@@ -1,0 +1,10 @@
+{
+  "appBar": {
+    "cart": "购物车",
+    "languageSwitcher": "切换语言"
+  },
+  "nav": {
+    "home": "首页",
+    "order": "订单"
+  }
+}

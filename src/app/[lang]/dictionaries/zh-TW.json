@@ -1,0 +1,10 @@
+{
+  "appBar": {
+    "cart": "購物車",
+    "languageSwitcher": "切換語言"
+  },
+  "nav": {
+    "home": "首頁",
+    "order": "訂單"
+  }
+}

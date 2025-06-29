@@ -1,0 +1,10 @@
+{
+  "appBar": {
+    "cart": "Cart",
+    "languageSwitcher": "Change Language"
+  },
+  "nav": {
+    "home": "Home",
+    "order": "Order"
+  }
+}

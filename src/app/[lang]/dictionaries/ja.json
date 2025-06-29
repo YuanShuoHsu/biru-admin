@@ -1,0 +1,10 @@
+{
+  "appBar": {
+    "cart": "カート",
+    "languageSwitcher": "言語を変更"
+  },
+  "nav": {
+    "home": "ホーム",
+    "order": "注文"
+  }
+}

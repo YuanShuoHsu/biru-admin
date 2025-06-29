@@ -1,0 +1,10 @@
+{
+  "appBar": {
+    "cart": "장바구니",
+    "languageSwitcher": "언어 변경"
+  },
+  "nav": {
+    "home": "홈",
+    "order": "주문"
+  }
+}
