@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 
 import HideOnScroll from "./HideOnScroll";
 import MenuAppBar from "./MenuAppBar";
@@ -46,7 +47,7 @@ interface HideAppBarProps {
 
 const HideAppBar = ({ onDrawerToggle }: HideAppBarProps) => {
   // const pathname = usePathname();
-  // const { lang, tableNumber } = useParams();
+  const { lang } = useParams();
 
   // const dict = useI18n();
 
@@ -71,7 +72,7 @@ const HideAppBar = ({ onDrawerToggle }: HideAppBarProps) => {
             </IconButton>
             <Stack
               component={Link}
-              href="/"
+              href={`/${lang}`}
               flexDirection="row"
               alignItems="center"
               gap={1}
