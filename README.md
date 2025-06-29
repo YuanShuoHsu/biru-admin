@@ -148,6 +148,13 @@ pnpm add @mui/material-nextjs @emotion/cache
 # https://mui.com/material-ui/customization/theme-components/
 ```
 
+## MUI X Data Grid
+
+```bash
+# https://mui.com/x/react-data-grid/quickstart/
+pnpm add @mui/x-data-grid
+```
+
 ## Zustand
 
 ```bash
