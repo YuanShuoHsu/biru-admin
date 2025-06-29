@@ -3,6 +3,12 @@
     "cart": "購物車",
     "languageSwitcher": "切換語言"
   },
+  "login": {
+    "title": "登入",
+    "email": "電子郵件",
+    "password": "密碼",
+    "submit": "登入"
+  },
   "nav": {
     "home": "首頁",
     "order": "訂單"

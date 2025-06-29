@@ -3,6 +3,12 @@
     "cart": "购物车",
     "languageSwitcher": "切换语言"
   },
+  "login": {
+    "title": "登录",
+    "email": "电子邮件",
+    "password": "密码",
+    "submit": "登录"
+  },
   "nav": {
     "home": "首页",
     "order": "订单"

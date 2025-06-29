@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 
+import { useI18n } from "@/context/i18n";
+
 import {
   Button,
   Card,
@@ -46,6 +48,8 @@ const StyledCardActions = styled(CardActions)(({ theme }) => ({
 const Home = () => {
   const [form, setForm] = useState({ email: "", password: "" });
 
+  const dict = useI18n();
+
   const handleChange = ({
     target: { name, value },
   }: React.ChangeEvent<HTMLInputElement>) =>
@@ -62,14 +66,14 @@ const Home = () => {
         <StyledCardHeader
           title={
             <Typography color="primary" textAlign="center" variant="h6">
-              登入
+              {dict.login.title}
             </Typography>
           }
         />
         <StyledCardContent>
           <TextField
             fullWidth
-            label="電子郵件"
+            label={dict.login.email}
             name="email"
             onChange={handleChange}
             required
@@ -78,7 +82,7 @@ const Home = () => {
           />
           <TextField
             fullWidth
-            label="密碼"
+            label={dict.login.password}
             name="password"
             onChange={handleChange}
             required
@@ -88,7 +92,7 @@ const Home = () => {
         </StyledCardContent>
         <StyledCardActions>
           <Button fullWidth size="large" type="submit" variant="contained">
-            登入
+            {dict.login.submit}
           </Button>
         </StyledCardActions>
       </StyledCard>

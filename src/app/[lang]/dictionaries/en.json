@@ -3,6 +3,12 @@
     "cart": "Cart",
     "languageSwitcher": "Change Language"
   },
+  "login": {
+    "title": "Sign In",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Login"
+  },
   "nav": {
     "home": "Home",
     "order": "Order"

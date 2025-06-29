@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 
 import HideOnScroll from "./HideOnScroll";
 import MenuAppBar from "./MenuAppBar";
@@ -46,8 +46,10 @@ interface HideAppBarProps {
 }
 
 const HideAppBar = ({ onDrawerToggle }: HideAppBarProps) => {
-  // const pathname = usePathname();
+  const pathname = usePathname();
   const { lang } = useParams();
+
+  const isLoginPage = pathname === `/${lang}`;
 
   // const dict = useI18n();
 
@@ -62,14 +64,16 @@ const HideAppBar = ({ onDrawerToggle }: HideAppBarProps) => {
       <AppBar position="fixed">
         <StyledToolbar>
           <Stack flexDirection="row" alignItems="center" gap={1}>
-            <IconButton
-              aria-label="open drawer"
-              color="inherit"
-              edge="start"
-              onClick={onDrawerToggle("nav", true)}
-            >
-              <Menu />
-            </IconButton>
+            {!isLoginPage && (
+              <IconButton
+                aria-label="open drawer"
+                color="inherit"
+                edge="start"
+                onClick={onDrawerToggle("nav", true)}
+              >
+                <Menu />
+              </IconButton>
+            )}
             <Stack
               component={Link}
               href={`/${lang}`}

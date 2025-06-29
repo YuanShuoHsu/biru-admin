@@ -3,6 +3,12 @@
     "cart": "カート",
     "languageSwitcher": "言語を変更"
   },
+  "login": {
+    "title": "ログイン",
+    "email": "メールアドレス",
+    "password": "パスワード",
+    "submit": "ログイン"
+  },
   "nav": {
     "home": "ホーム",
     "order": "注文"
