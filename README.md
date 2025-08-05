@@ -155,6 +155,13 @@ pnpm add @mui/material-nextjs @emotion/cache
 pnpm add @mui/x-data-grid
 ```
 
+## notistack
+
+```bash
+# https://notistack.com/
+pnpm add notistack
+```
+
 ## SWR
 
 ```bash

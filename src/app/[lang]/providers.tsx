@@ -1,5 +1,7 @@
 "use client";
 
+import { SnackbarProvider } from "notistack";
+
 import { I18nDict } from "@/context/i18n";
 
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
@@ -17,7 +19,14 @@ interface ProvidersProps {
 const Providers = ({ children, dict }: ProvidersProps) => (
   <I18nProvider dict={dict}>
     <AppRouterCacheProvider>
-      <ThemeProvider theme={theme}>{children}</ThemeProvider>
+      <ThemeProvider theme={theme}>
+        <SnackbarProvider
+          maxSnack={3}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        >
+          {children}
+        </SnackbarProvider>
+      </ThemeProvider>
     </AppRouterCacheProvider>
   </I18nProvider>
 );

@@ -1,6 +1,8 @@
 "use client";
 
+import { useSnackbar } from "notistack";
 import React, { useState } from "react";
+import useSWRMutation from "swr/mutation";
 
 import { useI18n } from "@/context/i18n";
 
@@ -16,6 +18,8 @@ import {
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+
+import type { CreateAuthDto } from "@/types/auth/login/createAuthDto";
 
 const StyledContainer = styled(Container)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -45,19 +49,36 @@ const StyledCardActions = styled(CardActions)(({ theme }) => ({
   paddingTop: 0,
 }));
 
+const sendRequest = async (url: string, { arg }: { arg: CreateAuthDto }) =>
+  fetch(url, {
+    method: "POST",
+    body: JSON.stringify(arg),
+  }).then((res) => res.json());
+
 const Home = () => {
   const [form, setForm] = useState({ email: "", password: "" });
 
   const dict = useI18n();
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const { isMutating, trigger } = useSWRMutation("/api/ecpay", sendRequest);
 
   const handleChange = ({
     target: { name, value },
   }: React.ChangeEvent<HTMLInputElement>) =>
     setForm((prev) => ({ ...prev, [name]: value }));
 
-  const handleSubmit = (event: React.FormEvent<HTMLDivElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLDivElement>) => {
     event.preventDefault();
-    // console.log({ email, password });
+
+    try {
+      const { data } = await trigger(form);
+
+      console.log(data);
+    } catch (error) {
+      enqueueSnackbar(String(error), { variant: "error" });
+    }
   };
 
   return (
@@ -91,7 +112,14 @@ const Home = () => {
           />
         </StyledCardContent>
         <StyledCardActions>
-          <Button fullWidth size="large" type="submit" variant="contained">
+          <Button
+            disabled={isMutating}
+            fullWidth
+            loading={isMutating}
+            size="large"
+            type="submit"
+            variant="contained"
+          >
             {dict.login.submit}
           </Button>
         </StyledCardActions>
