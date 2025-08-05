@@ -155,6 +155,13 @@ pnpm add @mui/material-nextjs @emotion/cache
 pnpm add @mui/x-data-grid
 ```
 
+## SWR
+
+```bash
+# https://swr.vercel.app/docs/getting-started
+pnpm add swr
+```
+
 ## Zustand
 
 ```bash
