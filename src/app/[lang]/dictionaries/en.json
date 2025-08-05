@@ -1,7 +1,9 @@
 {
   "appBar": {
     "cart": "Cart",
-    "languageSwitcher": "Change Language"
+    "darkMode": "Dark mode",
+    "languageSwitcher": "Change Language",
+    "lightMode": "Light mode"
   },
   "login": {
     "title": "Sign In",

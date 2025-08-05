@@ -1,7 +1,9 @@
 {
   "appBar": {
     "cart": "购物车",
-    "languageSwitcher": "切换语言"
+    "darkMode": "深色模式",
+    "languageSwitcher": "切换语言",
+    "lightMode": "浅色模式"
   },
   "login": {
     "title": "登录",

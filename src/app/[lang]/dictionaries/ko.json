@@ -1,7 +1,9 @@
 {
   "appBar": {
     "cart": "장바구니",
-    "languageSwitcher": "언어 변경"
+    "darkMode": "다크 모드",
+    "languageSwitcher": "언어 변경",
+    "lightMode": "라이트 모드"
   },
   "login": {
     "title": "로그인",

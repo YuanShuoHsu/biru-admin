@@ -1,17 +1,8 @@
 import { createContext, useContext } from "react";
 
-import en from "@/app/[lang]/dictionaries/en.json";
-import ja from "@/app/[lang]/dictionaries/ja.json";
-import ko from "@/app/[lang]/dictionaries/ko.json";
-import zhCN from "@/app/[lang]/dictionaries/zh-CN.json";
-import zhTW from "@/app/[lang]/dictionaries/zh-TW.json";
+import { dictionaries } from "@/app/[lang]/dictionaries";
 
-export type I18nDict =
-  | typeof zhTW
-  | typeof zhCN
-  | typeof en
-  | typeof ja
-  | typeof ko;
+export type I18nDict = Awaited<ReturnType<(typeof dictionaries)["zh-TW"]>>;
 
 const I18nContext = createContext<I18nDict | null>(null);
 

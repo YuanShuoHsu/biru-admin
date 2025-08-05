@@ -2,9 +2,9 @@
 
 import "server-only";
 
-import { LocaleCode } from "@/types/locale";
+import type { LocaleCode } from "@/types/locale";
 
-const dictionaries = {
+export const dictionaries = {
   "zh-TW": () =>
     import("./dictionaries/zh-TW.json").then((module) => module.default),
   en: () => import("./dictionaries/en.json").then((module) => module.default),

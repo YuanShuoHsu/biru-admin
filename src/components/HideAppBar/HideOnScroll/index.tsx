@@ -6,7 +6,7 @@ interface HideOnScrollProps {
   children?: React.ReactElement<unknown>;
 }
 
-const HideOnScroll: React.FC<HideOnScrollProps> = ({ children }) => {
+const HideOnScroll = ({ children }: HideOnScrollProps) => {
   const trigger = useScrollTrigger();
 
   return (
