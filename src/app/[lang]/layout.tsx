@@ -1,4 +1,5 @@
 // https://nextjs.org/docs/app/building-your-application/routing/internationalization
+// https://mui.com/material-ui/customization/css-theme-variables/configuration/#next-js-app-router
 
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -7,6 +8,8 @@ import "./globals.css";
 import AppLayout from "./appLayout";
 import { getDictionary } from "./dictionaries";
 import Providers from "./providers";
+
+import InitColorSchemeScript from "@mui/material/InitColorSchemeScript";
 
 import { LocaleCode } from "@/types/locale";
 
@@ -46,10 +49,11 @@ export default async function RootLayout({
   const dict = await getDictionary(lang);
 
   return (
-    <html lang={lang}>
+    <html lang={lang} suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <InitColorSchemeScript attribute="class" />
         <Providers dict={dict}>
           <AppLayout>{children}</AppLayout>
         </Providers>

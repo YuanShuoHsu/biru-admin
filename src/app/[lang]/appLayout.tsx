@@ -8,7 +8,7 @@ import NavTemporaryDrawer from "@/components/NavTemporaryDrawer";
 import ScrollTop from "@/components/ScrollTop";
 
 import { KeyboardArrowUp } from "@mui/icons-material";
-import { Box, CssBaseline, Fab, Toolbar } from "@mui/material";
+import { Box, BoxProps, CssBaseline, Fab, Toolbar } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { DrawerType } from "@/types/drawer";
@@ -17,12 +17,14 @@ const ContainerBox = styled(Box)({
   display: "flex",
 });
 
-const MainBox = styled(Box)({
+const MainBox = styled(Box)<BoxProps>(({ theme }) => ({
   width: "100%",
   minHeight: "100vh",
   display: "flex",
   flexDirection: "column",
-});
+  backgroundColor: theme.vars.palette.background.default,
+  transition: theme.transitions.create("background-color"),
+}));
 
 interface AppLayoutProps {
   children: React.ReactNode;
