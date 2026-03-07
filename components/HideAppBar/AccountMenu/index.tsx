@@ -104,8 +104,9 @@ const AccountMenu = () => {
   const isAuthPage = pathname.startsWith("/auth");
   const isCompanyPage = pathname.startsWith("/company");
 
-  const redirectTarget =
-    (isAccountPage || isAuthPage || isCompanyPage) && redirectTo
+  const redirectTarget = isAuthPage
+    ? redirectTo
+    : (isAccountPage || isCompanyPage) && redirectTo
       ? redirectTo
       : pathname;
 
