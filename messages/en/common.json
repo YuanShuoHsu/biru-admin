@@ -1,0 +1,14 @@
+{
+  "colon": ": ",
+  "currency": "NT$",
+  "delimiter": ", ",
+  "empty": "No items yet",
+  "from": "from",
+  "loading": "Loading...",
+  "maxQuantity": "You can buy up to {quantity} per item",
+  "multiply": "×",
+  "reachStockLimit": "Stock limit reached {label}",
+  "soldOut": "{label} Sold out",
+  "totalAmount": "Total",
+  "unavailable": "Unavailable"
+}

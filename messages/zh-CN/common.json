@@ -1,0 +1,14 @@
+{
+  "colon": "：",
+  "currency": "NT$",
+  "delimiter": "、",
+  "empty": "尚无商品",
+  "from": "起",
+  "loading": "加载中...",
+  "maxQuantity": "每项商品最多只能购买 {quantity} 件",
+  "multiply": "×",
+  "reachStockLimit": "{label} 已达库存上限",
+  "soldOut": "{label} 售罄",
+  "totalAmount": "总计",
+  "unavailable": "无法供应"
+}

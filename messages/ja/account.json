@@ -1,0 +1,98 @@
+{
+  "label": "アカウント",
+  "accountMenu": {
+    "這邊未來要根據頁面修正": "",
+    "addAnotherAccount": "別のアカウントを追加",
+    "myAccount": "マイアカウント",
+    "profile": "プロフィール",
+    "settings": "設定"
+  },
+  "addAnotherAccount": {
+    "title": "別のアカウントを追加",
+    "subtitle": "このデバイスでアカウントを切り替え",
+    "signedInNotice": "別のアカウントでサインインするには、先にサインアウトします。",
+    "signedOutNotice": "サインインしていません。サインインに進んでください。",
+    "currentAccount": "現在のアカウント",
+    "actions": {
+      "goToSignIn": "サインインへ",
+      "signOutContinue": "サインアウトして続行",
+      "cancel": "キャンセル"
+    }
+  },
+  "accountSettings": {
+    "label": "アカウント設定",
+    "title": "アカウント設定",
+    "subtitle": "セキュリティ、サインイン、端末の設定",
+    "signInCta": "サインインして設定を管理",
+    "empty": "サインインすると設定を表示します。",
+    "sections": {
+      "account": "アカウント",
+      "security": "セキュリティ",
+      "device": "この端末",
+      "support": "サポート",
+      "danger": "危険な操作"
+    },
+    "actions": {
+      "viewProfile": "プロフィールを見る",
+      "terms": "利用規約",
+      "privacy": "プライバシーポリシー"
+    },
+    "fields": {
+      "name": "名前"
+    },
+    "rememberMe": {
+      "label": "デフォルトでログイン状態を保持",
+      "helper": "サインイン画面のデフォルトとして使用します。"
+    },
+    "deviceNotice": "設定はこの端末にローカル保存されます。",
+    "securityNotice": "一部の操作ではメール認証が必要になる場合があります。",
+    "danger": {
+      "title": "アカウント削除",
+      "subtitle": "現在は利用できません。",
+      "action": "アカウント削除"
+    }
+  },
+  "myAccount": {
+    "title": "マイアカウント",
+    "subtitle": "概要とクイック操作",
+    "signInCta": "ログインしてアカウントを管理",
+    "empty": "ログインするとアカウント概要を表示します。",
+    "sections": {
+      "overview": "概要",
+      "security": "セキュリティ",
+      "quickActions": "クイック操作",
+      "appearance": "外観",
+      "support": "サポート"
+    },
+    "actions": {
+      "profile": "プロフィールを見る",
+      "settings": "アカウント設定",
+      "verifyEmail": "メールを確認",
+      "resetPassword": "パスワードをリセット",
+      "terms": "利用規約",
+      "privacy": "プライバシーポリシー"
+    },
+    "colorMode": {
+      "label": "カラーモード",
+      "helper": "ライト/ダークを切り替えます。"
+    }
+  },
+  "profile": {
+    "activity": "最近のアクティビティ",
+    "completion": "プロフィール完成度",
+    "contact": "連絡先",
+    "empty": "サインインするとアカウント情報を表示します。",
+    "lastUpdated": "最終更新 {date}",
+    "localNotice": "設定は今のところこの端末にのみ保存されます。",
+    "memberSince": "メンバー登録日 {date}",
+    "newsletter": "コーヒーニュースレター",
+    "orderUpdates": "注文状況の通知",
+    "placeholderName": "コーヒー好き",
+    "preferences": "設定",
+    "recommendations": "おすすめ情報",
+    "signInCta": "サインインしてプロフィールを確認",
+    "subtitle": "個人情報と設定",
+    "unverified": "未認証",
+    "verified": "認証済み"
+  }
+}

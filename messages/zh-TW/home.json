@@ -1,0 +1,15 @@
+{
+  "footer": {
+    "brand": "Biru Coffee",
+    "copyright": "Copyright © {year} {brand}.",
+    "newsletter": {
+      "action": "訂閱",
+      "invalidEmail": "請輸入有效的電子郵件。",
+      "subtitle": "訂閱電子報，定期收到更新。我們絕不寄送垃圾郵件。",
+      "success": "訂閱成功（示意）。",
+      "title": "掌握最新消息"
+    },
+    "tagline": "為你的每一天，沖煮一杯好咖啡。"
+  },
+  "label": "首頁"
+}

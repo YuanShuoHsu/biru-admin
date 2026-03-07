@@ -1,40 +1,219 @@
 # biru-admin
 
+## 主題色
+
+```bash
+# https://mui.com/material-ui/customization/color/
+
+唇 霞染胭脂 pink[100] (#f8bbd0) 粉
+大橘為重 暖陽淺橘 orange[100] (#ffe0b2) 橘
+身側 羽柔暖棕 brown[200] (#bcaaa4) 淺棕
+背毛 焦香摩卡 brown[700] (#5d4037) 深棕 // 需要試試 600
+胸毛 凝霜素白 grey[50] (#fafafa) 白
+法令紋 錦夜墨痕 grey[900] (#212121) 黑
+眼 霧織灰藍 blueGrey[500] (#607d8b) 灰藍
+```
+
 ## Next.js
 
 ```bash
 # https://nextjs.org/docs/app/getting-started/installation
-npx create-next-app@latest
-
-✔ What is your project named? … biru-admin
-✔ Would you like to use TypeScript? … No / Yes
-✔ Would you like to use ESLint? … No / Yes
-✔ Would you like to use Tailwind CSS? … No / Yes
-✔ Would you like your code inside a `src/` directory? … No / Yes
-✔ Would you like to use App Router? (recommended) … No / Yes
-✔ Would you like to use Turbopack for `next dev`? … No / Yes
-✔ Would you like to customize the import alias (`@/*` by default)? … No / Yes
+pnpm create next-app@latest biru-admin --yes
 Creating a new Next.js app in /Users/xuyuanshi/Desktop/biru-admin.
 
-Using npm.
+Using pnpm.
 
 Initializing project with template: app-tw
 
+
 Installing dependencies:
+- next
 - react
 - react-dom
-- next
 
 Installing devDependencies:
-- typescript
+- @tailwindcss/postcss
 - @types/node
 - @types/react
 - @types/react-dom
-- @tailwindcss/postcss
-- tailwindcss
 - eslint
 - eslint-config-next
-- @eslint/eslintrc
+- tailwindcss
+- typescript
+
+ WARN  GET https://registry.npmjs.org/prop-types error (502). Will retry in 10 seconds. 2 retries left.
+ WARN  Request took 10096ms: https://registry.npmjs.org/prop-types
+Packages: +351
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 424, reused 356, downloaded 0, added 351, done
+
+dependencies:
++ next 16.1.6
++ react 19.2.3 (19.2.4 is available)
++ react-dom 19.2.3 (19.2.4 is available)
+
+devDependencies:
++ @tailwindcss/postcss 4.2.1
++ @types/node 20.19.37 (25.3.5 is available)
++ @types/react 19.2.14
++ @types/react-dom 19.2.3
++ eslint 9.39.4 (10.0.3 is available)
++ eslint-config-next 16.1.6
++ tailwindcss 4.2.1
++ typescript 5.9.3
+
+Done in 19.5s using pnpm v10.30.3
+
+Generating route types...
+✓ Types generated successfully
+
+Success! Created biru-admin at /Users/xuyuanshi/Desktop/biru-admin
+```
+
+## Editor
+
+```bash
+# Visual Studio Code
+# https://github.com/prettier/prettier-vscode
+# https://marketplace.visualstudio.com/items?itemName=tombonnike.vscode-status-bar-format-toggle
+
+# .vscode/settings.json
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "always",
+    "source.addMissingImports": "always",
+    "source.organizeImports": "always"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnType": true
+}
+
+# https://nextjs.org/docs/app/guides/debugging
+
+# .vscode/launch.json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Next.js: debug server-side",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run dev -- --inspect"
+    },
+    {
+      "name": "Next.js: debug client-side",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:3000"
+    },
+    {
+      "name": "Next.js: debug client-side (Firefox)",
+      "type": "firefox",
+      "request": "launch",
+      "url": "http://localhost:3000",
+      "reAttach": true,
+      "pathMappings": [
+        {
+          "url": "webpack://_N_E",
+          "path": "${workspaceFolder}"
+        }
+      ]
+    },
+    {
+      "name": "Next.js: debug full stack",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/next/dist/bin/next",
+      "runtimeArgs": ["--inspect"],
+      "skipFiles": ["<node_internals>/**"],
+      "serverReadyAction": {
+        "action": "debugWithEdge",
+        "killOnServerStop": true,
+        "pattern": "- Local:.+(https?://.+)",
+        "uriFormat": "%s",
+        "webRoot": "${workspaceFolder}"
+      }
+    }
+  ]
+}
+
+# https://developer.chrome.com/docs/devtools/automatic-workspaces?hl=zh-tw
+# https://developer.chrome.com/docs/devtools/workspaces?hl=zh-tw
+
+# public/.well-known/appspecific/com.chrome.devtools.json
+pwd
+node -e "console.log(crypto.randomUUID())"
+
+{
+  "workspace": {
+    "root": "/Users/yourname/path/to/your/project",
+    "uuid": "a-random-version-4-uuid"
+  }
+}
+
+# .gitignore
+
+# chrome devtools workspace
+public/.well-known/appspecific/com.chrome.devtools.json
+```
+
+## ESLint
+
+```bash
+# https://nextjs.org/docs/app/api-reference/config/eslint
+pnpm add -D eslint-config-prettier
+
+import { defineConfig, globalIgnores } from 'eslint/config'
+import nextVitals from 'eslint-config-next/core-web-vitals'
+import prettier from 'eslint-config-prettier/flat'
+
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  prettier,
+  // Override default ignores of eslint-config-next.
+  globalIgnores([
+    // Default ignores of eslint-config-next:
+    '.next/**',
+    'out/**',
+    'build/**',
+    'next-env.d.ts',
+  ]),
+])
+
+export default eslintConfig
+
+# .lintstagedrc.js
+const path = require('path')
+
+const buildEslintCommand = (filenames) =>
+  `eslint --fix ${filenames
+    .map((f) => `"${path.relative(process.cwd(), f)}"`)
+    .join(' ')}`
+
+module.exports = {
+  '*.{js,jsx,ts,tsx}': [buildEslintCommand],
+}
+```
+
+## Git hooks
+
+```bash
+# https://prettier.io/docs/install#git-hooks
+pnpm add --save-dev husky lint-staged
+pnpm exec husky init
+node --eval "fs.writeFileSync('.husky/pre-commit','pnpm exec lint-staged\n')"
+
+{
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  }
+}
+
+pnpm format
+pnpm lint
+pnpm exec lint-staged
 ```
 
 ## Prettier
@@ -54,87 +233,6 @@ npx prettier . --check
 {}
 ```
 
-## Editor
-
-```bash
-# Visual Studio Code
-# https://github.com/prettier/prettier-vscode
-# https://marketplace.visualstudio.com/items?itemName=tombonnike.vscode-status-bar-format-toggle
-
-# .vscode/settings.json
-{
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "always",
-    "source.addMissingImports": "always",
-    "source.organizeImports": "always"
-  },
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": true
-}
-```
-
-## eslint
-
-```bash
-# https://nextjs.org/docs/app/api-reference/config/eslint
-pnpm add --save-dev eslint-config-prettier
-
-# eslint.config.mjs
-import { FlatCompat } from '@eslint/eslintrc'
-
-const compat = new FlatCompat({
-  // import.meta.dirname is available after Node.js v20.11.0
-  baseDirectory: import.meta.dirname,
-})
-
-const eslintConfig = [
-  ...compat.config({
-    extends: ['next', 'prettier'],
-  }),
-]
-
-export default eslintConfig
-```
-
-## Git hooks
-
-```bash
-# https://prettier.io/docs/install#git-hooks
-pnpm add --save-dev husky lint-staged
-pnpm exec husky init
-node --eval "fs.writeFileSync('.husky/pre-commit','pnpm exec lint-staged\n')"
-
-{
-  "lint-staged": {
-    "**/*": "prettier --write --ignore-unknown"
-  }
-}
-
-# https://nextjs.org/docs/app/api-reference/config/eslint
-# .lintstagedrc.js
-const path = require('path')
-
-const buildEslintCommand = (filenames) =>
-  `next lint --fix --file ${filenames
-    .map((f) => path.relative(process.cwd(), f))
-    .join(' --file ')}`
-
-module.exports = {
-  '*.{js,jsx,ts,tsx}': [buildEslintCommand],
-}
-
-# eslint.config.mjs
-const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript", "prettier"),
-  {
-    files: ['.lintstagedrc.js'],
-    rules: {
-      '@typescript-eslint/no-require-imports': 'off',
-    },
-  },
-];
-```
-
 ## Material UI
 
 ```bash
@@ -148,18 +246,20 @@ pnpm add @mui/material-nextjs @emotion/cache
 # https://mui.com/material-ui/customization/theme-components/
 ```
 
-## MUI X Data Grid
+## React Hook Form
 
 ```bash
-# https://mui.com/x/react-data-grid/quickstart/
-pnpm add @mui/x-data-grid
+# https://react-hook-form.com/
+# https://github.com/react-hook-form/react-hook-form
+pnpm add react-hook-form
+pnpm add @hookform/resolvers
 ```
 
-## notistack
+## better-auth
 
 ```bash
-# https://notistack.com/
-pnpm add notistack
+# https://www.better-auth.com/
+pnpm add better-auth
 ```
 
 ## SWR
@@ -167,6 +267,13 @@ pnpm add notistack
 ```bash
 # https://swr.vercel.app/docs/getting-started
 pnpm add swr
+```
+
+## Zod
+
+```bash
+# https://zod.dev/
+pnpm add zod
 ```
 
 ## Zustand
@@ -178,25 +285,73 @@ pnpm add zustand
 # https://zustand.docs.pmnd.rs/guides/nextjs
 ```
 
-## match
+## next-intl
 
 ```bash
-# https://nextjs.org/docs/app/building-your-application/routing/internationalization
-pnpm add @formatjs/intl-localematcher
+# https://next-intl.dev/docs/getting-started/app-router
+pnpm add next-intl
 ```
 
-## negotiator
+## autosuggest-highlight
 
 ```bash
-# https://nextjs.org/docs/app/building-your-application/routing/internationalization
+pnpm add autosuggest-highlight
+pnpm add @types/autosuggest-highlight
+```
 
-# https://www.npmjs.com/package/negotiator
-# https://github.com/jshttp/negotiator
-pnpm add negotiator
+## dayjs
 
-# https://www.npmjs.com/package/@types/negotiator
-# https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/negotiator
-pnpm add -D @types/negotiator
+```bash
+# https://mui.com/x/react-date-pickers/quickstart/
+pnpm add @mui/x-date-pickers
+
+# https://day.js.org/
+pnpm add dayjs
+```
+
+## js-cookie
+
+```bash
+pnpm add js-cookie
+pnpm add -D @types/js-cookie
+```
+
+## libphonenumber-js
+
+```bash
+# https://www.npmjs.com/package/libphonenumber-js
+# https://gitlab.com/catamphetamine/libphonenumber-js
+pnpm add libphonenumber-js
+```
+
+## notistack
+
+```bash
+# https://notistack.com/
+pnpm add notistack
+```
+
+## react-imask
+
+```bash
+# https://mui.com/material-ui/react-text-field/#FormattedInputs.tsx
+# https://github.com/uNmAnNeR/imaskjs
+# https://imask.js.org/
+pnpm add react-imask
+```
+
+## socket.io-client
+
+```bash
+# https://www.npmjs.com/package/socket.io-client
+pnpm add socket.io-client
+```
+
+## Swiper
+
+```bash
+# https://swiperjs.com/get-started
+pnpm add swiper
 ```
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).

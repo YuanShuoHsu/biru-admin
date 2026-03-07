@@ -1,0 +1,45 @@
+{
+  "label": "点餐",
+  "mode": {
+    "dineIn": {
+      "label": "堂食",
+      "storeSlug": {
+        "tableNumber": {
+          "value": "桌号 {tableNumber}",
+          "partySize": {
+            "select": {
+              "label": "选择用餐人数",
+              "value": "{count} 位"
+            }
+          }
+        }
+      }
+    },
+    "pickup": {
+      "label": "自取",
+      "select": {
+        "label": "选择门店"
+      }
+    },
+    "storeSlug": {
+      "selectTable": "选择桌号",
+      "tableNumber": {
+        "latest": "新品上架",
+        "new": "新品",
+        "search": {
+          "placeholder": "搜索菜单"
+        },
+        "stepper": {
+          "checkout": {
+            "label": "结账"
+          },
+          "complete": {
+            "label": "完成"
+          }
+        },
+        "top": "TOP",
+        "topSold": "人气商品"
+      }
+    }
+  }
+}

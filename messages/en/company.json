@@ -1,0 +1,15 @@
+{
+  "about": {
+    "label": "About"
+  },
+  "label": "Company",
+  "legal": {
+    "back": "Back",
+    "privacy": {
+      "label": "Privacy Policy"
+    },
+    "terms": {
+      "label": "Terms of Service"
+    }
+  }
+}

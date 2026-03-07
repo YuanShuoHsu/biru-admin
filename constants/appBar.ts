@@ -1,0 +1,4 @@
+// Values are in px.
+export const APP_BAR_TOOLBAR_HEIGHT = 56;
+export const APP_BAR_TOOLBAR_HEIGHT_XS_UP_LANDSCAPE = 48;
+export const APP_BAR_TOOLBAR_HEIGHT_SM_UP = 64;

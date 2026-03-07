@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# chrome devtools workspace
+public/.well-known/appspecific/com.chrome.devtools.json

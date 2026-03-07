@@ -1,0 +1,14 @@
+{
+  "colon": ": ",
+  "currency": "NT$",
+  "delimiter": ", ",
+  "empty": "상품이 없습니다",
+  "from": "부터",
+  "loading": "로딩 중...",
+  "maxQuantity": "각 상품은 최대 {quantity} 개까지 구매할 수 있습니다",
+  "multiply": "×",
+  "reachStockLimit": "재고 한도에 도달했습니다 {label}",
+  "soldOut": "{label} 품절",
+  "totalAmount": "합계",
+  "unavailable": "사용 불가"
+}

@@ -1,0 +1,45 @@
+{
+  "label": "注文",
+  "mode": {
+    "dineIn": {
+      "label": "店内",
+      "storeSlug": {
+        "tableNumber": {
+          "value": "テーブル {tableNumber}",
+          "partySize": {
+            "select": {
+              "label": "来店人数を選択",
+              "value": "{count} 名"
+            }
+          }
+        }
+      }
+    },
+    "pickup": {
+      "label": "お持ち帰り",
+      "select": {
+        "label": "店舗を選択"
+      }
+    },
+    "storeSlug": {
+      "selectTable": "テーブルを選択",
+      "tableNumber": {
+        "latest": "新着商品",
+        "new": "新着",
+        "search": {
+          "placeholder": "メニューを検索"
+        },
+        "stepper": {
+          "checkout": {
+            "label": "お会計"
+          },
+          "complete": {
+            "label": "完了"
+          }
+        },
+        "top": "TOP",
+        "topSold": "人気商品"
+      }
+    }
+  }
+}

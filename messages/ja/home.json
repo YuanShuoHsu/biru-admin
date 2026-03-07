@@ -1,0 +1,15 @@
+{
+  "footer": {
+    "brand": "Biru Coffee",
+    "copyright": "Copyright © {year} {brand}.",
+    "newsletter": {
+      "action": "登録",
+      "invalidEmail": "有効なメールアドレスを入力してください。",
+      "subtitle": "ニュースレターに登録して定期的な更新を受け取りましょう。スパムは一切送りません。",
+      "success": "登録しました（デモ）。",
+      "title": "最新情報を受け取る"
+    },
+    "tagline": "あなたの一日を彩る、こだわりのコーヒー。"
+  },
+  "label": "ホーム"
+}

@@ -1,0 +1,35 @@
+{
+  "birthDate": {
+    "invalid": "出生日期无效。",
+    "maxDate": "请选择今天或之前的出生日期。",
+    "minDate": "请选择 1900-01-01 或之后的出生日期。",
+    "required": "出生日期为必填。"
+  },
+  "confirmPassword": {
+    "mismatch": "两次输入的密码不一致。",
+    "required": "确认密码为必填。"
+  },
+  "countryCode": {
+    "invalid": "国码无效。",
+    "required": "国家码为必填。"
+  },
+  "email": {
+    "invalid": "请输入有效的电子邮件。"
+  },
+  "firstName": {
+    "minLength": "名字至少需要 1 个字符。"
+  },
+  "gender": {
+    "required": "性别为必填。"
+  },
+  "password": {
+    "letter": "包含至少一个英文字母。",
+    "match": "与密码一致。",
+    "minLength": "至少 8 个字符长度。",
+    "number": "包含至少一个数字。"
+  },
+  "phone": {
+    "invalid": "电话号码无效。",
+    "required": "电话号码为必填。"
+  }
+}

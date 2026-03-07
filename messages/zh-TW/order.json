@@ -1,0 +1,45 @@
+{
+  "label": "點餐",
+  "mode": {
+    "dineIn": {
+      "label": "內用",
+      "storeSlug": {
+        "tableNumber": {
+          "value": "桌號 {tableNumber}",
+          "partySize": {
+            "select": {
+              "label": "選擇用餐人數",
+              "value": "{count} 位"
+            }
+          }
+        }
+      }
+    },
+    "pickup": {
+      "label": "外帶自取",
+      "select": {
+        "label": "選擇門市"
+      }
+    },
+    "storeSlug": {
+      "selectTable": "選擇桌號",
+      "tableNumber": {
+        "latest": "新品上架",
+        "new": "新品",
+        "search": {
+          "placeholder": "搜尋菜單"
+        },
+        "stepper": {
+          "checkout": {
+            "label": "結帳"
+          },
+          "complete": {
+            "label": "完成"
+          }
+        },
+        "top": "TOP",
+        "topSold": "人氣商品"
+      }
+    }
+  }
+}

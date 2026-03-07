@@ -1,0 +1,6 @@
+{
+  "addToCart": "カートに追加",
+  "amount": "小計",
+  "close": "閉じる",
+  "maxStock": "{label} 在庫は残り {quantity} 個です"
+}

@@ -1,0 +1,98 @@
+{
+  "label": "帳號",
+  "accountMenu": {
+    "這邊未來要根據頁面修正": "",
+    "addAnotherAccount": "新增其他帳號",
+    "myAccount": "我的帳號",
+    "profile": "個人檔案",
+    "settings": "設定"
+  },
+  "addAnotherAccount": {
+    "title": "新增其他帳號",
+    "subtitle": "在此裝置切換帳號",
+    "signedInNotice": "要登入其他帳號，我們會先將你登出。",
+    "signedOutNotice": "你尚未登入，請先登入帳號。",
+    "currentAccount": "目前帳號",
+    "actions": {
+      "goToSignIn": "前往登入",
+      "signOutContinue": "登出並繼續",
+      "cancel": "取消"
+    }
+  },
+  "accountSettings": {
+    "label": "帳號設定",
+    "title": "帳號設定",
+    "subtitle": "管理安全性、登入與裝置偏好",
+    "signInCta": "登入後即可管理設定",
+    "empty": "登入後才可以調整你的帳號設定。",
+    "sections": {
+      "account": "帳戶",
+      "security": "安全性",
+      "device": "此裝置",
+      "support": "支援",
+      "danger": "危險區"
+    },
+    "actions": {
+      "viewProfile": "查看個人檔案",
+      "terms": "服務條款",
+      "privacy": "隱私權政策"
+    },
+    "fields": {
+      "name": "姓名"
+    },
+    "rememberMe": {
+      "label": "預設記住我",
+      "helper": "作為此裝置的登入預設值。"
+    },
+    "deviceNotice": "此頁面偏好目前只會儲存在此裝置。",
+    "securityNotice": "部分安全性操作可能需要重新驗證電子郵件。",
+    "danger": {
+      "title": "刪除帳號",
+      "subtitle": "功能尚未開放。",
+      "action": "刪除帳號"
+    }
+  },
+  "myAccount": {
+    "title": "我的帳號",
+    "subtitle": "帳號總覽與快速操作",
+    "signInCta": "登入以管理你的帳號",
+    "empty": "登入後將顯示你的帳號總覽。",
+    "sections": {
+      "overview": "總覽",
+      "security": "安全性",
+      "quickActions": "快速操作",
+      "appearance": "外觀",
+      "support": "支援"
+    },
+    "actions": {
+      "profile": "查看個人檔案",
+      "settings": "帳號設定",
+      "verifyEmail": "驗證電子郵件",
+      "resetPassword": "重設密碼",
+      "terms": "服務條款",
+      "privacy": "隱私權政策"
+    },
+    "colorMode": {
+      "label": "色彩模式",
+      "helper": "切換淺色/深色模式。"
+    }
+  },
+  "profile": {
+    "activity": "最新紀錄",
+    "completion": "檔案完成度",
+    "contact": "聯絡方式",
+    "empty": "登入後即可查看你的帳戶資訊。",
+    "lastUpdated": "最後更新 {date}",
+    "localNotice": "偏好目前只會儲存在此裝置。",
+    "memberSince": "加入時間 {date}",
+    "newsletter": "咖啡電子報",
+    "orderUpdates": "訂單更新通知",
+    "placeholderName": "咖啡同好",
+    "preferences": "偏好設定",
+    "recommendations": "個人化推薦",
+    "signInCta": "登入即可查看個人檔案",
+    "subtitle": "管理個人資訊與偏好",
+    "unverified": "尚未驗證",
+    "verified": "已驗證"
+  }
+}

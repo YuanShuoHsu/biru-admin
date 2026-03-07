@@ -1,0 +1,15 @@
+{
+  "about": {
+    "label": "회사 소개"
+  },
+  "label": "회사 소개",
+  "legal": {
+    "back": "뒤로가기",
+    "privacy": {
+      "label": "개인정보 처리방침"
+    },
+    "terms": {
+      "label": "서비스 이용약관"
+    }
+  }
+}

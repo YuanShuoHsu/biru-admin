@@ -1,0 +1,35 @@
+{
+  "birthDate": {
+    "invalid": "生年月日が正しくありません。",
+    "maxDate": "今日以前の生年月日を選択してください。",
+    "minDate": "1900-01-01以降の生年月日を選択してください。",
+    "required": "生年月日は必須です。"
+  },
+  "confirmPassword": {
+    "mismatch": "パスワードが一致しません。",
+    "required": "確認用パスワードは必須です。"
+  },
+  "countryCode": {
+    "invalid": "国コードが無効です。",
+    "required": "国コードは必須です."
+  },
+  "email": {
+    "invalid": "有効なメールアドレスを入力してください。"
+  },
+  "firstName": {
+    "minLength": "名は1文字以上で入力してください。"
+  },
+  "gender": {
+    "required": "性別は必須です。"
+  },
+  "password": {
+    "letter": "英字を1文字以上含む。",
+    "match": "パスワードと一致。",
+    "minLength": "8文字以上の長さ。",
+    "number": "数字を1文字以上含む。"
+  },
+  "phone": {
+    "invalid": "電話番号が正しくありません。",
+    "required": "電話番号は必須です。"
+  }
+}

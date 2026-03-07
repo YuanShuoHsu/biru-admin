@@ -1,0 +1,15 @@
+{
+  "about": {
+    "label": "關於我們"
+  },
+  "label": "公司",
+  "legal": {
+    "back": "返回",
+    "privacy": {
+      "label": "隱私權政策"
+    },
+    "terms": {
+      "label": "服務條款"
+    }
+  }
+}

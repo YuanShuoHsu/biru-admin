@@ -1,0 +1,45 @@
+{
+  "label": "Order",
+  "mode": {
+    "dineIn": {
+      "label": "Dine-in",
+      "storeSlug": {
+        "tableNumber": {
+          "value": "Table {tableNumber}",
+          "partySize": {
+            "select": {
+              "label": "Select party size",
+              "value": "{count} people"
+            }
+          }
+        }
+      }
+    },
+    "pickup": {
+      "label": "Pickup",
+      "select": {
+        "label": "Select a store"
+      }
+    },
+    "storeSlug": {
+      "selectTable": "Select a table",
+      "tableNumber": {
+        "latest": "New Arrivals",
+        "new": "New",
+        "search": {
+          "placeholder": "Search menu"
+        },
+        "stepper": {
+          "checkout": {
+            "label": "Checkout"
+          },
+          "complete": {
+            "label": "Complete"
+          }
+        },
+        "top": "TOP",
+        "topSold": "Best Sellers"
+      }
+    }
+  }
+}

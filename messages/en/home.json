@@ -1,0 +1,15 @@
+{
+  "footer": {
+    "brand": "Biru Coffee",
+    "copyright": "Copyright © {year} {brand}.",
+    "newsletter": {
+      "action": "Subscribe",
+      "invalidEmail": "Please enter a valid email.",
+      "subtitle": "Join our newsletter for regular updates. No spam ever.",
+      "success": "Subscribed (demo).",
+      "title": "Keep up to date"
+    },
+    "tagline": "Coffee, crafted for your day."
+  },
+  "label": "Home"
+}

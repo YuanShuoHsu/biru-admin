@@ -1,0 +1,6 @@
+{
+  "addToCart": "Add to cart",
+  "amount": "SubTotal",
+  "close": "Close",
+  "maxStock": "Only {quantity} left in stock {label}"
+}
