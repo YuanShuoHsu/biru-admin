@@ -1,5 +1,7 @@
 import { setRequestLocale } from "next-intl/server";
 
+import Home from ".";
+
 import type { Locale } from "@/i18n/routing";
 
 interface HomePageProps {
@@ -11,7 +13,7 @@ const HomePage = async ({ params }: HomePageProps) => {
 
   setRequestLocale(locale);
 
-  return <></>;
+  return <Home />;
 };
 
 export default HomePage;
