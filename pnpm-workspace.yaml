@@ -1,4 +1,8 @@
 onlyBuiltDependencies:
+  - "@parcel/watcher"
+  - "@prisma/engines"
+  - "@swc/core"
   - core-js-pure
+  - prisma
   - sharp
   - unrs-resolver

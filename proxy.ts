@@ -28,14 +28,13 @@ export const proxy = (request: NextRequest) => {
   const sessionCookie = getSessionCookie(request);
 
   const isAuthPage = pathname.includes("/auth");
-  const isAccountPage = pathname.includes("/account");
 
   if (sessionCookie && isAuthPage)
     return NextResponse.redirect(
       new URL(`/${locale}/account/my-account`, request.url),
     );
 
-  if (!sessionCookie && isAccountPage)
+  if (!sessionCookie && !isAuthPage)
     return NextResponse.redirect(
       new URL(`/${locale}/auth/sign-in`, request.url),
     );
