@@ -1,5 +1,12 @@
 {
   "permissions": {
-    "allow": ["Bash(ls:*)", "Bash(mkdir:*)", "Bash(cp:*)", "Bash(head:*)"]
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(mkdir:*)",
+      "Bash(cp:*)",
+      "Bash(head:*)",
+      "WebFetch(domain:better-auth.com)",
+      "Bash(find:*)"
+    ]
   }
 }

@@ -96,13 +96,25 @@ const Home = ({ locale, redirectTo, rememberMe }: HomeProps) => {
     };
 
   const onSubmit = handleSubmit(async (data: SigninFormData) => {
-    const { error } = await authClient.signIn.email(
-      { ...data, callbackURL: redirectTo },
+    const { error: signInError } = await authClient.signIn.email(
+      { ...data },
       { headers: { "Accept-Language": locale } },
     );
 
-    if (error?.code) {
-      const message = getErrorMessage(error.code, locale);
+    if (signInError?.code) {
+      const message = getErrorMessage(signInError.code, locale);
+      enqueueSnackbar(message, { variant: "error" });
+
+      return;
+    }
+
+    const { error: roleError } =
+      await authClient.organization.getActiveMemberRole();
+
+    if (roleError?.code) {
+      await authClient.signOut();
+
+      const message = getErrorMessage(roleError.code, locale);
       enqueueSnackbar(message, { variant: "error" });
 
       return;
