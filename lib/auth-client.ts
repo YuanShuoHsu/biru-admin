@@ -46,9 +46,12 @@ type ErrorTypes = Partial<
 const customErrorCodes: Record<string, Record<Locale, string>> = {
   NO_ACTIVE_ORGANIZATION: {
     [LocaleEnum.ZhTW]: "您的帳號無權限存取後台，請聯繫管理員",
-    [LocaleEnum.En]: "Your account does not have access to the admin panel. Please contact your administrator.",
-    [LocaleEnum.Ja]: "このアカウントには管理画面へのアクセス権限がありません。管理者にお問い合わせください。",
-    [LocaleEnum.Ko]: "이 계정은 관리자 패널에 접근할 권한이 없습니다. 관리자에게 문의하세요.",
+    [LocaleEnum.En]:
+      "Your account does not have access to the admin panel. Please contact your administrator.",
+    [LocaleEnum.Ja]:
+      "このアカウントには管理画面へのアクセス権限がありません。管理者にお問い合わせください。",
+    [LocaleEnum.Ko]:
+      "이 계정은 관리자 패널에 접근할 권한이 없습니다. 관리자에게 문의하세요.",
     [LocaleEnum.ZhCN]: "您的账号无权访问后台，请联系管理员",
   },
   EMAIL_IS_ALREADY_VERIFIED: {
