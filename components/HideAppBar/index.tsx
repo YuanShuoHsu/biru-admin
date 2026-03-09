@@ -25,6 +25,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
+import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDrawerStore } from "@/providers/drawer-store-provider";
 
 import { handleDrawerToggle } from "@/utils/drawer";
@@ -46,6 +47,7 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 }));
 
 const HideAppBar = () => {
+  const { session } = useAuthStore((state) => state);
   const { setDrawerOpen } = useDrawerStore((state) => state);
   const handleNavOpen = handleDrawerToggle(setDrawerOpen, "nav", true);
 
@@ -61,7 +63,7 @@ const HideAppBar = () => {
     <StyledAppBar position="fixed" trigger={trigger}>
       <StyledToolbar>
         <Stack minWidth={0} flexDirection="row" alignItems="center" gap={1}>
-          {!isMaintenanceMode && (
+          {!isMaintenanceMode && !!session && (
             <IconButton
               aria-label="open drawer"
               color="inherit"
