@@ -15,7 +15,6 @@ import {
   Login,
   MailOutline,
   Settings,
-  Shield,
   Update,
 } from "@mui/icons-material";
 import {
@@ -46,9 +45,6 @@ const preferenceDefaults: Record<PreferenceKey, boolean> = {
   orderUpdates: true,
   recommendations: false,
 };
-
-const formatRole = (role?: string) =>
-  role ? role.charAt(0) + role.slice(1).toLowerCase() : "User";
 
 interface InfoRowProps {
   icon: React.ElementType;
@@ -287,12 +283,6 @@ const AccountProfile = ({ currentURL }: AccountProfileProps) => {
                       variant="outlined"
                     />
                   )}
-                  <Chip
-                    color="default"
-                    label={formatRole(user.role)}
-                    size="small"
-                    variant="outlined"
-                  />
                 </Stack>
               </Stack>
             </Stack>
@@ -350,13 +340,6 @@ const AccountProfile = ({ currentURL }: AccountProfileProps) => {
                   justifyContent="flex-end"
                   mt={2}
                 >
-                  <Chip
-                    color="default"
-                    icon={<Shield fontSize="small" />}
-                    label={formatRole(user.role)}
-                    size="small"
-                    variant="outlined"
-                  />
                   {verificationChip(user.emailVerified)}
                   {/* {verificationChip(user.phoneNumberVerified)} */}
                 </Stack>

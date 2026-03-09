@@ -1,7 +1,5 @@
-import { inferAdditionalFields } from "better-auth/client/plugins";
+import { adminClient, inferAdditionalFields } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
-
-import { role } from "@/constants/role";
 
 import { LocaleEnum } from "@/enums/Locale";
 
@@ -10,6 +8,7 @@ import { type Locale, routing } from "@/i18n/routing";
 export const authClient = createAuthClient({
   baseURL: process.env.NEXT_PUBLIC_NEXT_URL,
   plugins: [
+    adminClient(),
     inferAdditionalFields({
       user: {
         emailSubscribed: {
@@ -29,12 +28,6 @@ export const authClient = createAuthClient({
         lastName: {
           type: "string",
           required: false,
-        },
-        role: {
-          type: [...role.roles],
-          required: true,
-          defaultValue: role.defaultRole,
-          input: false,
         },
       },
     }),

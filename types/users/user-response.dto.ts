@@ -1,7 +1,5 @@
 import type { Locale } from "@/i18n/routing";
 
-import type { Role } from "./role";
-
 export interface UserResponseDto {
   id: string;
   birthDate: string | null;
@@ -16,6 +14,5 @@ export interface UserResponseDto {
   lastName: string;
   phoneNumber: string | null;
   phoneNumberVerified: boolean;
-  role: Role;
   updatedAt: string;
 }

@@ -87,9 +87,6 @@ const SettingRow = ({ icon: Icon, label, status, value }: SettingRowProps) => (
   </Stack>
 );
 
-const formatRole = (role?: string) =>
-  role ? role.charAt(0) + role.slice(1).toLowerCase() : "User";
-
 interface AccountSettingsProps {
   currentURL: string;
 }
@@ -291,12 +288,6 @@ const AccountSettings = ({ currentURL }: AccountSettingsProps) => {
               >
                 {verificationChip(user.emailVerified)}
                 {/* {verificationChip(user.phoneNumberVerified)} */}
-                <Chip
-                  color="default"
-                  label={formatRole(user.role)}
-                  size="small"
-                  variant="outlined"
-                />
               </Stack>
               {!user.emailVerified && (
                 <Button
@@ -340,21 +331,6 @@ const AccountSettings = ({ currentURL }: AccountSettingsProps) => {
                     status={verificationChip(user.phoneNumberVerified)}
                     value={user.phoneNumber || tCommon("empty")}
                   /> */}
-                </Stack>
-                <Stack
-                  direction="row"
-                  flexWrap="wrap"
-                  gap={1}
-                  justifyContent="flex-end"
-                  mt={2}
-                >
-                  <Chip
-                    color="default"
-                    icon={<Security fontSize="small" />}
-                    label={formatRole(user.role)}
-                    size="small"
-                    variant="outlined"
-                  />
                 </Stack>
                 <Divider sx={{ my: 2 }} />
                 <Button

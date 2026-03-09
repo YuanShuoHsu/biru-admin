@@ -86,9 +86,6 @@ const InfoRow = ({ icon: Icon, label, status, value }: InfoRowProps) => (
   </Stack>
 );
 
-const formatRole = (role?: string) =>
-  role ? role.charAt(0) + role.slice(1).toLowerCase() : "User";
-
 interface MyAccountProps {
   currentURL: string;
 }
@@ -259,12 +256,6 @@ const MyAccount = ({ currentURL }: MyAccountProps) => {
                       variant="outlined"
                     />
                   )}
-                  <Chip
-                    color="default"
-                    label={formatRole(user.role)}
-                    size="small"
-                    variant="outlined"
-                  />
                 </Stack>
               </Stack>
             </Stack>
