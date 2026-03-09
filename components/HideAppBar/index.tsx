@@ -58,12 +58,13 @@ const HideAppBar = () => {
   });
 
   const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE === "true";
+  const showAuthControls = !isMaintenanceMode && !!session;
 
   return (
     <StyledAppBar position="fixed" trigger={trigger}>
       <StyledToolbar>
         <Stack minWidth={0} flexDirection="row" alignItems="center" gap={1}>
-          {!isMaintenanceMode && !!session && (
+          {showAuthControls && (
             <IconButton
               aria-label="open drawer"
               color="inherit"
@@ -80,7 +81,7 @@ const HideAppBar = () => {
           <Suspense>
             <LanguageMenu />
           </Suspense>
-          {!isMaintenanceMode && (
+          {showAuthControls && (
             <Suspense>
               <AccountMenu />
             </Suspense>

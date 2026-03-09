@@ -13,7 +13,10 @@ interface HomePageProps {
 }
 
 const HomePage = async ({ params, searchParams }: HomePageProps) => {
-  const [{ locale }, { redirectTo }] = await Promise.all([params, searchParams]);
+  const [{ locale }, { redirectTo }] = await Promise.all([
+    params,
+    searchParams,
+  ]);
 
   setRequestLocale(locale);
 
@@ -25,7 +28,9 @@ const HomePage = async ({ params, searchParams }: HomePageProps) => {
   const cookieStore = await cookies();
   const rememberMe = cookieStore.get(REMEMBER_ME)?.value === "true";
 
-  return <Home locale={locale} redirectTo={safeRedirectTo} rememberMe={rememberMe} />;
+  return (
+    <Home locale={locale} redirectTo={safeRedirectTo} rememberMe={rememberMe} />
+  );
 };
 
 export default HomePage;

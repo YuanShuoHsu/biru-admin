@@ -27,16 +27,15 @@ export const proxy = (request: NextRequest) => {
 
   const sessionCookie = getSessionCookie(request);
 
-  const isAuthPage = pathname.includes("/auth");
   const isHomePage =
     pathname === `/${locale}` || pathname === "/" || pathname === "";
 
-  if (sessionCookie && (isAuthPage || isHomePage))
+  if (sessionCookie && isHomePage)
     return NextResponse.redirect(
       new URL(`/${locale}/account/my-account`, request.url),
     );
 
-  if (!sessionCookie && !(isAuthPage || isHomePage))
+  if (!sessionCookie && !isHomePage)
     return NextResponse.redirect(new URL(`/${locale}`, request.url));
 
   const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE === "true";
