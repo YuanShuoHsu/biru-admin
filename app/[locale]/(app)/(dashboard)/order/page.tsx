@@ -1,19 +1,19 @@
 import { setRequestLocale } from "next-intl/server";
 
-import Dashboard from ".";
+import Order from ".";
 
 import type { Locale } from "@/i18n/routing";
 
-interface DashboardPageProps {
+interface OrderPageProps {
   params: Promise<{ locale: Locale }>;
 }
 
-const DashboardPage = async ({ params }: DashboardPageProps) => {
+const OrderPage = async ({ params }: OrderPageProps) => {
   const { locale } = await params;
 
   setRequestLocale(locale);
 
-  return <Dashboard />;
+  return <Order />;
 };
 
-export default DashboardPage;
+export default OrderPage;

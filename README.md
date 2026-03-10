@@ -244,6 +244,9 @@ pnpm add @mui/icons-material
 pnpm add @mui/material-nextjs @emotion/cache
 
 # https://mui.com/material-ui/customization/theme-components/
+
+# https://mui.com/x/react-data-grid/
+pnpm add @mui/x-data-grid
 ```
 
 ## React Hook Form

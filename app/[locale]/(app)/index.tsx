@@ -128,7 +128,7 @@ const Home = ({ locale, redirectTo, rememberMe }: HomeProps) => {
     setSession(session);
 
     enqueueSnackbar(tAuth("signIn.success"), { variant: "success" });
-    router.replace(redirectTo || "/dashboard");
+    router.replace(redirectTo || "/order");
   });
 
   return (

@@ -8,7 +8,17 @@
       "WebFetch(domain:better-auth.com)",
       "Bash(find:*)",
       "Bash(node:*)",
-      "Bash(xargs:*)"
+      "Bash(xargs:*)",
+      "WebFetch(domain:mui.com)",
+      "WebFetch(domain:github.com)",
+      "Bash(gh api:*)",
+      "Bash(gh search:*)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(curl:*)",
+      "Bash(rm:*)",
+      "Bash(pnpm add:*)",
+      "mcp__mui-mcp__fetchDocs",
+      "Bash(python3:*)"
     ]
   }
 }
