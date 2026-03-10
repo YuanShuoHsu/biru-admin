@@ -1,7 +1,15 @@
 "use client";
 
 import DownloadIcon from "@mui/icons-material/Download";
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 
 import type { Order, OrderStatus, OrdersQuery } from "@/types/orders";
@@ -22,7 +30,14 @@ const STATUS_OPTIONS: { value: OrderStatus | ""; label: string }[] = [
 const exportToCsv = (rows: Order[]) => {
   const headers = ["訂單編號", "狀態", "金額", "店家", "桌號", "建立時間"];
   const csvRows = rows.map((r) =>
-    [r.id, r.status, r.totalPrice, r.storeId, r.tableId ?? "", r.createdAt].join(","),
+    [
+      r.id,
+      r.status,
+      r.totalPrice,
+      r.storeId,
+      r.tableId ?? "",
+      r.createdAt,
+    ].join(","),
   );
   const csv = [headers.join(","), ...csvRows].join("\n");
   const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" });
@@ -54,7 +69,15 @@ const OrderToolbar = ({ query, onQueryChange, rows }: OrderToolbarProps) => {
   }, [searchValue, query.search, onQueryChange]);
 
   return (
-    <Box sx={{ p: 1, display: "flex", gap: 1, flexWrap: "wrap", alignItems: "center" }}>
+    <Box
+      sx={{
+        p: 1,
+        display: "flex",
+        gap: 1,
+        flexWrap: "wrap",
+        alignItems: "center",
+      }}
+    >
       <TextField
         size="small"
         placeholder="搜尋訂單編號、店家..."
@@ -68,7 +91,10 @@ const OrderToolbar = ({ query, onQueryChange, rows }: OrderToolbarProps) => {
           label="狀態"
           value={query.status}
           onChange={(e) =>
-            onQueryChange({ status: e.target.value as OrderStatus | "", page: 1 })
+            onQueryChange({
+              status: e.target.value as OrderStatus | "",
+              page: 1,
+            })
           }
         >
           {STATUS_OPTIONS.map((o) => (

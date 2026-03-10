@@ -1,6 +1,11 @@
 import { cache } from "react";
 
-import type { Order, OrderStatus, OrdersQuery, OrdersResponse } from "@/types/orders";
+import type {
+  Order,
+  OrderStatus,
+  OrdersQuery,
+  OrdersResponse,
+} from "@/types/orders";
 
 // TODO: Replace with real API call when ready
 // import { fetcher } from "./fetcher";
@@ -47,8 +52,7 @@ export const getOrders = cache(
       const q = query.search.toLowerCase();
       data = data.filter(
         (o) =>
-          o.id.toLowerCase().includes(q) ||
-          o.storeId.toLowerCase().includes(q),
+          o.id.toLowerCase().includes(q) || o.storeId.toLowerCase().includes(q),
       );
     }
 
