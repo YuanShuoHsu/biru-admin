@@ -16,6 +16,7 @@ import {
 import type { LinkProps } from "@mui/material/Link";
 import { createTheme } from "@mui/material/styles";
 import type {} from "@mui/material/themeCssVarsAugmentation";
+import type {} from "@mui/x-data-grid/themeAugmentation";
 import type {} from "@mui/x-date-pickers/AdapterDayjs";
 import type {} from "@mui/x-date-pickers/themeAugmentation";
 
@@ -83,15 +84,33 @@ const theme = createTheme({
     },
   },
   components: {
+    MuiButton: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          textTransform: "none",
+          transition: theme.transitions.create([
+            "background-color",
+            "border-color",
+            "color",
+          ]),
+        }),
+      },
+    },
     MuiButtonBase: {
       defaultProps: {
         LinkComponent: LinkBehavior,
       },
     },
-    MuiLink: {
-      defaultProps: {
-        component: LinkBehavior,
-      } as LinkProps,
+    MuiChip: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          transition: theme.transitions.create([
+            "background-color",
+            "border-color",
+            "color",
+          ]),
+        }),
+      },
     },
     MuiCssBaseline: {
       styleOverrides: (theme) => ({
@@ -108,26 +127,49 @@ const theme = createTheme({
         },
       }),
     },
-    MuiButton: {
+    MuiDataGrid: {
       styleOverrides: {
-        root: ({ theme }) => ({
-          textTransform: "none",
-          transition: theme.transitions.create([
-            "background-color",
-            "border-color",
-            "color",
-          ]),
+        cell: ({ theme }) => ({
+          transition: theme.transitions.create(["border-color", "color"]),
         }),
-      },
-    },
-    MuiChip: {
-      styleOverrides: {
-        root: ({ theme }) => ({
+        columnHeader: ({ theme }) => ({
           transition: theme.transitions.create([
             "background-color",
             "border-color",
             "color",
           ]),
+          "&[aria-colindex='1']": {
+            borderTopLeftRadius: theme.shape.borderRadius,
+          },
+          "&.MuiDataGrid-columnHeader--last": {
+            borderTopRightRadius: theme.shape.borderRadius,
+          },
+          "& .MuiDataGrid-sortButton": {
+            transition: theme.transitions.create("background-color"),
+          },
+        }),
+        // 尚有 border transition 問題
+        // columnSeparator: ({ theme }) => ({
+        //   "& .MuiDataGrid-iconSeparator": {
+        //     transition: theme.transitions.create("color"),
+        //   },
+        //   "&:hover .MuiDataGrid-iconSeparator": {
+        //     transition: "none",
+        //   },
+        // }),
+        footerContainer: ({ theme }) => ({
+          transition: theme.transitions.create(["border-color"]),
+        }),
+        root: ({ theme }) => ({
+          transition: theme.transitions.create(["background-color"]),
+          "& .MuiDataGrid-filler > div": {
+            transition: theme.transitions.create("border-color"),
+          },
+        }),
+        row: ({ theme }) => ({
+          "&.Mui-selected": {
+            transition: theme.transitions.create("background-color"),
+          },
         }),
       },
     },
@@ -158,6 +200,24 @@ const theme = createTheme({
             "color",
             "transform",
           ]),
+        }),
+      },
+    },
+    MuiLink: {
+      defaultProps: {
+        component: LinkBehavior,
+      } as LinkProps,
+    },
+    MuiTablePagination: {
+      styleOverrides: {
+        displayedRows: ({ theme }) => ({
+          transition: theme.transitions.create("color", { duration: 5000 }),
+        }),
+        select: ({ theme }) => ({
+          transition: theme.transitions.create("color", { duration: 5000 }),
+        }),
+        selectLabel: ({ theme }) => ({
+          transition: theme.transitions.create("color", { duration: 5000 }),
         }),
       },
     },
