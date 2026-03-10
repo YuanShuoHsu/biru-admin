@@ -31,9 +31,7 @@ export const proxy = (request: NextRequest) => {
     pathname === `/${locale}` || pathname === "/" || pathname === "";
 
   if (sessionCookie && isHomePage)
-    return NextResponse.redirect(
-      new URL(`/${locale}/account/my-account`, request.url),
-    );
+    return NextResponse.redirect(new URL(`/${locale}/dashboard`, request.url));
 
   if (!sessionCookie && !isHomePage)
     return NextResponse.redirect(new URL(`/${locale}`, request.url));

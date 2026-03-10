@@ -11,7 +11,7 @@ import ScrollTop from "@/components/ScrollTop";
 import { routing } from "@/i18n/routing";
 
 import { KeyboardArrowUp } from "@mui/icons-material";
-import { Box, Fab, Toolbar } from "@mui/material";
+import { Box, Fab, Stack, Toolbar } from "@mui/material";
 
 const AppLayout = async ({ children, params }: LayoutProps<"/[locale]">) => {
   const { locale } = await params;
@@ -37,7 +37,9 @@ const AppLayout = async ({ children, params }: LayoutProps<"/[locale]">) => {
         width="100%"
       >
         <Toolbar id="back-to-top-anchor" />
-        {children}
+        <Stack padding={2} height="100%" gap={2}>
+          {children}
+        </Stack>
       </Box>
       <ScrollTop>
         <Fab aria-label="scroll back to top" size="small">

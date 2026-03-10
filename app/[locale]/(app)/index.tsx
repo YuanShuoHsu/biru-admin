@@ -42,6 +42,8 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
+import { useAuthStore } from "@/providers/auth-store-provider";
+
 import { getHref } from "@/utils/href";
 import {
   handleMouseDownPassword,
@@ -64,6 +66,8 @@ const Home = ({ locale, redirectTo, rememberMe }: HomeProps) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const forgotPasswordHref = getHref("/auth/forgot-password", {});
+
+  const { setSession } = useAuthStore((state) => state);
 
   const signinFormSchema = useSigninFormSchema();
   type SigninFormData = z.infer<typeof signinFormSchema>;
@@ -120,8 +124,11 @@ const Home = ({ locale, redirectTo, rememberMe }: HomeProps) => {
       return;
     }
 
+    const { data: session } = await authClient.getSession();
+    setSession(session);
+
     enqueueSnackbar(tAuth("signIn.success"), { variant: "success" });
-    router.replace(redirectTo || "/");
+    router.replace(redirectTo || "/dashboard");
   });
 
   return (

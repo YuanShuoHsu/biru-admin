@@ -6,7 +6,9 @@
       "Bash(cp:*)",
       "Bash(head:*)",
       "WebFetch(domain:better-auth.com)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(node:*)",
+      "Bash(xargs:*)"
     ]
   }
 }

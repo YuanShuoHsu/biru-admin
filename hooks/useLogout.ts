@@ -2,6 +2,8 @@ import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 
+import { useRouter } from "@/i18n/navigation";
+
 import { authClient } from "@/lib/auth-client";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
@@ -11,6 +13,8 @@ export const useLogout = () => {
 
   const { setSession } = useAuthStore((state) => state);
 
+  const router = useRouter();
+
   const { enqueueSnackbar } = useSnackbar();
 
   const tAuth = useTranslations("auth");
@@ -18,11 +22,17 @@ export const useLogout = () => {
   const handleLogout = async () => {
     setIsMutatingLogout(true);
 
-    await authClient.signOut();
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          setSession(null);
+          enqueueSnackbar(tAuth("signOut.success"), { variant: "success" });
+          setIsMutatingLogout(false);
 
-    setSession(null);
-    enqueueSnackbar(tAuth("signOut.success"), { variant: "success" });
-    setIsMutatingLogout(false);
+          router.replace("/");
+        },
+      },
+    });
   };
 
   return {

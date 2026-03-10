@@ -22,7 +22,7 @@ const DashboardLayout = async ({
   setRequestLocale(locale);
 
   return (
-    <Stack padding={2} height="100%" gap={2}>
+    <>
       <Stack
         flexWrap={{ xs: "wrap", sm: "nowrap" }}
         direction="row"
@@ -34,7 +34,7 @@ const DashboardLayout = async ({
         {toolbar}
       </Stack>
       {children}
-    </Stack>
+    </>
   );
 };
 
