@@ -106,6 +106,7 @@ const Home = ({ locale, redirectTo, rememberMe }: HomeProps) => {
     );
 
     if (signInError?.code) {
+      console.log(signInError.code);
       const message = getErrorMessage(signInError.code, locale);
       enqueueSnackbar(message, { variant: "error" });
 
@@ -118,6 +119,7 @@ const Home = ({ locale, redirectTo, rememberMe }: HomeProps) => {
     if (roleError?.code) {
       await authClient.signOut();
 
+      console.log(roleError.code);
       const message = getErrorMessage(roleError.code, locale);
       enqueueSnackbar(message, { variant: "error" });
 
