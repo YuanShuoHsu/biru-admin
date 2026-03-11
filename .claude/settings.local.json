@@ -18,7 +18,17 @@
       "Bash(rm:*)",
       "Bash(pnpm add:*)",
       "mcp__mui-mcp__fetchDocs",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(pnpm info:*)",
+      "WebFetch(domain:vercel.com)",
+      "Bash(grep -v '^\\\\s*$' /Users/xuyuanshi/Desktop/biru-admin/.env | sed 's/=.*/=***/')",
+      "Read(//Users/xuyuanshi/Desktop/biru-api/**)",
+      "Read(//Users/xuyuanshi/Desktop/biru-api/src/**)",
+      "Bash(ls /Users/xuyuanshi/Desktop/biru-api/scripts && cat /Users/xuyuanshi/Desktop/biru-api/scripts/*.ts 2>/dev/null || echo \"no scripts\")",
+      "Bash(cd /Users/xuyuanshi/Desktop/biru-api && pnpm tsx scripts/setup-org.ts)",
+      "Bash(cd /Users/xuyuanshi/Desktop/biru-api && pnpm tsx -e \"\nimport 'dotenv/config';\nimport { db } from './src/db';\nimport { user } from './src/db/schema/users';\nimport { eq } from 'drizzle-orm';\n\nconst [u] = await db.select\\(\\).from\\(user\\).where\\(eq\\(user.email, 'ook1725@gmail.com'\\)\\);\nconsole.log\\(u ? JSON.stringify\\(u, null, 2\\) : 'User not found'\\);\nprocess.exit\\(\\);\n\")",
+      "mcp__mui-mcp__useMuiDocs",
+      "Bash(grep -ri \"filler\" /Users/xuyuanshi/Desktop/biru-admin/node_modules/@mui/x-data-grid/ --include=\"*.d.ts\" 2>/dev/null | head -10)"
     ]
   }
 }

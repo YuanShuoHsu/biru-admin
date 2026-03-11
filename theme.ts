@@ -141,9 +141,6 @@ const theme = createTheme({
           "&[aria-colindex='1']": {
             borderTopLeftRadius: theme.shape.borderRadius,
           },
-          "&.MuiDataGrid-columnHeader--last": {
-            borderTopRightRadius: theme.shape.borderRadius,
-          },
           "& .MuiDataGrid-sortButton": {
             transition: theme.transitions.create("background-color"),
           },
@@ -156,8 +153,14 @@ const theme = createTheme({
             "background-color",
             "border-color",
           ]),
-          "& .MuiDataGrid-filler > div": {
-            transition: theme.transitions.create("border-color"),
+          "& .MuiDataGrid-filler": {
+            transition: theme.transitions.create([
+              "background-color",
+              "border-color",
+            ]),
+            "& > div": {
+              transition: theme.transitions.create("border-color"),
+            },
           },
         }),
         row: ({ theme }) => ({
