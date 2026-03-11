@@ -38,7 +38,7 @@ export const proxy = (request: NextRequest) => {
   if (!sessionCookie && !isHomePage) {
     const redirectTo = pathname.slice(`/${locale}`.length);
     request.nextUrl.pathname = `/${locale}`;
-    request.nextUrl.searchParams.set("redirectTo", redirectTo);
+    if (redirectTo) request.nextUrl.searchParams.set("redirectTo", redirectTo);
 
     return NextResponse.redirect(request.nextUrl);
   }
