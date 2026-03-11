@@ -148,15 +148,6 @@ const theme = createTheme({
             transition: theme.transitions.create("background-color"),
           },
         }),
-        // 尚有 border transition 問題
-        // columnSeparator: ({ theme }) => ({
-        //   "& .MuiDataGrid-iconSeparator": {
-        //     transition: theme.transitions.create("color"),
-        //   },
-        //   "&:hover .MuiDataGrid-iconSeparator": {
-        //     transition: "none",
-        //   },
-        // }),
         footerContainer: ({ theme }) => ({
           transition: theme.transitions.create(["border-color"]),
         }),
@@ -211,13 +202,13 @@ const theme = createTheme({
     MuiTablePagination: {
       styleOverrides: {
         displayedRows: ({ theme }) => ({
-          transition: theme.transitions.create("color", { duration: 5000 }),
+          transition: theme.transitions.create("color"),
         }),
         select: ({ theme }) => ({
-          transition: theme.transitions.create("color", { duration: 5000 }),
+          transition: theme.transitions.create("color"),
         }),
         selectLabel: ({ theme }) => ({
-          transition: theme.transitions.create("color", { duration: 5000 }),
+          transition: theme.transitions.create("color"),
         }),
       },
     },
