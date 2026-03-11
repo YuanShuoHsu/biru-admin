@@ -22,10 +22,12 @@ This is a **Next.js 16 App Router** admin panel with TypeScript, MUI, and multi-
 ### Routing Structure
 
 Routes live under `app/[locale]/` for i18n. Layout groups organize routes:
+
 - `(app)/(dashboard)/` — protected routes (order, account settings)
 - `(app)/auth/` — public auth pages (sign-in, sign-up, password reset)
 
 The middleware at `proxy.ts` handles:
+
 - Redirecting authenticated users to `/order`
 - Redirecting unauthenticated users away from protected routes
 - Global maintenance mode (`NEXT_PUBLIC_MAINTENANCE` env flag)
