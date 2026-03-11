@@ -27,14 +27,21 @@ export const proxy = (request: NextRequest) => {
 
   const sessionCookie = getSessionCookie(request);
 
-  const isHomePage =
-    pathname === `/${locale}` || pathname === "/" || pathname === "";
+  const isHomePage = pathname === `/${locale}`;
 
-  if (sessionCookie && isHomePage)
-    return NextResponse.redirect(new URL(`/${locale}/order`, request.url));
+  if (sessionCookie && isHomePage) {
+    request.nextUrl.pathname = `/${locale}/order`;
 
-  if (!sessionCookie && !isHomePage)
-    return NextResponse.redirect(new URL(`/${locale}`, request.url));
+    return NextResponse.redirect(request.nextUrl);
+  }
+
+  if (!sessionCookie && !isHomePage) {
+    const redirectTo = pathname.slice(`/${locale}`.length);
+    request.nextUrl.pathname = `/${locale}`;
+    request.nextUrl.searchParams.set("redirectTo", redirectTo);
+
+    return NextResponse.redirect(request.nextUrl);
+  }
 
   const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE === "true";
   const isMaintenancePath =
