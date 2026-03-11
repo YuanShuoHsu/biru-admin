@@ -152,7 +152,10 @@ const theme = createTheme({
           transition: theme.transitions.create(["border-color"]),
         }),
         root: ({ theme }) => ({
-          transition: theme.transitions.create(["background-color"]),
+          transition: theme.transitions.create([
+            "background-color",
+            "border-color",
+          ]),
           "& .MuiDataGrid-filler > div": {
             transition: theme.transitions.create("border-color"),
           },

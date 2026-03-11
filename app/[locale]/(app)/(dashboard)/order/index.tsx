@@ -119,7 +119,6 @@ const Order = ({ initialData, query }: OrderProps) => {
       disableColumnFilter
       slots={{ toolbar: OrderToolbar }}
       slotProps={{ toolbar: { query, onQueryChange: updateParams, rows } }}
-      sx={{ border: 0 }}
     />
   );
 };
