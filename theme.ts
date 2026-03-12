@@ -3,6 +3,7 @@
 // https://mui.com/material-ui/customization/css-theme-variables/usage/#typescript
 // https://mui.com/material-ui/integrations/routing/
 // https://mui.com/x/react-data-grid/style/#StripedGrid.tsx
+// https://mui.com/x/react-data-grid/style/#SxProp.tsx
 // https://mui.com/x/react-date-pickers/quickstart/#typescript
 // https://mui.com/x/react-date-pickers/quickstart/#date-value-types
 
@@ -132,6 +133,9 @@ const theme = createTheme({
       styleOverrides: {
         cell: ({ theme }) => ({
           transition: theme.transitions.create(["border-color", "color"]),
+          "&:hover": {
+            color: theme.vars.palette.primary.main,
+          },
         }),
         columnHeader: ({ theme }) => ({
           transition: theme.transitions.create([
