@@ -2,6 +2,7 @@
 // https://mui.com/material-ui/customization/css-theme-variables/configuration/#preventing-ssr-flickering
 // https://mui.com/material-ui/customization/css-theme-variables/usage/#typescript
 // https://mui.com/material-ui/integrations/routing/
+// https://mui.com/x/react-data-grid/style/#StripedGrid.tsx
 // https://mui.com/x/react-date-pickers/quickstart/#typescript
 // https://mui.com/x/react-date-pickers/quickstart/#date-value-types
 
@@ -166,6 +167,24 @@ const theme = createTheme({
         row: ({ theme }) => ({
           "&.Mui-selected": {
             transition: theme.transitions.create("background-color"),
+          },
+          "&.even": {
+            backgroundColor: theme.vars.palette.action.hover,
+            "&:hover": {
+              backgroundColor: theme.vars.palette.action.selected,
+              "@media (hover: none)": {
+                backgroundColor: theme.vars.palette.action.hover,
+              },
+            },
+            "&.Mui-selected": {
+              backgroundColor: theme.vars.palette.action.selected,
+              "&:hover": {
+                backgroundColor: theme.vars.palette.action.focus,
+                "@media (hover: none)": {
+                  backgroundColor: theme.vars.palette.action.selected,
+                },
+              },
+            },
           },
         }),
         toolbar: ({ theme }) => ({

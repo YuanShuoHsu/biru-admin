@@ -195,6 +195,9 @@ const Organizations = ({ organizations }: OrganizationsProps) => {
         rows={organizations}
         columns={columns}
         disableRowSelectionOnClick
+        getRowClassName={({ indexRelativeToCurrentPage }) =>
+          indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
+        }
         slots={{
           columnSortedAscendingIcon: SortedAscendingIcon,
           noColumnsOverlay: CustomNoColumnsOverlay,
