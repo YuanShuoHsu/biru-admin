@@ -6,6 +6,11 @@ import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
+import {
+  SortedAscendingIcon,
+  SortedDescendingIcon,
+  UnsortedIcon,
+} from "@/components/CustomSortIcons";
 import CustomToolbar from "@/components/CustomToolbar";
 
 import { useRouter } from "@/i18n/navigation";
@@ -187,7 +192,12 @@ const Organizations = ({ organizations }: OrganizationsProps) => {
         columns={columns}
         disableRowSelectionOnClick
         autoHeight
-        slots={{ toolbar: CustomToolbar }}
+        slots={{
+          columnSortedAscendingIcon: SortedAscendingIcon,
+          columnSortedDescendingIcon: SortedDescendingIcon,
+          columnUnsortedIcon: UnsortedIcon,
+          toolbar: CustomToolbar,
+        }}
         slotProps={{
           toolbar: {
             action: (
