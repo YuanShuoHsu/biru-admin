@@ -20,10 +20,11 @@ const CreateOrgDialogContent = () => {
   const router = useRouter();
   const { resetDialog } = useDialogStore((s) => s);
 
-  const { control, handleSubmit, setValue, formState } =
-    useForm<CreateOrgForm>({
+  const { control, handleSubmit, setValue, formState } = useForm<CreateOrgForm>(
+    {
       defaultValues: { name: "", slug: "" },
-    });
+    },
+  );
 
   const handleNameChange = (name: string) => {
     setValue("name", name);
@@ -82,9 +83,7 @@ const CreateOrgDialogContent = () => {
               required
               error={!!fieldState.error}
               helperText={
-                fieldState.error
-                  ? "只能使用小寫英文、數字與連字號"
-                  : undefined
+                fieldState.error ? "只能使用小寫英文、數字與連字號" : undefined
               }
             />
           )}
