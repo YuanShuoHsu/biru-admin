@@ -188,6 +188,19 @@ const Organizations = ({ organizations }: OrganizationsProps) => {
         disableRowSelectionOnClick
         autoHeight
         slots={{ toolbar: CustomToolbar }}
+        slotProps={{
+          toolbar: {
+            action: (
+              <Button
+                onClick={() => setCreateOpen(true)}
+                size="small"
+                variant="contained"
+              >
+                {tOrganizations("actions.create")}
+              </Button>
+            ),
+          },
+        }}
         showToolbar
       />
       <Dialog

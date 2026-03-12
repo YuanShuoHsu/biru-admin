@@ -1,9 +1,10 @@
+// https://mui.com/x/react-data-grid/components/
 // https://mui.com/x/react-data-grid/components/toolbar/#GridToolbar.tsx
 
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 
 import {
   Cancel,
@@ -14,13 +15,13 @@ import {
 } from "@mui/icons-material";
 import {
   Badge,
+  Box,
   Divider,
   InputAdornment,
   Menu,
   MenuItem,
   TextField,
   Tooltip,
-  Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import {
@@ -36,10 +37,10 @@ import {
   ToolbarButton,
 } from "@mui/x-data-grid";
 
-const StyledTypography = styled(Typography)(({ theme }) => ({
+
+const StyledBox = styled(Box)({
   flex: 1,
-  marginInline: theme.spacing(0.5),
-}));
+});
 
 const StyledDivider = styled(Divider)(({ theme }) => ({
   marginInline: theme.spacing(0.5),
@@ -76,7 +77,17 @@ const StyledTextField = styled(TextField)<{
   transition: theme.transitions.create(["width", "opacity"]),
 }));
 
-const CustomToolbar = () => {
+declare module "@mui/x-data-grid" {
+  interface ToolbarPropsOverrides {
+    action?: ReactNode;
+  }
+}
+
+interface CustomToolbarProps {
+  action?: ReactNode;
+}
+
+const CustomToolbar = ({ action }: CustomToolbarProps) => {
   const tToolbar = useTranslations("dataGrid.toolbar");
   const [exportMenuTrigger, setExportMenuTrigger] =
     useState<HTMLElement | null>(null);
@@ -84,9 +95,7 @@ const CustomToolbar = () => {
 
   return (
     <Toolbar>
-      <StyledTypography fontWeight="medium">
-        {tToolbar("title")}
-      </StyledTypography>
+      <StyledBox>{action}</StyledBox>
       <Tooltip title={tToolbar("columns")}>
         <ColumnsPanelTrigger render={<ToolbarButton />}>
           <ViewColumn fontSize="small" />
