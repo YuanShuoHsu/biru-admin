@@ -11,7 +11,7 @@
   },
   "actions": {
     "create": "New organization",
-    "view": "View details",
+    "view": "Manage",
     "delete": "Delete"
   },
   "create": {

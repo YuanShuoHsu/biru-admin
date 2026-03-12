@@ -11,7 +11,7 @@
   },
   "actions": {
     "create": "組織を追加",
-    "view": "詳細を見る",
+    "view": "管理",
     "delete": "削除"
   },
   "create": {

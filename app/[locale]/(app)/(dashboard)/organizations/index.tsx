@@ -3,8 +3,8 @@
 import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
-import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+
+import CreateOrgDialogContent from "./CreateOrgDialogContent";
 
 import CustomNoColumnsOverlay from "@/components/CustomNoColumnsOverlay";
 import CustomNoResultsOverlay from "@/components/CustomNoResultsOverlay";
@@ -21,24 +21,15 @@ import { useRouter } from "@/i18n/navigation";
 
 import { authClient } from "@/lib/auth-client";
 
-import { Delete, Visibility } from "@mui/icons-material";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  IconButton,
-  Stack,
-  TextField,
-  Tooltip,
-} from "@mui/material";
+import { Delete, Settings } from "@mui/icons-material";
+import { Button, IconButton, Stack, Tooltip } from "@mui/material";
 import type {
   GridColDef,
   GridRenderCellParams,
   GridValidRowModel,
 } from "@mui/x-data-grid";
+
+import { useDialogStore } from "@/providers/dialog-store-provider";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -54,74 +45,45 @@ export type Organization = {
   members?: { id: string }[];
 };
 
-interface CreateOrgForm {
-  name: string;
-  slug: string;
-}
-
-interface ConfirmDeleteDialog {
-  open: boolean;
-  org: Organization | null;
-}
-
 interface OrganizationsProps {
   organizations: Organization[];
 }
 
 const Organizations = ({ organizations }: OrganizationsProps) => {
-  const tOrganizations = useTranslations("organizations");
+  const { setDialog } = useDialogStore((state) => state);
+
   const router = useRouter();
 
-  const [createOpen, setCreateOpen] = useState(false);
-  const [confirmDialog, setConfirmDialog] = useState<ConfirmDeleteDialog>({
-    open: false,
-    org: null,
-  });
+  const tOrganizations = useTranslations("organizations");
 
-  const { control, handleSubmit, reset, setValue, formState } =
-    useForm<CreateOrgForm>({
-      defaultValues: { name: "", slug: "" },
+  const handleOpenCreate = () => {
+    setDialog({
+      open: true,
+      title: tOrganizations("create.title"),
+      content: <CreateOrgDialogContent key={Date.now()} />,
     });
-
-  const handleCloseCreate = () => {
-    setCreateOpen(false);
-    reset();
   };
 
-  const handleCreateSubmit = async (values: CreateOrgForm) => {
-    const result = await authClient.organization.create({
-      name: values.name,
-      slug: values.slug,
+  const handleOpenDeleteConfirm = (org: Organization) => {
+    setDialog({
+      open: true,
+      title: tOrganizations("delete.title"),
+      contentText: tOrganizations("delete.confirm", { name: org.name }),
+      cancelText: "取消",
+      confirmText: "確認刪除",
+      onConfirm: async () => {
+        const result = await authClient.organization.delete({
+          organizationId: org.id,
+        });
+        if (result.error) {
+          throw new Error(tOrganizations("delete.error"));
+        }
+        enqueueSnackbar(tOrganizations("delete.success"), {
+          variant: "success",
+        });
+        router.refresh();
+      },
     });
-    if (result.error) {
-      enqueueSnackbar(tOrganizations("create.error"), { variant: "error" });
-    } else {
-      enqueueSnackbar(tOrganizations("create.success"), { variant: "success" });
-      handleCloseCreate();
-      router.refresh();
-    }
-  };
-
-  const handleDelete = async (org: Organization) => {
-    const result = await authClient.organization.delete({
-      organizationId: org.id,
-    });
-    if (result.error) {
-      enqueueSnackbar(tOrganizations("delete.error"), { variant: "error" });
-    } else {
-      enqueueSnackbar(tOrganizations("delete.success"), { variant: "success" });
-      router.refresh();
-    }
-    setConfirmDialog({ open: false, org: null });
-  };
-
-  const handleNameChange = (name: string) => {
-    setValue("name", name);
-    const slug = name
-      .toLowerCase()
-      .replace(/\s+/g, "-")
-      .replace(/[^a-z0-9-]/g, "");
-    setValue("slug", slug);
   };
 
   const columns: GridColDef<GridValidRowModel>[] = [
@@ -142,7 +104,7 @@ const Organizations = ({ organizations }: OrganizationsProps) => {
                   router.push(`/organizations/${row.slug}`);
                 }}
               >
-                <Visibility fontSize="small" />
+                <Settings fontSize="small" />
               </IconButton>
             </Tooltip>
             <Tooltip title={tOrganizations("actions.delete")}>
@@ -151,7 +113,7 @@ const Organizations = ({ organizations }: OrganizationsProps) => {
                 color="error"
                 onClick={(e) => {
                   e.stopPropagation();
-                  setConfirmDialog({ open: true, org: row });
+                  handleOpenDeleteConfirm(row);
                 }}
               >
                 <Delete fontSize="small" />
@@ -191,6 +153,11 @@ const Organizations = ({ organizations }: OrganizationsProps) => {
 
   return (
     <>
+      <Stack direction="row">
+        <Button onClick={handleOpenCreate} size="small" variant="contained">
+          {tOrganizations("actions.create")}
+        </Button>
+      </Stack>
       <DataGrid
         columns={columns}
         disableRowSelectionOnClick
@@ -205,17 +172,6 @@ const Organizations = ({ organizations }: OrganizationsProps) => {
               ActionsComponent: CustomPagination,
             },
           },
-          toolbar: {
-            action: (
-              <Button
-                onClick={() => setCreateOpen(true)}
-                size="small"
-                variant="contained"
-              >
-                {tOrganizations("actions.create")}
-              </Button>
-            ),
-          },
         }}
         slots={{
           columnSortedAscendingIcon: SortedAscendingIcon,
@@ -227,95 +183,6 @@ const Organizations = ({ organizations }: OrganizationsProps) => {
           toolbar: CustomToolbar,
         }}
       />
-      <Dialog
-        open={createOpen}
-        onClose={handleCloseCreate}
-        maxWidth="sm"
-        fullWidth
-      >
-        <form onSubmit={handleSubmit(handleCreateSubmit)}>
-          <DialogTitle>{tOrganizations("create.title")}</DialogTitle>
-          <DialogContent>
-            <Stack gap={2} pt={1}>
-              <Controller
-                name="name"
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    onChange={(e) => handleNameChange(e.target.value)}
-                    label={tOrganizations("create.fields.name")}
-                    size="small"
-                    fullWidth
-                    required
-                  />
-                )}
-              />
-              <Controller
-                name="slug"
-                control={control}
-                rules={{
-                  required: true,
-                  pattern: /^[a-z0-9-]+$/,
-                }}
-                render={({ field, fieldState }) => (
-                  <TextField
-                    {...field}
-                    label={tOrganizations("create.fields.slug")}
-                    size="small"
-                    fullWidth
-                    required
-                    error={!!fieldState.error}
-                    helperText={
-                      fieldState.error
-                        ? "只能使用小寫英文、數字與連字號"
-                        : undefined
-                    }
-                  />
-                )}
-              />
-            </Stack>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseCreate}>取消</Button>
-            <Button
-              type="submit"
-              variant="contained"
-              disabled={formState.isSubmitting}
-            >
-              {tOrganizations("actions.create")}
-            </Button>
-          </DialogActions>
-        </form>
-      </Dialog>
-      <Dialog
-        open={confirmDialog.open}
-        onClose={() => setConfirmDialog({ open: false, org: null })}
-        maxWidth="xs"
-        fullWidth
-      >
-        <DialogTitle>{tOrganizations("delete.title")}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {tOrganizations("delete.confirm", {
-              name: confirmDialog.org?.name ?? "",
-            })}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setConfirmDialog({ open: false, org: null })}>
-            取消
-          </Button>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() => confirmDialog.org && handleDelete(confirmDialog.org)}
-          >
-            確認刪除
-          </Button>
-        </DialogActions>
-      </Dialog>
     </>
   );
 };

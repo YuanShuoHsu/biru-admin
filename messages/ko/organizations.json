@@ -11,7 +11,7 @@
   },
   "actions": {
     "create": "조직 추가",
-    "view": "상세 보기",
+    "view": "관리",
     "delete": "삭제"
   },
   "create": {

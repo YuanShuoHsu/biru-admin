@@ -11,7 +11,7 @@
   },
   "actions": {
     "create": "新增组织",
-    "view": "查看详情",
+    "view": "管理",
     "delete": "删除"
   },
   "create": {
