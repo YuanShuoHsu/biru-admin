@@ -22,6 +22,7 @@ import {
   LocalMall,
   LockReset,
   Login,
+  ManageAccounts,
   Payment,
   Person,
   PersonAdd,
@@ -87,6 +88,8 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
   const storeName = getStoreName(locale, stores, storeSlug);
 
   const tAccount = useTranslations("account");
+  const tAdmin = useTranslations("admins");
+  const tOrganizations = useTranslations("organizations");
   const tAuth = useTranslations("auth");
   const tCompany = useTranslations("company");
   const tOrder = useTranslations("order");
@@ -156,6 +159,18 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
       icon: AccountCircle,
       label: tAccount("label"),
       to: "/account",
+    },
+    {
+      disabled: true,
+      icon: ManageAccounts,
+      label: tAdmin("users.label"),
+      to: "/admins",
+    },
+    {
+      disabled: true,
+      icon: Business,
+      label: tOrganizations("label"),
+      to: "/organizations",
     },
     {
       children: [

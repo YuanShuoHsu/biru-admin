@@ -16,6 +16,8 @@ import { useAuthMenuItems, useLogoutMenuItem } from "@/hooks/useAuth";
 
 import { usePathname } from "@/i18n/navigation";
 
+import { authClient } from "@/lib/auth-client";
+
 import {
   AccountCircle,
   Business,
@@ -25,6 +27,7 @@ import {
   Home,
   Info,
   LocalMall,
+  ManageAccounts,
   Person,
   Restaurant,
   Security,
@@ -208,6 +211,18 @@ const useNavItems = () => {
   const isAuthPage = pathname.startsWith("/auth");
   const isCompanyPage = pathname.startsWith("/company");
 
+  const { data: memberRole } = useSWR(
+    session ? "activeMemberRole" : null,
+    async () => {
+      const { data } = await authClient.organization.getActiveMemberRole();
+      return data?.role;
+    },
+  );
+
+  const hasAdminAccess =
+    memberRole === "owner" ||
+    memberRole === "admin" ||
+    session?.user?.role === "admin";
   const accountChildren = [
     ...useProfileMenuItems(),
     dividerSlot,
@@ -228,6 +243,8 @@ const useNavItems = () => {
   const tOrder = useTranslations("order");
   const tAuth = useTranslations("auth");
   const tAccount = useTranslations("account");
+  const tAdmin = useTranslations("admins");
+  const tOrganizations = useTranslations("organizations");
   const tCompany = useTranslations("company");
 
   const dineInChildren: MenuItem[] = [
@@ -268,6 +285,20 @@ const useNavItems = () => {
       label: tOrder("label"),
       to: "/order",
     },
+    ...(hasAdminAccess
+      ? [
+          {
+            icon: ManageAccounts,
+            label: tAdmin("users.label"),
+            to: "/admins",
+          },
+          {
+            icon: Business,
+            label: tOrganizations("label"),
+            to: "/organizations",
+          },
+        ]
+      : []),
     session
       ? {
           children: accountChildren,

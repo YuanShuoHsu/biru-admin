@@ -168,6 +168,9 @@ const theme = createTheme({
             transition: theme.transitions.create("background-color"),
           },
         }),
+        toolbar: ({ theme }) => ({
+          transition: theme.transitions.create("border-color"),
+        }),
       },
     },
     MuiDivider: {

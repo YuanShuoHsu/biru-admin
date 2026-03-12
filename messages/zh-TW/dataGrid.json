@@ -1,0 +1,17 @@
+{
+  "toolbar": {
+    "columns": "欄位",
+    "export": {
+      "csv": "匯出 CSV",
+      "label": "匯出",
+      "print": "列印"
+    },
+    "filters": "篩選器",
+    "search": {
+      "clear": "清除搜尋",
+      "label": "搜尋",
+      "placeholder": "搜尋…"
+    },
+    "title": "工具列"
+  }
+}

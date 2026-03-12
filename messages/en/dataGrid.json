@@ -1,0 +1,17 @@
+{
+  "toolbar": {
+    "columns": "Columns",
+    "export": {
+      "csv": "Download as CSV",
+      "label": "Export",
+      "print": "Print"
+    },
+    "filters": "Filters",
+    "search": {
+      "clear": "Clear search",
+      "label": "Search",
+      "placeholder": "Search…"
+    },
+    "title": "Toolbar"
+  }
+}

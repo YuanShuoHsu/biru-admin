@@ -1,0 +1,106 @@
+{
+  "label": "組織管理",
+  "title": "組織管理",
+  "subtitle": "管理組織與成員",
+  "columns": {
+    "name": "組織名稱",
+    "slug": "識別碼",
+    "members": "成員數",
+    "createdAt": "建立時間",
+    "actions": "操作"
+  },
+  "actions": {
+    "create": "新增組織",
+    "view": "查看詳情",
+    "delete": "刪除"
+  },
+  "create": {
+    "title": "新增組織",
+    "fields": {
+      "name": "組織名稱",
+      "slug": "識別碼（英文、數字、連字號）"
+    },
+    "success": "組織已建立",
+    "error": "建立失敗，請稍後重試"
+  },
+  "delete": {
+    "title": "刪除組織",
+    "confirm": "確定要刪除 {name} 嗎？此操作將同時移除所有成員與資料，且無法復原。",
+    "success": "已刪除組織",
+    "error": "刪除失敗，請稍後重試"
+  },
+  "empty": "尚無組織資料",
+  "detail": {
+    "title": "組織詳情",
+    "info": {
+      "name": "組織名稱",
+      "slug": "識別碼",
+      "createdAt": "建立時間",
+      "memberCount": "成員數"
+    }
+  },
+  "members": {
+    "label": "成員",
+    "columns": {
+      "name": "姓名",
+      "email": "電子郵件",
+      "role": "角色",
+      "joinedAt": "加入時間",
+      "actions": "操作"
+    },
+    "roles": {
+      "owner": "擁有者",
+      "admin": "管理員",
+      "member": "成員"
+    },
+    "actions": {
+      "invite": "邀請成員",
+      "remove": "移除",
+      "setRole": "更改角色"
+    },
+    "invite": {
+      "title": "邀請成員",
+      "fields": {
+        "email": "電子郵件",
+        "role": "角色"
+      },
+      "success": "邀請已發送",
+      "error": "邀請失敗，請稍後重試"
+    },
+    "remove": {
+      "confirm": "確定要移除 {name} 嗎？",
+      "success": "已移除成員",
+      "error": "移除失敗，請稍後重試"
+    },
+    "setRole": {
+      "success": "角色已更新",
+      "error": "更新失敗，請稍後重試"
+    },
+    "empty": "尚無成員"
+  },
+  "invitations": {
+    "label": "待處理邀請",
+    "columns": {
+      "email": "電子郵件",
+      "role": "角色",
+      "status": "狀態",
+      "expiresAt": "到期時間",
+      "actions": "操作"
+    },
+    "status": {
+      "pending": "待接受",
+      "accepted": "已接受",
+      "rejected": "已拒絕",
+      "cancelled": "已取消"
+    },
+    "actions": {
+      "cancel": "取消邀請"
+    },
+    "cancel": {
+      "confirm": "確定要取消對 {email} 的邀請嗎？",
+      "success": "已取消邀請",
+      "error": "取消失敗，請稍後重試"
+    },
+    "empty": "尚無待處理邀請"
+  }
+}

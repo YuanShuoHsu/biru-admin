@@ -1,0 +1,106 @@
+{
+  "label": "组织管理",
+  "title": "组织管理",
+  "subtitle": "管理组织与成员",
+  "columns": {
+    "name": "组织名称",
+    "slug": "标识符",
+    "members": "成员数",
+    "createdAt": "创建时间",
+    "actions": "操作"
+  },
+  "actions": {
+    "create": "新增组织",
+    "view": "查看详情",
+    "delete": "删除"
+  },
+  "create": {
+    "title": "新增组织",
+    "fields": {
+      "name": "组织名称",
+      "slug": "标识符（字母、数字、连字符）"
+    },
+    "success": "组织已创建",
+    "error": "创建失败，请稍后重试"
+  },
+  "delete": {
+    "title": "删除组织",
+    "confirm": "确定要删除 {name} 吗？所有成员和数据将被永久删除，且无法撤销。",
+    "success": "已删除组织",
+    "error": "删除失败，请稍后重试"
+  },
+  "empty": "暂无组织数据",
+  "detail": {
+    "title": "组织详情",
+    "info": {
+      "name": "组织名称",
+      "slug": "标识符",
+      "createdAt": "创建时间",
+      "memberCount": "成员数"
+    }
+  },
+  "members": {
+    "label": "成员",
+    "columns": {
+      "name": "姓名",
+      "email": "电子邮件",
+      "role": "角色",
+      "joinedAt": "加入时间",
+      "actions": "操作"
+    },
+    "roles": {
+      "owner": "拥有者",
+      "admin": "管理员",
+      "member": "成员"
+    },
+    "actions": {
+      "invite": "邀请成员",
+      "remove": "移除",
+      "setRole": "更改角色"
+    },
+    "invite": {
+      "title": "邀请成员",
+      "fields": {
+        "email": "电子邮件",
+        "role": "角色"
+      },
+      "success": "邀请已发送",
+      "error": "邀请失败，请稍后重试"
+    },
+    "remove": {
+      "confirm": "确定要移除 {name} 吗？",
+      "success": "已移除成员",
+      "error": "移除失败，请稍后重试"
+    },
+    "setRole": {
+      "success": "角色已更新",
+      "error": "更新失败，请稍后重试"
+    },
+    "empty": "暂无成员"
+  },
+  "invitations": {
+    "label": "待处理邀请",
+    "columns": {
+      "email": "电子邮件",
+      "role": "角色",
+      "status": "状态",
+      "expiresAt": "到期时间",
+      "actions": "操作"
+    },
+    "status": {
+      "pending": "待接受",
+      "accepted": "已接受",
+      "rejected": "已拒绝",
+      "cancelled": "已取消"
+    },
+    "actions": {
+      "cancel": "取消邀请"
+    },
+    "cancel": {
+      "confirm": "确定要取消对 {email} 的邀请吗？",
+      "success": "已取消邀请",
+      "error": "取消失败，请稍后重试"
+    },
+    "empty": "暂无待处理邀请"
+  }
+}

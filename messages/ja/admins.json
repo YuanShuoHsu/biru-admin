@@ -1,0 +1,68 @@
+{
+  "label": "管理",
+  "users": {
+    "label": "ユーザー管理",
+    "title": "ユーザー管理",
+    "subtitle": "全ユーザーアカウントを管理",
+    "columns": {
+      "name": "名前",
+      "email": "メール",
+      "role": "役割",
+      "status": "状態",
+      "createdAt": "作成日",
+      "actions": "操作"
+    },
+    "roles": {
+      "admin": "管理者",
+      "user": "一般ユーザー"
+    },
+    "status": {
+      "active": "有効",
+      "banned": "停止中"
+    },
+    "actions": {
+      "create": "ユーザーを追加",
+      "ban": "停止",
+      "unban": "停止解除",
+      "delete": "削除",
+      "setRole": "役割を変更"
+    },
+    "create": {
+      "title": "ユーザーを追加",
+      "fields": {
+        "firstName": "名",
+        "lastName": "姓",
+        "email": "メール",
+        "password": "パスワード",
+        "role": "役割"
+      },
+      "success": "ユーザーを作成しました",
+      "error": "作成に失敗しました。もう一度お試しください"
+    },
+    "ban": {
+      "title": "ユーザーを停止",
+      "confirm": "{name} を停止しますか？停止後はサインインできなくなります。",
+      "success": "ユーザーを停止しました",
+      "error": "停止に失敗しました。もう一度お試しください"
+    },
+    "unban": {
+      "success": "停止を解除しました",
+      "error": "停止解除に失敗しました。もう一度お試しください"
+    },
+    "delete": {
+      "title": "ユーザーを削除",
+      "confirm": "{name} を削除しますか？この操作は取り消せません。",
+      "success": "ユーザーを削除しました",
+      "error": "削除に失敗しました。もう一度お試しください"
+    },
+    "setRole": {
+      "title": "役割を変更",
+      "success": "役割を更新しました",
+      "error": "更新に失敗しました。もう一度お試しください"
+    },
+    "search": {
+      "placeholder": "名前またはメールで検索..."
+    },
+    "empty": "ユーザーが見つかりません"
+  }
+}

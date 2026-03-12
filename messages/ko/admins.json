@@ -1,0 +1,68 @@
+{
+  "label": "관리",
+  "users": {
+    "label": "사용자 관리",
+    "title": "사용자 관리",
+    "subtitle": "모든 사용자 계정을 관리합니다",
+    "columns": {
+      "name": "이름",
+      "email": "이메일",
+      "role": "역할",
+      "status": "상태",
+      "createdAt": "생성일",
+      "actions": "작업"
+    },
+    "roles": {
+      "admin": "관리자",
+      "user": "일반 사용자"
+    },
+    "status": {
+      "active": "정상",
+      "banned": "차단됨"
+    },
+    "actions": {
+      "create": "사용자 추가",
+      "ban": "차단",
+      "unban": "차단 해제",
+      "delete": "삭제",
+      "setRole": "역할 변경"
+    },
+    "create": {
+      "title": "사용자 추가",
+      "fields": {
+        "firstName": "이름",
+        "lastName": "성",
+        "email": "이메일",
+        "password": "비밀번호",
+        "role": "역할"
+      },
+      "success": "사용자가 생성되었습니다",
+      "error": "생성에 실패했습니다. 다시 시도해 주세요"
+    },
+    "ban": {
+      "title": "사용자 차단",
+      "confirm": "{name}을(를) 차단하시겠습니까? 차단 후에는 로그인할 수 없습니다.",
+      "success": "사용자가 차단되었습니다",
+      "error": "차단에 실패했습니다. 다시 시도해 주세요"
+    },
+    "unban": {
+      "success": "차단이 해제되었습니다",
+      "error": "차단 해제에 실패했습니다. 다시 시도해 주세요"
+    },
+    "delete": {
+      "title": "사용자 삭제",
+      "confirm": "{name}을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+      "success": "사용자가 삭제되었습니다",
+      "error": "삭제에 실패했습니다. 다시 시도해 주세요"
+    },
+    "setRole": {
+      "title": "역할 변경",
+      "success": "역할이 업데이트되었습니다",
+      "error": "업데이트에 실패했습니다. 다시 시도해 주세요"
+    },
+    "search": {
+      "placeholder": "이름 또는 이메일로 검색..."
+    },
+    "empty": "사용자가 없습니다"
+  }
+}

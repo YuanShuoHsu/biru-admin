@@ -8,6 +8,6 @@
   "editor.formatOnPaste": true,
   "editor.formatOnSave": true,
   "editor.formatOnType": true,
-  "i18n-ally.localesPaths": ["app/[locale]/dictionaries"],
+  "i18n-ally.localesPaths": ["./messages"],
   "i18n-ally.keystyle": "nested"
 }

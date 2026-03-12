@@ -1,0 +1,17 @@
+{
+  "toolbar": {
+    "columns": "列一覧",
+    "export": {
+      "csv": "CSVダウンロード",
+      "label": "エクスポート",
+      "print": "印刷"
+    },
+    "filters": "フィルター",
+    "search": {
+      "clear": "検索をクリア",
+      "label": "検索",
+      "placeholder": "検索…"
+    },
+    "title": "ツールバー"
+  }
+}

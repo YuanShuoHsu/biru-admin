@@ -1,0 +1,17 @@
+{
+  "toolbar": {
+    "columns": "列",
+    "export": {
+      "csv": "导出至CSV",
+      "label": "导出",
+      "print": "打印"
+    },
+    "filters": "筛选器",
+    "search": {
+      "clear": "清除搜索",
+      "label": "搜索",
+      "placeholder": "搜索…"
+    },
+    "title": "工具栏"
+  }
+}

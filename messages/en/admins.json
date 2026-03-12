@@ -1,0 +1,68 @@
+{
+  "label": "Admin",
+  "users": {
+    "label": "User Management",
+    "title": "User Management",
+    "subtitle": "Manage all user accounts",
+    "columns": {
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "status": "Status",
+      "createdAt": "Created",
+      "actions": "Actions"
+    },
+    "roles": {
+      "admin": "Admin",
+      "user": "User"
+    },
+    "status": {
+      "active": "Active",
+      "banned": "Banned"
+    },
+    "actions": {
+      "create": "Add user",
+      "ban": "Ban",
+      "unban": "Unban",
+      "delete": "Delete",
+      "setRole": "Change role"
+    },
+    "create": {
+      "title": "Add user",
+      "fields": {
+        "firstName": "First name",
+        "lastName": "Last name",
+        "email": "Email",
+        "password": "Password",
+        "role": "Role"
+      },
+      "success": "User created",
+      "error": "Failed to create user. Please try again."
+    },
+    "ban": {
+      "title": "Ban user",
+      "confirm": "Are you sure you want to ban {name}? They will no longer be able to sign in.",
+      "success": "User banned",
+      "error": "Failed to ban user. Please try again."
+    },
+    "unban": {
+      "success": "User unbanned",
+      "error": "Failed to unban user. Please try again."
+    },
+    "delete": {
+      "title": "Delete user",
+      "confirm": "Are you sure you want to delete {name}? This action cannot be undone.",
+      "success": "User deleted",
+      "error": "Failed to delete user. Please try again."
+    },
+    "setRole": {
+      "title": "Change role",
+      "success": "Role updated",
+      "error": "Failed to update role. Please try again."
+    },
+    "search": {
+      "placeholder": "Search by name or email..."
+    },
+    "empty": "No users found"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "toolbar": {
+    "columns": "열 목록",
+    "export": {
+      "csv": "CSV로 내보내기",
+      "label": "내보내기",
+      "print": "프린트"
+    },
+    "filters": "필터",
+    "search": {
+      "clear": "검색 초기화",
+      "label": "검색",
+      "placeholder": "검색…"
+    },
+    "title": "툴바"
+  }
+}

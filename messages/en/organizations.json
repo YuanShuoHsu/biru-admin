@@ -1,0 +1,106 @@
+{
+  "label": "Organization Management",
+  "title": "Organization Management",
+  "subtitle": "Manage organizations and members",
+  "columns": {
+    "name": "Name",
+    "slug": "Slug",
+    "members": "Members",
+    "createdAt": "Created",
+    "actions": "Actions"
+  },
+  "actions": {
+    "create": "New organization",
+    "view": "View details",
+    "delete": "Delete"
+  },
+  "create": {
+    "title": "New organization",
+    "fields": {
+      "name": "Organization name",
+      "slug": "Slug (letters, numbers, hyphens)"
+    },
+    "success": "Organization created",
+    "error": "Failed to create organization. Please try again."
+  },
+  "delete": {
+    "title": "Delete organization",
+    "confirm": "Are you sure you want to delete {name}? All members and data will be permanently removed.",
+    "success": "Organization deleted",
+    "error": "Failed to delete organization. Please try again."
+  },
+  "empty": "No organizations found",
+  "detail": {
+    "title": "Organization details",
+    "info": {
+      "name": "Name",
+      "slug": "Slug",
+      "createdAt": "Created",
+      "memberCount": "Members"
+    }
+  },
+  "members": {
+    "label": "Members",
+    "columns": {
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "joinedAt": "Joined",
+      "actions": "Actions"
+    },
+    "roles": {
+      "owner": "Owner",
+      "admin": "Admin",
+      "member": "Member"
+    },
+    "actions": {
+      "invite": "Invite member",
+      "remove": "Remove",
+      "setRole": "Change role"
+    },
+    "invite": {
+      "title": "Invite member",
+      "fields": {
+        "email": "Email",
+        "role": "Role"
+      },
+      "success": "Invitation sent",
+      "error": "Failed to send invitation. Please try again."
+    },
+    "remove": {
+      "confirm": "Are you sure you want to remove {name}?",
+      "success": "Member removed",
+      "error": "Failed to remove member. Please try again."
+    },
+    "setRole": {
+      "success": "Role updated",
+      "error": "Failed to update role. Please try again."
+    },
+    "empty": "No members yet"
+  },
+  "invitations": {
+    "label": "Pending invitations",
+    "columns": {
+      "email": "Email",
+      "role": "Role",
+      "status": "Status",
+      "expiresAt": "Expires",
+      "actions": "Actions"
+    },
+    "status": {
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "cancelled": "Cancelled"
+    },
+    "actions": {
+      "cancel": "Cancel"
+    },
+    "cancel": {
+      "confirm": "Are you sure you want to cancel the invitation for {email}?",
+      "success": "Invitation cancelled",
+      "error": "Failed to cancel invitation. Please try again."
+    },
+    "empty": "No pending invitations"
+  }
+}
