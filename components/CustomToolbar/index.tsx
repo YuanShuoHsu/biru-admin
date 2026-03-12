@@ -37,7 +37,6 @@ import {
   ToolbarButton,
 } from "@mui/x-data-grid";
 
-
 const StyledBox = styled(Box)({
   flex: 1,
 });
