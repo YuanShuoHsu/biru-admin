@@ -14,6 +14,7 @@
     }
   },
   "overlays": {
-    "noResults": "No results found."
+    "noResults": "No results found.",
+    "noRows": "No rows."
   }
 }
