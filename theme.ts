@@ -150,6 +150,12 @@ const theme = createTheme({
             transition: theme.transitions.create("background-color"),
           },
         }),
+        columnsManagement: ({ theme }) => ({
+          color: theme.vars.palette.text.primary,
+        }),
+        columnsManagementFooter: ({ theme }) => ({
+          color: theme.vars.palette.text.primary,
+        }),
         footerContainer: ({ theme }) => ({
           transition: theme.transitions.create(["border-color"]),
         }),
