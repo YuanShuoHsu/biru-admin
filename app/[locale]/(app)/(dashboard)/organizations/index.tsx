@@ -126,32 +126,6 @@ const Organizations = ({ organizations }: OrganizationsProps) => {
 
   const columns: GridColDef<GridValidRowModel>[] = [
     {
-      field: "name",
-      headerName: tOrganizations("columns.name"),
-      flex: 1,
-      minWidth: 160,
-    },
-    {
-      field: "slug",
-      headerName: tOrganizations("columns.slug"),
-      flex: 1,
-      minWidth: 140,
-    },
-    {
-      field: "members",
-      headerName: tOrganizations("columns.members"),
-      width: 110,
-      valueGetter: (_value: unknown, row: GridValidRowModel) =>
-        (row as Organization).members?.length ?? 0,
-    },
-    {
-      field: "createdAt",
-      headerName: tOrganizations("columns.createdAt"),
-      width: 170,
-      valueFormatter: (value: string) =>
-        value ? new Date(value).toLocaleString("zh-TW") : "",
-    },
-    {
       field: "actions",
       headerName: tOrganizations("columns.actions"),
       width: 110,
@@ -186,6 +160,32 @@ const Organizations = ({ organizations }: OrganizationsProps) => {
           </Stack>
         );
       },
+    },
+    {
+      field: "name",
+      headerName: tOrganizations("columns.name"),
+      flex: 1,
+      minWidth: 160,
+    },
+    {
+      field: "slug",
+      headerName: tOrganizations("columns.slug"),
+      flex: 1,
+      minWidth: 140,
+    },
+    {
+      field: "members",
+      headerName: tOrganizations("columns.members"),
+      width: 110,
+      valueGetter: (_value: unknown, row: GridValidRowModel) =>
+        (row as Organization).members?.length ?? 0,
+    },
+    {
+      field: "createdAt",
+      headerName: tOrganizations("columns.createdAt"),
+      width: 170,
+      valueFormatter: (value: string) =>
+        value ? new Date(value).toLocaleString("zh-TW") : "",
     },
   ];
 
