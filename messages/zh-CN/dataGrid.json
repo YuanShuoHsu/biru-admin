@@ -12,5 +12,8 @@
       "label": "搜索",
       "placeholder": "搜索…"
     }
+  },
+  "overlays": {
+    "noResults": "未找到结果。"
   }
 }

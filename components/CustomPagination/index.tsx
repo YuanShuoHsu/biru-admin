@@ -1,7 +1,6 @@
 // https://mui.com/x/react-data-grid/components/#CustomPaginationGrid.tsx
 
-import Pagination from "@mui/material/Pagination";
-import type { TablePaginationProps } from "@mui/material/TablePagination";
+import { Pagination, type TablePaginationProps } from "@mui/material";
 import {
   gridPageCountSelector,
   useGridApiContext,

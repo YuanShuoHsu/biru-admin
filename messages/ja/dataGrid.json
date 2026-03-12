@@ -12,5 +12,8 @@
       "label": "検索",
       "placeholder": "検索…"
     }
+  },
+  "overlays": {
+    "noResults": "結果が見つかりません。"
   }
 }

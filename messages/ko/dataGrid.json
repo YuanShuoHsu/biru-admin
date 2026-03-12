@@ -12,5 +12,8 @@
       "label": "검색",
       "placeholder": "검색…"
     }
+  },
+  "overlays": {
+    "noResults": "결과를 찾을 수 없습니다."
   }
 }

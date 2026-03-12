@@ -6,6 +6,7 @@ import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
+import CustomNoResultsOverlay from "@/components/CustomNoResultsOverlay";
 import CustomPagination from "@/components/CustomPagination";
 import {
   SortedAscendingIcon,
@@ -197,6 +198,7 @@ const Organizations = ({ organizations }: OrganizationsProps) => {
           columnSortedAscendingIcon: SortedAscendingIcon,
           columnSortedDescendingIcon: SortedDescendingIcon,
           columnUnsortedIcon: UnsortedIcon,
+          noResultsOverlay: CustomNoResultsOverlay,
           toolbar: CustomToolbar,
         }}
         slotProps={{

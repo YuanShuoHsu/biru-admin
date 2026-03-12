@@ -12,5 +12,8 @@
       "label": "搜尋",
       "placeholder": "搜尋…"
     }
+  },
+  "overlays": {
+    "noResults": "找不到結果。"
   }
 }

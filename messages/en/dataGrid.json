@@ -12,5 +12,8 @@
       "label": "Search",
       "placeholder": "Search…"
     }
+  },
+  "overlays": {
+    "noResults": "No results found."
   }
 }
