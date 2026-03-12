@@ -192,21 +192,13 @@ const Organizations = ({ organizations }: OrganizationsProps) => {
   return (
     <>
       <DataGrid
-        rows={organizations}
         columns={columns}
         disableRowSelectionOnClick
         getRowClassName={({ indexRelativeToCurrentPage }) =>
           indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
         }
-        slots={{
-          columnSortedAscendingIcon: SortedAscendingIcon,
-          noColumnsOverlay: CustomNoColumnsOverlay,
-          columnSortedDescendingIcon: SortedDescendingIcon,
-          columnUnsortedIcon: UnsortedIcon,
-          noResultsOverlay: CustomNoResultsOverlay,
-          noRowsOverlay: CustomNoRowsOverlay,
-          toolbar: CustomToolbar,
-        }}
+        rows={organizations}
+        showToolbar
         slotProps={{
           basePagination: {
             material: {
@@ -225,7 +217,15 @@ const Organizations = ({ organizations }: OrganizationsProps) => {
             ),
           },
         }}
-        showToolbar
+        slots={{
+          columnSortedAscendingIcon: SortedAscendingIcon,
+          columnSortedDescendingIcon: SortedDescendingIcon,
+          columnUnsortedIcon: UnsortedIcon,
+          noColumnsOverlay: CustomNoColumnsOverlay,
+          noResultsOverlay: CustomNoResultsOverlay,
+          noRowsOverlay: CustomNoRowsOverlay,
+          toolbar: CustomToolbar,
+        }}
       />
       <Dialog
         open={createOpen}
