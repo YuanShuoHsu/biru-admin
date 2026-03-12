@@ -6,6 +6,7 @@ import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
+import CustomPagination from "@/components/CustomPagination";
 import {
   SortedAscendingIcon,
   SortedDescendingIcon,
@@ -199,6 +200,11 @@ const Organizations = ({ organizations }: OrganizationsProps) => {
           toolbar: CustomToolbar,
         }}
         slotProps={{
+          basePagination: {
+            material: {
+              ActionsComponent: CustomPagination,
+            },
+          },
           toolbar: {
             action: (
               <Button

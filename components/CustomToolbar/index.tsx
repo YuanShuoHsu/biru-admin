@@ -1,5 +1,6 @@
 // https://mui.com/x/react-data-grid/components/
 // https://mui.com/x/react-data-grid/components/toolbar/#GridToolbar.tsx
+// https://mui.com/x/react-data-grid/components/#CustomFooter.tsx
 
 "use client";
 
