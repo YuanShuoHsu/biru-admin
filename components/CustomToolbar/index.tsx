@@ -84,7 +84,9 @@ const CustomToolbar = () => {
 
   return (
     <Toolbar>
-      <StyledTypography fontWeight="medium">{tToolbar("title")}</StyledTypography>
+      <StyledTypography fontWeight="medium">
+        {tToolbar("title")}
+      </StyledTypography>
       <Tooltip title={tToolbar("columns")}>
         <ColumnsPanelTrigger render={<ToolbarButton />}>
           <ViewColumn fontSize="small" />
