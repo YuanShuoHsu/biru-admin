@@ -1,4 +1,10 @@
 {
+  "overlays": {
+    "manageColumns": "管理列",
+    "noColumns": "暂无列。",
+    "noResults": "未找到结果。",
+    "noRows": "暂无数据。"
+  },
   "toolbar": {
     "columns": "列",
     "export": {
@@ -12,9 +18,5 @@
       "label": "搜索",
       "placeholder": "搜索…"
     }
-  },
-  "overlays": {
-    "noResults": "未找到结果。",
-    "noRows": "暂无数据。"
   }
 }

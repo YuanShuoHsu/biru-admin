@@ -6,6 +6,7 @@ import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
+import CustomNoColumnsOverlay from "@/components/CustomNoColumnsOverlay";
 import CustomNoResultsOverlay from "@/components/CustomNoResultsOverlay";
 import CustomNoRowsOverlay from "@/components/CustomNoRowsOverlay";
 import CustomPagination from "@/components/CustomPagination";
@@ -196,6 +197,7 @@ const Organizations = ({ organizations }: OrganizationsProps) => {
         disableRowSelectionOnClick
         slots={{
           columnSortedAscendingIcon: SortedAscendingIcon,
+          noColumnsOverlay: CustomNoColumnsOverlay,
           columnSortedDescendingIcon: SortedDescendingIcon,
           columnUnsortedIcon: UnsortedIcon,
           noResultsOverlay: CustomNoResultsOverlay,

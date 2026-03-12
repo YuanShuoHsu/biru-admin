@@ -1,4 +1,10 @@
 {
+  "overlays": {
+    "manageColumns": "列を管理",
+    "noColumns": "列がありません。",
+    "noResults": "結果が見つかりません。",
+    "noRows": "データがありません。"
+  },
   "toolbar": {
     "columns": "列一覧",
     "export": {
@@ -12,9 +18,5 @@
       "label": "検索",
       "placeholder": "検索…"
     }
-  },
-  "overlays": {
-    "noResults": "結果が見つかりません。",
-    "noRows": "データがありません。"
   }
 }

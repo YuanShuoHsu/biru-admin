@@ -1,4 +1,10 @@
 {
+  "overlays": {
+    "manageColumns": "Manage columns",
+    "noColumns": "No columns.",
+    "noResults": "No results found.",
+    "noRows": "No rows."
+  },
   "toolbar": {
     "columns": "Columns",
     "export": {
@@ -12,9 +18,5 @@
       "label": "Search",
       "placeholder": "Search…"
     }
-  },
-  "overlays": {
-    "noResults": "No results found.",
-    "noRows": "No rows."
   }
 }

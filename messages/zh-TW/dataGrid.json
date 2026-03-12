@@ -1,4 +1,10 @@
 {
+  "overlays": {
+    "manageColumns": "管理欄位",
+    "noColumns": "沒有欄位。",
+    "noResults": "找不到結果。",
+    "noRows": "沒有資料。"
+  },
   "toolbar": {
     "columns": "欄位",
     "export": {
@@ -12,9 +18,5 @@
       "label": "搜尋",
       "placeholder": "搜尋…"
     }
-  },
-  "overlays": {
-    "noResults": "找不到結果。",
-    "noRows": "沒有資料。"
   }
 }
