@@ -16,9 +16,13 @@ const stringToColor = (string: string) => {
   return color;
 };
 
-export const stringAvatar = (name: string) => ({
-  children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`,
-  sx: {
-    bgcolor: stringToColor(name),
-  },
-});
+export const stringAvatar = (name: string) => {
+  const parts = name.split(" ");
+
+  return {
+    children: parts.length > 1 ? `${parts[0][0]}${parts[1][0]}` : name[0],
+    sx: {
+      bgcolor: stringToColor(name),
+    },
+  };
+};

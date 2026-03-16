@@ -36,6 +36,7 @@ import type { MenuItem as MenuItemData } from "@/types/menuItem";
 
 import { useAccountMenuItems, useProfileMenuItems } from "@/utils/account";
 import { getDisplayName } from "@/utils/auth";
+import { stringAvatar } from "@/utils/avatar";
 import { getHref } from "@/utils/href";
 
 const StyledAvatar = styled(Avatar, {
@@ -47,6 +48,7 @@ const StyledAvatar = styled(Avatar, {
     ? theme.vars.palette.background.paper
     : "transparent",
   color: isSignedIn ? theme.vars.palette.primary.main : "inherit",
+  fontSize: 12,
   transition: theme.transitions.create(["background-color", "color"]),
 
   ...(isSignedIn && {
@@ -173,6 +175,7 @@ const AccountMenu = () => {
                 alt={displayName}
                 isSignedIn={!!session}
                 src={session?.user.image || undefined}
+                {...stringAvatar(displayName)}
               >
                 {!session ? <AccountCircle /> : displayName[0]}
               </StyledAvatar>

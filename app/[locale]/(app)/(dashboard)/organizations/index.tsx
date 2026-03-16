@@ -146,12 +146,14 @@ const Organizations = ({ rows }: OrganizationsProps) => {
       {
         field: "logo",
         headerName: tOrganizations("columns.logo"),
-        renderCell: ({ row }: GridRenderCellParams<OrganizationRow>) => (
+        renderCell: ({
+          row: { logo, name },
+        }: GridRenderCellParams<OrganizationRow>) => (
           <Stack height="100%" flexDirection="row" alignItems="center">
             <StyledAvatar
-              alt={row.name}
-              src={row.logo || undefined}
-              {...stringAvatar(row.name)}
+              alt={name}
+              src={logo || undefined}
+              {...stringAvatar(name)}
             />
           </Stack>
         ),
