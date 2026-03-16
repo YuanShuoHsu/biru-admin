@@ -26,10 +26,25 @@ import { useRouter } from "@/i18n/navigation";
 import { authClient } from "@/lib/auth-client";
 
 import { Delete, Settings } from "@mui/icons-material";
-import { Button, IconButton, Stack, Tooltip } from "@mui/material";
+import {
+  Avatar,
+  Button,
+  IconButton,
+  Stack,
+  Tooltip,
+  styled,
+} from "@mui/material";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
+
+import { stringAvatar } from "@/utils/avatar";
+
+const StyledAvatar = styled(Avatar)({
+  width: 24,
+  height: 24,
+  fontSize: 12,
+});
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -93,12 +108,11 @@ const Organizations = ({ rows }: OrganizationsProps) => {
     () => [
       {
         field: "actions",
-        disableAutosize: true,
         headerName: tOrganizations("columns.actions"),
-        width: 110,
+        resizable: false,
         renderCell: ({ row }: GridRenderCellParams<OrganizationRow>) => {
           return (
-            <Stack height="100%" direction="row" alignItems="center" gap={0.5}>
+            <Stack height="100%" direction="row" alignItems="center" gap={1}>
               <Tooltip title={tOrganizations("actions.view")}>
                 <IconButton
                   onClick={(e) => {
@@ -127,6 +141,21 @@ const Organizations = ({ rows }: OrganizationsProps) => {
             </Stack>
           );
         },
+        sortable: false,
+      },
+      {
+        field: "logo",
+        headerName: tOrganizations("columns.logo"),
+        renderCell: ({ row }: GridRenderCellParams<OrganizationRow>) => (
+          <Stack height="100%" flexDirection="row" alignItems="center">
+            <StyledAvatar
+              alt={row.name}
+              src={row.logo || undefined}
+              {...stringAvatar(row.name)}
+            />
+          </Stack>
+        ),
+        resizable: false,
         sortable: false,
       },
       {

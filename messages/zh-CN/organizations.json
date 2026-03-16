@@ -7,6 +7,7 @@
   "columns": {
     "actions": "操作",
     "createdAt": "创建时间",
+    "logo": "标志",
     "members": "成员数",
     "name": "组织名称",
     "slug": "标识符"

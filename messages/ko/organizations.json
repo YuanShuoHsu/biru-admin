@@ -7,6 +7,7 @@
   "columns": {
     "actions": "작업",
     "createdAt": "생성일",
+    "logo": "로고",
     "members": "멤버 수",
     "name": "조직명",
     "slug": "슬러그"

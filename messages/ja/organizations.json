@@ -7,6 +7,7 @@
   "columns": {
     "actions": "操作",
     "createdAt": "作成日",
+    "logo": "ロゴ",
     "members": "メンバー数",
     "name": "組織名",
     "slug": "スラッグ"

@@ -143,9 +143,6 @@ const theme = createTheme({
             "border-color",
             "color",
           ]),
-          "&[aria-colindex='1']": {
-            borderTopLeftRadius: theme.shape.borderRadius,
-          },
           "& .MuiDataGrid-sortButton": {
             transition: theme.transitions.create("background-color"),
           },
