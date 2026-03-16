@@ -10,17 +10,20 @@
     "required": "確認密碼為必填。"
   },
   "countryCode": {
-    "invalid": "國碼無效。",
+    "invalid": "國家代碼無效。",
     "required": "國碼為必填。"
   },
   "email": {
-    "invalid": "請輸入有效的電子郵件。"
+    "invalid": "電子郵件無效。"
   },
   "firstName": {
     "minLength": "名字至少需要 1 個字元。"
   },
   "gender": {
     "required": "性別為必填。"
+  },
+  "name": {
+    "minLength": "名稱至少需要 2 個字元。"
   },
   "password": {
     "letter": "包含至少一個英文字母。",
@@ -31,5 +34,9 @@
   "phone": {
     "invalid": "電話號碼無效。",
     "required": "電話號碼為必填。"
+  },
+  "slug": {
+    "letter": "包含至少一個英文字母。",
+    "minLength": "識別碼至少需要 1 個字元。"
   }
 }

@@ -13,10 +13,14 @@
     "slug": "スラッグ"
   },
   "create": {
+    "cancel": "キャンセル",
     "error": "作成に失敗しました。もう一度お試しください",
-    "fields": {
-      "name": "組織名",
-      "slug": "スラッグ（英数字・ハイフン）"
+    "name": {
+      "label": "組織名"
+    },
+    "slug": {
+      "label": "スラッグ（英数字・ハイフン）",
+      "placeholder": "my-organization"
     },
     "success": "組織を作成しました",
     "title": "組織を追加"

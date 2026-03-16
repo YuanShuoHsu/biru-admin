@@ -74,7 +74,10 @@ const Organizations = ({ rows }: OrganizationsProps) => {
 
   const handleOpenCreate = () => {
     setDialog({
+      cancelText: tOrganizations("create.cancel"),
+      confirmText: tOrganizations("actions.create"),
       content: <CreateOrgDialogContent key={Date.now()} />,
+      formId: "create-organization-form",
       open: true,
       title: tOrganizations("create.title"),
     });

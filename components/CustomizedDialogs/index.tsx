@@ -1,3 +1,4 @@
+// https://mui.com/material-ui/react-dialog/#FormDialog.tsx
 // https://mui.com/material-ui/react-dialog/#system-CustomizedDialogs.tsx
 
 "use client";
@@ -56,6 +57,7 @@ const CustomizedDialogs = () => {
     confirmText,
     content,
     contentText,
+    formId,
     onCancel,
     onConfirm,
     open,
@@ -134,9 +136,11 @@ const CustomizedDialogs = () => {
         <Button
           autoFocus
           disabled={confirmDisabled}
+          form={formId}
           loading={confirmLoading}
           loadingPosition="end"
-          onClick={handleConfirm}
+          onClick={formId ? undefined : handleConfirm}
+          type={formId ? "submit" : "button"}
         >
           {confirmText}
         </Button>

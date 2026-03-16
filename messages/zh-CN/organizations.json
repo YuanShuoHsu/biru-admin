@@ -13,10 +13,14 @@
     "slug": "标识符"
   },
   "create": {
+    "cancel": "取消",
     "error": "创建失败，请稍后重试",
-    "fields": {
-      "name": "组织名称",
-      "slug": "标识符（字母、数字、连字符）"
+    "name": {
+      "label": "组织名称"
+    },
+    "slug": {
+      "label": "标识符（字母、数字、连字符）",
+      "placeholder": "my-organization"
     },
     "success": "组织已创建",
     "title": "新增组织"

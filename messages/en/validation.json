@@ -10,17 +10,20 @@
     "required": "Confirm password is required."
   },
   "countryCode": {
-    "invalid": "Invalid country code.",
+    "invalid": "Country code is not valid.",
     "required": "Country code is required."
   },
   "email": {
-    "invalid": "Please enter a valid email."
+    "invalid": "Email is not valid."
   },
   "firstName": {
     "minLength": "First name must be at least 1 character long."
   },
   "gender": {
     "required": "Gender is required."
+  },
+  "name": {
+    "minLength": "Name must be at least 2 characters long."
   },
   "password": {
     "letter": "Contain at least one letter.",
@@ -31,5 +34,9 @@
   "phone": {
     "invalid": "Phone number is not valid.",
     "required": "Phone is required."
+  },
+  "slug": {
+    "letter": "Contain at least one letter.",
+    "minLength": "Slug must be at least 1 character long."
   }
 }

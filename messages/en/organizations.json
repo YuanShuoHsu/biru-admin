@@ -13,10 +13,14 @@
     "slug": "Slug"
   },
   "create": {
+    "cancel": "Cancel",
     "error": "Failed to create organization. Please try again.",
-    "fields": {
-      "name": "Organization name",
-      "slug": "Slug (letters, numbers, hyphens)"
+    "name": {
+      "label": "Organization name"
+    },
+    "slug": {
+      "label": "Slug (letters, numbers, hyphens)",
+      "placeholder": "my-organization"
     },
     "success": "Organization created",
     "title": "New organization"

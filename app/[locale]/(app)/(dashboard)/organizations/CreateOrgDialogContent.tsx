@@ -1,30 +1,53 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { Controller, useForm } from "react-hook-form";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+
+import {
+  type CreateOrganizationForm,
+  useCreateOrganizationFormSchema,
+} from "./definitions";
 
 import { useRouter } from "@/i18n/navigation";
+
 import { authClient } from "@/lib/auth-client";
+
+import { Box, type BoxProps, TextField, styled } from "@mui/material";
+
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { Button, DialogActions, Stack, TextField } from "@mui/material";
-
-interface CreateOrgForm {
-  name: string;
-  slug: string;
-}
+const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  gap: theme.spacing(2),
+  paddingTop: theme.spacing(1),
+}));
 
 const CreateOrgDialogContent = () => {
-  const tOrganizations = useTranslations("organizations");
-  const router = useRouter();
-  const { resetDialog } = useDialogStore((s) => s);
+  const { resetDialog, setDialog } = useDialogStore((s) => s);
 
-  const { control, handleSubmit, setValue, formState } = useForm<CreateOrgForm>(
-    {
-      defaultValues: { name: "", slug: "" },
-    },
-  );
+  const router = useRouter();
+
+  const tOrganizations = useTranslations("organizations.create");
+
+  const schema = useCreateOrganizationFormSchema();
+
+  const {
+    formState: { errors, isSubmitting },
+    handleSubmit,
+    register,
+    setValue,
+  } = useForm<CreateOrganizationForm>({
+    defaultValues: { name: "", slug: "" },
+    resolver: zodResolver(schema),
+  });
+
+  useEffect(() => {
+    setDialog({ confirmDisabled: isSubmitting });
+  }, [isSubmitting, setDialog]);
 
   const handleNameChange = (name: string) => {
     setValue("name", name);
@@ -35,71 +58,48 @@ const CreateOrgDialogContent = () => {
     setValue("slug", slug);
   };
 
-  const handleCreateSubmit = async (values: CreateOrgForm) => {
+  const handleCreateSubmit = async (values: CreateOrganizationForm) => {
     const result = await authClient.organization.create({
       name: values.name,
       slug: values.slug,
     });
     if (result.error) {
-      enqueueSnackbar(tOrganizations("create.error"), { variant: "error" });
+      enqueueSnackbar(tOrganizations("error"), { variant: "error" });
       return;
     }
-    enqueueSnackbar(tOrganizations("create.success"), { variant: "success" });
+    enqueueSnackbar(tOrganizations("success"), { variant: "success" });
     resetDialog();
     router.refresh();
   };
 
   return (
-    <form onSubmit={handleSubmit(handleCreateSubmit)}>
-      <Stack gap={2} pt={1}>
-        <Controller
-          name="name"
-          control={control}
-          rules={{ required: true }}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              onChange={(e) => handleNameChange(e.target.value)}
-              label={tOrganizations("create.fields.name")}
-              size="small"
-              fullWidth
-              required
-            />
-          )}
-        />
-        <Controller
-          name="slug"
-          control={control}
-          rules={{
-            required: true,
-            pattern: /^[a-z0-9-]+$/,
-          }}
-          render={({ field, fieldState }) => (
-            <TextField
-              {...field}
-              label={tOrganizations("create.fields.slug")}
-              size="small"
-              fullWidth
-              required
-              error={!!fieldState.error}
-              helperText={
-                fieldState.error ? "只能使用小寫英文、數字與連字號" : undefined
-              }
-            />
-          )}
-        />
-      </Stack>
-      <DialogActions>
-        <Button onClick={resetDialog}>取消</Button>
-        <Button
-          type="submit"
-          variant="contained"
-          disabled={formState.isSubmitting}
-        >
-          {tOrganizations("actions.create")}
-        </Button>
-      </DialogActions>
-    </form>
+    <StyledBox
+      component="form"
+      id="create-organization-form"
+      onSubmit={handleSubmit(handleCreateSubmit)}
+    >
+      <TextField
+        autoComplete="organization"
+        error={!!errors.name}
+        fullWidth
+        helperText={errors.name?.message}
+        label={tOrganizations("name.label")}
+        placeholder={tOrganizations("name.label")}
+        required
+        {...register("name", {
+          onChange: (e) => handleNameChange(e.target.value),
+        })}
+      />
+      <TextField
+        error={!!errors.slug}
+        fullWidth
+        helperText={errors.slug?.message}
+        label={tOrganizations("slug.label")}
+        placeholder={tOrganizations("slug.placeholder")}
+        required
+        {...register("slug")}
+      />
+    </StyledBox>
   );
 };
 

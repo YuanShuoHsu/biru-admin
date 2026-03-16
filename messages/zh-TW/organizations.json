@@ -13,10 +13,14 @@
     "slug": "識別碼"
   },
   "create": {
+    "cancel": "取消",
     "error": "建立失敗，請稍後重試",
-    "fields": {
-      "name": "組織名稱",
-      "slug": "識別碼（英文、數字、連字號）"
+    "name": {
+      "label": "組織名稱"
+    },
+    "slug": {
+      "label": "識別碼（英文、數字、連字號）",
+      "placeholder": "my-organization"
     },
     "success": "組織已建立",
     "title": "新增組織"

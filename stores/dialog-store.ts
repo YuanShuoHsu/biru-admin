@@ -6,6 +6,7 @@ type DialogState = {
   confirmText: string;
   content?: React.ReactNode;
   contentText?: string;
+  formId?: string;
   onCancel?: () => Promise<void>;
   onConfirm?: () => Promise<void>;
   open: boolean;
@@ -25,6 +26,7 @@ export const defaultInitState: DialogState = {
   confirmText: "",
   content: null,
   contentText: "",
+  formId: undefined,
   onCancel: undefined,
   onConfirm: undefined,
   open: false,

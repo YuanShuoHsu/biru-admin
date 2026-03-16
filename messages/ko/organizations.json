@@ -13,10 +13,14 @@
     "slug": "슬러그"
   },
   "create": {
+    "cancel": "취소",
     "error": "생성에 실패했습니다. 다시 시도해 주세요",
-    "fields": {
-      "name": "조직명",
-      "slug": "슬러그 (영문, 숫자, 하이픈)"
+    "name": {
+      "label": "조직명"
+    },
+    "slug": {
+      "label": "슬러그 (영문, 숫자, 하이픈)",
+      "placeholder": "my-organization"
     },
     "success": "조직이 생성되었습니다",
     "title": "조직 추가"
