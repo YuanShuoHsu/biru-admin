@@ -21,7 +21,7 @@ const OrganizationsPage = async ({ params }: OrganizationsPageProps) => {
 
   setRequestLocale(locale);
 
-  return <Organizations organizations={data || []} />;
+  return <Organizations rows={data || []} />;
 };
 
 export default OrganizationsPage;

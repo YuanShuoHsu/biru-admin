@@ -15,6 +15,9 @@ export const formats = {
       day: "numeric",
       month: "short",
       year: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
     },
   },
   number: {

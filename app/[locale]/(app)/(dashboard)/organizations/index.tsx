@@ -1,8 +1,12 @@
+// https://mui.com/x/react-data-grid/column-dimensions/
+// https://mui.com/x/react-data-grid/performance/
+
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
+import { useCallback, useMemo } from "react";
 
 import CreateOrgDialogContent from "./CreateOrgDialogContent";
 
@@ -23,11 +27,7 @@ import { authClient } from "@/lib/auth-client";
 
 import { Delete, Settings } from "@mui/icons-material";
 import { Button, IconButton, Stack, Tooltip } from "@mui/material";
-import type {
-  GridColDef,
-  GridRenderCellParams,
-  GridValidRowModel,
-} from "@mui/x-data-grid";
+import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -36,21 +36,22 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
-export type Organization = {
+interface OrganizationRow {
   id: string;
   name: string;
   slug: string;
   logo?: string | null;
   createdAt: Date | string;
-  members?: { id: string }[];
-};
-
-interface OrganizationsProps {
-  organizations: Organization[];
 }
 
-const Organizations = ({ organizations }: OrganizationsProps) => {
+interface OrganizationsProps {
+  rows: OrganizationRow[];
+}
+
+const Organizations = ({ rows }: OrganizationsProps) => {
   const { setDialog } = useDialogStore((state) => state);
+
+  const format = useFormatter();
 
   const router = useRouter();
 
@@ -58,98 +59,93 @@ const Organizations = ({ organizations }: OrganizationsProps) => {
 
   const handleOpenCreate = () => {
     setDialog({
+      content: <CreateOrgDialogContent key={Date.now()} />,
       open: true,
       title: tOrganizations("create.title"),
-      content: <CreateOrgDialogContent key={Date.now()} />,
     });
   };
 
-  const handleOpenDeleteConfirm = (org: Organization) => {
-    setDialog({
-      open: true,
-      title: tOrganizations("delete.title"),
-      contentText: tOrganizations("delete.confirm", { name: org.name }),
-      cancelText: "取消",
-      confirmText: "確認刪除",
-      onConfirm: async () => {
-        const result = await authClient.organization.delete({
-          organizationId: org.id,
-        });
-        if (result.error) {
-          throw new Error(tOrganizations("delete.error"));
-        }
-        enqueueSnackbar(tOrganizations("delete.success"), {
-          variant: "success",
-        });
-        router.refresh();
-      },
-    });
-  };
+  const handleOpenDeleteConfirm = useCallback(
+    (org: OrganizationRow) => {
+      setDialog({
+        cancelText: tOrganizations("delete.cancel"),
+        confirmText: tOrganizations("delete.submit"),
+        contentText: tOrganizations("delete.confirm", { name: org.name }),
+        onConfirm: async () => {
+          const result = await authClient.organization.delete({
+            organizationId: org.id,
+          });
+          if (result.error) throw new Error(tOrganizations("delete.error"));
 
-  const columns: GridColDef<GridValidRowModel>[] = [
-    {
-      field: "actions",
-      headerName: tOrganizations("columns.actions"),
-      width: 110,
-      sortable: false,
-      renderCell: ({ row: r }: GridRenderCellParams) => {
-        const row = r as Organization;
-        return (
-          <Stack direction="row" gap={0.5} alignItems="center" height="100%">
-            <Tooltip title={tOrganizations("actions.view")}>
-              <IconButton
-                size="small"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  router.push(`/organizations/${row.slug}`);
-                }}
-              >
-                <Settings fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title={tOrganizations("actions.delete")}>
-              <IconButton
-                size="small"
-                color="error"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleOpenDeleteConfirm(row);
-                }}
-              >
-                <Delete fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </Stack>
-        );
+          enqueueSnackbar(tOrganizations("delete.success"), {
+            variant: "success",
+          });
+          router.refresh();
+        },
+        open: true,
+        title: tOrganizations("delete.title"),
+      });
+    },
+    [router, setDialog, tOrganizations],
+  );
+
+  const columns = useMemo<GridColDef[]>(
+    () => [
+      {
+        field: "actions",
+        disableAutosize: true,
+        headerName: tOrganizations("columns.actions"),
+        width: 110,
+        renderCell: ({ row }: GridRenderCellParams<OrganizationRow>) => {
+          return (
+            <Stack height="100%" direction="row" alignItems="center" gap={0.5}>
+              <Tooltip title={tOrganizations("actions.view")}>
+                <IconButton
+                  onClick={(e) => {
+                    e.stopPropagation();
+
+                    router.push(`/organizations/${row.slug}`);
+                  }}
+                  size="small"
+                >
+                  <Settings fontSize="small" />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={tOrganizations("actions.delete")}>
+                <IconButton
+                  color="error"
+                  onClick={(e) => {
+                    e.stopPropagation();
+
+                    handleOpenDeleteConfirm(row);
+                  }}
+                  size="small"
+                >
+                  <Delete fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </Stack>
+          );
+        },
+        sortable: false,
       },
-    },
-    {
-      field: "name",
-      headerName: tOrganizations("columns.name"),
-      flex: 1,
-      minWidth: 160,
-    },
-    {
-      field: "slug",
-      headerName: tOrganizations("columns.slug"),
-      flex: 1,
-      minWidth: 140,
-    },
-    {
-      field: "members",
-      headerName: tOrganizations("columns.members"),
-      width: 110,
-      valueGetter: (_value: unknown, row: GridValidRowModel) =>
-        (row as Organization).members?.length ?? 0,
-    },
-    {
-      field: "createdAt",
-      headerName: tOrganizations("columns.createdAt"),
-      width: 170,
-      valueFormatter: (value: string) =>
-        value ? new Date(value).toLocaleString("zh-TW") : "",
-    },
-  ];
+      {
+        field: "name",
+        headerName: tOrganizations("columns.name"),
+      },
+      {
+        field: "slug",
+        headerName: tOrganizations("columns.slug"),
+      },
+      {
+        field: "createdAt",
+        headerName: tOrganizations("columns.createdAt"),
+        valueFormatter: (value: Date | string) =>
+          format.dateTime(new Date(value), "short"),
+      },
+    ],
+    [format, handleOpenDeleteConfirm, router, tOrganizations],
+  );
 
   return (
     <>
@@ -159,12 +155,13 @@ const Organizations = ({ organizations }: OrganizationsProps) => {
         </Button>
       </Stack>
       <DataGrid
+        autosizeOnMount
         columns={columns}
         disableRowSelectionOnClick
         getRowClassName={({ indexRelativeToCurrentPage }) =>
           indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
         }
-        rows={organizations}
+        rows={rows}
         showToolbar
         slotProps={{
           basePagination: {

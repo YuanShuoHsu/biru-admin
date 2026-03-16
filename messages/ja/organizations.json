@@ -1,106 +1,108 @@
 {
-  "label": "組織管理",
-  "title": "組織管理",
-  "subtitle": "組織とメンバーを管理",
-  "columns": {
-    "name": "組織名",
-    "slug": "スラッグ",
-    "members": "メンバー数",
-    "createdAt": "作成日",
-    "actions": "操作"
-  },
   "actions": {
     "create": "組織を追加",
-    "view": "管理",
-    "delete": "削除"
+    "delete": "削除",
+    "view": "管理"
+  },
+  "columns": {
+    "actions": "操作",
+    "createdAt": "作成日",
+    "members": "メンバー数",
+    "name": "組織名",
+    "slug": "スラッグ"
   },
   "create": {
-    "title": "組織を追加",
+    "error": "作成に失敗しました。もう一度お試しください",
     "fields": {
       "name": "組織名",
       "slug": "スラッグ（英数字・ハイフン）"
     },
     "success": "組織を作成しました",
-    "error": "作成に失敗しました。もう一度お試しください"
+    "title": "組織を追加"
   },
   "delete": {
-    "title": "組織を削除",
+    "cancel": "キャンセル",
     "confirm": "{name} を削除しますか？全メンバーとデータが完全に削除されます。",
+    "error": "削除に失敗しました。もう一度お試しください",
+    "submit": "削除",
     "success": "組織を削除しました",
-    "error": "削除に失敗しました。もう一度お試しください"
+    "title": "組織を削除"
+  },
+  "detail": {
+    "info": {
+      "createdAt": "作成日",
+      "memberCount": "メンバー数",
+      "name": "組織名",
+      "slug": "スラッグ"
+    },
+    "title": "組織詳細"
   },
   "empty": "組織が見つかりません",
-  "detail": {
-    "title": "組織詳細",
-    "info": {
-      "name": "組織名",
-      "slug": "スラッグ",
-      "createdAt": "作成日",
-      "memberCount": "メンバー数"
-    }
-  },
-  "members": {
-    "label": "メンバー",
-    "columns": {
-      "name": "名前",
-      "email": "メール",
-      "role": "役割",
-      "joinedAt": "参加日",
-      "actions": "操作"
-    },
-    "roles": {
-      "owner": "オーナー",
-      "admin": "管理者",
-      "member": "メンバー"
-    },
-    "actions": {
-      "invite": "メンバーを招待",
-      "remove": "削除",
-      "setRole": "役割を変更"
-    },
-    "invite": {
-      "title": "メンバーを招待",
-      "fields": {
-        "email": "メール",
-        "role": "役割"
-      },
-      "success": "招待を送信しました",
-      "error": "招待に失敗しました。もう一度お試しください"
-    },
-    "remove": {
-      "confirm": "{name} を削除しますか？",
-      "success": "メンバーを削除しました",
-      "error": "削除に失敗しました。もう一度お試しください"
-    },
-    "setRole": {
-      "success": "役割を更新しました",
-      "error": "更新に失敗しました。もう一度お試しください"
-    },
-    "empty": "メンバーがいません"
-  },
   "invitations": {
-    "label": "保留中の招待",
-    "columns": {
-      "email": "メール",
-      "role": "役割",
-      "status": "状態",
-      "expiresAt": "有効期限",
-      "actions": "操作"
-    },
-    "status": {
-      "pending": "保留中",
-      "accepted": "承認済み",
-      "rejected": "拒否済み",
-      "cancelled": "キャンセル済み"
-    },
     "actions": {
       "cancel": "キャンセル"
     },
     "cancel": {
       "confirm": "{email} への招待をキャンセルしますか？",
-      "success": "招待をキャンセルしました",
-      "error": "キャンセルに失敗しました。もう一度お試しください"
+      "error": "キャンセルに失敗しました。もう一度お試しください",
+      "success": "招待をキャンセルしました"
     },
-    "empty": "保留中の招待はありません"
-  }
+    "columns": {
+      "actions": "操作",
+      "email": "メール",
+      "expiresAt": "有効期限",
+      "role": "役割",
+      "status": "状態"
+    },
+    "empty": "保留中の招待はありません",
+    "label": "保留中の招待",
+    "status": {
+      "accepted": "承認済み",
+      "cancelled": "キャンセル済み",
+      "pending": "保留中",
+      "rejected": "拒否済み"
+    }
+  },
+  "label": "組織管理",
+  "members": {
+    "actions": {
+      "invite": "メンバーを招待",
+      "remove": "削除",
+      "setRole": "役割を変更"
+    },
+    "columns": {
+      "actions": "操作",
+      "email": "メール",
+      "joinedAt": "参加日",
+      "name": "名前",
+      "role": "役割"
+    },
+    "empty": "メンバーがいません",
+    "invite": {
+      "error": "招待に失敗しました。もう一度お試しください",
+      "fields": {
+        "email": "メール",
+        "role": "役割"
+      },
+      "success": "招待を送信しました",
+      "title": "メンバーを招待"
+    },
+    "label": "メンバー",
+    "remove": {
+      "confirm": "{name} を削除しますか？",
+      "error": "削除に失敗しました。もう一度お試しください",
+      "success": "メンバーを削除しました"
+    },
+    "roles": {
+      "admin": "管理者",
+      "member": "メンバー",
+      "owner": "オーナー"
+    },
+    "setRole": {
+      "error": "更新に失敗しました。もう一度お試しください",
+      "success": "役割を更新しました"
+    }
+  },
+  "subtitle": "組織とメンバーを管理",
+  "title": "組織管理"
 }
