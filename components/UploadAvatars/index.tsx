@@ -23,13 +23,12 @@ const StyledButtonBase = styled(ButtonBase)<ButtonBaseProps>({
   },
 });
 
-const StyledAvatar = styled(Avatar)(({ theme }) => ({
+const StyledAvatar = styled(Avatar)({
   width: "100%",
   maxWidth: "100px",
   height: "auto",
   aspectRatio: "1/1",
-  transition: theme.transitions.create(["background-color"]),
-}));
+});
 
 const VisuallyHiddenInput = styled("input")({
   border: 0,
