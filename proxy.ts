@@ -87,8 +87,9 @@ export const proxy = async (request: NextRequest) => {
 
   if (sessionCookie) {
     const { userRole, memberRole } = await getAuthInfo(request);
+    const isAuthorized = userRole === "admin" || memberRole;
 
-    if (userRole !== "admin" || !memberRole) {
+    if (!isAuthorized) {
       const redirectRes = NextResponse.redirect(getSignInUrl());
       redirectRes.cookies.delete("better-auth.session_token");
 
