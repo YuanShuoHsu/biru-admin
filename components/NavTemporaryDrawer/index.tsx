@@ -223,6 +223,7 @@ const useNavItems = () => {
     memberRole === "owner" ||
     memberRole === "admin" ||
     session?.user?.role === "admin";
+
   const accountChildren = [
     ...useProfileMenuItems(),
     dividerSlot,
