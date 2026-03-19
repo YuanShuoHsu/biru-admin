@@ -146,7 +146,7 @@ const AuthVerifyEmail = ({
 
   const resendButton = (
     <Button
-      disabled={isSubmitting || isCountingDown}
+      disabled={isCountingDown}
       fullWidth
       loading={isSubmitting}
       loadingPosition="start"

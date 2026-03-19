@@ -243,7 +243,6 @@ const AuthResetPassword = ({
       </StyledCardContent>
       <StyledCardActions disableSpacing>
         <Button
-          disabled={isSubmitting}
           fullWidth
           loading={isSubmitting}
           loadingPosition="start"

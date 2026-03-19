@@ -81,7 +81,6 @@ const GoogleButton = ({ action, redirectTo }: GoogleButtonProps) => {
   return (
     <Button
       aria-label={label}
-      disabled={isLoading}
       fullWidth
       loading={isLoading}
       loadingPosition="start"

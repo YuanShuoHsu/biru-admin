@@ -224,7 +224,6 @@ const Home = ({ locale, redirectTo, rememberMe }: HomeProps) => {
         </StyledCardContent>
         <StyledCardActions disableSpacing>
           <Button
-            disabled={isSubmitting}
             fullWidth
             loading={isSubmitting}
             size="large"

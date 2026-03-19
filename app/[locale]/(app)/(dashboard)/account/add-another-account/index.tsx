@@ -122,7 +122,6 @@ const AddAnotherAccount = ({ redirectTo }: AddAnotherAccountProps) => {
         {session?.user ? (
           <>
             <Button
-              disabled={isMutatingLogout}
               fullWidth
               loading={isMutatingLogout}
               onClick={handleSignOutAndContinue}

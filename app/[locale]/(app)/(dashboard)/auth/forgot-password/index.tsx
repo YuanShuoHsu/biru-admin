@@ -105,7 +105,7 @@ const AuthForgotPassword = ({ redirectTo }: AuthForgotPasswordProps) => {
       </StyledCardContent>
       <StyledCardActions disableSpacing>
         <Button
-          disabled={isSubmitting || isCountingDown}
+          disabled={isCountingDown}
           fullWidth
           loading={isSubmitting}
           loadingPosition="start"

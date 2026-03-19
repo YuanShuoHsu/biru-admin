@@ -188,7 +188,7 @@ const CustomerPaymentForm = () => {
       {/* <CouponForm /> */}
       <VerticalSpacingToggleButton payment={payment} setPayment={setPayment} />
       <Button
-        disabled={isMutating || isCartEmpty || !payment}
+        disabled={isCartEmpty || !payment}
         fullWidth
         loading={isMutating}
         loadingPosition="start"

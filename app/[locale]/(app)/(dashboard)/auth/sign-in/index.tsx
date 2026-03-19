@@ -231,7 +231,6 @@ const AuthSignIn = ({ locale, redirectTo, rememberMe }: AuthSignInProps) => {
       </StyledCardContent>
       <StyledCardActions disableSpacing>
         <Button
-          disabled={isSubmitting}
           fullWidth
           loading={isSubmitting}
           size="large"

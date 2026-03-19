@@ -30,10 +30,10 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { useSnackbar } from "notistack";
-import { useTranslations } from "next-intl";
-import { Controller, useForm } from "react-hook-form";
 import dayjs from "dayjs";
+import { useTranslations } from "next-intl";
+import { useSnackbar } from "notistack";
+import { Controller, useForm } from "react-hook-form";
 
 import { authClient } from "@/lib/auth-client";
 
@@ -506,6 +506,7 @@ const OrganizationDetail = ({ slug }: OrganizationDetailProps) => {
           </DialogContent>
           <DialogActions>
             <Button
+              disabled={formState.isSubmitting}
               onClick={() => {
                 setInviteOpen(false);
                 reset();
@@ -514,16 +515,16 @@ const OrganizationDetail = ({ slug }: OrganizationDetailProps) => {
               取消
             </Button>
             <Button
+              loading={formState.isSubmitting}
+              loadingPosition="end"
               type="submit"
               variant="contained"
-              disabled={formState.isSubmitting}
             >
               {tMembers("actions.invite")}
             </Button>
           </DialogActions>
         </form>
       </Dialog>
-
       {/* Remove member confirm */}
       <Dialog
         open={confirmRemove.open}

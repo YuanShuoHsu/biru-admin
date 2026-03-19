@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -13,7 +13,7 @@ import {
 
 import { useRouter } from "@/i18n/navigation";
 
-import { authClient } from "@/lib/auth-client";
+import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { Box, type BoxProps, TextField, styled } from "@mui/material";
 
@@ -28,6 +28,8 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 
 const CreateOrgDialogContent = () => {
   const { resetDialog, setDialog } = useDialogStore((s) => s);
+
+  const locale = useLocale();
 
   const router = useRouter();
 
@@ -58,25 +60,29 @@ const CreateOrgDialogContent = () => {
     setValue("slug", slug);
   };
 
-  const handleCreateSubmit = async (values: CreateOrganizationForm) => {
-    const result = await authClient.organization.create({
+  const onSubmit = handleSubmit(async (values: CreateOrganizationForm) => {
+    const { error } = await authClient.organization.create({
       name: values.name,
       slug: values.slug,
     });
-    if (result.error) {
-      enqueueSnackbar(tOrganizations("error"), { variant: "error" });
+
+    if (error?.code) {
+      const message = getErrorMessage(error.code, locale);
+      enqueueSnackbar(message, { variant: "error" });
+
       return;
     }
+
     enqueueSnackbar(tOrganizations("success"), { variant: "success" });
     resetDialog();
     router.refresh();
-  };
+  });
 
   return (
     <StyledBox
       component="form"
       id="create-organization-form"
-      onSubmit={handleSubmit(handleCreateSubmit)}
+      onSubmit={onSubmit}
     >
       <TextField
         autoComplete="organization"

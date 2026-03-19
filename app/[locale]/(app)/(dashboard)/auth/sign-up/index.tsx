@@ -489,7 +489,6 @@ const AuthSignUp = ({ locale, redirectTo }: AuthSignUpProps) => {
       </StyledCardContent>
       <StyledCardActions disableSpacing>
         <Button
-          disabled={isSubmitting}
           fullWidth
           loading={isSubmitting}
           loadingPosition="start"

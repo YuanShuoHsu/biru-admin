@@ -357,7 +357,6 @@ const AccountSettings = ({ currentURL }: AccountSettingsProps) => {
                   </Button>
                   <Button
                     color="error"
-                    disabled={isMutatingLogout}
                     loading={isMutatingLogout}
                     onClick={handleLogout}
                     startIcon={<Logout />}
