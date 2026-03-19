@@ -7,18 +7,9 @@
     "actions": "Actions",
     "createdAt": "Created",
     "logo": "Logo",
-    "members": "Members",
-    "name": "Name",
-    "slug": "Slug"
+    "members": "Members"
   },
   "create": {
-    "name": {
-      "label": "Organization name"
-    },
-    "slug": {
-      "label": "Slug (letters, numbers, hyphens)",
-      "placeholder": "my-organization"
-    },
     "success": "Organization created successfully",
     "title": "New organization"
   },
@@ -40,6 +31,16 @@
     "title": "Organization details"
   },
   "empty": "No organizations found",
+  "fields": {
+    "name": {
+      "label": "Organization name",
+      "placeholder": "Please enter organization name"
+    },
+    "slug": {
+      "label": "Slug",
+      "placeholder": "Please enter slug"
+    }
+  },
   "invitations": {
     "actions": {
       "cancel": "Cancel"

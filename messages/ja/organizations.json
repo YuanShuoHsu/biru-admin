@@ -7,18 +7,9 @@
     "actions": "操作",
     "createdAt": "作成日",
     "logo": "ロゴ",
-    "members": "メンバー数",
-    "name": "組織名",
-    "slug": "スラッグ"
+    "members": "メンバー数"
   },
   "create": {
-    "name": {
-      "label": "組織名"
-    },
-    "slug": {
-      "label": "スラッグ（英数字・ハイフン）",
-      "placeholder": "my-organization"
-    },
     "success": "組織の作成に成功しました",
     "title": "組織を追加"
   },
@@ -40,6 +31,16 @@
     "title": "組織詳細"
   },
   "empty": "組織が見つかりません",
+  "fields": {
+    "name": {
+      "label": "組織名",
+      "placeholder": "組織名を入力してください"
+    },
+    "slug": {
+      "label": "スラッグ",
+      "placeholder": "スラッグを入力してください"
+    }
+  },
   "invitations": {
     "actions": {
       "cancel": "キャンセル"

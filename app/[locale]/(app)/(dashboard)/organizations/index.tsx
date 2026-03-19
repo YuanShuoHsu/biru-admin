@@ -168,11 +168,11 @@ const Organizations = ({ rows }: OrganizationsProps) => {
       },
       {
         field: "name",
-        headerName: tOrganizations("columns.name"),
+        headerName: tOrganizations("fields.name.label"),
       },
       {
         field: "slug",
-        headerName: tOrganizations("columns.slug"),
+        headerName: tOrganizations("fields.slug.label"),
       },
       {
         field: "createdAt",

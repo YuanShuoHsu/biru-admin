@@ -7,18 +7,9 @@
     "actions": "操作",
     "createdAt": "建立時間",
     "logo": "標誌",
-    "members": "成員數",
-    "name": "組織名稱",
-    "slug": "識別碼"
+    "members": "成員數"
   },
   "create": {
-    "name": {
-      "label": "組織名稱"
-    },
-    "slug": {
-      "label": "識別碼（英文、數字、連字號）",
-      "placeholder": "my-organization"
-    },
     "success": "組織建立成功",
     "title": "新增組織"
   },
@@ -40,6 +31,16 @@
     "title": "組織詳情"
   },
   "empty": "尚無組織資料",
+  "fields": {
+    "name": {
+      "label": "組織名稱",
+      "placeholder": "請輸入組織名稱"
+    },
+    "slug": {
+      "label": "識別碼",
+      "placeholder": "請輸入識別碼"
+    }
+  },
   "invitations": {
     "actions": {
       "cancel": "取消邀請"

@@ -32,7 +32,7 @@ const CreateOrganizationDialogContent = () => {
 
   const router = useRouter();
 
-  const tOrganizations = useTranslations("organizations.create");
+  const tOrganizations = useTranslations("organizations");
 
   const schema = useCreateOrganizationFormSchema();
 
@@ -59,7 +59,7 @@ const CreateOrganizationDialogContent = () => {
             setDialog({ confirmLoading: false });
           },
           onSuccess: () => {
-            const message = tOrganizations("success");
+            const message = tOrganizations("create.success");
             enqueueSnackbar(message, { variant: "success" });
 
             resetDialog();
@@ -81,8 +81,8 @@ const CreateOrganizationDialogContent = () => {
         error={!!errors.name}
         fullWidth
         helperText={errors.name?.message}
-        label={tOrganizations("name.label")}
-        placeholder={tOrganizations("name.label")}
+        label={tOrganizations("fields.name.label")}
+        placeholder={tOrganizations("fields.name.placeholder")}
         required
         {...register("name")}
       />
@@ -90,8 +90,8 @@ const CreateOrganizationDialogContent = () => {
         error={!!errors.slug}
         fullWidth
         helperText={errors.slug?.message}
-        label={tOrganizations("slug.label")}
-        placeholder={tOrganizations("slug.placeholder")}
+        label={tOrganizations("fields.slug.label")}
+        placeholder={tOrganizations("fields.slug.placeholder")}
         required
         {...register("slug")}
       />

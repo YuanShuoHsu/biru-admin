@@ -7,18 +7,9 @@
     "actions": "작업",
     "createdAt": "생성일",
     "logo": "로고",
-    "members": "멤버 수",
-    "name": "조직명",
-    "slug": "슬러그"
+    "members": "멤버 수"
   },
   "create": {
-    "name": {
-      "label": "조직명"
-    },
-    "slug": {
-      "label": "슬러그 (영문, 숫자, 하이픈)",
-      "placeholder": "my-organization"
-    },
     "success": "조직이 성공적으로 생성되었습니다",
     "title": "조직 추가"
   },
@@ -40,6 +31,16 @@
     "title": "조직 상세"
   },
   "empty": "조직이 없습니다",
+  "fields": {
+    "name": {
+      "label": "조직명",
+      "placeholder": "조직명을 입력해 주세요"
+    },
+    "slug": {
+      "label": "슬러그",
+      "placeholder": "슬러그를 입력해 주세요"
+    }
+  },
   "invitations": {
     "actions": {
       "cancel": "취소"

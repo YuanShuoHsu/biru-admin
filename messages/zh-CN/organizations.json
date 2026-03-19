@@ -7,18 +7,9 @@
     "actions": "操作",
     "createdAt": "创建时间",
     "logo": "标志",
-    "members": "成员数",
-    "name": "组织名称",
-    "slug": "标识符"
+    "members": "成员数"
   },
   "create": {
-    "name": {
-      "label": "组织名称"
-    },
-    "slug": {
-      "label": "标识符（字母、数字、连字符）",
-      "placeholder": "my-organization"
-    },
     "success": "组织创建成功",
     "title": "新增组织"
   },
@@ -40,6 +31,16 @@
     "title": "组织详情"
   },
   "empty": "暂无组织数据",
+  "fields": {
+    "name": {
+      "label": "组织名称",
+      "placeholder": "请输入组织名称"
+    },
+    "slug": {
+      "label": "标识符",
+      "placeholder": "请输入标识符"
+    }
+  },
   "invitations": {
     "actions": {
       "cancel": "取消邀请"
