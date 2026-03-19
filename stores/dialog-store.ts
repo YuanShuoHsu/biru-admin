@@ -11,6 +11,8 @@ type DialogState = {
   onCancel?: () => Promise<void>;
   onConfirm?: () => Promise<void>;
   open: boolean;
+  showCancel?: boolean;
+  showConfirm?: boolean;
   title: string;
 };
 
@@ -32,6 +34,8 @@ export const defaultInitState: DialogState = {
   onCancel: undefined,
   onConfirm: undefined,
   open: false,
+  showCancel: true,
+  showConfirm: true,
   title: "",
 };
 

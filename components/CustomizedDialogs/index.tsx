@@ -62,6 +62,8 @@ const CustomizedDialogs = () => {
     open,
     resetDialog,
     setDialog,
+    showCancel,
+    showConfirm,
     title,
   } = useDialogStore((state) => state);
 
@@ -132,7 +134,7 @@ const CustomizedDialogs = () => {
         {content}
       </DialogContent>
       <DialogActions>
-        {cancelText !== undefined && (
+        {showCancel && (
           <Button
             loading={cancelLoading}
             loadingPosition="end"
@@ -141,7 +143,7 @@ const CustomizedDialogs = () => {
             {cancelText || tDialog("cancel")}
           </Button>
         )}
-        {confirmText !== undefined && (
+        {showConfirm && (
           <Button
             autoFocus
             disabled={confirmDisabled}
