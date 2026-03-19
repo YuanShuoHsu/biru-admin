@@ -61,7 +61,7 @@
       "error": "Failed to update role. Please try again."
     },
     "search": {
-      "placeholder": "Search by name or email..."
+      "placeholder": "Please enter a name or email"
     },
     "empty": "No users found"
   }

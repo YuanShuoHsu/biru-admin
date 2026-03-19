@@ -27,7 +27,7 @@
         "latest": "New Arrivals",
         "new": "New",
         "search": {
-          "placeholder": "Search menu"
+          "placeholder": "Please enter menu name"
         },
         "stepper": {
           "checkout": {

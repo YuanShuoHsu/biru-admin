@@ -61,7 +61,7 @@
       "error": "更新失败，请稍后重试"
     },
     "search": {
-      "placeholder": "搜索姓名或电子邮件..."
+      "placeholder": "请输入姓名或电子邮件"
     },
     "empty": "暂无用户数据"
   }

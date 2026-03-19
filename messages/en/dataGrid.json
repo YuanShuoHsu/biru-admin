@@ -16,7 +16,7 @@
     "search": {
       "clear": "Clear search",
       "label": "Search",
-      "placeholder": "Search…"
+      "placeholder": "Please enter search keywords"
     }
   }
 }

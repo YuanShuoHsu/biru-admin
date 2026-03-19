@@ -62,7 +62,7 @@ const CouponForm = () => {
         <TextField
           fullWidth
           size="small"
-          placeholder="輸入折價券代碼"
+          placeholder="請輸入折價券代碼"
           value={code}
           onChange={(e) => setCode(e.target.value)}
         />

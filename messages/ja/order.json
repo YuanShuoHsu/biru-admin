@@ -27,7 +27,7 @@
         "latest": "新着商品",
         "new": "新着",
         "search": {
-          "placeholder": "メニューを検索"
+          "placeholder": "メニュー名を入力してください"
         },
         "stepper": {
           "checkout": {

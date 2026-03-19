@@ -27,7 +27,7 @@
         "latest": "신상품",
         "new": "신상품",
         "search": {
-          "placeholder": "메뉴 검색"
+          "placeholder": "메뉴명을 입력해 주세요"
         },
         "stepper": {
           "checkout": {

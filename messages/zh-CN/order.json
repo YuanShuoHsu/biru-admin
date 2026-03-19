@@ -27,7 +27,7 @@
         "latest": "新品上架",
         "new": "新品",
         "search": {
-          "placeholder": "搜索菜单"
+          "placeholder": "请输入菜单名称"
         },
         "stepper": {
           "checkout": {

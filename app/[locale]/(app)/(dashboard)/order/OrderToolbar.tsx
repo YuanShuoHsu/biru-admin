@@ -80,7 +80,7 @@ const OrderToolbar = ({ query, onQueryChange, rows }: OrderToolbarProps) => {
     >
       <TextField
         size="small"
-        placeholder="搜尋訂單編號、店家..."
+        placeholder="請輸入訂單編號或店家"
         value={searchValue}
         onChange={(e) => setSearchValue(e.target.value)}
         sx={{ width: 240 }}

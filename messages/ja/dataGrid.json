@@ -16,7 +16,7 @@
     "search": {
       "clear": "検索をクリア",
       "label": "検索",
-      "placeholder": "検索…"
+      "placeholder": "検索キーワードを入力してください"
     }
   }
 }

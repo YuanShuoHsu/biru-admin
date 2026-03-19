@@ -16,7 +16,7 @@
     "search": {
       "clear": "清除搜尋",
       "label": "搜尋",
-      "placeholder": "搜尋…"
+      "placeholder": "請輸入搜尋內容"
     }
   }
 }
