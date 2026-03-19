@@ -3,6 +3,7 @@
 
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 
@@ -68,6 +69,8 @@ const CustomizedDialogs = () => {
 
   const { enqueueSnackbar } = useSnackbar();
 
+  const tDialog = useTranslations("dialog");
+
   const handleClose = () => {
     if (loading) return;
 
@@ -129,24 +132,28 @@ const CustomizedDialogs = () => {
         {content}
       </DialogContent>
       <DialogActions>
-        <Button
-          loading={cancelLoading}
-          loadingPosition="end"
-          onClick={handleCancel}
-        >
-          {cancelText}
-        </Button>
-        <Button
-          autoFocus
-          disabled={confirmDisabled}
-          form={formId}
-          loading={confirmLoading}
-          loadingPosition="end"
-          onClick={formId ? undefined : handleConfirm}
-          type={formId ? "submit" : "button"}
-        >
-          {confirmText}
-        </Button>
+        {cancelText !== undefined && (
+          <Button
+            loading={cancelLoading}
+            loadingPosition="end"
+            onClick={handleCancel}
+          >
+            {cancelText || tDialog("cancel")}
+          </Button>
+        )}
+        {confirmText !== undefined && (
+          <Button
+            autoFocus
+            disabled={confirmDisabled}
+            form={formId}
+            loading={confirmLoading}
+            loadingPosition="end"
+            onClick={formId ? undefined : handleConfirm}
+            type={formId ? "submit" : "button"}
+          >
+            {confirmText || tDialog("confirm")}
+          </Button>
+        )}
       </DialogActions>
     </BootstrapDialog>
   );

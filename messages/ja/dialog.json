@@ -1,6 +1,8 @@
 {
   "addToCart": "カートに追加",
   "amount": "小計",
+  "cancel": "キャンセル",
   "close": "閉じる",
+  "confirm": "確認",
   "maxStock": "{label} 在庫は残り {quantity} 個です"
 }

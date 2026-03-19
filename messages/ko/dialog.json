@@ -1,6 +1,8 @@
 {
   "addToCart": "장바구니에 추가",
   "amount": "소계",
+  "cancel": "취소",
   "close": "닫기",
+  "confirm": "확인",
   "maxStock": "{label} 재고가 {quantity} 개 남았습니다"
 }

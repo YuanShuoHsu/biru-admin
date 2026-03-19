@@ -1,6 +1,8 @@
 {
   "addToCart": "加入购物车",
   "amount": "小计",
+  "cancel": "取消",
   "close": "关闭",
+  "confirm": "确认",
   "maxStock": "{label} 库存仅剩 {quantity} 件"
 }

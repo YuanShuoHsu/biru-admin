@@ -12,9 +12,6 @@
     "slug": "标识符"
   },
   "create": {
-    "cancel": "取消",
-    "confirm": "新增组织",
-    "error": "创建失败，请稍后重试",
     "name": {
       "label": "组织名称"
     },

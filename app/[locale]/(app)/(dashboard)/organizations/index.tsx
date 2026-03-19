@@ -74,8 +74,6 @@ const Organizations = ({ rows }: OrganizationsProps) => {
 
   const handleOpenCreate = () => {
     setDialog({
-      cancelText: tOrganizations("create.cancel"),
-      confirmText: tOrganizations("create.confirm"),
       content: <CreateOrganizationDialogContent />,
       formId: "create-organization-form",
       open: true,
@@ -190,7 +188,7 @@ const Organizations = ({ rows }: OrganizationsProps) => {
     <>
       <Stack direction="row">
         <Button onClick={handleOpenCreate} size="small" variant="contained">
-          {tOrganizations("create.confirm")}
+          {tOrganizations("create.title")}
         </Button>
       </Stack>
       <DataGrid

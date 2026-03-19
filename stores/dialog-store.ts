@@ -1,10 +1,10 @@
 import { createStore } from "zustand/vanilla";
 
 type DialogState = {
-  cancelText: string;
+  cancelText?: string;
   confirmDisabled: boolean;
   confirmLoading: boolean;
-  confirmText: string;
+  confirmText?: string;
   content?: React.ReactNode;
   contentText?: string;
   formId?: string;

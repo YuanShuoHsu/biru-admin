@@ -12,9 +12,6 @@
     "slug": "Slug"
   },
   "create": {
-    "cancel": "Cancel",
-    "confirm": "New organization",
-    "error": "Failed to create organization. Please try again.",
     "name": {
       "label": "Organization name"
     },

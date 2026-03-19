@@ -12,9 +12,6 @@
     "slug": "識別碼"
   },
   "create": {
-    "cancel": "取消",
-    "confirm": "新增組織",
-    "error": "建立失敗，請稍後重試",
     "name": {
       "label": "組織名稱"
     },
