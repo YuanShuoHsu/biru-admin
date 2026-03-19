@@ -100,37 +100,40 @@ const Home = ({ locale, redirectTo, rememberMe }: HomeProps) => {
     };
 
   const onSubmit = handleSubmit(async (data: SigninFormData) => {
-    const { error: signInError } = await authClient.signIn.email(
+    await authClient.signIn.email(
       { ...data },
-      { headers: { "Accept-Language": locale } },
+      {
+        headers: { "Accept-Language": locale },
+        onError: ({ error: { code } }) => {
+          enqueueSnackbar(getErrorMessage(code, locale), {
+            variant: "error",
+          });
+        },
+        onSuccess: async () => {
+          await authClient.organization.getActiveMemberRole({
+            fetchOptions: {
+              onError: async ({ error: { code } }) => {
+                await authClient.signOut();
+
+                enqueueSnackbar(getErrorMessage(code, locale), {
+                  variant: "error",
+                });
+              },
+              onSuccess: async () => {
+                const { data: session } = await authClient.getSession();
+                setSession(session);
+
+                enqueueSnackbar(tAuth("signIn.success"), {
+                  variant: "success",
+                });
+
+                router.replace(redirectTo || "/order");
+              },
+            },
+          });
+        },
+      },
     );
-
-    if (signInError?.code) {
-      console.log(signInError.code);
-      const message = getErrorMessage(signInError.code, locale);
-      enqueueSnackbar(message, { variant: "error" });
-
-      return;
-    }
-
-    const { error: roleError } =
-      await authClient.organization.getActiveMemberRole();
-
-    if (roleError?.code) {
-      await authClient.signOut();
-
-      console.log(roleError.code);
-      const message = getErrorMessage(roleError.code, locale);
-      enqueueSnackbar(message, { variant: "error" });
-
-      return;
-    }
-
-    const { data: session } = await authClient.getSession();
-    setSession(session);
-
-    enqueueSnackbar(tAuth("signIn.success"), { variant: "success" });
-    router.replace(redirectTo || "/order");
   });
 
   return (

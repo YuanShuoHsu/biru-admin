@@ -179,7 +179,7 @@ const AuthSignUp = ({ locale, redirectTo }: AuthSignUpProps) => {
 
     // const parsedPhoneNumber = parsePhoneNumberWithError(phoneNumber, code);
 
-    const { error } = await authClient.signUp.email(
+    await authClient.signUp.email(
       {
         ...rest,
         // birthDate,
@@ -195,27 +195,26 @@ const AuthSignUp = ({ locale, redirectTo }: AuthSignUpProps) => {
           .join(locale === LocaleEnum.En ? " " : ""),
         // phoneNumber,
       },
-      { headers: { "Accept-Language": locale } },
-    );
+      {
+        headers: { "Accept-Language": locale },
+        onError: ({ error: { code } }) => {
+          enqueueSnackbar(getErrorMessage(code, locale), {
+            variant: "error",
+          });
+        },
+        onSuccess: () => {
+          startCountdown("verify-email");
 
-    if (error?.code) {
-      const message = getErrorMessage(error.code, locale);
-      enqueueSnackbar(message, { variant: "error" });
-
-      return;
-    }
-
-    startCountdown("verify-email");
-
-    const verifyEmailHref = {
-      pathname: "/auth/verify-email",
-      query: {
-        [query.email]: rest.email,
-        [query.redirectTo]: redirectTo,
+          router.push({
+            pathname: "/auth/verify-email",
+            query: {
+              [query.email]: rest.email,
+              [query.redirectTo]: redirectTo,
+            },
+          });
+        },
       },
-    };
-
-    router.push(verifyEmailHref);
+    );
   };
 
   const onSubmit = (event: BaseSyntheticEvent) =>

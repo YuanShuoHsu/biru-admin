@@ -117,20 +117,23 @@ const AuthResetPassword = ({
     }: ResetPasswordFormData) => {
       if (!token) return;
 
-      const { error } = await authClient.resetPassword(
+      await authClient.resetPassword(
         { ...data, token },
-        { headers: { "Accept-Language": locale } },
+        {
+          headers: { "Accept-Language": locale },
+          onError: ({ error: { code } }) => {
+            enqueueSnackbar(getErrorMessage(code, locale), {
+              variant: "error",
+            });
+          },
+          onSuccess: () => {
+            enqueueSnackbar(tAuth("resetPassword.success"), {
+              variant: "success",
+            });
+            router.replace(signInHref);
+          },
+        },
       );
-
-      if (error?.code) {
-        const message = getErrorMessage(error.code, locale);
-        enqueueSnackbar(message, { variant: "error" });
-
-        return;
-      }
-
-      enqueueSnackbar(tAuth("resetPassword.success"), { variant: "success" });
-      router.replace(signInHref);
     },
   );
 

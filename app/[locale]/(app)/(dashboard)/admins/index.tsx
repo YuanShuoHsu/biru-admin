@@ -170,68 +170,93 @@ const AdminUsers = ({ query }: AdminUsersProps) => {
   };
 
   const handleBan = async (user: UserRow) => {
-    const result = await authClient.admin.banUser({ userId: user.id });
-    if (result.error) {
-      enqueueSnackbar(t("ban.error"), { variant: "error" });
-    } else {
-      enqueueSnackbar(t("ban.success"), { variant: "success" });
-      mutate(swrKey);
-    }
+    await authClient.admin.banUser(
+      { userId: user.id },
+      {
+        onError: () => {
+          enqueueSnackbar(t("ban.error"), { variant: "error" });
+        },
+        onSuccess: () => {
+          enqueueSnackbar(t("ban.success"), { variant: "success" });
+          mutate(swrKey);
+        },
+      },
+    );
     setConfirmDialog({ open: false, type: null, user: null });
   };
 
   const handleUnban = async (userId: string) => {
-    const result = await authClient.admin.unbanUser({ userId });
-    if (result.error) {
-      enqueueSnackbar(t("unban.error"), { variant: "error" });
-    } else {
-      enqueueSnackbar(t("unban.success"), { variant: "success" });
-      mutate(swrKey);
-    }
+    await authClient.admin.unbanUser(
+      { userId },
+      {
+        onError: () => {
+          enqueueSnackbar(t("unban.error"), { variant: "error" });
+        },
+        onSuccess: () => {
+          enqueueSnackbar(t("unban.success"), { variant: "success" });
+          mutate(swrKey);
+        },
+      },
+    );
   };
 
   const handleDelete = async (user: UserRow) => {
-    const result = await authClient.admin.removeUser({ userId: user.id });
-    if (result.error) {
-      enqueueSnackbar(t("delete.error"), { variant: "error" });
-    } else {
-      enqueueSnackbar(t("delete.success"), { variant: "success" });
-      mutate(swrKey);
-    }
+    await authClient.admin.removeUser(
+      { userId: user.id },
+      {
+        onError: () => {
+          enqueueSnackbar(t("delete.error"), { variant: "error" });
+        },
+        onSuccess: () => {
+          enqueueSnackbar(t("delete.success"), { variant: "success" });
+          mutate(swrKey);
+        },
+      },
+    );
     setConfirmDialog({ open: false, type: null, user: null });
   };
 
   const handleSetRole = async (userId: string, role: "user" | "admin") => {
-    const result = await authClient.admin.setRole({ userId, role });
-    if (result.error) {
-      enqueueSnackbar(t("setRole.error"), { variant: "error" });
-    } else {
-      enqueueSnackbar(t("setRole.success"), { variant: "success" });
-      mutate(swrKey);
-    }
+    await authClient.admin.setRole(
+      { userId, role },
+      {
+        onError: () => {
+          enqueueSnackbar(t("setRole.error"), { variant: "error" });
+        },
+        onSuccess: () => {
+          enqueueSnackbar(t("setRole.success"), { variant: "success" });
+          mutate(swrKey);
+        },
+      },
+    );
   };
 
   const handleCreateSubmit = async (values: CreateUserForm) => {
-    const result = await authClient.admin.createUser({
-      name: `${values.firstName} ${values.lastName}`.trim(),
-      email: values.email,
-      password: values.password,
-      role: values.role,
-      data: {
-        firstName: values.firstName,
-        lastName: values.lastName,
-        emailSubscribed: true,
-        lang: "zh-TW",
+    await authClient.admin.createUser(
+      {
+        name: `${values.firstName} ${values.lastName}`.trim(),
+        email: values.email,
+        password: values.password,
+        role: values.role,
+        data: {
+          firstName: values.firstName,
+          lastName: values.lastName,
+          emailSubscribed: true,
+          lang: "zh-TW",
+        },
       },
-    });
-    if (result.error) {
-      enqueueSnackbar(t("create.error"), { variant: "error" });
-    } else {
-      enqueueSnackbar(t("create.success"), { variant: "success" });
-      setCreateOpen(false);
-      reset();
-      mutate(swrKey);
-    }
+      {
+        onError: () => {
+          enqueueSnackbar(t("create.error"), { variant: "error" });
+        },
+        onSuccess: () => {
+          enqueueSnackbar(t("create.success"), { variant: "success" });
+          setCreateOpen(false);
+          reset();
+          mutate(swrKey);
+        },
+      },
+    );
   };
 
   const columns: GridColDef<GridValidRowModel>[] = [

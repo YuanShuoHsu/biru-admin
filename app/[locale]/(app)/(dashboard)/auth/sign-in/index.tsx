@@ -102,41 +102,42 @@ const AuthSignIn = ({ locale, redirectTo, rememberMe }: AuthSignInProps) => {
     };
 
   const onSubmit = handleSubmit(async (data: SigninFormData) => {
-    const { error } = await authClient.signIn.email(
+    await authClient.signIn.email(
       { ...data, callbackURL: redirectTo },
-      { headers: { "Accept-Language": locale } },
+      {
+        headers: { "Accept-Language": locale },
+        onError: async ({ error: { code } }) => {
+          if (code === "EMAIL_NOT_VERIFIED") {
+            if (!items["verify-email"]) {
+              await authClient.sendVerificationEmail(
+                { callbackURL: redirectTo, email: data.email },
+                { headers: { "Accept-Language": locale } },
+              );
+
+              startCountdown("verify-email");
+            }
+
+            router.push({
+              pathname: "/auth/verify-email",
+              query: {
+                [query.email]: data.email,
+                [query.redirectTo]: redirectTo,
+              },
+            });
+
+            return;
+          }
+
+          enqueueSnackbar(getErrorMessage(code, locale), {
+            variant: "error",
+          });
+        },
+        onSuccess: () => {
+          enqueueSnackbar(tAuth("signIn.success"), { variant: "success" });
+          router.replace(redirectTo || "/");
+        },
+      },
     );
-
-    if (error?.code) {
-      if (error.code === "EMAIL_NOT_VERIFIED") {
-        if (!items["verify-email"]) {
-          await authClient.sendVerificationEmail(
-            { callbackURL: redirectTo, email: data.email },
-            { headers: { "Accept-Language": locale } },
-          );
-
-          startCountdown("verify-email");
-        }
-
-        router.push({
-          pathname: "/auth/verify-email",
-          query: {
-            [query.email]: data.email,
-            [query.redirectTo]: redirectTo,
-          },
-        });
-
-        return;
-      }
-
-      const message = getErrorMessage(error.code, locale);
-      enqueueSnackbar(message, { variant: "error" });
-
-      return;
-    }
-
-    enqueueSnackbar(tAuth("signIn.success"), { variant: "success" });
-    router.replace(redirectTo || "/");
   });
 
   return (

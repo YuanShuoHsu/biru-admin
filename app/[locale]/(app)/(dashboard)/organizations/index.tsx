@@ -90,15 +90,20 @@ const Organizations = ({ rows }: OrganizationsProps) => {
         confirmText: tOrganizations("delete.submit"),
         contentText: tOrganizations("delete.confirm", { name: org.name }),
         onConfirm: async () => {
-          const result = await authClient.organization.delete({
-            organizationId: org.id,
-          });
-          if (result.error) throw new Error(tOrganizations("delete.error"));
-
-          enqueueSnackbar(tOrganizations("delete.success"), {
-            variant: "success",
-          });
-          router.refresh();
+          await authClient.organization.delete(
+            { organizationId: org.id },
+            {
+              onError: () => {
+                throw new Error(tOrganizations("delete.error"));
+              },
+              onSuccess: () => {
+                enqueueSnackbar(tOrganizations("delete.success"), {
+                  variant: "success",
+                });
+                router.refresh();
+              },
+            },
+          );
         },
         open: true,
         title: tOrganizations("delete.title"),

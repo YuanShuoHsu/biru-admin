@@ -60,20 +60,20 @@ const AuthForgotPassword = ({ redirectTo }: AuthForgotPasswordProps) => {
   });
 
   const onSubmit = handleSubmit(async (data: ForgotPasswordFormData) => {
-    const { error } = await authClient.requestPasswordReset(
+    await authClient.requestPasswordReset(
       { ...data, redirectTo },
-      { headers: { "Accept-Language": locale } },
+      {
+        headers: { "Accept-Language": locale },
+        onError: ({ error: { code } }) => {
+          enqueueSnackbar(getErrorMessage(code, locale), {
+            variant: "error",
+          });
+        },
+        onSuccess: () => {
+          startCountdown("forgot-password");
+        },
+      },
     );
-
-    if (error?.code) {
-      enqueueSnackbar(getErrorMessage(error.code, locale), {
-        variant: "error",
-      });
-
-      return;
-    }
-
-    startCountdown("forgot-password");
   });
 
   return (

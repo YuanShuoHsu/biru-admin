@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import {
@@ -27,7 +26,7 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 }));
 
 const CreateOrgDialogContent = () => {
-  const { resetDialog, setDialog } = useDialogStore((s) => s);
+  const { resetDialog } = useDialogStore((s) => s);
 
   const locale = useLocale();
 
@@ -38,7 +37,7 @@ const CreateOrgDialogContent = () => {
   const schema = useCreateOrganizationFormSchema();
 
   const {
-    formState: { errors, isSubmitting },
+    formState: { errors },
     handleSubmit,
     register,
     setValue,
@@ -46,10 +45,6 @@ const CreateOrgDialogContent = () => {
     defaultValues: { name: "", slug: "" },
     resolver: zodResolver(schema),
   });
-
-  useEffect(() => {
-    setDialog({ confirmDisabled: isSubmitting });
-  }, [isSubmitting, setDialog]);
 
   const handleNameChange = (name: string) => {
     setValue("name", name);
@@ -60,23 +55,27 @@ const CreateOrgDialogContent = () => {
     setValue("slug", slug);
   };
 
-  const onSubmit = handleSubmit(async (values: CreateOrganizationForm) => {
-    const { error } = await authClient.organization.create({
-      name: values.name,
-      slug: values.slug,
-    });
-
-    if (error?.code) {
-      const message = getErrorMessage(error.code, locale);
-      enqueueSnackbar(message, { variant: "error" });
-
-      return;
-    }
-
-    enqueueSnackbar(tOrganizations("success"), { variant: "success" });
-    resetDialog();
-    router.refresh();
-  });
+  const onSubmit = handleSubmit(
+    async ({ name, slug }: CreateOrganizationForm) => {
+      await authClient.organization.create(
+        {
+          name,
+          slug,
+        },
+        {
+          onError: ({ error: { code } }) => {
+            const message = getErrorMessage(code, locale);
+            enqueueSnackbar(message, { variant: "error" });
+          },
+          onSuccess: () => {
+            enqueueSnackbar(tOrganizations("success"), { variant: "success" });
+            resetDialog();
+            router.refresh();
+          },
+        },
+      );
+    },
+  );
 
   return (
     <StyledBox

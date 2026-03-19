@@ -159,32 +159,42 @@ const OrganizationDetail = ({ slug }: OrganizationDetailProps) => {
   });
 
   const handleInviteSubmit = async (values: InviteForm) => {
-    const result = await authClient.organization.inviteMember({
-      organizationId: org!.id,
-      email: values.email,
-      role: values.role,
-    });
-    if (result.error) {
-      enqueueSnackbar(tMembers("invite.error"), { variant: "error" });
-    } else {
-      enqueueSnackbar(tMembers("invite.success"), { variant: "success" });
-      setInviteOpen(false);
-      reset();
-      mutate(swrKey);
-    }
+    await authClient.organization.inviteMember(
+      {
+        organizationId: org!.id,
+        email: values.email,
+        role: values.role,
+      },
+      {
+        onError: () => {
+          enqueueSnackbar(tMembers("invite.error"), { variant: "error" });
+        },
+        onSuccess: () => {
+          enqueueSnackbar(tMembers("invite.success"), { variant: "success" });
+          setInviteOpen(false);
+          reset();
+          mutate(swrKey);
+        },
+      },
+    );
   };
 
   const handleRemoveMember = async (member: Member) => {
-    const result = await authClient.organization.removeMember({
-      organizationId: org!.id,
-      memberIdOrEmail: member.userId,
-    });
-    if (result.error) {
-      enqueueSnackbar(tMembers("remove.error"), { variant: "error" });
-    } else {
-      enqueueSnackbar(tMembers("remove.success"), { variant: "success" });
-      mutate(swrKey);
-    }
+    await authClient.organization.removeMember(
+      {
+        organizationId: org!.id,
+        memberIdOrEmail: member.userId,
+      },
+      {
+        onError: () => {
+          enqueueSnackbar(tMembers("remove.error"), { variant: "error" });
+        },
+        onSuccess: () => {
+          enqueueSnackbar(tMembers("remove.success"), { variant: "success" });
+          mutate(swrKey);
+        },
+      },
+    );
     setConfirmRemove({ open: false, member: null });
   };
 
@@ -192,29 +202,39 @@ const OrganizationDetail = ({ slug }: OrganizationDetailProps) => {
     memberId: string,
     role: "admin" | "member",
   ) => {
-    const result = await authClient.organization.updateMemberRole({
-      organizationId: org!.id,
-      memberId,
-      role,
-    });
-    if (result.error) {
-      enqueueSnackbar(tMembers("setRole.error"), { variant: "error" });
-    } else {
-      enqueueSnackbar(tMembers("setRole.success"), { variant: "success" });
-      mutate(swrKey);
-    }
+    await authClient.organization.updateMemberRole(
+      {
+        organizationId: org!.id,
+        memberId,
+        role,
+      },
+      {
+        onError: () => {
+          enqueueSnackbar(tMembers("setRole.error"), { variant: "error" });
+        },
+        onSuccess: () => {
+          enqueueSnackbar(tMembers("setRole.success"), { variant: "success" });
+          mutate(swrKey);
+        },
+      },
+    );
   };
 
   const handleCancelInvitation = async (invitation: Invitation) => {
-    const result = await authClient.organization.cancelInvitation({
-      invitationId: invitation.id,
-    });
-    if (result.error) {
-      enqueueSnackbar(tInvitations("cancel.error"), { variant: "error" });
-    } else {
-      enqueueSnackbar(tInvitations("cancel.success"), { variant: "success" });
-      mutate(swrKey);
-    }
+    await authClient.organization.cancelInvitation(
+      { invitationId: invitation.id },
+      {
+        onError: () => {
+          enqueueSnackbar(tInvitations("cancel.error"), { variant: "error" });
+        },
+        onSuccess: () => {
+          enqueueSnackbar(tInvitations("cancel.success"), {
+            variant: "success",
+          });
+          mutate(swrKey);
+        },
+      },
+    );
     setConfirmCancel({ open: false, invitation: null });
   };
 

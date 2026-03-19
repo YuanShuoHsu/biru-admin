@@ -98,27 +98,30 @@ const AuthVerifyEmail = ({
     if (!token) return;
 
     const verifyToken = async () => {
-      const { error } = await authClient.verifyEmail(
+      await authClient.verifyEmail(
         { query: { token } },
-        { headers: { "Accept-Language": locale } },
+        {
+          headers: { "Accept-Language": locale },
+          onError: ({ error: { code } }) => {
+            setVerifyState({
+              errorMessage: getErrorMessage(code, locale),
+              status: VERIFY_STATUS.FAILED,
+            });
+          },
+          onSuccess: async () => {
+            const { data } = await authClient.getSession();
+            setSession(data);
+
+            setVerifyState({
+              errorMessage: "",
+              status: VERIFY_STATUS.VERIFIED,
+            });
+            startCountdown("verify-email-redirect", 3, () => {
+              router.replace(redirectTo || "/");
+            });
+          },
+        },
       );
-
-      if (error?.code) {
-        setVerifyState({
-          errorMessage: getErrorMessage(error.code, locale),
-          status: VERIFY_STATUS.FAILED,
-        });
-
-        return;
-      }
-
-      const { data } = await authClient.getSession();
-      setSession(data);
-
-      setVerifyState({ errorMessage: "", status: VERIFY_STATUS.VERIFIED });
-      startCountdown("verify-email-redirect", 3, () => {
-        router.replace(redirectTo || "/");
-      });
     };
 
     verifyToken();
@@ -171,22 +174,23 @@ const AuthVerifyEmail = ({
   });
 
   const onSubmit = handleSubmit(async () => {
-    const { error } = await authClient.sendVerificationEmail(
+    await authClient.sendVerificationEmail(
       { callbackURL: redirectTo, email },
-      { headers: { "Accept-Language": locale } },
+      {
+        headers: { "Accept-Language": locale },
+        onError: ({ error: { code } }) => {
+          enqueueSnackbar(getErrorMessage(code, locale), {
+            variant: "error",
+          });
+
+          if (code === "EMAIL_IS_ALREADY_VERIFIED")
+            router.replace(signInHref);
+        },
+        onSuccess: () => {
+          startCountdown("verify-email");
+        },
+      },
     );
-
-    if (error?.code) {
-      const message = getErrorMessage(error.code, locale);
-      enqueueSnackbar(message, { variant: "error" });
-
-      if (error.code === "EMAIL_IS_ALREADY_VERIFIED")
-        router.replace(signInHref);
-
-      return;
-    }
-
-    startCountdown("verify-email");
   });
 
   const configs: Record<
