@@ -183,8 +183,7 @@ const AuthVerifyEmail = ({
             variant: "error",
           });
 
-          if (code === "EMAIL_IS_ALREADY_VERIFIED")
-            router.replace(signInHref);
+          if (code === "EMAIL_IS_ALREADY_VERIFIED") router.replace(signInHref);
         },
         onSuccess: () => {
           startCountdown("verify-email");
