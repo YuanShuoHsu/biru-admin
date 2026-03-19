@@ -233,6 +233,7 @@ const AuthSignIn = ({ locale, redirectTo, rememberMe }: AuthSignInProps) => {
         <Button
           fullWidth
           loading={isSubmitting}
+          loadingPosition="end"
           size="large"
           type="submit"
           variant="contained"

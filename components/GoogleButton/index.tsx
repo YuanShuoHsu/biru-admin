@@ -83,7 +83,7 @@ const GoogleButton = ({ action, redirectTo }: GoogleButtonProps) => {
       aria-label={label}
       fullWidth
       loading={isLoading}
-      loadingPosition="start"
+      loadingPosition="end"
       onClick={handleClick}
       size="large"
       startIcon={<GoogleIcon />}

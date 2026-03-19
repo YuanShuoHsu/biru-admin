@@ -108,7 +108,7 @@ const AuthForgotPassword = ({ redirectTo }: AuthForgotPasswordProps) => {
           disabled={isCountingDown}
           fullWidth
           loading={isSubmitting}
-          loadingPosition="start"
+          loadingPosition="end"
           size="large"
           type="submit"
           variant="contained"

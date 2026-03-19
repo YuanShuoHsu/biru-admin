@@ -358,6 +358,7 @@ const AccountSettings = ({ currentURL }: AccountSettingsProps) => {
                   <Button
                     color="error"
                     loading={isMutatingLogout}
+                    loadingPosition="end"
                     onClick={handleLogout}
                     startIcon={<Logout />}
                     variant="contained"

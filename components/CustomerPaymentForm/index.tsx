@@ -191,7 +191,7 @@ const CustomerPaymentForm = () => {
         disabled={isCartEmpty || !payment}
         fullWidth
         loading={isMutating}
-        loadingPosition="start"
+        loadingPosition="end"
         size="large"
         type="submit"
         variant="contained"

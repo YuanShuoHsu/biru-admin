@@ -245,7 +245,7 @@ const AuthResetPassword = ({
         <Button
           fullWidth
           loading={isSubmitting}
-          loadingPosition="start"
+          loadingPosition="end"
           size="large"
           type="submit"
           variant="contained"

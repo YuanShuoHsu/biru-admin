@@ -124,6 +124,7 @@ const AddAnotherAccount = ({ redirectTo }: AddAnotherAccountProps) => {
             <Button
               fullWidth
               loading={isMutatingLogout}
+              loadingPosition="end"
               onClick={handleSignOutAndContinue}
               startIcon={<PersonAdd />}
               variant="contained"

@@ -98,7 +98,7 @@ const Newsletter = () => {
         />
         <Button
           loading={isMutating}
-          loadingPosition="start"
+          loadingPosition="end"
           size="small"
           type="submit"
           variant="outlined"
