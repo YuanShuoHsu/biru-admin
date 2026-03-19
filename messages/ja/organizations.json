@@ -1,6 +1,5 @@
 {
   "actions": {
-    "create": "組織を追加",
     "delete": "削除",
     "view": "管理"
   },
@@ -14,6 +13,7 @@
   },
   "create": {
     "cancel": "キャンセル",
+    "confirm": "組織を追加",
     "error": "作成に失敗しました。もう一度お試しください",
     "name": {
       "label": "組織名"
@@ -22,7 +22,7 @@
       "label": "スラッグ（英数字・ハイフン）",
       "placeholder": "my-organization"
     },
-    "success": "組織を作成しました",
+    "success": "組織の作成に成功しました",
     "title": "組織を追加"
   },
   "delete": {

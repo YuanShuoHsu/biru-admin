@@ -8,7 +8,7 @@ import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo } from "react";
 
-import CreateOrgDialogContent from "./CreateOrgDialogContent";
+import CreateOrganizationDialogContent from "./CreateOrganizationDialogContent";
 
 import CustomNoColumnsOverlay from "@/components/CustomNoColumnsOverlay";
 import CustomNoResultsOverlay from "@/components/CustomNoResultsOverlay";
@@ -75,8 +75,8 @@ const Organizations = ({ rows }: OrganizationsProps) => {
   const handleOpenCreate = () => {
     setDialog({
       cancelText: tOrganizations("create.cancel"),
-      confirmText: tOrganizations("actions.create"),
-      content: <CreateOrgDialogContent key={Date.now()} />,
+      confirmText: tOrganizations("create.confirm"),
+      content: <CreateOrganizationDialogContent />,
       formId: "create-organization-form",
       open: true,
       title: tOrganizations("create.title"),
@@ -190,7 +190,7 @@ const Organizations = ({ rows }: OrganizationsProps) => {
     <>
       <Stack direction="row">
         <Button onClick={handleOpenCreate} size="small" variant="contained">
-          {tOrganizations("actions.create")}
+          {tOrganizations("create.confirm")}
         </Button>
       </Stack>
       <DataGrid

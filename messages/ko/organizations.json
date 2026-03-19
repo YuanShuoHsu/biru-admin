@@ -1,6 +1,5 @@
 {
   "actions": {
-    "create": "조직 추가",
     "delete": "삭제",
     "view": "관리"
   },
@@ -14,6 +13,7 @@
   },
   "create": {
     "cancel": "취소",
+    "confirm": "조직 추가",
     "error": "생성에 실패했습니다. 다시 시도해 주세요",
     "name": {
       "label": "조직명"
@@ -22,7 +22,7 @@
       "label": "슬러그 (영문, 숫자, 하이픈)",
       "placeholder": "my-organization"
     },
-    "success": "조직이 생성되었습니다",
+    "success": "조직이 성공적으로 생성되었습니다",
     "title": "조직 추가"
   },
   "delete": {

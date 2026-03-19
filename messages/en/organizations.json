@@ -1,6 +1,5 @@
 {
   "actions": {
-    "create": "New organization",
     "delete": "Delete",
     "view": "Manage"
   },
@@ -14,6 +13,7 @@
   },
   "create": {
     "cancel": "Cancel",
+    "confirm": "New organization",
     "error": "Failed to create organization. Please try again.",
     "name": {
       "label": "Organization name"
@@ -22,7 +22,7 @@
       "label": "Slug (letters, numbers, hyphens)",
       "placeholder": "my-organization"
     },
-    "success": "Organization created",
+    "success": "Organization created successfully",
     "title": "New organization"
   },
   "delete": {

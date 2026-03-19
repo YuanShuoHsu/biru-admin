@@ -25,8 +25,8 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   paddingTop: theme.spacing(1),
 }));
 
-const CreateOrgDialogContent = () => {
-  const { resetDialog } = useDialogStore((s) => s);
+const CreateOrganizationDialogContent = () => {
+  const { resetDialog, setDialog } = useDialogStore((s) => s);
 
   const locale = useLocale();
 
@@ -40,35 +40,28 @@ const CreateOrgDialogContent = () => {
     formState: { errors },
     handleSubmit,
     register,
-    setValue,
   } = useForm<CreateOrganizationForm>({
     defaultValues: { name: "", slug: "" },
     resolver: zodResolver(schema),
   });
 
-  const handleNameChange = (name: string) => {
-    setValue("name", name);
-    const slug = name
-      .toLowerCase()
-      .replace(/\s+/g, "-")
-      .replace(/[^a-z0-9-]/g, "");
-    setValue("slug", slug);
-  };
-
   const onSubmit = handleSubmit(
     async ({ name, slug }: CreateOrganizationForm) => {
       await authClient.organization.create(
+        { name, slug },
         {
-          name,
-          slug,
-        },
-        {
+          onRequest: () => {
+            setDialog({ confirmLoading: true });
+          },
           onError: ({ error: { code } }) => {
             const message = getErrorMessage(code, locale);
             enqueueSnackbar(message, { variant: "error" });
+            setDialog({ confirmLoading: false });
           },
           onSuccess: () => {
-            enqueueSnackbar(tOrganizations("success"), { variant: "success" });
+            const message = tOrganizations("success");
+            enqueueSnackbar(message, { variant: "success" });
+
             resetDialog();
             router.refresh();
           },
@@ -91,9 +84,7 @@ const CreateOrgDialogContent = () => {
         label={tOrganizations("name.label")}
         placeholder={tOrganizations("name.label")}
         required
-        {...register("name", {
-          onChange: (e) => handleNameChange(e.target.value),
-        })}
+        {...register("name")}
       />
       <TextField
         error={!!errors.slug}
@@ -108,4 +99,4 @@ const CreateOrgDialogContent = () => {
   );
 };
 
-export default CreateOrgDialogContent;
+export default CreateOrganizationDialogContent;

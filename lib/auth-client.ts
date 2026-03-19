@@ -44,6 +44,20 @@ type ErrorTypes = Partial<
 >;
 
 const customErrorCodes: Record<string, Record<Locale, string>> = {
+  VALIDATION_ERROR: {
+    [LocaleEnum.ZhTW]: "資料驗證失敗",
+    [LocaleEnum.En]: "Validation Error",
+    [LocaleEnum.Ja]: "バリデーションエラー",
+    [LocaleEnum.Ko]: "유효성 검사 오류",
+    [LocaleEnum.ZhCN]: "数据验证失败",
+  },
+  ORGANIZATION_ALREADY_EXISTS: {
+    [LocaleEnum.ZhTW]: "此組織已存在",
+    [LocaleEnum.En]: "Organization already exists",
+    [LocaleEnum.Ja]: "この組織は既に存在します",
+    [LocaleEnum.Ko]: "이미 존재하는 조직입니다",
+    [LocaleEnum.ZhCN]: "此组织已存在",
+  },
   NO_ACTIVE_ORGANIZATION: {
     [LocaleEnum.ZhTW]: "您的帳號無權限存取後台，請聯繫管理員",
     [LocaleEnum.En]:

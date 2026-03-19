@@ -1,6 +1,5 @@
 {
   "actions": {
-    "create": "新增组织",
     "delete": "删除",
     "view": "管理"
   },
@@ -14,6 +13,7 @@
   },
   "create": {
     "cancel": "取消",
+    "confirm": "新增组织",
     "error": "创建失败，请稍后重试",
     "name": {
       "label": "组织名称"
@@ -22,7 +22,7 @@
       "label": "标识符（字母、数字、连字符）",
       "placeholder": "my-organization"
     },
-    "success": "组织已创建",
+    "success": "组织创建成功",
     "title": "新增组织"
   },
   "delete": {

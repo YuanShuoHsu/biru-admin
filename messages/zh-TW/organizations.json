@@ -1,6 +1,5 @@
 {
   "actions": {
-    "create": "新增組織",
     "delete": "刪除",
     "view": "管理"
   },
@@ -14,6 +13,7 @@
   },
   "create": {
     "cancel": "取消",
+    "confirm": "新增組織",
     "error": "建立失敗，請稍後重試",
     "name": {
       "label": "組織名稱"
@@ -22,7 +22,7 @@
       "label": "識別碼（英文、數字、連字號）",
       "placeholder": "my-organization"
     },
-    "success": "組織已建立",
+    "success": "組織建立成功",
     "title": "新增組織"
   },
   "delete": {
