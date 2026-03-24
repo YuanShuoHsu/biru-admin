@@ -241,6 +241,21 @@ const theme = createTheme({
         component: LinkBehavior,
       } as LinkProps,
     },
+    MuiTab: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          transition: theme.transitions.create("color"),
+        }),
+      },
+    },
+    MuiTabs: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          borderBottom: `1px solid ${theme.vars.palette.divider}`,
+          transition: theme.transitions.create("border-color"),
+        }),
+      },
+    },
     MuiTablePagination: {
       styleOverrides: {
         displayedRows: ({ theme }) => ({

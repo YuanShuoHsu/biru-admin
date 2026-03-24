@@ -56,13 +56,8 @@ const HorizontalTabs = styled(Tabs, {
   },
 
   backgroundColor: theme.vars.palette.background.paper,
-  borderBottom: `1px solid ${theme.palette.divider}`,
   transition: theme.transitions.create(["background-color", "transform"]),
   zIndex: theme.zIndex.appBar - 1,
-
-  "& .MuiTab-root": {
-    transition: theme.transitions.create("color"),
-  },
 }));
 
 const CustomizedTabs = () => {

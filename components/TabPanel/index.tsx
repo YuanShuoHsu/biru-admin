@@ -1,3 +1,5 @@
+// https://mui.com/material-ui/react-tabs/#BasicTabs.tsx
+
 import { Box } from "@mui/material";
 
 interface TabPanelProps {

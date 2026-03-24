@@ -14,13 +14,10 @@ import { useRouter } from "@/i18n/navigation";
 
 import { authClient } from "@/lib/auth-client";
 
-import { Business, Delete, GroupAdd, PersonRemove } from "@mui/icons-material";
+import { Delete, GroupAdd, PersonRemove } from "@mui/icons-material";
 import {
   Avatar,
-  Box,
   Button,
-  Card,
-  CardContent,
   Chip,
   Dialog,
   DialogActions,
@@ -28,7 +25,6 @@ import {
   DialogContentText,
   DialogTitle,
   FormControl,
-  Grid,
   IconButton,
   InputLabel,
   MenuItem,
@@ -38,7 +34,6 @@ import {
   Tabs,
   TextField,
   Tooltip,
-  Typography,
 } from "@mui/material";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 
@@ -109,7 +104,8 @@ interface OrganizationsSlugProps {
 }
 
 const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
-  const [tab, setTab] = useState(0);
+  const [value, setValue] = useState(0);
+
   const [inviteOpen, setInviteOpen] = useState(false);
   const { setDialog } = useDialogStore((state) => state);
 
@@ -121,9 +117,11 @@ const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
   const router = useRouter();
 
   const tDialog = useTranslations("dialog");
-  const tOrg = useTranslations("organizations");
   const tMembers = useTranslations("organizations.members");
   const tInvitations = useTranslations("organizations.invitations");
+
+  const handleChange = (_: React.SyntheticEvent, newValue: number) =>
+    setValue(newValue);
 
   const handleInviteSubmit = async (values: InviteForm) => {
     await authClient.organization.inviteMember(
@@ -328,7 +326,6 @@ const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
             </Stack>
           );
         },
-        sortable: false,
       },
       {
         field: "createdAt",
@@ -424,81 +421,31 @@ const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
 
   return (
     <>
-      <Card variant="outlined">
-        <CardContent>
-          <Stack direction="row" alignItems="center" gap={2}>
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              bgcolor="primary.main"
-              color="primary.contrastText"
-              borderRadius={2}
-              width={56}
-              height={56}
-              flexShrink={0}
-            >
-              <Business />
-            </Box>
-            <Box flexGrow={1}>
-              <Typography variant="h6" fontWeight={700}>
-                {org.name}
-              </Typography>
-              <Stack direction="row" gap={1} alignItems="center" mt={0.5}>
+      <Tabs
+        aria-label="organization tabs"
+        onChange={handleChange}
+        value={value}
+        variant="scrollable"
+      >
+        <Tab {...a11yProps(0)} label={tMembers("label")} />
+        <Tab
+          {...a11yProps(1)}
+          label={
+            <Stack direction="row" gap={0.5} alignItems="center">
+              {tInvitations("label")}
+              {pendingInvitations.length > 0 && (
                 <Chip
-                  label={org.slug}
+                  label={pendingInvitations.length}
                   size="small"
-                  variant="outlined"
-                  sx={{ fontSize: "0.75rem" }}
+                  color="warning"
+                  sx={{ height: 18, fontSize: "0.7rem" }}
                 />
-                <Typography variant="caption" color="text.secondary">
-                  {format.dateTime(new Date(org.createdAt), "short")}
-                </Typography>
-              </Stack>
-            </Box>
-            <Grid container spacing={3} sx={{ maxWidth: 300 }}>
-              <Grid size={{ xs: 6 }}>
-                <Typography variant="caption" color="text.secondary">
-                  {tOrg("detail.info.memberCount")}
-                </Typography>
-                <Typography variant="h6" fontWeight={600}>
-                  {org.members.length}
-                </Typography>
-              </Grid>
-              <Grid size={{ xs: 6 }}>
-                <Typography variant="caption" color="text.secondary">
-                  {tInvitations("label")}
-                </Typography>
-                <Typography variant="h6" fontWeight={600}>
-                  {pendingInvitations.length}
-                </Typography>
-              </Grid>
-            </Grid>
-          </Stack>
-        </CardContent>
-      </Card>
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-        <Tabs value={tab} onChange={(_, v) => setTab(v)}>
-          <Tab {...a11yProps(0)} label={tMembers("label")} />
-          <Tab
-            {...a11yProps(1)}
-            label={
-              <Stack direction="row" gap={0.5} alignItems="center">
-                {tInvitations("label")}
-                {pendingInvitations.length > 0 && (
-                  <Chip
-                    label={pendingInvitations.length}
-                    size="small"
-                    color="warning"
-                    sx={{ height: 18, fontSize: "0.7rem" }}
-                  />
-                )}
-              </Stack>
-            }
-          />
-        </Tabs>
-      </Box>
-      <TabPanel index={0} value={tab}>
+              )}
+            </Stack>
+          }
+        />
+      </Tabs>
+      <TabPanel index={0} value={value}>
         <Stack direction="row">
           <Button
             startIcon={<GroupAdd />}
@@ -515,7 +462,7 @@ const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
           rows={org.members}
         />
       </TabPanel>
-      <TabPanel index={1} value={tab}>
+      <TabPanel index={1} value={value}>
         <DataGrid
           {...DATA_GRID_PROPS}
           columns={invitationColumns}
