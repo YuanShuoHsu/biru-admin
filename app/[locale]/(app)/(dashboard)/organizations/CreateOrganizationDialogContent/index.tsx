@@ -26,7 +26,7 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 }));
 
 const CreateOrganizationDialogContent = () => {
-  const { resetDialog, setDialog } = useDialogStore((s) => s);
+  const { resetDialog, setDialog } = useDialogStore((state) => state);
 
   const locale = useLocale();
 
@@ -56,6 +56,7 @@ const CreateOrganizationDialogContent = () => {
           onError: ({ error: { code } }) => {
             const message = getErrorMessage(code, locale);
             enqueueSnackbar(message, { variant: "error" });
+
             setDialog({ confirmLoading: false });
           },
           onSuccess: () => {

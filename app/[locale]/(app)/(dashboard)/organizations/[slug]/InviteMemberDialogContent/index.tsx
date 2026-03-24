@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useForm } from "react-hook-form";
 
@@ -12,7 +12,7 @@ import {
 
 import { useRouter } from "@/i18n/navigation";
 
-import { authClient } from "@/lib/auth-client";
+import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import {
   Box,
@@ -41,7 +41,9 @@ interface InviteMemberDialogContentProps {
 const InviteMemberDialogContent = ({
   organizationId,
 }: InviteMemberDialogContentProps) => {
-  const { resetDialog, setDialog } = useDialogStore((s) => s);
+  const { resetDialog, setDialog } = useDialogStore((state) => state);
+
+  const locale = useLocale();
 
   const router = useRouter();
 
@@ -65,14 +67,16 @@ const InviteMemberDialogContent = ({
         onRequest: () => {
           setDialog({ confirmLoading: true });
         },
-        onError: () => {
-          enqueueSnackbar(tMembers("invite.error"), { variant: "error" });
+        onError: ({ error: { code } }) => {
+          const message = getErrorMessage(code, locale);
+          enqueueSnackbar(message, { variant: "error" });
+
           setDialog({ confirmLoading: false });
         },
         onSuccess: () => {
-          enqueueSnackbar(tMembers("invite.success"), {
-            variant: "success",
-          });
+          const message = tMembers("invite.success");
+          enqueueSnackbar(message, { variant: "success" });
+
           resetDialog();
           router.refresh();
         },
