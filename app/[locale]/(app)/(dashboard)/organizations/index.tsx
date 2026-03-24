@@ -66,7 +66,7 @@ const Organizations = ({ rows }: OrganizationsProps) => {
 
   const tOrganizations = useTranslations("organizations");
 
-  const handleOpenCreate = () => {
+  const handleCreateOrganization = () => {
     setDialog({
       content: <CreateOrganizationDialogContent />,
       formId: "create-organization-form",
@@ -75,7 +75,7 @@ const Organizations = ({ rows }: OrganizationsProps) => {
     });
   };
 
-  const handleOpenDeleteConfirm = useCallback(
+  const handleDeleteOrganization = useCallback(
     ({ id, name }: OrganizationRow) => {
       setDialog({
         content: (
@@ -136,7 +136,7 @@ const Organizations = ({ rows }: OrganizationsProps) => {
                   onClick={(event) => {
                     event.stopPropagation();
 
-                    handleOpenDeleteConfirm(row);
+                    handleDeleteOrganization(row);
                   }}
                   size="small"
                 >
@@ -180,13 +180,13 @@ const Organizations = ({ rows }: OrganizationsProps) => {
           format.dateTime(new Date(value), "short"),
       },
     ],
-    [format, handleOpenDeleteConfirm, router, tOrganizations],
+    [format, handleDeleteOrganization, router, tOrganizations],
   );
 
   return (
     <>
       <Stack direction="row">
-        <Button onClick={handleOpenCreate} size="small" variant="contained">
+        <Button onClick={handleCreateOrganization} size="small" variant="contained">
           {tOrganizations("create.title")}
         </Button>
       </Stack>

@@ -3,6 +3,8 @@
 
 import { forwardRef, useImperativeHandle, useState } from "react";
 
+import BadgeAvatars from "@/components/BadgeAvatars";
+
 import { CameraAlt } from "@mui/icons-material";
 import {
   Avatar,
@@ -11,8 +13,6 @@ import {
   type ButtonBaseProps,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-
-import BadgeAvatars from "../BadgeAvatars";
 
 const StyledButtonBase = styled(ButtonBase)<ButtonBaseProps>({
   borderRadius: "50%",

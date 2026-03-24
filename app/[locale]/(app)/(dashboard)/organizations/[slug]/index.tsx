@@ -4,8 +4,10 @@ import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
 
+import InviteMemberDialogContent from "./InviteMemberDialogContent";
+
+import CustomizedBadges from "@/components/CustomizedBadges";
 import TabPanel from "@/components/TabPanel";
 
 import { DATA_GRID_PROPS } from "@/constants/dataGrid";
@@ -19,20 +21,13 @@ import {
   Avatar,
   Button,
   Chip,
-  Dialog,
-  DialogActions,
-  DialogContent,
   DialogContentText,
-  DialogTitle,
-  FormControl,
   IconButton,
-  InputLabel,
   MenuItem,
   Select,
   Stack,
   Tab,
   Tabs,
-  TextField,
   Tooltip,
 } from "@mui/material";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
@@ -78,11 +73,6 @@ interface FullOrganization {
   invitations: Invitation[];
 }
 
-interface InviteForm {
-  email: string;
-  role: "admin" | "member";
-}
-
 const ROLE_COLOR_MAP: Record<string, "error" | "warning" | "default"> = {
   owner: "error",
   admin: "warning",
@@ -106,45 +96,28 @@ interface OrganizationsSlugProps {
 const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
   const [value, setValue] = useState(0);
 
-  const [inviteOpen, setInviteOpen] = useState(false);
   const { setDialog } = useDialogStore((state) => state);
 
-  const { control, handleSubmit, reset, formState } = useForm<InviteForm>({
-    defaultValues: { email: "", role: "member" },
-  });
-
   const format = useFormatter();
+
   const router = useRouter();
 
-  const tDialog = useTranslations("dialog");
-  const tMembers = useTranslations("organizations.members");
   const tInvitations = useTranslations("organizations.invitations");
+  const tMembers = useTranslations("organizations.members");
 
   const handleChange = (_: React.SyntheticEvent, newValue: number) =>
     setValue(newValue);
 
-  const handleInviteSubmit = async (values: InviteForm) => {
-    await authClient.organization.inviteMember(
-      {
-        organizationId: org.id,
-        email: values.email,
-        role: values.role,
-      },
-      {
-        onError: () => {
-          enqueueSnackbar(tMembers("invite.error"), { variant: "error" });
-        },
-        onSuccess: () => {
-          enqueueSnackbar(tMembers("invite.success"), { variant: "success" });
-          setInviteOpen(false);
-          reset();
-          router.refresh();
-        },
-      },
-    );
+  const handleInviteMember = () => {
+    setDialog({
+      content: <InviteMemberDialogContent organizationId={org.id} />,
+      formId: "invite-member-form",
+      open: true,
+      title: tMembers("invite.title"),
+    });
   };
 
-  const handleOpenRemoveConfirm = useCallback(
+  const handleRemoveMember = useCallback(
     (member: Member) => {
       setDialog({
         content: (
@@ -202,7 +175,7 @@ const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
     [org.id, router, tMembers],
   );
 
-  const handleOpenCancelConfirm = useCallback(
+  const handleCancelInvitation = useCallback(
     (invitation: Invitation) => {
       setDialog({
         content: (
@@ -233,10 +206,6 @@ const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
     [router, setDialog, tInvitations],
   );
 
-  const pendingInvitations = org.invitations.filter(
-    (inv) => inv.status === "pending",
-  );
-
   const memberColumns = useMemo<GridColDef[]>(
     () => [
       {
@@ -253,7 +222,7 @@ const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
                   color="error"
                   onClick={(event) => {
                     event.stopPropagation();
-                    handleOpenRemoveConfirm(row);
+                    handleRemoveMember(row);
                   }}
                 >
                   <PersonRemove fontSize="small" />
@@ -334,7 +303,7 @@ const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
           format.dateTime(new Date(value), "short"),
       },
     ],
-    [format, handleOpenRemoveConfirm, handleUpdateMemberRole, tMembers],
+    [format, handleRemoveMember, handleUpdateMemberRole, tMembers],
   );
 
   const invitationColumns = useMemo<GridColDef[]>(
@@ -353,7 +322,7 @@ const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
                   color="error"
                   onClick={(event) => {
                     event.stopPropagation();
-                    handleOpenCancelConfirm(row);
+                    handleCancelInvitation(row);
                   }}
                 >
                   <Delete fontSize="small" />
@@ -416,8 +385,51 @@ const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
           format.dateTime(new Date(value), "short"),
       },
     ],
-    [format, handleOpenCancelConfirm, tInvitations, tMembers],
+    [format, handleCancelInvitation, tInvitations, tMembers],
   );
+
+  const pendingCount = org.invitations.filter(
+    (inv) => inv.status === "pending",
+  ).length;
+
+  const tabs = [
+    {
+      children: (
+        <>
+          <Stack direction="row">
+            <Button
+              startIcon={<GroupAdd />}
+              onClick={handleInviteMember}
+              size="small"
+              variant="contained"
+            >
+              {tMembers("actions.invite")}
+            </Button>
+          </Stack>
+          <DataGrid
+            {...DATA_GRID_PROPS}
+            columns={memberColumns}
+            rows={org.members}
+          />
+        </>
+      ),
+      label: tMembers("label"),
+    },
+    {
+      children: (
+        <DataGrid
+          {...DATA_GRID_PROPS}
+          columns={invitationColumns}
+          rows={org.invitations}
+        />
+      ),
+      label: (
+        <CustomizedBadges badgeContent={pendingCount}>
+          {tInvitations("label")}
+        </CustomizedBadges>
+      ),
+    },
+  ];
 
   return (
     <>
@@ -427,116 +439,15 @@ const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
         value={value}
         variant="scrollable"
       >
-        <Tab {...a11yProps(0)} label={tMembers("label")} />
-        <Tab
-          {...a11yProps(1)}
-          label={
-            <Stack direction="row" gap={0.5} alignItems="center">
-              {tInvitations("label")}
-              {pendingInvitations.length > 0 && (
-                <Chip
-                  label={pendingInvitations.length}
-                  size="small"
-                  color="warning"
-                  sx={{ height: 18, fontSize: "0.7rem" }}
-                />
-              )}
-            </Stack>
-          }
-        />
+        {tabs.map(({ label }, index) => (
+          <Tab key={index} label={label} {...a11yProps(index)} />
+        ))}
       </Tabs>
-      <TabPanel index={0} value={value}>
-        <Stack direction="row">
-          <Button
-            startIcon={<GroupAdd />}
-            onClick={() => setInviteOpen(true)}
-            size="small"
-            variant="contained"
-          >
-            {tMembers("actions.invite")}
-          </Button>
-        </Stack>
-        <DataGrid
-          {...DATA_GRID_PROPS}
-          columns={memberColumns}
-          rows={org.members}
-        />
-      </TabPanel>
-      <TabPanel index={1} value={value}>
-        <DataGrid
-          {...DATA_GRID_PROPS}
-          columns={invitationColumns}
-          rows={org.invitations}
-        />
-      </TabPanel>
-      <Dialog
-        open={inviteOpen}
-        onClose={() => {
-          setInviteOpen(false);
-          reset();
-        }}
-        maxWidth="sm"
-        fullWidth
-      >
-        <form onSubmit={handleSubmit(handleInviteSubmit)}>
-          <DialogTitle>{tMembers("invite.title")}</DialogTitle>
-          <DialogContent>
-            <Stack gap={2} pt={1}>
-              <Controller
-                name="email"
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label={tMembers("invite.fields.email")}
-                    type="email"
-                    size="small"
-                    fullWidth
-                    required
-                  />
-                )}
-              />
-              <Controller
-                name="role"
-                control={control}
-                render={({ field }) => (
-                  <FormControl size="small" fullWidth>
-                    <InputLabel>{tMembers("invite.fields.role")}</InputLabel>
-                    <Select {...field} label={tMembers("invite.fields.role")}>
-                      <MenuItem value="member">
-                        {tMembers("roles.member")}
-                      </MenuItem>
-                      <MenuItem value="admin">
-                        {tMembers("roles.admin")}
-                      </MenuItem>
-                    </Select>
-                  </FormControl>
-                )}
-              />
-            </Stack>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              disabled={formState.isSubmitting}
-              onClick={() => {
-                setInviteOpen(false);
-                reset();
-              }}
-            >
-              {tDialog("cancel")}
-            </Button>
-            <Button
-              loading={formState.isSubmitting}
-              loadingPosition="end"
-              type="submit"
-              variant="contained"
-            >
-              {tMembers("actions.invite")}
-            </Button>
-          </DialogActions>
-        </form>
-      </Dialog>
+      {tabs.map(({ children }, index) => (
+        <TabPanel key={index} index={index} value={value}>
+          {children}
+        </TabPanel>
+      ))}
     </>
   );
 };

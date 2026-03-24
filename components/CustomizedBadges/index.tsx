@@ -8,9 +8,7 @@ const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
     padding: "0 4px",
     right: -3,
     top: 13,
-    border: `2px solid`,
-    borderColor: theme.vars.palette.primary.main,
-    transition: theme.transitions.create(["background-color", "border-color"]),
+    border: `2px solid ${theme.vars.palette.primary.main}`,
 
     [theme.getColorSchemeSelector("dark")]: {
       borderColor: theme.vars.palette.background.paper,
