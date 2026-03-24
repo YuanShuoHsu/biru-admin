@@ -6,13 +6,13 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
+import TabPanel from "@/components/TabPanel";
+
 import { DATA_GRID_PROPS } from "@/constants/dataGrid";
 
 import { useRouter } from "@/i18n/navigation";
 
 import { authClient } from "@/lib/auth-client";
-
-import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import { Business, Delete, GroupAdd, PersonRemove } from "@mui/icons-material";
 import {
@@ -41,6 +41,10 @@ import {
   Typography,
 } from "@mui/material";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+
+import { useDialogStore } from "@/providers/dialog-store-provider";
+
+import { a11yProps } from "@/utils/tab";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -473,10 +477,11 @@ const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
           </Stack>
         </CardContent>
       </Card>
-      <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 2 }}>
+      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs value={tab} onChange={(_, v) => setTab(v)}>
-          <Tab label={tMembers("label")} />
+          <Tab {...a11yProps(0)} label={tMembers("label")} />
           <Tab
+            {...a11yProps(1)}
             label={
               <Stack direction="row" gap={0.5} alignItems="center">
                 {tInvitations("label")}
@@ -493,32 +498,30 @@ const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
           />
         </Tabs>
       </Box>
-      {tab === 0 && (
-        <>
-          <Stack direction="row">
-            <Button
-              startIcon={<GroupAdd />}
-              onClick={() => setInviteOpen(true)}
-              size="small"
-              variant="contained"
-            >
-              {tMembers("actions.invite")}
-            </Button>
-          </Stack>
-          <DataGrid
-            {...DATA_GRID_PROPS}
-            columns={memberColumns}
-            rows={org.members}
-          />
-        </>
-      )}
-      {tab === 1 && (
+      <TabPanel index={0} value={tab}>
+        <Stack direction="row">
+          <Button
+            startIcon={<GroupAdd />}
+            onClick={() => setInviteOpen(true)}
+            size="small"
+            variant="contained"
+          >
+            {tMembers("actions.invite")}
+          </Button>
+        </Stack>
+        <DataGrid
+          {...DATA_GRID_PROPS}
+          columns={memberColumns}
+          rows={org.members}
+        />
+      </TabPanel>
+      <TabPanel index={1} value={tab}>
         <DataGrid
           {...DATA_GRID_PROPS}
           columns={invitationColumns}
           rows={org.invitations}
         />
-      )}
+      </TabPanel>
       <Dialog
         open={inviteOpen}
         onClose={() => {

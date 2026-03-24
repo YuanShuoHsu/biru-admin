@@ -8,7 +8,10 @@ import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
 import ResponsiveGrid from "./ResponsiveGrid";
-import TabPanel from "./TabPanel";
+
+import TabPanel from "@/components/TabPanel";
+
+import { a11yProps } from "@/utils/tab";
 
 import {
   APP_BAR_TOOLBAR_HEIGHT,
@@ -61,11 +64,6 @@ const HorizontalTabs = styled(Tabs, {
     transition: theme.transitions.create("color"),
   },
 }));
-
-const a11yProps = (index: number) => ({
-  id: `simple-tab-${index}`,
-  "aria-controls": `simple-tabpanel-${index}`,
-});
 
 const CustomizedTabs = () => {
   const locale = useLocale();
@@ -152,10 +150,6 @@ const CustomizedTabs = () => {
   const handleChange = (_: React.SyntheticEvent, newIndex: number) =>
     setSelectedId(filteredGroups[newIndex].id);
 
-  const tabList = filteredGroups.map(({ id, label }, index) => (
-    <Tab key={id} label={label} {...a11yProps(index)} />
-  ));
-
   return (
     <Stack gap={2}>
       {/* hook.js:608 Skipping auto-scroll behavior due to `position: sticky` or `position: fixed` on element */}
@@ -167,7 +161,9 @@ const CustomizedTabs = () => {
         value={displayIndex}
         variant="scrollable"
       >
-        {tabList}
+        {filteredGroups.map(({ id, label }, index) => (
+          <Tab key={id} label={label} {...a11yProps(index)} />
+        ))}
       </HorizontalTabs>
       {filteredGroups.map(({ id, items }, index) => (
         <TabPanel index={index} key={id} value={displayIndex}>
