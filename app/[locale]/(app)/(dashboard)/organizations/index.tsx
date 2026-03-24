@@ -29,6 +29,7 @@ import { Delete, Settings } from "@mui/icons-material";
 import {
   Avatar,
   Button,
+  DialogContentText,
   IconButton,
   Stack,
   Tooltip,
@@ -82,14 +83,19 @@ const Organizations = ({ rows }: OrganizationsProps) => {
   };
 
   const handleOpenDeleteConfirm = useCallback(
-    (org: OrganizationRow) => {
+    ({ id, name }: OrganizationRow) => {
       setDialog({
-        cancelText: tOrganizations("delete.cancel"),
-        confirmText: tOrganizations("delete.submit"),
-        contentText: tOrganizations("delete.confirm", { name: org.name }),
+        content: (
+          <DialogContentText>
+            {tOrganizations.rich("delete.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              name,
+            })}
+          </DialogContentText>
+        ),
         onConfirm: async () => {
           await authClient.organization.delete(
-            { organizationId: org.id },
+            { organizationId: id },
             {
               onError: () => {
                 throw new Error(tOrganizations("delete.error"));

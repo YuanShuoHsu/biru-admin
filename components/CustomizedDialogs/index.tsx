@@ -114,7 +114,7 @@ const CustomizedDialogs = () => {
   return (
     <BootstrapDialog
       aria-labelledby="customized-dialog-title"
-      aria-describedby="customized-dialog-description"
+      aria-describedby={contentText ? "customized-dialog-description" : undefined}
       fullWidth
       onClose={handleClose}
       open={open}
@@ -128,9 +128,11 @@ const CustomizedDialogs = () => {
         <Close />
       </StyledIconButton>
       <DialogContent dividers>
-        <DialogContentText id="customized-dialog-description">
-          {contentText}
-        </DialogContentText>
+        {contentText && (
+          <DialogContentText id="customized-dialog-description">
+            {contentText}
+          </DialogContentText>
+        )}
         {content}
       </DialogContent>
       <DialogActions>

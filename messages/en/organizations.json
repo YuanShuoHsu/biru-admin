@@ -15,7 +15,7 @@
   },
   "delete": {
     "cancel": "Cancel",
-    "confirm": "Are you sure you want to delete {name}? All members and data will be permanently removed.",
+    "confirm": "Are you sure you want to delete <bold>{name}</bold>? All members and data will be permanently removed.",
     "error": "Failed to delete organization. Please try again.",
     "submit": "Delete",
     "success": "Organization deleted",
