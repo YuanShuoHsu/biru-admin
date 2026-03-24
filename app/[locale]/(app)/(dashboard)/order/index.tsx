@@ -1,3 +1,8 @@
+// https://mui.com/x/react-data-grid/column-dimensions/
+// https://mui.com/x/react-data-grid/pagination/
+// https://mui.com/x/react-data-grid/performance/
+// https://mui.com/x/react-data-grid/server-side-data/
+
 "use client";
 
 import dynamic from "next/dynamic";
@@ -115,7 +120,7 @@ const Order = ({ initialData, query }: OrderProps) => {
       onPaginationModelChange={handlePaginationChange}
       sortModel={sortModel}
       onSortModelChange={handleSortChange}
-      pageSizeOptions={[10, 20, 50]}
+      pageSizeOptions={[5, 10, 50, 100]}
       disableColumnFilter
       slots={{ toolbar: OrderToolbar }}
       slotProps={{ toolbar: { query, onQueryChange: updateParams, rows } }}

@@ -1,5 +1,7 @@
 // https://mui.com/x/react-data-grid/column-dimensions/
+// https://mui.com/x/react-data-grid/pagination/
 // https://mui.com/x/react-data-grid/performance/
+// https://mui.com/x/react-data-grid/server-side-data/
 
 "use client";
 
@@ -204,6 +206,10 @@ const Organizations = ({ rows }: OrganizationsProps) => {
         getRowClassName={({ indexRelativeToCurrentPage }) =>
           indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
         }
+        initialState={{
+          pagination: { paginationModel: { pageSize: 10 } },
+        }}
+        pageSizeOptions={[5, 10, 50, 100]}
         rows={rows}
         showToolbar
         slotProps={{

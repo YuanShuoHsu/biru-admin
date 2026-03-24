@@ -28,7 +28,7 @@ const OrderPage = async ({ params, searchParams }: OrderPageProps) => {
 
   const query = {
     page: Math.max(1, Number(sp.page) || 1),
-    limit: Number(sp.limit) || 20,
+    limit: Number(sp.limit) || 10,
     status: (sp.status || "") as OrderStatus | "",
     search: sp.search || "",
     sortBy: sp.sortBy || "createdAt",

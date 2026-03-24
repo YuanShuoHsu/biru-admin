@@ -21,7 +21,7 @@ const UsersPage = async ({ params, searchParams }: UsersPageProps) => {
 
   const query = {
     page: Math.max(1, Number(sp.page) || 1),
-    limit: Number(sp.limit) || 20,
+    limit: Number(sp.limit) || 10,
     search: sp.search || "",
     role: sp.role || "",
   };

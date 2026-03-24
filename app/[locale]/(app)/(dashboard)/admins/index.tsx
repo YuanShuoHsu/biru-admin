@@ -1,3 +1,8 @@
+// https://mui.com/x/react-data-grid/column-dimensions/
+// https://mui.com/x/react-data-grid/pagination/
+// https://mui.com/x/react-data-grid/performance/
+// https://mui.com/x/react-data-grid/server-side-data/
+
 "use client";
 
 import { useTranslations } from "next-intl";
@@ -425,7 +430,7 @@ const AdminUsers = ({ query }: AdminUsersProps) => {
           page: query.page - 1,
           pageSize: query.limit,
         }}
-        pageSizeOptions={[10, 20, 50]}
+        pageSizeOptions={[5, 10, 50, 100]}
         onPaginationModelChange={handlePaginationChange}
         onSortModelChange={handleSortChange}
         disableRowSelectionOnClick
