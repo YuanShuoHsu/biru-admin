@@ -201,6 +201,10 @@ const Organizations = ({ rows }: OrganizationsProps) => {
       </Stack>
       <DataGrid
         autosizeOnMount
+        autosizeOptions={{
+          includeHeaders: true,
+          includeOutliers: true,
+        }}
         columns={columns}
         disableRowSelectionOnClick
         getRowClassName={({ indexRelativeToCurrentPage }) =>
