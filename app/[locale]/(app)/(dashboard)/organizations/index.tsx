@@ -127,8 +127,8 @@ const Organizations = ({ rows }: OrganizationsProps) => {
             <Stack height="100%" direction="row" alignItems="center" gap={1}>
               <Tooltip title={tOrganizations("actions.view")}>
                 <IconButton
-                  onClick={(e) => {
-                    e.stopPropagation();
+                  onClick={(event) => {
+                    event.stopPropagation();
 
                     router.push(`/organizations/${row.slug}`);
                   }}
@@ -140,8 +140,8 @@ const Organizations = ({ rows }: OrganizationsProps) => {
               <Tooltip title={tOrganizations("actions.delete")}>
                 <IconButton
                   color="error"
-                  onClick={(e) => {
-                    e.stopPropagation();
+                  onClick={(event) => {
+                    event.stopPropagation();
 
                     handleOpenDeleteConfirm(row);
                   }}
