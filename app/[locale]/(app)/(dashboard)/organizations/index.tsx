@@ -186,7 +186,11 @@ const Organizations = ({ rows }: OrganizationsProps) => {
   return (
     <>
       <Stack direction="row">
-        <Button onClick={handleCreateOrganization} size="small" variant="contained">
+        <Button
+          onClick={handleCreateOrganization}
+          size="small"
+          variant="contained"
+        >
           {tOrganizations("create.title")}
         </Button>
       </Stack>

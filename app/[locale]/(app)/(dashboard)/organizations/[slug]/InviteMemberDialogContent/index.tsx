@@ -58,36 +58,30 @@ const InviteMemberDialogContent = ({
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = handleSubmit(
-    async ({ email, role }: InviteMemberForm) => {
-      await authClient.organization.inviteMember(
-        { email, organizationId, role },
-        {
-          onRequest: () => {
-            setDialog({ confirmLoading: true });
-          },
-          onError: () => {
-            enqueueSnackbar(tMembers("invite.error"), { variant: "error" });
-            setDialog({ confirmLoading: false });
-          },
-          onSuccess: () => {
-            enqueueSnackbar(tMembers("invite.success"), {
-              variant: "success",
-            });
-            resetDialog();
-            router.refresh();
-          },
+  const onSubmit = handleSubmit(async ({ email, role }: InviteMemberForm) => {
+    await authClient.organization.inviteMember(
+      { email, organizationId, role },
+      {
+        onRequest: () => {
+          setDialog({ confirmLoading: true });
         },
-      );
-    },
-  );
+        onError: () => {
+          enqueueSnackbar(tMembers("invite.error"), { variant: "error" });
+          setDialog({ confirmLoading: false });
+        },
+        onSuccess: () => {
+          enqueueSnackbar(tMembers("invite.success"), {
+            variant: "success",
+          });
+          resetDialog();
+          router.refresh();
+        },
+      },
+    );
+  });
 
   return (
-    <StyledBox
-      component="form"
-      id="invite-member-form"
-      onSubmit={onSubmit}
-    >
+    <StyledBox component="form" id="invite-member-form" onSubmit={onSubmit}>
       <TextField
         error={!!errors.email}
         fullWidth
