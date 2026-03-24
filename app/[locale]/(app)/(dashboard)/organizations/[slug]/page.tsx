@@ -1,21 +1,34 @@
 import { setRequestLocale } from "next-intl/server";
+import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
 
-import OrganizationDetail from ".";
+import OrganizationsSlug from ".";
 
 import type { Locale } from "@/i18n/routing";
+import { authClient } from "@/lib/auth-client";
 
-interface OrganizationDetailPageProps {
+interface OrganizationsSlugPageProps {
   params: Promise<{ locale: Locale; slug: string }>;
 }
 
-const OrganizationDetailPage = async ({
+const OrganizationsSlugPage = async ({
   params,
-}: OrganizationDetailPageProps) => {
-  const { locale, slug } = await params;
+}: OrganizationsSlugPageProps) => {
+  const [cookieStore, { locale, slug }] = await Promise.all([
+    cookies(),
+    params,
+  ]);
 
   setRequestLocale(locale);
 
-  return <OrganizationDetail slug={decodeURIComponent(slug)} />;
+  const { data } = await authClient.organization.getFullOrganization({
+    query: { organizationSlug: decodeURIComponent(slug) },
+    fetchOptions: { headers: { cookie: cookieStore.toString() } },
+  });
+
+  if (!data) notFound();
+
+  return <OrganizationsSlug org={data} />;
 };
 
-export default OrganizationDetailPage;
+export default OrganizationsSlugPage;

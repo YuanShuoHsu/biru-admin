@@ -188,7 +188,6 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
           to: `/${slug}`,
         },
       ],
-      disabled: true,
       icon: Business,
       label: tOrganizations("label"),
       to: "/organizations",

@@ -1,0 +1,45 @@
+import CustomNoColumnsOverlay from "@/components/CustomNoColumnsOverlay";
+import CustomNoResultsOverlay from "@/components/CustomNoResultsOverlay";
+import CustomNoRowsOverlay from "@/components/CustomNoRowsOverlay";
+import CustomPagination from "@/components/CustomPagination";
+import {
+  SortedAscendingIcon,
+  SortedDescendingIcon,
+  UnsortedIcon,
+} from "@/components/CustomSortIcons";
+import CustomToolbar from "@/components/CustomToolbar";
+
+export const DATA_GRID_PROPS = {
+  autosizeOnMount: true,
+  autosizeOptions: {
+    includeHeaders: true,
+    includeOutliers: true,
+  },
+  disableRowSelectionOnClick: true,
+  getRowClassName: ({
+    indexRelativeToCurrentPage,
+  }: {
+    indexRelativeToCurrentPage: number;
+  }) => (indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"),
+  initialState: {
+    pagination: { paginationModel: { pageSize: 10 } },
+  },
+  pageSizeOptions: [5, 10, 50, 100],
+  showToolbar: true,
+  slotProps: {
+    basePagination: {
+      material: {
+        ActionsComponent: CustomPagination,
+      },
+    },
+  },
+  slots: {
+    columnSortedAscendingIcon: SortedAscendingIcon,
+    columnSortedDescendingIcon: SortedDescendingIcon,
+    columnUnsortedIcon: UnsortedIcon,
+    noColumnsOverlay: CustomNoColumnsOverlay,
+    noResultsOverlay: CustomNoResultsOverlay,
+    noRowsOverlay: CustomNoRowsOverlay,
+    toolbar: CustomToolbar,
+  },
+} as const;

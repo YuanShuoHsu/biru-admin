@@ -12,16 +12,7 @@ import { useCallback, useMemo } from "react";
 
 import CreateOrganizationDialogContent from "./CreateOrganizationDialogContent";
 
-import CustomNoColumnsOverlay from "@/components/CustomNoColumnsOverlay";
-import CustomNoResultsOverlay from "@/components/CustomNoResultsOverlay";
-import CustomNoRowsOverlay from "@/components/CustomNoRowsOverlay";
-import CustomPagination from "@/components/CustomPagination";
-import {
-  SortedAscendingIcon,
-  SortedDescendingIcon,
-  UnsortedIcon,
-} from "@/components/CustomSortIcons";
-import CustomToolbar from "@/components/CustomToolbar";
+import { DATA_GRID_PROPS } from "@/constants/dataGrid";
 
 import { useRouter } from "@/i18n/navigation";
 
@@ -199,40 +190,7 @@ const Organizations = ({ rows }: OrganizationsProps) => {
           {tOrganizations("create.title")}
         </Button>
       </Stack>
-      <DataGrid
-        autosizeOnMount
-        autosizeOptions={{
-          includeHeaders: true,
-          includeOutliers: true,
-        }}
-        columns={columns}
-        disableRowSelectionOnClick
-        getRowClassName={({ indexRelativeToCurrentPage }) =>
-          indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
-        }
-        initialState={{
-          pagination: { paginationModel: { pageSize: 10 } },
-        }}
-        pageSizeOptions={[5, 10, 50, 100]}
-        rows={rows}
-        showToolbar
-        slotProps={{
-          basePagination: {
-            material: {
-              ActionsComponent: CustomPagination,
-            },
-          },
-        }}
-        slots={{
-          columnSortedAscendingIcon: SortedAscendingIcon,
-          columnSortedDescendingIcon: SortedDescendingIcon,
-          columnUnsortedIcon: UnsortedIcon,
-          noColumnsOverlay: CustomNoColumnsOverlay,
-          noResultsOverlay: CustomNoResultsOverlay,
-          noRowsOverlay: CustomNoRowsOverlay,
-          toolbar: CustomToolbar,
-        }}
-      />
+      <DataGrid {...DATA_GRID_PROPS} columns={columns} rows={rows} />
     </>
   );
 };

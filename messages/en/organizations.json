@@ -18,7 +18,7 @@
     "confirm": "Are you sure you want to delete <bold>{name}</bold>? All members and data will be permanently removed.",
     "error": "Failed to delete organization. Please try again.",
     "submit": "Delete",
-    "success": "Organization deleted",
+    "success": "Organization deleted successfully",
     "title": "Delete organization"
   },
   "detail": {
@@ -48,7 +48,8 @@
     "cancel": {
       "confirm": "Are you sure you want to cancel the invitation for {email}?",
       "error": "Failed to cancel invitation. Please try again.",
-      "success": "Invitation cancelled"
+      "success": "Invitation cancelled successfully",
+      "title": "Cancel Invitation"
     },
     "columns": {
       "actions": "Actions",
@@ -87,14 +88,15 @@
         "email": "Email",
         "role": "Role"
       },
-      "success": "Invitation sent",
+      "success": "Invitation sent successfully",
       "title": "Invite member"
     },
     "label": "Members",
     "remove": {
       "confirm": "Are you sure you want to remove {name}?",
       "error": "Failed to remove member. Please try again.",
-      "success": "Member removed"
+      "success": "Member removed successfully",
+      "title": "Remove Member"
     },
     "roles": {
       "admin": "Admin",
@@ -103,7 +105,7 @@
     },
     "setRole": {
       "error": "Failed to update role. Please try again.",
-      "success": "Role updated"
+      "success": "Role updated successfully"
     }
   },
   "subtitle": "Manage organizations and members",

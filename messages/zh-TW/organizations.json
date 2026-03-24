@@ -10,7 +10,7 @@
     "members": "成員數"
   },
   "create": {
-    "success": "組織建立成功",
+    "success": "成功新增組織",
     "title": "新增組織"
   },
   "delete": {
@@ -18,7 +18,7 @@
     "confirm": "確定要刪除 <bold>{name}</bold> 嗎？此操作將同時移除所有成員與資料，且無法復原。",
     "error": "刪除失敗，請稍後重試",
     "submit": "確認刪除",
-    "success": "已刪除組織",
+    "success": "成功刪除組織",
     "title": "刪除組織"
   },
   "detail": {
@@ -48,7 +48,8 @@
     "cancel": {
       "confirm": "確定要取消對 {email} 的邀請嗎？",
       "error": "取消失敗，請稍後重試",
-      "success": "已取消邀請"
+      "success": "成功取消邀請",
+      "title": "取消邀請"
     },
     "columns": {
       "actions": "操作",
@@ -87,14 +88,15 @@
         "email": "電子郵件",
         "role": "角色"
       },
-      "success": "邀請已發送",
+      "success": "成功發送邀請",
       "title": "邀請成員"
     },
     "label": "成員",
     "remove": {
       "confirm": "確定要移除 {name} 嗎？",
       "error": "移除失敗，請稍後重試",
-      "success": "已移除成員"
+      "success": "成功移除成員",
+      "title": "移除成員"
     },
     "roles": {
       "admin": "管理員",
@@ -103,7 +105,7 @@
     },
     "setRole": {
       "error": "更新失敗，請稍後重試",
-      "success": "角色已更新"
+      "success": "成功更新角色"
     }
   },
   "subtitle": "管理組織與成員",

@@ -11,15 +11,13 @@ interface OrganizationsPageProps {
 }
 
 const OrganizationsPage = async ({ params }: OrganizationsPageProps) => {
-  const cookieStore = await cookies();
-  const [{ locale }, { data }] = await Promise.all([
-    params,
-    authClient.organization.list({
-      fetchOptions: { headers: { cookie: cookieStore.toString() } },
-    }),
-  ]);
+  const [cookieStore, { locale }] = await Promise.all([cookies(), params]);
 
   setRequestLocale(locale);
+
+  const { data } = await authClient.organization.list({
+    fetchOptions: { headers: { cookie: cookieStore.toString() } },
+  });
 
   return <Organizations rows={data || []} />;
 };

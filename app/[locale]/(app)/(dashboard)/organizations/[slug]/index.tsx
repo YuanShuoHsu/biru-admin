@@ -1,7 +1,18 @@
 "use client";
 
-import { useState } from "react";
-import useSWR, { mutate } from "swr";
+import { useFormatter, useTranslations } from "next-intl";
+import dynamic from "next/dynamic";
+import { enqueueSnackbar } from "notistack";
+import { useCallback, useMemo, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+
+import { DATA_GRID_PROPS } from "@/constants/dataGrid";
+
+import { useRouter } from "@/i18n/navigation";
+
+import { authClient } from "@/lib/auth-client";
+
+import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import { Business, Delete, GroupAdd, PersonRemove } from "@mui/icons-material";
 import {
@@ -22,7 +33,6 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  Skeleton,
   Stack,
   Tab,
   Tabs,
@@ -30,18 +40,18 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import dayjs from "dayjs";
-import { useTranslations } from "next-intl";
-import { useSnackbar } from "notistack";
-import { Controller, useForm } from "react-hook-form";
+import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 
-import { authClient } from "@/lib/auth-client";
+const DataGrid = dynamic(
+  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
+  { ssr: false },
+);
 
 interface Member {
   id: string;
   userId: string;
   role: "owner" | "admin" | "member";
-  createdAt: string;
+  createdAt: Date | string;
   user: {
     id: string;
     name: string;
@@ -53,10 +63,10 @@ interface Member {
 interface Invitation {
   id: string;
   email: string;
-  role: "admin" | "member";
-  status: "pending" | "accepted" | "rejected" | "cancelled";
-  expiresAt: string;
-  createdAt: string;
+  role: "owner" | "admin" | "member";
+  status: "pending" | "accepted" | "rejected" | "canceled" | "cancelled";
+  expiresAt: Date | string;
+  createdAt: Date | string;
 }
 
 interface FullOrganization {
@@ -64,7 +74,7 @@ interface FullOrganization {
   name: string;
   slug: string;
   logo?: string | null;
-  createdAt: string;
+  createdAt: Date | string;
   members: Member[];
   invitations: Invitation[];
 }
@@ -74,94 +84,47 @@ interface InviteForm {
   role: "admin" | "member";
 }
 
-interface ConfirmRemoveDialog {
-  open: boolean;
-  member: Member | null;
-}
-
-interface ConfirmCancelDialog {
-  open: boolean;
-  invitation: Invitation | null;
-}
-
-const fetchOrganization = async (slug: string): Promise<FullOrganization> => {
-  const result = await authClient.organization.getFullOrganization({
-    query: { organizationSlug: slug },
-  });
-  if (result.error) throw result.error;
-  return result.data as unknown as FullOrganization;
+const ROLE_COLOR_MAP: Record<string, "error" | "warning" | "default"> = {
+  owner: "error",
+  admin: "warning",
+  member: "default",
 };
 
-interface OrganizationDetailProps {
-  slug: string;
+const STATUS_COLOR_MAP: Record<
+  string,
+  "default" | "success" | "error" | "warning"
+> = {
+  pending: "warning",
+  accepted: "success",
+  rejected: "error",
+  cancelled: "default",
+};
+
+interface OrganizationsSlugProps {
+  org: FullOrganization;
 }
 
-const MemberRoleChip = ({ role }: { role: string }) => {
-  const t = useTranslations("organizations.members.roles");
-  const colorMap: Record<string, "error" | "warning" | "default"> = {
-    owner: "error",
-    admin: "warning",
-    member: "default",
-  };
-  return (
-    <Chip
-      label={t(role as "owner" | "admin" | "member")}
-      color={colorMap[role] ?? "default"}
-      size="small"
-      variant="outlined"
-    />
-  );
-};
-
-const InvitationStatusChip = ({ status }: { status: string }) => {
-  const t = useTranslations("organizations.invitations.status");
-  const colorMap: Record<string, "default" | "success" | "error" | "warning"> =
-    {
-      pending: "warning",
-      accepted: "success",
-      rejected: "error",
-      cancelled: "default",
-    };
-  return (
-    <Chip
-      label={t(status as "pending" | "accepted" | "rejected" | "cancelled")}
-      color={colorMap[status] ?? "default"}
-      size="small"
-      variant="outlined"
-    />
-  );
-};
-
-const OrganizationDetail = ({ slug }: OrganizationDetailProps) => {
-  const tOrg = useTranslations("organizations");
-  const tMembers = useTranslations("organizations.members");
-  const tInvitations = useTranslations("organizations.invitations");
-  const { enqueueSnackbar } = useSnackbar();
-
+const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
   const [tab, setTab] = useState(0);
   const [inviteOpen, setInviteOpen] = useState(false);
-  const [confirmRemove, setConfirmRemove] = useState<ConfirmRemoveDialog>({
-    open: false,
-    member: null,
-  });
-  const [confirmCancel, setConfirmCancel] = useState<ConfirmCancelDialog>({
-    open: false,
-    invitation: null,
-  });
-
-  const swrKey = ["organization-detail", slug];
-  const { data: org, isLoading } = useSWR(swrKey, ([, s]) =>
-    fetchOrganization(s),
-  );
+  const { setDialog } = useDialogStore((state) => state);
 
   const { control, handleSubmit, reset, formState } = useForm<InviteForm>({
     defaultValues: { email: "", role: "member" },
   });
 
+  const format = useFormatter();
+  const router = useRouter();
+
+  const tDialog = useTranslations("dialog");
+  const tOrg = useTranslations("organizations");
+  const tMembers = useTranslations("organizations.members");
+  const tInvitations = useTranslations("organizations.invitations");
+
   const handleInviteSubmit = async (values: InviteForm) => {
     await authClient.organization.inviteMember(
       {
-        organizationId: org!.id,
+        organizationId: org.id,
         email: values.email,
         role: values.role,
       },
@@ -173,90 +136,291 @@ const OrganizationDetail = ({ slug }: OrganizationDetailProps) => {
           enqueueSnackbar(tMembers("invite.success"), { variant: "success" });
           setInviteOpen(false);
           reset();
-          mutate(swrKey);
+          router.refresh();
         },
       },
     );
   };
 
-  const handleRemoveMember = async (member: Member) => {
-    await authClient.organization.removeMember(
-      {
-        organizationId: org!.id,
-        memberIdOrEmail: member.userId,
-      },
-      {
-        onError: () => {
-          enqueueSnackbar(tMembers("remove.error"), { variant: "error" });
+  const handleOpenRemoveConfirm = useCallback(
+    (member: Member) => {
+      setDialog({
+        content: (
+          <DialogContentText>
+            {tMembers("remove.confirm", { name: member.user.name })}
+          </DialogContentText>
+        ),
+        onConfirm: async () => {
+          await authClient.organization.removeMember(
+            {
+              organizationId: org.id,
+              memberIdOrEmail: member.userId,
+            },
+            {
+              onError: () => {
+                throw new Error(tMembers("remove.error"));
+              },
+              onSuccess: () => {
+                enqueueSnackbar(tMembers("remove.success"), {
+                  variant: "success",
+                });
+                router.refresh();
+              },
+            },
+          );
         },
-        onSuccess: () => {
-          enqueueSnackbar(tMembers("remove.success"), { variant: "success" });
-          mutate(swrKey);
-        },
-      },
-    );
-    setConfirmRemove({ open: false, member: null });
-  };
+        open: true,
+        title: tMembers("remove.title"),
+      });
+    },
+    [org.id, router, setDialog, tMembers],
+  );
 
-  const handleUpdateMemberRole = async (
-    memberId: string,
-    role: "admin" | "member",
-  ) => {
-    await authClient.organization.updateMemberRole(
-      {
-        organizationId: org!.id,
-        memberId,
-        role,
-      },
-      {
-        onError: () => {
-          enqueueSnackbar(tMembers("setRole.error"), { variant: "error" });
+  const handleUpdateMemberRole = useCallback(
+    async (memberId: string, role: "admin" | "member") => {
+      await authClient.organization.updateMemberRole(
+        {
+          organizationId: org.id,
+          memberId,
+          role,
         },
-        onSuccess: () => {
-          enqueueSnackbar(tMembers("setRole.success"), { variant: "success" });
-          mutate(swrKey);
+        {
+          onError: () => {
+            enqueueSnackbar(tMembers("setRole.error"), { variant: "error" });
+          },
+          onSuccess: () => {
+            enqueueSnackbar(tMembers("setRole.success"), {
+              variant: "success",
+            });
+            router.refresh();
+          },
         },
-      },
-    );
-  };
+      );
+    },
+    [org.id, router, tMembers],
+  );
 
-  const handleCancelInvitation = async (invitation: Invitation) => {
-    await authClient.organization.cancelInvitation(
-      { invitationId: invitation.id },
-      {
-        onError: () => {
-          enqueueSnackbar(tInvitations("cancel.error"), { variant: "error" });
+  const handleOpenCancelConfirm = useCallback(
+    (invitation: Invitation) => {
+      setDialog({
+        content: (
+          <DialogContentText>
+            {tInvitations("cancel.confirm", { email: invitation.email })}
+          </DialogContentText>
+        ),
+        onConfirm: async () => {
+          await authClient.organization.cancelInvitation(
+            { invitationId: invitation.id },
+            {
+              onError: () => {
+                throw new Error(tInvitations("cancel.error"));
+              },
+              onSuccess: () => {
+                enqueueSnackbar(tInvitations("cancel.success"), {
+                  variant: "success",
+                });
+                router.refresh();
+              },
+            },
+          );
         },
-        onSuccess: () => {
-          enqueueSnackbar(tInvitations("cancel.success"), {
-            variant: "success",
-          });
-          mutate(swrKey);
-        },
-      },
-    );
-    setConfirmCancel({ open: false, invitation: null });
-  };
-
-  if (isLoading) {
-    return (
-      <Stack gap={2}>
-        <Skeleton variant="rounded" height={100} />
-        <Skeleton variant="rounded" height={300} />
-      </Stack>
-    );
-  }
-
-  if (!org) return null;
+        open: true,
+        title: tInvitations("cancel.title"),
+      });
+    },
+    [router, setDialog, tInvitations],
+  );
 
   const pendingInvitations = org.invitations.filter(
     (inv) => inv.status === "pending",
   );
 
+  const memberColumns = useMemo<GridColDef[]>(
+    () => [
+      {
+        field: "actions",
+        headerName: tMembers("columns.actions"),
+        resizable: false,
+        renderCell: ({ row }: GridRenderCellParams<Member>) => {
+          if (row.role === "owner") return null;
+          return (
+            <Stack height="100%" direction="row" alignItems="center" gap={1}>
+              <Tooltip title={tMembers("actions.remove")}>
+                <IconButton
+                  size="small"
+                  color="error"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleOpenRemoveConfirm(row);
+                  }}
+                >
+                  <PersonRemove fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </Stack>
+          );
+        },
+        sortable: false,
+      },
+      {
+        field: "avatar",
+        headerName: "",
+        resizable: false,
+        sortable: false,
+        renderCell: ({ row }: GridRenderCellParams<Member>) => (
+          <Stack height="100%" direction="row" alignItems="center">
+            <Avatar
+              src={row.user.image ?? undefined}
+              sx={{ width: 24, height: 24, fontSize: 12 }}
+            >
+              {row.user.name?.[0]?.toUpperCase()}
+            </Avatar>
+          </Stack>
+        ),
+      },
+      {
+        field: "name",
+        headerName: tMembers("columns.name"),
+        valueGetter: (_value: unknown, row: Member) => row.user.name,
+      },
+      {
+        field: "email",
+        headerName: tMembers("columns.email"),
+        valueGetter: (_value: unknown, row: Member) => row.user.email,
+      },
+      {
+        field: "role",
+        headerName: tMembers("columns.role"),
+        renderCell: ({ row }: GridRenderCellParams<Member>) => {
+          if (row.role === "owner") {
+            return (
+              <Stack height="100%" direction="row" alignItems="center">
+                <Chip
+                  label={tMembers("roles.owner")}
+                  color="error"
+                  size="small"
+                  variant="outlined"
+                />
+              </Stack>
+            );
+          }
+          return (
+            <Stack height="100%" direction="row" alignItems="center">
+              <Select
+                size="small"
+                value={row.role}
+                onChange={(e) =>
+                  handleUpdateMemberRole(
+                    row.id,
+                    e.target.value as "admin" | "member",
+                  )
+                }
+                variant="standard"
+                sx={{ fontSize: "0.8rem", minWidth: 90 }}
+              >
+                <MenuItem value="admin">{tMembers("roles.admin")}</MenuItem>
+                <MenuItem value="member">{tMembers("roles.member")}</MenuItem>
+              </Select>
+            </Stack>
+          );
+        },
+        sortable: false,
+      },
+      {
+        field: "createdAt",
+        headerName: tMembers("columns.joinedAt"),
+        valueFormatter: (value: Date | string) =>
+          format.dateTime(new Date(value), "short"),
+      },
+    ],
+    [format, handleOpenRemoveConfirm, handleUpdateMemberRole, tMembers],
+  );
+
+  const invitationColumns = useMemo<GridColDef[]>(
+    () => [
+      {
+        field: "actions",
+        headerName: tInvitations("columns.actions"),
+        resizable: false,
+        renderCell: ({ row }: GridRenderCellParams<Invitation>) => {
+          if (row.status !== "pending") return null;
+          return (
+            <Stack height="100%" direction="row" alignItems="center" gap={1}>
+              <Tooltip title={tInvitations("actions.cancel")}>
+                <IconButton
+                  size="small"
+                  color="error"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleOpenCancelConfirm(row);
+                  }}
+                >
+                  <Delete fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </Stack>
+          );
+        },
+        sortable: false,
+      },
+      {
+        field: "email",
+        headerName: tInvitations("columns.email"),
+      },
+      {
+        field: "role",
+        headerName: tInvitations("columns.role"),
+        renderCell: ({ row }: GridRenderCellParams<Invitation>) => (
+          <Stack height="100%" direction="row" alignItems="center">
+            <Chip
+              label={tMembers(
+                `roles.${row.role}` as
+                  | "roles.owner"
+                  | "roles.admin"
+                  | "roles.member",
+              )}
+              color={ROLE_COLOR_MAP[row.role] ?? "default"}
+              size="small"
+              variant="outlined"
+            />
+          </Stack>
+        ),
+        sortable: false,
+      },
+      {
+        field: "status",
+        headerName: tInvitations("columns.status"),
+        renderCell: ({ row }: GridRenderCellParams<Invitation>) => (
+          <Stack height="100%" direction="row" alignItems="center">
+            <Chip
+              label={tInvitations(
+                `status.${row.status}` as
+                  | "status.pending"
+                  | "status.accepted"
+                  | "status.rejected"
+                  | "status.cancelled",
+              )}
+              color={STATUS_COLOR_MAP[row.status] ?? "default"}
+              size="small"
+              variant="outlined"
+            />
+          </Stack>
+        ),
+        sortable: false,
+      },
+      {
+        field: "expiresAt",
+        headerName: tInvitations("columns.expiresAt"),
+        valueFormatter: (value: Date | string) =>
+          format.dateTime(new Date(value), "short"),
+      },
+    ],
+    [format, handleOpenCancelConfirm, tInvitations, tMembers],
+  );
+
   return (
-    <Box>
-      {/* Header card */}
-      <Card variant="outlined" sx={{ mb: 3 }}>
+    <>
+      <Card variant="outlined">
         <CardContent>
           <Stack direction="row" alignItems="center" gap={2}>
             <Box
@@ -284,7 +448,7 @@ const OrganizationDetail = ({ slug }: OrganizationDetailProps) => {
                   sx={{ fontSize: "0.75rem" }}
                 />
                 <Typography variant="caption" color="text.secondary">
-                  {dayjs(org.createdAt).format("YYYY/MM/DD")}
+                  {format.dateTime(new Date(org.createdAt), "short")}
                 </Typography>
               </Stack>
             </Box>
@@ -309,8 +473,6 @@ const OrganizationDetail = ({ slug }: OrganizationDetailProps) => {
           </Stack>
         </CardContent>
       </Card>
-
-      {/* Tabs */}
       <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 2 }}>
         <Tabs value={tab} onChange={(_, v) => setTab(v)}>
           <Tab label={tMembers("label")} />
@@ -331,152 +493,32 @@ const OrganizationDetail = ({ slug }: OrganizationDetailProps) => {
           />
         </Tabs>
       </Box>
-
-      {/* Members tab */}
       {tab === 0 && (
-        <Box>
-          <Stack direction="row" justifyContent="flex-end" mb={2}>
+        <>
+          <Stack direction="row">
             <Button
-              variant="contained"
               startIcon={<GroupAdd />}
               onClick={() => setInviteOpen(true)}
+              size="small"
+              variant="contained"
             >
               {tMembers("actions.invite")}
             </Button>
           </Stack>
-          {org.members.length === 0 ? (
-            <Typography color="text.secondary" textAlign="center" py={4}>
-              {tMembers("empty")}
-            </Typography>
-          ) : (
-            <Stack gap={1}>
-              {org.members.map((member) => (
-                <Card key={member.id} variant="outlined">
-                  <CardContent sx={{ py: 1.5, "&:last-child": { pb: 1.5 } }}>
-                    <Stack direction="row" alignItems="center" gap={2}>
-                      <Avatar
-                        src={member.user.image ?? undefined}
-                        sx={{ width: 36, height: 36 }}
-                      >
-                        {member.user.name?.[0]?.toUpperCase()}
-                      </Avatar>
-                      <Box flexGrow={1} overflow="hidden">
-                        <Typography fontWeight={500} noWrap>
-                          {member.user.name}
-                        </Typography>
-                        <Typography
-                          variant="caption"
-                          color="text.secondary"
-                          noWrap
-                        >
-                          {member.user.email}
-                        </Typography>
-                      </Box>
-                      <Stack direction="row" alignItems="center" gap={1}>
-                        {member.role === "owner" ? (
-                          <MemberRoleChip role="owner" />
-                        ) : (
-                          <Select
-                            size="small"
-                            value={member.role}
-                            onChange={(e) =>
-                              handleUpdateMemberRole(
-                                member.id,
-                                e.target.value as "admin" | "member",
-                              )
-                            }
-                            variant="standard"
-                            sx={{ fontSize: "0.8rem", minWidth: 90 }}
-                          >
-                            <MenuItem value="admin">
-                              {tMembers("roles.admin")}
-                            </MenuItem>
-                            <MenuItem value="member">
-                              {tMembers("roles.member")}
-                            </MenuItem>
-                          </Select>
-                        )}
-                        <Typography
-                          variant="caption"
-                          color="text.secondary"
-                          sx={{ display: { xs: "none", sm: "block" } }}
-                        >
-                          {dayjs(member.createdAt).format("YYYY/MM/DD")}
-                        </Typography>
-                        {member.role !== "owner" && (
-                          <Tooltip title={tMembers("actions.remove")}>
-                            <IconButton
-                              size="small"
-                              color="error"
-                              onClick={() =>
-                                setConfirmRemove({ open: true, member })
-                              }
-                            >
-                              <PersonRemove fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
-                        )}
-                      </Stack>
-                    </Stack>
-                  </CardContent>
-                </Card>
-              ))}
-            </Stack>
-          )}
-        </Box>
+          <DataGrid
+            {...DATA_GRID_PROPS}
+            columns={memberColumns}
+            rows={org.members}
+          />
+        </>
       )}
-
-      {/* Invitations tab */}
       {tab === 1 && (
-        <Box>
-          {org.invitations.length === 0 ? (
-            <Typography color="text.secondary" textAlign="center" py={4}>
-              {tInvitations("empty")}
-            </Typography>
-          ) : (
-            <Stack gap={1}>
-              {org.invitations.map((invitation) => (
-                <Card key={invitation.id} variant="outlined">
-                  <CardContent sx={{ py: 1.5, "&:last-child": { pb: 1.5 } }}>
-                    <Stack direction="row" alignItems="center" gap={2}>
-                      <Box flexGrow={1} overflow="hidden">
-                        <Typography fontWeight={500} noWrap>
-                          {invitation.email}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {tInvitations("columns.expiresAt")}:{" "}
-                          {dayjs(invitation.expiresAt).format(
-                            "YYYY/MM/DD HH:mm",
-                          )}
-                        </Typography>
-                      </Box>
-                      <Stack direction="row" alignItems="center" gap={1}>
-                        <MemberRoleChip role={invitation.role} />
-                        <InvitationStatusChip status={invitation.status} />
-                        {invitation.status === "pending" && (
-                          <Tooltip title={tInvitations("actions.cancel")}>
-                            <IconButton
-                              size="small"
-                              color="error"
-                              onClick={() =>
-                                setConfirmCancel({ open: true, invitation })
-                              }
-                            >
-                              <Delete fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
-                        )}
-                      </Stack>
-                    </Stack>
-                  </CardContent>
-                </Card>
-              ))}
-            </Stack>
-          )}
-        </Box>
+        <DataGrid
+          {...DATA_GRID_PROPS}
+          columns={invitationColumns}
+          rows={org.invitations}
+        />
       )}
-
-      {/* Invite member dialog */}
       <Dialog
         open={inviteOpen}
         onClose={() => {
@@ -532,7 +574,7 @@ const OrganizationDetail = ({ slug }: OrganizationDetailProps) => {
                 reset();
               }}
             >
-              取消
+              {tDialog("cancel")}
             </Button>
             <Button
               loading={formState.isSubmitting}
@@ -545,74 +587,8 @@ const OrganizationDetail = ({ slug }: OrganizationDetailProps) => {
           </DialogActions>
         </form>
       </Dialog>
-      {/* Remove member confirm */}
-      <Dialog
-        open={confirmRemove.open}
-        onClose={() => setConfirmRemove({ open: false, member: null })}
-        maxWidth="xs"
-        fullWidth
-      >
-        <DialogTitle>移除成員</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {tMembers("remove.confirm", {
-              name: confirmRemove.member?.user.name ?? "",
-            })}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => setConfirmRemove({ open: false, member: null })}
-          >
-            取消
-          </Button>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() =>
-              confirmRemove.member && handleRemoveMember(confirmRemove.member)
-            }
-          >
-            確認移除
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Cancel invitation confirm */}
-      <Dialog
-        open={confirmCancel.open}
-        onClose={() => setConfirmCancel({ open: false, invitation: null })}
-        maxWidth="xs"
-        fullWidth
-      >
-        <DialogTitle>取消邀請</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {tInvitations("cancel.confirm", {
-              email: confirmCancel.invitation?.email ?? "",
-            })}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => setConfirmCancel({ open: false, invitation: null })}
-          >
-            取消
-          </Button>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() =>
-              confirmCancel.invitation &&
-              handleCancelInvitation(confirmCancel.invitation)
-            }
-          >
-            確認取消
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
+    </>
   );
 };
 
-export default OrganizationDetail;
+export default OrganizationsSlug;
