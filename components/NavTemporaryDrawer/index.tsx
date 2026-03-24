@@ -27,7 +27,7 @@ import {
   Home,
   Info,
   LocalMall,
-  ManageAccounts,
+  AdminPanelSettings,
   Person,
   Restaurant,
   Security,
@@ -289,7 +289,7 @@ const useNavItems = () => {
     ...(hasAdminAccess
       ? [
           {
-            icon: ManageAccounts,
+            icon: AdminPanelSettings,
             label: tAdmin("users.label"),
             to: "/admins",
           },

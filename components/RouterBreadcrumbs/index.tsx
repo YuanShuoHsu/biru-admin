@@ -11,8 +11,11 @@ import { ORDER_MODE } from "@/constants/orderMode";
 
 import { usePathname } from "@/i18n/navigation";
 
+import { authClient } from "@/lib/auth-client";
+
 import {
   AccountCircle,
+  AdminPanelSettings,
   Business,
   Email,
   Gavel,
@@ -82,10 +85,21 @@ interface BreadcrumbItem {
 }
 
 const useBreadcrumbs = (): BreadcrumbItem[] => {
-  const { locale, mode, storeSlug } = useParams<RouteParams>();
+  const { locale, mode, slug, storeSlug } = useParams<RouteParams>();
 
   const { data: stores = [] } = useSWR<Store[]>("/api/stores");
   const storeName = getStoreName(locale, stores, storeSlug);
+
+  const { data: organizations = [] } = useSWR(
+    "organizations-list",
+    async () => {
+      const { data } = await authClient.organization.list();
+      return data;
+    },
+  );
+  const decodedSlug = decodeURIComponent(slug);
+  const organization = organizations?.find(({ slug: s }) => s === decodedSlug);
+  const organizationName = organization?.name || decodedSlug;
 
   const tAccount = useTranslations("account");
   const tAdmin = useTranslations("admins");
@@ -162,11 +176,18 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
     },
     {
       disabled: true,
-      icon: ManageAccounts,
+      icon: AdminPanelSettings,
       label: tAdmin("users.label"),
       to: "/admins",
     },
     {
+      children: [
+        {
+          icon: ManageAccounts,
+          label: organizationName,
+          to: `/${slug}`,
+        },
+      ],
       disabled: true,
       icon: Business,
       label: tOrganizations("label"),

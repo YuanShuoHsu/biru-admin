@@ -15,7 +15,7 @@ const OrganizationDetailPage = async ({
 
   setRequestLocale(locale);
 
-  return <OrganizationDetail slug={slug} />;
+  return <OrganizationDetail slug={decodeURIComponent(slug)} />;
 };
 
 export default OrganizationDetailPage;

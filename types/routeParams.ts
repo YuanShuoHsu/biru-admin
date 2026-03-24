@@ -6,6 +6,7 @@ import type { Locale } from "@/i18n/routing";
 interface RouteParam {
   locale: Locale;
   mode: OrderMode;
+  slug: string;
   storeSlug: StoreSlug;
 }
 

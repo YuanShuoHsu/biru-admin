@@ -25,7 +25,7 @@ import { useRouter } from "@/i18n/navigation";
 
 import { authClient } from "@/lib/auth-client";
 
-import { Delete, Settings } from "@mui/icons-material";
+import { Delete, ManageAccounts } from "@mui/icons-material";
 import {
   Avatar,
   Button,
@@ -134,7 +134,7 @@ const Organizations = ({ rows }: OrganizationsProps) => {
                   }}
                   size="small"
                 >
-                  <Settings fontSize="small" />
+                  <ManageAccounts fontSize="small" />
                 </IconButton>
               </Tooltip>
               <Tooltip title={tOrganizations("actions.delete")}>
