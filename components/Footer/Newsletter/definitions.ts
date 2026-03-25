@@ -9,11 +9,6 @@ export const useNewsletterFormSchema = () => {
   });
 };
 
-export type NewsletterFormState =
-  | {
-      errors?: {
-        email?: string[];
-      };
-      message?: string;
-    }
-  | undefined;
+export type NewsletterForm = z.infer<
+  ReturnType<typeof useNewsletterFormSchema>
+>;

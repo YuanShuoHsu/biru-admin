@@ -29,3 +29,7 @@ export const useResetPasswordFormSchema = () => {
       },
     );
 };
+
+export type ResetPasswordForm = z.infer<
+  ReturnType<typeof useResetPasswordFormSchema>
+>;

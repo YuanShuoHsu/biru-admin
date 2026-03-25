@@ -34,11 +34,11 @@
   "fields": {
     "name": {
       "label": "Organization name",
-      "placeholder": "Please enter organization name"
+      "placeholder": "Please enter your organization name"
     },
     "slug": {
       "label": "Slug",
-      "placeholder": "Please enter slug"
+      "placeholder": "Please enter your slug"
     }
   },
   "invitations": {
@@ -82,12 +82,18 @@
       "role": "Role"
     },
     "empty": "No members yet",
+    "fields": {
+      "email": {
+        "label": "Email",
+        "placeholder": "Please enter your email"
+      },
+      "role": {
+        "label": "Role",
+        "placeholder": "Please select your role"
+      }
+    },
     "invite": {
       "error": "Failed to send invitation. Please try again.",
-      "fields": {
-        "email": "Email",
-        "role": "Role"
-      },
       "success": "Invitation sent successfully",
       "title": "Invite member"
     },

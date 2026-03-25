@@ -4,9 +4,8 @@ import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
 
-import { useVerifyEmailFormSchema } from "./definitions";
+import { type VerifyEmailForm, useVerifyEmailFormSchema } from "./definitions";
 
 import FormCard, {
   StyledCardActions,
@@ -131,13 +130,12 @@ const AuthVerifyEmail = ({
   const isCountingDown = countdown > 0;
 
   const verifyEmailFormSchema = useVerifyEmailFormSchema();
-  type VerifyEmailFormData = z.infer<typeof verifyEmailFormSchema>;
 
   const {
     formState: { errors, isSubmitting },
     handleSubmit,
     register,
-  } = useForm<VerifyEmailFormData>({
+  } = useForm<VerifyEmailForm>({
     defaultValues: { email },
     resolver: zodResolver(verifyEmailFormSchema),
   });

@@ -8,9 +8,11 @@ import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import * as z from "zod";
 
-import { useResetPasswordFormSchema } from "./definitions";
+import {
+  type ResetPasswordForm,
+  useResetPasswordFormSchema,
+} from "./definitions";
 
 import FormCard, {
   StyledCardActions,
@@ -69,14 +71,13 @@ const AuthResetPassword = ({
   const tAuth = useTranslations("auth");
 
   const resetPasswordFormSchema = useResetPasswordFormSchema();
-  type ResetPasswordFormData = z.infer<typeof resetPasswordFormSchema>;
 
   const {
     control,
     formState: { errors, isSubmitting },
     handleSubmit,
     register,
-  } = useForm<ResetPasswordFormData>({
+  } = useForm<ResetPasswordForm>({
     defaultValues: {
       email,
       newPassword: "",
@@ -114,7 +115,7 @@ const AuthResetPassword = ({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       confirmNewPassword: _,
       ...data
-    }: ResetPasswordFormData) => {
+    }: ResetPasswordForm) => {
       if (!token) return;
 
       await authClient.resetPassword(
@@ -171,7 +172,8 @@ const AuthResetPassword = ({
           helperText={
             <PasswordRuleList hasValue={hasPassword} rules={passwordRules} />
           }
-          label={tAuth("newPassword")}
+          label={tAuth("newPassword.label")}
+          placeholder={tAuth("newPassword.placeholder")}
           required
           slotProps={{
             formHelperText: { component: "div" },
@@ -212,7 +214,8 @@ const AuthResetPassword = ({
               rules={confirmPasswordRules}
             />
           }
-          label={tAuth("confirmNewPassword")}
+          label={tAuth("confirmNewPassword.label")}
+          placeholder={tAuth("confirmNewPassword.placeholder")}
           required
           slotProps={{
             formHelperText: { component: "div" },

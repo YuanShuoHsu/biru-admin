@@ -9,9 +9,8 @@ import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import * as z from "zod";
 
-import { useSigninFormSchema } from "./definitions";
+import { type SignInForm, useSignInFormSchema } from "./definitions";
 
 import FormCard, {
   StyledCardActions,
@@ -69,21 +68,20 @@ const Home = ({ locale, redirectTo, rememberMe }: HomeProps) => {
 
   const { setSession } = useAuthStore((state) => state);
 
-  const signinFormSchema = useSigninFormSchema();
-  type SigninFormData = z.infer<typeof signinFormSchema>;
+  const signInFormSchema = useSignInFormSchema();
 
   const {
     control,
     formState: { errors, isSubmitting },
     handleSubmit,
     register,
-  } = useForm<SigninFormData>({
+  } = useForm<SignInForm>({
     defaultValues: {
       email: "",
       password: "",
       rememberMe,
     },
-    resolver: zodResolver(signinFormSchema),
+    resolver: zodResolver(signInFormSchema),
   });
 
   const router = useRouter();
@@ -99,7 +97,7 @@ const Home = ({ locale, redirectTo, rememberMe }: HomeProps) => {
       onChange(checked);
     };
 
-  const onSubmit = handleSubmit(async (data: SigninFormData) => {
+  const onSubmit = handleSubmit(async (data: SignInForm) => {
     await authClient.signIn.email(
       { ...data },
       {
@@ -169,6 +167,7 @@ const Home = ({ locale, redirectTo, rememberMe }: HomeProps) => {
             fullWidth
             helperText={errors.password?.message}
             label={tAuth("password.label")}
+            placeholder={tAuth("password.placeholder")}
             required
             slotProps={{
               input: {
@@ -192,7 +191,6 @@ const Home = ({ locale, redirectTo, rememberMe }: HomeProps) => {
               },
             }}
             type={showPassword ? "text" : "password"}
-            placeholder={tAuth("password.placeholder")}
             {...register("password")}
           />
           <Stack

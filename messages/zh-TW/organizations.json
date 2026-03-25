@@ -34,11 +34,11 @@
   "fields": {
     "name": {
       "label": "組織名稱",
-      "placeholder": "請輸入組織名稱"
+      "placeholder": "請輸入您的組織名稱"
     },
     "slug": {
       "label": "識別碼",
-      "placeholder": "請輸入識別碼"
+      "placeholder": "請輸入您的識別碼"
     }
   },
   "invitations": {
@@ -82,12 +82,18 @@
       "role": "角色"
     },
     "empty": "尚無成員",
+    "fields": {
+      "email": {
+        "label": "電子郵件",
+        "placeholder": "請輸入您的電子郵件"
+      },
+      "role": {
+        "label": "角色",
+        "placeholder": "請選擇您的角色"
+      }
+    },
     "invite": {
       "error": "邀請失敗，請稍後重試",
-      "fields": {
-        "email": "電子郵件",
-        "role": "角色"
-      },
       "success": "成功發送邀請",
       "title": "邀請成員"
     },

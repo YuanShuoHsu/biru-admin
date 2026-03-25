@@ -7,9 +7,11 @@
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
 
-import { useForgotPasswordFormSchema } from "./definitions";
+import {
+  type ForgotPasswordForm,
+  useForgotPasswordFormSchema,
+} from "./definitions";
 
 import FormCard, {
   StyledCardActions,
@@ -39,13 +41,12 @@ const AuthForgotPassword = ({ redirectTo }: AuthForgotPasswordProps) => {
   const isCountingDown = countdown > 0;
 
   const forgotPasswordFormSchema = useForgotPasswordFormSchema();
-  type ForgotPasswordFormData = z.infer<typeof forgotPasswordFormSchema>;
 
   const {
     formState: { errors, isSubmitting },
     handleSubmit,
     register,
-  } = useForm<ForgotPasswordFormData>({
+  } = useForm<ForgotPasswordForm>({
     defaultValues: { email: "" },
     resolver: zodResolver(forgotPasswordFormSchema),
   });
@@ -59,7 +60,7 @@ const AuthForgotPassword = ({ redirectTo }: AuthForgotPasswordProps) => {
     [query.redirectTo]: redirectTo,
   });
 
-  const onSubmit = handleSubmit(async (data: ForgotPasswordFormData) => {
+  const onSubmit = handleSubmit(async (data: ForgotPasswordForm) => {
     await authClient.requestPasswordReset(
       { ...data, redirectTo },
       {

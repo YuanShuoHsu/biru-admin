@@ -1,3 +1,5 @@
+// https://mui.com/material-ui/react-select/#MultipleSelectPlaceholder.tsx
+
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -6,7 +8,9 @@ import { enqueueSnackbar } from "notistack";
 import { useForm } from "react-hook-form";
 
 import {
-  type InviteMemberForm,
+  type InviteMemberFormInput,
+  type InviteMemberFormOutput,
+  roles,
   useInviteMemberFormSchema,
 } from "./definitions";
 
@@ -14,16 +18,7 @@ import { useRouter } from "@/i18n/navigation";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import {
-  Box,
-  type BoxProps,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-  styled,
-} from "@mui/material";
+import { Box, type BoxProps, MenuItem, TextField, styled } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -49,63 +44,74 @@ const InviteMemberDialogContent = ({
 
   const tMembers = useTranslations("organizations.members");
 
-  const schema = useInviteMemberFormSchema();
+  const inviteMemberFormSchema = useInviteMemberFormSchema();
 
   const {
     formState: { errors },
     handleSubmit,
     register,
-  } = useForm<InviteMemberForm>({
-    defaultValues: { email: "", role: "member" },
-    resolver: zodResolver(schema),
+  } = useForm<InviteMemberFormInput, unknown, InviteMemberFormOutput>({
+    defaultValues: { email: "", role: "" },
+    resolver: zodResolver(inviteMemberFormSchema),
   });
 
-  const onSubmit = handleSubmit(async ({ email, role }: InviteMemberForm) => {
-    await authClient.organization.inviteMember(
-      { email, organizationId, role },
-      {
-        onRequest: () => {
-          setDialog({ confirmLoading: true });
-        },
-        onError: ({ error: { code } }) => {
-          const message = getErrorMessage(code, locale);
-          enqueueSnackbar(message, { variant: "error" });
+  const onSubmit = handleSubmit(
+    async ({ email, role }: InviteMemberFormOutput) => {
+      await authClient.organization.inviteMember(
+        { email, organizationId, role },
+        {
+          onRequest: () => {
+            setDialog({ confirmLoading: true });
+          },
+          onError: ({ error: { code } }) => {
+            const message = getErrorMessage(code, locale);
+            enqueueSnackbar(message, { variant: "error" });
 
-          setDialog({ confirmLoading: false });
-        },
-        onSuccess: () => {
-          const message = tMembers("invite.success");
-          enqueueSnackbar(message, { variant: "success" });
+            setDialog({ confirmLoading: false });
+          },
+          onSuccess: () => {
+            const message = tMembers("invite.success");
+            enqueueSnackbar(message, { variant: "success" });
 
-          resetDialog();
-          router.refresh();
+            resetDialog();
+            router.refresh();
+          },
         },
-      },
-    );
-  });
+      );
+    },
+  );
 
   return (
     <StyledBox component="form" id="invite-member-form" onSubmit={onSubmit}>
       <TextField
+        autoComplete="email"
         error={!!errors.email}
         fullWidth
         helperText={errors.email?.message}
-        label={tMembers("invite.fields.email")}
+        label={tMembers("fields.email.label")}
+        placeholder={tMembers("fields.email.placeholder")}
         required
         type="email"
         {...register("email")}
       />
-      <FormControl fullWidth size="small">
-        <InputLabel>{tMembers("invite.fields.role")}</InputLabel>
-        <Select
-          defaultValue="member"
-          label={tMembers("invite.fields.role")}
-          {...register("role")}
-        >
-          <MenuItem value="member">{tMembers("roles.member")}</MenuItem>
-          <MenuItem value="admin">{tMembers("roles.admin")}</MenuItem>
-        </Select>
-      </FormControl>
+      <TextField
+        error={!!errors.role}
+        fullWidth
+        helperText={errors.role?.message}
+        label={tMembers("fields.role.label")}
+        required
+        select
+        {...register("role")}
+      >
+        <MenuItem disabled value="">
+          <em>{tMembers("fields.role.placeholder")}</em>
+        </MenuItem>
+        {roles.map((role) => (
+          <MenuItem key={role} value={role}>
+            {tMembers(`roles.${role}`)}
+          </MenuItem>
+        ))}
+      </TextField>
     </StyledBox>
   );
 };

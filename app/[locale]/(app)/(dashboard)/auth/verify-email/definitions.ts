@@ -8,3 +8,7 @@ export const useVerifyEmailFormSchema = () => {
     email: z.email({ error: tValidation("email.invalid") }).trim(),
   });
 };
+
+export type VerifyEmailForm = z.infer<
+  ReturnType<typeof useVerifyEmailFormSchema>
+>;

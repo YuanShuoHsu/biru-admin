@@ -150,6 +150,7 @@ const theme = createTheme({
       styleOverrides: {
         cell: ({ theme }) => ({
           transition: theme.transitions.create(["border-color", "color"]),
+
           "&:hover": {
             color: theme.vars.palette.primary.main,
           },
@@ -160,6 +161,7 @@ const theme = createTheme({
             "border-color",
             "color",
           ]),
+
           "& .MuiDataGrid-sortButton": {
             transition: theme.transitions.create("background-color"),
           },
@@ -178,32 +180,37 @@ const theme = createTheme({
             "background-color",
             "border-color",
           ]),
+
           "& .MuiDataGrid-filler": {
             transition: theme.transitions.create([
               "background-color",
               "border-color",
             ]),
+
             "& > div": {
               transition: theme.transitions.create("border-color"),
             },
           },
         }),
         row: ({ theme }) => ({
-          "&.Mui-selected": {
-            transition: theme.transitions.create("background-color"),
-          },
+          transition: theme.transitions.create("background-color"),
+
           "&.even": {
             backgroundColor: theme.vars.palette.action.hover,
+
             "&:hover": {
               backgroundColor: theme.vars.palette.action.selected,
+
               "@media (hover: none)": {
                 backgroundColor: theme.vars.palette.action.hover,
               },
             },
             "&.Mui-selected": {
               backgroundColor: theme.vars.palette.action.selected,
+
               "&:hover": {
                 backgroundColor: theme.vars.palette.action.focus,
+
                 "@media (hover: none)": {
                   backgroundColor: theme.vars.palette.action.selected,
                 },

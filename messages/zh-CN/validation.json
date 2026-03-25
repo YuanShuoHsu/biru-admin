@@ -35,6 +35,9 @@
     "invalid": "电话号码无效。",
     "required": "电话号码为必填。"
   },
+  "role": {
+    "required": "角色为必填。"
+  },
   "slug": {
     "letter": "包含至少一个英文字母。",
     "minLength": "标识符至少需要 1 个字符。"

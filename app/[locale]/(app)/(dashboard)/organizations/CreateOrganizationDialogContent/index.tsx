@@ -34,7 +34,7 @@ const CreateOrganizationDialogContent = () => {
 
   const tOrganizations = useTranslations("organizations");
 
-  const schema = useCreateOrganizationFormSchema();
+  const createOrganizationFormSchema = useCreateOrganizationFormSchema();
 
   const {
     formState: { errors },
@@ -42,7 +42,7 @@ const CreateOrganizationDialogContent = () => {
     register,
   } = useForm<CreateOrganizationForm>({
     defaultValues: { name: "", slug: "" },
-    resolver: zodResolver(schema),
+    resolver: zodResolver(createOrganizationFormSchema),
   });
 
   const onSubmit = handleSubmit(

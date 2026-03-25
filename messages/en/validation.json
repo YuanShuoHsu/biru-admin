@@ -35,6 +35,9 @@
     "invalid": "Phone number is not valid.",
     "required": "Phone is required."
   },
+  "role": {
+    "required": "Role is required."
+  },
   "slug": {
     "letter": "Contain at least one letter.",
     "minLength": "Slug must be at least 1 character long."

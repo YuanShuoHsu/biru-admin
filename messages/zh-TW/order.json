@@ -27,7 +27,7 @@
         "latest": "新品上架",
         "new": "新品",
         "search": {
-          "placeholder": "請輸入菜單名稱"
+          "placeholder": "請輸入您的菜單名稱"
         },
         "stepper": {
           "checkout": {

@@ -8,3 +8,7 @@ export const useForgotPasswordFormSchema = () => {
     email: z.email({ error: tValidation("email.invalid") }).trim(),
   });
 };
+
+export type ForgotPasswordForm = z.infer<
+  ReturnType<typeof useForgotPasswordFormSchema>
+>;

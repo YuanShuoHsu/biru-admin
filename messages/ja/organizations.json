@@ -34,11 +34,11 @@
   "fields": {
     "name": {
       "label": "組織名",
-      "placeholder": "組織名を入力してください"
+      "placeholder": "あなたの組織名を入力してください"
     },
     "slug": {
       "label": "スラッグ",
-      "placeholder": "スラッグを入力してください"
+      "placeholder": "あなたのスラッグを入力してください"
     }
   },
   "invitations": {
@@ -82,12 +82,18 @@
       "role": "役割"
     },
     "empty": "メンバーがいません",
+    "fields": {
+      "email": {
+        "label": "メール",
+        "placeholder": "あなたのメールアドレスを入力してください"
+      },
+      "role": {
+        "label": "役割",
+        "placeholder": "あなたの役割を選択してください"
+      }
+    },
     "invite": {
       "error": "招待に失敗しました。もう一度お試しください",
-      "fields": {
-        "email": "メール",
-        "role": "役割"
-      },
       "success": "招待の送信に成功しました",
       "title": "メンバーを招待"
     },
