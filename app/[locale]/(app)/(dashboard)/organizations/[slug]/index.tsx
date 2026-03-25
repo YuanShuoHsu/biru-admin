@@ -15,6 +15,7 @@ import { DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { useRouter } from "@/i18n/navigation";
 
 import { authClient } from "@/lib/auth-client";
+import type { ActiveOrganization, Invitation, Member } from "@/types/auth";
 
 import { Delete, GroupAdd, PersonRemove } from "@mui/icons-material";
 import {
@@ -49,38 +50,6 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
-interface Member {
-  id: string;
-  userId: string;
-  role: "owner" | "admin" | "member";
-  createdAt: Date | string;
-  user: {
-    id: string;
-    name: string;
-    email: string;
-    image?: string | null;
-  };
-}
-
-interface Invitation {
-  id: string;
-  email: string;
-  role: "owner" | "admin" | "member";
-  status: "pending" | "accepted" | "rejected" | "canceled" | "cancelled";
-  expiresAt: Date | string;
-  createdAt: Date | string;
-}
-
-interface FullOrganization {
-  id: string;
-  name: string;
-  slug: string;
-  logo?: string | null;
-  createdAt: Date | string;
-  members: Member[];
-  invitations: Invitation[];
-}
-
 const ROLE_COLOR_MAP: Record<string, "error" | "warning" | "default"> = {
   owner: "error",
   admin: "warning",
@@ -98,10 +67,12 @@ const STATUS_COLOR_MAP: Record<
 };
 
 interface OrganizationsSlugProps {
-  org: FullOrganization;
+  activeOrganization: ActiveOrganization;
 }
 
-const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
+const OrganizationsSlug = ({
+  activeOrganization: { id, invitations, members },
+}: OrganizationsSlugProps) => {
   const [value, setValue] = useState(0);
 
   const { setDialog } = useDialogStore((state) => state);
@@ -118,7 +89,7 @@ const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
 
   const handleInviteMember = () => {
     setDialog({
-      content: <InviteMemberDialogContent organizationId={org.id} />,
+      content: <InviteMemberDialogContent organizationId={id} />,
       formId: "invite-member-form",
       open: true,
       title: tMembers("invite.title"),
@@ -136,7 +107,7 @@ const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
         onConfirm: async () => {
           await authClient.organization.removeMember(
             {
-              organizationId: org.id,
+              organizationId: id,
               memberIdOrEmail: member.userId,
             },
             {
@@ -156,14 +127,14 @@ const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
         title: tMembers("remove.title"),
       });
     },
-    [org.id, router, setDialog, tMembers],
+    [id, router, setDialog, tMembers],
   );
 
   const handleUpdateMemberRole = useCallback(
     async (memberId: string, role: "admin" | "member") => {
       await authClient.organization.updateMemberRole(
         {
-          organizationId: org.id,
+          organizationId: id,
           memberId,
           role,
         },
@@ -180,7 +151,7 @@ const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
         },
       );
     },
-    [org.id, router, tMembers],
+    [id, router, tMembers],
   );
 
   const handleCancelInvitation = useCallback(
@@ -403,7 +374,7 @@ const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
     [format, handleCancelInvitation, tInvitations, tMembers],
   );
 
-  const pendingCount = org.invitations.filter(
+  const pendingCount = invitations.filter(
     ({ status }) => status === "pending",
   ).length;
 
@@ -424,7 +395,7 @@ const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
           <DataGrid
             {...DATA_GRID_PROPS}
             columns={memberColumns}
-            rows={org.members}
+            rows={members}
           />
         </>
       ),
@@ -435,7 +406,7 @@ const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
         <DataGrid
           {...DATA_GRID_PROPS}
           columns={invitationColumns}
-          rows={org.invitations}
+          rows={invitations}
         />
       ),
       label: (
@@ -459,7 +430,7 @@ const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
         ))}
       </Tabs>
       {tabs.map(({ children }, index) => (
-        <TabPanel key={index} index={index} value={value}>
+        <TabPanel index={index} key={index} value={value}>
           {children}
         </TabPanel>
       ))}

@@ -28,7 +28,7 @@ const OrganizationsSlugPage = async ({
 
   if (!data) notFound();
 
-  return <OrganizationsSlug org={data} />;
+  return <OrganizationsSlug activeOrganization={data} />;
 };
 
 export default OrganizationsSlugPage;
