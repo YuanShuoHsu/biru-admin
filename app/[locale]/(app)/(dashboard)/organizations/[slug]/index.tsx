@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormatter, useTranslations } from "next-intl";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
@@ -14,8 +14,7 @@ import { DATA_GRID_PROPS } from "@/constants/dataGrid";
 
 import { useRouter } from "@/i18n/navigation";
 
-import { authClient } from "@/lib/auth-client";
-import type { ActiveOrganization, Invitation, Member } from "@/types/auth";
+import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { Delete, GroupAdd, PersonRemove } from "@mui/icons-material";
 import {
@@ -35,6 +34,8 @@ import {
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
+
+import type { ActiveOrganization, Invitation, Member } from "@/types/auth";
 
 import { stringAvatar } from "@/utils/avatar";
 import { a11yProps } from "@/utils/tab";
@@ -79,6 +80,8 @@ const OrganizationsSlug = ({
 
   const format = useFormatter();
 
+  const locale = useLocale();
+
   const router = useRouter();
 
   const tInvitations = useTranslations("organizations.invitations");
@@ -88,27 +91,30 @@ const OrganizationsSlug = ({
     setValue(newValue);
 
   const handleRemoveMember = useCallback(
-    (member: Member) => {
+    ({ userId, user: { name } }: Member) => {
       setDialog({
         content: (
           <DialogContentText>
-            {tMembers("remove.confirm", { name: member.user.name })}
+            {tMembers("remove.confirm", { name })}
           </DialogContentText>
         ),
         onConfirm: async () => {
           await authClient.organization.removeMember(
             {
               organizationId: id,
-              memberIdOrEmail: member.userId,
+              memberIdOrEmail: userId,
             },
             {
-              onError: () => {
-                throw new Error(tMembers("remove.error"));
+              onError: ({ error: { code } }) => {
+                const message = getErrorMessage(code, locale);
+                enqueueSnackbar(message, { variant: "error" });
               },
               onSuccess: () => {
-                enqueueSnackbar(tMembers("remove.success"), {
+                const message = tMembers("remove.success");
+                enqueueSnackbar(message, {
                   variant: "success",
                 });
+
                 router.refresh();
               },
             },
@@ -118,11 +124,11 @@ const OrganizationsSlug = ({
         title: tMembers("remove.title"),
       });
     },
-    [id, router, setDialog, tMembers],
+    [id, locale, router, setDialog, tMembers],
   );
 
   const handleUpdateMemberRole = useCallback(
-    async (memberId: string, role: "admin" | "member") => {
+    async (memberId: string, role: Member["role"]) => {
       await authClient.organization.updateMemberRole(
         {
           organizationId: id,
@@ -130,19 +136,20 @@ const OrganizationsSlug = ({
           role,
         },
         {
-          onError: () => {
-            enqueueSnackbar(tMembers("setRole.error"), { variant: "error" });
+          onError: ({ error: { code } }) => {
+            const message = getErrorMessage(code, locale);
+            enqueueSnackbar(message, { variant: "error" });
           },
           onSuccess: () => {
-            enqueueSnackbar(tMembers("setRole.success"), {
-              variant: "success",
-            });
+            const message = tMembers("setRole.success");
+            enqueueSnackbar(message, { variant: "success" });
+
             router.refresh();
           },
         },
       );
     },
-    [id, router, tMembers],
+    [id, locale, router, tMembers],
   );
 
   const memberColumns = useMemo<GridColDef[]>(
@@ -206,8 +213,8 @@ const OrganizationsSlug = ({
       {
         field: "role",
         headerName: tMembers("columns.role"),
-        renderCell: ({ row }: GridRenderCellParams<Member>) => {
-          if (row.role === "owner") {
+        renderCell: ({ row: { id, role } }: GridRenderCellParams<Member>) => {
+          if (role === "owner") {
             return (
               <Stack height="100%" direction="row" alignItems="center">
                 <Chip
@@ -219,19 +226,16 @@ const OrganizationsSlug = ({
               </Stack>
             );
           }
+
           return (
             <Stack height="100%" direction="row" alignItems="center">
               <Select
                 size="small"
-                value={row.role}
-                onChange={(e) =>
-                  handleUpdateMemberRole(
-                    row.id,
-                    e.target.value as "admin" | "member",
-                  )
+                value={role}
+                onChange={({ target: { value } }) =>
+                  handleUpdateMemberRole(id, value)
                 }
                 variant="standard"
-                sx={{ fontSize: "0.8rem", minWidth: 90 }}
               >
                 <MenuItem value="admin">{tMembers("roles.admin")}</MenuItem>
                 <MenuItem value="member">{tMembers("roles.member")}</MenuItem>
@@ -251,24 +255,25 @@ const OrganizationsSlug = ({
   );
 
   const handleCancelInvitation = useCallback(
-    (invitation: Invitation) => {
+    ({ id: invitationId, email }: Invitation) => {
       setDialog({
         content: (
           <DialogContentText>
-            {tInvitations("cancel.confirm", { email: invitation.email })}
+            {tInvitations("cancel.confirm", { email })}
           </DialogContentText>
         ),
         onConfirm: async () => {
           await authClient.organization.cancelInvitation(
-            { invitationId: invitation.id },
+            { invitationId },
             {
-              onError: () => {
-                throw new Error(tInvitations("cancel.error"));
+              onError: ({ error: { code } }) => {
+                const message = getErrorMessage(code, locale);
+                enqueueSnackbar(message, { variant: "error" });
               },
               onSuccess: () => {
-                enqueueSnackbar(tInvitations("cancel.success"), {
-                  variant: "success",
-                });
+                const message = tInvitations("cancel.success");
+                enqueueSnackbar(message, { variant: "success" });
+
                 router.refresh();
               },
             },
@@ -278,7 +283,7 @@ const OrganizationsSlug = ({
         title: tInvitations("cancel.title"),
       });
     },
-    [router, setDialog, tInvitations],
+    [locale, router, setDialog, tInvitations],
   );
 
   const invitationColumns = useMemo<GridColDef[]>(
@@ -293,13 +298,13 @@ const OrganizationsSlug = ({
             <Stack height="100%" direction="row" alignItems="center" gap={1}>
               <Tooltip title={tInvitations("actions.cancel")}>
                 <IconButton
-                  size="small"
                   color="error"
                   onClick={(event) => {
                     event.stopPropagation();
 
                     handleCancelInvitation(row);
                   }}
+                  size="small"
                 >
                   <Delete fontSize="small" />
                 </IconButton>
@@ -317,16 +322,16 @@ const OrganizationsSlug = ({
       {
         field: "role",
         headerName: tInvitations("columns.role"),
-        renderCell: ({ row }: GridRenderCellParams<Invitation>) => (
+        renderCell: ({ row: { role } }: GridRenderCellParams<Invitation>) => (
           <Stack height="100%" direction="row" alignItems="center">
             <Chip
+              color={ROLE_COLOR_MAP[role] ?? "default"}
               label={tMembers(
-                `roles.${row.role}` as
+                `roles.${role}` as
                   | "roles.owner"
                   | "roles.admin"
                   | "roles.member",
               )}
-              color={ROLE_COLOR_MAP[row.role] ?? "default"}
               size="small"
               variant="outlined"
             />
@@ -337,17 +342,17 @@ const OrganizationsSlug = ({
       {
         field: "status",
         headerName: tInvitations("columns.status"),
-        renderCell: ({ row }: GridRenderCellParams<Invitation>) => (
+        renderCell: ({ row: { status } }: GridRenderCellParams<Invitation>) => (
           <Stack height="100%" direction="row" alignItems="center">
             <Chip
+              color={STATUS_COLOR_MAP[status] || "default"}
               label={tInvitations(
-                `status.${row.status}` as
+                `status.${status}` as
                   | "status.pending"
                   | "status.accepted"
                   | "status.rejected"
                   | "status.cancelled",
               )}
-              color={STATUS_COLOR_MAP[row.status] ?? "default"}
               size="small"
               variant="outlined"
             />
@@ -384,9 +389,9 @@ const OrganizationsSlug = ({
         <>
           <Stack direction="row">
             <Button
-              startIcon={<GroupAdd />}
               onClick={handleInviteMember}
               size="small"
+              startIcon={<GroupAdd />}
               variant="contained"
             >
               {tMembers("actions.invite")}
