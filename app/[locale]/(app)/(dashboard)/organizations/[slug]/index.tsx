@@ -7,7 +7,6 @@ import { useCallback, useMemo, useState } from "react";
 
 import InviteMemberDialogContent from "./InviteMemberDialogContent";
 
-import CustomizedBadges from "@/components/CustomizedBadges";
 import TabPanel from "@/components/TabPanel";
 
 import { DATA_GRID_PROPS } from "@/constants/dataGrid";
@@ -415,9 +414,12 @@ const OrganizationsSlug = ({
         />
       ),
       label: (
-        <CustomizedBadges badgeContent={pendingCount}>
+        <Stack alignItems="center" direction="row" gap={1}>
           {tInvitations("label")}
-        </CustomizedBadges>
+          {pendingCount > 0 && (
+            <Chip color="secondary" label={pendingCount} size="small" />
+          )}
+        </Stack>
       ),
     },
   ];
