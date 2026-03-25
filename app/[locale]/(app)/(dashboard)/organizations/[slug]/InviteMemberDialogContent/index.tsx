@@ -5,7 +5,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
 import {
   type InviteMemberFormInput,
@@ -47,6 +47,7 @@ const InviteMemberDialogContent = ({
   const inviteMemberFormSchema = useInviteMemberFormSchema();
 
   const {
+    control,
     formState: { errors },
     handleSubmit,
     register,
@@ -54,6 +55,8 @@ const InviteMemberDialogContent = ({
     defaultValues: { email: "", role: "" },
     resolver: zodResolver(inviteMemberFormSchema),
   });
+
+  const role = useWatch({ control, name: "role" });
 
   const onSubmit = handleSubmit(
     async ({ email, role }: InviteMemberFormOutput) => {
@@ -101,6 +104,7 @@ const InviteMemberDialogContent = ({
         label={tMembers("fields.role.label")}
         required
         select
+        value={role}
         {...register("role")}
       >
         <MenuItem disabled value="">
