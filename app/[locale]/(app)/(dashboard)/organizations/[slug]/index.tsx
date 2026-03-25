@@ -87,15 +87,6 @@ const OrganizationsSlug = ({
   const handleChange = (_: React.SyntheticEvent, newValue: number) =>
     setValue(newValue);
 
-  const handleInviteMember = () => {
-    setDialog({
-      content: <InviteMemberDialogContent organizationId={id} />,
-      formId: "invite-member-form",
-      open: true,
-      title: tMembers("invite.title"),
-    });
-  };
-
   const handleRemoveMember = useCallback(
     (member: Member) => {
       setDialog({
@@ -152,37 +143,6 @@ const OrganizationsSlug = ({
       );
     },
     [id, router, tMembers],
-  );
-
-  const handleCancelInvitation = useCallback(
-    (invitation: Invitation) => {
-      setDialog({
-        content: (
-          <DialogContentText>
-            {tInvitations("cancel.confirm", { email: invitation.email })}
-          </DialogContentText>
-        ),
-        onConfirm: async () => {
-          await authClient.organization.cancelInvitation(
-            { invitationId: invitation.id },
-            {
-              onError: () => {
-                throw new Error(tInvitations("cancel.error"));
-              },
-              onSuccess: () => {
-                enqueueSnackbar(tInvitations("cancel.success"), {
-                  variant: "success",
-                });
-                router.refresh();
-              },
-            },
-          );
-        },
-        open: true,
-        title: tInvitations("cancel.title"),
-      });
-    },
-    [router, setDialog, tInvitations],
   );
 
   const memberColumns = useMemo<GridColDef[]>(
@@ -290,6 +250,37 @@ const OrganizationsSlug = ({
     [format, handleRemoveMember, handleUpdateMemberRole, tMembers],
   );
 
+  const handleCancelInvitation = useCallback(
+    (invitation: Invitation) => {
+      setDialog({
+        content: (
+          <DialogContentText>
+            {tInvitations("cancel.confirm", { email: invitation.email })}
+          </DialogContentText>
+        ),
+        onConfirm: async () => {
+          await authClient.organization.cancelInvitation(
+            { invitationId: invitation.id },
+            {
+              onError: () => {
+                throw new Error(tInvitations("cancel.error"));
+              },
+              onSuccess: () => {
+                enqueueSnackbar(tInvitations("cancel.success"), {
+                  variant: "success",
+                });
+                router.refresh();
+              },
+            },
+          );
+        },
+        open: true,
+        title: tInvitations("cancel.title"),
+      });
+    },
+    [router, setDialog, tInvitations],
+  );
+
   const invitationColumns = useMemo<GridColDef[]>(
     () => [
       {
@@ -373,6 +364,15 @@ const OrganizationsSlug = ({
     ],
     [format, handleCancelInvitation, tInvitations, tMembers],
   );
+
+  const handleInviteMember = () => {
+    setDialog({
+      content: <InviteMemberDialogContent organizationId={id} />,
+      formId: "invite-member-form",
+      open: true,
+      title: tMembers("invite.title"),
+    });
+  };
 
   const pendingCount = invitations.filter(
     ({ status }) => status === "pending",
