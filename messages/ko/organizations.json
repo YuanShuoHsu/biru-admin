@@ -76,6 +76,7 @@
     },
     "columns": {
       "actions": "작업",
+      "avatar": "아바타",
       "email": "이메일",
       "joinedAt": "가입일",
       "name": "이름",

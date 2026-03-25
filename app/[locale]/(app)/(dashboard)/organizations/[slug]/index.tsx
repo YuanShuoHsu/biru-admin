@@ -26,6 +26,7 @@ import {
   MenuItem,
   Select,
   Stack,
+  styled,
   Tab,
   Tabs,
   Tooltip,
@@ -34,7 +35,14 @@ import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
+import { stringAvatar } from "@/utils/avatar";
 import { a11yProps } from "@/utils/tab";
+
+const StyledAvatar = styled(Avatar)({
+  width: 24,
+  height: 24,
+  fontSize: 12,
+});
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -211,19 +219,20 @@ const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
       {
         field: "actions",
         headerName: tMembers("columns.actions"),
-        resizable: false,
         renderCell: ({ row }: GridRenderCellParams<Member>) => {
           if (row.role === "owner") return null;
+
           return (
             <Stack height="100%" direction="row" alignItems="center" gap={1}>
               <Tooltip title={tMembers("actions.remove")}>
                 <IconButton
-                  size="small"
                   color="error"
                   onClick={(event) => {
                     event.stopPropagation();
+
                     handleRemoveMember(row);
                   }}
+                  size="small"
                 >
                   <PersonRemove fontSize="small" />
                 </IconButton>
@@ -231,33 +240,37 @@ const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
             </Stack>
           );
         },
+        resizable: false,
         sortable: false,
       },
       {
         field: "avatar",
-        headerName: "",
-        resizable: false,
-        sortable: false,
-        renderCell: ({ row }: GridRenderCellParams<Member>) => (
+        headerName: tMembers("columns.avatar"),
+        renderCell: ({
+          row: {
+            user: { image, name },
+          },
+        }: GridRenderCellParams<Member>) => (
           <Stack height="100%" direction="row" alignItems="center">
-            <Avatar
-              src={row.user.image ?? undefined}
-              sx={{ width: 24, height: 24, fontSize: 12 }}
-            >
-              {row.user.name?.[0]?.toUpperCase()}
-            </Avatar>
+            <StyledAvatar
+              alt={name}
+              src={image || undefined}
+              {...stringAvatar(name)}
+            />
           </Stack>
         ),
+        resizable: false,
+        sortable: false,
       },
       {
         field: "name",
         headerName: tMembers("columns.name"),
-        valueGetter: (_value: unknown, row: Member) => row.user.name,
+        valueGetter: (_value: unknown, { user: { name } }: Member) => name,
       },
       {
         field: "email",
         headerName: tMembers("columns.email"),
-        valueGetter: (_value: unknown, row: Member) => row.user.email,
+        valueGetter: (_value: unknown, { user: { email } }: Member) => email,
       },
       {
         field: "role",
@@ -311,9 +324,9 @@ const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
       {
         field: "actions",
         headerName: tInvitations("columns.actions"),
-        resizable: false,
         renderCell: ({ row }: GridRenderCellParams<Invitation>) => {
           if (row.status !== "pending") return null;
+
           return (
             <Stack height="100%" direction="row" alignItems="center" gap={1}>
               <Tooltip title={tInvitations("actions.cancel")}>
@@ -322,6 +335,7 @@ const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
                   color="error"
                   onClick={(event) => {
                     event.stopPropagation();
+
                     handleCancelInvitation(row);
                   }}
                 >
@@ -331,6 +345,7 @@ const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
             </Stack>
           );
         },
+        resizable: false,
         sortable: false,
       },
       {
@@ -389,7 +404,7 @@ const OrganizationsSlug = ({ org }: OrganizationsSlugProps) => {
   );
 
   const pendingCount = org.invitations.filter(
-    (inv) => inv.status === "pending",
+    ({ status }) => status === "pending",
   ).length;
 
   const tabs = [

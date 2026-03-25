@@ -76,6 +76,7 @@
     },
     "columns": {
       "actions": "操作",
+      "avatar": "頭像",
       "email": "電子郵件",
       "joinedAt": "加入時間",
       "name": "姓名",
