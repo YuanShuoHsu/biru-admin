@@ -46,7 +46,7 @@
       "cancel": "Cancel"
     },
     "cancel": {
-      "confirm": "Are you sure you want to cancel the invitation for {email}?",
+      "confirm": "Are you sure you want to cancel the invitation for <bold>{email}</bold>?",
       "error": "Failed to cancel invitation. Please try again.",
       "success": "Invitation cancelled successfully",
       "title": "Cancel Invitation"

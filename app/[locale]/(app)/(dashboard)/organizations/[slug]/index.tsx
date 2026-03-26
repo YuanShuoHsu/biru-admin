@@ -258,7 +258,10 @@ const OrganizationsSlug = ({
       setDialog({
         content: (
           <DialogContentText>
-            {tInvitations("cancel.confirm", { email })}
+            {tInvitations.rich("cancel.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              email,
+            })}
           </DialogContentText>
         ),
         onConfirm: async () => {

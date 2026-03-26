@@ -46,7 +46,7 @@
       "cancel": "取消邀请"
     },
     "cancel": {
-      "confirm": "确定要取消对 {email} 的邀请吗？",
+      "confirm": "确定要取消对 <bold>{email}</bold> 的邀请吗？",
       "error": "取消失败，请稍后重试",
       "success": "成功取消邀请",
       "title": "取消邀请"
