@@ -194,11 +194,7 @@ const Organizations = ({ rows }: OrganizationsProps) => {
           {tOrganizations("create.title")}
         </Button>
       </Stack>
-      <DataGrid
-        {...DATA_GRID_PROPS}
-        columns={columns}
-        rows={rows}
-      />
+      <DataGrid {...DATA_GRID_PROPS} columns={columns} rows={rows} />
     </>
   );
 };
