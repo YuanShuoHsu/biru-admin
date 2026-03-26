@@ -32,6 +32,8 @@ import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
+import type { Organization } from "@/types/auth";
+
 import { stringAvatar } from "@/utils/avatar";
 
 const StyledAvatar = styled(Avatar)({
@@ -45,16 +47,8 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
-interface OrganizationRow {
-  id: string;
-  name: string;
-  slug: string;
-  logo?: string | null;
-  createdAt: Date | string;
-}
-
 interface OrganizationsProps {
-  rows: OrganizationRow[];
+  rows: Organization[];
 }
 
 const Organizations = ({ rows }: OrganizationsProps) => {
@@ -76,7 +70,7 @@ const Organizations = ({ rows }: OrganizationsProps) => {
   };
 
   const handleDeleteOrganization = useCallback(
-    ({ id, name }: OrganizationRow) => {
+    ({ id, name }: Organization) => {
       setDialog({
         content: (
           <DialogContentText>
@@ -115,7 +109,7 @@ const Organizations = ({ rows }: OrganizationsProps) => {
         field: "actions",
         headerName: tOrganizations("columns.actions"),
         resizable: false,
-        renderCell: ({ row }: GridRenderCellParams<OrganizationRow>) => {
+        renderCell: ({ row }: GridRenderCellParams<Organization>) => {
           return (
             <Stack height="100%" direction="row" alignItems="center" gap={1}>
               <Tooltip title={tOrganizations("actions.view")}>
@@ -153,7 +147,7 @@ const Organizations = ({ rows }: OrganizationsProps) => {
         headerName: tOrganizations("columns.logo"),
         renderCell: ({
           row: { logo, name },
-        }: GridRenderCellParams<OrganizationRow>) => (
+        }: GridRenderCellParams<Organization>) => (
           <Stack height="100%" flexDirection="row" alignItems="center">
             <StyledAvatar
               alt={name}
@@ -176,7 +170,7 @@ const Organizations = ({ rows }: OrganizationsProps) => {
       {
         field: "createdAt",
         headerName: tOrganizations("columns.createdAt"),
-        valueFormatter: (value: Date | string) =>
+        valueFormatter: (value: Date) =>
           format.dateTime(new Date(value), "short"),
       },
     ],
