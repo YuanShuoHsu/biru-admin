@@ -47,6 +47,8 @@ import type {
   GridValidRowModel,
 } from "@mui/x-data-grid";
 
+import { DATA_GRID_PROPS } from "@/constants/dataGrid";
+
 import { authClient } from "@/lib/auth-client";
 
 const DataGrid = dynamic(
@@ -168,10 +170,6 @@ const AdminUsers = ({ query }: AdminUsersProps) => {
 
   const handlePaginationChange = (model: GridPaginationModel) => {
     updateParams({ page: model.page + 1, limit: model.pageSize });
-  };
-
-  const handleSortChange = () => {
-    // server-side sort not supported by better-auth admin listUsers, ignore
   };
 
   const handleBan = async (user: UserRow) => {
@@ -420,20 +418,17 @@ const AdminUsers = ({ query }: AdminUsersProps) => {
       </Stack>
 
       <DataGrid
-        rows={data?.users ?? []}
+        {...DATA_GRID_PROPS}
+        rows={(data?.users ?? []).toReversed()}
         columns={columns}
         rowCount={data?.total ?? 0}
         loading={isLoading}
         paginationMode="server"
-        sortingMode="server"
         paginationModel={{
           page: query.page - 1,
           pageSize: query.limit,
         }}
-        pageSizeOptions={[5, 10, 50, 100]}
         onPaginationModelChange={handlePaginationChange}
-        onSortModelChange={handleSortChange}
-        disableRowSelectionOnClick
         autoHeight
         sx={{ bgcolor: "background.paper", borderRadius: 2 }}
       />
