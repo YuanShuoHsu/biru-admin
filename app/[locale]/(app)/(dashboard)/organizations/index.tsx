@@ -5,7 +5,7 @@
 
 "use client";
 
-import { useFormatter, useTranslations } from "next-intl";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo } from "react";
@@ -16,7 +16,7 @@ import { DATA_GRID_PROPS } from "@/constants/dataGrid";
 
 import { useRouter } from "@/i18n/navigation";
 
-import { authClient } from "@/lib/auth-client";
+import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { Delete, ManageAccounts } from "@mui/icons-material";
 import {
@@ -56,6 +56,8 @@ const Organizations = ({ rows }: OrganizationsProps) => {
 
   const format = useFormatter();
 
+  const locale = useLocale();
+
   const router = useRouter();
 
   const tOrganizations = useTranslations("organizations");
@@ -84,13 +86,16 @@ const Organizations = ({ rows }: OrganizationsProps) => {
           await authClient.organization.delete(
             { organizationId: id },
             {
-              onError: () => {
-                throw new Error(tOrganizations("delete.error"));
+              onError: ({ error: { code } }) => {
+                const message = getErrorMessage(code, locale);
+                enqueueSnackbar(message, { variant: "error" });
               },
               onSuccess: () => {
-                enqueueSnackbar(tOrganizations("delete.success"), {
+                const message = tOrganizations("delete.success");
+                enqueueSnackbar(message, {
                   variant: "success",
                 });
+
                 router.refresh();
               },
             },
@@ -100,7 +105,7 @@ const Organizations = ({ rows }: OrganizationsProps) => {
         title: tOrganizations("delete.title"),
       });
     },
-    [router, setDialog, tOrganizations],
+    [locale, router, setDialog, tOrganizations],
   );
 
   const columns = useMemo<GridColDef[]>(
@@ -108,7 +113,6 @@ const Organizations = ({ rows }: OrganizationsProps) => {
       {
         field: "actions",
         headerName: tOrganizations("columns.actions"),
-        resizable: false,
         renderCell: ({ row }: GridRenderCellParams<Organization>) => {
           return (
             <Stack height="100%" direction="row" alignItems="center" gap={1}>
@@ -140,6 +144,7 @@ const Organizations = ({ rows }: OrganizationsProps) => {
             </Stack>
           );
         },
+        resizable: false,
         sortable: false,
       },
       {

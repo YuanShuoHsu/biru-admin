@@ -160,21 +160,19 @@ const OrganizationsSlug = ({
           if (row.role === "owner") return null;
 
           return (
-            <Stack height="100%" direction="row" alignItems="center" gap={1}>
-              <Tooltip title={tMembers("actions.remove")}>
-                <IconButton
-                  color="error"
-                  onClick={(event) => {
-                    event.stopPropagation();
+            <Tooltip title={tMembers("actions.remove")}>
+              <IconButton
+                color="error"
+                onClick={(event) => {
+                  event.stopPropagation();
 
-                    handleRemoveMember(row);
-                  }}
-                  size="small"
-                >
-                  <PersonRemove fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            </Stack>
+                  handleRemoveMember(row);
+                }}
+                size="small"
+              >
+                <PersonRemove fontSize="small" />
+              </IconButton>
+            </Tooltip>
           );
         },
         resizable: false,
@@ -215,31 +213,27 @@ const OrganizationsSlug = ({
         renderCell: ({ row: { id, role } }: GridRenderCellParams<Member>) => {
           if (role === "owner") {
             return (
-              <Stack height="100%" direction="row" alignItems="center">
-                <Chip
-                  label={tMembers("roles.owner")}
-                  color="error"
-                  size="small"
-                  variant="outlined"
-                />
-              </Stack>
+              <Chip
+                label={tMembers("roles.owner")}
+                color="error"
+                size="small"
+                variant="outlined"
+              />
             );
           }
 
           return (
-            <Stack height="100%" direction="row" alignItems="center">
-              <Select
-                size="small"
-                value={role}
-                onChange={({ target: { value } }) =>
-                  handleUpdateMemberRole(id, value)
-                }
-                variant="standard"
-              >
-                <MenuItem value="admin">{tMembers("roles.admin")}</MenuItem>
-                <MenuItem value="member">{tMembers("roles.member")}</MenuItem>
-              </Select>
-            </Stack>
+            <Select
+              size="small"
+              value={role}
+              onChange={({ target: { value } }) =>
+                handleUpdateMemberRole(id, value)
+              }
+              variant="standard"
+            >
+              <MenuItem value="admin">{tMembers("roles.admin")}</MenuItem>
+              <MenuItem value="member">{tMembers("roles.member")}</MenuItem>
+            </Select>
           );
         },
       },
@@ -297,21 +291,19 @@ const OrganizationsSlug = ({
           if (row.status !== "pending") return null;
 
           return (
-            <Stack height="100%" direction="row" alignItems="center" gap={1}>
-              <Tooltip title={tInvitations("actions.cancel")}>
-                <IconButton
-                  color="error"
-                  onClick={(event) => {
-                    event.stopPropagation();
+            <Tooltip title={tInvitations("actions.cancel")}>
+              <IconButton
+                color="error"
+                onClick={(event) => {
+                  event.stopPropagation();
 
-                    handleCancelInvitation(row);
-                  }}
-                  size="small"
-                >
-                  <Delete fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            </Stack>
+                  handleCancelInvitation(row);
+                }}
+                size="small"
+              >
+                <Delete fontSize="small" />
+              </IconButton>
+            </Tooltip>
           );
         },
         resizable: false,
@@ -325,19 +317,12 @@ const OrganizationsSlug = ({
         field: "role",
         headerName: tInvitations("columns.role"),
         renderCell: ({ row: { role } }: GridRenderCellParams<Invitation>) => (
-          <Stack height="100%" direction="row" alignItems="center">
-            <Chip
-              color={ROLE_COLOR_MAP[role] ?? "default"}
-              label={tMembers(
-                `roles.${role}` as
-                  | "roles.owner"
-                  | "roles.admin"
-                  | "roles.member",
-              )}
-              size="small"
-              variant="outlined"
-            />
-          </Stack>
+          <Chip
+            color={ROLE_COLOR_MAP[role]}
+            label={tMembers(`roles.${role}`)}
+            size="small"
+            variant="outlined"
+          />
         ),
         sortable: false,
       },
@@ -345,20 +330,12 @@ const OrganizationsSlug = ({
         field: "status",
         headerName: tInvitations("columns.status"),
         renderCell: ({ row: { status } }: GridRenderCellParams<Invitation>) => (
-          <Stack height="100%" direction="row" alignItems="center">
-            <Chip
-              color={STATUS_COLOR_MAP[status] || "default"}
-              label={tInvitations(
-                `status.${status}` as
-                  | "status.pending"
-                  | "status.accepted"
-                  | "status.rejected"
-                  | "status.canceled",
-              )}
-              size="small"
-              variant="outlined"
-            />
-          </Stack>
+          <Chip
+            color={STATUS_COLOR_MAP[status]}
+            label={tInvitations(`status.${status}`)}
+            size="small"
+            variant="outlined"
+          />
         ),
         sortable: false,
       },

@@ -336,7 +336,7 @@ const AdminUsers = ({ query }: AdminUsersProps) => {
       renderCell: ({ row: r }: GridRenderCellParams) => {
         const row = r as UserRow;
         return (
-          <Stack direction="row" gap={0.5} alignItems="center" height="100%">
+          <Stack height="100%" direction="row" alignItems="center" gap={1}>
             {row.banned ? (
               <Tooltip title={t("actions.unban")}>
                 <IconButton

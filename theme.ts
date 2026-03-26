@@ -16,7 +16,7 @@ import {
 } from "@/constants/appBar";
 
 import type { LinkProps } from "@mui/material/Link";
-import { createTheme } from "@mui/material/styles";
+import { alpha, createTheme } from "@mui/material/styles";
 import type {} from "@mui/material/themeCssVarsAugmentation";
 import type {} from "@mui/x-data-grid/themeAugmentation";
 import type {} from "@mui/x-date-pickers/AdapterDayjs";
@@ -153,6 +153,12 @@ const theme = createTheme({
 
           "&:hover": {
             color: theme.vars.palette.primary.main,
+
+            ".MuiChip-root": {
+              color: theme.vars.palette.primary.main,
+              backgroundColor: alpha(theme.palette.primary.main, 0.12),
+              borderColor: theme.vars.palette.primary.main,
+            },
           },
         }),
         columnHeader: ({ theme }) => ({
