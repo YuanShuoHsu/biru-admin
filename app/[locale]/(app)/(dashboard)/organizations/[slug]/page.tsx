@@ -28,7 +28,15 @@ const OrganizationsSlugPage = async ({
 
   if (!data) notFound();
 
-  return <OrganizationsSlug activeOrganization={data} />;
+  return (
+    <OrganizationsSlug
+      activeOrganization={{
+        ...data,
+        invitations: data.invitations.toReversed(),
+        members: data.members.toReversed(),
+      }}
+    />
+  );
 };
 
 export default OrganizationsSlugPage;

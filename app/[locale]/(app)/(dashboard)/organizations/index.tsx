@@ -19,7 +19,6 @@ import { useRouter } from "@/i18n/navigation";
 import { authClient } from "@/lib/auth-client";
 
 import { Delete, ManageAccounts } from "@mui/icons-material";
-
 import {
   Avatar,
   Button,
@@ -198,7 +197,7 @@ const Organizations = ({ rows }: OrganizationsProps) => {
       <DataGrid
         {...DATA_GRID_PROPS}
         columns={columns}
-        rows={rows.toReversed()}
+        rows={rows}
       />
     </>
   );

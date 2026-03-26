@@ -399,7 +399,7 @@ const OrganizationsSlug = ({
           <DataGrid
             {...DATA_GRID_PROPS}
             columns={memberColumns}
-            rows={members.toReversed()}
+            rows={members}
           />
         </>
       ),
@@ -410,7 +410,7 @@ const OrganizationsSlug = ({
         <DataGrid
           {...DATA_GRID_PROPS}
           columns={invitationColumns}
-          rows={invitations.toReversed()}
+          rows={invitations}
         />
       ),
       label: (

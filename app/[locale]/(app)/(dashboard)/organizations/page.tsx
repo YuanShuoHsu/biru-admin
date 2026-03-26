@@ -19,7 +19,7 @@ const OrganizationsPage = async ({ params }: OrganizationsPageProps) => {
     fetchOptions: { headers: { cookie: cookieStore.toString() } },
   });
 
-  return <Organizations rows={data || []} />;
+  return <Organizations rows={(data || []).toReversed()} />;
 };
 
 export default OrganizationsPage;
