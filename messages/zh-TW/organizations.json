@@ -62,7 +62,7 @@
     "label": "待處理邀請",
     "status": {
       "accepted": "已接受",
-      "cancelled": "已取消",
+      "canceled": "已取消",
       "pending": "待接受",
       "rejected": "已拒絕"
     }

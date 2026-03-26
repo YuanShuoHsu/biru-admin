@@ -63,7 +63,7 @@ const STATUS_COLOR_MAP: Record<
   pending: "warning",
   accepted: "success",
   rejected: "error",
-  cancelled: "default",
+  canceled: "default",
 };
 
 interface OrganizationsSlugProps {
@@ -353,7 +353,7 @@ const OrganizationsSlug = ({
                   | "status.pending"
                   | "status.accepted"
                   | "status.rejected"
-                  | "status.cancelled",
+                  | "status.canceled",
               )}
               size="small"
               variant="outlined"

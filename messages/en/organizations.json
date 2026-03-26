@@ -48,7 +48,7 @@
     "cancel": {
       "confirm": "Are you sure you want to cancel the invitation for <bold>{email}</bold>?",
       "error": "Failed to cancel invitation. Please try again.",
-      "success": "Invitation cancelled successfully",
+      "success": "Invitation canceled successfully",
       "title": "Cancel Invitation"
     },
     "columns": {
@@ -62,7 +62,7 @@
     "label": "Pending invitations",
     "status": {
       "accepted": "Accepted",
-      "cancelled": "Cancelled",
+      "canceled": "Canceled",
       "pending": "Pending",
       "rejected": "Rejected"
     }

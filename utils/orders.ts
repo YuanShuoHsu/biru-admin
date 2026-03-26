@@ -21,7 +21,7 @@ import type {
 //   return fetcher<OrdersResponse>(`/admin/orders?${params}`);
 // });
 
-const STATUSES: OrderStatus[] = ["pending", "completed", "cancelled"];
+const STATUSES: OrderStatus[] = ["pending", "completed", "canceled"];
 const STORE_IDS = ["store-001", "store-002", "store-003"];
 const TABLE_IDS = ["T01", "T02", "T03", "T04", "T05", null];
 

@@ -62,7 +62,7 @@
     "label": "保留中の招待",
     "status": {
       "accepted": "承認済み",
-      "cancelled": "キャンセル済み",
+      "canceled": "キャンセル済み",
       "pending": "保留中",
       "rejected": "拒否済み"
     }

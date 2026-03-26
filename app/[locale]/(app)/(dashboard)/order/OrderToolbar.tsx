@@ -24,7 +24,7 @@ const STATUS_OPTIONS: { value: OrderStatus | ""; label: string }[] = [
   { value: "", label: "全部" },
   { value: "pending", label: "待處理" },
   { value: "completed", label: "已完成" },
-  { value: "cancelled", label: "已取消" },
+  { value: "canceled", label: "已取消" },
 ];
 
 const exportToCsv = (rows: Order[]) => {
