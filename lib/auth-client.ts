@@ -76,6 +76,20 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
     [LocaleEnum.Ko]: "이미 인증된 이메일입니다. 로그인해 주세요",
     [LocaleEnum.ZhCN]: "此邮箱已完成验证，请直接登录",
   },
+  USER_IS_ALREADY_INVITED_TO_THIS_ORGANIZATION: {
+    [LocaleEnum.ZhTW]: "此用戶已被邀請至該組織",
+    [LocaleEnum.En]: "User is already invited to this organization.",
+    [LocaleEnum.Ja]: "このユーザーは既にこの組織に招待されています",
+    [LocaleEnum.Ko]: "이 사용자는 이미 이 조직에 초대되었습니다",
+    [LocaleEnum.ZhCN]: "此用户已被邀请至该组织",
+  },
+  USER_IS_ALREADY_A_MEMBER_OF_THIS_ORGANIZATION: {
+    [LocaleEnum.ZhTW]: "此用戶已是該組織的成員",
+    [LocaleEnum.En]: "User is already a member of this organization.",
+    [LocaleEnum.Ja]: "このユーザーは既にこの組織のメンバーです",
+    [LocaleEnum.Ko]: "이 사용자는 이미 이 조직의 멤버입니다",
+    [LocaleEnum.ZhCN]: "此用户已是该组织的成员",
+  },
 };
 
 const errorCodes = {

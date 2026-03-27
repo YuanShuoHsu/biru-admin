@@ -1,4 +1,4 @@
-// https://mui.com/x/react-data-grid/column-dimensions/
+// https://mui.com/x/react-data-grid/column-dimensions/#ColumnAutosizingAsync.tsx
 // https://mui.com/x/react-data-grid/pagination/
 // https://mui.com/x/react-data-grid/performance/
 // https://mui.com/x/react-data-grid/server-side-data/
@@ -184,7 +184,7 @@ const Organizations = ({ rows }: OrganizationsProps) => {
 
   return (
     <>
-      <Stack direction="row">
+      <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
         <Button
           onClick={handleCreateOrganization}
           size="small"

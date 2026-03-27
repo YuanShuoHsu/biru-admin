@@ -1,17 +1,21 @@
+// https://mui.com/x/react-data-grid/column-dimensions/#ColumnAutosizingAsync.tsx
+// https://mui.com/x/react-data-grid/pagination/
+// https://mui.com/x/react-data-grid/performance/
+// https://mui.com/x/react-data-grid/server-side-data/
+
 "use client";
 
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
+import { flushSync } from "react-dom";
 
 import InviteMemberDialogContent from "./InviteMemberDialogContent";
 
 import TabPanel from "@/components/TabPanel";
 
-import { DATA_GRID_PROPS } from "@/constants/dataGrid";
-
-import { useRouter } from "@/i18n/navigation";
+import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
@@ -31,6 +35,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -71,9 +76,20 @@ interface OrganizationsSlugProps {
 }
 
 const OrganizationsSlug = ({
-  activeOrganization: { id, invitations, members },
+  activeOrganization: {
+    id,
+    invitations: initialInvitations,
+    members: initialMembers,
+    slug,
+  },
 }: OrganizationsSlugProps) => {
   const [value, setValue] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [members, setMembers] = useState(initialMembers);
+  const [invitations, setInvitations] = useState(initialInvitations);
+
+  const membersApiRef = useGridApiRef();
+  const invitationsApiRef = useGridApiRef();
 
   const { setDialog } = useDialogStore((state) => state);
 
@@ -81,13 +97,47 @@ const OrganizationsSlug = ({
 
   const locale = useLocale();
 
-  const router = useRouter();
-
   const tInvitations = useTranslations("organizations.invitations");
   const tMembers = useTranslations("organizations.members");
 
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+
+    const { data } = await authClient.organization.getFullOrganization({
+      query: { organizationSlug: slug },
+    });
+    if (!data) {
+      setLoading(false);
+
+      return;
+    }
+
+    flushSync(() => {
+      setMembers(data.members.toReversed());
+      setInvitations(data.invitations.toReversed());
+
+      setLoading(false);
+    });
+
+    setTimeout(() => {
+      membersApiRef.current?.autosizeColumns(autosizeOptions);
+      invitationsApiRef.current?.autosizeColumns(autosizeOptions);
+    }, 0);
+  }, [invitationsApiRef, membersApiRef, slug]);
+
   const handleChange = (_: React.SyntheticEvent, newValue: number) =>
     setValue(newValue);
+
+  const handleInviteMember = () => {
+    setDialog({
+      content: (
+        <InviteMemberDialogContent fetchData={fetchData} organizationId={id} />
+      ),
+      formId: "invite-member-form",
+      open: true,
+      title: tMembers("invite.title"),
+    });
+  };
 
   const handleRemoveMember = useCallback(
     ({ userId, user: { name } }: Member) => {
@@ -114,7 +164,7 @@ const OrganizationsSlug = ({
                   variant: "success",
                 });
 
-                router.refresh();
+                fetchData();
               },
             },
           );
@@ -123,7 +173,7 @@ const OrganizationsSlug = ({
         title: tMembers("remove.title"),
       });
     },
-    [id, locale, router, setDialog, tMembers],
+    [fetchData, id, locale, setDialog, tMembers],
   );
 
   const handleUpdateMemberRole = useCallback(
@@ -143,12 +193,12 @@ const OrganizationsSlug = ({
             const message = tMembers("setRole.success");
             enqueueSnackbar(message, { variant: "success" });
 
-            router.refresh();
+            fetchData();
           },
         },
       );
     },
-    [id, locale, router, tMembers],
+    [fetchData, id, locale, tMembers],
   );
 
   const memberColumns = useMemo<GridColDef[]>(
@@ -270,7 +320,7 @@ const OrganizationsSlug = ({
                 const message = tInvitations("cancel.success");
                 enqueueSnackbar(message, { variant: "success" });
 
-                router.refresh();
+                fetchData();
               },
             },
           );
@@ -279,7 +329,7 @@ const OrganizationsSlug = ({
         title: tInvitations("cancel.title"),
       });
     },
-    [locale, router, setDialog, tInvitations],
+    [fetchData, locale, setDialog, tInvitations],
   );
 
   const invitationColumns = useMemo<GridColDef[]>(
@@ -349,15 +399,6 @@ const OrganizationsSlug = ({
     [format, handleCancelInvitation, tInvitations, tMembers],
   );
 
-  const handleInviteMember = () => {
-    setDialog({
-      content: <InviteMemberDialogContent organizationId={id} />,
-      formId: "invite-member-form",
-      open: true,
-      title: tMembers("invite.title"),
-    });
-  };
-
   const pendingCount = invitations.filter(
     ({ status }) => status === "pending",
   ).length;
@@ -366,7 +407,7 @@ const OrganizationsSlug = ({
     {
       children: (
         <>
-          <Stack direction="row">
+          <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
             <Button
               onClick={handleInviteMember}
               size="small"
@@ -378,7 +419,9 @@ const OrganizationsSlug = ({
           </Stack>
           <DataGrid
             {...DATA_GRID_PROPS}
+            apiRef={membersApiRef}
             columns={memberColumns}
+            loading={loading}
             rows={members}
           />
         </>
@@ -389,7 +432,9 @@ const OrganizationsSlug = ({
       children: (
         <DataGrid
           {...DATA_GRID_PROPS}
+          apiRef={invitationsApiRef}
           columns={invitationColumns}
+          loading={loading}
           rows={invitations}
         />
       ),

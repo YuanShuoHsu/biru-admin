@@ -8,13 +8,16 @@ import {
   UnsortedIcon,
 } from "@/components/CustomSortIcons";
 import CustomToolbar from "@/components/CustomToolbar";
+import { GridAutosizeOptions } from "@mui/x-data-grid";
+
+export const autosizeOptions: GridAutosizeOptions = {
+  includeHeaders: true,
+  includeOutliers: true,
+};
 
 export const DATA_GRID_PROPS = {
   autosizeOnMount: true,
-  autosizeOptions: {
-    includeHeaders: true,
-    includeOutliers: true,
-  },
+  autosizeOptions,
   disableRowSelectionOnClick: true,
   getRowClassName: ({
     indexRelativeToCurrentPage,

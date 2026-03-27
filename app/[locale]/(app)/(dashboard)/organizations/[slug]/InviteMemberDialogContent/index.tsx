@@ -14,8 +14,6 @@ import {
   useInviteMemberFormSchema,
 } from "./definitions";
 
-import { useRouter } from "@/i18n/navigation";
-
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { Box, type BoxProps, MenuItem, TextField, styled } from "@mui/material";
@@ -30,17 +28,17 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 }));
 
 interface InviteMemberDialogContentProps {
+  fetchData: () => void;
   organizationId: string;
 }
 
 const InviteMemberDialogContent = ({
+  fetchData,
   organizationId,
 }: InviteMemberDialogContentProps) => {
   const { resetDialog, setDialog } = useDialogStore((state) => state);
 
   const locale = useLocale();
-
-  const router = useRouter();
 
   const tMembers = useTranslations("organizations.members");
 
@@ -77,7 +75,7 @@ const InviteMemberDialogContent = ({
             enqueueSnackbar(message, { variant: "success" });
 
             resetDialog();
-            router.refresh();
+            fetchData();
           },
         },
       );
