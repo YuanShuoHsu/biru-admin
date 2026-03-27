@@ -61,16 +61,6 @@ const ROLE_COLOR_MAP: Record<string, "error" | "warning" | "default"> = {
   member: "default",
 };
 
-const STATUS_COLOR_MAP: Record<
-  string,
-  "default" | "success" | "error" | "warning"
-> = {
-  pending: "warning",
-  accepted: "success",
-  rejected: "error",
-  canceled: "default",
-};
-
 interface OrganizationsSlugProps {
   activeOrganization: ActiveOrganization;
 }
@@ -86,7 +76,9 @@ const OrganizationsSlug = ({
   const [value, setValue] = useState(0);
   const [loading, setLoading] = useState(false);
   const [members, setMembers] = useState(initialMembers);
-  const [invitations, setInvitations] = useState(initialInvitations);
+  const [invitations, setInvitations] = useState(
+    initialInvitations.filter(({ status }) => status === "pending"),
+  );
 
   const membersApiRef = useGridApiRef();
   const invitationsApiRef = useGridApiRef();
@@ -114,7 +106,11 @@ const OrganizationsSlug = ({
 
     flushSync(() => {
       setMembers(data.members.toReversed());
-      setInvitations(data.invitations.toReversed());
+      setInvitations(
+        data.invitations
+          .toReversed()
+          .filter(({ status }) => status === "pending"),
+      );
 
       setLoading(false);
     });
@@ -337,25 +333,21 @@ const OrganizationsSlug = ({
       {
         field: "actions",
         headerName: tInvitations("columns.actions"),
-        renderCell: ({ row }: GridRenderCellParams<Invitation>) => {
-          if (row.status !== "pending") return null;
+        renderCell: ({ row }: GridRenderCellParams<Invitation>) => (
+          <Tooltip title={tInvitations("actions.cancel")}>
+            <IconButton
+              color="error"
+              onClick={(event) => {
+                event.stopPropagation();
 
-          return (
-            <Tooltip title={tInvitations("actions.cancel")}>
-              <IconButton
-                color="error"
-                onClick={(event) => {
-                  event.stopPropagation();
-
-                  handleCancelInvitation(row);
-                }}
-                size="small"
-              >
-                <Delete fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          );
-        },
+                handleCancelInvitation(row);
+              }}
+              size="small"
+            >
+              <Delete fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        ),
         resizable: false,
         sortable: false,
       },
@@ -377,19 +369,6 @@ const OrganizationsSlug = ({
         sortable: false,
       },
       {
-        field: "status",
-        headerName: tInvitations("columns.status"),
-        renderCell: ({ row: { status } }: GridRenderCellParams<Invitation>) => (
-          <Chip
-            color={STATUS_COLOR_MAP[status]}
-            label={tInvitations(`status.${status}`)}
-            size="small"
-            variant="outlined"
-          />
-        ),
-        sortable: false,
-      },
-      {
         field: "expiresAt",
         headerName: tInvitations("columns.expiresAt"),
         valueFormatter: (value: Date | string) =>
@@ -399,9 +378,7 @@ const OrganizationsSlug = ({
     [format, handleCancelInvitation, tInvitations, tMembers],
   );
 
-  const pendingCount = invitations.filter(
-    ({ status }) => status === "pending",
-  ).length;
+  const pendingCount = invitations.length;
 
   const tabs = [
     {
