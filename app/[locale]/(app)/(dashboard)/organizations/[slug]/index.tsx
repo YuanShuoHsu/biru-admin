@@ -83,17 +83,6 @@ const OrganizationsSlug = ({
   const membersApiRef = useGridApiRef();
   const invitationsApiRef = useGridApiRef();
 
-  const autosizeColumns = useCallback(
-    (tabIndex: number) => {
-      const apiRefs = [membersApiRef, invitationsApiRef];
-
-      setTimeout(() => {
-        apiRefs[tabIndex].current?.autosizeColumns(autosizeOptions);
-      }, 0);
-    },
-    [membersApiRef, invitationsApiRef],
-  );
-
   const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
@@ -126,14 +115,16 @@ const OrganizationsSlug = ({
       setLoading(false);
     });
 
-    autosizeColumns(value);
-  }, [autosizeColumns, slug, value]);
+    setTimeout(() => {
+      (value === 0
+        ? membersApiRef
+        : invitationsApiRef
+      ).current?.autosizeColumns(autosizeOptions);
+    }, 0);
+  }, [invitationsApiRef, membersApiRef, slug, value]);
 
-  const handleChange = (_: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (_: React.SyntheticEvent, newValue: number) =>
     setValue(newValue);
-
-    autosizeColumns(newValue);
-  };
 
   const handleInviteMember = () => {
     setDialog({
@@ -410,6 +401,9 @@ const OrganizationsSlug = ({
             apiRef={membersApiRef}
             columns={memberColumns}
             loading={loading}
+            onPaginationModelChange={() =>
+              membersApiRef.current?.autosizeColumns(autosizeOptions)
+            }
             rows={members}
           />
         </>
@@ -423,6 +417,9 @@ const OrganizationsSlug = ({
           apiRef={invitationsApiRef}
           columns={invitationColumns}
           loading={loading}
+          onPaginationModelChange={() =>
+            invitationsApiRef.current?.autosizeColumns(autosizeOptions)
+          }
           rows={invitations}
         />
       ),
