@@ -14,7 +14,11 @@ import type { Locale } from "@/i18n/routing";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { CheckCircle, GroupAdd, ReportGmailerrorred } from "@mui/icons-material";
+import {
+  CheckCircle,
+  GroupAdd,
+  ReportGmailerrorred,
+} from "@mui/icons-material";
 import { Avatar, Button, Typography } from "@mui/material";
 import { alpha, styled } from "@mui/material/styles";
 
@@ -116,7 +120,12 @@ const AuthAcceptInvitation = ({ locale, token }: AuthAcceptInvitationProps) => {
     },
     [ACCEPT_STATUS.ACCEPTED]: {
       actions: (
-        <Button fullWidth size="large" variant="contained" onClick={() => router.replace("/order")}>
+        <Button
+          fullWidth
+          size="large"
+          variant="contained"
+          onClick={() => router.replace("/order")}
+        >
           {redirectCountdown
             ? tAuth("acceptInvitation.accepted.actions", {
                 seconds: redirectCountdown,
@@ -131,7 +140,12 @@ const AuthAcceptInvitation = ({ locale, token }: AuthAcceptInvitationProps) => {
     },
     [ACCEPT_STATUS.FAILED]: {
       actions: (
-        <Button fullWidth size="large" variant="contained" onClick={() => router.replace("/order")}>
+        <Button
+          fullWidth
+          size="large"
+          variant="contained"
+          onClick={() => router.replace("/order")}
+        >
           {tAuth("acceptInvitation.failed.actions")}
         </Button>
       ),
