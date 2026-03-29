@@ -83,6 +83,17 @@ const OrganizationsSlug = ({
   const membersApiRef = useGridApiRef();
   const invitationsApiRef = useGridApiRef();
 
+  const autosizeColumns = useCallback(
+    (tabIndex: number) => {
+      const apiRefs = [membersApiRef, invitationsApiRef];
+
+      setTimeout(() => {
+        apiRefs[tabIndex].current?.autosizeColumns(autosizeOptions);
+      }, 0);
+    },
+    [membersApiRef, invitationsApiRef],
+  );
+
   const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
@@ -115,14 +126,14 @@ const OrganizationsSlug = ({
       setLoading(false);
     });
 
-    setTimeout(() => {
-      membersApiRef.current?.autosizeColumns(autosizeOptions);
-      invitationsApiRef.current?.autosizeColumns(autosizeOptions);
-    }, 0);
-  }, [invitationsApiRef, membersApiRef, slug]);
+    autosizeColumns(value);
+  }, [autosizeColumns, slug, value]);
 
-  const handleChange = (_: React.SyntheticEvent, newValue: number) =>
+  const handleChange = (_: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
+
+    autosizeColumns(newValue);
+  };
 
   const handleInviteMember = () => {
     setDialog({
