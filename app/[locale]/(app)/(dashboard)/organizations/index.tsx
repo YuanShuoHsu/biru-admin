@@ -8,11 +8,12 @@
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { flushSync } from "react-dom";
 
 import CreateOrganizationDialogContent from "./CreateOrganizationDialogContent";
 
-import { DATA_GRID_PROPS } from "@/constants/dataGrid";
+import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
 import { useRouter } from "@/i18n/navigation";
 
@@ -25,10 +26,11 @@ import {
   DialogContentText,
   IconButton,
   Stack,
-  Tooltip,
   styled,
+  Tooltip,
 } from "@mui/material";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -51,7 +53,12 @@ interface OrganizationsProps {
   rows: Organization[];
 }
 
-const Organizations = ({ rows }: OrganizationsProps) => {
+const Organizations = ({ rows: initialRows }: OrganizationsProps) => {
+  const [loading, setLoading] = useState(false);
+  const [rows, setRows] = useState(initialRows);
+
+  const apiRef = useGridApiRef();
+
   const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
@@ -62,9 +69,30 @@ const Organizations = ({ rows }: OrganizationsProps) => {
 
   const tOrganizations = useTranslations("organizations");
 
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+
+    const { data } = await authClient.organization.list();
+    if (!data) {
+      setLoading(false);
+
+      return;
+    }
+
+    flushSync(() => {
+      setRows(data.toReversed());
+
+      setLoading(false);
+    });
+
+    setTimeout(() => {
+      apiRef.current?.autosizeColumns(autosizeOptions);
+    }, 0);
+  }, [apiRef]);
+
   const handleCreateOrganization = () => {
     setDialog({
-      content: <CreateOrganizationDialogContent />,
+      content: <CreateOrganizationDialogContent fetchData={fetchData} />,
       formId: "create-organization-form",
       open: true,
       title: tOrganizations("create.title"),
@@ -96,7 +124,7 @@ const Organizations = ({ rows }: OrganizationsProps) => {
                   variant: "success",
                 });
 
-                router.refresh();
+                fetchData();
               },
             },
           );
@@ -105,7 +133,7 @@ const Organizations = ({ rows }: OrganizationsProps) => {
         title: tOrganizations("delete.title"),
       });
     },
-    [locale, router, setDialog, tOrganizations],
+    [fetchData, locale, setDialog, tOrganizations],
   );
 
   const columns = useMemo<GridColDef[]>(
@@ -193,7 +221,16 @@ const Organizations = ({ rows }: OrganizationsProps) => {
           {tOrganizations("create.title")}
         </Button>
       </Stack>
-      <DataGrid {...DATA_GRID_PROPS} columns={columns} rows={rows} />
+      <DataGrid
+        {...DATA_GRID_PROPS}
+        apiRef={apiRef}
+        columns={columns}
+        loading={loading}
+        onPaginationModelChange={() =>
+          apiRef.current?.autosizeColumns(autosizeOptions)
+        }
+        rows={rows}
+      />
     </>
   );
 };

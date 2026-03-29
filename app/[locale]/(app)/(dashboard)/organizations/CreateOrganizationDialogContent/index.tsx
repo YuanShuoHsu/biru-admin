@@ -10,8 +10,6 @@ import {
   useCreateOrganizationFormSchema,
 } from "./definitions";
 
-import { useRouter } from "@/i18n/navigation";
-
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { Box, type BoxProps, TextField, styled } from "@mui/material";
@@ -25,12 +23,16 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   paddingTop: theme.spacing(1),
 }));
 
-const CreateOrganizationDialogContent = () => {
+interface CreateOrganizationDialogContentProps {
+  fetchData: () => Promise<void>;
+}
+
+const CreateOrganizationDialogContent = ({
+  fetchData,
+}: CreateOrganizationDialogContentProps) => {
   const { resetDialog, setDialog } = useDialogStore((state) => state);
 
   const locale = useLocale();
-
-  const router = useRouter();
 
   const tOrganizations = useTranslations("organizations");
 
@@ -64,7 +66,7 @@ const CreateOrganizationDialogContent = () => {
             enqueueSnackbar(message, { variant: "success" });
 
             resetDialog();
-            router.refresh();
+            fetchData();
           },
         },
       );
