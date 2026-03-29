@@ -17,9 +17,11 @@ import TabPanel from "@/components/TabPanel";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
+import { useRouter } from "@/i18n/navigation";
+
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { Delete, GroupAdd, PersonRemove } from "@mui/icons-material";
+import { Delete, ExitToApp, GroupAdd, PersonRemove } from "@mui/icons-material";
 import {
   Avatar,
   Button,
@@ -37,6 +39,7 @@ import {
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
+import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { ActiveOrganization, Invitation, Member } from "@/types/auth";
@@ -70,6 +73,7 @@ const OrganizationsSlug = ({
     id,
     invitations: initialInvitations,
     members: initialMembers,
+    name,
     slug,
   },
 }: OrganizationsSlugProps) => {
@@ -83,14 +87,18 @@ const OrganizationsSlug = ({
   const membersApiRef = useGridApiRef();
   const invitationsApiRef = useGridApiRef();
 
+  const { session } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
 
   const locale = useLocale();
 
+  const router = useRouter();
+
   const tInvitations = useTranslations("organizations.invitations");
   const tMembers = useTranslations("organizations.members");
+  const tOrganizations = useTranslations("organizations");
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -125,6 +133,38 @@ const OrganizationsSlug = ({
 
   const handleChange = (_: React.SyntheticEvent, newValue: number) =>
     setValue(newValue);
+
+  const handleLeaveOrganization = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tOrganizations.rich("leave.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            name,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        await authClient.organization.leave(
+          { organizationId: id },
+          {
+            onError: ({ error: { code } }) => {
+              const message = getErrorMessage(code, locale);
+              enqueueSnackbar(message, { variant: "error" });
+            },
+            onSuccess: () => {
+              const message = tOrganizations("leave.success");
+              enqueueSnackbar(message, { variant: "success" });
+
+              router.push("/organizations");
+            },
+          },
+        );
+      },
+      open: true,
+      title: tOrganizations("leave.title"),
+    });
+  }, [id, locale, name, router, setDialog, tOrganizations]);
 
   const handleInviteMember = () => {
     setDialog({
@@ -205,20 +245,36 @@ const OrganizationsSlug = ({
         field: "actions",
         headerName: tMembers("columns.actions"),
         renderCell: ({ row }: GridRenderCellParams<Member>) => {
-          if (row.role === "owner") return null;
+          const isCurrentUser = row.userId === session?.user.id;
+
+          if (!isCurrentUser && row.role === "owner") return null;
 
           return (
-            <Tooltip title={tMembers("actions.remove")}>
+            <Tooltip
+              title={
+                isCurrentUser
+                  ? tOrganizations("actions.leave")
+                  : tMembers("actions.remove")
+              }
+            >
               <IconButton
                 color="error"
                 onClick={(event) => {
                   event.stopPropagation();
 
-                  handleRemoveMember(row);
+                  if (isCurrentUser) {
+                    handleLeaveOrganization();
+                  } else {
+                    handleRemoveMember(row);
+                  }
                 }}
                 size="small"
               >
-                <PersonRemove fontSize="small" />
+                {isCurrentUser ? (
+                  <ExitToApp fontSize="small" />
+                ) : (
+                  <PersonRemove fontSize="small" />
+                )}
               </IconButton>
             </Tooltip>
           );
@@ -292,7 +348,15 @@ const OrganizationsSlug = ({
           format.dateTime(new Date(value), "short"),
       },
     ],
-    [format, handleRemoveMember, handleUpdateMemberRole, tMembers],
+    [
+      format,
+      handleLeaveOrganization,
+      handleRemoveMember,
+      handleUpdateMemberRole,
+      session,
+      tMembers,
+      tOrganizations,
+    ],
   );
 
   const handleCancelInvitation = useCallback(

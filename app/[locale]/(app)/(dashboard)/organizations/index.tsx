@@ -12,6 +12,7 @@ import { useCallback, useMemo, useState } from "react";
 import { flushSync } from "react-dom";
 
 import CreateOrganizationDialogContent from "./CreateOrganizationDialogContent";
+import UpdateOrganizationDialogContent from "./UpdateOrganizationDialogContent";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
@@ -19,7 +20,7 @@ import { useRouter } from "@/i18n/navigation";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { Delete, ManageAccounts } from "@mui/icons-material";
+import { AddBusiness, Delete, Edit, ManageAccounts } from "@mui/icons-material";
 import {
   Avatar,
   Button,
@@ -99,6 +100,23 @@ const Organizations = ({ rows: initialRows }: OrganizationsProps) => {
     });
   };
 
+  const handleUpdateOrganization = useCallback(
+    (organization: Organization) => {
+      setDialog({
+        content: (
+          <UpdateOrganizationDialogContent
+            fetchData={fetchData}
+            organization={organization}
+          />
+        ),
+        formId: "update-organization-form",
+        open: true,
+        title: tOrganizations("update.title"),
+      });
+    },
+    [fetchData, setDialog, tOrganizations],
+  );
+
   const handleDeleteOrganization = useCallback(
     ({ id, name }: Organization) => {
       setDialog({
@@ -156,6 +174,18 @@ const Organizations = ({ rows: initialRows }: OrganizationsProps) => {
                   <ManageAccounts fontSize="small" />
                 </IconButton>
               </Tooltip>
+              <Tooltip title={tOrganizations("actions.update")}>
+                <IconButton
+                  onClick={(event) => {
+                    event.stopPropagation();
+
+                    handleUpdateOrganization(row);
+                  }}
+                  size="small"
+                >
+                  <Edit fontSize="small" />
+                </IconButton>
+              </Tooltip>
               <Tooltip title={tOrganizations("actions.delete")}>
                 <IconButton
                   color="error"
@@ -207,7 +237,13 @@ const Organizations = ({ rows: initialRows }: OrganizationsProps) => {
           format.dateTime(new Date(value), "short"),
       },
     ],
-    [format, handleDeleteOrganization, router, tOrganizations],
+    [
+      format,
+      handleDeleteOrganization,
+      handleUpdateOrganization,
+      router,
+      tOrganizations,
+    ],
   );
 
   return (
@@ -216,6 +252,7 @@ const Organizations = ({ rows: initialRows }: OrganizationsProps) => {
         <Button
           onClick={handleCreateOrganization}
           size="small"
+          startIcon={<AddBusiness />}
           variant="contained"
         >
           {tOrganizations("create.title")}

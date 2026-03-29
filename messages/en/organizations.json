@@ -1,6 +1,8 @@
 {
   "actions": {
     "delete": "Delete",
+    "leave": "Leave organization",
+    "update": "Edit",
     "view": "Manage"
   },
   "columns": {
@@ -31,6 +33,15 @@
     "title": "Organization details"
   },
   "empty": "No organizations found",
+  "leave": {
+    "confirm": "Are you sure you want to leave <bold>{name}</bold>?",
+    "success": "You have left the organization successfully",
+    "title": "Leave organization"
+  },
+  "update": {
+    "success": "Organization updated successfully",
+    "title": "Edit organization"
+  },
   "fields": {
     "name": {
       "label": "Organization name",

@@ -1,6 +1,8 @@
 {
   "actions": {
     "delete": "削除",
+    "leave": "組織を退出",
+    "update": "編集",
     "view": "管理"
   },
   "columns": {
@@ -31,6 +33,15 @@
     "title": "組織詳細"
   },
   "empty": "組織が見つかりません",
+  "leave": {
+    "confirm": "<bold>{name}</bold> を退出しますか？",
+    "success": "組織の退出に成功しました",
+    "title": "組織を退出"
+  },
+  "update": {
+    "success": "組織の更新に成功しました",
+    "title": "組織を編集"
+  },
   "fields": {
     "name": {
       "label": "組織名",

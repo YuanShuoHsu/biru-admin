@@ -1,6 +1,8 @@
 {
   "actions": {
     "delete": "刪除",
+    "leave": "離開組織",
+    "update": "編輯",
     "view": "管理"
   },
   "columns": {
@@ -31,6 +33,15 @@
     "title": "組織詳情"
   },
   "empty": "尚無組織資料",
+  "leave": {
+    "confirm": "確定要離開 <bold>{name}</bold> 嗎？",
+    "success": "成功離開組織",
+    "title": "離開組織"
+  },
+  "update": {
+    "success": "成功更新組織",
+    "title": "編輯組織"
+  },
   "fields": {
     "name": {
       "label": "組織名稱",

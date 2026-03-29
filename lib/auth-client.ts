@@ -58,6 +58,14 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
     [LocaleEnum.Ko]: "이미 존재하는 조직입니다",
     [LocaleEnum.ZhCN]: "此组织已存在",
   },
+  ORGANIZATION_SLUG_ALREADY_TAKEN: {
+    [LocaleEnum.ZhTW]: "此識別碼已被使用，請換一個",
+    [LocaleEnum.En]: "This slug is already taken. Please choose another.",
+    [LocaleEnum.Ja]:
+      "このスラッグは既に使用されています。別のものを選んでください",
+    [LocaleEnum.Ko]: "이미 사용 중인 슬러그입니다. 다른 것을 선택해 주세요",
+    [LocaleEnum.ZhCN]: "此标识符已被使用，请换一个",
+  },
   NO_ACTIVE_ORGANIZATION: {
     [LocaleEnum.ZhTW]: "您的帳號無權限存取後台，請聯繫管理員",
     [LocaleEnum.En]:
@@ -90,6 +98,20 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
     [LocaleEnum.Ko]: "이 사용자는 이미 이 조직의 멤버입니다",
     [LocaleEnum.ZhCN]: "此用户已是该组织的成员",
   },
+  YOU_CANNOT_LEAVE_THE_ORGANIZATION_AS_THE_ONLY_OWNER: {
+    [LocaleEnum.ZhTW]: "您是唯一的擁有者，無法離開組織",
+    [LocaleEnum.En]: "You cannot leave the organization as the only owner.",
+    [LocaleEnum.Ja]: "唯一のオーナーのため、組織を退出できません",
+    [LocaleEnum.Ko]: "유일한 소유자이므로 조직을 탈퇴할 수 없습니다",
+    [LocaleEnum.ZhCN]: "您是唯一的拥有者，无法离开组织",
+  },
+  // YOU_CANNOT_LEAVE_THE_ORGANIZATION_WITHOUT_AN_OWNER: {
+  //   [LocaleEnum.ZhTW]: "請先轉移擁有者權限，再離開組織",
+  //   [LocaleEnum.En]: "Please transfer ownership before leaving the organization.",
+  //   [LocaleEnum.Ja]: "組織を退出する前に、オーナー権限を移譲してください",
+  //   [LocaleEnum.Ko]: "조직을 탈퇴하기 전에 소유권을 이전해 주세요",
+  //   [LocaleEnum.ZhCN]: "请先转移拥有者权限，再离开组织",
+  // },
 };
 
 const errorCodes = {

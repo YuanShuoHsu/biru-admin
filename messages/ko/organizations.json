@@ -1,6 +1,8 @@
 {
   "actions": {
     "delete": "삭제",
+    "leave": "조직 탈퇴",
+    "update": "편집",
     "view": "관리"
   },
   "columns": {
@@ -31,6 +33,15 @@
     "title": "조직 상세"
   },
   "empty": "조직이 없습니다",
+  "leave": {
+    "confirm": "<bold>{name}</bold>에서 탈퇴하시겠습니까?",
+    "success": "조직에서 성공적으로 탈퇴했습니다",
+    "title": "조직 탈퇴"
+  },
+  "update": {
+    "success": "조직이 성공적으로 업데이트되었습니다",
+    "title": "조직 편집"
+  },
   "fields": {
     "name": {
       "label": "조직명",
