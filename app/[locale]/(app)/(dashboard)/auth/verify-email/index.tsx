@@ -196,8 +196,8 @@ const AuthVerifyEmail = ({
       actions: React.ReactNode;
       color: "error" | "primary";
       icon: React.ElementType;
-      subtitle: React.ReactNode;
-      title: React.ReactNode;
+      subtitle: string;
+      title: string;
     }
   > = {
     [VERIFY_STATUS.DEFAULT]: {

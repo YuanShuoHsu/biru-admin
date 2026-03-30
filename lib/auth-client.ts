@@ -44,12 +44,23 @@ type ErrorTypes = Partial<
 >;
 
 const customErrorCodes: Record<string, Record<Locale, string>> = {
-  VALIDATION_ERROR: {
-    [LocaleEnum.ZhTW]: "資料驗證失敗",
-    [LocaleEnum.En]: "Validation Error",
-    [LocaleEnum.Ja]: "バリデーションエラー",
-    [LocaleEnum.Ko]: "유효성 검사 오류",
-    [LocaleEnum.ZhCN]: "数据验证失败",
+  EMAIL_IS_ALREADY_VERIFIED: {
+    [LocaleEnum.ZhTW]: "此信箱已完成驗證，請直接登入",
+    [LocaleEnum.En]: "Email already verified. Please sign in.",
+    [LocaleEnum.Ja]:
+      "このメールアドレスは既に認証済みです。ログインしてください",
+    [LocaleEnum.Ko]: "이미 인증된 이메일입니다. 로그인해 주세요",
+    [LocaleEnum.ZhCN]: "此邮箱已完成验证，请直接登录",
+  },
+  NO_ACTIVE_ORGANIZATION: {
+    [LocaleEnum.ZhTW]: "您的帳號無權限存取後台，請聯繫管理員",
+    [LocaleEnum.En]:
+      "Your account does not have access to the admin panel. Please contact your administrator.",
+    [LocaleEnum.Ja]:
+      "このアカウントには管理画面へのアクセス権限がありません。管理者にお問い合わせください。",
+    [LocaleEnum.Ko]:
+      "이 계정은 관리자 패널에 접근할 권한이 없습니다. 관리자에게 문의하세요.",
+    [LocaleEnum.ZhCN]: "您的账号无权访问后台，请联系管理员",
   },
   ORGANIZATION_ALREADY_EXISTS: {
     [LocaleEnum.ZhTW]: "此組織已存在",
@@ -66,23 +77,12 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
     [LocaleEnum.Ko]: "이미 사용 중인 슬러그입니다. 다른 것을 선택해 주세요",
     [LocaleEnum.ZhCN]: "此标识符已被使用，请换一个",
   },
-  NO_ACTIVE_ORGANIZATION: {
-    [LocaleEnum.ZhTW]: "您的帳號無權限存取後台，請聯繫管理員",
-    [LocaleEnum.En]:
-      "Your account does not have access to the admin panel. Please contact your administrator.",
-    [LocaleEnum.Ja]:
-      "このアカウントには管理画面へのアクセス権限がありません。管理者にお問い合わせください。",
-    [LocaleEnum.Ko]:
-      "이 계정은 관리자 패널에 접근할 권한이 없습니다. 관리자에게 문의하세요.",
-    [LocaleEnum.ZhCN]: "您的账号无权访问后台，请联系管理员",
-  },
-  EMAIL_IS_ALREADY_VERIFIED: {
-    [LocaleEnum.ZhTW]: "此信箱已完成驗證，請直接登入",
-    [LocaleEnum.En]: "Email already verified. Please sign in.",
-    [LocaleEnum.Ja]:
-      "このメールアドレスは既に認証済みです。ログインしてください",
-    [LocaleEnum.Ko]: "이미 인증된 이메일입니다. 로그인해 주세요",
-    [LocaleEnum.ZhCN]: "此邮箱已完成验证，请直接登录",
+  USER_IS_ALREADY_A_MEMBER_OF_THIS_ORGANIZATION: {
+    [LocaleEnum.ZhTW]: "此用戶已是該組織的成員",
+    [LocaleEnum.En]: "User is already a member of this organization.",
+    [LocaleEnum.Ja]: "このユーザーは既にこの組織のメンバーです",
+    [LocaleEnum.Ko]: "이 사용자는 이미 이 조직의 멤버입니다",
+    [LocaleEnum.ZhCN]: "此用户已是该组织的成员",
   },
   USER_IS_ALREADY_INVITED_TO_THIS_ORGANIZATION: {
     [LocaleEnum.ZhTW]: "此用戶已被邀請至該組織",
@@ -91,12 +91,12 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
     [LocaleEnum.Ko]: "이 사용자는 이미 이 조직에 초대되었습니다",
     [LocaleEnum.ZhCN]: "此用户已被邀请至该组织",
   },
-  USER_IS_ALREADY_A_MEMBER_OF_THIS_ORGANIZATION: {
-    [LocaleEnum.ZhTW]: "此用戶已是該組織的成員",
-    [LocaleEnum.En]: "User is already a member of this organization.",
-    [LocaleEnum.Ja]: "このユーザーは既にこの組織のメンバーです",
-    [LocaleEnum.Ko]: "이 사용자는 이미 이 조직의 멤버입니다",
-    [LocaleEnum.ZhCN]: "此用户已是该组织的成员",
+  VALIDATION_ERROR: {
+    [LocaleEnum.ZhTW]: "資料驗證失敗",
+    [LocaleEnum.En]: "Validation Error",
+    [LocaleEnum.Ja]: "バリデーションエラー",
+    [LocaleEnum.Ko]: "유효성 검사 오류",
+    [LocaleEnum.ZhCN]: "数据验证失败",
   },
   YOU_CANNOT_LEAVE_THE_ORGANIZATION_AS_THE_ONLY_OWNER: {
     [LocaleEnum.ZhTW]: "您是唯一的擁有者，無法離開組織",
