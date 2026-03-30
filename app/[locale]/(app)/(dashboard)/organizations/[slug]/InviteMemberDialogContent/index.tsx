@@ -61,6 +61,7 @@ const InviteMemberDialogContent = ({
       await authClient.organization.inviteMember(
         { email, organizationId, role },
         {
+          headers: { "Accept-Language": locale },
           onRequest: () => {
             setDialog({ confirmLoading: true });
           },
