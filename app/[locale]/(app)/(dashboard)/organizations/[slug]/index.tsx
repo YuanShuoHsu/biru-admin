@@ -458,28 +458,16 @@ const OrganizationsSlug = ({
   const tabs = [
     {
       children: (
-        <>
-          <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
-            <Button
-              onClick={handleInviteMember}
-              size="small"
-              startIcon={<GroupAdd />}
-              variant="contained"
-            >
-              {tMembers("actions.invite")}
-            </Button>
-          </Stack>
-          <DataGrid
-            {...DATA_GRID_PROPS}
-            apiRef={membersApiRef}
-            columns={memberColumns}
-            loading={loading}
-            onPaginationModelChange={() =>
-              membersApiRef.current?.autosizeColumns(autosizeOptions)
-            }
-            rows={members}
-          />
-        </>
+        <DataGrid
+          {...DATA_GRID_PROPS}
+          apiRef={membersApiRef}
+          columns={memberColumns}
+          loading={loading}
+          onPaginationModelChange={() =>
+            membersApiRef.current?.autosizeColumns(autosizeOptions)
+          }
+          rows={members}
+        />
       ),
       label: tMembers("label"),
     },
@@ -509,6 +497,16 @@ const OrganizationsSlug = ({
 
   return (
     <>
+      <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
+        <Button
+          onClick={handleInviteMember}
+          size="small"
+          startIcon={<GroupAdd />}
+          variant="contained"
+        >
+          {tMembers("actions.invite")}
+        </Button>
+      </Stack>
       <Tabs
         aria-label="organization tabs"
         onChange={handleChange}
