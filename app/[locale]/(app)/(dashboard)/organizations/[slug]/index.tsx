@@ -239,6 +239,11 @@ const OrganizationsSlug = ({
     [fetchData, id, locale, tMembers],
   );
 
+  const ownerCount = useMemo(
+    () => members.filter(({ role }) => role === "owner").length,
+    [members],
+  );
+
   const memberColumns = useMemo<GridColDef[]>(
     () => [
       {
@@ -246,35 +251,38 @@ const OrganizationsSlug = ({
         headerName: tMembers("columns.actions"),
         renderCell: ({ row }: GridRenderCellParams<Member>) => {
           const isCurrentUser = row.userId === session?.user.id;
+          const isOwner = row.role === "owner";
 
-          if (!isCurrentUser && row.role === "owner") return null;
+          const action = isCurrentUser
+            ? isOwner && ownerCount === 1
+              ? null
+              : {
+                  icon: <ExitToApp fontSize="small" />,
+                  onClick: handleLeaveOrganization,
+                  title: tOrganizations("actions.leave"),
+                }
+            : isOwner
+              ? null
+              : {
+                  icon: <PersonRemove fontSize="small" />,
+                  onClick: () => handleRemoveMember(row),
+                  title: tMembers("actions.remove"),
+                };
+          if (!action) return null;
+          const { icon, onClick, title } = action;
 
           return (
-            <Tooltip
-              title={
-                isCurrentUser
-                  ? tOrganizations("actions.leave")
-                  : tMembers("actions.remove")
-              }
-            >
+            <Tooltip title={title}>
               <IconButton
                 color="error"
                 onClick={(event) => {
                   event.stopPropagation();
 
-                  if (isCurrentUser) {
-                    handleLeaveOrganization();
-                  } else {
-                    handleRemoveMember(row);
-                  }
+                  onClick();
                 }}
                 size="small"
               >
-                {isCurrentUser ? (
-                  <ExitToApp fontSize="small" />
-                ) : (
-                  <PersonRemove fontSize="small" />
-                )}
+                {icon}
               </IconButton>
             </Tooltip>
           );
@@ -353,6 +361,7 @@ const OrganizationsSlug = ({
       handleLeaveOrganization,
       handleRemoveMember,
       handleUpdateMemberRole,
+      ownerCount,
       session,
       tMembers,
       tOrganizations,
