@@ -52,6 +52,13 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
     [LocaleEnum.Ko]: "이미 인증된 이메일입니다. 로그인해 주세요",
     [LocaleEnum.ZhCN]: "此邮箱已完成验证，请直接登录",
   },
+  MEMBER_NOT_FOUND: {
+    [LocaleEnum.ZhTW]: "找不到該成員",
+    [LocaleEnum.En]: "Member not found.",
+    [LocaleEnum.Ja]: "メンバーが見つかりません",
+    [LocaleEnum.Ko]: "멤버를 찾을 수 없습니다",
+    [LocaleEnum.ZhCN]: "找不到该成员",
+  },
   NO_ACTIVE_ORGANIZATION: {
     [LocaleEnum.ZhTW]: "您的帳號無權限存取後台，請聯繫管理員",
     [LocaleEnum.En]:

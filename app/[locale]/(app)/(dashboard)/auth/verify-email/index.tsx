@@ -245,7 +245,6 @@ const AuthVerifyEmail = ({
     [VERIFY_STATUS.VERIFYING]: {
       actions: (
         <Button
-          disabled
           fullWidth
           loading
           loadingPosition="end"

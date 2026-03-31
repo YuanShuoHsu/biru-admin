@@ -178,7 +178,7 @@ const OrganizationsSlug = ({
   };
 
   const handleRemoveMember = useCallback(
-    ({ userId, user: { name } }: Member) => {
+    ({ id: memberId, user: { name } }: Member) => {
       setDialog({
         content: (
           <DialogContentText>
@@ -189,7 +189,7 @@ const OrganizationsSlug = ({
           await authClient.organization.removeMember(
             {
               organizationId: id,
-              memberIdOrEmail: userId,
+              memberIdOrEmail: memberId,
             },
             {
               onError: ({ error: { code } }) => {
@@ -239,35 +239,49 @@ const OrganizationsSlug = ({
     [fetchData, id, locale, tMembers],
   );
 
-  const ownerCount = useMemo(
-    () => members.filter(({ role }) => role === "owner").length,
-    [members],
-  );
-
   const memberColumns = useMemo<GridColDef[]>(
     () => [
       {
         field: "actions",
         headerName: tMembers("columns.actions"),
         renderCell: ({ row }: GridRenderCellParams<Member>) => {
-          const isCurrentUser = row.userId === session?.user.id;
-          const isOwner = row.role === "owner";
+          const currentUserId = session?.user.id;
+          const currentUserRole = members.find(
+            ({ userId }) => userId === currentUserId,
+          )?.role;
+          if (!currentUserRole) return null;
+          const currentUserCanRemove =
+            authClient.organization.checkRolePermission({
+              role: currentUserRole,
+              permissions: { member: ["delete"] },
+            });
 
-          const action = isCurrentUser
-            ? isOwner && ownerCount === 1
-              ? null
-              : {
-                  icon: <ExitToApp fontSize="small" />,
-                  onClick: handleLeaveOrganization,
-                  title: tOrganizations("actions.leave"),
-                }
-            : isOwner
-              ? null
-              : {
+          const isCurrentUser = row.userId === currentUserId;
+          const isOwner = row.role === "owner";
+          const ownerCount = members.filter(
+            ({ role }) => role === "owner",
+          ).length;
+
+          const canLeave = isCurrentUser && !(isOwner && ownerCount === 1);
+          const canRemove =
+            !isCurrentUser &&
+            currentUserCanRemove &&
+            (!isOwner || currentUserRole === "owner");
+
+          const action = canLeave
+            ? {
+                icon: <ExitToApp fontSize="small" />,
+                onClick: handleLeaveOrganization,
+                title: tOrganizations("actions.leave"),
+              }
+            : canRemove
+              ? {
                   icon: <PersonRemove fontSize="small" />,
                   onClick: () => handleRemoveMember(row),
                   title: tMembers("actions.remove"),
-                };
+                }
+              : null;
+
           if (!action) return null;
           const { icon, onClick, title } = action;
 
@@ -361,7 +375,7 @@ const OrganizationsSlug = ({
       handleLeaveOrganization,
       handleRemoveMember,
       handleUpdateMemberRole,
-      ownerCount,
+      members,
       session,
       tMembers,
       tOrganizations,
