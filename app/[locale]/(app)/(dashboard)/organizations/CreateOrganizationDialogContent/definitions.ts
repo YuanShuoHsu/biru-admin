@@ -5,6 +5,7 @@ export const useCreateOrganizationFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z.object({
+    logo: z.string().trim().optional(),
     name: z
       .string()
       .min(2, { error: tValidation("name.minLength") })

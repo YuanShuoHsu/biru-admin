@@ -94,8 +94,6 @@ const AuthSignUp = ({ locale, redirectTo }: AuthSignUpProps) => {
     [query.redirectTo]: redirectTo,
   });
 
-  const tAuth = useTranslations("auth");
-
   const signupFormSchema = useSignupFormSchema();
   type SignupFormData = z.infer<typeof signupFormSchema>;
 
@@ -123,6 +121,8 @@ const AuthSignUp = ({ locale, redirectTo }: AuthSignUpProps) => {
   const uploadAvatarsRef = useRef<UploadAvatarsHandle>(null);
 
   const router = useRouter();
+
+  const tAuth = useTranslations("auth");
 
   // const genderOptions = GENDER_VALUES.map((value) => ({
   //   label: tAuth("gender.options")[GENDER_LABELS[value]],

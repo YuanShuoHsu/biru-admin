@@ -3,12 +3,17 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
+import { type BaseSyntheticEvent, useRef } from "react";
 import { useForm } from "react-hook-form";
 
 import {
   type CreateOrganizationForm,
   useCreateOrganizationFormSchema,
 } from "./definitions";
+
+import UploadAvatars, {
+  type UploadAvatarsHandle,
+} from "@/components/UploadAvatars";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
@@ -47,31 +52,36 @@ const CreateOrganizationDialogContent = ({
     resolver: zodResolver(createOrganizationFormSchema),
   });
 
-  const onSubmit = handleSubmit(
-    async ({ name, slug }: CreateOrganizationForm) => {
-      await authClient.organization.create(
-        { name, slug },
-        {
-          onRequest: () => {
-            setDialog({ confirmLoading: true });
-          },
-          onError: ({ error: { code } }) => {
-            const message = getErrorMessage(code, locale);
-            enqueueSnackbar(message, { variant: "error" });
+  const uploadAvatarsRef = useRef<UploadAvatarsHandle>(null);
 
-            setDialog({ confirmLoading: false });
-          },
-          onSuccess: () => {
-            const message = tOrganizations("create.success");
-            enqueueSnackbar(message, { variant: "success" });
+  const onSubmitHandler = async ({ name, slug }: CreateOrganizationForm) => {
+    const { avatarSrc: logo } = uploadAvatarsRef.current?.getValue() || {};
 
-            resetDialog();
-            fetchData();
-          },
+    await authClient.organization.create(
+      { logo, name, slug },
+      {
+        onRequest: () => {
+          setDialog({ confirmLoading: true });
         },
-      );
-    },
-  );
+        onError: ({ error: { code } }) => {
+          const message = getErrorMessage(code, locale);
+          enqueueSnackbar(message, { variant: "error" });
+
+          setDialog({ confirmLoading: false });
+        },
+        onSuccess: () => {
+          const message = tOrganizations("create.success");
+          enqueueSnackbar(message, { variant: "success" });
+
+          resetDialog();
+          fetchData();
+        },
+      },
+    );
+  };
+
+  const onSubmit = (event: BaseSyntheticEvent) =>
+    handleSubmit(onSubmitHandler)(event);
 
   return (
     <StyledBox
@@ -79,6 +89,7 @@ const CreateOrganizationDialogContent = ({
       id="create-organization-form"
       onSubmit={onSubmit}
     >
+      <UploadAvatars ref={uploadAvatarsRef} />
       <TextField
         autoComplete="organization"
         error={!!errors.name}
