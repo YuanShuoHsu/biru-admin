@@ -34,6 +34,7 @@ import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
+import { useAuthStore } from "@/providers/auth-store-provider";
 
 import type { Organization } from "@/types/auth";
 
@@ -61,6 +62,7 @@ const Organizations = ({ rows: initialRows }: OrganizationsProps) => {
   const apiRef = useGridApiRef();
 
   const { setDialog } = useDialogStore((state) => state);
+  const { setSession } = useAuthStore((state) => state);
 
   const format = useFormatter();
 
@@ -74,8 +76,14 @@ const Organizations = ({ rows: initialRows }: OrganizationsProps) => {
     setLoading(true);
 
     const { data } = await authClient.organization.list();
-    if (!data) {
+    if (!data?.length) {
+      enqueueSnackbar(getErrorMessage("NO_ACTIVE_ORGANIZATION", locale), {
+        variant: "error",
+      });
+      await authClient.signOut();
+      setSession(null);
       setLoading(false);
+      router.replace("/");
 
       return;
     }
@@ -89,7 +97,7 @@ const Organizations = ({ rows: initialRows }: OrganizationsProps) => {
     setTimeout(() => {
       apiRef.current?.autosizeColumns(autosizeOptions);
     }, 0);
-  }, [apiRef]);
+  }, [apiRef, locale, router, setSession]);
 
   const handleCreateOrganization = () => {
     setDialog({

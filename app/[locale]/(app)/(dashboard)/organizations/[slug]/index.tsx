@@ -87,7 +87,7 @@ const OrganizationsSlug = ({
   const membersApiRef = useGridApiRef();
   const invitationsApiRef = useGridApiRef();
 
-  const { session } = useAuthStore((state) => state);
+  const { session, setSession } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
@@ -152,11 +152,26 @@ const OrganizationsSlug = ({
               const message = getErrorMessage(code, locale);
               enqueueSnackbar(message, { variant: "error" });
             },
-            onSuccess: () => {
+            onSuccess: async () => {
               const message = tOrganizations("leave.success");
               enqueueSnackbar(message, { variant: "success" });
 
-              router.push("/organizations");
+              const { data } = await authClient.organization.list();
+              if (!data?.length) {
+                enqueueSnackbar(
+                  getErrorMessage("NO_ACTIVE_ORGANIZATION", locale),
+                  {
+                    variant: "error",
+                  },
+                );
+                await authClient.signOut();
+                setSession(null);
+                router.replace("/");
+
+                return;
+              }
+
+              router.replace("/organizations");
             },
           },
         );
@@ -164,7 +179,7 @@ const OrganizationsSlug = ({
       open: true,
       title: tOrganizations("leave.title"),
     });
-  }, [id, locale, name, router, setDialog, tOrganizations]);
+  }, [id, locale, name, router, setDialog, setSession, tOrganizations]);
 
   const handleInviteMember = () => {
     setDialog({

@@ -84,6 +84,13 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
     [LocaleEnum.Ko]: "이미 사용 중인 슬러그입니다. 다른 것을 선택해 주세요",
     [LocaleEnum.ZhCN]: "此标识符已被使用，请换一个",
   },
+  UNAUTHORIZED: {
+    [LocaleEnum.ZhTW]: "請先登入",
+    [LocaleEnum.En]: "Please sign in first",
+    [LocaleEnum.Ja]: "先にログインしてください",
+    [LocaleEnum.Ko]: "먼저 로그인해 주세요",
+    [LocaleEnum.ZhCN]: "请先登录",
+  },
   USER_IS_ALREADY_A_MEMBER_OF_THIS_ORGANIZATION: {
     [LocaleEnum.ZhTW]: "此用戶已是該組織的成員",
     [LocaleEnum.En]: "User is already a member of this organization.",
