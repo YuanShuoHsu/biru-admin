@@ -17,7 +17,7 @@ import UploadAvatars, {
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { Box, type BoxProps, TextField, styled } from "@mui/material";
+import { Box, type BoxProps, Stack, TextField, styled } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -89,7 +89,9 @@ const CreateOrganizationDialogContent = ({
       id="create-organization-form"
       onSubmit={onSubmit}
     >
-      <UploadAvatars ref={uploadAvatarsRef} />
+      <Stack alignItems="center">
+        <UploadAvatars ref={uploadAvatarsRef} />
+      </Stack>
       <TextField
         autoComplete="organization"
         error={!!errors.name}
