@@ -22,7 +22,6 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   gap: theme.spacing(2),
-  paddingTop: theme.spacing(1),
 }));
 
 interface UpdateOrganizationDialogContentProps {
