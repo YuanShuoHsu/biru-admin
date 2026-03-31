@@ -1,6 +1,7 @@
 // https://mui.com/material-ui/react-avatar/#UploadAvatars.tsx
 // https://mui.com/material-ui/react-button/#InputFileUpload.tsx
 
+import imageCompression, { type Options } from "browser-image-compression";
 import { forwardRef, useImperativeHandle, useState } from "react";
 
 import BadgeAvatars from "@/components/BadgeAvatars";
@@ -46,50 +47,68 @@ export interface UploadAvatarsHandle {
   getValue: () => { avatarSrc?: string };
 }
 
-const UploadAvatars = forwardRef<UploadAvatarsHandle>((_, ref) => {
-  const [avatarSrc, setAvatarSrc] = useState<string | undefined>(undefined);
+const COMPRESSION_OPTIONS: Options = {
+  maxSizeMB: 0.1,
+  maxWidthOrHeight: 512,
+  fileType: "image/jpeg",
+  initialQuality: 0.9,
+  useWebWorker: true,
+};
 
-  useImperativeHandle(ref, () => ({
-    getValue: () => ({
-      avatarSrc,
-    }),
-  }));
+interface UploadAvatarsProps {
+  initialSrc?: string | null;
+}
 
-  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setAvatarSrc(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+const UploadAvatars = forwardRef<UploadAvatarsHandle, UploadAvatarsProps>(
+  ({ initialSrc }, ref) => {
+    const [avatarSrc, setAvatarSrc] = useState<string | undefined>(
+      initialSrc || undefined,
+    );
 
-  return (
-    <StyledButtonBase
-      aria-label="Avatar image"
-      component="label"
-      role={undefined}
-      tabIndex={-1}
-    >
-      <BadgeAvatars
-        badgeContent={
-          <IconButton aria-label="cameraAlt" component="span" size="small">
-            <CameraAlt fontSize="inherit" />
-          </IconButton>
-        }
+    useImperativeHandle(ref, () => ({
+      getValue: () => ({
+        avatarSrc,
+      }),
+    }));
+
+    const handleAvatarChange = async (
+      event: React.ChangeEvent<HTMLInputElement>,
+    ) => {
+      const file = event.target.files?.[0];
+      if (file) {
+        const compressed = await imageCompression(file, COMPRESSION_OPTIONS);
+
+        const reader = new FileReader();
+        reader.onload = () => setAvatarSrc(reader.result as string);
+        reader.readAsDataURL(compressed);
+      }
+    };
+
+    return (
+      <StyledButtonBase
+        aria-label="Avatar image"
+        component="label"
+        role={undefined}
+        tabIndex={-1}
       >
-        <StyledAvatar alt="Upload new avatar" src={avatarSrc} />
-        <VisuallyHiddenInput
-          accept="image/*"
-          onChange={handleAvatarChange}
-          type="file"
-        />
-      </BadgeAvatars>
-    </StyledButtonBase>
-  );
-});
+        <BadgeAvatars
+          badgeContent={
+            <IconButton aria-label="cameraAlt" component="span" size="small">
+              <CameraAlt fontSize="inherit" />
+            </IconButton>
+          }
+        >
+          <StyledAvatar alt="Upload new avatar" src={avatarSrc} />
+          <VisuallyHiddenInput
+            accept="image/*"
+            onChange={handleAvatarChange}
+            type="file"
+          />
+        </BadgeAvatars>
+      </StyledButtonBase>
+    );
+  },
+);
 
 UploadAvatars.displayName = "UploadAvatars";
 

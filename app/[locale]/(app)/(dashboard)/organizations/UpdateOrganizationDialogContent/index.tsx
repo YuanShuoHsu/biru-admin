@@ -3,12 +3,17 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
+import { type BaseSyntheticEvent, useRef } from "react";
 import { useForm } from "react-hook-form";
 
 import {
   type UpdateOrganizationForm,
   useUpdateOrganizationFormSchema,
 } from "./definitions";
+
+import UploadAvatars, {
+  type UploadAvatarsHandle,
+} from "@/components/UploadAvatars";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
@@ -21,6 +26,7 @@ import type { Organization } from "@/types/auth";
 const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
+  alignItems: "center",
   gap: theme.spacing(2),
 }));
 
@@ -50,31 +56,36 @@ const UpdateOrganizationDialogContent = ({
     resolver: zodResolver(updateOrganizationFormSchema),
   });
 
-  const onSubmit = handleSubmit(
-    async ({ name, slug }: UpdateOrganizationForm) => {
-      await authClient.organization.update(
-        { organizationId: organization.id, data: { name, slug } },
-        {
-          onRequest: () => {
-            setDialog({ confirmLoading: true });
-          },
-          onError: ({ error: { code } }) => {
-            const message = getErrorMessage(code, locale);
-            enqueueSnackbar(message, { variant: "error" });
+  const uploadAvatarsRef = useRef<UploadAvatarsHandle>(null);
 
-            setDialog({ confirmLoading: false });
-          },
-          onSuccess: () => {
-            const message = tOrganizations("update.success");
-            enqueueSnackbar(message, { variant: "success" });
+  const onSubmitHandler = async ({ name, slug }: UpdateOrganizationForm) => {
+    const { avatarSrc: logo } = uploadAvatarsRef.current?.getValue() || {};
 
-            resetDialog();
-            fetchData();
-          },
+    await authClient.organization.update(
+      { organizationId: organization.id, data: { name, slug, logo } },
+      {
+        onRequest: () => {
+          setDialog({ confirmLoading: true });
         },
-      );
-    },
-  );
+        onError: ({ error: { code } }) => {
+          const message = getErrorMessage(code, locale);
+          enqueueSnackbar(message, { variant: "error" });
+
+          setDialog({ confirmLoading: false });
+        },
+        onSuccess: () => {
+          const message = tOrganizations("update.success");
+          enqueueSnackbar(message, { variant: "success" });
+
+          resetDialog();
+          fetchData();
+        },
+      },
+    );
+  };
+
+  const onSubmit = (event: BaseSyntheticEvent) =>
+    handleSubmit(onSubmitHandler)(event);
 
   return (
     <StyledBox
@@ -82,6 +93,7 @@ const UpdateOrganizationDialogContent = ({
       id="update-organization-form"
       onSubmit={onSubmit}
     >
+      <UploadAvatars initialSrc={organization.logo} ref={uploadAvatarsRef} />
       <TextField
         autoComplete="organization"
         error={!!errors.name}

@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import OrganizationsSlug from ".";
 
 import type { Locale } from "@/i18n/routing";
+
 import { authClient } from "@/lib/auth-client";
 
 interface OrganizationsSlugPageProps {
