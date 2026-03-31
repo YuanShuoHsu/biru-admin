@@ -17,15 +17,15 @@ import UploadAvatars, {
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { Box, type BoxProps, Stack, TextField, styled } from "@mui/material";
+import { Box, type BoxProps, TextField, styled } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
+  alignItems: "center",
   gap: theme.spacing(2),
-  paddingTop: theme.spacing(1),
 }));
 
 interface CreateOrganizationDialogContentProps {
@@ -89,9 +89,7 @@ const CreateOrganizationDialogContent = ({
       id="create-organization-form"
       onSubmit={onSubmit}
     >
-      <Stack alignItems="center">
-        <UploadAvatars ref={uploadAvatarsRef} />
-      </Stack>
+      <UploadAvatars ref={uploadAvatarsRef} />
       <TextField
         autoComplete="organization"
         error={!!errors.name}

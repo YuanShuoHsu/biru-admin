@@ -23,8 +23,8 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
+  alignItems: "center",
   gap: theme.spacing(2),
-  paddingTop: theme.spacing(1),
 }));
 
 interface InviteMemberDialogContentProps {
