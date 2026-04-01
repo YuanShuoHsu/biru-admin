@@ -48,10 +48,10 @@ export interface UploadAvatarsHandle {
 }
 
 const COMPRESSION_OPTIONS: Options = {
-  maxSizeMB: 0.1,
+  maxSizeMB: 0.02,
   maxWidthOrHeight: 512,
   fileType: "image/jpeg",
-  initialQuality: 0.9,
+  initialQuality: 0.8,
   useWebWorker: true,
 };
 
