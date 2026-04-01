@@ -6,7 +6,7 @@ import { forwardRef, useImperativeHandle, useState } from "react";
 
 import BadgeAvatars from "@/components/BadgeAvatars";
 
-import { CameraAlt } from "@mui/icons-material";
+import { CameraAlt, Close } from "@mui/icons-material";
 import {
   Avatar,
   ButtonBase,
@@ -43,10 +43,6 @@ const VisuallyHiddenInput = styled("input")({
   width: "1px",
 });
 
-export interface UploadAvatarsHandle {
-  getValue: () => { avatarSrc?: string };
-}
-
 const COMPRESSION_OPTIONS: Options = {
   maxSizeMB: 0.02,
   maxWidthOrHeight: 512,
@@ -54,6 +50,10 @@ const COMPRESSION_OPTIONS: Options = {
   initialQuality: 0.8,
   useWebWorker: true,
 };
+
+export interface UploadAvatarsHandle {
+  getValue: () => { avatarSrc: string | undefined };
+}
 
 interface UploadAvatarsProps {
   initialSrc?: string | null;
@@ -84,6 +84,15 @@ const UploadAvatars = forwardRef<UploadAvatarsHandle, UploadAvatarsProps>(
       }
     };
 
+    const handleRemoveAvatar = (e: React.MouseEvent) => {
+      e.preventDefault();
+      setAvatarSrc(undefined);
+    };
+
+    const { Icon, label, onClick } = avatarSrc
+      ? { Icon: Close, label: "remove avatar", onClick: handleRemoveAvatar }
+      : { Icon: CameraAlt, label: "upload avatar", onClick: undefined };
+
     return (
       <StyledButtonBase
         aria-label="Avatar image"
@@ -93,8 +102,13 @@ const UploadAvatars = forwardRef<UploadAvatarsHandle, UploadAvatarsProps>(
       >
         <BadgeAvatars
           badgeContent={
-            <IconButton aria-label="cameraAlt" component="span" size="small">
-              <CameraAlt fontSize="inherit" />
+            <IconButton
+              aria-label={label}
+              component="span"
+              size="small"
+              onClick={onClick}
+            >
+              <Icon fontSize="inherit" />
             </IconButton>
           }
         >

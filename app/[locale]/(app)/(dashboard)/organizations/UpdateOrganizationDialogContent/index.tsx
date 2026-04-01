@@ -62,7 +62,7 @@ const UpdateOrganizationDialogContent = ({
     const { avatarSrc: logo } = uploadAvatarsRef.current?.getValue() || {};
 
     await authClient.organization.update(
-      { organizationId: organization.id, data: { name, slug, logo } },
+      { organizationId: organization.id, data: { logo, name, slug } },
       {
         onRequest: () => {
           setDialog({ confirmLoading: true });
