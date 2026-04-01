@@ -81,9 +81,13 @@
   "label": "组织管理",
   "members": {
     "actions": {
+      "edit": "编辑",
       "invite": "邀请成员",
       "remove": "移除",
       "setRole": "更改角色"
+    },
+    "edit": {
+      "title": "编辑成员"
     },
     "columns": {
       "actions": "操作",

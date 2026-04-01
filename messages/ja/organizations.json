@@ -81,9 +81,13 @@
   "label": "組織管理",
   "members": {
     "actions": {
+      "edit": "編集",
       "invite": "メンバーを招待",
       "remove": "削除",
       "setRole": "役割を変更"
+    },
+    "edit": {
+      "title": "メンバーを編集"
     },
     "columns": {
       "actions": "操作",

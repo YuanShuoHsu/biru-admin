@@ -16,10 +16,9 @@ import { useAuthMenuItems, useLogoutMenuItem } from "@/hooks/useAuth";
 
 import { usePathname } from "@/i18n/navigation";
 
-import { authClient } from "@/lib/auth-client";
-
 import {
   AccountCircle,
+  AdminPanelSettings,
   Business,
   Description,
   ExpandMore,
@@ -27,7 +26,6 @@ import {
   Home,
   Info,
   LocalMall,
-  AdminPanelSettings,
   Person,
   Restaurant,
   Security,
@@ -211,18 +209,18 @@ const useNavItems = () => {
   const isAuthPage = pathname.startsWith("/auth");
   const isCompanyPage = pathname.startsWith("/company");
 
-  const { data: memberRole } = useSWR(
-    session ? "activeMemberRole" : null,
-    async () => {
-      const { data } = await authClient.organization.getActiveMemberRole();
-      return data?.role;
-    },
-  );
+  // const { data: memberRole } = useSWR(
+  //   session ? "activeMemberRole" : null,
+  //   async () => {
+  //     const { data } = await authClient.organization.getActiveMemberRole();
+  //     return data?.role;
+  //   },
+  // );
 
-  const hasAdminAccess =
-    memberRole === "owner" ||
-    memberRole === "admin" ||
-    session?.user?.role === "admin";
+  // const hasAdminAccess =
+  //   memberRole === "owner" ||
+  //   memberRole === "admin" ||
+  //   session?.user?.role === "admin";
 
   const accountChildren = [
     ...useProfileMenuItems(),
@@ -286,20 +284,20 @@ const useNavItems = () => {
       label: tOrder("label"),
       to: "/order",
     },
-    ...(hasAdminAccess
-      ? [
-          {
-            icon: AdminPanelSettings,
-            label: tAdmin("users.label"),
-            to: "/admins",
-          },
-          {
-            icon: Business,
-            label: tOrganizations("label"),
-            to: "/organizations",
-          },
-        ]
-      : []),
+    // ...(hasAdminAccess
+    //   ? [
+    {
+      icon: AdminPanelSettings,
+      label: tAdmin("users.label"),
+      to: "/admins",
+    },
+    {
+      icon: Business,
+      label: tOrganizations("label"),
+      to: "/organizations",
+    },
+    //   ]
+    // : []),
     session
       ? {
           children: accountChildren,

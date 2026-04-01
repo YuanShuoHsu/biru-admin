@@ -81,9 +81,13 @@
   "label": "조직 관리",
   "members": {
     "actions": {
+      "edit": "편집",
       "invite": "멤버 초대",
       "remove": "제거",
       "setRole": "역할 변경"
+    },
+    "edit": {
+      "title": "멤버 편집"
     },
     "columns": {
       "actions": "작업",

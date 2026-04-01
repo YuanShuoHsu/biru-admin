@@ -11,6 +11,7 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import { flushSync } from "react-dom";
 
+import EditMemberDialogContent from "./EditMemberDialogContent";
 import InviteMemberDialogContent from "./InviteMemberDialogContent";
 
 import TabPanel from "@/components/TabPanel";
@@ -21,15 +22,19 @@ import { useRouter } from "@/i18n/navigation";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { Delete, ExitToApp, GroupAdd, PersonRemove } from "@mui/icons-material";
+import {
+  Delete,
+  Edit,
+  ExitToApp,
+  GroupAdd,
+  PersonRemove,
+} from "@mui/icons-material";
 import {
   Avatar,
   Button,
   Chip,
   DialogContentText,
   IconButton,
-  MenuItem,
-  Select,
   Stack,
   styled,
   Tab,
@@ -95,6 +100,11 @@ const OrganizationsSlug = ({
   const locale = useLocale();
 
   const router = useRouter();
+
+  const currentUserId = session?.user.id;
+  const currentUserRole = members.find(
+    ({ userId }) => userId === currentUserId,
+  )?.role;
 
   const tInvitations = useTranslations("organizations.invitations");
   const tMembers = useTranslations("organizations.members");
@@ -222,25 +232,22 @@ const OrganizationsSlug = ({
     [fetchData, id, locale, setDialog, tMembers],
   );
 
-  const handleUpdateMemberRole = useCallback(
-    async (memberId: string, role: Member["role"]) => {
-      await authClient.organization.updateMemberRole(
-        { organizationId: id, memberId, role },
-        {
-          onError: ({ error: { code } }) => {
-            const message = getErrorMessage(code, locale);
-            enqueueSnackbar(message, { variant: "error" });
-          },
-          onSuccess: () => {
-            const message = tMembers("setRole.success");
-            enqueueSnackbar(message, { variant: "success" });
-
-            fetchData();
-          },
-        },
-      );
+  const handleEditMember = useCallback(
+    (member: Member) => {
+      setDialog({
+        content: (
+          <EditMemberDialogContent
+            fetchData={fetchData}
+            member={member}
+            organizationId={id}
+          />
+        ),
+        formId: "edit-member-form",
+        open: true,
+        title: tMembers("edit.title"),
+      });
     },
-    [fetchData, id, locale, tMembers],
+    [fetchData, id, setDialog, tMembers],
   );
 
   const memberColumns = useMemo<GridColDef[]>(
@@ -249,15 +256,17 @@ const OrganizationsSlug = ({
         field: "actions",
         headerName: tMembers("columns.actions"),
         renderCell: ({ row }: GridRenderCellParams<Member>) => {
-          const currentUserId = session?.user.id;
-          const currentUserRole = members.find(
-            ({ userId }) => userId === currentUserId,
-          )?.role;
           if (!currentUserRole) return null;
+
           const currentUserCanRemove =
             authClient.organization.checkRolePermission({
               role: currentUserRole,
               permissions: { member: ["delete"] },
+            });
+          const currentUserCanUpdate =
+            authClient.organization.checkRolePermission({
+              role: currentUserRole,
+              permissions: { member: ["update"] },
             });
 
           const isCurrentUser = row.userId === currentUserId;
@@ -271,37 +280,54 @@ const OrganizationsSlug = ({
             !isCurrentUser &&
             currentUserCanRemove &&
             (!isOwner || currentUserRole === "owner");
+          const canEdit = !isCurrentUser && !isOwner && currentUserCanUpdate;
 
-          const action = canLeave
-            ? {
-                Icon: ExitToApp,
-                onClick: handleLeaveOrganization,
-                title: tOrganizations("actions.leave"),
-              }
-            : canRemove
-              ? {
-                  Icon: PersonRemove,
-                  onClick: () => handleRemoveMember(row),
-                  title: tMembers("actions.remove"),
-                }
-              : null;
-
-          if (!action) return null;
-          const { Icon, onClick, title } = action;
+          if (!canLeave && !canRemove && !canEdit) return null;
 
           return (
-            <Tooltip title={title}>
-              <IconButton
-                color="error"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  onClick?.();
-                }}
-                size="small"
-              >
-                <Icon fontSize="small" />
-              </IconButton>
-            </Tooltip>
+            <Stack direction="row" alignItems="center" height="100%" gap={0.5}>
+              {canEdit && (
+                <Tooltip title={tMembers("actions.edit")}>
+                  <IconButton
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      handleEditMember(row);
+                    }}
+                    size="small"
+                  >
+                    <Edit fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              )}
+              {canLeave && (
+                <Tooltip title={tOrganizations("actions.leave")}>
+                  <IconButton
+                    color="error"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      handleLeaveOrganization();
+                    }}
+                    size="small"
+                  >
+                    <ExitToApp fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              )}
+              {canRemove && (
+                <Tooltip title={tMembers("actions.remove")}>
+                  <IconButton
+                    color="error"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      handleRemoveMember(row);
+                    }}
+                    size="small"
+                  >
+                    <PersonRemove fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              )}
+            </Stack>
           );
         },
         resizable: false,
@@ -339,32 +365,15 @@ const OrganizationsSlug = ({
       {
         field: "role",
         headerName: tMembers("columns.role"),
-        renderCell: ({ row: { id, role } }: GridRenderCellParams<Member>) => {
-          if (role === "owner") {
-            return (
-              <Chip
-                label={tMembers("roles.owner")}
-                color="error"
-                size="small"
-                variant="outlined"
-              />
-            );
-          }
-
-          return (
-            <Select
-              size="small"
-              value={role}
-              onChange={({ target: { value } }) =>
-                handleUpdateMemberRole(id, value)
-              }
-              variant="standard"
-            >
-              <MenuItem value="admin">{tMembers("roles.admin")}</MenuItem>
-              <MenuItem value="member">{tMembers("roles.member")}</MenuItem>
-            </Select>
-          );
-        },
+        renderCell: ({ row: { role } }: GridRenderCellParams<Member>) => (
+          <Chip
+            color={ROLE_COLOR_MAP[role]}
+            label={tMembers(`roles.${role}`)}
+            size="small"
+            variant="outlined"
+          />
+        ),
+        sortable: false,
       },
       {
         field: "createdAt",
@@ -374,12 +383,13 @@ const OrganizationsSlug = ({
       },
     ],
     [
+      currentUserId,
+      currentUserRole,
       format,
+      handleEditMember,
       handleLeaveOrganization,
       handleRemoveMember,
-      handleUpdateMemberRole,
       members,
-      session,
       tMembers,
       tOrganizations,
     ],
@@ -425,21 +435,32 @@ const OrganizationsSlug = ({
       {
         field: "actions",
         headerName: tInvitations("columns.actions"),
-        renderCell: ({ row }: GridRenderCellParams<Invitation>) => (
-          <Tooltip title={tInvitations("actions.cancel")}>
-            <IconButton
-              color="error"
-              onClick={(event) => {
-                event.stopPropagation();
+        renderCell: ({ row }: GridRenderCellParams<Invitation>) => {
+          const canCancel =
+            currentUserRole &&
+            authClient.organization.checkRolePermission({
+              role: currentUserRole,
+              permissions: { invitation: ["cancel"] },
+            });
 
-                handleCancelInvitation(row);
-              }}
-              size="small"
-            >
-              <Delete fontSize="small" />
-            </IconButton>
-          </Tooltip>
-        ),
+          if (!canCancel) return null;
+
+          return (
+            <Tooltip title={tInvitations("actions.cancel")}>
+              <IconButton
+                color="error"
+                onClick={(event) => {
+                  event.stopPropagation();
+
+                  handleCancelInvitation(row);
+                }}
+                size="small"
+              >
+                <Delete fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          );
+        },
         resizable: false,
         sortable: false,
       },
@@ -467,7 +488,7 @@ const OrganizationsSlug = ({
           format.dateTime(new Date(value), "short"),
       },
     ],
-    [format, handleCancelInvitation, tInvitations, tMembers],
+    [currentUserRole, format, handleCancelInvitation, tInvitations, tMembers],
   );
 
   const pendingCount = invitations.length;
@@ -515,14 +536,20 @@ const OrganizationsSlug = ({
   return (
     <>
       <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
-        <Button
-          onClick={handleInviteMember}
-          size="small"
-          startIcon={<GroupAdd />}
-          variant="contained"
-        >
-          {tMembers("actions.invite")}
-        </Button>
+        {currentUserRole &&
+          authClient.organization.checkRolePermission({
+            role: currentUserRole,
+            permissions: { member: ["create"] },
+          }) && (
+            <Button
+              onClick={handleInviteMember}
+              size="small"
+              startIcon={<GroupAdd />}
+              variant="contained"
+            >
+              {tMembers("actions.invite")}
+            </Button>
+          )}
       </Stack>
       <Tabs
         aria-label="organization tabs"

@@ -81,9 +81,13 @@
   "label": "Organization Management",
   "members": {
     "actions": {
+      "edit": "Edit",
       "invite": "Invite member",
       "remove": "Remove",
       "setRole": "Change role"
+    },
+    "edit": {
+      "title": "Edit member"
     },
     "columns": {
       "actions": "Actions",

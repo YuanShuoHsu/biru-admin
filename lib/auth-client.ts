@@ -112,6 +112,27 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
     [LocaleEnum.Ko]: "유효성 검사 오류",
     [LocaleEnum.ZhCN]: "数据验证失败",
   },
+  YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_ORGANIZATION: {
+    [LocaleEnum.ZhTW]: "您沒有權限刪除此組織",
+    [LocaleEnum.En]: "You are not allowed to delete this organization.",
+    [LocaleEnum.Ja]: "この組織を削除する権限がありません",
+    [LocaleEnum.Ko]: "이 조직을 삭제할 권한이 없습니다",
+    [LocaleEnum.ZhCN]: "您没有权限删除此组织",
+  },
+  YOU_ARE_NOT_ALLOWED_TO_UPDATE_THIS_MEMBER: {
+    [LocaleEnum.ZhTW]: "您沒有權限更新此成員",
+    [LocaleEnum.En]: "You are not allowed to update this member.",
+    [LocaleEnum.Ja]: "このメンバーを更新する権限がありません",
+    [LocaleEnum.Ko]: "이 멤버를 업데이트할 권한이 없습니다",
+    [LocaleEnum.ZhCN]: "您没有权限更新此成员",
+  },
+  YOU_ARE_NOT_ALLOWED_TO_UPDATE_THIS_ORGANIZATION: {
+    [LocaleEnum.ZhTW]: "您沒有權限更新此組織",
+    [LocaleEnum.En]: "You are not allowed to update this organization.",
+    [LocaleEnum.Ja]: "この組織を更新する権限がありません",
+    [LocaleEnum.Ko]: "이 조직을 업데이트할 권한이 없습니다",
+    [LocaleEnum.ZhCN]: "您没有权限更新此组织",
+  },
   YOU_CANNOT_LEAVE_THE_ORGANIZATION_AS_THE_ONLY_OWNER: {
     [LocaleEnum.ZhTW]: "您是唯一的擁有者，無法離開組織",
     [LocaleEnum.En]: "You cannot leave the organization as the only owner.",
