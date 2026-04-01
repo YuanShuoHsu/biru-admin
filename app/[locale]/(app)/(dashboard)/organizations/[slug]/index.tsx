@@ -160,9 +160,7 @@ const OrganizationsSlug = ({
               if (!data?.length) {
                 enqueueSnackbar(
                   getErrorMessage("NO_ACTIVE_ORGANIZATION", locale),
-                  {
-                    variant: "error",
-                  },
+                  { variant: "error" },
                 );
                 await authClient.signOut();
                 setSession(null);
@@ -202,10 +200,7 @@ const OrganizationsSlug = ({
         ),
         onConfirm: async () => {
           await authClient.organization.removeMember(
-            {
-              organizationId: id,
-              memberIdOrEmail: memberId,
-            },
+            { organizationId: id, memberIdOrEmail: memberId },
             {
               onError: ({ error: { code } }) => {
                 const message = getErrorMessage(code, locale);
@@ -213,9 +208,7 @@ const OrganizationsSlug = ({
               },
               onSuccess: () => {
                 const message = tMembers("remove.success");
-                enqueueSnackbar(message, {
-                  variant: "success",
-                });
+                enqueueSnackbar(message, { variant: "success" });
 
                 fetchData();
               },
@@ -232,11 +225,7 @@ const OrganizationsSlug = ({
   const handleUpdateMemberRole = useCallback(
     async (memberId: string, role: Member["role"]) => {
       await authClient.organization.updateMemberRole(
-        {
-          organizationId: id,
-          memberId,
-          role,
-        },
+        { organizationId: id, memberId, role },
         {
           onError: ({ error: { code } }) => {
             const message = getErrorMessage(code, locale);
@@ -285,20 +274,20 @@ const OrganizationsSlug = ({
 
           const action = canLeave
             ? {
-                icon: <ExitToApp fontSize="small" />,
+                Icon: ExitToApp,
                 onClick: handleLeaveOrganization,
                 title: tOrganizations("actions.leave"),
               }
             : canRemove
               ? {
-                  icon: <PersonRemove fontSize="small" />,
+                  Icon: PersonRemove,
                   onClick: () => handleRemoveMember(row),
                   title: tMembers("actions.remove"),
                 }
               : null;
 
           if (!action) return null;
-          const { icon, onClick, title } = action;
+          const { Icon, onClick, title } = action;
 
           return (
             <Tooltip title={title}>
@@ -306,12 +295,11 @@ const OrganizationsSlug = ({
                 color="error"
                 onClick={(event) => {
                   event.stopPropagation();
-
-                  onClick();
+                  onClick?.();
                 }}
                 size="small"
               >
-                {icon}
+                <Icon fontSize="small" />
               </IconButton>
             </Tooltip>
           );
