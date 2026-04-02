@@ -180,8 +180,7 @@ const Organizations = ({
         field: "actions",
         headerName: tOrganizations("columns.actions"),
         renderCell: ({ row }: GridRenderCellParams<Organization>) => {
-          const { canDelete = false, canUpdate = false } =
-            organizationPermissions[row.id];
+          const { canDelete, canUpdate } = organizationPermissions[row.id];
 
           return (
             <Stack height="100%" direction="row" alignItems="center" gap={1}>
