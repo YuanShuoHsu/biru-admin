@@ -39,6 +39,10 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { Organization } from "@/types/auth";
 
 import { stringAvatar } from "@/utils/avatar";
+import {
+  getOrganizationPermissions,
+  type OrganizationPermissions,
+} from "@/utils/organizations";
 
 const StyledAvatar = styled(Avatar)({
   width: 24,
@@ -52,11 +56,18 @@ const DataGrid = dynamic(
 );
 
 interface OrganizationsProps {
+  organizationPermissions: OrganizationPermissions;
   rows: Organization[];
 }
 
-const Organizations = ({ rows: initialRows }: OrganizationsProps) => {
+const Organizations = ({
+  organizationPermissions: initialOrganizationPermissions,
+  rows: initialRows,
+}: OrganizationsProps) => {
   const [loading, setLoading] = useState(false);
+  const [organizationPermissions, setOrganizationPermissions] = useState(
+    initialOrganizationPermissions,
+  );
   const [rows, setRows] = useState(initialRows);
 
   const apiRef = useGridApiRef();
@@ -87,6 +98,9 @@ const Organizations = ({ rows: initialRows }: OrganizationsProps) => {
 
       return;
     }
+
+    const permissions = await getOrganizationPermissions(data);
+    setOrganizationPermissions(permissions);
 
     flushSync(() => {
       setRows(data.toReversed());
@@ -165,47 +179,56 @@ const Organizations = ({ rows: initialRows }: OrganizationsProps) => {
       {
         field: "actions",
         headerName: tOrganizations("columns.actions"),
-        renderCell: ({ row }: GridRenderCellParams<Organization>) => (
-          <Stack height="100%" direction="row" alignItems="center" gap={1}>
-            <Tooltip title={tOrganizations("actions.view")}>
-              <IconButton
-                onClick={(event) => {
-                  event.stopPropagation();
+        renderCell: ({ row }: GridRenderCellParams<Organization>) => {
+          const { canDelete = false, canUpdate = false } =
+            organizationPermissions[row.id];
 
-                  router.push(`/organizations/${row.slug}`);
-                }}
-                size="small"
-              >
-                <ManageAccounts fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title={tOrganizations("actions.update")}>
-              <IconButton
-                onClick={(event) => {
-                  event.stopPropagation();
+          return (
+            <Stack height="100%" direction="row" alignItems="center" gap={1}>
+              <Tooltip title={tOrganizations("actions.view")}>
+                <IconButton
+                  onClick={(event) => {
+                    event.stopPropagation();
 
-                  handleUpdateOrganization(row);
-                }}
-                size="small"
-              >
-                <Edit fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title={tOrganizations("actions.delete")}>
-              <IconButton
-                color="error"
-                onClick={(event) => {
-                  event.stopPropagation();
+                    router.push(`/organizations/${row.slug}`);
+                  }}
+                  size="small"
+                >
+                  <ManageAccounts fontSize="small" />
+                </IconButton>
+              </Tooltip>
+              {canUpdate && (
+                <Tooltip title={tOrganizations("actions.update")}>
+                  <IconButton
+                    onClick={(event) => {
+                      event.stopPropagation();
 
-                  handleDeleteOrganization(row);
-                }}
-                size="small"
-              >
-                <Delete fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </Stack>
-        ),
+                      handleUpdateOrganization(row);
+                    }}
+                    size="small"
+                  >
+                    <Edit fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              )}
+              {canDelete && (
+                <Tooltip title={tOrganizations("actions.delete")}>
+                  <IconButton
+                    color="error"
+                    onClick={(event) => {
+                      event.stopPropagation();
+
+                      handleDeleteOrganization(row);
+                    }}
+                    size="small"
+                  >
+                    <Delete fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              )}
+            </Stack>
+          );
+        },
         resizable: false,
         sortable: false,
       },
@@ -245,6 +268,7 @@ const Organizations = ({ rows: initialRows }: OrganizationsProps) => {
       format,
       handleDeleteOrganization,
       handleUpdateOrganization,
+      organizationPermissions,
       router,
       tOrganizations,
     ],

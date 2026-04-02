@@ -7,6 +7,8 @@ import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
+import { getOrganizationPermissions } from "@/utils/organizations";
+
 interface OrganizationsPageProps {
   params: Promise<{ locale: Locale }>;
 }
@@ -16,11 +18,23 @@ const OrganizationsPage = async ({ params }: OrganizationsPageProps) => {
 
   setRequestLocale(locale);
 
-  const { data } = await authClient.organization.list({
-    fetchOptions: { headers: { cookie: cookieStore.toString() } },
-  });
+  const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  return <Organizations rows={(data || []).toReversed()} />;
+  const { data } = await authClient.organization.list({ fetchOptions });
+
+  const organizations = (data || []).toReversed();
+
+  const organizationPermissions = await getOrganizationPermissions(
+    organizations,
+    fetchOptions,
+  );
+
+  return (
+    <Organizations
+      organizationPermissions={organizationPermissions}
+      rows={organizations}
+    />
+  );
 };
 
 export default OrganizationsPage;
