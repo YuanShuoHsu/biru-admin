@@ -10,33 +10,31 @@ export async function getOrganizationPermissions(
   fetchOptions?: { headers: { cookie: string } },
 ): Promise<OrganizationPermissions> {
   const memberRoles = await Promise.all(
-    organizations.map((org) =>
+    organizations.map(({ id }) =>
       authClient.organization.getActiveMemberRole({
-        query: { organizationId: org.id },
+        query: { organizationId: id },
         ...(fetchOptions && { fetchOptions }),
       }),
     ),
   );
 
   const permissions: OrganizationPermissions = {};
-  for (let i = 0; i < organizations.length; i++) {
-    const role = memberRoles[i].data?.role as
-      | "owner"
-      | "admin"
-      | "member"
-      | undefined;
-    if (role) {
-      permissions[organizations[i].id] = {
-        canUpdate: authClient.organization.checkRolePermission({
-          role,
-          permissions: { organization: ["update"] },
-        }),
-        canDelete: authClient.organization.checkRolePermission({
-          role,
-          permissions: { organization: ["delete"] },
-        }),
-      };
-    }
-  }
+
+  organizations.forEach(({ id }, index) => {
+    const role = memberRoles[index].data?.role;
+    if (!role) return;
+
+    permissions[id] = {
+      canUpdate: authClient.organization.checkRolePermission({
+        role,
+        permissions: { organization: ["update"] },
+      }),
+      canDelete: authClient.organization.checkRolePermission({
+        role,
+        permissions: { organization: ["delete"] },
+      }),
+    };
+  });
+
   return permissions;
 }
