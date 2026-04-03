@@ -142,7 +142,8 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
   },
   YOU_CANNOT_LEAVE_THE_ORGANIZATION_WITHOUT_AN_OWNER: {
     [LocaleEnum.ZhTW]: "請先轉移擁有者權限，再離開組織",
-    [LocaleEnum.En]: "Please transfer ownership before leaving the organization.",
+    [LocaleEnum.En]:
+      "Please transfer ownership before leaving the organization.",
     [LocaleEnum.Ja]: "組織を退出する前に、オーナー権限を移譲してください",
     [LocaleEnum.Ko]: "조직을 탈퇴하기 전에 소유권을 이전해 주세요",
     [LocaleEnum.ZhCN]: "请先转移拥有者权限，再离开组织",

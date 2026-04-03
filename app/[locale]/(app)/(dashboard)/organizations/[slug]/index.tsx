@@ -305,7 +305,7 @@ const OrganizationsSlug = ({
           const isCurrentUser = row.userId === currentUserId;
           const isOnlyOwner = row.role === "owner" && ownerCount === 1;
           const isHigherRoleRank =
-            ROLE_RANK[currentUserRole!] > ROLE_RANK[row.role];
+            ROLE_RANK[currentUserRole!] >= ROLE_RANK[row.role];
 
           return (
             <Stack direction="row" alignItems="center" height="100%" gap={0.5}>
