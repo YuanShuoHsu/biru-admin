@@ -13,9 +13,7 @@ export const useSetRoleFormSchema = () => {
   });
 };
 
-export type SetRoleFormInput = z.input<
-  ReturnType<typeof useSetRoleFormSchema>
->;
+export type SetRoleFormInput = z.input<ReturnType<typeof useSetRoleFormSchema>>;
 
 export type SetRoleFormOutput = z.output<
   ReturnType<typeof useSetRoleFormSchema>
