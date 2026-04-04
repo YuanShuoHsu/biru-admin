@@ -7,11 +7,11 @@ import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
-interface AdminUsersPageProps {
+interface AdminsPageProps {
   params: Promise<{ locale: Locale }>;
 }
 
-const AdminUsersPage = async ({ params }: AdminUsersPageProps) => {
+const AdminsPage = async ({ params }: AdminsPageProps) => {
   const [cookieStore, { locale }] = await Promise.all([cookies(), params]);
 
   setRequestLocale(locale);
@@ -19,13 +19,14 @@ const AdminUsersPage = async ({ params }: AdminUsersPageProps) => {
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
   const { data } = await authClient.admin.listUsers({
-    query: { limit: 100, offset: 0 },
+    query: { limit: 10, offset: 0, sortBy: "createdAt", sortDirection: "desc" },
     fetchOptions,
   });
 
-  const rows = (data?.users || []).toReversed();
+  const rows = data?.users ?? [];
+  const total = data?.total ?? 0;
 
-  return <AdminUsers rows={rows} />;
+  return <AdminUsers rows={rows} total={total} />;
 };
 
-export default AdminUsersPage;
+export default AdminsPage;

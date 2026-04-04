@@ -35,7 +35,11 @@ import {
   Stack,
   Tooltip,
 } from "@mui/material";
-import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+import type {
+  GridColDef,
+  GridPaginationModel,
+  GridRenderCellParams,
+} from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -45,13 +49,19 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
-interface UserWithRolesProps {
+interface AdminsProps {
   rows: UserWithRole[];
+  total: number;
 }
 
-const UserWithRoles = ({ rows: initialRows }: UserWithRolesProps) => {
+const Admins = ({ rows: initialRows, total }: AdminsProps) => {
   const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState(initialRows);
+  const [rowCount, setRowCount] = useState(total);
+  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
+    page: 0,
+    pageSize: 10,
+  });
 
   const apiRef = useGridApiRef();
 
@@ -63,27 +73,48 @@ const UserWithRoles = ({ rows: initialRows }: UserWithRolesProps) => {
 
   const tAdminsUsers = useTranslations("admins.users");
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
+  const fetchData = useCallback(
+    async ({ page, pageSize }: GridPaginationModel) => {
 
-    const { data } = await authClient.admin.listUsers({
-      query: { limit: 100, offset: 0 },
-    });
+      setLoading(true);
 
-    flushSync(() => {
-      setRows((data?.users || []).toReversed());
+      const { data } = await authClient.admin.listUsers({
+        query: {
+          limit: pageSize,
+          offset: page * pageSize,
+          sortBy: "createdAt",
+          sortDirection: "desc",
+        },
+      });
 
-      setLoading(false);
-    });
+      const users = data?.users ?? [];
+      const total = data?.total ?? 0;
 
-    setTimeout(() => {
+      flushSync(() => {
+        setRows(users);
+        setRowCount(total);
+        setLoading(false);
+      });
+
+      setTimeout(() => {
+        apiRef.current?.autosizeColumns(autosizeOptions);
+      }, 0);
+    },
+    [apiRef],
+  );
+
+  const handlePaginationModelChange = useCallback(
+    (newModel: GridPaginationModel) => {
+      setPaginationModel(newModel);
+      fetchData(newModel);
       apiRef.current?.autosizeColumns(autosizeOptions);
-    }, 0);
-  }, [apiRef]);
+    },
+    [apiRef, fetchData],
+  );
 
   const handleCreateUser = () => {
     setDialog({
-      content: <CreateUserDialogContent fetchData={fetchData} />,
+      content: <CreateUserDialogContent fetchData={() => fetchData(paginationModel)} />,
       formId: "create-user-form",
       open: true,
       title: tAdminsUsers("create.title"),
@@ -103,12 +134,12 @@ const UserWithRoles = ({ rows: initialRows }: UserWithRolesProps) => {
             const message = tAdminsUsers("setRole.success");
             enqueueSnackbar(message, { variant: "success" });
 
-            fetchData();
+            fetchData(paginationModel);
           },
         },
       );
     },
-    [fetchData, locale, tAdminsUsers],
+    [fetchData, locale, paginationModel, tAdminsUsers],
   );
 
   const handleBanUser = useCallback(
@@ -134,7 +165,7 @@ const UserWithRoles = ({ rows: initialRows }: UserWithRolesProps) => {
                 const message = tAdminsUsers("ban.success");
                 enqueueSnackbar(message, { variant: "success" });
 
-                fetchData();
+                fetchData(paginationModel);
               },
             },
           );
@@ -143,7 +174,7 @@ const UserWithRoles = ({ rows: initialRows }: UserWithRolesProps) => {
         title: tAdminsUsers("ban.title"),
       });
     },
-    [fetchData, locale, setDialog, tAdminsUsers],
+    [fetchData, locale, paginationModel, setDialog, tAdminsUsers],
   );
 
   const handleUnbanUser = useCallback(
@@ -159,12 +190,12 @@ const UserWithRoles = ({ rows: initialRows }: UserWithRolesProps) => {
             const message = tAdminsUsers("unban.success");
             enqueueSnackbar(message, { variant: "success" });
 
-            fetchData();
+            fetchData(paginationModel);
           },
         },
       );
     },
-    [fetchData, locale, tAdminsUsers],
+    [fetchData, locale, paginationModel, tAdminsUsers],
   );
 
   const handleDeleteUser = useCallback(
@@ -190,7 +221,7 @@ const UserWithRoles = ({ rows: initialRows }: UserWithRolesProps) => {
                 const message = tAdminsUsers("delete.success");
                 enqueueSnackbar(message, { variant: "success" });
 
-                fetchData();
+                fetchData(paginationModel);
               },
             },
           );
@@ -199,7 +230,7 @@ const UserWithRoles = ({ rows: initialRows }: UserWithRolesProps) => {
         title: tAdminsUsers("delete.title"),
       });
     },
-    [fetchData, locale, setDialog, tAdminsUsers],
+    [fetchData, locale, paginationModel, setDialog, tAdminsUsers],
   );
 
   const columns = useMemo<GridColDef[]>(
@@ -342,13 +373,14 @@ const UserWithRoles = ({ rows: initialRows }: UserWithRolesProps) => {
         apiRef={apiRef}
         columns={columns}
         loading={loading}
-        onPaginationModelChange={() =>
-          apiRef.current?.autosizeColumns(autosizeOptions)
-        }
+        onPaginationModelChange={handlePaginationModelChange}
+        paginationMode="server"
+        paginationModel={paginationModel}
+        rowCount={rowCount}
         rows={rows}
       />
     </>
   );
 };
 
-export default UserWithRoles;
+export default Admins;
