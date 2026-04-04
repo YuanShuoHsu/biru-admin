@@ -41,7 +41,7 @@
     },
     "ban": {
       "title": "封禁用户",
-      "confirm": "确定要封禁 {name} 吗？封禁后该用户将无法登录。",
+      "confirm": "确定要封禁 <bold>{name}</bold> 吗？封禁后该用户将无法登录。",
       "success": "已封禁用户",
       "error": "封禁失败，请稍后重试"
     },
@@ -51,7 +51,7 @@
     },
     "delete": {
       "title": "删除用户",
-      "confirm": "确定要删除 {name} 吗？此操作无法撤销。",
+      "confirm": "确定要删除 <bold>{name}</bold> 吗？此操作无法撤销。",
       "success": "已删除用户",
       "error": "删除失败，请稍后重试"
     },

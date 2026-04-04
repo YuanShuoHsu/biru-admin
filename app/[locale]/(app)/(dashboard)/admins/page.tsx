@@ -1,32 +1,40 @@
 import { setRequestLocale } from "next-intl/server";
+import { cookies } from "next/headers";
 
 import AdminUsers from ".";
 
 import type { Locale } from "@/i18n/routing";
 
-interface UsersPageProps {
+import { authClient } from "@/lib/auth-client";
+
+interface AdminUsersPageProps {
   params: Promise<{ locale: Locale }>;
-  searchParams: Promise<{
-    page?: string;
-    limit?: string;
-    search?: string;
-    role?: string;
-  }>;
 }
 
-const UsersPage = async ({ params, searchParams }: UsersPageProps) => {
-  const [{ locale }, sp] = await Promise.all([params, searchParams]);
+const AdminUsersPage = async ({ params }: AdminUsersPageProps) => {
+  const [cookieStore, { locale }] = await Promise.all([cookies(), params]);
 
   setRequestLocale(locale);
 
-  const query = {
-    page: Math.max(1, Number(sp.page) || 1),
-    limit: Number(sp.limit) || 10,
-    search: sp.search || "",
-    role: sp.role || "",
-  };
+  const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  return <AdminUsers query={query} />;
+  const { data } = await authClient.admin.listUsers({
+    query: { limit: 100, offset: 0 },
+    fetchOptions,
+  });
+
+  const rows = ((data?.users as AdminUser[]) ?? []).toReversed();
+
+  return <AdminUsers rows={rows} />;
 };
 
-export default UsersPage;
+export default AdminUsersPage;
+
+export type AdminUser = {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  banned: boolean;
+  createdAt: Date;
+};

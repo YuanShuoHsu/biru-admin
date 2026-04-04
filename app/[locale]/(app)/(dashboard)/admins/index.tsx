@@ -5,17 +5,19 @@
 
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useSnackbar } from "notistack";
-import { useCallback, useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import useSWR, { mutate } from "swr";
+import { enqueueSnackbar } from "notistack";
+import { useCallback, useMemo, useState } from "react";
+import { flushSync } from "react-dom";
 
-import { DATA_GRID_PROPS } from "@/constants/dataGrid";
+import type { AdminUser } from "./page";
 
-import { authClient } from "@/lib/auth-client";
+import CreateUserDialogContent from "./CreateUserDialogContent";
+
+import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
+
+import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import {
   Block,
@@ -25,287 +27,270 @@ import {
   PersonAdd,
 } from "@mui/icons-material";
 import {
-  Box,
   Button,
   Chip,
-  Dialog,
-  DialogActions,
-  DialogContent,
   DialogContentText,
-  DialogTitle,
-  FormControl,
   IconButton,
-  InputLabel,
   MenuItem,
-  OutlinedInput,
   Select,
   Stack,
-  TextField,
   Tooltip,
-  Typography,
 } from "@mui/material";
-import type {
-  GridColDef,
-  GridPaginationModel,
-  GridRenderCellParams,
-  GridValidRowModel,
-} from "@mui/x-data-grid";
+import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+import { useGridApiRef } from "@mui/x-data-grid";
+
+import { useDialogStore } from "@/providers/dialog-store-provider";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
   { ssr: false },
 );
 
-interface AdminUsersQuery {
-  page: number;
-  limit: number;
-  search: string;
-  role: string;
-}
-
 interface AdminUsersProps {
-  query: AdminUsersQuery;
+  rows: AdminUser[];
 }
 
-interface UserRow {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-  banned: boolean;
-  createdAt: string;
-}
+const AdminUsers = ({ rows: initialRows }: AdminUsersProps) => {
+  const [loading, setLoading] = useState(false);
+  const [rows, setRows] = useState(initialRows);
 
-interface ListUsersResponse {
-  users: UserRow[];
-  total: number;
-}
+  const apiRef = useGridApiRef();
 
-const USERS_SWR_KEY = "admin-users";
+  const { setDialog } = useDialogStore((state) => state);
 
-const fetchUsers = async (
-  query: AdminUsersQuery,
-): Promise<ListUsersResponse> => {
-  const offset = (query.page - 1) * query.limit;
-  const result = await authClient.admin.listUsers({
-    query: {
-      limit: query.limit,
-      offset,
-      ...(query.search
-        ? { searchField: "email" as const, searchValue: query.search }
-        : {}),
-    },
-  });
-  if (result.error) throw result.error;
-  return {
-    users: (result.data?.users ?? []) as unknown as UserRow[],
-    total: result.data?.total ?? 0,
-  };
-};
+  const format = useFormatter();
 
-interface CreateUserForm {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  role: "user" | "admin";
-}
+  const locale = useLocale();
 
-interface ConfirmDialog {
-  open: boolean;
-  type: "ban" | "delete" | null;
-  user: UserRow | null;
-}
-
-const AdminUsers = ({ query }: AdminUsersProps) => {
   const t = useTranslations("admins.users");
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const { enqueueSnackbar } = useSnackbar();
 
-  const [searchValue, setSearchValue] = useState(query.search);
-  const [createOpen, setCreateOpen] = useState(false);
-  const [confirmDialog, setConfirmDialog] = useState<ConfirmDialog>({
-    open: false,
-    type: null,
-    user: null,
-  });
+  const fetchData = useCallback(async () => {
+    setLoading(true);
 
-  const swrKey = [USERS_SWR_KEY, query] as const;
-  const { data, isLoading } = useSWR(swrKey, ([, q]) => fetchUsers(q));
+    const { data } = await authClient.admin.listUsers({
+      query: { limit: 100, offset: 0 },
+    });
 
-  const { control, handleSubmit, reset, formState } = useForm<CreateUserForm>({
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-      role: "user",
+    flushSync(() => {
+      setRows(((data?.users as AdminUser[]) ?? []).toReversed());
+
+      setLoading(false);
+    });
+
+    setTimeout(() => {
+      apiRef.current?.autosizeColumns(autosizeOptions);
+    }, 0);
+  }, [apiRef]);
+
+  const handleCreateUser = () => {
+    setDialog({
+      content: <CreateUserDialogContent fetchData={fetchData} />,
+      formId: "create-user-form",
+      open: true,
+      title: t("create.title"),
+    });
+  };
+
+  const handleSetRole = useCallback(
+    async (userId: string, role: "user" | "admin") => {
+      await authClient.admin.setRole(
+        { userId, role },
+        {
+          onError: ({ error: { code } }) => {
+            const message = getErrorMessage(code, locale);
+            enqueueSnackbar(message, { variant: "error" });
+          },
+          onSuccess: () => {
+            const message = t("setRole.success");
+            enqueueSnackbar(message, { variant: "success" });
+
+            fetchData();
+          },
+        },
+      );
     },
-  });
-
-  const updateParams = useCallback(
-    (updates: Partial<AdminUsersQuery>) => {
-      const params = new URLSearchParams(searchParams.toString());
-      Object.entries(updates).forEach(([key, value]) => {
-        if (value !== undefined && value !== "" && value !== 1) {
-          params.set(key, String(value));
-        } else {
-          params.delete(key);
-        }
-      });
-      router.push(`?${params.toString()}`);
-    },
-    [router, searchParams],
+    [fetchData, locale, t],
   );
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (searchValue !== query.search) {
-        updateParams({ search: searchValue, page: 1 });
-      }
-    }, 400);
-    return () => clearTimeout(timer);
-  }, [searchValue, query.search, updateParams]);
+  const handleBanUser = useCallback(
+    ({ id, name }: AdminUser) => {
+      setDialog({
+        content: (
+          <DialogContentText>
+            {t.rich("ban.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              name,
+            })}
+          </DialogContentText>
+        ),
+        onConfirm: async () => {
+          await authClient.admin.banUser(
+            { userId: id },
+            {
+              onError: ({ error: { code } }) => {
+                const message = getErrorMessage(code, locale);
+                enqueueSnackbar(message, { variant: "error" });
+              },
+              onSuccess: () => {
+                const message = t("ban.success");
+                enqueueSnackbar(message, { variant: "success" });
 
-  const handlePaginationChange = (model: GridPaginationModel) => {
-    updateParams({ page: model.page + 1, limit: model.pageSize });
-  };
-
-  const handleBan = async (user: UserRow) => {
-    await authClient.admin.banUser(
-      { userId: user.id },
-      {
-        onError: () => {
-          enqueueSnackbar(t("ban.error"), { variant: "error" });
+                fetchData();
+              },
+            },
+          );
         },
-        onSuccess: () => {
-          enqueueSnackbar(t("ban.success"), { variant: "success" });
-          mutate(swrKey);
-        },
-      },
-    );
-    setConfirmDialog({ open: false, type: null, user: null });
-  };
-
-  const handleUnban = async (userId: string) => {
-    await authClient.admin.unbanUser(
-      { userId },
-      {
-        onError: () => {
-          enqueueSnackbar(t("unban.error"), { variant: "error" });
-        },
-        onSuccess: () => {
-          enqueueSnackbar(t("unban.success"), { variant: "success" });
-          mutate(swrKey);
-        },
-      },
-    );
-  };
-
-  const handleDelete = async (user: UserRow) => {
-    await authClient.admin.removeUser(
-      { userId: user.id },
-      {
-        onError: () => {
-          enqueueSnackbar(t("delete.error"), { variant: "error" });
-        },
-        onSuccess: () => {
-          enqueueSnackbar(t("delete.success"), { variant: "success" });
-          mutate(swrKey);
-        },
-      },
-    );
-    setConfirmDialog({ open: false, type: null, user: null });
-  };
-
-  const handleSetRole = async (userId: string, role: "user" | "admin") => {
-    await authClient.admin.setRole(
-      { userId, role },
-      {
-        onError: () => {
-          enqueueSnackbar(t("setRole.error"), { variant: "error" });
-        },
-        onSuccess: () => {
-          enqueueSnackbar(t("setRole.success"), { variant: "success" });
-          mutate(swrKey);
-        },
-      },
-    );
-  };
-
-  const handleCreateSubmit = async (values: CreateUserForm) => {
-    await authClient.admin.createUser(
-      {
-        name: `${values.firstName} ${values.lastName}`.trim(),
-        email: values.email,
-        password: values.password,
-        role: values.role,
-        data: {
-          firstName: values.firstName,
-          lastName: values.lastName,
-          emailSubscribed: true,
-          lang: "zh-TW",
-        },
-      },
-      {
-        onError: () => {
-          enqueueSnackbar(t("create.error"), { variant: "error" });
-        },
-        onSuccess: () => {
-          enqueueSnackbar(t("create.success"), { variant: "success" });
-          setCreateOpen(false);
-          reset();
-          mutate(swrKey);
-        },
-      },
-    );
-  };
-
-  const columns: GridColDef<GridValidRowModel>[] = [
-    {
-      field: "name",
-      headerName: t("columns.name"),
-      flex: 1,
-      minWidth: 140,
+        open: true,
+        title: t("ban.title"),
+      });
     },
-    {
-      field: "email",
-      headerName: t("columns.email"),
-      flex: 1.5,
-      minWidth: 200,
+    [fetchData, locale, setDialog, t],
+  );
+
+  const handleUnbanUser = useCallback(
+    async (userId: string) => {
+      await authClient.admin.unbanUser(
+        { userId },
+        {
+          onError: ({ error: { code } }) => {
+            const message = getErrorMessage(code, locale);
+            enqueueSnackbar(message, { variant: "error" });
+          },
+          onSuccess: () => {
+            const message = t("unban.success");
+            enqueueSnackbar(message, { variant: "success" });
+
+            fetchData();
+          },
+        },
+      );
     },
-    {
-      field: "role",
-      headerName: t("columns.role"),
-      width: 130,
-      renderCell: ({ row: r }: GridRenderCellParams) => {
-        const row = r as UserRow;
-        return (
+    [fetchData, locale, t],
+  );
+
+  const handleDeleteUser = useCallback(
+    ({ id, name }: AdminUser) => {
+      setDialog({
+        content: (
+          <DialogContentText>
+            {t.rich("delete.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              name,
+            })}
+          </DialogContentText>
+        ),
+        onConfirm: async () => {
+          await authClient.admin.removeUser(
+            { userId: id },
+            {
+              onError: ({ error: { code } }) => {
+                const message = getErrorMessage(code, locale);
+                enqueueSnackbar(message, { variant: "error" });
+              },
+              onSuccess: () => {
+                const message = t("delete.success");
+                enqueueSnackbar(message, { variant: "success" });
+
+                fetchData();
+              },
+            },
+          );
+        },
+        open: true,
+        title: t("delete.title"),
+      });
+    },
+    [fetchData, locale, setDialog, t],
+  );
+
+  const columns = useMemo<GridColDef[]>(
+    () => [
+      {
+        field: "actions",
+        headerName: t("columns.actions"),
+        renderCell: ({ row }: GridRenderCellParams<AdminUser>) => (
+          <Stack height="100%" direction="row" alignItems="center" gap={1}>
+            {row.banned ? (
+              <Tooltip title={t("actions.unban")}>
+                <IconButton
+                  color="success"
+                  onClick={(event) => {
+                    event.stopPropagation();
+
+                    handleUnbanUser(row.id);
+                  }}
+                  size="small"
+                >
+                  <LockOpen fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            ) : (
+              <Tooltip title={t("actions.ban")}>
+                <IconButton
+                  color="warning"
+                  onClick={(event) => {
+                    event.stopPropagation();
+
+                    handleBanUser(row);
+                  }}
+                  size="small"
+                >
+                  <Block fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            )}
+            <Tooltip title={t("actions.delete")}>
+              <IconButton
+                color="error"
+                onClick={(event) => {
+                  event.stopPropagation();
+
+                  handleDeleteUser(row);
+                }}
+                size="small"
+              >
+                <Delete fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </Stack>
+        ),
+        resizable: false,
+        sortable: false,
+      },
+      {
+        field: "name",
+        headerName: t("columns.name"),
+      },
+      {
+        field: "email",
+        headerName: t("columns.email"),
+      },
+      {
+        field: "role",
+        headerName: t("columns.role"),
+        renderCell: ({ row }: GridRenderCellParams<AdminUser>) => (
           <Select
-            size="small"
-            value={row.role || "user"}
-            onChange={(e) =>
-              handleSetRole(row.id, e.target.value as "user" | "admin")
+            onChange={(event) =>
+              handleSetRole(row.id, event.target.value as "user" | "admin")
             }
-            onClick={(e) => e.stopPropagation()}
-            variant="standard"
+            onClick={(event) => event.stopPropagation()}
+            size="small"
             sx={{ fontSize: "0.875rem" }}
+            value={row.role || "user"}
+            variant="standard"
           >
             <MenuItem value="user">{t("roles.user")}</MenuItem>
             <MenuItem value="admin">{t("roles.admin")}</MenuItem>
           </Select>
-        );
+        ),
+        sortable: false,
       },
-    },
-    {
-      field: "banned",
-      headerName: t("columns.status"),
-      width: 110,
-      renderCell: ({ row: r }: GridRenderCellParams) => {
-        const row = r as UserRow;
-        return (
+      {
+        field: "banned",
+        headerName: t("columns.status"),
+        renderCell: ({ row }: GridRenderCellParams<AdminUser>) => (
           <Chip
+            color={row.banned ? "error" : "success"}
             icon={
               row.banned ? (
                 <Block fontSize="small" />
@@ -314,274 +299,52 @@ const AdminUsers = ({ query }: AdminUsersProps) => {
               )
             }
             label={row.banned ? t("status.banned") : t("status.active")}
-            color={row.banned ? "error" : "success"}
             size="small"
             variant="outlined"
           />
-        );
+        ),
+        sortable: false,
       },
-    },
-    {
-      field: "createdAt",
-      headerName: t("columns.createdAt"),
-      width: 170,
-      valueFormatter: (value: string) =>
-        value ? new Date(value).toLocaleString("zh-TW") : "",
-    },
-    {
-      field: "actions",
-      headerName: t("columns.actions"),
-      width: 110,
-      sortable: false,
-      renderCell: ({ row: r }: GridRenderCellParams) => {
-        const row = r as UserRow;
-        return (
-          <Stack height="100%" direction="row" alignItems="center" gap={1}>
-            {row.banned ? (
-              <Tooltip title={t("actions.unban")}>
-                <IconButton
-                  size="small"
-                  color="success"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleUnban(row.id);
-                  }}
-                >
-                  <LockOpen fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            ) : (
-              <Tooltip title={t("actions.ban")}>
-                <IconButton
-                  size="small"
-                  color="warning"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setConfirmDialog({ open: true, type: "ban", user: row });
-                  }}
-                >
-                  <Block fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
-            <Tooltip title={t("actions.delete")}>
-              <IconButton
-                size="small"
-                color="error"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setConfirmDialog({ open: true, type: "delete", user: row });
-                }}
-              >
-                <Delete fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </Stack>
-        );
+      {
+        field: "createdAt",
+        headerName: t("columns.createdAt"),
+        valueFormatter: (value: Date) =>
+          format.dateTime(new Date(value), "short"),
       },
-    },
-  ];
+    ],
+    [
+      format,
+      handleBanUser,
+      handleDeleteUser,
+      handleSetRole,
+      handleUnbanUser,
+      t,
+    ],
+  );
 
   return (
-    <Box>
-      <Stack
-        direction={{ xs: "column", sm: "row" }}
-        justifyContent="space-between"
-        alignItems={{ xs: "flex-start", sm: "center" }}
-        gap={2}
-        mb={2}
-      >
-        <Box>
-          <Typography variant="h6" fontWeight={600}>
-            {t("title")}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {t("subtitle")}
-          </Typography>
-        </Box>
-        <Stack direction="row" gap={1}>
-          <OutlinedInput
-            size="small"
-            placeholder={t("search.placeholder")}
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            sx={{ width: 240 }}
-          />
-          <Button
-            variant="contained"
-            startIcon={<PersonAdd />}
-            onClick={() => setCreateOpen(true)}
-          >
-            {t("actions.create")}
-          </Button>
-        </Stack>
+    <>
+      <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
+        <Button
+          onClick={handleCreateUser}
+          size="small"
+          startIcon={<PersonAdd />}
+          variant="contained"
+        >
+          {t("actions.create")}
+        </Button>
       </Stack>
-
       <DataGrid
         {...DATA_GRID_PROPS}
-        rows={(data?.users ?? []).toReversed()}
+        apiRef={apiRef}
         columns={columns}
-        rowCount={data?.total ?? 0}
-        loading={isLoading}
-        paginationMode="server"
-        paginationModel={{
-          page: query.page - 1,
-          pageSize: query.limit,
-        }}
-        onPaginationModelChange={handlePaginationChange}
-        autoHeight
-        sx={{ bgcolor: "background.paper", borderRadius: 2 }}
-      />
-
-      {/* Create user dialog */}
-      <Dialog
-        open={createOpen}
-        onClose={() => {
-          setCreateOpen(false);
-          reset();
-        }}
-        maxWidth="sm"
-        fullWidth
-      >
-        <form onSubmit={handleSubmit(handleCreateSubmit)}>
-          <DialogTitle>{t("create.title")}</DialogTitle>
-          <DialogContent>
-            <Stack gap={2} pt={1}>
-              <Stack direction="row" gap={2}>
-                <Controller
-                  name="firstName"
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label={t("create.fields.firstName")}
-                      size="small"
-                      fullWidth
-                      required
-                    />
-                  )}
-                />
-                <Controller
-                  name="lastName"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label={t("create.fields.lastName")}
-                      size="small"
-                      fullWidth
-                    />
-                  )}
-                />
-              </Stack>
-              <Controller
-                name="email"
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label={t("create.fields.email")}
-                    type="email"
-                    size="small"
-                    fullWidth
-                    required
-                  />
-                )}
-              />
-              <Controller
-                name="password"
-                control={control}
-                rules={{ required: true, minLength: 8 }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label={t("create.fields.password")}
-                    type="password"
-                    size="small"
-                    fullWidth
-                    required
-                  />
-                )}
-              />
-              <Controller
-                name="role"
-                control={control}
-                render={({ field }) => (
-                  <FormControl size="small" fullWidth>
-                    <InputLabel>{t("create.fields.role")}</InputLabel>
-                    <Select {...field} label={t("create.fields.role")}>
-                      <MenuItem value="user">{t("roles.user")}</MenuItem>
-                      <MenuItem value="admin">{t("roles.admin")}</MenuItem>
-                    </Select>
-                  </FormControl>
-                )}
-              />
-            </Stack>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={() => {
-                setCreateOpen(false);
-                reset();
-              }}
-            >
-              取消
-            </Button>
-            <Button
-              type="submit"
-              variant="contained"
-              disabled={formState.isSubmitting}
-            >
-              {t("actions.create")}
-            </Button>
-          </DialogActions>
-        </form>
-      </Dialog>
-
-      {/* Confirm dialog */}
-      <Dialog
-        open={confirmDialog.open}
-        onClose={() =>
-          setConfirmDialog({ open: false, type: null, user: null })
+        loading={loading}
+        onPaginationModelChange={() =>
+          apiRef.current?.autosizeColumns(autosizeOptions)
         }
-        maxWidth="xs"
-        fullWidth
-      >
-        <DialogTitle>
-          {confirmDialog.type === "ban" ? t("ban.title") : t("delete.title")}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {confirmDialog.type === "ban"
-              ? t("ban.confirm", { name: confirmDialog.user?.name ?? "" })
-              : t("delete.confirm", { name: confirmDialog.user?.name ?? "" })}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() =>
-              setConfirmDialog({ open: false, type: null, user: null })
-            }
-          >
-            取消
-          </Button>
-          <Button
-            variant="contained"
-            color={confirmDialog.type === "delete" ? "error" : "warning"}
-            onClick={() => {
-              if (!confirmDialog.user) return;
-              if (confirmDialog.type === "ban") handleBan(confirmDialog.user);
-              else if (confirmDialog.type === "delete")
-                handleDelete(confirmDialog.user);
-            }}
-          >
-            確認
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
+        rows={rows}
+      />
+    </>
   );
 };
 

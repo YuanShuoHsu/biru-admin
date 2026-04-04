@@ -41,7 +41,7 @@
     },
     "ban": {
       "title": "Ban user",
-      "confirm": "Are you sure you want to ban {name}? They will no longer be able to sign in.",
+      "confirm": "Are you sure you want to ban <bold>{name}</bold>? They will no longer be able to sign in.",
       "success": "User banned",
       "error": "Failed to ban user. Please try again."
     },
@@ -51,7 +51,7 @@
     },
     "delete": {
       "title": "Delete user",
-      "confirm": "Are you sure you want to delete {name}? This action cannot be undone.",
+      "confirm": "Are you sure you want to delete <bold>{name}</bold>? This action cannot be undone.",
       "success": "User deleted",
       "error": "Failed to delete user. Please try again."
     },
