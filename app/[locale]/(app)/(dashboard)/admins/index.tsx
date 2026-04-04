@@ -75,7 +75,6 @@ const Admins = ({ rows: initialRows, total }: AdminsProps) => {
 
   const fetchData = useCallback(
     async ({ page, pageSize }: GridPaginationModel) => {
-
       setLoading(true);
 
       const { data } = await authClient.admin.listUsers({
@@ -114,7 +113,9 @@ const Admins = ({ rows: initialRows, total }: AdminsProps) => {
 
   const handleCreateUser = () => {
     setDialog({
-      content: <CreateUserDialogContent fetchData={() => fetchData(paginationModel)} />,
+      content: (
+        <CreateUserDialogContent fetchData={() => fetchData(paginationModel)} />
+      ),
       formId: "create-user-form",
       open: true,
       title: tAdminsUsers("create.title"),
