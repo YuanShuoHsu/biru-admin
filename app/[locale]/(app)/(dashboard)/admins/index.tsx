@@ -56,7 +56,12 @@ interface AdminsProps {
   rowCount: number;
 }
 
-const Admins = ({ page, pageSize, rows: initialRows, rowCount: initialRowCount }: AdminsProps) => {
+const Admins = ({
+  page,
+  pageSize,
+  rows: initialRows,
+  rowCount: initialRowCount,
+}: AdminsProps) => {
   const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState(initialRows);
   const [rowCount, setRowCount] = useState(initialRowCount);
