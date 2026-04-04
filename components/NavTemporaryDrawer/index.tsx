@@ -289,7 +289,7 @@ const useNavItems = () => {
     {
       icon: AdminPanelSettings,
       label: tAdmin("users.label"),
-      to: "/admins",
+      to: "/admins?page=0&pageSize=10",
     },
     {
       icon: Business,

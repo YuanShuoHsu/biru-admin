@@ -50,17 +50,19 @@ const DataGrid = dynamic(
 );
 
 interface AdminsProps {
+  page: number;
+  pageSize: number;
   rows: UserWithRole[];
   total: number;
 }
 
-const Admins = ({ rows: initialRows, total }: AdminsProps) => {
+const Admins = ({ page, pageSize, rows: initialRows, total }: AdminsProps) => {
   const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState(initialRows);
   const [rowCount, setRowCount] = useState(total);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
-    page: 0,
-    pageSize: 10,
+    page,
+    pageSize,
   });
 
   const apiRef = useGridApiRef();
@@ -106,9 +108,8 @@ const Admins = ({ rows: initialRows, total }: AdminsProps) => {
     (newModel: GridPaginationModel) => {
       setPaginationModel(newModel);
       fetchData(newModel);
-      apiRef.current?.autosizeColumns(autosizeOptions);
     },
-    [apiRef, fetchData],
+    [fetchData],
   );
 
   const handleCreateUser = () => {
