@@ -34,12 +34,12 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
   });
 
   const rows = data?.users || [];
-  const total = data?.total || 0;
+  const rowCount = data?.total || 0;
 
   return (
     <AdminUsers
       rows={rows}
-      total={total}
+      rowCount={rowCount}
       page={currentPage}
       pageSize={currentPageSize}
     />

@@ -53,13 +53,13 @@ interface AdminsProps {
   page: number;
   pageSize: number;
   rows: UserWithRole[];
-  total: number;
+  rowCount: number;
 }
 
-const Admins = ({ page, pageSize, rows: initialRows, total }: AdminsProps) => {
+const Admins = ({ page, pageSize, rows: initialRows, rowCount: initialRowCount }: AdminsProps) => {
   const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState(initialRows);
-  const [rowCount, setRowCount] = useState(total);
+  const [rowCount, setRowCount] = useState(initialRowCount);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page,
     pageSize,
