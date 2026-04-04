@@ -70,7 +70,12 @@ const CreateUserDialogContent = ({
     handleSubmit(async ({ firstName, lastName, email, password, role }) => {
       await authClient.admin.createUser(
         {
-          name: `${firstName} ${lastName}`.trim(),
+          name: (locale === "en"
+            ? [firstName, lastName]
+            : [lastName, firstName]
+          )
+            .filter(Boolean)
+            .join(" "),
           email,
           password,
           role,
@@ -104,7 +109,15 @@ const CreateUserDialogContent = ({
 
   return (
     <StyledBox component="form" id="create-user-form" onSubmit={onSubmit}>
-      <Stack direction="row" gap={2} width="100%">
+      <Stack width="100%" direction="row" gap={2}>
+        <TextField
+          autoComplete="family-name"
+          error={!!errors.lastName}
+          fullWidth
+          helperText={errors.lastName?.message}
+          label={tAdminsUsers("create.fields.lastName")}
+          {...register("lastName")}
+        />
         <TextField
           autoComplete="given-name"
           error={!!errors.firstName}
@@ -113,14 +126,6 @@ const CreateUserDialogContent = ({
           label={tAdminsUsers("create.fields.firstName")}
           required
           {...register("firstName")}
-        />
-        <TextField
-          autoComplete="family-name"
-          error={!!errors.lastName}
-          fullWidth
-          helperText={errors.lastName?.message}
-          label={tAdminsUsers("create.fields.lastName")}
-          {...register("lastName")}
         />
       </Stack>
       <TextField
