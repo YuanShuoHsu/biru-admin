@@ -93,12 +93,12 @@ const Admins = ({
         },
       });
 
-      const users = data?.users || [];
-      const total = data?.total || 0;
+      const rows = data?.users || [];
+      const rowCount = data?.total || 0;
 
       flushSync(() => {
-        setRows(users);
-        setRowCount(total);
+        setRows(rows);
+        setRowCount(rowCount);
 
         setLoading(false);
       });
