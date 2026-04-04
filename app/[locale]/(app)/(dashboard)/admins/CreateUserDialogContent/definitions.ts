@@ -1,6 +1,8 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
+export const roles = ["user", "admin"] as const;
+
 export const useCreateUserFormSchema = () => {
   const tValidation = useTranslations("validation");
 
@@ -15,10 +17,16 @@ export const useCreateUserFormSchema = () => {
       .string()
       .min(8, { error: tValidation("password.minLength") })
       .trim(),
-    role: z.enum(["user", "admin"]),
+    role: z
+      .string()
+      .pipe(z.enum(roles, { error: tValidation("role.required") })),
   });
 };
 
-export type CreateUserForm = z.infer<
+export type CreateUserFormInput = z.input<
+  ReturnType<typeof useCreateUserFormSchema>
+>;
+
+export type CreateUserFormOutput = z.output<
   ReturnType<typeof useCreateUserFormSchema>
 >;

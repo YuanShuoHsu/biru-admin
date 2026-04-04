@@ -4,19 +4,21 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
-import { type CreateUserForm, useCreateUserFormSchema } from "./definitions";
+import {
+  type CreateUserFormInput,
+  type CreateUserFormOutput,
+  roles,
+  useCreateUserFormSchema,
+} from "./definitions";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import {
   Box,
   type BoxProps,
-  FormControl,
-  InputLabel,
   MenuItem,
-  Select,
   Stack,
   TextField,
   styled,
@@ -51,54 +53,54 @@ const CreateUserDialogContent = ({
     formState: { errors },
     handleSubmit,
     register,
-  } = useForm<CreateUserForm>({
+  } = useForm<CreateUserFormInput, unknown, CreateUserFormOutput>({
     defaultValues: {
       firstName: "",
       lastName: "",
       email: "",
       password: "",
-      role: "user",
+      role: "",
     },
     resolver: zodResolver(createUserFormSchema),
   });
 
-  const onSubmitHandler = async (values: CreateUserForm) => {
-    await authClient.admin.createUser(
-      {
-        name: `${values.firstName} ${values.lastName}`.trim(),
-        email: values.email,
-        password: values.password,
-        role: values.role,
-        data: {
-          firstName: values.firstName,
-          lastName: values.lastName,
-          emailSubscribed: true,
-          lang: "zh-TW",
-        },
-      },
-      {
-        onRequest: () => {
-          setDialog({ confirmLoading: true });
-        },
-        onError: ({ error: { code } }) => {
-          const message = getErrorMessage(code, locale);
-          enqueueSnackbar(message, { variant: "error" });
-
-          setDialog({ confirmLoading: false });
-        },
-        onSuccess: () => {
-          const message = tAdminsUsers("create.success");
-          enqueueSnackbar(message, { variant: "success" });
-
-          resetDialog();
-          fetchData();
-        },
-      },
-    );
-  };
+  const role = useWatch({ control, name: "role" });
 
   const onSubmit = (event: BaseSyntheticEvent) =>
-    handleSubmit(onSubmitHandler)(event);
+    handleSubmit(async ({ firstName, lastName, email, password, role }) => {
+      await authClient.admin.createUser(
+        {
+          name: `${firstName} ${lastName}`.trim(),
+          email,
+          password,
+          role,
+          data: {
+            firstName,
+            lastName,
+            emailSubscribed: true,
+            lang: "zh-TW",
+          },
+        },
+        {
+          onRequest: () => {
+            setDialog({ confirmLoading: true });
+          },
+          onError: ({ error: { code } }) => {
+            const message = getErrorMessage(code, locale);
+            enqueueSnackbar(message, { variant: "error" });
+
+            setDialog({ confirmLoading: false });
+          },
+          onSuccess: () => {
+            const message = tAdminsUsers("create.success");
+            enqueueSnackbar(message, { variant: "success" });
+
+            resetDialog();
+            fetchData();
+          },
+        },
+      );
+    })(event);
 
   return (
     <StyledBox component="form" id="create-user-form" onSubmit={onSubmit}>
@@ -141,19 +143,25 @@ const CreateUserDialogContent = ({
         type="password"
         {...register("password")}
       />
-      <Controller
-        control={control}
-        name="role"
-        render={({ field }) => (
-          <FormControl fullWidth>
-            <InputLabel>{tAdminsUsers("create.fields.role")}</InputLabel>
-            <Select {...field} label={tAdminsUsers("create.fields.role")}>
-              <MenuItem value="user">{tAdminsUsers("roles.user")}</MenuItem>
-              <MenuItem value="admin">{tAdminsUsers("roles.admin")}</MenuItem>
-            </Select>
-          </FormControl>
-        )}
-      />
+      <TextField
+        error={!!errors.role}
+        fullWidth
+        helperText={errors.role?.message}
+        label={tAdminsUsers("create.fields.role.label")}
+        required
+        select
+        value={role}
+        {...register("role")}
+      >
+        <MenuItem disabled value="">
+          <em>{tAdminsUsers("create.fields.role.placeholder")}</em>
+        </MenuItem>
+        {roles.map((role) => (
+          <MenuItem key={role} value={role}>
+            {tAdminsUsers(`roles.${role}`)}
+          </MenuItem>
+        ))}
+      </TextField>
     </StyledBox>
   );
 };

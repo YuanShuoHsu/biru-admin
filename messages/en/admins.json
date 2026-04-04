@@ -34,7 +34,10 @@
         "lastName": "Last name",
         "email": "Email",
         "password": "Password",
-        "role": "Role"
+        "role": {
+          "label": "Role",
+          "placeholder": "Please select your role"
+        }
       },
       "success": "User created",
       "error": "Failed to create user. Please try again."
