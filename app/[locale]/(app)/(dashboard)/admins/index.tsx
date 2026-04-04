@@ -82,7 +82,7 @@ const Admins = ({ page, pageSize, rows: initialRows, total }: AdminsProps) => {
       const { data } = await authClient.admin.listUsers({
         query: {
           limit: pageSize,
-          offset: page * pageSize,
+          offset: (page - 1) * pageSize,
           sortBy: "createdAt",
           sortDirection: "desc",
         },
@@ -107,8 +107,9 @@ const Admins = ({ page, pageSize, rows: initialRows, total }: AdminsProps) => {
 
   const handlePaginationModelChange = useCallback(
     (newModel: GridPaginationModel) => {
-      setPaginationModel(newModel);
-      fetchData(newModel);
+      const model = { ...newModel, page: newModel.page + 1 };
+      setPaginationModel(model);
+      fetchData(model);
     },
     [fetchData],
   );
@@ -378,7 +379,7 @@ const Admins = ({ page, pageSize, rows: initialRows, total }: AdminsProps) => {
         loading={loading}
         onPaginationModelChange={handlePaginationModelChange}
         paginationMode="server"
-        paginationModel={paginationModel}
+        paginationModel={{ ...paginationModel, page: paginationModel.page - 1 }}
         rowCount={rowCount}
         rows={rows}
       />

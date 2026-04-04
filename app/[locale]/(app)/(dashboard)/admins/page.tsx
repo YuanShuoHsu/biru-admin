@@ -13,7 +13,7 @@ interface AdminsPageProps {
 }
 
 const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
-  const [cookieStore, { locale }, { page = "0", pageSize = "10" }] =
+  const [cookieStore, { locale }, { page = "1", pageSize = "10" }] =
     await Promise.all([cookies(), params, searchParams]);
 
   setRequestLocale(locale);
@@ -26,7 +26,7 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
   const { data } = await authClient.admin.listUsers({
     query: {
       limit: currentPageSize,
-      offset: currentPage * currentPageSize,
+      offset: (currentPage - 1) * currentPageSize,
       sortBy: "createdAt",
       sortDirection: "desc",
     },
