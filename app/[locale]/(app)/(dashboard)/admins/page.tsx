@@ -23,18 +23,9 @@ const AdminUsersPage = async ({ params }: AdminUsersPageProps) => {
     fetchOptions,
   });
 
-  const rows = ((data?.users as AdminUser[]) ?? []).toReversed();
+  const rows = (data?.users || []).toReversed();
 
   return <AdminUsers rows={rows} />;
 };
 
 export default AdminUsersPage;
-
-export type AdminUser = {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-  banned: boolean;
-  createdAt: Date;
-};

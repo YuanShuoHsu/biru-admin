@@ -5,13 +5,12 @@
 
 "use client";
 
+import type { UserWithRole } from "better-auth/client/plugins";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import { flushSync } from "react-dom";
-
-import type { AdminUser } from "./page";
 
 import CreateUserDialogContent from "./CreateUserDialogContent";
 
@@ -46,11 +45,11 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
-interface AdminUsersProps {
-  rows: AdminUser[];
+interface UserWithRolesProps {
+  rows: UserWithRole[];
 }
 
-const AdminUsers = ({ rows: initialRows }: AdminUsersProps) => {
+const UserWithRoles = ({ rows: initialRows }: UserWithRolesProps) => {
   const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState(initialRows);
 
@@ -62,7 +61,7 @@ const AdminUsers = ({ rows: initialRows }: AdminUsersProps) => {
 
   const locale = useLocale();
 
-  const t = useTranslations("admins.users");
+  const tAdminsUsers = useTranslations("admins.users");
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -72,7 +71,7 @@ const AdminUsers = ({ rows: initialRows }: AdminUsersProps) => {
     });
 
     flushSync(() => {
-      setRows(((data?.users as AdminUser[]) ?? []).toReversed());
+      setRows((data?.users || []).toReversed());
 
       setLoading(false);
     });
@@ -87,7 +86,7 @@ const AdminUsers = ({ rows: initialRows }: AdminUsersProps) => {
       content: <CreateUserDialogContent fetchData={fetchData} />,
       formId: "create-user-form",
       open: true,
-      title: t("create.title"),
+      title: tAdminsUsers("create.title"),
     });
   };
 
@@ -101,7 +100,7 @@ const AdminUsers = ({ rows: initialRows }: AdminUsersProps) => {
             enqueueSnackbar(message, { variant: "error" });
           },
           onSuccess: () => {
-            const message = t("setRole.success");
+            const message = tAdminsUsers("setRole.success");
             enqueueSnackbar(message, { variant: "success" });
 
             fetchData();
@@ -109,15 +108,15 @@ const AdminUsers = ({ rows: initialRows }: AdminUsersProps) => {
         },
       );
     },
-    [fetchData, locale, t],
+    [fetchData, locale, tAdminsUsers],
   );
 
   const handleBanUser = useCallback(
-    ({ id, name }: AdminUser) => {
+    ({ id, name }: UserWithRole) => {
       setDialog({
         content: (
           <DialogContentText>
-            {t.rich("ban.confirm", {
+            {tAdminsUsers.rich("ban.confirm", {
               bold: (chunks) => <strong>{chunks}</strong>,
               name,
             })}
@@ -132,7 +131,7 @@ const AdminUsers = ({ rows: initialRows }: AdminUsersProps) => {
                 enqueueSnackbar(message, { variant: "error" });
               },
               onSuccess: () => {
-                const message = t("ban.success");
+                const message = tAdminsUsers("ban.success");
                 enqueueSnackbar(message, { variant: "success" });
 
                 fetchData();
@@ -141,10 +140,10 @@ const AdminUsers = ({ rows: initialRows }: AdminUsersProps) => {
           );
         },
         open: true,
-        title: t("ban.title"),
+        title: tAdminsUsers("ban.title"),
       });
     },
-    [fetchData, locale, setDialog, t],
+    [fetchData, locale, setDialog, tAdminsUsers],
   );
 
   const handleUnbanUser = useCallback(
@@ -157,7 +156,7 @@ const AdminUsers = ({ rows: initialRows }: AdminUsersProps) => {
             enqueueSnackbar(message, { variant: "error" });
           },
           onSuccess: () => {
-            const message = t("unban.success");
+            const message = tAdminsUsers("unban.success");
             enqueueSnackbar(message, { variant: "success" });
 
             fetchData();
@@ -165,15 +164,15 @@ const AdminUsers = ({ rows: initialRows }: AdminUsersProps) => {
         },
       );
     },
-    [fetchData, locale, t],
+    [fetchData, locale, tAdminsUsers],
   );
 
   const handleDeleteUser = useCallback(
-    ({ id, name }: AdminUser) => {
+    ({ id, name }: UserWithRole) => {
       setDialog({
         content: (
           <DialogContentText>
-            {t.rich("delete.confirm", {
+            {tAdminsUsers.rich("delete.confirm", {
               bold: (chunks) => <strong>{chunks}</strong>,
               name,
             })}
@@ -188,7 +187,7 @@ const AdminUsers = ({ rows: initialRows }: AdminUsersProps) => {
                 enqueueSnackbar(message, { variant: "error" });
               },
               onSuccess: () => {
-                const message = t("delete.success");
+                const message = tAdminsUsers("delete.success");
                 enqueueSnackbar(message, { variant: "success" });
 
                 fetchData();
@@ -197,21 +196,21 @@ const AdminUsers = ({ rows: initialRows }: AdminUsersProps) => {
           );
         },
         open: true,
-        title: t("delete.title"),
+        title: tAdminsUsers("delete.title"),
       });
     },
-    [fetchData, locale, setDialog, t],
+    [fetchData, locale, setDialog, tAdminsUsers],
   );
 
   const columns = useMemo<GridColDef[]>(
     () => [
       {
         field: "actions",
-        headerName: t("columns.actions"),
-        renderCell: ({ row }: GridRenderCellParams<AdminUser>) => (
+        headerName: tAdminsUsers("columns.actions"),
+        renderCell: ({ row }: GridRenderCellParams<UserWithRole>) => (
           <Stack height="100%" direction="row" alignItems="center" gap={1}>
             {row.banned ? (
-              <Tooltip title={t("actions.unban")}>
+              <Tooltip title={tAdminsUsers("actions.unban")}>
                 <IconButton
                   color="success"
                   onClick={(event) => {
@@ -225,7 +224,7 @@ const AdminUsers = ({ rows: initialRows }: AdminUsersProps) => {
                 </IconButton>
               </Tooltip>
             ) : (
-              <Tooltip title={t("actions.ban")}>
+              <Tooltip title={tAdminsUsers("actions.ban")}>
                 <IconButton
                   color="warning"
                   onClick={(event) => {
@@ -239,7 +238,7 @@ const AdminUsers = ({ rows: initialRows }: AdminUsersProps) => {
                 </IconButton>
               </Tooltip>
             )}
-            <Tooltip title={t("actions.delete")}>
+            <Tooltip title={tAdminsUsers("actions.delete")}>
               <IconButton
                 color="error"
                 onClick={(event) => {
@@ -259,16 +258,16 @@ const AdminUsers = ({ rows: initialRows }: AdminUsersProps) => {
       },
       {
         field: "name",
-        headerName: t("columns.name"),
+        headerName: tAdminsUsers("columns.name"),
       },
       {
         field: "email",
-        headerName: t("columns.email"),
+        headerName: tAdminsUsers("columns.email"),
       },
       {
         field: "role",
-        headerName: t("columns.role"),
-        renderCell: ({ row }: GridRenderCellParams<AdminUser>) => (
+        headerName: tAdminsUsers("columns.role"),
+        renderCell: ({ row }: GridRenderCellParams<UserWithRole>) => (
           <Select
             onChange={(event) =>
               handleSetRole(row.id, event.target.value as "user" | "admin")
@@ -279,16 +278,16 @@ const AdminUsers = ({ rows: initialRows }: AdminUsersProps) => {
             value={row.role || "user"}
             variant="standard"
           >
-            <MenuItem value="user">{t("roles.user")}</MenuItem>
-            <MenuItem value="admin">{t("roles.admin")}</MenuItem>
+            <MenuItem value="user">{tAdminsUsers("roles.user")}</MenuItem>
+            <MenuItem value="admin">{tAdminsUsers("roles.admin")}</MenuItem>
           </Select>
         ),
         sortable: false,
       },
       {
         field: "banned",
-        headerName: t("columns.status"),
-        renderCell: ({ row }: GridRenderCellParams<AdminUser>) => (
+        headerName: tAdminsUsers("columns.status"),
+        renderCell: ({ row }: GridRenderCellParams<UserWithRole>) => (
           <Chip
             color={row.banned ? "error" : "success"}
             icon={
@@ -298,7 +297,11 @@ const AdminUsers = ({ rows: initialRows }: AdminUsersProps) => {
                 <CheckCircle fontSize="small" />
               )
             }
-            label={row.banned ? t("status.banned") : t("status.active")}
+            label={
+              row.banned
+                ? tAdminsUsers("status.banned")
+                : tAdminsUsers("status.active")
+            }
             size="small"
             variant="outlined"
           />
@@ -307,7 +310,7 @@ const AdminUsers = ({ rows: initialRows }: AdminUsersProps) => {
       },
       {
         field: "createdAt",
-        headerName: t("columns.createdAt"),
+        headerName: tAdminsUsers("columns.createdAt"),
         valueFormatter: (value: Date) =>
           format.dateTime(new Date(value), "short"),
       },
@@ -318,7 +321,7 @@ const AdminUsers = ({ rows: initialRows }: AdminUsersProps) => {
       handleDeleteUser,
       handleSetRole,
       handleUnbanUser,
-      t,
+      tAdminsUsers,
     ],
   );
 
@@ -331,7 +334,7 @@ const AdminUsers = ({ rows: initialRows }: AdminUsersProps) => {
           startIcon={<PersonAdd />}
           variant="contained"
         >
-          {t("actions.create")}
+          {tAdminsUsers("actions.create")}
         </Button>
       </Stack>
       <DataGrid
@@ -348,4 +351,4 @@ const AdminUsers = ({ rows: initialRows }: AdminUsersProps) => {
   );
 };
 
-export default AdminUsers;
+export default UserWithRoles;

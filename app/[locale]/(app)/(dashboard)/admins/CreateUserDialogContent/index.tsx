@@ -42,7 +42,7 @@ const CreateUserDialogContent = ({
 
   const locale = useLocale();
 
-  const t = useTranslations("admins.users");
+  const tAdminsUsers = useTranslations("admins.users");
 
   const createUserFormSchema = useCreateUserFormSchema();
 
@@ -87,7 +87,7 @@ const CreateUserDialogContent = ({
           setDialog({ confirmLoading: false });
         },
         onSuccess: () => {
-          const message = t("create.success");
+          const message = tAdminsUsers("create.success");
           enqueueSnackbar(message, { variant: "success" });
 
           resetDialog();
@@ -108,7 +108,7 @@ const CreateUserDialogContent = ({
           error={!!errors.firstName}
           fullWidth
           helperText={errors.firstName?.message}
-          label={t("create.fields.firstName")}
+          label={tAdminsUsers("create.fields.firstName")}
           required
           {...register("firstName")}
         />
@@ -117,7 +117,7 @@ const CreateUserDialogContent = ({
           error={!!errors.lastName}
           fullWidth
           helperText={errors.lastName?.message}
-          label={t("create.fields.lastName")}
+          label={tAdminsUsers("create.fields.lastName")}
           {...register("lastName")}
         />
       </Stack>
@@ -126,7 +126,7 @@ const CreateUserDialogContent = ({
         error={!!errors.email}
         fullWidth
         helperText={errors.email?.message}
-        label={t("create.fields.email")}
+        label={tAdminsUsers("create.fields.email")}
         required
         type="email"
         {...register("email")}
@@ -136,7 +136,7 @@ const CreateUserDialogContent = ({
         error={!!errors.password}
         fullWidth
         helperText={errors.password?.message}
-        label={t("create.fields.password")}
+        label={tAdminsUsers("create.fields.password")}
         required
         type="password"
         {...register("password")}
@@ -146,10 +146,10 @@ const CreateUserDialogContent = ({
         name="role"
         render={({ field }) => (
           <FormControl fullWidth>
-            <InputLabel>{t("create.fields.role")}</InputLabel>
-            <Select {...field} label={t("create.fields.role")}>
-              <MenuItem value="user">{t("roles.user")}</MenuItem>
-              <MenuItem value="admin">{t("roles.admin")}</MenuItem>
+            <InputLabel>{tAdminsUsers("create.fields.role")}</InputLabel>
+            <Select {...field} label={tAdminsUsers("create.fields.role")}>
+              <MenuItem value="user">{tAdminsUsers("roles.user")}</MenuItem>
+              <MenuItem value="admin">{tAdminsUsers("roles.admin")}</MenuItem>
             </Select>
           </FormControl>
         )}
