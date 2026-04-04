@@ -88,12 +88,13 @@ const Admins = ({ page, pageSize, rows: initialRows, total }: AdminsProps) => {
         },
       });
 
-      const users = data?.users ?? [];
-      const total = data?.total ?? 0;
+      const users = data?.users || [];
+      const total = data?.total || 0;
 
       flushSync(() => {
         setRows(users);
         setRowCount(total);
+
         setLoading(false);
       });
 

@@ -83,7 +83,7 @@ const CreateUserDialogContent = ({
             firstName,
             lastName,
             emailSubscribed: true,
-            lang: "zh-TW",
+            lang: locale,
           },
         },
         {
