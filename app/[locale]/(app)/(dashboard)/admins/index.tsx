@@ -13,6 +13,7 @@ import { useCallback, useMemo, useState } from "react";
 import { flushSync } from "react-dom";
 
 import CreateUserDialogContent from "./CreateUserDialogContent";
+import SetRoleDialogContent from "./SetRoleDialogContent";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
@@ -22,6 +23,7 @@ import {
   Block,
   CheckCircle,
   Delete,
+  Edit,
   LockOpen,
   PersonAdd,
 } from "@mui/icons-material";
@@ -30,8 +32,6 @@ import {
   Chip,
   DialogContentText,
   IconButton,
-  MenuItem,
-  Select,
   Stack,
   Tooltip,
 } from "@mui/material";
@@ -48,6 +48,11 @@ const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
   { ssr: false },
 );
+
+const ROLE_COLOR_MAP: Record<string, "error" | "default"> = {
+  admin: "error",
+  user: "default",
+};
 
 interface AdminsProps {
   page: number;
@@ -131,24 +136,21 @@ const Admins = ({
   };
 
   const handleSetRole = useCallback(
-    async (userId: string, role: "user" | "admin") => {
-      await authClient.admin.setRole(
-        { userId, role },
-        {
-          onError: ({ error: { code } }) => {
-            const message = getErrorMessage(code, locale);
-            enqueueSnackbar(message, { variant: "error" });
-          },
-          onSuccess: () => {
-            const message = tAdminsUsers("setRole.success");
-            enqueueSnackbar(message, { variant: "success" });
-
-            fetchData(paginationModel);
-          },
-        },
-      );
+    ({ id, role }: UserWithRole) => {
+      setDialog({
+        content: (
+          <SetRoleDialogContent
+            currentRole={(role as "user" | "admin") || "user"}
+            fetchData={() => fetchData(paginationModel)}
+            userId={id}
+          />
+        ),
+        formId: "set-role-form",
+        open: true,
+        title: tAdminsUsers("setRole.title"),
+      });
     },
-    [fetchData, locale, paginationModel, tAdminsUsers],
+    [fetchData, paginationModel, setDialog, tAdminsUsers],
   );
 
   const handleBanUser = useCallback(
@@ -249,6 +251,18 @@ const Admins = ({
         headerName: tAdminsUsers("columns.actions"),
         renderCell: ({ row }: GridRenderCellParams<UserWithRole>) => (
           <Stack height="100%" direction="row" alignItems="center" gap={1}>
+            <Tooltip title={tAdminsUsers("actions.setRole")}>
+              <IconButton
+                onClick={(event) => {
+                  event.stopPropagation();
+
+                  handleSetRole(row);
+                }}
+                size="small"
+              >
+                <Edit fontSize="small" />
+              </IconButton>
+            </Tooltip>
             {row.banned ? (
               <Tooltip title={tAdminsUsers("actions.unban")}>
                 <IconButton
@@ -307,20 +321,13 @@ const Admins = ({
       {
         field: "role",
         headerName: tAdminsUsers("columns.role"),
-        renderCell: ({ row }: GridRenderCellParams<UserWithRole>) => (
-          <Select
-            onChange={(event) =>
-              handleSetRole(row.id, event.target.value as "user" | "admin")
-            }
-            onClick={(event) => event.stopPropagation()}
+        renderCell: ({ row: { role } }: GridRenderCellParams<UserWithRole>) => (
+          <Chip
+            color={ROLE_COLOR_MAP[role]}
+            label={tAdminsUsers(`roles.${role}`)}
             size="small"
-            sx={{ fontSize: "0.875rem" }}
-            value={row.role || "user"}
-            variant="standard"
-          >
-            <MenuItem value="user">{tAdminsUsers("roles.user")}</MenuItem>
-            <MenuItem value="admin">{tAdminsUsers("roles.admin")}</MenuItem>
-          </Select>
+            variant="outlined"
+          />
         ),
         sortable: false,
       },
