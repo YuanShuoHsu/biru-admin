@@ -9,9 +9,10 @@ import { useForm, useWatch } from "react-hook-form";
 import {
   type EditMemberFormInput,
   type EditMemberFormOutput,
-  roles,
   useEditMemberFormSchema,
 } from "./definitions";
+
+import { roles } from "@/constants/organizations";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 

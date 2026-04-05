@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-export const roles = ["owner", "admin", "member"] as const;
+import { roles } from "@/constants/organizations";
 
 export const useEditMemberFormSchema = () => {
   const tValidation = useTranslations("validation");

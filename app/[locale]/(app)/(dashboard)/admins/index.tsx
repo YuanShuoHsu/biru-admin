@@ -136,13 +136,12 @@ const Admins = ({
   };
 
   const handleSetRole = useCallback(
-    ({ id, role }: UserWithRole) => {
+    (user: UserWithRole) => {
       setDialog({
         content: (
           <SetRoleDialogContent
-            currentRole={(role as "user" | "admin") || "user"}
             fetchData={() => fetchData(paginationModel)}
-            userId={id}
+            user={user}
           />
         ),
         formId: "set-role-form",
@@ -321,6 +320,7 @@ const Admins = ({
       {
         field: "role",
         headerName: tAdminsUsers("columns.role"),
+        // 這裡有型別問題
         renderCell: ({ row: { role } }: GridRenderCellParams<UserWithRole>) => (
           <Chip
             color={ROLE_COLOR_MAP[role]}

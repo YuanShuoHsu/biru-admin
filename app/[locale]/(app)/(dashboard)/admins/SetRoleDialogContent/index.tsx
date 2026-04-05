@@ -1,12 +1,13 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { UserWithRole } from "better-auth/client/plugins";
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
-import { roles } from "../CreateUserDialogContent/definitions";
+import { roles } from "@/constants/admins";
 
 import {
   type SetRoleFormInput,
@@ -28,15 +29,13 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 }));
 
 interface SetRoleDialogContentProps {
-  currentRole: string;
   fetchData: () => void;
-  userId: string;
+  user: UserWithRole;
 }
 
 const SetRoleDialogContent = ({
-  currentRole,
   fetchData,
-  userId,
+  user,
 }: SetRoleDialogContentProps) => {
   const { resetDialog, setDialog } = useDialogStore((state) => state);
 
@@ -52,7 +51,7 @@ const SetRoleDialogContent = ({
     handleSubmit,
     register,
   } = useForm<SetRoleFormInput, unknown, SetRoleFormOutput>({
-    defaultValues: { role: currentRole },
+    defaultValues: { role: user.role },
     resolver: zodResolver(setRoleFormSchema),
   });
 
@@ -61,7 +60,7 @@ const SetRoleDialogContent = ({
   const onSubmit = (event: BaseSyntheticEvent) =>
     handleSubmit(async ({ role }) => {
       await authClient.admin.setRole(
-        { userId, role },
+        { userId: user.id, role },
         {
           onRequest: () => {
             setDialog({ confirmLoading: true });
