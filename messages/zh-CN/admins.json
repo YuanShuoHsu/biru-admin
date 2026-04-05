@@ -1,73 +1,79 @@
 {
   "label": "管理",
   "users": {
-    "label": "用户管理",
-    "title": "用户管理",
-    "subtitle": "管理所有用户账号",
-    "columns": {
-      "name": "姓名",
-      "email": "电子邮件",
-      "role": "角色",
-      "status": "状态",
-      "createdAt": "创建时间",
-      "actions": "操作"
-    },
-    "roles": {
-      "admin": "管理员",
-      "user": "普通用户"
-    },
-    "status": {
-      "active": "正常",
-      "banned": "已封禁"
-    },
     "actions": {
-      "create": "添加用户",
       "ban": "封禁",
-      "unban": "解除封禁",
+      "create": "添加用户",
       "delete": "删除",
-      "setRole": "更改角色"
+      "setRole": "更改角色",
+      "unban": "解除封禁"
+    },
+    "ban": {
+      "confirm": "确定要封禁 <bold>{name}</bold> 吗？封禁后该用户将无法登录。",
+      "error": "封禁失败，请稍后重试",
+      "success": "已封禁用户",
+      "title": "封禁用户"
+    },
+    "columns": {
+      "actions": "操作",
+      "createdAt": "创建时间",
+      "email": "电子邮件",
+      "emailSubscribed": "电子报",
+      "image": "头像",
+      "name": "姓名",
+      "role": "角色",
+      "status": "状态"
     },
     "create": {
-      "title": "添加用户",
+      "error": "创建失败，请稍后重试",
       "fields": {
+        "confirmPassword": "确认密码",
+        "email": "电子邮件",
+        "emailSubscribed": "我想通过电子邮件接收最新资讯",
         "firstName": "名字",
         "lastName": "姓氏",
-        "email": "电子邮件",
         "password": "密码",
-        "confirmPassword": "确认密码",
-        "emailSubscribed": "我想通过电子邮件接收最新资讯",
         "role": {
           "label": "角色",
           "placeholder": "请选择您的角色"
         }
       },
       "success": "用户已创建",
-      "error": "创建失败，请稍后重试"
-    },
-    "ban": {
-      "title": "封禁用户",
-      "confirm": "确定要封禁 <bold>{name}</bold> 吗？封禁后该用户将无法登录。",
-      "success": "已封禁用户",
-      "error": "封禁失败，请稍后重试"
-    },
-    "unban": {
-      "success": "已解除封禁",
-      "error": "解除封禁失败，请稍后重试"
+      "title": "添加用户"
     },
     "delete": {
-      "title": "删除用户",
       "confirm": "确定要删除 <bold>{name}</bold> 吗？此操作无法撤销。",
+      "error": "删除失败，请稍后重试",
       "success": "已删除用户",
-      "error": "删除失败，请稍后重试"
+      "title": "删除用户"
     },
-    "setRole": {
-      "title": "更改角色",
-      "success": "角色已更新",
-      "error": "更新失败，请稍后重试"
+    "empty": "暂无用户数据",
+    "label": "用户管理",
+    "roles": {
+      "admin": "管理员",
+      "user": "普通用户"
     },
     "search": {
       "placeholder": "请输入您的姓名或电子邮件"
     },
-    "empty": "暂无用户数据"
+    "setRole": {
+      "error": "更新失败，请稍后重试",
+      "success": "角色已更新",
+      "title": "更改角色"
+    },
+    "status": {
+      "active": "正常",
+      "banned": "已封禁",
+      "subscribed": "已订阅",
+      "unsubscribed": "未订阅"
+    },
+    "subtitle": "管理所有用户账号",
+    "title": "用户管理",
+    "unban": {
+      "confirm": "确定要解除封禁 <bold>{name}</bold> 吗？解除后该用户将可重新登录。",
+      "error": "解除封禁失败，请稍后重试",
+      "success": "已解除封禁",
+      "title": "解除封禁"
+    }
   }
 }

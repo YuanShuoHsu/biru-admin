@@ -1,73 +1,79 @@
 {
   "label": "管理",
   "users": {
-    "label": "使用者管理",
-    "title": "使用者管理",
-    "subtitle": "管理所有使用者帳號",
-    "columns": {
-      "name": "姓名",
-      "email": "電子郵件",
-      "role": "角色",
-      "status": "狀態",
-      "createdAt": "建立時間",
-      "actions": "操作"
-    },
-    "roles": {
-      "admin": "管理員",
-      "user": "一般使用者"
-    },
-    "status": {
-      "active": "正常",
-      "banned": "已封鎖"
-    },
     "actions": {
-      "create": "新增使用者",
       "ban": "封鎖",
-      "unban": "解除封鎖",
+      "create": "新增使用者",
       "delete": "刪除",
-      "setRole": "更改角色"
+      "setRole": "更改角色",
+      "unban": "解除封鎖"
+    },
+    "ban": {
+      "confirm": "確定要封鎖 <bold>{name}</bold> 嗎？封鎖後該使用者將無法登入。",
+      "error": "封鎖失敗，請稍後重試",
+      "success": "已封鎖使用者",
+      "title": "封鎖使用者"
+    },
+    "columns": {
+      "actions": "操作",
+      "createdAt": "建立時間",
+      "email": "電子郵件",
+      "emailSubscribed": "電子報",
+      "image": "頭像",
+      "name": "姓名",
+      "role": "角色",
+      "status": "狀態"
     },
     "create": {
-      "title": "新增使用者",
+      "error": "建立失敗，請稍後重試",
       "fields": {
+        "confirmPassword": "確認密碼",
+        "email": "電子郵件",
+        "emailSubscribed": "我想透過電子郵件接收最新資訊",
         "firstName": "名字",
         "lastName": "姓氏",
-        "email": "電子郵件",
         "password": "密碼",
-        "confirmPassword": "確認密碼",
-        "emailSubscribed": "我想透過電子郵件接收最新資訊",
         "role": {
           "label": "角色",
           "placeholder": "請選擇您的角色"
         }
       },
       "success": "使用者已建立",
-      "error": "建立失敗，請稍後重試"
-    },
-    "ban": {
-      "title": "封鎖使用者",
-      "confirm": "確定要封鎖 <bold>{name}</bold> 嗎？封鎖後該使用者將無法登入。",
-      "success": "已封鎖使用者",
-      "error": "封鎖失敗，請稍後重試"
-    },
-    "unban": {
-      "success": "已解除封鎖",
-      "error": "解除封鎖失敗，請稍後重試"
+      "title": "新增使用者"
     },
     "delete": {
-      "title": "刪除使用者",
       "confirm": "確定要刪除 <bold>{name}</bold> 嗎？此操作無法復原。",
+      "error": "刪除失敗，請稍後重試",
       "success": "已刪除使用者",
-      "error": "刪除失敗，請稍後重試"
+      "title": "刪除使用者"
     },
-    "setRole": {
-      "title": "更改角色",
-      "success": "角色已更新",
-      "error": "更新失敗，請稍後重試"
+    "empty": "尚無使用者資料",
+    "label": "使用者管理",
+    "roles": {
+      "admin": "管理員",
+      "user": "一般使用者"
     },
     "search": {
       "placeholder": "請輸入您的姓名或電子郵件"
     },
-    "empty": "尚無使用者資料"
+    "setRole": {
+      "error": "更新失敗，請稍後重試",
+      "success": "角色已更新",
+      "title": "更改角色"
+    },
+    "status": {
+      "active": "正常",
+      "banned": "已封鎖",
+      "subscribed": "已訂閱",
+      "unsubscribed": "未訂閱"
+    },
+    "subtitle": "管理所有使用者帳號",
+    "title": "使用者管理",
+    "unban": {
+      "confirm": "確定要解除封鎖 <bold>{name}</bold> 嗎？解除後該使用者將可重新登入。",
+      "error": "解除封鎖失敗，請稍後重試",
+      "success": "已解除封鎖",
+      "title": "解除封鎖"
+    }
   }
 }

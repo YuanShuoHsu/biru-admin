@@ -25,9 +25,12 @@ import {
   Delete,
   Edit,
   LockOpen,
+  MailOutline,
   PersonAdd,
+  UnsubscribeOutlined,
 } from "@mui/icons-material";
 import {
+  Avatar,
   Button,
   Chip,
   DialogContentText,
@@ -35,6 +38,7 @@ import {
   Stack,
   Tooltip,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
   GridPaginationModel,
@@ -42,6 +46,7 @@ import type {
 } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
+import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { AdminRole, AdminUser } from "@/types/admins";
@@ -50,6 +55,11 @@ const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
   { ssr: false },
 );
+
+const StyledAvatar = styled(Avatar)({
+  width: 28,
+  height: 28,
+});
 
 const ROLE_COLOR_MAP: Record<AdminRole, "error" | "default"> = {
   admin: "error",
@@ -79,7 +89,10 @@ const Admins = ({
 
   const apiRef = useGridApiRef();
 
+  const { session } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
+
+  const currentUserId = session?.user?.id;
 
   const format = useFormatter();
 
@@ -190,24 +203,38 @@ const Admins = ({
   );
 
   const handleUnbanUser = useCallback(
-    async (userId: string) => {
-      await authClient.admin.unbanUser(
-        { userId },
-        {
-          onError: ({ error: { code } }) => {
-            const message = getErrorMessage(code, locale);
-            enqueueSnackbar(message, { variant: "error" });
-          },
-          onSuccess: () => {
-            const message = tAdminsUsers("unban.success");
-            enqueueSnackbar(message, { variant: "success" });
+    ({ id, name }: UserWithRole) => {
+      setDialog({
+        content: (
+          <DialogContentText>
+            {tAdminsUsers.rich("unban.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              name,
+            })}
+          </DialogContentText>
+        ),
+        onConfirm: async () => {
+          await authClient.admin.unbanUser(
+            { userId: id },
+            {
+              onError: ({ error: { code } }) => {
+                const message = getErrorMessage(code, locale);
+                enqueueSnackbar(message, { variant: "error" });
+              },
+              onSuccess: () => {
+                const message = tAdminsUsers("unban.success");
+                enqueueSnackbar(message, { variant: "success" });
 
-            fetchData(paginationModel);
-          },
+                fetchData(paginationModel);
+              },
+            },
+          );
         },
-      );
+        open: true,
+        title: tAdminsUsers("unban.title"),
+      });
     },
-    [fetchData, locale, paginationModel, tAdminsUsers],
+    [fetchData, locale, paginationModel, setDialog, tAdminsUsers],
   );
 
   const handleDeleteUser = useCallback(
@@ -250,65 +277,84 @@ const Admins = ({
       {
         field: "actions",
         headerName: tAdminsUsers("columns.actions"),
-        renderCell: ({ row }: GridRenderCellParams<UserWithRole>) => (
-          <Stack height="100%" direction="row" alignItems="center" gap={1}>
-            <Tooltip title={tAdminsUsers("actions.setRole")}>
-              <IconButton
-                onClick={(event) => {
-                  event.stopPropagation();
+        renderCell: ({ row }: GridRenderCellParams<UserWithRole>) => {
+          const isCurrentUser = row.id === currentUserId;
 
-                  handleSetRole(row);
-                }}
-                size="small"
-              >
-                <Edit fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            {row.banned ? (
-              <Tooltip title={tAdminsUsers("actions.unban")}>
+          return (
+            <Stack height="100%" direction="row" alignItems="center" gap={1}>
+              <Tooltip title={tAdminsUsers("actions.setRole")}>
                 <IconButton
-                  color="success"
                   onClick={(event) => {
                     event.stopPropagation();
 
-                    handleUnbanUser(row.id);
+                    handleSetRole(row);
                   }}
                   size="small"
                 >
-                  <LockOpen fontSize="small" />
+                  <Edit fontSize="small" />
                 </IconButton>
               </Tooltip>
-            ) : (
-              <Tooltip title={tAdminsUsers("actions.ban")}>
-                <IconButton
-                  color="warning"
-                  onClick={(event) => {
-                    event.stopPropagation();
+              {!isCurrentUser &&
+                (row.banned ? (
+                  <Tooltip title={tAdminsUsers("actions.unban")}>
+                    <IconButton
+                      color="success"
+                      onClick={(event) => {
+                        event.stopPropagation();
 
-                    handleBanUser(row);
-                  }}
-                  size="small"
-                >
-                  <Block fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
-            <Tooltip title={tAdminsUsers("actions.delete")}>
-              <IconButton
-                color="error"
-                onClick={(event) => {
-                  event.stopPropagation();
+                        handleUnbanUser(row);
+                      }}
+                      size="small"
+                    >
+                      <LockOpen fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                ) : (
+                  <Tooltip title={tAdminsUsers("actions.ban")}>
+                    <IconButton
+                      color="warning"
+                      onClick={(event) => {
+                        event.stopPropagation();
 
-                  handleDeleteUser(row);
-                }}
-                size="small"
-              >
-                <Delete fontSize="small" />
-              </IconButton>
-            </Tooltip>
+                        handleBanUser(row);
+                      }}
+                      size="small"
+                    >
+                      <Block fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                ))}
+              {!isCurrentUser && (
+                <Tooltip title={tAdminsUsers("actions.delete")}>
+                  <IconButton
+                    color="error"
+                    onClick={(event) => {
+                      event.stopPropagation();
+
+                      handleDeleteUser(row);
+                    }}
+                    size="small"
+                  >
+                    <Delete fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              )}
+            </Stack>
+          );
+        },
+        resizable: false,
+        sortable: false,
+      },
+      {
+        field: "image",
+        headerName: tAdminsUsers("columns.image"),
+        renderCell: ({
+          row: { image, name },
+        }: GridRenderCellParams<AdminUser>) => (
+          <Stack height="100%" direction="row" alignItems="center">
+            <StyledAvatar alt={name} src={image || undefined} />
           </Stack>
         ),
-        resizable: false,
         sortable: false,
       },
       {
@@ -359,6 +405,30 @@ const Admins = ({
         sortable: false,
       },
       {
+        field: "emailSubscribed",
+        headerName: tAdminsUsers("columns.emailSubscribed"),
+        renderCell: ({ row }: GridRenderCellParams<AdminUser>) => (
+          <Chip
+            color={row.emailSubscribed ? "primary" : "default"}
+            icon={
+              row.emailSubscribed ? (
+                <MailOutline fontSize="small" />
+              ) : (
+                <UnsubscribeOutlined fontSize="small" />
+              )
+            }
+            label={
+              row.emailSubscribed
+                ? tAdminsUsers("status.subscribed")
+                : tAdminsUsers("status.unsubscribed")
+            }
+            size="small"
+            variant="outlined"
+          />
+        ),
+        sortable: false,
+      },
+      {
         field: "createdAt",
         headerName: tAdminsUsers("columns.createdAt"),
         valueFormatter: (value: Date) =>
@@ -366,6 +436,7 @@ const Admins = ({
       },
     ],
     [
+      currentUserId,
       format,
       handleBanUser,
       handleDeleteUser,

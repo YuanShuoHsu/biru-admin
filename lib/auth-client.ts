@@ -133,6 +133,20 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
     [LocaleEnum.Ko]: "이 조직을 업데이트할 권한이 없습니다",
     [LocaleEnum.ZhCN]: "您没有权限更新此组织",
   },
+  YOU_CANNOT_BAN_YOURSELF: {
+    [LocaleEnum.ZhTW]: "您無法封鎖自己",
+    [LocaleEnum.En]: "You cannot ban yourself.",
+    [LocaleEnum.Ja]: "自分自身を停止することはできません",
+    [LocaleEnum.Ko]: "자기 자신을 차단할 수 없습니다",
+    [LocaleEnum.ZhCN]: "您无法封禁自己",
+  },
+  YOU_CANNOT_REMOVE_YOURSELF: {
+    [LocaleEnum.ZhTW]: "您無法移除自己",
+    [LocaleEnum.En]: "You cannot remove yourself.",
+    [LocaleEnum.Ja]: "自分自身を削除することはできません",
+    [LocaleEnum.Ko]: "자기 자신을 삭제할 수 없습니다",
+    [LocaleEnum.ZhCN]: "您无法移除自己",
+  },
   YOU_CANNOT_LEAVE_THE_ORGANIZATION_AS_THE_ONLY_OWNER: {
     [LocaleEnum.ZhTW]: "您是唯一的擁有者，無法離開組織",
     [LocaleEnum.En]: "You cannot leave the organization as the only owner.",
