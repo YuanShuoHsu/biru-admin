@@ -34,6 +34,8 @@
         "lastName": "姓",
         "email": "メール",
         "password": "パスワード",
+        "confirmPassword": "パスワード確認",
+        "emailSubscribed": "メールで最新情報を受け取る",
         "role": {
           "label": "役割",
           "placeholder": "あなたの役割を選択してください"

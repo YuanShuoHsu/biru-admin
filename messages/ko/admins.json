@@ -34,6 +34,8 @@
         "lastName": "성",
         "email": "이메일",
         "password": "비밀번호",
+        "confirmPassword": "비밀번호 확인",
+        "emailSubscribed": "이메일로 최신 정보를 받고 싶습니다",
         "role": {
           "label": "역할",
           "placeholder": "역할을 선택해 주세요"

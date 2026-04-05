@@ -34,6 +34,8 @@
         "lastName": "姓氏",
         "email": "电子邮件",
         "password": "密码",
+        "confirmPassword": "确认密码",
+        "emailSubscribed": "我想通过电子邮件接收最新资讯",
         "role": {
           "label": "角色",
           "placeholder": "请选择您的角色"

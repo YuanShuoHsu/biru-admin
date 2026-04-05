@@ -34,6 +34,8 @@
         "lastName": "Last name",
         "email": "Email",
         "password": "Password",
+        "confirmPassword": "Confirm password",
+        "emailSubscribed": "I want to receive updates via email",
         "role": {
           "label": "Role",
           "placeholder": "Please select your role"

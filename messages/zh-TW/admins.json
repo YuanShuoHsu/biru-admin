@@ -34,6 +34,8 @@
         "lastName": "姓氏",
         "email": "電子郵件",
         "password": "密碼",
+        "confirmPassword": "確認密碼",
+        "emailSubscribed": "我想透過電子郵件接收最新資訊",
         "role": {
           "label": "角色",
           "placeholder": "請選擇您的角色"
