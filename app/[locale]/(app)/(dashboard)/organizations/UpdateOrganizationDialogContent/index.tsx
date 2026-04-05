@@ -21,7 +21,7 @@ import { Box, type BoxProps, TextField, styled } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { Organization } from "@/types/auth";
+import type { Organization } from "@/types/organizations";
 
 const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   display: "flex",

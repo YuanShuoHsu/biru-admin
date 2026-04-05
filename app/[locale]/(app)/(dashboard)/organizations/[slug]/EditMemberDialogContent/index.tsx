@@ -20,7 +20,7 @@ import { Box, type BoxProps, MenuItem, TextField, styled } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { Member } from "@/types/auth";
+import type { Member } from "@/types/organizations";
 
 const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   display: "flex",

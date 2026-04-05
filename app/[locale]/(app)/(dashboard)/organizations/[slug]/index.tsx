@@ -47,7 +47,7 @@ import { useGridApiRef } from "@mui/x-data-grid";
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { ActiveOrganization, Invitation, Member } from "@/types/auth";
+import type { ActiveOrganization, Invitation, Member } from "@/types/organizations";
 
 import { stringAvatar } from "@/utils/avatar";
 import { a11yProps } from "@/utils/tab";

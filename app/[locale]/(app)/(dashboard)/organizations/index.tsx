@@ -36,7 +36,7 @@ import { useGridApiRef } from "@mui/x-data-grid";
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { Organization } from "@/types/auth";
+import type { Organization } from "@/types/organizations";
 
 import { stringAvatar } from "@/utils/avatar";
 import {

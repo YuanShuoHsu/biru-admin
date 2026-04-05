@@ -44,12 +44,14 @@ import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
+import type { AdminRole, AdminUser } from "@/types/admins";
+
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
   { ssr: false },
 );
 
-const ROLE_COLOR_MAP: Record<string, "error" | "default"> = {
+const ROLE_COLOR_MAP: Record<AdminRole, "error" | "default"> = {
   admin: "error",
   user: "default",
 };
@@ -320,8 +322,9 @@ const Admins = ({
       {
         field: "role",
         headerName: tAdminsUsers("columns.role"),
-        // 這裡有型別問題
-        renderCell: ({ row: { role } }: GridRenderCellParams<UserWithRole>) => (
+        renderCell: ({
+          row: { role = "user" },
+        }: GridRenderCellParams<AdminUser>) => (
           <Chip
             color={ROLE_COLOR_MAP[role]}
             label={tAdminsUsers(`roles.${role}`)}
