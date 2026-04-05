@@ -109,9 +109,8 @@ const CreateUserDialogContent = ({
     hasConfirmPassword,
   } = usePasswordValidation(password, confirmPassword);
 
-  const handleClickShowPassword =
-    (key: "password" | "confirmPassword") => () =>
-      setShowPassword((prev) => ({ ...prev, [key]: !prev[key] }));
+  const handleClickShowPassword = (key: "password" | "confirmPassword") => () =>
+    setShowPassword((prev) => ({ ...prev, [key]: !prev[key] }));
 
   const onSubmit = (event: BaseSyntheticEvent) =>
     handleSubmit(
@@ -125,8 +124,7 @@ const CreateUserDialogContent = ({
         emailSubscribed,
         role,
       }) => {
-        const { avatarSrc: image } =
-          uploadAvatarsRef.current?.getValue() || {};
+        const { avatarSrc: image } = uploadAvatarsRef.current?.getValue() || {};
 
         await authClient.admin.createUser(
           {
