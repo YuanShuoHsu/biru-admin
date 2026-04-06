@@ -60,7 +60,7 @@ const SetRoleDialogContent = ({
   const onSubmit = (event: BaseSyntheticEvent) =>
     handleSubmit(async ({ role }) => {
       await authClient.admin.setRole(
-        { userId: user.id, role },
+        { role, userId: user.id },
         {
           onRequest: () => {
             setDialog({ confirmLoading: true });
@@ -94,6 +94,9 @@ const SetRoleDialogContent = ({
         value={role}
         {...register("role")}
       >
+        <MenuItem disabled value="">
+          <em>{tAdminsUsers("create.fields.role.placeholder")}</em>
+        </MenuItem>
         {roles.map((role) => (
           <MenuItem key={role} value={role}>
             {tAdminsUsers(`roles.${role}`)}

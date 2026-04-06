@@ -11,6 +11,26 @@
     "ban": {
       "confirm": "Are you sure you want to ban <bold>{name}</bold>? They will no longer be able to sign in.",
       "error": "Failed to ban user. Please try again.",
+      "fields": {
+        "banExpiresIn": {
+          "label": "Ban duration",
+          "options": {
+            "permanent": "Permanent",
+            "1year": "1 year",
+            "90days": "90 days",
+            "30days": "30 days",
+            "7days": "7 days",
+            "1day": "1 day",
+            "12hours": "12 hours",
+            "1hour": "1 hour"
+          },
+          "placeholder": "Please select your ban duration"
+        },
+        "banReason": {
+          "label": "Ban reason",
+          "placeholder": "Please enter your ban reason"
+        }
+      },
       "success": "User banned",
       "title": "Ban user"
     },

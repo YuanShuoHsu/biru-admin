@@ -11,6 +11,26 @@
     "ban": {
       "confirm": "确定要封禁 <bold>{name}</bold> 吗？封禁后该用户将无法登录。",
       "error": "封禁失败，请稍后重试",
+      "fields": {
+        "banExpiresIn": {
+          "label": "封禁时长",
+          "options": {
+            "permanent": "永久",
+            "1year": "1 年",
+            "90days": "90 天",
+            "30days": "30 天",
+            "7days": "7 天",
+            "1day": "1 天",
+            "12hours": "12 小时",
+            "1hour": "1 小时"
+          },
+          "placeholder": "请选择您的封禁时长"
+        },
+        "banReason": {
+          "label": "封禁原因",
+          "placeholder": "请输入您的封禁原因"
+        }
+      },
       "success": "已封禁用户",
       "title": "封禁用户"
     },

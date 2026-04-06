@@ -11,6 +11,26 @@
     "ban": {
       "confirm": "<bold>{name}</bold>을(를) 차단하시겠습니까? 차단 후에는 로그인할 수 없습니다.",
       "error": "차단에 실패했습니다. 다시 시도해 주세요",
+      "fields": {
+        "banExpiresIn": {
+          "label": "차단 기간",
+          "options": {
+            "permanent": "영구",
+            "1year": "1년",
+            "90days": "90일",
+            "30days": "30일",
+            "7days": "7일",
+            "1day": "1일",
+            "12hours": "12시간",
+            "1hour": "1시간"
+          },
+          "placeholder": "차단 기간을 선택해 주세요"
+        },
+        "banReason": {
+          "label": "차단 사유",
+          "placeholder": "차단 사유를 입력해 주세요"
+        }
+      },
       "success": "사용자가 차단되었습니다",
       "title": "사용자 차단"
     },

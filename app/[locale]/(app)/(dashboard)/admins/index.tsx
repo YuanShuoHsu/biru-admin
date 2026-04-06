@@ -12,6 +12,7 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import { flushSync } from "react-dom";
 
+import BanUserDialogContent from "./BanUserDialogContent";
 import CreateUserDialogContent from "./CreateUserDialogContent";
 import SetRoleDialogContent from "./SetRoleDialogContent";
 
@@ -168,38 +169,20 @@ const Admins = ({
   );
 
   const handleBanUser = useCallback(
-    ({ id, name }: UserWithRole) => {
+    (user: UserWithRole) => {
       setDialog({
         content: (
-          <DialogContentText>
-            {tAdminsUsers.rich("ban.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              name,
-            })}
-          </DialogContentText>
+          <BanUserDialogContent
+            fetchData={() => fetchData(paginationModel)}
+            user={user}
+          />
         ),
-        onConfirm: async () => {
-          await authClient.admin.banUser(
-            { userId: id },
-            {
-              onError: ({ error: { code } }) => {
-                const message = getErrorMessage(code, locale);
-                enqueueSnackbar(message, { variant: "error" });
-              },
-              onSuccess: () => {
-                const message = tAdminsUsers("ban.success");
-                enqueueSnackbar(message, { variant: "success" });
-
-                fetchData(paginationModel);
-              },
-            },
-          );
-        },
+        formId: "ban-user-form",
         open: true,
         title: tAdminsUsers("ban.title"),
       });
     },
-    [fetchData, locale, paginationModel, setDialog, tAdminsUsers],
+    [fetchData, paginationModel, setDialog, tAdminsUsers],
   );
 
   const handleUnbanUser = useCallback(
