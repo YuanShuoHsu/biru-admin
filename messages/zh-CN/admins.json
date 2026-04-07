@@ -2,8 +2,6 @@
   "actions": {
     "label": "操作",
     "ban": {
-      "confirm": "确定要封禁 <bold>{name}</bold> 吗？封禁后该用户将无法登录。",
-      "error": "封禁失败，请稍后重试",
       "fields": {
         "banExpiresIn": {
           "label": "封禁时长",
@@ -29,39 +27,48 @@
       "title": "封禁用户"
     },
     "create": {
-      "error": "创建失败，请稍后重试",
-      "fields": {
-        "confirmPassword": "确认密码",
-        "email": "电子邮件",
-        "emailSubscribed": "我想通过电子邮件接收最新资讯",
-        "firstName": "名字",
-        "lastName": "姓氏",
-        "password": "密码",
-        "role": {
-          "label": "角色",
-          "placeholder": "请选择您的角色"
-        }
+      "confirmPassword": {
+        "label": "确认密码",
+        "placeholder": "请再次输入密码"
+      },
+      "email": {
+        "label": "电子邮件",
+        "placeholder": "请输入您的电子邮件"
+      },
+      "emailSubscribed": "我想通过电子邮件接收最新资讯",
+      "firstName": {
+        "label": "名字",
+        "placeholder": "请输入您的名字"
+      },
+      "lastName": {
+        "label": "姓氏",
+        "placeholder": "请输入您的姓氏"
+      },
+      "password": {
+        "label": "密码",
+        "placeholder": "请输入您的密码"
       },
       "label": "添加用户",
+      "role": {
+        "label": "角色",
+        "placeholder": "请选择您的角色"
+      },
       "success": "用户已创建",
       "title": "添加用户"
     },
     "delete": {
       "confirm": "确定要删除 <bold>{name}</bold> 吗？此操作无法撤销。",
-      "error": "删除失败，请稍后重试",
       "label": "删除",
       "success": "已删除用户",
       "title": "删除用户"
     },
     "setRole": {
-      "error": "更新失败，请稍后重试",
       "label": "更改角色",
       "success": "角色已更新",
       "title": "更改角色"
     },
     "unban": {
       "confirm": "确定要解除封禁 <bold>{name}</bold> 吗？解除后该用户将可重新登录。",
-      "error": "解除封禁失败，请稍后重试",
       "label": "解除封禁",
       "success": "已解除封禁",
       "title": "解除封禁"

@@ -2,8 +2,6 @@
   "actions": {
     "label": "작업",
     "ban": {
-      "confirm": "<bold>{name}</bold>을(를) 차단하시겠습니까? 차단 후에는 로그인할 수 없습니다.",
-      "error": "차단에 실패했습니다. 다시 시도해 주세요",
       "fields": {
         "banExpiresIn": {
           "label": "차단 기간",
@@ -29,39 +27,48 @@
       "title": "사용자 차단"
     },
     "create": {
-      "error": "생성에 실패했습니다. 다시 시도해 주세요",
-      "fields": {
-        "confirmPassword": "비밀번호 확인",
-        "email": "이메일",
-        "emailSubscribed": "이메일로 최신 정보를 받고 싶습니다",
-        "firstName": "이름",
-        "lastName": "성",
-        "password": "비밀번호",
-        "role": {
-          "label": "역할",
-          "placeholder": "역할을 선택해 주세요"
-        }
+      "confirmPassword": {
+        "label": "비밀번호 확인",
+        "placeholder": "비밀번호를 다시 입력해 주세요"
+      },
+      "email": {
+        "label": "이메일",
+        "placeholder": "이메일을 입력해 주세요"
+      },
+      "emailSubscribed": "이메일로 최신 정보를 받고 싶습니다",
+      "firstName": {
+        "label": "이름",
+        "placeholder": "이름을 입력해 주세요"
+      },
+      "lastName": {
+        "label": "성",
+        "placeholder": "성을 입력해 주세요"
+      },
+      "password": {
+        "label": "비밀번호",
+        "placeholder": "비밀번호를 입력해 주세요"
       },
       "label": "사용자 추가",
+      "role": {
+        "label": "역할",
+        "placeholder": "역할을 선택해 주세요"
+      },
       "success": "사용자가 생성되었습니다",
       "title": "사용자 추가"
     },
     "delete": {
       "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
-      "error": "삭제에 실패했습니다. 다시 시도해 주세요",
       "label": "삭제",
       "success": "사용자가 삭제되었습니다",
       "title": "사용자 삭제"
     },
     "setRole": {
-      "error": "업데이트에 실패했습니다. 다시 시도해 주세요",
       "label": "역할 변경",
       "success": "역할이 업데이트되었습니다",
       "title": "역할 변경"
     },
     "unban": {
       "confirm": "<bold>{name}</bold>의 차단을 해제하시겠습니까? 해제 후에는 다시 로그인할 수 있습니다.",
-      "error": "차단 해제에 실패했습니다. 다시 시도해 주세요",
       "label": "차단 해제",
       "success": "차단이 해제되었습니다",
       "title": "차단 해제"

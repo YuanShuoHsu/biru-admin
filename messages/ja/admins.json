@@ -2,8 +2,6 @@
   "actions": {
     "label": "操作",
     "ban": {
-      "confirm": "<bold>{name}</bold> を停止しますか？停止後はサインインできなくなります。",
-      "error": "停止に失敗しました。もう一度お試しください",
       "fields": {
         "banExpiresIn": {
           "label": "停止期間",
@@ -29,39 +27,48 @@
       "title": "ユーザーを停止"
     },
     "create": {
-      "error": "作成に失敗しました。もう一度お試しください",
-      "fields": {
-        "confirmPassword": "パスワード確認",
-        "email": "メール",
-        "emailSubscribed": "メールで最新情報を受け取る",
-        "firstName": "名",
-        "lastName": "姓",
-        "password": "パスワード",
-        "role": {
-          "label": "役割",
-          "placeholder": "あなたの役割を選択してください"
-        }
+      "confirmPassword": {
+        "label": "パスワード確認",
+        "placeholder": "パスワードを再入力してください"
+      },
+      "email": {
+        "label": "メール",
+        "placeholder": "メールアドレスを入力してください"
+      },
+      "emailSubscribed": "メールで最新情報を受け取る",
+      "firstName": {
+        "label": "名",
+        "placeholder": "名を入力してください"
+      },
+      "lastName": {
+        "label": "姓",
+        "placeholder": "姓を入力してください"
+      },
+      "password": {
+        "label": "パスワード",
+        "placeholder": "パスワードを入力してください"
       },
       "label": "ユーザーを追加",
+      "role": {
+        "label": "役割",
+        "placeholder": "あなたの役割を選択してください"
+      },
       "success": "ユーザーを作成しました",
       "title": "ユーザーを追加"
     },
     "delete": {
       "confirm": "<bold>{name}</bold> を削除しますか？この操作は取り消せません。",
-      "error": "削除に失敗しました。もう一度お試しください",
       "label": "削除",
       "success": "ユーザーを削除しました",
       "title": "ユーザーを削除"
     },
     "setRole": {
-      "error": "更新に失敗しました。もう一度お試しください",
       "label": "役割を変更",
       "success": "役割を更新しました",
       "title": "役割を変更"
     },
     "unban": {
       "confirm": "<bold>{name}</bold> の停止を解除しますか？解除後はサインインできるようになります。",
-      "error": "停止解除に失敗しました。もう一度お試しください",
       "label": "停止解除",
       "success": "停止を解除しました",
       "title": "停止解除"

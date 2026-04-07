@@ -2,8 +2,6 @@
   "actions": {
     "label": "操作",
     "ban": {
-      "confirm": "確定要封鎖 <bold>{name}</bold> 嗎？封鎖後該使用者將無法登入。",
-      "error": "封鎖失敗，請稍後重試",
       "fields": {
         "banExpiresIn": {
           "label": "封鎖時長",
@@ -29,39 +27,48 @@
       "title": "封鎖使用者"
     },
     "create": {
-      "error": "建立失敗，請稍後重試",
-      "fields": {
-        "confirmPassword": "確認密碼",
-        "email": "電子郵件",
-        "emailSubscribed": "我想透過電子郵件接收最新資訊",
-        "firstName": "名字",
-        "lastName": "姓氏",
-        "password": "密碼",
-        "role": {
-          "label": "角色",
-          "placeholder": "請選擇您的角色"
-        }
+      "confirmPassword": {
+        "label": "確認密碼",
+        "placeholder": "請再次輸入密碼"
+      },
+      "email": {
+        "label": "電子郵件",
+        "placeholder": "請輸入您的電子郵件"
+      },
+      "emailSubscribed": "我想透過電子郵件接收最新資訊",
+      "firstName": {
+        "label": "名字",
+        "placeholder": "請輸入您的名字"
+      },
+      "lastName": {
+        "label": "姓氏",
+        "placeholder": "請輸入您的姓氏"
+      },
+      "password": {
+        "label": "密碼",
+        "placeholder": "請輸入您的密碼"
       },
       "label": "新增使用者",
+      "role": {
+        "label": "角色",
+        "placeholder": "請選擇您的角色"
+      },
       "success": "使用者已建立",
       "title": "新增使用者"
     },
     "delete": {
       "confirm": "確定要刪除 <bold>{name}</bold> 嗎？此操作無法復原。",
-      "error": "刪除失敗，請稍後重試",
       "label": "刪除",
       "success": "已刪除使用者",
       "title": "刪除使用者"
     },
     "setRole": {
-      "error": "更新失敗，請稍後重試",
       "label": "更改角色",
       "success": "角色已更新",
       "title": "更改角色"
     },
     "unban": {
       "confirm": "確定要解除封鎖 <bold>{name}</bold> 嗎？解除後該使用者將可重新登入。",
-      "error": "解除封鎖失敗，請稍後重試",
       "label": "解除封鎖",
       "success": "已解除封鎖",
       "title": "解除封鎖"

@@ -180,7 +180,8 @@ const CreateUserDialogContent = ({
           error={!!errors.lastName}
           fullWidth
           helperText={errors.lastName?.message}
-          label={tAdmins("actions.create.fields.lastName")}
+          label={tAdmins("actions.create.lastName.label")}
+          placeholder={tAdmins("actions.create.lastName.placeholder")}
           {...register("lastName")}
         />
         <TextField
@@ -188,7 +189,8 @@ const CreateUserDialogContent = ({
           error={!!errors.firstName}
           fullWidth
           helperText={errors.firstName?.message}
-          label={tAdmins("actions.create.fields.firstName")}
+          label={tAdmins("actions.create.firstName.label")}
+          placeholder={tAdmins("actions.create.firstName.placeholder")}
           required
           {...register("firstName")}
         />
@@ -198,7 +200,8 @@ const CreateUserDialogContent = ({
         error={!!errors.email}
         fullWidth
         helperText={errors.email?.message}
-        label={tAdmins("actions.create.fields.email")}
+        label={tAdmins("actions.create.email.label")}
+        placeholder={tAdmins("actions.create.email.placeholder")}
         required
         type="email"
         {...register("email")}
@@ -210,7 +213,8 @@ const CreateUserDialogContent = ({
         helperText={
           <PasswordRuleList hasValue={hasPassword} rules={passwordRules} />
         }
-        label={tAdmins("actions.create.fields.password")}
+        label={tAdmins("actions.create.password.label")}
+        placeholder={tAdmins("actions.create.password.placeholder")}
         required
         slotProps={{
           formHelperText: { component: "div" },
@@ -247,7 +251,8 @@ const CreateUserDialogContent = ({
             rules={confirmPasswordRules}
           />
         }
-        label={tAdmins("actions.create.fields.confirmPassword")}
+        label={tAdmins("actions.create.confirmPassword.label")}
+        placeholder={tAdmins("actions.create.confirmPassword.placeholder")}
         required
         slotProps={{
           formHelperText: { component: "div" },
@@ -291,7 +296,7 @@ const CreateUserDialogContent = ({
           }
           label={
             <Typography variant="body2">
-              {tAdmins("actions.create.fields.emailSubscribed")}
+              {tAdmins("actions.create.emailSubscribed")}
             </Typography>
           }
         />
@@ -300,14 +305,14 @@ const CreateUserDialogContent = ({
         error={!!errors.role}
         fullWidth
         helperText={errors.role?.message}
-        label={tAdmins("actions.create.fields.role.label")}
+        label={tAdmins("actions.create.role.label")}
         required
         select
         value={role}
         {...register("role")}
       >
         <MenuItem disabled value="">
-          <em>{tAdmins("actions.create.fields.role.placeholder")}</em>
+          <em>{tAdmins("actions.create.role.placeholder")}</em>
         </MenuItem>
         {roles.map((role) => (
           <MenuItem key={role} value={role}>

@@ -2,8 +2,6 @@
   "actions": {
     "label": "Actions",
     "ban": {
-      "confirm": "Are you sure you want to ban <bold>{name}</bold>? They will no longer be able to sign in.",
-      "error": "Failed to ban user. Please try again.",
       "fields": {
         "banExpiresIn": {
           "label": "Ban duration",
@@ -29,39 +27,48 @@
       "title": "Ban user"
     },
     "create": {
-      "error": "Failed to create user. Please try again.",
-      "fields": {
-        "confirmPassword": "Confirm password",
-        "email": "Email",
-        "emailSubscribed": "I want to receive updates via email",
-        "firstName": "First name",
-        "lastName": "Last name",
-        "password": "Password",
-        "role": {
-          "label": "Role",
-          "placeholder": "Please select your role"
-        }
+      "confirmPassword": {
+        "label": "Confirm password",
+        "placeholder": "Please confirm your password"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "Please enter your email"
+      },
+      "emailSubscribed": "I want to receive updates via email",
+      "firstName": {
+        "label": "First name",
+        "placeholder": "Please enter your first name"
+      },
+      "lastName": {
+        "label": "Last name",
+        "placeholder": "Please enter your last name"
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "Please enter your password"
       },
       "label": "Add user",
+      "role": {
+        "label": "Role",
+        "placeholder": "Please select your role"
+      },
       "success": "User created",
       "title": "Add user"
     },
     "delete": {
       "confirm": "Are you sure you want to delete <bold>{name}</bold>? This action cannot be undone.",
-      "error": "Failed to delete user. Please try again.",
       "label": "Delete",
       "success": "User deleted",
       "title": "Delete user"
     },
     "setRole": {
-      "error": "Failed to update role. Please try again.",
       "label": "Change role",
       "success": "Role updated",
       "title": "Change role"
     },
     "unban": {
       "confirm": "Are you sure you want to unban <bold>{name}</bold>? They will be able to sign in again.",
-      "error": "Failed to unban user. Please try again.",
       "label": "Unban",
       "success": "User unbanned",
       "title": "Unban user"
