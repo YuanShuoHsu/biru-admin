@@ -2,25 +2,23 @@
   "actions": {
     "label": "操作",
     "ban": {
-      "fields": {
-        "banExpiresIn": {
-          "label": "停止期間",
-          "options": {
-            "12hours": "12 時間",
-            "1day": "1 日",
-            "1hour": "1 時間",
-            "1year": "1 年",
-            "30days": "30 日",
-            "7days": "7 日",
-            "90days": "90 日",
-            "permanent": "永久"
-          },
-          "placeholder": "停止期間を選択してください"
+      "banExpiresIn": {
+        "label": "停止期間",
+        "options": {
+          "12hours": "12 時間",
+          "1day": "1 日",
+          "1hour": "1 時間",
+          "1year": "1 年",
+          "30days": "30 日",
+          "7days": "7 日",
+          "90days": "90 日",
+          "permanent": "永久"
         },
-        "banReason": {
-          "label": "停止理由",
-          "placeholder": "停止理由を入力してください"
-        }
+        "placeholder": "停止期間を選択してください"
+      },
+      "banReason": {
+        "label": "停止理由",
+        "placeholder": "停止理由を入力してください"
       },
       "success": "ユーザーを停止しました",
       "title": "ユーザーを停止"
@@ -47,10 +45,6 @@
         "label": "パスワード",
         "placeholder": "パスワードを入力してください"
       },
-      "role": {
-        "label": "役割",
-        "placeholder": "あなたの役割を選択してください"
-      },
       "success": "ユーザーを作成しました",
       "title": "ユーザーを追加"
     },
@@ -60,10 +54,6 @@
       "title": "ユーザーを削除"
     },
     "setRole": {
-      "role": {
-        "label": "役割",
-        "placeholder": "役割を選択してください"
-      },
       "success": "役割を更新しました",
       "title": "役割を変更"
     },
@@ -86,6 +76,7 @@
   "role": {
     "admin": "管理者",
     "label": "役割",
+    "placeholder": "役割を選択してください",
     "user": "一般ユーザー"
   },
   "status": {

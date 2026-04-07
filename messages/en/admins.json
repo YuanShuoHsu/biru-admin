@@ -2,25 +2,23 @@
   "actions": {
     "label": "Actions",
     "ban": {
-      "fields": {
-        "banExpiresIn": {
-          "label": "Ban duration",
-          "options": {
-            "12hours": "12 hours",
-            "1day": "1 day",
-            "1hour": "1 hour",
-            "1year": "1 year",
-            "30days": "30 days",
-            "7days": "7 days",
-            "90days": "90 days",
-            "permanent": "Permanent"
-          },
-          "placeholder": "Please select your ban duration"
+      "banExpiresIn": {
+        "label": "Ban duration",
+        "options": {
+          "12hours": "12 hours",
+          "1day": "1 day",
+          "1hour": "1 hour",
+          "1year": "1 year",
+          "30days": "30 days",
+          "7days": "7 days",
+          "90days": "90 days",
+          "permanent": "Permanent"
         },
-        "banReason": {
-          "label": "Ban reason",
-          "placeholder": "Please enter your ban reason"
-        }
+        "placeholder": "Please select your ban duration"
+      },
+      "banReason": {
+        "label": "Ban reason",
+        "placeholder": "Please enter your ban reason"
       },
       "success": "User banned",
       "title": "Ban user"
@@ -47,10 +45,6 @@
         "label": "Password",
         "placeholder": "Please enter your password"
       },
-      "role": {
-        "label": "Role",
-        "placeholder": "Please select your role"
-      },
       "success": "User created",
       "title": "Add user"
     },
@@ -60,10 +54,6 @@
       "title": "Delete user"
     },
     "setRole": {
-      "role": {
-        "label": "Role",
-        "placeholder": "Please select your role"
-      },
       "success": "Role updated",
       "title": "Change role"
     },
@@ -86,6 +76,7 @@
   "role": {
     "admin": "Admin",
     "label": "Role",
+    "placeholder": "Please select your role",
     "user": "User"
   },
   "status": {

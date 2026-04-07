@@ -88,14 +88,14 @@ const SetRoleDialogContent = ({
         error={!!errors.role}
         fullWidth
         helperText={errors.role?.message}
-        label={tAdmins("actions.setRole.role.label")}
+        label={tAdmins("role.label")}
         required
         select
         value={role}
         {...register("role")}
       >
         <MenuItem disabled value="">
-          <em>{tAdmins("actions.setRole.role.placeholder")}</em>
+          <em>{tAdmins("role.placeholder")}</em>
         </MenuItem>
         {roles.map((role) => (
           <MenuItem key={role} value={role}>

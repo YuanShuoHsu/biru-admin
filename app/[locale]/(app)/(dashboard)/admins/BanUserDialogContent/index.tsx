@@ -99,26 +99,26 @@ const BanUserDialogContent = ({
         error={!!errors.banReason}
         fullWidth
         helperText={errors.banReason?.message}
-        label={tAdmins("actions.ban.fields.banReason.label")}
+        label={tAdmins("actions.ban.banReason.label")}
         multiline
-        placeholder={tAdmins("actions.ban.fields.banReason.placeholder")}
+        placeholder={tAdmins("actions.ban.banReason.placeholder")}
         {...register("banReason")}
       />
       <TextField
         error={!!errors.banExpiresIn}
         fullWidth
         helperText={errors.banExpiresIn?.message}
-        label={tAdmins("actions.ban.fields.banExpiresIn.label")}
+        label={tAdmins("actions.ban.banExpiresIn.label")}
         select
         value={banExpiresIn}
         {...register("banExpiresIn")}
       >
         <MenuItem disabled value="">
-          <em>{tAdmins("actions.ban.fields.banExpiresIn.placeholder")}</em>
+          <em>{tAdmins("actions.ban.banExpiresIn.placeholder")}</em>
         </MenuItem>
         {BAN_EXPIRES_OPTIONS.map(({ value, label }) => (
           <MenuItem key={value} value={value}>
-            {tAdmins(`actions.ban.fields.banExpiresIn.options.${label}`)}
+            {tAdmins(`actions.ban.banExpiresIn.options.${label}`)}
           </MenuItem>
         ))}
       </TextField>

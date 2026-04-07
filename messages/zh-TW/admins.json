@@ -2,25 +2,23 @@
   "actions": {
     "label": "操作",
     "ban": {
-      "fields": {
-        "banExpiresIn": {
-          "label": "封鎖時長",
-          "options": {
-            "12hours": "12 小時",
-            "1day": "1 天",
-            "1hour": "1 小時",
-            "1year": "1 年",
-            "30days": "30 天",
-            "7days": "7 天",
-            "90days": "90 天",
-            "permanent": "永久"
-          },
-          "placeholder": "請選擇您的封鎖時長"
+      "banExpiresIn": {
+        "label": "封鎖時長",
+        "options": {
+          "12hours": "12 小時",
+          "1day": "1 天",
+          "1hour": "1 小時",
+          "1year": "1 年",
+          "30days": "30 天",
+          "7days": "7 天",
+          "90days": "90 天",
+          "permanent": "永久"
         },
-        "banReason": {
-          "label": "封鎖原因",
-          "placeholder": "請輸入您的封鎖原因"
-        }
+        "placeholder": "請選擇您的封鎖時長"
+      },
+      "banReason": {
+        "label": "封鎖原因",
+        "placeholder": "請輸入您的封鎖原因"
       },
       "success": "已封鎖使用者",
       "title": "封鎖使用者"
@@ -47,10 +45,6 @@
         "label": "密碼",
         "placeholder": "請輸入您的密碼"
       },
-      "role": {
-        "label": "角色",
-        "placeholder": "請選擇您的角色"
-      },
       "success": "使用者已建立",
       "title": "新增使用者"
     },
@@ -60,10 +54,6 @@
       "title": "刪除使用者"
     },
     "setRole": {
-      "role": {
-        "label": "角色",
-        "placeholder": "請選擇您的角色"
-      },
       "success": "角色已更新",
       "title": "更改角色"
     },
@@ -86,6 +76,7 @@
   "role": {
     "admin": "管理員",
     "label": "角色",
+    "placeholder": "請選擇您的角色",
     "user": "一般使用者"
   },
   "status": {
