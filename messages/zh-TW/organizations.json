@@ -1,30 +1,26 @@
 {
   "actions": {
     "create": {
-      "label": "新增組織",
       "success": "成功新增組織",
       "title": "新增組織"
     },
     "delete": {
       "confirm": "確定要刪除 <bold>{name}</bold> 嗎？此操作將同時移除所有成員與資料，且無法復原。",
-      "label": "刪除",
       "success": "成功刪除組織",
       "title": "刪除組織"
     },
     "label": "操作",
     "leave": {
       "confirm": "確定要離開 <bold>{name}</bold> 嗎？",
-      "label": "離開組織",
       "success": "成功離開組織",
       "title": "離開組織"
     },
     "update": {
-      "label": "編輯",
       "success": "成功更新組織",
       "title": "編輯組織"
     },
     "view": {
-      "label": "管理"
+      "title": "管理"
     }
   },
   "createdAt": "建立時間",
@@ -32,7 +28,6 @@
     "actions": {
       "cancel": {
         "confirm": "確定要取消對 <bold>{email}</bold> 的邀請嗎？",
-        "label": "取消邀請",
         "success": "成功取消邀請",
         "title": "取消邀請"
       },
@@ -48,7 +43,6 @@
   "members": {
     "actions": {
       "edit": {
-        "label": "編輯",
         "title": "編輯成員"
       },
       "invite": {
@@ -56,14 +50,12 @@
           "label": "電子郵件",
           "placeholder": "請輸入您的電子郵件"
         },
-        "label": "邀請成員",
         "success": "成功發送邀請",
         "title": "邀請成員"
       },
       "label": "操作",
       "remove": {
         "confirm": "確定要移除 <bold>{name}</bold> 嗎？",
-        "label": "移除",
         "success": "成功移除成員",
         "title": "移除成員"
       },

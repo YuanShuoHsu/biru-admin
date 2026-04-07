@@ -1,30 +1,26 @@
 {
   "actions": {
     "create": {
-      "label": "Add organization",
       "success": "Organization created successfully",
-      "title": "New organization"
+      "title": "Add organization"
     },
     "delete": {
       "confirm": "Are you sure you want to delete <bold>{name}</bold>? All members and data will be permanently removed.",
-      "label": "Delete",
       "success": "Organization deleted successfully",
       "title": "Delete organization"
     },
     "label": "Actions",
     "leave": {
       "confirm": "Are you sure you want to leave <bold>{name}</bold>?",
-      "label": "Leave organization",
       "success": "You have left the organization successfully",
       "title": "Leave organization"
     },
     "update": {
-      "label": "Edit",
       "success": "Organization updated successfully",
       "title": "Edit organization"
     },
     "view": {
-      "label": "Manage"
+      "title": "Manage"
     }
   },
   "createdAt": "Created",
@@ -32,9 +28,8 @@
     "actions": {
       "cancel": {
         "confirm": "Are you sure you want to cancel the invitation for <bold>{email}</bold>?",
-        "label": "Cancel",
         "success": "Invitation canceled successfully",
-        "title": "Cancel Invitation"
+        "title": "Cancel invitation"
       },
       "label": "Actions"
     },
@@ -48,7 +43,6 @@
   "members": {
     "actions": {
       "edit": {
-        "label": "Edit",
         "title": "Edit member"
       },
       "invite": {
@@ -56,16 +50,14 @@
           "label": "Email",
           "placeholder": "Please enter your email"
         },
-        "label": "Invite member",
         "success": "Invitation sent successfully",
         "title": "Invite member"
       },
       "label": "Actions",
       "remove": {
         "confirm": "Are you sure you want to remove <bold>{name}</bold>?",
-        "label": "Remove",
         "success": "Member removed successfully",
-        "title": "Remove Member"
+        "title": "Remove member"
       },
       "setRole": {
         "success": "Role updated successfully"

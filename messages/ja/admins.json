@@ -60,6 +60,10 @@
       "title": "ユーザーを削除"
     },
     "setRole": {
+      "role": {
+        "label": "役割",
+        "placeholder": "役割を選択してください"
+      },
       "success": "役割を更新しました",
       "title": "役割を変更"
     },

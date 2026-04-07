@@ -60,6 +60,10 @@
       "title": "刪除使用者"
     },
     "setRole": {
+      "role": {
+        "label": "角色",
+        "placeholder": "請選擇您的角色"
+      },
       "success": "角色已更新",
       "title": "更改角色"
     },

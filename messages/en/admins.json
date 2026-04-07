@@ -60,6 +60,10 @@
       "title": "Delete user"
     },
     "setRole": {
+      "role": {
+        "label": "Role",
+        "placeholder": "Please select your role"
+      },
       "success": "Role updated",
       "title": "Change role"
     },

@@ -60,6 +60,10 @@
       "title": "사용자 삭제"
     },
     "setRole": {
+      "role": {
+        "label": "역할",
+        "placeholder": "역할을 선택해 주세요"
+      },
       "success": "역할이 업데이트되었습니다",
       "title": "역할 변경"
     },

@@ -317,7 +317,7 @@ const OrganizationsSlug = ({
           return (
             <Stack direction="row" alignItems="center" height="100%" gap={0.5}>
               {canUpdateMember && !isOnlyOwner && isHigherRoleRank && (
-                <Tooltip title={tMembers("actions.edit.label")}>
+                <Tooltip title={tMembers("actions.edit.title")}>
                   <IconButton
                     onClick={(event) => {
                       event.stopPropagation();
@@ -331,7 +331,7 @@ const OrganizationsSlug = ({
                 </Tooltip>
               )}
               {isCurrentUser && !isOnlyOwner && (
-                <Tooltip title={tOrganizations("actions.leave.label")}>
+                <Tooltip title={tOrganizations("actions.leave.title")}>
                   <IconButton
                     color="error"
                     onClick={(event) => {
@@ -346,7 +346,7 @@ const OrganizationsSlug = ({
                 </Tooltip>
               )}
               {canDeleteMember && !isCurrentUser && !isOnlyOwner && (
-                <Tooltip title={tMembers("actions.remove.label")}>
+                <Tooltip title={tMembers("actions.remove.title")}>
                   <IconButton
                     color="error"
                     onClick={(event) => {
@@ -473,7 +473,7 @@ const OrganizationsSlug = ({
         renderCell: ({ row }: GridRenderCellParams<Invitation>) => (
           <>
             {canCancelInvitation && (
-              <Tooltip title={tInvitations("actions.cancel.label")}>
+              <Tooltip title={tInvitations("actions.cancel.title")}>
                 <IconButton
                   color="error"
                   onClick={(event) => {
@@ -577,7 +577,7 @@ const OrganizationsSlug = ({
             startIcon={<GroupAdd />}
             variant="contained"
           >
-            {tMembers("actions.invite.label")}
+            {tMembers("actions.invite.title")}
           </Button>
         )}
       </Stack>
