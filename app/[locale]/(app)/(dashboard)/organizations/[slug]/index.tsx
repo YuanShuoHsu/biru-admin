@@ -201,7 +201,7 @@ const OrganizationsSlug = ({
       ),
       formId: "invite-member-form",
       open: true,
-      title: tMembers("invite.title"),
+      title: tMembers("actions.invite.title"),
     });
   };
 
@@ -217,7 +217,7 @@ const OrganizationsSlug = ({
         ),
         formId: "edit-member-form",
         open: true,
-        title: tMembers("edit.title"),
+        title: tMembers("actions.edit.title"),
       });
     },
     [fetchData, id, setDialog, tMembers],
@@ -227,7 +227,7 @@ const OrganizationsSlug = ({
     setDialog({
       content: (
         <DialogContentText>
-          {tOrganizations.rich("leave.confirm", {
+          {tOrganizations.rich("actions.leave.confirm", {
             bold: (chunks) => <strong>{chunks}</strong>,
             name,
           })}
@@ -242,7 +242,7 @@ const OrganizationsSlug = ({
               enqueueSnackbar(message, { variant: "error" });
             },
             onSuccess: async () => {
-              const message = tOrganizations("leave.success");
+              const message = tOrganizations("actions.leave.success");
               enqueueSnackbar(message, { variant: "success" });
 
               const { data } = await authClient.organization.list();
@@ -264,7 +264,7 @@ const OrganizationsSlug = ({
         );
       },
       open: true,
-      title: tOrganizations("leave.title"),
+      title: tOrganizations("actions.leave.title"),
     });
   }, [id, locale, name, router, setDialog, setSession, tOrganizations]);
 
@@ -273,7 +273,7 @@ const OrganizationsSlug = ({
       setDialog({
         content: (
           <DialogContentText>
-            {tMembers("remove.confirm", { name })}
+            {tMembers("actions.remove.confirm", { name })}
           </DialogContentText>
         ),
         onConfirm: async () => {
@@ -285,7 +285,7 @@ const OrganizationsSlug = ({
                 enqueueSnackbar(message, { variant: "error" });
               },
               onSuccess: () => {
-                const message = tMembers("remove.success");
+                const message = tMembers("actions.remove.success");
                 enqueueSnackbar(message, { variant: "success" });
 
                 fetchData();
@@ -294,7 +294,7 @@ const OrganizationsSlug = ({
           );
         },
         open: true,
-        title: tMembers("remove.title"),
+        title: tMembers("actions.remove.title"),
       });
     },
     [fetchData, id, locale, setDialog, tMembers],
@@ -304,7 +304,7 @@ const OrganizationsSlug = ({
     () => [
       {
         field: "actions",
-        headerName: tMembers("columns.actions"),
+        headerName: tMembers("actions.label"),
         renderCell: ({ row }: GridRenderCellParams<Member>) => {
           const isCurrentUser = row.userId === currentUserId;
           const isOnlyOwner = row.role === "owner" && ownerCount === 1;
@@ -314,7 +314,7 @@ const OrganizationsSlug = ({
           return (
             <Stack direction="row" alignItems="center" height="100%" gap={0.5}>
               {canUpdateMember && !isOnlyOwner && isHigherRoleRank && (
-                <Tooltip title={tMembers("actions.edit")}>
+                <Tooltip title={tMembers("actions.edit.label")}>
                   <IconButton
                     onClick={(event) => {
                       event.stopPropagation();
@@ -328,7 +328,7 @@ const OrganizationsSlug = ({
                 </Tooltip>
               )}
               {isCurrentUser && !isOnlyOwner && (
-                <Tooltip title={tOrganizations("actions.leave")}>
+                <Tooltip title={tOrganizations("actions.leave.label")}>
                   <IconButton
                     color="error"
                     onClick={(event) => {
@@ -343,7 +343,7 @@ const OrganizationsSlug = ({
                 </Tooltip>
               )}
               {canDeleteMember && !isCurrentUser && !isOnlyOwner && (
-                <Tooltip title={tMembers("actions.remove")}>
+                <Tooltip title={tMembers("actions.remove.label")}>
                   <IconButton
                     color="error"
                     onClick={(event) => {
@@ -365,7 +365,7 @@ const OrganizationsSlug = ({
       },
       {
         field: "avatar",
-        headerName: tMembers("columns.avatar"),
+        headerName: tMembers("avatar"),
         renderCell: ({
           row: {
             user: { image, name },
@@ -384,21 +384,21 @@ const OrganizationsSlug = ({
       },
       {
         field: "name",
-        headerName: tMembers("columns.name"),
+        headerName: tMembers("name"),
         valueGetter: (_value: unknown, { user: { name } }: Member) => name,
       },
       {
         field: "email",
-        headerName: tMembers("columns.email"),
+        headerName: tMembers("email"),
         valueGetter: (_value: unknown, { user: { email } }: Member) => email,
       },
       {
         field: "role",
-        headerName: tMembers("columns.role"),
+        headerName: tMembers("role.label"),
         renderCell: ({ row: { role } }: GridRenderCellParams<Member>) => (
           <Chip
             color={ROLE_COLOR_MAP[role]}
-            label={tMembers(`roles.${role}`)}
+            label={tMembers(`role.${role}`)}
             size="small"
             variant="outlined"
           />
@@ -407,7 +407,7 @@ const OrganizationsSlug = ({
       },
       {
         field: "createdAt",
-        headerName: tMembers("columns.joinedAt"),
+        headerName: tMembers("joinedAt"),
         valueFormatter: (value: Date | string) =>
           format.dateTime(new Date(value), "short"),
       },
@@ -432,7 +432,7 @@ const OrganizationsSlug = ({
       setDialog({
         content: (
           <DialogContentText>
-            {tInvitations.rich("cancel.confirm", {
+            {tInvitations.rich("actions.cancel.confirm", {
               bold: (chunks) => <strong>{chunks}</strong>,
               email,
             })}
@@ -447,7 +447,7 @@ const OrganizationsSlug = ({
                 enqueueSnackbar(message, { variant: "error" });
               },
               onSuccess: () => {
-                const message = tInvitations("cancel.success");
+                const message = tInvitations("actions.cancel.success");
                 enqueueSnackbar(message, { variant: "success" });
 
                 fetchData();
@@ -456,7 +456,7 @@ const OrganizationsSlug = ({
           );
         },
         open: true,
-        title: tInvitations("cancel.title"),
+        title: tInvitations("actions.cancel.title"),
       });
     },
     [fetchData, locale, setDialog, tInvitations],
@@ -466,11 +466,11 @@ const OrganizationsSlug = ({
     () => [
       {
         field: "actions",
-        headerName: tInvitations("columns.actions"),
+        headerName: tInvitations("actions.label"),
         renderCell: ({ row }: GridRenderCellParams<Invitation>) => (
           <>
             {canCancelInvitation && (
-              <Tooltip title={tInvitations("actions.cancel")}>
+              <Tooltip title={tInvitations("actions.cancel.label")}>
                 <IconButton
                   color="error"
                   onClick={(event) => {
@@ -491,15 +491,15 @@ const OrganizationsSlug = ({
       },
       {
         field: "email",
-        headerName: tInvitations("columns.email"),
+        headerName: tInvitations("email"),
       },
       {
         field: "role",
-        headerName: tInvitations("columns.role"),
+        headerName: tInvitations("role"),
         renderCell: ({ row: { role } }: GridRenderCellParams<Invitation>) => (
           <Chip
             color={ROLE_COLOR_MAP[role]}
-            label={tMembers(`roles.${role}`)}
+            label={tMembers(`role.${role}`)}
             size="small"
             variant="outlined"
           />
@@ -508,7 +508,7 @@ const OrganizationsSlug = ({
       },
       {
         field: "expiresAt",
-        headerName: tInvitations("columns.expiresAt"),
+        headerName: tInvitations("expiresAt"),
         valueFormatter: (value: Date | string) =>
           format.dateTime(new Date(value), "short"),
       },
@@ -574,7 +574,7 @@ const OrganizationsSlug = ({
             startIcon={<GroupAdd />}
             variant="contained"
           >
-            {tMembers("actions.invite")}
+            {tMembers("actions.invite.label")}
           </Button>
         )}
       </Stack>

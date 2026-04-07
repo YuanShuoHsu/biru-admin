@@ -70,7 +70,7 @@ const CreateOrganizationDialogContent = ({
           setDialog({ confirmLoading: false });
         },
         onSuccess: () => {
-          const message = tOrganizations("create.success");
+          const message = tOrganizations("actions.create.success");
           enqueueSnackbar(message, { variant: "success" });
 
           resetDialog();
@@ -95,8 +95,8 @@ const CreateOrganizationDialogContent = ({
         error={!!errors.name}
         fullWidth
         helperText={errors.name?.message}
-        label={tOrganizations("fields.name.label")}
-        placeholder={tOrganizations("fields.name.placeholder")}
+        label={tOrganizations("name.label")}
+        placeholder={tOrganizations("name.placeholder")}
         required
         {...register("name")}
       />
@@ -104,8 +104,8 @@ const CreateOrganizationDialogContent = ({
         error={!!errors.slug}
         fullWidth
         helperText={errors.slug?.message}
-        label={tOrganizations("fields.slug.label")}
-        placeholder={tOrganizations("fields.slug.placeholder")}
+        label={tOrganizations("slug.label")}
+        placeholder={tOrganizations("slug.placeholder")}
         required
         {...register("slug")}
       />

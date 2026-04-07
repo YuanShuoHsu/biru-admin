@@ -1,135 +1,105 @@
 {
   "actions": {
-    "delete": "Delete",
-    "leave": "Leave organization",
-    "update": "Edit",
-    "view": "Manage"
-  },
-  "columns": {
-    "actions": "Actions",
-    "createdAt": "Created",
-    "logo": "Logo",
-    "members": "Members"
-  },
-  "create": {
-    "success": "Organization created successfully",
-    "title": "New organization"
-  },
-  "delete": {
-    "cancel": "Cancel",
-    "confirm": "Are you sure you want to delete <bold>{name}</bold>? All members and data will be permanently removed.",
-    "error": "Failed to delete organization. Please try again.",
-    "submit": "Delete",
-    "success": "Organization deleted successfully",
-    "title": "Delete organization"
-  },
-  "detail": {
-    "info": {
-      "createdAt": "Created",
-      "memberCount": "Members",
-      "name": "Name",
-      "slug": "Slug"
+    "create": {
+      "label": "Add organization",
+      "success": "Organization created successfully",
+      "title": "New organization"
     },
-    "title": "Organization details"
-  },
-  "empty": "No organizations found",
-  "leave": {
-    "confirm": "Are you sure you want to leave <bold>{name}</bold>?",
-    "success": "You have left the organization successfully",
-    "title": "Leave organization"
-  },
-  "update": {
-    "success": "Organization updated successfully",
-    "title": "Edit organization"
-  },
-  "fields": {
-    "name": {
-      "label": "Organization name",
-      "placeholder": "Please enter your organization name"
+    "delete": {
+      "cancel": "Cancel",
+      "confirm": "Are you sure you want to delete <bold>{name}</bold>? All members and data will be permanently removed.",
+      "error": "Failed to delete organization. Please try again.",
+      "label": "Delete",
+      "submit": "Delete",
+      "success": "Organization deleted successfully",
+      "title": "Delete organization"
     },
-    "slug": {
-      "label": "Slug",
-      "placeholder": "Please enter your slug"
+    "label": "Actions",
+    "leave": {
+      "confirm": "Are you sure you want to leave <bold>{name}</bold>?",
+      "label": "Leave organization",
+      "success": "You have left the organization successfully",
+      "title": "Leave organization"
+    },
+    "update": {
+      "label": "Edit",
+      "success": "Organization updated successfully",
+      "title": "Edit organization"
+    },
+    "view": {
+      "label": "Manage"
     }
   },
+  "createdAt": "Created",
   "invitations": {
     "actions": {
-      "cancel": "Cancel"
+      "cancel": {
+        "confirm": "Are you sure you want to cancel the invitation for <bold>{email}</bold>?",
+        "error": "Failed to cancel invitation. Please try again.",
+        "label": "Cancel",
+        "success": "Invitation canceled successfully",
+        "title": "Cancel Invitation"
+      },
+      "label": "Actions"
     },
-    "cancel": {
-      "confirm": "Are you sure you want to cancel the invitation for <bold>{email}</bold>?",
-      "error": "Failed to cancel invitation. Please try again.",
-      "success": "Invitation canceled successfully",
-      "title": "Cancel Invitation"
-    },
-    "columns": {
-      "actions": "Actions",
-      "email": "Email",
-      "expiresAt": "Expires",
-      "role": "Role",
-      "status": "Status"
-    },
-    "empty": "No pending invitations",
+    "email": "Email",
+    "expiresAt": "Expires",
     "label": "Pending invitations",
-    "status": {
-      "accepted": "Accepted",
-      "canceled": "Canceled",
-      "pending": "Pending",
-      "rejected": "Rejected"
-    }
+    "role": "Role"
   },
   "label": "Organization Management",
+  "logo": "Logo",
   "members": {
     "actions": {
-      "edit": "Edit",
-      "invite": "Invite member",
-      "remove": "Remove",
-      "setRole": "Change role"
-    },
-    "edit": {
-      "title": "Edit member"
-    },
-    "columns": {
-      "actions": "Actions",
-      "avatar": "Avatar",
-      "email": "Email",
-      "joinedAt": "Joined",
-      "name": "Name",
-      "role": "Role"
-    },
-    "empty": "No members yet",
-    "fields": {
-      "email": {
-        "label": "Email",
-        "placeholder": "Please enter your email"
+      "edit": {
+        "label": "Edit",
+        "title": "Edit member"
       },
-      "role": {
-        "label": "Role",
-        "placeholder": "Please select your role"
+      "invite": {
+        "error": "Failed to send invitation. Please try again.",
+        "fields": {
+          "email": {
+            "label": "Email",
+            "placeholder": "Please enter your email"
+          }
+        },
+        "label": "Invite member",
+        "success": "Invitation sent successfully",
+        "title": "Invite member"
+      },
+      "label": "Actions",
+      "remove": {
+        "confirm": "Are you sure you want to remove {name}?",
+        "error": "Failed to remove member. Please try again.",
+        "label": "Remove",
+        "success": "Member removed successfully",
+        "title": "Remove Member"
+      },
+      "setRole": {
+        "error": "Failed to update role. Please try again.",
+        "label": "Change role",
+        "success": "Role updated successfully"
       }
     },
-    "invite": {
-      "error": "Failed to send invitation. Please try again.",
-      "success": "Invitation sent successfully",
-      "title": "Invite member"
-    },
+    "avatar": "Avatar",
+    "email": "Email",
+    "joinedAt": "Joined",
     "label": "Members",
-    "remove": {
-      "confirm": "Are you sure you want to remove {name}?",
-      "error": "Failed to remove member. Please try again.",
-      "success": "Member removed successfully",
-      "title": "Remove Member"
-    },
-    "roles": {
+    "name": "Name",
+    "role": {
       "admin": "Admin",
+      "label": "Role",
       "member": "Member",
-      "owner": "Owner"
-    },
-    "setRole": {
-      "error": "Failed to update role. Please try again.",
-      "success": "Role updated successfully"
+      "owner": "Owner",
+      "placeholder": "Please select your role"
     }
   },
-  "subtitle": "Manage organizations and members",
-  "title": "Organization Management"
+  "name": {
+    "label": "Organization name",
+    "placeholder": "Please enter your organization name"
+  },
+  "slug": {
+    "label": "Slug",
+    "placeholder": "Please enter your slug"
+  }
 }

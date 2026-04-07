@@ -73,7 +73,7 @@ const InviteMemberDialogContent = ({
             setDialog({ confirmLoading: false });
           },
           onSuccess: () => {
-            const message = tMembers("invite.success");
+            const message = tMembers("actions.invite.success");
             enqueueSnackbar(message, { variant: "success" });
 
             resetDialog();
@@ -91,8 +91,8 @@ const InviteMemberDialogContent = ({
         error={!!errors.email}
         fullWidth
         helperText={errors.email?.message}
-        label={tMembers("fields.email.label")}
-        placeholder={tMembers("fields.email.placeholder")}
+        label={tMembers("actions.invite.fields.email.label")}
+        placeholder={tMembers("actions.invite.fields.email.placeholder")}
         required
         type="email"
         {...register("email")}
@@ -101,18 +101,18 @@ const InviteMemberDialogContent = ({
         error={!!errors.role}
         fullWidth
         helperText={errors.role?.message}
-        label={tMembers("fields.role.label")}
+        label={tMembers("role.label")}
         required
         select
         value={role}
         {...register("role")}
       >
         <MenuItem disabled value="">
-          <em>{tMembers("fields.role.placeholder")}</em>
+          <em>{tMembers("role.placeholder")}</em>
         </MenuItem>
         {roles.map((role) => (
           <MenuItem key={role} value={role}>
-            {tMembers(`roles.${role}`)}
+            {tMembers(`role.${role}`)}
           </MenuItem>
         ))}
       </TextField>

@@ -76,7 +76,7 @@ const EditMemberDialogContent = ({
             setDialog({ confirmLoading: false });
           },
           onSuccess: () => {
-            const message = tMembers("setRole.success");
+            const message = tMembers("actions.setRole.success");
             enqueueSnackbar(message, { variant: "success" });
 
             resetDialog();
@@ -92,18 +92,18 @@ const EditMemberDialogContent = ({
         error={!!errors.role}
         fullWidth
         helperText={errors.role?.message}
-        label={tMembers("fields.role.label")}
+        label={tMembers("role.label")}
         required
         select
         value={role}
         {...register("role")}
       >
         <MenuItem disabled value="">
-          <em>{tMembers("fields.role.placeholder")}</em>
+          <em>{tMembers("role.placeholder")}</em>
         </MenuItem>
         {roles.map((role) => (
           <MenuItem key={role} value={role}>
-            {tMembers(`roles.${role}`)}
+            {tMembers(`role.${role}`)}
           </MenuItem>
         ))}
       </TextField>

@@ -1,135 +1,105 @@
 {
   "actions": {
-    "delete": "삭제",
-    "leave": "조직 탈퇴",
-    "update": "편집",
-    "view": "관리"
-  },
-  "columns": {
-    "actions": "작업",
-    "createdAt": "생성일",
-    "logo": "로고",
-    "members": "멤버 수"
-  },
-  "create": {
-    "success": "조직이 성공적으로 생성되었습니다",
-    "title": "조직 추가"
-  },
-  "delete": {
-    "cancel": "취소",
-    "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까? 모든 멤버와 데이터가 영구적으로 삭제됩니다.",
-    "error": "삭제에 실패했습니다. 다시 시도해 주세요",
-    "submit": "삭제",
-    "success": "조직이 성공적으로 삭제되었습니다",
-    "title": "조직 삭제"
-  },
-  "detail": {
-    "info": {
-      "createdAt": "생성일",
-      "memberCount": "멤버 수",
-      "name": "조직명",
-      "slug": "슬러그"
+    "create": {
+      "label": "조직 추가",
+      "success": "조직이 성공적으로 생성되었습니다",
+      "title": "조직 추가"
     },
-    "title": "조직 상세"
-  },
-  "empty": "조직이 없습니다",
-  "leave": {
-    "confirm": "<bold>{name}</bold>에서 탈퇴하시겠습니까?",
-    "success": "조직에서 성공적으로 탈퇴했습니다",
-    "title": "조직 탈퇴"
-  },
-  "update": {
-    "success": "조직이 성공적으로 업데이트되었습니다",
-    "title": "조직 편집"
-  },
-  "fields": {
-    "name": {
-      "label": "조직명",
-      "placeholder": "조직명을 입력해 주세요"
+    "delete": {
+      "cancel": "취소",
+      "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까? 모든 멤버와 데이터가 영구적으로 삭제됩니다.",
+      "error": "삭제에 실패했습니다. 다시 시도해 주세요",
+      "label": "삭제",
+      "submit": "삭제",
+      "success": "조직이 성공적으로 삭제되었습니다",
+      "title": "조직 삭제"
     },
-    "slug": {
-      "label": "슬러그",
-      "placeholder": "슬러그를 입력해 주세요"
+    "label": "작업",
+    "leave": {
+      "confirm": "<bold>{name}</bold>에서 탈퇴하시겠습니까?",
+      "label": "조직 탈퇴",
+      "success": "조직에서 성공적으로 탈퇴했습니다",
+      "title": "조직 탈퇴"
+    },
+    "update": {
+      "label": "편집",
+      "success": "조직이 성공적으로 업데이트되었습니다",
+      "title": "조직 편집"
+    },
+    "view": {
+      "label": "관리"
     }
   },
+  "createdAt": "생성일",
   "invitations": {
     "actions": {
-      "cancel": "취소"
+      "cancel": {
+        "confirm": "<bold>{email}</bold>에 대한 초대를 취소하시겠습니까?",
+        "error": "취소에 실패했습니다. 다시 시도해 주세요",
+        "label": "취소",
+        "success": "초대가 성공적으로 취소되었습니다",
+        "title": "초대 취소"
+      },
+      "label": "작업"
     },
-    "cancel": {
-      "confirm": "<bold>{email}</bold>에 대한 초대를 취소하시겠습니까?",
-      "error": "취소에 실패했습니다. 다시 시도해 주세요",
-      "success": "초대가 성공적으로 취소되었습니다",
-      "title": "초대 취소"
-    },
-    "columns": {
-      "actions": "작업",
-      "email": "이메일",
-      "expiresAt": "만료일",
-      "role": "역할",
-      "status": "상태"
-    },
-    "empty": "대기 중인 초대가 없습니다",
+    "email": "이메일",
+    "expiresAt": "만료일",
     "label": "대기 중인 초대",
-    "status": {
-      "accepted": "수락됨",
-      "canceled": "취소됨",
-      "pending": "대기 중",
-      "rejected": "거절됨"
-    }
+    "role": "역할"
   },
   "label": "조직 관리",
+  "logo": "로고",
   "members": {
     "actions": {
-      "edit": "편집",
-      "invite": "멤버 초대",
-      "remove": "제거",
-      "setRole": "역할 변경"
-    },
-    "edit": {
-      "title": "멤버 편집"
-    },
-    "columns": {
-      "actions": "작업",
-      "avatar": "아바타",
-      "email": "이메일",
-      "joinedAt": "가입일",
-      "name": "이름",
-      "role": "역할"
-    },
-    "empty": "멤버가 없습니다",
-    "fields": {
-      "email": {
-        "label": "이메일",
-        "placeholder": "이메일을 입력해 주세요"
+      "edit": {
+        "label": "편집",
+        "title": "멤버 편집"
       },
-      "role": {
-        "label": "역할",
-        "placeholder": "역할을 선택해 주세요"
+      "invite": {
+        "error": "초대에 실패했습니다. 다시 시도해 주세요",
+        "fields": {
+          "email": {
+            "label": "이메일",
+            "placeholder": "이메일을 입력해 주세요"
+          }
+        },
+        "label": "멤버 초대",
+        "success": "초대가 성공적으로 발송되었습니다",
+        "title": "멤버 초대"
+      },
+      "label": "작업",
+      "remove": {
+        "confirm": "{name}을(를) 제거하시겠습니까?",
+        "error": "제거에 실패했습니다. 다시 시도해 주세요",
+        "label": "제거",
+        "success": "멤버가 성공적으로 제거되었습니다",
+        "title": "멤버 제거"
+      },
+      "setRole": {
+        "error": "업데이트에 실패했습니다. 다시 시도해 주세요",
+        "label": "역할 변경",
+        "success": "역할이 성공적으로 업데이트되었습니다"
       }
     },
-    "invite": {
-      "error": "초대에 실패했습니다. 다시 시도해 주세요",
-      "success": "초대가 성공적으로 발송되었습니다",
-      "title": "멤버 초대"
-    },
+    "avatar": "아바타",
+    "email": "이메일",
+    "joinedAt": "가입일",
     "label": "멤버",
-    "remove": {
-      "confirm": "{name}을(를) 제거하시겠습니까?",
-      "error": "제거에 실패했습니다. 다시 시도해 주세요",
-      "success": "멤버가 성공적으로 제거되었습니다",
-      "title": "멤버 제거"
-    },
-    "roles": {
+    "name": "이름",
+    "role": {
       "admin": "관리자",
+      "label": "역할",
       "member": "멤버",
-      "owner": "소유자"
-    },
-    "setRole": {
-      "error": "업데이트에 실패했습니다. 다시 시도해 주세요",
-      "success": "역할이 성공적으로 업데이트되었습니다"
+      "owner": "소유자",
+      "placeholder": "역할을 선택해 주세요"
     }
   },
-  "subtitle": "조직 및 멤버를 관리합니다",
-  "title": "조직 관리"
+  "name": {
+    "label": "조직명",
+    "placeholder": "조직명을 입력해 주세요"
+  },
+  "slug": {
+    "label": "슬러그",
+    "placeholder": "슬러그를 입력해 주세요"
+  }
 }

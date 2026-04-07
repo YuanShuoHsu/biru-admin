@@ -1,135 +1,105 @@
 {
   "actions": {
-    "delete": "删除",
-    "leave": "离开组织",
-    "update": "编辑",
-    "view": "管理"
-  },
-  "columns": {
-    "actions": "操作",
-    "createdAt": "创建时间",
-    "logo": "标志",
-    "members": "成员数"
-  },
-  "create": {
-    "success": "成功新增组织",
-    "title": "新增组织"
-  },
-  "delete": {
-    "cancel": "取消",
-    "confirm": "确定要删除 <bold>{name}</bold> 吗？所有成员和数据将被永久删除，且无法撤销。",
-    "error": "删除失败，请稍后重试",
-    "submit": "确认删除",
-    "success": "成功删除组织",
-    "title": "删除组织"
-  },
-  "detail": {
-    "info": {
-      "createdAt": "创建时间",
-      "memberCount": "成员数",
-      "name": "组织名称",
-      "slug": "标识符"
+    "create": {
+      "label": "新增组织",
+      "success": "成功新增组织",
+      "title": "新增组织"
     },
-    "title": "组织详情"
-  },
-  "empty": "暂无组织数据",
-  "leave": {
-    "confirm": "确定要离开 <bold>{name}</bold> 吗？",
-    "success": "成功离开组织",
-    "title": "离开组织"
-  },
-  "update": {
-    "success": "成功更新组织",
-    "title": "编辑组织"
-  },
-  "fields": {
-    "name": {
-      "label": "组织名称",
-      "placeholder": "请输入您的组织名称"
+    "delete": {
+      "cancel": "取消",
+      "confirm": "确定要删除 <bold>{name}</bold> 吗？所有成员和数据将被永久删除，且无法撤销。",
+      "error": "删除失败，请稍后重试",
+      "label": "删除",
+      "submit": "确认删除",
+      "success": "成功删除组织",
+      "title": "删除组织"
     },
-    "slug": {
-      "label": "标识符",
-      "placeholder": "请输入您的标识符"
+    "label": "操作",
+    "leave": {
+      "confirm": "确定要离开 <bold>{name}</bold> 吗？",
+      "label": "离开组织",
+      "success": "成功离开组织",
+      "title": "离开组织"
+    },
+    "update": {
+      "label": "编辑",
+      "success": "成功更新组织",
+      "title": "编辑组织"
+    },
+    "view": {
+      "label": "管理"
     }
   },
+  "createdAt": "创建时间",
   "invitations": {
     "actions": {
-      "cancel": "取消邀请"
+      "cancel": {
+        "confirm": "确定要取消对 <bold>{email}</bold> 的邀请吗？",
+        "error": "取消失败，请稍后重试",
+        "label": "取消邀请",
+        "success": "成功取消邀请",
+        "title": "取消邀请"
+      },
+      "label": "操作"
     },
-    "cancel": {
-      "confirm": "确定要取消对 <bold>{email}</bold> 的邀请吗？",
-      "error": "取消失败，请稍后重试",
-      "success": "成功取消邀请",
-      "title": "取消邀请"
-    },
-    "columns": {
-      "actions": "操作",
-      "email": "电子邮件",
-      "expiresAt": "到期时间",
-      "role": "角色",
-      "status": "状态"
-    },
-    "empty": "暂无待处理邀请",
+    "email": "电子邮件",
+    "expiresAt": "到期时间",
     "label": "待处理邀请",
-    "status": {
-      "accepted": "已接受",
-      "canceled": "已取消",
-      "pending": "待接受",
-      "rejected": "已拒绝"
-    }
+    "role": "角色"
   },
   "label": "组织管理",
+  "logo": "标志",
   "members": {
     "actions": {
-      "edit": "编辑",
-      "invite": "邀请成员",
-      "remove": "移除",
-      "setRole": "更改角色"
-    },
-    "edit": {
-      "title": "编辑成员"
-    },
-    "columns": {
-      "actions": "操作",
-      "avatar": "头像",
-      "email": "电子邮件",
-      "joinedAt": "加入时间",
-      "name": "姓名",
-      "role": "角色"
-    },
-    "empty": "暂无成员",
-    "fields": {
-      "email": {
-        "label": "电子邮件",
-        "placeholder": "请输入您的电子邮件"
+      "edit": {
+        "label": "编辑",
+        "title": "编辑成员"
       },
-      "role": {
-        "label": "角色",
-        "placeholder": "请选择您的角色"
+      "invite": {
+        "error": "邀请失败，请稍后重试",
+        "fields": {
+          "email": {
+            "label": "电子邮件",
+            "placeholder": "请输入您的电子邮件"
+          }
+        },
+        "label": "邀请成员",
+        "success": "成功发送邀请",
+        "title": "邀请成员"
+      },
+      "label": "操作",
+      "remove": {
+        "confirm": "确定要移除 {name} 吗？",
+        "error": "移除失败，请稍后重试",
+        "label": "移除",
+        "success": "成功移除成员",
+        "title": "移除成员"
+      },
+      "setRole": {
+        "error": "更新失败，请稍后重试",
+        "label": "更改角色",
+        "success": "成功更新角色"
       }
     },
-    "invite": {
-      "error": "邀请失败，请稍后重试",
-      "success": "成功发送邀请",
-      "title": "邀请成员"
-    },
+    "avatar": "头像",
+    "email": "电子邮件",
+    "joinedAt": "加入时间",
     "label": "成员",
-    "remove": {
-      "confirm": "确定要移除 {name} 吗？",
-      "error": "移除失败，请稍后重试",
-      "success": "成功移除成员",
-      "title": "移除成员"
-    },
-    "roles": {
+    "name": "姓名",
+    "role": {
       "admin": "管理员",
+      "label": "角色",
       "member": "成员",
-      "owner": "拥有者"
-    },
-    "setRole": {
-      "error": "更新失败，请稍后重试",
-      "success": "成功更新角色"
+      "owner": "拥有者",
+      "placeholder": "请选择您的角色"
     }
   },
-  "subtitle": "管理组织与成员",
-  "title": "组织管理"
+  "name": {
+    "label": "组织名称",
+    "placeholder": "请输入您的组织名称"
+  },
+  "slug": {
+    "label": "标识符",
+    "placeholder": "请输入您的标识符"
+  }
 }

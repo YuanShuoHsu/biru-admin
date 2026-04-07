@@ -118,7 +118,7 @@ const Organizations = ({
       content: <CreateOrganizationDialogContent fetchData={fetchData} />,
       formId: "create-organization-form",
       open: true,
-      title: tOrganizations("create.title"),
+      title: tOrganizations("actions.create.title"),
     });
   };
 
@@ -133,7 +133,7 @@ const Organizations = ({
         ),
         formId: "update-organization-form",
         open: true,
-        title: tOrganizations("update.title"),
+        title: tOrganizations("actions.update.title"),
       });
     },
     [fetchData, setDialog, tOrganizations],
@@ -144,7 +144,7 @@ const Organizations = ({
       setDialog({
         content: (
           <DialogContentText>
-            {tOrganizations.rich("delete.confirm", {
+            {tOrganizations.rich("actions.delete.confirm", {
               bold: (chunks) => <strong>{chunks}</strong>,
               name,
             })}
@@ -159,7 +159,7 @@ const Organizations = ({
                 enqueueSnackbar(message, { variant: "error" });
               },
               onSuccess: () => {
-                const message = tOrganizations("delete.success");
+                const message = tOrganizations("actions.delete.success");
                 enqueueSnackbar(message, { variant: "success" });
 
                 fetchData();
@@ -168,7 +168,7 @@ const Organizations = ({
           );
         },
         open: true,
-        title: tOrganizations("delete.title"),
+        title: tOrganizations("actions.delete.title"),
       });
     },
     [fetchData, locale, setDialog, tOrganizations],
@@ -178,13 +178,13 @@ const Organizations = ({
     () => [
       {
         field: "actions",
-        headerName: tOrganizations("columns.actions"),
+        headerName: tOrganizations("actions.label"),
         renderCell: ({ row }: GridRenderCellParams<Organization>) => {
           const { canDelete, canUpdate } = organizationPermissions[row.id];
 
           return (
             <Stack height="100%" direction="row" alignItems="center" gap={1}>
-              <Tooltip title={tOrganizations("actions.view")}>
+              <Tooltip title={tOrganizations("actions.view.label")}>
                 <IconButton
                   onClick={(event) => {
                     event.stopPropagation();
@@ -197,7 +197,7 @@ const Organizations = ({
                 </IconButton>
               </Tooltip>
               {canUpdate && (
-                <Tooltip title={tOrganizations("actions.update")}>
+                <Tooltip title={tOrganizations("actions.update.label")}>
                   <IconButton
                     onClick={(event) => {
                       event.stopPropagation();
@@ -211,7 +211,7 @@ const Organizations = ({
                 </Tooltip>
               )}
               {canDelete && (
-                <Tooltip title={tOrganizations("actions.delete")}>
+                <Tooltip title={tOrganizations("actions.delete.label")}>
                   <IconButton
                     color="error"
                     onClick={(event) => {
@@ -233,7 +233,7 @@ const Organizations = ({
       },
       {
         field: "logo",
-        headerName: tOrganizations("columns.logo"),
+        headerName: tOrganizations("logo"),
         renderCell: ({
           row: { logo, name },
         }: GridRenderCellParams<Organization>) => (
@@ -250,15 +250,15 @@ const Organizations = ({
       },
       {
         field: "name",
-        headerName: tOrganizations("fields.name.label"),
+        headerName: tOrganizations("name.label"),
       },
       {
         field: "slug",
-        headerName: tOrganizations("fields.slug.label"),
+        headerName: tOrganizations("slug.label"),
       },
       {
         field: "createdAt",
-        headerName: tOrganizations("columns.createdAt"),
+        headerName: tOrganizations("createdAt"),
         valueFormatter: (value: Date) =>
           format.dateTime(new Date(value), "short"),
       },
@@ -282,7 +282,7 @@ const Organizations = ({
           startIcon={<AddBusiness />}
           variant="contained"
         >
-          {tOrganizations("create.title")}
+          {tOrganizations("actions.create.label")}
         </Button>
       </Stack>
       <DataGrid
