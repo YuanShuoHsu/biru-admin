@@ -200,8 +200,8 @@ const CreateUserDialogContent = ({
         error={!!errors.email}
         fullWidth
         helperText={errors.email?.message}
-        label={tAdmins("actions.create.email.label")}
-        placeholder={tAdmins("actions.create.email.placeholder")}
+        label={tAdmins("email.label")}
+        placeholder={tAdmins("email.placeholder")}
         required
         type="email"
         {...register("email")}
@@ -296,7 +296,7 @@ const CreateUserDialogContent = ({
           }
           label={
             <Typography variant="body2">
-              {tAdmins("actions.create.emailSubscribed")}
+              {tAdmins("emailSubscribed.checkbox")}
             </Typography>
           }
         />

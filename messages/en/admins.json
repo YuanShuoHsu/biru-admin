@@ -1,6 +1,5 @@
 {
   "actions": {
-    "label": "Actions",
     "ban": {
       "banExpiresIn": {
         "label": "Ban duration",
@@ -28,11 +27,6 @@
         "label": "Confirm password",
         "placeholder": "Please confirm your password"
       },
-      "email": {
-        "label": "Email",
-        "placeholder": "Please enter your email"
-      },
-      "emailSubscribed": "I want to receive updates via email",
       "firstName": {
         "label": "First name",
         "placeholder": "Please enter your first name"
@@ -53,6 +47,57 @@
       "success": "User deleted",
       "title": "Delete user"
     },
+    "edit": {
+      "firstName": {
+        "label": "First name",
+        "placeholder": "Please enter your first name"
+      },
+      "lastName": {
+        "label": "Last name",
+        "placeholder": "Please enter your last name"
+      },
+      "success": "User updated",
+      "title": "Edit user"
+    },
+    "impersonate": {
+      "confirm": "Are you sure you want to impersonate <bold>{name}</bold>?",
+      "stop": "Stop impersonating",
+      "stopConfirm": "Are you sure you want to stop impersonating?",
+      "stopSuccess": "Returned to admin account",
+      "success": "Now impersonating {name}",
+      "title": "Impersonate"
+    },
+    "label": "Actions",
+    "sessions": {
+      "createdAt": "Signed in",
+      "current": "Current",
+      "empty": "No active sessions",
+      "expiresAt": "Expires",
+      "ipAddress": "IP address",
+      "revokeAll": {
+        "confirm": "Are you sure you want to revoke all sessions for <bold>{name}</bold>?",
+        "success": "All sessions revoked",
+        "title": "Revoke all"
+      },
+      "revokeOne": {
+        "success": "Session revoked",
+        "title": "Revoke session"
+      },
+      "title": "Sessions",
+      "userAgent": "Device"
+    },
+    "setPassword": {
+      "confirmPassword": {
+        "label": "Confirm password",
+        "placeholder": "Please confirm your password"
+      },
+      "newPassword": {
+        "label": "New password",
+        "placeholder": "Please enter new password"
+      },
+      "success": "Password updated",
+      "title": "Set password"
+    },
     "setRole": {
       "success": "Role updated",
       "title": "Change role"
@@ -64,8 +109,12 @@
     }
   },
   "createdAt": "Created",
-  "email": "Email",
+  "email": {
+    "label": "Email",
+    "placeholder": "Please enter your email"
+  },
   "emailSubscribed": {
+    "checkbox": "I want to receive updates via email",
     "label": "Newsletter",
     "subscribed": "Subscribed",
     "unsubscribed": "Unsubscribed"

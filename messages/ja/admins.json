@@ -1,6 +1,5 @@
 {
   "actions": {
-    "label": "操作",
     "ban": {
       "banExpiresIn": {
         "label": "停止期間",
@@ -28,11 +27,6 @@
         "label": "パスワード確認",
         "placeholder": "パスワードを再入力してください"
       },
-      "email": {
-        "label": "メール",
-        "placeholder": "メールアドレスを入力してください"
-      },
-      "emailSubscribed": "メールで最新情報を受け取る",
       "firstName": {
         "label": "名",
         "placeholder": "名を入力してください"
@@ -53,6 +47,57 @@
       "success": "ユーザーを削除しました",
       "title": "ユーザーを削除"
     },
+    "edit": {
+      "firstName": {
+        "label": "名",
+        "placeholder": "名を入力してください"
+      },
+      "lastName": {
+        "label": "姓",
+        "placeholder": "姓を入力してください"
+      },
+      "success": "ユーザー情報を更新しました",
+      "title": "ユーザーを編集"
+    },
+    "impersonate": {
+      "confirm": "<bold>{name}</bold> としてログインしますか？",
+      "stop": "なりすましを停止",
+      "stopConfirm": "なりすましを停止しますか？",
+      "stopSuccess": "管理者アカウントに戻りました",
+      "success": "{name} としてログイン中",
+      "title": "なりすまし"
+    },
+    "label": "操作",
+    "sessions": {
+      "createdAt": "ログイン日時",
+      "current": "現在",
+      "empty": "アクティブなセッションなし",
+      "expiresAt": "有効期限",
+      "ipAddress": "IPアドレス",
+      "revokeAll": {
+        "confirm": "<bold>{name}</bold> のすべてのセッションを無効化しますか？",
+        "success": "すべてのセッションを無効化しました",
+        "title": "すべて無効化"
+      },
+      "revokeOne": {
+        "success": "セッションを無効化しました",
+        "title": "セッションを無効化"
+      },
+      "title": "セッション管理",
+      "userAgent": "デバイス"
+    },
+    "setPassword": {
+      "confirmPassword": {
+        "label": "パスワード確認",
+        "placeholder": "パスワードを再入力してください"
+      },
+      "newPassword": {
+        "label": "新しいパスワード",
+        "placeholder": "新しいパスワードを入力してください"
+      },
+      "success": "パスワードを更新しました",
+      "title": "パスワード設定"
+    },
     "setRole": {
       "success": "役割を更新しました",
       "title": "役割を変更"
@@ -64,8 +109,12 @@
     }
   },
   "createdAt": "作成日",
-  "email": "メール",
+  "email": {
+    "label": "メール",
+    "placeholder": "メールアドレスを入力してください"
+  },
   "emailSubscribed": {
+    "checkbox": "メールで最新情報を受け取る",
     "label": "メール配信",
     "subscribed": "配信中",
     "unsubscribed": "未配信"

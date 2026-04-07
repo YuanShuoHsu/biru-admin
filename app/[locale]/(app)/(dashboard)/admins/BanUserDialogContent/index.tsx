@@ -1,6 +1,5 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import type { UserWithRole } from "better-auth/client/plugins";
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
@@ -13,6 +12,8 @@ import {
   type BanUserFormOutput,
   useBanUserFormSchema,
 } from "./definitions";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
@@ -89,8 +90,12 @@ const BanUserDialogContent = ({
     <StyledBox component="form" id="ban-user-form" onSubmit={onSubmit}>
       <TextField
         autoComplete="email"
+        error={!!errors.email}
         fullWidth
-        label={tAdmins("email")}
+        helperText={errors.email?.message}
+        label={tAdmins("email.label")}
+        placeholder={tAdmins("email.placeholder")}
+        required
         slotProps={{ input: { readOnly: true } }}
         type="email"
         {...register("email")}

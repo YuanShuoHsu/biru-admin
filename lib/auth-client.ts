@@ -44,6 +44,15 @@ type ErrorTypes = Partial<
 >;
 
 const customErrorCodes: Record<string, Record<Locale, string>> = {
+  BANNED_USER: {
+    [LocaleEnum.ZhTW]: "您的帳號已被停用，請聯繫管理員",
+    [LocaleEnum.En]:
+      "Your account has been banned. Please contact an administrator.",
+    [LocaleEnum.Ja]:
+      "アカウントが停止されています。管理者にお問い合わせください",
+    [LocaleEnum.Ko]: "계정이 정지되었습니다. 관리자에게 문의해 주세요",
+    [LocaleEnum.ZhCN]: "您的账号已被停用，请联系管理员",
+  },
   EMAIL_IS_ALREADY_VERIFIED: {
     [LocaleEnum.ZhTW]: "此信箱已完成驗證，請直接登入",
     [LocaleEnum.En]: "Email already verified. Please sign in.",

@@ -1,7 +1,7 @@
 import { setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 
-import AdminUsers from ".";
+import Admins from ".";
 
 import type { Locale } from "@/i18n/routing";
 
@@ -37,7 +37,7 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
   const rowCount = data?.total || 0;
 
   return (
-    <AdminUsers
+    <Admins
       rows={rows}
       rowCount={rowCount}
       page={currentPage}

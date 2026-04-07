@@ -306,6 +306,7 @@ const OrganizationsSlug = ({
   const memberColumns = useMemo<GridColDef[]>(
     () => [
       {
+        disableColumnMenu: true,
         field: "actions",
         headerName: tMembers("actions.label"),
         renderCell: ({ row }: GridRenderCellParams<Member>) => {
@@ -489,6 +490,7 @@ const OrganizationsSlug = ({
             )}
           </>
         ),
+        disableColumnMenu: true,
         resizable: false,
         sortable: false,
       },

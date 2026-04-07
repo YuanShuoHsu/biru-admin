@@ -177,6 +177,7 @@ const Organizations = ({
   const columns = useMemo<GridColDef[]>(
     () => [
       {
+        disableColumnMenu: true,
         field: "actions",
         headerName: tOrganizations("actions.label"),
         renderCell: ({ row }: GridRenderCellParams<Organization>) => {
