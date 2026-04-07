@@ -377,9 +377,7 @@ const Admins = ({
               )
             }
             label={
-              row.banned
-                ? tAdmins("status.banned")
-                : tAdmins("status.active")
+              row.banned ? tAdmins("status.banned") : tAdmins("status.active")
             }
             size="small"
             variant="outlined"
