@@ -52,11 +52,9 @@
         "title": "編輯成員"
       },
       "invite": {
-        "fields": {
-          "email": {
-            "label": "電子郵件",
-            "placeholder": "請輸入您的電子郵件"
-          }
+        "email": {
+          "label": "電子郵件",
+          "placeholder": "請輸入您的電子郵件"
         },
         "label": "邀請成員",
         "success": "成功發送邀請",
@@ -64,7 +62,7 @@
       },
       "label": "操作",
       "remove": {
-        "confirm": "確定要移除 {name} 嗎？",
+        "confirm": "確定要移除 <bold>{name}</bold> 嗎？",
         "label": "移除",
         "success": "成功移除成員",
         "title": "移除成員"

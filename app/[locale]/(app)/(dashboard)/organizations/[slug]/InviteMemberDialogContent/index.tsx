@@ -91,8 +91,8 @@ const InviteMemberDialogContent = ({
         error={!!errors.email}
         fullWidth
         helperText={errors.email?.message}
-        label={tMembers("actions.invite.fields.email.label")}
-        placeholder={tMembers("actions.invite.fields.email.placeholder")}
+        label={tMembers("actions.invite.email.label")}
+        placeholder={tMembers("actions.invite.email.placeholder")}
         required
         type="email"
         {...register("email")}

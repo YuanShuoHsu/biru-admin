@@ -273,7 +273,10 @@ const OrganizationsSlug = ({
       setDialog({
         content: (
           <DialogContentText>
-            {tMembers("actions.remove.confirm", { name })}
+            {tMembers.rich("actions.remove.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              name,
+            })}
           </DialogContentText>
         ),
         onConfirm: async () => {

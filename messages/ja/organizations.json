@@ -52,11 +52,9 @@
         "title": "メンバーを編集"
       },
       "invite": {
-        "fields": {
-          "email": {
-            "label": "メール",
-            "placeholder": "あなたのメールアドレスを入力してください"
-          }
+        "email": {
+          "label": "メール",
+          "placeholder": "あなたのメールアドレスを入力してください"
         },
         "label": "メンバーを招待",
         "success": "招待の送信に成功しました",
@@ -64,7 +62,7 @@
       },
       "label": "操作",
       "remove": {
-        "confirm": "{name} を削除しますか？",
+        "confirm": "<bold>{name}</bold> を削除しますか？",
         "label": "削除",
         "success": "メンバーの削除に成功しました",
         "title": "メンバーを削除"

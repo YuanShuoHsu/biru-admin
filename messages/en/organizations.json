@@ -52,11 +52,9 @@
         "title": "Edit member"
       },
       "invite": {
-        "fields": {
-          "email": {
-            "label": "Email",
-            "placeholder": "Please enter your email"
-          }
+        "email": {
+          "label": "Email",
+          "placeholder": "Please enter your email"
         },
         "label": "Invite member",
         "success": "Invitation sent successfully",
@@ -64,7 +62,7 @@
       },
       "label": "Actions",
       "remove": {
-        "confirm": "Are you sure you want to remove {name}?",
+        "confirm": "Are you sure you want to remove <bold>{name}</bold>?",
         "label": "Remove",
         "success": "Member removed successfully",
         "title": "Remove Member"
