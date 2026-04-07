@@ -288,7 +288,7 @@ const useNavItems = () => {
     //   ? [
     {
       icon: AdminPanelSettings,
-      label: tAdmin("users.label"),
+      label: tAdmin("label"),
       to: "/admins?page=1&pageSize=10",
     },
     {

@@ -70,7 +70,7 @@ const CreateUserDialogContent = ({
 
   const locale = useLocale();
 
-  const tAdminsUsers = useTranslations("admins.users");
+  const tAdmins = useTranslations("admins");
   const tAuth = useTranslations("auth");
 
   const createUserFormSchema = useCreateUserFormSchema();
@@ -156,7 +156,7 @@ const CreateUserDialogContent = ({
               setDialog({ confirmLoading: false });
             },
             onSuccess: () => {
-              const message = tAdminsUsers("create.success");
+              const message = tAdmins("actions.create.success");
               enqueueSnackbar(message, { variant: "success" });
 
               resetDialog();
@@ -180,7 +180,7 @@ const CreateUserDialogContent = ({
           error={!!errors.lastName}
           fullWidth
           helperText={errors.lastName?.message}
-          label={tAdminsUsers("create.fields.lastName")}
+          label={tAdmins("actions.create.fields.lastName")}
           {...register("lastName")}
         />
         <TextField
@@ -188,7 +188,7 @@ const CreateUserDialogContent = ({
           error={!!errors.firstName}
           fullWidth
           helperText={errors.firstName?.message}
-          label={tAdminsUsers("create.fields.firstName")}
+          label={tAdmins("actions.create.fields.firstName")}
           required
           {...register("firstName")}
         />
@@ -198,7 +198,7 @@ const CreateUserDialogContent = ({
         error={!!errors.email}
         fullWidth
         helperText={errors.email?.message}
-        label={tAdminsUsers("create.fields.email")}
+        label={tAdmins("actions.create.fields.email")}
         required
         type="email"
         {...register("email")}
@@ -210,7 +210,7 @@ const CreateUserDialogContent = ({
         helperText={
           <PasswordRuleList hasValue={hasPassword} rules={passwordRules} />
         }
-        label={tAdminsUsers("create.fields.password")}
+        label={tAdmins("actions.create.fields.password")}
         required
         slotProps={{
           formHelperText: { component: "div" },
@@ -247,7 +247,7 @@ const CreateUserDialogContent = ({
             rules={confirmPasswordRules}
           />
         }
-        label={tAdminsUsers("create.fields.confirmPassword")}
+        label={tAdmins("actions.create.fields.confirmPassword")}
         required
         slotProps={{
           formHelperText: { component: "div" },
@@ -291,7 +291,7 @@ const CreateUserDialogContent = ({
           }
           label={
             <Typography variant="body2">
-              {tAdminsUsers("create.fields.emailSubscribed")}
+              {tAdmins("actions.create.fields.emailSubscribed")}
             </Typography>
           }
         />
@@ -300,18 +300,18 @@ const CreateUserDialogContent = ({
         error={!!errors.role}
         fullWidth
         helperText={errors.role?.message}
-        label={tAdminsUsers("create.fields.role.label")}
+        label={tAdmins("actions.create.fields.role.label")}
         required
         select
         value={role}
         {...register("role")}
       >
         <MenuItem disabled value="">
-          <em>{tAdminsUsers("create.fields.role.placeholder")}</em>
+          <em>{tAdmins("actions.create.fields.role.placeholder")}</em>
         </MenuItem>
         {roles.map((role) => (
           <MenuItem key={role} value={role}>
-            {tAdminsUsers(`roles.${role}`)}
+            {tAdmins(`role.${role}`)}
           </MenuItem>
         ))}
       </TextField>

@@ -1,13 +1,6 @@
 {
-  "label": "관리",
-  "users": {
-    "actions": {
-      "ban": "차단",
-      "create": "사용자 추가",
-      "delete": "삭제",
-      "setRole": "역할 변경",
-      "unban": "차단 해제"
-    },
+  "actions": {
+    "label": "작업",
     "ban": {
       "confirm": "<bold>{name}</bold>을(를) 차단하시겠습니까? 차단 후에는 로그인할 수 없습니다.",
       "error": "차단에 실패했습니다. 다시 시도해 주세요",
@@ -15,14 +8,14 @@
         "banExpiresIn": {
           "label": "차단 기간",
           "options": {
-            "permanent": "영구",
+            "12hours": "12시간",
+            "1day": "1일",
+            "1hour": "1시간",
             "1year": "1년",
-            "90days": "90일",
             "30days": "30일",
             "7days": "7일",
-            "1day": "1일",
-            "12hours": "12시간",
-            "1hour": "1시간"
+            "90days": "90일",
+            "permanent": "영구"
           },
           "placeholder": "차단 기간을 선택해 주세요"
         },
@@ -31,18 +24,9 @@
           "placeholder": "차단 사유를 입력해 주세요"
         }
       },
+      "label": "차단",
       "success": "사용자가 차단되었습니다",
       "title": "사용자 차단"
-    },
-    "columns": {
-      "actions": "작업",
-      "createdAt": "생성일",
-      "email": "이메일",
-      "emailSubscribed": "뉴스레터",
-      "image": "프로필",
-      "name": "이름",
-      "role": "역할",
-      "status": "상태"
     },
     "create": {
       "error": "생성에 실패했습니다. 다시 시도해 주세요",
@@ -58,42 +42,49 @@
           "placeholder": "역할을 선택해 주세요"
         }
       },
+      "label": "사용자 추가",
       "success": "사용자가 생성되었습니다",
       "title": "사용자 추가"
     },
     "delete": {
       "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
       "error": "삭제에 실패했습니다. 다시 시도해 주세요",
+      "label": "삭제",
       "success": "사용자가 삭제되었습니다",
       "title": "사용자 삭제"
     },
-    "empty": "사용자가 없습니다",
-    "label": "사용자 관리",
-    "roles": {
-      "admin": "관리자",
-      "user": "일반 사용자"
-    },
-    "search": {
-      "placeholder": "이름 또는 이메일을 입력해 주세요"
-    },
     "setRole": {
       "error": "업데이트에 실패했습니다. 다시 시도해 주세요",
+      "label": "역할 변경",
       "success": "역할이 업데이트되었습니다",
       "title": "역할 변경"
     },
-    "status": {
-      "active": "정상",
-      "banned": "차단됨",
-      "subscribed": "구독 중",
-      "unsubscribed": "미구독"
-    },
-    "subtitle": "모든 사용자 계정을 관리합니다",
-    "title": "사용자 관리",
     "unban": {
       "confirm": "<bold>{name}</bold>의 차단을 해제하시겠습니까? 해제 후에는 다시 로그인할 수 있습니다.",
       "error": "차단 해제에 실패했습니다. 다시 시도해 주세요",
+      "label": "차단 해제",
       "success": "차단이 해제되었습니다",
       "title": "차단 해제"
     }
+  },
+  "createdAt": "생성일",
+  "email": "이메일",
+  "emailSubscribed": {
+    "label": "뉴스레터",
+    "subscribed": "구독 중",
+    "unsubscribed": "미구독"
+  },
+  "image": "프로필",
+  "label": "사용자 관리",
+  "name": "이름",
+  "role": {
+    "admin": "관리자",
+    "label": "역할",
+    "user": "일반 사용자"
+  },
+  "status": {
+    "active": "정상",
+    "banned": "차단됨",
+    "label": "상태"
   }
 }

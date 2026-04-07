@@ -177,7 +177,7 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
     {
       disabled: true,
       icon: AdminPanelSettings,
-      label: tAdmin("users.label"),
+      label: tAdmin("label"),
       to: "/admins",
     },
     {

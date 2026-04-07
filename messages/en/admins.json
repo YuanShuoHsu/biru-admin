@@ -1,13 +1,6 @@
 {
-  "label": "Admin",
-  "users": {
-    "actions": {
-      "ban": "Ban",
-      "create": "Add user",
-      "delete": "Delete",
-      "setRole": "Change role",
-      "unban": "Unban"
-    },
+  "actions": {
+    "label": "Actions",
     "ban": {
       "confirm": "Are you sure you want to ban <bold>{name}</bold>? They will no longer be able to sign in.",
       "error": "Failed to ban user. Please try again.",
@@ -15,14 +8,14 @@
         "banExpiresIn": {
           "label": "Ban duration",
           "options": {
-            "permanent": "Permanent",
+            "12hours": "12 hours",
+            "1day": "1 day",
+            "1hour": "1 hour",
             "1year": "1 year",
-            "90days": "90 days",
             "30days": "30 days",
             "7days": "7 days",
-            "1day": "1 day",
-            "12hours": "12 hours",
-            "1hour": "1 hour"
+            "90days": "90 days",
+            "permanent": "Permanent"
           },
           "placeholder": "Please select your ban duration"
         },
@@ -31,18 +24,9 @@
           "placeholder": "Please enter your ban reason"
         }
       },
+      "label": "Ban",
       "success": "User banned",
       "title": "Ban user"
-    },
-    "columns": {
-      "actions": "Actions",
-      "createdAt": "Created",
-      "email": "Email",
-      "emailSubscribed": "Newsletter",
-      "image": "Avatar",
-      "name": "Name",
-      "role": "Role",
-      "status": "Status"
     },
     "create": {
       "error": "Failed to create user. Please try again.",
@@ -58,42 +42,49 @@
           "placeholder": "Please select your role"
         }
       },
+      "label": "Add user",
       "success": "User created",
       "title": "Add user"
     },
     "delete": {
       "confirm": "Are you sure you want to delete <bold>{name}</bold>? This action cannot be undone.",
       "error": "Failed to delete user. Please try again.",
+      "label": "Delete",
       "success": "User deleted",
       "title": "Delete user"
     },
-    "empty": "No users found",
-    "label": "User Management",
-    "roles": {
-      "admin": "Admin",
-      "user": "User"
-    },
-    "search": {
-      "placeholder": "Please enter your name or email"
-    },
     "setRole": {
       "error": "Failed to update role. Please try again.",
+      "label": "Change role",
       "success": "Role updated",
       "title": "Change role"
     },
-    "status": {
-      "active": "Active",
-      "banned": "Banned",
-      "subscribed": "Subscribed",
-      "unsubscribed": "Unsubscribed"
-    },
-    "subtitle": "Manage all user accounts",
-    "title": "User Management",
     "unban": {
       "confirm": "Are you sure you want to unban <bold>{name}</bold>? They will be able to sign in again.",
       "error": "Failed to unban user. Please try again.",
+      "label": "Unban",
       "success": "User unbanned",
       "title": "Unban user"
     }
+  },
+  "createdAt": "Created",
+  "email": "Email",
+  "emailSubscribed": {
+    "label": "Newsletter",
+    "subscribed": "Subscribed",
+    "unsubscribed": "Unsubscribed"
+  },
+  "image": "Avatar",
+  "label": "User Management",
+  "name": "Name",
+  "role": {
+    "admin": "Admin",
+    "label": "Role",
+    "user": "User"
+  },
+  "status": {
+    "active": "Active",
+    "banned": "Banned",
+    "label": "Status"
   }
 }

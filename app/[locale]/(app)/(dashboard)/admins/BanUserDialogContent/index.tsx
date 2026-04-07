@@ -40,7 +40,7 @@ const BanUserDialogContent = ({
 
   const locale = useLocale();
 
-  const tAdminsUsers = useTranslations("admins.users");
+  const tAdmins = useTranslations("admins");
 
   const banUserFormSchema = useBanUserFormSchema();
 
@@ -75,7 +75,7 @@ const BanUserDialogContent = ({
             setDialog({ confirmLoading: false });
           },
           onSuccess: () => {
-            const message = tAdminsUsers("ban.success");
+            const message = tAdmins("actions.ban.success");
             enqueueSnackbar(message, { variant: "success" });
 
             resetDialog();
@@ -91,7 +91,7 @@ const BanUserDialogContent = ({
         autoComplete="email"
         defaultValue={user.email}
         fullWidth
-        label={tAdminsUsers("columns.email")}
+        label={tAdmins("email")}
         slotProps={{ input: { readOnly: true } }}
         type="email"
       />
@@ -99,26 +99,26 @@ const BanUserDialogContent = ({
         error={!!errors.banReason}
         fullWidth
         helperText={errors.banReason?.message}
-        label={tAdminsUsers("ban.fields.banReason.label")}
+        label={tAdmins("actions.ban.fields.banReason.label")}
         multiline
-        placeholder={tAdminsUsers("ban.fields.banReason.placeholder")}
+        placeholder={tAdmins("actions.ban.fields.banReason.placeholder")}
         {...register("banReason")}
       />
       <TextField
         error={!!errors.banExpiresIn}
         fullWidth
         helperText={errors.banExpiresIn?.message}
-        label={tAdminsUsers("ban.fields.banExpiresIn.label")}
+        label={tAdmins("actions.ban.fields.banExpiresIn.label")}
         select
         value={banExpiresIn}
         {...register("banExpiresIn")}
       >
         <MenuItem disabled value="">
-          <em>{tAdminsUsers("ban.fields.banExpiresIn.placeholder")}</em>
+          <em>{tAdmins("actions.ban.fields.banExpiresIn.placeholder")}</em>
         </MenuItem>
         {BAN_EXPIRES_OPTIONS.map(({ value, label }) => (
           <MenuItem key={value} value={value}>
-            {tAdminsUsers(`ban.fields.banExpiresIn.options.${label}`)}
+            {tAdmins(`actions.ban.fields.banExpiresIn.options.${label}`)}
           </MenuItem>
         ))}
       </TextField>

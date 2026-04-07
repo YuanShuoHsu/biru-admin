@@ -41,7 +41,7 @@ const SetRoleDialogContent = ({
 
   const locale = useLocale();
 
-  const tAdminsUsers = useTranslations("admins.users");
+  const tAdmins = useTranslations("admins");
 
   const setRoleFormSchema = useSetRoleFormSchema();
 
@@ -72,7 +72,7 @@ const SetRoleDialogContent = ({
             setDialog({ confirmLoading: false });
           },
           onSuccess: () => {
-            const message = tAdminsUsers("setRole.success");
+            const message = tAdmins("actions.setRole.success");
             enqueueSnackbar(message, { variant: "success" });
 
             resetDialog();
@@ -88,18 +88,18 @@ const SetRoleDialogContent = ({
         error={!!errors.role}
         fullWidth
         helperText={errors.role?.message}
-        label={tAdminsUsers("create.fields.role.label")}
+        label={tAdmins("actions.create.fields.role.label")}
         required
         select
         value={role}
         {...register("role")}
       >
         <MenuItem disabled value="">
-          <em>{tAdminsUsers("create.fields.role.placeholder")}</em>
+          <em>{tAdmins("actions.create.fields.role.placeholder")}</em>
         </MenuItem>
         {roles.map((role) => (
           <MenuItem key={role} value={role}>
-            {tAdminsUsers(`roles.${role}`)}
+            {tAdmins(`role.${role}`)}
           </MenuItem>
         ))}
       </TextField>

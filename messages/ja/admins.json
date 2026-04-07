@@ -1,13 +1,6 @@
 {
-  "label": "管理",
-  "users": {
-    "actions": {
-      "ban": "停止",
-      "create": "ユーザーを追加",
-      "delete": "削除",
-      "setRole": "役割を変更",
-      "unban": "停止解除"
-    },
+  "actions": {
+    "label": "操作",
     "ban": {
       "confirm": "<bold>{name}</bold> を停止しますか？停止後はサインインできなくなります。",
       "error": "停止に失敗しました。もう一度お試しください",
@@ -15,14 +8,14 @@
         "banExpiresIn": {
           "label": "停止期間",
           "options": {
-            "permanent": "永久",
+            "12hours": "12 時間",
+            "1day": "1 日",
+            "1hour": "1 時間",
             "1year": "1 年",
-            "90days": "90 日",
             "30days": "30 日",
             "7days": "7 日",
-            "1day": "1 日",
-            "12hours": "12 時間",
-            "1hour": "1 時間"
+            "90days": "90 日",
+            "permanent": "永久"
           },
           "placeholder": "停止期間を選択してください"
         },
@@ -31,18 +24,9 @@
           "placeholder": "停止理由を入力してください"
         }
       },
+      "label": "停止",
       "success": "ユーザーを停止しました",
       "title": "ユーザーを停止"
-    },
-    "columns": {
-      "actions": "操作",
-      "createdAt": "作成日",
-      "email": "メール",
-      "emailSubscribed": "メール配信",
-      "image": "アバター",
-      "name": "名前",
-      "role": "役割",
-      "status": "状態"
     },
     "create": {
       "error": "作成に失敗しました。もう一度お試しください",
@@ -58,42 +42,49 @@
           "placeholder": "あなたの役割を選択してください"
         }
       },
+      "label": "ユーザーを追加",
       "success": "ユーザーを作成しました",
       "title": "ユーザーを追加"
     },
     "delete": {
       "confirm": "<bold>{name}</bold> を削除しますか？この操作は取り消せません。",
       "error": "削除に失敗しました。もう一度お試しください",
+      "label": "削除",
       "success": "ユーザーを削除しました",
       "title": "ユーザーを削除"
     },
-    "empty": "ユーザーが見つかりません",
-    "label": "ユーザー管理",
-    "roles": {
-      "admin": "管理者",
-      "user": "一般ユーザー"
-    },
-    "search": {
-      "placeholder": "あなたの名前またはメールアドレスを入力してください"
-    },
     "setRole": {
       "error": "更新に失敗しました。もう一度お試しください",
+      "label": "役割を変更",
       "success": "役割を更新しました",
       "title": "役割を変更"
     },
-    "status": {
-      "active": "有効",
-      "banned": "停止中",
-      "subscribed": "配信中",
-      "unsubscribed": "未配信"
-    },
-    "subtitle": "全ユーザーアカウントを管理",
-    "title": "ユーザー管理",
     "unban": {
       "confirm": "<bold>{name}</bold> の停止を解除しますか？解除後はサインインできるようになります。",
       "error": "停止解除に失敗しました。もう一度お試しください",
+      "label": "停止解除",
       "success": "停止を解除しました",
       "title": "停止解除"
     }
+  },
+  "createdAt": "作成日",
+  "email": "メール",
+  "emailSubscribed": {
+    "label": "メール配信",
+    "subscribed": "配信中",
+    "unsubscribed": "未配信"
+  },
+  "image": "アバター",
+  "label": "ユーザー管理",
+  "name": "名前",
+  "role": {
+    "admin": "管理者",
+    "label": "役割",
+    "user": "一般ユーザー"
+  },
+  "status": {
+    "active": "有効",
+    "banned": "停止中",
+    "label": "状態"
   }
 }

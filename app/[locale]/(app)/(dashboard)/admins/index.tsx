@@ -99,7 +99,7 @@ const Admins = ({
 
   const locale = useLocale();
 
-  const tAdminsUsers = useTranslations("admins.users");
+  const tAdmins = useTranslations("admins");
 
   const fetchData = useCallback(
     async ({ page, pageSize }: GridPaginationModel) => {
@@ -147,7 +147,7 @@ const Admins = ({
       ),
       formId: "create-user-form",
       open: true,
-      title: tAdminsUsers("create.title"),
+      title: tAdmins("actions.create.title"),
     });
   };
 
@@ -162,10 +162,10 @@ const Admins = ({
         ),
         formId: "set-role-form",
         open: true,
-        title: tAdminsUsers("setRole.title"),
+        title: tAdmins("actions.setRole.title"),
       });
     },
-    [fetchData, paginationModel, setDialog, tAdminsUsers],
+    [fetchData, paginationModel, setDialog, tAdmins],
   );
 
   const handleBanUser = useCallback(
@@ -179,10 +179,10 @@ const Admins = ({
         ),
         formId: "ban-user-form",
         open: true,
-        title: tAdminsUsers("ban.title"),
+        title: tAdmins("actions.ban.title"),
       });
     },
-    [fetchData, paginationModel, setDialog, tAdminsUsers],
+    [fetchData, paginationModel, setDialog, tAdmins],
   );
 
   const handleUnbanUser = useCallback(
@@ -190,7 +190,7 @@ const Admins = ({
       setDialog({
         content: (
           <DialogContentText>
-            {tAdminsUsers.rich("unban.confirm", {
+            {tAdmins.rich("actions.unban.confirm", {
               bold: (chunks) => <strong>{chunks}</strong>,
               name,
             })}
@@ -205,7 +205,7 @@ const Admins = ({
                 enqueueSnackbar(message, { variant: "error" });
               },
               onSuccess: () => {
-                const message = tAdminsUsers("unban.success");
+                const message = tAdmins("actions.unban.success");
                 enqueueSnackbar(message, { variant: "success" });
 
                 fetchData(paginationModel);
@@ -214,10 +214,10 @@ const Admins = ({
           );
         },
         open: true,
-        title: tAdminsUsers("unban.title"),
+        title: tAdmins("actions.unban.title"),
       });
     },
-    [fetchData, locale, paginationModel, setDialog, tAdminsUsers],
+    [fetchData, locale, paginationModel, setDialog, tAdmins],
   );
 
   const handleDeleteUser = useCallback(
@@ -225,7 +225,7 @@ const Admins = ({
       setDialog({
         content: (
           <DialogContentText>
-            {tAdminsUsers.rich("delete.confirm", {
+            {tAdmins.rich("actions.delete.confirm", {
               bold: (chunks) => <strong>{chunks}</strong>,
               name,
             })}
@@ -240,7 +240,7 @@ const Admins = ({
                 enqueueSnackbar(message, { variant: "error" });
               },
               onSuccess: () => {
-                const message = tAdminsUsers("delete.success");
+                const message = tAdmins("actions.delete.success");
                 enqueueSnackbar(message, { variant: "success" });
 
                 fetchData(paginationModel);
@@ -249,23 +249,23 @@ const Admins = ({
           );
         },
         open: true,
-        title: tAdminsUsers("delete.title"),
+        title: tAdmins("actions.delete.title"),
       });
     },
-    [fetchData, locale, paginationModel, setDialog, tAdminsUsers],
+    [fetchData, locale, paginationModel, setDialog, tAdmins],
   );
 
   const columns = useMemo<GridColDef[]>(
     () => [
       {
         field: "actions",
-        headerName: tAdminsUsers("columns.actions"),
+        headerName: tAdmins("actions.label"),
         renderCell: ({ row }: GridRenderCellParams<UserWithRole>) => {
           const isCurrentUser = row.id === currentUserId;
 
           return (
             <Stack height="100%" direction="row" alignItems="center" gap={1}>
-              <Tooltip title={tAdminsUsers("actions.setRole")}>
+              <Tooltip title={tAdmins("actions.setRole.label")}>
                 <IconButton
                   onClick={(event) => {
                     event.stopPropagation();
@@ -279,7 +279,7 @@ const Admins = ({
               </Tooltip>
               {!isCurrentUser &&
                 (row.banned ? (
-                  <Tooltip title={tAdminsUsers("actions.unban")}>
+                  <Tooltip title={tAdmins("actions.unban.label")}>
                     <IconButton
                       color="success"
                       onClick={(event) => {
@@ -293,7 +293,7 @@ const Admins = ({
                     </IconButton>
                   </Tooltip>
                 ) : (
-                  <Tooltip title={tAdminsUsers("actions.ban")}>
+                  <Tooltip title={tAdmins("actions.ban.label")}>
                     <IconButton
                       color="warning"
                       onClick={(event) => {
@@ -308,7 +308,7 @@ const Admins = ({
                   </Tooltip>
                 ))}
               {!isCurrentUser && (
-                <Tooltip title={tAdminsUsers("actions.delete")}>
+                <Tooltip title={tAdmins("actions.delete.label")}>
                   <IconButton
                     color="error"
                     onClick={(event) => {
@@ -330,7 +330,7 @@ const Admins = ({
       },
       {
         field: "image",
-        headerName: tAdminsUsers("columns.image"),
+        headerName: tAdmins("image"),
         renderCell: ({
           row: { image, name },
         }: GridRenderCellParams<AdminUser>) => (
@@ -342,21 +342,21 @@ const Admins = ({
       },
       {
         field: "name",
-        headerName: tAdminsUsers("columns.name"),
+        headerName: tAdmins("name"),
       },
       {
         field: "email",
-        headerName: tAdminsUsers("columns.email"),
+        headerName: tAdmins("email"),
       },
       {
         field: "role",
-        headerName: tAdminsUsers("columns.role"),
+        headerName: tAdmins("role.label"),
         renderCell: ({
           row: { role = "user" },
         }: GridRenderCellParams<AdminUser>) => (
           <Chip
             color={ROLE_COLOR_MAP[role]}
-            label={tAdminsUsers(`roles.${role}`)}
+            label={tAdmins(`role.${role}`)}
             size="small"
             variant="outlined"
           />
@@ -365,7 +365,7 @@ const Admins = ({
       },
       {
         field: "banned",
-        headerName: tAdminsUsers("columns.status"),
+        headerName: tAdmins("status.label"),
         renderCell: ({ row }: GridRenderCellParams<UserWithRole>) => (
           <Chip
             color={row.banned ? "error" : "success"}
@@ -378,8 +378,8 @@ const Admins = ({
             }
             label={
               row.banned
-                ? tAdminsUsers("status.banned")
-                : tAdminsUsers("status.active")
+                ? tAdmins("status.banned")
+                : tAdmins("status.active")
             }
             size="small"
             variant="outlined"
@@ -389,7 +389,7 @@ const Admins = ({
       },
       {
         field: "emailSubscribed",
-        headerName: tAdminsUsers("columns.emailSubscribed"),
+        headerName: tAdmins("emailSubscribed.label"),
         renderCell: ({ row }: GridRenderCellParams<AdminUser>) => (
           <Chip
             color={row.emailSubscribed ? "primary" : "default"}
@@ -402,8 +402,8 @@ const Admins = ({
             }
             label={
               row.emailSubscribed
-                ? tAdminsUsers("status.subscribed")
-                : tAdminsUsers("status.unsubscribed")
+                ? tAdmins("emailSubscribed.subscribed")
+                : tAdmins("emailSubscribed.unsubscribed")
             }
             size="small"
             variant="outlined"
@@ -413,7 +413,7 @@ const Admins = ({
       },
       {
         field: "createdAt",
-        headerName: tAdminsUsers("columns.createdAt"),
+        headerName: tAdmins("createdAt"),
         valueFormatter: (value: Date) =>
           format.dateTime(new Date(value), "short"),
       },
@@ -425,7 +425,7 @@ const Admins = ({
       handleDeleteUser,
       handleSetRole,
       handleUnbanUser,
-      tAdminsUsers,
+      tAdmins,
     ],
   );
 
@@ -438,7 +438,7 @@ const Admins = ({
           startIcon={<PersonAdd />}
           variant="contained"
         >
-          {tAdminsUsers("actions.create")}
+          {tAdmins("actions.create.label")}
         </Button>
       </Stack>
       <DataGrid
