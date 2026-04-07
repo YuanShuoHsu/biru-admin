@@ -149,6 +149,13 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
     [LocaleEnum.Ko]: "자기 자신을 차단할 수 없습니다",
     [LocaleEnum.ZhCN]: "您无法封禁自己",
   },
+  YOU_CANNOT_IMPERSONATE_ADMINS: {
+    [LocaleEnum.ZhTW]: "無法模擬管理員帳號",
+    [LocaleEnum.En]: "You cannot impersonate admin users.",
+    [LocaleEnum.Ja]: "管理者アカウントをなりすましすることはできません",
+    [LocaleEnum.Ko]: "관리자 계정을 가장할 수 없습니다",
+    [LocaleEnum.ZhCN]: "无法模拟管理员账号",
+  },
   YOU_CANNOT_REMOVE_YOURSELF: {
     [LocaleEnum.ZhTW]: "您無法移除自己",
     [LocaleEnum.En]: "You cannot remove yourself.",
