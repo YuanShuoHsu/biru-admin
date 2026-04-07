@@ -15,4 +15,6 @@ export const useEditUserFormSchema = () => {
   });
 };
 
-export type EditUserFormValues = z.infer<ReturnType<typeof useEditUserFormSchema>>;
+export type EditUserFormValues = z.infer<
+  ReturnType<typeof useEditUserFormSchema>
+>;
