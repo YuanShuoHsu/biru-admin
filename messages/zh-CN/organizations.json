@@ -6,11 +6,8 @@
       "title": "新增组织"
     },
     "delete": {
-      "cancel": "取消",
       "confirm": "确定要删除 <bold>{name}</bold> 吗？所有成员和数据将被永久删除，且无法撤销。",
-      "error": "删除失败，请稍后重试",
       "label": "删除",
-      "submit": "确认删除",
       "success": "成功删除组织",
       "title": "删除组织"
     },
@@ -35,7 +32,6 @@
     "actions": {
       "cancel": {
         "confirm": "确定要取消对 <bold>{email}</bold> 的邀请吗？",
-        "error": "取消失败，请稍后重试",
         "label": "取消邀请",
         "success": "成功取消邀请",
         "title": "取消邀请"
@@ -56,7 +52,6 @@
         "title": "编辑成员"
       },
       "invite": {
-        "error": "邀请失败，请稍后重试",
         "fields": {
           "email": {
             "label": "电子邮件",
@@ -70,14 +65,11 @@
       "label": "操作",
       "remove": {
         "confirm": "确定要移除 {name} 吗？",
-        "error": "移除失败，请稍后重试",
         "label": "移除",
         "success": "成功移除成员",
         "title": "移除成员"
       },
       "setRole": {
-        "error": "更新失败，请稍后重试",
-        "label": "更改角色",
         "success": "成功更新角色"
       }
     },

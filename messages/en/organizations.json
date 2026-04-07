@@ -6,11 +6,8 @@
       "title": "New organization"
     },
     "delete": {
-      "cancel": "Cancel",
       "confirm": "Are you sure you want to delete <bold>{name}</bold>? All members and data will be permanently removed.",
-      "error": "Failed to delete organization. Please try again.",
       "label": "Delete",
-      "submit": "Delete",
       "success": "Organization deleted successfully",
       "title": "Delete organization"
     },
@@ -35,7 +32,6 @@
     "actions": {
       "cancel": {
         "confirm": "Are you sure you want to cancel the invitation for <bold>{email}</bold>?",
-        "error": "Failed to cancel invitation. Please try again.",
         "label": "Cancel",
         "success": "Invitation canceled successfully",
         "title": "Cancel Invitation"
@@ -56,7 +52,6 @@
         "title": "Edit member"
       },
       "invite": {
-        "error": "Failed to send invitation. Please try again.",
         "fields": {
           "email": {
             "label": "Email",
@@ -70,14 +65,11 @@
       "label": "Actions",
       "remove": {
         "confirm": "Are you sure you want to remove {name}?",
-        "error": "Failed to remove member. Please try again.",
         "label": "Remove",
         "success": "Member removed successfully",
         "title": "Remove Member"
       },
       "setRole": {
-        "error": "Failed to update role. Please try again.",
-        "label": "Change role",
         "success": "Role updated successfully"
       }
     },

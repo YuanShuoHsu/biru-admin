@@ -6,11 +6,8 @@
       "title": "新增組織"
     },
     "delete": {
-      "cancel": "取消",
       "confirm": "確定要刪除 <bold>{name}</bold> 嗎？此操作將同時移除所有成員與資料，且無法復原。",
-      "error": "刪除失敗，請稍後重試",
       "label": "刪除",
-      "submit": "確認刪除",
       "success": "成功刪除組織",
       "title": "刪除組織"
     },
@@ -35,7 +32,6 @@
     "actions": {
       "cancel": {
         "confirm": "確定要取消對 <bold>{email}</bold> 的邀請嗎？",
-        "error": "取消失敗，請稍後重試",
         "label": "取消邀請",
         "success": "成功取消邀請",
         "title": "取消邀請"
@@ -56,7 +52,6 @@
         "title": "編輯成員"
       },
       "invite": {
-        "error": "邀請失敗，請稍後重試",
         "fields": {
           "email": {
             "label": "電子郵件",
@@ -70,14 +65,11 @@
       "label": "操作",
       "remove": {
         "confirm": "確定要移除 {name} 嗎？",
-        "error": "移除失敗，請稍後重試",
         "label": "移除",
         "success": "成功移除成員",
         "title": "移除成員"
       },
       "setRole": {
-        "error": "更新失敗，請稍後重試",
-        "label": "更改角色",
         "success": "成功更新角色"
       }
     },
