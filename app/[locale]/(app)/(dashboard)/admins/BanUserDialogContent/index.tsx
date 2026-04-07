@@ -50,7 +50,7 @@ const BanUserDialogContent = ({
     handleSubmit,
     register,
   } = useForm<BanUserFormInput, unknown, BanUserFormOutput>({
-    defaultValues: { banExpiresIn: 0, banReason: "" },
+    defaultValues: { email: user.email, banExpiresIn: 0, banReason: "" },
     resolver: zodResolver(banUserFormSchema),
   });
 
@@ -89,11 +89,11 @@ const BanUserDialogContent = ({
     <StyledBox component="form" id="ban-user-form" onSubmit={onSubmit}>
       <TextField
         autoComplete="email"
-        defaultValue={user.email}
         fullWidth
         label={tAdmins("email")}
         slotProps={{ input: { readOnly: true } }}
         type="email"
+        {...register("email")}
       />
       <TextField
         error={!!errors.banReason}
