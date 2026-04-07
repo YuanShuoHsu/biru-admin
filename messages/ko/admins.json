@@ -22,7 +22,6 @@
           "placeholder": "차단 사유를 입력해 주세요"
         }
       },
-      "label": "차단",
       "success": "사용자가 차단되었습니다",
       "title": "사용자 차단"
     },
@@ -48,7 +47,6 @@
         "label": "비밀번호",
         "placeholder": "비밀번호를 입력해 주세요"
       },
-      "label": "사용자 추가",
       "role": {
         "label": "역할",
         "placeholder": "역할을 선택해 주세요"
@@ -58,18 +56,15 @@
     },
     "delete": {
       "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
-      "label": "삭제",
       "success": "사용자가 삭제되었습니다",
       "title": "사용자 삭제"
     },
     "setRole": {
-      "label": "역할 변경",
       "success": "역할이 업데이트되었습니다",
       "title": "역할 변경"
     },
     "unban": {
       "confirm": "<bold>{name}</bold>의 차단을 해제하시겠습니까? 해제 후에는 다시 로그인할 수 있습니다.",
-      "label": "차단 해제",
       "success": "차단이 해제되었습니다",
       "title": "차단 해제"
     }

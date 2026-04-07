@@ -22,7 +22,6 @@
           "placeholder": "停止理由を入力してください"
         }
       },
-      "label": "停止",
       "success": "ユーザーを停止しました",
       "title": "ユーザーを停止"
     },
@@ -48,7 +47,6 @@
         "label": "パスワード",
         "placeholder": "パスワードを入力してください"
       },
-      "label": "ユーザーを追加",
       "role": {
         "label": "役割",
         "placeholder": "あなたの役割を選択してください"
@@ -58,18 +56,15 @@
     },
     "delete": {
       "confirm": "<bold>{name}</bold> を削除しますか？この操作は取り消せません。",
-      "label": "削除",
       "success": "ユーザーを削除しました",
       "title": "ユーザーを削除"
     },
     "setRole": {
-      "label": "役割を変更",
       "success": "役割を更新しました",
       "title": "役割を変更"
     },
     "unban": {
       "confirm": "<bold>{name}</bold> の停止を解除しますか？解除後はサインインできるようになります。",
-      "label": "停止解除",
       "success": "停止を解除しました",
       "title": "停止解除"
     }

@@ -22,7 +22,6 @@
           "placeholder": "Please enter your ban reason"
         }
       },
-      "label": "Ban",
       "success": "User banned",
       "title": "Ban user"
     },
@@ -48,7 +47,6 @@
         "label": "Password",
         "placeholder": "Please enter your password"
       },
-      "label": "Add user",
       "role": {
         "label": "Role",
         "placeholder": "Please select your role"
@@ -58,18 +56,15 @@
     },
     "delete": {
       "confirm": "Are you sure you want to delete <bold>{name}</bold>? This action cannot be undone.",
-      "label": "Delete",
       "success": "User deleted",
       "title": "Delete user"
     },
     "setRole": {
-      "label": "Change role",
       "success": "Role updated",
       "title": "Change role"
     },
     "unban": {
       "confirm": "Are you sure you want to unban <bold>{name}</bold>? They will be able to sign in again.",
-      "label": "Unban",
       "success": "User unbanned",
       "title": "Unban user"
     }

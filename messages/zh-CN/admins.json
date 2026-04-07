@@ -22,7 +22,6 @@
           "placeholder": "请输入您的封禁原因"
         }
       },
-      "label": "封禁",
       "success": "已封禁用户",
       "title": "封禁用户"
     },
@@ -48,7 +47,6 @@
         "label": "密码",
         "placeholder": "请输入您的密码"
       },
-      "label": "添加用户",
       "role": {
         "label": "角色",
         "placeholder": "请选择您的角色"
@@ -58,18 +56,15 @@
     },
     "delete": {
       "confirm": "确定要删除 <bold>{name}</bold> 吗？此操作无法撤销。",
-      "label": "删除",
       "success": "已删除用户",
       "title": "删除用户"
     },
     "setRole": {
-      "label": "更改角色",
       "success": "角色已更新",
       "title": "更改角色"
     },
     "unban": {
       "confirm": "确定要解除封禁 <bold>{name}</bold> 吗？解除后该用户将可重新登录。",
-      "label": "解除封禁",
       "success": "已解除封禁",
       "title": "解除封禁"
     }

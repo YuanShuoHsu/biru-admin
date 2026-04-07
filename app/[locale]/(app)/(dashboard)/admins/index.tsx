@@ -265,7 +265,7 @@ const Admins = ({
 
           return (
             <Stack height="100%" direction="row" alignItems="center" gap={1}>
-              <Tooltip title={tAdmins("actions.setRole.label")}>
+              <Tooltip title={tAdmins("actions.setRole.title")}>
                 <IconButton
                   onClick={(event) => {
                     event.stopPropagation();
@@ -279,7 +279,7 @@ const Admins = ({
               </Tooltip>
               {!isCurrentUser &&
                 (row.banned ? (
-                  <Tooltip title={tAdmins("actions.unban.label")}>
+                  <Tooltip title={tAdmins("actions.unban.title")}>
                     <IconButton
                       color="success"
                       onClick={(event) => {
@@ -293,7 +293,7 @@ const Admins = ({
                     </IconButton>
                   </Tooltip>
                 ) : (
-                  <Tooltip title={tAdmins("actions.ban.label")}>
+                  <Tooltip title={tAdmins("actions.ban.title")}>
                     <IconButton
                       color="warning"
                       onClick={(event) => {
@@ -308,7 +308,7 @@ const Admins = ({
                   </Tooltip>
                 ))}
               {!isCurrentUser && (
-                <Tooltip title={tAdmins("actions.delete.label")}>
+                <Tooltip title={tAdmins("actions.delete.title")}>
                   <IconButton
                     color="error"
                     onClick={(event) => {
@@ -436,7 +436,7 @@ const Admins = ({
           startIcon={<PersonAdd />}
           variant="contained"
         >
-          {tAdmins("actions.create.label")}
+          {tAdmins("actions.create.title")}
         </Button>
       </Stack>
       <DataGrid

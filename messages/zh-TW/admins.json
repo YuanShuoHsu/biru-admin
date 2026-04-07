@@ -22,7 +22,6 @@
           "placeholder": "請輸入您的封鎖原因"
         }
       },
-      "label": "封鎖",
       "success": "已封鎖使用者",
       "title": "封鎖使用者"
     },
@@ -48,7 +47,6 @@
         "label": "密碼",
         "placeholder": "請輸入您的密碼"
       },
-      "label": "新增使用者",
       "role": {
         "label": "角色",
         "placeholder": "請選擇您的角色"
@@ -58,18 +56,15 @@
     },
     "delete": {
       "confirm": "確定要刪除 <bold>{name}</bold> 嗎？此操作無法復原。",
-      "label": "刪除",
       "success": "已刪除使用者",
       "title": "刪除使用者"
     },
     "setRole": {
-      "label": "更改角色",
       "success": "角色已更新",
       "title": "更改角色"
     },
     "unban": {
       "confirm": "確定要解除封鎖 <bold>{name}</bold> 嗎？解除後該使用者將可重新登入。",
-      "label": "解除封鎖",
       "success": "已解除封鎖",
       "title": "解除封鎖"
     }
