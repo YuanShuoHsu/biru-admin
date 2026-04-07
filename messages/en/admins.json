@@ -81,7 +81,10 @@
   },
   "status": {
     "active": "Active",
+    "banExpires": "Expires: {value}",
+    "banReason": "Reason: {value}",
     "banned": "Banned",
-    "label": "Status"
+    "label": "Status",
+    "permanent": "Permanent"
   }
 }

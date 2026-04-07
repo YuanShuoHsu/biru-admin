@@ -81,7 +81,10 @@
   },
   "status": {
     "active": "有効",
+    "banExpires": "期限：{value}",
+    "banReason": "理由：{value}",
     "banned": "停止中",
-    "label": "状態"
+    "label": "状態",
+    "permanent": "永久"
   }
 }

@@ -81,7 +81,10 @@
   },
   "status": {
     "active": "정상",
+    "banExpires": "만료일: {value}",
+    "banReason": "사유: {value}",
     "banned": "차단됨",
-    "label": "상태"
+    "label": "상태",
+    "permanent": "영구"
   }
 }

@@ -38,6 +38,7 @@ import {
   IconButton,
   Stack,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type {
@@ -367,21 +368,44 @@ const Admins = ({
         field: "banned",
         headerName: tAdmins("status.label"),
         renderCell: ({ row }: GridRenderCellParams<UserWithRole>) => (
-          <Chip
-            color={row.banned ? "error" : "success"}
-            icon={
+          <Tooltip
+            title={
               row.banned ? (
-                <Block fontSize="small" />
+                <Stack gap={0.5}>
+                  {row.banReason && (
+                    <Typography variant="body2">
+                      {tAdmins("status.banReason", { value: row.banReason })}
+                    </Typography>
+                  )}
+                  <Typography variant="body2">
+                    {tAdmins("status.banExpires", {
+                      value: row.banExpires
+                        ? format.dateTime(new Date(row.banExpires), "short")
+                        : tAdmins("status.permanent"),
+                    })}
+                  </Typography>
+                </Stack>
               ) : (
-                <CheckCircle fontSize="small" />
+                ""
               )
             }
-            label={
-              row.banned ? tAdmins("status.banned") : tAdmins("status.active")
-            }
-            size="small"
-            variant="outlined"
-          />
+          >
+            <Chip
+              color={row.banned ? "error" : "success"}
+              icon={
+                row.banned ? (
+                  <Block fontSize="small" />
+                ) : (
+                  <CheckCircle fontSize="small" />
+                )
+              }
+              label={
+                row.banned ? tAdmins("status.banned") : tAdmins("status.active")
+              }
+              size="small"
+              variant="outlined"
+            />
+          </Tooltip>
         ),
         sortable: false,
       },

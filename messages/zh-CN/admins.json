@@ -81,7 +81,10 @@
   },
   "status": {
     "active": "正常",
+    "banExpires": "到期时间：{value}",
+    "banReason": "原因：{value}",
     "banned": "已封禁",
-    "label": "状态"
+    "label": "状态",
+    "permanent": "永久"
   }
 }
