@@ -150,6 +150,54 @@ const OrganizationsSlug = ({
     [members],
   );
 
+  const getMemberPermissions = useCallback(
+    ({ role, userId }: Pick<Member, "role" | "userId">) => {
+      const isCurrentUser = userId === currentUserId;
+      const isOnlyOwner = role === "owner" && ownerCount === 1;
+      const isHigherRoleRank =
+        !!currentUserRole && ROLE_RANK[currentUserRole] >= ROLE_RANK[role];
+
+      return {
+        canUpdateMemberRole:
+          canUpdateMember && !isOnlyOwner && isHigherRoleRank,
+        canLeaveOrganization: isCurrentUser && !isOnlyOwner,
+        canRemoveMember: canDeleteMember && !isCurrentUser && !isOnlyOwner,
+      };
+    },
+    [
+      canDeleteMember,
+      canUpdateMember,
+      currentUserId,
+      currentUserRole,
+      ownerCount,
+    ],
+  );
+
+  const { canUpdateMemberRoles, canLeaveOrganizations, canRemoveMembers } =
+    useMemo(() => {
+      let canUpdateMemberRoles = false;
+      let canLeaveOrganizations = false;
+      let canRemoveMembers = false;
+
+      for (const member of members) {
+        const { canUpdateMemberRole, canLeaveOrganization, canRemoveMember } =
+          getMemberPermissions(member);
+
+        canUpdateMemberRoles ||= canUpdateMemberRole;
+        canLeaveOrganizations ||= canLeaveOrganization;
+        canRemoveMembers ||= canRemoveMember;
+
+        if (canUpdateMemberRoles && canLeaveOrganizations && canRemoveMembers)
+          break;
+      }
+
+      return {
+        canUpdateMemberRoles,
+        canLeaveOrganizations,
+        canRemoveMembers,
+      };
+    }, [getMemberPermissions, members]);
+
   const format = useFormatter();
 
   const locale = useLocale();
@@ -312,72 +360,66 @@ const OrganizationsSlug = ({
         field: "actions",
         headerName: tMembers("actions.label"),
         renderCell: ({ row }: GridRenderCellParams<Member>) => {
-          const isCurrentUser = row.userId === currentUserId;
-          const isOnlyOwner = row.role === "owner" && ownerCount === 1;
-          const isHigherRoleRank =
-            ROLE_RANK[currentUserRole!] >= ROLE_RANK[row.role];
-
-          const canUpdateCurrentMemberRole =
-            canUpdateMember && !isOnlyOwner && isHigherRoleRank;
-          const canLeaveCurrentOrganization = isCurrentUser && !isOnlyOwner;
-          const canRemoveCurrentMember =
-            canDeleteMember && !isCurrentUser && !isOnlyOwner;
+          const { canUpdateMemberRole, canLeaveOrganization, canRemoveMember } =
+            getMemberPermissions(row);
 
           return (
             <Stack height="100%" direction="row" alignItems="center" gap={0.5}>
-              <Tooltip title={tMembers("actions.updateMemberRole.title")}>
-                <IconButton
-                  onClick={(event) => {
-                    event.stopPropagation();
+              {canUpdateMemberRoles && (
+                <Tooltip title={tMembers("actions.updateMemberRole.title")}>
+                  <IconButton
+                    onClick={(event) => {
+                      event.stopPropagation();
 
-                    handleUpdateMemberRole(row);
-                  }}
-                  size="small"
-                  sx={{
-                    visibility: canUpdateCurrentMemberRole
-                      ? "visible"
-                      : "hidden",
-                  }}
+                      handleUpdateMemberRole(row);
+                    }}
+                    size="small"
+                    sx={{
+                      visibility: canUpdateMemberRole ? "visible" : "hidden",
+                    }}
+                  >
+                    <Edit fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              )}
+              {canLeaveOrganizations && (
+                <Tooltip
+                  title={tOrganizations("actions.leaveOrganization.title")}
                 >
-                  <Edit fontSize="small" />
-                </IconButton>
-              </Tooltip>
-              <Tooltip
-                title={tOrganizations("actions.leaveOrganization.title")}
-              >
-                <IconButton
-                  color="error"
-                  onClick={(event) => {
-                    event.stopPropagation();
+                  <IconButton
+                    color="error"
+                    onClick={(event) => {
+                      event.stopPropagation();
 
-                    handleLeaveOrganization();
-                  }}
-                  size="small"
-                  sx={{
-                    visibility: canLeaveCurrentOrganization
-                      ? "visible"
-                      : "hidden",
-                  }}
-                >
-                  <ExitToApp fontSize="small" />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title={tMembers("actions.removeMember.title")}>
-                <IconButton
-                  color="error"
-                  onClick={(event) => {
-                    event.stopPropagation();
+                      handleLeaveOrganization();
+                    }}
+                    size="small"
+                    sx={{
+                      visibility: canLeaveOrganization ? "visible" : "hidden",
+                    }}
+                  >
+                    <ExitToApp fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              )}
+              {canRemoveMembers && (
+                <Tooltip title={tMembers("actions.removeMember.title")}>
+                  <IconButton
+                    color="error"
+                    onClick={(event) => {
+                      event.stopPropagation();
 
-                    handleRemoveMember(row);
-                  }}
-                  size="small"
-                  sx={{
-                    visibility: canRemoveCurrentMember ? "visible" : "hidden",
-                  }}
-                >
-                  <PersonRemove fontSize="small" />
-                </IconButton>
-              </Tooltip>
+                      handleRemoveMember(row);
+                    }}
+                    size="small"
+                    sx={{
+                      visibility: canRemoveMember ? "visible" : "hidden",
+                    }}
+                  >
+                    <PersonRemove fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              )}
             </Stack>
           );
         },
@@ -434,15 +476,14 @@ const OrganizationsSlug = ({
       },
     ],
     [
-      canDeleteMember,
-      canUpdateMember,
-      currentUserId,
-      currentUserRole,
+      canLeaveOrganizations,
+      canRemoveMembers,
+      canUpdateMemberRoles,
       format,
-      handleUpdateMemberRole,
+      getMemberPermissions,
       handleLeaveOrganization,
       handleRemoveMember,
-      ownerCount,
+      handleUpdateMemberRole,
       tMembers,
       tOrganizations,
     ],
