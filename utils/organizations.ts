@@ -2,7 +2,7 @@ import { authClient } from "@/lib/auth-client";
 
 export type OrganizationPermissions = Record<
   string,
-  { canUpdate: boolean; canDelete: boolean }
+  { canUpdateOrganization: boolean; canDeleteOrganization: boolean }
 >;
 
 export async function getOrganizationPermissions(
@@ -25,11 +25,11 @@ export async function getOrganizationPermissions(
     if (!role) return;
 
     permissions[id] = {
-      canUpdate: authClient.organization.checkRolePermission({
+      canUpdateOrganization: authClient.organization.checkRolePermission({
         role,
         permissions: { organization: ["update"] },
       }),
-      canDelete: authClient.organization.checkRolePermission({
+      canDeleteOrganization: authClient.organization.checkRolePermission({
         role,
         permissions: { organization: ["delete"] },
       }),

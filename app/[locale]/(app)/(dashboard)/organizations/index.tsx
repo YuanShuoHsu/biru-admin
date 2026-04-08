@@ -178,6 +178,23 @@ const Organizations = ({
     [fetchData, locale, setDialog, tOrganizations],
   );
 
+  const { canUpdateOrganizations, canDeleteOrganizations } = useMemo(() => {
+    let canUpdateOrganizations = false;
+    let canDeleteOrganizations = false;
+
+    for (const {
+      canUpdateOrganization,
+      canDeleteOrganization,
+    } of Object.values(organizationPermissions)) {
+      canUpdateOrganizations ||= canUpdateOrganization;
+      canDeleteOrganizations ||= canDeleteOrganization;
+
+      if (canUpdateOrganizations && canDeleteOrganizations) break;
+    }
+
+    return { canUpdateOrganizations, canDeleteOrganizations };
+  }, [organizationPermissions]);
+
   const columns = useMemo<GridColDef[]>(
     () => [
       {
@@ -185,7 +202,8 @@ const Organizations = ({
         field: "actions",
         headerName: tOrganizations("actions.label"),
         renderCell: ({ row }: GridRenderCellParams<Organization>) => {
-          const { canDelete, canUpdate } = organizationPermissions[row.id];
+          const { canDeleteOrganization, canUpdateOrganization } =
+            organizationPermissions[row.id];
 
           return (
             <Stack height="100%" direction="row" alignItems="center" gap={1}>
@@ -203,37 +221,41 @@ const Organizations = ({
                   <ManageAccounts fontSize="small" />
                 </IconButton>
               </Tooltip>
-              <Tooltip
-                title={tOrganizations("actions.updateOrganization.title")}
-              >
-                <IconButton
-                  onClick={(event) => {
-                    event.stopPropagation();
-
-                    handleUpdateOrganization(row);
-                  }}
-                  size="small"
-                  sx={{ visibility: canUpdate ? "visible" : "hidden" }}
+              {canUpdateOrganizations && (
+                <Tooltip
+                  title={tOrganizations("actions.updateOrganization.title")}
                 >
-                  <Edit fontSize="small" />
-                </IconButton>
-              </Tooltip>
-              <Tooltip
-                title={tOrganizations("actions.deleteOrganization.title")}
-              >
-                <IconButton
-                  color="error"
-                  onClick={(event) => {
-                    event.stopPropagation();
+                  <IconButton
+                    onClick={(event) => {
+                      event.stopPropagation();
 
-                    handleDeleteOrganization(row);
-                  }}
-                  size="small"
-                  sx={{ visibility: canDelete ? "visible" : "hidden" }}
+                      handleUpdateOrganization(row);
+                    }}
+                    size="small"
+                    sx={{ visibility: canUpdateOrganization ? "visible" : "hidden" }}
+                  >
+                    <Edit fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              )}
+              {canDeleteOrganizations && (
+                <Tooltip
+                  title={tOrganizations("actions.deleteOrganization.title")}
                 >
-                  <Delete fontSize="small" />
-                </IconButton>
-              </Tooltip>
+                  <IconButton
+                    color="error"
+                    onClick={(event) => {
+                      event.stopPropagation();
+
+                      handleDeleteOrganization(row);
+                    }}
+                    size="small"
+                    sx={{ visibility: canDeleteOrganization ? "visible" : "hidden" }}
+                  >
+                    <Delete fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              )}
             </Stack>
           );
         },
@@ -273,6 +295,8 @@ const Organizations = ({
       },
     ],
     [
+      canDeleteOrganizations,
+      canUpdateOrganizations,
       format,
       handleDeleteOrganization,
       handleUpdateOrganization,
