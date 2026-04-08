@@ -51,7 +51,7 @@ const SetRoleDialogContent = ({
     handleSubmit,
     register,
   } = useForm<SetRoleFormInput, unknown, SetRoleFormOutput>({
-    defaultValues: { role: user.role },
+    defaultValues: { email: user.email, role: user.role },
     resolver: zodResolver(setRoleFormSchema),
   });
 
@@ -84,6 +84,18 @@ const SetRoleDialogContent = ({
 
   return (
     <StyledBox component="form" id="set-role-form" onSubmit={onSubmit}>
+      <TextField
+        autoComplete="email"
+        error={!!errors.email}
+        fullWidth
+        helperText={errors.email?.message}
+        label={tAdmins("email.label")}
+        placeholder={tAdmins("email.placeholder")}
+        required
+        slotProps={{ input: { readOnly: true } }}
+        type="email"
+        {...register("email")}
+      />
       <TextField
         error={!!errors.role}
         fullWidth

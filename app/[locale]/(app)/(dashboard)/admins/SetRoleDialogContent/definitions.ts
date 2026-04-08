@@ -7,6 +7,7 @@ export const useSetRoleFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z.object({
+    email: z.email({ error: tValidation("email.invalid") }).trim(),
     role: z
       .string()
       .pipe(z.enum(roles, { error: tValidation("role.required") })),
