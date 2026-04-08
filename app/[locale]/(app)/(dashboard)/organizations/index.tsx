@@ -232,7 +232,9 @@ const Organizations = ({
                       handleUpdateOrganization(row);
                     }}
                     size="small"
-                    sx={{ visibility: canUpdateOrganization ? "visible" : "hidden" }}
+                    sx={{
+                      visibility: canUpdateOrganization ? "visible" : "hidden",
+                    }}
                   >
                     <Edit fontSize="small" />
                   </IconButton>
@@ -250,7 +252,9 @@ const Organizations = ({
                       handleDeleteOrganization(row);
                     }}
                     size="small"
-                    sx={{ visibility: canDeleteOrganization ? "visible" : "hidden" }}
+                    sx={{
+                      visibility: canDeleteOrganization ? "visible" : "hidden",
+                    }}
                   >
                     <Delete fontSize="small" />
                   </IconButton>
