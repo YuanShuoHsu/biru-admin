@@ -15,6 +15,6 @@ export const useUpdateUserFormSchema = () => {
   });
 };
 
-export type UpdateUserFormValues = z.infer<
+export type UpdateUserForm = z.infer<
   ReturnType<typeof useUpdateUserFormSchema>
 >;

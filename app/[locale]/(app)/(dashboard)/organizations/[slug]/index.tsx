@@ -11,7 +11,7 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import { flushSync } from "react-dom";
 
-import EditMemberDialogContent from "./EditMemberDialogContent";
+import UpdateMemberRoleDialogContent from "./UpdateMemberRoleDialogContent";
 import InviteMemberDialogContent from "./InviteMemberDialogContent";
 
 import TabPanel from "@/components/TabPanel";
@@ -201,23 +201,23 @@ const OrganizationsSlug = ({
       ),
       formId: "invite-member-form",
       open: true,
-      title: tMembers("actions.invite.title"),
+      title: tMembers("actions.inviteMember.title"),
     });
   };
 
-  const handleEditMember = useCallback(
+  const handleUpdateMemberRole = useCallback(
     (member: Member) => {
       setDialog({
         content: (
-          <EditMemberDialogContent
+          <UpdateMemberRoleDialogContent
             fetchData={fetchData}
             member={member}
             organizationId={id}
           />
         ),
-        formId: "edit-member-form",
+        formId: "update-member-role-form",
         open: true,
-        title: tMembers("actions.edit.title"),
+        title: tMembers("actions.updateMemberRole.title"),
       });
     },
     [fetchData, id, setDialog, tMembers],
@@ -227,7 +227,7 @@ const OrganizationsSlug = ({
     setDialog({
       content: (
         <DialogContentText>
-          {tOrganizations.rich("actions.leave.confirm", {
+          {tOrganizations.rich("actions.leaveOrganization.confirm", {
             bold: (chunks) => <strong>{chunks}</strong>,
             name,
           })}
@@ -242,7 +242,7 @@ const OrganizationsSlug = ({
               enqueueSnackbar(message, { variant: "error" });
             },
             onSuccess: async () => {
-              const message = tOrganizations("actions.leave.success");
+              const message = tOrganizations("actions.leaveOrganization.success");
               enqueueSnackbar(message, { variant: "success" });
 
               const { data } = await authClient.organization.list();
@@ -264,7 +264,7 @@ const OrganizationsSlug = ({
         );
       },
       open: true,
-      title: tOrganizations("actions.leave.title"),
+      title: tOrganizations("actions.leaveOrganization.title"),
     });
   }, [id, locale, name, router, setDialog, setSession, tOrganizations]);
 
@@ -273,7 +273,7 @@ const OrganizationsSlug = ({
       setDialog({
         content: (
           <DialogContentText>
-            {tMembers.rich("actions.remove.confirm", {
+            {tMembers.rich("actions.removeMember.confirm", {
               bold: (chunks) => <strong>{chunks}</strong>,
               name,
             })}
@@ -288,7 +288,7 @@ const OrganizationsSlug = ({
                 enqueueSnackbar(message, { variant: "error" });
               },
               onSuccess: () => {
-                const message = tMembers("actions.remove.success");
+                const message = tMembers("actions.removeMember.success");
                 enqueueSnackbar(message, { variant: "success" });
 
                 fetchData();
@@ -297,7 +297,7 @@ const OrganizationsSlug = ({
           );
         },
         open: true,
-        title: tMembers("actions.remove.title"),
+        title: tMembers("actions.removeMember.title"),
       });
     },
     [fetchData, id, locale, setDialog, tMembers],
@@ -318,12 +318,12 @@ const OrganizationsSlug = ({
           return (
             <Stack direction="row" alignItems="center" height="100%" gap={0.5}>
               {canUpdateMember && !isOnlyOwner && isHigherRoleRank && (
-                <Tooltip title={tMembers("actions.edit.title")}>
+                <Tooltip title={tMembers("actions.updateMemberRole.title")}>
                   <IconButton
                     onClick={(event) => {
                       event.stopPropagation();
 
-                      handleEditMember(row);
+                      handleUpdateMemberRole(row);
                     }}
                     size="small"
                   >
@@ -332,7 +332,7 @@ const OrganizationsSlug = ({
                 </Tooltip>
               )}
               {isCurrentUser && !isOnlyOwner && (
-                <Tooltip title={tOrganizations("actions.leave.title")}>
+                <Tooltip title={tOrganizations("actions.leaveOrganization.title")}>
                   <IconButton
                     color="error"
                     onClick={(event) => {
@@ -347,7 +347,7 @@ const OrganizationsSlug = ({
                 </Tooltip>
               )}
               {canDeleteMember && !isCurrentUser && !isOnlyOwner && (
-                <Tooltip title={tMembers("actions.remove.title")}>
+                <Tooltip title={tMembers("actions.removeMember.title")}>
                   <IconButton
                     color="error"
                     onClick={(event) => {
@@ -422,7 +422,7 @@ const OrganizationsSlug = ({
       currentUserId,
       currentUserRole,
       format,
-      handleEditMember,
+      handleUpdateMemberRole,
       handleLeaveOrganization,
       handleRemoveMember,
       ownerCount,
@@ -436,7 +436,7 @@ const OrganizationsSlug = ({
       setDialog({
         content: (
           <DialogContentText>
-            {tInvitations.rich("actions.cancel.confirm", {
+            {tInvitations.rich("actions.cancelInvitation.confirm", {
               bold: (chunks) => <strong>{chunks}</strong>,
               email,
             })}
@@ -451,7 +451,7 @@ const OrganizationsSlug = ({
                 enqueueSnackbar(message, { variant: "error" });
               },
               onSuccess: () => {
-                const message = tInvitations("actions.cancel.success");
+                const message = tInvitations("actions.cancelInvitation.success");
                 enqueueSnackbar(message, { variant: "success" });
 
                 fetchData();
@@ -460,7 +460,7 @@ const OrganizationsSlug = ({
           );
         },
         open: true,
-        title: tInvitations("actions.cancel.title"),
+        title: tInvitations("actions.cancelInvitation.title"),
       });
     },
     [fetchData, locale, setDialog, tInvitations],
@@ -474,7 +474,7 @@ const OrganizationsSlug = ({
         renderCell: ({ row }: GridRenderCellParams<Invitation>) => (
           <>
             {canCancelInvitation && (
-              <Tooltip title={tInvitations("actions.cancel.title")}>
+              <Tooltip title={tInvitations("actions.cancelInvitation.title")}>
                 <IconButton
                   color="error"
                   onClick={(event) => {
@@ -579,7 +579,7 @@ const OrganizationsSlug = ({
             startIcon={<GroupAdd />}
             variant="contained"
           >
-            {tMembers("actions.invite.title")}
+            {tMembers("actions.inviteMember.title")}
           </Button>
         )}
       </Stack>

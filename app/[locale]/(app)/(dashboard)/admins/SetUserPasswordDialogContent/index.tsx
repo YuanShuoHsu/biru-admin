@@ -8,7 +8,7 @@ import { type BaseSyntheticEvent, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
 import {
-  type SetUserPasswordFormValues,
+  type SetUserPasswordForm,
   useSetUserPasswordFormSchema,
 } from "./definitions";
 
@@ -65,7 +65,7 @@ const SetUserPasswordDialogContent = ({
     formState: { errors },
     handleSubmit,
     register,
-  } = useForm<SetUserPasswordFormValues>({
+  } = useForm<SetUserPasswordForm>({
     defaultValues: { email: user.email, newPassword: "", confirmPassword: "" },
     resolver: zodResolver(setUserPasswordFormSchema),
   });

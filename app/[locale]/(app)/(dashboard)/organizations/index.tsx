@@ -120,7 +120,7 @@ const Organizations = ({
       content: <CreateOrganizationDialogContent fetchData={fetchData} />,
       formId: "create-organization-form",
       open: true,
-      title: tOrganizations("actions.create.title"),
+      title: tOrganizations("actions.createOrganization.title"),
     });
   };
 
@@ -135,7 +135,7 @@ const Organizations = ({
         ),
         formId: "update-organization-form",
         open: true,
-        title: tOrganizations("actions.update.title"),
+        title: tOrganizations("actions.updateOrganization.title"),
       });
     },
     [fetchData, setDialog, tOrganizations],
@@ -146,7 +146,7 @@ const Organizations = ({
       setDialog({
         content: (
           <DialogContentText>
-            {tOrganizations.rich("actions.delete.confirm", {
+            {tOrganizations.rich("actions.deleteOrganization.confirm", {
               bold: (chunks) => <strong>{chunks}</strong>,
               name,
             })}
@@ -161,7 +161,7 @@ const Organizations = ({
                 enqueueSnackbar(message, { variant: "error" });
               },
               onSuccess: () => {
-                const message = tOrganizations("actions.delete.success");
+                const message = tOrganizations("actions.deleteOrganization.success");
                 enqueueSnackbar(message, { variant: "success" });
 
                 fetchData();
@@ -170,7 +170,7 @@ const Organizations = ({
           );
         },
         open: true,
-        title: tOrganizations("actions.delete.title"),
+        title: tOrganizations("actions.deleteOrganization.title"),
       });
     },
     [fetchData, locale, setDialog, tOrganizations],
@@ -187,7 +187,7 @@ const Organizations = ({
 
           return (
             <Stack height="100%" direction="row" alignItems="center" gap={1}>
-              <Tooltip title={tOrganizations("actions.view.title")}>
+              <Tooltip title={tOrganizations("actions.manageOrganization.title")}>
                 <IconButton
                   onClick={(event) => {
                     event.stopPropagation();
@@ -200,7 +200,7 @@ const Organizations = ({
                 </IconButton>
               </Tooltip>
               {canUpdate && (
-                <Tooltip title={tOrganizations("actions.update.title")}>
+                <Tooltip title={tOrganizations("actions.updateOrganization.title")}>
                   <IconButton
                     onClick={(event) => {
                       event.stopPropagation();
@@ -214,7 +214,7 @@ const Organizations = ({
                 </Tooltip>
               )}
               {canDelete && (
-                <Tooltip title={tOrganizations("actions.delete.title")}>
+                <Tooltip title={tOrganizations("actions.deleteOrganization.title")}>
                   <IconButton
                     color="error"
                     onClick={(event) => {
@@ -285,7 +285,7 @@ const Organizations = ({
           startIcon={<AddBusiness />}
           variant="contained"
         >
-          {tOrganizations("actions.create.title")}
+          {tOrganizations("actions.createOrganization.title")}
         </Button>
       </Stack>
       <DataGrid

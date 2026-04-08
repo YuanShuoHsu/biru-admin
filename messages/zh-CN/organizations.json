@@ -1,32 +1,32 @@
 {
   "actions": {
-    "create": {
+    "createOrganization": {
       "success": "成功新增组织",
       "title": "新增组织"
     },
-    "delete": {
+    "deleteOrganization": {
       "confirm": "确定要删除 <bold>{name}</bold> 吗？所有成员和数据将被永久删除，且无法撤销。",
       "success": "成功删除组织",
       "title": "删除组织"
     },
     "label": "操作",
-    "leave": {
+    "leaveOrganization": {
       "confirm": "确定要离开 <bold>{name}</bold> 吗？",
       "success": "成功离开组织",
       "title": "离开组织"
     },
-    "update": {
+    "manageOrganization": {
+      "title": "管理"
+    },
+    "updateOrganization": {
       "success": "成功更新组织",
       "title": "编辑组织"
-    },
-    "view": {
-      "title": "管理"
     }
   },
   "createdAt": "创建时间",
   "invitations": {
     "actions": {
-      "cancel": {
+      "cancelInvitation": {
         "confirm": "确定要取消对 <bold>{email}</bold> 的邀请吗？",
         "success": "成功取消邀请",
         "title": "取消邀请"
@@ -42,10 +42,7 @@
   "logo": "标志",
   "members": {
     "actions": {
-      "edit": {
-        "title": "编辑成员"
-      },
-      "invite": {
+      "inviteMember": {
         "email": {
           "label": "电子邮件",
           "placeholder": "请输入您的电子邮件"
@@ -54,13 +51,14 @@
         "title": "邀请成员"
       },
       "label": "操作",
-      "remove": {
+      "removeMember": {
         "confirm": "确定要移除 <bold>{name}</bold> 吗？",
         "success": "成功移除成员",
-        "title": "移除成员"
+      "title": "移除成员"
       },
-      "setRole": {
-        "success": "成功更新角色"
+      "updateMemberRole": {
+        "success": "成功更新角色",
+        "title": "编辑成员"
       }
     },
     "avatar": "头像",

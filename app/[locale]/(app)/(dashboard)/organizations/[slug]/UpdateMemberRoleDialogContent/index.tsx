@@ -7,9 +7,9 @@ import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
 import {
-  type EditMemberFormInput,
-  type EditMemberFormOutput,
-  useEditMemberFormSchema,
+  type UpdateMemberRoleFormInput,
+  type UpdateMemberRoleFormOutput,
+  useUpdateMemberRoleFormSchema,
 } from "./definitions";
 
 import { roles } from "@/constants/organizations";
@@ -29,33 +29,37 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-interface EditMemberDialogContentProps {
+interface UpdateMemberRoleDialogContentProps {
   fetchData: () => void;
   member: Member;
   organizationId: string;
 }
 
-const EditMemberDialogContent = ({
+const UpdateMemberRoleDialogContent = ({
   fetchData,
   member,
   organizationId,
-}: EditMemberDialogContentProps) => {
+}: UpdateMemberRoleDialogContentProps) => {
   const { resetDialog, setDialog } = useDialogStore((state) => state);
 
   const locale = useLocale();
 
   const tMembers = useTranslations("organizations.members");
 
-  const editMemberFormSchema = useEditMemberFormSchema();
+  const updateMemberRoleFormSchema = useUpdateMemberRoleFormSchema();
 
   const {
     control,
     formState: { errors },
     handleSubmit,
     register,
-  } = useForm<EditMemberFormInput, unknown, EditMemberFormOutput>({
+  } = useForm<
+    UpdateMemberRoleFormInput,
+    unknown,
+    UpdateMemberRoleFormOutput
+  >({
     defaultValues: { role: member.role },
-    resolver: zodResolver(editMemberFormSchema),
+    resolver: zodResolver(updateMemberRoleFormSchema),
   });
 
   const role = useWatch({ control, name: "role" });
@@ -76,7 +80,7 @@ const EditMemberDialogContent = ({
             setDialog({ confirmLoading: false });
           },
           onSuccess: () => {
-            const message = tMembers("actions.setRole.success");
+            const message = tMembers("actions.updateMemberRole.success");
             enqueueSnackbar(message, { variant: "success" });
 
             resetDialog();
@@ -87,7 +91,7 @@ const EditMemberDialogContent = ({
     })(event);
 
   return (
-    <StyledBox component="form" id="edit-member-form" onSubmit={onSubmit}>
+    <StyledBox component="form" id="update-member-role-form" onSubmit={onSubmit}>
       <TextField
         error={!!errors.role}
         fullWidth
@@ -111,4 +115,4 @@ const EditMemberDialogContent = ({
   );
 };
 
-export default EditMemberDialogContent;
+export default UpdateMemberRoleDialogContent;

@@ -29,6 +29,6 @@ export const useSetUserPasswordFormSchema = () => {
     );
 };
 
-export type SetUserPasswordFormValues = z.infer<
+export type SetUserPasswordForm = z.infer<
   ReturnType<typeof useSetUserPasswordFormSchema>
 >;

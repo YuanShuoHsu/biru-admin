@@ -73,7 +73,7 @@ const InviteMemberDialogContent = ({
             setDialog({ confirmLoading: false });
           },
           onSuccess: () => {
-            const message = tMembers("actions.invite.success");
+            const message = tMembers("actions.inviteMember.success");
             enqueueSnackbar(message, { variant: "success" });
 
             resetDialog();
@@ -91,8 +91,8 @@ const InviteMemberDialogContent = ({
         error={!!errors.email}
         fullWidth
         helperText={errors.email?.message}
-        label={tMembers("actions.invite.email.label")}
-        placeholder={tMembers("actions.invite.email.placeholder")}
+        label={tMembers("actions.inviteMember.email.label")}
+        placeholder={tMembers("actions.inviteMember.email.placeholder")}
         required
         type="email"
         {...register("email")}

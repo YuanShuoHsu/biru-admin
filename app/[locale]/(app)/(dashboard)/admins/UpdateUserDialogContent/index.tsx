@@ -6,7 +6,7 @@ import { type BaseSyntheticEvent, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import {
-  type UpdateUserFormValues,
+  type UpdateUserForm,
   useUpdateUserFormSchema,
 } from "./definitions";
 
@@ -66,7 +66,7 @@ const UpdateUserDialogContent = ({
     formState: { errors },
     handleSubmit,
     register,
-  } = useForm<UpdateUserFormValues>({
+  } = useForm<UpdateUserForm>({
     defaultValues: {
       lastName: user.lastName,
       firstName: user.firstName,

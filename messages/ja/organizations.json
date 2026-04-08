@@ -1,32 +1,32 @@
 {
   "actions": {
-    "create": {
+    "createOrganization": {
       "success": "組織の作成に成功しました",
       "title": "組織を追加"
     },
-    "delete": {
+    "deleteOrganization": {
       "confirm": "<bold>{name}</bold> を削除しますか？全メンバーとデータが完全に削除されます。",
       "success": "組織の削除に成功しました",
       "title": "組織を削除"
     },
     "label": "操作",
-    "leave": {
+    "leaveOrganization": {
       "confirm": "<bold>{name}</bold> を退出しますか？",
       "success": "組織の退出に成功しました",
       "title": "組織を退出"
     },
-    "update": {
+    "manageOrganization": {
+      "title": "管理"
+    },
+    "updateOrganization": {
       "success": "組織の更新に成功しました",
       "title": "組織を編集"
-    },
-    "view": {
-      "title": "管理"
     }
   },
   "createdAt": "作成日",
   "invitations": {
     "actions": {
-      "cancel": {
+      "cancelInvitation": {
         "confirm": "<bold>{email}</bold> への招待をキャンセルしますか？",
         "success": "招待のキャンセルに成功しました",
         "title": "招待をキャンセル"
@@ -42,10 +42,7 @@
   "logo": "ロゴ",
   "members": {
     "actions": {
-      "edit": {
-        "title": "メンバーを編集"
-      },
-      "invite": {
+      "inviteMember": {
         "email": {
           "label": "メール",
           "placeholder": "あなたのメールアドレスを入力してください"
@@ -54,13 +51,14 @@
         "title": "メンバーを招待"
       },
       "label": "操作",
-      "remove": {
+      "removeMember": {
         "confirm": "<bold>{name}</bold> を削除しますか？",
         "success": "メンバーの削除に成功しました",
-        "title": "メンバーを削除"
+      "title": "メンバーを削除"
       },
-      "setRole": {
-        "success": "役割の更新に成功しました"
+      "updateMemberRole": {
+        "success": "役割の更新に成功しました",
+        "title": "メンバーを編集"
       }
     },
     "avatar": "アバター",

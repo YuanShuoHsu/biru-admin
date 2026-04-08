@@ -3,7 +3,7 @@ import * as z from "zod";
 
 import { roles } from "@/constants/organizations";
 
-export const useEditMemberFormSchema = () => {
+export const useUpdateMemberRoleFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z.object({
@@ -13,10 +13,10 @@ export const useEditMemberFormSchema = () => {
   });
 };
 
-export type EditMemberFormInput = z.input<
-  ReturnType<typeof useEditMemberFormSchema>
+export type UpdateMemberRoleFormInput = z.input<
+  ReturnType<typeof useUpdateMemberRoleFormSchema>
 >;
 
-export type EditMemberFormOutput = z.output<
-  ReturnType<typeof useEditMemberFormSchema>
+export type UpdateMemberRoleFormOutput = z.output<
+  ReturnType<typeof useUpdateMemberRoleFormSchema>
 >;

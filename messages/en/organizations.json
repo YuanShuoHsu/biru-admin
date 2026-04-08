@@ -1,32 +1,32 @@
 {
   "actions": {
-    "create": {
+    "createOrganization": {
       "success": "Organization created successfully",
       "title": "Add organization"
     },
-    "delete": {
+    "deleteOrganization": {
       "confirm": "Are you sure you want to delete <bold>{name}</bold>? All members and data will be permanently removed.",
       "success": "Organization deleted successfully",
       "title": "Delete organization"
     },
     "label": "Actions",
-    "leave": {
+    "leaveOrganization": {
       "confirm": "Are you sure you want to leave <bold>{name}</bold>?",
       "success": "You have left the organization successfully",
       "title": "Leave organization"
     },
-    "update": {
+    "manageOrganization": {
+      "title": "Manage"
+    },
+    "updateOrganization": {
       "success": "Organization updated successfully",
       "title": "Edit organization"
-    },
-    "view": {
-      "title": "Manage"
     }
   },
   "createdAt": "Created",
   "invitations": {
     "actions": {
-      "cancel": {
+      "cancelInvitation": {
         "confirm": "Are you sure you want to cancel the invitation for <bold>{email}</bold>?",
         "success": "Invitation canceled successfully",
         "title": "Cancel invitation"
@@ -42,10 +42,7 @@
   "logo": "Logo",
   "members": {
     "actions": {
-      "edit": {
-        "title": "Edit member"
-      },
-      "invite": {
+      "inviteMember": {
         "email": {
           "label": "Email",
           "placeholder": "Please enter your email"
@@ -54,13 +51,14 @@
         "title": "Invite member"
       },
       "label": "Actions",
-      "remove": {
+      "removeMember": {
         "confirm": "Are you sure you want to remove <bold>{name}</bold>?",
         "success": "Member removed successfully",
-        "title": "Remove member"
+      "title": "Remove member"
       },
-      "setRole": {
-        "success": "Role updated successfully"
+      "updateMemberRole": {
+        "success": "Role updated successfully",
+        "title": "Edit member"
       }
     },
     "avatar": "Avatar",

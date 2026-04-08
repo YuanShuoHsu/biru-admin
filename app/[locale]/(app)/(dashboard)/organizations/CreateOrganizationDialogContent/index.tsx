@@ -70,7 +70,7 @@ const CreateOrganizationDialogContent = ({
           setDialog({ confirmLoading: false });
         },
         onSuccess: () => {
-          const message = tOrganizations("actions.create.success");
+          const message = tOrganizations("actions.createOrganization.success");
           enqueueSnackbar(message, { variant: "success" });
 
           resetDialog();
