@@ -54,7 +54,7 @@
       "removeMember": {
         "confirm": "<bold>{name}</bold>을(를) 제거하시겠습니까?",
         "success": "멤버가 성공적으로 제거되었습니다",
-      "title": "멤버 제거"
+        "title": "멤버 제거"
       },
       "updateMemberRole": {
         "success": "역할이 성공적으로 업데이트되었습니다",

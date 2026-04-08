@@ -242,7 +242,9 @@ const OrganizationsSlug = ({
               enqueueSnackbar(message, { variant: "error" });
             },
             onSuccess: async () => {
-              const message = tOrganizations("actions.leaveOrganization.success");
+              const message = tOrganizations(
+                "actions.leaveOrganization.success",
+              );
               enqueueSnackbar(message, { variant: "success" });
 
               const { data } = await authClient.organization.list();
@@ -332,7 +334,9 @@ const OrganizationsSlug = ({
                 </Tooltip>
               )}
               {isCurrentUser && !isOnlyOwner && (
-                <Tooltip title={tOrganizations("actions.leaveOrganization.title")}>
+                <Tooltip
+                  title={tOrganizations("actions.leaveOrganization.title")}
+                >
                   <IconButton
                     color="error"
                     onClick={(event) => {
@@ -451,7 +455,9 @@ const OrganizationsSlug = ({
                 enqueueSnackbar(message, { variant: "error" });
               },
               onSuccess: () => {
-                const message = tInvitations("actions.cancelInvitation.success");
+                const message = tInvitations(
+                  "actions.cancelInvitation.success",
+                );
                 enqueueSnackbar(message, { variant: "success" });
 
                 fetchData();

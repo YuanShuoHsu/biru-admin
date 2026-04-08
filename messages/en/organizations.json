@@ -54,7 +54,7 @@
       "removeMember": {
         "confirm": "Are you sure you want to remove <bold>{name}</bold>?",
         "success": "Member removed successfully",
-      "title": "Remove member"
+        "title": "Remove member"
       },
       "updateMemberRole": {
         "success": "Role updated successfully",

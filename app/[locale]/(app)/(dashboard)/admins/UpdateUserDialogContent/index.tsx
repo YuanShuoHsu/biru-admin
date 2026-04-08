@@ -5,10 +5,7 @@ import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 
-import {
-  type UpdateUserForm,
-  useUpdateUserFormSchema,
-} from "./definitions";
+import { type UpdateUserForm, useUpdateUserFormSchema } from "./definitions";
 
 import UploadAvatars, {
   type UploadAvatarsHandle,

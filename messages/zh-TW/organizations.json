@@ -54,7 +54,7 @@
       "removeMember": {
         "confirm": "確定要移除 <bold>{name}</bold> 嗎？",
         "success": "成功移除成員",
-      "title": "移除成員"
+        "title": "移除成員"
       },
       "updateMemberRole": {
         "success": "成功更新角色",

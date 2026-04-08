@@ -53,11 +53,7 @@ const UpdateMemberRoleDialogContent = ({
     formState: { errors },
     handleSubmit,
     register,
-  } = useForm<
-    UpdateMemberRoleFormInput,
-    unknown,
-    UpdateMemberRoleFormOutput
-  >({
+  } = useForm<UpdateMemberRoleFormInput, unknown, UpdateMemberRoleFormOutput>({
     defaultValues: { role: member.role },
     resolver: zodResolver(updateMemberRoleFormSchema),
   });
@@ -91,7 +87,11 @@ const UpdateMemberRoleDialogContent = ({
     })(event);
 
   return (
-    <StyledBox component="form" id="update-member-role-form" onSubmit={onSubmit}>
+    <StyledBox
+      component="form"
+      id="update-member-role-form"
+      onSubmit={onSubmit}
+    >
       <TextField
         error={!!errors.role}
         fullWidth

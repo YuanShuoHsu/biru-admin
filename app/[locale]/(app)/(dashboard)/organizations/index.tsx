@@ -161,7 +161,9 @@ const Organizations = ({
                 enqueueSnackbar(message, { variant: "error" });
               },
               onSuccess: () => {
-                const message = tOrganizations("actions.deleteOrganization.success");
+                const message = tOrganizations(
+                  "actions.deleteOrganization.success",
+                );
                 enqueueSnackbar(message, { variant: "success" });
 
                 fetchData();
@@ -187,7 +189,9 @@ const Organizations = ({
 
           return (
             <Stack height="100%" direction="row" alignItems="center" gap={1}>
-              <Tooltip title={tOrganizations("actions.manageOrganization.title")}>
+              <Tooltip
+                title={tOrganizations("actions.manageOrganization.title")}
+              >
                 <IconButton
                   onClick={(event) => {
                     event.stopPropagation();
@@ -200,7 +204,9 @@ const Organizations = ({
                 </IconButton>
               </Tooltip>
               {canUpdate && (
-                <Tooltip title={tOrganizations("actions.updateOrganization.title")}>
+                <Tooltip
+                  title={tOrganizations("actions.updateOrganization.title")}
+                >
                   <IconButton
                     onClick={(event) => {
                       event.stopPropagation();
@@ -214,7 +220,9 @@ const Organizations = ({
                 </Tooltip>
               )}
               {canDelete && (
-                <Tooltip title={tOrganizations("actions.deleteOrganization.title")}>
+                <Tooltip
+                  title={tOrganizations("actions.deleteOrganization.title")}
+                >
                   <IconButton
                     color="error"
                     onClick={(event) => {

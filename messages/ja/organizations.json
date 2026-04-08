@@ -54,7 +54,7 @@
       "removeMember": {
         "confirm": "<bold>{name}</bold> を削除しますか？",
         "success": "メンバーの削除に成功しました",
-      "title": "メンバーを削除"
+        "title": "メンバーを削除"
       },
       "updateMemberRole": {
         "success": "役割の更新に成功しました",
