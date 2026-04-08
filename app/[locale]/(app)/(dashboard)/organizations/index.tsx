@@ -203,39 +203,33 @@ const Organizations = ({
                   <ManageAccounts fontSize="small" />
                 </IconButton>
               </Tooltip>
-              {canUpdate && (
-                <Tooltip
-                  title={tOrganizations("actions.updateOrganization.title")}
-                >
-                  <IconButton
-                    onClick={(event) => {
-                      event.stopPropagation();
+              <Tooltip title={tOrganizations("actions.updateOrganization.title")}>
+                <IconButton
+                  onClick={(event) => {
+                    event.stopPropagation();
 
-                      handleUpdateOrganization(row);
-                    }}
-                    size="small"
-                  >
-                    <Edit fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              )}
-              {canDelete && (
-                <Tooltip
-                  title={tOrganizations("actions.deleteOrganization.title")}
+                    handleUpdateOrganization(row);
+                  }}
+                  size="small"
+                  sx={{ visibility: canUpdate ? "visible" : "hidden" }}
                 >
-                  <IconButton
-                    color="error"
-                    onClick={(event) => {
-                      event.stopPropagation();
+                  <Edit fontSize="small" />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={tOrganizations("actions.deleteOrganization.title")}>
+                <IconButton
+                  color="error"
+                  onClick={(event) => {
+                    event.stopPropagation();
 
-                      handleDeleteOrganization(row);
-                    }}
-                    size="small"
-                  >
-                    <Delete fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              )}
+                    handleDeleteOrganization(row);
+                  }}
+                  size="small"
+                  sx={{ visibility: canDelete ? "visible" : "hidden" }}
+                >
+                  <Delete fontSize="small" />
+                </IconButton>
+              </Tooltip>
             </Stack>
           );
         },

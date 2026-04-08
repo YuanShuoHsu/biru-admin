@@ -11,8 +11,8 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import { flushSync } from "react-dom";
 
-import UpdateMemberRoleDialogContent from "./UpdateMemberRoleDialogContent";
 import InviteMemberDialogContent from "./InviteMemberDialogContent";
+import UpdateMemberRoleDialogContent from "./UpdateMemberRoleDialogContent";
 
 import TabPanel from "@/components/TabPanel";
 
@@ -317,54 +317,67 @@ const OrganizationsSlug = ({
           const isHigherRoleRank =
             ROLE_RANK[currentUserRole!] >= ROLE_RANK[row.role];
 
+          const canUpdateCurrentMemberRole =
+            canUpdateMember && !isOnlyOwner && isHigherRoleRank;
+          const canLeaveCurrentOrganization = isCurrentUser && !isOnlyOwner;
+          const canRemoveCurrentMember =
+            canDeleteMember && !isCurrentUser && !isOnlyOwner;
+
           return (
-            <Stack direction="row" alignItems="center" height="100%" gap={0.5}>
-              {canUpdateMember && !isOnlyOwner && isHigherRoleRank && (
-                <Tooltip title={tMembers("actions.updateMemberRole.title")}>
-                  <IconButton
-                    onClick={(event) => {
-                      event.stopPropagation();
+            <Stack height="100%" direction="row" alignItems="center" gap={0.5}>
+              <Tooltip title={tMembers("actions.updateMemberRole.title")}>
+                <IconButton
+                  onClick={(event) => {
+                    event.stopPropagation();
 
-                      handleUpdateMemberRole(row);
-                    }}
-                    size="small"
-                  >
-                    <Edit fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              )}
-              {isCurrentUser && !isOnlyOwner && (
-                <Tooltip
-                  title={tOrganizations("actions.leaveOrganization.title")}
+                    handleUpdateMemberRole(row);
+                  }}
+                  size="small"
+                  sx={{
+                    visibility: canUpdateCurrentMemberRole
+                      ? "visible"
+                      : "hidden",
+                  }}
                 >
-                  <IconButton
-                    color="error"
-                    onClick={(event) => {
-                      event.stopPropagation();
+                  <Edit fontSize="small" />
+                </IconButton>
+              </Tooltip>
+              <Tooltip
+                title={tOrganizations("actions.leaveOrganization.title")}
+              >
+                <IconButton
+                  color="error"
+                  onClick={(event) => {
+                    event.stopPropagation();
 
-                      handleLeaveOrganization();
-                    }}
-                    size="small"
-                  >
-                    <ExitToApp fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              )}
-              {canDeleteMember && !isCurrentUser && !isOnlyOwner && (
-                <Tooltip title={tMembers("actions.removeMember.title")}>
-                  <IconButton
-                    color="error"
-                    onClick={(event) => {
-                      event.stopPropagation();
+                    handleLeaveOrganization();
+                  }}
+                  size="small"
+                  sx={{
+                    visibility: canLeaveCurrentOrganization
+                      ? "visible"
+                      : "hidden",
+                  }}
+                >
+                  <ExitToApp fontSize="small" />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={tMembers("actions.removeMember.title")}>
+                <IconButton
+                  color="error"
+                  onClick={(event) => {
+                    event.stopPropagation();
 
-                      handleRemoveMember(row);
-                    }}
-                    size="small"
-                  >
-                    <PersonRemove fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              )}
+                    handleRemoveMember(row);
+                  }}
+                  size="small"
+                  sx={{
+                    visibility: canRemoveCurrentMember ? "visible" : "hidden",
+                  }}
+                >
+                  <PersonRemove fontSize="small" />
+                </IconButton>
+              </Tooltip>
             </Stack>
           );
         },
