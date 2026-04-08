@@ -65,7 +65,8 @@
       "stopConfirm": "なりすましを停止しますか？",
       "stopSuccess": "管理者アカウントに戻りました",
       "success": "{name} としてログイン中",
-      "title": "なりすまし"
+      "title": "なりすまし",
+      "impersonating": "なりすまし中：{name}"
     },
     "label": "操作",
     "sessions": {

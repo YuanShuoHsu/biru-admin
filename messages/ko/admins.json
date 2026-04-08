@@ -65,7 +65,8 @@
       "stopConfirm": "대리 로그인을 중지하시겠습니까?",
       "stopSuccess": "관리자 계정으로 돌아왔습니다",
       "success": "{name} 으로 로그인 중",
-      "title": "대리 로그인"
+      "title": "대리 로그인",
+      "impersonating": "대리 로그인 중: {name}"
     },
     "label": "작업",
     "sessions": {

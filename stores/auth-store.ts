@@ -21,6 +21,6 @@ export const defaultInitState: AuthState = {
 export const createAuthStore = (initState: AuthState = defaultInitState) => {
   return createStore<AuthStore>()((set) => ({
     ...initState,
-    setSession: (session) => set(() => ({ session })),
+    setSession: (session) => set({ session }),
   }));
 };

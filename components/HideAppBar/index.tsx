@@ -4,6 +4,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
+import { useSnackbar } from "notistack";
 import { Suspense } from "react";
 
 import AccountMenu from "./AccountMenu";
@@ -17,9 +18,13 @@ import { SCROLL_TRIGGER_THRESHOLD } from "@/constants/scroll";
 
 import { useRouter } from "@/i18n/navigation";
 
-import { Menu } from "@mui/icons-material";
+import { authClient, getErrorMessage } from "@/lib/auth-client";
+
+import { Close, Menu } from "@mui/icons-material";
 import {
   AppBar,
+  Chip,
+  DialogContentText,
   IconButton,
   Stack,
   Toolbar,
@@ -28,6 +33,7 @@ import {
 import { styled } from "@mui/material/styles";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
+import { useDialogStore } from "@/providers/dialog-store-provider";
 import { useDrawerStore } from "@/providers/drawer-store-provider";
 
 import { handleDrawerToggle } from "@/utils/drawer";
@@ -49,15 +55,20 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 }));
 
 const HideAppBar = () => {
-  const locale = useLocale();
-  const router = useRouter();
-  const tAdmins = useTranslations("admins");
-
   const { session, setSession } = useAuthStore((state) => state);
+  const { setDialog } = useDialogStore((state) => state);
   const { setDrawerOpen } = useDrawerStore((state) => state);
   const handleNavOpen = handleDrawerToggle(setDrawerOpen, "nav", true);
 
+  const locale = useLocale();
+
+  const router = useRouter();
+
   const { storeSlug } = useParams();
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const tAdmins = useTranslations("admins");
 
   const trigger = useScrollTrigger({
     threshold: SCROLL_TRIGGER_THRESHOLD,
@@ -65,54 +76,42 @@ const HideAppBar = () => {
 
   const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE === "true";
   const showAuthControls = !isMaintenanceMode && !!session;
+  const isImpersonating = !!session?.session.impersonatedBy;
 
-  /* TODO: check if this is the best way to check for impersonation
-  const isImpersonating = !!session?.session?.impersonatedBy;
+  const handleStopImpersonating = () => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tAdmins("actions.impersonate.stopConfirm")}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        await authClient.admin.stopImpersonating({
+          fetchOptions: {
+            onError: ({ error: { code } }) => {
+              enqueueSnackbar(getErrorMessage(code, locale), {
+                variant: "error",
+              });
+            },
+            onSuccess: async () => {
+              const { data } = await authClient.getSession();
+              setSession(data);
 
-  const handleStopImpersonating = async () => {
-    const { error } = await authClient.admin.stopImpersonating();
+              enqueueSnackbar(tAdmins("actions.impersonate.stopSuccess"), {
+                variant: "success",
+              });
 
-    if (error?.code) {
-      enqueueSnackbar(getErrorMessage(error.code, locale), {
-        variant: "error",
-      });
-
-      return;
-    }
-
-    const { data } = await authClient.getSession();
-    setSession(data);
-    enqueueSnackbar(tAdmins("actions.impersonate.stopSuccess"), {
-      variant: "success",
+              router.replace("/admins?page=1&pageSize=10");
+            },
+          },
+        });
+      },
+      open: true,
+      title: tAdmins("actions.impersonate.stop"),
     });
-    router.replace("/admins");
   };
-*/
+
   return (
-    //  {isImpersonating && (
-    //     <Alert
-    //       action={
-    //         <Button
-    //           color="inherit"
-    //           onClick={handleStopImpersonating}
-    //           size="small"
-    //         >
-    //           {tAdmins("actions.impersonate.stop")}
-    //         </Button>
-    //       }
-    //       severity="warning"
-    //       sx={{
-    //         borderRadius: 0,
-    //         position: "fixed",
-    //         top: 0,
-    //         left: 0,
-    //         right: 0,
-    //         zIndex: (theme) => theme.zIndex.appBar + 1,
-    //       }}
-    //     >
-    //       {tAdmins("actions.impersonate.title")}: {session?.user?.name}
-    //     </Alert>
-    //   )}
     <StyledAppBar position="fixed" trigger={trigger}>
       <StyledToolbar>
         <Stack minWidth={0} flexDirection="row" alignItems="center" gap={1}>
@@ -133,6 +132,19 @@ const HideAppBar = () => {
           <Suspense>
             <LanguageMenu />
           </Suspense>
+          {isImpersonating && (
+            <Chip
+              color="warning"
+              deleteIcon={<Close />}
+              label={tAdmins("actions.impersonate.impersonating", {
+                name: session.user.email,
+              })}
+              onClick={handleStopImpersonating}
+              onDelete={handleStopImpersonating}
+              size="small"
+              variant="outlined"
+            />
+          )}
           {showAuthControls && (
             <Suspense>
               <AccountMenu />

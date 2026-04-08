@@ -65,7 +65,8 @@
       "stopConfirm": "确定要停止模拟登录吗？",
       "stopSuccess": "已回到管理员身份",
       "success": "已切换为 {name} 的身份",
-      "title": "模拟登录"
+      "title": "模拟登录",
+      "impersonating": "模拟登录：{name}"
     },
     "label": "操作",
     "sessions": {

@@ -41,12 +41,12 @@ interface UserSessionsDialogContentProps {
 const UserSessionsDialogContent = ({
   user,
 }: UserSessionsDialogContentProps) => {
+  const apiRef = useGridApiRef();
+
   const { session: currentSession } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
-
-  const apiRef = useGridApiRef();
 
   const locale = useLocale();
 

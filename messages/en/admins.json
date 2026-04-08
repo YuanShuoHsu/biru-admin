@@ -65,7 +65,8 @@
       "stopConfirm": "Are you sure you want to stop impersonating?",
       "stopSuccess": "Returned to admin account",
       "success": "Now impersonating {name}",
-      "title": "Impersonate"
+      "title": "Impersonate",
+      "impersonating": "Impersonating: {name}"
     },
     "label": "Actions",
     "sessions": {

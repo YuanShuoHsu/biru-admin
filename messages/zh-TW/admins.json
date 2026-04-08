@@ -65,7 +65,8 @@
       "stopConfirm": "確定要停止模擬登入嗎？",
       "stopSuccess": "已回到管理員身份",
       "success": "已切換為 {name} 的身份",
-      "title": "模擬登入"
+      "title": "模擬登入",
+      "impersonating": "模擬登入：{name}"
     },
     "label": "操作",
     "sessions": {

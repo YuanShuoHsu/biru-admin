@@ -330,10 +330,12 @@ const Admins = ({
               onSuccess: async () => {
                 const { data } = await authClient.getSession();
                 setSession(data);
+
                 enqueueSnackbar(
-                  tAdmins("actions.impersonate.success", { name: user.name }),
+                  tAdmins("actions.impersonate.success", { name: user.email }),
                   { variant: "success" },
                 );
+
                 router.replace("/order");
               },
             },
@@ -353,6 +355,9 @@ const Admins = ({
         field: "actions",
         headerName: tAdmins("actions.label"),
         renderCell: ({ row }: GridRenderCellParams<UserWithRole>) => {
+          const isBanned =
+            row.banned &&
+            (!row.banExpires || new Date(row.banExpires) > new Date());
           const isCurrentUser = row.id === currentUserId;
 
           return (
@@ -371,17 +376,17 @@ const Admins = ({
               </Tooltip>
               <Tooltip
                 title={
-                  row.banned
+                  isBanned
                     ? tAdmins("actions.unban.title")
                     : tAdmins("actions.ban.title")
                 }
               >
                 <IconButton
-                  color={row.banned ? "success" : "warning"}
+                  color={isBanned ? "success" : "warning"}
                   onClick={(event) => {
                     event.stopPropagation();
 
-                    if (row.banned) {
+                    if (isBanned) {
                       handleUnbanUser(row);
                     } else {
                       handleBanUser(row);
@@ -390,7 +395,7 @@ const Admins = ({
                   size="small"
                   sx={{ visibility: isCurrentUser ? "hidden" : "visible" }}
                 >
-                  {row.banned ? (
+                  {isBanned ? (
                     <LockOpen fontSize="small" />
                   ) : (
                     <Block fontSize="small" />
@@ -503,46 +508,54 @@ const Admins = ({
       {
         field: "banned",
         headerName: tAdmins("status.label"),
-        renderCell: ({ row }: GridRenderCellParams<UserWithRole>) => (
-          <Tooltip
-            title={
-              row.banned ? (
-                <Stack gap={0.5}>
-                  {row.banReason && (
+        renderCell: ({ row }: GridRenderCellParams<UserWithRole>) => {
+          const isBanned =
+            row.banned &&
+            (!row.banExpires || new Date(row.banExpires) > new Date());
+
+          return (
+            <Tooltip
+              title={
+                isBanned ? (
+                  <Stack gap={0.5}>
+                    {row.banReason && (
+                      <Typography variant="body2">
+                        {tAdmins("status.banReason", {
+                          value: row.banReason,
+                        })}
+                      </Typography>
+                    )}
                     <Typography variant="body2">
-                      {tAdmins("status.banReason", { value: row.banReason })}
+                      {tAdmins("status.banExpires", {
+                        value: row.banExpires
+                          ? format.dateTime(new Date(row.banExpires), "short")
+                          : tAdmins("status.permanent"),
+                      })}
                     </Typography>
-                  )}
-                  <Typography variant="body2">
-                    {tAdmins("status.banExpires", {
-                      value: row.banExpires
-                        ? format.dateTime(new Date(row.banExpires), "short")
-                        : tAdmins("status.permanent"),
-                    })}
-                  </Typography>
-                </Stack>
-              ) : (
-                ""
-              )
-            }
-          >
-            <Chip
-              color={row.banned ? "error" : "success"}
-              icon={
-                row.banned ? (
-                  <Block fontSize="small" />
+                  </Stack>
                 ) : (
-                  <CheckCircle fontSize="small" />
+                  ""
                 )
               }
-              label={
-                row.banned ? tAdmins("status.banned") : tAdmins("status.active")
-              }
-              size="small"
-              variant="outlined"
-            />
-          </Tooltip>
-        ),
+            >
+              <Chip
+                color={isBanned ? "error" : "success"}
+                icon={
+                  isBanned ? (
+                    <Block fontSize="small" />
+                  ) : (
+                    <CheckCircle fontSize="small" />
+                  )
+                }
+                label={
+                  isBanned ? tAdmins("status.banned") : tAdmins("status.active")
+                }
+                size="small"
+                variant="outlined"
+              />
+            </Tooltip>
+          );
+        },
         sortable: false,
       },
       {

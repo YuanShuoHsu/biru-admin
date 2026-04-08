@@ -72,8 +72,8 @@ const Organizations = ({
 
   const apiRef = useGridApiRef();
 
-  const { setDialog } = useDialogStore((state) => state);
   const { setSession } = useAuthStore((state) => state);
+  const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
 
@@ -93,7 +93,9 @@ const Organizations = ({
       });
       await authClient.signOut();
       setSession(null);
+
       setLoading(false);
+
       router.replace("/");
 
       return;
