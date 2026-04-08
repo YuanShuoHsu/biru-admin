@@ -2,14 +2,14 @@ import { authClient } from "@/lib/auth-client";
 
 export type UserSessions = {
   hasUserSessions: boolean;
-  userSessionMap: Record<string, boolean>;
+  userSession: Record<string, boolean>;
 };
 
 export async function getUserSessions(
   users: { id: string }[],
   fetchOptions?: { headers: { cookie: string } },
 ): Promise<UserSessions> {
-  const sessionResults = await Promise.all(
+  const listUserSessions = await Promise.all(
     users.map(({ id }) =>
       authClient.admin.listUserSessions({
         userId: id,
@@ -18,16 +18,16 @@ export async function getUserSessions(
     ),
   );
 
-  const userSessionMap: UserSessions["userSessionMap"] = {};
+  const userSession: UserSessions["userSession"] = {};
 
   users.forEach(({ id }, index) => {
-    const sessions = sessionResults[index].data?.sessions;
+    const sessions = listUserSessions[index].data?.sessions;
     if (!sessions) return;
 
-    userSessionMap[id] = sessions.length > 0;
+    userSession[id] = sessions.length > 0;
   });
 
-  const hasUserSessions = Object.values(userSessionMap).some(Boolean);
+  const hasUserSessions = Object.values(userSession).some(Boolean);
 
-  return { hasUserSessions, userSessionMap };
+  return { hasUserSessions, userSession };
 }

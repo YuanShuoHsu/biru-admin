@@ -378,8 +378,8 @@ const Admins = ({
             (!row.banExpires || new Date(row.banExpires) > new Date());
           const isCurrentUser = row.id === currentUserId;
 
-          const { hasUserSessions, userSessionMap } = userSessions;
-          const hasUserSession = userSessionMap[row.id];
+          const { hasUserSessions, userSession } = userSessions;
+          const hasUserSession = userSession[row.id];
 
           return (
             <Stack height="100%" direction="row" alignItems="center" gap={1}>

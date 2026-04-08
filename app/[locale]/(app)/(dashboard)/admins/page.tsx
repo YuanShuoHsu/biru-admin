@@ -23,7 +23,12 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
   const currentPage = Number(page);
   const currentPageSize = Number(pageSize);
 
-  const fetchOptions = { headers: { cookie: cookieStore.toString() } };
+  const fetchOptions = {
+    headers: {
+      cookie: cookieStore.toString(),
+      origin: process.env.NEXT_PUBLIC_NEXT_URL!,
+    },
+  };
 
   const { data } = await authClient.admin.listUsers({
     query: {
