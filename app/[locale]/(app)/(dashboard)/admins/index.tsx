@@ -214,13 +214,13 @@ const Admins = ({
   );
 
   const handleUnbanUser = useCallback(
-    ({ id, name }: UserWithRole) => {
+    ({ id, email }: UserWithRole) => {
       setDialog({
         content: (
           <DialogContentText>
             {tAdmins.rich("actions.unbanUser.confirm", {
               bold: (chunks) => <strong>{chunks}</strong>,
-              name,
+              email,
             })}
           </DialogContentText>
         ),
@@ -243,41 +243,6 @@ const Admins = ({
         },
         open: true,
         title: tAdmins("actions.unbanUser.title"),
-      });
-    },
-    [fetchData, locale, paginationModel, setDialog, tAdmins],
-  );
-
-  const handleRemoveUser = useCallback(
-    ({ id, name }: UserWithRole) => {
-      setDialog({
-        content: (
-          <DialogContentText>
-            {tAdmins.rich("actions.removeUser.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              name,
-            })}
-          </DialogContentText>
-        ),
-        onConfirm: async () => {
-          await authClient.admin.removeUser(
-            { userId: id },
-            {
-              onError: ({ error: { code } }) => {
-                const message = getErrorMessage(code, locale);
-                enqueueSnackbar(message, { variant: "error" });
-              },
-              onSuccess: () => {
-                const message = tAdmins("actions.removeUser.success");
-                enqueueSnackbar(message, { variant: "success" });
-
-                fetchData(paginationModel);
-              },
-            },
-          );
-        },
-        open: true,
-        title: tAdmins("actions.removeUser.title"),
       });
     },
     [fetchData, locale, paginationModel, setDialog, tAdmins],
@@ -323,6 +288,41 @@ const Admins = ({
     [setDialog, tAdmins],
   );
 
+  const handleRemoveUser = useCallback(
+    ({ id, email }: UserWithRole) => {
+      setDialog({
+        content: (
+          <DialogContentText>
+            {tAdmins.rich("actions.removeUser.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              email,
+            })}
+          </DialogContentText>
+        ),
+        onConfirm: async () => {
+          await authClient.admin.removeUser(
+            { userId: id },
+            {
+              onError: ({ error: { code } }) => {
+                const message = getErrorMessage(code, locale);
+                enqueueSnackbar(message, { variant: "error" });
+              },
+              onSuccess: () => {
+                const message = tAdmins("actions.removeUser.success");
+                enqueueSnackbar(message, { variant: "success" });
+
+                fetchData(paginationModel);
+              },
+            },
+          );
+        },
+        open: true,
+        title: tAdmins("actions.removeUser.title"),
+      });
+    },
+    [fetchData, locale, paginationModel, setDialog, tAdmins],
+  );
+
   const handleImpersonateUser = useCallback(
     (user: UserWithRole) => {
       setDialog({
@@ -330,7 +330,7 @@ const Admins = ({
           <DialogContentText>
             {tAdmins.rich("actions.impersonateUser.confirm", {
               bold: (chunks) => <strong>{chunks}</strong>,
-              name: user.name,
+              email: user.email,
             })}
           </DialogContentText>
         ),
@@ -349,7 +349,7 @@ const Admins = ({
 
                 enqueueSnackbar(
                   tAdmins("actions.impersonateUser.success", {
-                    name: user.email,
+                    email: user.email,
                   }),
                   { variant: "success" },
                 );

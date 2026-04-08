@@ -43,13 +43,13 @@
       "title": "Add user"
     },
     "impersonateUser": {
-      "confirm": "Are you sure you want to impersonate <bold>{name}</bold>?",
-      "success": "Now impersonating {name}",
+      "confirm": "Are you sure you want to impersonate <bold>{email}</bold>?",
+      "success": "Now impersonating {email}",
       "title": "Impersonate"
     },
     "label": "Actions",
     "removeUser": {
-      "confirm": "Are you sure you want to delete <bold>{name}</bold>? This action cannot be undone.",
+      "confirm": "Are you sure you want to delete <bold>{email}</bold>? This action cannot be undone.",
       "success": "User deleted",
       "title": "Delete user"
     },
@@ -59,7 +59,7 @@
       "expiresAt": "Expires",
       "ipAddress": "IP address",
       "revokeAll": {
-        "confirm": "Are you sure you want to revoke all sessions for <bold>{name}</bold>?",
+        "confirm": "Are you sure you want to revoke all sessions for <bold>{email}</bold>?",
         "success": "All sessions revoked",
         "title": "Revoke all"
       },
@@ -88,12 +88,12 @@
     },
     "stopImpersonating": {
       "confirm": "Are you sure you want to stop impersonating?",
-      "impersonating": "Impersonating: {name}",
+      "impersonating": "Impersonating: {email}",
       "success": "Returned to admin account",
       "title": "Stop impersonating"
     },
     "unbanUser": {
-      "confirm": "Are you sure you want to unban <bold>{name}</bold>? They will be able to sign in again.",
+      "confirm": "Are you sure you want to unban <bold>{email}</bold>? They will be able to sign in again.",
       "success": "User unbanned",
       "title": "Unban user"
     },

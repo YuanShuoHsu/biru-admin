@@ -28,6 +28,7 @@ import {
   IconButton,
   Stack,
   Toolbar,
+  Tooltip,
   useScrollTrigger,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -133,17 +134,21 @@ const HideAppBar = () => {
             <LanguageMenu />
           </Suspense>
           {isImpersonating && (
-            <Chip
-              color="warning"
-              deleteIcon={<Close />}
-              label={tAdmins("actions.stopImpersonating.impersonating", {
-                name: session.user.email,
+            <Tooltip
+              title={tAdmins("actions.stopImpersonating.impersonating", {
+                email: session.user.email,
               })}
-              onClick={handleStopImpersonating}
-              onDelete={handleStopImpersonating}
-              size="small"
-              variant="outlined"
-            />
+            >
+              <Chip
+                color="warning"
+                deleteIcon={<Close />}
+                label={tAdmins("actions.stopImpersonating.title")}
+                onClick={handleStopImpersonating}
+                onDelete={handleStopImpersonating}
+                size="small"
+                variant="outlined"
+              />
+            </Tooltip>
           )}
           {showAuthControls && (
             <Suspense>

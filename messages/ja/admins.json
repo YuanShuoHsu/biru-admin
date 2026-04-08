@@ -43,13 +43,13 @@
       "title": "ユーザーを追加"
     },
     "impersonateUser": {
-      "confirm": "<bold>{name}</bold> としてログインしますか？",
-      "success": "{name} としてログイン中",
+      "confirm": "<bold>{email}</bold> としてログインしますか？",
+      "success": "{email} としてログイン中",
       "title": "なりすまし"
     },
     "label": "操作",
     "removeUser": {
-      "confirm": "<bold>{name}</bold> を削除しますか？この操作は取り消せません。",
+      "confirm": "<bold>{email}</bold> を削除しますか？この操作は取り消せません。",
       "success": "ユーザーを削除しました",
       "title": "ユーザーを削除"
     },
@@ -59,7 +59,7 @@
       "expiresAt": "有効期限",
       "ipAddress": "IPアドレス",
       "revokeAll": {
-        "confirm": "<bold>{name}</bold> のすべてのセッションを無効化しますか？",
+        "confirm": "<bold>{email}</bold> のすべてのセッションを無効化しますか？",
         "success": "すべてのセッションを無効化しました",
         "title": "すべて無効化"
       },
@@ -88,12 +88,12 @@
     },
     "stopImpersonating": {
       "confirm": "なりすましを停止しますか？",
-      "impersonating": "なりすまし中：{name}",
+      "impersonating": "なりすまし中：{email}",
       "success": "管理者アカウントに戻りました",
       "title": "なりすましを停止"
     },
     "unbanUser": {
-      "confirm": "<bold>{name}</bold> の停止を解除しますか？解除後はサインインできるようになります。",
+      "confirm": "<bold>{email}</bold> の停止を解除しますか？解除後はサインインできるようになります。",
       "success": "停止を解除しました",
       "title": "停止解除"
     },

@@ -88,7 +88,7 @@ const RevokeUserSessionsDialogContent = ({
         <DialogContentText>
           {tAdmins.rich("actions.revokeUserSessions.revokeAll.confirm", {
             bold: (chunks) => <strong>{chunks}</strong>,
-            name: user.name,
+            email: user.email,
           })}
         </DialogContentText>
       ),

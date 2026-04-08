@@ -43,13 +43,13 @@
       "title": "사용자 추가"
     },
     "impersonateUser": {
-      "confirm": "<bold>{name}</bold> 으로 로그인하시겠습니까?",
-      "success": "{name} 으로 로그인 중",
+      "confirm": "<bold>{email}</bold> 으로 로그인하시겠습니까?",
+      "success": "{email} 으로 로그인 중",
       "title": "대리 로그인"
     },
     "label": "작업",
     "removeUser": {
-      "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+      "confirm": "<bold>{email}</bold>을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
       "success": "사용자가 삭제되었습니다",
       "title": "사용자 삭제"
     },
@@ -59,7 +59,7 @@
       "expiresAt": "만료일",
       "ipAddress": "IP 주소",
       "revokeAll": {
-        "confirm": "<bold>{name}</bold>의 모든 세션을 취소하시겠습니까?",
+        "confirm": "<bold>{email}</bold>의 모든 세션을 취소하시겠습니까?",
         "success": "모든 세션이 취소되었습니다",
         "title": "모두 취소"
       },
@@ -88,12 +88,12 @@
     },
     "stopImpersonating": {
       "confirm": "대리 로그인을 중지하시겠습니까?",
-      "impersonating": "대리 로그인 중: {name}",
+      "impersonating": "대리 로그인 중: {email}",
       "success": "관리자 계정으로 돌아왔습니다",
       "title": "대리 로그인 중지"
     },
     "unbanUser": {
-      "confirm": "<bold>{name}</bold>의 차단을 해제하시겠습니까? 해제 후에는 다시 로그인할 수 있습니다.",
+      "confirm": "<bold>{email}</bold>의 차단을 해제하시겠습니까? 해제 후에는 다시 로그인할 수 있습니다.",
       "success": "차단이 해제되었습니다",
       "title": "차단 해제"
     },
