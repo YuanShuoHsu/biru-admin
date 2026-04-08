@@ -156,7 +156,7 @@ const CreateUserDialogContent = ({
               setDialog({ confirmLoading: false });
             },
             onSuccess: () => {
-              const message = tAdmins("actions.create.success");
+              const message = tAdmins("actions.createUser.success");
               enqueueSnackbar(message, { variant: "success" });
 
               resetDialog();
@@ -180,8 +180,8 @@ const CreateUserDialogContent = ({
           error={!!errors.lastName}
           fullWidth
           helperText={errors.lastName?.message}
-          label={tAdmins("actions.create.lastName.label")}
-          placeholder={tAdmins("actions.create.lastName.placeholder")}
+          label={tAdmins("actions.createUser.lastName.label")}
+          placeholder={tAdmins("actions.createUser.lastName.placeholder")}
           {...register("lastName")}
         />
         <TextField
@@ -189,8 +189,8 @@ const CreateUserDialogContent = ({
           error={!!errors.firstName}
           fullWidth
           helperText={errors.firstName?.message}
-          label={tAdmins("actions.create.firstName.label")}
-          placeholder={tAdmins("actions.create.firstName.placeholder")}
+          label={tAdmins("actions.createUser.firstName.label")}
+          placeholder={tAdmins("actions.createUser.firstName.placeholder")}
           required
           {...register("firstName")}
         />
@@ -213,8 +213,8 @@ const CreateUserDialogContent = ({
         helperText={
           <PasswordRuleList hasValue={hasPassword} rules={passwordRules} />
         }
-        label={tAdmins("actions.create.password.label")}
-        placeholder={tAdmins("actions.create.password.placeholder")}
+        label={tAdmins("actions.createUser.password.label")}
+        placeholder={tAdmins("actions.createUser.password.placeholder")}
         required
         slotProps={{
           formHelperText: { component: "div" },
@@ -251,8 +251,8 @@ const CreateUserDialogContent = ({
             rules={confirmPasswordRules}
           />
         }
-        label={tAdmins("actions.create.confirmPassword.label")}
-        placeholder={tAdmins("actions.create.confirmPassword.placeholder")}
+        label={tAdmins("actions.createUser.confirmPassword.label")}
+        placeholder={tAdmins("actions.createUser.confirmPassword.placeholder")}
         required
         slotProps={{
           formHelperText: { component: "div" },

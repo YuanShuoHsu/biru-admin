@@ -1,6 +1,6 @@
 {
   "actions": {
-    "ban": {
+    "banUser": {
       "banExpiresIn": {
         "label": "停止期間",
         "options": {
@@ -22,7 +22,7 @@
       "success": "ユーザーを停止しました",
       "title": "ユーザーを停止"
     },
-    "create": {
+    "createUser": {
       "confirmPassword": {
         "label": "パスワード確認",
         "placeholder": "パスワードを再入力してください"
@@ -42,34 +42,18 @@
       "success": "ユーザーを作成しました",
       "title": "ユーザーを追加"
     },
-    "delete": {
+    "impersonateUser": {
+      "confirm": "<bold>{name}</bold> としてログインしますか？",
+      "success": "{name} としてログイン中",
+      "title": "なりすまし"
+    },
+    "label": "操作",
+    "removeUser": {
       "confirm": "<bold>{name}</bold> を削除しますか？この操作は取り消せません。",
       "success": "ユーザーを削除しました",
       "title": "ユーザーを削除"
     },
-    "edit": {
-      "firstName": {
-        "label": "名",
-        "placeholder": "名を入力してください"
-      },
-      "lastName": {
-        "label": "姓",
-        "placeholder": "姓を入力してください"
-      },
-      "success": "ユーザー情報を更新しました",
-      "title": "ユーザーを編集"
-    },
-    "impersonate": {
-      "confirm": "<bold>{name}</bold> としてログインしますか？",
-      "stop": "なりすましを停止",
-      "stopConfirm": "なりすましを停止しますか？",
-      "stopSuccess": "管理者アカウントに戻りました",
-      "success": "{name} としてログイン中",
-      "title": "なりすまし",
-      "impersonating": "なりすまし中：{name}"
-    },
-    "label": "操作",
-    "sessions": {
+    "revokeUserSessions": {
       "createdAt": "ログイン日時",
       "current": "現在",
       "empty": "アクティブなセッションなし",
@@ -87,7 +71,11 @@
       "title": "セッション管理",
       "userAgent": "デバイス"
     },
-    "setPassword": {
+    "setRole": {
+      "success": "役割を更新しました",
+      "title": "役割を変更"
+    },
+    "setUserPassword": {
       "confirmPassword": {
         "label": "パスワード確認",
         "placeholder": "パスワードを再入力してください"
@@ -99,14 +87,28 @@
       "success": "パスワードを更新しました",
       "title": "パスワード設定"
     },
-    "setRole": {
-      "success": "役割を更新しました",
-      "title": "役割を変更"
+    "stopImpersonating": {
+      "confirm": "なりすましを停止しますか？",
+      "impersonating": "なりすまし中：{name}",
+      "success": "管理者アカウントに戻りました",
+      "title": "なりすましを停止"
     },
-    "unban": {
+    "unbanUser": {
       "confirm": "<bold>{name}</bold> の停止を解除しますか？解除後はサインインできるようになります。",
       "success": "停止を解除しました",
       "title": "停止解除"
+    },
+    "updateUser": {
+      "firstName": {
+        "label": "名",
+        "placeholder": "名を入力してください"
+      },
+      "lastName": {
+        "label": "姓",
+        "placeholder": "姓を入力してください"
+      },
+      "success": "ユーザー情報を更新しました",
+      "title": "ユーザーを編集"
     }
   },
   "createdAt": "作成日",

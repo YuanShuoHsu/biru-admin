@@ -1,6 +1,6 @@
 {
   "actions": {
-    "ban": {
+    "banUser": {
       "banExpiresIn": {
         "label": "封禁时长",
         "options": {
@@ -22,7 +22,7 @@
       "success": "已封禁用户",
       "title": "封禁用户"
     },
-    "create": {
+    "createUser": {
       "confirmPassword": {
         "label": "确认密码",
         "placeholder": "请再次输入密码"
@@ -42,34 +42,18 @@
       "success": "用户已创建",
       "title": "添加用户"
     },
-    "delete": {
+    "impersonateUser": {
+      "confirm": "确定要以 <bold>{name}</bold> 的身份登录吗？",
+      "success": "已切换为 {name} 的身份",
+      "title": "模拟登录"
+    },
+    "label": "操作",
+    "removeUser": {
       "confirm": "确定要删除 <bold>{name}</bold> 吗？此操作无法撤销。",
       "success": "已删除用户",
       "title": "删除用户"
     },
-    "edit": {
-      "firstName": {
-        "label": "名字",
-        "placeholder": "请输入您的名字"
-      },
-      "lastName": {
-        "label": "姓氏",
-        "placeholder": "请输入您的姓氏"
-      },
-      "success": "用户信息已更新",
-      "title": "编辑用户"
-    },
-    "impersonate": {
-      "confirm": "确定要以 <bold>{name}</bold> 的身份登录吗？",
-      "stop": "停止模拟",
-      "stopConfirm": "确定要停止模拟登录吗？",
-      "stopSuccess": "已回到管理员身份",
-      "success": "已切换为 {name} 的身份",
-      "title": "模拟登录",
-      "impersonating": "模拟登录：{name}"
-    },
-    "label": "操作",
-    "sessions": {
+    "revokeUserSessions": {
       "createdAt": "登录时间",
       "current": "当前",
       "empty": "无活跃 Session",
@@ -87,7 +71,11 @@
       "title": "Session 管理",
       "userAgent": "设备"
     },
-    "setPassword": {
+    "setRole": {
+      "success": "角色已更新",
+      "title": "更改角色"
+    },
+    "setUserPassword": {
       "confirmPassword": {
         "label": "确认密码",
         "placeholder": "请再次输入密码"
@@ -99,14 +87,28 @@
       "success": "密码已更新",
       "title": "设置密码"
     },
-    "setRole": {
-      "success": "角色已更新",
-      "title": "更改角色"
+    "stopImpersonating": {
+      "confirm": "确定要停止模拟登录吗？",
+      "impersonating": "模拟登录：{name}",
+      "success": "已回到管理员身份",
+      "title": "停止模拟"
     },
-    "unban": {
+    "unbanUser": {
       "confirm": "确定要解除封禁 <bold>{name}</bold> 吗？解除后该用户将可重新登录。",
       "success": "已解除封禁",
       "title": "解除封禁"
+    },
+    "updateUser": {
+      "firstName": {
+        "label": "名字",
+        "placeholder": "请输入您的名字"
+      },
+      "lastName": {
+        "label": "姓氏",
+        "placeholder": "请输入您的姓氏"
+      },
+      "success": "用户信息已更新",
+      "title": "编辑用户"
     }
   },
   "createdAt": "创建时间",

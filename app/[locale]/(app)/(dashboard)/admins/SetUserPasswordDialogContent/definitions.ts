@@ -3,7 +3,7 @@ import * as z from "zod";
 
 import { PASSWORD_MIN_LENGTH } from "@/constants/password";
 
-export const useSetPasswordFormSchema = () => {
+export const useSetUserPasswordFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z
@@ -29,6 +29,6 @@ export const useSetPasswordFormSchema = () => {
     );
 };
 
-export type SetPasswordFormValues = z.infer<
-  ReturnType<typeof useSetPasswordFormSchema>
+export type SetUserPasswordFormValues = z.infer<
+  ReturnType<typeof useSetUserPasswordFormSchema>
 >;

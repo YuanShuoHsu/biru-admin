@@ -14,10 +14,10 @@ import { flushSync } from "react-dom";
 
 import BanUserDialogContent from "./BanUserDialogContent";
 import CreateUserDialogContent from "./CreateUserDialogContent";
-import EditUserDialogContent from "./EditUserDialogContent";
-import SetPasswordDialogContent from "./SetPasswordDialogContent";
+import UpdateUserDialogContent from "./UpdateUserDialogContent";
+import SetUserPasswordDialogContent from "./SetUserPasswordDialogContent";
 import SetRoleDialogContent from "./SetRoleDialogContent";
-import UserSessionsDialogContent from "./UserSessionsDialogContent";
+import RevokeUserSessionsDialogContent from "./RevokeUserSessionsDialogContent";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
@@ -167,7 +167,7 @@ const Admins = ({
       ),
       formId: "create-user-form",
       open: true,
-      title: tAdmins("actions.create.title"),
+      title: tAdmins("actions.createUser.title"),
     });
   };
 
@@ -199,7 +199,7 @@ const Admins = ({
         ),
         formId: "ban-user-form",
         open: true,
-        title: tAdmins("actions.ban.title"),
+        title: tAdmins("actions.banUser.title"),
       });
     },
     [fetchData, paginationModel, setDialog, tAdmins],
@@ -210,7 +210,7 @@ const Admins = ({
       setDialog({
         content: (
           <DialogContentText>
-            {tAdmins.rich("actions.unban.confirm", {
+            {tAdmins.rich("actions.unbanUser.confirm", {
               bold: (chunks) => <strong>{chunks}</strong>,
               name,
             })}
@@ -225,7 +225,7 @@ const Admins = ({
                 enqueueSnackbar(message, { variant: "error" });
               },
               onSuccess: () => {
-                const message = tAdmins("actions.unban.success");
+                const message = tAdmins("actions.unbanUser.success");
                 enqueueSnackbar(message, { variant: "success" });
 
                 fetchData(paginationModel);
@@ -234,18 +234,18 @@ const Admins = ({
           );
         },
         open: true,
-        title: tAdmins("actions.unban.title"),
+        title: tAdmins("actions.unbanUser.title"),
       });
     },
     [fetchData, locale, paginationModel, setDialog, tAdmins],
   );
 
-  const handleDeleteUser = useCallback(
+  const handleRemoveUser = useCallback(
     ({ id, name }: UserWithRole) => {
       setDialog({
         content: (
           <DialogContentText>
-            {tAdmins.rich("actions.delete.confirm", {
+            {tAdmins.rich("actions.removeUser.confirm", {
               bold: (chunks) => <strong>{chunks}</strong>,
               name,
             })}
@@ -260,7 +260,7 @@ const Admins = ({
                 enqueueSnackbar(message, { variant: "error" });
               },
               onSuccess: () => {
-                const message = tAdmins("actions.delete.success");
+                const message = tAdmins("actions.removeUser.success");
                 enqueueSnackbar(message, { variant: "success" });
 
                 fetchData(paginationModel);
@@ -269,58 +269,58 @@ const Admins = ({
           );
         },
         open: true,
-        title: tAdmins("actions.delete.title"),
+        title: tAdmins("actions.removeUser.title"),
       });
     },
     [fetchData, locale, paginationModel, setDialog, tAdmins],
   );
 
-  const handleEditUser = useCallback(
+  const handleUpdateUser = useCallback(
     (user: AdminUser) => {
       setDialog({
         content: (
-          <EditUserDialogContent
+          <UpdateUserDialogContent
             fetchData={() => fetchData(paginationModel)}
             user={user}
           />
         ),
-        formId: "edit-user-form",
+        formId: "update-user-form",
         open: true,
-        title: tAdmins("actions.edit.title"),
+        title: tAdmins("actions.updateUser.title"),
       });
     },
     [fetchData, paginationModel, setDialog, tAdmins],
   );
 
-  const handleSetPassword = useCallback(
+  const handleSetUserPassword = useCallback(
     (user: UserWithRole) => {
       setDialog({
-        content: <SetPasswordDialogContent user={user} />,
-        formId: "set-password-form",
+        content: <SetUserPasswordDialogContent user={user} />,
+        formId: "set-user-password-form",
         open: true,
-        title: tAdmins("actions.setPassword.title"),
+        title: tAdmins("actions.setUserPassword.title"),
       });
     },
     [setDialog, tAdmins],
   );
 
-  const handleSessions = useCallback(
+  const handleRevokeUserSessions = useCallback(
     (user: UserWithRole) => {
       setDialog({
-        content: <UserSessionsDialogContent user={user} />,
+        content: <RevokeUserSessionsDialogContent user={user} />,
         open: true,
-        title: tAdmins("actions.sessions.title"),
+        title: tAdmins("actions.revokeUserSessions.title"),
       });
     },
     [setDialog, tAdmins],
   );
 
-  const handleImpersonate = useCallback(
+  const handleImpersonateUser = useCallback(
     (user: UserWithRole) => {
       setDialog({
         content: (
           <DialogContentText>
-            {tAdmins.rich("actions.impersonate.confirm", {
+            {tAdmins.rich("actions.impersonateUser.confirm", {
               bold: (chunks) => <strong>{chunks}</strong>,
               name: user.name,
             })}
@@ -340,7 +340,9 @@ const Admins = ({
                 setSession(data);
 
                 enqueueSnackbar(
-                  tAdmins("actions.impersonate.success", { name: user.email }),
+                  tAdmins("actions.impersonateUser.success", {
+                    name: user.email,
+                  }),
                   { variant: "success" },
                 );
 
@@ -350,7 +352,7 @@ const Admins = ({
           );
         },
         open: true,
-        title: tAdmins("actions.impersonate.title"),
+        title: tAdmins("actions.impersonateUser.title"),
       });
     },
     [locale, router, setDialog, setSession, tAdmins],
@@ -385,8 +387,8 @@ const Admins = ({
               <Tooltip
                 title={
                   isBanned
-                    ? tAdmins("actions.unban.title")
-                    : tAdmins("actions.ban.title")
+                    ? tAdmins("actions.unbanUser.title")
+                    : tAdmins("actions.banUser.title")
                 }
               >
                 <IconButton
@@ -410,49 +412,49 @@ const Admins = ({
                   )}
                 </IconButton>
               </Tooltip>
-              <Tooltip title={tAdmins("actions.edit.title")}>
+              <Tooltip title={tAdmins("actions.updateUser.title")}>
                 <IconButton
                   onClick={(event) => {
                     event.stopPropagation();
 
-                    handleEditUser(row as AdminUser);
+                    handleUpdateUser(row as AdminUser);
                   }}
                   size="small"
                 >
                   <ManageAccounts fontSize="small" />
                 </IconButton>
               </Tooltip>
-              <Tooltip title={tAdmins("actions.setPassword.title")}>
+              <Tooltip title={tAdmins("actions.setUserPassword.title")}>
                 <IconButton
                   onClick={(event) => {
                     event.stopPropagation();
 
-                    handleSetPassword(row);
+                    handleSetUserPassword(row);
                   }}
                   size="small"
                 >
                   <Password fontSize="small" />
                 </IconButton>
               </Tooltip>
-              <Tooltip title={tAdmins("actions.sessions.title")}>
+              <Tooltip title={tAdmins("actions.revokeUserSessions.title")}>
                 <IconButton
                   onClick={(event) => {
                     event.stopPropagation();
 
-                    handleSessions(row);
+                    handleRevokeUserSessions(row);
                   }}
                   size="small"
                 >
                   <ViewList fontSize="small" />
                 </IconButton>
               </Tooltip>
-              <Tooltip title={tAdmins("actions.impersonate.title")}>
+              <Tooltip title={tAdmins("actions.impersonateUser.title")}>
                 <IconButton
                   color="info"
                   onClick={(event) => {
                     event.stopPropagation();
 
-                    handleImpersonate(row);
+                    handleImpersonateUser(row);
                   }}
                   size="small"
                   sx={{ visibility: isCurrentUser ? "hidden" : "visible" }}
@@ -460,13 +462,13 @@ const Admins = ({
                   <SupervisorAccount fontSize="small" />
                 </IconButton>
               </Tooltip>
-              <Tooltip title={tAdmins("actions.delete.title")}>
+              <Tooltip title={tAdmins("actions.removeUser.title")}>
                 <IconButton
                   color="error"
                   onClick={(event) => {
                     event.stopPropagation();
 
-                    handleDeleteUser(row);
+                    handleRemoveUser(row);
                   }}
                   size="small"
                   sx={{ visibility: isCurrentUser ? "hidden" : "visible" }}
@@ -601,11 +603,11 @@ const Admins = ({
       currentUserId,
       format,
       handleBanUser,
-      handleDeleteUser,
-      handleEditUser,
-      handleImpersonate,
-      handleSessions,
-      handleSetPassword,
+      handleRemoveUser,
+      handleUpdateUser,
+      handleImpersonateUser,
+      handleRevokeUserSessions,
+      handleSetUserPassword,
       handleSetRole,
       handleUnbanUser,
       tAdmins,
@@ -621,7 +623,7 @@ const Admins = ({
           startIcon={<PersonAdd />}
           variant="contained"
         >
-          {tAdmins("actions.create.title")}
+          {tAdmins("actions.createUser.title")}
         </Button>
       </Stack>
       <DataGrid

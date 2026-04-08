@@ -82,7 +82,7 @@ const HideAppBar = () => {
     setDialog({
       content: (
         <DialogContentText>
-          {tAdmins("actions.impersonate.stopConfirm")}
+          {tAdmins("actions.stopImpersonating.confirm")}
         </DialogContentText>
       ),
       onConfirm: async () => {
@@ -97,7 +97,7 @@ const HideAppBar = () => {
               const { data } = await authClient.getSession();
               setSession(data);
 
-              enqueueSnackbar(tAdmins("actions.impersonate.stopSuccess"), {
+              enqueueSnackbar(tAdmins("actions.stopImpersonating.success"), {
                 variant: "success",
               });
 
@@ -107,7 +107,7 @@ const HideAppBar = () => {
         });
       },
       open: true,
-      title: tAdmins("actions.impersonate.stop"),
+      title: tAdmins("actions.stopImpersonating.title"),
     });
   };
 
@@ -136,7 +136,7 @@ const HideAppBar = () => {
             <Chip
               color="warning"
               deleteIcon={<Close />}
-              label={tAdmins("actions.impersonate.impersonating", {
+              label={tAdmins("actions.stopImpersonating.impersonating", {
                 name: session.user.email,
               })}
               onClick={handleStopImpersonating}

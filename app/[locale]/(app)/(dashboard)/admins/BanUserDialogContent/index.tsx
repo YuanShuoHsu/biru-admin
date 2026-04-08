@@ -76,7 +76,7 @@ const BanUserDialogContent = ({
             setDialog({ confirmLoading: false });
           },
           onSuccess: () => {
-            const message = tAdmins("actions.ban.success");
+            const message = tAdmins("actions.banUser.success");
             enqueueSnackbar(message, { variant: "success" });
 
             resetDialog();
@@ -104,26 +104,26 @@ const BanUserDialogContent = ({
         error={!!errors.banReason}
         fullWidth
         helperText={errors.banReason?.message}
-        label={tAdmins("actions.ban.banReason.label")}
+        label={tAdmins("actions.banUser.banReason.label")}
         multiline
-        placeholder={tAdmins("actions.ban.banReason.placeholder")}
+        placeholder={tAdmins("actions.banUser.banReason.placeholder")}
         {...register("banReason")}
       />
       <TextField
         error={!!errors.banExpiresIn}
         fullWidth
         helperText={errors.banExpiresIn?.message}
-        label={tAdmins("actions.ban.banExpiresIn.label")}
+        label={tAdmins("actions.banUser.banExpiresIn.label")}
         select
         value={banExpiresIn}
         {...register("banExpiresIn")}
       >
         <MenuItem disabled value="">
-          <em>{tAdmins("actions.ban.banExpiresIn.placeholder")}</em>
+          <em>{tAdmins("actions.banUser.banExpiresIn.placeholder")}</em>
         </MenuItem>
         {BAN_EXPIRES_OPTIONS.map(({ value, label }) => (
           <MenuItem key={value} value={value}>
-            {tAdmins(`actions.ban.banExpiresIn.options.${label}`)}
+            {tAdmins(`actions.banUser.banExpiresIn.options.${label}`)}
           </MenuItem>
         ))}
       </TextField>

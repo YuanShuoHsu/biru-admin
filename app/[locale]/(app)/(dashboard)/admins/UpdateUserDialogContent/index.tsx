@@ -5,7 +5,10 @@ import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 
-import { type EditUserFormValues, useEditUserFormSchema } from "./definitions";
+import {
+  type UpdateUserFormValues,
+  useUpdateUserFormSchema,
+} from "./definitions";
 
 import UploadAvatars, {
   type UploadAvatarsHandle,
@@ -39,15 +42,15 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-interface EditUserDialogContentProps {
+interface UpdateUserDialogContentProps {
   fetchData: () => void;
   user: AdminUser;
 }
 
-const EditUserDialogContent = ({
+const UpdateUserDialogContent = ({
   fetchData,
   user,
-}: EditUserDialogContentProps) => {
+}: UpdateUserDialogContentProps) => {
   const { resetDialog, setDialog } = useDialogStore((state) => state);
 
   const locale = useLocale();
@@ -56,21 +59,21 @@ const EditUserDialogContent = ({
 
   const tAdmins = useTranslations("admins");
 
-  const editUserFormSchema = useEditUserFormSchema();
+  const updateUserFormSchema = useUpdateUserFormSchema();
 
   const {
     control,
     formState: { errors },
     handleSubmit,
     register,
-  } = useForm<EditUserFormValues>({
+  } = useForm<UpdateUserFormValues>({
     defaultValues: {
       lastName: user.lastName,
       firstName: user.firstName,
       email: user.email,
       emailSubscribed: user.emailSubscribed,
     },
-    resolver: zodResolver(editUserFormSchema),
+    resolver: zodResolver(updateUserFormSchema),
   });
 
   const onSubmit = (event: BaseSyntheticEvent) =>
@@ -104,7 +107,7 @@ const EditUserDialogContent = ({
             setDialog({ confirmLoading: false });
           },
           onSuccess: () => {
-            enqueueSnackbar(tAdmins("actions.edit.success"), {
+            enqueueSnackbar(tAdmins("actions.updateUser.success"), {
               variant: "success",
             });
 
@@ -116,7 +119,7 @@ const EditUserDialogContent = ({
     })(event);
 
   return (
-    <StyledBox component="form" id="edit-user-form" onSubmit={onSubmit}>
+    <StyledBox component="form" id="update-user-form" onSubmit={onSubmit}>
       <UploadAvatars initialSrc={user.image} ref={uploadAvatarsRef} />
       <Stack
         width="100%"
@@ -128,8 +131,8 @@ const EditUserDialogContent = ({
           error={!!errors.lastName}
           fullWidth
           helperText={errors.lastName?.message}
-          label={tAdmins("actions.edit.lastName.label")}
-          placeholder={tAdmins("actions.edit.lastName.placeholder")}
+          label={tAdmins("actions.updateUser.lastName.label")}
+          placeholder={tAdmins("actions.updateUser.lastName.placeholder")}
           {...register("lastName")}
         />
         <TextField
@@ -137,8 +140,8 @@ const EditUserDialogContent = ({
           error={!!errors.firstName}
           fullWidth
           helperText={errors.firstName?.message}
-          label={tAdmins("actions.edit.firstName.label")}
-          placeholder={tAdmins("actions.edit.firstName.placeholder")}
+          label={tAdmins("actions.updateUser.firstName.label")}
+          placeholder={tAdmins("actions.updateUser.firstName.placeholder")}
           required
           {...register("firstName")}
         />
@@ -176,4 +179,4 @@ const EditUserDialogContent = ({
   );
 };
 
-export default EditUserDialogContent;
+export default UpdateUserDialogContent;

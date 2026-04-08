@@ -34,13 +34,13 @@ const DataGrid = dynamic(
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-interface UserSessionsDialogContentProps {
+interface RevokeUserSessionsDialogContentProps {
   user: UserWithRole;
 }
 
-const UserSessionsDialogContent = ({
+const RevokeUserSessionsDialogContent = ({
   user,
-}: UserSessionsDialogContentProps) => {
+}: RevokeUserSessionsDialogContentProps) => {
   const apiRef = useGridApiRef();
 
   const { session: currentSession } = useAuthStore((state) => state);
@@ -72,7 +72,7 @@ const UserSessionsDialogContent = ({
           enqueueSnackbar(getErrorMessage(code, locale), { variant: "error" });
         },
         onSuccess: () => {
-          enqueueSnackbar(tAdmins("actions.sessions.revokeOne.success"), {
+          enqueueSnackbar(tAdmins("actions.revokeUserSessions.revokeOne.success"), {
             variant: "success",
           });
           mutate();
@@ -85,7 +85,7 @@ const UserSessionsDialogContent = ({
     setDialog({
       content: (
         <DialogContentText>
-          {tAdmins.rich("actions.sessions.revokeAll.confirm", {
+          {tAdmins.rich("actions.revokeUserSessions.revokeAll.confirm", {
             bold: (chunks) => <strong>{chunks}</strong>,
             name: user.name,
           })}
@@ -101,16 +101,19 @@ const UserSessionsDialogContent = ({
               });
             },
             onSuccess: () => {
-              enqueueSnackbar(tAdmins("actions.sessions.revokeAll.success"), {
-                variant: "success",
-              });
+              enqueueSnackbar(
+                tAdmins("actions.revokeUserSessions.revokeAll.success"),
+                {
+                  variant: "success",
+                },
+              );
               mutate();
             },
           },
         );
       },
       open: true,
-      title: tAdmins("actions.sessions.revokeAll.title"),
+      title: tAdmins("actions.revokeUserSessions.revokeAll.title"),
     });
   };
 
@@ -121,7 +124,7 @@ const UserSessionsDialogContent = ({
       headerName: tAdmins("actions.label"),
       renderCell: ({ row }: GridRenderCellParams<Session>) => (
         <Stack height="100%" direction="row" alignItems="center" gap={1}>
-          <Tooltip title={tAdmins("actions.sessions.revokeOne.title")}>
+          <Tooltip title={tAdmins("actions.revokeUserSessions.revokeOne.title")}>
             <IconButton
               color="error"
               onClick={(event) => {
@@ -141,7 +144,7 @@ const UserSessionsDialogContent = ({
     },
     {
       field: "userAgent",
-      headerName: tAdmins("actions.sessions.userAgent"),
+      headerName: tAdmins("actions.revokeUserSessions.userAgent"),
       renderCell: ({
         row: { token, userAgent },
       }: GridRenderCellParams<Session>) => {
@@ -151,7 +154,7 @@ const UserSessionsDialogContent = ({
           <Stack height="100%" direction="row" alignItems="center" gap={1}>
             {isCurrent && (
               <Chip
-                label={tAdmins("actions.sessions.current")}
+                label={tAdmins("actions.revokeUserSessions.current")}
                 size="small"
                 variant="outlined"
               />
@@ -163,18 +166,18 @@ const UserSessionsDialogContent = ({
     },
     {
       field: "ipAddress",
-      headerName: tAdmins("actions.sessions.ipAddress"),
+      headerName: tAdmins("actions.revokeUserSessions.ipAddress"),
       valueFormatter: (value: string | null) => value,
     },
     {
       field: "createdAt",
-      headerName: tAdmins("actions.sessions.createdAt"),
+      headerName: tAdmins("actions.revokeUserSessions.createdAt"),
       valueFormatter: (value: string) =>
         format.dateTime(new Date(value), "short"),
     },
     {
       field: "expiresAt",
-      headerName: tAdmins("actions.sessions.expiresAt"),
+      headerName: tAdmins("actions.revokeUserSessions.expiresAt"),
       valueFormatter: (value: string) =>
         format.dateTime(new Date(value), "short"),
     },
@@ -191,7 +194,7 @@ const UserSessionsDialogContent = ({
   if (sessions.length === 0) {
     return (
       <Typography color="text.secondary" py={2} textAlign="center">
-        {tAdmins("actions.sessions.empty")}
+        {tAdmins("actions.revokeUserSessions.empty")}
       </Typography>
     );
   }
@@ -206,7 +209,7 @@ const UserSessionsDialogContent = ({
           startIcon={<LogoutOutlined />}
           variant="contained"
         >
-          {tAdmins("actions.sessions.revokeAll.title")}
+          {tAdmins("actions.revokeUserSessions.revokeAll.title")}
         </Button>
       </Stack>
       <DataGrid
@@ -223,4 +226,4 @@ const UserSessionsDialogContent = ({
   );
 };
 
-export default UserSessionsDialogContent;
+export default RevokeUserSessionsDialogContent;

@@ -1,6 +1,6 @@
 {
   "actions": {
-    "ban": {
+    "banUser": {
       "banExpiresIn": {
         "label": "Ban duration",
         "options": {
@@ -22,7 +22,7 @@
       "success": "User banned",
       "title": "Ban user"
     },
-    "create": {
+    "createUser": {
       "confirmPassword": {
         "label": "Confirm password",
         "placeholder": "Please confirm your password"
@@ -42,34 +42,18 @@
       "success": "User created",
       "title": "Add user"
     },
-    "delete": {
+    "impersonateUser": {
+      "confirm": "Are you sure you want to impersonate <bold>{name}</bold>?",
+      "success": "Now impersonating {name}",
+      "title": "Impersonate"
+    },
+    "label": "Actions",
+    "removeUser": {
       "confirm": "Are you sure you want to delete <bold>{name}</bold>? This action cannot be undone.",
       "success": "User deleted",
       "title": "Delete user"
     },
-    "edit": {
-      "firstName": {
-        "label": "First name",
-        "placeholder": "Please enter your first name"
-      },
-      "lastName": {
-        "label": "Last name",
-        "placeholder": "Please enter your last name"
-      },
-      "success": "User updated",
-      "title": "Edit user"
-    },
-    "impersonate": {
-      "confirm": "Are you sure you want to impersonate <bold>{name}</bold>?",
-      "stop": "Stop impersonating",
-      "stopConfirm": "Are you sure you want to stop impersonating?",
-      "stopSuccess": "Returned to admin account",
-      "success": "Now impersonating {name}",
-      "title": "Impersonate",
-      "impersonating": "Impersonating: {name}"
-    },
-    "label": "Actions",
-    "sessions": {
+    "revokeUserSessions": {
       "createdAt": "Signed in",
       "current": "Current",
       "empty": "No active sessions",
@@ -87,7 +71,11 @@
       "title": "Sessions",
       "userAgent": "Device"
     },
-    "setPassword": {
+    "setRole": {
+      "success": "Role updated",
+      "title": "Change role"
+    },
+    "setUserPassword": {
       "confirmPassword": {
         "label": "Confirm password",
         "placeholder": "Please confirm your password"
@@ -99,14 +87,28 @@
       "success": "Password updated",
       "title": "Set password"
     },
-    "setRole": {
-      "success": "Role updated",
-      "title": "Change role"
+    "stopImpersonating": {
+      "confirm": "Are you sure you want to stop impersonating?",
+      "impersonating": "Impersonating: {name}",
+      "success": "Returned to admin account",
+      "title": "Stop impersonating"
     },
-    "unban": {
+    "unbanUser": {
       "confirm": "Are you sure you want to unban <bold>{name}</bold>? They will be able to sign in again.",
       "success": "User unbanned",
       "title": "Unban user"
+    },
+    "updateUser": {
+      "firstName": {
+        "label": "First name",
+        "placeholder": "Please enter your first name"
+      },
+      "lastName": {
+        "label": "Last name",
+        "placeholder": "Please enter your last name"
+      },
+      "success": "User updated",
+      "title": "Edit user"
     }
   },
   "createdAt": "Created",

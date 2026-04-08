@@ -1,6 +1,6 @@
 {
   "actions": {
-    "ban": {
+    "banUser": {
       "banExpiresIn": {
         "label": "차단 기간",
         "options": {
@@ -22,7 +22,7 @@
       "success": "사용자가 차단되었습니다",
       "title": "사용자 차단"
     },
-    "create": {
+    "createUser": {
       "confirmPassword": {
         "label": "비밀번호 확인",
         "placeholder": "비밀번호를 다시 입력해 주세요"
@@ -42,34 +42,18 @@
       "success": "사용자가 생성되었습니다",
       "title": "사용자 추가"
     },
-    "delete": {
+    "impersonateUser": {
+      "confirm": "<bold>{name}</bold> 으로 로그인하시겠습니까?",
+      "success": "{name} 으로 로그인 중",
+      "title": "대리 로그인"
+    },
+    "label": "작업",
+    "removeUser": {
       "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
       "success": "사용자가 삭제되었습니다",
       "title": "사용자 삭제"
     },
-    "edit": {
-      "firstName": {
-        "label": "이름",
-        "placeholder": "이름을 입력해 주세요"
-      },
-      "lastName": {
-        "label": "성",
-        "placeholder": "성을 입력해 주세요"
-      },
-      "success": "사용자 정보가 업데이트되었습니다",
-      "title": "사용자 편집"
-    },
-    "impersonate": {
-      "confirm": "<bold>{name}</bold> 으로 로그인하시겠습니까?",
-      "stop": "대리 로그인 중지",
-      "stopConfirm": "대리 로그인을 중지하시겠습니까?",
-      "stopSuccess": "관리자 계정으로 돌아왔습니다",
-      "success": "{name} 으로 로그인 중",
-      "title": "대리 로그인",
-      "impersonating": "대리 로그인 중: {name}"
-    },
-    "label": "작업",
-    "sessions": {
+    "revokeUserSessions": {
       "createdAt": "로그인 시간",
       "current": "현재",
       "empty": "활성 세션 없음",
@@ -87,7 +71,11 @@
       "title": "세션 관리",
       "userAgent": "기기"
     },
-    "setPassword": {
+    "setRole": {
+      "success": "역할이 업데이트되었습니다",
+      "title": "역할 변경"
+    },
+    "setUserPassword": {
       "confirmPassword": {
         "label": "비밀번호 확인",
         "placeholder": "비밀번호를 다시 입력해 주세요"
@@ -99,14 +87,28 @@
       "success": "비밀번호가 업데이트되었습니다",
       "title": "비밀번호 설정"
     },
-    "setRole": {
-      "success": "역할이 업데이트되었습니다",
-      "title": "역할 변경"
+    "stopImpersonating": {
+      "confirm": "대리 로그인을 중지하시겠습니까?",
+      "impersonating": "대리 로그인 중: {name}",
+      "success": "관리자 계정으로 돌아왔습니다",
+      "title": "대리 로그인 중지"
     },
-    "unban": {
+    "unbanUser": {
       "confirm": "<bold>{name}</bold>의 차단을 해제하시겠습니까? 해제 후에는 다시 로그인할 수 있습니다.",
       "success": "차단이 해제되었습니다",
       "title": "차단 해제"
+    },
+    "updateUser": {
+      "firstName": {
+        "label": "이름",
+        "placeholder": "이름을 입력해 주세요"
+      },
+      "lastName": {
+        "label": "성",
+        "placeholder": "성을 입력해 주세요"
+      },
+      "success": "사용자 정보가 업데이트되었습니다",
+      "title": "사용자 편집"
     }
   },
   "createdAt": "생성일",

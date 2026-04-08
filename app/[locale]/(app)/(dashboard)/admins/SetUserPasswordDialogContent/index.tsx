@@ -8,8 +8,8 @@ import { type BaseSyntheticEvent, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
 import {
-  type SetPasswordFormValues,
-  useSetPasswordFormSchema,
+  type SetUserPasswordFormValues,
+  useSetUserPasswordFormSchema,
 } from "./definitions";
 
 import PasswordRuleList from "@/components/PasswordRuleList";
@@ -42,16 +42,18 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-interface SetPasswordDialogContentProps {
+interface SetUserPasswordDialogContentProps {
   user: UserWithRole;
 }
 
-const SetPasswordDialogContent = ({ user }: SetPasswordDialogContentProps) => {
+const SetUserPasswordDialogContent = ({
+  user,
+}: SetUserPasswordDialogContentProps) => {
   const { resetDialog, setDialog } = useDialogStore((state) => state);
   const locale = useLocale();
   const tAdmins = useTranslations("admins");
   const tAuth = useTranslations("auth");
-  const setPasswordFormSchema = useSetPasswordFormSchema();
+  const setUserPasswordFormSchema = useSetUserPasswordFormSchema();
 
   const [showPassword, setShowPassword] = useState({
     newPassword: false,
@@ -63,9 +65,9 @@ const SetPasswordDialogContent = ({ user }: SetPasswordDialogContentProps) => {
     formState: { errors },
     handleSubmit,
     register,
-  } = useForm<SetPasswordFormValues>({
+  } = useForm<SetUserPasswordFormValues>({
     defaultValues: { email: user.email, newPassword: "", confirmPassword: "" },
-    resolver: zodResolver(setPasswordFormSchema),
+    resolver: zodResolver(setUserPasswordFormSchema),
   });
 
   const [newPassword, confirmPassword] = useWatch({
@@ -99,7 +101,7 @@ const SetPasswordDialogContent = ({ user }: SetPasswordDialogContentProps) => {
             setDialog({ confirmLoading: false });
           },
           onSuccess: () => {
-            enqueueSnackbar(tAdmins("actions.setPassword.success"), {
+            enqueueSnackbar(tAdmins("actions.setUserPassword.success"), {
               variant: "success",
             });
 
@@ -110,7 +112,7 @@ const SetPasswordDialogContent = ({ user }: SetPasswordDialogContentProps) => {
     })(event);
 
   return (
-    <StyledBox component="form" id="set-password-form" onSubmit={onSubmit}>
+    <StyledBox component="form" id="set-user-password-form" onSubmit={onSubmit}>
       <TextField
         autoComplete="email"
         error={!!errors.email}
@@ -130,8 +132,8 @@ const SetPasswordDialogContent = ({ user }: SetPasswordDialogContentProps) => {
         helperText={
           <PasswordRuleList hasValue={hasPassword} rules={passwordRules} />
         }
-        label={tAdmins("actions.setPassword.newPassword.label")}
-        placeholder={tAdmins("actions.setPassword.newPassword.placeholder")}
+        label={tAdmins("actions.setUserPassword.newPassword.label")}
+        placeholder={tAdmins("actions.setUserPassword.newPassword.placeholder")}
         required
         slotProps={{
           formHelperText: { component: "div" },
@@ -172,8 +174,10 @@ const SetPasswordDialogContent = ({ user }: SetPasswordDialogContentProps) => {
             rules={confirmPasswordRules}
           />
         }
-        label={tAdmins("actions.setPassword.confirmPassword.label")}
-        placeholder={tAdmins("actions.setPassword.confirmPassword.placeholder")}
+        label={tAdmins("actions.setUserPassword.confirmPassword.label")}
+        placeholder={tAdmins(
+          "actions.setUserPassword.confirmPassword.placeholder",
+        )}
         required
         slotProps={{
           formHelperText: { component: "div" },
@@ -208,4 +212,4 @@ const SetPasswordDialogContent = ({ user }: SetPasswordDialogContentProps) => {
   );
 };
 
-export default SetPasswordDialogContent;
+export default SetUserPasswordDialogContent;
