@@ -115,32 +115,40 @@ const Admins = ({
 
   const fetchData = useCallback(
     async ({ page, pageSize }: GridPaginationModel) => {
-      setLoading(true);
-
-      const { data } = await authClient.admin.listUsers({
-        query: {
-          limit: pageSize,
-          offset: (page - 1) * pageSize,
-          sortBy: "createdAt",
-          sortDirection: "desc",
+      await authClient.admin.listUsers(
+        {
+          query: {
+            limit: pageSize,
+            offset: (page - 1) * pageSize,
+            sortBy: "createdAt",
+            sortDirection: "desc",
+          },
         },
-      });
+        {
+          onError: ({ error: { code } }) => {
+            setLoading(false);
 
-      const rows = data?.users || [];
-      const rowCount = data?.total || 0;
+            enqueueSnackbar(getErrorMessage(code, locale), {
+              variant: "error",
+            });
+          },
+          onRequest: () => setLoading(true),
+          onSuccess: ({ data: { users: rows, total: rowCount } }) => {
+            flushSync(() => {
+              setRows(rows);
+              setRowCount(rowCount);
 
-      flushSync(() => {
-        setRows(rows);
-        setRowCount(rowCount);
+              setLoading(false);
+            });
 
-        setLoading(false);
-      });
-
-      setTimeout(() => {
-        apiRef.current?.autosizeColumns(autosizeOptions);
-      }, 0);
+            setTimeout(() => {
+              apiRef.current?.autosizeColumns(autosizeOptions);
+            }, 0);
+          },
+        },
+      );
     },
-    [apiRef],
+    [apiRef, locale],
   );
 
   const handlePaginationModelChange = useCallback(
