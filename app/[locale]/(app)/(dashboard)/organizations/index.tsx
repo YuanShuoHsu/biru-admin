@@ -203,7 +203,9 @@ const Organizations = ({
                   <ManageAccounts fontSize="small" />
                 </IconButton>
               </Tooltip>
-              <Tooltip title={tOrganizations("actions.updateOrganization.title")}>
+              <Tooltip
+                title={tOrganizations("actions.updateOrganization.title")}
+              >
                 <IconButton
                   onClick={(event) => {
                     event.stopPropagation();
@@ -216,7 +218,9 @@ const Organizations = ({
                   <Edit fontSize="small" />
                 </IconButton>
               </Tooltip>
-              <Tooltip title={tOrganizations("actions.deleteOrganization.title")}>
+              <Tooltip
+                title={tOrganizations("actions.deleteOrganization.title")}
+              >
                 <IconButton
                   color="error"
                   onClick={(event) => {
