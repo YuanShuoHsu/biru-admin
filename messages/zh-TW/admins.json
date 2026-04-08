@@ -56,7 +56,6 @@
     "revokeUserSessions": {
       "createdAt": "登入時間",
       "current": "目前",
-      "empty": "無活躍 Session",
       "expiresAt": "到期時間",
       "ipAddress": "IP 位址",
       "revokeAll": {

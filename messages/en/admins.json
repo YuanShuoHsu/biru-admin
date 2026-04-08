@@ -56,7 +56,6 @@
     "revokeUserSessions": {
       "createdAt": "Signed in",
       "current": "Current",
-      "empty": "No active sessions",
       "expiresAt": "Expires",
       "ipAddress": "IP address",
       "revokeAll": {

@@ -52,7 +52,7 @@ interface GoogleButtonProps {
 }
 
 const GoogleButton = ({ action, redirectTo }: GoogleButtonProps) => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const locale = useLocale();
 
@@ -71,9 +71,9 @@ const GoogleButton = ({ action, redirectTo }: GoogleButtonProps) => {
           enqueueSnackbar(getErrorMessage(error.code, locale), {
             variant: "error",
           });
-          setIsLoading(false);
+          setLoading(false);
         },
-        onRequest: () => setIsLoading(true),
+        onRequest: () => setLoading(true),
       },
     );
   };
@@ -82,7 +82,7 @@ const GoogleButton = ({ action, redirectTo }: GoogleButtonProps) => {
     <Button
       aria-label={label}
       fullWidth
-      loading={isLoading}
+      loading={loading}
       loadingPosition="end"
       onClick={handleClick}
       size="large"

@@ -13,10 +13,8 @@ import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { DeleteOutline, LogoutOutlined } from "@mui/icons-material";
 import {
-  Box,
   Button,
   Chip,
-  CircularProgress,
   DialogContentText,
   IconButton,
   Stack,
@@ -187,22 +185,6 @@ const RevokeUserSessionsDialogContent = ({
         format.dateTime(new Date(value), "short"),
     },
   ];
-
-  if (isLoading) {
-    return (
-      <Box display="flex" justifyContent="center" p={2}>
-        <CircularProgress size={24} />
-      </Box>
-    );
-  }
-
-  if (sessions.length === 0) {
-    return (
-      <Typography color="text.secondary" py={2} textAlign="center">
-        {tAdmins("actions.revokeUserSessions.empty")}
-      </Typography>
-    );
-  }
 
   return (
     <Stack gap={2}>

@@ -56,7 +56,6 @@
     "revokeUserSessions": {
       "createdAt": "ログイン日時",
       "current": "現在",
-      "empty": "アクティブなセッションなし",
       "expiresAt": "有効期限",
       "ipAddress": "IPアドレス",
       "revokeAll": {

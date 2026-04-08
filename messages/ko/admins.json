@@ -56,7 +56,6 @@
     "revokeUserSessions": {
       "createdAt": "로그인 시간",
       "current": "현재",
-      "empty": "활성 세션 없음",
       "expiresAt": "만료일",
       "ipAddress": "IP 주소",
       "revokeAll": {
