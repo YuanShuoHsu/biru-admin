@@ -72,9 +72,12 @@ const RevokeUserSessionsDialogContent = ({
           enqueueSnackbar(getErrorMessage(code, locale), { variant: "error" });
         },
         onSuccess: () => {
-          enqueueSnackbar(tAdmins("actions.revokeUserSessions.revokeOne.success"), {
-            variant: "success",
-          });
+          enqueueSnackbar(
+            tAdmins("actions.revokeUserSessions.revokeOne.success"),
+            {
+              variant: "success",
+            },
+          );
           mutate();
         },
       },
@@ -124,7 +127,9 @@ const RevokeUserSessionsDialogContent = ({
       headerName: tAdmins("actions.label"),
       renderCell: ({ row }: GridRenderCellParams<Session>) => (
         <Stack height="100%" direction="row" alignItems="center" gap={1}>
-          <Tooltip title={tAdmins("actions.revokeUserSessions.revokeOne.title")}>
+          <Tooltip
+            title={tAdmins("actions.revokeUserSessions.revokeOne.title")}
+          >
             <IconButton
               color="error"
               onClick={(event) => {
