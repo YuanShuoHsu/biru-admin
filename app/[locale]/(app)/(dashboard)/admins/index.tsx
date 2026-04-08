@@ -14,10 +14,10 @@ import { flushSync } from "react-dom";
 
 import BanUserDialogContent from "./BanUserDialogContent";
 import CreateUserDialogContent from "./CreateUserDialogContent";
-import UpdateUserDialogContent from "./UpdateUserDialogContent";
-import SetUserPasswordDialogContent from "./SetUserPasswordDialogContent";
-import SetRoleDialogContent from "./SetRoleDialogContent";
 import RevokeUserSessionsDialogContent from "./RevokeUserSessionsDialogContent";
+import SetRoleDialogContent from "./SetRoleDialogContent";
+import SetUserPasswordDialogContent from "./SetUserPasswordDialogContent";
+import UpdateUserDialogContent from "./UpdateUserDialogContent";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
@@ -62,6 +62,8 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { AdminRole, AdminUser } from "@/types/admins";
 
+import { getUserSessions, type UserSessions } from "@/utils/admins";
+
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
   { ssr: false },
@@ -82,6 +84,7 @@ interface AdminsProps {
   pageSize: number;
   rows: UserWithRole[];
   rowCount: number;
+  userSessions: UserSessions;
 }
 
 const Admins = ({
@@ -89,6 +92,7 @@ const Admins = ({
   pageSize,
   rows: initialRows,
   rowCount: initialRowCount,
+  userSessions: initialUserSessions,
 }: AdminsProps) => {
   const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState(initialRows);
@@ -97,6 +101,7 @@ const Admins = ({
     page,
     pageSize,
   });
+  const [userSessions, setUserSessions] = useState(initialUserSessions);
 
   const apiRef = useGridApiRef();
 
@@ -133,10 +138,13 @@ const Admins = ({
             });
           },
           onRequest: () => setLoading(true),
-          onSuccess: ({ data: { users: rows, total: rowCount } }) => {
+          onSuccess: async ({ data: { users: rows, total: rowCount } }) => {
+            const userSessions = await getUserSessions(rows);
+
             flushSync(() => {
               setRows(rows);
               setRowCount(rowCount);
+              setUserSessions(userSessions);
 
               setLoading(false);
             });
@@ -370,6 +378,9 @@ const Admins = ({
             (!row.banExpires || new Date(row.banExpires) > new Date());
           const isCurrentUser = row.id === currentUserId;
 
+          const { hasUserSessions, userSessionMap } = userSessions;
+          const hasUserSession = userSessionMap[row.id];
+
           return (
             <Stack height="100%" direction="row" alignItems="center" gap={1}>
               <Tooltip title={tAdmins("actions.setRole.title")}>
@@ -436,18 +447,23 @@ const Admins = ({
                   <Password fontSize="small" />
                 </IconButton>
               </Tooltip>
-              <Tooltip title={tAdmins("actions.revokeUserSessions.title")}>
-                <IconButton
-                  onClick={(event) => {
-                    event.stopPropagation();
+              {hasUserSessions && (
+                <Tooltip title={tAdmins("actions.revokeUserSessions.title")}>
+                  <IconButton
+                    onClick={(event) => {
+                      event.stopPropagation();
 
-                    handleRevokeUserSessions(row);
-                  }}
-                  size="small"
-                >
-                  <ViewList fontSize="small" />
-                </IconButton>
-              </Tooltip>
+                      handleRevokeUserSessions(row);
+                    }}
+                    size="small"
+                    sx={{
+                      visibility: hasUserSession ? "visible" : "hidden",
+                    }}
+                  >
+                    <ViewList fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              )}
               <Tooltip title={tAdmins("actions.impersonateUser.title")}>
                 <IconButton
                   color="info"
@@ -611,6 +627,7 @@ const Admins = ({
       handleSetRole,
       handleUnbanUser,
       tAdmins,
+      userSessions,
     ],
   );
 

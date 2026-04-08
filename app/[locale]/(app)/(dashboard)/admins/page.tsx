@@ -7,6 +7,8 @@ import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
+import { getUserSessions } from "@/utils/admins";
+
 interface AdminsPageProps {
   params: Promise<{ locale: Locale }>;
   searchParams: Promise<{ page?: string; pageSize?: string }>;
@@ -36,12 +38,15 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
   const rows = data?.users || [];
   const rowCount = data?.total || 0;
 
+  const userSessions = await getUserSessions(rows, fetchOptions);
+
   return (
     <Admins
       rows={rows}
       rowCount={rowCount}
       page={currentPage}
       pageSize={currentPageSize}
+      userSessions={userSessions}
     />
   );
 };
