@@ -64,6 +64,7 @@
         "title": "Revoke all"
       },
       "revokeOne": {
+        "confirm": "Are you sure you want to revoke this session?",
         "success": "Session revoked",
         "title": "Revoke session"
       },

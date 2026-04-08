@@ -64,6 +64,7 @@
         "title": "撤銷全部"
       },
       "revokeOne": {
+        "confirm": "確定要撤銷此 session 嗎？",
         "success": "已撤銷 session",
         "title": "撤銷 Session"
       },

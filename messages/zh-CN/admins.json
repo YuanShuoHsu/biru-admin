@@ -64,6 +64,7 @@
         "title": "撤销全部"
       },
       "revokeOne": {
+        "confirm": "确定要撤销此 session 吗？",
         "success": "已撤销 session",
         "title": "撤销 Session"
       },
