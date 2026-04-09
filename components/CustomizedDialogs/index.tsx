@@ -73,20 +73,14 @@ const CustomizedDialogs = () => {
 
   const tDialog = useTranslations("dialog");
 
-  const handleClose = () => {
-    if (loading) return;
-
-    resetDialog();
-  };
-
-  const handleCancel = async () => {
+  const handleClose = async () => {
     if (loading) return;
 
     setCancelLoading(true);
 
     try {
       await onCancel?.();
-      handleClose();
+      resetDialog();
     } catch (error) {
       const message = getErrorMessage(error);
       enqueueSnackbar(message, { variant: "error" });
@@ -102,7 +96,7 @@ const CustomizedDialogs = () => {
 
     try {
       await onConfirm?.();
-      handleClose();
+      resetDialog();
     } catch (error) {
       const message = getErrorMessage(error);
       enqueueSnackbar(message, { variant: "error" });
@@ -142,7 +136,7 @@ const CustomizedDialogs = () => {
           <Button
             loading={cancelLoading}
             loadingPosition="end"
-            onClick={handleCancel}
+            onClick={handleClose}
           >
             {cancelText || tDialog("cancel")}
           </Button>

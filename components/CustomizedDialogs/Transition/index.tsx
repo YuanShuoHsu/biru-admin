@@ -11,7 +11,7 @@ const Transition = React.forwardRef(function Transition(
     children: React.ReactElement<any, any>;
   },
   ref: React.Ref<unknown>,
-): React.JSX.Element {
+) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
