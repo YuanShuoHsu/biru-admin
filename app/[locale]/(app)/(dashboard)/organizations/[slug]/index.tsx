@@ -208,7 +208,7 @@ const OrganizationsSlug = ({
   const tMembers = useTranslations("organizations.members");
   const tOrganizations = useTranslations("organizations");
 
-  const fetchData = useCallback(async () => {
+  const fetchFullOrganization = useCallback(async () => {
     setLoading(true);
 
     const { data } = await authClient.organization.getFullOrganization({
@@ -245,7 +245,10 @@ const OrganizationsSlug = ({
   const handleInviteMember = () => {
     setDialog({
       content: (
-        <InviteMemberDialogContent fetchData={fetchData} organizationId={id} />
+        <InviteMemberDialogContent
+          fetchFullOrganization={fetchFullOrganization}
+          organizationId={id}
+        />
       ),
       formId: "invite-member-form",
       open: true,
@@ -258,7 +261,7 @@ const OrganizationsSlug = ({
       setDialog({
         content: (
           <UpdateMemberRoleDialogContent
-            fetchData={fetchData}
+            fetchFullOrganization={fetchFullOrganization}
             member={member}
             organizationId={id}
           />
@@ -268,7 +271,7 @@ const OrganizationsSlug = ({
         title: tMembers("actions.updateMemberRole.title"),
       });
     },
-    [fetchData, id, setDialog, tMembers],
+    [fetchFullOrganization, id, setDialog, tMembers],
   );
 
   const handleLeaveOrganization = useCallback(() => {
@@ -341,7 +344,7 @@ const OrganizationsSlug = ({
                 const message = tMembers("actions.removeMember.success");
                 enqueueSnackbar(message, { variant: "success" });
 
-                fetchData();
+                fetchFullOrganization();
               },
             },
           );
@@ -350,7 +353,7 @@ const OrganizationsSlug = ({
         title: tMembers("actions.removeMember.title"),
       });
     },
-    [fetchData, id, locale, setDialog, tMembers],
+    [fetchFullOrganization, id, locale, setDialog, tMembers],
   );
 
   const memberColumns = useMemo<GridColDef[]>(
@@ -514,7 +517,7 @@ const OrganizationsSlug = ({
                 );
                 enqueueSnackbar(message, { variant: "success" });
 
-                fetchData();
+                fetchFullOrganization();
               },
             },
           );
@@ -523,7 +526,7 @@ const OrganizationsSlug = ({
         title: tInvitations("actions.cancelInvitation.title"),
       });
     },
-    [fetchData, locale, setDialog, tInvitations],
+    [fetchFullOrganization, locale, setDialog, tInvitations],
   );
 
   const invitationColumns = useMemo<GridColDef[]>(

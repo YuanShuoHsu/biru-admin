@@ -29,11 +29,11 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 }));
 
 interface CreateOrganizationDialogContentProps {
-  fetchData: () => Promise<void>;
+  fetchOrganizationList: () => Promise<void>;
 }
 
 const CreateOrganizationDialogContent = ({
-  fetchData,
+  fetchOrganizationList,
 }: CreateOrganizationDialogContentProps) => {
   const { resetDialog, setDialog } = useDialogStore((state) => state);
 
@@ -74,7 +74,7 @@ const CreateOrganizationDialogContent = ({
           enqueueSnackbar(message, { variant: "success" });
 
           resetDialog();
-          fetchData();
+          fetchOrganizationList();
         },
       },
     );

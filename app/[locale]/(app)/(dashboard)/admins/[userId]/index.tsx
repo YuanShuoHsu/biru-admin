@@ -54,7 +54,7 @@ const Sessions = ({ user, initialRows }: SessionsProps) => {
 
   const [loading, setLoading] = useState(false);
 
-  const fetchSessions = useCallback(async () => {
+  const fetchListUserSessions = useCallback(async () => {
     await authClient.admin.listUserSessions(
       { userId: user.id },
       {
@@ -106,7 +106,7 @@ const Sessions = ({ user, initialRows }: SessionsProps) => {
                 { variant: "success" },
               );
 
-              fetchSessions();
+              fetchListUserSessions();
             },
           },
         );
@@ -138,7 +138,7 @@ const Sessions = ({ user, initialRows }: SessionsProps) => {
                   tAdmins("actions.revokeUserSessions.revokeOne.success"),
                   { variant: "success" },
                 );
-                fetchSessions();
+                fetchListUserSessions();
               },
             },
           );
@@ -147,7 +147,7 @@ const Sessions = ({ user, initialRows }: SessionsProps) => {
         title: tAdmins("actions.revokeUserSessions.revokeOne.title"),
       });
     },
-    [fetchSessions, locale, setDialog, tAdmins],
+    [fetchListUserSessions, locale, setDialog, tAdmins],
   );
 
   const columns = useMemo<GridColDef[]>(

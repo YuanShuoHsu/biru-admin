@@ -30,13 +30,13 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 }));
 
 interface UpdateMemberRoleDialogContentProps {
-  fetchData: () => void;
+  fetchFullOrganization: () => void;
   member: Member;
   organizationId: string;
 }
 
 const UpdateMemberRoleDialogContent = ({
-  fetchData,
+  fetchFullOrganization,
   member,
   organizationId,
 }: UpdateMemberRoleDialogContentProps) => {
@@ -80,7 +80,7 @@ const UpdateMemberRoleDialogContent = ({
             enqueueSnackbar(message, { variant: "success" });
 
             resetDialog();
-            fetchData();
+            fetchFullOrganization();
           },
         },
       );

@@ -29,12 +29,12 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 }));
 
 interface BanUserDialogContentProps {
-  fetchData: () => void;
+  fetchListUsers: () => void;
   user: UserWithRole;
 }
 
 const BanUserDialogContent = ({
-  fetchData,
+  fetchListUsers,
   user,
 }: BanUserDialogContentProps) => {
   const { resetDialog, setDialog } = useDialogStore((state) => state);
@@ -80,7 +80,7 @@ const BanUserDialogContent = ({
             enqueueSnackbar(message, { variant: "success" });
 
             resetDialog();
-            fetchData();
+            fetchListUsers();
           },
         },
       );

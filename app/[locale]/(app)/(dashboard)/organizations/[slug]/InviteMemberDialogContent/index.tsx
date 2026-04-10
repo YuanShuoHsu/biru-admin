@@ -29,12 +29,12 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 }));
 
 interface InviteMemberDialogContentProps {
-  fetchData: () => void;
+  fetchFullOrganization: () => void;
   organizationId: string;
 }
 
 const InviteMemberDialogContent = ({
-  fetchData,
+  fetchFullOrganization,
   organizationId,
 }: InviteMemberDialogContentProps) => {
   const { resetDialog, setDialog } = useDialogStore((state) => state);
@@ -77,7 +77,7 @@ const InviteMemberDialogContent = ({
             enqueueSnackbar(message, { variant: "success" });
 
             resetDialog();
-            fetchData();
+            fetchFullOrganization();
           },
         },
       );

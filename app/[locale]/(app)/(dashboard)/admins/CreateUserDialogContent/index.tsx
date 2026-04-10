@@ -55,11 +55,11 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 }));
 
 interface CreateUserDialogContentProps {
-  fetchData: () => Promise<void>;
+  fetchListUsers: () => Promise<void>;
 }
 
 const CreateUserDialogContent = ({
-  fetchData,
+  fetchListUsers,
 }: CreateUserDialogContentProps) => {
   const { resetDialog, setDialog } = useDialogStore((state) => state);
 
@@ -160,7 +160,7 @@ const CreateUserDialogContent = ({
               enqueueSnackbar(message, { variant: "success" });
 
               resetDialog();
-              fetchData();
+              fetchListUsers();
             },
           },
         );

@@ -117,7 +117,7 @@ const Admins = ({
 
   const tAdmins = useTranslations("admins");
 
-  const fetchData = useCallback(
+  const fetchListUsers = useCallback(
     async ({ page, pageSize }: GridPaginationModel) => {
       await authClient.admin.listUsers(
         {
@@ -162,15 +162,17 @@ const Admins = ({
     (newModel: GridPaginationModel) => {
       const model = { ...newModel, page: newModel.page + 1 };
       setPaginationModel(model);
-      fetchData(model);
+      fetchListUsers(model);
     },
-    [fetchData],
+    [fetchListUsers],
   );
 
   const handleCreateUser = () => {
     setDialog({
       content: (
-        <CreateUserDialogContent fetchData={() => fetchData(paginationModel)} />
+        <CreateUserDialogContent
+          fetchListUsers={() => fetchListUsers(paginationModel)}
+        />
       ),
       formId: "create-user-form",
       open: true,
@@ -183,7 +185,7 @@ const Admins = ({
       setDialog({
         content: (
           <SetRoleDialogContent
-            fetchData={() => fetchData(paginationModel)}
+            fetchListUsers={() => fetchListUsers(paginationModel)}
             user={user}
           />
         ),
@@ -192,7 +194,7 @@ const Admins = ({
         title: tAdmins("actions.setRole.title"),
       });
     },
-    [fetchData, paginationModel, setDialog, tAdmins],
+    [fetchListUsers, paginationModel, setDialog, tAdmins],
   );
 
   const handleBanUser = useCallback(
@@ -200,7 +202,7 @@ const Admins = ({
       setDialog({
         content: (
           <BanUserDialogContent
-            fetchData={() => fetchData(paginationModel)}
+            fetchListUsers={() => fetchListUsers(paginationModel)}
             user={user}
           />
         ),
@@ -209,7 +211,7 @@ const Admins = ({
         title: tAdmins("actions.banUser.title"),
       });
     },
-    [fetchData, paginationModel, setDialog, tAdmins],
+    [fetchListUsers, paginationModel, setDialog, tAdmins],
   );
 
   const handleUnbanUser = useCallback(
@@ -235,7 +237,7 @@ const Admins = ({
                 const message = tAdmins("actions.unbanUser.success");
                 enqueueSnackbar(message, { variant: "success" });
 
-                fetchData(paginationModel);
+                fetchListUsers(paginationModel);
               },
             },
           );
@@ -244,7 +246,7 @@ const Admins = ({
         title: tAdmins("actions.unbanUser.title"),
       });
     },
-    [fetchData, locale, paginationModel, setDialog, tAdmins],
+    [fetchListUsers, locale, paginationModel, setDialog, tAdmins],
   );
 
   const handleUpdateUser = useCallback(
@@ -252,7 +254,7 @@ const Admins = ({
       setDialog({
         content: (
           <UpdateUserDialogContent
-            fetchData={() => fetchData(paginationModel)}
+            fetchListUsers={() => fetchListUsers(paginationModel)}
             user={user}
           />
         ),
@@ -261,7 +263,7 @@ const Admins = ({
         title: tAdmins("actions.updateUser.title"),
       });
     },
-    [fetchData, paginationModel, setDialog, tAdmins],
+    [fetchListUsers, paginationModel, setDialog, tAdmins],
   );
 
   const handleSetUserPassword = useCallback(
@@ -299,7 +301,7 @@ const Admins = ({
                 const message = tAdmins("actions.removeUser.success");
                 enqueueSnackbar(message, { variant: "success" });
 
-                fetchData(paginationModel);
+                fetchListUsers(paginationModel);
               },
             },
           );
@@ -308,7 +310,7 @@ const Admins = ({
         title: tAdmins("actions.removeUser.title"),
       });
     },
-    [fetchData, locale, paginationModel, setDialog, tAdmins],
+    [fetchListUsers, locale, paginationModel, setDialog, tAdmins],
   );
 
   const handleImpersonateUser = useCallback(

@@ -29,12 +29,12 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 }));
 
 interface SetRoleDialogContentProps {
-  fetchData: () => void;
+  fetchListUsers: () => void;
   user: UserWithRole;
 }
 
 const SetRoleDialogContent = ({
-  fetchData,
+  fetchListUsers,
   user,
 }: SetRoleDialogContentProps) => {
   const { resetDialog, setDialog } = useDialogStore((state) => state);
@@ -76,7 +76,7 @@ const SetRoleDialogContent = ({
             enqueueSnackbar(message, { variant: "success" });
 
             resetDialog();
-            fetchData();
+            fetchListUsers();
           },
         },
       );

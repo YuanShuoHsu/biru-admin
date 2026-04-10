@@ -40,12 +40,12 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 }));
 
 interface UpdateUserDialogContentProps {
-  fetchData: () => void;
+  fetchListUsers: () => void;
   user: AdminUser;
 }
 
 const UpdateUserDialogContent = ({
-  fetchData,
+  fetchListUsers,
   user,
 }: UpdateUserDialogContentProps) => {
   const { resetDialog, setDialog } = useDialogStore((state) => state);
@@ -109,7 +109,7 @@ const UpdateUserDialogContent = ({
             });
 
             resetDialog();
-            fetchData();
+            fetchListUsers();
           },
         },
       );

@@ -83,7 +83,7 @@ const Organizations = ({
 
   const tOrganizations = useTranslations("organizations");
 
-  const fetchData = useCallback(async () => {
+  const fetchOrganizationList = useCallback(async () => {
     setLoading(true);
 
     const { data } = await authClient.organization.list();
@@ -117,7 +117,11 @@ const Organizations = ({
 
   const handleCreateOrganization = () => {
     setDialog({
-      content: <CreateOrganizationDialogContent fetchData={fetchData} />,
+      content: (
+        <CreateOrganizationDialogContent
+          fetchOrganizationList={fetchOrganizationList}
+        />
+      ),
       formId: "create-organization-form",
       open: true,
       title: tOrganizations("actions.createOrganization.title"),
@@ -129,7 +133,7 @@ const Organizations = ({
       setDialog({
         content: (
           <UpdateOrganizationDialogContent
-            fetchData={fetchData}
+            fetchOrganizationList={fetchOrganizationList}
             organization={organization}
           />
         ),
@@ -138,7 +142,7 @@ const Organizations = ({
         title: tOrganizations("actions.updateOrganization.title"),
       });
     },
-    [fetchData, setDialog, tOrganizations],
+    [fetchOrganizationList, setDialog, tOrganizations],
   );
 
   const handleDeleteOrganization = useCallback(
@@ -166,7 +170,7 @@ const Organizations = ({
                 );
                 enqueueSnackbar(message, { variant: "success" });
 
-                fetchData();
+                fetchOrganizationList();
               },
             },
           );
@@ -175,7 +179,7 @@ const Organizations = ({
         title: tOrganizations("actions.deleteOrganization.title"),
       });
     },
-    [fetchData, locale, setDialog, tOrganizations],
+    [fetchOrganizationList, locale, setDialog, tOrganizations],
   );
 
   const { canUpdateOrganizations, canDeleteOrganizations } = useMemo(() => {
