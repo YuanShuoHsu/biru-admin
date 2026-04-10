@@ -59,6 +59,7 @@ const CustomizedDialogs = () => {
     formId,
     onCancel,
     onConfirm,
+    onExited,
     open,
     resetDialog,
     setDialog,
@@ -80,7 +81,7 @@ const CustomizedDialogs = () => {
 
     try {
       await onCancel?.();
-      resetDialog();
+      setDialog({ open: false });
     } catch (error) {
       const message = getErrorMessage(error);
       enqueueSnackbar(message, { variant: "error" });
@@ -96,13 +97,18 @@ const CustomizedDialogs = () => {
 
     try {
       await onConfirm?.();
-      resetDialog();
+      setDialog({ open: false });
     } catch (error) {
       const message = getErrorMessage(error);
       enqueueSnackbar(message, { variant: "error" });
     } finally {
       setDialog({ confirmLoading: false });
     }
+  };
+
+  const handleExited = () => {
+    resetDialog();
+    onExited?.();
   };
 
   return (
@@ -115,6 +121,7 @@ const CustomizedDialogs = () => {
       onClose={handleClose}
       open={open}
       scroll="body"
+      slotProps={{ transition: { onExited: handleExited } }}
       slots={{ transition: Transition }}
     >
       <StyledDialogTitle id="customized-dialog-title">

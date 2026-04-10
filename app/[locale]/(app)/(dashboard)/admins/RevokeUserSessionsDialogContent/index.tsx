@@ -50,85 +50,101 @@ const RevokeUserSessionsDialogContent = ({
 
   const tAdmins = useTranslations("admins");
 
-  const {
-    data: sessions = [],
-    isLoading,
-    mutate,
-  } = useSWR(`user-sessions-${user.id}`, async () => {
-    const { data } = await authClient.admin.listUserSessions({
-      userId: user.id,
-    });
+  const { data: sessions = [], isLoading } = useSWR(
+    `user-sessions-${user.id}`,
+    async () => {
+      const { data } = await authClient.admin.listUserSessions({
+        userId: user.id,
+      });
 
-    return data?.sessions;
-  });
+      return data?.sessions;
+    },
+  );
 
   const handleRevokeAll = () => {
     setDialog({
-      content: (
-        <DialogContentText>
-          {tAdmins.rich("actions.revokeUserSessions.revokeAll.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-            email: user.email,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        await authClient.admin.revokeUserSessions(
-          { userId: user.id },
-          {
-            onError: ({ error: { code } }) => {
-              enqueueSnackbar(getErrorMessage(code, locale), {
-                variant: "error",
-              });
-            },
-            onSuccess: () => {
-              enqueueSnackbar(
-                tAdmins("actions.revokeUserSessions.revokeAll.success"),
-                {
-                  variant: "success",
+      onExited: () => {
+        setDialog({
+          content: (
+            <DialogContentText>
+              {tAdmins.rich("actions.revokeUserSessions.revokeAll.confirm", {
+                bold: (chunks) => <strong>{chunks}</strong>,
+                email: user.email,
+              })}
+            </DialogContentText>
+          ),
+          onConfirm: async () => {
+            await authClient.admin.revokeUserSessions(
+              { userId: user.id },
+              {
+                onError: ({ error: { code } }) => {
+                  enqueueSnackbar(getErrorMessage(code, locale), {
+                    variant: "error",
+                  });
                 },
-              );
-              mutate();
-            },
+                onSuccess: () => {
+                  enqueueSnackbar(
+                    tAdmins("actions.revokeUserSessions.revokeAll.success"),
+                    {
+                      variant: "success",
+                    },
+                  );
+                },
+              },
+            );
           },
-        );
+          onExited: restoreSessionsDialog,
+          open: true,
+          title: tAdmins("actions.revokeUserSessions.revokeAll.title"),
+        });
       },
+      open: false,
+    });
+  };
+
+  const restoreSessionsDialog = () => {
+    setDialog({
+      content: <RevokeUserSessionsDialogContent user={user} />,
       open: true,
-      title: tAdmins("actions.revokeUserSessions.revokeAll.title"),
+      title: tAdmins("actions.revokeUserSessions.title"),
     });
   };
 
   const handleRevokeOne = (sessionToken: string) => {
     setDialog({
-      content: (
-        <DialogContentText>
-          {tAdmins("actions.revokeUserSessions.revokeOne.confirm")}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        await authClient.admin.revokeUserSession(
-          { sessionToken },
-          {
-            onError: ({ error: { code } }) => {
-              enqueueSnackbar(getErrorMessage(code, locale), {
-                variant: "error",
-              });
-            },
-            onSuccess: () => {
-              enqueueSnackbar(
-                tAdmins("actions.revokeUserSessions.revokeOne.success"),
-                {
-                  variant: "success",
+      onExited: () => {
+        setDialog({
+          content: (
+            <DialogContentText>
+              {tAdmins("actions.revokeUserSessions.revokeOne.confirm")}
+            </DialogContentText>
+          ),
+          onConfirm: async () => {
+            await authClient.admin.revokeUserSession(
+              { sessionToken },
+              {
+                onError: ({ error: { code } }) => {
+                  enqueueSnackbar(getErrorMessage(code, locale), {
+                    variant: "error",
+                  });
                 },
-              );
-
-              mutate();
-            },
+                onSuccess: () => {
+                  enqueueSnackbar(
+                    tAdmins("actions.revokeUserSessions.revokeOne.success"),
+                    {
+                      variant: "success",
+                    },
+                  );
+                },
+              },
+            );
           },
-        );
+          onExited: restoreSessionsDialog,
+          open: true,
+          title: tAdmins("actions.revokeUserSessions.revokeOne.title"),
+        });
       },
-      open: true,
-      title: tAdmins("actions.revokeUserSessions.revokeOne.title"),
+      open: false,
     });
   };
 
