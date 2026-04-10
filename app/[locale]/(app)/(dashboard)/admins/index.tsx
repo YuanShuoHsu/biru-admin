@@ -14,7 +14,6 @@ import { flushSync } from "react-dom";
 
 import BanUserDialogContent from "./BanUserDialogContent";
 import CreateUserDialogContent from "./CreateUserDialogContent";
-import RevokeUserSessionsDialogContent from "./RevokeUserSessionsDialogContent";
 import SetRoleDialogContent from "./SetRoleDialogContent";
 import SetUserPasswordDialogContent from "./SetUserPasswordDialogContent";
 import UpdateUserDialogContent from "./UpdateUserDialogContent";
@@ -277,17 +276,6 @@ const Admins = ({
     [setDialog, tAdmins],
   );
 
-  const handleRevokeUserSessions = useCallback(
-    (user: UserWithRole) => {
-      setDialog({
-        content: <RevokeUserSessionsDialogContent user={user} />,
-        open: true,
-        title: tAdmins("actions.revokeUserSessions.title"),
-      });
-    },
-    [setDialog, tAdmins],
-  );
-
   const handleRemoveUser = useCallback(
     ({ id, email }: UserWithRole) => {
       setDialog({
@@ -453,7 +441,7 @@ const Admins = ({
                     onClick={(event) => {
                       event.stopPropagation();
 
-                      handleRevokeUserSessions(row);
+                      router.push(`/admins/${row.id}`);
                     }}
                     size="small"
                     sx={{
@@ -622,10 +610,10 @@ const Admins = ({
       handleRemoveUser,
       handleUpdateUser,
       handleImpersonateUser,
-      handleRevokeUserSessions,
       handleSetUserPassword,
       handleSetRole,
       handleUnbanUser,
+      router,
       tAdmins,
       userSessions,
     ],

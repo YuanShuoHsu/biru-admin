@@ -5,7 +5,7 @@ import type { Session } from "better-auth/types";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
-import useSWR from "swr";
+import { useState } from "react";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
@@ -24,21 +24,22 @@ import {
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
+import { useAuthStore } from "@/providers/auth-store-provider";
+import { useDialogStore } from "@/providers/dialog-store-provider";
+
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
   { ssr: false },
 );
 
-import { useAuthStore } from "@/providers/auth-store-provider";
-import { useDialogStore } from "@/providers/dialog-store-provider";
-
-interface RevokeUserSessionsDialogContentProps {
+interface SessionsProps {
   user: UserWithRole;
+  initialSessions: Session[];
 }
 
-const RevokeUserSessionsDialogContent = ({
-  user,
-}: RevokeUserSessionsDialogContentProps) => {
+const Sessions = ({ user, initialSessions }: SessionsProps) => {
+  const [sessions, setSessions] = useState(initialSessions);
+
   const apiRef = useGridApiRef();
 
   const { session: currentSession } = useAuthStore((state) => state);
@@ -50,101 +51,76 @@ const RevokeUserSessionsDialogContent = ({
 
   const tAdmins = useTranslations("admins");
 
-  const { data: sessions = [], isLoading } = useSWR(
-    `user-sessions-${user.id}`,
-    async () => {
-      const { data } = await authClient.admin.listUserSessions({
-        userId: user.id,
-      });
+  const fetchSessions = async () => {
+    const { data } = await authClient.admin.listUserSessions({
+      userId: user.id,
+    });
 
-      return data?.sessions;
-    },
-  );
+    setSessions(data?.sessions || []);
+  };
 
   const handleRevokeAll = () => {
     setDialog({
-      onExited: () => {
-        setDialog({
-          content: (
-            <DialogContentText>
-              {tAdmins.rich("actions.revokeUserSessions.revokeAll.confirm", {
-                bold: (chunks) => <strong>{chunks}</strong>,
-                email: user.email,
-              })}
-            </DialogContentText>
-          ),
-          onConfirm: async () => {
-            await authClient.admin.revokeUserSessions(
-              { userId: user.id },
-              {
-                onError: ({ error: { code } }) => {
-                  enqueueSnackbar(getErrorMessage(code, locale), {
-                    variant: "error",
-                  });
-                },
-                onSuccess: () => {
-                  enqueueSnackbar(
-                    tAdmins("actions.revokeUserSessions.revokeAll.success"),
-                    {
-                      variant: "success",
-                    },
-                  );
-                },
-              },
-            );
+      content: (
+        <DialogContentText>
+          {tAdmins.rich("actions.revokeUserSessions.revokeAll.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            email: user.email,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        await authClient.admin.revokeUserSessions(
+          { userId: user.id },
+          {
+            onError: ({ error: { code } }) => {
+              enqueueSnackbar(getErrorMessage(code, locale), {
+                variant: "error",
+              });
+            },
+            onSuccess: () => {
+              enqueueSnackbar(
+                tAdmins("actions.revokeUserSessions.revokeAll.success"),
+                { variant: "success" },
+              );
+              fetchSessions();
+            },
           },
-          onExited: restoreSessionsDialog,
-          open: true,
-          title: tAdmins("actions.revokeUserSessions.revokeAll.title"),
-        });
+        );
       },
-      open: false,
-    });
-  };
-
-  const restoreSessionsDialog = () => {
-    setDialog({
-      content: <RevokeUserSessionsDialogContent user={user} />,
       open: true,
-      title: tAdmins("actions.revokeUserSessions.title"),
+      title: tAdmins("actions.revokeUserSessions.revokeAll.title"),
     });
   };
 
   const handleRevokeOne = (sessionToken: string) => {
     setDialog({
-      onExited: () => {
-        setDialog({
-          content: (
-            <DialogContentText>
-              {tAdmins("actions.revokeUserSessions.revokeOne.confirm")}
-            </DialogContentText>
-          ),
-          onConfirm: async () => {
-            await authClient.admin.revokeUserSession(
-              { sessionToken },
-              {
-                onError: ({ error: { code } }) => {
-                  enqueueSnackbar(getErrorMessage(code, locale), {
-                    variant: "error",
-                  });
-                },
-                onSuccess: () => {
-                  enqueueSnackbar(
-                    tAdmins("actions.revokeUserSessions.revokeOne.success"),
-                    {
-                      variant: "success",
-                    },
-                  );
-                },
-              },
-            );
+      content: (
+        <DialogContentText>
+          {tAdmins("actions.revokeUserSessions.revokeOne.confirm")}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        await authClient.admin.revokeUserSession(
+          { sessionToken },
+          {
+            onError: ({ error: { code } }) => {
+              enqueueSnackbar(getErrorMessage(code, locale), {
+                variant: "error",
+              });
+            },
+            onSuccess: () => {
+              enqueueSnackbar(
+                tAdmins("actions.revokeUserSessions.revokeOne.success"),
+                { variant: "success" },
+              );
+              fetchSessions();
+            },
           },
-          onExited: restoreSessionsDialog,
-          open: true,
-          title: tAdmins("actions.revokeUserSessions.revokeOne.title"),
-        });
+        );
       },
-      open: false,
+      open: true,
+      title: tAdmins("actions.revokeUserSessions.revokeOne.title"),
     });
   };
 
@@ -153,7 +129,7 @@ const RevokeUserSessionsDialogContent = ({
       disableColumnMenu: true,
       field: "actions",
       headerName: tAdmins("actions.label"),
-      renderCell: ({ row }: GridRenderCellParams<Session>) => (
+      renderCell: ({ row: { token } }: GridRenderCellParams<Session>) => (
         <Stack height="100%" direction="row" alignItems="center" gap={1}>
           <Tooltip
             title={tAdmins("actions.revokeUserSessions.revokeOne.title")}
@@ -163,7 +139,7 @@ const RevokeUserSessionsDialogContent = ({
               onClick={(event) => {
                 event.stopPropagation();
 
-                handleRevokeOne(row.token);
+                handleRevokeOne(token);
               }}
               size="small"
             >
@@ -233,7 +209,6 @@ const RevokeUserSessionsDialogContent = ({
         {...DATA_GRID_PROPS}
         apiRef={apiRef}
         columns={columns}
-        loading={isLoading}
         onPaginationModelChange={() =>
           apiRef.current?.autosizeColumns(autosizeOptions)
         }
@@ -243,4 +218,4 @@ const RevokeUserSessionsDialogContent = ({
   );
 };
 
-export default RevokeUserSessionsDialogContent;
+export default Sessions;

@@ -8,6 +8,7 @@ interface RouteParam {
   mode: OrderMode;
   slug: string;
   storeSlug: StoreSlug;
+  userId: string;
 }
 
 export type RouteParams<K extends keyof RouteParam = keyof RouteParam> =

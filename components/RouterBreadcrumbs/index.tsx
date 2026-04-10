@@ -85,21 +85,37 @@ interface BreadcrumbItem {
 }
 
 const useBreadcrumbs = (): BreadcrumbItem[] => {
-  const { locale, mode, slug, storeSlug } = useParams<RouteParams>();
+  const { locale, mode, slug, storeSlug, userId } = useParams<RouteParams>();
 
   const { data: stores = [] } = useSWR<Store[]>("/api/stores");
   const storeName = getStoreName(locale, stores, storeSlug);
 
-  const { data: organizations = [] } = useSWR(
-    "organizations-list",
+  const { data: userEmail = "" } = useSWR(
+    userId ? `admin-user-${userId}` : null,
     async () => {
-      const { data } = await authClient.organization.list();
-      return data;
+      const { data } = await authClient.admin.listUsers({
+        query: {
+          limit: 1,
+          offset: 0,
+          filterField: "id",
+          filterValue: userId,
+          filterOperator: "eq",
+        },
+      });
+
+      return data?.users[0].email;
     },
   );
+
   const decodedSlug = decodeURIComponent(slug);
-  const organization = organizations?.find(({ slug: s }) => s === decodedSlug);
-  const organizationName = organization?.name || decodedSlug;
+  const { data: organizationName = "" } = useSWR(
+    slug ? `organization-${slug}` : null,
+    async () => {
+      const { data } = await authClient.organization.list();
+
+      return data?.find(({ slug }) => slug === decodedSlug)?.name;
+    },
+  );
 
   const tAccount = useTranslations("account");
   const tAdmin = useTranslations("admins");
@@ -175,7 +191,13 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
       to: "/account",
     },
     {
-      disabled: true,
+      children: [
+        {
+          icon: ManageAccounts,
+          label: userEmail,
+          to: `/${userId}`,
+        },
+      ],
       icon: AdminPanelSettings,
       label: tAdmin("label"),
       to: "/admins",
