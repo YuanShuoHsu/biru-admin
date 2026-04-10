@@ -42,11 +42,11 @@ const SessionsPage = async ({ params }: SessionsPageProps) => {
   ]);
 
   const user = userData?.users[0];
-  const sessions = sessionsData?.sessions || [];
+  const initialRows = sessionsData?.sessions || [];
 
   if (!user) notFound();
 
-  return <Sessions user={user} initialSessions={sessions} />;
+  return <Sessions user={user} initialRows={initialRows} />;
 };
 
 export default SessionsPage;
