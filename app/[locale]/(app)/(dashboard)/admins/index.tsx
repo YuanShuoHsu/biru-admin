@@ -439,7 +439,9 @@ const Admins = ({
               </Tooltip>
               {hasUserSessions && (
                 <Tooltip
-                  title={tAdmins("userSessions.actions.revokeUserSessions.title")}
+                  title={tAdmins(
+                    "userSessions.actions.revokeUserSessions.title",
+                  )}
                 >
                   <IconButton
                     onClick={(event) => {

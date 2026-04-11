@@ -177,9 +177,7 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
 
           return (
             <Stack height="100%" direction="row" alignItems="center" gap={1}>
-              <Tooltip
-                title={tUserSessions("actions.revokeUserSession.title")}
-              >
+              <Tooltip title={tUserSessions("actions.revokeUserSession.title")}>
                 <IconButton
                   color="error"
                   onClick={(event) => {
