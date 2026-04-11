@@ -25,7 +25,7 @@
     "createUser": {
       "confirmPassword": {
         "label": "确认密码",
-        "placeholder": "请再次输入密码"
+        "placeholder": "请再次输入您的密码"
       },
       "firstName": {
         "label": "名字",
@@ -60,11 +60,11 @@
     "setUserPassword": {
       "confirmPassword": {
         "label": "确认密码",
-        "placeholder": "请再次输入密码"
+        "placeholder": "请再次输入您的密码"
       },
       "newPassword": {
         "label": "新密码",
-        "placeholder": "请输入新密码"
+        "placeholder": "请输入您的新密码"
       },
       "success": "密码已更新",
       "title": "设置密码"
@@ -97,7 +97,6 @@
     "actions": {
       "label": "操作",
       "revokeUserSession": {
-        "confirm": "确定要撤销此 session 吗？",
         "success": "已撤销 session",
         "title": "撤销 Session"
       },
@@ -110,8 +109,14 @@
     "createdAt": "登录时间",
     "current": "当前",
     "expiresAt": "到期时间",
-    "ipAddress": "IP 地址",
-    "userAgent": "设备"
+    "ipAddress": {
+      "label": "IP 地址",
+      "placeholder": "请输入您的 IP 地址"
+    },
+    "userAgent": {
+      "label": "设备",
+      "placeholder": "请输入您的设备信息"
+    }
   },
   "createdAt": "创建时间",
   "email": {

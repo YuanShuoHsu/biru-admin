@@ -45,7 +45,7 @@
       "inviteMember": {
         "email": {
           "label": "이메일",
-          "placeholder": "이메일을 입력해 주세요"
+          "placeholder": "귀하의 이메일을 입력해 주세요"
         },
         "success": "초대가 성공적으로 발송되었습니다",
         "title": "멤버 초대"
@@ -71,15 +71,15 @@
       "label": "역할",
       "member": "멤버",
       "owner": "소유자",
-      "placeholder": "역할을 선택해 주세요"
+      "placeholder": "귀하의 역할을 선택해 주세요"
     }
   },
   "name": {
     "label": "조직명",
-    "placeholder": "조직명을 입력해 주세요"
+    "placeholder": "귀하의 조직명을 입력해 주세요"
   },
   "slug": {
     "label": "슬러그",
-    "placeholder": "슬러그를 입력해 주세요"
+    "placeholder": "귀하의 슬러그를 입력해 주세요"
   }
 }

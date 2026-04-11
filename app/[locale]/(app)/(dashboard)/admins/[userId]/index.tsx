@@ -8,6 +8,8 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import { flushSync } from "react-dom";
 
+import RevokeUserSessionDialogContent from "./RevokeUserSessionDialogContent";
+
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
@@ -19,7 +21,6 @@ import {
   DialogContentText,
   IconButton,
   Stack,
-  TextField,
   Tooltip,
 } from "@mui/material";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
@@ -122,23 +123,7 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
     (session: Pick<Session, "token" | "ipAddress" | "userAgent">) => {
       setDialog({
         content: (
-          <Stack gap={2}>
-            <DialogContentText>
-              {tUserSessions("actions.revokeUserSession.confirm")}
-            </DialogContentText>
-            <TextField
-              fullWidth
-              label={tUserSessions("ipAddress")}
-              slotProps={{ input: { readOnly: true } }}
-              value={session.ipAddress || "-"}
-            />
-            <TextField
-              fullWidth
-              label={tUserSessions("userAgent")}
-              slotProps={{ input: { readOnly: true } }}
-              value={formatUserAgent(session.userAgent)}
-            />
-          </Stack>
+          <RevokeUserSessionDialogContent session={session} />
         ),
         onConfirm: async () => {
           await authClient.admin.revokeUserSession(
@@ -205,13 +190,13 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
       },
       {
         field: "userAgent",
-        headerName: tUserSessions("userAgent"),
+        headerName: tUserSessions("userAgent.label"),
         valueGetter: (_value: unknown, { userAgent }: Session) =>
           formatUserAgent(userAgent),
       },
       {
         field: "ipAddress",
-        headerName: tUserSessions("ipAddress"),
+        headerName: tUserSessions("ipAddress.label"),
         valueFormatter: (value: string | null) => value,
       },
       {

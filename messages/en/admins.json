@@ -64,7 +64,7 @@
       },
       "newPassword": {
         "label": "New password",
-        "placeholder": "Please enter new password"
+        "placeholder": "Please enter your new password"
       },
       "success": "Password updated",
       "title": "Set password"
@@ -97,7 +97,6 @@
     "actions": {
       "label": "Actions",
       "revokeUserSession": {
-        "confirm": "Are you sure you want to revoke this session?",
         "success": "Session revoked",
         "title": "Revoke session"
       },
@@ -110,8 +109,14 @@
     "createdAt": "Signed in",
     "current": "Current",
     "expiresAt": "Expires",
-    "ipAddress": "IP address",
-    "userAgent": "Device"
+    "ipAddress": {
+      "label": "IP address",
+      "placeholder": "Please enter your IP address"
+    },
+    "userAgent": {
+      "label": "Device",
+      "placeholder": "Please enter your device info"
+    }
   },
   "createdAt": "Created",
   "email": {

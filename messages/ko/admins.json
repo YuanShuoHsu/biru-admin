@@ -13,11 +13,11 @@
           "90days": "90일",
           "permanent": "영구"
         },
-        "placeholder": "차단 기간을 선택해 주세요"
+        "placeholder": "귀하의 차단 기간을 선택해 주세요"
       },
       "banReason": {
         "label": "차단 사유",
-        "placeholder": "차단 사유를 입력해 주세요"
+        "placeholder": "귀하의 차단 사유를 입력해 주세요"
       },
       "success": "사용자가 차단되었습니다",
       "title": "사용자 차단"
@@ -25,19 +25,19 @@
     "createUser": {
       "confirmPassword": {
         "label": "비밀번호 확인",
-        "placeholder": "비밀번호를 다시 입력해 주세요"
+        "placeholder": "귀하의 비밀번호를 다시 입력해 주세요"
       },
       "firstName": {
         "label": "이름",
-        "placeholder": "이름을 입력해 주세요"
+        "placeholder": "귀하의 이름을 입력해 주세요"
       },
       "lastName": {
         "label": "성",
-        "placeholder": "성을 입력해 주세요"
+        "placeholder": "귀하의 성을 입력해 주세요"
       },
       "password": {
         "label": "비밀번호",
-        "placeholder": "비밀번호를 입력해 주세요"
+        "placeholder": "귀하의 비밀번호를 입력해 주세요"
       },
       "success": "사용자가 생성되었습니다",
       "title": "사용자 추가"
@@ -60,11 +60,11 @@
     "setUserPassword": {
       "confirmPassword": {
         "label": "비밀번호 확인",
-        "placeholder": "비밀번호를 다시 입력해 주세요"
+        "placeholder": "귀하의 비밀번호를 다시 입력해 주세요"
       },
       "newPassword": {
         "label": "새 비밀번호",
-        "placeholder": "새 비밀번호를 입력해 주세요"
+        "placeholder": "귀하의 새 비밀번호를 입력해 주세요"
       },
       "success": "비밀번호가 업데이트되었습니다",
       "title": "비밀번호 설정"
@@ -83,11 +83,11 @@
     "updateUser": {
       "firstName": {
         "label": "이름",
-        "placeholder": "이름을 입력해 주세요"
+        "placeholder": "귀하의 이름을 입력해 주세요"
       },
       "lastName": {
         "label": "성",
-        "placeholder": "성을 입력해 주세요"
+        "placeholder": "귀하의 성을 입력해 주세요"
       },
       "success": "사용자 정보가 업데이트되었습니다",
       "title": "사용자 편집"
@@ -97,7 +97,6 @@
     "actions": {
       "label": "작업",
       "revokeUserSession": {
-        "confirm": "이 세션을 취소하시겠습니까?",
         "success": "세션이 취소되었습니다",
         "title": "세션 취소"
       },
@@ -110,13 +109,19 @@
     "createdAt": "로그인 시간",
     "current": "현재",
     "expiresAt": "만료일",
-    "ipAddress": "IP 주소",
-    "userAgent": "기기"
+    "ipAddress": {
+      "label": "IP 주소",
+      "placeholder": "귀하의 IP 주소를 입력해 주세요"
+    },
+    "userAgent": {
+      "label": "기기",
+      "placeholder": "귀하의 기기 정보를 입력해 주세요"
+    }
   },
   "createdAt": "생성일",
   "email": {
     "label": "이메일",
-    "placeholder": "이메일을 입력해 주세요"
+    "placeholder": "귀하의 이메일을 입력해 주세요"
   },
   "emailSubscribed": {
     "checkbox": "이메일로 최신 정보를 받고 싶습니다",
@@ -130,7 +135,7 @@
   "role": {
     "admin": "관리자",
     "label": "역할",
-    "placeholder": "역할을 선택해 주세요",
+    "placeholder": "귀하의 역할을 선택해 주세요",
     "user": "일반 사용자"
   },
   "status": {

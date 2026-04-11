@@ -13,11 +13,11 @@
           "90days": "90 日",
           "permanent": "永久"
         },
-        "placeholder": "停止期間を選択してください"
+        "placeholder": "あなたの停止期間を選択してください"
       },
       "banReason": {
         "label": "停止理由",
-        "placeholder": "停止理由を入力してください"
+        "placeholder": "あなたの停止理由を入力してください"
       },
       "success": "ユーザーを停止しました",
       "title": "ユーザーを停止"
@@ -25,19 +25,19 @@
     "createUser": {
       "confirmPassword": {
         "label": "パスワード確認",
-        "placeholder": "パスワードを再入力してください"
+        "placeholder": "あなたのパスワードを再入力してください"
       },
       "firstName": {
         "label": "名",
-        "placeholder": "名を入力してください"
+        "placeholder": "あなたの名を入力してください"
       },
       "lastName": {
         "label": "姓",
-        "placeholder": "姓を入力してください"
+        "placeholder": "あなたの姓を入力してください"
       },
       "password": {
         "label": "パスワード",
-        "placeholder": "パスワードを入力してください"
+        "placeholder": "あなたのパスワードを入力してください"
       },
       "success": "ユーザーを作成しました",
       "title": "ユーザーを追加"
@@ -60,11 +60,11 @@
     "setUserPassword": {
       "confirmPassword": {
         "label": "パスワード確認",
-        "placeholder": "パスワードを再入力してください"
+        "placeholder": "あなたのパスワードを再入力してください"
       },
       "newPassword": {
         "label": "新しいパスワード",
-        "placeholder": "新しいパスワードを入力してください"
+        "placeholder": "あなたの新しいパスワードを入力してください"
       },
       "success": "パスワードを更新しました",
       "title": "パスワード設定"
@@ -83,11 +83,11 @@
     "updateUser": {
       "firstName": {
         "label": "名",
-        "placeholder": "名を入力してください"
+        "placeholder": "あなたの名を入力してください"
       },
       "lastName": {
         "label": "姓",
-        "placeholder": "姓を入力してください"
+        "placeholder": "あなたの姓を入力してください"
       },
       "success": "ユーザー情報を更新しました",
       "title": "ユーザーを編集"
@@ -97,7 +97,6 @@
     "actions": {
       "label": "操作",
       "revokeUserSession": {
-        "confirm": "このセッションを無効化しますか？",
         "success": "セッションを無効化しました",
         "title": "セッションを無効化"
       },
@@ -110,13 +109,19 @@
     "createdAt": "ログイン日時",
     "current": "現在",
     "expiresAt": "有効期限",
-    "ipAddress": "IPアドレス",
-    "userAgent": "デバイス"
+    "ipAddress": {
+      "label": "IPアドレス",
+      "placeholder": "あなたのIPアドレスを入力してください"
+    },
+    "userAgent": {
+      "label": "デバイス",
+      "placeholder": "あなたのデバイス情報を入力してください"
+    }
   },
   "createdAt": "作成日",
   "email": {
     "label": "メール",
-    "placeholder": "メールアドレスを入力してください"
+    "placeholder": "あなたのメールアドレスを入力してください"
   },
   "emailSubscribed": {
     "checkbox": "メールで最新情報を受け取る",
@@ -130,7 +135,7 @@
   "role": {
     "admin": "管理者",
     "label": "役割",
-    "placeholder": "役割を選択してください",
+    "placeholder": "あなたの役割を選択してください",
     "user": "一般ユーザー"
   },
   "status": {
