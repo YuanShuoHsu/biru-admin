@@ -53,24 +53,6 @@
       "success": "ユーザーを削除しました",
       "title": "ユーザーを削除"
     },
-    "revokeUserSessions": {
-      "createdAt": "ログイン日時",
-      "current": "現在",
-      "expiresAt": "有効期限",
-      "ipAddress": "IPアドレス",
-      "revokeAll": {
-        "confirm": "<bold>{email}</bold> のすべてのセッションを無効化しますか？",
-        "success": "すべてのセッションを無効化しました",
-        "title": "すべて無効化"
-      },
-      "revokeOne": {
-        "confirm": "このセッションを無効化しますか？",
-        "success": "セッションを無効化しました",
-        "title": "セッションを無効化"
-      },
-      "title": "セッション管理",
-      "userAgent": "デバイス"
-    },
     "setRole": {
       "success": "役割を更新しました",
       "title": "役割を変更"
@@ -110,6 +92,26 @@
       "success": "ユーザー情報を更新しました",
       "title": "ユーザーを編集"
     }
+  },
+  "userSessions": {
+    "actions": {
+      "label": "操作",
+      "revokeUserSession": {
+        "confirm": "このセッションを無効化しますか？",
+        "success": "セッションを無効化しました",
+        "title": "セッションを無効化"
+      },
+      "revokeUserSessions": {
+        "confirm": "<bold>{email}</bold> のすべてのセッションを無効化しますか？",
+        "success": "すべてのセッションを無効化しました",
+        "title": "すべて無効化"
+      }
+    },
+    "createdAt": "ログイン日時",
+    "current": "現在",
+    "expiresAt": "有効期限",
+    "ipAddress": "IPアドレス",
+    "userAgent": "デバイス"
   },
   "createdAt": "作成日",
   "email": {

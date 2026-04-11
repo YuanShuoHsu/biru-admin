@@ -21,7 +21,6 @@ import {
   Stack,
   TextField,
   Tooltip,
-  Typography,
 } from "@mui/material";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
@@ -29,17 +28,19 @@ import { useGridApiRef } from "@mui/x-data-grid";
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
+import { formatUserAgent } from "@/utils/admins";
+
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
   { ssr: false },
 );
 
-interface SessionsProps {
+interface UserSessionsProps {
   initialRows: Session[];
   user: UserWithRole;
 }
 
-const Sessions = ({ initialRows, user }: SessionsProps) => {
+const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
   const [rows, setRows] = useState(initialRows);
 
   const apiRef = useGridApiRef();
@@ -51,7 +52,7 @@ const Sessions = ({ initialRows, user }: SessionsProps) => {
 
   const locale = useLocale();
 
-  const tAdmins = useTranslations("admins");
+  const tUserSessions = useTranslations("admins.userSessions");
 
   const [loading, setLoading] = useState(false);
 
@@ -82,11 +83,11 @@ const Sessions = ({ initialRows, user }: SessionsProps) => {
     );
   }, [apiRef, locale, user.id]);
 
-  const handleRevokeAll = () => {
+  const handleRevokeUserSessions = () => {
     setDialog({
       content: (
         <DialogContentText>
-          {tAdmins.rich("actions.revokeUserSessions.revokeAll.confirm", {
+          {tUserSessions.rich("actions.revokeUserSessions.confirm", {
             bold: (chunks) => <strong>{chunks}</strong>,
             email: user.email,
           })}
@@ -103,7 +104,7 @@ const Sessions = ({ initialRows, user }: SessionsProps) => {
             },
             onSuccess: () => {
               enqueueSnackbar(
-                tAdmins("actions.revokeUserSessions.revokeAll.success"),
+                tUserSessions("actions.revokeUserSessions.success"),
                 { variant: "success" },
               );
 
@@ -113,29 +114,29 @@ const Sessions = ({ initialRows, user }: SessionsProps) => {
         );
       },
       open: true,
-      title: tAdmins("actions.revokeUserSessions.revokeAll.title"),
+      title: tUserSessions("actions.revokeUserSessions.title"),
     });
   };
 
-  const handleRevokeOne = useCallback(
+  const handleRevokeUserSession = useCallback(
     (session: Pick<Session, "token" | "ipAddress" | "userAgent">) => {
       setDialog({
         content: (
           <Stack gap={2}>
             <DialogContentText>
-              {tAdmins("actions.revokeUserSessions.revokeOne.confirm")}
+              {tUserSessions("actions.revokeUserSession.confirm")}
             </DialogContentText>
             <TextField
               fullWidth
-              label={tAdmins("actions.revokeUserSessions.ipAddress")}
+              label={tUserSessions("ipAddress")}
               slotProps={{ input: { readOnly: true } }}
               value={session.ipAddress || "-"}
             />
             <TextField
               fullWidth
-              label={tAdmins("actions.revokeUserSessions.userAgent")}
+              label={tUserSessions("userAgent")}
               slotProps={{ input: { readOnly: true } }}
-              value={session.userAgent || "-"}
+              value={formatUserAgent(session.userAgent)}
             />
           </Stack>
         ),
@@ -150,7 +151,7 @@ const Sessions = ({ initialRows, user }: SessionsProps) => {
               },
               onSuccess: () => {
                 enqueueSnackbar(
-                  tAdmins("actions.revokeUserSessions.revokeOne.success"),
+                  tUserSessions("actions.revokeUserSession.success"),
                   { variant: "success" },
                 );
                 fetchListUserSessions();
@@ -159,10 +160,10 @@ const Sessions = ({ initialRows, user }: SessionsProps) => {
           );
         },
         open: true,
-        title: tAdmins("actions.revokeUserSessions.revokeOne.title"),
+        title: tUserSessions("actions.revokeUserSession.title"),
       });
     },
-    [fetchListUserSessions, locale, setDialog, tAdmins],
+    [fetchListUserSessions, locale, setDialog, tUserSessions],
   );
 
   const columns = useMemo<GridColDef[]>(
@@ -170,70 +171,65 @@ const Sessions = ({ initialRows, user }: SessionsProps) => {
       {
         disableColumnMenu: true,
         field: "actions",
-        headerName: tAdmins("actions.label"),
-        renderCell: ({ row }: GridRenderCellParams<Session>) => (
-          <Stack height="100%" direction="row" alignItems="center" gap={1}>
-            <Tooltip
-              title={tAdmins("actions.revokeUserSessions.revokeOne.title")}
-            >
-              <IconButton
-                color="error"
-                onClick={(event) => {
-                  event.stopPropagation();
+        headerName: tUserSessions("actions.label"),
+        renderCell: ({ row }: GridRenderCellParams<Session>) => {
+          const isCurrent = row.token === currentSession?.session.token;
 
-                  handleRevokeOne(row);
-                }}
-                size="small"
+          return (
+            <Stack height="100%" direction="row" alignItems="center" gap={1}>
+              <Tooltip
+                title={tUserSessions("actions.revokeUserSession.title")}
               >
-                <DeleteOutline fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </Stack>
-        ),
+                <IconButton
+                  color="error"
+                  onClick={(event) => {
+                    event.stopPropagation();
+
+                    handleRevokeUserSession(row);
+                  }}
+                  size="small"
+                >
+                  <DeleteOutline fontSize="small" />
+                </IconButton>
+              </Tooltip>
+              {isCurrent && (
+                <Chip
+                  label={tUserSessions("current")}
+                  size="small"
+                  variant="outlined"
+                />
+              )}
+            </Stack>
+          );
+        },
         resizable: false,
         sortable: false,
       },
       {
         field: "userAgent",
-        headerName: tAdmins("actions.revokeUserSessions.userAgent"),
-        renderCell: ({
-          row: { token, userAgent },
-        }: GridRenderCellParams<Session>) => {
-          const isCurrent = token === currentSession?.session.token;
-
-          return (
-            <Stack height="100%" direction="row" alignItems="center" gap={1}>
-              {isCurrent && (
-                <Chip
-                  label={tAdmins("actions.revokeUserSessions.current")}
-                  size="small"
-                  variant="outlined"
-                />
-              )}
-              <Typography variant="body2">{userAgent}</Typography>
-            </Stack>
-          );
-        },
+        headerName: tUserSessions("userAgent"),
+        valueGetter: (_value: unknown, { userAgent }: Session) =>
+          formatUserAgent(userAgent),
       },
       {
         field: "ipAddress",
-        headerName: tAdmins("actions.revokeUserSessions.ipAddress"),
+        headerName: tUserSessions("ipAddress"),
         valueFormatter: (value: string | null) => value,
       },
       {
         field: "createdAt",
-        headerName: tAdmins("actions.revokeUserSessions.createdAt"),
+        headerName: tUserSessions("createdAt"),
         valueFormatter: (value: string) =>
           format.dateTime(new Date(value), "short"),
       },
       {
         field: "expiresAt",
-        headerName: tAdmins("actions.revokeUserSessions.expiresAt"),
+        headerName: tUserSessions("expiresAt"),
         valueFormatter: (value: string) =>
           format.dateTime(new Date(value), "short"),
       },
     ],
-    [currentSession?.session, format, handleRevokeOne, tAdmins],
+    [currentSession?.session, format, handleRevokeUserSession, tUserSessions],
   );
 
   return (
@@ -241,12 +237,12 @@ const Sessions = ({ initialRows, user }: SessionsProps) => {
       <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
         <Button
           color="error"
-          onClick={handleRevokeAll}
+          onClick={handleRevokeUserSessions}
           size="small"
           startIcon={<LogoutOutlined />}
           variant="contained"
         >
-          {tAdmins("actions.revokeUserSessions.revokeAll.title")}
+          {tUserSessions("actions.revokeUserSessions.title")}
         </Button>
       </Stack>
       <DataGrid
@@ -263,4 +259,4 @@ const Sessions = ({ initialRows, user }: SessionsProps) => {
   );
 };
 
-export default Sessions;
+export default UserSessions;

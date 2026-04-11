@@ -37,6 +37,7 @@
     "socket.io-client": "^4.8.3",
     "swiper": "^12.1.2",
     "swr": "^2.3.6",
+    "ua-parser-js": "^2.0.9",
     "zod": "^4.1.13",
     "zustand": "^5.0.8"
   },
@@ -47,6 +48,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/ua-parser-js": "^0.7.39",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "eslint-config-prettier": "^10.1.8",

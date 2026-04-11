@@ -2,17 +2,17 @@ import { setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
-import Sessions from ".";
+import UserSessions from ".";
 
 import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
-interface SessionsPageProps {
+interface UserSessionsPageProps {
   params: Promise<{ locale: Locale; userId: string }>;
 }
 
-const SessionsPage = async ({ params }: SessionsPageProps) => {
+const UserSessionsPage = async ({ params }: UserSessionsPageProps) => {
   const [cookieStore, { locale, userId }] = await Promise.all([
     cookies(),
     params,
@@ -46,7 +46,7 @@ const SessionsPage = async ({ params }: SessionsPageProps) => {
 
   if (!user) notFound();
 
-  return <Sessions initialRows={initialRows} user={user} />;
+  return <UserSessions initialRows={initialRows} user={user} />;
 };
 
-export default SessionsPage;
+export default UserSessionsPage;

@@ -438,7 +438,9 @@ const Admins = ({
                 </IconButton>
               </Tooltip>
               {hasUserSessions && (
-                <Tooltip title={tAdmins("actions.revokeUserSessions.title")}>
+                <Tooltip
+                  title={tAdmins("userSessions.actions.revokeUserSessions.title")}
+                >
                   <IconButton
                     onClick={(event) => {
                       event.stopPropagation();

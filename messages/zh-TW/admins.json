@@ -53,24 +53,6 @@
       "success": "已刪除使用者",
       "title": "刪除使用者"
     },
-    "revokeUserSessions": {
-      "createdAt": "登入時間",
-      "current": "目前",
-      "expiresAt": "到期時間",
-      "ipAddress": "IP 位址",
-      "revokeAll": {
-        "confirm": "確定要撤銷 <bold>{email}</bold> 的所有 session 嗎？",
-        "success": "已撤銷所有 session",
-        "title": "撤銷全部"
-      },
-      "revokeOne": {
-        "confirm": "確定要撤銷此 session 嗎？",
-        "success": "已撤銷 session",
-        "title": "撤銷 Session"
-      },
-      "title": "Session 管理",
-      "userAgent": "裝置"
-    },
     "setRole": {
       "success": "角色已更新",
       "title": "更改角色"
@@ -110,6 +92,26 @@
       "success": "使用者資料已更新",
       "title": "編輯使用者"
     }
+  },
+  "userSessions": {
+    "actions": {
+      "label": "操作",
+      "revokeUserSession": {
+        "confirm": "確定要撤銷此 session 嗎？",
+        "success": "已撤銷 session",
+        "title": "撤銷 Session"
+      },
+      "revokeUserSessions": {
+        "confirm": "確定要撤銷 <bold>{email}</bold> 的所有 session 嗎？",
+        "success": "已撤銷所有 session",
+        "title": "撤銷全部"
+      }
+    },
+    "createdAt": "登入時間",
+    "current": "目前",
+    "expiresAt": "到期時間",
+    "ipAddress": "IP 位址",
+    "userAgent": "裝置"
   },
   "createdAt": "建立時間",
   "email": {
