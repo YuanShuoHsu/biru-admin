@@ -88,7 +88,7 @@
       "title": "パスワード設定"
     },
     "stopImpersonating": {
-      "confirm": "なりすましを停止しますか？",
+      "confirm": "<bold>{email}</bold> のなりすましを停止しますか？",
       "impersonating": "なりすまし中：{email}",
       "success": "管理者アカウントに戻りました",
       "title": "なりすましを停止"

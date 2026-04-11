@@ -88,7 +88,7 @@
       "title": "Set password"
     },
     "stopImpersonating": {
-      "confirm": "Are you sure you want to stop impersonating?",
+      "confirm": "Are you sure you want to stop impersonating <bold>{email}</bold>?",
       "impersonating": "Impersonating: {email}",
       "success": "Returned to admin account",
       "title": "Stop impersonating"

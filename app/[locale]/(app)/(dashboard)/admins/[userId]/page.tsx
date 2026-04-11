@@ -46,7 +46,7 @@ const SessionsPage = async ({ params }: SessionsPageProps) => {
 
   if (!user) notFound();
 
-  return <Sessions user={user} initialRows={initialRows} />;
+  return <Sessions initialRows={initialRows} user={user} />;
 };
 
 export default SessionsPage;

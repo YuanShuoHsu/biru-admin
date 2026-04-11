@@ -19,6 +19,7 @@ import {
   DialogContentText,
   IconButton,
   Stack,
+  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -34,11 +35,11 @@ const DataGrid = dynamic(
 );
 
 interface SessionsProps {
-  user: UserWithRole;
   initialRows: Session[];
+  user: UserWithRole;
 }
 
-const Sessions = ({ user, initialRows }: SessionsProps) => {
+const Sessions = ({ initialRows, user }: SessionsProps) => {
   const [rows, setRows] = useState(initialRows);
 
   const apiRef = useGridApiRef();
@@ -117,16 +118,30 @@ const Sessions = ({ user, initialRows }: SessionsProps) => {
   };
 
   const handleRevokeOne = useCallback(
-    (sessionToken: string) => {
+    (session: Pick<Session, "token" | "ipAddress" | "userAgent">) => {
       setDialog({
         content: (
-          <DialogContentText>
-            {tAdmins("actions.revokeUserSessions.revokeOne.confirm")}
-          </DialogContentText>
+          <Stack gap={2}>
+            <DialogContentText>
+              {tAdmins("actions.revokeUserSessions.revokeOne.confirm")}
+            </DialogContentText>
+            <TextField
+              fullWidth
+              label={tAdmins("actions.revokeUserSessions.ipAddress")}
+              slotProps={{ input: { readOnly: true } }}
+              value={session.ipAddress || "-"}
+            />
+            <TextField
+              fullWidth
+              label={tAdmins("actions.revokeUserSessions.userAgent")}
+              slotProps={{ input: { readOnly: true } }}
+              value={session.userAgent || "-"}
+            />
+          </Stack>
         ),
         onConfirm: async () => {
           await authClient.admin.revokeUserSession(
-            { sessionToken },
+            { sessionToken: session.token },
             {
               onError: ({ error: { code } }) => {
                 enqueueSnackbar(getErrorMessage(code, locale), {
@@ -156,7 +171,7 @@ const Sessions = ({ user, initialRows }: SessionsProps) => {
         disableColumnMenu: true,
         field: "actions",
         headerName: tAdmins("actions.label"),
-        renderCell: ({ row: { token } }: GridRenderCellParams<Session>) => (
+        renderCell: ({ row }: GridRenderCellParams<Session>) => (
           <Stack height="100%" direction="row" alignItems="center" gap={1}>
             <Tooltip
               title={tAdmins("actions.revokeUserSessions.revokeOne.title")}
@@ -166,7 +181,7 @@ const Sessions = ({ user, initialRows }: SessionsProps) => {
                 onClick={(event) => {
                   event.stopPropagation();
 
-                  handleRevokeOne(token);
+                  handleRevokeOne(row);
                 }}
                 size="small"
               >

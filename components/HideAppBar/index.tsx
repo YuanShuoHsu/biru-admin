@@ -83,7 +83,10 @@ const HideAppBar = () => {
     setDialog({
       content: (
         <DialogContentText>
-          {tAdmins("actions.stopImpersonating.confirm")}
+          {tAdmins.rich("actions.stopImpersonating.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            email: session!.user.email,
+          })}
         </DialogContentText>
       ),
       onConfirm: async () => {

@@ -88,7 +88,7 @@
       "title": "设置密码"
     },
     "stopImpersonating": {
-      "confirm": "确定要停止模拟登录吗？",
+      "confirm": "确定要停止模拟 <bold>{email}</bold> 的登录吗？",
       "impersonating": "模拟登录：{email}",
       "success": "已回到管理员身份",
       "title": "停止模拟"
