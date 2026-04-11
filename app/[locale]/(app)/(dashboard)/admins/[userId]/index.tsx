@@ -122,9 +122,7 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
   const handleRevokeUserSession = useCallback(
     (session: Pick<Session, "token" | "ipAddress" | "userAgent">) => {
       setDialog({
-        content: (
-          <RevokeUserSessionDialogContent session={session} />
-        ),
+        content: <RevokeUserSessionDialogContent session={session} />,
         onConfirm: async () => {
           await authClient.admin.revokeUserSession(
             { sessionToken: session.token },
