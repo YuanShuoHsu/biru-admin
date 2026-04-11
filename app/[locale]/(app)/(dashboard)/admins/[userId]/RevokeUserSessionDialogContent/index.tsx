@@ -29,24 +29,14 @@ const RevokeUserSessionDialogContent = ({
     register,
   } = useForm<RevokeUserSessionFormInput>({
     defaultValues: {
-      ipAddress: ipAddress || "",
       userAgent: formatUserAgent(userAgent),
+      ipAddress: ipAddress || "",
     },
     resolver: zodResolver(revokeUserSessionFormSchema),
   });
 
   return (
     <Stack gap={2}>
-      <TextField
-        error={!!errors.ipAddress}
-        fullWidth
-        helperText={errors.ipAddress?.message}
-        label={tUserSessions("ipAddress.label")}
-        placeholder={tUserSessions("ipAddress.placeholder")}
-        required
-        slotProps={{ input: { readOnly: true } }}
-        {...register("ipAddress")}
-      />
       <TextField
         error={!!errors.userAgent}
         fullWidth
@@ -56,6 +46,16 @@ const RevokeUserSessionDialogContent = ({
         required
         slotProps={{ input: { readOnly: true } }}
         {...register("userAgent")}
+      />
+      <TextField
+        error={!!errors.ipAddress}
+        fullWidth
+        helperText={errors.ipAddress?.message}
+        label={tUserSessions("ipAddress.label")}
+        placeholder={tUserSessions("ipAddress.placeholder")}
+        required
+        slotProps={{ input: { readOnly: true } }}
+        {...register("ipAddress")}
       />
     </Stack>
   );

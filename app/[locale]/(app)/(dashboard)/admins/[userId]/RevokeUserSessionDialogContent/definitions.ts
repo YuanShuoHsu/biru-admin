@@ -1,8 +1,8 @@
 import * as z from "zod";
 
 export const revokeUserSessionFormSchema = z.object({
-  ipAddress: z.string(),
   userAgent: z.string(),
+  ipAddress: z.string(),
 });
 
 export type RevokeUserSessionFormInput = z.input<
