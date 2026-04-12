@@ -32,7 +32,7 @@ import type { Order } from "@/types/orders";
 
 interface DashboardProps {
   stats: {
-    totalUsers: number;
+    totalUsers: number | null;
     totalOrganizations: number;
     totalOrders: number;
   };
@@ -60,12 +60,16 @@ const Dashboard = ({ stats, recentOrders }: DashboardProps) => {
       icon: <ShoppingCart />,
       href: "/order",
     },
-    {
-      label: t("stats.totalUsers"),
-      value: stats.totalUsers,
-      icon: <Group />,
-      href: "/admins?page=1&pageSize=10",
-    },
+    ...(stats.totalUsers !== null
+      ? [
+          {
+            label: t("stats.totalUsers"),
+            value: stats.totalUsers,
+            icon: <Group />,
+            href: "/admins?page=1&pageSize=10",
+          },
+        ]
+      : []),
     {
       label: t("stats.totalOrganizations"),
       value: stats.totalOrganizations,
@@ -79,7 +83,6 @@ const Dashboard = ({ stats, recentOrders }: DashboardProps) => {
       <Typography variant="h5" fontWeight="bold">
         {t("welcome", { name: firstName })}
       </Typography>
-
       <Stack direction={{ xs: "column", sm: "row" }} gap={2}>
         {statCards.map(({ label, value, icon, href }) => (
           <Card key={label} sx={{ flex: 1 }}>

@@ -2,5 +2,9 @@
   "cart": "カート",
   "darkMode": "ダークモード",
   "languageSwitcher": "言語を変更",
-  "lightMode": "ライトモード"
+  "lightMode": "ライトモード",
+  "switchMode": "モード切替",
+  "switchThemeMode": "テーマモードを切り替える",
+  "switchToDarkMode": "ダークモードに切り替える",
+  "switchToLightMode": "ライトモードに切り替える"
 }

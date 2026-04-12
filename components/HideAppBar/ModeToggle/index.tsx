@@ -4,52 +4,60 @@
 // https://mui.com/material-ui/customization/dark-mode/#ToggleColorMode.tsx
 // https://mui.com/material-ui/react-tooltip/#DisabledTooltips.tsx
 
+// https://github.com/mui/toolpad/blob/master/packages/toolpad-core/src/DashboardLayout/ThemeSwitcher.tsx
+
 import { useTranslations } from "next-intl";
+import { useCallback } from "react";
 
 import { DarkMode, LightMode } from "@mui/icons-material";
 import { IconButton, Tooltip } from "@mui/material";
 import { styled, useColorScheme } from "@mui/material/styles";
 
-const StyledDarkMode = styled(DarkMode)(({ theme }) => ({
-  display: "block",
+import { useSsr } from "@/utils/useSsr";
 
-  ...theme.applyStyles("dark", {
+const StyledDarkMode = styled(DarkMode)(({ theme }) => ({
+  display: "inline",
+
+  [theme.getColorSchemeSelector("dark")]: {
     display: "none",
-  }),
+  },
 }));
 
 const StyledLightMode = styled(LightMode)(({ theme }) => ({
   display: "none",
 
-  ...theme.applyStyles("dark", {
-    display: "block",
-  }),
+  [theme.getColorSchemeSelector("dark")]: {
+    display: "inline",
+  },
 }));
 
 const ModeToggle = () => {
   const { mode, setMode } = useColorScheme();
+  const isSsr = useSsr();
 
   const tAppBar = useTranslations("appBar");
 
-  const isLight = mode === "light";
+  const tooltipTitle = isSsr
+    ? tAppBar("switchMode")
+    : mode === "dark"
+      ? tAppBar("lightMode")
+      : tAppBar("darkMode");
 
-  const tooltipTitle = !mode
-    ? ""
-    : isLight
-      ? tAppBar("darkMode")
-      : tAppBar("lightMode");
+  const ariaLabel = isSsr
+    ? tAppBar("switchThemeMode")
+    : mode === "dark"
+      ? tAppBar("switchToLightMode")
+      : tAppBar("switchToDarkMode");
 
-  const handleModeToggle = () => setMode(isLight ? "dark" : "light");
+  const toggleMode = useCallback(
+    () => setMode(mode === "dark" ? "light" : "dark"),
+    [mode, setMode],
+  );
 
   return (
-    <Tooltip title={tooltipTitle}>
+    <Tooltip title={tooltipTitle} enterDelay={1000}>
       <span>
-        <IconButton
-          aria-label={tooltipTitle}
-          color="inherit"
-          disabled={!mode}
-          onClick={handleModeToggle}
-        >
+        <IconButton aria-label={ariaLabel} color="inherit" onClick={toggleMode}>
           <StyledDarkMode />
           <StyledLightMode />
         </IconButton>

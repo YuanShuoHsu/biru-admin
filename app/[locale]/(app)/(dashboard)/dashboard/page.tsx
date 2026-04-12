@@ -27,23 +27,26 @@ const DashboardPage = async ({ params }: DashboardPageProps) => {
     },
   };
 
-  const [usersData, organizationsData, ordersData] = await Promise.all([
-    authClient.admin
-      .listUsers({
-        query: {
-          limit: 1,
-          offset: 0,
-          sortBy: "createdAt",
-          sortDirection: "desc",
-        },
-        fetchOptions,
-      })
-      .then(({ data }) => ({ total: data?.total || 0 }))
-      .catch(() => ({ total: 0 })),
+  const { data: session } = await authClient.getSession({ fetchOptions });
+  const isAdmin = session?.user?.role === "admin";
+
+  const [usersTotal, organizationsData, ordersData] = await Promise.all([
+    isAdmin
+      ? authClient.admin
+          .listUsers({
+            query: {
+              limit: 1,
+              offset: 0,
+              sortBy: "createdAt",
+              sortDirection: "desc",
+            },
+            fetchOptions,
+          })
+          .then(({ data }) => data?.total || 0)
+      : Promise.resolve(null),
     authClient.organization
       .list({ fetchOptions })
-      .then(({ data }) => ({ total: data?.length || 0 }))
-      .catch(() => ({ total: 0 })),
+      .then(({ data }) => ({ total: data?.length || 0 })),
     getOrders({
       page: 1,
       limit: 5,
@@ -57,7 +60,7 @@ const DashboardPage = async ({ params }: DashboardPageProps) => {
   return (
     <Dashboard
       stats={{
-        totalUsers: usersData.total,
+        totalUsers: usersTotal,
         totalOrganizations: organizationsData.total,
         totalOrders: ordersData.total,
       }}

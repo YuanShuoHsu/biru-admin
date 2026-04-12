@@ -2,5 +2,9 @@
   "cart": "购物车",
   "darkMode": "深色模式",
   "languageSwitcher": "切换语言",
-  "lightMode": "浅色模式"
+  "lightMode": "浅色模式",
+  "switchMode": "切换模式",
+  "switchThemeMode": "切换主题模式",
+  "switchToDarkMode": "切换至深色模式",
+  "switchToLightMode": "切换至浅色模式"
 }
