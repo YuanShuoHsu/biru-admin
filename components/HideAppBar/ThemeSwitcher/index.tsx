@@ -31,7 +31,7 @@ const StyledLightMode = styled(LightMode)(({ theme }) => ({
   },
 }));
 
-const ModeToggle = () => {
+const ThemeSwitcher = () => {
   const { mode, setMode } = useColorScheme();
   const isSsr = useSsr();
 
@@ -66,4 +66,4 @@ const ModeToggle = () => {
   );
 };
 
-export default ModeToggle;
+export default ThemeSwitcher;
