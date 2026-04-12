@@ -68,10 +68,18 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
-const StyledAvatar = styled(Avatar)({
-  width: 28,
-  height: 28,
-});
+const StyledAvatar = styled(Avatar)(({ theme }) => ({
+  width: 24,
+  height: 24,
+  backgroundColor: theme.vars.palette.background.paper,
+  color: theme.vars.palette.primary.main,
+  fontSize: 12,
+
+  [theme.getColorSchemeSelector("dark")]: {
+    backgroundColor: theme.vars.palette.common.white,
+    color: theme.vars.palette.primary.contrastText,
+  },
+}));
 
 const ROLE_COLOR_MAP: Record<AdminRole, "error" | "default"> = {
   admin: "error",
@@ -495,7 +503,9 @@ const Admins = ({
           row: { image, name },
         }: GridRenderCellParams<AdminUser>) => (
           <Stack height="100%" direction="row" alignItems="center">
-            <StyledAvatar alt={name} src={image || undefined} />
+            <StyledAvatar alt={name} src={image || undefined}>
+              {name[0]}
+            </StyledAvatar>
           </Stack>
         ),
         sortable: false,

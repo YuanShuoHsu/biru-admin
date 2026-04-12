@@ -274,13 +274,13 @@ const Organizations = ({
         field: "logo",
         headerName: tOrganizations("logo"),
         renderCell: ({
-          row: { logo, name },
+          row: { logo, name, slug },
         }: GridRenderCellParams<Organization>) => (
           <Stack height="100%" flexDirection="row" alignItems="center">
             <StyledAvatar
               alt={name}
               src={logo || undefined}
-              {...stringAvatar(name)}
+              {...stringAvatar(slug)}
             />
           </Stack>
         ),

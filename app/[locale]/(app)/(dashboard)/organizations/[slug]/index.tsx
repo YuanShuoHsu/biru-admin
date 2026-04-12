@@ -53,14 +53,21 @@ import type {
   Member,
 } from "@/types/organizations";
 
-import { stringAvatar } from "@/utils/avatar";
+
 import { a11yProps } from "@/utils/tab";
 
-const StyledAvatar = styled(Avatar)({
+const StyledAvatar = styled(Avatar)(({ theme }) => ({
   width: 24,
   height: 24,
+  backgroundColor: theme.vars.palette.background.paper,
+  color: theme.vars.palette.primary.main,
   fontSize: 12,
-});
+
+  [theme.getColorSchemeSelector("dark")]: {
+    backgroundColor: theme.vars.palette.common.white,
+    color: theme.vars.palette.primary.contrastText,
+  },
+}));
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -438,11 +445,9 @@ const OrganizationsSlug = ({
           },
         }: GridRenderCellParams<Member>) => (
           <Stack height="100%" direction="row" alignItems="center">
-            <StyledAvatar
-              alt={name}
-              src={image || undefined}
-              {...stringAvatar(name)}
-            />
+            <StyledAvatar alt={name} src={image || undefined}>
+              {name[0]}
+            </StyledAvatar>
           </Stack>
         ),
         resizable: false,

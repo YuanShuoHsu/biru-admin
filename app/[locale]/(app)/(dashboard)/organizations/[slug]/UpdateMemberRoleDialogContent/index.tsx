@@ -44,6 +44,7 @@ const UpdateMemberRoleDialogContent = ({
 
   const locale = useLocale();
 
+  const tAdmins = useTranslations("admins");
   const tMembers = useTranslations("organizations.members");
 
   const updateMemberRoleFormSchema = useUpdateMemberRoleFormSchema();
@@ -54,7 +55,7 @@ const UpdateMemberRoleDialogContent = ({
     handleSubmit,
     register,
   } = useForm<UpdateMemberRoleFormInput, unknown, UpdateMemberRoleFormOutput>({
-    defaultValues: { role: member.role },
+    defaultValues: { email: member.user.email, role: member.role },
     resolver: zodResolver(updateMemberRoleFormSchema),
   });
 
@@ -92,6 +93,18 @@ const UpdateMemberRoleDialogContent = ({
       id="update-member-role-form"
       onSubmit={onSubmit}
     >
+      <TextField
+        autoComplete="email"
+        error={!!errors.email}
+        fullWidth
+        helperText={errors.email?.message}
+        label={tAdmins("email.label")}
+        placeholder={tAdmins("email.placeholder")}
+        required
+        slotProps={{ input: { readOnly: true } }}
+        type="email"
+        {...register("email")}
+      />
       <TextField
         error={!!errors.role}
         fullWidth
