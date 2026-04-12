@@ -197,6 +197,35 @@ const Admins = ({
     [fetchListUsers, paginationModel, setDialog, tAdmins],
   );
 
+  const handleSetUserPassword = useCallback(
+    (user: UserWithRole) => {
+      setDialog({
+        content: <SetUserPasswordDialogContent user={user} />,
+        formId: "set-user-password-form",
+        open: true,
+        title: tAdmins("actions.setUserPassword.title"),
+      });
+    },
+    [setDialog, tAdmins],
+  );
+
+  const handleUpdateUser = useCallback(
+    (user: AdminUser) => {
+      setDialog({
+        content: (
+          <UpdateUserDialogContent
+            fetchListUsers={() => fetchListUsers(paginationModel)}
+            user={user}
+          />
+        ),
+        formId: "update-user-form",
+        open: true,
+        title: tAdmins("actions.updateUser.title"),
+      });
+    },
+    [fetchListUsers, paginationModel, setDialog, tAdmins],
+  );
+
   const handleBanUser = useCallback(
     (user: UserWithRole) => {
       setDialog({
@@ -249,70 +278,6 @@ const Admins = ({
     [fetchListUsers, locale, paginationModel, setDialog, tAdmins],
   );
 
-  const handleUpdateUser = useCallback(
-    (user: AdminUser) => {
-      setDialog({
-        content: (
-          <UpdateUserDialogContent
-            fetchListUsers={() => fetchListUsers(paginationModel)}
-            user={user}
-          />
-        ),
-        formId: "update-user-form",
-        open: true,
-        title: tAdmins("actions.updateUser.title"),
-      });
-    },
-    [fetchListUsers, paginationModel, setDialog, tAdmins],
-  );
-
-  const handleSetUserPassword = useCallback(
-    (user: UserWithRole) => {
-      setDialog({
-        content: <SetUserPasswordDialogContent user={user} />,
-        formId: "set-user-password-form",
-        open: true,
-        title: tAdmins("actions.setUserPassword.title"),
-      });
-    },
-    [setDialog, tAdmins],
-  );
-
-  const handleRemoveUser = useCallback(
-    ({ id, email }: UserWithRole) => {
-      setDialog({
-        content: (
-          <DialogContentText>
-            {tAdmins.rich("actions.removeUser.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              email,
-            })}
-          </DialogContentText>
-        ),
-        onConfirm: async () => {
-          await authClient.admin.removeUser(
-            { userId: id },
-            {
-              onError: ({ error: { code } }) => {
-                const message = getErrorMessage(code, locale);
-                enqueueSnackbar(message, { variant: "error" });
-              },
-              onSuccess: () => {
-                const message = tAdmins("actions.removeUser.success");
-                enqueueSnackbar(message, { variant: "success" });
-
-                fetchListUsers(paginationModel);
-              },
-            },
-          );
-        },
-        open: true,
-        title: tAdmins("actions.removeUser.title"),
-      });
-    },
-    [fetchListUsers, locale, paginationModel, setDialog, tAdmins],
-  );
-
   const handleImpersonateUser = useCallback(
     (user: UserWithRole) => {
       setDialog({
@@ -356,6 +321,41 @@ const Admins = ({
     [locale, router, setDialog, setSession, tAdmins],
   );
 
+  const handleRemoveUser = useCallback(
+    ({ id, email }: UserWithRole) => {
+      setDialog({
+        content: (
+          <DialogContentText>
+            {tAdmins.rich("actions.removeUser.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              email,
+            })}
+          </DialogContentText>
+        ),
+        onConfirm: async () => {
+          await authClient.admin.removeUser(
+            { userId: id },
+            {
+              onError: ({ error: { code } }) => {
+                const message = getErrorMessage(code, locale);
+                enqueueSnackbar(message, { variant: "error" });
+              },
+              onSuccess: () => {
+                const message = tAdmins("actions.removeUser.success");
+                enqueueSnackbar(message, { variant: "success" });
+
+                fetchListUsers(paginationModel);
+              },
+            },
+          );
+        },
+        open: true,
+        title: tAdmins("actions.removeUser.title"),
+      });
+    },
+    [fetchListUsers, locale, paginationModel, setDialog, tAdmins],
+  );
+
   const columns = useMemo<GridColDef[]>(
     () => [
       {
@@ -385,6 +385,30 @@ const Admins = ({
                   <Edit fontSize="small" />
                 </IconButton>
               </Tooltip>
+              <Tooltip title={tAdmins("actions.setUserPassword.title")}>
+                <IconButton
+                  onClick={(event) => {
+                    event.stopPropagation();
+
+                    handleSetUserPassword(row);
+                  }}
+                  size="small"
+                >
+                  <Password fontSize="small" />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={tAdmins("actions.updateUser.title")}>
+                <IconButton
+                  onClick={(event) => {
+                    event.stopPropagation();
+
+                    handleUpdateUser(row as AdminUser);
+                  }}
+                  size="small"
+                >
+                  <ManageAccounts fontSize="small" />
+                </IconButton>
+              </Tooltip>
               <Tooltip
                 title={
                   isBanned
@@ -411,30 +435,6 @@ const Admins = ({
                   ) : (
                     <Block fontSize="small" />
                   )}
-                </IconButton>
-              </Tooltip>
-              <Tooltip title={tAdmins("actions.updateUser.title")}>
-                <IconButton
-                  onClick={(event) => {
-                    event.stopPropagation();
-
-                    handleUpdateUser(row as AdminUser);
-                  }}
-                  size="small"
-                >
-                  <ManageAccounts fontSize="small" />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title={tAdmins("actions.setUserPassword.title")}>
-                <IconButton
-                  onClick={(event) => {
-                    event.stopPropagation();
-
-                    handleSetUserPassword(row);
-                  }}
-                  size="small"
-                >
-                  <Password fontSize="small" />
                 </IconButton>
               </Tooltip>
               {hasUserSessions && (
