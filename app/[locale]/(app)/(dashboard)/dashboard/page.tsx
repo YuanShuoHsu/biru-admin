@@ -7,6 +7,8 @@ import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
+import type { Order } from "@/types/orders";
+
 import { getOrders } from "@/utils/orders";
 
 interface DashboardPageProps {
@@ -36,10 +38,12 @@ const DashboardPage = async ({ params }: DashboardPageProps) => {
         },
         fetchOptions,
       })
-      .then(({ data }) => ({ total: data?.total || 0 })),
+      .then(({ data }) => ({ total: data?.total || 0 }))
+      .catch(() => ({ total: 0 })),
     authClient.organization
       .list({ fetchOptions })
-      .then(({ data }) => ({ total: data?.length || 0 })),
+      .then(({ data }) => ({ total: data?.length || 0 }))
+      .catch(() => ({ total: 0 })),
     getOrders({
       page: 1,
       limit: 5,
@@ -47,7 +51,7 @@ const DashboardPage = async ({ params }: DashboardPageProps) => {
       search: "",
       sortBy: "createdAt",
       sortDir: "desc",
-    }),
+    }).catch(() => ({ data: [] as Order[], total: 0, page: 1, limit: 5 })),
   ]);
 
   return (

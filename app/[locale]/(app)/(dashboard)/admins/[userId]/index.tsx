@@ -12,6 +12,8 @@ import RevokeUserSessionDialogContent from "./RevokeUserSessionDialogContent";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
+import { useRouter } from "@/i18n/navigation";
+
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { DeleteOutline, LogoutOutlined } from "@mui/icons-material";
@@ -46,8 +48,14 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
 
   const apiRef = useGridApiRef();
 
-  const { session: currentSession } = useAuthStore((state) => state);
+  const { session: currentSession, setSession } = useAuthStore(
+    (state) => state,
+  );
   const { setDialog } = useDialogStore((state) => state);
+
+  const router = useRouter();
+
+  const isCurrentUser = user.id === currentSession?.user?.id;
 
   const format = useFormatter();
 
@@ -109,7 +117,12 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
                 { variant: "success" },
               );
 
-              fetchListUserSessions();
+              if (isCurrentUser) {
+                setSession(null);
+                router.replace("/");
+              } else {
+                fetchListUserSessions();
+              }
             },
           },
         );
@@ -137,7 +150,16 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
                   tUserSessions("actions.revokeUserSession.success"),
                   { variant: "success" },
                 );
-                fetchListUserSessions();
+
+                if (
+                  isCurrentUser &&
+                  session.token === currentSession?.session.token
+                ) {
+                  setSession(null);
+                  router.replace("/");
+                } else {
+                  fetchListUserSessions();
+                }
               },
             },
           );
@@ -146,7 +168,16 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
         title: tUserSessions("actions.revokeUserSession.title"),
       });
     },
-    [fetchListUserSessions, locale, setDialog, tUserSessions],
+    [
+      currentSession?.session.token,
+      fetchListUserSessions,
+      isCurrentUser,
+      locale,
+      router,
+      setDialog,
+      setSession,
+      tUserSessions,
+    ],
   );
 
   const columns = useMemo<GridColDef[]>(
