@@ -53,7 +53,6 @@ import type {
   Member,
 } from "@/types/organizations";
 
-
 import { a11yProps } from "@/utils/tab";
 
 const StyledAvatar = styled(Avatar)(({ theme }) => ({
