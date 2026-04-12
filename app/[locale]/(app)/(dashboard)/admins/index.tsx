@@ -19,6 +19,7 @@ import SetUserPasswordDialogContent from "./SetUserPasswordDialogContent";
 import UpdateUserDialogContent from "./UpdateUserDialogContent";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
+import { DEFAULT_AUTHENTICATED_ROUTE } from "@/constants/route";
 
 import { useRouter } from "@/i18n/navigation";
 
@@ -317,7 +318,7 @@ const Admins = ({
                   { variant: "success" },
                 );
 
-                router.replace("/order");
+                router.replace(DEFAULT_AUTHENTICATED_ROUTE);
               },
             },
           );

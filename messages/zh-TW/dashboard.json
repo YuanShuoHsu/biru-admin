@@ -1,0 +1,16 @@
+{
+  "label": "總覽",
+  "welcome": "歡迎回來，{name}",
+  "stats": {
+    "totalOrders": "總訂單數",
+    "totalUsers": "總使用者數",
+    "totalOrganizations": "總組織數",
+    "recentOrders": "近期訂單"
+  },
+  "quickActions": {
+    "label": "快速操作",
+    "viewOrders": "查看訂單",
+    "manageUsers": "管理使用者",
+    "manageOrganizations": "管理組織"
+  }
+}

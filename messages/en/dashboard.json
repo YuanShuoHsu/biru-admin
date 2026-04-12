@@ -1,0 +1,16 @@
+{
+  "label": "Dashboard",
+  "welcome": "Welcome back, {name}",
+  "stats": {
+    "totalOrders": "Total Orders",
+    "totalUsers": "Total Users",
+    "totalOrganizations": "Total Organizations",
+    "recentOrders": "Recent Orders"
+  },
+  "quickActions": {
+    "label": "Quick Actions",
+    "viewOrders": "View Orders",
+    "manageUsers": "Manage Users",
+    "manageOrganizations": "Manage Organizations"
+  }
+}

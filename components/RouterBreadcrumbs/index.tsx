@@ -17,6 +17,8 @@ import {
   AccountCircle,
   AdminPanelSettings,
   Business,
+  Dashboard,
+  Devices,
   Email,
   Gavel,
   Group,
@@ -35,7 +37,6 @@ import {
   Settings,
   ShoppingCart,
   Storefront,
-  Devices,
 } from "@mui/icons-material";
 import {
   Breadcrumbs,
@@ -114,6 +115,7 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
 
   const tAccount = useTranslations("account");
   const tAdmin = useTranslations("admins");
+  const tDashboard = useTranslations("dashboard");
   const tOrganizations = useTranslations("organizations");
   const tAuth = useTranslations("auth");
   const tCompany = useTranslations("company");
@@ -157,6 +159,11 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
   ];
 
   return [
+    {
+      icon: Dashboard,
+      label: tDashboard("label"),
+      to: "/dashboard",
+    },
     {
       children: [
         {

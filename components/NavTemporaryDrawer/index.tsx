@@ -20,10 +20,10 @@ import {
   AccountCircle,
   AdminPanelSettings,
   Business,
+  Dashboard,
   Description,
   ExpandMore,
   Group,
-  Home,
   Info,
   LocalMall,
   Person,
@@ -209,18 +209,7 @@ const useNavItems = () => {
   const isAuthPage = pathname.startsWith("/auth");
   const isCompanyPage = pathname.startsWith("/company");
 
-  // const { data: memberRole } = useSWR(
-  //   session ? "activeMemberRole" : null,
-  //   async () => {
-  //     const { data } = await authClient.organization.getActiveMemberRole();
-  //     return data?.role;
-  //   },
-  // );
-
-  // const hasAdminAccess =
-  //   memberRole === "owner" ||
-  //   memberRole === "admin" ||
-  //   session?.user?.role === "admin";
+  const isAdmin = session?.user?.role === "admin";
 
   const accountChildren = [
     ...useProfileMenuItems(),
@@ -238,10 +227,10 @@ const useNavItems = () => {
 
   const storeName = getStoreName(locale, stores, storeSlug);
 
-  const tHome = useTranslations("home");
   const tOrder = useTranslations("order");
   const tAuth = useTranslations("auth");
   const tAccount = useTranslations("account");
+  const tDashboard = useTranslations("dashboard");
   const tAdmin = useTranslations("admins");
   const tOrganizations = useTranslations("organizations");
   const tCompany = useTranslations("company");
@@ -277,27 +266,27 @@ const useNavItems = () => {
   ];
 
   const navItems: MenuItem[] = [
-    { icon: Home, label: tHome("label"), to: "/" },
+    { icon: Dashboard, label: tDashboard("label"), to: "/dashboard" },
     {
       children: dineInChildren,
       icon: ShoppingCart,
       label: tOrder("label"),
       to: "/order",
     },
-    // ...(hasAdminAccess
-    //   ? [
-    {
-      icon: AdminPanelSettings,
-      label: tAdmin("label"),
-      to: "/admins?page=1&pageSize=10",
-    },
+    ...(isAdmin
+      ? [
+          {
+            icon: AdminPanelSettings,
+            label: tAdmin("label"),
+            to: "/admins?page=1&pageSize=10",
+          },
+        ]
+      : []),
     {
       icon: Business,
       label: tOrganizations("label"),
       to: "/organizations",
     },
-    //   ]
-    // : []),
     session
       ? {
           children: accountChildren,

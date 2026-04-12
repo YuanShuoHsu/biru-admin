@@ -1,0 +1,16 @@
+{
+  "label": "대시보드",
+  "welcome": "다시 오신 것을 환영합니다, {name}",
+  "stats": {
+    "totalOrders": "총 주문 수",
+    "totalUsers": "총 사용자 수",
+    "totalOrganizations": "총 조직 수",
+    "recentOrders": "최근 주문"
+  },
+  "quickActions": {
+    "label": "빠른 작업",
+    "viewOrders": "주문 보기",
+    "manageUsers": "사용자 관리",
+    "manageOrganizations": "조직 관리"
+  }
+}

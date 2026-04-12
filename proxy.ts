@@ -10,6 +10,7 @@ import createMiddleware from "next-intl/middleware";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
+import { DEFAULT_AUTHENTICATED_ROUTE } from "./constants/route";
 import { routing } from "./i18n/routing";
 
 const fetchWithCookies = (url: string, request: NextRequest) =>
@@ -97,7 +98,7 @@ export const proxy = async (request: NextRequest) => {
     }
 
     if (isHomePage) {
-      request.nextUrl.pathname = `/${locale}/order`;
+      request.nextUrl.pathname = `/${locale}${DEFAULT_AUTHENTICATED_ROUTE}`;
       return NextResponse.redirect(request.nextUrl);
     }
   }

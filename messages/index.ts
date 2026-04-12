@@ -5,6 +5,7 @@ import auth from "./en/auth.json";
 import cart from "./en/cart.json";
 import common from "./en/common.json";
 import company from "./en/company.json";
+import dashboard from "./en/dashboard.json";
 import dataGrid from "./en/dataGrid.json";
 import dialog from "./en/dialog.json";
 import home from "./en/home.json";
@@ -21,6 +22,7 @@ const messages = {
   cart,
   common,
   company,
+  dashboard,
   dataGrid,
   dialog,
   home,

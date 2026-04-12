@@ -17,6 +17,8 @@ import FormCard, {
   StyledCardContent,
   StyledCardHeader,
 } from "@/components/FormCard";
+
+import { DEFAULT_AUTHENTICATED_ROUTE } from "@/constants/route";
 import { REMEMBER_ME } from "@/constants/sign-in";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -125,7 +127,7 @@ const Home = ({ locale, redirectTo, rememberMe }: HomeProps) => {
                   variant: "success",
                 });
 
-                router.replace(redirectTo || "/order");
+                router.replace(redirectTo || DEFAULT_AUTHENTICATED_ROUTE);
               },
             },
           });
