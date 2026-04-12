@@ -94,6 +94,7 @@
     }
   },
   "userSessions": {
+    "label": "User Sessions",
     "actions": {
       "label": "Actions",
       "revokeUserSession": {

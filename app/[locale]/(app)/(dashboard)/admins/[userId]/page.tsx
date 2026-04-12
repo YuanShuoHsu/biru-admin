@@ -27,21 +27,11 @@ const UserSessionsPage = async ({ params }: UserSessionsPageProps) => {
     },
   };
 
-  const [{ data: userData }, { data: sessionsData }] = await Promise.all([
-    authClient.admin.listUsers({
-      query: {
-        limit: 1,
-        offset: 0,
-        filterField: "id",
-        filterValue: userId,
-        filterOperator: "eq",
-      },
-      fetchOptions,
-    }),
+  const [{ data: user }, { data: sessionsData }] = await Promise.all([
+    authClient.admin.getUser({ query: { id: userId }, fetchOptions }),
     authClient.admin.listUserSessions({ userId, fetchOptions }),
   ]);
 
-  const user = userData?.users[0];
   const initialRows = sessionsData?.sessions || [];
 
   if (!user) notFound();

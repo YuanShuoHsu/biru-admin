@@ -94,6 +94,7 @@
     }
   },
   "userSessions": {
+    "label": "사용자 세션",
     "actions": {
       "label": "작업",
       "revokeUserSession": {

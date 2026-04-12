@@ -94,6 +94,7 @@
     }
   },
   "userSessions": {
+    "label": "用户 Sessions",
     "actions": {
       "label": "操作",
       "revokeUserSession": {

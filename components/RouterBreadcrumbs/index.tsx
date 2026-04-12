@@ -35,6 +35,7 @@ import {
   Settings,
   ShoppingCart,
   Storefront,
+  Devices,
 } from "@mui/icons-material";
 import {
   Breadcrumbs,
@@ -93,17 +94,11 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
   const { data: userEmail = "" } = useSWR(
     userId ? `admin-user-${userId}` : null,
     async () => {
-      const { data } = await authClient.admin.listUsers({
-        query: {
-          limit: 1,
-          offset: 0,
-          filterField: "id",
-          filterValue: userId,
-          filterOperator: "eq",
-        },
+      const { data } = await authClient.admin.getUser({
+        query: { id: userId },
       });
 
-      return data?.users[0].email;
+      return data?.email;
     },
   );
 
@@ -193,7 +188,7 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
     {
       children: [
         {
-          icon: ManageAccounts,
+          icon: Devices,
           label: userEmail,
           to: `/${userId}`,
         },

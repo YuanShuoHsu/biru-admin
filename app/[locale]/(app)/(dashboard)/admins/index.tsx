@@ -25,10 +25,11 @@ import { useRouter } from "@/i18n/navigation";
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import {
+  AssignmentInd,
   Block,
   CheckCircle,
   Delete,
-  Edit,
+  Devices,
   LockOpen,
   MailOutline,
   ManageAccounts,
@@ -36,7 +37,6 @@ import {
   PersonAdd,
   SupervisorAccount,
   UnsubscribeOutlined,
-  ViewList,
 } from "@mui/icons-material";
 import {
   Avatar,
@@ -382,7 +382,7 @@ const Admins = ({
                   }}
                   size="small"
                 >
-                  <Edit fontSize="small" />
+                  <AssignmentInd fontSize="small" />
                 </IconButton>
               </Tooltip>
               <Tooltip title={tAdmins("actions.setUserPassword.title")}>
@@ -438,11 +438,7 @@ const Admins = ({
                 </IconButton>
               </Tooltip>
               {hasUserSessions && (
-                <Tooltip
-                  title={tAdmins(
-                    "userSessions.actions.revokeUserSessions.title",
-                  )}
-                >
+                <Tooltip title={tAdmins("userSessions.label")}>
                   <IconButton
                     onClick={(event) => {
                       event.stopPropagation();
@@ -454,7 +450,7 @@ const Admins = ({
                       visibility: hasUserSession ? "visible" : "hidden",
                     }}
                   >
-                    <ViewList fontSize="small" />
+                    <Devices fontSize="small" />
                   </IconButton>
                 </Tooltip>
               )}
