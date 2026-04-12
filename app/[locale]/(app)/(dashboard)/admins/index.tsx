@@ -19,9 +19,12 @@ import SetUserPasswordDialogContent from "./SetUserPasswordDialogContent";
 import UpdateUserDialogContent from "./UpdateUserDialogContent";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
-import { DEFAULT_AUTHENTICATED_ROUTE } from "@/constants/route";
+import {
+  DEFAULT_AUTHENTICATED_ROUTE,
+  IMPERSONATE_RETURN_KEY,
+} from "@/constants/route";
 
-import { useRouter } from "@/i18n/navigation";
+import { usePathname, useRouter } from "@/i18n/navigation";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
@@ -124,6 +127,8 @@ const Admins = ({
   const format = useFormatter();
 
   const locale = useLocale();
+
+  const pathname = usePathname();
 
   const router = useRouter();
 
@@ -321,6 +326,11 @@ const Admins = ({
                   { variant: "success" },
                 );
 
+                sessionStorage.setItem(
+                  IMPERSONATE_RETURN_KEY,
+                  `${pathname}?page=${paginationModel.page}&pageSize=${paginationModel.pageSize}`,
+                );
+
                 router.replace(DEFAULT_AUTHENTICATED_ROUTE);
               },
             },
@@ -330,7 +340,7 @@ const Admins = ({
         title: tAdmins("actions.impersonateUser.title"),
       });
     },
-    [locale, router, setDialog, setSession, tAdmins],
+    [locale, paginationModel, pathname, router, setDialog, setSession, tAdmins],
   );
 
   const handleRemoveUser = useCallback(

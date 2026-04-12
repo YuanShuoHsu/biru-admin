@@ -14,6 +14,7 @@ import ModeToggle from "./ModeToggle";
 
 import BrandMark from "@/components/BrandMark";
 
+import { IMPERSONATE_RETURN_KEY } from "@/constants/route";
 import { SCROLL_TRIGGER_THRESHOLD } from "@/constants/scroll";
 
 import { useRouter } from "@/i18n/navigation";
@@ -105,7 +106,12 @@ const HideAppBar = () => {
                 variant: "success",
               });
 
-              router.replace("/admins?page=1&pageSize=10");
+              const returnTo =
+                sessionStorage.getItem(IMPERSONATE_RETURN_KEY) ||
+                "/admins?page=1&pageSize=10";
+              sessionStorage.removeItem(IMPERSONATE_RETURN_KEY);
+
+              router.replace(returnTo);
             },
           },
         });
