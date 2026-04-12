@@ -28,14 +28,26 @@ const DashboardPage = async ({ params }: DashboardPageProps) => {
   const [usersData, organizationsData, ordersData] = await Promise.all([
     authClient.admin
       .listUsers({
-        query: { limit: 1, offset: 0, sortBy: "createdAt", sortDirection: "desc" },
+        query: {
+          limit: 1,
+          offset: 0,
+          sortBy: "createdAt",
+          sortDirection: "desc",
+        },
         fetchOptions,
       })
       .then(({ data }) => ({ total: data?.total || 0 })),
     authClient.organization
       .list({ fetchOptions })
       .then(({ data }) => ({ total: data?.length || 0 })),
-    getOrders({ page: 1, limit: 5, status: "", search: "", sortBy: "createdAt", sortDir: "desc" }),
+    getOrders({
+      page: 1,
+      limit: 5,
+      status: "",
+      search: "",
+      sortBy: "createdAt",
+      sortDir: "desc",
+    }),
   ]);
 
   return (

@@ -98,9 +98,7 @@ const Dashboard = ({ stats, recentOrders }: DashboardProps) => {
                       {value.toLocaleString()}
                     </Typography>
                   </Stack>
-                  <Box sx={{ color: "primary.main", fontSize: 40 }}>
-                    {icon}
-                  </Box>
+                  <Box sx={{ color: "primary.main", fontSize: 40 }}>{icon}</Box>
                 </Stack>
               </CardContent>
             </CardActionArea>
