@@ -117,6 +117,9 @@ const Admins = ({
   const { setDialog } = useDialogStore((state) => state);
 
   const currentUserId = session?.user?.id;
+  const hasImpersonableUser = rows.some(
+    (row) => row.id !== currentUserId && row.role !== "admin",
+  );
 
   const format = useFormatter();
 
@@ -463,20 +466,27 @@ const Admins = ({
                   </IconButton>
                 </Tooltip>
               )}
-              <Tooltip title={tAdmins("actions.impersonateUser.title")}>
-                <IconButton
-                  color="info"
-                  onClick={(event) => {
-                    event.stopPropagation();
+              {hasImpersonableUser && (
+                <Tooltip title={tAdmins("actions.impersonateUser.title")}>
+                  <IconButton
+                    color="info"
+                    onClick={(event) => {
+                      event.stopPropagation();
 
-                    handleImpersonateUser(row);
-                  }}
-                  size="small"
-                  sx={{ visibility: isCurrentUser ? "hidden" : "visible" }}
-                >
-                  <SupervisorAccount fontSize="small" />
-                </IconButton>
-              </Tooltip>
+                      handleImpersonateUser(row);
+                    }}
+                    size="small"
+                    sx={{
+                      visibility:
+                        isCurrentUser || row.role === "admin"
+                          ? "hidden"
+                          : "visible",
+                    }}
+                  >
+                    <SupervisorAccount fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              )}
               <Tooltip title={tAdmins("actions.removeUser.title")}>
                 <IconButton
                   color="error"
@@ -620,12 +630,13 @@ const Admins = ({
       currentUserId,
       format,
       handleBanUser,
-      handleRemoveUser,
-      handleUpdateUser,
       handleImpersonateUser,
-      handleSetUserPassword,
+      handleRemoveUser,
       handleSetRole,
+      handleSetUserPassword,
       handleUnbanUser,
+      handleUpdateUser,
+      hasImpersonableUser,
       router,
       tAdmins,
       userSessions,
