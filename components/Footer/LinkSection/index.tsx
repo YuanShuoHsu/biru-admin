@@ -13,7 +13,10 @@ import { useAuthStore } from "@/providers/auth-store-provider";
 
 import type { MenuItem } from "@/types/menuItem";
 
-import { useAccountSettingsMenuItem, useAddAnotherAccountMenuItem } from "@/utils/account";
+import {
+  useAccountSettingsMenuItem,
+  useAddAnotherAccountMenuItem,
+} from "@/utils/account";
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
   display: "flex",

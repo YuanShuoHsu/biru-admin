@@ -57,7 +57,10 @@ import type { MenuItem } from "@/types/menuItem";
 import type { Store, StoreName } from "@/types/stores";
 
 import { RouteParams } from "@/types/routeParams";
-import { useAccountSettingsMenuItem, useAddAnotherAccountMenuItem } from "@/utils/account";
+import {
+  useAccountSettingsMenuItem,
+  useAddAnotherAccountMenuItem,
+} from "@/utils/account";
 import { handleDrawerToggle } from "@/utils/drawer";
 import { getHref } from "@/utils/href";
 import { getStoreName } from "@/utils/stores";
@@ -389,63 +392,65 @@ const NavTemporaryDrawer = () => {
     setOpenMap((prev) => ({ ...prev, [key]: !prev[key] }));
 
   const renderItems = (items: MenuItem[], level = 0, parentPath = "/") =>
-    items.map(({ children, disabled, icon, label, onClick, slot, to }, index) => {
-      const [toPath, toSearchParams] = to?.split("?") || [];
-      const search = toSearchParams || "";
-      const queryString = search ? `?${search}` : "";
+    items.map(
+      ({ children, disabled, icon, label, onClick, slot, to }, index) => {
+        const [toPath, toSearchParams] = to?.split("?") || [];
+        const search = toSearchParams || "";
+        const queryString = search ? `?${search}` : "";
 
-      const parentPrefix = parentPath === "/" ? "" : parentPath;
-      const basePath = toPath ? `${parentPrefix}${toPath}` : parentPath;
-      const isExpandable = Boolean(children?.length);
-      const href =
-        to && !isExpandable ? `${basePath}${queryString}` : undefined;
+        const parentPrefix = parentPath === "/" ? "" : parentPath;
+        const basePath = toPath ? `${parentPrefix}${toPath}` : parentPath;
+        const isExpandable = Boolean(children?.length);
+        const href =
+          to && !isExpandable ? `${basePath}${queryString}` : undefined;
 
-      const itemKey = toPath || `${level}-${index}`;
-      const open = Boolean(isExpandable && openMap[itemKey]);
-      const selected =
-        basePath === "/"
-          ? pathname === basePath
-          : pathname === basePath || pathname.startsWith(`${basePath}/`);
+        const itemKey = toPath || `${level}-${index}`;
+        const open = Boolean(isExpandable && openMap[itemKey]);
+        const selected =
+          basePath === "/"
+            ? pathname === basePath
+            : pathname === basePath || pathname.startsWith(`${basePath}/`);
 
-      const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
-        if (isExpandable) {
-          event.stopPropagation();
+        const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+          if (isExpandable) {
+            event.stopPropagation();
 
-          if (to) handleIconButtonToggle(itemKey);
+            if (to) handleIconButtonToggle(itemKey);
 
-          return;
-        }
+            return;
+          }
 
-        onClick?.();
-      };
+          onClick?.();
+        };
 
-      return (
-        <Fragment key={itemKey}>
-          {slot ? (
-            slot({ level })
-          ) : (
-            <ListItemLink
-              disabled={disabled}
-              href={href}
-              icon={icon}
-              isExpandable={isExpandable}
-              label={label}
-              level={level}
-              onClick={handleClick}
-              open={open}
-              selected={selected}
-            />
-          )}
-          {isExpandable && (
-            <Collapse in={open} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                {renderItems(children!, level + 1, basePath)}
-              </List>
-            </Collapse>
-          )}
-        </Fragment>
-      );
-    });
+        return (
+          <Fragment key={itemKey}>
+            {slot ? (
+              slot({ level })
+            ) : (
+              <ListItemLink
+                disabled={disabled}
+                href={href}
+                icon={icon}
+                isExpandable={isExpandable}
+                label={label}
+                level={level}
+                onClick={handleClick}
+                open={open}
+                selected={selected}
+              />
+            )}
+            {isExpandable && (
+              <Collapse in={open} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  {renderItems(children!, level + 1, basePath)}
+                </List>
+              </Collapse>
+            )}
+          </Fragment>
+        );
+      },
+    );
 
   const list = (
     <StyledBox

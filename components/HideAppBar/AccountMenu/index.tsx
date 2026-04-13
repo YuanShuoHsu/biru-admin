@@ -37,7 +37,10 @@ import { useAuthStore } from "@/providers/auth-store-provider";
 
 import type { MenuItem as MenuItemData } from "@/types/menuItem";
 
-import { useAccountSettingsMenuItem, useAddAnotherAccountMenuItem } from "@/utils/account";
+import {
+  useAccountSettingsMenuItem,
+  useAddAnotherAccountMenuItem,
+} from "@/utils/account";
 import { getDisplayName } from "@/utils/auth";
 import { getHref } from "@/utils/href";
 
@@ -224,7 +227,10 @@ const AccountMenu = () => {
           </StyledListSubheader>
         )}
         <Divider />
-        {renderMenuItems(pathname, "/account", [accountSettingsItem, logoutMenuItem])}
+        {renderMenuItems(pathname, "/account", [
+          accountSettingsItem,
+          logoutMenuItem,
+        ])}
         <Divider />
         {renderMenuItems(pathname, "/account", [addAnotherAccountItem])}
       </StyledMenu>
