@@ -37,10 +37,11 @@ const useFooterItems = (): MenuItem[] => {
 
   const accountSettingsItem = useAccountSettingsMenuItem();
   const addAnotherAccountItem = useAddAnotherAccountMenuItem();
+  const logoutMenuItem = useLogoutMenuItem();
 
   const accountChildren = [
     accountSettingsItem,
-    useLogoutMenuItem(),
+    logoutMenuItem,
     addAnotherAccountItem,
   ];
 
