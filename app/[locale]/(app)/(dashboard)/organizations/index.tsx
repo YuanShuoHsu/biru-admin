@@ -44,16 +44,22 @@ import {
   type OrganizationPermissions,
 } from "@/utils/organizations";
 
+const DataGrid = dynamic(
+  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
+  { ssr: false },
+);
+
+const StyledIconButton = styled(IconButton, {
+  shouldForwardProp: (prop) => prop !== "visible",
+})<{ visible: boolean }>(({ visible }) => ({
+  visibility: visible ? "visible" : "hidden",
+}));
+
 const StyledAvatar = styled(Avatar)({
   width: 24,
   height: 24,
   fontSize: 12,
 });
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 interface OrganizationsProps {
   organizationPermissions: OrganizationPermissions;
@@ -229,26 +235,24 @@ const Organizations = ({
                 <Tooltip
                   title={tOrganizations("actions.updateOrganization.title")}
                 >
-                  <IconButton
+                  <StyledIconButton
                     onClick={(event) => {
                       event.stopPropagation();
 
                       handleUpdateOrganization(row);
                     }}
                     size="small"
-                    sx={{
-                      visibility: canUpdateOrganization ? "visible" : "hidden",
-                    }}
+                    visible={canUpdateOrganization}
                   >
                     <Edit fontSize="small" />
-                  </IconButton>
+                  </StyledIconButton>
                 </Tooltip>
               )}
               {canDeleteOrganizations && (
                 <Tooltip
                   title={tOrganizations("actions.deleteOrganization.title")}
                 >
-                  <IconButton
+                  <StyledIconButton
                     color="error"
                     onClick={(event) => {
                       event.stopPropagation();
@@ -256,12 +260,10 @@ const Organizations = ({
                       handleDeleteOrganization(row);
                     }}
                     size="small"
-                    sx={{
-                      visibility: canDeleteOrganization ? "visible" : "hidden",
-                    }}
+                    visible={canDeleteOrganization}
                   >
                     <Delete fontSize="small" />
-                  </IconButton>
+                  </StyledIconButton>
                 </Tooltip>
               )}
             </Stack>

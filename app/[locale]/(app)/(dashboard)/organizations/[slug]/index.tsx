@@ -55,6 +55,17 @@ import type {
 
 import { a11yProps } from "@/utils/tab";
 
+const DataGrid = dynamic(
+  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
+  { ssr: false },
+);
+
+const StyledIconButton = styled(IconButton, {
+  shouldForwardProp: (prop) => prop !== "visible",
+})<{ visible: boolean }>(({ visible }) => ({
+  visibility: visible ? "visible" : "hidden",
+}));
+
 const StyledAvatar = styled(Avatar)(({ theme }) => ({
   width: 24,
   height: 24,
@@ -69,11 +80,6 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
     color: theme.vars.palette.primary.contrastText,
   },
 }));
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 const ROLE_COLOR_MAP: Record<string, "error" | "warning" | "default"> = {
   owner: "error",
@@ -378,26 +384,24 @@ const OrganizationsSlug = ({
             <Stack height="100%" direction="row" alignItems="center" gap={0.5}>
               {canUpdateMemberRoles && (
                 <Tooltip title={tMembers("actions.updateMemberRole.title")}>
-                  <IconButton
+                  <StyledIconButton
                     onClick={(event) => {
                       event.stopPropagation();
 
                       handleUpdateMemberRole(row);
                     }}
                     size="small"
-                    sx={{
-                      visibility: canUpdateMemberRole ? "visible" : "hidden",
-                    }}
+                    visible={canUpdateMemberRole}
                   >
                     <Edit fontSize="small" />
-                  </IconButton>
+                  </StyledIconButton>
                 </Tooltip>
               )}
               {canLeaveOrganizations && (
                 <Tooltip
                   title={tOrganizations("actions.leaveOrganization.title")}
                 >
-                  <IconButton
+                  <StyledIconButton
                     color="error"
                     onClick={(event) => {
                       event.stopPropagation();
@@ -405,17 +409,15 @@ const OrganizationsSlug = ({
                       handleLeaveOrganization();
                     }}
                     size="small"
-                    sx={{
-                      visibility: canLeaveOrganization ? "visible" : "hidden",
-                    }}
+                    visible={canLeaveOrganization}
                   >
                     <ExitToApp fontSize="small" />
-                  </IconButton>
+                  </StyledIconButton>
                 </Tooltip>
               )}
               {canRemoveMembers && (
                 <Tooltip title={tMembers("actions.removeMember.title")}>
-                  <IconButton
+                  <StyledIconButton
                     color="error"
                     onClick={(event) => {
                       event.stopPropagation();
@@ -423,12 +425,10 @@ const OrganizationsSlug = ({
                       handleRemoveMember(row);
                     }}
                     size="small"
-                    sx={{
-                      visibility: canRemoveMember ? "visible" : "hidden",
-                    }}
+                    visible={canRemoveMember}
                   >
                     <PersonRemove fontSize="small" />
-                  </IconButton>
+                  </StyledIconButton>
                 </Tooltip>
               )}
             </Stack>

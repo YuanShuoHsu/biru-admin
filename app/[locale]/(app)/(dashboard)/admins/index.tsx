@@ -72,6 +72,12 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
+const StyledIconButton = styled(IconButton, {
+  shouldForwardProp: (prop) => prop !== "visible",
+})<{ visible: boolean }>(({ visible }) => ({
+  visibility: visible ? "visible" : "hidden",
+}));
+
 const StyledAvatar = styled(Avatar)(({ theme }) => ({
   width: 24,
   height: 24,
@@ -86,7 +92,6 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
     color: theme.vars.palette.primary.contrastText,
   },
 }));
-
 const ROLE_COLOR_MAP: Record<AdminRole, "error" | "default"> = {
   admin: "error",
   user: "default",
@@ -440,7 +445,7 @@ const Admins = ({
                     : tAdmins("actions.banUser.title")
                 }
               >
-                <IconButton
+                <StyledIconButton
                   color={isBanned ? "success" : "warning"}
                   onClick={(event) => {
                     event.stopPropagation();
@@ -452,35 +457,33 @@ const Admins = ({
                     }
                   }}
                   size="small"
-                  sx={{ visibility: isCurrentUser ? "hidden" : "visible" }}
+                  visible={!isCurrentUser}
                 >
                   {isBanned ? (
                     <LockOpen fontSize="small" />
                   ) : (
                     <Block fontSize="small" />
                   )}
-                </IconButton>
+                </StyledIconButton>
               </Tooltip>
               {hasUserSessions && (
                 <Tooltip title={tAdmins("userSessions.label")}>
-                  <IconButton
+                  <StyledIconButton
                     onClick={(event) => {
                       event.stopPropagation();
 
                       router.push(`/admins/${row.id}`);
                     }}
                     size="small"
-                    sx={{
-                      visibility: hasUserSession ? "visible" : "hidden",
-                    }}
+                    visible={hasUserSession}
                   >
                     <Devices fontSize="small" />
-                  </IconButton>
+                  </StyledIconButton>
                 </Tooltip>
               )}
               {hasImpersonableUser && (
                 <Tooltip title={tAdmins("actions.impersonateUser.title")}>
-                  <IconButton
+                  <StyledIconButton
                     color="info"
                     onClick={(event) => {
                       event.stopPropagation();
@@ -488,19 +491,14 @@ const Admins = ({
                       handleImpersonateUser(row);
                     }}
                     size="small"
-                    sx={{
-                      visibility:
-                        isCurrentUser || row.role === "admin"
-                          ? "hidden"
-                          : "visible",
-                    }}
+                    visible={!isCurrentUser && row.role !== "admin"}
                   >
                     <SupervisorAccount fontSize="small" />
-                  </IconButton>
+                  </StyledIconButton>
                 </Tooltip>
               )}
               <Tooltip title={tAdmins("actions.removeUser.title")}>
-                <IconButton
+                <StyledIconButton
                   color="error"
                   onClick={(event) => {
                     event.stopPropagation();
@@ -508,10 +506,10 @@ const Admins = ({
                     handleRemoveUser(row);
                   }}
                   size="small"
-                  sx={{ visibility: isCurrentUser ? "hidden" : "visible" }}
+                  visible={!isCurrentUser}
                 >
                   <Delete fontSize="small" />
-                </IconButton>
+                </StyledIconButton>
               </Tooltip>
             </Stack>
           );
