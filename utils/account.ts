@@ -2,7 +2,12 @@
 
 import { useTranslations } from "next-intl";
 
-import { ManageAccounts, PersonAdd, PersonOutlined, Settings } from "@mui/icons-material";
+import {
+  ManageAccounts,
+  PersonAdd,
+  PersonOutlined,
+  Settings,
+} from "@mui/icons-material";
 
 import type { MenuItem } from "@/types/menuItem";
 

@@ -10,7 +10,9 @@ export const getDisplayName = (user?: Session["user"] | null) => {
       ? [user.firstName, user.lastName]
       : [user.lastName, user.firstName];
 
-  const name = nameParts.filter(Boolean).join(user.lang === LocaleEnum.En ? " " : "");
+  const name = nameParts
+    .filter(Boolean)
+    .join(user.lang === LocaleEnum.En ? " " : "");
 
   return name || user.email || "";
 };
