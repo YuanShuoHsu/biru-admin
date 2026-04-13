@@ -37,7 +37,7 @@ import { useAuthStore } from "@/providers/auth-store-provider";
 
 import type { MenuItem as MenuItemData } from "@/types/menuItem";
 
-import { useAccountMenuItems, useProfileMenuItems } from "@/utils/account";
+import { useAccountSettingsMenuItem, useAddAnotherAccountMenuItem } from "@/utils/account";
 import { getDisplayName } from "@/utils/auth";
 import { getHref } from "@/utils/href";
 
@@ -166,8 +166,9 @@ const AccountMenu = () => {
 
   const handleClose = () => setAnchorEl(null);
 
-  const profileMenuItems = useProfileMenuItems();
-  const accountMenuItems = [...useAccountMenuItems(), useLogoutMenuItem()];
+  const accountSettingsItem = useAccountSettingsMenuItem();
+  const addAnotherAccountItem = useAddAnotherAccountMenuItem();
+  const logoutMenuItem = useLogoutMenuItem();
 
   return (
     <>
@@ -223,9 +224,9 @@ const AccountMenu = () => {
           </StyledListSubheader>
         )}
         <Divider />
-        {renderMenuItems(pathname, "/account", profileMenuItems)}
+        {renderMenuItems(pathname, "/account", [accountSettingsItem, logoutMenuItem])}
         <Divider />
-        {renderMenuItems(pathname, "/account", accountMenuItems)}
+        {renderMenuItems(pathname, "/account", [addAnotherAccountItem])}
       </StyledMenu>
     </>
   );

@@ -13,7 +13,7 @@ import { useAuthStore } from "@/providers/auth-store-provider";
 
 import type { MenuItem } from "@/types/menuItem";
 
-import { useAccountMenuItems, useProfileMenuItems } from "@/utils/account";
+import { useAccountSettingsMenuItem, useAddAnotherAccountMenuItem } from "@/utils/account";
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
   display: "flex",
@@ -32,10 +32,13 @@ const useFooterItems = (): MenuItem[] => {
 
   const authChildren = useAuthMenuItems();
 
+  const accountSettingsItem = useAccountSettingsMenuItem();
+  const addAnotherAccountItem = useAddAnotherAccountMenuItem();
+
   const accountChildren = [
-    ...useProfileMenuItems(),
-    ...useAccountMenuItems(),
+    accountSettingsItem,
     useLogoutMenuItem(),
+    addAnotherAccountItem,
   ];
 
   return [

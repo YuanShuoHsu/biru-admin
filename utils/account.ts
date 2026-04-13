@@ -2,45 +2,26 @@
 
 import { useTranslations } from "next-intl";
 
-import {
-  ManageAccounts,
-  PersonAdd,
-  PersonOutlined,
-  Settings,
-} from "@mui/icons-material";
+import { PersonAdd, Settings } from "@mui/icons-material";
 
 import type { MenuItem } from "@/types/menuItem";
 
-export const useProfileMenuItems = (): MenuItem[] => {
+export const useAddAnotherAccountMenuItem = (): MenuItem => {
   const tAccount = useTranslations("account");
 
-  return [
-    {
-      icon: PersonOutlined,
-      label: tAccount("accountMenu.profile"),
-      to: "/profile",
-    },
-    {
-      icon: ManageAccounts,
-      label: tAccount("accountMenu.myAccount"),
-      to: "/my-account",
-    },
-  ];
+  return {
+    icon: PersonAdd,
+    label: tAccount("accountMenu.addAnotherAccount"),
+    to: "/add-another-account",
+  };
 };
 
-export const useAccountMenuItems = (): MenuItem[] => {
+export const useAccountSettingsMenuItem = (): MenuItem => {
   const tAccount = useTranslations("account");
 
-  return [
-    {
-      icon: PersonAdd,
-      label: tAccount("accountMenu.addAnotherAccount"),
-      to: "/add-another-account",
-    },
-    {
-      icon: Settings,
-      label: tAccount("accountSettings.label"),
-      to: "/account-settings",
-    },
-  ];
+  return {
+    icon: Settings,
+    label: tAccount("accountSettings.label"),
+    to: "/account-settings",
+  };
 };

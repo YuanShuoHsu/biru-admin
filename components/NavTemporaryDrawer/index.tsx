@@ -57,7 +57,7 @@ import type { MenuItem } from "@/types/menuItem";
 import type { Store, StoreName } from "@/types/stores";
 
 import { RouteParams } from "@/types/routeParams";
-import { useAccountMenuItems, useProfileMenuItems } from "@/utils/account";
+import { useAccountSettingsMenuItem, useAddAnotherAccountMenuItem } from "@/utils/account";
 import { handleDrawerToggle } from "@/utils/drawer";
 import { getHref } from "@/utils/href";
 import { getStoreName } from "@/utils/stores";
@@ -211,11 +211,15 @@ const useNavItems = () => {
 
   const isAdmin = session?.user?.role === "admin";
 
+  const accountSettingsItem = useAccountSettingsMenuItem();
+  const addAnotherAccountItem = useAddAnotherAccountMenuItem();
+  const logoutMenuItem = useLogoutMenuItem();
+
   const accountChildren = [
-    ...useProfileMenuItems(),
+    accountSettingsItem,
+    logoutMenuItem,
     dividerSlot,
-    ...useAccountMenuItems(),
-    useLogoutMenuItem(),
+    addAnotherAccountItem,
   ];
 
   const redirect =
@@ -227,13 +231,13 @@ const useNavItems = () => {
 
   const storeName = getStoreName(locale, stores, storeSlug);
 
-  const tOrder = useTranslations("order");
-  const tAuth = useTranslations("auth");
   const tAccount = useTranslations("account");
-  const tDashboard = useTranslations("dashboard");
   const tAdmin = useTranslations("admins");
-  const tOrganizations = useTranslations("organizations");
+  const tAuth = useTranslations("auth");
   const tCompany = useTranslations("company");
+  const tDashboard = useTranslations("dashboard");
+  const tOrder = useTranslations("order");
+  const tOrganizations = useTranslations("organizations");
 
   const dineInChildren: MenuItem[] = [
     ...(mode === ORDER_MODE.DineIn && storeSlug && storeName
@@ -385,7 +389,7 @@ const NavTemporaryDrawer = () => {
     setOpenMap((prev) => ({ ...prev, [key]: !prev[key] }));
 
   const renderItems = (items: MenuItem[], level = 0, parentPath = "/") =>
-    items.map(({ children, disabled, icon, label, onClick, slot, to }) => {
+    items.map(({ children, disabled, icon, label, onClick, slot, to }, index) => {
       const [toPath, toSearchParams] = to?.split("?") || [];
       const search = toSearchParams || "";
       const queryString = search ? `?${search}` : "";
@@ -396,7 +400,7 @@ const NavTemporaryDrawer = () => {
       const href =
         to && !isExpandable ? `${basePath}${queryString}` : undefined;
 
-      const itemKey = toPath || `${label}-${level}`;
+      const itemKey = toPath || `${level}-${index}`;
       const open = Boolean(isExpandable && openMap[itemKey]);
       const selected =
         basePath === "/"
