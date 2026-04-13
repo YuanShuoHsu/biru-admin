@@ -24,9 +24,12 @@ import {
   IconButton,
   ListItemIcon,
   ListItemText,
+  ListSubheader,
   Menu,
   MenuItem,
+  Stack,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -64,21 +67,58 @@ const StyledMenu = styled(Menu)(({ theme }) => ({
     marginTop: theme.spacing(7),
   },
 
-  "& .MuiPaper-root": {
-    "& .MuiAvatar-root": {
-      width: theme.spacing(2.5),
-      height: theme.spacing(2.5),
-    },
-
-    "& .MuiListItemIcon-root": {
-      minWidth: 0,
-    },
-
-    "& .MuiMenuItem-root": {
-      gap: theme.spacing(2),
-    },
+  "& .MuiDivider-root": {
+    marginBlock: theme.spacing(0.5),
   },
 }));
+
+const StyledListSubheader = styled(ListSubheader)(({ theme }) => ({
+  backgroundImage: "var(--Paper-overlay)",
+  display: "flex",
+  alignItems: "center",
+  gap: theme.spacing(2),
+}));
+
+const StyledHeaderAvatar = styled(StyledAvatar)(({ theme }) => ({
+  width: 36,
+  height: 36,
+  border: `1px solid ${theme.vars.palette.primary.main}`,
+  fontSize: 18,
+
+  [theme.getColorSchemeSelector("dark")]: {
+    borderColor: theme.vars.palette.common.white,
+  },
+}));
+
+const renderMenuItems = (
+  pathname: string,
+  basePath: string,
+  items: MenuItemData[],
+) =>
+  items.map(({ disabled, icon: Icon, label, onClick, to }, index) => {
+    const key = to || index;
+    const href = to && `${basePath}${to}`;
+    const selected = href
+      ? pathname === href || pathname.startsWith(`${href}/`)
+      : false;
+
+    return (
+      <MenuItem
+        disabled={disabled}
+        key={key}
+        onClick={onClick}
+        selected={selected}
+        {...(href ? { component: Link, href } : {})}
+      >
+        {Icon && (
+          <ListItemIcon>
+            <Icon fontSize="small" />
+          </ListItemIcon>
+        )}
+        <ListItemText primary={label} />
+      </MenuItem>
+    );
+  });
 
 const AccountMenu = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -129,33 +169,6 @@ const AccountMenu = () => {
   const profileMenuItems = useProfileMenuItems();
   const accountMenuItems = [...useAccountMenuItems(), useLogoutMenuItem()];
 
-  const renderMenuItems = (items: MenuItemData[]) =>
-    items.map(({ disabled, icon: Icon, label, onClick, to }, index) => {
-      const key = to || index;
-      const href = to && `/account${to}`;
-
-      const selected = href
-        ? pathname === href || pathname.startsWith(`${href}/`)
-        : false;
-
-      return (
-        <MenuItem
-          disabled={disabled}
-          key={key}
-          onClick={onClick}
-          selected={selected}
-          {...(href ? { component: Link, href } : {})}
-        >
-          {Icon && (
-            <ListItemIcon>
-              <Icon fontSize="small" />
-            </ListItemIcon>
-          )}
-          <ListItemText primary={label} />
-        </MenuItem>
-      );
-    });
-
   return (
     <>
       <Tooltip title={tooltipTitle}>
@@ -190,9 +203,29 @@ const AccountMenu = () => {
         open={open}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
       >
-        {renderMenuItems(profileMenuItems)}
+        {session && (
+          <StyledListSubheader>
+            <StyledHeaderAvatar
+              alt={displayName}
+              isSignedIn
+              src={session.user.image || undefined}
+            >
+              {displayName[0]}
+            </StyledHeaderAvatar>
+            <Stack gap={1}>
+              <Typography fontWeight="bold" variant="body2">
+                {displayName}
+              </Typography>
+              <Typography color="text.secondary" variant="caption">
+                {session.user.email}
+              </Typography>
+            </Stack>
+          </StyledListSubheader>
+        )}
         <Divider />
-        {renderMenuItems(accountMenuItems)}
+        {renderMenuItems(pathname, "/account", profileMenuItems)}
+        <Divider />
+        {renderMenuItems(pathname, "/account", accountMenuItems)}
       </StyledMenu>
     </>
   );

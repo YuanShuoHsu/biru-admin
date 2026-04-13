@@ -2,8 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
-import { PersonAdd, Settings } from "@mui/icons-material";
-import { Avatar } from "@mui/material";
+import { ManageAccounts, PersonAdd, PersonOutlined, Settings } from "@mui/icons-material";
 
 import type { MenuItem } from "@/types/menuItem";
 
@@ -12,12 +11,12 @@ export const useProfileMenuItems = (): MenuItem[] => {
 
   return [
     {
-      icon: Avatar,
+      icon: PersonOutlined,
       label: tAccount("accountMenu.profile"),
       to: "/profile",
     },
     {
-      icon: Avatar,
+      icon: ManageAccounts,
       label: tAccount("accountMenu.myAccount"),
       to: "/my-account",
     },
