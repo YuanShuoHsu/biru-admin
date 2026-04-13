@@ -59,11 +59,13 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
   width: 24,
   height: 24,
   backgroundColor: theme.vars.palette.background.paper,
+  border: `1px solid ${theme.vars.palette.primary.main}`,
   color: theme.vars.palette.primary.main,
   fontSize: 12,
 
   [theme.getColorSchemeSelector("dark")]: {
     backgroundColor: theme.vars.palette.common.white,
+    border: `1px solid ${theme.vars.palette.primary.main}`,
     color: theme.vars.palette.primary.contrastText,
   },
 }));

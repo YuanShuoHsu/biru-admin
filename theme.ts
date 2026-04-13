@@ -89,7 +89,11 @@ const theme = createTheme({
     MuiAvatar: {
       styleOverrides: {
         root: ({ theme }) => ({
-          transition: theme.transitions.create(["background-color", "color"]),
+          transition: theme.transitions.create([
+            "background-color",
+            "border-color",
+            "color",
+          ]),
         }),
       },
     },
