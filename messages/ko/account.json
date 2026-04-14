@@ -1,11 +1,10 @@
 {
   "label": "계정",
+  "switchSession": {
+    "success": "{email} 계정으로 성공적으로 전환했습니다"
+  },
   "accountMenu": {
-    "這邊未來要根據頁面修正": "",
-    "addAnotherAccount": "다른 계정 추가",
-    "myAccount": "내 계정",
-    "profile": "프로필",
-    "settings": "설정"
+    "addAnotherAccount": "다른 계정 추가"
   },
   "addAnotherAccount": {
     "title": "다른 계정 추가",

@@ -1,11 +1,10 @@
 {
   "label": "帳號",
+  "switchSession": {
+    "success": "已成功切換至 {email}"
+  },
   "accountMenu": {
-    "這邊未來要根據頁面修正": "",
-    "addAnotherAccount": "新增其他帳號",
-    "myAccount": "我的帳號",
-    "profile": "個人檔案",
-    "settings": "設定"
+    "addAnotherAccount": "新增其他帳號"
   },
   "addAnotherAccount": {
     "title": "新增其他帳號",

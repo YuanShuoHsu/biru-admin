@@ -5,15 +5,19 @@
 
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
+import { useSnackbar } from "notistack";
 import { useState, type MouseEvent } from "react";
+import useSWR from "swr";
 
 import BadgeAvatars from "@/components/BadgeAvatars";
 
 import { query } from "@/constants/query";
 
 import { useLogoutMenuItem } from "@/hooks/useAuth";
+
+import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 
@@ -23,13 +27,12 @@ import {
   Divider,
   IconButton,
   ListItemIcon,
+  listItemIconClasses,
   ListItemText,
   ListSubheader,
   Menu,
   MenuItem,
-  Stack,
   Tooltip,
-  Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -43,6 +46,10 @@ import {
 } from "@/utils/account";
 import { getDisplayName } from "@/utils/auth";
 import { getHref } from "@/utils/href";
+
+type DeviceSession = NonNullable<
+  Awaited<ReturnType<typeof authClient.multiSession.listDeviceSessions>>["data"]
+>[number];
 
 const StyledAvatar = styled(Avatar, {
   shouldForwardProp: (prop) => prop !== "isSignedIn",
@@ -79,14 +86,14 @@ const StyledListSubheader = styled(ListSubheader)(({ theme }) => ({
   backgroundImage: "var(--Paper-overlay)",
   display: "flex",
   alignItems: "center",
-  gap: theme.spacing(2),
+
+  [`& .${listItemIconClasses.root}`]: {
+    minWidth: theme.spacing(4.5),
+  },
 }));
 
-const StyledHeaderAvatar = styled(StyledAvatar)(({ theme }) => ({
-  width: 36,
-  height: 36,
+const StyledListAvatar = styled(StyledAvatar)(({ theme }) => ({
   border: `1px solid ${theme.vars.palette.primary.main}`,
-  fontSize: 18,
 
   [theme.getColorSchemeSelector("dark")]: {
     borderColor: theme.vars.palette.common.white,
@@ -125,11 +132,25 @@ const renderMenuItems = (
 
 const AccountMenu = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [isSwitching, setIsSwitching] = useState(false);
   const open = Boolean(anchorEl);
 
-  const { session } = useAuthStore((state) => state);
+  const { session, setSession } = useAuthStore((state) => state);
+
+  const locale = useLocale();
+
+  const { data: deviceSessions = [] } = useSWR<DeviceSession[]>(
+    open && session ? "device-sessions" : null,
+    async () => {
+      const { data } = await authClient.multiSession.listDeviceSessions();
+
+      return data || [];
+    },
+  );
 
   const displayName = getDisplayName(session?.user);
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const tAccount = useTranslations("account");
   const tAuth = useTranslations("auth");
@@ -167,9 +188,39 @@ const AccountMenu = () => {
 
   const handleClose = () => setAnchorEl(null);
 
+  const handleSwitchSession = async (sessionToken: string, email: string) => {
+    setIsSwitching(true);
+
+    await authClient.multiSession.setActive({
+      sessionToken,
+      fetchOptions: {
+        onError: ({ error }) => {
+          setIsSwitching(false);
+          enqueueSnackbar(getErrorMessage(error.code, locale), {
+            variant: "error",
+          });
+        },
+        onSuccess: async () => {
+          const { data } = await authClient.getSession();
+          setSession(data);
+          setIsSwitching(false);
+          handleClose();
+
+          enqueueSnackbar(tAccount("switchSession.success", { email }), {
+            variant: "success",
+          });
+        },
+      },
+    });
+  };
+
   const accountSettingsItem = useAccountSettingsMenuItem();
   const addAnotherAccountItem = useAddAnotherAccountMenuItem();
   const logoutMenuItem = useLogoutMenuItem();
+
+  const otherSessions = deviceSessions.filter(
+    ({ session: { token } }) => token !== session?.session.token,
+  );
 
   return (
     <>
@@ -207,21 +258,20 @@ const AccountMenu = () => {
       >
         {session && (
           <StyledListSubheader>
-            <StyledHeaderAvatar
-              alt={displayName}
-              isSignedIn
-              src={session.user.image || undefined}
-            >
-              {displayName[0]}
-            </StyledHeaderAvatar>
-            <Stack gap={0.5}>
-              <Typography fontWeight="bold" variant="body2">
-                {displayName}
-              </Typography>
-              <Typography color="text.secondary" variant="caption">
-                {session.user.email}
-              </Typography>
-            </Stack>
+            <ListItemIcon>
+              <StyledListAvatar
+                alt={displayName}
+                isSignedIn
+                src={session.user.image || undefined}
+              >
+                {displayName[0]}
+              </StyledListAvatar>
+            </ListItemIcon>
+            <ListItemText
+              primary={displayName}
+              secondary={session.user.email}
+              slotProps={{ secondary: { variant: "caption" } }}
+            />
           </StyledListSubheader>
         )}
         <Divider />
@@ -230,6 +280,32 @@ const AccountMenu = () => {
           logoutMenuItem,
         ])}
         <Divider />
+        {otherSessions.map(({ session: { token }, user }) => {
+          const name = getDisplayName(user);
+          return (
+            <MenuItem
+              disabled={isSwitching}
+              key={token}
+              onClick={() => handleSwitchSession(token, user.email)}
+            >
+              <ListItemIcon>
+                <StyledListAvatar
+                  alt={name}
+                  isSignedIn
+                  src={user.image || undefined}
+                >
+                  {name[0]}
+                </StyledListAvatar>
+              </ListItemIcon>
+              <ListItemText
+                primary={name}
+                secondary={user.email}
+                slotProps={{ secondary: { variant: "caption" } }}
+              />
+            </MenuItem>
+          );
+        })}
+        {otherSessions.length > 0 && <Divider />}
         {renderMenuItems(pathname, "/account", [addAnotherAccountItem])}
       </StyledMenu>
     </>

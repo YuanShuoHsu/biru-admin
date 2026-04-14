@@ -1,11 +1,10 @@
 {
   "label": "アカウント",
+  "switchSession": {
+    "success": "{email} への切り替えが完了しました"
+  },
   "accountMenu": {
-    "這邊未來要根據頁面修正": "",
-    "addAnotherAccount": "別のアカウントを追加",
-    "myAccount": "マイアカウント",
-    "profile": "プロフィール",
-    "settings": "設定"
+    "addAnotherAccount": "別のアカウントを追加"
   },
   "addAnotherAccount": {
     "title": "別のアカウントを追加",

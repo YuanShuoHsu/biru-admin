@@ -1,6 +1,7 @@
 import {
   adminClient,
   inferAdditionalFields,
+  multiSessionClient,
   organizationClient,
 } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
@@ -13,7 +14,6 @@ export const authClient = createAuthClient({
   baseURL: process.env.NEXT_PUBLIC_NEXT_URL,
   plugins: [
     adminClient(),
-    organizationClient(),
     inferAdditionalFields({
       user: {
         emailSubscribed: {
@@ -36,6 +36,8 @@ export const authClient = createAuthClient({
         },
       },
     }),
+    multiSessionClient(),
+    organizationClient(),
   ],
 });
 

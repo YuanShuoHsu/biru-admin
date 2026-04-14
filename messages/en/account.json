@@ -1,11 +1,10 @@
 {
   "label": "Account",
+  "switchSession": {
+    "success": "Successfully switched to {email}"
+  },
   "accountMenu": {
-    "這邊未來要根據頁面修正": "",
-    "addAnotherAccount": "Add another account",
-    "myAccount": "My account",
-    "profile": "Profile",
-    "settings": "Settings"
+    "addAnotherAccount": "Add another account"
   },
   "addAnotherAccount": {
     "title": "Add another account",
