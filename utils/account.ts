@@ -25,6 +25,6 @@ export const useAccountSettingsMenuItem = (): MenuItem => {
   return {
     icon: Settings,
     label: tAccount("accountSettings.label"),
-    to: "/account-settings",
+    to: "/settings",
   };
 };

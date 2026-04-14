@@ -39,10 +39,9 @@ export const useAuthMenuItems = (redirectTo?: string): MenuItem[] => {
 
 export const useLogoutMenuItem = (): MenuItem => {
   const tAuth = useTranslations("auth");
-  const { handleLogout, isMutatingLogout } = useLogout();
+  const { handleLogout } = useLogout();
 
   return {
-    disabled: isMutatingLogout,
     icon: Logout,
     label: tAuth("signOut.label"),
     onClick: handleLogout,

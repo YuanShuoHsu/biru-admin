@@ -1,5 +1,3 @@
-// vibe coding 未來要修正
-
 import { setRequestLocale } from "next-intl/server";
 
 import AccountSettings from ".";
@@ -10,15 +8,15 @@ import type { Locale } from "@/i18n/routing";
 
 import { getHref } from "@/utils/href";
 
-interface AccountAccountSettingsPageProps {
+interface AccountSettingsPageProps {
   params: Promise<{ locale: Locale }>;
   searchParams: Promise<{ redirectTo?: string }>;
 }
 
-const AccountAccountSettingsPage = async ({
+const AccountSettingsPage = async ({
   params,
   searchParams,
-}: AccountAccountSettingsPageProps) => {
+}: AccountSettingsPageProps) => {
   const [{ locale }, { redirectTo }] = await Promise.all([
     params,
     searchParams,
@@ -26,11 +24,11 @@ const AccountAccountSettingsPage = async ({
 
   setRequestLocale(locale);
 
-  const currentURL = getHref(`/${locale}/account/account-settings`, {
+  const currentURL = getHref(`/${locale}/account/settings`, {
     [query.redirectTo]: redirectTo,
   });
 
   return <AccountSettings currentURL={currentURL} />;
 };
 
-export default AccountAccountSettingsPage;
+export default AccountSettingsPage;
