@@ -1,80 +1,110 @@
 {
-  "label": "Account",
-  "switchSession": {
-    "success": "Successfully switched to {email}"
-  },
   "accountMenu": {
     "addAnotherAccount": "Add another account"
   },
-  "addAnotherAccount": {
-    "title": "Add another account",
-    "subtitle": "Switch accounts on this device",
-    "signedInNotice": "To sign in with another account, we'll sign you out first.",
-    "signedOutNotice": "You're not signed in. Continue to sign in.",
-    "currentAccount": "Current account",
-    "actions": {
-      "goToSignIn": "Go to sign in",
-      "signOutContinue": "Sign out & continue",
-      "cancel": "Cancel"
-    }
-  },
   "accountSettings": {
-    "label": "Account settings",
-    "title": "Account settings",
-    "subtitle": "Security, sign-in, and device preferences",
-    "signInCta": "Sign in to manage your settings",
-    "empty": "We will show settings after you sign in.",
-    "sections": {
-      "account": "Account",
-      "security": "Security",
-      "device": "On this device",
-      "support": "Support",
-      "danger": "Danger zone"
+    "accounts": {
+      "description": "Switch between your currently signed in accounts.",
+      "notice": "Sign in to an additional account.",
+      "title": "Accounts"
     },
     "actions": {
-      "viewProfile": "View profile",
+      "privacy": "Privacy policy",
       "terms": "Terms of service",
-      "privacy": "Privacy policy"
+      "viewProfile": "View profile"
     },
+    "apiKeys": {
+      "comingSoon": "API key management is coming soon."
+    },
+    "avatar": {
+      "description": "Click on the avatar to upload a custom one from your files.",
+      "notice": "An avatar is optional but strongly recommended.",
+      "saveSuccess": "Avatar updated",
+      "title": "Avatar",
+      "upload": "Upload photo"
+    },
+    "danger": {
+      "action": "Delete account",
+      "subtitle": "Not available yet.",
+      "title": "Delete account"
+    },
+    "deviceNotice": "Settings are stored locally on this device.",
+    "email": {
+      "description": "Enter the email address you want to use to log in.",
+      "notice": "Please enter a valid email address.",
+      "saveSuccess": "Verification email sent. Please check your inbox."
+    },
+    "empty": "We will show settings after you sign in.",
     "fields": {
       "name": "Name"
     },
-    "rememberMe": {
-      "label": "Remember me by default",
-      "helper": "Used as the default on the sign-in screen."
+    "label": "Account settings",
+    "name": {
+      "description": "Please enter your full name, or a display name.",
+      "notice": "Please use 32 characters at maximum.",
+      "saveSuccess": "Name updated"
     },
-    "deviceNotice": "Settings are stored locally on this device.",
+    "rememberMe": {
+      "helper": "Used as the default on the sign-in screen.",
+      "label": "Remember me by default"
+    },
+    "save": "Save",
     "securityNotice": "Some security actions may require email verification.",
-    "danger": {
-      "title": "Delete account",
-      "subtitle": "Not available yet.",
-      "action": "Delete account"
-    }
-  },
-  "myAccount": {
-    "title": "My account",
-    "subtitle": "Overview and quick actions",
-    "signInCta": "Sign in to manage your account",
-    "empty": "We will show your account overview after you sign in.",
     "sections": {
-      "overview": "Overview",
+      "account": "Account",
+      "apiKeys": "API Keys",
+      "danger": "Danger zone",
+      "device": "On this device",
       "security": "Security",
-      "quickActions": "Quick actions",
-      "appearance": "Appearance",
+      "sessions": "Sessions",
       "support": "Support"
     },
+    "sessions": {
+      "empty": "No other active sessions",
+      "revoke": "Sign out",
+      "revokeSuccess": "Signed out of {email}"
+    },
+    "signInCta": "Sign in to manage your settings",
+    "subtitle": "Security, sign-in, and device preferences",
+    "title": "Account settings"
+  },
+  "addAnotherAccount": {
     "actions": {
+      "cancel": "Cancel",
+      "goToSignIn": "Go to sign in",
+      "signOutContinue": "Sign out & continue"
+    },
+    "currentAccount": "Current account",
+    "signedInNotice": "To sign in with another account, we'll sign you out first.",
+    "signedOutNotice": "You're not signed in. Continue to sign in.",
+    "subtitle": "Switch accounts on this device",
+    "title": "Add another account"
+  },
+  "label": "Account",
+  "myAccount": {
+    "actions": {
+      "privacy": "Privacy policy",
       "profile": "View profile",
-      "settings": "Account settings",
-      "verifyEmail": "Verify email",
       "resetPassword": "Reset password",
+      "settings": "Account settings",
       "terms": "Terms of service",
-      "privacy": "Privacy policy"
+      "verifyEmail": "Verify email"
     },
     "colorMode": {
-      "label": "Color mode",
-      "helper": "Switch between light and dark."
-    }
+      "helper": "Switch between light and dark.",
+      "label": "Color mode"
+    },
+    "empty": "We will show your account overview after you sign in.",
+    "sections": {
+      "appearance": "Appearance",
+      "overview": "Overview",
+      "quickActions": "Quick actions",
+      "security": "Security",
+      "support": "Support"
+    },
+    "signInCta": "Sign in to manage your account",
+    "subtitle": "Overview and quick actions",
+    "title": "My account"
   },
   "profile": {
     "activity": "Recent activity",
@@ -93,5 +123,9 @@
     "subtitle": "Personal details and preferences",
     "unverified": "Not verified",
     "verified": "Verified"
+  },
+  "switchSession": {
+    "success": "Successfully switched to {email}",
+    "switchTo": "Switch to this account"
   }
 }

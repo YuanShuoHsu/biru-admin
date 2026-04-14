@@ -1,80 +1,110 @@
 {
-  "label": "계정",
-  "switchSession": {
-    "success": "{email} 계정으로 성공적으로 전환했습니다"
-  },
   "accountMenu": {
     "addAnotherAccount": "다른 계정 추가"
   },
-  "addAnotherAccount": {
-    "title": "다른 계정 추가",
-    "subtitle": "이 기기에서 계정 전환",
-    "signedInNotice": "다른 계정으로 로그인하려면 먼저 로그아웃합니다.",
-    "signedOutNotice": "로그인되어 있지 않습니다. 로그인으로 이동하세요.",
-    "currentAccount": "현재 계정",
-    "actions": {
-      "goToSignIn": "로그인으로 이동",
-      "signOutContinue": "로그아웃 후 계속",
-      "cancel": "취소"
-    }
-  },
   "accountSettings": {
-    "label": "계정 설정",
-    "title": "계정 설정",
-    "subtitle": "보안, 로그인, 기기 환경설정",
-    "signInCta": "로그인하여 설정 관리",
-    "empty": "로그인하면 설정을 확인할 수 있습니다.",
-    "sections": {
-      "account": "계정",
-      "security": "보안",
-      "device": "이 기기",
-      "support": "지원",
-      "danger": "위험 구역"
+    "accounts": {
+      "description": "현재 로그인한 계정을 전환합니다.",
+      "notice": "다른 계정으로 로그인하세요.",
+      "title": "계정"
     },
     "actions": {
-      "viewProfile": "프로필 보기",
+      "privacy": "개인정보 처리방침",
       "terms": "서비스 이용약관",
-      "privacy": "개인정보 처리방침"
+      "viewProfile": "프로필 보기"
     },
+    "apiKeys": {
+      "comingSoon": "API 키 관리 기능은 곧 출시됩니다."
+    },
+    "avatar": {
+      "description": "아바타를 클릭하여 파일에서 커스텀 이미지를 업로드하세요.",
+      "notice": "아바타는 선택 사항이지만 강력히 권장됩니다.",
+      "saveSuccess": "아바타가 업데이트되었습니다",
+      "title": "아바타",
+      "upload": "사진 업로드"
+    },
+    "danger": {
+      "action": "계정 삭제",
+      "subtitle": "아직 사용할 수 없습니다.",
+      "title": "계정 삭제"
+    },
+    "deviceNotice": "설정은 이 기기에 로컬로 저장됩니다.",
+    "email": {
+      "description": "로그인에 사용할 이메일 주소를 입력하세요.",
+      "notice": "유효한 이메일 주소를 입력하세요.",
+      "saveSuccess": "인증 이메일을 발송했습니다. 받은 편지함을 확인하세요."
+    },
+    "empty": "로그인하면 설정을 확인할 수 있습니다.",
     "fields": {
       "name": "이름"
     },
-    "rememberMe": {
-      "label": "기본으로 로그인 상태 유지",
-      "helper": "로그인 화면의 기본값으로 사용됩니다."
+    "label": "계정 설정",
+    "name": {
+      "description": "전체 이름 또는 표시 이름을 입력하세요.",
+      "notice": "최대 32자까지 사용할 수 있습니다.",
+      "saveSuccess": "이름이 업데이트되었습니다"
     },
-    "deviceNotice": "설정은 이 기기에 로컬로 저장됩니다.",
+    "rememberMe": {
+      "helper": "로그인 화면의 기본값으로 사용됩니다.",
+      "label": "기본으로 로그인 상태 유지"
+    },
+    "save": "저장",
     "securityNotice": "일부 보안 작업은 이메일 인증이 필요할 수 있습니다.",
-    "danger": {
-      "title": "계정 삭제",
-      "subtitle": "아직 사용할 수 없습니다.",
-      "action": "계정 삭제"
-    }
-  },
-  "myAccount": {
-    "title": "내 계정",
-    "subtitle": "개요 및 빠른 작업",
-    "signInCta": "로그인하여 계정을 관리하세요",
-    "empty": "로그인하면 계정 개요가 표시됩니다.",
     "sections": {
-      "overview": "개요",
+      "account": "계정",
+      "apiKeys": "API 키",
+      "danger": "위험 구역",
+      "device": "이 기기",
       "security": "보안",
-      "quickActions": "빠른 작업",
-      "appearance": "모양",
+      "sessions": "세션",
       "support": "지원"
     },
+    "sessions": {
+      "empty": "다른 활성 세션이 없습니다",
+      "revoke": "로그아웃",
+      "revokeSuccess": "{email}에서 로그아웃했습니다"
+    },
+    "signInCta": "로그인하여 설정 관리",
+    "subtitle": "보안, 로그인, 기기 환경설정",
+    "title": "계정 설정"
+  },
+  "addAnotherAccount": {
     "actions": {
+      "cancel": "취소",
+      "goToSignIn": "로그인으로 이동",
+      "signOutContinue": "로그아웃 후 계속"
+    },
+    "currentAccount": "현재 계정",
+    "signedInNotice": "다른 계정으로 로그인하려면 먼저 로그아웃합니다.",
+    "signedOutNotice": "로그인되어 있지 않습니다. 로그인으로 이동하세요.",
+    "subtitle": "이 기기에서 계정 전환",
+    "title": "다른 계정 추가"
+  },
+  "label": "계정",
+  "myAccount": {
+    "actions": {
+      "privacy": "개인정보 처리방침",
       "profile": "프로필 보기",
-      "settings": "계정 설정",
-      "verifyEmail": "이메일 인증",
       "resetPassword": "비밀번호 재설정",
+      "settings": "계정 설정",
       "terms": "서비스 이용약관",
-      "privacy": "개인정보 처리방침"
+      "verifyEmail": "이메일 인증"
     },
     "colorMode": {
-      "label": "색상 모드",
-      "helper": "라이트/다크 모드를 전환합니다."
-    }
+      "helper": "라이트/다크 모드를 전환합니다.",
+      "label": "색상 모드"
+    },
+    "empty": "로그인하면 계정 개요가 표시됩니다.",
+    "sections": {
+      "appearance": "모양",
+      "overview": "개요",
+      "quickActions": "빠른 작업",
+      "security": "보안",
+      "support": "지원"
+    },
+    "signInCta": "로그인하여 계정을 관리하세요",
+    "subtitle": "개요 및 빠른 작업",
+    "title": "내 계정"
   },
   "profile": {
     "activity": "최근 활동",
@@ -93,5 +123,9 @@
     "subtitle": "개인 정보와 환경설정",
     "unverified": "미인증",
     "verified": "인증됨"
+  },
+  "switchSession": {
+    "success": "{email} 계정으로 성공적으로 전환했습니다",
+    "switchTo": "이 계정으로 전환"
   }
 }

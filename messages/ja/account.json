@@ -1,80 +1,110 @@
 {
-  "label": "アカウント",
-  "switchSession": {
-    "success": "{email} への切り替えが完了しました"
-  },
   "accountMenu": {
     "addAnotherAccount": "別のアカウントを追加"
   },
-  "addAnotherAccount": {
-    "title": "別のアカウントを追加",
-    "subtitle": "このデバイスでアカウントを切り替え",
-    "signedInNotice": "別のアカウントでサインインするには、先にサインアウトします。",
-    "signedOutNotice": "サインインしていません。サインインに進んでください。",
-    "currentAccount": "現在のアカウント",
-    "actions": {
-      "goToSignIn": "サインインへ",
-      "signOutContinue": "サインアウトして続行",
-      "cancel": "キャンセル"
-    }
-  },
   "accountSettings": {
-    "label": "アカウント設定",
-    "title": "アカウント設定",
-    "subtitle": "セキュリティ、サインイン、端末の設定",
-    "signInCta": "サインインして設定を管理",
-    "empty": "サインインすると設定を表示します。",
-    "sections": {
-      "account": "アカウント",
-      "security": "セキュリティ",
-      "device": "この端末",
-      "support": "サポート",
-      "danger": "危険な操作"
+    "accounts": {
+      "description": "サインイン中のアカウントを切り替えます。",
+      "notice": "別のアカウントでサインイン。",
+      "title": "アカウント"
     },
     "actions": {
-      "viewProfile": "プロフィールを見る",
+      "privacy": "プライバシーポリシー",
       "terms": "利用規約",
-      "privacy": "プライバシーポリシー"
+      "viewProfile": "プロフィールを見る"
     },
+    "apiKeys": {
+      "comingSoon": "API キー管理機能は近日公開予定です。"
+    },
+    "avatar": {
+      "description": "アバターをクリックして、ファイルからカスタム画像をアップロード。",
+      "notice": "アバターは任意ですが、設定を強くお勧めします。",
+      "saveSuccess": "アバターを更新しました",
+      "title": "アバター",
+      "upload": "写真をアップロード"
+    },
+    "danger": {
+      "action": "アカウント削除",
+      "subtitle": "現在は利用できません。",
+      "title": "アカウント削除"
+    },
+    "deviceNotice": "設定はこの端末にローカル保存されます。",
+    "email": {
+      "description": "ログインに使用するメールアドレスを入力してください。",
+      "notice": "有効なメールアドレスを入力してください。",
+      "saveSuccess": "確認メールを送信しました。受信トレイをご確認ください。"
+    },
+    "empty": "サインインすると設定を表示します。",
     "fields": {
       "name": "名前"
     },
-    "rememberMe": {
-      "label": "デフォルトでログイン状態を保持",
-      "helper": "サインイン画面のデフォルトとして使用します。"
+    "label": "アカウント設定",
+    "name": {
+      "description": "フルネームまたは表示名を入力してください。",
+      "notice": "最大32文字まで使用できます。",
+      "saveSuccess": "名前を更新しました"
     },
-    "deviceNotice": "設定はこの端末にローカル保存されます。",
+    "rememberMe": {
+      "helper": "サインイン画面のデフォルトとして使用します。",
+      "label": "デフォルトでログイン状態を保持"
+    },
+    "save": "保存",
     "securityNotice": "一部の操作ではメール認証が必要になる場合があります。",
-    "danger": {
-      "title": "アカウント削除",
-      "subtitle": "現在は利用できません。",
-      "action": "アカウント削除"
-    }
-  },
-  "myAccount": {
-    "title": "マイアカウント",
-    "subtitle": "概要とクイック操作",
-    "signInCta": "ログインしてアカウントを管理",
-    "empty": "ログインするとアカウント概要を表示します。",
     "sections": {
-      "overview": "概要",
+      "account": "アカウント",
+      "apiKeys": "API キー",
+      "danger": "危険な操作",
+      "device": "この端末",
       "security": "セキュリティ",
-      "quickActions": "クイック操作",
-      "appearance": "外観",
+      "sessions": "セッション",
       "support": "サポート"
     },
+    "sessions": {
+      "empty": "他にアクティブなセッションはありません",
+      "revoke": "サインアウト",
+      "revokeSuccess": "{email} からサインアウトしました"
+    },
+    "signInCta": "サインインして設定を管理",
+    "subtitle": "セキュリティ、サインイン、端末の設定",
+    "title": "アカウント設定"
+  },
+  "addAnotherAccount": {
     "actions": {
+      "cancel": "キャンセル",
+      "goToSignIn": "サインインへ",
+      "signOutContinue": "サインアウトして続行"
+    },
+    "currentAccount": "現在のアカウント",
+    "signedInNotice": "別のアカウントでサインインするには、先にサインアウトします。",
+    "signedOutNotice": "サインインしていません。サインインに進んでください。",
+    "subtitle": "このデバイスでアカウントを切り替え",
+    "title": "別のアカウントを追加"
+  },
+  "label": "アカウント",
+  "myAccount": {
+    "actions": {
+      "privacy": "プライバシーポリシー",
       "profile": "プロフィールを見る",
-      "settings": "アカウント設定",
-      "verifyEmail": "メールを確認",
       "resetPassword": "パスワードをリセット",
+      "settings": "アカウント設定",
       "terms": "利用規約",
-      "privacy": "プライバシーポリシー"
+      "verifyEmail": "メールを確認"
     },
     "colorMode": {
-      "label": "カラーモード",
-      "helper": "ライト/ダークを切り替えます。"
-    }
+      "helper": "ライト/ダークを切り替えます。",
+      "label": "カラーモード"
+    },
+    "empty": "ログインするとアカウント概要を表示します。",
+    "sections": {
+      "appearance": "外観",
+      "overview": "概要",
+      "quickActions": "クイック操作",
+      "security": "セキュリティ",
+      "support": "サポート"
+    },
+    "signInCta": "ログインしてアカウントを管理",
+    "subtitle": "概要とクイック操作",
+    "title": "マイアカウント"
   },
   "profile": {
     "activity": "最近のアクティビティ",
@@ -93,5 +123,9 @@
     "subtitle": "個人情報と設定",
     "unverified": "未認証",
     "verified": "認証済み"
+  },
+  "switchSession": {
+    "success": "{email} への切り替えが完了しました",
+    "switchTo": "このアカウントに切り替え"
   }
 }

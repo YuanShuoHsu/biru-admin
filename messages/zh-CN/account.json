@@ -1,80 +1,110 @@
 {
-  "label": "账号",
-  "switchSession": {
-    "success": "已成功切换至 {email}"
-  },
   "accountMenu": {
     "addAnotherAccount": "添加其他账号"
   },
-  "addAnotherAccount": {
-    "title": "添加其他账号",
-    "subtitle": "在此设备切换账号",
-    "signedInNotice": "要登录其他账号，我们会先将你登出。",
-    "signedOutNotice": "你尚未登录，请先登录账号。",
-    "currentAccount": "当前账号",
-    "actions": {
-      "goToSignIn": "前往登录",
-      "signOutContinue": "登出并继续",
-      "cancel": "取消"
-    }
-  },
   "accountSettings": {
-    "label": "账号设置",
-    "title": "账号设置",
-    "subtitle": "管理安全性、登录与设备偏好",
-    "signInCta": "登录后即可管理设置",
-    "empty": "登录后才可以调整你的账号设置。",
-    "sections": {
-      "account": "账户",
-      "security": "安全",
-      "device": "此设备",
-      "support": "支持",
-      "danger": "危险区域"
+    "accounts": {
+      "description": "切换当前已登录的账号。",
+      "notice": "登录其他账号。",
+      "title": "账号"
     },
     "actions": {
-      "viewProfile": "查看个人资料",
+      "privacy": "隐私政策",
       "terms": "服务条款",
-      "privacy": "隐私政策"
+      "viewProfile": "查看个人资料"
     },
+    "apiKeys": {
+      "comingSoon": "API 密钥管理功能即将推出。"
+    },
+    "avatar": {
+      "description": "点击头像从你的文件中上传自定义图片。",
+      "notice": "头像为选填项目，但强烈建议上传。",
+      "saveSuccess": "头像已更新",
+      "title": "头像",
+      "upload": "上传图片"
+    },
+    "danger": {
+      "action": "删除账号",
+      "subtitle": "功能尚未开放。",
+      "title": "删除账号"
+    },
+    "deviceNotice": "此页面偏好目前仅会保存在此设备。",
+    "email": {
+      "description": "输入你用来登录的电子邮件地址。",
+      "notice": "请输入有效的电子邮件地址。",
+      "saveSuccess": "验证邮件已发送，请查收邮箱。"
+    },
+    "empty": "登录后才可以调整你的账号设置。",
     "fields": {
       "name": "姓名"
     },
-    "rememberMe": {
-      "label": "默认记住我",
-      "helper": "作为此设备的登录默认值。"
+    "label": "账号设置",
+    "name": {
+      "description": "请输入你的全名或显示名称。",
+      "notice": "最多可使用 32 个字符。",
+      "saveSuccess": "姓名已更新"
     },
-    "deviceNotice": "此页面偏好目前仅会保存在此设备。",
+    "rememberMe": {
+      "helper": "作为此设备的登录默认值。",
+      "label": "默认记住我"
+    },
+    "save": "保存",
     "securityNotice": "部分安全操作可能需要重新验证电子邮件。",
-    "danger": {
-      "title": "删除账号",
-      "subtitle": "功能尚未开放。",
-      "action": "删除账号"
-    }
-  },
-  "myAccount": {
-    "title": "我的账号",
-    "subtitle": "账号概览与快捷操作",
-    "signInCta": "登录以管理你的账号",
-    "empty": "登录后将显示你的账号概览。",
     "sections": {
-      "overview": "概览",
+      "account": "账户",
+      "apiKeys": "API 密钥",
+      "danger": "危险区域",
+      "device": "此设备",
       "security": "安全",
-      "quickActions": "快捷操作",
-      "appearance": "外观",
+      "sessions": "会话",
       "support": "支持"
     },
+    "sessions": {
+      "empty": "没有其他活跃会话",
+      "revoke": "登出",
+      "revokeSuccess": "已从 {email} 登出"
+    },
+    "signInCta": "登录后即可管理设置",
+    "subtitle": "管理安全性、登录与设备偏好",
+    "title": "账号设置"
+  },
+  "addAnotherAccount": {
     "actions": {
+      "cancel": "取消",
+      "goToSignIn": "前往登录",
+      "signOutContinue": "登出并继续"
+    },
+    "currentAccount": "当前账号",
+    "signedInNotice": "要登录其他账号，我们会先将你登出。",
+    "signedOutNotice": "你尚未登录，请先登录账号。",
+    "subtitle": "在此设备切换账号",
+    "title": "添加其他账号"
+  },
+  "label": "账号",
+  "myAccount": {
+    "actions": {
+      "privacy": "隐私政策",
       "profile": "查看个人资料",
-      "settings": "账号设置",
-      "verifyEmail": "验证电子邮件",
       "resetPassword": "重置密码",
+      "settings": "账号设置",
       "terms": "服务条款",
-      "privacy": "隐私政策"
+      "verifyEmail": "验证电子邮件"
     },
     "colorMode": {
-      "label": "颜色模式",
-      "helper": "切换浅色/深色模式。"
-    }
+      "helper": "切换浅色/深色模式。",
+      "label": "颜色模式"
+    },
+    "empty": "登录后将显示你的账号概览。",
+    "sections": {
+      "appearance": "外观",
+      "overview": "概览",
+      "quickActions": "快捷操作",
+      "security": "安全",
+      "support": "支持"
+    },
+    "signInCta": "登录以管理你的账号",
+    "subtitle": "账号概览与快捷操作",
+    "title": "我的账号"
   },
   "profile": {
     "activity": "最新记录",
@@ -93,5 +123,9 @@
     "subtitle": "管理个人信息与偏好",
     "unverified": "未验证",
     "verified": "已验证"
+  },
+  "switchSession": {
+    "success": "已成功切换至 {email}",
+    "switchTo": "切换至此账号"
   }
 }

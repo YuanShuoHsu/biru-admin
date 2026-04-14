@@ -4,11 +4,14 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { startTransition, useEffect, useMemo, useState } from "react";
+import useSWR from "swr";
 
 import { query } from "@/constants/query";
 import { REMEMBER_ME } from "@/constants/sign-in";
 
 import { useLogout } from "@/hooks/useLogout";
+
+import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import {
   AccountCircle,
@@ -16,6 +19,7 @@ import {
   DeleteForever,
   ErrorOutline,
   Gavel,
+  LogoutOutlined,
   LockReset,
   Logout,
   MailOutline,
@@ -34,15 +38,22 @@ import {
   Chip,
   Divider,
   Grid,
+  IconButton,
   Stack,
   Switch,
   Typography,
 } from "@mui/material";
 
+import { useSnackbar } from "notistack";
+
 import { useAuthStore } from "@/providers/auth-store-provider";
 
 import { getDisplayName } from "@/utils/auth";
 import { getHref } from "@/utils/href";
+
+type DeviceSession = NonNullable<
+  Awaited<ReturnType<typeof authClient.multiSession.listDeviceSessions>>["data"]
+>[number];
 
 interface SettingRowProps {
   icon: React.ElementType;
@@ -93,16 +104,56 @@ interface AccountSettingsProps {
 
 const AccountSettings = ({ currentURL }: AccountSettingsProps) => {
   const [rememberMeByDefault, setRememberMeByDefault] = useState(true);
+  const [revokingToken, setRevokingToken] = useState<string | null>(null);
 
   const { session } = useAuthStore((state) => state);
 
   const locale = useLocale();
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const { handleLogout, isMutatingLogout } = useLogout();
+
+  const { data: deviceSessions = [], mutate: mutateDeviceSessions } =
+    useSWR<DeviceSession[]>(
+      session ? "device-sessions" : null,
+      async () => {
+        const { data } = await authClient.multiSession.listDeviceSessions();
+        return data || [];
+      },
+    );
+
+  const otherSessions = deviceSessions.filter(
+    ({ session: { token } }) => token !== session?.session.token,
+  );
 
   const tAccount = useTranslations("account");
   const tAuth = useTranslations("auth");
   const tCommon = useTranslations("common");
+
+  const handleRevokeSession = async (sessionToken: string, email: string) => {
+    setRevokingToken(sessionToken);
+
+    await authClient.multiSession.revoke({
+      sessionToken,
+      fetchOptions: {
+        onError: ({ error }) => {
+          setRevokingToken(null);
+          enqueueSnackbar(getErrorMessage(error.code, locale), {
+            variant: "error",
+          });
+        },
+        onSuccess: async () => {
+          await mutateDeviceSessions();
+          setRevokingToken(null);
+          enqueueSnackbar(
+            tAccount("accountSettings.sessions.revokeSuccess", { email }),
+            { variant: "success" },
+          );
+        },
+      },
+    });
+  };
 
   useEffect(() => {
     const stored = localStorage.getItem(REMEMBER_ME);
@@ -369,6 +420,77 @@ const AccountSettings = ({ currentURL }: AccountSettingsProps) => {
                 <Typography color="text.secondary" mt={2} variant="caption">
                   {tAccount("accountSettings.securityNotice")}
                 </Typography>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader
+                title={tAccount("accountSettings.sections.sessions")}
+              />
+              <CardContent>
+                {otherSessions.length === 0 ? (
+                  <Typography color="text.secondary" variant="body2">
+                    {tAccount("accountSettings.sessions.empty")}
+                  </Typography>
+                ) : (
+                  <Stack gap={1.5}>
+                    {otherSessions.map(({ session: { token }, user }) => {
+                      const sessionName = getDisplayName(user);
+                      return (
+                        <Stack
+                          key={token}
+                          alignItems="center"
+                          direction="row"
+                          gap={1.5}
+                          justifyContent="space-between"
+                        >
+                          <Stack
+                            alignItems="center"
+                            direction="row"
+                            gap={1.5}
+                            minWidth={0}
+                          >
+                            <Avatar
+                              alt={sessionName}
+                              src={user.image || undefined}
+                              sx={{ width: 32, height: 32, fontSize: 14 }}
+                            >
+                              {sessionName[0]}
+                            </Avatar>
+                            <Stack minWidth={0}>
+                              <Typography
+                                fontWeight={600}
+                                noWrap
+                                variant="body2"
+                              >
+                                {sessionName}
+                              </Typography>
+                              <Typography
+                                color="text.secondary"
+                                noWrap
+                                variant="caption"
+                              >
+                                {user.email}
+                              </Typography>
+                            </Stack>
+                          </Stack>
+                          <IconButton
+                            aria-label={tAccount(
+                              "accountSettings.sessions.revoke",
+                            )}
+                            color="error"
+                            disabled={revokingToken === token}
+                            onClick={() =>
+                              handleRevokeSession(token, user.email)
+                            }
+                            size="small"
+                          >
+                            <LogoutOutlined fontSize="small" />
+                          </IconButton>
+                        </Stack>
+                      );
+                    })}
+                  </Stack>
+                )}
               </CardContent>
             </Card>
           </Stack>

@@ -1,80 +1,110 @@
 {
-  "label": "帳號",
-  "switchSession": {
-    "success": "已成功切換至 {email}"
-  },
   "accountMenu": {
     "addAnotherAccount": "新增其他帳號"
   },
-  "addAnotherAccount": {
-    "title": "新增其他帳號",
-    "subtitle": "在此裝置切換帳號",
-    "signedInNotice": "要登入其他帳號，我們會先將你登出。",
-    "signedOutNotice": "你尚未登入，請先登入帳號。",
-    "currentAccount": "目前帳號",
-    "actions": {
-      "goToSignIn": "前往登入",
-      "signOutContinue": "登出並繼續",
-      "cancel": "取消"
-    }
-  },
   "accountSettings": {
-    "label": "帳號設定",
-    "title": "帳號設定",
-    "subtitle": "管理安全性、登入與裝置偏好",
-    "signInCta": "登入後即可管理設定",
-    "empty": "登入後才可以調整你的帳號設定。",
-    "sections": {
-      "account": "帳戶",
-      "security": "安全性",
-      "device": "此裝置",
-      "support": "支援",
-      "danger": "危險區"
+    "accounts": {
+      "description": "切換目前已登入的帳號。",
+      "notice": "登入其他帳號。",
+      "title": "帳號"
     },
     "actions": {
-      "viewProfile": "查看個人檔案",
+      "privacy": "隱私權政策",
       "terms": "服務條款",
-      "privacy": "隱私權政策"
+      "viewProfile": "查看個人檔案"
     },
+    "apiKeys": {
+      "comingSoon": "API 金鑰管理功能即將推出。"
+    },
+    "avatar": {
+      "description": "點擊大頭貼以從你的檔案中上傳自訂圖片。",
+      "notice": "大頭貼為選填項目，但強烈建議上傳。",
+      "saveSuccess": "大頭貼已更新",
+      "title": "大頭貼",
+      "upload": "上傳圖片"
+    },
+    "danger": {
+      "action": "刪除帳號",
+      "subtitle": "功能尚未開放。",
+      "title": "刪除帳號"
+    },
+    "deviceNotice": "此頁面偏好目前只會儲存在此裝置。",
+    "email": {
+      "description": "輸入你用來登入的電子郵件地址。",
+      "notice": "請輸入有效的電子郵件地址。",
+      "saveSuccess": "驗證信已寄出，請查收信箱。"
+    },
+    "empty": "登入後才可以調整你的帳號設定。",
     "fields": {
       "name": "姓名"
     },
-    "rememberMe": {
-      "label": "預設記住我",
-      "helper": "作為此裝置的登入預設值。"
+    "label": "帳號設定",
+    "name": {
+      "description": "請輸入你的全名或顯示名稱。",
+      "notice": "最多可使用 32 個字元。",
+      "saveSuccess": "姓名已更新"
     },
-    "deviceNotice": "此頁面偏好目前只會儲存在此裝置。",
+    "rememberMe": {
+      "helper": "作為此裝置的登入預設值。",
+      "label": "預設記住我"
+    },
+    "save": "儲存",
     "securityNotice": "部分安全性操作可能需要重新驗證電子郵件。",
-    "danger": {
-      "title": "刪除帳號",
-      "subtitle": "功能尚未開放。",
-      "action": "刪除帳號"
-    }
-  },
-  "myAccount": {
-    "title": "我的帳號",
-    "subtitle": "帳號總覽與快速操作",
-    "signInCta": "登入以管理你的帳號",
-    "empty": "登入後將顯示你的帳號總覽。",
     "sections": {
-      "overview": "總覽",
+      "account": "帳戶",
+      "apiKeys": "API 金鑰",
+      "danger": "危險區",
+      "device": "此裝置",
       "security": "安全性",
-      "quickActions": "快速操作",
-      "appearance": "外觀",
+      "sessions": "工作階段",
       "support": "支援"
     },
+    "sessions": {
+      "empty": "沒有其他活躍的工作階段",
+      "revoke": "登出",
+      "revokeSuccess": "已從 {email} 登出"
+    },
+    "signInCta": "登入後即可管理設定",
+    "subtitle": "管理安全性、登入與裝置偏好",
+    "title": "帳號設定"
+  },
+  "addAnotherAccount": {
     "actions": {
+      "cancel": "取消",
+      "goToSignIn": "前往登入",
+      "signOutContinue": "登出並繼續"
+    },
+    "currentAccount": "目前帳號",
+    "signedInNotice": "要登入其他帳號，我們會先將你登出。",
+    "signedOutNotice": "你尚未登入，請先登入帳號。",
+    "subtitle": "在此裝置切換帳號",
+    "title": "新增其他帳號"
+  },
+  "label": "帳號",
+  "myAccount": {
+    "actions": {
+      "privacy": "隱私權政策",
       "profile": "查看個人檔案",
-      "settings": "帳號設定",
-      "verifyEmail": "驗證電子郵件",
       "resetPassword": "重設密碼",
+      "settings": "帳號設定",
       "terms": "服務條款",
-      "privacy": "隱私權政策"
+      "verifyEmail": "驗證電子郵件"
     },
     "colorMode": {
-      "label": "色彩模式",
-      "helper": "切換淺色/深色模式。"
-    }
+      "helper": "切換淺色/深色模式。",
+      "label": "色彩模式"
+    },
+    "empty": "登入後將顯示你的帳號總覽。",
+    "sections": {
+      "appearance": "外觀",
+      "overview": "總覽",
+      "quickActions": "快速操作",
+      "security": "安全性",
+      "support": "支援"
+    },
+    "signInCta": "登入以管理你的帳號",
+    "subtitle": "帳號總覽與快速操作",
+    "title": "我的帳號"
   },
   "profile": {
     "activity": "最新紀錄",
@@ -93,5 +123,9 @@
     "subtitle": "管理個人資訊與偏好",
     "unverified": "尚未驗證",
     "verified": "已驗證"
+  },
+  "switchSession": {
+    "success": "已成功切換至 {email}",
+    "switchTo": "切換至此帳號"
   }
 }
