@@ -114,14 +114,12 @@ const AccountSettings = ({ currentURL }: AccountSettingsProps) => {
 
   const { handleLogout, isMutatingLogout } = useLogout();
 
-  const { data: deviceSessions = [], mutate: mutateDeviceSessions } =
-    useSWR<DeviceSession[]>(
-      session ? "device-sessions" : null,
-      async () => {
-        const { data } = await authClient.multiSession.listDeviceSessions();
-        return data || [];
-      },
-    );
+  const { data: deviceSessions = [], mutate: mutateDeviceSessions } = useSWR<
+    DeviceSession[]
+  >(session ? "device-sessions" : null, async () => {
+    const { data } = await authClient.multiSession.listDeviceSessions();
+    return data || [];
+  });
 
   const otherSessions = deviceSessions.filter(
     ({ session: { token } }) => token !== session?.session.token,
