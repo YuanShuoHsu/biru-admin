@@ -406,10 +406,11 @@ const NavTemporaryDrawer = () => {
 
         const itemKey = toPath || `${level}-${index}`;
         const open = Boolean(isExpandable && openMap[itemKey]);
-        const selected =
-          basePath === "/"
+        const selected = toPath
+          ? basePath === "/"
             ? pathname === basePath
-            : pathname === basePath || pathname.startsWith(`${basePath}/`);
+            : pathname === basePath || pathname.startsWith(`${basePath}/`)
+          : false;
 
         const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
           if (isExpandable) {
