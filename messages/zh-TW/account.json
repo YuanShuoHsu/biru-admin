@@ -13,9 +13,6 @@
       "terms": "服務條款",
       "viewProfile": "查看個人檔案"
     },
-    "apiKeys": {
-      "comingSoon": "API 金鑰管理功能即將推出。"
-    },
     "avatar": {
       "description": "點擊大頭貼以從你的檔案中上傳自訂圖片。",
       "notice": "大頭貼為選填項目，但強烈建議上傳。",
@@ -52,7 +49,6 @@
     "securityNotice": "部分安全性操作可能需要重新驗證電子郵件。",
     "sections": {
       "account": "帳戶",
-      "apiKeys": "API 金鑰",
       "danger": "危險區",
       "device": "此裝置",
       "security": "安全性",

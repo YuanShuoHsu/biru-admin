@@ -13,9 +13,6 @@
       "terms": "서비스 이용약관",
       "viewProfile": "프로필 보기"
     },
-    "apiKeys": {
-      "comingSoon": "API 키 관리 기능은 곧 출시됩니다."
-    },
     "avatar": {
       "description": "아바타를 클릭하여 파일에서 커스텀 이미지를 업로드하세요.",
       "notice": "아바타는 선택 사항이지만 강력히 권장됩니다.",
@@ -52,7 +49,6 @@
     "securityNotice": "일부 보안 작업은 이메일 인증이 필요할 수 있습니다.",
     "sections": {
       "account": "계정",
-      "apiKeys": "API 키",
       "danger": "위험 구역",
       "device": "이 기기",
       "security": "보안",

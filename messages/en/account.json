@@ -13,9 +13,6 @@
       "terms": "Terms of service",
       "viewProfile": "View profile"
     },
-    "apiKeys": {
-      "comingSoon": "API key management is coming soon."
-    },
     "avatar": {
       "description": "Click on the avatar to upload a custom one from your files.",
       "notice": "An avatar is optional but strongly recommended.",
@@ -52,7 +49,6 @@
     "securityNotice": "Some security actions may require email verification.",
     "sections": {
       "account": "Account",
-      "apiKeys": "API Keys",
       "danger": "Danger zone",
       "device": "On this device",
       "security": "Security",

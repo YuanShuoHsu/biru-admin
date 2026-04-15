@@ -13,9 +13,6 @@
       "terms": "利用規約",
       "viewProfile": "プロフィールを見る"
     },
-    "apiKeys": {
-      "comingSoon": "API キー管理機能は近日公開予定です。"
-    },
     "avatar": {
       "description": "アバターをクリックして、ファイルからカスタム画像をアップロード。",
       "notice": "アバターは任意ですが、設定を強くお勧めします。",
@@ -52,7 +49,6 @@
     "securityNotice": "一部の操作ではメール認証が必要になる場合があります。",
     "sections": {
       "account": "アカウント",
-      "apiKeys": "API キー",
       "danger": "危険な操作",
       "device": "この端末",
       "security": "セキュリティ",

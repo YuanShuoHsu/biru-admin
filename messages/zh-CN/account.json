@@ -13,9 +13,6 @@
       "terms": "服务条款",
       "viewProfile": "查看个人资料"
     },
-    "apiKeys": {
-      "comingSoon": "API 密钥管理功能即将推出。"
-    },
     "avatar": {
       "description": "点击头像从你的文件中上传自定义图片。",
       "notice": "头像为选填项目，但强烈建议上传。",
@@ -52,7 +49,6 @@
     "securityNotice": "部分安全操作可能需要重新验证电子邮件。",
     "sections": {
       "account": "账户",
-      "apiKeys": "API 密钥",
       "danger": "危险区域",
       "device": "此设备",
       "security": "安全",
