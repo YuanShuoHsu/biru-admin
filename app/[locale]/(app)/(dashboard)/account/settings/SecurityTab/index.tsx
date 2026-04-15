@@ -85,9 +85,7 @@ const SecurityTab = ({ currentURL }: SecurityTabProps) => {
                 size="small"
                 slotProps={{
                   input: {
-                    "aria-label": tAccount(
-                      "accountSettings.rememberMe.label",
-                    ),
+                    "aria-label": tAccount("accountSettings.rememberMe.label"),
                   },
                 }}
               />

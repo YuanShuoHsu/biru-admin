@@ -384,78 +384,72 @@ const AccountTab = ({ currentURL }: AccountTabProps) => {
                 {tAccount("accountSettings.sessions.empty")}
               </Typography>
             ) : (
-              otherSessions.map(
-                ({ session: { token }, user: sessionUser }) => {
-                  const sessionName =
-                    getDisplayName(sessionUser) || sessionUser.email;
-                  const isLoading =
-                    revokingToken === token || switchingToken === token;
+              otherSessions.map(({ session: { token }, user: sessionUser }) => {
+                const sessionName =
+                  getDisplayName(sessionUser) || sessionUser.email;
+                const isLoading =
+                  revokingToken === token || switchingToken === token;
 
-                  return (
-                    <Card
-                      key={token}
-                      variant="outlined"
-                      sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        p: 2,
-                        gap: 1,
-                      }}
+                return (
+                  <Card
+                    key={token}
+                    variant="outlined"
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      p: 2,
+                      gap: 1,
+                    }}
+                  >
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      gap={1}
+                      sx={{ flex: 1, minWidth: 0 }}
                     >
-                      <Stack
-                        direction="row"
-                        alignItems="center"
-                        gap={1}
-                        sx={{ flex: 1, minWidth: 0 }}
+                      <Avatar
+                        alt={sessionName}
+                        src={sessionUser.image || undefined}
+                        sx={{
+                          width: 32,
+                          height: 32,
+                          fontSize: 14,
+                          flexShrink: 0,
+                        }}
                       >
-                        <Avatar
-                          alt={sessionName}
-                          src={sessionUser.image || undefined}
-                          sx={{
-                            width: 32,
-                            height: 32,
-                            fontSize: 14,
-                            flexShrink: 0,
-                          }}
+                        {sessionName.charAt(0)}
+                      </Avatar>
+                      <Stack sx={{ minWidth: 0 }}>
+                        <Typography fontWeight={500} noWrap variant="body2">
+                          {sessionName}
+                        </Typography>
+                        <Typography
+                          color="text.secondary"
+                          noWrap
+                          variant="caption"
                         >
-                          {sessionName.charAt(0)}
-                        </Avatar>
-                        <Stack sx={{ minWidth: 0 }}>
-                          <Typography
-                            fontWeight={500}
-                            noWrap
-                            variant="body2"
-                          >
-                            {sessionName}
-                          </Typography>
-                          <Typography
-                            color="text.secondary"
-                            noWrap
-                            variant="caption"
-                          >
-                            {sessionUser.email}
-                          </Typography>
-                        </Stack>
+                          {sessionUser.email}
+                        </Typography>
                       </Stack>
-                      <IconButton
-                        disabled={isLoading}
-                        onClick={(e) =>
-                          setAccountMenuState({
-                            el: e.currentTarget,
-                            token,
-                            email: sessionUser.email,
-                          })
-                        }
-                        size="small"
-                        sx={{ flexShrink: 0, ml: "auto" }}
-                      >
-                        <MoreHoriz />
-                      </IconButton>
-                    </Card>
-                  );
-                },
-              )
+                    </Stack>
+                    <IconButton
+                      disabled={isLoading}
+                      onClick={(e) =>
+                        setAccountMenuState({
+                          el: e.currentTarget,
+                          token,
+                          email: sessionUser.email,
+                        })
+                      }
+                      size="small"
+                      sx={{ flexShrink: 0, ml: "auto" }}
+                    >
+                      <MoreHoriz />
+                    </IconButton>
+                  </Card>
+                );
+              })
             )}
           </Stack>
         </CardContent>
@@ -476,10 +470,7 @@ const AccountTab = ({ currentURL }: AccountTabProps) => {
         <MenuItem onClick={handleSwitchSession}>
           {tAccount("switchSession.switchTo")}
         </MenuItem>
-        <MenuItem
-          onClick={handleRevokeSession}
-          sx={{ color: "error.main" }}
-        >
+        <MenuItem onClick={handleRevokeSession} sx={{ color: "error.main" }}>
           {tAccount("accountSettings.sessions.revoke")}
         </MenuItem>
       </Menu>
