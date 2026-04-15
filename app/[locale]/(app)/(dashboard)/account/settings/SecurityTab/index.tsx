@@ -6,6 +6,7 @@ import { startTransition, useEffect, useState } from "react";
 import { query } from "@/constants/query";
 import { REMEMBER_ME } from "@/constants/sign-in";
 
+import { useHref } from "@/hooks/useHref";
 import { useLogout } from "@/hooks/useLogout";
 
 import {
@@ -28,12 +29,10 @@ import {
 
 import { getHref } from "@/utils/href";
 
-interface SecurityTabProps {
-  currentURL: string;
-}
-
-const SecurityTab = ({ currentURL }: SecurityTabProps) => {
+const SecurityTab = () => {
   const [rememberMeByDefault, setRememberMeByDefault] = useState(true);
+
+  const currentURL = useHref();
 
   const { handleLogout, isMutatingLogout } = useLogout();
 

@@ -10,8 +10,7 @@
     },
     "actions": {
       "privacy": "プライバシーポリシー",
-      "terms": "利用規約",
-      "viewProfile": "プロフィールを見る"
+      "terms": "利用規約"
     },
     "avatar": {
       "description": "アバターをクリックして、ファイルからカスタム画像をアップロード。",
@@ -25,13 +24,11 @@
       "subtitle": "現在は利用できません。",
       "title": "アカウント削除"
     },
-    "deviceNotice": "設定はこの端末にローカル保存されます。",
     "email": {
       "description": "ログインに使用するメールアドレスを入力してください。",
       "notice": "有効なメールアドレスを入力してください。",
       "saveSuccess": "確認メールを送信しました。受信トレイをご確認ください。"
     },
-    "empty": "サインインすると設定を表示します。",
     "fields": {
       "name": "名前"
     },
@@ -50,19 +47,14 @@
     "sections": {
       "account": "アカウント",
       "danger": "危険な操作",
-      "device": "この端末",
       "security": "セキュリティ",
-      "sessions": "セッション",
       "support": "サポート"
     },
     "sessions": {
       "empty": "他にアクティブなセッションはありません",
       "revoke": "サインアウト",
       "revokeSuccess": "{email} からサインアウトしました"
-    },
-    "signInCta": "サインインして設定を管理",
-    "subtitle": "セキュリティ、サインイン、端末の設定",
-    "title": "アカウント設定"
+    }
   },
   "addAnotherAccount": {
     "actions": {
@@ -77,46 +69,10 @@
     "title": "別のアカウントを追加"
   },
   "label": "アカウント",
-  "myAccount": {
-    "actions": {
-      "privacy": "プライバシーポリシー",
-      "profile": "プロフィールを見る",
-      "resetPassword": "パスワードをリセット",
-      "settings": "アカウント設定",
-      "terms": "利用規約",
-      "verifyEmail": "メールを確認"
-    },
-    "colorMode": {
-      "helper": "ライト/ダークを切り替えます。",
-      "label": "カラーモード"
-    },
-    "empty": "ログインするとアカウント概要を表示します。",
-    "sections": {
-      "appearance": "外観",
-      "overview": "概要",
-      "quickActions": "クイック操作",
-      "security": "セキュリティ",
-      "support": "サポート"
-    },
-    "signInCta": "ログインしてアカウントを管理",
-    "subtitle": "概要とクイック操作",
-    "title": "マイアカウント"
-  },
   "profile": {
-    "activity": "最近のアクティビティ",
-    "completion": "プロフィール完成度",
-    "contact": "連絡先",
-    "empty": "サインインするとアカウント情報を表示します。",
     "lastUpdated": "最終更新 {date}",
-    "localNotice": "設定は今のところこの端末にのみ保存されます。",
     "memberSince": "メンバー登録日 {date}",
-    "newsletter": "コーヒーニュースレター",
-    "orderUpdates": "注文状況の通知",
     "placeholderName": "コーヒー好き",
-    "preferences": "設定",
-    "recommendations": "おすすめ情報",
-    "signInCta": "サインインしてプロフィールを確認",
-    "subtitle": "個人情報と設定",
     "unverified": "未認証",
     "verified": "認証済み"
   },

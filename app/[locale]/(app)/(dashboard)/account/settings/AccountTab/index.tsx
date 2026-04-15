@@ -9,6 +9,7 @@ import { z } from "zod";
 
 import { query } from "@/constants/query";
 
+import { useHref } from "@/hooks/useHref";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
@@ -55,11 +56,9 @@ const cardFooterSx = {
   gap: 2,
 } as const;
 
-interface AccountTabProps {
-  currentURL: string;
-}
+const AccountTab = () => {
+  const currentURL = useHref();
 
-const AccountTab = ({ currentURL }: AccountTabProps) => {
   const [accountMenuState, setAccountMenuState] = useState<{
     el: HTMLElement;
     token: string;

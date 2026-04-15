@@ -10,8 +10,7 @@
     },
     "actions": {
       "privacy": "隐私政策",
-      "terms": "服务条款",
-      "viewProfile": "查看个人资料"
+      "terms": "服务条款"
     },
     "avatar": {
       "description": "点击头像从你的文件中上传自定义图片。",
@@ -25,13 +24,11 @@
       "subtitle": "功能尚未开放。",
       "title": "删除账号"
     },
-    "deviceNotice": "此页面偏好目前仅会保存在此设备。",
     "email": {
       "description": "输入你用来登录的电子邮件地址。",
       "notice": "请输入有效的电子邮件地址。",
       "saveSuccess": "验证邮件已发送，请查收邮箱。"
     },
-    "empty": "登录后才可以调整你的账号设置。",
     "fields": {
       "name": "姓名"
     },
@@ -50,19 +47,14 @@
     "sections": {
       "account": "账户",
       "danger": "危险区域",
-      "device": "此设备",
       "security": "安全",
-      "sessions": "会话",
       "support": "支持"
     },
     "sessions": {
       "empty": "没有其他活跃会话",
       "revoke": "登出",
       "revokeSuccess": "已从 {email} 登出"
-    },
-    "signInCta": "登录后即可管理设置",
-    "subtitle": "管理安全性、登录与设备偏好",
-    "title": "账号设置"
+    }
   },
   "addAnotherAccount": {
     "actions": {
@@ -77,46 +69,10 @@
     "title": "添加其他账号"
   },
   "label": "账号",
-  "myAccount": {
-    "actions": {
-      "privacy": "隐私政策",
-      "profile": "查看个人资料",
-      "resetPassword": "重置密码",
-      "settings": "账号设置",
-      "terms": "服务条款",
-      "verifyEmail": "验证电子邮件"
-    },
-    "colorMode": {
-      "helper": "切换浅色/深色模式。",
-      "label": "颜色模式"
-    },
-    "empty": "登录后将显示你的账号概览。",
-    "sections": {
-      "appearance": "外观",
-      "overview": "概览",
-      "quickActions": "快捷操作",
-      "security": "安全",
-      "support": "支持"
-    },
-    "signInCta": "登录以管理你的账号",
-    "subtitle": "账号概览与快捷操作",
-    "title": "我的账号"
-  },
   "profile": {
-    "activity": "最新记录",
-    "completion": "资料完成度",
-    "contact": "联系方式",
-    "empty": "登录后即可查看你的账户资讯。",
     "lastUpdated": "最后更新 {date}",
-    "localNotice": "偏好目前仅会保存在此设备。",
     "memberSince": "加入时间 {date}",
-    "newsletter": "咖啡电子报",
-    "orderUpdates": "订单更新通知",
     "placeholderName": "咖啡同好",
-    "preferences": "偏好设置",
-    "recommendations": "个性化推荐",
-    "signInCta": "登录后查看个人资料",
-    "subtitle": "管理个人信息与偏好",
     "unverified": "未验证",
     "verified": "已验证"
   },
