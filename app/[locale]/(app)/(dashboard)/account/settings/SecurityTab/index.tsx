@@ -60,7 +60,7 @@ const SecurityTab = () => {
   return (
     <>
       <Card>
-        <CardHeader title={tAccount("accountSettings.sections.security")} />
+        <CardHeader title={tAccount("accountSettings.security.label")} />
         <CardContent>
           <Stack gap={1.5}>
             <Stack
@@ -114,7 +114,7 @@ const SecurityTab = () => {
         </CardContent>
       </Card>
       <Card>
-        <CardHeader title={tAccount("accountSettings.sections.support")} />
+        <CardHeader title={tAccount("accountSettings.support.label")} />
         <CardContent>
           <Stack gap={1.5}>
             <Button
@@ -135,7 +135,7 @@ const SecurityTab = () => {
         </CardContent>
       </Card>
       <Card>
-        <CardHeader title={tAccount("accountSettings.sections.danger")} />
+        <CardHeader title={tAccount("accountSettings.danger.label")} />
         <CardContent>
           <Stack gap={1}>
             <Typography fontWeight={600} variant="body2">

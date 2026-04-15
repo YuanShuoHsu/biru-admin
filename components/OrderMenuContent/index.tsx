@@ -150,6 +150,7 @@ const OrderMenuContent = () => {
     <>
       <Stack gap={2}>
         {/* hook.js:608 Skipping auto-scroll behavior due to `position: sticky` or `position: fixed` on element */}
+        {/* aria-label 未來可以修正，可以參考 AccountSettings */}
         <StyledTabs
           aria-label="scrollable auto tabs"
           onChange={handleChange}

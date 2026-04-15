@@ -3,6 +3,9 @@
     "addAnotherAccount": "新增其他帳號"
   },
   "accountSettings": {
+    "account": {
+      "label": "帳戶"
+    },
     "accounts": {
       "description": "切換目前已登入的帳號。",
       "notice": "登入其他帳號。",
@@ -21,6 +24,7 @@
     },
     "danger": {
       "action": "刪除帳號",
+      "label": "危險區",
       "subtitle": "功能尚未開放。",
       "title": "刪除帳號"
     },
@@ -43,17 +47,17 @@
       "label": "預設記住我"
     },
     "save": "儲存",
-    "securityNotice": "部分安全性操作可能需要重新驗證電子郵件。",
-    "sections": {
-      "account": "帳戶",
-      "danger": "危險區",
-      "security": "安全性",
-      "support": "支援"
+    "security": {
+      "label": "安全性"
     },
+    "securityNotice": "部分安全性操作可能需要重新驗證電子郵件。",
     "sessions": {
       "empty": "沒有其他活躍的工作階段",
       "revoke": "登出",
       "revokeSuccess": "已從 {email} 登出"
+    },
+    "support": {
+      "label": "支援"
     }
   },
   "addAnotherAccount": {

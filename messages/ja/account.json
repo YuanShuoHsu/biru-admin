@@ -3,6 +3,9 @@
     "addAnotherAccount": "別のアカウントを追加"
   },
   "accountSettings": {
+    "account": {
+      "label": "アカウント"
+    },
     "accounts": {
       "description": "サインイン中のアカウントを切り替えます。",
       "notice": "別のアカウントでサインイン。",
@@ -21,6 +24,7 @@
     },
     "danger": {
       "action": "アカウント削除",
+      "label": "危険な操作",
       "subtitle": "現在は利用できません。",
       "title": "アカウント削除"
     },
@@ -43,17 +47,17 @@
       "label": "デフォルトでログイン状態を保持"
     },
     "save": "保存",
-    "securityNotice": "一部の操作ではメール認証が必要になる場合があります。",
-    "sections": {
-      "account": "アカウント",
-      "danger": "危険な操作",
-      "security": "セキュリティ",
-      "support": "サポート"
+    "security": {
+      "label": "セキュリティ"
     },
+    "securityNotice": "一部の操作ではメール認証が必要になる場合があります。",
     "sessions": {
       "empty": "他にアクティブなセッションはありません",
       "revoke": "サインアウト",
       "revokeSuccess": "{email} からサインアウトしました"
+    },
+    "support": {
+      "label": "サポート"
     }
   },
   "addAnotherAccount": {

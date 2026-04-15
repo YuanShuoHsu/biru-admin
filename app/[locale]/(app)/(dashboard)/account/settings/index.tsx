@@ -8,59 +8,60 @@ import SecurityTab from "./SecurityTab";
 
 import CustomTabPanel from "@/components/CustomTabPanel";
 
-import { Lock, Person } from "@mui/icons-material";
+import { Lock, Person, type SvgIconComponent } from "@mui/icons-material";
 import { Stack, Tab, Tabs } from "@mui/material";
 
 import { a11yProps } from "@/utils/tab";
 
-type TabId = "account" | "security";
-
 const AccountSettings = () => {
-  const [activeTab, setActiveTab] = useState(0);
+  const [value, setValue] = useState(0);
 
   const tAccount = useTranslations("account");
 
-  const navItems: { id: TabId; Icon: typeof Person; label: string }[] = [
+  const navItems: {
+    Component: React.ComponentType;
+    Icon: SvgIconComponent;
+    label: string;
+  }[] = [
     {
-      id: "account",
+      Component: AccountTab,
       Icon: Person,
-      label: tAccount("accountSettings.sections.account"),
+      label: tAccount("accountSettings.account.label"),
     },
     {
-      id: "security",
+      Component: SecurityTab,
       Icon: Lock,
-      label: tAccount("accountSettings.sections.security"),
+      label: tAccount("accountSettings.security.label"),
     },
   ];
 
-  const handleTabChange = (_: React.SyntheticEvent, newValue: number) =>
-    setActiveTab(newValue);
+  const handleChange = (_: React.SyntheticEvent, newValue: number) =>
+    setValue(newValue);
 
   return (
     <Stack gap={2}>
       <Tabs
         aria-label="account settings tabs"
-        onChange={handleTabChange}
+        onChange={handleChange}
         scrollButtons="auto"
-        value={activeTab}
+        value={value}
         variant="scrollable"
       >
-        {navItems.map(({ id, Icon, label }, index) => (
+        {navItems.map(({ Icon, label }, index) => (
           <Tab
             icon={<Icon />}
             iconPosition="start"
-            key={id}
+            key={index}
             label={label}
             {...a11yProps(index)}
           />
         ))}
       </Tabs>
-      <CustomTabPanel index={0} value={activeTab}>
-        <AccountTab />
-      </CustomTabPanel>
-      <CustomTabPanel index={1} value={activeTab}>
-        <SecurityTab />
-      </CustomTabPanel>
+      {navItems.map(({ Component }, index) => (
+        <CustomTabPanel index={index} key={index} value={value}>
+          <Component />
+        </CustomTabPanel>
+      ))}
     </Stack>
   );
 };

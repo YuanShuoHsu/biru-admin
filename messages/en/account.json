@@ -3,6 +3,9 @@
     "addAnotherAccount": "Add another account"
   },
   "accountSettings": {
+    "account": {
+      "label": "Account"
+    },
     "accounts": {
       "description": "Switch between your currently signed in accounts.",
       "notice": "Sign in to an additional account.",
@@ -21,6 +24,7 @@
     },
     "danger": {
       "action": "Delete account",
+      "label": "Danger zone",
       "subtitle": "Not available yet.",
       "title": "Delete account"
     },
@@ -43,17 +47,17 @@
       "label": "Remember me by default"
     },
     "save": "Save",
-    "securityNotice": "Some security actions may require email verification.",
-    "sections": {
-      "account": "Account",
-      "danger": "Danger zone",
-      "security": "Security",
-      "support": "Support"
+    "security": {
+      "label": "Security"
     },
+    "securityNotice": "Some security actions may require email verification.",
     "sessions": {
       "empty": "No other active sessions",
       "revoke": "Sign out",
       "revokeSuccess": "Signed out of {email}"
+    },
+    "support": {
+      "label": "Support"
     }
   },
   "addAnotherAccount": {

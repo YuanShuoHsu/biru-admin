@@ -3,6 +3,9 @@
     "addAnotherAccount": "添加其他账号"
   },
   "accountSettings": {
+    "account": {
+      "label": "账户"
+    },
     "accounts": {
       "description": "切换当前已登录的账号。",
       "notice": "登录其他账号。",
@@ -21,6 +24,7 @@
     },
     "danger": {
       "action": "删除账号",
+      "label": "危险区域",
       "subtitle": "功能尚未开放。",
       "title": "删除账号"
     },
@@ -43,17 +47,17 @@
       "label": "默认记住我"
     },
     "save": "保存",
-    "securityNotice": "部分安全操作可能需要重新验证电子邮件。",
-    "sections": {
-      "account": "账户",
-      "danger": "危险区域",
-      "security": "安全",
-      "support": "支持"
+    "security": {
+      "label": "安全"
     },
+    "securityNotice": "部分安全操作可能需要重新验证电子邮件。",
     "sessions": {
       "empty": "没有其他活跃会话",
       "revoke": "登出",
       "revokeSuccess": "已从 {email} 登出"
+    },
+    "support": {
+      "label": "支持"
     }
   },
   "addAnotherAccount": {
