@@ -7,10 +7,10 @@ import dayjs from "dayjs";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
+import OrderBottomBar from "./OrderBottomBar";
 import ResponsiveGrid from "./ResponsiveGrid";
 
 import CustomTabPanel from "@/components/CustomTabPanel";
-import OrderBottomBar from "@/components/OrderBottomBar";
 
 import {
   APP_BAR_TOOLBAR_HEIGHT,
