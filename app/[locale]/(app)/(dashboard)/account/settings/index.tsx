@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocale, useTranslations } from "next-intl";
+import { useSnackbar } from "notistack";
 import { startTransition, useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import useSWR from "swr";
@@ -11,8 +12,6 @@ import { query } from "@/constants/query";
 import { REMEMBER_ME } from "@/constants/sign-in";
 
 import { useLogout } from "@/hooks/useLogout";
-
-import { useRouter } from "@/i18n/navigation";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
@@ -47,8 +46,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-
-import { useSnackbar } from "notistack";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
 
@@ -106,11 +103,7 @@ const AccountSettings = ({ currentURL }: AccountSettingsProps) => {
 
   const locale = useLocale();
 
-  const { handleLogout, isMutatingLogout } = useLogout({
-    onSuccess: () => router.push("/auth/sign-in"),
-  });
-
-  const router = useRouter();
+  const { handleLogout, isMutatingLogout } = useLogout();
 
   const { enqueueSnackbar } = useSnackbar();
 
