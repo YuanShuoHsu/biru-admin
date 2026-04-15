@@ -14,7 +14,7 @@ import { flushSync } from "react-dom";
 import InviteMemberDialogContent from "./InviteMemberDialogContent";
 import UpdateMemberRoleDialogContent from "./UpdateMemberRoleDialogContent";
 
-import TabPanel from "@/components/TabPanel";
+import CustomTabPanel from "@/components/CustomTabPanel";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
@@ -663,9 +663,9 @@ const OrganizationsSlug = ({
         ))}
       </Tabs>
       {tabs.map(({ children }, index) => (
-        <TabPanel index={index} key={index} value={value}>
+        <CustomTabPanel index={index} key={index} value={value}>
           {children}
-        </TabPanel>
+        </CustomTabPanel>
       ))}
     </>
   );

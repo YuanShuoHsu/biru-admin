@@ -2,13 +2,18 @@
 
 import { Box } from "@mui/material";
 
-interface TabPanelProps {
+interface CustomTabPanelProps {
   children: React.ReactNode;
   index: number;
   value: number;
 }
 
-const TabPanel = ({ children, index, value, ...other }: TabPanelProps) => (
+const CustomTabPanel = ({
+  children,
+  index,
+  value,
+  ...other
+}: CustomTabPanelProps) => (
   <Box
     aria-labelledby={`simple-tab-${index}`}
     display="flex"
@@ -23,4 +28,4 @@ const TabPanel = ({ children, index, value, ...other }: TabPanelProps) => (
   </Box>
 );
 
-export default TabPanel;
+export default CustomTabPanel;

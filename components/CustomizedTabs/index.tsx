@@ -1,4 +1,4 @@
-// https://mui.com/material-ui/react-tabs/#system-VerticalTabs.tsx
+// https://mui.com/material-ui/react-tabs/#ScrollableTabsButtonAuto.tsx
 // https://github.com/mui/material-ui/issues/10739
 
 "use client";
@@ -9,7 +9,7 @@ import { useState } from "react";
 
 import ResponsiveGrid from "./ResponsiveGrid";
 
-import TabPanel from "@/components/TabPanel";
+import CustomTabPanel from "@/components/CustomTabPanel";
 
 import { a11yProps } from "@/utils/tab";
 
@@ -32,7 +32,7 @@ import { styled } from "@mui/material/styles";
 import { useMenuStore } from "@/providers/menu-store-provider";
 import { useOrderSearchStore } from "@/providers/order-search-store-provider";
 
-const HorizontalTabs = styled(Tabs, {
+const StyledTabs = styled(Tabs, {
   shouldForwardProp: (prop) => prop !== "trigger",
 })<{ trigger: boolean }>(({ theme, trigger }) => ({
   position: "sticky",
@@ -148,10 +148,10 @@ const CustomizedTabs = () => {
   return (
     <Stack gap={2}>
       {/* hook.js:608 Skipping auto-scroll behavior due to `position: sticky` or `position: fixed` on element */}
-      <HorizontalTabs
-        aria-label="Horizontal tabs"
+      <StyledTabs
+        aria-label="scrollable auto tabs"
         onChange={handleChange}
-        orientation="horizontal"
+        scrollButtons="auto"
         trigger={trigger}
         value={displayIndex}
         variant="scrollable"
@@ -159,15 +159,15 @@ const CustomizedTabs = () => {
         {filteredGroups.map(({ id, label }, index) => (
           <Tab key={id} label={label} {...a11yProps(index)} />
         ))}
-      </HorizontalTabs>
+      </StyledTabs>
       {filteredGroups.map(({ id, items }, index) => (
-        <TabPanel index={index} key={id} value={displayIndex}>
+        <CustomTabPanel index={index} key={id} value={displayIndex}>
           <ResponsiveGrid
             items={items}
             showLatest={id === LATEST}
             showTopSold={id === TOP_SOLD}
           />
-        </TabPanel>
+        </CustomTabPanel>
       ))}
     </Stack>
   );
