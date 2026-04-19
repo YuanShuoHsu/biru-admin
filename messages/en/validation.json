@@ -13,8 +13,12 @@
     "invalid": "Country code is not valid.",
     "required": "Country code is required."
   },
+  "currentPassword": {
+    "required": "Current password is required."
+  },
   "email": {
-    "invalid": "Email is not valid."
+    "invalid": "Email is not valid.",
+    "sameAsCurrent": "New email must be different from the current one."
   },
   "firstName": {
     "minLength": "First name must be at least 1 character long."
@@ -24,6 +28,9 @@
   },
   "name": {
     "minLength": "Name must be at least 2 characters long."
+  },
+  "newPassword": {
+    "minLength": "New password must be at least 8 characters long."
   },
   "password": {
     "letter": "Contain at least one letter.",

@@ -3,8 +3,8 @@
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-import AccountTab from "./AccountTab";
-import SecurityTab from "./SecurityTab";
+import Account from "./Account";
+import Security from "./Security";
 
 import CustomTabPanel from "@/components/CustomTabPanel";
 
@@ -13,10 +13,10 @@ import { Stack, Tab, Tabs } from "@mui/material";
 
 import { a11yProps } from "@/utils/tab";
 
-const AccountSettings = () => {
+const AuthSettings = () => {
   const [value, setValue] = useState(0);
 
-  const tAccount = useTranslations("account");
+  const tAuth = useTranslations("auth");
 
   const navItems: {
     Component: React.ComponentType;
@@ -24,14 +24,14 @@ const AccountSettings = () => {
     label: string;
   }[] = [
     {
-      Component: AccountTab,
+      Component: Account,
       Icon: Person,
-      label: tAccount("accountSettings.account.label"),
+      label: tAuth("settings.account.label"),
     },
     {
-      Component: SecurityTab,
+      Component: Security,
       Icon: Lock,
-      label: tAccount("accountSettings.security.label"),
+      label: tAuth("settings.security.label"),
     },
   ];
 
@@ -49,7 +49,7 @@ const AccountSettings = () => {
       >
         {navItems.map(({ Icon, label }, index) => (
           <Tab
-            icon={<Icon />}
+            icon={<Icon fontSize="small" />}
             iconPosition="start"
             key={index}
             label={label}
@@ -66,4 +66,4 @@ const AccountSettings = () => {
   );
 };
 
-export default AccountSettings;
+export default AuthSettings;

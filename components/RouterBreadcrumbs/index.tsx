@@ -13,6 +13,8 @@ import { usePathname } from "@/i18n/navigation";
 
 import { authClient } from "@/lib/auth-client";
 
+import { useAuthStore } from "@/providers/auth-store-provider";
+
 import {
   AccountCircle,
   AdminPanelSettings,
@@ -85,6 +87,8 @@ interface BreadcrumbItem {
 }
 
 const useBreadcrumbs = (): BreadcrumbItem[] => {
+  const { session } = useAuthStore((state) => state);
+
   const { locale, mode, slug, storeSlug, userId } = useParams<RouteParams>();
 
   const { data: stores = [] } = useSWR<Store[]>("/api/stores");
@@ -111,7 +115,6 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
     },
   );
 
-  const tAccount = useTranslations("account");
   const tAdmin = useTranslations("admins");
   const tDashboard = useTranslations("dashboard");
   const tOrganizations = useTranslations("organizations");
@@ -165,24 +168,6 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
     {
       children: [
         {
-          icon: PersonAdd,
-          label: tAccount("accountMenu.addAnotherAccount"),
-          to: "/add-another-account",
-        },
-        {
-          icon: Settings,
-          label: tAccount("accountSettings.label"),
-          to: "/settings",
-        },
-      ],
-      disabled: true,
-      icon: AccountCircle,
-      label: tAccount("label"),
-      to: "/account",
-    },
-    {
-      children: [
-        {
           icon: Devices,
           label: userEmail,
           to: `/${userId}`,
@@ -230,6 +215,11 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
           icon: LockReset,
           label: tAuth("resetPassword.label"),
           to: "/reset-password",
+        },
+        {
+          icon: Settings,
+          label: tAuth("settings.label"),
+          to: "/settings",
         },
       ],
       disabled: true,

@@ -13,8 +13,12 @@
     "invalid": "国家代码无效。",
     "required": "国家码为必填。"
   },
+  "currentPassword": {
+    "required": "当前密码为必填。"
+  },
   "email": {
-    "invalid": "电子邮件无效。"
+    "invalid": "电子邮件无效。",
+    "sameAsCurrent": "新电子邮件不能与当前相同。"
   },
   "firstName": {
     "minLength": "名字至少需要 1 个字符。"
@@ -24,6 +28,9 @@
   },
   "name": {
     "minLength": "名称至少需要 2 个字符。"
+  },
+  "newPassword": {
+    "minLength": "新密码至少需要 8 个字符。"
   },
   "password": {
     "letter": "包含至少一个英文字母。",

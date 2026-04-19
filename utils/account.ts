@@ -8,23 +8,23 @@ import { PersonAdd, Settings } from "@mui/icons-material";
 
 import type { MenuItem } from "@/types/menuItem";
 
-export const useAddAnotherAccountMenuItem = (): MenuItem => {
-  const tAccount = useTranslations("account");
+export const useAddAccountMenuItem = (): MenuItem => {
+  const tAuth = useTranslations("auth");
   const router = useRouter();
 
   return {
     icon: PersonAdd,
-    label: tAccount("accountMenu.addAnotherAccount"),
+    label: tAuth("addAccount.label"),
     onClick: () => router.push("/auth/sign-in"),
   };
 };
 
-export const useAccountSettingsMenuItem = (): MenuItem => {
-  const tAccount = useTranslations("account");
+export const useSettingsMenuItem = (): MenuItem => {
+  const tAuth = useTranslations("auth");
 
   return {
     icon: Settings,
-    label: tAccount("accountSettings.label"),
+    label: tAuth("settings.label"),
     to: "/settings",
   };
 };

@@ -13,8 +13,12 @@
     "invalid": "國家代碼無效。",
     "required": "國碼為必填。"
   },
+  "currentPassword": {
+    "required": "目前密碼為必填。"
+  },
   "email": {
-    "invalid": "電子郵件無效。"
+    "invalid": "電子郵件無效。",
+    "sameAsCurrent": "新電子郵件不能與目前相同。"
   },
   "firstName": {
     "minLength": "名字至少需要 1 個字元。"
@@ -24,6 +28,9 @@
   },
   "name": {
     "minLength": "名稱至少需要 2 個字元。"
+  },
+  "newPassword": {
+    "minLength": "新密碼至少需要 8 個字元。"
   },
   "password": {
     "letter": "包含至少一個英文字母。",

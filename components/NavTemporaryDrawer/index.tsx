@@ -58,8 +58,8 @@ import type { Store, StoreName } from "@/types/stores";
 
 import { RouteParams } from "@/types/routeParams";
 import {
-  useAccountSettingsMenuItem,
-  useAddAnotherAccountMenuItem,
+  useAddAccountMenuItem,
+  useSettingsMenuItem,
 } from "@/utils/account";
 import { handleDrawerToggle } from "@/utils/drawer";
 import { getHref } from "@/utils/href";
@@ -208,25 +208,20 @@ const useNavItems = () => {
   const tableNumber = searchParams.get("tableNumber");
   const partySize = searchParams.get("partySize");
   const redirectTo = searchParams.get("redirectTo");
-  const isAccountPage = pathname.startsWith("/account");
+  const isAuthSettingsPage = pathname.startsWith("/auth/settings");
   const isAuthPage = pathname.startsWith("/auth");
   const isCompanyPage = pathname.startsWith("/company");
 
   const isAdmin = session?.user?.role === "admin";
 
-  const accountSettingsItem = useAccountSettingsMenuItem();
-  const addAnotherAccountItem = useAddAnotherAccountMenuItem();
+  const settingsItem = useSettingsMenuItem();
+  const addAccountItem = useAddAccountMenuItem();
   const logoutMenuItem = useLogoutMenuItem();
 
-  const accountChildren = [
-    accountSettingsItem,
-    logoutMenuItem,
-    dividerSlot,
-    addAnotherAccountItem,
-  ];
+  const accountChildren = [settingsItem, logoutMenuItem, dividerSlot, addAccountItem];
 
   const redirect =
-    (isAccountPage || isAuthPage || isCompanyPage) && redirectTo
+    (isAuthSettingsPage || isAuthPage || isCompanyPage) && redirectTo
       ? redirectTo
       : pathname;
 
@@ -234,7 +229,6 @@ const useNavItems = () => {
 
   const storeName = getStoreName(locale, stores, storeSlug);
 
-  const tAccount = useTranslations("account");
   const tAdmin = useTranslations("admins");
   const tAuth = useTranslations("auth");
   const tCompany = useTranslations("company");
@@ -294,19 +288,12 @@ const useNavItems = () => {
       label: tOrganizations("label"),
       to: "/organizations",
     },
-    session
-      ? {
-          children: accountChildren,
-          icon: AccountCircle,
-          label: tAccount("label"),
-          to: "/account",
-        }
-      : {
-          children: authChildren,
-          icon: AccountCircle,
-          label: tAuth("label"),
-          to: "/auth",
-        },
+    {
+      children: session ? accountChildren : authChildren,
+      icon: AccountCircle,
+      label: tAuth("label"),
+      to: "/auth",
+    },
     {
       children: [
         {

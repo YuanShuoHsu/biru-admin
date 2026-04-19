@@ -1,4 +1,3 @@
-import account from "./en/account.json";
 import admins from "./en/admins.json";
 import appBar from "./en/appBar.json";
 import auth from "./en/auth.json";
@@ -15,7 +14,6 @@ import organizations from "./en/organizations.json";
 import validation from "./en/validation.json";
 
 const messages = {
-  account,
   admins,
   appBar,
   auth,
