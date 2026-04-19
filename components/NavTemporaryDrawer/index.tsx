@@ -57,10 +57,7 @@ import type { MenuItem } from "@/types/menuItem";
 import type { Store, StoreName } from "@/types/stores";
 
 import { RouteParams } from "@/types/routeParams";
-import {
-  useAddAccountMenuItem,
-  useSettingsMenuItem,
-} from "@/utils/account";
+import { useAddAccountMenuItem, useSettingsMenuItem } from "@/utils/account";
 import { handleDrawerToggle } from "@/utils/drawer";
 import { getHref } from "@/utils/href";
 import { getStoreName } from "@/utils/stores";
@@ -218,7 +215,12 @@ const useNavItems = () => {
   const addAccountItem = useAddAccountMenuItem();
   const logoutMenuItem = useLogoutMenuItem();
 
-  const accountChildren = [settingsItem, logoutMenuItem, dividerSlot, addAccountItem];
+  const accountChildren = [
+    settingsItem,
+    logoutMenuItem,
+    dividerSlot,
+    addAccountItem,
+  ];
 
   const redirect =
     (isAuthSettingsPage || isAuthPage || isCompanyPage) && redirectTo

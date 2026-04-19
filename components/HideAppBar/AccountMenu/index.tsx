@@ -40,10 +40,7 @@ import { useAuthStore } from "@/providers/auth-store-provider";
 
 import type { MenuItem as MenuItemData } from "@/types/menuItem";
 
-import {
-  useAddAccountMenuItem,
-  useSettingsMenuItem,
-} from "@/utils/account";
+import { useAddAccountMenuItem, useSettingsMenuItem } from "@/utils/account";
 import { getDisplayName } from "@/utils/auth";
 import { getHref } from "@/utils/href";
 
@@ -153,7 +150,9 @@ const AccountMenu = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const tAuth = useTranslations("auth");
-  const tooltipTitle = session ? tAuth("settings.account.label") : tAuth("label");
+  const tooltipTitle = session
+    ? tAuth("settings.account.label")
+    : tAuth("label");
 
   const pathname = usePathname();
 

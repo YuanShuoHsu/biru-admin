@@ -3,8 +3,8 @@
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-import Account from "./Account";
-import Security from "./Security";
+import AuthSettingsAccount from "./Account";
+import AuthSettingsSecurity from "./Security";
 
 import CustomTabPanel from "@/components/CustomTabPanel";
 
@@ -24,12 +24,12 @@ const AuthSettings = () => {
     label: string;
   }[] = [
     {
-      Component: Account,
+      Component: AuthSettingsAccount,
       Icon: Person,
       label: tAuth("settings.account.label"),
     },
     {
-      Component: Security,
+      Component: AuthSettingsSecurity,
       Icon: Lock,
       label: tAuth("settings.security.label"),
     },
