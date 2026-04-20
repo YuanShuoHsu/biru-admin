@@ -154,7 +154,10 @@ const OtherSessionItem = ({ token, user }: OtherSessionItemProps) => {
         <MenuItem onClick={handleSetActiveSessionDialog}>
           {tAuth("settings.sessions.setActive.label")}
         </MenuItem>
-        <MenuItem onClick={handleRevokeSessionDialog} sx={{ color: "error.main" }}>
+        <MenuItem
+          onClick={handleRevokeSessionDialog}
+          sx={{ color: "error.main" }}
+        >
           {tAuth("settings.sessions.revoke.label")}
         </MenuItem>
       </Menu>
