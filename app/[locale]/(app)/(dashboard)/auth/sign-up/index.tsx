@@ -19,7 +19,7 @@ import FormCard, {
 } from "@/components/FormCard";
 import GoogleButton from "@/components/GoogleButton";
 import PasswordRuleList from "@/components/PasswordRuleList";
-import UploadAvatars, { useUploadAvatarSrc } from "@/components/UploadAvatars";
+import UploadAvatars from "@/components/UploadAvatars";
 
 import { LegalLinkType } from "@/constants/legal";
 import { query } from "@/constants/query";
@@ -29,6 +29,7 @@ import { LocaleEnum } from "@/enums/Locale";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { usePasswordValidation } from "@/hooks/usePasswordValidation";
+import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
 import { useRouter } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";

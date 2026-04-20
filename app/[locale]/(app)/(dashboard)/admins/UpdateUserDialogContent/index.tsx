@@ -7,11 +7,13 @@ import { Controller, useForm } from "react-hook-form";
 
 import { type UpdateUserForm, useUpdateUserFormSchema } from "./definitions";
 
-import UploadAvatars, { useUploadAvatarSrc } from "@/components/UploadAvatars";
+import UploadAvatars from "@/components/UploadAvatars";
 
 import { LocaleEnum } from "@/enums/Locale";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+
+import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 

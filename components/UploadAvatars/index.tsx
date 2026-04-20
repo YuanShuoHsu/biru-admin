@@ -5,6 +5,8 @@ import imageCompression, { type Options } from "browser-image-compression";
 
 import BadgeAvatars from "@/components/BadgeAvatars";
 
+import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
+
 import { CameraAlt, Close } from "@mui/icons-material";
 import {
   Avatar,
@@ -50,17 +52,6 @@ const COMPRESSION_OPTIONS: Options = {
   fileType: "image/jpeg",
   initialQuality: 0.8,
   useWebWorker: true,
-};
-
-export const useUploadAvatarSrc = (
-  uploadKey: string,
-  initialSrc?: string | null,
-) => {
-  const { avatarSrcs } = useUploadAvatarStore((state) => state);
-
-  return uploadKey in avatarSrcs
-    ? avatarSrcs[uploadKey]
-    : initialSrc || undefined;
 };
 
 interface UploadAvatarsProps {

@@ -10,9 +10,11 @@ import {
   useCreateOrganizationFormSchema,
 } from "./definitions";
 
-import UploadAvatars, { useUploadAvatarSrc } from "@/components/UploadAvatars";
+import UploadAvatars from "@/components/UploadAvatars";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+
+import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
