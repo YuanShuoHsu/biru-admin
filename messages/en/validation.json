@@ -17,8 +17,7 @@
     "required": "Current password is required."
   },
   "email": {
-    "invalid": "Email is not valid.",
-    "sameAsCurrent": "New email must be different from the current one."
+    "invalid": "Email is not valid."
   },
   "firstName": {
     "minLength": "First name must be at least 1 character long."

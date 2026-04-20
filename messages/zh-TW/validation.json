@@ -17,8 +17,7 @@
     "required": "目前密碼為必填。"
   },
   "email": {
-    "invalid": "電子郵件無效。",
-    "sameAsCurrent": "新電子郵件不能與目前相同。"
+    "invalid": "電子郵件無效。"
   },
   "firstName": {
     "minLength": "名字至少需要 1 個字元。"

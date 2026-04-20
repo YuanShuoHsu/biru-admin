@@ -27,10 +27,10 @@ const Email = () => {
   const { setDialog } = useDialogStore((state) => state);
 
   const currentEmail = session?.user.email || "";
-  const emailFormSchema = useEmailFormSchema(currentEmail);
+  const emailFormSchema = useEmailFormSchema();
 
   const {
-    formState: { errors, isSubmitting },
+    formState: { errors, isDirty, isSubmitting },
     handleSubmit,
     register,
     reset,
@@ -103,6 +103,7 @@ const Email = () => {
       </StyledCardContent>
       <StyledCardActions disableSpacing sx={{ alignItems: "flex-end" }}>
         <Button
+          disabled={!isDirty}
           loading={isSubmitting}
           size="small"
           type="submit"

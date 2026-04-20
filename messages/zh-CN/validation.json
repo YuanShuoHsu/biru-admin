@@ -17,8 +17,7 @@
     "required": "当前密码为必填。"
   },
   "email": {
-    "invalid": "电子邮件无效。",
-    "sameAsCurrent": "新电子邮件不能与当前相同。"
+    "invalid": "电子邮件无效。"
   },
   "firstName": {
     "minLength": "名字至少需要 1 个字符。"

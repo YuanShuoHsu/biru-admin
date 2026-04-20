@@ -2,7 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
-import { type BaseSyntheticEvent, useEffect, useRef } from "react";
+import { type BaseSyntheticEvent, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { type ProfileForm, useProfileFormSchema } from "./definitions";
@@ -12,9 +12,7 @@ import FormCard, {
   StyledCardContent,
   StyledCardHeader,
 } from "@/components/FormCard";
-import UploadAvatars, {
-  type UploadAvatarsHandle,
-} from "@/components/UploadAvatars";
+import UploadAvatars from "@/components/UploadAvatars";
 
 import { LocaleEnum } from "@/enums/Locale";
 
@@ -27,19 +25,28 @@ import { Button, Stack, TextField, Typography } from "@mui/material";
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
+import { useUploadAvatarStore } from "@/providers/upload-avatar-store-provider";
+
+const PROFILE_UPLOAD_AVATAR_KEY = "profile-upload-avatar";
+
 const Profile = () => {
-  const uploadAvatarsRef = useRef<UploadAvatarsHandle>(null);
-
   const { session, setSession } = useAuthStore((state) => state);
-
   const { setDialog } = useDialogStore((state) => state);
+
+  const { avatarSrcs } = useUploadAvatarStore((state) => state);
+  const avatarSrc = avatarSrcs[PROFILE_UPLOAD_AVATAR_KEY];
+  const isAvatarDirty = useUploadAvatarStore(
+    (state) =>
+      PROFILE_UPLOAD_AVATAR_KEY in state.avatarSrcs &&
+      state.avatarSrcs[PROFILE_UPLOAD_AVATAR_KEY] !== session?.user.image,
+  );
 
   const locale = useLocale();
 
   const profileFormSchema = useProfileFormSchema();
 
   const {
-    formState: { errors, isSubmitting },
+    formState: { errors, isDirty: isNameDirty, isSubmitting },
     handleSubmit,
     register,
     reset,
@@ -63,8 +70,6 @@ const Profile = () => {
   const tAuth = useTranslations("auth");
 
   const updateProfile = async ({ lastName, firstName }: ProfileForm) => {
-    const { avatarSrc } = uploadAvatarsRef.current?.getValue() || {};
-
     const name = (
       locale === LocaleEnum.En ? [firstName, lastName] : [lastName, firstName]
     )
@@ -75,7 +80,7 @@ const Profile = () => {
       lastName,
       firstName,
       name,
-      ...(avatarSrc !== undefined && { image: avatarSrc || "" }),
+      image: avatarSrc,
       fetchOptions: {
         onError: ({ error }) => {
           enqueueSnackbar(getErrorMessage(error.code, locale), {
@@ -117,7 +122,7 @@ const Profile = () => {
         <UploadAvatars
           initialSrc={session?.user.image}
           key={session?.user.id}
-          ref={uploadAvatarsRef}
+          uploadKey={PROFILE_UPLOAD_AVATAR_KEY}
         />
         <Stack
           width="100%"
@@ -147,6 +152,7 @@ const Profile = () => {
       </StyledCardContent>
       <StyledCardActions disableSpacing sx={{ alignItems: "flex-end" }}>
         <Button
+          disabled={!isNameDirty && !isAvatarDirty}
           loading={isSubmitting}
           size="small"
           type="submit"

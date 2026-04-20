@@ -8,16 +8,9 @@
 
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import {
-  type BaseSyntheticEvent,
-  type ReactNode,
-  useRef,
-  useState,
-} from "react";
+import { type BaseSyntheticEvent, type ReactNode, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
-import * as z from "zod";
-
-import { useSignupFormSchema } from "./definitions";
+import { type SignUpForm, useSignUpFormSchema } from "./definitions";
 
 import FormCard, {
   StyledCardActions,
@@ -26,9 +19,7 @@ import FormCard, {
 } from "@/components/FormCard";
 import GoogleButton from "@/components/GoogleButton";
 import PasswordRuleList from "@/components/PasswordRuleList";
-import UploadAvatars, {
-  type UploadAvatarsHandle,
-} from "@/components/UploadAvatars";
+import UploadAvatars from "@/components/UploadAvatars";
 
 import { LegalLinkType } from "@/constants/legal";
 import { query } from "@/constants/query";
@@ -61,6 +52,8 @@ import { styled } from "@mui/material/styles";
 
 import { useCountdownStore } from "@/providers/countdown-store-provider";
 
+import { useUploadAvatarStore } from "@/providers/upload-avatar-store-provider";
+
 import { getHref } from "@/utils/href";
 import {
   handleMouseDownPassword,
@@ -72,6 +65,8 @@ const StyledTypography = styled(Typography)({
 });
 
 // const today = dayjs();
+
+const SIGN_UP_AVATAR_KEY = "sign-up-avatar";
 
 interface AuthSignUpProps {
   locale: Locale;
@@ -94,15 +89,14 @@ const AuthSignUp = ({ locale, redirectTo }: AuthSignUpProps) => {
     [query.redirectTo]: redirectTo,
   });
 
-  const signupFormSchema = useSignupFormSchema();
-  type SignupFormData = z.infer<typeof signupFormSchema>;
+  const signUpFormSchema = useSignUpFormSchema();
 
   const {
     control,
     formState: { errors, isSubmitting },
     handleSubmit,
     register,
-  } = useForm<SignupFormData>({
+  } = useForm<SignUpForm>({
     defaultValues: {
       lastName: "",
       firstName: "",
@@ -115,10 +109,11 @@ const AuthSignUp = ({ locale, redirectTo }: AuthSignUpProps) => {
       // phoneNumber: "",
       emailSubscribed: true,
     },
-    resolver: zodResolver(signupFormSchema),
+    resolver: zodResolver(signUpFormSchema),
   });
 
-  const uploadAvatarsRef = useRef<UploadAvatarsHandle>(null);
+  const { avatarSrcs } = useUploadAvatarStore((state) => state);
+  const avatarSrc = avatarSrcs[SIGN_UP_AVATAR_KEY];
 
   const router = useRouter();
 
@@ -173,26 +168,32 @@ const AuthSignUp = ({ locale, redirectTo }: AuthSignUpProps) => {
     confirmPassword: _,
     // country: { code },
     // phoneNumber,
-    ...rest
-  }: SignupFormData) => {
-    const { avatarSrc: image } = uploadAvatarsRef.current?.getValue() || {};
-
+    email,
+    emailSubscribed,
+    firstName,
+    lastName,
+    password,
+  }: SignUpForm) => {
+    const name = (
+      locale === LocaleEnum.En ? [firstName, lastName] : [lastName, firstName]
+    )
+      .filter(Boolean)
+      .join(locale === LocaleEnum.En ? " " : "");
     // const parsedPhoneNumber = parsePhoneNumberWithError(phoneNumber, code);
 
     await authClient.signUp.email(
       {
-        ...rest,
         // birthDate,
         callbackURL: redirectTo,
+        email,
+        emailSubscribed,
+        firstName,
         // gender,
-        image,
+        image: avatarSrc,
         lang: locale,
-        name: (locale === LocaleEnum.En
-          ? [rest.firstName, rest.lastName]
-          : [rest.lastName, rest.firstName]
-        )
-          .filter(Boolean)
-          .join(locale === LocaleEnum.En ? " " : ""),
+        lastName,
+        name,
+        password,
         // phoneNumber,
       },
       {
@@ -208,7 +209,7 @@ const AuthSignUp = ({ locale, redirectTo }: AuthSignUpProps) => {
           router.push({
             pathname: "/auth/verify-email",
             query: {
-              [query.email]: rest.email,
+              [query.email]: email,
               [query.redirectTo]: redirectTo,
             },
           });
@@ -237,7 +238,7 @@ const AuthSignUp = ({ locale, redirectTo }: AuthSignUpProps) => {
       <StyledCardContent>
         <GoogleButton action="signUp" redirectTo={redirectTo} />
         <Divider flexItem>{tAuth("or")}</Divider>
-        <UploadAvatars ref={uploadAvatarsRef} />
+        <UploadAvatars uploadKey={SIGN_UP_AVATAR_KEY} />
         <Stack
           width="100%"
           direction={locale === LocaleEnum.En ? "row-reverse" : "row"}

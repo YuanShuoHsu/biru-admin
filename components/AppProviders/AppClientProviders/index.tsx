@@ -18,6 +18,7 @@ import { DialogStoreProvider } from "@/providers/dialog-store-provider";
 import { DrawerStoreProvider } from "@/providers/drawer-store-provider";
 import { OrderSearchStoreProvider } from "@/providers/order-search-store-provider";
 import SWRProvider from "@/providers/SWRProvider";
+import { UploadAvatarStoreProvider } from "@/providers/upload-avatar-store-provider";
 import { ViewStoreProvider } from "@/providers/view-store-provider";
 
 import type { Session } from "@/stores/auth-store";
@@ -61,7 +62,9 @@ const AppClientProviders = ({
                 <DialogStoreProvider>
                   <DrawerStoreProvider>
                     <OrderSearchStoreProvider>
-                      <ViewStoreProvider>{children}</ViewStoreProvider>
+                      <UploadAvatarStoreProvider>
+                        <ViewStoreProvider>{children}</ViewStoreProvider>
+                      </UploadAvatarStoreProvider>
                     </OrderSearchStoreProvider>
                   </DrawerStoreProvider>
                 </DialogStoreProvider>
