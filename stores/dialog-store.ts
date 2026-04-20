@@ -18,6 +18,7 @@ type DialogState = {
 };
 
 type DialogActions = {
+  closeDialog: () => void;
   resetDialog: () => void;
   setDialog: (options: Partial<DialogState>) => void;
 };
@@ -46,6 +47,7 @@ export const createDialogStore = (
 ) => {
   return createStore<DialogStore>()((set) => ({
     ...initState,
+    closeDialog: () => set({ open: false }),
     resetDialog: () => set(() => ({ ...defaultInitState })),
     setDialog: (options) =>
       set((state) => ({

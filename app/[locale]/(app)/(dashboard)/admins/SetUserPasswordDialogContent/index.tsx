@@ -1,6 +1,5 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import type { UserWithRole } from "better-auth/client/plugins";
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
@@ -13,6 +12,8 @@ import {
 } from "./definitions";
 
 import PasswordRuleList from "@/components/PasswordRuleList";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { usePasswordValidation } from "@/hooks/usePasswordValidation";
 
@@ -49,7 +50,7 @@ interface SetUserPasswordDialogContentProps {
 const SetUserPasswordDialogContent = ({
   user,
 }: SetUserPasswordDialogContentProps) => {
-  const { resetDialog, setDialog } = useDialogStore((state) => state);
+  const { closeDialog, setDialog } = useDialogStore((state) => state);
   const locale = useLocale();
   const tAdmins = useTranslations("admins");
   const tAuth = useTranslations("auth");
@@ -105,7 +106,7 @@ const SetUserPasswordDialogContent = ({
               variant: "success",
             });
 
-            resetDialog();
+            closeDialog();
           },
         },
       );

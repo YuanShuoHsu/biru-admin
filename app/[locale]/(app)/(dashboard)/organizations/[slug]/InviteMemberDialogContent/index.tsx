@@ -2,7 +2,6 @@
 
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useForm, useWatch } from "react-hook-form";
@@ -14,6 +13,8 @@ import {
 } from "./definitions";
 
 import { roles } from "@/constants/organizations";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
@@ -37,7 +38,7 @@ const InviteMemberDialogContent = ({
   fetchFullOrganization,
   organizationId,
 }: InviteMemberDialogContentProps) => {
-  const { resetDialog, setDialog } = useDialogStore((state) => state);
+  const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const locale = useLocale();
 
@@ -76,7 +77,8 @@ const InviteMemberDialogContent = ({
             const message = tMembers("actions.inviteMember.success");
             enqueueSnackbar(message, { variant: "success" });
 
-            resetDialog();
+            closeDialog();
+
             fetchFullOrganization();
           },
         },

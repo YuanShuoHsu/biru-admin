@@ -12,7 +12,7 @@ import FormCard, {
   StyledCardContent,
   StyledCardHeader,
 } from "@/components/FormCard";
-import UploadAvatars from "@/components/UploadAvatars";
+import UploadAvatars, { useUploadAvatarSrc } from "@/components/UploadAvatars";
 
 import { LocaleEnum } from "@/enums/Locale";
 
@@ -25,21 +25,11 @@ import { Button, Stack, TextField, Typography } from "@mui/material";
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { useUploadAvatarStore } from "@/providers/upload-avatar-store-provider";
-
 const PROFILE_UPLOAD_AVATAR_KEY = "profile-upload-avatar";
 
 const Profile = () => {
   const { session, setSession } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
-
-  const { avatarSrcs } = useUploadAvatarStore((state) => state);
-  const avatarSrc = avatarSrcs[PROFILE_UPLOAD_AVATAR_KEY];
-  const isAvatarDirty = useUploadAvatarStore(
-    (state) =>
-      PROFILE_UPLOAD_AVATAR_KEY in state.avatarSrcs &&
-      state.avatarSrcs[PROFILE_UPLOAD_AVATAR_KEY] !== session?.user.image,
-  );
 
   const locale = useLocale();
 
@@ -68,6 +58,12 @@ const Profile = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const tAuth = useTranslations("auth");
+
+  const avatarSrc = useUploadAvatarSrc(
+    PROFILE_UPLOAD_AVATAR_KEY,
+    session?.user.image,
+  );
+  const isAvatarDirty = avatarSrc !== (session?.user.image || undefined);
 
   const updateProfile = async ({ lastName, firstName }: ProfileForm) => {
     const name = (

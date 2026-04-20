@@ -52,18 +52,25 @@ const COMPRESSION_OPTIONS: Options = {
   useWebWorker: true,
 };
 
+export const useUploadAvatarSrc = (
+  uploadKey: string,
+  initialSrc?: string | null,
+) => {
+  const { avatarSrcs } = useUploadAvatarStore((state) => state);
+
+  return uploadKey in avatarSrcs
+    ? avatarSrcs[uploadKey]
+    : initialSrc || undefined;
+};
+
 interface UploadAvatarsProps {
   uploadKey: string;
   initialSrc?: string | null;
 }
 
 const UploadAvatars = ({ uploadKey, initialSrc }: UploadAvatarsProps) => {
-  const { avatarSrcs, setAvatarSrc } = useUploadAvatarStore((state) => state);
-  const storedSrc = avatarSrcs[uploadKey];
-  const hasInteracted = useUploadAvatarStore(
-    (state) => uploadKey in state.avatarSrcs,
-  );
-  const avatarSrc = hasInteracted ? storedSrc : initialSrc || undefined;
+  const { setAvatarSrc } = useUploadAvatarStore((state) => state);
+  const avatarSrc = useUploadAvatarSrc(uploadKey, initialSrc);
 
   const handleAvatarChange = async (
     event: React.ChangeEvent<HTMLInputElement>,

@@ -1,13 +1,10 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import type { UserWithRole } from "better-auth/client/plugins";
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
-
-import { roles } from "@/constants/admins";
 
 import {
   type SetRoleFormInput,
@@ -15,9 +12,13 @@ import {
   useSetRoleFormSchema,
 } from "./definitions";
 
+import { roles } from "@/constants/admins";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { Box, type BoxProps, MenuItem, TextField, styled } from "@mui/material";
+import { Box, type BoxProps, MenuItem, styled, TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -37,7 +38,7 @@ const SetRoleDialogContent = ({
   fetchListUsers,
   user,
 }: SetRoleDialogContentProps) => {
-  const { resetDialog, setDialog } = useDialogStore((state) => state);
+  const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const locale = useLocale();
 
@@ -75,7 +76,8 @@ const SetRoleDialogContent = ({
             const message = tAdmins("actions.setRole.success");
             enqueueSnackbar(message, { variant: "success" });
 
-            resetDialog();
+            closeDialog();
+
             fetchListUsers();
           },
         },

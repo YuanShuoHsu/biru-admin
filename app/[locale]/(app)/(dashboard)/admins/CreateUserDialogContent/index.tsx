@@ -1,9 +1,8 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent, useRef, useState } from "react";
+import { type BaseSyntheticEvent, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 
 import {
@@ -13,13 +12,13 @@ import {
 } from "./definitions";
 
 import PasswordRuleList from "@/components/PasswordRuleList";
-import UploadAvatars, {
-  type UploadAvatarsHandle,
-} from "@/components/UploadAvatars";
+import UploadAvatars, { useUploadAvatarSrc } from "@/components/UploadAvatars";
 
 import { roles } from "@/constants/admins";
 
 import { LocaleEnum } from "@/enums/Locale";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { usePasswordValidation } from "@/hooks/usePasswordValidation";
 
@@ -47,6 +46,8 @@ import {
   handleMouseUpPassword,
 } from "@/utils/password";
 
+const CREATE_USER_AVATAR_KEY = "create-user-avatar";
+
 const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
@@ -61,7 +62,8 @@ interface CreateUserDialogContentProps {
 const CreateUserDialogContent = ({
   fetchListUsers,
 }: CreateUserDialogContentProps) => {
-  const { resetDialog, setDialog } = useDialogStore((state) => state);
+  const { closeDialog, setDialog } = useDialogStore((state) => state);
+  const avatarSrc = useUploadAvatarSrc(CREATE_USER_AVATAR_KEY);
 
   const [showPassword, setShowPassword] = useState({
     password: false,
@@ -93,8 +95,6 @@ const CreateUserDialogContent = ({
     resolver: zodResolver(createUserFormSchema),
   });
 
-  const uploadAvatarsRef = useRef<UploadAvatarsHandle>(null);
-
   const [role, password, confirmPassword] = useWatch({
     control,
     name: ["role", "password", "confirmPassword"],
@@ -124,8 +124,6 @@ const CreateUserDialogContent = ({
         emailSubscribed,
         role,
       }) => {
-        const { avatarSrc: image } = uploadAvatarsRef.current?.getValue() || {};
-
         await authClient.admin.createUser(
           {
             name: (locale === LocaleEnum.En
@@ -140,7 +138,7 @@ const CreateUserDialogContent = ({
             data: {
               firstName,
               lastName,
-              image,
+              image: avatarSrc,
               emailSubscribed,
               lang: locale,
             },
@@ -159,7 +157,8 @@ const CreateUserDialogContent = ({
               const message = tAdmins("actions.createUser.success");
               enqueueSnackbar(message, { variant: "success" });
 
-              resetDialog();
+              closeDialog();
+
               fetchListUsers();
             },
           },
@@ -169,7 +168,7 @@ const CreateUserDialogContent = ({
 
   return (
     <StyledBox component="form" id="create-user-form" onSubmit={onSubmit}>
-      <UploadAvatars ref={uploadAvatarsRef} />
+      <UploadAvatars uploadKey={CREATE_USER_AVATAR_KEY} />
       <Stack
         width="100%"
         direction={locale === LocaleEnum.En ? "row-reverse" : "row"}

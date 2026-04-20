@@ -22,6 +22,7 @@ import {
 import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
+import { useUploadAvatarStore } from "@/providers/upload-avatar-store-provider";
 
 import { getErrorMessage } from "@/utils/errors";
 
@@ -51,6 +52,7 @@ const CustomizedDialogs = () => {
 
   const {
     cancelText,
+    closeDialog,
     confirmDisabled,
     confirmLoading,
     confirmText,
@@ -67,6 +69,7 @@ const CustomizedDialogs = () => {
     showConfirm,
     title,
   } = useDialogStore((state) => state);
+  const { resetUploadAvatar } = useUploadAvatarStore((state) => state);
 
   const loading = cancelLoading || confirmLoading;
 
@@ -81,7 +84,7 @@ const CustomizedDialogs = () => {
 
     try {
       await onCancel?.();
-      setDialog({ open: false });
+      closeDialog();
     } catch (error) {
       const message = getErrorMessage(error);
       enqueueSnackbar(message, { variant: "error" });
@@ -97,7 +100,7 @@ const CustomizedDialogs = () => {
 
     try {
       await onConfirm?.();
-      setDialog({ open: false });
+      closeDialog();
     } catch (error) {
       const message = getErrorMessage(error);
       enqueueSnackbar(message, { variant: "error" });
@@ -108,6 +111,7 @@ const CustomizedDialogs = () => {
 
   const handleExited = () => {
     resetDialog();
+    resetUploadAvatar();
     onExited?.();
   };
 

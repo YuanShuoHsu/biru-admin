@@ -1,6 +1,5 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
@@ -13,6 +12,8 @@ import {
 } from "./definitions";
 
 import { roles } from "@/constants/organizations";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
@@ -40,7 +41,7 @@ const UpdateMemberRoleDialogContent = ({
   member,
   organizationId,
 }: UpdateMemberRoleDialogContentProps) => {
-  const { resetDialog, setDialog } = useDialogStore((state) => state);
+  const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const locale = useLocale();
 
@@ -80,7 +81,8 @@ const UpdateMemberRoleDialogContent = ({
             const message = tMembers("actions.updateMemberRole.success");
             enqueueSnackbar(message, { variant: "success" });
 
-            resetDialog();
+            closeDialog();
+
             fetchFullOrganization();
           },
         },

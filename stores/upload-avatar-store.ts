@@ -5,6 +5,7 @@ type UploadAvatarState = {
 };
 
 type UploadAvatarActions = {
+  resetUploadAvatar: () => void;
   setAvatarSrc: (key: string, src?: string) => void;
 };
 
@@ -19,6 +20,7 @@ export const createUploadAvatarStore = (
 ) => {
   return createStore<UploadAvatarStore>()((set) => ({
     ...initState,
+    resetUploadAvatar: () => set(() => ({ ...defaultInitState })),
     setAvatarSrc: (key, src) =>
       set((state) => ({
         avatarSrcs: { ...state.avatarSrcs, [key]: src },

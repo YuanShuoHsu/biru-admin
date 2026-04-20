@@ -2,14 +2,12 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent, useRef } from "react";
+import { type BaseSyntheticEvent } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import { type UpdateUserForm, useUpdateUserFormSchema } from "./definitions";
 
-import UploadAvatars, {
-  type UploadAvatarsHandle,
-} from "@/components/UploadAvatars";
+import UploadAvatars, { useUploadAvatarSrc } from "@/components/UploadAvatars";
 
 import { LocaleEnum } from "@/enums/Locale";
 
@@ -48,11 +46,12 @@ const UpdateUserDialogContent = ({
   fetchListUsers,
   user,
 }: UpdateUserDialogContentProps) => {
-  const { resetDialog, setDialog } = useDialogStore((state) => state);
+  const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const locale = useLocale();
 
-  const uploadAvatarsRef = useRef<UploadAvatarsHandle>(null);
+  const uploadKey = `update-user-avatar-${user.id}`;
+  const image = useUploadAvatarSrc(uploadKey, user.image);
 
   const tAdmins = useTranslations("admins");
 
@@ -75,8 +74,6 @@ const UpdateUserDialogContent = ({
 
   const onSubmit = (event: BaseSyntheticEvent) =>
     handleSubmit(async ({ lastName, firstName, email, emailSubscribed }) => {
-      const { avatarSrc: image } = uploadAvatarsRef.current?.getValue() || {};
-
       await authClient.admin.updateUser(
         {
           userId: user.id,
@@ -91,7 +88,7 @@ const UpdateUserDialogContent = ({
             firstName,
             lastName,
             emailSubscribed,
-            ...(image !== undefined && { image }),
+            image,
           },
         },
         {
@@ -108,7 +105,8 @@ const UpdateUserDialogContent = ({
               variant: "success",
             });
 
-            resetDialog();
+            closeDialog();
+
             fetchListUsers();
           },
         },
@@ -117,7 +115,7 @@ const UpdateUserDialogContent = ({
 
   return (
     <StyledBox component="form" id="update-user-form" onSubmit={onSubmit}>
-      <UploadAvatars initialSrc={user.image} ref={uploadAvatarsRef} />
+      <UploadAvatars initialSrc={user.image} uploadKey={uploadKey} />
       <Stack
         width="100%"
         direction={locale === LocaleEnum.En ? "row-reverse" : "row"}

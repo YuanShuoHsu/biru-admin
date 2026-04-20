@@ -37,7 +37,7 @@ const BanUserDialogContent = ({
   fetchListUsers,
   user,
 }: BanUserDialogContentProps) => {
-  const { resetDialog, setDialog } = useDialogStore((state) => state);
+  const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const locale = useLocale();
 
@@ -79,7 +79,8 @@ const BanUserDialogContent = ({
             const message = tAdmins("actions.banUser.success");
             enqueueSnackbar(message, { variant: "success" });
 
-            resetDialog();
+            closeDialog();
+
             fetchListUsers();
           },
         },

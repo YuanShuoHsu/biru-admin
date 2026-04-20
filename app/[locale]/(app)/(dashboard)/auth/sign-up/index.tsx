@@ -19,7 +19,7 @@ import FormCard, {
 } from "@/components/FormCard";
 import GoogleButton from "@/components/GoogleButton";
 import PasswordRuleList from "@/components/PasswordRuleList";
-import UploadAvatars from "@/components/UploadAvatars";
+import UploadAvatars, { useUploadAvatarSrc } from "@/components/UploadAvatars";
 
 import { LegalLinkType } from "@/constants/legal";
 import { query } from "@/constants/query";
@@ -51,8 +51,6 @@ import {
 import { styled } from "@mui/material/styles";
 
 import { useCountdownStore } from "@/providers/countdown-store-provider";
-
-import { useUploadAvatarStore } from "@/providers/upload-avatar-store-provider";
 
 import { getHref } from "@/utils/href";
 import {
@@ -112,12 +110,11 @@ const AuthSignUp = ({ locale, redirectTo }: AuthSignUpProps) => {
     resolver: zodResolver(signUpFormSchema),
   });
 
-  const { avatarSrcs } = useUploadAvatarStore((state) => state);
-  const avatarSrc = avatarSrcs[SIGN_UP_AVATAR_KEY];
-
   const router = useRouter();
 
   const tAuth = useTranslations("auth");
+
+  const avatarSrc = useUploadAvatarSrc(SIGN_UP_AVATAR_KEY);
 
   // const genderOptions = GENDER_VALUES.map((value) => ({
   //   label: tAuth("gender.options")[GENDER_LABELS[value]],

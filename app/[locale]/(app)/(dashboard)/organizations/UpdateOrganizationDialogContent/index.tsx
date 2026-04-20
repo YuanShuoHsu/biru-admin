@@ -1,9 +1,8 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent, useRef } from "react";
+import { type BaseSyntheticEvent } from "react";
 import { useForm } from "react-hook-form";
 
 import {
@@ -11,9 +10,9 @@ import {
   useUpdateOrganizationFormSchema,
 } from "./definitions";
 
-import UploadAvatars, {
-  type UploadAvatarsHandle,
-} from "@/components/UploadAvatars";
+import UploadAvatars, { useUploadAvatarSrc } from "@/components/UploadAvatars";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
@@ -39,9 +38,12 @@ const UpdateOrganizationDialogContent = ({
   fetchOrganizationList,
   organization,
 }: UpdateOrganizationDialogContentProps) => {
-  const { resetDialog, setDialog } = useDialogStore((state) => state);
+  const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const locale = useLocale();
+
+  const uploadKey = `update-organization-avatar-${organization.id}`;
+  const logo = useUploadAvatarSrc(uploadKey, organization.logo);
 
   const tOrganizations = useTranslations("organizations");
 
@@ -56,11 +58,7 @@ const UpdateOrganizationDialogContent = ({
     resolver: zodResolver(updateOrganizationFormSchema),
   });
 
-  const uploadAvatarsRef = useRef<UploadAvatarsHandle>(null);
-
   const onSubmitHandler = async ({ name, slug }: UpdateOrganizationForm) => {
-    const { avatarSrc: logo } = uploadAvatarsRef.current?.getValue() || {};
-
     await authClient.organization.update(
       { organizationId: organization.id, data: { logo, name, slug } },
       {
@@ -77,7 +75,8 @@ const UpdateOrganizationDialogContent = ({
           const message = tOrganizations("actions.updateOrganization.success");
           enqueueSnackbar(message, { variant: "success" });
 
-          resetDialog();
+          closeDialog();
+
           fetchOrganizationList();
         },
       },
@@ -93,7 +92,7 @@ const UpdateOrganizationDialogContent = ({
       id="update-organization-form"
       onSubmit={onSubmit}
     >
-      <UploadAvatars initialSrc={organization.logo} ref={uploadAvatarsRef} />
+      <UploadAvatars initialSrc={organization.logo} uploadKey={uploadKey} />
       <TextField
         autoComplete="organization"
         error={!!errors.name}
