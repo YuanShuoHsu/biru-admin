@@ -27,7 +27,7 @@ import { Button, Stack, TextField, Typography } from "@mui/material";
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-const AuthSettingsAccountProfile = () => {
+const Profile = () => {
   const uploadAvatarsRef = useRef<UploadAvatarsHandle>(null);
 
   const { session, setSession } = useAuthStore((state) => state);
@@ -159,4 +159,4 @@ const AuthSettingsAccountProfile = () => {
   );
 };
 
-export default AuthSettingsAccountProfile;
+export default Profile;

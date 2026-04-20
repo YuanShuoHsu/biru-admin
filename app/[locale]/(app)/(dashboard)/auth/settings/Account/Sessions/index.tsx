@@ -74,7 +74,7 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
   },
 }));
 
-const AuthSettingsAccountSessions = () => {
+const Sessions = () => {
   const [accountMenuState, setAuthMenuState] =
     useState<SessionMenuState | null>(null);
   const [pendingToken, setPendingToken] = useState<string | null>(null);
@@ -274,4 +274,4 @@ const AuthSettingsAccountSessions = () => {
   );
 };
 
-export default AuthSettingsAccountSessions;
+export default Sessions;

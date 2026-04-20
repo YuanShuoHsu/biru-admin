@@ -22,7 +22,7 @@ import { Button, TextField, Typography } from "@mui/material";
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-const AuthSettingsAccountEmail = () => {
+const Email = () => {
   const { session } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
 
@@ -115,4 +115,4 @@ const AuthSettingsAccountEmail = () => {
   );
 };
 
-export default AuthSettingsAccountEmail;
+export default Email;

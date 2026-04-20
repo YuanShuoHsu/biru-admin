@@ -29,7 +29,7 @@ import {
   Typography,
 } from "@mui/material";
 
-const AuthSettingsSecurityChangePassword = () => {
+const ChangePassword = () => {
   const [showPassword, setShowPassword] = useState({
     newPassword: false,
     confirmNewPassword: false,
@@ -206,4 +206,4 @@ const AuthSettingsSecurityChangePassword = () => {
   );
 };
 
-export default AuthSettingsSecurityChangePassword;
+export default ChangePassword;

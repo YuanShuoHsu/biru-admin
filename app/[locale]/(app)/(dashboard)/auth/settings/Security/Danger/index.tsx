@@ -7,7 +7,7 @@ import { StyledCardHeader } from "@/components/FormCard";
 import { DeleteForever } from "@mui/icons-material";
 import { Button, Card, CardContent, Stack, Typography } from "@mui/material";
 
-const AuthSettingsSecurityDanger = () => {
+const Danger = () => {
   const tAuth = useTranslations("auth");
 
   return (
@@ -50,4 +50,4 @@ const AuthSettingsSecurityDanger = () => {
   );
 };
 
-export default AuthSettingsSecurityDanger;
+export default Danger;

@@ -3,7 +3,7 @@ import Danger from "./Danger";
 import Preferences from "./Preferences";
 import Support from "./Support";
 
-const AuthSettingsSecurity = () => (
+const Security = () => (
   <>
     <ChangePassword />
     <Preferences />
@@ -12,4 +12,4 @@ const AuthSettingsSecurity = () => (
   </>
 );
 
-export default AuthSettingsSecurity;
+export default Security;

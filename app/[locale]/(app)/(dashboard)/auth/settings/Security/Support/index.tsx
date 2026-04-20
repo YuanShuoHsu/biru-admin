@@ -7,7 +7,7 @@ import { StyledCardHeader } from "@/components/FormCard";
 import { Gavel, Policy } from "@mui/icons-material";
 import { Button, Card, CardContent, Stack, Typography } from "@mui/material";
 
-const AuthSettingsSecuritySupport = () => {
+const Support = () => {
   const tAuth = useTranslations("auth");
 
   return (
@@ -41,4 +41,4 @@ const AuthSettingsSecuritySupport = () => {
   );
 };
 
-export default AuthSettingsSecuritySupport;
+export default Support;

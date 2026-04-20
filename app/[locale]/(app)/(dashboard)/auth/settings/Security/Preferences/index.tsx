@@ -9,7 +9,7 @@ import { REMEMBER_ME } from "@/constants/sign-in";
 
 import { Card, CardContent, Stack, Switch, Typography } from "@mui/material";
 
-const AuthSettingsSecurityPreferences = () => {
+const Preferences = () => {
   const [rememberMeByDefault, setRememberMeByDefault] = useState(true);
 
   const tAuth = useTranslations("auth");
@@ -69,4 +69,4 @@ const AuthSettingsSecurityPreferences = () => {
   );
 };
 
-export default AuthSettingsSecurityPreferences;
+export default Preferences;

@@ -2,7 +2,7 @@ import Email from "./Email";
 import Profile from "./Profile";
 import Sessions from "./Sessions";
 
-const AuthSettingsAccount = () => (
+const Account = () => (
   <>
     <Profile />
     <Email />
@@ -10,4 +10,4 @@ const AuthSettingsAccount = () => (
   </>
 );
 
-export default AuthSettingsAccount;
+export default Account;
