@@ -7,7 +7,7 @@ type DrawerState = {
 };
 
 type DrawerActions = {
-  setDrawerOpen: (type: DrawerType, open: boolean) => void;
+  setDrawer: (type: DrawerType, open: boolean) => void;
 };
 
 export type DrawerStore = DrawerState & DrawerActions;
@@ -24,7 +24,7 @@ export const createDrawerStore = (
 ) => {
   return createStore<DrawerStore>()((set) => ({
     ...initState,
-    setDrawerOpen: (type, open) =>
+    setDrawer: (type, open) =>
       set((state) => ({
         drawer: {
           ...state.drawer,

@@ -6,7 +6,7 @@ import { ORDER_MODE } from "@/constants/orderMode";
 
 import { useAuthMenuItems, useLogoutMenuItem } from "@/hooks/useAuth";
 
-import { Grid, Link, Typography } from "@mui/material";
+import { Divider, Grid, Link, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
@@ -29,13 +29,17 @@ const useFooterItems = (): MenuItem[] => {
   const tCompany = useTranslations("company");
   const tOrder = useTranslations("order");
 
-  const authChildren = useAuthMenuItems();
-
-  const settingsItem = useSettingsMenuItem();
   const addAccountItem = useAddAccountMenuItem();
+  const authChildren = useAuthMenuItems();
   const logoutMenuItem = useLogoutMenuItem();
+  const settingsItem = useSettingsMenuItem();
 
-  const accountChildren = [settingsItem, logoutMenuItem, addAccountItem];
+  const accountChildren: MenuItem[] = [
+    settingsItem,
+    logoutMenuItem,
+    { slot: () => <Divider flexItem /> },
+    addAccountItem,
+  ];
 
   return [
     {
@@ -79,37 +83,35 @@ const LinkSection = () => {
 
   return (
     <>
-      {footerItems.map(
-        ({ children, label: parentLabel, slot: Slot, to: parentTo }, index) => (
-          <StyledGrid key={parentLabel || index} size={{ xs: 6, md: 2 }}>
-            {Slot ? (
-              <Slot level={0} />
-            ) : (
-              <>
-                <Typography color="text.primary" variant="subtitle2">
-                  {parentLabel}
-                </Typography>
-                {children?.map(
-                  ({ label: childLabel, onClick, to: childTo }) => (
-                    <Link
-                      color="text.secondary"
-                      {...(onClick
-                        ? { component: "button" }
-                        : { href: `${parentTo}${childTo}` })}
-                      key={onClick ? childLabel : childTo}
-                      onClick={onClick}
-                      underline="hover"
-                      variant="body2"
-                    >
-                      {childLabel}
-                    </Link>
-                  ),
-                )}
-              </>
-            )}
-          </StyledGrid>
-        ),
-      )}
+      {footerItems.map(({ children, label: parentLabel, to: parentTo }) => (
+        <StyledGrid key={parentTo} size={{ xs: 6, md: 2 }}>
+          <Typography color="text.primary" variant="subtitle2">
+            {parentLabel}
+          </Typography>
+          {children?.map(
+            (
+              { label: childLabel, onClick, slot: Slot, to: childTo },
+              itemIndex,
+            ) => {
+              if (Slot) return <Slot key={itemIndex} />;
+
+              return (
+                <Link
+                  color="text.secondary"
+                  component={onClick ? "button" : "a"}
+                  href={onClick ? undefined : `${parentTo}${childTo}`}
+                  key={itemIndex}
+                  onClick={onClick}
+                  underline="hover"
+                  variant="body2"
+                >
+                  {childLabel}
+                </Link>
+              );
+            },
+          )}
+        </StyledGrid>
+      ))}
     </>
   );
 };

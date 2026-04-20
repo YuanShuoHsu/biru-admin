@@ -1,11 +1,10 @@
 import { hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 
 import CustomizedDialogs from "@/components/CustomizedDialogs";
 import HideAppBar from "@/components/HideAppBar";
-import NavTemporaryDrawer from "@/components/NavTemporaryDrawer";
+import TemporaryDrawer from "@/components/TemporaryDrawer";
 import ScrollTop from "@/components/ScrollTop";
 
 import { routing } from "@/i18n/routing";
@@ -22,9 +21,7 @@ const AppLayout = async ({ children, params }: LayoutProps<"/[locale]">) => {
   return (
     <Box display="flex">
       <HideAppBar />
-      <Suspense>
-        <NavTemporaryDrawer />
-      </Suspense>
+      <TemporaryDrawer />
       <Box
         component="main"
         bgcolor="background.default"

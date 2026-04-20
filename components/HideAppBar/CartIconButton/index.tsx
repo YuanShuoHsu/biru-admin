@@ -8,15 +8,14 @@ import { ShoppingCart } from "@mui/icons-material";
 import { IconButton, Tooltip } from "@mui/material";
 
 import { useCartStore } from "@/providers/cart-store-provider";
-import { useDrawerStore } from "@/providers/drawer-store-provider";
 
-import { handleDrawerToggle } from "@/utils/drawer";
+import { useToggleDrawer } from "@/utils/drawer";
 
 const CartIconButton = () => {
   const { cartTotalQuantity } = useCartStore((state) => state);
 
-  const { setDrawerOpen } = useDrawerStore((state) => state);
-  const handleCartOpen = handleDrawerToggle(setDrawerOpen, "cart", true);
+  const toggleDrawer = useToggleDrawer();
+  const handleCartOpen = toggleDrawer("cart", true);
 
   const tAppBar = useTranslations("appBar");
 

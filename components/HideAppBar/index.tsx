@@ -36,9 +36,8 @@ import { styled } from "@mui/material/styles";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
-import { useDrawerStore } from "@/providers/drawer-store-provider";
 
-import { handleDrawerToggle } from "@/utils/drawer";
+import { useToggleDrawer } from "@/utils/drawer";
 
 const StyledAppBar = styled(AppBar, {
   shouldForwardProp: (prop) => prop !== "trigger",
@@ -59,8 +58,8 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 const HideAppBar = () => {
   const { session, setSession } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
-  const { setDrawerOpen } = useDrawerStore((state) => state);
-  const handleNavOpen = handleDrawerToggle(setDrawerOpen, "nav", true);
+  const toggleDrawer = useToggleDrawer();
+  const handleNavOpen = toggleDrawer("nav", true);
 
   const locale = useLocale();
 
