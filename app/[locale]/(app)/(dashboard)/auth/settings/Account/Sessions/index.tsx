@@ -13,6 +13,8 @@ import FormCard, {
   StyledCardHeader,
 } from "@/components/FormCard";
 
+import { swrKeys } from "@/constants/swr";
+
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { Logout } from "@mui/icons-material";
@@ -41,7 +43,7 @@ const Sessions = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const { data = [], mutate } = useSWR<DeviceSession[]>(
-    session ? "device-sessions" : null,
+    session ? swrKeys.deviceSessions : null,
     async () => {
       const { data } = await authClient.multiSession.listDeviceSessions();
 

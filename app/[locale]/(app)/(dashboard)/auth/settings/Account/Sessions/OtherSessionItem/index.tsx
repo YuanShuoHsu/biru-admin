@@ -9,6 +9,8 @@ import { useSWRConfig } from "swr";
 
 import SessionItem from "../SessionItem";
 
+import { swrKeys } from "@/constants/swr";
+
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { MoreHoriz } from "@mui/icons-material";
@@ -61,7 +63,7 @@ const OtherSessionItem = ({ token, user }: OtherSessionItemProps) => {
           const { data } = await authClient.getSession();
           setSession(data);
 
-          await mutate("device-sessions");
+          await mutate(swrKeys.deviceSessions);
 
           setIsLoading(false);
 
@@ -98,7 +100,7 @@ const OtherSessionItem = ({ token, user }: OtherSessionItemProps) => {
           enqueueSnackbar(getErrorMessage(code, locale), { variant: "error" });
         },
         onSuccess: async () => {
-          await mutate("device-sessions");
+          await mutate(swrKeys.deviceSessions);
 
           setIsLoading(false);
 

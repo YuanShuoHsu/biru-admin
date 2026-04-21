@@ -3,6 +3,8 @@ import { headers } from "next/headers";
 
 import AppClientProviders from "./AppClientProviders";
 
+import { swrKeys } from "@/constants/swr";
+
 import { authClient } from "@/lib/auth-client";
 
 import { getStores } from "@/utils/stores";
@@ -16,7 +18,7 @@ const AppProviders = async ({ children }: AppProvidersProps) => {
     getStores(),
     authClient.getSession({ fetchOptions: { headers: await headers() } }),
   ]);
-  const fallback = { "/api/stores": stores };
+  const fallback = { [swrKeys.stores]: stores };
 
   return (
     <NextIntlClientProvider>

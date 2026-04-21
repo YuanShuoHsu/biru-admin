@@ -9,11 +9,11 @@ import useSWR from "swr";
 
 import { ORDER_MODE } from "@/constants/orderMode";
 
+import { useStores } from "@/hooks/useStores";
+
 import { usePathname } from "@/i18n/navigation";
 
 import { authClient } from "@/lib/auth-client";
-
-import { useAuthStore } from "@/providers/auth-store-provider";
 
 import {
   AccountCircle,
@@ -47,7 +47,6 @@ import {
 import { styled, type Theme } from "@mui/material/styles";
 
 import type { RouteParams } from "@/types/routeParams";
-import type { Store } from "@/types/stores";
 
 import { getStoreName } from "@/utils/stores";
 
@@ -87,11 +86,9 @@ interface BreadcrumbItem {
 }
 
 const useBreadcrumbs = (): BreadcrumbItem[] => {
-  const { session } = useAuthStore((state) => state);
-
   const { locale, mode, slug, storeSlug, userId } = useParams<RouteParams>();
 
-  const { data: stores = [] } = useSWR<Store[]>("/api/stores");
+  const stores = useStores();
   const storeName = getStoreName(locale, stores, storeSlug);
 
   const { data: userEmail = "" } = useSWR(

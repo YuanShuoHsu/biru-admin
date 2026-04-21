@@ -14,12 +14,13 @@ import useSWR from "swr";
 import BadgeAvatars from "@/components/BadgeAvatars";
 
 import { query } from "@/constants/query";
+import { swrKeys } from "@/constants/swr";
 
-import { useLogoutMenuItem } from "@/hooks/useAuth";
-
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import { useAuthMenuItems, useLogoutMenuItem } from "@/hooks/useAuth";
 
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
+
+import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { AccountCircle } from "@mui/icons-material";
 import {
@@ -43,10 +44,6 @@ import type { MenuItem as MenuItemData } from "@/types/menuItem";
 import { useAddAccountMenuItem, useSettingsMenuItem } from "@/utils/account";
 import { getDisplayName } from "@/utils/auth";
 import { getHref } from "@/utils/href";
-
-type DeviceSession = NonNullable<
-  Awaited<ReturnType<typeof authClient.multiSession.listDeviceSessions>>["data"]
->[number];
 
 const StyledAvatar = styled(Avatar, {
   shouldForwardProp: (prop) => prop !== "isSignedIn",
@@ -127,32 +124,18 @@ const renderMenuItems = (
     );
   });
 
+type DeviceSession = NonNullable<
+  Awaited<ReturnType<typeof authClient.multiSession.listDeviceSessions>>["data"]
+>[number];
+
 const AccountMenu = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [isSwitching, setIsSwitching] = useState(false);
   const open = Boolean(anchorEl);
 
   const { session, setSession } = useAuthStore((state) => state);
-
-  const locale = useLocale();
-
-  const { data: deviceSessions = [] } = useSWR<DeviceSession[]>(
-    open && session ? "device-sessions" : null,
-    async () => {
-      const { data } = await authClient.multiSession.listDeviceSessions();
-
-      return data || [];
-    },
-  );
-
   const displayName = getDisplayName(session?.user);
 
-  const { enqueueSnackbar } = useSnackbar();
-
-  const tAuth = useTranslations("auth");
-  const tooltipTitle = session
-    ? tAuth("settings.account.label")
-    : tAuth("label");
+  const locale = useLocale();
 
   const pathname = usePathname();
 
@@ -160,19 +143,40 @@ const AccountMenu = () => {
 
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirectTo");
-  const isAuthSettingsPage = pathname.startsWith("/auth/settings");
   const isAuthPage = pathname.startsWith("/auth");
   const isCompanyPage = pathname.startsWith("/company");
 
-  const redirectTarget = isAuthPage
-    ? redirectTo
-    : (isAuthSettingsPage || isCompanyPage) && redirectTo
-      ? redirectTo
-      : pathname;
+  const redirectTarget =
+    (isAuthPage || isCompanyPage) && redirectTo ? redirectTo : pathname;
 
   const signInRedirectHref = getHref("/auth/sign-in", {
     [query.redirectTo]: redirectTarget,
   });
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const { data: deviceSessions = [] } = useSWR<DeviceSession[]>(
+    session ? swrKeys.deviceSessions : null,
+    async () => {
+      const { data } = await authClient.multiSession.listDeviceSessions();
+
+      return data || [];
+    },
+  );
+
+  const otherSessions = deviceSessions.filter(
+    ({ session: { token } }) => token !== session?.session.token,
+  );
+
+  const tAuth = useTranslations("auth");
+  const tooltipTitle = session
+    ? tAuth("settings.account.label")
+    : tAuth("label");
+
+  const addAccountItem = useAddAccountMenuItem();
+  const authMenuItems = useAuthMenuItems(redirectTarget || undefined);
+  const logoutMenuItem = useLogoutMenuItem();
+  const settingsItem = useSettingsMenuItem();
 
   const handleClick = (event: MouseEvent<HTMLElement>) => {
     if (!session) {
@@ -187,13 +191,10 @@ const AccountMenu = () => {
   const handleClose = () => setAnchorEl(null);
 
   const handleSwitchSession = async (sessionToken: string, email: string) => {
-    setIsSwitching(true);
-
     await authClient.multiSession.setActive({
       sessionToken,
       fetchOptions: {
         onError: ({ error }) => {
-          setIsSwitching(false);
           enqueueSnackbar(getErrorMessage(error.code, locale), {
             variant: "error",
           });
@@ -201,8 +202,6 @@ const AccountMenu = () => {
         onSuccess: async () => {
           const { data } = await authClient.getSession();
           setSession(data);
-          setIsSwitching(false);
-          handleClose();
 
           enqueueSnackbar(tAuth("switchSession.success", { email }), {
             variant: "success",
@@ -211,14 +210,6 @@ const AccountMenu = () => {
       },
     });
   };
-
-  const settingsItem = useSettingsMenuItem();
-  const addAccountItem = useAddAccountMenuItem();
-  const logoutMenuItem = useLogoutMenuItem();
-
-  const otherSessions = deviceSessions.filter(
-    ({ session: { token } }) => token !== session?.session.token,
-  );
 
   return (
     <>
@@ -272,36 +263,42 @@ const AccountMenu = () => {
             />
           </StyledListSubheader>
         )}
+        {!session && (
+          <StyledListSubheader>{tAuth("label")}</StyledListSubheader>
+        )}
         <Divider />
-        {renderMenuItems(pathname, "/auth", [settingsItem, logoutMenuItem])}
-        <Divider />
-        {otherSessions.map(({ session: { token }, user }) => {
-          const name = getDisplayName(user);
-          return (
-            <MenuItem
-              disabled={isSwitching}
-              key={token}
-              onClick={() => handleSwitchSession(token, user.email)}
-            >
-              <ListItemIcon>
-                <StyledListAvatar
-                  alt={name}
-                  isSignedIn
-                  src={user.image || undefined}
-                >
-                  {name[0]}
-                </StyledListAvatar>
-              </ListItemIcon>
-              <ListItemText
-                primary={name}
-                secondary={user.email}
-                slotProps={{ secondary: { variant: "caption" } }}
-              />
-            </MenuItem>
-          );
-        })}
-        {otherSessions.length > 0 && <Divider />}
-        {renderMenuItems(pathname, "/auth", [addAccountItem])}
+        {session &&
+          renderMenuItems(pathname, "/auth", [settingsItem, logoutMenuItem])}
+        {session && <Divider />}
+        {session &&
+          otherSessions.map(({ session: { token }, user }) => {
+            const name = getDisplayName(user);
+
+            return (
+              <MenuItem
+                key={token}
+                onClick={() => handleSwitchSession(token, user.email)}
+              >
+                <ListItemIcon>
+                  <StyledListAvatar
+                    alt={name}
+                    isSignedIn
+                    src={user.image || undefined}
+                  >
+                    {name[0]}
+                  </StyledListAvatar>
+                </ListItemIcon>
+                <ListItemText
+                  primary={name}
+                  secondary={user.email}
+                  slotProps={{ secondary: { variant: "caption" } }}
+                />
+              </MenuItem>
+            );
+          })}
+        {session && otherSessions.length > 0 && <Divider />}
+        {session && renderMenuItems(pathname, "/auth", [addAccountItem])}
+        {!session && renderMenuItems(pathname, "/auth", authMenuItems)}
       </StyledMenu>
     </>
   );

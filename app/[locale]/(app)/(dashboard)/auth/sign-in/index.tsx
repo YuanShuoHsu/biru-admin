@@ -131,7 +131,7 @@ const AuthSignIn = ({ locale, redirectTo, rememberMe }: AuthSignInProps) => {
           });
         },
         onSuccess: () => {
-          enqueueSnackbar(tAuth("signIn.success"), { variant: "success" });
+          enqueueSnackbar(tAuth("signIn.success", { email: data.email }), { variant: "success" });
           router.replace(redirectTo || "/");
         },
       },
