@@ -7,7 +7,7 @@ import BadgeAvatars from "@/components/BadgeAvatars";
 
 import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
-import { CameraAlt, Close } from "@mui/icons-material";
+import { CameraAlt, Close, RestartAlt } from "@mui/icons-material";
 import {
   Avatar,
   ButtonBase,
@@ -60,26 +60,36 @@ interface UploadAvatarsProps {
 }
 
 const UploadAvatars = ({ uploadKey, initialSrc }: UploadAvatarsProps) => {
-  const { setAvatarSrc } = useUploadAvatarStore((state) => state);
+  const { resetAvatarSrc, setAvatarSrc } = useUploadAvatarStore(
+    (state) => state,
+  );
   const avatarSrc = useUploadAvatarSrc(uploadKey, initialSrc);
+  const canRestore = !!initialSrc && avatarSrc !== initialSrc;
 
   const handleAvatarChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
-    if (file) {
-      const compressed = await imageCompression(file, COMPRESSION_OPTIONS);
+    event.target.value = "";
+    if (!file) return;
 
-      const reader = new FileReader();
-      reader.onload = () => setAvatarSrc(uploadKey, reader.result as string);
-      reader.readAsDataURL(compressed);
-    }
+    const compressed = await imageCompression(file, COMPRESSION_OPTIONS);
+
+    const reader = new FileReader();
+    reader.onload = () => setAvatarSrc(uploadKey, reader.result as string);
+    reader.readAsDataURL(compressed);
   };
 
   const handleRemoveAvatar = (e: React.MouseEvent) => {
     e.preventDefault();
 
     setAvatarSrc(uploadKey, undefined);
+  };
+
+  const handleRestoreAvatar = (e: React.MouseEvent) => {
+    e.preventDefault();
+
+    resetAvatarSrc(uploadKey);
   };
 
   const { Icon, label, onClick } = avatarSrc
@@ -94,23 +104,43 @@ const UploadAvatars = ({ uploadKey, initialSrc }: UploadAvatarsProps) => {
       tabIndex={-1}
     >
       <BadgeAvatars
+        anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
         badgeContent={
-          <IconButton
-            aria-label={label}
-            component="span"
-            size="small"
-            onClick={onClick}
-          >
-            <Icon fontSize="inherit" />
-          </IconButton>
+          canRestore ? (
+            <IconButton
+              aria-label="restore avatar"
+              component="span"
+              onClick={handleRestoreAvatar}
+              role={undefined}
+              size="small"
+              tabIndex={-1}
+            >
+              <RestartAlt fontSize="inherit" />
+            </IconButton>
+          ) : null
         }
       >
-        <StyledAvatar alt="Upload new avatar" src={avatarSrc} />
-        <VisuallyHiddenInput
-          accept="image/*"
-          onChange={handleAvatarChange}
-          type="file"
-        />
+        <BadgeAvatars
+          badgeContent={
+            <IconButton
+              aria-label={label}
+              component="span"
+              onClick={onClick}
+              role={undefined}
+              size="small"
+              tabIndex={-1}
+            >
+              <Icon fontSize="inherit" />
+            </IconButton>
+          }
+        >
+          <StyledAvatar alt="Upload new avatar" src={avatarSrc} />
+          <VisuallyHiddenInput
+            accept="image/*"
+            onChange={handleAvatarChange}
+            type="file"
+          />
+        </BadgeAvatars>
       </BadgeAvatars>
     </StyledButtonBase>
   );
