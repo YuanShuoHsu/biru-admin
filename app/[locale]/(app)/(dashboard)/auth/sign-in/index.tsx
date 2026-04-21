@@ -10,7 +10,7 @@ import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
-import { SignInForm, useSignInFormSchema } from "./definitions";
+import { type SignInForm, useSignInFormSchema } from "./definitions";
 
 import FormCard, {
   StyledCardActions,
@@ -43,6 +43,7 @@ import {
   Typography,
 } from "@mui/material";
 
+import { useAuthStore } from "@/providers/auth-store-provider";
 import { useCountdownStore } from "@/providers/countdown-store-provider";
 
 import { getHref } from "@/utils/href";
@@ -67,6 +68,8 @@ const AuthSignIn = ({ locale, redirectTo, rememberMe }: AuthSignInProps) => {
   const signUpHref = getHref("/auth/sign-up", {
     [query.redirectTo]: redirectTo,
   });
+
+  const { setSession } = useAuthStore((state) => state);
 
   const { items, startCountdown } = useCountdownStore((state) => state);
 
@@ -101,7 +104,7 @@ const AuthSignIn = ({ locale, redirectTo, rememberMe }: AuthSignInProps) => {
 
   const onSubmit = handleSubmit(async (data: SignInForm) => {
     await authClient.signIn.email(
-      { ...data, callbackURL: redirectTo },
+      { ...data },
       {
         headers: { "Accept-Language": locale },
         onError: async ({ error: { code } }) => {
@@ -130,8 +133,14 @@ const AuthSignIn = ({ locale, redirectTo, rememberMe }: AuthSignInProps) => {
             variant: "error",
           });
         },
-        onSuccess: () => {
-          enqueueSnackbar(tAuth("signIn.success", { email: data.email }), { variant: "success" });
+        onSuccess: async () => {
+          const { data: session } = await authClient.getSession();
+          setSession(session);
+
+          enqueueSnackbar(tAuth("signIn.success", { email: data.email }), {
+            variant: "success",
+          });
+
           router.replace(redirectTo || "/");
         },
       },
