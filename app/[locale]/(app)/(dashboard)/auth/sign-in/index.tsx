@@ -20,6 +20,7 @@ import FormCard, {
 import GoogleButton from "@/components/GoogleButton";
 
 import { query } from "@/constants/query";
+import { DEFAULT_AUTHENTICATED_ROUTE } from "@/constants/route";
 import { REMEMBER_ME } from "@/constants/sign-in";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -141,7 +142,7 @@ const AuthSignIn = ({ locale, redirectTo, rememberMe }: AuthSignInProps) => {
             variant: "success",
           });
 
-          router.replace(redirectTo || "/");
+          router.replace(redirectTo || DEFAULT_AUTHENTICATED_ROUTE);
         },
       },
     );

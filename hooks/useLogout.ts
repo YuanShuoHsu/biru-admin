@@ -4,7 +4,7 @@ import { useSWRConfig } from "swr";
 
 import { swrKeys } from "@/constants/swr";
 
-import { usePathname, useRouter } from "@/i18n/navigation";
+import { useRouter } from "@/i18n/navigation";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
@@ -19,8 +19,6 @@ export const useLogout = () => {
   const { mutate } = useSWRConfig();
 
   const locale = useLocale();
-
-  const pathname = usePathname();
 
   const router = useRouter();
 
@@ -47,8 +45,7 @@ export const useLogout = () => {
 
           enqueueSnackbar(tAuth("signOut.success"), { variant: "success" });
 
-          if (!data && pathname === "/auth/settings")
-            router.replace("/auth/sign-in");
+          if (!data) router.replace("/auth/sign-in");
         },
       },
     });

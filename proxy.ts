@@ -13,37 +13,40 @@ import { NextResponse } from "next/server";
 import { DEFAULT_AUTHENTICATED_ROUTE } from "./constants/route";
 import { routing } from "./i18n/routing";
 
+const SESSION_COOKIE_NAME = "better-auth.session_token";
+
+const handleI18nRouting = createMiddleware(routing);
+
 const fetchWithCookies = (url: string, request: NextRequest) =>
   fetch(url, {
     headers: {
-      cookie: request.headers.get("cookie") || "",
-      "X-Forwarded-For": request.headers.get("X-Forwarded-For") || "",
+      cookie: request.headers.get("cookie") ?? "",
+      "X-Forwarded-For": request.headers.get("X-Forwarded-For") ?? "",
     },
   });
 
 const getAuthInfo = async (request: NextRequest) => {
+  const baseURL = process.env.NEXT_PUBLIC_NEST_URL;
+
   try {
     const [session, member] = await Promise.all([
+      fetchWithCookies(`${baseURL}/api/auth/get-session`, request).then(
+        (res) => (res.ok ? res.json() : null),
+      ),
       fetchWithCookies(
-        `${process.env.NEXT_PUBLIC_NEST_URL}/api/auth/get-session`,
+        `${baseURL}/api/auth/organization/get-active-member-role`,
         request,
-      ).then((res) => res.json()),
-      fetchWithCookies(
-        `${process.env.NEXT_PUBLIC_NEST_URL}/api/auth/organization/get-active-member-role`,
-        request,
-      ).then((res) => res.json()),
+      ).then((res) => (res.ok ? res.json() : null)),
     ]);
 
     return {
-      userRole: session?.user?.role,
-      memberRole: member?.role,
+      userRole: session?.user?.role as string | undefined,
+      memberRole: member?.role as string | undefined,
     };
   } catch {
     return { userRole: undefined, memberRole: undefined };
   }
 };
-
-const handleI18nRouting = createMiddleware(routing);
 
 export const proxy = async (request: NextRequest) => {
   const { pathname } = request.nextUrl;
@@ -53,6 +56,7 @@ export const proxy = async (request: NextRequest) => {
   );
 
   const locale = pathnameLocale || routing.defaultLocale;
+
   const response = handleI18nRouting(request);
 
   const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE === "true";
@@ -71,35 +75,41 @@ export const proxy = async (request: NextRequest) => {
     return NextResponse.redirect(request.nextUrl);
   }
 
-  const isHomePage = pathname === `/${locale}`;
   const sessionCookie = getSessionCookie(request);
 
-  const getSignInUrl = () => {
+  const isRootPage = pathname === `/${locale}`;
+  const isAuthPage = pathname.startsWith(`/${locale}/auth/`);
+  const isCompanyPage = pathname.startsWith(`/${locale}/company`);
+  const isSettingsPage = pathname.includes("/auth/settings");
+  const isPublicPage = (isAuthPage || isCompanyPage) && !isSettingsPage;
+
+  const buildSignInUrl = () => {
     const redirectTo = pathname.slice(`/${locale}`.length);
-    request.nextUrl.pathname = `/${locale}`;
+    request.nextUrl.pathname = `/${locale}/auth/sign-in`;
     if (redirectTo) request.nextUrl.searchParams.set("redirectTo", redirectTo);
 
     return request.nextUrl;
   };
 
-  if (!sessionCookie && !isHomePage) {
-    return NextResponse.redirect(getSignInUrl());
+  if (!sessionCookie && !isPublicPage) {
+    return NextResponse.redirect(buildSignInUrl());
   }
 
-  if (sessionCookie) {
+  if (sessionCookie && isRootPage) {
+    request.nextUrl.pathname = `/${locale}${DEFAULT_AUTHENTICATED_ROUTE}`;
+
+    return NextResponse.redirect(request.nextUrl);
+  }
+
+  if (sessionCookie && !isPublicPage) {
     const { userRole, memberRole } = await getAuthInfo(request);
-    const isAuthorized = userRole === "admin" || memberRole;
+    const isAuthorized = userRole === "admin" || !!memberRole;
 
     if (!isAuthorized) {
-      const redirectRes = NextResponse.redirect(getSignInUrl());
-      redirectRes.cookies.delete("better-auth.session_token");
+      const redirectRes = NextResponse.redirect(buildSignInUrl());
+      redirectRes.cookies.delete(SESSION_COOKIE_NAME);
 
       return redirectRes;
-    }
-
-    if (isHomePage) {
-      request.nextUrl.pathname = `/${locale}${DEFAULT_AUTHENTICATED_ROUTE}`;
-      return NextResponse.redirect(request.nextUrl);
     }
   }
 
