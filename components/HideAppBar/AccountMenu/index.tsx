@@ -171,9 +171,7 @@ const AccountMenu = () => {
   );
 
   const tAuth = useTranslations("auth");
-  const tooltipTitle = session
-    ? tAuth("settings.account.label")
-    : tAuth("label");
+  const tooltipTitle = session ? session.user.email : tAuth("label");
 
   const addAccountItem = useAddAccountMenuItem();
   const authMenuItems = useAuthMenuItems(redirectTarget || undefined);
