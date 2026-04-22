@@ -64,15 +64,13 @@ const UpdateOrganizationDialogContent = ({
     await authClient.organization.update(
       { organizationId: organization.id, data: { logo, name, slug } },
       {
-        onRequest: () => {
-          setDialog({ confirmLoading: true });
-        },
         onError: ({ error: { code } }) => {
           const message = getErrorMessage(code, locale);
           enqueueSnackbar(message, { variant: "error" });
 
           setDialog({ confirmLoading: false });
         },
+        onRequest: () => setDialog({ confirmLoading: true }),
         onSuccess: () => {
           const message = tOrganizations("actions.updateOrganization.success");
           enqueueSnackbar(message, { variant: "success" });

@@ -64,15 +64,13 @@ const InviteMemberDialogContent = ({
         { email, organizationId, role },
         {
           headers: { "Accept-Language": locale },
-          onRequest: () => {
-            setDialog({ confirmLoading: true });
-          },
           onError: ({ error: { code } }) => {
             const message = getErrorMessage(code, locale);
             enqueueSnackbar(message, { variant: "error" });
 
             setDialog({ confirmLoading: false });
           },
+          onRequest: () => setDialog({ confirmLoading: true }),
           onSuccess: () => {
             const message = tMembers("actions.inviteMember.success");
             enqueueSnackbar(message, { variant: "success" });

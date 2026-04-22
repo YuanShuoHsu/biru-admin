@@ -52,7 +52,7 @@ const Email = () => {
   const changeEmail = async (email: string) => {
     await authClient.changeEmail({
       newEmail: email,
-      callbackURL: `${process.env.NEXT_PUBLIC_NEXT_URL}/${locale}/auth/settings`,
+      callbackURL: `${process.env.NEXT_PUBLIC_NEXT_URL}/${locale}/auth/settings/account`,
       fetchOptions: {
         onError: ({ error: { code } }) => {
           enqueueSnackbar(getErrorMessage(code, locale), {

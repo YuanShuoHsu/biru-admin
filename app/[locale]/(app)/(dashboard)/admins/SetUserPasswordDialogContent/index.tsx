@@ -94,13 +94,13 @@ const SetUserPasswordDialogContent = ({
       await authClient.admin.setUserPassword(
         { userId: user.id, newPassword },
         {
-          onRequest: () => setDialog({ confirmLoading: true }),
           onError: ({ error: { code } }) => {
             enqueueSnackbar(getErrorMessage(code, locale), {
               variant: "error",
             });
             setDialog({ confirmLoading: false });
           },
+          onRequest: () => setDialog({ confirmLoading: true }),
           onSuccess: () => {
             enqueueSnackbar(tAdmins("actions.setUserPassword.success"), {
               variant: "success",

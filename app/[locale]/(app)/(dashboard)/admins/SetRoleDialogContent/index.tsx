@@ -63,15 +63,13 @@ const SetRoleDialogContent = ({
       await authClient.admin.setRole(
         { role, userId: user.id },
         {
-          onRequest: () => {
-            setDialog({ confirmLoading: true });
-          },
           onError: ({ error: { code } }) => {
             const message = getErrorMessage(code, locale);
             enqueueSnackbar(message, { variant: "error" });
 
             setDialog({ confirmLoading: false });
           },
+          onRequest: () => setDialog({ confirmLoading: true }),
           onSuccess: () => {
             const message = tAdmins("actions.setRole.success");
             enqueueSnackbar(message, { variant: "success" });

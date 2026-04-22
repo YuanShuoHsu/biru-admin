@@ -53,12 +53,12 @@ const OtherSessionItem = ({ token, user }: OtherSessionItemProps) => {
     await authClient.multiSession.setActive({
       sessionToken: token,
       fetchOptions: {
-        onRequest: () => setIsLoading(true),
         onError: ({ error: { code } }) => {
           setIsLoading(false);
 
           enqueueSnackbar(getErrorMessage(code, locale), { variant: "error" });
         },
+        onRequest: () => setIsLoading(true),
         onSuccess: async () => {
           const { data } = await authClient.getSession();
           setSession(data);
@@ -93,12 +93,12 @@ const OtherSessionItem = ({ token, user }: OtherSessionItemProps) => {
     await authClient.multiSession.revoke({
       sessionToken: token,
       fetchOptions: {
-        onRequest: () => setIsLoading(true),
         onError: ({ error: { code } }) => {
           setIsLoading(false);
 
           enqueueSnackbar(getErrorMessage(code, locale), { variant: "error" });
         },
+        onRequest: () => setIsLoading(true),
         onSuccess: async () => {
           await mutate(swrKeys.deviceSessions);
 

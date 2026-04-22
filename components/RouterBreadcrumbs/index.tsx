@@ -26,10 +26,12 @@ import {
   HelpOutline,
   Info,
   LocalMall,
+  Lock,
   LockReset,
   Login,
   ManageAccounts,
   Payment,
+  Person,
   PersonAdd,
   Pets,
   Policy,
@@ -214,6 +216,19 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
           to: "/reset-password",
         },
         {
+          children: [
+            {
+              icon: Person,
+              label: tAuth("settings.account.label"),
+              to: "/account",
+            },
+            {
+              icon: Lock,
+              label: tAuth("settings.security.label"),
+              to: "/security",
+            },
+          ],
+          disabled: true,
           icon: Settings,
           label: tAuth("settings.label"),
           to: "/settings",

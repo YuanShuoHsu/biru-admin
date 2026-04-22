@@ -67,9 +67,6 @@ const UpdateMemberRoleDialogContent = ({
       await authClient.organization.updateMemberRole(
         { organizationId, memberId: member.id, role },
         {
-          onRequest: () => {
-            setDialog({ confirmLoading: true });
-          },
           onError: ({ error: { code } }) => {
             console.log(code);
             const message = getErrorMessage(code, locale);
@@ -77,6 +74,7 @@ const UpdateMemberRoleDialogContent = ({
 
             setDialog({ confirmLoading: false });
           },
+          onRequest: () => setDialog({ confirmLoading: true }),
           onSuccess: () => {
             const message = tMembers("actions.updateMemberRole.success");
             enqueueSnackbar(message, { variant: "success" });

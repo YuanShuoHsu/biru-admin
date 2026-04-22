@@ -60,15 +60,13 @@ const CreateOrganizationDialogContent = ({
     await authClient.organization.create(
       { logo, name, slug },
       {
-        onRequest: () => {
-          setDialog({ confirmLoading: true });
-        },
         onError: ({ error: { code } }) => {
           const message = getErrorMessage(code, locale);
           enqueueSnackbar(message, { variant: "error" });
 
           setDialog({ confirmLoading: false });
         },
+        onRequest: () => setDialog({ confirmLoading: true }),
         onSuccess: () => {
           const message = tOrganizations("actions.createOrganization.success");
           enqueueSnackbar(message, { variant: "success" });

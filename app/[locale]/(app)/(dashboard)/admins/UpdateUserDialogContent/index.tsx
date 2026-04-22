@@ -94,7 +94,6 @@ const UpdateUserDialogContent = ({
           },
         },
         {
-          onRequest: () => setDialog({ confirmLoading: true }),
           onError: ({ error: { code } }) => {
             console.log(code);
             enqueueSnackbar(getErrorMessage(code, locale), {
@@ -102,6 +101,7 @@ const UpdateUserDialogContent = ({
             });
             setDialog({ confirmLoading: false });
           },
+          onRequest: () => setDialog({ confirmLoading: true }),
           onSuccess: () => {
             enqueueSnackbar(tAdmins("actions.updateUser.success"), {
               variant: "success",

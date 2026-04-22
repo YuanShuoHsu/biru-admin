@@ -15,12 +15,12 @@ import FormCard, {
 
 import { swrKeys } from "@/constants/swr";
 
+import { useRouter } from "@/i18n/navigation";
+
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { Logout } from "@mui/icons-material";
 import { Button, Divider, Typography } from "@mui/material";
-
-import { useRouter } from "@/i18n/navigation";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -63,12 +63,12 @@ const Sessions = () => {
     await authClient.multiSession.revoke({
       sessionToken: session.session.token,
       fetchOptions: {
-        onRequest: () => setLoading(true),
         onError: ({ error: { code } }) => {
           setLoading(false);
 
           enqueueSnackbar(getErrorMessage(code, locale), { variant: "error" });
         },
+        onRequest: () => setLoading(true),
         onSuccess: async () => {
           const { data } = await authClient.getSession();
           setSession(data);

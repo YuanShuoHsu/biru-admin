@@ -71,6 +71,7 @@ const GoogleButton = ({ action, redirectTo }: GoogleButtonProps) => {
           enqueueSnackbar(getErrorMessage(error.code, locale), {
             variant: "error",
           });
+
           setLoading(false);
         },
         onRequest: () => setLoading(true),
