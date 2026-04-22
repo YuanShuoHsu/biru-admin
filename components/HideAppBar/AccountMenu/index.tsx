@@ -38,6 +38,7 @@ import {
 import { styled } from "@mui/material/styles";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
+import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { MenuItem as MenuItemData } from "@/types/menuItem";
 
@@ -133,6 +134,7 @@ const AccountMenu = () => {
   const open = Boolean(anchorEl);
 
   const { session, setSession } = useAuthStore((state) => state);
+  const { setDialog } = useDialogStore((state) => state);
   const displayName = getDisplayName(session?.user);
 
   const locale = useLocale();
@@ -190,7 +192,10 @@ const AccountMenu = () => {
 
   const handleClose = () => setAnchorEl(null);
 
-  const handleSwitchSession = async (sessionToken: string, email: string) => {
+  const handleSetActiveConfirm = async (
+    sessionToken: string,
+    email: string,
+  ) => {
     await authClient.multiSession.setActive({
       sessionToken,
       fetchOptions: {
@@ -210,6 +215,14 @@ const AccountMenu = () => {
       },
     });
   };
+
+  const handleSetActiveDialog = (sessionToken: string, email: string) =>
+    setDialog({
+      contentText: tAuth("switchSession.confirmContentText", { email }),
+      onConfirm: () => handleSetActiveConfirm(sessionToken, email),
+      open: true,
+      title: tAuth("switchSession.label"),
+    });
 
   return (
     <>
@@ -277,7 +290,7 @@ const AccountMenu = () => {
             return (
               <MenuItem
                 key={token}
-                onClick={() => handleSwitchSession(token, user.email)}
+                onClick={() => handleSetActiveDialog(token, user.email)}
               >
                 <ListItemIcon>
                   <StyledListAvatar
