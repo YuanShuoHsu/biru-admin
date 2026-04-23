@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import useSWR from "swr";
 
 import {
   type ChangePasswordForm,
@@ -21,13 +22,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { usePasswordValidation } from "@/hooks/usePasswordValidation";
 
+import { swrKeys } from "@/constants/swr";
+
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
+  Box,
   Button,
   IconButton,
   InputAdornment,
+  Stack,
   TextField,
   Typography,
 } from "@mui/material";
@@ -41,6 +46,7 @@ import {
 } from "@/utils/password";
 
 const ChangePassword = () => {
+  const [isSendingResetLink, setIsSendingResetLink] = useState(false);
   const [showPassword, setShowPassword] = useState({
     confirmNewPassword: false,
     newPassword: false,
@@ -84,6 +90,18 @@ const ChangePassword = () => {
 
   const { enqueueSnackbar } = useSnackbar();
 
+  const { data: accounts } = useSWR(
+    session ? [swrKeys.listAccounts, session.user.id] : null,
+    async () => {
+      const { data } = await authClient.listAccounts();
+
+      return data;
+    },
+  );
+  const hasCredential = accounts?.some(
+    ({ providerId }) => providerId === "credential",
+  );
+
   const tAuth = useTranslations("auth");
 
   const handleClickShowPassword =
@@ -124,6 +142,77 @@ const ChangePassword = () => {
       title: tAuth("settings.password.changeLabel"),
     });
   });
+
+  const handleSendResetLink = async () => {
+    if (!session?.user.email) return;
+    setIsSendingResetLink(true);
+    await authClient.requestPasswordReset(
+      {
+        email: session.user.email,
+        redirectTo: `${process.env.NEXT_PUBLIC_NEXT_URL}/${locale}/auth/reset-password`,
+      },
+      {
+        headers: { "Accept-Language": locale },
+        onError: ({ error: { code } }) => {
+          setIsSendingResetLink(false);
+          enqueueSnackbar(getErrorMessage(code, locale), { variant: "error" });
+        },
+        onSuccess: () => {
+          setIsSendingResetLink(false);
+          enqueueSnackbar(tAuth("settings.password.sendResetLinkSuccess"), {
+            variant: "success",
+          });
+        },
+      },
+    );
+  };
+
+  if (accounts === undefined) return null;
+
+  if (!hasCredential) {
+    return (
+      <FormCard>
+        <StyledCardHeader
+          title={
+            <Typography color="primary" fontWeight="bold" variant="h6">
+              {tAuth("settings.password.changeLabel")}
+            </Typography>
+          }
+        />
+        <StyledCardContent>
+          <Stack
+            alignItems={{ sm: "center" }}
+            direction={{ sm: "row", xs: "column" }}
+            justifyContent="space-between"
+            gap={2}
+          >
+            <Box>
+              <Typography fontWeight={500} variant="body2">
+                {tAuth("settings.password.noPassword.title")}
+              </Typography>
+              <Typography
+                color="text.secondary"
+                display="block"
+                mt={0.5}
+                variant="caption"
+              >
+                {tAuth("settings.password.noPassword.subtitle")}
+              </Typography>
+            </Box>
+            <Button
+              loading={isSendingResetLink}
+              onClick={handleSendResetLink}
+              size="small"
+              sx={{ flexShrink: 0 }}
+              variant="contained"
+            >
+              {tAuth("settings.password.sendResetLink")}
+            </Button>
+          </Stack>
+        </StyledCardContent>
+      </FormCard>
+    );
+  }
 
   return (
     <FormCard component="form" onSubmit={onSubmit}>
