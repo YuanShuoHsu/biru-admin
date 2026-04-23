@@ -3,8 +3,6 @@ import * as z from "zod";
 
 import { PASSWORD_MIN_LENGTH } from "@/constants/password";
 
-const PASSWORD_MAX_LENGTH = 128;
-
 export const useChangePasswordFormSchema = () => {
   const tValidation = useTranslations("validation");
 
@@ -12,23 +10,34 @@ export const useChangePasswordFormSchema = () => {
     .object({
       currentPassword: z
         .string()
-        .min(1, { error: tValidation("currentPassword.required") }),
+        .min(1, { error: tValidation("currentPassword.required") })
+        .trim(),
       newPassword: z
         .string()
         .min(PASSWORD_MIN_LENGTH, {
           error: tValidation("newPassword.minLength"),
         })
-        .max(PASSWORD_MAX_LENGTH),
+        .regex(/[a-zA-Z]/, { error: tValidation("newPassword.letter") })
+        .regex(/[0-9]/, { error: tValidation("newPassword.number") })
+        .trim(),
       confirmNewPassword: z
         .string()
-        .min(1, { error: tValidation("confirmPassword.required") }),
+        .min(1, { error: tValidation("confirmNewPassword.required") })
+        .trim(),
     })
+    .refine(
+      ({ currentPassword, newPassword }) => currentPassword !== newPassword,
+      {
+        path: ["newPassword"],
+        message: tValidation("newPassword.sameAsCurrent"),
+      },
+    )
     .refine(
       ({ newPassword, confirmNewPassword }) =>
         newPassword === confirmNewPassword,
       {
         path: ["confirmNewPassword"],
-        message: tValidation("confirmPassword.mismatch"),
+        message: tValidation("confirmNewPassword.mismatch"),
       },
     );
 };

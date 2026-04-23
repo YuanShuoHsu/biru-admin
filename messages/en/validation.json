@@ -5,6 +5,10 @@
     "minDate": "Please select a birth date on or after 1900-01-01.",
     "required": "Birth date is required."
   },
+  "confirmNewPassword": {
+    "mismatch": "Passwords do not match.",
+    "required": "Confirm new password is required."
+  },
   "confirmPassword": {
     "mismatch": "Passwords do not match.",
     "required": "Confirm password is required."
@@ -29,7 +33,12 @@
     "minLength": "Name must be at least 2 characters long."
   },
   "newPassword": {
-    "minLength": "New password must be at least 8 characters long."
+    "differentFromCurrent": "Be different from your current password.",
+    "letter": "Contain at least one letter.",
+    "match": "Matches the new password.",
+    "minLength": "Be at least 8 characters long.",
+    "number": "Contain at least one number.",
+    "sameAsCurrent": "New password must be different from your current password."
   },
   "password": {
     "letter": "Contain at least one letter.",

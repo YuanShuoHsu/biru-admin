@@ -5,6 +5,7 @@ import { PASSWORD_MIN_LENGTH } from "@/constants/password";
 export const usePasswordValidation = (
   password: string,
   confirmPassword: string,
+  currentPassword?: string,
 ) => {
   const tValidation = useTranslations("validation");
 
@@ -28,19 +29,32 @@ export const usePasswordValidation = (
       passed: /\d/.test(password),
       label: tValidation("password.number"),
     },
+    ...(currentPassword !== undefined
+      ? [
+          {
+            key: "differentFromCurrent",
+            passed: hasPassword && currentPassword !== password,
+            label: tValidation("newPassword.differentFromCurrent"),
+          },
+        ]
+      : []),
   ];
 
   const confirmPasswordRules = [
     {
       key: "match",
       passed: passwordsMatch,
-      label: tValidation("password.match"),
+      label:
+        currentPassword !== undefined
+          ? tValidation("newPassword.match")
+          : tValidation("password.match"),
     },
   ];
 
   const isPasswordError =
     hasPassword && passwordRules.some(({ passed }) => !passed);
-  const isConfirmPasswordError = hasConfirmPassword && !passwordsMatch;
+  const isConfirmPasswordError =
+    hasConfirmPassword && confirmPasswordRules.some(({ passed }) => !passed);
 
   return {
     hasPassword,

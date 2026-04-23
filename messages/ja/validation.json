@@ -5,6 +5,10 @@
     "minDate": "1900-01-01以降の生年月日を選択してください。",
     "required": "生年月日は必須です。"
   },
+  "confirmNewPassword": {
+    "mismatch": "パスワードが一致しません。",
+    "required": "新しいパスワードの確認は必須です。"
+  },
   "confirmPassword": {
     "mismatch": "パスワードが一致しません。",
     "required": "確認用パスワードは必須です。"
@@ -29,7 +33,12 @@
     "minLength": "名前は2文字以上で入力してください。"
   },
   "newPassword": {
-    "minLength": "新しいパスワードは8文字以上で入力してください。"
+    "differentFromCurrent": "現在のパスワードと異なる。",
+    "letter": "英字を1文字以上含む。",
+    "match": "新しいパスワードと一致。",
+    "minLength": "8文字以上の長さ。",
+    "number": "数字を1文字以上含む。",
+    "sameAsCurrent": "新しいパスワードは現在のパスワードと異なる必要があります。"
   },
   "password": {
     "letter": "英字を1文字以上含む。",

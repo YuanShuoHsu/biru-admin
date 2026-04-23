@@ -63,6 +63,20 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
     [LocaleEnum.Ko]: "이미 인증된 이메일입니다. 로그인해 주세요",
     [LocaleEnum.ZhCN]: "此邮箱已完成验证，请直接登录",
   },
+  EMAIL_VERIFICATION_REQUIRED_BEFORE_ACCEPTING_OR_REJECTING_INVITATION: {
+    [LocaleEnum.ZhTW]: "請先驗證信箱後再接受邀請",
+    [LocaleEnum.En]: "Email verification required before accepting invitation.",
+    [LocaleEnum.Ja]: "招待を受け入れる前にメール認証が必要です",
+    [LocaleEnum.Ko]: "초대를 수락하기 전에 이메일 인증이 필요합니다",
+    [LocaleEnum.ZhCN]: "请先验证邮箱后再接受邀请",
+  },
+  INVITATION_NOT_FOUND: {
+    [LocaleEnum.ZhTW]: "邀請連結無效或已過期",
+    [LocaleEnum.En]: "Invitation not found or has expired.",
+    [LocaleEnum.Ja]: "招待が見つからないか、有効期限が切れています",
+    [LocaleEnum.Ko]: "초대를 찾을 수 없거나 만료되었습니다",
+    [LocaleEnum.ZhCN]: "邀请链接无效或已过期",
+  },
   MEMBER_NOT_FOUND: {
     [LocaleEnum.ZhTW]: "找不到該成員",
     [LocaleEnum.En]: "Member not found.",
@@ -144,6 +158,13 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
     [LocaleEnum.Ko]: "이 조직을 업데이트할 권한이 없습니다",
     [LocaleEnum.ZhCN]: "您没有权限更新此组织",
   },
+  YOU_ARE_NOT_THE_RECIPIENT_OF_THE_INVITATION: {
+    [LocaleEnum.ZhTW]: "此邀請不是發給您的",
+    [LocaleEnum.En]: "You are not the recipient of this invitation.",
+    [LocaleEnum.Ja]: "この招待はあなた宛ではありません",
+    [LocaleEnum.Ko]: "이 초대는 귀하를 위한 것이 아닙니다",
+    [LocaleEnum.ZhCN]: "此邀请不是发给您的",
+  },
   YOU_CANNOT_BAN_YOURSELF: {
     [LocaleEnum.ZhTW]: "您無法封鎖自己",
     [LocaleEnum.En]: "You cannot ban yourself.",
@@ -191,6 +212,13 @@ const errorCodes = {
     [LocaleEnum.Ko]:
       "이메일 또는 비밀번호가 올바르지 않습니다. 다시 입력해 주세요",
     [LocaleEnum.ZhCN]: "电子邮件或密码错误，请重新输入",
+  },
+  INVALID_PASSWORD: {
+    [LocaleEnum.ZhTW]: "目前密碼錯誤，請重新輸入",
+    [LocaleEnum.En]: "Invalid password. Please try again.",
+    [LocaleEnum.Ja]: "現在のパスワードが間違っています。再入力してください",
+    [LocaleEnum.Ko]: "현재 비밀번호가 올바르지 않습니다. 다시 입력해 주세요",
+    [LocaleEnum.ZhCN]: "目前密码错误，请重新输入",
   },
   INVALID_TOKEN: {
     [LocaleEnum.ZhTW]: "驗證連結無效或已過期，請重新寄送",

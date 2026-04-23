@@ -5,6 +5,10 @@
     "minDate": "請選擇 1900-01-01 或之後的出生日期。",
     "required": "出生日期為必填。"
   },
+  "confirmNewPassword": {
+    "mismatch": "兩次輸入的密碼不一致。",
+    "required": "確認新密碼為必填。"
+  },
   "confirmPassword": {
     "mismatch": "兩次輸入的密碼不一致。",
     "required": "確認密碼為必填。"
@@ -29,7 +33,12 @@
     "minLength": "名稱至少需要 2 個字元。"
   },
   "newPassword": {
-    "minLength": "新密碼至少需要 8 個字元。"
+    "differentFromCurrent": "與目前密碼不相同。",
+    "letter": "包含至少一個英文字母。",
+    "match": "與新密碼一致。",
+    "minLength": "至少 8 個字元長度。",
+    "number": "包含至少一個數字。",
+    "sameAsCurrent": "新密碼不能與目前密碼相同。"
   },
   "password": {
     "letter": "包含至少一個英文字母。",

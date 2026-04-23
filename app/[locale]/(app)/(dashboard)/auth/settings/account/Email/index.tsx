@@ -60,7 +60,7 @@ const Email = () => {
           });
         },
         onSuccess: () => {
-          enqueueSnackbar(tAuth("settings.email.saveSuccess"), {
+          enqueueSnackbar(tAuth("settings.email.success"), {
             variant: "success",
           });
         },

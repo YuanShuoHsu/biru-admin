@@ -89,7 +89,7 @@ const Profile = () => {
           const { data } = await authClient.getSession();
           setSession(data);
 
-          enqueueSnackbar(tAuth("settings.profile.saveSuccess"), {
+          enqueueSnackbar(tAuth("settings.profile.success"), {
             variant: "success",
           });
         },

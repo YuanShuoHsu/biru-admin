@@ -5,6 +5,10 @@
     "minDate": "1900-01-01 이후 날짜를 선택해 주세요.",
     "required": "생년월일은 필수입니다."
   },
+  "confirmNewPassword": {
+    "mismatch": "비밀번호가 일치하지 않습니다.",
+    "required": "새 비밀번호 확인은 필수입니다."
+  },
   "confirmPassword": {
     "mismatch": "비밀번호가 일치하지 않습니다.",
     "required": "비밀번호 확인은 필수입니다."
@@ -29,7 +33,12 @@
     "minLength": "이름은 2자 이상이어야 합니다."
   },
   "newPassword": {
-    "minLength": "새 비밀번호는 8자 이상이어야 합니다."
+    "differentFromCurrent": "현재 비밀번호와 달라야 함.",
+    "letter": "영문자를 최소 1개 포함.",
+    "match": "새 비밀번호와 일치.",
+    "minLength": "8자 이상 길이.",
+    "number": "숫자를 최소 1개 포함.",
+    "sameAsCurrent": "새 비밀번호는 현재 비밀번호와 달라야 합니다."
   },
   "password": {
     "letter": "영문자를 최소 1개 포함.",
