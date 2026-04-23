@@ -167,8 +167,6 @@ const ChangePassword = () => {
     );
   };
 
-  if (accounts === undefined) return null;
-
   if (!hasCredential) {
     return (
       <FormCard>
