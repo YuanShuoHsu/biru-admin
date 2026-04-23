@@ -18,11 +18,11 @@ import FormCard, {
 } from "@/components/FormCard";
 import PasswordRuleList from "@/components/PasswordRuleList";
 
+import { swrKeys } from "@/constants/swr";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { usePasswordValidation } from "@/hooks/usePasswordValidation";
-
-import { swrKeys } from "@/constants/swr";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
@@ -48,8 +48,9 @@ import {
 const ChangePassword = () => {
   const [isSendingResetLink, setIsSendingResetLink] = useState(false);
   const [showPassword, setShowPassword] = useState({
-    confirmNewPassword: false,
+    currentPassword: false,
     newPassword: false,
+    confirmNewPassword: false,
   });
 
   const { session } = useAuthStore((state) => state);
@@ -65,9 +66,9 @@ const ChangePassword = () => {
     reset,
   } = useForm<ChangePasswordForm>({
     defaultValues: {
-      confirmNewPassword: "",
       currentPassword: "",
       newPassword: "",
+      confirmNewPassword: "",
     },
     resolver: zodResolver(changePasswordFormSchema),
   });
@@ -105,7 +106,7 @@ const ChangePassword = () => {
   const tAuth = useTranslations("auth");
 
   const handleClickShowPassword =
-    (key: "confirmNewPassword" | "newPassword") => () =>
+    (key: "currentPassword" | "confirmNewPassword" | "newPassword") => () =>
       setShowPassword((prev) => ({ ...prev, [key]: !prev[key] }));
 
   const changePassword = async ({
@@ -230,7 +231,32 @@ const ChangePassword = () => {
           label={tAuth("settings.password.currentLabel")}
           placeholder={tAuth("settings.password.currentPlaceholder")}
           required
-          type="password"
+          slotProps={{
+            input: {
+              endAdornment: (
+                <InputAdornment position="start">
+                  <IconButton
+                    aria-label={
+                      showPassword.currentPassword
+                        ? tAuth("hidePassword")
+                        : tAuth("showPassword")
+                    }
+                    edge="end"
+                    onClick={handleClickShowPassword("currentPassword")}
+                    onMouseDown={handleMouseDownPassword}
+                    onMouseUp={handleMouseUpPassword}
+                  >
+                    {showPassword.currentPassword ? (
+                      <VisibilityOff />
+                    ) : (
+                      <Visibility />
+                    )}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            },
+          }}
+          type={showPassword.currentPassword ? "text" : "password"}
           {...register("currentPassword")}
         />
         <TextField
