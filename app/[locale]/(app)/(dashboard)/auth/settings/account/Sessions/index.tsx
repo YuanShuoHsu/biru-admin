@@ -60,6 +60,8 @@ const Sessions = () => {
   const handleRevokeCurrentSessionConfirm = async () => {
     if (!session) return;
 
+    const email = session.user.email;
+
     await authClient.multiSession.revoke({
       sessionToken: session.session.token,
       fetchOptions: {
@@ -77,7 +79,9 @@ const Sessions = () => {
 
           setLoading(false);
 
-          enqueueSnackbar(tAuth("signOut.success"), { variant: "success" });
+          enqueueSnackbar(tAuth("signOut.success", { email }), {
+            variant: "success",
+          });
 
           if (!data) router.replace("/auth/sign-in");
         },
