@@ -1,13 +1,15 @@
 import ChangePassword from "./ChangePassword";
 import Danger from "./Danger";
-import Preferences from "./Preferences";
-import Support from "./Support";
+import LinkedAccounts from "./LinkedAccounts";
+import Passkeys from "./Passkeys";
+import Sessions from "./Sessions";
 
 const Security = () => (
   <>
     <ChangePassword />
-    <Preferences />
-    <Support />
+    <LinkedAccounts />
+    <Passkeys />
+    <Sessions />
     <Danger />
   </>
 );

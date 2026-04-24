@@ -106,7 +106,7 @@ const ChangePassword = () => {
   const tAuth = useTranslations("auth");
 
   const handleClickShowPassword =
-    (key: "currentPassword" | "confirmNewPassword" | "newPassword") => () =>
+    (key: "currentPassword" | "newPassword" | "confirmNewPassword") => () =>
       setShowPassword((prev) => ({ ...prev, [key]: !prev[key] }));
 
   const changePassword = async ({
