@@ -13,7 +13,7 @@ import GoogleIcon from "@/components/GoogleIcon";
 
 import { Divider, Typography } from "@mui/material";
 
-interface Provider {
+export interface Provider {
   id: string;
   Icon: ComponentType;
   label: string;
@@ -39,7 +39,7 @@ const LinkedAccounts = () => {
         {providers.map(({ id, Icon, label }, index) => (
           <Fragment key={id}>
             {index > 0 && <Divider flexItem />}
-            <ProviderRow Icon={Icon} label={label} providerId={id} />
+            <ProviderRow id={id} Icon={Icon} label={label} />
           </Fragment>
         ))}
       </StyledCardContent>

@@ -2,30 +2,37 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
-import { useState, type ComponentType } from "react";
+import { useState } from "react";
+
+import type { Provider } from "..";
 
 import useListAccounts from "@/hooks/useListAccounts";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { Link as LinkIcon, LinkOff as LinkOffIcon } from "@mui/icons-material";
-import { Button, ListItem, ListItemIcon, ListItemText } from "@mui/material";
+import {
+  Avatar,
+  Button,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  styled,
+} from "@mui/material";
+
+const StyledAvatar = styled(Avatar)(({ theme }) => ({
+  backgroundColor: theme.palette.action.selected,
+}));
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-interface ProviderRowProps {
-  Icon: ComponentType;
-  label: string;
-  providerId: string;
-}
-
-const ProviderRow = ({ Icon, label, providerId }: ProviderRowProps) => {
+const ProviderRow = ({ id, Icon, label }: Provider) => {
   const [loading, setLoading] = useState(false);
 
   const { setDialog } = useDialogStore((state) => state);
 
   const { data: accounts, mutate } = useListAccounts();
-  const isLinked = accounts?.some(({ providerId: id }) => id === providerId);
+  const isLinked = accounts?.some(({ providerId }) => providerId === id);
 
   const locale = useLocale();
 
@@ -35,7 +42,7 @@ const ProviderRow = ({ Icon, label, providerId }: ProviderRowProps) => {
 
   const handleLinkConfirm = async () => {
     await authClient.linkSocial({
-      provider: providerId,
+      provider: id,
       callbackURL: `${process.env.NEXT_PUBLIC_NEXT_URL}/${locale}/auth/settings/security`,
       fetchOptions: {
         onRequest: () => setLoading(true),
@@ -61,7 +68,7 @@ const ProviderRow = ({ Icon, label, providerId }: ProviderRowProps) => {
 
   const handleUnlinkConfirm = async () => {
     await authClient.unlinkAccount(
-      { providerId },
+      { providerId: id },
       {
         onRequest: () => setLoading(true),
         onError: ({ error: { code } }) => {
@@ -94,9 +101,8 @@ const ProviderRow = ({ Icon, label, providerId }: ProviderRowProps) => {
     });
   };
 
-  const action = isLinked ? (
+  const secondaryAction = isLinked ? (
     <Button
-      aria-label={tAuth("settings.linkedAccounts.unlink")}
       color="error"
       loading={loading}
       onClick={handleUnlinkDialog}
@@ -108,8 +114,6 @@ const ProviderRow = ({ Icon, label, providerId }: ProviderRowProps) => {
     </Button>
   ) : (
     <Button
-      aria-label={tAuth("settings.linkedAccounts.link")}
-      disabled={isLinked === undefined}
       loading={loading}
       onClick={handleLinkDialog}
       size="small"
@@ -121,9 +125,11 @@ const ProviderRow = ({ Icon, label, providerId }: ProviderRowProps) => {
   );
 
   return (
-    <ListItem disablePadding secondaryAction={action}>
+    <ListItem disablePadding secondaryAction={secondaryAction}>
       <ListItemIcon>
-        <Icon />
+        <StyledAvatar variant="rounded">
+          <Icon />
+        </StyledAvatar>
       </ListItemIcon>
       <ListItemText
         primary={label}
