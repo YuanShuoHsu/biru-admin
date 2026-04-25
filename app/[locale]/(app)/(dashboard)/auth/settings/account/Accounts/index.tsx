@@ -108,7 +108,6 @@ const Accounts = () => {
       <StyledCardContent>
         {session && (
           <AccountItem
-            user={session.user}
             secondaryAction={
               <Button
                 loading={loading}
@@ -121,6 +120,7 @@ const Accounts = () => {
                 {tAuth("signOut.label")}
               </Button>
             }
+            user={session.user}
           />
         )}
         {otherAccounts.map(({ session: { token }, user }) => (
