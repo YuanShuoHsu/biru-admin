@@ -9,12 +9,7 @@ import useListAccounts from "@/hooks/useListAccounts";
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { Link as LinkIcon, LinkOff as LinkOffIcon } from "@mui/icons-material";
-import {
-  Button,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-} from "@mui/material";
+import { Button, ListItem, ListItemIcon, ListItemText } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -132,7 +127,9 @@ const ProviderRow = ({ Icon, label, providerId }: ProviderRowProps) => {
       </ListItemIcon>
       <ListItemText
         primary={label}
-        secondary={tAuth("settings.linkedAccounts.subtitle", { provider: label })}
+        secondary={tAuth("settings.linkedAccounts.subtitle", {
+          provider: label,
+        })}
         slotProps={{ secondary: { variant: "caption" } }}
       />
     </ListItem>
