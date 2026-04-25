@@ -20,11 +20,15 @@ import {
   styled,
 } from "@mui/material";
 
+import { useDialogStore } from "@/providers/dialog-store-provider";
+
 const StyledAvatar = styled(Avatar)(({ theme }) => ({
   backgroundColor: theme.palette.action.selected,
 }));
 
-import { useDialogStore } from "@/providers/dialog-store-provider";
+const StyledListItem = styled(ListItem)({
+  "& .MuiListItemSecondaryAction-root": { right: 0 },
+});
 
 const ProviderRow = ({ id, Icon, label }: Provider) => {
   const [loading, setLoading] = useState(false);
@@ -125,7 +129,7 @@ const ProviderRow = ({ id, Icon, label }: Provider) => {
   );
 
   return (
-    <ListItem disablePadding secondaryAction={secondaryAction}>
+    <StyledListItem disablePadding secondaryAction={secondaryAction}>
       <ListItemIcon>
         <StyledAvatar variant="rounded">
           <Icon />
@@ -138,7 +142,7 @@ const ProviderRow = ({ id, Icon, label }: Provider) => {
         })}
         slotProps={{ secondary: { variant: "caption" } }}
       />
-    </ListItem>
+    </StyledListItem>
   );
 };
 

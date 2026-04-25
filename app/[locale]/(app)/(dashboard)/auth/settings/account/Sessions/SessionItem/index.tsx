@@ -5,6 +5,10 @@ import type { Session } from "@/stores/auth-store";
 
 import { getDisplayName } from "@/utils/auth";
 
+const StyledListItem = styled(ListItem)({
+  "& .MuiListItemSecondaryAction-root": { right: 0 },
+});
+
 const StyledAvatar = styled(Avatar)(({ theme }) => ({
   width: 24,
   height: 24,
@@ -29,7 +33,7 @@ const SessionItem = ({ secondaryAction, user }: SessionItemProps) => {
   const displayName = getDisplayName(user);
 
   return (
-    <ListItem disablePadding secondaryAction={secondaryAction}>
+    <StyledListItem disablePadding secondaryAction={secondaryAction}>
       <ListItemIcon>
         <StyledAvatar alt={displayName} src={user?.image || undefined}>
           {displayName[0]}
@@ -40,7 +44,7 @@ const SessionItem = ({ secondaryAction, user }: SessionItemProps) => {
         secondary={user?.email}
         slotProps={{ secondary: { variant: "caption" } }}
       />
-    </ListItem>
+    </StyledListItem>
   );
 };
 
