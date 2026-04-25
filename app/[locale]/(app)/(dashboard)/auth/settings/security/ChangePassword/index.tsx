@@ -4,7 +4,6 @@ import { useLocale, useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import useSWR from "swr";
 
 import {
   type ChangePasswordForm,
@@ -18,10 +17,9 @@ import FormCard, {
 } from "@/components/FormCard";
 import PasswordRuleList from "@/components/PasswordRuleList";
 
-import { swrKeys } from "@/constants/swr";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import useListAccounts from "@/hooks/useListAccounts";
 import { usePasswordValidation } from "@/hooks/usePasswordValidation";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
@@ -87,18 +85,12 @@ const ChangePassword = () => {
     passwordRules,
   } = usePasswordValidation(newPassword, confirmNewPassword, currentPassword);
 
+  const { data: accounts } = useListAccounts();
+
   const locale = useLocale();
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const { data: accounts } = useSWR(
-    session ? [swrKeys.listAccounts, session.user.id] : null,
-    async () => {
-      const { data } = await authClient.listAccounts();
-
-      return data;
-    },
-  );
   const hasCredential = accounts?.some(
     ({ providerId }) => providerId === "credential",
   );

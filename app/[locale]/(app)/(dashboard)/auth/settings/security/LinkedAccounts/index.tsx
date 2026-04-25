@@ -1,8 +1,9 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
-import { useSnackbar } from "notistack";
-import { useState } from "react";
+import { useTranslations } from "next-intl";
+import { Fragment, type ComponentType } from "react";
+
+import ProviderRow from "./ProviderRow";
 
 import FormCard, {
   StyledCardContent,
@@ -10,33 +11,20 @@ import FormCard, {
 } from "@/components/FormCard";
 import GoogleIcon from "@/components/GoogleIcon";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import { Divider, Typography } from "@mui/material";
 
-import { Link as LinkIcon } from "@mui/icons-material";
-import { Box, Button, Stack, Typography } from "@mui/material";
+interface Provider {
+  id: string;
+  Icon: ComponentType;
+  label: string;
+}
+
+const providers: Provider[] = [
+  { id: "google", Icon: GoogleIcon, label: "Google" },
+];
 
 const LinkedAccounts = () => {
-  const [loading, setLoading] = useState(false);
-
-  const locale = useLocale();
-
-  const { enqueueSnackbar } = useSnackbar();
-
   const tAuth = useTranslations("auth");
-
-  const handleLinkGoogle = async () => {
-    setLoading(true);
-    await authClient.linkSocial({
-      provider: "google",
-      callbackURL: `${process.env.NEXT_PUBLIC_NEXT_URL}/${locale}/auth/settings/security`,
-      fetchOptions: {
-        onError: ({ error: { code } }) => {
-          setLoading(false);
-          enqueueSnackbar(getErrorMessage(code, locale), { variant: "error" });
-        },
-      },
-    });
-  };
 
   return (
     <FormCard>
@@ -48,39 +36,12 @@ const LinkedAccounts = () => {
         }
       />
       <StyledCardContent>
-        <Stack alignItems="center" direction="row" gap={2} width="100%">
-          <Box
-            alignItems="center"
-            bgcolor="action.hover"
-            borderRadius={2}
-            display="flex"
-            flexShrink={0}
-            height={40}
-            justifyContent="center"
-            width={40}
-          >
-            <GoogleIcon />
-          </Box>
-          <Stack flex={1} minWidth={0}>
-            <Typography fontWeight={500} variant="body2">
-              {tAuth("settings.linkedAccounts.google.label")}
-            </Typography>
-            <Typography color="text.secondary" noWrap variant="caption">
-              {tAuth("settings.linkedAccounts.google.subtitle")}
-            </Typography>
-          </Stack>
-          <Button
-            aria-label={tAuth("settings.linkedAccounts.google.subtitle")}
-            loading={loading}
-            onClick={handleLinkGoogle}
-            size="small"
-            startIcon={<LinkIcon />}
-            sx={{ flexShrink: 0 }}
-            variant="outlined"
-          >
-            {tAuth("settings.linkedAccounts.link")}
-          </Button>
-        </Stack>
+        {providers.map(({ id, Icon, label }, index) => (
+          <Fragment key={id}>
+            {index > 0 && <Divider flexItem />}
+            <ProviderRow Icon={Icon} label={label} providerId={id} />
+          </Fragment>
+        ))}
       </StyledCardContent>
     </FormCard>
   );

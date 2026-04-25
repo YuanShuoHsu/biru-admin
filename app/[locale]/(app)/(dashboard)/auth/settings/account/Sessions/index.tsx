@@ -33,7 +33,6 @@ const Sessions = () => {
   const [loading, setLoading] = useState(false);
 
   const { session, setSession } = useAuthStore((state) => state);
-
   const { setDialog } = useDialogStore((state) => state);
 
   const locale = useLocale();
@@ -42,7 +41,7 @@ const Sessions = () => {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const { data = [], mutate } = useSWR<DeviceSession[]>(
+  const { data: sessions = [], mutate } = useSWR<DeviceSession[]>(
     session ? swrKeys.deviceSessions : null,
     async () => {
       const { data } = await authClient.multiSession.listDeviceSessions();
@@ -50,8 +49,7 @@ const Sessions = () => {
       return data || [];
     },
   );
-
-  const otherSessions = data.filter(
+  const otherSessions = sessions.filter(
     ({ session: { token } }) => token !== session?.session.token,
   );
 
@@ -59,8 +57,6 @@ const Sessions = () => {
 
   const handleRevokeCurrentSessionConfirm = async () => {
     if (!session) return;
-
-    const email = session.user.email;
 
     await authClient.multiSession.revoke({
       sessionToken: session.session.token,
@@ -79,9 +75,10 @@ const Sessions = () => {
 
           setLoading(false);
 
-          enqueueSnackbar(tAuth("signOut.success", { email }), {
-            variant: "success",
-          });
+          enqueueSnackbar(
+            tAuth("signOut.success", { email: session.user.email }),
+            { variant: "success" },
+          );
 
           if (!data) router.replace("/auth/sign-in");
         },
