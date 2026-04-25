@@ -1,77 +1,69 @@
-import { useTranslations } from "next-intl";
+import { useFormatter, useNow, useTranslations } from "next-intl";
 
+import { Computer } from "@mui/icons-material";
 import {
   Avatar,
   Chip,
   ListItem,
   ListItemIcon,
   ListItemText,
-  Stack,
-  Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import type { Session } from "@/stores/auth-store";
 
-import { getDisplayName } from "@/utils/auth";
+import { formatUserAgent } from "@/utils/auth";
 
 const StyledAvatar = styled(Avatar)(({ theme }) => ({
-  width: 24,
-  height: 24,
-  backgroundColor: theme.vars.palette.background.paper,
-  border: `1px solid ${theme.vars.palette.primary.main}`,
-  color: theme.vars.palette.primary.main,
-  fontSize: 12,
-
-  [theme.getColorSchemeSelector("dark")]: {
-    backgroundColor: theme.vars.palette.common.white,
-    borderColor: theme.vars.palette.common.white,
-    color: theme.vars.palette.primary.contrastText,
-  },
+  backgroundColor: theme.vars.palette.action.hover,
+  color: theme.vars.palette.text.secondary,
 }));
 
+const StyledListItem = styled(ListItem)({
+  "& .MuiListItemSecondaryAction-root": { right: 0 },
+});
+
 interface SessionItemProps {
+  isCurrent?: boolean;
   secondaryAction: React.ReactNode;
-  showCurrentChip?: boolean;
-  user?: Session["user"] | null;
+  session: Session["session"];
 }
 
 const SessionItem = ({
+  isCurrent,
   secondaryAction,
-  showCurrentChip,
-  user,
+  session: { createdAt, userAgent },
 }: SessionItemProps) => {
-  const displayName = getDisplayName(user);
+  const format = useFormatter();
+
+  const now = useNow();
 
   const tAuth = useTranslations("auth");
 
   return (
-    <ListItem disablePadding secondaryAction={secondaryAction}>
+    <StyledListItem disablePadding secondaryAction={secondaryAction}>
       <ListItemIcon>
-        <StyledAvatar alt={displayName} src={user?.image || undefined}>
-          {displayName[0]}
+        <StyledAvatar variant="rounded">
+          <Computer fontSize="small" />
         </StyledAvatar>
       </ListItemIcon>
       <ListItemText
-        primary={
-          <Stack alignItems="center" direction="row" gap={1}>
-            <Typography fontWeight={500} variant="body2">
-              {displayName}
-            </Typography>
-            {showCurrentChip && (
-              <Chip
-                color="primary"
-                label={tAuth("settings.sessions.currentSession")}
-                size="small"
-                variant="outlined"
-              />
-            )}
-          </Stack>
+        primary={formatUserAgent(userAgent)}
+        secondary={
+          isCurrent ? (
+            <Chip
+              color="primary"
+              label={tAuth("settings.sessions.currentSession")}
+              size="small"
+              variant="outlined"
+            />
+          ) : (
+            format.relativeTime(new Date(createdAt), now)
+          )
         }
-        secondary={user?.email}
-        slotProps={{ secondary: { variant: "caption" } }}
+        slotProps={{ secondary: { component: "div" } }}
       />
-    </ListItem>
+    </StyledListItem>
   );
 };
 

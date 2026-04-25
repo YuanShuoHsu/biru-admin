@@ -1,6 +1,19 @@
+import { UAParser } from "ua-parser-js";
+
 import { LocaleEnum } from "@/enums/Locale";
 
 import type { Session } from "@/stores/auth-store";
+
+export const formatUserAgent = (userAgent?: string | null): string => {
+  if (!userAgent) return "";
+
+  const {
+    browser: { name: browserName },
+    os: { name: osName },
+  } = new UAParser(userAgent).getResult();
+
+  return [browserName, osName].filter(Boolean).join(" · ");
+};
 
 export const getDisplayName = (user?: Session["user"] | null) => {
   if (!user) return "";

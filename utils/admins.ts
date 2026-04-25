@@ -1,17 +1,4 @@
-import { UAParser } from "ua-parser-js";
-
 import { authClient } from "@/lib/auth-client";
-
-export const formatUserAgent = (userAgent?: string | null): string => {
-  if (!userAgent) return "";
-
-  const {
-    browser: { name: browserName },
-    os: { name: osName },
-  } = new UAParser(userAgent).getResult();
-
-  return [browserName, osName].filter(Boolean).join(" · ");
-};
 
 export type UserSessions = {
   hasUserSessions: boolean;

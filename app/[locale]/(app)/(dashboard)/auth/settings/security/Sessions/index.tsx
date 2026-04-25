@@ -25,15 +25,14 @@ import { Button, Divider, Stack, Typography } from "@mui/material";
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-type DeviceSession = NonNullable<
-  Awaited<ReturnType<typeof authClient.multiSession.listDeviceSessions>>["data"]
+export type UserSession = NonNullable<
+  Awaited<ReturnType<typeof authClient.listSessions>>["data"]
 >[number];
 
 const Sessions = () => {
   const [loading, setLoading] = useState(false);
 
   const { session, setSession } = useAuthStore((state) => state);
-
   const { setDialog } = useDialogStore((state) => state);
 
   const locale = useLocale();
@@ -42,26 +41,25 @@ const Sessions = () => {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const { data = [], mutate } = useSWR<DeviceSession[]>(
-    session ? swrKeys.deviceSessions : null,
+  const { data: sessions = [], mutate } = useSWR<UserSession[]>(
+    session ? swrKeys.sessions : null,
     async () => {
-      const { data } = await authClient.multiSession.listDeviceSessions();
+      const { data } = await authClient.listSessions();
 
       return data || [];
     },
   );
-
-  const otherSessions = data.filter(
-    ({ session: { token } }) => token !== session?.session.token,
+  const otherSessions = sessions.filter(
+    ({ token }) => token !== session?.session.token,
   );
 
   const tAuth = useTranslations("auth");
 
-  const handleRevokeCurrentSessionConfirm = async () => {
+  const handleRevokeCurrentConfirm = async () => {
     if (!session) return;
 
-    await authClient.multiSession.revoke({
-      sessionToken: session.session.token,
+    await authClient.revokeSession({
+      token: session.session.token,
       fetchOptions: {
         onError: ({ error: { code } }) => {
           setLoading(false);
@@ -77,7 +75,10 @@ const Sessions = () => {
 
           setLoading(false);
 
-          enqueueSnackbar(tAuth("signOut.success"), { variant: "success" });
+          enqueueSnackbar(
+            tAuth("signOut.success", { email: session.user.email }),
+            { variant: "success" },
+          );
 
           if (!data) router.replace("/auth/sign-in");
         },
@@ -85,12 +86,12 @@ const Sessions = () => {
     });
   };
 
-  const handleRevokeCurrentSessionDialog = () =>
+  const handleSignOutDialog = () =>
     setDialog({
       contentText: tAuth("signOut.confirmContentText", {
         email: session?.user.email || "",
       }),
-      onConfirm: handleRevokeCurrentSessionConfirm,
+      onConfirm: handleRevokeCurrentConfirm,
       open: true,
       title: tAuth("signOut.label"),
     });
@@ -106,26 +107,28 @@ const Sessions = () => {
       />
       <StyledCardContent>
         <Stack gap={2} width="100%">
-          <SessionItem
-            user={session?.user}
-            showCurrentChip
-            secondaryAction={
-              <Button
-                loading={loading}
-                loadingPosition="end"
-                onClick={handleRevokeCurrentSessionDialog}
-                size="small"
-                startIcon={<Logout fontSize="small" />}
-                variant="outlined"
-              >
-                {tAuth("signOut.label")}
-              </Button>
-            }
-          />
-          {otherSessions.map(({ session: { token }, user }) => (
-            <Fragment key={token}>
+          {session && (
+            <SessionItem
+              isCurrent
+              secondaryAction={
+                <Button
+                  loading={loading}
+                  loadingPosition="end"
+                  onClick={handleSignOutDialog}
+                  size="small"
+                  startIcon={<Logout fontSize="small" />}
+                  variant="outlined"
+                >
+                  {tAuth("signOut.label")}
+                </Button>
+              }
+              session={session.session}
+            />
+          )}
+          {otherSessions.map((session) => (
+            <Fragment key={session.token}>
               <Divider flexItem />
-              <OtherSessionItem token={token} user={user} />
+              <OtherSessionItem session={session} />
             </Fragment>
           ))}
         </Stack>

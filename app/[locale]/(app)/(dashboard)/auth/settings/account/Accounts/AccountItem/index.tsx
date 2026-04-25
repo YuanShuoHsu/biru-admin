@@ -24,12 +24,12 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
   },
 }));
 
-interface SessionItemProps {
+interface AccountItemProps {
   secondaryAction: React.ReactNode;
-  user?: Session["user"] | null;
+  user: Session["user"];
 }
 
-const SessionItem = ({ secondaryAction, user }: SessionItemProps) => {
+const AccountItem = ({ secondaryAction, user }: AccountItemProps) => {
   const displayName = getDisplayName(user);
 
   return (
@@ -48,4 +48,4 @@ const SessionItem = ({ secondaryAction, user }: SessionItemProps) => {
   );
 };
 
-export default SessionItem;
+export default AccountItem;

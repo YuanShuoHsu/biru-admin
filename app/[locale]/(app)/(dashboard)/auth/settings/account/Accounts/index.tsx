@@ -5,8 +5,8 @@ import { useSnackbar } from "notistack";
 import { Fragment, useState } from "react";
 import useSWR from "swr";
 
-import OtherSessionItem from "./OtherSessionItem";
-import SessionItem from "./SessionItem";
+import AccountItem from "./AccountItem";
+import OtherAccountItem from "./OtherAccountItem";
 
 import FormCard, {
   StyledCardContent,
@@ -29,7 +29,7 @@ type DeviceSession = NonNullable<
   Awaited<ReturnType<typeof authClient.multiSession.listDeviceSessions>>["data"]
 >[number];
 
-const Sessions = () => {
+const Accounts = () => {
   const [loading, setLoading] = useState(false);
 
   const { session, setSession } = useAuthStore((state) => state);
@@ -41,7 +41,7 @@ const Sessions = () => {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const { data: sessions = [], mutate } = useSWR<DeviceSession[]>(
+  const { data: accounts = [], mutate } = useSWR<DeviceSession[]>(
     session ? swrKeys.deviceSessions : null,
     async () => {
       const { data } = await authClient.multiSession.listDeviceSessions();
@@ -49,13 +49,13 @@ const Sessions = () => {
       return data || [];
     },
   );
-  const otherSessions = sessions.filter(
+  const otherAccounts = accounts.filter(
     ({ session: { token } }) => token !== session?.session.token,
   );
 
   const tAuth = useTranslations("auth");
 
-  const handleRevokeCurrentSessionConfirm = async () => {
+  const handleRevokeCurrentConfirm = async () => {
     if (!session) return;
 
     await authClient.multiSession.revoke({
@@ -86,12 +86,12 @@ const Sessions = () => {
     });
   };
 
-  const handleRevokeCurrentSessionDialog = () =>
+  const handleRevokeCurrentDialog = () =>
     setDialog({
       contentText: tAuth("signOut.confirmContentText", {
         email: session?.user.email || "",
       }),
-      onConfirm: handleRevokeCurrentSessionConfirm,
+      onConfirm: handleRevokeCurrentConfirm,
       open: true,
       title: tAuth("signOut.label"),
     });
@@ -106,25 +106,27 @@ const Sessions = () => {
         }
       />
       <StyledCardContent>
-        <SessionItem
-          user={session?.user}
-          secondaryAction={
-            <Button
-              loading={loading}
-              loadingPosition="end"
-              onClick={handleRevokeCurrentSessionDialog}
-              size="small"
-              startIcon={<Logout fontSize="small" />}
-              variant="outlined"
-            >
-              {tAuth("signOut.label")}
-            </Button>
-          }
-        />
-        {otherSessions.map(({ session: { token }, user }) => (
+        {session && (
+          <AccountItem
+            user={session.user}
+            secondaryAction={
+              <Button
+                loading={loading}
+                loadingPosition="end"
+                onClick={handleRevokeCurrentDialog}
+                size="small"
+                startIcon={<Logout fontSize="small" />}
+                variant="outlined"
+              >
+                {tAuth("signOut.label")}
+              </Button>
+            }
+          />
+        )}
+        {otherAccounts.map(({ session: { token }, user }) => (
           <Fragment key={token}>
             <Divider flexItem />
-            <OtherSessionItem token={token} user={user} />
+            <OtherAccountItem token={token} user={user} />
           </Fragment>
         ))}
       </StyledCardContent>
@@ -132,4 +134,4 @@ const Sessions = () => {
   );
 };
 
-export default Sessions;
+export default Accounts;

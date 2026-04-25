@@ -7,7 +7,7 @@ import { useSnackbar } from "notistack";
 import { useState } from "react";
 import { useSWRConfig } from "swr";
 
-import SessionItem from "../SessionItem";
+import AccountItem from "../AccountItem";
 
 import { swrKeys } from "@/constants/swr";
 
@@ -21,18 +21,17 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { Session } from "@/stores/auth-store";
 
-interface OtherSessionItemProps {
+interface OtherAccountItemProps {
   token: string;
   user: Session["user"];
 }
 
-const OtherSessionItem = ({ token, user }: OtherSessionItemProps) => {
+const OtherAccountItem = ({ token, user }: OtherAccountItemProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
 
   const { setSession } = useAuthStore((state) => state);
-
   const { setDialog } = useDialogStore((state) => state);
 
   const locale = useLocale();
@@ -43,13 +42,12 @@ const OtherSessionItem = ({ token, user }: OtherSessionItemProps) => {
 
   const tAuth = useTranslations("auth");
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+  const handleClick = (event: React.MouseEvent<HTMLElement>) =>
     setAnchorEl(event.currentTarget);
-  };
 
   const handleClose = () => setAnchorEl(null);
 
-  const handleSetActiveSessionConfirm = async () => {
+  const handleSetActiveConfirm = async () => {
     await authClient.multiSession.setActive({
       sessionToken: token,
       fetchOptions: {
@@ -68,7 +66,7 @@ const OtherSessionItem = ({ token, user }: OtherSessionItemProps) => {
           setIsLoading(false);
 
           enqueueSnackbar(
-            tAuth("settings.sessions.setActive.success", { email: user.email }),
+            tAuth("settings.accounts.setActive.success", { email: user.email }),
             { variant: "success" },
           );
         },
@@ -76,20 +74,20 @@ const OtherSessionItem = ({ token, user }: OtherSessionItemProps) => {
     });
   };
 
-  const handleSetActiveSessionDialog = () => {
+  const handleSetActiveDialog = () => {
     handleClose();
 
     setDialog({
-      contentText: tAuth("settings.sessions.setActive.confirmContentText", {
+      contentText: tAuth("settings.accounts.setActive.confirmContentText", {
         email: user.email,
       }),
-      onConfirm: handleSetActiveSessionConfirm,
+      onConfirm: handleSetActiveConfirm,
       open: true,
-      title: tAuth("settings.sessions.setActive.label"),
+      title: tAuth("settings.accounts.setActive.label"),
     });
   };
 
-  const handleRevokeSessionConfirm = async () => {
+  const handleRevokeConfirm = async () => {
     await authClient.multiSession.revoke({
       sessionToken: token,
       fetchOptions: {
@@ -105,7 +103,7 @@ const OtherSessionItem = ({ token, user }: OtherSessionItemProps) => {
           setIsLoading(false);
 
           enqueueSnackbar(
-            tAuth("settings.sessions.revoke.success", { email: user.email }),
+            tAuth("settings.accounts.revoke.success", { email: user.email }),
             { variant: "success" },
           );
         },
@@ -113,27 +111,31 @@ const OtherSessionItem = ({ token, user }: OtherSessionItemProps) => {
     });
   };
 
-  const handleRevokeSessionDialog = () => {
+  const handleRevokeDialog = () => {
     handleClose();
 
     setDialog({
-      contentText: tAuth("settings.sessions.revoke.confirmContentText", {
+      contentText: tAuth("settings.accounts.revoke.confirmContentText", {
         email: user.email,
       }),
-      onConfirm: handleRevokeSessionConfirm,
+      onConfirm: handleRevokeConfirm,
       open: true,
-      title: tAuth("settings.sessions.revoke.label"),
+      title: tAuth("settings.accounts.revoke.label"),
     });
   };
 
   return (
     <>
-      <SessionItem
+      <AccountItem
         user={user}
         secondaryAction={
           <IconButton
-            id={`positioned-button-${user.id}`}
-            aria-controls={open ? `positioned-menu-${user.id}` : undefined}
+            id={`account-positioned-button-${user.id}`}
+            edge="end"
+            aria-label={tAuth("settings.accounts.actions.label")}
+            aria-controls={
+              open ? `account-positioned-menu-${user.id}` : undefined
+            }
             aria-expanded={open ? "true" : undefined}
             aria-haspopup="true"
             disabled={isLoading}
@@ -147,24 +149,21 @@ const OtherSessionItem = ({ token, user }: OtherSessionItemProps) => {
       <Menu
         anchorEl={anchorEl}
         anchorOrigin={{ horizontal: "right", vertical: "top" }}
-        aria-labelledby={`positioned-button-${user.id}`}
-        id={`positioned-menu-${user.id}`}
+        aria-labelledby={`account-positioned-button-${user.id}`}
+        id={`account-positioned-menu-${user.id}`}
         onClose={handleClose}
         open={open}
         transformOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem onClick={handleSetActiveSessionDialog}>
-          {tAuth("settings.sessions.setActive.label")}
+        <MenuItem onClick={handleSetActiveDialog}>
+          {tAuth("settings.accounts.setActive.label")}
         </MenuItem>
-        <MenuItem
-          onClick={handleRevokeSessionDialog}
-          sx={{ color: "error.main" }}
-        >
-          {tAuth("settings.sessions.revoke.label")}
+        <MenuItem onClick={handleRevokeDialog} sx={{ color: "error.main" }}>
+          {tAuth("settings.accounts.revoke.label")}
         </MenuItem>
       </Menu>
     </>
   );
 };
 
-export default OtherSessionItem;
+export default OtherAccountItem;

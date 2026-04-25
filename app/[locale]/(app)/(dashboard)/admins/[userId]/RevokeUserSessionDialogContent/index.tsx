@@ -13,7 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Stack, TextField } from "@mui/material";
 
-import { formatUserAgent } from "@/utils/admins";
+import { formatUserAgent } from "@/utils/auth";
 
 interface RevokeUserSessionDialogContentProps {
   session: Pick<Session, "ipAddress" | "userAgent">;
