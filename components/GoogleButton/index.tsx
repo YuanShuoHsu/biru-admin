@@ -2,7 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { query } from "@/constants/query";
 
@@ -23,6 +23,16 @@ interface GoogleButtonProps {
 
 const GoogleButton = ({ action, redirectTo }: GoogleButtonProps) => {
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const handlePageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) setLoading(false);
+    };
+
+    window.addEventListener("pageshow", handlePageShow);
+
+    return () => window.removeEventListener("pageshow", handlePageShow);
+  }, []);
 
   const locale = useLocale();
 
