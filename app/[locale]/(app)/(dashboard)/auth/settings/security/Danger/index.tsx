@@ -1,3 +1,5 @@
+"use client";
+
 import { useTranslations } from "next-intl";
 
 import FormCard, {
@@ -5,7 +7,12 @@ import FormCard, {
   StyledCardHeader,
 } from "@/components/FormCard";
 
-import { Button, Stack, Typography } from "@mui/material";
+import { Button, ListItem, ListItemText, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
+
+const StyledListItem = styled(ListItem)({
+  "& .MuiListItemSecondaryAction-root": { right: 0 },
+});
 
 const Danger = () => {
   const tAuth = useTranslations("auth");
@@ -20,31 +27,20 @@ const Danger = () => {
         }
       />
       <StyledCardContent>
-        <Stack
-          alignItems={{ sm: "center" }}
-          direction={{ xs: "column", sm: "row" }}
-          gap={2}
-          justifyContent="space-between"
-          width="100%"
+        <StyledListItem
+          disablePadding
+          secondaryAction={
+            <Button color="error" disabled size="small" variant="contained">
+              {tAuth("settings.danger.action")}
+            </Button>
+          }
         >
-          <Stack>
-            <Typography fontWeight={500} variant="body2">
-              {tAuth("settings.danger.title")}
-            </Typography>
-            <Typography color="text.secondary" mt={0.5} variant="caption">
-              {tAuth("settings.danger.subtitle")}
-            </Typography>
-          </Stack>
-          <Button
-            color="error"
-            disabled
-            size="small"
-            sx={{ flexShrink: 0 }}
-            variant="contained"
-          >
-            {tAuth("settings.danger.action")}
-          </Button>
-        </Stack>
+          <ListItemText
+            primary={tAuth("settings.danger.title")}
+            secondary={tAuth("settings.danger.subtitle")}
+            slotProps={{ secondary: { variant: "caption" } }}
+          />
+        </StyledListItem>
       </StyledCardContent>
     </FormCard>
   );

@@ -61,7 +61,7 @@ const SessionItem = ({
             format.relativeTime(new Date(createdAt), now)
           )
         }
-        slotProps={{ secondary: { component: "div" } }}
+        slotProps={{ secondary: { component: "div", variant: "caption" } }}
       />
     </StyledListItem>
   );
