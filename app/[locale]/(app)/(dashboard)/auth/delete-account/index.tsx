@@ -1,14 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
 import { useLocale, useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+
+import { DeleteAccountForm, useDeleteAccountFormSchema } from "./definitions";
 
 import FormCard, {
   StyledCardActions,
   StyledCardContent,
   StyledCardHeader,
 } from "@/components/FormCard";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useRouter } from "@/i18n/navigation";
 
@@ -19,7 +23,7 @@ import {
   DeleteForever,
   ReportGmailerrorred,
 } from "@mui/icons-material";
-import { Avatar, Button, Typography } from "@mui/material";
+import { Avatar, Button, TextField, Typography } from "@mui/material";
 import { alpha, styled } from "@mui/material/styles";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
@@ -47,11 +51,16 @@ const DELETE_STATUS = {
 type DeleteStatus = (typeof DELETE_STATUS)[keyof typeof DELETE_STATUS];
 
 interface AuthDeleteAccountProps {
+  email: string;
   redirectTo?: string;
   token: string;
 }
 
-const AuthDeleteAccount = ({ redirectTo, token }: AuthDeleteAccountProps) => {
+const AuthDeleteAccount = ({
+  email,
+  redirectTo,
+  token,
+}: AuthDeleteAccountProps) => {
   const [state, setState] = useState<{
     errorMessage: string;
     status: DeleteStatus;
@@ -73,6 +82,15 @@ const AuthDeleteAccount = ({ redirectTo, token }: AuthDeleteAccountProps) => {
   const verifyingTitle = tAuth("deleteAccount.verifying.title");
 
   const signInPath = redirectTo || "/auth/sign-in";
+
+  const schema = useDeleteAccountFormSchema();
+  const {
+    formState: { errors },
+    register,
+  } = useForm<DeleteAccountForm>({
+    defaultValues: { email },
+    resolver: zodResolver(schema),
+  });
 
   useEffect(() => {
     const deleteAccount = async () => {
@@ -193,6 +211,18 @@ const AuthDeleteAccount = ({ redirectTo, token }: AuthDeleteAccountProps) => {
         <Typography color="text.secondary" textAlign="center" variant="caption">
           {config.subtitle}
         </Typography>
+        <TextField
+          autoComplete="email"
+          error={!!errors.email}
+          fullWidth
+          helperText={errors.email?.message}
+          label={tAuth("email.label")}
+          placeholder={tAuth("email.placeholder")}
+          required
+          slotProps={{ input: { readOnly: true } }}
+          type="email"
+          {...register("email")}
+        />
       </StyledCardContent>
       <StyledCardActions disableSpacing>{config.actions}</StyledCardActions>
     </FormCard>

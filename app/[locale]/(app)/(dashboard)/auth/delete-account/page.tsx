@@ -8,6 +8,7 @@ import type { Locale } from "@/i18n/routing";
 interface AuthDeleteAccountPageProps {
   params: Promise<{ locale: Locale }>;
   searchParams: Promise<{
+    email?: string;
     redirectTo?: string;
     token?: string;
   }>;
@@ -17,21 +18,29 @@ const AuthDeleteAccountPage = async ({
   params,
   searchParams,
 }: AuthDeleteAccountPageProps) => {
-  const [{ locale }, { redirectTo, token }] = await Promise.all([
+  const [{ locale }, { email, redirectTo, token }] = await Promise.all([
     params,
     searchParams,
   ]);
 
   setRequestLocale(locale);
 
+  const safeEmail = typeof email === "string" ? email : "";
+  const safeRedirectTo =
+    typeof redirectTo === "string" && redirectTo.startsWith("/")
+      ? redirectTo
+      : undefined;
   const safeToken = typeof token === "string" ? token : "";
 
   if (!safeToken) notFound();
 
-  const safeRedirectTo =
-    typeof redirectTo === "string" ? redirectTo : undefined;
-
-  return <AuthDeleteAccount redirectTo={safeRedirectTo} token={safeToken} />;
+  return (
+    <AuthDeleteAccount
+      email={safeEmail}
+      redirectTo={safeRedirectTo}
+      token={safeToken}
+    />
+  );
 };
 
 export default AuthDeleteAccountPage;
