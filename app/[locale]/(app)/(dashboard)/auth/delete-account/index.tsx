@@ -72,7 +72,7 @@ const AuthDeleteAccount = ({ redirectTo, token }: AuthDeleteAccountProps) => {
   const tAuth = useTranslations("auth");
   const verifyingTitle = tAuth("deleteAccount.verifying.title");
 
-  const signInPath = redirectTo || `/${locale}/auth/sign-in`;
+  const signInPath = redirectTo || "/auth/sign-in";
 
   useEffect(() => {
     const deleteAccount = async () => {
