@@ -85,7 +85,8 @@ export const proxy = async (request: NextRequest) => {
     fetchOptions: { headers: request.headers },
   });
 
-  if (!session && !isPublicPage) return NextResponse.redirect(redirectToSignIn());
+  if (!session && !isPublicPage)
+    return NextResponse.redirect(redirectToSignIn());
 
   if (session && isRootPage) {
     request.nextUrl.pathname = `/${locale}${DEFAULT_AUTHENTICATED_ROUTE}`;
