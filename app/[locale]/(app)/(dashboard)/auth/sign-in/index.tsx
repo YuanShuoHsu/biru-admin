@@ -135,14 +135,27 @@ const AuthSignIn = ({ locale, redirectTo, rememberMe }: AuthSignInProps) => {
           });
         },
         onSuccess: async () => {
-          const { data: session } = await authClient.getSession();
-          setSession(session);
+          await authClient.organization.getActiveMemberRole({
+            fetchOptions: {
+              onError: async ({ error: { code } }) => {
+                await authClient.signOut();
 
-          enqueueSnackbar(tAuth("signIn.success", { email: data.email }), {
-            variant: "success",
+                enqueueSnackbar(getErrorMessage(code, locale), {
+                  variant: "error",
+                });
+              },
+              onSuccess: async () => {
+                const { data: session } = await authClient.getSession();
+                setSession(session);
+
+                enqueueSnackbar(tAuth("signIn.success", { email: data.email }), {
+                  variant: "success",
+                });
+
+                router.replace(redirectTo || DEFAULT_AUTHENTICATED_ROUTE);
+              },
+            },
           });
-
-          router.replace(redirectTo || DEFAULT_AUTHENTICATED_ROUTE);
         },
       },
     );

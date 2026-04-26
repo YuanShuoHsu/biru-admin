@@ -25,26 +25,18 @@ const fetchWithCookies = (url: string, request: NextRequest) =>
     },
   });
 
-const getAuthInfo = async (request: NextRequest) => {
+const isOrganizationMember = async (request: NextRequest) => {
   const baseURL = process.env.NEXT_PUBLIC_NEST_URL;
 
   try {
-    const [session, member] = await Promise.all([
-      fetchWithCookies(`${baseURL}/api/auth/get-session`, request).then(
-        (res) => (res.ok ? res.json() : null),
-      ),
-      fetchWithCookies(
-        `${baseURL}/api/auth/organization/get-active-member-role`,
-        request,
-      ).then((res) => (res.ok ? res.json() : null)),
-    ]);
+    const member = await fetchWithCookies(
+      `${baseURL}/api/auth/organization/get-active-member-role`,
+      request,
+    ).then((res) => (res.ok ? res.json() : null));
 
-    return {
-      userRole: session?.user?.role as string | undefined,
-      memberRole: member?.role as string | undefined,
-    };
+    return !!member?.role;
   } catch {
-    return { userRole: undefined, memberRole: undefined };
+    return false;
   }
 };
 
@@ -79,9 +71,9 @@ export const proxy = async (request: NextRequest) => {
 
   const isRootPage = pathname === `/${locale}`;
   const isAuthPage = pathname.startsWith(`/${locale}/auth/`);
+  const isAuthSettingsPage = pathname.startsWith(`/${locale}/auth/settings`);
   const isCompanyPage = pathname.startsWith(`/${locale}/company`);
-  const isSettingsPage = pathname.includes("/auth/settings");
-  const isPublicPage = (isAuthPage || isCompanyPage) && !isSettingsPage;
+  const isPublicPage = (isAuthPage && !isAuthSettingsPage) || isCompanyPage;
 
   const buildSignInUrl = () => {
     const redirectTo = pathname.slice(`/${locale}`.length);
@@ -102,8 +94,7 @@ export const proxy = async (request: NextRequest) => {
   }
 
   if (sessionCookie && !isPublicPage) {
-    const { userRole, memberRole } = await getAuthInfo(request);
-    const isAuthorized = userRole === "admin" || !!memberRole;
+    const isAuthorized = await isOrganizationMember(request);
 
     if (!isAuthorized) {
       const redirectRes = NextResponse.redirect(buildSignInUrl());
