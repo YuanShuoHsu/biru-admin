@@ -5,13 +5,13 @@
 // https://next-intl.dev/docs/getting-started/app-router
 // https://next-intl.dev/docs/routing/middleware
 
-import { getSessionCookie } from "better-auth/cookies";
 import createMiddleware from "next-intl/middleware";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 import { DEFAULT_AUTHENTICATED_ROUTE } from "./constants/route";
 import { routing } from "./i18n/routing";
+import { authClient } from "./lib/auth-client";
 
 const SESSION_COOKIE_NAME = "better-auth.session_token";
 
@@ -67,15 +67,13 @@ export const proxy = async (request: NextRequest) => {
     return NextResponse.redirect(request.nextUrl);
   }
 
-  const sessionCookie = getSessionCookie(request);
-
   const isRootPage = pathname === `/${locale}`;
   const isAuthPage = pathname.startsWith(`/${locale}/auth/`);
   const isAuthSettingsPage = pathname.startsWith(`/${locale}/auth/settings`);
   const isCompanyPage = pathname.startsWith(`/${locale}/company`);
   const isPublicPage = (isAuthPage && !isAuthSettingsPage) || isCompanyPage;
 
-  const buildSignInUrl = () => {
+  const redirectToSignIn = () => {
     const redirectTo = pathname.slice(`/${locale}`.length);
     request.nextUrl.pathname = `/${locale}/auth/sign-in`;
     if (redirectTo) request.nextUrl.searchParams.set("redirectTo", redirectTo);
@@ -83,21 +81,23 @@ export const proxy = async (request: NextRequest) => {
     return request.nextUrl;
   };
 
-  if (!sessionCookie && !isPublicPage) {
-    return NextResponse.redirect(buildSignInUrl());
-  }
+  const { data: session } = await authClient.getSession({
+    fetchOptions: { headers: request.headers },
+  });
 
-  if (sessionCookie && isRootPage) {
+  if (!session && !isPublicPage) return NextResponse.redirect(redirectToSignIn());
+
+  if (session && isRootPage) {
     request.nextUrl.pathname = `/${locale}${DEFAULT_AUTHENTICATED_ROUTE}`;
 
     return NextResponse.redirect(request.nextUrl);
   }
 
-  if (sessionCookie && !isPublicPage) {
+  if (session && !isPublicPage) {
     const isAuthorized = await isOrganizationMember(request);
 
     if (!isAuthorized) {
-      const redirectRes = NextResponse.redirect(buildSignInUrl());
+      const redirectRes = NextResponse.redirect(redirectToSignIn());
       redirectRes.cookies.delete(SESSION_COOKIE_NAME);
 
       return redirectRes;
