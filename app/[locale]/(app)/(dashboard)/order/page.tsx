@@ -21,8 +21,7 @@ interface OrderPageProps {
 }
 
 const OrderPage = async ({ params, searchParams }: OrderPageProps) => {
-  const { locale } = await params;
-  const sp = await searchParams;
+  const [{ locale }, sp] = await Promise.all([params, searchParams]);
 
   setRequestLocale(locale);
 

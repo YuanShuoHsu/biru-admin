@@ -18,11 +18,12 @@ const AuthVerifyEmailPage = async ({
   params,
   searchParams,
 }: AuthVerifyEmailPageProps) => {
-  const { locale } = await params;
+  const [{ locale }, { email, redirectTo, token }] = await Promise.all([
+    params,
+    searchParams,
+  ]);
 
   setRequestLocale(locale);
-
-  const { email, redirectTo, token } = await searchParams;
 
   const safeEmail = typeof email === "string" ? email : "";
   const safeRedirectTo =

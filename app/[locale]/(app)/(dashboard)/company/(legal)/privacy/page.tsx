@@ -15,11 +15,12 @@ const CompanyLegalPrivacyPage = async ({
   params,
   searchParams,
 }: CompanyLegalPrivacyPageProps) => {
-  const { locale } = await params;
+  const [{ locale }, { back, redirectTo }] = await Promise.all([
+    params,
+    searchParams,
+  ]);
 
   setRequestLocale(locale);
-
-  const { back, redirectTo } = await searchParams;
 
   const safeBack =
     typeof back === "string" && back.startsWith("/") ? back : "/";
