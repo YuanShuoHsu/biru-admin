@@ -20,6 +20,7 @@ import {
   AdminPanelSettings,
   Business,
   Dashboard,
+  DeleteForever,
   Devices,
   Email,
   Gavel,
@@ -214,6 +215,11 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
           icon: LockReset,
           label: tAuth("resetPassword.label"),
           to: "/reset-password",
+        },
+        {
+          icon: DeleteForever,
+          label: tAuth("deleteAccount.label"),
+          to: "/delete-account",
         },
         {
           children: [
