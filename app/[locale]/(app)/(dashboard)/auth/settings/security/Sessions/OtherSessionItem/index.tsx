@@ -9,6 +9,7 @@ import { swrKeys } from "@/constants/swr";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
+import { Close } from "@mui/icons-material";
 import { Button } from "@mui/material";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
@@ -77,8 +78,10 @@ const OtherSessionItem = ({ session }: OtherSessionItemProps) => {
         <Button
           color="error"
           loading={loading}
+          loadingPosition="end"
           onClick={handleRevokeDialog}
           size="small"
+          startIcon={<Close fontSize="small" />}
           variant="outlined"
         >
           {tAuth("settings.sessions.revoke.label")}
