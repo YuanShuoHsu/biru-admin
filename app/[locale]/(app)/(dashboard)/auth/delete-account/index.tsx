@@ -51,10 +51,7 @@ interface AuthDeleteAccountProps {
   token: string;
 }
 
-const AuthDeleteAccount = ({
-  redirectTo,
-  token,
-}: AuthDeleteAccountProps) => {
+const AuthDeleteAccount = ({ redirectTo, token }: AuthDeleteAccountProps) => {
   const [state, setState] = useState<{
     errorMessage: string;
     status: DeleteStatus;
