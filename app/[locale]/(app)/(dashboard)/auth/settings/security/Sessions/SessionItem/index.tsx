@@ -3,11 +3,7 @@ import { useFormatter, useNow, useTranslations } from "next-intl";
 import { StyledListItem, StyledListItemText } from "@/components/FormCard";
 
 import { Computer } from "@mui/icons-material";
-import {
-  Avatar,
-  Chip,
-  ListItemIcon,
-} from "@mui/material";
+import { Avatar, Chip, ListItemIcon } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import type { Session } from "@/stores/auth-store";
