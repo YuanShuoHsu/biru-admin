@@ -14,6 +14,8 @@ import FormCard, {
   StyledCardActions,
   StyledCardContent,
   StyledCardHeader,
+  StyledListItem,
+  StyledListItemText,
 } from "@/components/FormCard";
 import PasswordRuleList from "@/components/PasswordRuleList";
 
@@ -26,11 +28,9 @@ import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
-  Box,
   Button,
   IconButton,
   InputAdornment,
-  Stack,
   TextField,
   Typography,
 } from "@mui/material";
@@ -44,7 +44,7 @@ import {
 } from "@/utils/password";
 
 const ChangePassword = () => {
-  const [isSendingResetLink, setIsSendingResetLink] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState({
     currentPassword: false,
     newPassword: false,
@@ -138,7 +138,7 @@ const ChangePassword = () => {
 
   const handleSendResetLink = async () => {
     if (!session?.user.email) return;
-    setIsSendingResetLink(true);
+
     await authClient.requestPasswordReset(
       {
         email: session.user.email,
@@ -147,11 +147,14 @@ const ChangePassword = () => {
       {
         headers: { "Accept-Language": locale },
         onError: ({ error: { code } }) => {
-          setIsSendingResetLink(false);
+          setLoading(false);
+
           enqueueSnackbar(getErrorMessage(code, locale), { variant: "error" });
         },
+        onRequest: () => setLoading(true),
         onSuccess: () => {
-          setIsSendingResetLink(false);
+          setLoading(false);
+
           enqueueSnackbar(tAuth("settings.password.sendResetLinkSuccess"), {
             variant: "success",
           });
@@ -160,53 +163,8 @@ const ChangePassword = () => {
     );
   };
 
-  if (!hasCredential) {
-    return (
-      <FormCard>
-        <StyledCardHeader
-          title={
-            <Typography color="primary" fontWeight="bold" variant="h6">
-              {tAuth("settings.password.changeLabel")}
-            </Typography>
-          }
-        />
-        <StyledCardContent>
-          <Stack
-            alignItems={{ sm: "center" }}
-            direction={{ sm: "row", xs: "column" }}
-            justifyContent="space-between"
-            gap={2}
-          >
-            <Box>
-              <Typography fontWeight={500} variant="body2">
-                {tAuth("settings.password.noPassword.title")}
-              </Typography>
-              <Typography
-                color="text.secondary"
-                display="block"
-                mt={0.5}
-                variant="caption"
-              >
-                {tAuth("settings.password.noPassword.subtitle")}
-              </Typography>
-            </Box>
-            <Button
-              loading={isSendingResetLink}
-              onClick={handleSendResetLink}
-              size="small"
-              sx={{ flexShrink: 0 }}
-              variant="contained"
-            >
-              {tAuth("settings.password.sendResetLink")}
-            </Button>
-          </Stack>
-        </StyledCardContent>
-      </FormCard>
-    );
-  }
-
   return (
-    <FormCard component="form" onSubmit={onSubmit}>
+    <FormCard component="form" onSubmit={hasCredential ? onSubmit : undefined}>
       <StyledCardHeader
         title={
           <Typography color="primary" fontWeight="bold" variant="h6">
@@ -215,134 +173,164 @@ const ChangePassword = () => {
         }
       />
       <StyledCardContent>
-        <TextField
-          autoComplete="current-password"
-          error={!!errors.currentPassword}
-          fullWidth
-          helperText={errors.currentPassword?.message}
-          label={tAuth("settings.password.currentLabel")}
-          placeholder={tAuth("settings.password.currentPlaceholder")}
-          required
-          slotProps={{
-            input: {
-              endAdornment: (
-                <InputAdornment position="start">
-                  <IconButton
-                    aria-label={
-                      showPassword.currentPassword
-                        ? tAuth("hidePassword")
-                        : tAuth("showPassword")
-                    }
-                    edge="end"
-                    onClick={handleClickShowPassword("currentPassword")}
-                    onMouseDown={handleMouseDownPassword}
-                    onMouseUp={handleMouseUpPassword}
-                  >
-                    {showPassword.currentPassword ? (
-                      <VisibilityOff />
-                    ) : (
-                      <Visibility />
-                    )}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            },
-          }}
-          type={showPassword.currentPassword ? "text" : "password"}
-          {...register("currentPassword")}
-        />
-        <TextField
-          autoComplete="new-password"
-          error={isPasswordError}
-          fullWidth
-          helperText={
-            <PasswordRuleList hasValue={hasPassword} rules={passwordRules} />
-          }
-          label={tAuth("newPassword.label")}
-          placeholder={tAuth("newPassword.placeholder")}
-          required
-          slotProps={{
-            formHelperText: { component: "div" },
-            input: {
-              endAdornment: (
-                <InputAdornment position="start">
-                  <IconButton
-                    aria-label={
-                      showPassword.newPassword
-                        ? tAuth("hideNewPassword")
-                        : tAuth("showNewPassword")
-                    }
-                    edge="end"
-                    onClick={handleClickShowPassword("newPassword")}
-                    onMouseDown={handleMouseDownPassword}
-                    onMouseUp={handleMouseUpPassword}
-                  >
-                    {showPassword.newPassword ? (
-                      <VisibilityOff />
-                    ) : (
-                      <Visibility />
-                    )}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            },
-          }}
-          type={showPassword.newPassword ? "text" : "password"}
-          {...register("newPassword")}
-        />
-        <TextField
-          autoComplete="new-password"
-          error={isConfirmPasswordError}
-          fullWidth
-          helperText={
-            <PasswordRuleList
-              hasValue={hasConfirmPassword}
-              rules={confirmPasswordRules}
+        {hasCredential ? (
+          <>
+            <TextField
+              autoComplete="current-password"
+              error={!!errors.currentPassword}
+              fullWidth
+              helperText={errors.currentPassword?.message}
+              label={tAuth("settings.password.currentLabel")}
+              placeholder={tAuth("settings.password.currentPlaceholder")}
+              required
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="start">
+                      <IconButton
+                        aria-label={
+                          showPassword.currentPassword
+                            ? tAuth("hidePassword")
+                            : tAuth("showPassword")
+                        }
+                        edge="end"
+                        onClick={handleClickShowPassword("currentPassword")}
+                        onMouseDown={handleMouseDownPassword}
+                        onMouseUp={handleMouseUpPassword}
+                      >
+                        {showPassword.currentPassword ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
+              type={showPassword.currentPassword ? "text" : "password"}
+              {...register("currentPassword")}
             />
-          }
-          label={tAuth("confirmNewPassword.label")}
-          placeholder={tAuth("confirmNewPassword.placeholder")}
-          required
-          slotProps={{
-            formHelperText: { component: "div" },
-            input: {
-              endAdornment: (
-                <InputAdornment position="start">
-                  <IconButton
-                    aria-label={
-                      showPassword.confirmNewPassword
-                        ? tAuth("hideConfirmNewPassword")
-                        : tAuth("showConfirmNewPassword")
-                    }
-                    edge="end"
-                    onClick={handleClickShowPassword("confirmNewPassword")}
-                    onMouseDown={handleMouseDownPassword}
-                    onMouseUp={handleMouseUpPassword}
-                  >
-                    {showPassword.confirmNewPassword ? (
-                      <VisibilityOff />
-                    ) : (
-                      <Visibility />
-                    )}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            },
-          }}
-          type={showPassword.confirmNewPassword ? "text" : "password"}
-          {...register("confirmNewPassword")}
-        />
+            <TextField
+              autoComplete="new-password"
+              error={isPasswordError}
+              fullWidth
+              helperText={
+                <PasswordRuleList
+                  hasValue={hasPassword}
+                  rules={passwordRules}
+                />
+              }
+              label={tAuth("newPassword.label")}
+              placeholder={tAuth("newPassword.placeholder")}
+              required
+              slotProps={{
+                formHelperText: { component: "div" },
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="start">
+                      <IconButton
+                        aria-label={
+                          showPassword.newPassword
+                            ? tAuth("hideNewPassword")
+                            : tAuth("showNewPassword")
+                        }
+                        edge="end"
+                        onClick={handleClickShowPassword("newPassword")}
+                        onMouseDown={handleMouseDownPassword}
+                        onMouseUp={handleMouseUpPassword}
+                      >
+                        {showPassword.newPassword ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
+              type={showPassword.newPassword ? "text" : "password"}
+              {...register("newPassword")}
+            />
+            <TextField
+              autoComplete="new-password"
+              error={isConfirmPasswordError}
+              fullWidth
+              helperText={
+                <PasswordRuleList
+                  hasValue={hasConfirmPassword}
+                  rules={confirmPasswordRules}
+                />
+              }
+              label={tAuth("confirmNewPassword.label")}
+              placeholder={tAuth("confirmNewPassword.placeholder")}
+              required
+              slotProps={{
+                formHelperText: { component: "div" },
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="start">
+                      <IconButton
+                        aria-label={
+                          showPassword.confirmNewPassword
+                            ? tAuth("hideConfirmNewPassword")
+                            : tAuth("showConfirmNewPassword")
+                        }
+                        edge="end"
+                        onClick={handleClickShowPassword("confirmNewPassword")}
+                        onMouseDown={handleMouseDownPassword}
+                        onMouseUp={handleMouseUpPassword}
+                      >
+                        {showPassword.confirmNewPassword ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
+              type={showPassword.confirmNewPassword ? "text" : "password"}
+              {...register("confirmNewPassword")}
+            />
+          </>
+        ) : (
+          <StyledListItem
+            disablePadding
+            secondaryAction={
+              <Button
+                loading={loading}
+                loadingPosition="end"
+                onClick={handleSendResetLink}
+                size="small"
+                variant="contained"
+              >
+                {tAuth("settings.password.sendResetLink")}
+              </Button>
+            }
+          >
+            <StyledListItemText
+              primary={tAuth("settings.password.noPassword.title")}
+              secondary={tAuth("settings.password.noPassword.subtitle")}
+              slotProps={{ secondary: { variant: "caption" } }}
+            />
+          </StyledListItem>
+        )}
       </StyledCardContent>
-      <StyledCardActions disableSpacing sx={{ alignItems: "flex-end" }}>
-        <Button
-          loading={isSubmitting}
-          size="small"
-          type="submit"
-          variant="contained"
-        >
-          {tAuth("settings.password.update")}
-        </Button>
-      </StyledCardActions>
+      {hasCredential && (
+        <StyledCardActions disableSpacing sx={{ alignItems: "flex-end" }}>
+          <Button
+            loading={isSubmitting}
+            size="small"
+            type="submit"
+            variant="contained"
+          >
+            {tAuth("settings.password.update")}
+          </Button>
+        </StyledCardActions>
+      )}
     </FormCard>
   );
 };

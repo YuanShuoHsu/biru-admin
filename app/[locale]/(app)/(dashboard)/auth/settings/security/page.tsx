@@ -1,10 +1,16 @@
 import { hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
+import { SWRConfig, unstable_serialize } from "swr";
 
 import Security from ".";
 
+import { swrKeys } from "@/constants/swr";
+
 import { routing } from "@/i18n/routing";
+
+import { authClient } from "@/lib/auth-client";
 
 const AuthSettingsSecurityPage = async ({
   params,
@@ -14,7 +20,23 @@ const AuthSettingsSecurityPage = async ({
 
   setRequestLocale(locale);
 
-  return <Security />;
+  const reqHeaders = await headers();
+  const [{ data: session }, { data: accounts }] = await Promise.all([
+    authClient.getSession({ fetchOptions: { headers: reqHeaders } }),
+    authClient.listAccounts({ fetchOptions: { headers: reqHeaders } }),
+  ]);
+
+  const fallback = session
+    ? {
+        [unstable_serialize([swrKeys.listAccounts, session.user.id])]: accounts,
+      }
+    : {};
+
+  return (
+    <SWRConfig value={{ fallback }}>
+      <Security />
+    </SWRConfig>
+  );
 };
 
 export default AuthSettingsSecurityPage;

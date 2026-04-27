@@ -70,6 +70,13 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
     [LocaleEnum.Ko]: "초대를 수락하기 전에 이메일 인증이 필요합니다",
     [LocaleEnum.ZhCN]: "请先验证邮箱后再接受邀请",
   },
+  FAILED_TO_UNLINK_LAST_ACCOUNT: {
+    [LocaleEnum.ZhTW]: "無法解除最後一個登入方式",
+    [LocaleEnum.En]: "Cannot unlink the last login method.",
+    [LocaleEnum.Ja]: "最後のログイン方法は解除できません",
+    [LocaleEnum.Ko]: "마지막 로그인 방법은 연결 해제할 수 없습니다",
+    [LocaleEnum.ZhCN]: "无法解除最后一个登录方式",
+  },
   INVITATION_NOT_FOUND: {
     [LocaleEnum.ZhTW]: "邀請連結無效或已過期",
     [LocaleEnum.En]: "Invitation not found or has expired.",
