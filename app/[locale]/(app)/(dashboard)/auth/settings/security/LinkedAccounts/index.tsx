@@ -27,7 +27,7 @@ const LinkedAccounts = () => {
   const tAuth = useTranslations("auth");
 
   return (
-    <FormCard>
+    <FormCard component="form">
       <StyledCardHeader
         title={
           <Typography color="primary" fontWeight="bold" variant="h6">

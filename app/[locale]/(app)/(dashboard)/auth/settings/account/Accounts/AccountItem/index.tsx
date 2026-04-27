@@ -1,13 +1,11 @@
-import { Avatar, ListItem, ListItemIcon, ListItemText } from "@mui/material";
+import { StyledListItem, StyledListItemText } from "@/components/FormCard";
+
+import { Avatar, ListItemIcon } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import type { Session } from "@/stores/auth-store";
 
 import { getDisplayName } from "@/utils/auth";
-
-const StyledListItem = styled(ListItem)({
-  "& .MuiListItemSecondaryAction-root": { right: 0 },
-});
 
 const StyledAvatar = styled(Avatar)(({ theme }) => ({
   width: 24,
@@ -39,7 +37,7 @@ const AccountItem = ({ secondaryAction, user }: AccountItemProps) => {
           {displayName[0]}
         </StyledAvatar>
       </ListItemIcon>
-      <ListItemText
+      <StyledListItemText
         primary={displayName}
         secondary={user?.email}
         slotProps={{ secondary: { variant: "caption" } }}

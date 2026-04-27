@@ -80,7 +80,7 @@ const Email = () => {
   });
 
   return (
-    <FormCard component="form" noValidate onSubmit={onSubmit}>
+    <FormCard component="form" onSubmit={onSubmit}>
       <StyledCardHeader
         title={
           <Typography color="primary" fontWeight="bold" variant="h6">

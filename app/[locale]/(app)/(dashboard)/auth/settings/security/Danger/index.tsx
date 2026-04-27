@@ -7,19 +7,16 @@ import { useState } from "react";
 import FormCard, {
   StyledCardContent,
   StyledCardHeader,
+  StyledListItem,
+  StyledListItemText,
 } from "@/components/FormCard";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { Button, ListItem, ListItemText, Typography } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { Button, Typography } from "@mui/material";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
-
-const StyledListItem = styled(ListItem)({
-  "& .MuiListItemSecondaryAction-root": { right: 0 },
-});
 
 const Danger = () => {
   const [loading, setLoading] = useState(false);
@@ -86,7 +83,7 @@ const Danger = () => {
             </Button>
           }
         >
-          <ListItemText
+          <StyledListItemText
             primary={tAuth("settings.danger.title")}
             secondary={tAuth("settings.danger.subtitle")}
             slotProps={{ secondary: { variant: "caption" } }}

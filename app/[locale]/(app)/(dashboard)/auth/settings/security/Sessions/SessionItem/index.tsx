@@ -1,12 +1,12 @@
 import { useFormatter, useNow, useTranslations } from "next-intl";
 
+import { StyledListItem, StyledListItemText } from "@/components/FormCard";
+
 import { Computer } from "@mui/icons-material";
 import {
   Avatar,
   Chip,
-  ListItem,
   ListItemIcon,
-  ListItemText,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -18,10 +18,6 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
   backgroundColor: theme.vars.palette.action.hover,
   color: theme.vars.palette.text.secondary,
 }));
-
-const StyledListItem = styled(ListItem)({
-  "& .MuiListItemSecondaryAction-root": { right: 0 },
-});
 
 interface SessionItemProps {
   isCurrent?: boolean;
@@ -47,7 +43,7 @@ const SessionItem = ({
           <Computer fontSize="small" />
         </StyledAvatar>
       </ListItemIcon>
-      <ListItemText
+      <StyledListItemText
         primary={formatUserAgent(userAgent)}
         secondary={
           isCurrent ? (

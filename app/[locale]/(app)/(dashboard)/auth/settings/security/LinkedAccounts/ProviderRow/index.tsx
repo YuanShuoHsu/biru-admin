@@ -8,15 +8,15 @@ import type { Provider } from "..";
 
 import useListAccounts from "@/hooks/useListAccounts";
 
+import { StyledListItem, StyledListItemText } from "@/components/FormCard";
+
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { Link as LinkIcon, LinkOff as LinkOffIcon } from "@mui/icons-material";
 import {
   Avatar,
   Button,
-  ListItem,
   ListItemIcon,
-  ListItemText,
   styled,
 } from "@mui/material";
 
@@ -25,10 +25,6 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 const StyledAvatar = styled(Avatar)(({ theme }) => ({
   backgroundColor: theme.palette.action.selected,
 }));
-
-const StyledListItem = styled(ListItem)({
-  "& .MuiListItemSecondaryAction-root": { right: 0 },
-});
 
 const ProviderRow = ({ id, Icon, label }: Provider) => {
   const [loading, setLoading] = useState(false);
@@ -135,7 +131,7 @@ const ProviderRow = ({ id, Icon, label }: Provider) => {
           <Icon />
         </StyledAvatar>
       </ListItemIcon>
-      <ListItemText
+      <StyledListItemText
         primary={label}
         secondary={tAuth("settings.linkedAccounts.subtitle", {
           provider: label,

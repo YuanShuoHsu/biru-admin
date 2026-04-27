@@ -131,7 +131,6 @@ const OtherAccountItem = ({ token, user }: OtherAccountItemProps) => {
         secondaryAction={
           <IconButton
             id={`account-positioned-button-${user.id}`}
-            edge="end"
             aria-label={tAuth("settings.accounts.actions.label")}
             aria-controls={
               open ? `account-positioned-menu-${user.id}` : undefined
