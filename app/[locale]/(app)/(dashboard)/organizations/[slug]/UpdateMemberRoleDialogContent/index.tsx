@@ -76,7 +76,9 @@ const UpdateMemberRoleDialogContent = ({
           },
           onRequest: () => setDialog({ confirmLoading: true }),
           onSuccess: () => {
-            const message = tMembers("actions.updateMemberRole.success");
+            const message = tMembers("actions.updateMemberRole.success", {
+              email: member.user.email,
+            });
             enqueueSnackbar(message, { variant: "success" });
 
             closeDialog();

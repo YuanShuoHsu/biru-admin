@@ -56,6 +56,11 @@
         "success": "メンバーの削除に成功しました",
         "title": "メンバーを削除"
       },
+      "removeTeamMember": {
+        "confirm": "<bold>{name}</bold> をチームから削除しますか？",
+        "success": "{email} をチームから削除しました",
+        "title": "チームから削除"
+      },
       "updateMemberRole": {
         "success": "{email} の更新に成功しました",
         "title": "メンバーを編集"

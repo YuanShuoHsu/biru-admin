@@ -56,6 +56,11 @@
         "success": "멤버가 성공적으로 제거되었습니다",
         "title": "멤버 제거"
       },
+      "removeTeamMember": {
+        "confirm": "<bold>{name}</bold>을(를) 팀에서 제거하시겠습니까？",
+        "success": "{email}이(가) 팀에서 성공적으로 제거되었습니다",
+        "title": "팀에서 제거"
+      },
       "updateMemberRole": {
         "success": "{email} 멤버가 성공적으로 업데이트되었습니다",
         "title": "멤버 편집"

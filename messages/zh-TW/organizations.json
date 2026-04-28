@@ -56,6 +56,11 @@
         "success": "成功移除成員",
         "title": "移除成員"
       },
+      "removeTeamMember": {
+        "confirm": "確定要將 <bold>{name}</bold> 從團隊中移除嗎？",
+        "success": "成功將 {email} 從團隊移除",
+        "title": "從團隊移除"
+      },
       "updateMemberRole": {
         "success": "成功更新成員 {email}",
         "title": "編輯成員"

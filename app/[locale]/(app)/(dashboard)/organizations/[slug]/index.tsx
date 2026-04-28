@@ -30,6 +30,7 @@ import {
   Edit,
   ExitToApp,
   GroupAdd,
+  GroupRemove,
   PersonAdd,
   PersonRemove,
 } from "@mui/icons-material";
@@ -200,7 +201,7 @@ const OrganizationsSlug = ({
   );
 
   const getMemberPermissions = useCallback(
-    ({ role, userId }: Pick<Member, "role" | "userId">) => {
+    ({ role, teamId, userId }: Pick<Member, "role" | "teamId" | "userId">) => {
       const isCurrentUser = userId === currentUserId;
       const isOnlyOwner = role === "owner" && ownerCount === 1;
       const isHigherRoleRank =
@@ -210,42 +211,60 @@ const OrganizationsSlug = ({
         canUpdateMemberRole:
           canUpdateMember && !isOnlyOwner && isHigherRoleRank,
         canLeaveOrganization: isCurrentUser && !isOnlyOwner,
+        canRemoveTeamMember: canUpdateTeam && !!teamId,
         canRemoveMember: canDeleteMember && !isCurrentUser && !isOnlyOwner,
       };
     },
     [
       canDeleteMember,
       canUpdateMember,
+      canUpdateTeam,
       currentUserId,
       currentUserRole,
       ownerCount,
     ],
   );
 
-  const { canUpdateMemberRoles, canLeaveOrganizations, canRemoveMembers } =
-    useMemo(() => {
-      let canUpdateMemberRoles = false;
-      let canLeaveOrganizations = false;
-      let canRemoveMembers = false;
+  const {
+    canUpdateMemberRoles,
+    canLeaveOrganizations,
+    canRemoveTeamMembers,
+    canRemoveMembers,
+  } = useMemo(() => {
+    let canUpdateMemberRoles = false;
+    let canLeaveOrganizations = false;
+    let canRemoveTeamMembers = false;
+    let canRemoveMembers = false;
 
-      for (const member of members) {
-        const { canUpdateMemberRole, canLeaveOrganization, canRemoveMember } =
-          getMemberPermissions(member);
+    for (const member of members) {
+      const {
+        canUpdateMemberRole,
+        canLeaveOrganization,
+        canRemoveTeamMember,
+        canRemoveMember,
+      } = getMemberPermissions(member);
 
-        canUpdateMemberRoles ||= canUpdateMemberRole;
-        canLeaveOrganizations ||= canLeaveOrganization;
-        canRemoveMembers ||= canRemoveMember;
+      canUpdateMemberRoles ||= canUpdateMemberRole;
+      canLeaveOrganizations ||= canLeaveOrganization;
+      canRemoveTeamMembers ||= canRemoveTeamMember;
+      canRemoveMembers ||= canRemoveMember;
 
-        if (canUpdateMemberRoles && canLeaveOrganizations && canRemoveMembers)
-          break;
-      }
+      if (
+        canUpdateMemberRoles &&
+        canLeaveOrganizations &&
+        canRemoveTeamMembers &&
+        canRemoveMembers
+      )
+        break;
+    }
 
-      return {
-        canUpdateMemberRoles,
-        canLeaveOrganizations,
-        canRemoveMembers,
-      };
-    }, [getMemberPermissions, members]);
+    return {
+      canUpdateMemberRoles,
+      canLeaveOrganizations,
+      canRemoveTeamMembers,
+      canRemoveMembers,
+    };
+  }, [getMemberPermissions, members]);
 
   const fetchFullOrganization = useCallback(async () => {
     setLoading(true);
@@ -397,6 +416,43 @@ const OrganizationsSlug = ({
     [fetchFullOrganization, id, locale, setDialog, tMembers],
   );
 
+  const handleRemoveTeamMember = useCallback(
+    ({ teamId, userId: memberId, user: { email, name } }: Member) => {
+      setDialog({
+        content: (
+          <DialogContentText>
+            {tMembers.rich("actions.removeTeamMember.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              name,
+            })}
+          </DialogContentText>
+        ),
+        onConfirm: async () => {
+          await authClient.organization.removeTeamMember(
+            { teamId: teamId!, userId: memberId },
+            {
+              onError: ({ error: { code } }) => {
+                const message = getErrorMessage(code, locale);
+                enqueueSnackbar(message, { variant: "error" });
+              },
+              onSuccess: () => {
+                const message = tMembers("actions.removeTeamMember.success", {
+                  email,
+                });
+                enqueueSnackbar(message, { variant: "success" });
+
+                fetchFullOrganization();
+              },
+            },
+          );
+        },
+        open: true,
+        title: tMembers("actions.removeTeamMember.title"),
+      });
+    },
+    [fetchFullOrganization, locale, setDialog, tMembers],
+  );
+
   const memberColumns = useMemo<GridColDef[]>(
     () => [
       {
@@ -404,8 +460,12 @@ const OrganizationsSlug = ({
         field: "actions",
         headerName: tMembers("actions.label"),
         renderCell: ({ row }: GridRenderCellParams<Member>) => {
-          const { canUpdateMemberRole, canLeaveOrganization, canRemoveMember } =
-            getMemberPermissions(row);
+          const {
+            canUpdateMemberRole,
+            canLeaveOrganization,
+            canRemoveTeamMember,
+            canRemoveMember,
+          } = getMemberPermissions(row);
 
           return (
             <Stack height="100%" direction="row" alignItems="center" gap={0.5}>
@@ -439,6 +499,22 @@ const OrganizationsSlug = ({
                     visible={canLeaveOrganization}
                   >
                     <ExitToApp fontSize="small" />
+                  </StyledIconButton>
+                </Tooltip>
+              )}
+              {canRemoveTeamMembers && (
+                <Tooltip title={tMembers("actions.removeTeamMember.title")}>
+                  <StyledIconButton
+                    color="error"
+                    onClick={(event) => {
+                      event.stopPropagation();
+
+                      handleRemoveTeamMember(row);
+                    }}
+                    size="small"
+                    visible={canRemoveTeamMember}
+                  >
+                    <GroupRemove fontSize="small" />
                   </StyledIconButton>
                 </Tooltip>
               )}
@@ -505,6 +581,15 @@ const OrganizationsSlug = ({
         sortable: false,
       },
       {
+        field: "teamId",
+        headerName: tTeams("label"),
+        valueGetter: (teamId?: string | null) => {
+          if (!teamId) return "";
+
+          return teams.find(({ id }) => id === teamId)?.name || teamId;
+        },
+      },
+      {
         field: "createdAt",
         headerName: tMembers("joinedAt"),
         valueFormatter: (value: Date | string) =>
@@ -513,15 +598,19 @@ const OrganizationsSlug = ({
     ],
     [
       canLeaveOrganizations,
+      canRemoveTeamMembers,
       canRemoveMembers,
       canUpdateMemberRoles,
       format,
       getMemberPermissions,
       handleLeaveOrganization,
       handleRemoveMember,
+      handleRemoveTeamMember,
       handleUpdateMemberRole,
+      teams,
       tMembers,
       tOrganizations,
+      tTeams,
     ],
   );
 
