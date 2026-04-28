@@ -103,7 +103,8 @@ export const proxy = async (request: NextRequest) => {
     if (!isAuthorized) {
       const oauthProvider = request.nextUrl.searchParams.get(query.oauth);
       const signInUrl = redirectToSignIn();
-      if (oauthProvider) signInUrl.searchParams.set("error", "NO_ACTIVE_ORGANIZATION");
+      if (oauthProvider)
+        signInUrl.searchParams.set("error", "NO_ACTIVE_ORGANIZATION");
 
       const redirectRes = NextResponse.redirect(signInUrl);
       redirectRes.cookies.delete(SESSION_COOKIE_NAME);
