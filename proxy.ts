@@ -9,8 +9,11 @@ import createMiddleware from "next-intl/middleware";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
+import { query } from "./constants/query";
 import { DEFAULT_AUTHENTICATED_ROUTE } from "./constants/route";
+
 import { routing } from "./i18n/routing";
+
 import { authClient } from "./lib/auth-client";
 
 const SESSION_COOKIE_NAME = "better-auth.session_token";
@@ -98,7 +101,10 @@ export const proxy = async (request: NextRequest) => {
     const isAuthorized = await isOrganizationMember(request);
 
     if (!isAuthorized) {
-      const redirectRes = NextResponse.redirect(redirectToSignIn());
+      const signInUrl = redirectToSignIn();
+      if (signInUrl.searchParams.has(query.oauth))
+        signInUrl.searchParams.set("error", "NO_ACTIVE_ORGANIZATION");
+      const redirectRes = NextResponse.redirect(signInUrl);
       redirectRes.cookies.delete(SESSION_COOKIE_NAME);
 
       return redirectRes;
