@@ -158,7 +158,7 @@ const Dashboard = ({ stats, recentOrders }: DashboardProps) => {
                       ${order.totalPrice.toLocaleString()}
                     </TableCell>
                     <TableCell>
-                      {new Date(order.createdAt).toLocaleDateString()}
+                      {new Date(order.createdAt).toLocaleDateString("zh-TW")}
                     </TableCell>
                   </TableRow>
                 ))}
