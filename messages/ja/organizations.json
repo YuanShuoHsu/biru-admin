@@ -57,7 +57,7 @@
         "title": "メンバーを削除"
       },
       "updateMemberRole": {
-        "success": "役割の更新に成功しました",
+        "success": "{email} の更新に成功しました",
         "title": "メンバーを編集"
       }
     },
@@ -91,11 +91,11 @@
       "label": "操作",
       "removeTeam": {
         "confirm": "<bold>{name}</bold> を削除しますか？",
-        "success": "チームの削除に成功しました",
+        "success": "{name} の削除に成功しました",
         "title": "チームを削除"
       },
       "updateTeam": {
-        "success": "チームの更新に成功しました",
+        "success": "{name} の更新に成功しました",
         "title": "チームを編集"
       }
     },
@@ -105,6 +105,11 @@
       "label": "チーム名",
       "placeholder": "チーム名を入力してください"
     },
-    "placeholder": "チームなし"
+    "select": {
+      "keepCurrent": "チームを変更しない",
+      "label": "チーム（任意）",
+      "none": "チームなし",
+      "placeholder": "チームを選択してください"
+    }
   }
 }

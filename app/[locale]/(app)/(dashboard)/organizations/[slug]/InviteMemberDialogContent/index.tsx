@@ -126,13 +126,13 @@ const InviteMemberDialogContent = ({
         error={!!errors.teamId}
         fullWidth
         helperText={errors.teamId?.message}
-        label={tTeams("label")}
+        label={tTeams("select.label")}
         select
         value={teamId}
         {...register("teamId")}
       >
-        <MenuItem value="">
-          <em>{tTeams("placeholder")}</em>
+        <MenuItem disabled value="">
+          <em>{tTeams("select.placeholder")}</em>
         </MenuItem>
         {teams.map(({ id, name }) => (
           <MenuItem key={id} value={id}>

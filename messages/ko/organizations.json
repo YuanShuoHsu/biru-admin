@@ -57,7 +57,7 @@
         "title": "멤버 제거"
       },
       "updateMemberRole": {
-        "success": "역할이 성공적으로 업데이트되었습니다",
+        "success": "{email} 멤버가 성공적으로 업데이트되었습니다",
         "title": "멤버 편집"
       }
     },
@@ -91,11 +91,11 @@
       "label": "작업",
       "removeTeam": {
         "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까?",
-        "success": "팀이 성공적으로 삭제되었습니다",
+        "success": "{name} 이(가) 성공적으로 삭제되었습니다",
         "title": "팀 삭제"
       },
       "updateTeam": {
-        "success": "팀이 성공적으로 업데이트되었습니다",
+        "success": "{name} 이(가) 성공적으로 업데이트되었습니다",
         "title": "팀 편집"
       }
     },
@@ -105,6 +105,11 @@
       "label": "팀 이름",
       "placeholder": "팀 이름을 입력해 주세요"
     },
-    "placeholder": "팀 없음"
+    "select": {
+      "keepCurrent": "팀 변경 안 함",
+      "label": "팀 (선택 사항)",
+      "none": "팀 없음",
+      "placeholder": "팀을 선택해 주세요"
+    }
   }
 }

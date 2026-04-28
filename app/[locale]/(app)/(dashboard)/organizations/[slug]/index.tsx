@@ -556,26 +556,26 @@ const OrganizationsSlug = ({
   );
 
   const handleRemoveTeam = useCallback(
-    (team: Team) => {
+    ({ id: teamId, name }: Team) => {
       setDialog({
         content: (
           <DialogContentText>
             {tTeams.rich("actions.removeTeam.confirm", {
               bold: (chunks) => <strong>{chunks}</strong>,
-              name: team.name,
+              name,
             })}
           </DialogContentText>
         ),
         onConfirm: async () => {
           await authClient.organization.removeTeam(
-            { organizationId: id, teamId: team.id },
+            { organizationId: id, teamId },
             {
               onError: ({ error: { code } }) => {
                 const message = getErrorMessage(code, locale);
                 enqueueSnackbar(message, { variant: "error" });
               },
               onSuccess: () => {
-                const message = tTeams("actions.removeTeam.success");
+                const message = tTeams("actions.removeTeam.success", { name });
                 enqueueSnackbar(message, { variant: "success" });
 
                 fetchFullOrganization();

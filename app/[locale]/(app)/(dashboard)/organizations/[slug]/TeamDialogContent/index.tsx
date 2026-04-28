@@ -54,7 +54,7 @@ const TeamDialogContent = ({
   const onSubmit = handleSubmit(async ({ name }) => {
     if (team) {
       await authClient.organization.updateTeam(
-        { teamId: team.id, data: { name, organizationId } },
+        { teamId: team.id, data: { name } },
         {
           headers: { "Accept-Language": locale },
           onError: ({ error: { code } }) => {
@@ -65,7 +65,7 @@ const TeamDialogContent = ({
           },
           onRequest: () => setDialog({ confirmLoading: true }),
           onSuccess: () => {
-            const message = tTeams("actions.updateTeam.success");
+            const message = tTeams("actions.updateTeam.success", { name });
             enqueueSnackbar(message, { variant: "success" });
 
             closeDialog();
@@ -104,7 +104,6 @@ const TeamDialogContent = ({
   return (
     <StyledBox component="form" id="team-form" onSubmit={onSubmit}>
       <TextField
-        autoComplete="organization-title"
         error={!!errors.name}
         fullWidth
         helperText={errors.name?.message}

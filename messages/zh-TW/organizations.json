@@ -57,7 +57,7 @@
         "title": "移除成員"
       },
       "updateMemberRole": {
-        "success": "成功更新角色",
+        "success": "成功更新成員 {email}",
         "title": "編輯成員"
       }
     },
@@ -91,11 +91,11 @@
       "label": "操作",
       "removeTeam": {
         "confirm": "確定要刪除 <bold>{name}</bold> 嗎？",
-        "success": "成功刪除團隊",
+        "success": "成功刪除團隊 {name}",
         "title": "刪除團隊"
       },
       "updateTeam": {
-        "success": "成功更新團隊",
+        "success": "成功更新團隊 {name}",
         "title": "編輯團隊"
       }
     },
@@ -105,6 +105,11 @@
       "label": "團隊名稱",
       "placeholder": "請輸入您的團隊名稱"
     },
-    "placeholder": "不指定團隊"
+    "select": {
+      "keepCurrent": "不變更團隊",
+      "label": "團隊（選填）",
+      "none": "無團隊",
+      "placeholder": "請選擇您的團隊"
+    }
   }
 }

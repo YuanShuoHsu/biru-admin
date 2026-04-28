@@ -57,7 +57,7 @@
         "title": "Remove member"
       },
       "updateMemberRole": {
-        "success": "Role updated successfully",
+        "success": "Member {email} updated successfully",
         "title": "Edit member"
       }
     },
@@ -91,11 +91,11 @@
       "label": "Actions",
       "removeTeam": {
         "confirm": "Are you sure you want to delete <bold>{name}</bold>?",
-        "success": "Team deleted successfully",
+        "success": "{name} deleted successfully",
         "title": "Delete team"
       },
       "updateTeam": {
-        "success": "Team updated successfully",
+        "success": "{name} updated successfully",
         "title": "Edit team"
       }
     },
@@ -105,6 +105,11 @@
       "label": "Team name",
       "placeholder": "Please enter your team name"
     },
-    "placeholder": "No team"
+    "select": {
+      "keepCurrent": "Do not change team",
+      "label": "Team (Optional)",
+      "none": "No team",
+      "placeholder": "Please select a team"
+    }
   }
 }
