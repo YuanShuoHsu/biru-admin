@@ -12,6 +12,7 @@ import { useCallback, useMemo, useState } from "react";
 import { flushSync } from "react-dom";
 
 import InviteMemberDialogContent from "./InviteMemberDialogContent";
+import TeamDialogContent from "./TeamDialogContent";
 import UpdateMemberRoleDialogContent from "./UpdateMemberRoleDialogContent";
 
 import CustomTabPanel from "@/components/CustomTabPanel";
@@ -23,6 +24,7 @@ import { useRouter } from "@/i18n/navigation";
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import {
+  Add,
   Delete,
   Edit,
   ExitToApp,
@@ -51,6 +53,7 @@ import type {
   ActiveOrganization,
   Invitation,
   Member,
+  Team,
 } from "@/types/organizations";
 
 import { a11yProps } from "@/utils/tab";
@@ -104,20 +107,32 @@ const OrganizationsSlug = ({
     members: initialMembers,
     name,
     slug,
+    teams: initialTeams,
   },
 }: OrganizationsSlugProps) => {
   const [value, setValue] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [members, setMembers] = useState(initialMembers);
   const [invitations, setInvitations] = useState(
     initialInvitations.filter(({ status }) => status === "pending"),
   );
+  const [members, setMembers] = useState(initialMembers);
+  const [teams, setTeams] = useState(initialTeams);
 
-  const membersApiRef = useGridApiRef();
   const invitationsApiRef = useGridApiRef();
+  const membersApiRef = useGridApiRef();
+  const teamsApiRef = useGridApiRef();
 
   const { session, setSession } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
+
+  const format = useFormatter();
+  const locale = useLocale();
+  const router = useRouter();
+
+  const tInvitations = useTranslations("organizations.invitations");
+  const tMembers = useTranslations("organizations.members");
+  const tOrganizations = useTranslations("organizations");
+  const tTeams = useTranslations("organizations.teams");
 
   const currentUserId = session?.user?.id;
   const currentUserRole = useMemo(
@@ -130,6 +145,9 @@ const OrganizationsSlug = ({
     canCreateInvitation,
     canDeleteMember,
     canUpdateMember,
+    canCreateTeam,
+    canDeleteTeam,
+    canUpdateTeam,
   } = useMemo(() => {
     if (!currentUserRole)
       return {
@@ -137,6 +155,9 @@ const OrganizationsSlug = ({
         canCreateInvitation: false,
         canDeleteMember: false,
         canUpdateMember: false,
+        canCreateTeam: false,
+        canDeleteTeam: false,
+        canUpdateTeam: false,
       };
 
     return {
@@ -155,6 +176,18 @@ const OrganizationsSlug = ({
       canUpdateMember: authClient.organization.checkRolePermission({
         role: currentUserRole,
         permissions: { member: ["update"] },
+      }),
+      canCreateTeam: authClient.organization.checkRolePermission({
+        role: currentUserRole,
+        permissions: { team: ["create"] },
+      }),
+      canDeleteTeam: authClient.organization.checkRolePermission({
+        role: currentUserRole,
+        permissions: { team: ["delete"] },
+      }),
+      canUpdateTeam: authClient.organization.checkRolePermission({
+        role: currentUserRole,
+        permissions: { team: ["update"] },
       }),
     };
   }, [currentUserRole]);
@@ -212,16 +245,6 @@ const OrganizationsSlug = ({
       };
     }, [getMemberPermissions, members]);
 
-  const format = useFormatter();
-
-  const locale = useLocale();
-
-  const router = useRouter();
-
-  const tInvitations = useTranslations("organizations.invitations");
-  const tMembers = useTranslations("organizations.members");
-  const tOrganizations = useTranslations("organizations");
-
   const fetchFullOrganization = useCallback(async () => {
     setLoading(true);
 
@@ -235,23 +258,24 @@ const OrganizationsSlug = ({
     }
 
     flushSync(() => {
-      setMembers(data.members.toReversed());
       setInvitations(
         data.invitations
           .toReversed()
           .filter(({ status }) => status === "pending"),
       );
+      setMembers(data.members.toReversed());
+      setTeams(data.teams.toReversed());
 
       setLoading(false);
     });
 
+    const gridApiRefs = [membersApiRef, teamsApiRef, invitationsApiRef];
+    const activeGridApiRef = gridApiRefs[value];
+
     setTimeout(() => {
-      (value === 0
-        ? membersApiRef
-        : invitationsApiRef
-      ).current?.autosizeColumns(autosizeOptions);
+      activeGridApiRef?.current?.autosizeColumns(autosizeOptions);
     }, 0);
-  }, [invitationsApiRef, membersApiRef, slug, value]);
+  }, [invitationsApiRef, membersApiRef, slug, teamsApiRef, value]);
 
   const handleChange = (_: React.SyntheticEvent, newValue: number) =>
     setValue(newValue);
@@ -262,6 +286,7 @@ const OrganizationsSlug = ({
         <InviteMemberDialogContent
           fetchFullOrganization={fetchFullOrganization}
           organizationId={id}
+          teams={teams}
         />
       ),
       formId: "invite-member-form",
@@ -498,6 +523,136 @@ const OrganizationsSlug = ({
     ],
   );
 
+  const handleCreateTeam = () => {
+    setDialog({
+      content: (
+        <TeamDialogContent
+          fetchFullOrganization={fetchFullOrganization}
+          organizationId={id}
+        />
+      ),
+      formId: "team-form",
+      open: true,
+      title: tTeams("actions.createTeam.title"),
+    });
+  };
+
+  const handleUpdateTeam = useCallback(
+    (team: Team) => {
+      setDialog({
+        content: (
+          <TeamDialogContent
+            fetchFullOrganization={fetchFullOrganization}
+            organizationId={id}
+            team={team}
+          />
+        ),
+        formId: "team-form",
+        open: true,
+        title: tTeams("actions.updateTeam.title"),
+      });
+    },
+    [fetchFullOrganization, id, setDialog, tTeams],
+  );
+
+  const handleRemoveTeam = useCallback(
+    (team: Team) => {
+      setDialog({
+        content: (
+          <DialogContentText>
+            {tTeams.rich("actions.removeTeam.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              name: team.name,
+            })}
+          </DialogContentText>
+        ),
+        onConfirm: async () => {
+          await authClient.organization.removeTeam(
+            { organizationId: id, teamId: team.id },
+            {
+              onError: ({ error: { code } }) => {
+                const message = getErrorMessage(code, locale);
+                enqueueSnackbar(message, { variant: "error" });
+              },
+              onSuccess: () => {
+                const message = tTeams("actions.removeTeam.success");
+                enqueueSnackbar(message, { variant: "success" });
+
+                fetchFullOrganization();
+              },
+            },
+          );
+        },
+        open: true,
+        title: tTeams("actions.removeTeam.title"),
+      });
+    },
+    [fetchFullOrganization, id, locale, setDialog, tTeams],
+  );
+
+  const teamColumns = useMemo<GridColDef[]>(
+    () => [
+      {
+        disableColumnMenu: true,
+        field: "actions",
+        headerName: tTeams("actions.label"),
+        renderCell: ({ row }: GridRenderCellParams<Team>) => (
+          <Stack height="100%" direction="row" alignItems="center" gap={0.5}>
+            {canUpdateTeam && (
+              <Tooltip title={tTeams("actions.updateTeam.title")}>
+                <IconButton
+                  onClick={(event) => {
+                    event.stopPropagation();
+
+                    handleUpdateTeam(row);
+                  }}
+                  size="small"
+                >
+                  <Edit fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            )}
+            {canDeleteTeam && (
+              <Tooltip title={tTeams("actions.removeTeam.title")}>
+                <IconButton
+                  color="error"
+                  onClick={(event) => {
+                    event.stopPropagation();
+
+                    handleRemoveTeam(row);
+                  }}
+                  size="small"
+                >
+                  <Delete fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            )}
+          </Stack>
+        ),
+        resizable: false,
+        sortable: false,
+      },
+      {
+        field: "name",
+        headerName: tTeams("name.label"),
+      },
+      {
+        field: "createdAt",
+        headerName: tTeams("createdAt"),
+        valueFormatter: (value: Date | string) =>
+          format.dateTime(new Date(value), "short"),
+      },
+    ],
+    [
+      canDeleteTeam,
+      canUpdateTeam,
+      format,
+      handleRemoveTeam,
+      handleUpdateTeam,
+      tTeams,
+    ],
+  );
+
   const handleCancelInvitation = useCallback(
     ({ id: invitationId, email }: Invitation) => {
       setDialog({
@@ -581,6 +736,15 @@ const OrganizationsSlug = ({
         sortable: false,
       },
       {
+        field: "teamId",
+        headerName: tTeams("label"),
+        valueGetter: (teamId?: string | null) => {
+          if (!teamId) return "";
+
+          return teams.find(({ id }) => id === teamId)?.name || teamId;
+        },
+      },
+      {
         field: "expiresAt",
         headerName: tInvitations("expiresAt"),
         valueFormatter: (value: Date | string) =>
@@ -591,8 +755,10 @@ const OrganizationsSlug = ({
       canCancelInvitation,
       format,
       handleCancelInvitation,
+      teams,
       tInvitations,
       tMembers,
+      tTeams,
     ],
   );
 
@@ -613,6 +779,21 @@ const OrganizationsSlug = ({
         />
       ),
       label: tMembers("label"),
+    },
+    {
+      children: (
+        <DataGrid
+          {...DATA_GRID_PROPS}
+          apiRef={teamsApiRef}
+          columns={teamColumns}
+          loading={loading}
+          onPaginationModelChange={() =>
+            teamsApiRef.current?.autosizeColumns(autosizeOptions)
+          }
+          rows={teams}
+        />
+      ),
+      label: tTeams("label"),
     },
     {
       children: (
@@ -649,6 +830,16 @@ const OrganizationsSlug = ({
             variant="contained"
           >
             {tMembers("actions.inviteMember.title")}
+          </Button>
+        )}
+        {canCreateTeam && (
+          <Button
+            onClick={handleCreateTeam}
+            size="small"
+            startIcon={<Add />}
+            variant="outlined"
+          >
+            {tTeams("actions.createTeam.title")}
           </Button>
         )}
       </Stack>

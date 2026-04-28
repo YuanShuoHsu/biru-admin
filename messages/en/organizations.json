@@ -81,5 +81,30 @@
   "slug": {
     "label": "Slug",
     "placeholder": "Please enter your slug"
+  },
+  "teams": {
+    "actions": {
+      "createTeam": {
+        "success": "Team created successfully",
+        "title": "Add team"
+      },
+      "label": "Actions",
+      "removeTeam": {
+        "confirm": "Are you sure you want to delete <bold>{name}</bold>?",
+        "success": "Team deleted successfully",
+        "title": "Delete team"
+      },
+      "updateTeam": {
+        "success": "Team updated successfully",
+        "title": "Edit team"
+      }
+    },
+    "createdAt": "Created",
+    "label": "Teams",
+    "name": {
+      "label": "Team name",
+      "placeholder": "Please enter your team name"
+    },
+    "placeholder": "No team"
   }
 }

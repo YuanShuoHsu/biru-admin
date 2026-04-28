@@ -81,5 +81,30 @@
   "slug": {
     "label": "슬러그",
     "placeholder": "귀하의 슬러그를 입력해 주세요"
+  },
+  "teams": {
+    "actions": {
+      "createTeam": {
+        "success": "팀이 성공적으로 생성되었습니다",
+        "title": "팀 추가"
+      },
+      "label": "작업",
+      "removeTeam": {
+        "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까?",
+        "success": "팀이 성공적으로 삭제되었습니다",
+        "title": "팀 삭제"
+      },
+      "updateTeam": {
+        "success": "팀이 성공적으로 업데이트되었습니다",
+        "title": "팀 편집"
+      }
+    },
+    "createdAt": "생성일",
+    "label": "팀",
+    "name": {
+      "label": "팀 이름",
+      "placeholder": "팀 이름을 입력해 주세요"
+    },
+    "placeholder": "팀 없음"
   }
 }

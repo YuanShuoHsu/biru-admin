@@ -37,7 +37,7 @@ export const authClient = createAuthClient({
       },
     }),
     multiSessionClient(),
-    organizationClient(),
+    organizationClient({ teams: { enabled: true } }),
   ],
 });
 
@@ -116,6 +116,20 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
     [LocaleEnum.Ko]: "이미 사용 중인 슬러그입니다. 다른 것을 선택해 주세요",
     [LocaleEnum.ZhCN]: "此标识符已被使用，请换一个",
   },
+  // TEAM_ALREADY_EXISTS: {
+  //   [LocaleEnum.ZhTW]: "此團隊已存在",
+  //   [LocaleEnum.En]: "Team already exists.",
+  //   [LocaleEnum.Ja]: "このチームは既に存在します",
+  //   [LocaleEnum.Ko]: "이미 존재하는 팀입니다",
+  //   [LocaleEnum.ZhCN]: "此团队已存在",
+  // },
+  // TEAM_NOT_FOUND: {
+  //   [LocaleEnum.ZhTW]: "找不到該團隊",
+  //   [LocaleEnum.En]: "Team not found.",
+  //   [LocaleEnum.Ja]: "チームが見つかりません",
+  //   [LocaleEnum.Ko]: "팀을 찾을 수 없습니다",
+  //   [LocaleEnum.ZhCN]: "找不到该团队",
+  // },
   UNAUTHORIZED: {
     [LocaleEnum.ZhTW]: "請先登入",
     [LocaleEnum.En]: "Please sign in first",
@@ -151,6 +165,29 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
     [LocaleEnum.Ko]: "이 조직을 삭제할 권한이 없습니다",
     [LocaleEnum.ZhCN]: "您没有权限删除此组织",
   },
+  // YOU_ARE_NOT_ALLOWED_TO_CREATE_TEAMS_IN_THIS_ORGANIZATION: {
+  //   [LocaleEnum.ZhTW]: "您沒有權限在此組織建立團隊",
+  //   [LocaleEnum.En]:
+  //     "You are not allowed to create teams in this organization.",
+  //   [LocaleEnum.Ja]: "この組織でチームを作成する権限がありません",
+  //   [LocaleEnum.Ko]: "이 조직에서 팀을 생성할 권한이 없습니다",
+  //   [LocaleEnum.ZhCN]: "您没有权限在此组织创建团队",
+  // },
+  // YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_TEAM: {
+  //   [LocaleEnum.ZhTW]: "您沒有權限刪除此團隊",
+  //   [LocaleEnum.En]: "You are not allowed to delete this team.",
+  //   [LocaleEnum.Ja]: "このチームを削除する権限がありません",
+  //   [LocaleEnum.Ko]: "이 팀을 삭제할 권한이 없습니다",
+  //   [LocaleEnum.ZhCN]: "您没有权限删除此团队",
+  // },
+  // YOU_ARE_NOT_ALLOWED_TO_DELETE_TEAMS_IN_THIS_ORGANIZATION: {
+  //   [LocaleEnum.ZhTW]: "您沒有權限刪除此組織的團隊",
+  //   [LocaleEnum.En]:
+  //     "You are not allowed to delete teams in this organization.",
+  //   [LocaleEnum.Ja]: "この組織のチームを削除する権限がありません",
+  //   [LocaleEnum.Ko]: "이 조직의 팀을 삭제할 권한이 없습니다",
+  //   [LocaleEnum.ZhCN]: "您没有权限删除此组织的团队",
+  // },
   YOU_ARE_NOT_ALLOWED_TO_UPDATE_THIS_MEMBER: {
     [LocaleEnum.ZhTW]: "您沒有權限更新此成員",
     [LocaleEnum.En]: "You are not allowed to update this member.",
@@ -158,6 +195,20 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
     [LocaleEnum.Ko]: "이 멤버를 업데이트할 권한이 없습니다",
     [LocaleEnum.ZhCN]: "您没有权限更新此成员",
   },
+  // YOU_ARE_NOT_ALLOWED_TO_UPDATE_THIS_TEAM: {
+  //   [LocaleEnum.ZhTW]: "您沒有權限更新此團隊",
+  //   [LocaleEnum.En]: "You are not allowed to update this team.",
+  //   [LocaleEnum.Ja]: "このチームを更新する権限がありません",
+  //   [LocaleEnum.Ko]: "이 팀을 업데이트할 권한이 없습니다",
+  //   [LocaleEnum.ZhCN]: "您没有权限更新此团队",
+  // },
+  // YOU_HAVE_REACHED_THE_MAXIMUM_NUMBER_OF_TEAMS: {
+  //   [LocaleEnum.ZhTW]: "已達可建立團隊數量上限",
+  //   [LocaleEnum.En]: "You have reached the maximum number of teams.",
+  //   [LocaleEnum.Ja]: "作成できるチーム数の上限に達しました",
+  //   [LocaleEnum.Ko]: "생성 가능한 팀 수 한도에 도달했습니다",
+  //   [LocaleEnum.ZhCN]: "已达到可创建团队数量上限",
+  // },
   YOU_ARE_NOT_ALLOWED_TO_UPDATE_THIS_ORGANIZATION: {
     [LocaleEnum.ZhTW]: "您沒有權限更新此組織",
     [LocaleEnum.En]: "You are not allowed to update this organization.",

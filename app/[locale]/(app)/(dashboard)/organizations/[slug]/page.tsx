@@ -35,6 +35,7 @@ const OrganizationsSlugPage = async ({
         ...data,
         invitations: data.invitations.toReversed(),
         members: data.members.toReversed(),
+        teams: data.teams.toReversed(),
       }}
     />
   );

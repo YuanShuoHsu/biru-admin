@@ -11,6 +11,7 @@ export const useInviteMemberFormSchema = () => {
     role: z
       .string()
       .pipe(z.enum(roles, { error: tValidation("role.required") })),
+    teamId: z.string().trim().optional(),
   });
 };
 

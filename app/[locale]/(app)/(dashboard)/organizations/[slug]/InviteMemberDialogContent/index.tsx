@@ -22,6 +22,8 @@ import { Box, type BoxProps, MenuItem, TextField, styled } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
+import type { Team } from "@/types/organizations";
+
 const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
@@ -32,17 +34,20 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 interface InviteMemberDialogContentProps {
   fetchFullOrganization: () => void;
   organizationId: string;
+  teams: Team[];
 }
 
 const InviteMemberDialogContent = ({
   fetchFullOrganization,
   organizationId,
+  teams,
 }: InviteMemberDialogContentProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const locale = useLocale();
 
   const tMembers = useTranslations("organizations.members");
+  const tTeams = useTranslations("organizations.teams");
 
   const inviteMemberFormSchema = useInviteMemberFormSchema();
 
@@ -52,16 +57,17 @@ const InviteMemberDialogContent = ({
     handleSubmit,
     register,
   } = useForm<InviteMemberFormInput, unknown, InviteMemberFormOutput>({
-    defaultValues: { email: "", role: "" },
+    defaultValues: { email: "", role: "", teamId: "" },
     resolver: zodResolver(inviteMemberFormSchema),
   });
 
   const role = useWatch({ control, name: "role" });
+  const teamId = useWatch({ control, name: "teamId" });
 
   const onSubmit = handleSubmit(
-    async ({ email, role }: InviteMemberFormOutput) => {
+    async ({ email, role, teamId }: InviteMemberFormOutput) => {
       await authClient.organization.inviteMember(
-        { email, organizationId, role },
+        { email, organizationId, role, teamId: teamId || undefined },
         {
           headers: { "Accept-Language": locale },
           onError: ({ error: { code } }) => {
@@ -113,6 +119,24 @@ const InviteMemberDialogContent = ({
         {roles.map((role) => (
           <MenuItem key={role} value={role}>
             {tMembers(`role.${role}`)}
+          </MenuItem>
+        ))}
+      </TextField>
+      <TextField
+        error={!!errors.teamId}
+        fullWidth
+        helperText={errors.teamId?.message}
+        label={tTeams("label")}
+        select
+        value={teamId}
+        {...register("teamId")}
+      >
+        <MenuItem value="">
+          <em>{tTeams("placeholder")}</em>
+        </MenuItem>
+        {teams.map(({ id, name }) => (
+          <MenuItem key={id} value={id}>
+            {name}
           </MenuItem>
         ))}
       </TextField>
