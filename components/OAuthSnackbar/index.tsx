@@ -3,13 +3,15 @@
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import { query } from "@/constants/query";
 
 import { getErrorMessage } from "@/lib/auth-client";
 
 const OAuthSnackbar = () => {
+  const handled = useRef(false);
+
   const locale = useLocale();
 
   const pathname = usePathname();
@@ -17,14 +19,14 @@ const OAuthSnackbar = () => {
   const router = useRouter();
 
   const searchParams = useSearchParams();
+  const provider = searchParams.get(query.oauth);
+  const error = searchParams.get("error");
 
   const tAuth = useTranslations("auth");
 
   useEffect(() => {
-    const provider = searchParams.get(query.oauth);
-    if (!provider) return;
-
-    const error = searchParams.get("error");
+    if (!provider || handled.current) return;
+    handled.current = true;
 
     const newParams = new URLSearchParams(searchParams);
     newParams.delete(query.oauth);
@@ -37,7 +39,7 @@ const OAuthSnackbar = () => {
       enqueueSnackbar(message, { variant: "error" });
     } else if (provider === "google")
       enqueueSnackbar(tAuth("google.success"), { variant: "success" });
-  }, [locale, pathname, router, searchParams, tAuth]);
+  }, [error, locale, pathname, provider, router, searchParams, tAuth]);
 
   return null;
 };
