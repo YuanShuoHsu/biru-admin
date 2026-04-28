@@ -26,7 +26,7 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
   const fetchOptions = {
     headers: {
       cookie: cookieStore.toString(),
-      origin: process.env.NEXT_PUBLIC_NEXT_URL!,
+      origin: process.env.NEXT_PUBLIC_ADMIN_URL!,
     },
   };
 

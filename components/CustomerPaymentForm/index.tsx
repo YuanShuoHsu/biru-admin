@@ -96,7 +96,7 @@ const CustomerPaymentForm = () => {
       return;
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_NEXT_URL;
+    const baseUrl = process.env.NEXT_PUBLIC_ADMIN_URL;
     const completeUrl = `${baseUrl}/${locale}${completePath}`;
 
     const dto = {

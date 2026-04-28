@@ -23,7 +23,7 @@ const UserSessionsPage = async ({ params }: UserSessionsPageProps) => {
   const fetchOptions = {
     headers: {
       cookie: cookieStore.toString(),
-      origin: process.env.NEXT_PUBLIC_NEXT_URL!,
+      origin: process.env.NEXT_PUBLIC_ADMIN_URL!,
     },
   };
 

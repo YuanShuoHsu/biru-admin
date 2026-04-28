@@ -142,7 +142,7 @@ const ChangePassword = () => {
     await authClient.requestPasswordReset(
       {
         email: session.user.email,
-        redirectTo: `${process.env.NEXT_PUBLIC_NEXT_URL}/${locale}/auth/reset-password`,
+        redirectTo: `${process.env.NEXT_PUBLIC_ADMIN_URL}/${locale}/auth/reset-password`,
       },
       {
         headers: { "Accept-Language": locale },

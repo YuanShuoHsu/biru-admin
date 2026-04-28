@@ -40,7 +40,7 @@ const GoogleButton = ({ action, redirectTo }: GoogleButtonProps) => {
   const label = tAuth(`google.${action}`);
 
   const callbackURL =
-    process.env.NEXT_PUBLIC_NEXT_URL +
+    process.env.NEXT_PUBLIC_ADMIN_URL +
     getHref(redirectTo || "/", { [query.oauth]: "google" });
 
   const handleClick = async () => {

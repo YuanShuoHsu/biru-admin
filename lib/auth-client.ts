@@ -11,7 +11,7 @@ import { LocaleEnum } from "@/enums/Locale";
 import { type Locale, routing } from "@/i18n/routing";
 
 export const authClient = createAuthClient({
-  baseURL: process.env.NEXT_PUBLIC_NEXT_URL,
+  baseURL: process.env.NEXT_PUBLIC_ADMIN_URL,
   plugins: [
     adminClient(),
     inferAdditionalFields({

@@ -38,7 +38,7 @@ const ProviderRow = ({ id, Icon, label }: Provider) => {
   const handleLinkConfirm = async () => {
     await authClient.linkSocial({
       provider: id,
-      callbackURL: `${process.env.NEXT_PUBLIC_NEXT_URL}/${locale}/auth/settings/security`,
+      callbackURL: `${process.env.NEXT_PUBLIC_ADMIN_URL}/${locale}/auth/settings/security`,
       fetchOptions: {
         onRequest: () => setLoading(true),
         onError: ({ error: { code } }) => {

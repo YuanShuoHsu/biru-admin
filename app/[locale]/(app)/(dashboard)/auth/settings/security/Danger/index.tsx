@@ -31,7 +31,7 @@ const Danger = () => {
 
   const handleDeleteConfirm = async () => {
     await authClient.deleteUser({
-      callbackURL: `${process.env.NEXT_PUBLIC_NEXT_URL}/${locale}/auth/sign-in`,
+      callbackURL: `${process.env.NEXT_PUBLIC_ADMIN_URL}/${locale}/auth/sign-in`,
       fetchOptions: {
         headers: { "Accept-Language": locale },
         onRequest: () => setLoading(true),
