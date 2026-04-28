@@ -50,6 +50,9 @@
     "invalid": "Phone number is not valid.",
     "required": "Phone is required."
   },
+  "member": {
+    "required": "Member is required."
+  },
   "role": {
     "required": "Role is required."
   },

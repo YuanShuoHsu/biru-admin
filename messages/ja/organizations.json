@@ -72,6 +72,11 @@
       "member": "メンバー",
       "owner": "オーナー",
       "placeholder": "あなたの役割を選択してください"
+    },
+    "userId": {
+      "label": "メンバー",
+      "option": "{name} ({email})",
+      "placeholder": "あなたのメンバーを選択してください"
     }
   },
   "name": {
@@ -84,6 +89,10 @@
   },
   "teams": {
     "actions": {
+      "addTeamMember": {
+        "success": "{email} をチームに追加しました",
+        "title": "チームにメンバーを追加"
+      },
       "createTeam": {
         "success": "チームの作成に成功しました",
         "title": "チームを追加"
@@ -105,10 +114,8 @@
       "label": "チーム名",
       "placeholder": "チーム名を入力してください"
     },
-    "select": {
-      "keepCurrent": "チームを変更しない",
+    "teamId": {
       "label": "チーム（任意）",
-      "none": "チームなし",
       "placeholder": "チームを選択してください"
     }
   }

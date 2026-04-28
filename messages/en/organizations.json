@@ -72,6 +72,11 @@
       "member": "Member",
       "owner": "Owner",
       "placeholder": "Please select your role"
+    },
+    "userId": {
+      "label": "Member",
+      "option": "{name} ({email})",
+      "placeholder": "Please select your member"
     }
   },
   "name": {
@@ -84,6 +89,10 @@
   },
   "teams": {
     "actions": {
+      "addTeamMember": {
+        "success": "{email} added to team successfully",
+        "title": "Add member to team"
+      },
       "createTeam": {
         "success": "Team created successfully",
         "title": "Add team"
@@ -105,10 +114,8 @@
       "label": "Team name",
       "placeholder": "Please enter your team name"
     },
-    "select": {
-      "keepCurrent": "Do not change team",
+    "teamId": {
       "label": "Team (Optional)",
-      "none": "No team",
       "placeholder": "Please select a team"
     }
   }

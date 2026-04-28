@@ -72,6 +72,11 @@
       "member": "멤버",
       "owner": "소유자",
       "placeholder": "귀하의 역할을 선택해 주세요"
+    },
+    "userId": {
+      "label": "멤버",
+      "option": "{name} ({email})",
+      "placeholder": "귀하의 멤버를 선택해 주세요"
     }
   },
   "name": {
@@ -84,6 +89,10 @@
   },
   "teams": {
     "actions": {
+      "addTeamMember": {
+        "success": "{email}이(가) 팀에 성공적으로 추가되었습니다",
+        "title": "팀에 멤버 추가"
+      },
       "createTeam": {
         "success": "팀이 성공적으로 생성되었습니다",
         "title": "팀 추가"
@@ -105,10 +114,8 @@
       "label": "팀 이름",
       "placeholder": "팀 이름을 입력해 주세요"
     },
-    "select": {
-      "keepCurrent": "팀 변경 안 함",
+    "teamId": {
       "label": "팀 (선택 사항)",
-      "none": "팀 없음",
       "placeholder": "팀을 선택해 주세요"
     }
   }

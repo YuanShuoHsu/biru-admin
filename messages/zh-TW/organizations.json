@@ -72,6 +72,11 @@
       "member": "成員",
       "owner": "擁有者",
       "placeholder": "請選擇您的角色"
+    },
+    "userId": {
+      "label": "成員",
+      "option": "{name} ({email})",
+      "placeholder": "請選擇您的成員"
     }
   },
   "name": {
@@ -84,6 +89,10 @@
   },
   "teams": {
     "actions": {
+      "addTeamMember": {
+        "success": "成功將 {email} 新增至團隊",
+        "title": "新增成員至團隊"
+      },
       "createTeam": {
         "success": "成功新增團隊",
         "title": "新增團隊"
@@ -105,10 +114,8 @@
       "label": "團隊名稱",
       "placeholder": "請輸入您的團隊名稱"
     },
-    "select": {
-      "keepCurrent": "不變更團隊",
+    "teamId": {
       "label": "團隊（選填）",
-      "none": "無團隊",
       "placeholder": "請選擇您的團隊"
     }
   }

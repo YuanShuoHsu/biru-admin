@@ -11,6 +11,7 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import { flushSync } from "react-dom";
 
+import AddTeamMemberDialogContent from "./AddTeamMemberDialogContent";
 import InviteMemberDialogContent from "./InviteMemberDialogContent";
 import TeamDialogContent from "./TeamDialogContent";
 import UpdateMemberRoleDialogContent from "./UpdateMemberRoleDialogContent";
@@ -29,6 +30,7 @@ import {
   Edit,
   ExitToApp,
   GroupAdd,
+  PersonAdd,
   PersonRemove,
 } from "@mui/icons-material";
 import {
@@ -537,6 +539,24 @@ const OrganizationsSlug = ({
     });
   };
 
+  const handleAddTeamMember = useCallback(
+    ({ id: teamId }: Team) => {
+      setDialog({
+        content: (
+          <AddTeamMemberDialogContent
+            fetchFullOrganization={fetchFullOrganization}
+            members={members}
+            teamId={teamId}
+          />
+        ),
+        formId: "add-team-member-form",
+        open: true,
+        title: tTeams("actions.addTeamMember.title"),
+      });
+    },
+    [fetchFullOrganization, members, setDialog, tTeams],
+  );
+
   const handleUpdateTeam = useCallback(
     (team: Team) => {
       setDialog({
@@ -599,6 +619,20 @@ const OrganizationsSlug = ({
         renderCell: ({ row }: GridRenderCellParams<Team>) => (
           <Stack height="100%" direction="row" alignItems="center" gap={0.5}>
             {canUpdateTeam && (
+              <Tooltip title={tTeams("actions.addTeamMember.title")}>
+                <IconButton
+                  onClick={(event) => {
+                    event.stopPropagation();
+
+                    handleAddTeamMember(row);
+                  }}
+                  size="small"
+                >
+                  <PersonAdd fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            )}
+            {canUpdateTeam && (
               <Tooltip title={tTeams("actions.updateTeam.title")}>
                 <IconButton
                   onClick={(event) => {
@@ -647,6 +681,7 @@ const OrganizationsSlug = ({
       canDeleteTeam,
       canUpdateTeam,
       format,
+      handleAddTeamMember,
       handleRemoveTeam,
       handleUpdateTeam,
       tTeams,

@@ -50,6 +50,9 @@
     "invalid": "電話號碼無效。",
     "required": "電話號碼為必填。"
   },
+  "member": {
+    "required": "成員為必填。"
+  },
   "role": {
     "required": "角色為必填。"
   },
