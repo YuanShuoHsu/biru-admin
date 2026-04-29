@@ -1,3 +1,5 @@
+// https://mui.com/material-ui/react-avatar/#BackgroundLetterAvatars.tsx
+
 const stringToColor = (string: string) => {
   let hash = 0;
   let i;
@@ -16,13 +18,13 @@ const stringToColor = (string: string) => {
   return color;
 };
 
-export const stringAvatar = (name: string) => {
+export const stringAvatar = (name: string, colorSeed = name) => {
   const parts = name.split(" ");
 
   return {
     children: parts.length > 1 ? `${parts[0][0]}${parts[1][0]}` : name[0],
     sx: {
-      bgcolor: stringToColor(name),
+      bgcolor: stringToColor(colorSeed),
     },
   };
 };

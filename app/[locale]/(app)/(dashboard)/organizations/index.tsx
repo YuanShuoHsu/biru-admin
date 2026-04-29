@@ -276,7 +276,7 @@ const Organizations = ({
             <StyledAvatar
               alt={name}
               src={logo || undefined}
-              {...stringAvatar(slug)}
+              {...stringAvatar(name, slug)}
             />
           </Stack>
         ),
