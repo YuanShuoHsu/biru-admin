@@ -1,5 +1,6 @@
 "use client";
 
+import type { TeamMember } from "better-auth/plugins";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
@@ -7,6 +8,8 @@ import { useCallback, useMemo, useState } from "react";
 import { flushSync } from "react-dom";
 
 import AddTeamMemberDialog from "./AddTeamMemberDialog";
+import type { TeamMemberRow } from "./utils";
+import { toTeamMemberRow } from "./utils";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { authClient, getErrorMessage } from "@/lib/auth-client";
@@ -35,23 +38,6 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
-type TeamMemberRecord = {
-  id: string;
-  teamId: string;
-  userId: string;
-  createdAt: Date;
-};
-
-type TeamMemberRow = {
-  id: string;
-  userId: string;
-  name: string;
-  email: string;
-  avatar: string | null;
-  role: string;
-  createdAt: Date;
-};
-
 const ROLE_COLOR_MAP: Record<string, "error" | "warning" | "default"> = {
   owner: "error",
   admin: "warning",
@@ -76,7 +62,7 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
 interface OrganizationsSlugTeamsTeamIdProps {
   activeOrganization: ActiveOrganization;
   team: Team;
-  teamMembers: TeamMemberRecord[];
+  teamMembers: TeamMemberRow[];
 }
 
 const OrganizationsSlugTeamsTeamId = ({
@@ -126,7 +112,11 @@ const OrganizationsSlugTeamsTeamId = ({
         onRequest: () => setLoading(true),
         onSuccess: ({ data }) => {
           flushSync(() => {
-            setTeamMembers(data.toReversed());
+            setTeamMembers(
+              data
+                .toReversed()
+                .map((record: TeamMember) => toTeamMemberRow(record, members)),
+            );
 
             setLoading(false);
           });
@@ -137,25 +127,7 @@ const OrganizationsSlugTeamsTeamId = ({
         },
       },
     );
-  }, [apiRef, locale, team.id]);
-
-  const rows = useMemo<TeamMemberRow[]>(
-    () =>
-      teamMembers.map(({ id, userId, createdAt }) => {
-        const member = members.find((m) => m.userId === userId);
-
-        return {
-          id,
-          userId,
-          name: member?.user.name ?? "",
-          email: member?.user.email ?? "",
-          avatar: member?.user.image ?? null,
-          role: member?.role ?? "",
-          createdAt,
-        };
-      }),
-    [members, teamMembers],
-  );
+  }, [apiRef, locale, members, team.id]);
 
   const handleAddTeamMember = () => {
     setDialog({
@@ -307,7 +279,7 @@ const OrganizationsSlugTeamsTeamId = ({
         onPaginationModelChange={() =>
           apiRef.current?.autosizeColumns(autosizeOptions)
         }
-        rows={rows}
+        rows={teamMembers}
       />
     </>
   );

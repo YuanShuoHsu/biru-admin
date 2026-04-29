@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
 import OrganizationsSlugTeamsTeamId from ".";
+import { toTeamMemberRow } from "./utils";
 
 import type { Locale } from "@/i18n/routing";
 import { authClient } from "@/lib/auth-client";
@@ -39,11 +40,16 @@ const OrganizationsSlugTeamsTeamIdPage = async ({
   const team = activeOrganization.teams.find(({ id }) => id === teamId);
   if (!team) notFound();
 
+  const { members } = activeOrganization;
+  const teamMembersRows = (teamMembers || [])
+    .toReversed()
+    .map((record) => toTeamMemberRow(record, members));
+
   return (
     <OrganizationsSlugTeamsTeamId
       activeOrganization={activeOrganization}
       team={team}
-      teamMembers={teamMembers?.toReversed() || []}
+      teamMembers={teamMembersRows}
     />
   );
 };
