@@ -28,7 +28,7 @@
     "actions": {
       "cancelInvitation": {
         "confirm": "Are you sure you want to cancel the invitation for <bold>{email}</bold>?",
-        "success": "Invitation canceled successfully",
+        "success": "Invitation to {email} canceled successfully",
         "title": "Cancel invitation"
       },
       "label": "Actions"

@@ -28,7 +28,7 @@
     "actions": {
       "cancelInvitation": {
         "confirm": "確定要取消對 <bold>{email}</bold> 的邀請嗎？",
-        "success": "成功取消邀請",
+        "success": "成功取消對 {email} 的邀請",
         "title": "取消邀請"
       },
       "label": "操作"

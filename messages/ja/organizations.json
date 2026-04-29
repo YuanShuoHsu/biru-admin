@@ -28,7 +28,7 @@
     "actions": {
       "cancelInvitation": {
         "confirm": "<bold>{email}</bold> への招待をキャンセルしますか？",
-        "success": "招待のキャンセルに成功しました",
+        "success": "{email} への招待のキャンセルに成功しました",
         "title": "招待をキャンセル"
       },
       "label": "操作"

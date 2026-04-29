@@ -28,7 +28,7 @@
     "actions": {
       "cancelInvitation": {
         "confirm": "<bold>{email}</bold>에 대한 초대를 취소하시겠습니까?",
-        "success": "초대가 성공적으로 취소되었습니다",
+        "success": "{email} 초대가 성공적으로 취소되었습니다",
         "title": "초대 취소"
       },
       "label": "작업"

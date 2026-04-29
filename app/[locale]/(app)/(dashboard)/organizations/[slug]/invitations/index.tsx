@@ -137,7 +137,7 @@ const OrganizationsSlugInvitations = ({
               },
               onSuccess: () => {
                 enqueueSnackbar(
-                  tInvitations("actions.cancelInvitation.success"),
+                  tInvitations("actions.cancelInvitation.success", { email }),
                   { variant: "success" },
                 );
 
