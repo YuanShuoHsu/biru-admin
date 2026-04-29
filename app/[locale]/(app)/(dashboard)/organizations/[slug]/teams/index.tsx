@@ -278,8 +278,8 @@ const OrganizationsSlugTeams = ({
 
   return (
     <>
-      {canCreateTeam && (
-        <Stack direction="row">
+      <Stack direction="row">
+        {canCreateTeam && (
           <Button
             onClick={handleCreateTeam}
             size="small"
@@ -288,8 +288,8 @@ const OrganizationsSlugTeams = ({
           >
             {tTeams("actions.createTeam.title")}
           </Button>
-        </Stack>
-      )}
+        )}
+      </Stack>
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}

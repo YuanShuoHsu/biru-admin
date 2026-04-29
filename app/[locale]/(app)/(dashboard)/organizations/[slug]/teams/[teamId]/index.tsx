@@ -1,6 +1,6 @@
 "use client";
 
-import { useLocale, useFormatter, useTranslations } from "next-intl";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
@@ -9,10 +9,9 @@ import { flushSync } from "react-dom";
 import AddTeamMemberDialog from "./AddTeamMemberDialog";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
-import { Link } from "@/i18n/navigation";
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { ArrowBack, PersonAdd, PersonRemove } from "@mui/icons-material";
+import { PersonAdd, PersonRemove } from "@mui/icons-material";
 import {
   Avatar,
   Button,
@@ -22,7 +21,6 @@ import {
   Stack,
   styled,
   Tooltip,
-  Typography,
 } from "@mui/material";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
@@ -288,31 +286,17 @@ const OrganizationsSlugTeamsTeamId = ({
   }, [canUpdateTeam, format, handleRemoveTeamMember, tMembers, tTeams]);
 
   return (
-    <Stack gap={2}>
-      <Stack gap={1}>
-        <Stack direction="row" alignItems="center" gap={1}>
-          <Tooltip title={tTeams("label")}>
-            <IconButton
-              component={Link}
-              href={`/organizations/${orgSlug}`}
-              size="small"
-            >
-              <ArrowBack fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          <Typography variant="h6">{team.name}</Typography>
-        </Stack>
+    <>
+      <Stack direction="row">
         {canUpdateTeam && (
-          <Stack direction="row">
-            <Button
-              onClick={handleAddTeamMember}
-              size="small"
-              startIcon={<PersonAdd />}
-              variant="contained"
-            >
-              {tTeams("actions.addTeamMember.title")}
-            </Button>
-          </Stack>
+          <Button
+            onClick={handleAddTeamMember}
+            size="small"
+            startIcon={<PersonAdd />}
+            variant="contained"
+          >
+            {tTeams("actions.addTeamMember.title")}
+          </Button>
         )}
       </Stack>
       <DataGrid
@@ -325,7 +309,7 @@ const OrganizationsSlugTeamsTeamId = ({
         }
         rows={rows}
       />
-    </Stack>
+    </>
   );
 };
 

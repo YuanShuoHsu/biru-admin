@@ -34,19 +34,16 @@ const OrganizationsSlugTeamsTeamIdPage = async ({
         fetchOptions: { headers: cookieHeader },
       }),
     ]);
-
   if (!activeOrganization) notFound();
 
   const team = activeOrganization.teams.find(({ id }) => id === teamId);
   if (!team) notFound();
 
-  const teamMemberRows = teamMembers?.toReversed() || [];
-
   return (
     <OrganizationsSlugTeamsTeamId
       activeOrganization={activeOrganization}
       team={team}
-      teamMembers={teamMemberRows}
+      teamMembers={teamMembers?.toReversed() || []}
     />
   );
 };
