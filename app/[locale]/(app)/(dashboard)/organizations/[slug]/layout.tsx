@@ -24,7 +24,10 @@ const OrganizationsSlugLayout = ({
   const tabs = [
     { label: tMembers("label"), value: `/organizations/${slug}/members` },
     { label: tTeams("label"), value: `/organizations/${slug}/teams` },
-    { label: tInvitations("label"), value: `/organizations/${slug}/invitations` },
+    {
+      label: tInvitations("label"),
+      value: `/organizations/${slug}/invitations`,
+    },
   ];
 
   const currentTab =

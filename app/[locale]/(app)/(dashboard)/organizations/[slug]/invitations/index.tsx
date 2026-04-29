@@ -100,7 +100,9 @@ const InvitationsContent = ({
             { invitationId },
             {
               onError: ({ error: { code } }) => {
-                enqueueSnackbar(getErrorMessage(code, locale), { variant: "error" });
+                enqueueSnackbar(getErrorMessage(code, locale), {
+                  variant: "error",
+                });
               },
               onSuccess: () => {
                 enqueueSnackbar(

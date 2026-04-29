@@ -62,7 +62,11 @@ const TeamsContent = ({ id, members, slug, teams }: TeamsContentProps) => {
 
   const { canCreateTeam, canUpdateTeam, canDeleteTeam } = useMemo(() => {
     if (!currentUserRole)
-      return { canCreateTeam: false, canUpdateTeam: false, canDeleteTeam: false };
+      return {
+        canCreateTeam: false,
+        canUpdateTeam: false,
+        canDeleteTeam: false,
+      };
 
     return {
       canCreateTeam: authClient.organization.checkRolePermission({
@@ -83,7 +87,10 @@ const TeamsContent = ({ id, members, slug, teams }: TeamsContentProps) => {
   const refresh = useCallback(() => {
     startTransition(() => {
       router.refresh();
-      setTimeout(() => teamsApiRef.current?.autosizeColumns(autosizeOptions), 0);
+      setTimeout(
+        () => teamsApiRef.current?.autosizeColumns(autosizeOptions),
+        0,
+      );
     });
   }, [router, teamsApiRef]);
 
@@ -142,12 +149,17 @@ const TeamsContent = ({ id, members, slug, teams }: TeamsContentProps) => {
             { organizationId: id, teamId },
             {
               onError: ({ error: { code } }) => {
-                enqueueSnackbar(getErrorMessage(code, locale), { variant: "error" });
+                enqueueSnackbar(getErrorMessage(code, locale), {
+                  variant: "error",
+                });
               },
               onSuccess: () => {
-                enqueueSnackbar(tTeams("actions.removeTeam.success", { name }), {
-                  variant: "success",
-                });
+                enqueueSnackbar(
+                  tTeams("actions.removeTeam.success", { name }),
+                  {
+                    variant: "success",
+                  },
+                );
                 refresh();
               },
             },

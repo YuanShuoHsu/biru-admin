@@ -14,12 +14,7 @@ import { useRouter } from "@/i18n/navigation";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import {
-  Edit,
-  ExitToApp,
-  GroupAdd,
-  PersonRemove,
-} from "@mui/icons-material";
+import { Edit, ExitToApp, GroupAdd, PersonRemove } from "@mui/icons-material";
 import {
   Avatar,
   Button,
@@ -157,7 +152,13 @@ const MembersContent = ({ id, members, slug, teams }: MembersContentProps) => {
         canLeaveOrganization: isCurrentUser && !isOnlyOwner,
       };
     },
-    [canDeleteMember, canUpdateMember, currentUserId, currentUserRole, ownerCount],
+    [
+      canDeleteMember,
+      canUpdateMember,
+      currentUserId,
+      currentUserRole,
+      ownerCount,
+    ],
   );
 
   const { canUpdateMemberRoles, canRemoveMembers, canLeaveOrganizations } =
@@ -184,7 +185,10 @@ const MembersContent = ({ id, members, slug, teams }: MembersContentProps) => {
   const refresh = useCallback(() => {
     startTransition(() => {
       router.refresh();
-      setTimeout(() => membersApiRef.current?.autosizeColumns(autosizeOptions), 0);
+      setTimeout(
+        () => membersApiRef.current?.autosizeColumns(autosizeOptions),
+        0,
+      );
     });
   }, [membersApiRef, router]);
 
@@ -237,10 +241,14 @@ const MembersContent = ({ id, members, slug, teams }: MembersContentProps) => {
             { organizationId: id, memberIdOrEmail: memberId },
             {
               onError: ({ error: { code } }) => {
-                enqueueSnackbar(getErrorMessage(code, locale), { variant: "error" });
+                enqueueSnackbar(getErrorMessage(code, locale), {
+                  variant: "error",
+                });
               },
               onSuccess: () => {
-                enqueueSnackbar(tMembers("actions.removeMember.success"), { variant: "success" });
+                enqueueSnackbar(tMembers("actions.removeMember.success"), {
+                  variant: "success",
+                });
                 refresh();
               },
             },
@@ -268,7 +276,9 @@ const MembersContent = ({ id, members, slug, teams }: MembersContentProps) => {
           { organizationId: id },
           {
             onError: ({ error: { code } }) => {
-              enqueueSnackbar(getErrorMessage(code, locale), { variant: "error" });
+              enqueueSnackbar(getErrorMessage(code, locale), {
+                variant: "error",
+              });
             },
             onSuccess: async () => {
               enqueueSnackbar(
@@ -278,9 +288,12 @@ const MembersContent = ({ id, members, slug, teams }: MembersContentProps) => {
 
               const { data } = await authClient.organization.list();
               if (!data?.length) {
-                enqueueSnackbar(getErrorMessage("NO_ACTIVE_ORGANIZATION", locale), {
-                  variant: "error",
-                });
+                enqueueSnackbar(
+                  getErrorMessage("NO_ACTIVE_ORGANIZATION", locale),
+                  {
+                    variant: "error",
+                  },
+                );
                 await authClient.signOut();
                 setSession(null);
                 router.replace("/");
@@ -340,7 +353,9 @@ const MembersContent = ({ id, members, slug, teams }: MembersContentProps) => {
                 </Tooltip>
               )}
               {canLeaveOrganizations && (
-                <Tooltip title={tOrganizations("actions.leaveOrganization.title")}>
+                <Tooltip
+                  title={tOrganizations("actions.leaveOrganization.title")}
+                >
                   <StyledIconButton
                     color="error"
                     onClick={(event) => {
