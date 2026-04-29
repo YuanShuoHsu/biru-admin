@@ -31,8 +31,8 @@ const OrganizationsSlugMembersPage = async ({
 
   return (
     <OrganizationsSlugMembers
-      id={data.id}
       members={data.members.toReversed()}
+      organizationId={data.id}
       teams={data.teams.toReversed()}
     />
   );

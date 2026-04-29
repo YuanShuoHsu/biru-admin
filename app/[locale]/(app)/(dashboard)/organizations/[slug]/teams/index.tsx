@@ -37,14 +37,14 @@ const DataGrid = dynamic(
 );
 
 interface OrganizationsSlugTeamsProps {
-  id: string;
   members: Member[];
+  organizationId: string;
   teams: Team[];
 }
 
 const OrganizationsSlugTeams = ({
-  id,
   members: initialMembers,
+  organizationId,
   teams: initialTeams,
 }: OrganizationsSlugTeamsProps) => {
   const [loading, setLoading] = useState(false);
@@ -128,7 +128,7 @@ const OrganizationsSlugTeams = ({
       content: (
         <UpdateTeamDialog
           fetchFullOrganization={fetchFullOrganization}
-          organizationId={id}
+          organizationId={organizationId}
         />
       ),
       formId: "team-form",
@@ -150,7 +150,7 @@ const OrganizationsSlugTeams = ({
         content: (
           <UpdateTeamDialog
             fetchFullOrganization={fetchFullOrganization}
-            organizationId={id}
+            organizationId={organizationId}
             team={team}
           />
         ),
@@ -159,7 +159,7 @@ const OrganizationsSlugTeams = ({
         title: tTeams("actions.updateTeam.title"),
       });
     },
-    [fetchFullOrganization, id, setDialog, tTeams],
+    [fetchFullOrganization, organizationId, setDialog, tTeams],
   );
 
   const handleRemoveTeam = useCallback(
@@ -175,7 +175,7 @@ const OrganizationsSlugTeams = ({
         ),
         onConfirm: async () => {
           await authClient.organization.removeTeam(
-            { organizationId: id, teamId },
+            { organizationId, teamId },
             {
               onError: ({ error: { code } }) => {
                 enqueueSnackbar(getErrorMessage(code, locale), {
@@ -198,7 +198,7 @@ const OrganizationsSlugTeams = ({
         title: tTeams("actions.removeTeam.title"),
       });
     },
-    [fetchFullOrganization, id, locale, setDialog, tTeams],
+    [fetchFullOrganization, locale, organizationId, setDialog, tTeams],
   );
 
   const teamColumns = useMemo<GridColDef[]>(

@@ -74,14 +74,14 @@ const ROLE_RANK: Record<string, number> = {
 };
 
 interface OrganizationsSlugMembersProps {
-  id: string;
   members: Member[];
+  organizationId: string;
   teams: Team[];
 }
 
 const OrganizationsSlugMembers = ({
-  id,
   members: initialMembers,
+  organizationId,
   teams: initialTeams,
 }: OrganizationsSlugMembersProps) => {
   const [loading, setLoading] = useState(false);
@@ -226,7 +226,7 @@ const OrganizationsSlugMembers = ({
       content: (
         <InviteMemberDialog
           fetchFullOrganization={fetchFullOrganization}
-          organizationId={id}
+          organizationId={organizationId}
           teams={teams}
         />
       ),
@@ -243,7 +243,7 @@ const OrganizationsSlugMembers = ({
           <UpdateMemberRoleDialog
             fetchFullOrganization={fetchFullOrganization}
             member={member}
-            organizationId={id}
+            organizationId={organizationId}
           />
         ),
         formId: "update-member-role-form",
@@ -251,7 +251,7 @@ const OrganizationsSlugMembers = ({
         title: tMembers("actions.updateMemberRole.title"),
       });
     },
-    [fetchFullOrganization, id, setDialog, tMembers],
+    [fetchFullOrganization, organizationId, setDialog, tMembers],
   );
 
   const handleRemoveMember = useCallback(
@@ -267,7 +267,7 @@ const OrganizationsSlugMembers = ({
         ),
         onConfirm: async () => {
           await authClient.organization.removeMember(
-            { organizationId: id, memberIdOrEmail: memberId },
+            { organizationId, memberIdOrEmail: memberId },
             {
               onError: ({ error: { code } }) => {
                 enqueueSnackbar(getErrorMessage(code, locale), {
@@ -287,7 +287,7 @@ const OrganizationsSlugMembers = ({
         title: tMembers("actions.removeMember.title"),
       });
     },
-    [fetchFullOrganization, id, locale, setDialog, tMembers],
+    [fetchFullOrganization, locale, organizationId, setDialog, tMembers],
   );
 
   const handleLeaveOrganization = useCallback(() => {
@@ -302,7 +302,7 @@ const OrganizationsSlugMembers = ({
       ),
       onConfirm: async () => {
         await authClient.organization.leave(
-          { organizationId: id },
+          { organizationId },
           {
             onError: ({ error: { code } }) => {
               enqueueSnackbar(getErrorMessage(code, locale), {
@@ -338,7 +338,15 @@ const OrganizationsSlugMembers = ({
       open: true,
       title: tOrganizations("actions.leaveOrganization.title"),
     });
-  }, [id, locale, router, setDialog, setSession, slug, tOrganizations]);
+  }, [
+    locale,
+    organizationId,
+    router,
+    setDialog,
+    setSession,
+    slug,
+    tOrganizations,
+  ]);
 
   const memberColumns = useMemo<GridColDef[]>(
     () => [
