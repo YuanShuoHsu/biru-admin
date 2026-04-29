@@ -6,7 +6,7 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import { flushSync } from "react-dom";
 
-import AddTeamMemberDialogContent from "../../AddTeamMemberDialogContent";
+import AddTeamMemberDialogContent from "./AddTeamMemberDialogContent";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { Link } from "@/i18n/navigation";

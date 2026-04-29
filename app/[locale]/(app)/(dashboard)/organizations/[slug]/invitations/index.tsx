@@ -1,0 +1,207 @@
+"use client";
+
+import { useFormatter, useLocale, useTranslations } from "next-intl";
+import dynamic from "next/dynamic";
+import { enqueueSnackbar } from "notistack";
+import { useCallback, useMemo, useTransition } from "react";
+
+import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
+
+import { useRouter } from "@/i18n/navigation";
+
+import { authClient, getErrorMessage } from "@/lib/auth-client";
+
+import { Delete } from "@mui/icons-material";
+import { Chip, DialogContentText, IconButton, Tooltip } from "@mui/material";
+import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+import { useGridApiRef } from "@mui/x-data-grid";
+
+import { useAuthStore } from "@/providers/auth-store-provider";
+import { useDialogStore } from "@/providers/dialog-store-provider";
+
+import type { Invitation, Member, Team } from "@/types/organizations";
+
+const DataGrid = dynamic(
+  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
+  { ssr: false },
+);
+
+const ROLE_COLOR_MAP: Record<string, "error" | "warning" | "default"> = {
+  owner: "error",
+  admin: "warning",
+  member: "default",
+};
+
+interface InvitationsContentProps {
+  id: string;
+  invitations: Invitation[];
+  members: Member[];
+  teams: Team[];
+}
+
+const InvitationsContent = ({
+  id,
+  invitations,
+  members,
+  teams,
+}: InvitationsContentProps) => {
+  const [isPending, startTransition] = useTransition();
+
+  const invitationsApiRef = useGridApiRef();
+
+  const { session } = useAuthStore((state) => state);
+  const { setDialog } = useDialogStore((state) => state);
+
+  const format = useFormatter();
+  const locale = useLocale();
+  const router = useRouter();
+
+  const tInvitations = useTranslations("organizations.invitations");
+  const tMembers = useTranslations("organizations.members");
+  const tTeams = useTranslations("organizations.teams");
+
+  const currentUserRole = useMemo(
+    () => members.find(({ userId }) => userId === session?.user?.id)?.role,
+    [members, session?.user?.id],
+  );
+
+  const canCancelInvitation = useMemo(() => {
+    if (!currentUserRole) return false;
+
+    return authClient.organization.checkRolePermission({
+      role: currentUserRole,
+      permissions: { invitation: ["cancel"] },
+    });
+  }, [currentUserRole]);
+
+  const refresh = useCallback(() => {
+    startTransition(() => {
+      router.refresh();
+      setTimeout(
+        () => invitationsApiRef.current?.autosizeColumns(autosizeOptions),
+        0,
+      );
+    });
+  }, [invitationsApiRef, router]);
+
+  const handleCancelInvitation = useCallback(
+    ({ id: invitationId, email }: Invitation) => {
+      setDialog({
+        content: (
+          <DialogContentText>
+            {tInvitations.rich("actions.cancelInvitation.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              email,
+            })}
+          </DialogContentText>
+        ),
+        onConfirm: async () => {
+          await authClient.organization.cancelInvitation(
+            { invitationId },
+            {
+              onError: ({ error: { code } }) => {
+                enqueueSnackbar(getErrorMessage(code, locale), { variant: "error" });
+              },
+              onSuccess: () => {
+                enqueueSnackbar(
+                  tInvitations("actions.cancelInvitation.success"),
+                  { variant: "success" },
+                );
+                refresh();
+              },
+            },
+          );
+        },
+        open: true,
+        title: tInvitations("actions.cancelInvitation.title"),
+      });
+    },
+    [locale, refresh, setDialog, tInvitations],
+  );
+
+  const invitationColumns = useMemo<GridColDef[]>(
+    () => [
+      {
+        field: "actions",
+        headerName: tInvitations("actions.label"),
+        renderCell: ({ row }: GridRenderCellParams<Invitation>) => (
+          <>
+            {canCancelInvitation && (
+              <Tooltip title={tInvitations("actions.cancelInvitation.title")}>
+                <IconButton
+                  color="error"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleCancelInvitation(row);
+                  }}
+                  size="small"
+                >
+                  <Delete fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            )}
+          </>
+        ),
+        disableColumnMenu: true,
+        resizable: false,
+        sortable: false,
+      },
+      {
+        field: "email",
+        headerName: tInvitations("email"),
+      },
+      {
+        field: "role",
+        headerName: tInvitations("role"),
+        renderCell: ({ row: { role } }: GridRenderCellParams<Invitation>) => (
+          <Chip
+            color={ROLE_COLOR_MAP[role]}
+            label={tMembers(`role.${role}`)}
+            size="small"
+            variant="outlined"
+          />
+        ),
+        sortable: false,
+      },
+      {
+        field: "teamId",
+        headerName: tTeams("label"),
+        valueGetter: (teamId?: string | null) => {
+          if (!teamId) return "";
+
+          return teams.find(({ id }) => id === teamId)?.name || teamId;
+        },
+      },
+      {
+        field: "expiresAt",
+        headerName: tInvitations("expiresAt"),
+        valueFormatter: (value: Date | string) =>
+          format.dateTime(new Date(value), "short"),
+      },
+    ],
+    [
+      canCancelInvitation,
+      format,
+      handleCancelInvitation,
+      teams,
+      tInvitations,
+      tMembers,
+      tTeams,
+    ],
+  );
+
+  return (
+    <DataGrid
+      {...DATA_GRID_PROPS}
+      apiRef={invitationsApiRef}
+      columns={invitationColumns}
+      loading={isPending}
+      onPaginationModelChange={() =>
+        invitationsApiRef.current?.autosizeColumns(autosizeOptions)
+      }
+      rows={invitations}
+    />
+  );
+};
+
+export default InvitationsContent;

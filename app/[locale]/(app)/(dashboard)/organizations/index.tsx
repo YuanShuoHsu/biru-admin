@@ -224,7 +224,7 @@ const Organizations = ({
                   onClick={(event) => {
                     event.stopPropagation();
 
-                    router.push(`/organizations/${row.slug}`);
+                    router.push(`/organizations/${row.slug}/members`);
                   }}
                   size="small"
                 >

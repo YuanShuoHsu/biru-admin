@@ -2,19 +2,17 @@ import { setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
-import OrganizationsSlug from ".";
+import MembersContent from ".";
 
 import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
-interface OrganizationsSlugPageProps {
+interface MembersPageProps {
   params: Promise<{ locale: Locale; slug: string }>;
 }
 
-const OrganizationsSlugPage = async ({
-  params,
-}: OrganizationsSlugPageProps) => {
+const MembersPage = async ({ params }: MembersPageProps) => {
   const [cookieStore, { locale, slug }] = await Promise.all([
     cookies(),
     params,
@@ -30,15 +28,13 @@ const OrganizationsSlugPage = async ({
   if (!data) notFound();
 
   return (
-    <OrganizationsSlug
-      activeOrganization={{
-        ...data,
-        invitations: data.invitations.toReversed(),
-        members: data.members.toReversed(),
-        teams: data.teams.toReversed(),
-      }}
+    <MembersContent
+      id={data.id}
+      members={data.members.toReversed()}
+      slug={slug}
+      teams={data.teams.toReversed()}
     />
   );
 };
 
-export default OrganizationsSlugPage;
+export default MembersPage;
