@@ -135,9 +135,13 @@ const OrganizationsSlugTeamsTeamId = ({
 
   const handleAddTeamMember = () => {
     const teamMemberIds = new Set(teamMembers.map(({ userId }) => userId));
-    const availableMembers = members.filter(
-      ({ userId }) => !teamMemberIds.has(userId),
-    );
+    const isCurrentUserTeamMember =
+      currentUserId && teamMemberIds.has(currentUserId);
+    const availableMembers = members.filter(({ userId }) => {
+      if (!isCurrentUserTeamMember) return userId === currentUserId;
+
+      return !teamMemberIds.has(userId);
+    });
 
     setDialog({
       content: (
