@@ -24,6 +24,7 @@ import {
   Devices,
   Email,
   Gavel,
+  Groups,
   HelpOutline,
   Info,
   LocalMall,
@@ -31,11 +32,13 @@ import {
   LockReset,
   Login,
   ManageAccounts,
+  Mail,
   Payment,
   Person,
   PersonAdd,
   Pets,
   Policy,
+  People,
   Restaurant,
   Settings,
   ShoppingCart,
@@ -118,6 +121,11 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
   const tAdmin = useTranslations("admins");
   const tDashboard = useTranslations("dashboard");
   const tOrganizations = useTranslations("organizations");
+  const tOrganizationInvitations = useTranslations(
+    "organizations.invitations",
+  );
+  const tOrganizationMembers = useTranslations("organizations.members");
+  const tOrganizationTeams = useTranslations("organizations.teams");
   const tAuth = useTranslations("auth");
   const tCompany = useTranslations("company");
   const tOrder = useTranslations("order");
@@ -180,6 +188,23 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
     {
       children: [
         {
+          children: [
+            {
+              icon: People,
+              label: tOrganizationMembers("label"),
+              to: "/members",
+            },
+            {
+              icon: Groups,
+              label: tOrganizationTeams("label"),
+              to: "/teams",
+            },
+            {
+              icon: Mail,
+              label: tOrganizationInvitations("label"),
+              to: "/invitations",
+            },
+          ],
           icon: ManageAccounts,
           label: organizationName,
           to: `/${slug}`,
