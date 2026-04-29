@@ -11,9 +11,7 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import { flushSync } from "react-dom";
 
-import AddTeamMemberDialogContent from "./AddTeamMemberDialogContent";
 import InviteMemberDialogContent from "./InviteMemberDialogContent";
-import ManageTeamMembersDialogContent from "./ManageTeamMembersDialogContent";
 import TeamDialogContent from "./TeamDialogContent";
 import UpdateMemberRoleDialogContent from "./UpdateMemberRoleDialogContent";
 
@@ -31,8 +29,7 @@ import {
   Edit,
   ExitToApp,
   GroupAdd,
-  GroupRemove,
-  PersonAdd,
+  People,
   PersonRemove,
 } from "@mui/icons-material";
 import {
@@ -541,40 +538,11 @@ const OrganizationsSlug = ({
     });
   };
 
-  const handleAddTeamMember = useCallback(
+  const handleViewTeamMembers = useCallback(
     ({ id: teamId }: Team) => {
-      setDialog({
-        content: (
-          <AddTeamMemberDialogContent
-            fetchFullOrganization={fetchFullOrganization}
-            members={members}
-            teamId={teamId}
-          />
-        ),
-        formId: "add-team-member-form",
-        open: true,
-        title: tTeams("actions.addTeamMember.title"),
-      });
+      router.push(`/organizations/${slug}/teams/${teamId}`);
     },
-    [fetchFullOrganization, members, setDialog, tTeams],
-  );
-
-  const handleManageTeamMembers = useCallback(
-    ({ id: teamId }: Team) => {
-      setDialog({
-        content: (
-          <ManageTeamMembersDialogContent
-            fetchFullOrganization={fetchFullOrganization}
-            members={members}
-            teamId={teamId}
-          />
-        ),
-        open: true,
-        showConfirm: false,
-        title: tTeams("actions.manageTeamMembers.title"),
-      });
-    },
-    [fetchFullOrganization, members, setDialog, tTeams],
+    [router, slug],
   );
 
   const handleUpdateTeam = useCallback(
@@ -639,30 +607,16 @@ const OrganizationsSlug = ({
         renderCell: ({ row }: GridRenderCellParams<Team>) => (
           <Stack height="100%" direction="row" alignItems="center" gap={0.5}>
             {canUpdateTeam && (
-              <Tooltip title={tTeams("actions.addTeamMember.title")}>
-                <IconButton
-                  onClick={(event) => {
-                    event.stopPropagation();
-
-                    handleAddTeamMember(row);
-                  }}
-                  size="small"
-                >
-                  <PersonAdd fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
-            {canUpdateTeam && (
               <Tooltip title={tTeams("actions.manageTeamMembers.title")}>
                 <IconButton
                   onClick={(event) => {
                     event.stopPropagation();
 
-                    handleManageTeamMembers(row);
+                    handleViewTeamMembers(row);
                   }}
                   size="small"
                 >
-                  <GroupRemove fontSize="small" />
+                  <People fontSize="small" />
                 </IconButton>
               </Tooltip>
             )}
@@ -715,10 +669,9 @@ const OrganizationsSlug = ({
       canDeleteTeam,
       canUpdateTeam,
       format,
-      handleAddTeamMember,
-      handleManageTeamMembers,
       handleRemoveTeam,
       handleUpdateTeam,
+      handleViewTeamMembers,
       tTeams,
     ],
   );
