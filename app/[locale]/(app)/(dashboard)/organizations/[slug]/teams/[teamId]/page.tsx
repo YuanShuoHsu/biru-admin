@@ -23,28 +23,30 @@ const OrganizationsSlugTeamsTeamIdPage = async ({
 
   const cookieHeader = { cookie: cookieStore.toString() };
 
-  const [{ data: org }, { data: teamMembers }] = await Promise.all([
-    authClient.organization.getFullOrganization({
-      query: { organizationSlug: decodeURIComponent(slug) },
-      fetchOptions: { headers: cookieHeader },
-    }),
-    authClient.organization.listTeamMembers({
-      query: { teamId },
-      fetchOptions: { headers: cookieHeader },
-    }),
-  ]);
+  const [{ data: activeOrganization }, { data: teamMembers }] =
+    await Promise.all([
+      authClient.organization.getFullOrganization({
+        query: { organizationSlug: decodeURIComponent(slug) },
+        fetchOptions: { headers: cookieHeader },
+      }),
+      authClient.organization.listTeamMembers({
+        query: { teamId },
+        fetchOptions: { headers: cookieHeader },
+      }),
+    ]);
 
-  if (!org) notFound();
+  if (!activeOrganization) notFound();
 
-  const team = org.teams.find(({ id }) => id === teamId);
+  const team = activeOrganization.teams.find(({ id }) => id === teamId);
   if (!team) notFound();
+
+  const teamMemberRows = teamMembers?.toReversed() || [];
 
   return (
     <OrganizationsSlugTeamsTeamId
-      members={org.members.toReversed()}
-      orgSlug={slug}
+      activeOrganization={activeOrganization}
       team={team}
-      teamMembers={teamMembers ?? []}
+      teamMembers={teamMemberRows}
     />
   );
 };

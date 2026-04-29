@@ -51,7 +51,7 @@ const OrganizationsSlugTeams = ({
   const [members, setMembers] = useState(initialMembers);
   const [teams, setTeams] = useState(initialTeams);
 
-  const teamsApiRef = useGridApiRef();
+  const apiRef = useGridApiRef();
 
   const { session } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
@@ -116,12 +116,12 @@ const OrganizationsSlugTeams = ({
           });
 
           setTimeout(() => {
-            teamsApiRef.current?.autosizeColumns(autosizeOptions);
+            apiRef.current?.autosizeColumns(autosizeOptions);
           }, 0);
         },
       },
     );
-  }, [locale, slug, teamsApiRef]);
+  }, [apiRef, locale, slug]);
 
   const handleCreateTeam = () => {
     setDialog({
@@ -292,11 +292,11 @@ const OrganizationsSlugTeams = ({
       )}
       <DataGrid
         {...DATA_GRID_PROPS}
-        apiRef={teamsApiRef}
+        apiRef={apiRef}
         columns={teamColumns}
         loading={loading}
         onPaginationModelChange={() =>
-          teamsApiRef.current?.autosizeColumns(autosizeOptions)
+          apiRef.current?.autosizeColumns(autosizeOptions)
         }
         rows={teams}
       />

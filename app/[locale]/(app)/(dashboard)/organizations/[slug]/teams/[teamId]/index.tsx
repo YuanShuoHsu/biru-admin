@@ -30,7 +30,7 @@ import { useGridApiRef } from "@mui/x-data-grid";
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { Member, Team } from "@/types/organizations";
+import type { ActiveOrganization, Team } from "@/types/organizations";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -76,18 +76,17 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
 }));
 
 interface OrganizationsSlugTeamsTeamIdProps {
-  members: Member[];
-  orgSlug: string;
+  activeOrganization: ActiveOrganization;
   team: Team;
   teamMembers: TeamMemberRecord[];
 }
 
 const OrganizationsSlugTeamsTeamId = ({
-  members,
-  orgSlug,
+  activeOrganization: { members, slug: orgSlug },
   team,
   teamMembers: initialTeamMembers,
 }: OrganizationsSlugTeamsTeamIdProps) => {
+  const [loading, setLoading] = useState(false);
   const [teamMembers, setTeamMembers] = useState(initialTeamMembers);
 
   const apiRef = useGridApiRef();
@@ -115,13 +114,31 @@ const OrganizationsSlugTeamsTeamId = ({
   }, [currentUserRole]);
 
   const fetchTeamMembers = useCallback(async () => {
-    const { data } = await authClient.organization.listTeamMembers({
-      query: { teamId: team.id },
-    });
-    if (!data) return;
-    flushSync(() => setTeamMembers(data));
-    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-  }, [apiRef, team.id]);
+    await authClient.organization.listTeamMembers(
+      { query: { teamId: team.id } },
+      {
+        onError: ({ error: { code } }) => {
+          setLoading(false);
+
+          enqueueSnackbar(getErrorMessage(code, locale), {
+            variant: "error",
+          });
+        },
+        onRequest: () => setLoading(true),
+        onSuccess: ({ data }) => {
+          flushSync(() => {
+            setTeamMembers(data.toReversed());
+
+            setLoading(false);
+          });
+
+          setTimeout(() => {
+            apiRef.current?.autosizeColumns(autosizeOptions);
+          }, 0);
+        },
+      },
+    );
+  }, [apiRef, locale, team.id]);
 
   const rows = useMemo<TeamMemberRow[]>(
     () =>
@@ -271,36 +288,44 @@ const OrganizationsSlugTeamsTeamId = ({
   }, [canUpdateTeam, format, handleRemoveTeamMember, tMembers, tTeams]);
 
   return (
-    <>
-      <Stack direction="row" alignItems="center" gap={1}>
-        <Tooltip title={tTeams("label")}>
-          <IconButton
-            component={Link}
-            href={`/organizations/${orgSlug}`}
-            size="small"
-          >
-            <ArrowBack fontSize="small" />
-          </IconButton>
-        </Tooltip>
-        <Typography variant="h6">{team.name}</Typography>
+    <Stack gap={2}>
+      <Stack gap={1}>
+        <Stack direction="row" alignItems="center" gap={1}>
+          <Tooltip title={tTeams("label")}>
+            <IconButton
+              component={Link}
+              href={`/organizations/${orgSlug}`}
+              size="small"
+            >
+              <ArrowBack fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Typography variant="h6">{team.name}</Typography>
+        </Stack>
+        {canUpdateTeam && (
+          <Stack direction="row">
+            <Button
+              onClick={handleAddTeamMember}
+              size="small"
+              startIcon={<PersonAdd />}
+              variant="contained"
+            >
+              {tTeams("actions.addTeamMember.title")}
+            </Button>
+          </Stack>
+        )}
       </Stack>
-      {canUpdateTeam && (
-        <Button
-          onClick={handleAddTeamMember}
-          size="small"
-          startIcon={<PersonAdd />}
-          variant="contained"
-        >
-          {tTeams("actions.addTeamMember.title")}
-        </Button>
-      )}
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}
         columns={columns}
+        loading={loading}
+        onPaginationModelChange={() =>
+          apiRef.current?.autosizeColumns(autosizeOptions)
+        }
         rows={rows}
       />
-    </>
+    </Stack>
   );
 };
 

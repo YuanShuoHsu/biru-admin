@@ -88,7 +88,7 @@ const OrganizationsSlugMembers = ({
   const [members, setMembers] = useState(initialMembers);
   const [teams, setTeams] = useState(initialTeams);
 
-  const membersApiRef = useGridApiRef();
+  const apiRef = useGridApiRef();
 
   const { session, setSession } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
@@ -208,18 +208,18 @@ const OrganizationsSlugMembers = ({
         onSuccess: ({ data: { members, teams } }) => {
           flushSync(() => {
             setMembers(members.toReversed());
-            setTeams(teams.toReversed());
+            setTeams(teams);
 
             setLoading(false);
           });
 
           setTimeout(() => {
-            membersApiRef.current?.autosizeColumns(autosizeOptions);
+            apiRef.current?.autosizeColumns(autosizeOptions);
           }, 0);
         },
       },
     );
-  }, [locale, membersApiRef, slug]);
+  }, [apiRef, locale, slug]);
 
   const handleInviteMember = () => {
     setDialog({
@@ -489,11 +489,11 @@ const OrganizationsSlugMembers = ({
       )}
       <DataGrid
         {...DATA_GRID_PROPS}
-        apiRef={membersApiRef}
+        apiRef={apiRef}
         columns={memberColumns}
         loading={loading}
         onPaginationModelChange={() =>
-          membersApiRef.current?.autosizeColumns(autosizeOptions)
+          apiRef.current?.autosizeColumns(autosizeOptions)
         }
         rows={members}
       />

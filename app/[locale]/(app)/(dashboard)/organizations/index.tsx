@@ -33,7 +33,6 @@ import {
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
-import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { Organization } from "@/types/organizations";
@@ -78,7 +77,6 @@ const Organizations = ({
 
   const apiRef = useGridApiRef();
 
-  const { setSession } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
@@ -90,36 +88,31 @@ const Organizations = ({
   const tOrganizations = useTranslations("organizations");
 
   const fetchOrganizationList = useCallback(async () => {
-    setLoading(true);
+    await authClient.organization.list(undefined, {
+      onError: ({ error: { code } }) => {
+        setLoading(false);
 
-    const { data } = await authClient.organization.list();
-    if (!data?.length) {
-      enqueueSnackbar(getErrorMessage("NO_ACTIVE_ORGANIZATION", locale), {
-        variant: "error",
-      });
-      await authClient.signOut();
-      setSession(null);
+        enqueueSnackbar(getErrorMessage(code, locale), {
+          variant: "error",
+        });
+      },
+      onRequest: () => setLoading(true),
+      onSuccess: async ({ data }) => {
+        const permissions = await getOrganizationPermissions(data);
+        setOrganizationPermissions(permissions);
 
-      setLoading(false);
+        flushSync(() => {
+          setRows(data.toReversed());
 
-      router.replace("/");
+          setLoading(false);
+        });
 
-      return;
-    }
-
-    const permissions = await getOrganizationPermissions(data);
-    setOrganizationPermissions(permissions);
-
-    flushSync(() => {
-      setRows(data.toReversed());
-
-      setLoading(false);
+        setTimeout(() => {
+          apiRef.current?.autosizeColumns(autosizeOptions);
+        }, 0);
+      },
     });
-
-    setTimeout(() => {
-      apiRef.current?.autosizeColumns(autosizeOptions);
-    }, 0);
-  }, [apiRef, locale, router, setSession]);
+  }, [apiRef, locale]);
 
   const handleCreateOrganization = () => {
     setDialog({

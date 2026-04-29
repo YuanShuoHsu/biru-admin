@@ -48,7 +48,7 @@ const OrganizationsSlugInvitations = ({
   const [members, setMembers] = useState(initialMembers);
   const [teams, setTeams] = useState(initialTeams);
 
-  const invitationsApiRef = useGridApiRef();
+  const apiRef = useGridApiRef();
 
   const { session } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
@@ -103,12 +103,12 @@ const OrganizationsSlugInvitations = ({
           });
 
           setTimeout(() => {
-            invitationsApiRef.current?.autosizeColumns(autosizeOptions);
+            apiRef.current?.autosizeColumns(autosizeOptions);
           }, 0);
         },
       },
     );
-  }, [invitationsApiRef, locale, slug]);
+  }, [apiRef, locale, slug]);
 
   const handleCancelInvitation = useCallback(
     ({ id: invitationId, email }: Invitation) => {
@@ -224,11 +224,11 @@ const OrganizationsSlugInvitations = ({
   return (
     <DataGrid
       {...DATA_GRID_PROPS}
-      apiRef={invitationsApiRef}
+      apiRef={apiRef}
       columns={invitationColumns}
       loading={loading}
       onPaginationModelChange={() =>
-        invitationsApiRef.current?.autosizeColumns(autosizeOptions)
+        apiRef.current?.autosizeColumns(autosizeOptions)
       }
       rows={invitations}
     />

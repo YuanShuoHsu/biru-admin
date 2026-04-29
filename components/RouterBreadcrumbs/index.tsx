@@ -200,6 +200,7 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
               to: "/invitations",
             },
           ],
+          disabled: true,
           icon: ManageAccounts,
           label: organizationName,
           to: `/${slug}`,

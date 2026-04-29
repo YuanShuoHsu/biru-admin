@@ -121,7 +121,7 @@ const Admins = ({
   });
   const [userSessions, setUserSessions] = useState(initialUserSessions);
 
-  const apiRef = useGridApiRef();
+  const gridApiRef = useGridApiRef();
 
   const { session, setSession } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
@@ -173,13 +173,13 @@ const Admins = ({
             });
 
             setTimeout(() => {
-              apiRef.current?.autosizeColumns(autosizeOptions);
+              gridApiRef.current?.autosizeColumns(autosizeOptions);
             }, 0);
           },
         },
       );
     },
-    [apiRef, locale],
+    [gridApiRef, locale],
   );
 
   const handlePaginationModelChange = useCallback(
@@ -667,7 +667,7 @@ const Admins = ({
       </Stack>
       <DataGrid
         {...DATA_GRID_PROPS}
-        apiRef={apiRef}
+        gridApiRef={gridApiRef}
         columns={columns}
         loading={loading}
         onPaginationModelChange={handlePaginationModelChange}
