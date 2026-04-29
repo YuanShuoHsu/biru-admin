@@ -166,6 +166,7 @@ const Organizations = ({
               onSuccess: () => {
                 const message = tOrganizations(
                   "actions.deleteOrganization.success",
+                  { name },
                 );
                 enqueueSnackbar(message, { variant: "success" });
 

@@ -1,12 +1,12 @@
 {
   "actions": {
     "createOrganization": {
-      "success": "成功新增組織",
+      "success": "成功新增組織 {name}",
       "title": "新增組織"
     },
     "deleteOrganization": {
       "confirm": "確定要刪除 <bold>{name}</bold> 嗎？此操作將同時移除所有成員與資料，且無法復原。",
-      "success": "成功刪除組織",
+      "success": "成功刪除組織 {name}",
       "title": "刪除組織"
     },
     "label": "操作",

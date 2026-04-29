@@ -1,12 +1,12 @@
 {
   "actions": {
     "createOrganization": {
-      "success": "組織の作成に成功しました",
+      "success": "{name} の作成に成功しました",
       "title": "組織を追加"
     },
     "deleteOrganization": {
       "confirm": "<bold>{name}</bold> を削除しますか？全メンバーとデータが完全に削除されます。",
-      "success": "組織の削除に成功しました",
+      "success": "{name} の削除に成功しました",
       "title": "組織を削除"
     },
     "label": "操作",

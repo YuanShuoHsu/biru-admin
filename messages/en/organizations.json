@@ -1,12 +1,12 @@
 {
   "actions": {
     "createOrganization": {
-      "success": "Organization created successfully",
+      "success": "{name} created successfully",
       "title": "Add organization"
     },
     "deleteOrganization": {
       "confirm": "Are you sure you want to delete <bold>{name}</bold>? All members and data will be permanently removed.",
-      "success": "Organization deleted successfully",
+      "success": "{name} deleted successfully",
       "title": "Delete organization"
     },
     "label": "Actions",
