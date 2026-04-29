@@ -126,9 +126,9 @@ const OrganizationsSlugTeamsTeamId = ({
   }, [apiRef, locale, members, team.id]);
 
   const handleAddTeamMember = () => {
-    const teamMemberIds = new Set(teamMembers.map((m) => m.userId));
+    const teamMemberIds = new Set(teamMembers.map(({ userId }) => userId));
     const availableMembers = members.filter(
-      (m) => !teamMemberIds.has(m.userId),
+      ({ userId }) => !teamMemberIds.has(userId),
     );
 
     setDialog({
@@ -147,7 +147,7 @@ const OrganizationsSlugTeamsTeamId = ({
 
   const handleRemoveTeamMember = useCallback(
     (userId: string) => {
-      const member = members.find((m) => m.userId === userId);
+      const member = members.find(({ userId: memberId }) => memberId === userId);
 
       setDialog({
         content: (
@@ -163,6 +163,7 @@ const OrganizationsSlugTeamsTeamId = ({
             { teamId: team.id, userId },
             {
               onError: ({ error: { code } }) => {
+                console.log(code);
                 enqueueSnackbar(getErrorMessage(code, locale), {
                   variant: "error",
                 });

@@ -12,12 +12,10 @@ export const buildTeamMembers = (
 ): TeamMemberRow[] => {
   const rows: TeamMemberRow[] = [];
 
-  for (const { userId, createdAt } of teamMembers.toReversed()) {
-    const member = members.find((m) => m.userId === userId);
+  for (const { createdAt, userId } of teamMembers.toReversed()) {
+    const member = members.find(({ userId: memberId }) => memberId === userId);
 
-    if (member) {
-      rows.push({ ...member, joinedAt: createdAt });
-    }
+    if (member) rows.push({ ...member, joinedAt: createdAt });
   }
 
   return rows;
