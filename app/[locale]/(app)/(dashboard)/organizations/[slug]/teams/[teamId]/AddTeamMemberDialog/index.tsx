@@ -68,7 +68,7 @@ const AddTeamMemberDialog = ({
           setDialog({ confirmLoading: false });
         },
         onRequest: () => setDialog({ confirmLoading: true }),
-        fetchTeamMembers: () => {
+        onSuccess: () => {
           const email =
             availableMembers.find(({ userId: id }) => id === userId)?.user
               .email || "";
