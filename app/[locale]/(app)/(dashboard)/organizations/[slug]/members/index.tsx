@@ -2,6 +2,7 @@
 
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
+import { useParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useTransition } from "react";
 
@@ -74,14 +75,12 @@ const ROLE_RANK: Record<string, number> = {
 interface OrganizationsSlugMembersProps {
   id: string;
   members: Member[];
-  slug: string;
   teams: Team[];
 }
 
 const OrganizationsSlugMembers = ({
   id,
   members,
-  slug,
   teams,
 }: OrganizationsSlugMembersProps) => {
   const [isPending, startTransition] = useTransition();
@@ -92,7 +91,11 @@ const OrganizationsSlugMembers = ({
   const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
+
   const locale = useLocale();
+
+  const { slug } = useParams<{ slug: string }>();
+
   const router = useRouter();
 
   const tMembers = useTranslations("organizations.members");

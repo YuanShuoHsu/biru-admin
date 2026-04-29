@@ -33,7 +33,6 @@ const OrganizationsSlugMembersPage = async ({
     <OrganizationsSlugMembers
       id={data.id}
       members={data.members.toReversed()}
-      slug={slug}
       teams={data.teams.toReversed()}
     />
   );

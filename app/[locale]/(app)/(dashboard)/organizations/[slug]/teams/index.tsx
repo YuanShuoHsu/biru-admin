@@ -2,6 +2,7 @@
 
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
+import { useParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useTransition } from "react";
 
@@ -37,14 +38,12 @@ const DataGrid = dynamic(
 interface OrganizationsSlugTeamsProps {
   id: string;
   members: Member[];
-  slug: string;
   teams: Team[];
 }
 
 const OrganizationsSlugTeams = ({
   id,
   members,
-  slug,
   teams,
 }: OrganizationsSlugTeamsProps) => {
   const [isPending, startTransition] = useTransition();
@@ -55,7 +54,11 @@ const OrganizationsSlugTeams = ({
   const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
+
   const locale = useLocale();
+
+  const { slug } = useParams<{ slug: string }>();
+
   const router = useRouter();
 
   const tTeams = useTranslations("organizations.teams");
