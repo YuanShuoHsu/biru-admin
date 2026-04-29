@@ -57,7 +57,7 @@
         "title": "移除成员"
       },
       "removeTeamMember": {
-        "confirm": "确定要将 <bold>{name}</bold> 从团队中移除吗？",
+        "confirm": "确定要将 <bold>{email}</bold> 从团队中移除吗？",
         "success": "成功将 {email} 从团队移除",
         "title": "从团队移除"
       },

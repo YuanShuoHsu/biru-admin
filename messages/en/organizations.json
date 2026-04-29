@@ -57,7 +57,7 @@
         "title": "Remove member"
       },
       "removeTeamMember": {
-        "confirm": "Are you sure you want to remove <bold>{name}</bold> from the team?",
+        "confirm": "Are you sure you want to remove <bold>{email}</bold> from the team?",
         "success": "{email} removed from team successfully",
         "title": "Remove from team"
       },

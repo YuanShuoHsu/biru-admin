@@ -154,7 +154,7 @@ const OrganizationsSlugTeamsTeamId = ({
           <DialogContentText>
             {tMembers.rich("actions.removeTeamMember.confirm", {
               bold: (chunks) => <strong>{chunks}</strong>,
-              name: member?.user.name || "",
+              email: member?.user.email || "",
             })}
           </DialogContentText>
         ),

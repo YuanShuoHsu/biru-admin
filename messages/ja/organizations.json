@@ -57,7 +57,7 @@
         "title": "メンバーを削除"
       },
       "removeTeamMember": {
-        "confirm": "<bold>{name}</bold> をチームから削除しますか？",
+        "confirm": "<bold>{email}</bold> をチームから削除しますか？",
         "success": "{email} をチームから削除しました",
         "title": "チームから削除"
       },
