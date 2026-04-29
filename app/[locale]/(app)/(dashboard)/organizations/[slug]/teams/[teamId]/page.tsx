@@ -3,10 +3,12 @@ import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
 import OrganizationsSlugTeamsTeamId from ".";
-import { toTeamMemberRow } from "./utils";
 
 import type { Locale } from "@/i18n/routing";
+
 import { authClient } from "@/lib/auth-client";
+
+import { toTeamMemberListItems } from "@/utils/organizations";
 
 interface OrganizationsSlugTeamsTeamIdPageProps {
   params: Promise<{ locale: Locale; slug: string; teamId: string }>;
@@ -24,7 +26,7 @@ const OrganizationsSlugTeamsTeamIdPage = async ({
 
   const cookieHeader = { cookie: cookieStore.toString() };
 
-  const [{ data: activeOrganization }, { data: teamMembers }] =
+  const [{ data: activeOrganization }, { data: rawTeamMembers }] =
     await Promise.all([
       authClient.organization.getFullOrganization({
         query: { organizationSlug: decodeURIComponent(slug) },
@@ -40,16 +42,16 @@ const OrganizationsSlugTeamsTeamIdPage = async ({
   const team = activeOrganization.teams.find(({ id }) => id === teamId);
   if (!team) notFound();
 
-  const { members } = activeOrganization;
-  const teamMembersRows = (teamMembers || [])
-    .toReversed()
-    .map((record) => toTeamMemberRow(record, members));
+  const teamMembers = toTeamMemberListItems(
+    rawTeamMembers || [],
+    activeOrganization.members,
+  );
 
   return (
     <OrganizationsSlugTeamsTeamId
       activeOrganization={activeOrganization}
       team={team}
-      teamMembers={teamMembersRows}
+      teamMembers={teamMembers}
     />
   );
 };

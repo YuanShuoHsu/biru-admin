@@ -1,6 +1,5 @@
 "use client";
 
-import type { TeamMember } from "better-auth/plugins";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
@@ -8,10 +7,9 @@ import { useCallback, useMemo, useState } from "react";
 import { flushSync } from "react-dom";
 
 import AddTeamMemberDialog from "./AddTeamMemberDialog";
-import type { TeamMemberRow } from "./utils";
-import { toTeamMemberRow } from "./utils";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
+
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { PersonAdd, PersonRemove } from "@mui/icons-material";
@@ -32,6 +30,11 @@ import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { ActiveOrganization, Team } from "@/types/organizations";
+
+import {
+  toTeamMemberListItems,
+  type TeamMemberListItem,
+} from "@/utils/organizations";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -62,7 +65,7 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
 interface OrganizationsSlugTeamsTeamIdProps {
   activeOrganization: ActiveOrganization;
   team: Team;
-  teamMembers: TeamMemberRow[];
+  teamMembers: TeamMemberListItem[];
 }
 
 const OrganizationsSlugTeamsTeamId = ({
@@ -112,11 +115,7 @@ const OrganizationsSlugTeamsTeamId = ({
         onRequest: () => setLoading(true),
         onSuccess: ({ data }) => {
           flushSync(() => {
-            setTeamMembers(
-              data
-                .toReversed()
-                .map((record: TeamMember) => toTeamMemberRow(record, members)),
-            );
+            setTeamMembers(toTeamMemberListItems(data, members));
 
             setLoading(false);
           });
@@ -192,7 +191,7 @@ const OrganizationsSlugTeamsTeamId = ({
         disableColumnMenu: true,
         field: "actions",
         headerName: tTeams("actions.label"),
-        renderCell: ({ row }: GridRenderCellParams<TeamMemberRow>) => (
+        renderCell: ({ row }: GridRenderCellParams<TeamMemberListItem>) => (
           <>
             {canUpdateTeam && (
               <Tooltip title={tMembers("actions.removeTeamMember.title")}>
@@ -216,10 +215,10 @@ const OrganizationsSlugTeamsTeamId = ({
       {
         field: "avatar",
         headerName: tMembers("avatar"),
-        renderCell: ({ row }: GridRenderCellParams<TeamMemberRow>) => (
+        renderCell: ({ row }: GridRenderCellParams<TeamMemberListItem>) => (
           <Stack height="100%" direction="row" alignItems="center">
-            <StyledAvatar alt={row.name} src={row.avatar || undefined}>
-              {row.name[0]}
+            <StyledAvatar alt={row.user.name} src={row.user.image || undefined}>
+              {row.user.name[0]}
             </StyledAvatar>
           </Stack>
         ),
@@ -229,15 +228,17 @@ const OrganizationsSlugTeamsTeamId = ({
       {
         field: "name",
         headerName: tMembers("name"),
+        valueGetter: (_value, row: TeamMemberListItem) => row.user.name,
       },
       {
         field: "email",
         headerName: tMembers("email"),
+        valueGetter: (_value, row: TeamMemberListItem) => row.user.email,
       },
       {
         field: "role",
         headerName: tMembers("role.label"),
-        renderCell: ({ row }: GridRenderCellParams<TeamMemberRow>) => (
+        renderCell: ({ row }: GridRenderCellParams<TeamMemberListItem>) => (
           <Chip
             color={ROLE_COLOR_MAP[row.role] ?? "default"}
             label={tMembers(`role.${row.role as "owner" | "admin" | "member"}`)}
@@ -248,7 +249,7 @@ const OrganizationsSlugTeamsTeamId = ({
         sortable: false,
       },
       {
-        field: "createdAt",
+        field: "joinedAt",
         headerName: tMembers("joinedAt"),
         valueFormatter: (value: Date | string) =>
           format.dateTime(new Date(value), "short"),
