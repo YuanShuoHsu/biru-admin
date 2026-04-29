@@ -11,6 +11,7 @@ import InviteMemberDialog from "./InviteMemberDialog";
 import UpdateMemberRoleDialog from "./UpdateMemberRoleDialog";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
+import { countKeys } from "@/constants/organizations";
 
 import { useRouter } from "@/i18n/navigation";
 
@@ -31,9 +32,14 @@ import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
+import { useCountStore } from "@/providers/count-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { ActiveOrganization, Member } from "@/types/organizations";
+import type {
+  ActiveOrganization,
+  Invitation,
+  Member,
+} from "@/types/organizations";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -91,6 +97,7 @@ const OrganizationsSlugMembers = ({
   const apiRef = useGridApiRef();
 
   const { session, setSession } = useAuthStore((state) => state);
+  const { setCount } = useCountStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
@@ -110,39 +117,30 @@ const OrganizationsSlugMembers = ({
     [currentUserId, members],
   );
 
-  const {
-    canCancelInvitation: _,
-    canCreateInvitation,
-    canDeleteMember,
-    canUpdateMember,
-  } = useMemo(() => {
-    if (!currentUserRole)
-      return {
-        canCancelInvitation: false,
-        canCreateInvitation: false,
-        canDeleteMember: false,
-        canUpdateMember: false,
-      };
+  const { canCreateInvitation, canDeleteMember, canUpdateMember } =
+    useMemo(() => {
+      if (!currentUserRole)
+        return {
+          canCreateInvitation: false,
+          canDeleteMember: false,
+          canUpdateMember: false,
+        };
 
-    return {
-      canCancelInvitation: authClient.organization.checkRolePermission({
-        role: currentUserRole,
-        permissions: { invitation: ["cancel"] },
-      }),
-      canCreateInvitation: authClient.organization.checkRolePermission({
-        role: currentUserRole,
-        permissions: { invitation: ["create"] },
-      }),
-      canDeleteMember: authClient.organization.checkRolePermission({
-        role: currentUserRole,
-        permissions: { member: ["delete"] },
-      }),
-      canUpdateMember: authClient.organization.checkRolePermission({
-        role: currentUserRole,
-        permissions: { member: ["update"] },
-      }),
-    };
-  }, [currentUserRole]);
+      return {
+        canCreateInvitation: authClient.organization.checkRolePermission({
+          role: currentUserRole,
+          permissions: { invitation: ["create"] },
+        }),
+        canDeleteMember: authClient.organization.checkRolePermission({
+          role: currentUserRole,
+          permissions: { member: ["delete"] },
+        }),
+        canUpdateMember: authClient.organization.checkRolePermission({
+          role: currentUserRole,
+          permissions: { member: ["update"] },
+        }),
+      };
+    }, [currentUserRole]);
 
   const ownerCount = useMemo(
     () => members.filter(({ role }) => role === "owner").length,
@@ -205,7 +203,7 @@ const OrganizationsSlugMembers = ({
           });
         },
         onRequest: () => setLoading(true),
-        onSuccess: ({ data: { members, teams } }) => {
+        onSuccess: ({ data: { invitations, members, teams } }) => {
           flushSync(() => {
             setMembers(members.toReversed());
             setTeams(teams);
@@ -213,13 +211,19 @@ const OrganizationsSlugMembers = ({
             setLoading(false);
           });
 
+          setCount(
+            countKeys.pendingInvitations,
+            invitations.filter(({ status }: Invitation) => status === "pending")
+              .length,
+          );
+
           setTimeout(() => {
             apiRef.current?.autosizeColumns(autosizeOptions);
           }, 0);
         },
       },
     );
-  }, [apiRef, locale, slug]);
+  }, [apiRef, locale, setCount, slug]);
 
   const handleInviteMember = () => {
     setDialog({

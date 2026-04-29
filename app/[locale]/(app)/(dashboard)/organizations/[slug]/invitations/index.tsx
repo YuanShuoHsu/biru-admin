@@ -8,6 +8,7 @@ import { useCallback, useMemo, useState } from "react";
 import { flushSync } from "react-dom";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
+import { countKeys } from "@/constants/organizations";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
@@ -17,6 +18,7 @@ import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
+import { useCountStore } from "@/providers/count-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { ActiveOrganization, Invitation } from "@/types/organizations";
@@ -52,6 +54,7 @@ const OrganizationsSlugInvitations = ({
 
   const { session } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
+  const { setCount } = useCountStore((state) => state);
 
   const format = useFormatter();
 
@@ -90,17 +93,19 @@ const OrganizationsSlugInvitations = ({
         },
         onRequest: () => setLoading(true),
         onSuccess: ({ data: { invitations, members, teams } }) => {
+          const pendingInvitations = invitations
+            .toReversed()
+            .filter(({ status }: Invitation) => status === "pending");
+
           flushSync(() => {
-            setInvitations(
-              invitations
-                .toReversed()
-                .filter(({ status }: Invitation) => status === "pending"),
-            );
+            setInvitations(pendingInvitations);
             setMembers(members);
             setTeams(teams);
 
             setLoading(false);
           });
+
+          setCount(countKeys.pendingInvitations, pendingInvitations.length);
 
           setTimeout(() => {
             apiRef.current?.autosizeColumns(autosizeOptions);
@@ -108,7 +113,7 @@ const OrganizationsSlugInvitations = ({
         },
       },
     );
-  }, [apiRef, locale, slug]);
+  }, [apiRef, locale, setCount, slug]);
 
   const handleCancelInvitation = useCallback(
     ({ id: invitationId, email }: Invitation) => {

@@ -3,6 +3,8 @@
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 
+import { countKeys } from "@/constants/organizations";
+
 import { Link, usePathname } from "@/i18n/navigation";
 
 import {
@@ -11,13 +13,18 @@ import {
   People,
   type SvgIconComponent,
 } from "@mui/icons-material";
-import { Stack, Tab, Tabs } from "@mui/material";
+import { Chip, Stack, Tab, Tabs } from "@mui/material";
+
+import { useCountStore } from "@/providers/count-store-provider";
 
 interface OrganizationsSlugTabsProps {
   children: React.ReactNode;
 }
 
 const OrganizationsSlugTabs = ({ children }: OrganizationsSlugTabsProps) => {
+  const { getCount } = useCountStore((state) => state);
+  const count = getCount(countKeys.pendingInvitations);
+
   const { slug } = useParams<{ slug: string }>();
 
   const pathname = usePathname();
@@ -26,7 +33,11 @@ const OrganizationsSlugTabs = ({ children }: OrganizationsSlugTabsProps) => {
   const tTeams = useTranslations("organizations.teams");
   const tInvitations = useTranslations("organizations.invitations");
 
-  const tabs: { Icon: SvgIconComponent; label: string; value: string }[] = [
+  const tabs: {
+    Icon: SvgIconComponent;
+    label: React.ReactNode;
+    value: string;
+  }[] = [
     {
       Icon: People,
       label: tMembers("label"),
@@ -39,7 +50,12 @@ const OrganizationsSlugTabs = ({ children }: OrganizationsSlugTabsProps) => {
     },
     {
       Icon: Mail,
-      label: tInvitations("label"),
+      label: (
+        <Stack alignItems="center" direction="row" gap={1}>
+          {tInvitations("label")}
+          {count > 0 && <Chip color="secondary" label={count} size="small" />}
+        </Stack>
+      ),
       value: `/organizations/${slug}/invitations`,
     },
   ];
