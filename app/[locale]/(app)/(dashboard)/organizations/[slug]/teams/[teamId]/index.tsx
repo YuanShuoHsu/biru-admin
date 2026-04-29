@@ -129,7 +129,7 @@ const OrganizationsSlugTeamsTeamId = ({
     setDialog({
       content: (
         <AddTeamMemberDialog
-          fetchFullOrganization={fetchTeamMembers}
+          fetchTeamMembers={fetchTeamMembers}
           members={members}
           teamId={team.id}
         />

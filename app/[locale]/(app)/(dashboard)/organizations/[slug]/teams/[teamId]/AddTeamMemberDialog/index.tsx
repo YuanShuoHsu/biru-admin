@@ -27,13 +27,13 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 }));
 
 interface AddTeamMemberDialogProps {
-  fetchFullOrganization: () => void;
+  fetchTeamMembers: () => void;
   members: Member[];
   teamId: string;
 }
 
 const AddTeamMemberDialog = ({
-  fetchFullOrganization,
+  fetchTeamMembers,
   members,
   teamId,
 }: AddTeamMemberDialogProps) => {
@@ -69,16 +69,15 @@ const AddTeamMemberDialog = ({
           setDialog({ confirmLoading: false });
         },
         onRequest: () => setDialog({ confirmLoading: true }),
-        onSuccess: () => {
+        fetchTeamMembers: () => {
           const email =
-            members.find(({ userId: id }) => id === userId)?.user.email ||
-            userId;
+            members.find(({ userId: id }) => id === userId)?.user.email || "";
           const message = tTeams("actions.addTeamMember.success", { email });
           enqueueSnackbar(message, { variant: "success" });
 
           closeDialog();
 
-          fetchFullOrganization();
+          fetchTeamMembers();
         },
       },
     );
