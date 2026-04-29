@@ -214,6 +214,7 @@ const OrganizationsSlugTeams = ({
                 <IconButton
                   onClick={(event) => {
                     event.stopPropagation();
+
                     handleViewTeamMembers(row);
                   }}
                   size="small"
@@ -227,6 +228,7 @@ const OrganizationsSlugTeams = ({
                 <IconButton
                   onClick={(event) => {
                     event.stopPropagation();
+
                     handleUpdateTeam(row);
                   }}
                   size="small"
@@ -241,6 +243,7 @@ const OrganizationsSlugTeams = ({
                   color="error"
                   onClick={(event) => {
                     event.stopPropagation();
+
                     handleRemoveTeam(row);
                   }}
                   size="small"
@@ -278,7 +281,7 @@ const OrganizationsSlugTeams = ({
 
   return (
     <>
-      <Stack direction="row">
+      <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
         {canCreateTeam && (
           <Button
             onClick={handleCreateTeam}

@@ -80,7 +80,7 @@ interface OrganizationsSlugTeamsTeamIdProps {
 }
 
 const OrganizationsSlugTeamsTeamId = ({
-  activeOrganization: { members, slug: orgSlug },
+  activeOrganization: { members },
   team,
   teamMembers: initialTeamMembers,
 }: OrganizationsSlugTeamsTeamIdProps) => {
@@ -97,7 +97,7 @@ const OrganizationsSlugTeamsTeamId = ({
   const tMembers = useTranslations("organizations.members");
   const tTeams = useTranslations("organizations.teams");
 
-  const currentUserId = session?.user?.id;
+  const currentUserId = session?.user.id;
   const currentUserRole = useMemo(
     () => members.find(({ userId }) => userId === currentUserId)?.role,
     [currentUserId, members],
@@ -105,6 +105,7 @@ const OrganizationsSlugTeamsTeamId = ({
 
   const canUpdateTeam = useMemo(() => {
     if (!currentUserRole) return false;
+
     return authClient.organization.checkRolePermission({
       role: currentUserRole,
       permissions: { team: ["update"] },
@@ -142,10 +143,11 @@ const OrganizationsSlugTeamsTeamId = ({
     () =>
       teamMembers.map(({ id, userId, createdAt }) => {
         const member = members.find((m) => m.userId === userId);
+
         return {
           id,
           userId,
-          name: member?.user.name ?? userId,
+          name: member?.user.name ?? "",
           email: member?.user.email ?? "",
           avatar: member?.user.image ?? null,
           role: member?.role ?? "",
@@ -173,12 +175,13 @@ const OrganizationsSlugTeamsTeamId = ({
   const handleRemoveTeamMember = useCallback(
     (userId: string) => {
       const member = members.find((m) => m.userId === userId);
+
       setDialog({
         content: (
           <DialogContentText>
             {tMembers.rich("actions.removeTeamMember.confirm", {
               bold: (chunks) => <strong>{chunks}</strong>,
-              name: member?.user.name ?? userId,
+              name: member?.user.name || "",
             })}
           </DialogContentText>
         ),
@@ -194,10 +197,11 @@ const OrganizationsSlugTeamsTeamId = ({
               onSuccess: () => {
                 enqueueSnackbar(
                   tMembers("actions.removeTeamMember.success", {
-                    email: member?.user.email ?? userId,
+                    email: member?.user.email || "",
                   }),
                   { variant: "success" },
                 );
+
                 fetchTeamMembers();
               },
             },
@@ -210,36 +214,33 @@ const OrganizationsSlugTeamsTeamId = ({
     [fetchTeamMembers, locale, members, setDialog, team.id, tMembers],
   );
 
-  const columns = useMemo<GridColDef[]>(() => {
-    const cols: GridColDef[] = [];
-
-    if (canUpdateTeam) {
-      cols.push({
+  const columns = useMemo<GridColDef[]>(
+    () => [
+      {
         disableColumnMenu: true,
         field: "actions",
         headerName: tTeams("actions.label"),
         renderCell: ({ row }: GridRenderCellParams<TeamMemberRow>) => (
-          <Stack height="100%" direction="row" alignItems="center">
-            <Tooltip title={tMembers("actions.removeTeamMember.title")}>
-              <IconButton
-                color="error"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  handleRemoveTeamMember(row.userId);
-                }}
-                size="small"
-              >
-                <PersonRemove fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </Stack>
+          <>
+            {canUpdateTeam && (
+              <Tooltip title={tMembers("actions.removeTeamMember.title")}>
+                <IconButton
+                  color="error"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleRemoveTeamMember(row.userId);
+                  }}
+                  size="small"
+                >
+                  <PersonRemove fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            )}
+          </>
         ),
         resizable: false,
         sortable: false,
-      });
-    }
-
-    cols.push(
+      },
       {
         field: "avatar",
         headerName: tMembers("avatar"),
@@ -280,14 +281,13 @@ const OrganizationsSlugTeamsTeamId = ({
         valueFormatter: (value: Date | string) =>
           format.dateTime(new Date(value), "short"),
       },
-    );
-
-    return cols;
-  }, [canUpdateTeam, format, handleRemoveTeamMember, tMembers, tTeams]);
+    ],
+    [canUpdateTeam, format, handleRemoveTeamMember, tMembers, tTeams],
+  );
 
   return (
     <>
-      <Stack direction="row">
+      <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
         {canUpdateTeam && (
           <Button
             onClick={handleAddTeamMember}

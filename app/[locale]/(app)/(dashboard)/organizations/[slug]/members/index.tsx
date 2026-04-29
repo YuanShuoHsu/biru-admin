@@ -479,7 +479,7 @@ const OrganizationsSlugMembers = ({
 
   return (
     <>
-      <Stack direction="row">
+      <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
         {canCreateInvitation && (
           <Button
             onClick={handleInviteMember}
