@@ -8,6 +8,7 @@ interface RouteParam {
   mode: OrderMode;
   slug: string;
   storeSlug: StoreSlug;
+  teamId: string;
   userId: string;
 }
 

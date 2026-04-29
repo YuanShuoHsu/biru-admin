@@ -24,6 +24,7 @@ import {
   Devices,
   Email,
   Gavel,
+  Group,
   Groups,
   HelpOutline,
   Info,
@@ -31,14 +32,14 @@ import {
   Lock,
   LockReset,
   Login,
-  ManageAccounts,
   Mail,
+  ManageAccounts,
   Payment,
+  People,
   Person,
   PersonAdd,
   Pets,
   Policy,
-  People,
   Restaurant,
   Settings,
   ShoppingCart,
@@ -92,7 +93,8 @@ interface BreadcrumbItem {
 }
 
 const useBreadcrumbs = (): BreadcrumbItem[] => {
-  const { locale, mode, slug, storeSlug, userId } = useParams<RouteParams>();
+  const { locale, mode, slug, storeSlug, teamId, userId } =
+    useParams<RouteParams>();
 
   const stores = useStores();
   const storeName = getStoreName(locale, stores, storeSlug);
@@ -115,6 +117,17 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
       const { data } = await authClient.organization.list();
 
       return data?.find(({ slug }) => slug === decodedSlug)?.name;
+    },
+  );
+
+  const { data: teamName = "" } = useSWR(
+    teamId ? `team-${teamId}` : null,
+    async () => {
+      const { data } = await authClient.organization.getFullOrganization({
+        query: { organizationSlug: decodedSlug },
+      });
+
+      return data?.teams.find(({ id }) => id === teamId)?.name;
     },
   );
 
@@ -190,6 +203,14 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
               to: "/members",
             },
             {
+              children: [
+                {
+                  disabled: true,
+                  icon: Group,
+                  label: teamName,
+                  to: `/${teamId}`,
+                },
+              ],
               icon: Groups,
               label: tOrganizations("teams.label"),
               to: "/teams",
