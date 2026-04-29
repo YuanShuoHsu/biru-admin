@@ -31,10 +31,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { ActiveOrganization, Team } from "@/types/organizations";
 
-import {
-  buildTeamMembers,
-  type TeamMemberRow,
-} from "@/utils/teams";
+import { buildTeamMembers, type TeamMemberRow } from "@/utils/teams";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
