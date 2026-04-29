@@ -4,7 +4,8 @@ import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
-import { useCallback, useMemo, useTransition } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { flushSync } from "react-dom";
 
 import UpdateTeamDialog from "./UpdateTeamDialog";
 
@@ -43,10 +44,12 @@ interface OrganizationsSlugTeamsProps {
 
 const OrganizationsSlugTeams = ({
   id,
-  members,
-  teams,
+  members: initialMembers,
+  teams: initialTeams,
 }: OrganizationsSlugTeamsProps) => {
-  const [isPending, startTransition] = useTransition();
+  const [loading, setLoading] = useState(false);
+  const [members, setMembers] = useState(initialMembers);
+  const [teams, setTeams] = useState(initialTeams);
 
   const teamsApiRef = useGridApiRef();
 
@@ -92,20 +95,41 @@ const OrganizationsSlugTeams = ({
     };
   }, [currentUserRole]);
 
-  const refresh = useCallback(() => {
-    startTransition(() => {
-      router.refresh();
-      setTimeout(
-        () => teamsApiRef.current?.autosizeColumns(autosizeOptions),
-        0,
-      );
-    });
-  }, [router, teamsApiRef]);
+  const fetchFullOrganization = useCallback(async () => {
+    await authClient.organization.getFullOrganization(
+      { query: { organizationSlug: decodeURIComponent(slug) } },
+      {
+        onError: ({ error: { code } }) => {
+          setLoading(false);
+
+          enqueueSnackbar(getErrorMessage(code, locale), {
+            variant: "error",
+          });
+        },
+        onRequest: () => setLoading(true),
+        onSuccess: ({ data: { members, teams } }) => {
+          flushSync(() => {
+            setMembers(members);
+            setTeams(teams.toReversed());
+
+            setLoading(false);
+          });
+
+          setTimeout(() => {
+            teamsApiRef.current?.autosizeColumns(autosizeOptions);
+          }, 0);
+        },
+      },
+    );
+  }, [locale, slug, teamsApiRef]);
 
   const handleCreateTeam = () => {
     setDialog({
       content: (
-        <UpdateTeamDialog fetchFullOrganization={refresh} organizationId={id} />
+        <UpdateTeamDialog
+          fetchFullOrganization={fetchFullOrganization}
+          organizationId={id}
+        />
       ),
       formId: "team-form",
       open: true,
@@ -125,7 +149,7 @@ const OrganizationsSlugTeams = ({
       setDialog({
         content: (
           <UpdateTeamDialog
-            fetchFullOrganization={refresh}
+            fetchFullOrganization={fetchFullOrganization}
             organizationId={id}
             team={team}
           />
@@ -135,7 +159,7 @@ const OrganizationsSlugTeams = ({
         title: tTeams("actions.updateTeam.title"),
       });
     },
-    [id, refresh, setDialog, tTeams],
+    [fetchFullOrganization, id, setDialog, tTeams],
   );
 
   const handleRemoveTeam = useCallback(
@@ -165,7 +189,7 @@ const OrganizationsSlugTeams = ({
                     variant: "success",
                   },
                 );
-                refresh();
+                fetchFullOrganization();
               },
             },
           );
@@ -174,7 +198,7 @@ const OrganizationsSlugTeams = ({
         title: tTeams("actions.removeTeam.title"),
       });
     },
-    [id, locale, refresh, setDialog, tTeams],
+    [fetchFullOrganization, id, locale, setDialog, tTeams],
   );
 
   const teamColumns = useMemo<GridColDef[]>(
@@ -270,7 +294,7 @@ const OrganizationsSlugTeams = ({
         {...DATA_GRID_PROPS}
         apiRef={teamsApiRef}
         columns={teamColumns}
-        loading={isPending}
+        loading={loading}
         onPaginationModelChange={() =>
           teamsApiRef.current?.autosizeColumns(autosizeOptions)
         }

@@ -4,7 +4,8 @@ import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
-import { useCallback, useMemo, useTransition } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { flushSync } from "react-dom";
 
 import InviteMemberDialog from "./InviteMemberDialog";
 import UpdateMemberRoleDialog from "./UpdateMemberRoleDialog";
@@ -80,10 +81,12 @@ interface OrganizationsSlugMembersProps {
 
 const OrganizationsSlugMembers = ({
   id,
-  members,
-  teams,
+  members: initialMembers,
+  teams: initialTeams,
 }: OrganizationsSlugMembersProps) => {
-  const [isPending, startTransition] = useTransition();
+  const [loading, setLoading] = useState(false);
+  const [members, setMembers] = useState(initialMembers);
+  const [teams, setTeams] = useState(initialTeams);
 
   const membersApiRef = useGridApiRef();
 
@@ -190,21 +193,39 @@ const OrganizationsSlugMembers = ({
       return { canUpdateMemberRoles, canRemoveMembers, canLeaveOrganizations };
     }, [getMemberPermissions, members]);
 
-  const refresh = useCallback(() => {
-    startTransition(() => {
-      router.refresh();
-      setTimeout(
-        () => membersApiRef.current?.autosizeColumns(autosizeOptions),
-        0,
-      );
-    });
-  }, [membersApiRef, router]);
+  const fetchFullOrganization = useCallback(async () => {
+    await authClient.organization.getFullOrganization(
+      { query: { organizationSlug: decodeURIComponent(slug) } },
+      {
+        onError: ({ error: { code } }) => {
+          setLoading(false);
+
+          enqueueSnackbar(getErrorMessage(code, locale), {
+            variant: "error",
+          });
+        },
+        onRequest: () => setLoading(true),
+        onSuccess: ({ data: { members, teams } }) => {
+          flushSync(() => {
+            setMembers(members.toReversed());
+            setTeams(teams.toReversed());
+
+            setLoading(false);
+          });
+
+          setTimeout(() => {
+            membersApiRef.current?.autosizeColumns(autosizeOptions);
+          }, 0);
+        },
+      },
+    );
+  }, [locale, membersApiRef, slug]);
 
   const handleInviteMember = () => {
     setDialog({
       content: (
         <InviteMemberDialog
-          fetchFullOrganization={refresh}
+          fetchFullOrganization={fetchFullOrganization}
           organizationId={id}
           teams={teams}
         />
@@ -220,7 +241,7 @@ const OrganizationsSlugMembers = ({
       setDialog({
         content: (
           <UpdateMemberRoleDialog
-            fetchFullOrganization={refresh}
+            fetchFullOrganization={fetchFullOrganization}
             member={member}
             organizationId={id}
           />
@@ -230,7 +251,7 @@ const OrganizationsSlugMembers = ({
         title: tMembers("actions.updateMemberRole.title"),
       });
     },
-    [id, refresh, setDialog, tMembers],
+    [fetchFullOrganization, id, setDialog, tMembers],
   );
 
   const handleRemoveMember = useCallback(
@@ -257,7 +278,7 @@ const OrganizationsSlugMembers = ({
                 enqueueSnackbar(tMembers("actions.removeMember.success"), {
                   variant: "success",
                 });
-                refresh();
+                fetchFullOrganization();
               },
             },
           );
@@ -266,7 +287,7 @@ const OrganizationsSlugMembers = ({
         title: tMembers("actions.removeMember.title"),
       });
     },
-    [id, locale, refresh, setDialog, tMembers],
+    [fetchFullOrganization, id, locale, setDialog, tMembers],
   );
 
   const handleLeaveOrganization = useCallback(() => {
@@ -462,7 +483,7 @@ const OrganizationsSlugMembers = ({
         {...DATA_GRID_PROPS}
         apiRef={membersApiRef}
         columns={memberColumns}
-        loading={isPending}
+        loading={loading}
         onPaginationModelChange={() =>
           membersApiRef.current?.autosizeColumns(autosizeOptions)
         }
