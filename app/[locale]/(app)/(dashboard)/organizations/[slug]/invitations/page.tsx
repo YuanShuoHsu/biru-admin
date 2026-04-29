@@ -29,15 +29,14 @@ const OrganizationsSlugInvitationsPage = async ({
 
   if (!data) notFound();
 
-  const pendingInvitations = data.invitations
-    .toReversed()
-    .filter(({ status }) => status === "pending");
-
   return (
     <OrganizationsSlugInvitations
-      invitations={pendingInvitations}
-      members={data.members}
-      teams={data.teams}
+      activeOrganization={{
+        ...data,
+        invitations: data.invitations
+          .toReversed()
+          .filter(({ status }) => status === "pending"),
+      }}
     />
   );
 };

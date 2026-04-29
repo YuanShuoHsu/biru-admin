@@ -29,7 +29,7 @@ import { useGridApiRef } from "@mui/x-data-grid";
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { Member, Team } from "@/types/organizations";
+import type { ActiveOrganization, Team } from "@/types/organizations";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -37,15 +37,15 @@ const DataGrid = dynamic(
 );
 
 interface OrganizationsSlugTeamsProps {
-  members: Member[];
-  organizationId: string;
-  teams: Team[];
+  activeOrganization: ActiveOrganization;
 }
 
 const OrganizationsSlugTeams = ({
-  members: initialMembers,
-  organizationId,
-  teams: initialTeams,
+  activeOrganization: {
+    id: organizationId,
+    members: initialMembers,
+    teams: initialTeams,
+  },
 }: OrganizationsSlugTeamsProps) => {
   const [loading, setLoading] = useState(false);
   const [members, setMembers] = useState(initialMembers);

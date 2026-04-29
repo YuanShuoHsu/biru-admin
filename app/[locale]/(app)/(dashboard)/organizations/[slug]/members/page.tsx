@@ -31,9 +31,11 @@ const OrganizationsSlugMembersPage = async ({
 
   return (
     <OrganizationsSlugMembers
-      members={data.members.toReversed()}
-      organizationId={data.id}
-      teams={data.teams.toReversed()}
+      activeOrganization={{
+        ...data,
+        members: data.members.toReversed(),
+        teams: data.teams.toReversed(),
+      }}
     />
   );
 };

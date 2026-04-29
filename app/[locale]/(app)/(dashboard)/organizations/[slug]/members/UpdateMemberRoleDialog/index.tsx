@@ -21,7 +21,7 @@ import { Box, type BoxProps, MenuItem, TextField, styled } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { Member } from "@/types/organizations";
+import type { Member, Organization } from "@/types/organizations";
 
 const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   display: "flex",
@@ -33,7 +33,7 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 interface UpdateMemberRoleDialogProps {
   fetchFullOrganization: () => void;
   member: Member;
-  organizationId: string;
+  organizationId: Organization["id"];
 }
 
 const UpdateMemberRoleDialog = ({

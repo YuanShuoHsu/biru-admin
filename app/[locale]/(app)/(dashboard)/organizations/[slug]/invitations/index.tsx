@@ -19,7 +19,7 @@ import { useGridApiRef } from "@mui/x-data-grid";
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { Invitation, Member, Team } from "@/types/organizations";
+import type { ActiveOrganization, Invitation } from "@/types/organizations";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -33,15 +33,15 @@ const ROLE_COLOR_MAP: Record<string, "error" | "warning" | "default"> = {
 };
 
 interface OrganizationsSlugInvitationsProps {
-  invitations: Invitation[];
-  members: Member[];
-  teams: Team[];
+  activeOrganization: ActiveOrganization;
 }
 
 const OrganizationsSlugInvitations = ({
-  invitations: initialInvitations,
-  members: initialMembers,
-  teams: initialTeams,
+  activeOrganization: {
+    invitations: initialInvitations,
+    members: initialMembers,
+    teams: initialTeams,
+  },
 }: OrganizationsSlugInvitationsProps) => {
   const [loading, setLoading] = useState(false);
   const [invitations, setInvitations] = useState(initialInvitations);
