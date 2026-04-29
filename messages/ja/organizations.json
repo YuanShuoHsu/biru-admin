@@ -103,6 +103,9 @@
         "title": "チームを追加"
       },
       "label": "操作",
+      "manageTeamMembers": {
+        "title": "メンバーを管理"
+      },
       "removeTeam": {
         "confirm": "<bold>{name}</bold> を削除しますか？",
         "success": "{name} の削除に成功しました",
@@ -115,6 +118,9 @@
     },
     "createdAt": "作成日",
     "label": "チーム",
+    "members": {
+      "empty": "このチームにメンバーがいません"
+    },
     "name": {
       "label": "チーム名",
       "placeholder": "チーム名を入力してください"

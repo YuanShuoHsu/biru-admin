@@ -13,6 +13,7 @@ import { flushSync } from "react-dom";
 
 import AddTeamMemberDialogContent from "./AddTeamMemberDialogContent";
 import InviteMemberDialogContent from "./InviteMemberDialogContent";
+import ManageTeamMembersDialogContent from "./ManageTeamMembersDialogContent";
 import TeamDialogContent from "./TeamDialogContent";
 import UpdateMemberRoleDialogContent from "./UpdateMemberRoleDialogContent";
 
@@ -201,70 +202,52 @@ const OrganizationsSlug = ({
   );
 
   const getMemberPermissions = useCallback(
-    ({ role, teamId, userId }: Pick<Member, "role" | "teamId" | "userId">) => {
-      const isCurrentUser = userId === currentUserId;
+    ({ role, userId }: Pick<Member, "role" | "userId">) => {
       const isOnlyOwner = role === "owner" && ownerCount === 1;
       const isHigherRoleRank =
         !!currentUserRole && ROLE_RANK[currentUserRole] >= ROLE_RANK[role];
+      const isCurrentUser = userId === currentUserId;
 
       return {
         canUpdateMemberRole:
           canUpdateMember && !isOnlyOwner && isHigherRoleRank,
-        canLeaveOrganization: isCurrentUser && !isOnlyOwner,
-        canRemoveTeamMember: canUpdateTeam && !!teamId,
         canRemoveMember: canDeleteMember && !isCurrentUser && !isOnlyOwner,
+        canLeaveOrganization: isCurrentUser && !isOnlyOwner,
       };
     },
     [
       canDeleteMember,
       canUpdateMember,
-      canUpdateTeam,
       currentUserId,
       currentUserRole,
       ownerCount,
     ],
   );
 
-  const {
-    canUpdateMemberRoles,
-    canLeaveOrganizations,
-    canRemoveTeamMembers,
-    canRemoveMembers,
-  } = useMemo(() => {
-    let canUpdateMemberRoles = false;
-    let canLeaveOrganizations = false;
-    let canRemoveTeamMembers = false;
-    let canRemoveMembers = false;
+  const { canUpdateMemberRoles, canRemoveMembers, canLeaveOrganizations } =
+    useMemo(() => {
+      let canUpdateMemberRoles = false;
+      let canRemoveMembers = false;
+      let canLeaveOrganizations = false;
 
-    for (const member of members) {
-      const {
-        canUpdateMemberRole,
-        canLeaveOrganization,
-        canRemoveTeamMember,
-        canRemoveMember,
-      } = getMemberPermissions(member);
+      for (const member of members) {
+        const { canUpdateMemberRole, canRemoveMember, canLeaveOrganization } =
+          getMemberPermissions(member);
 
-      canUpdateMemberRoles ||= canUpdateMemberRole;
-      canLeaveOrganizations ||= canLeaveOrganization;
-      canRemoveTeamMembers ||= canRemoveTeamMember;
-      canRemoveMembers ||= canRemoveMember;
+        canUpdateMemberRoles ||= canUpdateMemberRole;
+        canRemoveMembers ||= canRemoveMember;
+        canLeaveOrganizations ||= canLeaveOrganization;
 
-      if (
-        canUpdateMemberRoles &&
-        canLeaveOrganizations &&
-        canRemoveTeamMembers &&
-        canRemoveMembers
-      )
-        break;
-    }
+        if (canUpdateMemberRoles && canRemoveMembers && canLeaveOrganizations)
+          break;
+      }
 
-    return {
-      canUpdateMemberRoles,
-      canLeaveOrganizations,
-      canRemoveTeamMembers,
-      canRemoveMembers,
-    };
-  }, [getMemberPermissions, members]);
+      return {
+        canUpdateMemberRoles,
+        canRemoveMembers,
+        canLeaveOrganizations,
+      };
+    }, [getMemberPermissions, members]);
 
   const fetchFullOrganization = useCallback(async () => {
     setLoading(true);
@@ -334,6 +317,41 @@ const OrganizationsSlug = ({
     [fetchFullOrganization, id, setDialog, tMembers],
   );
 
+  const handleRemoveMember = useCallback(
+    ({ id: memberId, user: { name } }: Member) => {
+      setDialog({
+        content: (
+          <DialogContentText>
+            {tMembers.rich("actions.removeMember.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              name,
+            })}
+          </DialogContentText>
+        ),
+        onConfirm: async () => {
+          await authClient.organization.removeMember(
+            { organizationId: id, memberIdOrEmail: memberId },
+            {
+              onError: ({ error: { code } }) => {
+                const message = getErrorMessage(code, locale);
+                enqueueSnackbar(message, { variant: "error" });
+              },
+              onSuccess: () => {
+                const message = tMembers("actions.removeMember.success");
+                enqueueSnackbar(message, { variant: "success" });
+
+                fetchFullOrganization();
+              },
+            },
+          );
+        },
+        open: true,
+        title: tMembers("actions.removeMember.title"),
+      });
+    },
+    [fetchFullOrganization, id, locale, setDialog, tMembers],
+  );
+
   const handleLeaveOrganization = useCallback(() => {
     setDialog({
       content: (
@@ -381,78 +399,6 @@ const OrganizationsSlug = ({
     });
   }, [id, locale, name, router, setDialog, setSession, tOrganizations]);
 
-  const handleRemoveMember = useCallback(
-    ({ id: memberId, user: { name } }: Member) => {
-      setDialog({
-        content: (
-          <DialogContentText>
-            {tMembers.rich("actions.removeMember.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              name,
-            })}
-          </DialogContentText>
-        ),
-        onConfirm: async () => {
-          await authClient.organization.removeMember(
-            { organizationId: id, memberIdOrEmail: memberId },
-            {
-              onError: ({ error: { code } }) => {
-                const message = getErrorMessage(code, locale);
-                enqueueSnackbar(message, { variant: "error" });
-              },
-              onSuccess: () => {
-                const message = tMembers("actions.removeMember.success");
-                enqueueSnackbar(message, { variant: "success" });
-
-                fetchFullOrganization();
-              },
-            },
-          );
-        },
-        open: true,
-        title: tMembers("actions.removeMember.title"),
-      });
-    },
-    [fetchFullOrganization, id, locale, setDialog, tMembers],
-  );
-
-  const handleRemoveTeamMember = useCallback(
-    ({ teamId, userId: memberId, user: { email, name } }: Member) => {
-      setDialog({
-        content: (
-          <DialogContentText>
-            {tMembers.rich("actions.removeTeamMember.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              name,
-            })}
-          </DialogContentText>
-        ),
-        onConfirm: async () => {
-          await authClient.organization.removeTeamMember(
-            { teamId: teamId!, userId: memberId },
-            {
-              onError: ({ error: { code } }) => {
-                const message = getErrorMessage(code, locale);
-                enqueueSnackbar(message, { variant: "error" });
-              },
-              onSuccess: () => {
-                const message = tMembers("actions.removeTeamMember.success", {
-                  email,
-                });
-                enqueueSnackbar(message, { variant: "success" });
-
-                fetchFullOrganization();
-              },
-            },
-          );
-        },
-        open: true,
-        title: tMembers("actions.removeTeamMember.title"),
-      });
-    },
-    [fetchFullOrganization, locale, setDialog, tMembers],
-  );
-
   const memberColumns = useMemo<GridColDef[]>(
     () => [
       {
@@ -460,12 +406,8 @@ const OrganizationsSlug = ({
         field: "actions",
         headerName: tMembers("actions.label"),
         renderCell: ({ row }: GridRenderCellParams<Member>) => {
-          const {
-            canUpdateMemberRole,
-            canLeaveOrganization,
-            canRemoveTeamMember,
-            canRemoveMember,
-          } = getMemberPermissions(row);
+          const { canUpdateMemberRole, canRemoveMember, canLeaveOrganization } =
+            getMemberPermissions(row);
 
           return (
             <Stack height="100%" direction="row" alignItems="center" gap={0.5}>
@@ -484,6 +426,22 @@ const OrganizationsSlug = ({
                   </StyledIconButton>
                 </Tooltip>
               )}
+              {canRemoveMembers && (
+                <Tooltip title={tMembers("actions.removeMember.title")}>
+                  <StyledIconButton
+                    color="error"
+                    onClick={(event) => {
+                      event.stopPropagation();
+
+                      handleRemoveMember(row);
+                    }}
+                    size="small"
+                    visible={canRemoveMember}
+                  >
+                    <PersonRemove fontSize="small" />
+                  </StyledIconButton>
+                </Tooltip>
+              )}
               {canLeaveOrganizations && (
                 <Tooltip
                   title={tOrganizations("actions.leaveOrganization.title")}
@@ -499,38 +457,6 @@ const OrganizationsSlug = ({
                     visible={canLeaveOrganization}
                   >
                     <ExitToApp fontSize="small" />
-                  </StyledIconButton>
-                </Tooltip>
-              )}
-              {canRemoveTeamMembers && (
-                <Tooltip title={tMembers("actions.removeTeamMember.title")}>
-                  <StyledIconButton
-                    color="error"
-                    onClick={(event) => {
-                      event.stopPropagation();
-
-                      handleRemoveTeamMember(row);
-                    }}
-                    size="small"
-                    visible={canRemoveTeamMember}
-                  >
-                    <GroupRemove fontSize="small" />
-                  </StyledIconButton>
-                </Tooltip>
-              )}
-              {canRemoveMembers && (
-                <Tooltip title={tMembers("actions.removeMember.title")}>
-                  <StyledIconButton
-                    color="error"
-                    onClick={(event) => {
-                      event.stopPropagation();
-
-                      handleRemoveMember(row);
-                    }}
-                    size="small"
-                    visible={canRemoveMember}
-                  >
-                    <PersonRemove fontSize="small" />
                   </StyledIconButton>
                 </Tooltip>
               )}
@@ -581,15 +507,6 @@ const OrganizationsSlug = ({
         sortable: false,
       },
       {
-        field: "teamId",
-        headerName: tTeams("label"),
-        valueGetter: (teamId?: string | null) => {
-          if (!teamId) return "";
-
-          return teams.find(({ id }) => id === teamId)?.name || teamId;
-        },
-      },
-      {
         field: "createdAt",
         headerName: tMembers("joinedAt"),
         valueFormatter: (value: Date | string) =>
@@ -598,19 +515,15 @@ const OrganizationsSlug = ({
     ],
     [
       canLeaveOrganizations,
-      canRemoveTeamMembers,
       canRemoveMembers,
       canUpdateMemberRoles,
       format,
       getMemberPermissions,
       handleLeaveOrganization,
       handleRemoveMember,
-      handleRemoveTeamMember,
       handleUpdateMemberRole,
-      teams,
       tMembers,
       tOrganizations,
-      tTeams,
     ],
   );
 
@@ -641,6 +554,24 @@ const OrganizationsSlug = ({
         formId: "add-team-member-form",
         open: true,
         title: tTeams("actions.addTeamMember.title"),
+      });
+    },
+    [fetchFullOrganization, members, setDialog, tTeams],
+  );
+
+  const handleManageTeamMembers = useCallback(
+    ({ id: teamId }: Team) => {
+      setDialog({
+        content: (
+          <ManageTeamMembersDialogContent
+            fetchFullOrganization={fetchFullOrganization}
+            members={members}
+            teamId={teamId}
+          />
+        ),
+        open: true,
+        showConfirm: false,
+        title: tTeams("actions.manageTeamMembers.title"),
       });
     },
     [fetchFullOrganization, members, setDialog, tTeams],
@@ -722,6 +653,20 @@ const OrganizationsSlug = ({
               </Tooltip>
             )}
             {canUpdateTeam && (
+              <Tooltip title={tTeams("actions.manageTeamMembers.title")}>
+                <IconButton
+                  onClick={(event) => {
+                    event.stopPropagation();
+
+                    handleManageTeamMembers(row);
+                  }}
+                  size="small"
+                >
+                  <GroupRemove fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            )}
+            {canUpdateTeam && (
               <Tooltip title={tTeams("actions.updateTeam.title")}>
                 <IconButton
                   onClick={(event) => {
@@ -771,6 +716,7 @@ const OrganizationsSlug = ({
       canUpdateTeam,
       format,
       handleAddTeamMember,
+      handleManageTeamMembers,
       handleRemoveTeam,
       handleUpdateTeam,
       tTeams,

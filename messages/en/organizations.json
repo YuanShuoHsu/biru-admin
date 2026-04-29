@@ -103,6 +103,9 @@
         "title": "Add team"
       },
       "label": "Actions",
+      "manageTeamMembers": {
+        "title": "Manage Members"
+      },
       "removeTeam": {
         "confirm": "Are you sure you want to delete <bold>{name}</bold>?",
         "success": "{name} deleted successfully",
@@ -115,6 +118,9 @@
     },
     "createdAt": "Created",
     "label": "Teams",
+    "members": {
+      "empty": "No members in this team"
+    },
     "name": {
       "label": "Team name",
       "placeholder": "Please enter your team name"

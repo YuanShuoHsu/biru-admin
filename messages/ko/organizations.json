@@ -103,6 +103,9 @@
         "title": "팀 추가"
       },
       "label": "작업",
+      "manageTeamMembers": {
+        "title": "멤버 관리"
+      },
       "removeTeam": {
         "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까?",
         "success": "{name} 이(가) 성공적으로 삭제되었습니다",
@@ -115,6 +118,9 @@
     },
     "createdAt": "생성일",
     "label": "팀",
+    "members": {
+      "empty": "이 팀에 멤버가 없습니다"
+    },
     "name": {
       "label": "팀 이름",
       "placeholder": "팀 이름을 입력해 주세요"

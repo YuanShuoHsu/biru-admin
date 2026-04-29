@@ -103,6 +103,9 @@
         "title": "新增團隊"
       },
       "label": "操作",
+      "manageTeamMembers": {
+        "title": "管理成員"
+      },
       "removeTeam": {
         "confirm": "確定要刪除 <bold>{name}</bold> 嗎？",
         "success": "成功刪除團隊 {name}",
@@ -115,6 +118,9 @@
     },
     "createdAt": "建立時間",
     "label": "團隊",
+    "members": {
+      "empty": "此團隊尚無成員"
+    },
     "name": {
       "label": "團隊名稱",
       "placeholder": "請輸入您的團隊名稱"
