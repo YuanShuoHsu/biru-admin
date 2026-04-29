@@ -90,7 +90,7 @@ const UpdateTeamDialog = ({
         },
         onRequest: () => setDialog({ confirmLoading: true }),
         onSuccess: () => {
-          const message = tTeams("actions.createTeam.success");
+          const message = tTeams("actions.createTeam.success", { name });
           enqueueSnackbar(message, { variant: "success" });
 
           closeDialog();

@@ -99,7 +99,7 @@
         "title": "新增成員至團隊"
       },
       "createTeam": {
-        "success": "成功新增團隊",
+        "success": "成功新增團隊 {name}",
         "title": "新增團隊"
       },
       "label": "操作",

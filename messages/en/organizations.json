@@ -99,7 +99,7 @@
         "title": "Add member to team"
       },
       "createTeam": {
-        "success": "Team created successfully",
+        "success": "{name} created successfully",
         "title": "Add team"
       },
       "label": "Actions",

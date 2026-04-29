@@ -99,7 +99,7 @@
         "title": "팀에 멤버 추가"
       },
       "createTeam": {
-        "success": "팀이 성공적으로 생성되었습니다",
+        "success": "{name}이(가) 성공적으로 생성되었습니다",
         "title": "팀 추가"
       },
       "label": "작업",
