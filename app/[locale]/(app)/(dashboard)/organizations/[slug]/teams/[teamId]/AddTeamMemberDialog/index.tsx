@@ -70,7 +70,8 @@ const AddTeamMemberDialog = ({
         onRequest: () => setDialog({ confirmLoading: true }),
         fetchTeamMembers: () => {
           const email =
-            availableMembers.find(({ userId: id }) => id === userId)?.user.email || "";
+            availableMembers.find(({ userId: id }) => id === userId)?.user
+              .email || "";
           const message = tTeams("actions.addTeamMember.success", { email });
           enqueueSnackbar(message, { variant: "success" });
 

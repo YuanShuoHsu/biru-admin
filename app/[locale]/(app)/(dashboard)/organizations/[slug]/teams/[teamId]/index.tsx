@@ -127,7 +127,9 @@ const OrganizationsSlugTeamsTeamId = ({
 
   const handleAddTeamMember = () => {
     const teamMemberIds = new Set(teamMembers.map((m) => m.userId));
-    const availableMembers = members.filter((m) => !teamMemberIds.has(m.userId));
+    const availableMembers = members.filter(
+      (m) => !teamMemberIds.has(m.userId),
+    );
 
     setDialog({
       content: (
