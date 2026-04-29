@@ -118,15 +118,12 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
     },
   );
 
-  const tAdmin = useTranslations("admins");
-  const tDashboard = useTranslations("dashboard");
-  const tOrganizations = useTranslations("organizations");
-  const tOrganizationInvitations = useTranslations("organizations.invitations");
-  const tOrganizationMembers = useTranslations("organizations.members");
-  const tOrganizationTeams = useTranslations("organizations.teams");
+  const tAdmins = useTranslations("admins");
   const tAuth = useTranslations("auth");
   const tCompany = useTranslations("company");
+  const tDashboard = useTranslations("dashboard");
   const tOrder = useTranslations("order");
+  const tOrganizations = useTranslations("organizations");
 
   const isPickup = mode === ORDER_MODE.Pickup;
 
@@ -180,7 +177,7 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
         },
       ],
       icon: AdminPanelSettings,
-      label: tAdmin("label"),
+      label: tAdmins("label"),
       to: "/admins",
     },
     {
@@ -189,17 +186,17 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
           children: [
             {
               icon: People,
-              label: tOrganizationMembers("label"),
+              label: tOrganizations("members.label"),
               to: "/members",
             },
             {
               icon: Groups,
-              label: tOrganizationTeams("label"),
+              label: tOrganizations("teams.label"),
               to: "/teams",
             },
             {
               icon: Mail,
-              label: tOrganizationInvitations("label"),
+              label: tOrganizations("invitations.label"),
               to: "/invitations",
             },
           ],
