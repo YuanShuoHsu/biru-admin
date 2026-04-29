@@ -19,7 +19,7 @@
       "title": "관리"
     },
     "updateOrganization": {
-      "success": "조직이 성공적으로 업데이트되었습니다",
+      "success": "{name}이(가) 성공적으로 업데이트되었습니다",
       "title": "조직 편집"
     }
   },

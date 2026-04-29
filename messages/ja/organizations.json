@@ -19,7 +19,7 @@
       "title": "管理"
     },
     "updateOrganization": {
-      "success": "組織の更新に成功しました",
+      "success": "{name} の更新に成功しました",
       "title": "組織を編集"
     }
   },

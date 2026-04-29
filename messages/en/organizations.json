@@ -19,7 +19,7 @@
       "title": "Manage"
     },
     "updateOrganization": {
-      "success": "Organization updated successfully",
+      "success": "{name} updated successfully",
       "title": "Edit organization"
     }
   },

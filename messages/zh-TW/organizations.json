@@ -19,7 +19,7 @@
       "title": "管理"
     },
     "updateOrganization": {
-      "success": "成功更新組織",
+      "success": "成功更新組織 {name}",
       "title": "編輯組織"
     }
   },

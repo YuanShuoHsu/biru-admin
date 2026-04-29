@@ -72,7 +72,9 @@ const UpdateOrganizationDialog = ({
         },
         onRequest: () => setDialog({ confirmLoading: true }),
         onSuccess: () => {
-          const message = tOrganizations("actions.updateOrganization.success");
+          const message = tOrganizations("actions.updateOrganization.success", {
+            name,
+          });
           enqueueSnackbar(message, { variant: "success" });
 
           closeDialog();
