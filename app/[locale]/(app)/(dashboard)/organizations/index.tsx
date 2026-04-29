@@ -11,8 +11,8 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import { flushSync } from "react-dom";
 
-import CreateOrganizationDialogContent from "./CreateOrganizationDialogContent";
-import UpdateOrganizationDialogContent from "./UpdateOrganizationDialogContent";
+import CreateOrganizationDialog from "./CreateOrganizationDialog";
+import UpdateOrganizationDialog from "./UpdateOrganizationDialog";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
@@ -124,7 +124,7 @@ const Organizations = ({
   const handleCreateOrganization = () => {
     setDialog({
       content: (
-        <CreateOrganizationDialogContent
+        <CreateOrganizationDialog
           fetchOrganizationList={fetchOrganizationList}
         />
       ),
@@ -138,7 +138,7 @@ const Organizations = ({
     (organization: Organization) => {
       setDialog({
         content: (
-          <UpdateOrganizationDialogContent
+          <UpdateOrganizationDialog
             fetchOrganizationList={fetchOrganizationList}
             organization={organization}
           />

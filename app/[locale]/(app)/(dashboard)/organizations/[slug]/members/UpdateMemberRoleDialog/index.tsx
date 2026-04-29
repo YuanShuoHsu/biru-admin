@@ -1,15 +1,14 @@
-// https://mui.com/material-ui/react-select/#MultipleSelectPlaceholder.tsx
-
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
+import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
 import {
-  type InviteMemberFormInput,
-  type InviteMemberFormOutput,
-  useInviteMemberFormSchema,
+  type UpdateMemberRoleFormInput,
+  type UpdateMemberRoleFormOutput,
+  useUpdateMemberRoleFormSchema,
 } from "./definitions";
 
 import { roles } from "@/constants/organizations";
@@ -22,7 +21,7 @@ import { Box, type BoxProps, MenuItem, TextField, styled } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { Team } from "@/types/organizations";
+import type { Member } from "@/types/organizations";
 
 const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   display: "flex",
@@ -31,46 +30,45 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-interface InviteMemberDialogContentProps {
+interface UpdateMemberRoleDialogProps {
   fetchFullOrganization: () => void;
+  member: Member;
   organizationId: string;
-  teams: Team[];
 }
 
-const InviteMemberDialogContent = ({
+const UpdateMemberRoleDialog = ({
   fetchFullOrganization,
+  member,
   organizationId,
-  teams,
-}: InviteMemberDialogContentProps) => {
+}: UpdateMemberRoleDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const locale = useLocale();
 
+  const tAdmins = useTranslations("admins");
   const tMembers = useTranslations("organizations.members");
-  const tTeams = useTranslations("organizations.teams");
 
-  const inviteMemberFormSchema = useInviteMemberFormSchema();
+  const updateMemberRoleFormSchema = useUpdateMemberRoleFormSchema();
 
   const {
     control,
     formState: { errors },
     handleSubmit,
     register,
-  } = useForm<InviteMemberFormInput, unknown, InviteMemberFormOutput>({
-    defaultValues: { email: "", role: "", teamId: "" },
-    resolver: zodResolver(inviteMemberFormSchema),
+  } = useForm<UpdateMemberRoleFormInput, unknown, UpdateMemberRoleFormOutput>({
+    defaultValues: { email: member.user.email, role: member.role },
+    resolver: zodResolver(updateMemberRoleFormSchema),
   });
 
   const role = useWatch({ control, name: "role" });
-  const teamId = useWatch({ control, name: "teamId" });
 
-  const onSubmit = handleSubmit(
-    async ({ email, role, teamId }: InviteMemberFormOutput) => {
-      await authClient.organization.inviteMember(
-        { email, organizationId, role, teamId: teamId || undefined },
+  const onSubmit = (event: BaseSyntheticEvent) =>
+    handleSubmit(async ({ role }) => {
+      await authClient.organization.updateMemberRole(
+        { organizationId, memberId: member.id, role },
         {
-          headers: { "Accept-Language": locale },
           onError: ({ error: { code } }) => {
+            console.log(code);
             const message = getErrorMessage(code, locale);
             enqueueSnackbar(message, { variant: "error" });
 
@@ -78,7 +76,9 @@ const InviteMemberDialogContent = ({
           },
           onRequest: () => setDialog({ confirmLoading: true }),
           onSuccess: () => {
-            const message = tMembers("actions.inviteMember.success");
+            const message = tMembers("actions.updateMemberRole.success", {
+              email: member.user.email,
+            });
             enqueueSnackbar(message, { variant: "success" });
 
             closeDialog();
@@ -87,19 +87,23 @@ const InviteMemberDialogContent = ({
           },
         },
       );
-    },
-  );
+    })(event);
 
   return (
-    <StyledBox component="form" id="invite-member-form" onSubmit={onSubmit}>
+    <StyledBox
+      component="form"
+      id="update-member-role-form"
+      onSubmit={onSubmit}
+    >
       <TextField
         autoComplete="email"
         error={!!errors.email}
         fullWidth
         helperText={errors.email?.message}
-        label={tMembers("actions.inviteMember.email.label")}
-        placeholder={tMembers("actions.inviteMember.email.placeholder")}
+        label={tAdmins("email.label")}
+        placeholder={tAdmins("email.placeholder")}
         required
+        slotProps={{ input: { readOnly: true } }}
         type="email"
         {...register("email")}
       />
@@ -122,26 +126,8 @@ const InviteMemberDialogContent = ({
           </MenuItem>
         ))}
       </TextField>
-      <TextField
-        error={!!errors.teamId}
-        fullWidth
-        helperText={errors.teamId?.message}
-        label={tTeams("teamId.label")}
-        select
-        value={teamId}
-        {...register("teamId")}
-      >
-        <MenuItem disabled value="">
-          <em>{tTeams("teamId.placeholder")}</em>
-        </MenuItem>
-        {teams.map(({ id, name }) => (
-          <MenuItem key={id} value={id}>
-            {name}
-          </MenuItem>
-        ))}
-      </TextField>
     </StyledBox>
   );
 };
 
-export default InviteMemberDialogContent;
+export default UpdateMemberRoleDialog;

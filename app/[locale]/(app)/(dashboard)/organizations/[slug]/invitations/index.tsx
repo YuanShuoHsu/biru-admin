@@ -32,19 +32,19 @@ const ROLE_COLOR_MAP: Record<string, "error" | "warning" | "default"> = {
   member: "default",
 };
 
-interface InvitationsContentProps {
+interface OrganizationsSlugInvitationsProps {
   id: string;
   invitations: Invitation[];
   members: Member[];
   teams: Team[];
 }
 
-const InvitationsContent = ({
+const OrganizationsSlugInvitations = ({
   id,
   invitations,
   members,
   teams,
-}: InvitationsContentProps) => {
+}: OrganizationsSlugInvitationsProps) => {
   const [isPending, startTransition] = useTransition();
 
   const invitationsApiRef = useGridApiRef();
@@ -206,4 +206,4 @@ const InvitationsContent = ({
   );
 };
 
-export default InvitationsContent;
+export default OrganizationsSlugInvitations;

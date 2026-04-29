@@ -31,13 +31,13 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-interface CreateOrganizationDialogContentProps {
+interface CreateOrganizationDialogProps {
   fetchOrganizationList: () => Promise<void>;
 }
 
-const CreateOrganizationDialogContent = ({
+const CreateOrganizationDialog = ({
   fetchOrganizationList,
-}: CreateOrganizationDialogContentProps) => {
+}: CreateOrganizationDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
   const logo = useUploadAvatarSrc(CREATE_ORGANIZATION_AVATAR_KEY);
 
@@ -112,4 +112,4 @@ const CreateOrganizationDialogContent = ({
   );
 };
 
-export default CreateOrganizationDialogContent;
+export default CreateOrganizationDialog;

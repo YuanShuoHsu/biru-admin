@@ -5,8 +5,8 @@ import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useTransition } from "react";
 
-import InviteMemberDialogContent from "./InviteMemberDialogContent";
-import UpdateMemberRoleDialogContent from "./UpdateMemberRoleDialogContent";
+import InviteMemberDialog from "./InviteMemberDialog";
+import UpdateMemberRoleDialog from "./UpdateMemberRoleDialog";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
@@ -71,14 +71,19 @@ const ROLE_RANK: Record<string, number> = {
   member: 1,
 };
 
-interface MembersContentProps {
+interface OrganizationsSlugMembersProps {
   id: string;
   members: Member[];
   slug: string;
   teams: Team[];
 }
 
-const MembersContent = ({ id, members, slug, teams }: MembersContentProps) => {
+const OrganizationsSlugMembers = ({
+  id,
+  members,
+  slug,
+  teams,
+}: OrganizationsSlugMembersProps) => {
   const [isPending, startTransition] = useTransition();
 
   const membersApiRef = useGridApiRef();
@@ -195,7 +200,7 @@ const MembersContent = ({ id, members, slug, teams }: MembersContentProps) => {
   const handleInviteMember = () => {
     setDialog({
       content: (
-        <InviteMemberDialogContent
+        <InviteMemberDialog
           fetchFullOrganization={refresh}
           organizationId={id}
           teams={teams}
@@ -211,7 +216,7 @@ const MembersContent = ({ id, members, slug, teams }: MembersContentProps) => {
     (member: Member) => {
       setDialog({
         content: (
-          <UpdateMemberRoleDialogContent
+          <UpdateMemberRoleDialog
             fetchFullOrganization={refresh}
             member={member}
             organizationId={id}
@@ -464,4 +469,4 @@ const MembersContent = ({ id, members, slug, teams }: MembersContentProps) => {
   );
 };
 
-export default MembersContent;
+export default OrganizationsSlugMembers;

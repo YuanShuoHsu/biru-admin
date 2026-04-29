@@ -23,17 +23,17 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-interface TeamDialogContentProps {
+interface UpdateTeamDialogProps {
   fetchFullOrganization: () => void;
   organizationId: string;
   team?: Team;
 }
 
-const TeamDialogContent = ({
+const UpdateTeamDialog = ({
   fetchFullOrganization,
   organizationId,
   team,
-}: TeamDialogContentProps) => {
+}: UpdateTeamDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const locale = useLocale();
@@ -116,4 +116,4 @@ const TeamDialogContent = ({
   );
 };
 
-export default TeamDialogContent;
+export default UpdateTeamDialog;

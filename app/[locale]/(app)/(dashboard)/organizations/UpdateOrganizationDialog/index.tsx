@@ -31,15 +31,15 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-interface UpdateOrganizationDialogContentProps {
+interface UpdateOrganizationDialogProps {
   fetchOrganizationList: () => Promise<void>;
   organization: Organization;
 }
 
-const UpdateOrganizationDialogContent = ({
+const UpdateOrganizationDialog = ({
   fetchOrganizationList,
   organization,
-}: UpdateOrganizationDialogContentProps) => {
+}: UpdateOrganizationDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const locale = useLocale();
@@ -116,4 +116,4 @@ const UpdateOrganizationDialogContent = ({
   );
 };
 
-export default UpdateOrganizationDialogContent;
+export default UpdateOrganizationDialog;

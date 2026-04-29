@@ -6,7 +6,7 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import { flushSync } from "react-dom";
 
-import AddTeamMemberDialogContent from "./AddTeamMemberDialogContent";
+import AddTeamMemberDialog from "./AddTeamMemberDialog";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { Link } from "@/i18n/navigation";
@@ -143,7 +143,7 @@ const OrganizationsSlugTeamsTeamId = ({
   const handleAddTeamMember = () => {
     setDialog({
       content: (
-        <AddTeamMemberDialogContent
+        <AddTeamMemberDialog
           fetchFullOrganization={fetchTeamMembers}
           members={members}
           teamId={team.id}

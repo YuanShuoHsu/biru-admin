@@ -2,17 +2,19 @@ import { setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
-import TeamsContent from ".";
+import OrganizationsSlugTeams from ".";
 
 import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
-interface TeamsPageProps {
+interface OrganizationsSlugTeamsPageProps {
   params: Promise<{ locale: Locale; slug: string }>;
 }
 
-const TeamsPage = async ({ params }: TeamsPageProps) => {
+const OrganizationsSlugTeamsPage = async ({
+  params,
+}: OrganizationsSlugTeamsPageProps) => {
   const [cookieStore, { locale, slug }] = await Promise.all([
     cookies(),
     params,
@@ -28,7 +30,7 @@ const TeamsPage = async ({ params }: TeamsPageProps) => {
   if (!data) notFound();
 
   return (
-    <TeamsContent
+    <OrganizationsSlugTeams
       id={data.id}
       members={data.members}
       slug={slug}
@@ -37,4 +39,4 @@ const TeamsPage = async ({ params }: TeamsPageProps) => {
   );
 };
 
-export default TeamsPage;
+export default OrganizationsSlugTeamsPage;

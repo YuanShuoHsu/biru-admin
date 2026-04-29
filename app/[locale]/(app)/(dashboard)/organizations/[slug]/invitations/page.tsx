@@ -2,17 +2,19 @@ import { setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
-import InvitationsContent from ".";
+import OrganizationsSlugInvitations from ".";
 
 import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
-interface InvitationsPageProps {
+interface OrganizationsSlugInvitationsPageProps {
   params: Promise<{ locale: Locale; slug: string }>;
 }
 
-const InvitationsPage = async ({ params }: InvitationsPageProps) => {
+const OrganizationsSlugInvitationsPage = async ({
+  params,
+}: OrganizationsSlugInvitationsPageProps) => {
   const [cookieStore, { locale, slug }] = await Promise.all([
     cookies(),
     params,
@@ -32,7 +34,7 @@ const InvitationsPage = async ({ params }: InvitationsPageProps) => {
     .filter(({ status }) => status === "pending");
 
   return (
-    <InvitationsContent
+    <OrganizationsSlugInvitations
       id={data.id}
       invitations={pendingInvitations}
       members={data.members}
@@ -41,4 +43,4 @@ const InvitationsPage = async ({ params }: InvitationsPageProps) => {
   );
 };
 
-export default InvitationsPage;
+export default OrganizationsSlugInvitationsPage;

@@ -2,17 +2,19 @@ import { setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
-import MembersContent from ".";
+import OrganizationsSlugMembers from ".";
 
 import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
-interface MembersPageProps {
+interface OrganizationsSlugMembersPageProps {
   params: Promise<{ locale: Locale; slug: string }>;
 }
 
-const MembersPage = async ({ params }: MembersPageProps) => {
+const OrganizationsSlugMembersPage = async ({
+  params,
+}: OrganizationsSlugMembersPageProps) => {
   const [cookieStore, { locale, slug }] = await Promise.all([
     cookies(),
     params,
@@ -28,7 +30,7 @@ const MembersPage = async ({ params }: MembersPageProps) => {
   if (!data) notFound();
 
   return (
-    <MembersContent
+    <OrganizationsSlugMembers
       id={data.id}
       members={data.members.toReversed()}
       slug={slug}
@@ -37,4 +39,4 @@ const MembersPage = async ({ params }: MembersPageProps) => {
   );
 };
 
-export default MembersPage;
+export default OrganizationsSlugMembersPage;

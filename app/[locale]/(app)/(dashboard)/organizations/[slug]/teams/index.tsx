@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useTransition } from "react";
 
-import TeamDialogContent from "./TeamDialogContent";
+import UpdateTeamDialog from "./UpdateTeamDialog";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
@@ -13,7 +13,7 @@ import { useRouter } from "@/i18n/navigation";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { Add, Delete, Edit, People } from "@mui/icons-material";
+import { Delete, Edit, FolderShared, People } from "@mui/icons-material";
 import {
   Button,
   DialogContentText,
@@ -34,14 +34,19 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
-interface TeamsContentProps {
+interface OrganizationsSlugTeamsProps {
   id: string;
   members: Member[];
   slug: string;
   teams: Team[];
 }
 
-const TeamsContent = ({ id, members, slug, teams }: TeamsContentProps) => {
+const OrganizationsSlugTeams = ({
+  id,
+  members,
+  slug,
+  teams,
+}: OrganizationsSlugTeamsProps) => {
   const [isPending, startTransition] = useTransition();
 
   const teamsApiRef = useGridApiRef();
@@ -97,7 +102,7 @@ const TeamsContent = ({ id, members, slug, teams }: TeamsContentProps) => {
   const handleCreateTeam = () => {
     setDialog({
       content: (
-        <TeamDialogContent
+        <UpdateTeamDialog
           fetchFullOrganization={refresh}
           organizationId={id}
         />
@@ -119,7 +124,7 @@ const TeamsContent = ({ id, members, slug, teams }: TeamsContentProps) => {
     (team: Team) => {
       setDialog({
         content: (
-          <TeamDialogContent
+          <UpdateTeamDialog
             fetchFullOrganization={refresh}
             organizationId={id}
             team={team}
@@ -254,8 +259,8 @@ const TeamsContent = ({ id, members, slug, teams }: TeamsContentProps) => {
           <Button
             onClick={handleCreateTeam}
             size="small"
-            startIcon={<Add />}
-            variant="outlined"
+            startIcon={<FolderShared />}
+            variant="contained"
           >
             {tTeams("actions.createTeam.title")}
           </Button>
@@ -275,4 +280,4 @@ const TeamsContent = ({ id, members, slug, teams }: TeamsContentProps) => {
   );
 };
 
-export default TeamsContent;
+export default OrganizationsSlugTeams;

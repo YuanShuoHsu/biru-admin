@@ -26,17 +26,17 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-interface AddTeamMemberDialogContentProps {
+interface AddTeamMemberDialogProps {
   fetchFullOrganization: () => void;
   members: Member[];
   teamId: string;
 }
 
-const AddTeamMemberDialogContent = ({
+const AddTeamMemberDialog = ({
   fetchFullOrganization,
   members,
   teamId,
-}: AddTeamMemberDialogContentProps) => {
+}: AddTeamMemberDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const locale = useLocale();
@@ -109,4 +109,4 @@ const AddTeamMemberDialogContent = ({
   );
 };
 
-export default AddTeamMemberDialogContent;
+export default AddTeamMemberDialog;
