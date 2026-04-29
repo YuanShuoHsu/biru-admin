@@ -75,11 +75,13 @@ const OrganizationsSlugTeamsTeamId = ({
 
   const apiRef = useGridApiRef();
 
-  const locale = useLocale();
   const { session } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
 
+  const locale = useLocale();
+
   const format = useFormatter();
+
   const tMembers = useTranslations("organizations.members");
   const tTeams = useTranslations("organizations.teams");
 
@@ -147,7 +149,9 @@ const OrganizationsSlugTeamsTeamId = ({
 
   const handleRemoveTeamMember = useCallback(
     (userId: string) => {
-      const member = members.find(({ userId: memberId }) => memberId === userId);
+      const member = members.find(
+        ({ userId: memberId }) => memberId === userId,
+      );
 
       setDialog({
         content: (

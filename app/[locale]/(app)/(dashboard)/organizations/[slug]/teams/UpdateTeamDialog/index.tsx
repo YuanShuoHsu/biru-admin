@@ -38,7 +38,6 @@ const UpdateTeamDialog = ({
 
   const locale = useLocale();
 
-  const tOrganizations = useTranslations("organizations");
   const tTeams = useTranslations("organizations.teams");
 
   const teamFormSchema = useTeamFormSchema();
@@ -107,7 +106,7 @@ const UpdateTeamDialog = ({
         error={!!errors.name}
         fullWidth
         helperText={errors.name?.message}
-        label={tOrganizations("name.label")}
+        label={tTeams("name.label")}
         placeholder={tTeams("name.placeholder")}
         required
         {...register("name")}
