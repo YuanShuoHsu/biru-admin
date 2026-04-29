@@ -171,7 +171,9 @@ const OrganizationsSlugInvitations = ({
         valueGetter: (teamId?: string | null) => {
           if (!teamId) return "";
 
-          return teams.find(({ id }) => id === teamId)?.name || teamId;
+          return (
+            teams.find(({ id }) => id === teamId)?.name || tTeams("unknown")
+          );
         },
       },
       {

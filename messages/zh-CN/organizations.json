@@ -128,6 +128,7 @@
     "teamId": {
       "label": "团队（选填）",
       "placeholder": "请选择您的团队"
-    }
+    },
+    "unknown": "未知团队"
   }
 }
