@@ -2,12 +2,12 @@
 
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
+import { useParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
-import { useCallback, useMemo, useTransition } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { flushSync } from "react-dom";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
-
-import { useRouter } from "@/i18n/navigation";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
@@ -33,19 +33,20 @@ const ROLE_COLOR_MAP: Record<string, "error" | "warning" | "default"> = {
 };
 
 interface OrganizationsSlugInvitationsProps {
-  id: string;
   invitations: Invitation[];
   members: Member[];
   teams: Team[];
 }
 
 const OrganizationsSlugInvitations = ({
-  id,
-  invitations,
-  members,
-  teams,
+  invitations: initialInvitations,
+  members: initialMembers,
+  teams: initialTeams,
 }: OrganizationsSlugInvitationsProps) => {
-  const [isPending, startTransition] = useTransition();
+  const [loading, setLoading] = useState(false);
+  const [invitations, setInvitations] = useState(initialInvitations);
+  const [members, setMembers] = useState(initialMembers);
+  const [teams, setTeams] = useState(initialTeams);
 
   const invitationsApiRef = useGridApiRef();
 
@@ -53,8 +54,10 @@ const OrganizationsSlugInvitations = ({
   const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
+
   const locale = useLocale();
-  const router = useRouter();
+
+  const { slug } = useParams<{ slug: string }>();
 
   const tInvitations = useTranslations("organizations.invitations");
   const tMembers = useTranslations("organizations.members");
@@ -74,15 +77,38 @@ const OrganizationsSlugInvitations = ({
     });
   }, [currentUserRole]);
 
-  const refresh = useCallback(() => {
-    startTransition(() => {
-      router.refresh();
-      setTimeout(
-        () => invitationsApiRef.current?.autosizeColumns(autosizeOptions),
-        0,
-      );
-    });
-  }, [invitationsApiRef, router]);
+  const fetchFullOrganization = useCallback(async () => {
+    await authClient.organization.getFullOrganization(
+      { query: { organizationSlug: decodeURIComponent(slug) } },
+      {
+        onError: ({ error: { code } }) => {
+          setLoading(false);
+
+          enqueueSnackbar(getErrorMessage(code, locale), {
+            variant: "error",
+          });
+        },
+        onRequest: () => setLoading(true),
+        onSuccess: ({ data: { invitations, members, teams } }) => {
+          flushSync(() => {
+            setInvitations(
+              invitations
+                .toReversed()
+                .filter(({ status }: Invitation) => status === "pending"),
+            );
+            setMembers(members);
+            setTeams(teams);
+
+            setLoading(false);
+          });
+
+          setTimeout(() => {
+            invitationsApiRef.current?.autosizeColumns(autosizeOptions);
+          }, 0);
+        },
+      },
+    );
+  }, [invitationsApiRef, locale, slug]);
 
   const handleCancelInvitation = useCallback(
     ({ id: invitationId, email }: Invitation) => {
@@ -109,7 +135,8 @@ const OrganizationsSlugInvitations = ({
                   tInvitations("actions.cancelInvitation.success"),
                   { variant: "success" },
                 );
-                refresh();
+
+                fetchFullOrganization();
               },
             },
           );
@@ -118,7 +145,7 @@ const OrganizationsSlugInvitations = ({
         title: tInvitations("actions.cancelInvitation.title"),
       });
     },
-    [locale, refresh, setDialog, tInvitations],
+    [fetchFullOrganization, locale, setDialog, tInvitations],
   );
 
   const invitationColumns = useMemo<GridColDef[]>(
@@ -199,7 +226,7 @@ const OrganizationsSlugInvitations = ({
       {...DATA_GRID_PROPS}
       apiRef={invitationsApiRef}
       columns={invitationColumns}
-      loading={isPending}
+      loading={loading}
       onPaginationModelChange={() =>
         invitationsApiRef.current?.autosizeColumns(autosizeOptions)
       }

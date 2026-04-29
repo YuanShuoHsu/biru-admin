@@ -35,7 +35,6 @@ const OrganizationsSlugInvitationsPage = async ({
 
   return (
     <OrganizationsSlugInvitations
-      id={data.id}
       invitations={pendingInvitations}
       members={data.members}
       teams={data.teams}
