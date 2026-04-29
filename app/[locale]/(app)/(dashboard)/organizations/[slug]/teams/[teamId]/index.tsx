@@ -32,9 +32,9 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { ActiveOrganization, Team } from "@/types/organizations";
 
 import {
-  toTeamMemberListItems,
-  type TeamMemberListItem,
-} from "@/utils/organizations";
+  buildTeamMembers,
+  type TeamMemberRow,
+} from "@/utils/teams";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -65,7 +65,7 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
 interface OrganizationsSlugTeamsTeamIdProps {
   activeOrganization: ActiveOrganization;
   team: Team;
-  teamMembers: TeamMemberListItem[];
+  teamMembers: TeamMemberRow[];
 }
 
 const OrganizationsSlugTeamsTeamId = ({
@@ -115,7 +115,7 @@ const OrganizationsSlugTeamsTeamId = ({
         onRequest: () => setLoading(true),
         onSuccess: ({ data }) => {
           flushSync(() => {
-            setTeamMembers(toTeamMemberListItems(data, members));
+            setTeamMembers(buildTeamMembers(data, members));
 
             setLoading(false);
           });
@@ -191,7 +191,7 @@ const OrganizationsSlugTeamsTeamId = ({
         disableColumnMenu: true,
         field: "actions",
         headerName: tTeams("actions.label"),
-        renderCell: ({ row }: GridRenderCellParams<TeamMemberListItem>) => (
+        renderCell: ({ row }: GridRenderCellParams<TeamMemberRow>) => (
           <>
             {canUpdateTeam && (
               <Tooltip title={tMembers("actions.removeTeamMember.title")}>
@@ -215,7 +215,7 @@ const OrganizationsSlugTeamsTeamId = ({
       {
         field: "avatar",
         headerName: tMembers("avatar"),
-        renderCell: ({ row }: GridRenderCellParams<TeamMemberListItem>) => (
+        renderCell: ({ row }: GridRenderCellParams<TeamMemberRow>) => (
           <Stack height="100%" direction="row" alignItems="center">
             <StyledAvatar alt={row.user.name} src={row.user.image || undefined}>
               {row.user.name[0]}
@@ -228,17 +228,17 @@ const OrganizationsSlugTeamsTeamId = ({
       {
         field: "name",
         headerName: tMembers("name"),
-        valueGetter: (_value, row: TeamMemberListItem) => row.user.name,
+        valueGetter: (_value, row: TeamMemberRow) => row.user.name,
       },
       {
         field: "email",
         headerName: tMembers("email"),
-        valueGetter: (_value, row: TeamMemberListItem) => row.user.email,
+        valueGetter: (_value, row: TeamMemberRow) => row.user.email,
       },
       {
         field: "role",
         headerName: tMembers("role.label"),
-        renderCell: ({ row }: GridRenderCellParams<TeamMemberListItem>) => (
+        renderCell: ({ row }: GridRenderCellParams<TeamMemberRow>) => (
           <Chip
             color={ROLE_COLOR_MAP[row.role] ?? "default"}
             label={tMembers(`role.${row.role as "owner" | "admin" | "member"}`)}

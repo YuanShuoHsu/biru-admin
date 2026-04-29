@@ -1,31 +1,4 @@
-import type { TeamMember } from "better-auth/plugins";
-
 import { authClient } from "@/lib/auth-client";
-
-import type { ActiveOrganization, Member } from "@/types/organizations";
-
-export type TeamMemberListItem = Member & {
-  joinedAt: TeamMember["createdAt"];
-};
-
-export const toTeamMemberListItems = (
-  teamMembers: TeamMember[],
-  members: ActiveOrganization["members"],
-): TeamMemberListItem[] => {
-  const teamMemberListItems: TeamMemberListItem[] = [];
-
-  for (const { userId, createdAt } of teamMembers.toReversed()) {
-    const member = members.find(
-      ({ userId: memberUserId }) => memberUserId === userId,
-    );
-
-    if (member) {
-      teamMemberListItems.push({ ...member, joinedAt: createdAt });
-    }
-  }
-
-  return teamMemberListItems;
-};
 
 export type OrganizationPermissions = Record<
   string,

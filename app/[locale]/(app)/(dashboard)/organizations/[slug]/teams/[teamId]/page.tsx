@@ -8,7 +8,7 @@ import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
-import { toTeamMemberListItems } from "@/utils/organizations";
+import { buildTeamMembers } from "@/utils/teams";
 
 interface OrganizationsSlugTeamsTeamIdPageProps {
   params: Promise<{ locale: Locale; slug: string; teamId: string }>;
@@ -26,7 +26,7 @@ const OrganizationsSlugTeamsTeamIdPage = async ({
 
   const cookieHeader = { cookie: cookieStore.toString() };
 
-  const [{ data: activeOrganization }, { data: rawTeamMembers }] =
+  const [{ data: activeOrganization }, { data: teamMemberData }] =
     await Promise.all([
       authClient.organization.getFullOrganization({
         query: { organizationSlug: decodeURIComponent(slug) },
@@ -42,8 +42,8 @@ const OrganizationsSlugTeamsTeamIdPage = async ({
   const team = activeOrganization.teams.find(({ id }) => id === teamId);
   if (!team) notFound();
 
-  const teamMembers = toTeamMemberListItems(
-    rawTeamMembers || [],
+  const teamMembers = buildTeamMembers(
+    teamMemberData || [],
     activeOrganization.members,
   );
 
