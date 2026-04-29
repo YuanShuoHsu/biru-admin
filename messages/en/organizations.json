@@ -96,7 +96,7 @@
     "actions": {
       "addTeamMember": {
         "success": "{email} added to team successfully",
-        "title": "Add member to team"
+        "title": "Add member"
       },
       "createTeam": {
         "success": "{name} created successfully",

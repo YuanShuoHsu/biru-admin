@@ -96,7 +96,7 @@
     "actions": {
       "addTeamMember": {
         "success": "{email} をチームに追加しました",
-        "title": "チームにメンバーを追加"
+        "title": "メンバーを追加"
       },
       "createTeam": {
         "success": "{name} の作成に成功しました",
