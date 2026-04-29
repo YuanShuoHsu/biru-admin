@@ -102,10 +102,7 @@ const OrganizationsSlugTeams = ({
   const handleCreateTeam = () => {
     setDialog({
       content: (
-        <UpdateTeamDialog
-          fetchFullOrganization={refresh}
-          organizationId={id}
-        />
+        <UpdateTeamDialog fetchFullOrganization={refresh} organizationId={id} />
       ),
       formId: "team-form",
       open: true,
