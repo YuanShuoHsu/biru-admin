@@ -107,6 +107,12 @@ const OrganizationsSlugTeamsTeamId = ({
         onError: ({ error: { code } }) => {
           setLoading(false);
 
+          if (code === "USER_IS_NOT_A_MEMBER_OF_THE_TEAM") {
+            setTeamMembers([]);
+
+            return;
+          }
+
           enqueueSnackbar(getErrorMessage(code, locale), {
             variant: "error",
           });
@@ -167,7 +173,6 @@ const OrganizationsSlugTeamsTeamId = ({
             { teamId: team.id, userId },
             {
               onError: ({ error: { code } }) => {
-                console.log(code);
                 enqueueSnackbar(getErrorMessage(code, locale), {
                   variant: "error",
                 });
