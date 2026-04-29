@@ -78,7 +78,7 @@ const InviteMemberDialog = ({
           },
           onRequest: () => setDialog({ confirmLoading: true }),
           onSuccess: () => {
-            const message = tMembers("actions.inviteMember.success");
+            const message = tMembers("actions.inviteMember.success", { email });
             enqueueSnackbar(message, { variant: "success" });
 
             closeDialog();

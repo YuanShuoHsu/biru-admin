@@ -47,7 +47,7 @@
           "label": "电子邮件",
           "placeholder": "请输入您的电子邮件"
         },
-        "success": "成功发送邀请",
+        "success": "成功发送邀请至 {email}",
         "title": "邀请成员"
       },
       "label": "操作",

@@ -47,7 +47,7 @@
           "label": "Email",
           "placeholder": "Please enter your email"
         },
-        "success": "Invitation sent successfully",
+        "success": "Invitation sent to {email} successfully",
         "title": "Invite member"
       },
       "label": "Actions",
