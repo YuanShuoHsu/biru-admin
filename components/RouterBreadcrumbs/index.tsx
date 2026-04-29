@@ -121,9 +121,7 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
   const tAdmin = useTranslations("admins");
   const tDashboard = useTranslations("dashboard");
   const tOrganizations = useTranslations("organizations");
-  const tOrganizationInvitations = useTranslations(
-    "organizations.invitations",
-  );
+  const tOrganizationInvitations = useTranslations("organizations.invitations");
   const tOrganizationMembers = useTranslations("organizations.members");
   const tOrganizationTeams = useTranslations("organizations.teams");
   const tAuth = useTranslations("auth");
