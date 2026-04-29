@@ -27,14 +27,14 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 }));
 
 interface AddTeamMemberDialogProps {
+  availableMembers: Member[];
   fetchTeamMembers: () => void;
-  members: Member[];
   teamId: string;
 }
 
 const AddTeamMemberDialog = ({
+  availableMembers,
   fetchTeamMembers,
-  members,
   teamId,
 }: AddTeamMemberDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
@@ -45,7 +45,6 @@ const AddTeamMemberDialog = ({
   const tTeams = useTranslations("organizations.teams");
 
   const addTeamMemberFormSchema = useAddTeamMemberFormSchema();
-
   const {
     control,
     formState: { errors },
@@ -71,7 +70,7 @@ const AddTeamMemberDialog = ({
         onRequest: () => setDialog({ confirmLoading: true }),
         fetchTeamMembers: () => {
           const email =
-            members.find(({ userId: id }) => id === userId)?.user.email || "";
+            availableMembers.find(({ userId: id }) => id === userId)?.user.email || "";
           const message = tTeams("actions.addTeamMember.success", { email });
           enqueueSnackbar(message, { variant: "success" });
 
@@ -98,7 +97,7 @@ const AddTeamMemberDialog = ({
         <MenuItem disabled value="">
           <em>{tMembers("userId.placeholder")}</em>
         </MenuItem>
-        {members.map(({ userId: memberId, user: { email, name } }) => (
+        {availableMembers.map(({ userId: memberId, user: { email, name } }) => (
           <MenuItem key={memberId} value={memberId}>
             {tMembers("userId.option", { email, name })}
           </MenuItem>

@@ -126,11 +126,14 @@ const OrganizationsSlugTeamsTeamId = ({
   }, [apiRef, locale, members, team.id]);
 
   const handleAddTeamMember = () => {
+    const teamMemberIds = new Set(teamMembers.map((m) => m.userId));
+    const availableMembers = members.filter((m) => !teamMemberIds.has(m.userId));
+
     setDialog({
       content: (
         <AddTeamMemberDialog
+          availableMembers={availableMembers}
           fetchTeamMembers={fetchTeamMembers}
-          members={members}
           teamId={team.id}
         />
       ),
