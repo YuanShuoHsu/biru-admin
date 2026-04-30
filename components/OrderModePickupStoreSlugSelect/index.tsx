@@ -1,8 +1,8 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 
-import { useStores } from "@/hooks/useStores";
+import { useOrganization } from "@/hooks/useOrganization";
 
 import { useRouter } from "@/i18n/navigation";
 
@@ -20,11 +20,9 @@ const OrderModePickupStoreSlugSelect = ({
   mode,
   storeSlug,
 }: OrderModePickupStoreSlugSelectProps) => {
-  const locale = useLocale();
-
   const router = useRouter();
 
-  const stores = useStores();
+  const organization = useOrganization();
 
   const tOrder = useTranslations("order");
 
@@ -44,11 +42,11 @@ const OrderModePickupStoreSlugSelect = ({
       size="small"
       value={storeSlug || ""}
     >
-      {stores.map(({ id, name, slug }) => (
-        <MenuItem key={id} value={slug}>
-          {name[locale]}
+      {organization && (
+        <MenuItem key={organization.id} value={organization.slug}>
+          {organization.name}
         </MenuItem>
-      ))}
+      )}
     </TextField>
   );
 };

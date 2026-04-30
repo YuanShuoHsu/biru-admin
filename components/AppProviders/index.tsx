@@ -7,18 +7,19 @@ import { swrKeys } from "@/constants/swr";
 
 import { authClient } from "@/lib/auth-client";
 
-import { getStores } from "@/utils/stores";
-
 interface AppProvidersProps {
   children: React.ReactNode;
 }
 
 const AppProviders = async ({ children }: AppProvidersProps) => {
-  const [stores, { data: initialSession }] = await Promise.all([
-    getStores(),
-    authClient.getSession({ fetchOptions: { headers: await headers() } }),
+  const requestHeaders = await headers();
+  const [{ data: organization }, { data: initialSession }] = await Promise.all([
+    authClient.organization.getFullOrganization({
+      fetchOptions: { headers: requestHeaders },
+    }),
+    authClient.getSession({ fetchOptions: { headers: requestHeaders } }),
   ]);
-  const fallback = { [swrKeys.stores]: stores };
+  const fallback = { [swrKeys.organization]: organization };
 
   return (
     <NextIntlClientProvider>

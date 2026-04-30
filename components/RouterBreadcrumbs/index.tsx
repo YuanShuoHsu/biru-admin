@@ -9,7 +9,7 @@ import useSWR from "swr";
 
 import { ORDER_MODE } from "@/constants/orderMode";
 
-import { useStores } from "@/hooks/useStores";
+import { useOrganization } from "@/hooks/useOrganization";
 
 import { usePathname } from "@/i18n/navigation";
 
@@ -55,8 +55,6 @@ import { styled, type Theme } from "@mui/material/styles";
 
 import type { RouteParams } from "@/types/routeParams";
 
-import { getStoreName } from "@/utils/stores";
-
 const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
   transition: "none",
 
@@ -93,11 +91,10 @@ interface BreadcrumbItem {
 }
 
 const useBreadcrumbs = (): BreadcrumbItem[] => {
-  const { locale, mode, slug, storeSlug, teamId, userId } =
-    useParams<RouteParams>();
+  const { mode, slug, storeSlug, teamId, userId } = useParams<RouteParams>();
 
-  const stores = useStores();
-  const storeName = getStoreName(locale, stores, storeSlug);
+  const organization = useOrganization();
+  const storeName = organization?.name || "";
 
   const { data: userEmail = "" } = useSWR(
     userId ? `admin-user-${userId}` : null,

@@ -13,7 +13,7 @@ import { ORDER_MODE } from "@/constants/orderMode";
 import { query } from "@/constants/query";
 
 import { useAuthMenuItems, useLogoutMenuItem } from "@/hooks/useAuth";
-import { useStores } from "@/hooks/useStores";
+import { useOrganization } from "@/hooks/useOrganization";
 
 import { usePathname } from "@/i18n/navigation";
 
@@ -52,7 +52,6 @@ import type { RouteParams } from "@/types/routeParams";
 
 import { useAddAccountMenuItem, useSettingsMenuItem } from "@/utils/account";
 import { getHref } from "@/utils/href";
-import { getStoreName } from "@/utils/stores";
 
 const StyledChip = styled(Chip)(({ theme }) => ({
   marginLeft: "auto",
@@ -68,7 +67,7 @@ const StyledDivider = styled(Divider, {
 
 // 等 order 完成後要修正
 const DineInMenuItem = () => {
-  const { locale, mode, storeSlug } = useParams<RouteParams>();
+  const { mode, storeSlug } = useParams<RouteParams>();
 
   const router = useRouter();
 
@@ -76,8 +75,8 @@ const DineInMenuItem = () => {
   const tableNumber = searchParams.get("tableNumber");
   const partySize = searchParams.get("partySize");
 
-  const stores = useStores();
-  const storeName = getStoreName(locale, stores, storeSlug);
+  const organization = useOrganization();
+  const storeName = organization?.name || "";
 
   const tOrder = useTranslations("order");
 

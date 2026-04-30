@@ -2,5 +2,5 @@ export const swrKeys = {
   listAccounts: "list-accounts",
   deviceSessions: "device-sessions",
   sessions: "sessions",
-  stores: "/api/stores",
+  organization: "/api/auth/organization/get-full-organization",
 } as const;

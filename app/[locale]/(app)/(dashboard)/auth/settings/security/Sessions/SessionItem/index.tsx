@@ -6,7 +6,7 @@ import { Computer } from "@mui/icons-material";
 import { Avatar, Chip, ListItemIcon } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import type { Session } from "@/stores/auth-store";
+import type { Session } from "@/types/auth";
 
 import { formatUserAgent } from "@/utils/auth";
 

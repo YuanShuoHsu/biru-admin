@@ -1,8 +1,6 @@
 import { createStore } from "zustand/vanilla";
 
-import { authClient } from "@/lib/auth-client";
-
-export type Session = typeof authClient.$Infer.Session;
+import type { Session } from "@/types/auth";
 
 type AuthState = {
   session: Session | null;

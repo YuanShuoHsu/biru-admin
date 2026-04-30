@@ -2,7 +2,7 @@ import { UAParser } from "ua-parser-js";
 
 import { LocaleEnum } from "@/enums/Locale";
 
-import type { Session } from "@/stores/auth-store";
+import type { Session } from "@/types/auth";
 
 export const formatUserAgent = (userAgent?: string | null): string => {
   if (!userAgent) return "";

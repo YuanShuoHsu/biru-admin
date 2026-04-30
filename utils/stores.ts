@@ -2,22 +2,7 @@ import { cache } from "react";
 
 import { fetcher } from "./fetcher";
 
-import type { Locale } from "@/i18n/routing";
-
-import type { Store, StoreName, StoreSlug } from "@/types/stores";
-
-export const getStoreName = (
-  locale: Locale,
-  stores: Store[],
-  storeSlug?: StoreSlug,
-): StoreName => {
-  if (!storeSlug) return "";
-
-  const store = stores.find(({ slug }) => slug === storeSlug);
-  const localizedName = store?.name?.[locale];
-
-  return localizedName || storeSlug;
-};
+import type { Store } from "@/types/stores";
 
 export const getStores = cache(async () => {
   try {

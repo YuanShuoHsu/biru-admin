@@ -23,7 +23,7 @@ import SWRProvider from "@/providers/SWRProvider";
 import { UploadAvatarStoreProvider } from "@/providers/upload-avatar-store-provider";
 import { ViewStoreProvider } from "@/providers/view-store-provider";
 
-import type { Session } from "@/stores/auth-store";
+import type { Session } from "@/types/auth";
 
 interface AppClientProvidersProps {
   children: React.ReactNode;
