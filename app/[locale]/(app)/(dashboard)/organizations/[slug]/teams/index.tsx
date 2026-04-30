@@ -209,20 +209,18 @@ const OrganizationsSlugTeams = ({
         headerName: tTeams("actions.label"),
         renderCell: ({ row }: GridRenderCellParams<Team>) => (
           <Stack height="100%" direction="row" alignItems="center" gap={0.5}>
-            {canUpdateTeam && (
-              <Tooltip title={tTeams("actions.manageTeamMembers.title")}>
-                <IconButton
-                  onClick={(event) => {
-                    event.stopPropagation();
+            <Tooltip title={tTeams("actions.manageTeamMembers.title")}>
+              <IconButton
+                onClick={(event) => {
+                  event.stopPropagation();
 
-                    handleViewTeamMembers(row);
-                  }}
-                  size="small"
-                >
-                  <People fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
+                  handleViewTeamMembers(row);
+                }}
+                size="small"
+              >
+                <People fontSize="small" />
+              </IconButton>
+            </Tooltip>
             {canUpdateTeam && (
               <Tooltip title={tTeams("actions.updateTeam.title")}>
                 <IconButton
