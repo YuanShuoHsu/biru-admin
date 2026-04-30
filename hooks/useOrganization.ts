@@ -1,14 +1,17 @@
 "use client";
 
+import { useParams } from "next/navigation";
 import useSWR from "swr";
 
-import { swrKeys } from "@/constants/swr";
-
-import type { ActiveOrganization } from "@/types/organizations";
+import type { Organization } from "@/types/organizations";
+import type { RouteParams } from "@/types/routeParams";
 
 export const useOrganization = () => {
-  const { data: organization = null } = useSWR<ActiveOrganization>(
-    swrKeys.organization,
+  const { slug, storeSlug } = useParams<RouteParams<"slug" | "storeSlug">>();
+  const organizationSlug = storeSlug || slug;
+
+  const { data: organization = null } = useSWR<Organization>(
+    organizationSlug ? `/api/organizations/${organizationSlug}` : null,
   );
 
   return organization;

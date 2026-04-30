@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
-import { useOrganization } from "@/hooks/useOrganization";
+import { useOrganizations } from "@/hooks/useOrganizations";
 
 import { useRouter } from "@/i18n/navigation";
 
@@ -22,7 +22,7 @@ const OrderModePickupStoreSlugSelect = ({
 }: OrderModePickupStoreSlugSelectProps) => {
   const router = useRouter();
 
-  const organization = useOrganization();
+  const organizations = useOrganizations();
 
   const tOrder = useTranslations("order");
 
@@ -42,11 +42,11 @@ const OrderModePickupStoreSlugSelect = ({
       size="small"
       value={storeSlug || ""}
     >
-      {organization && (
-        <MenuItem key={organization.id} value={organization.slug}>
-          {organization.name}
+      {organizations.map(({ id, slug, name }) => (
+        <MenuItem key={id} value={slug}>
+          {name}
         </MenuItem>
-      )}
+      ))}
     </TextField>
   );
 };
