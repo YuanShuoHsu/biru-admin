@@ -3,7 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
 import {
   type UpdateOrganizationForm,
@@ -59,7 +59,6 @@ const UpdateOrganizationDialog = ({
   const tOrganizations = useTranslations("organizations");
 
   const updateOrganizationFormSchema = useUpdateOrganizationFormSchema();
-
   const {
     control,
     formState: { errors },
@@ -80,6 +79,8 @@ const UpdateOrganizationDialog = ({
     },
     resolver: zodResolver(updateOrganizationFormSchema),
   });
+
+  const isOpen = useWatch({ control, name: "isOpen" });
 
   const onSubmitHandler = async ({
     name,
@@ -224,21 +225,10 @@ const UpdateOrganizationDialog = ({
         placeholder={tOrganizations("address.postOfficeBoxNumber.placeholder")}
         {...register("postOfficeBoxNumber")}
       />
-      <Controller
-        control={control}
-        name="isOpen"
-        render={({ field }) => (
-          <FormControlLabel
-            control={
-              <Switch
-                checked={field.value}
-                onChange={(e) => field.onChange(e.target.checked)}
-              />
-            }
-            label={tOrganizations("isOpen.label")}
-            sx={{ alignSelf: "flex-start" }}
-          />
-        )}
+      <FormControlLabel
+        control={<Switch checked={isOpen} {...register("isOpen")} />}
+        label={tOrganizations("isOpen.label")}
+        sx={{ alignSelf: "flex-start" }}
       />
     </StyledBox>
   );
