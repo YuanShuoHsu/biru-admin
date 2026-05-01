@@ -23,6 +23,40 @@
       "title": "编辑组织"
     }
   },
+  "additionalFields": {
+    "label": "其他字段"
+  },
+  "address": {
+    "addressCountry": {
+      "label": "国家/地区（选填）",
+      "placeholder": "请输入您的国家代码"
+    },
+    "addressLocality": {
+      "label": "城市/区县（选填）",
+      "placeholder": "请输入城市或区县"
+    },
+    "addressRegion": {
+      "label": "省/市（选填）",
+      "placeholder": "请输入省或市"
+    },
+    "extendedAddress": {
+      "label": "地址补充（选填）",
+      "placeholder": "请输入地址补充信息"
+    },
+    "label": "地址信息",
+    "postOfficeBoxNumber": {
+      "label": "邮政信箱（选填）",
+      "placeholder": "请输入邮政信箱"
+    },
+    "postalCode": {
+      "label": "邮政编码（选填）",
+      "placeholder": "请输入邮政编码"
+    },
+    "streetAddress": {
+      "label": "街道地址（选填）",
+      "placeholder": "请输入街道地址"
+    }
+  },
   "createdAt": "创建时间",
   "invitations": {
     "actions": {
@@ -37,6 +71,9 @@
     "expiresAt": "到期时间",
     "label": "待处理邀请",
     "role": "角色"
+  },
+  "isOpen": {
+    "label": "营业状态"
   },
   "label": "组织管理",
   "logo": "标志",

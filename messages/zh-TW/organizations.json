@@ -23,6 +23,40 @@
       "title": "編輯組織"
     }
   },
+  "additionalFields": {
+    "label": "其他欄位"
+  },
+  "address": {
+    "addressCountry": {
+      "label": "國家/地區（選填）",
+      "placeholder": "請輸入您的國家代碼"
+    },
+    "addressLocality": {
+      "label": "城市/區鄉鎮（選填）",
+      "placeholder": "請輸入城市或區鄉鎮"
+    },
+    "addressRegion": {
+      "label": "縣市/州省（選填）",
+      "placeholder": "請輸入縣市或州省"
+    },
+    "extendedAddress": {
+      "label": "地址補充（選填）",
+      "placeholder": "請輸入地址補充資訊"
+    },
+    "label": "地址資訊",
+    "postOfficeBoxNumber": {
+      "label": "郵政信箱（選填）",
+      "placeholder": "請輸入郵政信箱"
+    },
+    "postalCode": {
+      "label": "郵遞區號（選填）",
+      "placeholder": "請輸入郵遞區號"
+    },
+    "streetAddress": {
+      "label": "街道地址（選填）",
+      "placeholder": "請輸入街道地址"
+    }
+  },
   "createdAt": "建立時間",
   "invitations": {
     "actions": {
@@ -37,6 +71,9 @@
     "expiresAt": "到期時間",
     "label": "待處理邀請",
     "role": "角色"
+  },
+  "isOpen": {
+    "label": "營業狀態"
   },
   "label": "組織管理",
   "logo": "標誌",

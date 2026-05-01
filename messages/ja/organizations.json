@@ -23,6 +23,40 @@
       "title": "組織を編集"
     }
   },
+  "additionalFields": {
+    "label": "追加フィールド"
+  },
+  "address": {
+    "addressCountry": {
+      "label": "国/地域（任意）",
+      "placeholder": "あなたの国コードを入力してください"
+    },
+    "addressLocality": {
+      "label": "市区町村（任意）",
+      "placeholder": "市区町村を入力してください"
+    },
+    "addressRegion": {
+      "label": "都道府県（任意）",
+      "placeholder": "都道府県を入力してください"
+    },
+    "extendedAddress": {
+      "label": "住所補足（任意）",
+      "placeholder": "住所補足を入力してください"
+    },
+    "label": "住所情報",
+    "postOfficeBoxNumber": {
+      "label": "私書箱（任意）",
+      "placeholder": "私書箱番号を入力してください"
+    },
+    "postalCode": {
+      "label": "郵便番号（任意）",
+      "placeholder": "郵便番号を入力してください"
+    },
+    "streetAddress": {
+      "label": "番地（任意）",
+      "placeholder": "番地を入力してください"
+    }
+  },
   "createdAt": "作成日",
   "invitations": {
     "actions": {
@@ -37,6 +71,9 @@
     "expiresAt": "有効期限",
     "label": "保留中の招待",
     "role": "役割"
+  },
+  "isOpen": {
+    "label": "営業状態"
   },
   "label": "組織管理",
   "logo": "ロゴ",

@@ -3,7 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 
 import {
   type UpdateOrganizationForm,
@@ -18,7 +18,16 @@ import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { Box, type BoxProps, TextField, styled } from "@mui/material";
+import {
+  Box,
+  type BoxProps,
+  Chip,
+  Divider,
+  FormControlLabel,
+  Switch,
+  TextField,
+  styled,
+} from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -52,17 +61,55 @@ const UpdateOrganizationDialog = ({
   const updateOrganizationFormSchema = useUpdateOrganizationFormSchema();
 
   const {
+    control,
     formState: { errors },
     handleSubmit,
     register,
   } = useForm<UpdateOrganizationForm>({
-    defaultValues: { name: organization.name, slug: organization.slug },
+    defaultValues: {
+      name: organization.name,
+      slug: organization.slug,
+      isOpen: organization.isOpen ?? true,
+      addressCountry: organization.addressCountry ?? "",
+      addressLocality: organization.addressLocality ?? "",
+      addressRegion: organization.addressRegion ?? "",
+      extendedAddress: organization.extendedAddress ?? "",
+      postOfficeBoxNumber: organization.postOfficeBoxNumber ?? "",
+      postalCode: organization.postalCode ?? "",
+      streetAddress: organization.streetAddress ?? "",
+    },
     resolver: zodResolver(updateOrganizationFormSchema),
   });
 
-  const onSubmitHandler = async ({ name, slug }: UpdateOrganizationForm) => {
+  const onSubmitHandler = async ({
+    name,
+    slug,
+    isOpen,
+    addressCountry,
+    addressLocality,
+    addressRegion,
+    extendedAddress,
+    postOfficeBoxNumber,
+    postalCode,
+    streetAddress,
+  }: UpdateOrganizationForm) => {
     await authClient.organization.update(
-      { organizationId: organization.id, data: { logo, name, slug } },
+      {
+        organizationId: organization.id,
+        data: {
+          logo,
+          name,
+          slug,
+          isOpen,
+          addressCountry,
+          addressLocality,
+          addressRegion,
+          extendedAddress,
+          postOfficeBoxNumber,
+          postalCode,
+          streetAddress,
+        },
+      },
       {
         onError: ({ error: { code } }) => {
           const message = getErrorMessage(code, locale);
@@ -113,6 +160,85 @@ const UpdateOrganizationDialog = ({
         placeholder={tOrganizations("slug.placeholder")}
         required
         {...register("slug")}
+      />
+      <Divider flexItem>
+        <Chip label={tOrganizations("additionalFields.label")} size="small" />
+      </Divider>
+      <TextField
+        error={!!errors.streetAddress}
+        fullWidth
+        helperText={errors.streetAddress?.message}
+        label={tOrganizations("address.streetAddress.label")}
+        placeholder={tOrganizations("address.streetAddress.placeholder")}
+        {...register("streetAddress")}
+      />
+      <TextField
+        error={!!errors.extendedAddress}
+        fullWidth
+        helperText={errors.extendedAddress?.message}
+        label={tOrganizations("address.extendedAddress.label")}
+        placeholder={tOrganizations("address.extendedAddress.placeholder")}
+        {...register("extendedAddress")}
+      />
+      <Box display="flex" gap={2} width="100%">
+        <TextField
+          error={!!errors.postalCode}
+          fullWidth
+          helperText={errors.postalCode?.message}
+          label={tOrganizations("address.postalCode.label")}
+          placeholder={tOrganizations("address.postalCode.placeholder")}
+          {...register("postalCode")}
+        />
+        <TextField
+          error={!!errors.addressLocality}
+          fullWidth
+          helperText={errors.addressLocality?.message}
+          label={tOrganizations("address.addressLocality.label")}
+          placeholder={tOrganizations("address.addressLocality.placeholder")}
+          {...register("addressLocality")}
+        />
+      </Box>
+      <Box display="flex" gap={2} width="100%">
+        <TextField
+          error={!!errors.addressRegion}
+          fullWidth
+          helperText={errors.addressRegion?.message}
+          label={tOrganizations("address.addressRegion.label")}
+          placeholder={tOrganizations("address.addressRegion.placeholder")}
+          {...register("addressRegion")}
+        />
+        <TextField
+          error={!!errors.addressCountry}
+          fullWidth
+          helperText={errors.addressCountry?.message}
+          label={tOrganizations("address.addressCountry.label")}
+          placeholder={tOrganizations("address.addressCountry.placeholder")}
+          {...register("addressCountry")}
+        />
+      </Box>
+      <TextField
+        error={!!errors.postOfficeBoxNumber}
+        fullWidth
+        helperText={errors.postOfficeBoxNumber?.message}
+        label={tOrganizations("address.postOfficeBoxNumber.label")}
+        placeholder={tOrganizations("address.postOfficeBoxNumber.placeholder")}
+        {...register("postOfficeBoxNumber")}
+      />
+      <Controller
+        control={control}
+        name="isOpen"
+        render={({ field }) => (
+          <FormControlLabel
+            control={
+              <Switch
+                checked={field.value}
+                onChange={(e) => field.onChange(e.target.checked)}
+              />
+            }
+            label={tOrganizations("isOpen.label")}
+            sx={{ alignSelf: "flex-start" }}
+          />
+        )}
       />
     </StyledBox>
   );

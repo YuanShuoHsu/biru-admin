@@ -23,6 +23,40 @@
       "title": "Edit organization"
     }
   },
+  "additionalFields": {
+    "label": "Additional fields"
+  },
+  "address": {
+    "addressCountry": {
+      "label": "Country (Optional)",
+      "placeholder": "Please enter your country code"
+    },
+    "addressLocality": {
+      "label": "City / Town (Optional)",
+      "placeholder": "Please enter your city or town"
+    },
+    "addressRegion": {
+      "label": "State / Province (Optional)",
+      "placeholder": "Please enter your state or province"
+    },
+    "extendedAddress": {
+      "label": "Extended address (Optional)",
+      "placeholder": "Please enter your extended address"
+    },
+    "label": "Address",
+    "postOfficeBoxNumber": {
+      "label": "P.O. Box (Optional)",
+      "placeholder": "Please enter your P.O. Box number"
+    },
+    "postalCode": {
+      "label": "Postal code (Optional)",
+      "placeholder": "Please enter your postal code"
+    },
+    "streetAddress": {
+      "label": "Street address (Optional)",
+      "placeholder": "Please enter your street address"
+    }
+  },
   "createdAt": "Created",
   "invitations": {
     "actions": {
@@ -37,6 +71,9 @@
     "expiresAt": "Expires",
     "label": "Pending invitations",
     "role": "Role"
+  },
+  "isOpen": {
+    "label": "Open"
   },
   "label": "Organization Management",
   "logo": "Logo",
