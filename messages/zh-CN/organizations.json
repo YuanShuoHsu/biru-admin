@@ -33,28 +33,28 @@
     },
     "addressLocality": {
       "label": "城市/区县（选填）",
-      "placeholder": "请输入城市或区县"
+      "placeholder": "请输入您的城市或区县"
     },
     "addressRegion": {
       "label": "省/市（选填）",
-      "placeholder": "请输入省或市"
+      "placeholder": "请输入您的省或市"
     },
     "extendedAddress": {
       "label": "地址补充（选填）",
-      "placeholder": "请输入地址补充信息"
+      "placeholder": "请输入您的地址补充信息"
     },
     "label": "地址信息",
     "postOfficeBoxNumber": {
       "label": "邮政信箱（选填）",
-      "placeholder": "请输入邮政信箱"
+      "placeholder": "请输入您的邮政信箱"
     },
     "postalCode": {
       "label": "邮政编码（选填）",
-      "placeholder": "请输入邮政编码"
+      "placeholder": "请输入您的邮政编码"
     },
     "streetAddress": {
       "label": "街道地址（选填）",
-      "placeholder": "请输入街道地址"
+      "placeholder": "请输入您的街道地址"
     }
   },
   "createdAt": "创建时间",

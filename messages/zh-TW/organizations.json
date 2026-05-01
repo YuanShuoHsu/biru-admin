@@ -33,28 +33,28 @@
     },
     "addressLocality": {
       "label": "城市/區鄉鎮（選填）",
-      "placeholder": "請輸入城市或區鄉鎮"
+      "placeholder": "請輸入您的城市或區鄉鎮"
     },
     "addressRegion": {
       "label": "縣市/州省（選填）",
-      "placeholder": "請輸入縣市或州省"
+      "placeholder": "請輸入您的縣市或州省"
     },
     "extendedAddress": {
       "label": "地址補充（選填）",
-      "placeholder": "請輸入地址補充資訊"
+      "placeholder": "請輸入您的地址補充資訊"
     },
     "label": "地址資訊",
     "postOfficeBoxNumber": {
       "label": "郵政信箱（選填）",
-      "placeholder": "請輸入郵政信箱"
+      "placeholder": "請輸入您的郵政信箱"
     },
     "postalCode": {
       "label": "郵遞區號（選填）",
-      "placeholder": "請輸入郵遞區號"
+      "placeholder": "請輸入您的郵遞區號"
     },
     "streetAddress": {
       "label": "街道地址（選填）",
-      "placeholder": "請輸入街道地址"
+      "placeholder": "請輸入您的街道地址"
     }
   },
   "createdAt": "建立時間",

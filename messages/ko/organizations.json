@@ -33,28 +33,28 @@
     },
     "addressLocality": {
       "label": "시/군/구 (선택 사항)",
-      "placeholder": "시, 군 또는 구를 입력해 주세요"
+      "placeholder": "귀하의 시, 군 또는 구를 입력해 주세요"
     },
     "addressRegion": {
       "label": "시/도 (선택 사항)",
-      "placeholder": "시 또는 도를 입력해 주세요"
+      "placeholder": "귀하의 시 또는 도를 입력해 주세요"
     },
     "extendedAddress": {
       "label": "상세 주소 (선택 사항)",
-      "placeholder": "상세 주소를 입력해 주세요"
+      "placeholder": "귀하의 상세 주소를 입력해 주세요"
     },
     "label": "주소 정보",
     "postOfficeBoxNumber": {
       "label": "사서함 (선택 사항)",
-      "placeholder": "사서함 번호를 입력해 주세요"
+      "placeholder": "귀하의 사서함 번호를 입력해 주세요"
     },
     "postalCode": {
       "label": "우편번호 (선택 사항)",
-      "placeholder": "우편번호를 입력해 주세요"
+      "placeholder": "귀하의 우편번호를 입력해 주세요"
     },
     "streetAddress": {
       "label": "도로명 주소 (선택 사항)",
-      "placeholder": "도로명 주소를 입력해 주세요"
+      "placeholder": "귀하의 도로명 주소를 입력해 주세요"
     }
   },
   "createdAt": "생성일",
