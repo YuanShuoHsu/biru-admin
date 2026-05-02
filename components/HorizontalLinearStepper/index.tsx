@@ -56,11 +56,11 @@ const StyledStepLabel = styled(StepLabel)(({ theme }) => ({
 const HorizontalLinearStepper = () => {
   const tOrder = useTranslations("order");
 
-  const { locale, mode, storeSlug } = useParams<RouteParams>();
+  const { locale, storeSlug } = useParams<RouteParams>();
 
   const pathname = usePathname();
 
-  const base = `/order/${mode}/${storeSlug}`;
+  const base = `/order/${storeSlug}`;
   const stepPathnames = [base, `${base}/checkout`, `${base}/complete`];
   const activeStep = stepPathnames.findIndex(
     (path) => pathname === `/${locale}${path}`,
