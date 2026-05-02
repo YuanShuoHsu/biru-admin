@@ -2,23 +2,21 @@
 
 import { useTranslations } from "next-intl";
 
+import { ORDER_MODE } from "@/constants/orderMode";
 import { PARTY_SIZE_MAX } from "@/constants/partySize";
 
 import { useRouter } from "@/i18n/navigation";
 
 import { MenuItem, TextField } from "@mui/material";
 
-import type { OrderMode } from "@/types/orderMode";
 import type { StoreSlug } from "@/types/stores";
 
 interface OrderModeDineInStoreSlugTableNumberSelectProps {
-  mode: OrderMode;
   storeSlug: StoreSlug;
   tableNumber: string;
 }
 
 const OrderModeDineInStoreSlugTableNumberSelect = ({
-  mode,
   storeSlug,
   tableNumber,
 }: OrderModeDineInStoreSlugTableNumberSelectProps) => {
@@ -28,7 +26,7 @@ const OrderModeDineInStoreSlugTableNumberSelect = ({
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     router.push(
-      `/order/${mode}/${storeSlug}?tableNumber=${tableNumber}&partySize=${event.target.value}`,
+      `/order/${storeSlug}?mode=${ORDER_MODE.DineIn}&tableNumber=${tableNumber}&partySize=${event.target.value}`,
     );
 
   return (

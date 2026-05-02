@@ -2,24 +2,15 @@
 
 import { useTranslations } from "next-intl";
 
+import { ORDER_MODE } from "@/constants/orderMode";
+
 import { useOrganizations } from "@/hooks/useOrganizations";
 
 import { useRouter } from "@/i18n/navigation";
 
 import { MenuItem, TextField } from "@mui/material";
 
-import type { OrderMode } from "@/types/orderMode";
-import type { StoreSlug } from "@/types/stores";
-
-interface OrderModePickupStoreSlugSelectProps {
-  mode: OrderMode;
-  storeSlug: StoreSlug;
-}
-
-const OrderModePickupStoreSlugSelect = ({
-  mode,
-  storeSlug,
-}: OrderModePickupStoreSlugSelectProps) => {
+const OrderModePickupStoreSlugSelect = () => {
   const router = useRouter();
 
   const organizations = useOrganizations();
@@ -27,20 +18,18 @@ const OrderModePickupStoreSlugSelect = ({
   const tOrder = useTranslations("order");
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>
-    router.push(`/order/${mode}/${event.target.value}`);
+    router.push(`/order/${event.target.value}?mode=${ORDER_MODE.Pickup}`);
 
   return (
     <TextField
-      // error={!!state?.errors?.storeSlug}
       fullWidth
-      // helperText={state?.errors?.storeSlug}
       label={tOrder("mode.pickup.select.label")}
       name="storeSlug"
       onChange={handleChange}
       required
       select
       size="small"
-      value={storeSlug || ""}
+      value=""
     >
       {organizations.map(({ id, slug, name }) => (
         <MenuItem key={id} value={slug}>

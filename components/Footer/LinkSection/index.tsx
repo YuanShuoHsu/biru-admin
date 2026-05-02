@@ -46,7 +46,7 @@ const useFooterItems = (): MenuItem[] => {
       children: [
         {
           label: tOrder("mode.pickup.label"),
-          to: `/${ORDER_MODE.Pickup}`,
+          to: `?mode=${ORDER_MODE.Pickup}`,
         },
       ],
       label: tOrder("label"),
