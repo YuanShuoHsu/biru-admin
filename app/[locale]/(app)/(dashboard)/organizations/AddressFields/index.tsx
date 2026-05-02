@@ -3,14 +3,14 @@
 import { useLocale, useTranslations } from "next-intl";
 import type { FieldError, UseFormRegister } from "react-hook-form";
 
-import type { CreateOrganizationForm } from "./CreateOrganizationDialog/definitions";
-import type { UpdateOrganizationForm } from "./UpdateOrganizationDialog/definitions";
-
 import { LocaleEnum } from "@/enums/Locale";
 
 import { Box, TextField } from "@mui/material";
 
 import type { Organization } from "@/types/organizations";
+
+import type { CreateOrganizationForm } from "../CreateOrganizationDialog/definitions";
+import type { UpdateOrganizationForm } from "../UpdateOrganizationDialog/definitions";
 
 type AddressFieldName = keyof Pick<
   Organization,
