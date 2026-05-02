@@ -95,7 +95,6 @@ const UpdateUserDialogContent = ({
         },
         {
           onError: ({ error: { code } }) => {
-            console.log(code);
             enqueueSnackbar(getErrorMessage(code, locale), {
               variant: "error",
             });

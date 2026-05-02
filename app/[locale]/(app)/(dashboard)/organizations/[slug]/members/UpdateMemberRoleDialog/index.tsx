@@ -68,7 +68,6 @@ const UpdateMemberRoleDialog = ({
         { organizationId, memberId: member.id, role },
         {
           onError: ({ error: { code } }) => {
-            console.log(code);
             const message = getErrorMessage(code, locale);
             enqueueSnackbar(message, { variant: "error" });
 
