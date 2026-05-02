@@ -1,7 +1,16 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import type { FieldError, UseFormRegister } from "react-hook-form";
+import {
+  Controller,
+  type Control,
+  type FieldError,
+  type UseFormRegister,
+} from "react-hook-form";
+
+import CountrySelect from "@/components/CountrySelect";
+
+import { COUNTRY_OPTIONS, DEFAULT_COUNTRY } from "@/constants/countries";
 
 import { LocaleEnum } from "@/enums/Locale";
 
@@ -26,14 +35,34 @@ type AddressFieldName = keyof Pick<
 type OrganizationForm = CreateOrganizationForm | UpdateOrganizationForm;
 
 interface AddressFieldsProps {
+  control: Control<OrganizationForm>;
   errors: Partial<Record<AddressFieldName, FieldError>>;
   register: UseFormRegister<OrganizationForm>;
 }
 
-const AddressFields = ({ errors, register }: AddressFieldsProps) => {
+const AddressFields = ({ control, errors, register }: AddressFieldsProps) => {
   const locale = useLocale();
 
   const tOrganizations = useTranslations("organizations");
+
+  const countrySelect = (
+    <Controller
+      control={control}
+      name="addressCountry"
+      render={({ field: { onChange, value }, fieldState: { error } }) => (
+        <CountrySelect
+          error={!!error}
+          helperText={error?.message}
+          label={tOrganizations("address.addressCountry.label")}
+          onChange={({ code }) => onChange(code)}
+          value={
+            COUNTRY_OPTIONS.find(({ code }) => code === value) ||
+            DEFAULT_COUNTRY
+          }
+        />
+      )}
+    />
+  );
 
   return locale === LocaleEnum.En ? (
     <>
@@ -80,14 +109,7 @@ const AddressFields = ({ errors, register }: AddressFieldsProps) => {
           placeholder={tOrganizations("address.addressRegion.placeholder")}
           {...register("addressRegion")}
         />
-        <TextField
-          error={!!errors.addressCountry}
-          fullWidth
-          helperText={errors.addressCountry?.message}
-          label={tOrganizations("address.addressCountry.label")}
-          placeholder={tOrganizations("address.addressCountry.placeholder")}
-          {...register("addressCountry")}
-        />
+        {countrySelect}
       </Box>
       <TextField
         error={!!errors.postOfficeBoxNumber}
@@ -100,14 +122,7 @@ const AddressFields = ({ errors, register }: AddressFieldsProps) => {
     </>
   ) : (
     <>
-      <TextField
-        error={!!errors.addressCountry}
-        fullWidth
-        helperText={errors.addressCountry?.message}
-        label={tOrganizations("address.addressCountry.label")}
-        placeholder={tOrganizations("address.addressCountry.placeholder")}
-        {...register("addressCountry")}
-      />
+      {countrySelect}
       <Box display="flex" gap={2} width="100%">
         <TextField
           error={!!errors.addressRegion}

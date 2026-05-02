@@ -7,7 +7,6 @@
 
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
-import { useTranslations } from "next-intl";
 import Image from "next/image";
 import React, { useRef, useState } from "react";
 
@@ -130,6 +129,7 @@ const filter = createFilterOptions<CountryOption>({
 interface CountrySelectProps {
   error: boolean;
   helperText: React.ReactNode;
+  label: string;
   onChange: (value: CountryOption) => void;
   value: CountryOption;
 }
@@ -137,16 +137,15 @@ interface CountrySelectProps {
 const CountrySelect = ({
   error,
   helperText,
+  label,
   onChange,
   value,
 }: CountrySelectProps) => {
-  const { code, label, phone } = value;
+  const { code, label: countryName } = value;
 
   const hint = useRef("");
 
-  const tAuth = useTranslations("auth");
-
-  const [inputValue, setInputValue] = useState(formatPhone(phone));
+  const [inputValue, setInputValue] = useState(getCountryLabel(value));
 
   return (
     <Autocomplete
@@ -155,10 +154,11 @@ const CountrySelect = ({
       disablePortal
       filterOptions={(options, params) => {
         const { inputValue } = params;
-        if (inputValue === formatPhone(phone)) return options;
+        if (inputValue === getCountryLabel(value)) return options;
 
         return filter(options, params);
       }}
+      fullWidth
       getOptionLabel={getCountryLabel}
       isOptionEqualToValue={({ code: optionCode }, { code: valueCode }) =>
         optionCode === valueCode
@@ -167,9 +167,8 @@ const CountrySelect = ({
       id="country-select-demo"
       inputValue={inputValue}
       onChange={(_, newValue: CountryOption) => {
-        const phone = newValue ? newValue.phone : "";
-        const formattedPhone = formatPhone(phone);
-        setInputValue(formattedPhone);
+        setInputValue(getCountryLabel(newValue));
+
         onChange(newValue);
       }}
       onClose={() => {
@@ -178,7 +177,8 @@ const CountrySelect = ({
       onInputChange={(_, newInputValue, reason) => {
         if (reason === "reset") return;
         if (reason === "blur") {
-          setInputValue(formatPhone(phone));
+          setInputValue(getCountryLabel(value));
+
           return;
         }
 
@@ -187,8 +187,9 @@ const CountrySelect = ({
       onKeyDown={(event) => {
         if (event.key === "Tab") {
           if (hint.current) {
-            setInputValue(hint.current);
             event.preventDefault();
+
+            setInputValue(hint.current);
           }
         }
       }}
@@ -208,7 +209,7 @@ const CountrySelect = ({
             {...params}
             error={error}
             helperText={helperText}
-            label={tAuth("chooseCountry")}
+            label={label}
             onChange={({ target: { value: newValue } }) => {
               setInputValue(newValue);
 
@@ -232,7 +233,7 @@ const CountrySelect = ({
                 ...params.InputProps,
                 startAdornment: (
                   <StyledInputAdornment position="start">
-                    <FlagImage code={code} label={label} />
+                    <FlagImage code={code} label={countryName} />
                   </StyledInputAdornment>
                 ),
               },

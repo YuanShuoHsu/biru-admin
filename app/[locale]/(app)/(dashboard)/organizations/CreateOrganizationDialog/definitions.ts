@@ -8,7 +8,7 @@ export const useCreateOrganizationFormSchema = () => {
     logo: z.string().trim().optional(),
     name: z
       .string()
-      .min(2, { error: tValidation("name.minLength") })
+      .min(1, { error: tValidation("name.minLength") })
       .trim(),
     slug: z
       .string()

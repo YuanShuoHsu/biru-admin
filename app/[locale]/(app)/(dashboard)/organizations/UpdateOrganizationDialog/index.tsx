@@ -167,7 +167,7 @@ const UpdateOrganizationDialog = ({
       <Divider flexItem>
         <Chip label={tOrganizations("additionalFields.label")} size="small" />
       </Divider>
-      <AddressFields errors={errors} register={register} />
+      <AddressFields control={control} errors={errors} register={register} />
       <FormControlLabel
         control={<Switch checked={isOpen} {...register("isOpen")} />}
         label={tOrganizations("isOpen.label")}

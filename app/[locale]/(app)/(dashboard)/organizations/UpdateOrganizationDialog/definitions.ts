@@ -7,7 +7,7 @@ export const useUpdateOrganizationFormSchema = () => {
   return z.object({
     name: z
       .string()
-      .min(2, { error: tValidation("name.minLength") })
+      .min(1, { error: tValidation("name.minLength") })
       .trim(),
     slug: z
       .string()
