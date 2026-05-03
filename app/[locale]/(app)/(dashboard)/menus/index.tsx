@@ -275,6 +275,7 @@ const Menus = ({
             onChange={(event) => handleOrganizationChange(event.target.value)}
             select
             slotProps={{
+              inputLabel: { shrink: true },
               select: { displayEmpty: true },
             }}
             size="small"
