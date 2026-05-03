@@ -3,27 +3,15 @@
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
 import { type CreateMenuForm, useCreateMenuFormSchema } from "./definitions";
 
 import { locales } from "@/constants/locale";
 
-import { LocaleEnum } from "@/enums/Locale";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import {
-  Box,
-  type BoxProps,
-  FormControl,
-  FormHelperText,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-  styled,
-} from "@mui/material";
+import { Box, type BoxProps, MenuItem, TextField, styled } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -34,6 +22,7 @@ import { fetcher } from "@/utils/fetcher";
 const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
+  alignItems: "center",
   gap: theme.spacing(2),
 }));
 
@@ -43,20 +32,19 @@ const LOCALE_OPTIONS = Object.entries(locales).map(([value, { label }]) => ({
 }));
 
 interface CreateMenuDialogProps {
-  organizationId: string;
   fetchMenus: () => unknown;
+  organizationId: string;
 }
 
 const CreateMenuDialog = ({
-  organizationId,
   fetchMenus,
+  organizationId,
 }: CreateMenuDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
-  const tMenus = useTranslations("menus");
-
   const createMenuFormSchema = useCreateMenuFormSchema();
   const {
+    control,
     formState: { errors },
     handleSubmit,
     register,
@@ -64,11 +52,15 @@ const CreateMenuDialog = ({
     defaultValues: {
       name: "",
       description: "",
-      inLanguage: LocaleEnum.ZhTW,
+      inLanguage: "",
       image: "",
     },
     resolver: zodResolver(createMenuFormSchema),
   });
+
+  const inLanguage = useWatch({ control, name: "inLanguage" });
+
+  const tMenus = useTranslations("menus");
 
   const onSubmitHandler = async ({
     name,
@@ -95,11 +87,13 @@ const CreateMenuDialog = ({
       });
 
       closeDialog();
+
       fetchMenus();
     } catch {
       enqueueSnackbar(tMenus("actions.createMenu.title"), {
         variant: "error",
       });
+
       setDialog({ confirmLoading: false });
     }
   };
@@ -118,23 +112,29 @@ const CreateMenuDialog = ({
         required
         {...register("name")}
       />
-      <FormControl fullWidth error={!!errors.inLanguage}>
-        <InputLabel required>{tMenus("inLanguage.label")}</InputLabel>
-        <Select
-          defaultValue={LocaleEnum.ZhTW}
-          label={tMenus("inLanguage.label")}
-          {...register("inLanguage")}
-        >
-          {LOCALE_OPTIONS.map(({ label, value }) => (
-            <MenuItem key={value} value={value}>
-              {label}
-            </MenuItem>
-          ))}
-        </Select>
-        {errors.inLanguage && (
-          <FormHelperText>{errors.inLanguage.message}</FormHelperText>
-        )}
-      </FormControl>
+      <TextField
+        error={!!errors.inLanguage}
+        fullWidth
+        helperText={errors.inLanguage?.message}
+        label={tMenus("inLanguage.label")}
+        required
+        select
+        slotProps={{
+          inputLabel: { shrink: true },
+          select: { displayEmpty: true },
+        }}
+        value={inLanguage}
+        {...register("inLanguage")}
+      >
+        <MenuItem disabled value="">
+          <em>{tMenus("inLanguage.placeholder")}</em>
+        </MenuItem>
+        {LOCALE_OPTIONS.map(({ label, value }) => (
+          <MenuItem key={value} value={value}>
+            {label}
+          </MenuItem>
+        ))}
+      </TextField>
       <TextField
         error={!!errors.description}
         fullWidth

@@ -22,7 +22,6 @@ const MenusPage = async ({ params, searchParams }: MenusPageProps) => {
     params,
     searchParams,
   ]);
-
   setRequestLocale(locale);
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
