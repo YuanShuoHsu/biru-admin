@@ -146,6 +146,7 @@ const InviteMemberDialog = ({
             displayEmpty: true,
             renderValue: (selected) => {
               const team = teams.find(({ id }) => id === selected);
+
               return team ? team.name : <em>{tTeams("teamId.placeholder")}</em>;
             },
           },
