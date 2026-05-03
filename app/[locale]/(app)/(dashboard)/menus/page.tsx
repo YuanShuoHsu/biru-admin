@@ -1,5 +1,6 @@
 import { setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
 
 import Menus from ".";
 
@@ -9,15 +10,21 @@ import { authClient } from "@/lib/auth-client";
 
 interface MenusPageProps {
   params: Promise<{ locale: Locale }>;
+  searchParams: Promise<{ organization?: string }>;
 }
 
-const MenusPage = async ({ params }: MenusPageProps) => {
-  const [cookieStore, { locale }] = await Promise.all([cookies(), params]);
+const MenusPage = async ({ params, searchParams }: MenusPageProps) => {
+  const [cookieStore, { locale }, { organization }] = await Promise.all([
+    cookies(),
+    params,
+    searchParams,
+  ]);
 
   setRequestLocale(locale);
 
-  const fetchOptions = { headers: { cookie: cookieStore.toString() } };
+  if (!organization) notFound();
 
+  const fetchOptions = { headers: { cookie: cookieStore.toString() } };
   const { data } = await authClient.organization.list({ fetchOptions });
 
   const organizations = (data || []).toReversed();

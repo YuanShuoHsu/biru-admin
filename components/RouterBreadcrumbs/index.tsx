@@ -90,7 +90,8 @@ interface BreadcrumbItem {
 }
 
 const useBreadcrumbs = (): BreadcrumbItem[] => {
-  const { slug, storeSlug, teamId, userId } = useParams<RouteParams>();
+  const { menuId, slug, storeSlug, teamId, userId } =
+    useParams<RouteParams>();
 
   const searchParams = useSearchParams();
   const mode = searchParams.get("mode");
@@ -127,6 +128,16 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
       });
 
       return data?.teams.find(({ id }) => id === teamId)?.name;
+    },
+  );
+
+  const { data: menuName = "" } = useSWR(
+    menuId ? `/api/menus/${menuId}` : null,
+    async (url) => {
+      const res = await fetch(url);
+      if (!res.ok) return "";
+      const menu = await res.json();
+      return menu?.name ?? "";
     },
   );
 
@@ -220,6 +231,14 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
       to: "/organizations",
     },
     {
+      children: [
+        {
+          disabled: true,
+          icon: MenuBook,
+          label: menuName,
+          to: `/${menuId}`,
+        },
+      ],
       icon: MenuBook,
       label: tMenus("label"),
       to: "/menus",

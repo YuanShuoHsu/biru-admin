@@ -5,6 +5,7 @@
 
 import { useTranslations } from "next-intl";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
+import useSWR from "swr";
 
 import SelectedListItem from "./SelectedListItem";
 import { StyledListItemButton } from "./SelectedListItem/ListItemLink";
@@ -16,6 +17,8 @@ import { useAuthMenuItems, useLogoutMenuItem } from "@/hooks/useAuth";
 import { useOrganization } from "@/hooks/useOrganization";
 
 import { usePathname } from "@/i18n/navigation";
+
+import { authClient } from "@/lib/auth-client";
 
 import {
   AccountCircle,
@@ -176,6 +179,15 @@ const useNavItems = (): MenuItem[] => {
 
   const authChildren = useAuthMenuItems(redirect);
 
+  const { data: defaultOrganization } = useSWR<string>(
+    "default-organization",
+    async () => {
+      const { data } = await authClient.organization.list();
+
+      return data?.toReversed()[0]?.slug || "";
+    },
+  );
+
   const tAdmin = useTranslations("admins");
   const tAuth = useTranslations("auth");
   const tCompany = useTranslations("company");
@@ -217,11 +229,15 @@ const useNavItems = (): MenuItem[] => {
       label: tOrganizations("label"),
       to: "/organizations",
     },
-    {
-      icon: MenuBook,
-      label: tMenus("label"),
-      to: "/menus",
-    },
+    ...(defaultOrganization
+      ? [
+          {
+            icon: MenuBook,
+            label: tMenus("label"),
+            to: `/menus?organization=${defaultOrganization}`,
+          },
+        ]
+      : []),
     {
       children: session ? accountChildren : authChildren,
       icon: AccountCircle,

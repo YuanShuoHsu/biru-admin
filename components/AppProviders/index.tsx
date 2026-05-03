@@ -11,11 +11,20 @@ interface AppProvidersProps {
 
 const AppProviders = async ({ children }: AppProvidersProps) => {
   const requestHeaders = await headers();
-  const { data: initialSession } = await authClient.getSession({
-    fetchOptions: { headers: requestHeaders },
-  });
+  const [{ data: initialSession }, { data: organizations }] = await Promise.all(
+    [
+      authClient.getSession({ fetchOptions: { headers: requestHeaders } }),
+      authClient.organization.list({
+        fetchOptions: { headers: requestHeaders },
+      }),
+    ],
+  );
 
-  const fallback = {};
+  const defaultOrganization = (organizations || []).toReversed()[0]?.slug || "";
+
+  const fallback = {
+    "default-organization": defaultOrganization,
+  };
 
   return (
     <NextIntlClientProvider>

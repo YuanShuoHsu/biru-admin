@@ -10,6 +10,9 @@
       "title": "删除菜单"
     },
     "label": "操作",
+    "viewMenu": {
+      "title": "查看菜单"
+    },
     "updateMenu": {
       "success": "成功更新菜单 {name}",
       "title": "编辑菜单"
@@ -35,13 +38,83 @@
     },
     "placeholder": "请选择菜单语言"
   },
-  "label": "菜单管理",
-  "organization": {
-    "label": "组织"
+  "items": {
+    "actions": {
+      "createItem": {
+        "success": "成功新增品项 {name}",
+        "title": "新增品项"
+      },
+      "deleteItem": {
+        "confirm": "确定要删除 <bold>{name}</bold> 吗？定价设置将一并删除。",
+        "success": "成功删除品项 {name}",
+        "title": "删除品项"
+      },
+      "label": "操作",
+      "updateItem": {
+        "success": "成功更新品项 {name}",
+        "title": "编辑品项"
+      }
+    },
+    "description": {
+      "label": "描述（选填）",
+      "placeholder": "请输入品项描述"
+    },
+    "image": {
+      "label": "图片网址（选填）",
+      "placeholder": "请输入图片网址"
+    },
+    "label": "品项",
+    "name": {
+      "label": "品项名称",
+      "placeholder": "请输入品项名称"
+    },
+    "suitableForDiet": {
+      "label": "饮食限制（选填）"
+    },
+    "url": {
+      "label": "链接网址（选填）",
+      "placeholder": "请输入链接网址"
+    }
   },
+  "label": "菜单管理",
   "name": {
     "label": "菜单名称",
     "placeholder": "请输入菜单名称"
+  },
+  "organization": {
+    "label": "组织"
+  },
+  "sections": {
+    "actions": {
+      "addSubsection": {
+        "title": "新增子分组"
+      },
+      "createSection": {
+        "success": "成功新增分组 {name}",
+        "title": "新增分组"
+      },
+      "deleteSection": {
+        "confirm": "确定要删除 <bold>{name}</bold> 吗？子分组与品项将一并删除。",
+        "success": "成功删除分组 {name}",
+        "title": "删除分组"
+      },
+      "label": "操作",
+      "updateSection": {
+        "success": "成功更新分组 {name}",
+        "title": "编辑分组"
+      }
+    },
+    "allItems": "所有品项",
+    "description": {
+      "label": "描述（选填）",
+      "placeholder": "请输入分组描述"
+    },
+    "label": "分组",
+    "name": {
+      "label": "分组名称",
+      "placeholder": "请输入分组名称"
+    },
+    "unassigned": "未分组"
   },
   "updatedAt": "更新时间"
 }

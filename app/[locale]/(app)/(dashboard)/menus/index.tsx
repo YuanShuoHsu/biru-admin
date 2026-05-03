@@ -2,8 +2,9 @@
 
 import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
+import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import useSWR from "swr";
 
 import CreateMenuDialog from "./CreateMenuDialog";
@@ -11,19 +12,18 @@ import UpdateMenuDialog from "./UpdateMenuDialog";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
-import { fetcher } from "@/utils/fetcher";
+import { useRouter } from "@/i18n/navigation";
 
-import { Add, Delete, Edit } from "@mui/icons-material";
+import { Add, Delete, Edit, OpenInNew } from "@mui/icons-material";
 import {
+  Box,
   Button,
   Chip,
   DialogContentText,
-  FormControl,
   IconButton,
-  InputLabel,
   MenuItem,
-  Select,
   Stack,
+  TextField,
   Tooltip,
 } from "@mui/material";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
@@ -33,6 +33,8 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { AdminMenu } from "@/types/menus";
 import type { Organization } from "@/types/organizations";
+
+import { fetcher } from "@/utils/fetcher";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -52,17 +54,23 @@ interface MenusProps {
 }
 
 const Menus = ({ organizations }: MenusProps) => {
-  const [selectedOrgId, setSelectedOrgId] = useState(
-    organizations[0]?.id ?? "",
+  const searchParams = useSearchParams();
+  const orgSlug = searchParams.get("organization");
+
+  const selectedOrg = useMemo(
+    () =>
+      organizations.find(({ slug }) => slug === orgSlug) ?? organizations[0],
+    [organizations, orgSlug],
   );
+  const selectedOrgId = selectedOrg?.id ?? "";
+
+  const router = useRouter();
 
   const apiRef = useGridApiRef();
 
   const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
-
-  const tMenus = useTranslations("menus");
 
   const {
     data: rows = [],
@@ -78,6 +86,8 @@ const Menus = ({ organizations }: MenusProps) => {
       },
     },
   );
+
+  const tMenus = useTranslations("menus");
 
   const handleCreateMenu = () => {
     setDialog({
@@ -143,6 +153,14 @@ const Menus = ({ organizations }: MenusProps) => {
         headerName: tMenus("actions.label"),
         renderCell: ({ row }: GridRenderCellParams<AdminMenu>) => (
           <Stack height="100%" direction="row" alignItems="center" gap={1}>
+            <Tooltip title={tMenus("actions.viewMenu.title")}>
+              <IconButton
+                onClick={() => router.push(`/menus/${row.id}`)}
+                size="small"
+              >
+                <OpenInNew fontSize="small" />
+              </IconButton>
+            </Tooltip>
             <Tooltip title={tMenus("actions.updateMenu.title")}>
               <IconButton
                 onClick={(event) => {
@@ -174,7 +192,6 @@ const Menus = ({ organizations }: MenusProps) => {
       {
         field: "name",
         headerName: tMenus("name.label"),
-        flex: 1,
       },
       {
         field: "inLanguage",
@@ -204,26 +221,30 @@ const Menus = ({ organizations }: MenusProps) => {
           format.dateTime(new Date(value), "short"),
       },
     ],
-    [format, handleDeleteMenu, handleUpdateMenu, tMenus],
+    [format, handleDeleteMenu, handleUpdateMenu, router, tMenus],
   );
 
   return (
     <>
       <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
-        <FormControl size="small" sx={{ minWidth: 200 }}>
-          <InputLabel>{tMenus("organization.label")}</InputLabel>
-          <Select
+        <Box sx={{ width: 200 }}>
+          <TextField
+            fullWidth
             label={tMenus("organization.label")}
-            onChange={(e) => setSelectedOrgId(e.target.value)}
-            value={selectedOrgId}
+            onChange={(e) =>
+              router.replace(`/menus?organization=${e.target.value}`)
+            }
+            select
+            size="small"
+            value={selectedOrg?.slug ?? ""}
           >
-            {organizations.map(({ id, name }) => (
-              <MenuItem key={id} value={id}>
+            {organizations.map(({ id, slug, name }) => (
+              <MenuItem key={id} value={slug}>
                 {name}
               </MenuItem>
             ))}
-          </Select>
-        </FormControl>
+          </TextField>
+        </Box>
         <Button
           disabled={!selectedOrgId}
           onClick={handleCreateMenu}

@@ -10,6 +10,9 @@
       "title": "メニューを削除"
     },
     "label": "操作",
+    "viewMenu": {
+      "title": "メニューを表示"
+    },
     "updateMenu": {
       "success": "メニュー {name} を更新しました",
       "title": "メニューを編集"
@@ -35,13 +38,83 @@
     },
     "placeholder": "メニューの言語を選択してください"
   },
-  "label": "メニュー管理",
-  "organization": {
-    "label": "組織"
+  "items": {
+    "actions": {
+      "createItem": {
+        "success": "品目 {name} を追加しました",
+        "title": "品目を追加"
+      },
+      "deleteItem": {
+        "confirm": "<bold>{name}</bold> を削除しますか？価格設定もすべて削除されます。",
+        "success": "品目 {name} を削除しました",
+        "title": "品目を削除"
+      },
+      "label": "操作",
+      "updateItem": {
+        "success": "品目 {name} を更新しました",
+        "title": "品目を編集"
+      }
+    },
+    "description": {
+      "label": "説明（任意）",
+      "placeholder": "品目の説明を入力してください"
+    },
+    "image": {
+      "label": "画像URL（任意）",
+      "placeholder": "画像URLを入力してください"
+    },
+    "label": "品目",
+    "name": {
+      "label": "品目名",
+      "placeholder": "品目名を入力してください"
+    },
+    "suitableForDiet": {
+      "label": "食事制限（任意）"
+    },
+    "url": {
+      "label": "URL（任意）",
+      "placeholder": "URLを入力してください"
+    }
   },
+  "label": "メニュー管理",
   "name": {
     "label": "メニュー名",
     "placeholder": "メニュー名を入力してください"
+  },
+  "organization": {
+    "label": "組織"
+  },
+  "sections": {
+    "actions": {
+      "addSubsection": {
+        "title": "サブセクションを追加"
+      },
+      "createSection": {
+        "success": "セクション {name} を追加しました",
+        "title": "セクションを追加"
+      },
+      "deleteSection": {
+        "confirm": "<bold>{name}</bold> を削除しますか？サブセクションと品目もすべて削除されます。",
+        "success": "セクション {name} を削除しました",
+        "title": "セクションを削除"
+      },
+      "label": "操作",
+      "updateSection": {
+        "success": "セクション {name} を更新しました",
+        "title": "セクションを編集"
+      }
+    },
+    "allItems": "すべての品目",
+    "description": {
+      "label": "説明（任意）",
+      "placeholder": "セクションの説明を入力してください"
+    },
+    "label": "セクション",
+    "name": {
+      "label": "セクション名",
+      "placeholder": "セクション名を入力してください"
+    },
+    "unassigned": "未分類"
   },
   "updatedAt": "更新日時"
 }

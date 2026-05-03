@@ -10,6 +10,9 @@
       "title": "Delete menu"
     },
     "label": "Actions",
+    "viewMenu": {
+      "title": "View menu"
+    },
     "updateMenu": {
       "success": "Menu {name} updated",
       "title": "Edit menu"
@@ -35,13 +38,83 @@
     },
     "placeholder": "Please select the menu language"
   },
-  "label": "Menu Management",
-  "organization": {
-    "label": "Organization"
+  "items": {
+    "actions": {
+      "createItem": {
+        "success": "Item {name} created",
+        "title": "Add item"
+      },
+      "deleteItem": {
+        "confirm": "Are you sure you want to delete <bold>{name}</bold>? All pricing settings will also be deleted.",
+        "success": "Item {name} deleted",
+        "title": "Delete item"
+      },
+      "label": "Actions",
+      "updateItem": {
+        "success": "Item {name} updated",
+        "title": "Edit item"
+      }
+    },
+    "description": {
+      "label": "Description (optional)",
+      "placeholder": "Please enter an item description"
+    },
+    "image": {
+      "label": "Image URL (optional)",
+      "placeholder": "Please enter an image URL"
+    },
+    "label": "Items",
+    "name": {
+      "label": "Item name",
+      "placeholder": "Please enter an item name"
+    },
+    "suitableForDiet": {
+      "label": "Dietary restrictions (optional)"
+    },
+    "url": {
+      "label": "URL (optional)",
+      "placeholder": "Please enter a URL"
+    }
   },
+  "label": "Menu Management",
   "name": {
     "label": "Menu name",
     "placeholder": "Please enter a menu name"
+  },
+  "organization": {
+    "label": "Organization"
+  },
+  "sections": {
+    "actions": {
+      "addSubsection": {
+        "title": "Add subsection"
+      },
+      "createSection": {
+        "success": "Section {name} created",
+        "title": "Add section"
+      },
+      "deleteSection": {
+        "confirm": "Are you sure you want to delete <bold>{name}</bold>? All subsections and items will also be deleted.",
+        "success": "Section {name} deleted",
+        "title": "Delete section"
+      },
+      "label": "Actions",
+      "updateSection": {
+        "success": "Section {name} updated",
+        "title": "Edit section"
+      }
+    },
+    "allItems": "All items",
+    "description": {
+      "label": "Description (optional)",
+      "placeholder": "Please enter a section description"
+    },
+    "label": "Sections",
+    "name": {
+      "label": "Section name",
+      "placeholder": "Please enter a section name"
+    },
+    "unassigned": "Unassigned"
   },
   "updatedAt": "Updated"
 }
