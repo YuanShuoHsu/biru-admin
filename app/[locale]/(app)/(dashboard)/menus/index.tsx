@@ -82,10 +82,7 @@ const Menus = ({ organizations }: MenusProps) => {
   const handleCreateMenu = () => {
     setDialog({
       content: (
-        <CreateMenuDialog
-          organizationId={selectedOrgId}
-          onSuccess={mutate}
-        />
+        <CreateMenuDialog organizationId={selectedOrgId} onSuccess={mutate} />
       ),
       formId: "create-menu-form",
       open: true,
