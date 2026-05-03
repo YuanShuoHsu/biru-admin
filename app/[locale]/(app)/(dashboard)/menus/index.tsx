@@ -11,6 +11,7 @@ import CreateMenuDialog from "./CreateMenuDialog";
 import UpdateMenuDialog from "./UpdateMenuDialog";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
+import { locales } from "@/constants/locale";
 
 import { useRouter } from "@/i18n/navigation";
 
@@ -40,14 +41,6 @@ const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
   { ssr: false },
 );
-
-const LOCALE_LABEL: Record<string, string> = {
-  "zh-TW": "繁體中文",
-  en: "English",
-  ja: "日本語",
-  ko: "한국어",
-  "zh-CN": "简体中文",
-};
 
 interface MenusProps {
   organizations: Organization[];
@@ -199,7 +192,7 @@ const Menus = ({ organizations }: MenusProps) => {
         renderCell: ({ value }: GridRenderCellParams<AdminMenu>) => (
           <Stack height="100%" justifyContent="center">
             <Chip
-              label={LOCALE_LABEL[value] ?? value}
+              label={locales[value as keyof typeof locales]?.label ?? value}
               size="small"
               variant="outlined"
             />

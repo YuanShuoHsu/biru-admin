@@ -7,11 +7,11 @@ import { useForm } from "react-hook-form";
 
 import { type UpdateMenuForm, useUpdateMenuFormSchema } from "./definitions";
 
-import { zodResolver } from "@hookform/resolvers/zod";
+import { locales } from "@/constants/locale";
 
 import { LocaleEnum } from "@/enums/Locale";
 
-import { fetcher } from "@/utils/fetcher";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
   Box,
@@ -29,19 +29,18 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { AdminMenu } from "@/types/menus";
 
+import { fetcher } from "@/utils/fetcher";
+
 const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   gap: theme.spacing(2),
 }));
 
-const LOCALE_OPTIONS = [
-  { label: "繁體中文", value: LocaleEnum.ZhTW },
-  { label: "English", value: LocaleEnum.En },
-  { label: "日本語", value: LocaleEnum.Ja },
-  { label: "한국어", value: LocaleEnum.Ko },
-  { label: "简体中文", value: LocaleEnum.ZhCN },
-];
+const LOCALE_OPTIONS = Object.entries(locales).map(([value, { label }]) => ({
+  label,
+  value,
+}));
 
 interface UpdateMenuDialogProps {
   menu: AdminMenu;
