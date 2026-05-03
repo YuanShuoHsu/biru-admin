@@ -1,3 +1,5 @@
+import type { Locale } from "@/i18n/routing";
+
 // https://schema.org/RestrictedDiet
 export type RestrictedDiet =
   | "DiabeticDiet"
@@ -50,7 +52,7 @@ export interface AdminMenu {
   name: string;
   description: string | null;
   image: string | null;
-  inLanguage: string | null;
+  inLanguage: Locale | null;
   createdAt: string;
   updatedAt: string;
 }

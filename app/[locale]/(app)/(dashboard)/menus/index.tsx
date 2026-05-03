@@ -189,15 +189,16 @@ const Menus = ({ organizations }: MenusProps) => {
       {
         field: "inLanguage",
         headerName: tMenus("inLanguage.label"),
-        renderCell: ({ value }: GridRenderCellParams<AdminMenu>) => (
-          <Stack height="100%" justifyContent="center">
+        renderCell: ({
+          row: { inLanguage },
+        }: GridRenderCellParams<AdminMenu>) =>
+          inLanguage && (
             <Chip
-              label={locales[value as keyof typeof locales]?.label ?? value}
+              label={locales[inLanguage].label}
               size="small"
               variant="outlined"
             />
-          </Stack>
-        ),
+          ),
         resizable: false,
         sortable: false,
       },
