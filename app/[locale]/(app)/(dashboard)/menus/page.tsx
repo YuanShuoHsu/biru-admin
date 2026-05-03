@@ -30,13 +30,14 @@ const MenusPage = async ({ params, searchParams }: MenusPageProps) => {
 
   const organizations = (data || []).toReversed();
 
-  const selectedOrg = organizations.find(({ slug }) => slug === organization);
-
-  const rows = selectedOrg
+  const selectedOrganization = organizations.find(
+    ({ slug }) => slug === organization,
+  );
+  const rows = selectedOrganization
     ? await fetcher<AdminMenu[]>(
-        `/api/organizations/${selectedOrg.id}/menus`,
+        `/api/organizations/${selectedOrganization.id}/menus`,
         fetchOptions,
-      ).catch(() => [] as AdminMenu[])
+      )
     : [];
 
   return (
