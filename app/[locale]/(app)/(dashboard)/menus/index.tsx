@@ -98,9 +98,7 @@ const Menus = ({ organizations, rows: initialRows }: MenusProps) => {
     };
 
     onRequest();
-    fetcher<AdminMenu[]>(
-      `/api/organizations/${selectedOrganizationId}/menus`,
-    )
+    fetcher<AdminMenu[]>(`/api/organizations/${selectedOrganizationId}/menus`)
       .then(onSuccess)
       .catch(onError);
   }, [apiRef, selectedOrganizationId]);
