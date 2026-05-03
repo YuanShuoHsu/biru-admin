@@ -273,11 +273,15 @@ const Menus = ({
             select: {
               displayEmpty: true,
               renderValue: (selected) => {
-                if (typeof selected === "string" && selected.length === 0)
-                  return <em>{tMenus("organization.placeholder")}</em>;
+                const organization = organizations.find(
+                  ({ slug }) => slug === selected,
+                );
 
-                return organizations.find(({ slug }) => slug === selected)
-                  ?.name;
+                return organization ? (
+                  organization.name
+                ) : (
+                  <em>{tMenus("organization.placeholder")}</em>
+                );
               },
             },
           }}

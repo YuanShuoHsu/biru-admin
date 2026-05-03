@@ -116,7 +116,20 @@ const BanUserDialogContent = ({
         select
         slotProps={{
           inputLabel: { shrink: true },
-          select: { displayEmpty: true },
+          select: {
+            displayEmpty: true,
+            renderValue: (selected) => {
+              const option = BAN_EXPIRES_OPTIONS.find(
+                ({ value }) => value === selected,
+              );
+
+              return option ? (
+                tAdmins(`actions.banUser.banExpiresIn.options.${option.label}`)
+              ) : (
+                <em>{tAdmins("actions.banUser.banExpiresIn.placeholder")}</em>
+              );
+            },
+          },
         }}
         value={banExpiresIn}
         {...register("banExpiresIn")}

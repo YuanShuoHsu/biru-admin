@@ -105,7 +105,15 @@ const SetRoleDialogContent = ({
         select
         slotProps={{
           inputLabel: { shrink: true },
-          select: { displayEmpty: true },
+          select: {
+            displayEmpty: true,
+            renderValue: (selected) =>
+              selected ? (
+                tAdmins(`role.${selected as (typeof roles)[number]}`)
+              ) : (
+                <em>{tAdmins("role.placeholder")}</em>
+              ),
+          },
         }}
         value={role}
         {...register("role")}

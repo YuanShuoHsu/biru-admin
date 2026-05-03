@@ -115,7 +115,15 @@ const UpdateMemberRoleDialog = ({
         select
         slotProps={{
           inputLabel: { shrink: true },
-          select: { displayEmpty: true },
+          select: {
+            displayEmpty: true,
+            renderValue: (selected) =>
+              selected ? (
+                tMembers(`role.${selected as (typeof roles)[number]}`)
+              ) : (
+                <em>{tMembers("role.placeholder")}</em>
+              ),
+          },
         }}
         value={role}
         {...register("role")}

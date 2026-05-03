@@ -94,7 +94,23 @@ const AddTeamMemberDialog = ({
         select
         slotProps={{
           inputLabel: { shrink: true },
-          select: { displayEmpty: true },
+          select: {
+            displayEmpty: true,
+            renderValue: (selected) => {
+              const member = availableMembers.find(
+                ({ userId }) => userId === selected,
+              );
+
+              return member ? (
+                tMembers("userId.option", {
+                  email: member.user.email,
+                  name: member.user.name,
+                })
+              ) : (
+                <em>{tMembers("userId.placeholder")}</em>
+              );
+            },
+          },
         }}
         value={userId}
         {...register("userId")}

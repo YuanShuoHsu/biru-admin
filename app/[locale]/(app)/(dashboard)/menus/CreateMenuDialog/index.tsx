@@ -121,7 +121,20 @@ const CreateMenuDialog = ({
         select
         slotProps={{
           inputLabel: { shrink: true },
-          select: { displayEmpty: true },
+          select: {
+            displayEmpty: true,
+            renderValue: (selected) => {
+              const option = LOCALE_OPTIONS.find(
+                ({ value }) => value === selected,
+              );
+
+              return option ? (
+                option.label
+              ) : (
+                <em>{tMenus("inLanguage.placeholder")}</em>
+              );
+            },
+          },
         }}
         value={inLanguage}
         {...register("inLanguage")}
