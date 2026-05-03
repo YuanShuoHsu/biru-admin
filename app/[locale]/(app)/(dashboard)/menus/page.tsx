@@ -39,7 +39,13 @@ const MenusPage = async ({ params, searchParams }: MenusPageProps) => {
       ).catch(() => [] as AdminMenu[])
     : [];
 
-  return <Menus organizations={organizations} rows={rows} />;
+  return (
+    <Menus
+      organizations={organizations}
+      organizationSlug={organization || ""}
+      rows={rows}
+    />
+  );
 };
 
 export default MenusPage;

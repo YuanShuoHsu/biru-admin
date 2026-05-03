@@ -2,9 +2,8 @@
 
 import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
-import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 
 import CreateMenuDialog from "./CreateMenuDialog";
@@ -50,10 +49,15 @@ const OrganizationSelectBox = styled(Box)({
 
 interface MenusProps {
   organizations: Organization[];
+  organizationSlug: string;
   rows: AdminMenu[];
 }
 
-const Menus = ({ organizations, rows: initialRows }: MenusProps) => {
+const Menus = ({
+  organizations,
+  organizationSlug,
+  rows: initialRows,
+}: MenusProps) => {
   const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState(initialRows);
 
@@ -65,18 +69,19 @@ const Menus = ({ organizations, rows: initialRows }: MenusProps) => {
 
   const router = useRouter();
 
-  const searchParams = useSearchParams();
-  const orgSlug = searchParams.get("organization");
+  const [selectedSlug, setSelectedSlug] = useState(organizationSlug);
 
   const selectedOrganization = organizations.find(
-    ({ slug }) => slug === orgSlug,
+    ({ slug }) => slug === selectedSlug,
   );
   const selectedOrganizationId = selectedOrganization?.id || "";
+  const selectedOrganizationIdRef = useRef(selectedOrganizationId);
+  selectedOrganizationIdRef.current = selectedOrganizationId;
 
   const tMenus = useTranslations("menus");
 
   const fetchMenus = useCallback(
-    (organizationId = selectedOrganizationId) => {
+    (organizationId = selectedOrganizationIdRef.current) => {
       if (!organizationId) return;
 
       const onRequest = () => setLoading(true);
@@ -84,6 +89,7 @@ const Menus = ({ organizations, rows: initialRows }: MenusProps) => {
       const onSuccess = (data: AdminMenu[]) => {
         flushSync(() => {
           setRows(data);
+
           setLoading(false);
         });
 
@@ -103,17 +109,22 @@ const Menus = ({ organizations, rows: initialRows }: MenusProps) => {
         .then(onSuccess)
         .catch(onError);
     },
-    [apiRef, selectedOrganizationId],
+    [apiRef],
   );
 
-  const handleOrganizationChange = (slug: string) => {
-    const newOrganization = organizations.find(
-      ({ slug: organizationSlug }) => organizationSlug === slug,
-    );
-    router.replace(`/menus?organization=${slug}`);
+  const handleOrganizationChange = useCallback(
+    (slug: string) => {
+      setSelectedSlug(slug);
 
-    if (newOrganization) fetchMenus(newOrganization.id);
-  };
+      const newOrganization = organizations.find(
+        ({ slug: organizationSlug }) => organizationSlug === slug,
+      );
+      router.replace(`/menus?organization=${slug}`);
+
+      if (newOrganization) fetchMenus(newOrganization.id);
+    },
+    [fetchMenus, organizations, router],
+  );
 
   const handleCreateMenu = () => {
     setDialog({
@@ -267,7 +278,7 @@ const Menus = ({ organizations, rows: initialRows }: MenusProps) => {
               select: { displayEmpty: true },
             }}
             size="small"
-            value={selectedOrganization?.slug || ""}
+            value={selectedSlug}
           >
             <MenuItem disabled value="">
               {tMenus("organization.placeholder")}
