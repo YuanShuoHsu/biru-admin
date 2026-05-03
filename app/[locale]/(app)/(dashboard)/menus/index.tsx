@@ -58,7 +58,15 @@ const Menus = ({
   rows: initialRows,
 }: MenusProps) => {
   const [loading, setLoading] = useState(false);
+  const [selectedSlug, setSelectedSlug] = useState(organizationSlug);
   const [rows, setRows] = useState(initialRows);
+
+  const selectedOrganization = organizations.find(
+    ({ slug }) => slug === selectedSlug,
+  );
+  const selectedOrganizationId = selectedOrganization?.id || "";
+  const selectedOrganizationIdRef = useRef(selectedOrganizationId);
+  selectedOrganizationIdRef.current = selectedOrganizationId;
 
   const apiRef = useGridApiRef();
 
@@ -67,15 +75,6 @@ const Menus = ({
   const format = useFormatter();
 
   const router = useRouter();
-
-  const [selectedSlug, setSelectedSlug] = useState(organizationSlug);
-
-  const selectedOrganization = organizations.find(
-    ({ slug }) => slug === selectedSlug,
-  );
-  const selectedOrganizationId = selectedOrganization?.id || "";
-  const selectedOrganizationIdRef = useRef(selectedOrganizationId);
-  selectedOrganizationIdRef.current = selectedOrganizationId;
 
   const tMenus = useTranslations("menus");
 
@@ -114,10 +113,9 @@ const Menus = ({
   const handleChange = useCallback(
     ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
       setSelectedSlug(value);
-
-      const newOrganization = organizations.find(({ slug }) => slug === value);
       router.replace(`/menus?organization=${value}`);
 
+      const newOrganization = organizations.find(({ slug }) => slug === value);
       if (newOrganization) fetchMenus(newOrganization.id);
     },
     [fetchMenus, organizations, router],
@@ -269,6 +267,7 @@ const Menus = ({
           label={tMenus("organization.label")}
           onChange={handleChange}
           select
+          size="small"
           slotProps={{
             inputLabel: { shrink: true },
             select: {
@@ -282,7 +281,6 @@ const Menus = ({
               },
             },
           }}
-          size="small"
           value={selectedSlug}
         >
           <MenuItem disabled value="">
