@@ -1,0 +1,47 @@
+{
+  "actions": {
+    "createMenu": {
+      "success": "成功新增菜单 {name}",
+      "title": "新增菜单"
+    },
+    "deleteMenu": {
+      "confirm": "确定要删除菜单 <bold>{name}</bold> 吗？此操作无法撤销。",
+      "success": "成功删除菜单 {name}",
+      "title": "删除菜单"
+    },
+    "label": "操作",
+    "updateMenu": {
+      "success": "成功更新菜单 {name}",
+      "title": "编辑菜单"
+    }
+  },
+  "createdAt": "创建时间",
+  "description": {
+    "label": "描述（选填）",
+    "placeholder": "请输入菜单描述"
+  },
+  "image": {
+    "label": "封面图片网址（选填）",
+    "placeholder": "请输入图片网址"
+  },
+  "inLanguage": {
+    "label": "语言",
+    "options": {
+      "en": "英文",
+      "ja": "日文",
+      "ko": "韩文",
+      "zh-CN": "简体中文",
+      "zh-TW": "繁体中文"
+    },
+    "placeholder": "请选择菜单语言"
+  },
+  "label": "菜单管理",
+  "organization": {
+    "label": "组织"
+  },
+  "name": {
+    "label": "菜单名称",
+    "placeholder": "请输入菜单名称"
+  },
+  "updatedAt": "更新时间"
+}

@@ -26,6 +26,7 @@ import {
   Group,
   Info,
   LocalMall,
+  MenuBook,
   Person,
   Restaurant,
   Security,
@@ -179,6 +180,7 @@ const useNavItems = (): MenuItem[] => {
   const tAuth = useTranslations("auth");
   const tCompany = useTranslations("company");
   const tDashboard = useTranslations("dashboard");
+  const tMenus = useTranslations("menus");
   const tOrder = useTranslations("order");
   const tOrganizations = useTranslations("organizations");
 
@@ -214,6 +216,11 @@ const useNavItems = (): MenuItem[] => {
       icon: Business,
       label: tOrganizations("label"),
       to: "/organizations",
+    },
+    {
+      icon: MenuBook,
+      label: tMenus("label"),
+      to: "/menus",
     },
     {
       children: session ? accountChildren : authChildren,

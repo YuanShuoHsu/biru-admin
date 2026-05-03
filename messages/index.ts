@@ -9,6 +9,7 @@ import dataGrid from "./en/dataGrid.json";
 import dialog from "./en/dialog.json";
 import home from "./en/home.json";
 import maintenance from "./en/maintenance.json";
+import menus from "./en/menus.json";
 import order from "./en/order.json";
 import organizations from "./en/organizations.json";
 import validation from "./en/validation.json";
@@ -25,6 +26,7 @@ const messages = {
   dialog,
   home,
   maintenance,
+  menus,
   order,
   organizations,
   validation,

@@ -33,6 +33,7 @@ import {
   Login,
   Mail,
   ManageAccounts,
+  MenuBook,
   Payment,
   People,
   Person,
@@ -133,6 +134,7 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
   const tAuth = useTranslations("auth");
   const tCompany = useTranslations("company");
   const tDashboard = useTranslations("dashboard");
+  const tMenus = useTranslations("menus");
   const tOrder = useTranslations("order");
   const tOrganizations = useTranslations("organizations");
 
@@ -216,6 +218,11 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
       icon: Business,
       label: tOrganizations("label"),
       to: "/organizations",
+    },
+    {
+      icon: MenuBook,
+      label: tMenus("label"),
+      to: "/menus",
     },
     {
       children: [

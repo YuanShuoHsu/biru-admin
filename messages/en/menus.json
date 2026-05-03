@@ -1,0 +1,47 @@
+{
+  "actions": {
+    "createMenu": {
+      "success": "Menu {name} created",
+      "title": "Add menu"
+    },
+    "deleteMenu": {
+      "confirm": "Are you sure you want to delete menu <bold>{name}</bold>? This action cannot be undone.",
+      "success": "Menu {name} deleted",
+      "title": "Delete menu"
+    },
+    "label": "Actions",
+    "updateMenu": {
+      "success": "Menu {name} updated",
+      "title": "Edit menu"
+    }
+  },
+  "createdAt": "Created",
+  "description": {
+    "label": "Description (optional)",
+    "placeholder": "Please enter a menu description"
+  },
+  "image": {
+    "label": "Cover image URL (optional)",
+    "placeholder": "Please enter an image URL"
+  },
+  "inLanguage": {
+    "label": "Language",
+    "options": {
+      "en": "English",
+      "ja": "Japanese",
+      "ko": "Korean",
+      "zh-CN": "Simplified Chinese",
+      "zh-TW": "Traditional Chinese"
+    },
+    "placeholder": "Please select the menu language"
+  },
+  "label": "Menu Management",
+  "organization": {
+    "label": "Organization"
+  },
+  "name": {
+    "label": "Menu name",
+    "placeholder": "Please enter a menu name"
+  },
+  "updatedAt": "Updated"
+}

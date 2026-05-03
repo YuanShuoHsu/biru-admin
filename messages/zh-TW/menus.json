@@ -1,0 +1,47 @@
+{
+  "actions": {
+    "createMenu": {
+      "success": "成功新增菜單 {name}",
+      "title": "新增菜單"
+    },
+    "deleteMenu": {
+      "confirm": "確定要刪除菜單 <bold>{name}</bold> 嗎？此操作無法復原。",
+      "success": "成功刪除菜單 {name}",
+      "title": "刪除菜單"
+    },
+    "label": "操作",
+    "updateMenu": {
+      "success": "成功更新菜單 {name}",
+      "title": "編輯菜單"
+    }
+  },
+  "createdAt": "建立時間",
+  "description": {
+    "label": "描述（選填）",
+    "placeholder": "請輸入菜單描述"
+  },
+  "image": {
+    "label": "封面圖片網址（選填）",
+    "placeholder": "請輸入圖片網址"
+  },
+  "inLanguage": {
+    "label": "語言",
+    "options": {
+      "en": "英文",
+      "ja": "日文",
+      "ko": "韓文",
+      "zh-CN": "簡體中文",
+      "zh-TW": "繁體中文"
+    },
+    "placeholder": "請選擇菜單語言"
+  },
+  "label": "菜單管理",
+  "organization": {
+    "label": "組織"
+  },
+  "name": {
+    "label": "菜單名稱",
+    "placeholder": "請輸入菜單名稱"
+  },
+  "updatedAt": "更新時間"
+}
