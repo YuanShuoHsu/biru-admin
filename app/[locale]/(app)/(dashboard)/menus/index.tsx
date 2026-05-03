@@ -75,33 +75,45 @@ const Menus = ({ organizations, rows: initialRows }: MenusProps) => {
 
   const tMenus = useTranslations("menus");
 
-  const fetchMenus = useCallback(() => {
-    if (!selectedOrganizationId) return;
+  const fetchMenus = useCallback(
+    (organizationId = selectedOrganizationId) => {
+      if (!organizationId) return;
 
-    const onRequest = () => setLoading(true);
+      const onRequest = () => setLoading(true);
 
-    const onSuccess = (data: AdminMenu[]) => {
-      flushSync(() => {
-        setRows(data);
+      const onSuccess = (data: AdminMenu[]) => {
+        flushSync(() => {
+          setRows(data);
+          setLoading(false);
+        });
+
+        setTimeout(() => {
+          apiRef.current?.autosizeColumns(autosizeOptions);
+        }, 0);
+      };
+
+      const onError = (error: unknown) => {
         setLoading(false);
-      });
 
-      setTimeout(() => {
-        apiRef.current?.autosizeColumns(autosizeOptions);
-      }, 0);
-    };
+        enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+      };
 
-    const onError = (error: unknown) => {
-      setLoading(false);
+      onRequest();
+      fetcher<AdminMenu[]>(`/api/organizations/${organizationId}/menus`)
+        .then(onSuccess)
+        .catch(onError);
+    },
+    [apiRef, selectedOrganizationId],
+  );
 
-      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
-    };
+  const handleOrganizationChange = (slug: string) => {
+    const newOrganization = organizations.find(
+      ({ slug: organizationSlug }) => organizationSlug === slug,
+    );
+    router.replace(`/menus?organization=${slug}`);
 
-    onRequest();
-    fetcher<AdminMenu[]>(`/api/organizations/${selectedOrganizationId}/menus`)
-      .then(onSuccess)
-      .catch(onError);
-  }, [apiRef, selectedOrganizationId]);
+    if (newOrganization) fetchMenus(newOrganization.id);
+  };
 
   const handleCreateMenu = () => {
     setDialog({
@@ -249,9 +261,7 @@ const Menus = ({ organizations, rows: initialRows }: MenusProps) => {
           <TextField
             fullWidth
             label={tMenus("organization.label")}
-            onChange={(event) =>
-              router.replace(`/menus?organization=${event.target.value}`)
-            }
+            onChange={(event) => handleOrganizationChange(event.target.value)}
             select
             slotProps={{
               select: { displayEmpty: true },
