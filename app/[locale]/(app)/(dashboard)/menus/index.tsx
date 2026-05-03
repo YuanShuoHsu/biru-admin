@@ -111,14 +111,12 @@ const Menus = ({
     [apiRef],
   );
 
-  const handleOrganizationChange = useCallback(
-    (slug: string) => {
-      setSelectedSlug(slug);
+  const handleChange = useCallback(
+    ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
+      setSelectedSlug(value);
 
-      const newOrganization = organizations.find(
-        ({ slug: organizationSlug }) => organizationSlug === slug,
-      );
-      router.replace(`/menus?organization=${slug}`);
+      const newOrganization = organizations.find(({ slug }) => slug === value);
+      router.replace(`/menus?organization=${value}`);
 
       if (newOrganization) fetchMenus(newOrganization.id);
     },
@@ -269,7 +267,7 @@ const Menus = ({
       <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
         <StyledTextField
           label={tMenus("organization.label")}
-          onChange={(event) => handleOrganizationChange(event.target.value)}
+          onChange={handleChange}
           select
           slotProps={{
             inputLabel: { shrink: true },
