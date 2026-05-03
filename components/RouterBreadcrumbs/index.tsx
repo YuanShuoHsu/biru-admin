@@ -90,8 +90,7 @@ interface BreadcrumbItem {
 }
 
 const useBreadcrumbs = (): BreadcrumbItem[] => {
-  const { menuId, slug, storeSlug, teamId, userId } =
-    useParams<RouteParams>();
+  const { menuId, slug, storeSlug, teamId, userId } = useParams<RouteParams>();
 
   const searchParams = useSearchParams();
   const mode = searchParams.get("mode");

@@ -25,15 +25,17 @@ const MenuDetail = ({
     null,
   );
 
-  const { data: sections = initialSections, mutate: mutateSections } =
-    useSWR<AdminMenuSection[]>(`/api/menus/${menu.id}/sections`, {
-      fallbackData: initialSections,
-    });
+  const { data: sections = initialSections, mutate: mutateSections } = useSWR<
+    AdminMenuSection[]
+  >(`/api/menus/${menu.id}/sections`, {
+    fallbackData: initialSections,
+  });
 
-  const { data: items = initialItems, mutate: mutateItems } =
-    useSWR<AdminMenuItem[]>(`/api/menus/${menu.id}/items`, {
-      fallbackData: initialItems,
-    });
+  const { data: items = initialItems, mutate: mutateItems } = useSWR<
+    AdminMenuItem[]
+  >(`/api/menus/${menu.id}/items`, {
+    fallbackData: initialItems,
+  });
 
   const handleMutate = () => {
     mutateSections();

@@ -34,7 +34,9 @@ const MenuDetailPage = async ({ params }: MenuDetailPageProps) => {
 
   if (!menu) notFound();
 
-  return <MenuDetail menu={menu} initialSections={sections} initialItems={items} />;
+  return (
+    <MenuDetail menu={menu} initialSections={sections} initialItems={items} />
+  );
 };
 
 export default MenuDetailPage;
