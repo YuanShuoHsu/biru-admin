@@ -14,7 +14,7 @@ import { locales } from "@/constants/locale";
 
 import { useRouter } from "@/i18n/navigation";
 
-import { Add, Delete, Edit, OpenInNew } from "@mui/icons-material";
+import { Add, Delete, Edit, Summarize } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -198,7 +198,7 @@ const Menus = ({
                 onClick={() => router.push(`/menus/${row.id}`)}
                 size="small"
               >
-                <OpenInNew fontSize="small" />
+                <Summarize fontSize="small" />
               </IconButton>
             </Tooltip>
             <Tooltip title={tMenus("actions.updateMenu.title")}>

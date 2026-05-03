@@ -43,6 +43,7 @@ import {
   Settings,
   ShoppingCart,
   Storefront,
+  Summarize,
 } from "@mui/icons-material";
 import {
   Breadcrumbs,
@@ -232,8 +233,7 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
     {
       children: [
         {
-          disabled: true,
-          icon: MenuBook,
+          icon: Summarize,
           label: menuName,
           to: `/${menuId}`,
         },
