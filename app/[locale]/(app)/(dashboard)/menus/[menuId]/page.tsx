@@ -2,7 +2,7 @@ import { setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
-import MenuDetail from ".";
+import MenuId from ".";
 
 import type { Locale } from "@/i18n/routing";
 
@@ -32,9 +32,7 @@ const MenuIdPage = async ({ params }: MenuIdPageProps) => {
 
   if (!menu) notFound();
 
-  return (
-    <MenuDetail menu={menu} initialSections={sections} initialItems={items} />
-  );
+  return <MenuId menu={menu} initialSections={sections} initialItems={items} />;
 };
 
 export default MenuIdPage;
