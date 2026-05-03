@@ -59,6 +59,12 @@ const Menus = ({ organizations, rows: initialRows }: MenusProps) => {
 
   const apiRef = useGridApiRef();
 
+  const { setDialog } = useDialogStore((state) => state);
+
+  const format = useFormatter();
+
+  const router = useRouter();
+
   const searchParams = useSearchParams();
   const orgSlug = searchParams.get("organization");
 
@@ -66,12 +72,6 @@ const Menus = ({ organizations, rows: initialRows }: MenusProps) => {
     ({ slug }) => slug === orgSlug,
   );
   const selectedOrganizationId = selectedOrganization?.id || "";
-
-  const { setDialog } = useDialogStore((state) => state);
-
-  const format = useFormatter();
-
-  const router = useRouter();
 
   const tMenus = useTranslations("menus");
 
