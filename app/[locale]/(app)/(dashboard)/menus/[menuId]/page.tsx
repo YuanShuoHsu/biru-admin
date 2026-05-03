@@ -21,11 +21,9 @@ const MenuIdPage = async ({ params }: MenuIdPageProps) => {
     cookies(),
     params,
   ]);
-
   setRequestLocale(locale);
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
-
   const [menu, sections, items] = await Promise.all([
     getAdminMenu(menuId, fetchOptions),
     getAdminMenuSections(menuId, fetchOptions),
