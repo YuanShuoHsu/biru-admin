@@ -6,10 +6,7 @@ import MenuId from ".";
 
 import type { Locale } from "@/i18n/routing";
 
-import {
-  getAdminMenu,
-  getAdminMenuSections,
-} from "@/utils/admin-menus";
+import { getAdminMenu, getAdminMenuSections } from "@/utils/admin-menus";
 
 interface MenuIdPageProps {
   params: Promise<{ locale: Locale; menuId: string }>;

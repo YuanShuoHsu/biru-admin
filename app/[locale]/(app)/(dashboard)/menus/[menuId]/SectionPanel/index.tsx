@@ -40,11 +40,7 @@ interface SectionPanelProps {
   onMutate: () => unknown;
 }
 
-const SectionPanel = ({
-  menuId,
-  sections,
-  onMutate,
-}: SectionPanelProps) => {
+const SectionPanel = ({ menuId, sections, onMutate }: SectionPanelProps) => {
   const { setDialog } = useDialogStore((state) => state);
   const router = useRouter();
   const tMenus = useTranslations("menus");
@@ -186,13 +182,7 @@ const SectionPanel = ({
           format.dateTime(new Date(value), "short"),
       },
     ],
-    [
-      format,
-      handleDeleteSection,
-      handleViewItems,
-      handleUpdateSection,
-      tMenus,
-    ],
+    [format, handleDeleteSection, handleViewItems, handleUpdateSection, tMenus],
   );
 
   return (
