@@ -100,9 +100,15 @@
         "title": "删除分组"
       },
       "label": "操作",
+      "backToSections": {
+        "title": "返回分组"
+      },
       "updateSection": {
         "success": "成功更新分组 {name}",
         "title": "编辑分组"
+      },
+      "viewItems": {
+        "title": "查看品项"
       }
     },
     "allItems": "所有品项",

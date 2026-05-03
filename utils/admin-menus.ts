@@ -55,3 +55,17 @@ export const getAdminMenuItems = cache(
     }
   },
 );
+
+export const getAdminMenuSectionItems = cache(
+  async (sectionId: string, init?: RequestInit) => {
+    try {
+      const data = await fetcher<AdminMenuItem[]>(
+        `/api/menu-sections/${sectionId}/items`,
+        init,
+      );
+      return Array.isArray(data) ? data : [];
+    } catch {
+      return [];
+    }
+  },
+);

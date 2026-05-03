@@ -100,9 +100,15 @@
         "title": "섹션 삭제"
       },
       "label": "작업",
+      "backToSections": {
+        "title": "섹션으로 돌아가기"
+      },
       "updateSection": {
         "success": "섹션 {name}이(가) 업데이트되었습니다",
         "title": "섹션 편집"
+      },
+      "viewItems": {
+        "title": "항목 보기"
       }
     },
     "allItems": "모든 항목",

@@ -16,7 +16,6 @@ import { useRouter } from "@/i18n/navigation";
 
 import { Add, Delete, Edit, Summarize } from "@mui/icons-material";
 import {
-  Box,
   Button,
   Chip,
   DialogContentText,
@@ -43,7 +42,7 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
-const OrganizationSelectBox = styled(Box)({
+const StyledTextField = styled(TextField)({
   width: 200,
 });
 
@@ -268,29 +267,35 @@ const Menus = ({
   return (
     <>
       <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
-        <OrganizationSelectBox>
-          <TextField
-            fullWidth
-            label={tMenus("organization.label")}
-            onChange={(event) => handleOrganizationChange(event.target.value)}
-            select
-            slotProps={{
-              inputLabel: { shrink: true },
-              select: { displayEmpty: true },
-            }}
-            size="small"
-            value={selectedSlug}
-          >
-            <MenuItem disabled value="">
-              {tMenus("organization.placeholder")}
+        <StyledTextField
+          label={tMenus("organization.label")}
+          onChange={(event) => handleOrganizationChange(event.target.value)}
+          select
+          slotProps={{
+            inputLabel: { shrink: true },
+            select: {
+              displayEmpty: true,
+              renderValue: (selected) => {
+                if (typeof selected === "string" && selected.length === 0)
+                  return <em>{tMenus("organization.placeholder")}</em>;
+
+                return organizations.find(({ slug }) => slug === selected)
+                  ?.name;
+              },
+            },
+          }}
+          size="small"
+          value={selectedSlug}
+        >
+          <MenuItem disabled value="">
+            <em>{tMenus("organization.placeholder")}</em>
+          </MenuItem>
+          {organizations.map(({ id, slug, name }) => (
+            <MenuItem key={id} value={slug}>
+              {name}
             </MenuItem>
-            {organizations.map(({ id, slug, name }) => (
-              <MenuItem key={id} value={slug}>
-                {name}
-              </MenuItem>
-            ))}
-          </TextField>
-        </OrganizationSelectBox>
+          ))}
+        </StyledTextField>
         <Button
           onClick={handleCreateMenu}
           size="small"

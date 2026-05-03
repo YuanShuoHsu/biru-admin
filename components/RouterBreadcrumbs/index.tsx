@@ -44,6 +44,7 @@ import {
   ShoppingCart,
   Storefront,
   Summarize,
+  ViewList,
 } from "@mui/icons-material";
 import {
   Breadcrumbs,
@@ -91,7 +92,8 @@ interface BreadcrumbItem {
 }
 
 const useBreadcrumbs = (): BreadcrumbItem[] => {
-  const { menuId, slug, storeSlug, teamId, userId } = useParams<RouteParams>();
+  const { menuId, sectionId, slug, storeSlug, teamId, userId } =
+    useParams<RouteParams>();
 
   const searchParams = useSearchParams();
   const mode = searchParams.get("mode");
@@ -138,6 +140,16 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
       if (!res.ok) return "";
       const menu = await res.json();
       return menu?.name ?? "";
+    },
+  );
+
+  const { data: sectionName = "" } = useSWR(
+    sectionId ? `/api/menu-sections/${sectionId}` : null,
+    async (url) => {
+      const res = await fetch(url);
+      if (!res.ok) return "";
+      const section = await res.json();
+      return section?.name ?? "";
     },
   );
 
@@ -233,6 +245,25 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
     {
       children: [
         {
+          children: [
+            {
+              icon: ViewList,
+              label: tMenus("sections.label"),
+              to: "/sections",
+            },
+            {
+              children: [
+                {
+                  icon: MenuBook,
+                  label: tMenus("items.label"),
+                  to: "/items",
+                },
+              ],
+              icon: ViewList,
+              label: sectionName,
+              to: `/sections/${sectionId}`,
+            },
+          ],
           icon: Summarize,
           label: menuName,
           to: `/${menuId}`,

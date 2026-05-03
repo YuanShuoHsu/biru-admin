@@ -28,13 +28,11 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 
 interface CreateSectionDialogProps {
   menuId: string;
-  parentSectionId?: string | null;
   onSuccess: () => unknown;
 }
 
 const CreateSectionDialog = ({
   menuId,
-  parentSectionId = null,
   onSuccess,
 }: CreateSectionDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
@@ -61,7 +59,6 @@ const CreateSectionDialog = ({
         body: JSON.stringify({
           name,
           ...(description && { description }),
-          ...(parentSectionId && { parentSectionId }),
         }),
       });
 

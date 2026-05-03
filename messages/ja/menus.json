@@ -100,9 +100,15 @@
         "title": "セクションを削除"
       },
       "label": "操作",
+      "backToSections": {
+        "title": "セクションに戻る"
+      },
       "updateSection": {
         "success": "セクション {name} を更新しました",
         "title": "セクションを編集"
+      },
+      "viewItems": {
+        "title": "品目を見る"
       }
     },
     "allItems": "すべての品目",

@@ -7,13 +7,14 @@ import { useCallback, useMemo } from "react";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
-import { Add, Delete, Edit } from "@mui/icons-material";
+import { Add, ArrowBack, Delete, Edit } from "@mui/icons-material";
 import {
   Button,
   DialogContentText,
   IconButton,
   Stack,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
@@ -24,8 +25,8 @@ import type { AdminMenuItem, AdminMenuSection } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
 
-import CreateMenuItemDialog from "../CreateMenuItemDialog";
-import UpdateMenuItemDialog from "../UpdateMenuItemDialog";
+import CreateMenuItemDialog from "./CreateMenuItemDialog";
+import UpdateMenuItemDialog from "./UpdateMenuItemDialog";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -33,18 +34,18 @@ const DataGrid = dynamic(
 );
 
 interface ItemsPanelProps {
-  menuId: string;
   sections: AdminMenuSection[];
   items: AdminMenuItem[];
   selectedSectionId: string | null;
+  onBack: () => void;
   onMutate: () => unknown;
 }
 
 const ItemsPanel = ({
-  menuId,
   sections,
   items,
   selectedSectionId,
+  onBack,
   onMutate,
 }: ItemsPanelProps) => {
   const { setDialog } = useDialogStore((state) => state);
@@ -52,29 +53,22 @@ const ItemsPanel = ({
   const format = useFormatter();
   const apiRef = useGridApiRef();
 
-  const sectionMap = useMemo(
-    () => new Map(sections.map((s) => [s.id, s.name])),
-    [sections],
+  const selectedSection = useMemo(
+    () => sections.find((section) => section.id === selectedSectionId),
+    [sections, selectedSectionId],
   );
 
   const filteredItems = useMemo(() => {
-    if (selectedSectionId === null) return items;
-    if (selectedSectionId === "unassigned")
-      return items.filter((i) => i.menuSectionId === null);
+    if (!selectedSectionId) return [];
     return items.filter((i) => i.menuSectionId === selectedSectionId);
   }, [items, selectedSectionId]);
 
   const handleCreateItem = useCallback(() => {
-    const sectionId =
-      selectedSectionId === null || selectedSectionId === "unassigned"
-        ? null
-        : selectedSectionId;
-
     setDialog({
       content: (
         <CreateMenuItemDialog
-          menuId={menuId}
-          menuSectionId={sectionId}
+          menuSectionId={selectedSectionId}
+          sections={sections}
           onSuccess={onMutate}
         />
       ),
@@ -82,7 +76,7 @@ const ItemsPanel = ({
       open: true,
       title: tMenus("items.actions.createItem.title"),
     });
-  }, [menuId, onMutate, selectedSectionId, setDialog, tMenus]);
+  }, [onMutate, sections, selectedSectionId, setDialog, tMenus]);
 
   const handleUpdateItem = useCallback(
     (item: AdminMenuItem) => {
@@ -175,7 +169,7 @@ const ItemsPanel = ({
         field: "menuSectionId",
         headerName: tMenus("sections.label"),
         renderCell: ({ value }: GridRenderCellParams<AdminMenuItem>) =>
-          value ? (sectionMap.get(value) ?? value) : "—",
+          value ? (selectedSection?.name ?? value) : "—",
         sortable: false,
       },
       {
@@ -191,13 +185,26 @@ const ItemsPanel = ({
           format.dateTime(new Date(value), "short"),
       },
     ],
-    [format, handleDeleteItem, handleUpdateItem, sectionMap, tMenus],
+    [format, handleDeleteItem, handleUpdateItem, selectedSection, tMenus],
   );
 
   return (
     <Stack flex={1} minWidth={0} gap={1}>
-      <Stack direction="row" justifyContent="flex-end">
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Stack direction="row" alignItems="center" gap={1}>
+          <Tooltip title={tMenus("sections.actions.backToSections.title")}>
+            <IconButton onClick={onBack} size="small">
+              <ArrowBack fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Typography variant="subtitle2">
+            {selectedSection
+              ? `${selectedSection.name} ${tMenus("items.label")}`
+              : tMenus("items.label")}
+          </Typography>
+        </Stack>
         <Button
+          disabled={!selectedSectionId}
           onClick={handleCreateItem}
           size="small"
           startIcon={<Add />}

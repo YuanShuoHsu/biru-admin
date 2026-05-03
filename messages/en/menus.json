@@ -100,9 +100,15 @@
         "title": "Delete section"
       },
       "label": "Actions",
+      "backToSections": {
+        "title": "Back to sections"
+      },
       "updateSection": {
         "success": "Section {name} updated",
         "title": "Edit section"
+      },
+      "viewItems": {
+        "title": "View items"
       }
     },
     "allItems": "All items",

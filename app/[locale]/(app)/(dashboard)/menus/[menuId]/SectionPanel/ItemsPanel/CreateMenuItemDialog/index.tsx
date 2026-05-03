@@ -9,11 +9,11 @@ import { CreateMenuItemForm, useCreateMenuItemFormSchema } from "./definitions";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Box, type BoxProps, TextField, styled } from "@mui/material";
+import { Box, type BoxProps, MenuItem, TextField, styled } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { AdminMenuItem } from "@/types/menus";
+import type { AdminMenuItem, AdminMenuSection } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
 
@@ -24,14 +24,14 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 }));
 
 interface CreateMenuItemDialogProps {
-  menuId: string;
   menuSectionId?: string | null;
+  sections: AdminMenuSection[];
   onSuccess: () => unknown;
 }
 
 const CreateMenuItemDialog = ({
-  menuId,
   menuSectionId = null,
+  sections,
   onSuccess,
 }: CreateMenuItemDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
@@ -44,12 +44,19 @@ const CreateMenuItemDialog = ({
     handleSubmit,
     register,
   } = useForm<CreateMenuItemForm>({
-    defaultValues: { name: "", description: "", image: "", url: "" },
+    defaultValues: {
+      name: "",
+      menuSectionId: menuSectionId ?? sections[0]?.id ?? "",
+      description: "",
+      image: "",
+      url: "",
+    },
     resolver: zodResolver(schema),
   });
 
   const onSubmitHandler = async ({
     name,
+    menuSectionId,
     description,
     image,
     url,
@@ -57,17 +64,19 @@ const CreateMenuItemDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher<AdminMenuItem>(`/api/menus/${menuId}/items`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          ...(description && { description }),
-          ...(image && { image }),
-          ...(url && { url }),
-          ...(menuSectionId && { menuSectionId }),
-        }),
-      });
+      await fetcher<AdminMenuItem>(
+        `/api/menu-sections/${menuSectionId}/items`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name,
+            ...(description && { description }),
+            ...(image && { image }),
+            ...(url && { url }),
+          }),
+        },
+      );
 
       enqueueSnackbar(tMenus("items.actions.createItem.success", { name }), {
         variant: "success",
@@ -97,6 +106,21 @@ const CreateMenuItemDialog = ({
         required
         {...register("name")}
       />
+      <TextField
+        error={!!errors.menuSectionId}
+        fullWidth
+        helperText={errors.menuSectionId?.message}
+        label={tMenus("sections.label")}
+        required
+        select
+        {...register("menuSectionId")}
+      >
+        {sections.map((section) => (
+          <MenuItem key={section.id} value={section.id}>
+            {section.name}
+          </MenuItem>
+        ))}
+      </TextField>
       <TextField
         error={!!errors.description}
         fullWidth

@@ -8,7 +8,6 @@ import type { Locale } from "@/i18n/routing";
 
 import {
   getAdminMenu,
-  getAdminMenuItems,
   getAdminMenuSections,
 } from "@/utils/admin-menus";
 
@@ -24,15 +23,14 @@ const MenuIdPage = async ({ params }: MenuIdPageProps) => {
   setRequestLocale(locale);
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
-  const [menu, sections, items] = await Promise.all([
+  const [menu, sections] = await Promise.all([
     getAdminMenu(menuId, fetchOptions),
     getAdminMenuSections(menuId, fetchOptions),
-    getAdminMenuItems(menuId, fetchOptions),
   ]);
 
   if (!menu) notFound();
 
-  return <MenuId menu={menu} initialSections={sections} initialItems={items} />;
+  return <MenuId menu={menu} initialSections={sections} />;
 };
 
 export default MenuIdPage;
