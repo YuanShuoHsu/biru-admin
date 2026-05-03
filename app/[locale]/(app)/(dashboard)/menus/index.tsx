@@ -4,8 +4,8 @@ import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
-import { useCallback, useMemo } from "react";
-import useSWR from "swr";
+import { useCallback, useMemo, useState } from "react";
+import { flushSync } from "react-dom";
 
 import CreateMenuDialog from "./CreateMenuDialog";
 import UpdateMenuDialog from "./UpdateMenuDialog";
@@ -24,6 +24,7 @@ import {
   IconButton,
   MenuItem,
   Stack,
+  styled,
   TextField,
   Tooltip,
 } from "@mui/material";
@@ -35,6 +36,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { AdminMenu } from "@/types/menus";
 import type { Organization } from "@/types/organizations";
 
+import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
 const DataGrid = dynamic(
@@ -42,50 +44,74 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
+const OrganizationSelectBox = styled(Box)({
+  width: 200,
+});
+
 interface MenusProps {
   organizations: Organization[];
+  rows: AdminMenu[];
 }
 
-const Menus = ({ organizations }: MenusProps) => {
+const Menus = ({ organizations, rows: initialRows }: MenusProps) => {
+  const [loading, setLoading] = useState(false);
+  const [rows, setRows] = useState(initialRows);
+
+  const apiRef = useGridApiRef();
+
   const searchParams = useSearchParams();
   const orgSlug = searchParams.get("organization");
 
-  const selectedOrg = useMemo(
-    () =>
-      organizations.find(({ slug }) => slug === orgSlug) ?? organizations[0],
-    [organizations, orgSlug],
+  const selectedOrganization = organizations.find(
+    ({ slug }) => slug === orgSlug,
   );
-  const selectedOrgId = selectedOrg?.id ?? "";
-
-  const router = useRouter();
-
-  const apiRef = useGridApiRef();
+  const selectedOrganizationId = selectedOrganization?.id || "";
 
   const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
 
-  const {
-    data: rows = [],
-    isLoading,
-    mutate,
-  } = useSWR<AdminMenu[]>(
-    selectedOrgId ? `/api/organizations/${selectedOrgId}/menus` : null,
-    {
-      onSuccess: () => {
-        setTimeout(() => {
-          apiRef.current?.autosizeColumns(autosizeOptions);
-        }, 0);
-      },
-    },
-  );
+  const router = useRouter();
 
   const tMenus = useTranslations("menus");
+
+  const fetchMenus = useCallback(() => {
+    if (!selectedOrganizationId) return;
+
+    const onRequest = () => setLoading(true);
+
+    const onSuccess = (data: AdminMenu[]) => {
+      flushSync(() => {
+        setRows(data);
+        setLoading(false);
+      });
+
+      setTimeout(() => {
+        apiRef.current?.autosizeColumns(autosizeOptions);
+      }, 0);
+    };
+
+    const onError = (error: unknown) => {
+      setLoading(false);
+
+      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+    };
+
+    onRequest();
+    fetcher<AdminMenu[]>(
+      `/api/organizations/${selectedOrganizationId}/menus`,
+    )
+      .then(onSuccess)
+      .catch(onError);
+  }, [apiRef, selectedOrganizationId]);
 
   const handleCreateMenu = () => {
     setDialog({
       content: (
-        <CreateMenuDialog organizationId={selectedOrgId} onSuccess={mutate} />
+        <CreateMenuDialog
+          organizationId={selectedOrganizationId}
+          fetchMenus={fetchMenus}
+        />
       ),
       formId: "create-menu-form",
       open: true,
@@ -96,13 +122,13 @@ const Menus = ({ organizations }: MenusProps) => {
   const handleUpdateMenu = useCallback(
     (menu: AdminMenu) => {
       setDialog({
-        content: <UpdateMenuDialog menu={menu} onSuccess={mutate} />,
+        content: <UpdateMenuDialog menu={menu} fetchMenus={fetchMenus} />,
         formId: "update-menu-form",
         open: true,
         title: tMenus("actions.updateMenu.title"),
       });
     },
-    [mutate, setDialog, tMenus],
+    [fetchMenus, setDialog, tMenus],
   );
 
   const handleDeleteMenu = useCallback(
@@ -124,7 +150,7 @@ const Menus = ({ organizations }: MenusProps) => {
               variant: "success",
             });
 
-            mutate();
+            fetchMenus();
           } catch {
             enqueueSnackbar(tMenus("actions.deleteMenu.title"), {
               variant: "error",
@@ -135,7 +161,7 @@ const Menus = ({ organizations }: MenusProps) => {
         title: tMenus("actions.deleteMenu.title"),
       });
     },
-    [mutate, setDialog, tMenus],
+    [fetchMenus, setDialog, tMenus],
   );
 
   const columns = useMemo<GridColDef[]>(
@@ -221,26 +247,31 @@ const Menus = ({ organizations }: MenusProps) => {
   return (
     <>
       <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
-        <Box sx={{ width: 200 }}>
+        <OrganizationSelectBox>
           <TextField
             fullWidth
             label={tMenus("organization.label")}
-            onChange={(e) =>
-              router.replace(`/menus?organization=${e.target.value}`)
+            onChange={(event) =>
+              router.replace(`/menus?organization=${event.target.value}`)
             }
             select
+            slotProps={{
+              select: { displayEmpty: true },
+            }}
             size="small"
-            value={selectedOrg?.slug ?? ""}
+            value={selectedOrganization?.slug || ""}
           >
+            <MenuItem disabled value="">
+              {tMenus("organization.placeholder")}
+            </MenuItem>
             {organizations.map(({ id, slug, name }) => (
               <MenuItem key={id} value={slug}>
                 {name}
               </MenuItem>
             ))}
           </TextField>
-        </Box>
+        </OrganizationSelectBox>
         <Button
-          disabled={!selectedOrgId}
           onClick={handleCreateMenu}
           size="small"
           startIcon={<Add />}
@@ -253,7 +284,7 @@ const Menus = ({ organizations }: MenusProps) => {
         {...DATA_GRID_PROPS}
         apiRef={apiRef}
         columns={columns}
-        loading={isLoading}
+        loading={loading}
         onPaginationModelChange={() =>
           apiRef.current?.autosizeColumns(autosizeOptions)
         }

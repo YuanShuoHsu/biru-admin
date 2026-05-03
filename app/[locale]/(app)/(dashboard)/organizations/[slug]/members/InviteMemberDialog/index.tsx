@@ -110,6 +110,7 @@ const InviteMemberDialog = ({
         label={tMembers("role.label")}
         required
         select
+        slotProps={{ select: { displayEmpty: true } }}
         value={role}
         {...register("role")}
       >
@@ -128,6 +129,7 @@ const InviteMemberDialog = ({
         helperText={errors.teamId?.message}
         label={tTeams("teamId.label")}
         select
+        slotProps={{ select: { displayEmpty: true } }}
         value={teamId}
         {...register("teamId")}
       >

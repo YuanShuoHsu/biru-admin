@@ -44,10 +44,10 @@ const LOCALE_OPTIONS = Object.entries(locales).map(([value, { label }]) => ({
 
 interface UpdateMenuDialogProps {
   menu: AdminMenu;
-  onSuccess: () => unknown;
+  fetchMenus: () => unknown;
 }
 
-const UpdateMenuDialog = ({ menu, onSuccess }: UpdateMenuDialogProps) => {
+const UpdateMenuDialog = ({ menu, fetchMenus }: UpdateMenuDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const tMenus = useTranslations("menus");
@@ -92,7 +92,7 @@ const UpdateMenuDialog = ({ menu, onSuccess }: UpdateMenuDialogProps) => {
       });
 
       closeDialog();
-      onSuccess();
+      fetchMenus();
     } catch {
       enqueueSnackbar(tMenus("actions.updateMenu.title"), {
         variant: "error",

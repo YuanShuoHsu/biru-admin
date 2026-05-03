@@ -92,6 +92,7 @@ const AddTeamMemberDialog = ({
         label={tMembers("userId.label")}
         required
         select
+        slotProps={{ select: { displayEmpty: true } }}
         value={userId}
         {...register("userId")}
       >

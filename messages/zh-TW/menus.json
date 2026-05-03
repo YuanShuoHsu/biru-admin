@@ -21,11 +21,11 @@
   "createdAt": "建立時間",
   "description": {
     "label": "描述（選填）",
-    "placeholder": "請輸入菜單描述"
+    "placeholder": "請輸入您的菜單描述"
   },
   "image": {
     "label": "封面圖片網址（選填）",
-    "placeholder": "請輸入圖片網址"
+    "placeholder": "請輸入您的圖片網址"
   },
   "inLanguage": {
     "label": "語言",
@@ -36,7 +36,7 @@
       "zh-CN": "簡體中文",
       "zh-TW": "繁體中文"
     },
-    "placeholder": "請選擇菜單語言"
+    "placeholder": "請選擇您的菜單語言"
   },
   "items": {
     "actions": {
@@ -57,32 +57,33 @@
     },
     "description": {
       "label": "描述（選填）",
-      "placeholder": "請輸入品項描述"
+      "placeholder": "請輸入您的品項描述"
     },
     "image": {
       "label": "圖片網址（選填）",
-      "placeholder": "請輸入圖片網址"
+      "placeholder": "請輸入您的圖片網址"
     },
     "label": "品項",
     "name": {
       "label": "品項名稱",
-      "placeholder": "請輸入品項名稱"
+      "placeholder": "請輸入您的品項名稱"
     },
     "suitableForDiet": {
       "label": "飲食限制（選填）"
     },
     "url": {
       "label": "連結網址（選填）",
-      "placeholder": "請輸入連結網址"
+      "placeholder": "請輸入您的連結網址"
     }
   },
   "label": "菜單管理",
   "name": {
     "label": "菜單名稱",
-    "placeholder": "請輸入菜單名稱"
+    "placeholder": "請輸入您的菜單名稱"
   },
   "organization": {
-    "label": "組織"
+    "label": "組織",
+    "placeholder": "請選擇您的組織"
   },
   "sections": {
     "actions": {
@@ -107,12 +108,12 @@
     "allItems": "所有品項",
     "description": {
       "label": "描述（選填）",
-      "placeholder": "請輸入分組描述"
+      "placeholder": "請輸入您的分組描述"
     },
     "label": "分組",
     "name": {
       "label": "分組名稱",
-      "placeholder": "請輸入分組名稱"
+      "placeholder": "請輸入您的分組名稱"
     },
     "unassigned": "未分組"
   },

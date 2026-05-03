@@ -21,11 +21,11 @@
   "createdAt": "创建时间",
   "description": {
     "label": "描述（选填）",
-    "placeholder": "请输入菜单描述"
+    "placeholder": "请输入您的菜单描述"
   },
   "image": {
     "label": "封面图片网址（选填）",
-    "placeholder": "请输入图片网址"
+    "placeholder": "请输入您的图片网址"
   },
   "inLanguage": {
     "label": "语言",
@@ -36,7 +36,7 @@
       "zh-CN": "简体中文",
       "zh-TW": "繁体中文"
     },
-    "placeholder": "请选择菜单语言"
+    "placeholder": "请选择您的菜单语言"
   },
   "items": {
     "actions": {
@@ -57,32 +57,33 @@
     },
     "description": {
       "label": "描述（选填）",
-      "placeholder": "请输入品项描述"
+      "placeholder": "请输入您的品项描述"
     },
     "image": {
       "label": "图片网址（选填）",
-      "placeholder": "请输入图片网址"
+      "placeholder": "请输入您的图片网址"
     },
     "label": "品项",
     "name": {
       "label": "品项名称",
-      "placeholder": "请输入品项名称"
+      "placeholder": "请输入您的品项名称"
     },
     "suitableForDiet": {
       "label": "饮食限制（选填）"
     },
     "url": {
       "label": "链接网址（选填）",
-      "placeholder": "请输入链接网址"
+      "placeholder": "请输入您的链接网址"
     }
   },
   "label": "菜单管理",
   "name": {
     "label": "菜单名称",
-    "placeholder": "请输入菜单名称"
+    "placeholder": "请输入您的菜单名称"
   },
   "organization": {
-    "label": "组织"
+    "label": "组织",
+    "placeholder": "请选择您的组织"
   },
   "sections": {
     "actions": {
@@ -107,12 +108,12 @@
     "allItems": "所有品项",
     "description": {
       "label": "描述（选填）",
-      "placeholder": "请输入分组描述"
+      "placeholder": "请输入您的分组描述"
     },
     "label": "分组",
     "name": {
       "label": "分组名称",
-      "placeholder": "请输入分组名称"
+      "placeholder": "请输入您的分组名称"
     },
     "unassigned": "未分组"
   },

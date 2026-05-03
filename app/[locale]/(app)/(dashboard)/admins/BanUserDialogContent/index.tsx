@@ -114,6 +114,7 @@ const BanUserDialogContent = ({
         helperText={errors.banExpiresIn?.message}
         label={tAdmins("actions.banUser.banExpiresIn.label")}
         select
+        slotProps={{ select: { displayEmpty: true } }}
         value={banExpiresIn}
         {...register("banExpiresIn")}
       >

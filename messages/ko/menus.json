@@ -21,11 +21,11 @@
   "createdAt": "생성일",
   "description": {
     "label": "설명 (선택 사항)",
-    "placeholder": "메뉴 설명을 입력하세요"
+    "placeholder": "메뉴 설명을 입력해 주세요"
   },
   "image": {
     "label": "커버 이미지 URL (선택 사항)",
-    "placeholder": "이미지 URL을 입력하세요"
+    "placeholder": "이미지 URL을 입력해 주세요"
   },
   "inLanguage": {
     "label": "언어",
@@ -36,7 +36,7 @@
       "zh-CN": "중국어 (간체)",
       "zh-TW": "중국어 (번체)"
     },
-    "placeholder": "메뉴 언어를 선택하세요"
+    "placeholder": "메뉴 언어를 선택해 주세요"
   },
   "items": {
     "actions": {
@@ -57,32 +57,33 @@
     },
     "description": {
       "label": "설명 (선택 사항)",
-      "placeholder": "항목 설명을 입력하세요"
+      "placeholder": "항목 설명을 입력해 주세요"
     },
     "image": {
       "label": "이미지 URL (선택 사항)",
-      "placeholder": "이미지 URL을 입력하세요"
+      "placeholder": "이미지 URL을 입력해 주세요"
     },
     "label": "항목",
     "name": {
       "label": "항목 이름",
-      "placeholder": "항목 이름을 입력하세요"
+      "placeholder": "항목 이름을 입력해 주세요"
     },
     "suitableForDiet": {
       "label": "식이 제한 (선택 사항)"
     },
     "url": {
       "label": "URL (선택 사항)",
-      "placeholder": "URL을 입력하세요"
+      "placeholder": "URL을 입력해 주세요"
     }
   },
   "label": "메뉴 관리",
   "name": {
     "label": "메뉴 이름",
-    "placeholder": "메뉴 이름을 입력하세요"
+    "placeholder": "메뉴 이름을 입력해 주세요"
   },
   "organization": {
-    "label": "조직"
+    "label": "조직",
+    "placeholder": "조직을 선택해 주세요"
   },
   "sections": {
     "actions": {
@@ -107,12 +108,12 @@
     "allItems": "모든 항목",
     "description": {
       "label": "설명 (선택 사항)",
-      "placeholder": "섹션 설명을 입력하세요"
+      "placeholder": "섹션 설명을 입력해 주세요"
     },
     "label": "섹션",
     "name": {
       "label": "섹션 이름",
-      "placeholder": "섹션 이름을 입력하세요"
+      "placeholder": "섹션 이름을 입력해 주세요"
     },
     "unassigned": "미분류"
   },

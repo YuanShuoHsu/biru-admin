@@ -82,7 +82,8 @@
     "placeholder": "メニュー名を入力してください"
   },
   "organization": {
-    "label": "組織"
+    "label": "組織",
+    "placeholder": "組織を選択してください"
   },
   "sections": {
     "actions": {

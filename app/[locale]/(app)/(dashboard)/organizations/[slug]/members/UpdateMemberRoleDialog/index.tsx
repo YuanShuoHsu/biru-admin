@@ -113,6 +113,7 @@ const UpdateMemberRoleDialog = ({
         label={tMembers("role.label")}
         required
         select
+        slotProps={{ select: { displayEmpty: true } }}
         value={role}
         {...register("role")}
       >

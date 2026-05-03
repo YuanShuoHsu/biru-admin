@@ -1,12 +1,15 @@
 import { setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
-import { notFound } from "next/navigation";
 
 import Menus from ".";
 
 import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
+
+import type { AdminMenu } from "@/types/menus";
+
+import { fetcher } from "@/utils/fetcher";
 
 interface MenusPageProps {
   params: Promise<{ locale: Locale }>;
@@ -22,14 +25,21 @@ const MenusPage = async ({ params, searchParams }: MenusPageProps) => {
 
   setRequestLocale(locale);
 
-  if (!organization) notFound();
-
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
   const { data } = await authClient.organization.list({ fetchOptions });
 
   const organizations = (data || []).toReversed();
 
-  return <Menus organizations={organizations} />;
+  const selectedOrg = organizations.find(({ slug }) => slug === organization);
+
+  const rows = selectedOrg
+    ? await fetcher<AdminMenu[]>(
+        `/api/organizations/${selectedOrg.id}/menus`,
+        fetchOptions,
+      ).catch(() => [] as AdminMenu[])
+    : [];
+
+  return <Menus organizations={organizations} rows={rows} />;
 };
 
 export default MenusPage;

@@ -44,12 +44,12 @@ const LOCALE_OPTIONS = Object.entries(locales).map(([value, { label }]) => ({
 
 interface CreateMenuDialogProps {
   organizationId: string;
-  onSuccess: () => unknown;
+  fetchMenus: () => unknown;
 }
 
 const CreateMenuDialog = ({
   organizationId,
-  onSuccess,
+  fetchMenus,
 }: CreateMenuDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
@@ -95,7 +95,7 @@ const CreateMenuDialog = ({
       });
 
       closeDialog();
-      onSuccess();
+      fetchMenus();
     } catch {
       enqueueSnackbar(tMenus("actions.createMenu.title"), {
         variant: "error",

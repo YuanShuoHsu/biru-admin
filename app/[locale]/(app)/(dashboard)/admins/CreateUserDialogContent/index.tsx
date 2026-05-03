@@ -306,6 +306,7 @@ const CreateUserDialogContent = ({
         label={tAdmins("role.label")}
         required
         select
+        slotProps={{ select: { displayEmpty: true } }}
         value={role}
         {...register("role")}
       >

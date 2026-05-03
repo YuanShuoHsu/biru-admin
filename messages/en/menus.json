@@ -21,11 +21,11 @@
   "createdAt": "Created",
   "description": {
     "label": "Description (optional)",
-    "placeholder": "Please enter a menu description"
+    "placeholder": "Please enter your menu description"
   },
   "image": {
     "label": "Cover image URL (optional)",
-    "placeholder": "Please enter an image URL"
+    "placeholder": "Please enter your image URL"
   },
   "inLanguage": {
     "label": "Language",
@@ -36,7 +36,7 @@
       "zh-CN": "Simplified Chinese",
       "zh-TW": "Traditional Chinese"
     },
-    "placeholder": "Please select the menu language"
+    "placeholder": "Please select your menu language"
   },
   "items": {
     "actions": {
@@ -57,32 +57,33 @@
     },
     "description": {
       "label": "Description (optional)",
-      "placeholder": "Please enter an item description"
+      "placeholder": "Please enter your item description"
     },
     "image": {
       "label": "Image URL (optional)",
-      "placeholder": "Please enter an image URL"
+      "placeholder": "Please enter your image URL"
     },
     "label": "Items",
     "name": {
       "label": "Item name",
-      "placeholder": "Please enter an item name"
+      "placeholder": "Please enter your item name"
     },
     "suitableForDiet": {
       "label": "Dietary restrictions (optional)"
     },
     "url": {
       "label": "URL (optional)",
-      "placeholder": "Please enter a URL"
+      "placeholder": "Please enter your URL"
     }
   },
   "label": "Menu Management",
   "name": {
     "label": "Menu name",
-    "placeholder": "Please enter a menu name"
+    "placeholder": "Please enter your menu name"
   },
   "organization": {
-    "label": "Organization"
+    "label": "Organization",
+    "placeholder": "Please select your organization"
   },
   "sections": {
     "actions": {
@@ -107,12 +108,12 @@
     "allItems": "All items",
     "description": {
       "label": "Description (optional)",
-      "placeholder": "Please enter a section description"
+      "placeholder": "Please enter your section description"
     },
     "label": "Sections",
     "name": {
       "label": "Section name",
-      "placeholder": "Please enter a section name"
+      "placeholder": "Please enter your section name"
     },
     "unassigned": "Unassigned"
   },
