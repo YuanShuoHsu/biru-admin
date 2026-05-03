@@ -16,11 +16,7 @@ interface MenuDetailProps {
   initialItems: AdminMenuItem[];
 }
 
-const MenuDetail = ({
-  menu,
-  initialSections,
-  initialItems,
-}: MenuDetailProps) => {
+const MenuId = ({ menu, initialSections, initialItems }: MenuDetailProps) => {
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>(
     null,
   );
@@ -62,4 +58,4 @@ const MenuDetail = ({
   );
 };
 
-export default MenuDetail;
+export default MenuId;

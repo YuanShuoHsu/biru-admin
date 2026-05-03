@@ -12,11 +12,11 @@ import {
   getAdminMenuSections,
 } from "@/utils/admin-menus";
 
-interface MenuDetailPageProps {
+interface MenuIdPageProps {
   params: Promise<{ locale: Locale; menuId: string }>;
 }
 
-const MenuDetailPage = async ({ params }: MenuDetailPageProps) => {
+const MenuIdPage = async ({ params }: MenuIdPageProps) => {
   const [cookieStore, { locale, menuId }] = await Promise.all([
     cookies(),
     params,
@@ -39,4 +39,4 @@ const MenuDetailPage = async ({ params }: MenuDetailPageProps) => {
   );
 };
 
-export default MenuDetailPage;
+export default MenuIdPage;
