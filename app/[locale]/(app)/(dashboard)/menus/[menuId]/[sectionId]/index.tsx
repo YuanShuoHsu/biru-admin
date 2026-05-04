@@ -11,16 +11,13 @@ import UpdateMenuItemDialog from "./UpdateMenuItemDialog";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
-import { useRouter } from "@/i18n/navigation";
-
-import { Add, ArrowBack, Delete, Edit } from "@mui/icons-material";
+import { Add, Delete, Edit } from "@mui/icons-material";
 import {
   Button,
   DialogContentText,
   IconButton,
   Stack,
   Tooltip,
-  Typography,
 } from "@mui/material";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
@@ -54,8 +51,6 @@ const MenusMenuIdSectionId = ({
   const format = useFormatter();
 
   const apiRef = useGridApiRef();
-
-  const router = useRouter();
 
   const { data: sections = initialSections } = useSWR<AdminMenuSection[]>(
     `/api/menus/${menuId}/sections`,
@@ -203,19 +198,6 @@ const MenusMenuIdSectionId = ({
   return (
     <>
       <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
-        <Tooltip title={tMenus("sections.actions.backToSections.title")}>
-          <IconButton
-            onClick={() => router.push(`/menus/${menuId}`)}
-            size="small"
-          >
-            <ArrowBack fontSize="small" />
-          </IconButton>
-        </Tooltip>
-        <Typography variant="subtitle2">
-          {selectedSection
-            ? `${selectedSection.name} ${tMenus("items.label")}`
-            : tMenus("items.label")}
-        </Typography>
         <Button
           onClick={handleCreateItem}
           size="small"
