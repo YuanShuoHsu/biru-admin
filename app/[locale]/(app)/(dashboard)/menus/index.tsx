@@ -47,15 +47,15 @@ const StyledTextField = styled(TextField)({
 });
 
 interface MenusProps {
+  menus: AdminMenu[];
   organizations: Organization[];
   organizationSlug: string;
-  rows: AdminMenu[];
 }
 
 const Menus = ({
+  menus: initialMenus,
   organizations,
   organizationSlug,
-  rows: initialRows,
 }: MenusProps) => {
   const [selectedSlug, setSelectedSlug] = useState(organizationSlug);
 
@@ -67,7 +67,7 @@ const Menus = ({
   const apiRef = useGridApiRef();
 
   const {
-    data: rows = initialRows,
+    data: rows = initialMenus,
     mutate: mutateMenus,
     isValidating,
   } = useSWR<AdminMenu[]>(
@@ -75,7 +75,7 @@ const Menus = ({
       ? `/api/organizations/${selectedOrganizationId}/menus`
       : null,
     {
-      fallbackData: initialRows,
+      fallbackData: initialMenus,
       onSuccess: () => {
         setTimeout(() => {
           apiRef.current?.autosizeColumns(autosizeOptions);

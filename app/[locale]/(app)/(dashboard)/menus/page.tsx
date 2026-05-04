@@ -32,7 +32,7 @@ const MenusPage = async ({ params, searchParams }: MenusPageProps) => {
   const selectedOrganization = organizations.find(
     ({ slug }) => slug === organization,
   );
-  const rows = selectedOrganization
+  const menus = selectedOrganization
     ? await fetcher<AdminMenu[]>(
         `/api/organizations/${selectedOrganization.id}/menus`,
         fetchOptions,
@@ -41,9 +41,9 @@ const MenusPage = async ({ params, searchParams }: MenusPageProps) => {
 
   return (
     <Menus
+      menus={menus}
       organizations={organizations}
       organizationSlug={organization || ""}
-      rows={rows}
     />
   );
 };
