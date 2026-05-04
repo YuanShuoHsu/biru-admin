@@ -43,11 +43,11 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 }));
 
 interface CreateOrganizationDialogProps {
-  fetchOrganizationList: () => Promise<void>;
+  mutateOrganizations: () => void;
 }
 
 const CreateOrganizationDialog = ({
-  fetchOrganizationList,
+  mutateOrganizations,
 }: CreateOrganizationDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
   const logo = useUploadAvatarSrc(CREATE_ORGANIZATION_AVATAR_KEY);
@@ -124,7 +124,7 @@ const CreateOrganizationDialog = ({
 
           closeDialog();
 
-          fetchOrganizationList();
+          mutateOrganizations();
         },
       },
     );

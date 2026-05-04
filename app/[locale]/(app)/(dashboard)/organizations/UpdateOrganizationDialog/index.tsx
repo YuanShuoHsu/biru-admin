@@ -43,12 +43,12 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 }));
 
 interface UpdateOrganizationDialogProps {
-  fetchOrganizationList: () => Promise<void>;
+  mutateOrganizations: () => void;
   organization: Organization;
 }
 
 const UpdateOrganizationDialog = ({
-  fetchOrganizationList,
+  mutateOrganizations,
   organization,
 }: UpdateOrganizationDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
@@ -129,7 +129,7 @@ const UpdateOrganizationDialog = ({
 
           closeDialog();
 
-          fetchOrganizationList();
+          mutateOrganizations();
         },
       },
     );

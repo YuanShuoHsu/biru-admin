@@ -57,11 +57,11 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 }));
 
 interface CreateUserDialogContentProps {
-  fetchListUsers: () => Promise<void>;
+  mutateAdmins: () => void;
 }
 
 const CreateUserDialogContent = ({
-  fetchListUsers,
+  mutateAdmins,
 }: CreateUserDialogContentProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
   const avatarSrc = useUploadAvatarSrc(CREATE_USER_AVATAR_KEY);
@@ -158,7 +158,7 @@ const CreateUserDialogContent = ({
 
               closeDialog();
 
-              fetchListUsers();
+              mutateAdmins();
             },
           },
         );

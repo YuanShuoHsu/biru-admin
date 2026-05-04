@@ -29,12 +29,12 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 }));
 
 interface BanUserDialogContentProps {
-  fetchListUsers: () => void;
+  mutateAdmins: () => void;
   user: UserWithRole;
 }
 
 const BanUserDialogContent = ({
-  fetchListUsers,
+  mutateAdmins,
   user,
 }: BanUserDialogContentProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
@@ -79,7 +79,7 @@ const BanUserDialogContent = ({
 
             closeDialog();
 
-            fetchListUsers();
+            mutateAdmins();
           },
         },
       );

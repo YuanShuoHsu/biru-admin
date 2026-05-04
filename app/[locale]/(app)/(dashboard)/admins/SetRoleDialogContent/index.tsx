@@ -30,12 +30,12 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 }));
 
 interface SetRoleDialogContentProps {
-  fetchListUsers: () => void;
+  mutateAdmins: () => void;
   user: UserWithRole;
 }
 
 const SetRoleDialogContent = ({
-  fetchListUsers,
+  mutateAdmins,
   user,
 }: SetRoleDialogContentProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
@@ -76,7 +76,7 @@ const SetRoleDialogContent = ({
 
             closeDialog();
 
-            fetchListUsers();
+            mutateAdmins();
           },
         },
       );

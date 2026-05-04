@@ -10,7 +10,7 @@ import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
-import { flushSync } from "react-dom";
+import useSWR from "swr";
 
 import BanUserDialogContent from "./BanUserDialogContent";
 import CreateUserDialogContent from "./CreateUserDialogContent";
@@ -112,16 +112,55 @@ const Admins = ({
   rowCount: initialRowCount,
   userSessions: initialUserSessions,
 }: AdminsProps) => {
-  const [loading, setLoading] = useState(false);
-  const [rows, setRows] = useState(initialRows);
-  const [rowCount, setRowCount] = useState(initialRowCount);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page,
     pageSize,
   });
-  const [userSessions, setUserSessions] = useState(initialUserSessions);
 
   const apiRef = useGridApiRef();
+
+  const {
+    data: { rows, rowCount, userSessions } = {
+      rows: initialRows,
+      rowCount: initialRowCount,
+      userSessions: initialUserSessions,
+    },
+    mutate: mutateAdmins,
+    isValidating,
+  } = useSWR(
+    ["/api/admins", paginationModel.page, paginationModel.pageSize],
+    async ([, page, pageSize]: [string, number, number]) => {
+      const { data } = await authClient.admin.listUsers({
+        query: {
+          limit: pageSize,
+          offset: (page - 1) * pageSize,
+          sortBy: "createdAt",
+          sortDirection: "desc",
+        },
+      });
+      const userRows = data?.users || [];
+      const userSessions = await getUserSessions(userRows);
+
+      return {
+        rows: userRows,
+        rowCount: data?.total || 0,
+        userSessions,
+      };
+    },
+    {
+      fallbackData: {
+        rows: initialRows,
+        rowCount: initialRowCount,
+        userSessions: initialUserSessions,
+      },
+      keepPreviousData: true,
+      onSuccess: () => {
+        setTimeout(() => {
+          apiRef.current?.autosizeColumns(autosizeOptions);
+        }, 0);
+      },
+    },
+  );
 
   const { session, setSession } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
@@ -141,63 +180,16 @@ const Admins = ({
 
   const tAdmins = useTranslations("admins");
 
-  const fetchListUsers = useCallback(
-    async ({ page, pageSize }: GridPaginationModel) => {
-      await authClient.admin.listUsers(
-        {
-          query: {
-            limit: pageSize,
-            offset: (page - 1) * pageSize,
-            sortBy: "createdAt",
-            sortDirection: "desc",
-          },
-        },
-        {
-          onError: ({ error: { code } }) => {
-            setLoading(false);
-
-            enqueueSnackbar(getErrorMessage(code, locale), {
-              variant: "error",
-            });
-          },
-          onRequest: () => setLoading(true),
-          onSuccess: async ({ data: { users: rows, total: rowCount } }) => {
-            const userSessions = await getUserSessions(rows);
-
-            flushSync(() => {
-              setRows(rows);
-              setRowCount(rowCount);
-              setUserSessions(userSessions);
-
-              setLoading(false);
-            });
-
-            setTimeout(() => {
-              apiRef.current?.autosizeColumns(autosizeOptions);
-            }, 0);
-          },
-        },
-      );
-    },
-    [apiRef, locale],
-  );
-
   const handlePaginationModelChange = useCallback(
     (newModel: GridPaginationModel) => {
-      const model = { ...newModel, page: newModel.page + 1 };
-      setPaginationModel(model);
-      fetchListUsers(model);
+      setPaginationModel({ ...newModel, page: newModel.page + 1 });
     },
-    [fetchListUsers],
+    [],
   );
 
   const handleCreateUser = () => {
     setDialog({
-      content: (
-        <CreateUserDialogContent
-          fetchListUsers={() => fetchListUsers(paginationModel)}
-        />
-      ),
+      content: <CreateUserDialogContent mutateAdmins={mutateAdmins} />,
       formId: "create-user-form",
       open: true,
       title: tAdmins("actions.createUser.title"),
@@ -208,17 +200,14 @@ const Admins = ({
     (user: UserWithRole) => {
       setDialog({
         content: (
-          <SetRoleDialogContent
-            fetchListUsers={() => fetchListUsers(paginationModel)}
-            user={user}
-          />
+          <SetRoleDialogContent mutateAdmins={mutateAdmins} user={user} />
         ),
         formId: "set-role-form",
         open: true,
         title: tAdmins("actions.setRole.title"),
       });
     },
-    [fetchListUsers, paginationModel, setDialog, tAdmins],
+    [mutateAdmins, setDialog, tAdmins],
   );
 
   const handleSetUserPassword = useCallback(
@@ -237,34 +226,28 @@ const Admins = ({
     (user: AdminUser) => {
       setDialog({
         content: (
-          <UpdateUserDialogContent
-            fetchListUsers={() => fetchListUsers(paginationModel)}
-            user={user}
-          />
+          <UpdateUserDialogContent mutateAdmins={mutateAdmins} user={user} />
         ),
         formId: "update-user-form",
         open: true,
         title: tAdmins("actions.updateUser.title"),
       });
     },
-    [fetchListUsers, paginationModel, setDialog, tAdmins],
+    [mutateAdmins, setDialog, tAdmins],
   );
 
   const handleBanUser = useCallback(
     (user: UserWithRole) => {
       setDialog({
         content: (
-          <BanUserDialogContent
-            fetchListUsers={() => fetchListUsers(paginationModel)}
-            user={user}
-          />
+          <BanUserDialogContent mutateAdmins={mutateAdmins} user={user} />
         ),
         formId: "ban-user-form",
         open: true,
         title: tAdmins("actions.banUser.title"),
       });
     },
-    [fetchListUsers, paginationModel, setDialog, tAdmins],
+    [mutateAdmins, setDialog, tAdmins],
   );
 
   const handleUnbanUser = useCallback(
@@ -290,7 +273,7 @@ const Admins = ({
                 const message = tAdmins("actions.unbanUser.success");
                 enqueueSnackbar(message, { variant: "success" });
 
-                fetchListUsers(paginationModel);
+                mutateAdmins();
               },
             },
           );
@@ -299,7 +282,7 @@ const Admins = ({
         title: tAdmins("actions.unbanUser.title"),
       });
     },
-    [fetchListUsers, locale, paginationModel, setDialog, tAdmins],
+    [locale, mutateAdmins, setDialog, tAdmins],
   );
 
   const handleImpersonateUser = useCallback(
@@ -373,7 +356,7 @@ const Admins = ({
                 const message = tAdmins("actions.removeUser.success");
                 enqueueSnackbar(message, { variant: "success" });
 
-                fetchListUsers(paginationModel);
+                mutateAdmins();
               },
             },
           );
@@ -382,7 +365,7 @@ const Admins = ({
         title: tAdmins("actions.removeUser.title"),
       });
     },
-    [fetchListUsers, locale, paginationModel, setDialog, tAdmins],
+    [locale, mutateAdmins, setDialog, tAdmins],
   );
 
   const columns = useMemo<GridColDef[]>(
@@ -669,7 +652,7 @@ const Admins = ({
         {...DATA_GRID_PROPS}
         apiRef={apiRef}
         columns={columns}
-        loading={loading}
+        loading={isValidating}
         onPaginationModelChange={handlePaginationModelChange}
         paginationMode="server"
         paginationModel={{ ...paginationModel, page: paginationModel.page - 1 }}

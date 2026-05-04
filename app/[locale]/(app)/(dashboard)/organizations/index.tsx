@@ -8,8 +8,8 @@
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
-import { useCallback, useMemo, useState } from "react";
-import { flushSync } from "react-dom";
+import { useCallback, useMemo } from "react";
+import useSWR from "swr";
 
 import CreateOrganizationDialog from "./CreateOrganizationDialog";
 import UpdateOrganizationDialog from "./UpdateOrganizationDialog";
@@ -69,13 +69,37 @@ const Organizations = ({
   organizationPermissions: initialOrganizationPermissions,
   rows: initialRows,
 }: OrganizationsProps) => {
-  const [loading, setLoading] = useState(false);
-  const [organizationPermissions, setOrganizationPermissions] = useState(
-    initialOrganizationPermissions,
-  );
-  const [rows, setRows] = useState(initialRows);
-
   const apiRef = useGridApiRef();
+
+  const {
+    data: { rows, organizationPermissions } = {
+      rows: initialRows,
+      organizationPermissions: initialOrganizationPermissions,
+    },
+    mutate: mutateOrganizations,
+    isValidating,
+  } = useSWR(
+    "organizations-with-permissions",
+    async () => {
+      const { data } = await authClient.organization.list();
+      const organizations = (data || []).toReversed();
+      const organizationPermissions =
+        await getOrganizationPermissions(organizations);
+
+      return { rows: organizations, organizationPermissions };
+    },
+    {
+      fallbackData: {
+        rows: initialRows,
+        organizationPermissions: initialOrganizationPermissions,
+      },
+      onSuccess: () => {
+        setTimeout(() => {
+          apiRef.current?.autosizeColumns(autosizeOptions);
+        }, 0);
+      },
+    },
+  );
 
   const { setDialog } = useDialogStore((state) => state);
 
@@ -87,39 +111,10 @@ const Organizations = ({
 
   const tOrganizations = useTranslations("organizations");
 
-  const fetchOrganizationList = useCallback(async () => {
-    await authClient.organization.list(undefined, {
-      onError: ({ error: { code } }) => {
-        setLoading(false);
-
-        enqueueSnackbar(getErrorMessage(code, locale), {
-          variant: "error",
-        });
-      },
-      onRequest: () => setLoading(true),
-      onSuccess: async ({ data }) => {
-        const permissions = await getOrganizationPermissions(data);
-        setOrganizationPermissions(permissions);
-
-        flushSync(() => {
-          setRows(data.toReversed());
-
-          setLoading(false);
-        });
-
-        setTimeout(() => {
-          apiRef.current?.autosizeColumns(autosizeOptions);
-        }, 0);
-      },
-    });
-  }, [apiRef, locale]);
-
   const handleCreateOrganization = () => {
     setDialog({
       content: (
-        <CreateOrganizationDialog
-          fetchOrganizationList={fetchOrganizationList}
-        />
+        <CreateOrganizationDialog mutateOrganizations={mutateOrganizations} />
       ),
       formId: "create-organization-form",
       open: true,
@@ -132,7 +127,7 @@ const Organizations = ({
       setDialog({
         content: (
           <UpdateOrganizationDialog
-            fetchOrganizationList={fetchOrganizationList}
+            mutateOrganizations={mutateOrganizations}
             organization={organization}
           />
         ),
@@ -141,7 +136,7 @@ const Organizations = ({
         title: tOrganizations("actions.updateOrganization.title"),
       });
     },
-    [fetchOrganizationList, setDialog, tOrganizations],
+    [mutateOrganizations, setDialog, tOrganizations],
   );
 
   const handleDeleteOrganization = useCallback(
@@ -170,7 +165,7 @@ const Organizations = ({
                 );
                 enqueueSnackbar(message, { variant: "success" });
 
-                fetchOrganizationList();
+                mutateOrganizations();
               },
             },
           );
@@ -179,7 +174,7 @@ const Organizations = ({
         title: tOrganizations("actions.deleteOrganization.title"),
       });
     },
-    [fetchOrganizationList, locale, setDialog, tOrganizations],
+    [locale, mutateOrganizations, setDialog, tOrganizations],
   );
 
   const { canUpdateOrganizations, canDeleteOrganizations } = useMemo(() => {
@@ -326,7 +321,7 @@ const Organizations = ({
         {...DATA_GRID_PROPS}
         apiRef={apiRef}
         columns={columns}
-        loading={loading}
+        loading={isValidating}
         onPaginationModelChange={() =>
           apiRef.current?.autosizeColumns(autosizeOptions)
         }
