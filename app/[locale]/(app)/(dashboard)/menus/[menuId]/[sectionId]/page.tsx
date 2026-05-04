@@ -2,7 +2,7 @@ import { setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
-import MenusMenuIdSectionIdItems from ".";
+import MenusMenuIdSectionId from ".";
 
 import type { Locale } from "@/i18n/routing";
 
@@ -12,13 +12,13 @@ import {
   getAdminMenuSections,
 } from "@/utils/admin-menus";
 
-interface MenusMenuIdSectionIdItemsPageProps {
+interface MenusMenuIdSectionIdPageProps {
   params: Promise<{ locale: Locale; menuId: string; sectionId: string }>;
 }
 
-const MenusMenuIdSectionIdItemsPage = async ({
+const MenusMenuIdSectionIdPage = async ({
   params,
-}: MenusMenuIdSectionIdItemsPageProps) => {
+}: MenusMenuIdSectionIdPageProps) => {
   const [cookieStore, { locale, menuId, sectionId }] = await Promise.all([
     cookies(),
     params,
@@ -35,7 +35,7 @@ const MenusMenuIdSectionIdItemsPage = async ({
   if (!menu || !sections.some(({ id }) => id === sectionId)) notFound();
 
   return (
-    <MenusMenuIdSectionIdItems
+    <MenusMenuIdSectionId
       menuId={menuId}
       sectionId={sectionId}
       initialSections={sections}
@@ -44,4 +44,4 @@ const MenusMenuIdSectionIdItemsPage = async ({
   );
 };
 
-export default MenusMenuIdSectionIdItemsPage;
+export default MenusMenuIdSectionIdPage;

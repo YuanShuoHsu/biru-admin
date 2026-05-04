@@ -70,7 +70,7 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
 
   const handleViewItems = useCallback(
     (section: AdminMenuSection) => {
-      router.push(`/menus/${menu.id}/${section.id}/items`);
+      router.push(`/menus/${menu.id}/${section.id}`);
     },
     [menu.id, router],
   );
