@@ -71,11 +71,13 @@ const CreateMenuSectionDialog = ({
       );
 
       closeDialog();
+
       onSuccess();
     } catch {
       enqueueSnackbar(tMenus("sections.actions.createSection.title"), {
         variant: "error",
       });
+
       setDialog({ confirmLoading: false });
     }
   };
