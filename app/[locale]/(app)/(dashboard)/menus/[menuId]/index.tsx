@@ -85,7 +85,10 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
     (section: AdminMenuSection) => {
       setDialog({
         content: (
-          <UpdateMenuSectionDialog section={section} onSuccess={mutateSections} />
+          <UpdateMenuSectionDialog
+            section={section}
+            onSuccess={mutateSections}
+          />
         ),
         formId: "update-section-form",
         open: true,
@@ -224,9 +227,6 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
         {...DATA_GRID_PROPS}
         apiRef={apiRef}
         columns={columns}
-        getRowClassName={({ indexRelativeToCurrentPage }) =>
-          indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
-        }
         onPaginationModelChange={() =>
           apiRef.current?.autosizeColumns(autosizeOptions)
         }
