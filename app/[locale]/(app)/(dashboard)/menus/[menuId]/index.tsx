@@ -2,6 +2,7 @@
 
 import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
+import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo } from "react";
 import useSWR from "swr";
@@ -49,6 +50,9 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
 
   const router = useRouter();
 
+  const searchParams = useSearchParams();
+  const organization = searchParams.get("organization");
+
   const { data: sections = initialSections, mutate: mutateSections } = useSWR<
     AdminMenuSection[]
   >(`/api/menus/${menu.id}/sections`, {
@@ -70,9 +74,11 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
 
   const handleViewItems = useCallback(
     (section: AdminMenuSection) => {
-      router.push(`/menus/${menu.id}/${section.id}`);
+      router.push(
+        `/menus/${menu.id}/${section.id}${organization ? `?organization=${organization}` : ""}`,
+      );
     },
-    [menu.id, router],
+    [menu.id, organization, router],
   );
 
   const handleUpdateSection = useCallback(

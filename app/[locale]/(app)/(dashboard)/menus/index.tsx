@@ -191,7 +191,11 @@ const Menus = ({
           <Stack height="100%" direction="row" alignItems="center" gap={1}>
             <Tooltip title={tMenus("actions.viewMenu.title")}>
               <IconButton
-                onClick={() => router.push(`/menus/${row.id}`)}
+                onClick={() =>
+                  router.push(
+                    `/menus/${row.id}${selectedSlug ? `?organization=${selectedSlug}` : ""}`,
+                  )
+                }
                 size="small"
               >
                 <Summarize fontSize="small" />
@@ -201,6 +205,7 @@ const Menus = ({
               <IconButton
                 onClick={(event) => {
                   event.stopPropagation();
+
                   handleUpdateMenu(row);
                 }}
                 size="small"
@@ -213,6 +218,7 @@ const Menus = ({
                 color="error"
                 onClick={(event) => {
                   event.stopPropagation();
+
                   handleDeleteMenu(row);
                 }}
                 size="small"
@@ -258,7 +264,7 @@ const Menus = ({
           format.dateTime(new Date(value), "short"),
       },
     ],
-    [format, handleDeleteMenu, handleUpdateMenu, router, tMenus],
+    [format, handleDeleteMenu, handleUpdateMenu, router, selectedSlug, tMenus],
   );
 
   return (
