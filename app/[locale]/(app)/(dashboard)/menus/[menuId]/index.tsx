@@ -37,10 +37,10 @@ const DataGrid = dynamic(
 
 interface MenuDetailProps {
   menu: AdminMenu;
-  initialSections: AdminMenuSection[];
+  sections: AdminMenuSection[];
 }
 
-const MenuId = ({ menu, initialSections }: MenuDetailProps) => {
+const MenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
   const { data: sections = initialSections, mutate: mutateSections } = useSWR<
     AdminMenuSection[]
   >(`/api/menus/${menu.id}/sections`, {

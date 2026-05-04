@@ -27,7 +27,7 @@ const MenuIdPage = async ({ params }: MenuIdPageProps) => {
 
   if (!menu) notFound();
 
-  return <MenuId menu={menu} initialSections={sections} />;
+  return <MenuId menu={menu} sections={sections} />;
 };
 
 export default MenuIdPage;
