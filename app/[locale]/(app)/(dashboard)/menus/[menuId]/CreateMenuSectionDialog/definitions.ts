@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-export const useUpdateSectionFormSchema = () => {
+export const useCreateMenuSectionFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z.object({
@@ -13,6 +13,6 @@ export const useUpdateSectionFormSchema = () => {
   });
 };
 
-export type UpdateSectionForm = z.infer<
-  ReturnType<typeof useUpdateSectionFormSchema>
+export type CreateMenuSectionForm = z.infer<
+  ReturnType<typeof useCreateMenuSectionFormSchema>
 >;

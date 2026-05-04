@@ -7,8 +7,8 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo } from "react";
 import useSWR from "swr";
 
-import CreateSectionDialog from "./CreateSectionDialog";
-import UpdateSectionDialog from "./UpdateSectionDialog";
+import CreateMenuSectionDialog from "./CreateMenuSectionDialog";
+import UpdateMenuSectionDialog from "./UpdateMenuSectionDialog";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
@@ -64,7 +64,7 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
   const handleCreateSection = useCallback(() => {
     setDialog({
       content: (
-        <CreateSectionDialog menuId={menu.id} onSuccess={mutateSections} />
+        <CreateMenuSectionDialog menuId={menu.id} onSuccess={mutateSections} />
       ),
       formId: "create-section-form",
       open: true,
@@ -85,7 +85,7 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
     (section: AdminMenuSection) => {
       setDialog({
         content: (
-          <UpdateSectionDialog section={section} onSuccess={mutateSections} />
+          <UpdateMenuSectionDialog section={section} onSuccess={mutateSections} />
         ),
         formId: "update-section-form",
         open: true,

@@ -6,8 +6,8 @@ import { type BaseSyntheticEvent } from "react";
 import { useForm } from "react-hook-form";
 
 import {
-  type CreateSectionForm,
-  useCreateSectionFormSchema,
+  type CreateMenuSectionForm,
+  useCreateMenuSectionFormSchema,
 } from "./definitions";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,30 +26,33 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-interface CreateSectionDialogProps {
+interface CreateMenuSectionDialogProps {
   menuId: string;
   onSuccess: () => unknown;
 }
 
-const CreateSectionDialog = ({
+const CreateMenuSectionDialog = ({
   menuId,
   onSuccess,
-}: CreateSectionDialogProps) => {
+}: CreateMenuSectionDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const tMenus = useTranslations("menus");
 
-  const schema = useCreateSectionFormSchema();
+  const createMenuSectionFormSchema = useCreateMenuSectionFormSchema();
   const {
     formState: { errors },
     handleSubmit,
     register,
-  } = useForm<CreateSectionForm>({
+  } = useForm<CreateMenuSectionForm>({
     defaultValues: { name: "", description: "" },
-    resolver: zodResolver(schema),
+    resolver: zodResolver(createMenuSectionFormSchema),
   });
 
-  const onSubmitHandler = async ({ name, description }: CreateSectionForm) => {
+  const onSubmitHandler = async ({
+    name,
+    description,
+  }: CreateMenuSectionForm) => {
     try {
       setDialog({ confirmLoading: true });
 
@@ -105,4 +108,4 @@ const CreateSectionDialog = ({
   );
 };
 
-export default CreateSectionDialog;
+export default CreateMenuSectionDialog;

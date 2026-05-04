@@ -6,8 +6,8 @@ import { type BaseSyntheticEvent } from "react";
 import { useForm } from "react-hook-form";
 
 import {
-  type UpdateSectionForm,
-  useUpdateSectionFormSchema,
+  type UpdateMenuSectionForm,
+  useUpdateMenuSectionFormSchema,
 } from "./definitions";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,33 +26,36 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-interface UpdateSectionDialogProps {
+interface UpdateMenuSectionDialogProps {
   section: AdminMenuSection;
   onSuccess: () => unknown;
 }
 
-const UpdateSectionDialog = ({
+const UpdateMenuSectionDialog = ({
   section,
   onSuccess,
-}: UpdateSectionDialogProps) => {
+}: UpdateMenuSectionDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const tMenus = useTranslations("menus");
 
-  const schema = useUpdateSectionFormSchema();
+  const updateMenuSectionFormSchema = useUpdateMenuSectionFormSchema();
   const {
     formState: { errors },
     handleSubmit,
     register,
-  } = useForm<UpdateSectionForm>({
+  } = useForm<UpdateMenuSectionForm>({
     defaultValues: {
       name: section.name,
-      description: section.description ?? "",
+      description: section.description || "",
     },
-    resolver: zodResolver(schema),
+    resolver: zodResolver(updateMenuSectionFormSchema),
   });
 
-  const onSubmitHandler = async ({ name, description }: UpdateSectionForm) => {
+  const onSubmitHandler = async ({
+    name,
+    description,
+  }: UpdateMenuSectionForm) => {
     try {
       setDialog({ confirmLoading: true });
 
@@ -108,4 +111,4 @@ const UpdateSectionDialog = ({
   );
 };
 
-export default UpdateSectionDialog;
+export default UpdateMenuSectionDialog;
