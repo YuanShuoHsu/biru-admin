@@ -215,12 +215,12 @@ const useNavItems = (): MenuItem[] => {
       label: tOrder("label"),
       to: "/order",
     },
-    ...(isAdmin
+    ...(defaultOrganization
       ? [
           {
-            icon: AdminPanelSettings,
-            label: tAdmin("label"),
-            to: "/admins?page=1&pageSize=10",
+            icon: MenuBook,
+            label: tMenus("label"),
+            to: `/menus?organization=${defaultOrganization}`,
           },
         ]
       : []),
@@ -229,12 +229,12 @@ const useNavItems = (): MenuItem[] => {
       label: tOrganizations("label"),
       to: "/organizations",
     },
-    ...(defaultOrganization
+    ...(isAdmin
       ? [
           {
-            icon: MenuBook,
-            label: tMenus("label"),
-            to: `/menus?organization=${defaultOrganization}`,
+            icon: AdminPanelSettings,
+            label: tAdmin("label"),
+            to: "/admins?page=1&pageSize=10",
           },
         ]
       : []),
