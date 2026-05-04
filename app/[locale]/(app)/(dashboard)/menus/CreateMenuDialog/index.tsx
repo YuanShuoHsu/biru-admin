@@ -34,7 +34,7 @@ const LOCALE_OPTIONS = routing.locales.map((value) => ({
 }));
 
 interface CreateMenuDialogProps {
-  fetchMenus: () => unknown;
+  fetchMenus: () => void;
   organizationId: string;
   usedInLanguages: Locale[];
 }

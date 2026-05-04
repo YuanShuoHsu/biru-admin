@@ -28,12 +28,12 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 
 interface UpdateMenuSectionDialogProps {
   section: AdminMenuSection;
-  onSuccess: () => unknown;
+  mutateSections: () => void;
 }
 
 const UpdateMenuSectionDialog = ({
   section,
-  onSuccess,
+  mutateSections,
 }: UpdateMenuSectionDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
@@ -75,7 +75,7 @@ const UpdateMenuSectionDialog = ({
 
       closeDialog();
 
-      onSuccess();
+      mutateSections();
     } catch {
       enqueueSnackbar(tMenus("sections.actions.updateSection.title"), {
         variant: "error",

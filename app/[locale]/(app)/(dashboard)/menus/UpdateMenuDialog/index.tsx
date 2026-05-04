@@ -34,7 +34,7 @@ const LOCALE_OPTIONS = routing.locales.map((value) => ({
 }));
 
 interface UpdateMenuDialogProps {
-  fetchMenus: () => unknown;
+  fetchMenus: () => void;
   menu: AdminMenu;
 }
 
@@ -95,11 +95,13 @@ const UpdateMenuDialog = ({
       });
 
       closeDialog();
+
       fetchMenus();
     } catch {
       enqueueSnackbar(tMenus("actions.updateMenu.title"), {
         variant: "error",
       });
+
       setDialog({ confirmLoading: false });
     }
   };

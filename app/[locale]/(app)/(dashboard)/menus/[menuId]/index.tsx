@@ -53,10 +53,17 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
   const searchParams = useSearchParams();
   const organization = searchParams.get("organization");
 
-  const { data: sections = initialSections, mutate: mutateSections } = useSWR<
-    AdminMenuSection[]
-  >(`/api/menus/${menu.id}/sections`, {
+  const {
+    data: sections = initialSections,
+    mutate: mutateSections,
+    isValidating,
+  } = useSWR<AdminMenuSection[]>(`/api/menus/${menu.id}/sections`, {
     fallbackData: initialSections,
+    onSuccess: () => {
+      setTimeout(() => {
+        apiRef.current?.autosizeColumns(autosizeOptions);
+      }, 0);
+    },
   });
 
   const tMenus = useTranslations("menus");
@@ -64,7 +71,7 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
   const handleCreateSection = useCallback(() => {
     setDialog({
       content: (
-        <CreateMenuSectionDialog menuId={menu.id} onSuccess={mutateSections} />
+        <CreateMenuSectionDialog menuId={menu.id} mutateSections={mutateSections} />
       ),
       formId: "create-section-form",
       open: true,
@@ -87,7 +94,7 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
         content: (
           <UpdateMenuSectionDialog
             section={section}
-            onSuccess={mutateSections}
+            mutateSections={mutateSections}
           />
         ),
         formId: "update-section-form",
@@ -227,6 +234,7 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
         {...DATA_GRID_PROPS}
         apiRef={apiRef}
         columns={columns}
+        loading={isValidating}
         onPaginationModelChange={() =>
           apiRef.current?.autosizeColumns(autosizeOptions)
         }

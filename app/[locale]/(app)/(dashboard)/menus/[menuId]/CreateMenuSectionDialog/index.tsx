@@ -28,12 +28,12 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 
 interface CreateMenuSectionDialogProps {
   menuId: string;
-  onSuccess: () => unknown;
+  mutateSections: () => void;
 }
 
 const CreateMenuSectionDialog = ({
   menuId,
-  onSuccess,
+  mutateSections,
 }: CreateMenuSectionDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
@@ -72,7 +72,7 @@ const CreateMenuSectionDialog = ({
 
       closeDialog();
 
-      onSuccess();
+      mutateSections();
     } catch {
       enqueueSnackbar(tMenus("sections.actions.createSection.title"), {
         variant: "error",

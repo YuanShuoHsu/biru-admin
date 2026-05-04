@@ -28,7 +28,7 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 
 interface UpdateMenuItemDialogProps {
   item: AdminMenuItem;
-  mutateRows: () => unknown;
+  mutateRows: () => void;
 }
 
 const UpdateMenuItemDialog = ({
