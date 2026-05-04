@@ -10,19 +10,19 @@ import { useRouter } from "@/i18n/navigation";
 
 import type { AdminMenuItem, AdminMenuSection } from "@/types/menus";
 
-interface SectionItemsPageProps {
+interface MenusMenuIdSectionIdItemsProps {
   menuId: string;
   sectionId: string;
   initialSections: AdminMenuSection[];
   initialItems: AdminMenuItem[];
 }
 
-const SectionItemsPage = ({
+const MenusMenuIdSectionIdItems = ({
   menuId,
   sectionId,
   initialSections,
   initialItems,
-}: SectionItemsPageProps) => {
+}: MenusMenuIdSectionIdItemsProps) => {
   const router = useRouter();
 
   const { data: sections = initialSections } = useSWR<AdminMenuSection[]>(
@@ -51,4 +51,4 @@ const SectionItemsPage = ({
   );
 };
 
-export default SectionItemsPage;
+export default MenusMenuIdSectionIdItems;

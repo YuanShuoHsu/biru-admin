@@ -6,7 +6,12 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo } from "react";
 import useSWR from "swr";
 
+import CreateSectionDialog from "./CreateSectionDialog";
+import UpdateSectionDialog from "./UpdateSectionDialog";
+
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
+
+import { useRouter } from "@/i18n/navigation";
 
 import { Add, Delete, Edit, ListAlt } from "@mui/icons-material";
 import {
@@ -21,14 +26,9 @@ import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { useRouter } from "@/i18n/navigation";
-
 import type { AdminMenu, AdminMenuSection } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
-
-import CreateSectionDialog from "./CreateSectionDialog";
-import UpdateSectionDialog from "./UpdateSectionDialog";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -40,18 +40,22 @@ interface MenuDetailProps {
   sections: AdminMenuSection[];
 }
 
-const MenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
+const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
+  const { setDialog } = useDialogStore((state) => state);
+
+  const format = useFormatter();
+
+  const apiRef = useGridApiRef();
+
+  const router = useRouter();
+
   const { data: sections = initialSections, mutate: mutateSections } = useSWR<
     AdminMenuSection[]
   >(`/api/menus/${menu.id}/sections`, {
     fallbackData: initialSections,
   });
 
-  const { setDialog } = useDialogStore((state) => state);
-  const router = useRouter();
   const tMenus = useTranslations("menus");
-  const format = useFormatter();
-  const apiRef = useGridApiRef();
 
   const handleCreateSection = useCallback(() => {
     setDialog({
@@ -63,6 +67,13 @@ const MenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
       title: tMenus("sections.actions.createSection.title"),
     });
   }, [menu.id, mutateSections, setDialog, tMenus]);
+
+  const handleViewItems = useCallback(
+    (section: AdminMenuSection) => {
+      router.push(`/menus/${menu.id}/${section.id}/items`);
+    },
+    [menu.id, router],
+  );
 
   const handleUpdateSection = useCallback(
     (section: AdminMenuSection) => {
@@ -112,13 +123,6 @@ const MenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
     [mutateSections, setDialog, tMenus],
   );
 
-  const handleViewItems = useCallback(
-    (section: AdminMenuSection) => {
-      router.push(`/menus/${menu.id}/${section.id}/items`);
-    },
-    [menu.id, router],
-  );
-
   const columns = useMemo<GridColDef[]>(
     () => [
       {
@@ -131,6 +135,7 @@ const MenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
               <IconButton
                 onClick={(event) => {
                   event.stopPropagation();
+
                   handleViewItems(row);
                 }}
                 size="small"
@@ -142,6 +147,7 @@ const MenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
               <IconButton
                 onClick={(event) => {
                   event.stopPropagation();
+
                   handleUpdateSection(row);
                 }}
                 size="small"
@@ -154,6 +160,7 @@ const MenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
                 color="error"
                 onClick={(event) => {
                   event.stopPropagation();
+
                   handleDeleteSection(row);
                 }}
                 size="small"
@@ -196,8 +203,8 @@ const MenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
   );
 
   return (
-    <Stack gap={2} flex={1} minHeight={0} overflow="hidden">
-      <Stack direction="row" justifyContent="flex-end">
+    <>
+      <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
         <Button
           onClick={handleCreateSection}
           size="small"
@@ -219,8 +226,8 @@ const MenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
         }
         rows={sections}
       />
-    </Stack>
+    </>
   );
 };
 
-export default MenuId;
+export default MenusMenuId;
