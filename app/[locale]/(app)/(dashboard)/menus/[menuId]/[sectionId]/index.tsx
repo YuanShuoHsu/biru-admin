@@ -144,8 +144,9 @@ const MenusMenuIdSectionId = ({
           <Stack height="100%" direction="row" alignItems="center" gap={1}>
             <Tooltip title={tMenus("items.actions.updateItem.title")}>
               <IconButton
-                onClick={(e) => {
-                  e.stopPropagation();
+                onClick={(event) => {
+                  event.stopPropagation();
+
                   handleUpdateItem(row);
                 }}
                 size="small"
@@ -156,8 +157,9 @@ const MenusMenuIdSectionId = ({
             <Tooltip title={tMenus("items.actions.deleteItem.title")}>
               <IconButton
                 color="error"
-                onClick={(e) => {
-                  e.stopPropagation();
+                onClick={(event) => {
+                  event.stopPropagation();
+
                   handleDeleteItem(row);
                 }}
                 size="small"
