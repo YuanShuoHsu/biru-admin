@@ -104,7 +104,7 @@ const SectionPanel = ({ menuId, sections, onMutate }: SectionPanelProps) => {
 
   const handleViewItems = useCallback(
     (section: AdminMenuSection) => {
-      router.push(`/menus/${menuId}/sections/${section.id}/items`);
+      router.push(`/menus/${menuId}/${section.id}/items`);
     },
     [menuId, router],
   );

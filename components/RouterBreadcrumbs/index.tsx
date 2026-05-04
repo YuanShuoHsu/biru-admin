@@ -247,11 +247,6 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
         {
           children: [
             {
-              icon: ViewList,
-              label: tMenus("sections.label"),
-              to: "/sections",
-            },
-            {
               children: [
                 {
                   icon: MenuBook,
@@ -261,7 +256,7 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
               ],
               icon: ViewList,
               label: sectionName,
-              to: `/sections/${sectionId}`,
+              to: `/${sectionId}`,
             },
           ],
           icon: Summarize,

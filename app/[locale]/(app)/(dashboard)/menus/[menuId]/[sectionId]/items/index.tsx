@@ -2,7 +2,7 @@
 
 import useSWR from "swr";
 
-import ItemsPanel from "../../../SectionPanel/ItemsPanel";
+import ItemsPanel from "./ItemsPanel";
 
 import { Stack } from "@mui/material";
 
