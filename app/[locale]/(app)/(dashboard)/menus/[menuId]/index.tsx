@@ -195,14 +195,10 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
       {
         field: "name",
         headerName: tMenus("sections.name.label"),
-        flex: 1,
       },
       {
         field: "description",
         headerName: tMenus("sections.description.label"),
-        flex: 1,
-        renderCell: ({ value }: GridRenderCellParams<AdminMenuSection>) =>
-          value || "—",
         sortable: false,
       },
       {

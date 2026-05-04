@@ -169,13 +169,11 @@ const MenusMenuIdSectionId = ({
       {
         field: "name",
         headerName: tMenus("items.name.label"),
-        flex: 1,
       },
       {
         field: "menuSectionId",
         headerName: tMenus("sections.label"),
-        renderCell: ({ value }: GridRenderCellParams<AdminMenuItem>) =>
-          selectedSection?.name,
+        valueGetter: () => selectedSection?.name,
         sortable: false,
       },
       {
