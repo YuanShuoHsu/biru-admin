@@ -38,8 +38,8 @@ const MenusMenuIdSectionIdPage = async ({
     <MenusMenuIdSectionId
       menuId={menuId}
       sectionId={sectionId}
-      initialSections={sections}
-      initialItems={items}
+      sections={sections}
+      items={items}
     />
   );
 };

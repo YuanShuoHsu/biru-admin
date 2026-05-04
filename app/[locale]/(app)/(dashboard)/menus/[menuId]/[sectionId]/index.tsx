@@ -13,15 +13,15 @@ import type { AdminMenuItem, AdminMenuSection } from "@/types/menus";
 interface MenusMenuIdSectionIdProps {
   menuId: string;
   sectionId: string;
-  initialSections: AdminMenuSection[];
-  initialItems: AdminMenuItem[];
+  sections: AdminMenuSection[];
+  items: AdminMenuItem[];
 }
 
 const MenusMenuIdSectionId = ({
   menuId,
   sectionId,
-  initialSections,
-  initialItems,
+  sections: initialSections,
+  items: initialItems,
 }: MenusMenuIdSectionIdProps) => {
   const router = useRouter();
 
