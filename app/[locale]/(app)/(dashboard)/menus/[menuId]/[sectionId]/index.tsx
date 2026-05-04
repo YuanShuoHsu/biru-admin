@@ -1,51 +1,238 @@
 "use client";
 
+import { useFormatter, useTranslations } from "next-intl";
+import dynamic from "next/dynamic";
+import { enqueueSnackbar } from "notistack";
+import { useCallback, useMemo } from "react";
 import useSWR from "swr";
 
-import ItemsPanel from "./ItemsPanel";
+import CreateMenuItemDialog from "./CreateMenuItemDialog";
+import UpdateMenuItemDialog from "./UpdateMenuItemDialog";
 
-import { Stack } from "@mui/material";
+import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
 import { useRouter } from "@/i18n/navigation";
 
+import { Add, ArrowBack, Delete, Edit } from "@mui/icons-material";
+import {
+  Button,
+  DialogContentText,
+  IconButton,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+import { useGridApiRef } from "@mui/x-data-grid";
+
+import { useDialogStore } from "@/providers/dialog-store-provider";
+
 import type { AdminMenuItem, AdminMenuSection } from "@/types/menus";
 
+import { fetcher } from "@/utils/fetcher";
+
+const DataGrid = dynamic(
+  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
+  { ssr: false },
+);
+
 interface MenusMenuIdSectionIdProps {
+  items: AdminMenuItem[];
   menuId: string;
   sectionId: string;
   sections: AdminMenuSection[];
-  items: AdminMenuItem[];
 }
 
 const MenusMenuIdSectionId = ({
+  items: initialItems,
   menuId,
   sectionId,
   sections: initialSections,
-  items: initialItems,
 }: MenusMenuIdSectionIdProps) => {
+  const { setDialog } = useDialogStore((state) => state);
+
+  const format = useFormatter();
+
+  const apiRef = useGridApiRef();
+
   const router = useRouter();
 
   const { data: sections = initialSections } = useSWR<AdminMenuSection[]>(
     `/api/menus/${menuId}/sections`,
-    {
-      fallbackData: initialSections,
-    },
+    { fallbackData: initialSections },
   );
 
   const { data: items = initialItems, mutate: mutateItems } = useSWR<
     AdminMenuItem[]
-  >(`/api/menu-sections/${sectionId}/items`, {
-    fallbackData: initialItems,
-  });
+  >(`/api/menu-sections/${sectionId}/items`, { fallbackData: initialItems });
+
+  const tMenus = useTranslations("menus");
+
+  const selectedSection = useMemo(
+    () => sections.find((section) => section.id === sectionId),
+    [sections, sectionId],
+  );
+
+  const handleCreateItem = useCallback(() => {
+    setDialog({
+      content: (
+        <CreateMenuItemDialog
+          menuSectionId={sectionId}
+          sections={sections}
+          onSuccess={mutateItems}
+        />
+      ),
+      formId: "create-menu-item-form",
+      open: true,
+      title: tMenus("items.actions.createItem.title"),
+    });
+  }, [mutateItems, sections, sectionId, setDialog, tMenus]);
+
+  const handleUpdateItem = useCallback(
+    (item: AdminMenuItem) => {
+      setDialog({
+        content: <UpdateMenuItemDialog item={item} onSuccess={mutateItems} />,
+        formId: "update-menu-item-form",
+        open: true,
+        title: tMenus("items.actions.updateItem.title"),
+      });
+    },
+    [mutateItems, setDialog, tMenus],
+  );
+
+  const handleDeleteItem = useCallback(
+    ({ id, name }: AdminMenuItem) => {
+      setDialog({
+        content: (
+          <DialogContentText>
+            {tMenus.rich("items.actions.deleteItem.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              name,
+            })}
+          </DialogContentText>
+        ),
+        onConfirm: async () => {
+          try {
+            await fetcher(`/api/menu-items/${id}`, { method: "DELETE" });
+
+            enqueueSnackbar(
+              tMenus("items.actions.deleteItem.success", { name }),
+              { variant: "success" },
+            );
+
+            mutateItems();
+          } catch {
+            enqueueSnackbar(tMenus("items.actions.deleteItem.title"), {
+              variant: "error",
+            });
+          }
+        },
+        open: true,
+        title: tMenus("items.actions.deleteItem.title"),
+      });
+    },
+    [mutateItems, setDialog, tMenus],
+  );
+
+  const columns = useMemo<GridColDef[]>(
+    () => [
+      {
+        disableColumnMenu: true,
+        field: "actions",
+        headerName: tMenus("items.actions.label"),
+        renderCell: ({ row }: GridRenderCellParams<AdminMenuItem>) => (
+          <Stack height="100%" direction="row" alignItems="center" gap={1}>
+            <Tooltip title={tMenus("items.actions.updateItem.title")}>
+              <IconButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleUpdateItem(row);
+                }}
+                size="small"
+              >
+                <Edit fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title={tMenus("items.actions.deleteItem.title")}>
+              <IconButton
+                color="error"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteItem(row);
+                }}
+                size="small"
+              >
+                <Delete fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </Stack>
+        ),
+        resizable: false,
+        sortable: false,
+      },
+      {
+        field: "name",
+        headerName: tMenus("items.name.label"),
+        flex: 1,
+      },
+      {
+        field: "menuSectionId",
+        headerName: tMenus("sections.label"),
+        renderCell: ({ value }: GridRenderCellParams<AdminMenuItem>) =>
+          value ? (selectedSection?.name ?? value) : "—",
+        sortable: false,
+      },
+      {
+        field: "createdAt",
+        headerName: tMenus("createdAt"),
+        valueFormatter: (value: string) =>
+          format.dateTime(new Date(value), "short"),
+      },
+      {
+        field: "updatedAt",
+        headerName: tMenus("updatedAt"),
+        valueFormatter: (value: string) =>
+          format.dateTime(new Date(value), "short"),
+      },
+    ],
+    [format, handleDeleteItem, handleUpdateItem, selectedSection, tMenus],
+  );
 
   return (
     <Stack gap={2} flex={1} minHeight={0} overflow="hidden">
-      <ItemsPanel
-        sections={sections}
-        items={items}
-        selectedSectionId={sectionId}
-        onBack={() => router.push(`/menus/${menuId}`)}
-        onMutate={mutateItems}
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Stack direction="row" alignItems="center" gap={1}>
+          <Tooltip title={tMenus("sections.actions.backToSections.title")}>
+            <IconButton
+              onClick={() => router.push(`/menus/${menuId}`)}
+              size="small"
+            >
+              <ArrowBack fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Typography variant="subtitle2">
+            {selectedSection
+              ? `${selectedSection.name} ${tMenus("items.label")}`
+              : tMenus("items.label")}
+          </Typography>
+        </Stack>
+        <Button
+          onClick={handleCreateItem}
+          size="small"
+          startIcon={<Add />}
+          variant="contained"
+        >
+          {tMenus("items.actions.createItem.title")}
+        </Button>
+      </Stack>
+      <DataGrid
+        {...DATA_GRID_PROPS}
+        apiRef={apiRef}
+        columns={columns}
+        onPaginationModelChange={() =>
+          apiRef.current?.autosizeColumns(autosizeOptions)
+        }
+        rows={items}
       />
     </Stack>
   );
