@@ -13,6 +13,7 @@ import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { locales } from "@/constants/locale";
 
 import { useRouter } from "@/i18n/navigation";
+import { routing } from "@/i18n/routing";
 
 import { Add, Delete, Edit, Summarize } from "@mui/icons-material";
 import {
@@ -116,12 +117,17 @@ const Menus = ({
     [fetchMenus, organizations, router],
   );
 
+  const usedInLanguages = rows
+    .map(({ inLanguage }) => inLanguage)
+    .filter((inLanguage) => inLanguage !== null);
+
   const handleCreateMenu = () => {
     setDialog({
       content: (
         <CreateMenuDialog
-          organizationId={selectedOrganizationId}
           fetchMenus={fetchMenus}
+          organizationId={selectedOrganizationId}
+          usedInLanguages={usedInLanguages}
         />
       ),
       formId: "create-menu-form",
@@ -292,6 +298,7 @@ const Menus = ({
           ))}
         </StyledTextField>
         <Button
+          disabled={usedInLanguages.length >= routing.locales.length}
           onClick={handleCreateMenu}
           size="small"
           startIcon={<Add />}

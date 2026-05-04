@@ -178,6 +178,7 @@ const CustomerPaymentForm = () => {
         multiline
         name="notes"
         onChange={handleInfoChange}
+        rows={3}
         slotProps={{
           htmlInput: {
             maxLength: 50,

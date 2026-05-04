@@ -11,6 +11,8 @@ import { locales } from "@/constants/locale";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { type Locale, routing } from "@/i18n/routing";
+
 import { Box, type BoxProps, MenuItem, TextField, styled } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -26,21 +28,27 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-const LOCALE_OPTIONS = Object.entries(locales).map(([value, { label }]) => ({
-  label,
+const LOCALE_OPTIONS = routing.locales.map((value) => ({
+  label: locales[value].label,
   value,
 }));
 
 interface CreateMenuDialogProps {
   fetchMenus: () => unknown;
   organizationId: string;
+  usedInLanguages: Locale[];
 }
 
 const CreateMenuDialog = ({
   fetchMenus,
   organizationId,
+  usedInLanguages,
 }: CreateMenuDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
+
+  const availableLocaleOptions = LOCALE_OPTIONS.filter(
+    ({ value }) => !usedInLanguages.includes(value),
+  );
 
   const createMenuFormSchema = useCreateMenuFormSchema();
   const {
@@ -52,7 +60,7 @@ const CreateMenuDialog = ({
     defaultValues: {
       name: "",
       description: "",
-      inLanguage: "",
+      inLanguage: availableLocaleOptions[0]?.value || routing.defaultLocale,
       image: "",
     },
     resolver: zodResolver(createMenuFormSchema),
@@ -124,7 +132,7 @@ const CreateMenuDialog = ({
           select: {
             displayEmpty: true,
             renderValue: (selected) => {
-              const option = LOCALE_OPTIONS.find(
+              const option = availableLocaleOptions.find(
                 ({ value }) => value === selected,
               );
 
@@ -142,7 +150,7 @@ const CreateMenuDialog = ({
         <MenuItem disabled value="">
           <em>{tMenus("inLanguage.placeholder")}</em>
         </MenuItem>
-        {LOCALE_OPTIONS.map(({ label, value }) => (
+        {availableLocaleOptions.map(({ label, value }) => (
           <MenuItem key={value} value={value}>
             {label}
           </MenuItem>

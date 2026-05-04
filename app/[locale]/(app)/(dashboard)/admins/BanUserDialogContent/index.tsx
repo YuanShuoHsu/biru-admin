@@ -106,6 +106,7 @@ const BanUserDialogContent = ({
         label={tAdmins("actions.banUser.banReason.label")}
         multiline
         placeholder={tAdmins("actions.banUser.banReason.placeholder")}
+        rows={3}
         {...register("banReason")}
       />
       <TextField

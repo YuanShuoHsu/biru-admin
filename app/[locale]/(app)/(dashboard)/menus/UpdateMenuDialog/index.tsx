@@ -11,6 +11,8 @@ import { locales } from "@/constants/locale";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { routing } from "@/i18n/routing";
+
 import { Box, type BoxProps, MenuItem, TextField, styled } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -26,8 +28,8 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-const LOCALE_OPTIONS = Object.entries(locales).map(([value, { label }]) => ({
-  label,
+const LOCALE_OPTIONS = routing.locales.map((value) => ({
+  label: locales[value].label,
   value,
 }));
 
@@ -36,7 +38,16 @@ interface UpdateMenuDialogProps {
   menu: AdminMenu;
 }
 
-const UpdateMenuDialog = ({ fetchMenus, menu }: UpdateMenuDialogProps) => {
+const UpdateMenuDialog = ({
+  fetchMenus,
+  menu: {
+    id,
+    name: menuName,
+    description: menuDescription,
+    inLanguage: menuLanguage,
+    image: menuImage,
+  },
+}: UpdateMenuDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const tMenus = useTranslations("menus");
@@ -49,10 +60,10 @@ const UpdateMenuDialog = ({ fetchMenus, menu }: UpdateMenuDialogProps) => {
     register,
   } = useForm<UpdateMenuForm>({
     defaultValues: {
-      name: menu.name,
-      description: menu.description ?? "",
-      inLanguage: menu.inLanguage ?? "",
-      image: menu.image ?? "",
+      name: menuName,
+      description: menuDescription || "",
+      inLanguage: menuLanguage || routing.defaultLocale,
+      image: menuImage || "",
     },
     resolver: zodResolver(updateMenuFormSchema),
   });
@@ -68,7 +79,7 @@ const UpdateMenuDialog = ({ fetchMenus, menu }: UpdateMenuDialogProps) => {
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher<AdminMenu>(`/api/menus/${menu.id}`, {
+      await fetcher<AdminMenu>(`/api/menus/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
