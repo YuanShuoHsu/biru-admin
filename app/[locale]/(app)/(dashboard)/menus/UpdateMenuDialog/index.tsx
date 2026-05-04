@@ -34,12 +34,12 @@ const LOCALE_OPTIONS = routing.locales.map((value) => ({
 }));
 
 interface UpdateMenuDialogProps {
-  fetchMenus: () => void;
+  mutateMenus: () => void;
   menu: AdminMenu;
 }
 
 const UpdateMenuDialog = ({
-  fetchMenus,
+  mutateMenus,
   menu: {
     id,
     name: menuName,
@@ -96,7 +96,7 @@ const UpdateMenuDialog = ({
 
       closeDialog();
 
-      fetchMenus();
+      mutateMenus();
     } catch {
       enqueueSnackbar(tMenus("actions.updateMenu.title"), {
         variant: "error",

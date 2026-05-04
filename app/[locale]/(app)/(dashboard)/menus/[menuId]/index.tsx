@@ -71,7 +71,10 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
   const handleCreateSection = useCallback(() => {
     setDialog({
       content: (
-        <CreateMenuSectionDialog menuId={menu.id} mutateSections={mutateSections} />
+        <CreateMenuSectionDialog
+          menuId={menu.id}
+          mutateSections={mutateSections}
+        />
       ),
       formId: "create-section-form",
       open: true,

@@ -3,8 +3,8 @@
 import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
-import { useCallback, useMemo, useRef, useState } from "react";
-import { flushSync } from "react-dom";
+import { useCallback, useMemo, useState } from "react";
+import useSWR from "swr";
 
 import CreateMenuDialog from "./CreateMenuDialog";
 import UpdateMenuDialog from "./UpdateMenuDialog";
@@ -35,7 +35,6 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { AdminMenu } from "@/types/menus";
 import type { Organization } from "@/types/organizations";
 
-import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
 const DataGrid = dynamic(
@@ -58,18 +57,32 @@ const Menus = ({
   organizationSlug,
   rows: initialRows,
 }: MenusProps) => {
-  const [loading, setLoading] = useState(false);
   const [selectedSlug, setSelectedSlug] = useState(organizationSlug);
-  const [rows, setRows] = useState(initialRows);
 
   const selectedOrganization = organizations.find(
     ({ slug }) => slug === selectedSlug,
   );
   const selectedOrganizationId = selectedOrganization?.id || "";
-  const selectedOrganizationIdRef = useRef(selectedOrganizationId);
-  selectedOrganizationIdRef.current = selectedOrganizationId;
 
   const apiRef = useGridApiRef();
+
+  const {
+    data: rows = initialRows,
+    mutate: mutateMenus,
+    isValidating,
+  } = useSWR<AdminMenu[]>(
+    selectedOrganizationId
+      ? `/api/organizations/${selectedOrganizationId}/menus`
+      : null,
+    {
+      fallbackData: initialRows,
+      onSuccess: () => {
+        setTimeout(() => {
+          apiRef.current?.autosizeColumns(autosizeOptions);
+        }, 0);
+      },
+    },
+  );
 
   const { setDialog } = useDialogStore((state) => state);
 
@@ -79,42 +92,12 @@ const Menus = ({
 
   const tMenus = useTranslations("menus");
 
-  const fetchMenus = useCallback(
-    (organizationId = selectedOrganizationIdRef.current) => {
-      if (!organizationId) return;
-
-      setLoading(true);
-
-      fetcher<AdminMenu[]>(`/api/organizations/${organizationId}/menus`)
-        .then((data) => {
-          flushSync(() => {
-            setRows(data);
-
-            setLoading(false);
-          });
-
-          setTimeout(() => {
-            apiRef.current?.autosizeColumns(autosizeOptions);
-          }, 0);
-        })
-        .catch((error) => {
-          setLoading(false);
-
-          enqueueSnackbar(getErrorMessage(error), { variant: "error" });
-        });
-    },
-    [apiRef],
-  );
-
   const handleChange = useCallback(
     ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
       setSelectedSlug(value);
       router.replace(`/menus?organization=${value}`);
-
-      const newOrganization = organizations.find(({ slug }) => slug === value);
-      if (newOrganization) fetchMenus(newOrganization.id);
     },
-    [fetchMenus, organizations, router],
+    [router],
   );
 
   const usedInLanguages = rows
@@ -125,7 +108,7 @@ const Menus = ({
     setDialog({
       content: (
         <CreateMenuDialog
-          fetchMenus={fetchMenus}
+          mutateMenus={mutateMenus}
           organizationId={selectedOrganizationId}
           usedInLanguages={usedInLanguages}
         />
@@ -139,13 +122,13 @@ const Menus = ({
   const handleUpdateMenu = useCallback(
     (menu: AdminMenu) => {
       setDialog({
-        content: <UpdateMenuDialog menu={menu} fetchMenus={fetchMenus} />,
+        content: <UpdateMenuDialog menu={menu} mutateMenus={mutateMenus} />,
         formId: "update-menu-form",
         open: true,
         title: tMenus("actions.updateMenu.title"),
       });
     },
-    [fetchMenus, setDialog, tMenus],
+    [mutateMenus, setDialog, tMenus],
   );
 
   const handleDeleteMenu = useCallback(
@@ -167,7 +150,7 @@ const Menus = ({
               variant: "success",
             });
 
-            fetchMenus();
+            mutateMenus();
           } catch {
             enqueueSnackbar(tMenus("actions.deleteMenu.title"), {
               variant: "error",
@@ -178,7 +161,7 @@ const Menus = ({
         title: tMenus("actions.deleteMenu.title"),
       });
     },
-    [fetchMenus, setDialog, tMenus],
+    [mutateMenus, setDialog, tMenus],
   );
 
   const columns = useMemo<GridColDef[]>(
@@ -317,7 +300,7 @@ const Menus = ({
         {...DATA_GRID_PROPS}
         apiRef={apiRef}
         columns={columns}
-        loading={loading}
+        loading={isValidating}
         onPaginationModelChange={() =>
           apiRef.current?.autosizeColumns(autosizeOptions)
         }

@@ -34,13 +34,13 @@ const LOCALE_OPTIONS = routing.locales.map((value) => ({
 }));
 
 interface CreateMenuDialogProps {
-  fetchMenus: () => void;
+  mutateMenus: () => void;
   organizationId: string;
   usedInLanguages: Locale[];
 }
 
 const CreateMenuDialog = ({
-  fetchMenus,
+  mutateMenus,
   organizationId,
   usedInLanguages,
 }: CreateMenuDialogProps) => {
@@ -96,7 +96,7 @@ const CreateMenuDialog = ({
 
       closeDialog();
 
-      fetchMenus();
+      mutateMenus();
     } catch {
       enqueueSnackbar(tMenus("actions.createMenu.title"), {
         variant: "error",
