@@ -23,6 +23,7 @@ import { fetcher } from "@/utils/fetcher";
 const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
+  alignItems: "center",
   gap: theme.spacing(2),
 }));
 

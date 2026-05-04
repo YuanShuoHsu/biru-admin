@@ -23,17 +23,18 @@ import { fetcher } from "@/utils/fetcher";
 const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
+  alignItems: "center",
   gap: theme.spacing(2),
 }));
 
 interface UpdateMenuSectionDialogProps {
-  section: AdminMenuSection;
   mutateSections: () => void;
+  section: AdminMenuSection;
 }
 
 const UpdateMenuSectionDialog = ({
-  section,
   mutateSections,
+  section,
 }: UpdateMenuSectionDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 

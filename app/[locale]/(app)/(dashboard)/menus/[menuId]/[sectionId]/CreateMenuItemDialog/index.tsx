@@ -20,19 +20,20 @@ import { fetcher } from "@/utils/fetcher";
 const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
+  alignItems: "center",
   gap: theme.spacing(2),
 }));
 
 interface CreateMenuItemDialogProps {
-  menuSectionId?: string | null;
-  sections: AdminMenuSection[];
   mutateRows: () => void;
+  sections: AdminMenuSection[];
+  sectionId?: string | null;
 }
 
 const CreateMenuItemDialog = ({
-  menuSectionId = null,
-  sections,
   mutateRows,
+  sections,
+  sectionId = null,
 }: CreateMenuItemDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
@@ -46,7 +47,7 @@ const CreateMenuItemDialog = ({
   } = useForm<CreateMenuItemForm>({
     defaultValues: {
       name: "",
-      menuSectionId: menuSectionId ?? sections[0]?.id ?? "",
+      menuSectionId: sectionId || sections[0]?.id || "",
       description: "",
       image: "",
       url: "",

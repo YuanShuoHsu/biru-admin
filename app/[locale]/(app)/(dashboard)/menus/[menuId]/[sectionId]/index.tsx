@@ -35,16 +35,14 @@ const DataGrid = dynamic(
 
 interface MenusMenuIdSectionIdProps {
   items: AdminMenuItem[];
-  menuId: string;
-  sectionId: string;
   sections: AdminMenuSection[];
+  sectionId: string;
 }
 
 const MenusMenuIdSectionId = ({
   items: initialItems,
-  menuId,
-  sectionId,
   sections: initialSections,
+  sectionId,
 }: MenusMenuIdSectionIdProps) => {
   const { setDialog } = useDialogStore((state) => state);
 
@@ -52,28 +50,29 @@ const MenusMenuIdSectionId = ({
 
   const apiRef = useGridApiRef();
 
-  const { data: sections = initialSections } = useSWR<AdminMenuSection[]>(
-    `/api/menus/${menuId}/sections`,
-    { fallbackData: initialSections },
-  );
-
-  const { data: rows = initialItems, mutate: mutateRows } = useSWR<
-    AdminMenuItem[]
-  >(`/api/menu-sections/${sectionId}/items`, { fallbackData: initialItems });
+  const {
+    data: rows = initialItems,
+    mutate: mutateRows,
+    isValidating,
+  } = useSWR<AdminMenuItem[]>(`/api/menu-sections/${sectionId}/items`, {
+    fallbackData: initialItems,
+    onSuccess: () => {
+      setTimeout(() => {
+        apiRef.current?.autosizeColumns(autosizeOptions);
+      }, 0);
+    },
+  });
 
   const tMenus = useTranslations("menus");
 
-  const selectedSection = useMemo(
-    () => sections.find(({ id }) => id === sectionId),
-    [sections, sectionId],
-  );
+  const selectedSection = initialSections.find(({ id }) => id === sectionId);
 
   const handleCreateItem = useCallback(() => {
     setDialog({
       content: (
         <CreateMenuItemDialog
-          menuSectionId={sectionId}
-          sections={sections}
+          sectionId={sectionId}
+          sections={initialSections}
           mutateRows={mutateRows}
         />
       ),
@@ -81,7 +80,7 @@ const MenusMenuIdSectionId = ({
       open: true,
       title: tMenus("items.actions.createItem.title"),
     });
-  }, [mutateRows, sections, sectionId, setDialog, tMenus]);
+  }, [initialSections, mutateRows, sectionId, setDialog, tMenus]);
 
   const handleUpdateItem = useCallback(
     (item: AdminMenuItem) => {
@@ -176,7 +175,7 @@ const MenusMenuIdSectionId = ({
         field: "menuSectionId",
         headerName: tMenus("sections.label"),
         renderCell: ({ value }: GridRenderCellParams<AdminMenuItem>) =>
-          value ? (selectedSection?.name ?? value) : "—",
+          selectedSection?.name,
         sortable: false,
       },
       {
@@ -211,6 +210,7 @@ const MenusMenuIdSectionId = ({
         {...DATA_GRID_PROPS}
         apiRef={apiRef}
         columns={columns}
+        loading={isValidating}
         onPaginationModelChange={() =>
           apiRef.current?.autosizeColumns(autosizeOptions)
         }

@@ -31,15 +31,15 @@ const MenusMenuIdSectionIdPage = async ({
     getAdminMenuSections(menuId, fetchOptions),
     getAdminMenuSectionItems(sectionId, fetchOptions),
   ]);
+  const section = sections.find(({ id }) => id === sectionId);
 
-  if (!menu || !sections.some(({ id }) => id === sectionId)) notFound();
+  if (!menu || !section) notFound();
 
   return (
     <MenusMenuIdSectionId
-      menuId={menuId}
       items={items}
-      sectionId={sectionId}
       sections={sections}
+      sectionId={sectionId}
     />
   );
 };

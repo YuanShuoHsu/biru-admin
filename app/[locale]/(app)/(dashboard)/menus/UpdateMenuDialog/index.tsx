@@ -34,12 +34,11 @@ const LOCALE_OPTIONS = routing.locales.map((value) => ({
 }));
 
 interface UpdateMenuDialogProps {
-  mutateMenus: () => void;
   menu: AdminMenu;
+  mutateMenus: () => void;
 }
 
 const UpdateMenuDialog = ({
-  mutateMenus,
   menu: {
     id,
     name: menuName,
@@ -47,6 +46,7 @@ const UpdateMenuDialog = ({
     inLanguage: menuLanguage,
     image: menuImage,
   },
+  mutateMenus,
 }: UpdateMenuDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
