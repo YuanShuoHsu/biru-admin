@@ -62,14 +62,14 @@ const MenusMenuIdSectionId = ({
     { fallbackData: initialSections },
   );
 
-  const { data: items = initialItems, mutate: mutateItems } = useSWR<
+  const { data: rows = initialItems, mutate: mutateRows } = useSWR<
     AdminMenuItem[]
   >(`/api/menu-sections/${sectionId}/items`, { fallbackData: initialItems });
 
   const tMenus = useTranslations("menus");
 
   const selectedSection = useMemo(
-    () => sections.find((section) => section.id === sectionId),
+    () => sections.find(({ id }) => id === sectionId),
     [sections, sectionId],
   );
 
@@ -79,25 +79,25 @@ const MenusMenuIdSectionId = ({
         <CreateMenuItemDialog
           menuSectionId={sectionId}
           sections={sections}
-          onSuccess={mutateItems}
+          onSuccess={mutateRows}
         />
       ),
       formId: "create-menu-item-form",
       open: true,
       title: tMenus("items.actions.createItem.title"),
     });
-  }, [mutateItems, sections, sectionId, setDialog, tMenus]);
+  }, [mutateRows, sections, sectionId, setDialog, tMenus]);
 
   const handleUpdateItem = useCallback(
     (item: AdminMenuItem) => {
       setDialog({
-        content: <UpdateMenuItemDialog item={item} onSuccess={mutateItems} />,
+        content: <UpdateMenuItemDialog item={item} onSuccess={mutateRows} />,
         formId: "update-menu-item-form",
         open: true,
         title: tMenus("items.actions.updateItem.title"),
       });
     },
-    [mutateItems, setDialog, tMenus],
+    [mutateRows, setDialog, tMenus],
   );
 
   const handleDeleteItem = useCallback(
@@ -120,7 +120,7 @@ const MenusMenuIdSectionId = ({
               { variant: "success" },
             );
 
-            mutateItems();
+            mutateRows();
           } catch {
             enqueueSnackbar(tMenus("items.actions.deleteItem.title"), {
               variant: "error",
@@ -131,7 +131,7 @@ const MenusMenuIdSectionId = ({
         title: tMenus("items.actions.deleteItem.title"),
       });
     },
-    [mutateItems, setDialog, tMenus],
+    [mutateRows, setDialog, tMenus],
   );
 
   const columns = useMemo<GridColDef[]>(
@@ -199,23 +199,21 @@ const MenusMenuIdSectionId = ({
   );
 
   return (
-    <Stack gap={2} flex={1} minHeight={0} overflow="hidden">
-      <Stack direction="row" alignItems="center" justifyContent="space-between">
-        <Stack direction="row" alignItems="center" gap={1}>
-          <Tooltip title={tMenus("sections.actions.backToSections.title")}>
-            <IconButton
-              onClick={() => router.push(`/menus/${menuId}`)}
-              size="small"
-            >
-              <ArrowBack fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          <Typography variant="subtitle2">
-            {selectedSection
-              ? `${selectedSection.name} ${tMenus("items.label")}`
-              : tMenus("items.label")}
-          </Typography>
-        </Stack>
+    <>
+      <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
+        <Tooltip title={tMenus("sections.actions.backToSections.title")}>
+          <IconButton
+            onClick={() => router.push(`/menus/${menuId}`)}
+            size="small"
+          >
+            <ArrowBack fontSize="small" />
+          </IconButton>
+        </Tooltip>
+        <Typography variant="subtitle2">
+          {selectedSection
+            ? `${selectedSection.name} ${tMenus("items.label")}`
+            : tMenus("items.label")}
+        </Typography>
         <Button
           onClick={handleCreateItem}
           size="small"
@@ -232,9 +230,9 @@ const MenusMenuIdSectionId = ({
         onPaginationModelChange={() =>
           apiRef.current?.autosizeColumns(autosizeOptions)
         }
-        rows={items}
+        rows={rows}
       />
-    </Stack>
+    </>
   );
 };
 

@@ -37,9 +37,9 @@ const MenusMenuIdSectionIdPage = async ({
   return (
     <MenusMenuIdSectionId
       menuId={menuId}
+      items={items}
       sectionId={sectionId}
       sections={sections}
-      items={items}
     />
   );
 };
