@@ -82,30 +82,25 @@ const Menus = ({
     (organizationId = selectedOrganizationIdRef.current) => {
       if (!organizationId) return;
 
-      const onRequest = () => setLoading(true);
+      setLoading(true);
 
-      const onSuccess = (data: AdminMenu[]) => {
-        flushSync(() => {
-          setRows(data);
-
-          setLoading(false);
-        });
-
-        setTimeout(() => {
-          apiRef.current?.autosizeColumns(autosizeOptions);
-        }, 0);
-      };
-
-      const onError = (error: unknown) => {
-        setLoading(false);
-
-        enqueueSnackbar(getErrorMessage(error), { variant: "error" });
-      };
-
-      onRequest();
       fetcher<AdminMenu[]>(`/api/organizations/${organizationId}/menus`)
-        .then(onSuccess)
-        .catch(onError);
+        .then((data) => {
+          flushSync(() => {
+            setRows(data);
+
+            setLoading(false);
+          });
+
+          setTimeout(() => {
+            apiRef.current?.autosizeColumns(autosizeOptions);
+          }, 0);
+        })
+        .catch((error) => {
+          setLoading(false);
+
+          enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+        });
     },
     [apiRef],
   );
