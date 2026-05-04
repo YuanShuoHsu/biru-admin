@@ -74,7 +74,7 @@ const MenusMenuIdSectionId = ({
         <CreateMenuItemDialog
           menuSectionId={sectionId}
           sections={sections}
-          onSuccess={mutateRows}
+          mutateRows={mutateRows}
         />
       ),
       formId: "create-menu-item-form",
@@ -86,7 +86,7 @@ const MenusMenuIdSectionId = ({
   const handleUpdateItem = useCallback(
     (item: AdminMenuItem) => {
       setDialog({
-        content: <UpdateMenuItemDialog item={item} onSuccess={mutateRows} />,
+        content: <UpdateMenuItemDialog item={item} mutateRows={mutateRows} />,
         formId: "update-menu-item-form",
         open: true,
         title: tMenus("items.actions.updateItem.title"),
