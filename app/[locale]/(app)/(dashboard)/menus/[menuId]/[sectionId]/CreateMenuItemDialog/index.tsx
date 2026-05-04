@@ -38,7 +38,7 @@ const CreateMenuItemDialog = ({
 
   const tMenus = useTranslations("menus");
 
-  const schema = useCreateMenuItemFormSchema();
+  const createMenuItemFormSchema = useCreateMenuItemFormSchema();
   const {
     formState: { errors },
     handleSubmit,
@@ -51,7 +51,7 @@ const CreateMenuItemDialog = ({
       image: "",
       url: "",
     },
-    resolver: zodResolver(schema),
+    resolver: zodResolver(createMenuItemFormSchema),
   });
 
   const onSubmitHandler = async ({

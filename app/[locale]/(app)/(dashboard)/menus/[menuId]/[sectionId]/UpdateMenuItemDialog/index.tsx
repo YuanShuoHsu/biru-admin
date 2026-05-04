@@ -39,7 +39,7 @@ const UpdateMenuItemDialog = ({
 
   const tMenus = useTranslations("menus");
 
-  const schema = useUpdateMenuItemFormSchema();
+  const updateMenuItemFormSchema = useUpdateMenuItemFormSchema();
   const {
     formState: { errors },
     handleSubmit,
@@ -47,11 +47,11 @@ const UpdateMenuItemDialog = ({
   } = useForm<UpdateMenuItemForm>({
     defaultValues: {
       name: item.name,
-      description: item.description ?? "",
-      image: item.image ?? "",
-      url: item.url ?? "",
+      description: item.description || "",
+      image: item.image || "",
+      url: item.url || "",
     },
-    resolver: zodResolver(schema),
+    resolver: zodResolver(updateMenuItemFormSchema),
   });
 
   const onSubmitHandler = async ({
