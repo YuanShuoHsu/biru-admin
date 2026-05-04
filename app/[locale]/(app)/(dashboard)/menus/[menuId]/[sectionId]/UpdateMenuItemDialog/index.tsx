@@ -79,11 +79,13 @@ const UpdateMenuItemDialog = ({
       });
 
       closeDialog();
+
       mutateRows();
     } catch {
       enqueueSnackbar(tMenus("items.actions.updateItem.title"), {
         variant: "error",
       });
+
       setDialog({ confirmLoading: false });
     }
   };

@@ -83,11 +83,13 @@ const CreateMenuItemDialog = ({
       });
 
       closeDialog();
+
       mutateRows();
     } catch {
       enqueueSnackbar(tMenus("items.actions.createItem.title"), {
         variant: "error",
       });
+
       setDialog({ confirmLoading: false });
     }
   };
