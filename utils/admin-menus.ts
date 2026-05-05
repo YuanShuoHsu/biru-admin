@@ -32,7 +32,7 @@ export const getAdminMenuSections = cache(
   async (menuId: string, init?: RequestInit) => {
     try {
       const data = await fetcher<AdminMenuSection[]>(
-        `/api/menus/${menuId}/sections`,
+        `/api/menus/${menuId}/menu-sections`,
         init,
       );
       return Array.isArray(data) ? data : [];
@@ -42,25 +42,12 @@ export const getAdminMenuSections = cache(
   },
 );
 
-export const getAdminMenuItems = cache(
-  async (menuId: string, init?: RequestInit) => {
-    try {
-      const data = await fetcher<AdminMenuItem[]>(
-        `/api/menus/${menuId}/items`,
-        init,
-      );
-      return Array.isArray(data) ? data : [];
-    } catch {
-      return [];
-    }
-  },
-);
 
 export const getAdminMenuSectionItems = cache(
   async (sectionId: string, init?: RequestInit) => {
     try {
       const data = await fetcher<AdminMenuItem[]>(
-        `/api/menu-sections/${sectionId}/items`,
+        `/api/menu-sections/${sectionId}/menu-items`,
         init,
       );
       return Array.isArray(data) ? data : [];

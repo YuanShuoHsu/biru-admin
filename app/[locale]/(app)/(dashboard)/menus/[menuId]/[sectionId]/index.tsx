@@ -54,7 +54,7 @@ const MenusMenuIdSectionId = ({
     data: rows = initialItems,
     mutate: mutateRows,
     isValidating,
-  } = useSWR<AdminMenuItem[]>(`/api/menu-sections/${sectionId}/items`, {
+  } = useSWR<AdminMenuItem[]>(`/api/menu-sections/${sectionId}/menu-items`, {
     fallbackData: initialItems,
     onSuccess: () => {
       setTimeout(() => {

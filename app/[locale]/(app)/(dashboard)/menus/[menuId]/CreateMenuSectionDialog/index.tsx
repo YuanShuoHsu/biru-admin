@@ -57,7 +57,7 @@ const CreateMenuSectionDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher<AdminMenuSection>(`/api/menus/${menuId}/sections`, {
+      await fetcher<AdminMenuSection>(`/api/menus/${menuId}/menu-sections`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
