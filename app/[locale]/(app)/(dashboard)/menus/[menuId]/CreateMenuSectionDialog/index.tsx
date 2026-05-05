@@ -16,7 +16,7 @@ import { Box, type BoxProps, TextField, styled } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { AdminMenuSection } from "@/types/menus";
+import type { MenuSection } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
 
@@ -57,7 +57,7 @@ const CreateMenuSectionDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher<AdminMenuSection>(`/api/menus/${menuId}/menu-sections`, {
+      await fetcher<MenuSection>(`/api/menus/${menuId}/menu-sections`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

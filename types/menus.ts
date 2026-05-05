@@ -46,7 +46,7 @@ export interface NutritionInformation {
 }
 
 // https://schema.org/Menu
-export interface AdminMenu {
+export interface Menu {
   id: string;
   organizationId: string;
   name: string;
@@ -58,7 +58,7 @@ export interface AdminMenu {
 }
 
 // https://schema.org/MenuSection
-export interface AdminMenuSection {
+export interface MenuSection {
   id: string;
   menuId: string | null;
   parentSectionId: string | null;
@@ -70,7 +70,7 @@ export interface AdminMenuSection {
 }
 
 // https://schema.org/MenuItem
-export interface AdminMenuItem {
+export interface MenuItem {
   id: string;
   menuId: string | null;
   menuSectionId: string | null;
@@ -85,7 +85,7 @@ export interface AdminMenuItem {
 }
 
 // https://schema.org/Offer
-export interface AdminOffer {
+export interface Offer {
   id: string;
   menuItemId: string | null;
   menuSectionId: string | null;
@@ -107,7 +107,7 @@ export interface AdminOffer {
 }
 
 // https://schema.org/MenuItem menuAddOn property
-export interface AdminMenuItemAddOn {
+export interface MenuItemAddOn {
   id: string;
   menuItemId: string;
   addOnMenuItemId: string | null;

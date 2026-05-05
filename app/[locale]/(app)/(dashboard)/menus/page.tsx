@@ -7,7 +7,7 @@ import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
-import type { AdminMenu } from "@/types/menus";
+import type { Menu } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
 
@@ -33,7 +33,7 @@ const MenusPage = async ({ params, searchParams }: MenusPageProps) => {
     ({ slug }) => slug === organization,
   );
   const menus = selectedOrganization
-    ? await fetcher<AdminMenu[]>(
+    ? await fetcher<Menu[]>(
         `/api/organizations/${selectedOrganization.id}/menus`,
         fetchOptions,
       )

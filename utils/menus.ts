@@ -2,11 +2,11 @@ import { cache } from "react";
 
 import { fetcher } from "./fetcher";
 
-import type { AdminMenu, AdminMenuItem, AdminMenuSection } from "@/types/menus";
+import type { Menu, MenuItem, MenuSection } from "@/types/menus";
 
 export const getMenu = cache(async (menuId: string, init?: RequestInit) => {
   try {
-    return await fetcher<AdminMenu>(`/api/menus/${menuId}`, init);
+    return await fetcher<Menu>(`/api/menus/${menuId}`, init);
   } catch {
     return null;
   }
@@ -15,7 +15,7 @@ export const getMenu = cache(async (menuId: string, init?: RequestInit) => {
 export const getMenuSections = cache(
   async (menuId: string, init?: RequestInit) => {
     try {
-      const data = await fetcher<AdminMenuSection[]>(
+      const data = await fetcher<MenuSection[]>(
         `/api/menus/${menuId}/menu-sections`,
         init,
       );
@@ -29,7 +29,7 @@ export const getMenuSections = cache(
 export const getMenuSectionItems = cache(
   async (sectionId: string, init?: RequestInit) => {
     try {
-      const data = await fetcher<AdminMenuItem[]>(
+      const data = await fetcher<MenuItem[]>(
         `/api/menu-sections/${sectionId}/menu-items`,
         init,
       );

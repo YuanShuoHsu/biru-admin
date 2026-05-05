@@ -17,7 +17,7 @@ import { Box, type BoxProps, MenuItem, TextField, styled } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { AdminMenu } from "@/types/menus";
+import type { Menu } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
 
@@ -34,7 +34,7 @@ const LOCALE_OPTIONS = routing.locales.map((value) => ({
 }));
 
 interface UpdateMenuDialogProps {
-  menu: AdminMenu;
+  menu: Menu;
   mutateMenus: () => void;
 }
 
@@ -79,7 +79,7 @@ const UpdateMenuDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher<AdminMenu>(`/api/menus/${id}`, {
+      await fetcher<Menu>(`/api/menus/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -24,7 +24,7 @@ import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { AdminMenuItem, AdminMenuSection } from "@/types/menus";
+import type { MenuItem, MenuSection } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
 
@@ -34,8 +34,8 @@ const DataGrid = dynamic(
 );
 
 interface MenusMenuIdSectionIdProps {
-  items: AdminMenuItem[];
-  sections: AdminMenuSection[];
+  items: MenuItem[];
+  sections: MenuSection[];
   sectionId: string;
 }
 
@@ -54,7 +54,7 @@ const MenusMenuIdSectionId = ({
     data: rows = initialItems,
     mutate: mutateRows,
     isValidating,
-  } = useSWR<AdminMenuItem[]>(`/api/menu-sections/${sectionId}/menu-items`, {
+  } = useSWR<MenuItem[]>(`/api/menu-sections/${sectionId}/menu-items`, {
     fallbackData: initialItems,
     onSuccess: () => {
       setTimeout(() => {
@@ -77,7 +77,7 @@ const MenusMenuIdSectionId = ({
   }, [mutateRows, sectionId, setDialog, tMenus]);
 
   const handleUpdateItem = useCallback(
-    (item: AdminMenuItem) => {
+    (item: MenuItem) => {
       setDialog({
         content: <UpdateMenuItemDialog item={item} mutateRows={mutateRows} />,
         formId: "update-menu-item-form",
@@ -89,7 +89,7 @@ const MenusMenuIdSectionId = ({
   );
 
   const handleDeleteItem = useCallback(
-    ({ id, name }: AdminMenuItem) => {
+    ({ id, name }: MenuItem) => {
       setDialog({
         content: (
           <DialogContentText>
@@ -128,7 +128,7 @@ const MenusMenuIdSectionId = ({
         disableColumnMenu: true,
         field: "actions",
         headerName: tMenus("items.actions.label"),
-        renderCell: ({ row }: GridRenderCellParams<AdminMenuItem>) => (
+        renderCell: ({ row }: GridRenderCellParams<MenuItem>) => (
           <Stack height="100%" direction="row" alignItems="center" gap={1}>
             <Tooltip title={tMenus("items.actions.updateItem.title")}>
               <IconButton

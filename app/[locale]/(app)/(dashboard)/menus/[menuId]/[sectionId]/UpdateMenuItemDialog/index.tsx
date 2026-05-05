@@ -16,7 +16,7 @@ import { Box, type BoxProps, TextField, styled } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { AdminMenuItem } from "@/types/menus";
+import type { MenuItem } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
 
@@ -28,7 +28,7 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 }));
 
 interface UpdateMenuItemDialogProps {
-  item: AdminMenuItem;
+  item: MenuItem;
   mutateRows: () => void;
 }
 

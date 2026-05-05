@@ -13,7 +13,7 @@ import { Box, type BoxProps, TextField, styled } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { AdminMenuItem } from "@/types/menus";
+import type { MenuItem } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
 
@@ -61,7 +61,7 @@ const CreateMenuItemDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher<AdminMenuItem>(
+      await fetcher<MenuItem>(
         `/api/menu-sections/${sectionId}/menu-items`,
         {
           method: "POST",

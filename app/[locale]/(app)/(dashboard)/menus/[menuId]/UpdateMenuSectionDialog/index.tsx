@@ -16,7 +16,7 @@ import { Box, type BoxProps, TextField, styled } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { AdminMenuSection } from "@/types/menus";
+import type { MenuSection } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
 
@@ -29,7 +29,7 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 
 interface UpdateMenuSectionDialogProps {
   mutateSections: () => void;
-  section: AdminMenuSection;
+  section: MenuSection;
 }
 
 const UpdateMenuSectionDialog = ({

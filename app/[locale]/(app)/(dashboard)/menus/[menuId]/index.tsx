@@ -27,7 +27,7 @@ import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { AdminMenu, AdminMenuSection } from "@/types/menus";
+import type { Menu, MenuSection } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
 
@@ -37,8 +37,8 @@ const DataGrid = dynamic(
 );
 
 interface MenuDetailProps {
-  menu: AdminMenu;
-  sections: AdminMenuSection[];
+  menu: Menu;
+  sections: MenuSection[];
 }
 
 const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
@@ -57,7 +57,7 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
     data: sections = initialSections,
     mutate: mutateSections,
     isValidating,
-  } = useSWR<AdminMenuSection[]>(`/api/menus/${menu.id}/menu-sections`, {
+  } = useSWR<MenuSection[]>(`/api/menus/${menu.id}/menu-sections`, {
     fallbackData: initialSections,
     onSuccess: () => {
       setTimeout(() => {
@@ -83,7 +83,7 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
   }, [menu.id, mutateSections, setDialog, tMenus]);
 
   const handleViewItems = useCallback(
-    (section: AdminMenuSection) => {
+    (section: MenuSection) => {
       router.push(
         `/menus/${menu.id}/${section.id}${organization ? `?organization=${organization}` : ""}`,
       );
@@ -92,7 +92,7 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
   );
 
   const handleUpdateSection = useCallback(
-    (section: AdminMenuSection) => {
+    (section: MenuSection) => {
       setDialog({
         content: (
           <UpdateMenuSectionDialog
@@ -109,7 +109,7 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
   );
 
   const handleDeleteSection = useCallback(
-    ({ id, name }: AdminMenuSection) => {
+    ({ id, name }: MenuSection) => {
       setDialog({
         content: (
           <DialogContentText>
@@ -148,7 +148,7 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
         disableColumnMenu: true,
         field: "actions",
         headerName: tMenus("sections.actions.label"),
-        renderCell: ({ row }: GridRenderCellParams<AdminMenuSection>) => (
+        renderCell: ({ row }: GridRenderCellParams<MenuSection>) => (
           <Stack height="100%" direction="row" alignItems="center" gap={1}>
             <Tooltip title={tMenus("sections.actions.viewItems.title")}>
               <IconButton

@@ -32,7 +32,7 @@ import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { AdminMenu } from "@/types/menus";
+import type { Menu } from "@/types/menus";
 import type { Organization } from "@/types/organizations";
 
 import { fetcher } from "@/utils/fetcher";
@@ -47,7 +47,7 @@ const StyledTextField = styled(TextField)({
 });
 
 interface MenusProps {
-  menus: AdminMenu[];
+  menus: Menu[];
   organizations: Organization[];
   organizationSlug: string;
 }
@@ -70,7 +70,7 @@ const Menus = ({
     data: rows = initialMenus,
     mutate: mutateMenus,
     isValidating,
-  } = useSWR<AdminMenu[]>(
+  } = useSWR<Menu[]>(
     selectedOrganizationId
       ? `/api/organizations/${selectedOrganizationId}/menus`
       : null,
@@ -120,7 +120,7 @@ const Menus = ({
   };
 
   const handleUpdateMenu = useCallback(
-    (menu: AdminMenu) => {
+    (menu: Menu) => {
       setDialog({
         content: <UpdateMenuDialog menu={menu} mutateMenus={mutateMenus} />,
         formId: "update-menu-form",
@@ -132,7 +132,7 @@ const Menus = ({
   );
 
   const handleDeleteMenu = useCallback(
-    ({ id, name }: AdminMenu) => {
+    ({ id, name }: Menu) => {
       setDialog({
         content: (
           <DialogContentText>
@@ -170,7 +170,7 @@ const Menus = ({
         disableColumnMenu: true,
         field: "actions",
         headerName: tMenus("actions.label"),
-        renderCell: ({ row }: GridRenderCellParams<AdminMenu>) => (
+        renderCell: ({ row }: GridRenderCellParams<Menu>) => (
           <Stack height="100%" direction="row" alignItems="center" gap={1}>
             <Tooltip title={tMenus("actions.viewMenu.title")}>
               <IconButton
@@ -223,7 +223,7 @@ const Menus = ({
         headerName: tMenus("inLanguage.label"),
         renderCell: ({
           row: { inLanguage },
-        }: GridRenderCellParams<AdminMenu>) =>
+        }: GridRenderCellParams<Menu>) =>
           inLanguage && (
             <Chip
               label={locales[inLanguage].label}
