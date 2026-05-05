@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
 import { CreateMenuItemForm, useCreateMenuItemFormSchema } from "./definitions";
 
@@ -41,6 +41,7 @@ const CreateMenuItemDialog = ({
 
   const createMenuItemFormSchema = useCreateMenuItemFormSchema();
   const {
+    control,
     formState: { errors },
     handleSubmit,
     register,
@@ -54,6 +55,8 @@ const CreateMenuItemDialog = ({
     },
     resolver: zodResolver(createMenuItemFormSchema),
   });
+
+  const menuSectionId = useWatch({ control, name: "menuSectionId" });
 
   const onSubmitHandler = async ({
     name,
@@ -116,6 +119,7 @@ const CreateMenuItemDialog = ({
         label={tMenus("sections.label")}
         required
         select
+        value={menuSectionId}
         {...register("menuSectionId")}
       >
         {sections.map((section) => (
