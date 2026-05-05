@@ -4,6 +4,20 @@ import { fetcher } from "./fetcher";
 
 import type { Menu, MenuItem, MenuSection } from "@/types/menus";
 
+export const getMenus = cache(
+  async (organizationId: string, init?: RequestInit) => {
+    try {
+      const data = await fetcher<Menu[]>(
+        `/api/organizations/${organizationId}/menus`,
+        init,
+      );
+      return Array.isArray(data) ? data : [];
+    } catch {
+      return [];
+    }
+  },
+);
+
 export const getMenu = cache(async (menuId: string, init?: RequestInit) => {
   try {
     return await fetcher<Menu>(`/api/menus/${menuId}`, init);
