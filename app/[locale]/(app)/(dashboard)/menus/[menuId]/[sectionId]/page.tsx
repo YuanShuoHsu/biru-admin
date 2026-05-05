@@ -6,7 +6,11 @@ import MenusMenuIdSectionId from ".";
 
 import type { Locale } from "@/i18n/routing";
 
-import { getMenu, getMenuSectionItems, getMenuSections } from "@/utils/menus";
+import {
+  getAdminMenu,
+  getAdminMenuSectionItems,
+  getAdminMenuSections,
+} from "@/utils/menus";
 
 interface MenusMenuIdSectionIdPageProps {
   params: Promise<{ locale: Locale; menuId: string; sectionId: string }>;
@@ -23,9 +27,9 @@ const MenusMenuIdSectionIdPage = async ({
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
   const [menu, sections, items] = await Promise.all([
-    getMenu(menuId, fetchOptions),
-    getMenuSections(menuId, fetchOptions),
-    getMenuSectionItems(sectionId, fetchOptions),
+    getAdminMenu(menuId, fetchOptions),
+    getAdminMenuSections(menuId, fetchOptions),
+    getAdminMenuSectionItems(sectionId, fetchOptions),
   ]);
   const section = sections.find(({ id }) => id === sectionId);
 
