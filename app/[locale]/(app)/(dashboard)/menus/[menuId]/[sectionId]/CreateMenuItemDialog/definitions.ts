@@ -9,7 +9,6 @@ export const useCreateMenuItemFormSchema = () => {
       .string()
       .min(1, { error: tValidation("name.minLength") })
       .trim(),
-    menuSectionId: z.string().min(1, { error: tValidation("name.minLength") }),
     description: z.string().trim().optional(),
     image: z.string().trim().optional(),
     url: z.string().trim().optional(),

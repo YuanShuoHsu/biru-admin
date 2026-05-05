@@ -65,14 +65,11 @@ const MenusMenuIdSectionId = ({
 
   const tMenus = useTranslations("menus");
 
-  const selectedSection = initialSections.find(({ id }) => id === sectionId);
-
   const handleCreateItem = useCallback(() => {
     setDialog({
       content: (
         <CreateMenuItemDialog
           sectionId={sectionId}
-          sections={initialSections}
           mutateRows={mutateRows}
         />
       ),
@@ -80,7 +77,7 @@ const MenusMenuIdSectionId = ({
       open: true,
       title: tMenus("items.actions.createItem.title"),
     });
-  }, [initialSections, mutateRows, sectionId, setDialog, tMenus]);
+  }, [mutateRows, sectionId, setDialog, tMenus]);
 
   const handleUpdateItem = useCallback(
     (item: AdminMenuItem) => {
@@ -171,12 +168,6 @@ const MenusMenuIdSectionId = ({
         headerName: tMenus("items.name.label"),
       },
       {
-        field: "menuSectionId",
-        headerName: tMenus("sections.label"),
-        valueGetter: () => selectedSection?.name,
-        sortable: false,
-      },
-      {
         field: "createdAt",
         headerName: tMenus("createdAt"),
         valueFormatter: (value: string) =>
@@ -189,7 +180,7 @@ const MenusMenuIdSectionId = ({
           format.dateTime(new Date(value), "short"),
       },
     ],
-    [format, handleDeleteItem, handleUpdateItem, selectedSection, tMenus],
+    [format, handleDeleteItem, handleUpdateItem, tMenus],
   );
 
   return (

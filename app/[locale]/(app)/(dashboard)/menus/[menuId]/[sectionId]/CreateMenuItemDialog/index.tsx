@@ -3,17 +3,17 @@
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 import { CreateMenuItemForm, useCreateMenuItemFormSchema } from "./definitions";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Box, type BoxProps, MenuItem, TextField, styled } from "@mui/material";
+import { Box, type BoxProps, TextField, styled } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { AdminMenuItem, AdminMenuSection } from "@/types/menus";
+import type { AdminMenuItem } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
 
@@ -26,14 +26,12 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 
 interface CreateMenuItemDialogProps {
   mutateRows: () => void;
-  sections: AdminMenuSection[];
-  sectionId?: string | null;
+  sectionId: string;
 }
 
 const CreateMenuItemDialog = ({
   mutateRows,
-  sections,
-  sectionId = null,
+  sectionId,
 }: CreateMenuItemDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
@@ -41,14 +39,12 @@ const CreateMenuItemDialog = ({
 
   const createMenuItemFormSchema = useCreateMenuItemFormSchema();
   const {
-    control,
     formState: { errors },
     handleSubmit,
     register,
   } = useForm<CreateMenuItemForm>({
     defaultValues: {
       name: "",
-      menuSectionId: sectionId || sections[0]?.id || "",
       description: "",
       image: "",
       url: "",
@@ -56,11 +52,8 @@ const CreateMenuItemDialog = ({
     resolver: zodResolver(createMenuItemFormSchema),
   });
 
-  const menuSectionId = useWatch({ control, name: "menuSectionId" });
-
   const onSubmitHandler = async ({
     name,
-    menuSectionId,
     description,
     image,
     url,
@@ -72,7 +65,7 @@ const CreateMenuItemDialog = ({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          menuSectionId,
+          menuSectionId: sectionId,
           name,
           ...(description && { description }),
           ...(image && { image }),
@@ -112,22 +105,6 @@ const CreateMenuItemDialog = ({
         required
         {...register("name")}
       />
-      <TextField
-        error={!!errors.menuSectionId}
-        fullWidth
-        helperText={errors.menuSectionId?.message}
-        label={tMenus("sections.label")}
-        required
-        select
-        value={menuSectionId}
-        {...register("menuSectionId")}
-      >
-        {sections.map((section) => (
-          <MenuItem key={section.id} value={section.id}>
-            {section.name}
-          </MenuItem>
-        ))}
-      </TextField>
       <TextField
         error={!!errors.description}
         fullWidth
