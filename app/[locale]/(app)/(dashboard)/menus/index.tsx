@@ -221,9 +221,7 @@ const Menus = ({
       {
         field: "inLanguage",
         headerName: tMenus("inLanguage.label"),
-        renderCell: ({
-          row: { inLanguage },
-        }: GridRenderCellParams<Menu>) =>
+        renderCell: ({ row: { inLanguage } }: GridRenderCellParams<Menu>) =>
           inLanguage && (
             <Chip
               label={locales[inLanguage].label}
