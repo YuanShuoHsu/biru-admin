@@ -9,7 +9,12 @@ import useSWR from "swr";
 import CreateMenuItemDialog from "./CreateMenuItemDialog";
 import UpdateMenuItemDialog from "./UpdateMenuItemDialog";
 
+import { arrayMove, DragHandle, Sortable } from "@/components/Sortable";
+
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
+
+import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
+import { isSortableOperation } from "@dnd-kit/react/sortable";
 
 import { Add, Delete, Edit } from "@mui/icons-material";
 import {
@@ -41,7 +46,6 @@ interface MenusMenuIdSectionIdProps {
 
 const MenusMenuIdSectionId = ({
   items: initialItems,
-  sections: initialSections,
   sectionId,
 }: MenusMenuIdSectionIdProps) => {
   const { setDialog } = useDialogStore((state) => state);
@@ -64,6 +68,26 @@ const MenusMenuIdSectionId = ({
   });
 
   const tMenus = useTranslations("menus");
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    if (event.canceled || !isSortableOperation(event.operation)) return;
+    const { source, target } = event.operation;
+    if (!source || !target || source.index === target.index) return;
+
+    const newRows = arrayMove(rows, source.index, target.index);
+    mutateRows(newRows, false);
+
+    fetcher(`/api/menu-sections/${sectionId}/menu-items/reorder`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ids: newRows.map((r) => r.id) }),
+    }).catch(() => {
+      enqueueSnackbar(tMenus("items.actions.reorderItem.error"), {
+        variant: "error",
+      });
+      mutateRows();
+    });
+  };
 
   const handleCreateItem = useCallback(() => {
     setDialog({
@@ -124,6 +148,14 @@ const MenusMenuIdSectionId = ({
 
   const columns = useMemo<GridColDef[]>(
     () => [
+      {
+        disableColumnMenu: true,
+        field: "reorder",
+        headerName: "",
+        renderCell: () => <DragHandle />,
+        resizable: false,
+        sortable: false,
+      },
       {
         disableColumnMenu: true,
         field: "actions",
@@ -192,16 +224,22 @@ const MenusMenuIdSectionId = ({
           {tMenus("items.actions.createItem.title")}
         </Button>
       </Stack>
-      <DataGrid
-        {...DATA_GRID_PROPS}
-        apiRef={apiRef}
-        columns={columns}
-        loading={isValidating}
-        onPaginationModelChange={() =>
-          apiRef.current?.autosizeColumns(autosizeOptions)
-        }
-        rows={rows}
-      />
+      <DragDropProvider onDragEnd={handleDragEnd}>
+        <DataGrid
+          {...DATA_GRID_PROPS}
+          apiRef={apiRef}
+          columns={columns}
+          loading={isValidating}
+          onPaginationModelChange={() =>
+            apiRef.current?.autosizeColumns(autosizeOptions)
+          }
+          rows={rows}
+          slots={{
+            ...DATA_GRID_PROPS.slots,
+            row: Sortable,
+          }}
+        />
+      </DragDropProvider>
     </>
   );
 };

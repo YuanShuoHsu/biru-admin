@@ -50,6 +50,9 @@
         "title": "刪除品項"
       },
       "label": "操作",
+      "reorderItem": {
+        "error": "排序失敗"
+      },
       "updateItem": {
         "success": "成功更新品項 {name}",
         "title": "編輯品項"
@@ -102,6 +105,9 @@
       "label": "操作",
       "backToSections": {
         "title": "返回分組"
+      },
+      "reorderSection": {
+        "error": "排序失敗"
       },
       "updateSection": {
         "success": "成功更新分組 {name}",

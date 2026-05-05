@@ -50,6 +50,9 @@
         "title": "Delete item"
       },
       "label": "Actions",
+      "reorderItem": {
+        "error": "Reorder failed"
+      },
       "updateItem": {
         "success": "Item {name} updated",
         "title": "Edit item"
@@ -102,6 +105,9 @@
       "label": "Actions",
       "backToSections": {
         "title": "Back to sections"
+      },
+      "reorderSection": {
+        "error": "Reorder failed"
       },
       "updateSection": {
         "success": "Section {name} updated",

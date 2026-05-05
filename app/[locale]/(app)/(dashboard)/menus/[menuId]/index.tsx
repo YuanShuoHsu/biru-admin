@@ -10,7 +10,12 @@ import useSWR from "swr";
 import CreateMenuSectionDialog from "./CreateMenuSectionDialog";
 import UpdateMenuSectionDialog from "./UpdateMenuSectionDialog";
 
+import { arrayMove, DragHandle, Sortable } from "@/components/Sortable";
+
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
+
+import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
+import { isSortableOperation } from "@dnd-kit/react/sortable";
 
 import { useRouter } from "@/i18n/navigation";
 
@@ -67,6 +72,26 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
   });
 
   const tMenus = useTranslations("menus");
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    if (event.canceled || !isSortableOperation(event.operation)) return;
+    const { source, target } = event.operation;
+    if (!source || !target || source.index === target.index) return;
+
+    const newSections = arrayMove(sections, source.index, target.index);
+    mutateSections(newSections, false);
+
+    fetcher(`/api/menus/${menu.id}/menu-sections/reorder`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ids: newSections.map((s) => s.id) }),
+    }).catch(() => {
+      enqueueSnackbar(tMenus("sections.actions.reorderSection.error"), {
+        variant: "error",
+      });
+      mutateSections();
+    });
+  };
 
   const handleCreateSection = useCallback(() => {
     setDialog({
@@ -144,6 +169,14 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
 
   const columns = useMemo<GridColDef[]>(
     () => [
+      {
+        disableColumnMenu: true,
+        field: "reorder",
+        headerName: "",
+        renderCell: () => <DragHandle />,
+        resizable: false,
+        sortable: false,
+      },
       {
         disableColumnMenu: true,
         field: "actions",
@@ -229,16 +262,22 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
           {tMenus("sections.actions.createSection.title")}
         </Button>
       </Stack>
-      <DataGrid
-        {...DATA_GRID_PROPS}
-        apiRef={apiRef}
-        columns={columns}
-        loading={isValidating}
-        onPaginationModelChange={() =>
-          apiRef.current?.autosizeColumns(autosizeOptions)
-        }
-        rows={sections}
-      />
+      <DragDropProvider onDragEnd={handleDragEnd}>
+        <DataGrid
+          {...DATA_GRID_PROPS}
+          apiRef={apiRef}
+          columns={columns}
+          loading={isValidating}
+          onPaginationModelChange={() =>
+            apiRef.current?.autosizeColumns(autosizeOptions)
+          }
+          rows={sections}
+          slots={{
+            ...DATA_GRID_PROPS.slots,
+            row: Sortable,
+          }}
+        />
+      </DragDropProvider>
     </>
   );
 };

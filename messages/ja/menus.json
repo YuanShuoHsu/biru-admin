@@ -50,6 +50,9 @@
         "title": "品目を削除"
       },
       "label": "操作",
+      "reorderItem": {
+        "error": "並び替えに失敗しました"
+      },
       "updateItem": {
         "success": "品目 {name} を更新しました",
         "title": "品目を編集"
@@ -102,6 +105,9 @@
       "label": "操作",
       "backToSections": {
         "title": "セクションに戻る"
+      },
+      "reorderSection": {
+        "error": "並び替えに失敗しました"
       },
       "updateSection": {
         "success": "セクション {name} を更新しました",
