@@ -68,19 +68,17 @@ const CreateMenuItemDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher<AdminMenuItem>(
-        `/api/menu-sections/${menuSectionId}/items`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name,
-            ...(description && { description }),
-            ...(image && { image }),
-            ...(url && { url }),
-          }),
-        },
-      );
+      await fetcher<AdminMenuItem>(`/api/menu-items`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          menuSectionId,
+          name,
+          ...(description && { description }),
+          ...(image && { image }),
+          ...(url && { url }),
+        }),
+      });
 
       enqueueSnackbar(tMenus("items.actions.createItem.success", { name }), {
         variant: "success",
@@ -89,7 +87,9 @@ const CreateMenuItemDialog = ({
       closeDialog();
 
       mutateRows();
-    } catch {
+    } catch (error) {
+      console.log(error);
+
       enqueueSnackbar(tMenus("items.actions.createItem.title"), {
         variant: "error",
       });
