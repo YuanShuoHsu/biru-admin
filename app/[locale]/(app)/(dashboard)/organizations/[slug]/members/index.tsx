@@ -327,7 +327,13 @@ const OrganizationsSlugMembers = ({
                     variant: "error",
                   },
                 );
-                await authClient.signOut();
+
+                if (session) {
+                  await authClient.multiSession.revoke({
+                    sessionToken: session.session.token,
+                  });
+                }
+
                 setSession(null);
                 router.replace("/");
 
@@ -346,6 +352,7 @@ const OrganizationsSlugMembers = ({
     locale,
     organizationId,
     router,
+    session,
     setDialog,
     setSession,
     slug,
