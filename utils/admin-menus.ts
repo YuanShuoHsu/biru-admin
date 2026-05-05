@@ -4,20 +4,6 @@ import { fetcher } from "./fetcher";
 
 import type { AdminMenu, AdminMenuItem, AdminMenuSection } from "@/types/menus";
 
-export const getAdminMenus = cache(
-  async (organizationId: string, init?: RequestInit) => {
-    try {
-      const data = await fetcher<AdminMenu[]>(
-        `/api/organizations/${organizationId}/menus`,
-        init,
-      );
-      return Array.isArray(data) ? data : [];
-    } catch {
-      return [];
-    }
-  },
-);
-
 export const getAdminMenu = cache(
   async (menuId: string, init?: RequestInit) => {
     try {
@@ -41,7 +27,6 @@ export const getAdminMenuSections = cache(
     }
   },
 );
-
 
 export const getAdminMenuSectionItems = cache(
   async (sectionId: string, init?: RequestInit) => {
