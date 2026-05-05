@@ -16,8 +16,6 @@ import { routing } from "./i18n/routing";
 
 import { authClient } from "./lib/auth-client";
 
-const SESSION_COOKIE_NAME = "better-auth.session_token";
-
 const handleI18nRouting = createMiddleware(routing);
 
 const fetchWithCookies = (url: string, request: NextRequest) =>
@@ -107,7 +105,10 @@ export const proxy = async (request: NextRequest) => {
         signInUrl.searchParams.set("error", "NO_ACTIVE_ORGANIZATION");
 
       const redirectRes = NextResponse.redirect(signInUrl);
-      redirectRes.cookies.delete(SESSION_COOKIE_NAME);
+      redirectRes.cookies.delete("better-auth.session_token");
+      redirectRes.cookies.delete(
+        `better-auth.session_token_multi-${session.session.token.toLowerCase()}`,
+      );
 
       return redirectRes;
     }
