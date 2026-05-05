@@ -80,7 +80,7 @@ const MenusMenuIdSectionId = ({
     fetcher(`/api/menu-sections/${sectionId}/menu-items/reorder`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ids: newRows.map((r) => r.id) }),
+      body: JSON.stringify({ ids: newRows.map(({ id }) => id) }),
     }).catch(() => {
       enqueueSnackbar(tMenus("items.actions.reorderItem.error"), {
         variant: "error",
