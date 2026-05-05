@@ -68,10 +68,7 @@ const MenusMenuIdSectionId = ({
   const handleCreateItem = useCallback(() => {
     setDialog({
       content: (
-        <CreateMenuItemDialog
-          sectionId={sectionId}
-          mutateRows={mutateRows}
-        />
+        <CreateMenuItemDialog sectionId={sectionId} mutateRows={mutateRows} />
       ),
       formId: "create-menu-item-form",
       open: true,
