@@ -357,6 +357,13 @@ pnpm add socket.io-client
 pnpm add swiper
 ```
 
+## dnd kit
+
+```bash
+# https://dndkit.com/react/quickstart
+pnpm add @dnd-kit/react
+```
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
