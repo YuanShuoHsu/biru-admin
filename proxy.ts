@@ -59,14 +59,13 @@ export const proxy = async (request: NextRequest) => {
   if (isMaintenanceMode) {
     if (isMaintenancePath) return response;
 
-    request.nextUrl.pathname = `/${locale}/maintenance`;
-    return NextResponse.redirect(request.nextUrl);
+    return NextResponse.redirect(
+      new URL(`/${locale}/maintenance`, request.url),
+    );
   }
 
-  if (isMaintenancePath) {
-    request.nextUrl.pathname = `/${locale}`;
-    return NextResponse.redirect(request.nextUrl);
-  }
+  if (isMaintenancePath)
+    return NextResponse.redirect(new URL(`/${locale}`, request.url));
 
   const isRootPage = pathname === `/${locale}`;
   const isAuthPage = pathname.startsWith(`/${locale}/auth/`);
@@ -75,11 +74,12 @@ export const proxy = async (request: NextRequest) => {
   const isPublicPage = (isAuthPage && !isAuthSettingsPage) || isCompanyPage;
 
   const redirectToSignIn = () => {
-    const redirectTo = pathname.slice(`/${locale}`.length);
-    request.nextUrl.pathname = `/${locale}/auth/sign-in`;
-    if (redirectTo) request.nextUrl.searchParams.set("redirectTo", redirectTo);
+    const redirectTo =
+      pathname.slice(`/${locale}`.length) + request.nextUrl.search;
+    const url = new URL(`/${locale}/auth/sign-in`, request.url);
+    if (redirectTo) url.searchParams.set("redirectTo", redirectTo);
 
-    return request.nextUrl;
+    return url;
   };
 
   const { data: session } = await authClient.getSession({
@@ -90,9 +90,9 @@ export const proxy = async (request: NextRequest) => {
     return NextResponse.redirect(redirectToSignIn());
 
   if (session && isRootPage) {
-    request.nextUrl.pathname = `/${locale}${DEFAULT_AUTHENTICATED_ROUTE}`;
-
-    return NextResponse.redirect(request.nextUrl);
+    return NextResponse.redirect(
+      new URL(`/${locale}${DEFAULT_AUTHENTICATED_ROUTE}`, request.url),
+    );
   }
 
   if (session && !isPublicPage) {
