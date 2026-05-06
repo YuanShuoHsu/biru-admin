@@ -10,12 +10,12 @@ import useSWR from "swr";
 import CreateMenuSectionDialog from "./CreateMenuSectionDialog";
 import UpdateMenuSectionDialog from "./UpdateMenuSectionDialog";
 
-import { arrayMove, DragHandle, Sortable } from "@/components/Sortable";
+import { DragHandle, Sortable } from "@/components/Sortable";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
+import { move } from "@dnd-kit/helpers";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
-import { isSortableOperation } from "@dnd-kit/react/sortable";
 
 import { useRouter } from "@/i18n/navigation";
 
@@ -64,6 +64,7 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
     isValidating,
   } = useSWR<MenuSection[]>(`/api/menus/${menu.id}/menu-sections`, {
     fallbackData: initialSections,
+    revalidateOnFocus: false,
     onSuccess: () => {
       setTimeout(() => {
         apiRef.current?.autosizeColumns(autosizeOptions);
@@ -74,11 +75,9 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
   const tMenus = useTranslations("menus");
 
   const handleDragEnd = (event: DragEndEvent) => {
-    if (event.canceled || !isSortableOperation(event.operation)) return;
-    const { source, target } = event.operation;
-    if (!source || !target || source.index === target.index) return;
+    const newSections = move(sections, event);
+    if (newSections === sections) return;
 
-    const newSections = arrayMove(sections, source.index, target.index);
     mutateSections(newSections, false);
 
     fetcher(`/api/menus/${menu.id}/menu-sections/reorder`, {
@@ -89,7 +88,8 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
       enqueueSnackbar(tMenus("sections.actions.reorderSection.error"), {
         variant: "error",
       });
-      mutateSections();
+
+      mutateSections(sections, false);
     });
   };
 

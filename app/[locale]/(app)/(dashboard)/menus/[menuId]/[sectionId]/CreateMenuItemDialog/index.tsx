@@ -79,9 +79,7 @@ const CreateMenuItemDialog = ({
       closeDialog();
 
       mutateRows();
-    } catch (error) {
-      console.log(error);
-
+    } catch {
       enqueueSnackbar(tMenus("items.actions.createItem.title"), {
         variant: "error",
       });

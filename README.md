@@ -362,6 +362,9 @@ pnpm add swiper
 ```bash
 # https://dndkit.com/react/quickstart
 pnpm add @dnd-kit/react
+
+# https://main--5fc05e08a4a65d0021ae0bf2.chromatic.com/?path=/docs/react-sortable--docs
+pnpm add @dnd-kit/helpers
 ```
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).

@@ -1,3 +1,5 @@
+// https://main--5fc05e08a4a65d0021ae0bf2.chromatic.com/?path=/docs/react-sortable--docs
+
 import { createContext, useContext } from "react";
 
 import { useSortable } from "@dnd-kit/react/sortable";
@@ -6,14 +8,6 @@ import { DragIndicator } from "@mui/icons-material";
 import { styled } from "@mui/material";
 import type { GridRowProps } from "@mui/x-data-grid";
 import { GridRow } from "@mui/x-data-grid";
-
-export const arrayMove = <T,>(array: T[], from: number, to: number): T[] => {
-  const result = [...array];
-  const [item] = result.splice(from, 1);
-  result.splice(to, 0, item);
-
-  return result;
-};
 
 const StyledDragIndicator = styled(DragIndicator)({ cursor: "grab" });
 

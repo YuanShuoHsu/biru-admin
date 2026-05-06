@@ -9,12 +9,12 @@ import useSWR from "swr";
 import CreateMenuItemDialog from "./CreateMenuItemDialog";
 import UpdateMenuItemDialog from "./UpdateMenuItemDialog";
 
-import { arrayMove, DragHandle, Sortable } from "@/components/Sortable";
+import { DragHandle, Sortable } from "@/components/Sortable";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
+import { move } from "@dnd-kit/helpers";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
-import { isSortableOperation } from "@dnd-kit/react/sortable";
 
 import { Add, Delete, Edit } from "@mui/icons-material";
 import {
@@ -70,11 +70,9 @@ const MenusMenuIdSectionId = ({
   const tMenus = useTranslations("menus");
 
   const handleDragEnd = (event: DragEndEvent) => {
-    if (event.canceled || !isSortableOperation(event.operation)) return;
-    const { source, target } = event.operation;
-    if (!source || !target || source.index === target.index) return;
+    const newRows = move(rows, event);
+    if (newRows === rows) return;
 
-    const newRows = arrayMove(rows, source.index, target.index);
     mutateRows(newRows, false);
 
     fetcher(`/api/menu-sections/${sectionId}/menu-items/reorder`, {
@@ -85,7 +83,8 @@ const MenusMenuIdSectionId = ({
       enqueueSnackbar(tMenus("items.actions.reorderItem.error"), {
         variant: "error",
       });
-      mutateRows();
+
+      mutateRows(rows, false);
     });
   };
 
@@ -230,9 +229,9 @@ const MenusMenuIdSectionId = ({
           apiRef={apiRef}
           columns={columns}
           loading={isValidating}
-          onPaginationModelChange={() =>
-            apiRef.current?.autosizeColumns(autosizeOptions)
-          }
+          onPaginationModelChange={() => {
+            apiRef.current?.autosizeColumns(autosizeOptions);
+          }}
           rows={rows}
           slots={{
             ...DATA_GRID_PROPS.slots,
