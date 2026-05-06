@@ -10,8 +10,6 @@ import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { Button } from "@mui/material";
 
-import { getHref } from "@/utils/href";
-
 import GoogleIcon from "@/components/GoogleIcon";
 
 type GoogleAction = "signIn" | "signUp";
@@ -39,9 +37,9 @@ const GoogleButton = ({ action, redirectTo }: GoogleButtonProps) => {
   const tAuth = useTranslations("auth");
   const label = tAuth(`google.${action}`);
 
-  const callbackURL =
-    process.env.NEXT_PUBLIC_ADMIN_URL +
-    getHref(redirectTo || "/", { [query.oauth]: "google" });
+  const url = new URL(redirectTo || "/", process.env.NEXT_PUBLIC_ADMIN_URL);
+  url.searchParams.set(query.oauth, "google");
+  const callbackURL = url.toString();
 
   const handleClick = async () => {
     await authClient.signIn.social(
