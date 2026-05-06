@@ -14,8 +14,9 @@ import { DragHandle, Sortable } from "@/components/Sortable";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
-import { move } from "@dnd-kit/helpers";
+import { arrayMove } from "@dnd-kit/helpers";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
+import { isSortableOperation } from "@dnd-kit/react/sortable";
 
 import { useRouter } from "@/i18n/navigation";
 
@@ -75,22 +76,45 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
   const tMenus = useTranslations("menus");
 
   const handleDragEnd = (event: DragEndEvent) => {
-    const newSections = move(sections, event);
-    if (newSections === sections) return;
+    if (!isSortableOperation(event.operation)) return;
 
+    const { source, canceled } = event.operation;
+    if (!source || canceled) return;
+
+    const fromIndex = sections.findIndex(({ id }) => id === source.id);
+    if (fromIndex === -1) return;
+
+    const { page, pageSize } = apiRef.current?.state.pagination
+      .paginationModel || {
+      page: 0,
+      pageSize: 10,
+    };
+    const toIndex = source.index + page * pageSize;
+    if (fromIndex === toIndex) return;
+
+    const { name } = sections[fromIndex];
+    const newSections = arrayMove(sections, fromIndex, toIndex);
     mutateSections(newSections, false);
 
     fetcher(`/api/menus/${menu.id}/menu-sections/reorder`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids: newSections.map(({ id }) => id) }),
-    }).catch(() => {
-      enqueueSnackbar(tMenus("sections.actions.reorderSection.error"), {
-        variant: "error",
-      });
+    })
+      .then(() => {
+        enqueueSnackbar(
+          tMenus("sections.actions.reorderSection.success", { name }),
+          { variant: "success" },
+        );
+      })
+      .catch(() => {
+        enqueueSnackbar(
+          tMenus("sections.actions.reorderSection.error", { name }),
+          { variant: "error" },
+        );
 
-      mutateSections(sections, false);
-    });
+        mutateSections(sections, false);
+      });
   };
 
   const handleCreateSection = useCallback(() => {

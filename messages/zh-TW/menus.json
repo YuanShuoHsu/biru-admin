@@ -51,7 +51,8 @@
       },
       "label": "操作",
       "reorderItem": {
-        "error": "排序失敗"
+        "error": "品項 {name} 排序失敗",
+        "success": "品項 {name} 排序成功"
       },
       "updateItem": {
         "success": "成功更新品項 {name}",
@@ -107,7 +108,8 @@
         "title": "返回分組"
       },
       "reorderSection": {
-        "error": "排序失敗"
+        "error": "分組 {name} 排序失敗",
+        "success": "分組 {name} 排序成功"
       },
       "updateSection": {
         "success": "成功更新分組 {name}",

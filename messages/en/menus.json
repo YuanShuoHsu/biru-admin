@@ -51,7 +51,8 @@
       },
       "label": "Actions",
       "reorderItem": {
-        "error": "Reorder failed"
+        "error": "Item {name} reorder failed",
+        "success": "Item {name} reordered successfully"
       },
       "updateItem": {
         "success": "Item {name} updated",
@@ -107,7 +108,8 @@
         "title": "Back to sections"
       },
       "reorderSection": {
-        "error": "Reorder failed"
+        "error": "Section {name} reorder failed",
+        "success": "Section {name} reordered successfully"
       },
       "updateSection": {
         "success": "Section {name} updated",

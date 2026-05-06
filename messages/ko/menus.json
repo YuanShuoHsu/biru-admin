@@ -51,7 +51,8 @@
       },
       "label": "작업",
       "reorderItem": {
-        "error": "정렬에 실패했습니다"
+        "error": "품목 {name} 정렬에 실패했습니다",
+        "success": "품목 {name} 정렬에 성공했습니다"
       },
       "updateItem": {
         "success": "항목 {name}이(가) 업데이트되었습니다",
@@ -107,7 +108,8 @@
         "title": "섹션으로 돌아가기"
       },
       "reorderSection": {
-        "error": "정렬에 실패했습니다"
+        "error": "그룹 {name} 정렬에 실패했습니다",
+        "success": "그룹 {name} 정렬에 성공했습니다"
       },
       "updateSection": {
         "success": "섹션 {name}이(가) 업데이트되었습니다",

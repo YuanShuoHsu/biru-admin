@@ -13,8 +13,9 @@ import { DragHandle, Sortable } from "@/components/Sortable";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
-import { move } from "@dnd-kit/helpers";
+import { arrayMove } from "@dnd-kit/helpers";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
+import { isSortableOperation } from "@dnd-kit/react/sortable";
 
 import { Add, Delete, Edit } from "@mui/icons-material";
 import {
@@ -70,22 +71,43 @@ const MenusMenuIdSectionId = ({
   const tMenus = useTranslations("menus");
 
   const handleDragEnd = (event: DragEndEvent) => {
-    const newRows = move(rows, event);
-    if (newRows === rows) return;
+    if (!isSortableOperation(event.operation)) return;
 
+    const { source, canceled } = event.operation;
+    if (!source || canceled) return;
+
+    const fromIndex = rows.findIndex(({ id }) => id === source.id);
+    if (fromIndex === -1) return;
+
+    const { page, pageSize } = apiRef.current?.state.pagination
+      .paginationModel || {
+      page: 0,
+      pageSize: 10,
+    };
+    const toIndex = source.index + page * pageSize;
+    if (fromIndex === toIndex) return;
+
+    const { name } = rows[fromIndex];
+    const newRows = arrayMove(rows, fromIndex, toIndex);
     mutateRows(newRows, false);
 
     fetcher(`/api/menu-sections/${sectionId}/menu-items/reorder`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids: newRows.map(({ id }) => id) }),
-    }).catch(() => {
-      enqueueSnackbar(tMenus("items.actions.reorderItem.error"), {
-        variant: "error",
-      });
+    })
+      .then(() => {
+        enqueueSnackbar(tMenus("items.actions.reorderItem.success", { name }), {
+          variant: "success",
+        });
+      })
+      .catch(() => {
+        enqueueSnackbar(tMenus("items.actions.reorderItem.error", { name }), {
+          variant: "error",
+        });
 
-      mutateRows(rows, false);
-    });
+        mutateRows(rows, false);
+      });
   };
 
   const handleCreateItem = useCallback(() => {

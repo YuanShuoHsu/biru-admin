@@ -51,7 +51,8 @@
       },
       "label": "操作",
       "reorderItem": {
-        "error": "並び替えに失敗しました"
+        "error": "品目 {name} の並び替えに失敗しました",
+        "success": "品目 {name} の並び替えに成功しました"
       },
       "updateItem": {
         "success": "品目 {name} を更新しました",
@@ -107,7 +108,8 @@
         "title": "セクションに戻る"
       },
       "reorderSection": {
-        "error": "並び替えに失敗しました"
+        "error": "グループ {name} の並び替えに失敗しました",
+        "success": "グループ {name} の並び替えに成功しました"
       },
       "updateSection": {
         "success": "セクション {name} を更新しました",
