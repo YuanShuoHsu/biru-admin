@@ -92,6 +92,17 @@ const Menus = ({
 
   const tMenus = useTranslations("menus");
 
+  const sortedMenus = [...menus].sort((a, b) => {
+    const aIndex = a.inLanguage
+      ? routing.locales.indexOf(a.inLanguage)
+      : Infinity;
+    const bIndex = b.inLanguage
+      ? routing.locales.indexOf(b.inLanguage)
+      : Infinity;
+
+    return aIndex - bIndex;
+  });
+
   const handleChange = useCallback(
     ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
       setSelectedSlug(value);
@@ -302,7 +313,7 @@ const Menus = ({
         onPaginationModelChange={() =>
           apiRef.current?.autosizeColumns(autosizeOptions)
         }
-        rows={menus}
+        rows={sortedMenus}
       />
     </>
   );
