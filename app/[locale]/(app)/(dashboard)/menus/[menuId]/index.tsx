@@ -83,8 +83,9 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
 
     const { page, pageSize } = apiRef.current?.state.pagination
       .paginationModel || { page: 0, pageSize: 10 };
-    const fromIndex = source.initialIndex + page * pageSize;
-    const toIndex = source.index + page * pageSize;
+    const offset = page * pageSize;
+    const fromIndex = source.initialIndex + offset;
+    const toIndex = source.index + offset;
     if (fromIndex === toIndex) return;
 
     const { name } = sections[fromIndex];
