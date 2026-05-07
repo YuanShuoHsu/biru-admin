@@ -81,6 +81,7 @@ const MenusMenuIdSectionId = ({
       ),
       onConfirm: async () => {
         setIsReorderMode(true);
+
         setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
       },
       open: true,
@@ -130,7 +131,9 @@ const MenusMenuIdSectionId = ({
       ),
       onConfirm: async () => {
         mutateRows();
+
         setIsReorderMode(false);
+
         setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
       },
       open: true,
