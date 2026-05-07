@@ -75,20 +75,15 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
 
   const tMenus = useTranslations("menus");
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    if (!isSortableOperation(event.operation)) return;
+  const handleDragEnd = ({ operation }: DragEndEvent) => {
+    if (!isSortableOperation(operation)) return;
 
-    const { source, canceled } = event.operation;
-    if (!source || canceled) return;
-
-    const fromIndex = sections.findIndex(({ id }) => id === source.id);
-    if (fromIndex === -1) return;
+    const { canceled, source } = operation;
+    if (canceled || !source) return;
 
     const { page, pageSize } = apiRef.current?.state.pagination
-      .paginationModel || {
-      page: 0,
-      pageSize: 10,
-    };
+      .paginationModel || { page: 0, pageSize: 10 };
+    const fromIndex = source.initialIndex + page * pageSize;
     const toIndex = source.index + page * pageSize;
     if (fromIndex === toIndex) return;
 
@@ -113,7 +108,7 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
           { variant: "error" },
         );
 
-        mutateSections(sections, false);
+        mutateSections();
       });
   };
 
