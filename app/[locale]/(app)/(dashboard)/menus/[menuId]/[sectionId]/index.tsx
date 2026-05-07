@@ -70,21 +70,17 @@ const MenusMenuIdSectionId = ({
 
   const tMenus = useTranslations("menus");
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    if (!isSortableOperation(event.operation)) return;
+  const handleDragEnd = ({ operation }: DragEndEvent) => {
+    if (!isSortableOperation(operation)) return;
 
-    const { source, canceled } = event.operation;
-    if (!source || canceled) return;
-
-    const fromIndex = rows.findIndex(({ id }) => id === source.id);
-    if (fromIndex === -1) return;
+    const { canceled, source } = operation;
+    if (canceled || !source) return;
 
     const { page, pageSize } = apiRef.current?.state.pagination
-      .paginationModel || {
-      page: 0,
-      pageSize: 10,
-    };
-    const toIndex = source.index + page * pageSize;
+      .paginationModel || { page: 0, pageSize: 10 };
+    const offset = page * pageSize;
+    const fromIndex = source.initialIndex + offset;
+    const toIndex = source.index + offset;
     if (fromIndex === toIndex) return;
 
     const { name } = rows[fromIndex];
