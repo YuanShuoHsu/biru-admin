@@ -43,7 +43,7 @@ const MenusPage = async ({ params, searchParams }: MenusPageProps) => {
     <Menus
       menus={menus}
       organizations={organizations}
-      organizationSlug={organization || ""}
+      organizationSlug={selectedOrganization?.slug || ""}
     />
   );
 };
