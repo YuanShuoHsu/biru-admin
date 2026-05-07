@@ -46,13 +46,24 @@
       },
       "deleteItem": {
         "confirm": "Are you sure you want to delete <bold>{name}</bold>? All pricing settings will also be deleted.",
+        "error": "Failed to delete item {name}",
         "success": "Item {name} deleted",
         "title": "Delete item"
       },
       "label": "Actions",
       "reorderItem": {
-        "error": "Item {name} reorder failed",
-        "success": "Item {name} reordered successfully"
+        "cancel": {
+          "confirm": "Are you sure you want to cancel? Unsaved changes will be lost.",
+          "label": "Cancel Reorder"
+        },
+        "confirm": "Are you sure you want to reorder items?",
+        "save": {
+          "confirm": "Are you sure you want to save the reorder?",
+          "error": "Failed to save reorder",
+          "label": "Save Reorder",
+          "success": "Reorder saved"
+        },
+        "title": "Reorder Items"
       },
       "updateItem": {
         "success": "Item {name} updated",
@@ -100,6 +111,7 @@
       },
       "deleteSection": {
         "confirm": "Are you sure you want to delete <bold>{name}</bold>? All subsections and items will also be deleted.",
+        "error": "Failed to delete section {name}",
         "success": "Section {name} deleted",
         "title": "Delete section"
       },
@@ -108,8 +120,18 @@
         "title": "Back to sections"
       },
       "reorderSection": {
-        "error": "Section {name} reorder failed",
-        "success": "Section {name} reordered successfully"
+        "cancel": {
+          "confirm": "Are you sure you want to cancel? Unsaved changes will be lost.",
+          "label": "Cancel Reorder"
+        },
+        "confirm": "Are you sure you want to reorder?",
+        "save": {
+          "confirm": "Are you sure you want to save the reorder?",
+          "error": "Failed to save reorder",
+          "label": "Save Reorder",
+          "success": "Reorder saved"
+        },
+        "title": "Reorder Sections"
       },
       "updateSection": {
         "success": "Section {name} updated",

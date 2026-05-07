@@ -46,13 +46,24 @@
       },
       "deleteItem": {
         "confirm": "<bold>{name}</bold> を削除しますか？価格設定もすべて削除されます。",
+        "error": "品目 {name} の削除に失敗しました",
         "success": "品目 {name} を削除しました",
         "title": "品目を削除"
       },
       "label": "操作",
       "reorderItem": {
-        "error": "品目 {name} の並び替えに失敗しました",
-        "success": "品目 {name} の並び替えに成功しました"
+        "cancel": {
+          "confirm": "キャンセルしますか？保存されていない変更は失われます。",
+          "label": "並び替えをキャンセル"
+        },
+        "confirm": "品目を並び替えますか？",
+        "save": {
+          "confirm": "並び替えを保存しますか？",
+          "error": "並び替えの保存に失敗しました",
+          "label": "並び替えを保存",
+          "success": "並び替えを保存しました"
+        },
+        "title": "品目を並び替え"
       },
       "updateItem": {
         "success": "品目 {name} を更新しました",
@@ -100,6 +111,7 @@
       },
       "deleteSection": {
         "confirm": "<bold>{name}</bold> を削除しますか？サブセクションと品目もすべて削除されます。",
+        "error": "グループ {name} の削除に失敗しました",
         "success": "セクション {name} を削除しました",
         "title": "セクションを削除"
       },
@@ -108,8 +120,18 @@
         "title": "セクションに戻る"
       },
       "reorderSection": {
-        "error": "グループ {name} の並び替えに失敗しました",
-        "success": "グループ {name} の並び替えに成功しました"
+        "cancel": {
+          "confirm": "キャンセルしますか？保存されていない変更は失われます。",
+          "label": "並び替えをキャンセル"
+        },
+        "confirm": "並び替えを行いますか？",
+        "save": {
+          "confirm": "並び替えを保存しますか？",
+          "error": "並び替えの保存に失敗しました",
+          "label": "並び替えを保存",
+          "success": "並び替えを保存しました"
+        },
+        "title": "グループを並び替え"
       },
       "updateSection": {
         "success": "セクション {name} を更新しました",

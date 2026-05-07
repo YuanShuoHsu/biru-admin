@@ -4,7 +4,7 @@ import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import CreateMenuSectionDialog from "./CreateMenuSectionDialog";
@@ -20,7 +20,15 @@ import { isSortableOperation } from "@dnd-kit/react/sortable";
 
 import { useRouter } from "@/i18n/navigation";
 
-import { Add, Delete, Edit, ListAlt } from "@mui/icons-material";
+import {
+  Add,
+  Cancel,
+  Delete,
+  Edit,
+  ListAlt,
+  Save,
+  Sort,
+} from "@mui/icons-material";
 import {
   Button,
   DialogContentText,
@@ -48,6 +56,8 @@ interface MenuDetailProps {
 }
 
 const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
+  const [isReorderMode, setIsReorderMode] = useState(false);
+
   const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
@@ -75,6 +85,77 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
 
   const tMenus = useTranslations("menus");
 
+  const handleEnterReorderMode = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tMenus("sections.actions.reorderSection.confirm")}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsReorderMode(true);
+
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tMenus("sections.actions.reorderSection.title"),
+    });
+  }, [apiRef, setDialog, tMenus]);
+
+  const handleSaveReorder = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tMenus("sections.actions.reorderSection.save.confirm")}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        try {
+          await fetcher(`/api/menus/${menu.id}/menu-sections/reorder`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ids: sections.map(({ id }) => id) }),
+          });
+
+          setIsReorderMode(false);
+
+          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+
+          enqueueSnackbar(
+            tMenus("sections.actions.reorderSection.save.success"),
+            { variant: "success" },
+          );
+        } catch {
+          enqueueSnackbar(
+            tMenus("sections.actions.reorderSection.save.error"),
+            { variant: "error" },
+          );
+        }
+      },
+      open: true,
+      title: tMenus("sections.actions.reorderSection.save.label"),
+    });
+  }, [apiRef, menu.id, sections, setDialog, tMenus]);
+
+  const handleCancelReorder = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tMenus("sections.actions.reorderSection.cancel.confirm")}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        mutateSections();
+
+        setIsReorderMode(false);
+
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tMenus("sections.actions.reorderSection.cancel.label"),
+    });
+  }, [apiRef, mutateSections, setDialog, tMenus]);
+
   const handleDragEnd = ({ operation }: DragEndEvent) => {
     if (!isSortableOperation(operation)) return;
 
@@ -88,29 +169,8 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
     const toIndex = source.index + offset;
     if (fromIndex === toIndex) return;
 
-    const { name } = sections[fromIndex];
     const newSections = arrayMove(sections, fromIndex, toIndex);
     mutateSections(newSections, false);
-
-    fetcher(`/api/menus/${menu.id}/menu-sections/reorder`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ids: newSections.map(({ id }) => id) }),
-    })
-      .then(() => {
-        enqueueSnackbar(
-          tMenus("sections.actions.reorderSection.success", { name }),
-          { variant: "success" },
-        );
-      })
-      .catch(() => {
-        enqueueSnackbar(
-          tMenus("sections.actions.reorderSection.error", { name }),
-          { variant: "error" },
-        );
-
-        mutateSections(sections, false);
-      });
   };
 
   const handleCreateSection = useCallback(() => {
@@ -175,9 +235,10 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
 
             mutateSections();
           } catch {
-            enqueueSnackbar(tMenus("sections.actions.deleteSection.title"), {
-              variant: "error",
-            });
+            enqueueSnackbar(
+              tMenus("sections.actions.deleteSection.error", { name }),
+              { variant: "error" },
+            );
           }
         },
         open: true,
@@ -189,14 +250,18 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
 
   const columns = useMemo<GridColDef[]>(
     () => [
-      {
-        disableColumnMenu: true,
-        field: "reorder",
-        headerName: "",
-        renderCell: () => <DragHandle />,
-        resizable: false,
-        sortable: false,
-      },
+      ...(isReorderMode
+        ? [
+            {
+              disableColumnMenu: true,
+              field: "reorder",
+              headerName: "",
+              renderCell: () => <DragHandle />,
+              resizable: false,
+              sortable: false,
+            },
+          ]
+        : []),
       {
         disableColumnMenu: true,
         field: "actions",
@@ -267,20 +332,59 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
           format.dateTime(new Date(value), "short"),
       },
     ],
-    [format, handleDeleteSection, handleViewItems, handleUpdateSection, tMenus],
+    [
+      format,
+      handleDeleteSection,
+      handleViewItems,
+      handleUpdateSection,
+      isReorderMode,
+      tMenus,
+    ],
   );
 
   return (
     <>
       <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
-        <Button
-          onClick={handleCreateSection}
-          size="small"
-          startIcon={<Add />}
-          variant="contained"
-        >
-          {tMenus("sections.actions.createSection.title")}
-        </Button>
+        {!isReorderMode ? (
+          <>
+            <Button
+              onClick={handleCreateSection}
+              size="small"
+              startIcon={<Add />}
+              variant="contained"
+            >
+              {tMenus("sections.actions.createSection.title")}
+            </Button>
+            <Button
+              onClick={handleEnterReorderMode}
+              size="small"
+              startIcon={<Sort />}
+              variant="outlined"
+            >
+              {tMenus("sections.actions.reorderSection.title")}
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button
+              onClick={handleSaveReorder}
+              size="small"
+              startIcon={<Save />}
+              variant="contained"
+            >
+              {tMenus("sections.actions.reorderSection.save.label")}
+            </Button>
+            <Button
+              color="inherit"
+              onClick={handleCancelReorder}
+              size="small"
+              startIcon={<Cancel />}
+              variant="outlined"
+            >
+              {tMenus("sections.actions.reorderSection.cancel.label")}
+            </Button>
+          </>
+        )}
       </Stack>
       <DragDropProvider onDragEnd={handleDragEnd}>
         <DataGrid
@@ -294,7 +398,7 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
           rows={sections}
           slots={{
             ...DATA_GRID_PROPS.slots,
-            row: Sortable,
+            row: isReorderMode ? Sortable : undefined,
           }}
         />
       </DragDropProvider>

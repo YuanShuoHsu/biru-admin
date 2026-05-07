@@ -46,13 +46,24 @@
       },
       "deleteItem": {
         "confirm": "確定要刪除 <bold>{name}</bold> 嗎？定價設定將一併刪除。",
+        "error": "刪除品項 {name} 失敗",
         "success": "成功刪除品項 {name}",
         "title": "刪除品項"
       },
       "label": "操作",
       "reorderItem": {
-        "error": "品項 {name} 排序失敗",
-        "success": "品項 {name} 排序成功"
+        "cancel": {
+          "confirm": "確定要取消排序嗎？未儲存的變更將會遺失。",
+          "label": "取消排序"
+        },
+        "confirm": "確定要進行排序品項？",
+        "save": {
+          "confirm": "確定要儲存排序嗎？",
+          "error": "排序儲存失敗",
+          "label": "儲存排序",
+          "success": "排序已儲存"
+        },
+        "title": "排序品項"
       },
       "updateItem": {
         "success": "成功更新品項 {name}",
@@ -100,6 +111,7 @@
       },
       "deleteSection": {
         "confirm": "確定要刪除 <bold>{name}</bold> 嗎？子分組與品項將一併刪除。",
+        "error": "刪除分組 {name} 失敗",
         "success": "成功刪除分組 {name}",
         "title": "刪除分組"
       },
@@ -108,8 +120,18 @@
         "title": "返回分組"
       },
       "reorderSection": {
-        "error": "分組 {name} 排序失敗",
-        "success": "分組 {name} 排序成功"
+        "cancel": {
+          "confirm": "確定要取消排序嗎？未儲存的變更將會遺失。",
+          "label": "取消排序"
+        },
+        "confirm": "確定要進行排序？",
+        "save": {
+          "confirm": "確定要儲存排序嗎？",
+          "error": "排序儲存失敗",
+          "label": "儲存排序",
+          "success": "排序已儲存"
+        },
+        "title": "排序分組"
       },
       "updateSection": {
         "success": "成功更新分組 {name}",
