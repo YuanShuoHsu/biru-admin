@@ -206,6 +206,8 @@ const AccountMenu = () => {
           const { data } = await authClient.getSession();
           setSession(data);
 
+          router.refresh();
+
           enqueueSnackbar(tAuth("switchSession.success", { email }), {
             variant: "success",
           });
