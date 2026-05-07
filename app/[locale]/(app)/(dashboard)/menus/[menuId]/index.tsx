@@ -109,7 +109,7 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
           { variant: "error" },
         );
 
-        mutateSections();
+        mutateSections(sections, false);
       });
   };
 
