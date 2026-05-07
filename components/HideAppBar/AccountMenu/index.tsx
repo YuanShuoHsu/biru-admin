@@ -9,7 +9,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { useSnackbar } from "notistack";
 import { useState, type MouseEvent } from "react";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 
 import BadgeAvatars from "@/components/BadgeAvatars";
 
@@ -170,6 +170,8 @@ const AccountMenu = () => {
     ({ session: { token } }) => token !== session?.session.token,
   );
 
+  const { mutate } = useSWRConfig();
+
   const tAuth = useTranslations("auth");
   const tooltipTitle = session ? session.user.email : tAuth("label");
 
@@ -207,6 +209,7 @@ const AccountMenu = () => {
           setSession(data);
 
           router.refresh();
+          await mutate(() => true);
 
           enqueueSnackbar(tAuth("switchSession.success", { email }), {
             variant: "success",
