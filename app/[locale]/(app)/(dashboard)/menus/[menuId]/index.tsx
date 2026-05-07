@@ -356,6 +356,7 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
               {tMenus("sections.actions.createSection.title")}
             </Button>
             <Button
+              disabled={sections.length < 2}
               onClick={handleEnterReorderMode}
               size="small"
               startIcon={<Sort />}

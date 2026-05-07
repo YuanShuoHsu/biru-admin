@@ -29,12 +29,12 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 
 interface UpdateMenuItemDialogProps {
   item: MenuItem;
-  mutateRows: () => void;
+  mutateItems: () => void;
 }
 
 const UpdateMenuItemDialog = ({
   item,
-  mutateRows,
+  mutateItems,
 }: UpdateMenuItemDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
@@ -81,7 +81,7 @@ const UpdateMenuItemDialog = ({
 
       closeDialog();
 
-      mutateRows();
+      mutateItems();
     } catch {
       enqueueSnackbar(tMenus("items.actions.updateItem.title"), {
         variant: "error",

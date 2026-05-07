@@ -58,8 +58,8 @@ const MenusMenuIdSectionId = ({
   const apiRef = useGridApiRef();
 
   const {
-    data: rows = initialItems,
-    mutate: mutateRows,
+    data: items = initialItems,
+    mutate: mutateItems,
     isValidating,
   } = useSWR<MenuItem[]>(`/api/menu-sections/${sectionId}/menu-items`, {
     fallbackData: initialItems,
@@ -101,7 +101,7 @@ const MenusMenuIdSectionId = ({
           await fetcher(`/api/menu-sections/${sectionId}/menu-items/reorder`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ids: rows.map(({ id }) => id) }),
+            body: JSON.stringify({ ids: items.map(({ id }) => id) }),
           });
 
           setIsReorderMode(false);
@@ -120,7 +120,7 @@ const MenusMenuIdSectionId = ({
       open: true,
       title: tMenus("items.actions.reorderItem.save.label"),
     });
-  }, [apiRef, rows, sectionId, setDialog, tMenus]);
+  }, [apiRef, items, sectionId, setDialog, tMenus]);
 
   const handleCancelReorder = useCallback(() => {
     setDialog({
@@ -130,7 +130,7 @@ const MenusMenuIdSectionId = ({
         </DialogContentText>
       ),
       onConfirm: async () => {
-        mutateRows();
+        mutateItems();
 
         setIsReorderMode(false);
 
@@ -139,7 +139,7 @@ const MenusMenuIdSectionId = ({
       open: true,
       title: tMenus("items.actions.reorderItem.cancel.label"),
     });
-  }, [apiRef, mutateRows, setDialog, tMenus]);
+  }, [apiRef, mutateItems, setDialog, tMenus]);
 
   const handleDragEnd = ({ operation }: DragEndEvent) => {
     if (!isSortableOperation(operation)) return;
@@ -154,31 +154,31 @@ const MenusMenuIdSectionId = ({
     const toIndex = source.index + offset;
     if (fromIndex === toIndex) return;
 
-    const newRows = arrayMove(rows, fromIndex, toIndex);
-    mutateRows(newRows, false);
+    const newRows = arrayMove(items, fromIndex, toIndex);
+    mutateItems(newRows, false);
   };
 
   const handleCreateItem = useCallback(() => {
     setDialog({
       content: (
-        <CreateMenuItemDialog mutateRows={mutateRows} sectionId={sectionId} />
+        <CreateMenuItemDialog mutateItems={mutateItems} sectionId={sectionId} />
       ),
       formId: "create-menu-item-form",
       open: true,
       title: tMenus("items.actions.createItem.title"),
     });
-  }, [mutateRows, sectionId, setDialog, tMenus]);
+  }, [mutateItems, sectionId, setDialog, tMenus]);
 
   const handleUpdateItem = useCallback(
     (item: MenuItem) => {
       setDialog({
-        content: <UpdateMenuItemDialog item={item} mutateRows={mutateRows} />,
+        content: <UpdateMenuItemDialog item={item} mutateItems={mutateItems} />,
         formId: "update-menu-item-form",
         open: true,
         title: tMenus("items.actions.updateItem.title"),
       });
     },
-    [mutateRows, setDialog, tMenus],
+    [mutateItems, setDialog, tMenus],
   );
 
   const handleDeleteItem = useCallback(
@@ -201,7 +201,7 @@ const MenusMenuIdSectionId = ({
               { variant: "success" },
             );
 
-            mutateRows();
+            mutateItems();
           } catch {
             enqueueSnackbar(
               tMenus("items.actions.deleteItem.error", { name }),
@@ -213,7 +213,7 @@ const MenusMenuIdSectionId = ({
         title: tMenus("items.actions.deleteItem.title"),
       });
     },
-    [mutateRows, setDialog, tMenus],
+    [mutateItems, setDialog, tMenus],
   );
 
   const columns = useMemo<GridColDef[]>(
@@ -300,6 +300,7 @@ const MenusMenuIdSectionId = ({
               {tMenus("items.actions.createItem.title")}
             </Button>
             <Button
+              disabled={items.length < 2}
               onClick={handleEnterReorderMode}
               size="small"
               startIcon={<Sort />}
@@ -338,7 +339,7 @@ const MenusMenuIdSectionId = ({
           onPaginationModelChange={() => {
             apiRef.current?.autosizeColumns(autosizeOptions);
           }}
-          rows={rows}
+          rows={items}
           slots={{
             ...DATA_GRID_PROPS.slots,
             row: isReorderMode ? Sortable : undefined,

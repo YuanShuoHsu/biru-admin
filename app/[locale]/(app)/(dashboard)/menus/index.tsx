@@ -67,7 +67,7 @@ const Menus = ({
   const apiRef = useGridApiRef();
 
   const {
-    data: rows = initialMenus,
+    data: menus = initialMenus,
     mutate: mutateMenus,
     isValidating,
   } = useSWR<Menu[]>(
@@ -100,7 +100,7 @@ const Menus = ({
     [router],
   );
 
-  const usedInLanguages = rows
+  const usedInLanguages = menus
     .map(({ inLanguage }) => inLanguage)
     .filter((inLanguage) => inLanguage !== null);
 
@@ -302,7 +302,7 @@ const Menus = ({
         onPaginationModelChange={() =>
           apiRef.current?.autosizeColumns(autosizeOptions)
         }
-        rows={rows}
+        rows={menus}
       />
     </>
   );
