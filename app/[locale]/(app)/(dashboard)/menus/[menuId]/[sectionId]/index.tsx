@@ -97,14 +97,11 @@ const MenusMenuIdSectionId = ({
       ),
       onConfirm: async () => {
         try {
-          await fetcher(
-            `/api/menu-sections/${sectionId}/menu-items/reorder`,
-            {
-              method: "PATCH",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ ids: rows.map(({ id }) => id) }),
-            },
-          );
+          await fetcher(`/api/menu-sections/${sectionId}/menu-items/reorder`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ids: rows.map(({ id }) => id) }),
+          });
 
           setIsReorderMode(false);
 
