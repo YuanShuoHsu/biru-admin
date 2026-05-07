@@ -311,21 +311,20 @@ const MenusMenuIdSectionId = ({
         ) : (
           <>
             <Button
-              onClick={handleSaveReorder}
-              size="small"
-              startIcon={<Save />}
-              variant="contained"
-            >
-              {tMenus("items.actions.reorderItem.save.label")}
-            </Button>
-            <Button
-              color="inherit"
               onClick={handleCancelReorder}
               size="small"
               startIcon={<Cancel />}
               variant="outlined"
             >
               {tMenus("items.actions.reorderItem.cancel.label")}
+            </Button>
+            <Button
+              onClick={handleSaveReorder}
+              size="small"
+              startIcon={<Save />}
+              variant="contained"
+            >
+              {tMenus("items.actions.reorderItem.save.label")}
             </Button>
           </>
         )}

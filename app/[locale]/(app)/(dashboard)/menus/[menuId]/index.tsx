@@ -367,21 +367,20 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
         ) : (
           <>
             <Button
-              onClick={handleSaveReorder}
-              size="small"
-              startIcon={<Save />}
-              variant="contained"
-            >
-              {tMenus("sections.actions.reorderSection.save.label")}
-            </Button>
-            <Button
-              color="inherit"
               onClick={handleCancelReorder}
               size="small"
               startIcon={<Cancel />}
               variant="outlined"
             >
               {tMenus("sections.actions.reorderSection.cancel.label")}
+            </Button>
+            <Button
+              onClick={handleSaveReorder}
+              size="small"
+              startIcon={<Save />}
+              variant="contained"
+            >
+              {tMenus("sections.actions.reorderSection.save.label")}
             </Button>
           </>
         )}
