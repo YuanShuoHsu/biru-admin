@@ -16,24 +16,21 @@ interface AdminsPageProps {
 }
 
 const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
-  const [cookieStore, { locale }, { page, pageSize }] = await Promise.all([
-    cookies(),
-    params,
-    searchParams,
-  ]);
+  const [cookieStore, { locale }, { page: rawPage, pageSize: rawPageSize }] =
+    await Promise.all([cookies(), params, searchParams]);
 
   setRequestLocale(locale);
 
-  if (!page || !pageSize) {
-    const searchParams = new URLSearchParams({
-      page: page || "1",
-      pageSize: pageSize || "10",
-    });
-    redirect({ href: `/admins?${searchParams.toString()}`, locale });
-  }
+  const page = Math.max(1, Number(rawPage) || 1);
+  const pageSize = Math.max(1, Number(rawPageSize) || 10);
 
-  const currentPage = Number(page);
-  const currentPageSize = Number(pageSize);
+  if (rawPage !== String(page) || rawPageSize !== String(pageSize)) {
+    const params = new URLSearchParams({
+      page: String(page),
+      pageSize: String(pageSize),
+    });
+    redirect({ href: `/admins?${params.toString()}`, locale });
+  }
 
   const fetchOptions = {
     headers: {
@@ -44,8 +41,8 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
 
   const { data } = await authClient.admin.listUsers({
     query: {
-      limit: currentPageSize,
-      offset: (currentPage - 1) * currentPageSize,
+      limit: pageSize,
+      offset: (page - 1) * pageSize,
       sortBy: "createdAt",
       sortDirection: "desc",
     },
@@ -61,8 +58,8 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
     <Admins
       rows={rows}
       rowCount={rowCount}
-      page={currentPage}
-      pageSize={currentPageSize}
+      page={page}
+      pageSize={pageSize}
       userSessions={userSessions}
     />
   );

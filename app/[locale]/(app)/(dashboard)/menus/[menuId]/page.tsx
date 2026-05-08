@@ -25,30 +25,30 @@ const MenusMenuIdPage = async ({
   const [
     cookieStore,
     { locale, menuId },
-    { page, pageSize, ...restSearchParams },
+    { page: rawPage, pageSize: rawPageSize, ...restSearchParams },
   ] = await Promise.all([cookies(), params, searchParams]);
 
   setRequestLocale(locale);
 
-  if (!page || !pageSize) {
-    const searchParams = new URLSearchParams({
+  const page = Math.max(1, Number(rawPage) || 1);
+  const pageSize = Math.max(1, Number(rawPageSize) || 10);
+
+  if (rawPage !== String(page) || rawPageSize !== String(pageSize)) {
+    const params = new URLSearchParams({
       ...restSearchParams,
-      page: page || "1",
-      pageSize: pageSize || "10",
+      page: String(page),
+      pageSize: String(pageSize),
     });
     redirect({
-      href: `/menus/${menuId}?${searchParams.toString()}`,
+      href: `/menus/${menuId}?${params.toString()}`,
       locale,
     });
   }
 
-  const currentPage = Number(page);
-  const currentPageSize = Number(pageSize);
-
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
   const [menu, { sections, total }] = await Promise.all([
     getAdminMenu(menuId, fetchOptions),
-    getAdminMenuSections(menuId, currentPage, currentPageSize, fetchOptions),
+    getAdminMenuSections(menuId, page, pageSize, fetchOptions),
   ]);
 
   if (!menu) notFound();
@@ -58,8 +58,8 @@ const MenusMenuIdPage = async ({
       menu={menu}
       sections={sections}
       rowCount={total}
-      page={currentPage}
-      pageSize={currentPageSize}
+      page={page}
+      pageSize={pageSize}
     />
   );
 };

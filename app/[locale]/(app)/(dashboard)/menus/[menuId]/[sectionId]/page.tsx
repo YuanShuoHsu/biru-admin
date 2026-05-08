@@ -29,36 +29,31 @@ const MenusMenuIdSectionIdPage = async ({
   const [
     cookieStore,
     { locale, menuId, sectionId },
-    { page, pageSize, ...restSearchParams },
+    { page: rawPage, pageSize: rawPageSize, ...restSearchParams },
   ] = await Promise.all([cookies(), params, searchParams]);
 
   setRequestLocale(locale);
 
-  if (!page || !pageSize) {
-    const searchParams = new URLSearchParams({
+  const page = Math.max(1, Number(rawPage) || 1);
+  const pageSize = Math.max(1, Number(rawPageSize) || 10);
+
+  if (rawPage !== String(page) || rawPageSize !== String(pageSize)) {
+    const params = new URLSearchParams({
       ...restSearchParams,
-      page: page || "1",
-      pageSize: pageSize || "10",
+      page: String(page),
+      pageSize: String(pageSize),
     });
     redirect({
-      href: `/menus/${menuId}/${sectionId}?${searchParams.toString()}`,
+      href: `/menus/${menuId}/${sectionId}?${params.toString()}`,
       locale,
     });
   }
-
-  const currentPage = Number(page);
-  const currentPageSize = Number(pageSize);
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
   const [menu, section, { items, total }] = await Promise.all([
     getAdminMenu(menuId, fetchOptions),
     getAdminMenuSection(sectionId, fetchOptions),
-    getAdminMenuSectionItems(
-      sectionId,
-      currentPage,
-      currentPageSize,
-      fetchOptions,
-    ),
+    getAdminMenuSectionItems(sectionId, page, pageSize, fetchOptions),
   ]);
 
   if (!menu || !section) notFound();
@@ -67,8 +62,8 @@ const MenusMenuIdSectionIdPage = async ({
     <MenusMenuIdSectionId
       items={items}
       rowCount={total}
-      page={currentPage}
-      pageSize={currentPageSize}
+      page={page}
+      pageSize={pageSize}
       sectionId={sectionId}
     />
   );
