@@ -84,7 +84,10 @@ const MenusMenuIdSectionId = ({
     : `/api/menu-sections/${sectionId}/menu-items?limit=${paginationModel.pageSize}&offset=${(paginationModel.page - 1) * paginationModel.pageSize}`;
 
   const {
-    data: itemsData,
+    data: { data: items, total: rowCount } = {
+      data: initialItems,
+      total: initialRowCount,
+    },
     mutate: mutateItems,
     isValidating,
   } = useSWR<{ data: MenuItem[]; total: number }>(swrKey, {
@@ -97,9 +100,6 @@ const MenusMenuIdSectionId = ({
       }, 0);
     },
   });
-
-  const items = itemsData?.data ?? initialItems;
-  const rowCount = itemsData?.total ?? initialRowCount;
 
   const tMenus = useTranslations("menus");
 
