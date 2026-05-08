@@ -32,29 +32,60 @@ export const getAdminMenu = cache(
 );
 
 export const getAdminMenuSections = cache(
-  async (menuId: string, init?: RequestInit) => {
+  async (
+    menuId: string,
+    page: number,
+    pageSize: number,
+    init?: RequestInit,
+  ) => {
     try {
-      const data = await fetcher<AdminMenuSection[]>(
-        `/api/menus/${menuId}/menu-sections`,
+      const offset = (page - 1) * pageSize;
+      const result = await fetcher<{ data: AdminMenuSection[]; total: number }>(
+        `/api/menus/${menuId}/menu-sections?limit=${pageSize}&offset=${offset}`,
         init,
       );
-      return Array.isArray(data) ? data : [];
+      return {
+        sections: Array.isArray(result.data) ? result.data : [],
+        total: result.total || 0,
+      };
     } catch {
-      return [];
+      return { sections: [], total: 0 };
+    }
+  },
+);
+
+export const getAdminMenuSection = cache(
+  async (sectionId: string, init?: RequestInit) => {
+    try {
+      return await fetcher<AdminMenuSection>(
+        `/api/menu-sections/${sectionId}`,
+        init,
+      );
+    } catch {
+      return null;
     }
   },
 );
 
 export const getAdminMenuSectionItems = cache(
-  async (sectionId: string, init?: RequestInit) => {
+  async (
+    sectionId: string,
+    page: number,
+    pageSize: number,
+    init?: RequestInit,
+  ) => {
     try {
-      const data = await fetcher<AdminMenuItem[]>(
-        `/api/menu-sections/${sectionId}/menu-items`,
+      const offset = (page - 1) * pageSize;
+      const result = await fetcher<{ data: AdminMenuItem[]; total: number }>(
+        `/api/menu-sections/${sectionId}/menu-items?limit=${pageSize}&offset=${offset}`,
         init,
       );
-      return Array.isArray(data) ? data : [];
+      return {
+        items: Array.isArray(result.data) ? result.data : [],
+        total: result.total || 0,
+      };
     } catch {
-      return [];
+      return { items: [], total: 0 };
     }
   },
 );

@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 
 import Admins from ".";
 
+import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
@@ -15,10 +16,21 @@ interface AdminsPageProps {
 }
 
 const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
-  const [cookieStore, { locale }, { page = "1", pageSize = "10" }] =
-    await Promise.all([cookies(), params, searchParams]);
+  const [cookieStore, { locale }, { page, pageSize }] = await Promise.all([
+    cookies(),
+    params,
+    searchParams,
+  ]);
 
   setRequestLocale(locale);
+
+  if (!page || !pageSize) {
+    const searchParams = new URLSearchParams({
+      page: page || "1",
+      pageSize: pageSize || "10",
+    });
+    redirect({ href: `/admins?${searchParams.toString()}`, locale });
+  }
 
   const currentPage = Number(page);
   const currentPageSize = Number(pageSize);

@@ -18,7 +18,7 @@ import { arrayMove } from "@dnd-kit/helpers";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
 import { isSortableOperation } from "@dnd-kit/react/sortable";
 
-import { useRouter } from "@/i18n/navigation";
+import { usePathname, useRouter } from "@/i18n/navigation";
 
 import {
   Add,
@@ -36,7 +36,11 @@ import {
   Stack,
   Tooltip,
 } from "@mui/material";
-import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+import type {
+  GridColDef,
+  GridPaginationModel,
+  GridRenderCellParams,
+} from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -53,10 +57,23 @@ const DataGrid = dynamic(
 interface MenuDetailProps {
   menu: Menu;
   sections: MenuSection[];
+  rowCount: number;
+  page: number;
+  pageSize: number;
 }
 
-const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
+const MenusMenuId = ({
+  menu,
+  sections: initialSections,
+  rowCount: initialRowCount,
+  page,
+  pageSize,
+}: MenuDetailProps) => {
   const [isReorderMode, setIsReorderMode] = useState(false);
+  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
+    page,
+    pageSize,
+  });
 
   const { setDialog } = useDialogStore((state) => state);
 
@@ -64,17 +81,24 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
 
   const apiRef = useGridApiRef();
 
+  const pathname = usePathname();
+
   const router = useRouter();
 
   const searchParams = useSearchParams();
   const organization = searchParams.get("organization");
 
+  const swrKey = isReorderMode
+    ? `/api/menus/${menu.id}/menu-sections`
+    : `/api/menus/${menu.id}/menu-sections?limit=${paginationModel.pageSize}&offset=${(paginationModel.page - 1) * paginationModel.pageSize}`;
+
   const {
-    data: sections = initialSections,
+    data: sectionsData,
     mutate: mutateSections,
     isValidating,
-  } = useSWR<MenuSection[]>(`/api/menus/${menu.id}/menu-sections`, {
-    fallbackData: initialSections,
+  } = useSWR<{ data: MenuSection[]; total: number }>(swrKey, {
+    fallbackData: { data: initialSections, total: initialRowCount },
+    keepPreviousData: true,
     revalidateOnFocus: false,
     onSuccess: () => {
       setTimeout(() => {
@@ -83,7 +107,25 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
     },
   });
 
+  const sections = sectionsData?.data ?? initialSections;
+  const rowCount = sectionsData?.total ?? initialRowCount;
+
   const tMenus = useTranslations("menus");
+
+  const handlePaginationModelChange = useCallback(
+    (newModel: GridPaginationModel) => {
+      const newPage = newModel.page + 1;
+      setPaginationModel({ ...newModel, page: newPage });
+
+      const params = new URLSearchParams({
+        ...Object.fromEntries(searchParams),
+        page: String(newPage),
+        pageSize: String(newModel.pageSize),
+      });
+      router.replace(`${pathname}?${params.toString()}`);
+    },
+    [pathname, router, searchParams],
+  );
 
   const handleEnterReorderMode = useCallback(() => {
     setDialog({
@@ -94,13 +136,11 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
       ),
       onConfirm: async () => {
         setIsReorderMode(true);
-
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
       },
       open: true,
       title: tMenus("sections.actions.reorderSection.title"),
     });
-  }, [apiRef, setDialog, tMenus]);
+  }, [setDialog, tMenus]);
 
   const handleSaveReorder = useCallback(() => {
     setDialog({
@@ -119,8 +159,6 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
 
           setIsReorderMode(false);
 
-          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-
           enqueueSnackbar(
             tMenus("sections.actions.reorderSection.save.success"),
             { variant: "success" },
@@ -135,7 +173,7 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
       open: true,
       title: tMenus("sections.actions.reorderSection.save.label"),
     });
-  }, [apiRef, menu.id, sections, setDialog, tMenus]);
+  }, [menu.id, sections, setDialog, tMenus]);
 
   const handleCancelReorder = useCallback(() => {
     setDialog({
@@ -145,16 +183,12 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
         </DialogContentText>
       ),
       onConfirm: async () => {
-        mutateSections();
-
         setIsReorderMode(false);
-
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
       },
       open: true,
       title: tMenus("sections.actions.reorderSection.cancel.label"),
     });
-  }, [apiRef, mutateSections, setDialog, tMenus]);
+  }, [setDialog, tMenus]);
 
   const handleDragEnd = ({ operation }: DragEndEvent) => {
     if (!isSortableOperation(operation)) return;
@@ -170,7 +204,7 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
     if (fromIndex === toIndex) return;
 
     const newSections = arrayMove(sections, fromIndex, toIndex);
-    mutateSections(newSections, false);
+    mutateSections({ data: newSections, total: rowCount }, false);
   };
 
   const handleCreateSection = useCallback(() => {
@@ -187,11 +221,14 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
     });
   }, [menu.id, mutateSections, setDialog, tMenus]);
 
-  const handleViewItems = useCallback(
+  const handleViewSection = useCallback(
     (section: MenuSection) => {
-      router.push(
-        `/menus/${menu.id}/${section.id}${organization ? `?organization=${organization}` : ""}`,
-      );
+      const searchParams = new URLSearchParams({
+        ...(organization ? { organization } : {}),
+        page: "1",
+        pageSize: "10",
+      });
+      router.push(`/menus/${menu.id}/${section.id}?${searchParams.toString()}`);
     },
     [menu.id, organization, router],
   );
@@ -273,7 +310,7 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
                 onClick={(event) => {
                   event.stopPropagation();
 
-                  handleViewItems(row);
+                  handleViewSection(row);
                 }}
                 size="small"
               >
@@ -335,7 +372,7 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
     [
       format,
       handleDeleteSection,
-      handleViewItems,
+      handleViewSection,
       handleUpdateSection,
       isReorderMode,
       tMenus,
@@ -356,7 +393,7 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
               {tMenus("sections.actions.createSection.title")}
             </Button>
             <Button
-              disabled={sections.length < 2}
+              disabled={rowCount < 2}
               onClick={handleEnterReorderMode}
               size="small"
               startIcon={<Sort />}
@@ -392,9 +429,15 @@ const MenusMenuId = ({ menu, sections: initialSections }: MenuDetailProps) => {
           apiRef={apiRef}
           columns={columns}
           loading={isValidating}
-          onPaginationModelChange={() =>
-            apiRef.current?.autosizeColumns(autosizeOptions)
-          }
+          {...(!isReorderMode && {
+            onPaginationModelChange: handlePaginationModelChange,
+            paginationMode: "server",
+            paginationModel: {
+              ...paginationModel,
+              page: paginationModel.page - 1,
+            },
+            rowCount,
+          })}
           rows={sections}
           slots={{
             ...DATA_GRID_PROPS.slots,

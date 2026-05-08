@@ -2,6 +2,7 @@
 
 import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
+import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
@@ -17,6 +18,8 @@ import { arrayMove } from "@dnd-kit/helpers";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
 import { isSortableOperation } from "@dnd-kit/react/sortable";
 
+import { usePathname, useRouter } from "@/i18n/navigation";
+
 import { Add, Cancel, Delete, Edit, Save, Sort } from "@mui/icons-material";
 import {
   Button,
@@ -25,12 +28,16 @@ import {
   Stack,
   Tooltip,
 } from "@mui/material";
-import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+import type {
+  GridColDef,
+  GridPaginationModel,
+  GridRenderCellParams,
+} from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { MenuItem, MenuSection } from "@/types/menus";
+import type { MenuItem } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
 
@@ -41,15 +48,24 @@ const DataGrid = dynamic(
 
 interface MenusMenuIdSectionIdProps {
   items: MenuItem[];
-  sections: MenuSection[];
+  rowCount: number;
+  page: number;
+  pageSize: number;
   sectionId: string;
 }
 
 const MenusMenuIdSectionId = ({
   items: initialItems,
+  rowCount: initialRowCount,
+  page,
+  pageSize,
   sectionId,
 }: MenusMenuIdSectionIdProps) => {
   const [isReorderMode, setIsReorderMode] = useState(false);
+  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
+    page,
+    pageSize,
+  });
 
   const { setDialog } = useDialogStore((state) => state);
 
@@ -57,12 +73,24 @@ const MenusMenuIdSectionId = ({
 
   const apiRef = useGridApiRef();
 
+  const pathname = usePathname();
+
+  const router = useRouter();
+
+  const searchParams = useSearchParams();
+
+  const swrKey = isReorderMode
+    ? `/api/menu-sections/${sectionId}/menu-items`
+    : `/api/menu-sections/${sectionId}/menu-items?limit=${paginationModel.pageSize}&offset=${(paginationModel.page - 1) * paginationModel.pageSize}`;
+
   const {
-    data: items = initialItems,
+    data: itemsData,
     mutate: mutateItems,
     isValidating,
-  } = useSWR<MenuItem[]>(`/api/menu-sections/${sectionId}/menu-items`, {
-    fallbackData: initialItems,
+  } = useSWR<{ data: MenuItem[]; total: number }>(swrKey, {
+    fallbackData: { data: initialItems, total: initialRowCount },
+    keepPreviousData: true,
+    revalidateOnFocus: false,
     onSuccess: () => {
       setTimeout(() => {
         apiRef.current?.autosizeColumns(autosizeOptions);
@@ -70,7 +98,25 @@ const MenusMenuIdSectionId = ({
     },
   });
 
+  const items = itemsData?.data ?? initialItems;
+  const rowCount = itemsData?.total ?? initialRowCount;
+
   const tMenus = useTranslations("menus");
+
+  const handlePaginationModelChange = useCallback(
+    (newModel: GridPaginationModel) => {
+      const newPage = newModel.page + 1;
+      setPaginationModel({ ...newModel, page: newPage });
+
+      const params = new URLSearchParams({
+        ...Object.fromEntries(searchParams),
+        page: String(newPage),
+        pageSize: String(newModel.pageSize),
+      });
+      router.replace(`${pathname}?${params.toString()}`);
+    },
+    [pathname, router, searchParams],
+  );
 
   const handleEnterReorderMode = useCallback(() => {
     setDialog({
@@ -81,13 +127,11 @@ const MenusMenuIdSectionId = ({
       ),
       onConfirm: async () => {
         setIsReorderMode(true);
-
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
       },
       open: true,
       title: tMenus("items.actions.reorderItem.title"),
     });
-  }, [apiRef, setDialog, tMenus]);
+  }, [setDialog, tMenus]);
 
   const handleSaveReorder = useCallback(() => {
     setDialog({
@@ -106,8 +150,6 @@ const MenusMenuIdSectionId = ({
 
           setIsReorderMode(false);
 
-          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-
           enqueueSnackbar(tMenus("items.actions.reorderItem.save.success"), {
             variant: "success",
           });
@@ -120,7 +162,7 @@ const MenusMenuIdSectionId = ({
       open: true,
       title: tMenus("items.actions.reorderItem.save.label"),
     });
-  }, [apiRef, items, sectionId, setDialog, tMenus]);
+  }, [items, sectionId, setDialog, tMenus]);
 
   const handleCancelReorder = useCallback(() => {
     setDialog({
@@ -130,16 +172,12 @@ const MenusMenuIdSectionId = ({
         </DialogContentText>
       ),
       onConfirm: async () => {
-        mutateItems();
-
         setIsReorderMode(false);
-
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
       },
       open: true,
       title: tMenus("items.actions.reorderItem.cancel.label"),
     });
-  }, [apiRef, mutateItems, setDialog, tMenus]);
+  }, [setDialog, tMenus]);
 
   const handleDragEnd = ({ operation }: DragEndEvent) => {
     if (!isSortableOperation(operation)) return;
@@ -154,8 +192,8 @@ const MenusMenuIdSectionId = ({
     const toIndex = source.index + offset;
     if (fromIndex === toIndex) return;
 
-    const newRows = arrayMove(items, fromIndex, toIndex);
-    mutateItems(newRows, false);
+    const newItems = arrayMove(items, fromIndex, toIndex);
+    mutateItems({ data: newItems, total: rowCount }, false);
   };
 
   const handleCreateItem = useCallback(() => {
@@ -300,7 +338,7 @@ const MenusMenuIdSectionId = ({
               {tMenus("items.actions.createItem.title")}
             </Button>
             <Button
-              disabled={items.length < 2}
+              disabled={rowCount < 2}
               onClick={handleEnterReorderMode}
               size="small"
               startIcon={<Sort />}
@@ -336,9 +374,15 @@ const MenusMenuIdSectionId = ({
           apiRef={apiRef}
           columns={columns}
           loading={isValidating}
-          onPaginationModelChange={() => {
-            apiRef.current?.autosizeColumns(autosizeOptions);
-          }}
+          {...(!isReorderMode && {
+            onPaginationModelChange: handlePaginationModelChange,
+            paginationMode: "server",
+            paginationModel: {
+              ...paginationModel,
+              page: paginationModel.page - 1,
+            },
+            rowCount,
+          })}
           rows={items}
           slots={{
             ...DATA_GRID_PROPS.slots,

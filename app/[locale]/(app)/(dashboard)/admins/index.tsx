@@ -8,6 +8,7 @@
 import type { UserWithRole } from "better-auth/client/plugins";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
+import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
@@ -178,13 +179,23 @@ const Admins = ({
 
   const router = useRouter();
 
+  const searchParams = useSearchParams();
+
   const tAdmins = useTranslations("admins");
 
   const handlePaginationModelChange = useCallback(
     (newModel: GridPaginationModel) => {
-      setPaginationModel({ ...newModel, page: newModel.page + 1 });
+      const newPage = newModel.page + 1;
+      setPaginationModel({ ...newModel, page: newPage });
+
+      const params = new URLSearchParams({
+        ...Object.fromEntries(searchParams),
+        page: String(newPage),
+        pageSize: String(newModel.pageSize),
+      });
+      router.replace(`${pathname}?${params.toString()}`);
     },
-    [],
+    [pathname, router, searchParams],
   );
 
   const handleCreateUser = () => {

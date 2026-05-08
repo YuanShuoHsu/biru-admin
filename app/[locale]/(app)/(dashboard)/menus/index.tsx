@@ -130,6 +130,18 @@ const Menus = ({
     });
   };
 
+  const handleViewMenu = useCallback(
+    ({ id }: Menu) => {
+      const searchParams = new URLSearchParams({
+        ...(selectedSlug ? { organization: selectedSlug } : {}),
+        page: "1",
+        pageSize: "10",
+      });
+      router.push(`/menus/${id}?${searchParams.toString()}`);
+    },
+    [router, selectedSlug],
+  );
+
   const handleUpdateMenu = useCallback(
     (menu: Menu) => {
       setDialog({
@@ -185,11 +197,11 @@ const Menus = ({
           <Stack height="100%" direction="row" alignItems="center" gap={1}>
             <Tooltip title={tMenus("actions.viewMenu.title")}>
               <IconButton
-                onClick={() =>
-                  router.push(
-                    `/menus/${row.id}${selectedSlug ? `?organization=${selectedSlug}` : ""}`,
-                  )
-                }
+                onClick={(event) => {
+                  event.stopPropagation();
+
+                  handleViewMenu(row);
+                }}
                 size="small"
               >
                 <Summarize fontSize="small" />
@@ -256,7 +268,7 @@ const Menus = ({
           format.dateTime(new Date(value), "short"),
       },
     ],
-    [format, handleDeleteMenu, handleUpdateMenu, router, selectedSlug, tMenus],
+    [format, handleDeleteMenu, handleUpdateMenu, handleViewMenu, tMenus],
   );
 
   return (
