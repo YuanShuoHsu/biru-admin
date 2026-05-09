@@ -136,11 +136,13 @@ const MenusMenuId = ({
       ),
       onConfirm: async () => {
         setIsReorderMode(true);
+
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
       },
       open: true,
       title: tMenus("sections.actions.reorderSection.title"),
     });
-  }, [setDialog, tMenus]);
+  }, [apiRef, setDialog, tMenus]);
 
   const handleSaveReorder = useCallback(() => {
     setDialog({
@@ -159,6 +161,8 @@ const MenusMenuId = ({
 
           setIsReorderMode(false);
 
+          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+
           enqueueSnackbar(
             tMenus("sections.actions.reorderSection.save.success"),
             { variant: "success" },
@@ -173,7 +177,7 @@ const MenusMenuId = ({
       open: true,
       title: tMenus("sections.actions.reorderSection.save.label"),
     });
-  }, [menu.id, sections, setDialog, tMenus]);
+  }, [apiRef, menu.id, sections, setDialog, tMenus]);
 
   const handleCancelReorder = useCallback(() => {
     setDialog({
@@ -184,11 +188,13 @@ const MenusMenuId = ({
       ),
       onConfirm: async () => {
         setIsReorderMode(false);
+
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
       },
       open: true,
       title: tMenus("sections.actions.reorderSection.cancel.label"),
     });
-  }, [setDialog, tMenus]);
+  }, [apiRef, setDialog, tMenus]);
 
   const handleDragEnd = ({ operation }: DragEndEvent) => {
     if (!isSortableOperation(operation)) return;

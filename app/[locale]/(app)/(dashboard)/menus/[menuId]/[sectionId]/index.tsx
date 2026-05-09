@@ -127,11 +127,13 @@ const MenusMenuIdSectionId = ({
       ),
       onConfirm: async () => {
         setIsReorderMode(true);
+
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
       },
       open: true,
       title: tMenus("items.actions.reorderItem.title"),
     });
-  }, [setDialog, tMenus]);
+  }, [apiRef, setDialog, tMenus]);
 
   const handleSaveReorder = useCallback(() => {
     setDialog({
@@ -150,6 +152,8 @@ const MenusMenuIdSectionId = ({
 
           setIsReorderMode(false);
 
+          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+
           enqueueSnackbar(tMenus("items.actions.reorderItem.save.success"), {
             variant: "success",
           });
@@ -162,7 +166,7 @@ const MenusMenuIdSectionId = ({
       open: true,
       title: tMenus("items.actions.reorderItem.save.label"),
     });
-  }, [items, sectionId, setDialog, tMenus]);
+  }, [apiRef, items, sectionId, setDialog, tMenus]);
 
   const handleCancelReorder = useCallback(() => {
     setDialog({
@@ -173,11 +177,13 @@ const MenusMenuIdSectionId = ({
       ),
       onConfirm: async () => {
         setIsReorderMode(false);
+
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
       },
       open: true,
       title: tMenus("items.actions.reorderItem.cancel.label"),
     });
-  }, [setDialog, tMenus]);
+  }, [apiRef, setDialog, tMenus]);
 
   const handleDragEnd = ({ operation }: DragEndEvent) => {
     if (!isSortableOperation(operation)) return;
