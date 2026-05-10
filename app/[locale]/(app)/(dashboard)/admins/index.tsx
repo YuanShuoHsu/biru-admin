@@ -58,6 +58,7 @@ import type {
   GridColDef,
   GridPaginationModel,
   GridRenderCellParams,
+  GridSortModel,
 } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
@@ -103,6 +104,8 @@ interface AdminsProps {
   pageSize: number;
   rows: UserWithRole[];
   rowCount: number;
+  sortBy?: string;
+  sortDirection?: "asc" | "desc";
   userSessions: UserSessions;
 }
 
@@ -111,12 +114,17 @@ const Admins = ({
   pageSize,
   rows: initialRows,
   rowCount: initialRowCount,
+  sortBy,
+  sortDirection,
   userSessions: initialUserSessions,
 }: AdminsProps) => {
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page,
     pageSize,
   });
+  const [sortModel, setSortModel] = useState<GridSortModel>(
+    sortBy ? [{ field: sortBy, sort: sortDirection || "desc" }] : [],
+  );
 
   const apiRef = useGridApiRef();
 
@@ -129,14 +137,19 @@ const Admins = ({
     mutate: mutateAdmins,
     isValidating,
   } = useSWR(
-    ["/api/admins", paginationModel.page, paginationModel.pageSize],
-    async ([, page, pageSize]: [string, number, number]) => {
+    ["/api/admins", paginationModel.page, paginationModel.pageSize, sortModel],
+    async ([, page, pageSize, sortModel]: [
+      string,
+      number,
+      number,
+      GridSortModel,
+    ]) => {
       const { data } = await authClient.admin.listUsers({
         query: {
           limit: pageSize,
           offset: (page - 1) * pageSize,
-          sortBy: "createdAt",
-          sortDirection: "desc",
+          sortBy: sortModel[0]?.field || "createdAt",
+          sortDirection: sortModel[0]?.sort || "desc",
         },
       });
       const userRows = data?.users || [];
@@ -193,6 +206,26 @@ const Admins = ({
         page: String(newPage),
         pageSize: String(newModel.pageSize),
       });
+      router.replace(`${pathname}?${params.toString()}`);
+    },
+    [pathname, router, searchParams],
+  );
+
+  const handleSortModelChange = useCallback(
+    (newModel: GridSortModel) => {
+      setSortModel(newModel);
+      setPaginationModel((prev) => ({ ...prev, page: 1 }));
+
+      const params = new URLSearchParams(Object.fromEntries(searchParams));
+      params.set("page", "1");
+      const sortItem = newModel[0];
+      if (sortItem?.sort) {
+        params.set("sortBy", sortItem.field);
+        params.set("sortDirection", sortItem.sort);
+      } else {
+        params.delete("sortBy");
+        params.delete("sortDirection");
+      }
       router.replace(`${pathname}?${params.toString()}`);
     },
     [pathname, router, searchParams],
@@ -665,10 +698,13 @@ const Admins = ({
         columns={columns}
         loading={isValidating}
         onPaginationModelChange={handlePaginationModelChange}
+        onSortModelChange={handleSortModelChange}
         paginationMode="server"
         paginationModel={{ ...paginationModel, page: paginationModel.page - 1 }}
         rowCount={rowCount}
         rows={rows}
+        sortingMode="server"
+        sortModel={sortModel}
       />
     </>
   );

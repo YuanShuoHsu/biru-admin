@@ -40,6 +40,7 @@ import type {
   GridColDef,
   GridPaginationModel,
   GridRenderCellParams,
+  GridSortModel,
 } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
@@ -56,24 +57,31 @@ const DataGrid = dynamic(
 
 interface MenuDetailProps {
   menu: Menu;
-  sections: MenuSection[];
-  rowCount: number;
   page: number;
   pageSize: number;
+  rowCount: number;
+  sections: MenuSection[];
+  sortBy?: string;
+  sortDirection?: "asc" | "desc";
 }
 
 const MenusMenuId = ({
   menu,
-  sections: initialSections,
-  rowCount: initialRowCount,
   page,
   pageSize,
+  rowCount: initialRowCount,
+  sections: initialSections,
+  sortBy,
+  sortDirection,
 }: MenuDetailProps) => {
   const [isReorderMode, setIsReorderMode] = useState(false);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page,
     pageSize,
   });
+  const [sortModel, setSortModel] = useState<GridSortModel>(
+    sortBy ? [{ field: sortBy, sort: sortDirection || "desc" }] : [],
+  );
 
   const { setDialog } = useDialogStore((state) => state);
 
@@ -88,8 +96,6 @@ const MenusMenuId = ({
   const searchParams = useSearchParams();
   const organization = searchParams.get("organization");
 
-  const swrKey = `/api/menus/${menu.id}/menu-sections?limit=${paginationModel.pageSize}&offset=${(paginationModel.page - 1) * paginationModel.pageSize}`;
-
   const {
     data: { data: sections, total: rowCount } = {
       data: initialSections,
@@ -97,14 +103,36 @@ const MenusMenuId = ({
     },
     mutate: mutateSections,
     isValidating,
-  } = useSWR<{ data: MenuSection[]; total: number }>(swrKey, {
-    fallbackData: { data: initialSections, total: initialRowCount },
-    onSuccess: () => {
-      setTimeout(() => {
-        apiRef.current?.autosizeColumns(autosizeOptions);
-      }, 0);
+  } = useSWR(
+    [
+      `/api/menus/${menu.id}/menu-sections`,
+      paginationModel.page,
+      paginationModel.pageSize,
+      sortModel,
+    ],
+    async ([url, page, pageSize, sortModel]: [
+      string,
+      number,
+      number,
+      GridSortModel,
+    ]) =>
+      fetcher<{ data: MenuSection[]; total: number }>(
+        `${url}?${new URLSearchParams({
+          limit: String(pageSize),
+          offset: String((page - 1) * pageSize),
+          sortBy: sortModel[0]?.field || "createdAt",
+          sortDirection: sortModel[0]?.sort || "desc",
+        })}`,
+      ),
+    {
+      fallbackData: { data: initialSections, total: initialRowCount },
+      onSuccess: () => {
+        setTimeout(() => {
+          apiRef.current?.autosizeColumns(autosizeOptions);
+        }, 0);
+      },
     },
-  });
+  );
 
   const tMenus = useTranslations("menus");
 
@@ -123,6 +151,26 @@ const MenusMenuId = ({
     [pathname, router, searchParams],
   );
 
+  const handleSortModelChange = useCallback(
+    (newModel: GridSortModel) => {
+      setSortModel(newModel);
+      setPaginationModel((prev) => ({ ...prev, page: 1 }));
+
+      const params = new URLSearchParams(Object.fromEntries(searchParams));
+      params.set("page", "1");
+      const sortItem = newModel[0];
+      if (sortItem?.sort) {
+        params.set("sortBy", sortItem.field);
+        params.set("sortDirection", sortItem.sort);
+      } else {
+        params.delete("sortBy");
+        params.delete("sortDirection");
+      }
+      router.replace(`${pathname}?${params.toString()}`);
+    },
+    [pathname, router, searchParams],
+  );
+
   const handleEnterReorderMode = useCallback(() => {
     setDialog({
       content: (
@@ -132,7 +180,6 @@ const MenusMenuId = ({
       ),
       onConfirm: async () => {
         setIsReorderMode(true);
-
         setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
       },
       open: true,
@@ -443,6 +490,7 @@ const MenusMenuId = ({
           columns={columns}
           loading={isValidating}
           onPaginationModelChange={handlePaginationModelChange}
+          onSortModelChange={handleSortModelChange}
           paginationMode="server"
           paginationModel={{
             ...paginationModel,
@@ -454,6 +502,8 @@ const MenusMenuId = ({
             ...DATA_GRID_PROPS.slots,
             row: isReorderMode ? Sortable : undefined,
           }}
+          sortingMode="server"
+          sortModel={sortModel}
         />
       </DragDropProvider>
     </>

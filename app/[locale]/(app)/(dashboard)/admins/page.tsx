@@ -12,22 +12,48 @@ import { getUserSessions } from "@/utils/admins";
 
 interface AdminsPageProps {
   params: Promise<{ locale: Locale }>;
-  searchParams: Promise<{ page?: string; pageSize?: string }>;
+  searchParams: Promise<{
+    page?: string;
+    pageSize?: string;
+    sortBy?: string;
+    sortDirection?: string;
+  }>;
 }
 
 const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
-  const [cookieStore, { locale }, { page: rawPage, pageSize: rawPageSize }] =
-    await Promise.all([cookies(), params, searchParams]);
+  const [
+    cookieStore,
+    { locale },
+    {
+      page: rawPage,
+      pageSize: rawPageSize,
+      sortBy: rawSortBy,
+      sortDirection: rawSortDirection,
+    },
+  ] = await Promise.all([cookies(), params, searchParams]);
 
   setRequestLocale(locale);
 
   const page = Math.max(1, Number(rawPage) || 1);
   const pageSize = Math.max(1, Number(rawPageSize) || 10);
+  const SORT_BY_FIELDS = ["name", "email", "role", "createdAt"] as const;
+  const SORT_DIRECTIONS = ["asc", "desc"] as const;
+  const sortBy = SORT_BY_FIELDS.find((field) => field === rawSortBy);
+  const sortDirection = SORT_DIRECTIONS.find(
+    (direction) => direction === rawSortDirection,
+  );
 
-  if (rawPage !== String(page) || rawPageSize !== String(pageSize)) {
+  if (
+    rawPage !== String(page) ||
+    rawPageSize !== String(pageSize) ||
+    rawSortBy !== sortBy ||
+    rawSortDirection !== sortDirection
+  ) {
     const params = new URLSearchParams({
       page: String(page),
       pageSize: String(pageSize),
+      ...(sortBy && { sortBy }),
+      ...(sortDirection && { sortDirection }),
     });
     redirect({ href: `/admins?${params.toString()}`, locale });
   }
@@ -43,8 +69,8 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
     query: {
       limit: pageSize,
       offset: (page - 1) * pageSize,
-      sortBy: "createdAt",
-      sortDirection: "desc",
+      sortBy: sortBy || "createdAt",
+      sortDirection: sortDirection || "desc",
     },
     fetchOptions,
   });
@@ -60,6 +86,8 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
       rowCount={rowCount}
       page={page}
       pageSize={pageSize}
+      sortBy={sortBy}
+      sortDirection={sortDirection}
       userSessions={userSessions}
     />
   );
