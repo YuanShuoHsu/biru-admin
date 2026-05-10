@@ -178,7 +178,16 @@ const MenusMenuId = ({
       open: true,
       title: tMenus("sections.actions.reorderSection.save.label"),
     });
-  }, [apiRef, menu.id, mutateSections, paginationModel.page, paginationModel.pageSize, sections, setDialog, tMenus]);
+  }, [
+    apiRef,
+    menu.id,
+    mutateSections,
+    paginationModel.page,
+    paginationModel.pageSize,
+    sections,
+    setDialog,
+    tMenus,
+  ]);
 
   const handleCancelReorder = useCallback(() => {
     setDialog({
