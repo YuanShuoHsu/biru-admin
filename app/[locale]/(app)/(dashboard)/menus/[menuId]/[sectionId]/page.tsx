@@ -74,7 +74,14 @@ const MenusMenuIdSectionIdPage = async ({
   const [menu, section, { items, total }] = await Promise.all([
     getAdminMenu(menuId, fetchOptions),
     getAdminMenuSection(sectionId, fetchOptions),
-    getAdminMenuSectionItems(sectionId, page, pageSize, sortBy, sortDirection, fetchOptions),
+    getAdminMenuSectionItems(
+      sectionId,
+      page,
+      pageSize,
+      sortBy,
+      sortDirection,
+      fetchOptions,
+    ),
   ]);
 
   if (!menu || !section) notFound();

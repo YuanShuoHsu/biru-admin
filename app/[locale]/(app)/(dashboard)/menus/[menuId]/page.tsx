@@ -69,7 +69,14 @@ const MenusMenuIdPage = async ({
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
   const [menu, { sections, total }] = await Promise.all([
     getAdminMenu(menuId, fetchOptions),
-    getAdminMenuSections(menuId, page, pageSize, sortBy, sortDirection, fetchOptions),
+    getAdminMenuSections(
+      menuId,
+      page,
+      pageSize,
+      sortBy,
+      sortDirection,
+      fetchOptions,
+    ),
   ]);
 
   if (!menu) notFound();
