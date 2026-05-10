@@ -15,7 +15,14 @@
     "filters": "篩選器",
     "search": {
       "clear": "清除搜尋",
+      "field": "搜尋欄位",
       "label": "搜尋",
+      "operator": {
+        "contains": "包含",
+        "ends_with": "結尾為",
+        "label": "搜尋方式",
+        "starts_with": "開頭為"
+      },
       "placeholder": "請輸入您的搜尋內容"
     }
   }

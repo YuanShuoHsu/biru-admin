@@ -15,7 +15,14 @@
     "filters": "フィルター",
     "search": {
       "clear": "検索をクリア",
+      "field": "検索フィールド",
       "label": "検索",
+      "operator": {
+        "contains": "を含む",
+        "ends_with": "で終わる",
+        "label": "検索方法",
+        "starts_with": "で始まる"
+      },
       "placeholder": "あなたの検索キーワードを入力してください"
     }
   }

@@ -15,7 +15,14 @@
     "filters": "Filters",
     "search": {
       "clear": "Clear search",
+      "field": "Search field",
       "label": "Search",
+      "operator": {
+        "contains": "Contains",
+        "ends_with": "Ends with",
+        "label": "Search operator",
+        "starts_with": "Starts with"
+      },
       "placeholder": "Please enter your search keywords"
     }
   }

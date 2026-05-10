@@ -15,7 +15,14 @@
     "filters": "筛选器",
     "search": {
       "clear": "清除搜索",
+      "field": "搜索字段",
       "label": "搜索",
+      "operator": {
+        "contains": "包含",
+        "ends_with": "结尾为",
+        "label": "搜索方式",
+        "starts_with": "开头为"
+      },
       "placeholder": "请输入您的搜索内容"
     }
   }

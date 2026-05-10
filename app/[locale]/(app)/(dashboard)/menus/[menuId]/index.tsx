@@ -76,7 +76,7 @@ const MenusMenuId = ({
 }: MenuDetailProps) => {
   const [isReorderMode, setIsReorderMode] = useState(false);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
-    page,
+    page: page - 1,
     pageSize,
   });
   const [sortModel, setSortModel] = useState<GridSortModel>(
@@ -119,7 +119,7 @@ const MenusMenuId = ({
       fetcher<{ data: MenuSection[]; total: number }>(
         `${url}?${new URLSearchParams({
           limit: String(pageSize),
-          offset: String((page - 1) * pageSize),
+          offset: String(page * pageSize),
           ...(sortModel[0]?.field && { sortBy: sortModel[0].field }),
           ...(sortModel[0]?.sort && { sortDirection: sortModel[0].sort }),
         })}`,
@@ -138,12 +138,11 @@ const MenusMenuId = ({
 
   const handlePaginationModelChange = useCallback(
     (newModel: GridPaginationModel) => {
-      const newPage = newModel.page + 1;
-      setPaginationModel({ ...newModel, page: newPage });
+      setPaginationModel(newModel);
 
       const params = new URLSearchParams({
         ...Object.fromEntries(searchParams),
-        page: String(newPage),
+        page: String(newModel.page + 1),
         pageSize: String(newModel.pageSize),
       });
       router.replace(`${pathname}?${params.toString()}`);
@@ -154,7 +153,7 @@ const MenusMenuId = ({
   const handleSortModelChange = useCallback(
     (newModel: GridSortModel) => {
       setSortModel(newModel);
-      setPaginationModel((prev) => ({ ...prev, page: 1 }));
+      setPaginationModel((prev) => ({ ...prev, page: 0 }));
 
       const sortItem = newModel[0];
       const {
@@ -206,7 +205,7 @@ const MenusMenuId = ({
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               ids: sections.map(({ id }) => id),
-              offset: (paginationModel.page - 1) * paginationModel.pageSize,
+              offset: paginationModel.page * paginationModel.pageSize,
             }),
           });
 
@@ -497,10 +496,7 @@ const MenusMenuId = ({
           onPaginationModelChange={handlePaginationModelChange}
           onSortModelChange={handleSortModelChange}
           paginationMode="server"
-          paginationModel={{
-            ...paginationModel,
-            page: paginationModel.page - 1,
-          }}
+          paginationModel={paginationModel}
           rowCount={rowCount}
           rows={sections}
           slots={{

@@ -15,7 +15,14 @@
     "filters": "필터",
     "search": {
       "clear": "검색 초기화",
+      "field": "검색 필드",
       "label": "검색",
+      "operator": {
+        "contains": "포함",
+        "ends_with": "으로 끝남",
+        "label": "검색 방식",
+        "starts_with": "으로 시작"
+      },
       "placeholder": "귀하의 검색어를 입력해 주세요"
     }
   }
