@@ -167,7 +167,6 @@ const Admins = ({
         rowCount: initialRowCount,
         userSessions: initialUserSessions,
       },
-      keepPreviousData: true,
       onSuccess: () => {
         setTimeout(() => {
           apiRef.current?.autosizeColumns(autosizeOptions);
