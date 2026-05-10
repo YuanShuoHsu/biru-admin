@@ -47,13 +47,13 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
     rawPage !== String(page) ||
     rawPageSize !== String(pageSize) ||
     rawSortBy !== sortBy ||
-    rawSortDirection !== sortDirection
+    rawSortDirection !== sortDirection ||
+    !!sortBy !== !!sortDirection
   ) {
     const params = new URLSearchParams({
       page: String(page),
       pageSize: String(pageSize),
-      ...(sortBy && { sortBy }),
-      ...(sortDirection && { sortDirection }),
+      ...(sortBy && sortDirection && { sortBy, sortDirection }),
     });
     redirect({ href: `/admins?${params.toString()}`, locale });
   }

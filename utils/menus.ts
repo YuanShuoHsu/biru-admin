@@ -45,8 +45,8 @@ export const getAdminMenuSections = cache(
       const params = new URLSearchParams({
         limit: String(pageSize),
         offset: String(offset),
-        sortBy: sortBy ?? "createdAt",
-        sortDirection: sortDirection ?? "desc",
+        ...(sortBy && { sortBy }),
+        ...(sortDirection && { sortDirection }),
       });
       const result = await fetcher<{ data: AdminMenuSection[]; total: number }>(
         `/api/menus/${menuId}/menu-sections?${params.toString()}`,
@@ -89,8 +89,8 @@ export const getAdminMenuSectionItems = cache(
       const params = new URLSearchParams({
         limit: String(pageSize),
         offset: String(offset),
-        sortBy: sortBy ?? "createdAt",
-        sortDirection: sortDirection ?? "desc",
+        ...(sortBy && { sortBy }),
+        ...(sortDirection && { sortDirection }),
       });
       const result = await fetcher<{ data: AdminMenuItem[]; total: number }>(
         `/api/menu-sections/${sectionId}/menu-items?${params.toString()}`,

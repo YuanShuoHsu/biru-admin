@@ -123,7 +123,7 @@ const Admins = ({
     pageSize,
   });
   const [sortModel, setSortModel] = useState<GridSortModel>(
-    sortBy ? [{ field: sortBy, sort: sortDirection || "desc" }] : [],
+    sortBy && sortDirection ? [{ field: sortBy, sort: sortDirection }] : [],
   );
 
   const apiRef = useGridApiRef();
@@ -215,16 +215,21 @@ const Admins = ({
       setSortModel(newModel);
       setPaginationModel((prev) => ({ ...prev, page: 1 }));
 
-      const params = new URLSearchParams(Object.fromEntries(searchParams));
-      params.set("page", "1");
       const sortItem = newModel[0];
-      if (sortItem?.sort) {
-        params.set("sortBy", sortItem.field);
-        params.set("sortDirection", sortItem.sort);
-      } else {
-        params.delete("sortBy");
-        params.delete("sortDirection");
-      }
+      const {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        sortBy: _sortBy,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        sortDirection: _sortDirection,
+        ...rest
+      } = Object.fromEntries(searchParams);
+      const params = new URLSearchParams({
+        ...rest,
+        page: "1",
+        ...(sortItem?.field && { sortBy: sortItem.field }),
+        ...(sortItem?.sort && { sortDirection: sortItem.sort }),
+      });
+
       router.replace(`${pathname}?${params.toString()}`);
     },
     [pathname, router, searchParams],

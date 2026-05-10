@@ -51,14 +51,14 @@ const MenusMenuIdPage = async ({
     rawPage !== String(page) ||
     rawPageSize !== String(pageSize) ||
     rawSortBy !== sortBy ||
-    rawSortDirection !== sortDirection
+    rawSortDirection !== sortDirection ||
+    !!sortBy !== !!sortDirection
   ) {
     const params = new URLSearchParams({
       ...restSearchParams,
       page: String(page),
       pageSize: String(pageSize),
-      ...(sortBy && { sortBy }),
-      ...(sortDirection && { sortDirection }),
+      ...(sortBy && sortDirection && { sortBy, sortDirection }),
     });
     redirect({
       href: `/menus/${menuId}?${params.toString()}`,
