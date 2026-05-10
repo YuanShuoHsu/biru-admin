@@ -7,12 +7,7 @@ import { useSortable } from "@dnd-kit/react/sortable";
 import { DragIndicator } from "@mui/icons-material";
 import { styled } from "@mui/material";
 import type { GridRowProps } from "@mui/x-data-grid";
-import {
-  GridRow,
-  gridPaginationModelSelector,
-  useGridApiContext,
-  useGridSelector,
-} from "@mui/x-data-grid";
+import { GridRow } from "@mui/x-data-grid";
 
 const StyledDragIndicator = styled(DragIndicator)({ cursor: "grab" });
 
@@ -35,14 +30,9 @@ export const DragHandle = () => {
 };
 
 export const Sortable = ({ index, rowId, ...props }: GridRowProps) => {
-  const apiRef = useGridApiContext();
-  const { page, pageSize } = useGridSelector(
-    apiRef,
-    gridPaginationModelSelector,
-  );
   const { handleRef, isDragging, ref } = useSortable({
     id: rowId,
-    index: index - page * pageSize,
+    index,
   });
 
   return (

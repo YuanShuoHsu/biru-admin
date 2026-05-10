@@ -88,9 +88,7 @@ const MenusMenuId = ({
   const searchParams = useSearchParams();
   const organization = searchParams.get("organization");
 
-  const swrKey = isReorderMode
-    ? `/api/menus/${menu.id}/menu-sections`
-    : `/api/menus/${menu.id}/menu-sections?limit=${paginationModel.pageSize}&offset=${(paginationModel.page - 1) * paginationModel.pageSize}`;
+  const swrKey = `/api/menus/${menu.id}/menu-sections?limit=${paginationModel.pageSize}&offset=${(paginationModel.page - 1) * paginationModel.pageSize}`;
 
   const {
     data: { data: sections, total: rowCount } = {
@@ -101,8 +99,6 @@ const MenusMenuId = ({
     isValidating,
   } = useSWR<{ data: MenuSection[]; total: number }>(swrKey, {
     fallbackData: { data: initialSections, total: initialRowCount },
-    keepPreviousData: true,
-    revalidateOnFocus: false,
     onSuccess: () => {
       setTimeout(() => {
         apiRef.current?.autosizeColumns(autosizeOptions);
@@ -156,7 +152,10 @@ const MenusMenuId = ({
           await fetcher(`/api/menus/${menu.id}/menu-sections/reorder`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ids: sections.map(({ id }) => id) }),
+            body: JSON.stringify({
+              ids: sections.map(({ id }) => id),
+              offset: (paginationModel.page - 1) * paginationModel.pageSize,
+            }),
           });
 
           setIsReorderMode(false);
@@ -168,6 +167,8 @@ const MenusMenuId = ({
             { variant: "success" },
           );
         } catch {
+          mutateSections();
+
           enqueueSnackbar(
             tMenus("sections.actions.reorderSection.save.error"),
             { variant: "error" },
@@ -177,7 +178,7 @@ const MenusMenuId = ({
       open: true,
       title: tMenus("sections.actions.reorderSection.save.label"),
     });
-  }, [apiRef, menu.id, sections, setDialog, tMenus]);
+  }, [apiRef, menu.id, mutateSections, paginationModel.page, paginationModel.pageSize, sections, setDialog, tMenus]);
 
   const handleCancelReorder = useCallback(() => {
     setDialog({
@@ -189,12 +190,12 @@ const MenusMenuId = ({
       onConfirm: async () => {
         setIsReorderMode(false);
 
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+        mutateSections();
       },
       open: true,
       title: tMenus("sections.actions.reorderSection.cancel.label"),
     });
-  }, [apiRef, setDialog, tMenus]);
+  }, [mutateSections, setDialog, tMenus]);
 
   const handleDragEnd = ({ operation }: DragEndEvent) => {
     if (!isSortableOperation(operation)) return;
@@ -202,11 +203,8 @@ const MenusMenuId = ({
     const { canceled, source } = operation;
     if (canceled || !source) return;
 
-    const { page, pageSize } = apiRef.current?.state.pagination
-      .paginationModel || { page: 0, pageSize: 10 };
-    const offset = page * pageSize;
-    const fromIndex = source.initialIndex + offset;
-    const toIndex = source.index + offset;
+    const fromIndex = source.initialIndex;
+    const toIndex = source.index;
     if (fromIndex === toIndex) return;
 
     const newSections = arrayMove(sections, fromIndex, toIndex);
@@ -435,15 +433,13 @@ const MenusMenuId = ({
           apiRef={apiRef}
           columns={columns}
           loading={isValidating}
-          {...(!isReorderMode && {
-            onPaginationModelChange: handlePaginationModelChange,
-            paginationMode: "server",
-            paginationModel: {
-              ...paginationModel,
-              page: paginationModel.page - 1,
-            },
-            rowCount,
-          })}
+          onPaginationModelChange={handlePaginationModelChange}
+          paginationMode="server"
+          paginationModel={{
+            ...paginationModel,
+            page: paginationModel.page - 1,
+          }}
+          rowCount={rowCount}
           rows={sections}
           slots={{
             ...DATA_GRID_PROPS.slots,
