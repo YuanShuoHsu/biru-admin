@@ -12,6 +12,21 @@
       "label": "匯出",
       "print": "列印"
     },
+    "filter": {
+      "operator": {
+        "contains": "包含",
+        "ends_with": "結尾為",
+        "eq": "等於",
+        "gt": "大於",
+        "gte": "大於等於",
+        "in": "包含於",
+        "lt": "小於",
+        "lte": "小於等於",
+        "ne": "不等於",
+        "not_in": "不包含於",
+        "starts_with": "開頭為"
+      }
+    },
     "filters": "篩選器",
     "search": {
       "clear": "清除搜尋",

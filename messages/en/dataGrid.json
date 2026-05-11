@@ -12,6 +12,21 @@
       "label": "Export",
       "print": "Print"
     },
+    "filter": {
+      "operator": {
+        "contains": "Contains",
+        "ends_with": "Ends with",
+        "eq": "Equals",
+        "gt": "Greater than",
+        "gte": "Greater than or equal",
+        "in": "In",
+        "lt": "Less than",
+        "lte": "Less than or equal",
+        "ne": "Not equals",
+        "not_in": "Not in",
+        "starts_with": "Starts with"
+      }
+    },
     "filters": "Filters",
     "search": {
       "clear": "Clear search",

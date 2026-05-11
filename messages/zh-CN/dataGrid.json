@@ -12,6 +12,21 @@
       "label": "导出",
       "print": "打印"
     },
+    "filter": {
+      "operator": {
+        "contains": "包含",
+        "ends_with": "结尾为",
+        "eq": "等于",
+        "gt": "大于",
+        "gte": "大于等于",
+        "in": "包含于",
+        "lt": "小于",
+        "lte": "小于等于",
+        "ne": "不等于",
+        "not_in": "不包含于",
+        "starts_with": "开头为"
+      }
+    },
     "filters": "筛选器",
     "search": {
       "clear": "清除搜索",

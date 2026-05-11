@@ -12,6 +12,21 @@
       "label": "エクスポート",
       "print": "印刷"
     },
+    "filter": {
+      "operator": {
+        "contains": "を含む",
+        "ends_with": "で終わる",
+        "eq": "と等しい",
+        "gt": "より大きい",
+        "gte": "以上",
+        "in": "に含まれる",
+        "lt": "より小さい",
+        "lte": "以下",
+        "ne": "と等しくない",
+        "not_in": "に含まれない",
+        "starts_with": "で始まる"
+      }
+    },
     "filters": "フィルター",
     "search": {
       "clear": "検索をクリア",

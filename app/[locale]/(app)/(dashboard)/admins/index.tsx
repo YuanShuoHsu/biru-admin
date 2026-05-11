@@ -19,7 +19,7 @@ import { useForm, useWatch } from "react-hook-form";
 import useSWR from "swr";
 
 import BanUserDialogContent from "./BanUserDialogContent";
-import { SEARCH_FIELDS, SEARCH_OPERATORS } from "./constants";
+import { FILTER_OPERATORS, SEARCH_FIELDS, SEARCH_OPERATORS } from "./constants";
 import CreateUserDialogContent from "./CreateUserDialogContent";
 import { type SearchForm, useSearchFormSchema } from "./definitions";
 import SetRoleDialogContent from "./SetRoleDialogContent";
@@ -291,10 +291,10 @@ const Admins = ({
 
   const filterOperators = useMemo<GridFilterOperator[]>(
     () =>
-      SEARCH_OPERATORS.map((value) => ({
+      FILTER_OPERATORS.map((value) => ({
         getApplyFilterFn: () => null,
         InputComponent: GridFilterInputValue,
-        label: tToolbar(`search.operator.${value}`),
+        label: tToolbar(`filter.operator.${value}`),
         value,
       })),
     [tToolbar],
