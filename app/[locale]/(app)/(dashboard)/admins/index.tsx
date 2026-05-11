@@ -933,20 +933,28 @@ const Admins = ({
             }}
             value={searchField}
             {...register("searchField", {
-              onChange: (e) => {
+              onChange: ({ target: { value: searchField } }) => {
                 setPaginationModel((prev) => ({ ...prev, page: 0 }));
 
-                const newField = e.target.value as SearchField;
-                const params = new URLSearchParams(searchParams.toString());
-                params.set("page", "1");
-                params.delete("searchField");
-                params.delete("searchOperator");
-                params.delete("searchValue");
-                if (searchValue) {
-                  params.set("searchField", newField);
-                  params.set("searchOperator", searchOperator);
-                  params.set("searchValue", searchValue);
-                }
+                const {
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                  searchField: _searchField,
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                  searchOperator: _searchOperator,
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                  searchValue: _searchValue,
+                  ...rest
+                } = Object.fromEntries(searchParams);
+                const params = new URLSearchParams({
+                  ...rest,
+                  page: "1",
+                  ...(searchValue && {
+                    searchField,
+                    searchOperator,
+                    searchValue,
+                  }),
+                });
+
                 router.replace(`${pathname}?${params.toString()}`);
               },
             })}
@@ -967,20 +975,28 @@ const Admins = ({
             slotProps={{ inputLabel: { shrink: true } }}
             value={searchOperator}
             {...register("searchOperator", {
-              onChange: (e) => {
+              onChange: ({ target: { value: searchOperator } }) => {
                 setPaginationModel((prev) => ({ ...prev, page: 0 }));
 
-                const newOperator = e.target.value as SearchOperator;
-                const params = new URLSearchParams(searchParams.toString());
-                params.set("page", "1");
-                params.delete("searchField");
-                params.delete("searchOperator");
-                params.delete("searchValue");
-                if (searchValue) {
-                  params.set("searchField", searchField);
-                  params.set("searchOperator", newOperator);
-                  params.set("searchValue", searchValue);
-                }
+                const {
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                  searchField: _searchField,
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                  searchOperator: _searchOperator,
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                  searchValue: _searchValue,
+                  ...rest
+                } = Object.fromEntries(searchParams);
+                const params = new URLSearchParams({
+                  ...rest,
+                  page: "1",
+                  ...(searchValue && {
+                    searchField,
+                    searchOperator,
+                    searchValue,
+                  }),
+                });
+
                 router.replace(`${pathname}?${params.toString()}`);
               },
             })}
@@ -998,20 +1014,28 @@ const Admins = ({
             placeholder={tToolbar("search.placeholder")}
             size="small"
             {...register("searchValue", {
-              onChange: (e) => {
+              onChange: ({ target: { value } }) => {
                 setPaginationModel((prev) => ({ ...prev, page: 0 }));
 
-                const newSearchValue = e.target.value as string;
-                const params = new URLSearchParams(searchParams.toString());
-                params.set("page", "1");
-                params.delete("searchField");
-                params.delete("searchOperator");
-                params.delete("searchValue");
-                if (newSearchValue) {
-                  params.set("searchField", searchField);
-                  params.set("searchOperator", searchOperator);
-                  params.set("searchValue", newSearchValue);
-                }
+                const {
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                  searchField: _sf,
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                  searchOperator: _so,
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                  searchValue: _sv,
+                  ...rest
+                } = Object.fromEntries(searchParams);
+                const params = new URLSearchParams({
+                  ...rest,
+                  page: "1",
+                  ...(value && {
+                    searchField,
+                    searchOperator,
+                    searchValue: value,
+                  }),
+                });
+
                 router.replace(`${pathname}?${params.toString()}`);
               },
             })}

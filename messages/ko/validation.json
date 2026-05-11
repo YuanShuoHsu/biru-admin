@@ -62,5 +62,8 @@
   "slug": {
     "letter": "영문자를 최소 1개 포함.",
     "minLength": "슬러그는 1자 이상이어야 합니다."
+  },
+  "organizationSlug": {
+    "required": "조직은 필수입니다."
   }
 }

@@ -62,5 +62,8 @@
   "slug": {
     "letter": "包含至少一個英文字母。",
     "minLength": "識別碼至少需要 1 個字元。"
+  },
+  "organizationSlug": {
+    "required": "組織為必填。"
   }
 }

@@ -62,5 +62,8 @@
   "slug": {
     "letter": "包含至少一个英文字母。",
     "minLength": "标识符至少需要 1 个字符。"
+  },
+  "organizationSlug": {
+    "required": "组织为必填。"
   }
 }

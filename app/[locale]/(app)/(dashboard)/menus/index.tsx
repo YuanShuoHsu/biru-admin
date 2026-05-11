@@ -4,13 +4,17 @@ import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
 import useSWR from "swr";
 
 import CreateMenuDialog from "./CreateMenuDialog";
 import UpdateMenuDialog from "./UpdateMenuDialog";
+import { useMenusFormSchema, type MenusForm } from "./definitions";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { locales } from "@/constants/locale";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
@@ -59,6 +63,15 @@ const Menus = ({
 }: MenusProps) => {
   const [selectedSlug, setSelectedSlug] = useState(organizationSlug);
 
+  const menusFormSchema = useMenusFormSchema();
+  const {
+    formState: { errors },
+    register,
+  } = useForm<MenusForm>({
+    defaultValues: { organizationSlug },
+    resolver: zodResolver(menusFormSchema),
+  });
+
   const selectedOrganization = organizations.find(
     ({ slug }) => slug === selectedSlug,
   );
@@ -102,14 +115,6 @@ const Menus = ({
 
     return aIndex - bIndex;
   });
-
-  const handleChange = useCallback(
-    ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
-      setSelectedSlug(value);
-      router.replace(`/menus?organization=${value}`);
-    },
-    [router],
-  );
 
   const usedInLanguages = menus
     .map(({ inLanguage }) => inLanguage)
@@ -275,8 +280,9 @@ const Menus = ({
     <>
       <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
         <StyledTextField
+          error={!!errors.organizationSlug}
+          helperText={errors.organizationSlug?.message}
           label={tMenus("organization.label")}
-          onChange={handleChange}
           select
           size="small"
           slotProps={{
@@ -297,6 +303,15 @@ const Menus = ({
             },
           }}
           value={selectedSlug}
+          {...register("organizationSlug", {
+            onChange: ({
+              target: { value },
+            }: React.ChangeEvent<HTMLInputElement>) => {
+              setSelectedSlug(value);
+
+              router.replace(`/menus?organization=${value}`);
+            },
+          })}
         >
           <MenuItem disabled value="">
             <em>{tMenus("organization.placeholder")}</em>

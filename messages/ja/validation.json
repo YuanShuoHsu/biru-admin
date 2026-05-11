@@ -62,5 +62,8 @@
   "slug": {
     "letter": "英字を1文字以上含む。",
     "minLength": "スラッグは1文字以上で入力してください。"
+  },
+  "organizationSlug": {
+    "required": "組織は必須です。"
   }
 }
