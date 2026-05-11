@@ -270,7 +270,7 @@ const Admins = ({
         const { data: userRows, total } = await fetcher<{
           data: UserWithRole[];
           total: number;
-        }>(`/api/users?${params}`);
+        }>(`/api/users/list?${params}`);
 
         const userSessions = await getUserSessions(userRows);
 

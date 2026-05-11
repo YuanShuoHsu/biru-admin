@@ -138,7 +138,7 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
     });
 
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_NEST_URL}/api/users?${queryParams}`,
+      `${process.env.NEXT_PUBLIC_NEST_URL}/api/users/list?${queryParams}`,
       { headers: fetchOptions.headers },
     );
 
