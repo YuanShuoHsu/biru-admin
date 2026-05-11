@@ -18,11 +18,10 @@ import { useCallback, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import useSWR from "swr";
 
-import { SEARCH_FIELDS, SEARCH_OPERATORS } from "./constants";
-import { type SearchForm, useSearchFormSchema } from "./definitions";
-
 import BanUserDialogContent from "./BanUserDialogContent";
+import { SEARCH_FIELDS, SEARCH_OPERATORS } from "./constants";
 import CreateUserDialogContent from "./CreateUserDialogContent";
+import { type SearchForm, useSearchFormSchema } from "./definitions";
 import SetRoleDialogContent from "./SetRoleDialogContent";
 import SetUserPasswordDialogContent from "./SetUserPasswordDialogContent";
 import UpdateUserDialogContent from "./UpdateUserDialogContent";

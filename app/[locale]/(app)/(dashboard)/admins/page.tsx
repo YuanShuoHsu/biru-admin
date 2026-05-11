@@ -2,7 +2,6 @@ import { setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 
 import Admins from ".";
-
 import {
   FILTER_FIELDS,
   FILTER_OPERATORS,
