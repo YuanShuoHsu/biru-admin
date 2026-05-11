@@ -1,5 +1,24 @@
 import { authClient } from "@/lib/auth-client";
 
+interface QuickFilterMessages {
+  role: { admin: string; user: string };
+  status: { banned: string; active: string };
+  emailSubscribed: { subscribed: string; unsubscribed: string };
+}
+
+export const buildQuickFilterMap = ({
+  role: { admin, user },
+  status: { banned, active },
+  emailSubscribed: { subscribed, unsubscribed },
+}: QuickFilterMessages): Record<string, string> => ({
+  [admin]: "admin",
+  [user]: "user",
+  [banned]: "true",
+  [active]: "false",
+  [subscribed]: "true",
+  [unsubscribed]: "false",
+});
+
 export type UserSessions = {
   hasUserSessions: boolean;
   userSession: Record<string, boolean>;

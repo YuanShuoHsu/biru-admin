@@ -10,7 +10,12 @@
 "use client";
 
 import type { UserWithRole } from "better-auth/client/plugins";
-import { useFormatter, useLocale, useTranslations } from "next-intl";
+import {
+  useFormatter,
+  useLocale,
+  useMessages,
+  useTranslations,
+} from "next-intl";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
@@ -80,7 +85,12 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { AdminRole, AdminUser } from "@/types/admins";
 
-import { getUserSessions, type UserSessions } from "@/utils/admins";
+import {
+  buildQuickFilterMap,
+  getUserSessions,
+  type UserSessions,
+} from "@/utils/admins";
+import { fetcher } from "@/utils/fetcher";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -123,13 +133,14 @@ const ROLE_COLOR_MAP: Record<AdminRole, "error" | "default"> = {
 };
 
 interface AdminsProps {
-  page: number;
-  pageSize: number;
-  rows: UserWithRole[];
-  rowCount: number;
   filterField?: string;
   filterOperator?: FilterOperator;
   filterValue?: FilterValue;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  rowCount: number;
+  rows: UserWithRole[];
   searchField?: SearchField;
   searchOperator?: SearchOperator;
   searchValue?: string;
@@ -139,13 +150,14 @@ interface AdminsProps {
 }
 
 const Admins = ({
-  page,
-  pageSize,
-  rows: initialRows,
-  rowCount: initialRowCount,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
+  page,
+  pageSize,
+  quickFilterValue: initialQuickFilterValue,
+  rowCount: initialRowCount,
+  rows: initialRows,
   searchField: initialSearchField,
   searchOperator: initialSearchOperator,
   searchValue: initialSearchValue,
@@ -171,6 +183,7 @@ const Admins = ({
             },
           ]
         : [],
+    quickFilterValues: initialQuickFilterValue ? [initialQuickFilterValue] : [],
   });
 
   const { session, setSession } = useAuthStore((state) => state);
@@ -200,11 +213,19 @@ const Admins = ({
 
   const locale = useLocale();
 
+  const messages = useMessages();
+
   const pathname = usePathname();
 
   const router = useRouter();
 
   const searchParams = useSearchParams();
+
+  const quickFilterInput =
+    filterModel.quickFilterValues?.join(" ").trim() || "";
+
+  const tAdmins = useTranslations("admins");
+  const tToolbar = useTranslations("dataGrid.toolbar");
 
   const {
     data: { rows, rowCount, userSessions } = {
@@ -220,6 +241,7 @@ const Admins = ({
       paginationModel.page,
       paginationModel.pageSize,
       sortModel,
+      quickFilterInput,
       searchValue,
       searchField,
       searchOperator,
@@ -230,12 +252,15 @@ const Admins = ({
     async () => {
       const filterItem = filterModel.items[0];
 
-      const { data } = await authClient.admin.listUsers({
-        query: {
-          limit: paginationModel.pageSize,
-          offset: paginationModel.page * paginationModel.pageSize,
-          sortBy: sortModel[0]?.field || "createdAt",
-          sortDirection: sortModel[0]?.sort || "desc",
+      if (quickFilterInput) {
+        const quickFilterMap = buildQuickFilterMap(messages.admins);
+
+        const quickFilterValue = Object.entries(quickFilterMap).find(
+          ([label]) =>
+            label.toLowerCase().includes(quickFilterInput.toLowerCase()),
+        )?.[1];
+
+        const params = new URLSearchParams({
           ...(filterItem?.field &&
             filterItem?.operator &&
             filterItem?.value && {
@@ -243,24 +268,49 @@ const Admins = ({
               filterOperator: filterItem.operator,
               filterValue: filterItem.value,
             }),
+          limit: String(paginationModel.pageSize),
+          offset: String(paginationModel.page * paginationModel.pageSize),
+          ...(quickFilterValue && { quickFilterValue }),
           ...(searchField &&
             searchOperator &&
-            searchValue && {
-              searchField,
-              searchOperator,
-              searchValue,
+            searchValue && { searchField, searchOperator, searchValue }),
+          sortBy: sortModel[0]?.field || "createdAt",
+          sortDirection: sortModel[0]?.sort || "desc",
+        });
+
+        const { data: userRows, total } = await fetcher<{
+          data: UserWithRole[];
+          total: number;
+        }>(`/api/users?${params}`);
+
+        const userSessions = await getUserSessions(userRows);
+
+        return { rows: userRows, rowCount: total, userSessions };
+      }
+
+      const { data } = await authClient.admin.listUsers({
+        query: {
+          ...(filterItem?.field &&
+            filterItem?.operator &&
+            filterItem?.value && {
+              filterField: filterItem.field,
+              filterOperator: filterItem.operator,
+              filterValue: filterItem.value,
             }),
+          limit: paginationModel.pageSize,
+          offset: paginationModel.page * paginationModel.pageSize,
+          ...(searchField &&
+            searchOperator &&
+            searchValue && { searchField, searchOperator, searchValue }),
+          sortBy: sortModel[0]?.field || "createdAt",
+          sortDirection: sortModel[0]?.sort || "desc",
         },
       });
 
       const userRows = data?.users || [];
       const userSessions = await getUserSessions(userRows);
 
-      return {
-        rows: userRows,
-        rowCount: data?.total || 0,
-        userSessions,
-      };
+      return { rows: userRows, rowCount: data?.total || 0, userSessions };
     },
     {
       fallbackData: {
@@ -280,9 +330,6 @@ const Admins = ({
   const hasImpersonableUser = rows.some(
     (row) => row.id !== currentUserId && row.role !== "admin",
   );
-
-  const tAdmins = useTranslations("admins");
-  const tToolbar = useTranslations("dataGrid.toolbar");
 
   const fieldLabelMap: Record<SearchField, string> = {
     name: tAdmins("name"),
@@ -342,18 +389,21 @@ const Admins = ({
   const handleFilterModelChange = useCallback(
     (newModel: GridFilterModel) => {
       setFilterModel(newModel);
+      setPaginationModel((prev) => ({ ...prev, page: 0 }));
 
       const filterItem = newModel.items[0];
-
-      setPaginationModel((prev) => ({ ...prev, page: 0 }));
+      const newQuickFilterValue =
+        newModel.quickFilterValues?.join(" ").trim() || "";
 
       const {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        filterField: _ff,
+        filterField: _filterField,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        filterOperator: _fo,
+        filterOperator: _filterOperator,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        filterValue: _fv,
+        filterValue: _filterValue,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        quickFilterValue: _quickFilterValue,
         ...rest
       } = Object.fromEntries(searchParams);
 
@@ -367,6 +417,7 @@ const Admins = ({
             filterOperator: filterItem.operator,
             filterValue: filterItem.value,
           }),
+        ...(newQuickFilterValue && { quickFilterValue: newQuickFilterValue }),
       });
       router.replace(`${pathname}?${params.toString()}`);
     },

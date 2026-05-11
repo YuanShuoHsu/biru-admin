@@ -1,4 +1,5 @@
-import { setRequestLocale } from "next-intl/server";
+import type { UserWithRole } from "better-auth/client/plugins";
+import { getMessages, setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 
 import Admins from ".";
@@ -16,7 +17,7 @@ import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
-import { getUserSessions } from "@/utils/admins";
+import { buildQuickFilterMap, getUserSessions } from "@/utils/admins";
 
 interface AdminsPageProps {
   params: Promise<{ locale: Locale }>;
@@ -26,6 +27,7 @@ interface AdminsPageProps {
     filterField?: string;
     filterOperator?: string;
     filterValue?: string;
+    quickFilterValue?: string;
     searchField?: string;
     searchOperator?: string;
     searchValue?: string;
@@ -39,11 +41,12 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
     cookieStore,
     { locale },
     {
-      page: rawPage,
-      pageSize: rawPageSize,
       filterField: rawFilterField,
       filterOperator: rawFilterOperator,
       filterValue,
+      page: rawPage,
+      pageSize: rawPageSize,
+      quickFilterValue: rawQuickFilterValue,
       searchField: rawSearchField,
       searchOperator: rawSearchOperator,
       searchValue,
@@ -93,18 +96,11 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
       ...(sortBy && sortDirection && { sortBy, sortDirection }),
       ...(filterField &&
         filterOperator &&
-        filterValue && {
-          filterField,
-          filterOperator,
-          filterValue,
-        }),
+        filterValue && { filterField, filterOperator, filterValue }),
+      ...(rawQuickFilterValue && { quickFilterValue: rawQuickFilterValue }),
       ...(searchField &&
         searchOperator &&
-        searchValue && {
-          searchField,
-          searchOperator,
-          searchValue,
-        }),
+        searchValue && { searchField, searchOperator, searchValue }),
     });
     redirect({ href: `/admins?${params.toString()}`, locale });
   }
@@ -116,44 +112,72 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
     },
   };
 
-  const { data } = await authClient.admin.listUsers({
-    query: {
-      limit: pageSize,
-      offset: (page - 1) * pageSize,
-      sortBy: sortBy || "createdAt",
-      sortDirection: sortDirection || "desc",
+  let rows: UserWithRole[] = [];
+  let rowCount = 0;
+
+  if (rawQuickFilterValue) {
+    const messages = await getMessages();
+    const quickFilterMap = buildQuickFilterMap(messages.admins);
+    const quickFilterValue = Object.entries(quickFilterMap).find(([label]) =>
+      label.toLowerCase().includes(rawQuickFilterValue.toLowerCase()),
+    )?.[1];
+
+    const queryParams = new URLSearchParams({
       ...(filterField &&
         filterOperator &&
-        filterValue && {
-          filterField,
-          filterOperator,
-          filterValue,
-        }),
+        filterValue && { filterField, filterOperator, filterValue }),
+      limit: String(pageSize),
+      offset: String((page - 1) * pageSize),
+      ...(quickFilterValue && { quickFilterValue }),
       ...(searchField &&
         searchOperator &&
-        searchValue && {
-          searchField,
-          searchOperator,
-          searchValue,
-        }),
-    },
-    fetchOptions,
-  });
+        searchValue && { searchField, searchOperator, searchValue }),
+      sortBy: sortBy || "createdAt",
+      sortDirection: sortDirection || "desc",
+    });
 
-  const rows = data?.users || [];
-  const rowCount = data?.total || 0;
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_NEST_URL}/api/users?${queryParams}`,
+      { headers: fetchOptions.headers },
+    );
+
+    const { data, total } = await res.json();
+
+    rows = data || [];
+    rowCount = total || 0;
+  } else {
+    const { data } = await authClient.admin.listUsers({
+      query: {
+        ...(filterField &&
+          filterOperator &&
+          filterValue && { filterField, filterOperator, filterValue }),
+        limit: pageSize,
+        offset: (page - 1) * pageSize,
+        ...(searchField &&
+          searchOperator &&
+          searchValue && { searchField, searchOperator, searchValue }),
+        sortBy: sortBy || "createdAt",
+        sortDirection: sortDirection || "desc",
+      },
+      fetchOptions,
+    });
+
+    rows = data?.users || [];
+    rowCount = data?.total || 0;
+  }
 
   const userSessions = await getUserSessions(rows, fetchOptions);
 
   return (
     <Admins
-      rows={rows}
-      rowCount={rowCount}
-      page={page}
-      pageSize={pageSize}
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
+      page={page}
+      pageSize={pageSize}
+      quickFilterValue={rawQuickFilterValue}
+      rows={rows}
+      rowCount={rowCount}
       searchField={searchField}
       searchOperator={searchOperator}
       searchValue={searchValue}
