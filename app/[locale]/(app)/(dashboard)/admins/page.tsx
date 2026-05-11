@@ -112,12 +112,13 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
     },
   };
 
+  const messages = await getMessages();
+  const quickFilterMap = buildQuickFilterMap(messages.admins);
+
   let rows: UserWithRole[] = [];
   let rowCount = 0;
 
   if (rawQuickFilterValue) {
-    const messages = await getMessages();
-    const quickFilterMap = buildQuickFilterMap(messages.admins);
     const quickFilterValue = Object.entries(quickFilterMap).find(([label]) =>
       label.toLowerCase().includes(rawQuickFilterValue.toLowerCase()),
     )?.[1];
@@ -175,6 +176,7 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
       filterValue={filterValue}
       page={page}
       pageSize={pageSize}
+      quickFilterMap={quickFilterMap}
       quickFilterValue={rawQuickFilterValue}
       rows={rows}
       rowCount={rowCount}

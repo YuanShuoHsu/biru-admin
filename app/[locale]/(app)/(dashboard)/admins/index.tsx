@@ -10,12 +10,7 @@
 "use client";
 
 import type { UserWithRole } from "better-auth/client/plugins";
-import {
-  useFormatter,
-  useLocale,
-  useMessages,
-  useTranslations,
-} from "next-intl";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
@@ -85,11 +80,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { AdminRole, AdminUser } from "@/types/admins";
 
-import {
-  buildQuickFilterMap,
-  getUserSessions,
-  type UserSessions,
-} from "@/utils/admins";
+import { getUserSessions, type UserSessions } from "@/utils/admins";
 import { fetcher } from "@/utils/fetcher";
 
 const DataGrid = dynamic(
@@ -138,6 +129,7 @@ interface AdminsProps {
   filterValue?: FilterValue;
   page: number;
   pageSize: number;
+  quickFilterMap: Record<string, string>;
   quickFilterValue?: string;
   rowCount: number;
   rows: UserWithRole[];
@@ -155,6 +147,7 @@ const Admins = ({
   filterValue: initialFilterValue,
   page,
   pageSize,
+  quickFilterMap,
   quickFilterValue: initialQuickFilterValue,
   rowCount: initialRowCount,
   rows: initialRows,
@@ -213,8 +206,6 @@ const Admins = ({
 
   const locale = useLocale();
 
-  const messages = useMessages();
-
   const pathname = usePathname();
 
   const router = useRouter();
@@ -253,8 +244,6 @@ const Admins = ({
       const filterItem = filterModel.items[0];
 
       if (quickFilterInput) {
-        const quickFilterMap = buildQuickFilterMap(messages.admins);
-
         const quickFilterValue = Object.entries(quickFilterMap).find(
           ([label]) =>
             label.toLowerCase().includes(quickFilterInput.toLowerCase()),
