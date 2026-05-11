@@ -114,18 +114,9 @@ type ListUsersQuery = NonNullable<
 type SearchField = NonNullable<ListUsersQuery["searchField"]>;
 type SearchOperator = NonNullable<ListUsersQuery["searchOperator"]>;
 type FilterOperator = NonNullable<ListUsersQuery["filterOperator"]>;
-const COLUMN_FILTER_OPERATORS = [
-  "contains",
-  "starts_with",
-  "ends_with",
-] as const satisfies FilterOperator[];
-
-const getQuickFilterValue = (model: GridFilterModel) => {
-  return model.quickFilterValues?.join(" ") || "";
-};
 
 const isFilterOperator = (value: string): value is FilterOperator =>
-  COLUMN_FILTER_OPERATORS.some((operator) => operator === value);
+  SEARCH_OPERATORS.some((operator) => operator === value);
 
 const getColumnFilterItem = (model: GridFilterModel) => {
   const item = model.items[0];
@@ -193,7 +184,6 @@ const Admins = ({
   );
   const [filterModel, setFilterModel] = useState<GridFilterModel>({
     items: initialFilterItems,
-    quickFilterValues: initialSearchValue ? initialSearchValue.split(" ") : [],
   });
 
   const { session, setSession } = useAuthStore((state) => state);
@@ -344,7 +334,7 @@ const Admins = ({
 
   const filterOperators = useMemo<GridFilterOperator[]>(
     () =>
-      COLUMN_FILTER_OPERATORS.map((value) => ({
+      SEARCH_OPERATORS.map((value) => ({
         getApplyFilterFn: () => null,
         InputComponent: GridFilterInputValue,
         label: tToolbar(`search.operator.${value}`),
@@ -396,8 +386,8 @@ const Admins = ({
     (newModel: GridFilterModel) => {
       setFilterModel(newModel);
 
-      const nextQuickSearchValue = getQuickFilterValue(newModel);
-      const nextColumnFilterItem = getColumnFilterItem(newModel);
+      const { filterField, filterOperator, filterValue } =
+        getColumnFilterItem(newModel);
 
       setPaginationModel((prev) => ({ ...prev, page: 0 }));
 
@@ -414,16 +404,13 @@ const Admins = ({
       const params = new URLSearchParams({
         ...rest,
         page: "1",
-        ...(nextColumnFilterItem.filterValue &&
-          nextColumnFilterItem.filterField &&
-          nextColumnFilterItem.filterOperator && {
-            filterField: nextColumnFilterItem.filterField,
-            filterOperator: nextColumnFilterItem.filterOperator,
-            filterValue: nextColumnFilterItem.filterValue,
+        ...(filterValue &&
+          filterField &&
+          filterOperator && {
+            filterField,
+            filterOperator,
+            filterValue,
           }),
-        ...(nextQuickSearchValue && {
-          searchValue: nextQuickSearchValue,
-        }),
       });
       router.replace(`${pathname}?${params.toString()}`);
     },
