@@ -56,6 +56,9 @@
   "role": {
     "required": "역할은 필수입니다."
   },
+  "searchField": {
+    "required": "검색 필드는 필수입니다."
+  },
   "slug": {
     "letter": "영문자를 최소 1개 포함.",
     "minLength": "슬러그는 1자 이상이어야 합니다."

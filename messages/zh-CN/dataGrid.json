@@ -16,6 +16,7 @@
     "search": {
       "clear": "清除搜索",
       "field": "搜索字段",
+      "fieldPlaceholder": "请选择您的搜索字段",
       "label": "搜索",
       "operator": {
         "contains": "包含",

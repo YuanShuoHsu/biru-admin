@@ -56,6 +56,9 @@
   "role": {
     "required": "役割は必須です。"
   },
+  "searchField": {
+    "required": "検索フィールドは必須です。"
+  },
   "slug": {
     "letter": "英字を1文字以上含む。",
     "minLength": "スラッグは1文字以上で入力してください。"

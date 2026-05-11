@@ -56,6 +56,9 @@
   "role": {
     "required": "角色为必填。"
   },
+  "searchField": {
+    "required": "搜索字段为必填。"
+  },
   "slug": {
     "letter": "包含至少一个英文字母。",
     "minLength": "标识符至少需要 1 个字符。"

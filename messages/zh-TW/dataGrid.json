@@ -16,6 +16,7 @@
     "search": {
       "clear": "清除搜尋",
       "field": "搜尋欄位",
+      "fieldPlaceholder": "請選擇您的搜尋欄位",
       "label": "搜尋",
       "operator": {
         "contains": "包含",

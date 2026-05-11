@@ -10,11 +10,33 @@ import { authClient } from "@/lib/auth-client";
 
 import { getUserSessions } from "@/utils/admins";
 
+const SORT_BY_FIELDS = ["name", "email", "role", "createdAt"] as const;
+const SORT_DIRECTIONS = ["asc", "desc"] as const;
+
+const FILTER_FIELDS = ["email", "name"] as const;
+const FILTER_OPERATORS = [
+  "eq",
+  "ne",
+  "lt",
+  "lte",
+  "gt",
+  "gte",
+  "in",
+  "not_in",
+  "contains",
+  "starts_with",
+  "ends_with",
+] as const;
+
 interface AdminsPageProps {
   params: Promise<{ locale: Locale }>;
   searchParams: Promise<{
     page?: string;
     pageSize?: string;
+    filterField?: string;
+    filterOperator?: string;
+    filterValue?: string;
+    searchValue?: string;
     sortBy?: string;
     sortDirection?: string;
   }>;
@@ -27,6 +49,10 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
     {
       page: rawPage,
       pageSize: rawPageSize,
+      filterField: rawFilterField,
+      filterOperator: rawFilterOperator,
+      filterValue,
+      searchValue,
       sortBy: rawSortBy,
       sortDirection: rawSortDirection,
     },
@@ -36,11 +62,15 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
 
   const page = Math.max(1, Number(rawPage) || 1);
   const pageSize = Math.max(1, Number(rawPageSize) || 10);
-  const SORT_BY_FIELDS = ["name", "email", "role", "createdAt"] as const;
-  const SORT_DIRECTIONS = ["asc", "desc"] as const;
+
   const sortBy = SORT_BY_FIELDS.find((field) => field === rawSortBy);
   const sortDirection = SORT_DIRECTIONS.find(
     (direction) => direction === rawSortDirection,
+  );
+
+  const filterField = FILTER_FIELDS.find((field) => field === rawFilterField);
+  const filterOperator = FILTER_OPERATORS.find(
+    (operator) => operator === rawFilterOperator,
   );
 
   if (
@@ -48,12 +78,24 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
     rawPageSize !== String(pageSize) ||
     rawSortBy !== sortBy ||
     rawSortDirection !== sortDirection ||
-    !!sortBy !== !!sortDirection
+    !!sortBy !== !!sortDirection ||
+    rawFilterField !== filterField ||
+    rawFilterOperator !== filterOperator ||
+    !!(filterField || filterOperator || filterValue) !==
+      !!(filterField && filterOperator && filterValue)
   ) {
     const params = new URLSearchParams({
       page: String(page),
       pageSize: String(pageSize),
       ...(sortBy && sortDirection && { sortBy, sortDirection }),
+      ...(filterField &&
+        filterOperator &&
+        filterValue && {
+          filterField,
+          filterOperator,
+          filterValue,
+        }),
+      ...(searchValue && { searchValue }),
     });
     redirect({ href: `/admins?${params.toString()}`, locale });
   }
@@ -71,6 +113,19 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
       offset: (page - 1) * pageSize,
       sortBy: sortBy || "createdAt",
       sortDirection: sortDirection || "desc",
+      ...(filterField &&
+        filterOperator &&
+        filterValue && {
+          filterField,
+          filterOperator,
+          filterValue,
+        }),
+      ...(!filterField &&
+        searchValue && {
+          searchValue,
+          searchField: "email",
+          searchOperator: "contains",
+        }),
     },
     fetchOptions,
   });
@@ -86,6 +141,10 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
       rowCount={rowCount}
       page={page}
       pageSize={pageSize}
+      filterField={filterField}
+      filterOperator={filterOperator}
+      filterValue={filterValue}
+      searchValue={searchValue}
       sortBy={sortBy}
       sortDirection={sortDirection}
       userSessions={userSessions}

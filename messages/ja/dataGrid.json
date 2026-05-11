@@ -16,6 +16,7 @@
     "search": {
       "clear": "検索をクリア",
       "field": "検索フィールド",
+      "fieldPlaceholder": "あなたの検索フィールドを選択してください",
       "label": "検索",
       "operator": {
         "contains": "を含む",

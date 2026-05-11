@@ -1,4 +1,8 @@
 // https://mui.com/x/react-data-grid/column-dimensions/#ColumnAutosizingAsync.tsx
+// https://mui.com/x/react-data-grid/filtering/
+// https://mui.com/x/react-data-grid/filtering/customization/
+// https://mui.com/x/react-data-grid/filtering/quick-filter/
+// https://mui.com/x/react-data-grid/filtering/server-side/
 // https://mui.com/x/react-data-grid/pagination/
 // https://mui.com/x/react-data-grid/performance/
 // https://mui.com/x/react-data-grid/server-side-data/
@@ -11,13 +15,22 @@ import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import useSWR from "swr";
+
+import {
+  searchFields,
+  type SearchForm,
+  useSearchFormSchema,
+} from "./definitions";
 
 import BanUserDialogContent from "./BanUserDialogContent";
 import CreateUserDialogContent from "./CreateUserDialogContent";
 import SetRoleDialogContent from "./SetRoleDialogContent";
 import SetUserPasswordDialogContent from "./SetUserPasswordDialogContent";
 import UpdateUserDialogContent from "./UpdateUserDialogContent";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import {
@@ -49,18 +62,22 @@ import {
   Chip,
   DialogContentText,
   IconButton,
+  MenuItem,
   Stack,
+  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
+  GridFilterModel,
+  GridFilterOperator,
   GridPaginationModel,
   GridRenderCellParams,
   GridSortModel,
 } from "@mui/x-data-grid";
-import { useGridApiRef } from "@mui/x-data-grid";
+import { GridFilterInputValue, useGridApiRef } from "@mui/x-data-grid";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -94,6 +111,35 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
     color: theme.vars.palette.primary.contrastText,
   },
 }));
+
+type ListUsersQuery = NonNullable<
+  Parameters<typeof authClient.admin.listUsers>[0]["query"]
+>;
+type SearchField = NonNullable<ListUsersQuery["searchField"]>;
+type FilterOperator = NonNullable<ListUsersQuery["filterOperator"]>;
+const COLUMN_FILTER_OPERATORS = [
+  "contains",
+  "starts_with",
+  "ends_with",
+] as const satisfies FilterOperator[];
+
+const getQuickFilterValue = (model: GridFilterModel) => {
+  return model.quickFilterValues?.join(" ") || "";
+};
+
+const isFilterOperator = (value: string): value is FilterOperator =>
+  COLUMN_FILTER_OPERATORS.some((operator) => operator === value);
+
+const getColumnFilterItem = (model: GridFilterModel) => {
+  const item = model.items[0];
+
+  return {
+    filterValue: typeof item?.value === "string" ? item.value : "",
+    filterField: item?.field || "",
+    filterOperator: item?.operator || "",
+  };
+};
+
 const ROLE_COLOR_MAP: Record<AdminRole, "error" | "default"> = {
   admin: "error",
   user: "default",
@@ -104,6 +150,10 @@ interface AdminsProps {
   pageSize: number;
   rows: UserWithRole[];
   rowCount: number;
+  filterField?: string;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  searchValue?: string;
   sortBy?: string;
   sortDirection?: "asc" | "desc";
   userSessions: UserSessions;
@@ -114,19 +164,66 @@ const Admins = ({
   pageSize,
   rows: initialRows,
   rowCount: initialRowCount,
+  filterField: initialFilterField,
+  filterOperator: initialFilterOperator,
+  filterValue: initialFilterValue,
+  searchValue: initialSearchValue,
   sortBy,
   sortDirection,
   userSessions: initialUserSessions,
 }: AdminsProps) => {
+  const initialFilterItems: GridFilterModel["items"] =
+    initialFilterField && initialFilterOperator && initialFilterValue
+      ? [
+          {
+            field: initialFilterField,
+            operator: initialFilterOperator,
+            value: initialFilterValue,
+          },
+        ]
+      : [];
+
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
-    page,
+    page: page - 1,
     pageSize,
   });
   const [sortModel, setSortModel] = useState<GridSortModel>(
     sortBy && sortDirection ? [{ field: sortBy, sort: sortDirection }] : [],
   );
+  const [filterModel, setFilterModel] = useState<GridFilterModel>({
+    items: initialFilterItems,
+    quickFilterValues: initialSearchValue ? initialSearchValue.split(" ") : [],
+  });
+
+  const { session, setSession } = useAuthStore((state) => state);
+  const { setDialog } = useDialogStore((state) => state);
+
+  const searchFormSchema = useSearchFormSchema();
+  const {
+    control,
+    formState: { errors },
+    register,
+  } = useForm<SearchForm>({
+    defaultValues: { searchField: "name", searchValue: "" },
+    resolver: zodResolver(searchFormSchema),
+  });
+
+  const searchField = useWatch({ control, name: "searchField" });
+  const searchValue = useWatch({ control, name: "searchValue" });
+
+  const format = useFormatter();
 
   const apiRef = useGridApiRef();
+
+  const locale = useLocale();
+
+  const pathname = usePathname();
+
+  const router = useRouter();
+
+  const searchParams = useSearchParams();
+
+  const columnFilterItem = getColumnFilterItem(filterModel);
 
   const {
     data: { rows, rowCount, userSessions } = {
@@ -137,20 +234,66 @@ const Admins = ({
     mutate: mutateAdmins,
     isValidating,
   } = useSWR(
-    ["/api/admins", paginationModel.page, paginationModel.pageSize, sortModel],
-    async ([, page, pageSize, sortModel]: [
+    [
+      "/api/admins",
+      paginationModel.page,
+      paginationModel.pageSize,
+      sortModel,
+      searchValue,
+      searchField,
+      columnFilterItem.filterField,
+      columnFilterItem.filterOperator,
+      columnFilterItem.filterValue,
+    ],
+    async ([
+      ,
+      page,
+      pageSize,
+      sortModel,
+      searchValue,
+      searchField,
+      filterField,
+      filterOperator,
+      filterValue,
+    ]: [
       string,
       number,
       number,
       GridSortModel,
+      string,
+      SearchField,
+      string,
+      string,
+      string,
     ]) => {
+      const baseQuery = {
+        limit: pageSize,
+        offset: page * pageSize,
+        sortBy: sortModel[0]?.field || "createdAt",
+        sortDirection: sortModel[0]?.sort || "desc",
+      };
+      const query: NonNullable<
+        Parameters<typeof authClient.admin.listUsers>[0]["query"]
+      > = {
+        ...baseQuery,
+      };
+
+      const validFilterOperator = isFilterOperator(filterOperator)
+        ? filterOperator
+        : undefined;
+
+      if (filterField && validFilterOperator && filterValue) {
+        query.filterField = filterField;
+        query.filterOperator = validFilterOperator;
+        query.filterValue = filterValue;
+      } else if (searchValue) {
+        query.searchValue = searchValue;
+        query.searchField = searchField;
+        query.searchOperator = "contains";
+      }
+
       const { data } = await authClient.admin.listUsers({
-        query: {
-          limit: pageSize,
-          offset: (page - 1) * pageSize,
-          sortBy: sortModel[0]?.field || "createdAt",
-          sortDirection: sortModel[0]?.sort || "desc",
-        },
+        query,
       });
       const userRows = data?.users || [];
       const userSessions = await getUserSessions(userRows);
@@ -175,34 +318,37 @@ const Admins = ({
     },
   );
 
-  const { session, setSession } = useAuthStore((state) => state);
-  const { setDialog } = useDialogStore((state) => state);
-
   const currentUserId = session?.user?.id;
   const hasImpersonableUser = rows.some(
     (row) => row.id !== currentUserId && row.role !== "admin",
   );
 
-  const format = useFormatter();
-
-  const locale = useLocale();
-
-  const pathname = usePathname();
-
-  const router = useRouter();
-
-  const searchParams = useSearchParams();
-
   const tAdmins = useTranslations("admins");
+  const tToolbar = useTranslations("dataGrid.toolbar");
+
+  const fieldLabelMap: Record<SearchField, string> = {
+    name: tAdmins("name"),
+    email: tAdmins("email.label"),
+  };
+
+  const filterOperators = useMemo<GridFilterOperator[]>(
+    () =>
+      COLUMN_FILTER_OPERATORS.map((value) => ({
+        getApplyFilterFn: () => null,
+        InputComponent: GridFilterInputValue,
+        label: tToolbar(`search.operator.${value}`),
+        value,
+      })),
+    [tToolbar],
+  );
 
   const handlePaginationModelChange = useCallback(
     (newModel: GridPaginationModel) => {
-      const newPage = newModel.page + 1;
-      setPaginationModel({ ...newModel, page: newPage });
+      setPaginationModel(newModel);
 
       const params = new URLSearchParams({
         ...Object.fromEntries(searchParams),
-        page: String(newPage),
+        page: String(newModel.page + 1),
         pageSize: String(newModel.pageSize),
       });
       router.replace(`${pathname}?${params.toString()}`);
@@ -213,7 +359,7 @@ const Admins = ({
   const handleSortModelChange = useCallback(
     (newModel: GridSortModel) => {
       setSortModel(newModel);
-      setPaginationModel((prev) => ({ ...prev, page: 1 }));
+      setPaginationModel((prev) => ({ ...prev, page: 0 }));
 
       const sortItem = newModel[0];
       const {
@@ -230,6 +376,46 @@ const Admins = ({
         ...(sortItem?.sort && { sortDirection: sortItem.sort }),
       });
 
+      router.replace(`${pathname}?${params.toString()}`);
+    },
+    [pathname, router, searchParams],
+  );
+
+  const handleFilterModelChange = useCallback(
+    (newModel: GridFilterModel) => {
+      setFilterModel(newModel);
+
+      const nextQuickSearchValue = getQuickFilterValue(newModel);
+      const nextColumnFilterItem = getColumnFilterItem(newModel);
+
+      setPaginationModel((prev) => ({ ...prev, page: 0 }));
+
+      const {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        filterField: _ff,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        filterOperator: _fo,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        filterValue: _fv,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        searchValue: _sv,
+        ...rest
+      } = Object.fromEntries(searchParams);
+
+      const params = new URLSearchParams({
+        ...rest,
+        page: "1",
+        ...(nextColumnFilterItem.filterValue &&
+          nextColumnFilterItem.filterField &&
+          nextColumnFilterItem.filterOperator && {
+            filterField: nextColumnFilterItem.filterField,
+            filterOperator: nextColumnFilterItem.filterOperator,
+            filterValue: nextColumnFilterItem.filterValue,
+          }),
+        ...(nextQuickSearchValue && {
+          searchValue: nextQuickSearchValue,
+        }),
+      });
       router.replace(`${pathname}?${params.toString()}`);
     },
     [pathname, router, searchParams],
@@ -366,7 +552,7 @@ const Admins = ({
 
                 sessionStorage.setItem(
                   IMPERSONATE_RETURN_KEY,
-                  `${pathname}?page=${paginationModel.page}&pageSize=${paginationModel.pageSize}`,
+                  `${pathname}?page=${paginationModel.page + 1}&pageSize=${paginationModel.pageSize}`,
                 );
 
                 router.replace(DEFAULT_AUTHENTICATED_ROUTE);
@@ -421,6 +607,7 @@ const Admins = ({
       {
         disableColumnMenu: true,
         field: "actions",
+        filterable: false,
         headerName: tAdmins("actions.label"),
         renderCell: ({ row }: GridRenderCellParams<UserWithRole>) => {
           const isBanned =
@@ -550,6 +737,7 @@ const Admins = ({
       },
       {
         field: "image",
+        filterable: false,
         headerName: tAdmins("image"),
         renderCell: ({
           row: { image, name },
@@ -564,14 +752,17 @@ const Admins = ({
       },
       {
         field: "name",
+        filterOperators,
         headerName: tAdmins("name"),
       },
       {
         field: "email",
+        filterOperators,
         headerName: tAdmins("email.label"),
       },
       {
         field: "role",
+        filterable: false,
         headerName: tAdmins("role.label"),
         renderCell: ({ row: { role } }: GridRenderCellParams<AdminUser>) => (
           <Chip
@@ -585,6 +776,7 @@ const Admins = ({
       },
       {
         field: "banned",
+        filterable: false,
         headerName: tAdmins("status.label"),
         renderCell: ({ row }: GridRenderCellParams<UserWithRole>) => {
           const isBanned =
@@ -638,6 +830,7 @@ const Admins = ({
       },
       {
         field: "emailSubscribed",
+        filterable: false,
         headerName: tAdmins("emailSubscribed.label"),
         renderCell: ({ row }: GridRenderCellParams<AdminUser>) => (
           <Chip
@@ -662,6 +855,7 @@ const Admins = ({
       },
       {
         field: "createdAt",
+        filterable: false,
         headerName: tAdmins("createdAt"),
         valueFormatter: (value: Date) =>
           format.dateTime(new Date(value), "short"),
@@ -669,6 +863,7 @@ const Admins = ({
     ],
     [
       currentUserId,
+      filterOperators,
       format,
       handleBanUser,
       handleImpersonateUser,
@@ -686,7 +881,13 @@ const Admins = ({
 
   return (
     <>
-      <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
+      <Stack
+        direction="row"
+        flexWrap="wrap"
+        justifyContent="space-between"
+        alignItems="center"
+        gap={1}
+      >
         <Button
           onClick={handleCreateUser}
           size="small"
@@ -695,16 +896,69 @@ const Admins = ({
         >
           {tAdmins("actions.createUser.title")}
         </Button>
+        <Stack
+          marginLeft="auto"
+          direction="row"
+          flexWrap="wrap"
+          justifyContent="flex-end"
+          alignItems="center"
+          gap={1}
+        >
+          <TextField
+            error={!!errors.searchField}
+            helperText={errors.searchField?.message}
+            label={tToolbar("search.field")}
+            select
+            size="small"
+            slotProps={{
+              inputLabel: { shrink: true },
+              select: {
+                displayEmpty: true,
+                renderValue: (selected) =>
+                  selected ? (
+                    fieldLabelMap[selected as SearchField]
+                  ) : (
+                    <em>{tToolbar("search.fieldPlaceholder")}</em>
+                  ),
+              },
+            }}
+            value={searchField}
+            {...register("searchField")}
+          >
+            <MenuItem disabled value="">
+              <em>{tToolbar("search.fieldPlaceholder")}</em>
+            </MenuItem>
+            {searchFields.map((field) => (
+              <MenuItem key={field} value={field}>
+                {fieldLabelMap[field]}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            error={!!errors.searchValue}
+            helperText={errors.searchValue?.message}
+            label={tToolbar("search.label")}
+            placeholder={tToolbar("search.placeholder")}
+            size="small"
+            {...register("searchValue", {
+              onChange: () =>
+                setPaginationModel((prev) => ({ ...prev, page: 0 })),
+            })}
+          />
+        </Stack>
       </Stack>
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}
         columns={columns}
+        filterMode="server"
+        filterModel={filterModel}
         loading={isValidating}
+        onFilterModelChange={handleFilterModelChange}
         onPaginationModelChange={handlePaginationModelChange}
         onSortModelChange={handleSortModelChange}
         paginationMode="server"
-        paginationModel={{ ...paginationModel, page: paginationModel.page - 1 }}
+        paginationModel={paginationModel}
         rowCount={rowCount}
         rows={rows}
         sortingMode="server"

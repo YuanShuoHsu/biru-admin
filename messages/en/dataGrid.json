@@ -16,6 +16,7 @@
     "search": {
       "clear": "Clear search",
       "field": "Search field",
+      "fieldPlaceholder": "Please select your search field",
       "label": "Search",
       "operator": {
         "contains": "Contains",
