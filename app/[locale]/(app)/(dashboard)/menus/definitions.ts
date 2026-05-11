@@ -5,7 +5,9 @@ export const useMenusFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z.object({
-    organizationSlug: z.string().min(1, tValidation("organizationSlug.required")),
+    organizationSlug: z
+      .string()
+      .min(1, tValidation("organizationSlug.required")),
   });
 };
 
