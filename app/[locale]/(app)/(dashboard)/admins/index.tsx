@@ -115,19 +115,6 @@ type SearchField = NonNullable<ListUsersQuery["searchField"]>;
 type SearchOperator = NonNullable<ListUsersQuery["searchOperator"]>;
 type FilterOperator = NonNullable<ListUsersQuery["filterOperator"]>;
 
-const isFilterOperator = (value: string): value is FilterOperator =>
-  SEARCH_OPERATORS.some((operator) => operator === value);
-
-const getColumnFilterItem = (model: GridFilterModel) => {
-  const item = model.items[0];
-
-  return {
-    filterValue: typeof item?.value === "string" ? item.value : "",
-    filterField: item?.field || "",
-    filterOperator: item?.operator || "",
-  };
-};
-
 const ROLE_COLOR_MAP: Record<AdminRole, "error" | "default"> = {
   admin: "error",
   user: "default",
@@ -157,24 +144,13 @@ const Admins = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  searchField: initialSearchField = "name",
-  searchOperator: initialSearchOperator = "contains",
+  searchField: initialSearchField,
+  searchOperator: initialSearchOperator,
   searchValue: initialSearchValue,
   sortBy,
   sortDirection,
   userSessions: initialUserSessions,
 }: AdminsProps) => {
-  const initialFilterItems: GridFilterModel["items"] =
-    initialFilterField && initialFilterOperator && initialFilterValue
-      ? [
-          {
-            field: initialFilterField,
-            operator: initialFilterOperator,
-            value: initialFilterValue,
-          },
-        ]
-      : [];
-
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -183,7 +159,16 @@ const Admins = ({
     sortBy && sortDirection ? [{ field: sortBy, sort: sortDirection }] : [],
   );
   const [filterModel, setFilterModel] = useState<GridFilterModel>({
-    items: initialFilterItems,
+    items:
+      initialFilterField && initialFilterOperator && initialFilterValue
+        ? [
+            {
+              field: initialFilterField,
+              operator: initialFilterOperator,
+              value: initialFilterValue,
+            },
+          ]
+        : [],
   });
 
   const { session, setSession } = useAuthStore((state) => state);
@@ -196,9 +181,9 @@ const Admins = ({
     register,
   } = useForm<SearchForm>({
     defaultValues: {
-      searchField: initialSearchField,
-      searchOperator: initialSearchOperator,
-      searchValue: initialSearchValue ?? "",
+      searchField: initialSearchField || "name",
+      searchOperator: initialSearchOperator || "contains",
+      searchValue: initialSearchValue || "",
     },
     resolver: zodResolver(searchFormSchema),
   });
@@ -219,8 +204,6 @@ const Admins = ({
 
   const searchParams = useSearchParams();
 
-  const columnFilterItem = getColumnFilterItem(filterModel);
-
   const {
     data: { rows, rowCount, userSessions } = {
       rows: initialRows,
@@ -238,64 +221,36 @@ const Admins = ({
       searchValue,
       searchField,
       searchOperator,
-      columnFilterItem.filterField,
-      columnFilterItem.filterOperator,
-      columnFilterItem.filterValue,
+      filterModel.items[0]?.field,
+      filterModel.items[0]?.operator,
+      filterModel.items[0]?.value,
     ],
-    async ([
-      ,
-      page,
-      pageSize,
-      sortModel,
-      searchValue,
-      searchField,
-      searchOperator,
-      filterField,
-      filterOperator,
-      filterValue,
-    ]: [
-      string,
-      number,
-      number,
-      GridSortModel,
-      string,
-      SearchField,
-      SearchOperator,
-      string,
-      string,
-      string,
-    ]) => {
-      const baseQuery = {
-        limit: pageSize,
-        offset: page * pageSize,
-        sortBy: sortModel[0]?.field || "createdAt",
-        sortDirection: sortModel[0]?.sort || "desc",
-      };
-      const query: NonNullable<
-        Parameters<typeof authClient.admin.listUsers>[0]["query"]
-      > = {
-        ...baseQuery,
-      };
-
-      const validFilterOperator = isFilterOperator(filterOperator)
-        ? filterOperator
-        : undefined;
-
-      if (filterField && validFilterOperator && filterValue) {
-        query.filterField = filterField;
-        query.filterOperator = validFilterOperator;
-        query.filterValue = filterValue;
-      }
-
-      if (searchField && searchOperator && searchValue) {
-        query.searchValue = searchValue;
-        query.searchField = searchField;
-        query.searchOperator = searchOperator;
-      }
+    async () => {
+      const filterItem = filterModel.items[0];
 
       const { data } = await authClient.admin.listUsers({
-        query,
+        query: {
+          limit: paginationModel.pageSize,
+          offset: paginationModel.page * paginationModel.pageSize,
+          sortBy: sortModel[0]?.field || "createdAt",
+          sortDirection: sortModel[0]?.sort || "desc",
+          ...(filterItem?.field &&
+            filterItem?.operator &&
+            filterItem?.value && {
+              filterField: filterItem.field,
+              filterOperator: filterItem.operator,
+              filterValue: filterItem.value,
+            }),
+          ...(searchField &&
+            searchOperator &&
+            searchValue && {
+              searchField,
+              searchOperator,
+              searchValue,
+            }),
+        },
       });
+
       const userRows = data?.users || [];
       const userSessions = await getUserSessions(userRows);
 
@@ -386,8 +341,7 @@ const Admins = ({
     (newModel: GridFilterModel) => {
       setFilterModel(newModel);
 
-      const { filterField, filterOperator, filterValue } =
-        getColumnFilterItem(newModel);
+      const filterItem = newModel.items[0];
 
       setPaginationModel((prev) => ({ ...prev, page: 0 }));
 
@@ -404,12 +358,12 @@ const Admins = ({
       const params = new URLSearchParams({
         ...rest,
         page: "1",
-        ...(filterValue &&
-          filterField &&
-          filterOperator && {
-            filterField,
-            filterOperator,
-            filterValue,
+        ...(filterItem?.field &&
+          filterItem?.operator &&
+          filterItem?.value && {
+            filterField: filterItem.field,
+            filterOperator: filterItem.operator,
+            filterValue: filterItem.value,
           }),
       });
       router.replace(`${pathname}?${params.toString()}`);
