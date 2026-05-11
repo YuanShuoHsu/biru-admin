@@ -18,11 +18,8 @@ import { useCallback, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import useSWR from "swr";
 
-import {
-  searchFields,
-  type SearchForm,
-  useSearchFormSchema,
-} from "./definitions";
+import { SEARCH_FIELDS, SEARCH_OPERATORS } from "./constants";
+import { type SearchForm, useSearchFormSchema } from "./definitions";
 
 import BanUserDialogContent from "./BanUserDialogContent";
 import CreateUserDialogContent from "./CreateUserDialogContent";
@@ -116,6 +113,7 @@ type ListUsersQuery = NonNullable<
   Parameters<typeof authClient.admin.listUsers>[0]["query"]
 >;
 type SearchField = NonNullable<ListUsersQuery["searchField"]>;
+type SearchOperator = NonNullable<ListUsersQuery["searchOperator"]>;
 type FilterOperator = NonNullable<ListUsersQuery["filterOperator"]>;
 const COLUMN_FILTER_OPERATORS = [
   "contains",
@@ -153,6 +151,8 @@ interface AdminsProps {
   filterField?: string;
   filterOperator?: FilterOperator;
   filterValue?: string;
+  searchField?: SearchField;
+  searchOperator?: SearchOperator;
   searchValue?: string;
   sortBy?: string;
   sortDirection?: "asc" | "desc";
@@ -167,6 +167,8 @@ const Admins = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
+  searchField: initialSearchField = "name",
+  searchOperator: initialSearchOperator = "contains",
   searchValue: initialSearchValue,
   sortBy,
   sortDirection,
@@ -204,11 +206,16 @@ const Admins = ({
     formState: { errors },
     register,
   } = useForm<SearchForm>({
-    defaultValues: { searchField: "name", searchValue: "" },
+    defaultValues: {
+      searchField: initialSearchField,
+      searchOperator: initialSearchOperator,
+      searchValue: initialSearchValue ?? "",
+    },
     resolver: zodResolver(searchFormSchema),
   });
 
   const searchField = useWatch({ control, name: "searchField" });
+  const searchOperator = useWatch({ control, name: "searchOperator" });
   const searchValue = useWatch({ control, name: "searchValue" });
 
   const format = useFormatter();
@@ -241,6 +248,7 @@ const Admins = ({
       sortModel,
       searchValue,
       searchField,
+      searchOperator,
       columnFilterItem.filterField,
       columnFilterItem.filterOperator,
       columnFilterItem.filterValue,
@@ -252,6 +260,7 @@ const Admins = ({
       sortModel,
       searchValue,
       searchField,
+      searchOperator,
       filterField,
       filterOperator,
       filterValue,
@@ -262,6 +271,7 @@ const Admins = ({
       GridSortModel,
       string,
       SearchField,
+      SearchOperator,
       string,
       string,
       string,
@@ -286,10 +296,12 @@ const Admins = ({
         query.filterField = filterField;
         query.filterOperator = validFilterOperator;
         query.filterValue = filterValue;
-      } else if (searchValue) {
+      }
+
+      if (searchField && searchOperator && searchValue) {
         query.searchValue = searchValue;
         query.searchField = searchField;
-        query.searchOperator = "contains";
+        query.searchOperator = searchOperator;
       }
 
       const { data } = await authClient.admin.listUsers({
@@ -397,8 +409,6 @@ const Admins = ({
         filterOperator: _fo,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         filterValue: _fv,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        searchValue: _sv,
         ...rest
       } = Object.fromEntries(searchParams);
 
@@ -923,14 +933,62 @@ const Admins = ({
               },
             }}
             value={searchField}
-            {...register("searchField")}
+            {...register("searchField", {
+              onChange: (e) => {
+                setPaginationModel((prev) => ({ ...prev, page: 0 }));
+
+                const newField = e.target.value as SearchField;
+                const params = new URLSearchParams(searchParams.toString());
+                params.set("page", "1");
+                params.delete("searchField");
+                params.delete("searchOperator");
+                params.delete("searchValue");
+                if (searchValue) {
+                  params.set("searchField", newField);
+                  params.set("searchOperator", searchOperator);
+                  params.set("searchValue", searchValue);
+                }
+                router.replace(`${pathname}?${params.toString()}`);
+              },
+            })}
           >
             <MenuItem disabled value="">
               <em>{tToolbar("search.fieldPlaceholder")}</em>
             </MenuItem>
-            {searchFields.map((field) => (
+            {SEARCH_FIELDS.map((field) => (
               <MenuItem key={field} value={field}>
                 {fieldLabelMap[field]}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            label={tToolbar("search.operator.label")}
+            select
+            size="small"
+            slotProps={{ inputLabel: { shrink: true } }}
+            value={searchOperator}
+            {...register("searchOperator", {
+              onChange: (e) => {
+                setPaginationModel((prev) => ({ ...prev, page: 0 }));
+
+                const newOperator = e.target.value as SearchOperator;
+                const params = new URLSearchParams(searchParams.toString());
+                params.set("page", "1");
+                params.delete("searchField");
+                params.delete("searchOperator");
+                params.delete("searchValue");
+                if (searchValue) {
+                  params.set("searchField", searchField);
+                  params.set("searchOperator", newOperator);
+                  params.set("searchValue", searchValue);
+                }
+                router.replace(`${pathname}?${params.toString()}`);
+              },
+            })}
+          >
+            {SEARCH_OPERATORS.map((op) => (
+              <MenuItem key={op} value={op}>
+                {tToolbar(`search.operator.${op}`)}
               </MenuItem>
             ))}
           </TextField>
@@ -941,8 +999,22 @@ const Admins = ({
             placeholder={tToolbar("search.placeholder")}
             size="small"
             {...register("searchValue", {
-              onChange: () =>
-                setPaginationModel((prev) => ({ ...prev, page: 0 })),
+              onChange: (e) => {
+                setPaginationModel((prev) => ({ ...prev, page: 0 }));
+
+                const newSearchValue = e.target.value as string;
+                const params = new URLSearchParams(searchParams.toString());
+                params.set("page", "1");
+                params.delete("searchField");
+                params.delete("searchOperator");
+                params.delete("searchValue");
+                if (newSearchValue) {
+                  params.set("searchField", searchField);
+                  params.set("searchOperator", searchOperator);
+                  params.set("searchValue", newSearchValue);
+                }
+                router.replace(`${pathname}?${params.toString()}`);
+              },
             })}
           />
         </Stack>

@@ -3,30 +3,21 @@ import { cookies } from "next/headers";
 
 import Admins from ".";
 
+import {
+  FILTER_FIELDS,
+  FILTER_OPERATORS,
+  SEARCH_FIELDS,
+  SEARCH_OPERATORS,
+  SORT_BY_FIELDS,
+  SORT_DIRECTIONS,
+} from "./constants";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
 import { getUserSessions } from "@/utils/admins";
-
-const SORT_BY_FIELDS = ["name", "email", "role", "createdAt"] as const;
-const SORT_DIRECTIONS = ["asc", "desc"] as const;
-
-const FILTER_FIELDS = ["email", "name"] as const;
-const FILTER_OPERATORS = [
-  "eq",
-  "ne",
-  "lt",
-  "lte",
-  "gt",
-  "gte",
-  "in",
-  "not_in",
-  "contains",
-  "starts_with",
-  "ends_with",
-] as const;
 
 interface AdminsPageProps {
   params: Promise<{ locale: Locale }>;
@@ -36,6 +27,8 @@ interface AdminsPageProps {
     filterField?: string;
     filterOperator?: string;
     filterValue?: string;
+    searchField?: string;
+    searchOperator?: string;
     searchValue?: string;
     sortBy?: string;
     sortDirection?: string;
@@ -52,6 +45,8 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
       filterField: rawFilterField,
       filterOperator: rawFilterOperator,
       filterValue,
+      searchField: rawSearchField,
+      searchOperator: rawSearchOperator,
       searchValue,
       sortBy: rawSortBy,
       sortDirection: rawSortDirection,
@@ -73,6 +68,11 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
     (operator) => operator === rawFilterOperator,
   );
 
+  const searchField = SEARCH_FIELDS.find((field) => field === rawSearchField);
+  const searchOperator = SEARCH_OPERATORS.find(
+    (operator) => operator === rawSearchOperator,
+  );
+
   if (
     rawPage !== String(page) ||
     rawPageSize !== String(pageSize) ||
@@ -82,7 +82,11 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
     rawFilterField !== filterField ||
     rawFilterOperator !== filterOperator ||
     !!(filterField || filterOperator || filterValue) !==
-      !!(filterField && filterOperator && filterValue)
+      !!(filterField && filterOperator && filterValue) ||
+    rawSearchField !== searchField ||
+    rawSearchOperator !== searchOperator ||
+    !!(searchField || searchOperator || searchValue) !==
+      !!(searchField && searchOperator && searchValue)
   ) {
     const params = new URLSearchParams({
       page: String(page),
@@ -95,7 +99,13 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
           filterOperator,
           filterValue,
         }),
-      ...(searchValue && { searchValue }),
+      ...(searchField &&
+        searchOperator &&
+        searchValue && {
+          searchField,
+          searchOperator,
+          searchValue,
+        }),
     });
     redirect({ href: `/admins?${params.toString()}`, locale });
   }
@@ -120,11 +130,12 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
           filterOperator,
           filterValue,
         }),
-      ...(!filterField &&
+      ...(searchField &&
+        searchOperator &&
         searchValue && {
+          searchField,
+          searchOperator,
           searchValue,
-          searchField: "email",
-          searchOperator: "contains",
         }),
     },
     fetchOptions,
@@ -144,6 +155,8 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
+      searchField={searchField}
+      searchOperator={searchOperator}
       searchValue={searchValue}
       sortBy={sortBy}
       sortDirection={sortDirection}
