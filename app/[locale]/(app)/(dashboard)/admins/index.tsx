@@ -30,13 +30,13 @@ import SetRoleDialogContent from "./SetRoleDialogContent";
 import SetUserPasswordDialogContent from "./SetUserPasswordDialogContent";
 import UpdateUserDialogContent from "./UpdateUserDialogContent";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import {
   DEFAULT_AUTHENTICATED_ROUTE,
   IMPERSONATE_RETURN_KEY,
 } from "@/constants/route";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
