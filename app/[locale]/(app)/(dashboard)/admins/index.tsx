@@ -111,9 +111,9 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
 type ListUsersQuery = NonNullable<
   Parameters<typeof authClient.admin.listUsers>[0]["query"]
 >;
+type FilterOperator = NonNullable<ListUsersQuery["filterOperator"]>;
 type SearchField = NonNullable<ListUsersQuery["searchField"]>;
 type SearchOperator = NonNullable<ListUsersQuery["searchOperator"]>;
-type FilterOperator = NonNullable<ListUsersQuery["filterOperator"]>;
 
 const ROLE_COLOR_MAP: Record<AdminRole, "error" | "default"> = {
   admin: "error",
