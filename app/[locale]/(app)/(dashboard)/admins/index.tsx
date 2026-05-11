@@ -112,8 +112,10 @@ type ListUsersQuery = NonNullable<
   Parameters<typeof authClient.admin.listUsers>[0]["query"]
 >;
 type FilterOperator = NonNullable<ListUsersQuery["filterOperator"]>;
+type FilterValue = NonNullable<ListUsersQuery["filterValue"]>;
 type SearchField = NonNullable<ListUsersQuery["searchField"]>;
 type SearchOperator = NonNullable<ListUsersQuery["searchOperator"]>;
+type SortDirection = NonNullable<ListUsersQuery["sortDirection"]>;
 
 const ROLE_COLOR_MAP: Record<AdminRole, "error" | "default"> = {
   admin: "error",
@@ -127,12 +129,12 @@ interface AdminsProps {
   rowCount: number;
   filterField?: string;
   filterOperator?: FilterOperator;
-  filterValue?: string;
+  filterValue?: FilterValue;
   searchField?: SearchField;
   searchOperator?: SearchOperator;
   searchValue?: string;
   sortBy?: string;
-  sortDirection?: "asc" | "desc";
+  sortDirection?: SortDirection;
   userSessions: UserSessions;
 }
 
