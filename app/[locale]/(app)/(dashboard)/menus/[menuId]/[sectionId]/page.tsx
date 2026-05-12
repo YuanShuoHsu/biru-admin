@@ -88,10 +88,7 @@ const MenusMenuIdSectionIdPage = async ({
       !!(
         filterField &&
         filterOperator &&
-        (filterValue ||
-          NO_VALUE_FILTER_OPERATORS.includes(
-            filterOperator,
-          ))
+        (filterValue || NO_VALUE_FILTER_OPERATORS.includes(filterOperator))
       )
     // ||
     // rawSearchField !== searchField ||

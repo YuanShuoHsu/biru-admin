@@ -15,7 +15,10 @@ export const STRING_FILTER_OPERATORS = [
   "isEmpty",
   "isNotEmpty",
 ] as const;
-export const NO_VALUE_FILTER_OPERATORS: readonly string[] = ["isEmpty", "isNotEmpty"];
+export const NO_VALUE_FILTER_OPERATORS: readonly string[] = [
+  "isEmpty",
+  "isNotEmpty",
+];
 export const DATE_FILTER_OPERATORS = [
   "is",
   "not",

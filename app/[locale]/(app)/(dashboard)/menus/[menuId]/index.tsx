@@ -104,9 +104,7 @@ const MenusMenuId = ({
       initialFilterField &&
       initialFilterOperator &&
       (initialFilterValue ||
-        NO_VALUE_FILTER_OPERATORS.includes(
-          initialFilterOperator,
-        ))
+        NO_VALUE_FILTER_OPERATORS.includes(initialFilterOperator))
         ? [
             {
               field: initialFilterField,
@@ -171,9 +169,7 @@ const MenusMenuId = ({
           ...(filterField &&
             filterOperator &&
             (filterValue ||
-              NO_VALUE_FILTER_OPERATORS.includes(
-                filterOperator,
-              )) && {
+              NO_VALUE_FILTER_OPERATORS.includes(filterOperator)) && {
               filterField,
               filterOperator,
               ...(filterValue && { filterValue }),
@@ -282,9 +278,7 @@ const MenusMenuId = ({
         ...(filterItem?.field &&
           filterItem?.operator &&
           (filterItem?.value ||
-            NO_VALUE_FILTER_OPERATORS.includes(
-              filterItem.operator,
-            )) && {
+            NO_VALUE_FILTER_OPERATORS.includes(filterItem.operator)) && {
             filterField: filterItem.field,
             filterOperator: filterItem.operator,
             ...(filterItem?.value && { filterValue: filterItem.value }),

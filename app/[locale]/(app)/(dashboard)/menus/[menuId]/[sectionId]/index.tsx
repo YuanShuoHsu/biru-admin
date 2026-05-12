@@ -54,9 +54,9 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
-const DateFilterInputValue = (props: React.ComponentProps<typeof GridFilterInputValue>) => (
-  <GridFilterInputValue {...props} type="date" />
-);
+const DateFilterInputValue = (
+  props: React.ComponentProps<typeof GridFilterInputValue>,
+) => <GridFilterInputValue {...props} type="date" />;
 
 interface MenusMenuIdSectionIdProps {
   filterField?: string;
@@ -96,9 +96,7 @@ const MenusMenuIdSectionId = ({
       initialFilterField &&
       initialFilterOperator &&
       (initialFilterValue ||
-        NO_VALUE_FILTER_OPERATORS.includes(
-          initialFilterOperator,
-        ))
+        NO_VALUE_FILTER_OPERATORS.includes(initialFilterOperator))
         ? [
             {
               field: initialFilterField,
@@ -162,9 +160,7 @@ const MenusMenuIdSectionId = ({
           ...(filterField &&
             filterOperator &&
             (filterValue ||
-              NO_VALUE_FILTER_OPERATORS.includes(
-                filterOperator,
-              )) && {
+              NO_VALUE_FILTER_OPERATORS.includes(filterOperator)) && {
               filterField,
               filterOperator,
               ...(filterValue && { filterValue }),
@@ -273,9 +269,7 @@ const MenusMenuIdSectionId = ({
         ...(filterItem?.field &&
           filterItem?.operator &&
           (filterItem?.value ||
-            NO_VALUE_FILTER_OPERATORS.includes(
-              filterItem.operator,
-            )) && {
+            NO_VALUE_FILTER_OPERATORS.includes(filterItem.operator)) && {
             filterField: filterItem.field,
             filterOperator: filterItem.operator,
             ...(filterItem?.value && { filterValue: filterItem.value }),
