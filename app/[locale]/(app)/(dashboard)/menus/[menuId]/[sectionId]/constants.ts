@@ -12,7 +12,14 @@ export const STRING_FILTER_OPERATORS = [
   "starts_with",
   "ends_with",
 ] as const;
-export const DATE_FILTER_OPERATORS = ["eq", "ne", "lt", "lte", "gt", "gte"] as const;
+export const DATE_FILTER_OPERATORS = [
+  "eq",
+  "ne",
+  "lt",
+  "lte",
+  "gt",
+  "gte",
+] as const;
 export const FILTER_OPERATORS = [
   ...STRING_FILTER_OPERATORS,
   ...DATE_FILTER_OPERATORS,
