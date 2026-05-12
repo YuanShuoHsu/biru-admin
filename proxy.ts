@@ -21,8 +21,8 @@ const handleI18nRouting = createMiddleware(routing);
 const fetchWithCookies = (url: string, request: NextRequest) =>
   fetch(url, {
     headers: {
-      cookie: request.headers.get("cookie") ?? "",
-      "X-Forwarded-For": request.headers.get("X-Forwarded-For") ?? "",
+      cookie: request.headers.get("cookie") || "",
+      "X-Forwarded-For": request.headers.get("X-Forwarded-For") || "",
     },
   });
 
