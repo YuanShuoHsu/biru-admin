@@ -100,6 +100,7 @@
     "label": "組織",
     "placeholder": "請選擇您的組織"
   },
+  "reorder": "排序",
   "sections": {
     "actions": {
       "addSubsection": {

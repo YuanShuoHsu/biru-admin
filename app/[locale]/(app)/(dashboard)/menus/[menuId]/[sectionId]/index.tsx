@@ -7,7 +7,7 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
-import { FILTER_OPERATORS } from "./constants";
+import { DATE_FILTER_OPERATORS, STRING_FILTER_OPERATORS } from "./constants";
 import CreateMenuItemDialog from "./CreateMenuItemDialog";
 import UpdateMenuItemDialog from "./UpdateMenuItemDialog";
 
@@ -37,7 +37,11 @@ import type {
   GridRenderCellParams,
   GridSortModel,
 } from "@mui/x-data-grid";
-import { GridFilterInputValue, useGridApiRef } from "@mui/x-data-grid";
+import {
+  GridFilterInputDate,
+  GridFilterInputValue,
+  useGridApiRef,
+} from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -208,11 +212,22 @@ const MenusMenuIdSectionId = ({
     [pathname, router, searchParams],
   );
 
-  const filterOperators = useMemo<GridFilterOperator[]>(
+  const stringFilterOperators = useMemo<GridFilterOperator[]>(
     () =>
-      FILTER_OPERATORS.map((value) => ({
+      STRING_FILTER_OPERATORS.map((value) => ({
         getApplyFilterFn: () => null,
         InputComponent: GridFilterInputValue,
+        label: tToolbar(`filter.operator.${value}`),
+        value,
+      })),
+    [tToolbar],
+  );
+
+  const dateFilterOperators = useMemo<GridFilterOperator[]>(
+    () =>
+      DATE_FILTER_OPERATORS.map((value) => ({
+        getApplyFilterFn: () => null,
+        InputComponent: GridFilterInputDate,
         label: tToolbar(`filter.operator.${value}`),
         value,
       })),
@@ -411,7 +426,7 @@ const MenusMenuIdSectionId = ({
             {
               disableColumnMenu: true,
               field: "reorder",
-              headerName: "",
+              headerName: tMenus("reorder"),
               renderCell: () => <DragHandle />,
               resizable: false,
               sortable: false,
@@ -456,28 +471,31 @@ const MenusMenuIdSectionId = ({
       },
       {
         field: "name",
-        filterOperators,
+        filterOperators: stringFilterOperators,
         headerName: tMenus("items.name.label"),
       },
       {
         field: "createdAt",
+        filterOperators: dateFilterOperators,
         headerName: tMenus("createdAt"),
         valueFormatter: (value: string) =>
           format.dateTime(new Date(value), "short"),
       },
       {
         field: "updatedAt",
+        filterOperators: dateFilterOperators,
         headerName: tMenus("updatedAt"),
         valueFormatter: (value: string) =>
           format.dateTime(new Date(value), "short"),
       },
     ],
     [
-      filterOperators,
+      dateFilterOperators,
       format,
       handleDeleteItem,
       handleUpdateItem,
       isReorderMode,
+      stringFilterOperators,
       tMenus,
     ],
   );
