@@ -1,3 +1,5 @@
+// https://better-auth.com/docs/plugins/admin
+
 // https://mui.com/x/react-data-grid/column-dimensions/#ColumnAutosizingAsync.tsx
 // https://mui.com/x/react-data-grid/filtering/
 // https://mui.com/x/react-data-grid/filtering/customization/
@@ -15,13 +17,11 @@ import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
-import { useForm, useWatch } from "react-hook-form";
 import useSWR from "swr";
 
 import BanUserDialogContent from "./BanUserDialogContent";
-import { FILTER_OPERATORS, SEARCH_FIELDS, SEARCH_OPERATORS } from "./constants";
+import { FILTER_OPERATORS } from "./constants";
 import CreateUserDialogContent from "./CreateUserDialogContent";
-import { type SearchForm, useSearchFormSchema } from "./definitions";
 import SetRoleDialogContent from "./SetRoleDialogContent";
 import SetUserPasswordDialogContent from "./SetUserPasswordDialogContent";
 import UpdateUserDialogContent from "./UpdateUserDialogContent";
@@ -31,8 +31,6 @@ import {
   DEFAULT_AUTHENTICATED_ROUTE,
   IMPERSONATE_RETURN_KEY,
 } from "@/constants/route";
-
-import { zodResolver } from "@hookform/resolvers/zod";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
@@ -58,9 +56,7 @@ import {
   Chip,
   DialogContentText,
   IconButton,
-  MenuItem,
   Stack,
-  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -138,9 +134,9 @@ interface AdminsProps {
   quickFilterValue?: string;
   rowCount: number;
   rows: UserWithRole[];
-  searchField?: SearchField;
-  searchOperator?: SearchOperator;
-  searchValue?: string;
+  // searchField?: SearchField;
+  // searchOperator?: SearchOperator;
+  // searchValue?: string;
   sortBy?: string;
   sortDirection?: SortDirection;
   userSessions: UserSessions;
@@ -156,9 +152,9 @@ const Admins = ({
   quickFilterValue: initialQuickFilterValue,
   rowCount: initialRowCount,
   rows: initialRows,
-  searchField: initialSearchField,
-  searchOperator: initialSearchOperator,
-  searchValue: initialSearchValue,
+  // searchField: initialSearchField,
+  // searchOperator: initialSearchOperator,
+  // searchValue: initialSearchValue,
   sortBy,
   sortDirection,
   userSessions: initialUserSessions,
@@ -187,23 +183,23 @@ const Admins = ({
   const { session, setSession } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
 
-  const searchFormSchema = useSearchFormSchema();
-  const {
-    control,
-    formState: { errors },
-    register,
-  } = useForm<SearchForm>({
-    defaultValues: {
-      searchField: initialSearchField || "name",
-      searchOperator: initialSearchOperator || "contains",
-      searchValue: initialSearchValue || "",
-    },
-    resolver: zodResolver(searchFormSchema),
-  });
+  // const searchFormSchema = useSearchFormSchema();
+  // const {
+  //   control,
+  //   formState: { errors },
+  //   register,
+  // } = useForm<SearchForm>({
+  //   defaultValues: {
+  //     searchField: initialSearchField || "name",
+  //     searchOperator: initialSearchOperator || "contains",
+  //     searchValue: initialSearchValue || "",
+  //   },
+  //   resolver: zodResolver(searchFormSchema),
+  // });
 
-  const searchField = useWatch({ control, name: "searchField" });
-  const searchOperator = useWatch({ control, name: "searchOperator" });
-  const searchValue = useWatch({ control, name: "searchValue" });
+  // const searchField = useWatch({ control, name: "searchField" });
+  // const searchOperator = useWatch({ control, name: "searchOperator" });
+  // const searchValue = useWatch({ control, name: "searchValue" });
 
   const format = useFormatter();
 
@@ -237,9 +233,9 @@ const Admins = ({
       filterModel.quickFilterValues,
       paginationModel.page,
       paginationModel.pageSize,
-      searchField,
-      searchOperator,
-      searchValue,
+      // searchField,
+      // searchOperator,
+      // searchValue,
       sortModel,
     ],
     async () => {
@@ -261,9 +257,9 @@ const Admins = ({
           limit: String(paginationModel.pageSize),
           offset: String(paginationModel.page * paginationModel.pageSize),
           quickFilterValue,
-          ...(searchField &&
-            searchOperator &&
-            searchValue && { searchField, searchOperator, searchValue }),
+          // ...(searchField &&
+          //   searchOperator &&
+          //   searchValue && { searchField, searchOperator, searchValue }),
           sortBy: sortModel[0]?.field || "createdAt",
           sortDirection: sortModel[0]?.sort || "desc",
         });
@@ -288,9 +284,9 @@ const Admins = ({
               }),
             limit: paginationModel.pageSize,
             offset: paginationModel.page * paginationModel.pageSize,
-            ...(searchField &&
-              searchOperator &&
-              searchValue && { searchField, searchOperator, searchValue }),
+            // ...(searchField &&
+            //   searchOperator &&
+            //   searchValue && { searchField, searchOperator, searchValue }),
             sortBy: sortModel[0]?.field || "createdAt",
             sortDirection: sortModel[0]?.sort || "desc",
           },
@@ -321,10 +317,10 @@ const Admins = ({
     (row) => row.id !== currentUserId && row.role !== "admin",
   );
 
-  const fieldLabelMap: Record<SearchField, string> = {
-    name: tAdmins("name"),
-    email: tAdmins("email.label"),
-  };
+  // const fieldLabelMap: Record<SearchField, string> = {
+  //   name: tAdmins("name"),
+  //   email: tAdmins("email.label"),
+  // };
 
   const filterOperators = useMemo<GridFilterOperator[]>(
     () =>
@@ -890,7 +886,7 @@ const Admins = ({
         >
           {tAdmins("actions.createUser.title")}
         </Button>
-        <Stack
+        {/* <Stack
           marginLeft="auto"
           direction="row"
           flexWrap="wrap"
@@ -1025,7 +1021,7 @@ const Admins = ({
               },
             })}
           />
-        </Stack>
+        </Stack> */}
       </Stack>
       <DataGrid
         {...DATA_GRID_PROPS}

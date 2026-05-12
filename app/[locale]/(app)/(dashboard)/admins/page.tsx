@@ -6,8 +6,6 @@ import Admins from ".";
 import {
   FILTER_FIELDS,
   FILTER_OPERATORS,
-  SEARCH_FIELDS,
-  SEARCH_OPERATORS,
   SORT_BY_FIELDS,
   SORT_DIRECTIONS,
 } from "./constants";
@@ -48,9 +46,9 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
       page: rawPage,
       pageSize: rawPageSize,
       quickFilterValue: rawQuickFilterValue,
-      searchField: rawSearchField,
-      searchOperator: rawSearchOperator,
-      searchValue,
+      // searchField: rawSearchField,
+      // searchOperator: rawSearchOperator,
+      // searchValue,
       sortBy: rawSortBy,
       sortDirection: rawSortDirection,
     },
@@ -71,10 +69,10 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
     (operator) => operator === rawFilterOperator,
   );
 
-  const searchField = SEARCH_FIELDS.find((field) => field === rawSearchField);
-  const searchOperator = SEARCH_OPERATORS.find(
-    (operator) => operator === rawSearchOperator,
-  );
+  // const searchField = SEARCH_FIELDS.find((field) => field === rawSearchField);
+  // const searchOperator = SEARCH_OPERATORS.find(
+  //   (operator) => operator === rawSearchOperator,
+  // );
 
   if (
     rawPage !== String(page) ||
@@ -85,11 +83,12 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
     rawFilterField !== filterField ||
     rawFilterOperator !== filterOperator ||
     !!(filterField || filterOperator || filterValue) !==
-      !!(filterField && filterOperator && filterValue) ||
-    rawSearchField !== searchField ||
-    rawSearchOperator !== searchOperator ||
-    !!(searchField || searchOperator || searchValue) !==
-      !!(searchField && searchOperator && searchValue)
+      !!(filterField && filterOperator && filterValue)
+    // ||
+    // rawSearchField !== searchField ||
+    // rawSearchOperator !== searchOperator ||
+    // !!(searchField || searchOperator || searchValue) !==
+    //   !!(searchField && searchOperator && searchValue)
   ) {
     const params = new URLSearchParams({
       page: String(page),
@@ -99,9 +98,9 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
         filterOperator &&
         filterValue && { filterField, filterOperator, filterValue }),
       ...(rawQuickFilterValue && { quickFilterValue: rawQuickFilterValue }),
-      ...(searchField &&
-        searchOperator &&
-        searchValue && { searchField, searchOperator, searchValue }),
+      // ...(searchField &&
+      //   searchOperator &&
+      //   searchValue && { searchField, searchOperator, searchValue }),
     });
     redirect({ href: `/admins?${params.toString()}`, locale });
   }
@@ -131,9 +130,9 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
       limit: String(pageSize),
       offset: String((page - 1) * pageSize),
       quickFilterValue,
-      ...(searchField &&
-        searchOperator &&
-        searchValue && { searchField, searchOperator, searchValue }),
+      // ...(searchField &&
+      //   searchOperator &&
+      //   searchValue && { searchField, searchOperator, searchValue }),
       sortBy: sortBy || "createdAt",
       sortDirection: sortDirection || "desc",
     });
@@ -153,9 +152,9 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
           filterValue && { filterField, filterOperator, filterValue }),
         limit: pageSize,
         offset: (page - 1) * pageSize,
-        ...(searchField &&
-          searchOperator &&
-          searchValue && { searchField, searchOperator, searchValue }),
+        // ...(searchField &&
+        //   searchOperator &&
+        //   searchValue && { searchField, searchOperator, searchValue }),
         sortBy: sortBy || "createdAt",
         sortDirection: sortDirection || "desc",
       },
@@ -179,9 +178,9 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
       quickFilterValue={rawQuickFilterValue}
       rows={rows}
       rowCount={rowCount}
-      searchField={searchField}
-      searchOperator={searchOperator}
-      searchValue={searchValue}
+      // searchField={searchField}
+      // searchOperator={searchOperator}
+      // searchValue={searchValue}
       sortBy={sortBy}
       sortDirection={sortDirection}
       userSessions={userSessions}
