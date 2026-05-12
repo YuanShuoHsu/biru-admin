@@ -246,7 +246,7 @@ const Admins = ({
       const filterItem = filterModel.items[0];
       const quickFilterValue = getQuickFilterValue(
         quickFilterMessages,
-        filterModel.quickFilterValues,
+        (filterModel.quickFilterValues || []).join(" "),
       );
 
       if (quickFilterValue) {

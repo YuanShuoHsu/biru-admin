@@ -6,7 +6,7 @@ export interface QuickFilterMessages {
   emailSubscribed: { subscribed: string; unsubscribed: string };
 }
 
-export const buildQuickFilterMap = ({
+const buildQuickFilterMap = ({
   role: { admin, user },
   status: { banned, active },
   emailSubscribed: { subscribed, unsubscribed },
@@ -21,17 +21,18 @@ export const buildQuickFilterMap = ({
 
 export const getQuickFilterValue = (
   quickFilterMessages: QuickFilterMessages,
-  quickFilterValues?: string[],
+  quickFilterValue: string,
 ) => {
-  const quickFilterText = (quickFilterValues || []).join(" ").trim();
-  if (!quickFilterText) return undefined;
+  const normalized = quickFilterValue.trim().toLowerCase();
+  if (!normalized) return undefined;
 
   const quickFilterMap = buildQuickFilterMap(quickFilterMessages);
-  const matchedValue = Object.entries(quickFilterMap).find(([label]) =>
-    label.toLowerCase().includes(quickFilterText.toLowerCase()),
-  )?.[1];
 
-  return matchedValue || quickFilterText;
+  return (
+    Object.entries(quickFilterMap).find(([label]) =>
+      label.toLowerCase().includes(normalized),
+    )?.[1] || normalized
+  );
 };
 
 export type UserSessions = {

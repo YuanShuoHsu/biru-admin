@@ -117,7 +117,7 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
   const quickFilterMessages = messages.admins;
   const quickFilterValue = getQuickFilterValue(
     quickFilterMessages,
-    rawQuickFilterValue ? [rawQuickFilterValue] : undefined,
+    rawQuickFilterValue || "",
   );
 
   let rows: UserWithRole[] = [];
