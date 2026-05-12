@@ -80,7 +80,12 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { AdminRole, AdminUser } from "@/types/admins";
 
-import { getUserSessions, type UserSessions } from "@/utils/admins";
+import {
+  getQuickFilterValue,
+  getUserSessions,
+  type QuickFilterMessages,
+  type UserSessions,
+} from "@/utils/admins";
 import { fetcher } from "@/utils/fetcher";
 
 const DataGrid = dynamic(
@@ -129,7 +134,7 @@ interface AdminsProps {
   filterValue?: FilterValue;
   page: number;
   pageSize: number;
-  quickFilterMap: Record<string, string>;
+  quickFilterMessages: QuickFilterMessages;
   quickFilterValue?: string;
   rowCount: number;
   rows: UserWithRole[];
@@ -147,7 +152,7 @@ const Admins = ({
   filterValue: initialFilterValue,
   page,
   pageSize,
-  quickFilterMap,
+  quickFilterMessages,
   quickFilterValue: initialQuickFilterValue,
   rowCount: initialRowCount,
   rows: initialRows,
@@ -212,9 +217,6 @@ const Admins = ({
 
   const searchParams = useSearchParams();
 
-  const quickFilterInput =
-    filterModel.quickFilterValues?.join(" ").trim() || "";
-
   const tAdmins = useTranslations("admins");
   const tToolbar = useTranslations("dataGrid.toolbar");
 
@@ -229,26 +231,25 @@ const Admins = ({
   } = useSWR(
     [
       "/api/admins",
-      paginationModel.page,
-      paginationModel.pageSize,
-      sortModel,
-      quickFilterInput,
-      searchValue,
-      searchField,
-      searchOperator,
       filterModel.items[0]?.field,
       filterModel.items[0]?.operator,
       filterModel.items[0]?.value,
+      filterModel.quickFilterValues,
+      paginationModel.page,
+      paginationModel.pageSize,
+      searchField,
+      searchOperator,
+      searchValue,
+      sortModel,
     ],
     async () => {
       const filterItem = filterModel.items[0];
+      const quickFilterValue = getQuickFilterValue(
+        quickFilterMessages,
+        filterModel.quickFilterValues,
+      );
 
-      if (quickFilterInput) {
-        const quickFilterValue = Object.entries(quickFilterMap).find(
-          ([label]) =>
-            label.toLowerCase().includes(quickFilterInput.toLowerCase()),
-        )?.[1];
-
+      if (quickFilterValue) {
         const params = new URLSearchParams({
           ...(filterItem?.field &&
             filterItem?.operator &&
@@ -259,7 +260,7 @@ const Admins = ({
             }),
           limit: String(paginationModel.pageSize),
           offset: String(paginationModel.page * paginationModel.pageSize),
-          ...(quickFilterValue && { quickFilterValue }),
+          quickFilterValue,
           ...(searchField &&
             searchOperator &&
             searchValue && { searchField, searchOperator, searchValue }),
@@ -275,31 +276,31 @@ const Admins = ({
         const userSessions = await getUserSessions(userRows);
 
         return { rows: userRows, rowCount: total, userSessions };
+      } else {
+        const { data } = await authClient.admin.listUsers({
+          query: {
+            ...(filterItem?.field &&
+              filterItem?.operator &&
+              filterItem?.value && {
+                filterField: filterItem.field,
+                filterOperator: filterItem.operator,
+                filterValue: filterItem.value,
+              }),
+            limit: paginationModel.pageSize,
+            offset: paginationModel.page * paginationModel.pageSize,
+            ...(searchField &&
+              searchOperator &&
+              searchValue && { searchField, searchOperator, searchValue }),
+            sortBy: sortModel[0]?.field || "createdAt",
+            sortDirection: sortModel[0]?.sort || "desc",
+          },
+        });
+
+        const userRows = data?.users || [];
+        const userSessions = await getUserSessions(userRows);
+
+        return { rows: userRows, rowCount: data?.total || 0, userSessions };
       }
-
-      const { data } = await authClient.admin.listUsers({
-        query: {
-          ...(filterItem?.field &&
-            filterItem?.operator &&
-            filterItem?.value && {
-              filterField: filterItem.field,
-              filterOperator: filterItem.operator,
-              filterValue: filterItem.value,
-            }),
-          limit: paginationModel.pageSize,
-          offset: paginationModel.page * paginationModel.pageSize,
-          ...(searchField &&
-            searchOperator &&
-            searchValue && { searchField, searchOperator, searchValue }),
-          sortBy: sortModel[0]?.field || "createdAt",
-          sortDirection: sortModel[0]?.sort || "desc",
-        },
-      });
-
-      const userRows = data?.users || [];
-      const userSessions = await getUserSessions(userRows);
-
-      return { rows: userRows, rowCount: data?.total || 0, userSessions };
     },
     {
       fallbackData: {
@@ -381,8 +382,9 @@ const Admins = ({
       setPaginationModel((prev) => ({ ...prev, page: 0 }));
 
       const filterItem = newModel.items[0];
-      const newQuickFilterValue =
-        newModel.quickFilterValues?.join(" ").trim() || "";
+      const newQuickFilterValue = (newModel.quickFilterValues || [])
+        .join(" ")
+        .trim();
 
       const {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars

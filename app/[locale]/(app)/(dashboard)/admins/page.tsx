@@ -17,7 +17,7 @@ import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
-import { buildQuickFilterMap, getUserSessions } from "@/utils/admins";
+import { getQuickFilterValue, getUserSessions } from "@/utils/admins";
 import { fetcher } from "@/utils/fetcher";
 
 interface AdminsPageProps {
@@ -114,23 +114,23 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
   };
 
   const messages = await getMessages();
-  const quickFilterMap = buildQuickFilterMap(messages.admins);
+  const quickFilterMessages = messages.admins;
+  const quickFilterValue = getQuickFilterValue(
+    quickFilterMessages,
+    rawQuickFilterValue ? [rawQuickFilterValue] : undefined,
+  );
 
   let rows: UserWithRole[] = [];
   let rowCount = 0;
 
-  if (rawQuickFilterValue) {
-    const quickFilterValue = Object.entries(quickFilterMap).find(([label]) =>
-      label.toLowerCase().includes(rawQuickFilterValue.toLowerCase()),
-    )?.[1];
-
+  if (quickFilterValue) {
     const queryParams = new URLSearchParams({
       ...(filterField &&
         filterOperator &&
         filterValue && { filterField, filterOperator, filterValue }),
       limit: String(pageSize),
       offset: String((page - 1) * pageSize),
-      ...(quickFilterValue && { quickFilterValue }),
+      quickFilterValue,
       ...(searchField &&
         searchOperator &&
         searchValue && { searchField, searchOperator, searchValue }),
@@ -175,7 +175,7 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
       filterValue={filterValue}
       page={page}
       pageSize={pageSize}
-      quickFilterMap={quickFilterMap}
+      quickFilterMessages={quickFilterMessages}
       quickFilterValue={rawQuickFilterValue}
       rows={rows}
       rowCount={rowCount}
