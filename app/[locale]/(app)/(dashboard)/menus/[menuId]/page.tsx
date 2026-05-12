@@ -3,6 +3,12 @@ import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
 import MenusMenuId from ".";
+import {
+  FILTER_FIELDS,
+  FILTER_OPERATORS,
+  SORT_BY_FIELDS,
+  SORT_DIRECTIONS,
+} from "./constants";
 
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
@@ -12,6 +18,9 @@ import { getAdminMenu, getAdminMenuSections } from "@/utils/menus";
 interface MenusMenuIdPageProps {
   params: Promise<{ locale: Locale; menuId: string }>;
   searchParams: Promise<{
+    filterField?: string;
+    filterOperator?: string;
+    filterValue?: string;
     organization?: string;
     page?: string;
     pageSize?: string;
@@ -28,6 +37,12 @@ const MenusMenuIdPage = async ({
     cookieStore,
     { locale, menuId },
     {
+      filterField: rawFilterField,
+      filterOperator: rawFilterOperator,
+      filterValue,
+      // searchField: rawSearchField,
+      // searchOperator: rawSearchOperator,
+      // searchValue,
       page: rawPage,
       pageSize: rawPageSize,
       sortBy: rawSortBy,
@@ -40,25 +55,49 @@ const MenusMenuIdPage = async ({
 
   const page = Math.max(1, Number(rawPage) || 1);
   const pageSize = Math.max(1, Number(rawPageSize) || 10);
-  const SORT_BY_FIELDS = ["name", "createdAt", "updatedAt"] as const;
-  const SORT_DIRECTIONS = ["asc", "desc"] as const;
+
   const sortBy = SORT_BY_FIELDS.find((field) => field === rawSortBy);
   const sortDirection = SORT_DIRECTIONS.find(
     (direction) => direction === rawSortDirection,
   );
+
+  const filterField = FILTER_FIELDS.find((field) => field === rawFilterField);
+  const filterOperator = FILTER_OPERATORS.find(
+    (operator) => operator === rawFilterOperator,
+  );
+
+  // const searchField = SEARCH_FIELDS.find((field) => field === rawSearchField);
+  // const searchOperator = SEARCH_OPERATORS.find(
+  //   (operator) => operator === rawSearchOperator,
+  // );
 
   if (
     rawPage !== String(page) ||
     rawPageSize !== String(pageSize) ||
     rawSortBy !== sortBy ||
     rawSortDirection !== sortDirection ||
-    !!sortBy !== !!sortDirection
+    !!sortBy !== !!sortDirection ||
+    rawFilterField !== filterField ||
+    rawFilterOperator !== filterOperator ||
+    !!(filterField || filterOperator || filterValue) !==
+      !!(filterField && filterOperator && filterValue)
+    // ||
+    // rawSearchField !== searchField ||
+    // rawSearchOperator !== searchOperator ||
+    // !!(searchField || searchOperator || searchValue) !==
+    //   !!(searchField && searchOperator && searchValue)
   ) {
     const params = new URLSearchParams({
       ...restSearchParams,
       page: String(page),
       pageSize: String(pageSize),
       ...(sortBy && sortDirection && { sortBy, sortDirection }),
+      ...(filterField &&
+        filterOperator &&
+        filterValue && { filterField, filterOperator, filterValue }),
+      // ...(searchField &&
+      //   searchOperator &&
+      //   searchValue && { searchField, searchOperator, searchValue }),
     });
     redirect({
       href: `/menus/${menuId}?${params.toString()}`,
@@ -73,6 +112,9 @@ const MenusMenuIdPage = async ({
       menuId,
       page,
       pageSize,
+      filterField,
+      filterOperator,
+      filterValue,
       sortBy,
       sortDirection,
       fetchOptions,
@@ -83,10 +125,16 @@ const MenusMenuIdPage = async ({
 
   return (
     <MenusMenuId
+      filterField={filterField}
+      filterOperator={filterOperator}
+      filterValue={filterValue}
       menu={menu}
       page={page}
       pageSize={pageSize}
       rowCount={total}
+      // searchField={searchField}
+      // searchOperator={searchOperator}
+      // searchValue={searchValue}
       sections={sections}
       sortBy={sortBy}
       sortDirection={sortDirection}

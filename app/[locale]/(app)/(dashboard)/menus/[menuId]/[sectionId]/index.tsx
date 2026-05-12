@@ -7,6 +7,7 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
+import { FILTER_OPERATORS } from "./constants";
 import CreateMenuItemDialog from "./CreateMenuItemDialog";
 import UpdateMenuItemDialog from "./UpdateMenuItemDialog";
 
@@ -30,11 +31,13 @@ import {
 } from "@mui/material";
 import type {
   GridColDef,
+  GridFilterModel,
+  GridFilterOperator,
   GridPaginationModel,
   GridRenderCellParams,
   GridSortModel,
 } from "@mui/x-data-grid";
-import { useGridApiRef } from "@mui/x-data-grid";
+import { GridFilterInputValue, useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -48,6 +51,9 @@ const DataGrid = dynamic(
 );
 
 interface MenusMenuIdSectionIdProps {
+  filterField?: string;
+  filterOperator?: string;
+  filterValue?: string;
   items: MenuItem[];
   page: number;
   pageSize: number;
@@ -58,6 +64,12 @@ interface MenusMenuIdSectionIdProps {
 }
 
 const MenusMenuIdSectionId = ({
+  filterField: initialFilterField,
+  filterOperator: initialFilterOperator,
+  filterValue: initialFilterValue,
+  // searchField: initialSearchField,
+  // searchOperator: initialSearchOperator,
+  // searchValue: initialSearchValue,
   items: initialItems,
   page,
   pageSize,
@@ -74,6 +86,18 @@ const MenusMenuIdSectionId = ({
   const [sortModel, setSortModel] = useState<GridSortModel>(
     sortBy && sortDirection ? [{ field: sortBy, sort: sortDirection }] : [],
   );
+  const [filterModel, setFilterModel] = useState<GridFilterModel>({
+    items:
+      initialFilterField && initialFilterOperator && initialFilterValue
+        ? [
+            {
+              field: initialFilterField,
+              operator: initialFilterOperator,
+              value: initialFilterValue,
+            },
+          ]
+        : [],
+  });
 
   const { setDialog } = useDialogStore((state) => state);
 
@@ -97,12 +121,26 @@ const MenusMenuIdSectionId = ({
   } = useSWR(
     [
       `/api/menu-sections/${sectionId}/menu-items`,
+      filterModel.items[0]?.field,
+      filterModel.items[0]?.operator,
+      filterModel.items[0]?.value,
       paginationModel.page,
       paginationModel.pageSize,
       sortModel,
     ],
-    async ([url, page, pageSize, sortModel]: [
+    async ([
+      url,
+      filterField,
+      filterOperator,
+      filterValue,
+      page,
+      pageSize,
+      sortModel,
+    ]: [
       string,
+      string | undefined,
+      string | undefined,
+      string | undefined,
       number,
       number,
       GridSortModel,
@@ -111,6 +149,9 @@ const MenusMenuIdSectionId = ({
         `${url}?${new URLSearchParams({
           limit: String(pageSize),
           offset: String(page * pageSize),
+          ...(filterField &&
+            filterOperator &&
+            filterValue && { filterField, filterOperator, filterValue }),
           ...(sortModel[0]?.field && { sortBy: sortModel[0].field }),
           ...(sortModel[0]?.sort && { sortDirection: sortModel[0].sort }),
         })}`,
@@ -126,6 +167,7 @@ const MenusMenuIdSectionId = ({
   );
 
   const tMenus = useTranslations("menus");
+  const tToolbar = useTranslations("dataGrid.toolbar");
 
   const handlePaginationModelChange = useCallback(
     (newModel: GridPaginationModel) => {
@@ -161,6 +203,49 @@ const MenusMenuIdSectionId = ({
         ...(sortItem?.sort && { sortDirection: sortItem.sort }),
       });
 
+      router.replace(`${pathname}?${params.toString()}`);
+    },
+    [pathname, router, searchParams],
+  );
+
+  const filterOperators = useMemo<GridFilterOperator[]>(
+    () =>
+      FILTER_OPERATORS.map((value) => ({
+        getApplyFilterFn: () => null,
+        InputComponent: GridFilterInputValue,
+        label: tToolbar(`filter.operator.${value}`),
+        value,
+      })),
+    [tToolbar],
+  );
+
+  const handleFilterModelChange = useCallback(
+    (newModel: GridFilterModel) => {
+      setFilterModel(newModel);
+      setPaginationModel((prev) => ({ ...prev, page: 0 }));
+
+      const filterItem = newModel.items[0];
+      const {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        filterField: _filterField,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        filterOperator: _filterOperator,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        filterValue: _filterValue,
+        ...rest
+      } = Object.fromEntries(searchParams);
+
+      const params = new URLSearchParams({
+        ...rest,
+        page: "1",
+        ...(filterItem?.field &&
+          filterItem?.operator &&
+          filterItem?.value && {
+            filterField: filterItem.field,
+            filterOperator: filterItem.operator,
+            filterValue: filterItem.value,
+          }),
+      });
       router.replace(`${pathname}?${params.toString()}`);
     },
     [pathname, router, searchParams],
@@ -371,6 +456,7 @@ const MenusMenuIdSectionId = ({
       },
       {
         field: "name",
+        filterOperators,
         headerName: tMenus("items.name.label"),
       },
       {
@@ -386,7 +472,14 @@ const MenusMenuIdSectionId = ({
           format.dateTime(new Date(value), "short"),
       },
     ],
-    [format, handleDeleteItem, handleUpdateItem, isReorderMode, tMenus],
+    [
+      filterOperators,
+      format,
+      handleDeleteItem,
+      handleUpdateItem,
+      isReorderMode,
+      tMenus,
+    ],
   );
 
   return (
@@ -438,7 +531,10 @@ const MenusMenuIdSectionId = ({
           {...DATA_GRID_PROPS}
           apiRef={apiRef}
           columns={columns}
+          filterMode="server"
+          filterModel={filterModel}
           loading={isValidating}
+          onFilterModelChange={handleFilterModelChange}
           onPaginationModelChange={handlePaginationModelChange}
           onSortModelChange={handleSortModelChange}
           paginationMode="server"
