@@ -426,6 +426,7 @@ const MenusMenuIdSectionId = ({
             {
               disableColumnMenu: true,
               field: "reorder",
+              filterable: false,
               headerName: tMenus("reorder"),
               renderCell: () => <DragHandle />,
               resizable: false,
@@ -436,6 +437,7 @@ const MenusMenuIdSectionId = ({
       {
         disableColumnMenu: true,
         field: "actions",
+        filterable: false,
         headerName: tMenus("items.actions.label"),
         renderCell: ({ row }: GridRenderCellParams<MenuItem>) => (
           <Stack height="100%" direction="row" alignItems="center" gap={1}>
