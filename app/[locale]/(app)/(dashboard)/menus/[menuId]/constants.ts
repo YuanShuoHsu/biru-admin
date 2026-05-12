@@ -6,19 +6,25 @@ export const FILTER_FIELDS = [
 ] as const;
 
 export const STRING_FILTER_OPERATORS = [
-  "eq",
-  "ne",
   "contains",
-  "starts_with",
-  "ends_with",
+  "doesNotContain",
+  "equals",
+  "doesNotEqual",
+  "startsWith",
+  "endsWith",
+  "isEmpty",
+  "isNotEmpty",
 ] as const;
+export const NO_VALUE_FILTER_OPERATORS: readonly string[] = ["isEmpty", "isNotEmpty"];
 export const DATE_FILTER_OPERATORS = [
-  "eq",
-  "ne",
-  "lt",
-  "lte",
-  "gt",
-  "gte",
+  "is",
+  "not",
+  "after",
+  "onOrAfter",
+  "before",
+  "onOrBefore",
+  "isEmpty",
+  "isNotEmpty",
 ] as const;
 export const FILTER_OPERATORS = [
   ...STRING_FILTER_OPERATORS,

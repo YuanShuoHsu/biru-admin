@@ -103,9 +103,6 @@ export const getAdminMenuSectionItems = cache(
         ...(filterField &&
           filterOperator &&
           filterValue && { filterField, filterOperator, filterValue }),
-        // ...(searchField &&
-        //   searchOperator &&
-        //   searchValue && { searchField, searchOperator, searchValue }),
       });
       const result = await fetcher<{ data: AdminMenuItem[]; total: number }>(
         `/api/menu-sections/${sectionId}/menu-items?${params.toString()}`,

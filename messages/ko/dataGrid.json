@@ -14,17 +14,20 @@
     },
     "filter": {
       "operator": {
+        "after": "이후",
+        "before": "이전",
         "contains": "포함",
-        "ends_with": "으로 끝남",
-        "eq": "같음",
-        "gt": "보다 큼",
-        "gte": "이상",
-        "in": "포함 중",
-        "lt": "보다 작음",
-        "lte": "이하",
-        "ne": "같지 않음",
-        "not_in": "미포함",
-        "starts_with": "으로 시작"
+        "doesNotContain": "포함하지 않음",
+        "doesNotEqual": "같지 않음",
+        "endsWith": "으로 끝남",
+        "equals": "같음",
+        "is": "같음",
+        "isEmpty": "비어 있음",
+        "isNotEmpty": "비어 있지 않음",
+        "not": "같지 않음",
+        "onOrAfter": "이후 포함",
+        "onOrBefore": "이전 포함",
+        "startsWith": "으로 시작"
       }
     },
     "filters": "필터",

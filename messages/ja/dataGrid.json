@@ -14,17 +14,20 @@
     },
     "filter": {
       "operator": {
+        "after": "より後",
+        "before": "より前",
         "contains": "を含む",
-        "ends_with": "で終わる",
-        "eq": "と等しい",
-        "gt": "より大きい",
-        "gte": "以上",
-        "in": "に含まれる",
-        "lt": "より小さい",
-        "lte": "以下",
-        "ne": "と等しくない",
-        "not_in": "に含まれない",
-        "starts_with": "で始まる"
+        "doesNotContain": "を含まない",
+        "doesNotEqual": "と等しくない",
+        "endsWith": "で終わる",
+        "equals": "と等しい",
+        "is": "と等しい",
+        "isEmpty": "空である",
+        "isNotEmpty": "空でない",
+        "not": "と等しくない",
+        "onOrAfter": "以降",
+        "onOrBefore": "以前",
+        "startsWith": "で始まる"
       }
     },
     "filters": "フィルター",

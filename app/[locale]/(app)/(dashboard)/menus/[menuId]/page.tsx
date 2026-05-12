@@ -6,6 +6,7 @@ import MenusMenuId from ".";
 import {
   FILTER_FIELDS,
   FILTER_OPERATORS,
+  NO_VALUE_FILTER_OPERATORS,
   SORT_BY_FIELDS,
   SORT_DIRECTIONS,
 } from "./constants";
@@ -80,7 +81,14 @@ const MenusMenuIdPage = async ({
     rawFilterField !== filterField ||
     rawFilterOperator !== filterOperator ||
     !!(filterField || filterOperator || filterValue) !==
-      !!(filterField && filterOperator && filterValue)
+      !!(
+        filterField &&
+        filterOperator &&
+        (filterValue ||
+          NO_VALUE_FILTER_OPERATORS.includes(
+            filterOperator,
+          ))
+      )
     // ||
     // rawSearchField !== searchField ||
     // rawSearchOperator !== searchOperator ||

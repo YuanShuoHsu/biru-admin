@@ -7,7 +7,11 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
-import { DATE_FILTER_OPERATORS, STRING_FILTER_OPERATORS } from "./constants";
+import {
+  DATE_FILTER_OPERATORS,
+  NO_VALUE_FILTER_OPERATORS,
+  STRING_FILTER_OPERATORS,
+} from "./constants";
 import CreateMenuSectionDialog from "./CreateMenuSectionDialog";
 import UpdateMenuSectionDialog from "./UpdateMenuSectionDialog";
 
@@ -45,11 +49,7 @@ import type {
   GridRenderCellParams,
   GridSortModel,
 } from "@mui/x-data-grid";
-import {
-  GridFilterInputDate,
-  GridFilterInputValue,
-  useGridApiRef,
-} from "@mui/x-data-grid";
+import { GridFilterInputValue, useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -61,6 +61,10 @@ const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
   { ssr: false },
 );
+
+const DateFilterInputValue = (
+  props: React.ComponentProps<typeof GridFilterInputValue>,
+) => <GridFilterInputValue {...props} type="date" />;
 
 interface MenuDetailProps {
   filterField?: string;
@@ -79,9 +83,6 @@ const MenusMenuId = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  // searchField: initialSearchField,
-  // searchOperator: initialSearchOperator,
-  // searchValue: initialSearchValue,
   menu,
   page,
   pageSize,
@@ -100,7 +101,12 @@ const MenusMenuId = ({
   );
   const [filterModel, setFilterModel] = useState<GridFilterModel>({
     items:
-      initialFilterField && initialFilterOperator && initialFilterValue
+      initialFilterField &&
+      initialFilterOperator &&
+      (initialFilterValue ||
+        NO_VALUE_FILTER_OPERATORS.includes(
+          initialFilterOperator,
+        ))
         ? [
             {
               field: initialFilterField,
@@ -164,7 +170,14 @@ const MenusMenuId = ({
           offset: String(page * pageSize),
           ...(filterField &&
             filterOperator &&
-            filterValue && { filterField, filterOperator, filterValue }),
+            (filterValue ||
+              NO_VALUE_FILTER_OPERATORS.includes(
+                filterOperator,
+              )) && {
+              filterField,
+              filterOperator,
+              ...(filterValue && { filterValue }),
+            }),
           ...(sortModel[0]?.field && { sortBy: sortModel[0].field }),
           ...(sortModel[0]?.sort && { sortDirection: sortModel[0].sort }),
         })}`,
@@ -225,7 +238,9 @@ const MenusMenuId = ({
     () =>
       STRING_FILTER_OPERATORS.map((value) => ({
         getApplyFilterFn: () => null,
-        InputComponent: GridFilterInputValue,
+        ...(NO_VALUE_FILTER_OPERATORS.includes(value)
+          ? { requiresFilterValue: false }
+          : { InputComponent: GridFilterInputValue }),
         label: tToolbar(`filter.operator.${value}`),
         value,
       })),
@@ -236,7 +251,9 @@ const MenusMenuId = ({
     () =>
       DATE_FILTER_OPERATORS.map((value) => ({
         getApplyFilterFn: () => null,
-        InputComponent: GridFilterInputDate,
+        ...(NO_VALUE_FILTER_OPERATORS.includes(value)
+          ? { requiresFilterValue: false }
+          : { InputComponent: DateFilterInputValue }),
         label: tToolbar(`filter.operator.${value}`),
         value,
       })),
@@ -264,10 +281,13 @@ const MenusMenuId = ({
         page: "1",
         ...(filterItem?.field &&
           filterItem?.operator &&
-          filterItem?.value && {
+          (filterItem?.value ||
+            NO_VALUE_FILTER_OPERATORS.includes(
+              filterItem.operator,
+            )) && {
             filterField: filterItem.field,
             filterOperator: filterItem.operator,
-            filterValue: filterItem.value,
+            ...(filterItem?.value && { filterValue: filterItem.value }),
           }),
       });
       router.replace(`${pathname}?${params.toString()}`);

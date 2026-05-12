@@ -14,17 +14,20 @@
     },
     "filter": {
       "operator": {
+        "after": "晚於",
+        "before": "早於",
         "contains": "包含",
-        "ends_with": "結尾為",
-        "eq": "等於",
-        "gt": "大於",
-        "gte": "大於等於",
-        "in": "包含於",
-        "lt": "小於",
-        "lte": "小於等於",
-        "ne": "不等於",
-        "not_in": "不包含於",
-        "starts_with": "開頭為"
+        "doesNotContain": "不包含",
+        "doesNotEqual": "不等於",
+        "endsWith": "結尾為",
+        "equals": "等於",
+        "is": "等於",
+        "isEmpty": "為空",
+        "isNotEmpty": "不為空",
+        "not": "不等於",
+        "onOrAfter": "等於或晚於",
+        "onOrBefore": "等於或早於",
+        "startsWith": "開頭為"
       }
     },
     "filters": "篩選器",

@@ -14,17 +14,20 @@
     },
     "filter": {
       "operator": {
+        "after": "Is after",
+        "before": "Is before",
         "contains": "Contains",
-        "ends_with": "Ends with",
-        "eq": "Equals",
-        "gt": "Greater than",
-        "gte": "Greater than or equal",
-        "in": "In",
-        "lt": "Less than",
-        "lte": "Less than or equal",
-        "ne": "Not equals",
-        "not_in": "Not in",
-        "starts_with": "Starts with"
+        "doesNotContain": "Does not contain",
+        "doesNotEqual": "Does not equal",
+        "endsWith": "Ends with",
+        "equals": "Equals",
+        "is": "Is",
+        "isEmpty": "Is empty",
+        "isNotEmpty": "Is not empty",
+        "not": "Is not",
+        "onOrAfter": "Is on or after",
+        "onOrBefore": "Is on or before",
+        "startsWith": "Starts with"
       }
     },
     "filters": "Filters",

@@ -14,17 +14,20 @@
     },
     "filter": {
       "operator": {
+        "after": "晚于",
+        "before": "早于",
         "contains": "包含",
-        "ends_with": "结尾为",
-        "eq": "等于",
-        "gt": "大于",
-        "gte": "大于等于",
-        "in": "包含于",
-        "lt": "小于",
-        "lte": "小于等于",
-        "ne": "不等于",
-        "not_in": "不包含于",
-        "starts_with": "开头为"
+        "doesNotContain": "不包含",
+        "doesNotEqual": "不等于",
+        "endsWith": "结尾为",
+        "equals": "等于",
+        "is": "等于",
+        "isEmpty": "为空",
+        "isNotEmpty": "不为空",
+        "not": "不等于",
+        "onOrAfter": "等于或晚于",
+        "onOrBefore": "等于或早于",
+        "startsWith": "开头为"
       }
     },
     "filters": "筛选器",
