@@ -18,6 +18,7 @@ import type { Locale } from "@/i18n/routing";
 import { authClient } from "@/lib/auth-client";
 
 import { buildQuickFilterMap, getUserSessions } from "@/utils/admins";
+import { fetcher } from "@/utils/fetcher";
 
 interface AdminsPageProps {
   params: Promise<{ locale: Locale }>;
@@ -137,12 +138,10 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
       sortDirection: sortDirection || "desc",
     });
 
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_NEST_URL}/api/users/list?${queryParams}`,
-      { headers: fetchOptions.headers },
-    );
-
-    const { data, total } = await res.json();
+    const { data, total } = await fetcher<{
+      data: UserWithRole[];
+      total: number;
+    }>(`/api/users/list?${queryParams}`, { headers: fetchOptions.headers });
 
     rows = data || [];
     rowCount = total || 0;

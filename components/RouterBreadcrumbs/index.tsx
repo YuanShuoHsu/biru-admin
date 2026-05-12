@@ -54,7 +54,10 @@ import {
 } from "@mui/material";
 import { styled, type Theme } from "@mui/material/styles";
 
+import type { Menu, MenuSection } from "@/types/menus";
 import type { RouteParams } from "@/types/routeParams";
+
+import { fetcher } from "@/utils/fetcher";
 
 const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
   transition: "none",
@@ -137,20 +140,26 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
   const { data: menuName = "" } = useSWR(
     menuId ? `/api/menus/${menuId}` : null,
     async (url) => {
-      const res = await fetch(url);
-      if (!res.ok) return "";
-      const menu = await res.json();
-      return menu?.name ?? "";
+      try {
+        const menu = await fetcher<Menu>(url);
+
+        return menu.name || "";
+      } catch {
+        return "";
+      }
     },
   );
 
   const { data: sectionName = "" } = useSWR(
     sectionId ? `/api/menu-sections/${sectionId}` : null,
     async (url) => {
-      const res = await fetch(url);
-      if (!res.ok) return "";
-      const section = await res.json();
-      return section?.name ?? "";
+      try {
+        const section = await fetcher<MenuSection>(url);
+
+        return section.name || "";
+      } catch {
+        return "";
+      }
     },
   );
 
