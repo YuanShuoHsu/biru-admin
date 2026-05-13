@@ -45,9 +45,6 @@ const MenusMenuIdSectionIdPage = async ({
       filterField: rawFilterField,
       filterOperator: rawFilterOperator,
       filterValue,
-      // searchField: rawSearchField,
-      // searchOperator: rawSearchOperator,
-      // searchValue,
       page: rawPage,
       pageSize: rawPageSize,
       sortBy: rawSortBy,
@@ -71,11 +68,6 @@ const MenusMenuIdSectionIdPage = async ({
     (operator) => operator === rawFilterOperator,
   );
 
-  // const searchField = SEARCH_FIELDS.find((field) => field === rawSearchField);
-  // const searchOperator = SEARCH_OPERATORS.find(
-  //   (operator) => operator === rawSearchOperator,
-  // );
-
   if (
     rawPage !== String(page) ||
     rawPageSize !== String(pageSize) ||
@@ -90,11 +82,6 @@ const MenusMenuIdSectionIdPage = async ({
         filterOperator &&
         (filterValue || NO_VALUE_FILTER_OPERATORS.includes(filterOperator))
       )
-    // ||
-    // rawSearchField !== searchField ||
-    // rawSearchOperator !== searchOperator ||
-    // !!(searchField || searchOperator || searchValue) !==
-    //   !!(searchField && searchOperator && searchValue)
   ) {
     const params = new URLSearchParams({
       ...restSearchParams,
@@ -104,9 +91,6 @@ const MenusMenuIdSectionIdPage = async ({
       ...(filterField &&
         filterOperator &&
         filterValue && { filterField, filterOperator, filterValue }),
-      // ...(searchField &&
-      //   searchOperator &&
-      //   searchValue && { searchField, searchOperator, searchValue }),
     });
     redirect({
       href: `/menus/${menuId}/${sectionId}?${params.toString()}`,
