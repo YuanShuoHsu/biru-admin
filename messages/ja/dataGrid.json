@@ -22,6 +22,7 @@
         "endsWith": "で終わる",
         "equals": "と等しい",
         "is": "と等しい",
+        "isAnyOf": "次のいずれか",
         "isEmpty": "空である",
         "isNotEmpty": "空でない",
         "not": "と等しくない",
@@ -38,9 +39,9 @@
       "label": "検索",
       "operator": {
         "contains": "を含む",
-        "ends_with": "で終わる",
+        "endsWith": "で終わる",
         "label": "検索方法",
-        "starts_with": "で始まる"
+        "startsWith": "で始まる"
       },
       "placeholder": "あなたの検索キーワードを入力してください"
     }

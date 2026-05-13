@@ -21,11 +21,13 @@ import useSWR from "swr";
 
 import BanUserDialogContent from "./BanUserDialogContent";
 import {
+  ENUM_FILTER_OPERATORS,
   FILTER_FIELDS,
   FILTER_OPERATORS,
   NO_VALUE_FILTER_OPERATORS,
   SORT_BY,
   SORT_DIRECTIONS,
+  TEXT_FILTER_OPERATORS,
 } from "./constants";
 import CreateUserDialogContent from "./CreateUserDialogContent";
 import SetRoleDialogContent from "./SetRoleDialogContent";
@@ -75,7 +77,12 @@ import type {
   GridRenderCellParams,
   GridSortModel,
 } from "@mui/x-data-grid";
-import { GridFilterInputValue, useGridApiRef } from "@mui/x-data-grid";
+import {
+  GridFilterInputMultipleSingleSelect,
+  GridFilterInputSingleSelect,
+  GridFilterInputValue,
+  useGridApiRef,
+} from "@mui/x-data-grid";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -169,7 +176,10 @@ const Admins = ({
             {
               field: initialFilterField,
               operator: initialFilterOperator,
-              value: initialFilterValue,
+              value:
+                initialFilterOperator === "isAnyOf"
+                  ? initialFilterValue.split(",")
+                  : initialFilterValue,
             },
           ]
         : [],
@@ -223,13 +233,20 @@ const Admins = ({
         filterItem?.operator &&
         NO_VALUE_FILTER_OPERATORS.includes(filterItem.operator);
 
+      const filterValueString = Array.isArray(filterItem?.value)
+        ? filterItem.value.join(",")
+        : filterItem?.value;
+      const hasFilterValue = Array.isArray(filterItem?.value)
+        ? filterItem.value.length > 0
+        : !!filterItem?.value;
+
       const params = new URLSearchParams({
         ...(filterItem?.field &&
           filterItem?.operator &&
-          (filterItem?.value || isNoValueOperator) && {
+          (hasFilterValue || isNoValueOperator) && {
             filterField: filterItem.field,
             filterOperator: filterItem.operator,
-            ...(filterItem.value && { filterValue: filterItem.value }),
+            ...(filterValueString && { filterValue: filterValueString }),
           }),
         limit: String(paginationModel.pageSize),
         offset: String(paginationModel.page * paginationModel.pageSize),
@@ -267,13 +284,27 @@ const Admins = ({
     (row) => row.id !== currentUserId && row.role !== "admin",
   );
 
-  const filterOperators = useMemo<GridFilterOperator[]>(
+  const textFilterOperators = useMemo<GridFilterOperator[]>(
     () =>
-      FILTER_OPERATORS.map((value) => ({
+      TEXT_FILTER_OPERATORS.map((value) => ({
         getApplyFilterFn: () => null,
         ...(NO_VALUE_FILTER_OPERATORS.includes(value)
           ? { InputComponent: undefined }
           : { InputComponent: GridFilterInputValue }),
+        label: tToolbar(`filter.operator.${value}`),
+        value,
+      })),
+    [tToolbar],
+  );
+
+  const enumFilterOperators = useMemo<GridFilterOperator[]>(
+    () =>
+      ENUM_FILTER_OPERATORS.map((value) => ({
+        getApplyFilterFn: () => null,
+        InputComponent:
+          value === "isAnyOf"
+            ? GridFilterInputMultipleSingleSelect
+            : GridFilterInputSingleSelect,
         label: tToolbar(`filter.operator.${value}`),
         value,
       })),
@@ -345,15 +376,22 @@ const Admins = ({
         filterItem?.operator &&
         NO_VALUE_FILTER_OPERATORS.includes(filterItem.operator);
 
+      const filterValueString = Array.isArray(filterItem?.value)
+        ? filterItem.value.join(",")
+        : filterItem?.value;
+      const hasFilterValue = Array.isArray(filterItem?.value)
+        ? filterItem.value.length > 0
+        : !!filterItem?.value;
+
       const params = new URLSearchParams({
         ...rest,
         page: "1",
         ...(filterItem?.field &&
           filterItem?.operator &&
-          (filterItem?.value || isNoValueOperator) && {
+          (hasFilterValue || isNoValueOperator) && {
             filterField: filterItem.field,
             filterOperator: filterItem.operator,
-            ...(filterItem.value && { filterValue: filterItem.value }),
+            ...(filterValueString && { filterValue: filterValueString }),
           }),
         ...(newQuickFilterValue && { quickFilterValue: newQuickFilterValue }),
       });
@@ -543,8 +581,7 @@ const Admins = ({
     [locale, mutateAdmins, setDialog, tAdmins],
   );
 
-  const columns = useMemo<GridColDef[]>(
-    () => [
+  const columns = useMemo<GridColDef[]>(() => [
       {
         disableColumnMenu: true,
         field: "actions",
@@ -693,17 +730,17 @@ const Admins = ({
       },
       {
         field: "name",
-        filterOperators,
+        filterOperators: textFilterOperators,
         headerName: tAdmins("name"),
       },
       {
         field: "email",
-        filterOperators,
+        filterOperators: textFilterOperators,
         headerName: tAdmins("email.label"),
       },
       {
         field: "role",
-        filterable: false,
+        textFilterOperators: enumFilterOperators,
         headerName: tAdmins("role.label"),
         renderCell: ({ row: { role } }: GridRenderCellParams<AdminUser>) => (
           <Chip
@@ -714,10 +751,15 @@ const Admins = ({
           />
         ),
         sortable: false,
+        type: "singleSelect",
+        valueOptions: [
+          { label: tAdmins("role.admin"), value: "admin" },
+          { label: tAdmins("role.user"), value: "user" },
+        ],
       },
       {
         field: "banned",
-        filterable: false,
+        textFilterOperators: enumFilterOperators,
         headerName: tAdmins("status.label"),
         renderCell: ({ row }: GridRenderCellParams<UserWithRole>) => {
           const isBanned =
@@ -768,10 +810,15 @@ const Admins = ({
           );
         },
         sortable: false,
+        type: "singleSelect",
+        valueOptions: [
+          { label: tAdmins("status.banned"), value: true },
+          { label: tAdmins("status.active"), value: false },
+        ],
       },
       {
         field: "emailSubscribed",
-        filterable: false,
+        textFilterOperators: enumFilterOperators,
         headerName: tAdmins("emailSubscribed.label"),
         renderCell: ({ row }: GridRenderCellParams<AdminUser>) => (
           <Chip
@@ -793,6 +840,11 @@ const Admins = ({
           />
         ),
         sortable: false,
+        type: "singleSelect",
+        valueOptions: [
+          { label: tAdmins("emailSubscribed.subscribed"), value: true },
+          { label: tAdmins("emailSubscribed.unsubscribed"), value: false },
+        ],
       },
       {
         field: "createdAt",
@@ -801,24 +853,23 @@ const Admins = ({
         valueFormatter: (value: Date) =>
           format.dateTime(new Date(value), "short"),
       },
-    ],
-    [
-      currentUserId,
-      filterOperators,
-      format,
-      handleBanUser,
-      handleImpersonateUser,
-      handleRemoveUser,
-      handleSetRole,
-      handleSetUserPassword,
-      handleUnbanUser,
-      handleUpdateUser,
-      hasImpersonableUser,
-      router,
-      tAdmins,
-      userSessions,
-    ],
-  );
+  ], [
+    currentUserId,
+    enumFilterOperators,
+    format,
+    handleBanUser,
+    handleImpersonateUser,
+    handleRemoveUser,
+    handleSetRole,
+    handleSetUserPassword,
+    handleUnbanUser,
+    handleUpdateUser,
+    hasImpersonableUser,
+    router,
+    tAdmins,
+    textFilterOperators,
+    userSessions,
+  ]);
 
   return (
     <>

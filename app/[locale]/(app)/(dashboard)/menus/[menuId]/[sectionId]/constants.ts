@@ -37,8 +37,8 @@ export const FILTER_OPERATORS = [
 export const SEARCH_FIELDS = ["name", "description"] as const;
 export const SEARCH_OPERATORS = [
   "contains",
-  "starts_with",
-  "ends_with",
+  "startsWith",
+  "endsWith",
 ] as const;
 
 export const SORT_BY_FIELDS = ["name", "createdAt", "updatedAt"] as const;

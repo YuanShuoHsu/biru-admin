@@ -22,6 +22,7 @@
         "endsWith": "结尾为",
         "equals": "等于",
         "is": "等于",
+        "isAnyOf": "等于任一",
         "isEmpty": "为空",
         "isNotEmpty": "不为空",
         "not": "不等于",
@@ -38,9 +39,9 @@
       "label": "搜索",
       "operator": {
         "contains": "包含",
-        "ends_with": "结尾为",
+        "endsWith": "结尾为",
         "label": "搜索方式",
-        "starts_with": "开头为"
+        "startsWith": "开头为"
       },
       "placeholder": "请输入您的搜索内容"
     }

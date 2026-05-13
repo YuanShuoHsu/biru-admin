@@ -22,6 +22,7 @@
         "endsWith": "Ends with",
         "equals": "Equals",
         "is": "Is",
+        "isAnyOf": "Is any of",
         "isEmpty": "Is empty",
         "isNotEmpty": "Is not empty",
         "not": "Is not",
@@ -38,9 +39,9 @@
       "label": "Search",
       "operator": {
         "contains": "Contains",
-        "ends_with": "Ends with",
+        "endsWith": "Ends with",
         "label": "Search operator",
-        "starts_with": "Starts with"
+        "startsWith": "Starts with"
       },
       "placeholder": "Please enter your search keywords"
     }

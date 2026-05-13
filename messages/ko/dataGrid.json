@@ -22,6 +22,7 @@
         "endsWith": "으로 끝남",
         "equals": "같음",
         "is": "같음",
+        "isAnyOf": "다음 중 하나",
         "isEmpty": "비어 있음",
         "isNotEmpty": "비어 있지 않음",
         "not": "같지 않음",
@@ -38,9 +39,9 @@
       "label": "검색",
       "operator": {
         "contains": "포함",
-        "ends_with": "으로 끝남",
+        "endsWith": "으로 끝남",
         "label": "검색 방식",
-        "starts_with": "으로 시작"
+        "startsWith": "으로 시작"
       },
       "placeholder": "귀하의 검색어를 입력해 주세요"
     }
