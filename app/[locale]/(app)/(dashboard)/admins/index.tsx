@@ -581,7 +581,8 @@ const Admins = ({
     [locale, mutateAdmins, setDialog, tAdmins],
   );
 
-  const columns = useMemo<GridColDef[]>(() => [
+  const columns = useMemo<GridColDef[]>(
+    () => [
       {
         disableColumnMenu: true,
         field: "actions",
@@ -853,23 +854,25 @@ const Admins = ({
         valueFormatter: (value: Date) =>
           format.dateTime(new Date(value), "short"),
       },
-  ], [
-    currentUserId,
-    enumFilterOperators,
-    format,
-    handleBanUser,
-    handleImpersonateUser,
-    handleRemoveUser,
-    handleSetRole,
-    handleSetUserPassword,
-    handleUnbanUser,
-    handleUpdateUser,
-    hasImpersonableUser,
-    router,
-    tAdmins,
-    textFilterOperators,
-    userSessions,
-  ]);
+    ],
+    [
+      currentUserId,
+      enumFilterOperators,
+      format,
+      handleBanUser,
+      handleImpersonateUser,
+      handleRemoveUser,
+      handleSetRole,
+      handleSetUserPassword,
+      handleUnbanUser,
+      handleUpdateUser,
+      hasImpersonableUser,
+      router,
+      tAdmins,
+      textFilterOperators,
+      userSessions,
+    ],
+  );
 
   return (
     <>

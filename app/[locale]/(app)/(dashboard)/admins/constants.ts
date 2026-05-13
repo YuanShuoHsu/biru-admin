@@ -26,11 +26,7 @@ export const NO_VALUE_FILTER_OPERATORS: readonly string[] = [
 ];
 
 export const SEARCH_FIELDS = ["name", "email"] as const;
-export const SEARCH_OPERATORS = [
-  "contains",
-  "startsWith",
-  "endsWith",
-] as const;
+export const SEARCH_OPERATORS = ["contains", "startsWith", "endsWith"] as const;
 
 export const SORT_BY = ["name", "email", "role", "createdAt"] as const;
 export const SORT_DIRECTIONS = ["asc", "desc"] as const;
