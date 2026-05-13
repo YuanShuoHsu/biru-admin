@@ -88,9 +88,6 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
         filterOperator &&
         filterValue && { filterField, filterOperator, filterValue }),
       ...(rawQuickFilterValue && { quickFilterValue: rawQuickFilterValue }),
-      // ...(searchField &&
-      //   searchOperator &&
-      //   searchValue && { searchField, searchOperator, searchValue }),
     });
     redirect({ href: `/admins?${params.toString()}`, locale });
   }
