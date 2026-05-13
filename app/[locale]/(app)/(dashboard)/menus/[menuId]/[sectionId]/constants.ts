@@ -14,6 +14,7 @@ export const STRING_FILTER_OPERATORS = [
   "endsWith",
   "isEmpty",
   "isNotEmpty",
+  "isAnyOf",
 ] as const;
 export const NO_VALUE_FILTER_OPERATORS: readonly string[] = [
   "isEmpty",
@@ -30,8 +31,21 @@ export const DATE_FILTER_OPERATORS = [
   "isNotEmpty",
 ] as const;
 export const FILTER_OPERATORS = [
-  ...STRING_FILTER_OPERATORS,
-  ...DATE_FILTER_OPERATORS,
+  "contains",
+  "doesNotContain",
+  "equals",
+  "doesNotEqual",
+  "startsWith",
+  "endsWith",
+  "isEmpty",
+  "isNotEmpty",
+  "isAnyOf",
+  "is",
+  "not",
+  "after",
+  "onOrAfter",
+  "before",
+  "onOrBefore",
 ] as const;
 
 export const SEARCH_FIELDS = ["name", "description"] as const;

@@ -49,7 +49,11 @@ import type {
   GridRenderCellParams,
   GridSortModel,
 } from "@mui/x-data-grid";
-import { GridFilterInputValue, useGridApiRef } from "@mui/x-data-grid";
+import {
+  GridFilterInputMultipleValue,
+  GridFilterInputValue,
+  useGridApiRef,
+} from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -109,7 +113,10 @@ const MenusMenuId = ({
             {
               field: initialFilterField,
               operator: initialFilterOperator,
-              value: initialFilterValue,
+              value:
+                initialFilterOperator === "isAnyOf"
+                  ? initialFilterValue?.split(",")
+                  : initialFilterValue,
             },
           ]
         : [],
@@ -145,39 +152,34 @@ const MenusMenuId = ({
       paginationModel.pageSize,
       sortModel,
     ],
-    async ([
-      url,
-      filterField,
-      filterOperator,
-      filterValue,
-      page,
-      pageSize,
-      sortModel,
-    ]: [
-      string,
-      string | undefined,
-      string | undefined,
-      string | undefined,
-      number,
-      number,
-      GridSortModel,
-    ]) =>
-      fetcher<{ data: MenuSection[]; total: number }>(
-        `${url}?${new URLSearchParams({
-          limit: String(pageSize),
-          offset: String(page * pageSize),
-          ...(filterField &&
-            filterOperator &&
-            (filterValue ||
-              NO_VALUE_FILTER_OPERATORS.includes(filterOperator)) && {
-              filterField,
-              filterOperator,
-              ...(filterValue && { filterValue }),
+    async () => {
+      const filterItem = filterModel.items[0];
+      const isNoValueOperator =
+        filterItem?.operator &&
+        NO_VALUE_FILTER_OPERATORS.includes(filterItem.operator);
+      const filterValueString = Array.isArray(filterItem?.value)
+        ? filterItem.value.join(",")
+        : filterItem?.value;
+      const hasFilterValue = Array.isArray(filterItem?.value)
+        ? filterItem.value.length > 0
+        : !!filterItem?.value;
+
+      return fetcher<{ data: MenuSection[]; total: number }>(
+        `/api/menus/${menu.id}/menu-sections?${new URLSearchParams({
+          limit: String(paginationModel.pageSize),
+          offset: String(paginationModel.page * paginationModel.pageSize),
+          ...(filterItem?.field &&
+            filterItem?.operator &&
+            (hasFilterValue || isNoValueOperator) && {
+              filterField: filterItem.field,
+              filterOperator: filterItem.operator,
+              ...(filterValueString && { filterValue: filterValueString }),
             }),
           ...(sortModel[0]?.field && { sortBy: sortModel[0].field }),
           ...(sortModel[0]?.sort && { sortDirection: sortModel[0].sort }),
         })}`,
-      ),
+      );
+    },
     {
       fallbackData: { data: initialSections, total: initialRowCount },
       onSuccess: () => {
@@ -235,8 +237,10 @@ const MenusMenuId = ({
       STRING_FILTER_OPERATORS.map((value) => ({
         getApplyFilterFn: () => null,
         ...(NO_VALUE_FILTER_OPERATORS.includes(value)
-          ? { requiresFilterValue: false }
-          : { InputComponent: GridFilterInputValue }),
+          ? { InputComponent: undefined }
+          : value === "isAnyOf"
+            ? { InputComponent: GridFilterInputMultipleValue }
+            : { InputComponent: GridFilterInputValue }),
         label: tToolbar(`filter.operator.${value}`),
         value,
       })),
@@ -248,7 +252,7 @@ const MenusMenuId = ({
       DATE_FILTER_OPERATORS.map((value) => ({
         getApplyFilterFn: () => null,
         ...(NO_VALUE_FILTER_OPERATORS.includes(value)
-          ? { requiresFilterValue: false }
+          ? { InputComponent: undefined }
           : { InputComponent: DateFilterInputValue }),
         label: tToolbar(`filter.operator.${value}`),
         value,
@@ -272,16 +276,25 @@ const MenusMenuId = ({
         ...rest
       } = Object.fromEntries(searchParams);
 
+      const filterValueString = Array.isArray(filterItem?.value)
+        ? filterItem.value.join(",")
+        : filterItem?.value;
+      const hasFilterValue = Array.isArray(filterItem?.value)
+        ? filterItem.value.length > 0
+        : !!filterItem?.value;
+      const isNoValueOperator = filterItem?.operator
+        ? NO_VALUE_FILTER_OPERATORS.includes(filterItem.operator)
+        : false;
+
       const params = new URLSearchParams({
         ...rest,
         page: "1",
         ...(filterItem?.field &&
           filterItem?.operator &&
-          (filterItem?.value ||
-            NO_VALUE_FILTER_OPERATORS.includes(filterItem.operator)) && {
+          (hasFilterValue || isNoValueOperator) && {
             filterField: filterItem.field,
             filterOperator: filterItem.operator,
-            ...(filterItem?.value && { filterValue: filterItem.value }),
+            ...(filterValueString && { filterValue: filterValueString }),
           }),
       });
       router.replace(`${pathname}?${params.toString()}`);
