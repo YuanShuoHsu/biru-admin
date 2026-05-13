@@ -79,6 +79,7 @@ import type {
 } from "@mui/x-data-grid";
 import {
   GridFilterInputMultipleSingleSelect,
+  GridFilterInputMultipleValue,
   GridFilterInputSingleSelect,
   GridFilterInputValue,
   useGridApiRef,
@@ -290,7 +291,9 @@ const Admins = ({
         getApplyFilterFn: () => null,
         ...(NO_VALUE_FILTER_OPERATORS.includes(value)
           ? { InputComponent: undefined }
-          : { InputComponent: GridFilterInputValue }),
+          : value === "isAnyOf"
+            ? { InputComponent: GridFilterInputMultipleValue }
+            : { InputComponent: GridFilterInputValue }),
         label: tToolbar(`filter.operator.${value}`),
         value,
       })),
