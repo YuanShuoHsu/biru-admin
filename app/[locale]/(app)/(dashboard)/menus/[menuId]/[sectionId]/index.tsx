@@ -15,6 +15,7 @@ import {
 import CreateMenuItemDialog from "./CreateMenuItemDialog";
 import UpdateMenuItemDialog from "./UpdateMenuItemDialog";
 
+import DateFilterInputValue from "@/components/DateFilterInputValue";
 import { DragHandle, Sortable } from "@/components/Sortable";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
@@ -57,10 +58,6 @@ const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
   { ssr: false },
 );
-
-const DateFilterInputValue = (
-  props: React.ComponentProps<typeof GridFilterInputValue>,
-) => <GridFilterInputValue {...props} type="date" />;
 
 interface MenusMenuIdSectionIdProps {
   filterField?: string;

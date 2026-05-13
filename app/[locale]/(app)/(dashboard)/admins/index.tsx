@@ -21,6 +21,7 @@ import useSWR from "swr";
 
 import BanUserDialogContent from "./BanUserDialogContent";
 import {
+  DATE_FILTER_OPERATORS,
   ENUM_FILTER_OPERATORS,
   FILTER_FIELDS,
   FILTER_OPERATORS,
@@ -33,6 +34,8 @@ import CreateUserDialogContent from "./CreateUserDialogContent";
 import SetRoleDialogContent from "./SetRoleDialogContent";
 import SetUserPasswordDialogContent from "./SetUserPasswordDialogContent";
 import UpdateUserDialogContent from "./UpdateUserDialogContent";
+
+import DateFilterInputValue from "@/components/DateFilterInputValue";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import {
@@ -308,6 +311,19 @@ const Admins = ({
           value === "isAnyOf"
             ? GridFilterInputMultipleSingleSelect
             : GridFilterInputSingleSelect,
+        label: tToolbar(`filter.operator.${value}`),
+        value,
+      })),
+    [tToolbar],
+  );
+
+  const dateFilterOperators = useMemo<GridFilterOperator[]>(
+    () =>
+      DATE_FILTER_OPERATORS.map((value) => ({
+        getApplyFilterFn: () => null,
+        ...(NO_VALUE_FILTER_OPERATORS.includes(value)
+          ? { InputComponent: undefined }
+          : { InputComponent: DateFilterInputValue }),
         label: tToolbar(`filter.operator.${value}`),
         value,
       })),
@@ -852,14 +868,17 @@ const Admins = ({
       },
       {
         field: "createdAt",
-        filterable: false,
+        filterOperators: dateFilterOperators,
         headerName: tAdmins("createdAt"),
+        type: "date",
         valueFormatter: (value: Date) =>
           format.dateTime(new Date(value), "short"),
+        valueGetter: (value: Date) => new Date(value),
       },
     ],
     [
       currentUserId,
+      dateFilterOperators,
       enumFilterOperators,
       format,
       handleBanUser,

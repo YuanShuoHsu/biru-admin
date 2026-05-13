@@ -4,6 +4,7 @@ export const FILTER_FIELDS = [
   "role",
   "banned",
   "emailSubscribed",
+  "createdAt",
 ] as const;
 export const TEXT_FILTER_OPERATORS = [
   "contains",
@@ -17,6 +18,16 @@ export const TEXT_FILTER_OPERATORS = [
   "isAnyOf",
 ] as const;
 export const ENUM_FILTER_OPERATORS = ["is", "not", "isAnyOf"] as const;
+export const DATE_FILTER_OPERATORS = [
+  "is",
+  "not",
+  "after",
+  "onOrAfter",
+  "before",
+  "onOrBefore",
+  "isEmpty",
+  "isNotEmpty",
+] as const;
 export const FILTER_OPERATORS = [
   "contains",
   "doesNotContain",
@@ -29,6 +40,10 @@ export const FILTER_OPERATORS = [
   "is",
   "not",
   "isAnyOf",
+  "after",
+  "onOrAfter",
+  "before",
+  "onOrBefore",
 ] as const;
 export const NO_VALUE_FILTER_OPERATORS: readonly string[] = [
   "isEmpty",
