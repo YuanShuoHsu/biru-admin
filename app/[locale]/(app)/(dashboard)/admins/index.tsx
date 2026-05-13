@@ -821,13 +821,7 @@ const Admins = ({
 
   return (
     <>
-      <Stack
-        direction="row"
-        flexWrap="wrap"
-        justifyContent="space-between"
-        alignItems="center"
-        gap={1}
-      >
+      <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
         <Button
           onClick={handleCreateUser}
           size="small"
