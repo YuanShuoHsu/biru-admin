@@ -91,6 +91,26 @@
       "placeholder": "請輸入您的連結網址"
     }
   },
+  "addOns": {
+    "actions": {
+      "createAddOn": { "success": "成功新增加購", "title": "新增加購" },
+      "deleteAddOn": {
+        "confirm": "確定要刪除此加購設定嗎？",
+        "error": "刪除加購失敗",
+        "success": "成功刪除加購",
+        "title": "刪除加購"
+      },
+      "label": "操作"
+    },
+    "addOnMenuItemId": { "label": "加購品項" },
+    "addOnMenuSectionId": { "label": "加購分組" },
+    "label": "加購設定",
+    "type": {
+      "item": "指定品項",
+      "label": "加購類型",
+      "section": "整個分組"
+    }
+  },
   "label": "菜單管理",
   "name": {
     "label": "菜單名稱",
@@ -153,6 +173,45 @@
       "placeholder": "請輸入您的分組名稱"
     },
     "unassigned": "未分組"
+  },
+  "offers": {
+    "actions": {
+      "createOffer": { "success": "成功新增定價", "title": "新增定價" },
+      "deleteOffer": {
+        "confirm": "確定要刪除此定價設定嗎？此操作無法復原。",
+        "error": "刪除定價失敗",
+        "success": "成功刪除定價",
+        "title": "刪除定價"
+      },
+      "label": "操作",
+      "updateOffer": { "success": "成功更新定價", "title": "編輯定價" }
+    },
+    "availability": {
+      "label": "供應狀態",
+      "options": {
+        "BackOrder": "預購補貨中",
+        "Discontinued": "已停售",
+        "InStock": "供應中",
+        "InStoreOnly": "僅店內供應",
+        "LimitedAvailability": "限量供應",
+        "MadeToOrder": "接單製作",
+        "OnlineOnly": "僅線上供應",
+        "OutOfStock": "暫時缺貨",
+        "PreOrder": "預購",
+        "PreSale": "預售",
+        "Reserved": "保留",
+        "SoldOut": "售完"
+      }
+    },
+    "eligibleQuantityMax": { "label": "最多數量（選填）" },
+    "eligibleQuantityMin": { "label": "最少數量（選填）" },
+    "label": "定價設定",
+    "name": { "label": "定價名稱（選填）", "placeholder": "例如：午餐特價" },
+    "price": { "label": "價格", "placeholder": "例如：150.00" },
+    "priceCurrency": { "label": "幣別" },
+    "sku": { "label": "SKU（選填）", "placeholder": "庫存單位代碼" },
+    "validFrom": { "label": "有效起始日（選填）" },
+    "validThrough": { "label": "有效截止日（選填）" }
   },
   "updatedAt": "更新時間"
 }

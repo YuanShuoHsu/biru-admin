@@ -26,7 +26,7 @@ import { isSortableOperation } from "@dnd-kit/react/sortable";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
-import { Add, Cancel, Delete, Edit, Save, Sort } from "@mui/icons-material";
+import { Add, Cancel, Delete, Edit, LocalOffer, Save, Sort } from "@mui/icons-material";
 import {
   Button,
   DialogContentText,
@@ -65,11 +65,12 @@ interface MenusMenuIdSectionIdProps {
   filterOperator?: string;
   filterValue?: string;
   items: MenuItem[];
+  menuId: string;
   page: number;
   pageSize: number;
   quickFilterValue?: string;
   rowCount: number;
-  sectionId: string;
+  menuSectionId: string;
   sortBy?: string;
   sortDirection?: "asc" | "desc";
 }
@@ -80,11 +81,12 @@ const MenusMenuIdSectionId = ({
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
   items: initialItems,
+  menuId,
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,
   rowCount: initialRowCount,
-  sectionId,
+  menuSectionId,
   sortBy,
   sortDirection,
 }: MenusMenuIdSectionIdProps) => {
@@ -137,7 +139,7 @@ const MenusMenuIdSectionId = ({
     isValidating,
   } = useSWR(
     [
-      `/api/menu-sections/${sectionId}/menu-items`,
+      `/api/menu-sections/${menuSectionId}/menu-items`,
       filterModel.items[0]?.field,
       filterModel.items[0]?.operator,
       filterModel.items[0]?.value,
@@ -162,7 +164,7 @@ const MenusMenuIdSectionId = ({
         : !!filterItem?.value;
 
       return fetcher<{ data: MenuItem[]; total: number }>(
-        `/api/menu-sections/${sectionId}/menu-items?${new URLSearchParams({
+        `/api/menu-sections/${menuSectionId}/menu-items?${new URLSearchParams({
           limit: String(paginationModel.pageSize),
           offset: String(paginationModel.page * paginationModel.pageSize),
           ...(filterItem?.field &&
@@ -333,7 +335,7 @@ const MenusMenuIdSectionId = ({
       ),
       onConfirm: async () => {
         try {
-          await fetcher(`/api/menu-sections/${sectionId}/menu-items/reorder`, {
+          await fetcher(`/api/menu-sections/${menuSectionId}/menu-items/reorder`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -366,7 +368,7 @@ const MenusMenuIdSectionId = ({
     mutateItems,
     paginationModel.page,
     paginationModel.pageSize,
-    sectionId,
+    menuSectionId,
     setDialog,
     tMenus,
   ]);
@@ -402,16 +404,28 @@ const MenusMenuIdSectionId = ({
     mutateItems({ data: newItems, total: rowCount }, false);
   };
 
+  const handleManageItem = useCallback(
+    ({ id }: MenuItem) => {
+      const params = new URLSearchParams({
+        ...Object.fromEntries(searchParams),
+        page: "1",
+        pageSize: "10",
+      });
+      router.push(`/menus/${menuId}/${menuSectionId}/${id}/offers?${params.toString()}`);
+    },
+    [menuId, router, searchParams, menuSectionId],
+  );
+
   const handleCreateItem = useCallback(() => {
     setDialog({
       content: (
-        <CreateMenuItemDialog mutateItems={mutateItems} sectionId={sectionId} />
+        <CreateMenuItemDialog mutateItems={mutateItems} menuSectionId={menuSectionId} />
       ),
       formId: "create-menu-item-form",
       open: true,
       title: tMenus("items.actions.createItem.title"),
     });
-  }, [mutateItems, sectionId, setDialog, tMenus]);
+  }, [mutateItems, menuSectionId, setDialog, tMenus]);
 
   const handleUpdateItem = useCallback(
     (item: MenuItem) => {
@@ -489,6 +503,18 @@ const MenusMenuIdSectionId = ({
                   alignItems="center"
                   gap={1}
                 >
+                  <Tooltip title={tMenus("offers.label")}>
+                    <IconButton
+                      onClick={(event) => {
+                        event.stopPropagation();
+
+                        handleManageItem(row);
+                      }}
+                      size="small"
+                    >
+                      <LocalOffer fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
                   <Tooltip title={tMenus("items.actions.updateItem.title")}>
                     <IconButton
                       onClick={(event) => {
@@ -546,6 +572,7 @@ const MenusMenuIdSectionId = ({
       dateFilterOperators,
       format,
       handleDeleteItem,
+      handleManageItem,
       handleUpdateItem,
       isReorderMode,
       stringFilterOperators,

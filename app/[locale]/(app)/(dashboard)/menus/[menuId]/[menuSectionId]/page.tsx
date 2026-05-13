@@ -23,7 +23,7 @@ import {
 } from "@/utils/menus";
 
 interface MenusMenuIdSectionIdPageProps {
-  params: Promise<{ locale: Locale; menuId: string; sectionId: string }>;
+  params: Promise<{ locale: Locale; menuId: string; menuSectionId: string }>;
   searchParams: Promise<{
     filterField?: string;
     filterOperator?: string;
@@ -43,7 +43,7 @@ const MenusMenuIdSectionIdPage = async ({
 }: MenusMenuIdSectionIdPageProps) => {
   const [
     cookieStore,
-    { locale, menuId, sectionId },
+    { locale, menuId, menuSectionId },
     {
       filterField: rawFilterField,
       filterOperator: rawFilterOperator,
@@ -97,7 +97,7 @@ const MenusMenuIdSectionIdPage = async ({
         filterValue && { filterField, filterOperator, filterValue }),
     });
     redirect({
-      href: `/menus/${menuId}/${sectionId}?${params.toString()}`,
+      href: `/menus/${menuId}/${menuSectionId}?${params.toString()}`,
       locale,
     });
   }
@@ -105,9 +105,9 @@ const MenusMenuIdSectionIdPage = async ({
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
   const [menu, section, { items, total }] = await Promise.all([
     getAdminMenu(menuId, fetchOptions),
-    getAdminMenuSection(sectionId, fetchOptions),
+    getAdminMenuSection(menuSectionId, fetchOptions),
     getAdminMenuSectionItems(
-      sectionId,
+      menuSectionId,
       page,
       pageSize,
       filterField,
@@ -142,11 +142,12 @@ const MenusMenuIdSectionIdPage = async ({
       filterOperator={filterOperator}
       filterValue={filterValue}
       items={items}
+      menuId={menuId}
       page={page}
       pageSize={pageSize}
       quickFilterValue={quickFilterValue}
       rowCount={total}
-      sectionId={sectionId}
+      menuSectionId={menuSectionId}
       sortBy={sortBy}
       sortDirection={sortDirection}
     />

@@ -91,6 +91,26 @@
       "placeholder": "URLを入力してください"
     }
   },
+  "addOns": {
+    "actions": {
+      "createAddOn": { "success": "追加オプションを追加しました", "title": "追加オプションを追加" },
+      "deleteAddOn": {
+        "confirm": "この追加オプションを削除しますか？",
+        "error": "追加オプションの削除に失敗しました",
+        "success": "追加オプションを削除しました",
+        "title": "追加オプションを削除"
+      },
+      "label": "操作"
+    },
+    "addOnMenuItemId": { "label": "追加品目" },
+    "addOnMenuSectionId": { "label": "追加セクション" },
+    "label": "追加オプション",
+    "type": {
+      "item": "特定品目",
+      "label": "追加オプション種類",
+      "section": "セクション全体"
+    }
+  },
   "label": "メニュー管理",
   "name": {
     "label": "メニュー名",
@@ -153,6 +173,45 @@
       "placeholder": "セクション名を入力してください"
     },
     "unassigned": "未分類"
+  },
+  "offers": {
+    "actions": {
+      "createOffer": { "success": "価格設定を追加しました", "title": "価格設定を追加" },
+      "deleteOffer": {
+        "confirm": "この価格設定を削除しますか？この操作は取り消せません。",
+        "error": "価格設定の削除に失敗しました",
+        "success": "価格設定を削除しました",
+        "title": "価格設定を削除"
+      },
+      "label": "操作",
+      "updateOffer": { "success": "価格設定を更新しました", "title": "価格設定を編集" }
+    },
+    "availability": {
+      "label": "提供状況",
+      "options": {
+        "BackOrder": "取り寄せ中",
+        "Discontinued": "販売終了",
+        "InStock": "提供中",
+        "InStoreOnly": "店内のみ",
+        "LimitedAvailability": "数量限定",
+        "MadeToOrder": "受注製作",
+        "OnlineOnly": "オンラインのみ",
+        "OutOfStock": "在庫切れ",
+        "PreOrder": "予約注文",
+        "PreSale": "先行販売",
+        "Reserved": "予約済み",
+        "SoldOut": "売り切れ"
+      }
+    },
+    "eligibleQuantityMax": { "label": "最大数量（任意）" },
+    "eligibleQuantityMin": { "label": "最小数量（任意）" },
+    "label": "価格設定",
+    "name": { "label": "価格名（任意）", "placeholder": "例：ランチ特価" },
+    "price": { "label": "価格", "placeholder": "例：150.00" },
+    "priceCurrency": { "label": "通貨" },
+    "sku": { "label": "SKU（任意）", "placeholder": "在庫管理コード" },
+    "validFrom": { "label": "有効開始日（任意）" },
+    "validThrough": { "label": "有効終了日（任意）" }
   },
   "updatedAt": "更新日時"
 }

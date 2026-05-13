@@ -26,12 +26,12 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 
 interface CreateMenuItemDialogProps {
   mutateItems: () => void;
-  sectionId: string;
+  menuSectionId: string;
 }
 
 const CreateMenuItemDialog = ({
   mutateItems,
-  sectionId,
+  menuSectionId,
 }: CreateMenuItemDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
@@ -61,7 +61,7 @@ const CreateMenuItemDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher<MenuItem>(`/api/menu-sections/${sectionId}/menu-items`, {
+      await fetcher<MenuItem>(`/api/menu-sections/${menuSectionId}/menu-items`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

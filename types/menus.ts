@@ -89,6 +89,7 @@ export interface Offer {
   id: string;
   menuItemId: string | null;
   menuSectionId: string | null;
+  name: string | null;
   price: string | null;
   priceCurrency: string | null;
   availability: ItemAvailability | null;

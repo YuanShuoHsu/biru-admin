@@ -91,6 +91,26 @@
       "placeholder": "请输入您的链接网址"
     }
   },
+  "addOns": {
+    "actions": {
+      "createAddOn": { "success": "成功新增加购", "title": "新增加购" },
+      "deleteAddOn": {
+        "confirm": "确定要删除此加购设置吗？",
+        "error": "删除加购失败",
+        "success": "成功删除加购",
+        "title": "删除加购"
+      },
+      "label": "操作"
+    },
+    "addOnMenuItemId": { "label": "加购品项" },
+    "addOnMenuSectionId": { "label": "加购分组" },
+    "label": "加购设置",
+    "type": {
+      "item": "指定品项",
+      "label": "加购类型",
+      "section": "整个分组"
+    }
+  },
   "label": "菜单管理",
   "name": {
     "label": "菜单名称",
@@ -153,6 +173,45 @@
       "placeholder": "请输入您的分组名称"
     },
     "unassigned": "未分组"
+  },
+  "offers": {
+    "actions": {
+      "createOffer": { "success": "成功新增定价", "title": "新增定价" },
+      "deleteOffer": {
+        "confirm": "确定要删除此定价设置吗？此操作无法撤销。",
+        "error": "删除定价失败",
+        "success": "成功删除定价",
+        "title": "删除定价"
+      },
+      "label": "操作",
+      "updateOffer": { "success": "成功更新定价", "title": "编辑定价" }
+    },
+    "availability": {
+      "label": "供应状态",
+      "options": {
+        "BackOrder": "预购补货中",
+        "Discontinued": "已停售",
+        "InStock": "供应中",
+        "InStoreOnly": "仅店内供应",
+        "LimitedAvailability": "限量供应",
+        "MadeToOrder": "接单制作",
+        "OnlineOnly": "仅线上供应",
+        "OutOfStock": "暂时缺货",
+        "PreOrder": "预购",
+        "PreSale": "预售",
+        "Reserved": "保留",
+        "SoldOut": "售完"
+      }
+    },
+    "eligibleQuantityMax": { "label": "最多数量（选填）" },
+    "eligibleQuantityMin": { "label": "最少数量（选填）" },
+    "label": "定价设置",
+    "name": { "label": "定价名称（选填）", "placeholder": "例如：午餐特价" },
+    "price": { "label": "价格", "placeholder": "例如：150.00" },
+    "priceCurrency": { "label": "币别" },
+    "sku": { "label": "SKU（选填）", "placeholder": "库存单位代码" },
+    "validFrom": { "label": "有效起始日（选填）" },
+    "validThrough": { "label": "有效截止日（选填）" }
   },
   "updatedAt": "更新时间"
 }

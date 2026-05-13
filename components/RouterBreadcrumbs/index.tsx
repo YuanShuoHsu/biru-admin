@@ -23,11 +23,13 @@ import {
   DeleteForever,
   Devices,
   Email,
+  Extension,
   Gavel,
   Group,
   Groups,
   HelpOutline,
   Info,
+  LocalOffer,
   Lock,
   LockReset,
   Login,
@@ -95,7 +97,7 @@ interface BreadcrumbItem {
 }
 
 const useBreadcrumbs = (): BreadcrumbItem[] => {
-  const { menuId, sectionId, slug, storeSlug, teamId, userId } =
+  const { menuId, menuItemId, menuSectionId, slug, storeSlug, teamId, userId } =
     useParams<RouteParams>();
 
   const searchParams = useSearchParams();
@@ -151,12 +153,25 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
   );
 
   const { data: sectionName = "" } = useSWR(
-    sectionId ? `/api/menu-sections/${sectionId}` : null,
+    menuSectionId ? `/api/menu-sections/${menuSectionId}` : null,
     async (url) => {
       try {
         const section = await fetcher<MenuSection>(url);
 
         return section.name || "";
+      } catch {
+        return "";
+      }
+    },
+  );
+
+  const { data: menuItemName = "" } = useSWR(
+    menuItemId ? `/api/menu-items/${menuItemId}` : null,
+    async (url) => {
+      try {
+        const item = await fetcher<{ name: string }>(url);
+
+        return item.name || "";
       } catch {
         return "";
       }
@@ -257,9 +272,28 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
         {
           children: [
             {
+              children: [
+                {
+                  children: [
+                    {
+                      icon: LocalOffer,
+                      label: tMenus("offers.label"),
+                      to: "/offers",
+                    },
+                    {
+                      icon: Extension,
+                      label: tMenus("addOns.label"),
+                      to: "/add-ons",
+                    },
+                  ],
+                  icon: LocalOffer,
+                  label: menuItemName,
+                  to: `/${menuItemId}`,
+                },
+              ],
               icon: ViewList,
               label: sectionName,
-              to: `/${sectionId}`,
+              to: `/${menuSectionId}`,
             },
           ],
           icon: Summarize,

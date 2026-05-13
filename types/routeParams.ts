@@ -5,7 +5,8 @@ import type { Locale } from "@/i18n/routing";
 interface RouteParam {
   locale: Locale;
   menuId: string;
-  sectionId: string;
+  menuItemId: string;
+  menuSectionId: string;
   slug: string;
   storeSlug: StoreSlug;
   teamId: string;

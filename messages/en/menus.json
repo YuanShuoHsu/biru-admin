@@ -91,6 +91,26 @@
       "placeholder": "Please enter your URL"
     }
   },
+  "addOns": {
+    "actions": {
+      "createAddOn": { "success": "Add-on added", "title": "Add add-on" },
+      "deleteAddOn": {
+        "confirm": "Are you sure you want to remove this add-on?",
+        "error": "Failed to remove add-on",
+        "success": "Add-on removed",
+        "title": "Remove add-on"
+      },
+      "label": "Actions"
+    },
+    "addOnMenuItemId": { "label": "Add-on item" },
+    "addOnMenuSectionId": { "label": "Add-on section" },
+    "label": "Add-ons",
+    "type": {
+      "item": "Specific item",
+      "label": "Add-on type",
+      "section": "Entire section"
+    }
+  },
   "label": "Menu Management",
   "name": {
     "label": "Menu name",
@@ -153,6 +173,45 @@
       "placeholder": "Please enter your section name"
     },
     "unassigned": "Unassigned"
+  },
+  "offers": {
+    "actions": {
+      "createOffer": { "success": "Offer created", "title": "Add offer" },
+      "deleteOffer": {
+        "confirm": "Are you sure you want to delete this offer? This action cannot be undone.",
+        "error": "Failed to delete offer",
+        "success": "Offer deleted",
+        "title": "Delete offer"
+      },
+      "label": "Actions",
+      "updateOffer": { "success": "Offer updated", "title": "Edit offer" }
+    },
+    "availability": {
+      "label": "Availability",
+      "options": {
+        "BackOrder": "Back order",
+        "Discontinued": "Discontinued",
+        "InStock": "In stock",
+        "InStoreOnly": "In-store only",
+        "LimitedAvailability": "Limited availability",
+        "MadeToOrder": "Made to order",
+        "OnlineOnly": "Online only",
+        "OutOfStock": "Out of stock",
+        "PreOrder": "Pre-order",
+        "PreSale": "Pre-sale",
+        "Reserved": "Reserved",
+        "SoldOut": "Sold out"
+      }
+    },
+    "eligibleQuantityMax": { "label": "Max quantity (optional)" },
+    "eligibleQuantityMin": { "label": "Min quantity (optional)" },
+    "label": "Offers",
+    "name": { "label": "Offer name (optional)", "placeholder": "e.g. Lunch special" },
+    "price": { "label": "Price", "placeholder": "e.g. 150.00" },
+    "priceCurrency": { "label": "Currency" },
+    "sku": { "label": "SKU (optional)", "placeholder": "Stock keeping unit" },
+    "validFrom": { "label": "Valid from (optional)" },
+    "validThrough": { "label": "Valid through (optional)" }
   },
   "updatedAt": "Updated"
 }
