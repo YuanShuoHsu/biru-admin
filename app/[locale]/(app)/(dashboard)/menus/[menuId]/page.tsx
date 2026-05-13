@@ -25,6 +25,7 @@ interface MenusMenuIdPageProps {
     organization?: string;
     page?: string;
     pageSize?: string;
+    quickFilterValue?: string;
     sortBy?: string;
     sortDirection?: string;
   }>;
@@ -43,6 +44,7 @@ const MenusMenuIdPage = async ({
       filterValue,
       page: rawPage,
       pageSize: rawPageSize,
+      quickFilterValue,
       sortBy: rawSortBy,
       sortDirection: rawSortDirection,
       ...restSearchParams
@@ -104,6 +106,7 @@ const MenusMenuIdPage = async ({
       filterField,
       filterOperator,
       filterValue,
+      quickFilterValue,
       sortBy,
       sortDirection,
       fetchOptions,
@@ -120,6 +123,7 @@ const MenusMenuIdPage = async ({
       menu={menu}
       page={page}
       pageSize={pageSize}
+      quickFilterValue={quickFilterValue}
       rowCount={total}
       sections={sections}
       sortBy={sortBy}

@@ -74,6 +74,7 @@ interface MenuDetailProps {
   menu: Menu;
   page: number;
   pageSize: number;
+  quickFilterValue?: string;
   rowCount: number;
   sections: MenuSection[];
   sortBy?: string;
@@ -87,6 +88,7 @@ const MenusMenuId = ({
   menu,
   page,
   pageSize,
+  quickFilterValue: initialQuickFilterValue,
   rowCount: initialRowCount,
   sections: initialSections,
   sortBy,
@@ -117,6 +119,7 @@ const MenusMenuId = ({
             },
           ]
         : [],
+    quickFilterValues: initialQuickFilterValue ? [initialQuickFilterValue] : [],
   });
 
   const { setDialog } = useDialogStore((state) => state);
@@ -145,12 +148,16 @@ const MenusMenuId = ({
       filterModel.items[0]?.field,
       filterModel.items[0]?.operator,
       filterModel.items[0]?.value,
+      filterModel.quickFilterValues,
       paginationModel.page,
       paginationModel.pageSize,
       sortModel,
     ],
     async () => {
       const filterItem = filterModel.items[0];
+      const quickFilterValue = (filterModel.quickFilterValues || [])
+        .join(" ")
+        .trim();
       const isNoValueOperator =
         filterItem?.operator &&
         NO_VALUE_FILTER_OPERATORS.includes(filterItem.operator);
@@ -172,8 +179,10 @@ const MenusMenuId = ({
               filterOperator: filterItem.operator,
               ...(filterValueString && { filterValue: filterValueString }),
             }),
+          ...(quickFilterValue && { quickFilterValue }),
           ...(sortModel[0]?.field && { sortBy: sortModel[0].field }),
           ...(sortModel[0]?.sort && { sortDirection: sortModel[0].sort }),
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         })}`,
       );
     },
@@ -263,6 +272,9 @@ const MenusMenuId = ({
       setPaginationModel((prev) => ({ ...prev, page: 0 }));
 
       const filterItem = newModel.items[0];
+      const newQuickFilterValue = (newModel.quickFilterValues || [])
+        .join(" ")
+        .trim();
       const {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         filterField: _filterField,
@@ -270,6 +282,8 @@ const MenusMenuId = ({
         filterOperator: _filterOperator,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         filterValue: _filterValue,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        quickFilterValue: _quickFilterValue,
         ...rest
       } = Object.fromEntries(searchParams);
 
@@ -293,6 +307,7 @@ const MenusMenuId = ({
             filterOperator: filterItem.operator,
             ...(filterValueString && { filterValue: filterValueString }),
           }),
+        ...(newQuickFilterValue && { quickFilterValue: newQuickFilterValue }),
       });
       router.replace(`${pathname}?${params.toString()}`);
     },

@@ -39,6 +39,7 @@ export const getAdminMenuSections = cache(
     filterField?: string,
     filterOperator?: string,
     filterValue?: string,
+    quickFilterValue?: string,
     sortBy?: string,
     sortDirection?: "asc" | "desc",
     init?: RequestInit,
@@ -53,6 +54,7 @@ export const getAdminMenuSections = cache(
         ...(filterField &&
           filterOperator &&
           filterValue && { filterField, filterOperator, filterValue }),
+        ...(quickFilterValue && { quickFilterValue }),
       });
       const result = await fetcher<{ data: AdminMenuSection[]; total: number }>(
         `/api/menus/${menuId}/menu-sections?${params.toString()}`,
@@ -89,6 +91,7 @@ export const getAdminMenuSectionItems = cache(
     filterField?: string,
     filterOperator?: string,
     filterValue?: string,
+    quickFilterValue?: string,
     sortBy?: string,
     sortDirection?: "asc" | "desc",
     init?: RequestInit,
@@ -103,6 +106,7 @@ export const getAdminMenuSectionItems = cache(
         ...(filterField &&
           filterOperator &&
           filterValue && { filterField, filterOperator, filterValue }),
+        ...(quickFilterValue && { quickFilterValue }),
       });
       const result = await fetcher<{ data: AdminMenuItem[]; total: number }>(
         `/api/menu-sections/${sectionId}/menu-items?${params.toString()}`,
