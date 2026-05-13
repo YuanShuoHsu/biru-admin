@@ -206,7 +206,10 @@
     "eligibleQuantityMax": { "label": "Max quantity (optional)" },
     "eligibleQuantityMin": { "label": "Min quantity (optional)" },
     "label": "Offers",
-    "name": { "label": "Offer name (optional)", "placeholder": "e.g. Lunch special" },
+    "name": {
+      "label": "Offer name (optional)",
+      "placeholder": "e.g. Lunch special"
+    },
     "price": { "label": "Price", "placeholder": "e.g. 150.00" },
     "priceCurrency": { "label": "Currency" },
     "sku": { "label": "SKU (optional)", "placeholder": "Stock keeping unit" },

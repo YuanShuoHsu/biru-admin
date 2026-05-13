@@ -13,18 +13,16 @@ import {
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import {
-  Box,
-  type BoxProps,
-  MenuItem,
-  styled,
-  TextField,
-} from "@mui/material";
+import { Box, type BoxProps, MenuItem, styled, TextField } from "@mui/material";
 import useSWR from "swr";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { MenuItemAddOn, MenuSection, MenuItem as MenuItemType } from "@/types/menus";
+import type {
+  MenuItemAddOn,
+  MenuSection,
+  MenuItem as MenuItemType,
+} from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
 
@@ -110,9 +108,7 @@ const CreateAddOnDialog = ({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
-          type === "item"
-            ? { addOnMenuItemId }
-            : { addOnMenuSectionId },
+          type === "item" ? { addOnMenuItemId } : { addOnMenuSectionId },
         ),
       });
 
@@ -150,9 +146,7 @@ const CreateAddOnDialog = ({
           >
             {ADD_ON_TYPE_VALUES.map((value) => (
               <MenuItem key={value} value={value}>
-                {tMenus(
-                  `addOns.type.${value}` as Parameters<typeof tMenus>[0],
-                )}
+                {tMenus(`addOns.type.${value}` as Parameters<typeof tMenus>[0])}
               </MenuItem>
             ))}
           </TextField>

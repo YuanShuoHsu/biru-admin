@@ -26,7 +26,15 @@ import { isSortableOperation } from "@dnd-kit/react/sortable";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
-import { Add, Cancel, Delete, Edit, LocalOffer, Save, Sort } from "@mui/icons-material";
+import {
+  Add,
+  Cancel,
+  Delete,
+  Edit,
+  LocalOffer,
+  Save,
+  Sort,
+} from "@mui/icons-material";
 import {
   Button,
   DialogContentText,
@@ -335,14 +343,17 @@ const MenusMenuIdSectionId = ({
       ),
       onConfirm: async () => {
         try {
-          await fetcher(`/api/menu-sections/${menuSectionId}/menu-items/reorder`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              ids: items.map(({ id }) => id),
-              offset: paginationModel.page * paginationModel.pageSize,
-            }),
-          });
+          await fetcher(
+            `/api/menu-sections/${menuSectionId}/menu-items/reorder`,
+            {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                ids: items.map(({ id }) => id),
+                offset: paginationModel.page * paginationModel.pageSize,
+              }),
+            },
+          );
 
           setIsReorderMode(false);
 
@@ -411,7 +422,9 @@ const MenusMenuIdSectionId = ({
         page: "1",
         pageSize: "10",
       });
-      router.push(`/menus/${menuId}/${menuSectionId}/${id}/offers?${params.toString()}`);
+      router.push(
+        `/menus/${menuId}/${menuSectionId}/${id}/offers?${params.toString()}`,
+      );
     },
     [menuId, router, searchParams, menuSectionId],
   );
@@ -419,7 +432,10 @@ const MenusMenuIdSectionId = ({
   const handleCreateItem = useCallback(() => {
     setDialog({
       content: (
-        <CreateMenuItemDialog mutateItems={mutateItems} menuSectionId={menuSectionId} />
+        <CreateMenuItemDialog
+          mutateItems={mutateItems}
+          menuSectionId={menuSectionId}
+        />
       ),
       formId: "create-menu-item-form",
       open: true,

@@ -93,7 +93,10 @@
   },
   "addOns": {
     "actions": {
-      "createAddOn": { "success": "追加オプションを追加しました", "title": "追加オプションを追加" },
+      "createAddOn": {
+        "success": "追加オプションを追加しました",
+        "title": "追加オプションを追加"
+      },
       "deleteAddOn": {
         "confirm": "この追加オプションを削除しますか？",
         "error": "追加オプションの削除に失敗しました",
@@ -176,7 +179,10 @@
   },
   "offers": {
     "actions": {
-      "createOffer": { "success": "価格設定を追加しました", "title": "価格設定を追加" },
+      "createOffer": {
+        "success": "価格設定を追加しました",
+        "title": "価格設定を追加"
+      },
       "deleteOffer": {
         "confirm": "この価格設定を削除しますか？この操作は取り消せません。",
         "error": "価格設定の削除に失敗しました",
@@ -184,7 +190,10 @@
         "title": "価格設定を削除"
       },
       "label": "操作",
-      "updateOffer": { "success": "価格設定を更新しました", "title": "価格設定を編集" }
+      "updateOffer": {
+        "success": "価格設定を更新しました",
+        "title": "価格設定を編集"
+      }
     },
     "availability": {
       "label": "提供状況",

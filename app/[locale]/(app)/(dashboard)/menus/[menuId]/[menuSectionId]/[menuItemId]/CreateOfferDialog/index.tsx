@@ -92,12 +92,14 @@ const CreateOfferDialog = ({
           priceCurrency,
           availability,
           ...(sku && { sku }),
-          ...(eligibleQuantityMin !== "" && eligibleQuantityMin !== undefined && {
-            eligibleQuantityMin: Number(eligibleQuantityMin),
-          }),
-          ...(eligibleQuantityMax !== "" && eligibleQuantityMax !== undefined && {
-            eligibleQuantityMax: Number(eligibleQuantityMax),
-          }),
+          ...(eligibleQuantityMin !== "" &&
+            eligibleQuantityMin !== undefined && {
+              eligibleQuantityMin: Number(eligibleQuantityMin),
+            }),
+          ...(eligibleQuantityMax !== "" &&
+            eligibleQuantityMax !== undefined && {
+              eligibleQuantityMax: Number(eligibleQuantityMax),
+            }),
           ...(validFrom && { validFrom }),
           ...(validThrough && { validThrough }),
         }),

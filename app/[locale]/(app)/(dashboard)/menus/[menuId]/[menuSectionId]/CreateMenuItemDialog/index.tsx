@@ -61,16 +61,19 @@ const CreateMenuItemDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher<MenuItem>(`/api/menu-sections/${menuSectionId}/menu-items`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          ...(description && { description }),
-          ...(image && { image }),
-          ...(url && { url }),
-        }),
-      });
+      await fetcher<MenuItem>(
+        `/api/menu-sections/${menuSectionId}/menu-items`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name,
+            ...(description && { description }),
+            ...(image && { image }),
+            ...(url && { url }),
+          }),
+        },
+      );
 
       enqueueSnackbar(tMenus("items.actions.createItem.success", { name }), {
         variant: "success",

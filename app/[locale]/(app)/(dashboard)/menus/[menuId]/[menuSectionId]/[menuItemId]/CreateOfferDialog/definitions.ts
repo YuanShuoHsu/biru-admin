@@ -35,4 +35,6 @@ export const useCreateOfferFormSchema = () => {
   });
 };
 
-export type CreateOfferForm = z.infer<ReturnType<typeof useCreateOfferFormSchema>>;
+export type CreateOfferForm = z.infer<
+  ReturnType<typeof useCreateOfferFormSchema>
+>;

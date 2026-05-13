@@ -8,7 +8,11 @@ import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
-import { getAdminMenu, getAdminMenuItemOffers, getAdminMenuSection } from "@/utils/menus";
+import {
+  getAdminMenu,
+  getAdminMenuItemOffers,
+  getAdminMenuSection,
+} from "@/utils/menus";
 
 interface MenuItemOffersPageProps {
   params: Promise<{

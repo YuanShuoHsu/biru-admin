@@ -28,4 +28,6 @@ export const useCreateAddOnFormSchema = () => {
     });
 };
 
-export type CreateAddOnForm = z.infer<ReturnType<typeof useCreateAddOnFormSchema>>;
+export type CreateAddOnForm = z.infer<
+  ReturnType<typeof useCreateAddOnFormSchema>
+>;

@@ -93,7 +93,10 @@
   },
   "addOns": {
     "actions": {
-      "createAddOn": { "success": "추가 옵션이 추가되었습니다", "title": "추가 옵션 추가" },
+      "createAddOn": {
+        "success": "추가 옵션이 추가되었습니다",
+        "title": "추가 옵션 추가"
+      },
       "deleteAddOn": {
         "confirm": "이 추가 옵션을 삭제하시겠습니까?",
         "error": "추가 옵션 삭제에 실패했습니다",
@@ -176,7 +179,10 @@
   },
   "offers": {
     "actions": {
-      "createOffer": { "success": "가격 설정이 추가되었습니다", "title": "가격 설정 추가" },
+      "createOffer": {
+        "success": "가격 설정이 추가되었습니다",
+        "title": "가격 설정 추가"
+      },
       "deleteOffer": {
         "confirm": "이 가격 설정을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
         "error": "가격 설정 삭제에 실패했습니다",
@@ -184,7 +190,10 @@
         "title": "가격 설정 삭제"
       },
       "label": "작업",
-      "updateOffer": { "success": "가격 설정이 업데이트되었습니다", "title": "가격 설정 편집" }
+      "updateOffer": {
+        "success": "가격 설정이 업데이트되었습니다",
+        "title": "가격 설정 편집"
+      }
     },
     "availability": {
       "label": "공급 상태",
@@ -206,7 +215,10 @@
     "eligibleQuantityMax": { "label": "최대 수량 (선택 사항)" },
     "eligibleQuantityMin": { "label": "최소 수량 (선택 사항)" },
     "label": "가격 설정",
-    "name": { "label": "가격 이름 (선택 사항)", "placeholder": "예: 점심 특가" },
+    "name": {
+      "label": "가격 이름 (선택 사항)",
+      "placeholder": "예: 점심 특가"
+    },
     "price": { "label": "가격", "placeholder": "예: 150.00" },
     "priceCurrency": { "label": "통화" },
     "sku": { "label": "SKU (선택 사항)", "placeholder": "재고 관리 코드" },
