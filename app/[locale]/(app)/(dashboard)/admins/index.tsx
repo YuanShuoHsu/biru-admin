@@ -236,6 +236,7 @@ const Admins = ({
         ...(quickFilterValue && { quickFilterValue }),
         sortBy: sortModel[0]?.field || "createdAt",
         sortDirection: sortModel[0]?.sort || "desc",
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       });
 
       const { data: userRows, total } = await fetcher<{
