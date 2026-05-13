@@ -279,7 +279,14 @@ const Menus = ({
           format.dateTime(new Date(value), "short"),
       },
     ],
-    [canWrite, format, handleDeleteMenu, handleUpdateMenu, handleViewMenu, tMenus],
+    [
+      canWrite,
+      format,
+      handleDeleteMenu,
+      handleUpdateMenu,
+      handleViewMenu,
+      tMenus,
+    ],
   );
 
   return (
