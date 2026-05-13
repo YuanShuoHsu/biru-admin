@@ -20,7 +20,13 @@ import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import BanUserDialogContent from "./BanUserDialogContent";
-import { FILTER_OPERATORS, NO_VALUE_FILTER_OPERATORS } from "./constants";
+import {
+  FILTER_FIELDS,
+  FILTER_OPERATORS,
+  NO_VALUE_FILTER_OPERATORS,
+  SORT_BY,
+  SORT_DIRECTIONS,
+} from "./constants";
 import CreateUserDialogContent from "./CreateUserDialogContent";
 import SetRoleDialogContent from "./SetRoleDialogContent";
 import SetUserPasswordDialogContent from "./SetUserPasswordDialogContent";
@@ -110,14 +116,10 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
   },
 }));
 
-type ListUsersQuery = NonNullable<
-  Parameters<typeof authClient.admin.listUsers>[0]["query"]
->;
+type FilterField = (typeof FILTER_FIELDS)[number];
 type FilterOperator = (typeof FILTER_OPERATORS)[number];
-type FilterValue = NonNullable<ListUsersQuery["filterValue"]>;
-type SearchField = NonNullable<ListUsersQuery["searchField"]>;
-type SearchOperator = NonNullable<ListUsersQuery["searchOperator"]>;
-type SortDirection = NonNullable<ListUsersQuery["sortDirection"]>;
+type SortBy = (typeof SORT_BY)[number];
+type SortDirection = (typeof SORT_DIRECTIONS)[number];
 
 const ROLE_COLOR_MAP: Record<AdminRole, "error" | "default"> = {
   admin: "error",
@@ -125,19 +127,16 @@ const ROLE_COLOR_MAP: Record<AdminRole, "error" | "default"> = {
 };
 
 interface AdminsProps {
-  filterField?: string;
+  filterField?: FilterField;
   filterOperator?: FilterOperator;
-  filterValue?: FilterValue;
+  filterValue?: string;
   page: number;
   pageSize: number;
   quickFilterMessages: QuickFilterMessages;
   quickFilterValue?: string;
   rowCount: number;
   rows: UserWithRole[];
-  // searchField?: SearchField;
-  // searchOperator?: SearchOperator;
-  // searchValue?: string;
-  sortBy?: string;
+  sortBy?: SortBy;
   sortDirection?: SortDirection;
   userSessions: UserSessions;
 }
@@ -152,9 +151,6 @@ const Admins = ({
   quickFilterValue: initialQuickFilterValue,
   rowCount: initialRowCount,
   rows: initialRows,
-  // searchField: initialSearchField,
-  // searchOperator: initialSearchOperator,
-  // searchValue: initialSearchValue,
   sortBy,
   sortDirection,
   userSessions: initialUserSessions,
@@ -182,24 +178,6 @@ const Admins = ({
 
   const { session, setSession } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
-
-  // const searchFormSchema = useSearchFormSchema();
-  // const {
-  //   control,
-  //   formState: { errors },
-  //   register,
-  // } = useForm<SearchForm>({
-  //   defaultValues: {
-  //     searchField: initialSearchField || "name",
-  //     searchOperator: initialSearchOperator || "contains",
-  //     searchValue: initialSearchValue || "",
-  //   },
-  //   resolver: zodResolver(searchFormSchema),
-  // });
-
-  // const searchField = useWatch({ control, name: "searchField" });
-  // const searchOperator = useWatch({ control, name: "searchOperator" });
-  // const searchValue = useWatch({ control, name: "searchValue" });
 
   const format = useFormatter();
 
@@ -233,9 +211,6 @@ const Admins = ({
       filterModel.quickFilterValues,
       paginationModel.page,
       paginationModel.pageSize,
-      // searchField,
-      // searchOperator,
-      // searchValue,
       sortModel,
     ],
     async () => {
@@ -290,11 +265,6 @@ const Admins = ({
   const hasImpersonableUser = rows.some(
     (row) => row.id !== currentUserId && row.role !== "admin",
   );
-
-  // const fieldLabelMap: Record<SearchField, string> = {
-  //   name: tAdmins("name"),
-  //   email: tAdmins("email.label"),
-  // };
 
   const filterOperators = useMemo<GridFilterOperator[]>(
     () =>
@@ -866,142 +836,6 @@ const Admins = ({
         >
           {tAdmins("actions.createUser.title")}
         </Button>
-        {/* <Stack
-          marginLeft="auto"
-          direction="row"
-          flexWrap="wrap"
-          justifyContent="flex-end"
-          alignItems="center"
-          gap={1}
-        >
-          <TextField
-            error={!!errors.searchField}
-            helperText={errors.searchField?.message}
-            label={tToolbar("search.field")}
-            select
-            size="small"
-            slotProps={{
-              inputLabel: { shrink: true },
-              select: {
-                displayEmpty: true,
-                renderValue: (selected) =>
-                  selected ? (
-                    fieldLabelMap[selected as SearchField]
-                  ) : (
-                    <em>{tToolbar("search.fieldPlaceholder")}</em>
-                  ),
-              },
-            }}
-            value={searchField}
-            {...register("searchField", {
-              onChange: ({ target: { value: searchField } }) => {
-                setPaginationModel((prev) => ({ ...prev, page: 0 }));
-
-                const {
-                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                  searchField: _searchField,
-                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                  searchOperator: _searchOperator,
-                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                  searchValue: _searchValue,
-                  ...rest
-                } = Object.fromEntries(searchParams);
-                const params = new URLSearchParams({
-                  ...rest,
-                  page: "1",
-                  ...(searchValue && {
-                    searchField,
-                    searchOperator,
-                    searchValue,
-                  }),
-                });
-
-                router.replace(`${pathname}?${params.toString()}`);
-              },
-            })}
-          >
-            <MenuItem disabled value="">
-              <em>{tToolbar("search.fieldPlaceholder")}</em>
-            </MenuItem>
-            {SEARCH_FIELDS.map((field) => (
-              <MenuItem key={field} value={field}>
-                {fieldLabelMap[field]}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            label={tToolbar("search.operator.label")}
-            select
-            size="small"
-            slotProps={{ inputLabel: { shrink: true } }}
-            value={searchOperator}
-            {...register("searchOperator", {
-              onChange: ({ target: { value: searchOperator } }) => {
-                setPaginationModel((prev) => ({ ...prev, page: 0 }));
-
-                const {
-                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                  searchField: _searchField,
-                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                  searchOperator: _searchOperator,
-                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                  searchValue: _searchValue,
-                  ...rest
-                } = Object.fromEntries(searchParams);
-                const params = new URLSearchParams({
-                  ...rest,
-                  page: "1",
-                  ...(searchValue && {
-                    searchField,
-                    searchOperator,
-                    searchValue,
-                  }),
-                });
-
-                router.replace(`${pathname}?${params.toString()}`);
-              },
-            })}
-          >
-            {SEARCH_OPERATORS.map((op) => (
-              <MenuItem key={op} value={op}>
-                {tToolbar(`search.operator.${op}`)}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            error={!!errors.searchValue}
-            helperText={errors.searchValue?.message}
-            label={tToolbar("search.label")}
-            placeholder={tToolbar("search.placeholder")}
-            size="small"
-            {...register("searchValue", {
-              onChange: ({ target: { value } }) => {
-                setPaginationModel((prev) => ({ ...prev, page: 0 }));
-
-                const {
-                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                  searchField: _sf,
-                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                  searchOperator: _so,
-                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                  searchValue: _sv,
-                  ...rest
-                } = Object.fromEntries(searchParams);
-                const params = new URLSearchParams({
-                  ...rest,
-                  page: "1",
-                  ...(value && {
-                    searchField,
-                    searchOperator,
-                    searchValue: value,
-                  }),
-                });
-
-                router.replace(`${pathname}?${params.toString()}`);
-              },
-            })}
-          />
-        </Stack> */}
       </Stack>
       <DataGrid
         {...DATA_GRID_PROPS}

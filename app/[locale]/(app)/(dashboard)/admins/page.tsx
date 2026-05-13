@@ -7,7 +7,7 @@ import {
   FILTER_FIELDS,
   FILTER_OPERATORS,
   NO_VALUE_FILTER_OPERATORS,
-  SORT_BY_FIELDS,
+  SORT_BY,
   SORT_DIRECTIONS,
 } from "./constants";
 
@@ -45,9 +45,6 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
       page: rawPage,
       pageSize: rawPageSize,
       quickFilterValue: rawQuickFilterValue,
-      // searchField: rawSearchField,
-      // searchOperator: rawSearchOperator,
-      // searchValue,
       sortBy: rawSortBy,
       sortDirection: rawSortDirection,
     },
@@ -58,7 +55,7 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
   const page = Math.max(1, Number(rawPage) || 1);
   const pageSize = Math.max(1, Number(rawPageSize) || 10);
 
-  const sortBy = SORT_BY_FIELDS.find((field) => field === rawSortBy);
+  const sortBy = SORT_BY.find((field) => field === rawSortBy);
   const sortDirection = SORT_DIRECTIONS.find(
     (direction) => direction === rawSortDirection,
   );
@@ -67,11 +64,6 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
   const filterOperator = FILTER_OPERATORS.find(
     (operator) => operator === rawFilterOperator,
   );
-
-  // const searchField = SEARCH_FIELDS.find((field) => field === rawSearchField);
-  // const searchOperator = SEARCH_OPERATORS.find(
-  //   (operator) => operator === rawSearchOperator,
-  // );
 
   if (
     rawPage !== String(page) ||
@@ -87,11 +79,6 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
         filterOperator &&
         (filterValue || NO_VALUE_FILTER_OPERATORS.includes(filterOperator))
       )
-    // ||
-    // rawSearchField !== searchField ||
-    // rawSearchOperator !== searchOperator ||
-    // !!(searchField || searchOperator || searchValue) !==
-    //   !!(searchField && searchOperator && searchValue)
   ) {
     const params = new URLSearchParams({
       page: String(page),
@@ -158,9 +145,6 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
       quickFilterValue={rawQuickFilterValue}
       rows={rows}
       rowCount={rowCount}
-      // searchField={searchField}
-      // searchOperator={searchOperator}
-      // searchValue={searchValue}
       sortBy={sortBy}
       sortDirection={sortDirection}
       userSessions={userSessions}

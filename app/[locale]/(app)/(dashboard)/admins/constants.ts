@@ -21,5 +21,5 @@ export const SEARCH_OPERATORS = [
   "ends_with",
 ] as const;
 
-export const SORT_BY_FIELDS = ["name", "email", "role", "createdAt"] as const;
+export const SORT_BY = ["name", "email", "role", "createdAt"] as const;
 export const SORT_DIRECTIONS = ["asc", "desc"] as const;
