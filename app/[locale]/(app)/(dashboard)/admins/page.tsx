@@ -6,14 +6,13 @@ import Admins from ".";
 import {
   FILTER_FIELDS,
   FILTER_OPERATORS,
+  NO_VALUE_FILTER_OPERATORS,
   SORT_BY_FIELDS,
   SORT_DIRECTIONS,
 } from "./constants";
 
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
-
-import { authClient } from "@/lib/auth-client";
 
 import { getQuickFilterValue, getUserSessions } from "@/utils/admins";
 import { fetcher } from "@/utils/fetcher";
@@ -83,7 +82,11 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
     rawFilterField !== filterField ||
     rawFilterOperator !== filterOperator ||
     !!(filterField || filterOperator || filterValue) !==
-      !!(filterField && filterOperator && filterValue)
+      !!(
+        filterField &&
+        filterOperator &&
+        (filterValue || NO_VALUE_FILTER_OPERATORS.includes(filterOperator))
+      )
     // ||
     // rawSearchField !== searchField ||
     // rawSearchOperator !== searchOperator ||
@@ -119,51 +122,28 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
     rawQuickFilterValue || "",
   );
 
-  let rows: UserWithRole[] = [];
-  let rowCount = 0;
+  const queryParams = new URLSearchParams({
+    ...(filterField &&
+      filterOperator &&
+      (filterValue || NO_VALUE_FILTER_OPERATORS.includes(filterOperator)) && {
+        filterField,
+        filterOperator,
+        ...(filterValue && { filterValue }),
+      }),
+    limit: String(pageSize),
+    offset: String((page - 1) * pageSize),
+    ...(quickFilterValue && { quickFilterValue }),
+    sortBy: sortBy || "createdAt",
+    sortDirection: sortDirection || "desc",
+  });
 
-  if (quickFilterValue) {
-    const queryParams = new URLSearchParams({
-      ...(filterField &&
-        filterOperator &&
-        filterValue && { filterField, filterOperator, filterValue }),
-      limit: String(pageSize),
-      offset: String((page - 1) * pageSize),
-      quickFilterValue,
-      // ...(searchField &&
-      //   searchOperator &&
-      //   searchValue && { searchField, searchOperator, searchValue }),
-      sortBy: sortBy || "createdAt",
-      sortDirection: sortDirection || "desc",
-    });
+  const { data, total } = await fetcher<{
+    data: UserWithRole[];
+    total: number;
+  }>(`/api/users/list?${queryParams}`, { headers: fetchOptions.headers });
 
-    const { data, total } = await fetcher<{
-      data: UserWithRole[];
-      total: number;
-    }>(`/api/users/list?${queryParams}`, { headers: fetchOptions.headers });
-
-    rows = data || [];
-    rowCount = total || 0;
-  } else {
-    const { data } = await authClient.admin.listUsers({
-      query: {
-        ...(filterField &&
-          filterOperator &&
-          filterValue && { filterField, filterOperator, filterValue }),
-        limit: pageSize,
-        offset: (page - 1) * pageSize,
-        // ...(searchField &&
-        //   searchOperator &&
-        //   searchValue && { searchField, searchOperator, searchValue }),
-        sortBy: sortBy || "createdAt",
-        sortDirection: sortDirection || "desc",
-      },
-      fetchOptions,
-    });
-
-    rows = data?.users || [];
-    rowCount = data?.total || 0;
-  }
+  const rows: UserWithRole[] = data || [];
+  const rowCount = total || 0;
 
   const userSessions = await getUserSessions(rows, fetchOptions);
 

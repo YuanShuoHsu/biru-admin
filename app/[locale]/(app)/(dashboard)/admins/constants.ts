@@ -1,17 +1,22 @@
 export const FILTER_FIELDS = ["email", "name"] as const;
-export const FILTER_OPERATORS = [
-  "eq",
-  "ne",
-  "lt",
-  "lte",
-  "gt",
-  "gte",
-  "in",
-  "not_in",
+
+export const STRING_FILTER_OPERATORS = [
   "contains",
-  "starts_with",
-  "ends_with",
+  "doesNotContain",
+  "equals",
+  "doesNotEqual",
+  "startsWith",
+  "endsWith",
+  "isEmpty",
+  "isNotEmpty",
 ] as const;
+
+export const NO_VALUE_FILTER_OPERATORS: readonly string[] = [
+  "isEmpty",
+  "isNotEmpty",
+];
+
+export const FILTER_OPERATORS = [...STRING_FILTER_OPERATORS] as const;
 
 export const SEARCH_FIELDS = ["name", "email"] as const;
 export const SEARCH_OPERATORS = [

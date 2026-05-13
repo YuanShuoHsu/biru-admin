@@ -20,7 +20,7 @@ import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import BanUserDialogContent from "./BanUserDialogContent";
-import { FILTER_OPERATORS } from "./constants";
+import { FILTER_OPERATORS, NO_VALUE_FILTER_OPERATORS } from "./constants";
 import CreateUserDialogContent from "./CreateUserDialogContent";
 import SetRoleDialogContent from "./SetRoleDialogContent";
 import SetUserPasswordDialogContent from "./SetUserPasswordDialogContent";
@@ -113,7 +113,7 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
 type ListUsersQuery = NonNullable<
   Parameters<typeof authClient.admin.listUsers>[0]["query"]
 >;
-type FilterOperator = NonNullable<ListUsersQuery["filterOperator"]>;
+type FilterOperator = (typeof FILTER_OPERATORS)[number];
 type FilterValue = NonNullable<ListUsersQuery["filterValue"]>;
 type SearchField = NonNullable<ListUsersQuery["searchField"]>;
 type SearchOperator = NonNullable<ListUsersQuery["searchOperator"]>;
@@ -244,59 +244,33 @@ const Admins = ({
         quickFilterMessages,
         (filterModel.quickFilterValues || []).join(" "),
       );
+      const isNoValueOperator =
+        filterItem?.operator &&
+        NO_VALUE_FILTER_OPERATORS.includes(filterItem.operator);
 
-      if (quickFilterValue) {
-        const params = new URLSearchParams({
-          ...(filterItem?.field &&
-            filterItem?.operator &&
-            filterItem?.value && {
-              filterField: filterItem.field,
-              filterOperator: filterItem.operator,
-              filterValue: filterItem.value,
-            }),
-          limit: String(paginationModel.pageSize),
-          offset: String(paginationModel.page * paginationModel.pageSize),
-          quickFilterValue,
-          // ...(searchField &&
-          //   searchOperator &&
-          //   searchValue && { searchField, searchOperator, searchValue }),
-          sortBy: sortModel[0]?.field || "createdAt",
-          sortDirection: sortModel[0]?.sort || "desc",
-        });
+      const params = new URLSearchParams({
+        ...(filterItem?.field &&
+          filterItem?.operator &&
+          (filterItem?.value || isNoValueOperator) && {
+            filterField: filterItem.field,
+            filterOperator: filterItem.operator,
+            ...(filterItem.value && { filterValue: filterItem.value }),
+          }),
+        limit: String(paginationModel.pageSize),
+        offset: String(paginationModel.page * paginationModel.pageSize),
+        ...(quickFilterValue && { quickFilterValue }),
+        sortBy: sortModel[0]?.field || "createdAt",
+        sortDirection: sortModel[0]?.sort || "desc",
+      });
 
-        const { data: userRows, total } = await fetcher<{
-          data: UserWithRole[];
-          total: number;
-        }>(`/api/users/list?${params}`);
+      const { data: userRows, total } = await fetcher<{
+        data: UserWithRole[];
+        total: number;
+      }>(`/api/users/list?${params}`);
 
-        const userSessions = await getUserSessions(userRows);
+      const userSessions = await getUserSessions(userRows);
 
-        return { rows: userRows, rowCount: total, userSessions };
-      } else {
-        const { data } = await authClient.admin.listUsers({
-          query: {
-            ...(filterItem?.field &&
-              filterItem?.operator &&
-              filterItem?.value && {
-                filterField: filterItem.field,
-                filterOperator: filterItem.operator,
-                filterValue: filterItem.value,
-              }),
-            limit: paginationModel.pageSize,
-            offset: paginationModel.page * paginationModel.pageSize,
-            // ...(searchField &&
-            //   searchOperator &&
-            //   searchValue && { searchField, searchOperator, searchValue }),
-            sortBy: sortModel[0]?.field || "createdAt",
-            sortDirection: sortModel[0]?.sort || "desc",
-          },
-        });
-
-        const userRows = data?.users || [];
-        const userSessions = await getUserSessions(userRows);
-
-        return { rows: userRows, rowCount: data?.total || 0, userSessions };
-      }
+      return { rows: userRows, rowCount: total, userSessions };
     },
     {
       fallbackData: {
@@ -326,7 +300,9 @@ const Admins = ({
     () =>
       FILTER_OPERATORS.map((value) => ({
         getApplyFilterFn: () => null,
-        InputComponent: GridFilterInputValue,
+        ...(NO_VALUE_FILTER_OPERATORS.includes(value)
+          ? { InputComponent: undefined }
+          : { InputComponent: GridFilterInputValue }),
         label: tToolbar(`filter.operator.${value}`),
         value,
       })),
@@ -394,15 +370,19 @@ const Admins = ({
         ...rest
       } = Object.fromEntries(searchParams);
 
+      const isNoValueOperator =
+        filterItem?.operator &&
+        NO_VALUE_FILTER_OPERATORS.includes(filterItem.operator);
+
       const params = new URLSearchParams({
         ...rest,
         page: "1",
         ...(filterItem?.field &&
           filterItem?.operator &&
-          filterItem?.value && {
+          (filterItem?.value || isNoValueOperator) && {
             filterField: filterItem.field,
             filterOperator: filterItem.operator,
-            filterValue: filterItem.value,
+            ...(filterItem.value && { filterValue: filterItem.value }),
           }),
         ...(newQuickFilterValue && { quickFilterValue: newQuickFilterValue }),
       });
