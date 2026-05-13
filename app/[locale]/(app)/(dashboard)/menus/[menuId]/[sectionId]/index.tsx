@@ -60,6 +60,7 @@ const DataGrid = dynamic(
 );
 
 interface MenusMenuIdSectionIdProps {
+  canWrite: boolean;
   filterField?: string;
   filterOperator?: string;
   filterValue?: string;
@@ -74,6 +75,7 @@ interface MenusMenuIdSectionIdProps {
 }
 
 const MenusMenuIdSectionId = ({
+  canWrite,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
@@ -473,43 +475,52 @@ const MenusMenuIdSectionId = ({
             },
           ]
         : []),
-      {
-        disableColumnMenu: true,
-        field: "actions",
-        filterable: false,
-        headerName: tMenus("items.actions.label"),
-        renderCell: ({ row }: GridRenderCellParams<MenuItem>) => (
-          <Stack height="100%" direction="row" alignItems="center" gap={1}>
-            <Tooltip title={tMenus("items.actions.updateItem.title")}>
-              <IconButton
-                onClick={(event) => {
-                  event.stopPropagation();
+      ...(canWrite
+        ? [
+            {
+              disableColumnMenu: true,
+              field: "actions",
+              filterable: false,
+              headerName: tMenus("items.actions.label"),
+              renderCell: ({ row }: GridRenderCellParams<MenuItem>) => (
+                <Stack
+                  height="100%"
+                  direction="row"
+                  alignItems="center"
+                  gap={1}
+                >
+                  <Tooltip title={tMenus("items.actions.updateItem.title")}>
+                    <IconButton
+                      onClick={(event) => {
+                        event.stopPropagation();
 
-                  handleUpdateItem(row);
-                }}
-                size="small"
-              >
-                <Edit fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title={tMenus("items.actions.deleteItem.title")}>
-              <IconButton
-                color="error"
-                onClick={(event) => {
-                  event.stopPropagation();
+                        handleUpdateItem(row);
+                      }}
+                      size="small"
+                    >
+                      <Edit fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title={tMenus("items.actions.deleteItem.title")}>
+                    <IconButton
+                      color="error"
+                      onClick={(event) => {
+                        event.stopPropagation();
 
-                  handleDeleteItem(row);
-                }}
-                size="small"
-              >
-                <Delete fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </Stack>
-        ),
-        resizable: false,
-        sortable: false,
-      },
+                        handleDeleteItem(row);
+                      }}
+                      size="small"
+                    >
+                      <Delete fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </Stack>
+              ),
+              resizable: false,
+              sortable: false,
+            },
+          ]
+        : []),
       {
         field: "name",
         filterOperators: stringFilterOperators,
@@ -531,6 +542,7 @@ const MenusMenuIdSectionId = ({
       },
     ],
     [
+      canWrite,
       dateFilterOperators,
       format,
       handleDeleteItem,
@@ -546,23 +558,27 @@ const MenusMenuIdSectionId = ({
       <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
         {!isReorderMode ? (
           <>
-            <Button
-              onClick={handleCreateItem}
-              size="small"
-              startIcon={<Add />}
-              variant="contained"
-            >
-              {tMenus("items.actions.createItem.title")}
-            </Button>
-            <Button
-              disabled={rowCount < 2}
-              onClick={handleEnterReorderMode}
-              size="small"
-              startIcon={<Sort />}
-              variant="outlined"
-            >
-              {tMenus("items.actions.reorderItem.title")}
-            </Button>
+            {canWrite && (
+              <Button
+                onClick={handleCreateItem}
+                size="small"
+                startIcon={<Add />}
+                variant="contained"
+              >
+                {tMenus("items.actions.createItem.title")}
+              </Button>
+            )}
+            {canWrite && (
+              <Button
+                disabled={rowCount < 2}
+                onClick={handleEnterReorderMode}
+                size="small"
+                startIcon={<Sort />}
+                variant="outlined"
+              >
+                {tMenus("items.actions.reorderItem.title")}
+              </Button>
+            )}
           </>
         ) : (
           <>

@@ -14,6 +14,8 @@ import {
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
+import { authClient } from "@/lib/auth-client";
+
 import { getAdminMenu, getAdminMenuSections } from "@/utils/menus";
 
 interface MenusMenuIdPageProps {
@@ -115,8 +117,22 @@ const MenusMenuIdPage = async ({
 
   if (!menu) notFound();
 
+  const [sessionData, fullOrgData] = await Promise.all([
+    authClient.getSession({ fetchOptions }),
+    authClient.organization.getFullOrganization({
+      query: { organizationId: menu.organizationId },
+      fetchOptions,
+    }),
+  ]);
+
+  const currentUserId = sessionData.data?.user?.id;
+  const members = fullOrgData.data?.members || [];
+  const role = members.find(({ userId }) => userId === currentUserId)?.role;
+  const canWrite = role === "owner" || role === "admin";
+
   return (
     <MenusMenuId
+      canWrite={canWrite}
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}

@@ -32,15 +32,31 @@ const MenusPage = async ({ params, searchParams }: MenusPageProps) => {
   const selectedOrganization = organizations.find(
     ({ slug }) => slug === organization,
   );
-  const menus = selectedOrganization
-    ? await fetcher<Menu[]>(
-        `/api/organizations/${selectedOrganization.id}/menus`,
-        fetchOptions,
-      )
-    : [];
+
+  const [menus, sessionData, fullOrgData] = await Promise.all([
+    selectedOrganization
+      ? fetcher<Menu[]>(
+          `/api/organizations/${selectedOrganization.id}/menus`,
+          fetchOptions,
+        )
+      : Promise.resolve([]),
+    authClient.getSession({ fetchOptions }),
+    selectedOrganization
+      ? authClient.organization.getFullOrganization({
+          query: { organizationSlug: selectedOrganization.slug },
+          fetchOptions,
+        })
+      : Promise.resolve({ data: null }),
+  ]);
+
+  const currentUserId = sessionData.data?.user?.id;
+  const members = fullOrgData.data?.members || [];
+  const role = members.find(({ userId }) => userId === currentUserId)?.role;
+  const canWrite = role === "owner" || role === "admin";
 
   return (
     <Menus
+      canWrite={canWrite}
       menus={menus}
       organizations={organizations}
       organizationSlug={selectedOrganization?.slug || ""}

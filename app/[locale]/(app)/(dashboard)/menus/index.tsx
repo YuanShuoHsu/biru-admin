@@ -51,12 +51,14 @@ const StyledTextField = styled(TextField)({
 });
 
 interface MenusProps {
+  canWrite: boolean;
   menus: Menu[];
   organizations: Organization[];
   organizationSlug: string;
 }
 
 const Menus = ({
+  canWrite,
   menus: initialMenus,
   organizations,
   organizationSlug,
@@ -212,31 +214,35 @@ const Menus = ({
                 <Summarize fontSize="small" />
               </IconButton>
             </Tooltip>
-            <Tooltip title={tMenus("actions.updateMenu.title")}>
-              <IconButton
-                onClick={(event) => {
-                  event.stopPropagation();
+            {canWrite && (
+              <Tooltip title={tMenus("actions.updateMenu.title")}>
+                <IconButton
+                  onClick={(event) => {
+                    event.stopPropagation();
 
-                  handleUpdateMenu(row);
-                }}
-                size="small"
-              >
-                <Edit fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title={tMenus("actions.deleteMenu.title")}>
-              <IconButton
-                color="error"
-                onClick={(event) => {
-                  event.stopPropagation();
+                    handleUpdateMenu(row);
+                  }}
+                  size="small"
+                >
+                  <Edit fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            )}
+            {canWrite && (
+              <Tooltip title={tMenus("actions.deleteMenu.title")}>
+                <IconButton
+                  color="error"
+                  onClick={(event) => {
+                    event.stopPropagation();
 
-                  handleDeleteMenu(row);
-                }}
-                size="small"
-              >
-                <Delete fontSize="small" />
-              </IconButton>
-            </Tooltip>
+                    handleDeleteMenu(row);
+                  }}
+                  size="small"
+                >
+                  <Delete fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            )}
           </Stack>
         ),
         resizable: false,
@@ -273,7 +279,7 @@ const Menus = ({
           format.dateTime(new Date(value), "short"),
       },
     ],
-    [format, handleDeleteMenu, handleUpdateMenu, handleViewMenu, tMenus],
+    [canWrite, format, handleDeleteMenu, handleUpdateMenu, handleViewMenu, tMenus],
   );
 
   return (
@@ -322,15 +328,17 @@ const Menus = ({
             </MenuItem>
           ))}
         </StyledTextField>
-        <Button
-          disabled={usedInLanguages.length >= routing.locales.length}
-          onClick={handleCreateMenu}
-          size="small"
-          startIcon={<Add />}
-          variant="contained"
-        >
-          {tMenus("actions.createMenu.title")}
-        </Button>
+        {canWrite && (
+          <Button
+            disabled={usedInLanguages.length >= routing.locales.length}
+            onClick={handleCreateMenu}
+            size="small"
+            startIcon={<Add />}
+            variant="contained"
+          >
+            {tMenus("actions.createMenu.title")}
+          </Button>
+        )}
       </Stack>
       <DataGrid
         {...DATA_GRID_PROPS}

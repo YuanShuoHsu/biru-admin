@@ -68,6 +68,7 @@ const DataGrid = dynamic(
 );
 
 interface MenuDetailProps {
+  canWrite: boolean;
   filterField?: string;
   filterOperator?: string;
   filterValue?: string;
@@ -82,6 +83,7 @@ interface MenuDetailProps {
 }
 
 const MenusMenuId = ({
+  canWrite,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
@@ -522,31 +524,35 @@ const MenusMenuId = ({
                 <ListAlt fontSize="small" />
               </IconButton>
             </Tooltip>
-            <Tooltip title={tMenus("sections.actions.updateSection.title")}>
-              <IconButton
-                onClick={(event) => {
-                  event.stopPropagation();
+            {canWrite && (
+              <Tooltip title={tMenus("sections.actions.updateSection.title")}>
+                <IconButton
+                  onClick={(event) => {
+                    event.stopPropagation();
 
-                  handleUpdateSection(row);
-                }}
-                size="small"
-              >
-                <Edit fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title={tMenus("sections.actions.deleteSection.title")}>
-              <IconButton
-                color="error"
-                onClick={(event) => {
-                  event.stopPropagation();
+                    handleUpdateSection(row);
+                  }}
+                  size="small"
+                >
+                  <Edit fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            )}
+            {canWrite && (
+              <Tooltip title={tMenus("sections.actions.deleteSection.title")}>
+                <IconButton
+                  color="error"
+                  onClick={(event) => {
+                    event.stopPropagation();
 
-                  handleDeleteSection(row);
-                }}
-                size="small"
-              >
-                <Delete fontSize="small" />
-              </IconButton>
-            </Tooltip>
+                    handleDeleteSection(row);
+                  }}
+                  size="small"
+                >
+                  <Delete fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            )}
           </Stack>
         ),
         resizable: false,
@@ -579,6 +585,7 @@ const MenusMenuId = ({
       },
     ],
     [
+      canWrite,
       dateFilterOperators,
       format,
       handleDeleteSection,
@@ -595,23 +602,27 @@ const MenusMenuId = ({
       <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
         {!isReorderMode ? (
           <>
-            <Button
-              onClick={handleCreateSection}
-              size="small"
-              startIcon={<Add />}
-              variant="contained"
-            >
-              {tMenus("sections.actions.createSection.title")}
-            </Button>
-            <Button
-              disabled={rowCount < 2}
-              onClick={handleEnterReorderMode}
-              size="small"
-              startIcon={<Sort />}
-              variant="outlined"
-            >
-              {tMenus("sections.actions.reorderSection.title")}
-            </Button>
+            {canWrite && (
+              <Button
+                onClick={handleCreateSection}
+                size="small"
+                startIcon={<Add />}
+                variant="contained"
+              >
+                {tMenus("sections.actions.createSection.title")}
+              </Button>
+            )}
+            {canWrite && (
+              <Button
+                disabled={rowCount < 2}
+                onClick={handleEnterReorderMode}
+                size="small"
+                startIcon={<Sort />}
+                variant="outlined"
+              >
+                {tMenus("sections.actions.reorderSection.title")}
+              </Button>
+            )}
           </>
         ) : (
           <>
