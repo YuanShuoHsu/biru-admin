@@ -5,6 +5,10 @@ import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm } from "react-hook-form";
 
+import UploadAvatars from "@/components/UploadAvatars";
+
+import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
+
 import { CreateMenuItemForm, useCreateMenuItemFormSchema } from "./definitions";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,6 +28,8 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
+const CREATE_MENU_ITEM_IMAGE_KEY = "create-menu-item-image";
+
 interface CreateMenuItemDialogProps {
   mutateItems: () => void;
   menuSectionId: string;
@@ -37,6 +43,8 @@ const CreateMenuItemDialog = ({
 
   const tMenus = useTranslations("menus");
 
+  const imageSrc = useUploadAvatarSrc(CREATE_MENU_ITEM_IMAGE_KEY);
+
   const createMenuItemFormSchema = useCreateMenuItemFormSchema();
   const {
     formState: { errors },
@@ -46,8 +54,6 @@ const CreateMenuItemDialog = ({
     defaultValues: {
       name: "",
       description: "",
-      image: "",
-      url: "",
     },
     resolver: zodResolver(createMenuItemFormSchema),
   });
@@ -55,8 +61,6 @@ const CreateMenuItemDialog = ({
   const onSubmitHandler = async ({
     name,
     description,
-    image,
-    url,
   }: CreateMenuItemForm) => {
     try {
       setDialog({ confirmLoading: true });
@@ -69,8 +73,7 @@ const CreateMenuItemDialog = ({
           body: JSON.stringify({
             name,
             ...(description && { description }),
-            ...(image && { image }),
-            ...(url && { url }),
+            ...(imageSrc && { image: imageSrc }),
           }),
         },
       );
@@ -96,6 +99,12 @@ const CreateMenuItemDialog = ({
 
   return (
     <StyledBox component="form" id="create-menu-item-form" onSubmit={onSubmit}>
+      <UploadAvatars
+        aspectRatio="16/9"
+        fullWidth
+        shape="square"
+        uploadKey={CREATE_MENU_ITEM_IMAGE_KEY}
+      />
       <TextField
         error={!!errors.name}
         fullWidth
@@ -114,22 +123,6 @@ const CreateMenuItemDialog = ({
         placeholder={tMenus("items.description.placeholder")}
         rows={3}
         {...register("description")}
-      />
-      <TextField
-        error={!!errors.image}
-        fullWidth
-        helperText={errors.image?.message}
-        label={tMenus("items.image.label")}
-        placeholder={tMenus("items.image.placeholder")}
-        {...register("image")}
-      />
-      <TextField
-        error={!!errors.url}
-        fullWidth
-        helperText={errors.url?.message}
-        label={tMenus("items.url.label")}
-        placeholder={tMenus("items.url.placeholder")}
-        {...register("url")}
       />
     </StyledBox>
   );

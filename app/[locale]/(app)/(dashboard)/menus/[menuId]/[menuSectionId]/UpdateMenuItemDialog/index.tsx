@@ -5,6 +5,10 @@ import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm } from "react-hook-form";
 
+import UploadAvatars from "@/components/UploadAvatars";
+
+import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
+
 import {
   type UpdateMenuItemForm,
   useUpdateMenuItemFormSchema,
@@ -40,6 +44,9 @@ const UpdateMenuItemDialog = ({
 
   const tMenus = useTranslations("menus");
 
+  const uploadKey = `update-menu-item-image-${item.id}`;
+  const imageSrc = useUploadAvatarSrc(uploadKey, item.image);
+
   const updateMenuItemFormSchema = useUpdateMenuItemFormSchema();
   const {
     formState: { errors },
@@ -49,8 +56,6 @@ const UpdateMenuItemDialog = ({
     defaultValues: {
       name: item.name,
       description: item.description || "",
-      image: item.image || "",
-      url: item.url || "",
     },
     resolver: zodResolver(updateMenuItemFormSchema),
   });
@@ -58,8 +63,6 @@ const UpdateMenuItemDialog = ({
   const onSubmitHandler = async ({
     name,
     description,
-    image,
-    url,
   }: UpdateMenuItemForm) => {
     try {
       setDialog({ confirmLoading: true });
@@ -70,8 +73,7 @@ const UpdateMenuItemDialog = ({
         body: JSON.stringify({
           name,
           description: description || null,
-          image: image || null,
-          url: url || null,
+          image: imageSrc || null,
         }),
       });
 
@@ -96,6 +98,13 @@ const UpdateMenuItemDialog = ({
 
   return (
     <StyledBox component="form" id="update-menu-item-form" onSubmit={onSubmit}>
+      <UploadAvatars
+        aspectRatio="16/9"
+        fullWidth
+        initialSrc={item.image}
+        shape="square"
+        uploadKey={uploadKey}
+      />
       <TextField
         error={!!errors.name}
         fullWidth
@@ -114,22 +123,6 @@ const UpdateMenuItemDialog = ({
         placeholder={tMenus("items.description.placeholder")}
         rows={3}
         {...register("description")}
-      />
-      <TextField
-        error={!!errors.image}
-        fullWidth
-        helperText={errors.image?.message}
-        label={tMenus("items.image.label")}
-        placeholder={tMenus("items.image.placeholder")}
-        {...register("image")}
-      />
-      <TextField
-        error={!!errors.url}
-        fullWidth
-        helperText={errors.url?.message}
-        label={tMenus("items.url.label")}
-        placeholder={tMenus("items.url.placeholder")}
-        {...register("url")}
       />
     </StyledBox>
   );

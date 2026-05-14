@@ -5,13 +5,12 @@ export const useCreateMenuItemFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z.object({
+    image: z.string().trim().optional(),
     name: z
       .string()
       .min(1, { error: tValidation("name.minLength") })
       .trim(),
     description: z.string().trim().optional(),
-    image: z.string().trim().optional(),
-    url: z.string().trim().optional(),
   });
 };
 

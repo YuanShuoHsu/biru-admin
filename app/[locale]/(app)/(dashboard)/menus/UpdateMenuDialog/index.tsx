@@ -5,6 +5,10 @@ import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
+import UploadAvatars from "@/components/UploadAvatars";
+
+import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
+
 import { type UpdateMenuForm, useUpdateMenuFormSchema } from "./definitions";
 
 import { locales } from "@/constants/locale";
@@ -52,6 +56,9 @@ const UpdateMenuDialog = ({
 
   const tMenus = useTranslations("menus");
 
+  const uploadKey = `update-menu-image-${id}`;
+  const imageSrc = useUploadAvatarSrc(uploadKey, menuImage);
+
   const updateMenuFormSchema = useUpdateMenuFormSchema();
   const {
     control,
@@ -63,7 +70,6 @@ const UpdateMenuDialog = ({
       name: menuName,
       description: menuDescription || "",
       inLanguage: menuLanguage || routing.defaultLocale,
-      image: menuImage || "",
     },
     resolver: zodResolver(updateMenuFormSchema),
   });
@@ -74,7 +80,6 @@ const UpdateMenuDialog = ({
     name,
     description,
     inLanguage,
-    image,
   }: UpdateMenuForm) => {
     try {
       setDialog({ confirmLoading: true });
@@ -86,7 +91,7 @@ const UpdateMenuDialog = ({
           name,
           description: description || undefined,
           inLanguage,
-          image: image || undefined,
+          image: imageSrc || undefined,
         }),
       });
 
@@ -111,6 +116,13 @@ const UpdateMenuDialog = ({
 
   return (
     <StyledBox component="form" id="update-menu-form" onSubmit={onSubmit}>
+      <UploadAvatars
+        aspectRatio="16/9"
+        fullWidth
+        initialSrc={menuImage}
+        shape="square"
+        uploadKey={uploadKey}
+      />
       <TextField
         error={!!errors.name}
         fullWidth
@@ -165,14 +177,6 @@ const UpdateMenuDialog = ({
         placeholder={tMenus("description.placeholder")}
         rows={3}
         {...register("description")}
-      />
-      <TextField
-        error={!!errors.image}
-        fullWidth
-        helperText={errors.image?.message}
-        label={tMenus("image.label")}
-        placeholder={tMenus("image.placeholder")}
-        {...register("image")}
       />
     </StyledBox>
   );

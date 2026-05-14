@@ -18,21 +18,41 @@ import { styled } from "@mui/material/styles";
 
 import { useUploadAvatarStore } from "@/providers/upload-avatar-store-provider";
 
-const StyledButtonBase = styled(ButtonBase)<ButtonBaseProps>({
-  borderRadius: "50%",
+interface ShapeProps {
+  aspectRatio: string;
+  fullWidth: boolean;
+  shape: "circle" | "square";
+}
+
+const StyledButtonBase = styled(ButtonBase, {
+  shouldForwardProp: (prop) =>
+    prop !== "aspectRatio" && prop !== "fullWidth" && prop !== "shape",
+})<ButtonBaseProps & ShapeProps>(({ fullWidth, shape, theme }) => ({
+  borderRadius:
+    shape === "square" ? Number(theme.shape.borderRadius) * 2 : "50%",
+  ...(fullWidth && {
+    width: "100%",
+
+    "& .MuiBadge-root": { width: "100%" },
+  }),
 
   "&:has(:focus-visible)": {
     outline: "2px solid",
     outlineOffset: "2px",
   },
-});
+}));
 
-const StyledAvatar = styled(Avatar)({
+const StyledAvatar = styled(Avatar, {
+  shouldForwardProp: (prop) =>
+    prop !== "aspectRatio" && prop !== "fullWidth" && prop !== "shape",
+})<ShapeProps>(({ aspectRatio, fullWidth, shape, theme }) => ({
   width: "100%",
-  maxWidth: "100px",
+  maxWidth: fullWidth ? "100%" : "100px",
   height: "auto",
-  aspectRatio: "1/1",
-});
+  aspectRatio,
+  borderRadius:
+    shape === "square" ? Number(theme.shape.borderRadius) * 2 : "50%",
+}));
 
 const VisuallyHiddenInput = styled("input")({
   border: 0,
@@ -55,11 +75,20 @@ const COMPRESSION_OPTIONS: Options = {
 };
 
 interface UploadAvatarsProps {
-  uploadKey: string;
+  aspectRatio?: string;
+  fullWidth?: boolean;
   initialSrc?: string | null;
+  shape?: "circle" | "square";
+  uploadKey: string;
 }
 
-const UploadAvatars = ({ uploadKey, initialSrc }: UploadAvatarsProps) => {
+const UploadAvatars = ({
+  aspectRatio = "1/1",
+  fullWidth = false,
+  initialSrc,
+  shape = "circle",
+  uploadKey,
+}: UploadAvatarsProps) => {
   const { resetAvatarSrc, setAvatarSrc } = useUploadAvatarStore(
     (state) => state,
   );
@@ -99,8 +128,11 @@ const UploadAvatars = ({ uploadKey, initialSrc }: UploadAvatarsProps) => {
   return (
     <StyledButtonBase
       aria-label="Avatar image"
+      aspectRatio={aspectRatio}
       component="label"
+      fullWidth={fullWidth}
       role={undefined}
+      shape={shape}
       tabIndex={-1}
     >
       <BadgeAvatars
@@ -134,7 +166,13 @@ const UploadAvatars = ({ uploadKey, initialSrc }: UploadAvatarsProps) => {
             </IconButton>
           }
         >
-          <StyledAvatar alt="Upload new avatar" src={avatarSrc} />
+          <StyledAvatar
+            alt="Upload new avatar"
+            aspectRatio={aspectRatio}
+            fullWidth={fullWidth}
+            shape={shape}
+            src={avatarSrc}
+          />
           <VisuallyHiddenInput
             accept="image/*"
             onChange={handleAvatarChange}

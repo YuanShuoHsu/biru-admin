@@ -7,13 +7,13 @@ export const useUpdateMenuFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z.object({
+    image: z.string().trim().optional(),
     name: z
       .string()
       .min(1, { error: tValidation("name.minLength") })
       .trim(),
-    description: z.string().trim().optional(),
     inLanguage: z.enum(routing.locales),
-    image: z.string().trim().optional(),
+    description: z.string().trim().optional(),
   });
 };
 
