@@ -20,7 +20,6 @@ export const getDefaultCountry = (locale: Locale) => {
 
 export const getPhoneFormatting = (countryCode: CountryCode) => {
   const exampleNumber = getExampleNumber(countryCode, examples);
-
   if (!exampleNumber) return { mask: "0000000000", placeholder: "0123456789" };
 
   const nationalFormat = exampleNumber.formatNational();
