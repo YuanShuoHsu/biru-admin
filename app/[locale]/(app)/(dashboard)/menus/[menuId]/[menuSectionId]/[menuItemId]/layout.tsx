@@ -3,10 +3,10 @@
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 
-import { usePathname, useRouter } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 
-import { Extension, LocalOffer } from "@mui/icons-material";
-import { Box, Tab, Tabs } from "@mui/material";
+import { Extension, LocalOffer, type SvgIconComponent } from "@mui/icons-material";
+import { Stack, Tab, Tabs } from "@mui/material";
 
 const MenuItemLayout = ({ children }: { children: React.ReactNode }) => {
   const { menuId, menuSectionId, menuItemId } = useParams<{
@@ -16,35 +16,53 @@ const MenuItemLayout = ({ children }: { children: React.ReactNode }) => {
   }>();
 
   const pathname = usePathname();
-  const router = useRouter();
   const tMenus = useTranslations("menus");
 
   const basePath = `/menus/${menuId}/${menuSectionId}/${menuItemId}`;
-  const activeTab = pathname.startsWith(`${basePath}/add-ons`)
-    ? "add-ons"
-    : "offers";
+
+  const tabs: {
+    Icon: SvgIconComponent;
+    label: string;
+    value: string;
+  }[] = [
+    {
+      Icon: LocalOffer,
+      label: tMenus("offers.label"),
+      value: `${basePath}/offers`,
+    },
+    {
+      Icon: Extension,
+      label: tMenus("addOns.label"),
+      value: `${basePath}/add-ons`,
+    },
+  ];
+
+  const currentTab =
+    tabs.find(({ value }) => pathname.startsWith(value))?.value ||
+    tabs[0].value;
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+    <Stack gap={2}>
       <Tabs
-        value={activeTab}
-        onChange={(_, value) => router.push(`${basePath}/${value}`)}
+        aria-label="menu item tabs"
+        scrollButtons="auto"
+        value={currentTab}
+        variant="scrollable"
       >
-        <Tab
-          icon={<LocalOffer fontSize="small" />}
-          iconPosition="start"
-          label={tMenus("offers.label")}
-          value="offers"
-        />
-        <Tab
-          icon={<Extension fontSize="small" />}
-          iconPosition="start"
-          label={tMenus("addOns.label")}
-          value="add-ons"
-        />
+        {tabs.map(({ Icon, label, value }) => (
+          <Tab
+            component={Link}
+            href={value}
+            icon={<Icon fontSize="small" />}
+            iconPosition="start"
+            key={value}
+            label={label}
+            value={value}
+          />
+        ))}
       </Tabs>
       {children}
-    </Box>
+    </Stack>
   );
 };
 
