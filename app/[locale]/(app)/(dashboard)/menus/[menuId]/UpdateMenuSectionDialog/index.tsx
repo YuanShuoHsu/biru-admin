@@ -10,7 +10,11 @@ import {
   useUpdateMenuSectionFormSchema,
 } from "./definitions";
 
+import UploadAvatars from "@/components/UploadAvatars";
+
 import { zodResolver } from "@hookform/resolvers/zod";
+
+import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
 import { Box, type BoxProps, TextField, styled } from "@mui/material";
 
@@ -40,6 +44,9 @@ const UpdateMenuSectionDialog = ({
 
   const tMenus = useTranslations("menus");
 
+  const uploadKey = `update-menu-section-image-${section.id}`;
+  const imageSrc = useUploadAvatarSrc(uploadKey, section.image);
+
   const updateMenuSectionFormSchema = useUpdateMenuSectionFormSchema();
   const {
     formState: { errors },
@@ -66,6 +73,7 @@ const UpdateMenuSectionDialog = ({
         body: JSON.stringify({
           name,
           description: description || null,
+          image: imageSrc || null,
         }),
       });
 
@@ -91,6 +99,13 @@ const UpdateMenuSectionDialog = ({
 
   return (
     <StyledBox component="form" id="update-section-form" onSubmit={onSubmit}>
+      <UploadAvatars
+        aspectRatio="16/9"
+        fullWidth
+        initialSrc={section.image}
+        shape="square"
+        uploadKey={uploadKey}
+      />
       <TextField
         error={!!errors.name}
         fullWidth

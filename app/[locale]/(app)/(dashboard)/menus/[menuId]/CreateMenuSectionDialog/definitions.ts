@@ -5,6 +5,7 @@ export const useCreateMenuSectionFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z.object({
+    image: z.string().trim().optional(),
     name: z
       .string()
       .min(1, { error: tValidation("name.minLength") })

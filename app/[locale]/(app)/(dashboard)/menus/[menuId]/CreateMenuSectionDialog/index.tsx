@@ -10,7 +10,11 @@ import {
   useCreateMenuSectionFormSchema,
 } from "./definitions";
 
+import UploadAvatars from "@/components/UploadAvatars";
+
 import { zodResolver } from "@hookform/resolvers/zod";
+
+import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
 import { Box, type BoxProps, TextField, styled } from "@mui/material";
 
@@ -27,6 +31,8 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
+const CREATE_MENU_SECTION_IMAGE_KEY = "create-menu-section-image";
+
 interface CreateMenuSectionDialogProps {
   menuId: string;
   mutateSections: () => void;
@@ -39,6 +45,8 @@ const CreateMenuSectionDialog = ({
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const tMenus = useTranslations("menus");
+
+  const imageSrc = useUploadAvatarSrc(CREATE_MENU_SECTION_IMAGE_KEY);
 
   const createMenuSectionFormSchema = useCreateMenuSectionFormSchema();
   const {
@@ -63,6 +71,7 @@ const CreateMenuSectionDialog = ({
         body: JSON.stringify({
           name,
           ...(description && { description }),
+          ...(imageSrc && { image: imageSrc }),
         }),
       });
 
@@ -88,6 +97,12 @@ const CreateMenuSectionDialog = ({
 
   return (
     <StyledBox component="form" id="create-section-form" onSubmit={onSubmit}>
+      <UploadAvatars
+        aspectRatio="16/9"
+        fullWidth
+        shape="square"
+        uploadKey={CREATE_MENU_SECTION_IMAGE_KEY}
+      />
       <TextField
         error={!!errors.name}
         fullWidth
