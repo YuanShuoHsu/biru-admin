@@ -65,7 +65,7 @@ const OrganizationsSlugTabs = ({ children }: OrganizationsSlugTabsProps) => {
     tabs[0].value;
 
   return (
-    <Stack gap={2}>
+    <Stack height="100%" gap={2}>
       <Tabs
         aria-label="organization tabs"
         scrollButtons="auto"

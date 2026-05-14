@@ -46,7 +46,7 @@ const MenuItemLayout = ({ children }: { children: React.ReactNode }) => {
     tabs[0].value;
 
   return (
-    <Stack gap={2}>
+    <Stack height="100%" gap={2}>
       <Tabs
         aria-label="menu item tabs"
         scrollButtons="auto"
