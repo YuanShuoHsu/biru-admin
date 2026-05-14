@@ -134,9 +134,11 @@ const CurrencySelect = ({
   onChange,
   value,
 }: CurrencySelectProps) => {
-  const { code, label: currencyName } = value;
+  const { code, currency, label: currencyName } = value;
+
+  const [inputValue, setInputValue] = useState(currency);
+
   const hint = useRef("");
-  const [inputValue, setInputValue] = useState(getCurrencyLabel(value));
 
   return (
     <Autocomplete
@@ -145,7 +147,7 @@ const CurrencySelect = ({
       disablePortal
       filterOptions={(options, params) => {
         const { inputValue } = params;
-        if (inputValue === getCurrencyLabel(value)) return options;
+        if (inputValue === currency) return options;
 
         return filter(options, params);
       }}
@@ -159,7 +161,7 @@ const CurrencySelect = ({
       id="currency-select"
       inputValue={inputValue}
       onChange={(_, newValue: CurrencyOption) => {
-        setInputValue(getCurrencyLabel(newValue));
+        setInputValue(newValue.currency);
 
         onChange(newValue);
       }}
@@ -169,7 +171,7 @@ const CurrencySelect = ({
       onInputChange={(_, newInputValue, reason) => {
         if (reason === "reset") return;
         if (reason === "blur") {
-          setInputValue(getCurrencyLabel(value));
+          setInputValue(currency);
 
           return;
         }
