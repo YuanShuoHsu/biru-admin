@@ -2,12 +2,6 @@ import { countries } from "@/constants/countries";
 
 import type { CurrencyType } from "@/types/currencies";
 
-export const DEFAULT_CURRENCY_OPTION: CurrencyType = {
-  code: "TW",
-  currency: "TWD",
-  label: "New Taiwan Dollar",
-};
-
 const allCurrencies = Intl.supportedValuesOf("currency");
 
 export const currencies: CurrencyType[] = countries.flatMap((country) => {
@@ -17,3 +11,8 @@ export const currencies: CurrencyType[] = countries.flatMap((country) => {
 
   return currency ? [{ ...country, currency }] : [];
 });
+
+export const DEFAULT_CURRENCY_OPTION = currencies.find(
+  ({ code }) => code === "TW",
+)!;
+

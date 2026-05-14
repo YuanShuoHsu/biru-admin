@@ -23,6 +23,7 @@ import {
 } from "@mui/material";
 
 import CurrencySelect from "@/components/CurrencySelect";
+
 import { currencies, DEFAULT_CURRENCY_OPTION } from "@/constants/currencies";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";

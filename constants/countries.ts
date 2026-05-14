@@ -2,12 +2,6 @@
 
 import type { CountryType } from "@/types/countries";
 
-export const DEFAULT_COUNTRY_OPTION: CountryType = {
-  code: "TW",
-  label: "Taiwan",
-  phone: "886",
-};
-
 export const countries: CountryType[] = [
   { code: "AD", label: "Andorra", phone: "376" },
   {
@@ -432,3 +426,7 @@ export const countries: CountryType[] = [
   { code: "ZM", label: "Zambia", phone: "260" },
   { code: "ZW", label: "Zimbabwe", phone: "263" },
 ];
+
+export const DEFAULT_COUNTRY_OPTION = countries.find(
+  ({ code }) => code === "TW",
+)!;
