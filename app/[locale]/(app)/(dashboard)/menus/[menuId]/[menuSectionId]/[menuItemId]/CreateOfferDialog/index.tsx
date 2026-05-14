@@ -22,6 +22,12 @@ import {
   TextField,
 } from "@mui/material";
 
+import CurrencySelect from "@/components/CurrencySelect";
+import {
+  CURRENCY_OPTIONS,
+  DEFAULT_CURRENCY_OPTION,
+} from "@/constants/currencies";
+
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { Offer } from "@/types/menus";
@@ -145,13 +151,21 @@ const CreateOfferDialog = ({
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 4 }}>
-          <TextField
-            error={!!errors.priceCurrency}
-            fullWidth
-            helperText={errors.priceCurrency?.message}
-            label={tMenus("offers.priceCurrency.label")}
-            required
-            {...register("priceCurrency")}
+          <Controller
+            control={control}
+            name="priceCurrency"
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <CurrencySelect
+                error={!!error}
+                helperText={error?.message}
+                label={tMenus("offers.priceCurrency.label")}
+                onChange={({ currency }) => onChange(currency)}
+                value={
+                  CURRENCY_OPTIONS.find(({ currency }) => currency === value) ||
+                  DEFAULT_CURRENCY_OPTION
+                }
+              />
+            )}
           />
         </Grid>
       </Grid>

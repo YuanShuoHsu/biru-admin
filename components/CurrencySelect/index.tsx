@@ -1,16 +1,12 @@
-// https://mui.com/material-ui/react-autocomplete/#AutocompleteHint.tsx
-// https://mui.com/material-ui/react-autocomplete/#CountrySelect.tsx
-// https://mui.com/material-ui/react-autocomplete/#Filter.tsx
-// https://mui.com/material-ui/react-autocomplete/#GloballyCustomizedOptions.tsx
-// https://mui.com/material-ui/react-autocomplete/#Highlights.tsx
-// https://mui.com/material-ui/react-autocomplete/#RenderGroup.tsx
+"use client";
 
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
 import Image from "next/image";
 import React, { useRef, useState } from "react";
 
-import { COUNTRY_OPTIONS } from "@/constants/countries";
+import { CURRENCY_OPTIONS } from "@/constants/currencies";
+import type { CurrencyOption } from "@/types/currencies";
 
 import {
   Autocomplete,
@@ -19,14 +15,10 @@ import {
   InputAdornment,
   TextField,
   Typography,
-  TypographyProps,
   type BoxProps,
+  type TypographyProps,
 } from "@mui/material";
 import { darken, lighten, styled } from "@mui/material/styles";
-
-import type { CountryOption, CountryType } from "@/types/countries";
-
-import { formatPhone } from "@/utils/countries";
 
 const GroupHeader = styled("div")(({ theme }) => ({
   position: "sticky",
@@ -67,7 +59,7 @@ const StyledInputAdornment = styled(InputAdornment)(({ theme }) => ({
   width: theme.spacing(2.5),
 }));
 
-const FlagImage = ({ code, label }: Pick<CountryType, "code" | "label">) => (
+const FlagImage = ({ code, label }: { code: string; label: string }) => (
   <Image
     alt={label}
     fill
@@ -79,20 +71,20 @@ const FlagImage = ({ code, label }: Pick<CountryType, "code" | "label">) => (
   />
 );
 
-type CountryOptionBoxProps = Omit<BoxProps<"li">, "component"> & {
+type CurrencyOptionBoxProps = Omit<BoxProps<"li">, "component"> & {
   selected: boolean;
 };
 
-const CountryOptionRoot = React.forwardRef<
+const CurrencyOptionRoot = React.forwardRef<
   HTMLLIElement,
-  CountryOptionBoxProps
+  CurrencyOptionBoxProps
 >((props, ref) => <Box component="li" ref={ref} {...props} />);
 
-CountryOptionRoot.displayName = "CountryOptionRoot";
+CurrencyOptionRoot.displayName = "CurrencyOptionRoot";
 
-const CountryOptionBox = styled(CountryOptionRoot, {
+const CurrencyOptionBox = styled(CurrencyOptionRoot, {
   shouldForwardProp: (prop) => prop !== "selected",
-})<CountryOptionBoxProps>(({ selected, theme }) => ({
+})<CurrencyOptionBoxProps>(({ selected, theme }) => ({
   display: "flex",
   alignItems: "center",
   gap: theme.spacing(2),
@@ -119,34 +111,32 @@ const HighlightTypography = styled(Typography, {
   }),
 );
 
-const getCountryLabel = ({ label, code, phone }: CountryOption) =>
-  `${label} (${code}) ${formatPhone(phone)}`;
+const getCurrencyLabel = ({ currency, label }: CurrencyOption) =>
+  `${label} (${currency})`;
 
-const filter = createFilterOptions<CountryOption>({
+const filter = createFilterOptions<CurrencyOption>({
   // matchFrom: "start",
-  stringify: getCountryLabel,
+  stringify: getCurrencyLabel,
 });
 
-interface CountrySelectProps {
+interface CurrencySelectProps {
   error: boolean;
   helperText: React.ReactNode;
   label: string;
-  onChange: (value: CountryOption) => void;
-  value: CountryOption;
+  onChange: (value: CurrencyOption) => void;
+  value: CurrencyOption;
 }
 
-const CountrySelect = ({
+const CurrencySelect = ({
   error,
   helperText,
   label,
   onChange,
   value,
-}: CountrySelectProps) => {
-  const { code, label: countryName } = value;
-
+}: CurrencySelectProps) => {
+  const { code, label: currencyName } = value;
   const hint = useRef("");
-
-  const [inputValue, setInputValue] = useState(getCountryLabel(value));
+  const [inputValue, setInputValue] = useState(getCurrencyLabel(value));
 
   return (
     <Autocomplete
@@ -155,20 +145,21 @@ const CountrySelect = ({
       disablePortal
       filterOptions={(options, params) => {
         const { inputValue } = params;
-        if (inputValue === getCountryLabel(value)) return options;
+        if (inputValue === getCurrencyLabel(value)) return options;
 
         return filter(options, params);
       }}
       fullWidth
-      getOptionLabel={getCountryLabel}
-      isOptionEqualToValue={({ code: optionCode }, { code: valueCode }) =>
-        optionCode === valueCode
-      }
-      groupBy={({ firstLetter }: CountryOption) => firstLetter}
-      id="country-select"
+      getOptionLabel={getCurrencyLabel}
+      isOptionEqualToValue={(
+        { currency: optionCurrency },
+        { currency: valueCurrency },
+      ) => optionCurrency === valueCurrency}
+      groupBy={({ firstLetter }) => firstLetter}
+      id="currency-select"
       inputValue={inputValue}
-      onChange={(_, newValue: CountryOption) => {
-        setInputValue(getCountryLabel(newValue));
+      onChange={(_, newValue: CurrencyOption) => {
+        setInputValue(getCurrencyLabel(newValue));
 
         onChange(newValue);
       }}
@@ -178,7 +169,7 @@ const CountrySelect = ({
       onInputChange={(_, newInputValue, reason) => {
         if (reason === "reset") return;
         if (reason === "blur") {
-          setInputValue(getCountryLabel(value));
+          setInputValue(getCurrencyLabel(value));
 
           return;
         }
@@ -192,8 +183,8 @@ const CountrySelect = ({
           setInputValue(hint.current);
         }
       }}
-      options={COUNTRY_OPTIONS.sort(
-        (a, b) => -b.firstLetter.localeCompare(a.firstLetter),
+      options={CURRENCY_OPTIONS.sort((a, b) =>
+        a.firstLetter.localeCompare(b.firstLetter),
       )}
       renderGroup={({ key, group, children }) => (
         <Box component="li" key={key}>
@@ -212,13 +203,13 @@ const CountrySelect = ({
             onChange={({ target: { value: newValue } }) => {
               setInputValue(newValue);
 
-              const matchingOption = COUNTRY_OPTIONS.find((option) =>
-                option.label.startsWith(newValue),
+              const matchingOption = CURRENCY_OPTIONS.find((option) =>
+                getCurrencyLabel(option).startsWith(newValue),
               );
 
               hint.current =
                 newValue && matchingOption
-                  ? getCountryLabel(matchingOption)
+                  ? getCurrencyLabel(matchingOption)
                   : "";
             }}
             required
@@ -231,7 +222,7 @@ const CountrySelect = ({
                 ...params.InputProps,
                 startAdornment: (
                   <StyledInputAdornment position="start">
-                    <FlagImage code={code} label={countryName} />
+                    <FlagImage code={code} label={currencyName} />
                   </StyledInputAdornment>
                 ),
               },
@@ -248,7 +239,7 @@ const CountrySelect = ({
         const { code, label } = option;
         const optionLabelText = ownerState.getOptionLabel(option);
         const searchValue =
-          inputValue === getCountryLabel(value) ? "" : inputValue;
+          inputValue === getCurrencyLabel(value) ? "" : inputValue;
         const matches = match(optionLabelText, searchValue, {
           findAllOccurrences: true,
           insideWords: true,
@@ -256,7 +247,7 @@ const CountrySelect = ({
         const parts = parse(optionLabelText, matches);
 
         return (
-          <CountryOptionBox key={key} selected={selected} {...optionProps}>
+          <CurrencyOptionBox key={key} selected={selected} {...optionProps}>
             <ImageBox>
               <FlagImage code={code} label={label} />
             </ImageBox>
@@ -271,7 +262,7 @@ const CountrySelect = ({
                 </HighlightTypography>
               ))}
             </Box>
-          </CountryOptionBox>
+          </CurrencyOptionBox>
         );
       }}
       value={value}
@@ -279,4 +270,4 @@ const CountrySelect = ({
   );
 };
 
-export default CountrySelect;
+export default CurrencySelect;

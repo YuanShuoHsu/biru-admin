@@ -2,7 +2,7 @@
 
 import type { CountryOption, CountryType } from "@/types/countries";
 
-export const DEFAULT_COUNTRY: CountryOption = {
+export const DEFAULT_COUNTRY_OPTION: CountryOption = {
   code: "TW",
   label: "Taiwan",
   phone: "886",

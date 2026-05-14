@@ -10,7 +10,7 @@ import {
 
 import CountrySelect from "@/components/CountrySelect";
 
-import { COUNTRY_OPTIONS, DEFAULT_COUNTRY } from "@/constants/countries";
+import { COUNTRY_OPTIONS, DEFAULT_COUNTRY_OPTION } from "@/constants/countries";
 
 import { LocaleEnum } from "@/enums/Locale";
 
@@ -57,7 +57,7 @@ const AddressFields = ({ control, errors, register }: AddressFieldsProps) => {
           onChange={({ code }) => onChange(code)}
           value={
             COUNTRY_OPTIONS.find(({ code }) => code === value) ||
-            DEFAULT_COUNTRY
+            DEFAULT_COUNTRY_OPTION
           }
         />
       )}
