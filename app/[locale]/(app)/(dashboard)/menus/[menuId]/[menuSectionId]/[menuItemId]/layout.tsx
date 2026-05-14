@@ -5,7 +5,11 @@ import { useParams } from "next/navigation";
 
 import { Link, usePathname } from "@/i18n/navigation";
 
-import { Extension, LocalOffer, type SvgIconComponent } from "@mui/icons-material";
+import {
+  Extension,
+  LocalOffer,
+  type SvgIconComponent,
+} from "@mui/icons-material";
 import { Stack, Tab, Tabs } from "@mui/material";
 
 const MenuItemLayout = ({ children }: { children: React.ReactNode }) => {
