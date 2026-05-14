@@ -203,16 +203,25 @@
         "SoldOut": "Sold out"
       }
     },
-    "eligibleQuantityMax": { "label": "Max quantity (optional)" },
-    "eligibleQuantityMin": { "label": "Min quantity (optional)" },
+    "eligibleQuantityMax": {
+      "label": "Max quantity (optional)",
+      "placeholder": "Please enter your max quantity"
+    },
+    "eligibleQuantityMin": {
+      "label": "Min quantity (optional)",
+      "placeholder": "Please enter your min quantity"
+    },
     "label": "Offers",
     "name": {
       "label": "Offer name (optional)",
-      "placeholder": "e.g. Lunch special"
+      "placeholder": "Please enter your offer name"
     },
-    "price": { "label": "Price", "placeholder": "e.g. 150.00" },
+    "price": { "label": "Price", "placeholder": "Please enter your price" },
     "priceCurrency": { "label": "Currency" },
-    "sku": { "label": "SKU (optional)", "placeholder": "Stock keeping unit" },
+    "sku": {
+      "label": "SKU (optional)",
+      "placeholder": "Please enter your SKU"
+    },
     "validFrom": { "label": "Valid from (optional)" },
     "validThrough": { "label": "Valid through (optional)" }
   },

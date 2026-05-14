@@ -212,13 +212,22 @@
         "SoldOut": "売り切れ"
       }
     },
-    "eligibleQuantityMax": { "label": "最大数量（任意）" },
-    "eligibleQuantityMin": { "label": "最小数量（任意）" },
+    "eligibleQuantityMax": {
+      "label": "最大数量（任意）",
+      "placeholder": "最大数量を入力してください"
+    },
+    "eligibleQuantityMin": {
+      "label": "最小数量（任意）",
+      "placeholder": "最小数量を入力してください"
+    },
     "label": "価格設定",
-    "name": { "label": "価格名（任意）", "placeholder": "例：ランチ特価" },
-    "price": { "label": "価格", "placeholder": "例：150.00" },
+    "name": {
+      "label": "価格名（任意）",
+      "placeholder": "価格名を入力してください"
+    },
+    "price": { "label": "価格", "placeholder": "価格を入力してください" },
     "priceCurrency": { "label": "通貨" },
-    "sku": { "label": "SKU（任意）", "placeholder": "在庫管理コード" },
+    "sku": { "label": "SKU（任意）", "placeholder": "SKUを入力してください" },
     "validFrom": { "label": "有効開始日（任意）" },
     "validThrough": { "label": "有効終了日（任意）" }
   },

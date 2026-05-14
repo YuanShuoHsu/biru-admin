@@ -212,16 +212,22 @@
         "SoldOut": "품절"
       }
     },
-    "eligibleQuantityMax": { "label": "최대 수량 (선택 사항)" },
-    "eligibleQuantityMin": { "label": "최소 수량 (선택 사항)" },
+    "eligibleQuantityMax": {
+      "label": "최대 수량 (선택 사항)",
+      "placeholder": "최대 수량을 입력해 주세요"
+    },
+    "eligibleQuantityMin": {
+      "label": "최소 수량 (선택 사항)",
+      "placeholder": "최소 수량을 입력해 주세요"
+    },
     "label": "가격 설정",
     "name": {
       "label": "가격 이름 (선택 사항)",
-      "placeholder": "예: 점심 특가"
+      "placeholder": "가격 이름을 입력해 주세요"
     },
-    "price": { "label": "가격", "placeholder": "예: 150.00" },
+    "price": { "label": "가격", "placeholder": "가격을 입력해 주세요" },
     "priceCurrency": { "label": "통화" },
-    "sku": { "label": "SKU (선택 사항)", "placeholder": "재고 관리 코드" },
+    "sku": { "label": "SKU (선택 사항)", "placeholder": "SKU를 입력해 주세요" },
     "validFrom": { "label": "유효 시작일 (선택 사항)" },
     "validThrough": { "label": "유효 종료일 (선택 사항)" }
   },

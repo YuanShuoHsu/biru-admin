@@ -203,13 +203,22 @@
         "SoldOut": "售完"
       }
     },
-    "eligibleQuantityMax": { "label": "最多數量（選填）" },
-    "eligibleQuantityMin": { "label": "最少數量（選填）" },
+    "eligibleQuantityMax": {
+      "label": "最多數量（選填）",
+      "placeholder": "請輸入您的最多數量"
+    },
+    "eligibleQuantityMin": {
+      "label": "最少數量（選填）",
+      "placeholder": "請輸入您的最少數量"
+    },
     "label": "定價設定",
-    "name": { "label": "定價名稱（選填）", "placeholder": "例如：午餐特價" },
-    "price": { "label": "價格", "placeholder": "例如：150.00" },
+    "name": {
+      "label": "定價名稱（選填）",
+      "placeholder": "請輸入您的定價名稱"
+    },
+    "price": { "label": "價格", "placeholder": "請輸入您的價格" },
     "priceCurrency": { "label": "幣別" },
-    "sku": { "label": "SKU（選填）", "placeholder": "庫存單位代碼" },
+    "sku": { "label": "SKU（選填）", "placeholder": "請輸入您的 SKU" },
     "validFrom": { "label": "有效起始日（選填）" },
     "validThrough": { "label": "有效截止日（選填）" }
   },

@@ -212,6 +212,7 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
             fullWidth
             helperText={errors.eligibleQuantityMin?.message}
             label={tMenus("offers.eligibleQuantityMin.label")}
+            placeholder={tMenus("offers.eligibleQuantityMin.placeholder")}
             type="number"
             {...register("eligibleQuantityMin")}
           />
@@ -222,6 +223,7 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
             fullWidth
             helperText={errors.eligibleQuantityMax?.message}
             label={tMenus("offers.eligibleQuantityMax.label")}
+            placeholder={tMenus("offers.eligibleQuantityMax.placeholder")}
             type="number"
             {...register("eligibleQuantityMax")}
           />
