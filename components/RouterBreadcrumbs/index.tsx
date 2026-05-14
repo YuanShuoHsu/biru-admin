@@ -24,6 +24,7 @@ import {
   Devices,
   Email,
   Extension,
+  Fastfood,
   Gavel,
   Group,
   Groups,
@@ -152,7 +153,7 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
     },
   );
 
-  const { data: sectionName = "" } = useSWR(
+  const { data: menuSectionName = "" } = useSWR(
     menuSectionId ? `/api/menu-sections/${menuSectionId}` : null,
     async (url) => {
       try {
@@ -286,13 +287,14 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
                       to: "/add-ons",
                     },
                   ],
-                  icon: LocalOffer,
+                  hidden: true,
+                  icon: Fastfood,
                   label: menuItemName,
                   to: `/${menuItemId}`,
                 },
               ],
               icon: ViewList,
-              label: sectionName,
+              label: menuSectionName,
               to: `/${menuSectionId}`,
             },
           ],
