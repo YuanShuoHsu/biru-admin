@@ -295,7 +295,7 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
               ],
               icon: ViewList,
               label: menuSectionName,
-              to: `/${menuSectionId}`,
+              to: `/${menuSectionId}${organizationSlug ? `?organization=${organizationSlug}` : ""}`,
             },
           ],
           icon: Summarize,
@@ -432,10 +432,7 @@ const findHiddenTo = (
   const { hidden = false } = findBreadcrumb(breadcrumbs, nextMatchPath) || {};
   if (!hidden) return;
 
-  const nextTo = findHiddenTo(nextIndex, pathnames, breadcrumbs);
-  if (!nextTo) return nextMatchPath;
-
-  return nextTo;
+  return findHiddenTo(nextIndex, pathnames, breadcrumbs);
 };
 
 const RouterBreadcrumbs = () => {
