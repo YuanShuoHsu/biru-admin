@@ -12,10 +12,7 @@ import {
 } from "./definitions";
 
 import CurrencySelect from "@/components/CurrencySelect";
-import {
-  currencies,
-  DEFAULT_CURRENCY_OPTION,
-} from "@/constants/currencies";
+import { currencies, DEFAULT_CURRENCY_OPTION } from "@/constants/currencies";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 

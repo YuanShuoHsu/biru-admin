@@ -435,4 +435,3 @@ export const countries: CountryType[] = [
   { code: "ZM", label: "Zambia", phone: "260" },
   { code: "ZW", label: "Zimbabwe", phone: "263" },
 ];
-

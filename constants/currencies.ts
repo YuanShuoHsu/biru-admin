@@ -12,13 +12,10 @@ export const DEFAULT_CURRENCY_OPTION: CurrencyType = {
   label: "New Taiwan Dollar",
 };
 
-export const currencies: CurrencyType[] = Intl.supportedValuesOf(
-  "currency",
-)
+export const currencies: CurrencyType[] = Intl.supportedValuesOf("currency")
   .filter((currency) => countryCodes.has(currency.slice(0, 2).toUpperCase()))
   .map((currency) => ({
     code: currency.slice(0, 2).toUpperCase(),
     currency,
     label: displayNames.of(currency) || currency,
   }));
-

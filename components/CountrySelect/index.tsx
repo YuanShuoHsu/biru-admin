@@ -194,9 +194,7 @@ const CountrySelect = ({
           setInputValue(hint.current);
         }
       }}
-      options={countries.sort((a, b) =>
-        a.label[0].localeCompare(b.label[0]),
-      )}
+      options={countries.sort((a, b) => a.label[0].localeCompare(b.label[0]))}
       renderGroup={({ key, group, children }) => (
         <Box component="li" key={key}>
           <GroupHeader>{group}</GroupHeader>

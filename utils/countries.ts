@@ -19,8 +19,7 @@ export const getDefaultCountry = (locale: Locale) => {
   const countryCode = locales[locale].countryCode;
 
   return (
-    countries.find(({ code }) => code === countryCode) ||
-    DEFAULT_COUNTRY_OPTION
+    countries.find(({ code }) => code === countryCode) || DEFAULT_COUNTRY_OPTION
   );
 };
 

@@ -3,4 +3,3 @@ export interface CurrencyType {
   currency: string;
   label: string;
 }
-
