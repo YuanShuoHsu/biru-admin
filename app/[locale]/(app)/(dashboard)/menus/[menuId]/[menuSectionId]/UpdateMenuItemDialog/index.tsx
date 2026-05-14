@@ -60,10 +60,7 @@ const UpdateMenuItemDialog = ({
     resolver: zodResolver(updateMenuItemFormSchema),
   });
 
-  const onSubmitHandler = async ({
-    name,
-    description,
-  }: UpdateMenuItemForm) => {
+  const onSubmitHandler = async ({ name, description }: UpdateMenuItemForm) => {
     try {
       setDialog({ confirmLoading: true });
 
