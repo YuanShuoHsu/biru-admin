@@ -234,7 +234,6 @@ const MenuItemOffers = ({
         apiRef={apiRef}
         columns={columns}
         rows={offers}
-        hideFooter
       />
     </>
   );

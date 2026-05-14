@@ -188,7 +188,6 @@ const MenuItemAddOns = ({
         apiRef={apiRef}
         columns={columns}
         rows={addOns}
-        hideFooter
       />
     </>
   );
