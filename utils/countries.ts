@@ -1,12 +1,7 @@
 import { type CountryCode, getExampleNumber } from "libphonenumber-js";
 import examples from "libphonenumber-js/mobile/examples";
 
-import {
-  countries,
-  DEFAULT_COUNTRY_OPTION,
-  DEFAULT_NATIONAL_MASK,
-  DEFAULT_NATIONAL_PLACEHOLDER,
-} from "@/constants/countries";
+import { countries, DEFAULT_COUNTRY_OPTION } from "@/constants/countries";
 import { locales } from "@/constants/locale";
 
 import type { Locale } from "@/i18n/routing";
@@ -26,12 +21,7 @@ export const getDefaultCountry = (locale: Locale) => {
 export const getPhoneFormatting = (countryCode: CountryCode) => {
   const exampleNumber = getExampleNumber(countryCode, examples);
 
-  if (!exampleNumber) {
-    return {
-      mask: DEFAULT_NATIONAL_MASK,
-      placeholder: DEFAULT_NATIONAL_PLACEHOLDER,
-    };
-  }
+  if (!exampleNumber) return { mask: "0000000000", placeholder: "0123456789" };
 
   const nationalFormat = exampleNumber.formatNational();
 

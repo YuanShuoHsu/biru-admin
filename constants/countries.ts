@@ -8,9 +8,6 @@ export const DEFAULT_COUNTRY_OPTION: CountryType = {
   phone: "886",
 };
 
-export const DEFAULT_NATIONAL_MASK = "0000000000";
-export const DEFAULT_NATIONAL_PLACEHOLDER = "0123456789";
-
 export const countries: CountryType[] = [
   { code: "AD", label: "Andorra", phone: "376" },
   {
