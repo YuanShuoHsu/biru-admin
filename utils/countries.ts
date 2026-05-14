@@ -2,7 +2,7 @@ import { type CountryCode, getExampleNumber } from "libphonenumber-js";
 import examples from "libphonenumber-js/mobile/examples";
 
 import {
-  COUNTRY_OPTIONS,
+  countries,
   DEFAULT_COUNTRY_OPTION,
   DEFAULT_NATIONAL_MASK,
   DEFAULT_NATIONAL_PLACEHOLDER,
@@ -19,7 +19,7 @@ export const getDefaultCountry = (locale: Locale) => {
   const countryCode = locales[locale].countryCode;
 
   return (
-    COUNTRY_OPTIONS.find(({ code }) => code === countryCode) ||
+    countries.find(({ code }) => code === countryCode) ||
     DEFAULT_COUNTRY_OPTION
   );
 };

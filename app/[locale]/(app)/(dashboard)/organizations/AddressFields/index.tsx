@@ -10,7 +10,7 @@ import {
 
 import CountrySelect from "@/components/CountrySelect";
 
-import { COUNTRY_OPTIONS, DEFAULT_COUNTRY_OPTION } from "@/constants/countries";
+import { countries, DEFAULT_COUNTRY_OPTION } from "@/constants/countries";
 
 import { LocaleEnum } from "@/enums/Locale";
 
@@ -56,7 +56,7 @@ const AddressFields = ({ control, errors, register }: AddressFieldsProps) => {
           label={tOrganizations("address.addressCountry.label")}
           onChange={({ code }) => onChange(code)}
           value={
-            COUNTRY_OPTIONS.find(({ code }) => code === value) ||
+            countries.find(({ code }) => code === value) ||
             DEFAULT_COUNTRY_OPTION
           }
         />

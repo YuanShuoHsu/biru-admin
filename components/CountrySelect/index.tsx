@@ -10,7 +10,7 @@ import parse from "autosuggest-highlight/parse";
 import Image from "next/image";
 import React, { useRef, useState } from "react";
 
-import { COUNTRY_OPTIONS } from "@/constants/countries";
+import { countries } from "@/constants/countries";
 
 import {
   Autocomplete,
@@ -24,7 +24,7 @@ import {
 } from "@mui/material";
 import { darken, lighten, styled } from "@mui/material/styles";
 
-import type { CountryOption, CountryType } from "@/types/countries";
+import type { CountryType } from "@/types/countries";
 
 import { formatPhone } from "@/utils/countries";
 
@@ -119,10 +119,10 @@ const HighlightTypography = styled(Typography, {
   }),
 );
 
-const getCountryLabel = ({ label, code, phone }: CountryOption) =>
+const getCountryLabel = ({ label, code, phone }: CountryType) =>
   `${label} (${code}) ${formatPhone(phone)}`;
 
-const filter = createFilterOptions<CountryOption>({
+const filter = createFilterOptions<CountryType>({
   // matchFrom: "start",
   stringify: getCountryLabel,
 });
@@ -131,8 +131,8 @@ interface CountrySelectProps {
   error: boolean;
   helperText: React.ReactNode;
   label: string;
-  onChange: (value: CountryOption) => void;
-  value: CountryOption;
+  onChange: (value: CountryType) => void;
+  value: CountryType;
 }
 
 const CountrySelect = ({
@@ -164,10 +164,12 @@ const CountrySelect = ({
       isOptionEqualToValue={({ code: optionCode }, { code: valueCode }) =>
         optionCode === valueCode
       }
-      groupBy={({ firstLetter }: CountryOption) => firstLetter}
+      groupBy={({ label }) =>
+        /[0-9]/.test(label[0]) ? "0-9" : label[0].toUpperCase()
+      }
       id="country-select"
       inputValue={inputValue}
-      onChange={(_, newValue: CountryOption) => {
+      onChange={(_, newValue: CountryType) => {
         setInputValue(getCountryLabel(newValue));
 
         onChange(newValue);
@@ -192,8 +194,8 @@ const CountrySelect = ({
           setInputValue(hint.current);
         }
       }}
-      options={COUNTRY_OPTIONS.sort(
-        (a, b) => -b.firstLetter.localeCompare(a.firstLetter),
+      options={countries.sort((a, b) =>
+        a.label[0].localeCompare(b.label[0]),
       )}
       renderGroup={({ key, group, children }) => (
         <Box component="li" key={key}>
@@ -212,7 +214,7 @@ const CountrySelect = ({
             onChange={({ target: { value: newValue } }) => {
               setInputValue(newValue);
 
-              const matchingOption = COUNTRY_OPTIONS.find((option) =>
+              const matchingOption = countries.find((option) =>
                 option.label.startsWith(newValue),
               );
 

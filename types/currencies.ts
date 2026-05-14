@@ -4,4 +4,3 @@ export interface CurrencyType {
   label: string;
 }
 
-export type CurrencyOption = CurrencyType & { firstLetter: string };

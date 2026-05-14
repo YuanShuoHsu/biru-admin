@@ -7,4 +7,3 @@ export interface CountryType {
   suggested?: boolean;
 }
 
-export type CountryOption = CountryType & { firstLetter: string };

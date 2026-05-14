@@ -1,19 +1,18 @@
 import { countries } from "@/constants/countries";
 
-import type { CurrencyOption, CurrencyType } from "@/types/currencies";
+import type { CurrencyType } from "@/types/currencies";
 
 const displayNames = new Intl.DisplayNames(["en"], { type: "currency" });
 
 const countryCodes = new Set<string>(countries.map(({ code }) => code));
 
-export const DEFAULT_CURRENCY_OPTION: CurrencyOption = {
+export const DEFAULT_CURRENCY_OPTION: CurrencyType = {
   code: "TW",
   currency: "TWD",
-  firstLetter: "T",
   label: "New Taiwan Dollar",
 };
 
-export const currencies: readonly CurrencyType[] = Intl.supportedValuesOf(
+export const currencies: CurrencyType[] = Intl.supportedValuesOf(
   "currency",
 )
   .filter((currency) => countryCodes.has(currency.slice(0, 2).toUpperCase()))
@@ -23,7 +22,3 @@ export const currencies: readonly CurrencyType[] = Intl.supportedValuesOf(
     label: displayNames.of(currency) || currency,
   }));
 
-export const CURRENCY_OPTIONS: CurrencyOption[] = currencies.map((option) => ({
-  ...option,
-  firstLetter: option.currency[0].toUpperCase(),
-}));

@@ -24,7 +24,7 @@ import {
 
 import CurrencySelect from "@/components/CurrencySelect";
 import {
-  CURRENCY_OPTIONS,
+  currencies,
   DEFAULT_CURRENCY_OPTION,
 } from "@/constants/currencies";
 
@@ -161,7 +161,7 @@ const CreateOfferDialog = ({
                 label={tMenus("offers.priceCurrency.label")}
                 onChange={({ currency }) => onChange(currency)}
                 value={
-                  CURRENCY_OPTIONS.find(({ currency }) => currency === value) ||
+                  currencies.find(({ currency }) => currency === value) ||
                   DEFAULT_CURRENCY_OPTION
                 }
               />

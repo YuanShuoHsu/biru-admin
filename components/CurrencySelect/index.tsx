@@ -5,8 +5,7 @@ import parse from "autosuggest-highlight/parse";
 import Image from "next/image";
 import React, { useRef, useState } from "react";
 
-import { CURRENCY_OPTIONS } from "@/constants/currencies";
-import type { CurrencyOption } from "@/types/currencies";
+import { currencies } from "@/constants/currencies";
 
 import {
   Autocomplete,
@@ -19,6 +18,8 @@ import {
   type TypographyProps,
 } from "@mui/material";
 import { darken, lighten, styled } from "@mui/material/styles";
+
+import type { CurrencyType } from "@/types/currencies";
 
 const GroupHeader = styled("div")(({ theme }) => ({
   position: "sticky",
@@ -111,10 +112,10 @@ const HighlightTypography = styled(Typography, {
   }),
 );
 
-const getCurrencyLabel = ({ currency, label }: CurrencyOption) =>
+const getCurrencyLabel = ({ currency, label }: CurrencyType) =>
   `${label} (${currency})`;
 
-const filter = createFilterOptions<CurrencyOption>({
+const filter = createFilterOptions<CurrencyType>({
   // matchFrom: "start",
   stringify: getCurrencyLabel,
 });
@@ -123,8 +124,8 @@ interface CurrencySelectProps {
   error: boolean;
   helperText: React.ReactNode;
   label: string;
-  onChange: (value: CurrencyOption) => void;
-  value: CurrencyOption;
+  onChange: (value: CurrencyType) => void;
+  value: CurrencyType;
 }
 
 const CurrencySelect = ({
@@ -157,10 +158,10 @@ const CurrencySelect = ({
         { currency: optionCurrency },
         { currency: valueCurrency },
       ) => optionCurrency === valueCurrency}
-      groupBy={({ firstLetter }) => firstLetter}
+      groupBy={({ currency }) => currency[0].toUpperCase()}
       id="currency-select"
       inputValue={inputValue}
-      onChange={(_, newValue: CurrencyOption) => {
+      onChange={(_, newValue: CurrencyType) => {
         setInputValue(newValue.currency);
 
         onChange(newValue);
@@ -185,8 +186,8 @@ const CurrencySelect = ({
           setInputValue(hint.current);
         }
       }}
-      options={CURRENCY_OPTIONS.sort((a, b) =>
-        a.firstLetter.localeCompare(b.firstLetter),
+      options={currencies.sort((a, b) =>
+        a.currency[0].localeCompare(b.currency[0]),
       )}
       renderGroup={({ key, group, children }) => (
         <Box component="li" key={key}>
@@ -205,7 +206,7 @@ const CurrencySelect = ({
             onChange={({ target: { value: newValue } }) => {
               setInputValue(newValue);
 
-              const matchingOption = CURRENCY_OPTIONS.find((option) =>
+              const matchingOption = currencies.find((option) =>
                 getCurrencyLabel(option).startsWith(newValue),
               );
 
