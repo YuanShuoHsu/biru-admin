@@ -158,7 +158,9 @@ const CurrencySelect = ({
         { currency: optionCurrency },
         { currency: valueCurrency },
       ) => optionCurrency === valueCurrency}
-      groupBy={({ currency }) => currency[0].toUpperCase()}
+      groupBy={({ label }) =>
+        /[0-9]/.test(label[0]) ? "0-9" : label[0].toUpperCase()
+      }
       id="currency-select"
       inputValue={inputValue}
       onChange={(_, newValue: CurrencyType) => {
@@ -186,9 +188,7 @@ const CurrencySelect = ({
           setInputValue(hint.current);
         }
       }}
-      options={currencies.sort((a, b) =>
-        a.currency[0].localeCompare(b.currency[0]),
-      )}
+      options={currencies.sort((a, b) => a.label[0].localeCompare(b.label[0]))}
       renderGroup={({ key, group, children }) => (
         <Box component="li" key={key}>
           <GroupHeader>{group}</GroupHeader>
