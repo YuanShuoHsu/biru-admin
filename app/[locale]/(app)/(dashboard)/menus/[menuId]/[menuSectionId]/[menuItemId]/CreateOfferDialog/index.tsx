@@ -22,7 +22,7 @@ import {
   TextField,
 } from "@mui/material";
 
-import CurrencySelect from "@/components/CurrencySelect";
+import CountrySelect from "@/components/CountrySelect";
 
 import { currencies, DEFAULT_CURRENCY_OPTION } from "@/constants/currencies";
 
@@ -153,11 +153,14 @@ const CreateOfferDialog = ({
             control={control}
             name="priceCurrency"
             render={({ field: { onChange, value }, fieldState: { error } }) => (
-              <CurrencySelect
+              <CountrySelect
                 error={!!error}
                 helperText={error?.message}
                 label={tMenus("offers.priceCurrency.label")}
-                onChange={({ currency }) => onChange(currency)}
+                mode="currency"
+                onChange={(value) => {
+                  if ("currency" in value) onChange(value.currency);
+                }}
                 value={
                   currencies.find(({ currency }) => currency === value) ||
                   DEFAULT_CURRENCY_OPTION

@@ -11,7 +11,8 @@ import {
   useUpdateOfferFormSchema,
 } from "./definitions";
 
-import CurrencySelect from "@/components/CurrencySelect";
+import CountrySelect from "@/components/CountrySelect";
+
 import { currencies, DEFAULT_CURRENCY_OPTION } from "@/constants/currencies";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -155,11 +156,14 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
             control={control}
             name="priceCurrency"
             render={({ field: { onChange, value }, fieldState: { error } }) => (
-              <CurrencySelect
+              <CountrySelect
                 error={!!error}
                 helperText={error?.message}
                 label={tMenus("offers.priceCurrency.label")}
-                onChange={({ currency }) => onChange(currency)}
+                mode="currency"
+                onChange={(value) => {
+                  if ("currency" in value) onChange(value.currency);
+                }}
                 value={
                   currencies.find(({ currency }) => currency === value) ||
                   DEFAULT_CURRENCY_OPTION
