@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
-import { Controller, useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
 import {
   ITEM_AVAILABILITY_VALUES,
@@ -79,6 +79,7 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
     resolver: zodResolver(updateOfferFormSchema),
   });
 
+  const priceCurrency = useWatch({ control, name: "priceCurrency" });
   const availability = useWatch({ control, name: "availability" });
   const validFrom = useWatch({ control, name: "validFrom" });
   const validThrough = useWatch({ control, name: "validThrough" });
@@ -148,24 +149,20 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
       />
       <Grid container spacing={2} sx={{ width: "100%" }}>
         <Grid size={{ xs: 12, sm: 4 }}>
-          <Controller
-            control={control}
-            name="priceCurrency"
-            render={({ field: { onChange, value }, fieldState: { error } }) => (
-              <CountrySelect
-                error={!!error}
-                helperText={error?.message}
-                label={tMenus("offers.priceCurrency.label")}
-                mode="currency"
-                onChange={(value) => {
-                  if ("currency" in value) onChange(value.currency);
-                }}
-                value={
-                  currencies.find(({ currency }) => currency === value) ||
-                  DEFAULT_CURRENCY_OPTION
-                }
-              />
-            )}
+          <CountrySelect
+            error={!!errors.priceCurrency}
+            helperText={errors.priceCurrency?.message}
+            label={tMenus("offers.priceCurrency.label")}
+            mode="currency"
+            value={
+              currencies.find(({ currency }) => currency === priceCurrency) ||
+              DEFAULT_CURRENCY_OPTION
+            }
+            {...register("priceCurrency")}
+            onChange={(value) => {
+              if ("currency" in value)
+                setValue("priceCurrency", value.currency);
+            }}
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 8 }}>

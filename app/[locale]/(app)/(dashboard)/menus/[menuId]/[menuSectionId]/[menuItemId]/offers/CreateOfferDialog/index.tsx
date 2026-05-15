@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
-import { Controller, useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
 import {
   type CreateOfferForm,
@@ -76,6 +76,7 @@ const CreateOfferDialog = ({
     resolver: zodResolver(createOfferFormSchema),
   });
 
+  const priceCurrency = useWatch({ control, name: "priceCurrency" });
   const availability = useWatch({ control, name: "availability" });
   const validFrom = useWatch({ control, name: "validFrom" });
   const validThrough = useWatch({ control, name: "validThrough" });
@@ -145,24 +146,20 @@ const CreateOfferDialog = ({
       />
       <Grid width="100%" container spacing={2}>
         <Grid size={{ xs: 12, sm: 4 }}>
-          <Controller
-            control={control}
-            name="priceCurrency"
-            render={({ field: { onChange, value }, fieldState: { error } }) => (
-              <CountrySelect
-                error={!!error}
-                helperText={error?.message}
-                label={tMenus("offers.priceCurrency.label")}
-                mode="currency"
-                onChange={(value) => {
-                  if ("currency" in value) onChange(value.currency);
-                }}
-                value={
-                  currencies.find(({ currency }) => currency === value) ||
-                  DEFAULT_CURRENCY_OPTION
-                }
-              />
-            )}
+          <CountrySelect
+            error={!!errors.priceCurrency}
+            helperText={errors.priceCurrency?.message}
+            label={tMenus("offers.priceCurrency.label")}
+            mode="currency"
+            value={
+              currencies.find(({ currency }) => currency === priceCurrency) ||
+              DEFAULT_CURRENCY_OPTION
+            }
+            {...register("priceCurrency")}
+            onChange={(value) => {
+              if ("currency" in value)
+                setValue("priceCurrency", value.currency);
+            }}
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 8 }}>
