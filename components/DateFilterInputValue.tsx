@@ -1,7 +1,39 @@
-import { GridFilterInputValue } from "@mui/x-data-grid";
+"use client";
 
-const DateFilterInputValue = (
-  props: React.ComponentProps<typeof GridFilterInputValue>,
-) => <GridFilterInputValue {...props} type="date" />;
+import dayjs, { type Dayjs } from "dayjs";
+
+import type { GridFilterInputValueProps } from "@mui/x-data-grid";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+
+const DateFilterInputValue = ({
+  item,
+  applyValue,
+}: GridFilterInputValueProps) => {
+  const handleChange = (newValue: Dayjs | null) =>
+    applyValue({
+      ...item,
+      value: newValue?.isValid() ? newValue.format("YYYY-MM-DD") : "",
+    });
+
+  const handleClear = () => applyValue({ ...item, value: "" });
+
+  return (
+    <DatePicker
+      disableFuture
+      maxDate={dayjs()}
+      onChange={handleChange}
+      openTo="year"
+      slotProps={{
+        field: { clearable: true, onClear: handleClear },
+        textField: {
+          size: "small",
+        },
+      }}
+      value={item.value ? dayjs(item.value) : null}
+      views={["year", "month", "day"]}
+      yearsOrder="desc"
+    />
+  );
+};
 
 export default DateFilterInputValue;
