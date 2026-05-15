@@ -1,3 +1,5 @@
+// https://schema.org/ItemAvailability
+
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
@@ -21,11 +23,11 @@ export const useCreateOfferFormSchema = () => {
 
   return z.object({
     name: z.string().trim().optional(),
+    priceCurrency: z.string().trim().min(1),
     price: z
       .string()
       .trim()
       .min(1, { error: tValidation("name.minLength") }),
-    priceCurrency: z.string().trim().min(1),
     availability: z.enum(ITEM_AVAILABILITY_VALUES),
     sku: z.string().trim().optional(),
     eligibleQuantityMin: z.string().optional(),

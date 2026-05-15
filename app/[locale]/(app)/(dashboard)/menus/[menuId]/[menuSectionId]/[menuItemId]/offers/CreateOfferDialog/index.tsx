@@ -61,8 +61,8 @@ const CreateOfferDialog = ({
   } = useForm<CreateOfferForm, unknown, CreateOfferForm>({
     defaultValues: {
       name: "",
-      price: "",
       priceCurrency: "TWD",
+      price: "",
       availability: "InStock",
       sku: "",
       eligibleQuantityMin: "",
@@ -77,8 +77,8 @@ const CreateOfferDialog = ({
 
   const onSubmitHandler = async ({
     name,
-    price,
     priceCurrency,
+    price,
     availability,
     sku,
     eligibleQuantityMin,
@@ -94,8 +94,8 @@ const CreateOfferDialog = ({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...(name && { name }),
-          price,
           priceCurrency,
+          price,
           availability,
           ...(sku && { sku }),
           ...(eligibleQuantityMin !== "" &&
@@ -138,18 +138,7 @@ const CreateOfferDialog = ({
         placeholder={tMenus("offers.name.placeholder")}
         {...register("name")}
       />
-      <Grid container spacing={2} sx={{ width: "100%" }}>
-        <Grid size={{ xs: 12, sm: 8 }}>
-          <TextField
-            error={!!errors.price}
-            fullWidth
-            helperText={errors.price?.message}
-            label={tMenus("offers.price.label")}
-            placeholder={tMenus("offers.price.placeholder")}
-            required
-            {...register("price")}
-          />
-        </Grid>
+      <Grid width="100%" container spacing={2}>
         <Grid size={{ xs: 12, sm: 4 }}>
           <Controller
             control={control}
@@ -169,6 +158,17 @@ const CreateOfferDialog = ({
                 }
               />
             )}
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 8 }}>
+          <TextField
+            error={!!errors.price}
+            fullWidth
+            helperText={errors.price?.message}
+            label={tMenus("offers.price.label")}
+            placeholder={tMenus("offers.price.placeholder")}
+            required
+            {...register("price")}
           />
         </Grid>
       </Grid>
@@ -219,7 +219,7 @@ const CreateOfferDialog = ({
         placeholder={tMenus("offers.sku.placeholder")}
         {...register("sku")}
       />
-      <Grid container spacing={2} sx={{ width: "100%" }}>
+      <Grid width="100%" container spacing={2}>
         <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             error={!!errors.eligibleQuantityMin}
