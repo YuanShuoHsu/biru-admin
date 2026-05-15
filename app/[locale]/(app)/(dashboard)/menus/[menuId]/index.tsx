@@ -567,7 +567,6 @@ const MenusMenuId = ({
         field: "description",
         filterOperators: stringFilterOperators,
         headerName: tMenus("sections.description.label"),
-        sortable: false,
       },
       {
         field: "createdAt",
