@@ -51,5 +51,10 @@ export const FILTER_OPERATORS = [
 export const SEARCH_FIELDS = ["name", "description"] as const;
 export const SEARCH_OPERATORS = ["contains", "startsWith", "endsWith"] as const;
 
-export const SORT_BY_FIELDS = ["name", "description", "createdAt", "updatedAt"] as const;
+export const SORT_BY_FIELDS = [
+  "name",
+  "description",
+  "createdAt",
+  "updatedAt",
+] as const;
 export const SORT_DIRECTIONS = ["asc", "desc"] as const;
