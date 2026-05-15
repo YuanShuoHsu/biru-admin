@@ -60,6 +60,7 @@ const CreateOfferDialog = ({
     formState: { errors },
     handleSubmit,
     register,
+    setValue,
   } = useForm<CreateOfferForm, unknown, CreateOfferForm>({
     defaultValues: {
       name: "",
@@ -76,6 +77,8 @@ const CreateOfferDialog = ({
   });
 
   const availability = useWatch({ control, name: "availability" });
+  const validFrom = useWatch({ control, name: "validFrom" });
+  const validThrough = useWatch({ control, name: "validThrough" });
 
   const onSubmitHandler = async ({
     name,
@@ -245,49 +248,39 @@ const CreateOfferDialog = ({
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
-          <Controller
-            control={control}
-            name="validFrom"
-            render={({ field: { onChange, value }, fieldState: { error } }) => (
-              <DatePicker
-                label={tMenus("offers.validFrom.label")}
-                onChange={(date) =>
-                  onChange(date ? date.format("YYYY-MM-DD") : "")
-                }
-                slotProps={{
-                  field: { clearable: true },
-                  textField: {
-                    error: !!error,
-                    fullWidth: true,
-                    helperText: error?.message,
-                  },
-                }}
-                value={value ? dayjs(value) : null}
-              />
-            )}
+          <DatePicker
+            label={tMenus("offers.validFrom.label")}
+            slotProps={{
+              field: { clearable: true },
+              textField: {
+                error: !!errors.validFrom,
+                fullWidth: true,
+                helperText: errors.validFrom?.message,
+              },
+            }}
+            value={validFrom ? dayjs(validFrom) : null}
+            {...register("validFrom")}
+            onChange={(date) =>
+              setValue("validFrom", date ? date.format("YYYY-MM-DD") : "")
+            }
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
-          <Controller
-            control={control}
-            name="validThrough"
-            render={({ field: { onChange, value }, fieldState: { error } }) => (
-              <DatePicker
-                label={tMenus("offers.validThrough.label")}
-                onChange={(date) =>
-                  onChange(date ? date.format("YYYY-MM-DD") : "")
-                }
-                slotProps={{
-                  field: { clearable: true },
-                  textField: {
-                    error: !!error,
-                    fullWidth: true,
-                    helperText: error?.message,
-                  },
-                }}
-                value={value ? dayjs(value) : null}
-              />
-            )}
+          <DatePicker
+            label={tMenus("offers.validThrough.label")}
+            slotProps={{
+              field: { clearable: true },
+              textField: {
+                error: !!errors.validThrough,
+                fullWidth: true,
+                helperText: errors.validThrough?.message,
+              },
+            }}
+            value={validThrough ? dayjs(validThrough) : null}
+            {...register("validThrough")}
+            onChange={(date) =>
+              setValue("validThrough", date ? date.format("YYYY-MM-DD") : "")
+            }
           />
         </Grid>
       </Grid>
