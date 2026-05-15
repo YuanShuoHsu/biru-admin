@@ -58,8 +58,8 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
   } = useForm<UpdateOfferForm, unknown, UpdateOfferForm>({
     defaultValues: {
       name: offer.name || "",
-      price: offer.price || "",
       priceCurrency: offer.priceCurrency || "TWD",
+      price: offer.price || "",
       availability: offer.availability || "InStock",
       sku: offer.sku || "",
       eligibleQuantityMin:
@@ -142,17 +142,6 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
         {...register("name")}
       />
       <Grid container spacing={2} sx={{ width: "100%" }}>
-        <Grid size={{ xs: 12, sm: 8 }}>
-          <TextField
-            error={!!errors.price}
-            fullWidth
-            helperText={errors.price?.message}
-            label={tMenus("offers.price.label")}
-            placeholder={tMenus("offers.price.placeholder")}
-            required
-            {...register("price")}
-          />
-        </Grid>
         <Grid size={{ xs: 12, sm: 4 }}>
           <Controller
             control={control}
@@ -172,6 +161,17 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
                 }
               />
             )}
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 8 }}>
+          <TextField
+            error={!!errors.price}
+            fullWidth
+            helperText={errors.price?.message}
+            label={tMenus("offers.price.label")}
+            placeholder={tMenus("offers.price.placeholder")}
+            required
+            {...register("price")}
           />
         </Grid>
       </Grid>
