@@ -1,5 +1,6 @@
 "use client";
 
+import dayjs from "dayjs";
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
@@ -21,6 +22,7 @@ import {
   styled,
   TextField,
 } from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import CountrySelect from "@/components/CountrySelect";
 
@@ -243,25 +245,49 @@ const CreateOfferDialog = ({
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
-          <TextField
-            error={!!errors.validFrom}
-            fullWidth
-            helperText={errors.validFrom?.message}
-            label={tMenus("offers.validFrom.label")}
-            slotProps={{ inputLabel: { shrink: true } }}
-            type="date"
-            {...register("validFrom")}
+          <Controller
+            control={control}
+            name="validFrom"
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <DatePicker
+                label={tMenus("offers.validFrom.label")}
+                onChange={(date) =>
+                  onChange(date ? date.format("YYYY-MM-DD") : "")
+                }
+                slotProps={{
+                  field: { clearable: true },
+                  textField: {
+                    error: !!error,
+                    fullWidth: true,
+                    helperText: error?.message,
+                  },
+                }}
+                value={value ? dayjs(value) : null}
+              />
+            )}
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
-          <TextField
-            error={!!errors.validThrough}
-            fullWidth
-            helperText={errors.validThrough?.message}
-            label={tMenus("offers.validThrough.label")}
-            slotProps={{ inputLabel: { shrink: true } }}
-            type="date"
-            {...register("validThrough")}
+          <Controller
+            control={control}
+            name="validThrough"
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <DatePicker
+                label={tMenus("offers.validThrough.label")}
+                onChange={(date) =>
+                  onChange(date ? date.format("YYYY-MM-DD") : "")
+                }
+                slotProps={{
+                  field: { clearable: true },
+                  textField: {
+                    error: !!error,
+                    fullWidth: true,
+                    helperText: error?.message,
+                  },
+                }}
+                value={value ? dayjs(value) : null}
+              />
+            )}
           />
         </Grid>
       </Grid>

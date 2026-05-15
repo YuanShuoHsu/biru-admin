@@ -22,7 +22,6 @@ const DateFilterInputValue = ({
       disableFuture
       maxDate={dayjs()}
       onChange={handleChange}
-      openTo="year"
       slotProps={{
         field: { clearable: true, onClear: handleClear },
         textField: {
@@ -30,8 +29,6 @@ const DateFilterInputValue = ({
         },
       }}
       value={item.value ? dayjs(item.value) : null}
-      views={["year", "month", "day"]}
-      yearsOrder="desc"
     />
   );
 };
