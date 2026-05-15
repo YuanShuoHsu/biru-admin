@@ -1,4 +1,4 @@
-export const STRING_FILTER_FIELDS = ["name"] as const;
+export const STRING_FILTER_FIELDS = ["name", "description"] as const;
 export const DATE_FILTER_FIELDS = ["createdAt", "updatedAt"] as const;
 export const FILTER_FIELDS = [
   ...STRING_FILTER_FIELDS,
@@ -51,5 +51,5 @@ export const FILTER_OPERATORS = [
 export const SEARCH_FIELDS = ["name", "description"] as const;
 export const SEARCH_OPERATORS = ["contains", "startsWith", "endsWith"] as const;
 
-export const SORT_BY_FIELDS = ["name", "createdAt", "updatedAt"] as const;
+export const SORT_BY_FIELDS = ["name", "description", "createdAt", "updatedAt"] as const;
 export const SORT_DIRECTIONS = ["asc", "desc"] as const;
