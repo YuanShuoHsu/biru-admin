@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent, useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import useSWR from "swr";
 
 import {
   ADD_ON_TYPE_VALUES,
@@ -14,7 +15,6 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Box, type BoxProps, MenuItem, styled, TextField } from "@mui/material";
-import useSWR from "swr";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 

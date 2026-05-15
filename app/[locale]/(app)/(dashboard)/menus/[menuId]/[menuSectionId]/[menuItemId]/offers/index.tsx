@@ -19,8 +19,11 @@ import {
   Stack,
   Tooltip,
 } from "@mui/material";
-import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-import { useGridApiRef } from "@mui/x-data-grid";
+import {
+  type GridColDef,
+  type GridRenderCellParams,
+  useGridApiRef,
+} from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
