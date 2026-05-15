@@ -263,8 +263,6 @@ const Menus = ({
               variant="outlined"
             />
           ),
-        resizable: false,
-        sortable: false,
       },
       {
         field: "createdAt",
