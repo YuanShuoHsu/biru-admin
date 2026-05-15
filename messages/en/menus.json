@@ -102,8 +102,14 @@
       },
       "label": "Actions"
     },
-    "addOnMenuItemId": { "label": "Add-on item", "placeholder": "Please select your item" },
-    "addOnMenuSectionId": { "label": "Add-on section", "placeholder": "Please select your section" },
+    "addOnMenuItemId": {
+      "label": "Add-on item",
+      "placeholder": "Please select your add-on item"
+    },
+    "addOnMenuSectionId": {
+      "label": "Add-on section",
+      "placeholder": "Please select your add-on section"
+    },
     "label": "Add-ons",
     "type": {
       "item": "Specific item",

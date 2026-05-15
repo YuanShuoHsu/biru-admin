@@ -102,8 +102,11 @@
       },
       "label": "操作"
     },
-    "addOnMenuItemId": { "label": "加購品項", "placeholder": "請選擇您的品項" },
-    "addOnMenuSectionId": { "label": "加購分組", "placeholder": "請選擇您的分組" },
+    "addOnMenuItemId": { "label": "加購品項", "placeholder": "請選擇您的加購品項" },
+    "addOnMenuSectionId": {
+      "label": "加購分組",
+      "placeholder": "請選擇您的加購分組"
+    },
     "label": "加購設定",
     "type": {
       "item": "指定品項",

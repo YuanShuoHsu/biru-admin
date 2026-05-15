@@ -105,8 +105,14 @@
       },
       "label": "操作"
     },
-    "addOnMenuItemId": { "label": "追加品目", "placeholder": "品目を選択してください" },
-    "addOnMenuSectionId": { "label": "追加セクション", "placeholder": "セクションを選択してください" },
+    "addOnMenuItemId": {
+      "label": "追加品目",
+      "placeholder": "追加品目を選択してください"
+    },
+    "addOnMenuSectionId": {
+      "label": "追加セクション",
+      "placeholder": "追加セクションを選択してください"
+    },
     "label": "追加オプション",
     "type": {
       "item": "特定品目",
