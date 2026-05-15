@@ -102,12 +102,13 @@
       },
       "label": "Actions"
     },
-    "addOnMenuItemId": { "label": "Add-on item" },
-    "addOnMenuSectionId": { "label": "Add-on section" },
+    "addOnMenuItemId": { "label": "Add-on item", "placeholder": "Please select your item" },
+    "addOnMenuSectionId": { "label": "Add-on section", "placeholder": "Please select your section" },
     "label": "Add-ons",
     "type": {
       "item": "Specific item",
       "label": "Add-on type",
+      "placeholder": "Please select your add-on type",
       "section": "Entire section"
     }
   },
@@ -188,6 +189,7 @@
     },
     "availability": {
       "label": "Availability",
+      "placeholder": "Please select your availability",
       "options": {
         "BackOrder": "Back order",
         "Discontinued": "Discontinued",

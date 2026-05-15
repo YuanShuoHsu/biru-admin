@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 
 import {
   ITEM_AVAILABILITY_VALUES,
@@ -75,6 +75,8 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
     },
     resolver: zodResolver(updateOfferFormSchema),
   });
+
+  const availability = useWatch({ control, name: "availability" });
 
   const onSubmitHandler = async ({
     name,
@@ -173,31 +175,45 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
           />
         </Grid>
       </Grid>
-      <Controller
-        control={control}
-        name="availability"
-        render={({ field }) => (
-          <TextField
-            {...field}
-            error={!!errors.availability}
-            fullWidth
-            helperText={errors.availability?.message}
-            label={tMenus("offers.availability.label")}
-            required
-            select
-          >
-            {ITEM_AVAILABILITY_VALUES.map((value) => (
-              <MenuItem key={value} value={value}>
-                {tMenus(
-                  `offers.availability.options.${value}` as Parameters<
+      <TextField
+        error={!!errors.availability}
+        fullWidth
+        helperText={errors.availability?.message}
+        label={tMenus("offers.availability.label")}
+        required
+        select
+        slotProps={{
+          inputLabel: { shrink: true },
+          select: {
+            displayEmpty: true,
+            renderValue: (selected) =>
+              selected ? (
+                tMenus(
+                  `offers.availability.options.${selected}` as Parameters<
                     typeof tMenus
                   >[0],
-                )}
-              </MenuItem>
-            ))}
-          </TextField>
-        )}
-      />
+                )
+              ) : (
+                <em>{tMenus("offers.availability.placeholder")}</em>
+              ),
+          },
+        }}
+        value={availability}
+        {...register("availability")}
+      >
+        <MenuItem disabled value="">
+          <em>{tMenus("offers.availability.placeholder")}</em>
+        </MenuItem>
+        {ITEM_AVAILABILITY_VALUES.map((value) => (
+          <MenuItem key={value} value={value}>
+            {tMenus(
+              `offers.availability.options.${value}` as Parameters<
+                typeof tMenus
+              >[0],
+            )}
+          </MenuItem>
+        ))}
+      </TextField>
       <TextField
         error={!!errors.sku}
         fullWidth

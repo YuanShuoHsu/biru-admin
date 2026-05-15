@@ -102,12 +102,13 @@
       },
       "label": "操作"
     },
-    "addOnMenuItemId": { "label": "加購品項" },
-    "addOnMenuSectionId": { "label": "加購分組" },
+    "addOnMenuItemId": { "label": "加購品項", "placeholder": "請選擇您的品項" },
+    "addOnMenuSectionId": { "label": "加購分組", "placeholder": "請選擇您的分組" },
     "label": "加購設定",
     "type": {
       "item": "指定品項",
       "label": "加購類型",
+      "placeholder": "請選擇您的加購類型",
       "section": "整個分組"
     }
   },
@@ -188,6 +189,7 @@
     },
     "availability": {
       "label": "供應狀態",
+      "placeholder": "請選擇您的供應狀態",
       "options": {
         "BackOrder": "預購補貨中",
         "Discontinued": "已停售",
