@@ -770,7 +770,6 @@ const Admins = ({
             variant="outlined"
           />
         ),
-        sortable: false,
         type: "singleSelect",
         valueOptions: [
           { label: tAdmins("role.admin"), value: "admin" },
@@ -829,7 +828,6 @@ const Admins = ({
             </Tooltip>
           );
         },
-        sortable: false,
         type: "singleSelect",
         valueOptions: [
           { label: tAdmins("status.banned"), value: true },
@@ -859,7 +857,6 @@ const Admins = ({
             variant="outlined"
           />
         ),
-        sortable: false,
         type: "singleSelect",
         valueOptions: [
           { label: tAdmins("emailSubscribed.subscribed"), value: true },
