@@ -6,8 +6,8 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo } from "react";
 import useSWR from "swr";
 
-import CreateOfferDialog from "../CreateOfferDialog";
-import UpdateOfferDialog from "../UpdateOfferDialog";
+import CreateOfferDialog from "./CreateOfferDialog";
+import UpdateOfferDialog from "./UpdateOfferDialog";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 

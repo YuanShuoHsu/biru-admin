@@ -6,7 +6,7 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo } from "react";
 import useSWR from "swr";
 
-import CreateAddOnDialog from "../CreateAddOnDialog";
+import CreateAddOnDialog from "./CreateAddOnDialog";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
