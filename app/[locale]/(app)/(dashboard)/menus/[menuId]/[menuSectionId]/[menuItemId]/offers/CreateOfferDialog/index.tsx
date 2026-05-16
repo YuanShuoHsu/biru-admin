@@ -25,6 +25,7 @@ import {
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import CountrySelect from "@/components/CountrySelect";
+import NumberSpinner from "@/components/NumberSpinner";
 
 import { currencies, DEFAULT_CURRENCY_OPTION } from "@/constants/currencies";
 
@@ -82,6 +83,8 @@ const CreateOfferDialog = ({
 
   const priceCurrency = useWatch({ control, name: "priceCurrency" });
   const availability = useWatch({ control, name: "availability" });
+  const minValue = useWatch({ control, name: "eligibleQuantity.minValue" });
+  const maxValue = useWatch({ control, name: "eligibleQuantity.maxValue" });
   const validFrom = useWatch({ control, name: "validFrom" });
   const validThrough = useWatch({ control, name: "validThrough" });
 
@@ -236,25 +239,27 @@ const CreateOfferDialog = ({
       />
       <Grid width="100%" container spacing={2}>
         <Grid size={{ xs: 12, sm: 6 }}>
-          <TextField
+          <NumberSpinner
             error={!!errors.eligibleQuantity?.minValue}
-            fullWidth
             helperText={errors.eligibleQuantity?.minValue?.message}
             label={tMenus("offers.eligibleQuantity.minValue.label")}
             placeholder={tMenus("offers.eligibleQuantity.minValue.placeholder")}
-            type="number"
-            {...register("eligibleQuantity.minValue")}
+            value={minValue !== "" ? Number(minValue) : null}
+            onValueChange={(val) =>
+              setValue("eligibleQuantity.minValue", val != null ? String(val) : "")
+            }
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
-          <TextField
+          <NumberSpinner
             error={!!errors.eligibleQuantity?.maxValue}
-            fullWidth
             helperText={errors.eligibleQuantity?.maxValue?.message}
             label={tMenus("offers.eligibleQuantity.maxValue.label")}
             placeholder={tMenus("offers.eligibleQuantity.maxValue.placeholder")}
-            type="number"
-            {...register("eligibleQuantity.maxValue")}
+            value={maxValue !== "" ? Number(maxValue) : null}
+            onValueChange={(val) =>
+              setValue("eligibleQuantity.maxValue", val != null ? String(val) : "")
+            }
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>

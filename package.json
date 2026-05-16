@@ -12,6 +12,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@base-ui/react": "^1.4.1",
     "@dnd-kit/helpers": "^0.4.0",
     "@dnd-kit/react": "^0.4.0",
     "@emotion/cache": "^11.14.0",
