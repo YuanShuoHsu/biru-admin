@@ -245,6 +245,7 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
         <Grid size={{ xs: 12, sm: 6 }}>
           <NumberSpinner
             error={!!errors.eligibleQuantity?.minValue}
+            fullWidth
             helperText={errors.eligibleQuantity?.minValue?.message}
             label={tMenus("offers.eligibleQuantity.minValue.label")}
             placeholder={tMenus("offers.eligibleQuantity.minValue.placeholder")}
@@ -260,6 +261,7 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
         <Grid size={{ xs: 12, sm: 6 }}>
           <NumberSpinner
             error={!!errors.eligibleQuantity?.maxValue}
+            fullWidth
             helperText={errors.eligibleQuantity?.maxValue?.message}
             label={tMenus("offers.eligibleQuantity.maxValue.label")}
             placeholder={tMenus("offers.eligibleQuantity.maxValue.placeholder")}

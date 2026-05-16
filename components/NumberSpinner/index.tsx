@@ -74,18 +74,20 @@ const StyledOutlinedInput = styled(OutlinedInput)({
 });
 
 interface NumberSpinnerProps extends BaseNumberField.Root.Props {
-  label?: React.ReactNode;
+  error?: boolean;
+  fullWidth?: boolean;
   helperText?: string;
+  label?: React.ReactNode;
   placeholder?: string;
   size?: "small" | "medium";
-  error?: boolean;
 }
 
 const NumberSpinner = ({
+  error,
+  fullWidth,
+  helperText,
   id: idProp,
   label,
-  error,
-  helperText,
   placeholder,
   size = "medium",
   ...other
@@ -99,6 +101,7 @@ const NumberSpinner = ({
       render={(props, state) => (
         <StyledFormControl
           size={size}
+          fullWidth={fullWidth}
           ref={props.ref}
           disabled={state.disabled}
           required={state.required}
