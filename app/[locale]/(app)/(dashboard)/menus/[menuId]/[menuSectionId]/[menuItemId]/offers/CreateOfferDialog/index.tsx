@@ -68,7 +68,12 @@ const CreateOfferDialog = ({
       price: "",
       availability: "InStock",
       sku: "",
-      eligibleQuantity: { maxValue: "", minValue: "", unitCode: "", unitText: "" },
+      eligibleQuantity: {
+        maxValue: "",
+        minValue: "",
+        unitCode: "",
+        unitText: "",
+      },
       validFrom: "",
       validThrough: "",
     },
