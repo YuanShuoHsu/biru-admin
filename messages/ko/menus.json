@@ -228,6 +228,14 @@
       "minValue": {
         "label": "최소 수량 (선택 사항)",
         "placeholder": "최소 수량을 입력해 주세요"
+      },
+      "unitCode": {
+        "label": "단위 코드 (선택 사항)",
+        "placeholder": "단위 코드를 입력해 주세요"
+      },
+      "unitText": {
+        "label": "단위 (선택 사항)",
+        "placeholder": "단위를 입력해 주세요"
       }
     },
     "label": "가격 설정",

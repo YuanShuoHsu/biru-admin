@@ -219,6 +219,14 @@
       "minValue": {
         "label": "最少数量（选填）",
         "placeholder": "请输入您的最少数量"
+      },
+      "unitCode": {
+        "label": "单位代码（选填）",
+        "placeholder": "请输入您的单位代码"
+      },
+      "unitText": {
+        "label": "单位（选填）",
+        "placeholder": "请输入您的单位"
       }
     },
     "label": "定价设置",

@@ -219,6 +219,14 @@
       "minValue": {
         "label": "Min quantity (optional)",
         "placeholder": "Please enter your min quantity"
+      },
+      "unitCode": {
+        "label": "Unit code (optional)",
+        "placeholder": "Please enter your unit code"
+      },
+      "unitText": {
+        "label": "Unit (optional)",
+        "placeholder": "Please enter your unit"
       }
     },
     "label": "Offers",

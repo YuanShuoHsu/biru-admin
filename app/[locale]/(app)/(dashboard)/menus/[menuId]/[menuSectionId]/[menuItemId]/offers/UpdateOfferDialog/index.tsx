@@ -66,14 +66,16 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
       availability: offer.availability || "InStock",
       sku: offer.sku || "",
       eligibleQuantity: {
-        minValue:
-          offer.eligibleQuantity?.minValue != null
-            ? String(offer.eligibleQuantity.minValue)
-            : "",
         maxValue:
           offer.eligibleQuantity?.maxValue != null
             ? String(offer.eligibleQuantity.maxValue)
             : "",
+        minValue:
+          offer.eligibleQuantity?.minValue != null
+            ? String(offer.eligibleQuantity.minValue)
+            : "",
+        unitCode: offer.eligibleQuantity?.unitCode ?? "",
+        unitText: offer.eligibleQuantity?.unitText ?? "",
       },
       validFrom: offer.validFrom || "",
       validThrough: offer.validThrough || "",
@@ -100,11 +102,17 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
       setDialog({ confirmLoading: true });
 
       const eligibleQuantityPayload = {
+        ...(eligibleQuantity?.maxValue && {
+          maxValue: Number(eligibleQuantity.maxValue),
+        }),
         ...(eligibleQuantity?.minValue && {
           minValue: Number(eligibleQuantity.minValue),
         }),
-        ...(eligibleQuantity?.maxValue && {
-          maxValue: Number(eligibleQuantity.maxValue),
+        ...(eligibleQuantity?.unitCode && {
+          unitCode: eligibleQuantity.unitCode,
+        }),
+        ...(eligibleQuantity?.unitText && {
+          unitText: eligibleQuantity.unitText,
         }),
       };
 
@@ -251,6 +259,26 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
             placeholder={tMenus("offers.eligibleQuantity.maxValue.placeholder")}
             type="number"
             {...register("eligibleQuantity.maxValue")}
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <TextField
+            error={!!errors.eligibleQuantity?.unitText}
+            fullWidth
+            helperText={errors.eligibleQuantity?.unitText?.message}
+            label={tMenus("offers.eligibleQuantity.unitText.label")}
+            placeholder={tMenus("offers.eligibleQuantity.unitText.placeholder")}
+            {...register("eligibleQuantity.unitText")}
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <TextField
+            error={!!errors.eligibleQuantity?.unitCode}
+            fullWidth
+            helperText={errors.eligibleQuantity?.unitCode?.message}
+            label={tMenus("offers.eligibleQuantity.unitCode.label")}
+            placeholder={tMenus("offers.eligibleQuantity.unitCode.placeholder")}
+            {...register("eligibleQuantity.unitCode")}
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>

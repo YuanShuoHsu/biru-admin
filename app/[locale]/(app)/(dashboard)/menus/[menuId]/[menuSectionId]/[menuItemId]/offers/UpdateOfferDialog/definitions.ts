@@ -32,8 +32,10 @@ export const useUpdateOfferFormSchema = () => {
     sku: z.string().trim().optional(),
     eligibleQuantity: z
       .object({
-        minValue: z.string().optional(),
         maxValue: z.string().optional(),
+        minValue: z.string().optional(),
+        unitCode: z.string().trim().optional(),
+        unitText: z.string().trim().optional(),
       })
       .optional(),
     validFrom: z.string().trim().optional(),

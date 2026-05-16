@@ -68,7 +68,7 @@ const CreateOfferDialog = ({
       price: "",
       availability: "InStock",
       sku: "",
-      eligibleQuantity: { minValue: "", maxValue: "" },
+      eligibleQuantity: { maxValue: "", minValue: "", unitCode: "", unitText: "" },
       validFrom: "",
       validThrough: "",
     },
@@ -94,11 +94,17 @@ const CreateOfferDialog = ({
       setDialog({ confirmLoading: true });
 
       const eligibleQuantityPayload = {
+        ...(eligibleQuantity?.maxValue && {
+          maxValue: Number(eligibleQuantity.maxValue),
+        }),
         ...(eligibleQuantity?.minValue && {
           minValue: Number(eligibleQuantity.minValue),
         }),
-        ...(eligibleQuantity?.maxValue && {
-          maxValue: Number(eligibleQuantity.maxValue),
+        ...(eligibleQuantity?.unitCode && {
+          unitCode: eligibleQuantity.unitCode,
+        }),
+        ...(eligibleQuantity?.unitText && {
+          unitText: eligibleQuantity.unitText,
         }),
       };
 
@@ -244,6 +250,26 @@ const CreateOfferDialog = ({
             placeholder={tMenus("offers.eligibleQuantity.maxValue.placeholder")}
             type="number"
             {...register("eligibleQuantity.maxValue")}
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <TextField
+            error={!!errors.eligibleQuantity?.unitText}
+            fullWidth
+            helperText={errors.eligibleQuantity?.unitText?.message}
+            label={tMenus("offers.eligibleQuantity.unitText.label")}
+            placeholder={tMenus("offers.eligibleQuantity.unitText.placeholder")}
+            {...register("eligibleQuantity.unitText")}
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <TextField
+            error={!!errors.eligibleQuantity?.unitCode}
+            fullWidth
+            helperText={errors.eligibleQuantity?.unitCode?.message}
+            label={tMenus("offers.eligibleQuantity.unitCode.label")}
+            placeholder={tMenus("offers.eligibleQuantity.unitCode.placeholder")}
+            {...register("eligibleQuantity.unitCode")}
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>

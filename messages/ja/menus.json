@@ -228,6 +228,14 @@
       "minValue": {
         "label": "最小数量（任意）",
         "placeholder": "最小数量を入力してください"
+      },
+      "unitCode": {
+        "label": "単位コード（任意）",
+        "placeholder": "単位コードを入力してください"
+      },
+      "unitText": {
+        "label": "単位（任意）",
+        "placeholder": "単位を入力してください"
       }
     },
     "label": "価格設定",
