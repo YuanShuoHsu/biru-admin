@@ -250,7 +250,10 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
             placeholder={tMenus("offers.eligibleQuantity.minValue.placeholder")}
             value={minValue !== "" ? Number(minValue) : null}
             onValueChange={(val) =>
-              setValue("eligibleQuantity.minValue", val != null ? String(val) : "")
+              setValue(
+                "eligibleQuantity.minValue",
+                val != null ? String(val) : "",
+              )
             }
           />
         </Grid>
@@ -262,7 +265,10 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
             placeholder={tMenus("offers.eligibleQuantity.maxValue.placeholder")}
             value={maxValue !== "" ? Number(maxValue) : null}
             onValueChange={(val) =>
-              setValue("eligibleQuantity.maxValue", val != null ? String(val) : "")
+              setValue(
+                "eligibleQuantity.maxValue",
+                val != null ? String(val) : "",
+              )
             }
           />
         </Grid>
