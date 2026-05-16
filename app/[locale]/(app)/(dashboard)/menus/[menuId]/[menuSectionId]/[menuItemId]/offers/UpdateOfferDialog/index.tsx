@@ -244,6 +244,7 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
       <Grid container spacing={2} sx={{ width: "100%" }}>
         <Grid size={{ xs: 12, sm: 6 }}>
           <NumberSpinner
+            clearable
             error={!!errors.eligibleQuantity?.minValue}
             fullWidth
             helperText={errors.eligibleQuantity?.minValue?.message}
@@ -261,6 +262,7 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
           <NumberSpinner
+            clearable
             error={!!errors.eligibleQuantity?.maxValue}
             fullWidth
             helperText={errors.eligibleQuantity?.maxValue?.message}

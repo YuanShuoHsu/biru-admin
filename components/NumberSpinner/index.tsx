@@ -2,13 +2,15 @@ import { useId } from "react";
 
 import { NumberField as BaseNumberField } from "@base-ui/react/number-field";
 
-import { Add, OpenInFull, Remove } from "@mui/icons-material";
+import { Add, Clear, OpenInFull, Remove } from "@mui/icons-material";
 import {
   Button,
   FormControl,
   FormHelperText,
   FormLabel,
+  IconButton,
   OutlinedInput,
+  Stack,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -43,6 +45,12 @@ const StyledOpenInFull = styled(OpenInFull)({
   transform: "translateY(12.5%) rotate(45deg)",
 });
 
+const ClearButton = styled(IconButton, {
+  shouldForwardProp: (prop) => prop !== "visible",
+})<{ visible: boolean }>(({ visible }) => ({
+  visibility: visible ? "visible" : "hidden",
+}));
+
 const FlexDiv = styled("div")({
   display: "flex",
 });
@@ -57,16 +65,6 @@ const DecrementButton = styled(Button)({
   },
 });
 
-const IncrementButton = styled(Button)({
-  borderTopLeftRadius: 0,
-  borderBottomLeftRadius: 0,
-  borderLeft: "0px",
-
-  "&.Mui-disabled": {
-    borderLeft: "0px",
-  },
-});
-
 const StyledOutlinedInput = styled(OutlinedInput)({
   paddingRight: 0,
   borderRadius: 0,
@@ -77,7 +75,18 @@ const StyledOutlinedInput = styled(OutlinedInput)({
   },
 });
 
+const IncrementButton = styled(Button)({
+  borderTopLeftRadius: 0,
+  borderBottomLeftRadius: 0,
+  borderLeft: "0px",
+
+  "&.Mui-disabled": {
+    borderLeft: "0px",
+  },
+});
+
 interface NumberSpinnerProps extends BaseNumberField.Root.Props {
+  clearable?: boolean;
   error?: boolean;
   fullWidth?: boolean;
   helperText?: string;
@@ -87,6 +96,7 @@ interface NumberSpinnerProps extends BaseNumberField.Root.Props {
 }
 
 const NumberSpinner = ({
+  clearable,
   error,
   fullWidth,
   helperText,
@@ -104,31 +114,43 @@ const NumberSpinner = ({
       {...other}
       render={(props, state) => (
         <StyledFormControl
-          size={size}
+          disabled={state.disabled}
+          error={error}
           fullWidth={fullWidth}
           ref={props.ref}
-          disabled={state.disabled}
           required={state.required}
-          error={error}
+          size={size}
           variant="outlined"
         >
           {props.children}
         </StyledFormControl>
       )}
     >
-      <BaseNumberField.ScrubArea render={<ScrubAreaSpan />}>
-        <StyledFormLabel htmlFor={id}>{label}</StyledFormLabel>
-        <BaseNumberField.ScrubAreaCursor>
-          <StyledOpenInFull fontSize="small" />
-        </BaseNumberField.ScrubAreaCursor>
-      </BaseNumberField.ScrubArea>
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <BaseNumberField.ScrubArea render={<ScrubAreaSpan />}>
+          <StyledFormLabel htmlFor={id}>{label}</StyledFormLabel>
+          <BaseNumberField.ScrubAreaCursor>
+            <StyledOpenInFull fontSize="small" />
+          </BaseNumberField.ScrubAreaCursor>
+        </BaseNumberField.ScrubArea>
+        {clearable && (
+          <ClearButton
+            onClick={() => other.onValueChange?.(null, {} as never)}
+            size="small"
+            tabIndex={-1}
+            visible={other.value != null}
+          >
+            <Clear fontSize="small" />
+          </ClearButton>
+        )}
+      </Stack>
       <FlexDiv>
         <BaseNumberField.Decrement
           render={
             <DecrementButton
-              variant="outlined"
               aria-label="Decrease"
               size={size}
+              variant="outlined"
             />
           }
         >
@@ -139,12 +161,11 @@ const NumberSpinner = ({
           render={(props, state) => (
             <StyledOutlinedInput
               inputRef={props.ref}
-              value={state.inputValue}
               onBlur={props.onBlur}
               onChange={props.onChange}
-              onKeyUp={props.onKeyUp}
-              onKeyDown={props.onKeyDown}
               onFocus={props.onFocus}
+              onKeyDown={props.onKeyDown}
+              onKeyUp={props.onKeyUp}
               placeholder={placeholder}
               slotProps={{
                 input: {
@@ -156,15 +177,16 @@ const NumberSpinner = ({
                     ) + 1,
                 },
               }}
+              value={state.inputValue}
             />
           )}
         />
         <BaseNumberField.Increment
           render={
             <IncrementButton
-              variant="outlined"
               aria-label="Increase"
               size={size}
+              variant="outlined"
             />
           }
         >
