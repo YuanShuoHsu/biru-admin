@@ -248,6 +248,7 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
             fullWidth
             helperText={errors.eligibleQuantity?.minValue?.message}
             label={tMenus("offers.eligibleQuantity.minValue.label")}
+            min={1}
             placeholder={tMenus("offers.eligibleQuantity.minValue.placeholder")}
             value={minValue !== "" ? Number(minValue) : null}
             onValueChange={(val) =>
@@ -264,6 +265,7 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
             fullWidth
             helperText={errors.eligibleQuantity?.maxValue?.message}
             label={tMenus("offers.eligibleQuantity.maxValue.label")}
+            min={1}
             placeholder={tMenus("offers.eligibleQuantity.maxValue.placeholder")}
             value={maxValue !== "" ? Number(maxValue) : null}
             onValueChange={(val) =>
