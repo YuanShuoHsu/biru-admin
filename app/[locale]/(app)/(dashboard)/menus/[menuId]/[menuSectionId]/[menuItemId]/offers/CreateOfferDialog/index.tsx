@@ -68,8 +68,7 @@ const CreateOfferDialog = ({
       price: "",
       availability: "InStock",
       sku: "",
-      eligibleQuantityMin: "",
-      eligibleQuantityMax: "",
+      eligibleQuantity: { minValue: "", maxValue: "" },
       validFrom: "",
       validThrough: "",
     },
@@ -87,13 +86,21 @@ const CreateOfferDialog = ({
     price,
     availability,
     sku,
-    eligibleQuantityMin,
-    eligibleQuantityMax,
+    eligibleQuantity,
     validFrom,
     validThrough,
   }: CreateOfferForm) => {
     try {
       setDialog({ confirmLoading: true });
+
+      const eligibleQuantityPayload = {
+        ...(eligibleQuantity?.minValue && {
+          minValue: Number(eligibleQuantity.minValue),
+        }),
+        ...(eligibleQuantity?.maxValue && {
+          maxValue: Number(eligibleQuantity.maxValue),
+        }),
+      };
 
       await fetcher<Offer>(`/api/menu-items/${menuItemId}/offers`, {
         method: "POST",
@@ -104,14 +111,9 @@ const CreateOfferDialog = ({
           price,
           availability,
           ...(sku && { sku }),
-          ...(eligibleQuantityMin !== "" &&
-            eligibleQuantityMin !== undefined && {
-              eligibleQuantityMin: Number(eligibleQuantityMin),
-            }),
-          ...(eligibleQuantityMax !== "" &&
-            eligibleQuantityMax !== undefined && {
-              eligibleQuantityMax: Number(eligibleQuantityMax),
-            }),
+          ...(Object.keys(eligibleQuantityPayload).length > 0 && {
+            eligibleQuantity: eligibleQuantityPayload,
+          }),
           ...(validFrom && { validFrom }),
           ...(validThrough && { validThrough }),
         }),
@@ -224,24 +226,24 @@ const CreateOfferDialog = ({
       <Grid width="100%" container spacing={2}>
         <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
-            error={!!errors.eligibleQuantityMin}
+            error={!!errors.eligibleQuantity?.minValue}
             fullWidth
-            helperText={errors.eligibleQuantityMin?.message}
-            label={tMenus("offers.eligibleQuantityMin.label")}
-            placeholder={tMenus("offers.eligibleQuantityMin.placeholder")}
+            helperText={errors.eligibleQuantity?.minValue?.message}
+            label={tMenus("offers.eligibleQuantity.minValue.label")}
+            placeholder={tMenus("offers.eligibleQuantity.minValue.placeholder")}
             type="number"
-            {...register("eligibleQuantityMin")}
+            {...register("eligibleQuantity.minValue")}
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
-            error={!!errors.eligibleQuantityMax}
+            error={!!errors.eligibleQuantity?.maxValue}
             fullWidth
-            helperText={errors.eligibleQuantityMax?.message}
-            label={tMenus("offers.eligibleQuantityMax.label")}
-            placeholder={tMenus("offers.eligibleQuantityMax.placeholder")}
+            helperText={errors.eligibleQuantity?.maxValue?.message}
+            label={tMenus("offers.eligibleQuantity.maxValue.label")}
+            placeholder={tMenus("offers.eligibleQuantity.maxValue.placeholder")}
             type="number"
-            {...register("eligibleQuantityMax")}
+            {...register("eligibleQuantity.maxValue")}
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>

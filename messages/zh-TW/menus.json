@@ -211,13 +211,15 @@
         "SoldOut": "售完"
       }
     },
-    "eligibleQuantityMax": {
-      "label": "最多數量（選填）",
-      "placeholder": "請輸入您的最多數量"
-    },
-    "eligibleQuantityMin": {
-      "label": "最少數量（選填）",
-      "placeholder": "請輸入您的最少數量"
+    "eligibleQuantity": {
+      "maxValue": {
+        "label": "最多數量（選填）",
+        "placeholder": "請輸入您的最多數量"
+      },
+      "minValue": {
+        "label": "最少數量（選填）",
+        "placeholder": "請輸入您的最少數量"
+      }
     },
     "label": "定價設定",
     "name": {

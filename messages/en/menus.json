@@ -211,13 +211,15 @@
         "SoldOut": "Sold out"
       }
     },
-    "eligibleQuantityMax": {
-      "label": "Max quantity (optional)",
-      "placeholder": "Please enter your max quantity"
-    },
-    "eligibleQuantityMin": {
-      "label": "Min quantity (optional)",
-      "placeholder": "Please enter your min quantity"
+    "eligibleQuantity": {
+      "maxValue": {
+        "label": "Max quantity (optional)",
+        "placeholder": "Please enter your max quantity"
+      },
+      "minValue": {
+        "label": "Min quantity (optional)",
+        "placeholder": "Please enter your min quantity"
+      }
     },
     "label": "Offers",
     "name": {

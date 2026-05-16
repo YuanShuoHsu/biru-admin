@@ -29,22 +29,6 @@ export type ItemAvailability =
   | "Reserved"
   | "SoldOut";
 
-// https://schema.org/NutritionInformation
-export interface NutritionInformation {
-  calories?: string;
-  carbohydrateContent?: string;
-  cholesterolContent?: string;
-  fatContent?: string;
-  fiberContent?: string;
-  proteinContent?: string;
-  saturatedFatContent?: string;
-  servingSize?: string;
-  sodiumContent?: string;
-  sugarContent?: string;
-  transFatContent?: string;
-  unsaturatedFatContent?: string;
-}
-
 // https://schema.org/Menu
 export interface Menu {
   id: string;
@@ -69,6 +53,22 @@ export interface MenuSection {
   updatedAt: string;
 }
 
+// https://schema.org/NutritionInformation
+export interface NutritionInformation {
+  calories?: string;
+  carbohydrateContent?: string;
+  cholesterolContent?: string;
+  fatContent?: string;
+  fiberContent?: string;
+  proteinContent?: string;
+  saturatedFatContent?: string;
+  servingSize?: string;
+  sodiumContent?: string;
+  sugarContent?: string;
+  transFatContent?: string;
+  unsaturatedFatContent?: string;
+}
+
 // https://schema.org/MenuItem
 export interface MenuItem {
   id: string;
@@ -82,6 +82,15 @@ export interface MenuItem {
   nutrition: NutritionInformation | null;
   createdAt: string;
   updatedAt: string;
+}
+
+// https://schema.org/QuantitativeValue
+export interface QuantitativeValue {
+  maxValue?: number;
+  minValue?: number;
+  unitCode?: string;
+  unitText?: string;
+  value?: number;
 }
 
 // https://schema.org/Offer
@@ -99,8 +108,7 @@ export interface Offer {
   validFrom: string | null;
   validThrough: string | null;
   sku: string | null;
-  eligibleQuantityMin: number | null;
-  eligibleQuantityMax: number | null;
+  eligibleQuantity: QuantitativeValue | null;
   sellerId: string | null;
   eligibleRegion: string[] | null;
   createdAt: string;

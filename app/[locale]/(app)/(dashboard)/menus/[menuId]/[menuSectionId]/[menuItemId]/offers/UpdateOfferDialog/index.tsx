@@ -65,14 +65,16 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
       price: offer.price || "",
       availability: offer.availability || "InStock",
       sku: offer.sku || "",
-      eligibleQuantityMin:
-        offer.eligibleQuantityMin != null
-          ? String(offer.eligibleQuantityMin)
-          : "",
-      eligibleQuantityMax:
-        offer.eligibleQuantityMax != null
-          ? String(offer.eligibleQuantityMax)
-          : "",
+      eligibleQuantity: {
+        minValue:
+          offer.eligibleQuantity?.minValue != null
+            ? String(offer.eligibleQuantity.minValue)
+            : "",
+        maxValue:
+          offer.eligibleQuantity?.maxValue != null
+            ? String(offer.eligibleQuantity.maxValue)
+            : "",
+      },
       validFrom: offer.validFrom || "",
       validThrough: offer.validThrough || "",
     },
@@ -90,13 +92,21 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
     priceCurrency,
     availability,
     sku,
-    eligibleQuantityMin,
-    eligibleQuantityMax,
+    eligibleQuantity,
     validFrom,
     validThrough,
   }: UpdateOfferForm) => {
     try {
       setDialog({ confirmLoading: true });
+
+      const eligibleQuantityPayload = {
+        ...(eligibleQuantity?.minValue && {
+          minValue: Number(eligibleQuantity.minValue),
+        }),
+        ...(eligibleQuantity?.maxValue && {
+          maxValue: Number(eligibleQuantity.maxValue),
+        }),
+      };
 
       await fetcher(`/api/offers/${offer.id}`, {
         method: "PATCH",
@@ -107,13 +117,9 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
           priceCurrency,
           availability,
           sku: sku || null,
-          eligibleQuantityMin:
-            eligibleQuantityMin !== "" && eligibleQuantityMin !== undefined
-              ? Number(eligibleQuantityMin)
-              : null,
-          eligibleQuantityMax:
-            eligibleQuantityMax !== "" && eligibleQuantityMax !== undefined
-              ? Number(eligibleQuantityMax)
+          eligibleQuantity:
+            Object.keys(eligibleQuantityPayload).length > 0
+              ? eligibleQuantityPayload
               : null,
           validFrom: validFrom || null,
           validThrough: validThrough || null,
@@ -227,24 +233,24 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
       <Grid container spacing={2} sx={{ width: "100%" }}>
         <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
-            error={!!errors.eligibleQuantityMin}
+            error={!!errors.eligibleQuantity?.minValue}
             fullWidth
-            helperText={errors.eligibleQuantityMin?.message}
-            label={tMenus("offers.eligibleQuantityMin.label")}
-            placeholder={tMenus("offers.eligibleQuantityMin.placeholder")}
+            helperText={errors.eligibleQuantity?.minValue?.message}
+            label={tMenus("offers.eligibleQuantity.minValue.label")}
+            placeholder={tMenus("offers.eligibleQuantity.minValue.placeholder")}
             type="number"
-            {...register("eligibleQuantityMin")}
+            {...register("eligibleQuantity.minValue")}
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
-            error={!!errors.eligibleQuantityMax}
+            error={!!errors.eligibleQuantity?.maxValue}
             fullWidth
-            helperText={errors.eligibleQuantityMax?.message}
-            label={tMenus("offers.eligibleQuantityMax.label")}
-            placeholder={tMenus("offers.eligibleQuantityMax.placeholder")}
+            helperText={errors.eligibleQuantity?.maxValue?.message}
+            label={tMenus("offers.eligibleQuantity.maxValue.label")}
+            placeholder={tMenus("offers.eligibleQuantity.maxValue.placeholder")}
             type="number"
-            {...register("eligibleQuantityMax")}
+            {...register("eligibleQuantity.maxValue")}
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
