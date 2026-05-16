@@ -17,6 +17,7 @@ const StyledFormControl = styled(FormControl)(({ theme }) => ({
     borderColor: theme.palette.divider,
     minWidth: 0,
     backgroundColor: theme.palette.action.hover,
+
     "&:not(.Mui-disabled)": {
       color: theme.palette.text.primary,
     },
@@ -50,6 +51,7 @@ const DecrementButton = styled(Button)({
   borderTopRightRadius: 0,
   borderBottomRightRadius: 0,
   borderRight: "0px",
+
   "&.Mui-disabled": {
     borderRight: "0px",
   },
@@ -59,6 +61,7 @@ const IncrementButton = styled(Button)({
   borderTopLeftRadius: 0,
   borderBottomLeftRadius: 0,
   borderLeft: "0px",
+
   "&.Mui-disabled": {
     borderLeft: "0px",
   },
@@ -68,6 +71,7 @@ const StyledOutlinedInput = styled(OutlinedInput)({
   paddingRight: 0,
   borderRadius: 0,
   flex: 1,
+
   "& input": {
     textAlign: "center",
   },
@@ -130,7 +134,6 @@ const NumberSpinner = ({
         >
           <Remove fontSize={size} />
         </BaseNumberField.Decrement>
-
         <BaseNumberField.Input
           id={id}
           render={(props, state) => (
@@ -156,7 +159,6 @@ const NumberSpinner = ({
             />
           )}
         />
-
         <BaseNumberField.Increment
           render={
             <IncrementButton
