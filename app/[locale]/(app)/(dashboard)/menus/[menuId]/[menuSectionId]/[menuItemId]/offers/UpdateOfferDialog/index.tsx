@@ -65,21 +65,48 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
       price: offer.price || "",
       availability: offer.availability || "InStock",
       eligibleQuantity: {
-        value: offer.eligibleQuantity?.value != null ? String(offer.eligibleQuantity.value) : "",
-        maxValue: offer.eligibleQuantity?.maxValue != null ? String(offer.eligibleQuantity.maxValue) : "",
-        minValue: offer.eligibleQuantity?.minValue != null ? String(offer.eligibleQuantity.minValue) : "",
+        value:
+          offer.eligibleQuantity?.value != null
+            ? String(offer.eligibleQuantity.value)
+            : "",
+        maxValue:
+          offer.eligibleQuantity?.maxValue != null
+            ? String(offer.eligibleQuantity.maxValue)
+            : "",
+        minValue:
+          offer.eligibleQuantity?.minValue != null
+            ? String(offer.eligibleQuantity.minValue)
+            : "",
         unitText: offer.eligibleQuantity?.unitText ?? "",
       },
       deliveryLeadTime: {
-        value: offer.deliveryLeadTime?.value != null ? String(offer.deliveryLeadTime.value) : "",
-        maxValue: offer.deliveryLeadTime?.maxValue != null ? String(offer.deliveryLeadTime.maxValue) : "",
-        minValue: offer.deliveryLeadTime?.minValue != null ? String(offer.deliveryLeadTime.minValue) : "",
+        value:
+          offer.deliveryLeadTime?.value != null
+            ? String(offer.deliveryLeadTime.value)
+            : "",
+        maxValue:
+          offer.deliveryLeadTime?.maxValue != null
+            ? String(offer.deliveryLeadTime.maxValue)
+            : "",
+        minValue:
+          offer.deliveryLeadTime?.minValue != null
+            ? String(offer.deliveryLeadTime.minValue)
+            : "",
         unitText: offer.deliveryLeadTime?.unitText ?? "",
       },
       inventoryLevel: {
-        value: offer.inventoryLevel?.value != null ? String(offer.inventoryLevel.value) : "",
-        maxValue: offer.inventoryLevel?.maxValue != null ? String(offer.inventoryLevel.maxValue) : "",
-        minValue: offer.inventoryLevel?.minValue != null ? String(offer.inventoryLevel.minValue) : "",
+        value:
+          offer.inventoryLevel?.value != null
+            ? String(offer.inventoryLevel.value)
+            : "",
+        maxValue:
+          offer.inventoryLevel?.maxValue != null
+            ? String(offer.inventoryLevel.maxValue)
+            : "",
+        minValue:
+          offer.inventoryLevel?.minValue != null
+            ? String(offer.inventoryLevel.minValue)
+            : "",
         unitText: offer.inventoryLevel?.unitText ?? "",
       },
       availabilityStarts: offer.availabilityStarts || "",
@@ -93,24 +120,48 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
 
   const priceCurrency = useWatch({ control, name: "priceCurrency" });
   const availability = useWatch({ control, name: "availability" });
-  const eligibleQuantityValue = useWatch({ control, name: "eligibleQuantity.value" });
+  const eligibleQuantityValue = useWatch({
+    control,
+    name: "eligibleQuantity.value",
+  });
   const minValue = useWatch({ control, name: "eligibleQuantity.minValue" });
   const maxValue = useWatch({ control, name: "eligibleQuantity.maxValue" });
-  const deliveryLeadTimeValue = useWatch({ control, name: "deliveryLeadTime.value" });
-  const deliveryLeadTimeMinValue = useWatch({ control, name: "deliveryLeadTime.minValue" });
-  const deliveryLeadTimeMaxValue = useWatch({ control, name: "deliveryLeadTime.maxValue" });
-  const inventoryLevelValue = useWatch({ control, name: "inventoryLevel.value" });
-  const inventoryLevelMinValue = useWatch({ control, name: "inventoryLevel.minValue" });
-  const inventoryLevelMaxValue = useWatch({ control, name: "inventoryLevel.maxValue" });
+  const deliveryLeadTimeValue = useWatch({
+    control,
+    name: "deliveryLeadTime.value",
+  });
+  const deliveryLeadTimeMinValue = useWatch({
+    control,
+    name: "deliveryLeadTime.minValue",
+  });
+  const deliveryLeadTimeMaxValue = useWatch({
+    control,
+    name: "deliveryLeadTime.maxValue",
+  });
+  const inventoryLevelValue = useWatch({
+    control,
+    name: "inventoryLevel.value",
+  });
+  const inventoryLevelMinValue = useWatch({
+    control,
+    name: "inventoryLevel.minValue",
+  });
+  const inventoryLevelMaxValue = useWatch({
+    control,
+    name: "inventoryLevel.maxValue",
+  });
   const availabilityStarts = useWatch({ control, name: "availabilityStarts" });
   const availabilityEnds = useWatch({ control, name: "availabilityEnds" });
   const priceValidUntil = useWatch({ control, name: "priceValidUntil" });
   const validFrom = useWatch({ control, name: "validFrom" });
   const validThrough = useWatch({ control, name: "validThrough" });
 
-  const buildQuantitativePayload = (
-    qv?: { value?: string; maxValue?: string; minValue?: string; unitText?: string },
-  ) => {
+  const buildQuantitativePayload = (qv?: {
+    value?: string;
+    maxValue?: string;
+    minValue?: string;
+    unitText?: string;
+  }) => {
     if (!qv) return null;
     const payload = {
       ...(qv.value && { value: Number(qv.value) }),
@@ -253,7 +304,11 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
             label={tMenus("offers.eligibleQuantity.value.label")}
             min={0}
             placeholder={tMenus("offers.eligibleQuantity.value.placeholder")}
-            value={eligibleQuantityValue !== "" ? Number(eligibleQuantityValue) : null}
+            value={
+              eligibleQuantityValue !== ""
+                ? Number(eligibleQuantityValue)
+                : null
+            }
             onValueChange={(val) =>
               setValue("eligibleQuantity.value", val != null ? String(val) : "")
             }
@@ -314,7 +369,11 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
             label={tMenus("offers.deliveryLeadTime.value.label")}
             min={0}
             placeholder={tMenus("offers.deliveryLeadTime.value.placeholder")}
-            value={deliveryLeadTimeValue !== "" ? Number(deliveryLeadTimeValue) : null}
+            value={
+              deliveryLeadTimeValue !== ""
+                ? Number(deliveryLeadTimeValue)
+                : null
+            }
             onValueChange={(val) =>
               setValue("deliveryLeadTime.value", val != null ? String(val) : "")
             }
@@ -329,9 +388,16 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
             label={tMenus("offers.deliveryLeadTime.minValue.label")}
             min={0}
             placeholder={tMenus("offers.deliveryLeadTime.minValue.placeholder")}
-            value={deliveryLeadTimeMinValue !== "" ? Number(deliveryLeadTimeMinValue) : null}
+            value={
+              deliveryLeadTimeMinValue !== ""
+                ? Number(deliveryLeadTimeMinValue)
+                : null
+            }
             onValueChange={(val) =>
-              setValue("deliveryLeadTime.minValue", val != null ? String(val) : "")
+              setValue(
+                "deliveryLeadTime.minValue",
+                val != null ? String(val) : "",
+              )
             }
           />
         </Grid>
@@ -344,9 +410,16 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
             label={tMenus("offers.deliveryLeadTime.maxValue.label")}
             min={0}
             placeholder={tMenus("offers.deliveryLeadTime.maxValue.placeholder")}
-            value={deliveryLeadTimeMaxValue !== "" ? Number(deliveryLeadTimeMaxValue) : null}
+            value={
+              deliveryLeadTimeMaxValue !== ""
+                ? Number(deliveryLeadTimeMaxValue)
+                : null
+            }
             onValueChange={(val) =>
-              setValue("deliveryLeadTime.maxValue", val != null ? String(val) : "")
+              setValue(
+                "deliveryLeadTime.maxValue",
+                val != null ? String(val) : "",
+              )
             }
           />
         </Grid>
@@ -369,7 +442,9 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
             label={tMenus("offers.inventoryLevel.value.label")}
             min={0}
             placeholder={tMenus("offers.inventoryLevel.value.placeholder")}
-            value={inventoryLevelValue !== "" ? Number(inventoryLevelValue) : null}
+            value={
+              inventoryLevelValue !== "" ? Number(inventoryLevelValue) : null
+            }
             onValueChange={(val) =>
               setValue("inventoryLevel.value", val != null ? String(val) : "")
             }
@@ -384,9 +459,16 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
             label={tMenus("offers.inventoryLevel.minValue.label")}
             min={0}
             placeholder={tMenus("offers.inventoryLevel.minValue.placeholder")}
-            value={inventoryLevelMinValue !== "" ? Number(inventoryLevelMinValue) : null}
+            value={
+              inventoryLevelMinValue !== ""
+                ? Number(inventoryLevelMinValue)
+                : null
+            }
             onValueChange={(val) =>
-              setValue("inventoryLevel.minValue", val != null ? String(val) : "")
+              setValue(
+                "inventoryLevel.minValue",
+                val != null ? String(val) : "",
+              )
             }
           />
         </Grid>
@@ -399,9 +481,16 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
             label={tMenus("offers.inventoryLevel.maxValue.label")}
             min={0}
             placeholder={tMenus("offers.inventoryLevel.maxValue.placeholder")}
-            value={inventoryLevelMaxValue !== "" ? Number(inventoryLevelMaxValue) : null}
+            value={
+              inventoryLevelMaxValue !== ""
+                ? Number(inventoryLevelMaxValue)
+                : null
+            }
             onValueChange={(val) =>
-              setValue("inventoryLevel.maxValue", val != null ? String(val) : "")
+              setValue(
+                "inventoryLevel.maxValue",
+                val != null ? String(val) : "",
+              )
             }
           />
         </Grid>
@@ -471,10 +560,7 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
             value={priceValidUntil ? dayjs(priceValidUntil) : null}
             {...register("priceValidUntil")}
             onChange={(date) =>
-              setValue(
-                "priceValidUntil",
-                date ? date.format("YYYY-MM-DD") : "",
-              )
+              setValue("priceValidUntil", date ? date.format("YYYY-MM-DD") : "")
             }
           />
         </Grid>
