@@ -18,26 +18,29 @@ export const ITEM_AVAILABILITY_VALUES = [
   "SoldOut",
 ] as const;
 
+const quantitativeValueSchema = z.object({
+  maxValue: z.string().optional(),
+  minValue: z.string().optional(),
+  unitText: z.string().trim().optional(),
+  value: z.string().optional(),
+});
+
 export const useCreateOfferFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z.object({
-    name: z.string().trim().optional(),
     priceCurrency: z.string().trim().min(1),
     price: z
       .string()
       .trim()
       .min(1, { error: tValidation("name.minLength") }),
     availability: z.enum(ITEM_AVAILABILITY_VALUES),
-    sku: z.string().trim().optional(),
-    eligibleQuantity: z
-      .object({
-        maxValue: z.string().optional(),
-        minValue: z.string().optional(),
-        unitCode: z.string().trim().optional(),
-        unitText: z.string().trim().optional(),
-      })
-      .optional(),
+    eligibleQuantity: quantitativeValueSchema.optional(),
+    deliveryLeadTime: quantitativeValueSchema.optional(),
+    inventoryLevel: quantitativeValueSchema.optional(),
+    availabilityStarts: z.string().trim().optional(),
+    availabilityEnds: z.string().trim().optional(),
+    priceValidUntil: z.string().trim().optional(),
     validFrom: z.string().trim().optional(),
     validThrough: z.string().trim().optional(),
   });

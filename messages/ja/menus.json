@@ -229,25 +229,74 @@
         "label": "最小数量（任意）",
         "placeholder": "最小数量を入力してください"
       },
-      "unitCode": {
-        "label": "単位コード（任意）",
-        "placeholder": "単位コードを入力してください"
-      },
       "unitText": {
         "label": "単位（任意）",
         "placeholder": "単位を入力してください"
+      },
+      "value": {
+        "label": "数量（任意）",
+        "placeholder": "数量を入力してください"
+      }
+    },
+    "deliveryLeadTime": {
+      "maxValue": {
+        "label": "最大準備時間（任意）",
+        "placeholder": "最大準備時間を入力してください"
+      },
+      "minValue": {
+        "label": "最小準備時間（任意）",
+        "placeholder": "最小準備時間を入力してください"
+      },
+      "unitText": {
+        "label": "時間単位（任意）",
+        "placeholder": "例：minute"
+      },
+      "value": {
+        "label": "準備時間（任意）",
+        "placeholder": "準備時間を入力してください"
+      }
+    },
+    "inventoryLevel": {
+      "maxValue": {
+        "label": "最大在庫数（任意）",
+        "placeholder": "最大在庫数を入力してください"
+      },
+      "minValue": {
+        "label": "最小在庫数（任意）",
+        "placeholder": "最小在庫数を入力してください"
+      },
+      "unitText": {
+        "label": "在庫単位（任意）",
+        "placeholder": "在庫単位を入力してください"
+      },
+      "value": {
+        "label": "在庫数（任意）",
+        "placeholder": "在庫数を入力してください"
       }
     },
     "label": "価格設定",
-    "name": {
-      "label": "価格名（任意）",
-      "placeholder": "価格名を入力してください"
+    "price": {
+      "label": "価格",
+      "placeholder": "価格を入力してください"
     },
-    "price": { "label": "価格", "placeholder": "価格を入力してください" },
-    "priceCurrency": { "label": "通貨" },
-    "sku": { "label": "SKU（任意）", "placeholder": "SKUを入力してください" },
-    "validFrom": { "label": "有効開始日（任意）" },
-    "validThrough": { "label": "有効終了日（任意）" }
+    "priceCurrency": {
+      "label": "通貨"
+    },
+    "validFrom": {
+      "label": "有効開始日（任意）"
+    },
+    "validThrough": {
+      "label": "有効終了日（任意）"
+    },
+    "availabilityStarts": {
+      "label": "供給開始日（任意）"
+    },
+    "availabilityEnds": {
+      "label": "供給終了日（任意）"
+    },
+    "priceValidUntil": {
+      "label": "価格有効期限（任意）"
+    }
   },
   "updatedAt": "更新日時"
 }

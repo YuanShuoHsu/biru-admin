@@ -171,7 +171,6 @@ const MenuItemOffers = ({
             },
           ]
         : []),
-      { field: "name", headerName: tMenus("offers.name.label") },
       { field: "price", headerName: tMenus("offers.price.label") },
       {
         field: "priceCurrency",
@@ -189,7 +188,6 @@ const MenuItemOffers = ({
               )
             : "",
       },
-      { field: "sku", headerName: tMenus("offers.sku.label") },
       {
         field: "validFrom",
         headerName: tMenus("offers.validFrom.label"),

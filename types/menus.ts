@@ -98,7 +98,6 @@ export interface Offer {
   id: string;
   menuItemId: string | null;
   menuSectionId: string | null;
-  name: string | null;
   price: string | null;
   priceCurrency: string | null;
   availability: ItemAvailability | null;
@@ -107,10 +106,9 @@ export interface Offer {
   priceValidUntil: string | null;
   validFrom: string | null;
   validThrough: string | null;
-  sku: string | null;
   eligibleQuantity: QuantitativeValue | null;
-  sellerId: string | null;
-  eligibleRegion: string[] | null;
+  deliveryLeadTime: QuantitativeValue | null;
+  inventoryLevel: QuantitativeValue | null;
   createdAt: string;
   updatedAt: string;
 }

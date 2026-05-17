@@ -93,7 +93,10 @@
   },
   "addOns": {
     "actions": {
-      "createAddOn": { "success": "成功新增加购", "title": "新增加购" },
+      "createAddOn": {
+        "success": "成功新增加购",
+        "title": "新增加购"
+      },
       "deleteAddOn": {
         "confirm": "确定要删除此加购设置吗？",
         "error": "删除加购失败",
@@ -183,7 +186,10 @@
   },
   "offers": {
     "actions": {
-      "createOffer": { "success": "成功新增定价", "title": "新增定价" },
+      "createOffer": {
+        "success": "成功新增定价",
+        "title": "新增定价"
+      },
       "deleteOffer": {
         "confirm": "确定要删除此定价设置吗？此操作无法撤销。",
         "error": "删除定价失败",
@@ -191,7 +197,10 @@
         "title": "删除定价"
       },
       "label": "操作",
-      "updateOffer": { "success": "成功更新定价", "title": "编辑定价" }
+      "updateOffer": {
+        "success": "成功更新定价",
+        "title": "编辑定价"
+      }
     },
     "availability": {
       "label": "供应状态",
@@ -220,25 +229,74 @@
         "label": "最少数量（选填）",
         "placeholder": "请输入您的最少数量"
       },
-      "unitCode": {
-        "label": "单位代码（选填）",
-        "placeholder": "请输入您的单位代码"
-      },
       "unitText": {
         "label": "单位（选填）",
         "placeholder": "请输入您的单位"
+      },
+      "value": {
+        "label": "数量（选填）",
+        "placeholder": "请输入数量"
+      }
+    },
+    "deliveryLeadTime": {
+      "maxValue": {
+        "label": "最长备餐时间（选填）",
+        "placeholder": "请输入最长备餐时间"
+      },
+      "minValue": {
+        "label": "最短备餐时间（选填）",
+        "placeholder": "请输入最短备餐时间"
+      },
+      "unitText": {
+        "label": "时间单位（选填）",
+        "placeholder": "例如：minute"
+      },
+      "value": {
+        "label": "备餐时间（选填）",
+        "placeholder": "请输入备餐时间"
+      }
+    },
+    "inventoryLevel": {
+      "maxValue": {
+        "label": "最高库存量（选填）",
+        "placeholder": "请输入最高库存量"
+      },
+      "minValue": {
+        "label": "最低库存量（选填）",
+        "placeholder": "请输入最低库存量"
+      },
+      "unitText": {
+        "label": "库存单位（选填）",
+        "placeholder": "请输入库存单位"
+      },
+      "value": {
+        "label": "库存数量（选填）",
+        "placeholder": "请输入库存数量"
       }
     },
     "label": "定价设置",
-    "name": {
-      "label": "定价名称（选填）",
-      "placeholder": "请输入您的定价名称"
+    "price": {
+      "label": "价格",
+      "placeholder": "请输入您的价格"
     },
-    "price": { "label": "价格", "placeholder": "请输入您的价格" },
-    "priceCurrency": { "label": "币别" },
-    "sku": { "label": "SKU（选填）", "placeholder": "请输入您的 SKU" },
-    "validFrom": { "label": "有效起始日（选填）" },
-    "validThrough": { "label": "有效截止日（选填）" }
+    "priceCurrency": {
+      "label": "币别"
+    },
+    "validFrom": {
+      "label": "有效起始日（选填）"
+    },
+    "validThrough": {
+      "label": "有效截止日（选填）"
+    },
+    "availabilityStarts": {
+      "label": "供应开始日（选填）"
+    },
+    "availabilityEnds": {
+      "label": "供应截止日（选填）"
+    },
+    "priceValidUntil": {
+      "label": "价格有效截止日（选填）"
+    }
   },
   "updatedAt": "更新时间"
 }

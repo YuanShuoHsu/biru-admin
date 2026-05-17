@@ -61,23 +61,30 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
     setValue,
   } = useForm<UpdateOfferForm, unknown, UpdateOfferForm>({
     defaultValues: {
-      name: offer.name || "",
       priceCurrency: offer.priceCurrency || "TWD",
       price: offer.price || "",
       availability: offer.availability || "InStock",
-      sku: offer.sku || "",
       eligibleQuantity: {
-        maxValue:
-          offer.eligibleQuantity?.maxValue != null
-            ? String(offer.eligibleQuantity.maxValue)
-            : "",
-        minValue:
-          offer.eligibleQuantity?.minValue != null
-            ? String(offer.eligibleQuantity.minValue)
-            : "",
-        unitCode: offer.eligibleQuantity?.unitCode ?? "",
+        value: offer.eligibleQuantity?.value != null ? String(offer.eligibleQuantity.value) : "",
+        maxValue: offer.eligibleQuantity?.maxValue != null ? String(offer.eligibleQuantity.maxValue) : "",
+        minValue: offer.eligibleQuantity?.minValue != null ? String(offer.eligibleQuantity.minValue) : "",
         unitText: offer.eligibleQuantity?.unitText ?? "",
       },
+      deliveryLeadTime: {
+        value: offer.deliveryLeadTime?.value != null ? String(offer.deliveryLeadTime.value) : "",
+        maxValue: offer.deliveryLeadTime?.maxValue != null ? String(offer.deliveryLeadTime.maxValue) : "",
+        minValue: offer.deliveryLeadTime?.minValue != null ? String(offer.deliveryLeadTime.minValue) : "",
+        unitText: offer.deliveryLeadTime?.unitText ?? "",
+      },
+      inventoryLevel: {
+        value: offer.inventoryLevel?.value != null ? String(offer.inventoryLevel.value) : "",
+        maxValue: offer.inventoryLevel?.maxValue != null ? String(offer.inventoryLevel.maxValue) : "",
+        minValue: offer.inventoryLevel?.minValue != null ? String(offer.inventoryLevel.minValue) : "",
+        unitText: offer.inventoryLevel?.unitText ?? "",
+      },
+      availabilityStarts: offer.availabilityStarts || "",
+      availabilityEnds: offer.availabilityEnds || "",
+      priceValidUntil: offer.priceValidUntil || "",
       validFrom: offer.validFrom || "",
       validThrough: offer.validThrough || "",
     },
@@ -86,52 +93,63 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
 
   const priceCurrency = useWatch({ control, name: "priceCurrency" });
   const availability = useWatch({ control, name: "availability" });
+  const eligibleQuantityValue = useWatch({ control, name: "eligibleQuantity.value" });
   const minValue = useWatch({ control, name: "eligibleQuantity.minValue" });
   const maxValue = useWatch({ control, name: "eligibleQuantity.maxValue" });
+  const deliveryLeadTimeValue = useWatch({ control, name: "deliveryLeadTime.value" });
+  const deliveryLeadTimeMinValue = useWatch({ control, name: "deliveryLeadTime.minValue" });
+  const deliveryLeadTimeMaxValue = useWatch({ control, name: "deliveryLeadTime.maxValue" });
+  const inventoryLevelValue = useWatch({ control, name: "inventoryLevel.value" });
+  const inventoryLevelMinValue = useWatch({ control, name: "inventoryLevel.minValue" });
+  const inventoryLevelMaxValue = useWatch({ control, name: "inventoryLevel.maxValue" });
+  const availabilityStarts = useWatch({ control, name: "availabilityStarts" });
+  const availabilityEnds = useWatch({ control, name: "availabilityEnds" });
+  const priceValidUntil = useWatch({ control, name: "priceValidUntil" });
   const validFrom = useWatch({ control, name: "validFrom" });
   const validThrough = useWatch({ control, name: "validThrough" });
 
+  const buildQuantitativePayload = (
+    qv?: { value?: string; maxValue?: string; minValue?: string; unitText?: string },
+  ) => {
+    if (!qv) return null;
+    const payload = {
+      ...(qv.value && { value: Number(qv.value) }),
+      ...(qv.maxValue && { maxValue: Number(qv.maxValue) }),
+      ...(qv.minValue && { minValue: Number(qv.minValue) }),
+      ...(qv.unitText && { unitText: qv.unitText }),
+    };
+    return Object.keys(payload).length > 0 ? payload : null;
+  };
+
   const onSubmitHandler = async ({
-    name,
     price,
     priceCurrency,
     availability,
-    sku,
     eligibleQuantity,
+    deliveryLeadTime,
+    inventoryLevel,
+    availabilityStarts,
+    availabilityEnds,
+    priceValidUntil,
     validFrom,
     validThrough,
   }: UpdateOfferForm) => {
     try {
       setDialog({ confirmLoading: true });
 
-      const eligibleQuantityPayload = {
-        ...(eligibleQuantity?.maxValue && {
-          maxValue: Number(eligibleQuantity.maxValue),
-        }),
-        ...(eligibleQuantity?.minValue && {
-          minValue: Number(eligibleQuantity.minValue),
-        }),
-        ...(eligibleQuantity?.unitCode && {
-          unitCode: eligibleQuantity.unitCode,
-        }),
-        ...(eligibleQuantity?.unitText && {
-          unitText: eligibleQuantity.unitText,
-        }),
-      };
-
       await fetcher(`/api/offers/${offer.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: name || null,
           price,
           priceCurrency,
           availability,
-          sku: sku || null,
-          eligibleQuantity:
-            Object.keys(eligibleQuantityPayload).length > 0
-              ? eligibleQuantityPayload
-              : null,
+          eligibleQuantity: buildQuantitativePayload(eligibleQuantity),
+          deliveryLeadTime: buildQuantitativePayload(deliveryLeadTime),
+          inventoryLevel: buildQuantitativePayload(inventoryLevel),
+          availabilityStarts: availabilityStarts || null,
+          availabilityEnds: availabilityEnds || null,
+          priceValidUntil: priceValidUntil || null,
           validFrom: validFrom || null,
           validThrough: validThrough || null,
         }),
@@ -156,14 +174,6 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
 
   return (
     <StyledBox component="form" id="update-offer-form" onSubmit={onSubmit}>
-      <TextField
-        error={!!errors.name}
-        fullWidth
-        helperText={errors.name?.message}
-        label={tMenus("offers.name.label")}
-        placeholder={tMenus("offers.name.placeholder")}
-        {...register("name")}
-      />
       <Grid container spacing={2} sx={{ width: "100%" }}>
         <Grid size={{ xs: 12, sm: 4 }}>
           <CountrySelect
@@ -233,15 +243,22 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
           </MenuItem>
         ))}
       </TextField>
-      <TextField
-        error={!!errors.sku}
-        fullWidth
-        helperText={errors.sku?.message}
-        label={tMenus("offers.sku.label")}
-        placeholder={tMenus("offers.sku.placeholder")}
-        {...register("sku")}
-      />
       <Grid container spacing={2} sx={{ width: "100%" }}>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <NumberSpinner
+            clearable
+            error={!!errors.eligibleQuantity?.value}
+            fullWidth
+            helperText={errors.eligibleQuantity?.value?.message}
+            label={tMenus("offers.eligibleQuantity.value.label")}
+            min={0}
+            placeholder={tMenus("offers.eligibleQuantity.value.placeholder")}
+            value={eligibleQuantityValue !== "" ? Number(eligibleQuantityValue) : null}
+            onValueChange={(val) =>
+              setValue("eligibleQuantity.value", val != null ? String(val) : "")
+            }
+          />
+        </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
           <NumberSpinner
             clearable
@@ -289,13 +306,176 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
-          <TextField
-            error={!!errors.eligibleQuantity?.unitCode}
+          <NumberSpinner
+            clearable
+            error={!!errors.deliveryLeadTime?.value}
             fullWidth
-            helperText={errors.eligibleQuantity?.unitCode?.message}
-            label={tMenus("offers.eligibleQuantity.unitCode.label")}
-            placeholder={tMenus("offers.eligibleQuantity.unitCode.placeholder")}
-            {...register("eligibleQuantity.unitCode")}
+            helperText={errors.deliveryLeadTime?.value?.message}
+            label={tMenus("offers.deliveryLeadTime.value.label")}
+            min={0}
+            placeholder={tMenus("offers.deliveryLeadTime.value.placeholder")}
+            value={deliveryLeadTimeValue !== "" ? Number(deliveryLeadTimeValue) : null}
+            onValueChange={(val) =>
+              setValue("deliveryLeadTime.value", val != null ? String(val) : "")
+            }
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <NumberSpinner
+            clearable
+            error={!!errors.deliveryLeadTime?.minValue}
+            fullWidth
+            helperText={errors.deliveryLeadTime?.minValue?.message}
+            label={tMenus("offers.deliveryLeadTime.minValue.label")}
+            min={0}
+            placeholder={tMenus("offers.deliveryLeadTime.minValue.placeholder")}
+            value={deliveryLeadTimeMinValue !== "" ? Number(deliveryLeadTimeMinValue) : null}
+            onValueChange={(val) =>
+              setValue("deliveryLeadTime.minValue", val != null ? String(val) : "")
+            }
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <NumberSpinner
+            clearable
+            error={!!errors.deliveryLeadTime?.maxValue}
+            fullWidth
+            helperText={errors.deliveryLeadTime?.maxValue?.message}
+            label={tMenus("offers.deliveryLeadTime.maxValue.label")}
+            min={0}
+            placeholder={tMenus("offers.deliveryLeadTime.maxValue.placeholder")}
+            value={deliveryLeadTimeMaxValue !== "" ? Number(deliveryLeadTimeMaxValue) : null}
+            onValueChange={(val) =>
+              setValue("deliveryLeadTime.maxValue", val != null ? String(val) : "")
+            }
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <TextField
+            error={!!errors.deliveryLeadTime?.unitText}
+            fullWidth
+            helperText={errors.deliveryLeadTime?.unitText?.message}
+            label={tMenus("offers.deliveryLeadTime.unitText.label")}
+            placeholder={tMenus("offers.deliveryLeadTime.unitText.placeholder")}
+            {...register("deliveryLeadTime.unitText")}
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <NumberSpinner
+            clearable
+            error={!!errors.inventoryLevel?.value}
+            fullWidth
+            helperText={errors.inventoryLevel?.value?.message}
+            label={tMenus("offers.inventoryLevel.value.label")}
+            min={0}
+            placeholder={tMenus("offers.inventoryLevel.value.placeholder")}
+            value={inventoryLevelValue !== "" ? Number(inventoryLevelValue) : null}
+            onValueChange={(val) =>
+              setValue("inventoryLevel.value", val != null ? String(val) : "")
+            }
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <NumberSpinner
+            clearable
+            error={!!errors.inventoryLevel?.minValue}
+            fullWidth
+            helperText={errors.inventoryLevel?.minValue?.message}
+            label={tMenus("offers.inventoryLevel.minValue.label")}
+            min={0}
+            placeholder={tMenus("offers.inventoryLevel.minValue.placeholder")}
+            value={inventoryLevelMinValue !== "" ? Number(inventoryLevelMinValue) : null}
+            onValueChange={(val) =>
+              setValue("inventoryLevel.minValue", val != null ? String(val) : "")
+            }
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <NumberSpinner
+            clearable
+            error={!!errors.inventoryLevel?.maxValue}
+            fullWidth
+            helperText={errors.inventoryLevel?.maxValue?.message}
+            label={tMenus("offers.inventoryLevel.maxValue.label")}
+            min={0}
+            placeholder={tMenus("offers.inventoryLevel.maxValue.placeholder")}
+            value={inventoryLevelMaxValue !== "" ? Number(inventoryLevelMaxValue) : null}
+            onValueChange={(val) =>
+              setValue("inventoryLevel.maxValue", val != null ? String(val) : "")
+            }
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <TextField
+            error={!!errors.inventoryLevel?.unitText}
+            fullWidth
+            helperText={errors.inventoryLevel?.unitText?.message}
+            label={tMenus("offers.inventoryLevel.unitText.label")}
+            placeholder={tMenus("offers.inventoryLevel.unitText.placeholder")}
+            {...register("inventoryLevel.unitText")}
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <DatePicker
+            label={tMenus("offers.availabilityStarts.label")}
+            slotProps={{
+              field: { clearable: true },
+              textField: {
+                error: !!errors.availabilityStarts,
+                fullWidth: true,
+                helperText: errors.availabilityStarts?.message,
+              },
+            }}
+            value={availabilityStarts ? dayjs(availabilityStarts) : null}
+            {...register("availabilityStarts")}
+            onChange={(date) =>
+              setValue(
+                "availabilityStarts",
+                date ? date.format("YYYY-MM-DD") : "",
+              )
+            }
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <DatePicker
+            label={tMenus("offers.availabilityEnds.label")}
+            slotProps={{
+              field: { clearable: true },
+              textField: {
+                error: !!errors.availabilityEnds,
+                fullWidth: true,
+                helperText: errors.availabilityEnds?.message,
+              },
+            }}
+            value={availabilityEnds ? dayjs(availabilityEnds) : null}
+            {...register("availabilityEnds")}
+            onChange={(date) =>
+              setValue(
+                "availabilityEnds",
+                date ? date.format("YYYY-MM-DD") : "",
+              )
+            }
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <DatePicker
+            label={tMenus("offers.priceValidUntil.label")}
+            slotProps={{
+              field: { clearable: true },
+              textField: {
+                error: !!errors.priceValidUntil,
+                fullWidth: true,
+                helperText: errors.priceValidUntil?.message,
+              },
+            }}
+            value={priceValidUntil ? dayjs(priceValidUntil) : null}
+            {...register("priceValidUntil")}
+            onChange={(date) =>
+              setValue(
+                "priceValidUntil",
+                date ? date.format("YYYY-MM-DD") : "",
+              )
+            }
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>

@@ -93,7 +93,10 @@
   },
   "addOns": {
     "actions": {
-      "createAddOn": { "success": "Add-on added", "title": "Add add-on" },
+      "createAddOn": {
+        "success": "Add-on added",
+        "title": "Add add-on"
+      },
       "deleteAddOn": {
         "confirm": "Are you sure you want to remove this add-on?",
         "error": "Failed to remove add-on",
@@ -183,7 +186,10 @@
   },
   "offers": {
     "actions": {
-      "createOffer": { "success": "Offer created", "title": "Add offer" },
+      "createOffer": {
+        "success": "Offer created",
+        "title": "Add offer"
+      },
       "deleteOffer": {
         "confirm": "Are you sure you want to delete this offer? This action cannot be undone.",
         "error": "Failed to delete offer",
@@ -191,7 +197,10 @@
         "title": "Delete offer"
       },
       "label": "Actions",
-      "updateOffer": { "success": "Offer updated", "title": "Edit offer" }
+      "updateOffer": {
+        "success": "Offer updated",
+        "title": "Edit offer"
+      }
     },
     "availability": {
       "label": "Availability",
@@ -220,28 +229,74 @@
         "label": "Min quantity (optional)",
         "placeholder": "Please enter your min quantity"
       },
-      "unitCode": {
-        "label": "Unit code (optional)",
-        "placeholder": "Please enter your unit code"
-      },
       "unitText": {
         "label": "Unit (optional)",
         "placeholder": "Please enter your unit"
+      },
+      "value": {
+        "label": "Quantity (optional)",
+        "placeholder": "Enter quantity"
+      }
+    },
+    "deliveryLeadTime": {
+      "maxValue": {
+        "label": "Max preparation time (optional)",
+        "placeholder": "Enter max preparation time"
+      },
+      "minValue": {
+        "label": "Min preparation time (optional)",
+        "placeholder": "Enter min preparation time"
+      },
+      "unitText": {
+        "label": "Time unit (optional)",
+        "placeholder": "e.g. minute"
+      },
+      "value": {
+        "label": "Preparation time (optional)",
+        "placeholder": "Enter preparation time"
+      }
+    },
+    "inventoryLevel": {
+      "maxValue": {
+        "label": "Max inventory level (optional)",
+        "placeholder": "Enter max inventory level"
+      },
+      "minValue": {
+        "label": "Min inventory level (optional)",
+        "placeholder": "Enter min inventory level"
+      },
+      "unitText": {
+        "label": "Inventory unit (optional)",
+        "placeholder": "Enter inventory unit"
+      },
+      "value": {
+        "label": "Inventory quantity (optional)",
+        "placeholder": "Enter inventory quantity"
       }
     },
     "label": "Offers",
-    "name": {
-      "label": "Offer name (optional)",
-      "placeholder": "Please enter your offer name"
+    "price": {
+      "label": "Price",
+      "placeholder": "Please enter your price"
     },
-    "price": { "label": "Price", "placeholder": "Please enter your price" },
-    "priceCurrency": { "label": "Currency" },
-    "sku": {
-      "label": "SKU (optional)",
-      "placeholder": "Please enter your SKU"
+    "priceCurrency": {
+      "label": "Currency"
     },
-    "validFrom": { "label": "Valid from (optional)" },
-    "validThrough": { "label": "Valid through (optional)" }
+    "validFrom": {
+      "label": "Valid from (optional)"
+    },
+    "validThrough": {
+      "label": "Valid through (optional)"
+    },
+    "availabilityStarts": {
+      "label": "Availability starts (optional)"
+    },
+    "availabilityEnds": {
+      "label": "Availability ends (optional)"
+    },
+    "priceValidUntil": {
+      "label": "Price valid until (optional)"
+    }
   },
   "updatedAt": "Updated"
 }
