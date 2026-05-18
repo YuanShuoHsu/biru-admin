@@ -94,8 +94,14 @@ const CreateOfferDialog = ({
     control,
     name: "inventoryLevel.value",
   });
-  const saleValidFrom = useWatch({ control, name: "priceSpecification.validFrom" });
-  const saleValidThrough = useWatch({ control, name: "priceSpecification.validThrough" });
+  const saleValidFrom = useWatch({
+    control,
+    name: "priceSpecification.validFrom",
+  });
+  const saleValidThrough = useWatch({
+    control,
+    name: "priceSpecification.validThrough",
+  });
 
   const buildQuantitativePayload = (qv?: {
     value?: string;
@@ -129,8 +135,12 @@ const CreateOfferDialog = ({
             {
               price: priceSpecificationForm.price,
               priceCurrency,
-              ...(priceSpecificationForm.validFrom && { validFrom: priceSpecificationForm.validFrom }),
-              ...(priceSpecificationForm.validThrough && { validThrough: priceSpecificationForm.validThrough }),
+              ...(priceSpecificationForm.validFrom && {
+                validFrom: priceSpecificationForm.validFrom,
+              }),
+              ...(priceSpecificationForm.validThrough && {
+                validThrough: priceSpecificationForm.validThrough,
+              }),
             },
           ]
         : null;
@@ -321,7 +331,10 @@ const CreateOfferDialog = ({
             value={saleValidFrom ? dayjs(saleValidFrom) : null}
             {...register("priceSpecification.validFrom")}
             onChange={(date) =>
-              setValue("priceSpecification.validFrom", date ? date.format("YYYY-MM-DD") : "")
+              setValue(
+                "priceSpecification.validFrom",
+                date ? date.format("YYYY-MM-DD") : "",
+              )
             }
           />
         </Grid>
