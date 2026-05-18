@@ -37,7 +37,6 @@ const PriceMaskInput = React.forwardRef<InputElement, CustomProps>(
       onAccept: (_value: string, maskRef: { unmaskedValue: string }) =>
         onChange({ target: { name, value: maskRef.unmaskedValue } }),
       scale: 0,
-      signed: false,
       thousandsSeparator: ",",
     } as unknown as IMaskInputProps<HTMLInputElement>;
 
