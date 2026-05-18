@@ -85,8 +85,6 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
             : "",
         unitText: offer.inventoryLevel?.unitText ?? "",
       },
-      availabilityStarts: offer.availabilityStarts || "",
-      availabilityEnds: offer.availabilityEnds || "",
       priceValidUntil: offer.priceValidUntil || "",
       validFrom: offer.validFrom || "",
       validThrough: offer.validThrough || "",
@@ -108,8 +106,6 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
     control,
     name: "inventoryLevel.value",
   });
-  const availabilityStarts = useWatch({ control, name: "availabilityStarts" });
-  const availabilityEnds = useWatch({ control, name: "availabilityEnds" });
   const priceValidUntil = useWatch({ control, name: "priceValidUntil" });
   const validFrom = useWatch({ control, name: "validFrom" });
   const validThrough = useWatch({ control, name: "validThrough" });
@@ -133,8 +129,6 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
     eligibleQuantity,
     deliveryLeadTime,
     inventoryLevel,
-    availabilityStarts,
-    availabilityEnds,
     priceValidUntil,
     validFrom,
     validThrough,
@@ -152,8 +146,6 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
           eligibleQuantity: buildQuantitativePayload(eligibleQuantity),
           deliveryLeadTime: buildQuantitativePayload(deliveryLeadTime),
           inventoryLevel: buildQuantitativePayload(inventoryLevel),
-          availabilityStarts: availabilityStarts || null,
-          availabilityEnds: availabilityEnds || null,
           priceValidUntil: priceValidUntil || null,
           validFrom: validFrom || null,
           validThrough: validThrough || null,
@@ -332,48 +324,6 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
             label={tMenus("offers.inventoryLevel.unitText.label")}
             placeholder={tMenus("offers.inventoryLevel.unitText.placeholder")}
             {...register("inventoryLevel.unitText")}
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <DatePicker
-            label={tMenus("offers.availabilityStarts.label")}
-            slotProps={{
-              field: { clearable: true },
-              textField: {
-                error: !!errors.availabilityStarts,
-                fullWidth: true,
-                helperText: errors.availabilityStarts?.message,
-              },
-            }}
-            value={availabilityStarts ? dayjs(availabilityStarts) : null}
-            {...register("availabilityStarts")}
-            onChange={(date) =>
-              setValue(
-                "availabilityStarts",
-                date ? date.format("YYYY-MM-DD") : "",
-              )
-            }
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <DatePicker
-            label={tMenus("offers.availabilityEnds.label")}
-            slotProps={{
-              field: { clearable: true },
-              textField: {
-                error: !!errors.availabilityEnds,
-                fullWidth: true,
-                helperText: errors.availabilityEnds?.message,
-              },
-            }}
-            value={availabilityEnds ? dayjs(availabilityEnds) : null}
-            {...register("availabilityEnds")}
-            onChange={(date) =>
-              setValue(
-                "availabilityEnds",
-                date ? date.format("YYYY-MM-DD") : "",
-              )
-            }
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>

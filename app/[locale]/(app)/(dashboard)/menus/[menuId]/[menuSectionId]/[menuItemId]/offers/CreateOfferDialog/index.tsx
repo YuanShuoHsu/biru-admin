@@ -79,8 +79,6 @@ const CreateOfferDialog = ({
         value: "",
         unitText: "",
       },
-      availabilityStarts: "",
-      availabilityEnds: "",
       priceValidUntil: "",
       validFrom: "",
       validThrough: "",
@@ -102,8 +100,6 @@ const CreateOfferDialog = ({
     control,
     name: "inventoryLevel.value",
   });
-  const availabilityStarts = useWatch({ control, name: "availabilityStarts" });
-  const availabilityEnds = useWatch({ control, name: "availabilityEnds" });
   const priceValidUntil = useWatch({ control, name: "priceValidUntil" });
   const validFrom = useWatch({ control, name: "validFrom" });
   const validThrough = useWatch({ control, name: "validThrough" });
@@ -127,8 +123,6 @@ const CreateOfferDialog = ({
     eligibleQuantity,
     deliveryLeadTime,
     inventoryLevel,
-    availabilityStarts,
-    availabilityEnds,
     priceValidUntil,
     validFrom,
     validThrough,
@@ -158,8 +152,6 @@ const CreateOfferDialog = ({
           ...(inventoryLevelPayload && {
             inventoryLevel: inventoryLevelPayload,
           }),
-          ...(availabilityStarts && { availabilityStarts }),
-          ...(availabilityEnds && { availabilityEnds }),
           ...(priceValidUntil && { priceValidUntil }),
           ...(validFrom && { validFrom }),
           ...(validThrough && { validThrough }),
@@ -338,48 +330,6 @@ const CreateOfferDialog = ({
             label={tMenus("offers.inventoryLevel.unitText.label")}
             placeholder={tMenus("offers.inventoryLevel.unitText.placeholder")}
             {...register("inventoryLevel.unitText")}
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <DatePicker
-            label={tMenus("offers.availabilityStarts.label")}
-            slotProps={{
-              field: { clearable: true },
-              textField: {
-                error: !!errors.availabilityStarts,
-                fullWidth: true,
-                helperText: errors.availabilityStarts?.message,
-              },
-            }}
-            value={availabilityStarts ? dayjs(availabilityStarts) : null}
-            {...register("availabilityStarts")}
-            onChange={(date) =>
-              setValue(
-                "availabilityStarts",
-                date ? date.format("YYYY-MM-DD") : "",
-              )
-            }
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <DatePicker
-            label={tMenus("offers.availabilityEnds.label")}
-            slotProps={{
-              field: { clearable: true },
-              textField: {
-                error: !!errors.availabilityEnds,
-                fullWidth: true,
-                helperText: errors.availabilityEnds?.message,
-              },
-            }}
-            value={availabilityEnds ? dayjs(availabilityEnds) : null}
-            {...register("availabilityEnds")}
-            onChange={(date) =>
-              setValue(
-                "availabilityEnds",
-                date ? date.format("YYYY-MM-DD") : "",
-              )
-            }
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>

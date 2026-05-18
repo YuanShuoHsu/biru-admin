@@ -288,12 +288,6 @@
     "validThrough": {
       "label": "Valid through (optional)"
     },
-    "availabilityStarts": {
-      "label": "Availability starts (optional)"
-    },
-    "availabilityEnds": {
-      "label": "Availability ends (optional)"
-    },
     "priceValidUntil": {
       "label": "Price valid until (optional)"
     }

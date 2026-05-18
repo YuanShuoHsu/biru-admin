@@ -36,8 +36,6 @@ export const useCreateOfferFormSchema = () => {
     eligibleQuantity: quantitativeValueSchema.optional(),
     deliveryLeadTime: quantitativeValueSchema.optional(),
     inventoryLevel: quantitativeValueSchema.optional(),
-    availabilityStarts: z.string().trim().optional(),
-    availabilityEnds: z.string().trim().optional(),
     priceValidUntil: z.string().trim().optional(),
     validFrom: z.string().trim().optional(),
     validThrough: z.string().trim().optional(),

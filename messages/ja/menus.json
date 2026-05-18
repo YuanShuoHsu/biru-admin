@@ -288,12 +288,6 @@
     "validThrough": {
       "label": "有効終了日（任意）"
     },
-    "availabilityStarts": {
-      "label": "供給開始日（任意）"
-    },
-    "availabilityEnds": {
-      "label": "供給終了日（任意）"
-    },
     "priceValidUntil": {
       "label": "価格有効期限（任意）"
     }

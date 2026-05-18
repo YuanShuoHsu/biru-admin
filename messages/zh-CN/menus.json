@@ -288,12 +288,6 @@
     "validThrough": {
       "label": "有效截止日（选填）"
     },
-    "availabilityStarts": {
-      "label": "供应开始日（选填）"
-    },
-    "availabilityEnds": {
-      "label": "供应截止日（选填）"
-    },
     "priceValidUntil": {
       "label": "价格有效截止日（选填）"
     }
