@@ -64,19 +64,19 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
       priceCurrency: offer.priceCurrency || "TWD",
       price: offer.price || "",
       availability: offer.availability || "InStock",
-      deliveryLeadTime: {
-        value:
-          offer.deliveryLeadTime?.value != null
-            ? String(offer.deliveryLeadTime.value)
-            : "",
-        unitText: offer.deliveryLeadTime?.unitText ?? "",
-      },
       inventoryLevel: {
         value:
           offer.inventoryLevel?.value != null
             ? String(offer.inventoryLevel.value)
             : "",
         unitText: offer.inventoryLevel?.unitText ?? "",
+      },
+      deliveryLeadTime: {
+        value:
+          offer.deliveryLeadTime?.value != null
+            ? String(offer.deliveryLeadTime.value)
+            : "",
+        unitText: offer.deliveryLeadTime?.unitText ?? "",
       },
       priceValidUntil: offer.priceValidUntil || "",
       validFrom: offer.validFrom || "",
@@ -115,8 +115,8 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
     price,
     priceCurrency,
     availability,
-    deliveryLeadTime,
     inventoryLevel,
+    deliveryLeadTime,
     priceValidUntil,
     validFrom,
     validThrough,
@@ -231,6 +231,33 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
         <Grid size={{ xs: 12, sm: 6 }}>
           <NumberSpinner
             clearable
+            error={!!errors.inventoryLevel?.value}
+            fullWidth
+            helperText={errors.inventoryLevel?.value?.message}
+            label={tMenus("offers.inventoryLevel.value.label")}
+            min={0}
+            placeholder={tMenus("offers.inventoryLevel.value.placeholder")}
+            value={
+              inventoryLevelValue !== "" ? Number(inventoryLevelValue) : null
+            }
+            onValueChange={(val) =>
+              setValue("inventoryLevel.value", val != null ? String(val) : "")
+            }
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <TextField
+            error={!!errors.inventoryLevel?.unitText}
+            fullWidth
+            helperText={errors.inventoryLevel?.unitText?.message}
+            label={tMenus("offers.inventoryLevel.unitText.label")}
+            placeholder={tMenus("offers.inventoryLevel.unitText.placeholder")}
+            {...register("inventoryLevel.unitText")}
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <NumberSpinner
+            clearable
             error={!!errors.deliveryLeadTime?.value}
             fullWidth
             helperText={errors.deliveryLeadTime?.value?.message}
@@ -255,33 +282,6 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
             label={tMenus("offers.deliveryLeadTime.unitText.label")}
             placeholder={tMenus("offers.deliveryLeadTime.unitText.placeholder")}
             {...register("deliveryLeadTime.unitText")}
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <NumberSpinner
-            clearable
-            error={!!errors.inventoryLevel?.value}
-            fullWidth
-            helperText={errors.inventoryLevel?.value?.message}
-            label={tMenus("offers.inventoryLevel.value.label")}
-            min={0}
-            placeholder={tMenus("offers.inventoryLevel.value.placeholder")}
-            value={
-              inventoryLevelValue !== "" ? Number(inventoryLevelValue) : null
-            }
-            onValueChange={(val) =>
-              setValue("inventoryLevel.value", val != null ? String(val) : "")
-            }
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <TextField
-            error={!!errors.inventoryLevel?.unitText}
-            fullWidth
-            helperText={errors.inventoryLevel?.unitText?.message}
-            label={tMenus("offers.inventoryLevel.unitText.label")}
-            placeholder={tMenus("offers.inventoryLevel.unitText.placeholder")}
-            {...register("inventoryLevel.unitText")}
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>

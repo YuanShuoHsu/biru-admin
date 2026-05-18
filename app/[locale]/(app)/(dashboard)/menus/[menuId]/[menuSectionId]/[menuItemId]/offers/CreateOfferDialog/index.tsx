@@ -67,11 +67,11 @@ const CreateOfferDialog = ({
       priceCurrency: "TWD",
       price: "",
       availability: "InStock",
-      deliveryLeadTime: {
+      inventoryLevel: {
         value: "",
         unitText: "",
       },
-      inventoryLevel: {
+      deliveryLeadTime: {
         value: "",
         unitText: "",
       },
@@ -112,8 +112,8 @@ const CreateOfferDialog = ({
     priceCurrency,
     price,
     availability,
-    deliveryLeadTime,
     inventoryLevel,
+    deliveryLeadTime,
     priceValidUntil,
     validFrom,
     validThrough,
@@ -236,6 +236,33 @@ const CreateOfferDialog = ({
         <Grid size={{ xs: 12, sm: 6 }}>
           <NumberSpinner
             clearable
+            error={!!errors.inventoryLevel?.value}
+            fullWidth
+            helperText={errors.inventoryLevel?.value?.message}
+            label={tMenus("offers.inventoryLevel.value.label")}
+            min={0}
+            placeholder={tMenus("offers.inventoryLevel.value.placeholder")}
+            value={
+              inventoryLevelValue !== "" ? Number(inventoryLevelValue) : null
+            }
+            onValueChange={(val) =>
+              setValue("inventoryLevel.value", val != null ? String(val) : "")
+            }
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <TextField
+            error={!!errors.inventoryLevel?.unitText}
+            fullWidth
+            helperText={errors.inventoryLevel?.unitText?.message}
+            label={tMenus("offers.inventoryLevel.unitText.label")}
+            placeholder={tMenus("offers.inventoryLevel.unitText.placeholder")}
+            {...register("inventoryLevel.unitText")}
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <NumberSpinner
+            clearable
             error={!!errors.deliveryLeadTime?.value}
             fullWidth
             helperText={errors.deliveryLeadTime?.value?.message}
@@ -260,33 +287,6 @@ const CreateOfferDialog = ({
             label={tMenus("offers.deliveryLeadTime.unitText.label")}
             placeholder={tMenus("offers.deliveryLeadTime.unitText.placeholder")}
             {...register("deliveryLeadTime.unitText")}
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <NumberSpinner
-            clearable
-            error={!!errors.inventoryLevel?.value}
-            fullWidth
-            helperText={errors.inventoryLevel?.value?.message}
-            label={tMenus("offers.inventoryLevel.value.label")}
-            min={0}
-            placeholder={tMenus("offers.inventoryLevel.value.placeholder")}
-            value={
-              inventoryLevelValue !== "" ? Number(inventoryLevelValue) : null
-            }
-            onValueChange={(val) =>
-              setValue("inventoryLevel.value", val != null ? String(val) : "")
-            }
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <TextField
-            error={!!errors.inventoryLevel?.unitText}
-            fullWidth
-            helperText={errors.inventoryLevel?.unitText?.message}
-            label={tMenus("offers.inventoryLevel.unitText.label")}
-            placeholder={tMenus("offers.inventoryLevel.unitText.placeholder")}
-            {...register("inventoryLevel.unitText")}
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>

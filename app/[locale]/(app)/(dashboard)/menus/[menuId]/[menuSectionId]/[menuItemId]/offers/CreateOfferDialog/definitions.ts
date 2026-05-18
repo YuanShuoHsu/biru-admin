@@ -33,8 +33,8 @@ export const useCreateOfferFormSchema = () => {
       .trim()
       .min(1, { error: tValidation("name.minLength") }),
     availability: z.enum(ITEM_AVAILABILITY_VALUES),
-    deliveryLeadTime: quantitativeValueSchema.optional(),
     inventoryLevel: quantitativeValueSchema.optional(),
+    deliveryLeadTime: quantitativeValueSchema.optional(),
     priceValidUntil: z.string().trim().optional(),
     validFrom: z.string().trim().optional(),
     validThrough: z.string().trim().optional(),
