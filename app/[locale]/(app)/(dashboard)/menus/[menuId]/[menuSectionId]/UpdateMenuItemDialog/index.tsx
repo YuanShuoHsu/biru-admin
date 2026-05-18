@@ -253,6 +253,7 @@ const UpdateMenuItemDialog = ({
           <NumericFormat
             allowNegative={false}
             customInput={TextField}
+            decimalScale={2}
             error={!!errors.offer?.price}
             fullWidth
             helperText={errors.offer?.price?.message}
@@ -375,6 +376,7 @@ const UpdateMenuItemDialog = ({
           <NumericFormat
             allowNegative={false}
             customInput={TextField}
+            decimalScale={2}
             error={!!errors.offer?.priceSpecification?.price}
             fullWidth
             helperText={errors.offer?.priceSpecification?.price?.message}

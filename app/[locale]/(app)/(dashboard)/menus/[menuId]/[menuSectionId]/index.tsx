@@ -589,14 +589,6 @@ const MenusMenuIdSectionId = ({
         valueGetter: (_value: unknown, { offer }: MenuItem) => offer?.price,
       },
       {
-        field: "priceSpecification",
-        headerName: tMenus("offers.priceSpecification.price.label"),
-        sortable: false,
-        filterable: false,
-        valueGetter: (_value: unknown, { offer }: MenuItem) =>
-          offer?.priceSpecification?.price,
-      },
-      {
         field: "availability",
         headerName: tMenus("offers.availability.label"),
         sortable: false,
@@ -629,6 +621,32 @@ const MenusMenuIdSectionId = ({
           [offer?.deliveryLeadTime?.value, offer?.deliveryLeadTime?.unitText]
             .filter(Boolean)
             .join(" "),
+      },
+      {
+        field: "priceSpecification",
+        headerName: tMenus("offers.priceSpecification.price.label"),
+        sortable: false,
+        filterable: false,
+        valueGetter: (_value: unknown, { offer }: MenuItem) =>
+          offer?.priceSpecification?.price,
+        valueFormatter: (value: string) =>
+          value ? Number(value).toFixed(2) : "",
+      },
+      {
+        field: "priceSpecificationValidFrom",
+        headerName: tMenus("offers.priceSpecification.validFrom.label"),
+        sortable: false,
+        filterable: false,
+        valueGetter: (_value: unknown, { offer }: MenuItem) =>
+          offer?.priceSpecification?.validFrom,
+      },
+      {
+        field: "priceSpecificationValidThrough",
+        headerName: tMenus("offers.priceSpecification.validThrough.label"),
+        sortable: false,
+        filterable: false,
+        valueGetter: (_value: unknown, { offer }: MenuItem) =>
+          offer?.priceSpecification?.validThrough,
       },
       {
         field: "createdAt",
