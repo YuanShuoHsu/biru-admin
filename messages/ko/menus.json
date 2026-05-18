@@ -249,7 +249,7 @@
       },
       "unitText": {
         "label": "시간 단위 (선택 사항)",
-        "placeholder": "예: minute"
+        "placeholder": "단위를 입력해 주세요"
       },
       "value": {
         "label": "준비 시간 (선택 사항)",

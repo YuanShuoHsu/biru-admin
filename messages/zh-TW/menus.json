@@ -235,43 +235,43 @@
       },
       "value": {
         "label": "數量（選填）",
-        "placeholder": "請輸入數量"
+        "placeholder": "請輸入您的數量"
       }
     },
     "deliveryLeadTime": {
       "maxValue": {
         "label": "最長備餐時間（選填）",
-        "placeholder": "請輸入最長備餐時間"
+        "placeholder": "請輸入您的最長備餐時間"
       },
       "minValue": {
         "label": "最短備餐時間（選填）",
-        "placeholder": "請輸入最短備餐時間"
+        "placeholder": "請輸入您的最短備餐時間"
       },
       "unitText": {
         "label": "時間單位（選填）",
-        "placeholder": "例如：minute"
+        "placeholder": "請輸入您的單位"
       },
       "value": {
         "label": "備餐時間（選填）",
-        "placeholder": "請輸入備餐時間"
+        "placeholder": "請輸入您的備餐時間"
       }
     },
     "inventoryLevel": {
       "maxValue": {
         "label": "最高庫存量（選填）",
-        "placeholder": "請輸入最高庫存量"
+        "placeholder": "請輸入您的最高庫存量"
       },
       "minValue": {
         "label": "最低庫存量（選填）",
-        "placeholder": "請輸入最低庫存量"
+        "placeholder": "請輸入您的最低庫存量"
       },
       "unitText": {
         "label": "庫存單位（選填）",
-        "placeholder": "請輸入庫存單位"
+        "placeholder": "請輸入您的庫存單位"
       },
       "value": {
         "label": "庫存數量（選填）",
-        "placeholder": "請輸入庫存數量"
+        "placeholder": "請輸入您的庫存數量"
       }
     },
     "label": "定價設定",

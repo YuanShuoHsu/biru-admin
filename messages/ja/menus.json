@@ -249,7 +249,7 @@
       },
       "unitText": {
         "label": "時間単位（任意）",
-        "placeholder": "例：minute"
+        "placeholder": "単位を入力してください"
       },
       "value": {
         "label": "準備時間（任意）",

@@ -69,14 +69,6 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
           offer.eligibleQuantity?.value != null
             ? String(offer.eligibleQuantity.value)
             : "",
-        maxValue:
-          offer.eligibleQuantity?.maxValue != null
-            ? String(offer.eligibleQuantity.maxValue)
-            : "",
-        minValue:
-          offer.eligibleQuantity?.minValue != null
-            ? String(offer.eligibleQuantity.minValue)
-            : "",
         unitText: offer.eligibleQuantity?.unitText ?? "",
       },
       deliveryLeadTime: {
@@ -84,28 +76,12 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
           offer.deliveryLeadTime?.value != null
             ? String(offer.deliveryLeadTime.value)
             : "",
-        maxValue:
-          offer.deliveryLeadTime?.maxValue != null
-            ? String(offer.deliveryLeadTime.maxValue)
-            : "",
-        minValue:
-          offer.deliveryLeadTime?.minValue != null
-            ? String(offer.deliveryLeadTime.minValue)
-            : "",
         unitText: offer.deliveryLeadTime?.unitText ?? "",
       },
       inventoryLevel: {
         value:
           offer.inventoryLevel?.value != null
             ? String(offer.inventoryLevel.value)
-            : "",
-        maxValue:
-          offer.inventoryLevel?.maxValue != null
-            ? String(offer.inventoryLevel.maxValue)
-            : "",
-        minValue:
-          offer.inventoryLevel?.minValue != null
-            ? String(offer.inventoryLevel.minValue)
             : "",
         unitText: offer.inventoryLevel?.unitText ?? "",
       },
@@ -124,31 +100,13 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
     control,
     name: "eligibleQuantity.value",
   });
-  const minValue = useWatch({ control, name: "eligibleQuantity.minValue" });
-  const maxValue = useWatch({ control, name: "eligibleQuantity.maxValue" });
   const deliveryLeadTimeValue = useWatch({
     control,
     name: "deliveryLeadTime.value",
   });
-  const deliveryLeadTimeMinValue = useWatch({
-    control,
-    name: "deliveryLeadTime.minValue",
-  });
-  const deliveryLeadTimeMaxValue = useWatch({
-    control,
-    name: "deliveryLeadTime.maxValue",
-  });
   const inventoryLevelValue = useWatch({
     control,
     name: "inventoryLevel.value",
-  });
-  const inventoryLevelMinValue = useWatch({
-    control,
-    name: "inventoryLevel.minValue",
-  });
-  const inventoryLevelMaxValue = useWatch({
-    control,
-    name: "inventoryLevel.maxValue",
   });
   const availabilityStarts = useWatch({ control, name: "availabilityStarts" });
   const availabilityEnds = useWatch({ control, name: "availabilityEnds" });
@@ -158,15 +116,11 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
 
   const buildQuantitativePayload = (qv?: {
     value?: string;
-    maxValue?: string;
-    minValue?: string;
     unitText?: string;
   }) => {
     if (!qv) return null;
     const payload = {
       ...(qv.value && { value: Number(qv.value) }),
-      ...(qv.maxValue && { maxValue: Number(qv.maxValue) }),
-      ...(qv.minValue && { minValue: Number(qv.minValue) }),
       ...(qv.unitText && { unitText: qv.unitText }),
     };
     return Object.keys(payload).length > 0 ? payload : null;
@@ -315,42 +269,6 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
-          <NumberSpinner
-            clearable
-            error={!!errors.eligibleQuantity?.minValue}
-            fullWidth
-            helperText={errors.eligibleQuantity?.minValue?.message}
-            label={tMenus("offers.eligibleQuantity.minValue.label")}
-            min={1}
-            placeholder={tMenus("offers.eligibleQuantity.minValue.placeholder")}
-            value={minValue !== "" ? Number(minValue) : null}
-            onValueChange={(val) =>
-              setValue(
-                "eligibleQuantity.minValue",
-                val != null ? String(val) : "",
-              )
-            }
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <NumberSpinner
-            clearable
-            error={!!errors.eligibleQuantity?.maxValue}
-            fullWidth
-            helperText={errors.eligibleQuantity?.maxValue?.message}
-            label={tMenus("offers.eligibleQuantity.maxValue.label")}
-            min={1}
-            placeholder={tMenus("offers.eligibleQuantity.maxValue.placeholder")}
-            value={maxValue !== "" ? Number(maxValue) : null}
-            onValueChange={(val) =>
-              setValue(
-                "eligibleQuantity.maxValue",
-                val != null ? String(val) : "",
-              )
-            }
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             error={!!errors.eligibleQuantity?.unitText}
             fullWidth
@@ -380,50 +298,6 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
-          <NumberSpinner
-            clearable
-            error={!!errors.deliveryLeadTime?.minValue}
-            fullWidth
-            helperText={errors.deliveryLeadTime?.minValue?.message}
-            label={tMenus("offers.deliveryLeadTime.minValue.label")}
-            min={0}
-            placeholder={tMenus("offers.deliveryLeadTime.minValue.placeholder")}
-            value={
-              deliveryLeadTimeMinValue !== ""
-                ? Number(deliveryLeadTimeMinValue)
-                : null
-            }
-            onValueChange={(val) =>
-              setValue(
-                "deliveryLeadTime.minValue",
-                val != null ? String(val) : "",
-              )
-            }
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <NumberSpinner
-            clearable
-            error={!!errors.deliveryLeadTime?.maxValue}
-            fullWidth
-            helperText={errors.deliveryLeadTime?.maxValue?.message}
-            label={tMenus("offers.deliveryLeadTime.maxValue.label")}
-            min={0}
-            placeholder={tMenus("offers.deliveryLeadTime.maxValue.placeholder")}
-            value={
-              deliveryLeadTimeMaxValue !== ""
-                ? Number(deliveryLeadTimeMaxValue)
-                : null
-            }
-            onValueChange={(val) =>
-              setValue(
-                "deliveryLeadTime.maxValue",
-                val != null ? String(val) : "",
-              )
-            }
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             error={!!errors.deliveryLeadTime?.unitText}
             fullWidth
@@ -447,50 +321,6 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
             }
             onValueChange={(val) =>
               setValue("inventoryLevel.value", val != null ? String(val) : "")
-            }
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <NumberSpinner
-            clearable
-            error={!!errors.inventoryLevel?.minValue}
-            fullWidth
-            helperText={errors.inventoryLevel?.minValue?.message}
-            label={tMenus("offers.inventoryLevel.minValue.label")}
-            min={0}
-            placeholder={tMenus("offers.inventoryLevel.minValue.placeholder")}
-            value={
-              inventoryLevelMinValue !== ""
-                ? Number(inventoryLevelMinValue)
-                : null
-            }
-            onValueChange={(val) =>
-              setValue(
-                "inventoryLevel.minValue",
-                val != null ? String(val) : "",
-              )
-            }
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <NumberSpinner
-            clearable
-            error={!!errors.inventoryLevel?.maxValue}
-            fullWidth
-            helperText={errors.inventoryLevel?.maxValue?.message}
-            label={tMenus("offers.inventoryLevel.maxValue.label")}
-            min={0}
-            placeholder={tMenus("offers.inventoryLevel.maxValue.placeholder")}
-            value={
-              inventoryLevelMaxValue !== ""
-                ? Number(inventoryLevelMaxValue)
-                : null
-            }
-            onValueChange={(val) =>
-              setValue(
-                "inventoryLevel.maxValue",
-                val != null ? String(val) : "",
-              )
             }
           />
         </Grid>

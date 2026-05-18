@@ -235,43 +235,43 @@
       },
       "value": {
         "label": "Quantity (optional)",
-        "placeholder": "Enter quantity"
+        "placeholder": "Please enter your quantity"
       }
     },
     "deliveryLeadTime": {
       "maxValue": {
         "label": "Max preparation time (optional)",
-        "placeholder": "Enter max preparation time"
+        "placeholder": "Please enter your max preparation time"
       },
       "minValue": {
         "label": "Min preparation time (optional)",
-        "placeholder": "Enter min preparation time"
+        "placeholder": "Please enter your min preparation time"
       },
       "unitText": {
         "label": "Time unit (optional)",
-        "placeholder": "e.g. minute"
+        "placeholder": "Please enter your unit"
       },
       "value": {
         "label": "Preparation time (optional)",
-        "placeholder": "Enter preparation time"
+        "placeholder": "Please enter your preparation time"
       }
     },
     "inventoryLevel": {
       "maxValue": {
         "label": "Max inventory level (optional)",
-        "placeholder": "Enter max inventory level"
+        "placeholder": "Please enter your max inventory level"
       },
       "minValue": {
         "label": "Min inventory level (optional)",
-        "placeholder": "Enter min inventory level"
+        "placeholder": "Please enter your min inventory level"
       },
       "unitText": {
         "label": "Inventory unit (optional)",
-        "placeholder": "Enter inventory unit"
+        "placeholder": "Please enter your inventory unit"
       },
       "value": {
         "label": "Inventory quantity (optional)",
-        "placeholder": "Enter inventory quantity"
+        "placeholder": "Please enter your inventory quantity"
       }
     },
     "label": "Offers",

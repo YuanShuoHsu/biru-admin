@@ -86,9 +86,7 @@ export interface MenuItem {
 
 // https://schema.org/QuantitativeValue
 export interface QuantitativeValue {
-  maxValue?: number;
-  minValue?: number;
-  unitCode?: string;
+  // unitCode?: string;
   unitText?: string;
   value?: number;
 }

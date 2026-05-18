@@ -235,43 +235,43 @@
       },
       "value": {
         "label": "数量（选填）",
-        "placeholder": "请输入数量"
+        "placeholder": "请输入您的数量"
       }
     },
     "deliveryLeadTime": {
       "maxValue": {
         "label": "最长备餐时间（选填）",
-        "placeholder": "请输入最长备餐时间"
+        "placeholder": "请输入您的最长备餐时间"
       },
       "minValue": {
         "label": "最短备餐时间（选填）",
-        "placeholder": "请输入最短备餐时间"
+        "placeholder": "请输入您的最短备餐时间"
       },
       "unitText": {
         "label": "时间单位（选填）",
-        "placeholder": "例如：minute"
+        "placeholder": "请输入您的单位"
       },
       "value": {
         "label": "备餐时间（选填）",
-        "placeholder": "请输入备餐时间"
+        "placeholder": "请输入您的备餐时间"
       }
     },
     "inventoryLevel": {
       "maxValue": {
         "label": "最高库存量（选填）",
-        "placeholder": "请输入最高库存量"
+        "placeholder": "请输入您的最高库存量"
       },
       "minValue": {
         "label": "最低库存量（选填）",
-        "placeholder": "请输入最低库存量"
+        "placeholder": "请输入您的最低库存量"
       },
       "unitText": {
         "label": "库存单位（选填）",
-        "placeholder": "请输入库存单位"
+        "placeholder": "请输入您的库存单位"
       },
       "value": {
         "label": "库存数量（选填）",
-        "placeholder": "请输入库存数量"
+        "placeholder": "请输入您的库存数量"
       }
     },
     "label": "定价设置",

@@ -19,8 +19,6 @@ export const ITEM_AVAILABILITY_VALUES = [
 ] as const;
 
 const quantitativeValueSchema = z.object({
-  maxValue: z.string().optional(),
-  minValue: z.string().optional(),
   unitText: z.string().trim().optional(),
   value: z.string().optional(),
 });
