@@ -65,6 +65,7 @@
   "items": {
     "actions": {
       "createItem": {
+        "error": "新增品項失敗",
         "success": "成功新增品項 {name}",
         "title": "新增品項"
       },

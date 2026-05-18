@@ -65,6 +65,7 @@
   "items": {
     "actions": {
       "createItem": {
+        "error": "Failed to add item",
         "success": "Item {name} created",
         "title": "Add item"
       },

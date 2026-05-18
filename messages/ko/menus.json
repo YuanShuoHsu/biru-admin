@@ -65,6 +65,7 @@
   "items": {
     "actions": {
       "createItem": {
+        "error": "항목 추가에 실패했습니다",
         "success": "항목 {name}이(가) 추가되었습니다",
         "title": "항목 추가"
       },

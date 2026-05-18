@@ -178,7 +178,7 @@ const CreateMenuItemDialog = ({
       closeDialog();
       mutateItems();
     } catch {
-      enqueueSnackbar(tMenus("items.actions.createItem.title"), {
+      enqueueSnackbar(tMenus("items.actions.createItem.error"), {
         variant: "error",
       });
 

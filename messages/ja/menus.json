@@ -65,6 +65,7 @@
   "items": {
     "actions": {
       "createItem": {
+        "error": "品目の追加に失敗しました",
         "success": "品目 {name} を追加しました",
         "title": "品目を追加"
       },
