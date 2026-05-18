@@ -574,11 +574,27 @@ const MenusMenuIdSectionId = ({
         headerName: tMenus("items.description.label"),
       },
       {
+        field: "priceCurrency",
+        headerName: tMenus("offers.priceCurrency.label"),
+        sortable: false,
+        filterable: false,
+        valueGetter: (_value: unknown, { offer }: MenuItem) =>
+          offer?.priceCurrency,
+      },
+      {
         field: "price",
         headerName: tMenus("offers.price.label"),
         sortable: false,
         filterable: false,
         valueGetter: (_value: unknown, { offer }: MenuItem) => offer?.price,
+      },
+      {
+        field: "priceSpecification",
+        headerName: tMenus("offers.priceSpecification.price.label"),
+        sortable: false,
+        filterable: false,
+        valueGetter: (_value: unknown, { offer }: MenuItem) =>
+          offer?.priceSpecification?.price,
       },
       {
         field: "availability",
@@ -593,6 +609,26 @@ const MenusMenuIdSectionId = ({
                 >[0],
               )
             : "",
+      },
+      {
+        field: "inventoryLevel",
+        headerName: tMenus("offers.inventoryLevel.value.label"),
+        sortable: false,
+        filterable: false,
+        valueGetter: (_value: unknown, { offer }: MenuItem) =>
+          [offer?.inventoryLevel?.value, offer?.inventoryLevel?.unitText]
+            .filter(Boolean)
+            .join(" "),
+      },
+      {
+        field: "deliveryLeadTime",
+        headerName: tMenus("offers.deliveryLeadTime.value.label"),
+        sortable: false,
+        filterable: false,
+        valueGetter: (_value: unknown, { offer }: MenuItem) =>
+          [offer?.deliveryLeadTime?.value, offer?.deliveryLeadTime?.unitText]
+            .filter(Boolean)
+            .join(" "),
       },
       {
         field: "createdAt",
