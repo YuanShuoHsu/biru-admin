@@ -102,7 +102,6 @@ export interface Offer {
   priceValidUntil: string | null;
   validFrom: string | null;
   validThrough: string | null;
-  eligibleQuantity: QuantitativeValue | null;
   deliveryLeadTime: QuantitativeValue | null;
   inventoryLevel: QuantitativeValue | null;
   createdAt: string;

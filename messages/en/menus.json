@@ -220,24 +220,6 @@
         "SoldOut": "Sold out"
       }
     },
-    "eligibleQuantity": {
-      "maxValue": {
-        "label": "Max quantity (optional)",
-        "placeholder": "Please enter your max quantity"
-      },
-      "minValue": {
-        "label": "Min quantity (optional)",
-        "placeholder": "Please enter your min quantity"
-      },
-      "unitText": {
-        "label": "Unit (optional)",
-        "placeholder": "Please enter your unit"
-      },
-      "value": {
-        "label": "Quantity (optional)",
-        "placeholder": "Please enter your quantity"
-      }
-    },
     "deliveryLeadTime": {
       "maxValue": {
         "label": "Max preparation time (optional)",

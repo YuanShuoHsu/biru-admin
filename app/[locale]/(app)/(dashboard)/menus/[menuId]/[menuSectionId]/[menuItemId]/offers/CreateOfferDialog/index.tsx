@@ -67,10 +67,6 @@ const CreateOfferDialog = ({
       priceCurrency: "TWD",
       price: "",
       availability: "InStock",
-      eligibleQuantity: {
-        value: "",
-        unitText: "",
-      },
       deliveryLeadTime: {
         value: "",
         unitText: "",
@@ -88,10 +84,6 @@ const CreateOfferDialog = ({
 
   const priceCurrency = useWatch({ control, name: "priceCurrency" });
   const availability = useWatch({ control, name: "availability" });
-  const eligibleQuantityValue = useWatch({
-    control,
-    name: "eligibleQuantity.value",
-  });
   const deliveryLeadTimeValue = useWatch({
     control,
     name: "deliveryLeadTime.value",
@@ -120,7 +112,6 @@ const CreateOfferDialog = ({
     priceCurrency,
     price,
     availability,
-    eligibleQuantity,
     deliveryLeadTime,
     inventoryLevel,
     priceValidUntil,
@@ -130,8 +121,6 @@ const CreateOfferDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      const eligibleQuantityPayload =
-        buildQuantitativePayload(eligibleQuantity);
       const deliveryLeadTimePayload =
         buildQuantitativePayload(deliveryLeadTime);
       const inventoryLevelPayload = buildQuantitativePayload(inventoryLevel);
@@ -143,9 +132,6 @@ const CreateOfferDialog = ({
           priceCurrency,
           price,
           availability,
-          ...(eligibleQuantityPayload && {
-            eligibleQuantity: eligibleQuantityPayload,
-          }),
           ...(deliveryLeadTimePayload && {
             deliveryLeadTime: deliveryLeadTimePayload,
           }),
@@ -247,35 +233,6 @@ const CreateOfferDialog = ({
         ))}
       </TextField>
       <Grid container width="100%" alignItems="flex-end" spacing={2}>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <NumberSpinner
-            clearable
-            error={!!errors.eligibleQuantity?.value}
-            fullWidth
-            helperText={errors.eligibleQuantity?.value?.message}
-            label={tMenus("offers.eligibleQuantity.value.label")}
-            min={0}
-            placeholder={tMenus("offers.eligibleQuantity.value.placeholder")}
-            value={
-              eligibleQuantityValue !== ""
-                ? Number(eligibleQuantityValue)
-                : null
-            }
-            onValueChange={(val) =>
-              setValue("eligibleQuantity.value", val != null ? String(val) : "")
-            }
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <TextField
-            error={!!errors.eligibleQuantity?.unitText}
-            fullWidth
-            helperText={errors.eligibleQuantity?.unitText?.message}
-            label={tMenus("offers.eligibleQuantity.unitText.label")}
-            placeholder={tMenus("offers.eligibleQuantity.unitText.placeholder")}
-            {...register("eligibleQuantity.unitText")}
-          />
-        </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
           <NumberSpinner
             clearable

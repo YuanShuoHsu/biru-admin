@@ -220,24 +220,6 @@
         "SoldOut": "売り切れ"
       }
     },
-    "eligibleQuantity": {
-      "maxValue": {
-        "label": "最大数量（任意）",
-        "placeholder": "最大数量を入力してください"
-      },
-      "minValue": {
-        "label": "最小数量（任意）",
-        "placeholder": "最小数量を入力してください"
-      },
-      "unitText": {
-        "label": "単位（任意）",
-        "placeholder": "単位を入力してください"
-      },
-      "value": {
-        "label": "数量（任意）",
-        "placeholder": "数量を入力してください"
-      }
-    },
     "deliveryLeadTime": {
       "maxValue": {
         "label": "最大準備時間（任意）",

@@ -220,24 +220,6 @@
         "SoldOut": "售完"
       }
     },
-    "eligibleQuantity": {
-      "maxValue": {
-        "label": "最多數量（選填）",
-        "placeholder": "請輸入您的最多數量"
-      },
-      "minValue": {
-        "label": "最少數量（選填）",
-        "placeholder": "請輸入您的最少數量"
-      },
-      "unitText": {
-        "label": "單位（選填）",
-        "placeholder": "請輸入您的單位"
-      },
-      "value": {
-        "label": "數量（選填）",
-        "placeholder": "請輸入您的數量"
-      }
-    },
     "deliveryLeadTime": {
       "maxValue": {
         "label": "最長備餐時間（選填）",

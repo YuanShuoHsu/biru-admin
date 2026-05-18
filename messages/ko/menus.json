@@ -220,24 +220,6 @@
         "SoldOut": "품절"
       }
     },
-    "eligibleQuantity": {
-      "maxValue": {
-        "label": "최대 수량 (선택 사항)",
-        "placeholder": "최대 수량을 입력해 주세요"
-      },
-      "minValue": {
-        "label": "최소 수량 (선택 사항)",
-        "placeholder": "최소 수량을 입력해 주세요"
-      },
-      "unitText": {
-        "label": "단위 (선택 사항)",
-        "placeholder": "단위를 입력해 주세요"
-      },
-      "value": {
-        "label": "수량 (선택 사항)",
-        "placeholder": "수량을 입력해 주세요"
-      }
-    },
     "deliveryLeadTime": {
       "maxValue": {
         "label": "최대 준비 시간 (선택 사항)",
