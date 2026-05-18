@@ -79,9 +79,9 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
         unitText: offer.deliveryLeadTime?.unitText || "",
       },
       priceSpecification: {
-        price: offer.priceSpecification?.[0]?.price || "",
-        validFrom: offer.priceSpecification?.[0]?.validFrom || "",
-        validThrough: offer.priceSpecification?.[0]?.validThrough || "",
+        price: offer.priceSpecification?.price || "",
+        validFrom: offer.priceSpecification?.validFrom || "",
+        validThrough: offer.priceSpecification?.validThrough || "",
       },
     },
     resolver: zodResolver(updateOfferFormSchema),

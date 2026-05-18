@@ -109,7 +109,7 @@ export interface Offer {
   availability: ItemAvailability | null;
   deliveryLeadTime: QuantitativeValue | null;
   inventoryLevel: QuantitativeValue | null;
-  priceSpecification: PriceSpecification[] | null;
+  priceSpecification: PriceSpecification | null;
   createdAt: string;
   updatedAt: string;
 }

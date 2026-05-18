@@ -214,7 +214,7 @@ const MenuItemOffers = ({
         field: "priceSpecification",
         headerName: tMenus("offers.priceSpecification.price.label"),
         valueGetter: (_value: unknown, { priceSpecification }: Offer) =>
-          priceSpecification?.[0].price,
+          priceSpecification?.price,
       },
       {
         field: "validFrom",
@@ -222,7 +222,7 @@ const MenuItemOffers = ({
         valueFormatter: (value: string | null) =>
           value ? format.dateTime(new Date(value), "short") : "",
         valueGetter: (_value: unknown, { priceSpecification }: Offer) =>
-          priceSpecification?.[0].validFrom,
+          priceSpecification?.validFrom,
       },
       {
         field: "validThrough",
@@ -230,7 +230,7 @@ const MenuItemOffers = ({
         valueFormatter: (value: string | null) =>
           value ? format.dateTime(new Date(value), "short") : "",
         valueGetter: (_value: unknown, { priceSpecification }: Offer) =>
-          priceSpecification?.[0].validThrough,
+          priceSpecification?.validThrough,
       },
       {
         field: "createdAt",
