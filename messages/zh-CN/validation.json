@@ -65,5 +65,14 @@
   },
   "organizationSlug": {
     "required": "组织为必填。"
+  },
+  "addOnType": {
+    "required": "加购类型为必填。"
+  },
+  "addOnMenuSectionId": {
+    "required": "分组为必填。"
+  },
+  "addOnMenuItemId": {
+    "required": "加购品项为必填。"
   }
 }

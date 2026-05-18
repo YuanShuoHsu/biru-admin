@@ -40,13 +40,7 @@
       "label": "Add-on section",
       "placeholder": "Please select your add-on section"
     },
-    "label": "Add-ons",
-    "type": {
-      "item": "Specific item",
-      "label": "Add-on type",
-      "placeholder": "Please select your add-on type",
-      "section": "Entire section"
-    }
+    "label": "Add-ons"
   },
   "createdAt": "Created",
   "description": {

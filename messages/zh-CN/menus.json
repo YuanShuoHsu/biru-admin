@@ -40,13 +40,7 @@
       "label": "加购分组",
       "placeholder": "请选择您的加购分组"
     },
-    "label": "加购设置",
-    "type": {
-      "item": "指定品项",
-      "label": "加购类型",
-      "placeholder": "请选择您的加购类型",
-      "section": "整个分组"
-    }
+    "label": "加购设置"
   },
   "createdAt": "创建时间",
   "description": {

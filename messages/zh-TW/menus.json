@@ -40,13 +40,7 @@
       "label": "加購分組",
       "placeholder": "請選擇您的加購分組"
     },
-    "label": "加購設定",
-    "type": {
-      "item": "指定品項",
-      "label": "加購類型",
-      "placeholder": "請選擇您的加購類型",
-      "section": "整個分組"
-    }
+    "label": "加購設定"
   },
   "createdAt": "建立時間",
   "description": {

@@ -40,13 +40,7 @@
       "label": "追加セクション",
       "placeholder": "追加セクションを選択してください"
     },
-    "label": "追加オプション",
-    "type": {
-      "item": "特定品目",
-      "label": "追加オプション種類",
-      "placeholder": "追加オプション種類を選択してください",
-      "section": "セクション全体"
-    }
+    "label": "追加オプション"
   },
   "createdAt": "作成日時",
   "description": {

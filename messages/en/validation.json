@@ -65,5 +65,14 @@
   },
   "organizationSlug": {
     "required": "Organization is required."
+  },
+  "addOnType": {
+    "required": "Add-on type is required."
+  },
+  "addOnMenuSectionId": {
+    "required": "Section is required."
+  },
+  "addOnMenuItemId": {
+    "required": "Add-on item is required."
   }
 }

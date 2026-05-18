@@ -65,5 +65,14 @@
   },
   "organizationSlug": {
     "required": "組織は必須です。"
+  },
+  "addOnType": {
+    "required": "加購タイプは必須です。"
+  },
+  "addOnMenuSectionId": {
+    "required": "セクションは必須です。"
+  },
+  "addOnMenuItemId": {
+    "required": "追加アイテムは必須です。"
   }
 }

@@ -40,13 +40,7 @@
       "label": "추가 섹션",
       "placeholder": "추가 섹션을 선택해 주세요"
     },
-    "label": "추가 옵션",
-    "type": {
-      "item": "특정 항목",
-      "label": "추가 옵션 유형",
-      "placeholder": "추가 옵션 유형을 선택해 주세요",
-      "section": "전체 섹션"
-    }
+    "label": "추가 옵션"
   },
   "createdAt": "생성일",
   "description": {

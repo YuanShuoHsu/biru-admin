@@ -65,5 +65,14 @@
   },
   "organizationSlug": {
     "required": "조직은 필수입니다."
+  },
+  "addOnType": {
+    "required": "추가 유형은 필수입니다."
+  },
+  "addOnMenuSectionId": {
+    "required": "섹션은 필수입니다."
+  },
+  "addOnMenuItemId": {
+    "required": "추가 항목은 필수입니다."
   }
 }
