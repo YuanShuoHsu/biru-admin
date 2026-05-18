@@ -10,12 +10,42 @@
       "title": "刪除菜單"
     },
     "label": "操作",
-    "viewMenu": {
-      "title": "查看菜單"
-    },
     "updateMenu": {
       "success": "成功更新菜單 {name}",
       "title": "編輯菜單"
+    },
+    "viewMenu": {
+      "title": "查看菜單"
+    }
+  },
+  "addOns": {
+    "actions": {
+      "createAddOn": {
+        "success": "成功新增加購",
+        "title": "新增加購"
+      },
+      "deleteAddOn": {
+        "confirm": "確定要刪除此加購設定嗎？",
+        "error": "刪除加購失敗",
+        "success": "成功刪除加購",
+        "title": "刪除加購"
+      },
+      "label": "操作"
+    },
+    "addOnMenuItemId": {
+      "label": "加購品項",
+      "placeholder": "請選擇您的加購品項"
+    },
+    "addOnMenuSectionId": {
+      "label": "加購分組",
+      "placeholder": "請選擇您的加購分組"
+    },
+    "label": "加購設定",
+    "type": {
+      "item": "指定品項",
+      "label": "加購類型",
+      "placeholder": "請選擇您的加購類型",
+      "section": "整個分組"
     }
   },
   "createdAt": "建立時間",
@@ -91,98 +121,10 @@
       "placeholder": "請輸入您的連結網址"
     }
   },
-  "addOns": {
-    "actions": {
-      "createAddOn": {
-        "success": "成功新增加購",
-        "title": "新增加購"
-      },
-      "deleteAddOn": {
-        "confirm": "確定要刪除此加購設定嗎？",
-        "error": "刪除加購失敗",
-        "success": "成功刪除加購",
-        "title": "刪除加購"
-      },
-      "label": "操作"
-    },
-    "addOnMenuItemId": {
-      "label": "加購品項",
-      "placeholder": "請選擇您的加購品項"
-    },
-    "addOnMenuSectionId": {
-      "label": "加購分組",
-      "placeholder": "請選擇您的加購分組"
-    },
-    "label": "加購設定",
-    "type": {
-      "item": "指定品項",
-      "label": "加購類型",
-      "placeholder": "請選擇您的加購類型",
-      "section": "整個分組"
-    }
-  },
   "label": "菜單管理",
   "name": {
     "label": "菜單名稱",
     "placeholder": "請輸入您的菜單名稱"
-  },
-  "organization": {
-    "label": "組織",
-    "placeholder": "請選擇您的組織"
-  },
-  "reorder": "排序",
-  "sections": {
-    "actions": {
-      "addSubsection": {
-        "title": "新增子分組"
-      },
-      "createSection": {
-        "success": "成功新增分組 {name}",
-        "title": "新增分組"
-      },
-      "deleteSection": {
-        "confirm": "確定要刪除 <bold>{name}</bold> 嗎？子分組與品項將一併刪除。",
-        "error": "刪除分組 {name} 失敗",
-        "success": "成功刪除分組 {name}",
-        "title": "刪除分組"
-      },
-      "label": "操作",
-      "backToSections": {
-        "title": "返回分組"
-      },
-      "reorderSection": {
-        "cancel": {
-          "confirm": "確定要取消排序嗎？未儲存的變更將會遺失。",
-          "label": "取消排序"
-        },
-        "confirm": "確定要進行排序？",
-        "save": {
-          "confirm": "確定要儲存排序嗎？",
-          "error": "排序儲存失敗",
-          "label": "儲存排序",
-          "success": "排序已儲存"
-        },
-        "title": "排序分組"
-      },
-      "updateSection": {
-        "success": "成功更新分組 {name}",
-        "title": "編輯分組"
-      },
-      "viewItems": {
-        "title": "查看品項"
-      }
-    },
-    "allItems": "所有品項",
-    "description": {
-      "label": "描述（選填）",
-      "placeholder": "請輸入您的分組描述"
-    },
-    "label": "分組",
-    "name": {
-      "label": "分組名稱",
-      "placeholder": "請輸入您的分組名稱"
-    },
-    "unassigned": "未分組"
   },
   "offers": {
     "actions": {
@@ -204,7 +146,6 @@
     },
     "availability": {
       "label": "供應狀態",
-      "placeholder": "請選擇您的供應狀態",
       "options": {
         "BackOrder": "預購補貨中",
         "Discontinued": "已停售",
@@ -218,7 +159,8 @@
         "PreSale": "預售",
         "Reserved": "保留",
         "SoldOut": "售完"
-      }
+      },
+      "placeholder": "請選擇您的供應狀態"
     },
     "deliveryLeadTime": {
       "maxValue": {
@@ -264,12 +206,76 @@
     "priceCurrency": {
       "label": "幣別"
     },
-    "validFrom": {
-      "label": "有效起始日（選填）"
-    },
-    "validThrough": {
-      "label": "有效截止日（選填）"
+    "priceSpecification": {
+      "price": {
+        "label": "促銷價（選填）",
+        "placeholder": "請輸入您的促銷價"
+      },
+      "validFrom": {
+        "label": "促銷開始（選填）"
+      },
+      "validThrough": {
+        "label": "促銷結束（選填）"
+      }
     }
+  },
+  "organization": {
+    "label": "組織",
+    "placeholder": "請選擇您的組織"
+  },
+  "reorder": "排序",
+  "sections": {
+    "actions": {
+      "addSubsection": {
+        "title": "新增子分組"
+      },
+      "backToSections": {
+        "title": "返回分組"
+      },
+      "createSection": {
+        "success": "成功新增分組 {name}",
+        "title": "新增分組"
+      },
+      "deleteSection": {
+        "confirm": "確定要刪除 <bold>{name}</bold> 嗎？子分組與品項將一併刪除。",
+        "error": "刪除分組 {name} 失敗",
+        "success": "成功刪除分組 {name}",
+        "title": "刪除分組"
+      },
+      "label": "操作",
+      "reorderSection": {
+        "cancel": {
+          "confirm": "確定要取消排序嗎？未儲存的變更將會遺失。",
+          "label": "取消排序"
+        },
+        "confirm": "確定要進行排序？",
+        "save": {
+          "confirm": "確定要儲存排序嗎？",
+          "error": "排序儲存失敗",
+          "label": "儲存排序",
+          "success": "排序已儲存"
+        },
+        "title": "排序分組"
+      },
+      "updateSection": {
+        "success": "成功更新分組 {name}",
+        "title": "編輯分組"
+      },
+      "viewItems": {
+        "title": "查看品項"
+      }
+    },
+    "allItems": "所有品項",
+    "description": {
+      "label": "描述（選填）",
+      "placeholder": "請輸入您的分組描述"
+    },
+    "label": "分組",
+    "name": {
+      "label": "分組名稱",
+      "placeholder": "請輸入您的分組名稱"
+    },
+    "unassigned": "未分組"
   },
   "updatedAt": "更新時間"
 }

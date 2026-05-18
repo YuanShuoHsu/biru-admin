@@ -10,12 +10,42 @@
       "title": "Delete menu"
     },
     "label": "Actions",
-    "viewMenu": {
-      "title": "View menu"
-    },
     "updateMenu": {
       "success": "Menu {name} updated",
       "title": "Edit menu"
+    },
+    "viewMenu": {
+      "title": "View menu"
+    }
+  },
+  "addOns": {
+    "actions": {
+      "createAddOn": {
+        "success": "Add-on added",
+        "title": "Add add-on"
+      },
+      "deleteAddOn": {
+        "confirm": "Are you sure you want to remove this add-on?",
+        "error": "Failed to remove add-on",
+        "success": "Add-on removed",
+        "title": "Remove add-on"
+      },
+      "label": "Actions"
+    },
+    "addOnMenuItemId": {
+      "label": "Add-on item",
+      "placeholder": "Please select your add-on item"
+    },
+    "addOnMenuSectionId": {
+      "label": "Add-on section",
+      "placeholder": "Please select your add-on section"
+    },
+    "label": "Add-ons",
+    "type": {
+      "item": "Specific item",
+      "label": "Add-on type",
+      "placeholder": "Please select your add-on type",
+      "section": "Entire section"
     }
   },
   "createdAt": "Created",
@@ -91,98 +121,10 @@
       "placeholder": "Please enter your URL"
     }
   },
-  "addOns": {
-    "actions": {
-      "createAddOn": {
-        "success": "Add-on added",
-        "title": "Add add-on"
-      },
-      "deleteAddOn": {
-        "confirm": "Are you sure you want to remove this add-on?",
-        "error": "Failed to remove add-on",
-        "success": "Add-on removed",
-        "title": "Remove add-on"
-      },
-      "label": "Actions"
-    },
-    "addOnMenuItemId": {
-      "label": "Add-on item",
-      "placeholder": "Please select your add-on item"
-    },
-    "addOnMenuSectionId": {
-      "label": "Add-on section",
-      "placeholder": "Please select your add-on section"
-    },
-    "label": "Add-ons",
-    "type": {
-      "item": "Specific item",
-      "label": "Add-on type",
-      "placeholder": "Please select your add-on type",
-      "section": "Entire section"
-    }
-  },
   "label": "Menu Management",
   "name": {
     "label": "Menu name",
     "placeholder": "Please enter your menu name"
-  },
-  "organization": {
-    "label": "Organization",
-    "placeholder": "Please select your organization"
-  },
-  "reorder": "Order",
-  "sections": {
-    "actions": {
-      "addSubsection": {
-        "title": "Add subsection"
-      },
-      "createSection": {
-        "success": "Section {name} created",
-        "title": "Add section"
-      },
-      "deleteSection": {
-        "confirm": "Are you sure you want to delete <bold>{name}</bold>? All subsections and items will also be deleted.",
-        "error": "Failed to delete section {name}",
-        "success": "Section {name} deleted",
-        "title": "Delete section"
-      },
-      "label": "Actions",
-      "backToSections": {
-        "title": "Back to sections"
-      },
-      "reorderSection": {
-        "cancel": {
-          "confirm": "Are you sure you want to cancel? Unsaved changes will be lost.",
-          "label": "Cancel Reorder"
-        },
-        "confirm": "Are you sure you want to reorder?",
-        "save": {
-          "confirm": "Are you sure you want to save the reorder?",
-          "error": "Failed to save reorder",
-          "label": "Save Reorder",
-          "success": "Reorder saved"
-        },
-        "title": "Reorder Sections"
-      },
-      "updateSection": {
-        "success": "Section {name} updated",
-        "title": "Edit section"
-      },
-      "viewItems": {
-        "title": "View items"
-      }
-    },
-    "allItems": "All items",
-    "description": {
-      "label": "Description (optional)",
-      "placeholder": "Please enter your section description"
-    },
-    "label": "Sections",
-    "name": {
-      "label": "Section name",
-      "placeholder": "Please enter your section name"
-    },
-    "unassigned": "Unassigned"
   },
   "offers": {
     "actions": {
@@ -204,7 +146,6 @@
     },
     "availability": {
       "label": "Availability",
-      "placeholder": "Please select your availability",
       "options": {
         "BackOrder": "Back order",
         "Discontinued": "Discontinued",
@@ -218,7 +159,8 @@
         "PreSale": "Pre-sale",
         "Reserved": "Reserved",
         "SoldOut": "Sold out"
-      }
+      },
+      "placeholder": "Please select your availability"
     },
     "deliveryLeadTime": {
       "maxValue": {
@@ -264,12 +206,76 @@
     "priceCurrency": {
       "label": "Currency"
     },
-    "validFrom": {
-      "label": "Valid from (optional)"
-    },
-    "validThrough": {
-      "label": "Valid through (optional)"
+    "priceSpecification": {
+      "price": {
+        "label": "Sale price (optional)",
+        "placeholder": "Please enter your sale price"
+      },
+      "validFrom": {
+        "label": "Sale starts (optional)"
+      },
+      "validThrough": {
+        "label": "Sale ends (optional)"
+      }
     }
+  },
+  "organization": {
+    "label": "Organization",
+    "placeholder": "Please select your organization"
+  },
+  "reorder": "Order",
+  "sections": {
+    "actions": {
+      "addSubsection": {
+        "title": "Add subsection"
+      },
+      "backToSections": {
+        "title": "Back to sections"
+      },
+      "createSection": {
+        "success": "Section {name} created",
+        "title": "Add section"
+      },
+      "deleteSection": {
+        "confirm": "Are you sure you want to delete <bold>{name}</bold>? All subsections and items will also be deleted.",
+        "error": "Failed to delete section {name}",
+        "success": "Section {name} deleted",
+        "title": "Delete section"
+      },
+      "label": "Actions",
+      "reorderSection": {
+        "cancel": {
+          "confirm": "Are you sure you want to cancel? Unsaved changes will be lost.",
+          "label": "Cancel Reorder"
+        },
+        "confirm": "Are you sure you want to reorder?",
+        "save": {
+          "confirm": "Are you sure you want to save the reorder?",
+          "error": "Failed to save reorder",
+          "label": "Save Reorder",
+          "success": "Reorder saved"
+        },
+        "title": "Reorder Sections"
+      },
+      "updateSection": {
+        "success": "Section {name} updated",
+        "title": "Edit section"
+      },
+      "viewItems": {
+        "title": "View items"
+      }
+    },
+    "allItems": "All items",
+    "description": {
+      "label": "Description (optional)",
+      "placeholder": "Please enter your section description"
+    },
+    "label": "Sections",
+    "name": {
+      "label": "Section name",
+      "placeholder": "Please enter your section name"
+    },
+    "unassigned": "Unassigned"
   },
   "updatedAt": "Updated"
 }

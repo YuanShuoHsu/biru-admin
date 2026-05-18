@@ -10,12 +10,42 @@
       "title": "メニューを削除"
     },
     "label": "操作",
-    "viewMenu": {
-      "title": "メニューを表示"
-    },
     "updateMenu": {
       "success": "メニュー {name} を更新しました",
       "title": "メニューを編集"
+    },
+    "viewMenu": {
+      "title": "メニューを表示"
+    }
+  },
+  "addOns": {
+    "actions": {
+      "createAddOn": {
+        "success": "追加オプションを追加しました",
+        "title": "追加オプションを追加"
+      },
+      "deleteAddOn": {
+        "confirm": "この追加オプションを削除しますか？",
+        "error": "追加オプションの削除に失敗しました",
+        "success": "追加オプションを削除しました",
+        "title": "追加オプションを削除"
+      },
+      "label": "操作"
+    },
+    "addOnMenuItemId": {
+      "label": "追加品目",
+      "placeholder": "追加品目を選択してください"
+    },
+    "addOnMenuSectionId": {
+      "label": "追加セクション",
+      "placeholder": "追加セクションを選択してください"
+    },
+    "label": "追加オプション",
+    "type": {
+      "item": "特定品目",
+      "label": "追加オプション種類",
+      "placeholder": "追加オプション種類を選択してください",
+      "section": "セクション全体"
     }
   },
   "createdAt": "作成日時",
@@ -91,98 +121,10 @@
       "placeholder": "URLを入力してください"
     }
   },
-  "addOns": {
-    "actions": {
-      "createAddOn": {
-        "success": "追加オプションを追加しました",
-        "title": "追加オプションを追加"
-      },
-      "deleteAddOn": {
-        "confirm": "この追加オプションを削除しますか？",
-        "error": "追加オプションの削除に失敗しました",
-        "success": "追加オプションを削除しました",
-        "title": "追加オプションを削除"
-      },
-      "label": "操作"
-    },
-    "addOnMenuItemId": {
-      "label": "追加品目",
-      "placeholder": "追加品目を選択してください"
-    },
-    "addOnMenuSectionId": {
-      "label": "追加セクション",
-      "placeholder": "追加セクションを選択してください"
-    },
-    "label": "追加オプション",
-    "type": {
-      "item": "特定品目",
-      "label": "追加オプション種類",
-      "placeholder": "追加オプション種類を選択してください",
-      "section": "セクション全体"
-    }
-  },
   "label": "メニュー管理",
   "name": {
     "label": "メニュー名",
     "placeholder": "メニュー名を入力してください"
-  },
-  "organization": {
-    "label": "組織",
-    "placeholder": "組織を選択してください"
-  },
-  "reorder": "並び替え",
-  "sections": {
-    "actions": {
-      "addSubsection": {
-        "title": "サブセクションを追加"
-      },
-      "createSection": {
-        "success": "セクション {name} を追加しました",
-        "title": "セクションを追加"
-      },
-      "deleteSection": {
-        "confirm": "<bold>{name}</bold> を削除しますか？サブセクションと品目もすべて削除されます。",
-        "error": "グループ {name} の削除に失敗しました",
-        "success": "セクション {name} を削除しました",
-        "title": "セクションを削除"
-      },
-      "label": "操作",
-      "backToSections": {
-        "title": "セクションに戻る"
-      },
-      "reorderSection": {
-        "cancel": {
-          "confirm": "キャンセルしますか？保存されていない変更は失われます。",
-          "label": "並び替えをキャンセル"
-        },
-        "confirm": "並び替えを行いますか？",
-        "save": {
-          "confirm": "並び替えを保存しますか？",
-          "error": "並び替えの保存に失敗しました",
-          "label": "並び替えを保存",
-          "success": "並び替えを保存しました"
-        },
-        "title": "グループを並び替え"
-      },
-      "updateSection": {
-        "success": "セクション {name} を更新しました",
-        "title": "セクションを編集"
-      },
-      "viewItems": {
-        "title": "品目を見る"
-      }
-    },
-    "allItems": "すべての品目",
-    "description": {
-      "label": "説明（任意）",
-      "placeholder": "セクションの説明を入力してください"
-    },
-    "label": "セクション",
-    "name": {
-      "label": "セクション名",
-      "placeholder": "セクション名を入力してください"
-    },
-    "unassigned": "未分類"
   },
   "offers": {
     "actions": {
@@ -204,7 +146,6 @@
     },
     "availability": {
       "label": "提供状況",
-      "placeholder": "提供状況を選択してください",
       "options": {
         "BackOrder": "取り寄せ中",
         "Discontinued": "販売終了",
@@ -218,7 +159,8 @@
         "PreSale": "先行販売",
         "Reserved": "予約済み",
         "SoldOut": "売り切れ"
-      }
+      },
+      "placeholder": "提供状況を選択してください"
     },
     "deliveryLeadTime": {
       "maxValue": {
@@ -264,12 +206,76 @@
     "priceCurrency": {
       "label": "通貨"
     },
-    "validFrom": {
-      "label": "有効開始日（任意）"
-    },
-    "validThrough": {
-      "label": "有効終了日（任意）"
+    "priceSpecification": {
+      "price": {
+        "label": "セール価格（任意）",
+        "placeholder": "セール価格を入力してください"
+      },
+      "validFrom": {
+        "label": "セール開始（任意）"
+      },
+      "validThrough": {
+        "label": "セール終了（任意）"
+      }
     }
+  },
+  "organization": {
+    "label": "組織",
+    "placeholder": "組織を選択してください"
+  },
+  "reorder": "並び替え",
+  "sections": {
+    "actions": {
+      "addSubsection": {
+        "title": "サブセクションを追加"
+      },
+      "backToSections": {
+        "title": "セクションに戻る"
+      },
+      "createSection": {
+        "success": "セクション {name} を追加しました",
+        "title": "セクションを追加"
+      },
+      "deleteSection": {
+        "confirm": "<bold>{name}</bold> を削除しますか？サブセクションと品目もすべて削除されます。",
+        "error": "グループ {name} の削除に失敗しました",
+        "success": "セクション {name} を削除しました",
+        "title": "セクションを削除"
+      },
+      "label": "操作",
+      "reorderSection": {
+        "cancel": {
+          "confirm": "キャンセルしますか？保存されていない変更は失われます。",
+          "label": "並び替えをキャンセル"
+        },
+        "confirm": "並び替えを行いますか？",
+        "save": {
+          "confirm": "並び替えを保存しますか？",
+          "error": "並び替えの保存に失敗しました",
+          "label": "並び替えを保存",
+          "success": "並び替えを保存しました"
+        },
+        "title": "グループを並び替え"
+      },
+      "updateSection": {
+        "success": "セクション {name} を更新しました",
+        "title": "セクションを編集"
+      },
+      "viewItems": {
+        "title": "品目を見る"
+      }
+    },
+    "allItems": "すべての品目",
+    "description": {
+      "label": "説明（任意）",
+      "placeholder": "セクションの説明を入力してください"
+    },
+    "label": "セクション",
+    "name": {
+      "label": "セクション名",
+      "placeholder": "セクション名を入力してください"
+    },
+    "unassigned": "未分類"
   },
   "updatedAt": "更新日時"
 }

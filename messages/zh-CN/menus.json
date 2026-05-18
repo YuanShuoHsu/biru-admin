@@ -10,12 +10,42 @@
       "title": "删除菜单"
     },
     "label": "操作",
-    "viewMenu": {
-      "title": "查看菜单"
-    },
     "updateMenu": {
       "success": "成功更新菜单 {name}",
       "title": "编辑菜单"
+    },
+    "viewMenu": {
+      "title": "查看菜单"
+    }
+  },
+  "addOns": {
+    "actions": {
+      "createAddOn": {
+        "success": "成功新增加购",
+        "title": "新增加购"
+      },
+      "deleteAddOn": {
+        "confirm": "确定要删除此加购设置吗？",
+        "error": "删除加购失败",
+        "success": "成功删除加购",
+        "title": "删除加购"
+      },
+      "label": "操作"
+    },
+    "addOnMenuItemId": {
+      "label": "加购品项",
+      "placeholder": "请选择您的加购品项"
+    },
+    "addOnMenuSectionId": {
+      "label": "加购分组",
+      "placeholder": "请选择您的加购分组"
+    },
+    "label": "加购设置",
+    "type": {
+      "item": "指定品项",
+      "label": "加购类型",
+      "placeholder": "请选择您的加购类型",
+      "section": "整个分组"
     }
   },
   "createdAt": "创建时间",
@@ -91,98 +121,10 @@
       "placeholder": "请输入您的链接网址"
     }
   },
-  "addOns": {
-    "actions": {
-      "createAddOn": {
-        "success": "成功新增加购",
-        "title": "新增加购"
-      },
-      "deleteAddOn": {
-        "confirm": "确定要删除此加购设置吗？",
-        "error": "删除加购失败",
-        "success": "成功删除加购",
-        "title": "删除加购"
-      },
-      "label": "操作"
-    },
-    "addOnMenuItemId": {
-      "label": "加购品项",
-      "placeholder": "请选择您的加购品项"
-    },
-    "addOnMenuSectionId": {
-      "label": "加购分组",
-      "placeholder": "请选择您的加购分组"
-    },
-    "label": "加购设置",
-    "type": {
-      "item": "指定品项",
-      "label": "加购类型",
-      "placeholder": "请选择您的加购类型",
-      "section": "整个分组"
-    }
-  },
   "label": "菜单管理",
   "name": {
     "label": "菜单名称",
     "placeholder": "请输入您的菜单名称"
-  },
-  "organization": {
-    "label": "组织",
-    "placeholder": "请选择您的组织"
-  },
-  "reorder": "排序",
-  "sections": {
-    "actions": {
-      "addSubsection": {
-        "title": "新增子分组"
-      },
-      "createSection": {
-        "success": "成功新增分组 {name}",
-        "title": "新增分组"
-      },
-      "deleteSection": {
-        "confirm": "确定要删除 <bold>{name}</bold> 吗？子分组与品项将一并删除。",
-        "error": "删除分组 {name} 失败",
-        "success": "成功删除分组 {name}",
-        "title": "删除分组"
-      },
-      "label": "操作",
-      "backToSections": {
-        "title": "返回分组"
-      },
-      "reorderSection": {
-        "cancel": {
-          "confirm": "确定要取消排序吗？未保存的更改将会丢失。",
-          "label": "取消排序"
-        },
-        "confirm": "确定要进行排序？",
-        "save": {
-          "confirm": "确定要保存排序吗？",
-          "error": "排序保存失败",
-          "label": "保存排序",
-          "success": "排序已保存"
-        },
-        "title": "排序分组"
-      },
-      "updateSection": {
-        "success": "成功更新分组 {name}",
-        "title": "编辑分组"
-      },
-      "viewItems": {
-        "title": "查看品项"
-      }
-    },
-    "allItems": "所有品项",
-    "description": {
-      "label": "描述（选填）",
-      "placeholder": "请输入您的分组描述"
-    },
-    "label": "分组",
-    "name": {
-      "label": "分组名称",
-      "placeholder": "请输入您的分组名称"
-    },
-    "unassigned": "未分组"
   },
   "offers": {
     "actions": {
@@ -204,7 +146,6 @@
     },
     "availability": {
       "label": "供应状态",
-      "placeholder": "请选择您的供应状态",
       "options": {
         "BackOrder": "预购补货中",
         "Discontinued": "已停售",
@@ -218,7 +159,8 @@
         "PreSale": "预售",
         "Reserved": "保留",
         "SoldOut": "售完"
-      }
+      },
+      "placeholder": "请选择您的供应状态"
     },
     "deliveryLeadTime": {
       "maxValue": {
@@ -264,12 +206,76 @@
     "priceCurrency": {
       "label": "币别"
     },
-    "validFrom": {
-      "label": "有效起始日（选填）"
-    },
-    "validThrough": {
-      "label": "有效截止日（选填）"
+    "priceSpecification": {
+      "price": {
+        "label": "促销价（选填）",
+        "placeholder": "请输入您的促销价"
+      },
+      "validFrom": {
+        "label": "促销开始（选填）"
+      },
+      "validThrough": {
+        "label": "促销结束（选填）"
+      }
     }
+  },
+  "organization": {
+    "label": "组织",
+    "placeholder": "请选择您的组织"
+  },
+  "reorder": "排序",
+  "sections": {
+    "actions": {
+      "addSubsection": {
+        "title": "新增子分组"
+      },
+      "backToSections": {
+        "title": "返回分组"
+      },
+      "createSection": {
+        "success": "成功新增分组 {name}",
+        "title": "新增分组"
+      },
+      "deleteSection": {
+        "confirm": "确定要删除 <bold>{name}</bold> 吗？子分组与品项将一并删除。",
+        "error": "删除分组 {name} 失败",
+        "success": "成功删除分组 {name}",
+        "title": "删除分组"
+      },
+      "label": "操作",
+      "reorderSection": {
+        "cancel": {
+          "confirm": "确定要取消排序吗？未保存的更改将会丢失。",
+          "label": "取消排序"
+        },
+        "confirm": "确定要进行排序？",
+        "save": {
+          "confirm": "确定要保存排序吗？",
+          "error": "排序保存失败",
+          "label": "保存排序",
+          "success": "排序已保存"
+        },
+        "title": "排序分组"
+      },
+      "updateSection": {
+        "success": "成功更新分组 {name}",
+        "title": "编辑分组"
+      },
+      "viewItems": {
+        "title": "查看品项"
+      }
+    },
+    "allItems": "所有品项",
+    "description": {
+      "label": "描述（选填）",
+      "placeholder": "请输入您的分组描述"
+    },
+    "label": "分组",
+    "name": {
+      "label": "分组名称",
+      "placeholder": "请输入您的分组名称"
+    },
+    "unassigned": "未分组"
   },
   "updatedAt": "更新时间"
 }

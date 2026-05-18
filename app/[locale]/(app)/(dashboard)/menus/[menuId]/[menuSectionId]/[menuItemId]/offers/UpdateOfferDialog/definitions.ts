@@ -35,8 +35,13 @@ export const useUpdateOfferFormSchema = () => {
     availability: z.enum(ITEM_AVAILABILITY_VALUES),
     inventoryLevel: quantitativeValueSchema.optional(),
     deliveryLeadTime: quantitativeValueSchema.optional(),
-    validFrom: z.string().trim().optional(),
-    validThrough: z.string().trim().optional(),
+    priceSpecification: z
+      .object({
+        price: z.string().trim().optional(),
+        validFrom: z.string().trim().optional(),
+        validThrough: z.string().trim().optional(),
+      })
+      .optional(),
   });
 };
 

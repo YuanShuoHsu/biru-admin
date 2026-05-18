@@ -69,17 +69,20 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
           offer.inventoryLevel?.value != null
             ? String(offer.inventoryLevel.value)
             : "",
-        unitText: offer.inventoryLevel?.unitText ?? "",
+        unitText: offer.inventoryLevel?.unitText || "",
       },
       deliveryLeadTime: {
         value:
           offer.deliveryLeadTime?.value != null
             ? String(offer.deliveryLeadTime.value)
             : "",
-        unitText: offer.deliveryLeadTime?.unitText ?? "",
+        unitText: offer.deliveryLeadTime?.unitText || "",
       },
-      validFrom: offer.validFrom || "",
-      validThrough: offer.validThrough || "",
+      priceSpecification: {
+        price: offer.priceSpecification?.[0]?.price || "",
+        validFrom: offer.priceSpecification?.[0]?.validFrom || "",
+        validThrough: offer.priceSpecification?.[0]?.validThrough || "",
+      },
     },
     resolver: zodResolver(updateOfferFormSchema),
   });
@@ -94,8 +97,14 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
     control,
     name: "inventoryLevel.value",
   });
-  const validFrom = useWatch({ control, name: "validFrom" });
-  const validThrough = useWatch({ control, name: "validThrough" });
+  const saleValidFrom = useWatch({
+    control,
+    name: "priceSpecification.validFrom",
+  });
+  const saleValidThrough = useWatch({
+    control,
+    name: "priceSpecification.validThrough",
+  });
 
   const buildQuantitativePayload = (qv?: {
     value?: string;
@@ -115,11 +124,25 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
     availability,
     inventoryLevel,
     deliveryLeadTime,
-    validFrom,
-    validThrough,
+    priceSpecification: priceSpecificationForm,
   }: UpdateOfferForm) => {
     try {
       setDialog({ confirmLoading: true });
+
+      const priceSpecification = priceSpecificationForm?.price
+        ? [
+            {
+              price: priceSpecificationForm.price,
+              priceCurrency,
+              ...(priceSpecificationForm.validFrom && {
+                validFrom: priceSpecificationForm.validFrom,
+              }),
+              ...(priceSpecificationForm.validThrough && {
+                validThrough: priceSpecificationForm.validThrough,
+              }),
+            },
+          ]
+        : null;
 
       await fetcher(`/api/offers/${offer.id}`, {
         method: "PATCH",
@@ -130,8 +153,7 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
           availability,
           deliveryLeadTime: buildQuantitativePayload(deliveryLeadTime),
           inventoryLevel: buildQuantitativePayload(inventoryLevel),
-          validFrom: validFrom || null,
-          validThrough: validThrough || null,
+          priceSpecification,
         }),
       });
 
@@ -280,39 +302,55 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
             {...register("deliveryLeadTime.unitText")}
           />
         </Grid>
+        <Grid size={{ xs: 12 }}>
+          <TextField
+            error={!!errors.priceSpecification?.price}
+            fullWidth
+            helperText={errors.priceSpecification?.price?.message}
+            label={tMenus("offers.priceSpecification.price.label")}
+            placeholder={tMenus("offers.priceSpecification.price.placeholder")}
+            {...register("priceSpecification.price")}
+          />
+        </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
           <DatePicker
-            label={tMenus("offers.validFrom.label")}
+            label={tMenus("offers.priceSpecification.validFrom.label")}
             slotProps={{
               field: { clearable: true },
               textField: {
-                error: !!errors.validFrom,
+                error: !!errors.priceSpecification?.validFrom,
                 fullWidth: true,
-                helperText: errors.validFrom?.message,
+                helperText: errors.priceSpecification?.validFrom?.message,
               },
             }}
-            value={validFrom ? dayjs(validFrom) : null}
-            {...register("validFrom")}
+            value={saleValidFrom ? dayjs(saleValidFrom) : null}
+            {...register("priceSpecification.validFrom")}
             onChange={(date) =>
-              setValue("validFrom", date ? date.format("YYYY-MM-DD") : "")
+              setValue(
+                "priceSpecification.validFrom",
+                date ? date.format("YYYY-MM-DD") : "",
+              )
             }
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
           <DatePicker
-            label={tMenus("offers.validThrough.label")}
+            label={tMenus("offers.priceSpecification.validThrough.label")}
             slotProps={{
               field: { clearable: true },
               textField: {
-                error: !!errors.validThrough,
+                error: !!errors.priceSpecification?.validThrough,
                 fullWidth: true,
-                helperText: errors.validThrough?.message,
+                helperText: errors.priceSpecification?.validThrough?.message,
               },
             }}
-            value={validThrough ? dayjs(validThrough) : null}
-            {...register("validThrough")}
+            value={saleValidThrough ? dayjs(saleValidThrough) : null}
+            {...register("priceSpecification.validThrough")}
             onChange={(date) =>
-              setValue("validThrough", date ? date.format("YYYY-MM-DD") : "")
+              setValue(
+                "priceSpecification.validThrough",
+                date ? date.format("YYYY-MM-DD") : "",
+              )
             }
           />
         </Grid>

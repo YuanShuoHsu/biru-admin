@@ -91,6 +91,14 @@ export interface QuantitativeValue {
   value?: number;
 }
 
+// https://schema.org/PriceSpecification
+export interface PriceSpecification {
+  price: string;
+  priceCurrency: string;
+  validFrom?: string;
+  validThrough?: string;
+}
+
 // https://schema.org/Offer
 export interface Offer {
   id: string;
@@ -99,10 +107,9 @@ export interface Offer {
   price: string | null;
   priceCurrency: string | null;
   availability: ItemAvailability | null;
-  validFrom: string | null;
-  validThrough: string | null;
   deliveryLeadTime: QuantitativeValue | null;
   inventoryLevel: QuantitativeValue | null;
+  priceSpecification: PriceSpecification[] | null;
   createdAt: string;
   updatedAt: string;
 }

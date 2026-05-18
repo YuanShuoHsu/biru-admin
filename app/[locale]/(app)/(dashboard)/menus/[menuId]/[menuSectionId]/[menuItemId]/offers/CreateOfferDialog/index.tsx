@@ -75,8 +75,11 @@ const CreateOfferDialog = ({
         value: "",
         unitText: "",
       },
-      validFrom: "",
-      validThrough: "",
+      priceSpecification: {
+        price: "",
+        validFrom: "",
+        validThrough: "",
+      },
     },
     resolver: zodResolver(createOfferFormSchema),
   });
@@ -91,8 +94,8 @@ const CreateOfferDialog = ({
     control,
     name: "inventoryLevel.value",
   });
-  const validFrom = useWatch({ control, name: "validFrom" });
-  const validThrough = useWatch({ control, name: "validThrough" });
+  const saleValidFrom = useWatch({ control, name: "priceSpecification.validFrom" });
+  const saleValidThrough = useWatch({ control, name: "priceSpecification.validThrough" });
 
   const buildQuantitativePayload = (qv?: {
     value?: string;
@@ -112,8 +115,7 @@ const CreateOfferDialog = ({
     availability,
     inventoryLevel,
     deliveryLeadTime,
-    validFrom,
-    validThrough,
+    priceSpecification: priceSpecificationForm,
   }: CreateOfferForm) => {
     try {
       setDialog({ confirmLoading: true });
@@ -121,6 +123,17 @@ const CreateOfferDialog = ({
       const deliveryLeadTimePayload =
         buildQuantitativePayload(deliveryLeadTime);
       const inventoryLevelPayload = buildQuantitativePayload(inventoryLevel);
+
+      const priceSpecification = priceSpecificationForm?.price
+        ? [
+            {
+              price: priceSpecificationForm.price,
+              priceCurrency,
+              ...(priceSpecificationForm.validFrom && { validFrom: priceSpecificationForm.validFrom }),
+              ...(priceSpecificationForm.validThrough && { validThrough: priceSpecificationForm.validThrough }),
+            },
+          ]
+        : null;
 
       await fetcher<Offer>(`/api/menu-items/${menuItemId}/offers`, {
         method: "POST",
@@ -135,8 +148,7 @@ const CreateOfferDialog = ({
           ...(inventoryLevelPayload && {
             inventoryLevel: inventoryLevelPayload,
           }),
-          ...(validFrom && { validFrom }),
-          ...(validThrough && { validThrough }),
+          priceSpecification,
         }),
       });
 
@@ -285,39 +297,52 @@ const CreateOfferDialog = ({
             {...register("deliveryLeadTime.unitText")}
           />
         </Grid>
+        <Grid size={{ xs: 12 }}>
+          <TextField
+            error={!!errors.priceSpecification?.price}
+            fullWidth
+            helperText={errors.priceSpecification?.price?.message}
+            label={tMenus("offers.priceSpecification.price.label")}
+            placeholder={tMenus("offers.priceSpecification.price.placeholder")}
+            {...register("priceSpecification.price")}
+          />
+        </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
           <DatePicker
-            label={tMenus("offers.validFrom.label")}
+            label={tMenus("offers.priceSpecification.validFrom.label")}
             slotProps={{
               field: { clearable: true },
               textField: {
-                error: !!errors.validFrom,
+                error: !!errors.priceSpecification?.validFrom,
                 fullWidth: true,
-                helperText: errors.validFrom?.message,
+                helperText: errors.priceSpecification?.validFrom?.message,
               },
             }}
-            value={validFrom ? dayjs(validFrom) : null}
-            {...register("validFrom")}
+            value={saleValidFrom ? dayjs(saleValidFrom) : null}
+            {...register("priceSpecification.validFrom")}
             onChange={(date) =>
-              setValue("validFrom", date ? date.format("YYYY-MM-DD") : "")
+              setValue("priceSpecification.validFrom", date ? date.format("YYYY-MM-DD") : "")
             }
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
           <DatePicker
-            label={tMenus("offers.validThrough.label")}
+            label={tMenus("offers.priceSpecification.validThrough.label")}
             slotProps={{
               field: { clearable: true },
               textField: {
-                error: !!errors.validThrough,
+                error: !!errors.priceSpecification?.validThrough,
                 fullWidth: true,
-                helperText: errors.validThrough?.message,
+                helperText: errors.priceSpecification?.validThrough?.message,
               },
             }}
-            value={validThrough ? dayjs(validThrough) : null}
-            {...register("validThrough")}
+            value={saleValidThrough ? dayjs(saleValidThrough) : null}
+            {...register("priceSpecification.validThrough")}
             onChange={(date) =>
-              setValue("validThrough", date ? date.format("YYYY-MM-DD") : "")
+              setValue(
+                "priceSpecification.validThrough",
+                date ? date.format("YYYY-MM-DD") : "",
+              )
             }
           />
         </Grid>

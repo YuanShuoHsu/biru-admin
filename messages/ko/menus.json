@@ -10,12 +10,42 @@
       "title": "메뉴 삭제"
     },
     "label": "작업",
-    "viewMenu": {
-      "title": "메뉴 보기"
-    },
     "updateMenu": {
       "success": "메뉴 {name}이(가) 업데이트되었습니다",
       "title": "메뉴 편집"
+    },
+    "viewMenu": {
+      "title": "메뉴 보기"
+    }
+  },
+  "addOns": {
+    "actions": {
+      "createAddOn": {
+        "success": "추가 옵션이 추가되었습니다",
+        "title": "추가 옵션 추가"
+      },
+      "deleteAddOn": {
+        "confirm": "이 추가 옵션을 삭제하시겠습니까?",
+        "error": "추가 옵션 삭제에 실패했습니다",
+        "success": "추가 옵션이 삭제되었습니다",
+        "title": "추가 옵션 삭제"
+      },
+      "label": "작업"
+    },
+    "addOnMenuItemId": {
+      "label": "추가 항목",
+      "placeholder": "추가 항목을 선택해 주세요"
+    },
+    "addOnMenuSectionId": {
+      "label": "추가 섹션",
+      "placeholder": "추가 섹션을 선택해 주세요"
+    },
+    "label": "추가 옵션",
+    "type": {
+      "item": "특정 항목",
+      "label": "추가 옵션 유형",
+      "placeholder": "추가 옵션 유형을 선택해 주세요",
+      "section": "전체 섹션"
     }
   },
   "createdAt": "생성일",
@@ -91,98 +121,10 @@
       "placeholder": "URL을 입력해 주세요"
     }
   },
-  "addOns": {
-    "actions": {
-      "createAddOn": {
-        "success": "추가 옵션이 추가되었습니다",
-        "title": "추가 옵션 추가"
-      },
-      "deleteAddOn": {
-        "confirm": "이 추가 옵션을 삭제하시겠습니까?",
-        "error": "추가 옵션 삭제에 실패했습니다",
-        "success": "추가 옵션이 삭제되었습니다",
-        "title": "추가 옵션 삭제"
-      },
-      "label": "작업"
-    },
-    "addOnMenuItemId": {
-      "label": "추가 항목",
-      "placeholder": "추가 항목을 선택해 주세요"
-    },
-    "addOnMenuSectionId": {
-      "label": "추가 섹션",
-      "placeholder": "추가 섹션을 선택해 주세요"
-    },
-    "label": "추가 옵션",
-    "type": {
-      "item": "특정 항목",
-      "label": "추가 옵션 유형",
-      "placeholder": "추가 옵션 유형을 선택해 주세요",
-      "section": "전체 섹션"
-    }
-  },
   "label": "메뉴 관리",
   "name": {
     "label": "메뉴 이름",
     "placeholder": "메뉴 이름을 입력해 주세요"
-  },
-  "organization": {
-    "label": "조직",
-    "placeholder": "조직을 선택해 주세요"
-  },
-  "reorder": "순서",
-  "sections": {
-    "actions": {
-      "addSubsection": {
-        "title": "하위 섹션 추가"
-      },
-      "createSection": {
-        "success": "섹션 {name}이(가) 추가되었습니다",
-        "title": "섹션 추가"
-      },
-      "deleteSection": {
-        "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까? 하위 섹션과 항목도 모두 삭제됩니다.",
-        "error": "그룹 {name} 삭제에 실패했습니다",
-        "success": "섹션 {name}이(가) 삭제되었습니다",
-        "title": "섹션 삭제"
-      },
-      "label": "작업",
-      "backToSections": {
-        "title": "섹션으로 돌아가기"
-      },
-      "reorderSection": {
-        "cancel": {
-          "confirm": "취소하시겠습니까? 저장되지 않은 변경 사항은 사라집니다.",
-          "label": "정렬 취소"
-        },
-        "confirm": "정렬하시겠습니까?",
-        "save": {
-          "confirm": "정렬을 저장하시겠습니까?",
-          "error": "정렬 저장에 실패했습니다",
-          "label": "정렬 저장",
-          "success": "정렬이 저장되었습니다"
-        },
-        "title": "그룹 정렬"
-      },
-      "updateSection": {
-        "success": "섹션 {name}이(가) 업데이트되었습니다",
-        "title": "섹션 편집"
-      },
-      "viewItems": {
-        "title": "항목 보기"
-      }
-    },
-    "allItems": "모든 항목",
-    "description": {
-      "label": "설명 (선택 사항)",
-      "placeholder": "섹션 설명을 입력해 주세요"
-    },
-    "label": "섹션",
-    "name": {
-      "label": "섹션 이름",
-      "placeholder": "섹션 이름을 입력해 주세요"
-    },
-    "unassigned": "미분류"
   },
   "offers": {
     "actions": {
@@ -204,7 +146,6 @@
     },
     "availability": {
       "label": "공급 상태",
-      "placeholder": "공급 상태를 선택해 주세요",
       "options": {
         "BackOrder": "재고 주문 중",
         "Discontinued": "판매 종료",
@@ -218,7 +159,8 @@
         "PreSale": "사전 판매",
         "Reserved": "예약됨",
         "SoldOut": "품절"
-      }
+      },
+      "placeholder": "공급 상태를 선택해 주세요"
     },
     "deliveryLeadTime": {
       "maxValue": {
@@ -264,12 +206,76 @@
     "priceCurrency": {
       "label": "통화"
     },
-    "validFrom": {
-      "label": "유효 시작일 (선택 사항)"
-    },
-    "validThrough": {
-      "label": "유효 종료일 (선택 사항)"
+    "priceSpecification": {
+      "price": {
+        "label": "할인가（선택）",
+        "placeholder": "할인가를 입력해 주세요"
+      },
+      "validFrom": {
+        "label": "할인 시작（선택）"
+      },
+      "validThrough": {
+        "label": "할인 종료（선택）"
+      }
     }
+  },
+  "organization": {
+    "label": "조직",
+    "placeholder": "조직을 선택해 주세요"
+  },
+  "reorder": "순서",
+  "sections": {
+    "actions": {
+      "addSubsection": {
+        "title": "하위 섹션 추가"
+      },
+      "backToSections": {
+        "title": "섹션으로 돌아가기"
+      },
+      "createSection": {
+        "success": "섹션 {name}이(가) 추가되었습니다",
+        "title": "섹션 추가"
+      },
+      "deleteSection": {
+        "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까? 하위 섹션과 항목도 모두 삭제됩니다.",
+        "error": "그룹 {name} 삭제에 실패했습니다",
+        "success": "섹션 {name}이(가) 삭제되었습니다",
+        "title": "섹션 삭제"
+      },
+      "label": "작업",
+      "reorderSection": {
+        "cancel": {
+          "confirm": "취소하시겠습니까? 저장되지 않은 변경 사항은 사라집니다.",
+          "label": "정렬 취소"
+        },
+        "confirm": "정렬하시겠습니까?",
+        "save": {
+          "confirm": "정렬을 저장하시겠습니까?",
+          "error": "정렬 저장에 실패했습니다",
+          "label": "정렬 저장",
+          "success": "정렬이 저장되었습니다"
+        },
+        "title": "그룹 정렬"
+      },
+      "updateSection": {
+        "success": "섹션 {name}이(가) 업데이트되었습니다",
+        "title": "섹션 편집"
+      },
+      "viewItems": {
+        "title": "항목 보기"
+      }
+    },
+    "allItems": "모든 항목",
+    "description": {
+      "label": "설명 (선택 사항)",
+      "placeholder": "섹션 설명을 입력해 주세요"
+    },
+    "label": "섹션",
+    "name": {
+      "label": "섹션 이름",
+      "placeholder": "섹션 이름을 입력해 주세요"
+    },
+    "unassigned": "미분류"
   },
   "updatedAt": "수정일"
 }
