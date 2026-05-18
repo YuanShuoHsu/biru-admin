@@ -6,17 +6,22 @@ import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
-import UploadAvatars from "@/components/UploadAvatars";
-
-import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
-
 import {
   ITEM_AVAILABILITY_VALUES,
   type UpdateMenuItemForm,
   useUpdateMenuItemFormSchema,
 } from "./definitions";
 
+import CountrySelect from "@/components/CountrySelect";
+import NumberSpinner from "@/components/NumberSpinner";
+import PriceMaskInput from "@/components/PriceMaskInput";
+import UploadAvatars from "@/components/UploadAvatars";
+
+import { currencies, DEFAULT_CURRENCY_OPTION } from "@/constants/currencies";
+
 import { zodResolver } from "@hookform/resolvers/zod";
+
+import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
 import {
   Box,
@@ -29,11 +34,6 @@ import {
   Typography,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-
-import CountrySelect from "@/components/CountrySelect";
-import NumberSpinner from "@/components/NumberSpinner";
-
-import { currencies, DEFAULT_CURRENCY_OPTION } from "@/constants/currencies";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -104,6 +104,11 @@ const UpdateMenuItemDialog = ({
   });
 
   const priceCurrency = useWatch({ control, name: "offer.priceCurrency" });
+  const price = useWatch({ control, name: "offer.price" });
+  const priceSpecificationPrice = useWatch({
+    control,
+    name: "offer.priceSpecification.price",
+  });
   const availability = useWatch({ control, name: "offer.availability" });
   const deliveryLeadTimeValue = useWatch({
     control,
@@ -263,6 +268,13 @@ const UpdateMenuItemDialog = ({
             helperText={errors.offer?.price?.message}
             label={tMenus("offers.price.label")}
             placeholder={tMenus("offers.price.placeholder")}
+            slotProps={{
+              input: {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                inputComponent: PriceMaskInput as any,
+              },
+            }}
+            value={price}
             {...register("offer.price")}
           />
         </Grid>
@@ -375,6 +387,13 @@ const UpdateMenuItemDialog = ({
             helperText={errors.offer?.priceSpecification?.price?.message}
             label={tMenus("offers.priceSpecification.price.label")}
             placeholder={tMenus("offers.priceSpecification.price.placeholder")}
+            slotProps={{
+              input: {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                inputComponent: PriceMaskInput as any,
+              },
+            }}
+            value={priceSpecificationPrice}
             {...register("offer.priceSpecification.price")}
           />
         </Grid>
