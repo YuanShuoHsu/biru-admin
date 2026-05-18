@@ -120,7 +120,9 @@ export interface MenuItemAddOn {
   id: string;
   menuItemId: string;
   addOnMenuItemId: string | null;
+  addOnMenuItemName: string | null;
   addOnMenuSectionId: string | null;
+  addOnMenuSectionName: string | null;
   createdAt: string;
   updatedAt: string;
 }
