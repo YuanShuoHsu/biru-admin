@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { NumericFormat } from "react-number-format";
 
 import {
   ITEM_AVAILABILITY_VALUES,
@@ -14,7 +15,6 @@ import {
 
 import CountrySelect from "@/components/CountrySelect";
 import NumberSpinner from "@/components/NumberSpinner";
-import PriceMaskInput from "@/components/PriceMaskInput";
 import UploadAvatars from "@/components/UploadAvatars";
 
 import { currencies, DEFAULT_CURRENCY_OPTION } from "@/constants/currencies";
@@ -255,27 +255,23 @@ const UpdateMenuItemDialog = ({
               DEFAULT_CURRENCY_OPTION
             }
             {...register("offer.priceCurrency")}
-            onChange={(value) => {
-              if ("currency" in value)
-                setValue("offer.priceCurrency", value.currency);
-            }}
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 8 }}>
-          <TextField
+          <NumericFormat
+            allowNegative={false}
+            customInput={TextField}
             error={!!errors.offer?.price}
             fullWidth
             helperText={errors.offer?.price?.message}
             label={tMenus("offers.price.label")}
+            name="offer.price"
+            onBlur={register("offer.price").onBlur}
+            onValueChange={({ value }) => setValue("offer.price", value)}
             placeholder={tMenus("offers.price.placeholder")}
-            slotProps={{
-              input: {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                inputComponent: PriceMaskInput as any,
-              },
-            }}
+            thousandSeparator=","
             value={price}
-            {...register("offer.price")}
+            valueIsNumericString
           />
         </Grid>
       </Grid>
@@ -381,20 +377,22 @@ const UpdateMenuItemDialog = ({
           />
         </Grid>
         <Grid size={{ xs: 12 }}>
-          <TextField
+          <NumericFormat
+            allowNegative={false}
+            customInput={TextField}
             error={!!errors.offer?.priceSpecification?.price}
             fullWidth
             helperText={errors.offer?.priceSpecification?.price?.message}
             label={tMenus("offers.priceSpecification.price.label")}
+            name="offer.priceSpecification.price"
+            onBlur={register("offer.priceSpecification.price").onBlur}
+            onValueChange={({ value }) =>
+              setValue("offer.priceSpecification.price", value)
+            }
             placeholder={tMenus("offers.priceSpecification.price.placeholder")}
-            slotProps={{
-              input: {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                inputComponent: PriceMaskInput as any,
-              },
-            }}
+            thousandSeparator=","
             value={priceSpecificationPrice}
-            {...register("offer.priceSpecification.price")}
+            valueIsNumericString
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>

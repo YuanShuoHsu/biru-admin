@@ -54,7 +54,7 @@ const AddressFields = ({ control, errors, register }: AddressFieldsProps) => {
           error={!!error}
           helperText={error?.message}
           label={tOrganizations("address.addressCountry.label")}
-          onChange={({ code }) => onChange(code)}
+          onChange={onChange}
           value={
             countries.find(({ code }) => code === value) ||
             DEFAULT_COUNTRY_OPTION

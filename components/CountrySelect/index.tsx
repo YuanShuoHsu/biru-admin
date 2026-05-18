@@ -135,7 +135,9 @@ interface CountrySelectProps {
   helperText: React.ReactNode;
   label: string;
   mode?: "country" | "currency";
-  onChange: (value: CountryType | CurrencyType) => void;
+  name?: string;
+  onBlur?: React.FocusEventHandler;
+  onChange?: (event: { target: { name: string; value: string } }) => void;
   value: CountryType | CurrencyType;
 }
 
@@ -144,6 +146,8 @@ const CountrySelect = ({
   helperText,
   label,
   mode = "country",
+  name,
+  onBlur,
   onChange,
   value,
 }: CountrySelectProps) => {
@@ -193,10 +197,14 @@ const CountrySelect = ({
           ? option.currency === value.currency
           : option.code === value.code
       }
+      onBlur={onBlur}
       onChange={(_, newValue) => {
         setInputValue(getInputValue(newValue));
 
-        onChange(newValue);
+        const value =
+          "currency" in newValue ? newValue.currency : newValue.code;
+
+        onChange?.({ target: { name: name || "", value } });
       }}
       onClose={() => {
         hint.current = "";

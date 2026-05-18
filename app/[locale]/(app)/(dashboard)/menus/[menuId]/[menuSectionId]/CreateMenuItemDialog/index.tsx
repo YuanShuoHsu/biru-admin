@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { NumericFormat } from "react-number-format";
 
 import {
   type CreateMenuItemForm,
@@ -14,7 +15,6 @@ import {
 
 import CountrySelect from "@/components/CountrySelect";
 import NumberSpinner from "@/components/NumberSpinner";
-import PriceMaskInput from "@/components/PriceMaskInput";
 import UploadAvatars from "@/components/UploadAvatars";
 
 import { currencies, DEFAULT_CURRENCY_OPTION } from "@/constants/currencies";
@@ -112,18 +112,6 @@ const CreateMenuItemDialog = ({
     name: "offer.priceSpecification.validThrough",
   });
 
-  const buildQuantitativePayload = (qv?: {
-    value?: string;
-    unitText?: string;
-  }) => {
-    if (!qv) return null;
-    const payload = {
-      ...(qv.value && { value: Number(qv.value) }),
-      ...(qv.unitText && { unitText: qv.unitText }),
-    };
-    return Object.keys(payload).length > 0 ? payload : null;
-  };
-
   const onSubmitHandler = async ({
     name,
     description,
@@ -145,31 +133,49 @@ const CreateMenuItemDialog = ({
         },
       );
 
-      if (offer?.price) {
-        await fetcher(`/api/menu-items/${created.id}/offers`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            priceCurrency: offer.priceCurrency,
-            price: offer.price,
-            availability: offer.availability,
-            deliveryLeadTime: buildQuantitativePayload(offer.deliveryLeadTime),
-            inventoryLevel: buildQuantitativePayload(offer.inventoryLevel),
-            priceSpecification: offer.priceSpecification?.price
+      await fetcher(`/api/menu-items/${created.id}/offers`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          priceCurrency: offer?.priceCurrency,
+          price: offer?.price,
+          availability: offer?.availability,
+          deliveryLeadTime:
+            offer?.deliveryLeadTime?.value || offer?.deliveryLeadTime?.unitText
               ? {
-                  price: offer.priceSpecification.price,
-                  priceCurrency: offer.priceCurrency,
-                  ...(offer.priceSpecification.validFrom && {
-                    validFrom: offer.priceSpecification.validFrom,
+                  ...(offer.deliveryLeadTime.value && {
+                    value: Number(offer.deliveryLeadTime.value),
                   }),
-                  ...(offer.priceSpecification.validThrough && {
-                    validThrough: offer.priceSpecification.validThrough,
+                  ...(offer.deliveryLeadTime.unitText && {
+                    unitText: offer.deliveryLeadTime.unitText,
                   }),
                 }
               : null,
-          }),
-        });
-      }
+          inventoryLevel:
+            offer?.inventoryLevel?.value || offer?.inventoryLevel?.unitText
+              ? {
+                  ...(offer.inventoryLevel.value && {
+                    value: Number(offer.inventoryLevel.value),
+                  }),
+                  ...(offer.inventoryLevel.unitText && {
+                    unitText: offer.inventoryLevel.unitText,
+                  }),
+                }
+              : null,
+          priceSpecification: offer?.priceSpecification?.price
+            ? {
+                price: offer.priceSpecification.price,
+                priceCurrency: offer.priceCurrency,
+                ...(offer.priceSpecification.validFrom && {
+                  validFrom: offer.priceSpecification.validFrom,
+                }),
+                ...(offer.priceSpecification.validThrough && {
+                  validThrough: offer.priceSpecification.validThrough,
+                }),
+              }
+            : null,
+        }),
+      });
 
       enqueueSnackbar(tMenus("items.actions.createItem.success", { name }), {
         variant: "success",
@@ -232,27 +238,23 @@ const CreateMenuItemDialog = ({
               DEFAULT_CURRENCY_OPTION
             }
             {...register("offer.priceCurrency")}
-            onChange={(value) => {
-              if ("currency" in value)
-                setValue("offer.priceCurrency", value.currency);
-            }}
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 8 }}>
-          <TextField
+          <NumericFormat
+            allowNegative={false}
+            customInput={TextField}
             error={!!errors.offer?.price}
             fullWidth
             helperText={errors.offer?.price?.message}
             label={tMenus("offers.price.label")}
+            name="offer.price"
+            onBlur={register("offer.price").onBlur}
+            onValueChange={({ value }) => setValue("offer.price", value)}
             placeholder={tMenus("offers.price.placeholder")}
-            slotProps={{
-              input: {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                inputComponent: PriceMaskInput as any,
-              },
-            }}
+            thousandSeparator=","
             value={price}
-            {...register("offer.price")}
+            valueIsNumericString
           />
         </Grid>
       </Grid>
@@ -358,20 +360,22 @@ const CreateMenuItemDialog = ({
           />
         </Grid>
         <Grid size={{ xs: 12 }}>
-          <TextField
+          <NumericFormat
+            allowNegative={false}
+            customInput={TextField}
             error={!!errors.offer?.priceSpecification?.price}
             fullWidth
             helperText={errors.offer?.priceSpecification?.price?.message}
             label={tMenus("offers.priceSpecification.price.label")}
+            name="offer.priceSpecification.price"
+            onBlur={register("offer.priceSpecification.price").onBlur}
+            onValueChange={({ value }) =>
+              setValue("offer.priceSpecification.price", value)
+            }
             placeholder={tMenus("offers.priceSpecification.price.placeholder")}
-            slotProps={{
-              input: {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                inputComponent: PriceMaskInput as any,
-              },
-            }}
+            thousandSeparator=","
             value={priceSpecificationPrice}
-            {...register("offer.priceSpecification.price")}
+            valueIsNumericString
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
