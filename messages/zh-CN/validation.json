@@ -1,4 +1,13 @@
 {
+  "addOnMenuItemId": {
+    "required": "加购品项为必填。"
+  },
+  "addOnMenuSectionId": {
+    "required": "分组为必填。"
+  },
+  "addOnType": {
+    "required": "加购类型为必填。"
+  },
   "birthDate": {
     "invalid": "出生日期无效。",
     "maxDate": "请选择今天或之前的出生日期。",
@@ -29,6 +38,9 @@
   "gender": {
     "required": "性别为必填。"
   },
+  "member": {
+    "required": "成员为必填。"
+  },
   "name": {
     "minLength": "名称至少需要 2 个字符。"
   },
@@ -40,6 +52,9 @@
     "number": "包含至少一个数字。",
     "sameAsCurrent": "新密码不能与当前密码相同。"
   },
+  "organizationSlug": {
+    "required": "组织为必填。"
+  },
   "password": {
     "letter": "包含至少一个英文字母。",
     "match": "与密码一致。",
@@ -50,8 +65,8 @@
     "invalid": "电话号码无效。",
     "required": "电话号码为必填。"
   },
-  "member": {
-    "required": "成员为必填。"
+  "price": {
+    "required": "价格为必填。"
   },
   "role": {
     "required": "角色为必填。"
@@ -62,17 +77,5 @@
   "slug": {
     "letter": "包含至少一个英文字母。",
     "minLength": "标识符至少需要 1 个字符。"
-  },
-  "organizationSlug": {
-    "required": "组织为必填。"
-  },
-  "addOnType": {
-    "required": "加购类型为必填。"
-  },
-  "addOnMenuSectionId": {
-    "required": "分组为必填。"
-  },
-  "addOnMenuItemId": {
-    "required": "加购品项为必填。"
   }
 }

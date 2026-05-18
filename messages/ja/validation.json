@@ -1,4 +1,13 @@
 {
+  "addOnMenuItemId": {
+    "required": "追加アイテムは必須です。"
+  },
+  "addOnMenuSectionId": {
+    "required": "セクションは必須です。"
+  },
+  "addOnType": {
+    "required": "加購タイプは必須です。"
+  },
   "birthDate": {
     "invalid": "生年月日が無効です。",
     "maxDate": "今日以前の生年月日を選択してください。",
@@ -29,6 +38,9 @@
   "gender": {
     "required": "性別は必須です。"
   },
+  "member": {
+    "required": "メンバーは必須です。"
+  },
   "name": {
     "minLength": "名前は2文字以上で入力してください。"
   },
@@ -40,6 +52,9 @@
     "number": "数字を1文字以上含む。",
     "sameAsCurrent": "新しいパスワードは現在のパスワードと異なる必要があります。"
   },
+  "organizationSlug": {
+    "required": "組織は必須です。"
+  },
   "password": {
     "letter": "英字を1文字以上含む。",
     "match": "パスワードと一致。",
@@ -50,8 +65,8 @@
     "invalid": "電話番号が無効です。",
     "required": "電話番号は必須です。"
   },
-  "member": {
-    "required": "メンバーは必須です。"
+  "price": {
+    "required": "価格は必須です。"
   },
   "role": {
     "required": "役割は必須です。"
@@ -62,17 +77,5 @@
   "slug": {
     "letter": "英字を1文字以上含む。",
     "minLength": "スラッグは1文字以上で入力してください。"
-  },
-  "organizationSlug": {
-    "required": "組織は必須です。"
-  },
-  "addOnType": {
-    "required": "加購タイプは必須です。"
-  },
-  "addOnMenuSectionId": {
-    "required": "セクションは必須です。"
-  },
-  "addOnMenuItemId": {
-    "required": "追加アイテムは必須です。"
   }
 }

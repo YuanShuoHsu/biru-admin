@@ -1,4 +1,13 @@
 {
+  "addOnMenuItemId": {
+    "required": "Add-on item is required."
+  },
+  "addOnMenuSectionId": {
+    "required": "Section is required."
+  },
+  "addOnType": {
+    "required": "Add-on type is required."
+  },
   "birthDate": {
     "invalid": "Birth date is not valid.",
     "maxDate": "Please select a birth date on or before today.",
@@ -29,6 +38,9 @@
   "gender": {
     "required": "Gender is required."
   },
+  "member": {
+    "required": "Member is required."
+  },
   "name": {
     "minLength": "Name must be at least 2 characters long."
   },
@@ -40,6 +52,9 @@
     "number": "Contain at least one number.",
     "sameAsCurrent": "New password must be different from your current password."
   },
+  "organizationSlug": {
+    "required": "Organization is required."
+  },
   "password": {
     "letter": "Contain at least one letter.",
     "match": "Matches the password.",
@@ -50,8 +65,8 @@
     "invalid": "Phone number is not valid.",
     "required": "Phone is required."
   },
-  "member": {
-    "required": "Member is required."
+  "price": {
+    "required": "Price is required."
   },
   "role": {
     "required": "Role is required."
@@ -62,17 +77,5 @@
   "slug": {
     "letter": "Contain at least one letter.",
     "minLength": "Slug must be at least 1 character long."
-  },
-  "organizationSlug": {
-    "required": "Organization is required."
-  },
-  "addOnType": {
-    "required": "Add-on type is required."
-  },
-  "addOnMenuSectionId": {
-    "required": "Section is required."
-  },
-  "addOnMenuItemId": {
-    "required": "Add-on item is required."
   }
 }

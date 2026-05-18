@@ -37,7 +37,7 @@ export const useCreateMenuItemFormSchema = () => {
         price: z
           .string()
           .trim()
-          .min(1, { error: tValidation("name.minLength") }),
+          .min(1, { error: tValidation("price.required") }),
         availability: z.enum(ITEM_AVAILABILITY_VALUES),
         inventoryLevel: quantitativeValueSchema.optional(),
         deliveryLeadTime: quantitativeValueSchema.optional(),
