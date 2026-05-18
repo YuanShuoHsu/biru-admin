@@ -80,6 +80,7 @@ export interface MenuItem {
   url: string | null;
   suitableForDiet: RestrictedDiet[] | null;
   nutrition: NutritionInformation | null;
+  offer: Offer | null;
   createdAt: string;
   updatedAt: string;
 }

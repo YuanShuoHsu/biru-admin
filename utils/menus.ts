@@ -9,7 +9,6 @@ import type {
   MenuItem as AdminMenuItem,
   MenuItemAddOn as AdminMenuItemAddOn,
   MenuSection as AdminMenuSection,
-  Offer as AdminOffer,
 } from "@/types/menus";
 
 export const getMenus = cache(async (storeId: string) => {
@@ -124,19 +123,6 @@ export const getAdminMenuSectionItems = cache(
   },
 );
 
-export const getAdminMenuItemOffers = cache(
-  async (menuItemId: string, init?: RequestInit) => {
-    try {
-      const data = await fetcher<AdminOffer[]>(
-        `/api/menu-items/${menuItemId}/offers`,
-        init,
-      );
-      return Array.isArray(data) ? data : [];
-    } catch {
-      return [];
-    }
-  },
-);
 
 export const getAdminMenuItemAddOns = cache(
   async (menuItemId: string, init?: RequestInit) => {

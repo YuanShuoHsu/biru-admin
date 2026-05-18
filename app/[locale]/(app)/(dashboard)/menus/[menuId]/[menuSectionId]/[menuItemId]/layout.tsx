@@ -7,7 +7,6 @@ import { Link, usePathname } from "@/i18n/navigation";
 
 import {
   Extension,
-  LocalOffer,
   type SvgIconComponent,
 } from "@mui/icons-material";
 import { Stack, Tab, Tabs } from "@mui/material";
@@ -29,11 +28,6 @@ const MenuItemLayout = ({ children }: { children: React.ReactNode }) => {
     label: string;
     value: string;
   }[] = [
-    {
-      Icon: LocalOffer,
-      label: tMenus("offers.label"),
-      value: `${basePath}/offers`,
-    },
     {
       Icon: Extension,
       label: tMenus("addOns.label"),

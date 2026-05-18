@@ -127,23 +127,6 @@
     "placeholder": "请输入您的菜单名称"
   },
   "offers": {
-    "actions": {
-      "createOffer": {
-        "success": "成功新增定价",
-        "title": "新增定价"
-      },
-      "deleteOffer": {
-        "confirm": "确定要删除此定价设置吗？此操作无法撤销。",
-        "error": "删除定价失败",
-        "success": "成功删除定价",
-        "title": "删除定价"
-      },
-      "label": "操作",
-      "updateOffer": {
-        "success": "成功更新定价",
-        "title": "编辑定价"
-      }
-    },
     "availability": {
       "label": "供应状态",
       "options": {

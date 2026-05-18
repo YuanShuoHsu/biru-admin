@@ -127,23 +127,6 @@
     "placeholder": "메뉴 이름을 입력해 주세요"
   },
   "offers": {
-    "actions": {
-      "createOffer": {
-        "success": "가격 설정이 추가되었습니다",
-        "title": "가격 설정 추가"
-      },
-      "deleteOffer": {
-        "confirm": "이 가격 설정을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
-        "error": "가격 설정 삭제에 실패했습니다",
-        "success": "가격 설정이 삭제되었습니다",
-        "title": "가격 설정 삭제"
-      },
-      "label": "작업",
-      "updateOffer": {
-        "success": "가격 설정이 업데이트되었습니다",
-        "title": "가격 설정 편집"
-      }
-    },
     "availability": {
       "label": "공급 상태",
       "options": {

@@ -31,7 +31,7 @@ import {
   Cancel,
   Delete,
   Edit,
-  LocalOffer,
+  Extension,
   Save,
   Sort,
 } from "@mui/icons-material";
@@ -423,7 +423,7 @@ const MenusMenuIdSectionId = ({
         pageSize: "10",
       });
       router.push(
-        `/menus/${menuId}/${menuSectionId}/${id}/offers?${params.toString()}`,
+        `/menus/${menuId}/${menuSectionId}/${id}/add-ons?${params.toString()}`,
       );
     },
     [menuId, router, searchParams, menuSectionId],
@@ -519,7 +519,7 @@ const MenusMenuIdSectionId = ({
                   alignItems="center"
                   gap={1}
                 >
-                  <Tooltip title={tMenus("offers.label")}>
+                  <Tooltip title={tMenus("addOns.label")}>
                     <IconButton
                       onClick={(event) => {
                         event.stopPropagation();
@@ -528,7 +528,7 @@ const MenusMenuIdSectionId = ({
                       }}
                       size="small"
                     >
-                      <LocalOffer fontSize="small" />
+                      <Extension fontSize="small" />
                     </IconButton>
                   </Tooltip>
                   <Tooltip title={tMenus("items.actions.updateItem.title")}>
@@ -572,6 +572,23 @@ const MenusMenuIdSectionId = ({
         field: "description",
         filterOperators: stringFilterOperators,
         headerName: tMenus("items.description.label"),
+      },
+      {
+        field: "price",
+        headerName: tMenus("offers.price.label"),
+        sortable: false,
+        filterable: false,
+        valueGetter: (_value: unknown, { offer }: MenuItem) => offer?.price,
+      },
+      {
+        field: "availability",
+        headerName: tMenus("offers.availability.label"),
+        sortable: false,
+        filterable: false,
+        valueGetter: (_value: unknown, { offer }: MenuItem) =>
+          offer?.availability
+            ? tMenus(`offers.availability.options.${offer.availability}` as Parameters<typeof tMenus>[0])
+            : "",
       },
       {
         field: "createdAt",

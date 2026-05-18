@@ -127,23 +127,6 @@
     "placeholder": "メニュー名を入力してください"
   },
   "offers": {
-    "actions": {
-      "createOffer": {
-        "success": "価格設定を追加しました",
-        "title": "価格設定を追加"
-      },
-      "deleteOffer": {
-        "confirm": "この価格設定を削除しますか？この操作は取り消せません。",
-        "error": "価格設定の削除に失敗しました",
-        "success": "価格設定を削除しました",
-        "title": "価格設定を削除"
-      },
-      "label": "操作",
-      "updateOffer": {
-        "success": "価格設定を更新しました",
-        "title": "価格設定を編集"
-      }
-    },
     "availability": {
       "label": "提供状況",
       "options": {

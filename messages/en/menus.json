@@ -127,23 +127,6 @@
     "placeholder": "Please enter your menu name"
   },
   "offers": {
-    "actions": {
-      "createOffer": {
-        "success": "Offer created",
-        "title": "Add offer"
-      },
-      "deleteOffer": {
-        "confirm": "Are you sure you want to delete this offer? This action cannot be undone.",
-        "error": "Failed to delete offer",
-        "success": "Offer deleted",
-        "title": "Delete offer"
-      },
-      "label": "Actions",
-      "updateOffer": {
-        "success": "Offer updated",
-        "title": "Edit offer"
-      }
-    },
     "availability": {
       "label": "Availability",
       "options": {
