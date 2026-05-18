@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent, useEffect } from "react";
+import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import useSWR from "swr";
 
@@ -74,7 +74,7 @@ const CreateAddOnDialog = ({
     () =>
       fetcher<{ data: MenuSection[] }>(
         `/api/menus/${menuId}/menu-sections?limit=100&offset=0`,
-      ).then((r) => r.data ?? []),
+      ).then(({ data }) => data || []),
   );
 
   const { data: sectionItems = [] } = useSWR(
@@ -84,18 +84,8 @@ const CreateAddOnDialog = ({
     () =>
       fetcher<{ data: MenuItemType[] }>(
         `/api/menu-sections/${selectedSectionId}/menu-items?limit=100&offset=0`,
-      ).then((r) => r.data ?? []),
+      ).then(({ data }) => data || []),
   );
-
-  useEffect(() => {
-    setValue("addOnMenuItemId", "");
-    setValue("addOnMenuSectionId", "");
-    setValue("sectionId", "");
-  }, [selectedType, setValue]);
-
-  useEffect(() => {
-    setValue("addOnMenuItemId", "");
-  }, [selectedSectionId, setValue]);
 
   const onSubmitHandler = async ({
     type,
@@ -154,7 +144,13 @@ const CreateAddOnDialog = ({
           },
         }}
         value={selectedType}
-        {...register("type")}
+        {...register("type", {
+          onChange: () => {
+            setValue("sectionId", "");
+            setValue("addOnMenuItemId", "");
+            setValue("addOnMenuSectionId", "");
+          },
+        })}
       >
         <MenuItem disabled value="">
           <em>{tMenus("addOns.type.placeholder")}</em>
@@ -199,6 +195,7 @@ const CreateAddOnDialog = ({
         value={selectedSectionId}
         {...register("sectionId", {
           onChange: (e) => {
+            setValue("addOnMenuItemId", "");
             if (selectedType === "section") {
               setValue("addOnMenuSectionId", e.target.value);
             }
