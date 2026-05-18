@@ -147,7 +147,8 @@ const UpdateMenuItemDialog = ({
             price: offer?.price,
             availability: offer?.availability,
             deliveryLeadTime:
-              offer?.deliveryLeadTime?.value || offer?.deliveryLeadTime?.unitText
+              offer?.deliveryLeadTime?.value ||
+              offer?.deliveryLeadTime?.unitText
                 ? {
                     ...(offer.deliveryLeadTime.value && {
                       value: Number(offer.deliveryLeadTime.value),
