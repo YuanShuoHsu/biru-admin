@@ -179,7 +179,7 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
 
   return (
     <StyledBox component="form" id="update-offer-form" onSubmit={onSubmit}>
-      <Grid container spacing={2} sx={{ width: "100%" }}>
+      <Grid container width="100%" spacing={2}>
         <Grid size={{ xs: 12, sm: 4 }}>
           <CountrySelect
             error={!!errors.priceCurrency}
@@ -248,7 +248,7 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
           </MenuItem>
         ))}
       </TextField>
-      <Grid container spacing={2} sx={{ width: "100%" }}>
+      <Grid container width="100%" alignItems="flex-end" spacing={2}>
         <Grid size={{ xs: 12, sm: 6 }}>
           <NumberSpinner
             clearable

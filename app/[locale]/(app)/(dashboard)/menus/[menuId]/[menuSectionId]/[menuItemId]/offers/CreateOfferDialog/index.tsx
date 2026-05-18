@@ -185,7 +185,7 @@ const CreateOfferDialog = ({
 
   return (
     <StyledBox component="form" id="create-offer-form" onSubmit={onSubmit}>
-      <Grid width="100%" container spacing={2}>
+      <Grid container width="100%" spacing={2}>
         <Grid size={{ xs: 12, sm: 4 }}>
           <CountrySelect
             error={!!errors.priceCurrency}
@@ -254,7 +254,7 @@ const CreateOfferDialog = ({
           </MenuItem>
         ))}
       </TextField>
-      <Grid width="100%" container spacing={2}>
+      <Grid container width="100%" alignItems="flex-end" spacing={2}>
         <Grid size={{ xs: 12, sm: 6 }}>
           <NumberSpinner
             clearable

@@ -195,7 +195,7 @@ const NumberSpinner = ({
           <Add fontSize={size} />
         </BaseNumberField.Increment>
       </FlexDiv>
-      <FormHelperText>{helperText}</FormHelperText>
+      {helperText && <FormHelperText>{helperText}</FormHelperText>}
     </BaseNumberField.Root>
   );
 };
