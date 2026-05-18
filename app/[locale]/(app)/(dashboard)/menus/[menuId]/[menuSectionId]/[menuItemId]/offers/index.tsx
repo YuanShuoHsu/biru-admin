@@ -189,16 +189,48 @@ const MenuItemOffers = ({
             : "",
       },
       {
+        field: "inventoryLevel",
+        headerName: tMenus("offers.inventoryLevel.value.label"),
+        valueGetter: (_value: unknown, { inventoryLevel }: Offer) => {
+          if (inventoryLevel?.value == null) return;
+
+          return [String(inventoryLevel.value), inventoryLevel.unitText]
+            .filter(Boolean)
+            .join(" ");
+        },
+      },
+      {
+        field: "deliveryLeadTime",
+        headerName: tMenus("offers.deliveryLeadTime.value.label"),
+        valueGetter: (_value: unknown, { deliveryLeadTime }: Offer) => {
+          if (deliveryLeadTime?.value == null) return;
+
+          return [String(deliveryLeadTime.value), deliveryLeadTime.unitText]
+            .filter(Boolean)
+            .join(" ");
+        },
+      },
+      {
+        field: "priceSpecification",
+        headerName: tMenus("offers.priceSpecification.price.label"),
+        valueGetter: (_value: unknown, { priceSpecification }: Offer) =>
+          priceSpecification?.[0].price,
+      },
+      {
         field: "validFrom",
-        headerName: tMenus("offers.validFrom.label"),
+        headerName: tMenus("offers.priceSpecification.validFrom.label"),
         valueFormatter: (value: string | null) =>
           value ? format.dateTime(new Date(value), "short") : "",
+        valueGetter: (_value: unknown, { priceSpecification }: Offer) =>
+          priceSpecification?.[0].validFrom,
       },
       {
         field: "validThrough",
-        headerName: tMenus("offers.validThrough.label"),
+        headerName: tMenus("offers.priceSpecification.validThrough.label"),
         valueFormatter: (value: string | null) =>
           value ? format.dateTime(new Date(value), "short") : "",
+        valueGetter: (_value: unknown, { priceSpecification }: Offer) =>
+          priceSpecification?.[0].validThrough,
       },
       {
         field: "createdAt",
