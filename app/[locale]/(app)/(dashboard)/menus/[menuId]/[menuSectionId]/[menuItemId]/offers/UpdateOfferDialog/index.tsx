@@ -97,11 +97,11 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
     control,
     name: "inventoryLevel.value",
   });
-  const saleValidFrom = useWatch({
+  const priceSpecificationValidFrom = useWatch({
     control,
     name: "priceSpecification.validFrom",
   });
-  const saleValidThrough = useWatch({
+  const priceSpecificationValidThrough = useWatch({
     control,
     name: "priceSpecification.validThrough",
   });
@@ -323,7 +323,7 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
                 helperText: errors.priceSpecification?.validFrom?.message,
               },
             }}
-            value={saleValidFrom ? dayjs(saleValidFrom) : null}
+            value={priceSpecificationValidFrom ? dayjs(priceSpecificationValidFrom) : null}
             {...register("priceSpecification.validFrom")}
             onChange={(date) =>
               setValue(
@@ -344,7 +344,7 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
                 helperText: errors.priceSpecification?.validThrough?.message,
               },
             }}
-            value={saleValidThrough ? dayjs(saleValidThrough) : null}
+            value={priceSpecificationValidThrough ? dayjs(priceSpecificationValidThrough) : null}
             {...register("priceSpecification.validThrough")}
             onChange={(date) =>
               setValue(
