@@ -91,6 +91,7 @@
         "title": "Reorder Items"
       },
       "updateItem": {
+        "error": "Failed to update item",
         "success": "Item {name} updated",
         "title": "Edit item"
       }

@@ -127,18 +127,6 @@ const UpdateMenuItemDialog = ({
     name: "offer.priceSpecification.validThrough",
   });
 
-  const buildQuantitativePayload = (qv?: {
-    value?: string;
-    unitText?: string;
-  }) => {
-    if (!qv) return null;
-    const payload = {
-      ...(qv.value && { value: Number(qv.value) }),
-      ...(qv.unitText && { unitText: qv.unitText }),
-    };
-    return Object.keys(payload).length > 0 ? payload : null;
-  };
-
   const onSubmitHandler = async ({
     name,
     description,
@@ -154,44 +142,47 @@ const UpdateMenuItemDialog = ({
           name,
           description: description || null,
           image: imageSrc || null,
+          offer: {
+            priceCurrency: offer?.priceCurrency,
+            price: offer?.price,
+            availability: offer?.availability,
+            deliveryLeadTime:
+              offer?.deliveryLeadTime?.value || offer?.deliveryLeadTime?.unitText
+                ? {
+                    ...(offer.deliveryLeadTime.value && {
+                      value: Number(offer.deliveryLeadTime.value),
+                    }),
+                    ...(offer.deliveryLeadTime.unitText && {
+                      unitText: offer.deliveryLeadTime.unitText,
+                    }),
+                  }
+                : null,
+            inventoryLevel:
+              offer?.inventoryLevel?.value || offer?.inventoryLevel?.unitText
+                ? {
+                    ...(offer.inventoryLevel.value && {
+                      value: Number(offer.inventoryLevel.value),
+                    }),
+                    ...(offer.inventoryLevel.unitText && {
+                      unitText: offer.inventoryLevel.unitText,
+                    }),
+                  }
+                : null,
+            priceSpecification: offer?.priceSpecification?.price
+              ? {
+                  price: offer.priceSpecification.price,
+                  priceCurrency: offer?.priceCurrency,
+                  ...(offer.priceSpecification.validFrom && {
+                    validFrom: offer.priceSpecification.validFrom,
+                  }),
+                  ...(offer.priceSpecification.validThrough && {
+                    validThrough: offer.priceSpecification.validThrough,
+                  }),
+                }
+              : null,
+          },
         }),
       });
-
-      if (offer?.price) {
-        const offerBody = {
-          priceCurrency: offer.priceCurrency,
-          price: offer.price,
-          availability: offer.availability,
-          deliveryLeadTime: buildQuantitativePayload(offer.deliveryLeadTime),
-          inventoryLevel: buildQuantitativePayload(offer.inventoryLevel),
-          priceSpecification: offer.priceSpecification?.price
-            ? {
-                price: offer.priceSpecification.price,
-                priceCurrency: offer.priceCurrency,
-                ...(offer.priceSpecification.validFrom && {
-                  validFrom: offer.priceSpecification.validFrom,
-                }),
-                ...(offer.priceSpecification.validThrough && {
-                  validThrough: offer.priceSpecification.validThrough,
-                }),
-              }
-            : null,
-        };
-
-        if (item.offer) {
-          await fetcher(`/api/offers/${item.offer.id}`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(offerBody),
-          });
-        } else {
-          await fetcher(`/api/menu-items/${item.id}/offers`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(offerBody),
-          });
-        }
-      }
 
       enqueueSnackbar(tMenus("items.actions.updateItem.success", { name }), {
         variant: "success",
@@ -200,7 +191,7 @@ const UpdateMenuItemDialog = ({
       closeDialog();
       mutateItems();
     } catch {
-      enqueueSnackbar(tMenus("items.actions.updateItem.title"), {
+      enqueueSnackbar(tMenus("items.actions.updateItem.error"), {
         variant: "error",
       });
 
@@ -264,6 +255,9 @@ const UpdateMenuItemDialog = ({
             error={!!errors.offer?.price}
             fullWidth
             helperText={errors.offer?.price?.message}
+            isAllowed={({ floatValue }) =>
+              floatValue === undefined || floatValue <= 99999999.99
+            }
             label={tMenus("offers.price.label")}
             name="offer.price"
             onBlur={register("offer.price").onBlur}
@@ -383,6 +377,9 @@ const UpdateMenuItemDialog = ({
             error={!!errors.offer?.priceSpecification?.price}
             fullWidth
             helperText={errors.offer?.priceSpecification?.price?.message}
+            isAllowed={({ floatValue }) =>
+              floatValue === undefined || floatValue <= 99999999.99
+            }
             label={tMenus("offers.priceSpecification.price.label")}
             name="offer.priceSpecification.price"
             onBlur={register("offer.priceSpecification.price").onBlur}

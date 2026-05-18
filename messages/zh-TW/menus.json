@@ -91,6 +91,7 @@
         "title": "排序品項"
       },
       "updateItem": {
+        "error": "更新品項失敗",
         "success": "成功更新品項 {name}",
         "title": "編輯品項"
       }

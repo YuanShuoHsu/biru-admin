@@ -91,6 +91,7 @@
         "title": "品目を並び替え"
       },
       "updateItem": {
+        "error": "品目の更新に失敗しました",
         "success": "品目 {name} を更新しました",
         "title": "品目を編集"
       }

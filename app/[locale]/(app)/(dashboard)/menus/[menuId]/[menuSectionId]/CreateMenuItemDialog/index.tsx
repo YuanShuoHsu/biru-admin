@@ -120,7 +120,7 @@ const CreateMenuItemDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      const created = await fetcher<MenuItemType>(
+      await fetcher<MenuItemType>(
         `/api/menu-sections/${menuSectionId}/menu-items`,
         {
           method: "POST",
@@ -129,53 +129,48 @@ const CreateMenuItemDialog = ({
             name,
             ...(description && { description }),
             ...(imageSrc && { image: imageSrc }),
+            offer: {
+              priceCurrency: offer?.priceCurrency,
+              price: offer?.price,
+              availability: offer?.availability,
+              deliveryLeadTime:
+                offer?.deliveryLeadTime?.value || offer?.deliveryLeadTime?.unitText
+                  ? {
+                      ...(offer.deliveryLeadTime.value && {
+                        value: Number(offer.deliveryLeadTime.value),
+                      }),
+                      ...(offer.deliveryLeadTime.unitText && {
+                        unitText: offer.deliveryLeadTime.unitText,
+                      }),
+                    }
+                  : null,
+              inventoryLevel:
+                offer?.inventoryLevel?.value || offer?.inventoryLevel?.unitText
+                  ? {
+                      ...(offer.inventoryLevel.value && {
+                        value: Number(offer.inventoryLevel.value),
+                      }),
+                      ...(offer.inventoryLevel.unitText && {
+                        unitText: offer.inventoryLevel.unitText,
+                      }),
+                    }
+                  : null,
+              priceSpecification: offer?.priceSpecification?.price
+                ? {
+                    price: offer.priceSpecification.price,
+                    priceCurrency: offer?.priceCurrency,
+                    ...(offer.priceSpecification.validFrom && {
+                      validFrom: offer.priceSpecification.validFrom,
+                    }),
+                    ...(offer.priceSpecification.validThrough && {
+                      validThrough: offer.priceSpecification.validThrough,
+                    }),
+                  }
+                : null,
+            },
           }),
         },
       );
-
-      await fetcher(`/api/menu-items/${created.id}/offers`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          priceCurrency: offer?.priceCurrency,
-          price: offer?.price,
-          availability: offer?.availability,
-          deliveryLeadTime:
-            offer?.deliveryLeadTime?.value || offer?.deliveryLeadTime?.unitText
-              ? {
-                  ...(offer.deliveryLeadTime.value && {
-                    value: Number(offer.deliveryLeadTime.value),
-                  }),
-                  ...(offer.deliveryLeadTime.unitText && {
-                    unitText: offer.deliveryLeadTime.unitText,
-                  }),
-                }
-              : null,
-          inventoryLevel:
-            offer?.inventoryLevel?.value || offer?.inventoryLevel?.unitText
-              ? {
-                  ...(offer.inventoryLevel.value && {
-                    value: Number(offer.inventoryLevel.value),
-                  }),
-                  ...(offer.inventoryLevel.unitText && {
-                    unitText: offer.inventoryLevel.unitText,
-                  }),
-                }
-              : null,
-          priceSpecification: offer?.priceSpecification?.price
-            ? {
-                price: offer.priceSpecification.price,
-                priceCurrency: offer.priceCurrency,
-                ...(offer.priceSpecification.validFrom && {
-                  validFrom: offer.priceSpecification.validFrom,
-                }),
-                ...(offer.priceSpecification.validThrough && {
-                  validThrough: offer.priceSpecification.validThrough,
-                }),
-              }
-            : null,
-        }),
-      });
 
       enqueueSnackbar(tMenus("items.actions.createItem.success", { name }), {
         variant: "success",
@@ -247,6 +242,9 @@ const CreateMenuItemDialog = ({
             error={!!errors.offer?.price}
             fullWidth
             helperText={errors.offer?.price?.message}
+            isAllowed={({ floatValue }) =>
+              floatValue === undefined || floatValue <= 99999999.99
+            }
             label={tMenus("offers.price.label")}
             name="offer.price"
             onBlur={register("offer.price").onBlur}
@@ -366,6 +364,9 @@ const CreateMenuItemDialog = ({
             error={!!errors.offer?.priceSpecification?.price}
             fullWidth
             helperText={errors.offer?.priceSpecification?.price?.message}
+            isAllowed={({ floatValue }) =>
+              floatValue === undefined || floatValue <= 99999999.99
+            }
             label={tMenus("offers.priceSpecification.price.label")}
             name="offer.priceSpecification.price"
             onBlur={register("offer.priceSpecification.price").onBlur}
