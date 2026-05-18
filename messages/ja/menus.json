@@ -269,9 +269,6 @@
     },
     "validThrough": {
       "label": "有効終了日（任意）"
-    },
-    "priceValidUntil": {
-      "label": "価格有効期限（任意）"
     }
   },
   "updatedAt": "更新日時"

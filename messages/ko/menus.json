@@ -269,9 +269,6 @@
     },
     "validThrough": {
       "label": "유효 종료일 (선택 사항)"
-    },
-    "priceValidUntil": {
-      "label": "가격 유효 종료일 (선택 사항)"
     }
   },
   "updatedAt": "수정일"

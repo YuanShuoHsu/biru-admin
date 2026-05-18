@@ -99,7 +99,6 @@ export interface Offer {
   price: string | null;
   priceCurrency: string | null;
   availability: ItemAvailability | null;
-  priceValidUntil: string | null;
   validFrom: string | null;
   validThrough: string | null;
   deliveryLeadTime: QuantitativeValue | null;

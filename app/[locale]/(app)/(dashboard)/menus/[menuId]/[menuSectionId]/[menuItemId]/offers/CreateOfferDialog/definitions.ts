@@ -35,7 +35,6 @@ export const useCreateOfferFormSchema = () => {
     availability: z.enum(ITEM_AVAILABILITY_VALUES),
     inventoryLevel: quantitativeValueSchema.optional(),
     deliveryLeadTime: quantitativeValueSchema.optional(),
-    priceValidUntil: z.string().trim().optional(),
     validFrom: z.string().trim().optional(),
     validThrough: z.string().trim().optional(),
   });

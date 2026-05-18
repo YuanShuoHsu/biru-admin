@@ -78,7 +78,6 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
             : "",
         unitText: offer.deliveryLeadTime?.unitText ?? "",
       },
-      priceValidUntil: offer.priceValidUntil || "",
       validFrom: offer.validFrom || "",
       validThrough: offer.validThrough || "",
     },
@@ -95,7 +94,6 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
     control,
     name: "inventoryLevel.value",
   });
-  const priceValidUntil = useWatch({ control, name: "priceValidUntil" });
   const validFrom = useWatch({ control, name: "validFrom" });
   const validThrough = useWatch({ control, name: "validThrough" });
 
@@ -117,7 +115,6 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
     availability,
     inventoryLevel,
     deliveryLeadTime,
-    priceValidUntil,
     validFrom,
     validThrough,
   }: UpdateOfferForm) => {
@@ -133,7 +130,6 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
           availability,
           deliveryLeadTime: buildQuantitativePayload(deliveryLeadTime),
           inventoryLevel: buildQuantitativePayload(inventoryLevel),
-          priceValidUntil: priceValidUntil || null,
           validFrom: validFrom || null,
           validThrough: validThrough || null,
         }),
@@ -282,24 +278,6 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
             label={tMenus("offers.deliveryLeadTime.unitText.label")}
             placeholder={tMenus("offers.deliveryLeadTime.unitText.placeholder")}
             {...register("deliveryLeadTime.unitText")}
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <DatePicker
-            label={tMenus("offers.priceValidUntil.label")}
-            slotProps={{
-              field: { clearable: true },
-              textField: {
-                error: !!errors.priceValidUntil,
-                fullWidth: true,
-                helperText: errors.priceValidUntil?.message,
-              },
-            }}
-            value={priceValidUntil ? dayjs(priceValidUntil) : null}
-            {...register("priceValidUntil")}
-            onChange={(date) =>
-              setValue("priceValidUntil", date ? date.format("YYYY-MM-DD") : "")
-            }
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>

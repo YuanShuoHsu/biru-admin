@@ -269,9 +269,6 @@
     },
     "validThrough": {
       "label": "有效截止日（选填）"
-    },
-    "priceValidUntil": {
-      "label": "价格有效截止日（选填）"
     }
   },
   "updatedAt": "更新时间"

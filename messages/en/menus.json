@@ -269,9 +269,6 @@
     },
     "validThrough": {
       "label": "Valid through (optional)"
-    },
-    "priceValidUntil": {
-      "label": "Price valid until (optional)"
     }
   },
   "updatedAt": "Updated"
