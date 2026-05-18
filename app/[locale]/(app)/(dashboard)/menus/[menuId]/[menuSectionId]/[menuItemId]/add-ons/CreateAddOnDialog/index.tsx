@@ -6,10 +6,7 @@ import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import useSWR from "swr";
 
-import {
-  type CreateAddOnForm,
-  useCreateAddOnFormSchema,
-} from "./definitions";
+import { type CreateAddOnForm, useCreateAddOnFormSchema } from "./definitions";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
