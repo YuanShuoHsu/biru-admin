@@ -323,7 +323,11 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
                 helperText: errors.priceSpecification?.validFrom?.message,
               },
             }}
-            value={priceSpecificationValidFrom ? dayjs(priceSpecificationValidFrom) : null}
+            value={
+              priceSpecificationValidFrom
+                ? dayjs(priceSpecificationValidFrom)
+                : null
+            }
             {...register("priceSpecification.validFrom")}
             onChange={(date) =>
               setValue(
@@ -344,7 +348,11 @@ const UpdateOfferDialog = ({ offer, mutateOffers }: UpdateOfferDialogProps) => {
                 helperText: errors.priceSpecification?.validThrough?.message,
               },
             }}
-            value={priceSpecificationValidThrough ? dayjs(priceSpecificationValidThrough) : null}
+            value={
+              priceSpecificationValidThrough
+                ? dayjs(priceSpecificationValidThrough)
+                : null
+            }
             {...register("priceSpecification.validThrough")}
             onChange={(date) =>
               setValue(
