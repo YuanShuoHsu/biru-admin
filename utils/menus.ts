@@ -123,7 +123,6 @@ export const getAdminMenuSectionItems = cache(
   },
 );
 
-
 export const getAdminMenuItemAddOns = cache(
   async (menuItemId: string, init?: RequestInit) => {
     try {

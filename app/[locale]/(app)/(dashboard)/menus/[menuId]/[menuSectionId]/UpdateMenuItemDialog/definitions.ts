@@ -34,7 +34,10 @@ export const useUpdateMenuItemFormSchema = () => {
     offer: z
       .object({
         priceCurrency: z.string().trim().min(1),
-        price: z.string().trim().min(1, { error: tValidation("name.minLength") }),
+        price: z
+          .string()
+          .trim()
+          .min(1, { error: tValidation("name.minLength") }),
         availability: z.enum(ITEM_AVAILABILITY_VALUES),
         inventoryLevel: quantitativeValueSchema.optional(),
         deliveryLeadTime: quantitativeValueSchema.optional(),

@@ -587,7 +587,11 @@ const MenusMenuIdSectionId = ({
         filterable: false,
         valueGetter: (_value: unknown, { offer }: MenuItem) =>
           offer?.availability
-            ? tMenus(`offers.availability.options.${offer.availability}` as Parameters<typeof tMenus>[0])
+            ? tMenus(
+                `offers.availability.options.${offer.availability}` as Parameters<
+                  typeof tMenus
+                >[0],
+              )
             : "",
       },
       {

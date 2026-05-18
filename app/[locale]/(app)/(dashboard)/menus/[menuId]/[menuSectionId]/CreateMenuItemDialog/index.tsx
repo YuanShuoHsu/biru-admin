@@ -18,7 +18,16 @@ import {
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Box, type BoxProps, Divider, Grid, MenuItem, styled, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  type BoxProps,
+  Divider,
+  Grid,
+  MenuItem,
+  styled,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import CountrySelect from "@/components/CountrySelect";
@@ -81,12 +90,27 @@ const CreateMenuItemDialog = ({
 
   const priceCurrency = useWatch({ control, name: "offer.priceCurrency" });
   const availability = useWatch({ control, name: "offer.availability" });
-  const deliveryLeadTimeValue = useWatch({ control, name: "offer.deliveryLeadTime.value" });
-  const inventoryLevelValue = useWatch({ control, name: "offer.inventoryLevel.value" });
-  const priceSpecificationValidFrom = useWatch({ control, name: "offer.priceSpecification.validFrom" });
-  const priceSpecificationValidThrough = useWatch({ control, name: "offer.priceSpecification.validThrough" });
+  const deliveryLeadTimeValue = useWatch({
+    control,
+    name: "offer.deliveryLeadTime.value",
+  });
+  const inventoryLevelValue = useWatch({
+    control,
+    name: "offer.inventoryLevel.value",
+  });
+  const priceSpecificationValidFrom = useWatch({
+    control,
+    name: "offer.priceSpecification.validFrom",
+  });
+  const priceSpecificationValidThrough = useWatch({
+    control,
+    name: "offer.priceSpecification.validThrough",
+  });
 
-  const buildQuantitativePayload = (qv?: { value?: string; unitText?: string }) => {
+  const buildQuantitativePayload = (qv?: {
+    value?: string;
+    unitText?: string;
+  }) => {
     if (!qv) return null;
     const payload = {
       ...(qv.value && { value: Number(qv.value) }),
@@ -95,7 +119,11 @@ const CreateMenuItemDialog = ({
     return Object.keys(payload).length > 0 ? payload : null;
   };
 
-  const onSubmitHandler = async ({ name, description, offer }: CreateMenuItemForm) => {
+  const onSubmitHandler = async ({
+    name,
+    description,
+    offer,
+  }: CreateMenuItemForm) => {
     try {
       setDialog({ confirmLoading: true });
 
@@ -126,8 +154,12 @@ const CreateMenuItemDialog = ({
               ? {
                   price: offer.priceSpecification.price,
                   priceCurrency: offer.priceCurrency,
-                  ...(offer.priceSpecification.validFrom && { validFrom: offer.priceSpecification.validFrom }),
-                  ...(offer.priceSpecification.validThrough && { validThrough: offer.priceSpecification.validThrough }),
+                  ...(offer.priceSpecification.validFrom && {
+                    validFrom: offer.priceSpecification.validFrom,
+                  }),
+                  ...(offer.priceSpecification.validThrough && {
+                    validThrough: offer.priceSpecification.validThrough,
+                  }),
                 }
               : null,
           }),
@@ -196,7 +228,8 @@ const CreateMenuItemDialog = ({
             }
             {...register("offer.priceCurrency")}
             onChange={(value) => {
-              if ("currency" in value) setValue("offer.priceCurrency", value.currency);
+              if ("currency" in value)
+                setValue("offer.priceCurrency", value.currency);
             }}
           />
         </Grid>
@@ -225,7 +258,9 @@ const CreateMenuItemDialog = ({
             renderValue: (selected) =>
               selected ? (
                 tMenus(
-                  `offers.availability.options.${selected}` as Parameters<typeof tMenus>[0],
+                  `offers.availability.options.${selected}` as Parameters<
+                    typeof tMenus
+                  >[0],
                 )
               ) : (
                 <em>{tMenus("offers.availability.placeholder")}</em>
@@ -239,7 +274,11 @@ const CreateMenuItemDialog = ({
         </MenuItem>
         {ITEM_AVAILABILITY_VALUES.map((value) => (
           <MenuItem key={value} value={value}>
-            {tMenus(`offers.availability.options.${value}` as Parameters<typeof tMenus>[0])}
+            {tMenus(
+              `offers.availability.options.${value}` as Parameters<
+                typeof tMenus
+              >[0],
+            )}
           </MenuItem>
         ))}
       </TextField>
@@ -253,9 +292,14 @@ const CreateMenuItemDialog = ({
             label={tMenus("offers.inventoryLevel.value.label")}
             min={0}
             placeholder={tMenus("offers.inventoryLevel.value.placeholder")}
-            value={inventoryLevelValue !== "" ? Number(inventoryLevelValue) : null}
+            value={
+              inventoryLevelValue !== "" ? Number(inventoryLevelValue) : null
+            }
             onValueChange={(val) =>
-              setValue("offer.inventoryLevel.value", val != null ? String(val) : "")
+              setValue(
+                "offer.inventoryLevel.value",
+                val != null ? String(val) : "",
+              )
             }
           />
         </Grid>
@@ -278,9 +322,16 @@ const CreateMenuItemDialog = ({
             label={tMenus("offers.deliveryLeadTime.value.label")}
             min={0}
             placeholder={tMenus("offers.deliveryLeadTime.value.placeholder")}
-            value={deliveryLeadTimeValue !== "" ? Number(deliveryLeadTimeValue) : null}
+            value={
+              deliveryLeadTimeValue !== ""
+                ? Number(deliveryLeadTimeValue)
+                : null
+            }
             onValueChange={(val) =>
-              setValue("offer.deliveryLeadTime.value", val != null ? String(val) : "")
+              setValue(
+                "offer.deliveryLeadTime.value",
+                val != null ? String(val) : "",
+              )
             }
           />
         </Grid>
@@ -312,13 +363,21 @@ const CreateMenuItemDialog = ({
               textField: {
                 error: !!errors.offer?.priceSpecification?.validFrom,
                 fullWidth: true,
-                helperText: errors.offer?.priceSpecification?.validFrom?.message,
+                helperText:
+                  errors.offer?.priceSpecification?.validFrom?.message,
               },
             }}
-            value={priceSpecificationValidFrom ? dayjs(priceSpecificationValidFrom) : null}
+            value={
+              priceSpecificationValidFrom
+                ? dayjs(priceSpecificationValidFrom)
+                : null
+            }
             {...register("offer.priceSpecification.validFrom")}
             onChange={(date) =>
-              setValue("offer.priceSpecification.validFrom", date ? date.format("YYYY-MM-DD") : "")
+              setValue(
+                "offer.priceSpecification.validFrom",
+                date ? date.format("YYYY-MM-DD") : "",
+              )
             }
           />
         </Grid>
@@ -330,13 +389,21 @@ const CreateMenuItemDialog = ({
               textField: {
                 error: !!errors.offer?.priceSpecification?.validThrough,
                 fullWidth: true,
-                helperText: errors.offer?.priceSpecification?.validThrough?.message,
+                helperText:
+                  errors.offer?.priceSpecification?.validThrough?.message,
               },
             }}
-            value={priceSpecificationValidThrough ? dayjs(priceSpecificationValidThrough) : null}
+            value={
+              priceSpecificationValidThrough
+                ? dayjs(priceSpecificationValidThrough)
+                : null
+            }
             {...register("offer.priceSpecification.validThrough")}
             onChange={(date) =>
-              setValue("offer.priceSpecification.validThrough", date ? date.format("YYYY-MM-DD") : "")
+              setValue(
+                "offer.priceSpecification.validThrough",
+                date ? date.format("YYYY-MM-DD") : "",
+              )
             }
           />
         </Grid>
