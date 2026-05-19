@@ -3,15 +3,28 @@
 import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import CreateAddOnDialog from "./CreateAddOnDialog";
 import UpdateAddOnDialog from "./UpdateAddOnDialog";
 
+import { DragHandle, Sortable } from "@/components/Sortable";
+
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
-import { Add, Delete, Edit } from "@mui/icons-material";
+import { arrayMove } from "@dnd-kit/helpers";
+import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
+import { isSortableOperation } from "@dnd-kit/react/sortable";
+
+import {
+  Add,
+  Cancel,
+  Delete,
+  Edit,
+  Save,
+  Sort,
+} from "@mui/icons-material";
 import {
   Button,
   DialogContentText,
@@ -46,6 +59,8 @@ const MenuItemAddOns = ({
   menuId,
   menuItemId,
 }: MenuItemAddOnsProps) => {
+  const [isReorderMode, setIsReorderMode] = useState(false);
+
   const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
@@ -150,9 +165,104 @@ const MenuItemAddOns = ({
     [mutateAddOns, setDialog, tMenus],
   );
 
+  const handleEnterReorderMode = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tMenus("addOns.actions.reorderAddOn.confirm")}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsReorderMode(true);
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tMenus("addOns.actions.reorderAddOn.title"),
+    });
+  }, [apiRef, setDialog, tMenus]);
+
+  const handleSaveReorder = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tMenus("addOns.actions.reorderAddOn.save.confirm")}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        try {
+          await fetcher(`/api/menu-items/${menuItemId}/add-ons/reorder`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ids: addOns.map(({ id }) => id), offset: 0 }),
+          });
+
+          setIsReorderMode(false);
+          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+
+          enqueueSnackbar(
+            tMenus("addOns.actions.reorderAddOn.save.success"),
+            { variant: "success" },
+          );
+        } catch {
+          mutateAddOns();
+
+          enqueueSnackbar(
+            tMenus("addOns.actions.reorderAddOn.save.error"),
+            { variant: "error" },
+          );
+        }
+      },
+      open: true,
+      title: tMenus("addOns.actions.reorderAddOn.save.label"),
+    });
+  }, [addOns, apiRef, menuItemId, mutateAddOns, setDialog, tMenus]);
+
+  const handleCancelReorder = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tMenus("addOns.actions.reorderAddOn.cancel.confirm")}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsReorderMode(false);
+        mutateAddOns();
+      },
+      open: true,
+      title: tMenus("addOns.actions.reorderAddOn.cancel.label"),
+    });
+  }, [mutateAddOns, setDialog, tMenus]);
+
+  const handleDragEnd = ({ operation }: DragEndEvent) => {
+    if (!isSortableOperation(operation)) return;
+
+    const { canceled, source } = operation;
+    if (canceled || !source) return;
+
+    const fromIndex = source.initialIndex;
+    const toIndex = source.index;
+    if (fromIndex === toIndex) return;
+
+    const newAddOns = arrayMove(addOns, fromIndex, toIndex);
+    mutateAddOns(newAddOns, false);
+  };
+
   const columns = useMemo<GridColDef[]>(
     () => [
-      ...(canWrite
+      ...(isReorderMode
+        ? [
+            {
+              disableColumnMenu: true,
+              field: "reorder",
+              filterable: false,
+              headerName: tMenus("reorder"),
+              renderCell: () => <DragHandle />,
+              resizable: false,
+              sortable: false,
+            },
+          ]
+        : []),
+      ...(canWrite && !isReorderMode
         ? [
             {
               disableColumnMenu: true,
@@ -223,29 +333,74 @@ const MenuItemAddOns = ({
           format.dateTime(new Date(value), "short"),
       },
     ],
-    [canWrite, format, handleDeleteAddOn, handleUpdateAddOn, tMenus],
+    [
+      canWrite,
+      format,
+      handleDeleteAddOn,
+      handleUpdateAddOn,
+      isReorderMode,
+      tMenus,
+    ],
   );
 
   return (
     <>
       <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
-        {canWrite && (
-          <Button
-            onClick={handleCreateAddOn}
-            size="small"
-            startIcon={<Add />}
-            variant="contained"
-          >
-            {tMenus("addOns.actions.createAddOn.title")}
-          </Button>
+        {!isReorderMode ? (
+          canWrite && (
+            <>
+              <Button
+                onClick={handleCreateAddOn}
+                size="small"
+                startIcon={<Add />}
+                variant="contained"
+              >
+                {tMenus("addOns.actions.createAddOn.title")}
+              </Button>
+              <Button
+                disabled={addOns.length < 2}
+                onClick={handleEnterReorderMode}
+                size="small"
+                startIcon={<Sort />}
+                variant="outlined"
+              >
+                {tMenus("addOns.actions.reorderAddOn.title")}
+              </Button>
+            </>
+          )
+        ) : (
+          <>
+            <Button
+              onClick={handleCancelReorder}
+              size="small"
+              startIcon={<Cancel />}
+              variant="outlined"
+            >
+              {tMenus("addOns.actions.reorderAddOn.cancel.label")}
+            </Button>
+            <Button
+              onClick={handleSaveReorder}
+              size="small"
+              startIcon={<Save />}
+              variant="contained"
+            >
+              {tMenus("addOns.actions.reorderAddOn.save.label")}
+            </Button>
+          </>
         )}
       </Stack>
-      <DataGrid
-        {...DATA_GRID_PROPS}
-        apiRef={apiRef}
-        columns={columns}
-        rows={addOns}
-      />
+      <DragDropProvider onDragEnd={handleDragEnd}>
+        <DataGrid
+          {...DATA_GRID_PROPS}
+          apiRef={apiRef}
+          columns={columns}
+          rows={addOns}
+          slots={{
+            ...DATA_GRID_PROPS.slots,
+            row: isReorderMode ? Sortable : undefined,
+          }}
+        />
+      </DragDropProvider>
     </>
   );
 };

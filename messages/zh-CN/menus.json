@@ -47,6 +47,20 @@
         "title": "删除加购"
       },
       "label": "操作",
+      "reorderAddOn": {
+        "cancel": {
+          "confirm": "确定要取消排序吗？未保存的更改将会丢失。",
+          "label": "取消排序"
+        },
+        "confirm": "确定要进行排序加购？",
+        "save": {
+          "confirm": "确定要保存排序吗？",
+          "error": "排序保存失败",
+          "label": "保存排序",
+          "success": "排序已保存"
+        },
+        "title": "排序加购"
+      },
       "updateAddOn": {
         "error": {
           "menuItem": "更新加购品项 {name} 失败",

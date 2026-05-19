@@ -47,6 +47,20 @@
         "title": "刪除加購"
       },
       "label": "操作",
+      "reorderAddOn": {
+        "cancel": {
+          "confirm": "確定要取消排序嗎？未儲存的變更將會遺失。",
+          "label": "取消排序"
+        },
+        "confirm": "確定要進行排序加購？",
+        "save": {
+          "confirm": "確定要儲存排序嗎？",
+          "error": "排序儲存失敗",
+          "label": "儲存排序",
+          "success": "排序已儲存"
+        },
+        "title": "排序加購"
+      },
       "updateAddOn": {
         "error": {
           "menuItem": "更新加購品項 {name} 失敗",

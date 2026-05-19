@@ -47,6 +47,20 @@
         "title": "Remove add-on"
       },
       "label": "Actions",
+      "reorderAddOn": {
+        "cancel": {
+          "confirm": "Are you sure you want to cancel? Unsaved changes will be lost.",
+          "label": "Cancel Reorder"
+        },
+        "confirm": "Are you sure you want to reorder add-ons?",
+        "save": {
+          "confirm": "Are you sure you want to save the reorder?",
+          "error": "Failed to save reorder",
+          "label": "Save Reorder",
+          "success": "Reorder saved"
+        },
+        "title": "Reorder Add-ons"
+      },
       "updateAddOn": {
         "error": {
           "menuItem": "Failed to update add-on item {name}",

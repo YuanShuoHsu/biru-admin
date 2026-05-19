@@ -125,6 +125,7 @@ export interface MenuItemAddOn {
   addOnMenuSectionName: string | null;
   addOnMenuItemSectionId: string | null;
   addOnMenuItemSectionName: string | null;
+  sortOrder: number;
   createdAt: string;
   updatedAt: string;
 }
