@@ -68,6 +68,9 @@
   "price": {
     "required": "Price is required."
   },
+  "validFrom": {
+    "beforeValidThrough": "Start date must be before end date."
+  },
   "role": {
     "required": "Role is required."
   },

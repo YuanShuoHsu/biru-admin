@@ -68,6 +68,9 @@
   "price": {
     "required": "價格為必填。"
   },
+  "validFrom": {
+    "beforeValidThrough": "開始日期必須早於結束日期。"
+  },
   "role": {
     "required": "角色為必填。"
   },

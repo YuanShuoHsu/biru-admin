@@ -47,6 +47,16 @@ export const useCreateMenuItemFormSchema = () => {
             validFrom: z.string().trim().optional(),
             validThrough: z.string().trim().optional(),
           })
+          .refine(
+            ({ validFrom, validThrough }) => {
+              if (!validFrom || !validThrough) return true;
+              return new Date(validFrom) < new Date(validThrough);
+            },
+            {
+              message: tValidation("validFrom.beforeValidThrough"),
+              path: ["validThrough"],
+            },
+          )
           .optional(),
       })
       .optional(),
