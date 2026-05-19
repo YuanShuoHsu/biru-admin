@@ -84,43 +84,11 @@ const CreateAddOnDialog = ({
   );
 
   const usedSectionIds = new Set(
-    addOns
-      .map(({ addOnMenuSectionId }) => addOnMenuSectionId)
-      .filter((id) => id !== null),
+    addOns.flatMap(({ addOnMenuSectionId }) => addOnMenuSectionId || []),
   );
   const usedItemIds = new Set(
-    addOns
-      .map(({ addOnMenuItemId }) => addOnMenuItemId)
-      .filter((id) => id !== null),
+    addOns.flatMap(({ addOnMenuItemId }) => addOnMenuItemId || []),
   );
-
-  const { data: usedSectionItemsMap = {} } = useSWR<
-    Record<string, MenuItemType[]>
-  >(
-    usedSectionIds.size > 0
-      ? ["add-on-used-section-items", ...usedSectionIds]
-      : null,
-    async () =>
-      Object.fromEntries(
-        await Promise.all(
-          Array.from(usedSectionIds, async (sectionId) => {
-            const { data } = await fetcher<{ data: MenuItemType[] }>(
-              `/api/menu-sections/${sectionId}/menu-items?limit=100&offset=0`,
-            );
-            return [sectionId, data || []];
-          }),
-        ),
-      ),
-  );
-
-  const isDisabledSection = (sectionId: string): boolean => {
-    if (!usedSectionIds.has(sectionId)) return false;
-
-    const items = usedSectionItemsMap[sectionId];
-    if (!items) return false;
-
-    return items.length === 0 || items.every(({ id }) => usedItemIds.has(id));
-  };
 
   const { data: sections = [] } = useSWR(
     `/api/menus/${menuId}/menu-sections?limit=100&offset=0`,
@@ -229,7 +197,7 @@ const CreateAddOnDialog = ({
           <em>{tMenus("addOns.addOnMenuSectionId.placeholder")}</em>
         </MenuItem>
         {sections.map(({ id, name }) => (
-          <MenuItem disabled={isDisabledSection(id)} key={id} value={id}>
+          <MenuItem disabled={usedSectionIds.has(id)} key={id} value={id}>
             {name}
           </MenuItem>
         ))}
