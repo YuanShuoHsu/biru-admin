@@ -146,18 +146,18 @@ const MenuItemAddOns = ({
           ]
         : []),
       {
-        field: "addOnMenuItemName",
-        headerName: tMenus("addOns.addOnMenuItemId.label"),
-        valueGetter: (_value: unknown, { addOnMenuItemName }: MenuItemAddOn) =>
-          addOnMenuItemName,
-      },
-      {
         field: "addOnMenuSectionName",
         headerName: tMenus("addOns.addOnMenuSectionId.label"),
         valueGetter: (
           _value: unknown,
           { addOnMenuSectionName }: MenuItemAddOn,
         ) => addOnMenuSectionName,
+      },
+      {
+        field: "addOnMenuItemName",
+        headerName: tMenus("addOns.addOnMenuItemId.label"),
+        valueGetter: (_value: unknown, { addOnMenuItemName }: MenuItemAddOn) =>
+          addOnMenuItemName,
       },
       {
         field: "createdAt",
