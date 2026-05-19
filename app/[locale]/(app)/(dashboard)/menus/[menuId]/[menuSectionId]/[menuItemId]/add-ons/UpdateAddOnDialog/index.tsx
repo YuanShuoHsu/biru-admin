@@ -53,7 +53,8 @@ const UpdateAddOnDialog = ({
     control,
   } = useForm<UpdateAddOnForm>({
     defaultValues: {
-      addOnMenuSectionId: addOn.addOnMenuSectionId || "",
+      addOnMenuSectionId:
+        addOn.addOnMenuSectionId || addOn.addOnMenuItemSectionId || "",
       addOnMenuItemId: addOn.addOnMenuItemId || "",
     },
     resolver: zodResolver(updateAddOnFormSchema),

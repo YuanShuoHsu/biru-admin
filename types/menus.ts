@@ -123,6 +123,8 @@ export interface MenuItemAddOn {
   addOnMenuItemName: string | null;
   addOnMenuSectionId: string | null;
   addOnMenuSectionName: string | null;
+  addOnMenuItemSectionId: string | null;
+  addOnMenuItemSectionName: string | null;
   createdAt: string;
   updatedAt: string;
 }

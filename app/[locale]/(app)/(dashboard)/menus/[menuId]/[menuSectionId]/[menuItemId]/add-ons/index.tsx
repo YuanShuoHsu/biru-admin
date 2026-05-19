@@ -199,8 +199,8 @@ const MenuItemAddOns = ({
         headerName: tMenus("addOns.addOnMenuSectionId.label"),
         valueGetter: (
           _value: unknown,
-          { addOnMenuSectionName }: MenuItemAddOn,
-        ) => addOnMenuSectionName,
+          { addOnMenuSectionName, addOnMenuItemSectionName }: MenuItemAddOn,
+        ) => addOnMenuSectionName || addOnMenuItemSectionName,
       },
       {
         field: "addOnMenuItemName",
