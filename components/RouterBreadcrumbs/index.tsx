@@ -93,7 +93,7 @@ interface BreadcrumbItem {
   disabled?: boolean;
   hidden?: boolean;
   icon: React.ComponentType<SvgIconProps>;
-  label: string;
+  label?: string;
   to: string;
 }
 
@@ -160,19 +160,6 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
         const section = await fetcher<MenuSection>(url);
 
         return section.name || "";
-      } catch {
-        return "";
-      }
-    },
-  );
-
-  const { data: menuItemName = "" } = useSWR(
-    menuItemId ? `/api/menu-items/${menuItemId}` : null,
-    async (url) => {
-      try {
-        const item = await fetcher<{ name: string }>(url);
-
-        return item.name || "";
       } catch {
         return "";
       }
@@ -289,7 +276,6 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
                   ],
                   hidden: true,
                   icon: Fastfood,
-                  label: menuItemName,
                   to: `/${menuItemId}`,
                 },
               ],
