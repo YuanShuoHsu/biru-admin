@@ -398,6 +398,11 @@ const UpdateMenuItemDialog = ({
         <Grid size={{ xs: 12, sm: 6 }}>
           <DatePicker
             label={tMenus("offers.priceSpecification.validFrom.label")}
+            maxDate={
+              priceSpecificationValidThrough
+                ? dayjs(priceSpecificationValidThrough)
+                : undefined
+            }
             slotProps={{
               field: { clearable: true },
               textField: {
@@ -424,6 +429,11 @@ const UpdateMenuItemDialog = ({
         <Grid size={{ xs: 12, sm: 6 }}>
           <DatePicker
             label={tMenus("offers.priceSpecification.validThrough.label")}
+            minDate={
+              priceSpecificationValidFrom
+                ? dayjs(priceSpecificationValidFrom)
+                : undefined
+            }
             slotProps={{
               field: { clearable: true },
               textField: {
