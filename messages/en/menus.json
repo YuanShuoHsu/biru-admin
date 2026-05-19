@@ -21,16 +21,43 @@
   "addOns": {
     "actions": {
       "createAddOn": {
-        "success": "Add-on added",
+        "error": {
+          "menuItem": "Failed to add add-on item {name}",
+          "menuSection": "Failed to add add-on section {name}"
+        },
+        "success": {
+          "menuItem": "Add-on item {name} added",
+          "menuSection": "Add-on section {name} added"
+        },
         "title": "Add add-on"
       },
       "deleteAddOn": {
-        "confirm": "Are you sure you want to remove this add-on?",
-        "error": "Failed to remove add-on",
-        "success": "Add-on removed",
+        "confirm": {
+          "menuItem": "Are you sure you want to remove add-on item <bold>{name}</bold>?",
+          "menuSection": "Are you sure you want to remove add-on section <bold>{name}</bold>?"
+        },
+        "error": {
+          "menuItem": "Failed to remove add-on item {name}",
+          "menuSection": "Failed to remove add-on section {name}"
+        },
+        "success": {
+          "menuItem": "Add-on item {name} removed",
+          "menuSection": "Add-on section {name} removed"
+        },
         "title": "Remove add-on"
       },
-      "label": "Actions"
+      "label": "Actions",
+      "updateAddOn": {
+        "error": {
+          "menuItem": "Failed to update add-on item {name}",
+          "menuSection": "Failed to update add-on section {name}"
+        },
+        "success": {
+          "menuItem": "Add-on item {name} updated",
+          "menuSection": "Add-on section {name} updated"
+        },
+        "title": "Edit add-on"
+      }
     },
     "addOnMenuItemId": {
       "label": "Add-on item (optional)",

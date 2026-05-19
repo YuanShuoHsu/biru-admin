@@ -21,16 +21,43 @@
   "addOns": {
     "actions": {
       "createAddOn": {
-        "success": "成功新增加购",
+        "error": {
+          "menuItem": "新增加购品项 {name} 失败",
+          "menuSection": "新增加购分组 {name} 失败"
+        },
+        "success": {
+          "menuItem": "成功新增加购品项 {name}",
+          "menuSection": "成功新增加购分组 {name}"
+        },
         "title": "新增加购"
       },
       "deleteAddOn": {
-        "confirm": "确定要删除此加购设置吗？",
-        "error": "删除加购失败",
-        "success": "成功删除加购",
+        "confirm": {
+          "menuItem": "确定要删除加购品项 <bold>{name}</bold> 吗？",
+          "menuSection": "确定要删除加购分组 <bold>{name}</bold> 吗？"
+        },
+        "error": {
+          "menuItem": "删除加购品项 {name} 失败",
+          "menuSection": "删除加购分组 {name} 失败"
+        },
+        "success": {
+          "menuItem": "成功删除加购品项 {name}",
+          "menuSection": "成功删除加购分组 {name}"
+        },
         "title": "删除加购"
       },
-      "label": "操作"
+      "label": "操作",
+      "updateAddOn": {
+        "error": {
+          "menuItem": "更新加购品项 {name} 失败",
+          "menuSection": "更新加购分组 {name} 失败"
+        },
+        "success": {
+          "menuItem": "成功更新加购品项 {name}",
+          "menuSection": "成功更新加购分组 {name}"
+        },
+        "title": "编辑加购"
+      }
     },
     "addOnMenuItemId": {
       "label": "加购品项（选填）",

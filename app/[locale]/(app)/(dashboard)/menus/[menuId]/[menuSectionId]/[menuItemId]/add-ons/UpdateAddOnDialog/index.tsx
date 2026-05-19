@@ -6,7 +6,7 @@ import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import useSWR from "swr";
 
-import { type CreateAddOnForm, useCreateAddOnFormSchema } from "./definitions";
+import { type UpdateAddOnForm, useUpdateAddOnFormSchema } from "./definitions";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -29,34 +29,34 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-interface CreateAddOnDialogProps {
+interface UpdateAddOnDialogProps {
+  addOn: MenuItemAddOn;
   menuId: string;
-  menuItemId: string;
   mutateAddOns: () => void;
 }
 
-const CreateAddOnDialog = ({
+const UpdateAddOnDialog = ({
+  addOn,
   menuId,
-  menuItemId,
   mutateAddOns,
-}: CreateAddOnDialogProps) => {
+}: UpdateAddOnDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const tMenus = useTranslations("menus");
 
-  const createAddOnFormSchema = useCreateAddOnFormSchema();
+  const updateAddOnFormSchema = useUpdateAddOnFormSchema();
   const {
-    control,
     formState: { errors },
     handleSubmit,
     register,
     setValue,
-  } = useForm<CreateAddOnForm>({
+    control,
+  } = useForm<UpdateAddOnForm>({
     defaultValues: {
-      addOnMenuSectionId: "",
-      addOnMenuItemId: "",
+      addOnMenuSectionId: addOn.addOnMenuSectionId || "",
+      addOnMenuItemId: addOn.addOnMenuItemId || "",
     },
-    resolver: zodResolver(createAddOnFormSchema),
+    resolver: zodResolver(updateAddOnFormSchema),
   });
 
   const addOnMenuSectionId = useWatch({ control, name: "addOnMenuSectionId" });
@@ -83,17 +83,17 @@ const CreateAddOnDialog = ({
   const onSubmitHandler = async ({
     addOnMenuSectionId,
     addOnMenuItemId,
-  }: CreateAddOnForm) => {
+  }: UpdateAddOnForm) => {
     const name =
       (addOnMenuItemId
         ? sectionItems.find(({ id }) => id === addOnMenuItemId)?.name
-        : sections.find(({ id }) => id === addOnMenuSectionId)?.name) ?? "";
+        : sections.find(({ id }) => id === addOnMenuSectionId)?.name) || "";
 
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher<MenuItemAddOn>(`/api/menu-items/${menuItemId}/add-ons`, {
-        method: "POST",
+      await fetcher<MenuItemAddOn>(`/api/menu-item-add-ons/${addOn.id}`, {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
           addOnMenuItemId ? { addOnMenuItemId } : { addOnMenuSectionId },
@@ -103,8 +103,8 @@ const CreateAddOnDialog = ({
       enqueueSnackbar(
         tMenus(
           addOnMenuItemId
-            ? "addOns.actions.createAddOn.success.menuItem"
-            : "addOns.actions.createAddOn.success.menuSection",
+            ? "addOns.actions.updateAddOn.success.menuItem"
+            : "addOns.actions.updateAddOn.success.menuSection",
           { name },
         ),
         { variant: "success" },
@@ -116,8 +116,8 @@ const CreateAddOnDialog = ({
       enqueueSnackbar(
         tMenus(
           addOnMenuItemId
-            ? "addOns.actions.createAddOn.error.menuItem"
-            : "addOns.actions.createAddOn.error.menuSection",
+            ? "addOns.actions.updateAddOn.error.menuItem"
+            : "addOns.actions.updateAddOn.error.menuSection",
           { name },
         ),
         { variant: "error" },
@@ -130,7 +130,7 @@ const CreateAddOnDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <StyledBox component="form" id="create-add-on-form" onSubmit={onSubmit}>
+    <StyledBox component="form" id="update-add-on-form" onSubmit={onSubmit}>
       <TextField
         error={!!errors.addOnMenuSectionId}
         fullWidth
@@ -200,4 +200,4 @@ const CreateAddOnDialog = ({
   );
 };
 
-export default CreateAddOnDialog;
+export default UpdateAddOnDialog;

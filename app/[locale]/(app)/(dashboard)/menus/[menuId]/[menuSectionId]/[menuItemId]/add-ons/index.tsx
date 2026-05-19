@@ -7,10 +7,11 @@ import { useCallback, useMemo } from "react";
 import useSWR from "swr";
 
 import CreateAddOnDialog from "./CreateAddOnDialog";
+import UpdateAddOnDialog from "./UpdateAddOnDialog";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
-import { Add, Delete } from "@mui/icons-material";
+import { Add, Delete, Edit } from "@mui/icons-material";
 import {
   Button,
   DialogContentText,
@@ -80,27 +81,64 @@ const MenuItemAddOns = ({
     });
   }, [menuId, menuItemId, mutateAddOns, setDialog, tMenus]);
 
+  const handleUpdateAddOn = useCallback(
+    (addOn: MenuItemAddOn) => {
+      setDialog({
+        content: (
+          <UpdateAddOnDialog
+            addOn={addOn}
+            menuId={menuId}
+            mutateAddOns={mutateAddOns}
+          />
+        ),
+        formId: "update-add-on-form",
+        open: true,
+        title: tMenus("addOns.actions.updateAddOn.title"),
+      });
+    },
+    [menuId, mutateAddOns, setDialog, tMenus],
+  );
+
   const handleDeleteAddOn = useCallback(
-    ({ id }: MenuItemAddOn) => {
+    ({ id, addOnMenuItemName, addOnMenuSectionName }: MenuItemAddOn) => {
+      const name = addOnMenuItemName || addOnMenuSectionName || "";
+
       setDialog({
         content: (
           <DialogContentText>
-            {tMenus("addOns.actions.deleteAddOn.confirm")}
+            {tMenus.rich(
+              addOnMenuItemName
+                ? "addOns.actions.deleteAddOn.confirm.menuItem"
+                : "addOns.actions.deleteAddOn.confirm.menuSection",
+              { bold: (chunks) => <strong>{chunks}</strong>, name },
+            )}
           </DialogContentText>
         ),
         onConfirm: async () => {
           try {
             await fetcher(`/api/menu-item-add-ons/${id}`, { method: "DELETE" });
 
-            enqueueSnackbar(tMenus("addOns.actions.deleteAddOn.success"), {
-              variant: "success",
-            });
+            enqueueSnackbar(
+              tMenus(
+                addOnMenuItemName
+                  ? "addOns.actions.deleteAddOn.success.menuItem"
+                  : "addOns.actions.deleteAddOn.success.menuSection",
+                { name },
+              ),
+              { variant: "success" },
+            );
 
             mutateAddOns();
           } catch {
-            enqueueSnackbar(tMenus("addOns.actions.deleteAddOn.error"), {
-              variant: "error",
-            });
+            enqueueSnackbar(
+              tMenus(
+                addOnMenuItemName
+                  ? "addOns.actions.deleteAddOn.error.menuItem"
+                  : "addOns.actions.deleteAddOn.error.menuSection",
+                { name },
+              ),
+              { variant: "error" },
+            );
           }
         },
         open: true,
@@ -126,6 +164,17 @@ const MenuItemAddOns = ({
                   alignItems="center"
                   gap={1}
                 >
+                  <Tooltip title={tMenus("addOns.actions.updateAddOn.title")}>
+                    <IconButton
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleUpdateAddOn(row);
+                      }}
+                      size="small"
+                    >
+                      <Edit fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
                   <Tooltip title={tMenus("addOns.actions.deleteAddOn.title")}>
                     <IconButton
                       color="error"
@@ -172,7 +221,7 @@ const MenuItemAddOns = ({
           format.dateTime(new Date(value), "short"),
       },
     ],
-    [canWrite, format, handleDeleteAddOn, tMenus],
+    [canWrite, format, handleDeleteAddOn, handleUpdateAddOn, tMenus],
   );
 
   return (
