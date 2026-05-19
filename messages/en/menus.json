@@ -33,7 +33,7 @@
       "label": "Actions"
     },
     "addOnMenuItemId": {
-      "label": "Add-on item",
+      "label": "Add-on item (optional)",
       "placeholder": "Please select your add-on item"
     },
     "addOnMenuSectionId": {

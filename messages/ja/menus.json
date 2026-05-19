@@ -33,7 +33,7 @@
       "label": "操作"
     },
     "addOnMenuItemId": {
-      "label": "追加品目",
+      "label": "追加品目（任意）",
       "placeholder": "追加品目を選択してください"
     },
     "addOnMenuSectionId": {
