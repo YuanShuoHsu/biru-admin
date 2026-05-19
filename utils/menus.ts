@@ -124,15 +124,40 @@ export const getAdminMenuSectionItems = cache(
 );
 
 export const getAdminMenuItemAddOns = cache(
-  async (menuItemId: string, init?: RequestInit) => {
+  async (
+    menuItemId: string,
+    page: number,
+    pageSize: number,
+    filterField?: string,
+    filterOperator?: string,
+    filterValue?: string,
+    quickFilterValue?: string,
+    sortBy?: string,
+    sortDirection?: "asc" | "desc",
+    init?: RequestInit,
+  ) => {
     try {
-      const data = await fetcher<AdminMenuItemAddOn[]>(
-        `/api/menu-items/${menuItemId}/add-ons`,
-        init,
-      );
-      return Array.isArray(data) ? data : [];
+      const offset = (page - 1) * pageSize;
+      const params = new URLSearchParams({
+        limit: String(pageSize),
+        offset: String(offset),
+        ...(sortBy && { sortBy }),
+        ...(sortDirection && { sortDirection }),
+        ...(filterField &&
+          filterOperator &&
+          filterValue && { filterField, filterOperator, filterValue }),
+        ...(quickFilterValue && { quickFilterValue }),
+      });
+      const result = await fetcher<{
+        data: AdminMenuItemAddOn[];
+        total: number;
+      }>(`/api/menu-items/${menuItemId}/add-ons?${params.toString()}`, init);
+      return {
+        addOns: Array.isArray(result.data) ? result.data : [],
+        total: result.total || 0,
+      };
     } catch {
-      return [];
+      return { addOns: [], total: 0 };
     }
   },
 );
