@@ -341,7 +341,9 @@ const MenuItemAddOns = ({
             await fetcher(`/api/menu-item-add-ons/${id}`, { method: "DELETE" });
 
             enqueueSnackbar(
-              tMenus("addOns.actions.deleteAddOn.success", { name: displayName }),
+              tMenus("addOns.actions.deleteAddOn.success", {
+                name: displayName,
+              }),
               { variant: "success" },
             );
 

@@ -149,7 +149,8 @@ const UpdateAddOnDialog = ({
     const displayName = addOnMenuItemId
       ? tMenus("addOns.displayName.menuItem", {
           menuSection,
-          menuItem: sectionItems.find(({ id }) => id === addOnMenuItemId)?.name || "",
+          menuItem:
+            sectionItems.find(({ id }) => id === addOnMenuItemId)?.name || "",
         })
       : tMenus("addOns.displayName.menuSection", { menuSection });
 
