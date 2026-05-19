@@ -21,29 +21,14 @@
   "addOns": {
     "actions": {
       "createAddOn": {
-        "error": {
-          "menuItem": "추가 옵션 품목 {name} 추가에 실패했습니다",
-          "menuSection": "추가 옵션 그룹 {name} 추가에 실패했습니다"
-        },
-        "success": {
-          "menuItem": "추가 옵션 품목 {name}이(가) 추가되었습니다",
-          "menuSection": "추가 옵션 그룹 {name}이(가) 추가되었습니다"
-        },
+        "error": "{name} 추가에 실패했습니다",
+        "success": "{name}이(가) 추가되었습니다",
         "title": "추가 옵션 추가"
       },
       "deleteAddOn": {
-        "confirm": {
-          "menuItem": "추가 옵션 품목 <bold>{name}</bold>을(를) 삭제하시겠습니까?",
-          "menuSection": "추가 옵션 그룹 <bold>{name}</bold>을(를) 삭제하시겠습니까?"
-        },
-        "error": {
-          "menuItem": "추가 옵션 품목 {name} 삭제에 실패했습니다",
-          "menuSection": "추가 옵션 그룹 {name} 삭제에 실패했습니다"
-        },
-        "success": {
-          "menuItem": "추가 옵션 품목 {name}이(가) 삭제되었습니다",
-          "menuSection": "추가 옵션 그룹 {name}이(가) 삭제되었습니다"
-        },
+        "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까?",
+        "error": "{name} 삭제에 실패했습니다",
+        "success": "{name}이(가) 삭제되었습니다",
         "title": "추가 옵션 삭제"
       },
       "label": "작업",
@@ -62,16 +47,14 @@
         "title": "추가 옵션 정렬"
       },
       "updateAddOn": {
-        "error": {
-          "menuItem": "추가 옵션 품목 {name} 수정에 실패했습니다",
-          "menuSection": "추가 옵션 그룹 {name} 수정에 실패했습니다"
-        },
-        "success": {
-          "menuItem": "추가 옵션 품목 {name}이(가) 수정되었습니다",
-          "menuSection": "추가 옵션 그룹 {name}이(가) 수정되었습니다"
-        },
+        "error": "{name} 수정에 실패했습니다",
+        "success": "{name}이(가) 수정되었습니다",
         "title": "추가 옵션 편집"
       }
+    },
+    "displayName": {
+      "menuItem": "그룹 {menuSection} 품목 {menuItem}",
+      "menuSection": "그룹 {menuSection}"
     },
     "addOnMenuItemId": {
       "label": "추가 항목 (선택 사항)",

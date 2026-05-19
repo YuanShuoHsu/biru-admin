@@ -144,10 +144,14 @@ const UpdateAddOnDialog = ({
     addOnMenuSectionId,
     addOnMenuItemId,
   }: UpdateAddOnForm) => {
-    const name =
-      (addOnMenuItemId
-        ? sectionItems.find(({ id }) => id === addOnMenuItemId)?.name
-        : sections.find(({ id }) => id === addOnMenuSectionId)?.name) || "";
+    const menuSection =
+      sections.find(({ id }) => id === addOnMenuSectionId)?.name || "";
+    const displayName = addOnMenuItemId
+      ? tMenus("addOns.displayName.menuItem", {
+          menuSection,
+          menuItem: sectionItems.find(({ id }) => id === addOnMenuItemId)?.name || "",
+        })
+      : tMenus("addOns.displayName.menuSection", { menuSection });
 
     try {
       setDialog({ confirmLoading: true });
@@ -166,12 +170,7 @@ const UpdateAddOnDialog = ({
       );
 
       enqueueSnackbar(
-        tMenus(
-          addOnMenuItemId
-            ? "addOns.actions.updateAddOn.success.menuItem"
-            : "addOns.actions.updateAddOn.success.menuSection",
-          { name },
-        ),
+        tMenus("addOns.actions.updateAddOn.success", { name: displayName }),
         { variant: "success" },
       );
 
@@ -179,12 +178,7 @@ const UpdateAddOnDialog = ({
       mutateAddOns();
     } catch {
       enqueueSnackbar(
-        tMenus(
-          addOnMenuItemId
-            ? "addOns.actions.updateAddOn.error.menuItem"
-            : "addOns.actions.updateAddOn.error.menuSection",
-          { name },
-        ),
+        tMenus("addOns.actions.updateAddOn.error", { name: displayName }),
         { variant: "error" },
       );
       setDialog({ confirmLoading: false });

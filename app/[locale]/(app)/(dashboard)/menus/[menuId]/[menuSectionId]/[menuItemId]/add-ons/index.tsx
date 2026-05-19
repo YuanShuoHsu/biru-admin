@@ -312,18 +312,28 @@ const MenuItemAddOns = ({
   );
 
   const handleDeleteAddOn = useCallback(
-    ({ id, addOnMenuItemName, addOnMenuSectionName }: MenuItemAddOn) => {
-      const name = addOnMenuItemName || addOnMenuSectionName || "";
+    ({
+      id,
+      addOnMenuItemName,
+      addOnMenuItemSectionName,
+      addOnMenuSectionName,
+    }: MenuItemAddOn) => {
+      const displayName = addOnMenuItemName
+        ? tMenus("addOns.displayName.menuItem", {
+            menuSection: addOnMenuItemSectionName || "",
+            menuItem: addOnMenuItemName,
+          })
+        : tMenus("addOns.displayName.menuSection", {
+            menuSection: addOnMenuSectionName || "",
+          });
 
       setDialog({
         content: (
           <DialogContentText>
-            {tMenus.rich(
-              addOnMenuItemName
-                ? "addOns.actions.deleteAddOn.confirm.menuItem"
-                : "addOns.actions.deleteAddOn.confirm.menuSection",
-              { bold: (chunks) => <strong>{chunks}</strong>, name },
-            )}
+            {tMenus.rich("addOns.actions.deleteAddOn.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              name: displayName,
+            })}
           </DialogContentText>
         ),
         onConfirm: async () => {
@@ -331,24 +341,14 @@ const MenuItemAddOns = ({
             await fetcher(`/api/menu-item-add-ons/${id}`, { method: "DELETE" });
 
             enqueueSnackbar(
-              tMenus(
-                addOnMenuItemName
-                  ? "addOns.actions.deleteAddOn.success.menuItem"
-                  : "addOns.actions.deleteAddOn.success.menuSection",
-                { name },
-              ),
+              tMenus("addOns.actions.deleteAddOn.success", { name: displayName }),
               { variant: "success" },
             );
 
             mutateAddOns();
           } catch {
             enqueueSnackbar(
-              tMenus(
-                addOnMenuItemName
-                  ? "addOns.actions.deleteAddOn.error.menuItem"
-                  : "addOns.actions.deleteAddOn.error.menuSection",
-                { name },
-              ),
+              tMenus("addOns.actions.deleteAddOn.error", { name: displayName }),
               { variant: "error" },
             );
           }

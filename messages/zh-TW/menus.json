@@ -21,29 +21,14 @@
   "addOns": {
     "actions": {
       "createAddOn": {
-        "error": {
-          "menuItem": "新增加購品項 {name} 失敗",
-          "menuSection": "新增加購分組 {name} 失敗"
-        },
-        "success": {
-          "menuItem": "成功新增加購品項 {name}",
-          "menuSection": "成功新增加購分組 {name}"
-        },
+        "error": "新增{name}失敗",
+        "success": "成功新增{name}",
         "title": "新增加購"
       },
       "deleteAddOn": {
-        "confirm": {
-          "menuItem": "確定要刪除加購品項 <bold>{name}</bold> 嗎？",
-          "menuSection": "確定要刪除加購分組 <bold>{name}</bold> 嗎？"
-        },
-        "error": {
-          "menuItem": "刪除加購品項 {name} 失敗",
-          "menuSection": "刪除加購分組 {name} 失敗"
-        },
-        "success": {
-          "menuItem": "成功刪除加購品項 {name}",
-          "menuSection": "成功刪除加購分組 {name}"
-        },
+        "confirm": "確定要刪除 <bold>{name}</bold> 嗎？",
+        "error": "刪除{name}失敗",
+        "success": "成功刪除{name}",
         "title": "刪除加購"
       },
       "label": "操作",
@@ -62,16 +47,14 @@
         "title": "排序加購"
       },
       "updateAddOn": {
-        "error": {
-          "menuItem": "更新加購品項 {name} 失敗",
-          "menuSection": "更新加購分組 {name} 失敗"
-        },
-        "success": {
-          "menuItem": "成功更新加購品項 {name}",
-          "menuSection": "成功更新加購分組 {name}"
-        },
+        "error": "更新{name}失敗",
+        "success": "成功更新{name}",
         "title": "編輯加購"
       }
+    },
+    "displayName": {
+      "menuItem": "加購分組 {menuSection} 加購品項 {menuItem}",
+      "menuSection": "加購分組 {menuSection}"
     },
     "addOnMenuItemId": {
       "label": "加購品項（選填）",

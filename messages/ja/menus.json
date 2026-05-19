@@ -21,29 +21,14 @@
   "addOns": {
     "actions": {
       "createAddOn": {
-        "error": {
-          "menuItem": "追加オプション品目 {name} の追加に失敗しました",
-          "menuSection": "追加オプショングループ {name} の追加に失敗しました"
-        },
-        "success": {
-          "menuItem": "追加オプション品目 {name} を追加しました",
-          "menuSection": "追加オプショングループ {name} を追加しました"
-        },
+        "error": "{name}の追加に失敗しました",
+        "success": "{name}を追加しました",
         "title": "追加オプションを追加"
       },
       "deleteAddOn": {
-        "confirm": {
-          "menuItem": "追加オプション品目 <bold>{name}</bold> を削除しますか？",
-          "menuSection": "追加オプショングループ <bold>{name}</bold> を削除しますか？"
-        },
-        "error": {
-          "menuItem": "追加オプション品目 {name} の削除に失敗しました",
-          "menuSection": "追加オプショングループ {name} の削除に失敗しました"
-        },
-        "success": {
-          "menuItem": "追加オプション品目 {name} を削除しました",
-          "menuSection": "追加オプショングループ {name} を削除しました"
-        },
+        "confirm": "<bold>{name}</bold>を削除しますか？",
+        "error": "{name}の削除に失敗しました",
+        "success": "{name}を削除しました",
         "title": "追加オプションを削除"
       },
       "label": "操作",
@@ -62,16 +47,14 @@
         "title": "アドオンを並び替え"
       },
       "updateAddOn": {
-        "error": {
-          "menuItem": "追加オプション品目 {name} の更新に失敗しました",
-          "menuSection": "追加オプショングループ {name} の更新に失敗しました"
-        },
-        "success": {
-          "menuItem": "追加オプション品目 {name} を更新しました",
-          "menuSection": "追加オプショングループ {name} を更新しました"
-        },
+        "error": "{name}の更新に失敗しました",
+        "success": "{name}を更新しました",
         "title": "追加オプションを編集"
       }
+    },
+    "displayName": {
+      "menuItem": "グループ {menuSection} 品目 {menuItem}",
+      "menuSection": "グループ {menuSection}"
     },
     "addOnMenuItemId": {
       "label": "追加品目（任意）",
