@@ -31,14 +31,12 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 
 interface UpdateAddOnDialogProps {
   addOn: MenuItemAddOn;
-  addOns: MenuItemAddOn[];
   menuId: string;
   mutateAddOns: () => void;
 }
 
 const UpdateAddOnDialog = ({
   addOn,
-  addOns,
   menuId,
   mutateAddOns,
 }: UpdateAddOnDialogProps) => {
@@ -64,6 +62,12 @@ const UpdateAddOnDialog = ({
 
   const addOnMenuSectionId = useWatch({ control, name: "addOnMenuSectionId" });
   const addOnMenuItemId = useWatch({ control, name: "addOnMenuItemId" });
+
+  const { data: addOns = [] } = useSWR(
+    `/api/menu-items/${addOn.menuItemId}/add-ons`,
+    () =>
+      fetcher<MenuItemAddOn[]>(`/api/menu-items/${addOn.menuItemId}/add-ons`),
+  );
 
   const otherAddOns = addOns.filter(({ id }) => id !== addOn.id);
   const usedSectionIds = new Set(
