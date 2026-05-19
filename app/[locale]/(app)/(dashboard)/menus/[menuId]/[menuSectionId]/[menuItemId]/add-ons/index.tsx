@@ -17,14 +17,7 @@ import { arrayMove } from "@dnd-kit/helpers";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
 import { isSortableOperation } from "@dnd-kit/react/sortable";
 
-import {
-  Add,
-  Cancel,
-  Delete,
-  Edit,
-  Save,
-  Sort,
-} from "@mui/icons-material";
+import { Add, Cancel, Delete, Edit, Save, Sort } from "@mui/icons-material";
 import {
   Button,
   DialogContentText,
@@ -193,23 +186,24 @@ const MenuItemAddOns = ({
           await fetcher(`/api/menu-items/${menuItemId}/add-ons/reorder`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ids: addOns.map(({ id }) => id), offset: 0 }),
+            body: JSON.stringify({
+              ids: addOns.map(({ id }) => id),
+              offset: 0,
+            }),
           });
 
           setIsReorderMode(false);
           setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
 
-          enqueueSnackbar(
-            tMenus("addOns.actions.reorderAddOn.save.success"),
-            { variant: "success" },
-          );
+          enqueueSnackbar(tMenus("addOns.actions.reorderAddOn.save.success"), {
+            variant: "success",
+          });
         } catch {
           mutateAddOns();
 
-          enqueueSnackbar(
-            tMenus("addOns.actions.reorderAddOn.save.error"),
-            { variant: "error" },
-          );
+          enqueueSnackbar(tMenus("addOns.actions.reorderAddOn.save.error"), {
+            variant: "error",
+          });
         }
       },
       open: true,
