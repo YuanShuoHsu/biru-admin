@@ -10,7 +10,16 @@ import { type UpdateAddOnForm, useUpdateAddOnFormSchema } from "./definitions";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Box, type BoxProps, MenuItem, styled, TextField } from "@mui/material";
+import { Clear } from "@mui/icons-material";
+import {
+  Box,
+  type BoxProps,
+  IconButton,
+  InputAdornment,
+  MenuItem,
+  styled,
+  TextField,
+} from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -27,6 +36,10 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   flexDirection: "column",
   alignItems: "center",
   gap: theme.spacing(2),
+}));
+
+const StyledInputAdornment = styled(InputAdornment)(({ theme }) => ({
+  marginRight: theme.spacing(2),
 }));
 
 interface UpdateAddOnDialogProps {
@@ -64,20 +77,50 @@ const UpdateAddOnDialog = ({
   const addOnMenuItemId = useWatch({ control, name: "addOnMenuItemId" });
 
   const { data: addOns = [] } = useSWR(
-    `/api/menu-items/${addOn.menuItemId}/add-ons`,
+    `/api/menu-items/${addOn.menuItemId}/add-ons?limit=100&offset=0`,
     () =>
       fetcher<{ data: MenuItemAddOn[]; total: number }>(
-        `/api/menu-items/${addOn.menuItemId}/add-ons`,
+        `/api/menu-items/${addOn.menuItemId}/add-ons?limit=100&offset=0`,
       ).then(({ data }) => data),
   );
 
   const otherAddOns = addOns.filter(({ id }) => id !== addOn.id);
   const usedSectionIds = new Set(
-    otherAddOns.map(({ addOnMenuSectionId }) => addOnMenuSectionId),
+    otherAddOns
+      .map(({ addOnMenuSectionId }) => addOnMenuSectionId)
+      .filter((id) => id !== null),
   );
   const usedItemIds = new Set(
-    otherAddOns.map(({ addOnMenuItemId }) => addOnMenuItemId),
+    otherAddOns
+      .map(({ addOnMenuItemId }) => addOnMenuItemId)
+      .filter((id) => id !== null),
   );
+
+  const { data: usedSectionItemsMap = {} } = useSWR<
+    Record<string, MenuItemType[]>
+  >(
+    usedSectionIds.size > 0
+      ? ["update-add-on-used-section-items", ...usedSectionIds]
+      : null,
+    async () =>
+      Object.fromEntries(
+        await Promise.all(
+          Array.from(usedSectionIds, async (sectionId) => {
+            const { data } = await fetcher<{ data: MenuItemType[] }>(
+              `/api/menu-sections/${sectionId}/menu-items?limit=100&offset=0`,
+            );
+            return [sectionId, data || []];
+          }),
+        ),
+      ),
+  );
+
+  const isDisabledSection = (sectionId: string): boolean => {
+    if (!usedSectionIds.has(sectionId)) return false;
+    const items = usedSectionItemsMap[sectionId];
+    if (!items) return false;
+    return items.length === 0 || items.every(({ id }) => usedItemIds.has(id));
+  };
 
   const { data: sections = [] } = useSWR(
     `/api/menus/${menuId}/menu-sections?limit=100&offset=0`,
@@ -158,6 +201,21 @@ const UpdateAddOnDialog = ({
         required
         select
         slotProps={{
+          input: {
+            endAdornment: addOnMenuSectionId && (
+              <StyledInputAdornment position="end">
+                <IconButton
+                  onClick={() => {
+                    setValue("addOnMenuSectionId", "");
+                    setValue("addOnMenuItemId", "");
+                  }}
+                  size="small"
+                >
+                  <Clear fontSize="small" />
+                </IconButton>
+              </StyledInputAdornment>
+            ),
+          },
           inputLabel: { shrink: true },
           select: {
             displayEmpty: true,
@@ -179,7 +237,7 @@ const UpdateAddOnDialog = ({
         </MenuItem>
         {sections.map(({ id, name }) => (
           <MenuItem
-            disabled={id !== addOnMenuSectionId && usedSectionIds.has(id)}
+            disabled={id !== addOnMenuSectionId && isDisabledSection(id)}
             key={id}
             value={id}
           >
@@ -195,6 +253,18 @@ const UpdateAddOnDialog = ({
           label={tMenus("addOns.addOnMenuItemId.label")}
           select
           slotProps={{
+            input: {
+              endAdornment: addOnMenuItemId && (
+                <StyledInputAdornment position="end">
+                  <IconButton
+                    onClick={() => setValue("addOnMenuItemId", "")}
+                    size="small"
+                  >
+                    <Clear fontSize="small" />
+                  </IconButton>
+                </StyledInputAdornment>
+              ),
+            },
             inputLabel: { shrink: true },
             select: {
               displayEmpty: true,
