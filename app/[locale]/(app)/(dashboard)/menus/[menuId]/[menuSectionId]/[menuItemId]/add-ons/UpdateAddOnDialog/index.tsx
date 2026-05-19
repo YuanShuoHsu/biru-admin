@@ -66,8 +66,12 @@ const UpdateAddOnDialog = ({
   const addOnMenuItemId = useWatch({ control, name: "addOnMenuItemId" });
 
   const otherAddOns = addOns.filter(({ id }) => id !== addOn.id);
-  const usedSectionIds = new Set(otherAddOns.map(({ addOnMenuSectionId }) => addOnMenuSectionId));
-  const usedItemIds = new Set(otherAddOns.map(({ addOnMenuItemId }) => addOnMenuItemId));
+  const usedSectionIds = new Set(
+    otherAddOns.map(({ addOnMenuSectionId }) => addOnMenuSectionId),
+  );
+  const usedItemIds = new Set(
+    otherAddOns.map(({ addOnMenuItemId }) => addOnMenuItemId),
+  );
 
   const { data: sections = [] } = useSWR(
     `/api/menus/${menuId}/menu-sections?limit=100&offset=0`,
