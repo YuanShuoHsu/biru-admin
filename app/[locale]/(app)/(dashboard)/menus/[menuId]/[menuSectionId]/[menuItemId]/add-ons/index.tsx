@@ -338,7 +338,9 @@ const MenuItemAddOns = ({
         ),
         onConfirm: async () => {
           try {
-            await fetcher(`/api/menu-item-add-ons/${id}`, { method: "DELETE" });
+            await fetcher(`/api/menu-items/${menuItemId}/add-ons/${id}`, {
+              method: "DELETE",
+            });
 
             enqueueSnackbar(
               tMenus("addOns.actions.deleteAddOn.success", {
@@ -359,7 +361,7 @@ const MenuItemAddOns = ({
         title: tMenus("addOns.actions.deleteAddOn.title"),
       });
     },
-    [mutateAddOns, setDialog, tMenus],
+    [menuItemId, mutateAddOns, setDialog, tMenus],
   );
 
   const handleEnterReorderMode = useCallback(() => {
