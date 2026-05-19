@@ -152,15 +152,18 @@ const UpdateAddOnDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher<MenuItemAddOn>(`/api/menu-item-add-ons/${addOn.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(
-          addOnMenuItemId
-            ? { addOnMenuSectionId: null, addOnMenuItemId }
-            : { addOnMenuSectionId, addOnMenuItemId: null },
-        ),
-      });
+      await fetcher<MenuItemAddOn>(
+        `/api/menu-items/${addOn.menuItemId}/add-ons/${addOn.id}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(
+            addOnMenuItemId
+              ? { addOnMenuSectionId: null, addOnMenuItemId }
+              : { addOnMenuSectionId, addOnMenuItemId: null },
+          ),
+        },
+      );
 
       enqueueSnackbar(
         tMenus(
