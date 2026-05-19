@@ -66,7 +66,9 @@ const UpdateAddOnDialog = ({
   const { data: addOns = [] } = useSWR(
     `/api/menu-items/${addOn.menuItemId}/add-ons`,
     () =>
-      fetcher<MenuItemAddOn[]>(`/api/menu-items/${addOn.menuItemId}/add-ons`),
+      fetcher<{ data: MenuItemAddOn[]; total: number }>(
+        `/api/menu-items/${addOn.menuItemId}/add-ons`,
+      ).then(({ data }) => data),
   );
 
   const otherAddOns = addOns.filter(({ id }) => id !== addOn.id);

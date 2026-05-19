@@ -64,7 +64,10 @@ const CreateAddOnDialog = ({
 
   const { data: addOns = [] } = useSWR(
     `/api/menu-items/${menuItemId}/add-ons`,
-    () => fetcher<MenuItemAddOn[]>(`/api/menu-items/${menuItemId}/add-ons`),
+    () =>
+      fetcher<{ data: MenuItemAddOn[]; total: number }>(
+        `/api/menu-items/${menuItemId}/add-ons`,
+      ).then(({ data }) => data),
   );
 
   const usedSectionIds = new Set(
