@@ -9,9 +9,9 @@
 
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
-import type { CountryCode } from "libphonenumber-js";
-import Image from "next/image";
 import React, { useRef, useState } from "react";
+
+import FlagImage from "@/components/FlagImage";
 
 import { countries } from "@/constants/countries";
 import { currencies } from "@/constants/currencies";
@@ -72,18 +72,6 @@ const StyledInputAdornment = styled(InputAdornment)(({ theme }) => ({
   width: theme.spacing(2.5),
 }));
 
-const FlagImage = ({ code, label }: { code: CountryCode; label: string }) => (
-  <Image
-    alt={label}
-    fill
-    loading="lazy"
-    sizes="(min-width: 808px) 50vw, 100vw"
-    src={`/images/flags/w20/${code.toLowerCase()}.png`}
-    style={{ objectFit: "contain" }}
-    unoptimized
-  />
-);
-
 type CountryOptionBoxProps = Omit<BoxProps<"li">, "component"> & {
   selected: boolean;
 };
@@ -104,14 +92,6 @@ const CountryOptionBox = styled(CountryOptionRoot, {
   backgroundColor: selected
     ? theme.vars.palette.action.selected
     : "transparent",
-}));
-
-const ImageBox = styled(Box)(({ theme }) => ({
-  position: "relative",
-  width: theme.spacing(2.5),
-  height: theme.spacing(2.5),
-  flexShrink: 0,
-  overflow: "hidden",
 }));
 
 const HighlightTypography = styled(Typography, {
@@ -286,9 +266,7 @@ const CountrySelect = ({
 
         return (
           <CountryOptionBox key={key} selected={selected} {...optionProps}>
-            <ImageBox>
-              <FlagImage code={code} label={label} />
-            </ImageBox>
+            <FlagImage code={code} label={label} />
             <Box component="div">
               {parts.map(({ highlight, text }, index) => (
                 <HighlightTypography

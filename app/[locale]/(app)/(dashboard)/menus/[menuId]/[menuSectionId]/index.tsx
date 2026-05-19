@@ -16,6 +16,7 @@ import CreateMenuItemDialog from "./CreateMenuItemDialog";
 import UpdateMenuItemDialog from "./UpdateMenuItemDialog";
 
 import DateFilterInputValue from "@/components/DateFilterInputValue";
+import FlagImage from "@/components/FlagImage";
 import { DragHandle, Sortable } from "@/components/Sortable";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
@@ -41,6 +42,7 @@ import {
   IconButton,
   Stack,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import type {
   GridColDef,
@@ -58,6 +60,7 @@ import {
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
+import { currencies } from "@/constants/currencies";
 import type { MenuItem } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
@@ -580,6 +583,19 @@ const MenusMenuIdSectionId = ({
         filterable: false,
         valueGetter: (_value: unknown, { offer }: MenuItem) =>
           offer?.priceCurrency,
+        renderCell: ({ value }: { value?: string }) => {
+          const currency = currencies.find(
+            ({ currency }) => currency === value,
+          );
+          return (
+            <Stack height="100%" direction="row" alignItems="center" gap={1}>
+              {currency && (
+                <FlagImage code={currency.code} label={currency.label} />
+              )}
+              <Typography variant="body2">{value}</Typography>
+            </Stack>
+          );
+        },
       },
       {
         field: "price",
