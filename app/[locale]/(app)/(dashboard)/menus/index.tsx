@@ -118,9 +118,7 @@ const Menus = ({
     return aIndex - bIndex;
   });
 
-  const usedInLanguages = menus
-    .map(({ inLanguage }) => inLanguage)
-    .filter((inLanguage) => inLanguage !== null);
+  const usedInLanguages = menus.flatMap(({ inLanguage }) => inLanguage || []);
 
   const handleCreateMenu = () => {
     setDialog({
@@ -152,13 +150,19 @@ const Menus = ({
   const handleUpdateMenu = useCallback(
     (menu: Menu) => {
       setDialog({
-        content: <UpdateMenuDialog menu={menu} mutateMenus={mutateMenus} />,
+        content: (
+          <UpdateMenuDialog
+            menu={menu}
+            mutateMenus={mutateMenus}
+            usedInLanguages={usedInLanguages}
+          />
+        ),
         formId: "update-menu-form",
         open: true,
         title: tMenus("actions.updateMenu.title"),
       });
     },
-    [mutateMenus, setDialog, tMenus],
+    [mutateMenus, setDialog, tMenus, usedInLanguages],
   );
 
   const handleDeleteMenu = useCallback(

@@ -76,27 +76,27 @@ const UpdateMenuItemDialog = ({
       name: item.name,
       description: item.description || "",
       offer: {
-        priceCurrency: item.offer?.priceCurrency ?? "TWD",
-        price: item.offer?.price ?? "",
-        availability: item.offer?.availability ?? "InStock",
+        priceCurrency: item.offer?.priceCurrency || "TWD",
+        price: item.offer?.price || "",
+        availability: item.offer?.availability || "InStock",
         inventoryLevel: {
           value:
             item.offer?.inventoryLevel?.value != null
               ? String(item.offer.inventoryLevel.value)
               : "",
-          unitText: item.offer?.inventoryLevel?.unitText ?? "",
+          unitText: item.offer?.inventoryLevel?.unitText || "",
         },
         deliveryLeadTime: {
           value:
             item.offer?.deliveryLeadTime?.value != null
               ? String(item.offer.deliveryLeadTime.value)
               : "",
-          unitText: item.offer?.deliveryLeadTime?.unitText ?? "",
+          unitText: item.offer?.deliveryLeadTime?.unitText || "",
         },
         priceSpecification: {
-          price: item.offer?.priceSpecification?.price ?? "",
-          validFrom: item.offer?.priceSpecification?.validFrom ?? "",
-          validThrough: item.offer?.priceSpecification?.validThrough ?? "",
+          price: item.offer?.priceSpecification?.price || "",
+          validFrom: item.offer?.priceSpecification?.validFrom || "",
+          validThrough: item.offer?.priceSpecification?.validThrough || "",
         },
       },
     },
@@ -294,7 +294,7 @@ const UpdateMenuItemDialog = ({
               ),
           },
         }}
-        value={availability ?? ""}
+        value={availability}
       >
         <MenuItem disabled value="">
           <em>{tMenus("offers.availability.placeholder")}</em>

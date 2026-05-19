@@ -15,7 +15,7 @@ import { locales } from "@/constants/locale";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { routing } from "@/i18n/routing";
+import { type Locale, routing } from "@/i18n/routing";
 
 import { Box, type BoxProps, MenuItem, TextField, styled } from "@mui/material";
 
@@ -40,6 +40,7 @@ const LOCALE_OPTIONS = routing.locales.map((value) => ({
 interface UpdateMenuDialogProps {
   menu: Menu;
   mutateMenus: () => void;
+  usedInLanguages: Locale[];
 }
 
 const UpdateMenuDialog = ({
@@ -51,6 +52,7 @@ const UpdateMenuDialog = ({
     image: menuImage,
   },
   mutateMenus,
+  usedInLanguages,
 }: UpdateMenuDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
@@ -163,7 +165,11 @@ const UpdateMenuDialog = ({
           <em>{tMenus("inLanguage.placeholder")}</em>
         </MenuItem>
         {LOCALE_OPTIONS.map(({ label, value }) => (
-          <MenuItem key={value} value={value}>
+          <MenuItem
+            disabled={value !== menuLanguage && usedInLanguages.includes(value)}
+            key={value}
+            value={value}
+          >
             {label}
           </MenuItem>
         ))}

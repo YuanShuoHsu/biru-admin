@@ -281,7 +281,7 @@ const CreateMenuItemDialog = ({
               ),
           },
         }}
-        value={availability ?? ""}
+        value={availability}
       >
         <MenuItem disabled value="">
           <em>{tMenus("offers.availability.placeholder")}</em>

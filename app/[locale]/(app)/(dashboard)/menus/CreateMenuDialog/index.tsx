@@ -52,9 +52,9 @@ const CreateMenuDialog = ({
 }: CreateMenuDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
-  const availableLocaleOptions = LOCALE_OPTIONS.filter(
-    ({ value }) => !usedInLanguages.includes(value),
-  );
+  const firstAvailableLocale =
+    LOCALE_OPTIONS.find(({ value }) => !usedInLanguages.includes(value))
+      ?.value || routing.defaultLocale;
 
   const createMenuFormSchema = useCreateMenuFormSchema();
   const {
@@ -66,7 +66,7 @@ const CreateMenuDialog = ({
     defaultValues: {
       name: "",
       description: "",
-      inLanguage: availableLocaleOptions[0]?.value || routing.defaultLocale,
+      inLanguage: firstAvailableLocale,
     },
     resolver: zodResolver(createMenuFormSchema),
   });
@@ -143,7 +143,7 @@ const CreateMenuDialog = ({
           select: {
             displayEmpty: true,
             renderValue: (selected) => {
-              const option = availableLocaleOptions.find(
+              const option = LOCALE_OPTIONS.find(
                 ({ value }) => value === selected,
               );
 
@@ -161,8 +161,12 @@ const CreateMenuDialog = ({
         <MenuItem disabled value="">
           <em>{tMenus("inLanguage.placeholder")}</em>
         </MenuItem>
-        {availableLocaleOptions.map(({ label, value }) => (
-          <MenuItem key={value} value={value}>
+        {LOCALE_OPTIONS.map(({ label, value }) => (
+          <MenuItem
+            disabled={usedInLanguages.includes(value)}
+            key={value}
+            value={value}
+          >
             {label}
           </MenuItem>
         ))}

@@ -30,12 +30,14 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 }));
 
 interface CreateAddOnDialogProps {
+  addOns: MenuItemAddOn[];
   menuId: string;
   menuItemId: string;
   mutateAddOns: () => void;
 }
 
 const CreateAddOnDialog = ({
+  addOns,
   menuId,
   menuItemId,
   mutateAddOns,
@@ -62,6 +64,13 @@ const CreateAddOnDialog = ({
   const addOnMenuSectionId = useWatch({ control, name: "addOnMenuSectionId" });
   const addOnMenuItemId = useWatch({ control, name: "addOnMenuItemId" });
 
+  const usedSectionIds = new Set(
+    addOns.map(({ addOnMenuSectionId }) => addOnMenuSectionId),
+  );
+  const usedItemIds = new Set(
+    addOns.map(({ addOnMenuItemId }) => addOnMenuItemId),
+  );
+
   const { data: sections = [] } = useSWR(
     `/api/menus/${menuId}/menu-sections?limit=100&offset=0`,
     () =>
@@ -87,7 +96,7 @@ const CreateAddOnDialog = ({
     const name =
       (addOnMenuItemId
         ? sectionItems.find(({ id }) => id === addOnMenuItemId)?.name
-        : sections.find(({ id }) => id === addOnMenuSectionId)?.name) ?? "";
+        : sections.find(({ id }) => id === addOnMenuSectionId)?.name) || "";
 
     try {
       setDialog({ confirmLoading: true });
@@ -158,9 +167,9 @@ const CreateAddOnDialog = ({
         <MenuItem disabled value="">
           <em>{tMenus("addOns.addOnMenuSectionId.placeholder")}</em>
         </MenuItem>
-        {sections.map((section) => (
-          <MenuItem key={section.id} value={section.id}>
-            {section.name}
+        {sections.map(({ id, name }) => (
+          <MenuItem disabled={usedSectionIds.has(id)} key={id} value={id}>
+            {name}
           </MenuItem>
         ))}
       </TextField>
@@ -189,9 +198,9 @@ const CreateAddOnDialog = ({
           <MenuItem disabled value="">
             <em>{tMenus("addOns.addOnMenuItemId.placeholder")}</em>
           </MenuItem>
-          {sectionItems.map((item) => (
-            <MenuItem key={item.id} value={item.id}>
-              {item.name}
+          {sectionItems.map(({ id, name }) => (
+            <MenuItem disabled={usedItemIds.has(id)} key={id} value={id}>
+              {name}
             </MenuItem>
           ))}
         </TextField>

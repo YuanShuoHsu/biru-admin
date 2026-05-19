@@ -31,12 +31,14 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 
 interface UpdateAddOnDialogProps {
   addOn: MenuItemAddOn;
+  addOns: MenuItemAddOn[];
   menuId: string;
   mutateAddOns: () => void;
 }
 
 const UpdateAddOnDialog = ({
   addOn,
+  addOns,
   menuId,
   mutateAddOns,
 }: UpdateAddOnDialogProps) => {
@@ -62,6 +64,10 @@ const UpdateAddOnDialog = ({
 
   const addOnMenuSectionId = useWatch({ control, name: "addOnMenuSectionId" });
   const addOnMenuItemId = useWatch({ control, name: "addOnMenuItemId" });
+
+  const otherAddOns = addOns.filter(({ id }) => id !== addOn.id);
+  const usedSectionIds = new Set(otherAddOns.map(({ addOnMenuSectionId }) => addOnMenuSectionId));
+  const usedItemIds = new Set(otherAddOns.map(({ addOnMenuItemId }) => addOnMenuItemId));
 
   const { data: sections = [] } = useSWR(
     `/api/menus/${menuId}/menu-sections?limit=100&offset=0`,
@@ -97,7 +103,9 @@ const UpdateAddOnDialog = ({
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
-          addOnMenuItemId ? { addOnMenuItemId } : { addOnMenuSectionId },
+          addOnMenuItemId
+            ? { addOnMenuSectionId: null, addOnMenuItemId }
+            : { addOnMenuSectionId, addOnMenuItemId: null },
         ),
       });
 
@@ -159,9 +167,13 @@ const UpdateAddOnDialog = ({
         <MenuItem disabled value="">
           <em>{tMenus("addOns.addOnMenuSectionId.placeholder")}</em>
         </MenuItem>
-        {sections.map((section) => (
-          <MenuItem key={section.id} value={section.id}>
-            {section.name}
+        {sections.map(({ id, name }) => (
+          <MenuItem
+            disabled={id !== addOnMenuSectionId && usedSectionIds.has(id)}
+            key={id}
+            value={id}
+          >
+            {name}
           </MenuItem>
         ))}
       </TextField>
@@ -190,9 +202,13 @@ const UpdateAddOnDialog = ({
           <MenuItem disabled value="">
             <em>{tMenus("addOns.addOnMenuItemId.placeholder")}</em>
           </MenuItem>
-          {sectionItems.map((item) => (
-            <MenuItem key={item.id} value={item.id}>
-              {item.name}
+          {sectionItems.map(({ id, name }) => (
+            <MenuItem
+              disabled={id !== addOnMenuItemId && usedItemIds.has(id)}
+              key={id}
+              value={id}
+            >
+              {name}
             </MenuItem>
           ))}
         </TextField>

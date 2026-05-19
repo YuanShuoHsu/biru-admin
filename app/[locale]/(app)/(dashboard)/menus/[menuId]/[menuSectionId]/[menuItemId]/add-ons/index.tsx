@@ -70,6 +70,7 @@ const MenuItemAddOns = ({
     setDialog({
       content: (
         <CreateAddOnDialog
+          addOns={addOns}
           menuId={menuId}
           menuItemId={menuItemId}
           mutateAddOns={mutateAddOns}
@@ -79,7 +80,7 @@ const MenuItemAddOns = ({
       open: true,
       title: tMenus("addOns.actions.createAddOn.title"),
     });
-  }, [menuId, menuItemId, mutateAddOns, setDialog, tMenus]);
+  }, [addOns, menuId, menuItemId, mutateAddOns, setDialog, tMenus]);
 
   const handleUpdateAddOn = useCallback(
     (addOn: MenuItemAddOn) => {
@@ -87,6 +88,7 @@ const MenuItemAddOns = ({
         content: (
           <UpdateAddOnDialog
             addOn={addOn}
+            addOns={addOns}
             menuId={menuId}
             mutateAddOns={mutateAddOns}
           />
@@ -96,7 +98,7 @@ const MenuItemAddOns = ({
         title: tMenus("addOns.actions.updateAddOn.title"),
       });
     },
-    [menuId, mutateAddOns, setDialog, tMenus],
+    [addOns, menuId, mutateAddOns, setDialog, tMenus],
   );
 
   const handleDeleteAddOn = useCallback(
