@@ -7,8 +7,8 @@ import NavigationButton from "./NavigationButton";
 
 import {
   APP_BAR_TOOLBAR_HEIGHT,
-  APP_BAR_TOOLBAR_HEIGHT_XS_UP_LANDSCAPE,
   APP_BAR_TOOLBAR_HEIGHT_SM_UP,
+  APP_BAR_TOOLBAR_HEIGHT_XS_UP_LANDSCAPE,
 } from "@/constants/appBar";
 
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
@@ -24,7 +24,6 @@ import {
   Autoplay,
   FreeMode,
   Keyboard,
-  Mousewheel,
   Navigation,
   Pagination,
 } from "swiper/modules";
@@ -95,14 +94,22 @@ const Banner = () => (
         delay: 2500,
         disableOnInteraction: false,
       }}
-      grabCursor={true}
       freeMode={{
         sticky: true,
       }}
+      grabCursor={true}
       keyboard={{
         enabled: true,
       }}
       loop={true}
+      modules={[
+        Autoplay,
+        FreeMode,
+        Keyboard,
+        // Mousewheel,
+        Navigation,
+        Pagination,
+      ]}
       // mousewheel={true}
       navigation={{
         nextEl: ".custom-swiper-button-next",
@@ -113,14 +120,6 @@ const Banner = () => (
       }}
       slidesPerView={1}
       spaceBetween={0}
-      modules={[
-        Autoplay,
-        FreeMode,
-        Keyboard,
-        Mousewheel,
-        Navigation,
-        Pagination,
-      ]}
     >
       {Array.from({ length: 9 }, (_, index) => (
         <StyledSlide key={index}>
