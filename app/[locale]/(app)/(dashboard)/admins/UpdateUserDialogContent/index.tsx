@@ -76,45 +76,47 @@ const UpdateUserDialogContent = ({
   });
 
   const onSubmit = (event: BaseSyntheticEvent) =>
-    handleSubmit(async ({ lastName, firstName, email, bio, emailSubscribed }) => {
-      await authClient.admin.updateUser(
-        {
-          userId: user.id,
-          data: {
-            name: (locale === LocaleEnum.En
-              ? [firstName, lastName]
-              : [lastName, firstName]
-            )
-              .filter(Boolean)
-              .join(locale === LocaleEnum.En ? " " : ""),
-            email,
-            firstName,
-            lastName,
-            bio,
-            emailSubscribed,
-            image,
+    handleSubmit(
+      async ({ lastName, firstName, email, bio, emailSubscribed }) => {
+        await authClient.admin.updateUser(
+          {
+            userId: user.id,
+            data: {
+              name: (locale === LocaleEnum.En
+                ? [firstName, lastName]
+                : [lastName, firstName]
+              )
+                .filter(Boolean)
+                .join(locale === LocaleEnum.En ? " " : ""),
+              email,
+              firstName,
+              lastName,
+              bio,
+              emailSubscribed,
+              image,
+            },
           },
-        },
-        {
-          onError: ({ error: { code } }) => {
-            enqueueSnackbar(getErrorMessage(code, locale), {
-              variant: "error",
-            });
-            setDialog({ confirmLoading: false });
-          },
-          onRequest: () => setDialog({ confirmLoading: true }),
-          onSuccess: () => {
-            enqueueSnackbar(tAdmins("actions.updateUser.success"), {
-              variant: "success",
-            });
+          {
+            onError: ({ error: { code } }) => {
+              enqueueSnackbar(getErrorMessage(code, locale), {
+                variant: "error",
+              });
+              setDialog({ confirmLoading: false });
+            },
+            onRequest: () => setDialog({ confirmLoading: true }),
+            onSuccess: () => {
+              enqueueSnackbar(tAdmins("actions.updateUser.success"), {
+                variant: "success",
+              });
 
-            closeDialog();
+              closeDialog();
 
-            mutateAdmins();
+              mutateAdmins();
+            },
           },
-        },
-      );
-    })(event);
+        );
+      },
+    )(event);
 
   return (
     <StyledBox component="form" id="update-user-form" onSubmit={onSubmit}>

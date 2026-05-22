@@ -160,7 +160,6 @@ const Profile = () => {
           fullWidth
           helperText={errors.bio?.message}
           label={tAuth("settings.profile.bio.label")}
-          maxRows={4}
           multiline
           placeholder={tAuth("settings.profile.bio.placeholder")}
           rows={3}
