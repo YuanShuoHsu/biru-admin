@@ -93,7 +93,7 @@
         "label": "Last name (Optional)",
         "placeholder": "Please enter your last name"
       },
-      "success": "User updated",
+      "success": "{email} updated",
       "title": "Edit user"
     }
   },

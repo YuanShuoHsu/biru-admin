@@ -93,7 +93,7 @@
         "label": "姓氏（選填）",
         "placeholder": "請輸入您的姓氏"
       },
-      "success": "使用者資料已更新",
+      "success": "{email} 的資料已更新",
       "title": "編輯使用者"
     }
   },
