@@ -105,9 +105,12 @@ const UpdateUserDialogContent = ({
             },
             onRequest: () => setDialog({ confirmLoading: true }),
             onSuccess: () => {
-              enqueueSnackbar(tAdmins("actions.updateUser.success", { email }), {
-                variant: "success",
-              });
+              enqueueSnackbar(
+                tAdmins("actions.updateUser.success", { email }),
+                {
+                  variant: "success",
+                },
+              );
 
               closeDialog();
 
