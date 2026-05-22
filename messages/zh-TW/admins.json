@@ -32,7 +32,7 @@
         "placeholder": "請輸入您的名字"
       },
       "lastName": {
-        "label": "姓氏",
+        "label": "姓氏（選填）",
         "placeholder": "請輸入您的姓氏"
       },
       "password": {
@@ -90,7 +90,7 @@
         "placeholder": "請輸入您的名字"
       },
       "lastName": {
-        "label": "姓氏",
+        "label": "姓氏（選填）",
         "placeholder": "請輸入您的姓氏"
       },
       "success": "使用者資料已更新",

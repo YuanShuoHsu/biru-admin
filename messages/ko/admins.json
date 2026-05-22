@@ -32,7 +32,7 @@
         "placeholder": "귀하의 이름을 입력해 주세요"
       },
       "lastName": {
-        "label": "성",
+        "label": "성 (선택사항)",
         "placeholder": "귀하의 성을 입력해 주세요"
       },
       "password": {
@@ -90,7 +90,7 @@
         "placeholder": "귀하의 이름을 입력해 주세요"
       },
       "lastName": {
-        "label": "성",
+        "label": "성 (선택사항)",
         "placeholder": "귀하의 성을 입력해 주세요"
       },
       "success": "사용자 정보가 업데이트되었습니다",

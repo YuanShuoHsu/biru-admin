@@ -5,7 +5,7 @@ export const useUpdateUserFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z.object({
-    lastName: z.string().trim(),
+    lastName: z.string().trim().optional(),
     firstName: z
       .string()
       .min(1, { error: tValidation("firstName.minLength") })

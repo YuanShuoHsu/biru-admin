@@ -32,7 +32,7 @@
         "placeholder": "あなたの名を入力してください"
       },
       "lastName": {
-        "label": "姓",
+        "label": "姓（任意）",
         "placeholder": "あなたの姓を入力してください"
       },
       "password": {
@@ -90,7 +90,7 @@
         "placeholder": "あなたの名を入力してください"
       },
       "lastName": {
-        "label": "姓",
+        "label": "姓（任意）",
         "placeholder": "あなたの姓を入力してください"
       },
       "success": "ユーザー情報を更新しました",
