@@ -82,7 +82,7 @@
     },
     "updateUser": {
       "bio": {
-        "label": "자기소개",
+        "label": "자기소개 (선택사항)",
         "placeholder": "귀하의 자기소개를 입력해 주세요"
       },
       "firstName": {

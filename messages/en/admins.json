@@ -82,7 +82,7 @@
     },
     "updateUser": {
       "bio": {
-        "label": "Bio",
+        "label": "Bio (Optional)",
         "placeholder": "Please enter your bio"
       },
       "firstName": {

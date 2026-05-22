@@ -82,7 +82,7 @@
     },
     "updateUser": {
       "bio": {
-        "label": "自己紹介",
+        "label": "自己紹介（任意）",
         "placeholder": "あなたの自己紹介を入力してください"
       },
       "firstName": {

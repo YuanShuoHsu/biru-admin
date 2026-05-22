@@ -82,7 +82,7 @@
     },
     "updateUser": {
       "bio": {
-        "label": "个人简介",
+        "label": "个人简介（选填）",
         "placeholder": "请输入您的个人简介"
       },
       "firstName": {

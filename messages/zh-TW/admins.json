@@ -82,7 +82,7 @@
     },
     "updateUser": {
       "bio": {
-        "label": "個人簡介",
+        "label": "個人簡介（選填）",
         "placeholder": "請輸入您的個人簡介"
       },
       "firstName": {
