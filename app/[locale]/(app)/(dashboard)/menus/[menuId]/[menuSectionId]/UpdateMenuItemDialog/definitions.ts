@@ -30,7 +30,11 @@ export const useUpdateMenuItemFormSchema = () => {
       .string()
       .min(1, { error: tValidation("name.minLength") })
       .trim(),
-    description: z.string().trim().max(160, { error: tValidation("description.maxLength") }).optional(),
+    description: z
+      .string()
+      .trim()
+      .max(160, { error: tValidation("description.maxLength") })
+      .optional(),
     offer: z
       .object({
         priceCurrency: z.string().trim().min(1),
