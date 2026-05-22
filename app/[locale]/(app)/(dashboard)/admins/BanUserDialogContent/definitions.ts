@@ -18,7 +18,7 @@ export const useBanUserFormSchema = () => {
   return z.object({
     email: z.email({ error: tValidation("email.invalid") }).trim(),
     banExpiresIn: z.coerce.number(),
-    banReason: z.string(),
+    banReason: z.string().max(160, { error: tValidation("banReason.maxLength") }),
   });
 };
 

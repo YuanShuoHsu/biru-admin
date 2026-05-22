@@ -229,6 +229,7 @@ const UpdateMenuItemDialog = ({
         maxRows={4}
         multiline
         placeholder={tMenus("items.description.placeholder")}
+        slotProps={{ htmlInput: { maxLength: 160 } }}
         {...register("description")}
       />
       <Divider flexItem />

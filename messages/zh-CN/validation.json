@@ -8,6 +8,9 @@
   "addOnType": {
     "required": "加购类型为必填。"
   },
+  "banReason": {
+    "maxLength": "封禁原因不能超过 160 个字符。"
+  },
   "bio": {
     "maxLength": "个人简介不能超过 160 个字符。"
   },
@@ -31,6 +34,9 @@
   },
   "currentPassword": {
     "required": "当前密码为必填。"
+  },
+  "description": {
+    "maxLength": "描述不能超过 160 个字符。"
   },
   "email": {
     "invalid": "电子邮件无效。"
@@ -71,9 +77,6 @@
   "price": {
     "required": "价格为必填。"
   },
-  "validFrom": {
-    "beforeValidThrough": "開始日期必須早於結束日期。"
-  },
   "role": {
     "required": "角色为必填。"
   },
@@ -83,5 +86,8 @@
   "slug": {
     "letter": "包含至少一个英文字母。",
     "minLength": "标识符至少需要 1 个字符。"
+  },
+  "validFrom": {
+    "beforeValidThrough": "開始日期必須早於結束日期。"
   }
 }

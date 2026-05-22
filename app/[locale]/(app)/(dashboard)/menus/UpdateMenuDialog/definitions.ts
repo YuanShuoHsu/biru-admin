@@ -13,7 +13,7 @@ export const useUpdateMenuFormSchema = () => {
       .min(1, { error: tValidation("name.minLength") })
       .trim(),
     inLanguage: z.enum(routing.locales),
-    description: z.string().trim().optional(),
+    description: z.string().trim().max(160, { error: tValidation("description.maxLength") }).optional(),
   });
 };
 

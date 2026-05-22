@@ -8,6 +8,9 @@
   "addOnType": {
     "required": "추가 유형은 필수입니다."
   },
+  "banReason": {
+    "maxLength": "정지 사유는 160자를 초과할 수 없습니다."
+  },
   "bio": {
     "maxLength": "자기소개는 160자를 초과할 수 없습니다."
   },
@@ -31,6 +34,9 @@
   },
   "currentPassword": {
     "required": "현재 비밀번호는 필수입니다."
+  },
+  "description": {
+    "maxLength": "설명은 160자를 초과할 수 없습니다."
   },
   "email": {
     "invalid": "이메일이 유효하지 않습니다."
@@ -71,9 +77,6 @@
   "price": {
     "required": "가격은 필수입니다."
   },
-  "validFrom": {
-    "beforeValidThrough": "시작일은 종료일보다 이전이어야 합니다."
-  },
   "role": {
     "required": "역할은 필수입니다."
   },
@@ -83,5 +86,8 @@
   "slug": {
     "letter": "영문자를 최소 1개 포함.",
     "minLength": "슬러그는 1자 이상이어야 합니다."
+  },
+  "validFrom": {
+    "beforeValidThrough": "시작일은 종료일보다 이전이어야 합니다."
   }
 }

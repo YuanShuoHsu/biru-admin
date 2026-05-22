@@ -107,6 +107,7 @@ const BanUserDialogContent = ({
         maxRows={4}
         multiline
         placeholder={tAdmins("actions.banUser.banReason.placeholder")}
+        slotProps={{ htmlInput: { maxLength: 160 } }}
         {...register("banReason")}
       />
       <TextField

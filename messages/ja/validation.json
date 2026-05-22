@@ -8,6 +8,9 @@
   "addOnType": {
     "required": "加購タイプは必須です。"
   },
+  "banReason": {
+    "maxLength": "停止理由は160文字以内で入力してください。"
+  },
   "bio": {
     "maxLength": "自己紹介は160文字以内で入力してください。"
   },
@@ -31,6 +34,9 @@
   },
   "currentPassword": {
     "required": "現在のパスワードは必須です。"
+  },
+  "description": {
+    "maxLength": "説明は160文字以内で入力してください。"
   },
   "email": {
     "invalid": "メールアドレスが無効です。"
@@ -71,9 +77,6 @@
   "price": {
     "required": "価格は必須です。"
   },
-  "validFrom": {
-    "beforeValidThrough": "開始日は終了日より前である必要があります。"
-  },
   "role": {
     "required": "役割は必須です。"
   },
@@ -83,5 +86,8 @@
   "slug": {
     "letter": "英字を1文字以上含む。",
     "minLength": "スラッグは1文字以上で入力してください。"
+  },
+  "validFrom": {
+    "beforeValidThrough": "開始日は終了日より前である必要があります。"
   }
 }

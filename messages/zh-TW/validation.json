@@ -8,6 +8,9 @@
   "addOnType": {
     "required": "加購類型為必填。"
   },
+  "banReason": {
+    "maxLength": "封禁原因不能超過 160 個字元。"
+  },
   "bio": {
     "maxLength": "個人簡介不能超過 160 個字元。"
   },
@@ -31,6 +34,9 @@
   },
   "currentPassword": {
     "required": "目前密碼為必填。"
+  },
+  "description": {
+    "maxLength": "描述不能超過 160 個字元。"
   },
   "email": {
     "invalid": "電子郵件無效。"
@@ -71,9 +77,6 @@
   "price": {
     "required": "價格為必填。"
   },
-  "validFrom": {
-    "beforeValidThrough": "開始日期必須早於結束日期。"
-  },
   "role": {
     "required": "角色為必填。"
   },
@@ -83,5 +86,8 @@
   "slug": {
     "letter": "包含至少一個英文字母。",
     "minLength": "識別碼至少需要 1 個字元。"
+  },
+  "validFrom": {
+    "beforeValidThrough": "開始日期必須早於結束日期。"
   }
 }

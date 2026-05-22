@@ -182,6 +182,7 @@ const UpdateMenuDialog = ({
         maxRows={4}
         multiline
         placeholder={tMenus("description.placeholder")}
+        slotProps={{ htmlInput: { maxLength: 160 } }}
         {...register("description")}
       />
     </StyledBox>
