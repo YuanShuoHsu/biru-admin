@@ -176,9 +176,9 @@ const CreateMenuDialog = ({
         fullWidth
         helperText={errors.description?.message}
         label={tMenus("description.label")}
+        maxRows={4}
         multiline
         placeholder={tMenus("description.placeholder")}
-        rows={3}
         {...register("description")}
       />
     </StyledBox>

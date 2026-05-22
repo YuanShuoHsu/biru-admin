@@ -226,9 +226,9 @@ const UpdateMenuItemDialog = ({
         fullWidth
         helperText={errors.description?.message}
         label={tMenus("items.description.label")}
+        maxRows={4}
         multiline
         placeholder={tMenus("items.description.placeholder")}
-        rows={3}
         {...register("description")}
       />
       <Divider flexItem />

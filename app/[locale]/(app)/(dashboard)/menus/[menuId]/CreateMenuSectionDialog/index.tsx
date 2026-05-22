@@ -117,9 +117,9 @@ const CreateMenuSectionDialog = ({
         fullWidth
         helperText={errors.description?.message}
         label={tMenus("sections.description.label")}
+        maxRows={4}
         multiline
         placeholder={tMenus("sections.description.placeholder")}
-        rows={3}
         {...register("description")}
       />
     </StyledBox>

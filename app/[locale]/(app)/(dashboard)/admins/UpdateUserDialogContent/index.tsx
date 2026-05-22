@@ -165,7 +165,7 @@ const UpdateUserDialogContent = ({
         maxRows={4}
         multiline
         placeholder={tAdmins("actions.updateUser.bio.placeholder")}
-        rows={3}
+        slotProps={{ htmlInput: { maxLength: 160 } }}
         {...register("bio")}
       />
       <Stack width="100%" flexDirection="row" alignItems="center">

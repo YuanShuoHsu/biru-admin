@@ -8,6 +8,9 @@
   "addOnType": {
     "required": "加購類型為必填。"
   },
+  "bio": {
+    "maxLength": "個人簡介不能超過 160 個字元。"
+  },
   "birthDate": {
     "invalid": "出生日期無效。",
     "maxDate": "請選擇今天或之前的出生日期。",

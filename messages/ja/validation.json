@@ -8,6 +8,9 @@
   "addOnType": {
     "required": "加購タイプは必須です。"
   },
+  "bio": {
+    "maxLength": "自己紹介は160文字以内で入力してください。"
+  },
   "birthDate": {
     "invalid": "生年月日が無効です。",
     "maxDate": "今日以前の生年月日を選択してください。",

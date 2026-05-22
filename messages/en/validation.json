@@ -8,6 +8,9 @@
   "addOnType": {
     "required": "Add-on type is required."
   },
+  "bio": {
+    "maxLength": "Bio must not exceed 160 characters."
+  },
   "birthDate": {
     "invalid": "Birth date is not valid.",
     "maxDate": "Please select a birth date on or before today.",

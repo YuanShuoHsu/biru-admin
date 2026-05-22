@@ -11,7 +11,11 @@ export const useUpdateUserFormSchema = () => {
       .min(1, { error: tValidation("firstName.minLength") })
       .trim(),
     email: z.email({ error: tValidation("email.invalid") }).trim(),
-    bio: z.string().trim().optional(),
+    bio: z
+      .string()
+      .trim()
+      .max(160, { error: tValidation("bio.maxLength") })
+      .optional(),
     emailSubscribed: z.boolean(),
   });
 };

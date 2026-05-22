@@ -8,6 +8,9 @@
   "addOnType": {
     "required": "추가 유형은 필수입니다."
   },
+  "bio": {
+    "maxLength": "자기소개는 160자를 초과할 수 없습니다."
+  },
   "birthDate": {
     "invalid": "생년월일이 유효하지 않습니다.",
     "maxDate": "오늘 또는 그 이전 날짜를 선택해 주세요.",

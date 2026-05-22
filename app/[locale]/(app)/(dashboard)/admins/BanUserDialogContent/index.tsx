@@ -104,9 +104,9 @@ const BanUserDialogContent = ({
         fullWidth
         helperText={errors.banReason?.message}
         label={tAdmins("actions.banUser.banReason.label")}
+        maxRows={4}
         multiline
         placeholder={tAdmins("actions.banUser.banReason.placeholder")}
-        rows={3}
         {...register("banReason")}
       />
       <TextField

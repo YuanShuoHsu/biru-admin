@@ -175,10 +175,10 @@ const CustomerPaymentForm = () => {
       <TextField
         fullWidth
         label="備註"
+        maxRows={4}
         multiline
         name="notes"
         onChange={handleInfoChange}
-        rows={3}
         slotProps={{
           htmlInput: {
             maxLength: 50,
