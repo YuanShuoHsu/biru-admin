@@ -46,6 +46,7 @@ const Profile = () => {
     defaultValues: {
       lastName: session?.user.lastName || "",
       firstName: session?.user.firstName || "",
+      bio: session?.user.bio || "",
     },
     resolver: zodResolver(profileFormSchema),
   });
@@ -54,8 +55,14 @@ const Profile = () => {
     reset({
       lastName: session?.user.lastName || "",
       firstName: session?.user.firstName || "",
+      bio: session?.user.bio || "",
     });
-  }, [reset, session?.user.firstName, session?.user.lastName]);
+  }, [
+    reset,
+    session?.user.firstName,
+    session?.user.lastName,
+    session?.user.bio,
+  ]);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -67,7 +74,7 @@ const Profile = () => {
   );
   const isAvatarDirty = avatarSrc !== (session?.user.image || undefined);
 
-  const updateProfile = async ({ lastName, firstName }: ProfileForm) => {
+  const updateProfile = async ({ lastName, firstName, bio }: ProfileForm) => {
     const name = (
       locale === LocaleEnum.En ? [firstName, lastName] : [lastName, firstName]
     )
@@ -75,10 +82,11 @@ const Profile = () => {
       .join(locale === LocaleEnum.En ? " " : "");
 
     await authClient.updateUser({
+      image: avatarSrc,
       lastName,
       firstName,
       name,
-      image: avatarSrc,
+      bio,
       fetchOptions: {
         onError: ({ error }) => {
           enqueueSnackbar(getErrorMessage(error.code, locale), {
@@ -147,6 +155,17 @@ const Profile = () => {
             {...register("firstName")}
           />
         </Stack>
+        <TextField
+          error={!!errors.bio}
+          fullWidth
+          helperText={errors.bio?.message}
+          label={tAuth("settings.profile.bio.label")}
+          maxRows={4}
+          multiline
+          placeholder={tAuth("settings.profile.bio.placeholder")}
+          rows={3}
+          {...register("bio")}
+        />
       </StyledCardContent>
       <StyledCardActions disableSpacing sx={{ alignItems: "flex-end" }}>
         <Button

@@ -7,9 +7,10 @@ import type { Locale } from "@/i18n/routing";
 export type AdminRole = (typeof roles)[number];
 
 export type AdminUser = Omit<UserWithRole, "role"> & {
-  lastName?: string;
-  firstName: string;
+  bio?: string;
   emailSubscribed: boolean;
+  firstName: string;
   lang: Locale;
+  lastName?: string;
   role: AdminRole;
 };

@@ -81,6 +81,10 @@
       "title": "停止解除"
     },
     "updateUser": {
+      "bio": {
+        "label": "自己紹介",
+        "placeholder": "あなたの自己紹介を入力してください"
+      },
       "firstName": {
         "label": "名",
         "placeholder": "あなたの名を入力してください"

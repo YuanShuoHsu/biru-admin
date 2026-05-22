@@ -69,13 +69,14 @@ const UpdateUserDialogContent = ({
       lastName: user.lastName,
       firstName: user.firstName,
       email: user.email,
+      bio: user.bio || "",
       emailSubscribed: user.emailSubscribed,
     },
     resolver: zodResolver(updateUserFormSchema),
   });
 
   const onSubmit = (event: BaseSyntheticEvent) =>
-    handleSubmit(async ({ lastName, firstName, email, emailSubscribed }) => {
+    handleSubmit(async ({ lastName, firstName, email, bio, emailSubscribed }) => {
       await authClient.admin.updateUser(
         {
           userId: user.id,
@@ -89,6 +90,7 @@ const UpdateUserDialogContent = ({
             email,
             firstName,
             lastName,
+            bio,
             emailSubscribed,
             image,
           },
@@ -152,6 +154,17 @@ const UpdateUserDialogContent = ({
         required
         type="email"
         {...register("email")}
+      />
+      <TextField
+        error={!!errors.bio}
+        fullWidth
+        helperText={errors.bio?.message}
+        label={tAdmins("actions.updateUser.bio.label")}
+        maxRows={4}
+        multiline
+        placeholder={tAdmins("actions.updateUser.bio.placeholder")}
+        rows={3}
+        {...register("bio")}
       />
       <Stack width="100%" flexDirection="row" alignItems="center">
         <FormControlLabel

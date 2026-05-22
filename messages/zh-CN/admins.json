@@ -81,6 +81,10 @@
       "title": "解除封禁"
     },
     "updateUser": {
+      "bio": {
+        "label": "个人简介",
+        "placeholder": "请输入您的个人简介"
+      },
       "firstName": {
         "label": "名字",
         "placeholder": "请输入您的名字"

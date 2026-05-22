@@ -81,6 +81,10 @@
       "title": "차단 해제"
     },
     "updateUser": {
+      "bio": {
+        "label": "자기소개",
+        "placeholder": "귀하의 자기소개를 입력해 주세요"
+      },
       "firstName": {
         "label": "이름",
         "placeholder": "귀하의 이름을 입력해 주세요"

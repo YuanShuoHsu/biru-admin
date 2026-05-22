@@ -81,6 +81,10 @@
       "title": "解除封鎖"
     },
     "updateUser": {
+      "bio": {
+        "label": "個人簡介",
+        "placeholder": "請輸入您的個人簡介"
+      },
       "firstName": {
         "label": "名字",
         "placeholder": "請輸入您的名字"

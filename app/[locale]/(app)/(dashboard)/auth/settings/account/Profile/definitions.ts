@@ -10,6 +10,7 @@ export const useProfileFormSchema = () => {
       .string()
       .min(1, { error: tValidation("firstName.minLength") })
       .trim(),
+    bio: z.string().trim().optional(),
   });
 };
 

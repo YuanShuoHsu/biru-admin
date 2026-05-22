@@ -16,6 +16,10 @@ export const authClient = createAuthClient({
     adminClient(),
     inferAdditionalFields({
       user: {
+        bio: {
+          type: "string",
+          required: false,
+        },
         emailSubscribed: {
           type: "boolean",
           required: true,

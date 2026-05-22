@@ -81,6 +81,10 @@
       "title": "Unban user"
     },
     "updateUser": {
+      "bio": {
+        "label": "Bio",
+        "placeholder": "Please enter your bio"
+      },
       "firstName": {
         "label": "First name",
         "placeholder": "Please enter your first name"
