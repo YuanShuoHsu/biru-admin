@@ -428,6 +428,20 @@ const Admins = ({
     });
   };
 
+  const handleUpdateUser = useCallback(
+    (user: AdminUser) => {
+      setDialog({
+        content: (
+          <UpdateUserDialogContent mutateAdmins={mutateAdmins} user={user} />
+        ),
+        formId: "update-user-form",
+        open: true,
+        title: tAdmins("actions.updateUser.title"),
+      });
+    },
+    [mutateAdmins, setDialog, tAdmins],
+  );
+
   const handleSetRole = useCallback(
     (user: UserWithRole) => {
       setDialog({
@@ -452,20 +466,6 @@ const Admins = ({
       });
     },
     [setDialog, tAdmins],
-  );
-
-  const handleUpdateUser = useCallback(
-    (user: AdminUser) => {
-      setDialog({
-        content: (
-          <UpdateUserDialogContent mutateAdmins={mutateAdmins} user={user} />
-        ),
-        formId: "update-user-form",
-        open: true,
-        title: tAdmins("actions.updateUser.title"),
-      });
-    },
-    [mutateAdmins, setDialog, tAdmins],
   );
 
   const handleBanUser = useCallback(
@@ -618,6 +618,18 @@ const Admins = ({
 
           return (
             <Stack height="100%" direction="row" alignItems="center" gap={1}>
+              <Tooltip title={tAdmins("actions.updateUser.title")}>
+                <IconButton
+                  onClick={(event) => {
+                    event.stopPropagation();
+
+                    handleUpdateUser(row as AdminUser);
+                  }}
+                  size="small"
+                >
+                  <ManageAccounts fontSize="small" />
+                </IconButton>
+              </Tooltip>
               <Tooltip title={tAdmins("actions.setRole.title")}>
                 <IconButton
                   onClick={(event) => {
@@ -640,18 +652,6 @@ const Admins = ({
                   size="small"
                 >
                   <Password fontSize="small" />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title={tAdmins("actions.updateUser.title")}>
-                <IconButton
-                  onClick={(event) => {
-                    event.stopPropagation();
-
-                    handleUpdateUser(row as AdminUser);
-                  }}
-                  size="small"
-                >
-                  <ManageAccounts fontSize="small" />
                 </IconButton>
               </Tooltip>
               <Tooltip
@@ -752,6 +752,11 @@ const Admins = ({
         field: "name",
         filterOperators: textFilterOperators,
         headerName: tAdmins("name"),
+      },
+      {
+        field: "bio",
+        filterable: false,
+        headerName: tAdmins("bio"),
       },
       {
         field: "email",
