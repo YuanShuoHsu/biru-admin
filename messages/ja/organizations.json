@@ -75,16 +75,16 @@
   "localBusiness": {
     "hasMap": {
       "label": "地図リンク（任意）",
-      "placeholder": "Google マップURLを入力してください"
+      "placeholder": "あなたのGoogle マップURLを入力してください"
     },
     "label": "ビジネス情報",
     "openingHours": {
       "label": "営業時間（任意）",
-      "placeholder": "例：Mo-Su 08:00-21:00"
+      "placeholder": "あなたの営業時間を入力してください"
     },
     "telephone": {
       "label": "電話番号（任意）",
-      "placeholder": "電話番号を入力してください"
+      "placeholder": "あなたの電話番号を入力してください"
     }
   },
   "logo": "ロゴ",
@@ -171,11 +171,11 @@
     },
     "name": {
       "label": "チーム名",
-      "placeholder": "チーム名を入力してください"
+      "placeholder": "あなたのチーム名を入力してください"
     },
     "teamId": {
       "label": "チーム（任意）",
-      "placeholder": "チームを選択してください"
+      "placeholder": "あなたのチームを選択してください"
     },
     "unknown": "不明なチーム"
   }

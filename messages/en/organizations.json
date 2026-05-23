@@ -75,16 +75,16 @@
   "localBusiness": {
     "hasMap": {
       "label": "Map Link (Optional)",
-      "placeholder": "Please enter Google Maps URL"
+      "placeholder": "Please enter your Google Maps URL"
     },
     "label": "Business Info",
     "openingHours": {
       "label": "Opening Hours (Optional)",
-      "placeholder": "e.g. Mo-Su 08:00-21:00"
+      "placeholder": "Please enter your opening hours"
     },
     "telephone": {
       "label": "Telephone (Optional)",
-      "placeholder": "Please enter phone number"
+      "placeholder": "Please enter your phone number"
     }
   },
   "logo": "Logo",
@@ -175,7 +175,7 @@
     },
     "teamId": {
       "label": "Team (Optional)",
-      "placeholder": "Please select a team"
+      "placeholder": "Please select your team"
     },
     "unknown": "Unknown team"
   }
