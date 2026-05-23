@@ -66,6 +66,7 @@ const AddressFields = ({ control, errors, register }: AddressFieldsProps) => {
   return locale === LocaleEnum.En ? (
     <>
       <TextField
+        autoComplete="address-line1"
         error={!!errors.streetAddress}
         fullWidth
         helperText={errors.streetAddress?.message}
@@ -74,6 +75,7 @@ const AddressFields = ({ control, errors, register }: AddressFieldsProps) => {
         {...register("streetAddress")}
       />
       <TextField
+        autoComplete="address-line2"
         error={!!errors.extendedAddress}
         fullWidth
         helperText={errors.extendedAddress?.message}
@@ -83,6 +85,7 @@ const AddressFields = ({ control, errors, register }: AddressFieldsProps) => {
       />
       <Box display="flex" gap={2} width="100%">
         <TextField
+          autoComplete="postal-code"
           error={!!errors.postalCode}
           fullWidth
           helperText={errors.postalCode?.message}
@@ -91,6 +94,7 @@ const AddressFields = ({ control, errors, register }: AddressFieldsProps) => {
           {...register("postalCode")}
         />
         <TextField
+          autoComplete="address-level2"
           error={!!errors.addressLocality}
           fullWidth
           helperText={errors.addressLocality?.message}
@@ -101,6 +105,7 @@ const AddressFields = ({ control, errors, register }: AddressFieldsProps) => {
       </Box>
       <Box display="flex" gap={2} width="100%">
         <TextField
+          autoComplete="address-level1"
           error={!!errors.addressRegion}
           fullWidth
           helperText={errors.addressRegion?.message}
@@ -115,6 +120,7 @@ const AddressFields = ({ control, errors, register }: AddressFieldsProps) => {
     <>
       {countrySelect}
       <TextField
+        autoComplete="postal-code"
         error={!!errors.postalCode}
         fullWidth
         helperText={errors.postalCode?.message}
@@ -124,6 +130,7 @@ const AddressFields = ({ control, errors, register }: AddressFieldsProps) => {
       />
       <Box display="flex" gap={2} width="100%">
         <TextField
+          autoComplete="address-level1"
           error={!!errors.addressRegion}
           fullWidth
           helperText={errors.addressRegion?.message}
@@ -132,6 +139,7 @@ const AddressFields = ({ control, errors, register }: AddressFieldsProps) => {
           {...register("addressRegion")}
         />
         <TextField
+          autoComplete="address-level2"
           error={!!errors.addressLocality}
           fullWidth
           helperText={errors.addressLocality?.message}
@@ -141,6 +149,7 @@ const AddressFields = ({ control, errors, register }: AddressFieldsProps) => {
         />
       </Box>
       <TextField
+        autoComplete="address-line1"
         error={!!errors.streetAddress}
         fullWidth
         helperText={errors.streetAddress?.message}
@@ -149,6 +158,7 @@ const AddressFields = ({ control, errors, register }: AddressFieldsProps) => {
         {...register("streetAddress")}
       />
       <TextField
+        autoComplete="address-line2"
         error={!!errors.extendedAddress}
         fullWidth
         helperText={errors.extendedAddress?.message}
