@@ -71,6 +71,10 @@
       "label": "地図リンク（任意）",
       "placeholder": "あなたのGoogle マップURLを入力してください"
     },
+    "mapEmbedUrl": {
+      "label": "地図埋め込みURL（任意）",
+      "placeholder": "あなたのGoogle マップ埋め込みURLを入力してください"
+    },
     "label": "ビジネス",
     "openingHours": {
       "label": "営業時間（任意）",

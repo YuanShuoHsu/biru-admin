@@ -71,6 +71,10 @@
       "label": "地图链接（选填）",
       "placeholder": "请输入您的 Google 地图链接"
     },
+    "mapEmbedUrl": {
+      "label": "地图嵌入网址（选填）",
+      "placeholder": "请输入您的 Google 地图嵌入网址"
+    },
     "label": "商业",
     "openingHours": {
       "label": "营业时间（选填）",

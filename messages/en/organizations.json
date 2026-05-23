@@ -71,6 +71,10 @@
       "label": "Map Link (Optional)",
       "placeholder": "Please enter your Google Maps URL"
     },
+    "mapEmbedUrl": {
+      "label": "Map Embed URL (Optional)",
+      "placeholder": "Please enter your Google Maps embed URL"
+    },
     "label": "Business",
     "openingHours": {
       "label": "Opening Hours (Optional)",

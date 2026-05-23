@@ -76,6 +76,7 @@ const UpdateOrganizationDialog = ({
       postalCode: organization.postalCode || "",
       streetAddress: organization.streetAddress || "",
       hasMap: organization.hasMap || "",
+      mapEmbedUrl: organization.mapEmbedUrl || "",
       openingHours: organization.openingHours || "",
       telephone: organization.telephone || "",
     },
@@ -92,6 +93,7 @@ const UpdateOrganizationDialog = ({
     postalCode,
     streetAddress,
     hasMap,
+    mapEmbedUrl,
     openingHours,
     telephone,
   }: UpdateOrganizationForm) => {
@@ -109,6 +111,7 @@ const UpdateOrganizationDialog = ({
           postalCode,
           streetAddress,
           hasMap,
+          mapEmbedUrl,
           openingHours,
           telephone,
         },

@@ -74,6 +74,7 @@ const CreateOrganizationDialog = ({
       streetAddress: "",
 
       hasMap: "",
+      mapEmbedUrl: "",
       openingHours: "",
       telephone: "",
     },
@@ -90,6 +91,7 @@ const CreateOrganizationDialog = ({
     postalCode,
     streetAddress,
     hasMap,
+    mapEmbedUrl,
     openingHours,
     telephone,
   }: CreateOrganizationForm) => {
@@ -105,6 +107,7 @@ const CreateOrganizationDialog = ({
         postalCode,
         streetAddress,
         hasMap,
+        mapEmbedUrl,
         openingHours,
         telephone,
       },

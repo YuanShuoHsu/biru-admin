@@ -24,6 +24,7 @@ export const useUpdateOrganizationFormSchema = () => {
 
     // https://schema.org/LocalBusiness
     hasMap: z.string().trim().optional(),
+    mapEmbedUrl: z.string().trim().optional(),
     openingHours: z.string().trim().optional(),
     telephone: z.string().trim().optional(),
   });
