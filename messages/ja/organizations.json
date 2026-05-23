@@ -68,9 +68,6 @@
     "label": "保留中の招待",
     "role": "役割"
   },
-  "isOpen": {
-    "label": "営業状態"
-  },
   "label": "組織管理",
   "localBusiness": {
     "hasMap": {

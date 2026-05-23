@@ -68,9 +68,6 @@
     "label": "待处理邀请",
     "role": "角色"
   },
-  "isOpen": {
-    "label": "营业状态"
-  },
   "label": "组织管理",
   "localBusiness": {
     "hasMap": {

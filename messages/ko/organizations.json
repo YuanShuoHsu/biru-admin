@@ -68,9 +68,6 @@
     "label": "대기 중인 초대",
     "role": "역할"
   },
-  "isOpen": {
-    "label": "영업 상태"
-  },
   "label": "조직 관리",
   "localBusiness": {
     "hasMap": {

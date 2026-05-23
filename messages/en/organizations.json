@@ -68,9 +68,6 @@
     "label": "Pending invitations",
     "role": "Role"
   },
-  "isOpen": {
-    "label": "Open"
-  },
   "label": "Organization Management",
   "localBusiness": {
     "hasMap": {

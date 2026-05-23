@@ -27,8 +27,6 @@ export const useCreateOrganizationFormSchema = () => {
     hasMap: z.string().trim().optional(),
     openingHours: z.string().trim().optional(),
     telephone: z.string().trim().optional(),
-
-    isOpen: z.boolean(),
   });
 };
 

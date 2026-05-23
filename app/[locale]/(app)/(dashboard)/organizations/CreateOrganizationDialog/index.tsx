@@ -3,7 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 import {
   type CreateOrganizationForm,
@@ -23,8 +23,6 @@ import {
   type BoxProps,
   Chip,
   Divider,
-  FormControlLabel,
-  Switch,
   TextField,
   styled,
 } from "@mui/material";
@@ -78,18 +76,13 @@ const CreateOrganizationDialog = ({
       hasMap: "",
       openingHours: "",
       telephone: "",
-
-      isOpen: true,
     },
     resolver: zodResolver(createOrganizationFormSchema),
   });
 
-  const isOpen = useWatch({ control, name: "isOpen" });
-
   const onSubmitHandler = async ({
     name,
     slug,
-    isOpen,
     addressCountry,
     addressLocality,
     addressRegion,
@@ -105,7 +98,6 @@ const CreateOrganizationDialog = ({
         logo,
         name,
         slug,
-        isOpen,
         addressCountry,
         addressLocality,
         addressRegion,
@@ -175,11 +167,6 @@ const CreateOrganizationDialog = ({
         <Chip label={tOrganizations("localBusiness.label")} size="small" />
       </Divider>
       <LocalBusinessFields register={register} />
-      <FormControlLabel
-        control={<Switch checked={isOpen} {...register("isOpen")} />}
-        label={tOrganizations("isOpen.label")}
-        sx={{ alignSelf: "flex-start" }}
-      />
     </StyledBox>
   );
 };

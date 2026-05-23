@@ -64,11 +64,6 @@ export const authClient = createAuthClient({
             openingHours: { type: "string", required: false },
             telephone: { type: "string", required: false },
 
-            isOpen: {
-              type: "boolean",
-              required: true,
-              defaultValue: true,
-            },
           },
         },
       },

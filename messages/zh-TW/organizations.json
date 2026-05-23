@@ -68,9 +68,6 @@
     "label": "待處理邀請",
     "role": "角色"
   },
-  "isOpen": {
-    "label": "營業狀態"
-  },
   "label": "組織管理",
   "localBusiness": {
     "hasMap": {

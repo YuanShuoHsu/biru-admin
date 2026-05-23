@@ -71,7 +71,6 @@ const UpdateOrganizationDialog = ({
     defaultValues: {
       name: organization.name,
       slug: organization.slug,
-      isOpen: organization.isOpen || true,
       addressCountry: organization.addressCountry || "",
       addressLocality: organization.addressLocality || "",
       addressRegion: organization.addressRegion || "",
@@ -85,12 +84,9 @@ const UpdateOrganizationDialog = ({
     resolver: zodResolver(updateOrganizationFormSchema),
   });
 
-  const isOpen = useWatch({ control, name: "isOpen" });
-
   const onSubmitHandler = async ({
     name,
     slug,
-    isOpen,
     addressCountry,
     addressLocality,
     addressRegion,
@@ -108,7 +104,6 @@ const UpdateOrganizationDialog = ({
           logo,
           name,
           slug,
-          isOpen,
           addressCountry,
           addressLocality,
           addressRegion,
@@ -179,11 +174,6 @@ const UpdateOrganizationDialog = ({
         <Chip label={tOrganizations("localBusiness.label")} size="small" />
       </Divider>
       <LocalBusinessFields register={register} />
-      <FormControlLabel
-        control={<Switch checked={isOpen} {...register("isOpen")} />}
-        label={tOrganizations("isOpen.label")}
-        sx={{ alignSelf: "flex-start" }}
-      />
     </StyledBox>
   );
 };
