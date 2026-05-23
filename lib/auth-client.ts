@@ -63,7 +63,6 @@ export const authClient = createAuthClient({
             hasMap: { type: "string", required: false },
             openingHours: { type: "string", required: false },
             telephone: { type: "string", required: false },
-
           },
         },
       },
