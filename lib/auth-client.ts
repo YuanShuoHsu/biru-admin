@@ -61,7 +61,6 @@ export const authClient = createAuthClient({
 
             // https://schema.org/LocalBusiness
             hasMap: { type: "string", required: false },
-            mapEmbedUrl: { type: "string", required: false },
             openingHours: { type: "string", required: false },
             telephone: { type: "string", required: false },
           },

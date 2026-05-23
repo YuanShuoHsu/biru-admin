@@ -21,7 +21,7 @@ type OrganizationForm = CreateOrganizationForm | UpdateOrganizationForm;
 
 type LocalBusinessFieldName = keyof Pick<
   Organization,
-  "openingHours" | "telephone" | "hasMap" | "mapEmbedUrl"
+  "openingHours" | "telephone" | "hasMap"
 >;
 
 interface LocalBusinessFieldsProps {
@@ -75,15 +75,6 @@ const LocalBusinessFields = ({
         placeholder={tOrganizations("localBusiness.hasMap.placeholder")}
         type="url"
         {...register("hasMap")}
-      />
-      <TextField
-        error={!!errors.mapEmbedUrl}
-        fullWidth
-        helperText={errors.mapEmbedUrl?.message}
-        label={tOrganizations("localBusiness.mapEmbedUrl.label")}
-        placeholder={tOrganizations("localBusiness.mapEmbedUrl.placeholder")}
-        type="url"
-        {...register("mapEmbedUrl")}
       />
     </>
   );
