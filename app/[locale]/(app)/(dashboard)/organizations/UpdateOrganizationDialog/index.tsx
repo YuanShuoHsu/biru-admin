@@ -3,7 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 import {
   type UpdateOrganizationForm,
@@ -23,8 +23,6 @@ import {
   type BoxProps,
   Chip,
   Divider,
-  FormControlLabel,
-  Switch,
   TextField,
   styled,
 } from "@mui/material";
@@ -173,7 +171,11 @@ const UpdateOrganizationDialog = ({
       <Divider flexItem>
         <Chip label={tOrganizations("localBusiness.label")} size="small" />
       </Divider>
-      <LocalBusinessFields register={register} />
+      <LocalBusinessFields
+        control={control}
+        errors={errors}
+        register={register}
+      />
     </StyledBox>
   );
 };

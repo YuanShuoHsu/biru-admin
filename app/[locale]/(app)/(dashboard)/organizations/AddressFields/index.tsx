@@ -21,6 +21,8 @@ import type { Organization } from "@/types/organizations";
 import type { CreateOrganizationForm } from "../CreateOrganizationDialog/definitions";
 import type { UpdateOrganizationForm } from "../UpdateOrganizationDialog/definitions";
 
+type OrganizationForm = CreateOrganizationForm | UpdateOrganizationForm;
+
 type AddressFieldName = keyof Pick<
   Organization,
   | "addressCountry"
@@ -30,8 +32,6 @@ type AddressFieldName = keyof Pick<
   | "postalCode"
   | "streetAddress"
 >;
-
-type OrganizationForm = CreateOrganizationForm | UpdateOrganizationForm;
 
 interface AddressFieldsProps {
   control: Control<OrganizationForm>;

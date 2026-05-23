@@ -166,7 +166,11 @@ const CreateOrganizationDialog = ({
       <Divider flexItem>
         <Chip label={tOrganizations("localBusiness.label")} size="small" />
       </Divider>
-      <LocalBusinessFields register={register} />
+      <LocalBusinessFields
+        control={control}
+        errors={errors}
+        register={register}
+      />
     </StyledBox>
   );
 };
