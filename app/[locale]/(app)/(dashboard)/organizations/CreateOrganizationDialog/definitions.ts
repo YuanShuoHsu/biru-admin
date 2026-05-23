@@ -23,6 +23,11 @@ export const useCreateOrganizationFormSchema = () => {
     postalCode: z.string().trim().optional(),
     streetAddress: z.string().trim().optional(),
 
+    // https://schema.org/LocalBusiness
+    hasMap: z.string().trim().optional(),
+    openingHours: z.string().trim().optional(),
+    telephone: z.string().trim().optional(),
+
     isOpen: z.boolean(),
   });
 };

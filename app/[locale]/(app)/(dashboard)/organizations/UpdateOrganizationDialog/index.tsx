@@ -34,6 +34,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { Organization } from "@/types/organizations";
 
 import AddressFields from "../AddressFields";
+import LocalBusinessFields from "../LocalBusinessFields";
 
 const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   display: "flex",
@@ -77,6 +78,9 @@ const UpdateOrganizationDialog = ({
       extendedAddress: organization.extendedAddress || "",
       postalCode: organization.postalCode || "",
       streetAddress: organization.streetAddress || "",
+      hasMap: organization.hasMap || "",
+      openingHours: organization.openingHours || "",
+      telephone: organization.telephone || "",
     },
     resolver: zodResolver(updateOrganizationFormSchema),
   });
@@ -93,6 +97,9 @@ const UpdateOrganizationDialog = ({
     extendedAddress,
     postalCode,
     streetAddress,
+    hasMap,
+    openingHours,
+    telephone,
   }: UpdateOrganizationForm) => {
     await authClient.organization.update(
       {
@@ -108,6 +115,9 @@ const UpdateOrganizationDialog = ({
           extendedAddress,
           postalCode,
           streetAddress,
+          hasMap,
+          openingHours,
+          telephone,
         },
       },
       {
@@ -165,6 +175,10 @@ const UpdateOrganizationDialog = ({
         <Chip label={tOrganizations("additionalFields.label")} size="small" />
       </Divider>
       <AddressFields control={control} errors={errors} register={register} />
+      <Divider flexItem>
+        <Chip label={tOrganizations("localBusiness.label")} size="small" />
+      </Divider>
+      <LocalBusinessFields register={register} />
       <FormControlLabel
         control={<Switch checked={isOpen} {...register("isOpen")} />}
         label={tOrganizations("isOpen.label")}

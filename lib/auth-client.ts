@@ -59,6 +59,11 @@ export const authClient = createAuthClient({
             postalCode: { type: "string", required: false },
             streetAddress: { type: "string", required: false },
 
+            // https://schema.org/LocalBusiness
+            hasMap: { type: "string", required: false },
+            openingHours: { type: "string", required: false },
+            telephone: { type: "string", required: false },
+
             isOpen: {
               type: "boolean",
               required: true,

@@ -32,6 +32,7 @@ import {
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import AddressFields from "../AddressFields";
+import LocalBusinessFields from "../LocalBusinessFields";
 
 const CREATE_ORGANIZATION_AVATAR_KEY = "create-organization-avatar";
 
@@ -74,6 +75,10 @@ const CreateOrganizationDialog = ({
       postalCode: "",
       streetAddress: "",
 
+      hasMap: "",
+      openingHours: "",
+      telephone: "",
+
       isOpen: true,
     },
     resolver: zodResolver(createOrganizationFormSchema),
@@ -91,6 +96,9 @@ const CreateOrganizationDialog = ({
     extendedAddress,
     postalCode,
     streetAddress,
+    hasMap,
+    openingHours,
+    telephone,
   }: CreateOrganizationForm) => {
     await authClient.organization.create(
       {
@@ -104,6 +112,9 @@ const CreateOrganizationDialog = ({
         extendedAddress,
         postalCode,
         streetAddress,
+        hasMap,
+        openingHours,
+        telephone,
       },
       {
         onError: ({ error: { code } }) => {
@@ -160,6 +171,10 @@ const CreateOrganizationDialog = ({
         <Chip label={tOrganizations("additionalFields.label")} size="small" />
       </Divider>
       <AddressFields control={control} errors={errors} register={register} />
+      <Divider flexItem>
+        <Chip label={tOrganizations("localBusiness.label")} size="small" />
+      </Divider>
+      <LocalBusinessFields register={register} />
       <FormControlLabel
         control={<Switch checked={isOpen} {...register("isOpen")} />}
         label={tOrganizations("isOpen.label")}

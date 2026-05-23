@@ -163,5 +163,20 @@
       "placeholder": "请选择您的团队"
     },
     "unknown": "未知团队"
+  },
+  "localBusiness": {
+    "label": "商业信息",
+    "telephone": {
+      "label": "电话（选填）",
+      "placeholder": "请输入电话号码"
+    },
+    "openingHours": {
+      "label": "营业时间（选填）",
+      "placeholder": "例如：Mo-Su 08:00-21:00"
+    },
+    "hasMap": {
+      "label": "地图链接（选填）",
+      "placeholder": "请输入 Google 地图链接"
+    }
   }
 }

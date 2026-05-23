@@ -163,5 +163,20 @@
       "placeholder": "Please select a team"
     },
     "unknown": "Unknown team"
+  },
+  "localBusiness": {
+    "label": "Business Info",
+    "telephone": {
+      "label": "Telephone (Optional)",
+      "placeholder": "Please enter phone number"
+    },
+    "openingHours": {
+      "label": "Opening Hours (Optional)",
+      "placeholder": "e.g. Mo-Su 08:00-21:00"
+    },
+    "hasMap": {
+      "label": "Map Link (Optional)",
+      "placeholder": "Please enter Google Maps URL"
+    }
   }
 }
