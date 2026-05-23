@@ -71,7 +71,6 @@ const CreateOrganizationDialog = ({
       addressLocality: "",
       addressRegion: "",
       extendedAddress: "",
-      postOfficeBoxNumber: "",
       postalCode: "",
       streetAddress: "",
 
@@ -90,7 +89,6 @@ const CreateOrganizationDialog = ({
     addressLocality,
     addressRegion,
     extendedAddress,
-    postOfficeBoxNumber,
     postalCode,
     streetAddress,
   }: CreateOrganizationForm) => {
@@ -104,7 +102,6 @@ const CreateOrganizationDialog = ({
         addressLocality,
         addressRegion,
         extendedAddress,
-        postOfficeBoxNumber,
         postalCode,
         streetAddress,
       },

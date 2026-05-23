@@ -44,10 +44,6 @@
       "placeholder": "请输入您的地址补充信息"
     },
     "label": "地址信息",
-    "postOfficeBoxNumber": {
-      "label": "邮政信箱（选填）",
-      "placeholder": "请输入您的邮政信箱"
-    },
     "postalCode": {
       "label": "邮政编码（选填）",
       "placeholder": "请输入您的邮政编码"

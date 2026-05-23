@@ -27,7 +27,6 @@ type AddressFieldName = keyof Pick<
   | "addressLocality"
   | "addressRegion"
   | "extendedAddress"
-  | "postOfficeBoxNumber"
   | "postalCode"
   | "streetAddress"
 >;
@@ -111,18 +110,18 @@ const AddressFields = ({ control, errors, register }: AddressFieldsProps) => {
         />
         {countrySelect}
       </Box>
-      <TextField
-        error={!!errors.postOfficeBoxNumber}
-        fullWidth
-        helperText={errors.postOfficeBoxNumber?.message}
-        label={tOrganizations("address.postOfficeBoxNumber.label")}
-        placeholder={tOrganizations("address.postOfficeBoxNumber.placeholder")}
-        {...register("postOfficeBoxNumber")}
-      />
     </>
   ) : (
     <>
       {countrySelect}
+      <TextField
+        error={!!errors.postalCode}
+        fullWidth
+        helperText={errors.postalCode?.message}
+        label={tOrganizations("address.postalCode.label")}
+        placeholder={tOrganizations("address.postalCode.placeholder")}
+        {...register("postalCode")}
+      />
       <Box display="flex" gap={2} width="100%">
         <TextField
           error={!!errors.addressRegion}
@@ -142,14 +141,6 @@ const AddressFields = ({ control, errors, register }: AddressFieldsProps) => {
         />
       </Box>
       <TextField
-        error={!!errors.postalCode}
-        fullWidth
-        helperText={errors.postalCode?.message}
-        label={tOrganizations("address.postalCode.label")}
-        placeholder={tOrganizations("address.postalCode.placeholder")}
-        {...register("postalCode")}
-      />
-      <TextField
         error={!!errors.streetAddress}
         fullWidth
         helperText={errors.streetAddress?.message}
@@ -164,14 +155,6 @@ const AddressFields = ({ control, errors, register }: AddressFieldsProps) => {
         label={tOrganizations("address.extendedAddress.label")}
         placeholder={tOrganizations("address.extendedAddress.placeholder")}
         {...register("extendedAddress")}
-      />
-      <TextField
-        error={!!errors.postOfficeBoxNumber}
-        fullWidth
-        helperText={errors.postOfficeBoxNumber?.message}
-        label={tOrganizations("address.postOfficeBoxNumber.label")}
-        placeholder={tOrganizations("address.postOfficeBoxNumber.placeholder")}
-        {...register("postOfficeBoxNumber")}
       />
     </>
   );

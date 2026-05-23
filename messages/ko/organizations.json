@@ -44,10 +44,6 @@
       "placeholder": "귀하의 상세 주소를 입력해 주세요"
     },
     "label": "주소 정보",
-    "postOfficeBoxNumber": {
-      "label": "사서함 (선택 사항)",
-      "placeholder": "귀하의 사서함 번호를 입력해 주세요"
-    },
     "postalCode": {
       "label": "우편번호 (선택 사항)",
       "placeholder": "귀하의 우편번호를 입력해 주세요"

@@ -44,10 +44,6 @@
       "placeholder": "あなたの住所補足を入力してください"
     },
     "label": "住所情報",
-    "postOfficeBoxNumber": {
-      "label": "私書箱（任意）",
-      "placeholder": "あなたの私書箱番号を入力してください"
-    },
     "postalCode": {
       "label": "郵便番号（任意）",
       "placeholder": "あなたの郵便番号を入力してください"

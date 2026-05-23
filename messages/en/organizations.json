@@ -44,10 +44,6 @@
       "placeholder": "Please enter your extended address"
     },
     "label": "Address",
-    "postOfficeBoxNumber": {
-      "label": "P.O. Box (Optional)",
-      "placeholder": "Please enter your P.O. Box number"
-    },
     "postalCode": {
       "label": "Postal code (Optional)",
       "placeholder": "Please enter your postal code"

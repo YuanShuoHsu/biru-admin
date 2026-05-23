@@ -20,7 +20,6 @@ export const useCreateOrganizationFormSchema = () => {
     addressLocality: z.string().trim().optional(),
     addressRegion: z.string().trim().optional(),
     extendedAddress: z.string().trim().optional(),
-    postOfficeBoxNumber: z.string().trim().optional(),
     postalCode: z.string().trim().optional(),
     streetAddress: z.string().trim().optional(),
 

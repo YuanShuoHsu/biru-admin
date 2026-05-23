@@ -75,7 +75,6 @@ const UpdateOrganizationDialog = ({
       addressLocality: organization.addressLocality || "",
       addressRegion: organization.addressRegion || "",
       extendedAddress: organization.extendedAddress || "",
-      postOfficeBoxNumber: organization.postOfficeBoxNumber || "",
       postalCode: organization.postalCode || "",
       streetAddress: organization.streetAddress || "",
     },
@@ -92,7 +91,6 @@ const UpdateOrganizationDialog = ({
     addressLocality,
     addressRegion,
     extendedAddress,
-    postOfficeBoxNumber,
     postalCode,
     streetAddress,
   }: UpdateOrganizationForm) => {
@@ -108,7 +106,6 @@ const UpdateOrganizationDialog = ({
           addressLocality,
           addressRegion,
           extendedAddress,
-          postOfficeBoxNumber,
           postalCode,
           streetAddress,
         },

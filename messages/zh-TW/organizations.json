@@ -44,10 +44,6 @@
       "placeholder": "請輸入您的地址補充資訊"
     },
     "label": "地址資訊",
-    "postOfficeBoxNumber": {
-      "label": "郵政信箱（選填）",
-      "placeholder": "請輸入您的郵政信箱"
-    },
     "postalCode": {
       "label": "郵遞區號（選填）",
       "placeholder": "請輸入您的郵遞區號"
