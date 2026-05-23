@@ -27,7 +27,7 @@ const MenusPage = async ({ params, searchParams }: MenusPageProps) => {
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
   const { data } = await authClient.organization.list({ fetchOptions });
 
-  const organizations = (data || []).toReversed();
+  const organizations = data || [];
 
   const selectedOrganization = organizations.find(
     ({ slug }) => slug === organization,
