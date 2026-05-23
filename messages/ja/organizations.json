@@ -72,6 +72,21 @@
     "label": "営業状態"
   },
   "label": "組織管理",
+  "localBusiness": {
+    "hasMap": {
+      "label": "地図リンク（任意）",
+      "placeholder": "Google マップURLを入力してください"
+    },
+    "label": "ビジネス情報",
+    "openingHours": {
+      "label": "営業時間（任意）",
+      "placeholder": "例：Mo-Su 08:00-21:00"
+    },
+    "telephone": {
+      "label": "電話番号（任意）",
+      "placeholder": "電話番号を入力してください"
+    }
+  },
   "logo": "ロゴ",
   "members": {
     "actions": {
@@ -163,20 +178,5 @@
       "placeholder": "チームを選択してください"
     },
     "unknown": "不明なチーム"
-  },
-  "localBusiness": {
-    "label": "ビジネス情報",
-    "telephone": {
-      "label": "電話番号（任意）",
-      "placeholder": "電話番号を入力してください"
-    },
-    "openingHours": {
-      "label": "営業時間（任意）",
-      "placeholder": "例：Mo-Su 08:00-21:00"
-    },
-    "hasMap": {
-      "label": "地図リンク（任意）",
-      "placeholder": "Google マップURLを入力してください"
-    }
   }
 }
