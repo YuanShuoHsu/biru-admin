@@ -201,7 +201,7 @@
         "placeholder": "재고 수량을 입력해 주세요"
       }
     },
-    "label": "가격 설정",
+    "label": "판매",
     "price": {
       "label": "가격",
       "placeholder": "가격을 입력해 주세요"

@@ -26,12 +26,12 @@ import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 import {
   Box,
   type BoxProps,
+  Chip,
   Divider,
   Grid,
   MenuItem,
   styled,
   TextField,
-  Typography,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
@@ -219,10 +219,9 @@ const CreateMenuItemDialog = ({
         slotProps={{ htmlInput: { maxLength: 160 } }}
         {...register("description")}
       />
-      <Divider flexItem />
-      <Typography variant="subtitle2" alignSelf="flex-start">
-        {tMenus("offers.label")}
-      </Typography>
+      <Divider flexItem>
+        <Chip label={tMenus("offers.label")} size="small" />
+      </Divider>
       <Grid container width="100%" spacing={2}>
         <Grid size={{ xs: 12, sm: 4 }}>
           <CountrySelect

@@ -201,7 +201,7 @@
         "placeholder": "請輸入您的庫存數量"
       }
     },
-    "label": "定價設定",
+    "label": "銷售",
     "price": {
       "label": "價格",
       "placeholder": "請輸入您的價格"

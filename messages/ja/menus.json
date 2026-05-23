@@ -201,7 +201,7 @@
         "placeholder": "在庫数を入力してください"
       }
     },
-    "label": "価格設定",
+    "label": "販売",
     "price": {
       "label": "価格",
       "placeholder": "価格を入力してください"

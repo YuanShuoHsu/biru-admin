@@ -71,7 +71,7 @@
       "label": "Map Link (Optional)",
       "placeholder": "Please enter your Google Maps URL"
     },
-    "label": "Business Info",
+    "label": "Business",
     "openingHours": {
       "label": "Opening Hours (Optional)",
       "placeholder": "Please enter your opening hours"

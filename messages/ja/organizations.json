@@ -40,7 +40,7 @@
       "label": "住所補足（任意）",
       "placeholder": "あなたの住所補足を入力してください"
     },
-    "label": "住所情報",
+    "label": "住所",
     "postalCode": {
       "label": "郵便番号（任意）",
       "placeholder": "あなたの郵便番号を入力してください"
@@ -71,7 +71,7 @@
       "label": "地図リンク（任意）",
       "placeholder": "あなたのGoogle マップURLを入力してください"
     },
-    "label": "ビジネス情報",
+    "label": "ビジネス",
     "openingHours": {
       "label": "営業時間（任意）",
       "placeholder": "あなたの営業時間を入力してください"

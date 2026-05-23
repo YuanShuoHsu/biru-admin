@@ -201,7 +201,7 @@
         "placeholder": "请输入您的库存数量"
       }
     },
-    "label": "定价设置",
+    "label": "销售",
     "price": {
       "label": "价格",
       "placeholder": "请输入您的价格"

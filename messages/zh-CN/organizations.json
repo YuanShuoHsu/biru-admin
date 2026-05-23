@@ -40,7 +40,7 @@
       "label": "地址补充（选填）",
       "placeholder": "请输入您的地址补充信息"
     },
-    "label": "地址信息",
+    "label": "地址",
     "postalCode": {
       "label": "邮政编码（选填）",
       "placeholder": "请输入您的邮政编码"
@@ -71,7 +71,7 @@
       "label": "地图链接（选填）",
       "placeholder": "请输入您的 Google 地图链接"
     },
-    "label": "商业信息",
+    "label": "商业",
     "openingHours": {
       "label": "营业时间（选填）",
       "placeholder": "请输入您的营业时间"
