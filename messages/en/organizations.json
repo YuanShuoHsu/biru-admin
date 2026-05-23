@@ -23,9 +23,6 @@
       "title": "Edit organization"
     }
   },
-  "additionalFields": {
-    "label": "Additional fields"
-  },
   "address": {
     "addressCountry": {
       "label": "Country (Optional)",

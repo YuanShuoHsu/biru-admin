@@ -160,7 +160,7 @@ const CreateOrganizationDialog = ({
         {...register("slug")}
       />
       <Divider flexItem>
-        <Chip label={tOrganizations("additionalFields.label")} size="small" />
+        <Chip label={tOrganizations("address.label")} size="small" />
       </Divider>
       <AddressFields control={control} errors={errors} register={register} />
       <Divider flexItem>

@@ -23,9 +23,6 @@
       "title": "編輯組織"
     }
   },
-  "additionalFields": {
-    "label": "其他欄位"
-  },
   "address": {
     "addressCountry": {
       "label": "國家/地區（選填）",

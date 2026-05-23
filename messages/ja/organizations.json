@@ -23,9 +23,6 @@
       "title": "組織を編集"
     }
   },
-  "additionalFields": {
-    "label": "追加フィールド"
-  },
   "address": {
     "addressCountry": {
       "label": "国/地域（任意）",

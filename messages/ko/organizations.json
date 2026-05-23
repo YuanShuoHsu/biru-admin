@@ -23,9 +23,6 @@
       "title": "조직 편집"
     }
   },
-  "additionalFields": {
-    "label": "추가 필드"
-  },
   "address": {
     "addressCountry": {
       "label": "국가/지역 (선택 사항)",
