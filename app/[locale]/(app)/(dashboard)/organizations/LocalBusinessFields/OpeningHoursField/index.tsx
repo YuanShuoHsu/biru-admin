@@ -215,22 +215,25 @@ const OpeningHoursField = ({
 
   const conflicting = getConflictingSchedules(schedules);
 
-  const updateSchedules = (newSchedules: Schedule[]) => {
+  const updateSchedule = (newSchedules: Schedule[]) => {
     setSchedules(newSchedules);
     onChange(serializeOpeningHours(newSchedules));
   };
 
-  const addSchedule = () =>
-    updateSchedules([
+  const handleScheduleAdd = () =>
+    updateSchedule([
       ...schedules,
       { id: crypto.randomUUID(), days: [], startTime: "", endTime: "" },
     ]);
 
-  const removeSchedule = (id: string) =>
-    updateSchedules(schedules.filter((schedule) => schedule.id !== id));
+  const handleScheduleRemove = (id: string) =>
+    updateSchedule(schedules.filter((schedule) => schedule.id !== id));
 
-  const updateSchedule = (id: string, changes: Partial<Omit<Schedule, "id">>) =>
-    updateSchedules(
+  const handleScheduleChange = (
+    id: string,
+    changes: Partial<Omit<Schedule, "id">>,
+  ) =>
+    updateSchedule(
       schedules.map((schedule) =>
         schedule.id === id ? { ...schedule, ...changes } : schedule,
       ),
@@ -255,6 +258,7 @@ const OpeningHoursField = ({
         }) => {
           if (otherId === id || !otherStartTime || !otherEndTime) return false;
           if (!otherDays.some((day) => days.includes(day))) return false;
+
           const otherStart = toMinutes(otherStartTime);
           const otherEnd = toMinutes(otherEndTime);
 
@@ -298,7 +302,7 @@ const OpeningHoursField = ({
               <Grid size={{ xs: 12, sm: "auto" }}>
                 <StyledToggleButtonGroup
                   onChange={(_, newDays: Day[]) =>
-                    updateSchedule(id, { days: newDays })
+                    handleScheduleChange(id, { days: newDays })
                   }
                   size="small"
                   value={days}
@@ -319,7 +323,7 @@ const OpeningHoursField = ({
                   format="HH:mm"
                   maxTime={toTimeDayjs(endTime)?.subtract(1, "minute")}
                   onChange={(time) =>
-                    updateSchedule(id, {
+                    handleScheduleChange(id, {
                       startTime: time?.isValid() ? time.format("HH:mm") : "",
                     })
                   }
@@ -339,7 +343,7 @@ const OpeningHoursField = ({
                   format="HH:mm"
                   minTime={toTimeDayjs(startTime)?.add(1, "minute")}
                   onChange={(time) =>
-                    updateSchedule(id, {
+                    handleScheduleChange(id, {
                       endTime: time?.isValid() ? time.format("HH:mm") : "",
                     })
                   }
@@ -352,7 +356,10 @@ const OpeningHoursField = ({
                   }}
                   value={toTimeDayjs(endTime)}
                 />
-                <IconButton onClick={() => removeSchedule(id)} size="small">
+                <IconButton
+                  onClick={() => handleScheduleRemove(id)}
+                  size="small"
+                >
                   <DeleteOutline fontSize="small" />
                 </IconButton>
               </StyledGrid>
@@ -365,7 +372,11 @@ const OpeningHoursField = ({
           </Stack>
         );
       })}
-      <Button onClick={addSchedule} startIcon={<Add />} variant="outlined">
+      <Button
+        onClick={handleScheduleAdd}
+        startIcon={<Add />}
+        variant="outlined"
+      >
         {tOrganizations("localBusiness.openingHours.addSchedule")}
       </Button>
       {helperText && (
