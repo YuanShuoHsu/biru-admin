@@ -70,7 +70,11 @@ const AddressFields = ({
     },
   );
 
+  const isTaiwan = addressCountry === DEFAULT_COUNTRY_OPTION.code;
+
   const handlePostalCodeChange = (value: string) => {
+    if (!isTaiwan) return;
+
     const result = lookupByPostalCode(value);
     if (!result) return;
 
@@ -81,6 +85,8 @@ const AddressFields = ({
   };
 
   const handleAddressRegionChange = (value: string) => {
+    if (!isTaiwan) return;
+
     const locality = getValues("addressLocality") ?? "";
     if (!locality) return;
 
@@ -89,6 +95,8 @@ const AddressFields = ({
   };
 
   const handleAddressLocalityChange = (value: string) => {
+    if (!isTaiwan) return;
+
     const region = getValues("addressRegion") ?? "";
     if (!region) return;
 
