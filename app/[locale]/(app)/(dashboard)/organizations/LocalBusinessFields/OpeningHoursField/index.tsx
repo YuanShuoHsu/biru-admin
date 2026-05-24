@@ -55,20 +55,19 @@ const parseDays = (daysPart: string): Day[] => {
   const isDayCode = (s: string): s is Day =>
     (DAYS as readonly string[]).includes(s);
 
-  if (daysPart.includes(",")) {
-    return daysPart.split(",").filter(isDayCode);
-  }
+  if (daysPart.includes(",")) return daysPart.split(",").filter(isDayCode);
 
   const parts = daysPart.split("-");
   if (parts.length === 2 && isDayCode(parts[0]) && isDayCode(parts[1])) {
     const startIdx = DAYS.indexOf(parts[0]);
     const endIdx = DAYS.indexOf(parts[1]);
-    if (startIdx !== -1 && endIdx !== -1 && startIdx <= endIdx) {
+
+    if (startIdx !== -1 && endIdx !== -1 && startIdx <= endIdx)
       return [...DAYS].slice(startIdx, endIdx + 1);
-    }
   }
 
   if (isDayCode(daysPart)) return [daysPart];
+
   return [];
 };
 
@@ -80,14 +79,15 @@ const parseOpeningHours = (value: string): TimeSlot[] => {
     .map((line) => {
       const trimmed = line.trim();
       const spaceIdx = trimmed.indexOf(" ");
-      if (spaceIdx === -1) {
+      if (spaceIdx === -1)
         return { days: parseDays(trimmed), startTime: "", endTime: "" };
-      }
+
       const daysPart = trimmed.slice(0, spaceIdx);
       const timePart = trimmed.slice(spaceIdx + 1);
       const dashIdx = timePart.indexOf("-");
       const startTime = dashIdx !== -1 ? timePart.slice(0, dashIdx) : timePart;
       const endTime = dashIdx !== -1 ? timePart.slice(dashIdx + 1) : "";
+
       return { days: parseDays(daysPart), startTime, endTime };
     })
     .filter((slot) => slot.days.length > 0);
@@ -97,12 +97,13 @@ const serializeDays = (days: Day[]): string => {
   const indices = days.map((d) => DAYS.indexOf(d)).sort((a, b) => a - b);
   if (indices.length === 0) return "";
   if (indices.length === 1) return DAYS[indices[0]];
+
   const isConsecutive = indices.every(
     (idx, i) => i === 0 || idx === indices[i - 1] + 1,
   );
-  if (isConsecutive) {
+  if (isConsecutive)
     return `${DAYS[indices[0]]}-${DAYS[indices[indices.length - 1]]}`;
-  }
+
   return indices.map((i) => DAYS[i]).join(",");
 };
 
@@ -111,15 +112,16 @@ const serializeOpeningHours = (slots: TimeSlot[]): string =>
     .filter((slot) => slot.days.length > 0)
     .map((slot) => {
       const dayStr = serializeDays(slot.days);
-      if (slot.startTime && slot.endTime) {
+      if (slot.startTime && slot.endTime)
         return `${dayStr} ${slot.startTime}-${slot.endTime}`;
-      }
+
       return dayStr;
     })
     .join("\n");
 
 const toMinutes = (time: string): number => {
   const [h, m] = time.split(":").map(Number);
+
   return h * 60 + m;
 };
 
@@ -130,12 +132,15 @@ const getConflictingSlots = (slots: TimeSlot[]): Set<number> => {
       const a = slots[i];
       const b = slots[j];
       if (!a.startTime || !a.endTime || !b.startTime || !b.endTime) continue;
+
       const hasCommonDay = a.days.some((d) => b.days.includes(d));
       if (!hasCommonDay) continue;
+
       const aStart = toMinutes(a.startTime);
       const aEnd = toMinutes(a.endTime);
       const bStart = toMinutes(b.startTime);
       const bEnd = toMinutes(b.endTime);
+
       if (aStart < bEnd && bStart < aEnd) {
         conflicting.add(i);
         conflicting.add(j);
@@ -161,7 +166,7 @@ const OpeningHoursField = ({
 }: OpeningHoursFieldProps) => {
   const tOrganizations = useTranslations("organizations");
   const locale = useLocale();
-  const dayLabels = DAY_LABELS[locale] ?? DAY_LABELS["en"];
+  const dayLabels = DAY_LABELS[locale] || DAY_LABELS["en"];
 
   const [slots, setSlots] = useState<TimeSlot[]>(() => {
     const parsed = parseOpeningHours(value);
@@ -207,8 +212,10 @@ const OpeningHoursField = ({
     (slotIndex: number, field: "startTime" | "endTime") =>
     (value: Dayjs, view: TimeView) => {
       if (view === "seconds") return false;
+
       const currentDays = slots[slotIndex].days;
       if (currentDays.length === 0) return false;
+
       const currentSlot = slots[slotIndex];
       const valueMinutes = value.hour() * 60 + value.minute();
 
@@ -219,23 +226,23 @@ const OpeningHoursField = ({
         const sEnd = toMinutes(s.endTime);
 
         if (field === "endTime" && currentSlot.startTime) {
-          // 衝突條件：currentStart < sEnd && B_end > sStart
           const currentStart = toMinutes(currentSlot.startTime);
+
           return currentStart < sEnd && valueMinutes > sStart;
         }
 
         if (field === "startTime" && currentSlot.endTime) {
-          // 衝突條件：currentEnd > sStart && B_start < sEnd
           const currentEnd = toMinutes(currentSlot.endTime);
-          // hours view：整個小時的所有分鐘都無效才 disable
+
           if (view === "hours")
             return currentEnd > sStart && valueMinutes + 59 < sEnd;
+
           return currentEnd > sStart && valueMinutes < sEnd;
         }
 
-        // 另一端尚未設定，用保守的範圍檢查
         if (view === "hours")
           return valueMinutes > sStart && valueMinutes + 59 < sEnd;
+
         return field === "startTime"
           ? valueMinutes >= sStart && valueMinutes < sEnd
           : valueMinutes > sStart && valueMinutes <= sEnd;
