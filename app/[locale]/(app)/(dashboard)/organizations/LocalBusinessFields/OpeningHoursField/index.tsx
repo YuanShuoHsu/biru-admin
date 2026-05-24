@@ -139,8 +139,58 @@ const mergeSchedulesByTime = (
   });
 };
 
-const serializeOpeningHours = (schedules: Schedule[]): string =>
-  mergeSchedulesByTime(schedules)
+type PartialSchedule = Pick<Schedule, "days" | "startTime" | "endTime">;
+
+const mergeConsecutiveSchedules = (
+  schedules: PartialSchedule[],
+): PartialSchedule[] => {
+  let result = schedules.filter(({ days }) => days.length > 0);
+  let changed = true;
+
+  while (changed) {
+    changed = false;
+
+    outer: for (let i = 0; i < result.length; i++) {
+      for (let j = 0; j < result.length; j++) {
+        if (i === j) continue;
+        const a = result[i];
+        const b = result[j];
+
+        if (!a.startTime || !a.endTime || !b.startTime || !b.endTime) continue;
+        if (a.endTime !== b.startTime) continue;
+
+        const bDaysSet = new Set(b.days);
+        const commonDays = a.days.filter((day) => bDaysSet.has(day));
+        if (commonDays.length === 0) continue;
+
+        const commonDaysSet = new Set(commonDays);
+        const next = result.flatMap((s, idx) => {
+          if (idx !== i && idx !== j) return [s];
+          const remaining = s.days.filter((d) => !commonDaysSet.has(d));
+          return remaining.length > 0 ? [{ ...s, days: remaining }] : [];
+        });
+        next.push({ days: commonDays, startTime: a.startTime, endTime: b.endTime });
+
+        result = next;
+        changed = true;
+        break outer;
+      }
+    }
+  }
+
+  return result;
+};
+
+const serializeOpeningHours = (schedules: Schedule[]): string => {
+  const merged = mergeConsecutiveSchedules(mergeSchedulesByTime(schedules));
+  const deduped = mergeSchedulesByTime(merged as Schedule[]);
+
+  return deduped
+    .sort(
+      (a, b) =>
+        Math.min(...a.days.map((d) => DAYS.indexOf(d))) -
+        Math.min(...b.days.map((d) => DAYS.indexOf(d))),
+    )
     .map(({ days, startTime, endTime }) => {
       const dayStr = serializeDays(days);
       if (startTime && endTime) return `${dayStr} ${startTime}-${endTime}`;
@@ -148,6 +198,7 @@ const serializeOpeningHours = (schedules: Schedule[]): string =>
       return dayStr;
     })
     .join("\n");
+};
 
 const toTimeDayjs = (time: string): Dayjs | null =>
   time ? dayjs(`2000-01-01T${time}`) : null;
@@ -248,6 +299,8 @@ const OpeningHoursField = ({
       if (days.length === 0) return false;
 
       const valueMinutes = value.hour() * 60 + value.minute();
+      const hourEndMinutes = valueMinutes + 59;
+      const daysSet = new Set(days);
 
       return schedules.some(
         ({
@@ -257,7 +310,7 @@ const OpeningHoursField = ({
           endTime: otherEndTime,
         }) => {
           if (otherId === id || !otherStartTime || !otherEndTime) return false;
-          if (!otherDays.some((day) => days.includes(day))) return false;
+          if (!otherDays.some((day) => daysSet.has(day))) return false;
 
           const otherStart = toMinutes(otherStartTime);
           const otherEnd = toMinutes(otherEndTime);
@@ -272,13 +325,13 @@ const OpeningHoursField = ({
             const end = toMinutes(endTime);
 
             if (view === "hours")
-              return end > otherStart && valueMinutes + 59 < otherEnd;
+              return end > otherStart && hourEndMinutes < otherEnd;
 
             return end > otherStart && valueMinutes < otherEnd;
           }
 
           if (view === "hours")
-            return valueMinutes > otherStart && valueMinutes + 59 < otherEnd;
+            return valueMinutes > otherStart && hourEndMinutes < otherEnd;
 
           return field === "startTime"
             ? valueMinutes >= otherStart && valueMinutes < otherEnd
