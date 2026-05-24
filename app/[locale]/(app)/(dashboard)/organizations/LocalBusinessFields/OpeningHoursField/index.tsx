@@ -259,6 +259,7 @@ const OpeningHoursField = ({
                     updateSlotDays(index, newDays)
                   }
                   size="small"
+                  sx={{ flexWrap: "wrap" }}
                   value={slot.days}
                 >
                   {DAYS.map((day) => (
@@ -275,13 +276,17 @@ const OpeningHoursField = ({
               <Grid
                 size={{ xs: 12, sm: "grow" }}
                 sx={{
-                  alignItems: "center",
                   display: "grid",
-                  gap: 2,
                   gridTemplateColumns: "1fr auto 1fr auto",
+                  alignItems: "center",
+                  gap: 2,
 
                   "@media (max-width: 400px)": {
                     gridTemplateColumns: "1fr auto",
+                  },
+
+                  "@media (max-width: 320px)": {
+                    gridTemplateColumns: "1fr",
                   },
                 }}
               >
