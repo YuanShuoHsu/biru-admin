@@ -13,13 +13,14 @@ import {
 import CountrySelect from "@/components/CountrySelect";
 
 import { countries, DEFAULT_COUNTRY_OPTION } from "@/constants/countries";
-import { getAddress, getPostalCode } from "@/constants/tw-postal-codes";
 
 import { LocaleEnum } from "@/enums/Locale";
 
 import { Stack, TextField } from "@mui/material";
 
 import type { Organization } from "@/types/organizations";
+
+import { getAddress, getPostalCode } from "@/utils/tw-postal-codes";
 
 import type { CreateOrganizationForm } from "../CreateOrganizationDialog/definitions";
 import type { UpdateOrganizationForm } from "../UpdateOrganizationDialog/definitions";
