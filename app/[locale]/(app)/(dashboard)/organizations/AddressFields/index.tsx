@@ -13,7 +13,7 @@ import {
 import CountrySelect from "@/components/CountrySelect";
 
 import { countries, DEFAULT_COUNTRY_OPTION } from "@/constants/countries";
-import { getPostalCode, getAddress } from "@/constants/tw-postal-codes";
+import { getAddress, getPostalCode, formatPostalCode } from "@/constants/tw-postal-codes";
 
 import { LocaleEnum } from "@/enums/Locale";
 
@@ -73,32 +73,24 @@ const AddressFields = ({
   const handlePostalCodeChange = (value: string) => {
     if (!isTaiwan) return;
 
-    const result = getAddress(value);
-    if (!result) return;
+    const address = getAddress(value);
+    if (!address) return;
 
-    setValue("addressRegion", result.region, { shouldDirty: true });
-
-    if (result.locality)
-      setValue("addressLocality", result.locality, { shouldDirty: true });
-  };
-
-  const formatPostalCode = (threeDigitCode: string, currentCode: string) => {
-    if (currentCode.length === 5) return threeDigitCode.padEnd(5, "0");
-    if (currentCode.length === 6) return threeDigitCode.padEnd(6, "0");
-    return threeDigitCode;
+    setValue("addressRegion", address.region, { shouldDirty: true });
+    setValue("addressLocality", address.locality, { shouldDirty: true });
   };
 
   const handleAddressRegionChange = (value: string) => {
     if (!isTaiwan) return;
 
-    const locality = getValues("addressLocality") ?? "";
+    const locality = getValues("addressLocality");
     if (!locality) return;
 
     const postal = getPostalCode(value, locality);
     if (postal)
       setValue(
         "postalCode",
-        formatPostalCode(postal, getValues("postalCode") ?? ""),
+        formatPostalCode(postal, getValues("postalCode")),
         { shouldDirty: true },
       );
   };
@@ -106,14 +98,14 @@ const AddressFields = ({
   const handleAddressLocalityChange = (value: string) => {
     if (!isTaiwan) return;
 
-    const region = getValues("addressRegion") ?? "";
+    const region = getValues("addressRegion");
     if (!region) return;
 
     const postal = getPostalCode(region, value);
     if (postal)
       setValue(
         "postalCode",
-        formatPostalCode(postal, getValues("postalCode") ?? ""),
+        formatPostalCode(postal, getValues("postalCode")),
         { shouldDirty: true },
       );
   };

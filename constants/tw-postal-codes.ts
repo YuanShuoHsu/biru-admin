@@ -405,19 +405,22 @@ for (const [postal, region, locality] of postalCodes) {
 
 export const getAddress = (
   code: string,
-): { region: string; locality: string | null } | null => {
+): { region: string; locality: string } | null => {
   const districts = postalToAddress.get(code.slice(0, 3));
   if (!districts?.length) return null;
 
   return districts.length === 1
     ? districts[0]
-    : { region: districts[0].region, locality: null };
+    : { region: districts[0].region, locality: "" };
 };
 
 const normalize = (s: string) => s.trim().replace(/台/g, "臺");
 
-export const getPostalCode = (
-  region: string,
-  locality: string,
-): string | null =>
-  addressToPostal.get(`${normalize(region)}|${normalize(locality)}`) || null;
+export const getPostalCode = (region: string, locality: string) =>
+  addressToPostal.get(`${normalize(region)}|${normalize(locality)}`);
+
+export const formatPostalCode = (threeDigitCode: string, currentCode?: string) => {
+  if (currentCode?.length === 5) return threeDigitCode.padEnd(5, "0");
+  if (currentCode?.length === 6) return threeDigitCode.padEnd(6, "0");
+  return threeDigitCode;
+};
