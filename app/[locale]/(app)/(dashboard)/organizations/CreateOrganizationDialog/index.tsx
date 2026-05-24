@@ -59,8 +59,10 @@ const CreateOrganizationDialog = ({
   const {
     control,
     formState: { errors },
+    getValues,
     handleSubmit,
     register,
+    setValue,
   } = useForm<CreateOrganizationForm>({
     defaultValues: {
       name: "",
@@ -162,7 +164,13 @@ const CreateOrganizationDialog = ({
       <Divider flexItem>
         <Chip label={tOrganizations("address.label")} size="small" />
       </Divider>
-      <AddressFields control={control} errors={errors} register={register} />
+      <AddressFields
+        control={control}
+        errors={errors}
+        getValues={getValues}
+        register={register}
+        setValue={setValue}
+      />
       <Divider flexItem>
         <Chip label={tOrganizations("localBusiness.label")} size="small" />
       </Divider>

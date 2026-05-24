@@ -2,19 +2,25 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import {
-  Controller,
+  useWatch,
   type Control,
   type FieldError,
+  type UseFormGetValues,
   type UseFormRegister,
+  type UseFormSetValue,
 } from "react-hook-form";
 
 import CountrySelect from "@/components/CountrySelect";
 
 import { countries, DEFAULT_COUNTRY_OPTION } from "@/constants/countries";
+import {
+  lookupByAddress,
+  lookupByPostalCode,
+} from "@/constants/tw-postal-codes";
 
 import { LocaleEnum } from "@/enums/Locale";
 
-import { Box, TextField } from "@mui/material";
+import { Stack, TextField } from "@mui/material";
 
 import type { Organization } from "@/types/organizations";
 
@@ -36,35 +42,68 @@ type AddressFieldName = keyof Pick<
 interface AddressFieldsProps {
   control: Control<OrganizationForm>;
   errors: Partial<Record<AddressFieldName, FieldError>>;
+  getValues: UseFormGetValues<OrganizationForm>;
   register: UseFormRegister<OrganizationForm>;
+  setValue: UseFormSetValue<OrganizationForm>;
 }
 
-const AddressFields = ({ control, errors, register }: AddressFieldsProps) => {
+const AddressFields = ({
+  control,
+  errors,
+  getValues,
+  register,
+  setValue,
+}: AddressFieldsProps) => {
   const locale = useLocale();
 
   const tOrganizations = useTranslations("organizations");
 
-  const countrySelect = (
-    <Controller
-      control={control}
-      name="addressCountry"
-      render={({ field: { onChange, value }, fieldState: { error } }) => (
-        <CountrySelect
-          error={!!error}
-          helperText={error?.message}
-          label={tOrganizations("address.addressCountry.label")}
-          onChange={onChange}
-          value={
-            countries.find(({ code }) => code === value) ||
-            DEFAULT_COUNTRY_OPTION
-          }
-        />
-      )}
-    />
+  const [postalCode, addressRegion, addressLocality, addressCountry] = useWatch(
+    {
+      control,
+      name: [
+        "postalCode",
+        "addressRegion",
+        "addressLocality",
+        "addressCountry",
+      ],
+    },
   );
 
-  return locale === LocaleEnum.En ? (
-    <>
+  const handlePostalCodeChange = (value: string) => {
+    const result = lookupByPostalCode(value);
+    if (!result) return;
+
+    setValue("addressRegion", result.region, { shouldDirty: true });
+
+    if (result.locality)
+      setValue("addressLocality", result.locality, { shouldDirty: true });
+  };
+
+  const handleAddressRegionChange = (value: string) => {
+    const locality = getValues("addressLocality") ?? "";
+    if (!locality) return;
+
+    const postal = lookupByAddress(value, locality);
+    if (postal) setValue("postalCode", postal, { shouldDirty: true });
+  };
+
+  const handleAddressLocalityChange = (value: string) => {
+    const region = getValues("addressRegion") ?? "";
+    if (!region) return;
+
+    const postal = lookupByAddress(region, value);
+    if (postal) setValue("postalCode", postal, { shouldDirty: true });
+  };
+
+  const isEnglish = locale === LocaleEnum.En;
+
+  return (
+    <Stack
+      width="100%"
+      direction={isEnglish ? "column" : "column-reverse"}
+      spacing={2}
+    >
       <TextField
         autoComplete="address-line1"
         error={!!errors.streetAddress}
@@ -83,90 +122,55 @@ const AddressFields = ({ control, errors, register }: AddressFieldsProps) => {
         placeholder={tOrganizations("address.extendedAddress.placeholder")}
         {...register("extendedAddress")}
       />
-      <Box display="flex" gap={2} width="100%">
-        <TextField
-          autoComplete="postal-code"
-          error={!!errors.postalCode}
-          fullWidth
-          helperText={errors.postalCode?.message}
-          label={tOrganizations("address.postalCode.label")}
-          placeholder={tOrganizations("address.postalCode.placeholder")}
-          {...register("postalCode")}
-        />
+      <Stack direction={isEnglish ? "row" : "row-reverse"} spacing={2}>
         <TextField
           autoComplete="address-level2"
           error={!!errors.addressLocality}
           fullWidth
           helperText={errors.addressLocality?.message}
+          slotProps={{ inputLabel: { shrink: !!addressLocality } }}
           label={tOrganizations("address.addressLocality.label")}
           placeholder={tOrganizations("address.addressLocality.placeholder")}
-          {...register("addressLocality")}
+          {...register("addressLocality", {
+            onChange: (e) => handleAddressLocalityChange(e.target.value),
+          })}
         />
-      </Box>
-      <Box display="flex" gap={2} width="100%">
         <TextField
           autoComplete="address-level1"
           error={!!errors.addressRegion}
           fullWidth
           helperText={errors.addressRegion?.message}
+          slotProps={{ inputLabel: { shrink: !!addressRegion } }}
           label={tOrganizations("address.addressRegion.label")}
           placeholder={tOrganizations("address.addressRegion.placeholder")}
-          {...register("addressRegion")}
+          {...register("addressRegion", {
+            onChange: (e) => handleAddressRegionChange(e.target.value),
+          })}
         />
-        {countrySelect}
-      </Box>
-    </>
-  ) : (
-    <>
-      {countrySelect}
+      </Stack>
       <TextField
         autoComplete="postal-code"
         error={!!errors.postalCode}
         fullWidth
         helperText={errors.postalCode?.message}
+        slotProps={{ inputLabel: { shrink: !!postalCode } }}
         label={tOrganizations("address.postalCode.label")}
         placeholder={tOrganizations("address.postalCode.placeholder")}
-        {...register("postalCode")}
+        {...register("postalCode", {
+          onChange: (e) => handlePostalCodeChange(e.target.value),
+        })}
       />
-      <Box display="flex" gap={2} width="100%">
-        <TextField
-          autoComplete="address-level1"
-          error={!!errors.addressRegion}
-          fullWidth
-          helperText={errors.addressRegion?.message}
-          label={tOrganizations("address.addressRegion.label")}
-          placeholder={tOrganizations("address.addressRegion.placeholder")}
-          {...register("addressRegion")}
-        />
-        <TextField
-          autoComplete="address-level2"
-          error={!!errors.addressLocality}
-          fullWidth
-          helperText={errors.addressLocality?.message}
-          label={tOrganizations("address.addressLocality.label")}
-          placeholder={tOrganizations("address.addressLocality.placeholder")}
-          {...register("addressLocality")}
-        />
-      </Box>
-      <TextField
-        autoComplete="address-line1"
-        error={!!errors.streetAddress}
-        fullWidth
-        helperText={errors.streetAddress?.message}
-        label={tOrganizations("address.streetAddress.label")}
-        placeholder={tOrganizations("address.streetAddress.placeholder")}
-        {...register("streetAddress")}
+      <CountrySelect
+        error={!!errors.addressCountry}
+        helperText={errors.addressCountry?.message}
+        label={tOrganizations("address.addressCountry.label")}
+        value={
+          countries.find(({ code }) => code === addressCountry) ||
+          DEFAULT_COUNTRY_OPTION
+        }
+        {...register("addressCountry")}
       />
-      <TextField
-        autoComplete="address-line2"
-        error={!!errors.extendedAddress}
-        fullWidth
-        helperText={errors.extendedAddress?.message}
-        label={tOrganizations("address.extendedAddress.label")}
-        placeholder={tOrganizations("address.extendedAddress.placeholder")}
-        {...register("extendedAddress")}
-      />
-    </>
+    </Stack>
   );
 };
 
