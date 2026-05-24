@@ -226,12 +226,14 @@ const OpeningHoursField = ({
           // 衝突條件：currentEnd > sStart && B_start < sEnd
           const currentEnd = toMinutes(currentSlot.endTime);
           // hours view：整個小時的所有分鐘都無效才 disable
-          if (view === "hours") return currentEnd > sStart && valueMinutes + 59 < sEnd;
+          if (view === "hours")
+            return currentEnd > sStart && valueMinutes + 59 < sEnd;
           return currentEnd > sStart && valueMinutes < sEnd;
         }
 
         // 另一端尚未設定，用保守的範圍檢查
-        if (view === "hours") return valueMinutes > sStart && valueMinutes + 59 < sEnd;
+        if (view === "hours")
+          return valueMinutes > sStart && valueMinutes + 59 < sEnd;
         return field === "startTime"
           ? valueMinutes >= sStart && valueMinutes < sEnd
           : valueMinutes > sStart && valueMinutes <= sEnd;
@@ -272,7 +274,9 @@ const OpeningHoursField = ({
               </ToggleButtonGroup>
               <TimePicker
                 format="HH:mm"
-                maxTime={toTimeValue(slot.endTime)?.subtract(1, "minute") || undefined}
+                maxTime={
+                  toTimeValue(slot.endTime)?.subtract(1, "minute") || undefined
+                }
                 onChange={(v) => updateSlotTime(index, "startTime", v)}
                 shouldDisableTime={makeShouldDisableTime(index, "startTime")}
                 slotProps={{
@@ -289,7 +293,9 @@ const OpeningHoursField = ({
               </Typography>
               <TimePicker
                 format="HH:mm"
-                minTime={toTimeValue(slot.startTime)?.add(1, "minute") || undefined}
+                minTime={
+                  toTimeValue(slot.startTime)?.add(1, "minute") || undefined
+                }
                 onChange={(v) => updateSlotTime(index, "endTime", v)}
                 shouldDisableTime={makeShouldDisableTime(index, "endTime")}
                 slotProps={{
