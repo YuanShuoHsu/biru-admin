@@ -14,8 +14,8 @@ import CountrySelect from "@/components/CountrySelect";
 
 import { countries, DEFAULT_COUNTRY_OPTION } from "@/constants/countries";
 import {
-  lookupByAddress,
-  lookupByPostalCode,
+  getPostalCode,
+  getAddress,
 } from "@/constants/tw-postal-codes";
 
 import { LocaleEnum } from "@/enums/Locale";
@@ -76,7 +76,7 @@ const AddressFields = ({
   const handlePostalCodeChange = (value: string) => {
     if (!isTaiwan) return;
 
-    const result = lookupByPostalCode(value);
+    const result = getAddress(value);
     if (!result) return;
 
     setValue("addressRegion", result.region, { shouldDirty: true });
@@ -85,14 +85,25 @@ const AddressFields = ({
       setValue("addressLocality", result.locality, { shouldDirty: true });
   };
 
+  const formatPostalCode = (threeDigitCode: string, currentCode: string) => {
+    if (currentCode.length === 5) return threeDigitCode.padEnd(5, "0");
+    if (currentCode.length === 6) return threeDigitCode.padEnd(6, "0");
+    return threeDigitCode;
+  };
+
   const handleAddressRegionChange = (value: string) => {
     if (!isTaiwan) return;
 
     const locality = getValues("addressLocality") ?? "";
     if (!locality) return;
 
-    const postal = lookupByAddress(value, locality);
-    if (postal) setValue("postalCode", postal, { shouldDirty: true });
+    const postal = getPostalCode(value, locality);
+    if (postal)
+      setValue(
+        "postalCode",
+        formatPostalCode(postal, getValues("postalCode") ?? ""),
+        { shouldDirty: true },
+      );
   };
 
   const handleAddressLocalityChange = (value: string) => {
@@ -101,8 +112,13 @@ const AddressFields = ({
     const region = getValues("addressRegion") ?? "";
     if (!region) return;
 
-    const postal = lookupByAddress(region, value);
-    if (postal) setValue("postalCode", postal, { shouldDirty: true });
+    const postal = getPostalCode(region, value);
+    if (postal)
+      setValue(
+        "postalCode",
+        formatPostalCode(postal, getValues("postalCode") ?? ""),
+        { shouldDirty: true },
+      );
   };
 
   return (

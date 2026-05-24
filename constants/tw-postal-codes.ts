@@ -1,8 +1,4 @@
-// Taiwan 3-digit postal code ↔ region (縣市) + locality (鄉鎮市區) lookup tables.
-// Some postal codes map to multiple districts (e.g., 300 → 新竹市 三區); in those cases
-// only the region is auto-filled.
-
-const RAW: [string, string, string][] = [
+const postalCodes: [string, string, string][] = [
   // 臺北市
   ["100", "臺北市", "中正區"],
   ["103", "臺北市", "大同區"],
@@ -398,41 +394,30 @@ interface AddressEntry {
   locality: string;
 }
 
-// postal code → address entries (may be multiple when ambiguous)
-const POSTAL_TO_ADDRESS = new Map<string, AddressEntry[]>();
+const postalToAddress = new Map<string, AddressEntry[]>();
+const addressToPostal = new Map<string, string>();
 
-// "region|locality" → postal code
-const ADDRESS_TO_POSTAL = new Map<string, string>();
-
-for (const [postal, region, locality] of RAW) {
-  const existing = POSTAL_TO_ADDRESS.get(postal);
-  if (existing) {
-    existing.push({ region, locality });
-  } else {
-    POSTAL_TO_ADDRESS.set(postal, [{ region, locality }]);
-  }
-  ADDRESS_TO_POSTAL.set(`${region}|${locality}`, postal);
+for (const [postal, region, locality] of postalCodes) {
+  if (!postalToAddress.has(postal)) postalToAddress.set(postal, []);
+  postalToAddress.get(postal)!.push({ region, locality });
+  addressToPostal.set(`${region}|${locality}`, postal);
 }
 
-/** Look up region + locality by 3-digit Taiwan postal code.
- *  Returns `locality: null` when the code maps to multiple districts. */
-export function lookupByPostalCode(
+export const getAddress = (
   code: string,
-): { region: string; locality: string | null } | null {
-  const entries = POSTAL_TO_ADDRESS.get(code.slice(0, 3));
-  if (!entries || entries.length === 0) return null;
-  if (entries.length === 1) return entries[0];
-  return { region: entries[0].region, locality: null };
-}
+): { region: string; locality: string | null } | null => {
+  const districts = postalToAddress.get(code.slice(0, 3));
+  if (!districts?.length) return null;
 
-/** Look up 3-digit Taiwan postal code by region (縣市) + locality (鄉鎮市區).
- *  Accepts both 台 and 臺 spelling variants. */
-export function lookupByAddress(
+  return districts.length === 1
+    ? districts[0]
+    : { region: districts[0].region, locality: null };
+};
+
+const normalize = (s: string) => s.trim().replace(/台/g, "臺");
+
+export const getPostalCode = (
   region: string,
   locality: string,
-): string | null {
-  const normalize = (s: string) => s.trim().replace(/台/g, "臺");
-  return (
-    ADDRESS_TO_POSTAL.get(`${normalize(region)}|${normalize(locality)}`) ?? null
-  );
-}
+): string | null =>
+  addressToPostal.get(`${normalize(region)}|${normalize(locality)}`) || null;
