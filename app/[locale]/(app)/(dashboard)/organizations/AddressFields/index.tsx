@@ -13,7 +13,7 @@ import {
 import CountrySelect from "@/components/CountrySelect";
 
 import { countries, DEFAULT_COUNTRY_OPTION } from "@/constants/countries";
-import { getAddress, getPostalCode, formatPostalCode } from "@/constants/tw-postal-codes";
+import { getAddress, getPostalCode } from "@/constants/tw-postal-codes";
 
 import { LocaleEnum } from "@/enums/Locale";
 
@@ -87,12 +87,7 @@ const AddressFields = ({
     if (!locality) return;
 
     const postal = getPostalCode(value, locality);
-    if (postal)
-      setValue(
-        "postalCode",
-        formatPostalCode(postal, getValues("postalCode")),
-        { shouldDirty: true },
-      );
+    if (postal) setValue("postalCode", postal, { shouldDirty: true });
   };
 
   const handleAddressLocalityChange = (value: string) => {
@@ -102,12 +97,7 @@ const AddressFields = ({
     if (!region) return;
 
     const postal = getPostalCode(region, value);
-    if (postal)
-      setValue(
-        "postalCode",
-        formatPostalCode(postal, getValues("postalCode")),
-        { shouldDirty: true },
-      );
+    if (postal) setValue("postalCode", postal, { shouldDirty: true });
   };
 
   return (

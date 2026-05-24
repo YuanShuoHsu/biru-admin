@@ -418,9 +418,3 @@ const normalize = (s: string) => s.trim().replace(/台/g, "臺");
 
 export const getPostalCode = (region: string, locality: string) =>
   addressToPostal.get(`${normalize(region)}|${normalize(locality)}`);
-
-export const formatPostalCode = (threeDigitCode: string, currentCode?: string) => {
-  if (currentCode?.length === 5) return threeDigitCode.padEnd(5, "0");
-  if (currentCode?.length === 6) return threeDigitCode.padEnd(6, "0");
-  return threeDigitCode;
-};
