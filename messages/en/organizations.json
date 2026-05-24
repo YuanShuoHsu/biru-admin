@@ -73,7 +73,7 @@
     },
     "label": "Business",
     "openingHours": {
-      "addSlot": "Add time slot",
+      "addSchedule": "Add time slot",
       "conflict": "This slot overlaps with another time slot",
       "days": {
         "Fr": "Fr",

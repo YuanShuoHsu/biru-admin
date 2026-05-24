@@ -73,7 +73,7 @@
     },
     "label": "商業",
     "openingHours": {
-      "addSlot": "新增時段",
+      "addSchedule": "新增時段",
       "conflict": "此時段與其他時段時間重疊",
       "days": {
         "Fr": "五",

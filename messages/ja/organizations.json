@@ -73,7 +73,7 @@
     },
     "label": "ビジネス",
     "openingHours": {
-      "addSlot": "時間帯を追加",
+      "addSchedule": "時間帯を追加",
       "conflict": "この時間帯は他の時間帯と重複しています",
       "days": {
         "Fr": "金",

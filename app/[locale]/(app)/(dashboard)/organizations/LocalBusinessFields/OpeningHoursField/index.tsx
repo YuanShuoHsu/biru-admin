@@ -103,8 +103,8 @@ const serializeDays = (days: Day[]): string => {
   return indices.map((i) => DAYS[i]).join(",");
 };
 
-const serializeOpeningHours = (slots: TimeSlot[]): string =>
-  slots
+const serializeOpeningHours = (schedules: TimeSlot[]): string =>
+  schedules
     .filter((slot) => slot.days.length > 0)
     .map((slot) => {
       const dayStr = serializeDays(slot.days);
@@ -121,12 +121,12 @@ const toMinutes = (time: string): number => {
   return h * 60 + m;
 };
 
-const getConflictingSlots = (slots: TimeSlot[]): Set<number> => {
+const getConflictingSchedules = (schedules: TimeSlot[]): Set<number> => {
   const conflicting = new Set<number>();
-  for (let i = 0; i < slots.length; i++) {
-    for (let j = i + 1; j < slots.length; j++) {
-      const a = slots[i];
-      const b = slots[j];
+  for (let i = 0; i < schedules.length; i++) {
+    for (let j = i + 1; j < schedules.length; j++) {
+      const a = schedules[i];
+      const b = schedules[j];
       if (!a.startTime || !a.endTime || !b.startTime || !b.endTime) continue;
 
       const hasCommonDay = a.days.some((d) => b.days.includes(d));
@@ -162,7 +162,7 @@ const OpeningHoursField = ({
 }: OpeningHoursFieldProps) => {
   const tOrganizations = useTranslations("organizations");
 
-  const [slots, setSlots] = useState<TimeSlot[]>(() => {
+  const [schedules, setSchedules] = useState<TimeSlot[]>(() => {
     const parsed = parseOpeningHours(value);
 
     return parsed.length > 0
@@ -170,32 +170,34 @@ const OpeningHoursField = ({
       : [{ days: [], startTime: "", endTime: "" }];
   });
 
-  const conflicting = getConflictingSlots(slots);
+  const conflicting = getConflictingSchedules(schedules);
 
-  const updateSlots = (newSlots: TimeSlot[]) => {
-    setSlots(newSlots);
-    onChange(serializeOpeningHours(newSlots));
+  const updateSchedules = (newSchedules: TimeSlot[]) => {
+    setSchedules(newSchedules);
+    onChange(serializeOpeningHours(newSchedules));
   };
 
-  const addSlot = () =>
-    updateSlots([...slots, { days: [], startTime: "", endTime: "" }]);
+  const addSchedule = () =>
+    updateSchedules([...schedules, { days: [], startTime: "", endTime: "" }]);
 
-  const removeSlot = (index: number) =>
-    updateSlots(slots.filter((_, i) => i !== index));
+  const removeSchedule = (index: number) =>
+    updateSchedules(schedules.filter((_, i) => i !== index));
 
-  const updateSlotDays = (index: number, days: Day[]) =>
-    updateSlots(
-      slots.map((slot, i) => (i === index ? { ...slot, days } : slot)),
+  const updateScheduleDays = (index: number, days: Day[]) =>
+    updateSchedules(
+      schedules.map((slot, i) => (i === index ? { ...slot, days } : slot)),
     );
 
-  const updateSlotTime = (
+  const updateScheduleTime = (
     index: number,
     field: "startTime" | "endTime",
     value: Dayjs | null,
   ) => {
     const time = value?.isValid() ? value.format("HH:mm") : "";
-    updateSlots(
-      slots.map((slot, i) => (i === index ? { ...slot, [field]: time } : slot)),
+    updateSchedules(
+      schedules.map((slot, i) =>
+        i === index ? { ...slot, [field]: time } : slot,
+      ),
     );
   };
 
@@ -203,18 +205,18 @@ const OpeningHoursField = ({
     time ? dayjs(`2000-01-01T${time}`) : null;
 
   const makeShouldDisableTime =
-    (slotIndex: number, field: "startTime" | "endTime") =>
+    (scheduleIndex: number, field: "startTime" | "endTime") =>
     (value: Dayjs, view: TimeView) => {
       if (view === "seconds") return false;
 
-      const currentDays = slots[slotIndex].days;
+      const currentDays = schedules[scheduleIndex].days;
       if (currentDays.length === 0) return false;
 
-      const currentSlot = slots[slotIndex];
+      const currentSlot = schedules[scheduleIndex];
       const valueMinutes = value.hour() * 60 + value.minute();
 
-      return slots.some((s, i) => {
-        if (i === slotIndex || !s.startTime || !s.endTime) return false;
+      return schedules.some((s, i) => {
+        if (i === scheduleIndex || !s.startTime || !s.endTime) return false;
         if (!s.days.some((d) => currentDays.includes(d))) return false;
         const sStart = toMinutes(s.startTime);
         const sEnd = toMinutes(s.endTime);
@@ -248,7 +250,7 @@ const OpeningHoursField = ({
       <Typography color={error ? "error" : "text.secondary"} variant="body2">
         {tOrganizations("localBusiness.openingHours.label")}
       </Typography>
-      {slots.map((slot, index) => {
+      {schedules.map((slot, index) => {
         const hasConflict = conflicting.has(index);
 
         return (
@@ -257,7 +259,7 @@ const OpeningHoursField = ({
               <Grid size={{ xs: 12, sm: "auto" }}>
                 <StyledToggleButtonGroup
                   onChange={(_, newDays: Day[]) =>
-                    updateSlotDays(index, newDays)
+                    updateScheduleDays(index, newDays)
                   }
                   size="small"
                   value={slot.days}
@@ -280,7 +282,7 @@ const OpeningHoursField = ({
                     toTimeValue(slot.endTime)?.subtract(1, "minute") ||
                     undefined
                   }
-                  onChange={(v) => updateSlotTime(index, "startTime", v)}
+                  onChange={(v) => updateScheduleTime(index, "startTime", v)}
                   shouldDisableTime={makeShouldDisableTime(index, "startTime")}
                   slotProps={{
                     textField: { error: hasConflict, size: "small" },
@@ -295,14 +297,14 @@ const OpeningHoursField = ({
                   minTime={
                     toTimeValue(slot.startTime)?.add(1, "minute") || undefined
                   }
-                  onChange={(v) => updateSlotTime(index, "endTime", v)}
+                  onChange={(v) => updateScheduleTime(index, "endTime", v)}
                   shouldDisableTime={makeShouldDisableTime(index, "endTime")}
                   slotProps={{
                     textField: { error: hasConflict, size: "small" },
                   }}
                   value={toTimeValue(slot.endTime)}
                 />
-                <IconButton onClick={() => removeSlot(index)} size="small">
+                <IconButton onClick={() => removeSchedule(index)} size="small">
                   <DeleteOutline fontSize="small" />
                 </IconButton>
               </StyledGrid>
@@ -315,8 +317,8 @@ const OpeningHoursField = ({
           </Stack>
         );
       })}
-      <Button onClick={addSlot} startIcon={<Add />} variant="outlined">
-        {tOrganizations("localBusiness.openingHours.addSlot")}
+      <Button onClick={addSchedule} startIcon={<Add />} variant="outlined">
+        {tOrganizations("localBusiness.openingHours.addSchedule")}
       </Button>
       {helperText && (
         <FormHelperText error={error}>{helperText}</FormHelperText>

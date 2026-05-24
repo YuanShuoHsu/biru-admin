@@ -73,7 +73,7 @@
     },
     "label": "비즈니스",
     "openingHours": {
-      "addSlot": "시간대 추가",
+      "addSchedule": "시간대 추가",
       "conflict": "이 시간대는 다른 시간대와 겹칩니다",
       "days": {
         "Fr": "금",
