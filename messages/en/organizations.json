@@ -75,6 +75,15 @@
     "openingHours": {
       "addSlot": "Add time slot",
       "conflict": "This slot overlaps with another time slot",
+      "days": {
+        "Fr": "Fr",
+        "Mo": "Mo",
+        "Sa": "Sa",
+        "Su": "Su",
+        "Th": "Th",
+        "Tu": "Tu",
+        "We": "We"
+      },
       "label": "Opening Hours (Optional)",
       "to": "to"
     },

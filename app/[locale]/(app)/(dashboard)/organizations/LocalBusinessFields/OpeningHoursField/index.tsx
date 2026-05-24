@@ -1,7 +1,7 @@
 "use client";
 
 import dayjs, { type Dayjs } from "dayjs";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { Add, DeleteOutline } from "@mui/icons-material";
@@ -41,29 +41,6 @@ const StyledGrid = styled(Grid)(({ theme }) => ({
 const DAYS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"] as const;
 type Day = (typeof DAYS)[number];
 
-const DAY_LABELS: Record<string, Record<Day, string>> = {
-  "zh-TW": {
-    Mo: "一",
-    Tu: "二",
-    We: "三",
-    Th: "四",
-    Fr: "五",
-    Sa: "六",
-    Su: "日",
-  },
-  "zh-CN": {
-    Mo: "一",
-    Tu: "二",
-    We: "三",
-    Th: "四",
-    Fr: "五",
-    Sa: "六",
-    Su: "日",
-  },
-  en: { Mo: "Mo", Tu: "Tu", We: "We", Th: "Th", Fr: "Fr", Sa: "Sa", Su: "Su" },
-  ja: { Mo: "月", Tu: "火", We: "水", Th: "木", Fr: "金", Sa: "土", Su: "日" },
-  ko: { Mo: "월", Tu: "화", We: "수", Th: "목", Fr: "금", Sa: "토", Su: "일" },
-};
 
 interface TimeSlot {
   days: Day[];
@@ -185,8 +162,6 @@ const OpeningHoursField = ({
   value = "",
 }: OpeningHoursFieldProps) => {
   const tOrganizations = useTranslations("organizations");
-  const locale = useLocale();
-  const dayLabels = DAY_LABELS[locale] || DAY_LABELS["en"];
 
   const [slots, setSlots] = useState<TimeSlot[]>(() => {
     const parsed = parseOpeningHours(value);
@@ -294,7 +269,7 @@ const OpeningHoursField = ({
                       key={day}
                       value={day}
                     >
-                      {dayLabels[day]}
+                      {tOrganizations(`localBusiness.openingHours.days.${day}`)}
                     </ToggleButton>
                   ))}
                 </StyledToggleButtonGroup>
