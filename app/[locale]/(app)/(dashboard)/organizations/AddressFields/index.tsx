@@ -55,6 +55,7 @@ const AddressFields = ({
   setValue,
 }: AddressFieldsProps) => {
   const locale = useLocale();
+  const isEnglish = locale === LocaleEnum.En;
 
   const tOrganizations = useTranslations("organizations");
 
@@ -103,8 +104,6 @@ const AddressFields = ({
     const postal = lookupByAddress(region, value);
     if (postal) setValue("postalCode", postal, { shouldDirty: true });
   };
-
-  const isEnglish = locale === LocaleEnum.En;
 
   return (
     <Stack
