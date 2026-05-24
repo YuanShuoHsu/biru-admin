@@ -8,9 +8,9 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { Add, DeleteOutline } from "@mui/icons-material";
 import {
-  Box,
   Button,
   FormHelperText,
+  Grid,
   IconButton,
   Stack,
   ToggleButton,
@@ -165,9 +165,13 @@ const OpeningHoursField = ({
   const locale = useLocale();
   const dayLabels = DAY_LABELS[locale] ?? DAY_LABELS["en"];
 
-  const [slots, setSlots] = useState<TimeSlot[]>(() =>
-    parseOpeningHours(value),
-  );
+  const [slots, setSlots] = useState<TimeSlot[]>(() => {
+    const parsed = parseOpeningHours(value);
+
+    return parsed.length > 0
+      ? parsed
+      : [{ days: [], startTime: "", endTime: "" }];
+  });
 
   const conflicting = getConflictingSlots(slots);
 
@@ -241,76 +245,81 @@ const OpeningHoursField = ({
     };
 
   return (
-    <Stack spacing={1.5}>
+    <Stack width="100%" gap={2}>
       <Typography color={error ? "error" : "text.secondary"} variant="body2">
         {tOrganizations("localBusiness.openingHours.label")}
       </Typography>
       {slots.map((slot, index) => {
         const hasConflict = conflicting.has(index);
+
         return (
-          <Stack key={index} spacing={0.5}>
-            <Box
-              sx={{
-                alignItems: "center",
-                display: "flex",
-                flexWrap: "wrap",
-                gap: 1,
-              }}
-            >
-              <ToggleButtonGroup
-                onChange={(_, newDays: Day[]) => updateSlotDays(index, newDays)}
-                size="small"
-                value={slot.days}
+          <Stack key={index} gap={0.5}>
+            <Grid alignItems="start" container spacing={2}>
+              <Grid size={{ xs: 12, sm: "auto" }}>
+                <ToggleButtonGroup
+                  onChange={(_, newDays: Day[]) =>
+                    updateSlotDays(index, newDays)
+                  }
+                  size="small"
+                  value={slot.days}
+                >
+                  {DAYS.map((day) => (
+                    <ToggleButton
+                      color={hasConflict ? "error" : "standard"}
+                      key={day}
+                      value={day}
+                    >
+                      {dayLabels[day]}
+                    </ToggleButton>
+                  ))}
+                </ToggleButtonGroup>
+              </Grid>
+              <Grid
+                size={{ xs: 12, sm: "grow" }}
+                sx={{
+                  alignItems: "center",
+                  display: "grid",
+                  gap: 2,
+                  gridTemplateColumns: "1fr auto 1fr auto",
+
+                  "@media (max-width: 400px)": {
+                    gridTemplateColumns: "1fr auto",
+                  },
+                }}
               >
-                {DAYS.map((day) => (
-                  <ToggleButton
-                    color={hasConflict ? "error" : "standard"}
-                    key={day}
-                    value={day}
-                  >
-                    {dayLabels[day]}
-                  </ToggleButton>
-                ))}
-              </ToggleButtonGroup>
-              <TimePicker
-                format="HH:mm"
-                maxTime={
-                  toTimeValue(slot.endTime)?.subtract(1, "minute") || undefined
-                }
-                onChange={(v) => updateSlotTime(index, "startTime", v)}
-                shouldDisableTime={makeShouldDisableTime(index, "startTime")}
-                slotProps={{
-                  textField: {
-                    error: hasConflict,
-                    size: "small",
-                    sx: { width: 120 },
-                  },
-                }}
-                value={toTimeValue(slot.startTime)}
-              />
-              <Typography variant="body2">
-                {tOrganizations("localBusiness.openingHours.to")}
-              </Typography>
-              <TimePicker
-                format="HH:mm"
-                minTime={
-                  toTimeValue(slot.startTime)?.add(1, "minute") || undefined
-                }
-                onChange={(v) => updateSlotTime(index, "endTime", v)}
-                shouldDisableTime={makeShouldDisableTime(index, "endTime")}
-                slotProps={{
-                  textField: {
-                    error: hasConflict,
-                    size: "small",
-                    sx: { width: 120 },
-                  },
-                }}
-                value={toTimeValue(slot.endTime)}
-              />
-              <IconButton onClick={() => removeSlot(index)} size="small">
-                <DeleteOutline fontSize="small" />
-              </IconButton>
-            </Box>
+                <TimePicker
+                  format="HH:mm"
+                  maxTime={
+                    toTimeValue(slot.endTime)?.subtract(1, "minute") ||
+                    undefined
+                  }
+                  onChange={(v) => updateSlotTime(index, "startTime", v)}
+                  shouldDisableTime={makeShouldDisableTime(index, "startTime")}
+                  slotProps={{
+                    textField: { error: hasConflict, size: "small" },
+                  }}
+                  value={toTimeValue(slot.startTime)}
+                />
+                <Typography textAlign="center" variant="body2">
+                  {tOrganizations("localBusiness.openingHours.to")}
+                </Typography>
+                <TimePicker
+                  format="HH:mm"
+                  minTime={
+                    toTimeValue(slot.startTime)?.add(1, "minute") || undefined
+                  }
+                  onChange={(v) => updateSlotTime(index, "endTime", v)}
+                  shouldDisableTime={makeShouldDisableTime(index, "endTime")}
+                  slotProps={{
+                    textField: { error: hasConflict, size: "small" },
+                  }}
+                  value={toTimeValue(slot.endTime)}
+                />
+                <IconButton onClick={() => removeSlot(index)} size="small">
+                  <DeleteOutline fontSize="small" />
+                </IconButton>
+              </Grid>
+            </Grid>
             {hasConflict && (
               <FormHelperText error>
                 {tOrganizations("localBusiness.openingHours.conflict")}
@@ -319,16 +328,9 @@ const OpeningHoursField = ({
           </Stack>
         );
       })}
-      <Box>
-        <Button
-          onClick={addSlot}
-          size="small"
-          startIcon={<Add />}
-          variant="outlined"
-        >
-          {tOrganizations("localBusiness.openingHours.addSlot")}
-        </Button>
-      </Box>
+      <Button onClick={addSlot} startIcon={<Add />} variant="outlined">
+        {tOrganizations("localBusiness.openingHours.addSlot")}
+      </Button>
       {helperText && (
         <FormHelperText error={error}>{helperText}</FormHelperText>
       )}
