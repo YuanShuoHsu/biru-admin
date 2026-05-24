@@ -169,7 +169,11 @@ const mergeConsecutiveSchedules = (
           const remaining = s.days.filter((d) => !commonDaysSet.has(d));
           return remaining.length > 0 ? [{ ...s, days: remaining }] : [];
         });
-        next.push({ days: commonDays, startTime: a.startTime, endTime: b.endTime });
+        next.push({
+          days: commonDays,
+          startTime: a.startTime,
+          endTime: b.endTime,
+        });
 
         result = next;
         changed = true;
