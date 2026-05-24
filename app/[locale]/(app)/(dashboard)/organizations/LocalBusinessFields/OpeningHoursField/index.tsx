@@ -118,9 +118,29 @@ const serializeDays = (days: Day[]): string => {
   return indices.map((dayIndex) => DAYS[dayIndex]).join(",");
 };
 
+const mergeSchedulesByTime = (
+  schedules: Schedule[],
+): Pick<Schedule, "days" | "startTime" | "endTime">[] => {
+  const map = new Map<string, Set<Day>>();
+
+  for (const { days, startTime, endTime } of schedules) {
+    if (days.length === 0) continue;
+
+    const key = `${startTime}|${endTime}`;
+    const existing = map.get(key) ?? new Set<Day>();
+    days.forEach((day) => existing.add(day));
+    map.set(key, existing);
+  }
+
+  return Array.from(map.entries()).map(([key, daysSet]) => {
+    const [startTime, endTime] = key.split("|");
+
+    return { days: DAYS.filter((day) => daysSet.has(day)), startTime, endTime };
+  });
+};
+
 const serializeOpeningHours = (schedules: Schedule[]): string =>
-  schedules
-    .filter(({ days }) => days.length > 0)
+  mergeSchedulesByTime(schedules)
     .map(({ days, startTime, endTime }) => {
       const dayStr = serializeDays(days);
       if (startTime && endTime) return `${dayStr} ${startTime}-${endTime}`;
