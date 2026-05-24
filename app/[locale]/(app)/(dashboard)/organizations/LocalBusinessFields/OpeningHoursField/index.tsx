@@ -1,10 +1,8 @@
 "use client";
 
-import { useState } from "react";
-
 import dayjs, { type Dayjs } from "dayjs";
-
 import { useLocale, useTranslations } from "next-intl";
+import { useState } from "react";
 
 import { Add, DeleteOutline } from "@mui/icons-material";
 import {
@@ -53,7 +51,7 @@ interface TimeSlot {
   endTime: string;
 }
 
-function parseDays(daysPart: string): Day[] {
+const parseDays = (daysPart: string): Day[] => {
   const isDayCode = (s: string): s is Day =>
     (DAYS as readonly string[]).includes(s);
 
@@ -72,9 +70,9 @@ function parseDays(daysPart: string): Day[] {
 
   if (isDayCode(daysPart)) return [daysPart];
   return [];
-}
+};
 
-function parseOpeningHours(value: string): TimeSlot[] {
+const parseOpeningHours = (value: string): TimeSlot[] => {
   if (!value?.trim()) return [];
   return value
     .split("\n")
@@ -93,9 +91,9 @@ function parseOpeningHours(value: string): TimeSlot[] {
       return { days: parseDays(daysPart), startTime, endTime };
     })
     .filter((slot) => slot.days.length > 0);
-}
+};
 
-function serializeDays(days: Day[]): string {
+const serializeDays = (days: Day[]): string => {
   const indices = days.map((d) => DAYS.indexOf(d)).sort((a, b) => a - b);
   if (indices.length === 0) return "";
   if (indices.length === 1) return DAYS[indices[0]];
@@ -106,10 +104,10 @@ function serializeDays(days: Day[]): string {
     return `${DAYS[indices[0]]}-${DAYS[indices[indices.length - 1]]}`;
   }
   return indices.map((i) => DAYS[i]).join(",");
-}
+};
 
-function serializeOpeningHours(slots: TimeSlot[]): string {
-  return slots
+const serializeOpeningHours = (slots: TimeSlot[]): string =>
+  slots
     .filter((slot) => slot.days.length > 0)
     .map((slot) => {
       const dayStr = serializeDays(slot.days);
@@ -119,14 +117,13 @@ function serializeOpeningHours(slots: TimeSlot[]): string {
       return dayStr;
     })
     .join("\n");
-}
 
-function toMinutes(time: string): number {
+const toMinutes = (time: string): number => {
   const [h, m] = time.split(":").map(Number);
   return h * 60 + m;
-}
+};
 
-function getConflictingSlots(slots: TimeSlot[]): Set<number> {
+const getConflictingSlots = (slots: TimeSlot[]): Set<number> => {
   const conflicting = new Set<number>();
   for (let i = 0; i < slots.length; i++) {
     for (let j = i + 1; j < slots.length; j++) {
@@ -145,8 +142,9 @@ function getConflictingSlots(slots: TimeSlot[]): Set<number> {
       }
     }
   }
+
   return conflicting;
-}
+};
 
 interface OpeningHoursFieldProps {
   error?: boolean;
