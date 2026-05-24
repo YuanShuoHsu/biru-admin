@@ -1,4 +1,8 @@
-export const postalCodes: { postal: string; region: string; locality: string }[] = [
+export const postalCodes: {
+  postal: string;
+  region: string;
+  locality: string;
+}[] = [
   // 臺北市
   { postal: "100", region: "臺北市", locality: "中正區" },
   { postal: "103", region: "臺北市", locality: "大同區" },
