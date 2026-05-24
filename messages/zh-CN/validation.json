@@ -83,6 +83,9 @@
   "searchField": {
     "required": "搜索字段为必填。"
   },
+  "postalCode": {
+    "format": "邮政编码格式无效，请输入 3、5 或 6 位数字。"
+  },
   "slug": {
     "letter": "包含至少一个英文字母。",
     "minLength": "标识符至少需要 1 个字符。"

@@ -83,6 +83,9 @@
   "searchField": {
     "required": "Search field is required."
   },
+  "postalCode": {
+    "format": "Invalid postal code format. Please enter 3, 5, or 6 digits."
+  },
   "slug": {
     "letter": "Contain at least one letter.",
     "minLength": "Slug must be at least 1 character long."

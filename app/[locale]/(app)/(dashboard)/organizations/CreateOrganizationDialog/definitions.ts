@@ -20,7 +20,13 @@ export const useCreateOrganizationFormSchema = () => {
     addressLocality: z.string().trim().optional(),
     addressRegion: z.string().trim().optional(),
     extendedAddress: z.string().trim().optional(),
-    postalCode: z.string().trim().optional(),
+    postalCode: z
+      .string()
+      .trim()
+      .refine((val) => val === "" || /^\d{3}(\d{2}\d?)?$/.test(val), {
+        error: tValidation("postalCode.format"),
+      })
+      .optional(),
     streetAddress: z.string().trim().optional(),
 
     // https://schema.org/LocalBusiness

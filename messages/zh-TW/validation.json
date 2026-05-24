@@ -83,6 +83,9 @@
   "searchField": {
     "required": "搜尋欄位為必填。"
   },
+  "postalCode": {
+    "format": "郵遞區號格式無效，請輸入 3、5 或 6 碼數字。"
+  },
   "slug": {
     "letter": "包含至少一個英文字母。",
     "minLength": "識別碼至少需要 1 個字元。"
