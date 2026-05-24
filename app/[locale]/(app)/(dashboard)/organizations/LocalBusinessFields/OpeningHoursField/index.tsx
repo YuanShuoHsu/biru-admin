@@ -15,8 +15,28 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import type { TimeView } from "@mui/x-date-pickers";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+
+const StyledToggleButtonGroup = styled(ToggleButtonGroup)({
+  flexWrap: "wrap",
+});
+
+const StyledGrid = styled(Grid)(({ theme }) => ({
+  display: "grid",
+  gridTemplateColumns: "1fr auto 1fr auto",
+  alignItems: "center",
+  gap: theme.spacing(2),
+
+  "@media (max-width: 400px)": {
+    gridTemplateColumns: "1fr auto",
+  },
+
+  "@media (max-width: 320px)": {
+    gridTemplateColumns: "1fr",
+  },
+}));
 
 const DAYS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"] as const;
 type Day = (typeof DAYS)[number];
@@ -261,12 +281,11 @@ const OpeningHoursField = ({
           <Stack key={index} gap={0.5}>
             <Grid alignItems="start" container spacing={2}>
               <Grid size={{ xs: 12, sm: "auto" }}>
-                <ToggleButtonGroup
+                <StyledToggleButtonGroup
                   onChange={(_, newDays: Day[]) =>
                     updateSlotDays(index, newDays)
                   }
                   size="small"
-                  sx={{ flexWrap: "wrap" }}
                   value={slot.days}
                 >
                   {DAYS.map((day) => (
@@ -278,25 +297,9 @@ const OpeningHoursField = ({
                       {dayLabels[day]}
                     </ToggleButton>
                   ))}
-                </ToggleButtonGroup>
+                </StyledToggleButtonGroup>
               </Grid>
-              <Grid
-                size={{ xs: 12, sm: "grow" }}
-                sx={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr auto 1fr auto",
-                  alignItems: "center",
-                  gap: 2,
-
-                  "@media (max-width: 400px)": {
-                    gridTemplateColumns: "1fr auto",
-                  },
-
-                  "@media (max-width: 320px)": {
-                    gridTemplateColumns: "1fr",
-                  },
-                }}
-              >
+              <StyledGrid size={{ xs: 12, sm: "grow" }}>
                 <TimePicker
                   format="HH:mm"
                   maxTime={
@@ -328,7 +331,7 @@ const OpeningHoursField = ({
                 <IconButton onClick={() => removeSlot(index)} size="small">
                   <DeleteOutline fontSize="small" />
                 </IconButton>
-              </Grid>
+              </StyledGrid>
             </Grid>
             {hasConflict && (
               <FormHelperText error>
