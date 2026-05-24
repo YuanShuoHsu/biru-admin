@@ -41,7 +41,6 @@ const StyledGrid = styled(Grid)(({ theme }) => ({
 const DAYS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"] as const;
 type Day = (typeof DAYS)[number];
 
-
 interface TimeSlot {
   days: Day[];
   startTime: string;
