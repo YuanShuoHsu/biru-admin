@@ -41,6 +41,9 @@ const StyledGrid = styled(Grid)(({ theme }) => ({
 const DAYS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"] as const;
 type Day = (typeof DAYS)[number];
 
+const DAYS_SET = new Set<string>(DAYS);
+const isDayCode = (code: string): code is Day => DAYS_SET.has(code);
+
 interface Schedule {
   id: string;
   days: Day[];
@@ -49,9 +52,6 @@ interface Schedule {
 }
 
 const parseDays = (daysPart: string): Day[] => {
-  const isDayCode = (code: string): code is Day =>
-    (DAYS as readonly string[]).includes(code);
-
   if (daysPart.includes(",")) return daysPart.split(",").filter(isDayCode);
 
   const parts = daysPart.split("-");
@@ -60,7 +60,7 @@ const parseDays = (daysPart: string): Day[] => {
     const endIdx = DAYS.indexOf(parts[1]);
 
     if (startIdx !== -1 && endIdx !== -1 && startIdx <= endIdx)
-      return [...DAYS].slice(startIdx, endIdx + 1);
+      return Array.from(DAYS).slice(startIdx, endIdx + 1);
   }
 
   if (isDayCode(daysPart)) return [daysPart];
@@ -153,10 +153,7 @@ const getConflictingSchedules = (schedules: Schedule[]): Set<string> => {
       )
         continue;
 
-      const hasCommonDay = scheduleA.days.some((day) =>
-        scheduleB.days.includes(day),
-      );
-      if (!hasCommonDay) continue;
+      if (!scheduleA.days.some((day) => scheduleB.days.includes(day))) continue;
 
       const aStart = toMinutes(scheduleA.startTime);
       const aEnd = toMinutes(scheduleA.endTime);
