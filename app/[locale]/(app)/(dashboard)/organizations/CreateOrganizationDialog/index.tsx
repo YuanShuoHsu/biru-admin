@@ -178,6 +178,7 @@ const CreateOrganizationDialog = ({
         control={control}
         errors={errors}
         register={register}
+        setValue={setValue}
       />
     </StyledBox>
   );

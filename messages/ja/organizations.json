@@ -73,8 +73,10 @@
     },
     "label": "ビジネス",
     "openingHours": {
+      "addSlot": "時間帯を追加",
+      "conflict": "この時間帯は他の時間帯と重複しています",
       "label": "営業時間（任意）",
-      "placeholder": "あなたの営業時間を入力してください"
+      "to": "〜"
     },
     "telephone": {
       "label": "電話番号（任意）",

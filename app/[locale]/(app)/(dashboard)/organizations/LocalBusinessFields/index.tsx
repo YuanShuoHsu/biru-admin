@@ -6,6 +6,7 @@ import {
   type Control,
   type FieldError,
   type UseFormRegister,
+  type UseFormSetValue,
 } from "react-hook-form";
 
 import TextMaskCustom from "@/components/TextMaskCustom";
@@ -16,6 +17,7 @@ import type { Organization } from "@/types/organizations";
 
 import type { CreateOrganizationForm } from "../CreateOrganizationDialog/definitions";
 import type { UpdateOrganizationForm } from "../UpdateOrganizationDialog/definitions";
+import OpeningHoursField from "./OpeningHoursField";
 
 type OrganizationForm = CreateOrganizationForm | UpdateOrganizationForm;
 
@@ -28,27 +30,28 @@ interface LocalBusinessFieldsProps {
   control: Control<OrganizationForm>;
   errors: Partial<Record<LocalBusinessFieldName, FieldError>>;
   register: UseFormRegister<OrganizationForm>;
+  setValue: UseFormSetValue<OrganizationForm>;
 }
 
 const LocalBusinessFields = ({
   control,
   errors,
   register,
+  setValue,
 }: LocalBusinessFieldsProps) => {
   const tOrganizations = useTranslations("organizations");
 
   const addressCountry = useWatch({ control, name: "addressCountry" });
+  const openingHours = useWatch({ control, name: "openingHours" });
   const telephone = useWatch({ control, name: "telephone" });
 
   return (
     <>
-      <TextField
+      <OpeningHoursField
         error={!!errors.openingHours}
-        fullWidth
         helperText={errors.openingHours?.message}
-        label={tOrganizations("localBusiness.openingHours.label")}
-        placeholder={tOrganizations("localBusiness.openingHours.placeholder")}
-        {...register("openingHours")}
+        onChange={(val) => setValue("openingHours", val)}
+        value={openingHours}
       />
       <TextField
         autoComplete="tel"

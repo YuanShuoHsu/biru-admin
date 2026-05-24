@@ -73,8 +73,10 @@
     },
     "label": "비즈니스",
     "openingHours": {
+      "addSlot": "시간대 추가",
+      "conflict": "이 시간대는 다른 시간대와 겹칩니다",
       "label": "영업 시간 (선택)",
-      "placeholder": "귀하의 영업 시간을 입력해 주세요"
+      "to": "~"
     },
     "telephone": {
       "label": "전화번호 (선택)",

@@ -73,8 +73,10 @@
     },
     "label": "商业",
     "openingHours": {
+      "addSlot": "新增时段",
+      "conflict": "此时段与其他时段时间重叠",
       "label": "营业时间（选填）",
-      "placeholder": "请输入您的营业时间"
+      "to": "至"
     },
     "telephone": {
       "label": "电话（选填）",

@@ -73,8 +73,10 @@
     },
     "label": "Business",
     "openingHours": {
+      "addSlot": "Add time slot",
+      "conflict": "This slot overlaps with another time slot",
       "label": "Opening Hours (Optional)",
-      "placeholder": "Please enter your opening hours"
+      "to": "to"
     },
     "telephone": {
       "label": "Telephone (Optional)",
