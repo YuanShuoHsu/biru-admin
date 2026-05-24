@@ -44,13 +44,6 @@ type Day = (typeof DAYS)[number];
 const DAYS_SET = new Set<string>(DAYS);
 const isDayCode = (code: string): code is Day => DAYS_SET.has(code);
 
-interface Schedule {
-  id: string;
-  days: Day[];
-  startTime: string;
-  endTime: string;
-}
-
 const parseDays = (daysPart: string): Day[] => {
   if (daysPart.includes(",")) return daysPart.split(",").filter(isDayCode);
 
@@ -67,6 +60,13 @@ const parseDays = (daysPart: string): Day[] => {
 
   return [];
 };
+
+interface Schedule {
+  id: string;
+  days: Day[];
+  startTime: string;
+  endTime: string;
+}
 
 const parseOpeningHours = (value: string): Schedule[] => {
   if (!value?.trim()) return [];
