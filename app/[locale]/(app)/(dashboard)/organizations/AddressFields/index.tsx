@@ -13,10 +13,7 @@ import {
 import CountrySelect from "@/components/CountrySelect";
 
 import { countries, DEFAULT_COUNTRY_OPTION } from "@/constants/countries";
-import {
-  getPostalCode,
-  getAddress,
-} from "@/constants/tw-postal-codes";
+import { getPostalCode, getAddress } from "@/constants/tw-postal-codes";
 
 import { LocaleEnum } from "@/enums/Locale";
 
