@@ -14,7 +14,7 @@ const parseDays = (daysPart: string): Day[] => {
     const startIdx = DAYS.indexOf(parts[0]);
     const endIdx = DAYS.indexOf(parts[1]);
     if (startIdx !== -1 && endIdx !== -1 && startIdx <= endIdx)
-      return Array.from(DAYS).slice(startIdx, endIdx + 1);
+      return DAYS.slice(startIdx, endIdx + 1);
   }
 
   if (isDayCode(daysPart)) return [daysPart];
@@ -221,37 +221,5 @@ export const getConflictingSchedules = (schedules: Schedule[]): Set<string> => {
   return conflicting;
 };
 
-export const hasOpeningHoursConflict = (val: string): boolean => {
-  const slots = val
-    .split("\n")
-    .filter(Boolean)
-    .flatMap((line) => {
-      const spaceIdx = line.indexOf(" ");
-      if (spaceIdx <= 0) return [];
-
-      const daysPart = line.slice(0, spaceIdx);
-      const timePart = line.slice(spaceIdx + 1);
-      const dashIdx = timePart.indexOf("-");
-      if (dashIdx <= 0) return [];
-
-      const startTime = timePart.slice(0, dashIdx);
-      const endTime = timePart.slice(dashIdx + 1);
-      if (!startTime || !endTime) return [];
-
-      const days = parseDays(daysPart);
-      if (days.length === 0) return [];
-
-      return [{ days, start: toMinutes(startTime), end: toMinutes(endTime) }];
-    });
-
-  for (let i = 0; i < slots.length; i++) {
-    for (let j = i + 1; j < slots.length; j++) {
-      const a = slots[i];
-      const b = slots[j];
-      if (!a.days.some((day) => b.days.includes(day))) continue;
-      if (a.start < b.end && b.start < a.end) return true;
-    }
-  }
-
-  return false;
-};
+export const hasOpeningHoursConflict = (value: string): boolean =>
+  getConflictingSchedules(parseOpeningHours(value)).size > 0;
