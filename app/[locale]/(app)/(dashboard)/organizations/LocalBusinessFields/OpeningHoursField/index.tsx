@@ -67,7 +67,7 @@ const OpeningHoursField = ({
       : [{ id: crypto.randomUUID(), days: [], startTime: "", endTime: "" }];
   });
 
-  const conflicting = getConflictingSchedules(schedules);
+  const scheduleConflicts = getConflictingSchedules(schedules);
 
   const updateSchedule = (newSchedules: Schedule[]) => {
     setSchedules(newSchedules);
@@ -99,12 +99,12 @@ const OpeningHoursField = ({
         {tOrganizations("localBusiness.openingHours.label")}
       </Typography>
       {schedules.map(({ id, days, startTime, endTime }) => {
-        const conflictingDays = conflicting.get(id);
+        const conflictingDays = scheduleConflicts.get(id);
         const hasConflict = !!conflictingDays;
         const hasMissingDays =
           error && days.length === 0 && (!!startTime || !!endTime);
-        const startTimeError = error && days.length > 0 && !startTime;
-        const endTimeError = error && days.length > 0 && !endTime;
+        const hasStartTimeError = error && days.length > 0 && !startTime;
+        const hasEndTimeError = error && days.length > 0 && !endTime;
 
         return (
           <Stack key={id} gap={0.5}>
@@ -148,8 +148,8 @@ const OpeningHoursField = ({
                   }
                   slotProps={{
                     textField: {
-                      error: hasConflict || startTimeError,
-                      helperText: startTimeError
+                      error: hasConflict || hasStartTimeError,
+                      helperText: hasStartTimeError
                         ? tOrganizations(
                             "localBusiness.openingHours.missingStartTime",
                           )
@@ -172,8 +172,8 @@ const OpeningHoursField = ({
                   }
                   slotProps={{
                     textField: {
-                      error: hasConflict || endTimeError,
-                      helperText: endTimeError
+                      error: hasConflict || hasEndTimeError,
+                      helperText: hasEndTimeError
                         ? tOrganizations(
                             "localBusiness.openingHours.missingEndTime",
                           )

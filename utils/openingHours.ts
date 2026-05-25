@@ -172,11 +172,11 @@ export const serializeOpeningHours = (schedules: Schedule[]): string => {
     }
   }
 
-  const deduped = mergeSchedulesByTime(
+  const normalized = mergeSchedulesByTime(
     mergeConsecutiveSchedules(mergeSchedulesByTime(complete)),
   );
 
-  const completePart = deduped
+  const completePart = normalized
     .sort(
       (a, b) =>
         Math.min(...a.days.map((d) => DAYS.indexOf(d))) -
