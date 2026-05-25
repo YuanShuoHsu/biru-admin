@@ -85,6 +85,9 @@
         "We": "水"
       },
       "label": "営業時間（任意）",
+      "missingDays": "曜日を選択してください",
+      "missingEndTime": "終了時刻を入力してください",
+      "missingStartTime": "開始時刻を入力してください",
       "to": "〜"
     },
     "telephone": {

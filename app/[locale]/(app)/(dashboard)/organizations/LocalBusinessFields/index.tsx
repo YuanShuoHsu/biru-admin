@@ -49,7 +49,6 @@ const LocalBusinessFields = ({
     <>
       <OpeningHoursField
         error={!!errors.openingHours}
-        helperText={errors.openingHours?.message}
         onChange={(val) => setValue("openingHours", val)}
         value={openingHours}
       />

@@ -1,6 +1,5 @@
 "use client";
 
-import dayjs, { type Dayjs } from "dayjs";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
@@ -16,8 +15,17 @@ import {
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import type { TimeView } from "@mui/x-date-pickers";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+
+import {
+  DAYS,
+  type Day,
+  type Schedule,
+  getConflictingSchedules,
+  parseOpeningHours,
+  serializeOpeningHours,
+  toTimeDayjs,
+} from "@/utils/openingHours";
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)({
   flexWrap: "wrap",
@@ -38,223 +46,14 @@ const StyledGrid = styled(Grid)(({ theme }) => ({
   },
 }));
 
-const DAYS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"] as const;
-type Day = (typeof DAYS)[number];
-
-const DAYS_SET = new Set<string>(DAYS);
-const isDayCode = (code: string): code is Day => DAYS_SET.has(code);
-
-const parseDays = (daysPart: string): Day[] => {
-  if (daysPart.includes(",")) return daysPart.split(",").filter(isDayCode);
-
-  const parts = daysPart.split("-");
-  if (parts.length === 2 && isDayCode(parts[0]) && isDayCode(parts[1])) {
-    const startIdx = DAYS.indexOf(parts[0]);
-    const endIdx = DAYS.indexOf(parts[1]);
-
-    if (startIdx !== -1 && endIdx !== -1 && startIdx <= endIdx)
-      return Array.from(DAYS).slice(startIdx, endIdx + 1);
-  }
-
-  if (isDayCode(daysPart)) return [daysPart];
-
-  return [];
-};
-
-interface Schedule {
-  id: string;
-  days: Day[];
-  startTime: string;
-  endTime: string;
-}
-
-const parseOpeningHours = (value: string): Schedule[] => {
-  if (!value?.trim()) return [];
-
-  return value
-    .split("\n")
-    .filter(Boolean)
-    .map((line) => {
-      const trimmed = line.trim();
-      const spaceIdx = trimmed.indexOf(" ");
-      if (spaceIdx === -1)
-        return {
-          id: crypto.randomUUID(),
-          days: parseDays(trimmed),
-          startTime: "",
-          endTime: "",
-        };
-
-      const daysPart = trimmed.slice(0, spaceIdx);
-      const timePart = trimmed.slice(spaceIdx + 1);
-      const dashIdx = timePart.indexOf("-");
-      const startTime = dashIdx !== -1 ? timePart.slice(0, dashIdx) : timePart;
-      const endTime = dashIdx !== -1 ? timePart.slice(dashIdx + 1) : "";
-
-      return {
-        id: crypto.randomUUID(),
-        days: parseDays(daysPart),
-        startTime,
-        endTime,
-      };
-    })
-    .filter((schedule) => schedule.days.length > 0);
-};
-
-const serializeDays = (days: Day[]): string => {
-  const indices = days
-    .map((day) => DAYS.indexOf(day))
-    .sort((indexA, indexB) => indexA - indexB);
-  if (indices.length === 0) return "";
-  if (indices.length === 1) return DAYS[indices[0]];
-
-  const isConsecutive = indices.every(
-    (dayIndex, position) =>
-      position === 0 || dayIndex === indices[position - 1] + 1,
-  );
-  if (isConsecutive)
-    return `${DAYS[indices[0]]}-${DAYS[indices[indices.length - 1]]}`;
-
-  return indices.map((dayIndex) => DAYS[dayIndex]).join(",");
-};
-
-const mergeSchedulesByTime = (
-  schedules: Schedule[],
-): Pick<Schedule, "days" | "startTime" | "endTime">[] => {
-  const map = new Map<string, Set<Day>>();
-
-  for (const { days, startTime, endTime } of schedules) {
-    if (days.length === 0) continue;
-
-    const key = `${startTime}|${endTime}`;
-    const existing = map.get(key) ?? new Set<Day>();
-    days.forEach((day) => existing.add(day));
-    map.set(key, existing);
-  }
-
-  return Array.from(map.entries()).map(([key, daysSet]) => {
-    const [startTime, endTime] = key.split("|");
-
-    return { days: DAYS.filter((day) => daysSet.has(day)), startTime, endTime };
-  });
-};
-
-type PartialSchedule = Pick<Schedule, "days" | "startTime" | "endTime">;
-
-const mergeConsecutiveSchedules = (
-  schedules: PartialSchedule[],
-): PartialSchedule[] => {
-  let result = schedules.filter(({ days }) => days.length > 0);
-  let changed = true;
-
-  while (changed) {
-    changed = false;
-
-    outer: for (let i = 0; i < result.length; i++) {
-      for (let j = 0; j < result.length; j++) {
-        if (i === j) continue;
-        const a = result[i];
-        const b = result[j];
-
-        if (!a.startTime || !a.endTime || !b.startTime || !b.endTime) continue;
-        if (a.endTime !== b.startTime) continue;
-
-        const bDaysSet = new Set(b.days);
-        const commonDays = a.days.filter((day) => bDaysSet.has(day));
-        if (commonDays.length === 0) continue;
-
-        const commonDaysSet = new Set(commonDays);
-        const next = result.flatMap((s, idx) => {
-          if (idx !== i && idx !== j) return [s];
-          const remaining = s.days.filter((d) => !commonDaysSet.has(d));
-          return remaining.length > 0 ? [{ ...s, days: remaining }] : [];
-        });
-        next.push({
-          days: commonDays,
-          startTime: a.startTime,
-          endTime: b.endTime,
-        });
-
-        result = next;
-        changed = true;
-        break outer;
-      }
-    }
-  }
-
-  return result;
-};
-
-const serializeOpeningHours = (schedules: Schedule[]): string => {
-  const merged = mergeConsecutiveSchedules(mergeSchedulesByTime(schedules));
-  const deduped = mergeSchedulesByTime(merged as Schedule[]);
-
-  return deduped
-    .sort(
-      (a, b) =>
-        Math.min(...a.days.map((d) => DAYS.indexOf(d))) -
-        Math.min(...b.days.map((d) => DAYS.indexOf(d))),
-    )
-    .map(({ days, startTime, endTime }) => {
-      const dayStr = serializeDays(days);
-      if (startTime && endTime) return `${dayStr} ${startTime}-${endTime}`;
-
-      return dayStr;
-    })
-    .join("\n");
-};
-
-const toTimeDayjs = (time: string): Dayjs | null =>
-  time ? dayjs(`2000-01-01T${time}`) : null;
-
-const toMinutes = (time: string): number => {
-  const [hours, minutes] = time.split(":").map(Number);
-
-  return hours * 60 + minutes;
-};
-
-const getConflictingSchedules = (schedules: Schedule[]): Set<string> => {
-  const conflicting = new Set<string>();
-
-  for (let outerIdx = 0; outerIdx < schedules.length; outerIdx++) {
-    for (let innerIdx = outerIdx + 1; innerIdx < schedules.length; innerIdx++) {
-      const scheduleA = schedules[outerIdx];
-      const scheduleB = schedules[innerIdx];
-      if (
-        !scheduleA.startTime ||
-        !scheduleA.endTime ||
-        !scheduleB.startTime ||
-        !scheduleB.endTime
-      )
-        continue;
-
-      if (!scheduleA.days.some((day) => scheduleB.days.includes(day))) continue;
-
-      const aStart = toMinutes(scheduleA.startTime);
-      const aEnd = toMinutes(scheduleA.endTime);
-      const bStart = toMinutes(scheduleB.startTime);
-      const bEnd = toMinutes(scheduleB.endTime);
-
-      if (aStart < bEnd && bStart < aEnd) {
-        conflicting.add(scheduleA.id);
-        conflicting.add(scheduleB.id);
-      }
-    }
-  }
-
-  return conflicting;
-};
-
 interface OpeningHoursFieldProps {
   error?: boolean;
-  helperText?: string;
   onChange: (value: string) => void;
   value?: string;
 }
 
 const OpeningHoursField = ({
   error,
-  helperText,
   onChange,
   value = "",
 }: OpeningHoursFieldProps) => {
@@ -294,56 +93,6 @@ const OpeningHoursField = ({
       ),
     );
 
-  const createShouldDisableTime =
-    (
-      { id, days, startTime, endTime }: Schedule,
-      field: "startTime" | "endTime",
-    ) =>
-    (value: Dayjs, view: TimeView) => {
-      if (days.length === 0) return false;
-
-      const valueMinutes = value.hour() * 60 + value.minute();
-      const hourEndMinutes = valueMinutes + 59;
-      const daysSet = new Set(days);
-
-      return schedules.some(
-        ({
-          id: otherId,
-          days: otherDays,
-          startTime: otherStartTime,
-          endTime: otherEndTime,
-        }) => {
-          if (otherId === id || !otherStartTime || !otherEndTime) return false;
-          if (!otherDays.some((day) => daysSet.has(day))) return false;
-
-          const otherStart = toMinutes(otherStartTime);
-          const otherEnd = toMinutes(otherEndTime);
-
-          if (field === "endTime" && startTime) {
-            const start = toMinutes(startTime);
-
-            return start < otherEnd && valueMinutes > otherStart;
-          }
-
-          if (field === "startTime" && endTime) {
-            const end = toMinutes(endTime);
-
-            if (view === "hours")
-              return end > otherStart && hourEndMinutes < otherEnd;
-
-            return end > otherStart && valueMinutes < otherEnd;
-          }
-
-          if (view === "hours")
-            return valueMinutes > otherStart && hourEndMinutes < otherEnd;
-
-          return field === "startTime"
-            ? valueMinutes >= otherStart && valueMinutes < otherEnd
-            : valueMinutes > otherStart && valueMinutes <= otherEnd;
-        },
-      );
-    };
-
   return (
     <Stack width="100%" gap={2}>
       <Typography color={error ? "error" : "text.secondary"} variant="body2">
@@ -352,6 +101,10 @@ const OpeningHoursField = ({
       {schedules.map((schedule) => {
         const { id, days, startTime, endTime } = schedule;
         const hasConflict = conflicting.has(id);
+        const startTimeError = error && days.length > 0 && !startTime;
+        const endTimeError = error && days.length > 0 && !endTime;
+        const hasMissingDays =
+          error && days.length === 0 && (!!startTime || !!endTime);
 
         return (
           <Stack key={id} gap={0.5}>
@@ -366,7 +119,9 @@ const OpeningHoursField = ({
                 >
                   {DAYS.map((day) => (
                     <ToggleButton
-                      color={hasConflict ? "error" : "standard"}
+                      color={
+                        hasConflict || hasMissingDays ? "error" : "standard"
+                      }
                       key={day}
                       value={day}
                     >
@@ -374,6 +129,11 @@ const OpeningHoursField = ({
                     </ToggleButton>
                   ))}
                 </StyledToggleButtonGroup>
+                {hasMissingDays && (
+                  <FormHelperText error>
+                    {tOrganizations("localBusiness.openingHours.missingDays")}
+                  </FormHelperText>
+                )}
               </Grid>
               <StyledGrid size={{ xs: 12, sm: "grow" }}>
                 <TimePicker
@@ -384,12 +144,16 @@ const OpeningHoursField = ({
                       startTime: time?.isValid() ? time.format("HH:mm") : "",
                     })
                   }
-                  shouldDisableTime={createShouldDisableTime(
-                    schedule,
-                    "startTime",
-                  )}
                   slotProps={{
-                    textField: { error: hasConflict, size: "small" },
+                    textField: {
+                      error: hasConflict || startTimeError,
+                      helperText: startTimeError
+                        ? tOrganizations(
+                            "localBusiness.openingHours.missingStartTime",
+                          )
+                        : undefined,
+                      size: "small",
+                    },
                   }}
                   value={toTimeDayjs(startTime)}
                 />
@@ -404,12 +168,16 @@ const OpeningHoursField = ({
                       endTime: time?.isValid() ? time.format("HH:mm") : "",
                     })
                   }
-                  shouldDisableTime={createShouldDisableTime(
-                    schedule,
-                    "endTime",
-                  )}
                   slotProps={{
-                    textField: { error: hasConflict, size: "small" },
+                    textField: {
+                      error: hasConflict || endTimeError,
+                      helperText: endTimeError
+                        ? tOrganizations(
+                            "localBusiness.openingHours.missingEndTime",
+                          )
+                        : undefined,
+                      size: "small",
+                    },
                   }}
                   value={toTimeDayjs(endTime)}
                 />
@@ -436,9 +204,6 @@ const OpeningHoursField = ({
       >
         {tOrganizations("localBusiness.openingHours.addSchedule")}
       </Button>
-      {helperText && (
-        <FormHelperText error={error}>{helperText}</FormHelperText>
-      )}
     </Stack>
   );
 };

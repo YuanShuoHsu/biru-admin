@@ -85,6 +85,9 @@
         "We": "We"
       },
       "label": "Opening Hours (Optional)",
+      "missingDays": "Please select at least one day",
+      "missingEndTime": "Please fill in the end time",
+      "missingStartTime": "Please fill in the start time",
       "to": "to"
     },
     "telephone": {

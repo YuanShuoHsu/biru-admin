@@ -1,6 +1,8 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
+import { hasOpeningHoursConflict } from "@/utils/openingHours";
+
 export const useCreateOrganizationFormSchema = () => {
   const tValidation = useTranslations("validation");
 
@@ -31,7 +33,19 @@ export const useCreateOrganizationFormSchema = () => {
 
     // https://schema.org/LocalBusiness
     hasMap: z.string().trim().optional(),
-    openingHours: z.string().trim().optional(),
+    openingHours: z
+      .string()
+      .trim()
+      .optional()
+      .refine(
+        (val) =>
+          !val ||
+          val
+            .split("\n")
+            .filter(Boolean)
+            .every((line) => line.indexOf(" ") > 0),
+      )
+      .refine((val) => !val || !hasOpeningHoursConflict(val)),
     telephone: z.string().trim().optional(),
   });
 };

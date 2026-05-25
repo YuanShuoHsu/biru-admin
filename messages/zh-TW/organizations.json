@@ -85,6 +85,9 @@
         "We": "三"
       },
       "label": "營業時間（選填）",
+      "missingDays": "請選擇星期",
+      "missingEndTime": "請填寫結束時間",
+      "missingStartTime": "請填寫開始時間",
       "to": "至"
     },
     "telephone": {
