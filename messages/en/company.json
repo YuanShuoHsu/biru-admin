@@ -1,6 +1,93 @@
 {
   "about": {
-    "label": "About"
+    "label": "About",
+    "hero": {
+      "description": "We give guests the food, service, and space to bring a stunning dining experience to life with unrivalled warmth and ease.",
+      "stats": {
+        "founded": {
+          "label": "Born in Dayuan, Taoyuan",
+          "value": "2026"
+        },
+        "hours": {
+          "label": "Brunch to Dinner",
+          "value": "All Day"
+        },
+        "ingredients": {
+          "label": "Fresh ingredients daily",
+          "value": "100%"
+        }
+      },
+      "subtitle": "About us",
+      "titleLine1": "We're on a mission to make",
+      "titleLine2": "great coffee effortless"
+    },
+    "joinUs": {
+      "button": "View careers",
+      "description": "We give every team member the tools and stage to bring unforgettable moments to life with unrivalled passion and creativity.",
+      "imageAlt": "Biru Coffee storefront photo",
+      "label": "Join us",
+      "titleLine1": "Build the next generation",
+      "titleLine2": "of dining experiences"
+    },
+    "values": {
+      "description": "The Biru Coffee team pact describes the values we embody as a company, which help guide us toward the experiences and results we aim to deliver.",
+      "subtitle": "Our values",
+      "titleGradient": "team pact",
+      "titlePrefix": "The Biru Coffee ",
+      "values": {
+        "chaseBetter": {
+          "description": "We're driven by an unending desire to improve.",
+          "title": "Chase \"better\""
+        },
+        "keepItSimple": {
+          "description": "We're so not corporate—and we like it that way.",
+          "title": "Keep it simple"
+        },
+        "trustAndDeliver": {
+          "description": "We choose to cultivate unity as the core of achievement.",
+          "title": "Trust and deliver together"
+        },
+        "userObsessed": {
+          "description": "We never lose sight of who we're serving and why.",
+          "title": "User-obsessed"
+        }
+      }
+    },
+    "team": {
+      "description": "Contributing from all corners of Taiwan, Biru is a passionate team & community.",
+      "joinUs": "Join us",
+      "label": "Team",
+      "role": {
+        "admin": "Admin",
+        "member": "Member",
+        "owner": "Owner"
+      },
+      "selectOrganization": {
+        "label": "Organization",
+        "placeholder": "Please select your organization"
+      },
+      "titleHighlight": "Biruers",
+      "titlePrefix": "Meet the "
+    },
+    "location": {
+      "label": "Location",
+      "openingHours": {
+        "Fr": "Fri",
+        "Mo": "Mon",
+        "Sa": "Sat",
+        "Su": "Sun",
+        "Th": "Thu",
+        "Tu": "Tue",
+        "We": "Wed",
+        "rangeSeparator": "–"
+      },
+      "selectOrganization": {
+        "label": "Organization",
+        "placeholder": "Please select your organization"
+      },
+      "titleHighlight": "Find Us",
+      "titlePrefix": "Come "
+    }
   },
   "label": "Company",
   "legal": {

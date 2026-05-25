@@ -1,6 +1,93 @@
 {
   "about": {
-    "label": "私たちについて"
+    "label": "私たちについて",
+    "hero": {
+      "description": "料理、サービス、空間に、比類ない温かさと心地よさを添えて、心を奪うようなダイニング体験をかたちにします。",
+      "stats": {
+        "founded": {
+          "label": "桃園・大園で誕生",
+          "value": "2026"
+        },
+        "hours": {
+          "label": "ブランチからディナーまで",
+          "value": "終日営業"
+        },
+        "ingredients": {
+          "label": "毎日新鮮な食材",
+          "value": "100%"
+        }
+      },
+      "subtitle": "私たちについて",
+      "titleLine1": "私たちの使命は",
+      "titleLine2": "素晴らしいコーヒーを気軽にすること"
+    },
+    "joinUs": {
+      "button": "採用情報を見る",
+      "description": "すべてのメンバーにツールと舞台を提供し、比類ない情熱と創造力で忘れられないひとときをともにかたちにします。",
+      "imageAlt": "Biru Coffee 店舗外観の写真",
+      "label": "仲間になる",
+      "titleLine1": "次世代のダイニング体験を",
+      "titleLine2": "ともにかたちにする"
+    },
+    "values": {
+      "description": "Biru Coffee のチームパクトは、私たちが会社として体現する価値観を示し、届けたい体験と成果へ向かうための指針です。",
+      "subtitle": "私たちの価値観",
+      "titleGradient": "チームパクト",
+      "titlePrefix": "Biru Coffee ",
+      "values": {
+        "chaseBetter": {
+          "description": "私たちは、より良くなり続けたいという尽きない思いに突き動かされています。",
+          "title": "「より良い」を追求する"
+        },
+        "keepItSimple": {
+          "description": "私たちは堅苦しい企業らしさにとらわれず、そのあり方を大切にしています。",
+          "title": "シンプルに保つ"
+        },
+        "trustAndDeliver": {
+          "description": "私たちは、一体感を育むことこそが成果の核だと考えています。",
+          "title": "信頼し、ともに届ける"
+        },
+        "userObsessed": {
+          "description": "誰のために、なぜ届けるのかを決して見失いません。",
+          "title": "ユーザーに徹底して向き合う"
+        }
+      }
+    },
+    "team": {
+      "description": "台湾各地から集まった Biru は、情熱あふれるチームとコミュニティです。",
+      "joinUs": "採用情報",
+      "label": "チーム",
+      "role": {
+        "admin": "管理者",
+        "member": "メンバー",
+        "owner": "オーナー"
+      },
+      "selectOrganization": {
+        "label": "組織",
+        "placeholder": "組織を選択してください"
+      },
+      "titleHighlight": "Biruers",
+      "titlePrefix": "紹介します "
+    },
+    "location": {
+      "label": "アクセス",
+      "openingHours": {
+        "Fr": "金",
+        "Mo": "月",
+        "Sa": "土",
+        "Su": "日",
+        "Th": "木",
+        "Tu": "火",
+        "We": "水",
+        "rangeSeparator": "～"
+      },
+      "selectOrganization": {
+        "label": "組織",
+        "placeholder": "組織を選択してください"
+      },
+      "titleHighlight": "見つける",
+      "titlePrefix": "私たちを "
+    }
   },
   "label": "会社概要",
   "legal": {

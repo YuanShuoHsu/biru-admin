@@ -13,7 +13,7 @@ import { LocaleEnum } from "@/enums/Locale";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { useOrganizations } from "@/hooks/organization";
+import { useOrganizations } from "@/hooks/organizations";
 
 import { AccessTime, LocationOn, Phone } from "@mui/icons-material";
 import {

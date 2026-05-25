@@ -1,6 +1,93 @@
 {
   "about": {
-    "label": "關於我們"
+    "label": "關於我們",
+    "hero": {
+      "description": "我們以美食、服務與空間，搭配無可比擬的溫度與從容，為每位賓客成就令人驚豔的用餐體驗。",
+      "stats": {
+        "founded": {
+          "label": "誕生於桃園大園",
+          "value": "2026"
+        },
+        "hours": {
+          "label": "早午餐到晚餐",
+          "value": "全日供應"
+        },
+        "ingredients": {
+          "label": "每日新鮮食材",
+          "value": "100%"
+        }
+      },
+      "subtitle": "關於我們",
+      "titleLine1": "我們的使命是讓",
+      "titleLine2": "好咖啡變得輕鬆自在"
+    },
+    "joinUs": {
+      "button": "查看職缺",
+      "description": "我們賦予每位夥伴工具與舞台，以無可比擬的熱情與創意，一起成就令人難忘的每一刻。",
+      "imageAlt": "Biru Coffee 門市外觀照片",
+      "label": "加入我們",
+      "titleLine1": "打造下一個世代的極致",
+      "titleLine2": "餐飲體驗"
+    },
+    "values": {
+      "description": "Biru Coffee 團隊共識描繪了我們作為一家公司所實踐的價值，並指引我們走向想帶給賓客的體驗與成果。",
+      "subtitle": "我們的價值",
+      "titleGradient": "團隊共識",
+      "titlePrefix": "Biru Coffee ",
+      "values": {
+        "chaseBetter": {
+          "description": "我們被持續變得更好的渴望驅動。",
+          "title": "追求「更好」"
+        },
+        "keepItSimple": {
+          "description": "我們不走制式企業風格，而我們喜歡這樣。",
+          "title": "保持簡單"
+        },
+        "trustAndDeliver": {
+          "description": "我們選擇培養凝聚力，作為成就事情的核心。",
+          "title": "彼此信任，一起交付"
+        },
+        "userObsessed": {
+          "description": "我們始終記得自己服務的是誰，以及為什麼服務。",
+          "title": "以使用者為中心"
+        }
+      }
+    },
+    "team": {
+      "description": "來自台灣各地，Biru 是一支充滿熱情的餐飲團隊與社群。",
+      "joinUs": "加入我們",
+      "label": "團隊",
+      "role": {
+        "admin": "管理員",
+        "member": "成員",
+        "owner": "擁有者"
+      },
+      "selectOrganization": {
+        "label": "組織",
+        "placeholder": "請選擇您的組織"
+      },
+      "titleHighlight": "Biruers",
+      "titlePrefix": "認識 "
+    },
+    "location": {
+      "label": "位置",
+      "openingHours": {
+        "Fr": "週五",
+        "Mo": "週一",
+        "Sa": "週六",
+        "Su": "週日",
+        "Th": "週四",
+        "Tu": "週二",
+        "We": "週三",
+        "rangeSeparator": "～"
+      },
+      "selectOrganization": {
+        "label": "組織",
+        "placeholder": "請選擇您的組織"
+      },
+      "titleHighlight": "找到我們",
+      "titlePrefix": "來 "
+    }
   },
   "label": "公司",
   "legal": {

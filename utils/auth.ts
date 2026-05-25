@@ -1,3 +1,4 @@
+import { Locale } from "next-intl";
 import { UAParser } from "ua-parser-js";
 
 import { LocaleEnum } from "@/enums/Locale";
@@ -13,6 +14,18 @@ export const formatUserAgent = (userAgent?: string | null): string => {
   } = new UAParser(userAgent).getResult();
 
   return [browserName, osName].filter(Boolean).join(" · ");
+};
+
+export const formatFullName = (
+  locale: Locale,
+  firstName: string | null,
+  lastName?: string | null,
+) => {
+  const isEnLocale = locale === LocaleEnum.En;
+
+  return (isEnLocale ? [firstName, lastName] : [lastName, firstName])
+    .filter(Boolean)
+    .join(isEnLocale ? " " : "");
 };
 
 export const getDisplayName = (user?: Session["user"] | null) => {

@@ -1,6 +1,93 @@
 {
   "about": {
-    "label": "회사 소개"
+    "label": "회사 소개",
+    "hero": {
+      "description": "음식, 서비스, 공간에 비할 데 없는 따뜻함과 편안함을 더해, 놀라운 다이닝 경험이 자연스럽게 완성되도록 합니다.",
+      "stats": {
+        "founded": {
+          "label": "타오위안 다위안에서 탄생",
+          "value": "2026"
+        },
+        "hours": {
+          "label": "브런치부터 디너까지",
+          "value": "올데이"
+        },
+        "ingredients": {
+          "label": "매일 신선한 재료",
+          "value": "100%"
+        }
+      },
+      "subtitle": "회사 소개",
+      "titleLine1": "우리의 미션은",
+      "titleLine2": "훌륭한 커피를 더 편하게 만드는 것"
+    },
+    "joinUs": {
+      "button": "채용 정보 보기",
+      "description": "모든 팀원에게 도구와 무대를 제공하여, 비할 데 없는 열정과 창의력으로 잊을 수 없는 순간을 함께 만들어 갑니다.",
+      "imageAlt": "Biru Coffee 매장 외관 사진",
+      "label": "함께하기",
+      "titleLine1": "차세대 다이닝 경험을",
+      "titleLine2": "함께 만들어 가세요"
+    },
+    "values": {
+      "description": "Biru Coffee 팀 팩트는 우리가 회사로서 실천하는 가치를 담고 있으며, 우리가 전하고자 하는 경험과 결과로 나아가도록 이끌어 줍니다.",
+      "subtitle": "우리의 가치",
+      "titleGradient": "팀 팩트",
+      "titlePrefix": "Biru Coffee ",
+      "values": {
+        "chaseBetter": {
+          "description": "우리는 끊임없이 더 나아지고자 하는 열망으로 움직입니다.",
+          "title": "더 나음을 추구하기"
+        },
+        "keepItSimple": {
+          "description": "우리는 딱딱한 기업 문화와는 거리가 멀고, 그런 방식을 좋아합니다.",
+          "title": "단순하게 유지하기"
+        },
+        "trustAndDeliver": {
+          "description": "우리는 하나됨을 키우는 것이 성과의 핵심이라고 믿습니다.",
+          "title": "신뢰하고 함께 해내기"
+        },
+        "userObsessed": {
+          "description": "우리는 누구를 위해, 왜 일하는지 절대 잊지 않습니다.",
+          "title": "사용자에게 집중하기"
+        }
+      }
+    },
+    "team": {
+      "description": "대만 각지에서 모인 Biru는 열정 넘치는 팀과 커뮤니티입니다.",
+      "joinUs": "채용 정보",
+      "label": "팀",
+      "role": {
+        "admin": "관리자",
+        "member": "멤버",
+        "owner": "소유자"
+      },
+      "selectOrganization": {
+        "label": "조직",
+        "placeholder": "조직을 선택해 주세요"
+      },
+      "titleHighlight": "Biruers",
+      "titlePrefix": "만나보세요 "
+    },
+    "location": {
+      "label": "오시는 길",
+      "openingHours": {
+        "Fr": "금",
+        "Mo": "월",
+        "Sa": "토",
+        "Su": "일",
+        "Th": "목",
+        "Tu": "화",
+        "We": "수",
+        "rangeSeparator": "～"
+      },
+      "selectOrganization": {
+        "label": "조직",
+        "placeholder": "조직을 선택해 주세요"
+      },
+      "titleHighlight": "찾아오세요",
+      "titlePrefix": "저희를 "
+    }
   },
   "label": "회사 소개",
   "legal": {

@@ -7,11 +7,12 @@ import { type TeamForm, useTeamFormSchema } from "./definitions";
 
 import GradientBox from "@/components/GradientBox";
 
-import { formatFullName } from "@/utils/auth";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { useOrganizationMembers, useOrganizations } from "@/hooks/organization";
+import {
+  useOrganizationMembers,
+  useOrganizations,
+} from "@/hooks/organizations";
 
 import {
   Avatar,
@@ -26,6 +27,8 @@ import {
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+
+import { formatFullName } from "@/utils/auth";
 
 const StyledContainer = styled(Container)<ContainerProps>(({ theme }) => ({
   padding: theme.spacing(5, 2),

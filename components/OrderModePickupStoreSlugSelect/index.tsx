@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 
 import { ORDER_MODE } from "@/constants/orderMode";
 
-import { useOrganizations } from "@/hooks/useOrganizations";
+import { useOrganizations } from "@/hooks/organizations";
 
 import { useRouter } from "@/i18n/navigation";
 
