@@ -197,8 +197,10 @@ export const serializeOpeningHours = (schedules: Schedule[]): string => {
   return [completePart, incompletePart].filter(Boolean).join("\n");
 };
 
-export const getConflictingSchedules = (schedules: Schedule[]): Set<string> => {
-  const conflicting = new Set<string>();
+export const getConflictingSchedules = (
+  schedules: Schedule[],
+): Map<string, Set<Day>> => {
+  const result = new Map<string, Set<Day>>();
 
   for (let i = 0; i < schedules.length; i++) {
     for (let j = i + 1; j < schedules.length; j++) {
@@ -206,22 +208,32 @@ export const getConflictingSchedules = (schedules: Schedule[]): Set<string> => {
       const b = schedules[j];
 
       if (!a.startTime || !a.endTime || !b.startTime || !b.endTime) continue;
-      if (!a.days.some((day) => b.days.includes(day))) continue;
 
       const aStart = toMinutes(a.startTime);
       const aEnd = toMinutes(a.endTime);
       const bStart = toMinutes(b.startTime);
       const bEnd = toMinutes(b.endTime);
 
-      if (aStart < bEnd && bStart < aEnd) {
-        conflicting.add(a.id);
-        conflicting.add(b.id);
-      }
+      if (!(aStart < bEnd && bStart < aEnd)) continue;
+
+      const bDaysSet = new Set(b.days);
+      const overlapping = a.days.filter((day) => bDaysSet.has(day));
+      if (overlapping.length === 0) continue;
+
+      const aDays = result.get(a.id) ?? new Set<Day>();
+      const bDays = result.get(b.id) ?? new Set<Day>();
+      overlapping.forEach((day) => {
+        aDays.add(day);
+        bDays.add(day);
+      });
+      result.set(a.id, aDays);
+      result.set(b.id, bDays);
     }
   }
 
-  return conflicting;
+  return result;
 };
 
 export const hasOpeningHoursConflict = (value: string): boolean =>
   getConflictingSchedules(parseOpeningHours(value)).size > 0;
+

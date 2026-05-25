@@ -99,7 +99,8 @@ const OpeningHoursField = ({
         {tOrganizations("localBusiness.openingHours.label")}
       </Typography>
       {schedules.map(({ id, days, startTime, endTime }) => {
-        const hasConflict = conflicting.has(id);
+        const conflictingDays = conflicting.get(id);
+        const hasConflict = !!conflictingDays;
         const hasMissingDays =
           error && days.length === 0 && (!!startTime || !!endTime);
         const startTimeError = error && days.length > 0 && !startTime;
@@ -119,7 +120,9 @@ const OpeningHoursField = ({
                   {DAYS.map((day) => (
                     <ToggleButton
                       color={
-                        hasConflict || hasMissingDays ? "error" : "standard"
+                        conflictingDays?.has(day) || hasMissingDays
+                          ? "error"
+                          : "standard"
                       }
                       key={day}
                       value={day}
