@@ -95,6 +95,20 @@
       "placeholder": "Please enter your phone number"
     }
   },
+  "location": {
+    "empty": "No location information available",
+    "label": "Location",
+    "openingHours": {
+      "Fr": "Fri",
+      "Mo": "Mon",
+      "Sa": "Sat",
+      "Su": "Sun",
+      "Th": "Thu",
+      "Tu": "Tue",
+      "We": "Wed",
+      "rangeSeparator": "–"
+    }
+  },
   "logo": "Logo",
   "members": {
     "actions": {

@@ -96,6 +96,12 @@ const Location = () => {
   const tCommon = useTranslations("common");
   const tCompanyAboutLocation = useTranslations("company.about.location");
 
+  const hasContent =
+    address ||
+    organization?.openingHours ||
+    organization?.telephone ||
+    organization?.hasMap;
+
   return (
     <Box bgcolor="background.paper" component="section">
       <StyledContainer disableGutters maxWidth="lg">
@@ -154,6 +160,11 @@ const Location = () => {
               </MenuItem>
             ))}
           </StyledOrganizationSelect>
+          {!hasContent && (
+            <Typography color="text.secondary" variant="body2">
+              {tCompanyAboutLocation("empty")}
+            </Typography>
+          )}
           {address && (
             <Stack direction="row" gap={1}>
               <LocationOn color="primary" fontSize="small" />

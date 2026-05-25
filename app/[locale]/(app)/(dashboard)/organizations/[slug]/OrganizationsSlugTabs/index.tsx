@@ -9,6 +9,7 @@ import { Link, usePathname } from "@/i18n/navigation";
 
 import {
   Groups,
+  LocationOn,
   Mail,
   People,
   type SvgIconComponent,
@@ -32,6 +33,7 @@ const OrganizationsSlugTabs = ({ children }: OrganizationsSlugTabsProps) => {
   const tMembers = useTranslations("organizations.members");
   const tTeams = useTranslations("organizations.teams");
   const tInvitations = useTranslations("organizations.invitations");
+  const tLocation = useTranslations("organizations.location");
 
   const tabs: {
     Icon: SvgIconComponent;
@@ -57,6 +59,11 @@ const OrganizationsSlugTabs = ({ children }: OrganizationsSlugTabsProps) => {
         </Stack>
       ),
       value: `/organizations/${slug}/invitations`,
+    },
+    {
+      Icon: LocationOn,
+      label: tLocation("label"),
+      value: `/organizations/${slug}/location`,
     },
   ];
 

@@ -95,6 +95,20 @@
       "placeholder": "귀하의 전화번호를 입력해 주세요"
     }
   },
+  "location": {
+    "empty": "위치 정보가 없습니다",
+    "label": "위치",
+    "openingHours": {
+      "Fr": "금",
+      "Mo": "월",
+      "Sa": "토",
+      "Su": "일",
+      "Th": "목",
+      "Tu": "화",
+      "We": "수",
+      "rangeSeparator": "~"
+    }
+  },
   "logo": "로고",
   "members": {
     "actions": {

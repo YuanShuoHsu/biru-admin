@@ -1,6 +1,5 @@
 {
   "about": {
-    "label": "私たちについて",
     "hero": {
       "description": "料理、サービス、空間に、比類ない温かさと心地よさを添えて、心を奪うようなダイニング体験をかたちにします。",
       "stats": {
@@ -29,6 +28,43 @@
       "titleLine1": "次世代のダイニング体験を",
       "titleLine2": "ともにかたちにする"
     },
+    "label": "私たちについて",
+    "location": {
+      "empty": "位置情報が設定されていません",
+      "label": "アクセス",
+      "openingHours": {
+        "Fr": "金",
+        "Mo": "月",
+        "Sa": "土",
+        "Su": "日",
+        "Th": "木",
+        "Tu": "火",
+        "We": "水",
+        "rangeSeparator": "～"
+      },
+      "selectOrganization": {
+        "label": "組織",
+        "placeholder": "組織を選択してください"
+      },
+      "titleHighlight": "見つける",
+      "titlePrefix": "私たちを "
+    },
+    "team": {
+      "description": "台湾各地から集まった Biru は、情熱あふれるチームとコミュニティです。",
+      "joinUs": "採用情報",
+      "label": "チーム",
+      "role": {
+        "admin": "管理者",
+        "member": "メンバー",
+        "owner": "オーナー"
+      },
+      "selectOrganization": {
+        "label": "組織",
+        "placeholder": "組織を選択してください"
+      },
+      "titleHighlight": "Biruers",
+      "titlePrefix": "紹介します "
+    },
     "values": {
       "description": "Biru Coffee のチームパクトは、私たちが会社として体現する価値観を示し、届けたい体験と成果へ向かうための指針です。",
       "subtitle": "私たちの価値観",
@@ -52,41 +88,6 @@
           "title": "ユーザーに徹底して向き合う"
         }
       }
-    },
-    "team": {
-      "description": "台湾各地から集まった Biru は、情熱あふれるチームとコミュニティです。",
-      "joinUs": "採用情報",
-      "label": "チーム",
-      "role": {
-        "admin": "管理者",
-        "member": "メンバー",
-        "owner": "オーナー"
-      },
-      "selectOrganization": {
-        "label": "組織",
-        "placeholder": "組織を選択してください"
-      },
-      "titleHighlight": "Biruers",
-      "titlePrefix": "紹介します "
-    },
-    "location": {
-      "label": "アクセス",
-      "openingHours": {
-        "Fr": "金",
-        "Mo": "月",
-        "Sa": "土",
-        "Su": "日",
-        "Th": "木",
-        "Tu": "火",
-        "We": "水",
-        "rangeSeparator": "～"
-      },
-      "selectOrganization": {
-        "label": "組織",
-        "placeholder": "組織を選択してください"
-      },
-      "titleHighlight": "見つける",
-      "titlePrefix": "私たちを "
     }
   },
   "label": "会社概要",

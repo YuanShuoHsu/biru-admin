@@ -95,6 +95,20 @@
       "placeholder": "请输入您的电话号码"
     }
   },
+  "location": {
+    "empty": "暂无位置信息",
+    "label": "位置",
+    "openingHours": {
+      "Fr": "周五",
+      "Mo": "周一",
+      "Sa": "周六",
+      "Su": "周日",
+      "Th": "周四",
+      "Tu": "周二",
+      "We": "周三",
+      "rangeSeparator": "～"
+    }
+  },
   "logo": "标志",
   "members": {
     "actions": {

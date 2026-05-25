@@ -1,6 +1,5 @@
 {
   "about": {
-    "label": "회사 소개",
     "hero": {
       "description": "음식, 서비스, 공간에 비할 데 없는 따뜻함과 편안함을 더해, 놀라운 다이닝 경험이 자연스럽게 완성되도록 합니다.",
       "stats": {
@@ -29,6 +28,43 @@
       "titleLine1": "차세대 다이닝 경험을",
       "titleLine2": "함께 만들어 가세요"
     },
+    "label": "회사 소개",
+    "location": {
+      "empty": "위치 정보가 설정되지 않았습니다",
+      "label": "오시는 길",
+      "openingHours": {
+        "Fr": "금",
+        "Mo": "월",
+        "Sa": "토",
+        "Su": "일",
+        "Th": "목",
+        "Tu": "화",
+        "We": "수",
+        "rangeSeparator": "～"
+      },
+      "selectOrganization": {
+        "label": "조직",
+        "placeholder": "조직을 선택해 주세요"
+      },
+      "titleHighlight": "찾아오세요",
+      "titlePrefix": "저희를 "
+    },
+    "team": {
+      "description": "대만 각지에서 모인 Biru는 열정 넘치는 팀과 커뮤니티입니다.",
+      "joinUs": "채용 정보",
+      "label": "팀",
+      "role": {
+        "admin": "관리자",
+        "member": "멤버",
+        "owner": "소유자"
+      },
+      "selectOrganization": {
+        "label": "조직",
+        "placeholder": "조직을 선택해 주세요"
+      },
+      "titleHighlight": "Biruers",
+      "titlePrefix": "만나보세요 "
+    },
     "values": {
       "description": "Biru Coffee 팀 팩트는 우리가 회사로서 실천하는 가치를 담고 있으며, 우리가 전하고자 하는 경험과 결과로 나아가도록 이끌어 줍니다.",
       "subtitle": "우리의 가치",
@@ -52,41 +88,6 @@
           "title": "사용자에게 집중하기"
         }
       }
-    },
-    "team": {
-      "description": "대만 각지에서 모인 Biru는 열정 넘치는 팀과 커뮤니티입니다.",
-      "joinUs": "채용 정보",
-      "label": "팀",
-      "role": {
-        "admin": "관리자",
-        "member": "멤버",
-        "owner": "소유자"
-      },
-      "selectOrganization": {
-        "label": "조직",
-        "placeholder": "조직을 선택해 주세요"
-      },
-      "titleHighlight": "Biruers",
-      "titlePrefix": "만나보세요 "
-    },
-    "location": {
-      "label": "오시는 길",
-      "openingHours": {
-        "Fr": "금",
-        "Mo": "월",
-        "Sa": "토",
-        "Su": "일",
-        "Th": "목",
-        "Tu": "화",
-        "We": "수",
-        "rangeSeparator": "～"
-      },
-      "selectOrganization": {
-        "label": "조직",
-        "placeholder": "조직을 선택해 주세요"
-      },
-      "titleHighlight": "찾아오세요",
-      "titlePrefix": "저희를 "
     }
   },
   "label": "회사 소개",

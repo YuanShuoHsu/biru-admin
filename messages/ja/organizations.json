@@ -95,6 +95,20 @@
       "placeholder": "あなたの電話番号を入力してください"
     }
   },
+  "location": {
+    "empty": "位置情報が設定されていません",
+    "label": "所在地",
+    "openingHours": {
+      "Fr": "金",
+      "Mo": "月",
+      "Sa": "土",
+      "Su": "日",
+      "Th": "木",
+      "Tu": "火",
+      "We": "水",
+      "rangeSeparator": "〜"
+    }
+  },
   "logo": "ロゴ",
   "members": {
     "actions": {

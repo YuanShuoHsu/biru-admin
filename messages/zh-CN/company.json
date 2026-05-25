@@ -1,6 +1,5 @@
 {
   "about": {
-    "label": "关于我们",
     "hero": {
       "description": "我们以美食、服务与空间，搭配无可比拟的温度与从容，为每位宾客成就令人惊艳的用餐体验。",
       "stats": {
@@ -29,6 +28,43 @@
       "titleLine1": "打造下一个世代的极致",
       "titleLine2": "餐饮体验"
     },
+    "label": "关于我们",
+    "location": {
+      "empty": "尚未设置位置信息",
+      "label": "位置",
+      "openingHours": {
+        "Fr": "周五",
+        "Mo": "周一",
+        "Sa": "周六",
+        "Su": "周日",
+        "Th": "周四",
+        "Tu": "周二",
+        "We": "周三",
+        "rangeSeparator": "～"
+      },
+      "selectOrganization": {
+        "label": "组织",
+        "placeholder": "请选择您的组织"
+      },
+      "titleHighlight": "找到我们",
+      "titlePrefix": "来 "
+    },
+    "team": {
+      "description": "来自台湾各地，Biru 是一支充满热情的餐饮团队与社群。",
+      "joinUs": "加入我们",
+      "label": "团队",
+      "role": {
+        "admin": "管理员",
+        "member": "成员",
+        "owner": "拥有者"
+      },
+      "selectOrganization": {
+        "label": "组织",
+        "placeholder": "请选择您的组织"
+      },
+      "titleHighlight": "Biruers",
+      "titlePrefix": "认识 "
+    },
     "values": {
       "description": "Biru Coffee 团队共识描绘了我们作为一家公司所践行的价值，并指引我们走向想带给宾客的体验与成果。",
       "subtitle": "我们的价值",
@@ -52,41 +88,6 @@
           "title": "以用户为中心"
         }
       }
-    },
-    "team": {
-      "description": "来自台湾各地，Biru 是一支充满热情的餐饮团队与社群。",
-      "joinUs": "加入我们",
-      "label": "团队",
-      "role": {
-        "admin": "管理员",
-        "member": "成员",
-        "owner": "拥有者"
-      },
-      "selectOrganization": {
-        "label": "组织",
-        "placeholder": "请选择您的组织"
-      },
-      "titleHighlight": "Biruers",
-      "titlePrefix": "认识 "
-    },
-    "location": {
-      "label": "位置",
-      "openingHours": {
-        "Fr": "周五",
-        "Mo": "周一",
-        "Sa": "周六",
-        "Su": "周日",
-        "Th": "周四",
-        "Tu": "周二",
-        "We": "周三",
-        "rangeSeparator": "～"
-      },
-      "selectOrganization": {
-        "label": "组织",
-        "placeholder": "请选择您的组织"
-      },
-      "titleHighlight": "找到我们",
-      "titlePrefix": "来 "
     }
   },
   "label": "公司",
