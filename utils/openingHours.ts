@@ -236,4 +236,3 @@ export const getConflictingSchedules = (
 
 export const hasOpeningHoursConflict = (value: string): boolean =>
   getConflictingSchedules(parseOpeningHours(value)).size > 0;
-
