@@ -57,8 +57,6 @@ export interface Schedule {
   endTime: string;
 }
 
-type PartialSchedule = Pick<Schedule, "days" | "startTime" | "endTime">;
-
 export const parseOpeningHours = (value: string): Schedule[] => {
   if (!value?.trim()) return [];
 
@@ -91,6 +89,8 @@ export const parseOpeningHours = (value: string): Schedule[] => {
     })
     .filter((schedule) => schedule.days.length > 0);
 };
+
+type PartialSchedule = Pick<Schedule, "days" | "startTime" | "endTime">;
 
 const mergeSchedulesByTime = (
   schedules: PartialSchedule[],
@@ -241,3 +241,47 @@ export const getConflictingSchedules = (
 
 export const hasOpeningHoursConflict = (value: string): boolean =>
   getConflictingSchedules(parseOpeningHours(value)).size > 0;
+
+export interface OpeningHoursDisplayConfig {
+  formatDay: (day: Day) => string;
+  rangeSeparator: string;
+  delimiter: string;
+}
+
+const formatDisplayDays = (
+  days: Day[],
+  { formatDay, rangeSeparator, delimiter }: OpeningHoursDisplayConfig,
+): string => {
+  if (days.length === 0) return "";
+  if (days.length === 1) return formatDay(days[0]);
+
+  const first = DAYS.indexOf(days[0]);
+  const last = DAYS.indexOf(days[days.length - 1]);
+  const isConsecutive = last - first === days.length - 1;
+
+  if (isConsecutive)
+    return `${formatDay(days[0])}${rangeSeparator}${formatDay(days[days.length - 1])}`;
+
+  return days.map(formatDay).join(delimiter);
+};
+
+export const formatOpeningHoursForDisplay = (
+  value: string,
+  config: OpeningHoursDisplayConfig,
+): string[] => {
+  const schedules = parseOpeningHours(value);
+  const keys = [...new Set(schedules.map(({ days }) => days.join(",")))];
+
+  return keys.map((key) => {
+    const group = schedules.filter(({ days }) => days.join(",") === key);
+    const times = group
+      .filter(({ startTime, endTime }) => startTime && endTime)
+      .map(({ startTime, endTime }) => `${startTime}–${endTime}`);
+
+    const daysLabel = formatDisplayDays(group[0].days, config);
+
+    return times.length === 0
+      ? daysLabel
+      : `${daysLabel}　${times.join(config.delimiter)}`;
+  });
+};
