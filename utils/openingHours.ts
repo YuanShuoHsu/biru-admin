@@ -26,6 +26,7 @@ const parseDays = (daysPart: string): Day[] => {
 
 const toMinutes = (time: string): number => {
   const [hours, minutes] = time.split(":").map(Number);
+
   return hours * 60 + minutes;
 };
 
@@ -107,6 +108,7 @@ const mergeSchedulesByTime = (
 
   return Array.from(map.entries()).map(([key, daysSet]) => {
     const [startTime, endTime] = key.split("|");
+
     return { days: DAYS.filter((day) => daysSet.has(day)), startTime, endTime };
   });
 };
@@ -136,7 +138,9 @@ const mergeConsecutiveSchedules = (
         const commonDaysSet = new Set(commonDays);
         const next = result.flatMap((s, idx) => {
           if (idx !== i && idx !== j) return [s];
+
           const remaining = s.days.filter((d) => !commonDaysSet.has(d));
+
           return remaining.length > 0 ? [{ ...s, days: remaining }] : [];
         });
         next.push({
@@ -147,6 +151,7 @@ const mergeConsecutiveSchedules = (
 
         result = next;
         changed = true;
+
         break outer;
       }
     }
