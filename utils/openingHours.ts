@@ -1,3 +1,5 @@
+// vibe coding
+
 import dayjs, { type Dayjs } from "dayjs";
 
 export const DAYS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"] as const;

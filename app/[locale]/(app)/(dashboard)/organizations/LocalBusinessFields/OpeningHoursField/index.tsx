@@ -98,17 +98,16 @@ const OpeningHoursField = ({
       <Typography color={error ? "error" : "text.secondary"} variant="body2">
         {tOrganizations("localBusiness.openingHours.label")}
       </Typography>
-      {schedules.map((schedule) => {
-        const { id, days, startTime, endTime } = schedule;
+      {schedules.map(({ id, days, startTime, endTime }) => {
         const hasConflict = conflicting.has(id);
-        const startTimeError = error && days.length > 0 && !startTime;
-        const endTimeError = error && days.length > 0 && !endTime;
         const hasMissingDays =
           error && days.length === 0 && (!!startTime || !!endTime);
+        const startTimeError = error && days.length > 0 && !startTime;
+        const endTimeError = error && days.length > 0 && !endTime;
 
         return (
           <Stack key={id} gap={0.5}>
-            <Grid alignItems="start" container spacing={2}>
+            <Grid container alignItems="start" spacing={2}>
               <Grid size={{ xs: 12, sm: "auto" }}>
                 <StyledToggleButtonGroup
                   onChange={(_, newDays: Day[]) =>
