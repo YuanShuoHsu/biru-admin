@@ -223,12 +223,13 @@ const CreateMenuItemDialog = ({
         <Chip label={tMenus("offers.label")} size="small" />
       </Divider>
       <Grid container width="100%" spacing={2}>
-        <Grid size={{ xs: 12, sm: 4 }}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <CountrySelect
             error={!!errors.offer?.priceCurrency}
             helperText={errors.offer?.priceCurrency?.message}
             label={tMenus("offers.priceCurrency.label")}
             mode="currency"
+            required
             value={
               currencies.find(({ currency }) => currency === priceCurrency) ||
               null
@@ -236,7 +237,7 @@ const CreateMenuItemDialog = ({
             {...register("offer.priceCurrency")}
           />
         </Grid>
-        <Grid size={{ xs: 12, sm: 8 }}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <NumericFormat
             allowNegative={false}
             customInput={TextField}
@@ -252,6 +253,7 @@ const CreateMenuItemDialog = ({
             onBlur={register("offer.price").onBlur}
             onValueChange={({ value }) => setValue("offer.price", value)}
             placeholder={tMenus("offers.price.placeholder")}
+            required
             thousandSeparator=","
             value={price}
             valueIsNumericString
@@ -264,6 +266,7 @@ const CreateMenuItemDialog = ({
         fullWidth
         helperText={errors.offer?.availability?.message}
         label={tMenus("offers.availability.label")}
+        required
         select
         slotProps={{
           inputLabel: { shrink: true },
