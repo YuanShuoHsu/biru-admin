@@ -39,10 +39,7 @@ interface OrganizationsSlugInvitationsProps {
 }
 
 const OrganizationsSlugInvitations = ({
-  activeOrganization: {
-    invitations: initialInvitations,
-    teams: initialTeams,
-  },
+  activeOrganization: { invitations: initialInvitations, teams: initialTeams },
   canCancelInvitation,
 }: OrganizationsSlugInvitationsProps) => {
   const [loading, setLoading] = useState(false);

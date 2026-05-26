@@ -45,9 +45,16 @@ const OrganizationsSlugTeamsPage = async ({
     ({ userId }) => userId === session?.user?.id,
   )?.role;
 
-  const checkPerm = (permissions: Parameters<typeof authClient.organization.checkRolePermission>[0]["permissions"]) =>
+  const checkPerm = (
+    permissions: Parameters<
+      typeof authClient.organization.checkRolePermission
+    >[0]["permissions"],
+  ) =>
     currentUserRole
-      ? authClient.organization.checkRolePermission({ role: currentUserRole, permissions })
+      ? authClient.organization.checkRolePermission({
+          role: currentUserRole,
+          permissions,
+        })
       : false;
 
   return (
