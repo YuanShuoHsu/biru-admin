@@ -26,7 +26,7 @@ const OrganizationsSlugTeamsTeamIdPage = async ({
 
   const cookieHeader = { cookie: cookieStore.toString() };
 
-  const [{ data: activeOrganization }, { data: teamMemberData }] =
+  const [{ data: activeOrganization }, { data: teamMemberData }, { data: session }] =
     await Promise.all([
       authClient.organization.getFullOrganization({
         query: { organizationSlug: decodeURIComponent(slug) },
@@ -36,8 +36,17 @@ const OrganizationsSlugTeamsTeamIdPage = async ({
         query: { teamId },
         fetchOptions: { headers: cookieHeader },
       }),
+      authClient.getSession({
+        fetchOptions: {
+          headers: {
+            ...cookieHeader,
+            origin: process.env.NEXT_PUBLIC_ADMIN_URL!,
+          },
+        },
+      }),
     ]);
-  if (!activeOrganization) notFound();
+
+  if (!activeOrganization || !session?.user?.id) notFound();
 
   const team = activeOrganization.teams.find(({ id }) => id === teamId);
   if (!team) notFound();
@@ -47,9 +56,22 @@ const OrganizationsSlugTeamsTeamIdPage = async ({
     activeOrganization.members,
   );
 
+  const currentUserRole = activeOrganization.members.find(
+    ({ userId }) => userId === session.user.id,
+  )?.role;
+
+  const canUpdateTeam = currentUserRole
+    ? authClient.organization.checkRolePermission({
+        role: currentUserRole,
+        permissions: { team: ["update"] },
+      })
+    : false;
+
   return (
     <OrganizationsSlugTeamsTeamId
       activeOrganization={activeOrganization}
+      canUpdateTeam={canUpdateTeam}
+      currentUserId={session.user.id}
       team={team}
       teamMembers={teamMembers}
     />

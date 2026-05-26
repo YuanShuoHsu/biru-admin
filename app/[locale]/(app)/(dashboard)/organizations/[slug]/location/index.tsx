@@ -17,7 +17,7 @@ import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { Organization } from "@/types/organizations";
+import type { ActiveOrganization } from "@/types/organizations";
 
 import { formatOpeningHoursForDisplay } from "@/utils/openingHours";
 
@@ -36,13 +36,15 @@ const StyledIframe = styled("iframe")(({ theme }) => ({
 }));
 
 interface OrganizationsSlugLocationProps {
-  organization: Organization;
+  activeOrganization: ActiveOrganization;
+  canUpdateLocation: boolean;
 }
 
 const OrganizationsSlugLocation = ({
-  organization: initialOrganization,
+  activeOrganization: initialActiveOrganization,
+  canUpdateLocation,
 }: OrganizationsSlugLocationProps) => {
-  const [organization, setOrganization] = useState(initialOrganization);
+  const [organization, setOrganization] = useState(initialActiveOrganization);
 
   const { setDialog } = useDialogStore((state) => state);
 
@@ -110,14 +112,16 @@ const OrganizationsSlugLocation = ({
   return (
     <>
       <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
-        <Button
-          onClick={handleUpdateLocation}
-          size="small"
-          startIcon={<Edit />}
-          variant="contained"
-        >
-          {tOrganizations("location.actions.updateLocation.title")}
-        </Button>
+        {canUpdateLocation && (
+          <Button
+            onClick={handleUpdateLocation}
+            size="small"
+            startIcon={<Edit />}
+            variant="contained"
+          >
+            {tOrganizations("location.actions.updateLocation.title")}
+          </Button>
+        )}
       </Stack>
       <StyledPaper variant="outlined">
         {!hasContent && (

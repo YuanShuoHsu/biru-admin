@@ -17,7 +17,6 @@ import { Chip, DialogContentText, IconButton, Tooltip } from "@mui/material";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
-import { useAuthStore } from "@/providers/auth-store-provider";
 import { useCountStore } from "@/providers/count-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -36,23 +35,22 @@ const ROLE_COLOR_MAP: Record<string, "error" | "warning" | "default"> = {
 
 interface OrganizationsSlugInvitationsProps {
   activeOrganization: ActiveOrganization;
+  canCancelInvitation: boolean;
 }
 
 const OrganizationsSlugInvitations = ({
   activeOrganization: {
     invitations: initialInvitations,
-    members: initialMembers,
     teams: initialTeams,
   },
+  canCancelInvitation,
 }: OrganizationsSlugInvitationsProps) => {
   const [loading, setLoading] = useState(false);
   const [invitations, setInvitations] = useState(initialInvitations);
-  const [members, setMembers] = useState(initialMembers);
   const [teams, setTeams] = useState(initialTeams);
 
   const apiRef = useGridApiRef();
 
-  const { session } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
   const { setCount } = useCountStore((state) => state);
 
@@ -66,20 +64,6 @@ const OrganizationsSlugInvitations = ({
   const tMembers = useTranslations("organizations.members");
   const tTeams = useTranslations("organizations.teams");
 
-  const currentUserRole = useMemo(
-    () => members.find(({ userId }) => userId === session?.user?.id)?.role,
-    [members, session?.user?.id],
-  );
-
-  const canCancelInvitation = useMemo(() => {
-    if (!currentUserRole) return false;
-
-    return authClient.organization.checkRolePermission({
-      role: currentUserRole,
-      permissions: { invitation: ["cancel"] },
-    });
-  }, [currentUserRole]);
-
   const fetchFullOrganization = useCallback(async () => {
     await authClient.organization.getFullOrganization(
       { query: { organizationSlug: decodeURIComponent(slug) } },
@@ -92,14 +76,13 @@ const OrganizationsSlugInvitations = ({
           });
         },
         onRequest: () => setLoading(true),
-        onSuccess: ({ data: { invitations, members, teams } }) => {
+        onSuccess: ({ data: { invitations, teams } }) => {
           const pendingInvitations = invitations
             .toReversed()
             .filter(({ status }: Invitation) => status === "pending");
 
           flushSync(() => {
             setInvitations(pendingInvitations);
-            setMembers(members);
             setTeams(teams);
 
             setLoading(false);

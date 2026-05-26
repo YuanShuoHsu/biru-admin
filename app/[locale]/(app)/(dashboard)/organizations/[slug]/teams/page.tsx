@@ -22,16 +22,40 @@ const OrganizationsSlugTeamsPage = async ({
 
   setRequestLocale(locale);
 
-  const { data } = await authClient.organization.getFullOrganization({
-    query: { organizationSlug: decodeURIComponent(slug) },
-    fetchOptions: { headers: { cookie: cookieStore.toString() } },
-  });
+  const cookieHeader = cookieStore.toString();
+
+  const [{ data }, { data: session }] = await Promise.all([
+    authClient.organization.getFullOrganization({
+      query: { organizationSlug: decodeURIComponent(slug) },
+      fetchOptions: { headers: { cookie: cookieHeader } },
+    }),
+    authClient.getSession({
+      fetchOptions: {
+        headers: {
+          cookie: cookieHeader,
+          origin: process.env.NEXT_PUBLIC_ADMIN_URL!,
+        },
+      },
+    }),
+  ]);
 
   if (!data) notFound();
+
+  const currentUserRole = data.members.find(
+    ({ userId }) => userId === session?.user?.id,
+  )?.role;
+
+  const checkPerm = (permissions: Parameters<typeof authClient.organization.checkRolePermission>[0]["permissions"]) =>
+    currentUserRole
+      ? authClient.organization.checkRolePermission({ role: currentUserRole, permissions })
+      : false;
 
   return (
     <OrganizationsSlugTeams
       activeOrganization={{ ...data, teams: data.teams.toReversed() }}
+      canCreateTeam={checkPerm({ team: ["create"] })}
+      canDeleteTeam={checkPerm({ team: ["delete"] })}
+      canUpdateTeam={checkPerm({ team: ["update"] })}
     />
   );
 };

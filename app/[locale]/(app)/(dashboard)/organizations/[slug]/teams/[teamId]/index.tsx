@@ -26,7 +26,6 @@ import {
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
-import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { ActiveOrganization, Team } from "@/types/organizations";
@@ -61,12 +60,16 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
 
 interface OrganizationsSlugTeamsTeamIdProps {
   activeOrganization: ActiveOrganization;
+  canUpdateTeam: boolean;
+  currentUserId: string;
   team: Team;
   teamMembers: TeamMemberRow[];
 }
 
 const OrganizationsSlugTeamsTeamId = ({
   activeOrganization: { members },
+  canUpdateTeam,
+  currentUserId,
   team,
   teamMembers: initialTeamMembers,
 }: OrganizationsSlugTeamsTeamIdProps) => {
@@ -75,7 +78,6 @@ const OrganizationsSlugTeamsTeamId = ({
 
   const apiRef = useGridApiRef();
 
-  const { session } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
 
   const locale = useLocale();
@@ -84,21 +86,6 @@ const OrganizationsSlugTeamsTeamId = ({
 
   const tMembers = useTranslations("organizations.members");
   const tTeams = useTranslations("organizations.teams");
-
-  const currentUserId = session?.user.id;
-  const currentUserRole = useMemo(
-    () => members.find(({ userId }) => userId === currentUserId)?.role,
-    [currentUserId, members],
-  );
-
-  const canUpdateTeam = useMemo(() => {
-    if (!currentUserRole) return false;
-
-    return authClient.organization.checkRolePermission({
-      role: currentUserRole,
-      permissions: { team: ["update"] },
-    });
-  }, [currentUserRole]);
 
   const fetchTeamMembers = useCallback(async () => {
     await authClient.organization.listTeamMembers(

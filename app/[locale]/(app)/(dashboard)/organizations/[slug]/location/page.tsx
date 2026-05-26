@@ -22,14 +22,40 @@ const OrganizationsSlugLocationPage = async ({
 
   setRequestLocale(locale);
 
-  const { data } = await authClient.organization.getFullOrganization({
-    query: { organizationSlug: decodeURIComponent(slug) },
-    fetchOptions: { headers: { cookie: cookieStore.toString() } },
-  });
+  const [{ data }, { data: session }] = await Promise.all([
+    authClient.organization.getFullOrganization({
+      query: { organizationSlug: decodeURIComponent(slug) },
+      fetchOptions: { headers: { cookie: cookieStore.toString() } },
+    }),
+    authClient.getSession({
+      fetchOptions: {
+        headers: {
+          cookie: cookieStore.toString(),
+          origin: process.env.NEXT_PUBLIC_ADMIN_URL!,
+        },
+      },
+    }),
+  ]);
 
   if (!data) notFound();
 
-  return <OrganizationsSlugLocation organization={data} />;
+  const currentUserRole = data.members.find(
+    ({ userId }) => userId === session?.user?.id,
+  )?.role;
+
+  const canUpdateLocation = currentUserRole
+    ? authClient.organization.checkRolePermission({
+        role: currentUserRole,
+        permissions: { organization: ["update"] },
+      })
+    : false;
+
+  return (
+    <OrganizationsSlugLocation
+      activeOrganization={data}
+      canUpdateLocation={canUpdateLocation}
+    />
+  );
 };
 
 export default OrganizationsSlugLocationPage;

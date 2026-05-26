@@ -26,7 +26,6 @@ import {
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
-import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { ActiveOrganization, Team } from "@/types/organizations";
@@ -38,22 +37,22 @@ const DataGrid = dynamic(
 
 interface OrganizationsSlugTeamsProps {
   activeOrganization: ActiveOrganization;
+  canCreateTeam: boolean;
+  canDeleteTeam: boolean;
+  canUpdateTeam: boolean;
 }
 
 const OrganizationsSlugTeams = ({
-  activeOrganization: {
-    id: organizationId,
-    members: initialMembers,
-    teams: initialTeams,
-  },
+  activeOrganization: { id: organizationId, teams: initialTeams },
+  canCreateTeam,
+  canDeleteTeam,
+  canUpdateTeam,
 }: OrganizationsSlugTeamsProps) => {
   const [loading, setLoading] = useState(false);
-  const [members, setMembers] = useState(initialMembers);
   const [teams, setTeams] = useState(initialTeams);
 
   const apiRef = useGridApiRef();
 
-  const { session } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
@@ -65,35 +64,6 @@ const OrganizationsSlugTeams = ({
   const router = useRouter();
 
   const tTeams = useTranslations("organizations.teams");
-
-  const currentUserRole = useMemo(
-    () => members.find(({ userId }) => userId === session?.user?.id)?.role,
-    [members, session?.user?.id],
-  );
-
-  const { canCreateTeam, canUpdateTeam, canDeleteTeam } = useMemo(() => {
-    if (!currentUserRole)
-      return {
-        canCreateTeam: false,
-        canUpdateTeam: false,
-        canDeleteTeam: false,
-      };
-
-    return {
-      canCreateTeam: authClient.organization.checkRolePermission({
-        role: currentUserRole,
-        permissions: { team: ["create"] },
-      }),
-      canUpdateTeam: authClient.organization.checkRolePermission({
-        role: currentUserRole,
-        permissions: { team: ["update"] },
-      }),
-      canDeleteTeam: authClient.organization.checkRolePermission({
-        role: currentUserRole,
-        permissions: { team: ["delete"] },
-      }),
-    };
-  }, [currentUserRole]);
 
   const fetchFullOrganization = useCallback(async () => {
     await authClient.organization.getFullOrganization(
@@ -107,9 +77,8 @@ const OrganizationsSlugTeams = ({
           });
         },
         onRequest: () => setLoading(true),
-        onSuccess: ({ data: { members, teams } }) => {
+        onSuccess: ({ data: { teams } }) => {
           flushSync(() => {
-            setMembers(members);
             setTeams(teams.toReversed());
 
             setLoading(false);

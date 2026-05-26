@@ -11,7 +11,7 @@ import InviteMemberDialog from "./InviteMemberDialog";
 import UpdateMemberRoleDialog from "./UpdateMemberRoleDialog";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
-import { countKeys } from "@/constants/organizations";
+import { countKeys, ROLE_RANK } from "@/constants/organizations";
 
 import { useRouter } from "@/i18n/navigation";
 
@@ -73,14 +73,16 @@ const ROLE_COLOR_MAP: Record<string, "error" | "warning" | "default"> = {
   member: "default",
 };
 
-const ROLE_RANK: Record<string, number> = {
-  owner: 3,
-  admin: 2,
-  member: 1,
-};
-
 interface OrganizationsSlugMembersProps {
   activeOrganization: ActiveOrganization;
+  canCreateInvitation: boolean;
+  canDeleteMember: boolean;
+  canLeaveOrganizations: boolean;
+  canRemoveMembers: boolean;
+  canUpdateMember: boolean;
+  canUpdateMemberRoles: boolean;
+  currentUserId: string;
+  currentUserRole: string;
 }
 
 const OrganizationsSlugMembers = ({
@@ -89,6 +91,14 @@ const OrganizationsSlugMembers = ({
     members: initialMembers,
     teams: initialTeams,
   },
+  canCreateInvitation,
+  canDeleteMember,
+  canLeaveOrganizations,
+  canRemoveMembers,
+  canUpdateMember,
+  canUpdateMemberRoles,
+  currentUserId,
+  currentUserRole,
 }: OrganizationsSlugMembersProps) => {
   const [loading, setLoading] = useState(false);
   const [members, setMembers] = useState(initialMembers);
@@ -110,37 +120,6 @@ const OrganizationsSlugMembers = ({
 
   const tMembers = useTranslations("organizations.members");
   const tOrganizations = useTranslations("organizations");
-
-  const currentUserId = session?.user?.id;
-  const currentUserRole = useMemo(
-    () => members.find(({ userId }) => userId === currentUserId)?.role,
-    [currentUserId, members],
-  );
-
-  const { canCreateInvitation, canDeleteMember, canUpdateMember } =
-    useMemo(() => {
-      if (!currentUserRole)
-        return {
-          canCreateInvitation: false,
-          canDeleteMember: false,
-          canUpdateMember: false,
-        };
-
-      return {
-        canCreateInvitation: authClient.organization.checkRolePermission({
-          role: currentUserRole,
-          permissions: { invitation: ["create"] },
-        }),
-        canDeleteMember: authClient.organization.checkRolePermission({
-          role: currentUserRole,
-          permissions: { member: ["delete"] },
-        }),
-        canUpdateMember: authClient.organization.checkRolePermission({
-          role: currentUserRole,
-          permissions: { member: ["update"] },
-        }),
-      };
-    }, [currentUserRole]);
 
   const ownerCount = useMemo(
     () => members.filter(({ role }) => role === "owner").length,
@@ -169,27 +148,6 @@ const OrganizationsSlugMembers = ({
       ownerCount,
     ],
   );
-
-  const { canUpdateMemberRoles, canRemoveMembers, canLeaveOrganizations } =
-    useMemo(() => {
-      let canUpdateMemberRoles = false;
-      let canRemoveMembers = false;
-      let canLeaveOrganizations = false;
-
-      for (const member of members) {
-        const { canUpdateMemberRole, canRemoveMember, canLeaveOrganization } =
-          getMemberPermissions(member);
-
-        canUpdateMemberRoles ||= canUpdateMemberRole;
-        canRemoveMembers ||= canRemoveMember;
-        canLeaveOrganizations ||= canLeaveOrganization;
-
-        if (canUpdateMemberRoles && canRemoveMembers && canLeaveOrganizations)
-          break;
-      }
-
-      return { canUpdateMemberRoles, canRemoveMembers, canLeaveOrganizations };
-    }, [getMemberPermissions, members]);
 
   const fetchFullOrganization = useCallback(async () => {
     await authClient.organization.getFullOrganization(

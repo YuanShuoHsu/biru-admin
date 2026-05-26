@@ -22,12 +22,35 @@ const OrganizationsSlugInvitationsPage = async ({
 
   setRequestLocale(locale);
 
-  const { data } = await authClient.organization.getFullOrganization({
-    query: { organizationSlug: decodeURIComponent(slug) },
-    fetchOptions: { headers: { cookie: cookieStore.toString() } },
-  });
+  const cookieHeader = cookieStore.toString();
+
+  const [{ data }, { data: session }] = await Promise.all([
+    authClient.organization.getFullOrganization({
+      query: { organizationSlug: decodeURIComponent(slug) },
+      fetchOptions: { headers: { cookie: cookieHeader } },
+    }),
+    authClient.getSession({
+      fetchOptions: {
+        headers: {
+          cookie: cookieHeader,
+          origin: process.env.NEXT_PUBLIC_ADMIN_URL!,
+        },
+      },
+    }),
+  ]);
 
   if (!data) notFound();
+
+  const currentUserRole = data.members.find(
+    ({ userId }) => userId === session?.user?.id,
+  )?.role;
+
+  const canCancelInvitation = currentUserRole
+    ? authClient.organization.checkRolePermission({
+        role: currentUserRole,
+        permissions: { invitation: ["cancel"] },
+      })
+    : false;
 
   return (
     <OrganizationsSlugInvitations
@@ -37,6 +60,7 @@ const OrganizationsSlugInvitationsPage = async ({
           .toReversed()
           .filter(({ status }) => status === "pending"),
       }}
+      canCancelInvitation={canCancelInvitation}
     />
   );
 };
