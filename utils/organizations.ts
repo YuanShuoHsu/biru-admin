@@ -22,7 +22,15 @@ export async function getOrganizationPermissions(
 
   organizations.forEach(({ id }, index) => {
     const role = memberRoles[index].data?.role;
-    if (!role) return;
+
+    if (!role) {
+      permissions[id] = {
+        canUpdateOrganization: false,
+        canDeleteOrganization: false,
+      };
+
+      return;
+    }
 
     permissions[id] = {
       canUpdateOrganization: authClient.organization.checkRolePermission({
