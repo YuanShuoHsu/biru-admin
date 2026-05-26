@@ -120,9 +120,7 @@ const Organizations = ({
 
   const handleCreateOrganization = () => {
     setDialog({
-      content: (
-        <CreateOrganizationDialog mutate={mutate} />
-      ),
+      content: <CreateOrganizationDialog mutate={mutate} />,
       formId: "create-organization-form",
       open: true,
       title: tOrganizations("actions.createOrganization.title"),

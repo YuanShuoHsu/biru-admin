@@ -96,10 +96,7 @@ const OrganizationsSlugTeams = ({
   const handleCreateTeam = () => {
     setDialog({
       content: (
-        <UpdateTeamDialog
-          mutate={mutate}
-          organizationId={organizationId}
-        />
+        <UpdateTeamDialog mutate={mutate} organizationId={organizationId} />
       ),
       formId: "team-form",
       open: true,
