@@ -110,55 +110,59 @@ const getCountryLabel = ({ label, code, phone }: CountryType) =>
 const getCurrencyLabel = ({ currency, label }: CurrencyType) =>
   `${label} (${currency})`;
 
-interface CountrySelectProps {
+const getOptionLabel = (option: CountryType | CurrencyType): string =>
+  "currency" in option ? getCurrencyLabel(option) : getCountryLabel(option);
+
+const getInputValue = (option: CountryType | CurrencyType): string =>
+  "currency" in option ? option.currency : getCountryLabel(option);
+
+const filter = createFilterOptions<CountryType | CurrencyType>({
+  // matchFrom: "start",
+  stringify: getOptionLabel,
+});
+
+type BaseProps = {
   error: boolean;
   helperText: React.ReactNode;
   label: string;
-  mode?: "country" | "currency";
   name?: string;
   onBlur?: React.FocusEventHandler;
   onChange?: (event: { target: { name: string; value: string } }) => void;
-  value: CountryType | CurrencyType;
-}
+};
+
+type CountrySelectProps =
+  | (BaseProps & { mode: "country"; value: CountryType | null })
+  | (BaseProps & { mode: "currency"; value: CurrencyType | null });
 
 const CountrySelect = ({
   error,
   helperText,
   label,
-  mode = "country",
+  mode,
   name,
   onBlur,
   onChange,
   value,
 }: CountrySelectProps) => {
-  const currentInputValue =
-    "currency" in value ? value.currency : getCountryLabel(value);
+  const isCurrency = mode === "currency";
+
+  const currentInputValue = value
+    ? mode === "currency"
+      ? value.currency
+      : getCountryLabel(value)
+    : "";
 
   const [inputValue, setInputValue] = useState(currentInputValue);
 
   const hint = useRef("");
 
-  const isCurrency = mode === "currency";
-
-  const options: (CountryType | CurrencyType)[] = isCurrency
-    ? currencies.sort((a, b) => a.label[0].localeCompare(b.label[0]))
-    : countries.sort((a, b) => a.label[0].localeCompare(b.label[0]));
-
-  const getOptionLabel = (option: CountryType | CurrencyType): string =>
-    "currency" in option ? getCurrencyLabel(option) : getCountryLabel(option);
-
-  const getInputValue = (option: CountryType | CurrencyType): string =>
-    "currency" in option ? option.currency : getCountryLabel(option);
-
-  const filter = createFilterOptions<CountryType | CurrencyType>({
-    // matchFrom: "start",
-    stringify: getOptionLabel,
-  });
+  const options = isCurrency
+    ? [...currencies].sort((a, b) => a.label[0].localeCompare(b.label[0]))
+    : [...countries].sort((a, b) => a.label[0].localeCompare(b.label[0]));
 
   return (
     <Autocomplete
       autoHighlight
-      disableClearable
       disablePortal
       filterOptions={(options, params) => {
         if (params.inputValue === currentInputValue) return options;
@@ -172,18 +176,22 @@ const CountrySelect = ({
       }
       id={isCurrency ? "currency-select" : "country-select"}
       inputValue={inputValue}
-      isOptionEqualToValue={(option, value) =>
-        "currency" in option && "currency" in value
-          ? option.currency === value.currency
-          : option.code === value.code
+      isOptionEqualToValue={(option, selected) =>
+        selected
+          ? "currency" in option && "currency" in selected
+            ? option.currency === selected.currency
+            : option.code === selected.code
+          : false
       }
       onBlur={onBlur}
       onChange={(_, newValue) => {
-        setInputValue(getInputValue(newValue));
+        const value = newValue
+          ? "currency" in newValue
+            ? newValue.currency
+            : newValue.code
+          : "";
 
-        const value =
-          "currency" in newValue ? newValue.currency : newValue.code;
-
+        setInputValue(newValue ? getInputValue(newValue) : "");
         onChange?.({ target: { name: name || "", value } });
       }}
       onClose={() => {
@@ -239,11 +247,12 @@ const CountrySelect = ({
               },
               input: {
                 ...params.InputProps,
-                startAdornment: (
-                  <StyledInputAdornment position="start">
-                    <FlagImage code={value.code} label={value.label} />
-                  </StyledInputAdornment>
-                ),
+                startAdornment:
+                  !isCurrency && value ? (
+                    <StyledInputAdornment position="start">
+                      <FlagImage code={value.code} label={value.label} />
+                    </StyledInputAdornment>
+                  ) : null,
               },
             }}
           />

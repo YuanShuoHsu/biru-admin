@@ -50,7 +50,6 @@ export const authClient = createAuthClient({
             addressCountry: {
               type: "string",
               required: false,
-              defaultValue: "TW",
             },
             addressLocality: { type: "string", required: false },
             addressRegion: { type: "string", required: false },

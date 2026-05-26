@@ -12,7 +12,7 @@ import {
 
 import CountrySelect from "@/components/CountrySelect";
 
-import { countries, DEFAULT_COUNTRY_OPTION } from "@/constants/countries";
+import { countries } from "@/constants/countries";
 
 import { LocaleEnum } from "@/enums/Locale";
 
@@ -68,7 +68,7 @@ const AddressFields = ({
     },
   );
 
-  const isTaiwan = addressCountry === DEFAULT_COUNTRY_OPTION.code;
+  const isTaiwan = addressCountry === "TW";
 
   const handlePostalCodeChange = (value: string) => {
     if (!isTaiwan) return;
@@ -166,10 +166,8 @@ const AddressFields = ({
         error={!!errors.addressCountry}
         helperText={errors.addressCountry?.message}
         label={tOrganizations("address.addressCountry.label")}
-        value={
-          countries.find(({ code }) => code === addressCountry) ||
-          DEFAULT_COUNTRY_OPTION
-        }
+        mode="country"
+        value={countries.find(({ code }) => code === addressCountry) || null}
         {...register("addressCountry")}
       />
     </Stack>
