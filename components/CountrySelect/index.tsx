@@ -244,12 +244,11 @@ const CountrySelect = ({
               },
               input: {
                 ...params.InputProps,
-                startAdornment:
-                  !isCurrency && value ? (
-                    <StyledInputAdornment position="start">
-                      <FlagImage code={value.code} label={value.label} />
-                    </StyledInputAdornment>
-                  ) : null,
+                startAdornment: value ? (
+                  <StyledInputAdornment position="start">
+                    <FlagImage code={value.code} label={value.label} />
+                  </StyledInputAdornment>
+                ) : null,
               },
             }}
           />
