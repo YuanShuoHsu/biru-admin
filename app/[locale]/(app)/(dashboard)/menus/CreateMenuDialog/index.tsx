@@ -40,13 +40,13 @@ const LOCALE_OPTIONS = routing.locales.map((value) => ({
 const CREATE_MENU_IMAGE_KEY = "create-menu-image";
 
 interface CreateMenuDialogProps {
-  mutateMenus: () => void;
+  mutate: () => void;
   organizationId: string;
   usedInLanguages: Locale[];
 }
 
 const CreateMenuDialog = ({
-  mutateMenus,
+  mutate,
   organizationId,
   usedInLanguages,
 }: CreateMenuDialogProps) => {
@@ -101,7 +101,7 @@ const CreateMenuDialog = ({
 
       closeDialog();
 
-      mutateMenus();
+      mutate();
     } catch {
       enqueueSnackbar(tMenus("actions.createMenu.title"), {
         variant: "error",

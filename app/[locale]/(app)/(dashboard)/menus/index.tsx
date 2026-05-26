@@ -82,9 +82,9 @@ const Menus = ({
   const apiRef = useGridApiRef();
 
   const {
-    data: menus = initialMenus,
-    mutate: mutateMenus,
-    isValidating,
+    data: rows = initialMenus,
+    mutate,
+    isValidating: loading,
   } = useSWR<Menu[]>(
     selectedOrganizationId
       ? `/api/organizations/${selectedOrganizationId}/menus`
@@ -107,7 +107,7 @@ const Menus = ({
 
   const tMenus = useTranslations("menus");
 
-  const sortedMenus = [...menus].sort((a, b) => {
+  const sortedRows = [...rows].sort((a, b) => {
     const aIndex = a.inLanguage
       ? routing.locales.indexOf(a.inLanguage)
       : Infinity;
@@ -118,13 +118,13 @@ const Menus = ({
     return aIndex - bIndex;
   });
 
-  const usedInLanguages = menus.flatMap(({ inLanguage }) => inLanguage || []);
+  const usedInLanguages = rows.flatMap(({ inLanguage }) => inLanguage || []);
 
   const handleCreateMenu = () => {
     setDialog({
       content: (
         <CreateMenuDialog
-          mutateMenus={mutateMenus}
+          mutate={mutate}
           organizationId={selectedOrganizationId}
           usedInLanguages={usedInLanguages}
         />
@@ -153,7 +153,7 @@ const Menus = ({
         content: (
           <UpdateMenuDialog
             menu={menu}
-            mutateMenus={mutateMenus}
+            mutate={mutate}
             usedInLanguages={usedInLanguages}
           />
         ),
@@ -162,7 +162,7 @@ const Menus = ({
         title: tMenus("actions.updateMenu.title"),
       });
     },
-    [mutateMenus, setDialog, tMenus, usedInLanguages],
+    [mutate, setDialog, tMenus, usedInLanguages],
   );
 
   const handleDeleteMenu = useCallback(
@@ -184,7 +184,7 @@ const Menus = ({
               variant: "success",
             });
 
-            mutateMenus();
+            mutate();
           } catch {
             enqueueSnackbar(tMenus("actions.deleteMenu.title"), {
               variant: "error",
@@ -195,7 +195,7 @@ const Menus = ({
         title: tMenus("actions.deleteMenu.title"),
       });
     },
-    [mutateMenus, setDialog, tMenus],
+    [mutate, setDialog, tMenus],
   );
 
   const columns = useMemo<GridColDef[]>(
@@ -353,11 +353,11 @@ const Menus = ({
         {...DATA_GRID_PROPS}
         apiRef={apiRef}
         columns={columns}
-        loading={isValidating}
+        loading={loading}
         onPaginationModelChange={() =>
           apiRef.current?.autosizeColumns(autosizeOptions)
         }
-        rows={sortedMenus}
+        rows={sortedRows}
       />
     </>
   );

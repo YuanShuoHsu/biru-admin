@@ -39,7 +39,7 @@ const LOCALE_OPTIONS = routing.locales.map((value) => ({
 
 interface UpdateMenuDialogProps {
   menu: Menu;
-  mutateMenus: () => void;
+  mutate: () => void;
   usedInLanguages: Locale[];
 }
 
@@ -51,7 +51,7 @@ const UpdateMenuDialog = ({
     inLanguage: menuLanguage,
     image: menuImage,
   },
-  mutateMenus,
+  mutate,
   usedInLanguages,
 }: UpdateMenuDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
@@ -103,7 +103,7 @@ const UpdateMenuDialog = ({
 
       closeDialog();
 
-      mutateMenus();
+      mutate();
     } catch {
       enqueueSnackbar(tMenus("actions.updateMenu.title"), {
         variant: "error",
