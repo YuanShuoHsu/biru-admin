@@ -128,6 +128,7 @@ type BaseProps = {
   name?: string;
   onBlur?: React.FocusEventHandler;
   onChange?: (event: { target: { name: string; value: string } }) => void;
+  required?: boolean;
 };
 
 type CountrySelectProps =
@@ -142,6 +143,7 @@ const CountrySelect = ({
   name,
   onBlur,
   onChange,
+  required,
   value,
 }: CountrySelectProps) => {
   const isCurrency = mode === "currency";
@@ -239,7 +241,7 @@ const CountrySelect = ({
               hint.current =
                 newValue && matchingOption ? getInputValue(matchingOption) : "";
             }}
-            required
+            required={required}
             slotProps={{
               htmlInput: {
                 ...params.inputProps,
