@@ -32,12 +32,12 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 }));
 
 interface UpdateOrganizationDialogProps {
-  mutateOrganizations: () => void;
+  mutate: () => void;
   organization: Organization;
 }
 
 const UpdateOrganizationDialog = ({
-  mutateOrganizations,
+  mutate,
   organization,
 }: UpdateOrganizationDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
@@ -84,7 +84,7 @@ const UpdateOrganizationDialog = ({
 
           closeDialog();
 
-          mutateOrganizations();
+          mutate();
         },
       },
     );

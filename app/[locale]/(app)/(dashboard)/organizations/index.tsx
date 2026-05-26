@@ -76,13 +76,15 @@ const Organizations = ({
       rows: initialRows,
       organizationPermissions: initialOrganizationPermissions,
     },
-    mutate: mutateOrganizations,
-    isValidating,
+    mutate,
+    isValidating: loading,
   } = useSWR(
-    "organizations-with-permissions",
+    "organizations",
     async () => {
-      const { data } = await authClient.organization.list();
-      const organizations = (data || []).toReversed();
+      const { data, error } = await authClient.organization.list();
+      if (error) throw error;
+
+      const organizations = data.toReversed();
       const organizationPermissions =
         await getOrganizationPermissions(organizations);
 
@@ -92,6 +94,11 @@ const Organizations = ({
       fallbackData: {
         rows: initialRows,
         organizationPermissions: initialOrganizationPermissions,
+      },
+      onError: (error) => {
+        enqueueSnackbar(getErrorMessage(error.code, locale), {
+          variant: "error",
+        });
       },
       onSuccess: () => {
         setTimeout(() => {
@@ -114,7 +121,7 @@ const Organizations = ({
   const handleCreateOrganization = () => {
     setDialog({
       content: (
-        <CreateOrganizationDialog mutateOrganizations={mutateOrganizations} />
+        <CreateOrganizationDialog mutate={mutate} />
       ),
       formId: "create-organization-form",
       open: true,
@@ -127,7 +134,7 @@ const Organizations = ({
       setDialog({
         content: (
           <UpdateOrganizationDialog
-            mutateOrganizations={mutateOrganizations}
+            mutate={mutate}
             organization={organization}
           />
         ),
@@ -136,7 +143,7 @@ const Organizations = ({
         title: tOrganizations("actions.updateOrganization.title"),
       });
     },
-    [mutateOrganizations, setDialog, tOrganizations],
+    [mutate, setDialog, tOrganizations],
   );
 
   const handleDeleteOrganization = useCallback(
@@ -165,7 +172,7 @@ const Organizations = ({
                 );
                 enqueueSnackbar(message, { variant: "success" });
 
-                mutateOrganizations();
+                mutate();
               },
             },
           );
@@ -174,7 +181,7 @@ const Organizations = ({
         title: tOrganizations("actions.deleteOrganization.title"),
       });
     },
-    [locale, mutateOrganizations, setDialog, tOrganizations],
+    [locale, mutate, setDialog, tOrganizations],
   );
 
   const { canUpdateOrganizations, canDeleteOrganizations } = useMemo(() => {
@@ -321,7 +328,7 @@ const Organizations = ({
         {...DATA_GRID_PROPS}
         apiRef={apiRef}
         columns={columns}
-        loading={isValidating}
+        loading={loading}
         onPaginationModelChange={() =>
           apiRef.current?.autosizeColumns(autosizeOptions)
         }

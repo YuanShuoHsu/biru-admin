@@ -32,13 +32,13 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 }));
 
 interface InviteMemberDialogProps {
-  fetchFullOrganization: () => void;
+  mutate: () => void;
   organizationId: Organization["id"];
   teams: Team[];
 }
 
 const InviteMemberDialog = ({
-  fetchFullOrganization,
+  mutate,
   organizationId,
   teams,
 }: InviteMemberDialogProps) => {
@@ -83,7 +83,7 @@ const InviteMemberDialog = ({
 
             closeDialog();
 
-            fetchFullOrganization();
+            mutate();
           },
         },
       );

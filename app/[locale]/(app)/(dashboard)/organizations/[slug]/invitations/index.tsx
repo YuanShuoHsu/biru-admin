@@ -4,8 +4,8 @@ import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
-import { useCallback, useMemo, useState } from "react";
-import { flushSync } from "react-dom";
+import { useCallback, useMemo } from "react";
+import useSWR from "swr";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { countKeys } from "@/constants/organizations";
@@ -42,10 +42,6 @@ const OrganizationsSlugInvitations = ({
   activeOrganization: { invitations: initialInvitations, teams: initialTeams },
   canCancelInvitation,
 }: OrganizationsSlugInvitationsProps) => {
-  const [loading, setLoading] = useState(false);
-  const [invitations, setInvitations] = useState(initialInvitations);
-  const [teams, setTeams] = useState(initialTeams);
-
   const apiRef = useGridApiRef();
 
   const { setDialog } = useDialogStore((state) => state);
@@ -61,39 +57,52 @@ const OrganizationsSlugInvitations = ({
   const tMembers = useTranslations("organizations.members");
   const tTeams = useTranslations("organizations.teams");
 
-  const fetchFullOrganization = useCallback(async () => {
-    await authClient.organization.getFullOrganization(
-      { query: { organizationSlug: decodeURIComponent(slug) } },
-      {
-        onError: ({ error: { code } }) => {
-          setLoading(false);
-
-          enqueueSnackbar(getErrorMessage(code, locale), {
-            variant: "error",
-          });
+  const {
+    data: { rows, teams } = {
+      rows: initialInvitations,
+      teams: initialTeams,
+    },
+    mutate,
+    isValidating: loading,
+  } = useSWR(
+    `organization-invitations-${slug}`,
+    async () => {
+      const { data, error } = await authClient.organization.getFullOrganization(
+        {
+          query: { organizationSlug: decodeURIComponent(slug) },
         },
-        onRequest: () => setLoading(true),
-        onSuccess: ({ data: { invitations, teams } }) => {
-          const pendingInvitations = invitations
-            .toReversed()
-            .filter(({ status }: Invitation) => status === "pending");
+      );
+      if (error) throw error;
 
-          flushSync(() => {
-            setInvitations(pendingInvitations);
-            setTeams(teams);
+      const pendingInvitations = data.invitations
+        .toReversed()
+        .filter(({ status }: Invitation) => status === "pending");
 
-            setLoading(false);
-          });
-
-          setCount(countKeys.pendingInvitations, pendingInvitations.length);
-
-          setTimeout(() => {
-            apiRef.current?.autosizeColumns(autosizeOptions);
-          }, 0);
-        },
+      return {
+        rows: pendingInvitations,
+        teams: data.teams,
+        pendingInvitationCount: pendingInvitations.length,
+      };
+    },
+    {
+      fallbackData: {
+        rows: initialInvitations,
+        teams: initialTeams,
+        pendingInvitationCount: 0,
       },
-    );
-  }, [apiRef, locale, setCount, slug]);
+      onError: (error) => {
+        enqueueSnackbar(getErrorMessage(error.code, locale), {
+          variant: "error",
+        });
+      },
+      onSuccess: ({ pendingInvitationCount }) => {
+        setCount(countKeys.pendingInvitations, pendingInvitationCount);
+        setTimeout(() => {
+          apiRef.current?.autosizeColumns(autosizeOptions);
+        }, 0);
+      },
+    },
+  );
 
   const handleCancelInvitation = useCallback(
     ({ id: invitationId, email }: Invitation) => {
@@ -121,7 +130,7 @@ const OrganizationsSlugInvitations = ({
                   { variant: "success" },
                 );
 
-                fetchFullOrganization();
+                mutate();
               },
             },
           );
@@ -130,10 +139,10 @@ const OrganizationsSlugInvitations = ({
         title: tInvitations("actions.cancelInvitation.title"),
       });
     },
-    [fetchFullOrganization, locale, setDialog, tInvitations],
+    [locale, mutate, setDialog, tInvitations],
   );
 
-  const invitationColumns = useMemo<GridColDef[]>(
+  const columns = useMemo<GridColDef[]>(
     () => [
       {
         field: "actions",
@@ -210,12 +219,12 @@ const OrganizationsSlugInvitations = ({
     <DataGrid
       {...DATA_GRID_PROPS}
       apiRef={apiRef}
-      columns={invitationColumns}
+      columns={columns}
       loading={loading}
       onPaginationModelChange={() =>
         apiRef.current?.autosizeColumns(autosizeOptions)
       }
-      rows={invitations}
+      rows={rows}
     />
   );
 };

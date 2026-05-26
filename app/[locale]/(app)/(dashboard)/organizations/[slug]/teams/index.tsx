@@ -4,8 +4,8 @@ import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
-import { useCallback, useMemo, useState } from "react";
-import { flushSync } from "react-dom";
+import { useCallback, useMemo } from "react";
+import useSWR from "swr";
 
 import UpdateTeamDialog from "./UpdateTeamDialog";
 
@@ -48,9 +48,6 @@ const OrganizationsSlugTeams = ({
   canDeleteTeam,
   canUpdateTeam,
 }: OrganizationsSlugTeamsProps) => {
-  const [loading, setLoading] = useState(false);
-  const [teams, setTeams] = useState(initialTeams);
-
   const apiRef = useGridApiRef();
 
   const { setDialog } = useDialogStore((state) => state);
@@ -65,38 +62,42 @@ const OrganizationsSlugTeams = ({
 
   const tTeams = useTranslations("organizations.teams");
 
-  const fetchFullOrganization = useCallback(async () => {
-    await authClient.organization.getFullOrganization(
-      { query: { organizationSlug: decodeURIComponent(slug) } },
-      {
-        onError: ({ error: { code } }) => {
-          setLoading(false);
-
-          enqueueSnackbar(getErrorMessage(code, locale), {
-            variant: "error",
-          });
+  const {
+    data: { rows } = { rows: initialTeams },
+    mutate,
+    isValidating: loading,
+  } = useSWR(
+    `organization-teams-${slug}`,
+    async () => {
+      const { data, error } = await authClient.organization.getFullOrganization(
+        {
+          query: { organizationSlug: decodeURIComponent(slug) },
         },
-        onRequest: () => setLoading(true),
-        onSuccess: ({ data: { teams } }) => {
-          flushSync(() => {
-            setTeams(teams.toReversed());
+      );
+      if (error) throw error;
 
-            setLoading(false);
-          });
-
-          setTimeout(() => {
-            apiRef.current?.autosizeColumns(autosizeOptions);
-          }, 0);
-        },
+      return { rows: data.teams.toReversed() };
+    },
+    {
+      fallbackData: { rows: initialTeams },
+      onError: (error) => {
+        enqueueSnackbar(getErrorMessage(error.code, locale), {
+          variant: "error",
+        });
       },
-    );
-  }, [apiRef, locale, slug]);
+      onSuccess: () => {
+        setTimeout(() => {
+          apiRef.current?.autosizeColumns(autosizeOptions);
+        }, 0);
+      },
+    },
+  );
 
   const handleCreateTeam = () => {
     setDialog({
       content: (
         <UpdateTeamDialog
-          fetchFullOrganization={fetchFullOrganization}
+          mutate={mutate}
           organizationId={organizationId}
         />
       ),
@@ -118,7 +119,7 @@ const OrganizationsSlugTeams = ({
       setDialog({
         content: (
           <UpdateTeamDialog
-            fetchFullOrganization={fetchFullOrganization}
+            mutate={mutate}
             organizationId={organizationId}
             team={team}
           />
@@ -128,7 +129,7 @@ const OrganizationsSlugTeams = ({
         title: tTeams("actions.updateTeam.title"),
       });
     },
-    [fetchFullOrganization, organizationId, setDialog, tTeams],
+    [mutate, organizationId, setDialog, tTeams],
   );
 
   const handleRemoveTeam = useCallback(
@@ -158,7 +159,7 @@ const OrganizationsSlugTeams = ({
                     variant: "success",
                   },
                 );
-                fetchFullOrganization();
+                mutate();
               },
             },
           );
@@ -167,10 +168,10 @@ const OrganizationsSlugTeams = ({
         title: tTeams("actions.removeTeam.title"),
       });
     },
-    [fetchFullOrganization, locale, organizationId, setDialog, tTeams],
+    [locale, mutate, organizationId, setDialog, tTeams],
   );
 
-  const teamColumns = useMemo<GridColDef[]>(
+  const columns = useMemo<GridColDef[]>(
     () => [
       {
         disableColumnMenu: true,
@@ -263,12 +264,12 @@ const OrganizationsSlugTeams = ({
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}
-        columns={teamColumns}
+        columns={columns}
         loading={loading}
         onPaginationModelChange={() =>
           apiRef.current?.autosizeColumns(autosizeOptions)
         }
-        rows={teams}
+        rows={rows}
       />
     </>
   );

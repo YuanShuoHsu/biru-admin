@@ -31,14 +31,14 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 }));
 
 interface UpdateMemberRoleDialogProps {
-  fetchFullOrganization: () => void;
   member: Member;
+  mutate: () => void;
   organizationId: Organization["id"];
 }
 
 const UpdateMemberRoleDialog = ({
-  fetchFullOrganization,
   member,
+  mutate,
   organizationId,
 }: UpdateMemberRoleDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
@@ -82,7 +82,7 @@ const UpdateMemberRoleDialog = ({
 
             closeDialog();
 
-            fetchFullOrganization();
+            mutate();
           },
         },
       );

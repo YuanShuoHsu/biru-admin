@@ -3,8 +3,8 @@
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
-import { useCallback, useMemo, useState } from "react";
-import { flushSync } from "react-dom";
+import { useCallback, useMemo } from "react";
+import useSWR from "swr";
 
 import AddTeamMemberDialog from "./AddTeamMemberDialog";
 
@@ -73,9 +73,6 @@ const OrganizationsSlugTeamsTeamId = ({
   team,
   teamMembers: initialTeamMembers,
 }: OrganizationsSlugTeamsTeamIdProps) => {
-  const [loading, setLoading] = useState(false);
-  const [teamMembers, setTeamMembers] = useState(initialTeamMembers);
-
   const apiRef = useGridApiRef();
 
   const { setDialog } = useDialogStore((state) => state);
@@ -87,41 +84,38 @@ const OrganizationsSlugTeamsTeamId = ({
   const tMembers = useTranslations("organizations.members");
   const tTeams = useTranslations("organizations.teams");
 
-  const fetchTeamMembers = useCallback(async () => {
-    await authClient.organization.listTeamMembers(
-      { query: { teamId: team.id } },
-      {
-        onError: ({ error: { code } }) => {
-          setLoading(false);
+  const {
+    data: rows = initialTeamMembers,
+    mutate,
+    isValidating: loading,
+  } = useSWR(
+    `team-members-${team.id}`,
+    async () => {
+      const { data, error } = await authClient.organization.listTeamMembers({
+        query: { teamId: team.id },
+      });
+      if (error?.code === "USER_IS_NOT_A_MEMBER_OF_THE_TEAM") return [];
+      if (error) throw error;
 
-          if (code === "USER_IS_NOT_A_MEMBER_OF_THE_TEAM") {
-            setTeamMembers([]);
-
-            return;
-          }
-
-          enqueueSnackbar(getErrorMessage(code, locale), {
-            variant: "error",
-          });
-        },
-        onRequest: () => setLoading(true),
-        onSuccess: ({ data }) => {
-          flushSync(() => {
-            setTeamMembers(buildTeamMembers(data, members));
-
-            setLoading(false);
-          });
-
-          setTimeout(() => {
-            apiRef.current?.autosizeColumns(autosizeOptions);
-          }, 0);
-        },
+      return buildTeamMembers(data, members);
+    },
+    {
+      fallbackData: initialTeamMembers,
+      onError: (error) => {
+        enqueueSnackbar(getErrorMessage(error.code, locale), {
+          variant: "error",
+        });
       },
-    );
-  }, [apiRef, locale, members, team.id]);
+      onSuccess: () => {
+        setTimeout(() => {
+          apiRef.current?.autosizeColumns(autosizeOptions);
+        }, 0);
+      },
+    },
+  );
 
   const handleAddTeamMember = () => {
-    const teamMemberIds = new Set(teamMembers.map(({ userId }) => userId));
+    const teamMemberIds = new Set(rows.map(({ userId }) => userId));
     const isCurrentUserTeamMember =
       currentUserId && teamMemberIds.has(currentUserId);
     const availableMembers = members.filter(({ userId }) => {
@@ -134,7 +128,7 @@ const OrganizationsSlugTeamsTeamId = ({
       content: (
         <AddTeamMemberDialog
           availableMembers={availableMembers}
-          fetchTeamMembers={fetchTeamMembers}
+          mutate={mutate}
           teamId={team.id}
         />
       ),
@@ -176,7 +170,7 @@ const OrganizationsSlugTeamsTeamId = ({
                   { variant: "success" },
                 );
 
-                fetchTeamMembers();
+                mutate();
               },
             },
           );
@@ -185,7 +179,7 @@ const OrganizationsSlugTeamsTeamId = ({
         title: tMembers("actions.removeTeamMember.title"),
       });
     },
-    [fetchTeamMembers, locale, members, setDialog, team.id, tMembers],
+    [locale, members, mutate, setDialog, team.id, tMembers],
   );
 
   const columns = useMemo<GridColDef[]>(
@@ -263,8 +257,8 @@ const OrganizationsSlugTeamsTeamId = ({
 
   return (
     <>
-      <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
-        {canUpdateTeam && (
+      {canUpdateTeam && (
+        <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
           <Button
             onClick={handleAddTeamMember}
             size="small"
@@ -273,8 +267,8 @@ const OrganizationsSlugTeamsTeamId = ({
           >
             {tTeams("actions.addTeamMember.title")}
           </Button>
-        )}
-      </Stack>
+        </Stack>
+      )}
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}
@@ -283,7 +277,7 @@ const OrganizationsSlugTeamsTeamId = ({
         onPaginationModelChange={() =>
           apiRef.current?.autosizeColumns(autosizeOptions)
         }
-        rows={teamMembers}
+        rows={rows}
       />
     </>
   );

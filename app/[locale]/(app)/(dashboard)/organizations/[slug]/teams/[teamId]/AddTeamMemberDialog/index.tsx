@@ -28,13 +28,13 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 
 interface AddTeamMemberDialogProps {
   availableMembers: Member[];
-  fetchTeamMembers: () => void;
+  mutate: () => void;
   teamId: string;
 }
 
 const AddTeamMemberDialog = ({
   availableMembers,
-  fetchTeamMembers,
+  mutate,
   teamId,
 }: AddTeamMemberDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
@@ -77,7 +77,7 @@ const AddTeamMemberDialog = ({
 
           closeDialog();
 
-          fetchTeamMembers();
+          mutate();
         },
       },
     );

@@ -4,8 +4,8 @@ import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
-import { useCallback, useMemo, useState } from "react";
-import { flushSync } from "react-dom";
+import { useCallback, useMemo } from "react";
+import useSWR from "swr";
 
 import InviteMemberDialog from "./InviteMemberDialog";
 import UpdateMemberRoleDialog from "./UpdateMemberRoleDialog";
@@ -100,10 +100,6 @@ const OrganizationsSlugMembers = ({
   currentUserId,
   currentUserRole,
 }: OrganizationsSlugMembersProps) => {
-  const [loading, setLoading] = useState(false);
-  const [members, setMembers] = useState(initialMembers);
-  const [teams, setTeams] = useState(initialTeams);
-
   const apiRef = useGridApiRef();
 
   const { session, setSession } = useAuthStore((state) => state);
@@ -121,9 +117,51 @@ const OrganizationsSlugMembers = ({
   const tMembers = useTranslations("organizations.members");
   const tOrganizations = useTranslations("organizations");
 
+  const {
+    data: { rows, teams } = { rows: initialMembers, teams: initialTeams },
+    mutate,
+    isValidating: loading,
+  } = useSWR(
+    `organization-members-${slug}`,
+    async () => {
+      const { data, error } = await authClient.organization.getFullOrganization(
+        {
+          query: { organizationSlug: decodeURIComponent(slug) },
+        },
+      );
+      if (error) throw error;
+
+      return {
+        rows: data.members.toReversed(),
+        teams: data.teams,
+        pendingInvitationCount: data.invitations.filter(
+          ({ status }: Invitation) => status === "pending",
+        ).length,
+      };
+    },
+    {
+      fallbackData: {
+        rows: initialMembers,
+        teams: initialTeams,
+        pendingInvitationCount: 0,
+      },
+      onError: (error) => {
+        enqueueSnackbar(getErrorMessage(error.code, locale), {
+          variant: "error",
+        });
+      },
+      onSuccess: ({ pendingInvitationCount }) => {
+        setCount(countKeys.pendingInvitations, pendingInvitationCount);
+        setTimeout(() => {
+          apiRef.current?.autosizeColumns(autosizeOptions);
+        }, 0);
+      },
+    },
+  );
+
   const ownerCount = useMemo(
-    () => members.filter(({ role }) => role === "owner").length,
-    [members],
+    () => rows.filter(({ role }) => role === "owner").length,
+    [rows],
   );
 
   const getMemberPermissions = useCallback(
@@ -148,45 +186,11 @@ const OrganizationsSlugMembers = ({
     ],
   );
 
-  const fetchFullOrganization = useCallback(async () => {
-    await authClient.organization.getFullOrganization(
-      { query: { organizationSlug: decodeURIComponent(slug) } },
-      {
-        onError: ({ error: { code } }) => {
-          setLoading(false);
-
-          enqueueSnackbar(getErrorMessage(code, locale), {
-            variant: "error",
-          });
-        },
-        onRequest: () => setLoading(true),
-        onSuccess: ({ data: { invitations, members, teams } }) => {
-          flushSync(() => {
-            setMembers(members.toReversed());
-            setTeams(teams);
-
-            setLoading(false);
-          });
-
-          setCount(
-            countKeys.pendingInvitations,
-            invitations.filter(({ status }: Invitation) => status === "pending")
-              .length,
-          );
-
-          setTimeout(() => {
-            apiRef.current?.autosizeColumns(autosizeOptions);
-          }, 0);
-        },
-      },
-    );
-  }, [apiRef, locale, setCount, slug]);
-
   const handleInviteMember = () => {
     setDialog({
       content: (
         <InviteMemberDialog
-          fetchFullOrganization={fetchFullOrganization}
+          mutate={mutate}
           organizationId={organizationId}
           teams={teams}
         />
@@ -202,8 +206,8 @@ const OrganizationsSlugMembers = ({
       setDialog({
         content: (
           <UpdateMemberRoleDialog
-            fetchFullOrganization={fetchFullOrganization}
             member={member}
+            mutate={mutate}
             organizationId={organizationId}
           />
         ),
@@ -212,7 +216,7 @@ const OrganizationsSlugMembers = ({
         title: tMembers("actions.updateMemberRole.title"),
       });
     },
-    [fetchFullOrganization, organizationId, setDialog, tMembers],
+    [mutate, organizationId, setDialog, tMembers],
   );
 
   const handleRemoveMember = useCallback(
@@ -239,7 +243,7 @@ const OrganizationsSlugMembers = ({
                 enqueueSnackbar(tMembers("actions.removeMember.success"), {
                   variant: "success",
                 });
-                fetchFullOrganization();
+                mutate();
               },
             },
           );
@@ -248,7 +252,7 @@ const OrganizationsSlugMembers = ({
         title: tMembers("actions.removeMember.title"),
       });
     },
-    [fetchFullOrganization, locale, organizationId, setDialog, tMembers],
+    [locale, mutate, organizationId, setDialog, tMembers],
   );
 
   const handleLeaveOrganization = useCallback(() => {
@@ -316,7 +320,7 @@ const OrganizationsSlugMembers = ({
     tOrganizations,
   ]);
 
-  const memberColumns = useMemo<GridColDef[]>(
+  const columns = useMemo<GridColDef[]>(
     () => [
       {
         disableColumnMenu: true,
@@ -458,12 +462,12 @@ const OrganizationsSlugMembers = ({
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}
-        columns={memberColumns}
+        columns={columns}
         loading={loading}
         onPaginationModelChange={() =>
           apiRef.current?.autosizeColumns(autosizeOptions)
         }
-        rows={members}
+        rows={rows}
       />
     </>
   );

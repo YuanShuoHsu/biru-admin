@@ -24,13 +24,13 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 }));
 
 interface UpdateTeamDialogProps {
-  fetchFullOrganization: () => void;
+  mutate: () => void;
   organizationId: Organization["id"];
   team?: Team;
 }
 
 const UpdateTeamDialog = ({
-  fetchFullOrganization,
+  mutate,
   organizationId,
   team,
 }: UpdateTeamDialogProps) => {
@@ -69,7 +69,7 @@ const UpdateTeamDialog = ({
 
             closeDialog();
 
-            fetchFullOrganization();
+            mutate();
           },
         },
       );
@@ -94,7 +94,7 @@ const UpdateTeamDialog = ({
 
           closeDialog();
 
-          fetchFullOrganization();
+          mutate();
         },
       },
     );
