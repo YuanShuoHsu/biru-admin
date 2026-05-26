@@ -6,19 +6,18 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useSnackbar } from "notistack";
 import { useState, type MouseEvent } from "react";
 import useSWR, { useSWRConfig } from "swr";
 
 import BadgeAvatars from "@/components/BadgeAvatars";
 
-import { query } from "@/constants/query";
 import { swrKeys } from "@/constants/swr";
 
 import { useAuthMenuItems, useLogoutMenuItem } from "@/hooks/useAuth";
 
-import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
@@ -44,7 +43,6 @@ import type { MenuItem as MenuItemData } from "@/types/menuItem";
 
 import { useAddAccountMenuItem, useSettingsMenuItem } from "@/utils/account";
 import { getDisplayName } from "@/utils/auth";
-import { getHref } from "@/utils/href";
 
 const StyledAvatar = styled(Avatar, {
   shouldForwardProp: (prop) => prop !== "isSignedIn",
@@ -151,10 +149,6 @@ const AccountMenu = () => {
   const redirectTarget =
     (isAuthPage || isCompanyPage) && redirectTo ? redirectTo : pathname;
 
-  const signInRedirectHref = getHref("/auth/sign-in", {
-    [query.redirectTo]: redirectTarget,
-  });
-
   const { enqueueSnackbar } = useSnackbar();
 
   const { data: deviceSessions = [] } = useSWR<DeviceSession[]>(
@@ -181,12 +175,6 @@ const AccountMenu = () => {
   const settingsItem = useSettingsMenuItem();
 
   const handleClick = (event: MouseEvent<HTMLElement>) => {
-    if (!session) {
-      router.push(signInRedirectHref);
-
-      return;
-    }
-
     setAnchorEl(event.currentTarget);
   };
 
@@ -279,10 +267,7 @@ const AccountMenu = () => {
             />
           </StyledListSubheader>
         )}
-        {!session && (
-          <StyledListSubheader>{tAuth("label")}</StyledListSubheader>
-        )}
-        <Divider />
+        {session && <Divider />}
         {session &&
           renderMenuItems(pathname, "/auth", [settingsItem, logoutMenuItem])}
         {session && <Divider />}

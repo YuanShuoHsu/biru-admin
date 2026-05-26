@@ -1,11 +1,13 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
 import { useEffect, useRef } from "react";
 
 import { query } from "@/constants/query";
+
+import { usePathname, useRouter } from "@/i18n/navigation";
 
 import { getErrorMessage } from "@/lib/auth-client";
 

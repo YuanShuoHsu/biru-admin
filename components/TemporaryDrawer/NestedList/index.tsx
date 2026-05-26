@@ -4,7 +4,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import useSWR from "swr";
 
 import SelectedListItem from "./SelectedListItem";
@@ -16,7 +16,7 @@ import { query } from "@/constants/query";
 import { useAuthMenuItems, useLogoutMenuItem } from "@/hooks/useAuth";
 import { useOrganization } from "@/hooks/useOrganization";
 
-import { usePathname } from "@/i18n/navigation";
+import { usePathname, useRouter } from "@/i18n/navigation";
 
 import { authClient } from "@/lib/auth-client";
 
