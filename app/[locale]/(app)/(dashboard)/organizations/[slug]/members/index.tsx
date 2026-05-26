@@ -129,8 +129,7 @@ const OrganizationsSlugMembers = ({
   const getMemberPermissions = useCallback(
     ({ role, userId }: Pick<Member, "role" | "userId">) => {
       const isOnlyOwner = role === "owner" && ownerCount === 1;
-      const isHigherRoleRank =
-        !!currentUserRole && ROLE_RANK[currentUserRole] >= ROLE_RANK[role];
+      const isHigherRoleRank = ROLE_RANK[currentUserRole] >= ROLE_RANK[role];
       const isCurrentUser = userId === currentUserId;
 
       return {

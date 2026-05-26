@@ -45,24 +45,29 @@ const OrganizationsSlugTeamsPage = async ({
     ({ userId }) => userId === session?.user?.id,
   )?.role;
 
-  const checkPerm = (
-    permissions: Parameters<
-      typeof authClient.organization.checkRolePermission
-    >[0]["permissions"],
-  ) =>
-    currentUserRole
-      ? authClient.organization.checkRolePermission({
+  const { canCreateTeam, canDeleteTeam, canUpdateTeam } = currentUserRole
+    ? {
+        canCreateTeam: authClient.organization.checkRolePermission({
           role: currentUserRole,
-          permissions,
-        })
-      : false;
+          permissions: { team: ["create"] },
+        }),
+        canDeleteTeam: authClient.organization.checkRolePermission({
+          role: currentUserRole,
+          permissions: { team: ["delete"] },
+        }),
+        canUpdateTeam: authClient.organization.checkRolePermission({
+          role: currentUserRole,
+          permissions: { team: ["update"] },
+        }),
+      }
+    : { canCreateTeam: false, canDeleteTeam: false, canUpdateTeam: false };
 
   return (
     <OrganizationsSlugTeams
       activeOrganization={{ ...data, teams: data.teams.toReversed() }}
-      canCreateTeam={checkPerm({ team: ["create"] })}
-      canDeleteTeam={checkPerm({ team: ["delete"] })}
-      canUpdateTeam={checkPerm({ team: ["update"] })}
+      canCreateTeam={canCreateTeam}
+      canDeleteTeam={canDeleteTeam}
+      canUpdateTeam={canUpdateTeam}
     />
   );
 };
