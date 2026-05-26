@@ -20,7 +20,10 @@ const OrganizationsPage = async ({ params }: OrganizationsPageProps) => {
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const { data } = await authClient.organization.list({ fetchOptions });
+  const [{ data }, { data: session }] = await Promise.all([
+    authClient.organization.list({ fetchOptions }),
+    authClient.getSession({ fetchOptions }),
+  ]);
 
   const organizations = (data || []).toReversed();
 
@@ -31,6 +34,7 @@ const OrganizationsPage = async ({ params }: OrganizationsPageProps) => {
 
   return (
     <Organizations
+      canCreateOrganization={session?.user.role === "admin"}
       organizationPermissions={organizationPermissions}
       rows={organizations}
     />

@@ -61,11 +61,13 @@ const StyledAvatar = styled(Avatar)({
 });
 
 interface OrganizationsProps {
+  canCreateOrganization: boolean;
   organizationPermissions: OrganizationPermissions;
   rows: Organization[];
 }
 
 const Organizations = ({
+  canCreateOrganization,
   organizationPermissions: initialOrganizationPermissions,
   rows: initialRows,
 }: OrganizationsProps) => {
@@ -312,16 +314,18 @@ const Organizations = ({
 
   return (
     <>
-      <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
-        <Button
-          onClick={handleCreateOrganization}
-          size="small"
-          startIcon={<AddBusiness />}
-          variant="contained"
-        >
-          {tOrganizations("actions.createOrganization.title")}
-        </Button>
-      </Stack>
+      {canCreateOrganization && (
+        <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
+          <Button
+            onClick={handleCreateOrganization}
+            size="small"
+            startIcon={<AddBusiness />}
+            variant="contained"
+          >
+            {tOrganizations("actions.createOrganization.title")}
+          </Button>
+        </Stack>
+      )}
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}
