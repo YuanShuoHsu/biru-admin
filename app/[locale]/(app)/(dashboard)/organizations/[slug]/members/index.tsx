@@ -443,8 +443,8 @@ const OrganizationsSlugMembers = ({
 
   return (
     <>
-      <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
-        {canCreateInvitation && (
+      {canCreateInvitation && (
+        <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
           <Button
             onClick={handleInviteMember}
             size="small"
@@ -453,8 +453,8 @@ const OrganizationsSlugMembers = ({
           >
             {tMembers("actions.inviteMember.title")}
           </Button>
-        )}
-      </Stack>
+        </Stack>
+      )}
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}

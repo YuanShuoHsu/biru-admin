@@ -111,8 +111,8 @@ const OrganizationsSlugLocation = ({
 
   return (
     <>
-      <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
-        {canUpdateLocation && (
+      {canUpdateLocation && (
+        <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
           <Button
             onClick={handleUpdateLocation}
             size="small"
@@ -121,8 +121,8 @@ const OrganizationsSlugLocation = ({
           >
             {tOrganizations("location.actions.updateLocation.title")}
           </Button>
-        )}
-      </Stack>
+        </Stack>
+      )}
       <StyledPaper variant="outlined">
         {!hasContent && (
           <Typography color="text.secondary" variant="body2">
