@@ -184,7 +184,7 @@ const useNavItems = (): MenuItem[] => {
     async () => {
       const { data } = await authClient.organization.list();
 
-      return data?.toReversed()[0]?.slug || "";
+      return data?.[0].slug || "";
     },
   );
 
