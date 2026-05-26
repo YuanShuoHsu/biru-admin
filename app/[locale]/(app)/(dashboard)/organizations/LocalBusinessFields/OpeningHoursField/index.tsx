@@ -147,6 +147,7 @@ const OpeningHoursField = ({
                     })
                   }
                   slotProps={{
+                    field: { clearable: true },
                     textField: {
                       error: hasConflict || hasStartTimeError,
                       helperText: hasStartTimeError
@@ -171,6 +172,7 @@ const OpeningHoursField = ({
                     })
                   }
                   slotProps={{
+                    field: { clearable: true },
                     textField: {
                       error: hasConflict || hasEndTimeError,
                       helperText: hasEndTimeError
