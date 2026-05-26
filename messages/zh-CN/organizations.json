@@ -96,6 +96,12 @@
     }
   },
   "location": {
+    "actions": {
+      "updateLocation": {
+        "success": "成功更新位置信息",
+        "title": "编辑位置"
+      }
+    },
     "empty": "暂无位置信息",
     "label": "位置",
     "openingHours": {

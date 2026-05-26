@@ -18,21 +18,11 @@ import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import {
-  Box,
-  type BoxProps,
-  Chip,
-  Divider,
-  TextField,
-  styled,
-} from "@mui/material";
+import { Box, type BoxProps, TextField, styled } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { Organization } from "@/types/organizations";
-
-import AddressFields from "../AddressFields";
-import LocalBusinessFields from "../LocalBusinessFields";
 
 const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   display: "flex",
@@ -61,25 +51,13 @@ const UpdateOrganizationDialog = ({
 
   const updateOrganizationFormSchema = useUpdateOrganizationFormSchema();
   const {
-    control,
     formState: { errors },
-    getValues,
     handleSubmit,
     register,
-    setValue,
   } = useForm<UpdateOrganizationForm>({
     defaultValues: {
       name: organization.name,
       slug: organization.slug,
-      addressCountry: organization.addressCountry || "",
-      addressLocality: organization.addressLocality || "",
-      addressRegion: organization.addressRegion || "",
-      extendedAddress: organization.extendedAddress || "",
-      postalCode: organization.postalCode || "",
-      streetAddress: organization.streetAddress || "",
-      hasMap: organization.hasMap || "",
-      openingHours: organization.openingHours || "",
-      telephone: organization.telephone || "",
     },
     resolver: zodResolver(updateOrganizationFormSchema),
   });
@@ -87,33 +65,11 @@ const UpdateOrganizationDialog = ({
   const onSubmitHandler = async ({
     name,
     slug,
-    addressCountry,
-    addressLocality,
-    addressRegion,
-    extendedAddress,
-    postalCode,
-    streetAddress,
-    hasMap,
-    openingHours,
-    telephone,
   }: UpdateOrganizationForm) => {
     await authClient.organization.update(
       {
         organizationId: organization.id,
-        data: {
-          logo,
-          name,
-          slug,
-          addressCountry,
-          addressLocality,
-          addressRegion,
-          extendedAddress,
-          postalCode,
-          streetAddress,
-          hasMap,
-          openingHours,
-          telephone,
-        },
+        data: { logo, name, slug },
       },
       {
         onError: ({ error: { code } }) => {
@@ -165,25 +121,6 @@ const UpdateOrganizationDialog = ({
         placeholder={tOrganizations("slug.placeholder")}
         required
         {...register("slug")}
-      />
-      <Divider flexItem>
-        <Chip label={tOrganizations("address.label")} size="small" />
-      </Divider>
-      <AddressFields
-        control={control}
-        errors={errors}
-        getValues={getValues}
-        register={register}
-        setValue={setValue}
-      />
-      <Divider flexItem>
-        <Chip label={tOrganizations("localBusiness.label")} size="small" />
-      </Divider>
-      <LocalBusinessFields
-        control={control}
-        errors={errors}
-        register={register}
-        setValue={setValue}
       />
     </StyledBox>
   );

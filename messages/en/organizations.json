@@ -96,6 +96,12 @@
     }
   },
   "location": {
+    "actions": {
+      "updateLocation": {
+        "success": "Location updated successfully",
+        "title": "Edit location"
+      }
+    },
     "empty": "No location information available",
     "label": "Location",
     "openingHours": {

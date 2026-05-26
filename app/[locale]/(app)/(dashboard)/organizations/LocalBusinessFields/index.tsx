@@ -15,11 +15,10 @@ import { TextField } from "@mui/material";
 
 import type { Organization } from "@/types/organizations";
 
-import type { CreateOrganizationForm } from "../CreateOrganizationDialog/definitions";
-import type { UpdateOrganizationForm } from "../UpdateOrganizationDialog/definitions";
+import type { UpdateLocationForm } from "../[slug]/location/UpdateLocationDialog/definitions";
 import OpeningHoursField from "./OpeningHoursField";
 
-type OrganizationForm = CreateOrganizationForm | UpdateOrganizationForm;
+type OrganizationForm = UpdateLocationForm;
 
 type LocalBusinessFieldName = keyof Pick<
   Organization,

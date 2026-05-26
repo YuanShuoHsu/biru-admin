@@ -18,19 +18,9 @@ import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import {
-  Box,
-  type BoxProps,
-  Chip,
-  Divider,
-  TextField,
-  styled,
-} from "@mui/material";
+import { Box, type BoxProps, TextField, styled } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
-
-import AddressFields from "../AddressFields";
-import LocalBusinessFields from "../LocalBusinessFields";
 
 const CREATE_ORGANIZATION_AVATAR_KEY = "create-organization-avatar";
 
@@ -57,59 +47,20 @@ const CreateOrganizationDialog = ({
 
   const createOrganizationFormSchema = useCreateOrganizationFormSchema();
   const {
-    control,
     formState: { errors },
-    getValues,
     handleSubmit,
     register,
-    setValue,
   } = useForm<CreateOrganizationForm>({
     defaultValues: {
       name: "",
       slug: "",
-
-      addressCountry: "TW",
-      addressLocality: "",
-      addressRegion: "",
-      extendedAddress: "",
-      postalCode: "",
-      streetAddress: "",
-
-      hasMap: "",
-      openingHours: "",
-      telephone: "",
     },
     resolver: zodResolver(createOrganizationFormSchema),
   });
 
-  const onSubmitHandler = async ({
-    name,
-    slug,
-    addressCountry,
-    addressLocality,
-    addressRegion,
-    extendedAddress,
-    postalCode,
-    streetAddress,
-    hasMap,
-    openingHours,
-    telephone,
-  }: CreateOrganizationForm) => {
+  const onSubmitHandler = async ({ name, slug }: CreateOrganizationForm) => {
     await authClient.organization.create(
-      {
-        logo,
-        name,
-        slug,
-        addressCountry,
-        addressLocality,
-        addressRegion,
-        extendedAddress,
-        postalCode,
-        streetAddress,
-        hasMap,
-        openingHours,
-        telephone,
-      },
+      { logo, name, slug },
       {
         onError: ({ error: { code } }) => {
           const message = getErrorMessage(code, locale);
@@ -160,25 +111,6 @@ const CreateOrganizationDialog = ({
         placeholder={tOrganizations("slug.placeholder")}
         required
         {...register("slug")}
-      />
-      <Divider flexItem>
-        <Chip label={tOrganizations("address.label")} size="small" />
-      </Divider>
-      <AddressFields
-        control={control}
-        errors={errors}
-        getValues={getValues}
-        register={register}
-        setValue={setValue}
-      />
-      <Divider flexItem>
-        <Chip label={tOrganizations("localBusiness.label")} size="small" />
-      </Divider>
-      <LocalBusinessFields
-        control={control}
-        errors={errors}
-        register={register}
-        setValue={setValue}
       />
     </StyledBox>
   );

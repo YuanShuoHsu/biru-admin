@@ -96,6 +96,12 @@
     }
   },
   "location": {
+    "actions": {
+      "updateLocation": {
+        "success": "所在地情報を更新しました",
+        "title": "所在地を編集"
+      }
+    },
     "empty": "位置情報が設定されていません",
     "label": "所在地",
     "openingHours": {

@@ -22,10 +22,9 @@ import type { Organization } from "@/types/organizations";
 
 import { getAddress, getPostalCode } from "@/utils/tw-postal-codes";
 
-import type { CreateOrganizationForm } from "../CreateOrganizationDialog/definitions";
-import type { UpdateOrganizationForm } from "../UpdateOrganizationDialog/definitions";
+import type { UpdateLocationForm } from "../[slug]/location/UpdateLocationDialog/definitions";
 
-type OrganizationForm = CreateOrganizationForm | UpdateOrganizationForm;
+type OrganizationForm = UpdateLocationForm;
 
 type AddressFieldName = keyof Pick<
   Organization,

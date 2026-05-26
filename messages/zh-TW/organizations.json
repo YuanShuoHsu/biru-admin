@@ -96,6 +96,12 @@
     }
   },
   "location": {
+    "actions": {
+      "updateLocation": {
+        "success": "成功更新位置資訊",
+        "title": "編輯位置"
+      }
+    },
     "empty": "尚未設定位置資訊",
     "label": "位置",
     "openingHours": {

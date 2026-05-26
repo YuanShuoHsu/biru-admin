@@ -96,6 +96,12 @@
     }
   },
   "location": {
+    "actions": {
+      "updateLocation": {
+        "success": "위치 정보가 업데이트되었습니다",
+        "title": "위치 편집"
+      }
+    },
     "empty": "위치 정보가 없습니다",
     "label": "위치",
     "openingHours": {
