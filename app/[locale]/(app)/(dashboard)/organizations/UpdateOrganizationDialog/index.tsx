@@ -62,10 +62,7 @@ const UpdateOrganizationDialog = ({
     resolver: zodResolver(updateOrganizationFormSchema),
   });
 
-  const onSubmitHandler = async ({
-    name,
-    slug,
-  }: UpdateOrganizationForm) => {
+  const onSubmitHandler = async ({ name, slug }: UpdateOrganizationForm) => {
     await authClient.organization.update(
       {
         organizationId: organization.id,

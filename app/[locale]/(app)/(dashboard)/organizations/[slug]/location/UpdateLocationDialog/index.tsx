@@ -120,11 +120,7 @@ const UpdateLocationDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <StyledBox
-      component="form"
-      id="update-location-form"
-      onSubmit={onSubmit}
-    >
+    <StyledBox component="form" id="update-location-form" onSubmit={onSubmit}>
       <Divider flexItem>
         <Chip label={tOrganizations("address.label")} size="small" />
       </Divider>
