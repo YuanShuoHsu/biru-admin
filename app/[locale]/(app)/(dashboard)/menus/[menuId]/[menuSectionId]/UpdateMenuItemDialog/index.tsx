@@ -17,7 +17,7 @@ import CountrySelect from "@/components/CountrySelect";
 import NumberSpinner from "@/components/NumberSpinner";
 import UploadAvatars from "@/components/UploadAvatars";
 
-import { currencies, DEFAULT_CURRENCY_OPTION } from "@/constants/currencies";
+import { currencies } from "@/constants/currencies";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -244,7 +244,7 @@ const UpdateMenuItemDialog = ({
             mode="currency"
             value={
               currencies.find(({ currency }) => currency === priceCurrency) ||
-              DEFAULT_CURRENCY_OPTION
+              null
             }
             {...register("offer.priceCurrency")}
           />

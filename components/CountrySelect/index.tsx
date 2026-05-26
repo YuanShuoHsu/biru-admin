@@ -113,9 +113,6 @@ const getCurrencyLabel = ({ currency, label }: CurrencyType) =>
 const getOptionLabel = (option: CountryType | CurrencyType): string =>
   "currency" in option ? getCurrencyLabel(option) : getCountryLabel(option);
 
-const getInputValue = (option: CountryType | CurrencyType): string =>
-  "currency" in option ? option.currency : getCountryLabel(option);
-
 const filter = createFilterOptions<CountryType | CurrencyType>({
   // matchFrom: "start",
   stringify: getOptionLabel,
@@ -148,11 +145,7 @@ const CountrySelect = ({
 }: CountrySelectProps) => {
   const isCurrency = mode === "currency";
 
-  const currentInputValue = value
-    ? mode === "currency"
-      ? value.currency
-      : getCountryLabel(value)
-    : "";
+  const currentInputValue = value ? getOptionLabel(value) : "";
 
   const [inputValue, setInputValue] = useState(currentInputValue);
 
@@ -193,7 +186,7 @@ const CountrySelect = ({
             : newValue.code
           : "";
 
-        setInputValue(newValue ? getInputValue(newValue) : "");
+        setInputValue(newValue ? getOptionLabel(newValue) : "");
         onChange?.({ target: { name: name || "", value } });
       }}
       onClose={() => {
@@ -239,7 +232,9 @@ const CountrySelect = ({
               );
 
               hint.current =
-                newValue && matchingOption ? getInputValue(matchingOption) : "";
+                newValue && matchingOption
+                  ? getOptionLabel(matchingOption)
+                  : "";
             }}
             required={required}
             slotProps={{

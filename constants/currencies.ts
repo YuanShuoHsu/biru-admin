@@ -11,7 +11,3 @@ export const currencies: CurrencyType[] = countries.flatMap((country) => {
 
   return currency ? [{ ...country, currency }] : [];
 });
-
-export const DEFAULT_CURRENCY_OPTION = currencies.find(
-  ({ code }) => code === "TW",
-)!;
