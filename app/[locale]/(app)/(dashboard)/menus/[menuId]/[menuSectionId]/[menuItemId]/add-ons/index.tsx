@@ -297,11 +297,7 @@ const MenuItemAddOns = ({
     (addOn: MenuItemAddOn) => {
       setDialog({
         content: (
-          <UpdateAddOnDialog
-            addOn={addOn}
-            menuId={menuId}
-            mutate={mutate}
-          />
+          <UpdateAddOnDialog addOn={addOn} menuId={menuId} mutate={mutate} />
         ),
         formId: "update-add-on-form",
         open: true,

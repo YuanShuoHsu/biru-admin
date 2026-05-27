@@ -53,10 +53,7 @@ interface UpdateMenuItemDialogProps {
   mutate: () => void;
 }
 
-const UpdateMenuItemDialog = ({
-  item,
-  mutate,
-}: UpdateMenuItemDialogProps) => {
+const UpdateMenuItemDialog = ({ item, mutate }: UpdateMenuItemDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const tMenus = useTranslations("menus");

@@ -414,12 +414,7 @@ const MenusMenuId = ({
 
   const handleCreateSection = useCallback(() => {
     setDialog({
-      content: (
-        <CreateMenuSectionDialog
-          menuId={menu.id}
-          mutate={mutate}
-        />
-      ),
+      content: <CreateMenuSectionDialog menuId={menu.id} mutate={mutate} />,
       formId: "create-section-form",
       open: true,
       title: tMenus("sections.actions.createSection.title"),
@@ -441,12 +436,7 @@ const MenusMenuId = ({
   const handleUpdateSection = useCallback(
     (section: MenuSection) => {
       setDialog({
-        content: (
-          <UpdateMenuSectionDialog
-            section={section}
-            mutate={mutate}
-          />
-        ),
+        content: <UpdateMenuSectionDialog section={section} mutate={mutate} />,
         formId: "update-section-form",
         open: true,
         title: tMenus("sections.actions.updateSection.title"),
