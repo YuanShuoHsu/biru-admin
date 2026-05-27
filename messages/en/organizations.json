@@ -128,7 +128,7 @@
       },
       "label": "Actions",
       "removeMember": {
-        "confirm": "Are you sure you want to remove <bold>{name}</bold>?",
+        "confirm": "Are you sure you want to remove <bold>{email}</bold>?",
         "success": "Member removed successfully",
         "title": "Remove member"
       },

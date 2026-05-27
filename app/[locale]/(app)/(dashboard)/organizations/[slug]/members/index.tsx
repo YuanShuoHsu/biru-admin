@@ -220,13 +220,13 @@ const OrganizationsSlugMembers = ({
   );
 
   const handleRemoveMember = useCallback(
-    ({ id: memberId, user: { name } }: Member) => {
+    ({ id: memberId, user: { email } }: Member) => {
       setDialog({
         content: (
           <DialogContentText>
             {tMembers.rich("actions.removeMember.confirm", {
               bold: (chunks) => <strong>{chunks}</strong>,
-              name,
+              email,
             })}
           </DialogContentText>
         ),

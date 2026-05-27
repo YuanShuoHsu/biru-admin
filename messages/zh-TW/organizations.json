@@ -128,7 +128,7 @@
       },
       "label": "操作",
       "removeMember": {
-        "confirm": "確定要移除 <bold>{name}</bold> 嗎？",
+        "confirm": "確定要移除 <bold>{email}</bold> 嗎？",
         "success": "成功移除成員",
         "title": "移除成員"
       },
