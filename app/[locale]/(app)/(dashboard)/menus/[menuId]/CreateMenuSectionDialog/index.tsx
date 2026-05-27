@@ -35,12 +35,12 @@ const CREATE_MENU_SECTION_IMAGE_KEY = "create-menu-section-image";
 
 interface CreateMenuSectionDialogProps {
   menuId: string;
-  mutateSections: () => void;
+  mutate: () => void;
 }
 
 const CreateMenuSectionDialog = ({
   menuId,
-  mutateSections,
+  mutate,
 }: CreateMenuSectionDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
@@ -82,7 +82,7 @@ const CreateMenuSectionDialog = ({
 
       closeDialog();
 
-      mutateSections();
+      mutate();
     } catch {
       enqueueSnackbar(tMenus("sections.actions.createSection.title"), {
         variant: "error",

@@ -51,12 +51,12 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 const CREATE_MENU_ITEM_IMAGE_KEY = "create-menu-item-image";
 
 interface CreateMenuItemDialogProps {
-  mutateItems: () => void;
+  mutate: () => void;
   menuSectionId: string;
 }
 
 const CreateMenuItemDialog = ({
-  mutateItems,
+  mutate,
   menuSectionId,
 }: CreateMenuItemDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
@@ -178,7 +178,7 @@ const CreateMenuItemDialog = ({
       });
 
       closeDialog();
-      mutateItems();
+      mutate();
     } catch {
       enqueueSnackbar(tMenus("items.actions.createItem.error"), {
         variant: "error",

@@ -45,13 +45,13 @@ const StyledInputAdornment = styled(InputAdornment)(({ theme }) => ({
 interface CreateAddOnDialogProps {
   menuId: string;
   menuItemId: string;
-  mutateAddOns: () => void;
+  mutate: () => void;
 }
 
 const CreateAddOnDialog = ({
   menuId,
   menuItemId,
-  mutateAddOns,
+  mutate,
 }: CreateAddOnDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
@@ -139,7 +139,7 @@ const CreateAddOnDialog = ({
       );
 
       closeDialog();
-      mutateAddOns();
+      mutate();
     } catch {
       enqueueSnackbar(
         tMenus("addOns.actions.createAddOn.error", { name: displayName }),

@@ -146,8 +146,8 @@ const MenusMenuIdSectionId = ({
       data: initialItems,
       total: initialRowCount,
     },
-    mutate: mutateItems,
-    isValidating,
+    mutate,
+    isValidating: loading,
   } = useSWR(
     [
       `/api/menu-sections/${menuSectionId}/menu-items`,
@@ -366,7 +366,7 @@ const MenusMenuIdSectionId = ({
             variant: "success",
           });
         } catch {
-          mutateItems();
+          mutate();
 
           enqueueSnackbar(tMenus("items.actions.reorderItem.save.error"), {
             variant: "error",
@@ -379,7 +379,7 @@ const MenusMenuIdSectionId = ({
   }, [
     apiRef,
     items,
-    mutateItems,
+    mutate,
     paginationModel.page,
     paginationModel.pageSize,
     menuSectionId,
@@ -397,12 +397,12 @@ const MenusMenuIdSectionId = ({
       onConfirm: async () => {
         setIsReorderMode(false);
 
-        mutateItems();
+        mutate();
       },
       open: true,
       title: tMenus("items.actions.reorderItem.cancel.label"),
     });
-  }, [mutateItems, setDialog, tMenus]);
+  }, [mutate, setDialog, tMenus]);
 
   const handleDragEnd = ({ operation }: DragEndEvent) => {
     if (!isSortableOperation(operation)) return;
@@ -415,7 +415,7 @@ const MenusMenuIdSectionId = ({
     if (fromIndex === toIndex) return;
 
     const newItems = arrayMove(items, fromIndex, toIndex);
-    mutateItems({ data: newItems, total: rowCount }, false);
+    mutate({ data: newItems, total: rowCount }, false);
   };
 
   const handleManageItem = useCallback(
@@ -436,7 +436,7 @@ const MenusMenuIdSectionId = ({
     setDialog({
       content: (
         <CreateMenuItemDialog
-          mutateItems={mutateItems}
+          mutate={mutate}
           menuSectionId={menuSectionId}
         />
       ),
@@ -444,18 +444,18 @@ const MenusMenuIdSectionId = ({
       open: true,
       title: tMenus("items.actions.createItem.title"),
     });
-  }, [mutateItems, menuSectionId, setDialog, tMenus]);
+  }, [mutate, menuSectionId, setDialog, tMenus]);
 
   const handleUpdateItem = useCallback(
     (item: MenuItem) => {
       setDialog({
-        content: <UpdateMenuItemDialog item={item} mutateItems={mutateItems} />,
+        content: <UpdateMenuItemDialog item={item} mutate={mutate} />,
         formId: "update-menu-item-form",
         open: true,
         title: tMenus("items.actions.updateItem.title"),
       });
     },
-    [mutateItems, setDialog, tMenus],
+    [mutate, setDialog, tMenus],
   );
 
   const handleDeleteItem = useCallback(
@@ -478,7 +478,7 @@ const MenusMenuIdSectionId = ({
               { variant: "success" },
             );
 
-            mutateItems();
+            mutate();
           } catch {
             enqueueSnackbar(
               tMenus("items.actions.deleteItem.error", { name }),
@@ -490,7 +490,7 @@ const MenusMenuIdSectionId = ({
         title: tMenus("items.actions.deleteItem.title"),
       });
     },
-    [mutateItems, setDialog, tMenus],
+    [mutate, setDialog, tMenus],
   );
 
   const columns = useMemo<GridColDef[]>(
@@ -747,7 +747,7 @@ const MenusMenuIdSectionId = ({
           columns={columns}
           filterMode="server"
           filterModel={filterModel}
-          loading={isValidating}
+          loading={loading}
           onFilterModelChange={handleFilterModelChange}
           onPaginationModelChange={handlePaginationModelChange}
           onSortModelChange={handleSortModelChange}

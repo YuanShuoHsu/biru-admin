@@ -135,8 +135,8 @@ const MenuItemAddOns = ({
       data: initialAddOns,
       total: initialRowCount,
     },
-    mutate: mutateAddOns,
-    isValidating,
+    mutate,
+    isValidating: loading,
   } = useSWR(
     [
       `/api/menu-items/${menuItemId}/add-ons`,
@@ -284,14 +284,14 @@ const MenuItemAddOns = ({
         <CreateAddOnDialog
           menuId={menuId}
           menuItemId={menuItemId}
-          mutateAddOns={mutateAddOns}
+          mutate={mutate}
         />
       ),
       formId: "create-add-on-form",
       open: true,
       title: tMenus("addOns.actions.createAddOn.title"),
     });
-  }, [menuId, menuItemId, mutateAddOns, setDialog, tMenus]);
+  }, [menuId, menuItemId, mutate, setDialog, tMenus]);
 
   const handleUpdateAddOn = useCallback(
     (addOn: MenuItemAddOn) => {
@@ -300,7 +300,7 @@ const MenuItemAddOns = ({
           <UpdateAddOnDialog
             addOn={addOn}
             menuId={menuId}
-            mutateAddOns={mutateAddOns}
+            mutate={mutate}
           />
         ),
         formId: "update-add-on-form",
@@ -308,7 +308,7 @@ const MenuItemAddOns = ({
         title: tMenus("addOns.actions.updateAddOn.title"),
       });
     },
-    [menuId, mutateAddOns, setDialog, tMenus],
+    [menuId, mutate, setDialog, tMenus],
   );
 
   const handleDeleteAddOn = useCallback(
@@ -349,7 +349,7 @@ const MenuItemAddOns = ({
               { variant: "success" },
             );
 
-            mutateAddOns();
+            mutate();
           } catch {
             enqueueSnackbar(
               tMenus("addOns.actions.deleteAddOn.error", { name: displayName }),
@@ -361,7 +361,7 @@ const MenuItemAddOns = ({
         title: tMenus("addOns.actions.deleteAddOn.title"),
       });
     },
-    [menuItemId, mutateAddOns, setDialog, tMenus],
+    [menuItemId, mutate, setDialog, tMenus],
   );
 
   const handleEnterReorderMode = useCallback(() => {
@@ -405,7 +405,7 @@ const MenuItemAddOns = ({
             variant: "success",
           });
         } catch {
-          mutateAddOns();
+          mutate();
 
           enqueueSnackbar(tMenus("addOns.actions.reorderAddOn.save.error"), {
             variant: "error",
@@ -419,7 +419,7 @@ const MenuItemAddOns = ({
     addOns,
     apiRef,
     menuItemId,
-    mutateAddOns,
+    mutate,
     paginationModel.page,
     paginationModel.pageSize,
     setDialog,
@@ -435,12 +435,12 @@ const MenuItemAddOns = ({
       ),
       onConfirm: async () => {
         setIsReorderMode(false);
-        mutateAddOns();
+        mutate();
       },
       open: true,
       title: tMenus("addOns.actions.reorderAddOn.cancel.label"),
     });
-  }, [mutateAddOns, setDialog, tMenus]);
+  }, [mutate, setDialog, tMenus]);
 
   const handleDragEnd = ({ operation }: DragEndEvent) => {
     if (!isSortableOperation(operation)) return;
@@ -453,7 +453,7 @@ const MenuItemAddOns = ({
     if (fromIndex === toIndex) return;
 
     const newAddOns = arrayMove(addOns, fromIndex, toIndex);
-    mutateAddOns({ data: newAddOns, total: rowCount }, false);
+    mutate({ data: newAddOns, total: rowCount }, false);
   };
 
   const stringFilterOperators = useMemo<GridFilterOperator[]>(
@@ -639,7 +639,7 @@ const MenuItemAddOns = ({
           columns={columns}
           filterMode="server"
           filterModel={filterModel}
-          loading={isValidating}
+          loading={loading}
           onFilterModelChange={handleFilterModelChange}
           onPaginationModelChange={handlePaginationModelChange}
           onSortModelChange={handleSortModelChange}
