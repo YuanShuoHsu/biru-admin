@@ -14,8 +14,6 @@ import { authClient, getErrorMessage } from "@/lib/auth-client";
 const OAuthSnackbar = () => {
   const handled = useRef(false);
 
-  const { data: session } = authClient.useSession();
-
   const locale = useLocale();
 
   const pathname = usePathname();
@@ -39,16 +37,16 @@ const OAuthSnackbar = () => {
     router.replace(`${pathname}${search ? `?${search}` : ""}`);
 
     if (error) {
-      const message = getErrorMessage(error, locale);
-      enqueueSnackbar(message, { variant: "error" });
-    } else if (provider === "google")
-      enqueueSnackbar(
-        tAuth("google.success", { email: session?.user.email || "" }),
-        {
-          variant: "success",
-        },
-      );
-  }, [error, locale, pathname, provider, router, searchParams, session, tAuth]);
+      enqueueSnackbar(getErrorMessage(error, locale), { variant: "error" });
+    } else if (provider === "google") {
+      authClient.getSession().then(({ data: session }) => {
+        enqueueSnackbar(
+          tAuth("google.success", { email: session?.user.email || "" }),
+          { variant: "success" },
+        );
+      });
+    }
+  }, [error, locale, pathname, provider, router, searchParams, tAuth]);
 
   return null;
 };

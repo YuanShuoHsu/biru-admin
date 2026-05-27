@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { query } from "@/constants/query";
 import { DEFAULT_AUTHENTICATED_ROUTE } from "@/constants/route";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import { Button } from "@mui/material";
 
@@ -47,12 +47,14 @@ const GoogleButton = ({ action, redirectTo }: GoogleButtonProps) => {
 
   const handleClick = async () => {
     await authClient.signIn.social(
-      { provider: "google", callbackURL },
+      {
+        provider: "google",
+        callbackURL,
+        errorCallbackURL: callbackURL,
+      },
       {
         onError: ({ error }) => {
-          enqueueSnackbar(getErrorMessage(error.code, locale), {
-            variant: "error",
-          });
+          enqueueSnackbar(error.message, { variant: "error" });
 
           setLoading(false);
         },
