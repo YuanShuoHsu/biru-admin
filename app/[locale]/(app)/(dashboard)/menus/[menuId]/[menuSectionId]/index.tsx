@@ -2,6 +2,7 @@
 
 import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
@@ -37,10 +38,12 @@ import {
   Sort,
 } from "@mui/icons-material";
 import {
+  Box,
   Button,
   DialogContentText,
   IconButton,
   Stack,
+  styled,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -69,6 +72,14 @@ const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
   { ssr: false },
 );
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  position: "relative",
+  width: theme.spacing(4),
+  height: theme.spacing(4),
+  borderRadius: theme.shape.borderRadius,
+  overflow: "hidden",
+}));
 
 interface MenusMenuIdSectionIdProps {
   canWrite: boolean;
@@ -563,6 +574,26 @@ const MenusMenuIdSectionId = ({
             },
           ]
         : []),
+      {
+        field: "image",
+        filterable: false,
+        headerName: tMenus("items.image.label"),
+        renderCell: ({ value }: { value?: string | null }) =>
+          value && (
+            <Stack height="100%" flexDirection="row" alignItems="center">
+              <StyledBox>
+                <Image
+                  alt={value}
+                  fill
+                  src={value}
+                  style={{ objectFit: "cover" }}
+                />
+              </StyledBox>
+            </Stack>
+          ),
+        resizable: false,
+        sortable: false,
+      },
       {
         field: "name",
         filterOperators: stringFilterOperators,
