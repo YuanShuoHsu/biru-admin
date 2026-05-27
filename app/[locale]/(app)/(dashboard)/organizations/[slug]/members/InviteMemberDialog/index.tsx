@@ -78,8 +78,16 @@ const InviteMemberDialog = ({
           },
           onRequest: () => setDialog({ confirmLoading: true }),
           onSuccess: () => {
-            const message = tMembers("actions.inviteMember.success", { email });
-            enqueueSnackbar(message, { variant: "success" });
+            const selectedTeam = teams.find(({ id }) => id === teamId);
+            enqueueSnackbar(
+              selectedTeam
+                ? tMembers("actions.inviteMember.success.withTeam", {
+                    email,
+                    team: selectedTeam.name,
+                  })
+                : tMembers("actions.inviteMember.success.default", { email }),
+              { variant: "success" },
+            );
 
             closeDialog();
 

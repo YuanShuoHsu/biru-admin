@@ -17,7 +17,7 @@ import { Box, type BoxProps, MenuItem, TextField, styled } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { Member } from "@/types/organizations";
+import type { Member, Team } from "@/types/organizations";
 
 const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
   display: "flex",
@@ -29,13 +29,13 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 interface AddTeamMemberDialogProps {
   availableMembers: Member[];
   mutate: () => void;
-  teamId: string;
+  team: Team;
 }
 
 const AddTeamMemberDialog = ({
   availableMembers,
   mutate,
-  teamId,
+  team,
 }: AddTeamMemberDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
@@ -59,7 +59,7 @@ const AddTeamMemberDialog = ({
 
   const onSubmit = handleSubmit(async ({ userId }) => {
     await authClient.organization.addTeamMember(
-      { teamId, userId },
+      { teamId: team.id, userId },
       {
         onError: ({ error: { code } }) => {
           const message = getErrorMessage(code, locale);
@@ -72,7 +72,10 @@ const AddTeamMemberDialog = ({
           const email =
             availableMembers.find(({ userId: id }) => id === userId)?.user
               .email || "";
-          const message = tTeams("actions.addTeamMember.success", { email });
+          const message = tTeams("actions.addTeamMember.success", {
+            email,
+            team: team.name,
+          });
           enqueueSnackbar(message, { variant: "success" });
 
           closeDialog();

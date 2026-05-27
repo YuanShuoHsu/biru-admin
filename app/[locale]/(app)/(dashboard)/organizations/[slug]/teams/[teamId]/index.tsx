@@ -129,7 +129,7 @@ const OrganizationsSlugTeamsTeamId = ({
         <AddTeamMemberDialog
           availableMembers={availableMembers}
           mutate={mutate}
-          teamId={team.id}
+          team={team}
         />
       ),
       formId: "add-team-member-form",
@@ -150,6 +150,7 @@ const OrganizationsSlugTeamsTeamId = ({
             {tMembers.rich("actions.removeTeamMember.confirm", {
               bold: (chunks) => <strong>{chunks}</strong>,
               email: member?.user.email || "",
+              team: team.name,
             })}
           </DialogContentText>
         ),
@@ -166,6 +167,7 @@ const OrganizationsSlugTeamsTeamId = ({
                 enqueueSnackbar(
                   tMembers("actions.removeTeamMember.success", {
                     email: member?.user.email || "",
+                    team: team.name,
                   }),
                   { variant: "success" },
                 );
@@ -179,7 +181,7 @@ const OrganizationsSlugTeamsTeamId = ({
         title: tMembers("actions.removeTeamMember.title"),
       });
     },
-    [locale, members, mutate, setDialog, team.id, tMembers],
+    [locale, members, mutate, setDialog, team.id, team.name, tMembers],
   );
 
   const columns = useMemo<GridColDef[]>(

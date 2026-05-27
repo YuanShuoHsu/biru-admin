@@ -118,7 +118,10 @@ const OrganizationsSlugMembers = ({
   const tOrganizations = useTranslations("organizations");
 
   const {
-    data: { rows, teams } = { rows: initialMembers, teams: initialTeams },
+    data: { rows, teams } = {
+      rows: initialMembers,
+      teams: initialTeams,
+    },
     mutate,
     isValidating: loading,
   } = useSWR(
@@ -422,7 +425,7 @@ const OrganizationsSlugMembers = ({
             variant="outlined"
           />
         ),
-        sortable: false,
+        sortComparator: (a, b) => ROLE_RANK[a] - ROLE_RANK[b],
       },
       {
         field: "createdAt",

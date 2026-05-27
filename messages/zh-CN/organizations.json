@@ -123,7 +123,10 @@
           "label": "电子邮件",
           "placeholder": "请输入您的电子邮件"
         },
-        "success": "成功发送邀请至 {email}",
+        "success": {
+          "default": "成功发送邀请至 {email}",
+          "withTeam": "成功发送邀请至 {email}，并加入 {team} 团队"
+        },
         "title": "邀请成员"
       },
       "label": "操作",
@@ -133,8 +136,8 @@
         "title": "移除成员"
       },
       "removeTeamMember": {
-        "confirm": "确定要将 <bold>{email}</bold> 从团队中移除吗？",
-        "success": "成功将 {email} 从团队移除",
+        "confirm": "确定要将 <bold>{email}</bold> 从 <bold>{team}</bold> 团队中移除吗？",
+        "success": "成功将 {email} 从 {team} 团队移除",
         "title": "从团队移除"
       },
       "updateMemberRole": {
@@ -171,7 +174,7 @@
   "teams": {
     "actions": {
       "addTeamMember": {
-        "success": "成功将 {email} 新增至团队",
+        "success": "成功将 {email} 新增至 {team} 团队",
         "title": "新增团队成员"
       },
       "createTeam": {
@@ -204,7 +207,6 @@
     "teamId": {
       "label": "团队（选填）",
       "placeholder": "请选择您的团队"
-    },
-    "unknown": "未知团队"
+    }
   }
 }

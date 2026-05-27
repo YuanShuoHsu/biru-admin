@@ -123,7 +123,10 @@
           "label": "Email",
           "placeholder": "Please enter your email"
         },
-        "success": "Invitation sent to {email} successfully",
+        "success": {
+          "default": "Invitation sent to {email} successfully",
+          "withTeam": "Invitation sent to {email} and added to team {team} successfully"
+        },
         "title": "Invite member"
       },
       "label": "Actions",
@@ -133,8 +136,8 @@
         "title": "Remove member"
       },
       "removeTeamMember": {
-        "confirm": "Are you sure you want to remove <bold>{email}</bold> from the team?",
-        "success": "{email} removed from team successfully",
+        "confirm": "Are you sure you want to remove <bold>{email}</bold> from team <bold>{team}</bold>?",
+        "success": "{email} removed from team {team} successfully",
         "title": "Remove from team"
       },
       "updateMemberRole": {
@@ -171,7 +174,7 @@
   "teams": {
     "actions": {
       "addTeamMember": {
-        "success": "{email} added to team successfully",
+        "success": "{email} added to team {team} successfully",
         "title": "Add team member"
       },
       "createTeam": {
@@ -204,7 +207,6 @@
     "teamId": {
       "label": "Team (Optional)",
       "placeholder": "Please select your team"
-    },
-    "unknown": "Unknown team"
+    }
   }
 }

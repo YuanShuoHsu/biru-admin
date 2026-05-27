@@ -8,7 +8,7 @@ import { useCallback, useMemo } from "react";
 import useSWR from "swr";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
-import { countKeys } from "@/constants/organizations";
+import { countKeys, ROLE_RANK } from "@/constants/organizations";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
@@ -184,17 +184,23 @@ const OrganizationsSlugInvitations = ({
             variant="outlined"
           />
         ),
-        sortable: false,
+        sortComparator: (a, b) => ROLE_RANK[a] - ROLE_RANK[b],
       },
       {
         field: "teamId",
         headerName: tTeams("label"),
+        renderCell: ({ row: { teamId } }: GridRenderCellParams<Invitation>) =>
+          teamId && (
+            <Chip
+              label={teams.find(({ id }) => id === teamId)?.name}
+              size="small"
+              variant="outlined"
+            />
+          ),
         valueGetter: (teamId?: string | null) => {
           if (!teamId) return "";
 
-          return (
-            teams.find(({ id }) => id === teamId)?.name || tTeams("unknown")
-          );
+          return teams.find(({ id }) => id === teamId)?.name;
         },
       },
       {
