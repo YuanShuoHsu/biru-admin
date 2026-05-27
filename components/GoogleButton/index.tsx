@@ -5,6 +5,7 @@ import { enqueueSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 
 import { query } from "@/constants/query";
+import { DEFAULT_AUTHENTICATED_ROUTE } from "@/constants/route";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
@@ -37,7 +38,10 @@ const GoogleButton = ({ action, redirectTo }: GoogleButtonProps) => {
   const tAuth = useTranslations("auth");
   const label = tAuth(`google.${action}`);
 
-  const url = new URL(redirectTo || "/", process.env.NEXT_PUBLIC_ADMIN_URL);
+  const url = new URL(
+    redirectTo || DEFAULT_AUTHENTICATED_ROUTE,
+    process.env.NEXT_PUBLIC_ADMIN_URL,
+  );
   url.searchParams.set(query.oauth, "google");
   const callbackURL = url.toString();
 

@@ -9,10 +9,12 @@ import { query } from "@/constants/query";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
-import { getErrorMessage } from "@/lib/auth-client";
+import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 const OAuthSnackbar = () => {
   const handled = useRef(false);
+
+  const { data: session } = authClient.useSession();
 
   const locale = useLocale();
 
@@ -40,8 +42,13 @@ const OAuthSnackbar = () => {
       const message = getErrorMessage(error, locale);
       enqueueSnackbar(message, { variant: "error" });
     } else if (provider === "google")
-      enqueueSnackbar(tAuth("google.success"), { variant: "success" });
-  }, [error, locale, pathname, provider, router, searchParams, tAuth]);
+      enqueueSnackbar(
+        tAuth("google.success", { email: session?.user.email || "" }),
+        {
+          variant: "success",
+        },
+      );
+  }, [error, locale, pathname, provider, router, searchParams, session, tAuth]);
 
   return null;
 };
