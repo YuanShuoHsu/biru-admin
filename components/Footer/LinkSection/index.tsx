@@ -82,7 +82,7 @@ const LinkSection = () => {
   const footerItems = useFooterItems();
 
   return (
-    <>
+    <Grid container spacing={2}>
       {footerItems.map(({ children, label: parentLabel, to: parentTo }) => (
         <StyledGrid key={parentTo} size={{ xs: 6, md: 2 }}>
           <Typography color="text.primary" variant="subtitle2">
@@ -112,7 +112,7 @@ const LinkSection = () => {
           )}
         </StyledGrid>
       ))}
-    </>
+    </Grid>
   );
 };
 
