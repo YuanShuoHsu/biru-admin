@@ -1700,7 +1700,8 @@ export interface components {
       id: string;
       image?: string | null;
       lastName?: string | null;
-      role: string;
+      /** @enum {string} */
+      role: "admin" | "member" | "owner";
       teams: components["schemas"]["OrganizationMemberTeamDto"][];
       userId: string;
     };
