@@ -177,6 +177,13 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
 
   const isPickup = mode === ORDER_MODE.Pickup;
 
+  const modeLabel =
+    mode === ORDER_MODE.Pickup
+      ? tOrder("mode.pickup.label")
+      : mode === ORDER_MODE.DineIn
+        ? tOrder("mode.dineIn.label")
+        : mode || "";
+
   const storeChildren: BreadcrumbItem[] = [
     {
       icon: Payment,
@@ -192,9 +199,8 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
 
   const orderChildren: BreadcrumbItem[] = [
     {
-      hidden: true,
       icon: ShoppingCart,
-      label: mode || "",
+      label: modeLabel,
       to: `/${mode}`,
       children: [
         {

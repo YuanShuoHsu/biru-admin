@@ -7,6 +7,8 @@ import CardDialogContent, {
 } from "./CardDialogContent";
 import ItemSoldOut from "./ItemSoldOut";
 
+import { ViewDirections } from "@/constants/view";
+
 import { AutoAwesome, FavoriteBorder } from "@mui/icons-material";
 import {
   Box,
@@ -25,7 +27,7 @@ import { useMenuStore } from "@/providers/menu-store-provider";
 import { useViewStore } from "@/providers/view-store-provider";
 
 import type { Option } from "@/types/menu";
-import { ViewDirection, ViewDirections } from "@/types/view";
+import type { ViewDirection } from "@/types/view";
 
 const StyledCard = styled(Card)({
   position: "relative",

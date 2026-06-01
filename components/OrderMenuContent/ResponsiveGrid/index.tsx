@@ -1,11 +1,12 @@
 import ActionAreaCard from "./ActionAreaCard";
 
+import { ViewGridSizes } from "@/constants/view";
+
 import { Grid } from "@mui/material";
 
 import { useViewStore } from "@/providers/view-store-provider";
 
 import type { MenuItem } from "@/types/menu";
-import { ViewGridSizes } from "@/types/view";
 
 interface ResponsiveGridProps {
   items: MenuItem[];
