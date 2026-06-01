@@ -168,7 +168,7 @@ const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
           id,
           amount,
           extraCost,
-          image,
+          image: image || null,
           price,
           quantity,
           choices,
