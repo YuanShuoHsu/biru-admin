@@ -8,13 +8,7 @@ import LinkSection from "./LinkSection";
 import Newsletter from "./Newsletter";
 import SocialLinks from "./SocialLinks";
 
-import {
-  Container,
-  type ContainerProps,
-  Divider,
-  Grid,
-  Stack,
-} from "@mui/material";
+import { Container, type ContainerProps, Divider, Stack } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 const StyledContainer = styled(Container)<ContainerProps>(({ theme }) => ({
@@ -26,10 +20,8 @@ const StyledContainer = styled(Container)<ContainerProps>(({ theme }) => ({
 
 const Footer = () => (
   <StyledContainer component="footer" disableGutters maxWidth="lg">
-    <Grid container spacing={2}>
-      <Newsletter />
-      <LinkSection />
-    </Grid>
+    <Newsletter />
+    <LinkSection />
     <Divider />
     <Stack
       direction={{ xs: "column", sm: "row" }}
