@@ -1331,8 +1331,8 @@ export interface components {
       name: string;
       description?: string;
       image?: string;
-      /** @description BCP 47 language tag, e.g. zh-TW */
-      inLanguage?: string;
+      /** @enum {string} */
+      inLanguage?: "zh-TW" | "en" | "ja" | "ko" | "zh-CN";
     };
     MenuResponseDto: {
       id: string;
@@ -1340,8 +1340,8 @@ export interface components {
       name: string;
       description?: string | null;
       image?: string | null;
-      /** @description BCP 47 language tag, e.g. zh-TW */
-      inLanguage?: string | null;
+      /** @enum {string|null} */
+      inLanguage?: "zh-TW" | "en" | "ja" | "ko" | "zh-CN" | null;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -1351,8 +1351,8 @@ export interface components {
       name?: string;
       description?: string;
       image?: string;
-      /** @description BCP 47 language tag, e.g. zh-TW */
-      inLanguage?: string;
+      /** @enum {string} */
+      inLanguage?: "zh-TW" | "en" | "ja" | "ko" | "zh-CN";
     };
     CreateMenuSectionDto: {
       /** @description Parent section ID for nested sections */
@@ -2929,7 +2929,7 @@ export interface operations {
   PublicMenusController_findOrderMenu: {
     parameters: {
       query: {
-        lang: string;
+        lang: "zh-TW" | "en" | "ja" | "ko" | "zh-CN";
       };
       header?: never;
       path: {
