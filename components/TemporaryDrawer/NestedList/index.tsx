@@ -13,8 +13,8 @@ import { StyledListItemButton } from "./SelectedListItem/ListItemLink";
 import { ORDER_MODE } from "@/constants/orderMode";
 import { query } from "@/constants/query";
 
+import { useOrganization } from "@/hooks/organizations";
 import { useAuthMenuItems, useLogoutMenuItem } from "@/hooks/useAuth";
-import { useOrganization } from "@/hooks/useOrganization";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
@@ -71,12 +71,11 @@ const StyledDivider = styled(Divider, {
 
 // 等 order 完成後要修正
 const DineInMenuItem = () => {
-  const { storeSlug } = useParams<RouteParams>();
+  const { mode, organizationSlug } = useParams<RouteParams>();
 
   const router = useRouter();
 
   const searchParams = useSearchParams();
-  const mode = searchParams.get("mode");
   const tableNumber = searchParams.get("tableNumber");
   const partySize = searchParams.get("partySize");
 
@@ -89,7 +88,7 @@ const DineInMenuItem = () => {
 
   const handleClick = () =>
     router.push(
-      getHref(`/order/${storeSlug}`, { mode, tableNumber, partySize }),
+      getHref(`/order/${mode}/${organizationSlug}`, { tableNumber, partySize }),
     );
 
   return (
@@ -151,12 +150,11 @@ const DineInMenuItem = () => {
 const useNavItems = (): MenuItem[] => {
   const { session } = useAuthStore((state) => state);
 
-  const { storeSlug } = useParams<RouteParams>();
+  const { mode, organizationSlug } = useParams<Partial<RouteParams>>();
 
   const pathname = usePathname();
 
   const searchParams = useSearchParams();
-  const mode = searchParams.get("mode");
   const redirectTo = searchParams.get("redirectTo");
   const isAuthPage = pathname.startsWith("/auth");
   const isCompanyPage = pathname.startsWith("/company");
@@ -197,13 +195,13 @@ const useNavItems = (): MenuItem[] => {
   const tOrganizations = useTranslations("organizations");
 
   const dineInChildren: MenuItem[] = [
-    ...(mode === ORDER_MODE.DineIn && storeSlug
+    ...(mode === ORDER_MODE.DineIn && organizationSlug
       ? [{ slot: () => <DineInMenuItem /> }]
       : []),
     {
       icon: LocalMall,
       label: tOrder("mode.pickup.label"),
-      to: `?mode=${ORDER_MODE.Pickup}`,
+      to: `/${ORDER_MODE.Pickup}`,
     },
   ];
 

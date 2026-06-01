@@ -1,5 +1,3 @@
-import type { Locale } from "@/i18n/routing";
-
 import type { Choice, Menu, MenuItem, Option } from "@/types/menu";
 
 export const getItemKey = (
@@ -20,15 +18,11 @@ export const getItemKey = (
 const findItemById = (menus: Menu[], itemId: string): MenuItem | undefined =>
   menus.flatMap(({ items }) => items).find(({ id }) => id === itemId);
 
-export const getItemName = (
-  menus: Menu[],
-  itemId: string,
-  locale: Locale,
-): string => {
+export const getItemName = (menus: Menu[], itemId: string): string => {
   const item = findItemById(menus, itemId);
   if (!item) return "";
 
-  return item.name[locale];
+  return item.name;
 };
 
 export const getItemStock = (menus: Menu[], itemId: string): number | null => {
@@ -43,14 +37,10 @@ const findOptionChoiceById = (
   choiceId: string,
 ): Choice | undefined => option.choices.find(({ id }) => id === choiceId);
 
-const getOptionChoiceName = (
-  option: Option,
-  choiceId: string,
-  locale: Locale,
-): string => {
+const getOptionChoiceName = (option: Option, choiceId: string): string => {
   const choice = findOptionChoiceById(option, choiceId);
 
-  return choice?.name[locale] || "";
+  return choice?.name || "";
 };
 
 const findItemOptionById = (
@@ -64,7 +54,6 @@ export const getLimitingChoicesCap = (
   menus: Menu[],
   id: string,
   choices: Record<string, string[]>,
-  locale: Locale,
   getChoiceAvailableQuantity: (
     choiceId: string,
     choiceStock: number | null,
@@ -94,13 +83,11 @@ export const getLimitingChoicesCap = (
           id,
         );
 
-        const localizedName = name[locale];
-
         if (available < acc.cap) {
-          acc.names = [localizedName];
+          acc.names = [name];
           acc.cap = available;
-        } else if (available === acc.cap && !acc.names.includes(localizedName))
-          acc.names.push(localizedName);
+        } else if (available === acc.cap && !acc.names.includes(name))
+          acc.names.push(name);
 
         return Math.min(min, available);
       }, Infinity);
@@ -124,7 +111,6 @@ export const getChoiceNames = (
   menus: Menu[],
   itemId: string,
   choices: Record<string, string[]>,
-  locale: Locale,
   { colon, delimiter, joinWith = "\n" }: CommonSeparators,
 ): string => {
   const item = findItemById(menus, itemId);
@@ -138,13 +124,11 @@ export const getChoiceNames = (
       if (!option) return [];
 
       const choiceNames = choiceIds
-        .map((choiceId) => getOptionChoiceName(option, choiceId, locale))
+        .map((choiceId) => getOptionChoiceName(option, choiceId))
         .filter(Boolean)
         .join(delimiter);
 
-      return choiceNames
-        ? [`${option.name[locale]}${colon}${choiceNames}`]
-        : [];
+      return choiceNames ? [`${option.name}${colon}${choiceNames}`] : [];
     })
     .join(joinWith);
 };

@@ -13,29 +13,30 @@ import { MenuStoreProvider } from "@/providers/menu-store-provider";
 import { getMenus } from "@/utils/menus";
 import { getStores } from "@/utils/stores";
 
-interface OrderStoreSlugLayoutProps {
+interface OrderModeOrganizationSlugLayoutProps {
   children: React.ReactNode;
   params: Promise<{
     locale: string;
-    storeSlug: string;
+    mode: string;
+    organizationSlug: string;
   }>;
 }
 
-const OrderStoreSlugLayout = async ({
+const OrderModeOrganizationSlugLayout = async ({
   children,
   params,
-}: OrderStoreSlugLayoutProps) => {
-  const { locale, storeSlug } = await params;
+}: OrderModeOrganizationSlugLayoutProps) => {
+  const { locale, organizationSlug } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
 
   setRequestLocale(locale);
 
   const stores = await getStores();
 
-  const store = stores.find(({ slug }) => slug === storeSlug);
+  const store = stores.find(({ slug }) => slug === organizationSlug);
   if (!store) return notFound();
 
-  const menus = await getMenus(store.id);
+  const menus = await getMenus(organizationSlug, locale);
 
   return (
     <MenuStoreProvider menus={menus}>
@@ -46,4 +47,4 @@ const OrderStoreSlugLayout = async ({
   );
 };
 
-export default OrderStoreSlugLayout;
+export default OrderModeOrganizationSlugLayout;

@@ -9,24 +9,24 @@ import { useRouter } from "@/i18n/navigation";
 
 import { MenuItem, TextField } from "@mui/material";
 
-import type { StoreSlug } from "@/types/stores";
+import type { Organization } from "@/types/organizations";
 
 interface OrderModeDineInStoreSlugTableNumberSelectProps {
-  storeSlug: StoreSlug;
+  organizationSlug: Organization["slug"];
   tableNumber: string;
 }
 
 const OrderModeDineInStoreSlugTableNumberSelect = ({
-  storeSlug,
+  organizationSlug,
   tableNumber,
 }: OrderModeDineInStoreSlugTableNumberSelectProps) => {
-  const tOrder = useTranslations("order");
-
   const router = useRouter();
+
+  const tOrder = useTranslations("order");
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     router.push(
-      `/order/${storeSlug}?mode=${ORDER_MODE.DineIn}&tableNumber=${tableNumber}&partySize=${event.target.value}`,
+      `/order/${ORDER_MODE.DineIn}/${organizationSlug}?tableNumber=${tableNumber}&partySize=${event.target.value}`,
     );
 
   return (
@@ -38,8 +38,34 @@ const OrderModeDineInStoreSlugTableNumberSelect = ({
       required
       select
       size="small"
+      slotProps={{
+        inputLabel: { shrink: true },
+        select: {
+          displayEmpty: true,
+          renderValue: (selected) =>
+            selected ? (
+              tOrder(
+                "mode.dineIn.storeSlug.tableNumber.partySize.select.value",
+                { count: Number(selected) },
+              )
+            ) : (
+              <em>
+                {tOrder(
+                  "mode.dineIn.storeSlug.tableNumber.partySize.select.placeholder",
+                )}
+              </em>
+            ),
+        },
+      }}
       value={""}
     >
+      <MenuItem disabled value="">
+        <em>
+          {tOrder(
+            "mode.dineIn.storeSlug.tableNumber.partySize.select.placeholder",
+          )}
+        </em>
+      </MenuItem>
       {Array.from({ length: PARTY_SIZE_MAX }, (_, index) => index + 1).map(
         (count) => (
           <MenuItem key={count} value={count}>

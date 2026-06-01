@@ -1,4 +1,5 @@
-import type { StoreSlug } from "./stores";
+import type { OrderMode } from "./orderMode";
+import type { Organization } from "./organizations";
 
 import type { Locale } from "@/i18n/routing";
 
@@ -7,8 +8,9 @@ interface RouteParam {
   menuId: string;
   menuItemId: string;
   menuSectionId: string;
+  mode: OrderMode;
+  organizationSlug: Organization["slug"];
   slug: string;
-  storeSlug: StoreSlug;
   teamId: string;
   userId: string;
 }

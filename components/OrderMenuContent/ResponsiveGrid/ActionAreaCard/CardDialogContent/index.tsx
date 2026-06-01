@@ -113,13 +113,7 @@ const CardDialogContent = React.forwardRef<
   const itemStockCapLeft = itemStockLeft - cartItemTotalQuantity;
 
   const { names: limitingChoiceNames, cap: optionCapLeft } =
-    getLimitingChoicesCap(
-      menus,
-      id,
-      choices,
-      locale,
-      getChoiceAvailableQuantity,
-    );
+    getLimitingChoicesCap(menus, id, choices, getChoiceAvailableQuantity);
 
   const limitingChoicesLabel =
     limitingChoiceNames.length > 0
@@ -236,7 +230,7 @@ const CardDialogContent = React.forwardRef<
 
           return (
             <StyledFormControl key={optionId}>
-              <FormLabel>{optionName[locale]}</FormLabel>
+              <FormLabel>{optionName}</FormLabel>
               <Stack direction="row" flexWrap="wrap" gap={1}>
                 {filteredOptionChoices.map(
                   ({
@@ -294,7 +288,7 @@ const CardDialogContent = React.forwardRef<
                             gap={1}
                           >
                             <Typography component="span" variant="body2">
-                              {choiceName[locale]}
+                              {choiceName}
                             </Typography>
                             {extraCost > 0 && (
                               <>

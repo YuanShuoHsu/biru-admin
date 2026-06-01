@@ -78,7 +78,7 @@ const OrderMenuContent = () => {
   const categoryGroups = menus
     .map(({ id, name, items }) => ({
       id,
-      label: name[locale],
+      label: name,
       items: items.filter(({ isActive }) => isActive),
     }))
     .filter(({ items }) => items.length > 0);
@@ -122,7 +122,7 @@ const OrderMenuContent = () => {
     .map((group) => ({
       ...group,
       items: group.items.filter(({ name }) =>
-        name[locale].toLowerCase().includes(searchText),
+        name.toLowerCase().includes(searchText),
       ),
     }))
     .filter(

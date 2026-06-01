@@ -1,13 +1,11 @@
-import type { Locale } from "@/i18n/routing";
-
 interface Ingredient {
   id: string;
   key: string;
-  name: Record<Locale, string>;
+  name: string;
   createdAt: Date;
   menuItemId?: string;
   menuItemOptionChoiceId?: string;
-  unit: Record<Locale, string>;
+  unit: string;
   updatedAt: Date;
   usage: number;
 }
@@ -15,7 +13,7 @@ interface Ingredient {
 export interface Choice {
   id: string;
   key: string;
-  name: Record<Locale, string>;
+  name: string;
   createdAt: Date;
   extraCost: number;
   ingredients: Ingredient[];
@@ -30,7 +28,7 @@ export interface Choice {
 export interface Option {
   id: string;
   key: string;
-  name: Record<Locale, string>;
+  name: string;
   choices: Choice[];
   createdAt: Date;
   isActive: boolean;
@@ -43,9 +41,9 @@ export interface Option {
 export interface MenuItem {
   id: string;
   key: string;
-  name: Record<Locale, string>;
+  name: string;
   createdAt: Date;
-  description: Record<Locale, string>;
+  description: string;
   image: string | null;
   ingredients: Ingredient[];
   isActive: boolean;
@@ -60,7 +58,7 @@ export interface MenuItem {
 export interface Menu {
   id: string;
   key: string;
-  name: Record<Locale, string>;
+  name: string;
   createdAt: Date;
   isActive: boolean;
   items: MenuItem[];

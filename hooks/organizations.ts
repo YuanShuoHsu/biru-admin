@@ -7,10 +7,10 @@ import type { Organization, OrganizationMember } from "@/types/organizations";
 import type { RouteParams } from "@/types/routeParams";
 
 export const useOrganization = () => {
-  const { storeSlug } = useParams<RouteParams>();
+  const { organizationSlug } = useParams<RouteParams>();
 
   const { data: organization = null } = useSWR<Organization>(
-    storeSlug ? `/api/organizations/${storeSlug}` : null,
+    organizationSlug ? `/api/organizations/${organizationSlug}` : null,
   );
 
   return organization;

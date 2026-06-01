@@ -1,5 +1,3 @@
-import { useLocale } from "next-intl";
-
 import ActionAreaCard from "./ActionAreaCard";
 
 import { Grid } from "@mui/material";
@@ -20,8 +18,6 @@ const ResponsiveGrid = ({
   showLatest,
   showTopSold,
 }: ResponsiveGridProps) => {
-  const locale = useLocale();
-
   const { view } = useViewStore((state) => state);
   const viewGridSizes = ViewGridSizes[view];
 
@@ -32,8 +28,8 @@ const ResponsiveGrid = ({
           <Grid display="flex" key={id} size={viewGridSizes}>
             <ActionAreaCard
               id={id}
-              name={name[locale]}
-              description={description[locale]}
+              name={name}
+              description={description}
               image={image}
               options={options}
               price={price}

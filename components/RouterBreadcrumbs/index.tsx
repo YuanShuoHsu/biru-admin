@@ -9,7 +9,7 @@ import useSWR from "swr";
 
 import { ORDER_MODE } from "@/constants/orderMode";
 
-import { useOrganization } from "@/hooks/useOrganization";
+import { useOrganization } from "@/hooks/organizations";
 
 import { usePathname } from "@/i18n/navigation";
 
@@ -99,7 +99,7 @@ interface BreadcrumbItem {
 }
 
 const useBreadcrumbs = (): BreadcrumbItem[] => {
-  const { menuId, menuItemId, menuSectionId, slug, storeSlug, teamId, userId } =
+  const { menuId, menuItemId, menuSectionId, slug, teamId, userId } =
     useParams<RouteParams>();
 
   const searchParams = useSearchParams();
@@ -192,11 +192,19 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
 
   const orderChildren: BreadcrumbItem[] = [
     {
-      children: storeChildren,
-      disabled: !isPickup,
-      icon: Storefront,
-      label: storeName,
-      to: `/${storeSlug}`,
+      hidden: true,
+      icon: ShoppingCart,
+      label: mode || "",
+      to: `/${mode}`,
+      children: [
+        {
+          children: storeChildren,
+          disabled: !isPickup,
+          icon: Storefront,
+          label: storeName,
+          to: `/${organizationSlug}`,
+        },
+      ],
     },
   ];
 
@@ -217,49 +225,6 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
       icon: AdminPanelSettings,
       label: tAdmins("label"),
       to: "/admins",
-    },
-    {
-      children: [
-        {
-          children: [
-            {
-              icon: People,
-              label: tOrganizations("members.label"),
-              to: "/members",
-            },
-            {
-              children: [
-                {
-                  disabled: true,
-                  icon: Group,
-                  label: teamName,
-                  to: `/${teamId}`,
-                },
-              ],
-              icon: Groups,
-              label: tOrganizations("teams.label"),
-              to: "/teams",
-            },
-            {
-              icon: Mail,
-              label: tOrganizations("invitations.label"),
-              to: "/invitations",
-            },
-            {
-              icon: LocationOn,
-              label: tOrganizations("location.label"),
-              to: "/location",
-            },
-          ],
-          disabled: true,
-          icon: ManageAccounts,
-          label: organizationName,
-          to: `/${slug}`,
-        },
-      ],
-      icon: Business,
-      label: tOrganizations("label"),
-      to: "/organizations",
     },
     {
       children: [
@@ -384,6 +349,49 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
       icon: ShoppingCart,
       label: tOrder("label"),
       to: "/order",
+    },
+    {
+      children: [
+        {
+          children: [
+            {
+              icon: People,
+              label: tOrganizations("members.label"),
+              to: "/members",
+            },
+            {
+              children: [
+                {
+                  disabled: true,
+                  icon: Group,
+                  label: teamName,
+                  to: `/${teamId}`,
+                },
+              ],
+              icon: Groups,
+              label: tOrganizations("teams.label"),
+              to: "/teams",
+            },
+            {
+              icon: Mail,
+              label: tOrganizations("invitations.label"),
+              to: "/invitations",
+            },
+            {
+              icon: LocationOn,
+              label: tOrganizations("location.label"),
+              to: "/location",
+            },
+          ],
+          disabled: true,
+          icon: ManageAccounts,
+          label: organizationName,
+          to: `/${slug}`,
+        },
+      ],
+      icon: Business,
+      label: tOrganizations("label"),
+      to: "/organizations",
     },
   ];
 };

@@ -1,3 +1,3 @@
-const OrderToolbarDefault = () => null;
+const ToolbarOrderDefault = () => null;
 
-export default OrderToolbarDefault;
+export default ToolbarOrderDefault;
