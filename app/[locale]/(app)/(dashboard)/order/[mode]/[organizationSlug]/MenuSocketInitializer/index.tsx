@@ -34,7 +34,7 @@ const MenuSocketInitializer = ({ storeId }: MenuSocketInitializerProps) => {
       try {
         const response = await menuSocket
           .timeout(5000)
-          .emitWithAck("findAllMenus", { storeId, lang: locale });
+          .emitWithAck("orderMenu", { storeId, lang: locale });
 
         setMenu({ menus: response });
       } catch (error) {

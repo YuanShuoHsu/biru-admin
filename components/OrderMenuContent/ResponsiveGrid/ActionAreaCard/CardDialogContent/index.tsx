@@ -25,7 +25,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { Menu, Option } from "@/types/menu";
 
-import { getLimitingChoicesCap } from "@/utils/menu";
+import { getLimitingChoicesCap } from "@/utils/menus";
 
 const ImageBox = styled(Box)(({ theme }) => ({
   position: "relative",

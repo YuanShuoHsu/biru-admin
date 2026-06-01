@@ -4,7 +4,7 @@
 "use client";
 
 import dayjs from "dayjs";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import OrderBottomBar from "./OrderBottomBar";
@@ -62,8 +62,6 @@ const StyledTabs = styled(Tabs, {
 }));
 
 const OrderMenuContent = () => {
-  const locale = useLocale();
-
   const { menus } = useMenuStore((state) => state);
 
   const { orderSearchText } = useOrderSearchStore((state) => state);
