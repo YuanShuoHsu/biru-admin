@@ -9,17 +9,15 @@ import ItemSoldOut from "./ItemSoldOut";
 
 import { ViewDirections } from "@/constants/view";
 
-import { AutoAwesome, FavoriteBorder } from "@mui/icons-material";
 import {
   Box,
   Card,
   CardActionArea,
   CardContent,
-  Chip,
   Stack,
   Typography,
 } from "@mui/material";
-import { alpha, styled } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 
 import { useCartStore } from "@/providers/cart-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -28,8 +26,6 @@ import { useViewStore } from "@/providers/view-store-provider";
 
 import type { components } from "@/types/api";
 import type { ViewDirection } from "@/types/view";
-
-import type { Option } from "@/utils/menus";
 
 const StyledCard = styled(Card)({
   position: "relative",
@@ -56,46 +52,46 @@ const ImageBox = styled(Box, {
   height: viewDirection === "column" ? 140 : "100%",
 }));
 
-const TopSoldChip = styled(Chip, {
-  shouldForwardProp: (prop) => prop !== "rank",
-})<{ rank: number }>(({ rank, theme }) => {
-  const backgroundColor =
-    rank === 0
-      ? "rgba(255, 215, 0, 0.5)"
-      : rank === 1
-        ? "rgba(192, 192, 192, 0.5)"
-        : rank === 2
-          ? "rgba(205, 133, 63, 0.5)"
-          : alpha(theme.palette.primary.main, 0.5);
+// const TopSoldChip = styled(Chip, {
+//   shouldForwardProp: (prop) => prop !== "rank",
+// })<{ rank: number }>(({ rank, theme }) => {
+//   const backgroundColor =
+//     rank === 0
+//       ? "rgba(255, 215, 0, 0.5)"
+//       : rank === 1
+//         ? "rgba(192, 192, 192, 0.5)"
+//         : rank === 2
+//           ? "rgba(205, 133, 63, 0.5)"
+//           : alpha(theme.palette.primary.main, 0.5);
 
-  return {
-    position: "absolute",
-    top: theme.spacing(1),
-    right: theme.spacing(1),
-    backgroundColor,
-    color: theme.palette.common.white,
-    fontWeight: theme.typography.fontWeightBold,
-    zIndex: 1,
+//   return {
+//     position: "absolute",
+//     top: theme.spacing(1),
+//     right: theme.spacing(1),
+//     backgroundColor,
+//     color: theme.palette.common.white,
+//     fontWeight: theme.typography.fontWeightBold,
+//     zIndex: 1,
 
-    "& .MuiChip-icon": {
-      color: theme.palette.common.white,
-    },
-  };
-});
+//     "& .MuiChip-icon": {
+//       color: theme.palette.common.white,
+//     },
+//   };
+// });
 
-const LatestChip = styled(Chip)(({ theme }) => ({
-  position: "absolute",
-  top: theme.spacing(1),
-  right: theme.spacing(1),
-  backgroundColor: alpha(theme.palette.primary.main, 0.5),
-  color: theme.palette.common.white,
-  fontWeight: theme.typography.fontWeightBold,
-  zIndex: 1,
+// const LatestChip = styled(Chip)(({ theme }) => ({
+//   position: "absolute",
+//   top: theme.spacing(1),
+//   right: theme.spacing(1),
+//   backgroundColor: alpha(theme.palette.primary.main, 0.5),
+//   color: theme.palette.common.white,
+//   fontWeight: theme.typography.fontWeightBold,
+//   zIndex: 1,
 
-  "& .MuiChip-icon": {
-    color: theme.palette.common.white,
-  },
-}));
+//   "& .MuiChip-icon": {
+//     color: theme.palette.common.white,
+//   },
+// }));
 
 const StyledCardContent = styled(CardContent)(({ theme }) => ({
   width: "100%",
@@ -115,40 +111,34 @@ const StyledCardContent = styled(CardContent)(({ theme }) => ({
 // });
 
 export interface ActionAreaCardProps {
-  item: components["schemas"]["OrderMenuItemResponseDto"];
-  options: Option[];
-  showLatest: boolean;
-  topSoldRank?: number;
+  menuItem: components["schemas"]["OrderMenuItemResponseDto"];
 }
 
-const ActionAreaCard = ({
-  item,
-  options,
-  showLatest,
-  topSoldRank,
-}: ActionAreaCardProps) => {
-  const { id, name, description, image, offers } = item;
+const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
+  const { id, name, description, image, offers } = menuItem;
   const offer = offers[0];
-  const price = parseFloat(offer?.price ?? "0") || 0;
+  // const price = parseFloat(offer?.price ?? "0") || 0;
   const stock = offer?.inventoryLevel?.value ?? null;
   const dialogRef = useRef<CardDialogContentImperativeHandle>(null);
+
+  // const locale = useLocale();
 
   const { updateCartItem } = useCartStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
   const { menus } = useMenuStore((state) => state);
   const { view } = useViewStore((state) => state);
 
-  const tCommon = useTranslations("common");
+  // const tCommon = useTranslations("common");
   const tDialog = useTranslations("dialog");
-  const tOrder = useTranslations("order");
+  // const tOrder = useTranslations("order");
 
   const viewDirection = ViewDirections[view];
 
   // const sizes = options?.find(({ id }) => id === "size")?.choices;
 
-  const hasExtraCost = options?.some(({ choices }) =>
-    choices.some(({ extraCost }) => extraCost > 0),
-  );
+  // const hasExtraCost = options?.some(({ choices }) =>
+  //   choices.some(({ extraCost }) => extraCost > 0),
+  // );
 
   const isItemOutOfStock = stock === 0;
 
@@ -160,9 +150,9 @@ const ActionAreaCard = ({
       confirmText: tDialog("addToCart"),
       content: (
         <CardDialogContent
-          item={item}
+          menuItem={menuItem}
           menus={menus}
-          options={options}
+          options={[]}
           ref={dialogRef}
         />
       ),
@@ -199,7 +189,7 @@ const ActionAreaCard = ({
         viewDirection={viewDirection}
       >
         <ImageBox viewDirection={viewDirection}>
-          {topSoldRank !== undefined && (
+          {/* {topSoldRank !== undefined && (
             <TopSoldChip
               label={`${tOrder("mode.storeSlug.tableNumber.top")} ${topSoldRank + 1}`}
               icon={<FavoriteBorder />}
@@ -213,7 +203,7 @@ const ActionAreaCard = ({
               icon={<AutoAwesome />}
               size="small"
             />
-          )}
+          )} */}
           {image && (
             <Image
               alt={name}
@@ -236,9 +226,9 @@ const ActionAreaCard = ({
                 size="small"
               />
             ))} */}
-            <Typography color="text.primary" variant="subtitle2">
+            {/* <Typography color="text.primary" variant="subtitle2">
               {`${tCommon("currency")} ${price} ${hasExtraCost ? tCommon("from") : ""}`}
-            </Typography>
+            </Typography> */}
           </Stack>
           {description && (
             <Typography color="text.secondary" variant="body2">

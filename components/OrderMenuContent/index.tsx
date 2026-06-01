@@ -3,7 +3,6 @@
 
 "use client";
 
-import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import OrderBottomBar from "./OrderBottomBar";
@@ -64,7 +63,7 @@ const OrderMenuContent = () => {
     threshold: SCROLL_TRIGGER_THRESHOLD,
   });
 
-  const tOrder = useTranslations("order");
+  // const tOrder = useTranslations("order");
 
   console.log(menus);
 
@@ -77,7 +76,7 @@ const OrderMenuContent = () => {
     }))
     .filter(({ menuItems }) => menuItems.length > 0);
 
-  const allItems = categoryGroups.flatMap(({ menuItems }) => menuItems);
+  // const allItems = categoryGroups.flatMap(({ menuItems }) => menuItems);
 
   // TODO: 需等訂單系統完成後，後端補上 sold 欄位才能啟用
   // const topSoldItems = [...allItems]
