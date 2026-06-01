@@ -23,8 +23,9 @@ import { styled } from "@mui/material/styles";
 import { useCartStore } from "@/providers/cart-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { Menu, Option } from "@/types/menu";
+import type { components } from "@/types/api";
 
+import type { Option } from "@/utils/menus";
 import { getLimitingChoicesCap } from "@/utils/menus";
 
 const ImageBox = styled(Box)(({ theme }) => ({
@@ -52,20 +53,19 @@ export interface CardDialogContentImperativeHandle {
 }
 
 interface CardDialogContentProps {
-  id: string;
-  name: string;
-  description: string;
-  image: string | null;
-  menus: Menu[];
+  item: components["schemas"]["OrderMenuItemResponseDto"];
+  menus: components["schemas"]["OrderMenuResponseDto"][];
   options: Option[];
-  price: number;
-  stock: number | null;
 }
 
 const CardDialogContent = React.forwardRef<
   CardDialogContentImperativeHandle,
   CardDialogContentProps
->(({ id, name, description, image, menus, options, price, stock }, ref) => {
+>(({ item, menus, options }, ref) => {
+  const { id, name, description, image, offers } = item;
+  const offer = offers[0];
+  const price = parseFloat(offer?.price ?? "0") || 0;
+  const stock = offer?.inventoryLevel?.value ?? null;
   const [rawQuantity, setRawQuantity] = useState(1);
 
   const { getCartItemTotalQuantity, getChoiceAvailableQuantity } = useCartStore(

@@ -4,13 +4,33 @@ import { fetcher } from "./fetcher";
 
 import type { Locale } from "@/i18n/routing";
 
-import type { Menu, MenuItem } from "@/types/menu";
+import type { components } from "@/types/api";
 import type {
   Menu as AdminMenu,
   MenuItem as AdminMenuItem,
   MenuItemAddOn as AdminMenuItemAddOn,
   MenuSection as AdminMenuSection,
 } from "@/types/menus";
+
+type Menu = components["schemas"]["OrderMenuResponseDto"];
+type MenuItem = components["schemas"]["OrderMenuItemResponseDto"];
+
+export interface Choice {
+  id: string;
+  name: string;
+  extraCost: number;
+  stock: number | null;
+  isShared: boolean;
+  isActive: boolean;
+}
+
+export interface Option {
+  id: string;
+  name: string;
+  choices: Choice[];
+  multiple: boolean;
+  required: boolean;
+}
 
 export const getItemKey = (
   itemId: string,
@@ -28,7 +48,7 @@ export const getItemKey = (
 };
 
 const findItemById = (menus: Menu[], itemId: string): MenuItem | undefined =>
-  menus.flatMap(({ items }) => items).find(({ id }) => id === itemId);
+  menus.flatMap(({ menuItems }) => menuItems).find(({ id }) => id === itemId);
 
 export const getItemName = (menus: Menu[], itemId: string): string => {
   const item = findItemById(menus, itemId);
@@ -41,7 +61,7 @@ export const getItemStock = (menus: Menu[], itemId: string): number | null => {
   const item = findItemById(menus, itemId);
   if (!item) return 0;
 
-  return item.stock;
+  return item.offers[0]?.inventoryLevel?.value ?? null;
 };
 
 const findOptionChoiceById = (
@@ -56,7 +76,7 @@ const getOptionChoiceName = (option: Option, choiceId: string): string => {
 };
 
 const findItemOptionById = (
-  item: MenuItem,
+  item: MenuItem & { options: Option[] },
   optionId: string,
 ): Option | undefined => item.options.find(({ id }) => id === optionId);
 
@@ -73,7 +93,9 @@ export const getLimitingChoicesCap = (
     itemId: string,
   ) => number,
 ): OptionLimitResult => {
-  const item = findItemById(menus, id);
+  const item = findItemById(menus, id) as
+    | (MenuItem & { options: Option[] })
+    | undefined;
   if (!item) return { cap: Infinity, names: [] };
 
   const { names, cap } = Object.entries(choices).reduce<OptionLimitResult>(
@@ -125,7 +147,9 @@ export const getChoiceNames = (
   choices: Record<string, string[]>,
   { colon, delimiter, joinWith = "\n" }: CommonSeparators,
 ): string => {
-  const item = findItemById(menus, itemId);
+  const item = findItemById(menus, itemId) as
+    | (MenuItem & { options: Option[] })
+    | undefined;
   if (!item) return "";
 
   return Object.entries(choices)
