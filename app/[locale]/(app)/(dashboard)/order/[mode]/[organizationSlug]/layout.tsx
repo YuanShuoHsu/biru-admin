@@ -39,7 +39,7 @@ const OrderModeOrganizationSlugLayout = async ({
 
   return (
     <MenuStoreProvider>
-      <MenuSocketInitializer storeId={organization.id} />
+      <MenuSocketInitializer organizationId={organization.id} />
       <CartAnchorTemporaryDrawer />
       {children}
     </MenuStoreProvider>

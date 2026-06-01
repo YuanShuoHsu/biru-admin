@@ -13,10 +13,10 @@ import { useMenuStore } from "@/providers/menu-store-provider";
 import { getErrorMessage } from "@/utils/errors";
 
 interface MenuSocketInitializerProps {
-  storeId: string;
+  organizationId: string;
 }
 
-const MenuSocketInitializer = ({ storeId }: MenuSocketInitializerProps) => {
+const MenuSocketInitializer = ({ organizationId }: MenuSocketInitializerProps) => {
   const locale = useLocale();
 
   const { setMenu } = useMenuStore((state) => state);
@@ -34,7 +34,7 @@ const MenuSocketInitializer = ({ storeId }: MenuSocketInitializerProps) => {
       try {
         const response = await menuSocket
           .timeout(5000)
-          .emitWithAck("orderMenu", { storeId, lang: locale });
+          .emitWithAck("orderMenu", { organizationId, lang: locale });
 
         setMenu({ menus: response });
       } catch (error) {
@@ -46,7 +46,7 @@ const MenuSocketInitializer = ({ storeId }: MenuSocketInitializerProps) => {
     };
 
     initMenus();
-  }, [enqueueSnackbar, isConnected, locale, setMenu, storeId]);
+  }, [enqueueSnackbar, isConnected, locale, organizationId, setMenu]);
 
   return null;
 };
