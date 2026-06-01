@@ -9,8 +9,7 @@ interface OrderModePageProps {
 const OrderModePage = async ({ params }: OrderModePageProps) => {
   const { mode } = await params;
 
-  const validModes: string[] = Object.values(ORDER_MODE);
-  if (!validModes.includes(mode)) return notFound();
+  if (mode !== ORDER_MODE.Pickup) return notFound();
 
   return null;
 };
