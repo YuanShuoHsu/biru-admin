@@ -3,7 +3,6 @@
 
 "use client";
 
-import dayjs from "dayjs";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
@@ -18,7 +17,6 @@ import {
   APP_BAR_TOOLBAR_HEIGHT_XS_UP_LANDSCAPE,
 } from "@/constants/appBar";
 import { SCROLL_TRIGGER_THRESHOLD } from "@/constants/scroll";
-import { LATEST, NEW_PRODUCT_DAYS } from "@/constants/tab";
 
 import { Stack, Tab, Tabs, useScrollTrigger } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -71,16 +69,15 @@ const OrderMenuContent = () => {
   console.log(menus);
 
   const categoryGroups = menus
-    .map(({ id, name, menuItems }) => ({
-      id,
-      label: name,
-      items: menuItems.filter(
+    .map((menu) => ({
+      ...menu,
+      menuItems: menu.menuItems.filter(
         ({ offers }) => offers[0]?.availability !== "Discontinued",
       ),
     }))
-    .filter(({ items }) => items.length > 0);
+    .filter(({ menuItems }) => menuItems.length > 0);
 
-  const allItems = categoryGroups.flatMap(({ items }) => items);
+  const allItems = categoryGroups.flatMap(({ menuItems }) => menuItems);
 
   // TODO: 需等訂單系統完成後，後端補上 sold 欄位才能啟用
   // const topSoldItems = [...allItems]
@@ -96,36 +93,36 @@ const OrderMenuContent = () => {
   //       }
   //     : null;
 
-  const latestItems = allItems.filter(
-    ({ createdAt }) =>
-      dayjs().diff(dayjs(createdAt), "day") <= NEW_PRODUCT_DAYS,
-  );
+  // const latestItems = allItems.filter(
+  //   ({ createdAt }) =>
+  //     dayjs().diff(dayjs(createdAt), "day") <= NEW_PRODUCT_DAYS,
+  // );
 
-  const latestGroups =
-    latestItems.length > 0
-      ? {
-          id: LATEST,
-          items: latestItems,
-          label: tOrder("mode.storeSlug.tableNumber.latest"),
-        }
-      : null;
+  // const latestGroups =
+  //   latestItems.length > 0
+  //     ? ({
+  //         id: LATEST,
+  //         name: tOrder("mode.storeSlug.tableNumber.latest"),
+  //         menuItems: latestItems,
+  //       } as components["schemas"]["OrderMenuResponseDto"])
+  //     : null;
 
   const combinedGroups = [
     // ...(topSoldGroups ? [topSoldGroups] : []),
-    ...(latestGroups ? [latestGroups] : []),
+    // ...(latestGroups ? [latestGroups] : []),
     ...categoryGroups,
   ];
 
   const filteredGroups = combinedGroups
     .map((group) => ({
       ...group,
-      items: group.items.filter(({ name }) =>
+      menuItems: group.menuItems.filter(({ name }) =>
         name.toLowerCase().includes(searchText),
       ),
     }))
     .filter(
-      ({ items, label }) =>
-        label.toLowerCase().includes(searchText) || items.length > 0,
+      ({ menuItems, name }) =>
+        name.toLowerCase().includes(searchText) || menuItems.length > 0,
     );
 
   const [selectedId, setSelectedId] = useState(filteredGroups[0]?.id || "");
@@ -156,13 +153,13 @@ const OrderMenuContent = () => {
           value={displayIndex}
           variant="scrollable"
         >
-          {filteredGroups.map(({ id, label }, index) => (
-            <Tab key={id} label={label} {...a11yProps(index)} />
+          {filteredGroups.map(({ id, name }, index) => (
+            <Tab key={id} label={name} {...a11yProps(index)} />
           ))}
         </StyledTabs>
-        {filteredGroups.map(({ id, items }, index) => (
-          <CustomTabPanel index={index} key={id} value={displayIndex}>
-            <ResponsiveGrid groupId={id} items={items} />
+        {filteredGroups.map((group, index) => (
+          <CustomTabPanel index={index} key={group.id} value={displayIndex}>
+            <ResponsiveGrid group={group} />
           </CustomTabPanel>
         ))}
       </Stack>

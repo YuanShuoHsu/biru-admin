@@ -10,23 +10,22 @@ import { useViewStore } from "@/providers/view-store-provider";
 import type { components } from "@/types/api";
 
 interface ResponsiveGridProps {
-  groupId: string;
-  items: components["schemas"]["OrderMenuItemResponseDto"][];
+  group: components["schemas"]["OrderMenuResponseDto"];
 }
 
-const ResponsiveGrid = ({ groupId, items }: ResponsiveGridProps) => {
+const ResponsiveGrid = ({ group: { id, menuItems } }: ResponsiveGridProps) => {
   const { view } = useViewStore((state) => state);
   const viewGridSizes = ViewGridSizes[view];
 
-  const showLatest = groupId === LATEST;
-  const showTopSold = groupId === TOP_SOLD;
+  const showLatest = id === LATEST;
+  const showTopSold = id === TOP_SOLD;
 
   return (
     <Grid container spacing={2}>
-      {items.map((item, index) => (
-        <Grid display="flex" key={item.id} size={viewGridSizes}>
+      {menuItems.map((menuItem, index) => (
+        <Grid display="flex" key={menuItem.id} size={viewGridSizes}>
           <ActionAreaCard
-            item={item}
+            item={menuItem}
             options={[]}
             showLatest={showLatest}
             {...(showTopSold ? { topSoldRank: index } : {})}
