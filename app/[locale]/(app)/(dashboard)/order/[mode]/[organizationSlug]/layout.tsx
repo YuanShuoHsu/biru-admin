@@ -10,7 +10,6 @@ import { routing } from "@/i18n/routing";
 
 import { MenuStoreProvider } from "@/providers/menu-store-provider";
 
-import { getMenus } from "@/utils/menus";
 import { getStores } from "@/utils/stores";
 
 interface OrderModeOrganizationSlugLayoutProps {
@@ -36,10 +35,8 @@ const OrderModeOrganizationSlugLayout = async ({
   const store = stores.find(({ slug }) => slug === organizationSlug);
   if (!store) return notFound();
 
-  const menus = await getMenus(organizationSlug, locale);
-
   return (
-    <MenuStoreProvider menus={menus}>
+    <MenuStoreProvider>
       <MenuSocketInitializer storeId={store.id} />
       <CartAnchorTemporaryDrawer />
       {children}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useLocale } from "next-intl";
 import { useSnackbar } from "notistack";
 import { useEffect } from "react";
 
@@ -16,8 +17,12 @@ interface MenuSocketInitializerProps {
 }
 
 const MenuSocketInitializer = ({ storeId }: MenuSocketInitializerProps) => {
+  const locale = useLocale();
+
   const { setMenu } = useMenuStore((state) => state);
+
   const { enqueueSnackbar } = useSnackbar();
+
   const { isConnected } = useSocketConnection(menuSocket);
 
   useEffect(() => {
@@ -29,7 +34,7 @@ const MenuSocketInitializer = ({ storeId }: MenuSocketInitializerProps) => {
       try {
         const response = await menuSocket
           .timeout(5000)
-          .emitWithAck("findAllMenus", storeId);
+          .emitWithAck("findAllMenus", { storeId, lang: locale });
 
         setMenu({ menus: response });
       } catch (error) {
@@ -41,7 +46,7 @@ const MenuSocketInitializer = ({ storeId }: MenuSocketInitializerProps) => {
     };
 
     initMenus();
-  }, [enqueueSnackbar, isConnected, setMenu, storeId]);
+  }, [enqueueSnackbar, isConnected, locale, setMenu, storeId]);
 
   return null;
 };

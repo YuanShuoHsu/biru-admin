@@ -11,18 +11,22 @@ import { useRouter } from "@/i18n/navigation";
 
 import { MenuItem, TextField, styled } from "@mui/material";
 
-import type { RouteParams } from "@/types/routeParams";
-
 const StyledTextField = styled(TextField)(({ theme }) => ({
   [theme.breakpoints.up("sm")]: {
     width: theme.spacing(30),
   },
 }));
 
-const OrderOrganizationSlugSelect = () => {
-  const router = useRouter();
+interface OrderOrganizationSlugSelectProps {
+  organizationSlug: string;
+}
 
-  const { mode, organizationSlug } = useParams<Partial<RouteParams>>();
+const OrderOrganizationSlugSelect = ({
+  organizationSlug,
+}: OrderOrganizationSlugSelectProps) => {
+  const { mode } = useParams();
+
+  const router = useRouter();
 
   const organizations = useOrganizations();
 

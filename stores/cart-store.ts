@@ -1,7 +1,7 @@
 import { createJSONStorage, persist } from "zustand/middleware";
 import { createStore } from "zustand/vanilla";
 
-import { getItemKey } from "@/utils/menu";
+import { getItemKey } from "@/utils/menus";
 
 export interface CartItem {
   id: string;

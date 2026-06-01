@@ -31,7 +31,7 @@ import type {
 } from "@/types/ecpay/createEcpayDto";
 import type { PaymentMethod } from "@/types/payment";
 
-import { getChoiceNames, getItemName } from "@/utils/menu";
+import { getChoiceNames, getItemName } from "@/utils/menus";
 
 const getEcpayLanguage = (locale: Locale): EcpayLanguage =>
   locales[locale].ecpay;

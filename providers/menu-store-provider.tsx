@@ -5,22 +5,16 @@ import { type StoreApi, useStore } from "zustand";
 
 import { type MenuStore, createMenuStore } from "@/stores/menu-store";
 
-import type { Menu } from "@/types/menu";
-
 const MenuStoreContext = createContext<StoreApi<MenuStore> | undefined>(
   undefined,
 );
 
 interface MenuStoreProviderProps {
   children: ReactNode;
-  menus: Menu[];
 }
 
-export const MenuStoreProvider = ({
-  children,
-  menus,
-}: MenuStoreProviderProps) => {
-  const [store] = useState(() => createMenuStore({ isLoading: false, menus }));
+export const MenuStoreProvider = ({ children }: MenuStoreProviderProps) => {
+  const [store] = useState(() => createMenuStore());
 
   return (
     <MenuStoreContext.Provider value={store}>

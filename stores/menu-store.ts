@@ -1,6 +1,6 @@
 import { createStore } from "zustand/vanilla";
 
-import { type Menu } from "@/types/menu";
+import type { Menu } from "@/types/menu";
 
 type MenuState = {
   isLoading: boolean;

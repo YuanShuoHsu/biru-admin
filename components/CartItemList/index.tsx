@@ -7,7 +7,7 @@ import { Divider, List, NoSsr, Typography } from "@mui/material";
 
 import { useCartStore } from "@/providers/cart-store-provider";
 
-import { getItemKey } from "@/utils/menu";
+import { getItemKey } from "@/utils/menus";
 
 interface CartItemListProps {
   forceXsLayout?: boolean;

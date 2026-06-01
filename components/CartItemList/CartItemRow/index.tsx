@@ -29,7 +29,7 @@ import {
   getItemName,
   getItemStock,
   getLimitingChoicesCap,
-} from "@/utils/menu";
+} from "@/utils/menus";
 
 const StyledListItem = styled(ListItem)(({ theme }) => ({
   position: "relative",
