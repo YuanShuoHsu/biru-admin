@@ -8,9 +8,11 @@ import CartAnchorTemporaryDrawer from "@/components/CartAnchorTemporaryDrawer";
 
 import { routing } from "@/i18n/routing";
 
+import type { components } from "@/types/api";
+
 import { MenuStoreProvider } from "@/providers/menu-store-provider";
 
-import { getStores } from "@/utils/stores";
+import { fetcher } from "@/utils/fetcher";
 
 interface OrderModeOrganizationSlugLayoutProps {
   children: React.ReactNode;
@@ -30,14 +32,14 @@ const OrderModeOrganizationSlugLayout = async ({
 
   setRequestLocale(locale);
 
-  const stores = await getStores();
-
-  const store = stores.find(({ slug }) => slug === organizationSlug);
-  if (!store) return notFound();
+  const organization = await fetcher<
+    components["schemas"]["OrganizationResponseDto"]
+  >(`/api/organizations/${organizationSlug}`).catch(() => null);
+  if (!organization) return notFound();
 
   return (
     <MenuStoreProvider>
-      <MenuSocketInitializer storeId={store.id} />
+      <MenuSocketInitializer storeId={organization.id} />
       <CartAnchorTemporaryDrawer />
       {children}
     </MenuStoreProvider>
