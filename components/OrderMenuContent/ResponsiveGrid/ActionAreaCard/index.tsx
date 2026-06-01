@@ -24,7 +24,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import { useMenuStore } from "@/providers/menu-store-provider";
 import { useViewStore } from "@/providers/view-store-provider";
 
-import type { components } from "@/types/api";
+import type { OrderMenuItem } from "@/types/menus";
 import type { ViewDirection } from "@/types/view";
 
 const StyledCard = styled(Card)({
@@ -111,7 +111,7 @@ const StyledCardContent = styled(CardContent)(({ theme }) => ({
 // });
 
 export interface ActionAreaCardProps {
-  menuItem: components["schemas"]["OrderMenuItemResponseDto"];
+  menuItem: OrderMenuItem;
 }
 
 const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {

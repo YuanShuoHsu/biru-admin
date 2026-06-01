@@ -1,10 +1,10 @@
 import { createStore } from "zustand/vanilla";
 
-import type { components } from "@/types/api";
+import type { OrderMenu } from "@/types/menus";
 
 type MenuState = {
   isLoading: boolean;
-  menus: components["schemas"]["OrderMenuResponseDto"][];
+  menus: OrderMenu[];
 };
 
 type MenuActions = {

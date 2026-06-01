@@ -58,7 +58,7 @@ import {
 } from "@mui/material";
 import { styled, type Theme } from "@mui/material/styles";
 
-import type { components } from "@/types/api";
+import type { Menu, MenuSection } from "@/types/menus";
 import type { RouteParams } from "@/types/routeParams";
 
 import { fetcher } from "@/utils/fetcher";
@@ -152,8 +152,7 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
     menuId ? `/api/menus/${menuId}` : null,
     async (url) => {
       try {
-        const menu =
-          await fetcher<components["schemas"]["MenuResponseDto"]>(url);
+        const menu = await fetcher<Menu>(url);
 
         return menu.name || "";
       } catch {
@@ -166,8 +165,7 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
     menuSectionId ? `/api/menu-sections/${menuSectionId}` : null,
     async (url) => {
       try {
-        const section =
-          await fetcher<components["schemas"]["MenuSectionResponseDto"]>(url);
+        const section = await fetcher<MenuSection>(url);
 
         return section.name || "";
       } catch {

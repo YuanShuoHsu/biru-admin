@@ -10,7 +10,7 @@ import { routing } from "@/i18n/routing";
 
 import { MenuStoreProvider } from "@/providers/menu-store-provider";
 
-import type { components } from "@/types/api";
+import type { OrganizationResponse } from "@/types/organizations";
 
 import { fetcher } from "@/utils/fetcher";
 
@@ -32,9 +32,9 @@ const OrderModeOrganizationSlugLayout = async ({
 
   setRequestLocale(locale);
 
-  const organization = await fetcher<
-    components["schemas"]["OrganizationResponseDto"]
-  >(`/api/organizations/${organizationSlug}`).catch(() => null);
+  const organization = await fetcher<OrganizationResponse>(
+    `/api/organizations/${organizationSlug}`,
+  ).catch(() => null);
   if (!organization) return notFound();
 
   return (

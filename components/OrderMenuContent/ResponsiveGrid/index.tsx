@@ -6,10 +6,10 @@ import { Grid } from "@mui/material";
 
 import { useViewStore } from "@/providers/view-store-provider";
 
-import type { components } from "@/types/api";
+import type { OrderMenu } from "@/types/menus";
 
 interface ResponsiveGridProps {
-  group: components["schemas"]["OrderMenuResponseDto"];
+  group: OrderMenu;
 }
 
 const ResponsiveGrid = ({ group: { menuItems } }: ResponsiveGridProps) => {
