@@ -16,7 +16,9 @@ interface MenuSocketInitializerProps {
   organizationId: string;
 }
 
-const MenuSocketInitializer = ({ organizationId }: MenuSocketInitializerProps) => {
+const MenuSocketInitializer = ({
+  organizationId,
+}: MenuSocketInitializerProps) => {
   const locale = useLocale();
 
   const { setMenu } = useMenuStore((state) => state);
