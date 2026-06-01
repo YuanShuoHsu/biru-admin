@@ -58,7 +58,7 @@ import {
 } from "@mui/material";
 import { styled, type Theme } from "@mui/material/styles";
 
-import type { Menu, MenuSection } from "@/types/menus";
+import type { components } from "@/types/api";
 import type { RouteParams } from "@/types/routeParams";
 
 import { fetcher } from "@/utils/fetcher";
@@ -99,12 +99,19 @@ interface BreadcrumbItem {
 }
 
 const useBreadcrumbs = (): BreadcrumbItem[] => {
-  const { menuId, menuItemId, menuSectionId, slug, teamId, userId } =
-    useParams<RouteParams>();
+  const {
+    menuId,
+    menuItemId,
+    menuSectionId,
+    mode,
+    organizationSlug,
+    slug,
+    teamId,
+    userId,
+  } = useParams<RouteParams>();
 
   const searchParams = useSearchParams();
-  const mode = searchParams.get("mode");
-  const organizationSlug = searchParams.get("organization");
+  const menuOrganizationSlug = searchParams.get("organization");
 
   const organization = useOrganization();
   const storeName = organization?.name || "";
@@ -145,7 +152,8 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
     menuId ? `/api/menus/${menuId}` : null,
     async (url) => {
       try {
-        const menu = await fetcher<Menu>(url);
+        const menu =
+          await fetcher<components["schemas"]["MenuResponseDto"]>(url);
 
         return menu.name || "";
       } catch {
@@ -158,7 +166,8 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
     menuSectionId ? `/api/menu-sections/${menuSectionId}` : null,
     async (url) => {
       try {
-        const section = await fetcher<MenuSection>(url);
+        const section =
+          await fetcher<components["schemas"]["MenuSectionResponseDto"]>(url);
 
         return section.name || "";
       } catch {
@@ -258,17 +267,17 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
               ],
               icon: ViewList,
               label: menuSectionName,
-              to: `/${menuSectionId}${organizationSlug ? `?organization=${organizationSlug}` : ""}`,
+              to: `/${menuSectionId}${menuOrganizationSlug ? `?organization=${menuOrganizationSlug}` : ""}`,
             },
           ],
           icon: Summarize,
           label: menuName,
-          to: `/${menuId}${organizationSlug ? `?organization=${organizationSlug}` : ""}`,
+          to: `/${menuId}${menuOrganizationSlug ? `?organization=${menuOrganizationSlug}` : ""}`,
         },
       ],
       icon: MenuBook,
       label: tMenus("label"),
-      to: `/menus${organizationSlug ? `?organization=${organizationSlug}` : ""}`,
+      to: `/menus${menuOrganizationSlug ? `?organization=${menuOrganizationSlug}` : ""}`,
     },
     {
       children: [
