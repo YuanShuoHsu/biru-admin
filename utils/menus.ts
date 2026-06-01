@@ -2,18 +2,14 @@ import { cache } from "react";
 
 import { fetcher } from "./fetcher";
 
-import type { Locale } from "@/i18n/routing";
-
-import type { components } from "@/types/api";
 import type {
-  Menu as AdminMenu,
-  MenuItem as AdminMenuItem,
-  MenuItemAddOn as AdminMenuItemAddOn,
-  MenuSection as AdminMenuSection,
+  Menu,
+  MenuItem,
+  MenuItemAddOn,
+  MenuSection,
+  OrderMenu,
+  OrderMenuItem,
 } from "@/types/menus";
-
-type Menu = components["schemas"]["OrderMenuResponseDto"];
-type MenuItem = components["schemas"]["OrderMenuItemResponseDto"];
 
 export interface Choice {
   id: string;
@@ -47,17 +43,23 @@ export const getItemKey = (
   return parts.length > 0 ? `${itemId}_${parts.join("_")}` : itemId;
 };
 
-const findItemById = (menus: Menu[], itemId: string): MenuItem | undefined =>
+const findItemById = (
+  menus: OrderMenu[],
+  itemId: string,
+): OrderMenuItem | undefined =>
   menus.flatMap(({ menuItems }) => menuItems).find(({ id }) => id === itemId);
 
-export const getItemName = (menus: Menu[], itemId: string): string => {
+export const getItemName = (menus: OrderMenu[], itemId: string): string => {
   const item = findItemById(menus, itemId);
   if (!item) return "";
 
   return item.name;
 };
 
-export const getItemStock = (menus: Menu[], itemId: string): number | null => {
+export const getItemStock = (
+  menus: OrderMenu[],
+  itemId: string,
+): number | null => {
   const item = findItemById(menus, itemId);
   if (!item) return 0;
 
@@ -76,14 +78,14 @@ const getOptionChoiceName = (option: Option, choiceId: string): string => {
 };
 
 const findItemOptionById = (
-  item: MenuItem & { options: Option[] },
+  item: OrderMenuItem & { options: Option[] },
   optionId: string,
 ): Option | undefined => item.options.find(({ id }) => id === optionId);
 
 type OptionLimitResult = { cap: number; names: string[] };
 
 export const getLimitingChoicesCap = (
-  menus: Menu[],
+  menus: OrderMenu[],
   id: string,
   choices: Record<string, string[]>,
   getChoiceAvailableQuantity: (
@@ -94,7 +96,7 @@ export const getLimitingChoicesCap = (
   ) => number,
 ): OptionLimitResult => {
   const item = findItemById(menus, id) as
-    | (MenuItem & { options: Option[] })
+    | (OrderMenuItem & { options: Option[] })
     | undefined;
   if (!item) return { cap: Infinity, names: [] };
 
@@ -142,13 +144,13 @@ interface CommonSeparators {
 }
 
 export const getChoiceNames = (
-  menus: Menu[],
+  menus: OrderMenu[],
   itemId: string,
   choices: Record<string, string[]>,
   { colon, delimiter, joinWith = "\n" }: CommonSeparators,
 ): string => {
   const item = findItemById(menus, itemId) as
-    | (MenuItem & { options: Option[] })
+    | (OrderMenuItem & { options: Option[] })
     | undefined;
   if (!item) return "";
 
@@ -169,70 +171,10 @@ export const getChoiceNames = (
     .join(joinWith);
 };
 
-interface OrderMenuItem {
-  id: string;
-  name: string;
-  description: string;
-  image: string | null;
-  price: number;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface OrderMenuSection {
-  id: string;
-  organizationId: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-  items: OrderMenuItem[];
-}
-
-export const getMenus = cache(
-  async (slug: string, locale: Locale): Promise<Menu[]> => {
-    try {
-      const sections = await fetcher<OrderMenuSection[]>(
-        `/api/organizations/${slug}/order-menu?lang=${locale}`,
-        { next: { revalidate: 60, tags: ["menus"] } },
-      );
-
-      if (!Array.isArray(sections)) return [];
-
-      return sections.map((section) => ({
-        id: section.id,
-        key: section.id,
-        storeId: section.organizationId,
-        name: section.name,
-        isActive: true,
-        createdAt: new Date(section.createdAt),
-        updatedAt: new Date(section.updatedAt),
-        items: section.items.map((item) => ({
-          id: item.id,
-          key: item.id,
-          menuId: section.id,
-          name: item.name,
-          description: item.description,
-          image: item.image,
-          price: item.price,
-          stock: null,
-          sold: 0,
-          isActive: true,
-          options: [],
-          ingredients: [],
-          createdAt: new Date(item.createdAt),
-          updatedAt: new Date(item.updatedAt),
-        })),
-      }));
-    } catch {
-      return [];
-    }
-  },
-);
-
 export const getAdminMenu = cache(
   async (menuId: string, init?: RequestInit) => {
     try {
-      return await fetcher<AdminMenu>(`/api/menus/${menuId}`, init);
+      return await fetcher<Menu>(`/api/menus/${menuId}`, init);
     } catch {
       return null;
     }
@@ -264,7 +206,7 @@ export const getAdminMenuSections = cache(
           filterValue && { filterField, filterOperator, filterValue }),
         ...(quickFilterValue && { quickFilterValue }),
       });
-      const result = await fetcher<{ data: AdminMenuSection[]; total: number }>(
+      const result = await fetcher<{ data: MenuSection[]; total: number }>(
         `/api/menus/${menuId}/menu-sections?${params.toString()}`,
         init,
       );
@@ -281,7 +223,7 @@ export const getAdminMenuSections = cache(
 export const getAdminMenuSection = cache(
   async (sectionId: string, init?: RequestInit) => {
     try {
-      return await fetcher<AdminMenuSection>(
+      return await fetcher<MenuSection>(
         `/api/menu-sections/${sectionId}`,
         init,
       );
@@ -316,7 +258,7 @@ export const getAdminMenuSectionItems = cache(
           filterValue && { filterField, filterOperator, filterValue }),
         ...(quickFilterValue && { quickFilterValue }),
       });
-      const result = await fetcher<{ data: AdminMenuItem[]; total: number }>(
+      const result = await fetcher<{ data: MenuItem[]; total: number }>(
         `/api/menu-sections/${sectionId}/menu-items?${params.toString()}`,
         init,
       );
@@ -356,7 +298,7 @@ export const getAdminMenuItemAddOns = cache(
         ...(quickFilterValue && { quickFilterValue }),
       });
       const result = await fetcher<{
-        data: AdminMenuItemAddOn[];
+        data: MenuItemAddOn[];
         total: number;
       }>(`/api/menu-items/${menuItemId}/add-ons?${params.toString()}`, init);
       return {

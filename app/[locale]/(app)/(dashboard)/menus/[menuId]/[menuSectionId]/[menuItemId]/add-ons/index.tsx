@@ -163,7 +163,10 @@ const MenuItemAddOns = ({
         ? filterItem.value.length > 0
         : !!filterItem?.value;
 
-      return fetcher<{ data: MenuItemAddOn[]; total: number }>(
+      return fetcher<{
+        data: MenuItemAddOn[];
+        total: number;
+      }>(
         `/api/menu-items/${menuItemId}/add-ons?${new URLSearchParams({
           limit: String(paginationModel.pageSize),
           offset: String(paginationModel.page * paginationModel.pageSize),

@@ -8,9 +8,9 @@ import CartAnchorTemporaryDrawer from "@/components/CartAnchorTemporaryDrawer";
 
 import { routing } from "@/i18n/routing";
 
-import type { components } from "@/types/api";
-
 import { MenuStoreProvider } from "@/providers/menu-store-provider";
+
+import type { components } from "@/types/api";
 
 import { fetcher } from "@/utils/fetcher";
 
