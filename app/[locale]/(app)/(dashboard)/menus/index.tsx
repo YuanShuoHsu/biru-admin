@@ -203,6 +203,7 @@ const Menus = ({
       {
         disableColumnMenu: true,
         field: "actions",
+        filterable: false,
         headerName: tMenus("actions.label"),
         renderCell: ({ row }: GridRenderCellParams<Menu>) => (
           <Stack height="100%" direction="row" alignItems="center" gap={1}>

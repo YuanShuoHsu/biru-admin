@@ -328,6 +328,7 @@ const OrganizationsSlugMembers = ({
       {
         disableColumnMenu: true,
         field: "actions",
+        filterable: false,
         headerName: tMembers("actions.label"),
         renderCell: ({ row }: GridRenderCellParams<Member>) => {
           const { canUpdateMemberRole, canRemoveMember, canLeaveOrganization } =

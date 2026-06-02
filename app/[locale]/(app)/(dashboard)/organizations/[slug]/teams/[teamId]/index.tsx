@@ -189,6 +189,7 @@ const OrganizationsSlugTeamsTeamId = ({
       {
         disableColumnMenu: true,
         field: "actions",
+        filterable: false,
         headerName: tTeams("actions.label"),
         renderCell: ({ row }: GridRenderCellParams<TeamMemberRow>) => (
           <>

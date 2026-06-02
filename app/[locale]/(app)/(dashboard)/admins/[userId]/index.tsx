@@ -185,6 +185,7 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
       {
         disableColumnMenu: true,
         field: "actions",
+        filterable: false,
         headerName: tUserSessions("actions.label"),
         renderCell: ({ row }: GridRenderCellParams<Session>) => {
           const isCurrent = row.token === currentSession?.session.token;

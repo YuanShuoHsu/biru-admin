@@ -145,7 +145,9 @@ const OrganizationsSlugInvitations = ({
   const columns = useMemo<GridColDef[]>(
     () => [
       {
+        disableColumnMenu: true,
         field: "actions",
+        filterable: false,
         headerName: tInvitations("actions.label"),
         renderCell: ({ row }: GridRenderCellParams<Invitation>) => (
           <>
@@ -165,7 +167,6 @@ const OrganizationsSlugInvitations = ({
             )}
           </>
         ),
-        disableColumnMenu: true,
         resizable: false,
         sortable: false,
       },

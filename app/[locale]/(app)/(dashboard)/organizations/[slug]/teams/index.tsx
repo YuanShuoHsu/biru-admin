@@ -173,6 +173,7 @@ const OrganizationsSlugTeams = ({
       {
         disableColumnMenu: true,
         field: "actions",
+        filterable: false,
         headerName: tTeams("actions.label"),
         renderCell: ({ row }: GridRenderCellParams<Team>) => (
           <Stack height="100%" direction="row" alignItems="center" gap={0.5}>

@@ -206,6 +206,7 @@ const Organizations = ({
       {
         disableColumnMenu: true,
         field: "actions",
+        filterable: false,
         headerName: tOrganizations("actions.label"),
         renderCell: ({ row }: GridRenderCellParams<Organization>) => {
           const { canDeleteOrganization, canUpdateOrganization } =
