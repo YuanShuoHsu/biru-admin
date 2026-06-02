@@ -1,10 +1,19 @@
 {
   "label": "点餐",
-  "organizationSlug": {
-    "label": "门店",
-    "select": {
-      "label": "选择门店",
-      "placeholder": "请选择您的门店"
+  "menuItem": {
+    "calories": "热量 {value} kcal",
+    "diet": {
+      "DiabeticDiet": "糖尿病饮食",
+      "GlutenFreeDiet": "无麸质",
+      "HalalDiet": "清真",
+      "HinduDiet": "印度教",
+      "KosherDiet": "犹太洁食",
+      "LowCalorieDiet": "低卡",
+      "LowFatDiet": "低脂",
+      "LowLactoseDiet": "低乳糖",
+      "LowSaltDiet": "低盐",
+      "VeganDiet": "纯素",
+      "VegetarianDiet": "素食"
     }
   },
   "mode": {
@@ -12,14 +21,14 @@
       "label": "堂食",
       "storeSlug": {
         "tableNumber": {
-          "value": "桌号 {tableNumber}",
           "partySize": {
             "select": {
               "label": "选择用餐人数",
               "placeholder": "请选择您的用餐人数",
               "value": "{count} 位"
             }
-          }
+          },
+          "value": "桌号 {tableNumber}"
         }
       }
     },
@@ -45,6 +54,13 @@
         "top": "TOP",
         "topSold": "人气商品"
       }
+    }
+  },
+  "organizationSlug": {
+    "label": "门店",
+    "select": {
+      "label": "选择门店",
+      "placeholder": "请选择您的门店"
     }
   }
 }

@@ -1,10 +1,19 @@
 {
   "label": "注文",
-  "organizationSlug": {
-    "label": "店舗",
-    "select": {
-      "label": "店舗を選択",
-      "placeholder": "あなたの店舗を選択してください"
+  "menuItem": {
+    "calories": "{value} kcal",
+    "diet": {
+      "DiabeticDiet": "糖尿病食",
+      "GlutenFreeDiet": "グルテンフリー",
+      "HalalDiet": "ハラール",
+      "HinduDiet": "ヒンドゥー",
+      "KosherDiet": "コーシャ",
+      "LowCalorieDiet": "低カロリー",
+      "LowFatDiet": "低脂肪",
+      "LowLactoseDiet": "低乳糖",
+      "LowSaltDiet": "低塩",
+      "VeganDiet": "ビーガン",
+      "VegetarianDiet": "ベジタリアン"
     }
   },
   "mode": {
@@ -12,14 +21,14 @@
       "label": "店内",
       "storeSlug": {
         "tableNumber": {
-          "value": "テーブル {tableNumber}",
           "partySize": {
             "select": {
               "label": "来店人数を選択",
               "placeholder": "あなたの来店人数を選択してください",
               "value": "{count} 名"
             }
-          }
+          },
+          "value": "テーブル {tableNumber}"
         }
       }
     },
@@ -45,6 +54,13 @@
         "top": "TOP",
         "topSold": "人気商品"
       }
+    }
+  },
+  "organizationSlug": {
+    "label": "店舗",
+    "select": {
+      "label": "店舗を選択",
+      "placeholder": "あなたの店舗を選択してください"
     }
   }
 }

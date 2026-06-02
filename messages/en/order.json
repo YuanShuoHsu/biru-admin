@@ -1,10 +1,19 @@
 {
   "label": "Order",
-  "organizationSlug": {
-    "label": "Store",
-    "select": {
-      "label": "Select a store",
-      "placeholder": "Please select your store"
+  "menuItem": {
+    "calories": "{value} kcal",
+    "diet": {
+      "DiabeticDiet": "Diabetic",
+      "GlutenFreeDiet": "Gluten-Free",
+      "HalalDiet": "Halal",
+      "HinduDiet": "Hindu",
+      "KosherDiet": "Kosher",
+      "LowCalorieDiet": "Low-Calorie",
+      "LowFatDiet": "Low-Fat",
+      "LowLactoseDiet": "Low-Lactose",
+      "LowSaltDiet": "Low-Salt",
+      "VeganDiet": "Vegan",
+      "VegetarianDiet": "Vegetarian"
     }
   },
   "mode": {
@@ -12,14 +21,14 @@
       "label": "Dine-in",
       "storeSlug": {
         "tableNumber": {
-          "value": "Table {tableNumber}",
           "partySize": {
             "select": {
               "label": "Select party size",
               "placeholder": "Please select your party size",
               "value": "{count} people"
             }
-          }
+          },
+          "value": "Table {tableNumber}"
         }
       }
     },
@@ -45,6 +54,13 @@
         "top": "TOP",
         "topSold": "Best Sellers"
       }
+    }
+  },
+  "organizationSlug": {
+    "label": "Store",
+    "select": {
+      "label": "Select a store",
+      "placeholder": "Please select your store"
     }
   }
 }

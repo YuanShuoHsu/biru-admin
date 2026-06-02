@@ -14,6 +14,7 @@ import {
   Card,
   CardActionArea,
   CardContent,
+  Chip,
   Stack,
   Typography,
 } from "@mui/material";
@@ -115,7 +116,8 @@ export interface ActionAreaCardProps {
 }
 
 const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
-  const { id, name, description, image, offers } = menuItem;
+  const { id, name, description, image, offers, suitableForDiet, nutrition } =
+    menuItem;
   const offer = offers[0];
   // const price = parseFloat(offer?.price ?? "0") || 0;
   const stock = offer?.inventoryLevel?.value ?? null;
@@ -130,7 +132,7 @@ const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
 
   // const tCommon = useTranslations("common");
   const tDialog = useTranslations("dialog");
-  // const tOrder = useTranslations("order");
+  const tOrder = useTranslations("order");
 
   const viewDirection = ViewDirections[view];
 
@@ -233,6 +235,22 @@ const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
           {description && (
             <Typography color="text.secondary" variant="body2">
               {description}
+            </Typography>
+          )}
+          {suitableForDiet && suitableForDiet.length > 0 && (
+            <Stack direction="row" flexWrap="wrap" gap={0.5}>
+              {suitableForDiet.map((diet) => (
+                <Chip
+                  key={diet}
+                  label={tOrder(`menuItem.diet.${diet}`)}
+                  size="small"
+                />
+              ))}
+            </Stack>
+          )}
+          {nutrition?.calories && (
+            <Typography color="text.secondary" variant="caption">
+              {tOrder("menuItem.calories", { value: nutrition.calories })}
             </Typography>
           )}
         </StyledCardContent>

@@ -1,10 +1,19 @@
 {
   "label": "點餐",
-  "organizationSlug": {
-    "label": "門市",
-    "select": {
-      "label": "選擇門市",
-      "placeholder": "請選擇您的門市"
+  "menuItem": {
+    "calories": "熱量 {value} kcal",
+    "diet": {
+      "DiabeticDiet": "糖尿病飲食",
+      "GlutenFreeDiet": "無麩質",
+      "HalalDiet": "清真",
+      "HinduDiet": "印度教",
+      "KosherDiet": "猶太潔食",
+      "LowCalorieDiet": "低卡",
+      "LowFatDiet": "低脂",
+      "LowLactoseDiet": "低乳糖",
+      "LowSaltDiet": "低鹽",
+      "VeganDiet": "純素",
+      "VegetarianDiet": "素食"
     }
   },
   "mode": {
@@ -12,14 +21,14 @@
       "label": "內用",
       "storeSlug": {
         "tableNumber": {
-          "value": "桌號 {tableNumber}",
           "partySize": {
             "select": {
               "label": "選擇用餐人數",
               "placeholder": "請選擇您的用餐人數",
               "value": "{count} 位"
             }
-          }
+          },
+          "value": "桌號 {tableNumber}"
         }
       }
     },
@@ -45,6 +54,13 @@
         "top": "TOP",
         "topSold": "人氣商品"
       }
+    }
+  },
+  "organizationSlug": {
+    "label": "門市",
+    "select": {
+      "label": "選擇門市",
+      "placeholder": "請選擇您的門市"
     }
   }
 }
