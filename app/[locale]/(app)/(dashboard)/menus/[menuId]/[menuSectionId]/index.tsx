@@ -627,10 +627,11 @@ const MenusMenuIdSectionId = ({
       },
       {
         field: "price",
+        filterable: false,
         headerName: tMenus("offers.price.label"),
         sortable: false,
-        filterable: false,
-        valueGetter: (_value: unknown, { offer }: MenuItem) => offer?.price,
+        valueGetter: (_value: unknown, { offer }: MenuItem) =>
+          offer?.price && Number(offer.price),
       },
       {
         field: "availability",
@@ -668,13 +669,12 @@ const MenusMenuIdSectionId = ({
       },
       {
         field: "priceSpecification",
+        filterable: false,
         headerName: tMenus("offers.priceSpecification.price.label"),
         sortable: false,
-        filterable: false,
         valueGetter: (_value: unknown, { offer }: MenuItem) =>
-          offer?.priceSpecification?.price,
-        valueFormatter: (value: string) =>
-          value ? Number(value).toFixed(2) : "",
+          offer?.priceSpecification?.price &&
+          Number(offer.priceSpecification.price),
       },
       {
         field: "priceSpecificationValidFrom",
