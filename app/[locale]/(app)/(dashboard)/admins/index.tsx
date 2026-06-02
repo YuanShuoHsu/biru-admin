@@ -206,6 +206,7 @@ const Admins = ({
   const searchParams = useSearchParams();
 
   const tAdmins = useTranslations("admins");
+  const tCommon = useTranslations("common");
   const tToolbar = useTranslations("dataGrid.toolbar");
 
   const {
@@ -756,7 +757,7 @@ const Admins = ({
       {
         field: "bio",
         filterable: false,
-        headerName: tAdmins("bio"),
+        headerName: `${tAdmins("bio")} ${tCommon("optional")}`,
       },
       {
         field: "email",
@@ -893,6 +894,7 @@ const Admins = ({
       hasImpersonableUser,
       router,
       tAdmins,
+      tCommon,
       textFilterOperators,
       userSessions,
     ],

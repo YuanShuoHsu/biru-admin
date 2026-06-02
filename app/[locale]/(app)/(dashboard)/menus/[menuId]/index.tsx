@@ -198,6 +198,7 @@ const MenusMenuId = ({
     },
   );
 
+  const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
   const tToolbar = useTranslations("dataGrid.toolbar");
 
@@ -556,7 +557,7 @@ const MenusMenuId = ({
       {
         field: "description",
         filterOperators: stringFilterOperators,
-        headerName: tMenus("sections.description.label"),
+        headerName: `${tMenus("sections.description.label")} ${tCommon("optional")}`,
       },
       {
         field: "createdAt",
@@ -582,6 +583,7 @@ const MenusMenuId = ({
       handleUpdateSection,
       isReorderMode,
       stringFilterOperators,
+      tCommon,
       tMenus,
     ],
   );

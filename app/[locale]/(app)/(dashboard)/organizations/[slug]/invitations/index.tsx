@@ -53,6 +53,7 @@ const OrganizationsSlugInvitations = ({
 
   const { slug } = useParams<{ slug: string }>();
 
+  const tCommon = useTranslations("common");
   const tInvitations = useTranslations("organizations.invitations");
   const tMembers = useTranslations("organizations.members");
   const tTeams = useTranslations("organizations.teams");
@@ -189,7 +190,7 @@ const OrganizationsSlugInvitations = ({
       },
       {
         field: "teamId",
-        headerName: tTeams("label"),
+        headerName: `${tTeams("label")} ${tCommon("optional")}`,
         renderCell: ({ row: { teamId } }: GridRenderCellParams<Invitation>) =>
           teamId && (
             <Chip
@@ -216,6 +217,7 @@ const OrganizationsSlugInvitations = ({
       format,
       handleCancelInvitation,
       teams,
+      tCommon,
       tInvitations,
       tMembers,
       tTeams,

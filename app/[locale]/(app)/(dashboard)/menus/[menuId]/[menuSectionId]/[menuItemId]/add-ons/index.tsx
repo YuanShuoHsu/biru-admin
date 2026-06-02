@@ -121,6 +121,7 @@ const MenuItemAddOns = ({
   const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
+  const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
   const tToolbar = useTranslations("dataGrid.toolbar");
 
@@ -545,7 +546,7 @@ const MenuItemAddOns = ({
       {
         field: "addOnMenuSectionName",
         filterOperators: stringFilterOperators,
-        headerName: tMenus("addOns.addOnMenuSectionId.label"),
+        headerName: `${tMenus("addOns.addOnMenuSectionId.label")} ${tCommon("optional")}`,
         valueGetter: (
           _value: unknown,
           { addOnMenuSectionName, addOnMenuItemSectionName }: MenuItemAddOn,
@@ -554,7 +555,7 @@ const MenuItemAddOns = ({
       {
         field: "addOnMenuItemName",
         filterOperators: stringFilterOperators,
-        headerName: tMenus("addOns.addOnMenuItemId.label"),
+        headerName: `${tMenus("addOns.addOnMenuItemId.label")} ${tCommon("optional")}`,
         valueGetter: (_value: unknown, { addOnMenuItemName }: MenuItemAddOn) =>
           addOnMenuItemName,
       },
@@ -581,6 +582,7 @@ const MenuItemAddOns = ({
       handleUpdateAddOn,
       isReorderMode,
       stringFilterOperators,
+      tCommon,
       tMenus,
     ],
   );

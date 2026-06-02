@@ -213,6 +213,7 @@ const MenusMenuIdSectionId = ({
     },
   );
 
+  const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
   const tToolbar = useTranslations("dataGrid.toolbar");
 
@@ -602,7 +603,7 @@ const MenusMenuIdSectionId = ({
       {
         field: "description",
         filterOperators: stringFilterOperators,
-        headerName: tMenus("items.description.label"),
+        headerName: `${tMenus("items.description.label")} ${tCommon("optional")}`,
       },
       {
         field: "priceCurrency",
@@ -649,7 +650,7 @@ const MenusMenuIdSectionId = ({
       },
       {
         field: "inventoryLevel",
-        headerName: tMenus("offers.inventoryLevel.value.label"),
+        headerName: `${tMenus("offers.inventoryLevel.value.label")} ${tCommon("optional")}`,
         sortable: false,
         filterable: false,
         valueGetter: (_value: unknown, { offer }: MenuItem) =>
@@ -659,7 +660,7 @@ const MenusMenuIdSectionId = ({
       },
       {
         field: "deliveryLeadTime",
-        headerName: tMenus("offers.deliveryLeadTime.value.label"),
+        headerName: `${tMenus("offers.deliveryLeadTime.value.label")} ${tCommon("optional")}`,
         sortable: false,
         filterable: false,
         valueGetter: (_value: unknown, { offer }: MenuItem) =>
@@ -670,7 +671,7 @@ const MenusMenuIdSectionId = ({
       {
         field: "priceSpecification",
         filterable: false,
-        headerName: tMenus("offers.priceSpecification.price.label"),
+        headerName: `${tMenus("offers.priceSpecification.price.label")} ${tCommon("optional")}`,
         sortable: false,
         valueGetter: (_value: unknown, { offer }: MenuItem) =>
           offer?.priceSpecification?.price &&
@@ -678,7 +679,7 @@ const MenusMenuIdSectionId = ({
       },
       {
         field: "priceSpecificationValidFrom",
-        headerName: tMenus("offers.priceSpecification.validFrom.label"),
+        headerName: `${tMenus("offers.priceSpecification.validFrom.label")} ${tCommon("optional")}`,
         sortable: false,
         filterable: false,
         valueGetter: (_value: unknown, { offer }: MenuItem) =>
@@ -686,7 +687,7 @@ const MenusMenuIdSectionId = ({
       },
       {
         field: "priceSpecificationValidThrough",
-        headerName: tMenus("offers.priceSpecification.validThrough.label"),
+        headerName: `${tMenus("offers.priceSpecification.validThrough.label")} ${tCommon("optional")}`,
         sortable: false,
         filterable: false,
         valueGetter: (_value: unknown, { offer }: MenuItem) =>
@@ -716,6 +717,7 @@ const MenusMenuIdSectionId = ({
       handleUpdateItem,
       isReorderMode,
       stringFilterOperators,
+      tCommon,
       tMenus,
     ],
   );
