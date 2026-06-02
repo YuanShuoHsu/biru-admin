@@ -14,7 +14,8 @@
       "LowSaltDiet": "저염",
       "VeganDiet": "비건",
       "VegetarianDiet": "채식"
-    }
+    },
+    "promoUntil": "{date}까지"
   },
   "mode": {
     "dineIn": {

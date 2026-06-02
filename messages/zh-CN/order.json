@@ -14,7 +14,8 @@
       "LowSaltDiet": "低盐",
       "VeganDiet": "纯素",
       "VegetarianDiet": "素食"
-    }
+    },
+    "promoUntil": "优惠至 {date}"
   },
   "mode": {
     "dineIn": {

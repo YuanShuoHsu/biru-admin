@@ -14,7 +14,8 @@
       "LowSaltDiet": "低塩",
       "VeganDiet": "ビーガン",
       "VegetarianDiet": "ベジタリアン"
-    }
+    },
+    "promoUntil": "{date}まで"
   },
   "mode": {
     "dineIn": {

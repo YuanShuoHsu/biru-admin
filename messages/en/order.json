@@ -14,7 +14,8 @@
       "LowSaltDiet": "Low-Salt",
       "VeganDiet": "Vegan",
       "VegetarianDiet": "Vegetarian"
-    }
+    },
+    "promoUntil": "Offer ends {date}"
   },
   "mode": {
     "dineIn": {

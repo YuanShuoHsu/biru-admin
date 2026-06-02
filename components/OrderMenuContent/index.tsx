@@ -63,9 +63,7 @@ const OrderMenuContent = () => {
     threshold: SCROLL_TRIGGER_THRESHOLD,
   });
 
-  // const tOrder = useTranslations("order");
-
-  console.log(menus);
+  // const tOrder = useTranslations("order");;
 
   const categoryGroups = menus
     .map((menu) => ({

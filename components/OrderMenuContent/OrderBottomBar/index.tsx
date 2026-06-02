@@ -43,7 +43,9 @@ const OrderBottomBar = () => {
   );
 
   const locale = useLocale();
+
   const pathname = usePathname();
+
   const searchParams = useSearchParams();
   const search = searchParams.toString();
   const query = search ? `?${search}` : "";
