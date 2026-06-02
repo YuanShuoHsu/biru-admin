@@ -1,7 +1,5 @@
 "use client";
 
-import React from "react";
-
 import {
   Card,
   CardActions,
@@ -52,8 +50,8 @@ export const StyledCardActions = styled(CardActions)(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-const FormCard = React.forwardRef<HTMLFormElement, CardProps<"form">>(
-  (props, ref) => <Card ref={ref} component="form" {...props} />,
+const FormCard = ({ ref, ...props }: CardProps<"form">) => (
+  <Card ref={ref} component="form" {...props} />
 );
 
 FormCard.displayName = "FormCard";

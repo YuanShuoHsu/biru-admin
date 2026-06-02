@@ -10,26 +10,20 @@ import {
   useUpdateMenuSectionFormSchema,
 } from "./definitions";
 
+import FormBox from "@/components/FormBox";
 import UploadAvatars from "@/components/UploadAvatars";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
-import { Box, type BoxProps, TextField, styled } from "@mui/material";
+import { TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { MenuSection } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
-
-const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: theme.spacing(2),
-}));
 
 interface UpdateMenuSectionDialogProps {
   mutate: () => void;
@@ -99,7 +93,7 @@ const UpdateMenuSectionDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <StyledBox component="form" id="update-section-form" onSubmit={onSubmit}>
+    <FormBox id="update-section-form" onSubmit={onSubmit}>
       <UploadAvatars
         aspectRatio="16/9"
         fullWidth
@@ -127,7 +121,7 @@ const UpdateMenuSectionDialog = ({
         slotProps={{ htmlInput: { maxLength: 160 } }}
         {...register("description")}
       />
-    </StyledBox>
+    </FormBox>
   );
 };
 

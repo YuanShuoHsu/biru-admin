@@ -6,22 +6,17 @@ import { useForm } from "react-hook-form";
 
 import { type TeamForm, useTeamFormSchema } from "./definitions";
 
+import FormBox from "@/components/FormBox";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { Box, type BoxProps, TextField, styled } from "@mui/material";
+import { TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { Organization, Team } from "@/types/organizations";
-
-const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: theme.spacing(2),
-}));
 
 interface UpdateTeamDialogProps {
   mutate: () => void;
@@ -101,7 +96,7 @@ const UpdateTeamDialog = ({
   });
 
   return (
-    <StyledBox component="form" id="team-form" onSubmit={onSubmit}>
+    <FormBox id="team-form" onSubmit={onSubmit}>
       <TextField
         error={!!errors.name}
         fullWidth
@@ -111,7 +106,7 @@ const UpdateTeamDialog = ({
         required
         {...register("name")}
       />
-    </StyledBox>
+    </FormBox>
   );
 };
 

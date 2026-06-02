@@ -10,11 +10,13 @@ import {
   useUpdateLocationFormSchema,
 } from "./definitions";
 
+import FormBox from "@/components/FormBox";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { Box, type BoxProps, Chip, Divider, styled } from "@mui/material";
+import { Chip, Divider } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -22,13 +24,6 @@ import AddressFields from "@/app/[locale]/(app)/(dashboard)/organizations/Addres
 import LocalBusinessFields from "@/app/[locale]/(app)/(dashboard)/organizations/LocalBusinessFields";
 
 import type { Organization } from "@/types/organizations";
-
-const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: theme.spacing(2),
-}));
 
 interface UpdateLocationDialogProps {
   fetchOrganization: () => void;
@@ -120,7 +115,7 @@ const UpdateLocationDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <StyledBox component="form" id="update-location-form" onSubmit={onSubmit}>
+    <FormBox id="update-location-form" onSubmit={onSubmit}>
       <Divider flexItem>
         <Chip label={tOrganizations("address.label")} size="small" />
       </Divider>
@@ -140,7 +135,7 @@ const UpdateLocationDialog = ({
         register={register}
         setValue={setValue}
       />
-    </StyledBox>
+    </FormBox>
   );
 };
 

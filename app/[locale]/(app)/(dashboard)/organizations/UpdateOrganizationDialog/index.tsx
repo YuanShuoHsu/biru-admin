@@ -10,6 +10,7 @@ import {
   useUpdateOrganizationFormSchema,
 } from "./definitions";
 
+import FormBox from "@/components/FormBox";
 import UploadAvatars from "@/components/UploadAvatars";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,18 +19,11 @@ import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { Box, type BoxProps, TextField, styled } from "@mui/material";
+import { TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { Organization } from "@/types/organizations";
-
-const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: theme.spacing(2),
-}));
 
 interface UpdateOrganizationDialogProps {
   mutate: () => void;
@@ -94,11 +88,7 @@ const UpdateOrganizationDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <StyledBox
-      component="form"
-      id="update-organization-form"
-      onSubmit={onSubmit}
-    >
+    <FormBox id="update-organization-form" onSubmit={onSubmit}>
       <UploadAvatars initialSrc={organization.logo} uploadKey={uploadKey} />
       <TextField
         autoComplete="organization"
@@ -119,7 +109,7 @@ const UpdateOrganizationDialog = ({
         required
         {...register("slug")}
       />
-    </StyledBox>
+    </FormBox>
   );
 };
 

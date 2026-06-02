@@ -11,6 +11,7 @@ import {
   useCreateUserFormSchema,
 } from "./definitions";
 
+import FormBox from "@/components/FormBox";
 import PasswordRuleList from "@/components/PasswordRuleList";
 import UploadAvatars from "@/components/UploadAvatars";
 
@@ -27,8 +28,6 @@ import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
-  Box,
-  type BoxProps,
   Checkbox,
   FormControlLabel,
   IconButton,
@@ -37,7 +36,6 @@ import {
   Stack,
   TextField,
   Typography,
-  styled,
 } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -48,13 +46,6 @@ import {
 } from "@/utils/password";
 
 const CREATE_USER_AVATAR_KEY = "create-user-avatar";
-
-const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: theme.spacing(2),
-}));
 
 interface CreateUserDialogContentProps {
   mutateAdmins: () => void;
@@ -167,7 +158,7 @@ const CreateUserDialogContent = ({
     )(event);
 
   return (
-    <StyledBox component="form" id="create-user-form" onSubmit={onSubmit}>
+    <FormBox id="create-user-form" onSubmit={onSubmit}>
       <UploadAvatars uploadKey={CREATE_USER_AVATAR_KEY} />
       <Stack
         width="100%"
@@ -331,7 +322,7 @@ const CreateUserDialogContent = ({
           </MenuItem>
         ))}
       </TextField>
-    </StyledBox>
+    </FormBox>
   );
 };
 

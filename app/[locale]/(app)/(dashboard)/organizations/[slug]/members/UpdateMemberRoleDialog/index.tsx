@@ -11,24 +11,19 @@ import {
   useUpdateMemberRoleFormSchema,
 } from "./definitions";
 
+import FormBox from "@/components/FormBox";
+
 import { roles } from "@/constants/organizations";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { Box, type BoxProps, MenuItem, TextField, styled } from "@mui/material";
+import { MenuItem, TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { Member, Organization } from "@/types/organizations";
-
-const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: theme.spacing(2),
-}));
 
 interface UpdateMemberRoleDialogProps {
   member: Member;
@@ -89,11 +84,7 @@ const UpdateMemberRoleDialog = ({
     })(event);
 
   return (
-    <StyledBox
-      component="form"
-      id="update-member-role-form"
-      onSubmit={onSubmit}
-    >
+    <FormBox id="update-member-role-form" onSubmit={onSubmit}>
       <TextField
         autoComplete="email"
         error={!!errors.email}
@@ -137,7 +128,7 @@ const UpdateMemberRoleDialog = ({
           </MenuItem>
         ))}
       </TextField>
-    </StyledBox>
+    </FormBox>
   );
 };
 

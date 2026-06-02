@@ -13,20 +13,15 @@ import {
   useBanUserFormSchema,
 } from "./definitions";
 
+import FormBox from "@/components/FormBox";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { Box, type BoxProps, MenuItem, TextField, styled } from "@mui/material";
+import { MenuItem, TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
-
-const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: theme.spacing(2),
-}));
 
 interface BanUserDialogContentProps {
   mutateAdmins: () => void;
@@ -87,7 +82,7 @@ const BanUserDialogContent = ({
     })(event);
 
   return (
-    <StyledBox component="form" id="ban-user-form" onSubmit={onSubmit}>
+    <FormBox id="ban-user-form" onSubmit={onSubmit}>
       <TextField
         autoComplete="email"
         error={!!errors.email}
@@ -146,7 +141,7 @@ const BanUserDialogContent = ({
           </MenuItem>
         ))}
       </TextField>
-    </StyledBox>
+    </FormBox>
   );
 };
 

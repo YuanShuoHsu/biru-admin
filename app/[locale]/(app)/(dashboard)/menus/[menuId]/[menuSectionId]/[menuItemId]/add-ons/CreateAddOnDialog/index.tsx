@@ -8,12 +8,12 @@ import useSWR from "swr";
 
 import { type CreateAddOnForm, useCreateAddOnFormSchema } from "./definitions";
 
+import FormBox from "@/components/FormBox";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Clear } from "@mui/icons-material";
 import {
-  Box,
-  type BoxProps,
   IconButton,
   InputAdornment,
   MenuItem,
@@ -30,13 +30,6 @@ import type {
 } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
-
-const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: theme.spacing(2),
-}));
 
 const StyledInputAdornment = styled(InputAdornment)(({ theme }) => ({
   marginRight: theme.spacing(2),
@@ -157,7 +150,7 @@ const CreateAddOnDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <StyledBox component="form" id="create-add-on-form" onSubmit={onSubmit}>
+    <FormBox id="create-add-on-form" onSubmit={onSubmit}>
       <TextField
         error={!!errors.addOnMenuSectionId}
         fullWidth
@@ -250,7 +243,7 @@ const CreateAddOnDialog = ({
           ))}
         </TextField>
       )}
-    </StyledBox>
+    </FormBox>
   );
 };
 

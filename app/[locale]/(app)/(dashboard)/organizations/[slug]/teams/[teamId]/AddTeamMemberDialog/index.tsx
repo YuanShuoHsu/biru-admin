@@ -9,22 +9,17 @@ import {
   useAddTeamMemberFormSchema,
 } from "./definitions";
 
+import FormBox from "@/components/FormBox";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { Box, type BoxProps, MenuItem, TextField, styled } from "@mui/material";
+import { MenuItem, TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { Member, Team } from "@/types/organizations";
-
-const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: theme.spacing(2),
-}));
 
 interface AddTeamMemberDialogProps {
   availableMembers: Member[];
@@ -87,7 +82,7 @@ const AddTeamMemberDialog = ({
   });
 
   return (
-    <StyledBox component="form" id="add-team-member-form" onSubmit={onSubmit}>
+    <FormBox id="add-team-member-form" onSubmit={onSubmit}>
       <TextField
         error={!!errors.userId}
         fullWidth
@@ -127,7 +122,7 @@ const AddTeamMemberDialog = ({
           </MenuItem>
         ))}
       </TextField>
-    </StyledBox>
+    </FormBox>
   );
 };
 

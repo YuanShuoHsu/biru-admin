@@ -14,6 +14,7 @@ import {
 } from "./definitions";
 
 import CountrySelect from "@/components/CountrySelect";
+import FormBox from "@/components/FormBox";
 import NumberSpinner from "@/components/NumberSpinner";
 import UploadAvatars from "@/components/UploadAvatars";
 
@@ -23,16 +24,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
-import {
-  Box,
-  type BoxProps,
-  Chip,
-  Divider,
-  Grid,
-  MenuItem,
-  styled,
-  TextField,
-} from "@mui/material";
+import { Chip, Divider, Grid, MenuItem, TextField } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -40,13 +32,6 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { MenuItem as MenuItemType } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
-
-const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: theme.spacing(2),
-}));
 
 const CREATE_MENU_ITEM_IMAGE_KEY = "create-menu-item-image";
 
@@ -193,7 +178,7 @@ const CreateMenuItemDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <StyledBox component="form" id="create-menu-item-form" onSubmit={onSubmit}>
+    <FormBox id="create-menu-item-form" onSubmit={onSubmit}>
       <UploadAvatars
         aspectRatio="16/9"
         fullWidth
@@ -449,7 +434,7 @@ const CreateMenuItemDialog = ({
           />
         </Grid>
       </Grid>
-    </StyledBox>
+    </FormBox>
   );
 };
 

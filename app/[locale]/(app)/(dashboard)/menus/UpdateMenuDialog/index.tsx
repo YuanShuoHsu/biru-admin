@@ -5,11 +5,12 @@ import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
+import { type UpdateMenuForm, useUpdateMenuFormSchema } from "./definitions";
+
+import FormBox from "@/components/FormBox";
 import UploadAvatars from "@/components/UploadAvatars";
 
 import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
-
-import { type UpdateMenuForm, useUpdateMenuFormSchema } from "./definitions";
 
 import { locales } from "@/constants/locale";
 
@@ -17,20 +18,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { type Locale, routing } from "@/i18n/routing";
 
-import { Box, type BoxProps, MenuItem, TextField, styled } from "@mui/material";
+import { MenuItem, TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { Menu } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
-
-const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: theme.spacing(2),
-}));
 
 const LOCALE_OPTIONS = routing.locales.map((value) => ({
   label: locales[value].label,
@@ -118,7 +112,7 @@ const UpdateMenuDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <StyledBox component="form" id="update-menu-form" onSubmit={onSubmit}>
+    <FormBox id="update-menu-form" onSubmit={onSubmit}>
       <UploadAvatars
         aspectRatio="16/9"
         fullWidth
@@ -186,7 +180,7 @@ const UpdateMenuDialog = ({
         slotProps={{ htmlInput: { maxLength: 160 } }}
         {...register("description")}
       />
-    </StyledBox>
+    </FormBox>
   );
 };
 

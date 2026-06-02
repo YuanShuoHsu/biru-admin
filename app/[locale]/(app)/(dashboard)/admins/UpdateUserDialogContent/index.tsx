@@ -7,6 +7,7 @@ import { Controller, useForm } from "react-hook-form";
 
 import { type UpdateUserForm, useUpdateUserFormSchema } from "./definitions";
 
+import FormBox from "@/components/FormBox";
 import UploadAvatars from "@/components/UploadAvatars";
 
 import { LocaleEnum } from "@/enums/Locale";
@@ -18,26 +19,16 @@ import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import {
-  Box,
-  type BoxProps,
   Checkbox,
   FormControlLabel,
   Stack,
   TextField,
   Typography,
-  styled,
 } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { AdminUser } from "@/types/admins";
-
-const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: theme.spacing(2),
-}));
 
 interface UpdateUserDialogContentProps {
   mutateAdmins: () => void;
@@ -123,7 +114,7 @@ const UpdateUserDialogContent = ({
     )(event);
 
   return (
-    <StyledBox component="form" id="update-user-form" onSubmit={onSubmit}>
+    <FormBox id="update-user-form" onSubmit={onSubmit}>
       <UploadAvatars initialSrc={user.image} uploadKey={uploadKey} />
       <Stack
         width="100%"
@@ -190,7 +181,7 @@ const UpdateUserDialogContent = ({
           }
         />
       </Stack>
-    </StyledBox>
+    </FormBox>
   );
 };
 

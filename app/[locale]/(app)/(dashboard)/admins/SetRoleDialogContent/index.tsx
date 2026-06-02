@@ -12,22 +12,17 @@ import {
   useSetRoleFormSchema,
 } from "./definitions";
 
+import FormBox from "@/components/FormBox";
+
 import { roles } from "@/constants/admins";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { Box, type BoxProps, MenuItem, styled, TextField } from "@mui/material";
+import { MenuItem, TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
-
-const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: theme.spacing(2),
-}));
 
 interface SetRoleDialogContentProps {
   mutateAdmins: () => void;
@@ -83,7 +78,7 @@ const SetRoleDialogContent = ({
     })(event);
 
   return (
-    <StyledBox component="form" id="set-role-form" onSubmit={onSubmit}>
+    <FormBox id="set-role-form" onSubmit={onSubmit}>
       <TextField
         autoComplete="email"
         error={!!errors.email}
@@ -127,7 +122,7 @@ const SetRoleDialogContent = ({
           </MenuItem>
         ))}
       </TextField>
-    </StyledBox>
+    </FormBox>
   );
 };
 
