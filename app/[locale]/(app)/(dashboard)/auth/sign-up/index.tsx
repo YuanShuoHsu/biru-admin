@@ -114,6 +114,7 @@ const AuthSignUp = ({ locale, redirectTo }: AuthSignUpProps) => {
   const router = useRouter();
 
   const tAuth = useTranslations("auth");
+  const tCommon = useTranslations("common");
 
   const avatarSrc = useUploadAvatarSrc(SIGN_UP_AVATAR_KEY);
 
@@ -247,7 +248,7 @@ const AuthSignUp = ({ locale, redirectTo }: AuthSignUpProps) => {
             error={!!errors.lastName}
             fullWidth
             helperText={errors.lastName?.message}
-            label={tAuth("lastName.label")}
+            label={`${tAuth("lastName.label")} ${tCommon("optional")}`}
             placeholder={tAuth("lastName.placeholder")}
             {...register("lastName")}
           />

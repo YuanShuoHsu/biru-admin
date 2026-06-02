@@ -46,6 +46,7 @@ const InviteMemberDialog = ({
 
   const locale = useLocale();
 
+  const tCommon = useTranslations("common");
   const tMembers = useTranslations("organizations.members");
   const tTeams = useTranslations("organizations.teams");
 
@@ -146,7 +147,7 @@ const InviteMemberDialog = ({
         error={!!errors.teamId}
         fullWidth
         helperText={errors.teamId?.message}
-        label={tTeams("teamId.label")}
+        label={`${tTeams("teamId.label")} ${tCommon("optional")}`}
         select
         slotProps={{
           inputLabel: { shrink: true },

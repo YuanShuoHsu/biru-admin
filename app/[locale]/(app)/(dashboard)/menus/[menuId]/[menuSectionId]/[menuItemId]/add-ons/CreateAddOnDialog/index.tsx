@@ -55,6 +55,7 @@ const CreateAddOnDialog = ({
 }: CreateAddOnDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
+  const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
 
   const createAddOnFormSchema = useCreateAddOnFormSchema();
@@ -210,7 +211,7 @@ const CreateAddOnDialog = ({
           error={!!errors.addOnMenuItemId}
           fullWidth
           helperText={errors.addOnMenuItemId?.message}
-          label={tMenus("addOns.addOnMenuItemId.label")}
+          label={`${tMenus("addOns.addOnMenuItemId.label")} ${tCommon("optional")}`}
           select
           slotProps={{
             input: {

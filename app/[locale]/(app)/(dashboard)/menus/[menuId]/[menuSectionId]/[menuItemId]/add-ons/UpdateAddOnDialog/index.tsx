@@ -55,6 +55,7 @@ const UpdateAddOnDialog = ({
 }: UpdateAddOnDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
+  const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
 
   const updateAddOnFormSchema = useUpdateAddOnFormSchema();
@@ -218,7 +219,7 @@ const UpdateAddOnDialog = ({
           error={!!errors.addOnMenuItemId}
           fullWidth
           helperText={errors.addOnMenuItemId?.message}
-          label={tMenus("addOns.addOnMenuItemId.label")}
+          label={`${tMenus("addOns.addOnMenuItemId.label")} ${tCommon("optional")}`}
           select
           slotProps={{
             input: {

@@ -25,28 +25,28 @@
   },
   "address": {
     "addressCountry": {
-      "label": "国/地域（任意）",
+      "label": "国/地域",
       "placeholder": "あなたの国コードを入力してください"
     },
     "addressLocality": {
-      "label": "市区町村（任意）",
+      "label": "市区町村",
       "placeholder": "あなたの市区町村を入力してください"
     },
     "addressRegion": {
-      "label": "都道府県（任意）",
+      "label": "都道府県",
       "placeholder": "あなたの都道府県を入力してください"
     },
     "extendedAddress": {
-      "label": "住所補足（任意）",
+      "label": "住所補足",
       "placeholder": "あなたの住所補足を入力してください"
     },
     "label": "住所",
     "postalCode": {
-      "label": "郵便番号（任意）",
+      "label": "郵便番号",
       "placeholder": "あなたの郵便番号を入力してください"
     },
     "streetAddress": {
-      "label": "番地（任意）",
+      "label": "番地",
       "placeholder": "あなたの番地を入力してください"
     }
   },
@@ -68,7 +68,7 @@
   "label": "組織管理",
   "localBusiness": {
     "hasMap": {
-      "label": "地図リンク（任意）",
+      "label": "地図リンク",
       "placeholder": "あなたのGoogle マップURLを入力してください"
     },
     "label": "ビジネス",
@@ -84,14 +84,14 @@
         "Tu": "火",
         "We": "水"
       },
-      "label": "営業時間（任意）",
+      "label": "営業時間",
       "missingDays": "曜日を選択してください",
       "missingEndTime": "終了時刻を入力してください",
       "missingStartTime": "開始時刻を入力してください",
       "to": "〜"
     },
     "telephone": {
-      "label": "電話番号（任意）",
+      "label": "電話番号",
       "placeholder": "あなたの電話番号を入力してください"
     }
   },
@@ -205,7 +205,7 @@
       "placeholder": "あなたのチーム名を入力してください"
     },
     "teamId": {
-      "label": "チーム（任意）",
+      "label": "チーム",
       "placeholder": "あなたのチームを選択してください"
     }
   }

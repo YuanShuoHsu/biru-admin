@@ -32,7 +32,7 @@
         "placeholder": "Please enter your first name"
       },
       "lastName": {
-        "label": "Last name (Optional)",
+        "label": "Last name",
         "placeholder": "Please enter your last name"
       },
       "password": {
@@ -82,7 +82,7 @@
     },
     "updateUser": {
       "bio": {
-        "label": "Bio (Optional)",
+        "label": "Bio",
         "placeholder": "Please enter your bio"
       },
       "firstName": {
@@ -90,7 +90,7 @@
         "placeholder": "Please enter your first name"
       },
       "lastName": {
-        "label": "Last name (Optional)",
+        "label": "Last name",
         "placeholder": "Please enter your last name"
       },
       "success": "{email} updated",

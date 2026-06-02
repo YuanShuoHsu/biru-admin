@@ -32,7 +32,7 @@
         "placeholder": "あなたの名を入力してください"
       },
       "lastName": {
-        "label": "姓（任意）",
+        "label": "姓",
         "placeholder": "あなたの姓を入力してください"
       },
       "password": {
@@ -82,7 +82,7 @@
     },
     "updateUser": {
       "bio": {
-        "label": "自己紹介（任意）",
+        "label": "自己紹介",
         "placeholder": "あなたの自己紹介を入力してください"
       },
       "firstName": {
@@ -90,7 +90,7 @@
         "placeholder": "あなたの名を入力してください"
       },
       "lastName": {
-        "label": "姓（任意）",
+        "label": "姓",
         "placeholder": "あなたの姓を入力してください"
       },
       "success": "{email} の情報を更新しました",

@@ -67,6 +67,7 @@ const Profile = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const tAuth = useTranslations("auth");
+  const tCommon = useTranslations("common");
 
   const avatarSrc = useUploadAvatarSrc(
     PROFILE_UPLOAD_AVATAR_KEY,
@@ -140,7 +141,7 @@ const Profile = () => {
             error={!!errors.lastName}
             fullWidth
             helperText={errors.lastName?.message}
-            label={tAuth("lastName.label")}
+            label={`${tAuth("lastName.label")} ${tCommon("optional")}`}
             placeholder={tAuth("lastName.placeholder")}
             {...register("lastName")}
           />
@@ -159,7 +160,7 @@ const Profile = () => {
           error={!!errors.bio}
           fullWidth
           helperText={errors.bio?.message}
-          label={tAuth("settings.profile.bio.label")}
+          label={`${tAuth("settings.profile.bio.label")} ${tCommon("optional")}`}
           maxRows={4}
           multiline
           placeholder={tAuth("settings.profile.bio.placeholder")}

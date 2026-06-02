@@ -74,6 +74,7 @@ const CreateMenuDialog = ({
   const inLanguage = useWatch({ control, name: "inLanguage" });
   const imageSrc = useUploadAvatarSrc(CREATE_MENU_IMAGE_KEY);
 
+  const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
 
   const onSubmitHandler = async ({
@@ -175,7 +176,7 @@ const CreateMenuDialog = ({
         error={!!errors.description}
         fullWidth
         helperText={errors.description?.message}
-        label={tMenus("description.label")}
+        label={`${tMenus("description.label")} ${tCommon("optional")}`}
         maxRows={4}
         multiline
         placeholder={tMenus("description.placeholder")}

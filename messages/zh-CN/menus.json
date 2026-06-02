@@ -57,7 +57,7 @@
       "menuSection": "加购分组 {menuSection}"
     },
     "addOnMenuItemId": {
-      "label": "加购品项（选填）",
+      "label": "加购品项",
       "placeholder": "请选择您的加购品项"
     },
     "addOnMenuSectionId": {
@@ -68,11 +68,11 @@
   },
   "createdAt": "创建时间",
   "description": {
-    "label": "描述（选填）",
+    "label": "描述",
     "placeholder": "请输入您的菜单描述"
   },
   "image": {
-    "label": "封面图片网址（选填）",
+    "label": "封面图片网址",
     "placeholder": "请输入您的图片网址"
   },
   "inLanguage": {
@@ -121,11 +121,11 @@
       }
     },
     "description": {
-      "label": "描述（选填）",
+      "label": "描述",
       "placeholder": "请输入您的品项描述"
     },
     "image": {
-      "label": "图片网址（选填）",
+      "label": "图片网址",
       "placeholder": "请输入您的图片网址"
     },
     "label": "品项",
@@ -134,10 +134,10 @@
       "placeholder": "请输入您的品项名称"
     },
     "suitableForDiet": {
-      "label": "饮食限制（选填）"
+      "label": "饮食限制"
     },
     "url": {
-      "label": "链接网址（选填）",
+      "label": "链接网址",
       "placeholder": "请输入您的链接网址"
     }
   },
@@ -167,37 +167,37 @@
     },
     "deliveryLeadTime": {
       "maxValue": {
-        "label": "最长备餐时间（选填）",
+        "label": "最长备餐时间",
         "placeholder": "请输入您的最长备餐时间"
       },
       "minValue": {
-        "label": "最短备餐时间（选填）",
+        "label": "最短备餐时间",
         "placeholder": "请输入您的最短备餐时间"
       },
       "unitText": {
-        "label": "时间单位（选填）",
+        "label": "时间单位",
         "placeholder": "请输入您的单位"
       },
       "value": {
-        "label": "备餐时间（选填）",
+        "label": "备餐时间",
         "placeholder": "请输入您的备餐时间"
       }
     },
     "inventoryLevel": {
       "maxValue": {
-        "label": "最高库存量（选填）",
+        "label": "最高库存量",
         "placeholder": "请输入您的最高库存量"
       },
       "minValue": {
-        "label": "最低库存量（选填）",
+        "label": "最低库存量",
         "placeholder": "请输入您的最低库存量"
       },
       "unitText": {
-        "label": "库存单位（选填）",
+        "label": "库存单位",
         "placeholder": "请输入您的库存单位"
       },
       "value": {
-        "label": "库存数量（选填）",
+        "label": "库存数量",
         "placeholder": "请输入您的库存数量"
       }
     },
@@ -211,14 +211,14 @@
     },
     "priceSpecification": {
       "price": {
-        "label": "促销价（选填）",
+        "label": "促销价",
         "placeholder": "请输入您的促销价"
       },
       "validFrom": {
-        "label": "促销开始（选填）"
+        "label": "促销开始"
       },
       "validThrough": {
-        "label": "促销结束（选填）"
+        "label": "促销结束"
       }
     }
   },
@@ -270,7 +270,7 @@
     },
     "allItems": "所有品项",
     "description": {
-      "label": "描述（选填）",
+      "label": "描述",
       "placeholder": "请输入您的分组描述"
     },
     "label": "分组",

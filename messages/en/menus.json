@@ -57,7 +57,7 @@
       "menuSection": "section {menuSection}"
     },
     "addOnMenuItemId": {
-      "label": "Add-on item (optional)",
+      "label": "Add-on item",
       "placeholder": "Please select your add-on item"
     },
     "addOnMenuSectionId": {
@@ -68,11 +68,11 @@
   },
   "createdAt": "Created",
   "description": {
-    "label": "Description (optional)",
+    "label": "Description",
     "placeholder": "Please enter your menu description"
   },
   "image": {
-    "label": "Cover image URL (optional)",
+    "label": "Cover image URL",
     "placeholder": "Please enter your image URL"
   },
   "inLanguage": {
@@ -121,11 +121,11 @@
       }
     },
     "description": {
-      "label": "Description (optional)",
+      "label": "Description",
       "placeholder": "Please enter your item description"
     },
     "image": {
-      "label": "Image URL (optional)",
+      "label": "Image URL",
       "placeholder": "Please enter your image URL"
     },
     "label": "Items",
@@ -134,10 +134,10 @@
       "placeholder": "Please enter your item name"
     },
     "suitableForDiet": {
-      "label": "Dietary restrictions (optional)"
+      "label": "Dietary restrictions"
     },
     "url": {
-      "label": "URL (optional)",
+      "label": "URL",
       "placeholder": "Please enter your URL"
     }
   },
@@ -167,37 +167,37 @@
     },
     "deliveryLeadTime": {
       "maxValue": {
-        "label": "Max preparation time (optional)",
+        "label": "Max preparation time",
         "placeholder": "Please enter your max preparation time"
       },
       "minValue": {
-        "label": "Min preparation time (optional)",
+        "label": "Min preparation time",
         "placeholder": "Please enter your min preparation time"
       },
       "unitText": {
-        "label": "Time unit (optional)",
+        "label": "Time unit",
         "placeholder": "Please enter your unit"
       },
       "value": {
-        "label": "Preparation time (optional)",
+        "label": "Preparation time",
         "placeholder": "Please enter your preparation time"
       }
     },
     "inventoryLevel": {
       "maxValue": {
-        "label": "Max inventory level (optional)",
+        "label": "Max inventory level",
         "placeholder": "Please enter your max inventory level"
       },
       "minValue": {
-        "label": "Min inventory level (optional)",
+        "label": "Min inventory level",
         "placeholder": "Please enter your min inventory level"
       },
       "unitText": {
-        "label": "Inventory unit (optional)",
+        "label": "Inventory unit",
         "placeholder": "Please enter your inventory unit"
       },
       "value": {
-        "label": "Inventory quantity (optional)",
+        "label": "Inventory quantity",
         "placeholder": "Please enter your inventory quantity"
       }
     },
@@ -211,14 +211,14 @@
     },
     "priceSpecification": {
       "price": {
-        "label": "Sale price (optional)",
+        "label": "Sale price",
         "placeholder": "Please enter your sale price"
       },
       "validFrom": {
-        "label": "Sale starts (optional)"
+        "label": "Sale starts"
       },
       "validThrough": {
-        "label": "Sale ends (optional)"
+        "label": "Sale ends"
       }
     }
   },
@@ -270,7 +270,7 @@
     },
     "allItems": "All items",
     "description": {
-      "label": "Description (optional)",
+      "label": "Description",
       "placeholder": "Please enter your section description"
     },
     "label": "Sections",

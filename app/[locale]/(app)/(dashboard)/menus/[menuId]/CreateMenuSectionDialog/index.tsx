@@ -44,6 +44,7 @@ const CreateMenuSectionDialog = ({
 }: CreateMenuSectionDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
+  const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
 
   const imageSrc = useUploadAvatarSrc(CREATE_MENU_SECTION_IMAGE_KEY);
@@ -116,7 +117,7 @@ const CreateMenuSectionDialog = ({
         error={!!errors.description}
         fullWidth
         helperText={errors.description?.message}
-        label={tMenus("sections.description.label")}
+        label={`${tMenus("sections.description.label")} ${tCommon("optional")}`}
         maxRows={4}
         multiline
         placeholder={tMenus("sections.description.placeholder")}

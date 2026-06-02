@@ -56,6 +56,7 @@ const UpdateUserDialogContent = ({
   const image = useUploadAvatarSrc(uploadKey, user.image);
 
   const tAdmins = useTranslations("admins");
+  const tCommon = useTranslations("common");
 
   const updateUserFormSchema = useUpdateUserFormSchema();
 
@@ -134,7 +135,7 @@ const UpdateUserDialogContent = ({
           error={!!errors.lastName}
           fullWidth
           helperText={errors.lastName?.message}
-          label={tAdmins("actions.updateUser.lastName.label")}
+          label={`${tAdmins("actions.updateUser.lastName.label")} ${tCommon("optional")}`}
           placeholder={tAdmins("actions.updateUser.lastName.placeholder")}
           {...register("lastName")}
         />
@@ -164,7 +165,7 @@ const UpdateUserDialogContent = ({
         error={!!errors.bio}
         fullWidth
         helperText={errors.bio?.message}
-        label={tAdmins("actions.updateUser.bio.label")}
+        label={`${tAdmins("actions.updateUser.bio.label")} ${tCommon("optional")}`}
         maxRows={4}
         multiline
         placeholder={tAdmins("actions.updateUser.bio.placeholder")}

@@ -25,28 +25,28 @@
   },
   "address": {
     "addressCountry": {
-      "label": "國家/地區（選填）",
+      "label": "國家/地區",
       "placeholder": "請輸入您的國家代碼"
     },
     "addressLocality": {
-      "label": "城市/區鄉鎮（選填）",
+      "label": "城市/區鄉鎮",
       "placeholder": "請輸入您的城市或區鄉鎮"
     },
     "addressRegion": {
-      "label": "縣市/州省（選填）",
+      "label": "縣市/州省",
       "placeholder": "請輸入您的縣市或州省"
     },
     "extendedAddress": {
-      "label": "地址補充（選填）",
+      "label": "地址補充",
       "placeholder": "請輸入您的地址補充資訊"
     },
     "label": "地址",
     "postalCode": {
-      "label": "郵遞區號（選填）",
+      "label": "郵遞區號",
       "placeholder": "請輸入您的郵遞區號"
     },
     "streetAddress": {
-      "label": "街道地址（選填）",
+      "label": "街道地址",
       "placeholder": "請輸入您的街道地址"
     }
   },
@@ -68,7 +68,7 @@
   "label": "組織管理",
   "localBusiness": {
     "hasMap": {
-      "label": "地圖連結（選填）",
+      "label": "地圖連結",
       "placeholder": "請輸入您的 Google 地圖連結"
     },
     "label": "商業",
@@ -84,14 +84,14 @@
         "Tu": "二",
         "We": "三"
       },
-      "label": "營業時間（選填）",
+      "label": "營業時間",
       "missingDays": "請選擇星期",
       "missingEndTime": "請填寫結束時間",
       "missingStartTime": "請填寫開始時間",
       "to": "至"
     },
     "telephone": {
-      "label": "電話（選填）",
+      "label": "電話",
       "placeholder": "請輸入您的電話號碼"
     }
   },
@@ -205,7 +205,7 @@
       "placeholder": "請輸入您的團隊名稱"
     },
     "teamId": {
-      "label": "團隊（選填）",
+      "label": "團隊",
       "placeholder": "請選擇您的團隊"
     }
   }

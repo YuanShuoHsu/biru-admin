@@ -25,28 +25,28 @@
   },
   "address": {
     "addressCountry": {
-      "label": "Country (Optional)",
+      "label": "Country",
       "placeholder": "Please enter your country code"
     },
     "addressLocality": {
-      "label": "City / Town (Optional)",
+      "label": "City / Town",
       "placeholder": "Please enter your city or town"
     },
     "addressRegion": {
-      "label": "State / Province (Optional)",
+      "label": "State / Province",
       "placeholder": "Please enter your state or province"
     },
     "extendedAddress": {
-      "label": "Extended address (Optional)",
+      "label": "Extended address",
       "placeholder": "Please enter your extended address"
     },
     "label": "Address",
     "postalCode": {
-      "label": "Postal code (Optional)",
+      "label": "Postal code",
       "placeholder": "Please enter your postal code"
     },
     "streetAddress": {
-      "label": "Street address (Optional)",
+      "label": "Street address",
       "placeholder": "Please enter your street address"
     }
   },
@@ -68,7 +68,7 @@
   "label": "Organization Management",
   "localBusiness": {
     "hasMap": {
-      "label": "Map Link (Optional)",
+      "label": "Map Link",
       "placeholder": "Please enter your Google Maps URL"
     },
     "label": "Business",
@@ -84,14 +84,14 @@
         "Tu": "Tu",
         "We": "We"
       },
-      "label": "Opening Hours (Optional)",
+      "label": "Opening Hours",
       "missingDays": "Please select at least one day",
       "missingEndTime": "Please fill in the end time",
       "missingStartTime": "Please fill in the start time",
       "to": "to"
     },
     "telephone": {
-      "label": "Telephone (Optional)",
+      "label": "Telephone",
       "placeholder": "Please enter your phone number"
     }
   },
@@ -205,7 +205,7 @@
       "placeholder": "Please enter your team name"
     },
     "teamId": {
-      "label": "Team (Optional)",
+      "label": "Team",
       "placeholder": "Please select your team"
     }
   }

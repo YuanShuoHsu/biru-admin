@@ -57,7 +57,7 @@
       "menuSection": "그룹 {menuSection}"
     },
     "addOnMenuItemId": {
-      "label": "추가 항목 (선택 사항)",
+      "label": "추가 항목",
       "placeholder": "추가 항목을 선택해 주세요"
     },
     "addOnMenuSectionId": {
@@ -68,11 +68,11 @@
   },
   "createdAt": "생성일",
   "description": {
-    "label": "설명 (선택 사항)",
+    "label": "설명",
     "placeholder": "메뉴 설명을 입력해 주세요"
   },
   "image": {
-    "label": "커버 이미지 URL (선택 사항)",
+    "label": "커버 이미지 URL",
     "placeholder": "이미지 URL을 입력해 주세요"
   },
   "inLanguage": {
@@ -121,11 +121,11 @@
       }
     },
     "description": {
-      "label": "설명 (선택 사항)",
+      "label": "설명",
       "placeholder": "항목 설명을 입력해 주세요"
     },
     "image": {
-      "label": "이미지 URL (선택 사항)",
+      "label": "이미지 URL",
       "placeholder": "이미지 URL을 입력해 주세요"
     },
     "label": "항목",
@@ -134,10 +134,10 @@
       "placeholder": "항목 이름을 입력해 주세요"
     },
     "suitableForDiet": {
-      "label": "식이 제한 (선택 사항)"
+      "label": "식이 제한"
     },
     "url": {
-      "label": "URL (선택 사항)",
+      "label": "URL",
       "placeholder": "URL을 입력해 주세요"
     }
   },
@@ -167,37 +167,37 @@
     },
     "deliveryLeadTime": {
       "maxValue": {
-        "label": "최대 준비 시간 (선택 사항)",
+        "label": "최대 준비 시간",
         "placeholder": "최대 준비 시간을 입력해 주세요"
       },
       "minValue": {
-        "label": "최소 준비 시간 (선택 사항)",
+        "label": "최소 준비 시간",
         "placeholder": "최소 준비 시간을 입력해 주세요"
       },
       "unitText": {
-        "label": "시간 단위 (선택 사항)",
+        "label": "시간 단위",
         "placeholder": "단위를 입력해 주세요"
       },
       "value": {
-        "label": "준비 시간 (선택 사항)",
+        "label": "준비 시간",
         "placeholder": "준비 시간을 입력해 주세요"
       }
     },
     "inventoryLevel": {
       "maxValue": {
-        "label": "최대 재고 수준 (선택 사항)",
+        "label": "최대 재고 수준",
         "placeholder": "최대 재고 수준을 입력해 주세요"
       },
       "minValue": {
-        "label": "최소 재고 수준 (선택 사항)",
+        "label": "최소 재고 수준",
         "placeholder": "최소 재고 수준을 입력해 주세요"
       },
       "unitText": {
-        "label": "재고 단위 (선택 사항)",
+        "label": "재고 단위",
         "placeholder": "재고 단위를 입력해 주세요"
       },
       "value": {
-        "label": "재고 수량 (선택 사항)",
+        "label": "재고 수량",
         "placeholder": "재고 수량을 입력해 주세요"
       }
     },
@@ -270,7 +270,7 @@
     },
     "allItems": "모든 항목",
     "description": {
-      "label": "설명 (선택 사항)",
+      "label": "설명",
       "placeholder": "섹션 설명을 입력해 주세요"
     },
     "label": "섹션",

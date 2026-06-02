@@ -25,28 +25,28 @@
   },
   "address": {
     "addressCountry": {
-      "label": "국가/지역 (선택 사항)",
+      "label": "국가/지역",
       "placeholder": "귀하의 국가 코드를 입력해 주세요"
     },
     "addressLocality": {
-      "label": "시/군/구 (선택 사항)",
+      "label": "시/군/구",
       "placeholder": "귀하의 시, 군 또는 구를 입력해 주세요"
     },
     "addressRegion": {
-      "label": "시/도 (선택 사항)",
+      "label": "시/도",
       "placeholder": "귀하의 시 또는 도를 입력해 주세요"
     },
     "extendedAddress": {
-      "label": "상세 주소 (선택 사항)",
+      "label": "상세 주소",
       "placeholder": "귀하의 상세 주소를 입력해 주세요"
     },
     "label": "주소",
     "postalCode": {
-      "label": "우편번호 (선택 사항)",
+      "label": "우편번호",
       "placeholder": "귀하의 우편번호를 입력해 주세요"
     },
     "streetAddress": {
-      "label": "도로명 주소 (선택 사항)",
+      "label": "도로명 주소",
       "placeholder": "귀하의 도로명 주소를 입력해 주세요"
     }
   },
@@ -68,7 +68,7 @@
   "label": "조직 관리",
   "localBusiness": {
     "hasMap": {
-      "label": "지도 링크 (선택)",
+      "label": "지도 링크",
       "placeholder": "귀하의 Google 지도 URL을 입력해 주세요"
     },
     "label": "비즈니스",
@@ -84,14 +84,14 @@
         "Tu": "화",
         "We": "수"
       },
-      "label": "영업 시간 (선택)",
+      "label": "영업 시간",
       "missingDays": "요일을 선택해 주세요",
       "missingEndTime": "종료 시간을 입력해 주세요",
       "missingStartTime": "시작 시간을 입력해 주세요",
       "to": "~"
     },
     "telephone": {
-      "label": "전화번호 (선택)",
+      "label": "전화번호",
       "placeholder": "귀하의 전화번호를 입력해 주세요"
     }
   },
@@ -205,7 +205,7 @@
       "placeholder": "귀하의 팀 이름을 입력해 주세요"
     },
     "teamId": {
-      "label": "팀 (선택 사항)",
+      "label": "팀",
       "placeholder": "귀하의 팀을 선택해 주세요"
     }
   }

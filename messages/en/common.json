@@ -7,6 +7,7 @@
   "loading": "Loading...",
   "maxQuantity": "You can buy up to {quantity} per item",
   "multiply": "×",
+  "optional": "(optional)",
   "reachStockLimit": "Stock limit reached {label}",
   "soldOut": "{label} Sold out",
   "totalAmount": "Total",

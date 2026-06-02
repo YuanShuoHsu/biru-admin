@@ -54,6 +54,7 @@ const AddressFields = ({
   const locale = useLocale();
   const isEnglish = locale === LocaleEnum.En;
 
+  const tCommon = useTranslations("common");
   const tOrganizations = useTranslations("organizations");
 
   const [postalCode, addressRegion, addressLocality, addressCountry] = useWatch(
@@ -111,7 +112,7 @@ const AddressFields = ({
         error={!!errors.streetAddress}
         fullWidth
         helperText={errors.streetAddress?.message}
-        label={tOrganizations("address.streetAddress.label")}
+        label={`${tOrganizations("address.streetAddress.label")} ${tCommon("optional")}`}
         placeholder={tOrganizations("address.streetAddress.placeholder")}
         {...register("streetAddress")}
       />
@@ -120,7 +121,7 @@ const AddressFields = ({
         error={!!errors.extendedAddress}
         fullWidth
         helperText={errors.extendedAddress?.message}
-        label={tOrganizations("address.extendedAddress.label")}
+        label={`${tOrganizations("address.extendedAddress.label")} ${tCommon("optional")}`}
         placeholder={tOrganizations("address.extendedAddress.placeholder")}
         {...register("extendedAddress")}
       />
@@ -131,7 +132,7 @@ const AddressFields = ({
           fullWidth
           helperText={errors.addressLocality?.message}
           slotProps={{ inputLabel: { shrink: !!addressLocality } }}
-          label={tOrganizations("address.addressLocality.label")}
+          label={`${tOrganizations("address.addressLocality.label")} ${tCommon("optional")}`}
           placeholder={tOrganizations("address.addressLocality.placeholder")}
           {...register("addressLocality", {
             onChange: (e) => handleAddressLocalityChange(e.target.value),
@@ -143,7 +144,7 @@ const AddressFields = ({
           fullWidth
           helperText={errors.addressRegion?.message}
           slotProps={{ inputLabel: { shrink: !!addressRegion } }}
-          label={tOrganizations("address.addressRegion.label")}
+          label={`${tOrganizations("address.addressRegion.label")} ${tCommon("optional")}`}
           placeholder={tOrganizations("address.addressRegion.placeholder")}
           {...register("addressRegion", {
             onChange: (e) => handleAddressRegionChange(e.target.value),
@@ -156,7 +157,7 @@ const AddressFields = ({
         fullWidth
         helperText={errors.postalCode?.message}
         slotProps={{ inputLabel: { shrink: !!postalCode } }}
-        label={tOrganizations("address.postalCode.label")}
+        label={`${tOrganizations("address.postalCode.label")} ${tCommon("optional")}`}
         placeholder={tOrganizations("address.postalCode.placeholder")}
         {...register("postalCode", {
           onChange: (e) => handlePostalCodeChange(e.target.value),
@@ -165,7 +166,7 @@ const AddressFields = ({
       <CountrySelect
         error={!!errors.addressCountry}
         helperText={errors.addressCountry?.message}
-        label={tOrganizations("address.addressCountry.label")}
+        label={`${tOrganizations("address.addressCountry.label")} ${tCommon("optional")}`}
         mode="country"
         value={countries.find(({ code }) => code === addressCountry) || null}
         {...register("addressCountry")}

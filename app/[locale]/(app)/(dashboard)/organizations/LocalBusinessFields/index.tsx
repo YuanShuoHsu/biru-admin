@@ -38,6 +38,7 @@ const LocalBusinessFields = ({
   register,
   setValue,
 }: LocalBusinessFieldsProps) => {
+  const tCommon = useTranslations("common");
   const tOrganizations = useTranslations("organizations");
 
   const addressCountry = useWatch({ control, name: "addressCountry" });
@@ -56,7 +57,7 @@ const LocalBusinessFields = ({
         error={!!errors.telephone}
         fullWidth
         helperText={errors.telephone?.message}
-        label={tOrganizations("localBusiness.telephone.label")}
+        label={`${tOrganizations("localBusiness.telephone.label")} ${tCommon("optional")}`}
         slotProps={{
           input: {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -72,7 +73,7 @@ const LocalBusinessFields = ({
         error={!!errors.hasMap}
         fullWidth
         helperText={errors.hasMap?.message}
-        label={tOrganizations("localBusiness.hasMap.label")}
+        label={`${tOrganizations("localBusiness.hasMap.label")} ${tCommon("optional")}`}
         placeholder={tOrganizations("localBusiness.hasMap.placeholder")}
         type="url"
         {...register("hasMap")}

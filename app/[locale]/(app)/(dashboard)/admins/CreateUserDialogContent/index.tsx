@@ -74,6 +74,7 @@ const CreateUserDialogContent = ({
   const locale = useLocale();
 
   const tAdmins = useTranslations("admins");
+  const tCommon = useTranslations("common");
   const tAuth = useTranslations("auth");
 
   const createUserFormSchema = useCreateUserFormSchema();
@@ -178,7 +179,7 @@ const CreateUserDialogContent = ({
           error={!!errors.lastName}
           fullWidth
           helperText={errors.lastName?.message}
-          label={tAdmins("actions.createUser.lastName.label")}
+          label={`${tAdmins("actions.createUser.lastName.label")} ${tCommon("optional")}`}
           placeholder={tAdmins("actions.createUser.lastName.placeholder")}
           {...register("lastName")}
         />

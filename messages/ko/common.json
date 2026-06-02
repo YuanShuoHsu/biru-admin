@@ -7,6 +7,7 @@
   "loading": "로딩 중...",
   "maxQuantity": "각 상품은 최대 {quantity} 개까지 구매할 수 있습니다",
   "multiply": "×",
+  "optional": "(선택)",
   "reachStockLimit": "재고 한도에 도달했습니다 {label}",
   "soldOut": "{label} 품절",
   "totalAmount": "합계",

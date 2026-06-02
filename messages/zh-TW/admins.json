@@ -32,7 +32,7 @@
         "placeholder": "請輸入您的名字"
       },
       "lastName": {
-        "label": "姓氏（選填）",
+        "label": "姓氏",
         "placeholder": "請輸入您的姓氏"
       },
       "password": {
@@ -82,7 +82,7 @@
     },
     "updateUser": {
       "bio": {
-        "label": "個人簡介（選填）",
+        "label": "個人簡介",
         "placeholder": "請輸入您的個人簡介"
       },
       "firstName": {
@@ -90,7 +90,7 @@
         "placeholder": "請輸入您的名字"
       },
       "lastName": {
-        "label": "姓氏（選填）",
+        "label": "姓氏",
         "placeholder": "請輸入您的姓氏"
       },
       "success": "{email} 的資料已更新",

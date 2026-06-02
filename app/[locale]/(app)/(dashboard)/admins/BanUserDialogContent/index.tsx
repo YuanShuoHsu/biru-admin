@@ -42,6 +42,7 @@ const BanUserDialogContent = ({
   const locale = useLocale();
 
   const tAdmins = useTranslations("admins");
+  const tCommon = useTranslations("common");
 
   const banUserFormSchema = useBanUserFormSchema();
 
@@ -103,7 +104,7 @@ const BanUserDialogContent = ({
         error={!!errors.banReason}
         fullWidth
         helperText={errors.banReason?.message}
-        label={tAdmins("actions.banUser.banReason.label")}
+        label={`${tAdmins("actions.banUser.banReason.label")} ${tCommon("optional")}`}
         maxRows={4}
         multiline
         placeholder={tAdmins("actions.banUser.banReason.placeholder")}
@@ -114,7 +115,7 @@ const BanUserDialogContent = ({
         error={!!errors.banExpiresIn}
         fullWidth
         helperText={errors.banExpiresIn?.message}
-        label={tAdmins("actions.banUser.banExpiresIn.label")}
+        label={`${tAdmins("actions.banUser.banExpiresIn.label")} ${tCommon("optional")}`}
         select
         slotProps={{
           inputLabel: { shrink: true },

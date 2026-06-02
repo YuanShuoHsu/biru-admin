@@ -56,6 +56,7 @@ const UpdateMenuDialog = ({
 }: UpdateMenuDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
+  const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
 
   const uploadKey = `update-menu-image-${id}`;
@@ -178,7 +179,7 @@ const UpdateMenuDialog = ({
         error={!!errors.description}
         fullWidth
         helperText={errors.description?.message}
-        label={tMenus("description.label")}
+        label={`${tMenus("description.label")} ${tCommon("optional")}`}
         maxRows={4}
         multiline
         placeholder={tMenus("description.placeholder")}

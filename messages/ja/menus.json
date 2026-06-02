@@ -57,7 +57,7 @@
       "menuSection": "グループ {menuSection}"
     },
     "addOnMenuItemId": {
-      "label": "追加品目（任意）",
+      "label": "追加品目",
       "placeholder": "追加品目を選択してください"
     },
     "addOnMenuSectionId": {
@@ -68,11 +68,11 @@
   },
   "createdAt": "作成日時",
   "description": {
-    "label": "説明（任意）",
+    "label": "説明",
     "placeholder": "メニューの説明を入力してください"
   },
   "image": {
-    "label": "カバー画像URL（任意）",
+    "label": "カバー画像URL",
     "placeholder": "画像URLを入力してください"
   },
   "inLanguage": {
@@ -121,11 +121,11 @@
       }
     },
     "description": {
-      "label": "説明（任意）",
+      "label": "説明",
       "placeholder": "品目の説明を入力してください"
     },
     "image": {
-      "label": "画像URL（任意）",
+      "label": "画像URL",
       "placeholder": "画像URLを入力してください"
     },
     "label": "品目",
@@ -134,10 +134,10 @@
       "placeholder": "品目名を入力してください"
     },
     "suitableForDiet": {
-      "label": "食事制限（任意）"
+      "label": "食事制限"
     },
     "url": {
-      "label": "URL（任意）",
+      "label": "URL",
       "placeholder": "URLを入力してください"
     }
   },
@@ -167,37 +167,37 @@
     },
     "deliveryLeadTime": {
       "maxValue": {
-        "label": "最大準備時間（任意）",
+        "label": "最大準備時間",
         "placeholder": "最大準備時間を入力してください"
       },
       "minValue": {
-        "label": "最小準備時間（任意）",
+        "label": "最小準備時間",
         "placeholder": "最小準備時間を入力してください"
       },
       "unitText": {
-        "label": "時間単位（任意）",
+        "label": "時間単位",
         "placeholder": "単位を入力してください"
       },
       "value": {
-        "label": "準備時間（任意）",
+        "label": "準備時間",
         "placeholder": "準備時間を入力してください"
       }
     },
     "inventoryLevel": {
       "maxValue": {
-        "label": "最大在庫数（任意）",
+        "label": "最大在庫数",
         "placeholder": "最大在庫数を入力してください"
       },
       "minValue": {
-        "label": "最小在庫数（任意）",
+        "label": "最小在庫数",
         "placeholder": "最小在庫数を入力してください"
       },
       "unitText": {
-        "label": "在庫単位（任意）",
+        "label": "在庫単位",
         "placeholder": "在庫単位を入力してください"
       },
       "value": {
-        "label": "在庫数（任意）",
+        "label": "在庫数",
         "placeholder": "在庫数を入力してください"
       }
     },
@@ -211,14 +211,14 @@
     },
     "priceSpecification": {
       "price": {
-        "label": "セール価格（任意）",
+        "label": "セール価格",
         "placeholder": "セール価格を入力してください"
       },
       "validFrom": {
-        "label": "セール開始（任意）"
+        "label": "セール開始"
       },
       "validThrough": {
-        "label": "セール終了（任意）"
+        "label": "セール終了"
       }
     }
   },
@@ -270,7 +270,7 @@
     },
     "allItems": "すべての品目",
     "description": {
-      "label": "説明（任意）",
+      "label": "説明",
       "placeholder": "セクションの説明を入力してください"
     },
     "label": "セクション",
