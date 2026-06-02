@@ -655,8 +655,8 @@ const MenusMenuIdSectionId = ({
         filterable: false,
         valueGetter: (_value: unknown, { offer }: MenuItem) =>
           [offer?.inventoryLevel?.value, offer?.inventoryLevel?.unitText]
-            .filter(Boolean)
-            .join(" "),
+            .join(" ")
+            .trim(),
       },
       {
         field: "deliveryLeadTime",
@@ -665,8 +665,8 @@ const MenusMenuIdSectionId = ({
         filterable: false,
         valueGetter: (_value: unknown, { offer }: MenuItem) =>
           [offer?.deliveryLeadTime?.value, offer?.deliveryLeadTime?.unitText]
-            .filter(Boolean)
-            .join(" "),
+            .join(" ")
+            .trim(),
       },
       {
         field: "priceSpecification",
