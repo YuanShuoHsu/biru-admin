@@ -5,9 +5,9 @@ import { useParams } from "next/navigation";
 
 import { ORDER_MODE } from "@/constants/orderMode";
 
-import { useOrganizations } from "@/hooks/organizations";
-
 import { useRouter } from "@/i18n/navigation";
+
+import type { OrganizationResponse } from "@/types/organizations";
 
 import { MenuItem, TextField, styled } from "@mui/material";
 
@@ -18,23 +18,23 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
 }));
 
 interface OrderOrganizationSlugSelectProps {
+  organizations: OrganizationResponse[];
   organizationSlug: string;
 }
 
 const OrderOrganizationSlugSelect = ({
+  organizations,
   organizationSlug,
 }: OrderOrganizationSlugSelectProps) => {
   const { mode } = useParams();
 
   const router = useRouter();
 
-  const organizations = useOrganizations();
-
   const tOrder = useTranslations("order");
 
   const isDineIn = mode === ORDER_MODE.DineIn;
 
-  const currentOrg = organizations.find(
+  const currentOrganization = organizations.find(
     ({ slug }) => slug === organizationSlug,
   );
 
@@ -72,7 +72,11 @@ const OrderOrganizationSlugSelect = ({
               },
             },
       }}
-      value={isDineIn ? currentOrg?.name || "" : organizationSlug || ""}
+      value={
+        isDineIn
+          ? currentOrganization?.name || ""
+          : currentOrganization?.slug || ""
+      }
     >
       {isDineIn
         ? null
