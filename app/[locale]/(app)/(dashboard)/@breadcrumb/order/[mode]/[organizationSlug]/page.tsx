@@ -17,12 +17,7 @@ const BreadcrumbOrderModeOrganizationSlugPage = async ({
     `/api/organizations/${organizationSlug}`,
   );
 
-  return (
-    <RouterBreadcrumbs
-      organizationName={organization.name}
-      
-    />
-  );
+  return <RouterBreadcrumbs organizationName={organization.name} />;
 };
 
 export default BreadcrumbOrderModeOrganizationSlugPage;

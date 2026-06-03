@@ -27,9 +27,7 @@ const DashboardLayout = async ({
   return (
     <Stack padding={2} height="100%" gap={2}>
       <Grid container alignItems="center" gap={2}>
-        <Grid size={{ xs: 12, sm: "grow" }}>
-          {breadcrumb}
-        </Grid>
+        <Grid size={{ xs: 12, sm: "grow" }}>{breadcrumb}</Grid>
         <Grid size={{ xs: 12, sm: "auto" }}>{toolbar}</Grid>
       </Grid>
       {subheader}

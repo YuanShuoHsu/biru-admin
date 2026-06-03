@@ -1,7 +1,5 @@
 import RouterBreadcrumbs from "@/components/RouterBreadcrumbs";
 
-const BreadcrumbOrderDefault = () => (
-  <RouterBreadcrumbs organizationName=""  />
-);
+const BreadcrumbOrderDefault = () => <RouterBreadcrumbs organizationName="" />;
 
 export default BreadcrumbOrderDefault;
