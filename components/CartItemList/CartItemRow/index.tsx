@@ -251,9 +251,6 @@ const CartItemRow = ({ forceXsLayout, item }: CartItemRowProps) => {
                   </StyledInputAdornment>
                 ),
                 readOnly: true,
-                sx: {
-                  paddingInline: 1,
-                },
               },
             }}
             value={quantity}

@@ -1,10 +1,12 @@
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
-import React, { useEffect, useImperativeHandle, useState } from "react";
+import { useEffect, useState } from "react";
+
+import FormBox from "@/components/FormBox";
+import NumberSpinner from "@/components/NumberSpinner";
 
 import { MAX_QUANTITY } from "@/constants/cart";
 
-import { Add, Remove } from "@mui/icons-material";
 import {
   Box,
   Chip,
@@ -12,10 +14,7 @@ import {
   FormControl,
   FormLabel,
   Grid,
-  IconButton,
-  InputAdornment,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -31,7 +30,7 @@ import { getLimitingChoicesCap } from "@/utils/menus";
 const ImageBox = styled(Box)(({ theme }) => ({
   position: "relative",
   width: "100%",
-  aspectRatio: "4/3",
+  aspectRatio: "16/9",
   borderRadius: theme.shape.borderRadius,
   overflow: "hidden",
 }));
@@ -42,35 +41,29 @@ const StyledFormControl = styled(FormControl)(({ theme }) => ({
   gap: theme.spacing(1),
 }));
 
-export interface CardDialogContentImperativeHandle {
-  getValues: () => {
-    amount: number;
-    extraCost: number;
-    price: number;
-    quantity: number;
-    choices: Record<string, string[]>;
-  };
-}
-
 interface CardDialogContentProps {
   menuItem: OrderMenuItem;
   menus: OrderMenu[];
   options: Option[];
 }
 
-const CardDialogContent = React.forwardRef<
-  CardDialogContentImperativeHandle,
-  CardDialogContentProps
->(({ menuItem, menus, options }, ref) => {
+const CardDialogContent = ({
+  menuItem,
+  menus,
+  options,
+}: CardDialogContentProps) => {
   const { id, name, description, image, offers } = menuItem;
   const offer = offers[0];
   const price = parseFloat(offer?.price ?? "0") || 0;
+  const priceCurrency = offer?.priceCurrency;
   const stock = offer?.inventoryLevel?.value ?? null;
   const [rawQuantity, setRawQuantity] = useState(1);
 
-  const { getCartItemTotalQuantity, getChoiceAvailableQuantity } = useCartStore(
-    (state) => state,
-  );
+  const {
+    getCartItemTotalQuantity,
+    getChoiceAvailableQuantity,
+    updateCartItem,
+  } = useCartStore((state) => state);
 
   const initialChoices = options.reduce<Record<string, string[]>>(
     (acc, { id: optionId, choices: optionChoices, multiple, required }) => {
@@ -130,7 +123,7 @@ const CardDialogContent = React.forwardRef<
     Math.max(Math.min(value, availableToAdd), minQuantity);
   const quantity = clampQuantity(rawQuantity);
 
-  const { setDialog } = useDialogStore((state) => state);
+  const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   useEffect(() => {
     setDialog({ confirmDisabled: quantity <= 0 });
@@ -174,28 +167,26 @@ const CardDialogContent = React.forwardRef<
             })
           : "";
 
-  useImperativeHandle(
-    ref,
-    () => ({
-      getValues: () => ({
-        amount,
-        extraCost,
-        price,
-        quantity,
-        choices,
-      }),
-    }),
-    [amount, extraCost, price, quantity, choices],
-  );
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
 
-  const handleDecreaseQuantity = () =>
-    setRawQuantity((prev) => clampQuantity(prev - 1));
+    if (quantity <= 0) return;
 
-  const handleIncreaseQuantity = () =>
-    setRawQuantity((prev) => clampQuantity(prev + 1));
+    updateCartItem({
+      id,
+      amount,
+      extraCost,
+      image: image || null,
+      price,
+      quantity,
+      choices,
+    });
+
+    closeDialog();
+  };
 
   return (
-    <Stack direction="column" gap={2}>
+    <FormBox id="add-to-cart-form" onSubmit={handleSubmit}>
       <ImageBox>
         {image && (
           <Image
@@ -296,7 +287,7 @@ const CardDialogContent = React.forwardRef<
                                   /
                                 </Typography>
                                 <Typography component="span" variant="caption">
-                                  {tCommon("currency")} {extraCost}
+                                  {priceCurrency} {extraCost}
                                 </Typography>
                               </>
                             )}
@@ -313,7 +304,13 @@ const CardDialogContent = React.forwardRef<
         },
       )}
       <Divider variant="inset" />
-      <Grid container display="flex" alignItems="center" spacing={2}>
+      <Grid
+        width="100%"
+        container
+        display="flex"
+        alignItems="center"
+        spacing={2}
+      >
         <Grid size={{ xs: 5 }}>
           <Typography
             color="primary"
@@ -321,62 +318,24 @@ const CardDialogContent = React.forwardRef<
             fontWeight="bold"
             variant="h6"
           >
-            {tCommon("currency")} {displayPrice}
+            {priceCurrency} {displayPrice}
           </Typography>
         </Grid>
         <Grid size={{ xs: 7 }}>
-          <TextField
+          <NumberSpinner
             disabled={!quantity}
+            error={isAtLimit}
             fullWidth
             helperText={isAtLimit ? formHelperText : undefined}
-            size="small"
-            slotProps={{
-              formHelperText: {
-                error: isAtLimit,
-                sx: { textAlign: "right" },
-              },
-              htmlInput: {
-                sx: { textAlign: "center" },
-              },
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <IconButton
-                      aria-label="decrease"
-                      disabled={quantity <= minQuantity}
-                      onClick={handleDecreaseQuantity}
-                      size="small"
-                    >
-                      <Remove fontSize="small" />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="increase"
-                      disabled={quantity >= availableToAdd}
-                      onClick={handleIncreaseQuantity}
-                      size="small"
-                    >
-                      <Add fontSize="small" />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-                readOnly: true,
-                sx: {
-                  paddingInline: 1,
-                },
-              },
-            }}
+            max={availableToAdd}
+            min={minQuantity}
+            onValueChange={(value) => setRawQuantity(value || minQuantity)}
             value={quantity}
           />
         </Grid>
       </Grid>
-    </Stack>
+    </FormBox>
   );
-});
-
-CardDialogContent.displayName = "CardDialogContent";
+};
 
 export default CardDialogContent;
