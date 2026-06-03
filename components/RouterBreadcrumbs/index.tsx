@@ -9,8 +9,6 @@ import useSWR from "swr";
 
 import { ORDER_MODE } from "@/constants/orderMode";
 
-import { useOrganization } from "@/hooks/organizations";
-
 import { usePathname } from "@/i18n/navigation";
 
 import { authClient } from "@/lib/auth-client";
@@ -98,7 +96,7 @@ interface BreadcrumbItem {
   to: string;
 }
 
-const useBreadcrumbs = (): BreadcrumbItem[] => {
+const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
   const {
     menuId,
     menuItemId,
@@ -113,9 +111,6 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
   const searchParams = useSearchParams();
   const menuOrganizationSlug = searchParams.get("organization");
 
-  const organization = useOrganization();
-  const storeName = organization?.name || "";
-
   const { data: userEmail = "" } = useSWR(
     userId ? `admin-user-${userId}` : null,
     async () => {
@@ -128,25 +123,19 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
   );
 
   const decodedSlug = decodeURIComponent(slug);
-  const { data: organizationName = "" } = useSWR(
+  const { data: organizationData } = useSWR(
     slug ? `organization-${slug}` : null,
-    async () => {
-      const { data } = await authClient.organization.list();
-
-      return data?.find(({ slug }) => slug === decodedSlug)?.name;
-    },
-  );
-
-  const { data: teamName = "" } = useSWR(
-    teamId ? `team-${teamId}` : null,
     async () => {
       const { data } = await authClient.organization.getFullOrganization({
         query: { organizationSlug: decodedSlug },
       });
 
-      return data?.teams.find(({ id }) => id === teamId)?.name;
+      return data;
     },
   );
+  const organizationSlugName = organizationData?.name || "";
+  const teamName =
+    organizationData?.teams.find(({ id }) => id === teamId)?.name || "";
 
   const { data: menuName = "" } = useSWR(
     menuId ? `/api/menus/${menuId}` : null,
@@ -214,7 +203,7 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
           children: storeChildren,
           disabled: !isPickup,
           icon: Storefront,
-          label: storeName,
+          label: organizationName,
           to: `/${organizationSlug}`,
         },
       ],
@@ -398,7 +387,7 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
           ],
           disabled: true,
           icon: ManageAccounts,
-          label: organizationName,
+          label: organizationSlugName,
           to: `/${slug}`,
         },
       ],
@@ -448,8 +437,12 @@ const findHiddenTo = (
   return findHiddenTo(nextIndex, pathnames, breadcrumbs);
 };
 
-const RouterBreadcrumbs = () => {
-  const breadcrumbs = useBreadcrumbs();
+interface RouterBreadcrumbsProps {
+  organizationName: string;
+}
+
+const RouterBreadcrumbs = ({ organizationName }: RouterBreadcrumbsProps) => {
+  const breadcrumbs = useBreadcrumbs(organizationName);
 
   const pathname = usePathname();
   const pathnames = pathname.split("/").filter((x) => x);

@@ -2,18 +2,18 @@ import { hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
-import RouterBreadcrumbs from "@/components/RouterBreadcrumbs";
-
 import { routing } from "@/i18n/routing";
 
 import { Grid, Stack } from "@mui/material";
 
 interface DashboardLayoutProps extends LayoutProps<"/[locale]"> {
+  breadcrumb: React.ReactNode;
   subheader: React.ReactNode;
   toolbar: React.ReactNode;
 }
 
 const DashboardLayout = async ({
+  breadcrumb,
   children,
   params,
   subheader,
@@ -28,7 +28,7 @@ const DashboardLayout = async ({
     <Stack padding={2} height="100%" gap={2}>
       <Grid container alignItems="center" gap={2}>
         <Grid size={{ xs: 12, sm: "grow" }}>
-          <RouterBreadcrumbs />
+          {breadcrumb}
         </Grid>
         <Grid size={{ xs: 12, sm: "auto" }}>{toolbar}</Grid>
       </Grid>
