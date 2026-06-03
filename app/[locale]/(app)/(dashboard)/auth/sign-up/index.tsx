@@ -188,7 +188,7 @@ const AuthSignUp = ({ locale, redirectTo }: AuthSignUpProps) => {
         emailSubscribed,
         firstName,
         // gender,
-        image: avatarSrc,
+        ...(avatarSrc && { image: avatarSrc }),
         lang: locale,
         lastName,
         name,

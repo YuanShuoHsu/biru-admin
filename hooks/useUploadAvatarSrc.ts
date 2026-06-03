@@ -3,7 +3,7 @@ import { useUploadAvatarStore } from "@/providers/upload-avatar-store-provider";
 export const useUploadAvatarSrc = (
   uploadKey: string,
   initialSrc?: string | null,
-) => {
+): string | null | undefined => {
   const { avatarSrcs } = useUploadAvatarStore((state) => state);
 
   return uploadKey in avatarSrcs

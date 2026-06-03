@@ -110,7 +110,7 @@ const UploadAvatars = ({
   const handleRemoveAvatar = (e: React.MouseEvent) => {
     e.preventDefault();
 
-    setAvatarSrc(uploadKey, undefined);
+    setAvatarSrc(uploadKey, null);
   };
 
   const handleRestoreAvatar = (e: React.MouseEvent) => {
@@ -169,7 +169,7 @@ const UploadAvatars = ({
             aspectRatio={aspectRatio}
             fullWidth={fullWidth}
             shape={shape}
-            src={avatarSrc}
+            src={avatarSrc || undefined}
           />
           <VisuallyHiddenInput
             accept="image/*"
