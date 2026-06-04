@@ -320,7 +320,7 @@ const ModifierGroups = ({
     [pathname, router, searchParams],
   );
 
-  const handleEnterReorderMode = useCallback(() => {
+  const handleEnterModifierGroupReorderMode = useCallback(() => {
     setDialog({
       content: (
         <DialogContentText>
@@ -338,7 +338,7 @@ const ModifierGroups = ({
     });
   }, [apiRef, setDialog, tMenus]);
 
-  const handleSaveReorder = useCallback(() => {
+  const handleSaveModifierGroupReorder = useCallback(() => {
     setDialog({
       content: (
         <DialogContentText>
@@ -389,7 +389,7 @@ const ModifierGroups = ({
     tMenus,
   ]);
 
-  const handleCancelReorder = useCallback(() => {
+  const handleCancelModifierGroupReorder = useCallback(() => {
     setDialog({
       content: (
         <DialogContentText>
@@ -408,7 +408,7 @@ const ModifierGroups = ({
     });
   }, [mutate, setDialog, tMenus]);
 
-  const handleDragEnd = ({ operation }: DragEndEvent) => {
+  const handleModifierGroupDragEnd = ({ operation }: DragEndEvent) => {
     if (!isSortableOperation(operation)) return;
 
     const { canceled, source } = operation;
@@ -422,7 +422,7 @@ const ModifierGroups = ({
     mutate({ data: newGroups, total: rowCount }, false);
   };
 
-  const handleCreateGroup = useCallback(() => {
+  const handleCreateModifierGroup = useCallback(() => {
     setDialog({
       content: <CreateModifierGroupDialog menuId={menu.id} mutate={mutate} />,
       formId: "create-modifier-group-form",
@@ -445,7 +445,7 @@ const ModifierGroups = ({
     [menu.id, organization, router],
   );
 
-  const handleUpdateGroup = useCallback(
+  const handleUpdateModifierGroup = useCallback(
     (group: ModifierGroup) => {
       setDialog({
         content: <UpdateModifierGroupDialog group={group} mutate={mutate} />,
@@ -457,7 +457,7 @@ const ModifierGroups = ({
     [mutate, setDialog, tMenus],
   );
 
-  const handleDeleteGroup = useCallback(
+  const handleDeleteModifierGroup = useCallback(
     ({ id, displayName }: ModifierGroup) => {
       setDialog({
         content: (
@@ -540,7 +540,7 @@ const ModifierGroups = ({
                   onClick={(event) => {
                     event.stopPropagation();
 
-                    handleUpdateGroup(row);
+                    handleUpdateModifierGroup(row);
                   }}
                   size="small"
                 >
@@ -557,7 +557,7 @@ const ModifierGroups = ({
                   onClick={(event) => {
                     event.stopPropagation();
 
-                    handleDeleteGroup(row);
+                    handleDeleteModifierGroup(row);
                   }}
                   size="small"
                 >
@@ -611,8 +611,8 @@ const ModifierGroups = ({
       canWrite,
       dateFilterOperators,
       format,
-      handleDeleteGroup,
-      handleUpdateGroup,
+      handleDeleteModifierGroup,
+      handleUpdateModifierGroup,
       handleViewModifiers,
       isReorderMode,
       stringFilterOperators,
@@ -627,7 +627,7 @@ const ModifierGroups = ({
           <>
             {canWrite && (
               <Button
-                onClick={handleCreateGroup}
+                onClick={handleCreateModifierGroup}
                 size="small"
                 startIcon={<Add />}
                 variant="contained"
@@ -638,7 +638,7 @@ const ModifierGroups = ({
             {canWrite && (
               <Button
                 disabled={isReorderDisabled}
-                onClick={handleEnterReorderMode}
+                onClick={handleEnterModifierGroupReorderMode}
                 size="small"
                 startIcon={<Sort />}
                 variant="outlined"
@@ -650,7 +650,7 @@ const ModifierGroups = ({
         ) : (
           <>
             <Button
-              onClick={handleCancelReorder}
+              onClick={handleCancelModifierGroupReorder}
               size="small"
               startIcon={<Cancel />}
               variant="outlined"
@@ -658,7 +658,7 @@ const ModifierGroups = ({
               {tMenus("modifierGroups.actions.reorderGroup.cancel.label")}
             </Button>
             <Button
-              onClick={handleSaveReorder}
+              onClick={handleSaveModifierGroupReorder}
               size="small"
               startIcon={<Save />}
               variant="contained"
@@ -668,7 +668,7 @@ const ModifierGroups = ({
           </>
         )}
       </Stack>
-      <DragDropProvider onDragEnd={handleDragEnd}>
+      <DragDropProvider onDragEnd={handleModifierGroupDragEnd}>
         <DataGrid
           {...DATA_GRID_PROPS}
           apiRef={apiRef}
