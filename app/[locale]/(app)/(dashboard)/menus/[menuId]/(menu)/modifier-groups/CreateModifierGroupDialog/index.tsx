@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
 import {
   type CreateModifierGroupForm,
@@ -11,6 +11,7 @@ import {
 } from "./definitions";
 
 import FormBox from "@/components/FormBox";
+import NumberSpinner from "@/components/NumberSpinner";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -39,8 +40,10 @@ const CreateModifierGroupDialog = ({
   const createModifierGroupFormSchema = useCreateModifierGroupFormSchema();
   const {
     formState: { errors },
+    control,
     handleSubmit,
     register,
+    setValue,
   } = useForm<CreateModifierGroupForm>({
     defaultValues: {
       displayName: "",
@@ -49,6 +52,9 @@ const CreateModifierGroupDialog = ({
     },
     resolver: zodResolver(createModifierGroupFormSchema),
   });
+
+  const minSelectionCount = useWatch({ control, name: "minSelectionCount" });
+  const maxSelectionCount = useWatch({ control, name: "maxSelectionCount" });
 
   const onSubmitHandler = async ({
     displayName,
@@ -105,25 +111,31 @@ const CreateModifierGroupDialog = ({
         required
         {...register("displayName")}
       />
-      <TextField
+      <NumberSpinner
+        clearable
         error={!!errors.minSelectionCount}
         fullWidth
         helperText={errors.minSelectionCount?.message}
         label={`${tMenus("modifierGroups.minSelectionCount.label")} ${tCommon("optional")}`}
+        min={0}
         placeholder={tMenus("modifierGroups.minSelectionCount.placeholder")}
-        slotProps={{ htmlInput: { min: 0, step: 1 } }}
-        type="number"
-        {...register("minSelectionCount")}
+        value={minSelectionCount !== "" ? Number(minSelectionCount) : null}
+        onValueChange={(value) =>
+          setValue("minSelectionCount", value != null ? String(value) : "")
+        }
       />
-      <TextField
+      <NumberSpinner
+        clearable
         error={!!errors.maxSelectionCount}
         fullWidth
         helperText={errors.maxSelectionCount?.message}
         label={`${tMenus("modifierGroups.maxSelectionCount.label")} ${tCommon("optional")}`}
+        min={1}
         placeholder={tMenus("modifierGroups.maxSelectionCount.placeholder")}
-        slotProps={{ htmlInput: { min: 1, step: 1 } }}
-        type="number"
-        {...register("maxSelectionCount")}
+        value={maxSelectionCount !== "" ? Number(maxSelectionCount) : null}
+        onValueChange={(value) =>
+          setValue("maxSelectionCount", value != null ? String(value) : "")
+        }
       />
     </FormBox>
   );

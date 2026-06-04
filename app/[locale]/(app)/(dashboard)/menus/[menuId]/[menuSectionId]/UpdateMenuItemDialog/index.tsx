@@ -308,10 +308,10 @@ const UpdateMenuItemDialog = ({ item, mutate }: UpdateMenuItemDialogProps) => {
             value={
               inventoryLevelValue !== "" ? Number(inventoryLevelValue) : null
             }
-            onValueChange={(val) =>
+            onValueChange={(value) =>
               setValue(
                 "offer.inventoryLevel.value",
-                val != null ? String(val) : "",
+                value != null ? String(value) : "",
               )
             }
           />
@@ -340,10 +340,10 @@ const UpdateMenuItemDialog = ({ item, mutate }: UpdateMenuItemDialogProps) => {
                 ? Number(deliveryLeadTimeValue)
                 : null
             }
-            onValueChange={(val) =>
+            onValueChange={(value) =>
               setValue(
                 "offer.deliveryLeadTime.value",
-                val != null ? String(val) : "",
+                value != null ? String(value) : "",
               )
             }
           />

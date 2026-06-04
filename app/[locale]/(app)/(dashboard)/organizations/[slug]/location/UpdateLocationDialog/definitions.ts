@@ -15,7 +15,7 @@ export const useUpdateLocationFormSchema = () => {
     postalCode: z
       .string()
       .trim()
-      .refine((val) => val === "" || /^\d{3}(\d{2}\d?)?$/.test(val), {
+      .refine((value) => value === "" || /^\d{3}(\d{2}\d?)?$/.test(value), {
         error: tValidation("postalCode.format"),
       })
       .optional(),
@@ -28,14 +28,14 @@ export const useUpdateLocationFormSchema = () => {
       .trim()
       .optional()
       .refine(
-        (val) =>
-          !val ||
-          val
+        (value) =>
+          !value ||
+          value
             .split("\n")
             .filter(Boolean)
             .every((line) => line.indexOf(" ") > 0),
       )
-      .refine((val) => !val || !hasOpeningHoursConflict(val)),
+      .refine((value) => !value || !hasOpeningHoursConflict(value)),
     telephone: z.string().trim().optional(),
   });
 };

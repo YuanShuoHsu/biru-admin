@@ -298,10 +298,10 @@ const CreateMenuItemDialog = ({
             value={
               inventoryLevelValue !== "" ? Number(inventoryLevelValue) : null
             }
-            onValueChange={(val) =>
+            onValueChange={(value) =>
               setValue(
                 "offer.inventoryLevel.value",
-                val != null ? String(val) : "",
+                value != null ? String(value) : "",
               )
             }
           />
@@ -330,10 +330,10 @@ const CreateMenuItemDialog = ({
                 ? Number(deliveryLeadTimeValue)
                 : null
             }
-            onValueChange={(val) =>
+            onValueChange={(value) =>
               setValue(
                 "offer.deliveryLeadTime.value",
-                val != null ? String(val) : "",
+                value != null ? String(value) : "",
               )
             }
           />
