@@ -35,13 +35,13 @@
       "reorderAddOn": {
         "cancel": {
           "confirm": "<bold>추가 옵션</bold> 정렬을 취소하시겠습니까? 저장되지 않은 변경 사항은 사라집니다.",
-          "label": "정렬 취소"
+          "label": "추가 옵션 정렬 취소"
         },
         "confirm": "<bold>추가 옵션</bold>을 정렬하시겠습니까?",
         "save": {
           "confirm": "<bold>추가 옵션</bold> 정렬을 저장하시겠습니까?",
           "error": "정렬 저장에 실패했습니다",
-          "label": "정렬 저장",
+          "label": "추가 옵션 정렬 저장",
           "success": "정렬이 저장되었습니다"
         },
         "title": "추가 옵션 정렬"
@@ -103,13 +103,13 @@
       "reorder": {
         "cancel": {
           "confirm": "<bold>옵션 그룹</bold> 정렬을 취소하시겠습니까? 저장하지 않은 변경 사항은 사라집니다.",
-          "label": "정렬 취소"
+          "label": "옵션 그룹 정렬 취소"
         },
         "confirm": "<bold>옵션 그룹</bold>을 정렬하시겠습니까?",
         "save": {
           "confirm": "<bold>옵션 그룹</bold> 정렬을 저장하시겠습니까?",
           "error": "정렬 저장에 실패했습니다",
-          "label": "정렬 저장",
+          "label": "옵션 그룹 정렬 저장",
           "success": "정렬이 저장되었습니다"
         },
         "title": "옵션 그룹 정렬"
@@ -137,13 +137,13 @@
       "reorderItem": {
         "cancel": {
           "confirm": "<bold>메뉴 항목</bold> 정렬을 취소하시겠습니까? 저장되지 않은 변경 사항은 사라집니다.",
-          "label": "정렬 취소"
+          "label": "메뉴 항목 정렬 취소"
         },
         "confirm": "<bold>메뉴 항목</bold>을 정렬하시겠습니까?",
         "save": {
           "confirm": "<bold>메뉴 항목</bold> 정렬을 저장하시겠습니까?",
           "error": "정렬 저장에 실패했습니다",
-          "label": "정렬 저장",
+          "label": "메뉴 항목 정렬 저장",
           "success": "정렬이 저장되었습니다"
         },
         "title": "메뉴 항목 정렬"
@@ -277,13 +277,13 @@
       "reorderGroup": {
         "cancel": {
           "confirm": "<bold>옵션 그룹</bold> 정렬을 취소하시겠습니까? 저장하지 않은 변경 사항은 사라집니다.",
-          "label": "정렬 취소"
+          "label": "옵션 그룹 정렬 취소"
         },
         "confirm": "<bold>옵션 그룹</bold>을 정렬하시겠습니까?",
         "save": {
           "confirm": "<bold>옵션 그룹</bold> 정렬을 저장하시겠습니까?",
           "error": "정렬 저장에 실패했습니다",
-          "label": "정렬 저장",
+          "label": "옵션 그룹 정렬 저장",
           "success": "정렬이 저장되었습니다"
         },
         "title": "옵션 그룹 정렬"
@@ -329,13 +329,13 @@
       "reorderModifier": {
         "cancel": {
           "confirm": "<bold>옵션</bold> 정렬을 취소하시겠습니까? 저장하지 않은 변경 사항은 사라집니다.",
-          "label": "정렬 취소"
+          "label": "옵션 정렬 취소"
         },
         "confirm": "<bold>옵션</bold>을 정렬하시겠습니까?",
         "save": {
           "confirm": "<bold>옵션</bold> 정렬을 저장하시겠습니까?",
           "error": "정렬 저장에 실패했습니다",
-          "label": "정렬 저장",
+          "label": "옵션 정렬 저장",
           "success": "정렬이 저장되었습니다"
         },
         "title": "옵션 정렬"
@@ -379,13 +379,13 @@
       "reorderSection": {
         "cancel": {
           "confirm": "<bold>그룹</bold> 정렬을 취소하시겠습니까? 저장되지 않은 변경 사항은 사라집니다.",
-          "label": "정렬 취소"
+          "label": "그룹 정렬 취소"
         },
         "confirm": "<bold>그룹</bold>을 정렬하시겠습니까?",
         "save": {
           "confirm": "<bold>그룹</bold> 정렬을 저장하시겠습니까?",
           "error": "정렬 저장에 실패했습니다",
-          "label": "정렬 저장",
+          "label": "그룹 정렬 저장",
           "success": "정렬이 저장되었습니다"
         },
         "title": "그룹 정렬"

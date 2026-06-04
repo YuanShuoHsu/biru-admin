@@ -35,13 +35,13 @@
       "reorderAddOn": {
         "cancel": {
           "confirm": "Are you sure you want to cancel <bold>add-ons</bold> reorder? Unsaved changes will be lost.",
-          "label": "Cancel Reorder"
+          "label": "Cancel Add-ons Reorder"
         },
         "confirm": "Are you sure you want to reorder <bold>add-ons</bold>?",
         "save": {
           "confirm": "Are you sure you want to save <bold>add-ons</bold> reorder?",
           "error": "Failed to save reorder",
-          "label": "Save Reorder",
+          "label": "Save Add-ons Reorder",
           "success": "Reorder saved"
         },
         "title": "Reorder Add-ons"
@@ -103,13 +103,13 @@
       "reorder": {
         "cancel": {
           "confirm": "Are you sure you want to cancel <bold>modifier groups</bold> reorder? Unsaved changes will be lost.",
-          "label": "Cancel Reorder"
+          "label": "Cancel Modifier Groups Reorder"
         },
         "confirm": "Are you sure you want to reorder <bold>modifier groups</bold>?",
         "save": {
           "confirm": "Are you sure you want to save <bold>modifier groups</bold> reorder?",
-          "error": "Failed to save order",
-          "label": "Save order",
+          "error": "Failed to save reorder",
+          "label": "Save Modifier Groups Reorder",
           "success": "Order saved"
         },
         "title": "Reorder Modifier Groups"
@@ -137,13 +137,13 @@
       "reorderItem": {
         "cancel": {
           "confirm": "Are you sure you want to cancel <bold>items</bold> reorder? Unsaved changes will be lost.",
-          "label": "Cancel Reorder"
+          "label": "Cancel Items Reorder"
         },
         "confirm": "Are you sure you want to reorder <bold>items</bold>?",
         "save": {
           "confirm": "Are you sure you want to save <bold>items</bold> reorder?",
           "error": "Failed to save reorder",
-          "label": "Save Reorder",
+          "label": "Save Items Reorder",
           "success": "Reorder saved"
         },
         "title": "Reorder Items"
@@ -277,13 +277,13 @@
       "reorderGroup": {
         "cancel": {
           "confirm": "Are you sure you want to cancel <bold>modifier groups</bold> reorder? Unsaved changes will be lost.",
-          "label": "Cancel Reorder"
+          "label": "Cancel Modifier Groups Reorder"
         },
         "confirm": "Are you sure you want to reorder <bold>modifier groups</bold>?",
         "save": {
           "confirm": "Are you sure you want to save <bold>modifier groups</bold> reorder?",
-          "error": "Failed to save order",
-          "label": "Save order",
+          "error": "Failed to save reorder",
+          "label": "Save Modifier Groups Reorder",
           "success": "Order saved"
         },
         "title": "Reorder Modifier Groups"
@@ -329,13 +329,13 @@
       "reorderModifier": {
         "cancel": {
           "confirm": "Are you sure you want to cancel <bold>modifiers</bold> reorder? Unsaved changes will be lost.",
-          "label": "Cancel Reorder"
+          "label": "Cancel Modifiers Reorder"
         },
         "confirm": "Are you sure you want to reorder <bold>modifiers</bold>?",
         "save": {
           "confirm": "Are you sure you want to save <bold>modifiers</bold> reorder?",
-          "error": "Failed to save order",
-          "label": "Save order",
+          "error": "Failed to save reorder",
+          "label": "Save Modifiers Reorder",
           "success": "Order saved"
         },
         "title": "Reorder Modifiers"
@@ -379,13 +379,13 @@
       "reorderSection": {
         "cancel": {
           "confirm": "Are you sure you want to cancel <bold>sections</bold> reorder? Unsaved changes will be lost.",
-          "label": "Cancel Reorder"
+          "label": "Cancel Sections Reorder"
         },
         "confirm": "Are you sure you want to reorder <bold>sections</bold>?",
         "save": {
           "confirm": "Are you sure you want to save <bold>sections</bold> reorder?",
           "error": "Failed to save reorder",
-          "label": "Save Reorder",
+          "label": "Save Sections Reorder",
           "success": "Reorder saved"
         },
         "title": "Reorder Sections"

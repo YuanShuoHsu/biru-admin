@@ -35,13 +35,13 @@
       "reorderAddOn": {
         "cancel": {
           "confirm": "確定要取消<bold>加購</bold>排序嗎？未儲存的變更將會遺失。",
-          "label": "取消排序"
+          "label": "取消加購排序"
         },
         "confirm": "確定要進行<bold>加購</bold>排序嗎？",
         "save": {
           "confirm": "確定要儲存<bold>加購</bold>排序嗎？",
           "error": "排序儲存失敗",
-          "label": "儲存排序",
+          "label": "儲存加購排序",
           "success": "排序已儲存"
         },
         "title": "加購排序"
@@ -103,13 +103,13 @@
       "reorder": {
         "cancel": {
           "confirm": "確定要取消<bold>選項群組</bold>排序嗎？未儲存的變更將會遺失。",
-          "label": "取消排序"
+          "label": "取消選項群組排序"
         },
         "confirm": "確定要進行<bold>選項群組</bold>排序嗎？",
         "save": {
           "confirm": "確定要儲存<bold>選項群組</bold>排序嗎？",
           "error": "排序儲存失敗",
-          "label": "儲存排序",
+          "label": "儲存選項群組排序",
           "success": "排序已儲存"
         },
         "title": "選項群組排序"
@@ -137,13 +137,13 @@
       "reorderItem": {
         "cancel": {
           "confirm": "確定要取消<bold>品項</bold>排序嗎？未儲存的變更將會遺失。",
-          "label": "取消排序"
+          "label": "取消品項排序"
         },
         "confirm": "確定要進行<bold>品項</bold>排序嗎？",
         "save": {
           "confirm": "確定要儲存<bold>品項</bold>排序嗎？",
           "error": "排序儲存失敗",
-          "label": "儲存排序",
+          "label": "儲存品項排序",
           "success": "排序已儲存"
         },
         "title": "品項排序"
@@ -277,13 +277,13 @@
       "reorderGroup": {
         "cancel": {
           "confirm": "確定要取消<bold>選項群組</bold>排序嗎？未儲存的變更將會遺失。",
-          "label": "取消排序"
+          "label": "取消選項群組排序"
         },
         "confirm": "確定要進行<bold>選項群組</bold>排序嗎？",
         "save": {
           "confirm": "確定要儲存<bold>選項群組</bold>排序嗎？",
           "error": "排序儲存失敗",
-          "label": "儲存排序",
+          "label": "儲存選項群組排序",
           "success": "排序已儲存"
         },
         "title": "選項群組排序"
@@ -329,13 +329,13 @@
       "reorderModifier": {
         "cancel": {
           "confirm": "確定要取消<bold>選項</bold>排序嗎？未儲存的變更將會遺失。",
-          "label": "取消排序"
+          "label": "取消選項排序"
         },
         "confirm": "確定要進行<bold>選項</bold>排序嗎？",
         "save": {
           "confirm": "確定要儲存<bold>選項</bold>排序嗎？",
           "error": "排序儲存失敗",
-          "label": "儲存排序",
+          "label": "儲存選項排序",
           "success": "排序已儲存"
         },
         "title": "選項排序"
@@ -379,13 +379,13 @@
       "reorderSection": {
         "cancel": {
           "confirm": "確定要取消<bold>分組</bold>排序嗎？未儲存的變更將會遺失。",
-          "label": "取消排序"
+          "label": "取消分組排序"
         },
         "confirm": "確定要進行<bold>分組</bold>排序嗎？",
         "save": {
           "confirm": "確定要儲存<bold>分組</bold>排序嗎？",
           "error": "排序儲存失敗",
-          "label": "儲存排序",
+          "label": "儲存分組排序",
           "success": "排序已儲存"
         },
         "title": "分組排序"
