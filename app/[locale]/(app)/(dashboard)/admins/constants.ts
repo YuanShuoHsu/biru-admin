@@ -45,11 +45,6 @@ export const FILTER_OPERATORS = [
   "before",
   "onOrBefore",
 ] as const;
-export const NO_VALUE_FILTER_OPERATORS: readonly string[] = [
-  "isEmpty",
-  "isNotEmpty",
-];
-
 export const SEARCH_FIELDS = ["name", "email"] as const;
 export const SEARCH_OPERATORS = ["contains", "startsWith", "endsWith"] as const;
 

@@ -403,6 +403,165 @@ export interface paths {
     patch: operations["MenusController_updateMenuItemAddOn"];
     trace?: never;
   };
+  "/api/menus/{menuId}/modifier-groups": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得菜單所有選項群組 */
+    get: operations["MenusController_findAllModifierGroups"];
+    put?: never;
+    /** 建立選項群組 */
+    post: operations["MenusController_createModifierGroup"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/menus/{menuId}/modifier-groups/reorder": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** 重新排序選項群組 */
+    patch: operations["MenusController_reorderModifierGroups"];
+    trace?: never;
+  };
+  "/api/modifier-groups/{groupId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得選項群組詳情 */
+    get: operations["MenusController_findModifierGroup"];
+    put?: never;
+    post?: never;
+    /** 刪除選項群組 */
+    delete: operations["MenusController_deleteModifierGroup"];
+    options?: never;
+    head?: never;
+    /** 更新選項群組 */
+    patch: operations["MenusController_updateModifierGroup"];
+    trace?: never;
+  };
+  "/api/modifier-groups/{groupId}/modifiers": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得群組所有選項 */
+    get: operations["MenusController_findAllModifiers"];
+    put?: never;
+    /** 建立選項 */
+    post: operations["MenusController_createModifier"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/modifier-groups/{groupId}/modifiers/reorder": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** 重新排序選項 */
+    patch: operations["MenusController_reorderModifiers"];
+    trace?: never;
+  };
+  "/api/modifiers/{modifierId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** 刪除選項 */
+    delete: operations["MenusController_deleteModifier"];
+    options?: never;
+    head?: never;
+    /** 更新選項 */
+    patch: operations["MenusController_updateModifier"];
+    trace?: never;
+  };
+  "/api/menu-items/{menuItemId}/modifier-groups": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得品項已掛上的選項群組 */
+    get: operations["MenusController_findAllMenuItemModifierGroups"];
+    put?: never;
+    /** 為品項掛上選項群組 */
+    post: operations["MenusController_createMenuItemModifierGroup"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/menu-items/{menuItemId}/modifier-groups/reorder": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** 重新排序品項的選項群組 */
+    patch: operations["MenusController_reorderMenuItemModifierGroups"];
+    trace?: never;
+  };
+  "/api/menu-items/{menuItemId}/modifier-groups/{linkId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** 解除品項的選項群組掛載 */
+    delete: operations["MenusController_deleteMenuItemModifierGroup"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationId}/order-menu": {
     parameters: {
       query?: never;
@@ -1594,6 +1753,130 @@ export interface components {
       addOnMenuItemId?: string | null;
       /** @description Add-on menu section ID */
       addOnMenuSectionId?: string | null;
+    };
+    CreateModifierGroupDto: {
+      /** @description 群組名稱，如「甜度」「加料」 */
+      displayName: string;
+      /**
+       * @description 最少選擇數量；>= 1 代表必選
+       * @default 0
+       */
+      minSelectionCount: number;
+      /** @description 最多選擇數量；min=max=1 為單選，null 為不限 */
+      maxSelectionCount?: number | null;
+    };
+    ModifierResponseDto: {
+      id: string;
+      modifierGroupId: string;
+      displayName: string;
+      /** @description 加價金額；null 代表不影響價格 */
+      priceAdjustment?: string | null;
+      /** @enum {string|null} */
+      availability?:
+        | "BackOrder"
+        | "Discontinued"
+        | "InStock"
+        | "InStoreOnly"
+        | "LimitedAvailability"
+        | "MadeToOrder"
+        | "OnlineOnly"
+        | "OutOfStock"
+        | "PreOrder"
+        | "PreSale"
+        | "Reserved"
+        | "SoldOut"
+        | null;
+      sortOrder: number;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    ModifierGroupResponseDto: {
+      id: string;
+      menuId?: string | null;
+      displayName: string;
+      /** @description 最少選擇數量；>= 1 代表必選 */
+      minSelectionCount: number;
+      /** @description 最多選擇數量；null 為不限 */
+      maxSelectionCount?: number | null;
+      sortOrder: number;
+      /** @description 群組底下的選項（依需求帶出） */
+      modifiers?: components["schemas"]["ModifierResponseDto"][];
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    UpdateModifierGroupDto: {
+      /** @description 群組名稱 */
+      displayName?: string;
+      /** @description 最少選擇數量；>= 1 代表必選 */
+      minSelectionCount?: number;
+      /** @description 最多選擇數量；null 為不限 */
+      maxSelectionCount?: number | null;
+    };
+    CreateModifierDto: {
+      /** @description 選項名稱，如「半糖」「珍珠」 */
+      displayName: string;
+      /**
+       * @description 加價金額；省略代表不影響價格
+       * @example 10.00
+       */
+      priceAdjustment?: string;
+      /** @enum {string} */
+      availability?:
+        | "BackOrder"
+        | "Discontinued"
+        | "InStock"
+        | "InStoreOnly"
+        | "LimitedAvailability"
+        | "MadeToOrder"
+        | "OnlineOnly"
+        | "OutOfStock"
+        | "PreOrder"
+        | "PreSale"
+        | "Reserved"
+        | "SoldOut";
+    };
+    UpdateModifierDto: {
+      /** @description 選項名稱 */
+      displayName?: string;
+      /**
+       * @description 加價金額
+       * @example 10.00
+       */
+      priceAdjustment?: string;
+      /** @enum {string} */
+      availability?:
+        | "BackOrder"
+        | "Discontinued"
+        | "InStock"
+        | "InStoreOnly"
+        | "LimitedAvailability"
+        | "MadeToOrder"
+        | "OnlineOnly"
+        | "OutOfStock"
+        | "PreOrder"
+        | "PreSale"
+        | "Reserved"
+        | "SoldOut";
+    };
+    CreateMenuItemModifierGroupDto: {
+      /** @description 要掛到此品項的選項群組 ID */
+      modifierGroupId: string;
+    };
+    MenuItemModifierGroupResponseDto: {
+      id: string;
+      menuItemId: string;
+      modifierGroupId: string;
+      sortOrder: number;
+      /** @description 掛上的群組（含選項，依需求帶出） */
+      modifierGroup?: components["schemas"]["ModifierGroupResponseDto"];
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
     };
     OrderMenuOfferResponseDto: {
       id: string;
@@ -2916,6 +3199,521 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["MenuItemAddOnResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  MenusController_findAllModifierGroups: {
+    parameters: {
+      query?: {
+        limit?: number;
+        offset?: number;
+        filterField?: "displayName" | "createdAt" | "updatedAt";
+        filterOperator?:
+          | "contains"
+          | "doesNotContain"
+          | "equals"
+          | "doesNotEqual"
+          | "startsWith"
+          | "endsWith"
+          | "isEmpty"
+          | "isNotEmpty"
+          | "isAnyOf"
+          | "is"
+          | "not"
+          | "after"
+          | "onOrAfter"
+          | "before"
+          | "onOrBefore";
+        filterValue?: string;
+        quickFilterValue?: string;
+        sortBy?: "displayName" | "createdAt" | "updatedAt";
+        sortDirection?: "asc" | "desc";
+        timezone?: string;
+      };
+      header?: never;
+      path: {
+        menuId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  MenusController_createModifierGroup: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        menuId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateModifierGroupDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ModifierGroupResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  MenusController_reorderModifierGroups: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        menuId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ReorderDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  MenusController_findModifierGroup: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        groupId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ModifierGroupResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  MenusController_deleteModifierGroup: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        groupId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ModifierGroupResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  MenusController_updateModifierGroup: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        groupId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateModifierGroupDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ModifierGroupResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  MenusController_findAllModifiers: {
+    parameters: {
+      query?: {
+        limit?: number;
+        offset?: number;
+        filterField?: "displayName" | "createdAt" | "updatedAt";
+        filterOperator?:
+          | "contains"
+          | "doesNotContain"
+          | "equals"
+          | "doesNotEqual"
+          | "startsWith"
+          | "endsWith"
+          | "isEmpty"
+          | "isNotEmpty"
+          | "isAnyOf"
+          | "is"
+          | "not"
+          | "after"
+          | "onOrAfter"
+          | "before"
+          | "onOrBefore";
+        filterValue?: string;
+        quickFilterValue?: string;
+        sortBy?: "displayName" | "createdAt" | "updatedAt";
+        sortDirection?: "asc" | "desc";
+        timezone?: string;
+      };
+      header?: never;
+      path: {
+        groupId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  MenusController_createModifier: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        groupId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateModifierDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ModifierResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  MenusController_reorderModifiers: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        groupId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ReorderDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  MenusController_deleteModifier: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        modifierId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ModifierResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  MenusController_updateModifier: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        modifierId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateModifierDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ModifierResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  MenusController_findAllMenuItemModifierGroups: {
+    parameters: {
+      query?: {
+        limit?: number;
+        offset?: number;
+        filterField?: "displayName" | "createdAt" | "updatedAt";
+        filterOperator?:
+          | "contains"
+          | "doesNotContain"
+          | "equals"
+          | "doesNotEqual"
+          | "startsWith"
+          | "endsWith"
+          | "isEmpty"
+          | "isNotEmpty"
+          | "isAnyOf"
+          | "is"
+          | "not"
+          | "after"
+          | "onOrAfter"
+          | "before"
+          | "onOrBefore";
+        filterValue?: string;
+        quickFilterValue?: string;
+        sortBy?: "displayName" | "createdAt" | "updatedAt";
+        sortDirection?: "asc" | "desc";
+        timezone?: string;
+      };
+      header?: never;
+      path: {
+        menuItemId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  MenusController_createMenuItemModifierGroup: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        menuItemId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateMenuItemModifierGroupDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["MenuItemModifierGroupResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  MenusController_reorderMenuItemModifierGroups: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        menuItemId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ReorderDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  MenusController_deleteMenuItemModifierGroup: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        linkId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["MenuItemModifierGroupResponseDto"];
         };
       };
       /** @description Internal server error */

@@ -17,6 +17,7 @@ import {
   AccountCircle,
   AdminPanelSettings,
   Business,
+  Category,
   Dashboard,
   DeleteForever,
   Devices,
@@ -46,6 +47,7 @@ import {
   ShoppingCart,
   Storefront,
   Summarize,
+  Tune,
   ViewList,
 } from "@mui/icons-material";
 import {
@@ -56,7 +58,7 @@ import {
 } from "@mui/material";
 import { styled, type Theme } from "@mui/material/styles";
 
-import type { Menu, MenuSection } from "@/types/menus";
+import type { Menu, MenuSection, ModifierGroup } from "@/types/menus";
 import type { RouteParams } from "@/types/routeParams";
 
 import { fetcher } from "@/utils/fetcher";
@@ -98,6 +100,7 @@ interface BreadcrumbItem {
 
 const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
   const {
+    groupId,
     menuId,
     menuItemId,
     menuSectionId,
@@ -157,6 +160,19 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
         const section = await fetcher<MenuSection>(url);
 
         return section.name || "";
+      } catch {
+        return "";
+      }
+    },
+  );
+
+  const { data: modifierGroupName = "" } = useSWR(
+    groupId ? `/api/modifier-groups/${groupId}` : null,
+    async (url) => {
+      try {
+        const group = await fetcher<ModifierGroup>(url);
+
+        return group.displayName || "";
       } catch {
         return "";
       }
@@ -233,6 +249,11 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
         {
           children: [
             {
+              icon: Category,
+              label: tMenus("sections.label"),
+              to: `/sections${menuOrganizationSlug ? `?organization=${menuOrganizationSlug}` : ""}`,
+            },
+            {
               children: [
                 {
                   children: [
@@ -255,6 +276,18 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
               icon: ViewList,
               label: menuSectionName,
               to: `/${menuSectionId}${menuOrganizationSlug ? `?organization=${menuOrganizationSlug}` : ""}`,
+            },
+            {
+              children: [
+                {
+                  icon: Tune,
+                  label: modifierGroupName,
+                  to: `/${groupId}`,
+                },
+              ],
+              icon: Tune,
+              label: tMenus("modifierGroups.label"),
+              to: `/modifier-groups${menuOrganizationSlug ? `?organization=${menuOrganizationSlug}` : ""}`,
             },
           ],
           icon: Summarize,

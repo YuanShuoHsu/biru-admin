@@ -142,7 +142,7 @@ const Menus = ({
         page: "1",
         pageSize: "10",
       });
-      router.push(`/menus/${id}?${searchParams.toString()}`);
+      router.push(`/menus/${id}/sections?${searchParams.toString()}`);
     },
     [router, selectedSlug],
   );

@@ -50,6 +50,9 @@
   "member": {
     "required": "メンバーは必須です。"
   },
+  "modifierGroupId": {
+    "required": "オプショングループは必須です。"
+  },
   "name": {
     "minLength": "名前は2文字以上で入力してください。"
   },

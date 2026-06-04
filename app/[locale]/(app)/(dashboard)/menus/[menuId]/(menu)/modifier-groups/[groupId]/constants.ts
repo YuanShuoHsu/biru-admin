@@ -1,4 +1,4 @@
-export const STRING_FILTER_FIELDS = ["name", "description"] as const;
+export const STRING_FILTER_FIELDS = ["displayName"] as const;
 export const DATE_FILTER_FIELDS = ["createdAt", "updatedAt"] as const;
 export const FILTER_FIELDS = [
   ...STRING_FILTER_FIELDS,
@@ -16,10 +16,6 @@ export const STRING_FILTER_OPERATORS = [
   "isNotEmpty",
   "isAnyOf",
 ] as const;
-export const NO_VALUE_FILTER_OPERATORS: readonly string[] = [
-  "isEmpty",
-  "isNotEmpty",
-];
 export const DATE_FILTER_OPERATORS = [
   "is",
   "not",
@@ -48,13 +44,25 @@ export const FILTER_OPERATORS = [
   "onOrBefore",
 ] as const;
 
-export const SEARCH_FIELDS = ["name", "description"] as const;
-export const SEARCH_OPERATORS = ["contains", "startsWith", "endsWith"] as const;
-
 export const SORT_BY_FIELDS = [
-  "name",
-  "description",
+  "displayName",
   "createdAt",
   "updatedAt",
 ] as const;
 export const SORT_DIRECTIONS = ["asc", "desc"] as const;
+
+// 對應 biru-api itemAvailabilityEnum；i18n 標籤共用 menus.offers.availability.options
+export const ITEM_AVAILABILITY_OPTIONS = [
+  "BackOrder",
+  "Discontinued",
+  "InStock",
+  "InStoreOnly",
+  "LimitedAvailability",
+  "MadeToOrder",
+  "OnlineOnly",
+  "OutOfStock",
+  "PreOrder",
+  "PreSale",
+  "Reserved",
+  "SoldOut",
+] as const;

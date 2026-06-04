@@ -86,6 +86,40 @@
     },
     "placeholder": "请选择您的菜单语言"
   },
+  "itemModifierGroups": {
+    "actions": {
+      "attach": {
+        "error": "挂载选项组失败",
+        "success": "成功挂载选项组 {name}",
+        "title": "挂载选项组"
+      },
+      "detach": {
+        "confirm": "确定要解除 <bold>{name}</bold> 的挂载吗？此操作不会删除组本身。",
+        "error": "解除 {name} 挂载失败",
+        "success": "成功解除 {name} 挂载",
+        "title": "解除挂载"
+      },
+      "label": "操作",
+      "reorder": {
+        "cancel": {
+          "confirm": "确定要取消排序吗？未保存的更改将会丢失。",
+          "label": "取消排序"
+        },
+        "confirm": "确定要进行排序？",
+        "save": {
+          "confirm": "确定要保存排序吗？",
+          "error": "排序保存失败",
+          "label": "保存排序",
+          "success": "排序已保存"
+        },
+        "title": "排序"
+      }
+    },
+    "group": {
+      "label": "选项组",
+      "placeholder": "请选择您的选项组"
+    }
+  },
   "items": {
     "actions": {
       "createItem": {
@@ -225,6 +259,102 @@
   "organization": {
     "label": "组织",
     "placeholder": "请选择您的组织"
+  },
+  "modifierGroups": {
+    "actions": {
+      "createGroup": {
+        "error": "新增选项组失败",
+        "success": "成功新增选项组 {name}",
+        "title": "新增选项组"
+      },
+      "deleteGroup": {
+        "confirm": "确定要删除 <bold>{name}</bold> 吗？组内的选项将一并删除。",
+        "error": "删除选项组 {name} 失败",
+        "success": "成功删除选项组 {name}",
+        "title": "删除选项组"
+      },
+      "label": "操作",
+      "reorderGroup": {
+        "cancel": {
+          "confirm": "确定要取消排序吗？未保存的更改将会丢失。",
+          "label": "取消排序"
+        },
+        "confirm": "确定要进行排序选项组？",
+        "save": {
+          "confirm": "确定要保存排序吗？",
+          "error": "排序保存失败",
+          "label": "保存排序",
+          "success": "排序已保存"
+        },
+        "title": "排序选项组"
+      },
+      "updateGroup": {
+        "error": "更新选项组失败",
+        "success": "成功更新选项组 {name}",
+        "title": "编辑选项组"
+      },
+      "viewModifiers": {
+        "title": "查看选项"
+      }
+    },
+    "displayName": {
+      "label": "组名称",
+      "placeholder": "请输入您的组名称"
+    },
+    "label": "选项组",
+    "maxSelectionCount": {
+      "label": "最多选择数量",
+      "placeholder": "请输入您的最多选择数量",
+      "unlimited": "不限"
+    },
+    "minSelectionCount": {
+      "label": "最少选择数量",
+      "placeholder": "请输入您的最少选择数量"
+    }
+  },
+  "modifiers": {
+    "actions": {
+      "createModifier": {
+        "error": "新增选项失败",
+        "success": "成功新增选项 {name}",
+        "title": "新增选项"
+      },
+      "deleteModifier": {
+        "confirm": "确定要删除 <bold>{name}</bold> 吗？",
+        "error": "删除选项 {name} 失败",
+        "success": "成功删除选项 {name}",
+        "title": "删除选项"
+      },
+      "label": "操作",
+      "reorderModifier": {
+        "cancel": {
+          "confirm": "确定要取消排序吗？未保存的更改将会丢失。",
+          "label": "取消排序"
+        },
+        "confirm": "确定要进行排序选项？",
+        "save": {
+          "confirm": "确定要保存排序吗？",
+          "error": "排序保存失败",
+          "label": "保存排序",
+          "success": "排序已保存"
+        },
+        "title": "排序选项"
+      },
+      "updateModifier": {
+        "error": "更新选项失败",
+        "success": "成功更新选项 {name}",
+        "title": "编辑选项"
+      }
+    },
+    "displayName": {
+      "label": "选项名称",
+      "placeholder": "请输入您的选项名称"
+    },
+    "label": "选项",
+    "priceAdjustment": {
+      "label": "加价金额",
+      "placeholder": "请输入您的加价金额"
+    }
   },
   "reorder": "排序",
   "sections": {

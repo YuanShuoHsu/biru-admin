@@ -86,6 +86,40 @@
     },
     "placeholder": "Please select your menu language"
   },
+  "itemModifierGroups": {
+    "actions": {
+      "attach": {
+        "error": "Failed to attach modifier group",
+        "success": "Modifier group {name} attached",
+        "title": "Attach modifier group"
+      },
+      "detach": {
+        "confirm": "Are you sure you want to detach <bold>{name}</bold>? This does not delete the group itself.",
+        "error": "Failed to detach {name}",
+        "success": "{name} detached",
+        "title": "Detach"
+      },
+      "label": "Actions",
+      "reorder": {
+        "cancel": {
+          "confirm": "Cancel reordering? Unsaved changes will be lost.",
+          "label": "Cancel reorder"
+        },
+        "confirm": "Reorder?",
+        "save": {
+          "confirm": "Save the new order?",
+          "error": "Failed to save order",
+          "label": "Save order",
+          "success": "Order saved"
+        },
+        "title": "Reorder"
+      }
+    },
+    "group": {
+      "label": "Modifier group",
+      "placeholder": "Please select your modifier group"
+    }
+  },
   "items": {
     "actions": {
       "createItem": {
@@ -225,6 +259,102 @@
   "organization": {
     "label": "Organization",
     "placeholder": "Please select your organization"
+  },
+  "modifierGroups": {
+    "actions": {
+      "createGroup": {
+        "error": "Failed to create modifier group",
+        "success": "Modifier group {name} created",
+        "title": "Create modifier group"
+      },
+      "deleteGroup": {
+        "confirm": "Are you sure you want to delete <bold>{name}</bold>? The modifiers in this group will also be deleted.",
+        "error": "Failed to delete modifier group {name}",
+        "success": "Modifier group {name} deleted",
+        "title": "Delete modifier group"
+      },
+      "label": "Actions",
+      "reorderGroup": {
+        "cancel": {
+          "confirm": "Cancel reordering? Unsaved changes will be lost.",
+          "label": "Cancel reorder"
+        },
+        "confirm": "Reorder modifier groups?",
+        "save": {
+          "confirm": "Save the new order?",
+          "error": "Failed to save order",
+          "label": "Save order",
+          "success": "Order saved"
+        },
+        "title": "Reorder modifier groups"
+      },
+      "updateGroup": {
+        "error": "Failed to update modifier group",
+        "success": "Modifier group {name} updated",
+        "title": "Edit modifier group"
+      },
+      "viewModifiers": {
+        "title": "View modifiers"
+      }
+    },
+    "displayName": {
+      "label": "Group name",
+      "placeholder": "Please enter your group name"
+    },
+    "label": "Modifier groups",
+    "maxSelectionCount": {
+      "label": "Max selections",
+      "placeholder": "Please enter your max selections",
+      "unlimited": "Unlimited"
+    },
+    "minSelectionCount": {
+      "label": "Min selections",
+      "placeholder": "Please enter your min selections"
+    }
+  },
+  "modifiers": {
+    "actions": {
+      "createModifier": {
+        "error": "Failed to create modifier",
+        "success": "Modifier {name} created",
+        "title": "Create modifier"
+      },
+      "deleteModifier": {
+        "confirm": "Are you sure you want to delete <bold>{name}</bold>?",
+        "error": "Failed to delete modifier {name}",
+        "success": "Modifier {name} deleted",
+        "title": "Delete modifier"
+      },
+      "label": "Actions",
+      "reorderModifier": {
+        "cancel": {
+          "confirm": "Cancel reordering? Unsaved changes will be lost.",
+          "label": "Cancel reorder"
+        },
+        "confirm": "Reorder modifiers?",
+        "save": {
+          "confirm": "Save the new order?",
+          "error": "Failed to save order",
+          "label": "Save order",
+          "success": "Order saved"
+        },
+        "title": "Reorder modifiers"
+      },
+      "updateModifier": {
+        "error": "Failed to update modifier",
+        "success": "Modifier {name} updated",
+        "title": "Edit modifier"
+      }
+    },
+    "displayName": {
+      "label": "Modifier name",
+      "placeholder": "Please enter your modifier name"
+    },
+    "label": "Modifiers",
+    "priceAdjustment": {
+      "label": "Price adjustment",
+      "placeholder": "Please enter your price adjustment"
+    }
   },
   "reorder": "Order",
   "sections": {

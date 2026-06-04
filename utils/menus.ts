@@ -6,6 +6,9 @@ import type {
   Menu,
   MenuItem,
   MenuItemAddOn,
+  MenuItemModifierGroup,
+  Modifier,
+  ModifierGroup,
   MenuSection,
   OrderMenu,
   OrderMenuItem,
@@ -307,6 +310,139 @@ export const getAdminMenuItemAddOns = cache(
       };
     } catch {
       return { addOns: [], total: 0 };
+    }
+  },
+);
+
+export const getAdminModifierGroups = cache(
+  async (
+    menuId: string,
+    page: number,
+    pageSize: number,
+    filterField?: string,
+    filterOperator?: string,
+    filterValue?: string,
+    quickFilterValue?: string,
+    sortBy?: string,
+    sortDirection?: "asc" | "desc",
+    init?: RequestInit,
+  ) => {
+    try {
+      const offset = (page - 1) * pageSize;
+      const params = new URLSearchParams({
+        limit: String(pageSize),
+        offset: String(offset),
+        ...(sortBy && { sortBy }),
+        ...(sortDirection && { sortDirection }),
+        ...(filterField &&
+          filterOperator &&
+          filterValue && { filterField, filterOperator, filterValue }),
+        ...(quickFilterValue && { quickFilterValue }),
+      });
+      const result = await fetcher<{ data: ModifierGroup[]; total: number }>(
+        `/api/menus/${menuId}/modifier-groups?${params.toString()}`,
+        init,
+      );
+      return {
+        groups: Array.isArray(result.data) ? result.data : [],
+        total: result.total || 0,
+      };
+    } catch {
+      return { groups: [], total: 0 };
+    }
+  },
+);
+
+export const getAdminModifierGroup = cache(
+  async (groupId: string, init?: RequestInit) => {
+    try {
+      return await fetcher<ModifierGroup>(
+        `/api/modifier-groups/${groupId}`,
+        init,
+      );
+    } catch {
+      return null;
+    }
+  },
+);
+
+export const getAdminModifiers = cache(
+  async (
+    groupId: string,
+    page: number,
+    pageSize: number,
+    filterField?: string,
+    filterOperator?: string,
+    filterValue?: string,
+    quickFilterValue?: string,
+    sortBy?: string,
+    sortDirection?: "asc" | "desc",
+    init?: RequestInit,
+  ) => {
+    try {
+      const offset = (page - 1) * pageSize;
+      const params = new URLSearchParams({
+        limit: String(pageSize),
+        offset: String(offset),
+        ...(sortBy && { sortBy }),
+        ...(sortDirection && { sortDirection }),
+        ...(filterField &&
+          filterOperator &&
+          filterValue && { filterField, filterOperator, filterValue }),
+        ...(quickFilterValue && { quickFilterValue }),
+      });
+      const result = await fetcher<{ data: Modifier[]; total: number }>(
+        `/api/modifier-groups/${groupId}/modifiers?${params.toString()}`,
+        init,
+      );
+      return {
+        modifiers: Array.isArray(result.data) ? result.data : [],
+        total: result.total || 0,
+      };
+    } catch {
+      return { modifiers: [], total: 0 };
+    }
+  },
+);
+
+export const getAdminMenuItemModifierGroups = cache(
+  async (
+    menuItemId: string,
+    page: number,
+    pageSize: number,
+    filterField?: string,
+    filterOperator?: string,
+    filterValue?: string,
+    quickFilterValue?: string,
+    sortBy?: string,
+    sortDirection?: "asc" | "desc",
+    init?: RequestInit,
+  ) => {
+    try {
+      const offset = (page - 1) * pageSize;
+      const params = new URLSearchParams({
+        limit: String(pageSize),
+        offset: String(offset),
+        ...(sortBy && { sortBy }),
+        ...(sortDirection && { sortDirection }),
+        ...(filterField &&
+          filterOperator &&
+          filterValue && { filterField, filterOperator, filterValue }),
+        ...(quickFilterValue && { quickFilterValue }),
+      });
+      const result = await fetcher<{
+        data: MenuItemModifierGroup[];
+        total: number;
+      }>(
+        `/api/menu-items/${menuItemId}/modifier-groups?${params.toString()}`,
+        init,
+      );
+      return {
+        links: Array.isArray(result.data) ? result.data : [],
+        total: result.total || 0,
+      };
+    } catch {
+      return { links: [], total: 0 };
     }
   },
 );

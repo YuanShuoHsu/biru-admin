@@ -50,6 +50,9 @@
   "member": {
     "required": "Member is required."
   },
+  "modifierGroupId": {
+    "required": "Modifier group is required."
+  },
   "name": {
     "minLength": "Name must be at least 2 characters long."
   },

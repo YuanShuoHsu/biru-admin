@@ -50,6 +50,9 @@
   "member": {
     "required": "成员为必填。"
   },
+  "modifierGroupId": {
+    "required": "选项组为必填。"
+  },
   "name": {
     "minLength": "名称至少需要 2 个字符。"
   },

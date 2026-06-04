@@ -2,18 +2,15 @@
 
 import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
-import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
+import AttachModifierGroupDialog from "./AttachModifierGroupDialog";
 import { DATE_FILTER_OPERATORS, STRING_FILTER_OPERATORS } from "./constants";
-import CreateMenuItemDialog from "./CreateMenuItemDialog";
-import UpdateMenuItemDialog from "./UpdateMenuItemDialog";
 
 import DateFilterInputValue from "@/components/DateFilterInputValue";
-import FlagImage from "@/components/FlagImage";
 import { DragHandle, Sortable } from "@/components/Sortable";
 
 import {
@@ -28,24 +25,13 @@ import { isSortableOperation } from "@dnd-kit/react/sortable";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
+import { Add, Cancel, Delete, Save, Sort } from "@mui/icons-material";
 import {
-  Add,
-  Cancel,
-  Delete,
-  Edit,
-  Extension,
-  Save,
-  Sort,
-} from "@mui/icons-material";
-import {
-  Box,
   Button,
   DialogContentText,
   IconButton,
   Stack,
-  styled,
   Tooltip,
-  Typography,
 } from "@mui/material";
 import type {
   GridColDef,
@@ -63,8 +49,7 @@ import {
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { currencies } from "@/constants/currencies";
-import type { MenuItem } from "@/types/menus";
+import type { MenuItemModifierGroup } from "@/types/menus";
 
 import { isFilteredOrSorted } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
@@ -74,45 +59,37 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
-const StyledBox = styled(Box)(({ theme }) => ({
-  position: "relative",
-  width: theme.spacing(4),
-  height: theme.spacing(4),
-  borderRadius: theme.shape.borderRadius,
-  overflow: "hidden",
-}));
-
-interface MenusMenuIdSectionIdProps {
+interface MenuItemModifierGroupsProps {
   canWrite: boolean;
   filterField?: string;
   filterOperator?: string;
   filterValue?: string;
-  items: MenuItem[];
+  links: MenuItemModifierGroup[];
   menuId: string;
+  menuItemId: string;
   page: number;
   pageSize: number;
   quickFilterValue?: string;
   rowCount: number;
-  menuSectionId: string;
   sortBy?: string;
   sortDirection?: "asc" | "desc";
 }
 
-const MenusMenuIdSectionId = ({
+const MenuItemModifierGroups = ({
   canWrite,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  items: initialItems,
+  links: initialLinks,
   menuId,
+  menuItemId,
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,
   rowCount: initialRowCount,
-  menuSectionId,
   sortBy,
   sortDirection,
-}: MenusMenuIdSectionIdProps) => {
+}: MenuItemModifierGroupsProps) => {
   const [isReorderMode, setIsReorderMode] = useState(false);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
@@ -144,25 +121,25 @@ const MenusMenuIdSectionId = ({
   const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
+  const tMenus = useTranslations("menus");
+  const tToolbar = useTranslations("dataGrid.toolbar");
 
   const apiRef = useGridApiRef();
 
   const pathname = usePathname();
-
   const router = useRouter();
-
   const searchParams = useSearchParams();
 
   const {
-    data: { data: items, total: rowCount } = {
-      data: initialItems,
+    data: { data: links, total: rowCount } = {
+      data: initialLinks,
       total: initialRowCount,
     },
     mutate,
     isValidating: loading,
   } = useSWR(
     [
-      `/api/menu-sections/${menuSectionId}/menu-items`,
+      `/api/menu-items/${menuItemId}/modifier-groups`,
       filterModel.items[0]?.field,
       filterModel.items[0]?.operator,
       filterModel.items[0]?.value,
@@ -186,8 +163,8 @@ const MenusMenuIdSectionId = ({
         ? filterItem.value.length > 0
         : !!filterItem?.value;
 
-      return fetcher<{ data: MenuItem[]; total: number }>(
-        `/api/menu-sections/${menuSectionId}/menu-items?${new URLSearchParams({
+      return fetcher<{ data: MenuItemModifierGroup[]; total: number }>(
+        `/api/menu-items/${menuItemId}/modifier-groups?${new URLSearchParams({
           limit: String(paginationModel.pageSize),
           offset: String(paginationModel.page * paginationModel.pageSize),
           ...(filterItem?.field &&
@@ -205,7 +182,7 @@ const MenusMenuIdSectionId = ({
       );
     },
     {
-      fallbackData: { data: initialItems, total: initialRowCount },
+      fallbackData: { data: initialLinks, total: initialRowCount },
       onSuccess: () => {
         setTimeout(() => {
           apiRef.current?.autosizeColumns(autosizeOptions);
@@ -216,10 +193,6 @@ const MenusMenuIdSectionId = ({
 
   const isReorderDisabled =
     rowCount < 2 || isFilteredOrSorted(filterModel, sortModel);
-
-  const tCommon = useTranslations("common");
-  const tMenus = useTranslations("menus");
-  const tToolbar = useTranslations("dataGrid.toolbar");
 
   const handlePaginationModelChange = useCallback(
     (newModel: GridPaginationModel) => {
@@ -258,34 +231,6 @@ const MenusMenuIdSectionId = ({
       router.replace(`${pathname}?${params.toString()}`);
     },
     [pathname, router, searchParams],
-  );
-
-  const stringFilterOperators = useMemo<GridFilterOperator[]>(
-    () =>
-      STRING_FILTER_OPERATORS.map((value) => ({
-        getApplyFilterFn: () => null,
-        ...(NO_VALUE_FILTER_OPERATORS.includes(value)
-          ? { InputComponent: undefined }
-          : value === "isAnyOf"
-            ? { InputComponent: GridFilterInputMultipleValue }
-            : { InputComponent: GridFilterInputValue }),
-        label: tToolbar(`filter.operator.${value}`),
-        value,
-      })),
-    [tToolbar],
-  );
-
-  const dateFilterOperators = useMemo<GridFilterOperator[]>(
-    () =>
-      DATE_FILTER_OPERATORS.map((value) => ({
-        getApplyFilterFn: () => null,
-        ...(NO_VALUE_FILTER_OPERATORS.includes(value)
-          ? { InputComponent: undefined }
-          : { InputComponent: DateFilterInputValue }),
-        label: tToolbar(`filter.operator.${value}`),
-        value,
-      })),
-    [tToolbar],
   );
 
   const handleFilterModelChange = useCallback(
@@ -336,20 +281,78 @@ const MenusMenuIdSectionId = ({
     [pathname, router, searchParams],
   );
 
+  const handleAttach = useCallback(() => {
+    setDialog({
+      content: (
+        <AttachModifierGroupDialog
+          menuId={menuId}
+          menuItemId={menuItemId}
+          mutate={mutate}
+        />
+      ),
+      formId: "attach-modifier-group-form",
+      open: true,
+      title: tMenus("itemModifierGroups.actions.attach.title"),
+    });
+  }, [menuId, menuItemId, mutate, setDialog, tMenus]);
+
+  const handleDetach = useCallback(
+    ({ id, modifierGroup }: MenuItemModifierGroup) => {
+      const displayName = modifierGroup?.displayName ?? "";
+
+      setDialog({
+        content: (
+          <DialogContentText>
+            {tMenus.rich("itemModifierGroups.actions.detach.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              name: displayName,
+            })}
+          </DialogContentText>
+        ),
+        onConfirm: async () => {
+          try {
+            await fetcher(
+              `/api/menu-items/${menuItemId}/modifier-groups/${id}`,
+              { method: "DELETE" },
+            );
+
+            enqueueSnackbar(
+              tMenus("itemModifierGroups.actions.detach.success", {
+                name: displayName,
+              }),
+              { variant: "success" },
+            );
+
+            mutate();
+          } catch {
+            enqueueSnackbar(
+              tMenus("itemModifierGroups.actions.detach.error", {
+                name: displayName,
+              }),
+              { variant: "error" },
+            );
+          }
+        },
+        open: true,
+        title: tMenus("itemModifierGroups.actions.detach.title"),
+      });
+    },
+    [menuItemId, mutate, setDialog, tMenus],
+  );
+
   const handleEnterReorderMode = useCallback(() => {
     setDialog({
       content: (
         <DialogContentText>
-          {tMenus("items.actions.reorderItem.confirm")}
+          {tMenus("itemModifierGroups.actions.reorder.confirm")}
         </DialogContentText>
       ),
       onConfirm: async () => {
         setIsReorderMode(true);
-
         setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
       },
       open: true,
-      title: tMenus("items.actions.reorderItem.title"),
+      title: tMenus("itemModifierGroups.actions.reorder.title"),
     });
   }, [apiRef, setDialog, tMenus]);
 
@@ -357,48 +360,49 @@ const MenusMenuIdSectionId = ({
     setDialog({
       content: (
         <DialogContentText>
-          {tMenus("items.actions.reorderItem.save.confirm")}
+          {tMenus("itemModifierGroups.actions.reorder.save.confirm")}
         </DialogContentText>
       ),
       onConfirm: async () => {
         try {
           await fetcher(
-            `/api/menu-sections/${menuSectionId}/menu-items/reorder`,
+            `/api/menu-items/${menuItemId}/modifier-groups/reorder`,
             {
               method: "PATCH",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
-                ids: items.map(({ id }) => id),
+                ids: links.map(({ id }) => id),
                 offset: paginationModel.page * paginationModel.pageSize,
               }),
             },
           );
 
           setIsReorderMode(false);
-
           setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
 
-          enqueueSnackbar(tMenus("items.actions.reorderItem.save.success"), {
-            variant: "success",
-          });
+          enqueueSnackbar(
+            tMenus("itemModifierGroups.actions.reorder.save.success"),
+            { variant: "success" },
+          );
         } catch {
           mutate();
 
-          enqueueSnackbar(tMenus("items.actions.reorderItem.save.error"), {
-            variant: "error",
-          });
+          enqueueSnackbar(
+            tMenus("itemModifierGroups.actions.reorder.save.error"),
+            { variant: "error" },
+          );
         }
       },
       open: true,
-      title: tMenus("items.actions.reorderItem.save.label"),
+      title: tMenus("itemModifierGroups.actions.reorder.save.label"),
     });
   }, [
     apiRef,
-    items,
+    links,
+    menuItemId,
     mutate,
     paginationModel.page,
     paginationModel.pageSize,
-    menuSectionId,
     setDialog,
     tMenus,
   ]);
@@ -407,16 +411,15 @@ const MenusMenuIdSectionId = ({
     setDialog({
       content: (
         <DialogContentText>
-          {tMenus("items.actions.reorderItem.cancel.confirm")}
+          {tMenus("itemModifierGroups.actions.reorder.cancel.confirm")}
         </DialogContentText>
       ),
       onConfirm: async () => {
         setIsReorderMode(false);
-
         mutate();
       },
       open: true,
-      title: tMenus("items.actions.reorderItem.cancel.label"),
+      title: tMenus("itemModifierGroups.actions.reorder.cancel.label"),
     });
   }, [mutate, setDialog, tMenus]);
 
@@ -430,80 +433,36 @@ const MenusMenuIdSectionId = ({
     const toIndex = source.index;
     if (fromIndex === toIndex) return;
 
-    const newItems = arrayMove(items, fromIndex, toIndex);
-    mutate({ data: newItems, total: rowCount }, false);
+    const newLinks = arrayMove(links, fromIndex, toIndex);
+    mutate({ data: newLinks, total: rowCount }, false);
   };
 
-  const handleManageItem = useCallback(
-    ({ id }: MenuItem) => {
-      const params = new URLSearchParams({
-        ...Object.fromEntries(searchParams),
-        page: "1",
-        pageSize: "10",
-      });
-      router.push(
-        `/menus/${menuId}/${menuSectionId}/${id}/add-ons?${params.toString()}`,
-      );
-    },
-    [menuId, router, searchParams, menuSectionId],
+  const stringFilterOperators = useMemo<GridFilterOperator[]>(
+    () =>
+      STRING_FILTER_OPERATORS.map((value) => ({
+        getApplyFilterFn: () => null,
+        ...(NO_VALUE_FILTER_OPERATORS.includes(value)
+          ? { InputComponent: undefined }
+          : value === "isAnyOf"
+            ? { InputComponent: GridFilterInputMultipleValue }
+            : { InputComponent: GridFilterInputValue }),
+        label: tToolbar(`filter.operator.${value}`),
+        value,
+      })),
+    [tToolbar],
   );
 
-  const handleCreateItem = useCallback(() => {
-    setDialog({
-      content: (
-        <CreateMenuItemDialog mutate={mutate} menuSectionId={menuSectionId} />
-      ),
-      formId: "create-menu-item-form",
-      open: true,
-      title: tMenus("items.actions.createItem.title"),
-    });
-  }, [mutate, menuSectionId, setDialog, tMenus]);
-
-  const handleUpdateItem = useCallback(
-    (item: MenuItem) => {
-      setDialog({
-        content: <UpdateMenuItemDialog item={item} mutate={mutate} />,
-        formId: "update-menu-item-form",
-        open: true,
-        title: tMenus("items.actions.updateItem.title"),
-      });
-    },
-    [mutate, setDialog, tMenus],
-  );
-
-  const handleDeleteItem = useCallback(
-    ({ id, name }: MenuItem) => {
-      setDialog({
-        content: (
-          <DialogContentText>
-            {tMenus.rich("items.actions.deleteItem.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              name,
-            })}
-          </DialogContentText>
-        ),
-        onConfirm: async () => {
-          try {
-            await fetcher(`/api/menu-items/${id}`, { method: "DELETE" });
-
-            enqueueSnackbar(
-              tMenus("items.actions.deleteItem.success", { name }),
-              { variant: "success" },
-            );
-
-            mutate();
-          } catch {
-            enqueueSnackbar(
-              tMenus("items.actions.deleteItem.error", { name }),
-              { variant: "error" },
-            );
-          }
-        },
-        open: true,
-        title: tMenus("items.actions.deleteItem.title"),
-      });
-    },
-    [mutate, setDialog, tMenus],
+  const dateFilterOperators = useMemo<GridFilterOperator[]>(
+    () =>
+      DATE_FILTER_OPERATORS.map((value) => ({
+        getApplyFilterFn: () => null,
+        ...(NO_VALUE_FILTER_OPERATORS.includes(value)
+          ? { InputComponent: undefined }
+          : { InputComponent: DateFilterInputValue }),
+        label: tToolbar(`filter.operator.${value}`),
+        value,
+      })),
+    [tToolbar],
   );
 
   const columns = useMemo<GridColDef[]>(
@@ -521,51 +480,30 @@ const MenusMenuIdSectionId = ({
             },
           ]
         : []),
-      ...(canWrite
+      ...(canWrite && !isReorderMode
         ? [
             {
               disableColumnMenu: true,
               field: "actions",
               filterable: false,
-              headerName: tMenus("items.actions.label"),
-              renderCell: ({ row }: GridRenderCellParams<MenuItem>) => (
+              headerName: tMenus("itemModifierGroups.actions.label"),
+              renderCell: ({
+                row,
+              }: GridRenderCellParams<MenuItemModifierGroup>) => (
                 <Stack
                   height="100%"
                   direction="row"
                   alignItems="center"
                   gap={1}
                 >
-                  <Tooltip title={tMenus("addOns.label")}>
-                    <IconButton
-                      onClick={(event) => {
-                        event.stopPropagation();
-
-                        handleManageItem(row);
-                      }}
-                      size="small"
-                    >
-                      <Extension fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title={tMenus("items.actions.updateItem.title")}>
-                    <IconButton
-                      onClick={(event) => {
-                        event.stopPropagation();
-
-                        handleUpdateItem(row);
-                      }}
-                      size="small"
-                    >
-                      <Edit fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title={tMenus("items.actions.deleteItem.title")}>
+                  <Tooltip
+                    title={tMenus("itemModifierGroups.actions.detach.title")}
+                  >
                     <IconButton
                       color="error"
                       onClick={(event) => {
                         event.stopPropagation();
-
-                        handleDeleteItem(row);
+                        handleDetach(row);
                       }}
                       size="small"
                     >
@@ -580,122 +518,35 @@ const MenusMenuIdSectionId = ({
           ]
         : []),
       {
-        field: "image",
-        filterable: false,
-        headerName: tMenus("items.image.label"),
-        renderCell: ({ value }: { value?: string | null }) =>
-          value && (
-            <Stack height="100%" flexDirection="row" alignItems="center">
-              <StyledBox>
-                <Image
-                  alt={value}
-                  fill
-                  src={value}
-                  style={{ objectFit: "cover" }}
-                />
-              </StyledBox>
-            </Stack>
-          ),
-        resizable: false,
-        sortable: false,
-      },
-      {
-        field: "name",
+        field: "displayName",
         filterOperators: stringFilterOperators,
-        headerName: tMenus("items.name.label"),
+        headerName: tMenus("modifierGroups.displayName.label"),
+        valueGetter: (
+          _value: unknown,
+          { modifierGroup }: MenuItemModifierGroup,
+        ) => modifierGroup?.displayName,
       },
       {
-        field: "description",
-        filterOperators: stringFilterOperators,
-        headerName: `${tMenus("items.description.label")} ${tCommon("optional")}`,
-      },
-      {
-        field: "priceCurrency",
-        headerName: tMenus("offers.priceCurrency.label"),
-        sortable: false,
+        field: "minSelectionCount",
         filterable: false,
-        valueGetter: (_value: unknown, { offer }: MenuItem) =>
-          offer?.priceCurrency,
-        renderCell: ({ value }: { value?: string }) => {
-          const currency = currencies.find(
-            ({ currency }) => currency === value,
-          );
-          return (
-            <Stack height="100%" direction="row" alignItems="center" gap={1}>
-              {currency && (
-                <FlagImage code={currency.code} label={currency.label} />
-              )}
-              <Typography variant="body2">{value}</Typography>
-            </Stack>
-          );
-        },
+        headerName: tMenus("modifierGroups.minSelectionCount.label"),
+        sortable: false,
+        valueGetter: (
+          _value: unknown,
+          { modifierGroup }: MenuItemModifierGroup,
+        ) => modifierGroup?.minSelectionCount,
       },
       {
-        field: "price",
+        field: "maxSelectionCount",
         filterable: false,
-        headerName: tMenus("offers.price.label"),
+        headerName: tMenus("modifierGroups.maxSelectionCount.label"),
         sortable: false,
-        valueGetter: (_value: unknown, { offer }: MenuItem) =>
-          offer?.price && Number(offer.price),
-      },
-      {
-        field: "availability",
-        headerName: tMenus("offers.availability.label"),
-        sortable: false,
-        filterable: false,
-        valueGetter: (_value: unknown, { offer }: MenuItem) =>
-          offer?.availability
-            ? tMenus(
-                `offers.availability.options.${offer.availability}` as Parameters<
-                  typeof tMenus
-                >[0],
-              )
-            : "",
-      },
-      {
-        field: "inventoryLevel",
-        headerName: `${tMenus("offers.inventoryLevel.value.label")} ${tCommon("optional")}`,
-        sortable: false,
-        filterable: false,
-        valueGetter: (_value: unknown, { offer }: MenuItem) =>
-          [offer?.inventoryLevel?.value, offer?.inventoryLevel?.unitText]
-            .join(" ")
-            .trim(),
-      },
-      {
-        field: "deliveryLeadTime",
-        headerName: `${tMenus("offers.deliveryLeadTime.value.label")} ${tCommon("optional")}`,
-        sortable: false,
-        filterable: false,
-        valueGetter: (_value: unknown, { offer }: MenuItem) =>
-          [offer?.deliveryLeadTime?.value, offer?.deliveryLeadTime?.unitText]
-            .join(" ")
-            .trim(),
-      },
-      {
-        field: "priceSpecification",
-        filterable: false,
-        headerName: `${tMenus("offers.priceSpecification.price.label")} ${tCommon("optional")}`,
-        sortable: false,
-        valueGetter: (_value: unknown, { offer }: MenuItem) =>
-          offer?.priceSpecification?.price &&
-          Number(offer.priceSpecification.price),
-      },
-      {
-        field: "priceSpecificationValidFrom",
-        headerName: `${tMenus("offers.priceSpecification.validFrom.label")} ${tCommon("optional")}`,
-        sortable: false,
-        filterable: false,
-        valueGetter: (_value: unknown, { offer }: MenuItem) =>
-          offer?.priceSpecification?.validFrom,
-      },
-      {
-        field: "priceSpecificationValidThrough",
-        headerName: `${tMenus("offers.priceSpecification.validThrough.label")} ${tCommon("optional")}`,
-        sortable: false,
-        filterable: false,
-        valueGetter: (_value: unknown, { offer }: MenuItem) =>
-          offer?.priceSpecification?.validThrough,
+        valueGetter: (
+          _value: unknown,
+          { modifierGroup }: MenuItemModifierGroup,
+        ) =>
+          modifierGroup?.maxSelectionCount ??
+          tMenus("modifierGroups.maxSelectionCount.unlimited"),
       },
       {
         field: "createdAt",
@@ -716,12 +567,9 @@ const MenusMenuIdSectionId = ({
       canWrite,
       dateFilterOperators,
       format,
-      handleDeleteItem,
-      handleManageItem,
-      handleUpdateItem,
+      handleDetach,
       isReorderMode,
       stringFilterOperators,
-      tCommon,
       tMenus,
     ],
   );
@@ -730,18 +578,16 @@ const MenusMenuIdSectionId = ({
     <>
       <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
         {!isReorderMode ? (
-          <>
-            {canWrite && (
+          canWrite && (
+            <>
               <Button
-                onClick={handleCreateItem}
+                onClick={handleAttach}
                 size="small"
                 startIcon={<Add />}
                 variant="contained"
               >
-                {tMenus("items.actions.createItem.title")}
+                {tMenus("itemModifierGroups.actions.attach.title")}
               </Button>
-            )}
-            {canWrite && (
               <Button
                 disabled={isReorderDisabled}
                 onClick={handleEnterReorderMode}
@@ -749,10 +595,10 @@ const MenusMenuIdSectionId = ({
                 startIcon={<Sort />}
                 variant="outlined"
               >
-                {tMenus("items.actions.reorderItem.title")}
+                {tMenus("itemModifierGroups.actions.reorder.title")}
               </Button>
-            )}
-          </>
+            </>
+          )
         ) : (
           <>
             <Button
@@ -761,7 +607,7 @@ const MenusMenuIdSectionId = ({
               startIcon={<Cancel />}
               variant="outlined"
             >
-              {tMenus("items.actions.reorderItem.cancel.label")}
+              {tMenus("itemModifierGroups.actions.reorder.cancel.label")}
             </Button>
             <Button
               onClick={handleSaveReorder}
@@ -769,7 +615,7 @@ const MenusMenuIdSectionId = ({
               startIcon={<Save />}
               variant="contained"
             >
-              {tMenus("items.actions.reorderItem.save.label")}
+              {tMenus("itemModifierGroups.actions.reorder.save.label")}
             </Button>
           </>
         )}
@@ -788,7 +634,7 @@ const MenusMenuIdSectionId = ({
           paginationMode="server"
           paginationModel={paginationModel}
           rowCount={rowCount}
-          rows={items}
+          rows={links}
           slots={{
             ...DATA_GRID_PROPS.slots,
             row: isReorderMode ? Sortable : undefined,
@@ -801,4 +647,4 @@ const MenusMenuIdSectionId = ({
   );
 };
 
-export default MenusMenuIdSectionId;
+export default MenuItemModifierGroups;

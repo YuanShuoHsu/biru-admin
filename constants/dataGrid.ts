@@ -46,3 +46,8 @@ export const DATA_GRID_PROPS = {
     toolbar: CustomToolbar,
   },
 } as const;
+
+export const NO_VALUE_FILTER_OPERATORS: readonly string[] = [
+  "isEmpty",
+  "isNotEmpty",
+];

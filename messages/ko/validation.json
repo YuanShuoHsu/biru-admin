@@ -50,6 +50,9 @@
   "member": {
     "required": "멤버는 필수입니다."
   },
+  "modifierGroupId": {
+    "required": "옵션 그룹은 필수입니다."
+  },
   "name": {
     "minLength": "이름은 2자 이상이어야 합니다."
   },

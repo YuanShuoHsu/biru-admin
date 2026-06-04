@@ -6,10 +6,11 @@ import MenuItemAddOns from ".";
 import {
   FILTER_FIELDS,
   FILTER_OPERATORS,
-  NO_VALUE_FILTER_OPERATORS,
   SORT_BY_FIELDS,
   SORT_DIRECTIONS,
 } from "./constants";
+
+import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
 
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";

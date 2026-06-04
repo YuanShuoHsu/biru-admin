@@ -1,24 +1,28 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 
 import { Link, usePathname } from "@/i18n/navigation";
 
-import { Extension, Tune, type SvgIconComponent } from "@mui/icons-material";
+import { Category, Tune, type SvgIconComponent } from "@mui/icons-material";
 import { Stack, Tab, Tabs } from "@mui/material";
 
-const MenuItemLayout = ({ children }: { children: React.ReactNode }) => {
-  const { menuId, menuSectionId, menuItemId } = useParams<{
-    menuId: string;
-    menuSectionId: string;
-    menuItemId: string;
-  }>();
+const MenuLayout = ({ children }: { children: React.ReactNode }) => {
+  const { menuId } = useParams<{ menuId: string }>();
 
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const tMenus = useTranslations("menus");
 
-  const basePath = `/menus/${menuId}/${menuSectionId}/${menuItemId}`;
+  const organization = searchParams.get("organization");
+  const query = new URLSearchParams({
+    ...(organization ? { organization } : {}),
+    page: "1",
+    pageSize: "10",
+  }).toString();
+
+  const basePath = `/menus/${menuId}`;
 
   const tabs: {
     Icon: SvgIconComponent;
@@ -26,9 +30,9 @@ const MenuItemLayout = ({ children }: { children: React.ReactNode }) => {
     value: string;
   }[] = [
     {
-      Icon: Extension,
-      label: tMenus("addOns.label"),
-      value: `${basePath}/add-ons`,
+      Icon: Category,
+      label: tMenus("sections.label"),
+      value: `${basePath}/sections`,
     },
     {
       Icon: Tune,
@@ -44,7 +48,7 @@ const MenuItemLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <Stack height="100%" gap={2}>
       <Tabs
-        aria-label="menu item tabs"
+        aria-label="menu tabs"
         scrollButtons="auto"
         value={currentTab}
         variant="scrollable"
@@ -52,7 +56,7 @@ const MenuItemLayout = ({ children }: { children: React.ReactNode }) => {
         {tabs.map(({ Icon, label, value }) => (
           <Tab
             component={Link}
-            href={value}
+            href={`${value}?${query}`}
             icon={<Icon fontSize="small" />}
             iconPosition="start"
             key={value}
@@ -66,4 +70,4 @@ const MenuItemLayout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default MenuItemLayout;
+export default MenuLayout;

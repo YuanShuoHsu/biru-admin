@@ -1,12 +1,12 @@
-import type { UserWithRole } from "better-auth/client/plugins";
-import { getMessages, setRequestLocale } from "next-intl/server";
+import { setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
 
-import Admins from ".";
+import MenusMenuId from ".";
 import {
   FILTER_FIELDS,
   FILTER_OPERATORS,
-  SORT_BY,
+  SORT_BY_FIELDS,
   SORT_DIRECTIONS,
 } from "./constants";
 
@@ -15,39 +15,42 @@ import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
-import { getQuickFilterValue, getUserSessions } from "@/utils/admins";
-import { fetcher } from "@/utils/fetcher";
+import { authClient } from "@/lib/auth-client";
 
-interface AdminsPageProps {
-  params: Promise<{ locale: Locale }>;
+import { getAdminMenu, getAdminMenuSections } from "@/utils/menus";
+
+interface MenusMenuIdPageProps {
+  params: Promise<{ locale: Locale; menuId: string }>;
   searchParams: Promise<{
-    page?: string;
-    pageSize?: string;
     filterField?: string;
     filterOperator?: string;
     filterValue?: string;
+    organization?: string;
+    page?: string;
+    pageSize?: string;
     quickFilterValue?: string;
-    searchField?: string;
-    searchOperator?: string;
-    searchValue?: string;
     sortBy?: string;
     sortDirection?: string;
   }>;
 }
 
-const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
+const MenusMenuIdPage = async ({
+  params,
+  searchParams,
+}: MenusMenuIdPageProps) => {
   const [
     cookieStore,
-    { locale },
+    { locale, menuId },
     {
       filterField: rawFilterField,
       filterOperator: rawFilterOperator,
       filterValue,
       page: rawPage,
       pageSize: rawPageSize,
-      quickFilterValue: rawQuickFilterValue,
+      quickFilterValue,
       sortBy: rawSortBy,
       sortDirection: rawSortDirection,
+      ...restSearchParams
     },
   ] = await Promise.all([cookies(), params, searchParams]);
 
@@ -56,7 +59,7 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
   const page = Math.max(1, Number(rawPage) || 1);
   const pageSize = Math.max(1, Number(rawPageSize) || 10);
 
-  const sortBy = SORT_BY.find((field) => field === rawSortBy);
+  const sortBy = SORT_BY_FIELDS.find((field) => field === rawSortBy);
   const sortDirection = SORT_DIRECTIONS.find(
     (direction) => direction === rawSortDirection,
   );
@@ -82,72 +85,68 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
       )
   ) {
     const params = new URLSearchParams({
+      ...restSearchParams,
       page: String(page),
       pageSize: String(pageSize),
       ...(sortBy && sortDirection && { sortBy, sortDirection }),
       ...(filterField &&
         filterOperator &&
         filterValue && { filterField, filterOperator, filterValue }),
-      ...(rawQuickFilterValue && { quickFilterValue: rawQuickFilterValue }),
     });
-    redirect({ href: `/admins?${params.toString()}`, locale });
+    redirect({
+      href: `/menus/${menuId}/sections?${params.toString()}`,
+      locale,
+    });
   }
 
-  const fetchOptions = {
-    headers: {
-      cookie: cookieStore.toString(),
-      origin: process.env.NEXT_PUBLIC_ADMIN_URL!,
-    },
-  };
+  const fetchOptions = { headers: { cookie: cookieStore.toString() } };
+  const [menu, { sections, total }] = await Promise.all([
+    getAdminMenu(menuId, fetchOptions),
+    getAdminMenuSections(
+      menuId,
+      page,
+      pageSize,
+      filterField,
+      filterOperator,
+      filterValue,
+      quickFilterValue,
+      sortBy,
+      sortDirection,
+      fetchOptions,
+    ),
+  ]);
 
-  const messages = await getMessages();
-  const quickFilterMessages = messages.admins;
-  const quickFilterValue = getQuickFilterValue(
-    quickFilterMessages,
-    rawQuickFilterValue || "",
-  );
+  if (!menu) notFound();
 
-  const queryParams = new URLSearchParams({
-    ...(filterField &&
-      filterOperator &&
-      (filterValue || NO_VALUE_FILTER_OPERATORS.includes(filterOperator)) && {
-        filterField,
-        filterOperator,
-        ...(filterValue && { filterValue }),
-      }),
-    limit: String(pageSize),
-    offset: String((page - 1) * pageSize),
-    ...(quickFilterValue && { quickFilterValue }),
-    sortBy: sortBy || "createdAt",
-    sortDirection: sortDirection || "desc",
-  });
+  const [sessionData, fullOrgData] = await Promise.all([
+    authClient.getSession({ fetchOptions }),
+    authClient.organization.getFullOrganization({
+      query: { organizationId: menu.organizationId },
+      fetchOptions,
+    }),
+  ]);
 
-  const { data, total } = await fetcher<{
-    data: UserWithRole[];
-    total: number;
-  }>(`/api/users/list?${queryParams}`, { headers: fetchOptions.headers });
-
-  const rows: UserWithRole[] = data || [];
-  const rowCount = total || 0;
-
-  const userSessions = await getUserSessions(rows, fetchOptions);
+  const currentUserId = sessionData.data?.user?.id;
+  const members = fullOrgData.data?.members || [];
+  const role = members.find(({ userId }) => userId === currentUserId)?.role;
+  const canWrite = role === "owner" || role === "admin";
 
   return (
-    <Admins
+    <MenusMenuId
+      canWrite={canWrite}
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
+      menu={menu}
       page={page}
       pageSize={pageSize}
-      quickFilterMessages={quickFilterMessages}
-      quickFilterValue={rawQuickFilterValue}
-      rows={rows}
-      rowCount={rowCount}
+      quickFilterValue={quickFilterValue}
+      rowCount={total}
+      sections={sections}
       sortBy={sortBy}
       sortDirection={sortDirection}
-      userSessions={userSessions}
     />
   );
 };
 
-export default AdminsPage;
+export default MenusMenuIdPage;

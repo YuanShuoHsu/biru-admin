@@ -86,6 +86,40 @@
     },
     "placeholder": "メニューの言語を選択してください"
   },
+  "itemModifierGroups": {
+    "actions": {
+      "attach": {
+        "error": "オプショングループの紐付けに失敗しました",
+        "success": "オプショングループ {name} を紐付けました",
+        "title": "オプショングループを紐付け"
+      },
+      "detach": {
+        "confirm": "<bold>{name}</bold> の紐付けを解除してもよろしいですか？グループ自体は削除されません。",
+        "error": "{name} の紐付け解除に失敗しました",
+        "success": "{name} の紐付けを解除しました",
+        "title": "紐付けを解除"
+      },
+      "label": "操作",
+      "reorder": {
+        "cancel": {
+          "confirm": "並び替えをキャンセルしますか？保存していない変更は失われます。",
+          "label": "並び替えをキャンセル"
+        },
+        "confirm": "並び替えますか？",
+        "save": {
+          "confirm": "並び順を保存しますか？",
+          "error": "並び順の保存に失敗しました",
+          "label": "並び順を保存",
+          "success": "並び順を保存しました"
+        },
+        "title": "並び替え"
+      }
+    },
+    "group": {
+      "label": "オプショングループ",
+      "placeholder": "オプショングループを選択してください"
+    }
+  },
   "items": {
     "actions": {
       "createItem": {
@@ -225,6 +259,102 @@
   "organization": {
     "label": "組織",
     "placeholder": "組織を選択してください"
+  },
+  "modifierGroups": {
+    "actions": {
+      "createGroup": {
+        "error": "オプショングループの追加に失敗しました",
+        "success": "オプショングループ {name} を追加しました",
+        "title": "オプショングループを追加"
+      },
+      "deleteGroup": {
+        "confirm": "<bold>{name}</bold> を削除してもよろしいですか？グループ内のオプションも削除されます。",
+        "error": "オプショングループ {name} の削除に失敗しました",
+        "success": "オプショングループ {name} を削除しました",
+        "title": "オプショングループを削除"
+      },
+      "label": "操作",
+      "reorderGroup": {
+        "cancel": {
+          "confirm": "並び替えをキャンセルしますか？保存していない変更は失われます。",
+          "label": "並び替えをキャンセル"
+        },
+        "confirm": "オプショングループを並び替えますか？",
+        "save": {
+          "confirm": "並び順を保存しますか？",
+          "error": "並び順の保存に失敗しました",
+          "label": "並び順を保存",
+          "success": "並び順を保存しました"
+        },
+        "title": "オプショングループを並び替え"
+      },
+      "updateGroup": {
+        "error": "オプショングループの更新に失敗しました",
+        "success": "オプショングループ {name} を更新しました",
+        "title": "オプショングループを編集"
+      },
+      "viewModifiers": {
+        "title": "オプションを表示"
+      }
+    },
+    "displayName": {
+      "label": "グループ名",
+      "placeholder": "グループ名を入力してください"
+    },
+    "label": "オプショングループ",
+    "maxSelectionCount": {
+      "label": "最大選択数",
+      "placeholder": "最大選択数を入力してください",
+      "unlimited": "無制限"
+    },
+    "minSelectionCount": {
+      "label": "最小選択数",
+      "placeholder": "最小選択数を入力してください"
+    }
+  },
+  "modifiers": {
+    "actions": {
+      "createModifier": {
+        "error": "オプションの追加に失敗しました",
+        "success": "オプション {name} を追加しました",
+        "title": "オプションを追加"
+      },
+      "deleteModifier": {
+        "confirm": "<bold>{name}</bold> を削除してもよろしいですか？",
+        "error": "オプション {name} の削除に失敗しました",
+        "success": "オプション {name} を削除しました",
+        "title": "オプションを削除"
+      },
+      "label": "操作",
+      "reorderModifier": {
+        "cancel": {
+          "confirm": "並び替えをキャンセルしますか？保存していない変更は失われます。",
+          "label": "並び替えをキャンセル"
+        },
+        "confirm": "オプションを並び替えますか？",
+        "save": {
+          "confirm": "並び順を保存しますか？",
+          "error": "並び順の保存に失敗しました",
+          "label": "並び順を保存",
+          "success": "並び順を保存しました"
+        },
+        "title": "オプションを並び替え"
+      },
+      "updateModifier": {
+        "error": "オプションの更新に失敗しました",
+        "success": "オプション {name} を更新しました",
+        "title": "オプションを編集"
+      }
+    },
+    "displayName": {
+      "label": "オプション名",
+      "placeholder": "オプション名を入力してください"
+    },
+    "label": "オプション",
+    "priceAdjustment": {
+      "label": "追加料金",
+      "placeholder": "価格調整を入力してください"
+    }
   },
   "reorder": "並び替え",
   "sections": {

@@ -9,16 +9,16 @@ import useSWR from "swr";
 
 import CreateAddOnDialog from "./CreateAddOnDialog";
 import UpdateAddOnDialog from "./UpdateAddOnDialog";
-import {
-  DATE_FILTER_OPERATORS,
-  NO_VALUE_FILTER_OPERATORS,
-  STRING_FILTER_OPERATORS,
-} from "./constants";
+import { DATE_FILTER_OPERATORS, STRING_FILTER_OPERATORS } from "./constants";
 
 import DateFilterInputValue from "@/components/DateFilterInputValue";
 import { DragHandle, Sortable } from "@/components/Sortable";
 
-import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
+import {
+  autosizeOptions,
+  DATA_GRID_PROPS,
+  NO_VALUE_FILTER_OPERATORS,
+} from "@/constants/dataGrid";
 
 import { arrayMove } from "@dnd-kit/helpers";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
@@ -52,6 +52,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { MenuItemAddOn } from "@/types/menus";
 
+import { isFilteredOrSorted } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
 
 const DataGrid = dynamic(
@@ -194,6 +195,9 @@ const MenuItemAddOns = ({
       },
     },
   );
+
+  const isReorderDisabled =
+    rowCount < 2 || isFilteredOrSorted(filterModel, sortModel);
 
   const handlePaginationModelChange = useCallback(
     (newModel: GridPaginationModel) => {
@@ -602,7 +606,7 @@ const MenuItemAddOns = ({
                 {tMenus("addOns.actions.createAddOn.title")}
               </Button>
               <Button
-                disabled={rowCount < 2}
+                disabled={isReorderDisabled}
                 onClick={handleEnterReorderMode}
                 size="small"
                 startIcon={<Sort />}

@@ -25,7 +25,6 @@ import {
   ENUM_FILTER_OPERATORS,
   FILTER_FIELDS,
   FILTER_OPERATORS,
-  NO_VALUE_FILTER_OPERATORS,
   SORT_BY,
   SORT_DIRECTIONS,
   TEXT_FILTER_OPERATORS,
@@ -37,7 +36,11 @@ import UpdateUserDialogContent from "./UpdateUserDialogContent";
 
 import DateFilterInputValue from "@/components/DateFilterInputValue";
 
-import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
+import {
+  autosizeOptions,
+  DATA_GRID_PROPS,
+  NO_VALUE_FILTER_OPERATORS,
+} from "@/constants/dataGrid";
 import {
   DEFAULT_AUTHENTICATED_ROUTE,
   IMPERSONATE_RETURN_KEY,

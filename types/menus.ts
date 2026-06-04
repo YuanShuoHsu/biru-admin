@@ -7,3 +7,10 @@ export type MenuItemAddOn = components["schemas"]["MenuItemAddOnResponseDto"];
 
 export type OrderMenu = components["schemas"]["OrderMenuResponseDto"];
 export type OrderMenuItem = components["schemas"]["OrderMenuItemResponseDto"];
+
+export type ModifierGroup = components["schemas"]["ModifierGroupResponseDto"];
+export type Modifier = components["schemas"]["ModifierResponseDto"];
+export type MenuItemModifierGroup =
+  components["schemas"]["MenuItemModifierGroupResponseDto"];
+
+export type ItemAvailability = NonNullable<Modifier["availability"]>;
