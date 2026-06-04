@@ -340,7 +340,9 @@ const MenusMenuIdSectionId = ({
     setDialog({
       content: (
         <DialogContentText>
-          {tMenus("items.actions.reorderItem.confirm")}
+          {tMenus.rich("items.actions.reorderItem.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
         </DialogContentText>
       ),
       onConfirm: async () => {
@@ -357,7 +359,9 @@ const MenusMenuIdSectionId = ({
     setDialog({
       content: (
         <DialogContentText>
-          {tMenus("items.actions.reorderItem.save.confirm")}
+          {tMenus.rich("items.actions.reorderItem.save.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
         </DialogContentText>
       ),
       onConfirm: async () => {
@@ -407,7 +411,9 @@ const MenusMenuIdSectionId = ({
     setDialog({
       content: (
         <DialogContentText>
-          {tMenus("items.actions.reorderItem.cancel.confirm")}
+          {tMenus.rich("items.actions.reorderItem.cancel.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
         </DialogContentText>
       ),
       onConfirm: async () => {

@@ -344,7 +344,9 @@ const MenuItemModifierGroups = ({
     setDialog({
       content: (
         <DialogContentText>
-          {tMenus("itemModifierGroups.actions.reorder.confirm")}
+          {tMenus.rich("itemModifierGroups.actions.reorder.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
         </DialogContentText>
       ),
       onConfirm: async () => {
@@ -360,7 +362,9 @@ const MenuItemModifierGroups = ({
     setDialog({
       content: (
         <DialogContentText>
-          {tMenus("itemModifierGroups.actions.reorder.save.confirm")}
+          {tMenus.rich("itemModifierGroups.actions.reorder.save.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
         </DialogContentText>
       ),
       onConfirm: async () => {
@@ -411,7 +415,9 @@ const MenuItemModifierGroups = ({
     setDialog({
       content: (
         <DialogContentText>
-          {tMenus("itemModifierGroups.actions.reorder.cancel.confirm")}
+          {tMenus.rich("itemModifierGroups.actions.reorder.cancel.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
         </DialogContentText>
       ),
       onConfirm: async () => {

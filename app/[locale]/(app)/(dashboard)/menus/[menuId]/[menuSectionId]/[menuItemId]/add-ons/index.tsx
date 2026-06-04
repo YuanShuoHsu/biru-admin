@@ -372,7 +372,9 @@ const MenuItemAddOns = ({
     setDialog({
       content: (
         <DialogContentText>
-          {tMenus("addOns.actions.reorderAddOn.confirm")}
+          {tMenus.rich("addOns.actions.reorderAddOn.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
         </DialogContentText>
       ),
       onConfirm: async () => {
@@ -388,7 +390,9 @@ const MenuItemAddOns = ({
     setDialog({
       content: (
         <DialogContentText>
-          {tMenus("addOns.actions.reorderAddOn.save.confirm")}
+          {tMenus.rich("addOns.actions.reorderAddOn.save.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
         </DialogContentText>
       ),
       onConfirm: async () => {
@@ -434,7 +438,9 @@ const MenuItemAddOns = ({
     setDialog({
       content: (
         <DialogContentText>
-          {tMenus("addOns.actions.reorderAddOn.cancel.confirm")}
+          {tMenus.rich("addOns.actions.reorderAddOn.cancel.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
         </DialogContentText>
       ),
       onConfirm: async () => {

@@ -316,7 +316,9 @@ const Modifiers = ({
     setDialog({
       content: (
         <DialogContentText>
-          {tMenus("modifiers.actions.reorderModifier.confirm")}
+          {tMenus.rich("modifiers.actions.reorderModifier.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
         </DialogContentText>
       ),
       onConfirm: async () => {
@@ -332,7 +334,9 @@ const Modifiers = ({
     setDialog({
       content: (
         <DialogContentText>
-          {tMenus("modifiers.actions.reorderModifier.save.confirm")}
+          {tMenus.rich("modifiers.actions.reorderModifier.save.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
         </DialogContentText>
       ),
       onConfirm: async () => {
@@ -381,7 +385,9 @@ const Modifiers = ({
     setDialog({
       content: (
         <DialogContentText>
-          {tMenus("modifiers.actions.reorderModifier.cancel.confirm")}
+          {tMenus.rich("modifiers.actions.reorderModifier.cancel.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
         </DialogContentText>
       ),
       onConfirm: async () => {
