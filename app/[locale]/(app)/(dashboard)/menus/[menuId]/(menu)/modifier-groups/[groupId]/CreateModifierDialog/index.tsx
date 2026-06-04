@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
 import { ITEM_AVAILABILITY_OPTIONS } from "../constants";
 import {
@@ -12,6 +12,7 @@ import {
 } from "./definitions";
 
 import FormBox from "@/components/FormBox";
+import NumberSpinner from "@/components/NumberSpinner";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -39,9 +40,11 @@ const CreateModifierDialog = ({
 
   const createModifierFormSchema = useCreateModifierFormSchema();
   const {
+    control,
     formState: { errors },
     handleSubmit,
     register,
+    setValue,
   } = useForm<CreateModifierForm>({
     defaultValues: {
       displayName: "",
@@ -50,6 +53,8 @@ const CreateModifierDialog = ({
     },
     resolver: zodResolver(createModifierFormSchema),
   });
+
+  const priceAdjustment = useWatch({ control, name: "priceAdjustment" });
 
   const onSubmitHandler = async ({
     displayName,
@@ -105,15 +110,19 @@ const CreateModifierDialog = ({
         required
         {...register("displayName")}
       />
-      <TextField
+      <NumberSpinner
+        clearable
         error={!!errors.priceAdjustment}
         fullWidth
         helperText={errors.priceAdjustment?.message}
         label={`${tMenus("modifiers.priceAdjustment.label")} ${tCommon("optional")}`}
+        min={0}
         placeholder={tMenus("modifiers.priceAdjustment.placeholder")}
-        slotProps={{ htmlInput: { min: 0, step: "0.01" } }}
-        type="number"
-        {...register("priceAdjustment")}
+        step={1}
+        value={priceAdjustment ? Number(priceAdjustment) : null}
+        onValueChange={(value) =>
+          setValue("priceAdjustment", value != null ? String(value) : "")
+        }
       />
       <TextField
         error={!!errors.availability}
