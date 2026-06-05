@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormatter, useTranslations } from "next-intl";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
@@ -62,6 +62,7 @@ import type { Menu, MenuSection } from "@/types/menus";
 
 import { isFilteredOrSorted } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
+import { localize } from "@/utils/locale";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -202,6 +203,7 @@ const MenusMenuId = ({
   const isReorderDisabled =
     rowCount < 2 || isFilteredOrSorted(filterModel, sortModel);
 
+  const locale = useLocale();
   const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
   const tToolbar = useTranslations("dataGrid.toolbar");
@@ -458,12 +460,14 @@ const MenusMenuId = ({
 
   const handleDeleteSection = useCallback(
     ({ id, name }: MenuSection) => {
+      const displayName = localize(name, locale);
+
       setDialog({
         content: (
           <DialogContentText>
             {tMenus.rich("sections.actions.deleteSection.confirm", {
               bold: (chunks) => <strong>{chunks}</strong>,
-              name,
+              name: displayName,
             })}
           </DialogContentText>
         ),
@@ -472,14 +476,18 @@ const MenusMenuId = ({
             await fetcher(`/api/menu-sections/${id}`, { method: "DELETE" });
 
             enqueueSnackbar(
-              tMenus("sections.actions.deleteSection.success", { name }),
+              tMenus("sections.actions.deleteSection.success", {
+                name: displayName,
+              }),
               { variant: "success" },
             );
 
             mutate();
           } catch {
             enqueueSnackbar(
-              tMenus("sections.actions.deleteSection.error", { name }),
+              tMenus("sections.actions.deleteSection.error", {
+                name: displayName,
+              }),
               { variant: "error" },
             );
           }
@@ -488,7 +496,7 @@ const MenusMenuId = ({
         title: tMenus("sections.actions.deleteSection.title"),
       });
     },
-    [mutate, setDialog, tMenus],
+    [locale, mutate, setDialog, tMenus],
   );
 
   const columns = useMemo<GridColDef[]>(
@@ -563,11 +571,15 @@ const MenusMenuId = ({
         field: "name",
         filterOperators: stringFilterOperators,
         headerName: tMenus("sections.name.label"),
+        valueGetter: (_value: unknown, row: MenuSection) =>
+          localize(row.name, locale),
       },
       {
         field: "description",
         filterOperators: stringFilterOperators,
         headerName: `${tMenus("sections.description.label")} ${tCommon("optional")}`,
+        valueGetter: (_value: unknown, row: MenuSection) =>
+          localize(row.description, locale),
       },
       {
         field: "createdAt",
@@ -592,6 +604,7 @@ const MenusMenuId = ({
       handleViewSection,
       handleUpdateSection,
       isReorderMode,
+      locale,
       stringFilterOperators,
       tCommon,
       tMenus,

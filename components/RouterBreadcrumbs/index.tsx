@@ -3,7 +3,7 @@
 
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useParams, useSearchParams } from "next/navigation";
 import useSWR from "swr";
 
@@ -62,6 +62,7 @@ import type { Menu, MenuSection, ModifierGroup } from "@/types/menus";
 import type { RouteParams } from "@/types/routeParams";
 
 import { fetcher } from "@/utils/fetcher";
+import { localize } from "@/utils/locale";
 
 const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
   transition: "none",
@@ -99,6 +100,8 @@ interface BreadcrumbItem {
 }
 
 const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
+  const locale = useLocale();
+
   const {
     groupId,
     menuId,
@@ -144,9 +147,9 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
     menuId ? `/api/menus/${menuId}` : null,
     async (url) => {
       try {
-        const menu = await fetcher<Menu>(url);
+        const { name } = await fetcher<Menu>(url);
 
-        return menu.name || "";
+        return localize(name, locale);
       } catch {
         return "";
       }
@@ -157,9 +160,9 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
     menuSectionId ? `/api/menu-sections/${menuSectionId}` : null,
     async (url) => {
       try {
-        const section = await fetcher<MenuSection>(url);
+        const { name } = await fetcher<MenuSection>(url);
 
-        return section.name || "";
+        return localize(name, locale);
       } catch {
         return "";
       }
@@ -170,9 +173,9 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
     groupId ? `/api/modifier-groups/${groupId}` : null,
     async (url) => {
       try {
-        const group = await fetcher<ModifierGroup>(url);
+        const { displayName } = await fetcher<ModifierGroup>(url);
 
-        return group.displayName || "";
+        return localize(displayName, locale);
       } catch {
         return "";
       }
@@ -290,6 +293,7 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
               to: `/modifier-groups${menuOrganizationSlug ? `?organization=${menuOrganizationSlug}` : ""}`,
             },
           ],
+          hidden: true,
           icon: Summarize,
           label: menuName,
           to: `/${menuId}${menuOrganizationSlug ? `?organization=${menuOrganizationSlug}` : ""}`,

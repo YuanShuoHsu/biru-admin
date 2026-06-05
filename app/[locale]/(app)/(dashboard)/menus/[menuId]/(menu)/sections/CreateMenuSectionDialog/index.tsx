@@ -1,9 +1,9 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
 import {
   type CreateMenuSectionForm,
@@ -11,19 +11,19 @@ import {
 } from "./definitions";
 
 import FormBox from "@/components/FormBox";
+import LocalizedTextFields from "@/components/LocalizedTextFields";
 import UploadAvatars from "@/components/UploadAvatars";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
-import { TextField } from "@mui/material";
-
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { MenuSection } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
+import { localize } from "@/utils/locale";
 
 const CREATE_MENU_SECTION_IMAGE_KEY = "create-menu-section-image";
 
@@ -38,6 +38,7 @@ const CreateMenuSectionDialog = ({
 }: CreateMenuSectionDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
+  const locale = useLocale();
   const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
 
@@ -45,13 +46,17 @@ const CreateMenuSectionDialog = ({
 
   const createMenuSectionFormSchema = useCreateMenuSectionFormSchema();
   const {
+    control,
     formState: { errors },
     handleSubmit,
-    register,
+    setValue,
   } = useForm<CreateMenuSectionForm>({
-    defaultValues: { name: "", description: "" },
+    defaultValues: { name: {}, description: {} },
     resolver: zodResolver(createMenuSectionFormSchema),
   });
+
+  const nameValue = useWatch({ control, name: "name" });
+  const descriptionValue = useWatch({ control, name: "description" });
 
   const onSubmitHandler = async ({
     name,
@@ -65,13 +70,15 @@ const CreateMenuSectionDialog = ({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name,
-          ...(description && { description }),
+          description,
           ...(imageSrc && { image: imageSrc }),
         }),
       });
 
       enqueueSnackbar(
-        tMenus("sections.actions.createSection.success", { name }),
+        tMenus("sections.actions.createSection.success", {
+          name: localize(name, locale),
+        }),
         { variant: "success" },
       );
 
@@ -98,25 +105,36 @@ const CreateMenuSectionDialog = ({
         shape="square"
         uploadKey={CREATE_MENU_SECTION_IMAGE_KEY}
       />
-      <TextField
-        error={!!errors.name}
-        fullWidth
-        helperText={errors.name?.message}
-        label={tMenus("sections.name.label")}
-        placeholder={tMenus("sections.name.placeholder")}
-        required
-        {...register("name")}
-      />
-      <TextField
-        error={!!errors.description}
-        fullWidth
-        helperText={errors.description?.message}
-        label={`${tMenus("sections.description.label")} ${tCommon("optional")}`}
-        maxRows={4}
-        multiline
-        placeholder={tMenus("sections.description.placeholder")}
-        slotProps={{ htmlInput: { maxLength: 160 } }}
-        {...register("description")}
+      <LocalizedTextFields
+        fields={(lang) => [
+          {
+            error: !!errors.name?.root,
+            fullWidth: true,
+            helperText: errors.name?.root?.message,
+            label: tMenus("sections.name.label"),
+            onChange: (event) =>
+              setValue("name", { ...nameValue, [lang]: event.target.value }),
+            placeholder: tMenus("sections.name.placeholder"),
+            required: true,
+            value: nameValue?.[lang] || "",
+          },
+          {
+            error: !!errors.description?.root,
+            fullWidth: true,
+            helperText: errors.description?.root?.message,
+            label: `${tMenus("sections.description.label")} ${tCommon("optional")}`,
+            maxRows: 4,
+            multiline: true,
+            onChange: (event) =>
+              setValue("description", {
+                ...descriptionValue,
+                [lang]: event.target.value,
+              }),
+            placeholder: tMenus("sections.description.placeholder"),
+            slotProps: { htmlInput: { maxLength: 160 } },
+            value: descriptionValue?.[lang] || "",
+          },
+        ]}
       />
     </FormBox>
   );

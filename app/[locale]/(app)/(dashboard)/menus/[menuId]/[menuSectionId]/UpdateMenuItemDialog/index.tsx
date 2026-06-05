@@ -1,7 +1,7 @@
 "use client";
 
 import dayjs from "dayjs";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -15,6 +15,7 @@ import {
 
 import CountrySelect from "@/components/CountrySelect";
 import FormBox from "@/components/FormBox";
+import LocalizedTextFields from "@/components/LocalizedTextFields";
 import NumberSpinner from "@/components/NumberSpinner";
 import UploadAvatars from "@/components/UploadAvatars";
 
@@ -32,6 +33,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { MenuItem as MenuItemType } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
+import { localize } from "@/utils/locale";
 
 interface UpdateMenuItemDialogProps {
   item: MenuItemType;
@@ -41,6 +43,7 @@ interface UpdateMenuItemDialogProps {
 const UpdateMenuItemDialog = ({ item, mutate }: UpdateMenuItemDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
+  const locale = useLocale();
   const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
 
@@ -57,7 +60,7 @@ const UpdateMenuItemDialog = ({ item, mutate }: UpdateMenuItemDialogProps) => {
   } = useForm<UpdateMenuItemForm>({
     defaultValues: {
       name: item.name,
-      description: item.description || "",
+      description: item.description || {},
       offer: {
         priceCurrency: item.offer?.priceCurrency || "TWD",
         price: item.offer?.price || "",
@@ -86,6 +89,8 @@ const UpdateMenuItemDialog = ({ item, mutate }: UpdateMenuItemDialogProps) => {
     resolver: zodResolver(updateMenuItemFormSchema),
   });
 
+  const nameValue = useWatch({ control, name: "name" });
+  const description = useWatch({ control, name: "description" });
   const priceCurrency = useWatch({ control, name: "offer.priceCurrency" });
   const price = useWatch({ control, name: "offer.price" });
   const priceSpecificationPrice = useWatch({
@@ -97,7 +102,7 @@ const UpdateMenuItemDialog = ({ item, mutate }: UpdateMenuItemDialogProps) => {
     control,
     name: "offer.deliveryLeadTime.value",
   });
-  const inventoryLevelValue = useWatch({
+  const inventoryLevel = useWatch({
     control,
     name: "offer.inventoryLevel.value",
   });
@@ -123,7 +128,7 @@ const UpdateMenuItemDialog = ({ item, mutate }: UpdateMenuItemDialogProps) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name,
-          description: description || null,
+          description,
           image: imageSrc || null,
           offer: {
             priceCurrency: offer?.priceCurrency,
@@ -168,9 +173,14 @@ const UpdateMenuItemDialog = ({ item, mutate }: UpdateMenuItemDialogProps) => {
         }),
       });
 
-      enqueueSnackbar(tMenus("items.actions.updateItem.success", { name }), {
-        variant: "success",
-      });
+      enqueueSnackbar(
+        tMenus("items.actions.updateItem.success", {
+          name: localize(name, locale),
+        }),
+        {
+          variant: "success",
+        },
+      );
 
       closeDialog();
       mutate();
@@ -195,25 +205,36 @@ const UpdateMenuItemDialog = ({ item, mutate }: UpdateMenuItemDialogProps) => {
         shape="square"
         uploadKey={uploadKey}
       />
-      <TextField
-        error={!!errors.name}
-        fullWidth
-        helperText={errors.name?.message}
-        label={tMenus("items.name.label")}
-        placeholder={tMenus("items.name.placeholder")}
-        required
-        {...register("name")}
-      />
-      <TextField
-        error={!!errors.description}
-        fullWidth
-        helperText={errors.description?.message}
-        label={`${tMenus("items.description.label")} ${tCommon("optional")}`}
-        maxRows={4}
-        multiline
-        placeholder={tMenus("items.description.placeholder")}
-        slotProps={{ htmlInput: { maxLength: 160 } }}
-        {...register("description")}
+      <LocalizedTextFields
+        fields={(lang) => [
+          {
+            error: !!errors.name?.root,
+            fullWidth: true,
+            helperText: errors.name?.root?.message,
+            label: tMenus("items.name.label"),
+            onChange: (event) =>
+              setValue("name", { ...nameValue, [lang]: event.target.value }),
+            placeholder: tMenus("items.name.placeholder"),
+            required: true,
+            value: nameValue?.[lang] || "",
+          },
+          {
+            error: !!errors.description?.root,
+            fullWidth: true,
+            helperText: errors.description?.root?.message,
+            label: `${tMenus("items.description.label")} ${tCommon("optional")}`,
+            maxRows: 4,
+            multiline: true,
+            onChange: (event) =>
+              setValue("description", {
+                ...description,
+                [lang]: event.target.value,
+              }),
+            placeholder: tMenus("items.description.placeholder"),
+            slotProps: { htmlInput: { maxLength: 160 } },
+            value: description?.[lang] || "",
+          },
+        ]}
       />
       <Divider flexItem>
         <Chip label={tMenus("offers.label")} size="small" />
@@ -305,9 +326,7 @@ const UpdateMenuItemDialog = ({ item, mutate }: UpdateMenuItemDialogProps) => {
             label={`${tMenus("offers.inventoryLevel.value.label")} ${tCommon("optional")}`}
             min={0}
             placeholder={tMenus("offers.inventoryLevel.value.placeholder")}
-            value={
-              inventoryLevelValue !== "" ? Number(inventoryLevelValue) : null
-            }
+            value={inventoryLevel !== "" ? Number(inventoryLevel) : null}
             onValueChange={(value) =>
               setValue(
                 "offer.inventoryLevel.value",

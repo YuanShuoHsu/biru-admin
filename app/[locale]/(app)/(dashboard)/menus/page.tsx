@@ -1,8 +1,8 @@
 import { setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
 
-import Menus from ".";
-
+import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
@@ -26,42 +26,28 @@ const MenusPage = async ({ params, searchParams }: MenusPageProps) => {
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
   const { data } = await authClient.organization.list({ fetchOptions });
-
   const organizations = data || [];
 
-  const selectedOrganization = organizations.find(
-    ({ slug }) => slug === organization,
+  const selectedOrganization =
+    organizations.find(({ slug }) => slug === organization) || organizations[0];
+
+  if (!selectedOrganization) redirect({ href: "/organizations", locale });
+
+  const menus = await fetcher<Menu[]>(
+    `/api/organizations/${selectedOrganization.id}/menus`,
+    fetchOptions,
   );
+  const menu = menus[0];
 
-  const [menus, sessionData, fullOrgData] = await Promise.all([
-    selectedOrganization
-      ? fetcher<Menu[]>(
-          `/api/organizations/${selectedOrganization.id}/menus`,
-          fetchOptions,
-        )
-      : Promise.resolve([]),
-    authClient.getSession({ fetchOptions }),
-    selectedOrganization
-      ? authClient.organization.getFullOrganization({
-          query: { organizationSlug: selectedOrganization.slug },
-          fetchOptions,
-        })
-      : Promise.resolve({ data: null }),
-  ]);
+  if (!menu) notFound();
 
-  const currentUserId = sessionData.data?.user?.id;
-  const members = fullOrgData.data?.members || [];
-  const role = members.find(({ userId }) => userId === currentUserId)?.role;
-  const canWrite = role === "owner" || role === "admin";
+  const query = new URLSearchParams({
+    organization: selectedOrganization.slug,
+    page: "1",
+    pageSize: "10",
+  }).toString();
 
-  return (
-    <Menus
-      canWrite={canWrite}
-      menus={menus}
-      organizations={organizations}
-      organizationSlug={selectedOrganization?.slug || ""}
-    />
-  );
+  redirect({ href: `/menus/${menu.id}/sections?${query}`, locale });
 };
 
 export default MenusPage;

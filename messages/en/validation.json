@@ -47,6 +47,9 @@
   "gender": {
     "required": "Gender is required."
   },
+  "localizedText": {
+    "required": "All languages are required."
+  },
   "member": {
     "required": "Member is required."
   },
@@ -77,6 +80,9 @@
     "invalid": "Phone number is not valid.",
     "required": "Phone is required."
   },
+  "postalCode": {
+    "format": "Invalid postal code format. Please enter 3, 5, or 6 digits."
+  },
   "price": {
     "required": "Price is required."
   },
@@ -85,9 +91,6 @@
   },
   "searchField": {
     "required": "Search field is required."
-  },
-  "postalCode": {
-    "format": "Invalid postal code format. Please enter 3, 5, or 6 digits."
   },
   "slug": {
     "letter": "Contain at least one letter.",

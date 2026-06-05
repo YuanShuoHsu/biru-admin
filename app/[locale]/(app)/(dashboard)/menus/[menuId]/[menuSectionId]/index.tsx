@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormatter, useTranslations } from "next-intl";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
@@ -68,6 +68,7 @@ import type { MenuItem } from "@/types/menus";
 
 import { isFilteredOrSorted } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
+import { localize } from "@/utils/locale";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -144,6 +145,7 @@ const MenusMenuIdSectionId = ({
   const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
+  const locale = useLocale();
 
   const apiRef = useGridApiRef();
 
@@ -479,12 +481,14 @@ const MenusMenuIdSectionId = ({
 
   const handleDeleteItem = useCallback(
     ({ id, name }: MenuItem) => {
+      const localizedName = localize(name, locale);
+
       setDialog({
         content: (
           <DialogContentText>
             {tMenus.rich("items.actions.deleteItem.confirm", {
               bold: (chunks) => <strong>{chunks}</strong>,
-              name,
+              name: localizedName,
             })}
           </DialogContentText>
         ),
@@ -493,14 +497,16 @@ const MenusMenuIdSectionId = ({
             await fetcher(`/api/menu-items/${id}`, { method: "DELETE" });
 
             enqueueSnackbar(
-              tMenus("items.actions.deleteItem.success", { name }),
+              tMenus("items.actions.deleteItem.success", {
+                name: localizedName,
+              }),
               { variant: "success" },
             );
 
             mutate();
           } catch {
             enqueueSnackbar(
-              tMenus("items.actions.deleteItem.error", { name }),
+              tMenus("items.actions.deleteItem.error", { name: localizedName }),
               { variant: "error" },
             );
           }
@@ -509,7 +515,7 @@ const MenusMenuIdSectionId = ({
         title: tMenus("items.actions.deleteItem.title"),
       });
     },
-    [mutate, setDialog, tMenus],
+    [locale, mutate, setDialog, tMenus],
   );
 
   const columns = useMemo<GridColDef[]>(
@@ -609,11 +615,15 @@ const MenusMenuIdSectionId = ({
         field: "name",
         filterOperators: stringFilterOperators,
         headerName: tMenus("items.name.label"),
+        valueGetter: (_value: unknown, row: MenuItem) =>
+          localize(row.name, locale),
       },
       {
         field: "description",
         filterOperators: stringFilterOperators,
         headerName: `${tMenus("items.description.label")} ${tCommon("optional")}`,
+        valueGetter: (_value: unknown, row: MenuItem) =>
+          localize(row.description, locale),
       },
       {
         field: "priceCurrency",
@@ -726,6 +736,7 @@ const MenusMenuIdSectionId = ({
       handleManageItem,
       handleUpdateItem,
       isReorderMode,
+      locale,
       stringFilterOperators,
       tCommon,
       tMenus,

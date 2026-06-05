@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -22,6 +22,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { MenuItemModifierGroup, ModifierGroup } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
+import { localize } from "@/utils/locale";
 
 interface AttachModifierGroupDialogProps {
   menuId: string;
@@ -36,6 +37,7 @@ const AttachModifierGroupDialog = ({
 }: AttachModifierGroupDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
+  const locale = useLocale();
   const tMenus = useTranslations("menus");
 
   const attachModifierGroupFormSchema = useAttachModifierGroupFormSchema();
@@ -74,8 +76,10 @@ const AttachModifierGroupDialog = ({
   const onSubmitHandler = async ({
     modifierGroupId,
   }: AttachModifierGroupForm) => {
-    const displayName =
-      groups.find(({ id }) => id === modifierGroupId)?.displayName || "";
+    const displayName = localize(
+      groups.find(({ id }) => id === modifierGroupId)?.displayName,
+      locale,
+    );
 
     try {
       setDialog({ confirmLoading: true });
@@ -122,12 +126,15 @@ const AttachModifierGroupDialog = ({
           inputLabel: { shrink: true },
           select: {
             displayEmpty: true,
-            renderValue: (selected) =>
-              selected ? (
-                groups.find(({ id }) => id === selected)?.displayName
+            renderValue: (selected) => {
+              const group = groups.find(({ id }) => id === selected);
+
+              return group ? (
+                localize(group.displayName, locale)
               ) : (
                 <em>{tMenus("itemModifierGroups.group.placeholder")}</em>
-              ),
+              );
+            },
           },
         }}
         value={modifierGroupId}
@@ -138,7 +145,7 @@ const AttachModifierGroupDialog = ({
         </MenuItem>
         {groups.map(({ id, displayName }) => (
           <MenuItem disabled={usedGroupIds.has(id)} key={id} value={id}>
-            {displayName}
+            {localize(displayName, locale)}
           </MenuItem>
         ))}
       </TextField>

@@ -7,10 +7,9 @@ import useSWRMutation from "swr/mutation";
 
 import VerticalSpacingToggleButton from "./VerticalSpacingToggleButton";
 
-import { locales } from "@/constants/locale";
+import { localeConfigs } from "@/constants/locale";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
-import type { Locale } from "@/i18n/routing";
 
 import {
   Button,
@@ -25,16 +24,10 @@ import { styled } from "@mui/material/styles";
 import { useCartStore } from "@/providers/cart-store-provider";
 import { useMenuStore } from "@/providers/menu-store-provider";
 
-import type {
-  CreateEcpayDto,
-  EcpayLanguage,
-} from "@/types/ecpay/createEcpayDto";
+import type { CreateEcpayDto } from "@/types/ecpay/createEcpayDto";
 import type { PaymentMethod } from "@/types/payment";
 
 import { getChoiceNames, getItemName } from "@/utils/menus";
-
-const getEcpayLanguage = (locale: Locale): EcpayLanguage =>
-  locales[locale].ecpay;
 
 const sendRequest = async (url: string, { arg }: { arg: CreateEcpayDto }) =>
   fetch(url, {
@@ -117,7 +110,7 @@ const CustomerPaymentForm = () => {
         ClientBackURL: completeUrl,
         OrderResultURL: completeUrl,
         NeedExtraPaidInfo: "Y" as const,
-        Language: getEcpayLanguage(locale),
+        Language: localeConfigs[locale].ecpayLanguage,
       },
     };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormatter, useTranslations } from "next-intl";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
@@ -54,6 +54,7 @@ import type { MenuItemAddOn } from "@/types/menus";
 
 import { isFilteredOrSorted } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
+import { localize } from "@/utils/locale";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -122,6 +123,7 @@ const MenuItemAddOns = ({
   const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
+  const locale = useLocale();
   const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
   const tToolbar = useTranslations("dataGrid.toolbar");
@@ -324,11 +326,11 @@ const MenuItemAddOns = ({
     }: MenuItemAddOn) => {
       const displayName = addOnMenuItemName
         ? tMenus("addOns.displayName.menuItem", {
-            menuSection: addOnMenuItemSectionName || "",
-            menuItem: addOnMenuItemName,
+            menuSection: localize(addOnMenuItemSectionName, locale),
+            menuItem: localize(addOnMenuItemName, locale),
           })
         : tMenus("addOns.displayName.menuSection", {
-            menuSection: addOnMenuSectionName || "",
+            menuSection: localize(addOnMenuSectionName, locale),
           });
 
       setDialog({
@@ -365,7 +367,7 @@ const MenuItemAddOns = ({
         title: tMenus("addOns.actions.deleteAddOn.title"),
       });
     },
-    [menuItemId, mutate, setDialog, tMenus],
+    [locale, menuItemId, mutate, setDialog, tMenus],
   );
 
   const handleEnterReorderMode = useCallback(() => {
@@ -560,14 +562,14 @@ const MenuItemAddOns = ({
         valueGetter: (
           _value: unknown,
           { addOnMenuSectionName, addOnMenuItemSectionName }: MenuItemAddOn,
-        ) => addOnMenuSectionName || addOnMenuItemSectionName,
+        ) => localize(addOnMenuSectionName || addOnMenuItemSectionName, locale),
       },
       {
         field: "addOnMenuItemName",
         filterOperators: stringFilterOperators,
         headerName: `${tMenus("addOns.addOnMenuItemId.label")} ${tCommon("optional")}`,
         valueGetter: (_value: unknown, { addOnMenuItemName }: MenuItemAddOn) =>
-          addOnMenuItemName,
+          localize(addOnMenuItemName, locale),
       },
       {
         field: "createdAt",
@@ -591,6 +593,7 @@ const MenuItemAddOns = ({
       handleDeleteAddOn,
       handleUpdateAddOn,
       isReorderMode,
+      locale,
       stringFilterOperators,
       tCommon,
       tMenus,

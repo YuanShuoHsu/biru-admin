@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormatter, useTranslations } from "next-intl";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
@@ -62,6 +62,7 @@ import type { Menu, ModifierGroup } from "@/types/menus";
 
 import { isFilteredOrSorted } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
+import { localize } from "@/utils/locale";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -130,6 +131,8 @@ const ModifierGroups = ({
   const format = useFormatter();
 
   const apiRef = useGridApiRef();
+
+  const locale = useLocale();
 
   const pathname = usePathname();
 
@@ -459,12 +462,14 @@ const ModifierGroups = ({
 
   const handleDeleteModifierGroup = useCallback(
     ({ id, displayName }: ModifierGroup) => {
+      const name = localize(displayName, locale);
+
       setDialog({
         content: (
           <DialogContentText>
             {tMenus.rich("modifierGroups.actions.deleteGroup.confirm", {
               bold: (chunks) => <strong>{chunks}</strong>,
-              name: displayName,
+              name,
             })}
           </DialogContentText>
         ),
@@ -474,7 +479,7 @@ const ModifierGroups = ({
 
             enqueueSnackbar(
               tMenus("modifierGroups.actions.deleteGroup.success", {
-                name: displayName,
+                name,
               }),
               { variant: "success" },
             );
@@ -483,7 +488,7 @@ const ModifierGroups = ({
           } catch {
             enqueueSnackbar(
               tMenus("modifierGroups.actions.deleteGroup.error", {
-                name: displayName,
+                name,
               }),
               { variant: "error" },
             );
@@ -493,7 +498,7 @@ const ModifierGroups = ({
         title: tMenus("modifierGroups.actions.deleteGroup.title"),
       });
     },
-    [mutate, setDialog, tMenus],
+    [locale, mutate, setDialog, tMenus],
   );
 
   const columns = useMemo<GridColDef[]>(
@@ -574,6 +579,8 @@ const ModifierGroups = ({
         field: "displayName",
         filterOperators: stringFilterOperators,
         headerName: tMenus("modifierGroups.displayName.label"),
+        valueGetter: (_value: unknown, { displayName }: ModifierGroup) =>
+          localize(displayName, locale),
       },
       {
         field: "minSelectionCount",
@@ -615,6 +622,7 @@ const ModifierGroups = ({
       handleUpdateModifierGroup,
       handleViewModifiers,
       isReorderMode,
+      locale,
       stringFilterOperators,
       tMenus,
     ],

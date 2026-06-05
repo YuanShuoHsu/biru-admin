@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -11,17 +11,17 @@ import {
 } from "./definitions";
 
 import FormBox from "@/components/FormBox";
+import LocalizedTextFields from "@/components/LocalizedTextFields";
 import NumberSpinner from "@/components/NumberSpinner";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-
-import { TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { ModifierGroup } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
+import { localize } from "@/utils/locale";
 
 interface CreateModifierGroupDialogProps {
   menuId: string;
@@ -34,6 +34,7 @@ const CreateModifierGroupDialog = ({
 }: CreateModifierGroupDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
+  const locale = useLocale();
   const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
 
@@ -42,17 +43,17 @@ const CreateModifierGroupDialog = ({
     formState: { errors },
     control,
     handleSubmit,
-    register,
     setValue,
   } = useForm<CreateModifierGroupForm>({
     defaultValues: {
-      displayName: "",
+      displayName: {},
       minSelectionCount: "",
       maxSelectionCount: "",
     },
     resolver: zodResolver(createModifierGroupFormSchema),
   });
 
+  const displayNameValue = useWatch({ control, name: "displayName" });
   const minSelectionCount = useWatch({ control, name: "minSelectionCount" });
   const maxSelectionCount = useWatch({ control, name: "maxSelectionCount" });
 
@@ -80,7 +81,7 @@ const CreateModifierGroupDialog = ({
 
       enqueueSnackbar(
         tMenus("modifierGroups.actions.createGroup.success", {
-          name: displayName,
+          name: localize(displayName, locale),
         }),
         { variant: "success" },
       );
@@ -102,14 +103,23 @@ const CreateModifierGroupDialog = ({
 
   return (
     <FormBox id="create-modifier-group-form" onSubmit={onSubmit}>
-      <TextField
-        error={!!errors.displayName}
-        fullWidth
-        helperText={errors.displayName?.message}
-        label={tMenus("modifierGroups.displayName.label")}
-        placeholder={tMenus("modifierGroups.displayName.placeholder")}
-        required
-        {...register("displayName")}
+      <LocalizedTextFields
+        fields={(lang) => [
+          {
+            error: !!errors.displayName?.root,
+            fullWidth: true,
+            helperText: errors.displayName?.root?.message,
+            label: tMenus("modifierGroups.displayName.label"),
+            onChange: (event) =>
+              setValue("displayName", {
+                ...displayNameValue,
+                [lang]: event.target.value,
+              }),
+            placeholder: tMenus("modifierGroups.displayName.placeholder"),
+            required: true,
+            value: displayNameValue?.[lang] || "",
+          },
+        ]}
       />
       <NumberSpinner
         clearable

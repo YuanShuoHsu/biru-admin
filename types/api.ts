@@ -180,8 +180,7 @@ export interface paths {
     /** 取得組織所有菜單 */
     get: operations["MenusController_findAllMenus"];
     put?: never;
-    /** 建立菜單 */
-    post: operations["MenusController_createMenu"];
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -199,8 +198,7 @@ export interface paths {
     get: operations["MenusController_findMenu"];
     put?: never;
     post?: never;
-    /** 刪除菜單 */
-    delete: operations["MenusController_deleteMenu"];
+    delete?: never;
     options?: never;
     head?: never;
     /** 更新菜單 */
@@ -1486,46 +1484,47 @@ export interface components {
        */
       RandomNumber: string;
     };
-    CreateMenuDto: {
-      name: string;
-      description?: string;
-      image?: string;
-      /** @enum {string} */
-      inLanguage?: "zh-TW" | "en" | "ja" | "ko" | "zh-CN";
-    };
     MenuResponseDto: {
       id: string;
       organizationId: string;
-      name: string;
-      description?: string | null;
+      name: Record<string, never>;
+      description?: Record<string, never> | null;
       image?: string | null;
-      /** @enum {string|null} */
-      inLanguage?: "zh-TW" | "en" | "ja" | "ko" | "zh-CN" | null;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
       updatedAt: string;
     };
     UpdateMenuDto: {
-      name?: string;
-      description?: string;
+      /**
+       * @example {
+       *       "zh-TW": "午餐菜單",
+       *       "en": "Lunch Menu"
+       *     }
+       */
+      name?: Record<string, never>;
+      description?: Record<string, never>;
       image?: string;
-      /** @enum {string} */
-      inLanguage?: "zh-TW" | "en" | "ja" | "ko" | "zh-CN";
     };
     CreateMenuSectionDto: {
       /** @description Parent section ID for nested sections */
       parentSectionId?: string;
-      name: string;
-      description?: string;
+      /**
+       * @example {
+       *       "zh-TW": "主餐",
+       *       "en": "Main Course"
+       *     }
+       */
+      name: Record<string, never>;
+      description?: Record<string, never>;
       image?: string;
     };
     MenuSectionResponseDto: {
       id: string;
       menuId?: string | null;
       parentSectionId?: string | null;
-      name: string;
-      description?: string | null;
+      name: Record<string, never>;
+      description?: Record<string, never> | null;
       image?: string | null;
       /** Format: date-time */
       createdAt: string;
@@ -1540,8 +1539,14 @@ export interface components {
     UpdateMenuSectionDto: {
       /** @description Parent section ID for nested sections */
       parentSectionId?: string;
-      name?: string;
-      description?: string;
+      /**
+       * @example {
+       *       "zh-TW": "主餐",
+       *       "en": "Main Course"
+       *     }
+       */
+      name?: Record<string, never>;
+      description?: Record<string, never>;
       image?: string;
     };
     NutritionInformationDto: {
@@ -1604,8 +1609,14 @@ export interface components {
       priceSpecification?: components["schemas"]["PriceSpecificationDto"];
     };
     CreateMenuItemDto: {
-      name: string;
-      description?: string;
+      /**
+       * @example {
+       *       "zh-TW": "拿鐵",
+       *       "en": "Latte"
+       *     }
+       */
+      name: Record<string, never>;
+      description?: Record<string, never>;
       image?: string;
       suitableForDiet?: (
         | "DiabeticDiet"
@@ -1658,8 +1669,8 @@ export interface components {
       id: string;
       menuId?: string | null;
       menuSectionId?: string | null;
-      name: string;
-      description?: string | null;
+      name: Record<string, never>;
+      description?: Record<string, never> | null;
       image?: string | null;
       suitableForDiet?:
         | (
@@ -1684,8 +1695,14 @@ export interface components {
       updatedAt: string;
     };
     UpdateMenuItemDto: {
-      name?: string;
-      description?: string;
+      /**
+       * @example {
+       *       "zh-TW": "拿鐵",
+       *       "en": "Latte"
+       *     }
+       */
+      name?: Record<string, never>;
+      description?: Record<string, never>;
       image?: string;
       suitableForDiet?: (
         | "DiabeticDiet"
@@ -1738,11 +1755,11 @@ export interface components {
       id: string;
       menuItemId: string;
       addOnMenuItemId?: string | null;
-      addOnMenuItemName?: string | null;
+      addOnMenuItemName?: Record<string, never> | null;
       addOnMenuSectionId?: string | null;
-      addOnMenuSectionName?: string | null;
+      addOnMenuSectionName?: Record<string, never> | null;
       addOnMenuItemSectionId?: string | null;
-      addOnMenuItemSectionName?: string | null;
+      addOnMenuItemSectionName?: Record<string, never> | null;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -1755,8 +1772,14 @@ export interface components {
       addOnMenuSectionId?: string | null;
     };
     CreateModifierGroupDto: {
-      /** @description 群組名稱，如「甜度」「加料」 */
-      displayName: string;
+      /**
+       * @description 群組名稱，如「甜度」「加料」
+       * @example {
+       *       "zh-TW": "甜度",
+       *       "en": "Sweetness"
+       *     }
+       */
+      displayName: Record<string, never>;
       /**
        * @description 最少選擇數量；>= 1 代表必選
        * @default 0
@@ -1768,7 +1791,7 @@ export interface components {
     ModifierResponseDto: {
       id: string;
       modifierGroupId: string;
-      displayName: string;
+      displayName: Record<string, never>;
       /** @description 加價金額；null 代表不影響價格 */
       priceAdjustment?: string | null;
       /** @enum {string|null} */
@@ -1795,7 +1818,7 @@ export interface components {
     ModifierGroupResponseDto: {
       id: string;
       menuId?: string | null;
-      displayName: string;
+      displayName: Record<string, never>;
       /** @description 最少選擇數量；>= 1 代表必選 */
       minSelectionCount: number;
       /** @description 最多選擇數量；null 為不限 */
@@ -1810,15 +1833,21 @@ export interface components {
     };
     UpdateModifierGroupDto: {
       /** @description 群組名稱 */
-      displayName?: string;
+      displayName?: Record<string, never>;
       /** @description 最少選擇數量；>= 1 代表必選 */
       minSelectionCount?: number;
       /** @description 最多選擇數量；null 為不限 */
       maxSelectionCount?: number | null;
     };
     CreateModifierDto: {
-      /** @description 選項名稱，如「半糖」「珍珠」 */
-      displayName: string;
+      /**
+       * @description 選項名稱，如「半糖」「珍珠」
+       * @example {
+       *       "zh-TW": "半糖",
+       *       "en": "Half Sugar"
+       *     }
+       */
+      displayName: Record<string, never>;
       /**
        * @description 加價金額；省略代表不影響價格
        * @example 10.00
@@ -1841,7 +1870,7 @@ export interface components {
     };
     UpdateModifierDto: {
       /** @description 選項名稱 */
-      displayName?: string;
+      displayName?: Record<string, never>;
       /**
        * @description 加價金額
        * @example 10.00
@@ -2409,67 +2438,7 @@ export interface operations {
       };
     };
   };
-  MenusController_createMenu: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        organizationId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateMenuDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["MenuResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
   MenusController_findMenu: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        menuId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["MenuResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_deleteMenu: {
     parameters: {
       query?: never;
       header?: never;
@@ -3728,7 +3697,7 @@ export interface operations {
   PublicMenusController_findOrderMenu: {
     parameters: {
       query: {
-        lang: "zh-TW" | "en" | "ja" | "ko" | "zh-CN";
+        lang: "en" | "ja" | "ko" | "zh-CN" | "zh-TW";
       };
       header?: never;
       path: {

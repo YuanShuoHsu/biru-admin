@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormatter, useTranslations } from "next-intl";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
@@ -53,6 +53,7 @@ import type { MenuItemModifierGroup } from "@/types/menus";
 
 import { isFilteredOrSorted } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
+import { localize } from "@/utils/locale";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -121,6 +122,7 @@ const MenuItemModifierGroups = ({
   const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
+  const locale = useLocale();
   const tMenus = useTranslations("menus");
   const tToolbar = useTranslations("dataGrid.toolbar");
 
@@ -298,7 +300,7 @@ const MenuItemModifierGroups = ({
 
   const handleDetach = useCallback(
     ({ id, modifierGroup }: MenuItemModifierGroup) => {
-      const displayName = modifierGroup?.displayName ?? "";
+      const displayName = localize(modifierGroup?.displayName, locale);
 
       setDialog({
         content: (
@@ -337,7 +339,7 @@ const MenuItemModifierGroups = ({
         title: tMenus("itemModifierGroups.actions.detach.title"),
       });
     },
-    [menuItemId, mutate, setDialog, tMenus],
+    [locale, menuItemId, mutate, setDialog, tMenus],
   );
 
   const handleEnterReorderMode = useCallback(() => {
@@ -530,7 +532,7 @@ const MenuItemModifierGroups = ({
         valueGetter: (
           _value: unknown,
           { modifierGroup }: MenuItemModifierGroup,
-        ) => modifierGroup?.displayName,
+        ) => localize(modifierGroup?.displayName, locale),
       },
       {
         field: "minSelectionCount",
@@ -575,6 +577,7 @@ const MenuItemModifierGroups = ({
       format,
       handleDetach,
       isReorderMode,
+      locale,
       stringFilterOperators,
       tMenus,
     ],

@@ -47,6 +47,9 @@
   "gender": {
     "required": "性别为必填。"
   },
+  "localizedText": {
+    "required": "所有语言为必填。"
+  },
   "member": {
     "required": "成员为必填。"
   },
@@ -77,6 +80,9 @@
     "invalid": "电话号码无效。",
     "required": "电话号码为必填。"
   },
+  "postalCode": {
+    "format": "邮政编码格式无效，请输入 3、5 或 6 位数字。"
+  },
   "price": {
     "required": "价格为必填。"
   },
@@ -85,9 +91,6 @@
   },
   "searchField": {
     "required": "搜索字段为必填。"
-  },
-  "postalCode": {
-    "format": "邮政编码格式无效，请输入 3、5 或 6 位数字。"
   },
   "slug": {
     "letter": "包含至少一个英文字母。",

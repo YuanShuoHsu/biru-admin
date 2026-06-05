@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -12,6 +12,7 @@ import {
 } from "./definitions";
 
 import FormBox from "@/components/FormBox";
+import LocalizedTextFields from "@/components/LocalizedTextFields";
 import NumberSpinner from "@/components/NumberSpinner";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,6 +24,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { Modifier } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
+import { localize } from "@/utils/locale";
 
 interface CreateModifierDialogProps {
   modifierGroupId: string;
@@ -35,6 +37,7 @@ const CreateModifierDialog = ({
 }: CreateModifierDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
+  const locale = useLocale();
   const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
 
@@ -47,13 +50,14 @@ const CreateModifierDialog = ({
     setValue,
   } = useForm<CreateModifierForm>({
     defaultValues: {
-      displayName: "",
+      displayName: {},
       priceAdjustment: "",
       availability: "InStock",
     },
     resolver: zodResolver(createModifierFormSchema),
   });
 
+  const displayNameValue = useWatch({ control, name: "displayName" });
   const priceAdjustment = useWatch({ control, name: "priceAdjustment" });
 
   const onSubmitHandler = async ({
@@ -79,7 +83,7 @@ const CreateModifierDialog = ({
 
       enqueueSnackbar(
         tMenus("modifiers.actions.createModifier.success", {
-          name: displayName,
+          name: localize(displayName, locale),
         }),
         { variant: "success" },
       );
@@ -101,14 +105,23 @@ const CreateModifierDialog = ({
 
   return (
     <FormBox id="create-modifier-form" onSubmit={onSubmit}>
-      <TextField
-        error={!!errors.displayName}
-        fullWidth
-        helperText={errors.displayName?.message}
-        label={tMenus("modifiers.displayName.label")}
-        placeholder={tMenus("modifiers.displayName.placeholder")}
-        required
-        {...register("displayName")}
+      <LocalizedTextFields
+        fields={(lang) => [
+          {
+            error: !!errors.displayName?.root,
+            fullWidth: true,
+            helperText: errors.displayName?.root?.message,
+            label: tMenus("modifiers.displayName.label"),
+            onChange: (event) =>
+              setValue("displayName", {
+                ...displayNameValue,
+                [lang]: event.target.value,
+              }),
+            placeholder: tMenus("modifiers.displayName.placeholder"),
+            required: true,
+            value: displayNameValue?.[lang] || "",
+          },
+        ]}
       />
       <NumberSpinner
         clearable

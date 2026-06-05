@@ -47,6 +47,9 @@
   "gender": {
     "required": "性別は必須です。"
   },
+  "localizedText": {
+    "required": "すべての言語は必須です。"
+  },
   "member": {
     "required": "メンバーは必須です。"
   },
@@ -77,6 +80,9 @@
     "invalid": "電話番号が無効です。",
     "required": "電話番号は必須です。"
   },
+  "postalCode": {
+    "format": "郵便番号の形式が無効です。3、5、または6桁の数字を入力してください。"
+  },
   "price": {
     "required": "価格は必須です。"
   },
@@ -85,9 +91,6 @@
   },
   "searchField": {
     "required": "検索フィールドは必須です。"
-  },
-  "postalCode": {
-    "format": "郵便番号の形式が無効です。3、5、または6桁の数字を入力してください。"
   },
   "slug": {
     "letter": "英字を1文字以上含む。",

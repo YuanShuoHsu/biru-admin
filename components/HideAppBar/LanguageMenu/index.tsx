@@ -7,7 +7,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
-import { locales } from "@/constants/locale";
+import { localeConfigs } from "@/constants/locale";
 
 import { useHref } from "@/hooks/useHref";
 
@@ -28,7 +28,7 @@ const StyledMenu = styled(Menu)(({ theme }) => ({
 
 const languages = routing.locales.map((locale) => ({
   locale,
-  label: locales[locale].label,
+  label: localeConfigs[locale].label,
 }));
 
 const LanguageMenu = () => {

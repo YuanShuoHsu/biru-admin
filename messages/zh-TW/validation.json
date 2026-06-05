@@ -47,6 +47,9 @@
   "gender": {
     "required": "性別為必填。"
   },
+  "localizedText": {
+    "required": "所有語言為必填。"
+  },
   "member": {
     "required": "成員為必填。"
   },
@@ -77,6 +80,9 @@
     "invalid": "電話號碼無效。",
     "required": "電話號碼為必填。"
   },
+  "postalCode": {
+    "format": "郵遞區號格式無效，請輸入 3、5 或 6 碼數字。"
+  },
   "price": {
     "required": "價格為必填。"
   },
@@ -85,9 +91,6 @@
   },
   "searchField": {
     "required": "搜尋欄位為必填。"
-  },
-  "postalCode": {
-    "format": "郵遞區號格式無效，請輸入 3、5 或 6 碼數字。"
   },
   "slug": {
     "letter": "包含至少一個英文字母。",

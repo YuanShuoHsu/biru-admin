@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -30,6 +30,7 @@ import type {
 } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
+import { localize } from "@/utils/locale";
 
 const StyledInputAdornment = styled(InputAdornment)(({ theme }) => ({
   marginRight: theme.spacing(2),
@@ -48,6 +49,7 @@ const UpdateAddOnDialog = ({
 }: UpdateAddOnDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
+  const locale = useLocale();
   const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
 
@@ -108,13 +110,17 @@ const UpdateAddOnDialog = ({
     addOnMenuSectionId,
     addOnMenuItemId,
   }: UpdateAddOnForm) => {
-    const menuSection =
-      sections.find(({ id }) => id === addOnMenuSectionId)?.name || "";
+    const menuSection = localize(
+      sections.find(({ id }) => id === addOnMenuSectionId)?.name,
+      locale,
+    );
     const displayName = addOnMenuItemId
       ? tMenus("addOns.displayName.menuItem", {
           menuSection,
-          menuItem:
-            sectionItems.find(({ id }) => id === addOnMenuItemId)?.name || "",
+          menuItem: localize(
+            sectionItems.find(({ id }) => id === addOnMenuItemId)?.name,
+            locale,
+          ),
         })
       : tMenus("addOns.displayName.menuSection", { menuSection });
 
@@ -183,7 +189,10 @@ const UpdateAddOnDialog = ({
             displayEmpty: true,
             renderValue: (selected) =>
               selected ? (
-                sections.find(({ id }) => id === selected)?.name
+                localize(
+                  sections.find(({ id }) => id === selected)?.name,
+                  locale,
+                )
               ) : (
                 <em>{tMenus("addOns.addOnMenuSectionId.placeholder")}</em>
               ),
@@ -203,7 +212,7 @@ const UpdateAddOnDialog = ({
             key={id}
             value={id}
           >
-            {name}
+            {localize(name, locale)}
           </MenuItem>
         ))}
       </TextField>
@@ -232,7 +241,10 @@ const UpdateAddOnDialog = ({
               displayEmpty: true,
               renderValue: (selected) =>
                 selected ? (
-                  sectionItems.find(({ id }) => id === selected)?.name
+                  localize(
+                    sectionItems.find(({ id }) => id === selected)?.name,
+                    locale,
+                  )
                 ) : (
                   <em>{tMenus("addOns.addOnMenuItemId.placeholder")}</em>
                 ),
@@ -250,7 +262,7 @@ const UpdateAddOnDialog = ({
               key={id}
               value={id}
             >
-              {name}
+              {localize(name, locale)}
             </MenuItem>
           ))}
         </TextField>

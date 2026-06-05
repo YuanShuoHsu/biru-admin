@@ -1,7 +1,7 @@
 "use client";
 
 import dayjs from "dayjs";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -15,6 +15,7 @@ import {
 
 import CountrySelect from "@/components/CountrySelect";
 import FormBox from "@/components/FormBox";
+import LocalizedTextFields from "@/components/LocalizedTextFields";
 import NumberSpinner from "@/components/NumberSpinner";
 import UploadAvatars from "@/components/UploadAvatars";
 
@@ -32,6 +33,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { MenuItem as MenuItemType } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
+import { localize } from "@/utils/locale";
 
 const CREATE_MENU_ITEM_IMAGE_KEY = "create-menu-item-image";
 
@@ -46,6 +48,7 @@ const CreateMenuItemDialog = ({
 }: CreateMenuItemDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
+  const locale = useLocale();
   const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
 
@@ -60,8 +63,8 @@ const CreateMenuItemDialog = ({
     setValue,
   } = useForm<CreateMenuItemForm>({
     defaultValues: {
-      name: "",
-      description: "",
+      name: {},
+      description: {},
       offer: {
         priceCurrency: "TWD",
         price: "",
@@ -74,6 +77,8 @@ const CreateMenuItemDialog = ({
     resolver: zodResolver(createMenuItemFormSchema),
   });
 
+  const nameValue = useWatch({ control, name: "name" });
+  const descriptionValue = useWatch({ control, name: "description" });
   const priceCurrency = useWatch({ control, name: "offer.priceCurrency" });
   const price = useWatch({ control, name: "offer.price" });
   const priceSpecificationPrice = useWatch({
@@ -113,7 +118,7 @@ const CreateMenuItemDialog = ({
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             name,
-            ...(description && { description }),
+            description,
             ...(imageSrc && { image: imageSrc }),
             offer: {
               priceCurrency: offer?.priceCurrency,
@@ -159,9 +164,14 @@ const CreateMenuItemDialog = ({
         },
       );
 
-      enqueueSnackbar(tMenus("items.actions.createItem.success", { name }), {
-        variant: "success",
-      });
+      enqueueSnackbar(
+        tMenus("items.actions.createItem.success", {
+          name: localize(name, locale),
+        }),
+        {
+          variant: "success",
+        },
+      );
 
       closeDialog();
       mutate();
@@ -185,25 +195,36 @@ const CreateMenuItemDialog = ({
         shape="square"
         uploadKey={CREATE_MENU_ITEM_IMAGE_KEY}
       />
-      <TextField
-        error={!!errors.name}
-        fullWidth
-        helperText={errors.name?.message}
-        label={tMenus("items.name.label")}
-        placeholder={tMenus("items.name.placeholder")}
-        required
-        {...register("name")}
-      />
-      <TextField
-        error={!!errors.description}
-        fullWidth
-        helperText={errors.description?.message}
-        label={`${tMenus("items.description.label")} ${tCommon("optional")}`}
-        maxRows={4}
-        multiline
-        placeholder={tMenus("items.description.placeholder")}
-        slotProps={{ htmlInput: { maxLength: 160 } }}
-        {...register("description")}
+      <LocalizedTextFields
+        fields={(lang) => [
+          {
+            error: !!errors.name?.root,
+            fullWidth: true,
+            helperText: errors.name?.root?.message,
+            label: tMenus("items.name.label"),
+            onChange: (event) =>
+              setValue("name", { ...nameValue, [lang]: event.target.value }),
+            placeholder: tMenus("items.name.placeholder"),
+            required: true,
+            value: nameValue?.[lang] || "",
+          },
+          {
+            error: !!errors.description?.root,
+            fullWidth: true,
+            helperText: errors.description?.root?.message,
+            label: `${tMenus("items.description.label")} ${tCommon("optional")}`,
+            maxRows: 4,
+            multiline: true,
+            onChange: (event) =>
+              setValue("description", {
+                ...descriptionValue,
+                [lang]: event.target.value,
+              }),
+            placeholder: tMenus("items.description.placeholder"),
+            slotProps: { htmlInput: { maxLength: 160 } },
+            value: descriptionValue?.[lang] || "",
+          },
+        ]}
       />
       <Divider flexItem>
         <Chip label={tMenus("offers.label")} size="small" />
