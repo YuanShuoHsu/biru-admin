@@ -65,6 +65,7 @@ import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
 
 const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
+  flex: 1,
   transition: "none",
 
   "& .MuiBreadcrumbs-separator": {
