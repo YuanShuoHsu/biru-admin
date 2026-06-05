@@ -31,7 +31,10 @@ export const useUpdateMenuItemFormSchema = () => {
     name: z
       .record(
         z.string(),
-        z.string().trim().min(1, { error: tValidation("name.minLength") }),
+        z
+          .string()
+          .trim()
+          .min(1, { error: tValidation("name.minLength") }),
       )
       .refine(hasAllLocalizedText, {
         message: tValidation("localizedText.required"),
@@ -40,9 +43,12 @@ export const useUpdateMenuItemFormSchema = () => {
     description: z
       .record(
         z.string(),
-        z.string().trim().max(160, {
-          error: tValidation("description.maxLength"),
-        }),
+        z
+          .string()
+          .trim()
+          .max(160, {
+            error: tValidation("description.maxLength"),
+          }),
       )
       .optional(),
     offer: z

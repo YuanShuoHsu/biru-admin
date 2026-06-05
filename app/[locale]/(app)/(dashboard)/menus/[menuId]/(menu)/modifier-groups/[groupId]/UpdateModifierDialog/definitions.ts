@@ -10,7 +10,10 @@ export const useUpdateModifierFormSchema = () => {
     displayName: z
       .record(
         z.string(),
-        z.string().trim().min(1, { error: tValidation("name.minLength") }),
+        z
+          .string()
+          .trim()
+          .min(1, { error: tValidation("name.minLength") }),
       )
       .refine(hasAllLocalizedText, {
         message: tValidation("localizedText.required"),
