@@ -1,4 +1,11 @@
 {
+  "locales": {
+    "zh-TW": "번체 중국어",
+    "en": "영어",
+    "ja": "일본어",
+    "ko": "한국어",
+    "zh-CN": "간체 중국어"
+  },
   "colon": ": ",
   "currency": "NT$",
   "delimiter": ", ",

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { startTransition, useEffect, useState } from "react";
 
 import type { Locale } from "@/i18n/routing";
@@ -25,19 +26,18 @@ const LocalizedTextFields = ({ fields }: LocalizedTextFieldsProps) => {
     routing.defaultLocale,
   );
 
+  const tCommon = useTranslations("common");
+
   const isComplete = (lang: Locale) => {
-    const requiredFields = fields(lang).filter(({ required }) => required);
+    const required = fields(lang).filter(({ required }) => required);
 
     return (
-      requiredFields.length > 0 &&
-      requiredFields.every(({ value }) => String(value || "").trim())
+      required.length > 0 &&
+      required.every(({ value }) => !!String(value || "").trim())
     );
   };
 
-  const isError = (lang: Locale) =>
-    fields(lang).some(
-      ({ error, value }) => error && !String(value || "").trim(),
-    );
+  const isError = (lang: Locale) => fields(lang).some(({ error }) => error);
 
   const firstErrorLocale = routing.locales.find(isError);
 
@@ -55,21 +55,26 @@ const LocalizedTextFields = ({ fields }: LocalizedTextFieldsProps) => {
         value={activeLocale}
         variant="scrollable"
       >
-        {routing.locales.map((lang) => (
-          <Tab
-            key={lang}
-            label={
-              <StyledBadge
-                color={isError(lang) ? "error" : "primary"}
-                invisible={!isError(lang) && !isComplete(lang)}
-                variant="dot"
-              >
-                {lang}
-              </StyledBadge>
-            }
-            value={lang}
-          />
-        ))}
+        {routing.locales.map((lang) => {
+          const error = isError(lang);
+          const complete = isComplete(lang);
+
+          return (
+            <Tab
+              key={lang}
+              label={
+                <StyledBadge
+                  color={error ? "error" : "primary"}
+                  invisible={!error && !complete}
+                  variant="dot"
+                >
+                  {tCommon(`locales.${lang}`)}
+                </StyledBadge>
+              }
+              value={lang}
+            />
+          );
+        })}
       </Tabs>
       {fields(activeLocale).map((props, index) => (
         <TextField key={index} {...props} />

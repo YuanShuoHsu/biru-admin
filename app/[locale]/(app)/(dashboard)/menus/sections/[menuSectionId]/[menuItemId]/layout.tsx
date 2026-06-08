@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 
 import { Link, usePathname } from "@/i18n/navigation";
 
@@ -15,9 +15,18 @@ const MenuItemLayout = ({ children }: { children: React.ReactNode }) => {
   }>();
 
   const pathname = usePathname();
-  const tMenus = useTranslations("menus");
+
+  const searchParams = useSearchParams();
+  const organization = searchParams.get("organization");
 
   const basePath = `/menus/sections/${menuSectionId}/${menuItemId}`;
+  const tabQuery = `?${new URLSearchParams({
+    ...(organization && { organization }),
+    page: "1",
+    pageSize: "10",
+  }).toString()}`;
+
+  const tMenus = useTranslations("menus");
 
   const tabs: {
     Icon: SvgIconComponent;
@@ -51,7 +60,7 @@ const MenuItemLayout = ({ children }: { children: React.ReactNode }) => {
         {tabs.map(({ Icon, label, value }) => (
           <Tab
             component={Link}
-            href={value}
+            href={`${value}${tabQuery}`}
             icon={<Icon fontSize="small" />}
             iconPosition="start"
             key={value}
