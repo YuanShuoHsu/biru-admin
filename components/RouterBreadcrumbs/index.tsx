@@ -46,7 +46,7 @@ import {
   ShoppingCart,
   Storefront,
   Tune,
-  ViewList,
+  Category,
 } from "@mui/icons-material";
 import {
   Breadcrumbs,
@@ -261,12 +261,12 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
                   to: `/${menuItemId}`,
                 },
               ],
-              icon: ViewList,
+              icon: Category,
               label: menuSectionName,
               to: `/${menuSectionId}?${menusQuery}`,
             },
           ],
-          icon: ViewList,
+          icon: Category,
           label: tMenus("sections.label"),
           to: `/sections?${menusQuery}`,
         },
