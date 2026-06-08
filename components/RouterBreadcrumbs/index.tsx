@@ -45,6 +45,7 @@ import {
   Settings,
   ShoppingCart,
   Storefront,
+  Checklist,
   Tune,
   Category,
 } from "@mui/icons-material";
@@ -273,7 +274,7 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
         {
           children: [
             {
-              icon: Tune,
+              icon: Checklist,
               label: modifierGroupName,
               to: `/${groupId}`,
             },
