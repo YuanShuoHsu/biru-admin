@@ -198,7 +198,7 @@ const UpdateAddOnDialog = ({
               ),
           },
         }}
-        value={addOnMenuSectionId}
+        value={sections.length ? addOnMenuSectionId : ""}
         {...register("addOnMenuSectionId", {
           onChange: () => setValue("addOnMenuItemId", ""),
         })}
