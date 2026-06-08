@@ -6,7 +6,7 @@ import useSWR from "swr";
 
 import UpdateMenuDialog from "../UpdateMenuDialog";
 
-import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 
 import { authClient } from "@/lib/auth-client";
 
@@ -18,11 +18,9 @@ import {
 } from "@mui/icons-material";
 import {
   IconButton,
-  MenuItem,
   Stack,
   Tab,
   Tabs,
-  TextField,
   Tooltip,
 } from "@mui/material";
 
@@ -36,7 +34,6 @@ const MenusTabsLayout = ({ children }: { children: React.ReactNode }) => {
   const { setDialog } = useDialogStore((state) => state);
 
   const pathname = usePathname();
-  const router = useRouter();
   const searchParams = useSearchParams();
 
   const organization = searchParams.get("organization");
@@ -88,16 +85,6 @@ const MenusTabsLayout = ({ children }: { children: React.ReactNode }) => {
     tabs.find(({ value }) => pathname.startsWith(value))?.value ??
     tabs[0].value;
 
-  const handleOrganizationChange = (slug: string) => {
-    const params = new URLSearchParams({
-      organization: slug,
-      page: "1",
-      pageSize: "10",
-    }).toString();
-
-    router.push(`${currentTab}?${params}`);
-  };
-
   const handleEditMenu = () => {
     if (!menu) return;
 
@@ -111,44 +98,13 @@ const MenusTabsLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <Stack height="100%" gap={2}>
-      <Stack direction="row" alignItems="center" gap={1}>
-        <TextField
-          label={tMenus("organization.label")}
-          select
-          size="small"
-          slotProps={{
-            inputLabel: { shrink: true },
-            select: {
-              displayEmpty: true,
-              renderValue: () =>
-                selectedOrganization ? (
-                  selectedOrganization.name
-                ) : (
-                  <em>{tMenus("organization.placeholder")}</em>
-                ),
-            },
-          }}
-          sx={{ width: 200 }}
-          value={selectedOrganization?.slug || ""}
-          onChange={(event) => handleOrganizationChange(event.target.value)}
-        >
-          <MenuItem disabled value="">
-            <em>{tMenus("organization.placeholder")}</em>
-          </MenuItem>
-          {organizations.map(({ id, name, slug }) => (
-            <MenuItem key={id} value={slug}>
-              {name}
-            </MenuItem>
-          ))}
-        </TextField>
-        {menu && (
-          <Tooltip title={tMenus("settings.actions.update.title")}>
-            <IconButton onClick={handleEditMenu} size="small">
-              <Edit fontSize="small" />
-            </IconButton>
-          </Tooltip>
-        )}
-      </Stack>
+      {menu && (
+        <Tooltip title={tMenus("settings.actions.update.title")}>
+          <IconButton onClick={handleEditMenu} size="small">
+            <Edit fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      )}
       <Tabs
         aria-label="menu tabs"
         scrollButtons="auto"
