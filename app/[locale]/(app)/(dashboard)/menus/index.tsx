@@ -441,9 +441,7 @@ const MenusMenuId = ({
         page: "1",
         pageSize: "10",
       });
-      router.push(
-        `/menus/section/${section.id}?${searchParams.toString()}`,
-      );
+      router.push(`/menus/section/${section.id}?${searchParams.toString()}`);
     },
     [organization, router],
   );

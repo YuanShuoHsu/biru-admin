@@ -441,9 +441,7 @@ const ModifierGroups = ({
         page: "1",
         pageSize: "10",
       });
-      router.push(
-        `/menus/modifier-groups/${group.id}?${params.toString()}`,
-      );
+      router.push(`/menus/modifier-groups/${group.id}?${params.toString()}`);
     },
     [organization, router],
   );
