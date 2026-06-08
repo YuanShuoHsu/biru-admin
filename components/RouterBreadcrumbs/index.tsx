@@ -46,6 +46,7 @@ import {
   ShoppingCart,
   Storefront,
   Checklist,
+  ListAlt,
   Tune,
   Category,
 } from "@mui/icons-material";
@@ -262,7 +263,7 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
                   to: `/${menuItemId}`,
                 },
               ],
-              icon: Category,
+              icon: ListAlt,
               label: menuSectionName,
               to: `/${menuSectionId}?${menusQuery}`,
             },
