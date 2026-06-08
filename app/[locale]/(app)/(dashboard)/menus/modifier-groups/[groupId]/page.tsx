@@ -77,15 +77,13 @@ const ModifiersPage = async ({ params, searchParams }: ModifiersPageProps) => {
   const group = await getAdminModifierGroup(groupId, fetchOptions);
 
   if (!group?.menuId) notFound();
-  if (!organization) return redirect({ href: DEFAULT_MENUS_HREF, locale });
 
   const [menu, selectedOrganization] = await Promise.all([
     getAdminMenu(group.menuId, fetchOptions),
     getAdminOrganization(organization, fetchOptions),
   ]);
 
-  if (!menu) notFound();
-  if (!selectedOrganization || selectedOrganization.id !== menu.organizationId)
+  if (!selectedOrganization || selectedOrganization.id !== menu?.organizationId)
     return redirect({ href: DEFAULT_MENUS_HREF, locale });
 
   if (

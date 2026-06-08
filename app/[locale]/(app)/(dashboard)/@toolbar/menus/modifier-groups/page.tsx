@@ -6,11 +6,13 @@ import type { OrganizationResponse } from "@/types/organizations";
 
 import { fetcher } from "@/utils/fetcher";
 
-interface ToolbarMenusPageProps {
+interface ToolbarMenusModifierGroupsPageProps {
   searchParams: Promise<{ organization?: string }>;
 }
 
-const ToolbarMenusPage = async ({ searchParams }: ToolbarMenusPageProps) => {
+const ToolbarMenusModifierGroupsPage = async ({
+  searchParams,
+}: ToolbarMenusModifierGroupsPageProps) => {
   const [cookieStore, { organization = "" }] = await Promise.all([
     cookies(),
     searchParams,
@@ -29,4 +31,4 @@ const ToolbarMenusPage = async ({ searchParams }: ToolbarMenusPageProps) => {
   );
 };
 
-export default ToolbarMenusPage;
+export default ToolbarMenusModifierGroupsPage;

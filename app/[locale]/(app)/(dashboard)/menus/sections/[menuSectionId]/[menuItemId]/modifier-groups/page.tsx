@@ -84,15 +84,13 @@ const MenuItemModifierGroupsPage = async ({
   const section = await getAdminMenuSection(menuSectionId, fetchOptions);
 
   if (!section?.menuId) notFound();
-  if (!organization) return redirect({ href: DEFAULT_MENUS_HREF, locale });
 
   const [menu, selectedOrganization] = await Promise.all([
     getAdminMenu(section.menuId, fetchOptions),
     getAdminOrganization(organization, fetchOptions),
   ]);
 
-  if (!menu) notFound();
-  if (!selectedOrganization || selectedOrganization.id !== menu.organizationId)
+  if (!selectedOrganization || selectedOrganization.id !== menu?.organizationId)
     return redirect({ href: DEFAULT_MENUS_HREF, locale });
 
   if (

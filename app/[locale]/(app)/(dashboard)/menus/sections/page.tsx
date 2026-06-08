@@ -1,6 +1,5 @@
 import { setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
-import { notFound } from "next/navigation";
 
 import MenusSections from ".";
 import {
@@ -18,7 +17,6 @@ import type { Locale } from "@/i18n/routing";
 import { authClient } from "@/lib/auth-client";
 
 import {
-  DEFAULT_MENUS_HREF,
   getAdminMenuSections,
   getAdminOrganizationMenu,
 } from "@/utils/menus";
@@ -81,9 +79,8 @@ const MenusSectionsPage = async ({
   const { organization: selectedOrganization, menu } =
     await getAdminOrganizationMenu(organization, fetchOptions);
 
-  if (!selectedOrganization)
-    return redirect({ href: DEFAULT_MENUS_HREF, locale });
-  if (!menu) notFound();
+  if (!selectedOrganization || !menu)
+    return <MenusTabsLayout>{null}</MenusTabsLayout>;
 
   if (
     rawPage !== String(page) ||
