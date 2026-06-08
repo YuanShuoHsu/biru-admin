@@ -2,7 +2,7 @@ import { setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
-import MenuItemAddOns from ".";
+import MenusMenuIdSectionId from ".";
 import {
   FILTER_FIELDS,
   FILTER_OPERATORS,
@@ -20,17 +20,13 @@ import { authClient } from "@/lib/auth-client";
 import {
   DEFAULT_MENUS_HREF,
   getAdminMenu,
-  getAdminMenuItemAddOns,
   getAdminMenuSection,
+  getAdminMenuSectionItems,
   getAdminOrganization,
 } from "@/utils/menus";
 
-interface MenuItemAddOnsPageProps {
-  params: Promise<{
-    locale: Locale;
-    menuSectionId: string;
-    menuItemId: string;
-  }>;
+interface MenusMenuIdSectionIdPageProps {
+  params: Promise<{ locale: Locale; menuSectionId: string }>;
   searchParams: Promise<{
     filterField?: string;
     filterOperator?: string;
@@ -44,13 +40,13 @@ interface MenuItemAddOnsPageProps {
   }>;
 }
 
-const MenuItemAddOnsPage = async ({
+const MenusMenuIdSectionIdPage = async ({
   params,
   searchParams,
-}: MenuItemAddOnsPageProps) => {
+}: MenusMenuIdSectionIdPageProps) => {
   const [
     cookieStore,
-    { locale, menuSectionId, menuItemId },
+    { locale, menuSectionId },
     {
       filterField: rawFilterField,
       filterOperator: rawFilterOperator,
@@ -110,7 +106,7 @@ const MenuItemAddOnsPage = async ({
         (filterValue || NO_VALUE_FILTER_OPERATORS.includes(filterOperator))
       )
   ) {
-    const redirectParams = new URLSearchParams({
+    const params = new URLSearchParams({
       ...restSearchParams,
       organization: selectedOrganization.slug,
       page: String(page),
@@ -122,14 +118,14 @@ const MenuItemAddOnsPage = async ({
     });
 
     redirect({
-      href: `/menus/section/${menuSectionId}/${menuItemId}/add-ons?${redirectParams.toString()}`,
+      href: `/menus/sections/${menuSectionId}?${params.toString()}`,
       locale,
     });
   }
 
-  const [{ addOns, total }, sessionData, fullOrgData] = await Promise.all([
-    getAdminMenuItemAddOns(
-      menuItemId,
+  const [{ items, total }, sessionData, fullOrgData] = await Promise.all([
+    getAdminMenuSectionItems(
+      menuSectionId,
       page,
       pageSize,
       filterField,
@@ -153,22 +149,21 @@ const MenuItemAddOnsPage = async ({
   const canWrite = role === "owner" || role === "admin";
 
   return (
-    <MenuItemAddOns
-      addOns={addOns}
+    <MenusMenuIdSectionId
       canWrite={canWrite}
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
-      menuId={menu.id}
-      menuItemId={menuItemId}
+      items={items}
       page={page}
       pageSize={pageSize}
       quickFilterValue={quickFilterValue}
       rowCount={total}
+      menuSectionId={menuSectionId}
       sortBy={sortBy}
       sortDirection={sortDirection}
     />
   );
 };
 
-export default MenuItemAddOnsPage;
+export default MenusMenuIdSectionIdPage;

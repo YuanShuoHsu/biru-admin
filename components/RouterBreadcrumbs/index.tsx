@@ -115,7 +115,7 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
   const searchParams = useSearchParams();
   const menuOrganizationSlug = searchParams.get("organization");
   const menusQuery = new URLSearchParams({
-    ...(menuOrganizationSlug ? { organization: menuOrganizationSlug } : {}),
+    ...(menuOrganizationSlug && { organization: menuOrganizationSlug }),
     page: "1",
     pageSize: "10",
   }).toString();
@@ -266,9 +266,9 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
               to: `/${menuSectionId}?${menusQuery}`,
             },
           ],
-          hidden: true,
           icon: ViewList,
-          to: "/section",
+          label: tMenus("sections.label"),
+          to: `/sections?${menusQuery}`,
         },
         {
           children: [

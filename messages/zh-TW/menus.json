@@ -360,39 +360,39 @@
   "sections": {
     "actions": {
       "addSubsection": {
-        "title": "新增子分組"
+        "title": "新增子分類"
       },
       "backToSections": {
-        "title": "返回分組"
+        "title": "返回分類"
       },
       "createSection": {
-        "success": "成功新增分組 {name}",
-        "title": "新增分組"
+        "success": "成功新增分類 {name}",
+        "title": "新增分類"
       },
       "deleteSection": {
-        "confirm": "確定要刪除 <bold>{name}</bold> 嗎？子分組與品項將一併刪除。",
-        "error": "刪除分組 {name} 失敗",
-        "success": "成功刪除分組 {name}",
-        "title": "刪除分組"
+        "confirm": "確定要刪除 <bold>{name}</bold> 嗎？子分類與品項將一併刪除。",
+        "error": "刪除分類 {name} 失敗",
+        "success": "成功刪除分類 {name}",
+        "title": "刪除分類"
       },
       "label": "操作",
       "reorderSection": {
         "cancel": {
-          "confirm": "確定要取消<bold>分組</bold>排序嗎？未儲存的變更將會遺失。",
-          "label": "取消分組排序"
+          "confirm": "確定要取消<bold>分類</bold>排序嗎？未儲存的變更將會遺失。",
+          "label": "取消分類排序"
         },
-        "confirm": "確定要進行<bold>分組</bold>排序嗎？",
+        "confirm": "確定要進行<bold>分類</bold>排序嗎？",
         "save": {
-          "confirm": "確定要儲存<bold>分組</bold>排序嗎？",
+          "confirm": "確定要儲存<bold>分類</bold>排序嗎？",
           "error": "排序儲存失敗",
-          "label": "儲存分組排序",
+          "label": "儲存分類排序",
           "success": "排序已儲存"
         },
-        "title": "分組排序"
+        "title": "分類排序"
       },
       "updateSection": {
-        "success": "成功更新分組 {name}",
-        "title": "編輯分組"
+        "success": "成功更新分類 {name}",
+        "title": "編輯分類"
       },
       "viewItems": {
         "title": "查看品項"
@@ -401,14 +401,14 @@
     "allItems": "所有品項",
     "description": {
       "label": "描述",
-      "placeholder": "請輸入您的分組描述"
+      "placeholder": "請輸入您的分類描述"
     },
-    "label": "分組",
+    "label": "分類",
     "name": {
-      "label": "分組名稱",
-      "placeholder": "請輸入您的分組名稱"
+      "label": "分類名稱",
+      "placeholder": "請輸入您的分類名稱"
     },
-    "unassigned": "未分組"
+    "unassigned": "未分類"
   },
   "updatedAt": "更新時間"
 }

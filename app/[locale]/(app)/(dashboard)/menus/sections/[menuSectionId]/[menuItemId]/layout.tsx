@@ -17,7 +17,7 @@ const MenuItemLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const tMenus = useTranslations("menus");
 
-  const basePath = `/menus/section/${menuSectionId}/${menuItemId}`;
+  const basePath = `/menus/sections/${menuSectionId}/${menuItemId}`;
 
   const tabs: {
     Icon: SvgIconComponent;

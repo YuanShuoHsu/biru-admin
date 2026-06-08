@@ -176,7 +176,7 @@ export const getChoiceNames = (
     .join(joinWith);
 };
 
-export const DEFAULT_MENUS_HREF = "/menus?page=1&pageSize=10";
+export const DEFAULT_MENUS_HREF = "/menus/sections?page=1&pageSize=10";
 
 export const getAdminOrganization = cache(
   async (organizationSlug?: string, init?: { headers: { cookie: string } }) => {

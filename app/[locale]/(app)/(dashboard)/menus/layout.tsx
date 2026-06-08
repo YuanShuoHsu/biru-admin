@@ -19,7 +19,7 @@ const MenusLayout = ({ children }: { children: React.ReactNode }) => {
 
   const organization = searchParams.get("organization");
   const query = new URLSearchParams({
-    ...(organization ? { organization } : {}),
+    ...(organization && { organization }),
     page: "1",
     pageSize: "10",
   }).toString();
@@ -40,7 +40,7 @@ const MenusLayout = ({ children }: { children: React.ReactNode }) => {
       pageSize: "10",
     }).toString();
 
-    router.push(`/menus?${params}`);
+    router.push(`${currentTab}?${params}`);
   };
 
   const tabs: {
@@ -51,7 +51,7 @@ const MenusLayout = ({ children }: { children: React.ReactNode }) => {
     {
       Icon: Category,
       label: tMenus("sections.label"),
-      value: "/menus",
+      value: "/menus/sections",
     },
     {
       Icon: Tune,
@@ -62,9 +62,9 @@ const MenusLayout = ({ children }: { children: React.ReactNode }) => {
 
   const currentTab = pathname.startsWith("/menus/modifier-groups")
     ? "/menus/modifier-groups"
-    : "/menus";
+    : "/menus/sections";
 
-  if (pathname.startsWith("/menus/section/")) return children;
+  if (pathname.startsWith("/menus/sections/")) return children;
 
   return (
     <Stack height="100%" gap={2}>

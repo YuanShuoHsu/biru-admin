@@ -437,7 +437,7 @@ const ModifierGroups = ({
   const handleViewModifiers = useCallback(
     (group: ModifierGroup) => {
       const params = new URLSearchParams({
-        ...(organization ? { organization } : {}),
+        ...(organization && { organization }),
         page: "1",
         pageSize: "10",
       });

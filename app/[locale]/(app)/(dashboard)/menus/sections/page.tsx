@@ -2,7 +2,7 @@ import { setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
-import MenusMenuIdSectionId from ".";
+import MenusSections from ".";
 import {
   FILTER_FIELDS,
   FILTER_OPERATORS,
@@ -19,14 +19,12 @@ import { authClient } from "@/lib/auth-client";
 
 import {
   DEFAULT_MENUS_HREF,
-  getAdminMenu,
-  getAdminMenuSection,
-  getAdminMenuSectionItems,
-  getAdminOrganization,
+  getAdminMenuSections,
+  getAdminOrganizationMenu,
 } from "@/utils/menus";
 
-interface MenusMenuIdSectionIdPageProps {
-  params: Promise<{ locale: Locale; menuSectionId: string }>;
+interface MenusSectionsPageProps {
+  params: Promise<{ locale: Locale }>;
   searchParams: Promise<{
     filterField?: string;
     filterOperator?: string;
@@ -40,13 +38,13 @@ interface MenusMenuIdSectionIdPageProps {
   }>;
 }
 
-const MenusMenuIdSectionIdPage = async ({
+const MenusSectionsPage = async ({
   params,
   searchParams,
-}: MenusMenuIdSectionIdPageProps) => {
+}: MenusSectionsPageProps) => {
   const [
     cookieStore,
-    { locale, menuSectionId },
+    { locale },
     {
       filterField: rawFilterField,
       filterOperator: rawFilterOperator,
@@ -77,19 +75,13 @@ const MenusMenuIdSectionIdPage = async ({
   );
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
-  const section = await getAdminMenuSection(menuSectionId, fetchOptions);
 
-  if (!section?.menuId) notFound();
-  if (!organization) return redirect({ href: DEFAULT_MENUS_HREF, locale });
+  const { organization: selectedOrganization, menu } =
+    await getAdminOrganizationMenu(organization, fetchOptions);
 
-  const [menu, selectedOrganization] = await Promise.all([
-    getAdminMenu(section.menuId, fetchOptions),
-    getAdminOrganization(organization, fetchOptions),
-  ]);
-
-  if (!menu) notFound();
-  if (!selectedOrganization || selectedOrganization.id !== menu.organizationId)
+  if (!selectedOrganization)
     return redirect({ href: DEFAULT_MENUS_HREF, locale });
+  if (!menu) notFound();
 
   if (
     rawPage !== String(page) ||
@@ -117,15 +109,12 @@ const MenusMenuIdSectionIdPage = async ({
         filterValue && { filterField, filterOperator, filterValue }),
     });
 
-    redirect({
-      href: `/menus/section/${menuSectionId}?${params.toString()}`,
-      locale,
-    });
+    redirect({ href: `/menus/sections?${params.toString()}`, locale });
   }
 
-  const [{ items, total }, sessionData, fullOrgData] = await Promise.all([
-    getAdminMenuSectionItems(
-      menuSectionId,
+  const [{ sections, total }, sessionData, fullOrgData] = await Promise.all([
+    getAdminMenuSections(
+      menu.id,
       page,
       pageSize,
       filterField,
@@ -149,21 +138,21 @@ const MenusMenuIdSectionIdPage = async ({
   const canWrite = role === "owner" || role === "admin";
 
   return (
-    <MenusMenuIdSectionId
+    <MenusSections
       canWrite={canWrite}
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
-      items={items}
+      menu={menu}
       page={page}
       pageSize={pageSize}
       quickFilterValue={quickFilterValue}
       rowCount={total}
-      menuSectionId={menuSectionId}
+      sections={sections}
       sortBy={sortBy}
       sortDirection={sortDirection}
     />
   );
 };
 
-export default MenusMenuIdSectionIdPage;
+export default MenusSectionsPage;

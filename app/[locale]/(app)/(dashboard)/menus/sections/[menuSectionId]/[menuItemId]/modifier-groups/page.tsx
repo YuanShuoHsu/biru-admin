@@ -122,7 +122,7 @@ const MenuItemModifierGroupsPage = async ({
     });
 
     redirect({
-      href: `/menus/section/${menuSectionId}/${menuItemId}/modifier-groups?${redirectParams.toString()}`,
+      href: `/menus/sections/${menuSectionId}/${menuItemId}/modifier-groups?${redirectParams.toString()}`,
       locale,
     });
   }
