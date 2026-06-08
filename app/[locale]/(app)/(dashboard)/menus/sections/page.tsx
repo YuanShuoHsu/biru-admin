@@ -16,10 +16,7 @@ import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
-import {
-  getAdminMenuSections,
-  getAdminOrganizationMenu,
-} from "@/utils/menus";
+import { getAdminMenuSections, getAdminOrganizationMenu } from "@/utils/menus";
 
 import MenusTabsLayout from "../MenusTabsLayout";
 
