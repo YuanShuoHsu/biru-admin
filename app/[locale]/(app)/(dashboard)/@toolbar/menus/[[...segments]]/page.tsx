@@ -4,13 +4,11 @@ import type { OrganizationResponse } from "@/types/organizations";
 
 import { fetcher } from "@/utils/fetcher";
 
-interface ToolbarMenusSectionsPageProps {
+interface ToolbarMenusPageProps {
   searchParams: Promise<{ organization?: string }>;
 }
 
-const ToolbarMenusSectionsPage = async ({
-  searchParams,
-}: ToolbarMenusSectionsPageProps) => {
+const ToolbarMenusPage = async ({ searchParams }: ToolbarMenusPageProps) => {
   const { organization = "" } = await searchParams;
 
   const organizations = await fetcher<OrganizationResponse[]>(
@@ -25,4 +23,4 @@ const ToolbarMenusSectionsPage = async ({
   );
 };
 
-export default ToolbarMenusSectionsPage;
+export default ToolbarMenusPage;
