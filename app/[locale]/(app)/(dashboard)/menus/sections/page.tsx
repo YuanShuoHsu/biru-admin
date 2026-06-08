@@ -23,6 +23,8 @@ import {
   getAdminOrganizationMenu,
 } from "@/utils/menus";
 
+import MenusTabsLayout from "../MenusTabsLayout";
+
 interface MenusSectionsPageProps {
   params: Promise<{ locale: Locale }>;
   searchParams: Promise<{
@@ -138,20 +140,22 @@ const MenusSectionsPage = async ({
   const canWrite = role === "owner" || role === "admin";
 
   return (
-    <MenusSections
-      canWrite={canWrite}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      menu={menu}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={total}
-      sections={sections}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <MenusTabsLayout>
+      <MenusSections
+        canWrite={canWrite}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        menu={menu}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        rowCount={total}
+        sections={sections}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+      />
+    </MenusTabsLayout>
   );
 };
 

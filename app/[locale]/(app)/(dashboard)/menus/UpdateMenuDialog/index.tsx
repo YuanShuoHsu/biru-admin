@@ -1,14 +1,11 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
-import {
-  type CreateMenuSectionForm,
-  useCreateMenuSectionFormSchema,
-} from "./definitions";
+import { type UpdateMenuForm, useUpdateMenuFormSchema } from "./definitions";
 
 import FormBox from "@/components/FormBox";
 import LocalizedTextFields from "@/components/LocalizedTextFields";
@@ -20,73 +17,64 @@ import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { MenuSection } from "@/types/menus";
+import type { Menu } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
-import { localize } from "@/utils/locale";
 
-const CREATE_MENU_SECTION_IMAGE_KEY = "create-menu-section-image";
-
-interface CreateMenuSectionDialogProps {
-  menuId: string;
+interface UpdateMenuDialogProps {
+  menu: Menu;
   mutate: () => void;
 }
 
-const CreateMenuSectionDialog = ({
-  menuId,
-  mutate,
-}: CreateMenuSectionDialogProps) => {
+const UpdateMenuDialog = ({ menu, mutate }: UpdateMenuDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
-  const locale = useLocale();
   const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
 
-  const imageSrc = useUploadAvatarSrc(CREATE_MENU_SECTION_IMAGE_KEY);
+  const uploadKey = `update-menu-image-${menu.id}`;
+  const imageSrc = useUploadAvatarSrc(uploadKey, menu.image ?? undefined);
 
-  const createMenuSectionFormSchema = useCreateMenuSectionFormSchema();
+  const updateMenuFormSchema = useUpdateMenuFormSchema();
   const {
     control,
     formState: { errors },
     handleSubmit,
     setValue,
-  } = useForm<CreateMenuSectionForm>({
-    defaultValues: { name: {}, description: {} },
-    resolver: zodResolver(createMenuSectionFormSchema),
+  } = useForm<UpdateMenuForm>({
+    defaultValues: {
+      description: menu.description ?? {},
+      image: menu.image ?? "",
+      name: menu.name ?? {},
+    },
+    resolver: zodResolver(updateMenuFormSchema),
   });
 
   const nameValue = useWatch({ control, name: "name" });
   const descriptionValue = useWatch({ control, name: "description" });
 
-  const onSubmitHandler = async ({
-    name,
-    description,
-  }: CreateMenuSectionForm) => {
+  const onSubmitHandler = async ({ name, description }: UpdateMenuForm) => {
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher<MenuSection>(`/api/menus/${menuId}/menu-sections`, {
-        method: "POST",
+      await fetcher(`/api/menus/${menu.id}`, {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name,
           description,
-          ...(imageSrc && { image: imageSrc }),
+          image: imageSrc || null,
         }),
       });
 
-      enqueueSnackbar(
-        tMenus("sections.actions.createSection.success", {
-          name: localize(name, locale),
-        }),
-        { variant: "success" },
-      );
+      enqueueSnackbar(tMenus("settings.actions.save.success"), {
+        variant: "success",
+      });
 
       closeDialog();
-
       mutate();
     } catch {
-      enqueueSnackbar(tMenus("sections.actions.createSection.error"), {
+      enqueueSnackbar(tMenus("settings.actions.save.error"), {
         variant: "error",
       });
 
@@ -98,12 +86,13 @@ const CreateMenuSectionDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="create-section-form" onSubmit={onSubmit}>
+    <FormBox id="update-menu-form" onSubmit={onSubmit}>
       <UploadAvatars
         aspectRatio="16/9"
         fullWidth
+        initialSrc={menu.image ?? undefined}
         shape="square"
-        uploadKey={CREATE_MENU_SECTION_IMAGE_KEY}
+        uploadKey={uploadKey}
       />
       <LocalizedTextFields
         fields={(lang) => [
@@ -111,10 +100,10 @@ const CreateMenuSectionDialog = ({
             error: !!errors.name?.root,
             fullWidth: true,
             helperText: errors.name?.root?.message,
-            label: tMenus("sections.name.label"),
+            label: tMenus("name.label"),
             onChange: (event) =>
               setValue("name", { ...nameValue, [lang]: event.target.value }),
-            placeholder: tMenus("sections.name.placeholder"),
+            placeholder: tMenus("name.placeholder"),
             required: true,
             value: nameValue?.[lang] || "",
           },
@@ -122,7 +111,7 @@ const CreateMenuSectionDialog = ({
             error: !!errors.description?.root,
             fullWidth: true,
             helperText: errors.description?.root?.message,
-            label: `${tMenus("sections.description.label")} ${tCommon("optional")}`,
+            label: `${tMenus("description.label")} ${tCommon("optional")}`,
             maxRows: 4,
             multiline: true,
             onChange: (event) =>
@@ -130,7 +119,7 @@ const CreateMenuSectionDialog = ({
                 ...descriptionValue,
                 [lang]: event.target.value,
               }),
-            placeholder: tMenus("sections.description.placeholder"),
+            placeholder: tMenus("description.placeholder"),
             slotProps: { htmlInput: { maxLength: 160 } },
             value: descriptionValue?.[lang] || "",
           },
@@ -140,4 +129,4 @@ const CreateMenuSectionDialog = ({
   );
 };
 
-export default CreateMenuSectionDialog;
+export default UpdateMenuDialog;

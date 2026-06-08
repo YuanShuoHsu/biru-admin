@@ -52,10 +52,6 @@
         "title": "Edit add-on"
       }
     },
-    "displayName": {
-      "menuItem": "section {menuSection} item {menuItem}",
-      "menuSection": "section {menuSection}"
-    },
     "addOnMenuItemId": {
       "label": "Add-on item",
       "placeholder": "Please select your add-on item"
@@ -63,6 +59,10 @@
     "addOnMenuSectionId": {
       "label": "Add-on section",
       "placeholder": "Please select your add-on section"
+    },
+    "displayName": {
+      "menuItem": "section {menuSection} item {menuItem}",
+      "menuSection": "section {menuSection}"
     },
     "label": "Add-ons"
   },
@@ -176,90 +176,6 @@
     }
   },
   "label": "Menu Management",
-  "name": {
-    "label": "Menu name",
-    "placeholder": "Please enter your menu name"
-  },
-  "offers": {
-    "availability": {
-      "label": "Availability",
-      "options": {
-        "BackOrder": "Back order",
-        "Discontinued": "Discontinued",
-        "InStock": "In stock",
-        "InStoreOnly": "In-store only",
-        "LimitedAvailability": "Limited availability",
-        "MadeToOrder": "Made to order",
-        "OnlineOnly": "Online only",
-        "OutOfStock": "Out of stock",
-        "PreOrder": "Pre-order",
-        "PreSale": "Pre-sale",
-        "Reserved": "Reserved",
-        "SoldOut": "Sold out"
-      },
-      "placeholder": "Please select your availability"
-    },
-    "deliveryLeadTime": {
-      "maxValue": {
-        "label": "Max preparation time",
-        "placeholder": "Please enter your max preparation time"
-      },
-      "minValue": {
-        "label": "Min preparation time",
-        "placeholder": "Please enter your min preparation time"
-      },
-      "unitText": {
-        "label": "Time unit",
-        "placeholder": "Please enter your unit"
-      },
-      "value": {
-        "label": "Preparation time",
-        "placeholder": "Please enter your preparation time"
-      }
-    },
-    "inventoryLevel": {
-      "maxValue": {
-        "label": "Max inventory level",
-        "placeholder": "Please enter your max inventory level"
-      },
-      "minValue": {
-        "label": "Min inventory level",
-        "placeholder": "Please enter your min inventory level"
-      },
-      "unitText": {
-        "label": "Inventory unit",
-        "placeholder": "Please enter your inventory unit"
-      },
-      "value": {
-        "label": "Inventory quantity",
-        "placeholder": "Please enter your inventory quantity"
-      }
-    },
-    "label": "Offers",
-    "price": {
-      "label": "Price",
-      "placeholder": "Please enter your price"
-    },
-    "priceCurrency": {
-      "label": "Currency"
-    },
-    "priceSpecification": {
-      "price": {
-        "label": "Sale price",
-        "placeholder": "Please enter your sale price"
-      },
-      "validFrom": {
-        "label": "Sale starts"
-      },
-      "validThrough": {
-        "label": "Sale ends"
-      }
-    }
-  },
-  "organization": {
-    "label": "Organization",
-    "placeholder": "Please select your organization"
-  },
   "modifierGroups": {
     "actions": {
       "createGroup": {
@@ -356,6 +272,90 @@
       "placeholder": "Please enter your price adjustment"
     }
   },
+  "name": {
+    "label": "Menu name",
+    "placeholder": "Please enter your menu name"
+  },
+  "offers": {
+    "availability": {
+      "label": "Availability",
+      "options": {
+        "BackOrder": "Back order",
+        "Discontinued": "Discontinued",
+        "InStock": "In stock",
+        "InStoreOnly": "In-store only",
+        "LimitedAvailability": "Limited availability",
+        "MadeToOrder": "Made to order",
+        "OnlineOnly": "Online only",
+        "OutOfStock": "Out of stock",
+        "PreOrder": "Pre-order",
+        "PreSale": "Pre-sale",
+        "Reserved": "Reserved",
+        "SoldOut": "Sold out"
+      },
+      "placeholder": "Please select your availability"
+    },
+    "deliveryLeadTime": {
+      "maxValue": {
+        "label": "Max preparation time",
+        "placeholder": "Please enter your max preparation time"
+      },
+      "minValue": {
+        "label": "Min preparation time",
+        "placeholder": "Please enter your min preparation time"
+      },
+      "unitText": {
+        "label": "Time unit",
+        "placeholder": "Please enter your unit"
+      },
+      "value": {
+        "label": "Preparation time",
+        "placeholder": "Please enter your preparation time"
+      }
+    },
+    "inventoryLevel": {
+      "maxValue": {
+        "label": "Max inventory level",
+        "placeholder": "Please enter your max inventory level"
+      },
+      "minValue": {
+        "label": "Min inventory level",
+        "placeholder": "Please enter your min inventory level"
+      },
+      "unitText": {
+        "label": "Inventory unit",
+        "placeholder": "Please enter your inventory unit"
+      },
+      "value": {
+        "label": "Inventory quantity",
+        "placeholder": "Please enter your inventory quantity"
+      }
+    },
+    "label": "Offers",
+    "price": {
+      "label": "Price",
+      "placeholder": "Please enter your price"
+    },
+    "priceCurrency": {
+      "label": "Currency"
+    },
+    "priceSpecification": {
+      "price": {
+        "label": "Sale price",
+        "placeholder": "Please enter your sale price"
+      },
+      "validFrom": {
+        "label": "Sale starts"
+      },
+      "validThrough": {
+        "label": "Sale ends"
+      }
+    }
+  },
+  "organization": {
+    "label": "Organization",
+    "placeholder": "Please select your organization"
+  },
   "reorder": "Order",
   "sections": {
     "actions": {
@@ -366,6 +366,7 @@
         "title": "Back to sections"
       },
       "createSection": {
+        "error": "Failed to create section",
         "success": "Section {name} created",
         "title": "Add section"
       },
@@ -409,6 +410,19 @@
       "placeholder": "Please enter your section name"
     },
     "unassigned": "Unassigned"
+  },
+  "settings": {
+    "actions": {
+      "save": {
+        "error": "Failed to save menu settings",
+        "label": "Save settings",
+        "success": "Menu settings saved"
+      },
+      "update": {
+        "title": "Edit menu"
+      }
+    },
+    "label": "Settings"
   },
   "updatedAt": "Updated"
 }

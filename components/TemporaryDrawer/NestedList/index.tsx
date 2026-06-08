@@ -218,7 +218,7 @@ const useNavItems = (): MenuItem[] => {
           {
             icon: MenuBook,
             label: tMenus("label"),
-            to: `/menus?organization=${defaultOrganizationSlug}&page=1&pageSize=10`,
+            to: `/menus/sections?organization=${defaultOrganizationSlug}&page=1&pageSize=10`,
           },
         ]
       : []),

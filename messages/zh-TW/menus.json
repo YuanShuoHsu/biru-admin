@@ -52,10 +52,6 @@
         "title": "編輯加購"
       }
     },
-    "displayName": {
-      "menuItem": "加購分組 {menuSection} 加購品項 {menuItem}",
-      "menuSection": "加購分組 {menuSection}"
-    },
     "addOnMenuItemId": {
       "label": "加購品項",
       "placeholder": "請選擇您的加購品項"
@@ -63,6 +59,10 @@
     "addOnMenuSectionId": {
       "label": "加購分組",
       "placeholder": "請選擇您的加購分組"
+    },
+    "displayName": {
+      "menuItem": "加購分組 {menuSection} 加購品項 {menuItem}",
+      "menuSection": "加購分組 {menuSection}"
     },
     "label": "加購設定"
   },
@@ -176,90 +176,6 @@
     }
   },
   "label": "菜單管理",
-  "name": {
-    "label": "菜單名稱",
-    "placeholder": "請輸入您的菜單名稱"
-  },
-  "offers": {
-    "availability": {
-      "label": "供應狀態",
-      "options": {
-        "BackOrder": "預購補貨中",
-        "Discontinued": "已停售",
-        "InStock": "供應中",
-        "InStoreOnly": "僅店內供應",
-        "LimitedAvailability": "限量供應",
-        "MadeToOrder": "接單製作",
-        "OnlineOnly": "僅線上供應",
-        "OutOfStock": "暫時缺貨",
-        "PreOrder": "預購",
-        "PreSale": "預售",
-        "Reserved": "保留",
-        "SoldOut": "售完"
-      },
-      "placeholder": "請選擇您的供應狀態"
-    },
-    "deliveryLeadTime": {
-      "maxValue": {
-        "label": "最長備餐時間",
-        "placeholder": "請輸入您的最長備餐時間"
-      },
-      "minValue": {
-        "label": "最短備餐時間",
-        "placeholder": "請輸入您的最短備餐時間"
-      },
-      "unitText": {
-        "label": "時間單位",
-        "placeholder": "請輸入您的單位"
-      },
-      "value": {
-        "label": "備餐時間",
-        "placeholder": "請輸入您的備餐時間"
-      }
-    },
-    "inventoryLevel": {
-      "maxValue": {
-        "label": "最高庫存量",
-        "placeholder": "請輸入您的最高庫存量"
-      },
-      "minValue": {
-        "label": "最低庫存量",
-        "placeholder": "請輸入您的最低庫存量"
-      },
-      "unitText": {
-        "label": "庫存單位",
-        "placeholder": "請輸入您的庫存單位"
-      },
-      "value": {
-        "label": "庫存數量",
-        "placeholder": "請輸入您的庫存數量"
-      }
-    },
-    "label": "銷售",
-    "price": {
-      "label": "價格",
-      "placeholder": "請輸入您的價格"
-    },
-    "priceCurrency": {
-      "label": "幣別"
-    },
-    "priceSpecification": {
-      "price": {
-        "label": "促銷價",
-        "placeholder": "請輸入您的促銷價"
-      },
-      "validFrom": {
-        "label": "促銷開始"
-      },
-      "validThrough": {
-        "label": "促銷結束"
-      }
-    }
-  },
-  "organization": {
-    "label": "組織",
-    "placeholder": "請選擇您的組織"
-  },
   "modifierGroups": {
     "actions": {
       "createGroup": {
@@ -356,6 +272,90 @@
       "placeholder": "請輸入您的加價金額"
     }
   },
+  "name": {
+    "label": "菜單名稱",
+    "placeholder": "請輸入您的菜單名稱"
+  },
+  "offers": {
+    "availability": {
+      "label": "供應狀態",
+      "options": {
+        "BackOrder": "預購補貨中",
+        "Discontinued": "已停售",
+        "InStock": "供應中",
+        "InStoreOnly": "僅店內供應",
+        "LimitedAvailability": "限量供應",
+        "MadeToOrder": "接單製作",
+        "OnlineOnly": "僅線上供應",
+        "OutOfStock": "暫時缺貨",
+        "PreOrder": "預購",
+        "PreSale": "預售",
+        "Reserved": "保留",
+        "SoldOut": "售完"
+      },
+      "placeholder": "請選擇您的供應狀態"
+    },
+    "deliveryLeadTime": {
+      "maxValue": {
+        "label": "最長備餐時間",
+        "placeholder": "請輸入您的最長備餐時間"
+      },
+      "minValue": {
+        "label": "最短備餐時間",
+        "placeholder": "請輸入您的最短備餐時間"
+      },
+      "unitText": {
+        "label": "時間單位",
+        "placeholder": "請輸入您的單位"
+      },
+      "value": {
+        "label": "備餐時間",
+        "placeholder": "請輸入您的備餐時間"
+      }
+    },
+    "inventoryLevel": {
+      "maxValue": {
+        "label": "最高庫存量",
+        "placeholder": "請輸入您的最高庫存量"
+      },
+      "minValue": {
+        "label": "最低庫存量",
+        "placeholder": "請輸入您的最低庫存量"
+      },
+      "unitText": {
+        "label": "庫存單位",
+        "placeholder": "請輸入您的庫存單位"
+      },
+      "value": {
+        "label": "庫存數量",
+        "placeholder": "請輸入您的庫存數量"
+      }
+    },
+    "label": "銷售",
+    "price": {
+      "label": "價格",
+      "placeholder": "請輸入您的價格"
+    },
+    "priceCurrency": {
+      "label": "幣別"
+    },
+    "priceSpecification": {
+      "price": {
+        "label": "促銷價",
+        "placeholder": "請輸入您的促銷價"
+      },
+      "validFrom": {
+        "label": "促銷開始"
+      },
+      "validThrough": {
+        "label": "促銷結束"
+      }
+    }
+  },
+  "organization": {
+    "label": "組織",
+    "placeholder": "請選擇您的組織"
+  },
   "reorder": "排序",
   "sections": {
     "actions": {
@@ -366,6 +366,7 @@
         "title": "返回分類"
       },
       "createSection": {
+        "error": "新增分類失敗",
         "success": "成功新增分類 {name}",
         "title": "新增分類"
       },
@@ -409,6 +410,19 @@
       "placeholder": "請輸入您的分類名稱"
     },
     "unassigned": "未分類"
+  },
+  "settings": {
+    "actions": {
+      "save": {
+        "error": "儲存菜單設定失敗",
+        "label": "儲存設定",
+        "success": "成功儲存菜單設定"
+      },
+      "update": {
+        "title": "編輯菜單"
+      }
+    },
+    "label": "菜單設定"
   },
   "updatedAt": "更新時間"
 }

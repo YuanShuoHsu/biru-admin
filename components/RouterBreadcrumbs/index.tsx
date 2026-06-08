@@ -283,6 +283,7 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
           to: `/modifier-groups?${menusQuery}`,
         },
       ],
+      disabled: true,
       icon: MenuBook,
       label: tMenus("label"),
       to: `/menus?${menusQuery}`,

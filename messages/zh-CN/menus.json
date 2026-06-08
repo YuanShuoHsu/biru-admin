@@ -52,10 +52,6 @@
         "title": "编辑加购"
       }
     },
-    "displayName": {
-      "menuItem": "加购分组 {menuSection} 加购品项 {menuItem}",
-      "menuSection": "加购分组 {menuSection}"
-    },
     "addOnMenuItemId": {
       "label": "加购品项",
       "placeholder": "请选择您的加购品项"
@@ -63,6 +59,10 @@
     "addOnMenuSectionId": {
       "label": "加购分组",
       "placeholder": "请选择您的加购分组"
+    },
+    "displayName": {
+      "menuItem": "加购分组 {menuSection} 加购品项 {menuItem}",
+      "menuSection": "加购分组 {menuSection}"
     },
     "label": "加购设置"
   },
@@ -176,90 +176,6 @@
     }
   },
   "label": "菜单管理",
-  "name": {
-    "label": "菜单名称",
-    "placeholder": "请输入您的菜单名称"
-  },
-  "offers": {
-    "availability": {
-      "label": "供应状态",
-      "options": {
-        "BackOrder": "预购补货中",
-        "Discontinued": "已停售",
-        "InStock": "供应中",
-        "InStoreOnly": "仅店内供应",
-        "LimitedAvailability": "限量供应",
-        "MadeToOrder": "接单制作",
-        "OnlineOnly": "仅线上供应",
-        "OutOfStock": "暂时缺货",
-        "PreOrder": "预购",
-        "PreSale": "预售",
-        "Reserved": "保留",
-        "SoldOut": "售完"
-      },
-      "placeholder": "请选择您的供应状态"
-    },
-    "deliveryLeadTime": {
-      "maxValue": {
-        "label": "最长备餐时间",
-        "placeholder": "请输入您的最长备餐时间"
-      },
-      "minValue": {
-        "label": "最短备餐时间",
-        "placeholder": "请输入您的最短备餐时间"
-      },
-      "unitText": {
-        "label": "时间单位",
-        "placeholder": "请输入您的单位"
-      },
-      "value": {
-        "label": "备餐时间",
-        "placeholder": "请输入您的备餐时间"
-      }
-    },
-    "inventoryLevel": {
-      "maxValue": {
-        "label": "最高库存量",
-        "placeholder": "请输入您的最高库存量"
-      },
-      "minValue": {
-        "label": "最低库存量",
-        "placeholder": "请输入您的最低库存量"
-      },
-      "unitText": {
-        "label": "库存单位",
-        "placeholder": "请输入您的库存单位"
-      },
-      "value": {
-        "label": "库存数量",
-        "placeholder": "请输入您的库存数量"
-      }
-    },
-    "label": "销售",
-    "price": {
-      "label": "价格",
-      "placeholder": "请输入您的价格"
-    },
-    "priceCurrency": {
-      "label": "币别"
-    },
-    "priceSpecification": {
-      "price": {
-        "label": "促销价",
-        "placeholder": "请输入您的促销价"
-      },
-      "validFrom": {
-        "label": "促销开始"
-      },
-      "validThrough": {
-        "label": "促销结束"
-      }
-    }
-  },
-  "organization": {
-    "label": "组织",
-    "placeholder": "请选择您的组织"
-  },
   "modifierGroups": {
     "actions": {
       "createGroup": {
@@ -356,6 +272,90 @@
       "placeholder": "请输入您的加价金额"
     }
   },
+  "name": {
+    "label": "菜单名称",
+    "placeholder": "请输入您的菜单名称"
+  },
+  "offers": {
+    "availability": {
+      "label": "供应状态",
+      "options": {
+        "BackOrder": "预购补货中",
+        "Discontinued": "已停售",
+        "InStock": "供应中",
+        "InStoreOnly": "仅店内供应",
+        "LimitedAvailability": "限量供应",
+        "MadeToOrder": "接单制作",
+        "OnlineOnly": "仅线上供应",
+        "OutOfStock": "暂时缺货",
+        "PreOrder": "预购",
+        "PreSale": "预售",
+        "Reserved": "保留",
+        "SoldOut": "售完"
+      },
+      "placeholder": "请选择您的供应状态"
+    },
+    "deliveryLeadTime": {
+      "maxValue": {
+        "label": "最长备餐时间",
+        "placeholder": "请输入您的最长备餐时间"
+      },
+      "minValue": {
+        "label": "最短备餐时间",
+        "placeholder": "请输入您的最短备餐时间"
+      },
+      "unitText": {
+        "label": "时间单位",
+        "placeholder": "请输入您的单位"
+      },
+      "value": {
+        "label": "备餐时间",
+        "placeholder": "请输入您的备餐时间"
+      }
+    },
+    "inventoryLevel": {
+      "maxValue": {
+        "label": "最高库存量",
+        "placeholder": "请输入您的最高库存量"
+      },
+      "minValue": {
+        "label": "最低库存量",
+        "placeholder": "请输入您的最低库存量"
+      },
+      "unitText": {
+        "label": "库存单位",
+        "placeholder": "请输入您的库存单位"
+      },
+      "value": {
+        "label": "库存数量",
+        "placeholder": "请输入您的库存数量"
+      }
+    },
+    "label": "销售",
+    "price": {
+      "label": "价格",
+      "placeholder": "请输入您的价格"
+    },
+    "priceCurrency": {
+      "label": "币别"
+    },
+    "priceSpecification": {
+      "price": {
+        "label": "促销价",
+        "placeholder": "请输入您的促销价"
+      },
+      "validFrom": {
+        "label": "促销开始"
+      },
+      "validThrough": {
+        "label": "促销结束"
+      }
+    }
+  },
+  "organization": {
+    "label": "组织",
+    "placeholder": "请选择您的组织"
+  },
   "reorder": "排序",
   "sections": {
     "actions": {
@@ -366,6 +366,7 @@
         "title": "返回分类"
       },
       "createSection": {
+        "error": "新增分类失败",
         "success": "成功新增分类 {name}",
         "title": "新增分类"
       },
@@ -409,6 +410,19 @@
       "placeholder": "请输入您的分类名称"
     },
     "unassigned": "未分类"
+  },
+  "settings": {
+    "actions": {
+      "save": {
+        "error": "保存菜单设置失败",
+        "label": "保存设置",
+        "success": "成功保存菜单设置"
+      },
+      "update": {
+        "title": "编辑菜单"
+      }
+    },
+    "label": "菜单设置"
   },
   "updatedAt": "更新时间"
 }

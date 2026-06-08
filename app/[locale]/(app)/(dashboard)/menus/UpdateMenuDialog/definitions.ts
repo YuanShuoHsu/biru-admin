@@ -3,10 +3,11 @@ import * as z from "zod";
 
 import { hasAllLocalizedText } from "@/utils/locale";
 
-export const useCreateMenuSectionFormSchema = () => {
+export const useUpdateMenuFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z.object({
+    image: z.string().trim().optional(),
     name: z
       .record(
         z.string(),
@@ -25,14 +26,12 @@ export const useCreateMenuSectionFormSchema = () => {
         z
           .string()
           .trim()
-          .max(160, {
-            error: tValidation("description.maxLength"),
-          }),
+          .max(160, { error: tValidation("description.maxLength") }),
       )
       .optional(),
   });
 };
 
-export type CreateMenuSectionForm = z.infer<
-  ReturnType<typeof useCreateMenuSectionFormSchema>
+export type UpdateMenuForm = z.infer<
+  ReturnType<typeof useUpdateMenuFormSchema>
 >;

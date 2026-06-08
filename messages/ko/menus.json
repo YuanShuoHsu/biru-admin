@@ -52,10 +52,6 @@
         "title": "추가 옵션 편집"
       }
     },
-    "displayName": {
-      "menuItem": "그룹 {menuSection} 품목 {menuItem}",
-      "menuSection": "그룹 {menuSection}"
-    },
     "addOnMenuItemId": {
       "label": "추가 항목",
       "placeholder": "추가 항목을 선택해 주세요"
@@ -63,6 +59,10 @@
     "addOnMenuSectionId": {
       "label": "추가 섹션",
       "placeholder": "추가 섹션을 선택해 주세요"
+    },
+    "displayName": {
+      "menuItem": "그룹 {menuSection} 품목 {menuItem}",
+      "menuSection": "그룹 {menuSection}"
     },
     "label": "추가 옵션"
   },
@@ -176,90 +176,6 @@
     }
   },
   "label": "메뉴 관리",
-  "name": {
-    "label": "메뉴 이름",
-    "placeholder": "메뉴 이름을 입력해 주세요"
-  },
-  "offers": {
-    "availability": {
-      "label": "공급 상태",
-      "options": {
-        "BackOrder": "재고 주문 중",
-        "Discontinued": "판매 종료",
-        "InStock": "공급 중",
-        "InStoreOnly": "매장 전용",
-        "LimitedAvailability": "한정 공급",
-        "MadeToOrder": "주문 제작",
-        "OnlineOnly": "온라인 전용",
-        "OutOfStock": "재고 없음",
-        "PreOrder": "예약 주문",
-        "PreSale": "사전 판매",
-        "Reserved": "예약됨",
-        "SoldOut": "품절"
-      },
-      "placeholder": "공급 상태를 선택해 주세요"
-    },
-    "deliveryLeadTime": {
-      "maxValue": {
-        "label": "최대 준비 시간",
-        "placeholder": "최대 준비 시간을 입력해 주세요"
-      },
-      "minValue": {
-        "label": "최소 준비 시간",
-        "placeholder": "최소 준비 시간을 입력해 주세요"
-      },
-      "unitText": {
-        "label": "시간 단위",
-        "placeholder": "단위를 입력해 주세요"
-      },
-      "value": {
-        "label": "준비 시간",
-        "placeholder": "준비 시간을 입력해 주세요"
-      }
-    },
-    "inventoryLevel": {
-      "maxValue": {
-        "label": "최대 재고 수준",
-        "placeholder": "최대 재고 수준을 입력해 주세요"
-      },
-      "minValue": {
-        "label": "최소 재고 수준",
-        "placeholder": "최소 재고 수준을 입력해 주세요"
-      },
-      "unitText": {
-        "label": "재고 단위",
-        "placeholder": "재고 단위를 입력해 주세요"
-      },
-      "value": {
-        "label": "재고 수량",
-        "placeholder": "재고 수량을 입력해 주세요"
-      }
-    },
-    "label": "판매",
-    "price": {
-      "label": "가격",
-      "placeholder": "가격을 입력해 주세요"
-    },
-    "priceCurrency": {
-      "label": "통화"
-    },
-    "priceSpecification": {
-      "price": {
-        "label": "할인가（선택）",
-        "placeholder": "할인가를 입력해 주세요"
-      },
-      "validFrom": {
-        "label": "할인 시작（선택）"
-      },
-      "validThrough": {
-        "label": "할인 종료（선택）"
-      }
-    }
-  },
-  "organization": {
-    "label": "조직",
-    "placeholder": "조직을 선택해 주세요"
-  },
   "modifierGroups": {
     "actions": {
       "createGroup": {
@@ -356,6 +272,90 @@
       "placeholder": "가격 조정을 입력해 주세요"
     }
   },
+  "name": {
+    "label": "메뉴 이름",
+    "placeholder": "메뉴 이름을 입력해 주세요"
+  },
+  "offers": {
+    "availability": {
+      "label": "공급 상태",
+      "options": {
+        "BackOrder": "재고 주문 중",
+        "Discontinued": "판매 종료",
+        "InStock": "공급 중",
+        "InStoreOnly": "매장 전용",
+        "LimitedAvailability": "한정 공급",
+        "MadeToOrder": "주문 제작",
+        "OnlineOnly": "온라인 전용",
+        "OutOfStock": "재고 없음",
+        "PreOrder": "예약 주문",
+        "PreSale": "사전 판매",
+        "Reserved": "예약됨",
+        "SoldOut": "품절"
+      },
+      "placeholder": "공급 상태를 선택해 주세요"
+    },
+    "deliveryLeadTime": {
+      "maxValue": {
+        "label": "최대 준비 시간",
+        "placeholder": "최대 준비 시간을 입력해 주세요"
+      },
+      "minValue": {
+        "label": "최소 준비 시간",
+        "placeholder": "최소 준비 시간을 입력해 주세요"
+      },
+      "unitText": {
+        "label": "시간 단위",
+        "placeholder": "단위를 입력해 주세요"
+      },
+      "value": {
+        "label": "준비 시간",
+        "placeholder": "준비 시간을 입력해 주세요"
+      }
+    },
+    "inventoryLevel": {
+      "maxValue": {
+        "label": "최대 재고 수준",
+        "placeholder": "최대 재고 수준을 입력해 주세요"
+      },
+      "minValue": {
+        "label": "최소 재고 수준",
+        "placeholder": "최소 재고 수준을 입력해 주세요"
+      },
+      "unitText": {
+        "label": "재고 단위",
+        "placeholder": "재고 단위를 입력해 주세요"
+      },
+      "value": {
+        "label": "재고 수량",
+        "placeholder": "재고 수량을 입력해 주세요"
+      }
+    },
+    "label": "판매",
+    "price": {
+      "label": "가격",
+      "placeholder": "가격을 입력해 주세요"
+    },
+    "priceCurrency": {
+      "label": "통화"
+    },
+    "priceSpecification": {
+      "price": {
+        "label": "할인가（선택）",
+        "placeholder": "할인가를 입력해 주세요"
+      },
+      "validFrom": {
+        "label": "할인 시작（선택）"
+      },
+      "validThrough": {
+        "label": "할인 종료（선택）"
+      }
+    }
+  },
+  "organization": {
+    "label": "조직",
+    "placeholder": "조직을 선택해 주세요"
+  },
   "reorder": "순서",
   "sections": {
     "actions": {
@@ -366,6 +366,7 @@
         "title": "섹션으로 돌아가기"
       },
       "createSection": {
+        "error": "섹션 추가에 실패했습니다",
         "success": "섹션 {name}이(가) 추가되었습니다",
         "title": "섹션 추가"
       },
@@ -409,6 +410,19 @@
       "placeholder": "섹션 이름을 입력해 주세요"
     },
     "unassigned": "미분류"
+  },
+  "settings": {
+    "actions": {
+      "save": {
+        "error": "메뉴 설정 저장에 실패했습니다",
+        "label": "설정 저장",
+        "success": "메뉴 설정이 저장되었습니다"
+      },
+      "update": {
+        "title": "메뉴 편집"
+      }
+    },
+    "label": "설정"
   },
   "updatedAt": "수정일"
 }
