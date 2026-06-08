@@ -16,13 +16,7 @@ import {
   Tune,
   type SvgIconComponent,
 } from "@mui/icons-material";
-import {
-  IconButton,
-  Stack,
-  Tab,
-  Tabs,
-  Tooltip,
-} from "@mui/material";
+import { IconButton, Stack, Tab, Tabs, Tooltip } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
