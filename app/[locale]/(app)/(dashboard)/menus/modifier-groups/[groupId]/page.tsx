@@ -18,13 +18,15 @@ import type { Locale } from "@/i18n/routing";
 import { authClient } from "@/lib/auth-client";
 
 import {
+  DEFAULT_MENUS_HREF,
   getAdminMenu,
   getAdminModifierGroup,
   getAdminModifiers,
+  getAdminOrganization,
 } from "@/utils/menus";
 
 interface ModifiersPageProps {
-  params: Promise<{ locale: Locale; menuId: string; groupId: string }>;
+  params: Promise<{ locale: Locale; groupId: string }>;
   searchParams: Promise<{
     filterField?: string;
     filterOperator?: string;
@@ -41,11 +43,12 @@ interface ModifiersPageProps {
 const ModifiersPage = async ({ params, searchParams }: ModifiersPageProps) => {
   const [
     cookieStore,
-    { locale, menuId, groupId },
+    { locale, groupId },
     {
       filterField: rawFilterField,
       filterOperator: rawFilterOperator,
       filterValue,
+      organization,
       page: rawPage,
       pageSize: rawPageSize,
       quickFilterValue,
@@ -70,6 +73,21 @@ const ModifiersPage = async ({ params, searchParams }: ModifiersPageProps) => {
     (operator) => operator === rawFilterOperator,
   );
 
+  const fetchOptions = { headers: { cookie: cookieStore.toString() } };
+  const group = await getAdminModifierGroup(groupId, fetchOptions);
+
+  if (!group?.menuId) notFound();
+  if (!organization) return redirect({ href: DEFAULT_MENUS_HREF, locale });
+
+  const [menu, selectedOrganization] = await Promise.all([
+    getAdminMenu(group.menuId, fetchOptions),
+    getAdminOrganization(organization, fetchOptions),
+  ]);
+
+  if (!menu) notFound();
+  if (!selectedOrganization || selectedOrganization.id !== menu.organizationId)
+    return redirect({ href: DEFAULT_MENUS_HREF, locale });
+
   if (
     rawPage !== String(page) ||
     rawPageSize !== String(pageSize) ||
@@ -87,6 +105,7 @@ const ModifiersPage = async ({ params, searchParams }: ModifiersPageProps) => {
   ) {
     const params = new URLSearchParams({
       ...restSearchParams,
+      organization: selectedOrganization.slug,
       page: String(page),
       pageSize: String(pageSize),
       ...(sortBy && sortDirection && { sortBy, sortDirection }),
@@ -94,15 +113,14 @@ const ModifiersPage = async ({ params, searchParams }: ModifiersPageProps) => {
         filterOperator &&
         filterValue && { filterField, filterOperator, filterValue }),
     });
+
     redirect({
-      href: `/menus/${menuId}/modifier-groups/${groupId}?${params.toString()}`,
+      href: `/menus/modifier-groups/${groupId}?${params.toString()}`,
       locale,
     });
   }
 
-  const fetchOptions = { headers: { cookie: cookieStore.toString() } };
-  const [group, { modifiers, total }] = await Promise.all([
-    getAdminModifierGroup(groupId, fetchOptions),
+  const [{ modifiers, total }, sessionData, fullOrgData] = await Promise.all([
     getAdminModifiers(
       groupId,
       page,
@@ -115,16 +133,6 @@ const ModifiersPage = async ({ params, searchParams }: ModifiersPageProps) => {
       sortDirection,
       fetchOptions,
     ),
-  ]);
-
-  if (!group) notFound();
-
-  const menu = group.menuId
-    ? await getAdminMenu(group.menuId, fetchOptions)
-    : null;
-  if (!menu) notFound();
-
-  const [sessionData, fullOrgData] = await Promise.all([
     authClient.getSession({ fetchOptions }),
     authClient.organization.getFullOrganization({
       query: { organizationId: menu.organizationId },

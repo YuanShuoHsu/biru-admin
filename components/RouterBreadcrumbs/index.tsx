@@ -17,7 +17,6 @@ import {
   AccountCircle,
   AdminPanelSettings,
   Business,
-  Category,
   Dashboard,
   DeleteForever,
   Devices,
@@ -46,7 +45,6 @@ import {
   Settings,
   ShoppingCart,
   Storefront,
-  Summarize,
   Tune,
   ViewList,
 } from "@mui/icons-material";
@@ -58,7 +56,7 @@ import {
 } from "@mui/material";
 import { styled, type Theme } from "@mui/material/styles";
 
-import type { Menu, MenuSection, ModifierGroup } from "@/types/menus";
+import type { MenuSection, ModifierGroup } from "@/types/menus";
 import type { RouteParams } from "@/types/routeParams";
 
 import { fetcher } from "@/utils/fetcher";
@@ -105,7 +103,6 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
 
   const {
     groupId,
-    menuId,
     menuItemId,
     menuSectionId,
     mode,
@@ -117,6 +114,11 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
 
   const searchParams = useSearchParams();
   const menuOrganizationSlug = searchParams.get("organization");
+  const menusQuery = new URLSearchParams({
+    ...(menuOrganizationSlug ? { organization: menuOrganizationSlug } : {}),
+    page: "1",
+    pageSize: "10",
+  }).toString();
 
   const { data: userEmail = "" } = useSWR(
     userId ? `admin-user-${userId}` : null,
@@ -143,19 +145,6 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
   const organizationSlugName = organizationData?.name || "";
   const teamName =
     organizationData?.teams.find(({ id }) => id === teamId)?.name || "";
-
-  const { data: menuName = "" } = useSWR(
-    menuId ? `/api/menus/${menuId}` : null,
-    async (url) => {
-      try {
-        const { name } = await fetcher<Menu>(url);
-
-        return localize(name, locale);
-      } catch {
-        return "";
-      }
-    },
-  );
 
   const { data: menuSectionName = "" } = useSWR(
     menuSectionId ? `/api/menu-sections/${menuSectionId}` : null,
@@ -253,11 +242,6 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
         {
           children: [
             {
-              icon: Category,
-              label: tMenus("sections.label"),
-              to: `/sections${menuOrganizationSlug ? `?organization=${menuOrganizationSlug}` : ""}`,
-            },
-            {
               children: [
                 {
                   children: [
@@ -279,30 +263,29 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
               ],
               icon: ViewList,
               label: menuSectionName,
-              to: `/${menuSectionId}${menuOrganizationSlug ? `?organization=${menuOrganizationSlug}` : ""}`,
-            },
-            {
-              children: [
-                {
-                  icon: Tune,
-                  label: modifierGroupName,
-                  to: `/${groupId}`,
-                },
-              ],
-              icon: Tune,
-              label: tMenus("modifierGroups.label"),
-              to: `/modifier-groups${menuOrganizationSlug ? `?organization=${menuOrganizationSlug}` : ""}`,
+              to: `/${menuSectionId}?${menusQuery}`,
             },
           ],
           hidden: true,
-          icon: Summarize,
-          label: menuName,
-          to: `/${menuId}${menuOrganizationSlug ? `?organization=${menuOrganizationSlug}` : ""}`,
+          icon: ViewList,
+          to: "/section",
+        },
+        {
+          children: [
+            {
+              icon: Tune,
+              label: modifierGroupName,
+              to: `/${groupId}`,
+            },
+          ],
+          icon: Tune,
+          label: tMenus("modifierGroups.label"),
+          to: `/modifier-groups?${menusQuery}`,
         },
       ],
       icon: MenuBook,
       label: tMenus("label"),
-      to: `/menus${menuOrganizationSlug ? `?organization=${menuOrganizationSlug}` : ""}`,
+      to: `/menus?${menusQuery}`,
     },
     {
       children: [

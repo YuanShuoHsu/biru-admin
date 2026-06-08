@@ -177,8 +177,8 @@ const useNavItems = (): MenuItem[] => {
 
   const authChildren = useAuthMenuItems(redirect);
 
-  const { data: defaultOrganization } = useSWR<string>(
-    "default-organization",
+  const { data: defaultOrganizationSlug = "" } = useSWR<string>(
+    "default-organization-slug",
     async () => {
       const { data } = await authClient.organization.list();
 
@@ -213,12 +213,12 @@ const useNavItems = (): MenuItem[] => {
       label: tOrder("label"),
       to: "/order",
     },
-    ...(defaultOrganization
+    ...(defaultOrganizationSlug
       ? [
           {
             icon: MenuBook,
             label: tMenus("label"),
-            to: `/menus?organization=${defaultOrganization}`,
+            to: `/menus?organization=${defaultOrganizationSlug}&page=1&pageSize=10`,
           },
         ]
       : []),

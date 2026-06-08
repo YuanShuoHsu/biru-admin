@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useParams, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import useSWR from "swr";
 
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
@@ -11,9 +11,7 @@ import { authClient } from "@/lib/auth-client";
 import { Category, Tune, type SvgIconComponent } from "@mui/icons-material";
 import { MenuItem, Stack, Tab, Tabs, TextField } from "@mui/material";
 
-const MenuLayout = ({ children }: { children: React.ReactNode }) => {
-  const { menuId } = useParams<{ menuId: string }>();
-
+const MenusLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -31,6 +29,9 @@ const MenuLayout = ({ children }: { children: React.ReactNode }) => {
 
     return data || [];
   });
+  const selectedOrganization = organizations.find(
+    ({ slug }) => slug === organization,
+  );
 
   const handleOrganizationChange = (slug: string) => {
     const params = new URLSearchParams({
@@ -42,8 +43,6 @@ const MenuLayout = ({ children }: { children: React.ReactNode }) => {
     router.push(`/menus?${params}`);
   };
 
-  const basePath = `/menus/${menuId}`;
-
   const tabs: {
     Icon: SvgIconComponent;
     label: string;
@@ -52,18 +51,20 @@ const MenuLayout = ({ children }: { children: React.ReactNode }) => {
     {
       Icon: Category,
       label: tMenus("sections.label"),
-      value: `${basePath}/sections`,
+      value: "/menus",
     },
     {
       Icon: Tune,
       label: tMenus("modifierGroups.label"),
-      value: `${basePath}/modifier-groups`,
+      value: "/menus/modifier-groups",
     },
   ];
 
-  const currentTab =
-    tabs.find(({ value }) => pathname.startsWith(value))?.value ||
-    tabs[0].value;
+  const currentTab = pathname.startsWith("/menus/modifier-groups")
+    ? "/menus/modifier-groups"
+    : "/menus";
+
+  if (pathname.startsWith("/menus/section/")) return children;
 
   return (
     <Stack height="100%" gap={2}>
@@ -75,21 +76,16 @@ const MenuLayout = ({ children }: { children: React.ReactNode }) => {
           inputLabel: { shrink: true },
           select: {
             displayEmpty: true,
-            renderValue: (selected) => {
-              const selectedOrganization = organizations.find(
-                ({ slug }) => slug === selected,
-              );
-
-              return selectedOrganization ? (
+            renderValue: () =>
+              selectedOrganization ? (
                 selectedOrganization.name
               ) : (
                 <em>{tMenus("organization.placeholder")}</em>
-              );
-            },
+              ),
           },
         }}
         sx={{ width: 200 }}
-        value={organization ?? ""}
+        value={selectedOrganization?.slug || ""}
         onChange={(event) => handleOrganizationChange(event.target.value)}
       >
         <MenuItem disabled value="">
@@ -124,4 +120,4 @@ const MenuLayout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default MenuLayout;
+export default MenusLayout;

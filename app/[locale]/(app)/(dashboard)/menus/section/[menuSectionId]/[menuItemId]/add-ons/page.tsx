@@ -2,7 +2,7 @@ import { setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
-import MenusMenuId from ".";
+import MenuItemAddOns from ".";
 import {
   FILTER_FIELDS,
   FILTER_OPERATORS,
@@ -17,10 +17,20 @@ import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
-import { getAdminMenu, getAdminMenuSections } from "@/utils/menus";
+import {
+  DEFAULT_MENUS_HREF,
+  getAdminMenu,
+  getAdminMenuItemAddOns,
+  getAdminMenuSection,
+  getAdminOrganization,
+} from "@/utils/menus";
 
-interface MenusMenuIdPageProps {
-  params: Promise<{ locale: Locale; menuId: string }>;
+interface MenuItemAddOnsPageProps {
+  params: Promise<{
+    locale: Locale;
+    menuSectionId: string;
+    menuItemId: string;
+  }>;
   searchParams: Promise<{
     filterField?: string;
     filterOperator?: string;
@@ -34,17 +44,18 @@ interface MenusMenuIdPageProps {
   }>;
 }
 
-const MenusMenuIdPage = async ({
+const MenuItemAddOnsPage = async ({
   params,
   searchParams,
-}: MenusMenuIdPageProps) => {
+}: MenuItemAddOnsPageProps) => {
   const [
     cookieStore,
-    { locale, menuId },
+    { locale, menuSectionId, menuItemId },
     {
       filterField: rawFilterField,
       filterOperator: rawFilterOperator,
       filterValue,
+      organization,
       page: rawPage,
       pageSize: rawPageSize,
       quickFilterValue,
@@ -69,6 +80,21 @@ const MenusMenuIdPage = async ({
     (operator) => operator === rawFilterOperator,
   );
 
+  const fetchOptions = { headers: { cookie: cookieStore.toString() } };
+  const section = await getAdminMenuSection(menuSectionId, fetchOptions);
+
+  if (!section?.menuId) notFound();
+  if (!organization) return redirect({ href: DEFAULT_MENUS_HREF, locale });
+
+  const [menu, selectedOrganization] = await Promise.all([
+    getAdminMenu(section.menuId, fetchOptions),
+    getAdminOrganization(organization, fetchOptions),
+  ]);
+
+  if (!menu) notFound();
+  if (!selectedOrganization || selectedOrganization.id !== menu.organizationId)
+    return redirect({ href: DEFAULT_MENUS_HREF, locale });
+
   if (
     rawPage !== String(page) ||
     rawPageSize !== String(pageSize) ||
@@ -84,8 +110,9 @@ const MenusMenuIdPage = async ({
         (filterValue || NO_VALUE_FILTER_OPERATORS.includes(filterOperator))
       )
   ) {
-    const params = new URLSearchParams({
+    const redirectParams = new URLSearchParams({
       ...restSearchParams,
+      organization: selectedOrganization.slug,
       page: String(page),
       pageSize: String(pageSize),
       ...(sortBy && sortDirection && { sortBy, sortDirection }),
@@ -93,17 +120,16 @@ const MenusMenuIdPage = async ({
         filterOperator &&
         filterValue && { filterField, filterOperator, filterValue }),
     });
+
     redirect({
-      href: `/menus/${menuId}/sections?${params.toString()}`,
+      href: `/menus/section/${menuSectionId}/${menuItemId}/add-ons?${redirectParams.toString()}`,
       locale,
     });
   }
 
-  const fetchOptions = { headers: { cookie: cookieStore.toString() } };
-  const [menu, { sections, total }] = await Promise.all([
-    getAdminMenu(menuId, fetchOptions),
-    getAdminMenuSections(
-      menuId,
+  const [{ addOns, total }, sessionData, fullOrgData] = await Promise.all([
+    getAdminMenuItemAddOns(
+      menuItemId,
       page,
       pageSize,
       filterField,
@@ -114,11 +140,6 @@ const MenusMenuIdPage = async ({
       sortDirection,
       fetchOptions,
     ),
-  ]);
-
-  if (!menu) notFound();
-
-  const [sessionData, fullOrgData] = await Promise.all([
     authClient.getSession({ fetchOptions }),
     authClient.organization.getFullOrganization({
       query: { organizationId: menu.organizationId },
@@ -132,21 +153,22 @@ const MenusMenuIdPage = async ({
   const canWrite = role === "owner" || role === "admin";
 
   return (
-    <MenusMenuId
+    <MenuItemAddOns
+      addOns={addOns}
       canWrite={canWrite}
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
-      menu={menu}
+      menuId={menu.id}
+      menuItemId={menuItemId}
       page={page}
       pageSize={pageSize}
       quickFilterValue={quickFilterValue}
       rowCount={total}
-      sections={sections}
       sortBy={sortBy}
       sortDirection={sortDirection}
     />
   );
 };
 
-export default MenusMenuIdPage;
+export default MenuItemAddOnsPage;

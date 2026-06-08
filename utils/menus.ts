@@ -2,14 +2,16 @@ import { cache } from "react";
 
 import { fetcher } from "./fetcher";
 
+import { authClient } from "@/lib/auth-client";
+
 import type {
   Menu,
   MenuItem,
   MenuItemAddOn,
   MenuItemModifierGroup,
+  MenuSection,
   Modifier,
   ModifierGroup,
-  MenuSection,
   OrderMenu,
   OrderMenuItem,
 } from "@/types/menus";
@@ -64,9 +66,9 @@ export const getItemStock = (
   itemId: string,
 ): number | null => {
   const item = findItemById(menus, itemId);
-  if (!item) return 0;
+  if (!item) return null;
 
-  return item.offers[0]?.inventoryLevel?.value ?? null;
+  return item.offers[0]?.inventoryLevel?.value || null;
 };
 
 const findOptionChoiceById = (
@@ -173,6 +175,32 @@ export const getChoiceNames = (
     })
     .join(joinWith);
 };
+
+export const DEFAULT_MENUS_HREF = "/menus?page=1&pageSize=10";
+
+export const getAdminOrganization = cache(
+  async (organizationSlug?: string, init?: { headers: { cookie: string } }) => {
+    const { data: organizations = [] } = await authClient.organization.list({
+      fetchOptions: init,
+    });
+
+    return organizations?.find(({ slug }) => slug === organizationSlug);
+  },
+);
+
+export const getAdminOrganizationMenu = cache(
+  async (organizationSlug?: string, init?: { headers: { cookie: string } }) => {
+    const organization = await getAdminOrganization(organizationSlug, init);
+    if (!organization) return { organization: null, menu: null };
+
+    const menus = await fetcher<Menu[]>(
+      `/api/organizations/${organization.id}/menus`,
+      init,
+    );
+
+    return { organization, menu: menus[0] };
+  },
+);
 
 export const getAdminMenu = cache(
   async (menuId: string, init?: RequestInit) => {

@@ -2,7 +2,7 @@ import { setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
-import MenusMenuIdSectionId from ".";
+import MenuItemModifierGroups from ".";
 import {
   FILTER_FIELDS,
   FILTER_OPERATORS,
@@ -18,13 +18,19 @@ import type { Locale } from "@/i18n/routing";
 import { authClient } from "@/lib/auth-client";
 
 import {
+  DEFAULT_MENUS_HREF,
   getAdminMenu,
+  getAdminMenuItemModifierGroups,
   getAdminMenuSection,
-  getAdminMenuSectionItems,
+  getAdminOrganization,
 } from "@/utils/menus";
 
-interface MenusMenuIdSectionIdPageProps {
-  params: Promise<{ locale: Locale; menuId: string; menuSectionId: string }>;
+interface MenuItemModifierGroupsPageProps {
+  params: Promise<{
+    locale: Locale;
+    menuSectionId: string;
+    menuItemId: string;
+  }>;
   searchParams: Promise<{
     filterField?: string;
     filterOperator?: string;
@@ -38,17 +44,18 @@ interface MenusMenuIdSectionIdPageProps {
   }>;
 }
 
-const MenusMenuIdSectionIdPage = async ({
+const MenuItemModifierGroupsPage = async ({
   params,
   searchParams,
-}: MenusMenuIdSectionIdPageProps) => {
+}: MenuItemModifierGroupsPageProps) => {
   const [
     cookieStore,
-    { locale, menuId, menuSectionId },
+    { locale, menuSectionId, menuItemId },
     {
       filterField: rawFilterField,
       filterOperator: rawFilterOperator,
       filterValue,
+      organization,
       page: rawPage,
       pageSize: rawPageSize,
       quickFilterValue,
@@ -73,6 +80,21 @@ const MenusMenuIdSectionIdPage = async ({
     (operator) => operator === rawFilterOperator,
   );
 
+  const fetchOptions = { headers: { cookie: cookieStore.toString() } };
+  const section = await getAdminMenuSection(menuSectionId, fetchOptions);
+
+  if (!section?.menuId) notFound();
+  if (!organization) return redirect({ href: DEFAULT_MENUS_HREF, locale });
+
+  const [menu, selectedOrganization] = await Promise.all([
+    getAdminMenu(section.menuId, fetchOptions),
+    getAdminOrganization(organization, fetchOptions),
+  ]);
+
+  if (!menu) notFound();
+  if (!selectedOrganization || selectedOrganization.id !== menu.organizationId)
+    return redirect({ href: DEFAULT_MENUS_HREF, locale });
+
   if (
     rawPage !== String(page) ||
     rawPageSize !== String(pageSize) ||
@@ -88,8 +110,9 @@ const MenusMenuIdSectionIdPage = async ({
         (filterValue || NO_VALUE_FILTER_OPERATORS.includes(filterOperator))
       )
   ) {
-    const params = new URLSearchParams({
+    const redirectParams = new URLSearchParams({
       ...restSearchParams,
+      organization: selectedOrganization.slug,
       page: String(page),
       pageSize: String(pageSize),
       ...(sortBy && sortDirection && { sortBy, sortDirection }),
@@ -97,18 +120,16 @@ const MenusMenuIdSectionIdPage = async ({
         filterOperator &&
         filterValue && { filterField, filterOperator, filterValue }),
     });
+
     redirect({
-      href: `/menus/${menuId}/${menuSectionId}?${params.toString()}`,
+      href: `/menus/section/${menuSectionId}/${menuItemId}/modifier-groups?${redirectParams.toString()}`,
       locale,
     });
   }
 
-  const fetchOptions = { headers: { cookie: cookieStore.toString() } };
-  const [menu, section, { items, total }] = await Promise.all([
-    getAdminMenu(menuId, fetchOptions),
-    getAdminMenuSection(menuSectionId, fetchOptions),
-    getAdminMenuSectionItems(
-      menuSectionId,
+  const [{ links, total }, sessionData, fullOrgData] = await Promise.all([
+    getAdminMenuItemModifierGroups(
+      menuItemId,
       page,
       pageSize,
       filterField,
@@ -119,11 +140,6 @@ const MenusMenuIdSectionIdPage = async ({
       sortDirection,
       fetchOptions,
     ),
-  ]);
-
-  if (!menu || !section) notFound();
-
-  const [sessionData, fullOrgData] = await Promise.all([
     authClient.getSession({ fetchOptions }),
     authClient.organization.getFullOrganization({
       query: { organizationId: menu.organizationId },
@@ -137,22 +153,22 @@ const MenusMenuIdSectionIdPage = async ({
   const canWrite = role === "owner" || role === "admin";
 
   return (
-    <MenusMenuIdSectionId
+    <MenuItemModifierGroups
       canWrite={canWrite}
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
-      items={items}
-      menuId={menuId}
+      links={links}
+      menuId={menu.id}
+      menuItemId={menuItemId}
       page={page}
       pageSize={pageSize}
       quickFilterValue={quickFilterValue}
       rowCount={total}
-      menuSectionId={menuSectionId}
       sortBy={sortBy}
       sortDirection={sortDirection}
     />
   );
 };
 
-export default MenusMenuIdSectionIdPage;
+export default MenuItemModifierGroupsPage;

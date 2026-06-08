@@ -2,16 +2,18 @@
 
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import { DATE_FILTER_OPERATORS, STRING_FILTER_OPERATORS } from "./constants";
-import CreateMenuSectionDialog from "./CreateMenuSectionDialog";
-import UpdateMenuSectionDialog from "./UpdateMenuSectionDialog";
+import CreateMenuItemDialog from "./CreateMenuItemDialog";
+import UpdateMenuItemDialog from "./UpdateMenuItemDialog";
 
 import DateFilterInputValue from "@/components/DateFilterInputValue";
+import FlagImage from "@/components/FlagImage";
 import { DragHandle, Sortable } from "@/components/Sortable";
 
 import {
@@ -31,16 +33,19 @@ import {
   Cancel,
   Delete,
   Edit,
-  ListAlt,
+  Extension,
   Save,
   Sort,
 } from "@mui/icons-material";
 import {
+  Box,
   Button,
   DialogContentText,
   IconButton,
   Stack,
+  styled,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import type {
   GridColDef,
@@ -58,7 +63,8 @@ import {
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { Menu, MenuSection } from "@/types/menus";
+import { currencies } from "@/constants/currencies";
+import type { MenuItem } from "@/types/menus";
 
 import { isFilteredOrSorted } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
@@ -69,35 +75,43 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
-interface MenuDetailProps {
+const StyledBox = styled(Box)(({ theme }) => ({
+  position: "relative",
+  width: theme.spacing(4),
+  height: theme.spacing(4),
+  borderRadius: theme.shape.borderRadius,
+  overflow: "hidden",
+}));
+
+interface MenusMenuIdSectionIdProps {
   canWrite: boolean;
   filterField?: string;
   filterOperator?: string;
   filterValue?: string;
-  menu: Menu;
+  items: MenuItem[];
   page: number;
   pageSize: number;
   quickFilterValue?: string;
   rowCount: number;
-  sections: MenuSection[];
+  menuSectionId: string;
   sortBy?: string;
   sortDirection?: "asc" | "desc";
 }
 
-const MenusMenuId = ({
+const MenusMenuIdSectionId = ({
   canWrite,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  menu,
+  items: initialItems,
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,
   rowCount: initialRowCount,
-  sections: initialSections,
+  menuSectionId,
   sortBy,
   sortDirection,
-}: MenuDetailProps) => {
+}: MenusMenuIdSectionIdProps) => {
   const [isReorderMode, setIsReorderMode] = useState(false);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
@@ -129,6 +143,7 @@ const MenusMenuId = ({
   const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
+  const locale = useLocale();
 
   const apiRef = useGridApiRef();
 
@@ -137,18 +152,17 @@ const MenusMenuId = ({
   const router = useRouter();
 
   const searchParams = useSearchParams();
-  const organization = searchParams.get("organization");
 
   const {
-    data: { data: sections, total: rowCount } = {
-      data: initialSections,
+    data: { data: items, total: rowCount } = {
+      data: initialItems,
       total: initialRowCount,
     },
     mutate,
     isValidating: loading,
   } = useSWR(
     [
-      `/api/menus/${menu.id}/menu-sections`,
+      `/api/menu-sections/${menuSectionId}/menu-items`,
       filterModel.items[0]?.field,
       filterModel.items[0]?.operator,
       filterModel.items[0]?.value,
@@ -172,8 +186,8 @@ const MenusMenuId = ({
         ? filterItem.value.length > 0
         : !!filterItem?.value;
 
-      return fetcher<{ data: MenuSection[]; total: number }>(
-        `/api/menus/${menu.id}/menu-sections?${new URLSearchParams({
+      return fetcher<{ data: MenuItem[]; total: number }>(
+        `/api/menu-sections/${menuSectionId}/menu-items?${new URLSearchParams({
           limit: String(paginationModel.pageSize),
           offset: String(paginationModel.page * paginationModel.pageSize),
           ...(filterItem?.field &&
@@ -191,7 +205,7 @@ const MenusMenuId = ({
       );
     },
     {
-      fallbackData: { data: initialSections, total: initialRowCount },
+      fallbackData: { data: initialItems, total: initialRowCount },
       onSuccess: () => {
         setTimeout(() => {
           apiRef.current?.autosizeColumns(autosizeOptions);
@@ -203,7 +217,6 @@ const MenusMenuId = ({
   const isReorderDisabled =
     rowCount < 2 || isFilteredOrSorted(filterModel, sortModel);
 
-  const locale = useLocale();
   const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
   const tToolbar = useTranslations("dataGrid.toolbar");
@@ -327,17 +340,18 @@ const MenusMenuId = ({
     setDialog({
       content: (
         <DialogContentText>
-          {tMenus.rich("sections.actions.reorderSection.confirm", {
+          {tMenus.rich("items.actions.reorderItem.confirm", {
             bold: (chunks) => <strong>{chunks}</strong>,
           })}
         </DialogContentText>
       ),
       onConfirm: async () => {
         setIsReorderMode(true);
+
         setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
       },
       open: true,
-      title: tMenus("sections.actions.reorderSection.title"),
+      title: tMenus("items.actions.reorderItem.title"),
     });
   }, [apiRef, setDialog, tMenus]);
 
@@ -345,49 +359,50 @@ const MenusMenuId = ({
     setDialog({
       content: (
         <DialogContentText>
-          {tMenus.rich("sections.actions.reorderSection.save.confirm", {
+          {tMenus.rich("items.actions.reorderItem.save.confirm", {
             bold: (chunks) => <strong>{chunks}</strong>,
           })}
         </DialogContentText>
       ),
       onConfirm: async () => {
         try {
-          await fetcher(`/api/menus/${menu.id}/menu-sections/reorder`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              ids: sections.map(({ id }) => id),
-              offset: paginationModel.page * paginationModel.pageSize,
-            }),
-          });
+          await fetcher(
+            `/api/menu-sections/${menuSectionId}/menu-items/reorder`,
+            {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                ids: items.map(({ id }) => id),
+                offset: paginationModel.page * paginationModel.pageSize,
+              }),
+            },
+          );
 
           setIsReorderMode(false);
 
           setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
 
-          enqueueSnackbar(
-            tMenus("sections.actions.reorderSection.save.success"),
-            { variant: "success" },
-          );
+          enqueueSnackbar(tMenus("items.actions.reorderItem.save.success"), {
+            variant: "success",
+          });
         } catch {
           mutate();
 
-          enqueueSnackbar(
-            tMenus("sections.actions.reorderSection.save.error"),
-            { variant: "error" },
-          );
+          enqueueSnackbar(tMenus("items.actions.reorderItem.save.error"), {
+            variant: "error",
+          });
         }
       },
       open: true,
-      title: tMenus("sections.actions.reorderSection.save.label"),
+      title: tMenus("items.actions.reorderItem.save.label"),
     });
   }, [
     apiRef,
-    menu.id,
+    items,
     mutate,
     paginationModel.page,
     paginationModel.pageSize,
-    sections,
+    menuSectionId,
     setDialog,
     tMenus,
   ]);
@@ -396,7 +411,7 @@ const MenusMenuId = ({
     setDialog({
       content: (
         <DialogContentText>
-          {tMenus.rich("sections.actions.reorderSection.cancel.confirm", {
+          {tMenus.rich("items.actions.reorderItem.cancel.confirm", {
             bold: (chunks) => <strong>{chunks}</strong>,
           })}
         </DialogContentText>
@@ -407,7 +422,7 @@ const MenusMenuId = ({
         mutate();
       },
       open: true,
-      title: tMenus("sections.actions.reorderSection.cancel.label"),
+      title: tMenus("items.actions.reorderItem.cancel.label"),
     });
   }, [mutate, setDialog, tMenus]);
 
@@ -421,63 +436,67 @@ const MenusMenuId = ({
     const toIndex = source.index;
     if (fromIndex === toIndex) return;
 
-    const newSections = arrayMove(sections, fromIndex, toIndex);
-    mutate({ data: newSections, total: rowCount }, false);
+    const newItems = arrayMove(items, fromIndex, toIndex);
+    mutate({ data: newItems, total: rowCount }, false);
   };
 
-  const handleCreateSection = useCallback(() => {
-    setDialog({
-      content: <CreateMenuSectionDialog menuId={menu.id} mutate={mutate} />,
-      formId: "create-section-form",
-      open: true,
-      title: tMenus("sections.actions.createSection.title"),
-    });
-  }, [menu.id, mutate, setDialog, tMenus]);
-
-  const handleViewSection = useCallback(
-    (section: MenuSection) => {
-      const searchParams = new URLSearchParams({
-        ...(organization ? { organization } : {}),
+  const handleManageItem = useCallback(
+    ({ id }: MenuItem) => {
+      const params = new URLSearchParams({
+        ...Object.fromEntries(searchParams),
         page: "1",
         pageSize: "10",
       });
-      router.push(`/menus/${menu.id}/${section.id}?${searchParams.toString()}`);
+      router.push(
+        `/menus/section/${menuSectionId}/${id}/add-ons?${params.toString()}`,
+      );
     },
-    [menu.id, organization, router],
+    [router, searchParams, menuSectionId],
   );
 
-  const handleUpdateSection = useCallback(
-    (section: MenuSection) => {
+  const handleCreateItem = useCallback(() => {
+    setDialog({
+      content: (
+        <CreateMenuItemDialog mutate={mutate} menuSectionId={menuSectionId} />
+      ),
+      formId: "create-menu-item-form",
+      open: true,
+      title: tMenus("items.actions.createItem.title"),
+    });
+  }, [mutate, menuSectionId, setDialog, tMenus]);
+
+  const handleUpdateItem = useCallback(
+    (item: MenuItem) => {
       setDialog({
-        content: <UpdateMenuSectionDialog section={section} mutate={mutate} />,
-        formId: "update-section-form",
+        content: <UpdateMenuItemDialog item={item} mutate={mutate} />,
+        formId: "update-menu-item-form",
         open: true,
-        title: tMenus("sections.actions.updateSection.title"),
+        title: tMenus("items.actions.updateItem.title"),
       });
     },
     [mutate, setDialog, tMenus],
   );
 
-  const handleDeleteSection = useCallback(
-    ({ id, name }: MenuSection) => {
-      const displayName = localize(name, locale);
+  const handleDeleteItem = useCallback(
+    ({ id, name }: MenuItem) => {
+      const localizedName = localize(name, locale);
 
       setDialog({
         content: (
           <DialogContentText>
-            {tMenus.rich("sections.actions.deleteSection.confirm", {
+            {tMenus.rich("items.actions.deleteItem.confirm", {
               bold: (chunks) => <strong>{chunks}</strong>,
-              name: displayName,
+              name: localizedName,
             })}
           </DialogContentText>
         ),
         onConfirm: async () => {
           try {
-            await fetcher(`/api/menu-sections/${id}`, { method: "DELETE" });
+            await fetcher(`/api/menu-items/${id}`, { method: "DELETE" });
 
             enqueueSnackbar(
-              tMenus("sections.actions.deleteSection.success", {
-                name: displayName,
+              tMenus("items.actions.deleteItem.success", {
+                name: localizedName,
               }),
               { variant: "success" },
             );
@@ -485,15 +504,13 @@ const MenusMenuId = ({
             mutate();
           } catch {
             enqueueSnackbar(
-              tMenus("sections.actions.deleteSection.error", {
-                name: displayName,
-              }),
+              tMenus("items.actions.deleteItem.error", { name: localizedName }),
               { variant: "error" },
             );
           }
         },
         open: true,
-        title: tMenus("sections.actions.deleteSection.title"),
+        title: tMenus("items.actions.deleteItem.title"),
       });
     },
     [locale, mutate, setDialog, tMenus],
@@ -514,72 +531,185 @@ const MenusMenuId = ({
             },
           ]
         : []),
+      ...(canWrite
+        ? [
+            {
+              disableColumnMenu: true,
+              field: "actions",
+              filterable: false,
+              headerName: tMenus("items.actions.label"),
+              renderCell: ({ row }: GridRenderCellParams<MenuItem>) => (
+                <Stack
+                  height="100%"
+                  direction="row"
+                  alignItems="center"
+                  gap={1}
+                >
+                  <Tooltip title={tMenus("addOns.label")}>
+                    <IconButton
+                      onClick={(event) => {
+                        event.stopPropagation();
+
+                        handleManageItem(row);
+                      }}
+                      size="small"
+                    >
+                      <Extension fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title={tMenus("items.actions.updateItem.title")}>
+                    <IconButton
+                      onClick={(event) => {
+                        event.stopPropagation();
+
+                        handleUpdateItem(row);
+                      }}
+                      size="small"
+                    >
+                      <Edit fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title={tMenus("items.actions.deleteItem.title")}>
+                    <IconButton
+                      color="error"
+                      onClick={(event) => {
+                        event.stopPropagation();
+
+                        handleDeleteItem(row);
+                      }}
+                      size="small"
+                    >
+                      <Delete fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </Stack>
+              ),
+              resizable: false,
+              sortable: false,
+            },
+          ]
+        : []),
       {
-        disableColumnMenu: true,
-        field: "actions",
+        field: "image",
         filterable: false,
-        headerName: tMenus("sections.actions.label"),
-        renderCell: ({ row }: GridRenderCellParams<MenuSection>) => (
-          <Stack height="100%" direction="row" alignItems="center" gap={1}>
-            <Tooltip title={tMenus("sections.actions.viewItems.title")}>
-              <IconButton
-                onClick={(event) => {
-                  event.stopPropagation();
-
-                  handleViewSection(row);
-                }}
-                size="small"
-              >
-                <ListAlt fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            {canWrite && (
-              <Tooltip title={tMenus("sections.actions.updateSection.title")}>
-                <IconButton
-                  onClick={(event) => {
-                    event.stopPropagation();
-
-                    handleUpdateSection(row);
-                  }}
-                  size="small"
-                >
-                  <Edit fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
-            {canWrite && (
-              <Tooltip title={tMenus("sections.actions.deleteSection.title")}>
-                <IconButton
-                  color="error"
-                  onClick={(event) => {
-                    event.stopPropagation();
-
-                    handleDeleteSection(row);
-                  }}
-                  size="small"
-                >
-                  <Delete fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
-          </Stack>
-        ),
+        headerName: tMenus("items.image.label"),
+        renderCell: ({ value }: { value?: string | null }) =>
+          value && (
+            <Stack height="100%" flexDirection="row" alignItems="center">
+              <StyledBox>
+                <Image
+                  alt={value}
+                  fill
+                  src={value}
+                  style={{ objectFit: "cover" }}
+                />
+              </StyledBox>
+            </Stack>
+          ),
         resizable: false,
         sortable: false,
       },
       {
         field: "name",
         filterOperators: stringFilterOperators,
-        headerName: tMenus("sections.name.label"),
-        valueGetter: (_value: unknown, row: MenuSection) =>
+        headerName: tMenus("items.name.label"),
+        valueGetter: (_value: unknown, row: MenuItem) =>
           localize(row.name, locale),
       },
       {
         field: "description",
         filterOperators: stringFilterOperators,
-        headerName: `${tMenus("sections.description.label")} ${tCommon("optional")}`,
-        valueGetter: (_value: unknown, row: MenuSection) =>
+        headerName: `${tMenus("items.description.label")} ${tCommon("optional")}`,
+        valueGetter: (_value: unknown, row: MenuItem) =>
           localize(row.description, locale),
+      },
+      {
+        field: "priceCurrency",
+        headerName: tMenus("offers.priceCurrency.label"),
+        sortable: false,
+        filterable: false,
+        valueGetter: (_value: unknown, { offer }: MenuItem) =>
+          offer?.priceCurrency,
+        renderCell: ({ value }: { value?: string }) => {
+          const currency = currencies.find(
+            ({ currency }) => currency === value,
+          );
+          return (
+            <Stack height="100%" direction="row" alignItems="center" gap={1}>
+              {currency && (
+                <FlagImage code={currency.code} label={currency.label} />
+              )}
+              <Typography variant="body2">{value}</Typography>
+            </Stack>
+          );
+        },
+      },
+      {
+        field: "price",
+        filterable: false,
+        headerName: tMenus("offers.price.label"),
+        sortable: false,
+        valueGetter: (_value: unknown, { offer }: MenuItem) =>
+          offer?.price && Number(offer.price),
+      },
+      {
+        field: "availability",
+        headerName: tMenus("offers.availability.label"),
+        sortable: false,
+        filterable: false,
+        valueGetter: (_value: unknown, { offer }: MenuItem) =>
+          offer?.availability
+            ? tMenus(
+                `offers.availability.options.${offer.availability}` as Parameters<
+                  typeof tMenus
+                >[0],
+              )
+            : "",
+      },
+      {
+        field: "inventoryLevel",
+        headerName: `${tMenus("offers.inventoryLevel.value.label")} ${tCommon("optional")}`,
+        sortable: false,
+        filterable: false,
+        valueGetter: (_value: unknown, { offer }: MenuItem) =>
+          [offer?.inventoryLevel?.value, offer?.inventoryLevel?.unitText]
+            .join(" ")
+            .trim(),
+      },
+      {
+        field: "deliveryLeadTime",
+        headerName: `${tMenus("offers.deliveryLeadTime.value.label")} ${tCommon("optional")}`,
+        sortable: false,
+        filterable: false,
+        valueGetter: (_value: unknown, { offer }: MenuItem) =>
+          [offer?.deliveryLeadTime?.value, offer?.deliveryLeadTime?.unitText]
+            .join(" ")
+            .trim(),
+      },
+      {
+        field: "priceSpecification",
+        filterable: false,
+        headerName: `${tMenus("offers.priceSpecification.price.label")} ${tCommon("optional")}`,
+        sortable: false,
+        valueGetter: (_value: unknown, { offer }: MenuItem) =>
+          offer?.priceSpecification?.price &&
+          Number(offer.priceSpecification.price),
+      },
+      {
+        field: "priceSpecificationValidFrom",
+        headerName: `${tMenus("offers.priceSpecification.validFrom.label")} ${tCommon("optional")}`,
+        sortable: false,
+        filterable: false,
+        valueGetter: (_value: unknown, { offer }: MenuItem) =>
+          offer?.priceSpecification?.validFrom,
+      },
+      {
+        field: "priceSpecificationValidThrough",
+        headerName: `${tMenus("offers.priceSpecification.validThrough.label")} ${tCommon("optional")}`,
+        sortable: false,
+        filterable: false,
+        valueGetter: (_value: unknown, { offer }: MenuItem) =>
+          offer?.priceSpecification?.validThrough,
       },
       {
         field: "createdAt",
@@ -600,9 +730,9 @@ const MenusMenuId = ({
       canWrite,
       dateFilterOperators,
       format,
-      handleDeleteSection,
-      handleViewSection,
-      handleUpdateSection,
+      handleDeleteItem,
+      handleManageItem,
+      handleUpdateItem,
       isReorderMode,
       locale,
       stringFilterOperators,
@@ -618,12 +748,12 @@ const MenusMenuId = ({
           <>
             {canWrite && (
               <Button
-                onClick={handleCreateSection}
+                onClick={handleCreateItem}
                 size="small"
                 startIcon={<Add />}
                 variant="contained"
               >
-                {tMenus("sections.actions.createSection.title")}
+                {tMenus("items.actions.createItem.title")}
               </Button>
             )}
             {canWrite && (
@@ -634,7 +764,7 @@ const MenusMenuId = ({
                 startIcon={<Sort />}
                 variant="outlined"
               >
-                {tMenus("sections.actions.reorderSection.title")}
+                {tMenus("items.actions.reorderItem.title")}
               </Button>
             )}
           </>
@@ -646,7 +776,7 @@ const MenusMenuId = ({
               startIcon={<Cancel />}
               variant="outlined"
             >
-              {tMenus("sections.actions.reorderSection.cancel.label")}
+              {tMenus("items.actions.reorderItem.cancel.label")}
             </Button>
             <Button
               onClick={handleSaveReorder}
@@ -654,7 +784,7 @@ const MenusMenuId = ({
               startIcon={<Save />}
               variant="contained"
             >
-              {tMenus("sections.actions.reorderSection.save.label")}
+              {tMenus("items.actions.reorderItem.save.label")}
             </Button>
           </>
         )}
@@ -673,7 +803,7 @@ const MenusMenuId = ({
           paginationMode="server"
           paginationModel={paginationModel}
           rowCount={rowCount}
-          rows={sections}
+          rows={items}
           slots={{
             ...DATA_GRID_PROPS.slots,
             row: isReorderMode ? Sortable : undefined,
@@ -686,4 +816,4 @@ const MenusMenuId = ({
   );
 };
 
-export default MenusMenuId;
+export default MenusMenuIdSectionId;

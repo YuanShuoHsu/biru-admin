@@ -9,8 +9,7 @@ import { Extension, Tune, type SvgIconComponent } from "@mui/icons-material";
 import { Stack, Tab, Tabs } from "@mui/material";
 
 const MenuItemLayout = ({ children }: { children: React.ReactNode }) => {
-  const { menuId, menuSectionId, menuItemId } = useParams<{
-    menuId: string;
+  const { menuSectionId, menuItemId } = useParams<{
     menuSectionId: string;
     menuItemId: string;
   }>();
@@ -18,7 +17,7 @@ const MenuItemLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const tMenus = useTranslations("menus");
 
-  const basePath = `/menus/${menuId}/${menuSectionId}/${menuItemId}`;
+  const basePath = `/menus/section/${menuSectionId}/${menuItemId}`;
 
   const tabs: {
     Icon: SvgIconComponent;

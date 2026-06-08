@@ -8,8 +8,8 @@ import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import { DATE_FILTER_OPERATORS, STRING_FILTER_OPERATORS } from "./constants";
-import CreateModifierGroupDialog from "./CreateModifierGroupDialog";
-import UpdateModifierGroupDialog from "./UpdateModifierGroupDialog";
+import CreateMenuSectionDialog from "./CreateMenuSectionDialog";
+import UpdateMenuSectionDialog from "./UpdateMenuSectionDialog";
 
 import DateFilterInputValue from "@/components/DateFilterInputValue";
 import { DragHandle, Sortable } from "@/components/Sortable";
@@ -58,7 +58,7 @@ import {
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { Menu, ModifierGroup } from "@/types/menus";
+import type { Menu, MenuSection } from "@/types/menus";
 
 import { isFilteredOrSorted } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
@@ -69,35 +69,35 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
-interface ModifierGroupsProps {
+interface MenuDetailProps {
   canWrite: boolean;
   filterField?: string;
   filterOperator?: string;
   filterValue?: string;
-  groups: ModifierGroup[];
   menu: Menu;
   page: number;
   pageSize: number;
   quickFilterValue?: string;
   rowCount: number;
+  sections: MenuSection[];
   sortBy?: string;
   sortDirection?: "asc" | "desc";
 }
 
-const ModifierGroups = ({
+const MenusMenuId = ({
   canWrite,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  groups: initialGroups,
   menu,
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,
   rowCount: initialRowCount,
+  sections: initialSections,
   sortBy,
   sortDirection,
-}: ModifierGroupsProps) => {
+}: MenuDetailProps) => {
   const [isReorderMode, setIsReorderMode] = useState(false);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
@@ -132,8 +132,6 @@ const ModifierGroups = ({
 
   const apiRef = useGridApiRef();
 
-  const locale = useLocale();
-
   const pathname = usePathname();
 
   const router = useRouter();
@@ -142,15 +140,15 @@ const ModifierGroups = ({
   const organization = searchParams.get("organization");
 
   const {
-    data: { data: groups, total: rowCount } = {
-      data: initialGroups,
+    data: { data: sections, total: rowCount } = {
+      data: initialSections,
       total: initialRowCount,
     },
     mutate,
     isValidating: loading,
   } = useSWR(
     [
-      `/api/menus/${menu.id}/modifier-groups`,
+      `/api/menus/${menu.id}/menu-sections`,
       filterModel.items[0]?.field,
       filterModel.items[0]?.operator,
       filterModel.items[0]?.value,
@@ -174,8 +172,8 @@ const ModifierGroups = ({
         ? filterItem.value.length > 0
         : !!filterItem?.value;
 
-      return fetcher<{ data: ModifierGroup[]; total: number }>(
-        `/api/menus/${menu.id}/modifier-groups?${new URLSearchParams({
+      return fetcher<{ data: MenuSection[]; total: number }>(
+        `/api/menus/${menu.id}/menu-sections?${new URLSearchParams({
           limit: String(paginationModel.pageSize),
           offset: String(paginationModel.page * paginationModel.pageSize),
           ...(filterItem?.field &&
@@ -193,7 +191,7 @@ const ModifierGroups = ({
       );
     },
     {
-      fallbackData: { data: initialGroups, total: initialRowCount },
+      fallbackData: { data: initialSections, total: initialRowCount },
       onSuccess: () => {
         setTimeout(() => {
           apiRef.current?.autosizeColumns(autosizeOptions);
@@ -205,6 +203,8 @@ const ModifierGroups = ({
   const isReorderDisabled =
     rowCount < 2 || isFilteredOrSorted(filterModel, sortModel);
 
+  const locale = useLocale();
+  const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
   const tToolbar = useTranslations("dataGrid.toolbar");
 
@@ -323,11 +323,11 @@ const ModifierGroups = ({
     [pathname, router, searchParams],
   );
 
-  const handleEnterModifierGroupReorderMode = useCallback(() => {
+  const handleEnterReorderMode = useCallback(() => {
     setDialog({
       content: (
         <DialogContentText>
-          {tMenus.rich("modifierGroups.actions.reorderGroup.confirm", {
+          {tMenus.rich("sections.actions.reorderSection.confirm", {
             bold: (chunks) => <strong>{chunks}</strong>,
           })}
         </DialogContentText>
@@ -337,26 +337,26 @@ const ModifierGroups = ({
         setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
       },
       open: true,
-      title: tMenus("modifierGroups.actions.reorderGroup.title"),
+      title: tMenus("sections.actions.reorderSection.title"),
     });
   }, [apiRef, setDialog, tMenus]);
 
-  const handleSaveModifierGroupReorder = useCallback(() => {
+  const handleSaveReorder = useCallback(() => {
     setDialog({
       content: (
         <DialogContentText>
-          {tMenus.rich("modifierGroups.actions.reorderGroup.save.confirm", {
+          {tMenus.rich("sections.actions.reorderSection.save.confirm", {
             bold: (chunks) => <strong>{chunks}</strong>,
           })}
         </DialogContentText>
       ),
       onConfirm: async () => {
         try {
-          await fetcher(`/api/menus/${menu.id}/modifier-groups/reorder`, {
+          await fetcher(`/api/menus/${menu.id}/menu-sections/reorder`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              ids: groups.map(({ id }) => id),
+              ids: sections.map(({ id }) => id),
               offset: paginationModel.page * paginationModel.pageSize,
             }),
           });
@@ -366,37 +366,37 @@ const ModifierGroups = ({
           setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
 
           enqueueSnackbar(
-            tMenus("modifierGroups.actions.reorderGroup.save.success"),
+            tMenus("sections.actions.reorderSection.save.success"),
             { variant: "success" },
           );
         } catch {
           mutate();
 
           enqueueSnackbar(
-            tMenus("modifierGroups.actions.reorderGroup.save.error"),
+            tMenus("sections.actions.reorderSection.save.error"),
             { variant: "error" },
           );
         }
       },
       open: true,
-      title: tMenus("modifierGroups.actions.reorderGroup.save.label"),
+      title: tMenus("sections.actions.reorderSection.save.label"),
     });
   }, [
     apiRef,
-    groups,
     menu.id,
     mutate,
     paginationModel.page,
     paginationModel.pageSize,
+    sections,
     setDialog,
     tMenus,
   ]);
 
-  const handleCancelModifierGroupReorder = useCallback(() => {
+  const handleCancelReorder = useCallback(() => {
     setDialog({
       content: (
         <DialogContentText>
-          {tMenus.rich("modifierGroups.actions.reorderGroup.cancel.confirm", {
+          {tMenus.rich("sections.actions.reorderSection.cancel.confirm", {
             bold: (chunks) => <strong>{chunks}</strong>,
           })}
         </DialogContentText>
@@ -407,11 +407,11 @@ const ModifierGroups = ({
         mutate();
       },
       open: true,
-      title: tMenus("modifierGroups.actions.reorderGroup.cancel.label"),
+      title: tMenus("sections.actions.reorderSection.cancel.label"),
     });
   }, [mutate, setDialog, tMenus]);
 
-  const handleModifierGroupDragEnd = ({ operation }: DragEndEvent) => {
+  const handleDragEnd = ({ operation }: DragEndEvent) => {
     if (!isSortableOperation(operation)) return;
 
     const { canceled, source } = operation;
@@ -421,65 +421,65 @@ const ModifierGroups = ({
     const toIndex = source.index;
     if (fromIndex === toIndex) return;
 
-    const newGroups = arrayMove(groups, fromIndex, toIndex);
-    mutate({ data: newGroups, total: rowCount }, false);
+    const newSections = arrayMove(sections, fromIndex, toIndex);
+    mutate({ data: newSections, total: rowCount }, false);
   };
 
-  const handleCreateModifierGroup = useCallback(() => {
+  const handleCreateSection = useCallback(() => {
     setDialog({
-      content: <CreateModifierGroupDialog menuId={menu.id} mutate={mutate} />,
-      formId: "create-modifier-group-form",
+      content: <CreateMenuSectionDialog menuId={menu.id} mutate={mutate} />,
+      formId: "create-section-form",
       open: true,
-      title: tMenus("modifierGroups.actions.createGroup.title"),
+      title: tMenus("sections.actions.createSection.title"),
     });
   }, [menu.id, mutate, setDialog, tMenus]);
 
-  const handleViewModifiers = useCallback(
-    (group: ModifierGroup) => {
-      const params = new URLSearchParams({
+  const handleViewSection = useCallback(
+    (section: MenuSection) => {
+      const searchParams = new URLSearchParams({
         ...(organization ? { organization } : {}),
         page: "1",
         pageSize: "10",
       });
       router.push(
-        `/menus/${menu.id}/modifier-groups/${group.id}?${params.toString()}`,
+        `/menus/section/${section.id}?${searchParams.toString()}`,
       );
     },
-    [menu.id, organization, router],
+    [organization, router],
   );
 
-  const handleUpdateModifierGroup = useCallback(
-    (group: ModifierGroup) => {
+  const handleUpdateSection = useCallback(
+    (section: MenuSection) => {
       setDialog({
-        content: <UpdateModifierGroupDialog group={group} mutate={mutate} />,
-        formId: "update-modifier-group-form",
+        content: <UpdateMenuSectionDialog section={section} mutate={mutate} />,
+        formId: "update-section-form",
         open: true,
-        title: tMenus("modifierGroups.actions.updateGroup.title"),
+        title: tMenus("sections.actions.updateSection.title"),
       });
     },
     [mutate, setDialog, tMenus],
   );
 
-  const handleDeleteModifierGroup = useCallback(
-    ({ id, displayName }: ModifierGroup) => {
-      const name = localize(displayName, locale);
+  const handleDeleteSection = useCallback(
+    ({ id, name }: MenuSection) => {
+      const displayName = localize(name, locale);
 
       setDialog({
         content: (
           <DialogContentText>
-            {tMenus.rich("modifierGroups.actions.deleteGroup.confirm", {
+            {tMenus.rich("sections.actions.deleteSection.confirm", {
               bold: (chunks) => <strong>{chunks}</strong>,
-              name,
+              name: displayName,
             })}
           </DialogContentText>
         ),
         onConfirm: async () => {
           try {
-            await fetcher(`/api/modifier-groups/${id}`, { method: "DELETE" });
+            await fetcher(`/api/menu-sections/${id}`, { method: "DELETE" });
 
             enqueueSnackbar(
-              tMenus("modifierGroups.actions.deleteGroup.success", {
-                name,
+              tMenus("sections.actions.deleteSection.success", {
+                name: displayName,
               }),
               { variant: "success" },
             );
@@ -487,15 +487,15 @@ const ModifierGroups = ({
             mutate();
           } catch {
             enqueueSnackbar(
-              tMenus("modifierGroups.actions.deleteGroup.error", {
-                name,
+              tMenus("sections.actions.deleteSection.error", {
+                name: displayName,
               }),
               { variant: "error" },
             );
           }
         },
         open: true,
-        title: tMenus("modifierGroups.actions.deleteGroup.title"),
+        title: tMenus("sections.actions.deleteSection.title"),
       });
     },
     [locale, mutate, setDialog, tMenus],
@@ -520,17 +520,15 @@ const ModifierGroups = ({
         disableColumnMenu: true,
         field: "actions",
         filterable: false,
-        headerName: tMenus("modifierGroups.actions.label"),
-        renderCell: ({ row }: GridRenderCellParams<ModifierGroup>) => (
+        headerName: tMenus("sections.actions.label"),
+        renderCell: ({ row }: GridRenderCellParams<MenuSection>) => (
           <Stack height="100%" direction="row" alignItems="center" gap={1}>
-            <Tooltip
-              title={tMenus("modifierGroups.actions.viewModifiers.title")}
-            >
+            <Tooltip title={tMenus("sections.actions.viewItems.title")}>
               <IconButton
                 onClick={(event) => {
                   event.stopPropagation();
 
-                  handleViewModifiers(row);
+                  handleViewSection(row);
                 }}
                 size="small"
               >
@@ -538,14 +536,12 @@ const ModifierGroups = ({
               </IconButton>
             </Tooltip>
             {canWrite && (
-              <Tooltip
-                title={tMenus("modifierGroups.actions.updateGroup.title")}
-              >
+              <Tooltip title={tMenus("sections.actions.updateSection.title")}>
                 <IconButton
                   onClick={(event) => {
                     event.stopPropagation();
 
-                    handleUpdateModifierGroup(row);
+                    handleUpdateSection(row);
                   }}
                   size="small"
                 >
@@ -554,15 +550,13 @@ const ModifierGroups = ({
               </Tooltip>
             )}
             {canWrite && (
-              <Tooltip
-                title={tMenus("modifierGroups.actions.deleteGroup.title")}
-              >
+              <Tooltip title={tMenus("sections.actions.deleteSection.title")}>
                 <IconButton
                   color="error"
                   onClick={(event) => {
                     event.stopPropagation();
 
-                    handleDeleteModifierGroup(row);
+                    handleDeleteSection(row);
                   }}
                   size="small"
                 >
@@ -576,28 +570,18 @@ const ModifierGroups = ({
         sortable: false,
       },
       {
-        field: "displayName",
+        field: "name",
         filterOperators: stringFilterOperators,
-        headerName: tMenus("modifierGroups.displayName.label"),
-        valueGetter: (_value: unknown, { displayName }: ModifierGroup) =>
-          localize(displayName, locale),
+        headerName: tMenus("sections.name.label"),
+        valueGetter: (_value: unknown, row: MenuSection) =>
+          localize(row.name, locale),
       },
       {
-        field: "minSelectionCount",
-        filterable: false,
-        headerName: tMenus("modifierGroups.minSelectionCount.label"),
-        sortable: false,
-      },
-      {
-        field: "maxSelectionCount",
-        filterable: false,
-        headerName: tMenus("modifierGroups.maxSelectionCount.label"),
-        renderCell: ({
-          row: { maxSelectionCount },
-        }: GridRenderCellParams<ModifierGroup>) =>
-          maxSelectionCount ??
-          tMenus("modifierGroups.maxSelectionCount.unlimited"),
-        sortable: false,
+        field: "description",
+        filterOperators: stringFilterOperators,
+        headerName: `${tMenus("sections.description.label")} ${tCommon("optional")}`,
+        valueGetter: (_value: unknown, row: MenuSection) =>
+          localize(row.description, locale),
       },
       {
         field: "createdAt",
@@ -618,12 +602,13 @@ const ModifierGroups = ({
       canWrite,
       dateFilterOperators,
       format,
-      handleDeleteModifierGroup,
-      handleUpdateModifierGroup,
-      handleViewModifiers,
+      handleDeleteSection,
+      handleViewSection,
+      handleUpdateSection,
       isReorderMode,
       locale,
       stringFilterOperators,
+      tCommon,
       tMenus,
     ],
   );
@@ -635,48 +620,48 @@ const ModifierGroups = ({
           <>
             {canWrite && (
               <Button
-                onClick={handleCreateModifierGroup}
+                onClick={handleCreateSection}
                 size="small"
                 startIcon={<Add />}
                 variant="contained"
               >
-                {tMenus("modifierGroups.actions.createGroup.title")}
+                {tMenus("sections.actions.createSection.title")}
               </Button>
             )}
             {canWrite && (
               <Button
                 disabled={isReorderDisabled}
-                onClick={handleEnterModifierGroupReorderMode}
+                onClick={handleEnterReorderMode}
                 size="small"
                 startIcon={<Sort />}
                 variant="outlined"
               >
-                {tMenus("modifierGroups.actions.reorderGroup.title")}
+                {tMenus("sections.actions.reorderSection.title")}
               </Button>
             )}
           </>
         ) : (
           <>
             <Button
-              onClick={handleCancelModifierGroupReorder}
+              onClick={handleCancelReorder}
               size="small"
               startIcon={<Cancel />}
               variant="outlined"
             >
-              {tMenus("modifierGroups.actions.reorderGroup.cancel.label")}
+              {tMenus("sections.actions.reorderSection.cancel.label")}
             </Button>
             <Button
-              onClick={handleSaveModifierGroupReorder}
+              onClick={handleSaveReorder}
               size="small"
               startIcon={<Save />}
               variant="contained"
             >
-              {tMenus("modifierGroups.actions.reorderGroup.save.label")}
+              {tMenus("sections.actions.reorderSection.save.label")}
             </Button>
           </>
         )}
       </Stack>
-      <DragDropProvider onDragEnd={handleModifierGroupDragEnd}>
+      <DragDropProvider onDragEnd={handleDragEnd}>
         <DataGrid
           {...DATA_GRID_PROPS}
           apiRef={apiRef}
@@ -690,7 +675,7 @@ const ModifierGroups = ({
           paginationMode="server"
           paginationModel={paginationModel}
           rowCount={rowCount}
-          rows={groups}
+          rows={sections}
           slots={{
             ...DATA_GRID_PROPS.slots,
             row: isReorderMode ? Sortable : undefined,
@@ -703,4 +688,4 @@ const ModifierGroups = ({
   );
 };
 
-export default ModifierGroups;
+export default MenusMenuId;

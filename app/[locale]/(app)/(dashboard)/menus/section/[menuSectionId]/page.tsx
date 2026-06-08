@@ -2,7 +2,7 @@ import { setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
-import ModifierGroups from ".";
+import MenusMenuIdSectionId from ".";
 import {
   FILTER_FIELDS,
   FILTER_OPERATORS,
@@ -17,10 +17,16 @@ import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
-import { getAdminMenu, getAdminModifierGroups } from "@/utils/menus";
+import {
+  DEFAULT_MENUS_HREF,
+  getAdminMenu,
+  getAdminMenuSection,
+  getAdminMenuSectionItems,
+  getAdminOrganization,
+} from "@/utils/menus";
 
-interface ModifierGroupsPageProps {
-  params: Promise<{ locale: Locale; menuId: string }>;
+interface MenusMenuIdSectionIdPageProps {
+  params: Promise<{ locale: Locale; menuSectionId: string }>;
   searchParams: Promise<{
     filterField?: string;
     filterOperator?: string;
@@ -34,17 +40,18 @@ interface ModifierGroupsPageProps {
   }>;
 }
 
-const ModifierGroupsPage = async ({
+const MenusMenuIdSectionIdPage = async ({
   params,
   searchParams,
-}: ModifierGroupsPageProps) => {
+}: MenusMenuIdSectionIdPageProps) => {
   const [
     cookieStore,
-    { locale, menuId },
+    { locale, menuSectionId },
     {
       filterField: rawFilterField,
       filterOperator: rawFilterOperator,
       filterValue,
+      organization,
       page: rawPage,
       pageSize: rawPageSize,
       quickFilterValue,
@@ -69,6 +76,21 @@ const ModifierGroupsPage = async ({
     (operator) => operator === rawFilterOperator,
   );
 
+  const fetchOptions = { headers: { cookie: cookieStore.toString() } };
+  const section = await getAdminMenuSection(menuSectionId, fetchOptions);
+
+  if (!section?.menuId) notFound();
+  if (!organization) return redirect({ href: DEFAULT_MENUS_HREF, locale });
+
+  const [menu, selectedOrganization] = await Promise.all([
+    getAdminMenu(section.menuId, fetchOptions),
+    getAdminOrganization(organization, fetchOptions),
+  ]);
+
+  if (!menu) notFound();
+  if (!selectedOrganization || selectedOrganization.id !== menu.organizationId)
+    return redirect({ href: DEFAULT_MENUS_HREF, locale });
+
   if (
     rawPage !== String(page) ||
     rawPageSize !== String(pageSize) ||
@@ -86,6 +108,7 @@ const ModifierGroupsPage = async ({
   ) {
     const params = new URLSearchParams({
       ...restSearchParams,
+      organization: selectedOrganization.slug,
       page: String(page),
       pageSize: String(pageSize),
       ...(sortBy && sortDirection && { sortBy, sortDirection }),
@@ -93,17 +116,16 @@ const ModifierGroupsPage = async ({
         filterOperator &&
         filterValue && { filterField, filterOperator, filterValue }),
     });
+
     redirect({
-      href: `/menus/${menuId}/modifier-groups?${params.toString()}`,
+      href: `/menus/section/${menuSectionId}?${params.toString()}`,
       locale,
     });
   }
 
-  const fetchOptions = { headers: { cookie: cookieStore.toString() } };
-  const [menu, { groups, total }] = await Promise.all([
-    getAdminMenu(menuId, fetchOptions),
-    getAdminModifierGroups(
-      menuId,
+  const [{ items, total }, sessionData, fullOrgData] = await Promise.all([
+    getAdminMenuSectionItems(
+      menuSectionId,
       page,
       pageSize,
       filterField,
@@ -114,11 +136,6 @@ const ModifierGroupsPage = async ({
       sortDirection,
       fetchOptions,
     ),
-  ]);
-
-  if (!menu) notFound();
-
-  const [sessionData, fullOrgData] = await Promise.all([
     authClient.getSession({ fetchOptions }),
     authClient.organization.getFullOrganization({
       query: { organizationId: menu.organizationId },
@@ -132,21 +149,21 @@ const ModifierGroupsPage = async ({
   const canWrite = role === "owner" || role === "admin";
 
   return (
-    <ModifierGroups
+    <MenusMenuIdSectionId
       canWrite={canWrite}
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
-      groups={groups}
-      menu={menu}
+      items={items}
       page={page}
       pageSize={pageSize}
       quickFilterValue={quickFilterValue}
       rowCount={total}
+      menuSectionId={menuSectionId}
       sortBy={sortBy}
       sortDirection={sortDirection}
     />
   );
 };
 
-export default ModifierGroupsPage;
+export default MenusMenuIdSectionIdPage;
