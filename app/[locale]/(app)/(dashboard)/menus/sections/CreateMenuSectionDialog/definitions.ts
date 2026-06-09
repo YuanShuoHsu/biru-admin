@@ -1,24 +1,20 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-import { hasAllLocalizedText } from "@/utils/locale";
+import {
+  refineRequiredLocalizedText,
+  refineOptionalLocalizedText,
+} from "@/utils/locale";
 
 export const useCreateMenuSectionFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z.object({
     name: z
-      .record(
-        z.string(),
-        z
-          .string()
-          .trim()
-          .min(1, { error: tValidation("name.minLength") }),
-      )
-      .refine(hasAllLocalizedText, {
-        message: tValidation("localizedText.required"),
-        path: ["root"],
-      }),
+      .record(z.string(), z.string().trim())
+      .superRefine(
+        refineRequiredLocalizedText(tValidation("localizedText.required")),
+      ),
     description: z
       .record(
         z.string(),
@@ -29,7 +25,12 @@ export const useCreateMenuSectionFormSchema = () => {
             error: tValidation("description.maxLength"),
           }),
       )
-      .optional(),
+      .optional()
+      .superRefine(
+        refineOptionalLocalizedText(
+          tValidation("localizedText.completeOrEmpty"),
+        ),
+      ),
   });
 };
 

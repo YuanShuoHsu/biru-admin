@@ -42,12 +42,13 @@
     "invalid": "이메일이 유효하지 않습니다."
   },
   "firstName": {
-    "minLength": "이름은 1자 이상이어야 합니다."
+    "required": "이름은 필수입니다."
   },
   "gender": {
     "required": "성별은 필수입니다."
   },
   "localizedText": {
+    "completeOrEmpty": "하나의 언어라도 입력하면 모든 언어를 입력해야 합니다.",
     "required": "모든 언어는 필수입니다."
   },
   "member": {
@@ -57,7 +58,7 @@
     "required": "옵션 그룹은 필수입니다."
   },
   "name": {
-    "minLength": "이름은 2자 이상이어야 합니다."
+    "required": "이름은 필수입니다."
   },
   "newPassword": {
     "differentFromCurrent": "현재 비밀번호와 달라야 함.",
@@ -94,7 +95,7 @@
   },
   "slug": {
     "letter": "영문자를 최소 1개 포함.",
-    "minLength": "슬러그는 1자 이상이어야 합니다."
+    "required": "슬러그는 필수입니다."
   },
   "validFrom": {
     "beforeValidThrough": "시작일은 종료일보다 이전이어야 합니다."

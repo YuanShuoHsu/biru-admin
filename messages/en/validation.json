@@ -42,12 +42,13 @@
     "invalid": "Email is not valid."
   },
   "firstName": {
-    "minLength": "First name must be at least 1 character long."
+    "required": "First name is required."
   },
   "gender": {
     "required": "Gender is required."
   },
   "localizedText": {
+    "completeOrEmpty": "When any language is filled in, all languages are required.",
     "required": "All languages are required."
   },
   "member": {
@@ -57,7 +58,7 @@
     "required": "Modifier group is required."
   },
   "name": {
-    "minLength": "Name must be at least 2 characters long."
+    "required": "Name is required."
   },
   "newPassword": {
     "differentFromCurrent": "Be different from your current password.",
@@ -94,7 +95,7 @@
   },
   "slug": {
     "letter": "Contain at least one letter.",
-    "minLength": "Slug must be at least 1 character long."
+    "required": "Slug is required."
   },
   "validFrom": {
     "beforeValidThrough": "Start date must be before end date."

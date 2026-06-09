@@ -42,12 +42,13 @@
     "invalid": "电子邮件无效。"
   },
   "firstName": {
-    "minLength": "名字至少需要 1 个字符。"
+    "required": "名字为必填。"
   },
   "gender": {
     "required": "性别为必填。"
   },
   "localizedText": {
+    "completeOrEmpty": "填写任一语言时，所有语言皆须填写。",
     "required": "所有语言为必填。"
   },
   "member": {
@@ -57,7 +58,7 @@
     "required": "选项组为必填。"
   },
   "name": {
-    "minLength": "名称至少需要 2 个字符。"
+    "required": "名称为必填。"
   },
   "newPassword": {
     "differentFromCurrent": "与当前密码不相同。",
@@ -94,7 +95,7 @@
   },
   "slug": {
     "letter": "包含至少一个英文字母。",
-    "minLength": "标识符至少需要 1 个字符。"
+    "required": "标识符为必填。"
   },
   "validFrom": {
     "beforeValidThrough": "開始日期必須早於結束日期。"

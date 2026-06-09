@@ -106,9 +106,9 @@ const CreateModifierGroupDialog = ({
       <LocalizedTextFields
         fields={(lang) => [
           {
-            error: !!errors.displayName?.root,
+            error: !!errors.displayName?.[lang],
             fullWidth: true,
-            helperText: errors.displayName?.root?.message,
+            helperText: errors.displayName?.[lang]?.message,
             label: tMenus("modifierGroups.displayName.label"),
             onChange: (event) =>
               setValue("displayName", {

@@ -42,12 +42,13 @@
     "invalid": "電子郵件無效。"
   },
   "firstName": {
-    "minLength": "名字至少需要 1 個字元。"
+    "required": "名字為必填。"
   },
   "gender": {
     "required": "性別為必填。"
   },
   "localizedText": {
+    "completeOrEmpty": "填寫任一語言時，所有語言皆須填寫。",
     "required": "所有語言為必填。"
   },
   "member": {
@@ -57,7 +58,7 @@
     "required": "選項群組為必填。"
   },
   "name": {
-    "minLength": "名稱至少需要 2 個字元。"
+    "required": "名稱為必填。"
   },
   "newPassword": {
     "differentFromCurrent": "與目前密碼不相同。",
@@ -94,7 +95,7 @@
   },
   "slug": {
     "letter": "包含至少一個英文字母。",
-    "minLength": "識別碼至少需要 1 個字元。"
+    "required": "識別碼為必填。"
   },
   "validFrom": {
     "beforeValidThrough": "開始日期必須早於結束日期。"

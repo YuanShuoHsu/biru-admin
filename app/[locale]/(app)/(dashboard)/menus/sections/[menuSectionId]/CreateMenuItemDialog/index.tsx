@@ -198,9 +198,9 @@ const CreateMenuItemDialog = ({
       <LocalizedTextFields
         fields={(lang) => [
           {
-            error: !!errors.name?.root,
+            error: !!errors.name?.[lang],
             fullWidth: true,
-            helperText: errors.name?.root?.message,
+            helperText: errors.name?.[lang]?.message,
             label: tMenus("items.name.label"),
             onChange: (event) =>
               setValue("name", { ...nameValue, [lang]: event.target.value }),
@@ -209,9 +209,9 @@ const CreateMenuItemDialog = ({
             value: nameValue?.[lang] || "",
           },
           {
-            error: !!errors.description?.root,
+            error: !!errors.description?.[lang],
             fullWidth: true,
-            helperText: errors.description?.root?.message,
+            helperText: errors.description?.[lang]?.message,
             label: `${tMenus("items.description.label")} ${tCommon("optional")}`,
             maxRows: 4,
             multiline: true,

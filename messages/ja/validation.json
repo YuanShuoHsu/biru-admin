@@ -42,12 +42,13 @@
     "invalid": "メールアドレスが無効です。"
   },
   "firstName": {
-    "minLength": "名は1文字以上で入力してください。"
+    "required": "名は必須です。"
   },
   "gender": {
     "required": "性別は必須です。"
   },
   "localizedText": {
+    "completeOrEmpty": "いずれかの言語を入力した場合、すべての言語の入力が必要です。",
     "required": "すべての言語は必須です。"
   },
   "member": {
@@ -57,7 +58,7 @@
     "required": "オプショングループは必須です。"
   },
   "name": {
-    "minLength": "名前は2文字以上で入力してください。"
+    "required": "名前は必須です。"
   },
   "newPassword": {
     "differentFromCurrent": "現在のパスワードと異なる。",
@@ -94,7 +95,7 @@
   },
   "slug": {
     "letter": "英字を1文字以上含む。",
-    "minLength": "スラッグは1文字以上で入力してください。"
+    "required": "スラッグは必須です。"
   },
   "validFrom": {
     "beforeValidThrough": "開始日は終了日より前である必要があります。"

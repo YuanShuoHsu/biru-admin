@@ -104,9 +104,9 @@ const UpdateMenuDialog = ({ menu, mutate }: UpdateMenuDialogProps) => {
       <LocalizedTextFields
         fields={(lang) => [
           {
-            error: !!errors.name?.root,
+            error: !!errors.name?.[lang],
             fullWidth: true,
-            helperText: errors.name?.root?.message,
+            helperText: errors.name?.[lang]?.message,
             label: tMenus("name.label"),
             onChange: (event) =>
               setValue("name", { ...nameValue, [lang]: event.target.value }),
@@ -115,9 +115,9 @@ const UpdateMenuDialog = ({ menu, mutate }: UpdateMenuDialogProps) => {
             value: nameValue?.[lang] || "",
           },
           {
-            error: !!errors.description?.root,
+            error: !!errors.description?.[lang],
             fullWidth: true,
-            helperText: errors.description?.root?.message,
+            helperText: errors.description?.[lang]?.message,
             label: `${tMenus("description.label")} ${tCommon("optional")}`,
             maxRows: 4,
             multiline: true,

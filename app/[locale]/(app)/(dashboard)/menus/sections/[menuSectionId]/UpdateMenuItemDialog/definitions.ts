@@ -3,7 +3,10 @@ import * as z from "zod";
 
 import { itemAvailabilityValues } from "@/types/api";
 
-import { hasAllLocalizedText } from "@/utils/locale";
+import {
+  refineRequiredLocalizedText,
+  refineOptionalLocalizedText,
+} from "@/utils/locale";
 
 const quantitativeValueSchema = z.object({
   unitText: z.string().trim().optional(),
@@ -16,17 +19,10 @@ export const useUpdateMenuItemFormSchema = () => {
   return z.object({
     image: z.string().trim().optional(),
     name: z
-      .record(
-        z.string(),
-        z
-          .string()
-          .trim()
-          .min(1, { error: tValidation("name.minLength") }),
-      )
-      .refine(hasAllLocalizedText, {
-        message: tValidation("localizedText.required"),
-        path: ["root"],
-      }),
+      .record(z.string(), z.string().trim())
+      .superRefine(
+        refineRequiredLocalizedText(tValidation("localizedText.required")),
+      ),
     description: z
       .record(
         z.string(),
@@ -37,7 +33,12 @@ export const useUpdateMenuItemFormSchema = () => {
             error: tValidation("description.maxLength"),
           }),
       )
-      .optional(),
+      .optional()
+      .superRefine(
+        refineOptionalLocalizedText(
+          tValidation("localizedText.completeOrEmpty"),
+        ),
+      ),
     offer: z
       .object({
         priceCurrency: z.string().trim().min(1),

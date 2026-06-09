@@ -7,7 +7,7 @@ export const useTeamFormSchema = () => {
   return z.object({
     name: z
       .string()
-      .min(1, { error: tValidation("name.minLength") })
+      .min(1, { error: tValidation("name.required") })
       .trim(),
   });
 };
