@@ -18,53 +18,14 @@
       "title": "查看菜单"
     }
   },
-  "addOns": {
-    "actions": {
-      "createAddOn": {
-        "error": "新增{name}失败",
-        "success": "成功新增{name}",
-        "title": "新增加购"
-      },
-      "deleteAddOn": {
-        "confirm": "确定要删除 <bold>{name}</bold> 吗？",
-        "error": "删除{name}失败",
-        "success": "成功删除{name}",
-        "title": "删除加购"
-      },
-      "label": "操作",
-      "reorderAddOn": {
-        "cancel": {
-          "confirm": "确定要取消<bold>加购</bold>排序吗？未保存的更改将会丢失。",
-          "label": "取消加购排序"
-        },
-        "confirm": "确定要进行<bold>加购</bold>排序吗？",
-        "save": {
-          "confirm": "确定要保存<bold>加购</bold>排序吗？",
-          "error": "排序保存失败",
-          "label": "保存加购排序",
-          "success": "排序已保存"
-        },
-        "title": "加购排序"
-      },
-      "updateAddOn": {
-        "error": "更新{name}失败",
-        "success": "成功更新{name}",
-        "title": "编辑加购"
-      }
+  "availability": {
+    "label": "供应状态",
+    "options": {
+      "Discontinued": "已停售",
+      "InStock": "供应中",
+      "SoldOut": "售完"
     },
-    "addOnMenuItemId": {
-      "label": "加购品项",
-      "placeholder": "请选择您的加购品项"
-    },
-    "addOnMenuSectionId": {
-      "label": "加购分组",
-      "placeholder": "请选择您的加购分组"
-    },
-    "displayName": {
-      "menuItem": "加购分组 {menuSection} 加购品项 {menuItem}",
-      "menuSection": "加购分组 {menuSection}"
-    },
-    "label": "加购设置"
+    "placeholder": "请选择您的供应状态"
   },
   "createdAt": "创建时间",
   "description": {
@@ -85,41 +46,6 @@
       "zh-TW": "繁体中文"
     },
     "placeholder": "请选择您的菜单语言"
-  },
-  "itemModifierGroups": {
-    "actions": {
-      "attach": {
-        "error": "挂载选项组失败",
-        "success": "成功挂载选项组 {name}",
-        "title": "挂载选项组"
-      },
-      "detach": {
-        "confirm": "确定要解除 <bold>{name}</bold> 的挂载吗？此操作不会删除组本身。",
-        "error": "解除 {name} 挂载失败",
-        "success": "成功解除 {name} 挂载",
-        "title": "解除挂载"
-      },
-      "label": "操作",
-      "reorder": {
-        "cancel": {
-          "confirm": "确定要取消<bold>选项组</bold>排序吗？未保存的更改将会丢失。",
-          "label": "取消选项组排序"
-        },
-        "confirm": "确定要进行<bold>选项组</bold>排序吗？",
-        "save": {
-          "confirm": "确定要保存<bold>选项组</bold>排序吗？",
-          "error": "排序保存失败",
-          "label": "保存选项组排序",
-          "success": "排序已保存"
-        },
-        "title": "选项组排序"
-      }
-    },
-    "group": {
-      "label": "选项组",
-      "placeholder": "请选择您的选项组"
-    },
-    "label": "选项设置"
   },
   "items": {
     "actions": {
@@ -155,6 +81,54 @@
         "title": "编辑品项"
       }
     },
+    "addOns": {
+      "actions": {
+        "createAddOn": {
+          "error": "新增{name}失败",
+          "success": "成功新增{name}",
+          "title": "新增加购"
+        },
+        "deleteAddOn": {
+          "confirm": "确定要删除 <bold>{name}</bold> 吗？",
+          "error": "删除{name}失败",
+          "success": "成功删除{name}",
+          "title": "删除加购"
+        },
+        "label": "操作",
+        "reorderAddOn": {
+          "cancel": {
+            "confirm": "确定要取消<bold>加购</bold>排序吗？未保存的更改将会丢失。",
+            "label": "取消加购排序"
+          },
+          "confirm": "确定要进行<bold>加购</bold>排序吗？",
+          "save": {
+            "confirm": "确定要保存<bold>加购</bold>排序吗？",
+            "error": "排序保存失败",
+            "label": "保存加购排序",
+            "success": "排序已保存"
+          },
+          "title": "加购排序"
+        },
+        "updateAddOn": {
+          "error": "更新{name}失败",
+          "success": "成功更新{name}",
+          "title": "编辑加购"
+        }
+      },
+      "addOnMenuItemId": {
+        "label": "加购品项",
+        "placeholder": "请选择您的加购品项"
+      },
+      "addOnMenuSectionId": {
+        "label": "加购分组",
+        "placeholder": "请选择您的加购分组"
+      },
+      "displayName": {
+        "menuItem": "加购分组 {menuSection} 加购品项 {menuItem}",
+        "menuSection": "加购分组 {menuSection}"
+      },
+      "label": "加购设置"
+    },
     "description": {
       "label": "描述",
       "placeholder": "请输入您的品项描述"
@@ -164,9 +138,102 @@
       "placeholder": "请输入您的图片网址"
     },
     "label": "品项",
+    "modifierGroups": {
+      "actions": {
+        "attach": {
+          "error": "挂载选项组失败",
+          "success": "成功挂载选项组 {name}",
+          "title": "挂载选项组"
+        },
+        "detach": {
+          "confirm": "确定要解除 <bold>{name}</bold> 的挂载吗？此操作不会删除组本身。",
+          "error": "解除 {name} 挂载失败",
+          "success": "成功解除 {name} 挂载",
+          "title": "解除挂载"
+        },
+        "label": "操作",
+        "reorder": {
+          "cancel": {
+            "confirm": "确定要取消<bold>选项组</bold>排序吗？未保存的更改将会丢失。",
+            "label": "取消选项组排序"
+          },
+          "confirm": "确定要进行<bold>选项组</bold>排序吗？",
+          "save": {
+            "confirm": "确定要保存<bold>选项组</bold>排序吗？",
+            "error": "排序保存失败",
+            "label": "保存选项组排序",
+            "success": "排序已保存"
+          },
+          "title": "选项组排序"
+        }
+      },
+      "group": {
+        "label": "选项组",
+        "placeholder": "请选择您的选项组"
+      },
+      "label": "选项设置"
+    },
     "name": {
       "label": "品项名称",
       "placeholder": "请输入您的品项名称"
+    },
+    "offers": {
+      "deliveryLeadTime": {
+        "maxValue": {
+          "label": "最长备餐时间",
+          "placeholder": "请输入您的最长备餐时间"
+        },
+        "minValue": {
+          "label": "最短备餐时间",
+          "placeholder": "请输入您的最短备餐时间"
+        },
+        "unitText": {
+          "label": "时间单位",
+          "placeholder": "请输入您的单位"
+        },
+        "value": {
+          "label": "备餐时间",
+          "placeholder": "请输入您的备餐时间"
+        }
+      },
+      "inventoryLevel": {
+        "maxValue": {
+          "label": "最高库存量",
+          "placeholder": "请输入您的最高库存量"
+        },
+        "minValue": {
+          "label": "最低库存量",
+          "placeholder": "请输入您的最低库存量"
+        },
+        "unitText": {
+          "label": "库存单位",
+          "placeholder": "请输入您的库存单位"
+        },
+        "value": {
+          "label": "库存数量",
+          "placeholder": "请输入您的库存数量"
+        }
+      },
+      "label": "销售",
+      "price": {
+        "label": "价格",
+        "placeholder": "请输入您的价格"
+      },
+      "priceCurrency": {
+        "label": "币别"
+      },
+      "priceSpecification": {
+        "price": {
+          "label": "促销价",
+          "placeholder": "请输入您的促销价"
+        },
+        "validFrom": {
+          "label": "促销开始"
+        },
+        "validThrough": {
+          "label": "促销结束"
+        }
+      }
     },
     "suitableForDiet": {
       "label": "饮食限制"
@@ -276,73 +343,6 @@
   "name": {
     "label": "菜单名称",
     "placeholder": "请输入您的菜单名称"
-  },
-  "offers": {
-    "availability": {
-      "label": "供应状态",
-      "options": {
-        "Discontinued": "已停售",
-        "InStock": "供应中",
-        "SoldOut": "售完"
-      },
-      "placeholder": "请选择您的供应状态"
-    },
-    "deliveryLeadTime": {
-      "maxValue": {
-        "label": "最长备餐时间",
-        "placeholder": "请输入您的最长备餐时间"
-      },
-      "minValue": {
-        "label": "最短备餐时间",
-        "placeholder": "请输入您的最短备餐时间"
-      },
-      "unitText": {
-        "label": "时间单位",
-        "placeholder": "请输入您的单位"
-      },
-      "value": {
-        "label": "备餐时间",
-        "placeholder": "请输入您的备餐时间"
-      }
-    },
-    "inventoryLevel": {
-      "maxValue": {
-        "label": "最高库存量",
-        "placeholder": "请输入您的最高库存量"
-      },
-      "minValue": {
-        "label": "最低库存量",
-        "placeholder": "请输入您的最低库存量"
-      },
-      "unitText": {
-        "label": "库存单位",
-        "placeholder": "请输入您的库存单位"
-      },
-      "value": {
-        "label": "库存数量",
-        "placeholder": "请输入您的库存数量"
-      }
-    },
-    "label": "销售",
-    "price": {
-      "label": "价格",
-      "placeholder": "请输入您的价格"
-    },
-    "priceCurrency": {
-      "label": "币别"
-    },
-    "priceSpecification": {
-      "price": {
-        "label": "促销价",
-        "placeholder": "请输入您的促销价"
-      },
-      "validFrom": {
-        "label": "促销开始"
-      },
-      "validThrough": {
-        "label": "促销结束"
-      }
-    }
   },
   "organization": {
     "label": "组织",

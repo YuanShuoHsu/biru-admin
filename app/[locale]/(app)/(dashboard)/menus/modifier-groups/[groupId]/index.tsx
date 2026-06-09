@@ -20,6 +20,7 @@ import {
   NO_VALUE_FILTER_OPERATORS,
   STRING_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
+import { ITEM_AVAILABILITY_COLOR_MAP } from "@/constants/itemAvailability";
 
 import { arrayMove } from "@dnd-kit/helpers";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
@@ -563,17 +564,18 @@ const Modifiers = ({
       {
         field: "availability",
         filterable: false,
-        headerName: tMenus("offers.availability.label"),
+        headerName: tMenus("availability.label"),
         renderCell: ({
           row: { availability },
         }: GridRenderCellParams<Modifier>) =>
-          availability ? (
+          availability && (
             <Chip
-              label={tMenus(`offers.availability.options.${availability}`)}
+              color={ITEM_AVAILABILITY_COLOR_MAP[availability]}
+              label={tMenus(`availability.options.${availability}`)}
               size="small"
               variant="outlined"
             />
-          ) : null,
+          ),
         sortable: false,
       },
       {

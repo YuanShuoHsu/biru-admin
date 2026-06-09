@@ -237,14 +237,14 @@ const UpdateMenuItemDialog = ({ item, mutate }: UpdateMenuItemDialogProps) => {
         ]}
       />
       <Divider flexItem>
-        <Chip label={tMenus("offers.label")} size="small" />
+        <Chip label={tMenus("items.offers.label")} size="small" />
       </Divider>
       <Grid container width="100%" spacing={2}>
         <Grid size={{ xs: 12, sm: 6 }}>
           <CountrySelect
             error={!!errors.offer?.priceCurrency}
             helperText={errors.offer?.priceCurrency?.message}
-            label={tMenus("offers.priceCurrency.label")}
+            label={tMenus("items.offers.priceCurrency.label")}
             mode="currency"
             required
             value={
@@ -265,11 +265,11 @@ const UpdateMenuItemDialog = ({ item, mutate }: UpdateMenuItemDialogProps) => {
             isAllowed={({ floatValue }) =>
               floatValue === undefined || floatValue <= 99999999.99
             }
-            label={tMenus("offers.price.label")}
+            label={tMenus("items.offers.price.label")}
             name="offer.price"
             onBlur={register("offer.price").onBlur}
             onValueChange={({ value }) => setValue("offer.price", value)}
-            placeholder={tMenus("offers.price.placeholder")}
+            placeholder={tMenus("items.offers.price.placeholder")}
             required
             thousandSeparator=","
             value={price}
@@ -282,37 +282,29 @@ const UpdateMenuItemDialog = ({ item, mutate }: UpdateMenuItemDialogProps) => {
         error={!!errors.offer?.availability}
         fullWidth
         helperText={errors.offer?.availability?.message}
-        label={tMenus("offers.availability.label")}
+        label={tMenus("availability.label")}
         required
         select
         slotProps={{
           inputLabel: { shrink: true },
           select: {
             displayEmpty: true,
-            renderValue: (selected) =>
-              selected ? (
-                tMenus(
-                  `offers.availability.options.${selected}` as Parameters<
-                    typeof tMenus
-                  >[0],
-                )
+            renderValue: () =>
+              availability ? (
+                tMenus(`availability.options.${availability}`)
               ) : (
-                <em>{tMenus("offers.availability.placeholder")}</em>
+                <em>{tMenus("availability.placeholder")}</em>
               ),
           },
         }}
         value={availability}
       >
         <MenuItem disabled value="">
-          <em>{tMenus("offers.availability.placeholder")}</em>
+          <em>{tMenus("availability.placeholder")}</em>
         </MenuItem>
         {itemAvailabilityValues.map((value) => (
           <MenuItem key={value} value={value}>
-            {tMenus(
-              `offers.availability.options.${value}` as Parameters<
-                typeof tMenus
-              >[0],
-            )}
+            {tMenus(`availability.options.${value}`)}
           </MenuItem>
         ))}
       </TextField>
@@ -323,9 +315,11 @@ const UpdateMenuItemDialog = ({ item, mutate }: UpdateMenuItemDialogProps) => {
             error={!!errors.offer?.inventoryLevel?.value}
             fullWidth
             helperText={errors.offer?.inventoryLevel?.value?.message}
-            label={`${tMenus("offers.inventoryLevel.value.label")} ${tCommon("optional")}`}
+            label={`${tMenus("items.offers.inventoryLevel.value.label")} ${tCommon("optional")}`}
             min={0}
-            placeholder={tMenus("offers.inventoryLevel.value.placeholder")}
+            placeholder={tMenus(
+              "items.offers.inventoryLevel.value.placeholder",
+            )}
             value={inventoryLevel !== "" ? Number(inventoryLevel) : null}
             onValueChange={(value) =>
               setValue(
@@ -340,8 +334,10 @@ const UpdateMenuItemDialog = ({ item, mutate }: UpdateMenuItemDialogProps) => {
             error={!!errors.offer?.inventoryLevel?.unitText}
             fullWidth
             helperText={errors.offer?.inventoryLevel?.unitText?.message}
-            label={`${tMenus("offers.inventoryLevel.unitText.label")} ${tCommon("optional")}`}
-            placeholder={tMenus("offers.inventoryLevel.unitText.placeholder")}
+            label={`${tMenus("items.offers.inventoryLevel.unitText.label")} ${tCommon("optional")}`}
+            placeholder={tMenus(
+              "items.offers.inventoryLevel.unitText.placeholder",
+            )}
             {...register("offer.inventoryLevel.unitText")}
           />
         </Grid>
@@ -351,9 +347,11 @@ const UpdateMenuItemDialog = ({ item, mutate }: UpdateMenuItemDialogProps) => {
             error={!!errors.offer?.deliveryLeadTime?.value}
             fullWidth
             helperText={errors.offer?.deliveryLeadTime?.value?.message}
-            label={`${tMenus("offers.deliveryLeadTime.value.label")} ${tCommon("optional")}`}
+            label={`${tMenus("items.offers.deliveryLeadTime.value.label")} ${tCommon("optional")}`}
             min={0}
-            placeholder={tMenus("offers.deliveryLeadTime.value.placeholder")}
+            placeholder={tMenus(
+              "items.offers.deliveryLeadTime.value.placeholder",
+            )}
             value={
               deliveryLeadTimeValue !== ""
                 ? Number(deliveryLeadTimeValue)
@@ -372,8 +370,10 @@ const UpdateMenuItemDialog = ({ item, mutate }: UpdateMenuItemDialogProps) => {
             error={!!errors.offer?.deliveryLeadTime?.unitText}
             fullWidth
             helperText={errors.offer?.deliveryLeadTime?.unitText?.message}
-            label={`${tMenus("offers.deliveryLeadTime.unitText.label")} ${tCommon("optional")}`}
-            placeholder={tMenus("offers.deliveryLeadTime.unitText.placeholder")}
+            label={`${tMenus("items.offers.deliveryLeadTime.unitText.label")} ${tCommon("optional")}`}
+            placeholder={tMenus(
+              "items.offers.deliveryLeadTime.unitText.placeholder",
+            )}
             {...register("offer.deliveryLeadTime.unitText")}
           />
         </Grid>
@@ -388,13 +388,15 @@ const UpdateMenuItemDialog = ({ item, mutate }: UpdateMenuItemDialogProps) => {
             isAllowed={({ floatValue }) =>
               floatValue === undefined || floatValue <= 99999999.99
             }
-            label={`${tMenus("offers.priceSpecification.price.label")} ${tCommon("optional")}`}
+            label={`${tMenus("items.offers.priceSpecification.price.label")} ${tCommon("optional")}`}
             name="offer.priceSpecification.price"
             onBlur={register("offer.priceSpecification.price").onBlur}
             onValueChange={({ value }) =>
               setValue("offer.priceSpecification.price", value)
             }
-            placeholder={tMenus("offers.priceSpecification.price.placeholder")}
+            placeholder={tMenus(
+              "items.offers.priceSpecification.price.placeholder",
+            )}
             thousandSeparator=","
             value={priceSpecificationPrice}
             valueIsNumericString
@@ -402,7 +404,7 @@ const UpdateMenuItemDialog = ({ item, mutate }: UpdateMenuItemDialogProps) => {
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
           <DatePicker
-            label={`${tMenus("offers.priceSpecification.validFrom.label")} ${tCommon("optional")}`}
+            label={`${tMenus("items.offers.priceSpecification.validFrom.label")} ${tCommon("optional")}`}
             maxDate={
               priceSpecificationValidThrough
                 ? dayjs(priceSpecificationValidThrough)
@@ -433,7 +435,7 @@ const UpdateMenuItemDialog = ({ item, mutate }: UpdateMenuItemDialogProps) => {
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
           <DatePicker
-            label={`${tMenus("offers.priceSpecification.validThrough.label")} ${tCommon("optional")}`}
+            label={`${tMenus("items.offers.priceSpecification.validThrough.label")} ${tCommon("optional")}`}
             minDate={
               priceSpecificationValidFrom
                 ? dayjs(priceSpecificationValidFrom)

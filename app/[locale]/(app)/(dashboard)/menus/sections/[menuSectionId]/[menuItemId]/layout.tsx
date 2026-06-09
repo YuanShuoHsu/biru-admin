@@ -35,12 +35,12 @@ const MenuItemLayout = ({ children }: { children: React.ReactNode }) => {
   }[] = [
     {
       Icon: Extension,
-      label: tMenus("addOns.label"),
+      label: tMenus("items.addOns.label"),
       value: `${basePath}/add-ons`,
     },
     {
       Icon: Tune,
-      label: tMenus("itemModifierGroups.label"),
+      label: tMenus("items.modifierGroups.label"),
       value: `${basePath}/modifier-groups`,
     },
   ];

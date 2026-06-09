@@ -21,6 +21,8 @@ export type Modifier = components["schemas"]["ModifierResponseDto"];
 export type MenuItemModifierGroup =
   components["schemas"]["MenuItemModifierGroupResponseDto"];
 
+export type ItemAvailability = components["schemas"]["ItemAvailability"];
+
 export type MenuFilterField = (typeof menuFilterFieldValues)[number];
 export type MenuSortField = (typeof menuSortFieldValues)[number];
 

@@ -18,53 +18,14 @@
       "title": "View menu"
     }
   },
-  "addOns": {
-    "actions": {
-      "createAddOn": {
-        "error": "Failed to add {name}",
-        "success": "{name} added",
-        "title": "Add add-on"
-      },
-      "deleteAddOn": {
-        "confirm": "Are you sure you want to remove <bold>{name}</bold>?",
-        "error": "Failed to remove {name}",
-        "success": "{name} removed",
-        "title": "Remove add-on"
-      },
-      "label": "Actions",
-      "reorderAddOn": {
-        "cancel": {
-          "confirm": "Are you sure you want to cancel <bold>add-ons</bold> reorder? Unsaved changes will be lost.",
-          "label": "Cancel Add-ons Reorder"
-        },
-        "confirm": "Are you sure you want to reorder <bold>add-ons</bold>?",
-        "save": {
-          "confirm": "Are you sure you want to save <bold>add-ons</bold> reorder?",
-          "error": "Failed to save reorder",
-          "label": "Save Add-ons Reorder",
-          "success": "Reorder saved"
-        },
-        "title": "Reorder Add-ons"
-      },
-      "updateAddOn": {
-        "error": "Failed to update {name}",
-        "success": "{name} updated",
-        "title": "Edit add-on"
-      }
+  "availability": {
+    "label": "Availability",
+    "options": {
+      "Discontinued": "Discontinued",
+      "InStock": "In stock",
+      "SoldOut": "Sold out"
     },
-    "addOnMenuItemId": {
-      "label": "Add-on item",
-      "placeholder": "Please select your add-on item"
-    },
-    "addOnMenuSectionId": {
-      "label": "Add-on section",
-      "placeholder": "Please select your add-on section"
-    },
-    "displayName": {
-      "menuItem": "section {menuSection} item {menuItem}",
-      "menuSection": "section {menuSection}"
-    },
-    "label": "Add-on setup"
+    "placeholder": "Please select your availability"
   },
   "createdAt": "Created",
   "description": {
@@ -85,41 +46,6 @@
       "zh-TW": "Traditional Chinese"
     },
     "placeholder": "Please select your menu language"
-  },
-  "itemModifierGroups": {
-    "actions": {
-      "attach": {
-        "error": "Failed to attach modifier group",
-        "success": "Modifier group {name} attached",
-        "title": "Attach modifier group"
-      },
-      "detach": {
-        "confirm": "Are you sure you want to detach <bold>{name}</bold>? This does not delete the group itself.",
-        "error": "Failed to detach {name}",
-        "success": "{name} detached",
-        "title": "Detach"
-      },
-      "label": "Actions",
-      "reorder": {
-        "cancel": {
-          "confirm": "Are you sure you want to cancel <bold>modifier groups</bold> reorder? Unsaved changes will be lost.",
-          "label": "Cancel Modifier Groups Reorder"
-        },
-        "confirm": "Are you sure you want to reorder <bold>modifier groups</bold>?",
-        "save": {
-          "confirm": "Are you sure you want to save <bold>modifier groups</bold> reorder?",
-          "error": "Failed to save reorder",
-          "label": "Save Modifier Groups Reorder",
-          "success": "Order saved"
-        },
-        "title": "Reorder Modifier Groups"
-      }
-    },
-    "group": {
-      "label": "Modifier group",
-      "placeholder": "Please select your modifier group"
-    },
-    "label": "Modifier setup"
   },
   "items": {
     "actions": {
@@ -155,6 +81,54 @@
         "title": "Edit item"
       }
     },
+    "addOns": {
+      "actions": {
+        "createAddOn": {
+          "error": "Failed to add {name}",
+          "success": "{name} added",
+          "title": "Add add-on"
+        },
+        "deleteAddOn": {
+          "confirm": "Are you sure you want to remove <bold>{name}</bold>?",
+          "error": "Failed to remove {name}",
+          "success": "{name} removed",
+          "title": "Remove add-on"
+        },
+        "label": "Actions",
+        "reorderAddOn": {
+          "cancel": {
+            "confirm": "Are you sure you want to cancel <bold>add-ons</bold> reorder? Unsaved changes will be lost.",
+            "label": "Cancel Add-ons Reorder"
+          },
+          "confirm": "Are you sure you want to reorder <bold>add-ons</bold>?",
+          "save": {
+            "confirm": "Are you sure you want to save <bold>add-ons</bold> reorder?",
+            "error": "Failed to save reorder",
+            "label": "Save Add-ons Reorder",
+            "success": "Reorder saved"
+          },
+          "title": "Reorder Add-ons"
+        },
+        "updateAddOn": {
+          "error": "Failed to update {name}",
+          "success": "{name} updated",
+          "title": "Edit add-on"
+        }
+      },
+      "addOnMenuItemId": {
+        "label": "Add-on item",
+        "placeholder": "Please select your add-on item"
+      },
+      "addOnMenuSectionId": {
+        "label": "Add-on section",
+        "placeholder": "Please select your add-on section"
+      },
+      "displayName": {
+        "menuItem": "section {menuSection} item {menuItem}",
+        "menuSection": "section {menuSection}"
+      },
+      "label": "Add-on setup"
+    },
     "description": {
       "label": "Description",
       "placeholder": "Please enter your item description"
@@ -164,9 +138,102 @@
       "placeholder": "Please enter your image URL"
     },
     "label": "Items",
+    "modifierGroups": {
+      "actions": {
+        "attach": {
+          "error": "Failed to attach modifier group",
+          "success": "Modifier group {name} attached",
+          "title": "Attach modifier group"
+        },
+        "detach": {
+          "confirm": "Are you sure you want to detach <bold>{name}</bold>? This does not delete the group itself.",
+          "error": "Failed to detach {name}",
+          "success": "{name} detached",
+          "title": "Detach"
+        },
+        "label": "Actions",
+        "reorder": {
+          "cancel": {
+            "confirm": "Are you sure you want to cancel <bold>modifier groups</bold> reorder? Unsaved changes will be lost.",
+            "label": "Cancel Modifier Groups Reorder"
+          },
+          "confirm": "Are you sure you want to reorder <bold>modifier groups</bold>?",
+          "save": {
+            "confirm": "Are you sure you want to save <bold>modifier groups</bold> reorder?",
+            "error": "Failed to save reorder",
+            "label": "Save Modifier Groups Reorder",
+            "success": "Order saved"
+          },
+          "title": "Reorder Modifier Groups"
+        }
+      },
+      "group": {
+        "label": "Modifier group",
+        "placeholder": "Please select your modifier group"
+      },
+      "label": "Modifier setup"
+    },
     "name": {
       "label": "Item name",
       "placeholder": "Please enter your item name"
+    },
+    "offers": {
+      "deliveryLeadTime": {
+        "maxValue": {
+          "label": "Max preparation time",
+          "placeholder": "Please enter your max preparation time"
+        },
+        "minValue": {
+          "label": "Min preparation time",
+          "placeholder": "Please enter your min preparation time"
+        },
+        "unitText": {
+          "label": "Time unit",
+          "placeholder": "Please enter your unit"
+        },
+        "value": {
+          "label": "Preparation time",
+          "placeholder": "Please enter your preparation time"
+        }
+      },
+      "inventoryLevel": {
+        "maxValue": {
+          "label": "Max inventory level",
+          "placeholder": "Please enter your max inventory level"
+        },
+        "minValue": {
+          "label": "Min inventory level",
+          "placeholder": "Please enter your min inventory level"
+        },
+        "unitText": {
+          "label": "Inventory unit",
+          "placeholder": "Please enter your inventory unit"
+        },
+        "value": {
+          "label": "Inventory quantity",
+          "placeholder": "Please enter your inventory quantity"
+        }
+      },
+      "label": "Offers",
+      "price": {
+        "label": "Price",
+        "placeholder": "Please enter your price"
+      },
+      "priceCurrency": {
+        "label": "Currency"
+      },
+      "priceSpecification": {
+        "price": {
+          "label": "Sale price",
+          "placeholder": "Please enter your sale price"
+        },
+        "validFrom": {
+          "label": "Sale starts"
+        },
+        "validThrough": {
+          "label": "Sale ends"
+        }
+      }
     },
     "suitableForDiet": {
       "label": "Dietary restrictions"
@@ -276,73 +343,6 @@
   "name": {
     "label": "Menu name",
     "placeholder": "Please enter your menu name"
-  },
-  "offers": {
-    "availability": {
-      "label": "Availability",
-      "options": {
-        "Discontinued": "Discontinued",
-        "InStock": "In stock",
-        "SoldOut": "Sold out"
-      },
-      "placeholder": "Please select your availability"
-    },
-    "deliveryLeadTime": {
-      "maxValue": {
-        "label": "Max preparation time",
-        "placeholder": "Please enter your max preparation time"
-      },
-      "minValue": {
-        "label": "Min preparation time",
-        "placeholder": "Please enter your min preparation time"
-      },
-      "unitText": {
-        "label": "Time unit",
-        "placeholder": "Please enter your unit"
-      },
-      "value": {
-        "label": "Preparation time",
-        "placeholder": "Please enter your preparation time"
-      }
-    },
-    "inventoryLevel": {
-      "maxValue": {
-        "label": "Max inventory level",
-        "placeholder": "Please enter your max inventory level"
-      },
-      "minValue": {
-        "label": "Min inventory level",
-        "placeholder": "Please enter your min inventory level"
-      },
-      "unitText": {
-        "label": "Inventory unit",
-        "placeholder": "Please enter your inventory unit"
-      },
-      "value": {
-        "label": "Inventory quantity",
-        "placeholder": "Please enter your inventory quantity"
-      }
-    },
-    "label": "Offers",
-    "price": {
-      "label": "Price",
-      "placeholder": "Please enter your price"
-    },
-    "priceCurrency": {
-      "label": "Currency"
-    },
-    "priceSpecification": {
-      "price": {
-        "label": "Sale price",
-        "placeholder": "Please enter your sale price"
-      },
-      "validFrom": {
-        "label": "Sale starts"
-      },
-      "validThrough": {
-        "label": "Sale ends"
-      }
-    }
   },
   "organization": {
     "label": "Organization",

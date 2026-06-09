@@ -137,14 +137,14 @@ const UpdateModifierDialog = ({
       <TextField
         error={!!errors.availability}
         fullWidth
-        label={tMenus("offers.availability.label")}
+        label={tMenus("availability.label")}
         select
         {...register("availability")}
         defaultValue={modifier.availability ?? "InStock"}
       >
         {itemAvailabilityValues.map((value) => (
           <MenuItem key={value} value={value}>
-            {tMenus(`offers.availability.options.${value}`)}
+            {tMenus(`availability.options.${value}`)}
           </MenuItem>
         ))}
       </TextField>

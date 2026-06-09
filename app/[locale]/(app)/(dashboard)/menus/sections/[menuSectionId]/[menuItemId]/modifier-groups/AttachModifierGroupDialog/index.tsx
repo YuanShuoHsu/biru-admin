@@ -94,7 +94,7 @@ const AttachModifierGroupDialog = ({
       );
 
       enqueueSnackbar(
-        tMenus("itemModifierGroups.actions.attach.success", {
+        tMenus("items.modifierGroups.actions.attach.success", {
           name: displayName,
         }),
         { variant: "success" },
@@ -103,7 +103,7 @@ const AttachModifierGroupDialog = ({
       closeDialog();
       mutate();
     } catch {
-      enqueueSnackbar(tMenus("itemModifierGroups.actions.attach.error"), {
+      enqueueSnackbar(tMenus("items.modifierGroups.actions.attach.error"), {
         variant: "error",
       });
       setDialog({ confirmLoading: false });
@@ -119,7 +119,7 @@ const AttachModifierGroupDialog = ({
         error={!!errors.modifierGroupId}
         fullWidth
         helperText={errors.modifierGroupId?.message}
-        label={tMenus("itemModifierGroups.group.label")}
+        label={tMenus("items.modifierGroups.group.label")}
         required
         select
         slotProps={{
@@ -132,7 +132,7 @@ const AttachModifierGroupDialog = ({
               return group ? (
                 localize(group.displayName, locale)
               ) : (
-                <em>{tMenus("itemModifierGroups.group.placeholder")}</em>
+                <em>{tMenus("items.modifierGroups.group.placeholder")}</em>
               );
             },
           },
@@ -141,7 +141,7 @@ const AttachModifierGroupDialog = ({
         {...register("modifierGroupId")}
       >
         <MenuItem disabled value="">
-          <em>{tMenus("itemModifierGroups.group.placeholder")}</em>
+          <em>{tMenus("items.modifierGroups.group.placeholder")}</em>
         </MenuItem>
         {groups.map(({ id, displayName }) => (
           <MenuItem disabled={usedGroupIds.has(id)} key={id} value={id}>

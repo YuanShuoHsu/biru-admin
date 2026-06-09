@@ -300,7 +300,7 @@ const MenuItemModifierGroups = ({
       ),
       formId: "attach-modifier-group-form",
       open: true,
-      title: tMenus("itemModifierGroups.actions.attach.title"),
+      title: tMenus("items.modifierGroups.actions.attach.title"),
     });
   }, [menuId, menuItemId, mutate, setDialog, tMenus]);
 
@@ -311,7 +311,7 @@ const MenuItemModifierGroups = ({
       setDialog({
         content: (
           <DialogContentText>
-            {tMenus.rich("itemModifierGroups.actions.detach.confirm", {
+            {tMenus.rich("items.modifierGroups.actions.detach.confirm", {
               bold: (chunks) => <strong>{chunks}</strong>,
               name: displayName,
             })}
@@ -325,7 +325,7 @@ const MenuItemModifierGroups = ({
             );
 
             enqueueSnackbar(
-              tMenus("itemModifierGroups.actions.detach.success", {
+              tMenus("items.modifierGroups.actions.detach.success", {
                 name: displayName,
               }),
               { variant: "success" },
@@ -334,7 +334,7 @@ const MenuItemModifierGroups = ({
             mutate();
           } catch {
             enqueueSnackbar(
-              tMenus("itemModifierGroups.actions.detach.error", {
+              tMenus("items.modifierGroups.actions.detach.error", {
                 name: displayName,
               }),
               { variant: "error" },
@@ -342,7 +342,7 @@ const MenuItemModifierGroups = ({
           }
         },
         open: true,
-        title: tMenus("itemModifierGroups.actions.detach.title"),
+        title: tMenus("items.modifierGroups.actions.detach.title"),
       });
     },
     [locale, menuItemId, mutate, setDialog, tMenus],
@@ -352,7 +352,7 @@ const MenuItemModifierGroups = ({
     setDialog({
       content: (
         <DialogContentText>
-          {tMenus.rich("itemModifierGroups.actions.reorder.confirm", {
+          {tMenus.rich("items.modifierGroups.actions.reorder.confirm", {
             bold: (chunks) => <strong>{chunks}</strong>,
           })}
         </DialogContentText>
@@ -362,7 +362,7 @@ const MenuItemModifierGroups = ({
         setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
       },
       open: true,
-      title: tMenus("itemModifierGroups.actions.reorder.title"),
+      title: tMenus("items.modifierGroups.actions.reorder.title"),
     });
   }, [apiRef, setDialog, tMenus]);
 
@@ -370,7 +370,7 @@ const MenuItemModifierGroups = ({
     setDialog({
       content: (
         <DialogContentText>
-          {tMenus.rich("itemModifierGroups.actions.reorder.save.confirm", {
+          {tMenus.rich("items.modifierGroups.actions.reorder.save.confirm", {
             bold: (chunks) => <strong>{chunks}</strong>,
           })}
         </DialogContentText>
@@ -393,20 +393,20 @@ const MenuItemModifierGroups = ({
           setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
 
           enqueueSnackbar(
-            tMenus("itemModifierGroups.actions.reorder.save.success"),
+            tMenus("items.modifierGroups.actions.reorder.save.success"),
             { variant: "success" },
           );
         } catch {
           mutate();
 
           enqueueSnackbar(
-            tMenus("itemModifierGroups.actions.reorder.save.error"),
+            tMenus("items.modifierGroups.actions.reorder.save.error"),
             { variant: "error" },
           );
         }
       },
       open: true,
-      title: tMenus("itemModifierGroups.actions.reorder.save.label"),
+      title: tMenus("items.modifierGroups.actions.reorder.save.label"),
     });
   }, [
     apiRef,
@@ -423,7 +423,7 @@ const MenuItemModifierGroups = ({
     setDialog({
       content: (
         <DialogContentText>
-          {tMenus.rich("itemModifierGroups.actions.reorder.cancel.confirm", {
+          {tMenus.rich("items.modifierGroups.actions.reorder.cancel.confirm", {
             bold: (chunks) => <strong>{chunks}</strong>,
           })}
         </DialogContentText>
@@ -433,7 +433,7 @@ const MenuItemModifierGroups = ({
         mutate();
       },
       open: true,
-      title: tMenus("itemModifierGroups.actions.reorder.cancel.label"),
+      title: tMenus("items.modifierGroups.actions.reorder.cancel.label"),
     });
   }, [mutate, setDialog, tMenus]);
 
@@ -500,7 +500,7 @@ const MenuItemModifierGroups = ({
               disableColumnMenu: true,
               field: "actions",
               filterable: false,
-              headerName: tMenus("itemModifierGroups.actions.label"),
+              headerName: tMenus("items.modifierGroups.actions.label"),
               renderCell: ({
                 row,
               }: GridRenderCellParams<MenuItemModifierGroup>) => (
@@ -511,7 +511,7 @@ const MenuItemModifierGroups = ({
                   gap={1}
                 >
                   <Tooltip
-                    title={tMenus("itemModifierGroups.actions.detach.title")}
+                    title={tMenus("items.modifierGroups.actions.detach.title")}
                   >
                     <IconButton
                       color="error"
@@ -601,7 +601,7 @@ const MenuItemModifierGroups = ({
                 startIcon={<Add />}
                 variant="contained"
               >
-                {tMenus("itemModifierGroups.actions.attach.title")}
+                {tMenus("items.modifierGroups.actions.attach.title")}
               </Button>
               <Button
                 disabled={isReorderDisabled}
@@ -610,7 +610,7 @@ const MenuItemModifierGroups = ({
                 startIcon={<Sort />}
                 variant="outlined"
               >
-                {tMenus("itemModifierGroups.actions.reorder.title")}
+                {tMenus("items.modifierGroups.actions.reorder.title")}
               </Button>
             </>
           )
@@ -622,7 +622,7 @@ const MenuItemModifierGroups = ({
               startIcon={<Cancel />}
               variant="outlined"
             >
-              {tMenus("itemModifierGroups.actions.reorder.cancel.label")}
+              {tMenus("items.modifierGroups.actions.reorder.cancel.label")}
             </Button>
             <Button
               onClick={handleSaveReorder}
@@ -630,7 +630,7 @@ const MenuItemModifierGroups = ({
               startIcon={<Save />}
               variant="contained"
             >
-              {tMenus("itemModifierGroups.actions.reorder.save.label")}
+              {tMenus("items.modifierGroups.actions.reorder.save.label")}
             </Button>
           </>
         )}

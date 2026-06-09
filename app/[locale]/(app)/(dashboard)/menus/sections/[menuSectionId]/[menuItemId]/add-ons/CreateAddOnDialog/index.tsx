@@ -117,14 +117,14 @@ const CreateAddOnDialog = ({
     );
 
     const displayName = addOnMenuItemId
-      ? tMenus("addOns.displayName.menuItem", {
+      ? tMenus("items.addOns.displayName.menuItem", {
           menuSection,
           menuItem: localize(
             sectionItems.find(({ id }) => id === addOnMenuItemId)?.name,
             locale,
           ),
         })
-      : tMenus("addOns.displayName.menuSection", { menuSection });
+      : tMenus("items.addOns.displayName.menuSection", { menuSection });
 
     try {
       setDialog({ confirmLoading: true });
@@ -138,7 +138,9 @@ const CreateAddOnDialog = ({
       });
 
       enqueueSnackbar(
-        tMenus("addOns.actions.createAddOn.success", { name: displayName }),
+        tMenus("items.addOns.actions.createAddOn.success", {
+          name: displayName,
+        }),
         { variant: "success" },
       );
 
@@ -146,7 +148,7 @@ const CreateAddOnDialog = ({
       mutate();
     } catch {
       enqueueSnackbar(
-        tMenus("addOns.actions.createAddOn.error", { name: displayName }),
+        tMenus("items.addOns.actions.createAddOn.error", { name: displayName }),
         { variant: "error" },
       );
       setDialog({ confirmLoading: false });
@@ -162,7 +164,7 @@ const CreateAddOnDialog = ({
         error={!!errors.addOnMenuSectionId}
         fullWidth
         helperText={errors.addOnMenuSectionId?.message}
-        label={tMenus("addOns.addOnMenuSectionId.label")}
+        label={tMenus("items.addOns.addOnMenuSectionId.label")}
         required
         select
         slotProps={{
@@ -191,7 +193,7 @@ const CreateAddOnDialog = ({
                   locale,
                 )
               ) : (
-                <em>{tMenus("addOns.addOnMenuSectionId.placeholder")}</em>
+                <em>{tMenus("items.addOns.addOnMenuSectionId.placeholder")}</em>
               ),
           },
         }}
@@ -201,7 +203,7 @@ const CreateAddOnDialog = ({
         })}
       >
         <MenuItem disabled value="">
-          <em>{tMenus("addOns.addOnMenuSectionId.placeholder")}</em>
+          <em>{tMenus("items.addOns.addOnMenuSectionId.placeholder")}</em>
         </MenuItem>
         {sections.map(({ id, name }) => (
           <MenuItem disabled={usedSectionIds.has(id)} key={id} value={id}>
@@ -214,7 +216,7 @@ const CreateAddOnDialog = ({
           error={!!errors.addOnMenuItemId}
           fullWidth
           helperText={errors.addOnMenuItemId?.message}
-          label={`${tMenus("addOns.addOnMenuItemId.label")} ${tCommon("optional")}`}
+          label={`${tMenus("items.addOns.addOnMenuItemId.label")} ${tCommon("optional")}`}
           select
           slotProps={{
             input: {
@@ -239,7 +241,7 @@ const CreateAddOnDialog = ({
                     locale,
                   )
                 ) : (
-                  <em>{tMenus("addOns.addOnMenuItemId.placeholder")}</em>
+                  <em>{tMenus("items.addOns.addOnMenuItemId.placeholder")}</em>
                 ),
             },
           }}
@@ -247,7 +249,7 @@ const CreateAddOnDialog = ({
           {...register("addOnMenuItemId")}
         >
           <MenuItem disabled value="">
-            <em>{tMenus("addOns.addOnMenuItemId.placeholder")}</em>
+            <em>{tMenus("items.addOns.addOnMenuItemId.placeholder")}</em>
           </MenuItem>
           {sectionItems.map(({ id, name }) => (
             <MenuItem disabled={usedItemIds.has(id)} key={id} value={id}>

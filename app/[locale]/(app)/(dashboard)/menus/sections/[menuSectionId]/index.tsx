@@ -22,6 +22,7 @@ import {
   NO_VALUE_FILTER_OPERATORS,
   STRING_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
+import { ITEM_AVAILABILITY_COLOR_MAP } from "@/constants/itemAvailability";
 
 import { arrayMove } from "@dnd-kit/helpers";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
@@ -41,6 +42,7 @@ import {
 import {
   Box,
   Button,
+  Chip,
   DialogContentText,
   IconButton,
   Stack,
@@ -547,7 +549,7 @@ const MenusMenuIdSectionId = ({
                   alignItems="center"
                   gap={1}
                 >
-                  <Tooltip title={tMenus("addOns.label")}>
+                  <Tooltip title={tMenus("items.addOns.label")}>
                     <IconButton
                       onClick={(event) => {
                         event.stopPropagation();
@@ -627,7 +629,7 @@ const MenusMenuIdSectionId = ({
       },
       {
         field: "priceCurrency",
-        headerName: tMenus("offers.priceCurrency.label"),
+        headerName: tMenus("items.offers.priceCurrency.label"),
         sortable: false,
         filterable: false,
         valueGetter: (_value: unknown, { offer }: MenuItem) =>
@@ -649,28 +651,29 @@ const MenusMenuIdSectionId = ({
       {
         field: "price",
         filterable: false,
-        headerName: tMenus("offers.price.label"),
+        headerName: tMenus("items.offers.price.label"),
         sortable: false,
         valueGetter: (_value: unknown, { offer }: MenuItem) =>
           offer?.price && Number(offer.price),
       },
       {
         field: "availability",
-        headerName: tMenus("offers.availability.label"),
+        headerName: tMenus("availability.label"),
         sortable: false,
         filterable: false,
-        valueGetter: (_value: unknown, { offer }: MenuItem) =>
-          offer?.availability
-            ? tMenus(
-                `offers.availability.options.${offer.availability}` as Parameters<
-                  typeof tMenus
-                >[0],
-              )
-            : "",
+        renderCell: ({ row: { offer } }: GridRenderCellParams<MenuItem>) =>
+          offer?.availability && (
+            <Chip
+              color={ITEM_AVAILABILITY_COLOR_MAP[offer.availability]}
+              label={tMenus(`availability.options.${offer.availability}`)}
+              size="small"
+              variant="outlined"
+            />
+          ),
       },
       {
         field: "inventoryLevel",
-        headerName: `${tMenus("offers.inventoryLevel.value.label")} ${tCommon("optional")}`,
+        headerName: `${tMenus("items.offers.inventoryLevel.value.label")} ${tCommon("optional")}`,
         sortable: false,
         filterable: false,
         valueGetter: (_value: unknown, { offer }: MenuItem) =>
@@ -680,7 +683,7 @@ const MenusMenuIdSectionId = ({
       },
       {
         field: "deliveryLeadTime",
-        headerName: `${tMenus("offers.deliveryLeadTime.value.label")} ${tCommon("optional")}`,
+        headerName: `${tMenus("items.offers.deliveryLeadTime.value.label")} ${tCommon("optional")}`,
         sortable: false,
         filterable: false,
         valueGetter: (_value: unknown, { offer }: MenuItem) =>
@@ -691,7 +694,7 @@ const MenusMenuIdSectionId = ({
       {
         field: "priceSpecification",
         filterable: false,
-        headerName: `${tMenus("offers.priceSpecification.price.label")} ${tCommon("optional")}`,
+        headerName: `${tMenus("items.offers.priceSpecification.price.label")} ${tCommon("optional")}`,
         sortable: false,
         valueGetter: (_value: unknown, { offer }: MenuItem) =>
           offer?.priceSpecification?.price &&
@@ -699,7 +702,7 @@ const MenusMenuIdSectionId = ({
       },
       {
         field: "priceSpecificationValidFrom",
-        headerName: `${tMenus("offers.priceSpecification.validFrom.label")} ${tCommon("optional")}`,
+        headerName: `${tMenus("items.offers.priceSpecification.validFrom.label")} ${tCommon("optional")}`,
         sortable: false,
         filterable: false,
         valueGetter: (_value: unknown, { offer }: MenuItem) =>
@@ -707,7 +710,7 @@ const MenusMenuIdSectionId = ({
       },
       {
         field: "priceSpecificationValidThrough",
-        headerName: `${tMenus("offers.priceSpecification.validThrough.label")} ${tCommon("optional")}`,
+        headerName: `${tMenus("items.offers.priceSpecification.validThrough.label")} ${tCommon("optional")}`,
         sortable: false,
         filterable: false,
         valueGetter: (_value: unknown, { offer }: MenuItem) =>

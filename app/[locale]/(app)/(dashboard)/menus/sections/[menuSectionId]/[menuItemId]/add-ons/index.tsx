@@ -305,7 +305,7 @@ const MenuItemAddOns = ({
       ),
       formId: "create-add-on-form",
       open: true,
-      title: tMenus("addOns.actions.createAddOn.title"),
+      title: tMenus("items.addOns.actions.createAddOn.title"),
     });
   }, [menuId, menuItemId, mutate, setDialog, tMenus]);
 
@@ -317,7 +317,7 @@ const MenuItemAddOns = ({
         ),
         formId: "update-add-on-form",
         open: true,
-        title: tMenus("addOns.actions.updateAddOn.title"),
+        title: tMenus("items.addOns.actions.updateAddOn.title"),
       });
     },
     [menuId, mutate, setDialog, tMenus],
@@ -331,18 +331,18 @@ const MenuItemAddOns = ({
       addOnMenuSectionName,
     }: MenuItemAddOn) => {
       const displayName = addOnMenuItemName
-        ? tMenus("addOns.displayName.menuItem", {
+        ? tMenus("items.addOns.displayName.menuItem", {
             menuSection: localize(addOnMenuItemSectionName, locale),
             menuItem: localize(addOnMenuItemName, locale),
           })
-        : tMenus("addOns.displayName.menuSection", {
+        : tMenus("items.addOns.displayName.menuSection", {
             menuSection: localize(addOnMenuSectionName, locale),
           });
 
       setDialog({
         content: (
           <DialogContentText>
-            {tMenus.rich("addOns.actions.deleteAddOn.confirm", {
+            {tMenus.rich("items.addOns.actions.deleteAddOn.confirm", {
               bold: (chunks) => <strong>{chunks}</strong>,
               name: displayName,
             })}
@@ -355,7 +355,7 @@ const MenuItemAddOns = ({
             });
 
             enqueueSnackbar(
-              tMenus("addOns.actions.deleteAddOn.success", {
+              tMenus("items.addOns.actions.deleteAddOn.success", {
                 name: displayName,
               }),
               { variant: "success" },
@@ -364,13 +364,15 @@ const MenuItemAddOns = ({
             mutate();
           } catch {
             enqueueSnackbar(
-              tMenus("addOns.actions.deleteAddOn.error", { name: displayName }),
+              tMenus("items.addOns.actions.deleteAddOn.error", {
+                name: displayName,
+              }),
               { variant: "error" },
             );
           }
         },
         open: true,
-        title: tMenus("addOns.actions.deleteAddOn.title"),
+        title: tMenus("items.addOns.actions.deleteAddOn.title"),
       });
     },
     [locale, menuItemId, mutate, setDialog, tMenus],
@@ -380,7 +382,7 @@ const MenuItemAddOns = ({
     setDialog({
       content: (
         <DialogContentText>
-          {tMenus.rich("addOns.actions.reorderAddOn.confirm", {
+          {tMenus.rich("items.addOns.actions.reorderAddOn.confirm", {
             bold: (chunks) => <strong>{chunks}</strong>,
           })}
         </DialogContentText>
@@ -390,7 +392,7 @@ const MenuItemAddOns = ({
         setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
       },
       open: true,
-      title: tMenus("addOns.actions.reorderAddOn.title"),
+      title: tMenus("items.addOns.actions.reorderAddOn.title"),
     });
   }, [apiRef, setDialog, tMenus]);
 
@@ -398,7 +400,7 @@ const MenuItemAddOns = ({
     setDialog({
       content: (
         <DialogContentText>
-          {tMenus.rich("addOns.actions.reorderAddOn.save.confirm", {
+          {tMenus.rich("items.addOns.actions.reorderAddOn.save.confirm", {
             bold: (chunks) => <strong>{chunks}</strong>,
           })}
         </DialogContentText>
@@ -417,19 +419,25 @@ const MenuItemAddOns = ({
           setIsReorderMode(false);
           setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
 
-          enqueueSnackbar(tMenus("addOns.actions.reorderAddOn.save.success"), {
-            variant: "success",
-          });
+          enqueueSnackbar(
+            tMenus("items.addOns.actions.reorderAddOn.save.success"),
+            {
+              variant: "success",
+            },
+          );
         } catch {
           mutate();
 
-          enqueueSnackbar(tMenus("addOns.actions.reorderAddOn.save.error"), {
-            variant: "error",
-          });
+          enqueueSnackbar(
+            tMenus("items.addOns.actions.reorderAddOn.save.error"),
+            {
+              variant: "error",
+            },
+          );
         }
       },
       open: true,
-      title: tMenus("addOns.actions.reorderAddOn.save.label"),
+      title: tMenus("items.addOns.actions.reorderAddOn.save.label"),
     });
   }, [
     addOns,
@@ -446,7 +454,7 @@ const MenuItemAddOns = ({
     setDialog({
       content: (
         <DialogContentText>
-          {tMenus.rich("addOns.actions.reorderAddOn.cancel.confirm", {
+          {tMenus.rich("items.addOns.actions.reorderAddOn.cancel.confirm", {
             bold: (chunks) => <strong>{chunks}</strong>,
           })}
         </DialogContentText>
@@ -456,7 +464,7 @@ const MenuItemAddOns = ({
         mutate();
       },
       open: true,
-      title: tMenus("addOns.actions.reorderAddOn.cancel.label"),
+      title: tMenus("items.addOns.actions.reorderAddOn.cancel.label"),
     });
   }, [mutate, setDialog, tMenus]);
 
@@ -523,7 +531,7 @@ const MenuItemAddOns = ({
               disableColumnMenu: true,
               field: "actions",
               filterable: false,
-              headerName: tMenus("addOns.actions.label"),
+              headerName: tMenus("items.addOns.actions.label"),
               renderCell: ({ row }: GridRenderCellParams<MenuItemAddOn>) => (
                 <Stack
                   height="100%"
@@ -531,7 +539,9 @@ const MenuItemAddOns = ({
                   alignItems="center"
                   gap={1}
                 >
-                  <Tooltip title={tMenus("addOns.actions.updateAddOn.title")}>
+                  <Tooltip
+                    title={tMenus("items.addOns.actions.updateAddOn.title")}
+                  >
                     <IconButton
                       onClick={(event) => {
                         event.stopPropagation();
@@ -542,7 +552,9 @@ const MenuItemAddOns = ({
                       <Edit fontSize="small" />
                     </IconButton>
                   </Tooltip>
-                  <Tooltip title={tMenus("addOns.actions.deleteAddOn.title")}>
+                  <Tooltip
+                    title={tMenus("items.addOns.actions.deleteAddOn.title")}
+                  >
                     <IconButton
                       color="error"
                       onClick={(event) => {
@@ -564,7 +576,7 @@ const MenuItemAddOns = ({
       {
         field: "addOnMenuSectionName",
         filterOperators: stringFilterOperators,
-        headerName: `${tMenus("addOns.addOnMenuSectionId.label")} ${tCommon("optional")}`,
+        headerName: `${tMenus("items.addOns.addOnMenuSectionId.label")} ${tCommon("optional")}`,
         valueGetter: (
           _value: unknown,
           { addOnMenuSectionName, addOnMenuItemSectionName }: MenuItemAddOn,
@@ -573,7 +585,7 @@ const MenuItemAddOns = ({
       {
         field: "addOnMenuItemName",
         filterOperators: stringFilterOperators,
-        headerName: `${tMenus("addOns.addOnMenuItemId.label")} ${tCommon("optional")}`,
+        headerName: `${tMenus("items.addOns.addOnMenuItemId.label")} ${tCommon("optional")}`,
         valueGetter: (_value: unknown, { addOnMenuItemName }: MenuItemAddOn) =>
           localize(addOnMenuItemName, locale),
       },
@@ -618,7 +630,7 @@ const MenuItemAddOns = ({
                 startIcon={<Add />}
                 variant="contained"
               >
-                {tMenus("addOns.actions.createAddOn.title")}
+                {tMenus("items.addOns.actions.createAddOn.title")}
               </Button>
               <Button
                 disabled={isReorderDisabled}
@@ -627,7 +639,7 @@ const MenuItemAddOns = ({
                 startIcon={<Sort />}
                 variant="outlined"
               >
-                {tMenus("addOns.actions.reorderAddOn.title")}
+                {tMenus("items.addOns.actions.reorderAddOn.title")}
               </Button>
             </>
           )
@@ -639,7 +651,7 @@ const MenuItemAddOns = ({
               startIcon={<Cancel />}
               variant="outlined"
             >
-              {tMenus("addOns.actions.reorderAddOn.cancel.label")}
+              {tMenus("items.addOns.actions.reorderAddOn.cancel.label")}
             </Button>
             <Button
               onClick={handleSaveReorder}
@@ -647,7 +659,7 @@ const MenuItemAddOns = ({
               startIcon={<Save />}
               variant="contained"
             >
-              {tMenus("addOns.actions.reorderAddOn.save.label")}
+              {tMenus("items.addOns.actions.reorderAddOn.save.label")}
             </Button>
           </>
         )}

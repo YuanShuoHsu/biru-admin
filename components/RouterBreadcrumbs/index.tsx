@@ -262,17 +262,17 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
                   children: [
                     {
                       icon: LocalOffer,
-                      label: tMenus("offers.label"),
+                      label: tMenus("items.offers.label"),
                       to: "/offers",
                     },
                     {
                       icon: Extension,
-                      label: tMenus("addOns.label"),
+                      label: tMenus("items.addOns.label"),
                       to: "/add-ons",
                     },
                     {
                       icon: Tune,
-                      label: tMenus("itemModifierGroups.label"),
+                      label: tMenus("items.modifierGroups.label"),
                       to: "/modifier-groups",
                     },
                   ],
