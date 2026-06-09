@@ -136,10 +136,12 @@ const Location = () => {
               select: {
                 displayEmpty: true,
                 renderValue: (selected) => {
-                  const org = organizations.find(({ id }) => id === selected);
+                  const selectedOrganization = organizations.find(
+                    ({ id }) => id === selected,
+                  );
 
-                  return org ? (
-                    org.name
+                  return selectedOrganization ? (
+                    selectedOrganization.name
                   ) : (
                     <em>
                       {tCompanyAboutLocation("selectOrganization.placeholder")}
