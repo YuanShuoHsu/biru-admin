@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -20,6 +20,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { Menu } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
+import { localize } from "@/utils/locale";
 
 interface UpdateMenuDialogProps {
   menu: Menu;
@@ -28,6 +29,8 @@ interface UpdateMenuDialogProps {
 
 const UpdateMenuDialog = ({ menu, mutate }: UpdateMenuDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
+
+  const locale = useLocale();
 
   const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
@@ -54,6 +57,8 @@ const UpdateMenuDialog = ({ menu, mutate }: UpdateMenuDialogProps) => {
   const descriptionValue = useWatch({ control, name: "description" });
 
   const onSubmitHandler = async ({ name, description }: UpdateMenuForm) => {
+    const displayName = localize(name, locale);
+
     try {
       setDialog({ confirmLoading: true });
 
@@ -67,16 +72,18 @@ const UpdateMenuDialog = ({ menu, mutate }: UpdateMenuDialogProps) => {
         }),
       });
 
-      enqueueSnackbar(tMenus("settings.actions.save.success"), {
-        variant: "success",
-      });
+      enqueueSnackbar(
+        tMenus("settings.actions.save.success", { name: displayName }),
+        { variant: "success" },
+      );
 
       closeDialog();
       mutate();
     } catch {
-      enqueueSnackbar(tMenus("settings.actions.save.error"), {
-        variant: "error",
-      });
+      enqueueSnackbar(
+        tMenus("settings.actions.save.error", { name: displayName }),
+        { variant: "error" },
+      );
 
       setDialog({ confirmLoading: false });
     }

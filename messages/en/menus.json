@@ -414,9 +414,9 @@
   "settings": {
     "actions": {
       "save": {
-        "error": "Failed to save menu settings",
+        "error": "Failed to save {name} menu settings",
         "label": "Save settings",
-        "success": "Menu settings saved"
+        "success": "{name} menu settings saved"
       },
       "update": {
         "title": "Edit menu"

@@ -414,9 +414,9 @@
   "settings": {
     "actions": {
       "save": {
-        "error": "保存菜单设置失败",
+        "error": "保存 {name} 菜单设置失败",
         "label": "保存设置",
-        "success": "成功保存菜单设置"
+        "success": "成功保存 {name} 菜单设置"
       },
       "update": {
         "title": "编辑菜单"

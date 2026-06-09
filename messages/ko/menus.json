@@ -414,9 +414,9 @@
   "settings": {
     "actions": {
       "save": {
-        "error": "메뉴 설정 저장에 실패했습니다",
+        "error": "{name} 메뉴 설정 저장에 실패했습니다",
         "label": "설정 저장",
-        "success": "메뉴 설정이 저장되었습니다"
+        "success": "{name} 메뉴 설정이 저장되었습니다"
       },
       "update": {
         "title": "메뉴 편집"

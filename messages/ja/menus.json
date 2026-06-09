@@ -414,9 +414,9 @@
   "settings": {
     "actions": {
       "save": {
-        "error": "メニュー設定の保存に失敗しました",
+        "error": "{name} のメニュー設定の保存に失敗しました",
         "label": "設定を保存",
-        "success": "メニュー設定を保存しました"
+        "success": "{name} のメニュー設定を保存しました"
       },
       "update": {
         "title": "メニューを編集"

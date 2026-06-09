@@ -414,9 +414,9 @@
   "settings": {
     "actions": {
       "save": {
-        "error": "儲存菜單設定失敗",
+        "error": "儲存 {name} 菜單設定失敗",
         "label": "儲存設定",
-        "success": "成功儲存菜單設定"
+        "success": "成功儲存 {name} 菜單設定"
       },
       "update": {
         "title": "編輯菜單"
