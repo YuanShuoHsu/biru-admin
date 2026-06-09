@@ -64,7 +64,7 @@
       "menuItem": "グループ {menuSection} 品目 {menuItem}",
       "menuSection": "グループ {menuSection}"
     },
-    "label": "追加オプション"
+    "label": "追加オプション設定"
   },
   "createdAt": "作成日時",
   "description": {
@@ -118,7 +118,8 @@
     "group": {
       "label": "オプショングループ",
       "placeholder": "オプショングループを選択してください"
-    }
+    },
+    "label": "オプション設定"
   },
   "items": {
     "actions": {

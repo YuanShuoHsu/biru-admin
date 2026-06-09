@@ -118,7 +118,8 @@
     "group": {
       "label": "选项组",
       "placeholder": "请选择您的选项组"
-    }
+    },
+    "label": "选项设置"
   },
   "items": {
     "actions": {

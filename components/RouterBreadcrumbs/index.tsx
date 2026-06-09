@@ -17,6 +17,8 @@ import {
   AccountCircle,
   AdminPanelSettings,
   Business,
+  Category,
+  Checklist,
   Dashboard,
   DeleteForever,
   Devices,
@@ -28,6 +30,7 @@ import {
   Groups,
   HelpOutline,
   Info,
+  ListAlt,
   LocalOffer,
   LocationOn,
   Lock,
@@ -45,10 +48,7 @@ import {
   Settings,
   ShoppingCart,
   Storefront,
-  Checklist,
-  ListAlt,
   Tune,
-  Category,
 } from "@mui/icons-material";
 import {
   Breadcrumbs,
@@ -58,7 +58,7 @@ import {
 } from "@mui/material";
 import { styled, type Theme } from "@mui/material/styles";
 
-import type { MenuSection, ModifierGroup } from "@/types/menus";
+import type { MenuItem, MenuSection, ModifierGroup } from "@/types/menus";
 import type { RouteParams } from "@/types/routeParams";
 
 import { fetcher } from "@/utils/fetcher";
@@ -153,6 +153,19 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
     async (url) => {
       try {
         const { name } = await fetcher<MenuSection>(url);
+
+        return localize(name, locale);
+      } catch {
+        return "";
+      }
+    },
+  );
+
+  const { data: menuItemName = "" } = useSWR(
+    menuItemId ? `/api/menu-items/${menuItemId}` : null,
+    async (url) => {
+      try {
+        const { name } = await fetcher<MenuItem>(url);
 
         return localize(name, locale);
       } catch {
@@ -257,9 +270,15 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
                       label: tMenus("addOns.label"),
                       to: "/add-ons",
                     },
+                    {
+                      icon: Tune,
+                      label: tMenus("itemModifierGroups.label"),
+                      to: "/modifier-groups",
+                    },
                   ],
-                  hidden: true,
+                  disabled: true,
                   icon: Fastfood,
+                  label: menuItemName,
                   to: `/${menuItemId}`,
                 },
               ],

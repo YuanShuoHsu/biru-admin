@@ -64,7 +64,7 @@
       "menuItem": "그룹 {menuSection} 품목 {menuItem}",
       "menuSection": "그룹 {menuSection}"
     },
-    "label": "추가 옵션"
+    "label": "추가 옵션 설정"
   },
   "createdAt": "생성일",
   "description": {
@@ -118,7 +118,8 @@
     "group": {
       "label": "옵션 그룹",
       "placeholder": "옵션 그룹을 선택해 주세요"
-    }
+    },
+    "label": "옵션 설정"
   },
   "items": {
     "actions": {

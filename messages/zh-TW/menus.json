@@ -118,7 +118,8 @@
     "group": {
       "label": "選項群組",
       "placeholder": "請選擇您的選項群組"
-    }
+    },
+    "label": "選項設定"
   },
   "items": {
     "actions": {

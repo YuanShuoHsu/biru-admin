@@ -40,7 +40,7 @@ const MenuItemLayout = ({ children }: { children: React.ReactNode }) => {
     },
     {
       Icon: Tune,
-      label: tMenus("modifierGroups.label"),
+      label: tMenus("itemModifierGroups.label"),
       value: `${basePath}/modifier-groups`,
     },
   ];

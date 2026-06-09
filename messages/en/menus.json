@@ -64,7 +64,7 @@
       "menuItem": "section {menuSection} item {menuItem}",
       "menuSection": "section {menuSection}"
     },
-    "label": "Add-ons"
+    "label": "Add-on setup"
   },
   "createdAt": "Created",
   "description": {
@@ -118,7 +118,8 @@
     "group": {
       "label": "Modifier group",
       "placeholder": "Please select your modifier group"
-    }
+    },
+    "label": "Modifier setup"
   },
   "items": {
     "actions": {
