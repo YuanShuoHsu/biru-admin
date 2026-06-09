@@ -1,3 +1,4 @@
+// https://mui.com/material-ui/react-breadcrumbs/#CondensedWithMenu.tsx
 // https://mui.com/material-ui/react-breadcrumbs/#system-IconBreadcrumbs.tsx
 // https://mui.com/material-ui/react-breadcrumbs/#system-RouterBreadcrumbs.tsx
 
@@ -5,11 +6,12 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useParams, useSearchParams } from "next/navigation";
+import { useState } from "react";
 import useSWR from "swr";
 
 import { ORDER_MODE } from "@/constants/orderMode";
 
-import { usePathname } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 
 import { authClient } from "@/lib/auth-client";
 
@@ -39,6 +41,7 @@ import {
   Mail,
   ManageAccounts,
   MenuBook,
+  MoreHoriz,
   Payment,
   People,
   Person,
@@ -52,7 +55,12 @@ import {
 } from "@mui/icons-material";
 import {
   Breadcrumbs,
-  Link,
+  IconButton,
+  LinkProps,
+  Menu,
+  type MenuItemProps,
+  Link as MuiLink,
+  MenuItem as MuiMenuItem,
   type SvgIconProps,
   Typography,
 } from "@mui/material";
@@ -87,7 +95,11 @@ const StyledTypography = styled(Typography)(({ theme }) => ({
   ...iconTextBaseStyles(theme),
 }));
 
-const StyledLink = styled(Link)(({ theme }) => ({
+const StyledLink = styled(MuiLink)<LinkProps>(({ theme }) => ({
+  ...iconTextBaseStyles(theme),
+}));
+
+const StyledMenuItem = styled(MuiMenuItem)<MenuItemProps>(({ theme }) => ({
   ...iconTextBaseStyles(theme),
 }));
 
@@ -480,17 +492,24 @@ const findHiddenTo = (
   return findHiddenTo(nextIndex, pathnames, breadcrumbs);
 };
 
+const ITEMS_BEFORE_COLLAPSE = 1;
+const ITEMS_AFTER_COLLAPSE = 2;
+const MAX_ITEMS = ITEMS_BEFORE_COLLAPSE + ITEMS_AFTER_COLLAPSE + 1;
+
 interface RouterBreadcrumbsProps {
   organizationName: string;
 }
 
 const RouterBreadcrumbs = ({ organizationName }: RouterBreadcrumbsProps) => {
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const open = Boolean(anchorEl);
+
   const breadcrumbs = useBreadcrumbs(organizationName);
 
   const pathname = usePathname();
   const pathnames = pathname.split("/").filter((x) => x);
 
-  const segments = pathnames.flatMap((value, index) => {
+  const segments: BreadcrumbItem[] = pathnames.flatMap((value, index) => {
     const segmentPath = pathnames.slice(0, index + 1).join("/");
     const path = `/${segmentPath}`;
 
@@ -513,33 +532,81 @@ const RouterBreadcrumbs = ({ organizationName }: RouterBreadcrumbsProps) => {
     return [{ disabled, icon, label, to }];
   });
 
-  const lastIndex = segments.length - 1;
+  const lastSegment = segments.at(-1);
+  const isCollapsed = segments.length > MAX_ITEMS;
+  const afterStart = segments.length - ITEMS_AFTER_COLLAPSE;
+  const collapsedItems = segments.slice(ITEMS_BEFORE_COLLAPSE, afterStart);
+
+  const handleOpen = (event: React.MouseEvent<HTMLButtonElement> | null) => {
+    if (event) setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => setAnchorEl(null);
+
+  const renderSegment = (segment: BreadcrumbItem) => {
+    const { disabled, icon: Icon, label, to } = segment;
+    const isLast = segment === lastSegment;
+    const isText = isLast || disabled;
+    const color = isLast ? "text.primary" : "text.secondary";
+
+    return isText ? (
+      <StyledTypography color={color} key={to}>
+        <Icon fontSize="inherit" />
+        {label}
+      </StyledTypography>
+    ) : (
+      <StyledLink
+        color="text.secondary"
+        component={Link}
+        href={to}
+        key={to}
+        underline="always"
+      >
+        <Icon fontSize="inherit" />
+        {label}
+      </StyledLink>
+    );
+  };
 
   return (
-    <StyledBreadcrumbs aria-label="breadcrumb">
-      {segments.map(({ disabled, icon: Icon, label, to }, index) => {
-        const isLast = index === lastIndex;
-        const isText = isLast || disabled;
-        const color = isLast ? "text.primary" : "text.secondary";
-
-        return isText ? (
-          <StyledTypography color={color} key={to}>
-            <Icon fontSize="inherit" />
-            {label}
-          </StyledTypography>
-        ) : (
-          <StyledLink
-            color="text.secondary"
-            href={to}
-            key={to}
-            underline="always"
-          >
-            <Icon fontSize="inherit" />
-            {label}
-          </StyledLink>
-        );
-      })}
-    </StyledBreadcrumbs>
+    <>
+      {isCollapsed && (
+        <Menu
+          anchorEl={anchorEl}
+          aria-labelledby="breadcrumbs-menu-trigger"
+          onClose={handleClose}
+          open={open}
+        >
+          {collapsedItems.map(({ disabled, icon: Icon, label, to }) => (
+            <StyledMenuItem
+              disabled={disabled}
+              key={to}
+              onClick={handleClose}
+              {...(disabled ? {} : { component: Link, href: to })}
+            >
+              <Icon fontSize="small" />
+              {label}
+            </StyledMenuItem>
+          ))}
+        </Menu>
+      )}
+      <StyledBreadcrumbs aria-label="breadcrumb">
+        {isCollapsed
+          ? [
+              ...segments.slice(0, ITEMS_BEFORE_COLLAPSE).map(renderSegment),
+              <IconButton
+                color="inherit"
+                id="breadcrumbs-menu-trigger"
+                key="collapsed-trigger"
+                onClick={handleOpen}
+                size="small"
+              >
+                <MoreHoriz fontSize="inherit" />
+              </IconButton>,
+              ...segments.slice(afterStart).map(renderSegment),
+            ]
+          : segments.map(renderSegment)}
+      </StyledBreadcrumbs>
+    </>
   );
 };
 
