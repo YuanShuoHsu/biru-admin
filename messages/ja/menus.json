@@ -280,17 +280,8 @@
     "availability": {
       "label": "提供状況",
       "options": {
-        "BackOrder": "取り寄せ中",
         "Discontinued": "販売終了",
         "InStock": "提供中",
-        "InStoreOnly": "店内のみ",
-        "LimitedAvailability": "数量限定",
-        "MadeToOrder": "受注製作",
-        "OnlineOnly": "オンラインのみ",
-        "OutOfStock": "在庫切れ",
-        "PreOrder": "予約注文",
-        "PreSale": "先行販売",
-        "Reserved": "予約済み",
         "SoldOut": "売り切れ"
       },
       "placeholder": "提供状況を選択してください"

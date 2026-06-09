@@ -280,17 +280,8 @@
     "availability": {
       "label": "공급 상태",
       "options": {
-        "BackOrder": "재고 주문 중",
         "Discontinued": "판매 종료",
         "InStock": "공급 중",
-        "InStoreOnly": "매장 전용",
-        "LimitedAvailability": "한정 공급",
-        "MadeToOrder": "주문 제작",
-        "OnlineOnly": "온라인 전용",
-        "OutOfStock": "재고 없음",
-        "PreOrder": "예약 주문",
-        "PreSale": "사전 판매",
-        "Reserved": "예약됨",
         "SoldOut": "품절"
       },
       "placeholder": "공급 상태를 선택해 주세요"

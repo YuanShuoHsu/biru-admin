@@ -1563,6 +1563,8 @@ export interface components {
       transFatContent?: string;
       unsaturatedFatContent?: string;
     };
+    /** @enum {string} */
+    ItemAvailability: "InStock" | "SoldOut" | "Discontinued";
     QuantitativeValueDto: {
       unitText?: string;
       value?: number;
@@ -1588,20 +1590,7 @@ export interface components {
       price: string;
       /** @default TWD */
       priceCurrency: string;
-      /** @enum {string} */
-      availability?:
-        | "BackOrder"
-        | "Discontinued"
-        | "InStock"
-        | "InStoreOnly"
-        | "LimitedAvailability"
-        | "MadeToOrder"
-        | "OnlineOnly"
-        | "OutOfStock"
-        | "PreOrder"
-        | "PreSale"
-        | "Reserved"
-        | "SoldOut";
+      availability?: components["schemas"]["ItemAvailability"];
       /** @description 預計準備時間，unitText 建議用 "minute" */
       deliveryLeadTime?: components["schemas"]["QuantitativeValueDto"];
       /** @description 當日剩餘庫存數量 */
@@ -1640,21 +1629,7 @@ export interface components {
       menuSectionId?: string | null;
       price?: string | null;
       priceCurrency?: string | null;
-      /** @enum {string|null} */
-      availability?:
-        | "BackOrder"
-        | "Discontinued"
-        | "InStock"
-        | "InStoreOnly"
-        | "LimitedAvailability"
-        | "MadeToOrder"
-        | "OnlineOnly"
-        | "OutOfStock"
-        | "PreOrder"
-        | "PreSale"
-        | "Reserved"
-        | "SoldOut"
-        | null;
+      availability?: components["schemas"]["ItemAvailability"] | null;
       deliveryLeadTime?: components["schemas"]["QuantitativeValueDto"] | null;
       inventoryLevel?: components["schemas"]["QuantitativeValueDto"] | null;
       priceSpecification?:
@@ -1725,20 +1700,7 @@ export interface components {
       price?: string;
       /** @default TWD */
       priceCurrency: string;
-      /** @enum {string} */
-      availability?:
-        | "BackOrder"
-        | "Discontinued"
-        | "InStock"
-        | "InStoreOnly"
-        | "LimitedAvailability"
-        | "MadeToOrder"
-        | "OnlineOnly"
-        | "OutOfStock"
-        | "PreOrder"
-        | "PreSale"
-        | "Reserved"
-        | "SoldOut";
+      availability?: components["schemas"]["ItemAvailability"];
       /** @description 預計準備時間，unitText 建議用 "minute" */
       deliveryLeadTime?: components["schemas"]["QuantitativeValueDto"];
       /** @description 當日剩餘庫存數量 */
@@ -1794,21 +1756,7 @@ export interface components {
       displayName: Record<string, never>;
       /** @description 加價金額；null 代表不影響價格 */
       priceAdjustment?: string | null;
-      /** @enum {string|null} */
-      availability?:
-        | "BackOrder"
-        | "Discontinued"
-        | "InStock"
-        | "InStoreOnly"
-        | "LimitedAvailability"
-        | "MadeToOrder"
-        | "OnlineOnly"
-        | "OutOfStock"
-        | "PreOrder"
-        | "PreSale"
-        | "Reserved"
-        | "SoldOut"
-        | null;
+      availability?: components["schemas"]["ItemAvailability"] | null;
       sortOrder: number;
       /** Format: date-time */
       createdAt: string;
@@ -1853,20 +1801,7 @@ export interface components {
        * @example 10.00
        */
       priceAdjustment?: string;
-      /** @enum {string} */
-      availability?:
-        | "BackOrder"
-        | "Discontinued"
-        | "InStock"
-        | "InStoreOnly"
-        | "LimitedAvailability"
-        | "MadeToOrder"
-        | "OnlineOnly"
-        | "OutOfStock"
-        | "PreOrder"
-        | "PreSale"
-        | "Reserved"
-        | "SoldOut";
+      availability?: components["schemas"]["ItemAvailability"];
     };
     UpdateModifierDto: {
       /** @description 選項名稱 */
@@ -1876,20 +1811,7 @@ export interface components {
        * @example 10.00
        */
       priceAdjustment?: string;
-      /** @enum {string} */
-      availability?:
-        | "BackOrder"
-        | "Discontinued"
-        | "InStock"
-        | "InStoreOnly"
-        | "LimitedAvailability"
-        | "MadeToOrder"
-        | "OnlineOnly"
-        | "OutOfStock"
-        | "PreOrder"
-        | "PreSale"
-        | "Reserved"
-        | "SoldOut";
+      availability?: components["schemas"]["ItemAvailability"];
     };
     CreateMenuItemModifierGroupDto: {
       /** @description 要掛到此品項的選項群組 ID */
@@ -1913,21 +1835,7 @@ export interface components {
       menuSectionId?: string | null;
       price?: string | null;
       priceCurrency?: string | null;
-      /** @enum {string|null} */
-      availability?:
-        | "BackOrder"
-        | "Discontinued"
-        | "InStock"
-        | "InStoreOnly"
-        | "LimitedAvailability"
-        | "MadeToOrder"
-        | "OnlineOnly"
-        | "OutOfStock"
-        | "PreOrder"
-        | "PreSale"
-        | "Reserved"
-        | "SoldOut"
-        | null;
+      availability?: components["schemas"]["ItemAvailability"] | null;
       deliveryLeadTime?: components["schemas"]["QuantitativeValueDto"] | null;
       inventoryLevel?: components["schemas"]["QuantitativeValueDto"] | null;
       priceSpecification?:
@@ -3807,3 +3715,364 @@ export interface operations {
     };
   };
 }
+type FlattenedDeepRequired<T> = {
+  [K in keyof T]-?: FlattenedDeepRequired<
+    T[K] extends unknown[] | undefined | null
+      ? Extract<T[K], unknown[]>[number]
+      : T[K]
+  >;
+};
+type ReadonlyArray<T> = [Exclude<T, undefined>] extends [unknown[]]
+  ? Readonly<Exclude<T, undefined>>
+  : Readonly<Exclude<T, undefined>[]>;
+export const pathsApiUsersListGetParametersQueryFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/users/list"]["get"]["parameters"]["query"]["filterField"]
+> = ["name", "email", "role", "banned", "emailSubscribed", "createdAt"];
+export const pathsApiUsersListGetParametersQueryFilterOperatorValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/users/list"]["get"]["parameters"]["query"]["filterOperator"]
+> = [
+  "contains",
+  "doesNotContain",
+  "equals",
+  "doesNotEqual",
+  "startsWith",
+  "endsWith",
+  "isEmpty",
+  "isNotEmpty",
+  "isAnyOf",
+  "is",
+  "not",
+  "after",
+  "onOrAfter",
+  "before",
+  "onOrBefore",
+];
+export const pathsApiUsersListGetParametersQuerySearchFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/users/list"]["get"]["parameters"]["query"]["searchField"]
+> = ["name", "email"];
+export const pathsApiUsersListGetParametersQuerySearchOperatorValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/users/list"]["get"]["parameters"]["query"]["searchOperator"]
+> = ["contains", "startsWith", "endsWith"];
+export const pathsApiUsersListGetParametersQuerySortByValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/users/list"]["get"]["parameters"]["query"]["sortBy"]
+> = ["name", "email", "role", "banned", "emailSubscribed", "createdAt"];
+export const pathsApiUsersListGetParametersQuerySortDirectionValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/users/list"]["get"]["parameters"]["query"]["sortDirection"]
+> = ["asc", "desc"];
+export const pathsApiMenusMenuIdMenuSectionsGetParametersQueryFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/menus/{menuId}/menu-sections"]["get"]["parameters"]["query"]["filterField"]
+> = ["name", "description", "createdAt", "updatedAt"];
+export const pathsApiMenusMenuIdMenuSectionsGetParametersQueryFilterOperatorValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/menus/{menuId}/menu-sections"]["get"]["parameters"]["query"]["filterOperator"]
+> = [
+  "contains",
+  "doesNotContain",
+  "equals",
+  "doesNotEqual",
+  "startsWith",
+  "endsWith",
+  "isEmpty",
+  "isNotEmpty",
+  "isAnyOf",
+  "is",
+  "not",
+  "after",
+  "onOrAfter",
+  "before",
+  "onOrBefore",
+];
+export const pathsApiMenusMenuIdMenuSectionsGetParametersQuerySearchFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/menus/{menuId}/menu-sections"]["get"]["parameters"]["query"]["searchField"]
+> = ["name", "description"];
+export const pathsApiMenusMenuIdMenuSectionsGetParametersQuerySearchOperatorValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/menus/{menuId}/menu-sections"]["get"]["parameters"]["query"]["searchOperator"]
+> = ["contains", "startsWith", "endsWith"];
+export const pathsApiMenusMenuIdMenuSectionsGetParametersQuerySortByValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/menus/{menuId}/menu-sections"]["get"]["parameters"]["query"]["sortBy"]
+> = ["name", "description", "createdAt", "updatedAt"];
+export const pathsApiMenusMenuIdMenuSectionsGetParametersQuerySortDirectionValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/menus/{menuId}/menu-sections"]["get"]["parameters"]["query"]["sortDirection"]
+> = ["asc", "desc"];
+export const pathsApiMenuSectionsSectionIdMenuItemsGetParametersQueryFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/menu-sections/{sectionId}/menu-items"]["get"]["parameters"]["query"]["filterField"]
+> = ["name", "description", "createdAt", "updatedAt"];
+export const pathsApiMenuSectionsSectionIdMenuItemsGetParametersQueryFilterOperatorValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/menu-sections/{sectionId}/menu-items"]["get"]["parameters"]["query"]["filterOperator"]
+> = [
+  "contains",
+  "doesNotContain",
+  "equals",
+  "doesNotEqual",
+  "startsWith",
+  "endsWith",
+  "isEmpty",
+  "isNotEmpty",
+  "isAnyOf",
+  "is",
+  "not",
+  "after",
+  "onOrAfter",
+  "before",
+  "onOrBefore",
+];
+export const pathsApiMenuSectionsSectionIdMenuItemsGetParametersQuerySearchFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/menu-sections/{sectionId}/menu-items"]["get"]["parameters"]["query"]["searchField"]
+> = ["name", "description"];
+export const pathsApiMenuSectionsSectionIdMenuItemsGetParametersQuerySearchOperatorValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/menu-sections/{sectionId}/menu-items"]["get"]["parameters"]["query"]["searchOperator"]
+> = ["contains", "startsWith", "endsWith"];
+export const pathsApiMenuSectionsSectionIdMenuItemsGetParametersQuerySortByValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/menu-sections/{sectionId}/menu-items"]["get"]["parameters"]["query"]["sortBy"]
+> = ["name", "description", "createdAt", "updatedAt"];
+export const pathsApiMenuSectionsSectionIdMenuItemsGetParametersQuerySortDirectionValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/menu-sections/{sectionId}/menu-items"]["get"]["parameters"]["query"]["sortDirection"]
+> = ["asc", "desc"];
+export const pathsApiMenuItemsMenuItemIdAddOnsGetParametersQueryFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/menu-items/{menuItemId}/add-ons"]["get"]["parameters"]["query"]["filterField"]
+> = ["addOnMenuSectionName", "addOnMenuItemName", "createdAt", "updatedAt"];
+export const pathsApiMenuItemsMenuItemIdAddOnsGetParametersQueryFilterOperatorValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/menu-items/{menuItemId}/add-ons"]["get"]["parameters"]["query"]["filterOperator"]
+> = [
+  "contains",
+  "doesNotContain",
+  "equals",
+  "doesNotEqual",
+  "startsWith",
+  "endsWith",
+  "isEmpty",
+  "isNotEmpty",
+  "isAnyOf",
+  "is",
+  "not",
+  "after",
+  "onOrAfter",
+  "before",
+  "onOrBefore",
+];
+export const pathsApiMenuItemsMenuItemIdAddOnsGetParametersQuerySortByValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/menu-items/{menuItemId}/add-ons"]["get"]["parameters"]["query"]["sortBy"]
+> = ["addOnMenuSectionName", "addOnMenuItemName", "createdAt", "updatedAt"];
+export const pathsApiMenuItemsMenuItemIdAddOnsGetParametersQuerySortDirectionValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/menu-items/{menuItemId}/add-ons"]["get"]["parameters"]["query"]["sortDirection"]
+> = ["asc", "desc"];
+export const pathsApiMenusMenuIdModifierGroupsGetParametersQueryFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/menus/{menuId}/modifier-groups"]["get"]["parameters"]["query"]["filterField"]
+> = ["displayName", "createdAt", "updatedAt"];
+export const pathsApiMenusMenuIdModifierGroupsGetParametersQueryFilterOperatorValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/menus/{menuId}/modifier-groups"]["get"]["parameters"]["query"]["filterOperator"]
+> = [
+  "contains",
+  "doesNotContain",
+  "equals",
+  "doesNotEqual",
+  "startsWith",
+  "endsWith",
+  "isEmpty",
+  "isNotEmpty",
+  "isAnyOf",
+  "is",
+  "not",
+  "after",
+  "onOrAfter",
+  "before",
+  "onOrBefore",
+];
+export const pathsApiMenusMenuIdModifierGroupsGetParametersQuerySortByValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/menus/{menuId}/modifier-groups"]["get"]["parameters"]["query"]["sortBy"]
+> = ["displayName", "createdAt", "updatedAt"];
+export const pathsApiMenusMenuIdModifierGroupsGetParametersQuerySortDirectionValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/menus/{menuId}/modifier-groups"]["get"]["parameters"]["query"]["sortDirection"]
+> = ["asc", "desc"];
+export const pathsApiModifierGroupsGroupIdModifiersGetParametersQueryFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/modifier-groups/{groupId}/modifiers"]["get"]["parameters"]["query"]["filterField"]
+> = ["displayName", "createdAt", "updatedAt"];
+export const pathsApiModifierGroupsGroupIdModifiersGetParametersQueryFilterOperatorValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/modifier-groups/{groupId}/modifiers"]["get"]["parameters"]["query"]["filterOperator"]
+> = [
+  "contains",
+  "doesNotContain",
+  "equals",
+  "doesNotEqual",
+  "startsWith",
+  "endsWith",
+  "isEmpty",
+  "isNotEmpty",
+  "isAnyOf",
+  "is",
+  "not",
+  "after",
+  "onOrAfter",
+  "before",
+  "onOrBefore",
+];
+export const pathsApiModifierGroupsGroupIdModifiersGetParametersQuerySortByValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/modifier-groups/{groupId}/modifiers"]["get"]["parameters"]["query"]["sortBy"]
+> = ["displayName", "createdAt", "updatedAt"];
+export const pathsApiModifierGroupsGroupIdModifiersGetParametersQuerySortDirectionValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/modifier-groups/{groupId}/modifiers"]["get"]["parameters"]["query"]["sortDirection"]
+> = ["asc", "desc"];
+export const pathsApiMenuItemsMenuItemIdModifierGroupsGetParametersQueryFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/menu-items/{menuItemId}/modifier-groups"]["get"]["parameters"]["query"]["filterField"]
+> = ["displayName", "createdAt", "updatedAt"];
+export const pathsApiMenuItemsMenuItemIdModifierGroupsGetParametersQueryFilterOperatorValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/menu-items/{menuItemId}/modifier-groups"]["get"]["parameters"]["query"]["filterOperator"]
+> = [
+  "contains",
+  "doesNotContain",
+  "equals",
+  "doesNotEqual",
+  "startsWith",
+  "endsWith",
+  "isEmpty",
+  "isNotEmpty",
+  "isAnyOf",
+  "is",
+  "not",
+  "after",
+  "onOrAfter",
+  "before",
+  "onOrBefore",
+];
+export const pathsApiMenuItemsMenuItemIdModifierGroupsGetParametersQuerySortByValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/menu-items/{menuItemId}/modifier-groups"]["get"]["parameters"]["query"]["sortBy"]
+> = ["displayName", "createdAt", "updatedAt"];
+export const pathsApiMenuItemsMenuItemIdModifierGroupsGetParametersQuerySortDirectionValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/menu-items/{menuItemId}/modifier-groups"]["get"]["parameters"]["query"]["sortDirection"]
+> = ["asc", "desc"];
+export const pathsApiOrganizationsOrganizationIdOrderMenuGetParametersQueryLangValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/organizations/{organizationId}/order-menu"]["get"]["parameters"]["query"]["lang"]
+> = ["en", "ja", "ko", "zh-CN", "zh-TW"];
+export const userResponseDtoLangValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["UserResponseDto"]["lang"]
+> = ["en", "ja", "ko", "zh-CN", "zh-TW"];
+export const updateUserDtoGenderValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["UpdateUserDto"]["gender"]
+> = ["female", "male", "other"];
+export const baseEcpayDtoPaymentTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["BaseEcpayDto"]["PaymentType"]
+> = ["aio"];
+export const baseEcpayDtoChoosePaymentValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["BaseEcpayDto"]["ChoosePayment"]
+> = [
+  "Credit",
+  "TWQR",
+  "WebATM",
+  "ATM",
+  "CVS",
+  "BARCODE",
+  "ApplePay",
+  "BNPL",
+  "WeiXin",
+  "ALL",
+];
+export const baseEcpayDtoEncryptTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["BaseEcpayDto"]["EncryptType"]
+> = [1];
+export const baseEcpayDtoNeedExtraPaidInfoValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["BaseEcpayDto"]["NeedExtraPaidInfo"]
+> = ["Y", "N"];
+export const baseEcpayDtoLanguageValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["BaseEcpayDto"]["Language"]
+> = ["ENG", "KOR", "JPN", "CHI"];
+export const returnEcpayDtoSimulatePaidValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["ReturnEcpayDto"]["SimulatePaid"]
+> = [0, 1];
+export const issueInvoiceEcpayItemDtoItemTaxTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayItemDto"]["ItemTaxType"]
+> = ["1", "2", "3"];
+export const issueInvoiceEcpayDecryptedRequestDtoChannelPartnerValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["ChannelPartner"]
+> = ["1"];
+export const issueInvoiceEcpayDecryptedRequestDtoClearanceMarkValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["ClearanceMark"]
+> = ["1", "2"];
+export const issueInvoiceEcpayDecryptedRequestDtoPrintValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["Print"]
+> = ["0", "1"];
+export const issueInvoiceEcpayDecryptedRequestDtoDonationValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["Donation"]
+> = ["0", "1"];
+export const issueInvoiceEcpayDecryptedRequestDtoCarrierTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["CarrierType"]
+> = ["", "1", "2", "3", "4", "5"];
+export const issueInvoiceEcpayDecryptedRequestDtoTaxTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["TaxType"]
+> = ["1", "2", "3", "4", "9"];
+export const issueInvoiceEcpayDecryptedRequestDtoZeroTaxRateReasonValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["ZeroTaxRateReason"]
+> = ["71", "72", "73", "74", "75", "76", "77", "78", "79"];
+export const issueInvoiceEcpayDecryptedRequestDtoSpecialTaxTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["SpecialTaxType"]
+> = [1, 2, 3, 4, 5, 6, 7, 8];
+export const issueInvoiceEcpayDecryptedRequestDtoInvTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["InvType"]
+> = ["07", "08"];
+export const issueInvoiceEcpayDecryptedRequestDtoVatValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["vat"]
+> = ["1", "0"];
+export const itemAvailabilityValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["ItemAvailability"]
+> = ["InStock", "SoldOut", "Discontinued"];
+export const createMenuItemDtoSuitableForDietValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CreateMenuItemDto"]["suitableForDiet"]
+> = [
+  "DiabeticDiet",
+  "GlutenFreeDiet",
+  "HalalDiet",
+  "HinduDiet",
+  "KosherDiet",
+  "LowCalorieDiet",
+  "LowFatDiet",
+  "LowLactoseDiet",
+  "LowSaltDiet",
+  "VeganDiet",
+  "VegetarianDiet",
+];
+export const menuItemResponseDtoSuitableForDietValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["MenuItemResponseDto"]["suitableForDiet"]
+> = [
+  "DiabeticDiet",
+  "GlutenFreeDiet",
+  "HalalDiet",
+  "HinduDiet",
+  "KosherDiet",
+  "LowCalorieDiet",
+  "LowFatDiet",
+  "LowLactoseDiet",
+  "LowSaltDiet",
+  "VeganDiet",
+  "VegetarianDiet",
+];
+export const updateMenuItemDtoSuitableForDietValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["UpdateMenuItemDto"]["suitableForDiet"]
+> = [
+  "DiabeticDiet",
+  "GlutenFreeDiet",
+  "HalalDiet",
+  "HinduDiet",
+  "KosherDiet",
+  "LowCalorieDiet",
+  "LowFatDiet",
+  "LowLactoseDiet",
+  "LowSaltDiet",
+  "VeganDiet",
+  "VegetarianDiet",
+];
+export const orderMenuItemResponseDtoSuitableForDietValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["OrderMenuItemResponseDto"]["suitableForDiet"]
+> = [
+  "DiabeticDiet",
+  "GlutenFreeDiet",
+  "HalalDiet",
+  "HinduDiet",
+  "KosherDiet",
+  "LowCalorieDiet",
+  "LowFatDiet",
+  "LowLactoseDiet",
+  "LowSaltDiet",
+  "VeganDiet",
+  "VegetarianDiet",
+];
+export const organizationMemberResponseDtoRoleValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["OrganizationMemberResponseDto"]["role"]
+> = ["admin", "member", "owner"];

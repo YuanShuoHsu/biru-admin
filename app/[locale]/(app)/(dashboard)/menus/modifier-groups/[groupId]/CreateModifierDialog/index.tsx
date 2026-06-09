@@ -5,7 +5,6 @@ import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
-import { ITEM_AVAILABILITY_OPTIONS } from "../constants";
 import {
   type CreateModifierForm,
   useCreateModifierFormSchema,
@@ -21,6 +20,7 @@ import { MenuItem, TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
+import { itemAvailabilityValues } from "@/types/api";
 import type { Modifier } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
@@ -145,7 +145,7 @@ const CreateModifierDialog = ({
         {...register("availability")}
         defaultValue="InStock"
       >
-        {ITEM_AVAILABILITY_OPTIONS.map((value) => (
+        {itemAvailabilityValues.map((value) => (
           <MenuItem key={value} value={value}>
             {tMenus(`offers.availability.options.${value}`)}
           </MenuItem>

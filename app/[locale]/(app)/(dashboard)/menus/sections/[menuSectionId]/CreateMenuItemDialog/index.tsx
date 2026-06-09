@@ -9,7 +9,6 @@ import { NumericFormat } from "react-number-format";
 
 import {
   type CreateMenuItemForm,
-  ITEM_AVAILABILITY_VALUES,
   useCreateMenuItemFormSchema,
 } from "./definitions";
 
@@ -30,6 +29,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
+import { itemAvailabilityValues } from "@/types/api";
 import type { MenuItem as MenuItemType } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
@@ -296,7 +296,7 @@ const CreateMenuItemDialog = ({
         <MenuItem disabled value="">
           <em>{tMenus("offers.availability.placeholder")}</em>
         </MenuItem>
-        {ITEM_AVAILABILITY_VALUES.map((value) => (
+        {itemAvailabilityValues.map((value) => (
           <MenuItem key={value} value={value}>
             {tMenus(
               `offers.availability.options.${value}` as Parameters<

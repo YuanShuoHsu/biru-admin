@@ -1,22 +1,9 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-import { hasAllLocalizedText } from "@/utils/locale";
+import { itemAvailabilityValues } from "@/types/api";
 
-export const ITEM_AVAILABILITY_VALUES = [
-  "BackOrder",
-  "Discontinued",
-  "InStock",
-  "InStoreOnly",
-  "LimitedAvailability",
-  "MadeToOrder",
-  "OnlineOnly",
-  "OutOfStock",
-  "PreOrder",
-  "PreSale",
-  "Reserved",
-  "SoldOut",
-] as const;
+import { hasAllLocalizedText } from "@/utils/locale";
 
 const quantitativeValueSchema = z.object({
   unitText: z.string().trim().optional(),
@@ -58,7 +45,7 @@ export const useCreateMenuItemFormSchema = () => {
           .string()
           .trim()
           .min(1, { error: tValidation("price.required") }),
-        availability: z.enum(ITEM_AVAILABILITY_VALUES),
+        availability: z.enum(itemAvailabilityValues),
         inventoryLevel: quantitativeValueSchema.optional(),
         deliveryLeadTime: quantitativeValueSchema.optional(),
         priceSpecification: z

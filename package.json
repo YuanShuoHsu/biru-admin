@@ -10,7 +10,7 @@
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "prepare": "husky",
-    "codegen": "openapi-typescript http://localhost:3001/api-json -o types/api.ts"
+    "codegen": "openapi-typescript http://localhost:3001/api-json --enum-values -o types/api.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",

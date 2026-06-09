@@ -50,19 +50,3 @@ export const SORT_BY_FIELDS = [
   "updatedAt",
 ] as const;
 export const SORT_DIRECTIONS = ["asc", "desc"] as const;
-
-// 對應 biru-api itemAvailabilityEnum；i18n 標籤共用 menus.offers.availability.options
-export const ITEM_AVAILABILITY_OPTIONS = [
-  "BackOrder",
-  "Discontinued",
-  "InStock",
-  "InStoreOnly",
-  "LimitedAvailability",
-  "MadeToOrder",
-  "OnlineOnly",
-  "OutOfStock",
-  "PreOrder",
-  "PreSale",
-  "Reserved",
-  "SoldOut",
-] as const;

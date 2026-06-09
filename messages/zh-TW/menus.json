@@ -280,17 +280,8 @@
     "availability": {
       "label": "供應狀態",
       "options": {
-        "BackOrder": "預購補貨中",
         "Discontinued": "已停售",
         "InStock": "供應中",
-        "InStoreOnly": "僅店內供應",
-        "LimitedAvailability": "限量供應",
-        "MadeToOrder": "接單製作",
-        "OnlineOnly": "僅線上供應",
-        "OutOfStock": "暫時缺貨",
-        "PreOrder": "預購",
-        "PreSale": "預售",
-        "Reserved": "保留",
         "SoldOut": "售完"
       },
       "placeholder": "請選擇您的供應狀態"

@@ -163,8 +163,7 @@ const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
   //   choices.some(({ extraCost }) => extraCost > 0),
   // );
 
-  const isItemOutOfStock =
-    stock === 0 || availability === "OutOfStock" || availability === "SoldOut";
+  const isItemOutOfStock = stock === 0 || availability === "SoldOut";
 
   const handleDialogClick = () => {
     if (isItemOutOfStock) return;

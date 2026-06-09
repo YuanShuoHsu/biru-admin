@@ -280,17 +280,8 @@
     "availability": {
       "label": "Availability",
       "options": {
-        "BackOrder": "Back order",
         "Discontinued": "Discontinued",
         "InStock": "In stock",
-        "InStoreOnly": "In-store only",
-        "LimitedAvailability": "Limited availability",
-        "MadeToOrder": "Made to order",
-        "OnlineOnly": "Online only",
-        "OutOfStock": "Out of stock",
-        "PreOrder": "Pre-order",
-        "PreSale": "Pre-sale",
-        "Reserved": "Reserved",
         "SoldOut": "Sold out"
       },
       "placeholder": "Please select your availability"
