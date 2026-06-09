@@ -5,7 +5,7 @@ export const useAddTeamMemberFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z.object({
-    userId: z.string().min(1, { message: tValidation("member.required") }),
+    userId: z.string().min(1, { error: tValidation("member.required") }),
   });
 };
 

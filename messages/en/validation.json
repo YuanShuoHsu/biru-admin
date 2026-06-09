@@ -1,12 +1,6 @@
 {
-  "addOnMenuItemId": {
-    "required": "Add-on item is required."
-  },
   "addOnMenuSectionId": {
     "required": "Section is required."
-  },
-  "addOnType": {
-    "required": "Add-on type is required."
   },
   "banReason": {
     "maxLength": "Ban reason must not exceed 160 characters."
@@ -67,9 +61,6 @@
     "minLength": "Be at least 8 characters long.",
     "number": "Contain at least one number.",
     "sameAsCurrent": "New password must be different from your current password."
-  },
-  "organizationSlug": {
-    "required": "Organization is required."
   },
   "password": {
     "letter": "Contain at least one letter.",

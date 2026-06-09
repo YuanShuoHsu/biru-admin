@@ -1,12 +1,6 @@
 {
-  "addOnMenuItemId": {
-    "required": "추가 항목은 필수입니다."
-  },
   "addOnMenuSectionId": {
     "required": "섹션은 필수입니다."
-  },
-  "addOnType": {
-    "required": "추가 유형은 필수입니다."
   },
   "banReason": {
     "maxLength": "정지 사유는 160자를 초과할 수 없습니다."
@@ -67,9 +61,6 @@
     "minLength": "8자 이상 길이.",
     "number": "숫자를 최소 1개 포함.",
     "sameAsCurrent": "새 비밀번호는 현재 비밀번호와 달라야 합니다."
-  },
-  "organizationSlug": {
-    "required": "조직은 필수입니다."
   },
   "password": {
     "letter": "영문자를 최소 1개 포함.",
