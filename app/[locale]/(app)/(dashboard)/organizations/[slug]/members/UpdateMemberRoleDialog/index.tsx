@@ -108,12 +108,15 @@ const UpdateMemberRoleDialog = ({
           inputLabel: { shrink: true },
           select: {
             displayEmpty: true,
-            renderValue: (selected) =>
-              selected ? (
-                tMembers(`role.${selected as (typeof roles)[number]}`)
+            renderValue: (selected) => {
+              const selectedRole = roles.find((role) => role === selected);
+
+              return selectedRole ? (
+                tMembers(`role.${selectedRole}`)
               ) : (
                 <em>{tMembers("role.placeholder")}</em>
-              ),
+              );
+            },
           },
         }}
         value={role}

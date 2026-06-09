@@ -302,12 +302,15 @@ const CreateUserDialogContent = ({
           inputLabel: { shrink: true },
           select: {
             displayEmpty: true,
-            renderValue: (selected) =>
-              selected ? (
-                tAdmins(`role.${selected as (typeof roles)[number]}`)
+            renderValue: (selected) => {
+              const selectedRole = roles.find((role) => role === selected);
+
+              return selectedRole ? (
+                tAdmins(`role.${selectedRole}`)
               ) : (
                 <em>{tAdmins("role.placeholder")}</em>
-              ),
+              );
+            },
           },
         }}
         value={role}
