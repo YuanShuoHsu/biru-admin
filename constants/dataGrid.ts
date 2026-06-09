@@ -51,3 +51,43 @@ export const NO_VALUE_FILTER_OPERATORS: readonly string[] = [
   "isEmpty",
   "isNotEmpty",
 ];
+
+export const STRING_FILTER_OPERATORS = [
+  "contains",
+  "doesNotContain",
+  "equals",
+  "doesNotEqual",
+  "startsWith",
+  "endsWith",
+  "isEmpty",
+  "isNotEmpty",
+  "isAnyOf",
+] as const;
+export const DATE_FILTER_OPERATORS = [
+  "is",
+  "not",
+  "after",
+  "onOrAfter",
+  "before",
+  "onOrBefore",
+  "isEmpty",
+  "isNotEmpty",
+] as const;
+export const FILTER_OPERATORS = [
+  "contains",
+  "doesNotContain",
+  "equals",
+  "doesNotEqual",
+  "startsWith",
+  "endsWith",
+  "isEmpty",
+  "isNotEmpty",
+  "isAnyOf",
+  "is",
+  "not",
+  "after",
+  "onOrAfter",
+  "before",
+  "onOrBefore",
+] as const;
+export const SORT_DIRECTIONS = ["asc", "desc"] as const;

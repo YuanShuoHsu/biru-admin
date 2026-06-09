@@ -2,14 +2,13 @@ import { setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 
 import ModifierGroups from ".";
-import {
-  FILTER_FIELDS,
-  FILTER_OPERATORS,
-  SORT_BY_FIELDS,
-  SORT_DIRECTIONS,
-} from "./constants";
+import { FILTER_FIELDS, SORT_BY_FIELDS } from "./constants";
 
-import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
+import {
+  FILTER_OPERATORS,
+  NO_VALUE_FILTER_OPERATORS,
+  SORT_DIRECTIONS,
+} from "@/constants/dataGrid";
 
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";

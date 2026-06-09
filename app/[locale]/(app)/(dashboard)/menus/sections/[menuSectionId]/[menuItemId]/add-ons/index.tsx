@@ -9,7 +9,6 @@ import useSWR from "swr";
 
 import CreateAddOnDialog from "./CreateAddOnDialog";
 import UpdateAddOnDialog from "./UpdateAddOnDialog";
-import { DATE_FILTER_OPERATORS, STRING_FILTER_OPERATORS } from "./constants";
 
 import DateFilterInputValue from "@/components/DateFilterInputValue";
 import { DragHandle, Sortable } from "@/components/Sortable";
@@ -17,7 +16,9 @@ import { DragHandle, Sortable } from "@/components/Sortable";
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
+  DATE_FILTER_OPERATORS,
   NO_VALUE_FILTER_OPERATORS,
+  STRING_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
 
 import { arrayMove } from "@dnd-kit/helpers";

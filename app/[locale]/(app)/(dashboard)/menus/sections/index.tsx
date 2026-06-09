@@ -7,7 +7,6 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
-import { DATE_FILTER_OPERATORS, STRING_FILTER_OPERATORS } from "./constants";
 import CreateMenuSectionDialog from "./CreateMenuSectionDialog";
 import UpdateMenuSectionDialog from "./UpdateMenuSectionDialog";
 
@@ -17,7 +16,9 @@ import { DragHandle, Sortable } from "@/components/Sortable";
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
+  DATE_FILTER_OPERATORS,
   NO_VALUE_FILTER_OPERATORS,
+  STRING_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
 
 import { arrayMove } from "@dnd-kit/helpers";
