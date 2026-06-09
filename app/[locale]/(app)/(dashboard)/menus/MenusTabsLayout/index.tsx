@@ -1,33 +1,89 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import useSWR from "swr";
 
-import UpdateMenuDialog from "../UpdateMenuDialog";
-
-import { Link, usePathname } from "@/i18n/navigation";
-
-import { authClient } from "@/lib/auth-client";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
 
 import {
   Category,
   Edit,
+  RestaurantMenu,
   Tune,
   type SvgIconComponent,
 } from "@mui/icons-material";
-import { IconButton, Stack, Tab, Tabs, Tooltip } from "@mui/material";
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardMedia,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { Menu } from "@/types/menus";
 
-import { fetcher } from "@/utils/fetcher";
+import { localize } from "@/utils/locale";
 
-const MenusTabsLayout = ({ children }: { children: React.ReactNode }) => {
+import UpdateMenuDialog from "../UpdateMenuDialog";
+
+const StyledCard = styled(Card)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  [theme.breakpoints.up("sm")]: {
+    flexDirection: "row",
+  },
+}));
+
+const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
+  width: "100%",
+  backgroundColor: theme.palette.action.hover,
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  aspectRatio: "16 / 9",
+  flexShrink: 0,
+
+  [theme.breakpoints.up("sm")]: {
+    width: theme.spacing(25),
+    aspectRatio: "auto",
+  },
+}));
+
+const StyledCardContent = styled(CardContent)({
+  paddingBottom: 0,
+});
+
+const WrapTypography = styled(Typography)({
+  overflowWrap: "break-word",
+});
+
+const StyledCardActions = styled(CardActions)(({ theme }) => ({
+  padding: theme.spacing(2),
+}));
+
+interface MenusTabsLayoutProps {
+  canWrite?: boolean;
+  children: React.ReactNode;
+  menu?: Menu;
+}
+
+const MenusTabsLayout = ({
+  canWrite = false,
+  children,
+  menu,
+}: MenusTabsLayoutProps) => {
   const { setDialog } = useDialogStore((state) => state);
 
+  const locale = useLocale();
   const pathname = usePathname();
+  const router = useRouter();
   const searchParams = useSearchParams();
 
   const organization = searchParams.get("organization");
@@ -36,25 +92,6 @@ const MenusTabsLayout = ({ children }: { children: React.ReactNode }) => {
     page: "1",
     pageSize: "10",
   }).toString();
-
-  const { data: organizations = [] } = useSWR("organization-list", async () => {
-    const { data } = await authClient.organization.list();
-
-    return data || [];
-  });
-  const selectedOrganization = organizations.find(
-    ({ slug }) => slug === organization,
-  );
-
-  const { data: menu, mutate: mutateMenu } = useSWR<Menu>(
-    selectedOrganization
-      ? `organization-menu-${selectedOrganization.id}`
-      : null,
-    () =>
-      fetcher<Menu[]>(
-        `/api/organizations/${selectedOrganization!.id}/menus`,
-      ).then((menus) => menus[0]),
-  );
 
   const tMenus = useTranslations("menus");
 
@@ -83,7 +120,7 @@ const MenusTabsLayout = ({ children }: { children: React.ReactNode }) => {
     if (!menu) return;
 
     setDialog({
-      content: <UpdateMenuDialog menu={menu} mutate={mutateMenu} />,
+      content: <UpdateMenuDialog menu={menu} mutate={router.refresh} />,
       formId: "update-menu-form",
       open: true,
       title: tMenus("settings.actions.update.title"),
@@ -93,11 +130,37 @@ const MenusTabsLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <Stack height="100%" gap={2}>
       {menu && (
-        <Tooltip title={tMenus("settings.actions.update.title")}>
-          <IconButton onClick={handleEditMenu} size="small">
-            <Edit fontSize="small" />
-          </IconButton>
-        </Tooltip>
+        <StyledCard variant="outlined">
+          <StyledCardMedia image={menu.image || undefined}>
+            {!menu.image && (
+              <RestaurantMenu color="disabled" fontSize="large" />
+            )}
+          </StyledCardMedia>
+          <Stack flex={1} minWidth={0}>
+            <StyledCardContent>
+              <WrapTypography fontWeight="bold" variant="subtitle1">
+                {localize(menu.name, locale)}
+              </WrapTypography>
+              {localize(menu.description, locale) && (
+                <WrapTypography color="text.secondary" variant="body2">
+                  {localize(menu.description, locale)}
+                </WrapTypography>
+              )}
+            </StyledCardContent>
+            <StyledCardActions>
+              {canWrite && (
+                <Button
+                  onClick={handleEditMenu}
+                  size="small"
+                  startIcon={<Edit fontSize="small" />}
+                  variant="outlined"
+                >
+                  {tMenus("settings.actions.update.title")}
+                </Button>
+              )}
+            </StyledCardActions>
+          </Stack>
+        </StyledCard>
       )}
       <Tabs
         aria-label="menu tabs"

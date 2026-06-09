@@ -139,7 +139,7 @@ const ModifierGroupsPage = async ({
   const canWrite = role === "owner" || role === "admin";
 
   return (
-    <MenusTabsLayout>
+    <MenusTabsLayout canWrite={canWrite} menu={menu}>
       <ModifierGroups
         canWrite={canWrite}
         filterField={filterField}

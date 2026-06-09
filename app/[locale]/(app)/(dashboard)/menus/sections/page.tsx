@@ -134,7 +134,7 @@ const MenusSectionsPage = async ({
   const canWrite = role === "owner" || role === "admin";
 
   return (
-    <MenusTabsLayout>
+    <MenusTabsLayout canWrite={canWrite} menu={menu}>
       <MenusSections
         canWrite={canWrite}
         filterField={filterField}
