@@ -52,7 +52,13 @@ import {
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { Modifier, ModifierGroup } from "@/types/menus";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type {
+  Modifier,
+  ModifierFilterField,
+  ModifierGroup,
+  ModifierSortField,
+} from "@/types/menus";
 
 import { isFilteredOrSorted } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
@@ -65,8 +71,8 @@ const DataGrid = dynamic(
 
 interface ModifiersProps {
   canWrite: boolean;
-  filterField?: string;
-  filterOperator?: string;
+  filterField?: ModifierFilterField;
+  filterOperator?: FilterOperator;
   filterValue?: string;
   group: ModifierGroup;
   modifiers: Modifier[];
@@ -74,8 +80,8 @@ interface ModifiersProps {
   pageSize: number;
   quickFilterValue?: string;
   rowCount: number;
-  sortBy?: string;
-  sortDirection?: "asc" | "desc";
+  sortBy?: ModifierSortField;
+  sortDirection?: SortDirection;
 }
 
 const Modifiers = ({

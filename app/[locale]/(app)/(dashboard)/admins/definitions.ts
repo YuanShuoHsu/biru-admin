@@ -1,16 +1,16 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-import { SEARCH_FIELDS, SEARCH_OPERATORS } from "./constants";
+import { userSearchFieldValues, userSearchOperatorValues } from "@/types/api";
 
 export const useSearchFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z.object({
-    searchField: z.enum(SEARCH_FIELDS, {
+    searchField: z.enum(userSearchFieldValues, {
       error: tValidation("searchField.required"),
     }),
-    searchOperator: z.enum(SEARCH_OPERATORS),
+    searchOperator: z.enum(userSearchOperatorValues),
     searchValue: z.string(),
   });
 };

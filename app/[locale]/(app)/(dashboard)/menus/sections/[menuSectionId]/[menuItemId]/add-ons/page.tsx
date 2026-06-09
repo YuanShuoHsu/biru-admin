@@ -3,18 +3,20 @@ import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
 import MenuItemAddOns from ".";
-import { FILTER_FIELDS, SORT_BY_FIELDS } from "./constants";
 
-import {
-  FILTER_OPERATORS,
-  NO_VALUE_FILTER_OPERATORS,
-  SORT_DIRECTIONS,
-} from "@/constants/dataGrid";
+import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
 
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
+
+import {
+  addOnFilterFieldValues,
+  addOnSortFieldValues,
+  filterOperatorValues,
+  sortDirectionValues,
+} from "@/types/api";
 
 import {
   DEFAULT_MENUS_HREF,
@@ -69,13 +71,15 @@ const MenuItemAddOnsPage = async ({
   const page = Math.max(1, Number(rawPage) || 1);
   const pageSize = Math.max(1, Number(rawPageSize) || 10);
 
-  const sortBy = SORT_BY_FIELDS.find((field) => field === rawSortBy);
-  const sortDirection = SORT_DIRECTIONS.find(
+  const sortBy = addOnSortFieldValues.find((field) => field === rawSortBy);
+  const sortDirection = sortDirectionValues.find(
     (direction) => direction === rawSortDirection,
   );
 
-  const filterField = FILTER_FIELDS.find((field) => field === rawFilterField);
-  const filterOperator = FILTER_OPERATORS.find(
+  const filterField = addOnFilterFieldValues.find(
+    (field) => field === rawFilterField,
+  );
+  const filterOperator = filterOperatorValues.find(
     (operator) => operator === rawFilterOperator,
   );
 

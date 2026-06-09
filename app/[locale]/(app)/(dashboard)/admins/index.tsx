@@ -23,10 +23,6 @@ import BanUserDialogContent from "./BanUserDialogContent";
 import {
   DATE_FILTER_OPERATORS,
   ENUM_FILTER_OPERATORS,
-  FILTER_FIELDS,
-  FILTER_OPERATORS,
-  SORT_BY,
-  SORT_DIRECTIONS,
   TEXT_FILTER_OPERATORS,
 } from "./constants";
 import CreateUserDialogContent from "./CreateUserDialogContent";
@@ -94,7 +90,14 @@ import {
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { AdminRole, AdminUser } from "@/types/admins";
+import type {
+  AdminRole,
+  AdminUser,
+  UserFilterField,
+  UserFilterOperator,
+  UserSortField,
+} from "@/types/admins";
+import type { SortDirection } from "@/types/dataGrid";
 
 import {
   getQuickFilterValue,
@@ -130,19 +133,14 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
   },
 }));
 
-type FilterField = (typeof FILTER_FIELDS)[number];
-type FilterOperator = (typeof FILTER_OPERATORS)[number];
-type SortBy = (typeof SORT_BY)[number];
-type SortDirection = (typeof SORT_DIRECTIONS)[number];
-
 const ROLE_COLOR_MAP: Record<AdminRole, "error" | "default"> = {
   admin: "error",
   user: "default",
 };
 
 interface AdminsProps {
-  filterField?: FilterField;
-  filterOperator?: FilterOperator;
+  filterField?: UserFilterField;
+  filterOperator?: UserFilterOperator;
   filterValue?: string;
   page: number;
   pageSize: number;
@@ -150,7 +148,7 @@ interface AdminsProps {
   quickFilterValue?: string;
   rowCount: number;
   rows: UserWithRole[];
-  sortBy?: SortBy;
+  sortBy?: UserSortField;
   sortDirection?: SortDirection;
   userSessions: UserSessions;
 }

@@ -3,17 +3,18 @@ import { getMessages, setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 
 import Admins from ".";
-import {
-  FILTER_FIELDS,
-  FILTER_OPERATORS,
-  SORT_BY,
-  SORT_DIRECTIONS,
-} from "./constants";
 
 import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
 
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
+
+import {
+  sortDirectionValues,
+  userFilterFieldValues,
+  userFilterOperatorValues,
+  userSortFieldValues,
+} from "@/types/api";
 
 import { getQuickFilterValue, getUserSessions } from "@/utils/admins";
 import { fetcher } from "@/utils/fetcher";
@@ -56,13 +57,15 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
   const page = Math.max(1, Number(rawPage) || 1);
   const pageSize = Math.max(1, Number(rawPageSize) || 10);
 
-  const sortBy = SORT_BY.find((field) => field === rawSortBy);
-  const sortDirection = SORT_DIRECTIONS.find(
+  const sortBy = userSortFieldValues.find((field) => field === rawSortBy);
+  const sortDirection = sortDirectionValues.find(
     (direction) => direction === rawSortDirection,
   );
 
-  const filterField = FILTER_FIELDS.find((field) => field === rawFilterField);
-  const filterOperator = FILTER_OPERATORS.find(
+  const filterField = userFilterFieldValues.find(
+    (field) => field === rawFilterField,
+  );
+  const filterOperator = userFilterOperatorValues.find(
     (operator) => operator === rawFilterOperator,
   );
 

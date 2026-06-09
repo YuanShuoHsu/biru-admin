@@ -1,4 +1,12 @@
-import type { components } from "@/types/api";
+import {
+  type components,
+  addOnFilterFieldValues,
+  addOnSortFieldValues,
+  menuFilterFieldValues,
+  menuSortFieldValues,
+  modifierFilterFieldValues,
+  modifierSortFieldValues,
+} from "@/types/api";
 
 export type Menu = components["schemas"]["MenuResponseDto"];
 export type MenuSection = components["schemas"]["MenuSectionResponseDto"];
@@ -12,3 +20,12 @@ export type ModifierGroup = components["schemas"]["ModifierGroupResponseDto"];
 export type Modifier = components["schemas"]["ModifierResponseDto"];
 export type MenuItemModifierGroup =
   components["schemas"]["MenuItemModifierGroupResponseDto"];
+
+export type MenuFilterField = (typeof menuFilterFieldValues)[number];
+export type MenuSortField = (typeof menuSortFieldValues)[number];
+
+export type AddOnFilterField = (typeof addOnFilterFieldValues)[number];
+export type AddOnSortField = (typeof addOnSortFieldValues)[number];
+
+export type ModifierFilterField = (typeof modifierFilterFieldValues)[number];
+export type ModifierSortField = (typeof modifierSortFieldValues)[number];

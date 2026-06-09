@@ -59,7 +59,13 @@ import {
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { Menu, MenuSection } from "@/types/menus";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type {
+  Menu,
+  MenuFilterField,
+  MenuSection,
+  MenuSortField,
+} from "@/types/menus";
 
 import { isFilteredOrSorted } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
@@ -72,8 +78,8 @@ const DataGrid = dynamic(
 
 interface MenuDetailProps {
   canWrite: boolean;
-  filterField?: string;
-  filterOperator?: string;
+  filterField?: MenuFilterField;
+  filterOperator?: FilterOperator;
   filterValue?: string;
   menu: Menu;
   page: number;
@@ -81,8 +87,8 @@ interface MenuDetailProps {
   quickFilterValue?: string;
   rowCount: number;
   sections: MenuSection[];
-  sortBy?: string;
-  sortDirection?: "asc" | "desc";
+  sortBy?: MenuSortField;
+  sortDirection?: SortDirection;
 }
 
 const MenusMenuId = ({

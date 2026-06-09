@@ -65,7 +65,8 @@ import {
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import { currencies } from "@/constants/currencies";
-import type { MenuItem } from "@/types/menus";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { MenuFilterField, MenuItem, MenuSortField } from "@/types/menus";
 
 import { isFilteredOrSorted } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
@@ -86,8 +87,8 @@ const StyledBox = styled(Box)(({ theme }) => ({
 
 interface MenusMenuIdSectionIdProps {
   canWrite: boolean;
-  filterField?: string;
-  filterOperator?: string;
+  filterField?: MenuFilterField;
+  filterOperator?: FilterOperator;
   filterValue?: string;
   items: MenuItem[];
   page: number;
@@ -95,8 +96,8 @@ interface MenusMenuIdSectionIdProps {
   quickFilterValue?: string;
   rowCount: number;
   menuSectionId: string;
-  sortBy?: string;
-  sortDirection?: "asc" | "desc";
+  sortBy?: MenuSortField;
+  sortDirection?: SortDirection;
 }
 
 const MenusMenuIdSectionId = ({
