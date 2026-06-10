@@ -45,9 +45,6 @@
     "completeOrEmpty": "하나의 언어라도 입력하면 모든 언어를 입력해야 합니다.",
     "required": "모든 언어는 필수입니다."
   },
-  "maxSelectionCount": {
-    "lessThanMin": "최대 선택 수는 최소 선택 수보다 작을 수 없습니다."
-  },
   "member": {
     "required": "멤버는 필수입니다."
   },

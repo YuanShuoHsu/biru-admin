@@ -45,9 +45,6 @@
     "completeOrEmpty": "填寫任一語言時，所有語言皆須填寫。",
     "required": "所有語言為必填。"
   },
-  "maxSelectionCount": {
-    "lessThanMin": "最多選擇數量不能小於最少選擇數量。"
-  },
   "member": {
     "required": "成員為必填。"
   },

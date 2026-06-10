@@ -45,9 +45,6 @@
     "completeOrEmpty": "填写任一语言时，所有语言皆须填写。",
     "required": "所有语言为必填。"
   },
-  "maxSelectionCount": {
-    "lessThanMin": "最多选择数量不能小于最少选择数量。"
-  },
   "member": {
     "required": "成员为必填。"
   },

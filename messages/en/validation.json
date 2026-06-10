@@ -45,9 +45,6 @@
     "completeOrEmpty": "When any language is filled in, all languages are required.",
     "required": "All languages are required."
   },
-  "maxSelectionCount": {
-    "lessThanMin": "Max selections cannot be less than min selections."
-  },
   "member": {
     "required": "Member is required."
   },
