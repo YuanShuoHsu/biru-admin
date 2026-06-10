@@ -64,7 +64,7 @@ import {
   type SvgIconProps,
   Typography,
 } from "@mui/material";
-import { styled, type Theme } from "@mui/material/styles";
+import { type CSSObject, styled, type Theme } from "@mui/material/styles";
 
 import type { MenuItem, MenuSection, ModifierGroup } from "@/types/menus";
 import type { RouteParams } from "@/types/routeParams";
@@ -85,10 +85,15 @@ const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
   },
 }));
 
-const iconTextBaseStyles = (theme: Theme) => ({
+const iconTextBaseStyles = (theme: Theme): CSSObject => ({
   display: "flex",
-  alignItems: "center",
+  alignItems: "flex-start",
   gap: theme.spacing(0.5),
+  overflowWrap: "anywhere",
+
+  "& > .MuiSvgIcon-root": {
+    marginTop: "calc((1lh - 1em) / 2)",
+  },
 });
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
@@ -583,7 +588,7 @@ const RouterBreadcrumbs = ({ organizationName }: RouterBreadcrumbsProps) => {
               onClick={handleClose}
               {...(disabled ? {} : { component: Link, href: to })}
             >
-              <Icon fontSize="small" />
+              <Icon fontSize="inherit" />
               {label}
             </StyledMenuItem>
           ))}
