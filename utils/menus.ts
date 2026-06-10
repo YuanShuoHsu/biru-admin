@@ -2,6 +2,8 @@ import { cache } from "react";
 
 import { fetcher } from "./fetcher";
 
+import { LOW_STOCK_THRESHOLD } from "@/constants/menus";
+
 import { authClient } from "@/lib/auth-client";
 
 import type {
@@ -16,6 +18,14 @@ import type {
   OrderMenuItem,
   OrderMenuOffer,
 } from "@/types/menus";
+
+export const isLowStock = (offer?: OrderMenuOffer): boolean => {
+  const stock = offer?.inventoryLevel?.value;
+  if (stock == null || stock <= 0) return false;
+  if (offer?.availability === "SoldOut") return false;
+
+  return stock <= LOW_STOCK_THRESHOLD;
+};
 
 export interface PromoInfo {
   price: number;

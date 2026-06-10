@@ -24,7 +24,7 @@ import { useViewStore } from "@/providers/view-store-provider";
 import type { OrderMenuItem } from "@/types/menus";
 import type { ViewDirection } from "@/types/view";
 
-import { getActivePromo } from "@/utils/menus";
+import { getActivePromo, isLowStock } from "@/utils/menus";
 
 const StyledCard = styled(Card)({
   width: "100%",
@@ -143,6 +143,7 @@ const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
   const price = Number(offer.price);
   const priceCurrency = offer.priceCurrency;
   const stock = offer.inventoryLevel?.value;
+  const stockUnit = offer.inventoryLevel?.unitText;
   const availability = offer.availability;
 
   const promoInfo = getActivePromo(offer);
@@ -163,6 +164,7 @@ const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
   // );
 
   const isItemOutOfStock = stock === 0 || availability === "SoldOut";
+  const showLowStock = isLowStock(offer);
 
   const handleDialogClick = () => {
     if (isItemOutOfStock) return;
@@ -246,6 +248,13 @@ const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
                     month: "numeric",
                     day: "numeric",
                   }),
+                })}
+              </Typography>
+            )}
+            {showLowStock && (
+              <Typography color="text.secondary" variant="caption">
+                {tOrder("menuItem.stockLeft", {
+                  stock: [stock, stockUnit].filter(Boolean).join(" "),
                 })}
               </Typography>
             )}

@@ -16,7 +16,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { OrderMenuItem } from "@/types/menus";
 
-import { getActivePromo } from "@/utils/menus";
+import { getActivePromo, isLowStock } from "@/utils/menus";
 
 const ImageBox = styled(Box)(({ theme }) => ({
   position: "relative",
@@ -64,6 +64,7 @@ const CardDialogContent = ({ menuItem }: CardDialogContentProps) => {
 
   const promoInfo = getActivePromo(offer);
   const price = promoInfo?.price ?? basePrice;
+  const showLowStock = isLowStock(offer);
 
   const [rawQuantity, setRawQuantity] = useState(1);
 
@@ -209,7 +210,7 @@ const CardDialogContent = ({ menuItem }: CardDialogContentProps) => {
                 })}
               </Typography>
             )}
-            {stock !== null && (
+            {showLowStock && (
               <Typography color="text.secondary" variant="caption">
                 {tOrder("menuItem.stockLeft", {
                   stock: [stock, stockUnit].filter(Boolean).join(" "),
