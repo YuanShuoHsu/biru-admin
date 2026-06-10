@@ -15,7 +15,9 @@
       "VeganDiet": "비건",
       "VegetarianDiet": "채식"
     },
-    "promoUntil": "{date}까지"
+    "preparationTime": "준비 시간 약 {value}분",
+    "promoUntil": "{date}까지",
+    "stockLeft": "남은 수량 {stock}"
   },
   "mode": {
     "dineIn": {

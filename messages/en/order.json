@@ -15,7 +15,9 @@
       "VeganDiet": "Vegan",
       "VegetarianDiet": "Vegetarian"
     },
-    "promoUntil": "Offer ends {date}"
+    "preparationTime": "Ready in about {value} min",
+    "promoUntil": "Offer ends {date}",
+    "stockLeft": "Only {stock} left"
   },
   "mode": {
     "dineIn": {

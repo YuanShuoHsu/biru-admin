@@ -19,11 +19,12 @@ import {
 import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
-import { useMenuStore } from "@/providers/menu-store-provider";
 import { useViewStore } from "@/providers/view-store-provider";
 
 import type { OrderMenuItem } from "@/types/menus";
 import type { ViewDirection } from "@/types/view";
+
+import { getActivePromo } from "@/utils/menus";
 
 const StyledCard = styled(Card)({
   width: "100%",
@@ -144,26 +145,9 @@ const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
   const stock = offer.inventoryLevel?.value;
   const availability = offer.availability;
 
-  const promoInfo = (() => {
-    const priceSpecification = offer.priceSpecification;
-    if (!priceSpecification) return null;
-
-    const now = new Date();
-    const validFrom = priceSpecification.validFrom
-      ? new Date(priceSpecification.validFrom)
-      : null;
-    const validThrough = priceSpecification.validThrough
-      ? new Date(priceSpecification.validThrough)
-      : null;
-
-    if (validFrom && now < validFrom) return null;
-    if (validThrough && now > validThrough) return null;
-
-    return { price: Number(priceSpecification.price), validThrough };
-  })();
+  const promoInfo = getActivePromo(offer);
 
   const { setDialog } = useDialogStore((state) => state);
-  const { menus } = useMenuStore((state) => state);
   const { view } = useViewStore((state) => state);
 
   const tDialog = useTranslations("dialog");
@@ -186,9 +170,7 @@ const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
     setDialog({
       cancelText: tDialog("close"),
       confirmText: tDialog("addToCart"),
-      content: (
-        <CardDialogContent menus={menus} menuItem={menuItem} options={[]} />
-      ),
+      content: <CardDialogContent menuItem={menuItem} />,
       formId: "add-to-cart-form",
       open: true,
       title: name,

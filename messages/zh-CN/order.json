@@ -15,7 +15,9 @@
       "VeganDiet": "纯素",
       "VegetarianDiet": "素食"
     },
-    "promoUntil": "优惠至 {date}"
+    "preparationTime": "预计准备约 {value} 分钟",
+    "promoUntil": "优惠至 {date}",
+    "stockLeft": "剩余 {stock}"
   },
   "mode": {
     "dineIn": {

@@ -15,7 +15,9 @@
       "VeganDiet": "ビーガン",
       "VegetarianDiet": "ベジタリアン"
     },
-    "promoUntil": "{date}まで"
+    "preparationTime": "提供まで約{value}分",
+    "promoUntil": "{date}まで",
+    "stockLeft": "残り {stock}"
   },
   "mode": {
     "dineIn": {
