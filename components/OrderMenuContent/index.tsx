@@ -3,12 +3,10 @@
 
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import OrderBottomBar from "./OrderBottomBar";
 import ResponsiveGrid from "./ResponsiveGrid";
-
-import CustomTabPanel from "@/components/CustomTabPanel";
 
 import {
   APP_BAR_TOOLBAR_HEIGHT,
@@ -17,13 +15,18 @@ import {
 } from "@/constants/appBar";
 import { SCROLL_TRIGGER_THRESHOLD } from "@/constants/scroll";
 
-import { Stack, Tab, Tabs, useScrollTrigger } from "@mui/material";
+import {
+  Box,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
+  useScrollTrigger,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { useMenuStore } from "@/providers/menu-store-provider";
 import { useOrderSearchStore } from "@/providers/order-search-store-provider";
-
-import { a11yProps } from "@/utils/tab";
 
 const StyledTabs = styled(Tabs, {
   shouldForwardProp: (prop) => prop !== "trigger",
@@ -53,7 +56,38 @@ const StyledTabs = styled(Tabs, {
   zIndex: theme.zIndex.appBar - 1,
 }));
 
+const TABS_HEIGHT = 48;
+
+const SectionBox = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  gap: theme.spacing(2),
+  scrollMarginTop: `calc(${APP_BAR_TOOLBAR_HEIGHT + TABS_HEIGHT}px + ${theme.spacing(2)})`,
+
+  [`${theme.breakpoints.up("xs")} and (orientation: landscape)`]: {
+    scrollMarginTop: `calc(${APP_BAR_TOOLBAR_HEIGHT_XS_UP_LANDSCAPE + TABS_HEIGHT}px + ${theme.spacing(2)})`,
+  },
+
+  [theme.breakpoints.up("sm")]: {
+    scrollMarginTop: `calc(${APP_BAR_TOOLBAR_HEIGHT_SM_UP + TABS_HEIGHT}px + ${theme.spacing(2)})`,
+  },
+}));
+
+const SectionTypography = styled(Typography)(({ theme }) => ({
+  borderLeft: `${theme.spacing(0.375)} solid ${theme.vars.palette.primary.main}`,
+  paddingLeft: theme.spacing(1),
+}));
+
 const OrderMenuContent = () => {
+  const [selectedId, setSelectedId] = useState("");
+
+  const sectionRefs = useRef(new Map<string, HTMLDivElement>());
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const pendingRef = useRef<{
+    id: string;
+    timer?: ReturnType<typeof setTimeout>;
+  }>({ id: "" });
+
   const { menus } = useMenuStore((state) => state);
 
   const { orderSearchText } = useOrderSearchStore((state) => state);
@@ -122,21 +156,72 @@ const OrderMenuContent = () => {
         name.toLowerCase().includes(searchText) || menuItems.length > 0,
     );
 
-  const [selectedId, setSelectedId] = useState(filteredGroups[0]?.id || "");
-
-  const activeSelectedId =
-    filteredGroups.length > 0 &&
-    !filteredGroups.some(({ id }) => id === selectedId)
-      ? filteredGroups[0]?.id || ""
-      : selectedId;
-
-  const currentIndex = filteredGroups.findIndex(
-    ({ id }) => id === activeSelectedId,
+  const displayIndex = Math.max(
+    0,
+    filteredGroups.findIndex(({ id }) => id === selectedId),
   );
-  const displayIndex = currentIndex >= 0 ? currentIndex : 0;
 
-  const handleChange = (_: React.SyntheticEvent, newIndex: number) =>
-    setSelectedId(filteredGroups[newIndex].id);
+  useEffect(() => {
+    const pending = pendingRef.current;
+    const offset = APP_BAR_TOOLBAR_HEIGHT + TABS_HEIGHT;
+
+    const observer = new IntersectionObserver(
+      () => {
+        let topId = "";
+        let minTop = Infinity;
+        for (const [id, section] of sectionRefs.current) {
+          const { bottom, top } = section.getBoundingClientRect();
+          if (bottom <= offset || top >= minTop) continue;
+
+          minTop = top;
+          topId = id;
+        }
+        if (!topId) return;
+
+        if (!pending.id) return setSelectedId(topId);
+        if (topId === pending.id) pending.id = "";
+      },
+      { rootMargin: `-${offset}px 0px 0px 0px` },
+    );
+
+    observerRef.current = observer;
+    sectionRefs.current.forEach((section) => observer.observe(section));
+
+    return () => {
+      observer.disconnect();
+      observerRef.current = null;
+      clearTimeout(pending.timer);
+    };
+  }, []);
+
+  const handleChange = (_: React.SyntheticEvent, newIndex: number) => {
+    const { id } = filteredGroups[newIndex];
+    const section = sectionRefs.current.get(id);
+    if (!section) return;
+
+    setSelectedId(id);
+
+    const pending = pendingRef.current;
+    pending.id = id;
+    clearTimeout(pending.timer);
+    pending.timer = setTimeout(() => {
+      pending.id = "";
+    }, 1000);
+
+    section.style.scrollMarginTop = "";
+    const styles = getComputedStyle(section);
+    const expandedMargin = parseFloat(styles.scrollMarginTop);
+    const collapsedMargin = TABS_HEIGHT + parseFloat(styles.rowGap);
+    const { top } = section.getBoundingClientRect();
+
+    if (
+      top > expandedMargin &&
+      window.scrollY + top - collapsedMargin > SCROLL_TRIGGER_THRESHOLD
+    )
+      section.style.scrollMarginTop = `${collapsedMargin}px`;
+
+    section.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   return (
     <>
@@ -150,14 +235,32 @@ const OrderMenuContent = () => {
           value={displayIndex}
           variant="scrollable"
         >
-          {filteredGroups.map(({ id, name }, index) => (
-            <Tab key={id} label={name} {...a11yProps(index)} />
+          {filteredGroups.map(({ id, name }) => (
+            <Tab key={id} label={name} />
           ))}
         </StyledTabs>
-        {filteredGroups.map((group, index) => (
-          <CustomTabPanel index={index} key={group.id} value={displayIndex}>
+        {filteredGroups.map((group) => (
+          <SectionBox
+            key={group.id}
+            ref={(node: HTMLDivElement) => {
+              sectionRefs.current.set(group.id, node);
+              observerRef.current?.observe(node);
+
+              return () => {
+                observerRef.current?.unobserve(node);
+                sectionRefs.current.delete(group.id);
+              };
+            }}
+          >
+            <SectionTypography
+              color="primary"
+              fontWeight="bold"
+              variant="subtitle1"
+            >
+              {group.name}
+            </SectionTypography>
             <ResponsiveGrid group={group} />
-          </CustomTabPanel>
+          </SectionBox>
         ))}
       </Stack>
       <OrderBottomBar />
