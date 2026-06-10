@@ -220,6 +220,11 @@ const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
         </ImageBox>
         <StyledCardContent>
           <WrapTypography variant="subtitle1">{name}</WrapTypography>
+          {description && (
+            <WrapTypography color="text.secondary" variant="body2">
+              {description}
+            </WrapTypography>
+          )}
           {/* <Stack direction="row" alignItems="center" gap={1} flexWrap="wrap"> */}
           {/* {sizes?.map(({ name }) => (
               <SizeOptionChip
@@ -260,11 +265,6 @@ const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
             )}
           </Stack>
           {/* </Stack> */}
-          {description && (
-            <WrapTypography color="text.secondary" variant="body2">
-              {description}
-            </WrapTypography>
-          )}
           {suitableForDiet && suitableForDiet.length > 0 && (
             <Stack direction="row" flexWrap="wrap" gap={0.5}>
               {suitableForDiet.map((diet) => (
