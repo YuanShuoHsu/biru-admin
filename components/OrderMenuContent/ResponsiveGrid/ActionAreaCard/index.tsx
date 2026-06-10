@@ -116,7 +116,7 @@ const OriginalPriceTypography = styled(Typography, {
 //   },
 // });
 
-export interface ActionAreaCardProps {
+interface ActionAreaCardProps {
   menuItem: OrderMenuItem;
 }
 
