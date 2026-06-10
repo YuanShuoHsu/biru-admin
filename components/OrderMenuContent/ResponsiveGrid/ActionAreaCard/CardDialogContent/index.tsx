@@ -52,15 +52,8 @@ interface CardDialogContentProps {
 }
 
 const CardDialogContent = ({ menuItem }: CardDialogContentProps) => {
-  const {
-    id,
-    name,
-    description,
-    image,
-    offers,
-    suitableForDiet,
-    nutrition,
-  } = menuItem;
+  const { id, name, description, image, offers, suitableForDiet, nutrition } =
+    menuItem;
   const offer = offers[0];
   const basePrice = parseFloat(offer?.price ?? "0") || 0;
   const priceCurrency = offer?.priceCurrency;
