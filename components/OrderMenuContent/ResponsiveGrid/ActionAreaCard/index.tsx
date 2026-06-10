@@ -6,6 +6,7 @@ import ItemSoldOut from "./ItemSoldOut";
 
 import { ViewDirections } from "@/constants/view";
 
+import { RestaurantMenu } from "@mui/icons-material";
 import {
   Box,
   Card,
@@ -25,7 +26,6 @@ import type { OrderMenuItem } from "@/types/menus";
 import type { ViewDirection } from "@/types/view";
 
 const StyledCard = styled(Card)({
-  position: "relative",
   width: "100%",
 });
 
@@ -43,10 +43,16 @@ const StyledCardActionArea = styled(CardActionArea, {
 
 const ImageBox = styled(Box, {
   shouldForwardProp: (prop) => prop !== "viewDirection",
-})<{ viewDirection: ViewDirection }>(({ viewDirection }) => ({
+})<{ viewDirection: ViewDirection }>(({ viewDirection, theme }) => ({
   position: "relative",
-  width: viewDirection === "column" ? "100%" : 140,
-  height: viewDirection === "column" ? 140 : "100%",
+  backgroundColor: theme.palette.action.hover,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  overflow: "hidden",
+  ...(viewDirection === "column"
+    ? { width: "100%", aspectRatio: "16/9" }
+    : { width: theme.spacing(25), height: "100%" }),
 }));
 
 // const TopSoldChip = styled(Chip, {
@@ -90,22 +96,22 @@ const ImageBox = styled(Box, {
 //   },
 // }));
 
+const StyledRestaurantMenu = styled(RestaurantMenu)(({ theme }) => ({
+  fontSize: theme.spacing(6),
+}));
+
 const StyledCardContent = styled(CardContent)(({ theme }) => ({
   width: "100%",
   flex: 1,
+  minWidth: 0,
   display: "flex",
   flexDirection: "column",
   gap: theme.spacing(1),
 }));
 
-const OriginalPriceTypography = styled(Typography, {
-  shouldForwardProp: (prop) => prop !== "isPromo",
-})<{ isPromo: boolean }>(({ isPromo }) => ({
-  ...(isPromo && {
-    textDecoration: "line-through",
-    lineHeight: 1.2,
-  }),
-}));
+const WrapTypography = styled(Typography)({
+  overflowWrap: "anywhere",
+});
 
 // const SizeOptionChip = styled(Chip)({
 //   "& .MuiChip-label": {
@@ -115,6 +121,15 @@ const OriginalPriceTypography = styled(Typography, {
 //     justifyContent: "center",
 //   },
 // });
+
+const OriginalPriceTypography = styled(Typography, {
+  shouldForwardProp: (prop) => prop !== "isPromo",
+})<{ isPromo: boolean }>(({ isPromo }) => ({
+  ...(isPromo && {
+    textDecoration: "line-through",
+    lineHeight: 1.2,
+  }),
+}));
 
 interface ActionAreaCardProps {
   menuItem: OrderMenuItem;
@@ -181,7 +196,7 @@ const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
   };
 
   return (
-    <StyledCard>
+    <StyledCard variant="outlined">
       <ItemSoldOut isItemOutOfStock={isItemOutOfStock} />
       <StyledCardActionArea
         disableRipple={isItemOutOfStock}
@@ -205,7 +220,7 @@ const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
               size="small"
             />
           )} */}
-          {image && (
+          {image ? (
             <Image
               alt={name}
               draggable={false}
@@ -215,10 +230,12 @@ const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
               src={image}
               style={{ objectFit: "cover" }}
             />
+          ) : (
+            <StyledRestaurantMenu color="disabled" />
           )}
         </ImageBox>
         <StyledCardContent>
-          <Typography variant="subtitle1">{name}</Typography>
+          <WrapTypography variant="subtitle1">{name}</WrapTypography>
           {/* <Stack direction="row" alignItems="center" gap={1} flexWrap="wrap"> */}
           {/* {sizes?.map(({ name }) => (
               <SizeOptionChip
@@ -253,9 +270,9 @@ const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
           </Stack>
           {/* </Stack> */}
           {description && (
-            <Typography color="text.secondary" variant="body2">
+            <WrapTypography color="text.secondary" variant="body2">
               {description}
-            </Typography>
+            </WrapTypography>
           )}
           {suitableForDiet && suitableForDiet.length > 0 && (
             <Stack direction="row" flexWrap="wrap" gap={0.5}>

@@ -7,6 +7,7 @@ import NumberSpinner from "@/components/NumberSpinner";
 
 import { MAX_QUANTITY } from "@/constants/cart";
 
+import { RestaurantMenu } from "@mui/icons-material";
 import {
   Box,
   Chip,
@@ -30,9 +31,17 @@ import { getLimitingChoicesCap } from "@/utils/menus";
 const ImageBox = styled(Box)(({ theme }) => ({
   position: "relative",
   width: "100%",
-  aspectRatio: "16/9",
+  backgroundColor: theme.palette.action.hover,
   borderRadius: theme.shape.borderRadius,
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  aspectRatio: "16/9",
   overflow: "hidden",
+}));
+
+const StyledRestaurantMenu = styled(RestaurantMenu)(({ theme }) => ({
+  fontSize: theme.spacing(6),
 }));
 
 const StyledFormControl = styled(FormControl)(({ theme }) => ({
@@ -188,7 +197,7 @@ const CardDialogContent = ({
   return (
     <FormBox id="add-to-cart-form" onSubmit={handleSubmit}>
       <ImageBox>
-        {image && (
+        {image ? (
           <Image
             alt={name}
             draggable={false}
@@ -197,6 +206,8 @@ const CardDialogContent = ({
             src={image}
             style={{ objectFit: "cover" }}
           />
+        ) : (
+          <StyledRestaurantMenu color="disabled" />
         )}
       </ImageBox>
       {description && (

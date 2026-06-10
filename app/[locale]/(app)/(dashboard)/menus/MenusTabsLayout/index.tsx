@@ -31,11 +31,13 @@ import type { Menu } from "@/types/menus";
 
 import { localize } from "@/utils/locale";
 
+import theme from "@/theme";
 import UpdateMenuDialog from "../UpdateMenuDialog";
 
 const StyledCard = styled(Card)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
+
   [theme.breakpoints.up("sm")]: {
     flexDirection: "row",
   },
@@ -58,10 +60,13 @@ const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
 
 const StyledCardContent = styled(CardContent)({
   paddingBottom: 0,
+  display: "flex",
+  flexDirection: "column",
+  gap: theme.spacing(1),
 });
 
 const WrapTypography = styled(Typography)({
-  overflowWrap: "break-word",
+  overflowWrap: "anywhere",
 });
 
 const StyledCardActions = styled(CardActions)(({ theme }) => ({
