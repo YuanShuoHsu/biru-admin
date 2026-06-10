@@ -45,6 +45,9 @@
     "completeOrEmpty": "いずれかの言語を入力した場合、すべての言語の入力が必要です。",
     "required": "すべての言語は必須です。"
   },
+  "maxSelectionCount": {
+    "lessThanMin": "最大選択数は最小選択数より小さくできません。"
+  },
   "member": {
     "required": "メンバーは必須です。"
   },

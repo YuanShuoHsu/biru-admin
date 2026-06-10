@@ -6,15 +6,29 @@ import { refineRequiredLocalizedText } from "@/utils/locale";
 export const useUpdateModifierGroupFormSchema = () => {
   const tValidation = useTranslations("validation");
 
-  return z.object({
-    displayName: z
-      .record(z.string(), z.string().trim())
-      .superRefine(
-        refineRequiredLocalizedText(tValidation("localizedText.required")),
-      ),
-    minSelectionCount: z.string().trim().optional(),
-    maxSelectionCount: z.string().trim().optional(),
-  });
+  return z
+    .object({
+      displayName: z
+        .record(z.string(), z.string().trim())
+        .superRefine(
+          refineRequiredLocalizedText(tValidation("localizedText.required")),
+        ),
+      minSelectionCount: z.string().trim().optional(),
+      maxSelectionCount: z.string().trim().optional(),
+    })
+    .superRefine(({ minSelectionCount, maxSelectionCount }, ctx) => {
+      if (
+        minSelectionCount &&
+        maxSelectionCount &&
+        Number(maxSelectionCount) < Number(minSelectionCount)
+      ) {
+        ctx.addIssue({
+          code: "custom",
+          message: tValidation("maxSelectionCount.lessThanMin"),
+          path: ["maxSelectionCount"],
+        });
+      }
+    });
 };
 
 export type UpdateModifierGroupForm = z.infer<

@@ -70,10 +70,10 @@ const CreateModifierGroupDialog = ({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           displayName,
-          ...(minSelectionCount?.trim() && {
+          ...(minSelectionCount && {
             minSelectionCount: Number(minSelectionCount),
           }),
-          ...(maxSelectionCount?.trim() && {
+          ...(maxSelectionCount && {
             maxSelectionCount: Number(maxSelectionCount),
           }),
         }),
@@ -127,6 +127,7 @@ const CreateModifierGroupDialog = ({
         fullWidth
         helperText={errors.minSelectionCount?.message}
         label={`${tMenus("modifierGroups.minSelectionCount.label")} ${tCommon("optional")}`}
+        max={Number(maxSelectionCount) || undefined}
         min={0}
         placeholder={tMenus("modifierGroups.minSelectionCount.placeholder")}
         value={minSelectionCount !== "" ? Number(minSelectionCount) : null}
@@ -140,7 +141,7 @@ const CreateModifierGroupDialog = ({
         fullWidth
         helperText={errors.maxSelectionCount?.message}
         label={`${tMenus("modifierGroups.maxSelectionCount.label")} ${tCommon("optional")}`}
-        min={1}
+        min={Math.max(1, Number(minSelectionCount) || 0)}
         placeholder={tMenus("modifierGroups.maxSelectionCount.placeholder")}
         value={maxSelectionCount !== "" ? Number(maxSelectionCount) : null}
         onValueChange={(value) =>
