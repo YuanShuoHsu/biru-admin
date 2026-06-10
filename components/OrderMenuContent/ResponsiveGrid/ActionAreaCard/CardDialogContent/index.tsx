@@ -44,6 +44,10 @@ const StyledRestaurantMenu = styled(RestaurantMenu)(({ theme }) => ({
   fontSize: theme.spacing(6),
 }));
 
+const WrapTypography = styled(Typography)({
+  overflowWrap: "anywhere",
+});
+
 const StyledFormControl = styled(FormControl)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
@@ -211,9 +215,9 @@ const CardDialogContent = ({
         )}
       </ImageBox>
       {description && (
-        <Typography color="text.secondary" variant="body2">
+        <WrapTypography color="text.secondary" variant="body2">
           {description}
-        </Typography>
+        </WrapTypography>
       )}
       {options.map(
         ({
