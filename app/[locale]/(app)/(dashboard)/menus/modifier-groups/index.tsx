@@ -30,9 +30,9 @@ import { usePathname, useRouter } from "@/i18n/navigation";
 import {
   Add,
   Cancel,
+  Checklist,
   Delete,
   Edit,
-  ListAlt,
   Save,
   Sort,
 } from "@mui/icons-material";
@@ -539,7 +539,7 @@ const ModifierGroups = ({
                 }}
                 size="small"
               >
-                <ListAlt fontSize="small" />
+                <Checklist fontSize="small" />
               </IconButton>
             </Tooltip>
             {canWrite && (
