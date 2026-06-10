@@ -166,7 +166,12 @@ const CardDialogContent = ({ menuItem }: CardDialogContentProps) => {
         </Typography>
       )}
       {leadTime !== undefined && (
-        <Stack direction="row" alignItems="center" gap={0.5}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          alignSelf="flex-start"
+          gap={0.5}
+        >
           <AccessTime color="disabled" fontSize="small" />
           <Typography color="text.secondary" variant="caption">
             {tOrder("menuItem.preparationTime", { value: leadTime })}
