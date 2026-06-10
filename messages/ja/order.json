@@ -1,6 +1,7 @@
 {
   "label": "注文",
   "menuItem": {
+    "addOn": "追加",
     "calories": "{value} kcal",
     "diet": {
       "DiabeticDiet": "糖尿病食",
@@ -17,6 +18,8 @@
     },
     "preparationTime": "提供まで約{value}分",
     "promoUntil": "{date}まで",
+    "selectAtLeast": "{count}個以上お選びください",
+    "selectUpTo": "最大{count}個まで選択できます",
     "stockLeft": "残り {stock}"
   },
   "mode": {

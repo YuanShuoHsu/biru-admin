@@ -77,9 +77,11 @@ const CartItemRow = ({ forceXsLayout, item }: CartItemRowProps) => {
   const { menus } = useMenuStore((state) => state);
 
   const tCommon = useTranslations("common");
+  const tOrder = useTranslations("order");
 
   const itemName = getItemName(menus, id);
   const choiceNames = getChoiceNames(menus, id, choices, {
+    addOnLabel: tOrder("menuItem.addOn"),
     colon: tCommon("colon"),
     delimiter: tCommon("delimiter"),
   });

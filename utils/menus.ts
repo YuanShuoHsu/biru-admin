@@ -65,7 +65,76 @@ export interface Option {
   choices: Choice[];
   multiple: boolean;
   required: boolean;
+  minSelections: number;
+  maxSelections: number | null;
 }
+
+export const ADD_ON_OPTION_ID = "addOns";
+
+export const getItemOptions = (
+  item: OrderMenuItem,
+  addOnLabel = "",
+): Option[] => {
+  const modifierOptions = item.modifierGroups.map(
+    ({ id, displayName, minSelectionCount, maxSelectionCount, modifiers }) => ({
+      id,
+      name: displayName,
+      multiple: maxSelectionCount !== 1,
+      required: minSelectionCount >= 1,
+      minSelections: minSelectionCount,
+      maxSelections: maxSelectionCount ?? null,
+      choices: modifiers.map(
+        ({ id, displayName, priceAdjustment, availability }) => ({
+          id,
+          name: displayName,
+          extraCost: Number(priceAdjustment ?? 0),
+          stock: null,
+          isShared: false,
+          isActive: availability !== "SoldOut",
+        }),
+      ),
+    }),
+  );
+
+  const seen = new Set<string>();
+  const addOnChoices = item.addOns
+    .flatMap(({ menuItems }) => menuItems)
+    .filter(({ id }) => {
+      if (seen.has(id)) return false;
+      seen.add(id);
+      return true;
+    })
+    .map(({ id, name, offers }) => {
+      const offer = offers[0];
+      const basePrice = Number(offer?.price || 0);
+
+      return {
+        id,
+        name,
+        extraCost: getActivePromo(offer)?.price || basePrice,
+        stock: offer?.inventoryLevel?.value ?? null,
+        isShared: true,
+        isActive: offer?.availability !== "SoldOut",
+      };
+    });
+
+  return [
+    ...modifierOptions,
+    ...(addOnChoices.length > 0
+      ? [
+          {
+            id: ADD_ON_OPTION_ID,
+            name: addOnLabel,
+            multiple: true,
+            required: false,
+            minSelections: 0,
+            maxSelections: null,
+            choices: addOnChoices,
+          },
+        ]
+      : []),
+  ];
+};
 
 export const getItemKey = (
   itemId: string,
@@ -100,9 +169,9 @@ export const getItemStock = (
   itemId: string,
 ): number | null => {
   const item = findItemById(menus, itemId);
-  if (!item) return null;
+  if (!item) return 0;
 
-  return item.offers[0]?.inventoryLevel?.value || null;
+  return item.offers[0]?.inventoryLevel?.value ?? null;
 };
 
 const findOptionChoiceById = (
@@ -116,12 +185,51 @@ const getOptionChoiceName = (option: Option, choiceId: string): string => {
   return choice?.name || "";
 };
 
-const findItemOptionById = (
-  item: OrderMenuItem & { options: Option[] },
-  optionId: string,
-): Option | undefined => item.options.find(({ id }) => id === optionId);
+export const getSelectedChoices = (
+  options: Option[],
+  choices: Record<string, string[]>,
+): Choice[] =>
+  Object.entries(choices).flatMap(([optionId, choiceIds]) => {
+    const option = options.find(({ id }) => id === optionId);
+    if (!option) return [];
+
+    return choiceIds.flatMap((choiceId) => {
+      const choice = findOptionChoiceById(option, choiceId);
+      return choice ? [choice] : [];
+    });
+  });
 
 type OptionLimitResult = { cap: number; names: string[] };
+
+export const getChoicesCap = (
+  selectedChoices: Choice[],
+  itemId: string,
+  getChoiceAvailableQuantity: (
+    choiceId: string,
+    choiceStock: number | null,
+    isShared: boolean,
+    itemId: string,
+  ) => number,
+): OptionLimitResult =>
+  selectedChoices.reduce<OptionLimitResult>(
+    (acc, { id, name, stock, isShared }) => {
+      const available =
+        stock === null
+          ? Infinity
+          : getChoiceAvailableQuantity(id, stock, isShared, itemId);
+
+      if (available < acc.cap) return { cap: available, names: [name] };
+      if (
+        available === acc.cap &&
+        acc.cap !== Infinity &&
+        !acc.names.includes(name)
+      )
+        acc.names.push(name);
+
+      return acc;
+    },
+    { cap: Infinity, names: [] },
+  );
 
 export const getLimitingChoicesCap = (
   menus: OrderMenu[],
@@ -134,49 +242,16 @@ export const getLimitingChoicesCap = (
     itemId: string,
   ) => number,
 ): OptionLimitResult => {
-  const item = findItemById(menus, id) as
-    | (OrderMenuItem & { options: Option[] })
-    | undefined;
+  const item = findItemById(menus, id);
   if (!item) return { cap: Infinity, names: [] };
 
-  const { names, cap } = Object.entries(choices).reduce<OptionLimitResult>(
-    (acc, [optionId, choiceIds]) => {
-      if (!choiceIds.length) return acc;
+  const selectedChoices = getSelectedChoices(getItemOptions(item), choices);
 
-      const option = findItemOptionById(item, optionId);
-      if (!option) return acc;
-
-      const optionCap = choiceIds.reduce((min, choiceId) => {
-        const choice = findOptionChoiceById(option, choiceId);
-        if (!choice) return min;
-
-        const { stock: choiceStock, isShared, name } = choice;
-        const available = getChoiceAvailableQuantity(
-          choiceId,
-          choiceStock,
-          isShared,
-          id,
-        );
-
-        if (available < acc.cap) {
-          acc.names = [name];
-          acc.cap = available;
-        } else if (available === acc.cap && !acc.names.includes(name))
-          acc.names.push(name);
-
-        return Math.min(min, available);
-      }, Infinity);
-
-      acc.cap = Math.min(acc.cap, optionCap);
-      return acc;
-    },
-    { cap: Infinity, names: [] },
-  );
-
-  return { names, cap };
+  return getChoicesCap(selectedChoices, id, getChoiceAvailableQuantity);
 };
 
 interface CommonSeparators {
+  addOnLabel?: string;
   colon: string;
   delimiter: string;
   joinWith?: string;
@@ -186,18 +261,18 @@ export const getChoiceNames = (
   menus: OrderMenu[],
   itemId: string,
   choices: Record<string, string[]>,
-  { colon, delimiter, joinWith = "\n" }: CommonSeparators,
+  { addOnLabel, colon, delimiter, joinWith = "\n" }: CommonSeparators,
 ): string => {
-  const item = findItemById(menus, itemId) as
-    | (OrderMenuItem & { options: Option[] })
-    | undefined;
+  const item = findItemById(menus, itemId);
   if (!item) return "";
+
+  const options = getItemOptions(item, addOnLabel);
 
   return Object.entries(choices)
     .flatMap(([optionId, choiceIds]) => {
       if (!choiceIds.length) return [];
 
-      const option = findItemOptionById(item, optionId);
+      const option = options.find(({ id }) => id === optionId);
       if (!option) return [];
 
       const choiceNames = choiceIds

@@ -97,6 +97,7 @@ const CustomerPaymentForm = () => {
           .map(({ id, choices, quantity }) => {
             const itemName = getItemName(menus, id);
             const choiceNames = getChoiceNames(menus, id, choices, {
+              addOnLabel: "加購",
               colon: "：",
               delimiter: "、",
               joinWith: "、",

@@ -1923,6 +1923,52 @@ export interface components {
       /** Format: date-time */
       updatedAt: string;
     };
+    OrderMenuAddOnItemResponseDto: {
+      id: string;
+      name: string;
+      image?: string | null;
+      offers: components["schemas"]["OrderMenuOfferResponseDto"][];
+    };
+    OrderMenuAddOnResponseDto: {
+      id: string;
+      menuItemId: string;
+      addOnMenuItemId?: string | null;
+      addOnMenuSectionId?: string | null;
+      sortOrder: number;
+      /** @description 解析後的加購品項（指向品項為單筆；指向區塊為其所有品項） */
+      menuItems: components["schemas"]["OrderMenuAddOnItemResponseDto"][];
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    OrderMenuModifierResponseDto: {
+      id: string;
+      modifierGroupId: string;
+      displayName: string;
+      /** @description 加價金額；null 代表不影響價格 */
+      priceAdjustment?: string | null;
+      availability?: components["schemas"]["ItemAvailability"] | null;
+      sortOrder: number;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    OrderMenuModifierGroupResponseDto: {
+      id: string;
+      displayName: string;
+      /** @description 最少選擇數量；>= 1 代表必選 */
+      minSelectionCount: number;
+      /** @description 最多選擇數量；null 為不限 */
+      maxSelectionCount?: number | null;
+      sortOrder: number;
+      modifiers: components["schemas"]["OrderMenuModifierResponseDto"][];
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
     OrderMenuItemResponseDto: {
       id: string;
       menuId?: string | null;
@@ -1948,6 +1994,8 @@ export interface components {
       nutrition?: components["schemas"]["NutritionInformationDto"] | null;
       sortOrder: number;
       offers: components["schemas"]["OrderMenuOfferResponseDto"][];
+      addOns: components["schemas"]["OrderMenuAddOnResponseDto"][];
+      modifierGroups: components["schemas"]["OrderMenuModifierGroupResponseDto"][];
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */

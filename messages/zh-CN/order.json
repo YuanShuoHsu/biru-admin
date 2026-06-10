@@ -1,6 +1,7 @@
 {
   "label": "点餐",
   "menuItem": {
+    "addOn": "加购",
     "calories": "热量 {value} kcal",
     "diet": {
       "DiabeticDiet": "糖尿病饮食",
@@ -17,6 +18,8 @@
     },
     "preparationTime": "预计准备约 {value} 分钟",
     "promoUntil": "优惠至 {date}",
+    "selectAtLeast": "请至少选择 {count} 项",
+    "selectUpTo": "最多可选 {count} 项",
     "stockLeft": "剩余 {stock}"
   },
   "mode": {

@@ -1,6 +1,7 @@
 {
   "label": "주문",
   "menuItem": {
+    "addOn": "추가 옵션",
     "calories": "{value} kcal",
     "diet": {
       "DiabeticDiet": "당뇨병식",
@@ -17,6 +18,8 @@
     },
     "preparationTime": "준비 시간 약 {value}분",
     "promoUntil": "{date}까지",
+    "selectAtLeast": "최소 {count}개를 선택해 주세요",
+    "selectUpTo": "최대 {count}개까지 선택 가능합니다",
     "stockLeft": "남은 수량 {stock}"
   },
   "mode": {

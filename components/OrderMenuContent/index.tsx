@@ -99,16 +99,7 @@ const OrderMenuContent = () => {
 
   // const tOrder = useTranslations("order");;
 
-  const categoryGroups = menus
-    .map((menu) => ({
-      ...menu,
-      menuItems: menu.menuItems.filter(
-        ({ offers }) => offers[0]?.availability !== "Discontinued",
-      ),
-    }))
-    .filter(({ menuItems }) => menuItems.length > 0);
-
-  // const allItems = categoryGroups.flatMap(({ menuItems }) => menuItems);
+  // const allItems = menus.flatMap(({ menuItems }) => menuItems);
 
   // TODO: 需等訂單系統完成後，後端補上 sold 欄位才能啟用
   // const topSoldItems = [...allItems]
@@ -141,7 +132,7 @@ const OrderMenuContent = () => {
   const combinedGroups = [
     // ...(topSoldGroups ? [topSoldGroups] : []),
     // ...(latestGroups ? [latestGroups] : []),
-    ...categoryGroups,
+    ...menus,
   ];
 
   const filteredGroups = combinedGroups

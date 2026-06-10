@@ -1,6 +1,7 @@
 {
   "label": "Order",
   "menuItem": {
+    "addOn": "Add-ons",
     "calories": "{value} kcal",
     "diet": {
       "DiabeticDiet": "Diabetic",
@@ -17,6 +18,8 @@
     },
     "preparationTime": "Ready in about {value} min",
     "promoUntil": "Offer ends {date}",
+    "selectAtLeast": "Select at least {count}",
+    "selectUpTo": "Select up to {count}",
     "stockLeft": "Only {stock} left"
   },
   "mode": {
