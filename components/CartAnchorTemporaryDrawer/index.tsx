@@ -16,7 +16,7 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { type CSSObject, styled } from "@mui/material/styles";
 
 import { useCartStore } from "@/providers/cart-store-provider";
 import { useDrawerStore } from "@/providers/drawer-store-provider";
@@ -27,8 +27,8 @@ const DrawerBox = styled(Box)({
   width: 250,
 });
 
-const stickyBaseStyles = (theme: Theme) => ({
-  position: "sticky" as const,
+const stickyBaseStyles = (theme: Theme): CSSObject => ({
+  position: "sticky",
   backgroundColor: theme.vars.palette.background.paper,
   zIndex: theme.zIndex.appBar,
 });
