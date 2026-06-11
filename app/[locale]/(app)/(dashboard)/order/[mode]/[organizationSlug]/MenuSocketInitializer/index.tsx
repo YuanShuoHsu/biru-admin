@@ -53,7 +53,9 @@ const MenuSocketInitializer = ({
 
     menuSocket.on("menuUpdated", initMenus);
 
-    return () => menuSocket.off("menuUpdated", initMenus);
+    return () => {
+      menuSocket.off("menuUpdated", initMenus);
+    };
   }, [enqueueSnackbar, isConnected, locale, organizationId, setMenu]);
 
   return null;
