@@ -28,7 +28,7 @@ import {
   getChoiceNames,
   getItemName,
   getItemStock,
-  getLimitingChoicesCap,
+  getLimitingAddOnsCap,
 } from "@/utils/menus";
 
 const StyledListItem = styled(ListItem)(({ theme }) => ({
@@ -100,18 +100,22 @@ const CartItemRow = ({ forceXsLayout, item }: CartItemRowProps) => {
   const perItemCapLeft = MAX_QUANTITY - cartItemTotalQuantity;
   const itemStockCapLeft = itemStockLeft - cartItemTotalQuantity;
 
-  const { names: limitingChoiceNames, cap: optionCapLeft } =
-    getLimitingChoicesCap(menu, id, choices, getChoiceAvailableQuantity);
+  const { names: limitingAddOnNames, cap: addOnCapLeft } = getLimitingAddOnsCap(
+    menu,
+    id,
+    choices,
+    getChoiceAvailableQuantity,
+  );
 
-  const limitingChoicesLabel =
-    limitingChoiceNames.length > 0
-      ? limitingChoiceNames.join(tCommon("delimiter"))
+  const limitingAddOnsLabel =
+    limitingAddOnNames.length > 0
+      ? limitingAddOnNames.join(tCommon("delimiter"))
       : "";
 
   const availableToAdd = Math.min(
     perItemCapLeft,
     itemStockCapLeft,
-    optionCapLeft,
+    addOnCapLeft,
   );
 
   const formHelperText =
@@ -119,8 +123,8 @@ const CartItemRow = ({ forceXsLayout, item }: CartItemRowProps) => {
       ? tCommon("maxQuantity", { quantity: MAX_QUANTITY })
       : itemStockCapLeft === availableToAdd
         ? tCommon("reachStockLimit", { label: "" })
-        : optionCapLeft === availableToAdd
-          ? tCommon("reachStockLimit", { label: limitingChoicesLabel })
+        : addOnCapLeft === availableToAdd
+          ? tCommon("reachStockLimit", { label: limitingAddOnsLabel })
           : "";
 
   const canDecrease = quantity > 1;
@@ -149,11 +153,11 @@ const CartItemRow = ({ forceXsLayout, item }: CartItemRowProps) => {
   return (
     <StyledListItem disablePadding>
       <CartItemSoldOut
+        addOnCapLeft={addOnCapLeft}
         availableToAdd={availableToAdd}
         item={item}
         itemStockCapLeft={itemStockCapLeft}
-        limitingChoicesLabel={limitingChoicesLabel}
-        optionCapLeft={optionCapLeft}
+        limitingAddOnsLabel={limitingAddOnsLabel}
         unavailable={!itemName}
       />
       <Grid

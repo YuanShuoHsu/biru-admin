@@ -28,16 +28,15 @@ import { styled } from "@mui/material/styles";
 import { useCartStore } from "@/providers/cart-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { OrderMenuItem } from "@/types/menus";
+import type { OrderMenuItem, OrderMenuModifierGroup } from "@/types/menus";
 
 import {
+  ADD_ON_OPTION_ID,
   getActivePromo,
-  getChoicesCap,
-  getItemOptions,
-  getSelectedChoices,
+  getAddOnItems,
+  getAddOnPrice,
+  getAddOnsCap,
   isLowStock,
-  type Choice,
-  type Option,
 } from "@/utils/menus";
 
 const ImageBox = styled(Box)(({ theme }) => ({
@@ -74,8 +73,16 @@ interface CardDialogContentProps {
 }
 
 const CardDialogContent = ({ menuItem }: CardDialogContentProps) => {
-  const { id, name, description, image, offers, suitableForDiet, nutrition } =
-    menuItem;
+  const {
+    id,
+    name,
+    description,
+    image,
+    offers,
+    suitableForDiet,
+    nutrition,
+    modifierGroups,
+  } = menuItem;
   const offer = offers[0];
   const basePrice = Number(offer?.price || 0);
   const priceCurrency = offer?.priceCurrency;
@@ -103,26 +110,45 @@ const CardDialogContent = ({ menuItem }: CardDialogContentProps) => {
   const tDialog = useTranslations("dialog");
   const tOrder = useTranslations("order");
 
-  const options = useMemo(
-    () => getItemOptions(menuItem, tOrder("menuItem.addOn")),
-    [menuItem, tOrder],
+  const addOnItems = useMemo(() => getAddOnItems(menuItem), [menuItem]);
+
+  const selectedAddOnIds = choices[ADD_ON_OPTION_ID] ?? [];
+  const selectedAddOnItems = addOnItems.filter(({ id }) =>
+    selectedAddOnIds.includes(id),
   );
 
-  const selectedChoices = getSelectedChoices(options, choices);
+  const modifierExtraCost = modifierGroups.reduce((sum, { id, modifiers }) => {
+    const selected = choices[id] ?? [];
 
-  const extraCost = selectedChoices.reduce(
-    (sum, choice) => sum + choice.extraCost,
+    return (
+      sum +
+      modifiers.reduce(
+        (groupSum, { id, priceAdjustment }) =>
+          selected.includes(id)
+            ? groupSum + Number(priceAdjustment ?? 0)
+            : groupSum,
+        0,
+      )
+    );
+  }, 0);
+
+  const addOnExtraCost = selectedAddOnItems.reduce(
+    (sum, addOnItem) => sum + getAddOnPrice(addOnItem),
     0,
   );
 
-  const isSelectionValid = options.every((option) => {
-    const selectedCount = (choices[option.id] ?? []).length;
+  const extraCost = modifierExtraCost + addOnExtraCost;
 
-    return (
-      selectedCount >= option.minSelections &&
-      (option.maxSelections === null || selectedCount <= option.maxSelections)
-    );
-  });
+  const isSelectionValid = modifierGroups.every(
+    ({ id, minSelectionCount, maxSelectionCount }) => {
+      const selectedCount = (choices[id] ?? []).length;
+
+      return (
+        selectedCount >= minSelectionCount &&
+        (maxSelectionCount == null || selectedCount <= maxSelectionCount)
+      );
+    },
+  );
 
   const cartItemTotalQuantity = getCartItemTotalQuantity(id);
   const itemStockLeft =
@@ -131,16 +157,15 @@ const CardDialogContent = ({ menuItem }: CardDialogContentProps) => {
   const perItemCapLeft = MAX_QUANTITY - cartItemTotalQuantity;
   const itemStockCapLeft = itemStockLeft - cartItemTotalQuantity;
 
-  const { names: limitingChoiceNames, cap: optionCapLeft } = getChoicesCap(
-    selectedChoices,
-    id,
+  const { names: limitingAddOnNames, cap: addOnCapLeft } = getAddOnsCap(
+    selectedAddOnItems,
     getChoiceAvailableQuantity,
   );
 
   const availableToAdd = Math.min(
     perItemCapLeft,
     itemStockCapLeft,
-    optionCapLeft,
+    addOnCapLeft,
   );
   const minQuantity = availableToAdd > 0 ? 1 : 0;
   const clampQuantity = (value: number) =>
@@ -158,9 +183,9 @@ const CardDialogContent = ({ menuItem }: CardDialogContentProps) => {
 
   const isAtLimit = quantity >= availableToAdd;
 
-  const limitingChoicesLabel =
-    limitingChoiceNames.length > 0
-      ? limitingChoiceNames.join(tCommon("delimiter"))
+  const limitingAddOnsLabel =
+    limitingAddOnNames.length > 0
+      ? limitingAddOnNames.join(tCommon("delimiter"))
       : "";
 
   const formHelperText =
@@ -171,20 +196,17 @@ const CardDialogContent = ({ menuItem }: CardDialogContentProps) => {
             label: "",
             quantity: availableToAdd,
           })
-        : tCommon("reachStockLimit", { label: limitingChoicesLabel });
+        : tCommon("reachStockLimit", { label: limitingAddOnsLabel });
 
-  const handleSelect = (option: Option, choiceId: string, checked: boolean) => {
+  const handleSelect = (optionId: string, choiceId: string, checked: boolean) =>
     setChoices((prev) => {
-      const selected = prev[option.id] ?? [];
-      const next = !option.multiple
-        ? [choiceId]
-        : checked
-          ? [...selected, choiceId]
-          : selected.filter((id) => id !== choiceId);
+      const selected = prev[optionId] ?? [];
+      const next = checked
+        ? [...selected, choiceId]
+        : selected.filter((id) => id !== choiceId);
 
-      return { ...prev, [option.id]: next };
+      return { ...prev, [optionId]: next };
     });
-  };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -204,16 +226,20 @@ const CardDialogContent = ({ menuItem }: CardDialogContentProps) => {
     closeDialog();
   };
 
-  const renderChoiceLabel = (choice: Choice) => (
+  const renderChoiceLabel = (
+    choiceName: string,
+    choiceExtraCost: number,
+    soldOut: boolean,
+  ) => (
     <Stack direction="row" alignItems="center" gap={1}>
-      <WrapTypography variant="body2">{choice.name}</WrapTypography>
-      {choice.extraCost !== 0 && (
+      <WrapTypography variant="body2">{choiceName}</WrapTypography>
+      {choiceExtraCost !== 0 && (
         <Typography color="text.secondary" variant="caption">
-          {choice.extraCost > 0 ? "+" : "-"}
-          {priceCurrency} {Math.abs(choice.extraCost).toLocaleString(locale)}
+          {choiceExtraCost > 0 ? "+" : "-"}
+          {priceCurrency} {Math.abs(choiceExtraCost).toLocaleString(locale)}
         </Typography>
       )}
-      {!choice.isActive && (
+      {soldOut && (
         <Typography color="error" variant="caption">
           {tCommon("soldOut")}
         </Typography>
@@ -221,13 +247,16 @@ const CardDialogContent = ({ menuItem }: CardDialogContentProps) => {
     </Stack>
   );
 
-  const renderOptionHint = (option: Option) => {
+  const renderModifierGroupHint = ({
+    minSelectionCount,
+    maxSelectionCount,
+  }: OrderMenuModifierGroup) => {
     const hints = [
-      ...(option.minSelections > 1
-        ? [tOrder("menuItem.selectAtLeast", { count: option.minSelections })]
+      ...(minSelectionCount > 1
+        ? [tOrder("menuItem.selectAtLeast", { count: minSelectionCount })]
         : []),
-      ...(option.multiple && option.maxSelections !== null
-        ? [tOrder("menuItem.selectUpTo", { count: option.maxSelections })]
+      ...(maxSelectionCount != null && maxSelectionCount !== 1
+        ? [tOrder("menuItem.selectUpTo", { count: maxSelectionCount })]
         : []),
     ];
 
@@ -290,64 +319,115 @@ const CardDialogContent = ({ menuItem }: CardDialogContentProps) => {
           </Typography>
         </Stack>
       )}
-      {options.map((option) => {
-        const selected = choices[option.id] ?? [];
+      {modifierGroups.map((group) => {
+        const {
+          id: groupId,
+          displayName,
+          minSelectionCount,
+          maxSelectionCount,
+          modifiers,
+        } = group;
+        const selected = choices[groupId] ?? [];
         const atMax =
-          option.maxSelections !== null &&
-          selected.length >= option.maxSelections;
+          maxSelectionCount != null && selected.length >= maxSelectionCount;
 
         return (
-          <FormControl key={option.id} required={option.required}>
-            <FormLabel>{option.name}</FormLabel>
-            {renderOptionHint(option)}
-            {option.multiple ? (
+          <FormControl key={groupId} required={minSelectionCount >= 1}>
+            <FormLabel>{displayName}</FormLabel>
+            {renderModifierGroupHint(group)}
+            {maxSelectionCount !== 1 ? (
               <FormGroup>
-                {option.choices.map((choice) => {
-                  const checked = selected.includes(choice.id);
+                {modifiers.map(
+                  ({ id, displayName, priceAdjustment, availability }) => {
+                    const checked = selected.includes(id);
 
-                  return (
-                    <FormControlLabel
-                      key={choice.id}
-                      control={
-                        <Checkbox
-                          checked={checked}
-                          onChange={(event) =>
-                            handleSelect(
-                              option,
-                              choice.id,
-                              event.target.checked,
-                            )
-                          }
-                          size="small"
-                        />
-                      }
-                      disabled={!choice.isActive || (!checked && atMax)}
-                      label={renderChoiceLabel(choice)}
-                    />
-                  );
-                })}
+                    return (
+                      <FormControlLabel
+                        key={id}
+                        control={
+                          <Checkbox
+                            checked={checked}
+                            onChange={(event) =>
+                              handleSelect(groupId, id, event.target.checked)
+                            }
+                            size="small"
+                          />
+                        }
+                        disabled={
+                          availability === "SoldOut" || (!checked && atMax)
+                        }
+                        label={renderChoiceLabel(
+                          displayName,
+                          Number(priceAdjustment ?? 0),
+                          availability === "SoldOut",
+                        )}
+                      />
+                    );
+                  },
+                )}
               </FormGroup>
             ) : (
               <RadioGroup
                 value={selected[0] ?? ""}
                 onChange={(event) =>
-                  handleSelect(option, event.target.value, true)
+                  setChoices((prev) => ({
+                    ...prev,
+                    [groupId]: [event.target.value],
+                  }))
                 }
               >
-                {option.choices.map((choice) => (
-                  <FormControlLabel
-                    key={choice.id}
-                    control={<Radio size="small" />}
-                    disabled={!choice.isActive}
-                    label={renderChoiceLabel(choice)}
-                    value={choice.id}
-                  />
-                ))}
+                {modifiers.map(
+                  ({ id, displayName, priceAdjustment, availability }) => (
+                    <FormControlLabel
+                      key={id}
+                      control={<Radio size="small" />}
+                      disabled={availability === "SoldOut"}
+                      label={renderChoiceLabel(
+                        displayName,
+                        Number(priceAdjustment ?? 0),
+                        availability === "SoldOut",
+                      )}
+                      value={id}
+                    />
+                  ),
+                )}
               </RadioGroup>
             )}
           </FormControl>
         );
       })}
+      {addOnItems.length > 0 && (
+        <FormControl>
+          <FormLabel>{tOrder("menuItem.addOn")}</FormLabel>
+          <FormGroup>
+            {addOnItems.map((addOnItem) => {
+              const { id, name, offers } = addOnItem;
+              const soldOut = offers[0]?.availability === "SoldOut";
+
+              return (
+                <FormControlLabel
+                  key={id}
+                  control={
+                    <Checkbox
+                      checked={selectedAddOnIds.includes(id)}
+                      onChange={(event) =>
+                        handleSelect(ADD_ON_OPTION_ID, id, event.target.checked)
+                      }
+                      size="small"
+                    />
+                  }
+                  disabled={soldOut}
+                  label={renderChoiceLabel(
+                    name,
+                    getAddOnPrice(addOnItem),
+                    soldOut,
+                  )}
+                />
+              );
+            })}
+          </FormGroup>
+        </FormControl>
+      )}
       <Divider variant="inset" />
       <Grid
         width="100%"

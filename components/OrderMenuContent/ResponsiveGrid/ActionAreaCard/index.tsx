@@ -24,7 +24,7 @@ import { useViewStore } from "@/providers/view-store-provider";
 import type { OrderMenuItem } from "@/types/menus";
 import type { ViewDirection } from "@/types/view";
 
-import { getActivePromo, getItemOptions, isLowStock } from "@/utils/menus";
+import { getActivePromo, isLowStock } from "@/utils/menus";
 
 const StyledCard = styled(Card)({
   width: "100%",
@@ -163,13 +163,14 @@ const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
   //   choices.some(({ extraCost }) => extraCost > 0),
   // );
 
-  const hasUnsatisfiableOption = getItemOptions(menuItem).some(
-    ({ minSelections, choices }) =>
-      choices.filter(({ isActive }) => isActive).length < minSelections,
+  const hasUnsatisfiableModifierGroup = menuItem.modifierGroups.some(
+    ({ minSelectionCount, modifiers }) =>
+      modifiers.filter(({ availability }) => availability !== "SoldOut")
+        .length < minSelectionCount,
   );
 
   const isItemOutOfStock =
-    stock === 0 || availability === "SoldOut" || hasUnsatisfiableOption;
+    stock === 0 || availability === "SoldOut" || hasUnsatisfiableModifierGroup;
   const showLowStock = isLowStock(offer);
 
   const handleDialogClick = () => {

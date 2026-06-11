@@ -53,28 +53,28 @@ const StyledTypography = styled(Typography)({
 });
 
 interface CartItemSoldOutProps {
+  addOnCapLeft: number;
   availableToAdd: number;
   item: CartItem;
   itemStockCapLeft: number;
-  limitingChoicesLabel: string;
-  optionCapLeft: number;
+  limitingAddOnsLabel: string;
   unavailable: boolean;
 }
 
 const CartItemSoldOut = ({
+  addOnCapLeft,
   availableToAdd,
   item,
   itemStockCapLeft,
-  limitingChoicesLabel,
-  optionCapLeft,
+  limitingAddOnsLabel,
   unavailable,
 }: CartItemSoldOutProps) => {
   const { extraCost, price, quantity } = item;
 
+  const { deleteCartItem, updateCartItem } = useCartStore((state) => state);
+
   const tCart = useTranslations("cart");
   const tCommon = useTranslations("common");
-
-  const { deleteCartItem, updateCartItem } = useCartStore((state) => state);
 
   const targetQuantity = quantity + availableToAdd;
   const shouldDeleteItem = availableToAdd < 0 && targetQuantity <= 0;
@@ -86,15 +86,15 @@ const CartItemSoldOut = ({
       ? tCommon("unavailable")
       : itemStockCapLeft === availableToAdd
         ? tCommon("soldOut", { label: "" })
-        : optionCapLeft === availableToAdd
-          ? tCommon("soldOut", { label: `${limitingChoicesLabel}\n` })
+        : addOnCapLeft === availableToAdd
+          ? tCommon("soldOut", { label: `${limitingAddOnsLabel}\n` })
           : ""
     : shouldEditItem
       ? itemStockCapLeft === availableToAdd
         ? tCart("quantityExceedsStock", { label: "", stock: targetQuantity })
-        : optionCapLeft === availableToAdd
+        : addOnCapLeft === availableToAdd
           ? tCart("quantityExceedsStock", {
-              label: `${limitingChoicesLabel}\n`,
+              label: `${limitingAddOnsLabel}\n`,
               stock: targetQuantity,
             })
           : ""

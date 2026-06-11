@@ -29,12 +29,7 @@ interface CartActions {
   clearCartItem: () => void;
   deleteCartItem: (item: CartItem) => void;
   updateCartItem: (item: CartItem) => void;
-  getChoiceAvailableQuantity: (
-    choiceId: string,
-    choiceStock: number | null,
-    isShared: boolean,
-    itemId: string,
-  ) => number;
+  getChoiceAvailableQuantity: (choiceId: string, choiceStock: number) => number;
   getCartItemTotalQuantity: (itemId: string) => number;
 }
 
@@ -127,18 +122,9 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
             isCartEmpty,
           });
         },
-        getChoiceAvailableQuantity: (
-          choiceId,
-          choiceStock,
-          isShared,
-          itemId,
-        ) => {
-          if (choiceStock == null) return Infinity;
-
+        getChoiceAvailableQuantity: (choiceId, choiceStock) => {
           const used = Object.values(get().cartItemsMap).reduce(
-            (sum, { id, choices, quantity }) => {
-              if (!isShared && id !== itemId) return sum;
-
+            (sum, { choices, quantity }) => {
               const hasChoice = Object.values(choices).some((selected) =>
                 selected.includes(choiceId),
               );
