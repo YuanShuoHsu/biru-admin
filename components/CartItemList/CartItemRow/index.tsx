@@ -70,7 +70,16 @@ interface CartItemRowProps {
 }
 
 const CartItemRow = ({ forceXsLayout, item }: CartItemRowProps) => {
-  const { id, amount, choices, extraCost, image, price, quantity } = item;
+  const {
+    menuItemId,
+    amount,
+    modifiers,
+    addOns,
+    extraCost,
+    image,
+    price,
+    quantity,
+  } = item;
 
   const locale = useLocale();
 
@@ -79,8 +88,8 @@ const CartItemRow = ({ forceXsLayout, item }: CartItemRowProps) => {
   const tCommon = useTranslations("common");
   const tOrder = useTranslations("order");
 
-  const itemName = getItemName(menu, id);
-  const choiceNames = getChoiceNames(menu, id, choices, {
+  const itemName = getItemName(menu, menuItemId);
+  const choiceNames = getChoiceNames(menu, menuItemId, modifiers, addOns, {
     addOnLabel: tOrder("menuItem.addOn"),
     colon: tCommon("colon"),
     delimiter: tCommon("delimiter"),
@@ -93,17 +102,17 @@ const CartItemRow = ({ forceXsLayout, item }: CartItemRowProps) => {
     updateCartItem,
   } = useCartStore((state) => state);
 
-  const itemStock = getItemStock(menu, id);
+  const itemStock = getItemStock(menu, menuItemId);
   const itemStockLeft = itemStock === null ? Infinity : itemStock;
-  const cartItemTotalQuantity = getCartItemTotalQuantity(id);
+  const cartItemTotalQuantity = getCartItemTotalQuantity(menuItemId);
 
   const perItemCapLeft = MAX_QUANTITY - cartItemTotalQuantity;
   const itemStockCapLeft = itemStockLeft - cartItemTotalQuantity;
 
   const { names: limitingAddOnNames, cap: addOnCapLeft } = getLimitingAddOnsCap(
     menu,
-    id,
-    choices,
+    menuItemId,
+    addOns,
     getChoiceAvailableQuantity,
   );
 

@@ -213,14 +213,17 @@ const CardDialogContent = ({ menuItem }: CardDialogContentProps) => {
 
     if (quantity <= 0 || !isSelectionValid) return;
 
+    const { [ADD_ON_OPTION_ID]: addOns = [], ...modifiers } = choices;
+
     updateCartItem({
-      id,
+      menuItemId: id,
       amount,
       extraCost,
       image: image || null,
       price,
       quantity,
-      choices,
+      modifiers,
+      addOns,
     });
 
     closeDialog();

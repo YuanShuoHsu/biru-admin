@@ -29,10 +29,10 @@ const CartItemList = ({ forceXsLayout = false }: CartItemListProps) => {
           </Typography>
         ) : (
           cartItemsList.map((item, index) => {
-            const { id, choices } = item;
+            const { menuItemId, modifiers, addOns } = item;
 
             return (
-              <Fragment key={getItemKey(id, choices)}>
+              <Fragment key={getItemKey(menuItemId, modifiers, addOns)}>
                 <CartItemRow forceXsLayout={forceXsLayout} item={item} />
                 {index < cartItemsList.length - 1 && (
                   <Divider component="li" variant="inset" />

@@ -72,18 +72,18 @@ export const getAddOnPrice = (addOnItem: OrderMenuAddOnItem): number => {
 };
 
 export const getItemKey = (
-  itemId: string,
-  choices: Record<string, string[]>,
+  menuItemId: string,
+  modifiers: Record<string, string[]>,
+  addOns: string[],
 ): string => {
-  if (!choices) return itemId;
+  const parts = [
+    ...Object.entries(modifiers).flatMap(([groupId, selected]) =>
+      [...selected].sort().map((modifierId) => `${groupId}:${modifierId}`),
+    ),
+    ...[...addOns].sort().map((addOnId) => `${ADD_ON_OPTION_ID}:${addOnId}`),
+  ];
 
-  const parts = Object.entries(choices).flatMap(([optionId, selected]) =>
-    selected.length > 0
-      ? [...selected].sort().map((choiceId) => `${optionId}:${choiceId}`)
-      : [],
-  );
-
-  return parts.length > 0 ? `${itemId}_${parts.join("_")}` : itemId;
+  return parts.length > 0 ? `${menuItemId}_${parts.join("_")}` : menuItemId;
 };
 
 const findItemById = (
@@ -138,16 +138,15 @@ export const getAddOnsCap = (
 
 export const getLimitingAddOnsCap = (
   menu: OrderMenu | null,
-  id: string,
-  choices: Record<string, string[]>,
+  menuItemId: string,
+  addOns: string[],
   getChoiceAvailableQuantity: (choiceId: string, choiceStock: number) => number,
 ): AddOnLimitResult => {
-  const item = findItemById(menu, id);
+  const item = findItemById(menu, menuItemId);
   if (!item) return { cap: Infinity, names: [] };
 
-  const selectedIds = choices[ADD_ON_OPTION_ID] ?? [];
   const selectedAddOnItems = getAddOnItems(item).filter(({ id }) =>
-    selectedIds.includes(id),
+    addOns.includes(id),
   );
 
   return getAddOnsCap(selectedAddOnItems, getChoiceAvailableQuantity);
@@ -162,37 +161,44 @@ interface CommonSeparators {
 
 export const getChoiceNames = (
   menu: OrderMenu | null,
-  itemId: string,
-  choices: Record<string, string[]>,
+  menuItemId: string,
+  modifiers: Record<string, string[]>,
+  addOns: string[],
   { addOnLabel, colon, delimiter, joinWith = "\n" }: CommonSeparators,
 ): string => {
-  const item = findItemById(menu, itemId);
+  const item = findItemById(menu, menuItemId);
   if (!item) return "";
 
-  const addOnItems = getAddOnItems(item);
+  const modifierParts = Object.entries(modifiers).flatMap(
+    ([groupId, modifierIds]) => {
+      if (!modifierIds.length) return [];
 
-  return Object.entries(choices)
-    .flatMap(([optionId, choiceIds]) => {
-      if (!choiceIds.length) return [];
+      const group = item.modifierGroups.find(({ id }) => id === groupId);
 
-      const isAddOn = optionId === ADD_ON_OPTION_ID;
-      const group = isAddOn
-        ? undefined
-        : item.modifierGroups.find(({ id }) => id === optionId);
-      const label = isAddOn ? (addOnLabel ?? "") : (group?.displayName ?? "");
-
-      const choiceNames = choiceIds
-        .map((choiceId) =>
-          isAddOn
-            ? addOnItems.find(({ id }) => id === choiceId)?.name
-            : group?.modifiers.find(({ id }) => id === choiceId)?.displayName,
+      const modifierNames = modifierIds
+        .map(
+          (modifierId) =>
+            group?.modifiers.find(({ id }) => id === modifierId)?.displayName,
         )
         .filter(Boolean)
         .join(delimiter);
 
-      return choiceNames ? [`${label}${colon}${choiceNames}`] : [];
-    })
-    .join(joinWith);
+      return modifierNames
+        ? [`${group?.displayName ?? ""}${colon}${modifierNames}`]
+        : [];
+    },
+  );
+
+  const addOnItems = getAddOnItems(item);
+  const addOnNames = addOns
+    .map((addOnId) => addOnItems.find(({ id }) => id === addOnId)?.name)
+    .filter(Boolean)
+    .join(delimiter);
+
+  return [
+    ...modifierParts,
+    ...(addOnNames ? [`${addOnLabel ?? ""}${colon}${addOnNames}`] : []),
+  ].join(joinWith);
 };
 
 export const DEFAULT_MENUS_HREF = "/menus/sections?page=1&pageSize=10";

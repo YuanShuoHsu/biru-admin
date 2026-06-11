@@ -1,9 +1,18 @@
 "use client";
 
-import { type ReactNode, createContext, useContext, useState } from "react";
+import { useParams } from "next/navigation";
+import {
+  type ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { type StoreApi, useStore } from "zustand";
 
 import { type CartStore, createCartStore } from "@/stores/cart-store";
+
+import type { RouteParams } from "@/types/routeParams";
 
 const CartStoreContext = createContext<StoreApi<CartStore> | undefined>(
   undefined,
@@ -15,6 +24,12 @@ interface CartStoreProviderProps {
 
 export const CartStoreProvider = ({ children }: CartStoreProviderProps) => {
   const [store] = useState(() => createCartStore());
+
+  const { organizationSlug } = useParams<RouteParams>();
+
+  useEffect(() => {
+    store.getState().setActiveOrganization(organizationSlug ?? null);
+  }, [store, organizationSlug]);
 
   return (
     <CartStoreContext.Provider value={store}>

@@ -1,20 +1,27 @@
 import { createJSONStorage, persist } from "zustand/middleware";
 import { createStore } from "zustand/vanilla";
 
+import type { Organization } from "@/types/organizations";
+
 import { getItemKey } from "@/utils/menus";
 
 export interface CartItem {
-  id: string;
+  menuItemId: string;
   amount: number;
   extraCost: number;
   image: string | null;
   price: number;
   quantity: number;
-  choices: Record<string, string[]>;
+  modifiers: Record<string, string[]>;
+  addOns: string[];
 }
 
+type CartItemsMap = Record<string, CartItem>;
+
 interface CartState {
-  cartItemsMap: Record<string, CartItem>;
+  carts: Record<Organization["slug"], CartItemsMap>;
+  activeOrganizationSlug: Organization["slug"] | null;
+  cartItemsMap: CartItemsMap;
   cartItemsList: CartItem[];
   cartTotalAmount: number;
   cartTotalQuantity: number;
@@ -22,129 +29,114 @@ interface CartState {
 }
 
 interface CartActions {
-  computeCartTotals: (map: Record<string, CartItem>) => {
-    cartTotalAmount: number;
-    cartTotalQuantity: number;
-  };
-  clearCartItem: () => void;
+  setActiveOrganization: (slug: Organization["slug"] | null) => void;
+  clearCart: () => void;
   deleteCartItem: (item: CartItem) => void;
   updateCartItem: (item: CartItem) => void;
   getChoiceAvailableQuantity: (choiceId: string, choiceStock: number) => number;
-  getCartItemTotalQuantity: (itemId: string) => number;
+  getCartItemTotalQuantity: (menuItemId: string) => number;
 }
 
 export type CartStore = CartState & CartActions;
 
+const deriveCartState = (cartItemsMap: CartItemsMap) => {
+  const cartItemsList = Object.values(cartItemsMap);
+
+  const cartTotalAmount = cartItemsList.reduce(
+    (sum, { amount }) => sum + amount,
+    0,
+  );
+
+  const cartTotalQuantity = cartItemsList.reduce(
+    (sum, { quantity }) => sum + quantity,
+    0,
+  );
+
+  return {
+    cartItemsMap,
+    cartItemsList,
+    cartTotalAmount,
+    cartTotalQuantity,
+    isCartEmpty: cartTotalQuantity === 0,
+  };
+};
+
 const defaultInitState: CartState = {
-  cartItemsMap: {},
-  cartItemsList: [],
-  cartTotalAmount: 0,
-  cartTotalQuantity: 0,
-  isCartEmpty: true,
+  carts: {},
+  activeOrganizationSlug: null,
+  ...deriveCartState({}),
 };
 
 export const createCartStore = (initState: CartState = defaultInitState) => {
   return createStore<CartStore>()(
     persist(
-      (set, get) => ({
-        ...initState,
-        computeCartTotals: (map) => {
-          const cartTotalAmount = Object.values(map).reduce(
-            (sum, { amount }) => sum + amount,
-            0,
-          );
-
-          const cartTotalQuantity = Object.values(map).reduce(
-            (sum, { quantity }) => sum + quantity,
-            0,
-          );
-
-          return { cartTotalAmount, cartTotalQuantity };
-        },
-        clearCartItem: () =>
-          set({
-            cartItemsMap: {},
-            cartItemsList: [],
-            cartTotalAmount: 0,
-            cartTotalQuantity: 0,
-            isCartEmpty: true,
-          }),
-        deleteCartItem: (item) => {
-          const { id, choices } = item;
-
-          const { computeCartTotals, cartItemsMap } = get();
-          const newMap = { ...cartItemsMap };
-          const itemKey = getItemKey(id, choices);
-          delete newMap[itemKey];
-
-          const { cartTotalAmount, cartTotalQuantity } =
-            computeCartTotals(newMap);
-
-          const cartItemsList = Object.values(newMap);
-          const isCartEmpty = cartTotalQuantity === 0;
+      (set, get) => {
+        const setActiveCart = (cartItemsMap: CartItemsMap) => {
+          const { activeOrganizationSlug, carts } = get();
+          if (!activeOrganizationSlug) return;
 
           set({
-            cartItemsMap: newMap,
-            cartItemsList,
-            cartTotalAmount,
-            cartTotalQuantity,
-            isCartEmpty,
+            carts: { ...carts, [activeOrganizationSlug]: cartItemsMap },
+            ...deriveCartState(cartItemsMap),
           });
-        },
-        updateCartItem: (item) => {
-          const { id, amount, choices, quantity } = item;
+        };
 
-          const { computeCartTotals, cartItemsMap } = get();
-          const itemKey = getItemKey(id, choices);
-          const existing = cartItemsMap[itemKey];
+        return {
+          ...initState,
+          setActiveOrganization: (slug) =>
+            set(({ carts }) => ({
+              activeOrganizationSlug: slug,
+              ...deriveCartState(slug ? (carts[slug] ?? {}) : {}),
+            })),
+          clearCart: () => setActiveCart({}),
+          deleteCartItem: (item) => {
+            const { menuItemId, modifiers, addOns } = item;
 
-          const updatedItem = existing
-            ? {
-                ...existing,
-                amount: existing.amount + amount,
-                quantity: existing.quantity + quantity,
-              }
-            : { ...item };
+            const newMap = { ...get().cartItemsMap };
+            delete newMap[getItemKey(menuItemId, modifiers, addOns)];
 
-          const newMap = { ...cartItemsMap, [itemKey]: updatedItem };
+            setActiveCart(newMap);
+          },
+          updateCartItem: (item) => {
+            const { menuItemId, amount, modifiers, addOns, quantity } = item;
 
-          const { cartTotalAmount, cartTotalQuantity } =
-            computeCartTotals(newMap);
+            const { cartItemsMap } = get();
+            const itemKey = getItemKey(menuItemId, modifiers, addOns);
+            const existing = cartItemsMap[itemKey];
 
-          const cartItemsList = Object.values(newMap);
-          const isCartEmpty = cartTotalQuantity === 0;
+            const updatedItem = existing
+              ? {
+                  ...existing,
+                  amount: existing.amount + amount,
+                  quantity: existing.quantity + quantity,
+                }
+              : { ...item };
 
-          set({
-            cartItemsMap: newMap,
-            cartItemsList,
-            cartTotalAmount,
-            cartTotalQuantity,
-            isCartEmpty,
-          });
-        },
-        getChoiceAvailableQuantity: (choiceId, choiceStock) => {
-          const used = Object.values(get().cartItemsMap).reduce(
-            (sum, { choices, quantity }) => {
-              const hasChoice = Object.values(choices).some((selected) =>
-                selected.includes(choiceId),
-              );
+            setActiveCart({ ...cartItemsMap, [itemKey]: updatedItem });
+          },
+          getChoiceAvailableQuantity: (choiceId, choiceStock) => {
+            const used = get().cartItemsList.reduce(
+              (sum, { addOns, quantity }) =>
+                sum + (addOns.includes(choiceId) ? quantity : 0),
+              0,
+            );
 
-              return sum + (hasChoice ? quantity : 0);
-            },
-            0,
-          );
-
-          return choiceStock - used;
-        },
-        getCartItemTotalQuantity: (itemId) =>
-          Object.values(get().cartItemsMap).reduce(
-            (sum, { id, quantity }) => (id === itemId ? sum + quantity : sum),
-            0,
-          ),
-      }),
+            return choiceStock - used;
+          },
+          getCartItemTotalQuantity: (menuItemId) =>
+            get().cartItemsList.reduce(
+              (sum, item) =>
+                item.menuItemId === menuItemId ? sum + item.quantity : sum,
+              0,
+            ),
+        };
+      },
       {
         name: "biru-cart",
         storage: createJSONStorage(() => localStorage),
+        partialize: ({ carts }) => ({ carts }),
+        version: 1,
+        migrate: () => ({ carts: {} }),
       },
     ),
   );

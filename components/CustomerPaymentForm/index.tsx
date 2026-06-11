@@ -94,14 +94,20 @@ const CustomerPaymentForm = () => {
         TotalAmount: cartTotalAmount,
         TradeDesc: "餐點付款",
         ItemName: cartItemsList
-          .map(({ id, choices, quantity }) => {
-            const itemName = getItemName(menu, id);
-            const choiceNames = getChoiceNames(menu, id, choices, {
-              addOnLabel: "加購",
-              colon: "：",
-              delimiter: "、",
-              joinWith: "、",
-            });
+          .map(({ menuItemId, modifiers, addOns, quantity }) => {
+            const itemName = getItemName(menu, menuItemId);
+            const choiceNames = getChoiceNames(
+              menu,
+              menuItemId,
+              modifiers,
+              addOns,
+              {
+                addOnLabel: "加購",
+                colon: "：",
+                delimiter: "、",
+                joinWith: "、",
+              },
+            );
             const formattedChoices = choiceNames ? `[${choiceNames}]` : "";
 
             return `${itemName} ${formattedChoices} ${tCommon("multiply")} ${quantity}`;
