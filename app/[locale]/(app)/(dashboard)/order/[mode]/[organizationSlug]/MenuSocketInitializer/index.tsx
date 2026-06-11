@@ -50,6 +50,10 @@ const MenuSocketInitializer = ({
     };
 
     initMenus();
+
+    menuSocket.on("menuUpdated", initMenus);
+
+    return () => menuSocket.off("menuUpdated", initMenus);
   }, [enqueueSnackbar, isConnected, locale, organizationId, setMenu]);
 
   return null;
