@@ -1,8 +1,9 @@
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 
-import CardDialogContent from "./CardDialogContent";
 import ItemSoldOut from "./ItemSoldOut";
+
+import CardDialogContent from "@/components/CardDialogContent";
 
 import { ViewDirections } from "@/constants/view";
 

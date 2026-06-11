@@ -28,6 +28,8 @@ import { styled } from "@mui/material/styles";
 import { useCartStore } from "@/providers/cart-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
+import type { CartItem } from "@/stores/cart-store";
+
 import type { OrderMenuItem, OrderMenuModifierGroup } from "@/types/menus";
 
 import {
@@ -69,10 +71,11 @@ const OriginalPriceTypography = styled(Typography, {
 }));
 
 interface CardDialogContentProps {
+  cartItem?: CartItem;
   menuItem: OrderMenuItem;
 }
 
-const CardDialogContent = ({ menuItem }: CardDialogContentProps) => {
+const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
   const {
     id,
     name,
@@ -95,10 +98,15 @@ const CardDialogContent = ({ menuItem }: CardDialogContentProps) => {
   const price = promoInfo?.price ?? basePrice;
   const showLowStock = isLowStock(offer);
 
-  const [rawQuantity, setRawQuantity] = useState(1);
-  const [choices, setChoices] = useState<Record<string, string[]>>({});
+  const [rawQuantity, setRawQuantity] = useState(cartItem?.quantity || 1);
+  const [choices, setChoices] = useState<Record<string, string[]>>(() =>
+    cartItem
+      ? { ...cartItem.modifiers, [ADD_ON_OPTION_ID]: cartItem.addOns }
+      : {},
+  );
 
   const {
+    deleteCartItem,
     getCartItemTotalQuantity,
     getChoiceAvailableQuantity,
     updateCartItem,
@@ -150,7 +158,8 @@ const CardDialogContent = ({ menuItem }: CardDialogContentProps) => {
     },
   );
 
-  const cartItemTotalQuantity = getCartItemTotalQuantity(id);
+  const editingQuantity = cartItem?.quantity || 0;
+  const cartItemTotalQuantity = getCartItemTotalQuantity(id) - editingQuantity;
   const itemStockLeft =
     availability === "SoldOut" ? 0 : stock === null ? Infinity : stock;
 
@@ -159,7 +168,9 @@ const CardDialogContent = ({ menuItem }: CardDialogContentProps) => {
 
   const { names: limitingAddOnNames, cap: addOnCapLeft } = getAddOnsCap(
     selectedAddOnItems,
-    getChoiceAvailableQuantity,
+    (choiceId, choiceStock) =>
+      getChoiceAvailableQuantity(choiceId, choiceStock) +
+      (cartItem?.addOns.includes(choiceId) ? editingQuantity : 0),
   );
 
   const availableToAdd = Math.min(
@@ -214,6 +225,8 @@ const CardDialogContent = ({ menuItem }: CardDialogContentProps) => {
     if (quantity <= 0 || !isSelectionValid) return;
 
     const { [ADD_ON_OPTION_ID]: addOns = [], ...modifiers } = choices;
+
+    if (cartItem) deleteCartItem(cartItem);
 
     updateCartItem({
       menuItemId: id,

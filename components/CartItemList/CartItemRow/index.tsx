@@ -3,6 +3,8 @@ import Image from "next/image";
 
 import CartItemSoldOut from "./CartItemSoldOut";
 
+import CardDialogContent from "@/components/CardDialogContent";
+
 import { MAX_QUANTITY } from "@/constants/cart";
 
 import { Add, Delete, Remove } from "@mui/icons-material";
@@ -20,13 +22,14 @@ import {
 import { styled } from "@mui/material/styles";
 
 import { useCartStore } from "@/providers/cart-store-provider";
+import { useDialogStore } from "@/providers/dialog-store-provider";
 import { useMenuStore } from "@/providers/menu-store-provider";
 
 import { type CartItem } from "@/stores/cart-store";
 
 import {
+  findItemById,
   getChoiceNames,
-  getItemName,
   getItemStock,
   getLimitingAddOnsCap,
 } from "@/utils/menus";
@@ -36,6 +39,12 @@ const StyledListItem = styled(ListItem)(({ theme }) => ({
   padding: theme.spacing(2),
   display: "flex",
   gap: theme.spacing(2),
+  cursor: "pointer",
+  transition: theme.transitions.create("background-color"),
+
+  "&:hover": {
+    backgroundColor: theme.vars.palette.action.hover,
+  },
 }));
 
 const StyledListItemAvatar = styled(ListItemAvatar)({
@@ -84,11 +93,14 @@ const CartItemRow = ({ forceXsLayout, item }: CartItemRowProps) => {
   const locale = useLocale();
 
   const { menu } = useMenuStore((state) => state);
+  const { setDialog } = useDialogStore((state) => state);
 
   const tCommon = useTranslations("common");
+  const tDialog = useTranslations("dialog");
   const tOrder = useTranslations("order");
 
-  const itemName = getItemName(menu, menuItemId);
+  const menuItem = findItemById(menu, menuItemId);
+  const itemName = menuItem?.name || "";
   const choiceNames = getChoiceNames(menu, menuItemId, modifiers, addOns, {
     addOnLabel: tOrder("menuItem.addOn"),
     colon: tCommon("colon"),
@@ -159,8 +171,21 @@ const CartItemRow = ({ forceXsLayout, item }: CartItemRowProps) => {
     }
   };
 
+  const handleEdit = () => {
+    if (!menuItem) return;
+
+    setDialog({
+      cancelText: tDialog("close"),
+      confirmText: tDialog("updateCart"),
+      content: <CardDialogContent cartItem={item} menuItem={menuItem} />,
+      formId: "add-to-cart-form",
+      open: true,
+      title: itemName,
+    });
+  };
+
   return (
-    <StyledListItem disablePadding>
+    <StyledListItem disablePadding onClick={handleEdit}>
       <CartItemSoldOut
         addOnCapLeft={addOnCapLeft}
         availableToAdd={availableToAdd}
@@ -236,6 +261,7 @@ const CartItemRow = ({ forceXsLayout, item }: CartItemRowProps) => {
                 sx: { textAlign: "center" },
               },
               input: {
+                onClick: (event) => event.stopPropagation(),
                 startAdornment: (
                   <StyledInputAdornment position="start">
                     <IconButton

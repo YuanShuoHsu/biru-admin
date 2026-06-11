@@ -86,7 +86,7 @@ export const getItemKey = (
   return parts.length > 0 ? `${menuItemId}_${parts.join("_")}` : menuItemId;
 };
 
-const findItemById = (
+export const findItemById = (
   menu: OrderMenu | null,
   itemId: string,
 ): OrderMenuItem | undefined =>

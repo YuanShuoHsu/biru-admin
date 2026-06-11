@@ -4,5 +4,6 @@
   "cancel": "取消",
   "close": "關閉",
   "confirm": "確認",
-  "maxStock": "{label} 庫存僅剩 {quantity} 件"
+  "maxStock": "{label} 庫存僅剩 {quantity} 件",
+  "updateCart": "更新購物車"
 }

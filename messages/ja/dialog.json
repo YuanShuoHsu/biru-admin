@@ -4,5 +4,6 @@
   "cancel": "キャンセル",
   "close": "閉じる",
   "confirm": "確認",
-  "maxStock": "{label} 在庫は残り {quantity} 個です"
+  "maxStock": "{label} 在庫は残り {quantity} 個です",
+  "updateCart": "カートを更新"
 }

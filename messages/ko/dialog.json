@@ -4,5 +4,6 @@
   "cancel": "취소",
   "close": "닫기",
   "confirm": "확인",
-  "maxStock": "{label} 재고가 {quantity} 개 남았습니다"
+  "maxStock": "{label} 재고가 {quantity} 개 남았습니다",
+  "updateCart": "장바구니 업데이트"
 }

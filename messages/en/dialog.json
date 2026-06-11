@@ -4,5 +4,6 @@
   "cancel": "Cancel",
   "close": "Close",
   "confirm": "Confirm",
-  "maxStock": "Only {quantity} left in stock {label}"
+  "maxStock": "Only {quantity} left in stock {label}",
+  "updateCart": "Update cart"
 }
