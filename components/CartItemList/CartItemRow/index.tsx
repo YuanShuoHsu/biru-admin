@@ -4,19 +4,17 @@ import Image from "next/image";
 import CartItemSoldOut from "./CartItemSoldOut";
 
 import CardDialogContent from "@/components/CardDialogContent";
+import NumberSpinner from "@/components/NumberSpinner";
 
 import { MAX_QUANTITY } from "@/constants/cart";
 
-import { Add, Delete, Remove } from "@mui/icons-material";
+import { Delete } from "@mui/icons-material";
 import {
   Box,
   Grid,
-  IconButton,
-  InputAdornment,
   ListItem,
   ListItemAvatar,
   ListItemText,
-  TextField,
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -68,10 +66,6 @@ const StyledListItemText = styled(ListItemText)(({ theme }) => ({
     transition: theme.transitions.create("color"),
   },
 }));
-
-const StyledInputAdornment = styled(InputAdornment)({
-  margin: 0,
-});
 
 interface CartItemRowProps {
   forceXsLayout: boolean;
@@ -148,25 +142,24 @@ const CartItemRow = ({ forceXsLayout, item }: CartItemRowProps) => {
           ? tCommon("reachStockLimit", { label: limitingAddOnsLabel })
           : "";
 
-  const canDecrease = quantity > 1;
   const canIncrease = availableToAdd > 0;
 
-  const handleDecrease = () => {
-    if (canDecrease) {
-      updateCartItem({
-        ...item,
-        quantity: -1,
-        amount: -(price + extraCost),
-      });
-    }
-  };
+  const handleValueChange = (value: number | null) => {
+    if (value === null) return;
 
-  const handleIncrease = () => {
-    if (canIncrease) {
+    if (value <= 0) {
+      deleteCartItem(item);
+
+      return;
+    }
+
+    const delta = value - quantity;
+
+    if (delta) {
       updateCartItem({
         ...item,
-        quantity: 1,
-        amount: price + extraCost,
+        quantity: delta,
+        amount: delta * (price + extraCost),
       });
     }
   };
@@ -247,53 +240,21 @@ const CartItemRow = ({ forceXsLayout, item }: CartItemRowProps) => {
             ...(forceXsLayout ? {} : { sm: 4 }),
           }}
         >
-          <TextField
+          <NumberSpinner
+            {...(quantity > 1
+              ? {}
+              : {
+                  decrementAriaLabel: "Delete",
+                  decrementIcon: <Delete fontSize="small" />,
+                })}
             disabled={!quantity}
+            error={!canIncrease}
             fullWidth
             helperText={!canIncrease ? formHelperText : undefined}
+            max={quantity + availableToAdd}
+            min={0}
+            onValueChange={handleValueChange}
             size="small"
-            slotProps={{
-              formHelperText: {
-                error: !canIncrease,
-                sx: { textAlign: "right" },
-              },
-              htmlInput: {
-                sx: { textAlign: "center" },
-              },
-              input: {
-                onClick: (event) => event.stopPropagation(),
-                startAdornment: (
-                  <StyledInputAdornment position="start">
-                    <IconButton
-                      aria-label={canDecrease ? "decrease" : "delete"}
-                      onClick={() =>
-                        canDecrease ? handleDecrease() : deleteCartItem(item)
-                      }
-                      size="small"
-                    >
-                      {canDecrease ? (
-                        <Remove fontSize="small" />
-                      ) : (
-                        <Delete fontSize="small" />
-                      )}
-                    </IconButton>
-                  </StyledInputAdornment>
-                ),
-                endAdornment: (
-                  <StyledInputAdornment position="end">
-                    <IconButton
-                      aria-label="increase"
-                      disabled={!canIncrease}
-                      onClick={handleIncrease}
-                      size="small"
-                    >
-                      <Add fontSize="small" />
-                    </IconButton>
-                  </StyledInputAdornment>
-                ),
-                readOnly: true,
-              },
-            }}
             value={quantity}
           />
         </Grid>

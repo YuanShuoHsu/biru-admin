@@ -89,6 +89,8 @@ const IncrementButton = styled(Button)({
 
 interface NumberSpinnerProps extends BaseNumberField.Root.Props {
   clearable?: boolean;
+  decrementAriaLabel?: string;
+  decrementIcon?: React.ReactNode;
   error?: boolean;
   fullWidth?: boolean;
   helperText?: string;
@@ -99,6 +101,8 @@ interface NumberSpinnerProps extends BaseNumberField.Root.Props {
 
 const NumberSpinner = ({
   clearable,
+  decrementAriaLabel = "Decrease",
+  decrementIcon,
   error,
   fullWidth,
   helperText,
@@ -146,17 +150,17 @@ const NumberSpinner = ({
           </ClearButton>
         )}
       </Stack>
-      <FlexDiv>
+      <FlexDiv onClick={(event) => event.stopPropagation()}>
         <BaseNumberField.Decrement
           render={
             <DecrementButton
-              aria-label="Decrease"
+              aria-label={decrementAriaLabel}
               size={size}
               variant="outlined"
             />
           }
         >
-          <Remove fontSize={size} />
+          {decrementIcon || <Remove fontSize={size} />}
         </BaseNumberField.Decrement>
         <BaseNumberField.Input
           id={id}
