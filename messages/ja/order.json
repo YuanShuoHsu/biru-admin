@@ -47,6 +47,7 @@
         "latest": "新着商品",
         "new": "新着",
         "search": {
+          "noResults": "該当する商品が見つかりません",
           "placeholder": "あなたのメニュー名を入力してください"
         },
         "stepper": {

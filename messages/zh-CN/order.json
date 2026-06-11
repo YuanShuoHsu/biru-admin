@@ -47,6 +47,7 @@
         "latest": "新品上架",
         "new": "新品",
         "search": {
+          "noResults": "未找到符合的品项",
           "placeholder": "请输入您的菜单名称"
         },
         "stepper": {

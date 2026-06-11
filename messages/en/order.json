@@ -47,6 +47,7 @@
         "latest": "New Arrivals",
         "new": "New",
         "search": {
+          "noResults": "No matching items found",
           "placeholder": "Please enter your menu name"
         },
         "stepper": {

@@ -47,6 +47,7 @@
         "latest": "신상품",
         "new": "신상품",
         "search": {
+          "noResults": "일치하는 메뉴가 없습니다",
           "placeholder": "귀하의 메뉴명을 입력해 주세요"
         },
         "stepper": {

@@ -3,11 +3,15 @@
 
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
 import MenuCard from "./MenuCard";
 import OrderBottomBar from "./OrderBottomBar";
 import ResponsiveGrid from "./ResponsiveGrid";
+
+import OrderSearch from "@/components/OrderSearch";
+import ViewToggleButtons from "@/components/ViewToggleButtons";
 
 import {
   APP_BAR_TOOLBAR_HEIGHT,
@@ -22,38 +26,63 @@ import { styled } from "@mui/material/styles";
 import { useMenuStore } from "@/providers/menu-store-provider";
 import { useOrderSearchStore } from "@/providers/order-search-store-provider";
 
-const StyledTabs = styled(Tabs, {
+const TABS_HEIGHT = 48;
+const CONTROLS_HEIGHT = 72;
+const HEADER_HEIGHT = CONTROLS_HEIGHT + TABS_HEIGHT;
+
+const HeaderBox = styled(Box, {
   shouldForwardProp: (prop) => prop !== "trigger",
 })<{ trigger: boolean }>(({ theme, trigger }) => ({
   position: "sticky",
-  top: trigger ? 0 : APP_BAR_TOOLBAR_HEIGHT,
+  top: trigger ? -CONTROLS_HEIGHT : APP_BAR_TOOLBAR_HEIGHT,
   backgroundColor: theme.vars.palette.background.paper,
   transition: theme.transitions.create(["background-color", "top"]),
   zIndex: theme.zIndex.appBar - 1,
+  borderRadius: theme.vars.shape.borderRadius,
+  boxShadow: `inset 0 0 0 1px ${theme.vars.palette.divider}`,
+  overflow: "hidden",
+  display: "flex",
+  flexDirection: "column",
 
   [`${theme.breakpoints.up("xs")} and (orientation: landscape)`]: {
-    top: trigger ? 0 : APP_BAR_TOOLBAR_HEIGHT_XS_UP_LANDSCAPE,
+    top: trigger ? -CONTROLS_HEIGHT : APP_BAR_TOOLBAR_HEIGHT_XS_UP_LANDSCAPE,
   },
 
   [theme.breakpoints.up("sm")]: {
     top: trigger ? 0 : APP_BAR_TOOLBAR_HEIGHT_SM_UP,
+    flexDirection: "row-reverse",
+    alignItems: "center",
   },
 }));
 
-const TABS_HEIGHT = 48;
+const ControlsBox = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(2),
+  display: "flex",
+  alignItems: "center",
+  gap: theme.spacing(2),
+}));
+
+const StyledTabs = styled(Tabs)(({ theme }) => ({
+  [theme.breakpoints.up("sm")]: {
+    flex: 1,
+    minWidth: 0,
+  },
+}));
 
 const SectionBox = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   gap: theme.spacing(2),
-  scrollMarginTop: `calc(${APP_BAR_TOOLBAR_HEIGHT + TABS_HEIGHT}px + ${theme.spacing(2)})`,
+  scrollMarginTop: `calc(${APP_BAR_TOOLBAR_HEIGHT + HEADER_HEIGHT}px + ${theme.spacing(2)})`,
+  "--collapsed-header-height": `${TABS_HEIGHT}px`,
 
   [`${theme.breakpoints.up("xs")} and (orientation: landscape)`]: {
-    scrollMarginTop: `calc(${APP_BAR_TOOLBAR_HEIGHT_XS_UP_LANDSCAPE + TABS_HEIGHT}px + ${theme.spacing(2)})`,
+    scrollMarginTop: `calc(${APP_BAR_TOOLBAR_HEIGHT_XS_UP_LANDSCAPE + HEADER_HEIGHT}px + ${theme.spacing(2)})`,
   },
 
   [theme.breakpoints.up("sm")]: {
-    scrollMarginTop: `calc(${APP_BAR_TOOLBAR_HEIGHT_SM_UP + TABS_HEIGHT}px + ${theme.spacing(2)})`,
+    scrollMarginTop: `calc(${APP_BAR_TOOLBAR_HEIGHT_SM_UP + CONTROLS_HEIGHT}px + ${theme.spacing(2)})`,
+    "--collapsed-header-height": `${CONTROLS_HEIGHT}px`,
   },
 }));
 
@@ -65,6 +94,7 @@ const SectionTypography = styled(Typography)(({ theme }) => ({
 const OrderMenuContent = () => {
   const [selectedId, setSelectedId] = useState("");
 
+  const headerRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef(new Map<string, HTMLDivElement>());
   const observerRef = useRef<IntersectionObserver | null>(null);
   const pendingRef = useRef<{
@@ -81,7 +111,7 @@ const OrderMenuContent = () => {
     threshold: SCROLL_TRIGGER_THRESHOLD,
   });
 
-  // const tOrder = useTranslations("order");;
+  const tOrder = useTranslations("order");
 
   // const allItems = sections.flatMap(({ menuItems }) => menuItems);
 
@@ -140,7 +170,9 @@ const OrderMenuContent = () => {
 
   useEffect(() => {
     const pending = pendingRef.current;
-    const offset = APP_BAR_TOOLBAR_HEIGHT + TABS_HEIGHT;
+    const offset =
+      APP_BAR_TOOLBAR_HEIGHT +
+      (headerRef.current?.offsetHeight ?? HEADER_HEIGHT);
 
     const observer = new IntersectionObserver(
       () => {
@@ -188,7 +220,9 @@ const OrderMenuContent = () => {
     section.style.scrollMarginTop = "";
     const styles = getComputedStyle(section);
     const expandedMargin = parseFloat(styles.scrollMarginTop);
-    const collapsedMargin = TABS_HEIGHT + parseFloat(styles.rowGap);
+    const collapsedMargin =
+      parseFloat(styles.getPropertyValue("--collapsed-header-height")) +
+      parseFloat(styles.rowGap);
     const { top } = section.getBoundingClientRect();
 
     if (
@@ -204,18 +238,28 @@ const OrderMenuContent = () => {
     <>
       {/* hook.js:608 Skipping auto-scroll behavior due to `position: sticky` or `position: fixed` on element */}
       <MenuCard />
-      <StyledTabs
-        aria-label="menu category tabs"
-        onChange={handleChange}
-        scrollButtons="auto"
-        trigger={trigger}
-        value={displayIndex}
-        variant="scrollable"
-      >
-        {filteredSections.map(({ id, name }) => (
-          <Tab key={id} label={name} />
-        ))}
-      </StyledTabs>
+      <HeaderBox ref={headerRef} trigger={trigger}>
+        <ControlsBox>
+          <OrderSearch />
+          <ViewToggleButtons />
+        </ControlsBox>
+        <StyledTabs
+          aria-label="menu category tabs"
+          onChange={handleChange}
+          scrollButtons="auto"
+          value={displayIndex}
+          variant="scrollable"
+        >
+          {filteredSections.map(({ id, name }) => (
+            <Tab key={id} label={name} />
+          ))}
+        </StyledTabs>
+      </HeaderBox>
+      {!filteredSections.length && (
+        <Typography align="center" color="text.secondary">
+          {tOrder("mode.storeSlug.tableNumber.search.noResults")}
+        </Typography>
+      )}
       {filteredSections.map(({ id, menuItems, name }) => (
         <SectionBox
           key={id}

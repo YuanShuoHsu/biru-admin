@@ -8,7 +8,6 @@ import { Stack } from "@mui/material";
 
 interface DashboardLayoutProps extends LayoutProps<"/[locale]"> {
   breadcrumb: React.ReactNode;
-  subheader: React.ReactNode;
   toolbar: React.ReactNode;
 }
 
@@ -16,7 +15,6 @@ const DashboardLayout = async ({
   breadcrumb,
   children,
   params,
-  subheader,
   toolbar,
 }: DashboardLayoutProps) => {
   const { locale } = await params;
@@ -30,7 +28,6 @@ const DashboardLayout = async ({
         {breadcrumb}
         {toolbar}
       </Stack>
-      {subheader}
       {children}
     </Stack>
   );
