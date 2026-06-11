@@ -14,6 +14,11 @@ import ThemeSwitcher from "./ThemeSwitcher";
 
 import BrandMark from "@/components/BrandMark";
 
+import {
+  APP_BAR_TOOLBAR_HEIGHT,
+  APP_BAR_TOOLBAR_HEIGHT_SM_UP,
+  APP_BAR_TOOLBAR_HEIGHT_XS_UP_LANDSCAPE,
+} from "@/constants/appBar";
 import { IMPERSONATE_RETURN_KEY } from "@/constants/route";
 import { SCROLL_TRIGGER_THRESHOLD } from "@/constants/scroll";
 
@@ -42,10 +47,17 @@ import { useToggleDrawer } from "@/utils/drawer";
 const StyledAppBar = styled(AppBar, {
   shouldForwardProp: (prop) => prop !== "trigger",
 })<{ trigger: boolean }>(({ theme, trigger }) => ({
+  top: trigger ? -APP_BAR_TOOLBAR_HEIGHT : 0,
   backgroundImage: "none",
-  transform: trigger ? "translateY(-100%)" : "translateY(0)",
-  transition: theme.transitions.create(["background-color", "transform"]),
-  willChange: "transform",
+  transition: theme.transitions.create(["background-color", "top"]),
+
+  [`${theme.breakpoints.up("xs")} and (orientation: landscape)`]: {
+    top: trigger ? -APP_BAR_TOOLBAR_HEIGHT_XS_UP_LANDSCAPE : 0,
+  },
+
+  [theme.breakpoints.up("sm")]: {
+    top: trigger ? -APP_BAR_TOOLBAR_HEIGHT_SM_UP : 0,
+  },
 }));
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({

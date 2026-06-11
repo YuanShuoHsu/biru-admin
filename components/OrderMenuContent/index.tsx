@@ -26,28 +26,18 @@ const StyledTabs = styled(Tabs, {
   shouldForwardProp: (prop) => prop !== "trigger",
 })<{ trigger: boolean }>(({ theme, trigger }) => ({
   position: "sticky",
-  top: APP_BAR_TOOLBAR_HEIGHT,
-  transform: trigger
-    ? `translateY(-${APP_BAR_TOOLBAR_HEIGHT}px)`
-    : "translateY(0)",
+  top: trigger ? 0 : APP_BAR_TOOLBAR_HEIGHT,
+  backgroundColor: theme.vars.palette.background.paper,
+  transition: theme.transitions.create(["background-color", "top"]),
+  zIndex: theme.zIndex.appBar - 1,
 
   [`${theme.breakpoints.up("xs")} and (orientation: landscape)`]: {
-    top: APP_BAR_TOOLBAR_HEIGHT_XS_UP_LANDSCAPE,
-    transform: trigger
-      ? `translateY(-${APP_BAR_TOOLBAR_HEIGHT_XS_UP_LANDSCAPE}px)`
-      : "translateY(0)",
+    top: trigger ? 0 : APP_BAR_TOOLBAR_HEIGHT_XS_UP_LANDSCAPE,
   },
 
   [theme.breakpoints.up("sm")]: {
-    top: APP_BAR_TOOLBAR_HEIGHT_SM_UP,
-    transform: trigger
-      ? `translateY(-${APP_BAR_TOOLBAR_HEIGHT_SM_UP}px)`
-      : "translateY(0)",
+    top: trigger ? 0 : APP_BAR_TOOLBAR_HEIGHT_SM_UP,
   },
-
-  backgroundColor: theme.vars.palette.background.paper,
-  transition: theme.transitions.create(["background-color", "transform"]),
-  zIndex: theme.zIndex.appBar - 1,
 }));
 
 const TABS_HEIGHT = 48;
