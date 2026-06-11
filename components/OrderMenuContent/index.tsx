@@ -5,6 +5,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import MenuCard from "./MenuCard";
 import OrderBottomBar from "./OrderBottomBar";
 import ResponsiveGrid from "./ResponsiveGrid";
 
@@ -15,14 +16,7 @@ import {
 } from "@/constants/appBar";
 import { SCROLL_TRIGGER_THRESHOLD } from "@/constants/scroll";
 
-import {
-  Box,
-  Stack,
-  Tab,
-  Tabs,
-  Typography,
-  useScrollTrigger,
-} from "@mui/material";
+import { Box, Tab, Tabs, Typography, useScrollTrigger } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { useMenuStore } from "@/providers/menu-store-provider";
@@ -88,7 +82,7 @@ const OrderMenuContent = () => {
     timer?: ReturnType<typeof setTimeout>;
   }>({ id: "" });
 
-  const { menus } = useMenuStore((state) => state);
+  const { menu } = useMenuStore((state) => state);
 
   const { orderSearchText } = useOrderSearchStore((state) => state);
   const searchText = orderSearchText.trim().toLowerCase();
@@ -99,14 +93,14 @@ const OrderMenuContent = () => {
 
   // const tOrder = useTranslations("order");;
 
-  // const allItems = menus.flatMap(({ menuItems }) => menuItems);
+  // const allItems = sections.flatMap(({ menuItems }) => menuItems);
 
   // TODO: 需等訂單系統完成後，後端補上 sold 欄位才能啟用
   // const topSoldItems = [...allItems]
   //   .sort((a, b) => b.sold - a.sold)
   //   .slice(0, TOP_SOLD_LIMIT);
 
-  // const topSoldGroups =
+  // const topSoldSection =
   //   topSoldItems.length > 0
   //     ? {
   //         id: TOP_SOLD,
@@ -120,25 +114,27 @@ const OrderMenuContent = () => {
   //     dayjs().diff(dayjs(createdAt), "day") <= NEW_PRODUCT_DAYS,
   // );
 
-  // const latestGroups =
+  // const latestSection =
   //   latestItems.length > 0
   //     ? ({
   //         id: LATEST,
   //         name: tOrder("mode.storeSlug.tableNumber.latest"),
   //         menuItems: latestItems,
-  //       } as components["schemas"]["OrderMenuResponseDto"])
+  //       } as components["schemas"]["OrderMenuSectionResponseDto"])
   //     : null;
 
-  const combinedGroups = [
-    // ...(topSoldGroups ? [topSoldGroups] : []),
-    // ...(latestGroups ? [latestGroups] : []),
-    ...menus,
+  const sections = menu?.sections || [];
+
+  const combinedSections = [
+    // ...(topSoldSection ? [topSoldSection] : []),
+    // ...(latestSection ? [latestSection] : []),
+    ...sections,
   ];
 
-  const filteredGroups = combinedGroups
-    .map((group) => ({
-      ...group,
-      menuItems: group.menuItems.filter(({ name }) =>
+  const filteredSections = combinedSections
+    .map((section) => ({
+      ...section,
+      menuItems: section.menuItems.filter(({ name }) =>
         name.toLowerCase().includes(searchText),
       ),
     }))
@@ -149,7 +145,7 @@ const OrderMenuContent = () => {
 
   const displayIndex = Math.max(
     0,
-    filteredGroups.findIndex(({ id }) => id === selectedId),
+    filteredSections.findIndex(({ id }) => id === selectedId),
   );
 
   useEffect(() => {
@@ -186,7 +182,7 @@ const OrderMenuContent = () => {
   }, []);
 
   const handleChange = (_: React.SyntheticEvent, newIndex: number) => {
-    const { id } = filteredGroups[newIndex];
+    const { id } = filteredSections[newIndex];
     const section = sectionRefs.current.get(id);
     if (!section) return;
 
@@ -216,44 +212,43 @@ const OrderMenuContent = () => {
 
   return (
     <>
-      <Stack gap={2}>
-        {/* hook.js:608 Skipping auto-scroll behavior due to `position: sticky` or `position: fixed` on element */}
-        <StyledTabs
-          aria-label="menu category tabs"
-          onChange={handleChange}
-          scrollButtons="auto"
-          trigger={trigger}
-          value={displayIndex}
-          variant="scrollable"
-        >
-          {filteredGroups.map(({ id, name }) => (
-            <Tab key={id} label={name} />
-          ))}
-        </StyledTabs>
-        {filteredGroups.map((group) => (
-          <SectionBox
-            key={group.id}
-            ref={(node: HTMLDivElement) => {
-              sectionRefs.current.set(group.id, node);
-              observerRef.current?.observe(node);
-
-              return () => {
-                observerRef.current?.unobserve(node);
-                sectionRefs.current.delete(group.id);
-              };
-            }}
-          >
-            <SectionTypography
-              color="primary"
-              fontWeight="bold"
-              variant="subtitle1"
-            >
-              {group.name}
-            </SectionTypography>
-            <ResponsiveGrid group={group} />
-          </SectionBox>
+      {/* hook.js:608 Skipping auto-scroll behavior due to `position: sticky` or `position: fixed` on element */}
+      <MenuCard />
+      <StyledTabs
+        aria-label="menu category tabs"
+        onChange={handleChange}
+        scrollButtons="auto"
+        trigger={trigger}
+        value={displayIndex}
+        variant="scrollable"
+      >
+        {filteredSections.map(({ id, name }) => (
+          <Tab key={id} label={name} />
         ))}
-      </Stack>
+      </StyledTabs>
+      {filteredSections.map(({ id, menuItems, name }) => (
+        <SectionBox
+          key={id}
+          ref={(node: HTMLDivElement) => {
+            sectionRefs.current.set(id, node);
+            observerRef.current?.observe(node);
+
+            return () => {
+              observerRef.current?.unobserve(node);
+              sectionRefs.current.delete(id);
+            };
+          }}
+        >
+          <SectionTypography
+            color="primary"
+            fontWeight="bold"
+            variant="subtitle1"
+          >
+            {name}
+          </SectionTypography>
+          <ResponsiveGrid menuItems={menuItems} />
+        </SectionBox>
+      ))}
       <OrderBottomBar />
     </>
   );

@@ -152,23 +152,25 @@ export const getItemKey = (
 };
 
 const findItemById = (
-  menus: OrderMenu[],
+  menu: OrderMenu | null,
   itemId: string,
 ): OrderMenuItem | undefined =>
-  menus.flatMap(({ menuItems }) => menuItems).find(({ id }) => id === itemId);
+  menu?.sections
+    .flatMap(({ menuItems }) => menuItems)
+    .find(({ id }) => id === itemId);
 
-export const getItemName = (menus: OrderMenu[], itemId: string): string => {
-  const item = findItemById(menus, itemId);
+export const getItemName = (menu: OrderMenu | null, itemId: string): string => {
+  const item = findItemById(menu, itemId);
   if (!item) return "";
 
   return item.name;
 };
 
 export const getItemStock = (
-  menus: OrderMenu[],
+  menu: OrderMenu | null,
   itemId: string,
 ): number | null => {
-  const item = findItemById(menus, itemId);
+  const item = findItemById(menu, itemId);
   if (!item) return 0;
 
   return item.offers[0]?.inventoryLevel?.value ?? null;
@@ -232,7 +234,7 @@ export const getChoicesCap = (
   );
 
 export const getLimitingChoicesCap = (
-  menus: OrderMenu[],
+  menu: OrderMenu | null,
   id: string,
   choices: Record<string, string[]>,
   getChoiceAvailableQuantity: (
@@ -242,7 +244,7 @@ export const getLimitingChoicesCap = (
     itemId: string,
   ) => number,
 ): OptionLimitResult => {
-  const item = findItemById(menus, id);
+  const item = findItemById(menu, id);
   if (!item) return { cap: Infinity, names: [] };
 
   const selectedChoices = getSelectedChoices(getItemOptions(item), choices);
@@ -258,12 +260,12 @@ interface CommonSeparators {
 }
 
 export const getChoiceNames = (
-  menus: OrderMenu[],
+  menu: OrderMenu | null,
   itemId: string,
   choices: Record<string, string[]>,
   { addOnLabel, colon, delimiter, joinWith = "\n" }: CommonSeparators,
 ): string => {
-  const item = findItemById(menus, itemId);
+  const item = findItemById(menu, itemId);
   if (!item) return "";
 
   const options = getItemOptions(item, addOnLabel);

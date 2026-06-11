@@ -4,7 +4,7 @@ import type { OrderMenu } from "@/types/menus";
 
 type MenuState = {
   isLoading: boolean;
-  menus: OrderMenu[];
+  menu: OrderMenu | null;
 };
 
 type MenuActions = {
@@ -15,7 +15,7 @@ export type MenuStore = MenuState & MenuActions;
 
 export const defaultInitState: MenuState = {
   isLoading: true,
-  menus: [],
+  menu: null,
 };
 
 export const createMenuStore = (initState: MenuState = defaultInitState) => {

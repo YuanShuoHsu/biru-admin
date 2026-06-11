@@ -2001,7 +2001,7 @@ export interface components {
       /** Format: date-time */
       updatedAt: string;
     };
-    OrderMenuResponseDto: {
+    OrderMenuSectionResponseDto: {
       id: string;
       menuId?: string | null;
       parentSectionId?: string | null;
@@ -2010,6 +2010,17 @@ export interface components {
       image?: string | null;
       sortOrder: number;
       menuItems: components["schemas"]["OrderMenuItemResponseDto"][];
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    OrderMenuResponseDto: {
+      id: string;
+      name: string;
+      description?: string | null;
+      image?: string | null;
+      sections: components["schemas"]["OrderMenuSectionResponseDto"][];
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -3643,12 +3654,13 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
+      /** @description 無菜單時為 null */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["OrderMenuResponseDto"][];
+          "application/json": components["schemas"]["OrderMenuResponseDto"];
         };
       };
       /** @description Internal server error */

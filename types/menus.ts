@@ -14,6 +14,8 @@ export type MenuItem = components["schemas"]["MenuItemResponseDto"];
 export type MenuItemAddOn = components["schemas"]["MenuItemAddOnResponseDto"];
 
 export type OrderMenu = components["schemas"]["OrderMenuResponseDto"];
+export type OrderMenuSection =
+  components["schemas"]["OrderMenuSectionResponseDto"];
 export type OrderMenuItem = components["schemas"]["OrderMenuItemResponseDto"];
 export type OrderMenuOffer = components["schemas"]["OrderMenuOfferResponseDto"];
 export type OrderMenuAddOn = components["schemas"]["OrderMenuAddOnResponseDto"];

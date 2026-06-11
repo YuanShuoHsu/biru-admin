@@ -6,13 +6,13 @@ import { Grid } from "@mui/material";
 
 import { useViewStore } from "@/providers/view-store-provider";
 
-import type { OrderMenu } from "@/types/menus";
+import type { OrderMenuItem } from "@/types/menus";
 
 interface ResponsiveGridProps {
-  group: OrderMenu;
+  menuItems: OrderMenuItem[];
 }
 
-const ResponsiveGrid = ({ group: { menuItems } }: ResponsiveGridProps) => {
+const ResponsiveGrid = ({ menuItems }: ResponsiveGridProps) => {
   const { view } = useViewStore((state) => state);
   const viewGridSizes = ViewGridSizes[view];
 

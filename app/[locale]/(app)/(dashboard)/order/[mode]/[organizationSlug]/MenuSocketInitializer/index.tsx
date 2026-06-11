@@ -10,6 +10,8 @@ import { useSocketConnection } from "@/hooks/useSocketConnection";
 
 import { useMenuStore } from "@/providers/menu-store-provider";
 
+import type { OrderMenu } from "@/types/menus";
+
 import { getErrorMessage } from "@/utils/errors";
 
 interface MenuSocketInitializerProps {
@@ -34,13 +36,13 @@ const MenuSocketInitializer = ({
       setMenu({ isLoading: true });
 
       try {
-        const response = await menuSocket
+        const response: OrderMenu | null = await menuSocket
           .timeout(5000)
           .emitWithAck("orderMenu", { organizationId, lang: locale });
 
-        setMenu({ menus: response });
+        setMenu({ menu: response });
       } catch (error) {
-        setMenu({ menus: [] });
+        setMenu({ menu: null });
         enqueueSnackbar(getErrorMessage(error), { variant: "error" });
       } finally {
         setMenu({ isLoading: false });
