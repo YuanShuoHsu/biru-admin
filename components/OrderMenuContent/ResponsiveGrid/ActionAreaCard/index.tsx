@@ -27,6 +27,7 @@ import type { ViewDirection } from "@/types/view";
 import { getActivePromo, isLowStock } from "@/utils/menus";
 
 const StyledCard = styled(Card)({
+  position: "relative",
   width: "100%",
 });
 
@@ -122,7 +123,7 @@ const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
 
   const isItemOutOfStock =
     stock === 0 || availability === "SoldOut" || hasUnsatisfiableModifierGroup;
-  const showLowStock = isLowStock(offer);
+  const showLowStock = !isItemOutOfStock && isLowStock(offer);
 
   const handleDialogClick = () => {
     if (isItemOutOfStock) return;

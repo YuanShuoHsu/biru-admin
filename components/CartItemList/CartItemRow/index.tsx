@@ -165,7 +165,7 @@ const CartItemRow = ({ forceXsLayout, item }: CartItemRowProps) => {
   };
 
   const handleEdit = () => {
-    if (!menuItem) return;
+    if (!menuItem || availableToAdd < 0) return;
 
     setDialog({
       cancelText: tDialog("close"),

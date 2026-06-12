@@ -16,6 +16,7 @@ import {
   FormControl,
   FormControlLabel,
   FormGroup,
+  FormHelperText,
   FormLabel,
   Grid,
   Radio,
@@ -133,7 +134,7 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
       modifiers.reduce(
         (groupSum, { id, priceAdjustment }) =>
           selected.includes(id)
-            ? groupSum + Number(priceAdjustment ?? 0)
+            ? groupSum + Number(priceAdjustment || 0)
             : groupSum,
         0,
       )
@@ -147,16 +148,20 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
 
   const extraCost = modifierExtraCost + addOnExtraCost;
 
-  const isSelectionValid = modifierGroups.every(
-    ({ id, minSelectionCount, maxSelectionCount }) => {
-      const selectedCount = (choices[id] ?? []).length;
+  const isGroupSelectionValid = ({
+    id,
+    minSelectionCount,
+    maxSelectionCount,
+  }: OrderMenuModifierGroup) => {
+    const selectedCount = (choices[id] ?? []).length;
 
-      return (
-        selectedCount >= minSelectionCount &&
-        (maxSelectionCount == null || selectedCount <= maxSelectionCount)
-      );
-    },
-  );
+    return (
+      selectedCount >= minSelectionCount &&
+      (maxSelectionCount == null || selectedCount <= maxSelectionCount)
+    );
+  };
+
+  const isSelectionValid = modifierGroups.every(isGroupSelectionValid);
 
   const editingQuantity = cartItem?.quantity || 0;
   const cartItemTotalQuantity = getCartItemTotalQuantity(id) - editingQuantity;
@@ -278,11 +283,7 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
 
     if (hints.length === 0) return null;
 
-    return (
-      <Typography color="text.secondary" variant="caption">
-        {hints.join(tCommon("delimiter"))}
-      </Typography>
-    );
+    return <FormHelperText>{hints.join(tCommon("delimiter"))}</FormHelperText>;
   };
 
   return (
@@ -348,10 +349,42 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
           maxSelectionCount != null && selected.length >= maxSelectionCount;
 
         return (
-          <FormControl key={groupId} required={minSelectionCount >= 1}>
-            <FormLabel>{displayName}</FormLabel>
-            {renderModifierGroupHint(group)}
-            {maxSelectionCount !== 1 ? (
+          <FormControl
+            key={groupId}
+            component="fieldset"
+            error={!isGroupSelectionValid(group)}
+            fullWidth
+            required={minSelectionCount >= 1}
+            variant="standard"
+          >
+            <FormLabel component="legend">{displayName}</FormLabel>
+            {minSelectionCount === 1 && maxSelectionCount === 1 ? (
+              <RadioGroup
+                value={selected[0] || ""}
+                onChange={(event) =>
+                  setChoices((prev) => ({
+                    ...prev,
+                    [groupId]: [event.target.value],
+                  }))
+                }
+              >
+                {modifiers.map(
+                  ({ id, displayName, priceAdjustment, availability }) => (
+                    <FormControlLabel
+                      key={id}
+                      control={<Radio size="small" />}
+                      disabled={availability === "SoldOut"}
+                      label={renderChoiceLabel(
+                        displayName,
+                        Number(priceAdjustment || 0),
+                        availability === "SoldOut",
+                      )}
+                      value={id}
+                    />
+                  ),
+                )}
+              </RadioGroup>
+            ) : (
               <FormGroup>
                 {modifiers.map(
                   ({ id, displayName, priceAdjustment, availability }) => {
@@ -374,7 +407,7 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
                         }
                         label={renderChoiceLabel(
                           displayName,
-                          Number(priceAdjustment ?? 0),
+                          Number(priceAdjustment || 0),
                           availability === "SoldOut",
                         )}
                       />
@@ -382,39 +415,14 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
                   },
                 )}
               </FormGroup>
-            ) : (
-              <RadioGroup
-                value={selected[0] ?? ""}
-                onChange={(event) =>
-                  setChoices((prev) => ({
-                    ...prev,
-                    [groupId]: [event.target.value],
-                  }))
-                }
-              >
-                {modifiers.map(
-                  ({ id, displayName, priceAdjustment, availability }) => (
-                    <FormControlLabel
-                      key={id}
-                      control={<Radio size="small" />}
-                      disabled={availability === "SoldOut"}
-                      label={renderChoiceLabel(
-                        displayName,
-                        Number(priceAdjustment ?? 0),
-                        availability === "SoldOut",
-                      )}
-                      value={id}
-                    />
-                  ),
-                )}
-              </RadioGroup>
             )}
+            {renderModifierGroupHint(group)}
           </FormControl>
         );
       })}
       {addOnItems.length > 0 && (
-        <FormControl>
-          <FormLabel>{tOrder("menuItem.addOn")}</FormLabel>
+        <FormControl component="fieldset" fullWidth variant="standard">
+          <FormLabel component="legend">{tOrder("menuItem.addOn")}</FormLabel>
           <FormGroup>
             {addOnItems.map((addOnItem) => {
               const { id, name, offers } = addOnItem;
@@ -452,43 +460,41 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
         alignItems="center"
         spacing={2}
       >
-        <Grid size={{ xs: 5 }}>
-          <Stack>
-            {promoInfo && (
-              <OriginalPriceTypography
-                color="text.disabled"
-                isPromo
-                variant="caption"
-              >
-                {`${priceCurrency} ${basePrice.toLocaleString(locale)}`}
-              </OriginalPriceTypography>
-            )}
-            <Typography
-              color={promoInfo ? "error" : "primary"}
-              component="span"
-              fontWeight="bold"
-              variant="h6"
+        <Grid size={{ xs: 5 }} display="flex" flexDirection="column">
+          {promoInfo && (
+            <OriginalPriceTypography
+              color="text.disabled"
+              isPromo
+              variant="caption"
             >
-              {priceCurrency} {displayPrice}
+              {`${priceCurrency} ${basePrice.toLocaleString(locale)}`}
+            </OriginalPriceTypography>
+          )}
+          <Typography
+            color={promoInfo ? "error" : "primary"}
+            component="span"
+            fontWeight="bold"
+            variant="h6"
+          >
+            {priceCurrency} {displayPrice}
+          </Typography>
+          {promoInfo?.validThrough && (
+            <Typography color="error" variant="caption">
+              {tOrder("menuItem.promoUntil", {
+                date: promoInfo.validThrough.toLocaleDateString(locale, {
+                  month: "numeric",
+                  day: "numeric",
+                }),
+              })}
             </Typography>
-            {promoInfo?.validThrough && (
-              <Typography color="error" variant="caption">
-                {tOrder("menuItem.promoUntil", {
-                  date: promoInfo.validThrough.toLocaleDateString(locale, {
-                    month: "numeric",
-                    day: "numeric",
-                  }),
-                })}
-              </Typography>
-            )}
-            {showLowStock && (
-              <Typography color="text.secondary" variant="caption">
-                {tOrder("menuItem.stockLeft", {
-                  stock: [stock, stockUnit].filter(Boolean).join(" "),
-                })}
-              </Typography>
-            )}
-          </Stack>
+          )}
+          {showLowStock && (
+            <Typography color="text.secondary" variant="caption">
+              {tOrder("menuItem.stockLeft", {
+                stock: [stock, stockUnit].filter(Boolean).join(" "),
+              })}
+            </Typography>
+          )}
         </Grid>
         <Grid size={{ xs: 7 }}>
           <NumberSpinner
