@@ -83,13 +83,13 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
   const offer = offers[0];
   const basePrice = Number(offer?.price || 0);
   const priceCurrency = offer?.priceCurrency;
-  const stock = offer?.inventoryLevel?.value ?? null;
+  const stock = offer?.inventoryLevel?.value || null;
   const stockUnit = offer?.inventoryLevel?.unitText;
   const availability = offer?.availability;
   const leadTime = offer?.deliveryLeadTime?.value;
 
   const promoInfo = getActivePromo(offer);
-  const price = promoInfo?.price ?? basePrice;
+  const price = promoInfo?.price || basePrice;
   const showLowStock = isLowStock(offer);
 
   const {
@@ -137,7 +137,7 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
 
   const addOnItems = useMemo(() => getAddOnItems(menuItem), [menuItem]);
 
-  const selectedAddOnIds = choices[ADD_ON_OPTION_ID] ?? [];
+  const selectedAddOnIds = choices[ADD_ON_OPTION_ID] || [];
   const selectedAddOnItems = addOnItems.filter(({ id }) =>
     selectedAddOnIds.includes(id),
   );
@@ -147,7 +147,7 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
     selections: Record<string, string[]>,
   ) =>
     groups.reduce((sum, { id, modifiers }) => {
-      const selected = selections[id] ?? [];
+      const selected = selections[id] || [];
 
       return (
         sum +
@@ -169,7 +169,7 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
       getAddOnPrice(addOnItem) +
       getGroupsExtraCost(
         addOnItem.modifierGroups,
-        addOnChoices[addOnItem.id] ?? {},
+        addOnChoices[addOnItem.id] || {},
       ),
     0,
   );
@@ -250,7 +250,7 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
     );
     const addOns = selectedAddOnItems.map(({ id }) => ({
       id,
-      modifiers: addOnChoices[id] ?? {},
+      modifiers: addOnChoices[id] || {},
     }));
 
     if (cartItem) deleteCartItem(cartItem);
@@ -319,38 +319,39 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
       maxSelectionCount,
       modifiers,
     } = group;
-    const selected = selections[groupId] ?? [];
+    const selected = selections[groupId] || [];
     const helperText = error?.message || getModifierGroupHint(group);
-
-    if (minSelectionCount === 1 && maxSelectionCount === 1)
-      return (
-        <RadioButtonsGroup
-          key={groupId}
-          error={!!error}
-          fullWidth
-          helperText={helperText}
-          label={displayName}
-          onChange={(event, next) => onGroupChange(groupId, [next])}
-          options={modifiers.map(
-            ({ id, displayName, priceAdjustment, availability }) => ({
-              disabled: availability === "SoldOut",
-              label: renderChoiceLabel(
-                displayName,
-                Number(priceAdjustment || 0),
-                availability === "SoldOut",
-              ),
-              value: id,
-            }),
-          )}
-          required
-          value={selected[0] || ""}
-        />
-      );
 
     const atMax =
       maxSelectionCount != null && selected.length >= maxSelectionCount;
 
-    return (
+    return minSelectionCount === 1 && maxSelectionCount === 1 ? (
+      <RadioButtonsGroup
+        key={groupId}
+        error={!!error}
+        fullWidth
+        helperText={helperText}
+        label={displayName}
+        onChange={(event, next) => onGroupChange(groupId, [next])}
+        options={modifiers.map(
+          ({ availability, displayName, id, priceAdjustment }) => {
+            const soldOut = availability === "SoldOut";
+
+            return {
+              disabled: soldOut,
+              label: renderChoiceLabel(
+                displayName,
+                Number(priceAdjustment || 0),
+                soldOut,
+              ),
+              value: id,
+            };
+          },
+        )}
+        required
+        value={selected[0] || ""}
+      />
+    ) : (
       <CheckboxesGroup
         key={groupId}
         error={!!error}
@@ -359,17 +360,20 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
         label={displayName}
         onChange={(event, next) => onGroupChange(groupId, next)}
         options={modifiers.map(
-          ({ id, displayName, priceAdjustment, availability }) => ({
-            children: null,
-            disabled:
-              availability === "SoldOut" || (!selected.includes(id) && atMax),
-            label: renderChoiceLabel(
-              displayName,
-              Number(priceAdjustment || 0),
-              availability === "SoldOut",
-            ),
-            value: id,
-          }),
+          ({ availability, displayName, id, priceAdjustment }) => {
+            const soldOut = availability === "SoldOut";
+
+            return {
+              children: null,
+              disabled: soldOut || (!selected.includes(id) && atMax),
+              label: renderChoiceLabel(
+                displayName,
+                Number(priceAdjustment || 0),
+                soldOut,
+              ),
+              value: id,
+            };
+          },
         )}
         required={minSelectionCount >= 1}
         value={selected}
@@ -453,11 +457,11 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
 
             return {
               children: checked && modifierGroups.length > 0 && (
-                <Stack pl={4} gap={1}>
+                <Stack pl={3}>
                   {modifierGroups.map((group) =>
                     renderModifierGroup(
                       group,
-                      addOnChoices[id] ?? {},
+                      addOnChoices[id] || {},
                       handleAddOnChoicesChange(id),
                       errors.addOnChoices?.[id]?.[group.id],
                     ),
