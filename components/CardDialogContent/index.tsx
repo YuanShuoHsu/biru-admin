@@ -8,6 +8,7 @@ import { type AddToCartFormInput, useAddToCartFormSchema } from "./definitions";
 import CheckboxesGroup from "@/components/CheckboxesGroup";
 import FormBox from "@/components/FormBox";
 import NumberSpinner from "@/components/NumberSpinner";
+import RadioButtonsGroup from "@/components/RadioButtonsGroup";
 
 import { MAX_QUANTITY } from "@/constants/cart";
 
@@ -18,13 +19,7 @@ import {
   Box,
   Chip,
   Divider,
-  FormControl,
-  FormControlLabel,
-  FormHelperText,
-  FormLabel,
   Grid,
-  Radio,
-  RadioGroup,
   Stack,
   Typography,
 } from "@mui/material";
@@ -336,37 +331,27 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
 
     if (minSelectionCount === 1 && maxSelectionCount === 1)
       return (
-        <FormControl
+        <RadioButtonsGroup
           key={groupId}
-          component="fieldset"
           error={!!error}
           fullWidth
-          required
-          variant="standard"
-        >
-          <FormLabel component="legend">{displayName}</FormLabel>
-          <RadioGroup
-            value={selected[0] || ""}
-            onChange={(event) => onGroupChange(groupId, [event.target.value])}
-          >
-            {modifiers.map(
-              ({ id, displayName, priceAdjustment, availability }) => (
-                <FormControlLabel
-                  key={id}
-                  control={<Radio size="small" />}
-                  disabled={availability === "SoldOut"}
-                  label={renderChoiceLabel(
-                    displayName,
-                    Number(priceAdjustment || 0),
-                    availability === "SoldOut",
-                  )}
-                  value={id}
-                />
+          helperText={helperText}
+          label={displayName}
+          onChange={(event, next) => onGroupChange(groupId, [next])}
+          options={modifiers.map(
+            ({ id, displayName, priceAdjustment, availability }) => ({
+              disabled: availability === "SoldOut",
+              label: renderChoiceLabel(
+                displayName,
+                Number(priceAdjustment || 0),
+                availability === "SoldOut",
               ),
-            )}
-          </RadioGroup>
-          {helperText && <FormHelperText>{helperText}</FormHelperText>}
-        </FormControl>
+              value: id,
+            }),
+          )}
+          required
+          value={selected[0] || ""}
+        />
       );
 
     const atMax =
