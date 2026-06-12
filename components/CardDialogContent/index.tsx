@@ -15,14 +15,7 @@ import { MAX_QUANTITY } from "@/constants/cart";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { AccessTime, RestaurantMenu } from "@mui/icons-material";
-import {
-  Box,
-  Chip,
-  Divider,
-  Grid,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Chip, Divider, Grid, Stack, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { useCartStore } from "@/providers/cart-store-provider";
