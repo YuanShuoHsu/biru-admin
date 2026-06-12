@@ -25,6 +25,11 @@ const StyledFormControl = styled(FormControl)(({ theme }) => ({
     "&:not(.Mui-disabled)": {
       color: theme.palette.text.primary,
     },
+
+    // BUG(base-ui): 按下時換 icon 觸發 mouseover，會多減/多加一次
+    "& svg": {
+      pointerEvents: "none",
+    },
   },
 }));
 
