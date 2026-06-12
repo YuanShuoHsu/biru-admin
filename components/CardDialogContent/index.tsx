@@ -5,6 +5,7 @@ import { useForm, useWatch } from "react-hook-form";
 
 import { type AddToCartFormInput, useAddToCartFormSchema } from "./definitions";
 
+import CheckboxesGroup from "@/components/CheckboxesGroup";
 import FormBox from "@/components/FormBox";
 import NumberSpinner from "@/components/NumberSpinner";
 
@@ -15,12 +16,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { AccessTime, RestaurantMenu } from "@mui/icons-material";
 import {
   Box,
-  Checkbox,
   Chip,
   Divider,
   FormControl,
   FormControlLabel,
-  FormGroup,
   FormHelperText,
   FormLabel,
   Grid,
@@ -246,21 +245,6 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
             : tCommon("reachStockLimit", { label: "" })
         : tCommon("reachStockLimit", { label: limitingAddOnsLabel });
 
-  const toggleChoice = (
-    selected: string[],
-    choiceId: string,
-    checked: boolean,
-  ) =>
-    checked
-      ? [...selected, choiceId]
-      : selected.filter((id) => id !== choiceId);
-
-  const handleAddOnToggle = (addOnId: string, checked: boolean) =>
-    setValue(
-      `choices.${ADD_ON_OPTION_ID}`,
-      toggleChoice(selectedAddOnIds, addOnId, checked),
-    );
-
   const handleChoicesChange = (groupId: string, next: string[]) =>
     setValue(`choices.${groupId}`, next, { shouldValidate: isSubmitted });
 
@@ -318,7 +302,7 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
     </Stack>
   );
 
-  const renderModifierGroupHint = ({
+  const getModifierGroupHint = ({
     minSelectionCount,
     maxSelectionCount,
   }: OrderMenuModifierGroup) => {
@@ -331,16 +315,14 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
         : []),
     ];
 
-    if (hints.length === 0) return null;
-
-    return <FormHelperText>{hints.join(tCommon("delimiter"))}</FormHelperText>;
+    return hints.length > 0 ? hints.join(tCommon("delimiter")) : null;
   };
 
   const renderModifierGroup = (
     group: OrderMenuModifierGroup,
     selections: Record<string, string[]>,
-    error: boolean,
     onGroupChange: (groupId: string, next: string[]) => void,
+    error?: { message?: string },
   ) => {
     const {
       id: groupId,
@@ -350,20 +332,19 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
       modifiers,
     } = group;
     const selected = selections[groupId] ?? [];
-    const atMax =
-      maxSelectionCount != null && selected.length >= maxSelectionCount;
+    const helperText = error?.message || getModifierGroupHint(group);
 
-    return (
-      <FormControl
-        key={groupId}
-        component="fieldset"
-        error={error}
-        fullWidth
-        required={minSelectionCount >= 1}
-        variant="standard"
-      >
-        <FormLabel component="legend">{displayName}</FormLabel>
-        {minSelectionCount === 1 && maxSelectionCount === 1 ? (
+    if (minSelectionCount === 1 && maxSelectionCount === 1)
+      return (
+        <FormControl
+          key={groupId}
+          component="fieldset"
+          error={!!error}
+          fullWidth
+          required
+          variant="standard"
+        >
+          <FormLabel component="legend">{displayName}</FormLabel>
           <RadioGroup
             value={selected[0] || ""}
             onChange={(event) => onGroupChange(groupId, [event.target.value])}
@@ -384,41 +365,37 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
               ),
             )}
           </RadioGroup>
-        ) : (
-          <FormGroup>
-            {modifiers.map(
-              ({ id, displayName, priceAdjustment, availability }) => {
-                const checked = selected.includes(id);
+          {helperText && <FormHelperText>{helperText}</FormHelperText>}
+        </FormControl>
+      );
 
-                return (
-                  <FormControlLabel
-                    key={id}
-                    control={
-                      <Checkbox
-                        checked={checked}
-                        onChange={(event) =>
-                          onGroupChange(
-                            groupId,
-                            toggleChoice(selected, id, event.target.checked),
-                          )
-                        }
-                        size="small"
-                      />
-                    }
-                    disabled={availability === "SoldOut" || (!checked && atMax)}
-                    label={renderChoiceLabel(
-                      displayName,
-                      Number(priceAdjustment || 0),
-                      availability === "SoldOut",
-                    )}
-                  />
-                );
-              },
-            )}
-          </FormGroup>
+    const atMax =
+      maxSelectionCount != null && selected.length >= maxSelectionCount;
+
+    return (
+      <CheckboxesGroup
+        key={groupId}
+        error={!!error}
+        fullWidth
+        helperText={helperText}
+        label={displayName}
+        onChange={(event, next) => onGroupChange(groupId, next)}
+        options={modifiers.map(
+          ({ id, displayName, priceAdjustment, availability }) => ({
+            children: null,
+            disabled:
+              availability === "SoldOut" || (!selected.includes(id) && atMax),
+            label: renderChoiceLabel(
+              displayName,
+              Number(priceAdjustment || 0),
+              availability === "SoldOut",
+            ),
+            value: id,
+          }),
         )}
-        {renderModifierGroupHint(group)}
-      </FormControl>
+        required={minSelectionCount >= 1}
+        value={selected}
+      />
     );
   };
 
@@ -476,57 +453,46 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
         renderModifierGroup(
           group,
           choices,
-          !!errors.choices?.[group.id],
           handleChoicesChange,
+          errors.choices?.[group.id],
         ),
       )}
       {addOnItems.length > 0 && (
-        <FormControl component="fieldset" fullWidth variant="standard">
-          <FormLabel component="legend">{tOrder("menuItem.addOn")}</FormLabel>
-          <FormGroup>
-            {addOnItems.map((addOnItem) => {
-              const { id, name, offers, modifierGroups } = addOnItem;
-              const soldOut =
-                offers[0]?.availability === "SoldOut" ||
-                hasUnsatisfiableModifierGroup(modifierGroups);
-              const checked = selectedAddOnIds.includes(id);
+        <CheckboxesGroup
+          error={!!errors.choices?.[ADD_ON_OPTION_ID]}
+          fullWidth
+          helperText={errors.choices?.[ADD_ON_OPTION_ID]?.message}
+          label={tOrder("menuItem.addOn")}
+          onChange={(event, next) =>
+            setValue(`choices.${ADD_ON_OPTION_ID}`, next)
+          }
+          options={addOnItems.map((addOnItem) => {
+            const { id, name, offers, modifierGroups } = addOnItem;
+            const soldOut =
+              offers[0]?.availability === "SoldOut" ||
+              hasUnsatisfiableModifierGroup(modifierGroups);
+            const checked = selectedAddOnIds.includes(id);
 
-              return (
-                <Box key={id}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={checked}
-                        onChange={(event) =>
-                          handleAddOnToggle(id, event.target.checked)
-                        }
-                        size="small"
-                      />
-                    }
-                    disabled={soldOut}
-                    label={renderChoiceLabel(
-                      name,
-                      getAddOnPrice(addOnItem),
-                      soldOut,
-                    )}
-                  />
-                  {checked && modifierGroups.length > 0 && (
-                    <Stack pl={4} gap={1}>
-                      {modifierGroups.map((group) =>
-                        renderModifierGroup(
-                          group,
-                          addOnChoices[id] ?? {},
-                          !!errors.addOnChoices?.[id]?.[group.id],
-                          handleAddOnChoicesChange(id),
-                        ),
-                      )}
-                    </Stack>
+            return {
+              children: checked && modifierGroups.length > 0 && (
+                <Stack pl={4} gap={1}>
+                  {modifierGroups.map((group) =>
+                    renderModifierGroup(
+                      group,
+                      addOnChoices[id] ?? {},
+                      handleAddOnChoicesChange(id),
+                      errors.addOnChoices?.[id]?.[group.id],
+                    ),
                   )}
-                </Box>
-              );
-            })}
-          </FormGroup>
-        </FormControl>
+                </Stack>
+              ),
+              disabled: soldOut,
+              label: renderChoiceLabel(name, getAddOnPrice(addOnItem), soldOut),
+              value: id,
+            };
+          })}
+          value={selectedAddOnIds}
+        />
       )}
       <Divider variant="inset" />
       <Grid
