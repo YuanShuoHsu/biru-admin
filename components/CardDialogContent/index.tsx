@@ -1,6 +1,6 @@
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
-import { useEffect, useMemo } from "react";
+import { Fragment, useEffect, useMemo } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
 import { type AddToCartFormInput, useAddToCartFormSchema } from "./definitions";
@@ -431,13 +431,20 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
           </Typography>
         </Stack>
       )}
-      {modifierGroups.map((group) =>
-        renderModifierGroup(
-          group,
-          choices,
-          handleChoicesChange,
-          errors.choices?.[group.id],
-        ),
+      <Divider flexItem />
+      {modifierGroups.map((group, index) => (
+        <Fragment key={group.id}>
+          {index > 0 && <Divider flexItem variant="inset" />}
+          {renderModifierGroup(
+            group,
+            choices,
+            handleChoicesChange,
+            errors.choices?.[group.id],
+          )}
+        </Fragment>
+      ))}
+      {modifierGroups.length > 0 && addOnItems.length > 0 && (
+        <Divider flexItem variant="inset" />
       )}
       {addOnItems.length > 0 && (
         <CheckboxesGroup
@@ -476,7 +483,9 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
           value={selectedAddOnIds}
         />
       )}
-      <Divider variant="inset" />
+      {(modifierGroups.length > 0 || addOnItems.length > 0) && (
+        <Divider flexItem />
+      )}
       <Grid
         width="100%"
         container
