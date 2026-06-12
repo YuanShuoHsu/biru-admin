@@ -1,11 +1,16 @@
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
+import { useForm, useWatch } from "react-hook-form";
+
+import { type AddToCartFormInput, useAddToCartFormSchema } from "./definitions";
 
 import FormBox from "@/components/FormBox";
 import NumberSpinner from "@/components/NumberSpinner";
 
 import { MAX_QUANTITY } from "@/constants/cart";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { AccessTime, RestaurantMenu } from "@mui/icons-material";
 import {
@@ -100,25 +105,6 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
   const price = promoInfo?.price ?? basePrice;
   const showLowStock = isLowStock(offer);
 
-  const [rawQuantity, setRawQuantity] = useState(cartItem?.quantity || 1);
-  const [choices, setChoices] = useState<Record<string, string[]>>(() =>
-    cartItem
-      ? {
-          ...cartItem.modifiers,
-          [ADD_ON_OPTION_ID]: cartItem.addOns.map(({ id }) => id),
-        }
-      : {},
-  );
-  const [addOnChoices, setAddOnChoices] = useState<
-    Record<string, Record<string, string[]>>
-  >(() =>
-    cartItem
-      ? Object.fromEntries(
-          cartItem.addOns.map(({ id, modifiers }) => [id, modifiers]),
-        )
-      : {},
-  );
-
   const {
     deleteCartItem,
     getCartItemTotalQuantity,
@@ -131,6 +117,36 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
   const tCommon = useTranslations("common");
   const tDialog = useTranslations("dialog");
   const tOrder = useTranslations("order");
+
+  const addToCartFormSchema = useAddToCartFormSchema(menuItem);
+
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    formState: { errors, isSubmitted },
+  } = useForm<AddToCartFormInput>({
+    defaultValues: {
+      quantity: cartItem?.quantity || 1,
+      choices: cartItem
+        ? {
+            ...cartItem.modifiers,
+            [ADD_ON_OPTION_ID]: cartItem.addOns.map(({ id }) => id),
+          }
+        : {},
+      addOnChoices: cartItem
+        ? Object.fromEntries(
+            cartItem.addOns.map(({ id, modifiers }) => [id, modifiers]),
+          )
+        : {},
+    },
+    resolver: zodResolver(addToCartFormSchema),
+  });
+
+  const [choices = {}, addOnChoices = {}, rawQuantity = 1] = useWatch({
+    control,
+    name: ["choices", "addOnChoices", "quantity"],
+  });
 
   const addOnItems = useMemo(() => getAddOnItems(menuItem), [menuItem]);
 
@@ -173,26 +189,6 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
 
   const extraCost = modifierExtraCost + addOnExtraCost;
 
-  const isGroupSelectionValid = (
-    { id, minSelectionCount, maxSelectionCount }: OrderMenuModifierGroup,
-    selections: Record<string, string[]>,
-  ) => {
-    const selectedCount = (selections[id] ?? []).length;
-
-    return (
-      selectedCount >= minSelectionCount &&
-      (maxSelectionCount == null || selectedCount <= maxSelectionCount)
-    );
-  };
-
-  const isSelectionValid =
-    modifierGroups.every((group) => isGroupSelectionValid(group, choices)) &&
-    selectedAddOnItems.every((addOnItem) =>
-      addOnItem.modifierGroups.every((group) =>
-        isGroupSelectionValid(group, addOnChoices[addOnItem.id] ?? {}),
-      ),
-    );
-
   const editingQuantity = cartItem?.quantity || 0;
   const cartItemTotalQuantity = getCartItemTotalQuantity(id) - editingQuantity;
   const itemStockLeft =
@@ -223,8 +219,8 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   useEffect(() => {
-    setDialog({ confirmDisabled: quantity <= 0 || !isSelectionValid });
-  }, [quantity, isSelectionValid, setDialog]);
+    setDialog({ confirmDisabled: quantity <= 0 });
+  }, [quantity, setDialog]);
 
   const amount = (price + extraCost) * quantity;
   const displayPrice = amount.toLocaleString(locale);
@@ -240,10 +236,14 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
     perItemCapLeft === availableToAdd
       ? tCommon("maxQuantity", { quantity: MAX_QUANTITY })
       : itemStockCapLeft === availableToAdd
-        ? tDialog("maxStock", {
-            label: "",
-            quantity: availableToAdd,
-          })
+        ? availableToAdd > 0
+          ? tDialog("maxStock", {
+              label: "",
+              quantity: availableToAdd,
+            })
+          : itemStockLeft === 0
+            ? tCommon("soldOut", { label: "" })
+            : tCommon("reachStockLimit", { label: "" })
         : tCommon("reachStockLimit", { label: limitingAddOnsLabel });
 
   const toggleChoice = (
@@ -256,29 +256,22 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
       : selected.filter((id) => id !== choiceId);
 
   const handleAddOnToggle = (addOnId: string, checked: boolean) =>
-    setChoices((prev) => ({
-      ...prev,
-      [ADD_ON_OPTION_ID]: toggleChoice(
-        prev[ADD_ON_OPTION_ID] ?? [],
-        addOnId,
-        checked,
-      ),
-    }));
+    setValue(
+      `choices.${ADD_ON_OPTION_ID}`,
+      toggleChoice(selectedAddOnIds, addOnId, checked),
+    );
 
   const handleChoicesChange = (groupId: string, next: string[]) =>
-    setChoices((prev) => ({ ...prev, [groupId]: next }));
+    setValue(`choices.${groupId}`, next, { shouldValidate: isSubmitted });
 
   const handleAddOnChoicesChange =
     (addOnId: string) => (groupId: string, next: string[]) =>
-      setAddOnChoices((prev) => ({
-        ...prev,
-        [addOnId]: { ...(prev[addOnId] ?? {}), [groupId]: next },
-      }));
+      setValue(`addOnChoices.${addOnId}.${groupId}`, next, {
+        shouldValidate: isSubmitted,
+      });
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-
-    if (quantity <= 0 || !isSelectionValid) return;
+  const onSubmit = handleSubmit(({ choices, addOnChoices }) => {
+    if (quantity <= 0) return;
 
     const modifiers = Object.fromEntries(
       Object.entries(choices).filter(([key]) => key !== ADD_ON_OPTION_ID),
@@ -302,7 +295,7 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
     });
 
     closeDialog();
-  };
+  });
 
   const renderChoiceLabel = (
     choiceName: string,
@@ -319,7 +312,7 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
       )}
       {soldOut && (
         <Typography color="error" variant="caption">
-          {tCommon("soldOut")}
+          {tCommon("soldOut", { label: "" })}
         </Typography>
       )}
     </Stack>
@@ -346,6 +339,7 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
   const renderModifierGroup = (
     group: OrderMenuModifierGroup,
     selections: Record<string, string[]>,
+    error: boolean,
     onGroupChange: (groupId: string, next: string[]) => void,
   ) => {
     const {
@@ -363,7 +357,7 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
       <FormControl
         key={groupId}
         component="fieldset"
-        error={!isGroupSelectionValid(group, selections)}
+        error={error}
         fullWidth
         required={minSelectionCount >= 1}
         variant="standard"
@@ -429,7 +423,7 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
   };
 
   return (
-    <FormBox id="add-to-cart-form" onSubmit={handleSubmit}>
+    <FormBox id="add-to-cart-form" onSubmit={onSubmit}>
       <ImageBox>
         {image ? (
           <Image
@@ -479,7 +473,12 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
         </Stack>
       )}
       {modifierGroups.map((group) =>
-        renderModifierGroup(group, choices, handleChoicesChange),
+        renderModifierGroup(
+          group,
+          choices,
+          !!errors.choices?.[group.id],
+          handleChoicesChange,
+        ),
       )}
       {addOnItems.length > 0 && (
         <FormControl component="fieldset" fullWidth variant="standard">
@@ -517,6 +516,7 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
                         renderModifierGroup(
                           group,
                           addOnChoices[id] ?? {},
+                          !!errors.addOnChoices?.[id]?.[group.id],
                           handleAddOnChoicesChange(id),
                         ),
                       )}
@@ -580,7 +580,9 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
             helperText={isAtLimit ? formHelperText : undefined}
             max={availableToAdd}
             min={minQuantity}
-            onValueChange={(value) => setRawQuantity(value || minQuantity)}
+            onValueChange={(value) =>
+              setValue("quantity", value || minQuantity)
+            }
             value={quantity}
           />
         </Grid>
