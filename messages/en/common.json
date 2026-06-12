@@ -15,6 +15,8 @@
   "maxQuantity": "You can buy up to {quantity} per item",
   "multiply": "×",
   "optional": "(optional)",
+  "parenthesisClose": ")",
+  "parenthesisOpen": "(",
   "reachStockLimit": "Stock limit reached {label}",
   "soldOut": "{label} Sold out",
   "totalAmount": "Total",

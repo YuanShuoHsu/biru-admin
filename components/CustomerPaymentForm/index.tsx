@@ -72,6 +72,7 @@ const CustomerPaymentForm = () => {
   const { isMutating, trigger } = useSWRMutation("/api/ecpay", sendRequest);
 
   const tCommon = useTranslations("common");
+  const tOrder = useTranslations("order");
 
   const handleInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -102,10 +103,12 @@ const CustomerPaymentForm = () => {
               modifiers,
               addOns,
               {
-                addOnLabel: "加購",
-                colon: "：",
-                delimiter: "、",
-                joinWith: "、",
+                addOnLabel: tOrder("menuItem.addOn"),
+                colon: tCommon("colon"),
+                delimiter: tCommon("delimiter"),
+                joinWith: tCommon("delimiter"),
+                parenthesisOpen: tCommon("parenthesisOpen"),
+                parenthesisClose: tCommon("parenthesisClose"),
               },
             );
             const formattedChoices = choiceNames ? `[${choiceNames}]` : "";

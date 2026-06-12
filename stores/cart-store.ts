@@ -5,6 +5,11 @@ import type { Organization } from "@/types/organizations";
 
 import { getItemKey } from "@/utils/menus";
 
+export interface CartAddOn {
+  id: string;
+  modifiers: Record<string, string[]>;
+}
+
 export interface CartItem {
   menuItemId: string;
   amount: number;
@@ -13,7 +18,7 @@ export interface CartItem {
   price: number;
   quantity: number;
   modifiers: Record<string, string[]>;
-  addOns: string[];
+  addOns: CartAddOn[];
 }
 
 type CartItemsMap = Record<string, CartItem>;
@@ -117,7 +122,7 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
           getChoiceAvailableQuantity: (choiceId, choiceStock) => {
             const used = get().cartItemsList.reduce(
               (sum, { addOns, quantity }) =>
-                sum + (addOns.includes(choiceId) ? quantity : 0),
+                sum + (addOns.some(({ id }) => id === choiceId) ? quantity : 0),
               0,
             );
 
@@ -135,7 +140,7 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
         name: "biru-cart",
         storage: createJSONStorage(() => localStorage),
         partialize: ({ carts }) => ({ carts }),
-        version: 1,
+        version: 2,
         migrate: () => ({ carts: {} }),
       },
     ),

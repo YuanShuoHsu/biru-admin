@@ -6,6 +6,8 @@ import { LOW_STOCK_THRESHOLD } from "@/constants/menus";
 
 import { authClient } from "@/lib/auth-client";
 
+import type { CartAddOn } from "@/stores/cart-store";
+
 import type {
   Menu,
   MenuItem,
@@ -17,6 +19,7 @@ import type {
   OrderMenu,
   OrderMenuAddOnItem,
   OrderMenuItem,
+  OrderMenuModifierGroup,
   OrderMenuOffer,
 } from "@/types/menus";
 
@@ -51,6 +54,15 @@ export const getActivePromo = (offer?: OrderMenuOffer): PromoInfo | null => {
   return { price: Number(priceSpecification.price), validThrough };
 };
 
+export const hasUnsatisfiableModifierGroup = (
+  modifierGroups: OrderMenuModifierGroup[],
+): boolean =>
+  modifierGroups.some(
+    ({ minSelectionCount, modifiers }) =>
+      modifiers.filter(({ availability }) => availability !== "SoldOut")
+        .length < minSelectionCount,
+  );
+
 export const ADD_ON_OPTION_ID = "addOns";
 
 export const getAddOnItems = (item: OrderMenuItem): OrderMenuAddOnItem[] => {
@@ -74,13 +86,25 @@ export const getAddOnPrice = (addOnItem: OrderMenuAddOnItem): number => {
 export const getItemKey = (
   menuItemId: string,
   modifiers: Record<string, string[]>,
-  addOns: string[],
+  addOns: CartAddOn[],
 ): string => {
   const parts = [
     ...Object.entries(modifiers).flatMap(([groupId, selected]) =>
       [...selected].sort().map((modifierId) => `${groupId}:${modifierId}`),
     ),
-    ...[...addOns].sort().map((addOnId) => `${ADD_ON_OPTION_ID}:${addOnId}`),
+    ...[...addOns]
+      .sort((a, b) => a.id.localeCompare(b.id))
+      .flatMap(({ id: addOnId, modifiers }) => [
+        `${ADD_ON_OPTION_ID}:${addOnId}`,
+        ...Object.entries(modifiers).flatMap(([groupId, selected]) =>
+          [...selected]
+            .sort()
+            .map(
+              (modifierId) =>
+                `${ADD_ON_OPTION_ID}:${addOnId}:${groupId}:${modifierId}`,
+            ),
+        ),
+      ]),
   ];
 
   return parts.length > 0 ? `${menuItemId}_${parts.join("_")}` : menuItemId;
@@ -139,14 +163,14 @@ export const getAddOnsCap = (
 export const getLimitingAddOnsCap = (
   menu: OrderMenu | null,
   menuItemId: string,
-  addOns: string[],
+  addOns: CartAddOn[],
   getChoiceAvailableQuantity: (choiceId: string, choiceStock: number) => number,
 ): AddOnLimitResult => {
   const item = findItemById(menu, menuItemId);
   if (!item) return { cap: Infinity, names: [] };
 
   const selectedAddOnItems = getAddOnItems(item).filter(({ id }) =>
-    addOns.includes(id),
+    addOns.some((addOn) => addOn.id === id),
   );
 
   return getAddOnsCap(selectedAddOnItems, getChoiceAvailableQuantity);
@@ -157,14 +181,23 @@ interface CommonSeparators {
   colon: string;
   delimiter: string;
   joinWith?: string;
+  parenthesisOpen: string;
+  parenthesisClose: string;
 }
 
 export const getChoiceNames = (
   menu: OrderMenu | null,
   menuItemId: string,
   modifiers: Record<string, string[]>,
-  addOns: string[],
-  { addOnLabel, colon, delimiter, joinWith = "\n" }: CommonSeparators,
+  addOns: CartAddOn[],
+  {
+    addOnLabel,
+    colon,
+    delimiter,
+    joinWith = "\n",
+    parenthesisOpen,
+    parenthesisClose,
+  }: CommonSeparators,
 ): string => {
   const item = findItemById(menu, menuItemId);
   if (!item) return "";
@@ -191,7 +224,28 @@ export const getChoiceNames = (
 
   const addOnItems = getAddOnItems(item);
   const addOnNames = addOns
-    .map((addOnId) => addOnItems.find(({ id }) => id === addOnId)?.name)
+    .map(({ id: addOnId, modifiers }) => {
+      const addOnItem = addOnItems.find(({ id }) => id === addOnId);
+      if (!addOnItem) return "";
+
+      const modifierNames = Object.entries(modifiers)
+        .flatMap(([groupId, modifierIds]) => {
+          const group = addOnItem.modifierGroups.find(
+            ({ id }) => id === groupId,
+          );
+
+          return modifierIds.map(
+            (modifierId) =>
+              group?.modifiers.find(({ id }) => id === modifierId)?.displayName,
+          );
+        })
+        .filter(Boolean)
+        .join(delimiter);
+
+      return modifierNames
+        ? `${addOnItem.name}${parenthesisOpen}${modifierNames}${parenthesisClose}`
+        : addOnItem.name;
+    })
     .filter(Boolean)
     .join(delimiter);
 

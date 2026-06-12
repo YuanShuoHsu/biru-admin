@@ -1928,6 +1928,7 @@ export interface components {
       name: string;
       image?: string | null;
       offers: components["schemas"]["OrderMenuOfferResponseDto"][];
+      modifierGroups: components["schemas"]["OrderMenuModifierGroupResponseDto"][];
     };
     OrderMenuAddOnResponseDto: {
       id: string;

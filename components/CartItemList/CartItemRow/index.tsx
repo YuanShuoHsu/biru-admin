@@ -99,6 +99,8 @@ const CartItemRow = ({ forceXsLayout, item }: CartItemRowProps) => {
     addOnLabel: tOrder("menuItem.addOn"),
     colon: tCommon("colon"),
     delimiter: tCommon("delimiter"),
+    parenthesisOpen: tCommon("parenthesisOpen"),
+    parenthesisClose: tCommon("parenthesisClose"),
   });
 
   const {

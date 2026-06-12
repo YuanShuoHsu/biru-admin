@@ -24,7 +24,11 @@ import { useViewStore } from "@/providers/view-store-provider";
 import type { OrderMenuItem } from "@/types/menus";
 import type { ViewDirection } from "@/types/view";
 
-import { getActivePromo, isLowStock } from "@/utils/menus";
+import {
+  getActivePromo,
+  hasUnsatisfiableModifierGroup,
+  isLowStock,
+} from "@/utils/menus";
 
 const StyledCard = styled(Card)({
   position: "relative",
@@ -115,14 +119,10 @@ const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
 
   const viewDirection = ViewDirections[view];
 
-  const hasUnsatisfiableModifierGroup = menuItem.modifierGroups.some(
-    ({ minSelectionCount, modifiers }) =>
-      modifiers.filter(({ availability }) => availability !== "SoldOut")
-        .length < minSelectionCount,
-  );
-
   const isItemOutOfStock =
-    stock === 0 || availability === "SoldOut" || hasUnsatisfiableModifierGroup;
+    stock === 0 ||
+    availability === "SoldOut" ||
+    hasUnsatisfiableModifierGroup(menuItem.modifierGroups);
   const showLowStock = !isItemOutOfStock && isLowStock(offer);
 
   const handleDialogClick = () => {
