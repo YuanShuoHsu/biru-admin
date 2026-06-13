@@ -163,7 +163,9 @@ const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
           )}
         </ImageBox>
         <StyledCardContent>
-          <WrapTypography fontWeight="bold" variant="subtitle1">{name}</WrapTypography>
+          <WrapTypography fontWeight="bold" variant="subtitle1">
+            {name}
+          </WrapTypography>
           {description && (
             <ClampTypography color="text.secondary" variant="body2">
               {description}
