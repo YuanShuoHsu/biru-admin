@@ -163,7 +163,7 @@ const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
           )}
         </ImageBox>
         <StyledCardContent>
-          <WrapTypography variant="subtitle1">{name}</WrapTypography>
+          <WrapTypography fontWeight="bold" variant="subtitle1">{name}</WrapTypography>
           {description && (
             <ClampTypography color="text.secondary" variant="body2">
               {description}
@@ -171,14 +171,15 @@ const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
           )}
           <Stack>
             <OriginalPriceTypography
-              color={promoInfo ? "text.disabled" : "text.primary"}
+              color={promoInfo ? "text.disabled" : "primary"}
+              fontWeight="bold"
               isPromo={!!promoInfo}
               variant={promoInfo ? "caption" : "subtitle2"}
             >
               {`${priceCurrency} ${price}`}
             </OriginalPriceTypography>
             {promoInfo && (
-              <Typography color="error" variant="subtitle2">
+              <Typography color="error" fontWeight="bold" variant="subtitle2">
                 {`${priceCurrency} ${promoInfo.price}`}
               </Typography>
             )}

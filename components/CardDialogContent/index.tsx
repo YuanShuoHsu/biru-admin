@@ -475,6 +475,7 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
           {promoInfo && (
             <OriginalPriceTypography
               color="text.disabled"
+              fontWeight="bold"
               isPromo
               variant="caption"
             >
