@@ -48,12 +48,15 @@ const StyledListItem = styled(ListItem)(({ theme }) => ({
 
 const StyledListItemAvatar = styled(ListItemAvatar)({
   margin: 0,
+  flex: 1,
+  aspectRatio: "16/9",
+  minWidth: 0,
 });
 
 const ImageBox = styled(Box)(({ theme }) => ({
   position: "relative",
-  height: 60,
-  aspectRatio: "16/9",
+  width: "100%",
+  height: "100%",
   backgroundColor: theme.palette.action.hover,
   borderRadius: theme.shape.borderRadius,
   display: "flex",
@@ -68,6 +71,7 @@ const StyledRestaurantMenu = styled(RestaurantMenu)(({ theme }) => ({
 
 const StyledListItemText = styled(ListItemText)(({ theme }) => ({
   margin: 0,
+  flex: 1,
   wordBreak: "break-word",
   whiteSpace: "pre-line",
 
