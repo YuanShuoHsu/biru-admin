@@ -447,15 +447,18 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
 
             return {
               children: checked && modifierGroups.length > 0 && (
-                <Stack pl={3}>
-                  {modifierGroups.map((group) =>
-                    renderModifierGroup(
-                      group,
-                      addOnChoices[id] || {},
-                      handleAddOnChoicesChange(id),
-                      errors.addOnChoices?.[id]?.[group.id],
-                    ),
-                  )}
+                <Stack pl={3} gap={2}>
+                  {modifierGroups.map((group, index) => (
+                    <Fragment key={group.id}>
+                      {index > 0 && <Divider flexItem variant="inset" />}
+                      {renderModifierGroup(
+                        group,
+                        addOnChoices[id] || {},
+                        handleAddOnChoicesChange(id),
+                        errors.addOnChoices?.[id]?.[group.id],
+                      )}
+                    </Fragment>
+                  ))}
                 </Stack>
               ),
               disabled: soldOut,
