@@ -93,6 +93,7 @@ const IncrementButton = styled(Button)({
 });
 
 interface NumberSpinnerProps extends BaseNumberField.Root.Props {
+  className?: string;
   clearable?: boolean;
   decrementAriaLabel?: string;
   decrementIcon?: React.ReactNode;
@@ -105,6 +106,7 @@ interface NumberSpinnerProps extends BaseNumberField.Root.Props {
 }
 
 const NumberSpinner = ({
+  className,
   clearable,
   decrementAriaLabel = "Decrease",
   decrementIcon,
@@ -125,6 +127,7 @@ const NumberSpinner = ({
       {...other}
       render={(props, state) => (
         <StyledFormControl
+          className={className}
           disabled={state.disabled}
           error={error}
           fullWidth={fullWidth}

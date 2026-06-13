@@ -15,7 +15,7 @@ import { MAX_QUANTITY } from "@/constants/cart";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { AccessTime, RestaurantMenu } from "@mui/icons-material";
-import { Box, Chip, Divider, Grid, Stack, Typography } from "@mui/material";
+import { Box, Chip, Divider, Stack, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { useCartStore } from "@/providers/cart-store-provider";
@@ -55,6 +55,12 @@ const StyledRestaurantMenu = styled(RestaurantMenu)(({ theme }) => ({
 const WrapTypography = styled(Typography)({
   overflowWrap: "anywhere",
 });
+
+const StyledNumberSpinner = styled(NumberSpinner)(({ theme }) => ({
+  [theme.breakpoints.up("sm")]: {
+    flex: 1,
+  },
+}));
 
 const OriginalPriceTypography = styled(Typography, {
   shouldForwardProp: (prop) => prop !== "isPromo",
@@ -463,8 +469,14 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
       {(modifierGroups.length > 0 || addOnItems.length > 0) && (
         <Divider flexItem />
       )}
-      <Grid container width="100%" alignItems="center" spacing={2}>
-        <Grid display="flex" flexDirection="column" size={{ xs: 5 }}>
+      <Stack
+        width="100%"
+        direction="row"
+        flexWrap="wrap"
+        alignItems="center"
+        gap={2}
+      >
+        <Stack direction="column" flex={1}>
           {promoInfo && (
             <OriginalPriceTypography
               color="text.disabled"
@@ -500,22 +512,18 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
               })}
             </Typography>
           )}
-        </Grid>
-        <Grid size={{ xs: 7 }}>
-          <NumberSpinner
-            disabled={!quantity}
-            error={isAtLimit}
-            fullWidth
-            helperText={isAtLimit ? formHelperText : undefined}
-            max={availableToAdd}
-            min={minQuantity}
-            onValueChange={(value) =>
-              setValue("quantity", value || minQuantity)
-            }
-            value={quantity}
-          />
-        </Grid>
-      </Grid>
+        </Stack>
+        <StyledNumberSpinner
+          disabled={!quantity}
+          error={isAtLimit}
+          fullWidth
+          helperText={isAtLimit ? formHelperText : undefined}
+          max={availableToAdd}
+          min={minQuantity}
+          onValueChange={(value) => setValue("quantity", value || minQuantity)}
+          value={quantity}
+        />
+      </Stack>
     </FormBox>
   );
 };
