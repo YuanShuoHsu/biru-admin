@@ -107,7 +107,6 @@ const CustomerPaymentForm = () => {
                 addOnLabel: tOrder("menuItem.addOn"),
                 colon: tCommon("colon"),
                 delimiter: tCommon("delimiter"),
-                joinWith: tCommon("delimiter"),
                 parenthesisOpen: tCommon("parenthesisOpen"),
                 parenthesisClose: tCommon("parenthesisClose"),
               },

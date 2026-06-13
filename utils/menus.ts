@@ -256,7 +256,6 @@ interface CommonSeparators {
   addOnLabel?: string;
   colon: string;
   delimiter: string;
-  joinWith?: string;
   parenthesisOpen: string;
   parenthesisClose: string;
 }
@@ -270,7 +269,6 @@ export const getChoiceNames = (
     addOnLabel,
     colon,
     delimiter,
-    joinWith = "\n",
     parenthesisOpen,
     parenthesisClose,
   }: CommonSeparators,
@@ -304,22 +302,29 @@ export const getChoiceNames = (
       const addOnItem = addOnItems.find(({ id }) => id === addOnId);
       if (!addOnItem) return "";
 
-      const modifierNames = Object.entries(modifiers)
+      const modifierParts = Object.entries(modifiers)
         .flatMap(([groupId, modifierIds]) => {
+          if (!modifierIds.length) return [];
+
           const group = addOnItem.modifierGroups.find(
             ({ id }) => id === groupId,
           );
 
-          return modifierIds.map(
-            (modifierId) =>
-              group?.modifiers.find(({ id }) => id === modifierId)?.displayName,
-          );
+          const names = modifierIds
+            .map(
+              (modifierId) =>
+                group?.modifiers.find(({ id }) => id === modifierId)
+                  ?.displayName,
+            )
+            .filter(Boolean)
+            .join(delimiter);
+
+          return names ? [`${group?.displayName ?? ""}${colon}${names}`] : [];
         })
-        .filter(Boolean)
         .join(delimiter);
 
-      return modifierNames
-        ? `${addOnItem.name}${parenthesisOpen}${modifierNames}${parenthesisClose}`
+      return modifierParts
+        ? `${addOnItem.name}${parenthesisOpen}${modifierParts}${parenthesisClose}`
         : addOnItem.name;
     })
     .filter(Boolean)
@@ -328,7 +333,7 @@ export const getChoiceNames = (
   return [
     ...modifierParts,
     ...(addOnNames ? [`${addOnLabel ?? ""}${colon}${addOnNames}`] : []),
-  ].join(joinWith);
+  ].join(delimiter);
 };
 
 export const DEFAULT_MENUS_HREF = "/menus/sections?page=1&pageSize=10";
