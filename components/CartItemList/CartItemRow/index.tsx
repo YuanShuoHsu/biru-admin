@@ -218,12 +218,10 @@ const CartItemRow = ({ item }: CartItemRowProps) => {
           {priceCurrency} {amount.toLocaleString(locale)}
         </Typography>
         <NumberSpinner
-          {...(quantity > 1
-            ? {}
-            : {
-                decrementAriaLabel: "Delete",
-                decrementIcon: <Delete fontSize="small" />,
-              })}
+          {...(quantity <= 1 && {
+            decrementAriaLabel: "Delete",
+            decrementIcon: <Delete fontSize="small" />,
+          })}
           disabled={!quantity}
           error={!canIncrease}
           fullWidth
