@@ -31,6 +31,7 @@ import {
   getAddOnItems,
   getAddOnPrice,
   getAddOnsCap,
+  getGroupsExtraCost,
   hasUnsatisfiableModifierGroup,
   isLowStock,
 } from "@/utils/menus";
@@ -142,25 +143,6 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
     selectedAddOnIds.includes(id),
   );
 
-  const getGroupsExtraCost = (
-    groups: OrderMenuModifierGroup[],
-    selections: Record<string, string[]>,
-  ) =>
-    groups.reduce((sum, { id, modifiers }) => {
-      const selected = selections[id] || [];
-
-      return (
-        sum +
-        modifiers.reduce(
-          (groupSum, { id, priceAdjustment }) =>
-            selected.includes(id)
-              ? groupSum + Number(priceAdjustment || 0)
-              : groupSum,
-          0,
-        )
-      );
-    }, 0);
-
   const modifierExtraCost = getGroupsExtraCost(modifierGroups, choices);
 
   const addOnExtraCost = selectedAddOnItems.reduce(
@@ -257,11 +239,6 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
 
     updateCartItem({
       menuItemId: id,
-      amount,
-      extraCost,
-      image: image || null,
-      price,
-      priceCurrency: priceCurrency || "",
       quantity,
       modifiers,
       addOns,

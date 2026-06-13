@@ -12,11 +12,6 @@ export interface CartAddOn {
 
 export interface CartItem {
   menuItemId: string;
-  amount: number;
-  extraCost: number;
-  image: string | null;
-  price: number;
-  priceCurrency: string;
   quantity: number;
   modifiers: Record<string, string[]>;
   addOns: CartAddOn[];
@@ -27,10 +22,8 @@ type CartItemsMap = Record<string, CartItem>;
 interface CartState {
   carts: Record<Organization["slug"], CartItemsMap>;
   activeOrganizationSlug: Organization["slug"] | null;
-  cartCurrency: string;
   cartItemsMap: CartItemsMap;
   cartItemsList: CartItem[];
-  cartTotalAmount: number;
   cartTotalQuantity: number;
   isCartEmpty: boolean;
 }
@@ -49,23 +42,14 @@ export type CartStore = CartState & CartActions;
 const deriveCartState = (cartItemsMap: CartItemsMap) => {
   const cartItemsList = Object.values(cartItemsMap);
 
-  const cartCurrency = cartItemsList[0]?.priceCurrency || "";
-
-  const cartTotalAmount = cartItemsList.reduce(
-    (sum, { amount }) => sum + amount,
-    0,
-  );
-
   const cartTotalQuantity = cartItemsList.reduce(
     (sum, { quantity }) => sum + quantity,
     0,
   );
 
   return {
-    cartCurrency,
     cartItemsMap,
     cartItemsList,
-    cartTotalAmount,
     cartTotalQuantity,
     isCartEmpty: cartTotalQuantity === 0,
   };
@@ -108,7 +92,7 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
             setActiveCart(newMap);
           },
           updateCartItem: (item) => {
-            const { menuItemId, amount, modifiers, addOns, quantity } = item;
+            const { menuItemId, modifiers, addOns, quantity } = item;
 
             const { cartItemsMap } = get();
             const itemKey = getItemKey(menuItemId, modifiers, addOns);
@@ -117,12 +101,13 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
             const updatedItem = existing
               ? {
                   ...existing,
-                  amount: existing.amount + amount,
                   quantity: existing.quantity + quantity,
                 }
               : { ...item };
 
-            setActiveCart({ ...cartItemsMap, [itemKey]: updatedItem });
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { [itemKey]: _, ...rest } = cartItemsMap;
+            setActiveCart({ [itemKey]: updatedItem, ...rest });
           },
           getChoiceAvailableQuantity: (choiceId, choiceStock) => {
             const used = get().cartItemsList.reduce(
@@ -145,7 +130,7 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
         name: "biru-cart",
         storage: createJSONStorage(() => localStorage),
         partialize: ({ carts }) => ({ carts }),
-        version: 3,
+        version: 4,
         migrate: () => ({ carts: {} }),
       },
     ),

@@ -69,7 +69,7 @@ const CartItemSoldOut = ({
   limitingAddOnsLabel,
   unavailable,
 }: CartItemSoldOutProps) => {
-  const { extraCost, price, quantity } = item;
+  const { quantity } = item;
 
   const { deleteCartItem, updateCartItem } = useCartStore((state) => state);
 
@@ -110,11 +110,7 @@ const CartItemSoldOut = ({
     }
 
     if (shouldEditItem) {
-      updateCartItem({
-        ...item,
-        quantity: availableToAdd,
-        amount: availableToAdd * (price + extraCost),
-      });
+      updateCartItem({ ...item, quantity: availableToAdd });
     }
   };
 

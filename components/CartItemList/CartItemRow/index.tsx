@@ -26,7 +26,9 @@ import { useMenuStore } from "@/providers/menu-store-provider";
 import { type CartItem } from "@/stores/cart-store";
 
 import {
+  calcCartItemExtraCost,
   findItemById,
+  getActivePromo,
   getChoiceNames,
   getItemStock,
   getLimitingAddOnsCap,
@@ -73,17 +75,7 @@ interface CartItemRowProps {
 }
 
 const CartItemRow = ({ forceXsLayout, item }: CartItemRowProps) => {
-  const {
-    menuItemId,
-    amount,
-    modifiers,
-    addOns,
-    extraCost,
-    image,
-    price,
-    priceCurrency,
-    quantity,
-  } = item;
+  const { menuItemId, modifiers, addOns, quantity } = item;
 
   const locale = useLocale();
 
@@ -96,6 +88,14 @@ const CartItemRow = ({ forceXsLayout, item }: CartItemRowProps) => {
 
   const menuItem = findItemById(menu, menuItemId);
   const itemName = menuItem?.name || "";
+  const offer = menuItem?.offers[0];
+  const basePrice = Number(offer?.price || 0);
+  const promoInfo = offer ? getActivePromo(offer) : null;
+  const price = promoInfo?.price || basePrice;
+  const image = menuItem?.image || null;
+  const priceCurrency = offer?.priceCurrency || "";
+  const extraCost = calcCartItemExtraCost(menu, menuItemId, modifiers, addOns);
+  const amount = (price + extraCost) * quantity;
   const choiceNames = getChoiceNames(menu, menuItemId, modifiers, addOns, {
     addOnLabel: tOrder("menuItem.addOn"),
     colon: tCommon("colon"),
@@ -159,11 +159,7 @@ const CartItemRow = ({ forceXsLayout, item }: CartItemRowProps) => {
     const delta = value - quantity;
 
     if (delta) {
-      updateCartItem({
-        ...item,
-        quantity: delta,
-        amount: delta * (price + extraCost),
-      });
+      updateCartItem({ ...item, quantity: delta });
     }
   };
 

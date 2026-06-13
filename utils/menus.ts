@@ -6,7 +6,7 @@ import { LOW_STOCK_THRESHOLD } from "@/constants/menus";
 
 import { authClient } from "@/lib/auth-client";
 
-import type { CartAddOn } from "@/stores/cart-store";
+import type { CartAddOn, CartItem } from "@/stores/cart-store";
 
 import type {
   Menu,
@@ -81,6 +81,82 @@ export const getAddOnPrice = (addOnItem: OrderMenuAddOnItem): number => {
   const offer = addOnItem.offers[0];
 
   return getActivePromo(offer)?.price || Number(offer?.price || 0);
+};
+
+export const getGroupsExtraCost = (
+  groups: OrderMenuModifierGroup[],
+  selections: Record<string, string[]>,
+): number =>
+  groups.reduce((sum, { id, modifiers }) => {
+    const selected = selections[id] || [];
+
+    return (
+      sum +
+      modifiers.reduce(
+        (groupSum, { id, priceAdjustment }) =>
+          selected.includes(id)
+            ? groupSum + Number(priceAdjustment || 0)
+            : groupSum,
+        0,
+      )
+    );
+  }, 0);
+
+export const calcCartItemExtraCost = (
+  menu: OrderMenu | null,
+  menuItemId: string,
+  modifiers: Record<string, string[]>,
+  addOns: CartAddOn[],
+): number => {
+  const item = findItemById(menu, menuItemId);
+  if (!item) return 0;
+
+  const modifierExtraCost = getGroupsExtraCost(item.modifierGroups, modifiers);
+
+  const addOnItems = getAddOnItems(item);
+  const selectedAddOnItems = addOnItems.filter(({ id }) =>
+    addOns.some((addOn) => addOn.id === id),
+  );
+
+  const addOnExtraCost = selectedAddOnItems.reduce((sum, addOnItem) => {
+    const addOnModifiers =
+      addOns.find(({ id }) => id === addOnItem.id)?.modifiers || {};
+
+    return (
+      sum +
+      getAddOnPrice(addOnItem) +
+      getGroupsExtraCost(addOnItem.modifierGroups, addOnModifiers)
+    );
+  }, 0);
+
+  return modifierExtraCost + addOnExtraCost;
+};
+
+export const calcCartItemAmount = (
+  menu: OrderMenu | null,
+  item: CartItem,
+): number => {
+  const { menuItemId, modifiers, addOns, quantity } = item;
+  const menuItem = findItemById(menu, menuItemId);
+  if (!menuItem) return 0;
+
+  const offer = menuItem.offers[0];
+  const basePrice = Number(offer?.price || 0);
+  const promoInfo = getActivePromo(offer);
+  const price = promoInfo?.price || basePrice;
+  const extraCost = calcCartItemExtraCost(menu, menuItemId, modifiers, addOns);
+
+  return (price + extraCost) * quantity;
+};
+
+export const getCartCurrency = (
+  menu: OrderMenu | null,
+  cartItemsList: CartItem[],
+): string => {
+  if (!cartItemsList.length) return "";
+  const item = findItemById(menu, cartItemsList[0].menuItemId);
+
+  return item?.offers[0]?.priceCurrency || "";
 };
 
 export const getItemKey = (

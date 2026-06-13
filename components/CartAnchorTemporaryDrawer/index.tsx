@@ -21,6 +21,8 @@ import { type CSSObject, styled } from "@mui/material/styles";
 import { useCartStore } from "@/providers/cart-store-provider";
 import { useDrawerStore } from "@/providers/drawer-store-provider";
 
+import useCartTotals from "@/hooks/useCartTotals";
+
 import { useToggleDrawer } from "@/utils/drawer";
 
 const DrawerBox = styled(Box)({
@@ -50,16 +52,17 @@ const StickyFooter = styled(Box)(({ theme }) => ({
 }));
 
 const CartAnchorTemporaryDrawer = () => {
-  const { cartCurrency, isCartEmpty, cartTotalAmount } = useCartStore(
-    (state) => state,
-  );
+  const { isCartEmpty } = useCartStore((state) => state);
+  const { cartCurrency, cartTotalAmount } = useCartTotals();
   const { drawer } = useDrawerStore((state) => state);
   const open = drawer.cart;
   const toggleDrawer = useToggleDrawer();
-  const handleCartClose = toggleDrawer("cart", false);
+  const handleClose = toggleDrawer("cart", false);
 
   const locale = useLocale();
+
   const pathname = usePathname();
+
   const searchParams = useSearchParams();
   const search = searchParams.toString();
   const query = search ? `?${search}` : "";
@@ -108,7 +111,7 @@ const CartAnchorTemporaryDrawer = () => {
           disabled={actionDisabled}
           fullWidth
           href={actionHref}
-          onClick={handleCartClose}
+          onClick={handleClose}
           variant="contained"
         >
           {actionLabel}
@@ -121,7 +124,7 @@ const CartAnchorTemporaryDrawer = () => {
     <Drawer
       anchor="right"
       ModalProps={{ keepMounted: true }}
-      onClose={handleCartClose}
+      onClose={handleClose}
       open={open}
     >
       {drawerList}

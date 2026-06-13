@@ -3,6 +3,8 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 
+import useCartTotals from "@/hooks/useCartTotals";
+
 import { usePathname } from "@/i18n/navigation";
 
 import {
@@ -38,8 +40,8 @@ const StyledChip = styled(Chip)(({ theme }) => ({
 }));
 
 const OrderBottomBar = () => {
-  const { cartCurrency, cartTotalAmount, cartTotalQuantity, isCartEmpty } =
-    useCartStore((state) => state);
+  const { cartTotalQuantity, isCartEmpty } = useCartStore((state) => state);
+  const { cartCurrency, cartTotalAmount } = useCartTotals();
 
   const locale = useLocale();
 
@@ -51,6 +53,7 @@ const OrderBottomBar = () => {
   const checkoutHref = `${pathname}/checkout${query}`;
 
   const tCart = useTranslations("cart");
+
   return (
     <Fade in={!isCartEmpty}>
       <StyledBox
