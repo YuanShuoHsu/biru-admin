@@ -9,11 +9,7 @@ import { useCartStore } from "@/providers/cart-store-provider";
 
 import { getItemKey } from "@/utils/menus";
 
-interface CartItemListProps {
-  forceXsLayout?: boolean;
-}
-
-const CartItemList = ({ forceXsLayout = false }: CartItemListProps) => {
+const CartItemList = () => {
   const { isCartEmpty, cartItemsList } = useCartStore((state) => state);
 
   const tCommon = useTranslations("common");
@@ -33,7 +29,7 @@ const CartItemList = ({ forceXsLayout = false }: CartItemListProps) => {
 
             return (
               <Fragment key={getItemKey(menuItemId, modifiers, addOns)}>
-                <CartItemRow forceXsLayout={forceXsLayout} item={item} />
+                <CartItemRow item={item} />
                 {index < cartItemsList.length - 1 && (
                   <Divider component="li" variant="inset" />
                 )}

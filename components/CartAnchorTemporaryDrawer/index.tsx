@@ -88,7 +88,7 @@ const CartAnchorTemporaryDrawer = () => {
           <Typography variant="h6">{tCart("title")}</Typography>
         </Toolbar>
       </StickyHeader>
-      <CartItemList forceXsLayout />
+      <CartItemList />
       <StickyFooter>
         <Stack
           flexDirection="row"

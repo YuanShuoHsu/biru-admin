@@ -11,10 +11,10 @@ import { MAX_QUANTITY } from "@/constants/cart";
 import { Delete, RestaurantMenu } from "@mui/icons-material";
 import {
   Box,
-  Grid,
   ListItem,
   ListItemAvatar,
   ListItemText,
+  Stack,
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -77,11 +77,10 @@ const StyledListItemText = styled(ListItemText)(({ theme }) => ({
 }));
 
 interface CartItemRowProps {
-  forceXsLayout: boolean;
   item: CartItem;
 }
 
-const CartItemRow = ({ forceXsLayout, item }: CartItemRowProps) => {
+const CartItemRow = ({ item }: CartItemRowProps) => {
   const { menuItemId, modifiers, addOns, quantity } = item;
 
   const locale = useLocale();
@@ -189,22 +188,8 @@ const CartItemRow = ({ forceXsLayout, item }: CartItemRowProps) => {
         limitingAddOnsLabel={limitingAddOnsLabel}
         unavailable={!itemName}
       />
-      <Grid
-        container
-        width="100%"
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        spacing={2}
-      >
-        <Grid
-          size={{
-            xs: 12,
-            ...(forceXsLayout ? {} : { sm: 6 }),
-          }}
-          display="flex"
-          gap={2}
-        >
+      <Stack width="100%" gap={2}>
+        <Stack direction="row" gap={2}>
           <StyledListItemAvatar>
             <ImageBox>
               {image ? (
@@ -222,47 +207,34 @@ const CartItemRow = ({ forceXsLayout, item }: CartItemRowProps) => {
             </ImageBox>
           </StyledListItemAvatar>
           <StyledListItemText primary={itemName} secondary={choiceNames} />
-        </Grid>
-        <Grid
-          size={{
-            xs: 5,
-            ...(forceXsLayout ? {} : { sm: 2 }),
-          }}
+        </Stack>
+        <Typography
+          color="primary"
+          component="span"
+          flex={1}
+          fontWeight="bold"
+          variant="body2"
         >
-          <Typography
-            color="primary"
-            component="span"
-            fontWeight="bold"
-            variant="body2"
-          >
-            {priceCurrency} {amount.toLocaleString(locale)}
-          </Typography>
-        </Grid>
-        <Grid
-          size={{
-            xs: 7,
-            ...(forceXsLayout ? {} : { sm: 4 }),
-          }}
-        >
-          <NumberSpinner
-            {...(quantity > 1
-              ? {}
-              : {
-                  decrementAriaLabel: "Delete",
-                  decrementIcon: <Delete fontSize="small" />,
-                })}
-            disabled={!quantity}
-            error={!canIncrease}
-            fullWidth
-            helperText={!canIncrease ? formHelperText : undefined}
-            max={quantity + availableToAdd}
-            min={0}
-            onValueChange={handleValueChange}
-            size="small"
-            value={quantity}
-          />
-        </Grid>
-      </Grid>
+          {priceCurrency} {amount.toLocaleString(locale)}
+        </Typography>
+        <NumberSpinner
+          {...(quantity > 1
+            ? {}
+            : {
+                decrementAriaLabel: "Delete",
+                decrementIcon: <Delete fontSize="small" />,
+              })}
+          disabled={!quantity}
+          error={!canIncrease}
+          fullWidth
+          helperText={!canIncrease ? formHelperText : undefined}
+          max={quantity + availableToAdd}
+          min={0}
+          onValueChange={handleValueChange}
+          size="small"
+          value={quantity}
+        />
+      </Stack>
     </StyledListItem>
   );
 };
