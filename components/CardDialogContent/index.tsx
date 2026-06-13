@@ -187,13 +187,8 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
 
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
-  useEffect(() => {
-    setDialog({ confirmDisabled: quantity <= 0 });
-  }, [quantity, setDialog]);
-
   const amount = (price + extraCost) * quantity;
   const displayPrice = amount.toLocaleString(locale);
-
   const isAtLimit = quantity >= availableToAdd;
 
   const limitingAddOnsLabel =
@@ -214,6 +209,10 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
             ? tCommon("soldOut", { label: "" })
             : tCommon("reachStockLimit", { label: "" })
         : tCommon("reachStockLimit", { label: limitingAddOnsLabel });
+
+  useEffect(() => {
+    setDialog({ confirmDisabled: quantity <= 0 });
+  }, [quantity, setDialog]);
 
   const handleChoicesChange = (groupId: string, next: string[]) =>
     setValue(`choices.${groupId}`, next, { shouldValidate: isSubmitted });
@@ -464,13 +463,7 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
       {(modifierGroups.length > 0 || addOnItems.length > 0) && (
         <Divider flexItem />
       )}
-      <Grid
-        width="100%"
-        container
-        display="flex"
-        alignItems="flex-start"
-        spacing={2}
-      >
+      <Grid container width="100%" alignItems="center" spacing={2}>
         <Grid display="flex" flexDirection="column" size={{ xs: 5 }}>
           {promoInfo && (
             <OriginalPriceTypography
