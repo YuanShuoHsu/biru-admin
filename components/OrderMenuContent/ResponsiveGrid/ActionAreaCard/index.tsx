@@ -91,6 +91,7 @@ const ClampTypography = styled(Typography)({
 const OriginalPriceTypography = styled(Typography, {
   shouldForwardProp: (prop) => prop !== "isPromo",
 })<{ isPromo: boolean }>(({ isPromo }) => ({
+  ...wrapStyle,
   ...(isPromo && {
     textDecoration: "line-through",
   }),
@@ -181,9 +182,13 @@ const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
               {`${priceCurrency} ${price}`}
             </OriginalPriceTypography>
             {promoInfo && (
-              <Typography color="error" fontWeight="bold" variant="subtitle2">
+              <WrapTypography
+                color="error"
+                fontWeight="bold"
+                variant="subtitle2"
+              >
                 {`${priceCurrency} ${promoInfo.price}`}
-              </Typography>
+              </WrapTypography>
             )}
             {showLowStock && (
               <Typography color="text.secondary" variant="caption">
