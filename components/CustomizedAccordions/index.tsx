@@ -50,7 +50,7 @@ const CustomizedAccordions = () => {
   const [expanded, setExpanded] = useState<string | false>("panel1");
   const isPanel1Expanded = expanded === "panel1";
 
-  const { cartTotalAmount } = useCartStore((state) => state);
+  const { cartCurrency, cartTotalAmount } = useCartStore((state) => state);
 
   const tCommon = useTranslations("common");
 
@@ -79,7 +79,7 @@ const CustomizedAccordions = () => {
           textAlign="center"
           variant="h6"
         >
-          {tCommon("currency")} {cartTotalAmount.toLocaleString(locale)}
+          {cartCurrency} {cartTotalAmount.toLocaleString(locale)}
         </Typography>
         <Box flex={1} display="flex" justifyContent="flex-end">
           <StyledExpandMore expanded={isPanel1Expanded} />

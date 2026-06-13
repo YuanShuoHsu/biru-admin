@@ -16,6 +16,7 @@ export interface CartItem {
   extraCost: number;
   image: string | null;
   price: number;
+  priceCurrency: string;
   quantity: number;
   modifiers: Record<string, string[]>;
   addOns: CartAddOn[];
@@ -26,6 +27,7 @@ type CartItemsMap = Record<string, CartItem>;
 interface CartState {
   carts: Record<Organization["slug"], CartItemsMap>;
   activeOrganizationSlug: Organization["slug"] | null;
+  cartCurrency: string;
   cartItemsMap: CartItemsMap;
   cartItemsList: CartItem[];
   cartTotalAmount: number;
@@ -47,6 +49,8 @@ export type CartStore = CartState & CartActions;
 const deriveCartState = (cartItemsMap: CartItemsMap) => {
   const cartItemsList = Object.values(cartItemsMap);
 
+  const cartCurrency = cartItemsList[0]?.priceCurrency || "";
+
   const cartTotalAmount = cartItemsList.reduce(
     (sum, { amount }) => sum + amount,
     0,
@@ -58,6 +62,7 @@ const deriveCartState = (cartItemsMap: CartItemsMap) => {
   );
 
   return {
+    cartCurrency,
     cartItemsMap,
     cartItemsList,
     cartTotalAmount,
@@ -140,7 +145,7 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
         name: "biru-cart",
         storage: createJSONStorage(() => localStorage),
         partialize: ({ carts }) => ({ carts }),
-        version: 2,
+        version: 3,
         migrate: () => ({ carts: {} }),
       },
     ),

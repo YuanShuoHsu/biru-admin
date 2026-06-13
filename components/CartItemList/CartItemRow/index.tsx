@@ -81,6 +81,7 @@ const CartItemRow = ({ forceXsLayout, item }: CartItemRowProps) => {
     extraCost,
     image,
     price,
+    priceCurrency,
     quantity,
   } = item;
 
@@ -233,7 +234,7 @@ const CartItemRow = ({ forceXsLayout, item }: CartItemRowProps) => {
             fontWeight="bold"
             variant="body2"
           >
-            {tCommon("currency")} {amount.toLocaleString(locale)}
+            {priceCurrency} {amount.toLocaleString(locale)}
           </Typography>
         </Grid>
         <Grid

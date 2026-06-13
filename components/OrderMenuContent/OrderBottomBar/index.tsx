@@ -38,9 +38,8 @@ const StyledChip = styled(Chip)(({ theme }) => ({
 }));
 
 const OrderBottomBar = () => {
-  const { isCartEmpty, cartTotalAmount, cartTotalQuantity } = useCartStore(
-    (state) => state,
-  );
+  const { cartCurrency, cartTotalAmount, cartTotalQuantity, isCartEmpty } =
+    useCartStore((state) => state);
 
   const locale = useLocale();
 
@@ -52,8 +51,6 @@ const OrderBottomBar = () => {
   const checkoutHref = `${pathname}/checkout${query}`;
 
   const tCart = useTranslations("cart");
-  const tCommon = useTranslations("common");
-
   return (
     <Fade in={!isCartEmpty}>
       <StyledBox
@@ -82,7 +79,7 @@ const OrderBottomBar = () => {
               /
             </Typography>
             <Typography component="span" fontWeight="bold" variant="subtitle1">
-              {tCommon("currency")} {cartTotalAmount.toLocaleString(locale)}
+              {cartCurrency} {cartTotalAmount.toLocaleString(locale)}
             </Typography>
           </Stack>
           <StyledChip label={tCart("checkout")} variant="outlined" />

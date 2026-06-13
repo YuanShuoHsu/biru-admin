@@ -261,6 +261,7 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
       extraCost,
       image: image || null,
       price,
+      priceCurrency: priceCurrency || "",
       quantity,
       modifiers,
       addOns,
