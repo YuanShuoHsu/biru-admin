@@ -138,7 +138,11 @@ const NumberSpinner = ({
       )}
     >
       {(label || clearable) && (
-        <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+        >
           <BaseNumberField.ScrubArea render={<ScrubAreaSpan />}>
             <StyledFormLabel htmlFor={id}>{label}</StyledFormLabel>
             <BaseNumberField.ScrubAreaCursor>
