@@ -77,11 +77,14 @@ export const getAddOnItems = (item: OrderMenuItem): OrderMenuAddOnItem[] => {
     });
 };
 
-export const getAddOnPrice = (addOnItem: OrderMenuAddOnItem): number => {
-  const offer = addOnItem.offers[0];
+export const getItemPrice = (offer?: OrderMenuOffer): number => {
+  const promo = getActivePromo(offer);
 
-  return getActivePromo(offer)?.price || Number(offer?.price || 0);
+  return promo !== null ? promo.price : Number(offer?.price || 0);
 };
+
+export const getAddOnPrice = (addOnItem: OrderMenuAddOnItem): number =>
+  getItemPrice(addOnItem.offers[0]);
 
 export const getGroupsExtraCost = (
   groups: OrderMenuModifierGroup[],
@@ -113,14 +116,13 @@ export const calcCartItemExtraCost = (
 
   const modifierExtraCost = getGroupsExtraCost(item.modifierGroups, modifiers);
 
-  const addOnItems = getAddOnItems(item);
-  const selectedAddOnItems = addOnItems.filter(({ id }) =>
-    addOns.some((addOn) => addOn.id === id),
+  const addOnMap = new Map(addOns.map((a) => [a.id, a]));
+  const selectedAddOnItems = getAddOnItems(item).filter(({ id }) =>
+    addOnMap.has(id),
   );
 
   const addOnExtraCost = selectedAddOnItems.reduce((sum, addOnItem) => {
-    const addOnModifiers =
-      addOns.find(({ id }) => id === addOnItem.id)?.modifiers || {};
+    const addOnModifiers = addOnMap.get(addOnItem.id)?.modifiers || {};
 
     return (
       sum +
@@ -141,9 +143,7 @@ export const calcCartItemAmount = (
   if (!menuItem) return 0;
 
   const offer = menuItem.offers[0];
-  const basePrice = Number(offer?.price || 0);
-  const promoInfo = getActivePromo(offer);
-  const price = promoInfo?.price || basePrice;
+  const price = getItemPrice(offer);
   const extraCost = calcCartItemExtraCost(menu, menuItemId, modifiers, addOns);
 
   return (price + extraCost) * quantity;

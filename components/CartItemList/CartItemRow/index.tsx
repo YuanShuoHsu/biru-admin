@@ -8,7 +8,7 @@ import NumberSpinner from "@/components/NumberSpinner";
 
 import { MAX_QUANTITY } from "@/constants/cart";
 
-import { Delete } from "@mui/icons-material";
+import { Delete, RestaurantMenu } from "@mui/icons-material";
 import {
   Box,
   Grid,
@@ -26,9 +26,8 @@ import { useMenuStore } from "@/providers/menu-store-provider";
 import { type CartItem } from "@/stores/cart-store";
 
 import {
-  calcCartItemExtraCost,
+  calcCartItemAmount,
   findItemById,
-  getActivePromo,
   getChoiceNames,
   getItemStock,
   getLimitingAddOnsCap,
@@ -53,10 +52,18 @@ const StyledListItemAvatar = styled(ListItemAvatar)({
 
 const ImageBox = styled(Box)(({ theme }) => ({
   position: "relative",
-  width: 60,
   height: 60,
+  aspectRatio: "16/9",
+  backgroundColor: theme.palette.action.hover,
   borderRadius: theme.shape.borderRadius,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
   overflow: "hidden",
+}));
+
+const StyledRestaurantMenu = styled(RestaurantMenu)(({ theme }) => ({
+  fontSize: theme.spacing(4),
 }));
 
 const StyledListItemText = styled(ListItemText)(({ theme }) => ({
@@ -89,13 +96,9 @@ const CartItemRow = ({ forceXsLayout, item }: CartItemRowProps) => {
   const menuItem = findItemById(menu, menuItemId);
   const itemName = menuItem?.name || "";
   const offer = menuItem?.offers[0];
-  const basePrice = Number(offer?.price || 0);
-  const promoInfo = offer ? getActivePromo(offer) : null;
-  const price = promoInfo?.price || basePrice;
   const image = menuItem?.image || null;
   const priceCurrency = offer?.priceCurrency || "";
-  const extraCost = calcCartItemExtraCost(menu, menuItemId, modifiers, addOns);
-  const amount = (price + extraCost) * quantity;
+  const amount = calcCartItemAmount(menu, item);
   const choiceNames = getChoiceNames(menu, menuItemId, modifiers, addOns, {
     addOnLabel: tOrder("menuItem.addOn"),
     colon: tCommon("colon"),
@@ -204,7 +207,7 @@ const CartItemRow = ({ forceXsLayout, item }: CartItemRowProps) => {
         >
           <StyledListItemAvatar>
             <ImageBox>
-              {image && (
+              {image ? (
                 <Image
                   alt={itemName}
                   draggable={false}
@@ -213,6 +216,8 @@ const CartItemRow = ({ forceXsLayout, item }: CartItemRowProps) => {
                   src={image}
                   style={{ objectFit: "cover" }}
                 />
+              ) : (
+                <StyledRestaurantMenu color="disabled" />
               )}
             </ImageBox>
           </StyledListItemAvatar>
