@@ -468,10 +468,10 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
         width="100%"
         container
         display="flex"
-        alignItems="center"
+        alignItems="flex-start"
         spacing={2}
       >
-        <Grid size={{ xs: 5 }} display="flex" flexDirection="column">
+        <Grid display="flex" flexDirection="column" size={{ xs: 5 }}>
           {promoInfo && (
             <OriginalPriceTypography
               color="text.disabled"

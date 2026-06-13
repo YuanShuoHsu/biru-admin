@@ -137,24 +137,26 @@ const NumberSpinner = ({
         </StyledFormControl>
       )}
     >
-      <Stack direction="row" alignItems="center" justifyContent="space-between">
-        <BaseNumberField.ScrubArea render={<ScrubAreaSpan />}>
-          <StyledFormLabel htmlFor={id}>{label}</StyledFormLabel>
-          <BaseNumberField.ScrubAreaCursor>
-            <StyledOpenInFull fontSize="small" />
-          </BaseNumberField.ScrubAreaCursor>
-        </BaseNumberField.ScrubArea>
-        {clearable && (
-          <ClearButton
-            onClick={() => other.onValueChange?.(null, {} as never)}
-            size="small"
-            tabIndex={-1}
-            visible={other.value != null}
-          >
-            <Clear fontSize="small" />
-          </ClearButton>
-        )}
-      </Stack>
+      {(label || clearable) && (
+        <Stack direction="row" alignItems="center" justifyContent="space-between">
+          <BaseNumberField.ScrubArea render={<ScrubAreaSpan />}>
+            <StyledFormLabel htmlFor={id}>{label}</StyledFormLabel>
+            <BaseNumberField.ScrubAreaCursor>
+              <StyledOpenInFull fontSize="small" />
+            </BaseNumberField.ScrubAreaCursor>
+          </BaseNumberField.ScrubArea>
+          {clearable && (
+            <ClearButton
+              onClick={() => other.onValueChange?.(null, {} as never)}
+              size="small"
+              tabIndex={-1}
+              visible={other.value != null}
+            >
+              <Clear fontSize="small" />
+            </ClearButton>
+          )}
+        </Stack>
+      )}
       <FlexDiv onClick={(event) => event.stopPropagation()}>
         <BaseNumberField.Decrement
           render={
