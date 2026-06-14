@@ -9,7 +9,11 @@ import { useCartStore } from "@/providers/cart-store-provider";
 
 import { getItemKey } from "@/utils/menus";
 
-const CartItemList = () => {
+interface CartItemListProps {
+  compact?: boolean;
+}
+
+const CartItemList = ({ compact = false }: CartItemListProps) => {
   const { isCartEmpty, cartItemsList } = useCartStore((state) => state);
 
   const tCommon = useTranslations("common");
@@ -29,7 +33,7 @@ const CartItemList = () => {
 
             return (
               <Fragment key={getItemKey(menuItemId, modifiers, addOns)}>
-                <CartItemRow item={item} />
+                <CartItemRow compact={compact} item={item} />
                 {index < cartItemsList.length - 1 && (
                   <Divider component="li" variant="inset" />
                 )}

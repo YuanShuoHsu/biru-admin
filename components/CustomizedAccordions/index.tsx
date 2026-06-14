@@ -86,7 +86,7 @@ const CustomizedAccordions = () => {
         </Box>
       </StyledAccordionSummary>
       <StyledAccordionDetails>
-        <CartItemList />
+        <CartItemList compact />
       </StyledAccordionDetails>
     </StyledAccordion>
   );

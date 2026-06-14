@@ -16,6 +16,7 @@ import {
   ListItemText,
   Stack,
   Typography,
+  TypographyProps,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -80,11 +81,20 @@ const StyledListItemText = styled(ListItemText)(({ theme }) => ({
   },
 }));
 
+const StyledTypography = styled(Typography)<TypographyProps>({
+  flex: 1,
+});
+
+const StyledNumberSpinner = styled(NumberSpinner)({
+  flex: 1,
+});
+
 interface CartItemRowProps {
+  compact?: boolean;
   item: CartItem;
 }
 
-const CartItemRow = ({ item }: CartItemRowProps) => {
+const CartItemRow = ({ compact = false, item }: CartItemRowProps) => {
   const { menuItemId, modifiers, addOns, quantity } = item;
 
   const locale = useLocale();
@@ -212,30 +222,35 @@ const CartItemRow = ({ item }: CartItemRowProps) => {
           </StyledListItemAvatar>
           <StyledListItemText primary={itemName} secondary={choiceNames} />
         </Stack>
-        <Typography
-          color="primary"
-          component="span"
-          flex={1}
-          fontWeight="bold"
-          variant="body2"
+        <Stack
+          alignItems={compact ? "center" : "stretch"}
+          direction={compact ? "row" : "column"}
+          gap={2}
         >
-          {priceCurrency} {amount.toLocaleString(locale)}
-        </Typography>
-        <NumberSpinner
-          {...(quantity <= 1 && {
-            decrementAriaLabel: "Delete",
-            decrementIcon: <Delete fontSize="small" />,
-          })}
-          disabled={!quantity}
-          error={!canIncrease}
-          fullWidth
-          helperText={!canIncrease ? formHelperText : undefined}
-          max={quantity + availableToAdd}
-          min={0}
-          onValueChange={handleValueChange}
-          size="small"
-          value={quantity}
-        />
+          <StyledTypography
+            color="primary"
+            component="span"
+            fontWeight="bold"
+            variant="body2"
+          >
+            {priceCurrency} {amount.toLocaleString(locale)}
+          </StyledTypography>
+          <StyledNumberSpinner
+            {...(quantity <= 1 && {
+              decrementAriaLabel: "Delete",
+              decrementIcon: <Delete fontSize="small" />,
+            })}
+            disabled={!quantity}
+            error={!canIncrease}
+            fullWidth
+            helperText={!canIncrease ? formHelperText : undefined}
+            max={quantity + availableToAdd}
+            min={0}
+            onValueChange={handleValueChange}
+            size="small"
+            value={quantity}
+          />
+        </Stack>
       </Stack>
     </StyledListItem>
   );
