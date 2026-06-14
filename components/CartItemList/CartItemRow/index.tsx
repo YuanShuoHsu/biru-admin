@@ -111,10 +111,10 @@ const CartItemRow = ({ item }: CartItemRowProps) => {
   });
 
   const {
+    addCartItem,
     deleteCartItem,
     getCartItemTotalQuantity,
     getChoiceAvailableQuantity,
-    updateCartItem,
   } = useCartStore((state) => state);
 
   const itemStock = getItemStock(menu, menuItemId);
@@ -165,7 +165,7 @@ const CartItemRow = ({ item }: CartItemRowProps) => {
     const delta = value - quantity;
 
     if (delta) {
-      updateCartItem({ ...item, quantity: delta });
+      addCartItem({ ...item, quantity: delta });
     }
   };
 

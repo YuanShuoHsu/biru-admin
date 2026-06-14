@@ -71,7 +71,7 @@ const CartItemSoldOut = ({
 }: CartItemSoldOutProps) => {
   const { quantity } = item;
 
-  const { deleteCartItem, updateCartItem } = useCartStore((state) => state);
+  const { addCartItem, deleteCartItem } = useCartStore((state) => state);
 
   const tCart = useTranslations("cart");
   const tCommon = useTranslations("common");
@@ -110,7 +110,7 @@ const CartItemSoldOut = ({
     }
 
     if (shouldEditItem) {
-      updateCartItem({ ...item, quantity: availableToAdd });
+      addCartItem({ ...item, quantity: availableToAdd });
     }
   };
 

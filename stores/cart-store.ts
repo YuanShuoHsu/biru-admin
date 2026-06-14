@@ -29,12 +29,13 @@ interface CartState {
 }
 
 interface CartActions {
-  setActiveOrganization: (slug: Organization["slug"] | null) => void;
+  addCartItem: (item: CartItem) => void;
   clearCart: () => void;
   deleteCartItem: (item: CartItem) => void;
-  updateCartItem: (item: CartItem) => void;
-  getChoiceAvailableQuantity: (choiceId: string, choiceStock: number) => number;
   getCartItemTotalQuantity: (menuItemId: string) => number;
+  getChoiceAvailableQuantity: (choiceId: string, choiceStock: number) => number;
+  setActiveOrganization: (slug: Organization["slug"] | null) => void;
+  updateCartItem: (oldItem: CartItem, newItem: CartItem) => void;
 }
 
 export type CartStore = CartState & CartActions;
@@ -77,38 +78,32 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
 
         return {
           ...initState,
-          setActiveOrganization: (slug) =>
-            set(({ carts }) => ({
-              activeOrganizationSlug: slug,
-              ...deriveCartState(slug ? (carts[slug] ?? {}) : {}),
-            })),
-          clearCart: () => setActiveCart({}),
-          deleteCartItem: (item) => {
-            const { menuItemId, modifiers, addOns } = item;
-
-            const newMap = { ...get().cartItemsMap };
-            delete newMap[getItemKey(menuItemId, modifiers, addOns)];
-
-            setActiveCart(newMap);
-          },
-          updateCartItem: (item) => {
-            const { menuItemId, modifiers, addOns, quantity } = item;
-
+          addCartItem: (item) => {
             const { cartItemsMap } = get();
-            const itemKey = getItemKey(menuItemId, modifiers, addOns);
+            const itemKey = getItemKey(item.menuItemId, item.modifiers, item.addOns);
             const existing = cartItemsMap[itemKey];
 
-            const updatedItem = existing
-              ? {
-                  ...existing,
-                  quantity: existing.quantity + quantity,
-                }
-              : { ...item };
-
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { [itemKey]: _, ...rest } = cartItemsMap;
-            setActiveCart({ [itemKey]: updatedItem, ...rest });
+            if (existing) {
+              setActiveCart({
+                ...cartItemsMap,
+                [itemKey]: { ...existing, quantity: existing.quantity + item.quantity },
+              });
+            } else {
+              setActiveCart({ [itemKey]: item, ...cartItemsMap });
+            }
           },
+          clearCart: () => setActiveCart({}),
+          deleteCartItem: (item) => {
+            const newMap = { ...get().cartItemsMap };
+            delete newMap[getItemKey(item.menuItemId, item.modifiers, item.addOns)];
+            setActiveCart(newMap);
+          },
+          getCartItemTotalQuantity: (menuItemId) =>
+            get().cartItemsList.reduce(
+              (sum, item) =>
+                item.menuItemId === menuItemId ? sum + item.quantity : sum,
+              0,
+            ),
           getChoiceAvailableQuantity: (choiceId, choiceStock) => {
             const used = get().cartItemsList.reduce(
               (sum, { addOns, quantity }) =>
@@ -118,12 +113,33 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
 
             return choiceStock - used;
           },
-          getCartItemTotalQuantity: (menuItemId) =>
-            get().cartItemsList.reduce(
-              (sum, item) =>
-                item.menuItemId === menuItemId ? sum + item.quantity : sum,
-              0,
-            ),
+          setActiveOrganization: (slug) =>
+            set(({ carts }) => ({
+              activeOrganizationSlug: slug,
+              ...deriveCartState(slug ? (carts[slug] ?? {}) : {}),
+            })),
+          updateCartItem: (oldItem, newItem) => {
+            const { cartItemsMap } = get();
+            const oldKey = getItemKey(oldItem.menuItemId, oldItem.modifiers, oldItem.addOns);
+            const newKey = getItemKey(newItem.menuItemId, newItem.modifiers, newItem.addOns);
+
+            if (oldKey === newKey) {
+              setActiveCart({ ...cartItemsMap, [oldKey]: newItem });
+              return;
+            }
+
+            const existing = cartItemsMap[newKey];
+
+            setActiveCart(
+              Object.fromEntries(
+                Object.entries(cartItemsMap).flatMap(([key, item]) => {
+                  if (key === oldKey) return existing ? [] : [[newKey, newItem]];
+                  if (key === newKey) return [[newKey, { ...item, quantity: item.quantity + newItem.quantity }]];
+                  return [[key, item]];
+                }),
+              ),
+            );
+          },
         };
       },
       {

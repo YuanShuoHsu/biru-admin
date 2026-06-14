@@ -100,7 +100,7 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
   const showLowStock = isLowStock(offer);
 
   const {
-    deleteCartItem,
+    addCartItem,
     getCartItemTotalQuantity,
     getChoiceAvailableQuantity,
     updateCartItem,
@@ -240,14 +240,13 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
       modifiers: addOnChoices[id] || {},
     }));
 
-    if (cartItem) deleteCartItem(cartItem);
+    const newItem = { menuItemId: id, quantity, modifiers, addOns };
 
-    updateCartItem({
-      menuItemId: id,
-      quantity,
-      modifiers,
-      addOns,
-    });
+    if (cartItem) {
+      updateCartItem(cartItem, newItem);
+    } else {
+      addCartItem(newItem);
+    }
 
     closeDialog();
   });
