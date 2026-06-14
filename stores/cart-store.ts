@@ -80,13 +80,20 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
           ...initState,
           addCartItem: (item) => {
             const { cartItemsMap } = get();
-            const itemKey = getItemKey(item.menuItemId, item.modifiers, item.addOns);
+            const itemKey = getItemKey(
+              item.menuItemId,
+              item.modifiers,
+              item.addOns,
+            );
             const existing = cartItemsMap[itemKey];
 
             if (existing) {
               setActiveCart({
                 ...cartItemsMap,
-                [itemKey]: { ...existing, quantity: existing.quantity + item.quantity },
+                [itemKey]: {
+                  ...existing,
+                  quantity: existing.quantity + item.quantity,
+                },
               });
             } else {
               setActiveCart({ [itemKey]: item, ...cartItemsMap });
@@ -95,7 +102,9 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
           clearCart: () => setActiveCart({}),
           deleteCartItem: (item) => {
             const newMap = { ...get().cartItemsMap };
-            delete newMap[getItemKey(item.menuItemId, item.modifiers, item.addOns)];
+            delete newMap[
+              getItemKey(item.menuItemId, item.modifiers, item.addOns)
+            ];
             setActiveCart(newMap);
           },
           getCartItemTotalQuantity: (menuItemId) =>
@@ -120,8 +129,16 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
             })),
           updateCartItem: (oldItem, newItem) => {
             const { cartItemsMap } = get();
-            const oldKey = getItemKey(oldItem.menuItemId, oldItem.modifiers, oldItem.addOns);
-            const newKey = getItemKey(newItem.menuItemId, newItem.modifiers, newItem.addOns);
+            const oldKey = getItemKey(
+              oldItem.menuItemId,
+              oldItem.modifiers,
+              oldItem.addOns,
+            );
+            const newKey = getItemKey(
+              newItem.menuItemId,
+              newItem.modifiers,
+              newItem.addOns,
+            );
 
             if (oldKey === newKey) {
               setActiveCart({ ...cartItemsMap, [oldKey]: newItem });
@@ -133,8 +150,15 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
             setActiveCart(
               Object.fromEntries(
                 Object.entries(cartItemsMap).flatMap(([key, item]) => {
-                  if (key === oldKey) return existing ? [] : [[newKey, newItem]];
-                  if (key === newKey) return [[newKey, { ...item, quantity: item.quantity + newItem.quantity }]];
+                  if (key === oldKey)
+                    return existing ? [] : [[newKey, newItem]];
+                  if (key === newKey)
+                    return [
+                      [
+                        newKey,
+                        { ...item, quantity: item.quantity + newItem.quantity },
+                      ],
+                    ];
                   return [[key, item]];
                 }),
               ),
