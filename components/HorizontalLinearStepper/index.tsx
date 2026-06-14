@@ -3,9 +3,6 @@
 
 "use client";
 
-import { useTranslations } from "next-intl";
-import { useParams } from "next/navigation";
-
 import { usePathname } from "@/i18n/navigation";
 
 import {
@@ -16,8 +13,6 @@ import {
   Stepper,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-
-import type { RouteParams } from "@/types/routeParams";
 
 const QontoConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -53,28 +48,17 @@ const StyledStepLabel = styled(StepLabel)(({ theme }) => ({
   },
 }));
 
-const HorizontalLinearStepper = () => {
-  const tOrder = useTranslations("order");
+interface HorizontalLinearStepperProps {
+  steps: { label: string; path: string }[];
+}
 
-  const { locale, mode, organizationSlug } = useParams<RouteParams>();
-
+const HorizontalLinearStepper = ({ steps }: HorizontalLinearStepperProps) => {
   const pathname = usePathname();
-
-  const base = `/order/${mode}/${organizationSlug}`;
-  const stepPathnames = [base, `${base}/checkout`, `${base}/complete`];
-  const activeStep = stepPathnames.findIndex(
-    (path) => pathname === `/${locale}${path}`,
-  );
-
-  const steps = [
-    tOrder("label"),
-    tOrder("mode.storeSlug.tableNumber.stepper.checkout.label"),
-    tOrder("mode.storeSlug.tableNumber.stepper.complete.label"),
-  ];
+  const activeStep = steps.findIndex(({ path }) => pathname === path);
 
   return (
     <Stepper activeStep={activeStep} connector={<QontoConnector />}>
-      {steps.map((label, index) => (
+      {steps.map(({ label }, index) => (
         <Step key={label} completed={activeStep > index}>
           <StyledStepLabel>{label}</StyledStepLabel>
         </Step>

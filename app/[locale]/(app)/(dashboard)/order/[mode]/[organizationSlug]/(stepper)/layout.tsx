@@ -1,5 +1,5 @@
 import { hasLocale } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import HorizontalLinearStepper from "@/components/HorizontalLinearStepper";
@@ -19,14 +19,23 @@ const OrderModeOrganizationSlugStepperLayout = async ({
   children,
   params,
 }: OrderModeOrganizationSlugStepperLayoutProps) => {
-  const { locale } = await params;
+  const { locale, mode, organizationSlug } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
 
   setRequestLocale(locale);
 
+  const tOrder = await getTranslations({ locale, namespace: "order" });
+
+  const base = `/order/${mode}/${organizationSlug}`;
+  const steps = [
+    { label: tOrder("label"), path: base },
+    { label: tOrder("mode.storeSlug.tableNumber.stepper.checkout.label"), path: `${base}/checkout` },
+    { label: tOrder("mode.storeSlug.tableNumber.stepper.complete.label"), path: `${base}/complete` },
+  ];
+
   return (
     <>
-      <HorizontalLinearStepper />
+      <HorizontalLinearStepper steps={steps} />
       {children}
     </>
   );
