@@ -30,7 +30,7 @@
           "label": "桌號",
           "partySize": {
             "select": {
-              "label": "選擇用餐人數",
+              "label": "用餐人數",
               "placeholder": "請選擇您的用餐人數",
               "value": "{count} 位"
             }

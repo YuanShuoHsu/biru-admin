@@ -30,7 +30,7 @@
           "label": "테이블",
           "partySize": {
             "select": {
-              "label": "인원을 선택하세요",
+              "label": "인원",
               "placeholder": "귀하의 인원을 선택해 주세요",
               "value": "{count} 명"
             }

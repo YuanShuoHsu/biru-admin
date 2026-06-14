@@ -30,7 +30,7 @@
           "label": "テーブル",
           "partySize": {
             "select": {
-              "label": "来店人数を選択",
+              "label": "来店人数",
               "placeholder": "あなたの来店人数を選択してください",
               "value": "{count} 名"
             }

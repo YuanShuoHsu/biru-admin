@@ -30,7 +30,7 @@
           "label": "Table",
           "partySize": {
             "select": {
-              "label": "Select party size",
+              "label": "Party size",
               "placeholder": "Please select your party size",
               "value": "{count} people"
             }
