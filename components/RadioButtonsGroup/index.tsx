@@ -1,11 +1,13 @@
-// https://mui.com/material-ui/react-radio-button/#RadioButtonsGroup.tsx
+// https://mui.com/material-ui/react-radio-button/#ControlledRadioButtonsGroup.tsx
+
+import { useId } from "react";
+
+import StyledFormControlLabel from "@/components/StyledFormControlLabel";
 
 import {
   FormControl,
-  FormControlLabel,
   FormHelperText,
   FormLabel,
-  Radio,
   RadioGroup,
   type FormControlLabelProps,
   type FormControlProps,
@@ -14,16 +16,11 @@ import {
   type RadioGroupProps,
 } from "@mui/material";
 
-interface RadioButtonsGroupOption
-  extends Omit<FormControlLabelProps, "control"> {
-  value: string;
-}
-
 interface RadioButtonsGroupProps extends Omit<FormControlProps, "onChange"> {
   helperText: FormHelperTextProps["children"];
   label: FormLabelProps["children"];
   onChange: RadioGroupProps["onChange"];
-  options: RadioButtonsGroupOption[];
+  options: FormControlLabelProps[];
   value: string;
 }
 
@@ -34,21 +31,29 @@ const RadioButtonsGroup = ({
   options,
   value,
   ...props
-}: RadioButtonsGroupProps) => (
-  <FormControl component="fieldset" variant="standard" {...props}>
-    <FormLabel component="legend">{label}</FormLabel>
-    <RadioGroup value={value} onChange={onChange}>
-      {options.map(({ value: optionValue, ...optionProps }) => (
-        <FormControlLabel
-          key={optionValue}
-          {...optionProps}
-          control={<Radio size="small" />}
-          value={optionValue}
-        />
-      ))}
-    </RadioGroup>
-    {helperText && <FormHelperText>{helperText}</FormHelperText>}
-  </FormControl>
-);
+}: RadioButtonsGroupProps) => {
+  const id = useId();
+
+  return (
+    <FormControl variant="standard" {...props}>
+      <FormLabel id={`${id}-label`}>{label}</FormLabel>
+      <RadioGroup
+        aria-labelledby={`${id}-label`}
+        name={`${id}-radio-buttons-group`}
+        onChange={onChange}
+        value={value}
+      >
+        {options.map((option) => (
+          <StyledFormControlLabel
+            key={String(option.value)}
+            {...option}
+            checked={value === option.value}
+          />
+        ))}
+      </RadioGroup>
+      {helperText && <FormHelperText>{helperText}</FormHelperText>}
+    </FormControl>
+  );
+};
 
 export default RadioButtonsGroup;

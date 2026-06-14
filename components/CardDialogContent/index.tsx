@@ -15,7 +15,7 @@ import { MAX_QUANTITY } from "@/constants/cart";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { AccessTime, RestaurantMenu } from "@mui/icons-material";
-import { Box, Chip, Divider, Stack, Typography } from "@mui/material";
+import { Box, Chip, Divider, Radio, Stack, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { useCartStore } from "@/providers/cart-store-provider";
@@ -320,6 +320,7 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
             const soldOut = availability === "SoldOut";
 
             return {
+              control: <Radio size="small" />,
               disabled: soldOut,
               label: renderChoiceLabel(
                 displayName,

@@ -1,11 +1,13 @@
 // https://mui.com/material-ui/react-checkbox/#CheckboxesGroup.tsx
+// https://mui.com/material-ui/react-checkbox/#IndeterminateCheckbox.tsx
 
 import { Fragment, type ChangeEvent } from "react";
+
+import StyledFormControlLabel from "@/components/StyledFormControlLabel";
 
 import {
   Checkbox,
   FormControl,
-  FormControlLabel,
   FormGroup,
   FormHelperText,
   FormLabel,
@@ -52,22 +54,27 @@ const CheckboxesGroup = ({
     <FormControl component="fieldset" variant="standard" {...props}>
       <FormLabel component="legend">{label}</FormLabel>
       <FormGroup>
-        {options.map(({ children, value: optionValue, ...optionProps }) => (
-          <Fragment key={optionValue}>
-            <FormControlLabel
-              {...optionProps}
-              control={
-                <Checkbox
-                  checked={value.includes(optionValue)}
-                  name={optionValue}
-                  onChange={handleChange}
-                  size="small"
-                />
-              }
-            />
-            {children}
-          </Fragment>
-        ))}
+        {options.map(({ children, value: optionValue, ...optionProps }) => {
+          const checked = value.includes(optionValue);
+
+          return (
+            <Fragment key={optionValue}>
+              <StyledFormControlLabel
+                {...optionProps}
+                checked={checked}
+                control={
+                  <Checkbox
+                    checked={checked}
+                    name={optionValue}
+                    onChange={handleChange}
+                    size="small"
+                  />
+                }
+              />
+              {children}
+            </Fragment>
+          );
+        })}
       </FormGroup>
       {helperText && <FormHelperText>{helperText}</FormHelperText>}
     </FormControl>
