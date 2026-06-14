@@ -12,7 +12,9 @@ import { MenuItem, TextField, styled } from "@mui/material";
 import type { Organization } from "@/types/organizations";
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
+  flex: 1,
   [theme.breakpoints.up("sm")]: {
+    flex: "none",
     width: theme.spacing(30),
   },
 }));
