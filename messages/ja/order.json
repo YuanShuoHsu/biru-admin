@@ -27,6 +27,7 @@
       "label": "店内",
       "storeSlug": {
         "tableNumber": {
+          "label": "テーブル",
           "partySize": {
             "select": {
               "label": "来店人数を選択",

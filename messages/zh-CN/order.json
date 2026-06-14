@@ -27,6 +27,7 @@
       "label": "堂食",
       "storeSlug": {
         "tableNumber": {
+          "label": "桌号",
           "partySize": {
             "select": {
               "label": "选择用餐人数",

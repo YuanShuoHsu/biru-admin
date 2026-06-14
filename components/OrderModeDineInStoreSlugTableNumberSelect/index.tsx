@@ -7,17 +7,25 @@ import { PARTY_SIZE_MAX } from "@/constants/partySize";
 
 import { useRouter } from "@/i18n/navigation";
 
-import { MenuItem, TextField } from "@mui/material";
+import { MenuItem, TextField, styled } from "@mui/material";
 
 import type { Organization } from "@/types/organizations";
 
+const StyledTextField = styled(TextField)(({ theme }) => ({
+  [theme.breakpoints.up("sm")]: {
+    width: theme.spacing(30),
+  },
+}));
+
 interface OrderModeDineInStoreSlugTableNumberSelectProps {
   organizationSlug: Organization["slug"];
+  partySize?: string;
   tableNumber: string;
 }
 
 const OrderModeDineInStoreSlugTableNumberSelect = ({
   organizationSlug,
+  partySize,
   tableNumber,
 }: OrderModeDineInStoreSlugTableNumberSelectProps) => {
   const router = useRouter();
@@ -30,7 +38,7 @@ const OrderModeDineInStoreSlugTableNumberSelect = ({
     );
 
   return (
-    <TextField
+    <StyledTextField
       fullWidth
       label={tOrder("mode.dineIn.storeSlug.tableNumber.partySize.select.label")}
       name="partySize"
@@ -57,7 +65,7 @@ const OrderModeDineInStoreSlugTableNumberSelect = ({
             ),
         },
       }}
-      value={""}
+      value={partySize ? Number(partySize) : ""}
     >
       <MenuItem disabled value="">
         <em>
@@ -78,7 +86,7 @@ const OrderModeDineInStoreSlugTableNumberSelect = ({
           </MenuItem>
         ),
       )}
-    </TextField>
+    </StyledTextField>
   );
 };
 

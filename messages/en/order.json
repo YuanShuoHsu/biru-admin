@@ -27,6 +27,7 @@
       "label": "Dine-in",
       "storeSlug": {
         "tableNumber": {
+          "label": "Table",
           "partySize": {
             "select": {
               "label": "Select party size",

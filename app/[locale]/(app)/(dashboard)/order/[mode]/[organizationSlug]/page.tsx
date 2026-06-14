@@ -1,7 +1,10 @@
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
+import { Stack } from "@mui/material";
+
 import OrderMenuContent from "@/components/OrderMenuContent";
+import OrderModeDineInStoreSlugTableNumberDisplay from "@/components/OrderModeDineInStoreSlugTableNumberDisplay";
 import OrderModeDineInStoreSlugTableNumberSelect from "@/components/OrderModeDineInStoreSlugTableNumberSelect";
 
 import { ORDER_MODE } from "@/constants/orderMode";
@@ -42,10 +45,13 @@ const OrderModeOrganizationSlugPage = async ({
 
   if (!partySize) {
     return (
-      <OrderModeDineInStoreSlugTableNumberSelect
-        organizationSlug={organizationSlug}
-        tableNumber={tableNumber}
-      />
+      <Stack alignItems={{ sm: "flex-end" }} gap={2}>
+        <OrderModeDineInStoreSlugTableNumberDisplay tableNumber={tableNumber} />
+        <OrderModeDineInStoreSlugTableNumberSelect
+          organizationSlug={organizationSlug}
+          tableNumber={tableNumber}
+        />
+      </Stack>
     );
   }
 
@@ -57,7 +63,24 @@ const OrderModeOrganizationSlugPage = async ({
 
   if (!isValidPartySize) return notFound();
 
-  return <OrderMenuContent />;
+  return (
+    <>
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        justifyContent={{ sm: "flex-end" }}
+        alignItems={{ xs: "stretch", sm: "center" }}
+        gap={2}
+      >
+        <OrderModeDineInStoreSlugTableNumberDisplay tableNumber={tableNumber} />
+        <OrderModeDineInStoreSlugTableNumberSelect
+          organizationSlug={organizationSlug}
+          partySize={partySize}
+          tableNumber={tableNumber}
+        />
+      </Stack>
+      <OrderMenuContent />
+    </>
+  );
 };
 
 export default OrderModeOrganizationSlugPage;
