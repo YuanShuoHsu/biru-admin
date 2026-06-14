@@ -29,8 +29,14 @@ const OrderModeOrganizationSlugStepperLayout = async ({
   const base = `/order/${mode}/${organizationSlug}`;
   const steps = [
     { label: tOrder("label"), path: base },
-    { label: tOrder("mode.storeSlug.tableNumber.stepper.checkout.label"), path: `${base}/checkout` },
-    { label: tOrder("mode.storeSlug.tableNumber.stepper.complete.label"), path: `${base}/complete` },
+    {
+      label: tOrder("mode.storeSlug.tableNumber.stepper.checkout.label"),
+      path: `${base}/checkout`,
+    },
+    {
+      label: tOrder("mode.storeSlug.tableNumber.stepper.complete.label"),
+      path: `${base}/complete`,
+    },
   ];
 
   return (
