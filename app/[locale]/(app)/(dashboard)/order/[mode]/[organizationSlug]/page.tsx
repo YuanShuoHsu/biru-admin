@@ -71,9 +71,9 @@ const OrderModeOrganizationSlugPage = async ({
   return (
     <>
       <Stack
-        alignItems="center"
         direction="row"
         justifyContent={{ sm: "flex-end" }}
+        alignItems="center"
         gap={2}
       >
         <OrderModeDineInStoreSlugTableNumberDisplay tableNumber={tableNumber} />
