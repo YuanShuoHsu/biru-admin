@@ -15,9 +15,7 @@ interface OrderTableNumberChipProps {
   tableNumber: string;
 }
 
-const OrderTableNumberChip = ({
-  tableNumber,
-}: OrderTableNumberChipProps) => {
+const OrderTableNumberChip = ({ tableNumber }: OrderTableNumberChipProps) => {
   const tOrder = useTranslations("order");
 
   return (
