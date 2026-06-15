@@ -45,7 +45,12 @@ const OrderModeOrganizationSlugPage = async ({
 
   if (!partySize) {
     return (
-      <Stack alignItems="center" direction="row" gap={2}>
+      <Stack
+        direction="row"
+        justifyContent={{ sm: "flex-end" }}
+        alignItems="center"
+        gap={2}
+      >
         <OrderModeDineInStoreSlugTableNumberDisplay tableNumber={tableNumber} />
         <OrderModeDineInStoreSlugTableNumberSelect
           organizationSlug={organizationSlug}
