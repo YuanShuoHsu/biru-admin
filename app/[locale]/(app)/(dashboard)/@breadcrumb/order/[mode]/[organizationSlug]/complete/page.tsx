@@ -15,9 +15,9 @@ const BreadcrumbOrderModeOrganizationSlugCompletePage = async ({
 
   const organization = await fetcher<OrganizationResponse>(
     `/api/organizations/${organizationSlug}`,
-  );
+  ).catch(() => null);
 
-  return <RouterBreadcrumbs organizationName={organization.name} />;
+  return <RouterBreadcrumbs organizationName={organization?.name || ""} />;
 };
 
 export default BreadcrumbOrderModeOrganizationSlugCompletePage;
