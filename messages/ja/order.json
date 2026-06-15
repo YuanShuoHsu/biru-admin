@@ -1,4 +1,17 @@
 {
+  "checkout": {
+    "name": "お名前",
+    "notes": "備考",
+    "payment": {
+      "Cash": "現金",
+      "Credit": "クレジットカード",
+      "TWQR": "モバイル決済",
+      "WeiXin": "WeChat Pay"
+    },
+    "placeOrder": "注文する",
+    "title": "お客様情報とお支払い",
+    "tradeDesc": "お食事代"
+  },
   "label": "注文",
   "menuItem": {
     "addOn": "追加",

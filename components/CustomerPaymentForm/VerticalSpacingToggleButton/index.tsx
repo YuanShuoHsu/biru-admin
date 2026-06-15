@@ -2,6 +2,7 @@
 // https://mui.com/material-ui/react-toggle-button/#VerticalSpacingToggleButton.tsx
 // https://mui.com/material-ui/react-radio-button/#RadioButtons.tsx
 
+import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 
 import { ORDER_MODE } from "@/constants/orderMode";
@@ -25,33 +26,6 @@ import { styled } from "@mui/material/styles";
 
 import type { OrderMode } from "@/types/orderMode";
 import type { PaymentMethod } from "@/types/payment";
-
-const paymentOptions = (mode: OrderMode | null) => [
-  ...(mode === ORDER_MODE.DineIn
-    ? [
-        {
-          id: "Cash",
-          icon: Payments,
-          label: "現金",
-        },
-      ]
-    : []),
-  {
-    id: "Credit",
-    icon: CreditCard,
-    label: "信用卡",
-  },
-  {
-    id: "TWQR",
-    icon: QrCodeScanner,
-    label: "行動支付",
-  },
-  {
-    id: "WeiXin",
-    icon: MarkChatRead,
-    label: "微信支付",
-  },
-];
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -103,6 +77,16 @@ const VerticalSpacingToggleButton = ({
 }: VerticalSpacingToggleButtonProps) => {
   const searchParams = useSearchParams();
   const mode = searchParams.get("mode") as OrderMode | null;
+  const tOrder = useTranslations("order");
+
+  const paymentOptions = [
+    ...(mode === ORDER_MODE.DineIn
+      ? [{ id: "Cash", icon: Payments, label: tOrder("checkout.payment.Cash") }]
+      : []),
+    { id: "Credit", icon: CreditCard, label: tOrder("checkout.payment.Credit") },
+    { id: "TWQR", icon: QrCodeScanner, label: tOrder("checkout.payment.TWQR") },
+    { id: "WeiXin", icon: MarkChatRead, label: tOrder("checkout.payment.WeiXin") },
+  ];
 
   const handlePaymentChange = (
     _: React.MouseEvent<HTMLElement>,
@@ -119,7 +103,7 @@ const VerticalSpacingToggleButton = ({
         value={payment}
         size="small"
       >
-        {paymentOptions(mode).map(({ id, icon: Icon, label }) => (
+        {paymentOptions.map(({ id, icon: Icon, label }) => (
           <StyledToggleButton aria-label={label} key={id} value={id}>
             <Stack
               display="flex"

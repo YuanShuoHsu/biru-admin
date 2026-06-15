@@ -92,7 +92,7 @@ const CustomerPaymentForm = () => {
     const dto = {
       base: {
         TotalAmount: cartTotalAmount,
-        TradeDesc: "餐點付款",
+        TradeDesc: tOrder("checkout.tradeDesc"),
         ItemName: cartItemsList
           .map(({ menuItemId, modifiers, addOns, quantity }) => {
             const itemName = getItemName(menu, menuItemId);
@@ -137,11 +137,11 @@ const CustomerPaymentForm = () => {
   return (
     <StyledPaper component="form" onSubmit={handleSubmit}>
       <Typography component="span" variant="subtitle1">
-        顧客資訊與付款
+        {tOrder("checkout.title")}
       </Typography>
       <TextField
         fullWidth
-        label="姓名"
+        label={tOrder("checkout.name")}
         name="name"
         onChange={handleInfoChange}
         required
@@ -149,7 +149,7 @@ const CustomerPaymentForm = () => {
       />
       <TextField
         fullWidth
-        label="備註"
+        label={tOrder("checkout.notes")}
         maxRows={4}
         multiline
         name="notes"
@@ -172,7 +172,7 @@ const CustomerPaymentForm = () => {
         type="submit"
         variant="contained"
       >
-        下單
+        {tOrder("checkout.placeOrder")}
       </Button>
     </StyledPaper>
   );
