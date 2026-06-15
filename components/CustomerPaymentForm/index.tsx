@@ -216,7 +216,12 @@ const CustomerPaymentForm = () => {
   return (
     <FormCard onSubmit={handleSubmit}>
       <StyledCardContent>
-        <Typography alignSelf="flex-start" color="text.secondary" fontWeight="bold" variant="subtitle2">
+        <Typography
+          alignSelf="flex-start"
+          color="text.secondary"
+          fontWeight="bold"
+          variant="subtitle2"
+        >
           {tOrder("checkout.title")}
         </Typography>
         <TextField
