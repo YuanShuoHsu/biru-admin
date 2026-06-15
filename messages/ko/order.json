@@ -1,15 +1,18 @@
 {
   "checkout": {
+    "email": "이메일",
     "name": "이름",
     "notes": "메모",
+    "phone": "전화번호",
     "payment": {
       "Cash": "현금",
       "Credit": "신용카드",
       "TWQR": "모바일 결제",
       "WeiXin": "위챗페이"
     },
+    "paymentMethod": "결제 방법",
     "placeOrder": "주문하기",
-    "title": "고객 정보 및 결제",
+    "title": "고객 정보",
     "tradeDesc": "식사 결제"
   },
   "label": "주문",

@@ -14,7 +14,6 @@ import {
   QrCodeScanner,
 } from "@mui/icons-material";
 import {
-  Paper,
   Radio,
   Stack,
   ToggleButton,
@@ -26,11 +25,6 @@ import { styled } from "@mui/material/styles";
 
 import type { OrderMode } from "@/types/orderMode";
 import type { PaymentMethod } from "@/types/payment";
-
-const StyledPaper = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(2),
-  border: `1px solid rgba(${theme.vars.palette.common.onBackgroundChannel} / 0.23)`,
-}));
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
   width: "100%",
@@ -102,38 +96,36 @@ const VerticalSpacingToggleButton = ({
   ) => setPayment(newPayment);
 
   return (
-    <StyledPaper elevation={0}>
-      <StyledToggleButtonGroup
-        aria-label="payment method selection"
-        exclusive
-        onChange={handlePaymentChange}
-        orientation="vertical"
-        value={payment}
-        size="small"
-      >
-        {paymentOptions.map(({ id, icon: Icon, label }) => (
-          <StyledToggleButton aria-label={label} key={id} value={id}>
-            <Stack
-              display="flex"
-              flexDirection="row"
-              alignItems="center"
-              gap={2}
-            >
-              <Icon />
-              <Typography>{label}</Typography>
-            </Stack>
-            <StyledRadio
-              aria-label={label}
-              key={id}
-              checked={payment === id}
-              name="radio-buttons"
-              size="small"
-              value={id}
-            />
-          </StyledToggleButton>
-        ))}
-      </StyledToggleButtonGroup>
-    </StyledPaper>
+    <StyledToggleButtonGroup
+      aria-label="payment method selection"
+      exclusive
+      onChange={handlePaymentChange}
+      orientation="vertical"
+      value={payment}
+      size="small"
+    >
+      {paymentOptions.map(({ id, icon: Icon, label }) => (
+        <StyledToggleButton aria-label={label} key={id} value={id}>
+          <Stack
+            display="flex"
+            flexDirection="row"
+            alignItems="center"
+            gap={2}
+          >
+            <Icon />
+            <Typography>{label}</Typography>
+          </Stack>
+          <StyledRadio
+            aria-label={label}
+            key={id}
+            checked={payment === id}
+            name="radio-buttons"
+            size="small"
+            value={id}
+          />
+        </StyledToggleButton>
+      ))}
+    </StyledToggleButtonGroup>
   );
 };
 

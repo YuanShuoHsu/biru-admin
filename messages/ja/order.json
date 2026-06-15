@@ -1,15 +1,18 @@
 {
   "checkout": {
+    "email": "メールアドレス",
     "name": "お名前",
     "notes": "備考",
+    "phone": "電話番号",
     "payment": {
       "Cash": "現金",
       "Credit": "クレジットカード",
       "TWQR": "モバイル決済",
       "WeiXin": "WeChat Pay"
     },
+    "paymentMethod": "お支払い方法",
     "placeOrder": "注文する",
-    "title": "お客様情報とお支払い",
+    "title": "お客様情報",
     "tradeDesc": "お食事代"
   },
   "label": "注文",

@@ -1,15 +1,18 @@
 {
   "checkout": {
+    "email": "Email",
     "name": "Name",
     "notes": "Notes",
+    "phone": "Phone",
     "payment": {
       "Cash": "Cash",
       "Credit": "Credit Card",
       "TWQR": "Mobile Payment",
       "WeiXin": "WeChat Pay"
     },
+    "paymentMethod": "Payment Method",
     "placeOrder": "Place Order",
-    "title": "Customer Info & Payment",
+    "title": "Customer Info",
     "tradeDesc": "Meal Payment"
   },
   "label": "Order",

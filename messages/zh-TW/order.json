@@ -1,15 +1,18 @@
 {
   "checkout": {
+    "email": "電子郵件",
     "name": "姓名",
     "notes": "備註",
+    "phone": "電話",
     "payment": {
       "Cash": "現金",
       "Credit": "信用卡",
       "TWQR": "行動支付",
       "WeiXin": "微信支付"
     },
+    "paymentMethod": "付款方式",
     "placeOrder": "下單",
-    "title": "顧客資訊與付款",
+    "title": "顧客資訊",
     "tradeDesc": "餐點付款"
   },
   "label": "點餐",
