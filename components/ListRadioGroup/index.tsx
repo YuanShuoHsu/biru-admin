@@ -36,13 +36,13 @@ interface ListRadioGroupProps {
   value: string;
 }
 
-export const ListRadioGroup = ({
+const ListRadioGroup = ({
   label,
   onChange,
   options,
   value,
 }: ListRadioGroupProps) => (
-  <Stack gap={2}>
+  <Stack width="100%" gap={2}>
     <Typography color="text.secondary" fontWeight="bold" variant="subtitle2">
       {label}
     </Typography>
@@ -67,3 +67,5 @@ export const ListRadioGroup = ({
     </Paper>
   </Stack>
 );
+
+export default ListRadioGroup;

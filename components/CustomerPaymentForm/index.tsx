@@ -11,7 +11,7 @@ import InvoiceForm, {
   type InvoiceType,
 } from "./InvoiceForm";
 
-import { ListRadioGroup } from "@/components/VerticalOptionCard";
+import ListRadioGroup from "@/components/ListRadioGroup";
 
 import { localeConfigs } from "@/constants/locale";
 import { ORDER_MODE } from "@/constants/orderMode";
@@ -23,15 +23,18 @@ import {
   Payments,
   QrCodeScanner,
 } from "@mui/icons-material";
+import FormCard, {
+  StyledCardActions,
+  StyledCardContent,
+  StyledCardHeader,
+} from "@/components/FormCard";
+
 import {
   Button,
   Divider,
-  Paper,
-  type PaperProps,
   TextField,
   Typography,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
 
 import { useCartStore } from "@/providers/cart-store-provider";
 import { useMenuStore } from "@/providers/menu-store-provider";
@@ -50,14 +53,6 @@ const sendRequest = async (url: string, { arg }: { arg: CreateEcpayDto }) =>
     body: JSON.stringify(arg),
   }).then((res) => res.json());
 
-const StyledPaper = styled((props: PaperProps) => <Paper {...props} />)(
-  ({ theme }) => ({
-    padding: theme.spacing(2),
-    display: "flex",
-    flexDirection: "column",
-    gap: theme.spacing(2),
-  }),
-);
 
 const CustomerPaymentForm = () => {
   const { mode } = useParams<Partial<RouteParams>>();
@@ -122,7 +117,7 @@ const CustomerPaymentForm = () => {
     setCustomerInfo({ ...customerInfo, [name]: value });
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLDivElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (payment === "Cash") {
@@ -226,82 +221,90 @@ const CustomerPaymentForm = () => {
   };
 
   return (
-    <StyledPaper component="form" onSubmit={handleSubmit}>
-      <Typography color="text.secondary" variant="subtitle2">
-        {tOrder("checkout.title")}
-      </Typography>
-      <TextField
-        fullWidth
-        label={tOrder("checkout.name")}
-        name="name"
-        onChange={handleInfoChange}
-        required
-        value={customerInfo.name}
-      />
-      <TextField
-        fullWidth
-        label={tOrder("checkout.phone")}
-        name="phone"
-        onChange={handleInfoChange}
-        required={isPickup}
-        type="tel"
-        value={customerInfo.phone}
-      />
-      <TextField
-        fullWidth
-        label={tOrder("checkout.email")}
-        name="email"
-        onChange={handleInfoChange}
-        type="email"
-        value={customerInfo.email}
-      />
-      <TextField
-        fullWidth
-        label={tOrder("checkout.notes")}
-        maxRows={4}
-        multiline
-        name="notes"
-        onChange={handleInfoChange}
-        slotProps={{
-          htmlInput: {
-            maxLength: 50,
-          },
-        }}
-        value={customerInfo.notes}
-      />
-      {/* <CouponForm /> */}
-      <Divider />
-      <ListRadioGroup
-        label={tOrder("checkout.paymentMethod")}
-        onChange={(_, value) => setPayment(value as PaymentMethod)}
-        options={paymentOptions.map(({ icon, id, label }) => ({
-          icon,
-          label,
-          value: id,
-        }))}
-        value={payment || ""}
-      />
-      <Divider />
-      <InvoiceForm
-        invoiceInfo={invoiceInfo}
-        invoiceType={invoiceType}
-        setInvoiceInfo={setInvoiceInfo}
-        setInvoiceType={setInvoiceType}
-      />
-      <Button
-        disabled={
-          isCartEmpty || !payment || !isInvoiceValid(invoiceType, invoiceInfo)
+    <FormCard onSubmit={handleSubmit}>
+      <StyledCardHeader
+        title={
+          <Typography color="text.secondary" fontWeight="bold" variant="subtitle2">
+            {tOrder("checkout.title")}
+          </Typography>
         }
-        fullWidth
-        loading={isMutating}
-        loadingPosition="end"
-        size="large"
-        type="submit"
-        variant="contained"
-      >
-        {tOrder("checkout.placeOrder")}
-      </Button>
-    </StyledPaper>
+      />
+      <StyledCardContent>
+        <TextField
+          fullWidth
+          label={tOrder("checkout.name")}
+          name="name"
+          onChange={handleInfoChange}
+          required
+          value={customerInfo.name}
+        />
+        <TextField
+          fullWidth
+          label={tOrder("checkout.phone")}
+          name="phone"
+          onChange={handleInfoChange}
+          required={isPickup}
+          type="tel"
+          value={customerInfo.phone}
+        />
+        <TextField
+          fullWidth
+          label={tOrder("checkout.email")}
+          name="email"
+          onChange={handleInfoChange}
+          type="email"
+          value={customerInfo.email}
+        />
+        <TextField
+          fullWidth
+          label={tOrder("checkout.notes")}
+          maxRows={4}
+          multiline
+          name="notes"
+          onChange={handleInfoChange}
+          slotProps={{
+            htmlInput: {
+              maxLength: 50,
+            },
+          }}
+          value={customerInfo.notes}
+        />
+        {/* <CouponForm /> */}
+        <Divider flexItem />
+        <ListRadioGroup
+          label={tOrder("checkout.paymentMethod")}
+          onChange={(_, value) => setPayment(value as PaymentMethod)}
+          options={paymentOptions.map(({ icon, id, label }) => ({
+            icon,
+            label,
+            value: id,
+          }))}
+          value={payment || ""}
+        />
+        <Divider flexItem />
+        <InvoiceForm
+          invoiceInfo={invoiceInfo}
+          invoiceType={invoiceType}
+          setInvoiceInfo={setInvoiceInfo}
+          setInvoiceType={setInvoiceType}
+        />
+      </StyledCardContent>
+      <StyledCardActions disableSpacing>
+        <Button
+          disabled={
+            isCartEmpty || !payment || !isInvoiceValid(invoiceType, invoiceInfo)
+          }
+          fullWidth
+          loading={isMutating}
+          loadingPosition="end"
+          size="large"
+          type="submit"
+          variant="contained"
+        >
+          {tOrder("checkout.placeOrder")}
+        </Button>
+      </StyledCardActions>
+    </FormCard>
   );
 };
 

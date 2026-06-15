@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
-import { ListRadioGroup } from "@/components/VerticalOptionCard";
+import ListRadioGroup from "@/components/ListRadioGroup";
 
 import { Stack, TextField } from "@mui/material";
 
