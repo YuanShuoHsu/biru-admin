@@ -83,9 +83,17 @@ const VerticalSpacingToggleButton = ({
     ...(mode === ORDER_MODE.DineIn
       ? [{ id: "Cash", icon: Payments, label: tOrder("checkout.payment.Cash") }]
       : []),
-    { id: "Credit", icon: CreditCard, label: tOrder("checkout.payment.Credit") },
+    {
+      id: "Credit",
+      icon: CreditCard,
+      label: tOrder("checkout.payment.Credit"),
+    },
     { id: "TWQR", icon: QrCodeScanner, label: tOrder("checkout.payment.TWQR") },
-    { id: "WeiXin", icon: MarkChatRead, label: tOrder("checkout.payment.WeiXin") },
+    {
+      id: "WeiXin",
+      icon: MarkChatRead,
+      label: tOrder("checkout.payment.WeiXin"),
+    },
   ];
 
   const handlePaymentChange = (
