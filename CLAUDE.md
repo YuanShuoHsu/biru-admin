@@ -63,3 +63,12 @@ MUI v7 with a custom theme (`theme.ts`) supporting light/dark via CSS variables 
 ### Path Alias
 
 `@/` maps to the project root. Use it for all non-relative imports.
+
+## biru Sync
+
+Mirror repo (frontend): `/Users/yuanshuohsu/Desktop/biru`. Changes in either repo must be synced to the other.
+
+Superset files (admin is a superset of frontend — transplant hunks only, never overwrite the whole file):
+`utils/menus.ts`, `CustomerPaymentForm`, `messages/*/common.json`, `types/api.ts`
+
+All other mirrored components, stores, hooks, constants, and messages can be synced with `cp`.
