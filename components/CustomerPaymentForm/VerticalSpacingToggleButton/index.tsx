@@ -106,12 +106,7 @@ const VerticalSpacingToggleButton = ({
     >
       {paymentOptions.map(({ id, icon: Icon, label }) => (
         <StyledToggleButton aria-label={label} key={id} value={id}>
-          <Stack
-            display="flex"
-            flexDirection="row"
-            alignItems="center"
-            gap={2}
-          >
+          <Stack display="flex" flexDirection="row" alignItems="center" gap={2}>
             <Icon />
             <Typography>{label}</Typography>
           </Stack>
