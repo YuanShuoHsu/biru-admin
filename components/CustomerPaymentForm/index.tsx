@@ -5,6 +5,11 @@ import { useParams, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import useSWRMutation from "swr/mutation";
 
+import InvoiceForm, {
+  isInvoiceValid,
+  type InvoiceInfo,
+  type InvoiceType,
+} from "./InvoiceForm";
 import VerticalSpacingToggleButton from "./VerticalSpacingToggleButton";
 
 import { localeConfigs } from "@/constants/locale";
@@ -61,6 +66,14 @@ const CustomerPaymentForm = () => {
 
   const [payment, setPayment] = useState<PaymentMethod | null>(null);
 
+  const [invoiceType, setInvoiceType] = useState<InvoiceType>("individual");
+  const [invoiceInfo, setInvoiceInfo] = useState<InvoiceInfo>({
+    carruerNum: "",
+    customerIdentifier: "",
+    customerName: "",
+    loveCode: "",
+  });
+
   const { isCartEmpty, cartItemsList } = useCartStore((state) => state);
   const { menu } = useMenuStore((state) => state);
   const { cartTotalAmount } = useCartTotals();
@@ -97,6 +110,52 @@ const CustomerPaymentForm = () => {
     const baseUrl = process.env.NEXT_PUBLIC_NEXT_URL;
     const completeUrl = `${baseUrl}/${locale}${completePath}`;
 
+    const buildInvoice = (): CreateEcpayDto["invoice"] => {
+      const common = {
+        CustomerEmail: customerInfo.email,
+        CustomerName: customerInfo.name,
+        CustomerPhone: customerInfo.phone,
+        DelayDay: "0",
+        Donation: "0",
+        InvType: "07",
+        TaxType: "1",
+      };
+      switch (invoiceType) {
+        case "individual":
+          return { ...common, CarruerType: "", Donation: "0", Print: "0" };
+        case "mobile":
+          return {
+            ...common,
+            CarruerNum: invoiceInfo.carruerNum,
+            CarruerType: "3",
+            Print: "0",
+          };
+        case "certificate":
+          return {
+            ...common,
+            CarruerNum: invoiceInfo.carruerNum,
+            CarruerType: "2",
+            Print: "0",
+          };
+        case "company":
+          return {
+            ...common,
+            CarruerType: "",
+            CustomerIdentifier: invoiceInfo.customerIdentifier,
+            CustomerName: invoiceInfo.customerName,
+            Print: "1",
+          };
+        case "donate":
+          return {
+            ...common,
+            CarruerType: "",
+            Donation: "1",
+            LoveCode: invoiceInfo.loveCode,
+            Print: "0",
+          };
+      }
+    };
+
     const dto = {
       base: {
         TotalAmount: cartTotalAmount,
@@ -128,6 +187,7 @@ const CustomerPaymentForm = () => {
         NeedExtraPaidInfo: "Y" as const,
         Language: localeConfigs[locale].ecpayLanguage,
       },
+      invoice: buildInvoice(),
     };
 
     const { data } = await trigger(dto);
@@ -192,8 +252,18 @@ const CustomerPaymentForm = () => {
         {tOrder("checkout.paymentMethod")}
       </Typography>
       <VerticalSpacingToggleButton payment={payment} setPayment={setPayment} />
+      <Divider />
+      <Typography color="text.secondary" variant="subtitle2">
+        {tOrder("checkout.invoice.title")}
+      </Typography>
+      <InvoiceForm
+        invoiceInfo={invoiceInfo}
+        invoiceType={invoiceType}
+        setInvoiceInfo={setInvoiceInfo}
+        setInvoiceType={setInvoiceType}
+      />
       <Button
-        disabled={isCartEmpty || !payment}
+        disabled={isCartEmpty || !payment || !isInvoiceValid(invoiceType, invoiceInfo)}
         fullWidth
         loading={isMutating}
         loadingPosition="end"

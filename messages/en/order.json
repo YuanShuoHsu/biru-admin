@@ -1,6 +1,21 @@
 {
   "checkout": {
     "email": "Email",
+    "invoice": {
+      "carruerNum": "Carrier Number",
+      "certificate": "Natural Person Certificate",
+      "certificateFormat": "16 uppercase alphanumeric characters",
+      "company": "Company Invoice",
+      "customerIdentifier": "Business ID Number",
+      "customerName": "Company Name",
+      "donate": "Donate Invoice",
+      "donateFormat": "3 to 7 digits",
+      "loveCode": "Love Code",
+      "mobile": "Mobile Barcode",
+      "mobileFormat": "Format: /XXXXXXX",
+      "individual": "Personal E-Invoice",
+      "title": "E-Invoice"
+    },
     "name": "Name",
     "notes": "Notes",
     "phone": "Phone",
