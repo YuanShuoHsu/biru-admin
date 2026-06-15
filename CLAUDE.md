@@ -66,9 +66,15 @@ MUI v7 with a custom theme (`theme.ts`) supporting light/dark via CSS variables 
 
 ## biru Sync
 
-Mirror repo (frontend): `/Users/yuanshuohsu/Desktop/biru`. Changes in either repo must be synced to the other.
+Mirror repo (frontend): `/Users/yuanshuohsu/Desktop/biru`. After completing any file changes, always sync to biru before considering the task done.
 
-Superset files (admin is a superset of frontend — transplant hunks only, never overwrite the whole file):
-`utils/menus.ts`, `CustomerPaymentForm`, `messages/*/common.json`, `types/api.ts`
+For each changed file, read both versions and decide:
 
-All other mirrored components, stores, hooks, constants, and messages can be synced with `cp`.
+1. **Superset files** (this repo has extra content — transplant only the changed hunks to biru, never overwrite the whole file):
+   `utils/menus.ts`, `CustomerPaymentForm`, `messages/*/common.json`, `types/api.ts`
+
+2. **All other mirrored files** — if biru has the same path, check whether its content differs only because it's an older version of this repo (safe to `cp`) or because it has intentional frontend-specific differences (transplant hunks only).
+
+3. **Renamed or deleted files** — apply the same operation in biru (rename directory, delete file).
+
+When unsure whether a difference is intentional, read the biru file first before deciding.
