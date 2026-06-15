@@ -29,12 +29,7 @@ import FormCard, {
   StyledCardHeader,
 } from "@/components/FormCard";
 
-import {
-  Button,
-  Divider,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, Divider, TextField, Typography } from "@mui/material";
 
 import { useCartStore } from "@/providers/cart-store-provider";
 import { useMenuStore } from "@/providers/menu-store-provider";
@@ -52,7 +47,6 @@ const sendRequest = async (url: string, { arg }: { arg: CreateEcpayDto }) =>
     method: "POST",
     body: JSON.stringify(arg),
   }).then((res) => res.json());
-
 
 const CustomerPaymentForm = () => {
   const { mode } = useParams<Partial<RouteParams>>();
@@ -224,7 +218,11 @@ const CustomerPaymentForm = () => {
     <FormCard onSubmit={handleSubmit}>
       <StyledCardHeader
         title={
-          <Typography color="text.secondary" fontWeight="bold" variant="subtitle2">
+          <Typography
+            color="text.secondary"
+            fontWeight="bold"
+            variant="subtitle2"
+          >
             {tOrder("checkout.title")}
           </Typography>
         }
