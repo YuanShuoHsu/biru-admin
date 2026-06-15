@@ -5,7 +5,7 @@ import type { Locale } from "@/i18n/routing";
 import OrderModeOrganizationSlugCheckout from ".";
 
 interface OrderModeOrganizationSlugCheckoutPageProps {
-  params: Promise<{ locale: Locale; mode: string; organizationSlug: string }>;
+  params: Promise<{ locale: Locale }>;
 }
 
 const OrderModeOrganizationSlugCheckoutPage = async ({
