@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 
 import ListRadioGroup from "@/components/ListRadioGroup";
 
-import { Stack, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 
 export type InvoiceType =
   | "certificate"
@@ -75,7 +75,7 @@ const InvoiceForm = ({
   };
 
   return (
-    <Stack gap={2}>
+    <>
       <ListRadioGroup
         label={tOrder("checkout.invoice.title")}
         onChange={handleTypeChange}
@@ -127,7 +127,7 @@ const InvoiceForm = ({
           value={invoiceInfo.loveCode}
         />
       )}
-    </Stack>
+    </>
   );
 };
 
