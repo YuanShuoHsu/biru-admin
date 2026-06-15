@@ -104,9 +104,17 @@ const CustomerPaymentForm = () => {
     ...(mode === ORDER_MODE.DineIn
       ? [{ icon: Payments, id: "Cash", label: tOrder("checkout.payment.Cash") }]
       : []),
-    { icon: CreditCard, id: "Credit", label: tOrder("checkout.payment.Credit") },
+    {
+      icon: CreditCard,
+      id: "Credit",
+      label: tOrder("checkout.payment.Credit"),
+    },
     { icon: QrCodeScanner, id: "TWQR", label: tOrder("checkout.payment.TWQR") },
-    { icon: MarkChatRead, id: "WeiXin", label: tOrder("checkout.payment.WeiXin") },
+    {
+      icon: MarkChatRead,
+      id: "WeiXin",
+      label: tOrder("checkout.payment.WeiXin"),
+    },
   ];
 
   const handleInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -264,15 +272,15 @@ const CustomerPaymentForm = () => {
       {/* <CouponForm /> */}
       <Divider />
       <ListRadioGroup
-          label={tOrder("checkout.paymentMethod")}
-          onChange={(_, value) => setPayment(value as PaymentMethod)}
-          options={paymentOptions.map(({ icon, id, label }) => ({
-            icon,
-            label,
-            value: id,
-          }))}
-          value={payment || ""}
-        />
+        label={tOrder("checkout.paymentMethod")}
+        onChange={(_, value) => setPayment(value as PaymentMethod)}
+        options={paymentOptions.map(({ icon, id, label }) => ({
+          icon,
+          label,
+          value: id,
+        }))}
+        value={payment || ""}
+      />
       <Divider />
       <InvoiceForm
         invoiceInfo={invoiceInfo}
