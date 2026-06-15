@@ -1,5 +1,5 @@
-import OrderModeDineInStoreSlugTableNumberDisplay from "@/components/OrderModeDineInStoreSlugTableNumberDisplay";
-import OrderModeDineInStoreSlugTableNumberSelect from "@/components/OrderModeDineInStoreSlugTableNumberSelect";
+import OrderTableNumberChip from "@/components/OrderTableNumberChip";
+import OrderPartySizeTextField from "@/components/OrderPartySizeTextField";
 
 import { ORDER_MODE } from "@/constants/orderMode";
 
@@ -26,8 +26,8 @@ const SubheaderOrderModeOrganizationSlugCheckoutPage = async ({
       alignItems="center"
       gap={2}
     >
-      <OrderModeDineInStoreSlugTableNumberDisplay tableNumber={tableNumber} />
-      <OrderModeDineInStoreSlugTableNumberSelect
+      <OrderTableNumberChip tableNumber={tableNumber} />
+      <OrderPartySizeTextField
         organizationSlug={organizationSlug}
         partySize={partySize}
         tableNumber={tableNumber}

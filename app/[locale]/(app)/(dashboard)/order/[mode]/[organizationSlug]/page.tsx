@@ -4,8 +4,8 @@ import { notFound } from "next/navigation";
 import { Stack } from "@mui/material";
 
 import OrderMenuContent from "@/components/OrderMenuContent";
-import OrderModeDineInStoreSlugTableNumberDisplay from "@/components/OrderModeDineInStoreSlugTableNumberDisplay";
-import OrderModeDineInStoreSlugTableNumberSelect from "@/components/OrderModeDineInStoreSlugTableNumberSelect";
+import OrderTableNumberChip from "@/components/OrderTableNumberChip";
+import OrderPartySizeTextField from "@/components/OrderPartySizeTextField";
 
 import { ORDER_MODE } from "@/constants/orderMode";
 import { PARTY_SIZE_MAX } from "@/constants/partySize";
@@ -51,8 +51,8 @@ const OrderModeOrganizationSlugPage = async ({
         alignItems="center"
         gap={2}
       >
-        <OrderModeDineInStoreSlugTableNumberDisplay tableNumber={tableNumber} />
-        <OrderModeDineInStoreSlugTableNumberSelect
+        <OrderTableNumberChip tableNumber={tableNumber} />
+        <OrderPartySizeTextField
           organizationSlug={organizationSlug}
           tableNumber={tableNumber}
         />
@@ -76,8 +76,8 @@ const OrderModeOrganizationSlugPage = async ({
         alignItems="center"
         gap={2}
       >
-        <OrderModeDineInStoreSlugTableNumberDisplay tableNumber={tableNumber} />
-        <OrderModeDineInStoreSlugTableNumberSelect
+        <OrderTableNumberChip tableNumber={tableNumber} />
+        <OrderPartySizeTextField
           organizationSlug={organizationSlug}
           partySize={partySize}
           tableNumber={tableNumber}

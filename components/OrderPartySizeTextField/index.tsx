@@ -19,17 +19,17 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   },
 }));
 
-interface OrderModeDineInStoreSlugTableNumberSelectProps {
+interface OrderPartySizeTextFieldProps {
   organizationSlug: Organization["slug"];
   partySize?: string;
   tableNumber: string;
 }
 
-const OrderModeDineInStoreSlugTableNumberSelect = ({
+const OrderPartySizeTextField = ({
   organizationSlug,
   partySize,
   tableNumber,
-}: OrderModeDineInStoreSlugTableNumberSelectProps) => {
+}: OrderPartySizeTextFieldProps) => {
   const router = useRouter();
 
   const tOrder = useTranslations("order");
@@ -92,4 +92,4 @@ const OrderModeDineInStoreSlugTableNumberSelect = ({
   );
 };
 
-export default OrderModeDineInStoreSlugTableNumberSelect;
+export default OrderPartySizeTextField;

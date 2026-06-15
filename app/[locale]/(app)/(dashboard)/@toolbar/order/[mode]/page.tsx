@@ -1,4 +1,4 @@
-import OrderOrganizationSlugSelect from "@/components/OrderOrganizationSlugSelect";
+import OrderOrganizationTextField from "@/components/OrderOrganizationTextField";
 
 import type { OrganizationResponse } from "@/types/organizations";
 
@@ -10,7 +10,7 @@ const ToolbarOrderModePage = async () => {
   ).catch(() => []);
 
   return (
-    <OrderOrganizationSlugSelect
+    <OrderOrganizationTextField
       organizations={organizations}
       organizationSlug=""
     />

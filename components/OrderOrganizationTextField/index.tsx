@@ -17,15 +17,15 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   },
 }));
 
-interface OrderOrganizationSlugSelectProps {
+interface OrderOrganizationTextFieldProps {
   organizations: OrganizationResponse[];
   organizationSlug: string;
 }
 
-const OrderOrganizationSlugSelect = ({
+const OrderOrganizationTextField = ({
   organizations,
   organizationSlug,
-}: OrderOrganizationSlugSelectProps) => {
+}: OrderOrganizationTextFieldProps) => {
   const { mode } = useParams();
 
   const router = useRouter();
@@ -60,12 +60,12 @@ const OrderOrganizationSlugSelect = ({
           : {
               displayEmpty: true,
               renderValue: (selected) => {
-                const organization = organizations.find(
+                const selectedOrganization = organizations.find(
                   ({ slug }) => slug === selected,
                 );
 
-                return organization ? (
-                  organization.name
+                return selectedOrganization ? (
+                  selectedOrganization.name
                 ) : (
                   <em>{tOrder("organizationSlug.select.placeholder")}</em>
                 );
@@ -94,4 +94,4 @@ const OrderOrganizationSlugSelect = ({
   );
 };
 
-export default OrderOrganizationSlugSelect;
+export default OrderOrganizationTextField;

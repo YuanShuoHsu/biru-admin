@@ -11,13 +11,13 @@ const StyledChip = styled(Chip)({
   height: "auto",
 });
 
-interface OrderModeDineInStoreSlugTableNumberDisplayProps {
+interface OrderTableNumberChipProps {
   tableNumber: string;
 }
 
-const OrderModeDineInStoreSlugTableNumberDisplay = ({
+const OrderTableNumberChip = ({
   tableNumber,
-}: OrderModeDineInStoreSlugTableNumberDisplayProps) => {
+}: OrderTableNumberChipProps) => {
   const tOrder = useTranslations("order");
 
   return (
@@ -39,4 +39,4 @@ const OrderModeDineInStoreSlugTableNumberDisplay = ({
   );
 };
 
-export default OrderModeDineInStoreSlugTableNumberDisplay;
+export default OrderTableNumberChip;
