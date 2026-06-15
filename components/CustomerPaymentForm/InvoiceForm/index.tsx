@@ -3,7 +3,13 @@
 import { useTranslations } from "next-intl";
 import StyledFormControlLabel from "@/components/StyledFormControlLabel";
 
-import { FormControl, Radio, RadioGroup, Stack, TextField } from "@mui/material";
+import {
+  FormControl,
+  Radio,
+  RadioGroup,
+  Stack,
+  TextField,
+} from "@mui/material";
 
 export type InvoiceType =
   | "certificate"

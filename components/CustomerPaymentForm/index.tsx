@@ -263,7 +263,9 @@ const CustomerPaymentForm = () => {
         setInvoiceType={setInvoiceType}
       />
       <Button
-        disabled={isCartEmpty || !payment || !isInvoiceValid(invoiceType, invoiceInfo)}
+        disabled={
+          isCartEmpty || !payment || !isInvoiceValid(invoiceType, invoiceInfo)
+        }
         fullWidth
         loading={isMutating}
         loadingPosition="end"
