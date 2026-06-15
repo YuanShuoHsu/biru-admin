@@ -18,14 +18,6 @@ export type InvoiceType =
   | "individual"
   | "mobile";
 
-const INVOICE_TYPES: InvoiceType[] = [
-  "individual",
-  "mobile",
-  "certificate",
-  "company",
-  "donate",
-];
-
 export interface InvoiceInfo {
   carruerNum: string;
   customerIdentifier: string;
@@ -53,6 +45,14 @@ export const isInvoiceValid = (
       return /^\d{3,7}$/.test(invoiceInfo.loveCode);
   }
 };
+
+const INVOICE_TYPES: InvoiceType[] = [
+  "individual",
+  "mobile",
+  "certificate",
+  "company",
+  "donate",
+];
 
 interface InvoiceFormProps {
   invoiceInfo: InvoiceInfo;

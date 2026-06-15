@@ -2,8 +2,10 @@
 // https://mui.com/material-ui/react-toggle-button/#VerticalSpacingToggleButton.tsx
 // https://mui.com/material-ui/react-radio-button/#RadioButtons.tsx
 
+"use client";
+
 import { useTranslations } from "next-intl";
-import { useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 
 import { ORDER_MODE } from "@/constants/orderMode";
 
@@ -23,8 +25,8 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import type { OrderMode } from "@/types/orderMode";
 import type { PaymentMethod } from "@/types/payment";
+import type { RouteParams } from "@/types/routeParams";
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
   width: "100%",
@@ -69,8 +71,7 @@ const VerticalSpacingToggleButton = ({
   payment,
   setPayment,
 }: VerticalSpacingToggleButtonProps) => {
-  const searchParams = useSearchParams();
-  const mode = searchParams.get("mode") as OrderMode | null;
+  const { mode } = useParams<Partial<RouteParams>>();
   const tOrder = useTranslations("order");
 
   const paymentOptions = [
@@ -101,18 +102,17 @@ const VerticalSpacingToggleButton = ({
       exclusive
       onChange={handlePaymentChange}
       orientation="vertical"
-      value={payment}
       size="small"
+      value={payment}
     >
       {paymentOptions.map(({ id, icon: Icon, label }) => (
         <StyledToggleButton aria-label={label} key={id} value={id}>
-          <Stack display="flex" flexDirection="row" alignItems="center" gap={2}>
+          <Stack flexDirection="row" alignItems="center" gap={2}>
             <Icon />
             <Typography>{label}</Typography>
           </Stack>
           <StyledRadio
             aria-label={label}
-            key={id}
             checked={payment === id}
             name="radio-buttons"
             size="small"

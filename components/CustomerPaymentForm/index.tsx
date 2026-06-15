@@ -16,7 +16,6 @@ import { localeConfigs } from "@/constants/locale";
 import { ORDER_MODE } from "@/constants/orderMode";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
-
 import {
   Button,
   Divider,
