@@ -10,12 +10,19 @@ import InvoiceForm, {
   type InvoiceInfo,
   type InvoiceType,
 } from "./InvoiceForm";
-import VerticalSpacingToggleButton from "./VerticalSpacingToggleButton";
+
+import { ListRadioGroup } from "@/components/VerticalOptionCard";
 
 import { localeConfigs } from "@/constants/locale";
 import { ORDER_MODE } from "@/constants/orderMode";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
+import {
+  CreditCard,
+  MarkChatRead,
+  Payments,
+  QrCodeScanner,
+} from "@mui/icons-material";
 import {
   Button,
   Divider,
@@ -92,6 +99,15 @@ const CustomerPaymentForm = () => {
 
   const tCommon = useTranslations("common");
   const tOrder = useTranslations("order");
+
+  const paymentOptions = [
+    ...(mode === ORDER_MODE.DineIn
+      ? [{ icon: Payments, id: "Cash", label: tOrder("checkout.payment.Cash") }]
+      : []),
+    { icon: CreditCard, id: "Credit", label: tOrder("checkout.payment.Credit") },
+    { icon: QrCodeScanner, id: "TWQR", label: tOrder("checkout.payment.TWQR") },
+    { icon: MarkChatRead, id: "WeiXin", label: tOrder("checkout.payment.WeiXin") },
+  ];
 
   const handleInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -247,14 +263,17 @@ const CustomerPaymentForm = () => {
       />
       {/* <CouponForm /> */}
       <Divider />
-      <Typography color="text.secondary" variant="subtitle2">
-        {tOrder("checkout.paymentMethod")}
-      </Typography>
-      <VerticalSpacingToggleButton payment={payment} setPayment={setPayment} />
+      <ListRadioGroup
+          label={tOrder("checkout.paymentMethod")}
+          onChange={(_, value) => setPayment(value as PaymentMethod)}
+          options={paymentOptions.map(({ icon, id, label }) => ({
+            icon,
+            label,
+            value: id,
+          }))}
+          value={payment || ""}
+        />
       <Divider />
-      <Typography color="text.secondary" variant="subtitle2">
-        {tOrder("checkout.invoice.title")}
-      </Typography>
       <InvoiceForm
         invoiceInfo={invoiceInfo}
         invoiceType={invoiceType}

@@ -1,15 +1,10 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import StyledFormControlLabel from "@/components/StyledFormControlLabel";
 
-import {
-  FormControl,
-  Radio,
-  RadioGroup,
-  Stack,
-  TextField,
-} from "@mui/material";
+import { ListRadioGroup } from "@/components/VerticalOptionCard";
+
+import { Stack, TextField } from "@mui/material";
 
 export type InvoiceType =
   | "certificate"
@@ -81,19 +76,15 @@ const InvoiceForm = ({
 
   return (
     <Stack gap={2}>
-      <FormControl>
-        <RadioGroup onChange={handleTypeChange} value={invoiceType}>
-          {INVOICE_TYPES.map((type) => (
-            <StyledFormControlLabel
-              checked={invoiceType === type}
-              control={<Radio size="small" />}
-              key={type}
-              label={tOrder(`checkout.invoice.${type}`)}
-              value={type}
-            />
-          ))}
-        </RadioGroup>
-      </FormControl>
+      <ListRadioGroup
+        label={tOrder("checkout.invoice.title")}
+        onChange={handleTypeChange}
+        options={INVOICE_TYPES.map((type) => ({
+          label: tOrder(`checkout.invoice.${type}`),
+          value: type,
+        }))}
+        value={invoiceType}
+      />
       {(invoiceType === "mobile" || invoiceType === "certificate") && (
         <TextField
           fullWidth
