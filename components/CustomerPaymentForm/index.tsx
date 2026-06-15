@@ -15,7 +15,6 @@ import {
   Button,
   Paper,
   type PaperProps,
-  Stack,
   TextField,
   Typography,
 } from "@mui/material";
@@ -62,7 +61,6 @@ const CustomerPaymentForm = () => {
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const tableNumber = searchParams.get("tableNumber");
   const search = searchParams.toString();
   const query = search ? `?${search}` : "";
   const completePath = `${pathname.replace("/checkout", "/complete")}${query}`;
@@ -138,26 +136,9 @@ const CustomerPaymentForm = () => {
 
   return (
     <StyledPaper component="form" onSubmit={handleSubmit}>
-      <Stack
-        flexDirection="row"
-        justifyContent="space-between"
-        alignItems="center"
-      >
-        <Typography component="span" variant="subtitle1">
-          顧客資訊與付款
-        </Typography>
-        <Typography
-          color="primary"
-          component="span"
-          fontWeight="bold"
-          variant="h6"
-        >
-          {/* {isDineIn
-            ? tCommon("tableNumber", { tableNumber })
-            : tOrder("mode.pickup.label")} */}
-          桌號 {tableNumber}
-        </Typography>
-      </Stack>
+      <Typography component="span" variant="subtitle1">
+        顧客資訊與付款
+      </Typography>
       <TextField
         fullWidth
         label="姓名"
