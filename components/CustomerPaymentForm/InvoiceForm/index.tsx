@@ -4,6 +4,13 @@ import { useTranslations } from "next-intl";
 
 import ListRadioGroup from "@/components/ListRadioGroup";
 
+import {
+  Badge,
+  Business,
+  ReceiptLong,
+  Smartphone,
+  VolunteerActivism,
+} from "@mui/icons-material";
 import { TextField } from "@mui/material";
 
 export type InvoiceType =
@@ -41,12 +48,12 @@ export const isInvoiceValid = (
   }
 };
 
-const INVOICE_TYPES: InvoiceType[] = [
-  "individual",
-  "mobile",
-  "certificate",
-  "company",
-  "donate",
+const INVOICE_TYPES: { icon: React.ElementType; type: InvoiceType }[] = [
+  { icon: ReceiptLong, type: "individual" },
+  { icon: Smartphone, type: "mobile" },
+  { icon: Badge, type: "certificate" },
+  { icon: Business, type: "company" },
+  { icon: VolunteerActivism, type: "donate" },
 ];
 
 interface InvoiceFormProps {
@@ -79,7 +86,8 @@ const InvoiceForm = ({
       <ListRadioGroup
         label={tOrder("checkout.invoice.title")}
         onChange={handleTypeChange}
-        options={INVOICE_TYPES.map((type) => ({
+        options={INVOICE_TYPES.map(({ icon, type }) => ({
+          icon,
           label: tOrder(`checkout.invoice.${type}`),
           value: type,
         }))}
