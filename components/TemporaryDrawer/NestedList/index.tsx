@@ -69,9 +69,8 @@ const StyledDivider = styled(Divider, {
   marginLeft: theme.spacing(level * 2),
 }));
 
-// 等 order 完成後要修正
-const DineInMenuItem = () => {
-  const { mode, organizationSlug } = useParams<RouteParams>();
+const DineInMenuItem = ({ level }: { level: number }) => {
+  const { organizationSlug } = useParams<RouteParams>();
 
   const router = useRouter();
 
@@ -88,11 +87,14 @@ const DineInMenuItem = () => {
 
   const handleClick = () =>
     router.push(
-      getHref(`/order/${mode}/${organizationSlug}`, { tableNumber, partySize }),
+      getHref(`/order/${ORDER_MODE.DineIn}/${organizationSlug}`, {
+        tableNumber,
+        partySize,
+      }),
     );
 
   return (
-    <StyledListItemButton onClick={handleClick} selected>
+    <StyledListItemButton level={level} onClick={handleClick} selected>
       <Stack
         width="100%"
         flexDirection="row"
@@ -168,7 +170,7 @@ const useNavItems = (): MenuItem[] => {
   const accountChildren: MenuItem[] = [
     settingsItem,
     logoutMenuItem,
-    { slot: ({ level = 0 }) => <StyledDivider level={level} /> },
+    { slot: ({ level }) => <StyledDivider level={level} /> },
     addAccountItem,
   ];
 
@@ -194,10 +196,13 @@ const useNavItems = (): MenuItem[] => {
   const tOrder = useTranslations("order");
   const tOrganizations = useTranslations("organizations");
 
-  const dineInChildren: MenuItem[] = [
-    ...(mode === ORDER_MODE.DineIn && organizationSlug
-      ? [{ slot: () => <DineInMenuItem /> }]
-      : []),
+  const dineInSlot: MenuItem[] =
+    mode === ORDER_MODE.DineIn && organizationSlug
+      ? [{ slot: ({ level }) => <DineInMenuItem level={level} /> }]
+      : [];
+
+  const orderChildren: MenuItem[] = [
+    ...dineInSlot,
     {
       icon: LocalMall,
       label: tOrder("mode.pickup.label"),
@@ -208,7 +213,7 @@ const useNavItems = (): MenuItem[] => {
   return [
     { icon: Dashboard, label: tDashboard("label"), to: "/dashboard" },
     {
-      children: dineInChildren,
+      children: orderChildren,
       icon: ShoppingCart,
       label: tOrder("label"),
       to: "/order",

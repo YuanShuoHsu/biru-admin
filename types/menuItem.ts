@@ -4,6 +4,6 @@ export interface MenuItem {
   icon?: React.ElementType;
   label?: string;
   onClick?: () => void;
-  slot?: (props: { level?: number }) => React.ReactNode;
+  slot?: (props: { level: number }) => React.ReactNode;
   to?: string;
 }
