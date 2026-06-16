@@ -265,6 +265,13 @@ const CustomerPaymentForm = () => {
         />
         {/* <CouponForm /> */}
         <Divider flexItem />
+        <InvoiceForm
+          invoiceInfo={invoiceInfo}
+          invoiceType={invoiceType}
+          setInvoiceInfo={setInvoiceInfo}
+          setInvoiceType={setInvoiceType}
+        />
+        <Divider flexItem />
         <ListRadioGroup
           label={tOrder("checkout.paymentMethod")}
           onChange={(_, value) => setPayment(value as PaymentMethod)}
@@ -274,13 +281,6 @@ const CustomerPaymentForm = () => {
             value: id,
           }))}
           value={payment || ""}
-        />
-        <Divider flexItem />
-        <InvoiceForm
-          invoiceInfo={invoiceInfo}
-          invoiceType={invoiceType}
-          setInvoiceInfo={setInvoiceInfo}
-          setInvoiceType={setInvoiceType}
         />
       </StyledCardContent>
       <StyledCardActions disableSpacing>
