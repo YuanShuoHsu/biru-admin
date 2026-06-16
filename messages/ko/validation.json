@@ -29,6 +29,12 @@
   "currentPassword": {
     "required": "현재 비밀번호는 필수입니다."
   },
+  "customerIdentifier": {
+    "invalid": "사업자 등록번호는 8자리 숫자여야 합니다."
+  },
+  "customerName": {
+    "required": "회사명은 필수입니다."
+  },
   "description": {
     "maxLength": "설명은 160자를 초과할 수 없습니다."
   },
@@ -67,6 +73,9 @@
     "match": "비밀번호와 일치.",
     "minLength": "8자 이상 길이.",
     "number": "숫자를 최소 1개 포함."
+  },
+  "payment": {
+    "required": "결제 방법을 선택해 주세요."
   },
   "phone": {
     "invalid": "전화번호가 유효하지 않습니다.",

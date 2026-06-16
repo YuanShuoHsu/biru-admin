@@ -2,26 +2,33 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useParams, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import useSWRMutation from "swr/mutation";
 
-import InvoiceForm, {
-  isInvoiceValid,
-  type InvoiceInfo,
+import {
+  type CustomerPaymentFormValues,
   type InvoiceType,
-} from "./InvoiceForm";
+  useCustomerPaymentFormSchema,
+} from "./definitions";
 
 import ListRadioGroup from "@/components/ListRadioGroup";
 
 import { localeConfigs } from "@/constants/locale";
 import { ORDER_MODE } from "@/constants/orderMode";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+
 import { usePathname, useRouter } from "@/i18n/navigation";
 import {
+  Badge,
+  Business,
   CreditCard,
   MarkChatRead,
   Payments,
   QrCodeScanner,
+  ReceiptLong,
+  Smartphone,
+  VolunteerActivism,
 } from "@mui/icons-material";
 import FormCard, {
   StyledCardActions,
@@ -39,33 +46,50 @@ import type { CreateEcpayDto } from "@/types/ecpay/createEcpayDto";
 import type { PaymentMethod } from "@/types/payment";
 import type { RouteParams } from "@/types/routeParams";
 
+import { sendRequest } from "@/utils/fetcher";
 import { getChoiceNames, getItemName } from "@/utils/menus";
 
-const sendRequest = async (url: string, { arg }: { arg: CreateEcpayDto }) =>
-  fetch(url, {
-    method: "POST",
-    body: JSON.stringify(arg),
-  }).then((res) => res.json());
+const INVOICE_TYPES: { icon: React.ElementType; type: InvoiceType }[] = [
+  { icon: ReceiptLong, type: "individual" },
+  { icon: Smartphone, type: "mobile" },
+  { icon: Badge, type: "certificate" },
+  { icon: Business, type: "company" },
+  { icon: VolunteerActivism, type: "donate" },
+];
 
 const CustomerPaymentForm = () => {
   const { mode } = useParams<Partial<RouteParams>>();
   const isPickup = mode === ORDER_MODE.Pickup;
 
-  const [customerInfo, setCustomerInfo] = useState({
-    email: "",
-    name: "",
-    notes: "",
-    phone: "",
+  const customerPaymentFormSchema = useCustomerPaymentFormSchema(isPickup);
+
+  const {
+    control,
+    formState: { errors, isSubmitted },
+    handleSubmit,
+    register,
+    setValue,
+  } = useForm<CustomerPaymentFormValues>({
+    defaultValues: {
+      email: "",
+      invoiceInfo: {
+        carruerNum: "",
+        customerIdentifier: "",
+        customerName: "",
+        loveCode: "",
+      },
+      invoiceType: "individual",
+      name: "",
+      notes: "",
+      payment: null,
+      phone: "",
+    },
+    resolver: zodResolver(customerPaymentFormSchema),
   });
 
-  const [payment, setPayment] = useState<PaymentMethod | null>(null);
-
-  const [invoiceType, setInvoiceType] = useState<InvoiceType>("individual");
-  const [invoiceInfo, setInvoiceInfo] = useState<InvoiceInfo>({
-    carruerNum: "",
-    customerIdentifier: "",
-    customerName: "",
-    loveCode: "",
+  const [invoiceType, payment] = useWatch({
+    control,
+    name: ["invoiceType", "payment"],
   });
 
   const { isCartEmpty, cartItemsList } = useCartStore((state) => state);
@@ -83,7 +107,10 @@ const CustomerPaymentForm = () => {
 
   const router = useRouter();
 
-  const { isMutating, trigger } = useSWRMutation("/api/ecpay", sendRequest);
+  const { isMutating, trigger } = useSWRMutation(
+    "/api/ecpay",
+    sendRequest<{ message: string }, CreateEcpayDto>(),
+  );
 
   const tCommon = useTranslations("common");
   const tOrder = useTranslations("order");
@@ -105,15 +132,8 @@ const CustomerPaymentForm = () => {
     },
   ];
 
-  const handleInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setCustomerInfo({ ...customerInfo, [name]: value });
-  };
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    if (payment === "Cash") {
+  const onSubmit = handleSubmit(async (values) => {
+    if (values.payment === "Cash") {
       router.replace(completePath);
       return;
     }
@@ -123,28 +143,28 @@ const CustomerPaymentForm = () => {
 
     const buildInvoice = (): CreateEcpayDto["invoice"] => {
       const common = {
-        CustomerEmail: customerInfo.email,
-        CustomerName: customerInfo.name,
-        CustomerPhone: customerInfo.phone,
+        CustomerEmail: values.email,
+        CustomerName: values.name,
+        CustomerPhone: values.phone,
         DelayDay: "0",
         Donation: "0",
         InvType: "07",
         TaxType: "1",
       };
-      switch (invoiceType) {
+      switch (values.invoiceType) {
         case "individual":
           return { ...common, CarruerType: "", Donation: "0", Print: "0" };
         case "mobile":
           return {
             ...common,
-            CarruerNum: invoiceInfo.carruerNum,
+            CarruerNum: values.invoiceInfo.carruerNum,
             CarruerType: "3",
             Print: "0",
           };
         case "certificate":
           return {
             ...common,
-            CarruerNum: invoiceInfo.carruerNum,
+            CarruerNum: values.invoiceInfo.carruerNum,
             CarruerType: "2",
             Print: "0",
           };
@@ -152,8 +172,8 @@ const CustomerPaymentForm = () => {
           return {
             ...common,
             CarruerType: "",
-            CustomerIdentifier: invoiceInfo.customerIdentifier,
-            CustomerName: invoiceInfo.customerName,
+            CustomerIdentifier: values.invoiceInfo.customerIdentifier,
+            CustomerName: values.invoiceInfo.customerName,
             Print: "1",
           };
         case "donate":
@@ -161,7 +181,7 @@ const CustomerPaymentForm = () => {
             ...common,
             CarruerType: "",
             Donation: "1",
-            LoveCode: invoiceInfo.loveCode,
+            LoveCode: values.invoiceInfo.loveCode,
             Print: "0",
           };
       }
@@ -192,7 +212,8 @@ const CustomerPaymentForm = () => {
             return `${itemName} ${formattedChoices} ${tCommon("multiply")} ${quantity}`;
           })
           .join("#"),
-        ChoosePayment: payment as CreateEcpayDto["base"]["ChoosePayment"],
+        ChoosePayment:
+          values.payment as CreateEcpayDto["base"]["ChoosePayment"],
         ClientBackURL: completeUrl,
         OrderResultURL: completeUrl,
         NeedExtraPaidInfo: "Y" as const,
@@ -201,7 +222,7 @@ const CustomerPaymentForm = () => {
       invoice: buildInvoice(),
     };
 
-    const { data } = await trigger(dto);
+    const { message: data } = await trigger(dto);
 
     const parser = new DOMParser();
     const doc = parser.parseFromString(data, "text/html");
@@ -211,10 +232,10 @@ const CustomerPaymentForm = () => {
       document.body.appendChild(form);
       form.submit();
     }
-  };
+  });
 
   return (
-    <FormCard onSubmit={handleSubmit}>
+    <FormCard onSubmit={onSubmit}>
       <StyledCardContent>
         <Typography
           alignSelf="flex-start"
@@ -225,56 +246,106 @@ const CustomerPaymentForm = () => {
           {tOrder("checkout.title")}
         </Typography>
         <TextField
+          error={!!errors.name}
           fullWidth
+          helperText={errors.name?.message}
           label={tOrder("checkout.name")}
-          name="name"
-          onChange={handleInfoChange}
           required
-          value={customerInfo.name}
+          {...register("name")}
         />
         <TextField
+          error={!!errors.phone}
           fullWidth
+          helperText={errors.phone?.message}
           label={tOrder("checkout.phone")}
-          name="phone"
-          onChange={handleInfoChange}
           required={isPickup}
           type="tel"
-          value={customerInfo.phone}
+          {...register("phone")}
         />
         <TextField
+          error={!!errors.email}
           fullWidth
+          helperText={errors.email?.message}
           label={tOrder("checkout.email")}
-          name="email"
-          onChange={handleInfoChange}
           type="email"
-          value={customerInfo.email}
+          {...register("email")}
         />
         <TextField
           fullWidth
           label={tOrder("checkout.notes")}
           maxRows={4}
           multiline
-          name="notes"
-          onChange={handleInfoChange}
           slotProps={{
             htmlInput: {
               maxLength: 50,
             },
           }}
-          value={customerInfo.notes}
+          {...register("notes")}
         />
         {/* <CouponForm /> */}
         <Divider flexItem />
-        <InvoiceForm
-          invoiceInfo={invoiceInfo}
-          invoiceType={invoiceType}
-          setInvoiceInfo={setInvoiceInfo}
-          setInvoiceType={setInvoiceType}
+        <ListRadioGroup
+          label={tOrder("checkout.invoice.title")}
+          onChange={(_, value) =>
+            setValue("invoiceType", value, { shouldValidate: isSubmitted })
+          }
+          options={INVOICE_TYPES.map(({ icon, type }) => ({
+            icon,
+            label: tOrder(`checkout.invoice.${type}`),
+            value: type,
+          }))}
+          value={invoiceType}
         />
+        {(invoiceType === "mobile" || invoiceType === "certificate") && (
+          <TextField
+            error={!!errors.invoiceInfo?.carruerNum}
+            fullWidth
+            helperText={tOrder(`checkout.invoice.${invoiceType}Format`)}
+            label={tOrder("checkout.invoice.carruerNum")}
+            required
+            {...register("invoiceInfo.carruerNum")}
+          />
+        )}
+        {invoiceType === "company" && (
+          <>
+            <TextField
+              error={!!errors.invoiceInfo?.customerIdentifier}
+              fullWidth
+              helperText={errors.invoiceInfo?.customerIdentifier?.message}
+              label={tOrder("checkout.invoice.customerIdentifier")}
+              required
+              {...register("invoiceInfo.customerIdentifier")}
+            />
+            <TextField
+              error={!!errors.invoiceInfo?.customerName}
+              fullWidth
+              helperText={errors.invoiceInfo?.customerName?.message}
+              label={tOrder("checkout.invoice.customerName")}
+              required
+              {...register("invoiceInfo.customerName")}
+            />
+          </>
+        )}
+        {invoiceType === "donate" && (
+          <TextField
+            error={!!errors.invoiceInfo?.loveCode}
+            fullWidth
+            helperText={tOrder("checkout.invoice.donateFormat")}
+            label={tOrder("checkout.invoice.loveCode")}
+            required
+            {...register("invoiceInfo.loveCode")}
+          />
+        )}
         <Divider flexItem />
         <ListRadioGroup
+          error={!!errors.payment}
+          helperText={errors.payment?.message}
           label={tOrder("checkout.paymentMethod")}
-          onChange={(_, value) => setPayment(value as PaymentMethod)}
+          onChange={(_, value) =>
+            setValue("payment", value as PaymentMethod, {
+              shouldValidate: isSubmitted,
+            })
+          }
           options={paymentOptions.map(({ icon, id, label }) => ({
             icon,
             label,
@@ -285,9 +356,7 @@ const CustomerPaymentForm = () => {
       </StyledCardContent>
       <StyledCardActions disableSpacing>
         <Button
-          disabled={
-            isCartEmpty || !payment || !isInvoiceValid(invoiceType, invoiceInfo)
-          }
+          disabled={isCartEmpty}
           fullWidth
           loading={isMutating}
           loadingPosition="end"

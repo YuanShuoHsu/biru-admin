@@ -29,6 +29,12 @@
   "currentPassword": {
     "required": "当前密码为必填。"
   },
+  "customerIdentifier": {
+    "invalid": "统一编号格式需为 8 位数字。"
+  },
+  "customerName": {
+    "required": "公司名称为必填。"
+  },
   "description": {
     "maxLength": "描述不能超过 160 个字符。"
   },
@@ -52,7 +58,7 @@
     "required": "选项组为必填。"
   },
   "name": {
-    "required": "名称为必填。"
+    "required": "姓名为必填。"
   },
   "newPassword": {
     "differentFromCurrent": "与当前密码不相同。",
@@ -67,6 +73,9 @@
     "match": "与密码一致。",
     "minLength": "至少 8 个字符长度。",
     "number": "包含至少一个数字。"
+  },
+  "payment": {
+    "required": "请选择付款方式。"
   },
   "phone": {
     "invalid": "电话号码无效。",

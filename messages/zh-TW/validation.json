@@ -29,6 +29,12 @@
   "currentPassword": {
     "required": "目前密碼為必填。"
   },
+  "customerIdentifier": {
+    "invalid": "統一編號格式需為 8 碼數字。"
+  },
+  "customerName": {
+    "required": "公司名稱為必填。"
+  },
   "description": {
     "maxLength": "描述不能超過 160 個字元。"
   },
@@ -52,7 +58,7 @@
     "required": "選項群組為必填。"
   },
   "name": {
-    "required": "名稱為必填。"
+    "required": "姓名為必填。"
   },
   "newPassword": {
     "differentFromCurrent": "與目前密碼不相同。",
@@ -67,6 +73,9 @@
     "match": "與密碼一致。",
     "minLength": "至少 8 個字元長度。",
     "number": "包含至少一個數字。"
+  },
+  "payment": {
+    "required": "請選擇付款方式。"
   },
   "phone": {
     "invalid": "電話號碼無效。",

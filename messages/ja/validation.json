@@ -29,6 +29,12 @@
   "currentPassword": {
     "required": "現在のパスワードは必須です。"
   },
+  "customerIdentifier": {
+    "invalid": "統一番号は8桁の数字で入力してください。"
+  },
+  "customerName": {
+    "required": "会社名は必須です。"
+  },
   "description": {
     "maxLength": "説明は160文字以内で入力してください。"
   },
@@ -52,7 +58,7 @@
     "required": "オプショングループは必須です。"
   },
   "name": {
-    "required": "名前は必須です。"
+    "required": "氏名は必須です。"
   },
   "newPassword": {
     "differentFromCurrent": "現在のパスワードと異なる。",
@@ -67,6 +73,9 @@
     "match": "パスワードと一致。",
     "minLength": "8文字以上の長さ。",
     "number": "数字を1文字以上含む。"
+  },
+  "payment": {
+    "required": "支払い方法を選択してください。"
   },
   "phone": {
     "invalid": "電話番号が無効です。",

@@ -8,11 +8,13 @@ import { Fragment } from "react";
 import {
   Divider,
   FormControlLabel,
+  FormHelperText,
   Paper,
   Radio,
   RadioGroup,
   Stack,
   Typography,
+  type FormHelperTextProps,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -23,31 +25,41 @@ const StyledFormControlLabel = styled(FormControlLabel)(({ theme }) => ({
   justifyContent: "space-between",
 }));
 
-interface ListRadioGroupOption {
+interface ListRadioGroupOption<T extends string> {
   icon?: React.ElementType;
   label: string;
-  value: string;
+  value: T;
 }
 
-interface ListRadioGroupProps {
+interface ListRadioGroupProps<T extends string> {
+  error?: FormHelperTextProps["error"];
+  helperText?: FormHelperTextProps["children"];
   label: string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>, value: string) => void;
-  options: ListRadioGroupOption[];
-  value: string;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>, value: T) => void;
+  options: ListRadioGroupOption<T>[];
+  value: T;
 }
 
-const ListRadioGroup = ({
+const ListRadioGroup = <T extends string>({
+  error,
+  helperText,
   label,
   onChange,
   options,
   value,
-}: ListRadioGroupProps) => (
+}: ListRadioGroupProps<T>) => (
   <Stack width="100%" gap={2}>
     <Typography color="text.secondary" fontWeight="bold" variant="subtitle2">
       {label}
     </Typography>
     <Paper variant="outlined">
-      <RadioGroup onChange={onChange} value={value}>
+      <RadioGroup
+        onChange={(event, optionValue) => {
+          const option = options.find(({ value }) => value === optionValue);
+          if (option) onChange(event, option.value);
+        }}
+        value={value}
+      >
         {options.map(({ icon: Icon, label, value: optionValue }, index) => (
           <Fragment key={optionValue}>
             {index !== 0 && <Divider />}
@@ -65,6 +77,7 @@ const ListRadioGroup = ({
         ))}
       </RadioGroup>
     </Paper>
+    {helperText && <FormHelperText error={error}>{helperText}</FormHelperText>}
   </Stack>
 );
 

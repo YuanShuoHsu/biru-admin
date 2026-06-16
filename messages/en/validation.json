@@ -29,6 +29,12 @@
   "currentPassword": {
     "required": "Current password is required."
   },
+  "customerIdentifier": {
+    "invalid": "Tax ID must be 8 digits."
+  },
+  "customerName": {
+    "required": "Company name is required."
+  },
   "description": {
     "maxLength": "Description must not exceed 160 characters."
   },
@@ -67,6 +73,9 @@
     "match": "Matches the password.",
     "minLength": "Be at least 8 characters long.",
     "number": "Contain at least one number."
+  },
+  "payment": {
+    "required": "Please select a payment method."
   },
   "phone": {
     "invalid": "Phone number is not valid.",
