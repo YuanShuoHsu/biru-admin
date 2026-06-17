@@ -1,4 +1,7 @@
 {
+  "banReason": {
+    "maxLength": "封禁原因不能超过 160 个字符。"
+  },
   "bio": {
     "maxLength": "个人简介不能超过 160 个字符。"
   },

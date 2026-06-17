@@ -1,4 +1,7 @@
 {
+  "banReason": {
+    "maxLength": "Ban reason must not exceed 160 characters."
+  },
   "bio": {
     "maxLength": "Bio must not exceed 160 characters."
   },
