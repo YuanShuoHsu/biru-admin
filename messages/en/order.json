@@ -2,6 +2,7 @@
   "checkout": {
     "email": "Email",
     "invoice": {
+      "carrierType": "Carrier Type",
       "carruerNum": "Carrier Number",
       "certificate": "Natural Person Certificate",
       "certificateFormat": "16 uppercase alphanumeric characters",
@@ -10,10 +11,11 @@
       "customerName": "Company Name",
       "donate": "Donate Invoice",
       "donateFormat": "3 to 7 digits",
+      "individual": "Email",
       "loveCode": "Love Code",
       "mobile": "Mobile Barcode",
       "mobileFormat": "Format: /XXXXXXX",
-      "individual": "Personal E-Invoice",
+      "personal": "Personal Invoice",
       "title": "E-Invoice"
     },
     "name": "Name",

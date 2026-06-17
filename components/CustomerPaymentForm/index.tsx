@@ -6,6 +6,7 @@ import { useForm, useWatch } from "react-hook-form";
 import useSWRMutation from "swr/mutation";
 
 import {
+  type CarrierType,
   type CustomerPaymentFormValues,
   type InvoiceType,
   useCustomerPaymentFormSchema,
@@ -25,6 +26,7 @@ import {
   CreditCard,
   MarkChatRead,
   Payments,
+  Person,
   QrCodeScanner,
   ReceiptLong,
   Smartphone,
@@ -50,11 +52,15 @@ import { sendRequest } from "@/utils/fetcher";
 import { getChoiceNames, getItemName } from "@/utils/menus";
 
 const INVOICE_TYPES: { icon: React.ElementType; type: InvoiceType }[] = [
+  { icon: Person, type: "personal" },
+  { icon: Business, type: "company" },
+  { icon: VolunteerActivism, type: "donate" },
+];
+
+const CARRIER_TYPES: { icon: React.ElementType; type: CarrierType }[] = [
   { icon: ReceiptLong, type: "individual" },
   { icon: Smartphone, type: "mobile" },
   { icon: Badge, type: "certificate" },
-  { icon: Business, type: "company" },
-  { icon: VolunteerActivism, type: "donate" },
 ];
 
 const CustomerPaymentForm = () => {
@@ -71,6 +77,7 @@ const CustomerPaymentForm = () => {
     setValue,
   } = useForm<CustomerPaymentFormValues>({
     defaultValues: {
+      carrierType: "individual",
       email: "",
       invoiceInfo: {
         carruerNum: "",
@@ -78,7 +85,7 @@ const CustomerPaymentForm = () => {
         customerName: "",
         loveCode: "",
       },
-      invoiceType: "individual",
+      invoiceType: "personal",
       name: "",
       notes: "",
       payment: null,
@@ -87,9 +94,9 @@ const CustomerPaymentForm = () => {
     resolver: zodResolver(customerPaymentFormSchema),
   });
 
-  const [invoiceType, payment] = useWatch({
+  const [carrierType, invoiceType, payment] = useWatch({
     control,
-    name: ["invoiceType", "payment"],
+    name: ["carrierType", "invoiceType", "payment"],
   });
 
   const { isCartEmpty, cartItemsList } = useCartStore((state) => state);
@@ -152,22 +159,26 @@ const CustomerPaymentForm = () => {
         TaxType: "1",
       };
       switch (values.invoiceType) {
-        case "individual":
-          return { ...common, CarruerType: "", Donation: "0", Print: "0" };
-        case "mobile":
-          return {
-            ...common,
-            CarruerNum: values.invoiceInfo.carruerNum,
-            CarruerType: "3",
-            Print: "0",
-          };
-        case "certificate":
-          return {
-            ...common,
-            CarruerNum: values.invoiceInfo.carruerNum,
-            CarruerType: "2",
-            Print: "0",
-          };
+        case "personal":
+          switch (values.carrierType) {
+            case "individual":
+              return { ...common, CarruerType: "", Donation: "0", Print: "0" };
+            case "mobile":
+              return {
+                ...common,
+                CarruerNum: values.invoiceInfo.carruerNum,
+                CarruerType: "3",
+                Print: "0",
+              };
+            case "certificate":
+              return {
+                ...common,
+                CarruerNum: values.invoiceInfo.carruerNum,
+                CarruerType: "2",
+                Print: "0",
+              };
+          }
+          break;
         case "company":
           return {
             ...common,
@@ -287,7 +298,9 @@ const CustomerPaymentForm = () => {
         <ListRadioGroup
           label={tOrder("checkout.invoice.title")}
           onChange={(_, value) =>
-            setValue("invoiceType", value, { shouldValidate: isSubmitted })
+            setValue("invoiceType", value as InvoiceType, {
+              shouldValidate: isSubmitted,
+            })
           }
           options={INVOICE_TYPES.map(({ icon, type }) => ({
             icon,
@@ -296,16 +309,33 @@ const CustomerPaymentForm = () => {
           }))}
           value={invoiceType}
         />
-        {(invoiceType === "mobile" || invoiceType === "certificate") && (
-          <TextField
-            error={!!errors.invoiceInfo?.carruerNum}
-            fullWidth
-            helperText={tOrder(`checkout.invoice.${invoiceType}Format`)}
-            label={tOrder("checkout.invoice.carruerNum")}
-            required
-            {...register("invoiceInfo.carruerNum")}
+        {invoiceType === "personal" && (
+          <ListRadioGroup
+            label={tOrder("checkout.invoice.carrierType")}
+            onChange={(_, value) =>
+              setValue("carrierType", value as CarrierType, {
+                shouldValidate: isSubmitted,
+              })
+            }
+            options={CARRIER_TYPES.map(({ icon, type }) => ({
+              icon,
+              label: tOrder(`checkout.invoice.${type}`),
+              value: type,
+            }))}
+            value={carrierType}
           />
         )}
+        {invoiceType === "personal" &&
+          (carrierType === "mobile" || carrierType === "certificate") && (
+            <TextField
+              error={!!errors.invoiceInfo?.carruerNum}
+              fullWidth
+              helperText={tOrder(`checkout.invoice.${carrierType}Format`)}
+              label={tOrder("checkout.invoice.carruerNum")}
+              required
+              {...register("invoiceInfo.carruerNum")}
+            />
+          )}
         {invoiceType === "company" && (
           <>
             <TextField

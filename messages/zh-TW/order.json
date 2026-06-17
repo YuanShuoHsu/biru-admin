@@ -2,6 +2,7 @@
   "checkout": {
     "email": "電子郵件",
     "invoice": {
+      "carrierType": "載具類型",
       "carruerNum": "載具號碼",
       "certificate": "自然人憑證",
       "certificateFormat": "格式：16 碼英數大寫",
@@ -10,10 +11,11 @@
       "customerName": "公司名稱",
       "donate": "捐贈發票",
       "donateFormat": "3 至 7 碼數字",
+      "individual": "電子信箱",
       "loveCode": "愛心碼",
       "mobile": "手機條碼",
       "mobileFormat": "格式：/XXXXXXX",
-      "individual": "個人電子發票",
+      "personal": "個人發票",
       "title": "電子發票"
     },
     "name": "姓名",

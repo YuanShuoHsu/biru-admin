@@ -2,6 +2,7 @@
   "checkout": {
     "email": "电子邮件",
     "invoice": {
+      "carrierType": "载具类型",
       "carruerNum": "载具号码",
       "certificate": "自然人凭证",
       "certificateFormat": "格式：16 位英数大写",
@@ -10,10 +11,11 @@
       "customerName": "公司名称",
       "donate": "捐赠发票",
       "donateFormat": "3 至 7 位数字",
+      "individual": "电子邮箱",
       "loveCode": "爱心码",
       "mobile": "手机条码",
       "mobileFormat": "格式：/XXXXXXX",
-      "individual": "个人电子发票",
+      "personal": "个人发票",
       "title": "电子发票"
     },
     "name": "姓名",

@@ -1,12 +1,8 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-export type InvoiceType =
-  | "certificate"
-  | "company"
-  | "donate"
-  | "individual"
-  | "mobile";
+export type InvoiceType = "company" | "donate" | "personal";
+export type CarrierType = "certificate" | "individual" | "mobile";
 
 export interface InvoiceInfo {
   carruerNum: string;
@@ -21,6 +17,7 @@ export const useCustomerPaymentFormSchema = (isPickup: boolean) => {
 
   return z
     .object({
+      carrierType: z.enum(["certificate", "individual", "mobile"]),
       email: z.union([
         z.literal(""),
         z.email({ error: tValidation("email.invalid") }),
@@ -31,13 +28,7 @@ export const useCustomerPaymentFormSchema = (isPickup: boolean) => {
         customerName: z.string().trim(),
         loveCode: z.string().trim(),
       }),
-      invoiceType: z.enum([
-        "certificate",
-        "company",
-        "donate",
-        "individual",
-        "mobile",
-      ]),
+      invoiceType: z.enum(["company", "donate", "personal"]),
       name: z
         .string()
         .min(1, { error: tValidation("name.required") })
@@ -64,22 +55,23 @@ export const useCustomerPaymentFormSchema = (isPickup: boolean) => {
       }
 
       switch (data.invoiceType) {
-        case "mobile":
-          if (!/^\/[A-Z0-9+\-.]{7}$/.test(data.invoiceInfo.carruerNum)) {
-            ctx.addIssue({
-              code: "custom",
-              message: tOrder("checkout.invoice.mobileFormat"),
-              path: ["invoiceInfo", "carruerNum"],
-            });
-          }
-          break;
-        case "certificate":
-          if (!/^[A-Z0-9]{16}$/.test(data.invoiceInfo.carruerNum)) {
-            ctx.addIssue({
-              code: "custom",
-              message: tOrder("checkout.invoice.certificateFormat"),
-              path: ["invoiceInfo", "carruerNum"],
-            });
+        case "personal":
+          if (data.carrierType === "mobile") {
+            if (!/^\/[A-Z0-9+\-.]{7}$/.test(data.invoiceInfo.carruerNum)) {
+              ctx.addIssue({
+                code: "custom",
+                message: tOrder("checkout.invoice.mobileFormat"),
+                path: ["invoiceInfo", "carruerNum"],
+              });
+            }
+          } else if (data.carrierType === "certificate") {
+            if (!/^[A-Z0-9]{16}$/.test(data.invoiceInfo.carruerNum)) {
+              ctx.addIssue({
+                code: "custom",
+                message: tOrder("checkout.invoice.certificateFormat"),
+                path: ["invoiceInfo", "carruerNum"],
+              });
+            }
           }
           break;
         case "company":
