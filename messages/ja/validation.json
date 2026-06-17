@@ -1,18 +1,21 @@
 {
+  "addOnMenuSectionId": {
+    "required": "アドオンセクションを選択してください。"
+  },
   "banReason": {
     "maxLength": "BAN理由は160文字以内で入力してください。"
   },
   "bio": {
     "maxLength": "自己紹介は160文字以内で入力してください。"
   },
-  "carrierType": {
-    "required": "キャリアタイプを選択してください。"
-  },
   "birthDate": {
     "invalid": "生年月日が無効です。",
     "maxDate": "今日以前の生年月日を選択してください。",
     "minDate": "1900-01-01以降の生年月日を選択してください。",
     "required": "生年月日は必須です。"
+  },
+  "carrierType": {
+    "required": "キャリアタイプを選択してください。"
   },
   "confirmNewPassword": {
     "mismatch": "パスワードが一致しません。",
@@ -38,6 +41,9 @@
   "customerName": {
     "required": "会社名は必須です。"
   },
+  "description": {
+    "maxLength": "説明は160文字以内で入力してください。"
+  },
   "email": {
     "invalid": "メールアドレスが無効です。",
     "required": "メールアドレスは必須です。"
@@ -48,11 +54,18 @@
   "gender": {
     "required": "性別は必須です。"
   },
+  "localizedText": {
+    "completeOrEmpty": "すべての言語フィールドを入力するか、すべて空白にしてください。",
+    "required": "多言語テキストを入力してください。"
+  },
+  "member": {
+    "required": "メンバーを選択してください。"
+  },
+  "modifierGroupId": {
+    "required": "修飾グループを選択してください。"
+  },
   "name": {
     "required": "氏名は必須です。"
-  },
-  "notes": {
-    "maxLength": "備考は160文字以内で入力してください。"
   },
   "newPassword": {
     "differentFromCurrent": "現在のパスワードと異なる。",
@@ -61,6 +74,9 @@
     "minLength": "8文字以上の長さ。",
     "number": "数字を1文字以上含む。",
     "sameAsCurrent": "新しいパスワードは現在のパスワードと異なる必要があります。"
+  },
+  "notes": {
+    "maxLength": "備考は160文字以内で入力してください。"
   },
   "password": {
     "letter": "英字を1文字以上含む。",
@@ -74,5 +90,24 @@
   "phone": {
     "invalid": "電話番号が無効です。",
     "required": "電話番号は必須です。"
+  },
+  "postalCode": {
+    "format": "郵便番号の形式が無効です。"
+  },
+  "price": {
+    "required": "価格を入力してください。"
+  },
+  "role": {
+    "required": "役割を選択してください。"
+  },
+  "searchField": {
+    "required": "検索フィールドを選択してください。"
+  },
+  "slug": {
+    "letter": "スラッグには少なくとも1つのアルファベットを含める必要があります。",
+    "required": "スラッグは必須です。"
+  },
+  "validFrom": {
+    "beforeValidThrough": "開始日は終了日より前でなければなりません。"
   }
 }

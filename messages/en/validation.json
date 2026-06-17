@@ -1,18 +1,21 @@
 {
+  "addOnMenuSectionId": {
+    "required": "Please select an add-on section."
+  },
   "banReason": {
     "maxLength": "Ban reason must not exceed 160 characters."
   },
   "bio": {
     "maxLength": "Bio must not exceed 160 characters."
   },
-  "carrierType": {
-    "required": "Please select a carrier type."
-  },
   "birthDate": {
     "invalid": "Birth date is not valid.",
     "maxDate": "Please select a birth date on or before today.",
     "minDate": "Please select a birth date on or after 1900-01-01.",
     "required": "Birth date is required."
+  },
+  "carrierType": {
+    "required": "Please select a carrier type."
   },
   "confirmNewPassword": {
     "mismatch": "Passwords do not match.",
@@ -38,6 +41,9 @@
   "customerName": {
     "required": "Company name is required."
   },
+  "description": {
+    "maxLength": "Description must not exceed 160 characters."
+  },
   "email": {
     "invalid": "Email is not valid.",
     "required": "Email is required."
@@ -48,11 +54,18 @@
   "gender": {
     "required": "Gender is required."
   },
+  "localizedText": {
+    "completeOrEmpty": "All language fields must be filled in or left empty together.",
+    "required": "Please fill in the localized text."
+  },
+  "member": {
+    "required": "Please select a member."
+  },
+  "modifierGroupId": {
+    "required": "Please select a modifier group."
+  },
   "name": {
     "required": "Name is required."
-  },
-  "notes": {
-    "maxLength": "Notes must not exceed 160 characters."
   },
   "newPassword": {
     "differentFromCurrent": "Be different from your current password.",
@@ -61,6 +74,9 @@
     "minLength": "Be at least 8 characters long.",
     "number": "Contain at least one number.",
     "sameAsCurrent": "New password must be different from your current password."
+  },
+  "notes": {
+    "maxLength": "Notes must not exceed 160 characters."
   },
   "password": {
     "letter": "Contain at least one letter.",
@@ -74,5 +90,24 @@
   "phone": {
     "invalid": "Phone number is not valid.",
     "required": "Phone is required."
+  },
+  "postalCode": {
+    "format": "Postal code format is invalid."
+  },
+  "price": {
+    "required": "Please enter a price."
+  },
+  "role": {
+    "required": "Please select a role."
+  },
+  "searchField": {
+    "required": "Please select a search field."
+  },
+  "slug": {
+    "letter": "Slug must contain at least one letter.",
+    "required": "Slug is required."
+  },
+  "validFrom": {
+    "beforeValidThrough": "Start date must be before end date."
   }
 }

@@ -1,18 +1,21 @@
 {
+  "addOnMenuSectionId": {
+    "required": "请选择加购区块。"
+  },
   "banReason": {
     "maxLength": "封禁原因不能超过 160 个字符。"
   },
   "bio": {
     "maxLength": "个人简介不能超过 160 个字符。"
   },
-  "carrierType": {
-    "required": "请选择载具类型。"
-  },
   "birthDate": {
     "invalid": "出生日期无效。",
     "maxDate": "请选择今天或之前的出生日期。",
     "minDate": "请选择 1900-01-01 或之后的出生日期。",
     "required": "出生日期为必填。"
+  },
+  "carrierType": {
+    "required": "请选择载具类型。"
   },
   "confirmNewPassword": {
     "mismatch": "两次输入的密码不一致。",
@@ -38,6 +41,9 @@
   "customerName": {
     "required": "公司名称为必填。"
   },
+  "description": {
+    "maxLength": "描述不能超过 160 个字符。"
+  },
   "email": {
     "invalid": "电子邮件无效。",
     "required": "电子邮件为必填。"
@@ -48,11 +54,18 @@
   "gender": {
     "required": "性别为必填。"
   },
+  "localizedText": {
+    "completeOrEmpty": "所有语言字段必须同时填写或同时留空。",
+    "required": "请填写多语言文字。"
+  },
+  "member": {
+    "required": "请选择成员。"
+  },
+  "modifierGroupId": {
+    "required": "请选择修饰组。"
+  },
   "name": {
     "required": "姓名为必填。"
-  },
-  "notes": {
-    "maxLength": "备注不能超过 160 个字符。"
   },
   "newPassword": {
     "differentFromCurrent": "与当前密码不相同。",
@@ -61,6 +74,9 @@
     "minLength": "至少 8 个字符长度。",
     "number": "包含至少一个数字。",
     "sameAsCurrent": "新密码不能与当前密码相同。"
+  },
+  "notes": {
+    "maxLength": "备注不能超过 160 个字符。"
   },
   "password": {
     "letter": "包含至少一个英文字母。",
@@ -74,5 +90,24 @@
   "phone": {
     "invalid": "电话号码无效。",
     "required": "电话号码为必填。"
+  },
+  "postalCode": {
+    "format": "邮政编码格式无效。"
+  },
+  "price": {
+    "required": "请输入价格。"
+  },
+  "role": {
+    "required": "请选择角色。"
+  },
+  "searchField": {
+    "required": "请选择搜索字段。"
+  },
+  "slug": {
+    "letter": "网址识别码必须包含至少一个英文字母。",
+    "required": "网址识别码为必填。"
+  },
+  "validFrom": {
+    "beforeValidThrough": "生效日期必须早于截止日期。"
   }
 }
