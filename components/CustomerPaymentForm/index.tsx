@@ -34,7 +34,13 @@ import FormCard, {
   StyledCardContent,
 } from "@/components/FormCard";
 
-import { Button, Divider, MenuItem, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  Divider,
+  MenuItem,
+  TextField,
+  Typography,
+} from "@mui/material";
 
 import { useCartStore } from "@/providers/cart-store-provider";
 import { useMenuStore } from "@/providers/menu-store-provider";
@@ -269,9 +275,7 @@ const CustomerPaymentForm = () => {
           fullWidth
           helperText={errors.email?.message}
           label={tOrder("checkout.email")}
-          required={
-            invoiceType === "personal" && carrierType === "individual"
-          }
+          required={invoiceType === "personal" && carrierType === "individual"}
           type="email"
           {...register("email")}
         />
