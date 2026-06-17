@@ -10,6 +10,7 @@
       "certificate": "自然人憑證",
       "certificateFormat": "格式：16 碼英數大寫",
       "company": "公司發票",
+      "customerAddr": "公司地址",
       "customerIdentifier": "統一編號",
       "customerName": "公司名稱",
       "donate": "捐贈發票",

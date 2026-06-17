@@ -19,6 +19,7 @@ export const useCustomerPaymentFormSchema = (isPickup: boolean) => {
         z.email({ error: tValidation("email.invalid") }),
       ]),
       invoiceInfo: z.object({
+        address: z.string().trim(),
         carruerNum: z.string().trim(),
         customerIdentifier: z.string().trim(),
         customerName: z.string().trim(),
@@ -92,6 +93,13 @@ export const useCustomerPaymentFormSchema = (isPickup: boolean) => {
           }
           break;
         case "company":
+          if (!data.invoiceInfo.address) {
+            ctx.addIssue({
+              code: "custom",
+              message: tValidation("customerAddr.required"),
+              path: ["invoiceInfo", "address"],
+            });
+          }
           if (!/^\d{8}$/.test(data.invoiceInfo.customerIdentifier)) {
             ctx.addIssue({
               code: "custom",

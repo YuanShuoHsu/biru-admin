@@ -26,6 +26,9 @@
   "currentPassword": {
     "required": "現在のパスワードは必須です。"
   },
+  "customerAddr": {
+    "required": "会社住所は必須です。"
+  },
   "customerIdentifier": {
     "invalid": "統一番号は8桁の数字で入力してください。"
   },

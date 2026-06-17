@@ -10,6 +10,7 @@
       "certificate": "自然人証明書",
       "certificateFormat": "半角英大文字・数字16文字",
       "company": "法人インボイス",
+      "customerAddr": "会社住所",
       "customerIdentifier": "統一番号",
       "customerName": "会社名",
       "donate": "寄付インボイス",

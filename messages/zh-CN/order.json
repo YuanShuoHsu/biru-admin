@@ -10,6 +10,7 @@
       "certificate": "自然人凭证",
       "certificateFormat": "格式：16 位英数大写",
       "company": "公司发票",
+      "customerAddr": "公司地址",
       "customerIdentifier": "统一编号",
       "customerName": "公司名称",
       "donate": "捐赠发票",

@@ -93,7 +93,7 @@ const LinkSection = () => {
               { label: childLabel, onClick, slot: Slot, to: childTo },
               itemIndex,
             ) => {
-              if (Slot) return <Slot key={itemIndex} />;
+              if (Slot) return <Slot key={itemIndex} level={0} />;
 
               return (
                 <Link

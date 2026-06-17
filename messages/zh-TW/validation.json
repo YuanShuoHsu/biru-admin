@@ -26,6 +26,9 @@
   "currentPassword": {
     "required": "目前密碼為必填。"
   },
+  "customerAddr": {
+    "required": "公司地址為必填。"
+  },
   "customerIdentifier": {
     "invalid": "統一編號格式需為 8 碼數字。"
   },

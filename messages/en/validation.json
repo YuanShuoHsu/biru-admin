@@ -26,6 +26,9 @@
   "currentPassword": {
     "required": "Current password is required."
   },
+  "customerAddr": {
+    "required": "Company address is required."
+  },
   "customerIdentifier": {
     "invalid": "Tax ID must be 8 digits."
   },

@@ -79,6 +79,7 @@ const CustomerPaymentForm = () => {
       carrierType: "individual",
       email: "",
       invoiceInfo: {
+        address: "",
         carruerNum: "",
         customerIdentifier: "",
         customerName: "",
@@ -180,6 +181,7 @@ const CustomerPaymentForm = () => {
           return {
             ...common,
             CarruerType: "",
+            CustomerAddr: values.invoiceInfo.address,
             CustomerIdentifier: values.invoiceInfo.customerIdentifier,
             CustomerName: values.invoiceInfo.customerName,
             Print: "1",
@@ -224,8 +226,9 @@ const CustomerPaymentForm = () => {
           values.payment as CreateEcpayDto["base"]["ChoosePayment"],
         ClientBackURL: completeUrl,
         OrderResultURL: completeUrl,
-        NeedExtraPaidInfo: "Y" as const,
         Language: localeConfigs[locale].ecpayLanguage,
+        NeedExtraPaidInfo: "Y" as const,
+        Remark: values.notes || undefined,
       },
       invoice: buildInvoice(),
     };
@@ -364,6 +367,14 @@ const CustomerPaymentForm = () => {
           )}
         {invoiceType === "company" && (
           <>
+            <TextField
+              error={!!errors.invoiceInfo?.address}
+              fullWidth
+              helperText={errors.invoiceInfo?.address?.message}
+              label={tOrder("checkout.invoice.customerAddr")}
+              required
+              {...register("invoiceInfo.address")}
+            />
             <TextField
               error={!!errors.invoiceInfo?.customerIdentifier}
               fullWidth

@@ -10,6 +10,7 @@
       "certificate": "자연인 인증서",
       "certificateFormat": "영대문자·숫자 16자리",
       "company": "사업자 영수증",
+      "customerAddr": "회사 주소",
       "customerIdentifier": "사업자 번호",
       "customerName": "회사명",
       "donate": "기부 영수증",

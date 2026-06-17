@@ -10,6 +10,7 @@
       "certificate": "Natural Person Certificate",
       "certificateFormat": "16 uppercase alphanumeric characters",
       "company": "Company Invoice",
+      "customerAddr": "Company Address",
       "customerIdentifier": "Business ID Number",
       "customerName": "Company Name",
       "donate": "Donate Invoice",
