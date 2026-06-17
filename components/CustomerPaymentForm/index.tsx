@@ -368,14 +368,6 @@ const CustomerPaymentForm = () => {
         {invoiceType === "company" && (
           <>
             <TextField
-              error={!!errors.invoiceInfo?.address}
-              fullWidth
-              helperText={errors.invoiceInfo?.address?.message}
-              label={tOrder("checkout.invoice.customerAddr")}
-              required
-              {...register("invoiceInfo.address")}
-            />
-            <TextField
               error={!!errors.invoiceInfo?.customerIdentifier}
               fullWidth
               helperText={errors.invoiceInfo?.customerIdentifier?.message}
@@ -390,6 +382,14 @@ const CustomerPaymentForm = () => {
               label={tOrder("checkout.invoice.customerName")}
               required
               {...register("invoiceInfo.customerName")}
+            />
+            <TextField
+              error={!!errors.invoiceInfo?.address}
+              fullWidth
+              helperText={errors.invoiceInfo?.address?.message}
+              label={tOrder("checkout.invoice.customerAddr")}
+              required
+              {...register("invoiceInfo.address")}
             />
           </>
         )}
