@@ -4,20 +4,16 @@ import * as z from "zod";
 export type InvoiceType = "company" | "donate" | "personal";
 export type CarrierType = "certificate" | "individual" | "mobile";
 
-export interface InvoiceInfo {
-  carruerNum: string;
-  customerIdentifier: string;
-  customerName: string;
-  loveCode: string;
-}
-
 export const useCustomerPaymentFormSchema = (isPickup: boolean) => {
   const tOrder = useTranslations("order");
   const tValidation = useTranslations("validation");
 
   return z
     .object({
-      carrierType: z.enum(["certificate", "individual", "mobile"]),
+      carrierType: z.union([
+        z.enum(["certificate", "individual", "mobile"]),
+        z.literal(""),
+      ]),
       email: z.union([
         z.literal(""),
         z.email({ error: tValidation("email.invalid") }),
@@ -33,7 +29,10 @@ export const useCustomerPaymentFormSchema = (isPickup: boolean) => {
         .string()
         .min(1, { error: tValidation("name.required") })
         .trim(),
-      notes: z.string().trim(),
+      notes: z
+        .string()
+        .max(160, { error: tValidation("notes.maxLength") })
+        .trim(),
       payment: z.enum(["Cash", "Credit", "TWQR", "WeiXin"]).nullable(),
       phone: z.string().trim(),
     })
@@ -54,9 +53,27 @@ export const useCustomerPaymentFormSchema = (isPickup: boolean) => {
         });
       }
 
+      if (
+        data.invoiceType === "personal" &&
+        data.carrierType === "individual" &&
+        !data.email
+      ) {
+        ctx.addIssue({
+          code: "custom",
+          message: tValidation("email.required"),
+          path: ["email"],
+        });
+      }
+
       switch (data.invoiceType) {
         case "personal":
-          if (data.carrierType === "mobile") {
+          if (!data.carrierType) {
+            ctx.addIssue({
+              code: "custom",
+              message: tValidation("carrierType.required"),
+              path: ["carrierType"],
+            });
+          } else if (data.carrierType === "mobile") {
             if (!/^\/[A-Z0-9+\-.]{7}$/.test(data.invoiceInfo.carruerNum)) {
               ctx.addIssue({
                 code: "custom",
@@ -65,7 +82,7 @@ export const useCustomerPaymentFormSchema = (isPickup: boolean) => {
               });
             }
           } else if (data.carrierType === "certificate") {
-            if (!/^[A-Z0-9]{16}$/.test(data.invoiceInfo.carruerNum)) {
+            if (!/^[A-Z]{2}\d{14}$/.test(data.invoiceInfo.carruerNum)) {
               ctx.addIssue({
                 code: "custom",
                 message: tOrder("checkout.invoice.certificateFormat"),

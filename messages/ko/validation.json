@@ -1,12 +1,9 @@
 {
-  "addOnMenuSectionId": {
-    "required": "섹션은 필수입니다."
-  },
-  "banReason": {
-    "maxLength": "정지 사유는 160자를 초과할 수 없습니다."
-  },
   "bio": {
     "maxLength": "자기소개는 160자를 초과할 수 없습니다."
+  },
+  "carrierType": {
+    "required": "캐리어 유형을 선택해 주세요."
   },
   "birthDate": {
     "invalid": "생년월일이 유효하지 않습니다.",
@@ -35,11 +32,9 @@
   "customerName": {
     "required": "회사명은 필수입니다."
   },
-  "description": {
-    "maxLength": "설명은 160자를 초과할 수 없습니다."
-  },
   "email": {
-    "invalid": "이메일이 유효하지 않습니다."
+    "invalid": "이메일이 유효하지 않습니다.",
+    "required": "이메일은 필수입니다."
   },
   "firstName": {
     "required": "이름은 필수입니다."
@@ -47,18 +42,11 @@
   "gender": {
     "required": "성별은 필수입니다."
   },
-  "localizedText": {
-    "completeOrEmpty": "하나의 언어라도 입력하면 모든 언어를 입력해야 합니다.",
-    "required": "모든 언어는 필수입니다."
-  },
-  "member": {
-    "required": "멤버는 필수입니다."
-  },
-  "modifierGroupId": {
-    "required": "옵션 그룹은 필수입니다."
-  },
   "name": {
     "required": "이름은 필수입니다."
+  },
+  "notes": {
+    "maxLength": "메모는 160자를 초과할 수 없습니다."
   },
   "newPassword": {
     "differentFromCurrent": "현재 비밀번호와 달라야 함.",
@@ -80,24 +68,5 @@
   "phone": {
     "invalid": "전화번호가 유효하지 않습니다.",
     "required": "전화번호는 필수입니다."
-  },
-  "postalCode": {
-    "format": "우편번호 형식이 유효하지 않습니다. 3자리, 5자리 또는 6자리 숫자를 입력해 주세요."
-  },
-  "price": {
-    "required": "가격은 필수입니다."
-  },
-  "role": {
-    "required": "역할은 필수입니다."
-  },
-  "searchField": {
-    "required": "검색 필드는 필수입니다."
-  },
-  "slug": {
-    "letter": "영문자를 최소 1개 포함.",
-    "required": "슬러그는 필수입니다."
-  },
-  "validFrom": {
-    "beforeValidThrough": "시작일은 종료일보다 이전이어야 합니다."
   }
 }

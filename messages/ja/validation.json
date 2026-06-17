@@ -1,12 +1,9 @@
 {
-  "addOnMenuSectionId": {
-    "required": "セクションは必須です。"
-  },
-  "banReason": {
-    "maxLength": "停止理由は160文字以内で入力してください。"
-  },
   "bio": {
     "maxLength": "自己紹介は160文字以内で入力してください。"
+  },
+  "carrierType": {
+    "required": "キャリアタイプを選択してください。"
   },
   "birthDate": {
     "invalid": "生年月日が無効です。",
@@ -35,11 +32,9 @@
   "customerName": {
     "required": "会社名は必須です。"
   },
-  "description": {
-    "maxLength": "説明は160文字以内で入力してください。"
-  },
   "email": {
-    "invalid": "メールアドレスが無効です。"
+    "invalid": "メールアドレスが無効です。",
+    "required": "メールアドレスは必須です。"
   },
   "firstName": {
     "required": "名は必須です。"
@@ -47,18 +42,11 @@
   "gender": {
     "required": "性別は必須です。"
   },
-  "localizedText": {
-    "completeOrEmpty": "いずれかの言語を入力した場合、すべての言語の入力が必要です。",
-    "required": "すべての言語は必須です。"
-  },
-  "member": {
-    "required": "メンバーは必須です。"
-  },
-  "modifierGroupId": {
-    "required": "オプショングループは必須です。"
-  },
   "name": {
     "required": "氏名は必須です。"
+  },
+  "notes": {
+    "maxLength": "備考は160文字以内で入力してください。"
   },
   "newPassword": {
     "differentFromCurrent": "現在のパスワードと異なる。",
@@ -80,24 +68,5 @@
   "phone": {
     "invalid": "電話番号が無効です。",
     "required": "電話番号は必須です。"
-  },
-  "postalCode": {
-    "format": "郵便番号の形式が無効です。3、5、または6桁の数字を入力してください。"
-  },
-  "price": {
-    "required": "価格は必須です。"
-  },
-  "role": {
-    "required": "役割は必須です。"
-  },
-  "searchField": {
-    "required": "検索フィールドは必須です。"
-  },
-  "slug": {
-    "letter": "英字を1文字以上含む。",
-    "required": "スラッグは必須です。"
-  },
-  "validFrom": {
-    "beforeValidThrough": "開始日は終了日より前である必要があります。"
   }
 }

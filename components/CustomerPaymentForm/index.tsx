@@ -21,15 +21,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 import {
-  Badge,
   Business,
   CreditCard,
   MarkChatRead,
   Payments,
   Person,
   QrCodeScanner,
-  ReceiptLong,
-  Smartphone,
   VolunteerActivism,
 } from "@mui/icons-material";
 import FormCard, {
@@ -37,7 +34,7 @@ import FormCard, {
   StyledCardContent,
 } from "@/components/FormCard";
 
-import { Button, Divider, TextField, Typography } from "@mui/material";
+import { Button, Divider, MenuItem, TextField, Typography } from "@mui/material";
 
 import { useCartStore } from "@/providers/cart-store-provider";
 import { useMenuStore } from "@/providers/menu-store-provider";
@@ -57,11 +54,7 @@ const INVOICE_TYPES: { icon: React.ElementType; type: InvoiceType }[] = [
   { icon: VolunteerActivism, type: "donate" },
 ];
 
-const CARRIER_TYPES: { icon: React.ElementType; type: CarrierType }[] = [
-  { icon: ReceiptLong, type: "individual" },
-  { icon: Smartphone, type: "mobile" },
-  { icon: Badge, type: "certificate" },
-];
+const CARRIER_TYPES: CarrierType[] = ["individual", "mobile", "certificate"];
 
 const CustomerPaymentForm = () => {
   const { mode } = useParams<Partial<RouteParams>>();
@@ -160,25 +153,23 @@ const CustomerPaymentForm = () => {
       };
       switch (values.invoiceType) {
         case "personal":
-          switch (values.carrierType) {
-            case "individual":
-              return { ...common, CarruerType: "", Donation: "0", Print: "0" };
-            case "mobile":
-              return {
-                ...common,
-                CarruerNum: values.invoiceInfo.carruerNum,
-                CarruerType: "3",
-                Print: "0",
-              };
-            case "certificate":
-              return {
-                ...common,
-                CarruerNum: values.invoiceInfo.carruerNum,
-                CarruerType: "2",
-                Print: "0",
-              };
+          if (values.carrierType === "mobile") {
+            return {
+              ...common,
+              CarruerNum: values.invoiceInfo.carruerNum,
+              CarruerType: "3",
+              Print: "0",
+            };
           }
-          break;
+          if (values.carrierType === "certificate") {
+            return {
+              ...common,
+              CarruerNum: values.invoiceInfo.carruerNum,
+              CarruerType: "2",
+              Print: "0",
+            };
+          }
+          return { ...common, CarruerType: "", Donation: "0", Print: "0" };
         case "company":
           return {
             ...common,
@@ -278,17 +269,22 @@ const CustomerPaymentForm = () => {
           fullWidth
           helperText={errors.email?.message}
           label={tOrder("checkout.email")}
+          required={
+            invoiceType === "personal" && carrierType === "individual"
+          }
           type="email"
           {...register("email")}
         />
         <TextField
+          error={!!errors.notes}
           fullWidth
+          helperText={errors.notes?.message}
           label={tOrder("checkout.notes")}
           maxRows={4}
           multiline
           slotProps={{
             htmlInput: {
-              maxLength: 50,
+              maxLength: 160,
             },
           }}
           {...register("notes")}
@@ -310,29 +306,55 @@ const CustomerPaymentForm = () => {
           value={invoiceType}
         />
         {invoiceType === "personal" && (
-          <ListRadioGroup
-            label={tOrder("checkout.invoice.carrierType")}
-            onChange={(_, value) =>
-              setValue("carrierType", value as CarrierType, {
+          <TextField
+            error={!!errors.carrierType}
+            fullWidth
+            helperText={errors.carrierType?.message}
+            label={tOrder("checkout.invoice.carrierType.label")}
+            onChange={(e) =>
+              setValue("carrierType", e.target.value as CarrierType, {
                 shouldValidate: isSubmitted,
               })
             }
-            options={CARRIER_TYPES.map(({ icon, type }) => ({
-              icon,
-              label: tOrder(`checkout.invoice.${type}`),
-              value: type,
-            }))}
+            select
+            slotProps={{
+              inputLabel: { shrink: true },
+              select: {
+                displayEmpty: true,
+                renderValue: (selected) =>
+                  selected ? (
+                    tOrder(`checkout.invoice.${selected as CarrierType}`)
+                  ) : (
+                    <em>
+                      {tOrder("checkout.invoice.carrierType.placeholder")}
+                    </em>
+                  ),
+              },
+            }}
             value={carrierType}
-          />
+          >
+            <MenuItem disabled value="">
+              <em>{tOrder("checkout.invoice.carrierType.placeholder")}</em>
+            </MenuItem>
+            {CARRIER_TYPES.map((type) => (
+              <MenuItem key={type} value={type}>
+                {tOrder(`checkout.invoice.${type}`)}
+              </MenuItem>
+            ))}
+          </TextField>
         )}
         {invoiceType === "personal" &&
           (carrierType === "mobile" || carrierType === "certificate") && (
             <TextField
               error={!!errors.invoiceInfo?.carruerNum}
               fullWidth
-              helperText={tOrder(`checkout.invoice.${carrierType}Format`)}
+              helperText={errors.invoiceInfo?.carruerNum?.message}
               label={tOrder("checkout.invoice.carruerNum")}
+              placeholder={
+                carrierType === "mobile" ? "/AB12345" : "AB12345678901234"
+              }
               required
+              slotProps={{ inputLabel: { shrink: true } }}
               {...register("invoiceInfo.carruerNum")}
             />
           )}

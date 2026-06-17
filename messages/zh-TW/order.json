@@ -1,8 +1,11 @@
 {
   "checkout": {
-    "email": "電子郵件",
+    "email": "電子信箱",
     "invoice": {
-      "carrierType": "載具類型",
+      "carrierType": {
+        "label": "載具類型",
+        "placeholder": "請選擇您的載具類型"
+      },
       "carruerNum": "載具號碼",
       "certificate": "自然人憑證",
       "certificateFormat": "格式：16 碼英數大寫",

@@ -2,7 +2,10 @@
   "checkout": {
     "email": "Email",
     "invoice": {
-      "carrierType": "Carrier Type",
+      "carrierType": {
+        "label": "Carrier Type",
+        "placeholder": "Please select your carrier type"
+      },
       "carruerNum": "Carrier Number",
       "certificate": "Natural Person Certificate",
       "certificateFormat": "16 uppercase alphanumeric characters",

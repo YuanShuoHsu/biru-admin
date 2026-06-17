@@ -1,12 +1,9 @@
 {
-  "addOnMenuSectionId": {
-    "required": "Section is required."
-  },
-  "banReason": {
-    "maxLength": "Ban reason must not exceed 160 characters."
-  },
   "bio": {
     "maxLength": "Bio must not exceed 160 characters."
+  },
+  "carrierType": {
+    "required": "Please select a carrier type."
   },
   "birthDate": {
     "invalid": "Birth date is not valid.",
@@ -35,11 +32,9 @@
   "customerName": {
     "required": "Company name is required."
   },
-  "description": {
-    "maxLength": "Description must not exceed 160 characters."
-  },
   "email": {
-    "invalid": "Email is not valid."
+    "invalid": "Email is not valid.",
+    "required": "Email is required."
   },
   "firstName": {
     "required": "First name is required."
@@ -47,18 +42,11 @@
   "gender": {
     "required": "Gender is required."
   },
-  "localizedText": {
-    "completeOrEmpty": "When any language is filled in, all languages are required.",
-    "required": "All languages are required."
-  },
-  "member": {
-    "required": "Member is required."
-  },
-  "modifierGroupId": {
-    "required": "Modifier group is required."
-  },
   "name": {
     "required": "Name is required."
+  },
+  "notes": {
+    "maxLength": "Notes must not exceed 160 characters."
   },
   "newPassword": {
     "differentFromCurrent": "Be different from your current password.",
@@ -80,24 +68,5 @@
   "phone": {
     "invalid": "Phone number is not valid.",
     "required": "Phone is required."
-  },
-  "postalCode": {
-    "format": "Invalid postal code format. Please enter 3, 5, or 6 digits."
-  },
-  "price": {
-    "required": "Price is required."
-  },
-  "role": {
-    "required": "Role is required."
-  },
-  "searchField": {
-    "required": "Search field is required."
-  },
-  "slug": {
-    "letter": "Contain at least one letter.",
-    "required": "Slug is required."
-  },
-  "validFrom": {
-    "beforeValidThrough": "Start date must be before end date."
   }
 }

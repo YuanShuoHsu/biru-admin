@@ -1,12 +1,9 @@
 {
-  "addOnMenuSectionId": {
-    "required": "分組為必填。"
-  },
-  "banReason": {
-    "maxLength": "封禁原因不能超過 160 個字元。"
-  },
   "bio": {
     "maxLength": "個人簡介不能超過 160 個字元。"
+  },
+  "carrierType": {
+    "required": "請選擇載具類型。"
   },
   "birthDate": {
     "invalid": "出生日期無效。",
@@ -35,11 +32,9 @@
   "customerName": {
     "required": "公司名稱為必填。"
   },
-  "description": {
-    "maxLength": "描述不能超過 160 個字元。"
-  },
   "email": {
-    "invalid": "電子郵件無效。"
+    "invalid": "電子郵件無效。",
+    "required": "電子郵件為必填。"
   },
   "firstName": {
     "required": "名字為必填。"
@@ -47,18 +42,11 @@
   "gender": {
     "required": "性別為必填。"
   },
-  "localizedText": {
-    "completeOrEmpty": "填寫任一語言時，所有語言皆須填寫。",
-    "required": "所有語言為必填。"
-  },
-  "member": {
-    "required": "成員為必填。"
-  },
-  "modifierGroupId": {
-    "required": "選項群組為必填。"
-  },
   "name": {
     "required": "姓名為必填。"
+  },
+  "notes": {
+    "maxLength": "備註不能超過 160 個字元。"
   },
   "newPassword": {
     "differentFromCurrent": "與目前密碼不相同。",
@@ -80,24 +68,5 @@
   "phone": {
     "invalid": "電話號碼無效。",
     "required": "電話號碼為必填。"
-  },
-  "postalCode": {
-    "format": "郵遞區號格式無效，請輸入 3、5 或 6 碼數字。"
-  },
-  "price": {
-    "required": "價格為必填。"
-  },
-  "role": {
-    "required": "角色為必填。"
-  },
-  "searchField": {
-    "required": "搜尋欄位為必填。"
-  },
-  "slug": {
-    "letter": "包含至少一個英文字母。",
-    "required": "識別碼為必填。"
-  },
-  "validFrom": {
-    "beforeValidThrough": "開始日期必須早於結束日期。"
   }
 }

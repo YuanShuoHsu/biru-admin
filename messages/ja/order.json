@@ -2,7 +2,10 @@
   "checkout": {
     "email": "メールアドレス",
     "invoice": {
-      "carrierType": "キャリアタイプ",
+      "carrierType": {
+        "label": "キャリアタイプ",
+        "placeholder": "あなたのキャリアタイプを選択してください"
+      },
       "carruerNum": "キャリア番号",
       "certificate": "自然人証明書",
       "certificateFormat": "半角英大文字・数字16文字",
