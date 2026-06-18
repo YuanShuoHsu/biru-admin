@@ -6,6 +6,15 @@ import HorizontalLinearStepper from "@/components/HorizontalLinearStepper";
 
 import { routing } from "@/i18n/routing";
 
+import { Container } from "@mui/material";
+import { styled } from "@mui/material/styles";
+
+const StyledContainer = styled(Container)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  gap: theme.spacing(2),
+}));
+
 interface OrderModeOrganizationSlugStepperLayoutProps {
   children: React.ReactNode;
   params: Promise<{
@@ -43,10 +52,10 @@ const OrderModeOrganizationSlugStepperLayout = async ({
   ];
 
   return (
-    <>
+    <StyledContainer disableGutters maxWidth="sm">
       <HorizontalLinearStepper steps={steps} />
       {children}
-    </>
+    </StyledContainer>
   );
 };
 
