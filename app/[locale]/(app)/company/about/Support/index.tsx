@@ -10,7 +10,7 @@ import { Box, Button, Container, Grid, Stack, Typography } from "@mui/material";
 
 const Support = () => (
   <Box sx={{ py: { xs: 10, sm: 14 }, bgcolor: "background.default" }}>
-    <Container maxWidth="lg">
+    <Container disableGutters maxWidth="lg">
       <Grid container spacing={6}>
         <Grid size={{ xs: 12, md: 4 }}>
           <Stack spacing={2}>
