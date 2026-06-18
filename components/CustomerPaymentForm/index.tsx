@@ -24,8 +24,8 @@ import { usePathname, useRouter } from "@/i18n/navigation";
 import {
   Business,
   CreditCard,
-  KeyboardArrowLeft,
   MarkChatRead,
+  ShoppingCart,
   Payments,
   Person,
   QrCodeScanner,
@@ -439,7 +439,7 @@ const CustomerPaymentForm = () => {
           disabled={isMutating}
           onClick={() => router.push(pathname.replace("/checkout", "/cart"))}
           size="large"
-          startIcon={<KeyboardArrowLeft />}
+          startIcon={<ShoppingCart />}
           variant="outlined"
         >
           {tOrder("checkout.back")}

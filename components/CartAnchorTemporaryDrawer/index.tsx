@@ -8,8 +8,7 @@ import CartItemList from "@/components/CartItemList";
 import { usePathname } from "@/i18n/navigation";
 
 import {
-  KeyboardArrowLeft,
-  KeyboardArrowRight,
+  MenuBook,
   ShoppingCart,
   ShoppingCartCheckout,
 } from "@mui/icons-material";
@@ -120,7 +119,7 @@ const CartAnchorTemporaryDrawer = () => {
             fullWidth
             href={menuHref}
             onClick={handleClose}
-            startIcon={<KeyboardArrowLeft />}
+            startIcon={<MenuBook />}
             variant="outlined"
           >
             {tOrder("cart.back")}
@@ -133,7 +132,7 @@ const CartAnchorTemporaryDrawer = () => {
             fullWidth
             href={cartHref}
             onClick={handleClose}
-            startIcon={isCheckoutPage ? <KeyboardArrowLeft /> : undefined}
+            startIcon={isCheckoutPage ? <ShoppingCart /> : undefined}
             variant="outlined"
           >
             {isCheckoutPage ? tOrder("checkout.back") : tOrder("cart.view")}
@@ -142,9 +141,7 @@ const CartAnchorTemporaryDrawer = () => {
         {!isCheckoutPage && (
           <Button
             disabled={isCartEmpty}
-            endIcon={
-              isCartPage ? <KeyboardArrowRight /> : <ShoppingCartCheckout />
-            }
+            endIcon={<ShoppingCartCheckout />}
             fullWidth
             href={checkoutHref}
             onClick={handleClose}
