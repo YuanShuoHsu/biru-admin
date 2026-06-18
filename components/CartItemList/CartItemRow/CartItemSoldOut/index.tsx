@@ -91,7 +91,10 @@ const CartItemSoldOut = ({
           : ""
     : shouldEditItem
       ? itemStockCapLeft === availableToAdd
-        ? tOrder("cart.quantityExceedsStock", { label: "", stock: targetQuantity })
+        ? tOrder("cart.quantityExceedsStock", {
+            label: "",
+            stock: targetQuantity,
+          })
         : addOnCapLeft === availableToAdd
           ? tOrder("cart.quantityExceedsStock", {
               label: `${limitingAddOnsLabel}\n`,

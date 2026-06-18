@@ -85,7 +85,11 @@ const OrderBottomBar = () => {
               {cartCurrency} {cartTotalAmount.toLocaleString(locale)}
             </Typography>
           </Stack>
-          <Chip color="primary" label={tOrder("cart.view")} variant="outlined" />
+          <Chip
+            color="primary"
+            label={tOrder("cart.view")}
+            variant="outlined"
+          />
         </StyledButton>
         <StyledButton href={checkoutHref} size="large" variant="contained">
           <StyledChip label={tOrder("cart.next")} variant="outlined" />

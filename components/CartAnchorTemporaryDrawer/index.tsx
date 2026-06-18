@@ -7,7 +7,12 @@ import CartItemList from "@/components/CartItemList";
 
 import { usePathname } from "@/i18n/navigation";
 
-import { KeyboardArrowLeft, KeyboardArrowRight, ShoppingCart, ShoppingCartCheckout } from "@mui/icons-material";
+import {
+  KeyboardArrowLeft,
+  KeyboardArrowRight,
+  ShoppingCart,
+  ShoppingCartCheckout,
+} from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -127,7 +132,9 @@ const CartAnchorTemporaryDrawer = () => {
             fullWidth
             href={cartHref}
             onClick={handleClose}
-            startIcon={isCheckoutPage ? <KeyboardArrowLeft /> : <ShoppingCart />}
+            startIcon={
+              isCheckoutPage ? <KeyboardArrowLeft /> : <ShoppingCart />
+            }
             variant="outlined"
           >
             {isCheckoutPage ? tOrder("checkout.back") : tOrder("cart.view")}
@@ -136,7 +143,9 @@ const CartAnchorTemporaryDrawer = () => {
         {!isCheckoutPage && (
           <Button
             disabled={isCartEmpty}
-            endIcon={isCartPage ? <KeyboardArrowRight /> : <ShoppingCartCheckout />}
+            endIcon={
+              isCartPage ? <KeyboardArrowRight /> : <ShoppingCartCheckout />
+            }
             fullWidth
             href={checkoutHref}
             onClick={handleClose}
