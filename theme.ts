@@ -109,13 +109,16 @@ const theme = createTheme({
     },
     MuiButton: {
       styleOverrides: {
-        root: ({ theme }) => ({
+        root: ({ ownerState, theme }) => ({
           textTransform: "none",
           transition: theme.transitions.create([
             "background-color",
             "border-color",
             "color",
           ]),
+          ...(ownerState.variant === "outlined" && {
+            backgroundColor: theme.vars.palette.background.paper,
+          }),
         }),
       },
     },

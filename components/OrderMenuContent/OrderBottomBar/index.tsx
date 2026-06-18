@@ -9,7 +9,7 @@ import { usePathname } from "@/i18n/navigation";
 
 import {
   Button,
-  ButtonProps,
+  type ButtonProps,
   Chip,
   Container,
   Fade,
@@ -29,7 +29,7 @@ const StyledContainer = styled(Container)(({ theme }) => ({
   zIndex: theme.zIndex.appBar - 1,
 }));
 
-const StyledButton = styled(Button)<ButtonProps>(({ theme }) => ({
+const StyledButton = styled(Button)<ButtonProps>(({ theme, variant }) => ({
   padding: theme.spacing(2),
   display: "flex",
   flexWrap: "wrap",
@@ -37,15 +37,9 @@ const StyledButton = styled(Button)<ButtonProps>(({ theme }) => ({
   alignItems: "center",
   gap: theme.spacing(1),
   pointerEvents: "auto",
-  variants: [
-    {
-      props: { variant: "outlined" },
-      style: {
-        backgroundColor: theme.vars.palette.background.paper,
-        flex: 1,
-      },
-    },
-  ],
+  ...(variant === "outlined" && {
+    flex: 1,
+  }),
 }));
 
 const StyledChip = styled(Chip)(({ theme }) => ({
