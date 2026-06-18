@@ -129,12 +129,11 @@ const CartAnchorTemporaryDrawer = () => {
         {!isCartPage && (
           <Button
             disabled={!isCheckoutPage && isCartEmpty}
+            endIcon={isCheckoutPage ? undefined : <ShoppingCart />}
             fullWidth
             href={cartHref}
             onClick={handleClose}
-            startIcon={
-              isCheckoutPage ? <KeyboardArrowLeft /> : <ShoppingCart />
-            }
+            startIcon={isCheckoutPage ? <KeyboardArrowLeft /> : undefined}
             variant="outlined"
           >
             {isCheckoutPage ? tOrder("checkout.back") : tOrder("cart.view")}

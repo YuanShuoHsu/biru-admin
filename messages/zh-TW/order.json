@@ -3,7 +3,7 @@
     "back": "返回菜單",
     "next": "前往結帳",
     "quantityExceedsStock": "{label} 剩 {stock} 件",
-    "title": "購物車清單",
+    "title": "購物車",
     "totalQuantity": "共 {quantity} 件",
     "view": "查看購物車"
   },
