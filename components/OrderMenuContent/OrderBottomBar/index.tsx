@@ -33,7 +33,6 @@ const StyledButton = styled(Button)<ButtonProps>(({ theme, variant }) => ({
   padding: theme.spacing(2),
   display: "flex",
   flexWrap: "wrap",
-  justifyContent: "center",
   alignItems: "center",
   gap: theme.spacing(1),
   pointerEvents: "auto",
@@ -67,7 +66,7 @@ const OrderBottomBar = () => {
   return (
     <Fade in={!isCartEmpty}>
       <StyledContainer disableGutters maxWidth="sm">
-        <StyledButton href={cartHref} size="large" variant="outlined">
+        <StyledButton href={cartHref} variant="outlined">
           <Typography flex={1} fontWeight="bold" variant="subtitle1">
             {tOrder("cart.totalQuantity", { quantity: cartTotalQuantity })}{" "}
             <Box component="span" typography="body2">
@@ -81,7 +80,7 @@ const OrderBottomBar = () => {
             variant="outlined"
           />
         </StyledButton>
-        <StyledButton href={checkoutHref} size="large" variant="contained">
+        <StyledButton href={checkoutHref} variant="contained">
           <StyledChip label={tOrder("cart.next")} variant="outlined" />
         </StyledButton>
       </StyledContainer>
