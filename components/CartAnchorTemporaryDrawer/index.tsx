@@ -109,17 +109,35 @@ const CartAnchorTemporaryDrawer = () => {
           </Typography>
         </Stack>
         {(isCartPage || isCheckoutPage) && (
-          <Button color="info" fullWidth href={menuHref} onClick={handleClose} variant="outlined">
+          <Button
+            color="info"
+            fullWidth
+            href={menuHref}
+            onClick={handleClose}
+            variant="outlined"
+          >
             {tCart("backToOrder")}
           </Button>
         )}
         {!isCartPage && (
-          <Button disabled={!isCheckoutPage && isCartEmpty} fullWidth href={cartHref} onClick={handleClose} variant="outlined">
+          <Button
+            disabled={!isCheckoutPage && isCartEmpty}
+            fullWidth
+            href={cartHref}
+            onClick={handleClose}
+            variant="outlined"
+          >
             {tCart("viewCart")}
           </Button>
         )}
         {!isCheckoutPage && (
-          <Button disabled={isCartEmpty} fullWidth href={checkoutHref} onClick={handleClose} variant="contained">
+          <Button
+            disabled={isCartEmpty}
+            fullWidth
+            href={checkoutHref}
+            onClick={handleClose}
+            variant="contained"
+          >
             {tCart("checkout")}
           </Button>
         )}
