@@ -1,5 +1,10 @@
 {
+  "cart": {
+    "back": "메뉴로 돌아가기",
+    "next": "결제하기"
+  },
   "checkout": {
+    "back": "장바구니로 돌아가기",
     "email": "이메일",
     "invoice": {
       "carrierType": {

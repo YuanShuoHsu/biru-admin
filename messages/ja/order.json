@@ -1,5 +1,10 @@
 {
+  "cart": {
+    "back": "メニューに戻る",
+    "next": "レジへ進む"
+  },
   "checkout": {
+    "back": "カートに戻る",
     "email": "メールアドレス",
     "invoice": {
       "carrierType": {

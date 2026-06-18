@@ -1,5 +1,10 @@
 {
+  "cart": {
+    "back": "返回点餐",
+    "next": "前往结账"
+  },
   "checkout": {
+    "back": "返回购物车",
     "email": "电子邮箱",
     "invoice": {
       "carrierType": {

@@ -1,5 +1,10 @@
 {
+  "cart": {
+    "back": "Back to Menu",
+    "next": "Proceed to Checkout"
+  },
   "checkout": {
+    "back": "Back to Cart",
     "email": "Email",
     "invoice": {
       "carrierType": {

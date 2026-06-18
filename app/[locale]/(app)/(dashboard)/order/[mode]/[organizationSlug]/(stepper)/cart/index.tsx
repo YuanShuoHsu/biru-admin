@@ -1,5 +1,59 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+import { useParams, useSearchParams } from "next/navigation";
+
 import CustomizedAccordions from "@/components/CustomizedAccordions";
 
-const OrderModeOrganizationSlugCart = () => <CustomizedAccordions />;
+import { useRouter } from "@/i18n/navigation";
+
+import { Button, Stack } from "@mui/material";
+
+import { useCartStore } from "@/providers/cart-store-provider";
+
+const OrderModeOrganizationSlugCart = () => {
+  const { isCartEmpty } = useCartStore((state) => state);
+
+  const { mode, organizationSlug } = useParams<{
+    mode: string;
+    organizationSlug: string;
+  }>();
+
+  const router = useRouter();
+
+  const searchParams = useSearchParams();
+  const search = searchParams.toString();
+  const query = search ? `?${search}` : "";
+
+  const tOrder = useTranslations("order");
+
+  return (
+    <>
+      <CustomizedAccordions />
+      <Stack direction="row" justifyContent="space-between">
+        <Button
+          color="info"
+          onClick={() =>
+            router.push(`/order/${mode}/${organizationSlug}${query}`)
+          }
+          size="large"
+          variant="outlined"
+        >
+          {tOrder("cart.back")}
+        </Button>
+        <Button
+          disabled={isCartEmpty}
+          onClick={() =>
+            router.push(`/order/${mode}/${organizationSlug}/checkout${query}`)
+          }
+          size="large"
+          variant="contained"
+        >
+          {tOrder("cart.next")}
+        </Button>
+      </Stack>
+    </>
+  );
+};
 
 export default OrderModeOrganizationSlugCart;

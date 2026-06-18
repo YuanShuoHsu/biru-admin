@@ -12,6 +12,7 @@ import {
   useCustomerPaymentFormSchema,
 } from "./definitions";
 
+import FormBox from "@/components/FormBox";
 import ListRadioGroup from "@/components/ListRadioGroup";
 
 import { localeConfigs } from "@/constants/locale";
@@ -29,15 +30,14 @@ import {
   QrCodeScanner,
   VolunteerActivism,
 } from "@mui/icons-material";
-import FormCard, {
-  StyledCardActions,
-  StyledCardContent,
-} from "@/components/FormCard";
 
 import {
   Button,
+  Card,
+  CardContent,
   Divider,
   MenuItem,
+  Stack,
   TextField,
   Typography,
 } from "@mui/material";
@@ -246,185 +246,203 @@ const CustomerPaymentForm = () => {
   });
 
   return (
-    <FormCard onSubmit={onSubmit}>
-      <StyledCardContent>
-        <Typography
-          alignSelf="flex-start"
-          color="text.secondary"
-          fontWeight="bold"
-          variant="subtitle2"
-        >
-          {tOrder("checkout.title")}
-        </Typography>
-        <TextField
-          error={!!errors.name}
-          fullWidth
-          helperText={errors.name?.message}
-          label={tOrder("checkout.name")}
-          required
-          {...register("name")}
-        />
-        <TextField
-          error={!!errors.phone}
-          fullWidth
-          helperText={errors.phone?.message}
-          label={tOrder("checkout.phone")}
-          required={isPickup}
-          type="tel"
-          {...register("phone")}
-        />
-        <TextField
-          error={!!errors.email}
-          fullWidth
-          helperText={errors.email?.message}
-          label={tOrder("checkout.email")}
-          required={invoiceType === "personal" && carrierType === "individual"}
-          type="email"
-          {...register("email")}
-        />
-        <TextField
-          error={!!errors.notes}
-          fullWidth
-          helperText={errors.notes?.message}
-          label={tOrder("checkout.notes")}
-          maxRows={4}
-          multiline
-          slotProps={{
-            htmlInput: {
-              maxLength: 160,
-            },
+    <FormBox onSubmit={onSubmit}>
+      <Card variant="outlined">
+        <CardContent
+          sx={{
+            alignItems: "center",
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
           }}
-          {...register("notes")}
-        />
-        {/* <CouponForm /> */}
-        <Divider flexItem />
-        <ListRadioGroup
-          label={tOrder("checkout.invoice.title")}
-          onChange={(_, value) =>
-            setValue("invoiceType", value as InvoiceType, {
-              shouldValidate: isSubmitted,
-            })
-          }
-          options={INVOICE_TYPES.map(({ icon, type }) => ({
-            icon,
-            label: tOrder(`checkout.invoice.${type}`),
-            value: type,
-          }))}
-          value={invoiceType}
-        />
-        {invoiceType === "personal" && (
+        >
+          <Typography
+            alignSelf="flex-start"
+            color="text.secondary"
+            fontWeight="bold"
+            variant="subtitle2"
+          >
+            {tOrder("checkout.title")}
+          </Typography>
           <TextField
-            error={!!errors.carrierType}
+            error={!!errors.name}
             fullWidth
-            helperText={errors.carrierType?.message}
-            label={tOrder("checkout.invoice.carrierType.label")}
-            onChange={(e) =>
-              setValue("carrierType", e.target.value as CarrierType, {
+            helperText={errors.name?.message}
+            label={tOrder("checkout.name")}
+            required
+            {...register("name")}
+          />
+          <TextField
+            error={!!errors.phone}
+            fullWidth
+            helperText={errors.phone?.message}
+            label={tOrder("checkout.phone")}
+            required={isPickup}
+            type="tel"
+            {...register("phone")}
+          />
+          <TextField
+            error={!!errors.email}
+            fullWidth
+            helperText={errors.email?.message}
+            label={tOrder("checkout.email")}
+            required={
+              invoiceType === "personal" && carrierType === "individual"
+            }
+            type="email"
+            {...register("email")}
+          />
+          <TextField
+            error={!!errors.notes}
+            fullWidth
+            helperText={errors.notes?.message}
+            label={tOrder("checkout.notes")}
+            maxRows={4}
+            multiline
+            slotProps={{
+              htmlInput: {
+                maxLength: 160,
+              },
+            }}
+            {...register("notes")}
+          />
+          {/* <CouponForm /> */}
+          <Divider flexItem />
+          <ListRadioGroup
+            label={tOrder("checkout.invoice.title")}
+            onChange={(_, value) =>
+              setValue("invoiceType", value as InvoiceType, {
                 shouldValidate: isSubmitted,
               })
             }
-            select
-            slotProps={{
-              inputLabel: { shrink: true },
-              select: {
-                displayEmpty: true,
-                renderValue: (selected) =>
-                  selected ? (
-                    tOrder(`checkout.invoice.${selected as CarrierType}`)
-                  ) : (
-                    <em>
-                      {tOrder("checkout.invoice.carrierType.placeholder")}
-                    </em>
-                  ),
-              },
-            }}
-            value={carrierType}
-          >
-            <MenuItem disabled value="">
-              <em>{tOrder("checkout.invoice.carrierType.placeholder")}</em>
-            </MenuItem>
-            {CARRIER_TYPES.map((type) => (
-              <MenuItem key={type} value={type}>
-                {tOrder(`checkout.invoice.${type}`)}
-              </MenuItem>
-            ))}
-          </TextField>
-        )}
-        {invoiceType === "personal" &&
-          (carrierType === "mobile" || carrierType === "certificate") && (
+            options={INVOICE_TYPES.map(({ icon, type }) => ({
+              icon,
+              label: tOrder(`checkout.invoice.${type}`),
+              value: type,
+            }))}
+            value={invoiceType}
+          />
+          {invoiceType === "personal" && (
             <TextField
-              error={!!errors.invoiceInfo?.carruerNum}
+              error={!!errors.carrierType}
               fullWidth
-              helperText={errors.invoiceInfo?.carruerNum?.message}
-              label={tOrder("checkout.invoice.carruerNum")}
-              placeholder={
-                carrierType === "mobile" ? "/AB12345" : "AB12345678901234"
+              helperText={errors.carrierType?.message}
+              label={tOrder("checkout.invoice.carrierType.label")}
+              onChange={(e) =>
+                setValue("carrierType", e.target.value as CarrierType, {
+                  shouldValidate: isSubmitted,
+                })
               }
+              select
+              slotProps={{
+                inputLabel: { shrink: true },
+                select: {
+                  displayEmpty: true,
+                  renderValue: (selected) =>
+                    selected ? (
+                      tOrder(`checkout.invoice.${selected as CarrierType}`)
+                    ) : (
+                      <em>
+                        {tOrder("checkout.invoice.carrierType.placeholder")}
+                      </em>
+                    ),
+                },
+              }}
+              value={carrierType}
+            >
+              <MenuItem disabled value="">
+                <em>{tOrder("checkout.invoice.carrierType.placeholder")}</em>
+              </MenuItem>
+              {CARRIER_TYPES.map((type) => (
+                <MenuItem key={type} value={type}>
+                  {tOrder(`checkout.invoice.${type}`)}
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
+          {invoiceType === "personal" &&
+            (carrierType === "mobile" || carrierType === "certificate") && (
+              <TextField
+                error={!!errors.invoiceInfo?.carruerNum}
+                fullWidth
+                helperText={errors.invoiceInfo?.carruerNum?.message}
+                label={tOrder("checkout.invoice.carruerNum")}
+                placeholder={
+                  carrierType === "mobile" ? "/AB12345" : "AB12345678901234"
+                }
+                required
+                slotProps={{ inputLabel: { shrink: true } }}
+                {...register("invoiceInfo.carruerNum")}
+              />
+            )}
+          {invoiceType === "company" && (
+            <>
+              <TextField
+                error={!!errors.invoiceInfo?.customerIdentifier}
+                fullWidth
+                helperText={errors.invoiceInfo?.customerIdentifier?.message}
+                label={tOrder("checkout.invoice.customerIdentifier")}
+                required
+                {...register("invoiceInfo.customerIdentifier")}
+              />
+              <TextField
+                error={!!errors.invoiceInfo?.customerName}
+                fullWidth
+                helperText={errors.invoiceInfo?.customerName?.message}
+                label={tOrder("checkout.invoice.customerName")}
+                required
+                {...register("invoiceInfo.customerName")}
+              />
+              <TextField
+                error={!!errors.invoiceInfo?.address}
+                fullWidth
+                helperText={errors.invoiceInfo?.address?.message}
+                label={tOrder("checkout.invoice.customerAddr")}
+                required
+                {...register("invoiceInfo.address")}
+              />
+            </>
+          )}
+          {invoiceType === "donate" && (
+            <TextField
+              error={!!errors.invoiceInfo?.loveCode}
+              fullWidth
+              helperText={tOrder("checkout.invoice.donateFormat")}
+              label={tOrder("checkout.invoice.loveCode")}
               required
-              slotProps={{ inputLabel: { shrink: true } }}
-              {...register("invoiceInfo.carruerNum")}
+              {...register("invoiceInfo.loveCode")}
             />
           )}
-        {invoiceType === "company" && (
-          <>
-            <TextField
-              error={!!errors.invoiceInfo?.customerIdentifier}
-              fullWidth
-              helperText={errors.invoiceInfo?.customerIdentifier?.message}
-              label={tOrder("checkout.invoice.customerIdentifier")}
-              required
-              {...register("invoiceInfo.customerIdentifier")}
-            />
-            <TextField
-              error={!!errors.invoiceInfo?.customerName}
-              fullWidth
-              helperText={errors.invoiceInfo?.customerName?.message}
-              label={tOrder("checkout.invoice.customerName")}
-              required
-              {...register("invoiceInfo.customerName")}
-            />
-            <TextField
-              error={!!errors.invoiceInfo?.address}
-              fullWidth
-              helperText={errors.invoiceInfo?.address?.message}
-              label={tOrder("checkout.invoice.customerAddr")}
-              required
-              {...register("invoiceInfo.address")}
-            />
-          </>
-        )}
-        {invoiceType === "donate" && (
-          <TextField
-            error={!!errors.invoiceInfo?.loveCode}
-            fullWidth
-            helperText={tOrder("checkout.invoice.donateFormat")}
-            label={tOrder("checkout.invoice.loveCode")}
-            required
-            {...register("invoiceInfo.loveCode")}
+          <Divider flexItem />
+          <ListRadioGroup
+            error={!!errors.payment}
+            helperText={errors.payment?.message}
+            label={tOrder("checkout.paymentMethod")}
+            onChange={(_, value) =>
+              setValue("payment", value as PaymentMethod, {
+                shouldValidate: isSubmitted,
+              })
+            }
+            options={paymentOptions.map(({ icon, id, label }) => ({
+              icon,
+              label,
+              value: id,
+            }))}
+            value={payment || ""}
           />
-        )}
-        <Divider flexItem />
-        <ListRadioGroup
-          error={!!errors.payment}
-          helperText={errors.payment?.message}
-          label={tOrder("checkout.paymentMethod")}
-          onChange={(_, value) =>
-            setValue("payment", value as PaymentMethod, {
-              shouldValidate: isSubmitted,
-            })
-          }
-          options={paymentOptions.map(({ icon, id, label }) => ({
-            icon,
-            label,
-            value: id,
-          }))}
-          value={payment || ""}
-        />
-      </StyledCardContent>
-      <StyledCardActions disableSpacing>
+        </CardContent>
+      </Card>
+      <Stack direction="row" justifyContent="space-between">
+        <Button
+          disabled={isMutating}
+          onClick={() => router.push(pathname.replace("/checkout", "/cart"))}
+          size="large"
+          variant="outlined"
+        >
+          {tOrder("checkout.back")}
+        </Button>
         <Button
           disabled={isCartEmpty}
-          fullWidth
           loading={isMutating}
           loadingPosition="end"
           size="large"
@@ -433,8 +451,8 @@ const CustomerPaymentForm = () => {
         >
           {tOrder("checkout.placeOrder")}
         </Button>
-      </StyledCardActions>
-    </FormCard>
+      </Stack>
+    </FormBox>
   );
 };
 
