@@ -71,15 +71,16 @@ const CartAnchorTemporaryDrawer = () => {
   const tCommon = useTranslations("common");
 
   const isCheckoutPage = pathname.endsWith("/checkout");
+  const isCartPage = pathname.endsWith("/cart");
+
   const basePath = isCheckoutPage
     ? pathname.slice(0, -"/checkout".length)
-    : pathname;
+    : isCartPage
+      ? pathname.slice(0, -"/cart".length)
+      : pathname;
   const menuHref = `${basePath}${query}`;
+  const cartHref = `${basePath}/cart${query}`;
   const checkoutHref = `${basePath}/checkout${query}`;
-
-  const actionDisabled = !isCheckoutPage && isCartEmpty;
-  const actionHref = isCheckoutPage ? menuHref : checkoutHref;
-  const actionLabel = isCheckoutPage ? tCart("backToOrder") : tCart("checkout");
 
   const drawerList = (
     <DrawerBox role="presentation">
@@ -107,15 +108,21 @@ const CartAnchorTemporaryDrawer = () => {
             {cartCurrency} {cartTotalAmount.toLocaleString(locale)}
           </Typography>
         </Stack>
-        <Button
-          disabled={actionDisabled}
-          fullWidth
-          href={actionHref}
-          onClick={handleClose}
-          variant="contained"
-        >
-          {actionLabel}
-        </Button>
+        {(isCartPage || isCheckoutPage) && (
+          <Button color="info" fullWidth href={menuHref} onClick={handleClose} variant="outlined">
+            {tCart("backToOrder")}
+          </Button>
+        )}
+        {!isCartPage && (
+          <Button disabled={!isCheckoutPage && isCartEmpty} fullWidth href={cartHref} onClick={handleClose} variant="outlined">
+            {tCart("viewCart")}
+          </Button>
+        )}
+        {!isCheckoutPage && (
+          <Button disabled={isCartEmpty} fullWidth href={checkoutHref} onClick={handleClose} variant="contained">
+            {tCart("checkout")}
+          </Button>
+        )}
       </StickyFooter>
     </DrawerBox>
   );

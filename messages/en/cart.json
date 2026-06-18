@@ -3,5 +3,6 @@
   "checkout": "Proceed to Checkout",
   "quantityExceedsStock": "{label} {stock} left",
   "title": "Shopping Cart",
-  "totalQuantity": "{quantity} items"
+  "totalQuantity": "{quantity} items",
+  "viewCart": "View Cart"
 }

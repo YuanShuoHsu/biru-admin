@@ -89,6 +89,9 @@
           "placeholder": "Please enter your menu name"
         },
         "stepper": {
+          "cart": {
+            "label": "Cart"
+          },
           "checkout": {
             "label": "Checkout"
           },

@@ -8,10 +8,10 @@ import useCartTotals from "@/hooks/useCartTotals";
 import { usePathname } from "@/i18n/navigation";
 
 import {
-  Box,
   Button,
-  type ButtonProps,
+  ButtonProps,
   Chip,
+  Container,
   Fade,
   Stack,
   Typography,
@@ -20,18 +20,32 @@ import { styled } from "@mui/material/styles";
 
 import { useCartStore } from "@/providers/cart-store-provider";
 
-const StyledBox = styled(Box)({
+const StyledContainer = styled(Container)(({ theme }) => ({
+  position: "sticky",
+  bottom: theme.spacing(2),
+  display: "flex",
+  gap: theme.spacing(2),
   pointerEvents: "none",
-});
+  zIndex: theme.zIndex.appBar - 1,
+}));
 
 const StyledButton = styled(Button)<ButtonProps>(({ theme }) => ({
-  paddingInline: theme.spacing(2),
-  maxWidth: theme.breakpoints.values.sm,
+  padding: theme.spacing(2),
   display: "flex",
-  justifyContent: "space-between",
+  flexWrap: "wrap",
+  justifyContent: "center",
   alignItems: "center",
-  gap: theme.spacing(2),
+  gap: theme.spacing(1),
   pointerEvents: "auto",
+  variants: [
+    {
+      props: { variant: "outlined" },
+      style: {
+        backgroundColor: theme.vars.palette.background.paper,
+        flex: 1,
+      },
+    },
+  ],
 }));
 
 const StyledChip = styled(Chip)(({ theme }) => ({
@@ -41,6 +55,7 @@ const StyledChip = styled(Chip)(({ theme }) => ({
 
 const OrderBottomBar = () => {
   const { cartTotalQuantity, isCartEmpty } = useCartStore((state) => state);
+
   const { cartCurrency, cartTotalAmount } = useCartTotals();
 
   const locale = useLocale();
@@ -50,33 +65,24 @@ const OrderBottomBar = () => {
   const searchParams = useSearchParams();
   const search = searchParams.toString();
   const query = search ? `?${search}` : "";
+  const cartHref = `${pathname}/cart${query}`;
   const checkoutHref = `${pathname}/checkout${query}`;
 
   const tCart = useTranslations("cart");
 
   return (
     <Fade in={!isCartEmpty}>
-      <StyledBox
-        position="sticky"
-        left={0}
-        bottom={(theme) => theme.spacing(2)}
-        width="100%"
-        display="flex"
-        justifyContent="center"
-        zIndex={(theme) => theme.zIndex.appBar - 1}
-      >
-        <StyledButton
-          disabled={isCartEmpty}
-          fullWidth
-          href={checkoutHref}
-          size="large"
-          variant="contained"
-        >
-          <Stack flexDirection="row" alignItems="center" gap={1}>
+      <StyledContainer disableGutters maxWidth="sm">
+        <StyledButton href={cartHref} size="large" variant="outlined">
+          <Stack
+            flex={1}
+            flexDirection="row"
+            justifyContent="center"
+            alignItems="center"
+            gap={1}
+          >
             <Typography component="span" fontWeight="bold" variant="subtitle1">
-              {tCart("totalQuantity", {
-                quantity: cartTotalQuantity,
-              })}
+              {tCart("totalQuantity", { quantity: cartTotalQuantity })}
             </Typography>
             <Typography component="span" variant="body2">
               /
@@ -85,9 +91,12 @@ const OrderBottomBar = () => {
               {cartCurrency} {cartTotalAmount.toLocaleString(locale)}
             </Typography>
           </Stack>
+          <Chip color="primary" label={tCart("viewCart")} variant="outlined" />
+        </StyledButton>
+        <StyledButton href={checkoutHref} size="large" variant="contained">
           <StyledChip label={tCart("checkout")} variant="outlined" />
         </StyledButton>
-      </StyledBox>
+      </StyledContainer>
     </Fade>
   );
 };

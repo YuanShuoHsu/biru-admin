@@ -89,6 +89,9 @@
           "placeholder": "귀하의 메뉴명을 입력해 주세요"
         },
         "stepper": {
+          "cart": {
+            "label": "장바구니"
+          },
           "checkout": {
             "label": "결제"
           },

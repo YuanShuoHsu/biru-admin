@@ -89,6 +89,9 @@
           "placeholder": "请输入您的菜单名称"
         },
         "stepper": {
+          "cart": {
+            "label": "购物车"
+          },
           "checkout": {
             "label": "结账"
           },

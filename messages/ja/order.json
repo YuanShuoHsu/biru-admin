@@ -89,6 +89,9 @@
           "placeholder": "あなたのメニュー名を入力してください"
         },
         "stepper": {
+          "cart": {
+            "label": "カート"
+          },
           "checkout": {
             "label": "お会計"
           },
