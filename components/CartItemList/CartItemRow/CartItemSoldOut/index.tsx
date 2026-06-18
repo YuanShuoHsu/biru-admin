@@ -73,8 +73,8 @@ const CartItemSoldOut = ({
 
   const { addCartItem, deleteCartItem } = useCartStore((state) => state);
 
-  const tCart = useTranslations("cart");
   const tCommon = useTranslations("common");
+  const tOrder = useTranslations("order");
 
   const targetQuantity = quantity + availableToAdd;
   const shouldDeleteItem = availableToAdd < 0 && targetQuantity <= 0;
@@ -91,9 +91,9 @@ const CartItemSoldOut = ({
           : ""
     : shouldEditItem
       ? itemStockCapLeft === availableToAdd
-        ? tCart("quantityExceedsStock", { label: "", stock: targetQuantity })
+        ? tOrder("cart.quantityExceedsStock", { label: "", stock: targetQuantity })
         : addOnCapLeft === availableToAdd
-          ? tCart("quantityExceedsStock", {
+          ? tOrder("cart.quantityExceedsStock", {
               label: `${limitingAddOnsLabel}\n`,
               stock: targetQuantity,
             })

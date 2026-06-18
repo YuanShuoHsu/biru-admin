@@ -1,8 +1,0 @@
-{
-  "backToOrder": "메뉴로 돌아가기",
-  "checkout": "결제하기",
-  "quantityExceedsStock": "{label} {stock} 개 남음",
-  "title": "장바구니",
-  "totalQuantity": "총 {quantity} 개",
-  "viewCart": "장바구니 보기"
-}

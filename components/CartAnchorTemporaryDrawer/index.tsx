@@ -7,6 +7,7 @@ import CartItemList from "@/components/CartItemList";
 
 import { usePathname } from "@/i18n/navigation";
 
+import { KeyboardArrowLeft, KeyboardArrowRight, ShoppingCart, ShoppingCartCheckout } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -67,8 +68,8 @@ const CartAnchorTemporaryDrawer = () => {
   const search = searchParams.toString();
   const query = search ? `?${search}` : "";
 
-  const tCart = useTranslations("cart");
   const tCommon = useTranslations("common");
+  const tOrder = useTranslations("order");
 
   const isCheckoutPage = pathname.endsWith("/checkout");
   const isCartPage = pathname.endsWith("/cart");
@@ -86,7 +87,7 @@ const CartAnchorTemporaryDrawer = () => {
     <DrawerBox role="presentation">
       <StickyHeader>
         <Toolbar>
-          <Typography variant="h6">{tCart("title")}</Typography>
+          <Typography variant="h6">{tOrder("cart.title")}</Typography>
         </Toolbar>
       </StickyHeader>
       <CartItemList />
@@ -114,9 +115,10 @@ const CartAnchorTemporaryDrawer = () => {
             fullWidth
             href={menuHref}
             onClick={handleClose}
+            startIcon={<KeyboardArrowLeft />}
             variant="outlined"
           >
-            {tCart("backToOrder")}
+            {tOrder("cart.back")}
           </Button>
         )}
         {!isCartPage && (
@@ -125,20 +127,22 @@ const CartAnchorTemporaryDrawer = () => {
             fullWidth
             href={cartHref}
             onClick={handleClose}
+            startIcon={isCheckoutPage ? <KeyboardArrowLeft /> : <ShoppingCart />}
             variant="outlined"
           >
-            {tCart("viewCart")}
+            {isCheckoutPage ? tOrder("checkout.back") : tOrder("cart.view")}
           </Button>
         )}
         {!isCheckoutPage && (
           <Button
             disabled={isCartEmpty}
+            endIcon={isCartPage ? <KeyboardArrowRight /> : <ShoppingCartCheckout />}
             fullWidth
             href={checkoutHref}
             onClick={handleClose}
             variant="contained"
           >
-            {tCart("checkout")}
+            {tOrder("cart.next")}
           </Button>
         )}
       </StickyFooter>

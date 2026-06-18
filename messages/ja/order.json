@@ -1,7 +1,11 @@
 {
   "cart": {
     "back": "メニューに戻る",
-    "next": "レジへ進む"
+    "next": "レジへ進む",
+    "quantityExceedsStock": "{label} 残り {stock} 個",
+    "title": "カート",
+    "totalQuantity": "合計 {quantity} 点",
+    "view": "カートを見る"
   },
   "checkout": {
     "back": "カートに戻る",

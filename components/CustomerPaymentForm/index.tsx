@@ -24,10 +24,12 @@ import { usePathname, useRouter } from "@/i18n/navigation";
 import {
   Business,
   CreditCard,
+  KeyboardArrowLeft,
   MarkChatRead,
   Payments,
   Person,
   QrCodeScanner,
+  TaskAlt,
   VolunteerActivism,
 } from "@mui/icons-material";
 
@@ -437,12 +439,14 @@ const CustomerPaymentForm = () => {
           disabled={isMutating}
           onClick={() => router.push(pathname.replace("/checkout", "/cart"))}
           size="large"
+          startIcon={<KeyboardArrowLeft />}
           variant="outlined"
         >
           {tOrder("checkout.back")}
         </Button>
         <Button
           disabled={isCartEmpty}
+          endIcon={<TaskAlt />}
           loading={isMutating}
           loadingPosition="end"
           size="large"

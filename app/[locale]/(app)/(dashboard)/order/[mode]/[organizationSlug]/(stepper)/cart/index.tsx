@@ -7,6 +7,7 @@ import CustomizedAccordions from "@/components/CustomizedAccordions";
 
 import { useRouter } from "@/i18n/navigation";
 
+import { KeyboardArrowLeft, KeyboardArrowRight } from "@mui/icons-material";
 import { Button, Stack } from "@mui/material";
 
 import { useCartStore } from "@/providers/cart-store-provider";
@@ -37,12 +38,14 @@ const OrderModeOrganizationSlugCart = () => {
             router.push(`/order/${mode}/${organizationSlug}${query}`)
           }
           size="large"
+          startIcon={<KeyboardArrowLeft />}
           variant="outlined"
         >
           {tOrder("cart.back")}
         </Button>
         <Button
           disabled={isCartEmpty}
+          endIcon={<KeyboardArrowRight />}
           onClick={() =>
             router.push(`/order/${mode}/${organizationSlug}/checkout${query}`)
           }

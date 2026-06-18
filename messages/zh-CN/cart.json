@@ -1,8 +1,0 @@
-{
-  "backToOrder": "返回点餐",
-  "checkout": "前往结算",
-  "quantityExceedsStock": "{label} 剩 {stock} 件",
-  "title": "购物车",
-  "totalQuantity": "共 {quantity} 件",
-  "viewCart": "查看购物车"
-}

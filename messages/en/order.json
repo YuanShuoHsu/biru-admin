@@ -1,7 +1,11 @@
 {
   "cart": {
     "back": "Back to Menu",
-    "next": "Proceed to Checkout"
+    "next": "Proceed to Checkout",
+    "quantityExceedsStock": "{label} {stock} left",
+    "title": "Shopping Cart",
+    "totalQuantity": "{quantity} items",
+    "view": "View Cart"
   },
   "checkout": {
     "back": "Back to Cart",

@@ -1,7 +1,11 @@
 {
   "cart": {
-    "back": "返回點餐",
-    "next": "前往結帳"
+    "back": "返回菜單",
+    "next": "前往結帳",
+    "quantityExceedsStock": "{label} 剩 {stock} 件",
+    "title": "購物車清單",
+    "totalQuantity": "共 {quantity} 件",
+    "view": "查看購物車"
   },
   "checkout": {
     "back": "返回購物車",

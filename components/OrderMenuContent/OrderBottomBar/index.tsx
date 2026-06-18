@@ -62,7 +62,7 @@ const OrderBottomBar = () => {
   const cartHref = `${pathname}/cart${query}`;
   const checkoutHref = `${pathname}/checkout${query}`;
 
-  const tCart = useTranslations("cart");
+  const tOrder = useTranslations("order");
 
   return (
     <Fade in={!isCartEmpty}>
@@ -76,7 +76,7 @@ const OrderBottomBar = () => {
             gap={1}
           >
             <Typography component="span" fontWeight="bold" variant="subtitle1">
-              {tCart("totalQuantity", { quantity: cartTotalQuantity })}
+              {tOrder("cart.totalQuantity", { quantity: cartTotalQuantity })}
             </Typography>
             <Typography component="span" variant="body2">
               /
@@ -85,10 +85,10 @@ const OrderBottomBar = () => {
               {cartCurrency} {cartTotalAmount.toLocaleString(locale)}
             </Typography>
           </Stack>
-          <Chip color="primary" label={tCart("viewCart")} variant="outlined" />
+          <Chip color="primary" label={tOrder("cart.view")} variant="outlined" />
         </StyledButton>
         <StyledButton href={checkoutHref} size="large" variant="contained">
-          <StyledChip label={tCart("checkout")} variant="outlined" />
+          <StyledChip label={tOrder("cart.next")} variant="outlined" />
         </StyledButton>
       </StyledContainer>
     </Fade>
