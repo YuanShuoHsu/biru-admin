@@ -223,6 +223,11 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
 
   const storeChildren: BreadcrumbItem[] = [
     {
+      icon: ShoppingCart,
+      label: tOrder("mode.storeSlug.tableNumber.stepper.cart.label"),
+      to: "/cart",
+    },
+    {
       icon: Payment,
       label: tOrder("mode.storeSlug.tableNumber.stepper.checkout.label"),
       to: "/checkout",
