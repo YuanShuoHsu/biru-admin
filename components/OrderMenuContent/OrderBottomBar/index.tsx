@@ -8,12 +8,12 @@ import useCartTotals from "@/hooks/useCartTotals";
 import { usePathname } from "@/i18n/navigation";
 
 import {
+  Box,
   Button,
   type ButtonProps,
   Chip,
   Container,
   Fade,
-  Stack,
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -68,23 +68,13 @@ const OrderBottomBar = () => {
     <Fade in={!isCartEmpty}>
       <StyledContainer disableGutters maxWidth="sm">
         <StyledButton href={cartHref} size="large" variant="outlined">
-          <Stack
-            flex={1}
-            flexDirection="row"
-            justifyContent="center"
-            alignItems="center"
-            gap={1}
-          >
-            <Typography component="span" fontWeight="bold" variant="subtitle1">
-              {tOrder("cart.totalQuantity", { quantity: cartTotalQuantity })}
-            </Typography>
-            <Typography component="span" variant="body2">
+          <Typography flex={1} fontWeight="bold" variant="subtitle1">
+            {tOrder("cart.totalQuantity", { quantity: cartTotalQuantity })}{" "}
+            <Box component="span" typography="body2">
               /
-            </Typography>
-            <Typography component="span" fontWeight="bold" variant="subtitle1">
-              {cartCurrency} {cartTotalAmount.toLocaleString(locale)}
-            </Typography>
-          </Stack>
+            </Box>{" "}
+            {cartCurrency} {cartTotalAmount.toLocaleString(locale)}
+          </Typography>
           <Chip
             color="primary"
             label={tOrder("cart.view")}
