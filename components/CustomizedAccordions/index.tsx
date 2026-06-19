@@ -46,8 +46,16 @@ const StyledAccordionDetails = styled(AccordionDetails)(({ theme }) => ({
   borderTop: `1px solid ${theme.vars.palette.divider}`,
 }));
 
-const CustomizedAccordions = () => {
-  const [expanded, setExpanded] = useState<string | false>("panel1");
+interface CustomizedAccordionsProps {
+  defaultExpanded?: boolean;
+}
+
+const CustomizedAccordions = ({
+  defaultExpanded = true,
+}: CustomizedAccordionsProps) => {
+  const [expanded, setExpanded] = useState<string | false>(
+    defaultExpanded ? "panel1" : false,
+  );
   const isPanel1Expanded = expanded === "panel1";
 
   const { cartCurrency, cartTotalAmount } = useCartTotals();
