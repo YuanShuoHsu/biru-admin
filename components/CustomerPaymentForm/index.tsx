@@ -12,7 +12,6 @@ import {
   useCustomerPaymentFormSchema,
 } from "./definitions";
 
-import FormBox from "@/components/FormBox";
 import ListRadioGroup from "@/components/ListRadioGroup";
 
 import { localeConfigs } from "@/constants/locale";
@@ -25,10 +24,10 @@ import {
   Business,
   CreditCard,
   MarkChatRead,
-  ShoppingCart,
   Payments,
   Person,
   QrCodeScanner,
+  ShoppingCart,
   TaskAlt,
   VolunteerActivism,
 } from "@mui/icons-material";
@@ -36,7 +35,6 @@ import {
 import {
   Button,
   Card,
-  CardContent,
   Divider,
   MenuItem,
   Stack,
@@ -55,6 +53,9 @@ import type { RouteParams } from "@/types/routeParams";
 
 import { sendRequest } from "@/utils/fetcher";
 import { getChoiceNames, getItemName } from "@/utils/menus";
+
+import FormBox from "../FormBox";
+import { StyledCardContent } from "../FormCard";
 
 const INVOICE_TYPES: { icon: React.ElementType; type: InvoiceType }[] = [
   { icon: Person, type: "personal" },
@@ -250,14 +251,7 @@ const CustomerPaymentForm = () => {
   return (
     <FormBox onSubmit={onSubmit}>
       <Card variant="outlined">
-        <CardContent
-          sx={{
-            alignItems: "center",
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-          }}
-        >
+        <StyledCardContent>
           <Typography
             alignSelf="flex-start"
             color="text.secondary"
@@ -432,13 +426,12 @@ const CustomerPaymentForm = () => {
             }))}
             value={payment || ""}
           />
-        </CardContent>
+        </StyledCardContent>
       </Card>
       <Stack direction="row" justifyContent="space-between">
         <Button
           disabled={isMutating}
           onClick={() => router.push(pathname.replace("/checkout", "/cart"))}
-          size="large"
           startIcon={<ShoppingCart />}
           variant="outlined"
         >
@@ -449,7 +442,6 @@ const CustomerPaymentForm = () => {
           endIcon={<TaskAlt />}
           loading={isMutating}
           loadingPosition="end"
-          size="large"
           type="submit"
           variant="contained"
         >

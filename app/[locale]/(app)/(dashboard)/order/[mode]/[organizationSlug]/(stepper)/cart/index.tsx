@@ -33,11 +33,10 @@ const OrderModeOrganizationSlugCart = () => {
       <CustomizedAccordions />
       <Stack direction="row" justifyContent="space-between">
         <Button
-          color="info"
+          color="success"
           onClick={() =>
             router.push(`/order/${mode}/${organizationSlug}${query}`)
           }
-          size="large"
           startIcon={<MenuBook />}
           variant="outlined"
         >
@@ -49,7 +48,6 @@ const OrderModeOrganizationSlugCart = () => {
           onClick={() =>
             router.push(`/order/${mode}/${organizationSlug}/checkout${query}`)
           }
-          size="large"
           variant="contained"
         >
           {tOrder("cart.next")}
