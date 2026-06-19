@@ -7,7 +7,7 @@ import { styled } from "@mui/material/styles";
 
 const StyledBox = styled(Box)(({ theme }) => ({
   position: "fixed",
-  bottom: theme.spacing(10),
+  bottom: theme.spacing(12.5),
   right: theme.spacing(2),
   zIndex: theme.zIndex.appBar - 1,
 }));
