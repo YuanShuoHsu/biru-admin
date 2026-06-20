@@ -221,7 +221,7 @@ const LoveCodeSelect = ({
 
         return (
           <LoveCodeOption key={key} selected={selected} {...optionProps}>
-            <Typography>
+            <Box component="div">
               {parts.map(({ highlight, text }, index) => (
                 <HighlightTypography
                   component="span"
@@ -231,7 +231,7 @@ const LoveCodeSelect = ({
                   {text}
                 </HighlightTypography>
               ))}
-            </Typography>
+            </Box>
           </LoveCodeOption>
         );
       }}
