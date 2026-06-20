@@ -117,19 +117,17 @@ const filter = createFilterOptions<CountryType | CurrencyType>({
   stringify: getOptionLabel,
 });
 
-type BaseProps = {
+interface CountrySelectProps {
   error: boolean;
   helperText: React.ReactNode;
   label: string;
+  mode: "country" | "currency";
   name?: string;
   onBlur?: React.FocusEventHandler;
   onChange?: (event: { target: { name: string; value: string } }) => void;
   required?: boolean;
-};
-
-type CountrySelectProps =
-  | (BaseProps & { mode: "country"; value: CountryType | null })
-  | (BaseProps & { mode: "currency"; value: CurrencyType | null });
+  value: string;
+}
 
 const CountrySelect = ({
   error,
@@ -140,18 +138,20 @@ const CountrySelect = ({
   onBlur,
   onChange,
   required,
-  value,
+  value: valueCode,
 }: CountrySelectProps) => {
   const isCurrency = mode === "currency";
+  const options = isCurrency
+    ? [...currencies].sort((a, b) => a.label[0].localeCompare(b.label[0]))
+    : [...countries].sort((a, b) => a.label[0].localeCompare(b.label[0]));
+  const value = isCurrency
+    ? currencies.find(({ currency }) => currency === valueCode) || null
+    : countries.find(({ code }) => code === valueCode) || null;
 
   const currentInputValue = value ? getOptionLabel(value) : "";
   const [inputValue, setInputValue] = useState(currentInputValue);
 
   const hint = useRef("");
-
-  const options = isCurrency
-    ? [...currencies].sort((a, b) => a.label[0].localeCompare(b.label[0]))
-    : [...countries].sort((a, b) => a.label[0].localeCompare(b.label[0]));
 
   return (
     <Autocomplete

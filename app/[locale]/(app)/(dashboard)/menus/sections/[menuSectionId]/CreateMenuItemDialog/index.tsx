@@ -18,8 +18,6 @@ import LocalizedTextFields from "@/components/LocalizedTextFields";
 import NumberSpinner from "@/components/NumberSpinner";
 import UploadAvatars from "@/components/UploadAvatars";
 
-import { currencies } from "@/constants/currencies";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
@@ -237,10 +235,7 @@ const CreateMenuItemDialog = ({
             label={tMenus("items.offers.priceCurrency.label")}
             mode="currency"
             required
-            value={
-              currencies.find(({ currency }) => currency === priceCurrency) ||
-              null
-            }
+            value={priceCurrency}
             {...register("offer.priceCurrency")}
           />
         </Grid>

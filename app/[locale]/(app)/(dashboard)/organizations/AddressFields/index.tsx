@@ -12,8 +12,6 @@ import {
 
 import CountrySelect from "@/components/CountrySelect";
 
-import { countries } from "@/constants/countries";
-
 import { LocaleEnum } from "@/enums/Locale";
 
 import { Stack, TextField } from "@mui/material";
@@ -168,7 +166,7 @@ const AddressFields = ({
         helperText={errors.addressCountry?.message}
         label={`${tOrganizations("address.addressCountry.label")} ${tCommon("optional")}`}
         mode="country"
-        value={countries.find(({ code }) => code === addressCountry) || null}
+        value={addressCountry || ""}
         {...register("addressCountry")}
       />
     </Stack>
