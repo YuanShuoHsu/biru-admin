@@ -245,7 +245,7 @@ const UpdateMenuItemDialog = ({ item, mutate }: UpdateMenuItemDialogProps) => {
             label={tMenus("items.offers.priceCurrency.label")}
             mode="currency"
             required
-            value={priceCurrency}
+            value={priceCurrency || ""}
             {...register("offer.priceCurrency")}
           />
         </Grid>
