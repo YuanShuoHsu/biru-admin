@@ -21,7 +21,10 @@ import { ORDER_MODE } from "@/constants/orderMode";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import useCartTotals from "@/hooks/useCartTotals";
+
 import { usePathname, useRouter } from "@/i18n/navigation";
+
 import {
   Business,
   CreditCard,
@@ -33,7 +36,6 @@ import {
   TaskAlt,
   VolunteerActivism,
 } from "@mui/icons-material";
-
 import {
   Autocomplete,
   Button,
@@ -47,8 +49,6 @@ import {
 
 import { useCartStore } from "@/providers/cart-store-provider";
 import { useMenuStore } from "@/providers/menu-store-provider";
-
-import useCartTotals from "@/hooks/useCartTotals";
 
 import type { CreateEcpayDto } from "@/types/ecpay/createEcpayDto";
 import type { PaymentMethod } from "@/types/payment";
@@ -70,8 +70,10 @@ const CARRIER_TYPES: CarrierType[] = ["individual", "mobile", "certificate"];
 type LoveCodeOption = { label: string; loveCode: string; short?: string };
 
 const CustomerPaymentForm = () => {
-  const { mode } = useParams();
-  const isPickup = mode === ORDER_MODE.Pickup;
+  const { isCartEmpty, cartItemsList } = useCartStore((state) => state);
+  const { menu } = useMenuStore((state) => state);
+
+  const { cartTotalAmount } = useCartTotals();
 
   const customerPaymentFormSchema = useCustomerPaymentFormSchema();
 
@@ -106,16 +108,10 @@ const CustomerPaymentForm = () => {
     name: ["carrierType", "invoiceType", "invoiceInfo.loveCode", "payment"],
   });
 
-  const { data: loveCodes = [] } = useSWR<LoveCodeOption[]>(
-    invoiceType === "donate" ? "/api/love-codes" : null,
-    fetcher,
-  );
-
-  const { isCartEmpty, cartItemsList } = useCartStore((state) => state);
-  const { menu } = useMenuStore((state) => state);
-  const { cartTotalAmount } = useCartTotals();
-
   const locale = useLocale();
+
+  const { mode } = useParams();
+  const isPickup = mode === ORDER_MODE.Pickup;
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -125,6 +121,11 @@ const CustomerPaymentForm = () => {
   // const isDineIn = mode === ORDER_MODE.DineIn;
 
   const router = useRouter();
+
+  const { data: loveCodes = [] } = useSWR<LoveCodeOption[]>(
+    invoiceType === "donate" ? "/api/love-codes" : null,
+    fetcher,
+  );
 
   const { isMutating, trigger } = useSWRMutation(
     "/api/ecpay",
