@@ -89,11 +89,10 @@ type LoveCodeType = {
 };
 
 const getLoveCodeLabel = ({ label, loveCode, short }: LoveCodeType): string =>
-  `${short || label} ${loveCode}`;
+  `${label}${short ? ` (${short})` : ""} ${loveCode}`;
 
 const filter = createFilterOptions<LoveCodeType>({
-  stringify: ({ label, loveCode, short }) =>
-    [label, short, loveCode].filter(Boolean).join(" "),
+  stringify: getLoveCodeLabel,
 });
 
 interface LoveCodeSelectProps {
