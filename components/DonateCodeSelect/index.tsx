@@ -55,9 +55,10 @@ type DonateCodeOptionProps = Omit<BoxProps<"li">, "component"> & {
   selected: boolean;
 };
 
-const DonateCodeOptionBox = React.forwardRef<HTMLLIElement, DonateCodeOptionProps>(
-  (props, ref) => <Box component="li" ref={ref} {...props} />,
-);
+const DonateCodeOptionBox = React.forwardRef<
+  HTMLLIElement,
+  DonateCodeOptionProps
+>((props, ref) => <Box component="li" ref={ref} {...props} />);
 
 DonateCodeOptionBox.displayName = "DonateCodeOptionBox";
 
@@ -121,8 +122,11 @@ const DonateCodeSelect = ({
   value: donateCode,
 }: DonateCodeSelectProps) => {
   const { data = [] } = useSWR<DonateCodeType[]>("/api/donate-codes", fetcher);
-  const options = [...data].sort((a, b) => a.donateNm.localeCompare(b.donateNm));
-  const value = options.find((option) => option.donateCode === donateCode) || null;
+  const options = [...data].sort((a, b) =>
+    a.donateNm.localeCompare(b.donateNm),
+  );
+  const value =
+    options.find((option) => option.donateCode === donateCode) || null;
 
   const currentInputValue = value ? getDonateCodeLabel(value) : "";
   const [inputValue, setInputValue] = useState(currentInputValue);
