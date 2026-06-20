@@ -3,7 +3,6 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useParams, useSearchParams } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
-import useSWR from "swr";
 import useSWRMutation from "swr/mutation";
 
 import {
@@ -15,6 +14,7 @@ import {
 
 import CustomizedAccordions from "@/components/CustomizedAccordions";
 import ListRadioGroup from "@/components/ListRadioGroup";
+import LoveCodeSelect from "@/components/LoveCodeSelect";
 
 import { localeConfigs } from "@/constants/locale";
 import { ORDER_MODE } from "@/constants/orderMode";
@@ -37,7 +37,6 @@ import {
   VolunteerActivism,
 } from "@mui/icons-material";
 import {
-  Autocomplete,
   Button,
   Card,
   Divider,
@@ -53,7 +52,7 @@ import { useMenuStore } from "@/providers/menu-store-provider";
 import type { CreateEcpayDto } from "@/types/ecpay/createEcpayDto";
 import type { PaymentMethod } from "@/types/payment";
 
-import { fetcher, sendRequest } from "@/utils/fetcher";
+import { sendRequest } from "@/utils/fetcher";
 import { getChoiceNames, getItemName } from "@/utils/menus";
 
 import FormBox from "@/components/FormBox";
@@ -66,8 +65,6 @@ const INVOICE_TYPES: { icon: React.ElementType; type: InvoiceType }[] = [
 ];
 
 const CARRIER_TYPES: CarrierType[] = ["individual", "mobile", "certificate"];
-
-type LoveCodeOption = { label: string; loveCode: string; short?: string };
 
 const OrderModeOrganizationSlugCheckout = () => {
   const { isCartEmpty, cartItemsList } = useCartStore((state) => state);
@@ -121,11 +118,6 @@ const OrderModeOrganizationSlugCheckout = () => {
   // const isDineIn = mode === ORDER_MODE.DineIn;
 
   const router = useRouter();
-
-  const { data: loveCodes = [] } = useSWR<LoveCodeOption[]>(
-    invoiceType === "donate" ? "/api/love-codes" : null,
-    fetcher,
-  );
 
   const { isMutating, trigger } = useSWRMutation(
     "/api/ecpay",
@@ -411,53 +403,16 @@ const OrderModeOrganizationSlugCheckout = () => {
             </>
           )}
           {invoiceType === "donate" && (
-            <Autocomplete
-              filterOptions={(options, { inputValue }) =>
-                options.filter(
-                  ({ label, loveCode: code, short }) =>
-                    label.includes(inputValue) ||
-                    (short && short.includes(inputValue)) ||
-                    code.startsWith(inputValue),
-                )
-              }
-              freeSolo
-              fullWidth
-              getOptionLabel={(option) =>
-                typeof option === "string" ? option : option.loveCode
-              }
-              inputValue={loveCode}
-              onInputChange={(_, value) =>
+            <LoveCodeSelect
+              error={!!errors.invoiceInfo?.loveCode}
+              helperText={errors.invoiceInfo?.loveCode?.message}
+              label={tOrder("checkout.invoice.loveCode")}
+              onChange={({ target: { value } }) =>
                 setValue("invoiceInfo.loveCode", value, {
                   shouldValidate: isSubmitted,
                 })
               }
-              options={loveCodes}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  error={!!errors.invoiceInfo?.loveCode}
-                  helperText={
-                    errors.invoiceInfo?.loveCode?.message ||
-                    tOrder("checkout.invoice.donateFormat")
-                  }
-                  label={tOrder("checkout.invoice.loveCode")}
-                  required
-                />
-              )}
-              renderOption={({ key, ...props }, option) => (
-                <li key={key} {...props}>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    sx={{ width: "100%" }}
-                  >
-                    <Typography>{option.short || option.label}</Typography>
-                    <Typography color="text.secondary" variant="body2">
-                      {option.loveCode}
-                    </Typography>
-                  </Stack>
-                </li>
-              )}
+              value={loveCode}
             />
           )}
           <Divider flexItem />
