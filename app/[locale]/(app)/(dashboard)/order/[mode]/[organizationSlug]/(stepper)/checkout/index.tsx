@@ -14,7 +14,7 @@ import {
 
 import CustomizedAccordions from "@/components/CustomizedAccordions";
 import ListRadioGroup from "@/components/ListRadioGroup";
-import LoveCodeSelect from "@/components/LoveCodeSelect";
+import DonateCodeSelect from "@/components/DonateCodeSelect";
 
 import { localeConfigs } from "@/constants/locale";
 import { ORDER_MODE } from "@/constants/orderMode";
@@ -89,7 +89,7 @@ const OrderModeOrganizationSlugCheckout = () => {
         carruerNum: "",
         customerIdentifier: "",
         customerName: "",
-        loveCode: "",
+        donateCode: "",
       },
       invoiceType: "personal",
       name: "",
@@ -100,9 +100,9 @@ const OrderModeOrganizationSlugCheckout = () => {
     resolver: zodResolver(customerPaymentFormSchema),
   });
 
-  const [carrierType, invoiceType, loveCode, payment] = useWatch({
+  const [carrierType, invoiceType, donateCode, payment] = useWatch({
     control,
-    name: ["carrierType", "invoiceType", "invoiceInfo.loveCode", "payment"],
+    name: ["carrierType", "invoiceType", "invoiceInfo.donateCode", "payment"],
   });
 
   const locale = useLocale();
@@ -196,7 +196,7 @@ const OrderModeOrganizationSlugCheckout = () => {
             ...common,
             CarruerType: "",
             Donation: "1",
-            LoveCode: values.invoiceInfo.loveCode,
+            LoveCode: values.invoiceInfo.donateCode,
             Print: "0",
           };
       }
@@ -403,16 +403,16 @@ const OrderModeOrganizationSlugCheckout = () => {
             </>
           )}
           {invoiceType === "donate" && (
-            <LoveCodeSelect
-              error={!!errors.invoiceInfo?.loveCode}
-              helperText={errors.invoiceInfo?.loveCode?.message}
-              label={tOrder("checkout.invoice.loveCode")}
+            <DonateCodeSelect
+              error={!!errors.invoiceInfo?.donateCode}
+              helperText={errors.invoiceInfo?.donateCode?.message}
+              label={tOrder("checkout.invoice.donateCode")}
               onChange={({ target: { value } }) =>
-                setValue("invoiceInfo.loveCode", value, {
+                setValue("invoiceInfo.donateCode", value, {
                   shouldValidate: isSubmitted,
                 })
               }
-              value={loveCode}
+              value={donateCode}
             />
           )}
           <Divider flexItem />

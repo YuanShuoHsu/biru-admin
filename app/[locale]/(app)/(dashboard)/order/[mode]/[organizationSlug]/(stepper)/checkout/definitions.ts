@@ -29,7 +29,7 @@ export const useCustomerPaymentFormSchema = () => {
         carruerNum: z.string().trim(),
         customerIdentifier: z.string().trim(),
         customerName: z.string().trim(),
-        loveCode: z.string().trim(),
+        donateCode: z.string().trim(),
       }),
       invoiceType: z.enum(["company", "donate", "personal"]),
       name: z
@@ -122,11 +122,11 @@ export const useCustomerPaymentFormSchema = () => {
           }
           break;
         case "donate":
-          if (!/^\d{3,7}$/.test(data.invoiceInfo.loveCode)) {
+          if (!/^\d{3,7}$/.test(data.invoiceInfo.donateCode)) {
             ctx.addIssue({
               code: "custom",
               message: tOrder("checkout.invoice.donateFormat"),
-              path: ["invoiceInfo", "loveCode"],
+              path: ["invoiceInfo", "donateCode"],
             });
           }
           break;

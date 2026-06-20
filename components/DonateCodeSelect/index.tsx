@@ -51,19 +51,19 @@ const HintTypography = styled(Typography)(({ theme }) => ({
   zIndex: 1,
 }));
 
-type LoveCodeOptionProps = Omit<BoxProps<"li">, "component"> & {
+type DonateCodeOptionProps = Omit<BoxProps<"li">, "component"> & {
   selected: boolean;
 };
 
-const LoveCodeOptionBox = React.forwardRef<HTMLLIElement, LoveCodeOptionProps>(
+const DonateCodeOptionBox = React.forwardRef<HTMLLIElement, DonateCodeOptionProps>(
   (props, ref) => <Box component="li" ref={ref} {...props} />,
 );
 
-LoveCodeOptionBox.displayName = "LoveCodeOptionBox";
+DonateCodeOptionBox.displayName = "DonateCodeOptionBox";
 
-const LoveCodeOption = styled(LoveCodeOptionBox, {
+const DonateCodeOption = styled(DonateCodeOptionBox, {
   shouldForwardProp: (prop) => prop !== "selected",
-})<LoveCodeOptionProps>(({ selected, theme }) => ({
+})<DonateCodeOptionProps>(({ selected, theme }) => ({
   display: "flex",
   alignItems: "center",
   gap: theme.spacing(2),
@@ -82,20 +82,24 @@ const HighlightTypography = styled(Typography, {
   }),
 );
 
-type LoveCodeType = {
-  label: string;
-  loveCode: string;
-  short?: string;
+type DonateCodeType = {
+  donateNm: string;
+  donateCode: string;
+  donateShortNm?: string;
 };
 
-const getLoveCodeLabel = ({ label, loveCode, short }: LoveCodeType): string =>
-  `${label}${short ? ` (${short})` : ""} ${loveCode}`;
+const getDonateCodeLabel = ({
+  donateNm,
+  donateCode,
+  donateShortNm,
+}: DonateCodeType): string =>
+  `${donateNm}${donateShortNm ? ` (${donateShortNm})` : ""} ${donateCode}`;
 
-const filter = createFilterOptions<LoveCodeType>({
-  stringify: getLoveCodeLabel,
+const filter = createFilterOptions<DonateCodeType>({
+  stringify: getDonateCodeLabel,
 });
 
-interface LoveCodeSelectProps {
+interface DonateCodeSelectProps {
   error: boolean;
   helperText: React.ReactNode;
   label: string;
@@ -106,7 +110,7 @@ interface LoveCodeSelectProps {
   value: string;
 }
 
-const LoveCodeSelect = ({
+const DonateCodeSelect = ({
   error,
   helperText,
   label,
@@ -114,13 +118,13 @@ const LoveCodeSelect = ({
   onBlur,
   onChange,
   required,
-  value: loveCode,
-}: LoveCodeSelectProps) => {
-  const { data = [] } = useSWR<LoveCodeType[]>("/api/love-codes", fetcher);
-  const options = [...data].sort((a, b) => a.label.localeCompare(b.label));
-  const value = options.find((opt) => opt.loveCode === loveCode) || null;
+  value: donateCode,
+}: DonateCodeSelectProps) => {
+  const { data = [] } = useSWR<DonateCodeType[]>("/api/donate-codes", fetcher);
+  const options = [...data].sort((a, b) => a.donateNm.localeCompare(b.donateNm));
+  const value = options.find((option) => option.donateCode === donateCode) || null;
 
-  const currentInputValue = value ? getLoveCodeLabel(value) : "";
+  const currentInputValue = value ? getDonateCodeLabel(value) : "";
   const [inputValue, setInputValue] = useState(currentInputValue);
 
   const hint = useRef("");
@@ -135,18 +139,18 @@ const LoveCodeSelect = ({
         return filter(options, params);
       }}
       fullWidth
-      getOptionLabel={getLoveCodeLabel}
-      groupBy={(option) => option.label[0].toUpperCase()}
+      getOptionLabel={getDonateCodeLabel}
+      groupBy={(option) => option.donateNm[0].toUpperCase()}
       id="love-code-select"
       inputValue={inputValue}
       isOptionEqualToValue={(option, selected) =>
-        selected ? option.loveCode === selected.loveCode : false
+        selected ? option.donateCode === selected.donateCode : false
       }
       onBlur={onBlur}
       onChange={(_, newValue) => {
-        setInputValue(newValue ? getLoveCodeLabel(newValue) : "");
+        setInputValue(newValue ? getDonateCodeLabel(newValue) : "");
 
-        const value = newValue?.loveCode || "";
+        const value = newValue?.donateCode || "";
         onChange?.({ target: { name: name || "", value } });
       }}
       onClose={() => {
@@ -186,12 +190,12 @@ const LoveCodeSelect = ({
             label={label}
             onChange={({ target: { value: newValue } }) => {
               const matchingOption = options.find((option) =>
-                getLoveCodeLabel(option).startsWith(newValue),
+                getDonateCodeLabel(option).startsWith(newValue),
               );
 
               hint.current =
                 newValue && matchingOption
-                  ? getLoveCodeLabel(matchingOption)
+                  ? getDonateCodeLabel(matchingOption)
                   : "";
             }}
             required={required}
@@ -219,7 +223,7 @@ const LoveCodeSelect = ({
         const parts = parse(optionLabelText, matches);
 
         return (
-          <LoveCodeOption key={key} selected={selected} {...optionProps}>
+          <DonateCodeOption key={key} selected={selected} {...optionProps}>
             <Box component="div">
               {parts.map(({ highlight, text }, index) => (
                 <HighlightTypography
@@ -231,7 +235,7 @@ const LoveCodeSelect = ({
                 </HighlightTypography>
               ))}
             </Box>
-          </LoveCodeOption>
+          </DonateCodeOption>
         );
       }}
       value={value}
@@ -239,4 +243,4 @@ const LoveCodeSelect = ({
   );
 };
 
-export default LoveCodeSelect;
+export default DonateCodeSelect;
