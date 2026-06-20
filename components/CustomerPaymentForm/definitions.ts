@@ -1,10 +1,16 @@
 import { useTranslations } from "next-intl";
+import { useParams } from "next/navigation";
 import * as z from "zod";
+
+import { ORDER_MODE } from "@/constants/orderMode";
 
 export type InvoiceType = "company" | "donate" | "personal";
 export type CarrierType = "certificate" | "individual" | "mobile";
 
-export const useCustomerPaymentFormSchema = (isPickup: boolean) => {
+export const useCustomerPaymentFormSchema = () => {
+  const { mode } = useParams();
+  const isPickup = mode === ORDER_MODE.Pickup;
+
   const tOrder = useTranslations("order");
   const tValidation = useTranslations("validation");
 

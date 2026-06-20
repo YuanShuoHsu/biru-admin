@@ -52,7 +52,6 @@ import useCartTotals from "@/hooks/useCartTotals";
 
 import type { CreateEcpayDto } from "@/types/ecpay/createEcpayDto";
 import type { PaymentMethod } from "@/types/payment";
-import type { RouteParams } from "@/types/routeParams";
 
 import { fetcher, sendRequest } from "@/utils/fetcher";
 import { getChoiceNames, getItemName } from "@/utils/menus";
@@ -71,10 +70,10 @@ const CARRIER_TYPES: CarrierType[] = ["individual", "mobile", "certificate"];
 type LoveCodeOption = { label: string; loveCode: string; short?: string };
 
 const CustomerPaymentForm = () => {
-  const { mode } = useParams<Partial<RouteParams>>();
+  const { mode } = useParams();
   const isPickup = mode === ORDER_MODE.Pickup;
 
-  const customerPaymentFormSchema = useCustomerPaymentFormSchema(isPickup);
+  const customerPaymentFormSchema = useCustomerPaymentFormSchema();
 
   const {
     control,
