@@ -1,8 +1,8 @@
 import { setRequestLocale } from "next-intl/server";
 
-import type { Locale } from "@/i18n/routing";
-
 import OrderModeOrganizationSlugCheckout from ".";
+
+import type { Locale } from "@/i18n/routing";
 
 interface OrderModeOrganizationSlugCheckoutPageProps {
   params: Promise<{ locale: Locale }>;
