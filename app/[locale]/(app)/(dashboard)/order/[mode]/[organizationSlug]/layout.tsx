@@ -10,6 +10,7 @@ import { routing } from "@/i18n/routing";
 
 import { MenuStoreProvider } from "@/providers/menu-store-provider";
 
+import type { OrderMenu } from "@/types/menus";
 import type { OrganizationResponse } from "@/types/organizations";
 
 import { fetcher } from "@/utils/fetcher";
@@ -37,8 +38,12 @@ const OrderModeOrganizationSlugLayout = async ({
   ).catch(() => null);
   if (!organization) return notFound();
 
+  const initialMenu = await fetcher<OrderMenu>(
+    `/api/organizations/${organization.id}/order-menu?lang=${locale}`,
+  ).catch(() => null);
+
   return (
-    <MenuStoreProvider>
+    <MenuStoreProvider initialMenu={initialMenu}>
       <MenuSocketInitializer organizationId={organization.id} />
       <CartAnchorTemporaryDrawer />
       {children}

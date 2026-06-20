@@ -191,7 +191,7 @@ export const findItemById = (
   itemId: string,
 ): OrderMenuItem | undefined =>
   menu?.sections
-    .flatMap(({ menuItems }) => menuItems)
+    ?.flatMap(({ menuItems }) => menuItems)
     .find(({ id }) => id === itemId);
 
 export const getItemName = (menu: OrderMenu | null, itemId: string): string => {
