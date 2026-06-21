@@ -174,9 +174,15 @@ const OrderModeOrganizationSlugCheckout = () => {
   });
 
   const paymentOptions = [
-    ...(mode === ORDER_MODE.DineIn
-      ? [{ icon: Payments, id: "Cash", label: tOrder("checkout.payment.Cash") }]
-      : []),
+    {
+      ...(mode !== ORDER_MODE.DineIn && {
+        disabled: true,
+        disabledReason: tOrder("checkout.payment.dineInOnly"),
+      }),
+      icon: Payments,
+      id: "Cash",
+      label: tOrder("checkout.payment.Cash"),
+    },
     {
       icon: CreditCard,
       id: "Credit",
@@ -541,7 +547,9 @@ const OrderModeOrganizationSlugCheckout = () => {
                 shouldValidate: isSubmitted,
               })
             }
-            options={paymentOptions.map(({ icon, id, label }) => ({
+            options={paymentOptions.map(({ disabled, disabledReason, icon, id, label }) => ({
+              disabled,
+              disabledReason,
               icon,
               label,
               value: id,

@@ -1,7 +1,6 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useParams } from "next/navigation";
 
 import { ORDER_MODE } from "@/constants/orderMode";
 
@@ -18,16 +17,16 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
 }));
 
 interface OrderOrganizationTextFieldProps {
+  mode: string;
   organizations: OrganizationResponse[];
   organizationSlug: string;
 }
 
 const OrderOrganizationTextField = ({
+  mode,
   organizations,
   organizationSlug,
 }: OrderOrganizationTextFieldProps) => {
-  const { mode } = useParams();
-
   const router = useRouter();
 
   const tOrder = useTranslations("order");

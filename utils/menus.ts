@@ -208,7 +208,10 @@ export const getItemStock = (
   const item = findItemById(menu, itemId);
   if (!item) return 0;
 
-  return item.offers[0]?.inventoryLevel?.value ?? null;
+  const offer = item.offers[0];
+  if (offer?.availability === "SoldOut") return 0;
+
+  return offer?.inventoryLevel?.value || null;
 };
 
 type AddOnLimitResult = { cap: number; names: string[] };

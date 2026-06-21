@@ -5,13 +5,13 @@ import type { OrganizationResponse } from "@/types/organizations";
 import { fetcher } from "@/utils/fetcher";
 
 interface ToolbarOrderModeOrganizationSlugCompletePageProps {
-  params: Promise<{ organizationSlug: string }>;
+  params: Promise<{ mode: string; organizationSlug: string }>;
 }
 
 const ToolbarOrderModeOrganizationSlugCompletePage = async ({
   params,
 }: ToolbarOrderModeOrganizationSlugCompletePageProps) => {
-  const { organizationSlug } = await params;
+  const { mode, organizationSlug } = await params;
 
   const organizations = await fetcher<OrganizationResponse[]>(
     "/api/organizations",
@@ -19,6 +19,7 @@ const ToolbarOrderModeOrganizationSlugCompletePage = async ({
 
   return (
     <OrderOrganizationTextField
+      mode={mode}
       organizations={organizations}
       organizationSlug={organizationSlug}
     />

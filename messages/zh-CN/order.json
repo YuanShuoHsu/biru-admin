@@ -56,6 +56,7 @@
     "payment": {
       "Cash": "现金",
       "Credit": "信用卡",
+      "dineInOnly": "仅限堂食",
       "TWQR": "移动支付",
       "WeiXin": "微信支付"
     },
