@@ -382,11 +382,9 @@ const OrderModeOrganizationSlugCheckout = () => {
               helperText={errors.invoice?.carrierType?.message}
               label={tOrder("checkout.invoice.carrierType.label")}
               onChange={(e) =>
-                setValue(
-                  "invoice.carrierType",
-                  e.target.value as CarrierType,
-                  { shouldValidate: isSubmitted },
-                )
+                setValue("invoice.carrierType", e.target.value as CarrierType, {
+                  shouldValidate: isSubmitted,
+                })
               }
               select
               slotProps={{
