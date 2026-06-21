@@ -23,7 +23,10 @@
       "customerIdentifier": "统一编号",
       "customerName": "公司名称",
       "donate": "捐赠发票",
-      "donateCode": "爱心码",
+      "donateCode": {
+        "label": "爱心码",
+        "placeholder": "请选择您的爱心码"
+      },
       "donateFormat": "3 至 7 位数字",
       "individual": "电子邮箱",
       "mobile": "手机条码",

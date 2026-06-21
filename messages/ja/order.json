@@ -23,7 +23,10 @@
       "customerIdentifier": "統一番号",
       "customerName": "会社名",
       "donate": "寄付インボイス",
-      "donateCode": "ラブコード",
+      "donateCode": {
+        "label": "ラブコード",
+        "placeholder": "あなたのラブコードを選択してください"
+      },
       "donateFormat": "3〜7桁の数字",
       "individual": "メールアドレス",
       "mobile": "携帯バーコード",

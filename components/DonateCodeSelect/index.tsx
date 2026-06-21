@@ -107,6 +107,7 @@ interface DonateCodeSelectProps {
   name?: string;
   onBlur?: React.FocusEventHandler;
   onChange?: (event: { target: { name: string; value: string } }) => void;
+  placeholder?: string;
   required?: boolean;
   value: string;
 }
@@ -118,6 +119,7 @@ const DonateCodeSelect = ({
   name,
   onBlur,
   onChange,
+  placeholder,
   required,
   value: donateCode,
 }: DonateCodeSelectProps) => {
@@ -202,6 +204,7 @@ const DonateCodeSelect = ({
                   ? getDonateCodeLabel(matchingOption)
                   : "";
             }}
+            placeholder={placeholder}
             required={required}
             slotProps={{
               htmlInput: {

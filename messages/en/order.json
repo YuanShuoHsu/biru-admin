@@ -23,7 +23,10 @@
       "customerIdentifier": "Business ID Number",
       "customerName": "Company Name",
       "donate": "Donate Invoice",
-      "donateCode": "Love Code",
+      "donateCode": {
+        "label": "Love Code",
+        "placeholder": "Please select your love code"
+      },
       "donateFormat": "3 to 7 digits",
       "individual": "Email",
       "mobile": "Mobile Barcode",
