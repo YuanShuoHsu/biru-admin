@@ -475,6 +475,7 @@ const OrderModeOrganizationSlugCheckout = () => {
               helperText={errors.invoiceInfo?.donateCode?.message}
               label={tOrder("checkout.invoice.donateCode.label")}
               placeholder={tOrder("checkout.invoice.donateCode.placeholder")}
+              required
               value={donateCode}
               {...register("invoiceInfo.donateCode")}
             />
