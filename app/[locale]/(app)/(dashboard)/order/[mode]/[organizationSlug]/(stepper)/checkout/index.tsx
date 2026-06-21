@@ -18,6 +18,7 @@ import DonateCodeSelect from "@/components/DonateCodeSelect";
 import FormBox from "@/components/FormBox";
 import { StyledCardContent } from "@/components/FormCard";
 import ListRadioGroup from "@/components/ListRadioGroup";
+import TextMaskCustom from "@/components/TextMaskCustom";
 
 import { localeConfigs } from "@/constants/locale";
 import { ORDER_MODE } from "@/constants/orderMode";
@@ -398,11 +399,23 @@ const OrderModeOrganizationSlugCheckout = () => {
                 fullWidth
                 helperText={errors.invoiceInfo?.carruerNum?.message}
                 label={tOrder("checkout.invoice.carruerNum")}
-                placeholder={
-                  carrierType === "mobile" ? "/AB12345" : "AB12345678901234"
-                }
                 required
-                slotProps={{ inputLabel: { shrink: true } }}
+                slotProps={{
+                  input: {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    inputComponent: TextMaskCustom as any,
+                    inputProps: {
+                      mask:
+                        carrierType === "mobile"
+                          ? "/AAAAAAA"
+                          : "aa00000000000000",
+                      placeholder:
+                        carrierType === "mobile"
+                          ? "/AB12345"
+                          : "AB12345678901234",
+                    },
+                  },
+                }}
                 {...register("invoiceInfo.carruerNum")}
               />
             )}
@@ -413,9 +426,14 @@ const OrderModeOrganizationSlugCheckout = () => {
                 fullWidth
                 helperText={errors.invoiceInfo?.customerIdentifier?.message}
                 label={tOrder("checkout.invoice.customerIdentifier")}
-                placeholder="12345678"
                 required
-                slotProps={{ inputLabel: { shrink: true } }}
+                slotProps={{
+                  input: {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    inputComponent: TextMaskCustom as any,
+                    inputProps: { mask: "00000000", placeholder: "12345678" },
+                  },
+                }}
                 {...register("invoiceInfo.customerIdentifier", {
                   onChange: () =>
                     triggerValidation("invoiceInfo.customerIdentifier"),
