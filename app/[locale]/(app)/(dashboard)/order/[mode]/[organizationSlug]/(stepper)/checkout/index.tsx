@@ -324,7 +324,7 @@ const OrderModeOrganizationSlugCheckout = () => {
             error={!!errors.customer?.phone}
             fullWidth
             helperText={errors.customer?.phone?.message}
-            label={tOrder("checkout.customer.phone.label")}
+            label={`${tOrder("checkout.customer.phone.label")}${!isPickup ? ` ${tCommon("optional")}` : ""}`}
             placeholder={tOrder("checkout.customer.phone.placeholder")}
             required={isPickup}
             type="tel"
@@ -334,7 +334,7 @@ const OrderModeOrganizationSlugCheckout = () => {
             error={!!errors.customer?.email}
             fullWidth
             helperText={errors.customer?.email?.message}
-            label={tOrder("checkout.customer.email.label")}
+            label={`${tOrder("checkout.customer.email.label")}${!(invoiceType === "personal" && carrierType === "individual" && emailSameAsCustomer) ? ` ${tCommon("optional")}` : ""}`}
             placeholder={tOrder("checkout.customer.email.placeholder")}
             required={
               invoiceType === "personal" &&
@@ -348,7 +348,7 @@ const OrderModeOrganizationSlugCheckout = () => {
             error={!!errors.customer?.notes}
             fullWidth
             helperText={errors.customer?.notes?.message}
-            label={tOrder("checkout.customer.notes.label")}
+            label={`${tOrder("checkout.customer.notes.label")} ${tCommon("optional")}`}
             maxRows={4}
             multiline
             placeholder={tOrder("checkout.customer.notes.placeholder")}
