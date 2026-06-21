@@ -9,14 +9,17 @@ import {
   type UseFormSetValue,
 } from "react-hook-form";
 
+import OpeningHoursField from "./OpeningHoursField";
+
 import TextMaskCustom from "@/components/TextMaskCustom";
 
 import { TextField } from "@mui/material";
 
+import { getPhoneFormatting } from "@/utils/countries";
+
 import type { Organization } from "@/types/organizations";
 
 import type { UpdateLocationForm } from "../[slug]/location/UpdateLocationDialog/definitions";
-import OpeningHoursField from "./OpeningHoursField";
 
 type OrganizationForm = UpdateLocationForm;
 
@@ -45,6 +48,8 @@ const LocalBusinessFields = ({
   const openingHours = useWatch({ control, name: "openingHours" });
   const telephone = useWatch({ control, name: "telephone" });
 
+  const { mask, placeholder } = getPhoneFormatting(addressCountry);
+
   return (
     <>
       <OpeningHoursField
@@ -62,7 +67,7 @@ const LocalBusinessFields = ({
           input: {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             inputComponent: TextMaskCustom as any,
-            inputProps: { countryCode: addressCountry },
+            inputProps: { mask, placeholder },
           },
         }}
         type="tel"
