@@ -11,12 +11,11 @@ interface CustomProps {
 }
 
 const TextMaskCustom = React.forwardRef<HTMLInputElement, CustomProps>(
-  function TextMaskCustom({ mask, name, onChange, ...other }, ref) {
+  function TextMaskCustom({ name, onChange, ...other }, ref) {
     return (
       <IMaskInput
         {...other}
         inputRef={ref}
-        mask={mask}
         name={name}
         onAccept={(value: string) => onChange({ target: { name, value } })}
         overwrite
