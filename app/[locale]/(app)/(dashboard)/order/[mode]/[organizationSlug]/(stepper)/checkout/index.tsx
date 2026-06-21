@@ -386,6 +386,7 @@ const OrderModeOrganizationSlugCheckout = () => {
                   shouldValidate: isSubmitted,
                 })
               }
+              required
               select
               slotProps={{
                 inputLabel: { shrink: true },
