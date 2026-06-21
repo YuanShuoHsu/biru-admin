@@ -456,13 +456,9 @@ const OrderModeOrganizationSlugCheckout = () => {
               error={!!errors.invoiceInfo?.donateCode}
               helperText={errors.invoiceInfo?.donateCode?.message}
               label={tOrder("checkout.invoice.donateCode.label")}
-              onChange={({ target: { value } }) =>
-                setValue("invoiceInfo.donateCode", value, {
-                  shouldValidate: isSubmitted,
-                })
-              }
               placeholder={tOrder("checkout.invoice.donateCode.placeholder")}
               value={donateCode}
+              {...register("invoiceInfo.donateCode")}
             />
           )}
           <Divider flexItem />

@@ -11,6 +11,7 @@ import {
   type BoxProps,
   createFilterOptions,
   TextField,
+  type TextFieldProps,
   Typography,
   TypographyProps,
 } from "@mui/material";
@@ -100,28 +101,18 @@ const filter = createFilterOptions<DonateCodeType>({
   stringify: getDonateCodeLabel,
 });
 
-interface DonateCodeSelectProps {
-  error: boolean;
-  helperText: React.ReactNode;
-  label: string;
-  name?: string;
+interface DonateCodeSelectProps
+  extends Omit<TextFieldProps, "onBlur" | "onChange"> {
   onBlur?: React.FocusEventHandler;
   onChange?: (event: { target: { name: string; value: string } }) => void;
-  placeholder?: string;
-  required?: boolean;
-  value: string;
 }
 
 const DonateCodeSelect = ({
-  error,
-  helperText,
-  label,
   name,
   onBlur,
   onChange,
-  placeholder,
-  required,
   value: donateCode,
+  ...textFieldProps
 }: DonateCodeSelectProps) => {
   const { data = [] } = useSWR<DonateCodeType[]>("/api/donate-codes", fetcher);
   const options = [...data].sort((a, b) =>
@@ -191,9 +182,7 @@ const DonateCodeSelect = ({
           <HintTypography>{hint.current}</HintTypography>
           <TextField
             {...params}
-            error={error}
-            helperText={helperText}
-            label={label}
+            {...textFieldProps}
             onChange={({ target: { value: newValue } }) => {
               const matchingOption = options.find((option) =>
                 getDonateCodeLabel(option).startsWith(newValue),
@@ -204,8 +193,6 @@ const DonateCodeSelect = ({
                   ? getDonateCodeLabel(matchingOption)
                   : "";
             }}
-            placeholder={placeholder}
-            required={required}
             slotProps={{
               htmlInput: {
                 ...params.inputProps,

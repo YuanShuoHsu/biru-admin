@@ -22,6 +22,7 @@ import {
   createFilterOptions,
   InputAdornment,
   TextField,
+  type TextFieldProps,
   Typography,
   TypographyProps,
   type BoxProps,
@@ -117,30 +118,20 @@ const filter = createFilterOptions<CountryType | CurrencyType>({
   stringify: getOptionLabel,
 });
 
-interface CountrySelectProps {
-  error: boolean;
-  helperText: React.ReactNode;
-  label: string;
+interface CountrySelectProps
+  extends Omit<TextFieldProps, "onBlur" | "onChange"> {
   mode: "country" | "currency";
-  name?: string;
   onBlur?: React.FocusEventHandler;
   onChange?: (event: { target: { name: string; value: string } }) => void;
-  placeholder?: string;
-  required?: boolean;
-  value: string;
 }
 
 const CountrySelect = ({
-  error,
-  helperText,
-  label,
   mode,
   name,
   onBlur,
   onChange,
-  placeholder,
-  required,
   value: valueCode,
+  ...textFieldProps
 }: CountrySelectProps) => {
   const isCurrency = mode === "currency";
   const options = isCurrency
@@ -221,9 +212,7 @@ const CountrySelect = ({
           <HintTypography>{hint.current}</HintTypography>
           <TextField
             {...params}
-            error={error}
-            helperText={helperText}
-            label={label}
+            {...textFieldProps}
             onChange={({ target: { value: newValue } }) => {
               const matchingOption = options.find((option) =>
                 getOptionLabel(option).startsWith(newValue),
@@ -234,8 +223,6 @@ const CountrySelect = ({
                   ? getOptionLabel(matchingOption)
                   : "";
             }}
-            placeholder={placeholder}
-            required={required}
             slotProps={{
               htmlInput: {
                 ...params.inputProps,
