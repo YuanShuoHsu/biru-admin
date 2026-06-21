@@ -166,6 +166,7 @@ const AddressFields = ({
         helperText={errors.addressCountry?.message}
         label={`${tOrganizations("address.addressCountry.label")} ${tCommon("optional")}`}
         mode="country"
+        placeholder={tOrganizations("address.addressCountry.placeholder")}
         value={addressCountry || ""}
         {...register("addressCountry")}
       />

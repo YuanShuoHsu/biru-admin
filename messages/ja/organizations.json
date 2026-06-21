@@ -26,7 +26,7 @@
   "address": {
     "addressCountry": {
       "label": "国/地域",
-      "placeholder": "あなたの国コードを入力してください"
+      "placeholder": "あなたの国/地域を選択してください"
     },
     "addressLocality": {
       "label": "市区町村",

@@ -220,7 +220,8 @@
         "placeholder": "가격을 입력해 주세요"
       },
       "priceCurrency": {
-        "label": "통화"
+        "label": "통화",
+        "placeholder": "귀하의 통화를 선택해 주세요"
       },
       "priceSpecification": {
         "price": {

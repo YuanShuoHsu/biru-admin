@@ -220,7 +220,8 @@
         "placeholder": "请输入您的价格"
       },
       "priceCurrency": {
-        "label": "币别"
+        "label": "币别",
+        "placeholder": "请选择您的币别"
       },
       "priceSpecification": {
         "price": {

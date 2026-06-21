@@ -220,7 +220,8 @@
         "placeholder": "Please enter your price"
       },
       "priceCurrency": {
-        "label": "Currency"
+        "label": "Currency",
+        "placeholder": "Please select your currency"
       },
       "priceSpecification": {
         "price": {

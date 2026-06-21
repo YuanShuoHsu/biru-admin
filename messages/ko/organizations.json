@@ -26,7 +26,7 @@
   "address": {
     "addressCountry": {
       "label": "국가/지역",
-      "placeholder": "귀하의 국가 코드를 입력해 주세요"
+      "placeholder": "귀하의 국가/지역을 선택해 주세요"
     },
     "addressLocality": {
       "label": "시/군/구",

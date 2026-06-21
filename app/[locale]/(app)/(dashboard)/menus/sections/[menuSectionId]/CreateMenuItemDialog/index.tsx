@@ -234,6 +234,7 @@ const CreateMenuItemDialog = ({
             helperText={errors.offer?.priceCurrency?.message}
             label={tMenus("items.offers.priceCurrency.label")}
             mode="currency"
+            placeholder={tMenus("items.offers.priceCurrency.placeholder")}
             required
             value={priceCurrency || ""}
             {...register("offer.priceCurrency")}

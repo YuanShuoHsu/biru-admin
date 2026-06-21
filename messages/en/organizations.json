@@ -26,7 +26,7 @@
   "address": {
     "addressCountry": {
       "label": "Country",
-      "placeholder": "Please enter your country code"
+      "placeholder": "Please select your country"
     },
     "addressLocality": {
       "label": "City / Town",

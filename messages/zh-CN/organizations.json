@@ -26,7 +26,7 @@
   "address": {
     "addressCountry": {
       "label": "国家/地区",
-      "placeholder": "请输入您的国家代码"
+      "placeholder": "请选择您的国家/地区"
     },
     "addressLocality": {
       "label": "城市/区县",

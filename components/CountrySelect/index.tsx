@@ -125,6 +125,7 @@ interface CountrySelectProps {
   name?: string;
   onBlur?: React.FocusEventHandler;
   onChange?: (event: { target: { name: string; value: string } }) => void;
+  placeholder?: string;
   required?: boolean;
   value: string;
 }
@@ -137,6 +138,7 @@ const CountrySelect = ({
   name,
   onBlur,
   onChange,
+  placeholder,
   required,
   value: valueCode,
 }: CountrySelectProps) => {
@@ -232,6 +234,7 @@ const CountrySelect = ({
                   ? getOptionLabel(matchingOption)
                   : "";
             }}
+            placeholder={placeholder}
             required={required}
             slotProps={{
               htmlInput: {
