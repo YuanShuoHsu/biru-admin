@@ -547,13 +547,15 @@ const OrderModeOrganizationSlugCheckout = () => {
                 shouldValidate: isSubmitted,
               })
             }
-            options={paymentOptions.map(({ disabled, disabledReason, icon, id, label }) => ({
-              disabled,
-              disabledReason,
-              icon,
-              label,
-              value: id,
-            }))}
+            options={paymentOptions.map(
+              ({ disabled, disabledReason, icon, id, label }) => ({
+                disabled,
+                disabledReason,
+                icon,
+                label,
+                value: id,
+              }),
+            )}
             value={payment || ""}
           />
         </StyledCardContent>

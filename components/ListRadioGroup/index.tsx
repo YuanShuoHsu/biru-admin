@@ -59,7 +59,10 @@ const ListRadioGroup = ({
     <Paper variant="outlined">
       <RadioGroup onChange={onChange} value={value}>
         {options.map(
-          ({ disabled, disabledReason, icon: Icon, label, value: optionValue }, index) => (
+          (
+            { disabled, disabledReason, icon: Icon, label, value: optionValue },
+            index,
+          ) => (
             <Fragment key={optionValue}>
               {index !== 0 && <Divider />}
               <StyledFormControlLabel
