@@ -9,9 +9,23 @@
   },
   "checkout": {
     "back": "返回购物车",
-    "email": {
-      "label": "电子邮箱",
-      "placeholder": "请输入您的电子邮箱"
+    "customer": {
+      "email": {
+        "label": "电子邮箱",
+        "placeholder": "请输入您的电子邮箱"
+      },
+      "name": {
+        "label": "姓名",
+        "placeholder": "请输入您的姓名"
+      },
+      "notes": {
+        "label": "备注",
+        "placeholder": "请输入您的备注"
+      },
+      "phone": {
+        "label": "电话",
+        "placeholder": "请输入您的电话"
+      }
     },
     "invoice": {
       "carrierType": {
@@ -38,18 +52,6 @@
       "mobile": "手机条码",
       "personal": "个人发票",
       "title": "电子发票"
-    },
-    "name": {
-      "label": "姓名",
-      "placeholder": "请输入您的姓名"
-    },
-    "notes": {
-      "label": "备注",
-      "placeholder": "请输入您的备注"
-    },
-    "phone": {
-      "label": "电话",
-      "placeholder": "请输入您的电话"
     },
     "payment": {
       "Cash": "现金",

@@ -9,9 +9,23 @@
   },
   "checkout": {
     "back": "カートに戻る",
-    "email": {
-      "label": "メールアドレス",
-      "placeholder": "あなたのメールアドレスを入力してください"
+    "customer": {
+      "email": {
+        "label": "メールアドレス",
+        "placeholder": "あなたのメールアドレスを入力してください"
+      },
+      "name": {
+        "label": "お名前",
+        "placeholder": "あなたのお名前を入力してください"
+      },
+      "notes": {
+        "label": "備考",
+        "placeholder": "あなたの備考を入力してください"
+      },
+      "phone": {
+        "label": "電話番号",
+        "placeholder": "あなたの電話番号を入力してください"
+      }
     },
     "invoice": {
       "carrierType": {
@@ -38,18 +52,6 @@
       "mobile": "携帯バーコード",
       "personal": "個人インボイス",
       "title": "電子インボイス"
-    },
-    "name": {
-      "label": "お名前",
-      "placeholder": "あなたのお名前を入力してください"
-    },
-    "notes": {
-      "label": "備考",
-      "placeholder": "あなたの備考を入力してください"
-    },
-    "phone": {
-      "label": "電話番号",
-      "placeholder": "あなたの電話番号を入力してください"
     },
     "payment": {
       "Cash": "現金",

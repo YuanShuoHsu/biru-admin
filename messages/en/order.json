@@ -9,9 +9,23 @@
   },
   "checkout": {
     "back": "Back to cart",
-    "email": {
-      "label": "Email",
-      "placeholder": "Please enter your email"
+    "customer": {
+      "email": {
+        "label": "Email",
+        "placeholder": "Please enter your email"
+      },
+      "name": {
+        "label": "Name",
+        "placeholder": "Please enter your name"
+      },
+      "notes": {
+        "label": "Notes",
+        "placeholder": "Please enter your notes"
+      },
+      "phone": {
+        "label": "Phone",
+        "placeholder": "Please enter your phone number"
+      }
     },
     "invoice": {
       "carrierType": {
@@ -38,18 +52,6 @@
       "mobile": "Mobile barcode",
       "personal": "Personal invoice",
       "title": "E-invoice"
-    },
-    "name": {
-      "label": "Name",
-      "placeholder": "Please enter your name"
-    },
-    "notes": {
-      "label": "Notes",
-      "placeholder": "Please enter your notes"
-    },
-    "phone": {
-      "label": "Phone",
-      "placeholder": "Please enter your phone number"
     },
     "payment": {
       "Cash": "Cash",

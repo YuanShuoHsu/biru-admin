@@ -15,22 +15,31 @@ export const useCustomerPaymentFormSchema = () => {
 
   return z
     .object({
-      carrierType: z.union([
-        z.enum(["certificate", "individual", "mobile"]),
-        z.literal(""),
-      ]),
-      email: z.union([
-        z.literal(""),
-        z.email({ error: tValidation("email.invalid") }),
-      ]),
-      invoiceEmail: z.union([
-        z.literal(""),
-        z.email({ error: tValidation("email.invalid") }),
-      ]),
-      invoiceEmailSameAsCustomer: z.boolean(),
-      invoiceInfo: z.object({
-        address: z.string().trim(),
+      customer: z.object({
+        email: z.union([
+          z.literal(""),
+          z.email({ error: tValidation("email.invalid") }),
+        ]),
+        name: z
+          .string()
+          .trim()
+          .min(1, { error: tValidation("name.required") }),
+        notes: z
+          .string()
+          .trim()
+          .max(160, { error: tValidation("notes.maxLength") }),
+        phone: z
+          .string()
+          .trim()
+          .refine((val) => !isPickup || !!val, tValidation("phone.required")),
+      }),
+      invoice: z.object({
+        carrierType: z.union([
+          z.enum(["certificate", "individual", "mobile"]),
+          z.literal(""),
+        ]),
         carruerNum: z.string().trim(),
+        customerAddr: z.string().trim(),
         customerIdentifier: z
           .string()
           .trim()
@@ -46,28 +55,21 @@ export const useCustomerPaymentFormSchema = () => {
             (val) => !val || /^\d{3,7}$/.test(val),
             tValidation("donateCode.invalid"),
           ),
+        email: z.union([
+          z.literal(""),
+          z.email({ error: tValidation("email.invalid") }),
+        ]),
+        emailSameAsCustomer: z.boolean(),
+        type: z.enum(["company", "donate", "personal"]).nullable(),
       }),
-      invoiceType: z.enum(["company", "donate", "personal"]).nullable(),
-      name: z
-        .string()
-        .trim()
-        .min(1, { error: tValidation("name.required") }),
-      notes: z
-        .string()
-        .trim()
-        .max(160, { error: tValidation("notes.maxLength") }),
       payment: z.enum(["Cash", "Credit", "TWQR", "WeiXin"]).nullable(),
-      phone: z
-        .string()
-        .trim()
-        .refine((val) => !isPickup || !!val, tValidation("phone.required")),
     })
     .superRefine((data, ctx) => {
-      if (!data.invoiceType) {
+      if (!data.invoice.type) {
         ctx.addIssue({
           code: "custom",
           message: tValidation("invoiceType.required"),
-          path: ["invoiceType"],
+          path: ["invoice", "type"],
         });
       }
 
@@ -79,73 +81,73 @@ export const useCustomerPaymentFormSchema = () => {
         });
       }
 
-      switch (data.invoiceType) {
+      switch (data.invoice.type) {
         case "personal":
-          if (data.carrierType === "individual") {
-            if (data.invoiceEmailSameAsCustomer) {
-              if (!data.email) {
+          if (data.invoice.carrierType === "individual") {
+            if (data.invoice.emailSameAsCustomer) {
+              if (!data.customer.email) {
                 ctx.addIssue({
                   code: "custom",
                   message: tValidation("email.required"),
-                  path: ["email"],
+                  path: ["customer", "email"],
                 });
               }
             } else {
-              if (!data.invoiceEmail) {
+              if (!data.invoice.email) {
                 ctx.addIssue({
                   code: "custom",
                   message: tValidation("email.required"),
-                  path: ["invoiceEmail"],
+                  path: ["invoice", "email"],
                 });
               }
             }
-          } else if (data.carrierType === "mobile") {
-            if (!/^\/[A-Z0-9+\-.]{7}$/.test(data.invoiceInfo.carruerNum)) {
+          } else if (data.invoice.carrierType === "mobile") {
+            if (!/^\/[A-Z0-9+\-.]{7}$/.test(data.invoice.carruerNum)) {
               ctx.addIssue({
                 code: "custom",
                 message: tValidation("carruerNum.mobile.invalid"),
-                path: ["invoiceInfo", "carruerNum"],
+                path: ["invoice", "carruerNum"],
               });
             }
-          } else if (data.carrierType === "certificate") {
-            if (!/^[A-Z]{2}\d{14}$/.test(data.invoiceInfo.carruerNum)) {
+          } else if (data.invoice.carrierType === "certificate") {
+            if (!/^[A-Z]{2}\d{14}$/.test(data.invoice.carruerNum)) {
               ctx.addIssue({
                 code: "custom",
                 message: tValidation("carruerNum.certificate.invalid"),
-                path: ["invoiceInfo", "carruerNum"],
+                path: ["invoice", "carruerNum"],
               });
             }
           }
           break;
         case "company":
-          if (!data.invoiceInfo.address) {
+          if (!data.invoice.customerAddr) {
             ctx.addIssue({
               code: "custom",
               message: tValidation("customerAddr.required"),
-              path: ["invoiceInfo", "address"],
+              path: ["invoice", "customerAddr"],
             });
           }
-          if (!data.invoiceInfo.customerIdentifier) {
+          if (!data.invoice.customerIdentifier) {
             ctx.addIssue({
               code: "custom",
               message: tValidation("customerIdentifier.required"),
-              path: ["invoiceInfo", "customerIdentifier"],
+              path: ["invoice", "customerIdentifier"],
             });
           }
-          if (!data.invoiceInfo.customerName) {
+          if (!data.invoice.customerName) {
             ctx.addIssue({
               code: "custom",
               message: tValidation("customerName.required"),
-              path: ["invoiceInfo", "customerName"],
+              path: ["invoice", "customerName"],
             });
           }
           break;
         case "donate":
-          if (!data.invoiceInfo.donateCode) {
+          if (!data.invoice.donateCode) {
             ctx.addIssue({
               code: "custom",
               message: tValidation("donateCode.required"),
-              path: ["invoiceInfo", "donateCode"],
+              path: ["invoice", "donateCode"],
             });
           }
           break;
