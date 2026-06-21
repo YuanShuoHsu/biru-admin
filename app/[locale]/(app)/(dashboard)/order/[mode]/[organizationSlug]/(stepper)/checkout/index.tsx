@@ -43,7 +43,9 @@ import {
 import {
   Button,
   Card,
+  Checkbox,
   Divider,
+  FormControlLabel,
   MenuItem,
   Stack,
   TextField,
@@ -87,6 +89,8 @@ const OrderModeOrganizationSlugCheckout = () => {
     defaultValues: {
       carrierType: "individual",
       email: "",
+      invoiceEmail: "",
+      invoiceEmailSameAsCustomer: true,
       invoiceInfo: {
         address: "",
         carruerNum: "",
@@ -103,17 +107,24 @@ const OrderModeOrganizationSlugCheckout = () => {
     resolver: zodResolver(customerPaymentFormSchema),
   });
 
-  const [carrierType, customerIdentifier, donateCode, invoiceType, payment] =
-    useWatch({
-      control,
-      name: [
-        "carrierType",
-        "invoiceInfo.customerIdentifier",
-        "invoiceInfo.donateCode",
-        "invoiceType",
-        "payment",
-      ],
-    });
+  const [
+    carrierType,
+    invoiceEmailSameAsCustomer,
+    customerIdentifier,
+    donateCode,
+    invoiceType,
+    payment,
+  ] = useWatch({
+    control,
+    name: [
+      "carrierType",
+      "invoiceEmailSameAsCustomer",
+      "invoiceInfo.customerIdentifier",
+      "invoiceInfo.donateCode",
+      "invoiceType",
+      "payment",
+    ],
+  });
 
   const locale = useLocale();
 
@@ -188,7 +199,9 @@ const OrderModeOrganizationSlugCheckout = () => {
 
     const buildInvoice = (): CreateEcpayDto["invoice"] => {
       const common = {
-        CustomerEmail: values.email,
+        CustomerEmail: values.invoiceEmailSameAsCustomer
+          ? values.email
+          : values.invoiceEmail,
         CustomerName: values.name,
         CustomerPhone: values.phone,
         DelayDay: "0",
@@ -300,7 +313,8 @@ const OrderModeOrganizationSlugCheckout = () => {
             error={!!errors.name}
             fullWidth
             helperText={errors.name?.message}
-            label={tOrder("checkout.name")}
+            label={tOrder("checkout.name.label")}
+            placeholder={tOrder("checkout.name.placeholder")}
             required
             {...register("name")}
           />
@@ -308,7 +322,8 @@ const OrderModeOrganizationSlugCheckout = () => {
             error={!!errors.phone}
             fullWidth
             helperText={errors.phone?.message}
-            label={tOrder("checkout.phone")}
+            label={tOrder("checkout.phone.label")}
+            placeholder={tOrder("checkout.phone.placeholder")}
             required={isPickup}
             type="tel"
             {...register("phone")}
@@ -317,9 +332,12 @@ const OrderModeOrganizationSlugCheckout = () => {
             error={!!errors.email}
             fullWidth
             helperText={errors.email?.message}
-            label={tOrder("checkout.email")}
+            label={tOrder("checkout.email.label")}
+            placeholder={tOrder("checkout.email.placeholder")}
             required={
-              invoiceType === "personal" && carrierType === "individual"
+              invoiceType === "personal" &&
+              carrierType === "individual" &&
+              invoiceEmailSameAsCustomer
             }
             type="email"
             {...register("email")}
@@ -328,9 +346,10 @@ const OrderModeOrganizationSlugCheckout = () => {
             error={!!errors.notes}
             fullWidth
             helperText={errors.notes?.message}
-            label={tOrder("checkout.notes")}
+            label={tOrder("checkout.notes.label")}
             maxRows={4}
             multiline
+            placeholder={tOrder("checkout.notes.placeholder")}
             slotProps={{
               htmlInput: {
                 maxLength: 160,
@@ -391,6 +410,35 @@ const OrderModeOrganizationSlugCheckout = () => {
                 </MenuItem>
               ))}
             </TextField>
+          )}
+          {invoiceType === "personal" && carrierType === "individual" && (
+            <>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={invoiceEmailSameAsCustomer}
+                    size="small"
+                    {...register("invoiceEmailSameAsCustomer")}
+                  />
+                }
+                label={tOrder("checkout.invoice.invoiceEmail.sameAsCustomer")}
+                slotProps={{ typography: { variant: "body2" } }}
+              />
+              {!invoiceEmailSameAsCustomer && (
+                <TextField
+                  error={!!errors.invoiceEmail}
+                  fullWidth
+                  helperText={errors.invoiceEmail?.message}
+                  label={tOrder("checkout.invoice.invoiceEmail.label")}
+                  placeholder={tOrder(
+                    "checkout.invoice.invoiceEmail.placeholder",
+                  )}
+                  required
+                  type="email"
+                  {...register("invoiceEmail")}
+                />
+              )}
+            </>
           )}
           {invoiceType === "personal" &&
             (carrierType === "mobile" || carrierType === "certificate") && (

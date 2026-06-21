@@ -23,6 +23,11 @@ export const useCustomerPaymentFormSchema = () => {
         z.literal(""),
         z.email({ error: tValidation("email.invalid") }),
       ]),
+      invoiceEmail: z.union([
+        z.literal(""),
+        z.email({ error: tValidation("email.invalid") }),
+      ]),
+      invoiceEmailSameAsCustomer: z.boolean(),
       invoiceInfo: z.object({
         address: z.string().trim(),
         carruerNum: z.string().trim(),
@@ -77,12 +82,22 @@ export const useCustomerPaymentFormSchema = () => {
       switch (data.invoiceType) {
         case "personal":
           if (data.carrierType === "individual") {
-            if (!data.email) {
-              ctx.addIssue({
-                code: "custom",
-                message: tValidation("email.required"),
-                path: ["email"],
-              });
+            if (data.invoiceEmailSameAsCustomer) {
+              if (!data.email) {
+                ctx.addIssue({
+                  code: "custom",
+                  message: tValidation("email.required"),
+                  path: ["email"],
+                });
+              }
+            } else {
+              if (!data.invoiceEmail) {
+                ctx.addIssue({
+                  code: "custom",
+                  message: tValidation("email.required"),
+                  path: ["invoiceEmail"],
+                });
+              }
             }
           } else if (data.carrierType === "mobile") {
             if (!/^\/[A-Z0-9+\-.]{7}$/.test(data.invoiceInfo.carruerNum)) {

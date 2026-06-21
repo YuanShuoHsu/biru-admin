@@ -9,7 +9,10 @@
   },
   "checkout": {
     "back": "返回購物車",
-    "email": "電子信箱",
+    "email": {
+      "label": "電子信箱",
+      "placeholder": "請輸入您的電子信箱"
+    },
     "invoice": {
       "carrierType": {
         "label": "載具類型",
@@ -17,7 +20,6 @@
       },
       "carruerNum": "載具號碼",
       "certificate": "自然人憑證",
-      "certificateFormat": "格式：16 碼英數大寫",
       "company": "公司發票",
       "customerAddr": "公司地址",
       "customerIdentifier": "統一編號",
@@ -27,16 +29,28 @@
         "label": "愛心碼",
         "placeholder": "請選擇您的愛心碼"
       },
-      "donateFormat": "3 至 7 碼數字",
       "individual": "電子信箱",
+      "invoiceEmail": {
+        "label": "發票電子信箱",
+        "placeholder": "請輸入您的發票電子信箱",
+        "sameAsCustomer": "與顧客電子信箱相同"
+      },
       "mobile": "手機條碼",
-      "mobileFormat": "格式：/XXXXXXX",
       "personal": "個人發票",
       "title": "電子發票"
     },
-    "name": "姓名",
-    "notes": "備註",
-    "phone": "電話",
+    "name": {
+      "label": "姓名",
+      "placeholder": "請輸入您的姓名"
+    },
+    "notes": {
+      "label": "備註",
+      "placeholder": "請輸入您的備註"
+    },
+    "phone": {
+      "label": "電話",
+      "placeholder": "請輸入您的電話"
+    },
     "payment": {
       "Cash": "現金",
       "Credit": "信用卡",

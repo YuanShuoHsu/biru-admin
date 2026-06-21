@@ -9,7 +9,7 @@
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent, type ReactNode, useState } from "react";
-import { Controller, useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { type SignUpForm, useSignUpFormSchema } from "./definitions";
 
 import FormCard, {
@@ -123,9 +123,9 @@ const AuthSignUp = ({ locale, redirectTo }: AuthSignUpProps) => {
   //   value,
   // }));
 
-  const [password, confirmPassword] = useWatch({
+  const [emailSubscribed, password, confirmPassword] = useWatch({
     control,
-    name: ["password", "confirmPassword"],
+    name: ["emailSubscribed", "password", "confirmPassword"],
   });
   // const country = watch("country");
 
@@ -473,17 +473,14 @@ const AuthSignUp = ({ locale, redirectTo }: AuthSignUpProps) => {
         >
           <FormControlLabel
             control={
-              <Controller
-                control={control}
-                name="emailSubscribed"
-                render={({ field: { onChange, value } }) => (
-                  <Checkbox checked={value} onChange={onChange} size="small" />
-                )}
+              <Checkbox
+                checked={emailSubscribed}
+                size="small"
+                {...register("emailSubscribed")}
               />
             }
-            label={
-              <Typography variant="body2">{tAuth("emailUpdates")}</Typography>
-            }
+            label={tAuth("emailUpdates")}
+            slotProps={{ typography: { variant: "body2" } }}
           />
         </Stack>
       </StyledCardContent>

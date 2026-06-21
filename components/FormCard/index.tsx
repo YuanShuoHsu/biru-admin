@@ -19,7 +19,6 @@ export const StyledCardHeader = styled(CardHeader)(({ theme }) => ({
 export const StyledCardContent = styled(CardContent)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
-  alignItems: "center",
   gap: theme.spacing(2),
 }));
 

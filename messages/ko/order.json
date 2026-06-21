@@ -9,7 +9,10 @@
   },
   "checkout": {
     "back": "장바구니로 돌아가기",
-    "email": "이메일",
+    "email": {
+      "label": "이메일",
+      "placeholder": "귀하의 이메일을 입력해 주세요"
+    },
     "invoice": {
       "carrierType": {
         "label": "캐리어 유형",
@@ -17,7 +20,6 @@
       },
       "carruerNum": "캐리어 번호",
       "certificate": "자연인 인증서",
-      "certificateFormat": "영대문자·숫자 16자리",
       "company": "사업자 영수증",
       "customerAddr": "회사 주소",
       "customerIdentifier": "사업자 번호",
@@ -27,16 +29,28 @@
         "label": "러브코드",
         "placeholder": "귀하의 러브코드를 선택해 주세요"
       },
-      "donateFormat": "3~7자리 숫자",
       "individual": "이메일",
+      "invoiceEmail": {
+        "label": "청구서 이메일",
+        "placeholder": "귀하의 청구서 이메일을 입력해 주세요",
+        "sameAsCustomer": "고객 이메일과 동일"
+      },
       "mobile": "모바일 바코드",
-      "mobileFormat": "형식: /XXXXXXX",
       "personal": "개인 영수증",
       "title": "전자 영수증"
     },
-    "name": "이름",
-    "notes": "메모",
-    "phone": "전화번호",
+    "name": {
+      "label": "이름",
+      "placeholder": "귀하의 이름을 입력해 주세요"
+    },
+    "notes": {
+      "label": "메모",
+      "placeholder": "귀하의 메모를 입력해 주세요"
+    },
+    "phone": {
+      "label": "전화번호",
+      "placeholder": "귀하의 전화번호를 입력해 주세요"
+    },
     "payment": {
       "Cash": "현금",
       "Credit": "신용카드",

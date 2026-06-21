@@ -9,7 +9,10 @@
   },
   "checkout": {
     "back": "返回购物车",
-    "email": "电子邮箱",
+    "email": {
+      "label": "电子邮箱",
+      "placeholder": "请输入您的电子邮箱"
+    },
     "invoice": {
       "carrierType": {
         "label": "载具类型",
@@ -17,7 +20,6 @@
       },
       "carruerNum": "载具号码",
       "certificate": "自然人凭证",
-      "certificateFormat": "格式：16 位英数大写",
       "company": "公司发票",
       "customerAddr": "公司地址",
       "customerIdentifier": "统一编号",
@@ -27,16 +29,28 @@
         "label": "爱心码",
         "placeholder": "请选择您的爱心码"
       },
-      "donateFormat": "3 至 7 位数字",
       "individual": "电子邮箱",
+      "invoiceEmail": {
+        "label": "发票电子邮箱",
+        "placeholder": "请输入您的发票电子邮箱",
+        "sameAsCustomer": "与顾客电子邮箱相同"
+      },
       "mobile": "手机条码",
-      "mobileFormat": "格式：/XXXXXXX",
       "personal": "个人发票",
       "title": "电子发票"
     },
-    "name": "姓名",
-    "notes": "备注",
-    "phone": "电话",
+    "name": {
+      "label": "姓名",
+      "placeholder": "请输入您的姓名"
+    },
+    "notes": {
+      "label": "备注",
+      "placeholder": "请输入您的备注"
+    },
+    "phone": {
+      "label": "电话",
+      "placeholder": "请输入您的电话"
+    },
     "payment": {
       "Cash": "现金",
       "Credit": "信用卡",

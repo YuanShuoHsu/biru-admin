@@ -9,7 +9,10 @@
   },
   "checkout": {
     "back": "カートに戻る",
-    "email": "メールアドレス",
+    "email": {
+      "label": "メールアドレス",
+      "placeholder": "あなたのメールアドレスを入力してください"
+    },
     "invoice": {
       "carrierType": {
         "label": "キャリアタイプ",
@@ -17,7 +20,6 @@
       },
       "carruerNum": "キャリア番号",
       "certificate": "自然人証明書",
-      "certificateFormat": "半角英大文字・数字16文字",
       "company": "法人インボイス",
       "customerAddr": "会社住所",
       "customerIdentifier": "統一番号",
@@ -27,16 +29,28 @@
         "label": "ラブコード",
         "placeholder": "あなたのラブコードを選択してください"
       },
-      "donateFormat": "3〜7桁の数字",
       "individual": "メールアドレス",
+      "invoiceEmail": {
+        "label": "請求書メールアドレス",
+        "placeholder": "あなたの請求書メールアドレスを入力してください",
+        "sameAsCustomer": "顧客メールアドレスと同じ"
+      },
       "mobile": "携帯バーコード",
-      "mobileFormat": "形式：/XXXXXXX",
       "personal": "個人インボイス",
       "title": "電子インボイス"
     },
-    "name": "お名前",
-    "notes": "備考",
-    "phone": "電話番号",
+    "name": {
+      "label": "お名前",
+      "placeholder": "あなたのお名前を入力してください"
+    },
+    "notes": {
+      "label": "備考",
+      "placeholder": "あなたの備考を入力してください"
+    },
+    "phone": {
+      "label": "電話番号",
+      "placeholder": "あなたの電話番号を入力してください"
+    },
     "payment": {
       "Cash": "現金",
       "Credit": "クレジットカード",

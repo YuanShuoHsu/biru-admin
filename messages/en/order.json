@@ -1,52 +1,66 @@
 {
   "cart": {
-    "back": "Back to Menu",
-    "next": "Proceed to Checkout",
+    "back": "Back to menu",
+    "next": "Proceed to checkout",
     "quantityExceedsStock": "{label} {stock} left",
-    "title": "Shopping Cart",
+    "title": "Shopping cart",
     "totalQuantity": "{quantity} items",
-    "view": "View Cart"
+    "view": "View cart"
   },
   "checkout": {
-    "back": "Back to Cart",
-    "email": "Email",
+    "back": "Back to cart",
+    "email": {
+      "label": "Email",
+      "placeholder": "Please enter your email"
+    },
     "invoice": {
       "carrierType": {
-        "label": "Carrier Type",
+        "label": "Carrier type",
         "placeholder": "Please select your carrier type"
       },
-      "carruerNum": "Carrier Number",
-      "certificate": "Natural Person Certificate",
-      "certificateFormat": "16 uppercase alphanumeric characters",
-      "company": "Company Invoice",
-      "customerAddr": "Company Address",
-      "customerIdentifier": "Business ID Number",
-      "customerName": "Company Name",
-      "donate": "Donate Invoice",
+      "carruerNum": "Carrier number",
+      "certificate": "Natural person certificate",
+      "company": "Company invoice",
+      "customerAddr": "Company address",
+      "customerIdentifier": "Business ID number",
+      "customerName": "Company name",
+      "donate": "Donate invoice",
       "donateCode": {
-        "label": "Love Code",
+        "label": "Love code",
         "placeholder": "Please select your love code"
       },
-      "donateFormat": "3 to 7 digits",
       "individual": "Email",
-      "mobile": "Mobile Barcode",
-      "mobileFormat": "Format: /XXXXXXX",
-      "personal": "Personal Invoice",
-      "title": "E-Invoice"
+      "invoiceEmail": {
+        "label": "Invoice email",
+        "placeholder": "Please enter your invoice email",
+        "sameAsCustomer": "Same as customer email"
+      },
+      "mobile": "Mobile barcode",
+      "personal": "Personal invoice",
+      "title": "E-invoice"
     },
-    "name": "Name",
-    "notes": "Notes",
-    "phone": "Phone",
+    "name": {
+      "label": "Name",
+      "placeholder": "Please enter your name"
+    },
+    "notes": {
+      "label": "Notes",
+      "placeholder": "Please enter your notes"
+    },
+    "phone": {
+      "label": "Phone",
+      "placeholder": "Please enter your phone number"
+    },
     "payment": {
       "Cash": "Cash",
-      "Credit": "Credit Card",
-      "TWQR": "Mobile Payment",
+      "Credit": "Credit card",
+      "TWQR": "Mobile payment",
       "WeiXin": "WeChat Pay"
     },
-    "paymentMethod": "Payment Method",
-    "placeOrder": "Place Order",
-    "title": "Customer Info",
-    "tradeDesc": "Meal Payment"
+    "paymentMethod": "Payment method",
+    "placeOrder": "Place order",
+    "title": "Customer info",
+    "tradeDesc": "Meal payment"
   },
   "label": "Order",
   "menuItem": {
@@ -54,14 +68,14 @@
     "calories": "{value} kcal",
     "diet": {
       "DiabeticDiet": "Diabetic",
-      "GlutenFreeDiet": "Gluten-Free",
+      "GlutenFreeDiet": "Gluten-free",
       "HalalDiet": "Halal",
       "HinduDiet": "Hindu",
       "KosherDiet": "Kosher",
-      "LowCalorieDiet": "Low-Calorie",
-      "LowFatDiet": "Low-Fat",
-      "LowLactoseDiet": "Low-Lactose",
-      "LowSaltDiet": "Low-Salt",
+      "LowCalorieDiet": "Low-calorie",
+      "LowFatDiet": "Low-fat",
+      "LowLactoseDiet": "Low-lactose",
+      "LowSaltDiet": "Low-salt",
       "VeganDiet": "Vegan",
       "VegetarianDiet": "Vegetarian"
     },
@@ -94,7 +108,7 @@
     "storeSlug": {
       "selectTable": "Select a table",
       "tableNumber": {
-        "latest": "New Arrivals",
+        "latest": "New arrivals",
         "new": "New",
         "search": {
           "noResults": "No matching items found",
@@ -112,7 +126,7 @@
           }
         },
         "top": "TOP",
-        "topSold": "Best Sellers"
+        "topSold": "Best sellers"
       }
     }
   },
