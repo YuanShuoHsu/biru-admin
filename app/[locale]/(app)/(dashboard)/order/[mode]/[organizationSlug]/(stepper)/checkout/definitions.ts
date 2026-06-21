@@ -83,7 +83,13 @@ export const useCustomerPaymentFormSchema = () => {
 
       switch (data.invoice.type) {
         case "personal":
-          if (data.invoice.carrierType === "individual") {
+          if (!data.invoice.carrierType) {
+            ctx.addIssue({
+              code: "custom",
+              message: tValidation("carrierType.required"),
+              path: ["invoice", "carrierType"],
+            });
+          } else if (data.invoice.carrierType === "individual") {
             if (data.invoice.emailSameAsCustomer) {
               if (!data.customer.email) {
                 ctx.addIssue({

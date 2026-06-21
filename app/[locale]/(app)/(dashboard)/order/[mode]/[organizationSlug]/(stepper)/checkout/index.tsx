@@ -94,7 +94,7 @@ const OrderModeOrganizationSlugCheckout = () => {
         phone: "",
       },
       invoice: {
-        carrierType: "individual",
+        carrierType: "",
         carruerNum: "",
         customerAddr: "",
         customerIdentifier: "",
