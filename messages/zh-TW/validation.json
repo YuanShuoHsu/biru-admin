@@ -17,6 +17,14 @@
   "carrierType": {
     "required": "請選擇載具類型。"
   },
+  "carruerNum": {
+    "certificate": {
+      "invalid": "自然人憑證格式需為 16 碼英數大寫。"
+    },
+    "mobile": {
+      "invalid": "手機條碼格式需為 /XXXXXXX。"
+    }
+  },
   "confirmNewPassword": {
     "mismatch": "兩次輸入的密碼不一致。",
     "required": "確認新密碼為必填。"
@@ -36,13 +44,19 @@
     "required": "公司地址為必填。"
   },
   "customerIdentifier": {
-    "invalid": "統一編號格式需為 8 碼數字。"
+    "invalid": "統一編號格式需為 8 碼數字。",
+    "notFound": "查無對應的公司資料。",
+    "required": "統一編號為必填。"
   },
   "customerName": {
     "required": "公司名稱為必填。"
   },
   "description": {
     "maxLength": "描述不能超過 160 個字元。"
+  },
+  "donateCode": {
+    "invalid": "捐贈碼格式需為 3 至 7 碼數字。",
+    "required": "捐贈碼為必填。"
   },
   "email": {
     "invalid": "電子郵件無效。",
@@ -53,6 +67,9 @@
   },
   "gender": {
     "required": "性別為必填。"
+  },
+  "invoiceType": {
+    "required": "發票類型為必填。"
   },
   "localizedText": {
     "completeOrEmpty": "所有語言欄位必須同時填寫或同時留空。",

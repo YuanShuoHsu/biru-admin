@@ -3,6 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useParams, useSearchParams } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
+import useSWR from "swr";
 import useSWRMutation from "swr/mutation";
 
 import {
@@ -13,8 +14,10 @@ import {
 } from "./definitions";
 
 import CustomizedAccordions from "@/components/CustomizedAccordions";
-import ListRadioGroup from "@/components/ListRadioGroup";
 import DonateCodeSelect from "@/components/DonateCodeSelect";
+import FormBox from "@/components/FormBox";
+import { StyledCardContent } from "@/components/FormCard";
+import ListRadioGroup from "@/components/ListRadioGroup";
 
 import { localeConfigs } from "@/constants/locale";
 import { ORDER_MODE } from "@/constants/orderMode";
@@ -55,9 +58,6 @@ import type { PaymentMethod } from "@/types/payment";
 import { sendRequest } from "@/utils/fetcher";
 import { getChoiceNames, getItemName } from "@/utils/menus";
 
-import FormBox from "@/components/FormBox";
-import { StyledCardContent } from "@/components/FormCard";
-
 const INVOICE_TYPES: { icon: React.ElementType; type: InvoiceType }[] = [
   { icon: Person, type: "personal" },
   { icon: Business, type: "company" },
@@ -79,7 +79,9 @@ const OrderModeOrganizationSlugCheckout = () => {
     formState: { errors, isSubmitted },
     handleSubmit,
     register,
+    setError,
     setValue,
+    trigger: triggerValidation,
   } = useForm<CustomerPaymentFormValues>({
     defaultValues: {
       carrierType: "individual",
@@ -91,7 +93,7 @@ const OrderModeOrganizationSlugCheckout = () => {
         customerName: "",
         donateCode: "",
       },
-      invoiceType: "personal",
+      invoiceType: null,
       name: "",
       notes: "",
       payment: null,
@@ -100,10 +102,17 @@ const OrderModeOrganizationSlugCheckout = () => {
     resolver: zodResolver(customerPaymentFormSchema),
   });
 
-  const [carrierType, invoiceType, donateCode, payment] = useWatch({
-    control,
-    name: ["carrierType", "invoiceType", "invoiceInfo.donateCode", "payment"],
-  });
+  const [carrierType, customerIdentifier, donateCode, invoiceType, payment] =
+    useWatch({
+      control,
+      name: [
+        "carrierType",
+        "invoiceInfo.customerIdentifier",
+        "invoiceInfo.donateCode",
+        "invoiceType",
+        "payment",
+      ],
+    });
 
   const locale = useLocale();
 
@@ -119,13 +128,36 @@ const OrderModeOrganizationSlugCheckout = () => {
 
   const router = useRouter();
 
-  const { isMutating, trigger } = useSWRMutation(
+  const { isMutating, trigger: triggerEcpay } = useSWRMutation(
     "/api/ecpay",
     sendRequest<{ message: string }, CreateEcpayDto>(),
   );
 
+  const shouldFetch =
+    invoiceType === "company" && /^\d{8}$/.test(customerIdentifier);
+
   const tCommon = useTranslations("common");
   const tOrder = useTranslations("order");
+  const tValidation = useTranslations("validation");
+
+  const { data: businessInfo } = useSWR<{
+    address: string;
+    name: string;
+  }>(shouldFetch ? `/api/gcis/${customerIdentifier}` : null, {
+    onError: () => {
+      setError("invoiceInfo.customerIdentifier", {
+        message: tValidation("customerIdentifier.notFound"),
+      });
+    },
+    onSuccess: (data) => {
+      setValue("invoiceInfo.address", data.address, {
+        shouldValidate: isSubmitted,
+      });
+      setValue("invoiceInfo.customerName", data.name, {
+        shouldValidate: isSubmitted,
+      });
+    },
+  });
 
   const paymentOptions = [
     ...(mode === ORDER_MODE.DineIn
@@ -238,7 +270,7 @@ const OrderModeOrganizationSlugCheckout = () => {
       invoice: buildInvoice(),
     };
 
-    const { message: data } = await trigger(dto);
+    const { message: data } = await triggerEcpay(dto);
 
     const parser = new DOMParser();
     const doc = parser.parseFromString(data, "text/html");
@@ -319,7 +351,7 @@ const OrderModeOrganizationSlugCheckout = () => {
               label: tOrder(`checkout.invoice.${type}`),
               value: type,
             }))}
-            value={invoiceType}
+            value={invoiceType || ""}
           />
           {invoiceType === "personal" && (
             <TextField
@@ -381,25 +413,42 @@ const OrderModeOrganizationSlugCheckout = () => {
                 fullWidth
                 helperText={errors.invoiceInfo?.customerIdentifier?.message}
                 label={tOrder("checkout.invoice.customerIdentifier")}
+                placeholder="12345678"
                 required
-                {...register("invoiceInfo.customerIdentifier")}
+                slotProps={{ inputLabel: { shrink: true } }}
+                {...register("invoiceInfo.customerIdentifier", {
+                  onChange: () =>
+                    triggerValidation("invoiceInfo.customerIdentifier"),
+                })}
               />
-              <TextField
-                error={!!errors.invoiceInfo?.customerName}
-                fullWidth
-                helperText={errors.invoiceInfo?.customerName?.message}
-                label={tOrder("checkout.invoice.customerName")}
-                required
-                {...register("invoiceInfo.customerName")}
-              />
-              <TextField
-                error={!!errors.invoiceInfo?.address}
-                fullWidth
-                helperText={errors.invoiceInfo?.address?.message}
-                label={tOrder("checkout.invoice.customerAddr")}
-                required
-                {...register("invoiceInfo.address")}
-              />
+              {businessInfo && (
+                <>
+                  <TextField
+                    error={!!errors.invoiceInfo?.customerName}
+                    fullWidth
+                    helperText={errors.invoiceInfo?.customerName?.message}
+                    label={tOrder("checkout.invoice.customerName")}
+                    required
+                    slotProps={{
+                      input: { readOnly: true },
+                      inputLabel: { shrink: true },
+                    }}
+                    {...register("invoiceInfo.customerName")}
+                  />
+                  <TextField
+                    error={!!errors.invoiceInfo?.address}
+                    fullWidth
+                    helperText={errors.invoiceInfo?.address?.message}
+                    label={tOrder("checkout.invoice.customerAddr")}
+                    required
+                    slotProps={{
+                      input: { readOnly: true },
+                      inputLabel: { shrink: true },
+                    }}
+                    {...register("invoiceInfo.address")}
+                  />
+                </>
+              )}
             </>
           )}
           {invoiceType === "donate" && (

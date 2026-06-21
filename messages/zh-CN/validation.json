@@ -17,6 +17,14 @@
   "carrierType": {
     "required": "请选择载具类型。"
   },
+  "carruerNum": {
+    "certificate": {
+      "invalid": "自然人凭证格式需为 16 位英数大写。"
+    },
+    "mobile": {
+      "invalid": "手机条码格式需为 /XXXXXXX。"
+    }
+  },
   "confirmNewPassword": {
     "mismatch": "两次输入的密码不一致。",
     "required": "确认新密码为必填。"
@@ -36,13 +44,19 @@
     "required": "公司地址为必填。"
   },
   "customerIdentifier": {
-    "invalid": "统一编号格式需为 8 位数字。"
+    "invalid": "统一编号格式需为 8 位数字。",
+    "notFound": "查无对应的公司资料。",
+    "required": "统一编号为必填。"
   },
   "customerName": {
     "required": "公司名称为必填。"
   },
   "description": {
     "maxLength": "描述不能超过 160 个字符。"
+  },
+  "donateCode": {
+    "invalid": "捐赠码格式需为 3 至 7 位数字。",
+    "required": "捐赠码为必填。"
   },
   "email": {
     "invalid": "电子邮件无效。",
@@ -53,6 +67,9 @@
   },
   "gender": {
     "required": "性别为必填。"
+  },
+  "invoiceType": {
+    "required": "发票类型为必填。"
   },
   "localizedText": {
     "completeOrEmpty": "所有语言字段必须同时填写或同时留空。",

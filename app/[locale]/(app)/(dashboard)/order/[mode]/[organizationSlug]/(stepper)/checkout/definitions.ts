@@ -11,7 +11,6 @@ export const useCustomerPaymentFormSchema = () => {
   const { mode } = useParams();
   const isPickup = mode === ORDER_MODE.Pickup;
 
-  const tOrder = useTranslations("order");
   const tValidation = useTranslations("validation");
 
   return z
@@ -27,28 +26,43 @@ export const useCustomerPaymentFormSchema = () => {
       invoiceInfo: z.object({
         address: z.string().trim(),
         carruerNum: z.string().trim(),
-        customerIdentifier: z.string().trim(),
+        customerIdentifier: z
+          .string()
+          .trim()
+          .refine(
+            (val) => !val || /^\d{8}$/.test(val),
+            tValidation("customerIdentifier.invalid"),
+          ),
         customerName: z.string().trim(),
-        donateCode: z.string().trim(),
+        donateCode: z
+          .string()
+          .trim()
+          .refine(
+            (val) => !val || /^\d{3,7}$/.test(val),
+            tValidation("donateCode.invalid"),
+          ),
       }),
-      invoiceType: z.enum(["company", "donate", "personal"]),
+      invoiceType: z.enum(["company", "donate", "personal"]).nullable(),
       name: z
         .string()
-        .min(1, { error: tValidation("name.required") })
-        .trim(),
+        .trim()
+        .min(1, { error: tValidation("name.required") }),
       notes: z
         .string()
-        .max(160, { error: tValidation("notes.maxLength") })
-        .trim(),
+        .trim()
+        .max(160, { error: tValidation("notes.maxLength") }),
       payment: z.enum(["Cash", "Credit", "TWQR", "WeiXin"]).nullable(),
-      phone: z.string().trim(),
+      phone: z
+        .string()
+        .trim()
+        .refine((val) => !isPickup || !!val, tValidation("phone.required")),
     })
     .superRefine((data, ctx) => {
-      if (isPickup && !data.phone) {
+      if (!data.invoiceType) {
         ctx.addIssue({
           code: "custom",
-          message: tValidation("phone.required"),
-          path: ["phone"],
+          message: tValidation("invoiceType.required"),
+          path: ["invoiceType"],
         });
       }
 
@@ -60,31 +74,21 @@ export const useCustomerPaymentFormSchema = () => {
         });
       }
 
-      if (
-        data.invoiceType === "personal" &&
-        data.carrierType === "individual" &&
-        !data.email
-      ) {
-        ctx.addIssue({
-          code: "custom",
-          message: tValidation("email.required"),
-          path: ["email"],
-        });
-      }
-
       switch (data.invoiceType) {
         case "personal":
-          if (!data.carrierType) {
-            ctx.addIssue({
-              code: "custom",
-              message: tValidation("carrierType.required"),
-              path: ["carrierType"],
-            });
+          if (data.carrierType === "individual") {
+            if (!data.email) {
+              ctx.addIssue({
+                code: "custom",
+                message: tValidation("email.required"),
+                path: ["email"],
+              });
+            }
           } else if (data.carrierType === "mobile") {
             if (!/^\/[A-Z0-9+\-.]{7}$/.test(data.invoiceInfo.carruerNum)) {
               ctx.addIssue({
                 code: "custom",
-                message: tOrder("checkout.invoice.mobileFormat"),
+                message: tValidation("carruerNum.mobile.invalid"),
                 path: ["invoiceInfo", "carruerNum"],
               });
             }
@@ -92,7 +96,7 @@ export const useCustomerPaymentFormSchema = () => {
             if (!/^[A-Z]{2}\d{14}$/.test(data.invoiceInfo.carruerNum)) {
               ctx.addIssue({
                 code: "custom",
-                message: tOrder("checkout.invoice.certificateFormat"),
+                message: tValidation("carruerNum.certificate.invalid"),
                 path: ["invoiceInfo", "carruerNum"],
               });
             }
@@ -106,10 +110,10 @@ export const useCustomerPaymentFormSchema = () => {
               path: ["invoiceInfo", "address"],
             });
           }
-          if (!/^\d{8}$/.test(data.invoiceInfo.customerIdentifier)) {
+          if (!data.invoiceInfo.customerIdentifier) {
             ctx.addIssue({
               code: "custom",
-              message: tValidation("customerIdentifier.invalid"),
+              message: tValidation("customerIdentifier.required"),
               path: ["invoiceInfo", "customerIdentifier"],
             });
           }
@@ -122,10 +126,10 @@ export const useCustomerPaymentFormSchema = () => {
           }
           break;
         case "donate":
-          if (!/^\d{3,7}$/.test(data.invoiceInfo.donateCode)) {
+          if (!data.invoiceInfo.donateCode) {
             ctx.addIssue({
               code: "custom",
-              message: tOrder("checkout.invoice.donateFormat"),
+              message: tValidation("donateCode.required"),
               path: ["invoiceInfo", "donateCode"],
             });
           }

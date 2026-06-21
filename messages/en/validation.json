@@ -17,6 +17,14 @@
   "carrierType": {
     "required": "Please select a carrier type."
   },
+  "carruerNum": {
+    "certificate": {
+      "invalid": "Certificate must be 16 uppercase alphanumeric characters."
+    },
+    "mobile": {
+      "invalid": "Mobile barcode must be in the format /XXXXXXX."
+    }
+  },
   "confirmNewPassword": {
     "mismatch": "Passwords do not match.",
     "required": "Confirm new password is required."
@@ -36,13 +44,19 @@
     "required": "Company address is required."
   },
   "customerIdentifier": {
-    "invalid": "Tax ID must be 8 digits."
+    "invalid": "Tax ID must be 8 digits.",
+    "notFound": "No company found for this Tax ID.",
+    "required": "Tax ID is required."
   },
   "customerName": {
     "required": "Company name is required."
   },
   "description": {
     "maxLength": "Description must not exceed 160 characters."
+  },
+  "donateCode": {
+    "invalid": "Donation code must be 3 to 7 digits.",
+    "required": "Donation code is required."
   },
   "email": {
     "invalid": "Email is not valid.",
@@ -53,6 +67,9 @@
   },
   "gender": {
     "required": "Gender is required."
+  },
+  "invoiceType": {
+    "required": "Invoice type is required."
   },
   "localizedText": {
     "completeOrEmpty": "All language fields must be filled in or left empty together.",

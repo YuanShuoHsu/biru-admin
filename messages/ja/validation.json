@@ -17,6 +17,14 @@
   "carrierType": {
     "required": "キャリアタイプを選択してください。"
   },
+  "carruerNum": {
+    "certificate": {
+      "invalid": "自然人証明書は半角英大文字・数字16文字で入力してください。"
+    },
+    "mobile": {
+      "invalid": "スマホバーコードの形式は /XXXXXXX で入力してください。"
+    }
+  },
   "confirmNewPassword": {
     "mismatch": "パスワードが一致しません。",
     "required": "新しいパスワードの確認は必須です。"
@@ -36,13 +44,19 @@
     "required": "会社住所は必須です。"
   },
   "customerIdentifier": {
-    "invalid": "統一番号は8桁の数字で入力してください。"
+    "invalid": "統一番号は8桁の数字で入力してください。",
+    "notFound": "該当する会社が見つかりません。",
+    "required": "統一番号は必須です。"
   },
   "customerName": {
     "required": "会社名は必須です。"
   },
   "description": {
     "maxLength": "説明は160文字以内で入力してください。"
+  },
+  "donateCode": {
+    "invalid": "寄付コードは3〜7桁の数字で入力してください。",
+    "required": "寄付コードは必須です。"
   },
   "email": {
     "invalid": "メールアドレスが無効です。",
@@ -53,6 +67,9 @@
   },
   "gender": {
     "required": "性別は必須です。"
+  },
+  "invoiceType": {
+    "required": "インボイスの種類は必須です。"
   },
   "localizedText": {
     "completeOrEmpty": "すべての言語フィールドを入力するか、すべて空白にしてください。",
