@@ -26,6 +26,7 @@ import { type CSSObject, styled } from "@mui/material/styles";
 import { useCartStore } from "@/providers/cart-store-provider";
 import { useDrawerStore } from "@/providers/drawer-store-provider";
 
+import useCartHasInvalidItems from "@/hooks/useCartHasInvalidItems";
 import useCartTotals from "@/hooks/useCartTotals";
 
 import { useToggleDrawer } from "@/utils/drawer";
@@ -59,6 +60,7 @@ const StickyFooter = styled(Box)(({ theme }) => ({
 const CartAnchorTemporaryDrawer = () => {
   const { isCartEmpty } = useCartStore((state) => state);
   const { cartCurrency, cartTotalAmount } = useCartTotals();
+  const hasInvalidItems = useCartHasInvalidItems();
   const { drawer } = useDrawerStore((state) => state);
   const open = drawer.cart;
   const toggleDrawer = useToggleDrawer();
@@ -140,7 +142,7 @@ const CartAnchorTemporaryDrawer = () => {
         )}
         {!isCheckoutPage && (
           <Button
-            disabled={isCartEmpty}
+            disabled={isCartEmpty || hasInvalidItems}
             endIcon={<ShoppingCartCheckout />}
             fullWidth
             href={checkoutHref}
