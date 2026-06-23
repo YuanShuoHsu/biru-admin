@@ -466,7 +466,7 @@ const OrderModeOrganizationSlugCheckout = () => {
                     inputProps: {
                       mask:
                         carrierType === "mobile"
-                          ? "/AAAAAAA"
+                          ? "/*******"
                           : "aa00000000000000",
                       placeholder:
                         carrierType === "mobile"
