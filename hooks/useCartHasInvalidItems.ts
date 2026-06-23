@@ -8,11 +8,14 @@ import { useMenuStore } from "@/providers/menu-store-provider";
 import { getItemStock, getLimitingAddOnsCap } from "@/utils/menus";
 
 const useCartHasInvalidItems = (): boolean => {
-  const { cartItemsList, getCartItemTotalQuantity, getChoiceAvailableQuantity } =
-    useCartStore((state) => state);
+  const {
+    cartItemsList,
+    getCartItemTotalQuantity,
+    getChoiceAvailableQuantity,
+  } = useCartStore((state) => state);
   const { menu } = useMenuStore((state) => state);
 
-  return cartItemsList.some(({ menuItemId, addOns, quantity }) => {
+  return cartItemsList.some(({ menuItemId, addOns }) => {
     const itemStock = getItemStock(menu, menuItemId);
     const itemStockLeft = itemStock === null ? Infinity : itemStock;
     const cartItemTotalQuantity = getCartItemTotalQuantity(menuItemId);

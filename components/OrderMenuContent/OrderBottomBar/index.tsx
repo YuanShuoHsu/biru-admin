@@ -85,7 +85,11 @@ const OrderBottomBar = () => {
             variant="outlined"
           />
         </StyledButton>
-        <StyledButton disabled={hasInvalidItems} href={checkoutHref} variant="contained">
+        <StyledButton
+          disabled={hasInvalidItems}
+          href={checkoutHref}
+          variant="contained"
+        >
           <StyledChip label={tOrder("cart.next")} variant="outlined" />
         </StyledButton>
       </StyledContainer>
