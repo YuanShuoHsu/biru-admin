@@ -5,6 +5,8 @@ import { useParams, useSearchParams } from "next/navigation";
 
 import CustomizedAccordions from "@/components/CustomizedAccordions";
 
+import useCartHasInvalidItems from "@/hooks/useCartHasInvalidItems";
+
 import { useRouter } from "@/i18n/navigation";
 
 import { MenuBook, ShoppingCartCheckout } from "@mui/icons-material";
@@ -13,6 +15,8 @@ import { Button, Stack } from "@mui/material";
 import { useCartStore } from "@/providers/cart-store-provider";
 
 const OrderModeOrganizationSlugCart = () => {
+  const hasInvalidItems = useCartHasInvalidItems();
+
   const { isCartEmpty } = useCartStore((state) => state);
 
   const { mode, organizationSlug } = useParams<{
@@ -43,7 +47,7 @@ const OrderModeOrganizationSlugCart = () => {
           {tOrder("cart.back")}
         </Button>
         <Button
-          disabled={isCartEmpty}
+          disabled={isCartEmpty || hasInvalidItems}
           endIcon={<ShoppingCartCheckout />}
           onClick={() =>
             router.push(`/order/${mode}/${organizationSlug}/checkout${query}`)

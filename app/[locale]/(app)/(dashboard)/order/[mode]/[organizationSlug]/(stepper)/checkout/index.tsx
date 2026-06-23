@@ -25,6 +25,7 @@ import { ORDER_MODE } from "@/constants/orderMode";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import useCartHasInvalidItems from "@/hooks/useCartHasInvalidItems";
 import useCartTotals from "@/hooks/useCartTotals";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
@@ -72,6 +73,7 @@ const CARRIER_TYPES: CarrierType[] = ["individual", "mobile", "certificate"];
 const OrderModeOrganizationSlugCheckout = () => {
   const { isCartEmpty, cartItemsList } = useCartStore((state) => state);
   const { menu } = useMenuStore((state) => state);
+  const hasInvalidItems = useCartHasInvalidItems();
 
   const { cartTotalAmount } = useCartTotals();
 
@@ -570,7 +572,7 @@ const OrderModeOrganizationSlugCheckout = () => {
           {tOrder("checkout.back")}
         </Button>
         <Button
-          disabled={isCartEmpty}
+          disabled={isCartEmpty || hasInvalidItems}
           endIcon={<TaskAlt />}
           loading={isMutating}
           loadingPosition="end"

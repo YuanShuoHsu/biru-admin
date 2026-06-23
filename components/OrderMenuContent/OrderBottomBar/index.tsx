@@ -3,6 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 
+import useCartHasInvalidItems from "@/hooks/useCartHasInvalidItems";
 import useCartTotals from "@/hooks/useCartTotals";
 
 import { usePathname } from "@/i18n/navigation";
@@ -52,6 +53,7 @@ const OrderBottomBar = () => {
   const { cartTotalQuantity, isCartEmpty } = useCartStore((state) => state);
 
   const { cartCurrency, cartTotalAmount } = useCartTotals();
+  const hasInvalidItems = useCartHasInvalidItems();
 
   const locale = useLocale();
 
@@ -83,7 +85,7 @@ const OrderBottomBar = () => {
             variant="outlined"
           />
         </StyledButton>
-        <StyledButton href={checkoutHref} variant="contained">
+        <StyledButton disabled={hasInvalidItems} href={checkoutHref} variant="contained">
           <StyledChip label={tOrder("cart.next")} variant="outlined" />
         </StyledButton>
       </StyledContainer>
