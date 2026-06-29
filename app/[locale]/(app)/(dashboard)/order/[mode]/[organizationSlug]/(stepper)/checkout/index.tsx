@@ -133,7 +133,6 @@ const OrderModeOrganizationSlugCheckout = () => {
   const locale = useLocale();
 
   const { mode } = useParams();
-  const isPickup = mode === ORDER_MODE.Pickup;
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -332,9 +331,9 @@ const OrderModeOrganizationSlugCheckout = () => {
             error={!!errors.customer?.phone}
             fullWidth
             helperText={errors.customer?.phone?.message}
-            label={`${tOrder("checkout.customer.phone.label")}${!isPickup ? ` ${tCommon("optional")}` : ""}`}
+            label={tOrder("checkout.customer.phone.label")}
             placeholder={tOrder("checkout.customer.phone.placeholder")}
-            required={isPickup}
+            required
             type="tel"
             {...register("customer.phone")}
           />

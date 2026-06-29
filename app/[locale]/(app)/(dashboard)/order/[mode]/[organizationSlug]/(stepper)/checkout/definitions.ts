@@ -1,16 +1,10 @@
 import { useTranslations } from "next-intl";
-import { useParams } from "next/navigation";
 import * as z from "zod";
-
-import { ORDER_MODE } from "@/constants/orderMode";
 
 export type InvoiceType = "company" | "donate" | "personal";
 export type CarrierType = "certificate" | "individual" | "mobile";
 
 export const useCustomerPaymentFormSchema = () => {
-  const { mode } = useParams();
-  const isPickup = mode === ORDER_MODE.Pickup;
-
   const tValidation = useTranslations("validation");
 
   return z
@@ -31,7 +25,7 @@ export const useCustomerPaymentFormSchema = () => {
         phone: z
           .string()
           .trim()
-          .refine((val) => !isPickup || !!val, tValidation("phone.required")),
+          .min(1, { error: tValidation("phone.required") }),
       }),
       invoice: z.object({
         carrierType: z.union([
