@@ -1,17 +1,18 @@
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
-import { Stack } from "@mui/material";
+import KioskSelect from "./KioskSelect";
 
 import OrderMenuContent from "@/components/OrderMenuContent";
-import OrderTableNumberChip from "@/components/OrderTableNumberChip";
 import OrderPartySizeTextField from "@/components/OrderPartySizeTextField";
-import KioskSelect from "./KioskSelect";
+import OrderTableNumberChip from "@/components/OrderTableNumberChip";
 
 import { ORDER_MODE } from "@/constants/orderMode";
 import { PARTY_SIZE_MAX } from "@/constants/partySize";
 
 import type { Locale } from "@/i18n/routing";
+
+import { Stack } from "@mui/material";
 
 import type { Organization } from "@/types/organizations";
 
@@ -41,6 +42,7 @@ const OrderModeOrganizationSlugPage = async ({
 
   if (mode === ORDER_MODE.Kiosk) {
     if (!type) return <KioskSelect />;
+
     return <OrderMenuContent />;
   }
 
