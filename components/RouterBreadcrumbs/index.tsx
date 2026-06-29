@@ -70,6 +70,7 @@ import type { MenuItem, MenuSection, ModifierGroup } from "@/types/menus";
 import type { RouteParams } from "@/types/routeParams";
 
 import { fetcher } from "@/utils/fetcher";
+import { getHref } from "@/utils/href";
 import { localize } from "@/utils/locale";
 
 const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
@@ -212,14 +213,17 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
   const tOrder = useTranslations("order");
   const tOrganizations = useTranslations("organizations");
 
-  const isPickup = mode === ORDER_MODE.Pickup;
+  const modeLabelMap: Partial<Record<string, string>> = {
+    [ORDER_MODE.Counter]: tOrder("mode.counter.label"),
+    [ORDER_MODE.DineIn]: tOrder("mode.dineIn.label"),
+    [ORDER_MODE.Kiosk]: tOrder("mode.kiosk.label"),
+    [ORDER_MODE.Pickup]: tOrder("mode.pickup.label"),
+  };
+  const modeLabel = (mode && modeLabelMap[mode]) || mode || "";
 
-  const modeLabel =
-    mode === ORDER_MODE.Pickup
-      ? tOrder("mode.pickup.label")
-      : mode === ORDER_MODE.DineIn
-        ? tOrder("mode.dineIn.label")
-        : mode || "";
+  const partySize = searchParams.get("partySize");
+  const tableNumber = searchParams.get("tableNumber");
+  const storeTo = getHref(`/${organizationSlug}`, { partySize, tableNumber });
 
   const storeChildren: BreadcrumbItem[] = [
     {
@@ -241,18 +245,18 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
 
   const orderChildren: BreadcrumbItem[] = [
     {
-      icon: ShoppingCart,
-      label: modeLabel,
-      to: `/${mode}`,
       children: [
         {
           children: storeChildren,
-          disabled: !isPickup,
           icon: Storefront,
           label: organizationName,
-          to: `/${organizationSlug}`,
+          to: storeTo,
         },
       ],
+      disabled: true,
+      icon: ShoppingCart,
+      label: modeLabel,
+      to: `/${mode}`,
     },
   ];
 
@@ -471,8 +475,7 @@ const findBreadcrumb = (
   | Pick<BreadcrumbItem, "disabled" | "hidden" | "icon" | "label" | "to">
   | undefined =>
   breadcrumbs.flatMap(({ children, disabled, hidden, icon, label, to }) => {
-    const pathOnly = to.split("?")[0];
-    const currentPath = `${parentPath}${pathOnly}`;
+    const currentPath = `${parentPath}${to.split("?")[0]}`;
 
     if (currentPath === targetPath)
       return [{ disabled, hidden, icon, label, to }];
