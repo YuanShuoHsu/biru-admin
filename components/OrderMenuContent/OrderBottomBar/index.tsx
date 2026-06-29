@@ -68,7 +68,7 @@ const OrderBottomBar = () => {
   const tOrder = useTranslations("order");
 
   return (
-    <Fade in={!isCartEmpty}>
+    <Fade in={!isCartEmpty} unmountOnExit>
       <StyledContainer disableGutters maxWidth="sm">
         <StyledButton href={cartHref} variant="outlined">
           <Stack flex={1} direction="row" alignItems="center" gap={2}>
