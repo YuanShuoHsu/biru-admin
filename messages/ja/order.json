@@ -89,6 +89,9 @@
     "stockLeft": "残り {stock}"
   },
   "mode": {
+    "counter": {
+      "label": "カウンター注文"
+    },
     "dineIn": {
       "label": "店内",
       "storeSlug": {

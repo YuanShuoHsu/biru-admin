@@ -89,6 +89,9 @@
     "stockLeft": "剩餘 {stock}"
   },
   "mode": {
+    "counter": {
+      "label": "到店點餐"
+    },
     "dineIn": {
       "label": "內用",
       "storeSlug": {

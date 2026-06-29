@@ -31,9 +31,7 @@ const OrderOrganizationTextField = ({
 
   const tOrder = useTranslations("order");
 
-  if (mode === ORDER_MODE.Kiosk) return null;
-
-  const isDineIn = mode === ORDER_MODE.DineIn;
+  const isDineIn = mode !== ORDER_MODE.Pickup;
 
   const currentOrganization = organizations.find(
     ({ slug }) => slug === organizationSlug,

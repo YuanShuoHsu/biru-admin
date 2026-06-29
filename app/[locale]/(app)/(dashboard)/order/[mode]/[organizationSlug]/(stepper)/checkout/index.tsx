@@ -176,11 +176,10 @@ const OrderModeOrganizationSlugCheckout = () => {
 
   const paymentOptions = [
     {
-      ...(mode !== ORDER_MODE.DineIn &&
-        !isKiosk && {
-          disabled: true,
-          disabledReason: tOrder("checkout.payment.dineInOnly"),
-        }),
+      ...(mode === ORDER_MODE.Pickup && {
+        disabled: true,
+        disabledReason: tOrder("checkout.payment.dineInOnly"),
+      }),
       icon: Payments,
       id: "Cash",
       label: tOrder("checkout.payment.Cash"),

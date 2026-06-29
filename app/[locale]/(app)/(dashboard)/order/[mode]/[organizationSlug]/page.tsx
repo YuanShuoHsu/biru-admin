@@ -38,7 +38,8 @@ const OrderModeOrganizationSlugPage = async ({
 
   setRequestLocale(locale);
 
-  if (mode === ORDER_MODE.Pickup) return <OrderMenuContent />;
+  if (mode === ORDER_MODE.Counter || mode === ORDER_MODE.Pickup)
+    return <OrderMenuContent />;
 
   if (mode === ORDER_MODE.Kiosk) {
     if (!type) return <KioskSelect />;

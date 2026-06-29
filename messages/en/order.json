@@ -89,6 +89,9 @@
     "stockLeft": "Only {stock} left"
   },
   "mode": {
+    "counter": {
+      "label": "Counter"
+    },
     "dineIn": {
       "label": "Dine-in",
       "storeSlug": {

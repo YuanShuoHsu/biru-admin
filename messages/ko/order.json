@@ -89,6 +89,9 @@
     "stockLeft": "남은 수량 {stock}"
   },
   "mode": {
+    "counter": {
+      "label": "카운터 주문"
+    },
     "dineIn": {
       "label": "매장 식사",
       "storeSlug": {
