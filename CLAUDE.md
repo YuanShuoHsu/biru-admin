@@ -31,6 +31,7 @@ Routes live under `app/[locale]/` for i18n. Layout groups organize routes:
 - `(app)/maintenance/` — maintenance mode page
 
 The `(dashboard)` layout uses three **parallel route slots** colocated with each feature:
+
 - `@breadcrumb` — breadcrumb bar
 - `@subheader` — secondary header (e.g., order search)
 - `@toolbar` — action toolbar (e.g., add items, toggle view)
