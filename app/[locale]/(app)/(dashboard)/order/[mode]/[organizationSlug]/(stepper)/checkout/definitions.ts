@@ -30,7 +30,10 @@ export const useCustomerPaymentFormSchema = () => {
           .max(160, { error: tValidation("notes.maxLength") }),
         phone: isKiosk
           ? z.string().trim()
-          : z.string().trim().min(1, { error: tValidation("phone.required") }),
+          : z
+              .string()
+              .trim()
+              .min(1, { error: tValidation("phone.required") }),
       }),
       invoice: z.object({
         carrierType: z.union([
