@@ -105,6 +105,12 @@
         }
       }
     },
+    "kiosk": {
+      "dineIn": "內用",
+      "label": "自助點餐",
+      "takeout": "外帶",
+      "title": "請選擇用餐方式"
+    },
     "pickup": {
       "label": "外帶自取"
     },

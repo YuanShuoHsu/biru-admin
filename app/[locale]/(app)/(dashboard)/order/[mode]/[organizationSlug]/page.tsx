@@ -6,6 +6,7 @@ import { Stack } from "@mui/material";
 import OrderMenuContent from "@/components/OrderMenuContent";
 import OrderTableNumberChip from "@/components/OrderTableNumberChip";
 import OrderPartySizeTextField from "@/components/OrderPartySizeTextField";
+import KioskSelect from "./KioskSelect";
 
 import { ORDER_MODE } from "@/constants/orderMode";
 import { PARTY_SIZE_MAX } from "@/constants/partySize";
@@ -21,8 +22,9 @@ interface OrderModeOrganizationSlugPageProps {
     organizationSlug: Organization["slug"];
   }>;
   searchParams: Promise<{
-    tableNumber?: string;
     partySize?: string;
+    tableNumber?: string;
+    type?: string;
   }>;
 }
 
@@ -30,12 +32,17 @@ const OrderModeOrganizationSlugPage = async ({
   params,
   searchParams,
 }: OrderModeOrganizationSlugPageProps) => {
-  const [{ locale, mode, organizationSlug }, { tableNumber, partySize }] =
+  const [{ locale, mode, organizationSlug }, { partySize, tableNumber, type }] =
     await Promise.all([params, searchParams]);
 
   setRequestLocale(locale);
 
   if (mode === ORDER_MODE.Pickup) return <OrderMenuContent />;
+
+  if (mode === ORDER_MODE.Kiosk) {
+    if (!type) return <KioskSelect />;
+    return <OrderMenuContent />;
+  }
 
   if (mode !== ORDER_MODE.DineIn) return notFound();
 

@@ -31,6 +31,8 @@ const OrderOrganizationTextField = ({
 
   const tOrder = useTranslations("order");
 
+  if (mode === ORDER_MODE.Kiosk) return null;
+
   const isDineIn = mode === ORDER_MODE.DineIn;
 
   const currentOrganization = organizations.find(
@@ -38,7 +40,7 @@ const OrderOrganizationTextField = ({
   );
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>
-    router.push(`/order/${ORDER_MODE.Pickup}/${event.target.value}`);
+    router.push(`/order/${mode}/${event.target.value}`);
 
   return (
     <StyledTextField

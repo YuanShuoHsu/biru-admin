@@ -1,10 +1,16 @@
 import { useTranslations } from "next-intl";
+import { useParams } from "next/navigation";
 import * as z from "zod";
+
+import { ORDER_MODE } from "@/constants/orderMode";
 
 export type InvoiceType = "company" | "donate" | "personal";
 export type CarrierType = "certificate" | "individual" | "mobile";
 
 export const useCustomerPaymentFormSchema = () => {
+  const { mode } = useParams();
+  const isKiosk = mode === ORDER_MODE.Kiosk;
+
   const tValidation = useTranslations("validation");
 
   return z
@@ -22,10 +28,9 @@ export const useCustomerPaymentFormSchema = () => {
           .string()
           .trim()
           .max(160, { error: tValidation("notes.maxLength") }),
-        phone: z
-          .string()
-          .trim()
-          .min(1, { error: tValidation("phone.required") }),
+        phone: isKiosk
+          ? z.string().trim()
+          : z.string().trim().min(1, { error: tValidation("phone.required") }),
       }),
       invoice: z.object({
         carrierType: z.union([

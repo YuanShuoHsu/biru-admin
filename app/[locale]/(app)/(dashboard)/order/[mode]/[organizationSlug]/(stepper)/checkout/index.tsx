@@ -133,7 +133,7 @@ const OrderModeOrganizationSlugCheckout = () => {
   const locale = useLocale();
 
   const { mode } = useParams();
-
+  const isKiosk = mode === ORDER_MODE.Kiosk;
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const search = searchParams.toString();
@@ -176,7 +176,7 @@ const OrderModeOrganizationSlugCheckout = () => {
 
   const paymentOptions = [
     {
-      ...(mode !== ORDER_MODE.DineIn && {
+      ...(mode !== ORDER_MODE.DineIn && !isKiosk && {
         disabled: true,
         disabledReason: tOrder("checkout.payment.dineInOnly"),
       }),
@@ -331,9 +331,9 @@ const OrderModeOrganizationSlugCheckout = () => {
             error={!!errors.customer?.phone}
             fullWidth
             helperText={errors.customer?.phone?.message}
-            label={tOrder("checkout.customer.phone.label")}
+            label={`${tOrder("checkout.customer.phone.label")}${isKiosk ? ` ${tCommon("optional")}` : ""}`}
             placeholder={tOrder("checkout.customer.phone.placeholder")}
-            required
+            required={!isKiosk}
             type="tel"
             {...register("customer.phone")}
           />

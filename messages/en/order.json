@@ -105,6 +105,12 @@
         }
       }
     },
+    "kiosk": {
+      "dineIn": "Dine in",
+      "label": "Kiosk",
+      "takeout": "Takeout",
+      "title": "Please select your dining option"
+    },
     "pickup": {
       "label": "Pickup"
     },
