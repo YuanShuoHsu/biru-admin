@@ -231,8 +231,9 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
     [ORDER_MODE.Kiosk]: TouchApp,
     [ORDER_MODE.Pickup]: LocalMall,
   };
-  const modeIcon: React.ComponentType<SvgIconProps> =
-    mode ? modeIconMap[mode] : ShoppingCart;
+  const modeIcon: React.ComponentType<SvgIconProps> = mode
+    ? modeIconMap[mode]
+    : ShoppingCart;
 
   const partySize = searchParams.get("partySize");
   const tableNumber = searchParams.get("tableNumber");
