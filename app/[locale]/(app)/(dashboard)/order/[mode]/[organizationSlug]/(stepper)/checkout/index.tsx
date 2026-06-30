@@ -56,7 +56,7 @@ import {
 import { useCartStore } from "@/providers/cart-store-provider";
 import { useMenuStore } from "@/providers/menu-store-provider";
 
-import type { CreateEcpayDto } from "@/types/ecpay/createEcpayDto";
+import type { BaseEcpayDto } from "@/types/ecpay";
 import type { PaymentMethod } from "@/types/payment";
 
 import { sendRequest } from "@/utils/fetcher";
@@ -73,6 +73,7 @@ const CARRIER_TYPES: CarrierType[] = ["individual", "mobile", "certificate"];
 const OrderModeOrganizationSlugCheckout = () => {
   const { isCartEmpty, cartItemsList } = useCartStore((state) => state);
   const { menu } = useMenuStore((state) => state);
+
   const hasInvalidItems = useCartHasInvalidItems();
 
   const { cartTotalAmount } = useCartTotals();
@@ -145,7 +146,7 @@ const OrderModeOrganizationSlugCheckout = () => {
 
   const { isMutating, trigger: triggerEcpay } = useSWRMutation(
     "/api/ecpay",
-    sendRequest<{ message: string }, CreateEcpayDto>(),
+    sendRequest<{ message: string }, BaseEcpayDto>(),
   );
 
   const shouldFetch =
@@ -198,99 +199,98 @@ const OrderModeOrganizationSlugCheckout = () => {
   ];
 
   const onSubmit = handleSubmit(async (values) => {
+    if (!values.payment) return;
+
     if (values.payment === "Cash") {
       router.replace(completePath);
+
       return;
     }
 
     const baseUrl = process.env.NEXT_PUBLIC_NEXT_URL;
     const completeUrl = `${baseUrl}/${locale}${completePath}`;
 
-    const buildInvoice = (): CreateEcpayDto["invoice"] => {
-      const common = {
-        CustomerEmail: values.invoice.emailSameAsCustomer
-          ? values.customer.email
-          : values.invoice.email,
-        CustomerName: values.customer.name,
-        CustomerPhone: values.customer.phone,
-        DelayDay: "0",
-        Donation: "0",
-        InvType: "07",
-        TaxType: "1",
-      };
-      switch (values.invoice.type) {
-        case "personal":
-          if (values.invoice.carrierType === "mobile") {
-            return {
-              ...common,
-              CarruerNum: values.invoice.carruerNum,
-              CarruerType: "3",
-              Print: "0",
-            };
-          }
-          if (values.invoice.carrierType === "certificate") {
-            return {
-              ...common,
-              CarruerNum: values.invoice.carruerNum,
-              CarruerType: "2",
-              Print: "0",
-            };
-          }
-          return { ...common, CarruerType: "", Donation: "0", Print: "0" };
-        case "company":
-          return {
-            ...common,
-            CarruerType: "",
-            CustomerAddr: values.invoice.customerAddr,
-            CustomerIdentifier: values.invoice.customerIdentifier,
-            CustomerName: values.invoice.customerName,
-            Print: "1",
-          };
-        case "donate":
-          return {
-            ...common,
-            CarruerType: "",
-            Donation: "1",
-            LoveCode: values.invoice.donateCode,
-            Print: "0",
-          };
-      }
-    };
+    // const buildInvoice = (): CreateEcpayDto["invoice"] => {
+    //   const common = {
+    //     CustomerEmail: values.invoice.emailSameAsCustomer
+    //       ? values.customer.email
+    //       : values.invoice.email,
+    //     CustomerName: values.customer.name,
+    //     CustomerPhone: values.customer.phone,
+    //     DelayDay: "0",
+    //     Donation: "0",
+    //     InvType: "07",
+    //     TaxType: "1",
+    //   };
+    //   switch (values.invoice.type) {
+    //     case "personal":
+    //       if (values.invoice.carrierType === "mobile") {
+    //         return {
+    //           ...common,
+    //           CarruerNum: values.invoice.carruerNum,
+    //           CarruerType: "3",
+    //           Print: "0",
+    //         };
+    //       }
+    //       if (values.invoice.carrierType === "certificate") {
+    //         return {
+    //           ...common,
+    //           CarruerNum: values.invoice.carruerNum,
+    //           CarruerType: "2",
+    //           Print: "0",
+    //         };
+    //       }
+    //       return { ...common, CarruerType: "", Donation: "0", Print: "0" };
+    //     case "company":
+    //       return {
+    //         ...common,
+    //         CarruerType: "",
+    //         CustomerAddr: values.invoice.customerAddr,
+    //         CustomerIdentifier: values.invoice.customerIdentifier,
+    //         CustomerName: values.invoice.customerName,
+    //         Print: "1",
+    //       };
+    //     case "donate":
+    //       return {
+    //         ...common,
+    //         CarruerType: "",
+    //         Donation: "1",
+    //         LoveCode: values.invoice.donateCode,
+    //         Print: "0",
+    //       };
+    //   }
+    // };
 
-    const dto = {
-      base: {
-        TotalAmount: cartTotalAmount,
-        TradeDesc: tOrder("checkout.tradeDesc"),
-        ItemName: cartItemsList
-          .map(({ menuItemId, modifiers, addOns, quantity }) => {
-            const itemName = getItemName(menu, menuItemId);
-            const choiceNames = getChoiceNames(
-              menu,
-              menuItemId,
-              modifiers,
-              addOns,
-              {
-                addOnLabel: tOrder("menuItem.addOn"),
-                colon: tCommon("colon"),
-                delimiter: tCommon("delimiter"),
-                parenthesisOpen: tCommon("parenthesisOpen"),
-                parenthesisClose: tCommon("parenthesisClose"),
-              },
-            );
-            const formattedChoices = choiceNames ? `[${choiceNames}]` : "";
+    const dto: BaseEcpayDto = {
+      ChoosePayment: values.payment,
+      ClientBackURL: completeUrl,
+      ItemName: cartItemsList
+        .map(({ menuItemId, modifiers, addOns, quantity }) => {
+          const itemName = getItemName(menu, menuItemId);
+          const choiceNames = getChoiceNames(
+            menu,
+            menuItemId,
+            modifiers,
+            addOns,
+            {
+              addOnLabel: tOrder("menuItem.addOn"),
+              colon: tCommon("colon"),
+              delimiter: tCommon("delimiter"),
+              parenthesisOpen: tCommon("parenthesisOpen"),
+              parenthesisClose: tCommon("parenthesisClose"),
+            },
+          );
+          const formattedChoices = choiceNames ? `[${choiceNames}]` : "";
 
-            return `${itemName} ${formattedChoices} ${tCommon("multiply")} ${quantity}`;
-          })
-          .join("#"),
-        ChoosePayment:
-          values.payment as CreateEcpayDto["base"]["ChoosePayment"],
-        ClientBackURL: completeUrl,
-        OrderResultURL: completeUrl,
-        Language: localeConfigs[locale].ecpayLanguage,
-        NeedExtraPaidInfo: "Y" as const,
-        Remark: values.customer.notes || undefined,
-      },
-      invoice: buildInvoice(),
+          return `${itemName} ${formattedChoices} ${tCommon("multiply")} ${quantity}`;
+        })
+        .join("#"),
+      Language: localeConfigs[locale].ecpayLanguage,
+      NeedExtraPaidInfo: "Y",
+      OrderResultURL: completeUrl,
+      Remark: values.customer.notes || undefined,
+      TotalAmount: cartTotalAmount,
+      TradeDesc: tOrder("checkout.tradeDesc"),
     };
 
     const { message: data } = await triggerEcpay(dto);
@@ -471,6 +471,7 @@ const OrderModeOrganizationSlugCheckout = () => {
                         carrierType === "mobile"
                           ? "/AB12345"
                           : "AB12345678901234",
+                      uppercase: true,
                     },
                   },
                 }}

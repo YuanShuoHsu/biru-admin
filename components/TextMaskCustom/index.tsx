@@ -8,11 +8,13 @@ interface CustomProps {
   name: string;
   onChange: (event: { target: { name: string; value: string } }) => void;
   placeholder?: string;
+  uppercase?: boolean;
 }
 
 const TextMaskCustom = React.forwardRef<HTMLInputElement, CustomProps>(
   function TextMaskCustom(props, ref) {
-    const { onChange, ...other } = props;
+    const { onChange, uppercase, ...other } = props;
+
     return (
       <IMaskInput
         {...other}
@@ -21,6 +23,7 @@ const TextMaskCustom = React.forwardRef<HTMLInputElement, CustomProps>(
           onChange({ target: { name: props.name, value } })
         }
         overwrite
+        {...(uppercase && { prepare: (str: string) => str.toUpperCase() })}
       />
     );
   },

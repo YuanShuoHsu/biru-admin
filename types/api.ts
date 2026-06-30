@@ -106,6 +106,22 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/donate-codes": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["DonateCodesController_getAll"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/ecpay": {
     parameters: {
       query?: never;
@@ -578,6 +594,40 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/gcis/{businessNo}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 依統一編號查詢公司名稱與地址 */
+    get: operations["GcisController_findOne"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/orders": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 建立訂單 */
+    post: operations["OrdersController_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations": {
     parameters: {
       query?: never;
@@ -780,6 +830,16 @@ export interface components {
        */
       email: string;
     };
+    /**
+     * @description 語系設定
+     *     預設語系為中文，若要變更語系參數值請帶：
+     *     - ENG：英語
+     *     - KOR：韓語
+     *     - JPN：日語
+     *     - CHI：簡體中文
+     * @enum {string}
+     */
+    BaseEcpayLanguage: "ENG" | "KOR" | "JPN" | "CHI";
     BaseEcpayDto: {
       /**
        * @description 特店編號（必填）
@@ -1003,9 +1063,8 @@ export interface components {
        *     - JPN：日語
        *     - CHI：簡體中文
        * @example ENG
-       * @enum {string}
        */
-      Language?: "ENG" | "KOR" | "JPN" | "CHI";
+      Language?: components["schemas"]["BaseEcpayLanguage"];
     };
     ReturnEcpayDto: {
       /**
@@ -1923,26 +1982,6 @@ export interface components {
       /** Format: date-time */
       updatedAt: string;
     };
-    OrderMenuAddOnItemResponseDto: {
-      id: string;
-      name: string;
-      image?: string | null;
-      offers: components["schemas"]["OrderMenuOfferResponseDto"][];
-      modifierGroups: components["schemas"]["OrderMenuModifierGroupResponseDto"][];
-    };
-    OrderMenuAddOnResponseDto: {
-      id: string;
-      menuItemId: string;
-      addOnMenuItemId?: string | null;
-      addOnMenuSectionId?: string | null;
-      sortOrder: number;
-      /** @description 解析後的加購品項（指向品項為單筆；指向區塊為其所有品項） */
-      menuItems: components["schemas"]["OrderMenuAddOnItemResponseDto"][];
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
     OrderMenuModifierResponseDto: {
       id: string;
       modifierGroupId: string;
@@ -1965,6 +2004,26 @@ export interface components {
       maxSelectionCount?: number | null;
       sortOrder: number;
       modifiers: components["schemas"]["OrderMenuModifierResponseDto"][];
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    OrderMenuAddOnItemResponseDto: {
+      id: string;
+      name: string;
+      image?: string | null;
+      offers: components["schemas"]["OrderMenuOfferResponseDto"][];
+      modifierGroups: components["schemas"]["OrderMenuModifierGroupResponseDto"][];
+    };
+    OrderMenuAddOnResponseDto: {
+      id: string;
+      menuItemId: string;
+      addOnMenuItemId?: string | null;
+      addOnMenuSectionId?: string | null;
+      sortOrder: number;
+      /** @description 解析後的加購品項（指向品項為單筆；指向區塊為其所有品項） */
+      menuItems: components["schemas"]["OrderMenuAddOnItemResponseDto"][];
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -2022,6 +2081,77 @@ export interface components {
       description?: string | null;
       image?: string | null;
       sections: components["schemas"]["OrderMenuSectionResponseDto"][];
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    CreateOrderCustomerDto: {
+      name: string;
+      phone?: string;
+      /** Format: email */
+      email?: string;
+      notes?: string;
+    };
+    CreateOrderInvoiceDto: {
+      /** @enum {string} */
+      type: "personal" | "company" | "donate";
+      /** @enum {string} */
+      carrierType?: "individual" | "mobile" | "certificate";
+      carruerNum?: string;
+      /** Format: email */
+      email?: string;
+      customerIdentifier?: string;
+      customerName?: string;
+      customerAddr?: string;
+      donateCode?: string;
+    };
+    CreateOrderItemAddOnDto: {
+      menuItemId: string;
+      /** @description modifierGroupId → modifierIds[] */
+      modifiers: Record<string, never>;
+    };
+    CreateOrderItemDto: {
+      menuItemId: string;
+      quantity: number;
+      /** @description modifierGroupId → modifierIds[] */
+      modifiers: Record<string, never>;
+      addOns: components["schemas"]["CreateOrderItemAddOnDto"][];
+    };
+    CreateOrderDto: {
+      /** @enum {string} */
+      mode: "dineIn" | "pickup";
+      customer: components["schemas"]["CreateOrderCustomerDto"];
+      /** @enum {string} */
+      payment: "Cash" | "Credit" | "TWQR" | "WeiXin";
+      invoice?: components["schemas"]["CreateOrderInvoiceDto"];
+      items: components["schemas"]["CreateOrderItemDto"][];
+    };
+    OrderItemResponseDto: {
+      id: string;
+      menuItemId: string;
+      menuItemName: string;
+      unitPrice: string;
+      orderQuantity: number;
+      modifiers?: Record<string, never>[] | null;
+      addOns?: Record<string, never>[] | null;
+    };
+    OrderResponseDto: {
+      id: string;
+      sellerId: string;
+      mode: Record<string, never>;
+      orderNumber: string;
+      customerName: string;
+      customerPhone?: string | null;
+      customerEmail?: string | null;
+      customerNotes?: string | null;
+      paymentMethod: Record<string, never>;
+      orderStatus: Record<string, never>;
+      confirmationNumber?: string | null;
+      discount?: string | null;
+      discountCode?: string | null;
+      invoice?: Record<string, never> | null;
+      items: components["schemas"]["OrderItemResponseDto"][];
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -2304,6 +2434,32 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  DonateCodesController_getAll: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": Record<string, never>[];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -3673,6 +3829,67 @@ export interface operations {
       };
     };
   };
+  GcisController_findOne: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 統一編號（8位數字） */
+        businessNo: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": Record<string, never>;
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrdersController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateOrderDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   OrganizationsController_findAll: {
     parameters: {
       query?: never;
@@ -3821,6 +4038,9 @@ export const sortDirectionValues: ReadonlyArray<
 export const updateUserDtoGenderValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UpdateUserDto"]["gender"]
 > = ["female", "male", "other"];
+export const baseEcpayLanguageValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["BaseEcpayLanguage"]
+> = ["ENG", "KOR", "JPN", "CHI"];
 export const baseEcpayDtoPaymentTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["BaseEcpayDto"]["PaymentType"]
 > = ["aio"];
@@ -3844,9 +4064,6 @@ export const baseEcpayDtoEncryptTypeValues: ReadonlyArray<
 export const baseEcpayDtoNeedExtraPaidInfoValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["BaseEcpayDto"]["NeedExtraPaidInfo"]
 > = ["Y", "N"];
-export const baseEcpayDtoLanguageValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["BaseEcpayDto"]["Language"]
-> = ["ENG", "KOR", "JPN", "CHI"];
 export const returnEcpayDtoSimulatePaidValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["ReturnEcpayDto"]["SimulatePaid"]
 > = [0, 1];
@@ -3983,6 +4200,18 @@ export const orderMenuItemResponseDtoSuitableForDietValues: ReadonlyArray<
   "VeganDiet",
   "VegetarianDiet",
 ];
+export const createOrderInvoiceDtoTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CreateOrderInvoiceDto"]["type"]
+> = ["personal", "company", "donate"];
+export const createOrderInvoiceDtoCarrierTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CreateOrderInvoiceDto"]["carrierType"]
+> = ["individual", "mobile", "certificate"];
+export const createOrderDtoModeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CreateOrderDto"]["mode"]
+> = ["dineIn", "pickup"];
+export const createOrderDtoPaymentValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CreateOrderDto"]["payment"]
+> = ["Cash", "Credit", "TWQR", "WeiXin"];
 export const organizationMemberResponseDtoRoleValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrganizationMemberResponseDto"]["role"]
 > = ["admin", "member", "owner"];
