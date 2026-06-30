@@ -43,7 +43,7 @@
         "label": "Love code",
         "placeholder": "Please select your love code"
       },
-      "individual": "Email",
+      "individual": "E-Invoice",
       "invoiceEmail": {
         "label": "Invoice email",
         "placeholder": "Please enter your invoice email",

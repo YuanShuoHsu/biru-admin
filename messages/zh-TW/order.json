@@ -43,7 +43,7 @@
         "label": "愛心碼",
         "placeholder": "請選擇您的愛心碼"
       },
-      "individual": "電子信箱",
+      "individual": "電子發票",
       "invoiceEmail": {
         "label": "發票電子信箱",
         "placeholder": "請輸入您的發票電子信箱",

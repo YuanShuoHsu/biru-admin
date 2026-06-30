@@ -91,24 +91,6 @@ export const useCustomerPaymentFormSchema = () => {
               message: tValidation("carrierType.required"),
               path: ["invoice", "carrierType"],
             });
-          } else if (data.invoice.carrierType === "individual") {
-            if (data.invoice.emailSameAsCustomer) {
-              if (!data.customer.email) {
-                ctx.addIssue({
-                  code: "custom",
-                  message: tValidation("email.required"),
-                  path: ["customer", "email"],
-                });
-              }
-            } else {
-              if (!data.invoice.email) {
-                ctx.addIssue({
-                  code: "custom",
-                  message: tValidation("email.required"),
-                  path: ["invoice", "email"],
-                });
-              }
-            }
           } else if (data.invoice.carrierType === "mobile") {
             if (!/^\/[A-Z0-9+\-.]{7}$/.test(data.invoice.carruerNum)) {
               ctx.addIssue({

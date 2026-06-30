@@ -43,7 +43,7 @@
         "label": "ラブコード",
         "placeholder": "あなたのラブコードを選択してください"
       },
-      "individual": "メールアドレス",
+      "individual": "電子インボイス",
       "invoiceEmail": {
         "label": "請求書メールアドレス",
         "placeholder": "あなたの請求書メールアドレスを入力してください",

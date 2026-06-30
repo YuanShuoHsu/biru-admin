@@ -44,9 +44,7 @@ import {
 import {
   Button,
   Card,
-  Checkbox,
   Divider,
-  FormControlLabel,
   MenuItem,
   Stack,
   TextField,
@@ -112,24 +110,17 @@ const OrderModeOrganizationSlugCheckout = () => {
     resolver: zodResolver(customerPaymentFormSchema),
   });
 
-  const [
-    carrierType,
-    emailSameAsCustomer,
-    customerIdentifier,
-    donateCode,
-    invoiceType,
-    payment,
-  ] = useWatch({
-    control,
-    name: [
-      "invoice.carrierType",
-      "invoice.emailSameAsCustomer",
-      "invoice.customerIdentifier",
-      "invoice.donateCode",
-      "invoice.type",
-      "payment",
-    ],
-  });
+  const [carrierType, customerIdentifier, donateCode, invoiceType, payment] =
+    useWatch({
+      control,
+      name: [
+        "invoice.carrierType",
+        "invoice.customerIdentifier",
+        "invoice.donateCode",
+        "invoice.type",
+        "payment",
+      ],
+    });
 
   const locale = useLocale();
 
@@ -341,13 +332,8 @@ const OrderModeOrganizationSlugCheckout = () => {
             error={!!errors.customer?.email}
             fullWidth
             helperText={errors.customer?.email?.message}
-            label={`${tOrder("checkout.customer.email.label")}${!(invoiceType === "personal" && carrierType === "individual" && emailSameAsCustomer) ? ` ${tCommon("optional")}` : ""}`}
+            label={`${tOrder("checkout.customer.email.label")} ${tCommon("optional")}`}
             placeholder={tOrder("checkout.customer.email.placeholder")}
-            required={
-              invoiceType === "personal" &&
-              carrierType === "individual" &&
-              emailSameAsCustomer
-            }
             type="email"
             {...register("customer.email")}
           />
@@ -420,35 +406,6 @@ const OrderModeOrganizationSlugCheckout = () => {
                 </MenuItem>
               ))}
             </TextField>
-          )}
-          {invoiceType === "personal" && carrierType === "individual" && (
-            <>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={emailSameAsCustomer}
-                    size="small"
-                    {...register("invoice.emailSameAsCustomer")}
-                  />
-                }
-                label={tOrder("checkout.invoice.invoiceEmail.sameAsCustomer")}
-                slotProps={{ typography: { variant: "body2" } }}
-              />
-              {!emailSameAsCustomer && (
-                <TextField
-                  error={!!errors.invoice?.email}
-                  fullWidth
-                  helperText={errors.invoice?.email?.message}
-                  label={tOrder("checkout.invoice.invoiceEmail.label")}
-                  placeholder={tOrder(
-                    "checkout.invoice.invoiceEmail.placeholder",
-                  )}
-                  required
-                  type="email"
-                  {...register("invoice.email")}
-                />
-              )}
-            </>
           )}
           {invoiceType === "personal" &&
             (carrierType === "mobile" || carrierType === "certificate") && (

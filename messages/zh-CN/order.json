@@ -43,7 +43,7 @@
         "label": "爱心码",
         "placeholder": "请选择您的爱心码"
       },
-      "individual": "电子邮箱",
+      "individual": "电子发票",
       "invoiceEmail": {
         "label": "发票电子邮箱",
         "placeholder": "请输入您的发票电子邮箱",

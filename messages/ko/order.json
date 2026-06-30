@@ -43,7 +43,7 @@
         "label": "러브코드",
         "placeholder": "귀하의 러브코드를 선택해 주세요"
       },
-      "individual": "이메일",
+      "individual": "전자 영수증",
       "invoiceEmail": {
         "label": "청구서 이메일",
         "placeholder": "귀하의 청구서 이메일을 입력해 주세요",
