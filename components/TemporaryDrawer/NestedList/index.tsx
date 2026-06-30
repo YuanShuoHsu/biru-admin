@@ -31,11 +31,13 @@ import {
   LocalMall,
   MenuBook,
   Person,
+  QrCodeScanner,
   Restaurant,
   Security,
   ShoppingCart,
   Storefront,
   TableBar,
+  TouchApp,
 } from "@mui/icons-material";
 import {
   Chip,
@@ -69,38 +71,32 @@ const StyledDivider = styled(Divider, {
   marginLeft: theme.spacing(level * 2),
 }));
 
-const DineInMenuItem = ({ level }: { level: number }) => {
-  const { organizationSlug } = useParams<RouteParams>();
-
-  const router = useRouter();
-
-  const searchParams = useSearchParams();
-  const tableNumber = searchParams.get("tableNumber");
-  const partySize = searchParams.get("partySize");
-
+const OrderModeMenuItem = ({
+  chipIcon,
+  chipLabel,
+  extra,
+  level,
+  onClick,
+}: {
+  chipIcon: React.ReactElement;
+  chipLabel: string;
+  extra?: { icon: React.ReactElement; primary: string }[];
+  level: number;
+  onClick: () => void;
+}) => {
   const organization = useOrganization();
   const storeName = organization?.name || "";
 
-  const tOrder = useTranslations("order");
-
   if (!storeName) return null;
 
-  const handleClick = () =>
-    router.push(
-      getHref(`/order/${ORDER_MODE.DineIn}/${organizationSlug}`, {
-        tableNumber,
-        partySize,
-      }),
-    );
-
   return (
-    <StyledListItemButton level={level} onClick={handleClick} selected>
+    <StyledListItemButton level={level} onClick={onClick} selected>
       <Stack
         width="100%"
         flexDirection="row"
+        flexWrap="wrap"
         justifyContent="space-between"
         alignItems="center"
-        flexWrap="wrap"
         gap={1}
       >
         <Stack gap={1}>
@@ -110,36 +106,17 @@ const DineInMenuItem = ({ level }: { level: number }) => {
             </ListItemIcon>
             <ListItemText primary={storeName} />
           </Stack>
-          {tableNumber && (
-            <Stack flexDirection="row" alignItems="center" gap={4}>
-              <ListItemIcon>
-                <TableBar />
-              </ListItemIcon>
-              <ListItemText
-                primary={tOrder("mode.dineIn.storeSlug.tableNumber.value", {
-                  tableNumber,
-                })}
-              />
+          {extra?.map(({ icon, primary }, i) => (
+            <Stack key={i} flexDirection="row" alignItems="center" gap={4}>
+              <ListItemIcon>{icon}</ListItemIcon>
+              <ListItemText primary={primary} />
             </Stack>
-          )}
-          {partySize && (
-            <Stack flexDirection="row" alignItems="center" gap={4}>
-              <ListItemIcon>
-                {partySize === "1" ? <Person /> : <Group />}
-              </ListItemIcon>
-              <ListItemText
-                primary={tOrder(
-                  "mode.dineIn.storeSlug.tableNumber.partySize.select.value",
-                  { count: partySize },
-                )}
-              />
-            </Stack>
-          )}
+          ))}
         </Stack>
         <StyledChip
           color="primary"
-          icon={<Restaurant />}
-          label={tOrder("mode.dineIn.label")}
+          icon={chipIcon}
+          label={chipLabel}
           size="small"
           variant="outlined"
         />
@@ -155,9 +132,14 @@ const useNavItems = (): MenuItem[] => {
   const { mode, organizationSlug } = useParams<Partial<RouteParams>>();
 
   const pathname = usePathname();
+  const router = useRouter();
 
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirectTo");
+  const tableNumber = searchParams.get("tableNumber");
+  const partySize = searchParams.get("partySize");
+  const type = searchParams.get("type");
+
   const isAuthPage = pathname.startsWith("/auth");
   const isCompanyPage = pathname.startsWith("/company");
 
@@ -196,13 +178,84 @@ const useNavItems = (): MenuItem[] => {
   const tOrder = useTranslations("order");
   const tOrganizations = useTranslations("organizations");
 
+  const counterSlot: MenuItem[] =
+    mode === ORDER_MODE.Counter && organizationSlug
+      ? [
+          {
+            slot: ({ level }) => (
+              <OrderModeMenuItem
+                chipIcon={<QrCodeScanner />}
+                chipLabel={tOrder("mode.counter.label")}
+                level={level}
+                onClick={() =>
+                  router.push(`/order/${ORDER_MODE.Counter}/${organizationSlug}`)
+                }
+              />
+            ),
+          },
+        ]
+      : [];
+
   const dineInSlot: MenuItem[] =
     mode === ORDER_MODE.DineIn && organizationSlug
-      ? [{ slot: ({ level }) => <DineInMenuItem level={level} /> }]
+      ? [
+          {
+            slot: ({ level }) => (
+              <OrderModeMenuItem
+                chipIcon={<Restaurant />}
+                chipLabel={tOrder("mode.dineIn.label")}
+                extra={[
+                  ...(tableNumber
+                    ? [{ icon: <TableBar />, primary: tOrder("mode.dineIn.storeSlug.tableNumber.value", { tableNumber }) }]
+                    : []),
+                  ...(partySize
+                    ? [{ icon: partySize === "1" ? <Person /> : <Group />, primary: tOrder("mode.dineIn.storeSlug.tableNumber.partySize.select.value", { count: partySize }) }]
+                    : []),
+                ]}
+                level={level}
+                onClick={() =>
+                  router.push(
+                    getHref(`/order/${ORDER_MODE.DineIn}/${organizationSlug}`, {
+                      tableNumber,
+                      partySize,
+                    }),
+                  )
+                }
+              />
+            ),
+          },
+        ]
+      : [];
+
+  const kioskSlot: MenuItem[] =
+    mode === ORDER_MODE.Kiosk && organizationSlug
+      ? [
+          {
+            slot: ({ level }) => (
+              <OrderModeMenuItem
+                chipIcon={<TouchApp />}
+                chipLabel={tOrder("mode.kiosk.label")}
+                extra={
+                  type
+                    ? [{ icon: type === "dine-in" ? <Restaurant /> : <LocalMall />, primary: tOrder(type === "dine-in" ? "mode.kiosk.dineIn" : "mode.kiosk.takeout") }]
+                    : []
+                }
+                level={level}
+                onClick={() =>
+                  router.push(
+                    `/order/${ORDER_MODE.Kiosk}/${organizationSlug}?${searchParams.toString()}`,
+                  )
+                }
+              />
+            ),
+          },
+        ]
       : [];
 
   const orderChildren: MenuItem[] = [
+    ...counterSlot,
     ...dineInSlot,
+    ...kioskSlot,
     {
       icon: LocalMall,
       label: tOrder("mode.pickup.label"),
