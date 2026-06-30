@@ -1,6 +1,7 @@
 import { createJSONStorage, persist } from "zustand/middleware";
 import { createStore } from "zustand/vanilla";
 
+import type { OrderMode } from "@/types/orderMode";
 import type { Organization } from "@/types/organizations";
 
 import { getItemKey } from "@/utils/menus";
@@ -20,8 +21,8 @@ export interface CartItem {
 type CartItemsMap = Record<string, CartItem>;
 
 interface CartState {
-  carts: Record<Organization["slug"], CartItemsMap>;
-  activeOrganizationSlug: Organization["slug"] | null;
+  carts: Record<string, CartItemsMap>;
+  cartKey: string | null;
   cartItemsMap: CartItemsMap;
   cartItemsList: CartItem[];
   cartTotalQuantity: number;
@@ -34,7 +35,10 @@ interface CartActions {
   deleteCartItem: (item: CartItem) => void;
   getCartItemTotalQuantity: (menuItemId: string) => number;
   getChoiceAvailableQuantity: (choiceId: string, choiceStock: number) => number;
-  setActiveOrganization: (slug: Organization["slug"] | null) => void;
+  setCartKey: (
+    mode: OrderMode | null,
+    slug: Organization["slug"] | null,
+  ) => void;
   updateCartItem: (oldItem: CartItem, newItem: CartItem) => void;
 }
 
@@ -58,7 +62,7 @@ const deriveCartState = (cartItemsMap: CartItemsMap) => {
 
 const defaultInitState: CartState = {
   carts: {},
-  activeOrganizationSlug: null,
+  cartKey: null,
   ...deriveCartState({}),
 };
 
@@ -67,11 +71,11 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
     persist(
       (set, get) => {
         const setActiveCart = (cartItemsMap: CartItemsMap) => {
-          const { activeOrganizationSlug, carts } = get();
-          if (!activeOrganizationSlug) return;
+          const { cartKey, carts } = get();
+          if (!cartKey) return;
 
           set({
-            carts: { ...carts, [activeOrganizationSlug]: cartItemsMap },
+            carts: { ...carts, [cartKey]: cartItemsMap },
             ...deriveCartState(cartItemsMap),
           });
         };
@@ -122,11 +126,14 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
 
             return choiceStock - used;
           },
-          setActiveOrganization: (slug) =>
+          setCartKey: (mode, slug) => {
+            const key = slug && mode && `${slug}:${mode}`;
+
             set(({ carts }) => ({
-              activeOrganizationSlug: slug,
-              ...deriveCartState(slug ? (carts[slug] ?? {}) : {}),
-            })),
+              cartKey: key,
+              ...deriveCartState((key && carts[key]) || {}),
+            }));
+          },
           updateCartItem: (oldItem, newItem) => {
             const { cartItemsMap } = get();
             const oldKey = getItemKey(
@@ -170,7 +177,7 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
         name: "biru-cart",
         storage: createJSONStorage(() => localStorage),
         partialize: ({ carts }) => ({ carts }),
-        version: 4,
+        version: 5,
         migrate: () => ({ carts: {} }),
       },
     ),

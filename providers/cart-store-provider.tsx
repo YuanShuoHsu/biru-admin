@@ -25,11 +25,11 @@ interface CartStoreProviderProps {
 export const CartStoreProvider = ({ children }: CartStoreProviderProps) => {
   const [store] = useState(() => createCartStore());
 
-  const { organizationSlug } = useParams<RouteParams>();
+  const { mode, organizationSlug } = useParams<RouteParams>();
 
   useEffect(() => {
-    store.getState().setActiveOrganization(organizationSlug ?? null);
-  }, [store, organizationSlug]);
+    store.getState().setCartKey(mode || null, organizationSlug || null);
+  }, [mode, organizationSlug, store]);
 
   return (
     <CartStoreContext.Provider value={store}>
