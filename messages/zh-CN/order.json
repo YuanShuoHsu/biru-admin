@@ -54,6 +54,7 @@
       "title": "电子发票"
     },
     "payment": {
+      "ApplePay": "Apple Pay",
       "Cash": "现金",
       "Credit": "信用卡",
       "dineInOnly": "仅限堂食",

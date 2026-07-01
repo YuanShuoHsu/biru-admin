@@ -54,6 +54,7 @@
       "title": "電子發票"
     },
     "payment": {
+      "ApplePay": "Apple Pay",
       "Cash": "現金",
       "Credit": "信用卡",
       "dineInOnly": "僅限內用",

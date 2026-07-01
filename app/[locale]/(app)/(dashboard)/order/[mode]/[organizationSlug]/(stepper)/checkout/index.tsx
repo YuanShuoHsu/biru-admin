@@ -36,6 +36,7 @@ import {
   MarkChatRead,
   Payments,
   Person,
+  PhoneIphone,
   QrCodeScanner,
   ShoppingCart,
   TaskAlt,
@@ -180,6 +181,11 @@ const OrderModeOrganizationSlugCheckout = () => {
       icon: CreditCard,
       id: "Credit",
       label: tOrder("checkout.payment.Credit"),
+    },
+    {
+      icon: PhoneIphone,
+      id: "ApplePay",
+      label: tOrder("checkout.payment.ApplePay"),
     },
     { icon: QrCodeScanner, id: "TWQR", label: tOrder("checkout.payment.TWQR") },
     {

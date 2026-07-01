@@ -64,7 +64,7 @@ export const useCustomerPaymentFormSchema = () => {
         emailSameAsCustomer: z.boolean(),
         type: z.enum(["company", "donate", "personal"]).nullable(),
       }),
-      payment: z.enum(["Cash", "Credit", "TWQR", "WeiXin"]).nullable(),
+      payment: z.enum(["ApplePay", "Cash", "Credit", "TWQR", "WeiXin"]).nullable(),
     })
     .superRefine((data, ctx) => {
       if (!data.invoice.type) {

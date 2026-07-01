@@ -54,6 +54,7 @@
       "title": "電子インボイス"
     },
     "payment": {
+      "ApplePay": "Apple Pay",
       "Cash": "現金",
       "Credit": "クレジットカード",
       "dineInOnly": "店内飲食のみ",

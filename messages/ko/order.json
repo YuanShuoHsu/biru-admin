@@ -54,6 +54,7 @@
       "title": "전자 영수증"
     },
     "payment": {
+      "ApplePay": "Apple Pay",
       "Cash": "현금",
       "Credit": "신용카드",
       "dineInOnly": "매장 내 식사 전용",

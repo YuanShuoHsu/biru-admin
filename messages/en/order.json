@@ -54,6 +54,7 @@
       "title": "E-invoice"
     },
     "payment": {
+      "ApplePay": "Apple Pay",
       "Cash": "Cash",
       "Credit": "Credit card",
       "dineInOnly": "Dine-in only",
