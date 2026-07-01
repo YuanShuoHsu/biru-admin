@@ -932,6 +932,7 @@ export interface components {
         | "ApplePay"
         | "BNPL"
         | "WeiXin"
+        | "DigitalPayment"
         | "ALL";
       /**
        * @description 檢查碼（必填）
@@ -4056,6 +4057,7 @@ export const baseEcpayDtoChoosePaymentValues: ReadonlyArray<
   "ApplePay",
   "BNPL",
   "WeiXin",
+  "DigitalPayment",
   "ALL",
 ];
 export const baseEcpayDtoEncryptTypeValues: ReadonlyArray<

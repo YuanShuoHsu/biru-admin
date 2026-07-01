@@ -58,6 +58,8 @@
       "Cash": "現金",
       "Credit": "信用卡",
       "dineInOnly": "僅限內用",
+      "iPASS": "iPASS MONEY",
+      "Jkopay": "街口支付",
       "TWQR": "行動支付",
       "WeiXin": "微信支付"
     },

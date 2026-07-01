@@ -31,6 +31,7 @@ import useCartTotals from "@/hooks/useCartTotals";
 import { usePathname, useRouter } from "@/i18n/navigation";
 
 import {
+  AccountBalanceWallet,
   Business,
   CreditCard,
   MarkChatRead,
@@ -39,6 +40,7 @@ import {
   PhoneIphone,
   QrCodeScanner,
   ShoppingCart,
+  TapAndPlay,
   TaskAlt,
   VolunteerActivism,
 } from "@mui/icons-material";
@@ -193,6 +195,16 @@ const OrderModeOrganizationSlugCheckout = () => {
       id: "WeiXin",
       label: tOrder("checkout.payment.WeiXin"),
     },
+    {
+      icon: TapAndPlay,
+      id: "iPASS",
+      label: tOrder("checkout.payment.iPASS"),
+    },
+    {
+      icon: AccountBalanceWallet,
+      id: "Jkopay",
+      label: tOrder("checkout.payment.Jkopay"),
+    },
   ];
 
   const onSubmit = handleSubmit(async (values) => {
@@ -259,7 +271,13 @@ const OrderModeOrganizationSlugCheckout = () => {
     // };
 
     const dto: BaseEcpayDto = {
-      ChoosePayment: values.payment,
+      ChoosePayment:
+        values.payment === "Jkopay" || values.payment === "iPASS"
+          ? "DigitalPayment"
+          : (values.payment as BaseEcpayDto["ChoosePayment"]),
+      ...(["iPASS", "Jkopay"].includes(values.payment) && {
+        ChooseSubPayment: values.payment,
+      }),
       ClientBackURL: completeUrl,
       ItemName: cartItemsList
         .map(({ menuItemId, modifiers, addOns, quantity }) => {

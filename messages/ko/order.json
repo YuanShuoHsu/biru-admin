@@ -58,6 +58,8 @@
       "Cash": "현금",
       "Credit": "신용카드",
       "dineInOnly": "매장 내 식사 전용",
+      "iPASS": "iPASS MONEY",
+      "Jkopay": "JKO Pay",
       "TWQR": "모바일 결제",
       "WeiXin": "위챗페이"
     },

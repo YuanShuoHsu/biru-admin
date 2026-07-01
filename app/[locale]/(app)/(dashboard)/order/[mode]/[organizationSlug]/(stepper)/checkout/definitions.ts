@@ -65,7 +65,7 @@ export const useCustomerPaymentFormSchema = () => {
         type: z.enum(["company", "donate", "personal"]).nullable(),
       }),
       payment: z
-        .enum(["ApplePay", "Cash", "Credit", "TWQR", "WeiXin"])
+        .enum(["ApplePay", "Cash", "Credit", "iPASS", "Jkopay", "TWQR", "WeiXin"])
         .nullable(),
     })
     .superRefine((data, ctx) => {

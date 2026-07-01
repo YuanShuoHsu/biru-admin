@@ -1,1 +1,1 @@
-export type PaymentMethod = "ApplePay" | "Cash" | "Credit" | "TWQR" | "WeiXin";
+export type PaymentMethod = "ApplePay" | "Cash" | "Credit" | "iPASS" | "Jkopay" | "TWQR" | "WeiXin";

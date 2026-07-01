@@ -58,6 +58,8 @@
       "Cash": "Cash",
       "Credit": "Credit card",
       "dineInOnly": "Dine-in only",
+      "iPASS": "iPASS MONEY",
+      "Jkopay": "JKO Pay",
       "TWQR": "Mobile payment",
       "WeiXin": "WeChat Pay"
     },
