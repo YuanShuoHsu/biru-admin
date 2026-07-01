@@ -211,7 +211,10 @@ export const getItemStock = (
   if (!item) return 0;
 
   const offer = item.offers[0];
-  if (offer?.availability === "SoldOut" || offer?.availability === "Discontinued")
+  if (
+    offer?.availability === "SoldOut" ||
+    offer?.availability === "Discontinued"
+  )
     return 0;
 
   return offer?.inventoryLevel?.value || null;

@@ -447,8 +447,8 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
           options={addOnItems.map((addOnItem) => {
             const { id, name, offers, modifierGroups } = addOnItem;
             const soldOut =
-              (offers[0]?.availability === "SoldOut" ||
-              offers[0]?.availability === "Discontinued") ||
+              offers[0]?.availability === "SoldOut" ||
+              offers[0]?.availability === "Discontinued" ||
               hasUnsatisfiableModifierGroup(modifierGroups);
             const checked = selectedAddOnIds.includes(id);
 
