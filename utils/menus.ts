@@ -203,6 +203,16 @@ export const getItemName = (menu: OrderMenu | null, itemId: string): string => {
   return item.name;
 };
 
+export const getOfferStock = (offer?: OrderMenuOffer): number | null => {
+  if (
+    offer?.availability === "SoldOut" ||
+    offer?.availability === "Discontinued"
+  )
+    return 0;
+  // || 把 0 當 null，null 代表無追蹤，缺貨變無限制
+  return offer?.inventoryLevel?.value ?? null;
+};
+
 export const getItemStock = (
   menu: OrderMenu | null,
   itemId: string,
@@ -210,14 +220,7 @@ export const getItemStock = (
   const item = findItemById(menu, itemId);
   if (!item) return 0;
 
-  const offer = item.offers[0];
-  if (
-    offer?.availability === "SoldOut" ||
-    offer?.availability === "Discontinued"
-  )
-    return 0;
-
-  return offer?.inventoryLevel?.value || null;
+  return getOfferStock(item.offers[0]);
 };
 
 type AddOnLimitResult = { cap: number; names: string[] };
@@ -228,16 +231,9 @@ export const getAddOnsCap = (
 ): AddOnLimitResult =>
   selectedAddOnItems.reduce<AddOnLimitResult>(
     (acc, { id, name, offers }) => {
-      const offer = offers[0];
-      const isSoldOut =
-        offer?.availability === "SoldOut" ||
-        offer?.availability === "Discontinued";
-      const stock = offer?.inventoryLevel?.value || null;
-      const available = isSoldOut
-        ? getChoiceAvailableQuantity(id, 0)
-        : stock === null
-          ? Infinity
-          : getChoiceAvailableQuantity(id, stock);
+      const stock = getOfferStock(offers[0]);
+      const available =
+        stock === null ? Infinity : getChoiceAvailableQuantity(id, stock);
 
       if (available < acc.cap) return { cap: available, names: [name] };
       if (

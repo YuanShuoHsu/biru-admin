@@ -32,6 +32,7 @@ import {
   getAddOnPrice,
   getAddOnsCap,
   getGroupsExtraCost,
+  getOfferStock,
   hasUnsatisfiableModifierGroup,
   isLowStock,
 } from "@/utils/menus";
@@ -90,9 +91,8 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
   const offer = offers[0];
   const basePrice = Number(offer?.price || 0);
   const priceCurrency = offer?.priceCurrency;
-  const stock = offer?.inventoryLevel?.value || null;
+  const stock = getOfferStock(offer);
   const stockUnit = offer?.inventoryLevel?.unitText;
-  const availability = offer?.availability;
   const leadTime = offer?.deliveryLeadTime?.value;
 
   const promoInfo = getActivePromo(offer);
@@ -166,12 +166,7 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
 
   const editingQuantity = cartItem?.quantity || 0;
   const cartItemTotalQuantity = getCartItemTotalQuantity(id) - editingQuantity;
-  const itemStockLeft =
-    availability === "SoldOut" || availability === "Discontinued"
-      ? 0
-      : stock === null
-        ? Infinity
-        : stock;
+  const itemStockLeft = stock === null ? Infinity : stock;
 
   const perItemCapLeft = MAX_QUANTITY - cartItemTotalQuantity;
   const itemStockCapLeft = itemStockLeft - cartItemTotalQuantity;
