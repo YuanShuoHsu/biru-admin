@@ -9,6 +9,7 @@
   "colon": ": ",
   "currency": "NT$",
   "delimiter": ", ",
+  "discontinued": "단종",
   "empty": "상품이 없습니다",
   "from": "부터",
   "loading": "로딩 중...",
@@ -18,7 +19,7 @@
   "parenthesisClose": ")",
   "parenthesisOpen": "(",
   "reachStockLimit": "재고 한도에 도달했습니다 {label}",
-  "soldOut": "{label} 품절",
+  "soldOut": "품절",
   "totalAmount": "합계",
   "unavailable": "사용 불가"
 }

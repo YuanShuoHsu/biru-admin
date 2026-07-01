@@ -1,5 +1,3 @@
-import { useTranslations } from "next-intl";
-
 import { Button, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -33,17 +31,11 @@ const StyledTypography = styled(Typography)({
 });
 
 interface ItemSoldOutProps {
-  isItemOutOfStock: boolean;
+  soldOutLabel: string;
 }
 
-const ItemSoldOut = ({ isItemOutOfStock }: ItemSoldOutProps) => {
-  const tCommon = useTranslations("common");
-
-  const message = isItemOutOfStock
-    ? tCommon("soldOut", {
-        label: "",
-      })
-    : "";
+const ItemSoldOut = ({ soldOutLabel }: ItemSoldOutProps) => {
+  const message = soldOutLabel;
 
   const handleClick = (event: React.MouseEvent) => event.stopPropagation();
 
@@ -51,8 +43,8 @@ const ItemSoldOut = ({ isItemOutOfStock }: ItemSoldOutProps) => {
     <StyledButton
       aria-label={message}
       color="error"
-      disabled={!isItemOutOfStock}
-      inStock={!isItemOutOfStock}
+      disabled={!message}
+      inStock={!message}
       onClick={handleClick}
       variant="outlined"
     >

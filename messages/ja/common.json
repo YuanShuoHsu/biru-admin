@@ -9,6 +9,7 @@
   "colon": "：",
   "currency": "NT$",
   "delimiter": "、",
+  "discontinued": "販売終了",
   "empty": "商品がありません",
   "from": "〜",
   "loading": "読み込み中...",
@@ -18,7 +19,7 @@
   "parenthesisClose": ")",
   "parenthesisOpen": "(",
   "reachStockLimit": "在庫の上限に達しました {label}",
-  "soldOut": "{label} 売り切れ",
+  "soldOut": "売り切れ",
   "totalAmount": "合計",
   "unavailable": "取扱なし"
 }

@@ -55,19 +55,19 @@ const StyledTypography = styled(Typography)({
 interface CartItemSoldOutProps {
   addOnCapLeft: number;
   availableToAdd: number;
+  discontinued: boolean;
   item: CartItem;
   itemStockCapLeft: number;
   limitingAddOnsLabel: string;
-  unavailable: boolean;
 }
 
 const CartItemSoldOut = ({
   addOnCapLeft,
   availableToAdd,
+  discontinued,
   item,
   itemStockCapLeft,
   limitingAddOnsLabel,
-  unavailable,
 }: CartItemSoldOutProps) => {
   const { quantity } = item;
 
@@ -82,13 +82,9 @@ const CartItemSoldOut = ({
   const showOverlay = shouldDeleteItem || shouldEditItem;
 
   const message = shouldDeleteItem
-    ? unavailable
-      ? tCommon("unavailable")
-      : itemStockCapLeft === availableToAdd
-        ? tCommon("soldOut", { label: "" })
-        : addOnCapLeft === availableToAdd
-          ? tCommon("soldOut", { label: `${limitingAddOnsLabel}\n` })
-          : ""
+    ? discontinued
+      ? tCommon("discontinued")
+      : tCommon("soldOut")
     : shouldEditItem
       ? itemStockCapLeft === availableToAdd
         ? tOrder("cart.quantityExceedsStock", {

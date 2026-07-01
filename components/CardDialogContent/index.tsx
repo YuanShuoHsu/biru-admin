@@ -167,7 +167,11 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
   const editingQuantity = cartItem?.quantity || 0;
   const cartItemTotalQuantity = getCartItemTotalQuantity(id) - editingQuantity;
   const itemStockLeft =
-    availability === "SoldOut" ? 0 : stock === null ? Infinity : stock;
+    availability === "SoldOut" || availability === "Discontinued"
+      ? 0
+      : stock === null
+        ? Infinity
+        : stock;
 
   const perItemCapLeft = MAX_QUANTITY - cartItemTotalQuantity;
   const itemStockCapLeft = itemStockLeft - cartItemTotalQuantity;
@@ -212,7 +216,7 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
               quantity: availableToAdd,
             })
           : itemStockLeft === 0
-            ? tCommon("soldOut", { label: "" })
+            ? tCommon("soldOut")
             : tCommon("reachStockLimit", { label: "" })
         : tCommon("reachStockLimit", { label: limitingAddOnsLabel });
 
@@ -266,7 +270,7 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
       )}
       {soldOut && (
         <Typography color="error" variant="caption">
-          {tCommon("soldOut", { label: "" })}
+          {tCommon("soldOut")}
         </Typography>
       )}
     </Stack>
@@ -317,7 +321,8 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
         onChange={(event, next) => onGroupChange(groupId, [next])}
         options={modifiers.map(
           ({ availability, displayName, id, priceAdjustment }) => {
-            const soldOut = availability === "SoldOut";
+            const soldOut =
+              availability === "SoldOut" || availability === "Discontinued";
 
             return {
               control: <Radio size="small" />,
@@ -344,7 +349,8 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
         onChange={(event, next) => onGroupChange(groupId, next)}
         options={modifiers.map(
           ({ availability, displayName, id, priceAdjustment }) => {
-            const soldOut = availability === "SoldOut";
+            const soldOut =
+              availability === "SoldOut" || availability === "Discontinued";
 
             return {
               children: null,
@@ -441,7 +447,8 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
           options={addOnItems.map((addOnItem) => {
             const { id, name, offers, modifierGroups } = addOnItem;
             const soldOut =
-              offers[0]?.availability === "SoldOut" ||
+              (offers[0]?.availability === "SoldOut" ||
+              offers[0]?.availability === "Discontinued") ||
               hasUnsatisfiableModifierGroup(modifierGroups);
             const checked = selectedAddOnIds.includes(id);
 

@@ -59,8 +59,10 @@ export const hasUnsatisfiableModifierGroup = (
 ): boolean =>
   modifierGroups.some(
     ({ minSelectionCount, modifiers }) =>
-      modifiers.filter(({ availability }) => availability !== "SoldOut")
-        .length < minSelectionCount,
+      modifiers.filter(
+        ({ availability }) =>
+          availability !== "SoldOut" && availability !== "Discontinued",
+      ).length < minSelectionCount,
   );
 
 export const ADD_ON_OPTION_ID = "addOns";
@@ -209,7 +211,8 @@ export const getItemStock = (
   if (!item) return 0;
 
   const offer = item.offers[0];
-  if (offer?.availability === "SoldOut") return 0;
+  if (offer?.availability === "SoldOut" || offer?.availability === "Discontinued")
+    return 0;
 
   return offer?.inventoryLevel?.value || null;
 };
@@ -222,9 +225,16 @@ export const getAddOnsCap = (
 ): AddOnLimitResult =>
   selectedAddOnItems.reduce<AddOnLimitResult>(
     (acc, { id, name, offers }) => {
-      const stock = offers[0]?.inventoryLevel?.value ?? null;
-      const available =
-        stock === null ? Infinity : getChoiceAvailableQuantity(id, stock);
+      const offer = offers[0];
+      const isSoldOut =
+        offer?.availability === "SoldOut" ||
+        offer?.availability === "Discontinued";
+      const stock = offer?.inventoryLevel?.value || null;
+      const available = isSoldOut
+        ? getChoiceAvailableQuantity(id, 0)
+        : stock === null
+          ? Infinity
+          : getChoiceAvailableQuantity(id, stock);
 
       if (available < acc.cap) return { cap: available, names: [name] };
       if (

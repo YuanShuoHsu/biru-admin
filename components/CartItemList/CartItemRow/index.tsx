@@ -197,10 +197,10 @@ const CartItemRow = ({ compact = false, item }: CartItemRowProps) => {
       <CartItemSoldOut
         addOnCapLeft={addOnCapLeft}
         availableToAdd={availableToAdd}
+        discontinued={offer?.availability === "Discontinued" || !menuItem}
         item={item}
         itemStockCapLeft={itemStockCapLeft}
         limitingAddOnsLabel={limitingAddOnsLabel}
-        unavailable={!itemName}
       />
       <Stack width="100%" gap={2}>
         <Stack direction="row" gap={2}>

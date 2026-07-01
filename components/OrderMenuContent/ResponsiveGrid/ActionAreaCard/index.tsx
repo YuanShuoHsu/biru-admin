@@ -115,6 +115,7 @@ const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
   const { setDialog } = useDialogStore((state) => state);
   const { view } = useViewStore((state) => state);
 
+  const tCommon = useTranslations("common");
   const tDialog = useTranslations("dialog");
   const tOrder = useTranslations("order");
 
@@ -123,8 +124,16 @@ const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
   const isItemOutOfStock =
     stock === 0 ||
     availability === "SoldOut" ||
+    availability === "Discontinued" ||
     hasUnsatisfiableModifierGroup(menuItem.modifierGroups);
   const showLowStock = !isItemOutOfStock && isLowStock(offer);
+
+  const soldOutLabel =
+    availability === "Discontinued"
+      ? tCommon("discontinued")
+      : isItemOutOfStock
+        ? tCommon("soldOut")
+        : "";
 
   const handleDialogClick = () => {
     if (isItemOutOfStock) return;
@@ -141,7 +150,7 @@ const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
 
   return (
     <StyledCard variant="outlined">
-      <ItemSoldOut isItemOutOfStock={isItemOutOfStock} />
+      <ItemSoldOut soldOutLabel={soldOutLabel} />
       <StyledCardActionArea
         disableRipple={isItemOutOfStock}
         inStock={!isItemOutOfStock}
