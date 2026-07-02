@@ -10,6 +10,10 @@
   "checkout": {
     "back": "장바구니로 돌아가기",
     "customer": {
+      "countryCode": {
+        "label": "국가 코드",
+        "placeholder": "국가 코드를 선택해 주세요"
+      },
       "email": {
         "label": "이메일",
         "placeholder": "귀하의 이메일을 입력해 주세요"
@@ -23,7 +27,7 @@
         "placeholder": "귀하의 메모를 입력해 주세요"
       },
       "phone": {
-        "label": "휴대폰 번호"
+        "label": "전화번호"
       }
     },
     "invoice": {

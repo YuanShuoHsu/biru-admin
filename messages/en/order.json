@@ -10,6 +10,10 @@
   "checkout": {
     "back": "Back to cart",
     "customer": {
+      "countryCode": {
+        "label": "Country code",
+        "placeholder": "Please select your country code"
+      },
       "email": {
         "label": "Email",
         "placeholder": "Please enter your email"
@@ -23,7 +27,7 @@
         "placeholder": "Please enter your notes"
       },
       "phone": {
-        "label": "Mobile number"
+        "label": "Phone"
       }
     },
     "invoice": {

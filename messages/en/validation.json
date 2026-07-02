@@ -35,6 +35,7 @@
   },
   "countryCode": {
     "invalid": "Country code is not valid.",
+    "notSelected": "Please select your country code.",
     "required": "Country code is required."
   },
   "currentPassword": {
@@ -105,8 +106,8 @@
     "notSelected": "Please select your payment method."
   },
   "phone": {
-    "invalid": "Mobile number is not valid.",
-    "required": "Mobile number is required."
+    "invalid": "Phone is not valid.",
+    "required": "Phone is required."
   },
   "postalCode": {
     "format": "Postal code format is invalid."

@@ -1,3 +1,4 @@
+import { type CountryCode, isValidPhoneNumber } from "libphonenumber-js";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import * as z from "zod";
@@ -16,6 +17,9 @@ export const useCustomerPaymentFormSchema = () => {
   return z
     .object({
       customer: z.object({
+        countryCode: z
+          .string()
+          .min(1, { error: tValidation("countryCode.notSelected") }),
         email: z.union([
           z.literal(""),
           z.email({ error: tValidation("email.invalid") }),
@@ -29,18 +33,11 @@ export const useCustomerPaymentFormSchema = () => {
           .trim()
           .max(160, { error: tValidation("notes.maxLength") }),
         phone: isKiosk
-          ? z.union([
-              z.literal(""),
-              z
-                .string()
-                .trim()
-                .regex(/^09\d{8}$/, { error: tValidation("phone.invalid") }),
-            ])
+          ? z.string().trim()
           : z
               .string()
               .trim()
-              .min(1, { error: tValidation("phone.required") })
-              .regex(/^09\d{8}$/, { error: tValidation("phone.invalid") }),
+              .min(1, { error: tValidation("phone.required") }),
       }),
       invoice: z.object({
         carrierType: z.union([
@@ -84,6 +81,20 @@ export const useCustomerPaymentFormSchema = () => {
         .nullable(),
     })
     .superRefine((data, ctx) => {
+      if (
+        data.customer.phone &&
+        !isValidPhoneNumber(
+          data.customer.phone,
+          data.customer.countryCode as CountryCode,
+        )
+      ) {
+        ctx.addIssue({
+          code: "custom",
+          message: tValidation("phone.invalid"),
+          path: ["customer", "phone"],
+        });
+      }
+
       if (!data.invoice.type) {
         ctx.addIssue({
           code: "custom",

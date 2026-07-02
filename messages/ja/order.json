@@ -10,6 +10,10 @@
   "checkout": {
     "back": "カートに戻る",
     "customer": {
+      "countryCode": {
+        "label": "国番号",
+        "placeholder": "国番号を選択してください"
+      },
       "email": {
         "label": "メールアドレス",
         "placeholder": "あなたのメールアドレスを入力してください"
@@ -23,7 +27,7 @@
         "placeholder": "あなたの備考を入力してください"
       },
       "phone": {
-        "label": "携帯電話番号"
+        "label": "電話番号"
       }
     },
     "invoice": {

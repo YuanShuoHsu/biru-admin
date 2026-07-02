@@ -10,6 +10,10 @@
   "checkout": {
     "back": "返回購物車",
     "customer": {
+      "countryCode": {
+        "label": "國碼",
+        "placeholder": "請選擇您的國碼"
+      },
       "email": {
         "label": "電子信箱",
         "placeholder": "請輸入您的電子信箱"
@@ -23,7 +27,7 @@
         "placeholder": "請輸入您的備註"
       },
       "phone": {
-        "label": "手機號碼"
+        "label": "電話"
       }
     },
     "invoice": {

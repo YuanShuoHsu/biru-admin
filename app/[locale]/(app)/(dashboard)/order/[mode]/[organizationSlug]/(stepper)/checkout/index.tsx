@@ -14,6 +14,7 @@ import {
   useCustomerPaymentFormSchema,
 } from "./definitions";
 
+import CountrySelect from "@/components/CountrySelect";
 import CustomizedAccordions from "@/components/CustomizedAccordions";
 import DonateCodeSelect from "@/components/DonateCodeSelect";
 import FormBox from "@/components/FormBox";
@@ -44,6 +45,7 @@ import {
   Button,
   Card,
   Divider,
+  Grid,
   MenuItem,
   Stack,
   TextField,
@@ -56,6 +58,7 @@ import { useMenuStore } from "@/providers/menu-store-provider";
 import type { BaseEcpayDto } from "@/types/ecpay";
 import type { PaymentMethod } from "@/types/payment";
 
+import { getPhoneFormatting } from "@/utils/countries";
 import { sendRequest } from "@/utils/fetcher";
 import { getChoiceNames, getItemName } from "@/utils/menus";
 
@@ -88,6 +91,8 @@ const OrderModeOrganizationSlugCheckout = () => {
 
   const customerPaymentFormSchema = useCustomerPaymentFormSchema();
 
+  const locale = useLocale();
+
   const {
     control,
     formState: { errors, isSubmitted },
@@ -99,6 +104,7 @@ const OrderModeOrganizationSlugCheckout = () => {
   } = useForm<CustomerPaymentFormValues>({
     defaultValues: {
       customer: {
+        countryCode: localeConfigs[locale].countryCode,
         email: "",
         name: "",
         notes: "",
@@ -120,19 +126,26 @@ const OrderModeOrganizationSlugCheckout = () => {
     resolver: zodResolver(customerPaymentFormSchema),
   });
 
-  const [carrierType, customerIdentifier, donateCode, invoiceType, payment] =
-    useWatch({
-      control,
-      name: [
-        "invoice.carrierType",
-        "invoice.customerIdentifier",
-        "invoice.donateCode",
-        "invoice.type",
-        "payment",
-      ],
-    });
+  const [
+    countryCode,
+    carrierType,
+    customerIdentifier,
+    donateCode,
+    invoiceType,
+    payment,
+  ] = useWatch({
+    control,
+    name: [
+      "customer.countryCode",
+      "invoice.carrierType",
+      "invoice.customerIdentifier",
+      "invoice.donateCode",
+      "invoice.type",
+      "payment",
+    ],
+  });
 
-  const locale = useLocale();
+  const { mask, placeholder } = getPhoneFormatting(countryCode);
 
   const { mode } = useParams();
   const isKiosk = mode === ORDER_MODE.Kiosk;
@@ -353,22 +366,41 @@ const OrderModeOrganizationSlugCheckout = () => {
             required
             {...register("customer.name")}
           />
-          <TextField
-            error={!!errors.customer?.phone}
-            fullWidth
-            helperText={errors.customer?.phone?.message}
-            label={`${tOrder("checkout.customer.phone.label")}${isKiosk ? ` ${tCommon("optional")}` : ""}`}
-            required={!isKiosk}
-            slotProps={{
-              input: {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                inputComponent: TextMaskCustom as any,
-                inputProps: { mask: "0000000000", placeholder: "0912345678" },
-              },
-            }}
-            type="tel"
-            {...register("customer.phone")}
-          />
+          <Grid container spacing={2} width="100%">
+            <Grid size={{ xs: 6, sm: 4 }}>
+              <CountrySelect
+                error={!!errors.customer?.countryCode}
+                helperText={errors.customer?.countryCode?.message}
+                label={tOrder("checkout.customer.countryCode.label")}
+                mode="country"
+                placeholder={tOrder(
+                  "checkout.customer.countryCode.placeholder",
+                )}
+                required
+                value={countryCode}
+                {...register("customer.countryCode")}
+              />
+            </Grid>
+            <Grid size={{ xs: 6, sm: 8 }}>
+              <TextField
+                autoComplete="tel"
+                error={!!errors.customer?.phone}
+                fullWidth
+                helperText={errors.customer?.phone?.message}
+                label={`${tOrder("checkout.customer.phone.label")}${isKiosk ? ` ${tCommon("optional")}` : ""}`}
+                required={!isKiosk}
+                slotProps={{
+                  input: {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    inputComponent: TextMaskCustom as any,
+                    inputProps: { mask, placeholder },
+                  },
+                }}
+                type="tel"
+                {...register("customer.phone")}
+              />
+            </Grid>
+          </Grid>
           <TextField
             error={!!errors.customer?.email}
             fullWidth

@@ -35,6 +35,7 @@
   },
   "countryCode": {
     "invalid": "국가 코드가 유효하지 않습니다.",
+    "notSelected": "국가 코드를 선택해 주세요.",
     "required": "국가 코드는 필수입니다."
   },
   "currentPassword": {
@@ -105,8 +106,8 @@
     "notSelected": "결제 방법을 선택해 주세요."
   },
   "phone": {
-    "invalid": "휴대폰 번호가 유효하지 않습니다.",
-    "required": "휴대폰 번호는 필수입니다."
+    "invalid": "전화번호가 유효하지 않습니다.",
+    "required": "전화번호는 필수입니다."
   },
   "postalCode": {
     "format": "우편번호 형식이 올바르지 않습니다."

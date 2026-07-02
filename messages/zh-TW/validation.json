@@ -35,6 +35,7 @@
   },
   "countryCode": {
     "invalid": "國家代碼無效。",
+    "notSelected": "請選擇您的國碼。",
     "required": "國碼為必填。"
   },
   "currentPassword": {
@@ -105,8 +106,8 @@
     "notSelected": "請選擇您的付款方式。"
   },
   "phone": {
-    "invalid": "手機號碼格式無效。",
-    "required": "手機號碼為必填。"
+    "invalid": "電話格式無效。",
+    "required": "電話為必填。"
   },
   "postalCode": {
     "format": "郵遞區號格式無效。"

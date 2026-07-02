@@ -35,6 +35,7 @@
   },
   "countryCode": {
     "invalid": "国コードが無効です。",
+    "notSelected": "国番号を選択してください。",
     "required": "国コードは必須です."
   },
   "currentPassword": {
@@ -105,8 +106,8 @@
     "notSelected": "お支払い方法を選択してください。"
   },
   "phone": {
-    "invalid": "携帯電話番号が無効です。",
-    "required": "携帯電話番号は必須です。"
+    "invalid": "電話番号が無効です。",
+    "required": "電話番号は必須です。"
   },
   "postalCode": {
     "format": "郵便番号の形式が無効です。"
