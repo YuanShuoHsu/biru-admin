@@ -56,11 +56,11 @@
     "payment": {
       "ApplePay": "Apple Pay",
       "Cash": "Cash",
-      "Credit": "Credit card",
+      "Credit": "Credit Card",
       "dineInOnly": "Dine-in only",
       "iPASS": "iPASS MONEY",
       "Jkopay": "JKO Pay",
-      "TWQR": "Mobile payment",
+      "TWQR": "TWQR Mobile Payment",
       "WeiXin": "WeChat Pay"
     },
     "paymentMethod": "Payment method",
