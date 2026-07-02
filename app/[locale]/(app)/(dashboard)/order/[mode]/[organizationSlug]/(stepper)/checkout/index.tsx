@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
+import Image from "next/image";
 import { useParams, useSearchParams } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
 import useSWR from "swr";
@@ -31,16 +32,11 @@ import useCartTotals from "@/hooks/useCartTotals";
 import { usePathname, useRouter } from "@/i18n/navigation";
 
 import {
-  AccountBalanceWallet,
   Business,
   CreditCard,
-  MarkChatRead,
   Payments,
   Person,
-  PhoneIphone,
-  QrCodeScanner,
   ShoppingCart,
-  TapAndPlay,
   TaskAlt,
   VolunteerActivism,
 } from "@mui/icons-material";
@@ -62,6 +58,17 @@ import type { PaymentMethod } from "@/types/payment";
 
 import { sendRequest } from "@/utils/fetcher";
 import { getChoiceNames, getItemName } from "@/utils/menus";
+
+const PaymentImage = ({ method }: { method: PaymentMethod }) => (
+  <Image
+    alt={method}
+    height={20}
+    src={`/icons/payment/${method}.svg`}
+    style={{ objectFit: "contain" }}
+    unoptimized
+    width={20}
+  />
+);
 
 const INVOICE_TYPES: { icon: React.ElementType; type: InvoiceType }[] = [
   { icon: Person, type: "personal" },
@@ -175,33 +182,37 @@ const OrderModeOrganizationSlugCheckout = () => {
         disabled: true,
         disabledReason: tOrder("checkout.payment.dineInOnly"),
       }),
-      icon: Payments,
+      icon: <Payments fontSize="small" />,
       id: "Cash",
       label: tOrder("checkout.payment.Cash"),
     },
     {
-      icon: CreditCard,
+      icon: <CreditCard fontSize="small" />,
       id: "Credit",
       label: tOrder("checkout.payment.Credit"),
     },
     {
-      icon: PhoneIphone,
+      icon: <PaymentImage method="ApplePay" />,
       id: "ApplePay",
       label: tOrder("checkout.payment.ApplePay"),
     },
-    { icon: QrCodeScanner, id: "TWQR", label: tOrder("checkout.payment.TWQR") },
     {
-      icon: MarkChatRead,
+      icon: <PaymentImage method="TWQR" />,
+      id: "TWQR",
+      label: tOrder("checkout.payment.TWQR"),
+    },
+    {
+      icon: <PaymentImage method="WeiXin" />,
       id: "WeiXin",
       label: tOrder("checkout.payment.WeiXin"),
     },
     {
-      icon: TapAndPlay,
+      icon: <PaymentImage method="iPASS" />,
       id: "iPASS",
       label: tOrder("checkout.payment.iPASS"),
     },
     {
-      icon: AccountBalanceWallet,
+      icon: <PaymentImage method="Jkopay" />,
       id: "Jkopay",
       label: tOrder("checkout.payment.Jkopay"),
     },
@@ -385,8 +396,8 @@ const OrderModeOrganizationSlugCheckout = () => {
                 shouldValidate: isSubmitted,
               })
             }
-            options={INVOICE_TYPES.map(({ icon, type }) => ({
-              icon,
+            options={INVOICE_TYPES.map(({ icon: Icon, type }) => ({
+              icon: <Icon fontSize="small" />,
               label: tOrder(`checkout.invoice.${type}`),
               value: type,
             }))}

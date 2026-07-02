@@ -60,7 +60,7 @@
       "dineInOnly": "僅限內用",
       "iPASS": "iPASS MONEY",
       "Jkopay": "街口支付",
-      "TWQR": "歐付寶TWQR行動支付",
+      "TWQR": "行動支付",
       "WeiXin": "微信支付"
     },
     "paymentMethod": "付款方式",

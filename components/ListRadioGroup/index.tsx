@@ -30,7 +30,7 @@ const StyledFormControlLabel = styled(FormControlLabel)(({ theme }) => ({
 interface ListRadioGroupOption {
   disabled?: boolean;
   disabledReason?: string;
-  icon?: React.ElementType;
+  icon?: React.ReactNode;
   label: string;
   value: string;
 }
@@ -60,7 +60,7 @@ const ListRadioGroup = ({
       <RadioGroup onChange={onChange} value={value}>
         {options.map(
           (
-            { disabled, disabledReason, icon: Icon, label, value: optionValue },
+            { disabled, disabledReason, icon, label, value: optionValue },
             index,
           ) => (
             <Fragment key={optionValue}>
@@ -70,7 +70,7 @@ const ListRadioGroup = ({
                 disabled={disabled}
                 label={
                   <Stack direction="row" alignItems="center" gap={2}>
-                    {Icon && <Icon fontSize="small" />}
+                    {icon}
                     <Typography variant="body2">{label}</Typography>
                     {disabled && disabledReason && (
                       <Chip label={disabledReason} size="small" />
