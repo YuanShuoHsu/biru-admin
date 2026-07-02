@@ -367,7 +367,7 @@ const OrderModeOrganizationSlugCheckout = () => {
             {...register("customer.name")}
           />
           <Grid container spacing={2} width="100%">
-            <Grid size={{ xs: 6, sm: 4 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <CountrySelect
                 error={!!errors.customer?.countryCode}
                 helperText={errors.customer?.countryCode?.message}
@@ -381,7 +381,7 @@ const OrderModeOrganizationSlugCheckout = () => {
                 {...register("customer.countryCode")}
               />
             </Grid>
-            <Grid size={{ xs: 6, sm: 8 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 autoComplete="tel"
                 error={!!errors.customer?.phone}
