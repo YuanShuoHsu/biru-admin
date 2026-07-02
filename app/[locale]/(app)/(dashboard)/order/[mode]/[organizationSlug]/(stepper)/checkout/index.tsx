@@ -358,8 +358,14 @@ const OrderModeOrganizationSlugCheckout = () => {
             fullWidth
             helperText={errors.customer?.phone?.message}
             label={`${tOrder("checkout.customer.phone.label")}${isKiosk ? ` ${tCommon("optional")}` : ""}`}
-            placeholder={tOrder("checkout.customer.phone.placeholder")}
             required={!isKiosk}
+            slotProps={{
+              input: {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                inputComponent: TextMaskCustom as any,
+                inputProps: { mask: "0000000000", placeholder: "0912345678" },
+              },
+            }}
             type="tel"
             {...register("customer.phone")}
           />
@@ -390,6 +396,8 @@ const OrderModeOrganizationSlugCheckout = () => {
           {/* <CouponForm /> */}
           <Divider flexItem />
           <ListRadioGroup
+            error={!!errors.invoice?.type}
+            helperText={errors.invoice?.type?.message}
             label={tOrder("checkout.invoice.title")}
             onChange={(_, value) =>
               setValue("invoice.type", value as InvoiceType, {

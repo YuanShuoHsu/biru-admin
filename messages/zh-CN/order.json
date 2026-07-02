@@ -23,8 +23,7 @@
         "placeholder": "请输入您的备注"
       },
       "phone": {
-        "label": "电话",
-        "placeholder": "请输入您的电话"
+        "label": "手机号码"
       }
     },
     "invoice": {
@@ -51,7 +50,7 @@
       },
       "mobile": "手机条码",
       "personal": "个人发票",
-      "title": "电子发票"
+      "title": "发票类型"
     },
     "payment": {
       "ApplePay": "Apple Pay",

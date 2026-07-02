@@ -23,8 +23,7 @@
         "placeholder": "귀하의 메모를 입력해 주세요"
       },
       "phone": {
-        "label": "전화번호",
-        "placeholder": "귀하의 전화번호를 입력해 주세요"
+        "label": "휴대폰 번호"
       }
     },
     "invoice": {
@@ -51,7 +50,7 @@
       },
       "mobile": "모바일 바코드",
       "personal": "개인 영수증",
-      "title": "전자 영수증"
+      "title": "영수증 유형"
     },
     "payment": {
       "ApplePay": "Apple Pay",

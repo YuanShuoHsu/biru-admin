@@ -23,8 +23,7 @@
         "placeholder": "あなたの備考を入力してください"
       },
       "phone": {
-        "label": "電話番号",
-        "placeholder": "あなたの電話番号を入力してください"
+        "label": "携帯電話番号"
       }
     },
     "invoice": {
@@ -51,7 +50,7 @@
       },
       "mobile": "携帯バーコード",
       "personal": "個人インボイス",
-      "title": "電子インボイス"
+      "title": "インボイスの種類"
     },
     "payment": {
       "ApplePay": "Apple Pay",

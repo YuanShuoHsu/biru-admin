@@ -29,11 +29,18 @@ export const useCustomerPaymentFormSchema = () => {
           .trim()
           .max(160, { error: tValidation("notes.maxLength") }),
         phone: isKiosk
-          ? z.string().trim()
+          ? z.union([
+              z.literal(""),
+              z
+                .string()
+                .trim()
+                .regex(/^09\d{8}$/, { error: tValidation("phone.invalid") }),
+            ])
           : z
               .string()
               .trim()
-              .min(1, { error: tValidation("phone.required") }),
+              .min(1, { error: tValidation("phone.required") })
+              .regex(/^09\d{8}$/, { error: tValidation("phone.invalid") }),
       }),
       invoice: z.object({
         carrierType: z.union([
@@ -80,7 +87,7 @@ export const useCustomerPaymentFormSchema = () => {
       if (!data.invoice.type) {
         ctx.addIssue({
           code: "custom",
-          message: tValidation("invoiceType.required"),
+          message: tValidation("invoiceType.notSelected"),
           path: ["invoice", "type"],
         });
       }
@@ -88,7 +95,7 @@ export const useCustomerPaymentFormSchema = () => {
       if (!data.payment) {
         ctx.addIssue({
           code: "custom",
-          message: tValidation("payment.required"),
+          message: tValidation("payment.notSelected"),
           path: ["payment"],
         });
       }
@@ -98,7 +105,7 @@ export const useCustomerPaymentFormSchema = () => {
           if (!data.invoice.carrierType) {
             ctx.addIssue({
               code: "custom",
-              message: tValidation("carrierType.required"),
+              message: tValidation("carrierType.notSelected"),
               path: ["invoice", "carrierType"],
             });
           } else if (data.invoice.carrierType === "mobile") {

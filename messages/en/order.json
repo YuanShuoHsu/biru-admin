@@ -23,8 +23,7 @@
         "placeholder": "Please enter your notes"
       },
       "phone": {
-        "label": "Phone",
-        "placeholder": "Please enter your phone number"
+        "label": "Mobile number"
       }
     },
     "invoice": {
@@ -51,7 +50,7 @@
       },
       "mobile": "Mobile barcode",
       "personal": "Personal invoice",
-      "title": "E-invoice"
+      "title": "Invoice type"
     },
     "payment": {
       "ApplePay": "Apple Pay",

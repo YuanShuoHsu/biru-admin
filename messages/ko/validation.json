@@ -15,14 +15,14 @@
     "required": "생년월일은 필수입니다."
   },
   "carrierType": {
-    "required": "캐리어 유형을 선택해 주세요."
+    "notSelected": "캐리어 유형을 선택해 주세요."
   },
   "carruerNum": {
     "certificate": {
-      "invalid": "자연인 인증서는 영대문자·숫자 16자리여야 합니다."
+      "invalid": "자연인 인증서가 유효하지 않습니다."
     },
     "mobile": {
-      "invalid": "휴대폰 바코드 형식은 /XXXXXXX 여야 합니다."
+      "invalid": "휴대폰 바코드가 유효하지 않습니다."
     }
   },
   "confirmNewPassword": {
@@ -44,7 +44,7 @@
     "required": "회사 주소는 필수입니다."
   },
   "customerIdentifier": {
-    "invalid": "사업자 등록번호는 8자리 숫자여야 합니다.",
+    "invalid": "사업자 등록번호가 유효하지 않습니다.",
     "notFound": "해당 번호의 회사를 찾을 수 없습니다.",
     "required": "사업자 등록번호는 필수입니다."
   },
@@ -55,7 +55,7 @@
     "maxLength": "설명은 160자를 초과할 수 없습니다."
   },
   "donateCode": {
-    "invalid": "기부코드는 3~7자리 숫자여야 합니다.",
+    "invalid": "기부코드가 유효하지 않습니다.",
     "required": "기부코드는 필수입니다."
   },
   "email": {
@@ -69,7 +69,7 @@
     "required": "성별은 필수입니다."
   },
   "invoiceType": {
-    "required": "청구서 유형은 필수입니다."
+    "notSelected": "영수증 유형을 선택해 주세요."
   },
   "localizedText": {
     "completeOrEmpty": "모든 언어 필드를 함께 채우거나 비워두어야 합니다.",
@@ -102,11 +102,11 @@
     "number": "숫자를 최소 1개 포함."
   },
   "payment": {
-    "required": "결제 방법을 선택해 주세요."
+    "notSelected": "결제 방법을 선택해 주세요."
   },
   "phone": {
-    "invalid": "전화번호가 유효하지 않습니다.",
-    "required": "전화번호는 필수입니다."
+    "invalid": "휴대폰 번호가 유효하지 않습니다.",
+    "required": "휴대폰 번호는 필수입니다."
   },
   "postalCode": {
     "format": "우편번호 형식이 올바르지 않습니다."

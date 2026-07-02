@@ -15,14 +15,14 @@
     "required": "出生日期為必填。"
   },
   "carrierType": {
-    "required": "請選擇載具類型。"
+    "notSelected": "請選擇您的載具類型。"
   },
   "carruerNum": {
     "certificate": {
-      "invalid": "自然人憑證格式需為 16 碼英數大寫。"
+      "invalid": "自然人憑證格式無效。"
     },
     "mobile": {
-      "invalid": "手機條碼格式需為 /XXXXXXX。"
+      "invalid": "手機條碼格式無效。"
     }
   },
   "confirmNewPassword": {
@@ -44,7 +44,7 @@
     "required": "公司地址為必填。"
   },
   "customerIdentifier": {
-    "invalid": "統一編號格式需為 8 碼數字。",
+    "invalid": "統一編號格式無效。",
     "notFound": "查無對應的公司資料。",
     "required": "統一編號為必填。"
   },
@@ -55,7 +55,7 @@
     "maxLength": "描述不能超過 160 個字元。"
   },
   "donateCode": {
-    "invalid": "捐贈碼格式需為 3 至 7 碼數字。",
+    "invalid": "捐贈碼格式無效。",
     "required": "捐贈碼為必填。"
   },
   "email": {
@@ -69,7 +69,7 @@
     "required": "性別為必填。"
   },
   "invoiceType": {
-    "required": "發票類型為必填。"
+    "notSelected": "請選擇您的發票類型。"
   },
   "localizedText": {
     "completeOrEmpty": "所有語言欄位必須同時填寫或同時留空。",
@@ -102,11 +102,11 @@
     "number": "包含至少一個數字。"
   },
   "payment": {
-    "required": "請選擇付款方式。"
+    "notSelected": "請選擇您的付款方式。"
   },
   "phone": {
-    "invalid": "電話號碼無效。",
-    "required": "電話號碼為必填。"
+    "invalid": "手機號碼格式無效。",
+    "required": "手機號碼為必填。"
   },
   "postalCode": {
     "format": "郵遞區號格式無效。"
