@@ -11,7 +11,6 @@ import {
   CheckCircleOutline,
   ContentCopy,
   ErrorOutline,
-  Home,
   MenuBook,
 } from "@mui/icons-material";
 import {
@@ -326,14 +325,6 @@ const OrderModeOrganizationSlugComplete = ({
         </>
       )}
       <Stack direction="row" gap={2}>
-        <Button
-          fullWidth
-          onClick={() => router.push("/")}
-          startIcon={<Home />}
-          variant="outlined"
-        >
-          {tOrder("complete.home")}
-        </Button>
         {isSuccess ? (
           <Button
             fullWidth
@@ -346,15 +337,29 @@ const OrderModeOrganizationSlugComplete = ({
             {tOrder("complete.backToMenu")}
           </Button>
         ) : (
-          <Button
-            fullWidth
-            onClick={() =>
-              router.push(`/order/${mode}/${organizationSlug}/checkout${query}`)
-            }
-            variant="contained"
-          >
-            {tOrder("complete.failure.retry")}
-          </Button>
+          <>
+            <Button
+              fullWidth
+              onClick={() =>
+                router.push(`/order/${mode}/${organizationSlug}${query}`)
+              }
+              startIcon={<MenuBook />}
+              variant="outlined"
+            >
+              {tOrder("cart.back")}
+            </Button>
+            <Button
+              fullWidth
+              onClick={() =>
+                router.push(
+                  `/order/${mode}/${organizationSlug}/checkout${query}`,
+                )
+              }
+              variant="contained"
+            >
+              {tOrder("complete.failure.retry")}
+            </Button>
+          </>
         )}
       </Stack>
     </Stack>

@@ -80,7 +80,6 @@
       "subtitle": "The transaction was not completed. Please try again, or ask our staff for assistance.",
       "title": "Payment failed"
     },
-    "home": "Home",
     "pickupLocation": "Pickup location",
     "pickupNumber": "Pickup number",
     "success": {
