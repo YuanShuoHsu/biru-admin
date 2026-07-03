@@ -74,12 +74,12 @@
   "complete": {
     "backToMenu": "Order again",
     "copied": "Order number copied",
-    "estimatedPickupTime": "Estimated pickup time {time}",
-    "failure": {
+    "error": {
       "retry": "Retry checkout",
       "subtitle": "The transaction was not completed. Please try again, or ask our staff for assistance.",
       "title": "Payment failed"
     },
+    "estimatedPickupTime": "Estimated pickup time {time}",
     "pickupLocation": "Pickup location",
     "pickupNumber": "Pickup number",
     "success": {

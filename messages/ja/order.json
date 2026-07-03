@@ -74,12 +74,12 @@
   "complete": {
     "backToMenu": "続けて注文する",
     "copied": "注文番号をコピーしました",
-    "estimatedPickupTime": "受け取り予定時間 {time}",
-    "failure": {
+    "error": {
       "retry": "もう一度決済する",
       "subtitle": "決済が完了しませんでした。もう一度お試しいただくか、スタッフにお声がけください。",
       "title": "決済に失敗しました"
     },
+    "estimatedPickupTime": "受け取り予定時間 {time}",
     "pickupLocation": "受け取り場所",
     "pickupNumber": "受け取り番号",
     "success": {

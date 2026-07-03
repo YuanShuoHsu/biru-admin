@@ -74,12 +74,12 @@
   "complete": {
     "backToMenu": "계속 주문하기",
     "copied": "주문 번호가 복사되었습니다",
-    "estimatedPickupTime": "예상 픽업 시간 {time}",
-    "failure": {
+    "error": {
       "retry": "다시 결제하기",
       "subtitle": "결제가 완료되지 않았습니다. 다시 시도하시거나 직원에게 문의해 주세요.",
       "title": "결제 실패"
     },
+    "estimatedPickupTime": "예상 픽업 시간 {time}",
     "pickupLocation": "픽업 장소",
     "pickupNumber": "픽업 번호",
     "success": {

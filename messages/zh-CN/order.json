@@ -74,12 +74,12 @@
   "complete": {
     "backToMenu": "继续点餐",
     "copied": "已复制订单编号",
-    "estimatedPickupTime": "预计取餐时间 {time}",
-    "failure": {
+    "error": {
       "retry": "重新结账",
       "subtitle": "交易未完成，请重新结账。若持续发生，请联系现场工作人员协助。",
       "title": "付款失败"
     },
+    "estimatedPickupTime": "预计取餐时间 {time}",
     "pickupLocation": "取餐地点",
     "pickupNumber": "取餐号码",
     "success": {

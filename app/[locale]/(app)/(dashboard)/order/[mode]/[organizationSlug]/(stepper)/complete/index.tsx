@@ -15,7 +15,6 @@ import {
 } from "@mui/icons-material";
 import {
   Alert,
-  Box,
   Button,
   Card,
   Chip,
@@ -25,7 +24,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { type CSSObject, styled } from "@mui/material/styles";
 
 import { StyledCardContent } from "@/components/FormCard";
 import LocationDetails from "@/components/LocationDetails";
@@ -38,6 +37,20 @@ import type { PaymentMethod } from "@/types/payment";
 const StyledAlert = styled(Alert)({
   justifyContent: "center",
 });
+
+const statusIconStyle: CSSObject = {
+  alignSelf: "center",
+  fontSize: 56,
+};
+
+const StyledCheckCircleOutline = styled(CheckCircleOutline)(statusIconStyle);
+
+const StyledErrorOutline = styled(ErrorOutline)(statusIconStyle);
+
+const STATUS_ICON = {
+  error: StyledErrorOutline,
+  success: StyledCheckCircleOutline,
+} as const;
 
 // TODO: 接上綠界 OrderResultURL / 後端訂單資料後，改為讀取真實交易結果
 const MOCK_TRANSACTION = {
@@ -133,7 +146,8 @@ const OrderModeOrganizationSlugComplete = ({
 
   const showPickupInfo = mode === ORDER_MODE.Pickup && !!organization;
 
-  const StatusIcon = isSuccess ? CheckCircleOutline : ErrorOutline;
+  const status = isSuccess ? "success" : "error";
+  const StatusIcon = STATUS_ICON[status];
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(merchantTradeNo);
@@ -142,30 +156,27 @@ const OrderModeOrganizationSlugComplete = ({
   };
 
   return (
-    <Stack gap={2} pb={4}>
+    <>
       <Card variant="outlined">
         <StyledCardContent>
-          <Box textAlign="center">
-            <StatusIcon
-              sx={{
-                color: isSuccess ? "success.main" : "error.main",
-                fontSize: 56,
-                mb: 1,
-              }}
-            />
-            <Typography fontWeight="bold" gutterBottom variant="h5">
-              {tOrder(
-                isSuccess ? "complete.success.title" : "complete.failure.title",
-              )}
+          <StatusIcon color={status} />
+          <Stack>
+            <Typography
+              fontWeight="bold"
+              gutterBottom
+              textAlign="center"
+              variant="h5"
+            >
+              {tOrder(`complete.${status}.title`)}
             </Typography>
-            <Typography color="text.secondary" variant="body2">
-              {tOrder(
-                isSuccess
-                  ? "complete.success.subtitle"
-                  : "complete.failure.subtitle",
-              )}
+            <Typography
+              color="text.secondary"
+              textAlign="center"
+              variant="body2"
+            >
+              {tOrder(`complete.${status}.subtitle`)}
             </Typography>
-          </Box>
+          </Stack>
         </StyledCardContent>
       </Card>
       {isSuccess && (
@@ -190,7 +201,7 @@ const OrderModeOrganizationSlugComplete = ({
                 </Typography>
               </Stack>
               <StyledAlert
-                icon={<AccessTime fontSize="inherit" />}
+                icon={<AccessTime fontSize="small" />}
                 severity="info"
               >
                 {tOrder("complete.estimatedPickupTime", {
@@ -348,12 +359,12 @@ const OrderModeOrganizationSlugComplete = ({
               }
               variant="contained"
             >
-              {tOrder("complete.failure.retry")}
+              {tOrder("complete.error.retry")}
             </Button>
           </>
         )}
       </Stack>
-    </Stack>
+    </>
   );
 };
 
