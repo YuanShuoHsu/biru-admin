@@ -25,6 +25,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import { StyledCardContent } from "@/components/FormCard";
 import LocationDetails from "@/components/LocationDetails";
@@ -33,6 +34,10 @@ import { ORDER_MODE } from "@/constants/orderMode";
 
 import type { OrganizationResponse } from "@/types/organizations";
 import type { PaymentMethod } from "@/types/payment";
+
+const StyledAlert = styled(Alert)({
+  justifyContent: "center",
+});
 
 // TODO: 接上綠界 OrderResultURL / 後端訂單資料後，改為讀取真實交易結果
 const MOCK_TRANSACTION = {
@@ -184,15 +189,14 @@ const OrderModeOrganizationSlugComplete = ({
                   {pickupNumber}
                 </Typography>
               </Stack>
-              <Alert
+              <StyledAlert
                 icon={<AccessTime fontSize="inherit" />}
                 severity="info"
-                sx={{ justifyContent: "center" }}
               >
                 {tOrder("complete.estimatedPickupTime", {
                   time: estimatedPickupTime,
                 })}
-              </Alert>
+              </StyledAlert>
             </StyledCardContent>
           </Card>
           {showPickupInfo && organization && (
