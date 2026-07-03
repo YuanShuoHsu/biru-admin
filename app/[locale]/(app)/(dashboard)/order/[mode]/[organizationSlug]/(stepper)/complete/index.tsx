@@ -4,6 +4,11 @@ import { useLocale, useTranslations } from "next-intl";
 import { useParams, useSearchParams } from "next/navigation";
 import { useSnackbar } from "notistack";
 
+import { StyledCardContent } from "@/components/FormCard";
+import LocationDetails from "@/components/LocationDetails";
+
+import { ORDER_MODE } from "@/constants/orderMode";
+
 import { useRouter } from "@/i18n/navigation";
 
 import {
@@ -26,11 +31,6 @@ import {
 } from "@mui/material";
 import { type CSSObject, styled } from "@mui/material/styles";
 
-import { StyledCardContent } from "@/components/FormCard";
-import LocationDetails from "@/components/LocationDetails";
-
-import { ORDER_MODE } from "@/constants/orderMode";
-
 import type { OrganizationResponse } from "@/types/organizations";
 import type { PaymentMethod } from "@/types/payment";
 
@@ -51,6 +51,10 @@ const STATUS_ICON = {
   error: StyledErrorOutline,
   success: StyledCheckCircleOutline,
 } as const;
+
+const StyledTypography = styled(Typography)({
+  wordBreak: "break-all",
+});
 
 // TODO: 接上綠界 OrderResultURL / 後端訂單資料後，改為讀取真實交易結果
 const MOCK_TRANSACTION = {
@@ -80,23 +84,17 @@ const InfoRow = ({
   value: React.ReactNode;
 }) => (
   <Stack
-    alignItems="center"
     direction="row"
-    gap={1}
     justifyContent="space-between"
+    alignItems="center"
+    gap={2}
   >
-    <Typography color="text.secondary" flexShrink={0} variant="body2">
+    <Typography color="text.secondary" variant="body2">
       {label}
     </Typography>
-    <Stack alignItems="center" direction="row" gap={0.5} minWidth={0}>
+    <Stack direction="row" alignItems="center" gap={1}>
       {typeof value === "string" ? (
-        <Typography
-          fontWeight={500}
-          sx={{ wordBreak: "break-all" }}
-          variant="body2"
-        >
-          {value}
-        </Typography>
+        <StyledTypography variant="body2">{value}</StyledTypography>
       ) : (
         value
       )}
