@@ -9,10 +9,7 @@ import GradientBox from "@/components/GradientBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import {
-  useOrganizationMembers,
-  useOrganizations,
-} from "@/hooks/organizations";
+import { useOrganizationMembers } from "@/hooks/organizations";
 
 import {
   Avatar,
@@ -27,6 +24,8 @@ import {
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+
+import type { OrganizationResponse } from "@/types/organizations";
 
 import { formatFullName } from "@/utils/auth";
 
@@ -56,9 +55,11 @@ const MemberAvatar = styled(Avatar)(({ theme }) => ({
   height: theme.spacing(8.5),
 }));
 
-const Team = () => {
-  const organizations = useOrganizations();
+interface TeamProps {
+  organizations: OrganizationResponse[];
+}
 
+const Team = ({ organizations }: TeamProps) => {
   const defaultOrganizationId = organizations[0]?.id || "";
 
   const teamFormSchema = useTeamFormSchema();

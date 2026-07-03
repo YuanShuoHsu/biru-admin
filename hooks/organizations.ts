@@ -23,10 +23,3 @@ export const useOrganizationMembers = (organizationId: string) => {
 
   return organizationMembers;
 };
-
-export const useOrganizations = () => {
-  const { data: organizations = [] } =
-    useSWR<Organization[]>("/api/organizations");
-
-  return organizations;
-};

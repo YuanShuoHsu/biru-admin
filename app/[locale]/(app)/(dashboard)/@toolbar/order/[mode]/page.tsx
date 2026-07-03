@@ -1,8 +1,6 @@
 import OrderOrganizationTextField from "@/components/OrderOrganizationTextField";
 
-import type { OrganizationResponse } from "@/types/organizations";
-
-import { fetcher } from "@/utils/fetcher";
+import { getOrganizations } from "@/utils/organizations";
 
 interface ToolbarOrderModePageProps {
   params: Promise<{ mode: string }>;
@@ -11,9 +9,7 @@ interface ToolbarOrderModePageProps {
 const ToolbarOrderModePage = async ({ params }: ToolbarOrderModePageProps) => {
   const { mode } = await params;
 
-  const organizations = await fetcher<OrganizationResponse[]>(
-    "/api/organizations",
-  ).catch(() => []);
+  const organizations = await getOrganizations();
 
   return (
     <OrderOrganizationTextField

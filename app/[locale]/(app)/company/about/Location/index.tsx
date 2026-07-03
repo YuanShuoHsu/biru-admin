@@ -10,8 +10,6 @@ import LocationDetails from "@/components/LocationDetails";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { useOrganizations } from "@/hooks/organizations";
-
 import {
   Box,
   Container,
@@ -22,6 +20,8 @@ import {
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+
+import type { OrganizationResponse } from "@/types/organizations";
 
 const StyledContainer = styled(Container)<ContainerProps>(({ theme }) => ({
   padding: theme.spacing(5, 2),
@@ -34,8 +34,11 @@ const StyledOrganizationSelect = styled(TextField)({
   maxWidth: 240,
 });
 
-const Location = () => {
-  const organizations = useOrganizations();
+interface LocationProps {
+  organizations: OrganizationResponse[];
+}
+
+const Location = ({ organizations }: LocationProps) => {
   const defaultOrganizationId = organizations[0]?.id || "";
 
   const locationFormSchema = useLocationFormSchema();

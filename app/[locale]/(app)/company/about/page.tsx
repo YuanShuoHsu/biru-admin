@@ -4,6 +4,8 @@ import About from ".";
 
 import type { Locale } from "@/i18n/routing";
 
+import { getOrganizations } from "@/utils/organizations";
+
 interface AboutPageProps {
   params: Promise<{ locale: Locale }>;
 }
@@ -13,7 +15,9 @@ const AboutPage = async ({ params }: AboutPageProps) => {
 
   setRequestLocale(locale);
 
-  return <About />;
+  const organizations = await getOrganizations();
+
+  return <About organizations={organizations} />;
 };
 
 export default AboutPage;

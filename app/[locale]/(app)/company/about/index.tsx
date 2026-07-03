@@ -12,17 +12,23 @@ import Footer from "@/components/Footer";
 
 import { Divider } from "@mui/material";
 
-const About = () => (
+import type { OrganizationResponse } from "@/types/organizations";
+
+interface AboutProps {
+  organizations: OrganizationResponse[];
+}
+
+const About = ({ organizations }: AboutProps) => (
   <>
     <Hero />
     <Divider />
     <Values />
     <Divider />
-    <Team />
+    <Team organizations={organizations} />
     <Divider />
     {/* <Support />
     <Divider /> */}
-    <Location />
+    <Location organizations={organizations} />
     <Divider />
     <JoinUs />
     <Divider />

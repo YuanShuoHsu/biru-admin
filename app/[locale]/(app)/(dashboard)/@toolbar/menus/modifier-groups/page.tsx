@@ -2,9 +2,7 @@ import { cookies } from "next/headers";
 
 import MenusOrganizationSelect from "@/components/MenusOrganizationSelect";
 
-import type { OrganizationResponse } from "@/types/organizations";
-
-import { fetcher } from "@/utils/fetcher";
+import { getOrganizations } from "@/utils/organizations";
 
 interface ToolbarMenusModifierGroupsPageProps {
   searchParams: Promise<{ organization?: string }>;
@@ -18,10 +16,9 @@ const ToolbarMenusModifierGroupsPage = async ({
     searchParams,
   ]);
 
-  const organizations = await fetcher<OrganizationResponse[]>(
-    "/api/organizations",
-    { headers: { cookie: cookieStore.toString() } },
-  ).catch(() => []);
+  const organizations = await getOrganizations({
+    headers: { cookie: cookieStore.toString() },
+  });
 
   return (
     <MenusOrganizationSelect
