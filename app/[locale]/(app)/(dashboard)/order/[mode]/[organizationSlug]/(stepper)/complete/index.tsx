@@ -324,18 +324,16 @@ const OrderModeOrganizationSlugComplete = ({
           </Card>
         </>
       )}
-      <Stack direction="row" gap={2}>
-        <Button
-          fullWidth
-          onClick={() =>
-            router.push(`/order/${mode}/${organizationSlug}${query}`)
-          }
-          startIcon={<MenuBook />}
-          variant="contained"
-        >
-          {tOrder(isSuccess ? "complete.backToMenu" : "cart.back")}
-        </Button>
-      </Stack>
+      <Button
+        fullWidth
+        onClick={() =>
+          router.push(`/order/${mode}/${organizationSlug}${query}`)
+        }
+        startIcon={<MenuBook />}
+        variant="contained"
+      >
+        {tOrder(isSuccess ? "complete.backToMenu" : "cart.back")}
+      </Button>
     </>
   );
 };
