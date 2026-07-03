@@ -331,7 +331,7 @@ const OrderModeOrganizationSlugComplete = ({
             router.push(`/order/${mode}/${organizationSlug}${query}`)
           }
           startIcon={<MenuBook />}
-          variant={isSuccess ? "contained" : "outlined"}
+          variant="contained"
         >
           {tOrder(isSuccess ? "complete.backToMenu" : "cart.back")}
         </Button>
