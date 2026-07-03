@@ -32,8 +32,8 @@
     "location": {
       "label": "오시는 길",
       "selectOrganization": {
-        "label": "조직",
-        "placeholder": "조직을 선택해 주세요"
+        "label": "지점",
+        "placeholder": "귀하의 지점을 선택해 주세요"
       },
       "titleHighlight": "찾아오세요",
       "titlePrefix": "저희를 "
@@ -48,8 +48,8 @@
         "owner": "소유자"
       },
       "selectOrganization": {
-        "label": "조직",
-        "placeholder": "조직을 선택해 주세요"
+        "label": "지점",
+        "placeholder": "귀하의 지점을 선택해 주세요"
       },
       "titleHighlight": "Biruers",
       "titlePrefix": "만나보세요 "

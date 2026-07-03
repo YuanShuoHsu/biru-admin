@@ -32,8 +32,8 @@
     "location": {
       "label": "アクセス",
       "selectOrganization": {
-        "label": "組織",
-        "placeholder": "組織を選択してください"
+        "label": "店舗",
+        "placeholder": "あなたの店舗を選択してください"
       },
       "titleHighlight": "見つける",
       "titlePrefix": "私たちを "
@@ -48,8 +48,8 @@
         "owner": "オーナー"
       },
       "selectOrganization": {
-        "label": "組織",
-        "placeholder": "組織を選択してください"
+        "label": "店舗",
+        "placeholder": "あなたの店舗を選択してください"
       },
       "titleHighlight": "Biruers",
       "titlePrefix": "紹介します "

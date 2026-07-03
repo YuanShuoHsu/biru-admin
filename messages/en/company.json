@@ -32,8 +32,8 @@
     "location": {
       "label": "Location",
       "selectOrganization": {
-        "label": "Organization",
-        "placeholder": "Please select your organization"
+        "label": "Store",
+        "placeholder": "Please select your store"
       },
       "titleHighlight": "Find Us",
       "titlePrefix": "Come "
@@ -48,8 +48,8 @@
         "owner": "Owner"
       },
       "selectOrganization": {
-        "label": "Organization",
-        "placeholder": "Please select your organization"
+        "label": "Store",
+        "placeholder": "Please select your store"
       },
       "titleHighlight": "Biruers",
       "titlePrefix": "Meet the "

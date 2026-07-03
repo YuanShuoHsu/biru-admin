@@ -71,6 +71,37 @@
     "title": "顧客資訊",
     "tradeDesc": "餐點付款"
   },
+  "complete": {
+    "backToMenu": "繼續點餐",
+    "copied": "已複製訂單編號",
+    "estimatedPickupTime": "預計取餐時間 {time}",
+    "failure": {
+      "retry": "重新結帳",
+      "subtitle": "交易未完成，請重新結帳。若持續發生，請洽現場工作人員協助。",
+      "title": "付款失敗"
+    },
+    "home": "回首頁",
+    "pickupLocation": "取餐地點",
+    "pickupNumber": "取餐號碼",
+    "success": {
+      "subtitle": "已收到您的訂單，餐點準備中",
+      "title": "付款成功"
+    },
+    "summary": {
+      "title": "訂單明細",
+      "total": "總計"
+    },
+    "transaction": {
+      "amount": "付款金額",
+      "orderNo": "訂單編號",
+      "paid": "已付款",
+      "paymentDate": "付款時間",
+      "paymentMethod": "付款方式",
+      "status": "交易狀態",
+      "title": "交易資訊",
+      "tradeNo": "綠界交易編號"
+    }
+  },
   "label": "點餐",
   "menuItem": {
     "addOn": "加購",

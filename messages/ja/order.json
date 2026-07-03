@@ -71,6 +71,37 @@
     "title": "お客様情報",
     "tradeDesc": "お食事代"
   },
+  "complete": {
+    "backToMenu": "続けて注文する",
+    "copied": "注文番号をコピーしました",
+    "estimatedPickupTime": "受け取り予定時間 {time}",
+    "failure": {
+      "retry": "もう一度決済する",
+      "subtitle": "決済が完了しませんでした。もう一度お試しいただくか、スタッフにお声がけください。",
+      "title": "決済に失敗しました"
+    },
+    "home": "ホームへ",
+    "pickupLocation": "受け取り場所",
+    "pickupNumber": "受け取り番号",
+    "success": {
+      "subtitle": "ご注文を承りました。お料理を準備しています",
+      "title": "決済が完了しました"
+    },
+    "summary": {
+      "title": "注文明細",
+      "total": "合計"
+    },
+    "transaction": {
+      "amount": "お支払い金額",
+      "orderNo": "注文番号",
+      "paid": "支払い済み",
+      "paymentDate": "お支払い日時",
+      "paymentMethod": "お支払い方法",
+      "status": "取引ステータス",
+      "title": "取引情報",
+      "tradeNo": "ECPay取引番号"
+    }
+  },
   "label": "注文",
   "menuItem": {
     "addOn": "追加",

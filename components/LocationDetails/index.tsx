@@ -38,9 +38,13 @@ interface LocationDetailsProps {
     | "streetAddress"
     | "telephone"
   >;
+  showMap?: boolean;
 }
 
-const LocationDetails = ({ organization }: LocationDetailsProps) => {
+const LocationDetails = ({
+  organization,
+  showMap = true,
+}: LocationDetailsProps) => {
   const locale = useLocale();
 
   const tCommon = useTranslations("common");
@@ -145,7 +149,7 @@ const LocationDetails = ({ organization }: LocationDetailsProps) => {
           </Typography>
         </Stack>
       )}
-      {organization?.hasMap && (
+      {showMap && organization?.hasMap && (
         <StyledIframe
           allowFullScreen
           loading="lazy"

@@ -2,6 +2,10 @@ import { setRequestLocale } from "next-intl/server";
 
 import type { Locale } from "@/i18n/routing";
 
+import type { OrganizationResponse } from "@/types/organizations";
+
+import { fetcher } from "@/utils/fetcher";
+
 import OrderModeOrganizationSlugComplete from ".";
 
 interface OrderModeOrganizationSlugCompletePageProps {
@@ -11,11 +15,15 @@ interface OrderModeOrganizationSlugCompletePageProps {
 const OrderModeOrganizationSlugCompletePage = async ({
   params,
 }: OrderModeOrganizationSlugCompletePageProps) => {
-  const { locale } = await params;
+  const { locale, organizationSlug } = await params;
 
   setRequestLocale(locale);
 
-  return <OrderModeOrganizationSlugComplete />;
+  const organization = await fetcher<OrganizationResponse>(
+    `/api/organizations/${organizationSlug}`,
+  ).catch(() => null);
+
+  return <OrderModeOrganizationSlugComplete organization={organization} />;
 };
 
 export default OrderModeOrganizationSlugCompletePage;

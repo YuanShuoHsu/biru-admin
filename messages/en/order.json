@@ -71,6 +71,37 @@
     "title": "Customer info",
     "tradeDesc": "Meal payment"
   },
+  "complete": {
+    "backToMenu": "Order again",
+    "copied": "Order number copied",
+    "estimatedPickupTime": "Estimated pickup time {time}",
+    "failure": {
+      "retry": "Retry checkout",
+      "subtitle": "The transaction was not completed. Please try again, or ask our staff for assistance.",
+      "title": "Payment failed"
+    },
+    "home": "Home",
+    "pickupLocation": "Pickup location",
+    "pickupNumber": "Pickup number",
+    "success": {
+      "subtitle": "We have received your order and are preparing it",
+      "title": "Payment successful"
+    },
+    "summary": {
+      "title": "Order summary",
+      "total": "Total"
+    },
+    "transaction": {
+      "amount": "Amount paid",
+      "orderNo": "Order number",
+      "paid": "Paid",
+      "paymentDate": "Paid at",
+      "paymentMethod": "Payment method",
+      "status": "Status",
+      "title": "Transaction details",
+      "tradeNo": "ECPay trade number"
+    }
+  },
   "label": "Order",
   "menuItem": {
     "addOn": "Add-ons",

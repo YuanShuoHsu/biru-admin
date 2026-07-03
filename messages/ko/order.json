@@ -71,6 +71,37 @@
     "title": "고객 정보",
     "tradeDesc": "식사 결제"
   },
+  "complete": {
+    "backToMenu": "계속 주문하기",
+    "copied": "주문 번호가 복사되었습니다",
+    "estimatedPickupTime": "예상 픽업 시간 {time}",
+    "failure": {
+      "retry": "다시 결제하기",
+      "subtitle": "결제가 완료되지 않았습니다. 다시 시도하시거나 직원에게 문의해 주세요.",
+      "title": "결제 실패"
+    },
+    "home": "홈으로",
+    "pickupLocation": "픽업 장소",
+    "pickupNumber": "픽업 번호",
+    "success": {
+      "subtitle": "주문이 접수되어 준비 중입니다",
+      "title": "결제 완료"
+    },
+    "summary": {
+      "title": "주문 내역",
+      "total": "합계"
+    },
+    "transaction": {
+      "amount": "결제 금액",
+      "orderNo": "주문 번호",
+      "paid": "결제 완료",
+      "paymentDate": "결제 시간",
+      "paymentMethod": "결제 수단",
+      "status": "거래 상태",
+      "title": "거래 정보",
+      "tradeNo": "ECPay 거래 번호"
+    }
+  },
   "label": "주문",
   "menuItem": {
     "addOn": "추가 옵션",

@@ -32,8 +32,8 @@
     "location": {
       "label": "位置",
       "selectOrganization": {
-        "label": "組織",
-        "placeholder": "請選擇您的組織"
+        "label": "門市",
+        "placeholder": "請選擇您的門市"
       },
       "titleHighlight": "找到我們",
       "titlePrefix": "來 "
@@ -48,8 +48,8 @@
         "owner": "擁有者"
       },
       "selectOrganization": {
-        "label": "組織",
-        "placeholder": "請選擇您的組織"
+        "label": "門市",
+        "placeholder": "請選擇您的門市"
       },
       "titleHighlight": "Biruers",
       "titlePrefix": "認識 "

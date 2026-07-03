@@ -71,6 +71,37 @@
     "title": "顾客信息",
     "tradeDesc": "餐点付款"
   },
+  "complete": {
+    "backToMenu": "继续点餐",
+    "copied": "已复制订单编号",
+    "estimatedPickupTime": "预计取餐时间 {time}",
+    "failure": {
+      "retry": "重新结账",
+      "subtitle": "交易未完成，请重新结账。若持续发生，请联系现场工作人员协助。",
+      "title": "付款失败"
+    },
+    "home": "回首页",
+    "pickupLocation": "取餐地点",
+    "pickupNumber": "取餐号码",
+    "success": {
+      "subtitle": "已收到您的订单，餐点准备中",
+      "title": "付款成功"
+    },
+    "summary": {
+      "title": "订单明细",
+      "total": "总计"
+    },
+    "transaction": {
+      "amount": "付款金额",
+      "orderNo": "订单编号",
+      "paid": "已付款",
+      "paymentDate": "付款时间",
+      "paymentMethod": "付款方式",
+      "status": "交易状态",
+      "title": "交易信息",
+      "tradeNo": "绿界交易编号"
+    }
+  },
   "label": "点餐",
   "menuItem": {
     "addOn": "加购",
