@@ -1,34 +1,27 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useForm, useWatch } from "react-hook-form";
 
 import { type LocationForm, useLocationFormSchema } from "./definitions";
 
 import GradientBox from "@/components/GradientBox";
-
-import { countries } from "@/constants/countries";
-
-import { LocaleEnum } from "@/enums/Locale";
+import LocationDetails from "@/components/LocationDetails";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useOrganizations } from "@/hooks/organizations";
 
-import { AccessTime, LocationOn, Phone } from "@mui/icons-material";
 import {
   Box,
   Container,
   type ContainerProps,
-  Link,
   MenuItem,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-
-import { formatOpeningHoursForDisplay } from "@/utils/openingHours";
 
 const StyledContainer = styled(Container)<ContainerProps>(({ theme }) => ({
   padding: theme.spacing(5, 2),
@@ -40,12 +33,6 @@ const StyledContainer = styled(Container)<ContainerProps>(({ theme }) => ({
 const StyledOrganizationSelect = styled(TextField)({
   maxWidth: 240,
 });
-
-const StyledIframe = styled("iframe")(({ theme }) => ({
-  width: "100%",
-  height: theme.spacing(56.25),
-  borderRadius: theme.shape.borderRadius,
-}));
 
 const Location = () => {
   const organizations = useOrganizations();
@@ -62,45 +49,7 @@ const Location = () => {
     ({ id }) => id === selectedOrganizationId,
   );
 
-  const mapUrl = (() => {
-    if (!organization?.hasMap) return null;
-    const cidMatch = organization.hasMap.match(
-      /!1s(0x[0-9a-f]+)%3A(0x[0-9a-f]+)/i,
-    );
-    if (cidMatch)
-      return `https://www.google.com/maps?cid=${BigInt(cidMatch[2]).toString()}`;
-    return organization.hasMap.replace("/maps/embed?", "/maps?");
-  })();
-
-  const countryLabel =
-    countries.find(({ code }) => code === organization?.addressCountry)
-      ?.label || organization?.addressCountry;
-
-  const locale = useLocale();
-
-  const addressGroups = [
-    [organization?.streetAddress, organization?.extendedAddress],
-    [organization?.addressLocality],
-    [organization?.addressRegion],
-    [organization?.postalCode],
-    [countryLabel],
-  ];
-
-  const address = (
-    locale === LocaleEnum.En ? addressGroups : [...addressGroups].reverse()
-  )
-    .flat()
-    .filter(Boolean)
-    .join(", ");
-
-  const tCommon = useTranslations("common");
   const tCompanyAboutLocation = useTranslations("company.about.location");
-
-  const hasContent =
-    address ||
-    organization?.openingHours ||
-    organization?.telephone ||
-    organization?.hasMap;
 
   return (
     <Box bgcolor="background.paper" component="section">
@@ -162,77 +111,7 @@ const Location = () => {
               </MenuItem>
             ))}
           </StyledOrganizationSelect>
-          {!hasContent && (
-            <Typography color="text.secondary" variant="body2">
-              {tCompanyAboutLocation("empty")}
-            </Typography>
-          )}
-          {address && (
-            <Stack direction="row" gap={1}>
-              <LocationOn color="primary" fontSize="small" />
-              <Typography color="text.secondary" variant="body2">
-                {mapUrl ? (
-                  <Link
-                    color="text.secondary"
-                    href={mapUrl}
-                    rel="noopener noreferrer"
-                    target="_blank"
-                    underline="hover"
-                  >
-                    {address}
-                  </Link>
-                ) : (
-                  address
-                )}
-              </Typography>
-            </Stack>
-          )}
-          {organization?.openingHours && (
-            <Stack direction="row" gap={1}>
-              <AccessTime color="primary" fontSize="small" />
-              <Stack gap={1}>
-                {formatOpeningHoursForDisplay(organization.openingHours, {
-                  formatDay: (day) =>
-                    tCompanyAboutLocation(`openingHours.${day}`),
-                  rangeSeparator: tCompanyAboutLocation(
-                    "openingHours.rangeSeparator",
-                  ),
-                  delimiter: tCommon("delimiter"),
-                }).map((line, index) => (
-                  <Typography
-                    color="text.secondary"
-                    key={index}
-                    variant="body2"
-                  >
-                    {line}
-                  </Typography>
-                ))}
-              </Stack>
-            </Stack>
-          )}
-          {organization?.telephone && (
-            <Stack direction="row" gap={1}>
-              <Phone color="primary" fontSize="small" />
-              <Typography color="text.secondary" variant="body2">
-                <Link
-                  color="text.secondary"
-                  href={`tel:${organization.telephone}`}
-                  underline="hover"
-                >
-                  {organization.telephone}
-                </Link>
-              </Typography>
-            </Stack>
-          )}
-          {organization?.hasMap && (
-            <StyledIframe
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              src={organization.hasMap}
-              title={tCompanyAboutLocation("label")}
-            />
-          )}
+          <LocationDetails organization={organization} />
         </Stack>
       </StyledContainer>
     </Box>

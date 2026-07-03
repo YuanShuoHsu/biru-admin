@@ -13,6 +13,19 @@
   "empty": "商品がありません",
   "from": "〜",
   "loading": "読み込み中...",
+  "location": {
+    "empty": "位置情報が設定されていません",
+    "openingHours": {
+      "Fr": "金",
+      "Mo": "月",
+      "Sa": "土",
+      "Su": "日",
+      "Th": "木",
+      "Tu": "火",
+      "We": "水",
+      "rangeSeparator": "～"
+    }
+  },
   "maxQuantity": "各商品は最大 {quantity} 個まで購入できます",
   "multiply": "×",
   "optional": "（任意）",

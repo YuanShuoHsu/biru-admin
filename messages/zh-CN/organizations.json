@@ -102,18 +102,7 @@
         "title": "编辑位置"
       }
     },
-    "empty": "暂无位置信息",
-    "label": "位置",
-    "openingHours": {
-      "Fr": "周五",
-      "Mo": "周一",
-      "Sa": "周六",
-      "Su": "周日",
-      "Th": "周四",
-      "Tu": "周二",
-      "We": "周三",
-      "rangeSeparator": "～"
-    }
+    "label": "位置"
   },
   "logo": "标志",
   "members": {

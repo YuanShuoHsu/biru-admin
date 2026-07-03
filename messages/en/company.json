@@ -30,18 +30,7 @@
     },
     "label": "About",
     "location": {
-      "empty": "No location information available",
       "label": "Location",
-      "openingHours": {
-        "Fr": "Fri",
-        "Mo": "Mon",
-        "Sa": "Sat",
-        "Su": "Sun",
-        "Th": "Thu",
-        "Tu": "Tue",
-        "We": "Wed",
-        "rangeSeparator": "–"
-      },
       "selectOrganization": {
         "label": "Organization",
         "placeholder": "Please select your organization"

@@ -30,18 +30,7 @@
     },
     "label": "关于我们",
     "location": {
-      "empty": "尚未设置位置信息",
       "label": "位置",
-      "openingHours": {
-        "Fr": "周五",
-        "Mo": "周一",
-        "Sa": "周六",
-        "Su": "周日",
-        "Th": "周四",
-        "Tu": "周二",
-        "We": "周三",
-        "rangeSeparator": "～"
-      },
       "selectOrganization": {
         "label": "组织",
         "placeholder": "请选择您的组织"

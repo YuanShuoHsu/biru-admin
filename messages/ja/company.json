@@ -30,18 +30,7 @@
     },
     "label": "私たちについて",
     "location": {
-      "empty": "位置情報が設定されていません",
       "label": "アクセス",
-      "openingHours": {
-        "Fr": "金",
-        "Mo": "月",
-        "Sa": "土",
-        "Su": "日",
-        "Th": "木",
-        "Tu": "火",
-        "We": "水",
-        "rangeSeparator": "～"
-      },
       "selectOrganization": {
         "label": "組織",
         "placeholder": "組織を選択してください"

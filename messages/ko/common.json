@@ -13,6 +13,19 @@
   "empty": "상품이 없습니다",
   "from": "부터",
   "loading": "로딩 중...",
+  "location": {
+    "empty": "위치 정보가 설정되지 않았습니다",
+    "openingHours": {
+      "Fr": "금",
+      "Mo": "월",
+      "Sa": "토",
+      "Su": "일",
+      "Th": "목",
+      "Tu": "화",
+      "We": "수",
+      "rangeSeparator": "～"
+    }
+  },
   "maxQuantity": "각 상품은 최대 {quantity} 개까지 구매할 수 있습니다",
   "multiply": "×",
   "optional": "(선택)",

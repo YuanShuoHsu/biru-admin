@@ -30,18 +30,7 @@
     },
     "label": "회사 소개",
     "location": {
-      "empty": "위치 정보가 설정되지 않았습니다",
       "label": "오시는 길",
-      "openingHours": {
-        "Fr": "금",
-        "Mo": "월",
-        "Sa": "토",
-        "Su": "일",
-        "Th": "목",
-        "Tu": "화",
-        "We": "수",
-        "rangeSeparator": "～"
-      },
       "selectOrganization": {
         "label": "조직",
         "placeholder": "조직을 선택해 주세요"

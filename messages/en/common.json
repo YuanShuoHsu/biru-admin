@@ -13,6 +13,19 @@
   "empty": "No items yet",
   "from": "from",
   "loading": "Loading...",
+  "location": {
+    "empty": "No location information available",
+    "openingHours": {
+      "Fr": "Fri",
+      "Mo": "Mon",
+      "Sa": "Sat",
+      "Su": "Sun",
+      "Th": "Thu",
+      "Tu": "Tue",
+      "We": "Wed",
+      "rangeSeparator": "–"
+    }
+  },
   "maxQuantity": "You can buy up to {quantity} per item",
   "multiply": "×",
   "optional": "(optional)",

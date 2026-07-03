@@ -102,18 +102,7 @@
         "title": "Edit location"
       }
     },
-    "empty": "No location information available",
-    "label": "Location",
-    "openingHours": {
-      "Fr": "Fri",
-      "Mo": "Mon",
-      "Sa": "Sat",
-      "Su": "Sun",
-      "Th": "Thu",
-      "Tu": "Tue",
-      "We": "Wed",
-      "rangeSeparator": "–"
-    }
+    "label": "Location"
   },
   "logo": "Logo",
   "members": {

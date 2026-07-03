@@ -13,6 +13,19 @@
   "empty": "尚无商品",
   "from": "起",
   "loading": "加载中...",
+  "location": {
+    "empty": "尚未设置位置信息",
+    "openingHours": {
+      "Fr": "周五",
+      "Mo": "周一",
+      "Sa": "周六",
+      "Su": "周日",
+      "Th": "周四",
+      "Tu": "周二",
+      "We": "周三",
+      "rangeSeparator": "～"
+    }
+  },
   "maxQuantity": "每项商品最多只能购买 {quantity} 件",
   "multiply": "×",
   "optional": "（选填）",
