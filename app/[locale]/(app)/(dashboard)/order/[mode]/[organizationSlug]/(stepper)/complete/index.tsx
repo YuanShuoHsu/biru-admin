@@ -87,36 +87,6 @@ const InfoRow = ({
   </Stack>
 );
 
-const StatusHeader = ({
-  error,
-  subtitle,
-  title,
-}: {
-  error?: boolean;
-  subtitle: string;
-  title: string;
-}) => {
-  const Icon = error ? ErrorOutline : CheckCircleOutline;
-
-  return (
-    <Box textAlign="center">
-      <Icon
-        sx={{
-          color: error ? "error.main" : "success.main",
-          fontSize: 56,
-          mb: 1,
-        }}
-      />
-      <Typography fontWeight="bold" gutterBottom variant="h5">
-        {title}
-      </Typography>
-      <Typography color="text.secondary" variant="body2">
-        {subtitle}
-      </Typography>
-    </Box>
-  );
-};
-
 interface OrderModeOrganizationSlugCompleteProps {
   organization: OrganizationResponse | null;
 }
@@ -158,6 +128,8 @@ const OrderModeOrganizationSlugComplete = ({
 
   const showPickupInfo = mode === ORDER_MODE.Pickup && !!organization;
 
+  const StatusIcon = isSuccess ? CheckCircleOutline : ErrorOutline;
+
   const handleCopy = async () => {
     await navigator.clipboard.writeText(merchantTradeNo);
 
@@ -168,17 +140,27 @@ const OrderModeOrganizationSlugComplete = ({
     <Stack gap={2} pb={4}>
       <Card variant="outlined">
         <StyledCardContent>
-          <StatusHeader
-            error={!isSuccess}
-            subtitle={tOrder(
-              isSuccess
-                ? "complete.success.subtitle"
-                : "complete.failure.subtitle",
-            )}
-            title={tOrder(
-              isSuccess ? "complete.success.title" : "complete.failure.title",
-            )}
-          />
+          <Box textAlign="center">
+            <StatusIcon
+              sx={{
+                color: isSuccess ? "success.main" : "error.main",
+                fontSize: 56,
+                mb: 1,
+              }}
+            />
+            <Typography fontWeight="bold" gutterBottom variant="h5">
+              {tOrder(
+                isSuccess ? "complete.success.title" : "complete.failure.title",
+              )}
+            </Typography>
+            <Typography color="text.secondary" variant="body2">
+              {tOrder(
+                isSuccess
+                  ? "complete.success.subtitle"
+                  : "complete.failure.subtitle",
+              )}
+            </Typography>
+          </Box>
         </StyledCardContent>
       </Card>
       {isSuccess && (
