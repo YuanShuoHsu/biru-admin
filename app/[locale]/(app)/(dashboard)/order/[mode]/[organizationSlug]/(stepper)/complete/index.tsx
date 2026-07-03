@@ -61,7 +61,7 @@ const MOCK_TRANSACTION = {
   card4No: "4242",
   currency: "NT$",
   estimatedPickupTime: "15:05",
-  isSuccess: true,
+  isSuccess: false,
   items: [
     { name: "招牌拿鐵（大杯 / 熱 / 燕麥奶）", quantity: 2, subtotal: 240 },
     { name: "肉桂捲", quantity: 1, subtotal: 120 },
@@ -325,42 +325,16 @@ const OrderModeOrganizationSlugComplete = ({
         </>
       )}
       <Stack direction="row" gap={2}>
-        {isSuccess ? (
-          <Button
-            fullWidth
-            onClick={() =>
-              router.push(`/order/${mode}/${organizationSlug}${query}`)
-            }
-            startIcon={<MenuBook />}
-            variant="contained"
-          >
-            {tOrder("complete.backToMenu")}
-          </Button>
-        ) : (
-          <>
-            <Button
-              fullWidth
-              onClick={() =>
-                router.push(`/order/${mode}/${organizationSlug}${query}`)
-              }
-              startIcon={<MenuBook />}
-              variant="outlined"
-            >
-              {tOrder("cart.back")}
-            </Button>
-            <Button
-              fullWidth
-              onClick={() =>
-                router.push(
-                  `/order/${mode}/${organizationSlug}/checkout${query}`,
-                )
-              }
-              variant="contained"
-            >
-              {tOrder("complete.error.retry")}
-            </Button>
-          </>
-        )}
+        <Button
+          fullWidth
+          onClick={() =>
+            router.push(`/order/${mode}/${organizationSlug}${query}`)
+          }
+          startIcon={<MenuBook />}
+          variant={isSuccess ? "contained" : "outlined"}
+        >
+          {tOrder(isSuccess ? "complete.backToMenu" : "cart.back")}
+        </Button>
       </Stack>
     </>
   );

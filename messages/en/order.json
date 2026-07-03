@@ -75,7 +75,6 @@
     "backToMenu": "Order again",
     "copied": "Order number copied",
     "error": {
-      "retry": "Retry checkout",
       "subtitle": "The transaction was not completed. Please try again, or ask our staff for assistance.",
       "title": "Payment failed"
     },
