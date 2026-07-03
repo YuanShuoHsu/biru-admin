@@ -167,18 +167,23 @@ const OrderModeOrganizationSlugComplete = ({
         <>
           <Card variant="outlined">
             <StyledCardContent>
-              <Box textAlign="center">
+              <Stack>
                 <Typography
                   color="text.secondary"
-                  letterSpacing={2}
-                  variant="overline"
+                  textAlign="center"
+                  variant="caption"
                 >
                   {tOrder("complete.pickupNumber")}
                 </Typography>
-                <Typography color="primary" fontWeight="bold" variant="h2">
+                <Typography
+                  color="primary"
+                  fontWeight="bold"
+                  textAlign="center"
+                  variant="h2"
+                >
                   {pickupNumber}
                 </Typography>
-              </Box>
+              </Stack>
               <Alert
                 icon={<AccessTime fontSize="inherit" />}
                 severity="info"
