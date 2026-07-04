@@ -1,9 +1,10 @@
 "use client";
 
-import { type CountryCode, parsePhoneNumber } from "libphonenumber-js";
+import { type CountryCode, parsePhoneNumberWithError } from "libphonenumber-js";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams, useSearchParams } from "next/navigation";
+import { useSnackbar } from "notistack";
 import { useForm, useWatch } from "react-hook-form";
 import useSWR from "swr";
 import useSWRMutation from "swr/mutation";
@@ -29,7 +30,6 @@ import { ORDER_MODE } from "@/constants/orderMode";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import useCartHasInvalidItems from "@/hooks/useCartHasInvalidItems";
-import useCartTotals from "@/hooks/useCartTotals";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
@@ -61,6 +61,7 @@ import type { CreateOrderDto, OrderResponse } from "@/types/orders";
 import type { PaymentMethod } from "@/types/payment";
 
 import { getPhoneFormatting } from "@/utils/countries";
+import { getErrorMessage } from "@/utils/errors";
 import { sendRequest } from "@/utils/fetcher";
 import { getChoiceNames, getItemName } from "@/utils/menus";
 
@@ -98,7 +99,7 @@ const OrderModeOrganizationSlugCheckout = () => {
 
   const hasInvalidItems = useCartHasInvalidItems();
 
-  const { cartTotalAmount } = useCartTotals();
+  const { enqueueSnackbar } = useSnackbar();
 
   const customerPaymentFormSchema = useCustomerPaymentFormSchema();
 
@@ -248,147 +249,141 @@ const OrderModeOrganizationSlugCheckout = () => {
   const onSubmit = handleSubmit(async (values) => {
     if (!values.payment) return;
 
-    const order = await triggerOrder({
-      customer: {
-        email: values.customer.email || undefined,
-        name: values.customer.name,
-        notes: values.customer.notes || undefined,
-        phone: values.customer.phone
-          ? parsePhoneNumber(
-              values.customer.phone,
-              values.customer.countryCode as CountryCode,
-            ).number
-          : undefined,
-      },
-      items: cartItemsList.map(
-        ({ addOns, menuItemId, modifiers, quantity }) => ({
-          addOns: addOns.map(({ id, modifiers: addOnModifiers }) => ({
-            menuItemId: id,
-            modifiers: addOnModifiers,
-          })),
-          menuItemId,
-          modifiers,
-          quantity,
-        }),
-      ),
-      mode: API_ORDER_MODE[String(mode)],
-      payment: values.payment,
-    });
-
-    clearCart();
-
-    const completeSearchParams = new URLSearchParams(search);
-    completeSearchParams.set("orderId", order.id);
-    const completePath = `${pathname.replace("/checkout", "/complete")}?${completeSearchParams}`;
-
-    if (values.payment === "Cash") {
-      router.replace(completePath);
-
-      return;
-    }
-
-    const baseUrl = process.env.NEXT_PUBLIC_NEXT_URL;
-    const completeUrl = `${baseUrl}/${locale}${completePath}`;
-
-    // const buildInvoice = (): CreateEcpayDto["invoice"] => {
-    //   const common = {
-    //     CustomerEmail: values.invoice.emailSameAsCustomer
-    //       ? values.customer.email
-    //       : values.invoice.email,
-    //     CustomerName: values.customer.name,
-    //     CustomerPhone: values.customer.phone,
-    //     DelayDay: "0",
-    //     Donation: "0",
-    //     InvType: "07",
-    //     TaxType: "1",
-    //   };
-    //   switch (values.invoice.type) {
-    //     case "personal":
-    //       if (values.invoice.carrierType === "mobile") {
-    //         return {
-    //           ...common,
-    //           CarruerNum: values.invoice.carruerNum,
-    //           CarruerType: "3",
-    //           Print: "0",
-    //         };
-    //       }
-    //       if (values.invoice.carrierType === "certificate") {
-    //         return {
-    //           ...common,
-    //           CarruerNum: values.invoice.carruerNum,
-    //           CarruerType: "2",
-    //           Print: "0",
-    //         };
-    //       }
-    //       return { ...common, CarruerType: "", Donation: "0", Print: "0" };
-    //     case "company":
-    //       return {
-    //         ...common,
-    //         CarruerType: "",
-    //         CustomerAddr: values.invoice.customerAddr,
-    //         CustomerIdentifier: values.invoice.customerIdentifier,
-    //         CustomerName: values.invoice.customerName,
-    //         Print: "1",
-    //       };
-    //     case "donate":
-    //       return {
-    //         ...common,
-    //         CarruerType: "",
-    //         Donation: "1",
-    //         LoveCode: values.invoice.donateCode,
-    //         Print: "0",
-    //       };
-    //   }
-    // };
-
-    const dto: CheckoutEcpayDto = {
-      ChoosePayment:
-        values.payment === "Jkopay" || values.payment === "iPASS"
-          ? "DigitalPayment"
-          : (values.payment as CheckoutEcpayDto["ChoosePayment"]),
-      ...(["iPASS", "Jkopay"].includes(values.payment) && {
-        ChooseSubPayment: values.payment,
-      }),
-      ClientBackURL: completeUrl,
-      ItemName: cartItemsList
-        .map(({ menuItemId, modifiers, addOns, quantity }) => {
-          const itemName = getItemName(menu, menuItemId);
-          const choiceNames = getChoiceNames(
-            menu,
+    try {
+      const order = await triggerOrder({
+        customer: {
+          email: values.customer.email || undefined,
+          name: values.customer.name,
+          notes: values.customer.notes || undefined,
+          phone: values.customer.phone
+            ? parsePhoneNumberWithError(
+                values.customer.phone,
+                values.customer.countryCode as CountryCode,
+              ).number
+            : undefined,
+        },
+        items: cartItemsList.map(
+          ({ addOns, menuItemId, modifiers, quantity }) => ({
+            addOns: addOns.map(({ id, modifiers: addOnModifiers }) => ({
+              menuItemId: id,
+              modifiers: addOnModifiers,
+            })),
             menuItemId,
             modifiers,
-            addOns,
-            {
-              addOnLabel: tOrder("menuItem.addOn"),
-              colon: tCommon("colon"),
-              delimiter: tCommon("delimiter"),
-              parenthesisOpen: tCommon("parenthesisOpen"),
-              parenthesisClose: tCommon("parenthesisClose"),
-            },
-          );
-          const formattedChoices = choiceNames ? `[${choiceNames}]` : "";
+            quantity,
+          }),
+        ),
+        mode: API_ORDER_MODE[String(mode)],
+        payment: values.payment,
+      });
 
-          return `${itemName} ${formattedChoices} ${tCommon("multiply")} ${quantity}`;
-        })
-        .join("#"),
-      Language: localeConfigs[locale].ecpayLanguage,
-      MerchantTradeNo: order.confirmationNumber || order.id,
-      NeedExtraPaidInfo: "Y",
-      OrderResultURL: completeUrl,
-      Remark: values.customer.notes || undefined,
-      TotalAmount: cartTotalAmount,
-      TradeDesc: tOrder("checkout.tradeDesc"),
-    };
+      clearCart();
 
-    const { message: data } = await triggerEcpay(dto);
+      const completeSearchParams = new URLSearchParams(search);
+      completeSearchParams.set("orderId", order.id);
+      const completePath = `${pathname.replace("/checkout", "/complete")}?${completeSearchParams}`;
 
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(data, "text/html");
-    const form = doc.getElementById("ecpayForm");
+      if (values.payment === "Cash") {
+        router.replace(completePath);
 
-    if (form instanceof HTMLFormElement) {
-      document.body.appendChild(form);
-      form.submit();
+        return;
+      }
+
+      const baseUrl = process.env.NEXT_PUBLIC_NEXT_URL;
+      const completeUrl = `${baseUrl}/${locale}${completePath}`;
+
+      // const buildInvoice = (): CreateEcpayDto["invoice"] => {
+      //   const common = {
+      //     CustomerEmail: values.invoice.emailSameAsCustomer
+      //       ? values.customer.email
+      //       : values.invoice.email,
+      //     CustomerName: values.customer.name,
+      //     CustomerPhone: values.customer.phone,
+      //     DelayDay: "0",
+      //     Donation: "0",
+      //     InvType: "07",
+      //     TaxType: "1",
+      //   };
+      //   switch (values.invoice.type) {
+      //     case "personal":
+      //       if (values.invoice.carrierType === "mobile") {
+      //         return {
+      //           ...common,
+      //           CarruerNum: values.invoice.carruerNum,
+      //           CarruerType: "3",
+      //           Print: "0",
+      //         };
+      //       }
+      //       if (values.invoice.carrierType === "certificate") {
+      //         return {
+      //           ...common,
+      //           CarruerNum: values.invoice.carruerNum,
+      //           CarruerType: "2",
+      //           Print: "0",
+      //         };
+      //       }
+      //       return { ...common, CarruerType: "", Donation: "0", Print: "0" };
+      //     case "company":
+      //       return {
+      //         ...common,
+      //         CarruerType: "",
+      //         CustomerAddr: values.invoice.customerAddr,
+      //         CustomerIdentifier: values.invoice.customerIdentifier,
+      //         CustomerName: values.invoice.customerName,
+      //         Print: "1",
+      //       };
+      //     case "donate":
+      //       return {
+      //         ...common,
+      //         CarruerType: "",
+      //         Donation: "1",
+      //         LoveCode: values.invoice.donateCode,
+      //         Print: "0",
+      //       };
+      //   }
+      // };
+
+      const dto: CheckoutEcpayDto = {
+        ClientBackURL: completeUrl,
+        ItemName: cartItemsList
+          .map(({ menuItemId, modifiers, addOns, quantity }) => {
+            const itemName = getItemName(menu, menuItemId);
+            const choiceNames = getChoiceNames(
+              menu,
+              menuItemId,
+              modifiers,
+              addOns,
+              {
+                addOnLabel: tOrder("menuItem.addOn"),
+                colon: tCommon("colon"),
+                delimiter: tCommon("delimiter"),
+                parenthesisOpen: tCommon("parenthesisOpen"),
+                parenthesisClose: tCommon("parenthesisClose"),
+              },
+            );
+            const formattedChoices = choiceNames ? `[${choiceNames}]` : "";
+
+            return `${itemName} ${formattedChoices} ${tCommon("multiply")} ${quantity}`;
+          })
+          .join("#"),
+        Language: localeConfigs[locale].ecpayLanguage,
+        orderId: order.id,
+        OrderResultURL: completeUrl,
+        TradeDesc: tOrder("checkout.tradeDesc"),
+      };
+
+      const { message: data } = await triggerEcpay(dto);
+
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(data, "text/html");
+      const form = doc.getElementById("ecpayForm");
+
+      if (form instanceof HTMLFormElement) {
+        document.body.appendChild(form);
+        form.submit();
+      }
+    } catch (error) {
+      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
     }
   });
 
