@@ -78,7 +78,6 @@
       "subtitle": "The transaction was not completed. Please try again, or ask our staff for assistance.",
       "title": "Payment failed"
     },
-    "estimatedPickupTime": "Estimated pickup time {time}",
     "pickupLocation": "Pickup location",
     "pickupNumber": "Pickup number",
     "success": {
@@ -97,7 +96,8 @@
       "paymentMethod": "Payment method",
       "status": "Status",
       "title": "Transaction details",
-      "tradeNo": "ECPay trade number"
+      "tradeNo": "ECPay trade number",
+      "unpaid": "Awaiting payment"
     }
   },
   "label": "Order",

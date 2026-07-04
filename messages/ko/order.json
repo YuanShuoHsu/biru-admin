@@ -78,7 +78,6 @@
       "subtitle": "결제가 완료되지 않았습니다. 다시 시도하시거나 직원에게 문의해 주세요.",
       "title": "결제 실패"
     },
-    "estimatedPickupTime": "예상 픽업 시간 {time}",
     "pickupLocation": "픽업 장소",
     "pickupNumber": "픽업 번호",
     "success": {
@@ -97,7 +96,8 @@
       "paymentMethod": "결제 수단",
       "status": "거래 상태",
       "title": "거래 정보",
-      "tradeNo": "ECPay 거래 번호"
+      "tradeNo": "ECPay 거래 번호",
+      "unpaid": "결제 대기"
     }
   },
   "label": "주문",

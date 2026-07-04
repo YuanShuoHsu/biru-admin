@@ -1,5 +1,6 @@
 "use client";
 
+import { type CountryCode, parsePhoneNumber } from "libphonenumber-js";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams, useSearchParams } from "next/navigation";
@@ -55,7 +56,8 @@ import {
 import { useCartStore } from "@/providers/cart-store-provider";
 import { useMenuStore } from "@/providers/menu-store-provider";
 
-import type { BaseEcpayDto } from "@/types/ecpay";
+import type { CheckoutEcpayDto } from "@/types/ecpay";
+import type { CreateOrderDto, OrderResponse } from "@/types/orders";
 import type { PaymentMethod } from "@/types/payment";
 
 import { getPhoneFormatting } from "@/utils/countries";
@@ -81,8 +83,17 @@ const INVOICE_TYPES: { icon: React.ElementType; type: InvoiceType }[] = [
 
 const CARRIER_TYPES: CarrierType[] = ["individual", "mobile", "certificate"];
 
+const API_ORDER_MODE: Record<string, CreateOrderDto["mode"]> = {
+  [ORDER_MODE.Counter]: "counter",
+  [ORDER_MODE.DineIn]: "dineIn",
+  [ORDER_MODE.Kiosk]: "kiosk",
+  [ORDER_MODE.Pickup]: "pickup",
+};
+
 const OrderModeOrganizationSlugCheckout = () => {
-  const { isCartEmpty, cartItemsList } = useCartStore((state) => state);
+  const { cartItemsList, clearCart, isCartEmpty } = useCartStore(
+    (state) => state,
+  );
   const { menu } = useMenuStore((state) => state);
 
   const hasInvalidItems = useCartHasInvalidItems();
@@ -147,20 +158,23 @@ const OrderModeOrganizationSlugCheckout = () => {
 
   const { mask, placeholder } = getPhoneFormatting(countryCode);
 
-  const { mode } = useParams();
+  const { mode, organizationSlug } = useParams();
   const isKiosk = mode === ORDER_MODE.Kiosk;
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const search = searchParams.toString();
-  const query = search ? `?${search}` : "";
-  const completePath = `${pathname.replace("/checkout", "/complete")}${query}`;
   // const isDineIn = mode === ORDER_MODE.DineIn;
 
   const router = useRouter();
 
-  const { isMutating, trigger: triggerEcpay } = useSWRMutation(
+  const { isMutating: isMutatingEcpay, trigger: triggerEcpay } = useSWRMutation(
     "/api/ecpay",
-    sendRequest<{ message: string }, BaseEcpayDto>(),
+    sendRequest<{ message: string }, CheckoutEcpayDto>(),
+  );
+
+  const { isMutating: isMutatingOrder, trigger: triggerOrder } = useSWRMutation(
+    `/api/organizations/${String(organizationSlug)}/orders`,
+    sendRequest<OrderResponse, CreateOrderDto>(),
   );
 
   const shouldFetch =
@@ -234,6 +248,39 @@ const OrderModeOrganizationSlugCheckout = () => {
   const onSubmit = handleSubmit(async (values) => {
     if (!values.payment) return;
 
+    const order = await triggerOrder({
+      customer: {
+        email: values.customer.email || undefined,
+        name: values.customer.name,
+        notes: values.customer.notes || undefined,
+        phone: values.customer.phone
+          ? parsePhoneNumber(
+              values.customer.phone,
+              values.customer.countryCode as CountryCode,
+            ).number
+          : undefined,
+      },
+      items: cartItemsList.map(
+        ({ addOns, menuItemId, modifiers, quantity }) => ({
+          addOns: addOns.map(({ id, modifiers: addOnModifiers }) => ({
+            menuItemId: id,
+            modifiers: addOnModifiers,
+          })),
+          menuItemId,
+          modifiers,
+          quantity,
+        }),
+      ),
+      mode: API_ORDER_MODE[String(mode)],
+      payment: values.payment,
+    });
+
+    clearCart();
+
+    const completeSearchParams = new URLSearchParams(search);
+    completeSearchParams.set("orderId", order.id);
+    const completePath = `${pathname.replace("/checkout", "/complete")}?${completeSearchParams}`;
+
     if (values.payment === "Cash") {
       router.replace(completePath);
 
@@ -294,11 +341,11 @@ const OrderModeOrganizationSlugCheckout = () => {
     //   }
     // };
 
-    const dto: BaseEcpayDto = {
+    const dto: CheckoutEcpayDto = {
       ChoosePayment:
         values.payment === "Jkopay" || values.payment === "iPASS"
           ? "DigitalPayment"
-          : (values.payment as BaseEcpayDto["ChoosePayment"]),
+          : (values.payment as CheckoutEcpayDto["ChoosePayment"]),
       ...(["iPASS", "Jkopay"].includes(values.payment) && {
         ChooseSubPayment: values.payment,
       }),
@@ -325,6 +372,7 @@ const OrderModeOrganizationSlugCheckout = () => {
         })
         .join("#"),
       Language: localeConfigs[locale].ecpayLanguage,
+      MerchantTradeNo: order.confirmationNumber || order.id,
       NeedExtraPaidInfo: "Y",
       OrderResultURL: completeUrl,
       Remark: values.customer.notes || undefined,
@@ -596,7 +644,7 @@ const OrderModeOrganizationSlugCheckout = () => {
       </Card>
       <Stack direction="row" justifyContent="space-between">
         <Button
-          disabled={isMutating}
+          disabled={isMutatingEcpay || isMutatingOrder}
           onClick={() => router.push(pathname.replace("/checkout", "/cart"))}
           startIcon={<ShoppingCart />}
           variant="outlined"
@@ -606,7 +654,7 @@ const OrderModeOrganizationSlugCheckout = () => {
         <Button
           disabled={isCartEmpty || hasInvalidItems}
           endIcon={<TaskAlt />}
-          loading={isMutating}
+          loading={isMutatingEcpay || isMutatingOrder}
           loadingPosition="end"
           type="submit"
           variant="contained"

@@ -78,7 +78,6 @@
       "subtitle": "交易未完成，请重新结账。若持续发生，请联系现场工作人员协助。",
       "title": "付款失败"
     },
-    "estimatedPickupTime": "预计取餐时间 {time}",
     "pickupLocation": "取餐地点",
     "pickupNumber": "取餐号码",
     "success": {
@@ -97,7 +96,8 @@
       "paymentMethod": "付款方式",
       "status": "交易状态",
       "title": "交易信息",
-      "tradeNo": "绿界交易编号"
+      "tradeNo": "绿界交易编号",
+      "unpaid": "待付款"
     }
   },
   "label": "点餐",

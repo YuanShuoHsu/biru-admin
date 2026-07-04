@@ -78,7 +78,6 @@
       "subtitle": "決済が完了しませんでした。もう一度お試しいただくか、スタッフにお声がけください。",
       "title": "決済に失敗しました"
     },
-    "estimatedPickupTime": "受け取り予定時間 {time}",
     "pickupLocation": "受け取り場所",
     "pickupNumber": "受け取り番号",
     "success": {
@@ -97,7 +96,8 @@
       "paymentMethod": "お支払い方法",
       "status": "取引ステータス",
       "title": "取引情報",
-      "tradeNo": "ECPay取引番号"
+      "tradeNo": "ECPay取引番号",
+      "unpaid": "支払い待ち"
     }
   },
   "label": "注文",

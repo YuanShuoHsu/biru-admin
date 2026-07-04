@@ -3,6 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useParams, useSearchParams } from "next/navigation";
 import { useSnackbar } from "notistack";
+import useSWR from "swr";
 
 import { StyledCardContent } from "@/components/FormCard";
 import LocationDetails from "@/components/LocationDetails";
@@ -12,14 +13,12 @@ import { ORDER_MODE } from "@/constants/orderMode";
 import { useRouter } from "@/i18n/navigation";
 
 import {
-  AccessTime,
   CheckCircleOutline,
   ContentCopy,
   ErrorOutline,
   MenuBook,
 } from "@mui/icons-material";
 import {
-  Alert,
   Button,
   Card,
   Chip,
@@ -31,12 +30,8 @@ import {
 } from "@mui/material";
 import { type CSSObject, styled } from "@mui/material/styles";
 
+import type { OrderResponse } from "@/types/orders";
 import type { OrganizationResponse } from "@/types/organizations";
-import type { PaymentMethod } from "@/types/payment";
-
-const StyledAlert = styled(Alert)({
-  justifyContent: "center",
-});
 
 const statusIconStyle: CSSObject = {
   alignSelf: "center",
@@ -56,23 +51,11 @@ const StyledTypography = styled(Typography)({
   wordBreak: "break-all",
 });
 
-// TODO: 接上綠界 OrderResultURL / 後端訂單資料後，改為讀取真實交易結果
-const MOCK_TRANSACTION = {
-  card4No: "4242",
-  currency: "NT$",
-  estimatedPickupTime: "15:05",
-  isSuccess: false,
-  items: [
-    { name: "招牌拿鐵（大杯 / 熱 / 燕麥奶）", quantity: 2, subtotal: 240 },
-    { name: "肉桂捲", quantity: 1, subtotal: 120 },
-  ],
-  merchantTradeNo: "BIRU20260703123456",
-  paymentDate: "2026/07/03 14:32",
-  paymentType: "Credit" as PaymentMethod,
-  pickupNumber: "A102",
-  totalAmount: 360,
-  tradeNo: "2607031432187654",
-};
+const SUCCESS_ORDER_STATUSES: OrderResponse["orderStatus"][] = [
+  "OrderDelivered",
+  "OrderPickupAvailable",
+  "OrderProcessing",
+];
 
 const InfoRow = ({
   action,
@@ -122,25 +105,38 @@ const OrderModeOrganizationSlugComplete = ({
   const router = useRouter();
 
   const searchParams = useSearchParams();
-  const search = searchParams.toString();
-  const query = search ? `?${search}` : "";
+  const orderId = searchParams.get("orderId");
+  const menuSearchParams = new URLSearchParams(searchParams);
+  menuSearchParams.delete("orderId");
+  const menuQuery = menuSearchParams.size ? `?${menuSearchParams}` : "";
 
   const tCommon = useTranslations("common");
   const tOrder = useTranslations("order");
 
-  const {
-    card4No,
-    currency,
-    estimatedPickupTime,
-    isSuccess,
-    items,
-    merchantTradeNo,
-    paymentDate,
-    paymentType,
-    pickupNumber,
-    totalAmount,
-    tradeNo,
-  } = MOCK_TRANSACTION;
+  const { data: order, isLoading } = useSWR<OrderResponse>(
+    orderId ? `/api/organizations/${organizationSlug}/orders/${orderId}` : null,
+    {
+      refreshInterval: (data) =>
+        data &&
+        data.paymentMethod !== "Cash" &&
+        data.orderStatus === "OrderPaymentDue"
+          ? 3000
+          : 0,
+    },
+  );
+
+  const isSuccess =
+    !!order &&
+    (order.paymentMethod === "Cash" ||
+      SUCCESS_ORDER_STATUSES.includes(order.orderStatus));
+  const isPaid = !!order && order.orderStatus !== "OrderPaymentDue";
+  const orderNo = order ? order.confirmationNumber || order.orderNumber : "";
+  const currency = order?.items[0]?.priceCurrency || "";
+  const totalAmount = (order?.items || []).reduce(
+    (sum, { orderQuantity, unitPrice }) =>
+      sum + Number(unitPrice) * orderQuantity,
+    0,
+  );
 
   const showPickupInfo = mode === ORDER_MODE.Pickup && !!organization;
 
@@ -148,10 +144,32 @@ const OrderModeOrganizationSlugComplete = ({
   const StatusIcon = STATUS_ICON[status];
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(merchantTradeNo);
+    await navigator.clipboard.writeText(orderNo);
 
     enqueueSnackbar(tOrder("complete.copied"), { variant: "success" });
   };
+
+  const getOrderItemName = ({
+    addOns,
+    menuItemName,
+    modifiers,
+  }: OrderResponse["items"][number]) => {
+    const choiceNames = [
+      ...(modifiers || []).map(({ modifierName }) => modifierName),
+      ...(addOns || []).flatMap(
+        ({ menuItemName: addOnName, modifiers: addOnModifiers }) => [
+          addOnName,
+          ...addOnModifiers.map(({ modifierName }) => modifierName),
+        ],
+      ),
+    ].join(tCommon("delimiter"));
+
+    return choiceNames
+      ? `${menuItemName}${tCommon("parenthesisOpen")}${choiceNames}${tCommon("parenthesisClose")}`
+      : menuItemName;
+  };
+
+  if (isLoading) return null;
 
   return (
     <>
@@ -177,7 +195,7 @@ const OrderModeOrganizationSlugComplete = ({
           </Stack>
         </StyledCardContent>
       </Card>
-      {isSuccess && (
+      {order && isSuccess && (
         <>
           <Card variant="outlined">
             <StyledCardContent>
@@ -195,17 +213,9 @@ const OrderModeOrganizationSlugComplete = ({
                   textAlign="center"
                   variant="h2"
                 >
-                  {pickupNumber}
+                  {order.orderNumber}
                 </Typography>
               </Stack>
-              <StyledAlert
-                icon={<AccessTime fontSize="small" />}
-                severity="info"
-              >
-                {tOrder("complete.estimatedPickupTime", {
-                  time: estimatedPickupTime,
-                })}
-              </StyledAlert>
             </StyledCardContent>
           </Card>
           {showPickupInfo && organization && (
@@ -241,18 +251,22 @@ const OrderModeOrganizationSlugComplete = ({
               >
                 {tOrder("complete.summary.title")}
               </Typography>
-              {items.map(({ name, quantity, subtotal }) => (
+              {order.items.map((item) => (
                 <Stack
                   direction="row"
                   gap={1}
                   justifyContent="space-between"
-                  key={name}
+                  key={item.id}
                 >
                   <Typography variant="body2">
-                    {name} {tCommon("multiply")} {quantity}
+                    {getOrderItemName(item)} {tCommon("multiply")}{" "}
+                    {item.orderQuantity}
                   </Typography>
                   <Typography flexShrink={0} variant="body2">
-                    {currency} {subtotal.toLocaleString(locale)}
+                    {currency}{" "}
+                    {(
+                      Number(item.unitPrice) * item.orderQuantity
+                    ).toLocaleString(locale)}
                   </Typography>
                 </Stack>
               ))}
@@ -284,8 +298,12 @@ const OrderModeOrganizationSlugComplete = ({
                 label={tOrder("complete.transaction.status")}
                 value={
                   <Chip
-                    color="success"
-                    label={tOrder("complete.transaction.paid")}
+                    color={isPaid ? "success" : "warning"}
+                    label={tOrder(
+                      isPaid
+                        ? "complete.transaction.paid"
+                        : "complete.transaction.unpaid",
+                    )}
                     size="small"
                     variant="outlined"
                   />
@@ -302,20 +320,24 @@ const OrderModeOrganizationSlugComplete = ({
                   </IconButton>
                 }
                 label={tOrder("complete.transaction.orderNo")}
-                value={merchantTradeNo}
+                value={orderNo}
               />
-              <InfoRow
-                label={tOrder("complete.transaction.tradeNo")}
-                value={tradeNo}
-              />
+              {order.tradeNo && (
+                <InfoRow
+                  label={tOrder("complete.transaction.tradeNo")}
+                  value={order.tradeNo}
+                />
+              )}
               <InfoRow
                 label={tOrder("complete.transaction.paymentMethod")}
-                value={`${tOrder(`checkout.payment.${paymentType}`)} •••• ${card4No}`}
+                value={`${tOrder(`checkout.payment.${order.paymentMethod}`)}${order.paymentMethodId ? ` •••• ${order.paymentMethodId}` : ""}`}
               />
-              <InfoRow
-                label={tOrder("complete.transaction.paymentDate")}
-                value={paymentDate}
-              />
+              {order.paymentDate && (
+                <InfoRow
+                  label={tOrder("complete.transaction.paymentDate")}
+                  value={new Date(order.paymentDate).toLocaleString(locale)}
+                />
+              )}
               <InfoRow
                 label={tOrder("complete.transaction.amount")}
                 value={`${currency} ${totalAmount.toLocaleString(locale)}`}
@@ -327,7 +349,7 @@ const OrderModeOrganizationSlugComplete = ({
       <Button
         fullWidth
         onClick={() =>
-          router.push(`/order/${mode}/${organizationSlug}${query}`)
+          router.push(`/order/${mode}/${organizationSlug}${menuQuery}`)
         }
         startIcon={<MenuBook />}
         variant="contained"
