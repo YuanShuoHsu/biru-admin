@@ -56,10 +56,7 @@ import {
 import { useCartStore } from "@/providers/cart-store-provider";
 import { useMenuStore } from "@/providers/menu-store-provider";
 
-import type {
-  CheckoutEcpayDto,
-  CheckoutEcpayResponse,
-} from "@/types/ecpay";
+import type { CheckoutEcpayDto, CheckoutEcpayResponse } from "@/types/ecpay";
 import type { CreateOrderDto, OrderResponse } from "@/types/orders";
 import type { PaymentMethod } from "@/types/payment";
 
