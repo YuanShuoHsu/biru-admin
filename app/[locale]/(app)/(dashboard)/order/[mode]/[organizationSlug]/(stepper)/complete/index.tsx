@@ -87,10 +87,12 @@ const InfoRow = ({
 );
 
 interface OrderModeOrganizationSlugCompleteProps {
+  order: OrderResponse | null;
   organization: OrganizationResponse | null;
 }
 
 const OrderModeOrganizationSlugComplete = ({
+  order: initialOrder,
   organization,
 }: OrderModeOrganizationSlugCompleteProps) => {
   const { enqueueSnackbar } = useSnackbar();
@@ -113,9 +115,10 @@ const OrderModeOrganizationSlugComplete = ({
   const tCommon = useTranslations("common");
   const tOrder = useTranslations("order");
 
-  const { data: order, isLoading } = useSWR<OrderResponse>(
+  const { data: order = initialOrder } = useSWR<OrderResponse | null>(
     orderId ? `/api/organizations/${organizationSlug}/orders/${orderId}` : null,
     {
+      fallbackData: initialOrder,
       refreshInterval: (data) =>
         data &&
         data.paymentMethod !== "Cash" &&
@@ -168,8 +171,6 @@ const OrderModeOrganizationSlugComplete = ({
       ? `${menuItemName}${tCommon("parenthesisOpen")}${choiceNames}${tCommon("parenthesisClose")}`
       : menuItemName;
   };
-
-  if (isLoading) return null;
 
   return (
     <>
