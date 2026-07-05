@@ -4,4127 +4,3866 @@
  */
 
 export interface paths {
-  "/api/hello": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/hello": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AppController_getHello"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["AppController_getHello"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/hello/translated": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/hello/translated": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AppController_getTranslatedHello"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["AppController_getTranslatedHello"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/users": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 查詢所有使用者 */
+        get: operations["UsersController_findAll"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** 查詢所有使用者 */
-    get: operations["UsersController_findAll"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/users/list": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/users/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 查詢所有使用者 */
+        get: operations["UsersController_findList"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** 查詢所有使用者 */
-    get: operations["UsersController_findList"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/users/{id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/users/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 查詢使用者 */
+        get: operations["UsersController_findOne"];
+        put?: never;
+        post?: never;
+        /** 刪除使用者 */
+        delete: operations["UsersController_remove"];
+        options?: never;
+        head?: never;
+        /** 更新使用者 */
+        patch: operations["UsersController_update"];
+        trace?: never;
     };
-    /** 查詢使用者 */
-    get: operations["UsersController_findOne"];
-    put?: never;
-    post?: never;
-    /** 刪除使用者 */
-    delete: operations["UsersController_remove"];
-    options?: never;
-    head?: never;
-    /** 更新使用者 */
-    patch: operations["UsersController_update"];
-    trace?: never;
-  };
-  "/api/mails/test": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/mails/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** 測試 SMTP 設定 */
+        post: operations["MailsController_test"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** 測試 SMTP 設定 */
-    post: operations["MailsController_test"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/donate-codes": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/donate-codes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["DonateCodesController_getAll"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["DonateCodesController_getAll"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/ecpay": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/ecpay": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["EcpayController_checkout"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["EcpayController_checkout"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/ecpay/return": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/ecpay/return": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["EcpayController_return"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["EcpayController_return"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/ecpay/get-gov-invoice-word-setting": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/ecpay/result": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["EcpayController_result"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["EcpayController_getGovInvoiceWordSetting"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/ecpay/issue-invoice": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/ecpay/get-gov-invoice-word-setting": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["EcpayController_getGovInvoiceWordSetting"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["EcpayController_issueInvoice"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/organizations/{organizationSlug}/orders": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/ecpay/issue-invoice": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["EcpayController_issueInvoice"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** 建立訂單 */
-    post: operations["OrdersController_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/organizations/{organizationSlug}/orders/{orderId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/organizations/{organizationSlug}/orders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** 建立訂單 */
+        post: operations["OrdersController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** 查詢訂單 */
-    get: operations["OrdersController_findOne"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/organizations/{organizationId}/menus": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/organizations/{organizationSlug}/orders/{orderId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 查詢訂單 */
+        get: operations["OrdersController_findOne"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** 取得組織所有菜單 */
-    get: operations["MenusController_findAllMenus"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/menus/{menuId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/organizations/{organizationId}/menus": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 取得組織所有菜單 */
+        get: operations["MenusController_findAllMenus"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** 取得菜單詳情 */
-    get: operations["MenusController_findMenu"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /** 更新菜單 */
-    patch: operations["MenusController_updateMenu"];
-    trace?: never;
-  };
-  "/api/menus/{menuId}/menu-sections": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/menus/{menuId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 取得菜單詳情 */
+        get: operations["MenusController_findMenu"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** 更新菜單 */
+        patch: operations["MenusController_updateMenu"];
+        trace?: never;
     };
-    /** 取得菜單所有分類 */
-    get: operations["MenusController_findAllMenuSections"];
-    put?: never;
-    /** 建立菜單分類 */
-    post: operations["MenusController_createMenuSection"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/menus/{menuId}/menu-sections/reorder": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/menus/{menuId}/menu-sections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 取得菜單所有分類 */
+        get: operations["MenusController_findAllMenuSections"];
+        put?: never;
+        /** 建立菜單分類 */
+        post: operations["MenusController_createMenuSection"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /** 重新排序菜單分類 */
-    patch: operations["MenusController_reorderMenuSections"];
-    trace?: never;
-  };
-  "/api/menu-sections/{sectionId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/menus/{menuId}/menu-sections/reorder": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** 重新排序菜單分類 */
+        patch: operations["MenusController_reorderMenuSections"];
+        trace?: never;
     };
-    /** 取得菜單分類詳情 */
-    get: operations["MenusController_findMenuSection"];
-    put?: never;
-    post?: never;
-    /** 刪除菜單分類 */
-    delete: operations["MenusController_deleteMenuSection"];
-    options?: never;
-    head?: never;
-    /** 更新菜單分類 */
-    patch: operations["MenusController_updateMenuSection"];
-    trace?: never;
-  };
-  "/api/menu-sections/{sectionId}/menu-items": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/menu-sections/{sectionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 取得菜單分類詳情 */
+        get: operations["MenusController_findMenuSection"];
+        put?: never;
+        post?: never;
+        /** 刪除菜單分類 */
+        delete: operations["MenusController_deleteMenuSection"];
+        options?: never;
+        head?: never;
+        /** 更新菜單分類 */
+        patch: operations["MenusController_updateMenuSection"];
+        trace?: never;
     };
-    /** 取得分類所有品項 */
-    get: operations["MenusController_findAllMenuSectionItems"];
-    put?: never;
-    /** 建立菜單品項 */
-    post: operations["MenusController_createMenuItem"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/menu-sections/{sectionId}/menu-items/reorder": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/menu-sections/{sectionId}/menu-items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 取得分類所有品項 */
+        get: operations["MenusController_findAllMenuSectionItems"];
+        put?: never;
+        /** 建立菜單品項 */
+        post: operations["MenusController_createMenuItem"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /** 重新排序菜單品項 */
-    patch: operations["MenusController_reorderMenuItems"];
-    trace?: never;
-  };
-  "/api/menu-items/{menuItemId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/menu-sections/{sectionId}/menu-items/reorder": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** 重新排序菜單品項 */
+        patch: operations["MenusController_reorderMenuItems"];
+        trace?: never;
     };
-    /** 取得菜單品項詳情 */
-    get: operations["MenusController_findMenuItem"];
-    put?: never;
-    post?: never;
-    /** 刪除菜單品項 */
-    delete: operations["MenusController_deleteMenuItem"];
-    options?: never;
-    head?: never;
-    /** 更新菜單品項 */
-    patch: operations["MenusController_updateMenuItem"];
-    trace?: never;
-  };
-  "/api/menu-items/{menuItemId}/offers": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/menu-items/{menuItemId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 取得菜單品項詳情 */
+        get: operations["MenusController_findMenuItem"];
+        put?: never;
+        post?: never;
+        /** 刪除菜單品項 */
+        delete: operations["MenusController_deleteMenuItem"];
+        options?: never;
+        head?: never;
+        /** 更新菜單品項 */
+        patch: operations["MenusController_updateMenuItem"];
+        trace?: never;
     };
-    /** 取得品項所有定價 */
-    get: operations["MenusController_findAllOffers"];
-    put?: never;
-    /** 建立品項定價 */
-    post: operations["MenusController_createOffer"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/offers/{offerId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/menu-items/{menuItemId}/offers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 取得品項所有定價 */
+        get: operations["MenusController_findAllOffers"];
+        put?: never;
+        /** 建立品項定價 */
+        post: operations["MenusController_createOffer"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** 刪除品項定價 */
-    delete: operations["MenusController_deleteOffer"];
-    options?: never;
-    head?: never;
-    /** 更新品項定價 */
-    patch: operations["MenusController_updateOffer"];
-    trace?: never;
-  };
-  "/api/menu-items/{menuItemId}/add-ons": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/offers/{offerId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** 刪除品項定價 */
+        delete: operations["MenusController_deleteOffer"];
+        options?: never;
+        head?: never;
+        /** 更新品項定價 */
+        patch: operations["MenusController_updateOffer"];
+        trace?: never;
     };
-    /** 取得品項所有加購 */
-    get: operations["MenusController_findAllMenuItemAddOns"];
-    put?: never;
-    /** 新增品項加購 */
-    post: operations["MenusController_createMenuItemAddOn"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/menu-items/{menuItemId}/add-ons/reorder": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/menu-items/{menuItemId}/add-ons": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 取得品項所有加購 */
+        get: operations["MenusController_findAllMenuItemAddOns"];
+        put?: never;
+        /** 新增品項加購 */
+        post: operations["MenusController_createMenuItemAddOn"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /** 重新排序品項加購 */
-    patch: operations["MenusController_reorderMenuItemAddOns"];
-    trace?: never;
-  };
-  "/api/menu-items/{menuItemId}/add-ons/{addOnId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/menu-items/{menuItemId}/add-ons/reorder": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** 重新排序品項加購 */
+        patch: operations["MenusController_reorderMenuItemAddOns"];
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** 刪除品項加購 */
-    delete: operations["MenusController_deleteMenuItemAddOn"];
-    options?: never;
-    head?: never;
-    /** 更新品項加購 */
-    patch: operations["MenusController_updateMenuItemAddOn"];
-    trace?: never;
-  };
-  "/api/menus/{menuId}/modifier-groups": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/menu-items/{menuItemId}/add-ons/{addOnId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** 刪除品項加購 */
+        delete: operations["MenusController_deleteMenuItemAddOn"];
+        options?: never;
+        head?: never;
+        /** 更新品項加購 */
+        patch: operations["MenusController_updateMenuItemAddOn"];
+        trace?: never;
     };
-    /** 取得菜單所有選項群組 */
-    get: operations["MenusController_findAllModifierGroups"];
-    put?: never;
-    /** 建立選項群組 */
-    post: operations["MenusController_createModifierGroup"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/menus/{menuId}/modifier-groups/reorder": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/menus/{menuId}/modifier-groups": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 取得菜單所有選項群組 */
+        get: operations["MenusController_findAllModifierGroups"];
+        put?: never;
+        /** 建立選項群組 */
+        post: operations["MenusController_createModifierGroup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /** 重新排序選項群組 */
-    patch: operations["MenusController_reorderModifierGroups"];
-    trace?: never;
-  };
-  "/api/modifier-groups/{groupId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/menus/{menuId}/modifier-groups/reorder": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** 重新排序選項群組 */
+        patch: operations["MenusController_reorderModifierGroups"];
+        trace?: never;
     };
-    /** 取得選項群組詳情 */
-    get: operations["MenusController_findModifierGroup"];
-    put?: never;
-    post?: never;
-    /** 刪除選項群組 */
-    delete: operations["MenusController_deleteModifierGroup"];
-    options?: never;
-    head?: never;
-    /** 更新選項群組 */
-    patch: operations["MenusController_updateModifierGroup"];
-    trace?: never;
-  };
-  "/api/modifier-groups/{groupId}/modifiers": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/modifier-groups/{groupId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 取得選項群組詳情 */
+        get: operations["MenusController_findModifierGroup"];
+        put?: never;
+        post?: never;
+        /** 刪除選項群組 */
+        delete: operations["MenusController_deleteModifierGroup"];
+        options?: never;
+        head?: never;
+        /** 更新選項群組 */
+        patch: operations["MenusController_updateModifierGroup"];
+        trace?: never;
     };
-    /** 取得群組所有選項 */
-    get: operations["MenusController_findAllModifiers"];
-    put?: never;
-    /** 建立選項 */
-    post: operations["MenusController_createModifier"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/modifier-groups/{groupId}/modifiers/reorder": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/modifier-groups/{groupId}/modifiers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 取得群組所有選項 */
+        get: operations["MenusController_findAllModifiers"];
+        put?: never;
+        /** 建立選項 */
+        post: operations["MenusController_createModifier"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /** 重新排序選項 */
-    patch: operations["MenusController_reorderModifiers"];
-    trace?: never;
-  };
-  "/api/modifiers/{modifierId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/modifier-groups/{groupId}/modifiers/reorder": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** 重新排序選項 */
+        patch: operations["MenusController_reorderModifiers"];
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** 刪除選項 */
-    delete: operations["MenusController_deleteModifier"];
-    options?: never;
-    head?: never;
-    /** 更新選項 */
-    patch: operations["MenusController_updateModifier"];
-    trace?: never;
-  };
-  "/api/menu-items/{menuItemId}/modifier-groups": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/modifiers/{modifierId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** 刪除選項 */
+        delete: operations["MenusController_deleteModifier"];
+        options?: never;
+        head?: never;
+        /** 更新選項 */
+        patch: operations["MenusController_updateModifier"];
+        trace?: never;
     };
-    /** 取得品項已掛上的選項群組 */
-    get: operations["MenusController_findAllMenuItemModifierGroups"];
-    put?: never;
-    /** 為品項掛上選項群組 */
-    post: operations["MenusController_createMenuItemModifierGroup"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/menu-items/{menuItemId}/modifier-groups/reorder": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/menu-items/{menuItemId}/modifier-groups": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 取得品項已掛上的選項群組 */
+        get: operations["MenusController_findAllMenuItemModifierGroups"];
+        put?: never;
+        /** 為品項掛上選項群組 */
+        post: operations["MenusController_createMenuItemModifierGroup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /** 重新排序品項的選項群組 */
-    patch: operations["MenusController_reorderMenuItemModifierGroups"];
-    trace?: never;
-  };
-  "/api/menu-items/{menuItemId}/modifier-groups/{linkId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/menu-items/{menuItemId}/modifier-groups/reorder": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** 重新排序品項的選項群組 */
+        patch: operations["MenusController_reorderMenuItemModifierGroups"];
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** 解除品項的選項群組掛載 */
-    delete: operations["MenusController_deleteMenuItemModifierGroup"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/organizations/{organizationId}/order-menu": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/menu-items/{menuItemId}/modifier-groups/{linkId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** 解除品項的選項群組掛載 */
+        delete: operations["MenusController_deleteMenuItemModifierGroup"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** 取得點餐菜單 */
-    get: operations["PublicMenusController_findOrderMenu"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/gcis/{businessNo}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/organizations/{organizationId}/order-menu": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 取得點餐菜單 */
+        get: operations["PublicMenusController_findOrderMenu"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** 依統一編號查詢公司名稱與地址 */
-    get: operations["GcisController_findOne"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/organizations": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/gcis/{businessNo}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 依統一編號查詢公司名稱與地址 */
+        get: operations["GcisController_findOne"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** 查詢所有組織 */
-    get: operations["OrganizationsController_findAll"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/organizations/{slug}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/organizations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 查詢所有組織 */
+        get: operations["OrganizationsController_findAll"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** 查詢組織 */
-    get: operations["OrganizationsController_findOne"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/organizations/{id}/members": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/organizations/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 查詢組織 */
+        get: operations["OrganizationsController_findOne"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** 查詢組織成員 */
-    get: operations["OrganizationsController_findMembers"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+    "/api/organizations/{id}/members": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 查詢組織成員 */
+        get: operations["OrganizationsController_findMembers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    UserResponseDto: {
-      /**
-       * @description ID
-       * @example 123e4567-e89b-12d3-a456-426614174000
-       */
-      id: string;
-      /**
-       * @description 姓名
-       * @example Coffee
-       */
-      name: string;
-      /**
-       * Format: date-time
-       * @description 建立時間
-       * @example 2025-10-14T12:34:56.000Z
-       */
-      createdAt: string;
-      /**
-       * @description 電子郵件
-       * @example biru@example.com
-       */
-      email: string;
-      /**
-       * @description 是否訂閱電子報
-       * @example true
-       */
-      emailSubscribed: boolean;
-      /**
-       * @description 是否已驗證電子郵件
-       * @example true
-       */
-      emailVerified: boolean;
-      /**
-       * @description 名
-       * @example Coffee
-       */
-      firstName: string;
-      /**
-       * @description 頭像 URL
-       * @example https://example.com/avatar.png
-       */
-      image?: string | null;
-      /**
-       * @description 語言
-       * @example zh-TW
-       * @enum {string}
-       */
-      lang: "en" | "ja" | "ko" | "zh-CN" | "zh-TW";
-      /**
-       * @description 姓
-       * @example Biru
-       */
-      lastName?: string | null;
-      /**
-       * Format: date-time
-       * @description 最後更新時間
-       * @example 2025-10-14T12:34:56.000Z
-       */
-      updatedAt: string;
+    schemas: {
+        UserResponseDto: {
+            /**
+             * @description ID
+             * @example 123e4567-e89b-12d3-a456-426614174000
+             */
+            id: string;
+            /**
+             * @description 姓名
+             * @example Coffee
+             */
+            name: string;
+            /**
+             * Format: date-time
+             * @description 建立時間
+             * @example 2025-10-14T12:34:56.000Z
+             */
+            createdAt: string;
+            /**
+             * @description 電子郵件
+             * @example biru@example.com
+             */
+            email: string;
+            /**
+             * @description 是否訂閱電子報
+             * @example true
+             */
+            emailSubscribed: boolean;
+            /**
+             * @description 是否已驗證電子郵件
+             * @example true
+             */
+            emailVerified: boolean;
+            /**
+             * @description 名
+             * @example Coffee
+             */
+            firstName: string;
+            /**
+             * @description 頭像 URL
+             * @example https://example.com/avatar.png
+             */
+            image?: string | null;
+            /**
+             * @description 語言
+             * @example zh-TW
+             * @enum {string}
+             */
+            lang: "en" | "ja" | "ko" | "zh-CN" | "zh-TW";
+            /**
+             * @description 姓
+             * @example Biru
+             */
+            lastName?: string | null;
+            /**
+             * Format: date-time
+             * @description 最後更新時間
+             * @example 2025-10-14T12:34:56.000Z
+             */
+            updatedAt: string;
+        };
+        /** @enum {string} */
+        UserFilterField: "name" | "email" | "role" | "banned" | "emailSubscribed" | "createdAt";
+        /** @enum {string} */
+        UserFilterOperator: "contains" | "doesNotContain" | "equals" | "doesNotEqual" | "startsWith" | "endsWith" | "isEmpty" | "isNotEmpty" | "isAnyOf" | "is" | "not" | "after" | "onOrAfter" | "before" | "onOrBefore";
+        /** @enum {string} */
+        UserSearchField: "name" | "email";
+        /** @enum {string} */
+        UserSearchOperator: "contains" | "startsWith" | "endsWith";
+        /** @enum {string} */
+        UserSortField: "name" | "email" | "role" | "banned" | "emailSubscribed" | "createdAt";
+        /** @enum {string} */
+        SortDirection: "asc" | "desc";
+        UpdateUserDto: {
+            /**
+             * Format: date
+             * @description 生日
+             * @example 2024-04-04
+             */
+            birthDate?: string;
+            /**
+             * @description 是否訂閱電子報
+             * @example true
+             */
+            emailSubscribed?: boolean;
+            /**
+             * @description 名
+             * @example Coffee
+             */
+            firstName?: string;
+            /**
+             * @description 性別
+             * @example other
+             * @enum {string}
+             */
+            gender?: "female" | "male" | "other";
+            /**
+             * Format: uri
+             * @description 頭像 URL
+             * @example https://example.com/avatar.png
+             */
+            image?: string;
+            /**
+             * @description 姓
+             * @example Biru
+             */
+            lastName?: string;
+            /**
+             * @description 聯絡電話（不含國碼）
+             * @example 0123456789
+             */
+            phoneNumber?: string;
+        };
+        SendTestEmailDto: {
+            /**
+             * Format: email
+             * @description 收件人 Email
+             * @example user@example.com
+             */
+            email: string;
+        };
+        /**
+         * @description 語系設定
+         *     預設語系為中文，若要變更語系參數值請帶：
+         *     - ENG：英語
+         *     - KOR：韓語
+         *     - JPN：日語
+         *     - CHI：簡體中文
+         * @enum {string}
+         */
+        BaseEcpayLanguage: "ENG" | "KOR" | "JPN" | "CHI";
+        CheckoutEcpayDto: {
+            /**
+             * @description 交易描述（必填）
+             *     請勿帶入特殊字元。
+             * @example 商品訂購
+             */
+            TradeDesc: string;
+            /**
+             * @description 商品名稱（必填）
+             *     - 如果商品名稱有多筆，需在金流選擇頁一行一行顯示商品名稱的話，商品名稱請以符號 # 分隔。
+             *     - 商品名稱字數限制為中英數 400 字內，超過此限制系統將自動截斷。 詳細的使用注意事項請參考 FAQ。
+             * @example 商品A#商品B
+             */
+            ItemName: string;
+            /**
+             * Format: uri
+             * @description Client 端返回特店的按鈕連結
+             *     消費者點選此按鈕後，會將頁面導回到此設定的網址
+             *     注意事項：
+             *     1. 導回時不會帶付款結果到此網址，只是將頁面導回而已。
+             *     2. 設定此參數，綠界會在付款完成或取號完成頁面上顯示 [返回商店] 的按鈕。
+             *     3. 設定此參數，發生簡訊 OTP 驗證失敗時，頁面上會顯示 [返回商店] 的按鈕。
+             *     4. 若未設定此參數，則綠界付款完成頁或取號完成頁面，不會顯示 [返回商店] 的按鈕。
+             *     5. 若導回網址未使用 https 時，部份瀏覽器可能會出現警告訊息。
+             *     6. 參數內容若有包含 %26(&) 及 %3C(<) 這二個值時，請先進行 urldecode() 避免呼叫 API 失敗。
+             * @example https://your-domain.com/shop
+             */
+            ClientBackURL?: string;
+            /**
+             * Format: uri
+             * @description Client 端回傳付款結果網址
+             *     有別於 ReturnURL（server端的網址），OrderResultURL 為特店的 client 端（前端）網址。消費者付款完成後，綠界會將付款結果參數以 POST 方式回傳到到該網址。詳細說明請參考付款結果通知。
+             *     注意事項：
+             *     1. 若與 [ClientBackURL] 同時設定，將會以此參數為主。
+             *     2. 銀聯卡及非即時交易（ATM、CVS、BARCODE）不支援此參數。
+             *     3. 付款結果通知請依 ReturnURL（server端的網址）為主,避免因前端操作或網路問題未收到 OrderResultURL 特店的 client 端（前端）的通知。
+             *     4. 參數內容若有包含 %26(&) 及 %3C(<) 這二個值時，請先進行 urldecode() 避免呼叫 API 失敗。
+             * @example https://your-domain.com/ecpay/result
+             */
+            OrderResultURL?: string;
+            /**
+             * @description 語系設定
+             *     預設語系為中文，若要變更語系參數值請帶：
+             *     - ENG：英語
+             *     - KOR：韓語
+             *     - JPN：日語
+             *     - CHI：簡體中文
+             * @example ENG
+             */
+            Language?: components["schemas"]["BaseEcpayLanguage"];
+            /** @description 訂單 ID */
+            orderId: string;
+        };
+        CheckoutEcpayResponseDto: {
+            /** @description 綠界結帳端點，前端以 hidden form POST 導向 */
+            action: string;
+            /** @description 表單欄位（含 CheckMacValue），逐一放入 hidden input */
+            fields: {
+                [key: string]: string;
+            };
+        };
+        ReturnEcpayDto: {
+            /**
+             * @description 特店編號
+             * @example 3002607
+             */
+            MerchantID: string;
+            /**
+             * @description 特店交易編號
+             *     訂單產生時傳送給綠界的特店交易編號。
+             * @example D9RMXNrihUYM
+             */
+            MerchantTradeNo: string;
+            /**
+             * @description 特店旗下店舖代號
+             * @example
+             */
+            StoreID?: string;
+            /**
+             * @description 交易狀態
+             *     - 若回傳值為 1 時，為付款成功
+             *     - 其餘代碼皆為交易異常，請至廠商管理後台確認後再出貨。
+             *
+             *     常見交易狀態：
+             *     - 10300066：「交易付款結果待確認中，請勿出貨」，請至廠商管理後台確認已付款完成再出貨。
+             *     - 10100248：「拒絕交易，請客戶聯繫發卡行確認原因」
+             *     - 10100252：「額度不足，請客戶檢查卡片額度或餘額」
+             *     - 10100254：「交易失敗，請客戶聯繫發卡行確認交易限制」
+             *     - 10100251：「卡片過期，請客戶檢查卡片重新交易」
+             *     - 10100255：「報失卡，請客戶更換卡片重新交易」
+             *     - 10100256：「被盜用卡，請客戶更換卡片重新交易」
+             * @example 1
+             */
+            RtnCode: number;
+            /**
+             * @description 交易訊息
+             * @example 交易成功
+             */
+            RtnMsg: string;
+            /**
+             * @description 綠界的交易編號
+             *     請保存綠界的交易編號與特店交易編號 [MerchantTradeNo] 的關連。
+             * @example 2412311225437371
+             */
+            TradeNo: string;
+            /**
+             * @description 交易金額
+             * @example 402
+             */
+            TradeAmt: number;
+            /**
+             * @description 付款時間
+             *     格式為 yyyy/MM/dd HH:mm:ss
+             * @example 2024/12/31 12:26:09
+             */
+            PaymentDate: string;
+            /**
+             * @description 特店選擇的付款方式
+             *     請參考回覆付款方式一覽表
+             * @example Credit_CreditCard
+             */
+            PaymentType: string;
+            /**
+             * @description 交易服務金額
+             *     交易手續費+交易處理費的總金額
+             * @example 10
+             */
+            PaymentTypeChargeFee: number;
+            /**
+             * @description 訂單成立時間
+             *     格式為 yyyy/MM/dd HH:mm:ss
+             * @example 2024/12/31 12:25:43
+             */
+            TradeDate: string;
+            /**
+             * @description 特約合作平台商代號
+             *     為專案合作的平台商使用。
+             */
+            PlatformID?: string;
+            /**
+             * @description 是否為模擬付款
+             *     - 是否為模擬付款
+             *     - 0：代表此交易非模擬付款。
+             *     - 1：代表此交易為模擬付款，RtnCode 也為 1。並非是由消費者實際真的付款，所以綠界也不會撥款給廠商，請勿對該筆交易做出貨等動作，以避免損失。
+             *
+             *     注意事項：
+             *     1. 特店可透過廠商後台來針對單筆訂單模擬綠界回傳付款通知，以方便介接 API。
+             *     2. 此功能僅只是用於測試 ReturnURL 是否能成功接收，不會改變付款狀態。
+             *     3. 只有透過廠商後台的定期定額查詢功能發動的模擬付款通知，綠界才會傳送此參數，正常由定期定額排程所發送的付款通知，不會傳送此參數。
+             * @example 0
+             * @enum {number}
+             */
+            SimulatePaid?: 0 | 1;
+            /**
+             * @description 自訂名稱欄位 1
+             *     提供合作廠商使用記錄用客製化使用欄位
+             * @example
+             */
+            CustomField1?: string;
+            /**
+             * @description 自訂名稱欄位 2
+             *     提供合作廠商使用記錄用客製化使用欄位
+             * @example
+             */
+            CustomField2?: string;
+            /**
+             * @description 自訂名稱欄位 3
+             *     提供合作廠商使用記錄用客製化使用欄位
+             * @example
+             */
+            CustomField3?: string;
+            /**
+             * @description 自訂名稱欄位 4
+             *     提供合作廠商使用記錄用客製化使用欄位
+             * @example
+             */
+            CustomField4?: string;
+            /**
+             * @description 檢查碼
+             *     特店必須檢查檢查碼 [CheckMacValue] 來驗證，請參考附錄檢查碼機制。
+             * @example 85D927637935683EA756CDEF76498FEB9F5D098A7A1AC4F0CB3B3609A9D4116A
+             */
+            CheckMacValue: string;
+        };
+        IssueInvoiceEcpayItemDto: {
+            /**
+             * @description 商品序號
+             *     請帶入1~999整數數字
+             * @example 1
+             */
+            ItemSeq?: number;
+            /**
+             * @description 商品名稱（必填）
+             * @example 經典拿鐵
+             */
+            ItemName: string;
+            /**
+             * @description 商品數量（必填）
+             *     支援整數8位，小數7位
+             * @example 1
+             */
+            ItemCount: number;
+            /**
+             * @description 商品單位（必填）
+             * @example 件
+             */
+            ItemWord: string;
+            /**
+             * @description 商品單價（必填）
+             *     - 支援整數 10 位，小數 7 位
+             *     - 若 vat=0（未稅），商品金額需為未稅金額
+             *     若 vat=1（含稅），商品金額需為含稅金額
+             * @example 50
+             */
+            ItemPrice: number;
+            /**
+             * @description 商品課稅別
+             *     - 當課稅類別 [TaxType] = 9 時，此欄位不可為空。
+             *     1：應稅
+             *     2：零稅率
+             *     3：免稅
+             *
+             *     注意事項：
+             *     - 當課稅類別 [TaxType] = 9 時，免稅和零稅率發票不能同時開立。商品課稅類別 [ItemTaxType] 只能為以下組合：
+             *     （應稅 + 免稅）或（應稅 + 零稅率）
+             *     - 當課稅類別 [TaxType] 不等於 9（混稅）時，商品課稅類別 [ItemTaxType] 無效不需填寫
+             * @example 1
+             * @enum {string}
+             */
+            ItemTaxType?: "1" | "2" | "3";
+            /**
+             * @description 商品合計（必填）
+             *     - 支援整數 12 位，小數 7 位
+             *     - 此為含稅小計金額
+             *     - 所有商品的 ItemAmount 加總後四捨五入=SalesAmount（含稅）
+             *
+             *     注意事項：
+             *     - ItemAmount 需統一為含稅金額，且商品金額需符合以下規則：
+             *     1. 當 vat = 1, 且 TaxType = 1：
+             *     ItemPrice（含稅）* ItemCount = ItemAmount（含稅）
+             *     ex: 500 * 5 = 2500
+             *     2. 當 vat = 0, 且 TaxType = 1（稅率5%）：
+             *     ItemPrice（不含稅）* ItemCount * 1.05 = ItemAmount（含稅）
+             *     ex: 500 * 5 * 1.05 = 2625
+             * @example 50
+             */
+            ItemAmount: number;
+            /**
+             * @description 商品備註
+             * @example item01_desc
+             */
+            ItemRemark?: string;
+        };
+        IssueInvoiceEcpayDecryptedRequestDto: {
+            /**
+             * @description 特店編號（必填）
+             * @example 2000132
+             */
+            MerchantID: string;
+            /**
+             * @description 特店自訂編號（必填）
+             *     需為唯一值不可重複使用
+             *
+             *     注意事項：
+             *     - 請勿使用特殊符號
+             *     - 大小寫英文視為相同 (e.g. 123abc456=123ABC456)
+             * @example 20181028000000001
+             */
+            RelateNumber: string;
+            /**
+             * @description 通路商編號
+             *     1：蝦皮
+             *     其餘數值忽略無效
+             * @enum {string}
+             */
+            ChannelPartner?: "1";
+            /**
+             * @description 客戶編號
+             *     格式為『英文、數字、下底線』等字元
+             * @example
+             */
+            CustomerID?: string;
+            /**
+             * @description 產品服務別代號
+             *     - 該參數必須由英文字母（A-Z, a-z）和數字（0-9）組成，其長度必須在 1 到 10 個字符之間。
+             *     - 此參數只有在【B2C 系統多組字軌】開關為【啟用】時，帶入值才會進行處理，否則會忽略此參數。如需啟用請洽所屬業務。
+             *     - 具體步驟參考如下：
+             *     1. 聯繫所屬業務 <啟用> B2C 系統多組字軌功能
+             *     2. 至廠商後台 <字軌分類管理> 節點，新增商品/服務別，例如 A0001-餐具、A0002-清潔用品，可參考 電子發票系統操作手冊 <字軌分類管理> 章節說明
+             *     3. 至廠商後台 <字軌與配號設定> 節點，新增字軌配號，可參考 電子發票系統操作手冊 <字軌與配號設定> 章節說明
+             *     4. 透過開立發票 API，此參數 [ProductServiceID] 帶入先前廠商後台設定的 A0001 或 A0002，即可完成發票開立
+             */
+            ProductServiceID?: string;
+            /**
+             * @description 統一編號
+             *     - 格式為數字，固定長度為 8 碼
+             *     - 根據財政部的最新公告，針對統一編號的檢核方式做了調整。
+             *     您可以點擊以下連結查看：
+             *     [財政部財政資訊中心營利事業統一編號檢查碼邏輯修正說明]
+             *     - 如未符合上述檢核邏輯，則開立發票、設定交易對象維護資料時將會失敗，請營業人務必提供正確的統一編號
+             *     - 只會做格式邏輯檢核，不會去查詢公開資料庫是否存在
+             * @example
+             */
+            CustomerIdentifier?: string;
+            /**
+             * @description 客戶名稱
+             *     - 當列印註記 [Print]=1（列印）時，此參數為必填
+             *     - 格式為中、英文及數字等。
+             *     - 當統一編號 [CustomerIdentifier] 有值時，請帶入相對應的營業人名稱，可參照以下 API 取得多數的對應公司名稱統一編號驗證 API
+             * @example 綠界科技股份有限公司
+             */
+            CustomerName?: string;
+            /**
+             * @description 客戶地址
+             *     當列印註記 [Print]=1（列印）時，此參數為必填
+             * @example 106台北市南港區發票一街1號1樓
+             */
+            CustomerAddr?: string;
+            /**
+             * @description 客戶手機號碼
+             *     - 當客戶電子信箱 [CustomerEmail] 為空字串時，為必填。
+             *     - 格式為數字
+             * @example
+             */
+            CustomerPhone?: string;
+            /**
+             * @description 客戶電子信箱
+             *     - 當客戶手機號碼 [CustomerPhone] 為空字串時，為必填。
+             *     - 需為有效的 Email 格式，且僅可填寫一組 Email。
+             *     - 格式檢核正規表達式為：
+             *
+             *     注意事項：
+             *     - 測試環境請勿帶入之真實電子信箱，避免個資外洩。
+             *     - 測試環境僅作 API 串接測試使用，僅以 API 回覆成功或失敗；不提供發信測試，僅驗規則。
+             *     - 格式檢核正規表達式為：```/^((([A-Za-z]|\d|[!#\$%&’\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([A-Za-z]|\d|[!#\$%&’\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([A-Za-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([A-Za-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([A-Za-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([A-Za-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([A-Za-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([A-Za-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([A-Za-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([A-Za-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/u```
+             * @example test@ecpay.com.tw
+             */
+            CustomerEmail?: string;
+            /**
+             * @description 通關方式
+             *     - 當課稅類別 [TaxType] 為 2（零稅率）或 9（混合應稅與零稅率）時，為必填
+             *     1：非經海關出口
+             *     2：經海關出口
+             * @example 1
+             * @enum {string}
+             */
+            ClearanceMark?: "1" | "2";
+            /**
+             * @description 列印註記（必填）
+             *     0：不列印
+             *     1：列印
+             *
+             *     注意事項：
+             *     1. 請注意此參數的意義為註記這張發票之後會被廠商自行印出紙本，綠界上傳財政部時也會提供這個參數讓財政部知道這張發票是被列印成紙本的，並不是指由綠界代為列印與寄送
+             *     2. 當捐贈註記 [Donation]=1（要捐贈），此參數請帶 0
+             *     3. 當統一編號 [CustomerIdentifier] 有值時
+             *     2.a 載具類別 [CarrierType] 為空值時，此參數請帶 1
+             *     2.b 載具類別 [CarrierType]=1 或 2 時，此參數請帶 0
+             *     2.c 載具類別 [CarrierType]=3 時，此參數可帶 0 或 1
+             *
+             *     注意事項：
+             *
+             *     超商 KIOSK 事務機列印注意事項（除須向業務申請開通外，請按以下需求帶入參數）
+             *     1. 要列印消費發票（ibon）
+             *     Print=1，CarrierType=””，CustomerIdentifier=””，Donation=0，只能列印一次（之後中獎也無法再次列印）
+             *     2. 要列印中獎發票（ibon, FamiPort）
+             *     Print=0，CarrierType=1，CustomerIdentifier=””，Donation=0，只能列印一次
+             *     3. 折讓後發票金額為 0 元，不可列印
+             * @example 1
+             * @enum {string}
+             */
+            Print: "0" | "1";
+            /**
+             * @description 捐贈註記（必填）
+             *     0：不捐贈
+             *     1：捐贈
+             *
+             *     注意事項：
+             *     1. 當統一編號 [CustomerIdentifier] 有值時，此參數請帶 0
+             *     2. 當載具類別 [CarrierType] 不為空字串且捐贈註記 [Donation]=1 時，代表此張發票開立當下是存在載具內，之後消費者將此張發票進行捐贈成功，所以此張發票最終狀態是捐贈成功
+             * @example 0
+             * @enum {string}
+             */
+            Donation: "0" | "1";
+            /**
+             * @description 捐贈碼
+             *     - 當捐贈註記 [Donation]=1（要捐贈）時，為必填。
+             *     - 格式為阿拉伯數字為限，最少三碼，最多七碼，首位可以為零。
+             *
+             *     注意事項：使用捐贈碼時，請先呼叫捐贈碼驗證進行檢核，避免輸入錯誤。
+             *
+             *     推薦捐贈碼 168001
+             *     OMG 關懷社會愛心基金會
+             *     成立於 2009 年，希望能集結網友族群的心意，將愛傳遞到社會的每一個角落。
+             *     本基金會致力於：清寒學生及偏遠學校助學、流浪動物與動物保育議題、老人及弱勢團體、急難救助、人道救援、社會公益活動推廣及廣告贊助…等。
+             * @example
+             */
+            LoveCode?: string;
+            /**
+             * @description 載具類別
+             *     空字串：無載具
+             *     1：綠界電子發票載具
+             *     2：自然人憑證號碼
+             *     3：手機條碼載具
+             *     4：悠遊卡
+             *     5：一卡通
+             *
+             *     注意事項：
+             *     - 當列印參數 [Print]=1（需列印）且發票含統編時，若同時需存放載具，則僅能使用手機條碼載具（值為 3）；若不使用載具，則請傳入空字串。
+             *     - 當列印註記 [Print]=0（不列印），且統一編號 [CustomerIdentifier] 有值時，此參數不可帶空字串。
+             *     - 只有存在綠界電子發票載具（此參數帶 1）的發票，中獎後才能在 ibon 列印領取必填
+             * @example
+             * @enum {string}
+             */
+            CarrierType?: "" | "1" | "2" | "3" | "4" | "5";
+            /**
+             * @description 載具編號
+             *     - 當 [CarrierType]=”” 時，請帶空字串。
+             *     - 當[CarrierType]=1
+             *     請帶空字串，系統會自動帶入值，為客戶電子信箱或客戶手機號碼擇一（以客戶電子信箱優先），請注意，綠界會重新編碼後產出綠界載具編號。
+             *     - [CarrierType]=2
+             *     請帶固定長度為 16 且格式為 2 碼大寫英文字母加上 14 碼數字
+             *     - [CarrierType]=3
+             *     請帶固定長度為 8 碼字元，第 1 碼為【/】; 其餘 7 碼則由數字【0-9】、大寫英文【A-Z】與特殊符號【+】【-】【.】這 39 個字元組成的編號。
+             *     - 當[CarrierType]=4 或 5
+             *     必填，請帶入實體卡片的 <隱碼id>，不會檢核。
+             *
+             *     注意事項：
+             *     1. 英文、數字、符號僅接受半形字元，格式錯誤會造成開立失敗
+             *     2. 若為手機條碼載具時，請先呼叫手機條碼驗證進行檢核，一旦手機條碼有誤，會造成發票歸戶失敗。
+             *     3. 針對悠遊卡或一卡通如何取得卡片隱碼（內碼）：您的設備需配備能讀取悠遊卡或一卡通的讀卡機，並確保該設備能讀取卡片內碼
+             *     4. 查詢發票 API，當載具類別為悠遊卡/一卡通，因有資安考量，不會回傳 <隱碼id>
+             * @example
+             */
+            CarrierNum?: string;
+            /**
+             * @description 第二載具編號
+             *     - 當 [CarrierType]=4 或 5
+             *     必填，請帶入實體卡片的 <顯碼id>，以便發票查詢可以顯示用來識別不同的實體卡片，不會檢核。
+             *     - 當 [CarrierType]=不等於 4 或 5 時，此參數不須帶入。
+             *
+             *     注意事項：
+             *     1. 英文、數字、符號僅接受半形字元，格式錯誤會造成開立失敗
+             *     2. 當 CarrierType 數值為 1、2 或 3 時，請廠商無須填入此欄位，以避免系統阻擋。
+             *     3. 針對悠遊卡或一卡通的顯碼（外碼）指的是卡片上外顯的號碼，用來方便持有卡片者區別不同的實體卡片
+             *     4. 查詢發票 API，會於參數 IIS_Carrier_Num 內回傳 <顯碼id>
+             */
+            CarrierNum2?: string;
+            /**
+             * @description 課稅類別（必填）
+             *     - 當字軌類別 [InvType] 為 07 時，則此欄位請填入 1、2、3 或 9
+             *     - 當字軌類別 [InvType] 為 08 時，則此欄位請填入 3 或 4
+             *     1：應稅。
+             *     2：零稅率。
+             *     3：免稅。
+             *     4：應稅（特種稅率）
+             *     9：混合應稅與免稅或零稅率，必需通過申請核可。
+             *     - 綠界稅額計算方式
+             *     一般發票（非混稅、非特種）：
+             *     （發票金額 / 1.05）* 0.05 並四捨五入至整數
+             *     混稅發票：
+             *     （應稅品項小計總和 / 1.05）* 0.05 並四捨五入至整數
+             * @example 1
+             * @enum {string}
+             */
+            TaxType: "1" | "2" | "3" | "4" | "9";
+            /**
+             * @description 零稅率原因
+             *     - 自 115 年 1 月 1 日起，當課稅類別 [TaxType] 為 2（零稅率）或 9（混合應稅與零稅率）時，此欄位必填或廠商後台必須設定以便程式抓取，否則將會開立失敗，其值如下
+             *     71：第一款 外銷貨物
+             *     72：第二款 與外銷有關之勞務，或在國內提供而在國外使用之勞務
+             *     73：第三款 依法設立之免稅商店銷售與過境或出境旅客之貨物
+             *     74：第四款 銷售與保稅區營業人供營運之貨物或勞務
+             *     75：第五款 國際間之運輸。但外國運輸事業在中華民國境內經營國際運輸業務者，應以各該國對中華民國國際運輸事業予以相等待遇或免徵類似稅捐者為限
+             *     76：第六款 國際運輸用之船舶、航空器及遠洋漁船
+             *     77：第七款 銷售與國際運輸用之船舶、航空器及遠洋漁船所使用之貨物或修繕勞務
+             *     78：第八款 保稅區營業人銷售與課稅區營業人未輸往課稅區而直接出口之貨物
+             *     79：第九款 保稅區營業人銷售與課稅區營業人存入自由港區事業或海關管理之保稅倉庫、物流中心以供外銷之貨物
+             * @enum {string}
+             */
+            ZeroTaxRateReason?: "71" | "72" | "73" | "74" | "75" | "76" | "77" | "78" | "79";
+            /**
+             * @description 特種稅額類別
+             *     - 當課稅類別 [TaxType] 為 1 / 2 / 9 時，系統將會自動帶入數字【0】
+             *     - 當課稅類別 [TaxType] 為 3 時，則該參數必填，請填入數字【8】
+             *     - 當課稅類別 [TaxType] 為 4 時，則該參數必填，可填入數字【1-8】
+             *     - 並分別代表以下類別與稅率
+             *     1：代表酒家及有陪侍服務之茶室、咖啡廳、酒吧之營業稅稅率，稅率為 25 %
+             *     2：代表夜總會、有娛樂節目之餐飲店之營業稅稅率，稅率為 15 %
+             *     3：代表銀行業、保險業、信託投資業、證券業、期貨業、票券業及典當業之專屬本業收入（不含銀行業、保險業經營銀行、保險本業收入）之營業稅稅率，稅率為 2 %
+             *     4：代表保險業之再保費收入之營業稅稅率，稅率為 1 %
+             *     5：代表銀行業、保險業、信託投資業、證券業、期貨業、票券業及典當業之非專屬本業收入之營業稅稅率，稅率為 5 %
+             *     6：代表銀行業、保險業經營銀行、保險本業收入之營業稅稅率（適用於民國 103 年 07 月以後銷售額），稅率為 5 %
+             *     7：代表銀行業、保險業經營銀行、保險本業收入之營業稅稅率（適用於民國 103 年 06 月以前銷售額），稅率為 5 %
+             *     8：代表空白為免稅或非銷項特種稅額之資料
+             * @enum {number}
+             */
+            SpecialTaxType?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+            /**
+             * @description 發票總金額（含稅）（必填）
+             *     - 請帶整數，支援至12位，不可有小數點。
+             *     - 僅限新台幣。
+             * @example 100
+             */
+            SalesAmount: number;
+            /**
+             * @description 發票備註
+             *     由於配合 MIG 4.0 改版，
+             *     系統暫時性限制接受字元長度為 100 字元 – String(100)，
+             *     將於 Q2 搭配 MIG 4.0 上線後重新恢復支援 200 字元 – String(200)。
+             * @example 發票備註
+             */
+            InvoiceRemark?: string;
+            /**
+             * @description 商品
+             *     - 可多筆
+             *     - 商品最多支援999項
+             */
+            Items: components["schemas"]["IssueInvoiceEcpayItemDto"][];
+            /**
+             * @description 字軌類別（必填）
+             *     - 該張發票的字軌類型
+             *     07：一般稅額
+             *     08：特種稅額
+             * @example 07
+             * @enum {string}
+             */
+            InvType: "07" | "08";
+            /**
+             * @description 商品單價是否含稅
+             *     - 預設為含稅價
+             *     1：含稅
+             *     0：未稅
+             * @example 1
+             * @enum {string}
+             */
+            vat?: "1" | "0";
+        };
+        IssueInvoiceEcpayDecryptedResponseDto: {
+            /**
+             * @description 回應代碼
+             *     1 代表 API 執行成功，其餘代碼均為失敗。
+             * @example 1
+             */
+            RtnCode: number;
+            /**
+             * @description 回應訊息
+             * @example 開立發票成功
+             */
+            RtnMsg: string;
+            /**
+             * @description 發票號碼
+             *     - 若開立成功，則會回傳一組發票號碼
+             *     - 若開立失敗，則會回傳空值
+             * @example UV11100012
+             */
+            InvoiceNo: string;
+            /**
+             * @description 發票開立時間
+             *     格式為「yyyy-MM-dd HH:mm:ss」或「 yyyy/MM/dd HH:mm:ss」
+             * @example 2019-09-17 17:17:31
+             */
+            InvoiceDate: string;
+            /**
+             * @description 隨機碼
+             * @example 6866
+             */
+            RandomNumber: string;
+        };
+        CreateOrderCustomerDto: {
+            /** Format: email */
+            email?: string;
+            name: string;
+            remark?: string;
+            telephone?: string;
+        };
+        CreateOrderInvoiceDto: {
+            /** @enum {string} */
+            type: "personal" | "company" | "donate";
+            /** @enum {string} */
+            carrierType?: "individual" | "mobile" | "certificate";
+            carruerNum?: string;
+            /** Format: email */
+            email?: string;
+            customerIdentifier?: string;
+            customerName?: string;
+            customerAddr?: string;
+            donateCode?: string;
+        };
+        CreateOrderItemAddOnDto: {
+            menuItemId: string;
+            /** @description modifierGroupId → modifierIds[] */
+            modifiers: {
+                [key: string]: string[];
+            };
+        };
+        CreateOrderItemDto: {
+            menuItemId: string;
+            quantity: number;
+            /** @description modifierGroupId → modifierIds[] */
+            modifiers: {
+                [key: string]: string[];
+            };
+            addOns: components["schemas"]["CreateOrderItemAddOnDto"][];
+        };
+        CreateOrderDto: {
+            /** @enum {string} */
+            mode: "counter" | "dineIn" | "kiosk" | "pickup";
+            customer: components["schemas"]["CreateOrderCustomerDto"];
+            /** @enum {string} */
+            payment: "ApplePay" | "Cash" | "Credit" | "iPASS" | "Jkopay" | "TWQR" | "WeiXin";
+            invoice?: components["schemas"]["CreateOrderInvoiceDto"];
+            items: components["schemas"]["CreateOrderItemDto"][];
+        };
+        OrderCustomerDto: {
+            email?: string | null;
+            name: string;
+            remark?: string | null;
+            telephone?: string | null;
+        };
+        OrderItemModifierSnapshotDto: {
+            modifierGroupId: string;
+            modifierGroupName: string;
+            modifierId: string;
+            modifierName: string;
+            priceAdjustment?: string | null;
+        };
+        OrderItemAddOnSnapshotDto: {
+            menuItemId: string;
+            menuItemName: string;
+            unitPrice: string;
+            modifiers: components["schemas"]["OrderItemModifierSnapshotDto"][];
+        };
+        OrderItemResponseDto: {
+            id: string;
+            menuItemId: string;
+            menuItemName: string;
+            unitPrice: string;
+            priceCurrency?: string | null;
+            orderQuantity: number;
+            modifiers?: components["schemas"]["OrderItemModifierSnapshotDto"][] | null;
+            addOns?: components["schemas"]["OrderItemAddOnSnapshotDto"][] | null;
+        };
+        OrderResponseDto: {
+            id: string;
+            sellerId: string;
+            /** @enum {string} */
+            mode: "counter" | "dineIn" | "kiosk" | "pickup";
+            orderNumber: string;
+            customer: components["schemas"]["OrderCustomerDto"];
+            /** @enum {string} */
+            paymentMethod: "ApplePay" | "Cash" | "Credit" | "iPASS" | "Jkopay" | "TWQR" | "WeiXin";
+            paymentMethodId?: string | null;
+            /** @enum {string} */
+            orderStatus: "OrderCancelled" | "OrderDelivered" | "OrderPaymentDue" | "OrderPickupAvailable" | "OrderProcessing" | "OrderProblem";
+            confirmationNumber?: string | null;
+            /** Format: date-time */
+            paymentDate?: string | null;
+            tradeNo?: string | null;
+            discount?: string | null;
+            discountCode?: string | null;
+            invoice?: Record<string, never> | null;
+            items: components["schemas"]["OrderItemResponseDto"][];
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        MenuResponseDto: {
+            id: string;
+            organizationId: string;
+            name: Record<string, never>;
+            description?: Record<string, never> | null;
+            image?: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        UpdateMenuDto: {
+            /**
+             * @example {
+             *       "zh-TW": "午餐菜單",
+             *       "en": "Lunch Menu"
+             *     }
+             */
+            name?: Record<string, never>;
+            description?: Record<string, never>;
+            image?: string;
+        };
+        CreateMenuSectionDto: {
+            /** @description Parent section ID for nested sections */
+            parentSectionId?: string;
+            /**
+             * @example {
+             *       "zh-TW": "主餐",
+             *       "en": "Main Course"
+             *     }
+             */
+            name: Record<string, never>;
+            description?: Record<string, never>;
+            image?: string;
+        };
+        MenuSectionResponseDto: {
+            id: string;
+            menuId?: string | null;
+            parentSectionId?: string | null;
+            name: Record<string, never>;
+            description?: Record<string, never> | null;
+            image?: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        /** @enum {string} */
+        MenuFilterField: "name" | "description" | "createdAt" | "updatedAt";
+        /** @enum {string} */
+        FilterOperator: "contains" | "doesNotContain" | "equals" | "doesNotEqual" | "startsWith" | "endsWith" | "isEmpty" | "isNotEmpty" | "isAnyOf" | "is" | "not" | "after" | "onOrAfter" | "before" | "onOrBefore";
+        /** @enum {string} */
+        MenuSortField: "name" | "description" | "createdAt" | "updatedAt";
+        ReorderDto: {
+            ids: string[];
+            /** @default 0 */
+            offset: number;
+        };
+        UpdateMenuSectionDto: {
+            /** @description Parent section ID for nested sections */
+            parentSectionId?: string;
+            /**
+             * @example {
+             *       "zh-TW": "主餐",
+             *       "en": "Main Course"
+             *     }
+             */
+            name?: Record<string, never>;
+            description?: Record<string, never>;
+            image?: string;
+        };
+        NutritionInformationDto: {
+            calories?: string;
+            carbohydrateContent?: string;
+            cholesterolContent?: string;
+            fatContent?: string;
+            fiberContent?: string;
+            proteinContent?: string;
+            saturatedFatContent?: string;
+            servingSize?: string;
+            sodiumContent?: string;
+            sugarContent?: string;
+            transFatContent?: string;
+            unsaturatedFatContent?: string;
+        };
+        /** @enum {string} */
+        ItemAvailability: "InStock" | "SoldOut" | "Discontinued";
+        QuantitativeValueDto: {
+            unitText?: string;
+            value?: number;
+        };
+        PriceSpecificationDto: {
+            /** @example 150.00 */
+            price: string;
+            /** @example TWD */
+            priceCurrency: string;
+            /**
+             * @description 促銷開始時間（ISO 8601）
+             * @example 2025-06-01T00:00:00+08:00
+             */
+            validFrom?: string;
+            /**
+             * @description 促銷結束時間（ISO 8601）
+             * @example 2025-06-30T23:59:59+08:00
+             */
+            validThrough?: string;
+        };
+        CreateOfferDto: {
+            /** @example 150.00 */
+            price: string;
+            /** @default TWD */
+            priceCurrency: string;
+            availability?: components["schemas"]["ItemAvailability"];
+            /** @description 預計準備時間，unitText 建議用 "minute" */
+            deliveryLeadTime?: components["schemas"]["QuantitativeValueDto"];
+            /** @description 當日剩餘庫存數量 */
+            inventoryLevel?: components["schemas"]["QuantitativeValueDto"];
+            priceSpecification?: components["schemas"]["PriceSpecificationDto"];
+        };
+        CreateMenuItemDto: {
+            /**
+             * @example {
+             *       "zh-TW": "拿鐵",
+             *       "en": "Latte"
+             *     }
+             */
+            name: Record<string, never>;
+            description?: Record<string, never>;
+            image?: string;
+            suitableForDiet?: ("DiabeticDiet" | "GlutenFreeDiet" | "HalalDiet" | "HinduDiet" | "KosherDiet" | "LowCalorieDiet" | "LowFatDiet" | "LowLactoseDiet" | "LowSaltDiet" | "VeganDiet" | "VegetarianDiet")[];
+            nutrition?: components["schemas"]["NutritionInformationDto"];
+            offer?: components["schemas"]["CreateOfferDto"];
+        };
+        OfferResponseDto: {
+            id: string;
+            menuItemId?: string | null;
+            menuSectionId?: string | null;
+            price?: string | null;
+            priceCurrency?: string | null;
+            availability?: components["schemas"]["ItemAvailability"] | null;
+            deliveryLeadTime?: components["schemas"]["QuantitativeValueDto"] | null;
+            inventoryLevel?: components["schemas"]["QuantitativeValueDto"] | null;
+            priceSpecification?: components["schemas"]["PriceSpecificationDto"] | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        MenuItemResponseDto: {
+            id: string;
+            menuId?: string | null;
+            menuSectionId?: string | null;
+            name: Record<string, never>;
+            description?: Record<string, never> | null;
+            image?: string | null;
+            suitableForDiet?: ("DiabeticDiet" | "GlutenFreeDiet" | "HalalDiet" | "HinduDiet" | "KosherDiet" | "LowCalorieDiet" | "LowFatDiet" | "LowLactoseDiet" | "LowSaltDiet" | "VeganDiet" | "VegetarianDiet")[] | null;
+            nutrition?: components["schemas"]["NutritionInformationDto"] | null;
+            offer?: components["schemas"]["OfferResponseDto"] | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        UpdateMenuItemDto: {
+            /**
+             * @example {
+             *       "zh-TW": "拿鐵",
+             *       "en": "Latte"
+             *     }
+             */
+            name?: Record<string, never>;
+            description?: Record<string, never>;
+            image?: string;
+            suitableForDiet?: ("DiabeticDiet" | "GlutenFreeDiet" | "HalalDiet" | "HinduDiet" | "KosherDiet" | "LowCalorieDiet" | "LowFatDiet" | "LowLactoseDiet" | "LowSaltDiet" | "VeganDiet" | "VegetarianDiet")[];
+            nutrition?: components["schemas"]["NutritionInformationDto"];
+            offer?: components["schemas"]["CreateOfferDto"];
+        };
+        UpdateOfferDto: {
+            /** @example 150.00 */
+            price?: string;
+            /** @default TWD */
+            priceCurrency: string;
+            availability?: components["schemas"]["ItemAvailability"];
+            /** @description 預計準備時間，unitText 建議用 "minute" */
+            deliveryLeadTime?: components["schemas"]["QuantitativeValueDto"];
+            /** @description 當日剩餘庫存數量 */
+            inventoryLevel?: components["schemas"]["QuantitativeValueDto"];
+            priceSpecification?: components["schemas"]["PriceSpecificationDto"];
+        };
+        CreateMenuItemAddOnDto: {
+            /** @description Add-on menu item ID */
+            addOnMenuItemId?: string;
+            /** @description Add-on menu section ID */
+            addOnMenuSectionId?: string;
+        };
+        MenuItemAddOnResponseDto: {
+            id: string;
+            menuItemId: string;
+            addOnMenuItemId?: string | null;
+            addOnMenuItemName?: Record<string, never> | null;
+            addOnMenuSectionId?: string | null;
+            addOnMenuSectionName?: Record<string, never> | null;
+            addOnMenuItemSectionId?: string | null;
+            addOnMenuItemSectionName?: Record<string, never> | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        /** @enum {string} */
+        AddOnFilterField: "addOnMenuSectionName" | "addOnMenuItemName" | "createdAt" | "updatedAt";
+        /** @enum {string} */
+        AddOnSortField: "addOnMenuSectionName" | "addOnMenuItemName" | "createdAt" | "updatedAt";
+        UpdateMenuItemAddOnDto: {
+            /** @description Add-on menu item ID */
+            addOnMenuItemId?: string | null;
+            /** @description Add-on menu section ID */
+            addOnMenuSectionId?: string | null;
+        };
+        CreateModifierGroupDto: {
+            /**
+             * @description 群組名稱，如「甜度」「加料」
+             * @example {
+             *       "zh-TW": "甜度",
+             *       "en": "Sweetness"
+             *     }
+             */
+            displayName: Record<string, never>;
+            /**
+             * @description 最少選擇數量；>= 1 代表必選
+             * @default 0
+             */
+            minSelectionCount: number;
+            /** @description 最多選擇數量；min=max=1 為單選，null 為不限 */
+            maxSelectionCount?: number | null;
+        };
+        ModifierResponseDto: {
+            id: string;
+            modifierGroupId: string;
+            displayName: Record<string, never>;
+            /** @description 加價金額；null 代表不影響價格 */
+            priceAdjustment?: string | null;
+            availability?: components["schemas"]["ItemAvailability"] | null;
+            sortOrder: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        ModifierGroupResponseDto: {
+            id: string;
+            menuId?: string | null;
+            displayName: Record<string, never>;
+            /** @description 最少選擇數量；>= 1 代表必選 */
+            minSelectionCount: number;
+            /** @description 最多選擇數量；null 為不限 */
+            maxSelectionCount?: number | null;
+            sortOrder: number;
+            /** @description 群組底下的選項（依需求帶出） */
+            modifiers?: components["schemas"]["ModifierResponseDto"][];
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        /** @enum {string} */
+        ModifierFilterField: "displayName" | "createdAt" | "updatedAt";
+        /** @enum {string} */
+        ModifierSortField: "displayName" | "createdAt" | "updatedAt";
+        UpdateModifierGroupDto: {
+            /** @description 群組名稱 */
+            displayName?: Record<string, never>;
+            /** @description 最少選擇數量；>= 1 代表必選 */
+            minSelectionCount?: number;
+            /** @description 最多選擇數量；null 為不限 */
+            maxSelectionCount?: number | null;
+        };
+        CreateModifierDto: {
+            /**
+             * @description 選項名稱，如「半糖」「珍珠」
+             * @example {
+             *       "zh-TW": "半糖",
+             *       "en": "Half Sugar"
+             *     }
+             */
+            displayName: Record<string, never>;
+            /**
+             * @description 加價金額；省略代表不影響價格
+             * @example 10.00
+             */
+            priceAdjustment?: string;
+            availability?: components["schemas"]["ItemAvailability"];
+        };
+        UpdateModifierDto: {
+            /** @description 選項名稱 */
+            displayName?: Record<string, never>;
+            /**
+             * @description 加價金額
+             * @example 10.00
+             */
+            priceAdjustment?: string;
+            availability?: components["schemas"]["ItemAvailability"];
+        };
+        CreateMenuItemModifierGroupDto: {
+            /** @description 要掛到此品項的選項群組 ID */
+            modifierGroupId: string;
+        };
+        MenuItemModifierGroupResponseDto: {
+            id: string;
+            menuItemId: string;
+            modifierGroupId: string;
+            sortOrder: number;
+            /** @description 掛上的群組（含選項，依需求帶出） */
+            modifierGroup?: components["schemas"]["ModifierGroupResponseDto"];
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        OrderMenuOfferResponseDto: {
+            id: string;
+            menuItemId?: string | null;
+            menuSectionId?: string | null;
+            price?: string | null;
+            priceCurrency?: string | null;
+            availability?: components["schemas"]["ItemAvailability"] | null;
+            deliveryLeadTime?: components["schemas"]["QuantitativeValueDto"] | null;
+            inventoryLevel?: components["schemas"]["QuantitativeValueDto"] | null;
+            priceSpecification?: components["schemas"]["PriceSpecificationDto"] | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        OrderMenuModifierResponseDto: {
+            id: string;
+            modifierGroupId: string;
+            displayName: string;
+            /** @description 加價金額；null 代表不影響價格 */
+            priceAdjustment?: string | null;
+            availability?: components["schemas"]["ItemAvailability"] | null;
+            sortOrder: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        OrderMenuModifierGroupResponseDto: {
+            id: string;
+            displayName: string;
+            /** @description 最少選擇數量；>= 1 代表必選 */
+            minSelectionCount: number;
+            /** @description 最多選擇數量；null 為不限 */
+            maxSelectionCount?: number | null;
+            sortOrder: number;
+            modifiers: components["schemas"]["OrderMenuModifierResponseDto"][];
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        OrderMenuAddOnItemResponseDto: {
+            id: string;
+            name: string;
+            image?: string | null;
+            offers: components["schemas"]["OrderMenuOfferResponseDto"][];
+            modifierGroups: components["schemas"]["OrderMenuModifierGroupResponseDto"][];
+        };
+        OrderMenuAddOnResponseDto: {
+            id: string;
+            menuItemId: string;
+            addOnMenuItemId?: string | null;
+            addOnMenuSectionId?: string | null;
+            sortOrder: number;
+            /** @description 解析後的加購品項（指向品項為單筆；指向區塊為其所有品項） */
+            menuItems: components["schemas"]["OrderMenuAddOnItemResponseDto"][];
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        OrderMenuItemResponseDto: {
+            id: string;
+            menuId?: string | null;
+            menuSectionId?: string | null;
+            name: string;
+            description?: string | null;
+            image?: string | null;
+            suitableForDiet?: ("DiabeticDiet" | "GlutenFreeDiet" | "HalalDiet" | "HinduDiet" | "KosherDiet" | "LowCalorieDiet" | "LowFatDiet" | "LowLactoseDiet" | "LowSaltDiet" | "VeganDiet" | "VegetarianDiet")[] | null;
+            nutrition?: components["schemas"]["NutritionInformationDto"] | null;
+            sortOrder: number;
+            offers: components["schemas"]["OrderMenuOfferResponseDto"][];
+            addOns: components["schemas"]["OrderMenuAddOnResponseDto"][];
+            modifierGroups: components["schemas"]["OrderMenuModifierGroupResponseDto"][];
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        OrderMenuSectionResponseDto: {
+            id: string;
+            menuId?: string | null;
+            parentSectionId?: string | null;
+            name: string;
+            description?: string | null;
+            image?: string | null;
+            sortOrder: number;
+            menuItems: components["schemas"]["OrderMenuItemResponseDto"][];
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        OrderMenuResponseDto: {
+            id: string;
+            name: string;
+            description?: string | null;
+            image?: string | null;
+            sections: components["schemas"]["OrderMenuSectionResponseDto"][];
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        OrganizationResponseDto: {
+            id: string;
+            name: string;
+            slug: string;
+            logo?: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            metadata?: string | null;
+            addressCountry?: string | null;
+            addressLocality?: string | null;
+            addressRegion?: string | null;
+            extendedAddress?: string | null;
+            postalCode?: string | null;
+            streetAddress?: string | null;
+            hasMap?: string | null;
+            openingHours?: string | null;
+            telephone?: string | null;
+        };
+        OrganizationMemberTeamDto: {
+            id: string;
+            name: string;
+        };
+        OrganizationMemberResponseDto: {
+            bio?: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            firstName: string;
+            id: string;
+            image?: string | null;
+            lastName?: string | null;
+            /** @enum {string} */
+            role: "admin" | "member" | "owner";
+            teams: components["schemas"]["OrganizationMemberTeamDto"][];
+            userId: string;
+        };
     };
-    /** @enum {string} */
-    UserFilterField:
-      | "name"
-      | "email"
-      | "role"
-      | "banned"
-      | "emailSubscribed"
-      | "createdAt";
-    /** @enum {string} */
-    UserFilterOperator:
-      | "contains"
-      | "doesNotContain"
-      | "equals"
-      | "doesNotEqual"
-      | "startsWith"
-      | "endsWith"
-      | "isEmpty"
-      | "isNotEmpty"
-      | "isAnyOf"
-      | "is"
-      | "not"
-      | "after"
-      | "onOrAfter"
-      | "before"
-      | "onOrBefore";
-    /** @enum {string} */
-    UserSearchField: "name" | "email";
-    /** @enum {string} */
-    UserSearchOperator: "contains" | "startsWith" | "endsWith";
-    /** @enum {string} */
-    UserSortField:
-      | "name"
-      | "email"
-      | "role"
-      | "banned"
-      | "emailSubscribed"
-      | "createdAt";
-    /** @enum {string} */
-    SortDirection: "asc" | "desc";
-    UpdateUserDto: {
-      /**
-       * Format: date
-       * @description 生日
-       * @example 2024-04-04
-       */
-      birthDate?: string;
-      /**
-       * @description 是否訂閱電子報
-       * @example true
-       */
-      emailSubscribed?: boolean;
-      /**
-       * @description 名
-       * @example Coffee
-       */
-      firstName?: string;
-      /**
-       * @description 性別
-       * @example other
-       * @enum {string}
-       */
-      gender?: "female" | "male" | "other";
-      /**
-       * Format: uri
-       * @description 頭像 URL
-       * @example https://example.com/avatar.png
-       */
-      image?: string;
-      /**
-       * @description 姓
-       * @example Biru
-       */
-      lastName?: string;
-      /**
-       * @description 聯絡電話（不含國碼）
-       * @example 0123456789
-       */
-      phoneNumber?: string;
-    };
-    SendTestEmailDto: {
-      /**
-       * Format: email
-       * @description 收件人 Email
-       * @example user@example.com
-       */
-      email: string;
-    };
-    /**
-     * @description 語系設定
-     *     預設語系為中文，若要變更語系參數值請帶：
-     *     - ENG：英語
-     *     - KOR：韓語
-     *     - JPN：日語
-     *     - CHI：簡體中文
-     * @enum {string}
-     */
-    BaseEcpayLanguage: "ENG" | "KOR" | "JPN" | "CHI";
-    CheckoutEcpayDto: {
-      /**
-       * @description 交易描述（必填）
-       *     請勿帶入特殊字元。
-       * @example 商品訂購
-       */
-      TradeDesc: string;
-      /**
-       * @description 商品名稱（必填）
-       *     - 如果商品名稱有多筆，需在金流選擇頁一行一行顯示商品名稱的話，商品名稱請以符號 # 分隔。
-       *     - 商品名稱字數限制為中英數 400 字內，超過此限制系統將自動截斷。 詳細的使用注意事項請參考 FAQ。
-       * @example 商品A#商品B
-       */
-      ItemName: string;
-      /**
-       * Format: uri
-       * @description Client 端返回特店的按鈕連結
-       *     消費者點選此按鈕後，會將頁面導回到此設定的網址
-       *     注意事項：
-       *     1. 導回時不會帶付款結果到此網址，只是將頁面導回而已。
-       *     2. 設定此參數，綠界會在付款完成或取號完成頁面上顯示 [返回商店] 的按鈕。
-       *     3. 設定此參數，發生簡訊 OTP 驗證失敗時，頁面上會顯示 [返回商店] 的按鈕。
-       *     4. 若未設定此參數，則綠界付款完成頁或取號完成頁面，不會顯示 [返回商店] 的按鈕。
-       *     5. 若導回網址未使用 https 時，部份瀏覽器可能會出現警告訊息。
-       *     6. 參數內容若有包含 %26(&) 及 %3C(<) 這二個值時，請先進行 urldecode() 避免呼叫 API 失敗。
-       * @example https://your-domain.com/shop
-       */
-      ClientBackURL?: string;
-      /**
-       * Format: uri
-       * @description Client 端回傳付款結果網址
-       *     有別於 ReturnURL（server端的網址），OrderResultURL 為特店的 client 端（前端）網址。消費者付款完成後，綠界會將付款結果參數以 POST 方式回傳到到該網址。詳細說明請參考付款結果通知。
-       *     注意事項：
-       *     1. 若與 [ClientBackURL] 同時設定，將會以此參數為主。
-       *     2. 銀聯卡及非即時交易（ATM、CVS、BARCODE）不支援此參數。
-       *     3. 付款結果通知請依 ReturnURL（server端的網址）為主,避免因前端操作或網路問題未收到 OrderResultURL 特店的 client 端（前端）的通知。
-       *     4. 參數內容若有包含 %26(&) 及 %3C(<) 這二個值時，請先進行 urldecode() 避免呼叫 API 失敗。
-       * @example https://your-domain.com/ecpay/result
-       */
-      OrderResultURL?: string;
-      /**
-       * @description 語系設定
-       *     預設語系為中文，若要變更語系參數值請帶：
-       *     - ENG：英語
-       *     - KOR：韓語
-       *     - JPN：日語
-       *     - CHI：簡體中文
-       * @example ENG
-       */
-      Language?: components["schemas"]["BaseEcpayLanguage"];
-      /** @description 訂單 ID */
-      orderId: string;
-    };
-    ReturnEcpayDto: {
-      /**
-       * @description 特店編號
-       * @example 3002607
-       */
-      MerchantID: string;
-      /**
-       * @description 特店交易編號
-       *     訂單產生時傳送給綠界的特店交易編號。
-       * @example D9RMXNrihUYM
-       */
-      MerchantTradeNo: string;
-      /**
-       * @description 特店旗下店舖代號
-       * @example
-       */
-      StoreID?: string;
-      /**
-       * @description 交易狀態
-       *     - 若回傳值為 1 時，為付款成功
-       *     - 其餘代碼皆為交易異常，請至廠商管理後台確認後再出貨。
-       *
-       *     常見交易狀態：
-       *     - 10300066：「交易付款結果待確認中，請勿出貨」，請至廠商管理後台確認已付款完成再出貨。
-       *     - 10100248：「拒絕交易，請客戶聯繫發卡行確認原因」
-       *     - 10100252：「額度不足，請客戶檢查卡片額度或餘額」
-       *     - 10100254：「交易失敗，請客戶聯繫發卡行確認交易限制」
-       *     - 10100251：「卡片過期，請客戶檢查卡片重新交易」
-       *     - 10100255：「報失卡，請客戶更換卡片重新交易」
-       *     - 10100256：「被盜用卡，請客戶更換卡片重新交易」
-       * @example 1
-       */
-      RtnCode: number;
-      /**
-       * @description 交易訊息
-       * @example 交易成功
-       */
-      RtnMsg: string;
-      /**
-       * @description 綠界的交易編號
-       *     請保存綠界的交易編號與特店交易編號 [MerchantTradeNo] 的關連。
-       * @example 2412311225437371
-       */
-      TradeNo: string;
-      /**
-       * @description 交易金額
-       * @example 402
-       */
-      TradeAmt: number;
-      /**
-       * @description 付款時間
-       *     格式為 yyyy/MM/dd HH:mm:ss
-       * @example 2024/12/31 12:26:09
-       */
-      PaymentDate: string;
-      /**
-       * @description 特店選擇的付款方式
-       *     請參考回覆付款方式一覽表
-       * @example Credit_CreditCard
-       */
-      PaymentType: string;
-      /**
-       * @description 交易服務金額
-       *     交易手續費+交易處理費的總金額
-       * @example 10
-       */
-      PaymentTypeChargeFee: number;
-      /**
-       * @description 訂單成立時間
-       *     格式為 yyyy/MM/dd HH:mm:ss
-       * @example 2024/12/31 12:25:43
-       */
-      TradeDate: string;
-      /**
-       * @description 特約合作平台商代號
-       *     為專案合作的平台商使用。
-       */
-      PlatformID?: string;
-      /**
-       * @description 是否為模擬付款
-       *     - 是否為模擬付款
-       *     - 0：代表此交易非模擬付款。
-       *     - 1：代表此交易為模擬付款，RtnCode 也為 1。並非是由消費者實際真的付款，所以綠界也不會撥款給廠商，請勿對該筆交易做出貨等動作，以避免損失。
-       *
-       *     注意事項：
-       *     1. 特店可透過廠商後台來針對單筆訂單模擬綠界回傳付款通知，以方便介接 API。
-       *     2. 此功能僅只是用於測試 ReturnURL 是否能成功接收，不會改變付款狀態。
-       *     3. 只有透過廠商後台的定期定額查詢功能發動的模擬付款通知，綠界才會傳送此參數，正常由定期定額排程所發送的付款通知，不會傳送此參數。
-       * @example 0
-       * @enum {number}
-       */
-      SimulatePaid?: 0 | 1;
-      /**
-       * @description 自訂名稱欄位 1
-       *     提供合作廠商使用記錄用客製化使用欄位
-       * @example
-       */
-      CustomField1?: string;
-      /**
-       * @description 自訂名稱欄位 2
-       *     提供合作廠商使用記錄用客製化使用欄位
-       * @example
-       */
-      CustomField2?: string;
-      /**
-       * @description 自訂名稱欄位 3
-       *     提供合作廠商使用記錄用客製化使用欄位
-       * @example
-       */
-      CustomField3?: string;
-      /**
-       * @description 自訂名稱欄位 4
-       *     提供合作廠商使用記錄用客製化使用欄位
-       * @example
-       */
-      CustomField4?: string;
-      /**
-       * @description 檢查碼
-       *     特店必須檢查檢查碼 [CheckMacValue] 來驗證，請參考附錄檢查碼機制。
-       * @example 85D927637935683EA756CDEF76498FEB9F5D098A7A1AC4F0CB3B3609A9D4116A
-       */
-      CheckMacValue: string;
-    };
-    IssueInvoiceEcpayItemDto: {
-      /**
-       * @description 商品序號
-       *     請帶入1~999整數數字
-       * @example 1
-       */
-      ItemSeq?: number;
-      /**
-       * @description 商品名稱（必填）
-       * @example 經典拿鐵
-       */
-      ItemName: string;
-      /**
-       * @description 商品數量（必填）
-       *     支援整數8位，小數7位
-       * @example 1
-       */
-      ItemCount: number;
-      /**
-       * @description 商品單位（必填）
-       * @example 件
-       */
-      ItemWord: string;
-      /**
-       * @description 商品單價（必填）
-       *     - 支援整數 10 位，小數 7 位
-       *     - 若 vat=0（未稅），商品金額需為未稅金額
-       *     若 vat=1（含稅），商品金額需為含稅金額
-       * @example 50
-       */
-      ItemPrice: number;
-      /**
-       * @description 商品課稅別
-       *     - 當課稅類別 [TaxType] = 9 時，此欄位不可為空。
-       *     1：應稅
-       *     2：零稅率
-       *     3：免稅
-       *
-       *     注意事項：
-       *     - 當課稅類別 [TaxType] = 9 時，免稅和零稅率發票不能同時開立。商品課稅類別 [ItemTaxType] 只能為以下組合：
-       *     （應稅 + 免稅）或（應稅 + 零稅率）
-       *     - 當課稅類別 [TaxType] 不等於 9（混稅）時，商品課稅類別 [ItemTaxType] 無效不需填寫
-       * @example 1
-       * @enum {string}
-       */
-      ItemTaxType?: "1" | "2" | "3";
-      /**
-       * @description 商品合計（必填）
-       *     - 支援整數 12 位，小數 7 位
-       *     - 此為含稅小計金額
-       *     - 所有商品的 ItemAmount 加總後四捨五入=SalesAmount（含稅）
-       *
-       *     注意事項：
-       *     - ItemAmount 需統一為含稅金額，且商品金額需符合以下規則：
-       *     1. 當 vat = 1, 且 TaxType = 1：
-       *     ItemPrice（含稅）* ItemCount = ItemAmount（含稅）
-       *     ex: 500 * 5 = 2500
-       *     2. 當 vat = 0, 且 TaxType = 1（稅率5%）：
-       *     ItemPrice（不含稅）* ItemCount * 1.05 = ItemAmount（含稅）
-       *     ex: 500 * 5 * 1.05 = 2625
-       * @example 50
-       */
-      ItemAmount: number;
-      /**
-       * @description 商品備註
-       * @example item01_desc
-       */
-      ItemRemark?: string;
-    };
-    IssueInvoiceEcpayDecryptedRequestDto: {
-      /**
-       * @description 特店編號（必填）
-       * @example 2000132
-       */
-      MerchantID: string;
-      /**
-       * @description 特店自訂編號（必填）
-       *     需為唯一值不可重複使用
-       *
-       *     注意事項：
-       *     - 請勿使用特殊符號
-       *     - 大小寫英文視為相同 (e.g. 123abc456=123ABC456)
-       * @example 20181028000000001
-       */
-      RelateNumber: string;
-      /**
-       * @description 通路商編號
-       *     1：蝦皮
-       *     其餘數值忽略無效
-       * @enum {string}
-       */
-      ChannelPartner?: "1";
-      /**
-       * @description 客戶編號
-       *     格式為『英文、數字、下底線』等字元
-       * @example
-       */
-      CustomerID?: string;
-      /**
-       * @description 產品服務別代號
-       *     - 該參數必須由英文字母（A-Z, a-z）和數字（0-9）組成，其長度必須在 1 到 10 個字符之間。
-       *     - 此參數只有在【B2C 系統多組字軌】開關為【啟用】時，帶入值才會進行處理，否則會忽略此參數。如需啟用請洽所屬業務。
-       *     - 具體步驟參考如下：
-       *     1. 聯繫所屬業務 <啟用> B2C 系統多組字軌功能
-       *     2. 至廠商後台 <字軌分類管理> 節點，新增商品/服務別，例如 A0001-餐具、A0002-清潔用品，可參考 電子發票系統操作手冊 <字軌分類管理> 章節說明
-       *     3. 至廠商後台 <字軌與配號設定> 節點，新增字軌配號，可參考 電子發票系統操作手冊 <字軌與配號設定> 章節說明
-       *     4. 透過開立發票 API，此參數 [ProductServiceID] 帶入先前廠商後台設定的 A0001 或 A0002，即可完成發票開立
-       */
-      ProductServiceID?: string;
-      /**
-       * @description 統一編號
-       *     - 格式為數字，固定長度為 8 碼
-       *     - 根據財政部的最新公告，針對統一編號的檢核方式做了調整。
-       *     您可以點擊以下連結查看：
-       *     [財政部財政資訊中心營利事業統一編號檢查碼邏輯修正說明]
-       *     - 如未符合上述檢核邏輯，則開立發票、設定交易對象維護資料時將會失敗，請營業人務必提供正確的統一編號
-       *     - 只會做格式邏輯檢核，不會去查詢公開資料庫是否存在
-       * @example
-       */
-      CustomerIdentifier?: string;
-      /**
-       * @description 客戶名稱
-       *     - 當列印註記 [Print]=1（列印）時，此參數為必填
-       *     - 格式為中、英文及數字等。
-       *     - 當統一編號 [CustomerIdentifier] 有值時，請帶入相對應的營業人名稱，可參照以下 API 取得多數的對應公司名稱統一編號驗證 API
-       * @example 綠界科技股份有限公司
-       */
-      CustomerName?: string;
-      /**
-       * @description 客戶地址
-       *     當列印註記 [Print]=1（列印）時，此參數為必填
-       * @example 106台北市南港區發票一街1號1樓
-       */
-      CustomerAddr?: string;
-      /**
-       * @description 客戶手機號碼
-       *     - 當客戶電子信箱 [CustomerEmail] 為空字串時，為必填。
-       *     - 格式為數字
-       * @example
-       */
-      CustomerPhone?: string;
-      /**
-       * @description 客戶電子信箱
-       *     - 當客戶手機號碼 [CustomerPhone] 為空字串時，為必填。
-       *     - 需為有效的 Email 格式，且僅可填寫一組 Email。
-       *     - 格式檢核正規表達式為：
-       *
-       *     注意事項：
-       *     - 測試環境請勿帶入之真實電子信箱，避免個資外洩。
-       *     - 測試環境僅作 API 串接測試使用，僅以 API 回覆成功或失敗；不提供發信測試，僅驗規則。
-       *     - 格式檢核正規表達式為：```/^((([A-Za-z]|\d|[!#\$%&’\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([A-Za-z]|\d|[!#\$%&’\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([A-Za-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([A-Za-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([A-Za-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([A-Za-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([A-Za-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([A-Za-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([A-Za-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([A-Za-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/u```
-       * @example test@ecpay.com.tw
-       */
-      CustomerEmail?: string;
-      /**
-       * @description 通關方式
-       *     - 當課稅類別 [TaxType] 為 2（零稅率）或 9（混合應稅與零稅率）時，為必填
-       *     1：非經海關出口
-       *     2：經海關出口
-       * @example 1
-       * @enum {string}
-       */
-      ClearanceMark?: "1" | "2";
-      /**
-       * @description 列印註記（必填）
-       *     0：不列印
-       *     1：列印
-       *
-       *     注意事項：
-       *     1. 請注意此參數的意義為註記這張發票之後會被廠商自行印出紙本，綠界上傳財政部時也會提供這個參數讓財政部知道這張發票是被列印成紙本的，並不是指由綠界代為列印與寄送
-       *     2. 當捐贈註記 [Donation]=1（要捐贈），此參數請帶 0
-       *     3. 當統一編號 [CustomerIdentifier] 有值時
-       *     2.a 載具類別 [CarrierType] 為空值時，此參數請帶 1
-       *     2.b 載具類別 [CarrierType]=1 或 2 時，此參數請帶 0
-       *     2.c 載具類別 [CarrierType]=3 時，此參數可帶 0 或 1
-       *
-       *     注意事項：
-       *
-       *     超商 KIOSK 事務機列印注意事項（除須向業務申請開通外，請按以下需求帶入參數）
-       *     1. 要列印消費發票（ibon）
-       *     Print=1，CarrierType=””，CustomerIdentifier=””，Donation=0，只能列印一次（之後中獎也無法再次列印）
-       *     2. 要列印中獎發票（ibon, FamiPort）
-       *     Print=0，CarrierType=1，CustomerIdentifier=””，Donation=0，只能列印一次
-       *     3. 折讓後發票金額為 0 元，不可列印
-       * @example 1
-       * @enum {string}
-       */
-      Print: "0" | "1";
-      /**
-       * @description 捐贈註記（必填）
-       *     0：不捐贈
-       *     1：捐贈
-       *
-       *     注意事項：
-       *     1. 當統一編號 [CustomerIdentifier] 有值時，此參數請帶 0
-       *     2. 當載具類別 [CarrierType] 不為空字串且捐贈註記 [Donation]=1 時，代表此張發票開立當下是存在載具內，之後消費者將此張發票進行捐贈成功，所以此張發票最終狀態是捐贈成功
-       * @example 0
-       * @enum {string}
-       */
-      Donation: "0" | "1";
-      /**
-       * @description 捐贈碼
-       *     - 當捐贈註記 [Donation]=1（要捐贈）時，為必填。
-       *     - 格式為阿拉伯數字為限，最少三碼，最多七碼，首位可以為零。
-       *
-       *     注意事項：使用捐贈碼時，請先呼叫捐贈碼驗證進行檢核，避免輸入錯誤。
-       *
-       *     推薦捐贈碼 168001
-       *     OMG 關懷社會愛心基金會
-       *     成立於 2009 年，希望能集結網友族群的心意，將愛傳遞到社會的每一個角落。
-       *     本基金會致力於：清寒學生及偏遠學校助學、流浪動物與動物保育議題、老人及弱勢團體、急難救助、人道救援、社會公益活動推廣及廣告贊助…等。
-       * @example
-       */
-      LoveCode?: string;
-      /**
-       * @description 載具類別
-       *     空字串：無載具
-       *     1：綠界電子發票載具
-       *     2：自然人憑證號碼
-       *     3：手機條碼載具
-       *     4：悠遊卡
-       *     5：一卡通
-       *
-       *     注意事項：
-       *     - 當列印參數 [Print]=1（需列印）且發票含統編時，若同時需存放載具，則僅能使用手機條碼載具（值為 3）；若不使用載具，則請傳入空字串。
-       *     - 當列印註記 [Print]=0（不列印），且統一編號 [CustomerIdentifier] 有值時，此參數不可帶空字串。
-       *     - 只有存在綠界電子發票載具（此參數帶 1）的發票，中獎後才能在 ibon 列印領取必填
-       * @example
-       * @enum {string}
-       */
-      CarrierType?: "" | "1" | "2" | "3" | "4" | "5";
-      /**
-       * @description 載具編號
-       *     - 當 [CarrierType]=”” 時，請帶空字串。
-       *     - 當[CarrierType]=1
-       *     請帶空字串，系統會自動帶入值，為客戶電子信箱或客戶手機號碼擇一（以客戶電子信箱優先），請注意，綠界會重新編碼後產出綠界載具編號。
-       *     - [CarrierType]=2
-       *     請帶固定長度為 16 且格式為 2 碼大寫英文字母加上 14 碼數字
-       *     - [CarrierType]=3
-       *     請帶固定長度為 8 碼字元，第 1 碼為【/】; 其餘 7 碼則由數字【0-9】、大寫英文【A-Z】與特殊符號【+】【-】【.】這 39 個字元組成的編號。
-       *     - 當[CarrierType]=4 或 5
-       *     必填，請帶入實體卡片的 <隱碼id>，不會檢核。
-       *
-       *     注意事項：
-       *     1. 英文、數字、符號僅接受半形字元，格式錯誤會造成開立失敗
-       *     2. 若為手機條碼載具時，請先呼叫手機條碼驗證進行檢核，一旦手機條碼有誤，會造成發票歸戶失敗。
-       *     3. 針對悠遊卡或一卡通如何取得卡片隱碼（內碼）：您的設備需配備能讀取悠遊卡或一卡通的讀卡機，並確保該設備能讀取卡片內碼
-       *     4. 查詢發票 API，當載具類別為悠遊卡/一卡通，因有資安考量，不會回傳 <隱碼id>
-       * @example
-       */
-      CarrierNum?: string;
-      /**
-       * @description 第二載具編號
-       *     - 當 [CarrierType]=4 或 5
-       *     必填，請帶入實體卡片的 <顯碼id>，以便發票查詢可以顯示用來識別不同的實體卡片，不會檢核。
-       *     - 當 [CarrierType]=不等於 4 或 5 時，此參數不須帶入。
-       *
-       *     注意事項：
-       *     1. 英文、數字、符號僅接受半形字元，格式錯誤會造成開立失敗
-       *     2. 當 CarrierType 數值為 1、2 或 3 時，請廠商無須填入此欄位，以避免系統阻擋。
-       *     3. 針對悠遊卡或一卡通的顯碼（外碼）指的是卡片上外顯的號碼，用來方便持有卡片者區別不同的實體卡片
-       *     4. 查詢發票 API，會於參數 IIS_Carrier_Num 內回傳 <顯碼id>
-       */
-      CarrierNum2?: string;
-      /**
-       * @description 課稅類別（必填）
-       *     - 當字軌類別 [InvType] 為 07 時，則此欄位請填入 1、2、3 或 9
-       *     - 當字軌類別 [InvType] 為 08 時，則此欄位請填入 3 或 4
-       *     1：應稅。
-       *     2：零稅率。
-       *     3：免稅。
-       *     4：應稅（特種稅率）
-       *     9：混合應稅與免稅或零稅率，必需通過申請核可。
-       *     - 綠界稅額計算方式
-       *     一般發票（非混稅、非特種）：
-       *     （發票金額 / 1.05）* 0.05 並四捨五入至整數
-       *     混稅發票：
-       *     （應稅品項小計總和 / 1.05）* 0.05 並四捨五入至整數
-       * @example 1
-       * @enum {string}
-       */
-      TaxType: "1" | "2" | "3" | "4" | "9";
-      /**
-       * @description 零稅率原因
-       *     - 自 115 年 1 月 1 日起，當課稅類別 [TaxType] 為 2（零稅率）或 9（混合應稅與零稅率）時，此欄位必填或廠商後台必須設定以便程式抓取，否則將會開立失敗，其值如下
-       *     71：第一款 外銷貨物
-       *     72：第二款 與外銷有關之勞務，或在國內提供而在國外使用之勞務
-       *     73：第三款 依法設立之免稅商店銷售與過境或出境旅客之貨物
-       *     74：第四款 銷售與保稅區營業人供營運之貨物或勞務
-       *     75：第五款 國際間之運輸。但外國運輸事業在中華民國境內經營國際運輸業務者，應以各該國對中華民國國際運輸事業予以相等待遇或免徵類似稅捐者為限
-       *     76：第六款 國際運輸用之船舶、航空器及遠洋漁船
-       *     77：第七款 銷售與國際運輸用之船舶、航空器及遠洋漁船所使用之貨物或修繕勞務
-       *     78：第八款 保稅區營業人銷售與課稅區營業人未輸往課稅區而直接出口之貨物
-       *     79：第九款 保稅區營業人銷售與課稅區營業人存入自由港區事業或海關管理之保稅倉庫、物流中心以供外銷之貨物
-       * @enum {string}
-       */
-      ZeroTaxRateReason?:
-        | "71"
-        | "72"
-        | "73"
-        | "74"
-        | "75"
-        | "76"
-        | "77"
-        | "78"
-        | "79";
-      /**
-       * @description 特種稅額類別
-       *     - 當課稅類別 [TaxType] 為 1 / 2 / 9 時，系統將會自動帶入數字【0】
-       *     - 當課稅類別 [TaxType] 為 3 時，則該參數必填，請填入數字【8】
-       *     - 當課稅類別 [TaxType] 為 4 時，則該參數必填，可填入數字【1-8】
-       *     - 並分別代表以下類別與稅率
-       *     1：代表酒家及有陪侍服務之茶室、咖啡廳、酒吧之營業稅稅率，稅率為 25 %
-       *     2：代表夜總會、有娛樂節目之餐飲店之營業稅稅率，稅率為 15 %
-       *     3：代表銀行業、保險業、信託投資業、證券業、期貨業、票券業及典當業之專屬本業收入（不含銀行業、保險業經營銀行、保險本業收入）之營業稅稅率，稅率為 2 %
-       *     4：代表保險業之再保費收入之營業稅稅率，稅率為 1 %
-       *     5：代表銀行業、保險業、信託投資業、證券業、期貨業、票券業及典當業之非專屬本業收入之營業稅稅率，稅率為 5 %
-       *     6：代表銀行業、保險業經營銀行、保險本業收入之營業稅稅率（適用於民國 103 年 07 月以後銷售額），稅率為 5 %
-       *     7：代表銀行業、保險業經營銀行、保險本業收入之營業稅稅率（適用於民國 103 年 06 月以前銷售額），稅率為 5 %
-       *     8：代表空白為免稅或非銷項特種稅額之資料
-       * @enum {number}
-       */
-      SpecialTaxType?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
-      /**
-       * @description 發票總金額（含稅）（必填）
-       *     - 請帶整數，支援至12位，不可有小數點。
-       *     - 僅限新台幣。
-       * @example 100
-       */
-      SalesAmount: number;
-      /**
-       * @description 發票備註
-       *     由於配合 MIG 4.0 改版，
-       *     系統暫時性限制接受字元長度為 100 字元 – String(100)，
-       *     將於 Q2 搭配 MIG 4.0 上線後重新恢復支援 200 字元 – String(200)。
-       * @example 發票備註
-       */
-      InvoiceRemark?: string;
-      /**
-       * @description 商品
-       *     - 可多筆
-       *     - 商品最多支援999項
-       */
-      Items: components["schemas"]["IssueInvoiceEcpayItemDto"][];
-      /**
-       * @description 字軌類別（必填）
-       *     - 該張發票的字軌類型
-       *     07：一般稅額
-       *     08：特種稅額
-       * @example 07
-       * @enum {string}
-       */
-      InvType: "07" | "08";
-      /**
-       * @description 商品單價是否含稅
-       *     - 預設為含稅價
-       *     1：含稅
-       *     0：未稅
-       * @example 1
-       * @enum {string}
-       */
-      vat?: "1" | "0";
-    };
-    IssueInvoiceEcpayDecryptedResponseDto: {
-      /**
-       * @description 回應代碼
-       *     1 代表 API 執行成功，其餘代碼均為失敗。
-       * @example 1
-       */
-      RtnCode: number;
-      /**
-       * @description 回應訊息
-       * @example 開立發票成功
-       */
-      RtnMsg: string;
-      /**
-       * @description 發票號碼
-       *     - 若開立成功，則會回傳一組發票號碼
-       *     - 若開立失敗，則會回傳空值
-       * @example UV11100012
-       */
-      InvoiceNo: string;
-      /**
-       * @description 發票開立時間
-       *     格式為「yyyy-MM-dd HH:mm:ss」或「 yyyy/MM/dd HH:mm:ss」
-       * @example 2019-09-17 17:17:31
-       */
-      InvoiceDate: string;
-      /**
-       * @description 隨機碼
-       * @example 6866
-       */
-      RandomNumber: string;
-    };
-    CreateOrderCustomerDto: {
-      name: string;
-      phone?: string;
-      /** Format: email */
-      email?: string;
-      notes?: string;
-    };
-    CreateOrderInvoiceDto: {
-      /** @enum {string} */
-      type: "personal" | "company" | "donate";
-      /** @enum {string} */
-      carrierType?: "individual" | "mobile" | "certificate";
-      carruerNum?: string;
-      /** Format: email */
-      email?: string;
-      customerIdentifier?: string;
-      customerName?: string;
-      customerAddr?: string;
-      donateCode?: string;
-    };
-    CreateOrderItemAddOnDto: {
-      menuItemId: string;
-      /** @description modifierGroupId → modifierIds[] */
-      modifiers: {
-        [key: string]: string[];
-      };
-    };
-    CreateOrderItemDto: {
-      menuItemId: string;
-      quantity: number;
-      /** @description modifierGroupId → modifierIds[] */
-      modifiers: {
-        [key: string]: string[];
-      };
-      addOns: components["schemas"]["CreateOrderItemAddOnDto"][];
-    };
-    CreateOrderDto: {
-      /** @enum {string} */
-      mode: "counter" | "dineIn" | "kiosk" | "pickup";
-      customer: components["schemas"]["CreateOrderCustomerDto"];
-      /** @enum {string} */
-      payment:
-        | "ApplePay"
-        | "Cash"
-        | "Credit"
-        | "iPASS"
-        | "Jkopay"
-        | "TWQR"
-        | "WeiXin";
-      invoice?: components["schemas"]["CreateOrderInvoiceDto"];
-      items: components["schemas"]["CreateOrderItemDto"][];
-    };
-    OrderItemModifierSnapshotDto: {
-      modifierGroupId: string;
-      modifierGroupName: string;
-      modifierId: string;
-      modifierName: string;
-      priceAdjustment?: string | null;
-    };
-    OrderItemAddOnSnapshotDto: {
-      menuItemId: string;
-      menuItemName: string;
-      unitPrice: string;
-      modifiers: components["schemas"]["OrderItemModifierSnapshotDto"][];
-    };
-    OrderItemResponseDto: {
-      id: string;
-      menuItemId: string;
-      menuItemName: string;
-      unitPrice: string;
-      priceCurrency?: string | null;
-      orderQuantity: number;
-      modifiers?:
-        | components["schemas"]["OrderItemModifierSnapshotDto"][]
-        | null;
-      addOns?: components["schemas"]["OrderItemAddOnSnapshotDto"][] | null;
-    };
-    OrderResponseDto: {
-      id: string;
-      sellerId: string;
-      /** @enum {string} */
-      mode: "counter" | "dineIn" | "kiosk" | "pickup";
-      orderNumber: string;
-      customerName: string;
-      customerPhone?: string | null;
-      customerEmail?: string | null;
-      customerNotes?: string | null;
-      /** @enum {string} */
-      paymentMethod:
-        | "ApplePay"
-        | "Cash"
-        | "Credit"
-        | "iPASS"
-        | "Jkopay"
-        | "TWQR"
-        | "WeiXin";
-      paymentMethodId?: string | null;
-      /** @enum {string} */
-      orderStatus:
-        | "OrderCancelled"
-        | "OrderDelivered"
-        | "OrderPaymentDue"
-        | "OrderPickupAvailable"
-        | "OrderProcessing"
-        | "OrderProblem";
-      confirmationNumber?: string | null;
-      /** Format: date-time */
-      paymentDate?: string | null;
-      tradeNo?: string | null;
-      discount?: string | null;
-      discountCode?: string | null;
-      invoice?: Record<string, never> | null;
-      items: components["schemas"]["OrderItemResponseDto"][];
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    MenuResponseDto: {
-      id: string;
-      organizationId: string;
-      name: Record<string, never>;
-      description?: Record<string, never> | null;
-      image?: string | null;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    UpdateMenuDto: {
-      /**
-       * @example {
-       *       "zh-TW": "午餐菜單",
-       *       "en": "Lunch Menu"
-       *     }
-       */
-      name?: Record<string, never>;
-      description?: Record<string, never>;
-      image?: string;
-    };
-    CreateMenuSectionDto: {
-      /** @description Parent section ID for nested sections */
-      parentSectionId?: string;
-      /**
-       * @example {
-       *       "zh-TW": "主餐",
-       *       "en": "Main Course"
-       *     }
-       */
-      name: Record<string, never>;
-      description?: Record<string, never>;
-      image?: string;
-    };
-    MenuSectionResponseDto: {
-      id: string;
-      menuId?: string | null;
-      parentSectionId?: string | null;
-      name: Record<string, never>;
-      description?: Record<string, never> | null;
-      image?: string | null;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    /** @enum {string} */
-    MenuFilterField: "name" | "description" | "createdAt" | "updatedAt";
-    /** @enum {string} */
-    FilterOperator:
-      | "contains"
-      | "doesNotContain"
-      | "equals"
-      | "doesNotEqual"
-      | "startsWith"
-      | "endsWith"
-      | "isEmpty"
-      | "isNotEmpty"
-      | "isAnyOf"
-      | "is"
-      | "not"
-      | "after"
-      | "onOrAfter"
-      | "before"
-      | "onOrBefore";
-    /** @enum {string} */
-    MenuSortField: "name" | "description" | "createdAt" | "updatedAt";
-    ReorderDto: {
-      ids: string[];
-      /** @default 0 */
-      offset: number;
-    };
-    UpdateMenuSectionDto: {
-      /** @description Parent section ID for nested sections */
-      parentSectionId?: string;
-      /**
-       * @example {
-       *       "zh-TW": "主餐",
-       *       "en": "Main Course"
-       *     }
-       */
-      name?: Record<string, never>;
-      description?: Record<string, never>;
-      image?: string;
-    };
-    NutritionInformationDto: {
-      calories?: string;
-      carbohydrateContent?: string;
-      cholesterolContent?: string;
-      fatContent?: string;
-      fiberContent?: string;
-      proteinContent?: string;
-      saturatedFatContent?: string;
-      servingSize?: string;
-      sodiumContent?: string;
-      sugarContent?: string;
-      transFatContent?: string;
-      unsaturatedFatContent?: string;
-    };
-    /** @enum {string} */
-    ItemAvailability: "InStock" | "SoldOut" | "Discontinued";
-    QuantitativeValueDto: {
-      unitText?: string;
-      value?: number;
-    };
-    PriceSpecificationDto: {
-      /** @example 150.00 */
-      price: string;
-      /** @example TWD */
-      priceCurrency: string;
-      /**
-       * @description 促銷開始時間（ISO 8601）
-       * @example 2025-06-01T00:00:00+08:00
-       */
-      validFrom?: string;
-      /**
-       * @description 促銷結束時間（ISO 8601）
-       * @example 2025-06-30T23:59:59+08:00
-       */
-      validThrough?: string;
-    };
-    CreateOfferDto: {
-      /** @example 150.00 */
-      price: string;
-      /** @default TWD */
-      priceCurrency: string;
-      availability?: components["schemas"]["ItemAvailability"];
-      /** @description 預計準備時間，unitText 建議用 "minute" */
-      deliveryLeadTime?: components["schemas"]["QuantitativeValueDto"];
-      /** @description 當日剩餘庫存數量 */
-      inventoryLevel?: components["schemas"]["QuantitativeValueDto"];
-      priceSpecification?: components["schemas"]["PriceSpecificationDto"];
-    };
-    CreateMenuItemDto: {
-      /**
-       * @example {
-       *       "zh-TW": "拿鐵",
-       *       "en": "Latte"
-       *     }
-       */
-      name: Record<string, never>;
-      description?: Record<string, never>;
-      image?: string;
-      suitableForDiet?: (
-        | "DiabeticDiet"
-        | "GlutenFreeDiet"
-        | "HalalDiet"
-        | "HinduDiet"
-        | "KosherDiet"
-        | "LowCalorieDiet"
-        | "LowFatDiet"
-        | "LowLactoseDiet"
-        | "LowSaltDiet"
-        | "VeganDiet"
-        | "VegetarianDiet"
-      )[];
-      nutrition?: components["schemas"]["NutritionInformationDto"];
-      offer?: components["schemas"]["CreateOfferDto"];
-    };
-    OfferResponseDto: {
-      id: string;
-      menuItemId?: string | null;
-      menuSectionId?: string | null;
-      price?: string | null;
-      priceCurrency?: string | null;
-      availability?: components["schemas"]["ItemAvailability"] | null;
-      deliveryLeadTime?: components["schemas"]["QuantitativeValueDto"] | null;
-      inventoryLevel?: components["schemas"]["QuantitativeValueDto"] | null;
-      priceSpecification?:
-        | components["schemas"]["PriceSpecificationDto"]
-        | null;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    MenuItemResponseDto: {
-      id: string;
-      menuId?: string | null;
-      menuSectionId?: string | null;
-      name: Record<string, never>;
-      description?: Record<string, never> | null;
-      image?: string | null;
-      suitableForDiet?:
-        | (
-            | "DiabeticDiet"
-            | "GlutenFreeDiet"
-            | "HalalDiet"
-            | "HinduDiet"
-            | "KosherDiet"
-            | "LowCalorieDiet"
-            | "LowFatDiet"
-            | "LowLactoseDiet"
-            | "LowSaltDiet"
-            | "VeganDiet"
-            | "VegetarianDiet"
-          )[]
-        | null;
-      nutrition?: components["schemas"]["NutritionInformationDto"] | null;
-      offer?: components["schemas"]["OfferResponseDto"] | null;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    UpdateMenuItemDto: {
-      /**
-       * @example {
-       *       "zh-TW": "拿鐵",
-       *       "en": "Latte"
-       *     }
-       */
-      name?: Record<string, never>;
-      description?: Record<string, never>;
-      image?: string;
-      suitableForDiet?: (
-        | "DiabeticDiet"
-        | "GlutenFreeDiet"
-        | "HalalDiet"
-        | "HinduDiet"
-        | "KosherDiet"
-        | "LowCalorieDiet"
-        | "LowFatDiet"
-        | "LowLactoseDiet"
-        | "LowSaltDiet"
-        | "VeganDiet"
-        | "VegetarianDiet"
-      )[];
-      nutrition?: components["schemas"]["NutritionInformationDto"];
-      offer?: components["schemas"]["CreateOfferDto"];
-    };
-    UpdateOfferDto: {
-      /** @example 150.00 */
-      price?: string;
-      /** @default TWD */
-      priceCurrency: string;
-      availability?: components["schemas"]["ItemAvailability"];
-      /** @description 預計準備時間，unitText 建議用 "minute" */
-      deliveryLeadTime?: components["schemas"]["QuantitativeValueDto"];
-      /** @description 當日剩餘庫存數量 */
-      inventoryLevel?: components["schemas"]["QuantitativeValueDto"];
-      priceSpecification?: components["schemas"]["PriceSpecificationDto"];
-    };
-    CreateMenuItemAddOnDto: {
-      /** @description Add-on menu item ID */
-      addOnMenuItemId?: string;
-      /** @description Add-on menu section ID */
-      addOnMenuSectionId?: string;
-    };
-    MenuItemAddOnResponseDto: {
-      id: string;
-      menuItemId: string;
-      addOnMenuItemId?: string | null;
-      addOnMenuItemName?: Record<string, never> | null;
-      addOnMenuSectionId?: string | null;
-      addOnMenuSectionName?: Record<string, never> | null;
-      addOnMenuItemSectionId?: string | null;
-      addOnMenuItemSectionName?: Record<string, never> | null;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    /** @enum {string} */
-    AddOnFilterField:
-      | "addOnMenuSectionName"
-      | "addOnMenuItemName"
-      | "createdAt"
-      | "updatedAt";
-    /** @enum {string} */
-    AddOnSortField:
-      | "addOnMenuSectionName"
-      | "addOnMenuItemName"
-      | "createdAt"
-      | "updatedAt";
-    UpdateMenuItemAddOnDto: {
-      /** @description Add-on menu item ID */
-      addOnMenuItemId?: string | null;
-      /** @description Add-on menu section ID */
-      addOnMenuSectionId?: string | null;
-    };
-    CreateModifierGroupDto: {
-      /**
-       * @description 群組名稱，如「甜度」「加料」
-       * @example {
-       *       "zh-TW": "甜度",
-       *       "en": "Sweetness"
-       *     }
-       */
-      displayName: Record<string, never>;
-      /**
-       * @description 最少選擇數量；>= 1 代表必選
-       * @default 0
-       */
-      minSelectionCount: number;
-      /** @description 最多選擇數量；min=max=1 為單選，null 為不限 */
-      maxSelectionCount?: number | null;
-    };
-    ModifierResponseDto: {
-      id: string;
-      modifierGroupId: string;
-      displayName: Record<string, never>;
-      /** @description 加價金額；null 代表不影響價格 */
-      priceAdjustment?: string | null;
-      availability?: components["schemas"]["ItemAvailability"] | null;
-      sortOrder: number;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    ModifierGroupResponseDto: {
-      id: string;
-      menuId?: string | null;
-      displayName: Record<string, never>;
-      /** @description 最少選擇數量；>= 1 代表必選 */
-      minSelectionCount: number;
-      /** @description 最多選擇數量；null 為不限 */
-      maxSelectionCount?: number | null;
-      sortOrder: number;
-      /** @description 群組底下的選項（依需求帶出） */
-      modifiers?: components["schemas"]["ModifierResponseDto"][];
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    /** @enum {string} */
-    ModifierFilterField: "displayName" | "createdAt" | "updatedAt";
-    /** @enum {string} */
-    ModifierSortField: "displayName" | "createdAt" | "updatedAt";
-    UpdateModifierGroupDto: {
-      /** @description 群組名稱 */
-      displayName?: Record<string, never>;
-      /** @description 最少選擇數量；>= 1 代表必選 */
-      minSelectionCount?: number;
-      /** @description 最多選擇數量；null 為不限 */
-      maxSelectionCount?: number | null;
-    };
-    CreateModifierDto: {
-      /**
-       * @description 選項名稱，如「半糖」「珍珠」
-       * @example {
-       *       "zh-TW": "半糖",
-       *       "en": "Half Sugar"
-       *     }
-       */
-      displayName: Record<string, never>;
-      /**
-       * @description 加價金額；省略代表不影響價格
-       * @example 10.00
-       */
-      priceAdjustment?: string;
-      availability?: components["schemas"]["ItemAvailability"];
-    };
-    UpdateModifierDto: {
-      /** @description 選項名稱 */
-      displayName?: Record<string, never>;
-      /**
-       * @description 加價金額
-       * @example 10.00
-       */
-      priceAdjustment?: string;
-      availability?: components["schemas"]["ItemAvailability"];
-    };
-    CreateMenuItemModifierGroupDto: {
-      /** @description 要掛到此品項的選項群組 ID */
-      modifierGroupId: string;
-    };
-    MenuItemModifierGroupResponseDto: {
-      id: string;
-      menuItemId: string;
-      modifierGroupId: string;
-      sortOrder: number;
-      /** @description 掛上的群組（含選項，依需求帶出） */
-      modifierGroup?: components["schemas"]["ModifierGroupResponseDto"];
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    OrderMenuOfferResponseDto: {
-      id: string;
-      menuItemId?: string | null;
-      menuSectionId?: string | null;
-      price?: string | null;
-      priceCurrency?: string | null;
-      availability?: components["schemas"]["ItemAvailability"] | null;
-      deliveryLeadTime?: components["schemas"]["QuantitativeValueDto"] | null;
-      inventoryLevel?: components["schemas"]["QuantitativeValueDto"] | null;
-      priceSpecification?:
-        | components["schemas"]["PriceSpecificationDto"]
-        | null;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    OrderMenuModifierResponseDto: {
-      id: string;
-      modifierGroupId: string;
-      displayName: string;
-      /** @description 加價金額；null 代表不影響價格 */
-      priceAdjustment?: string | null;
-      availability?: components["schemas"]["ItemAvailability"] | null;
-      sortOrder: number;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    OrderMenuModifierGroupResponseDto: {
-      id: string;
-      displayName: string;
-      /** @description 最少選擇數量；>= 1 代表必選 */
-      minSelectionCount: number;
-      /** @description 最多選擇數量；null 為不限 */
-      maxSelectionCount?: number | null;
-      sortOrder: number;
-      modifiers: components["schemas"]["OrderMenuModifierResponseDto"][];
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    OrderMenuAddOnItemResponseDto: {
-      id: string;
-      name: string;
-      image?: string | null;
-      offers: components["schemas"]["OrderMenuOfferResponseDto"][];
-      modifierGroups: components["schemas"]["OrderMenuModifierGroupResponseDto"][];
-    };
-    OrderMenuAddOnResponseDto: {
-      id: string;
-      menuItemId: string;
-      addOnMenuItemId?: string | null;
-      addOnMenuSectionId?: string | null;
-      sortOrder: number;
-      /** @description 解析後的加購品項（指向品項為單筆；指向區塊為其所有品項） */
-      menuItems: components["schemas"]["OrderMenuAddOnItemResponseDto"][];
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    OrderMenuItemResponseDto: {
-      id: string;
-      menuId?: string | null;
-      menuSectionId?: string | null;
-      name: string;
-      description?: string | null;
-      image?: string | null;
-      suitableForDiet?:
-        | (
-            | "DiabeticDiet"
-            | "GlutenFreeDiet"
-            | "HalalDiet"
-            | "HinduDiet"
-            | "KosherDiet"
-            | "LowCalorieDiet"
-            | "LowFatDiet"
-            | "LowLactoseDiet"
-            | "LowSaltDiet"
-            | "VeganDiet"
-            | "VegetarianDiet"
-          )[]
-        | null;
-      nutrition?: components["schemas"]["NutritionInformationDto"] | null;
-      sortOrder: number;
-      offers: components["schemas"]["OrderMenuOfferResponseDto"][];
-      addOns: components["schemas"]["OrderMenuAddOnResponseDto"][];
-      modifierGroups: components["schemas"]["OrderMenuModifierGroupResponseDto"][];
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    OrderMenuSectionResponseDto: {
-      id: string;
-      menuId?: string | null;
-      parentSectionId?: string | null;
-      name: string;
-      description?: string | null;
-      image?: string | null;
-      sortOrder: number;
-      menuItems: components["schemas"]["OrderMenuItemResponseDto"][];
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    OrderMenuResponseDto: {
-      id: string;
-      name: string;
-      description?: string | null;
-      image?: string | null;
-      sections: components["schemas"]["OrderMenuSectionResponseDto"][];
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    OrganizationResponseDto: {
-      id: string;
-      name: string;
-      slug: string;
-      logo?: string | null;
-      /** Format: date-time */
-      createdAt: string;
-      metadata?: string | null;
-      addressCountry?: string | null;
-      addressLocality?: string | null;
-      addressRegion?: string | null;
-      extendedAddress?: string | null;
-      postalCode?: string | null;
-      streetAddress?: string | null;
-      hasMap?: string | null;
-      openingHours?: string | null;
-      telephone?: string | null;
-    };
-    OrganizationMemberTeamDto: {
-      id: string;
-      name: string;
-    };
-    OrganizationMemberResponseDto: {
-      bio?: string | null;
-      /** Format: date-time */
-      createdAt: string;
-      firstName: string;
-      id: string;
-      image?: string | null;
-      lastName?: string | null;
-      /** @enum {string} */
-      role: "admin" | "member" | "owner";
-      teams: components["schemas"]["OrganizationMemberTeamDto"][];
-      userId: string;
-    };
-  };
-  responses: never;
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  AppController_getHello: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": string;
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  AppController_getTranslatedHello: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": string;
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  UsersController_findAll: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["UserResponseDto"][];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  UsersController_findList: {
-    parameters: {
-      query?: {
-        /** @description Column filter 欄位 */
-        filterField?: components["schemas"]["UserFilterField"];
-        /** @description Column filter 運算子 */
-        filterOperator?: components["schemas"]["UserFilterOperator"];
-        /** @description Column filter 值（isEmpty/isNotEmpty 時可省略，isAnyOf 時以逗號分隔多值） */
-        filterValue?: string;
-        /** @description 每頁筆數 */
-        limit?: number;
-        /** @description 偏移量 */
-        offset?: number;
-        /** @description Quick Filter 搜尋值。可傳一般文字，或 role:admin、banned:true、emailSubscribed:false 等欄位 token */
-        quickFilterValue?: string;
-        /** @description Search 欄位 */
-        searchField?: components["schemas"]["UserSearchField"];
-        /** @description Search 運算子 */
-        searchOperator?: components["schemas"]["UserSearchOperator"];
-        /** @description Search 值 */
-        searchValue?: string;
-        /** @description 排序欄位 */
-        sortBy?: components["schemas"]["UserSortField"];
-        /** @description 排序方向 */
-        sortDirection?: components["schemas"]["SortDirection"];
-        /** @description 時區，用於 createdAt 本地時間比對，例如 Asia/Taipei */
-        timezone?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  UsersController_findOne: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["UserResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  UsersController_remove: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["UserResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  UsersController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateUserDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["UserResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MailsController_test: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["SendTestEmailDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  DonateCodesController_getAll: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": Record<string, never>[];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  EcpayController_checkout: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CheckoutEcpayDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": string;
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  EcpayController_return: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["ReturnEcpayDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": Record<string, never>;
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  EcpayController_getGovInvoiceWordSetting: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  EcpayController_issueInvoice: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["IssueInvoiceEcpayDecryptedResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  OrdersController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        organizationSlug: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateOrderDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["OrderResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  OrdersController_findOne: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        organizationSlug: string;
-        orderId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["OrderResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_findAllMenus: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        organizationId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["MenuResponseDto"][];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_findMenu: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        menuId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["MenuResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_updateMenu: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        menuId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateMenuDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["MenuResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_findAllMenuSections: {
-    parameters: {
-      query?: {
-        filterField?: components["schemas"]["MenuFilterField"];
-        filterOperator?: components["schemas"]["FilterOperator"];
-        sortBy?: components["schemas"]["MenuSortField"];
-        sortDirection?: components["schemas"]["SortDirection"];
-        limit?: number;
-        offset?: number;
-        filterValue?: string;
-        quickFilterValue?: string;
-        searchField?: "name" | "description";
-        searchOperator?: "contains" | "startsWith" | "endsWith";
-        searchValue?: string;
-        timezone?: string;
-      };
-      header?: never;
-      path: {
-        menuId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_createMenuSection: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        menuId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateMenuSectionDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["MenuSectionResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_reorderMenuSections: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        menuId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["ReorderDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_findMenuSection: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        sectionId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["MenuSectionResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_deleteMenuSection: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        sectionId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["MenuSectionResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_updateMenuSection: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        sectionId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateMenuSectionDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["MenuSectionResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_findAllMenuSectionItems: {
-    parameters: {
-      query?: {
-        filterField?: components["schemas"]["MenuFilterField"];
-        filterOperator?: components["schemas"]["FilterOperator"];
-        sortBy?: components["schemas"]["MenuSortField"];
-        sortDirection?: components["schemas"]["SortDirection"];
-        limit?: number;
-        offset?: number;
-        filterValue?: string;
-        quickFilterValue?: string;
-        searchField?: "name" | "description";
-        searchOperator?: "contains" | "startsWith" | "endsWith";
-        searchValue?: string;
-        timezone?: string;
-      };
-      header?: never;
-      path: {
-        sectionId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_createMenuItem: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        sectionId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateMenuItemDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["MenuItemResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_reorderMenuItems: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        sectionId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["ReorderDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_findMenuItem: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        menuItemId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["MenuItemResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_deleteMenuItem: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        menuItemId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["MenuItemResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_updateMenuItem: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        menuItemId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateMenuItemDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["MenuItemResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_findAllOffers: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        menuItemId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["OfferResponseDto"][];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_createOffer: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        menuItemId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateOfferDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["OfferResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_deleteOffer: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        offerId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["OfferResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_updateOffer: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        offerId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateOfferDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["OfferResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_findAllMenuItemAddOns: {
-    parameters: {
-      query?: {
-        filterField?: components["schemas"]["AddOnFilterField"];
-        filterOperator?: components["schemas"]["FilterOperator"];
-        sortBy?: components["schemas"]["AddOnSortField"];
-        sortDirection?: components["schemas"]["SortDirection"];
-        limit?: number;
-        offset?: number;
-        filterValue?: string;
-        quickFilterValue?: string;
-        timezone?: string;
-      };
-      header?: never;
-      path: {
-        menuItemId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_createMenuItemAddOn: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        menuItemId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateMenuItemAddOnDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["MenuItemAddOnResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_reorderMenuItemAddOns: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        menuItemId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["ReorderDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_deleteMenuItemAddOn: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        addOnId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["MenuItemAddOnResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_updateMenuItemAddOn: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        addOnId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateMenuItemAddOnDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["MenuItemAddOnResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_findAllModifierGroups: {
-    parameters: {
-      query?: {
-        filterField?: components["schemas"]["ModifierFilterField"];
-        filterOperator?: components["schemas"]["FilterOperator"];
-        sortBy?: components["schemas"]["ModifierSortField"];
-        sortDirection?: components["schemas"]["SortDirection"];
-        limit?: number;
-        offset?: number;
-        filterValue?: string;
-        quickFilterValue?: string;
-        timezone?: string;
-      };
-      header?: never;
-      path: {
-        menuId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_createModifierGroup: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        menuId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateModifierGroupDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ModifierGroupResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_reorderModifierGroups: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        menuId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["ReorderDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_findModifierGroup: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        groupId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ModifierGroupResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_deleteModifierGroup: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        groupId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ModifierGroupResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_updateModifierGroup: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        groupId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateModifierGroupDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ModifierGroupResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_findAllModifiers: {
-    parameters: {
-      query?: {
-        filterField?: components["schemas"]["ModifierFilterField"];
-        filterOperator?: components["schemas"]["FilterOperator"];
-        sortBy?: components["schemas"]["ModifierSortField"];
-        sortDirection?: components["schemas"]["SortDirection"];
-        limit?: number;
-        offset?: number;
-        filterValue?: string;
-        quickFilterValue?: string;
-        timezone?: string;
-      };
-      header?: never;
-      path: {
-        groupId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_createModifier: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        groupId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateModifierDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ModifierResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_reorderModifiers: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        groupId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["ReorderDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_deleteModifier: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        modifierId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ModifierResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_updateModifier: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        modifierId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateModifierDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ModifierResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_findAllMenuItemModifierGroups: {
-    parameters: {
-      query?: {
-        filterField?: components["schemas"]["ModifierFilterField"];
-        filterOperator?: components["schemas"]["FilterOperator"];
-        sortBy?: components["schemas"]["ModifierSortField"];
-        sortDirection?: components["schemas"]["SortDirection"];
-        limit?: number;
-        offset?: number;
-        filterValue?: string;
-        quickFilterValue?: string;
-        timezone?: string;
-      };
-      header?: never;
-      path: {
-        menuItemId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_createMenuItemModifierGroup: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        menuItemId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateMenuItemModifierGroupDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["MenuItemModifierGroupResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_reorderMenuItemModifierGroups: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        menuItemId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["ReorderDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_deleteMenuItemModifierGroup: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        linkId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["MenuItemModifierGroupResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  PublicMenusController_findOrderMenu: {
-    parameters: {
-      query: {
-        lang: "en" | "ja" | "ko" | "zh-CN" | "zh-TW";
-      };
-      header?: never;
-      path: {
-        organizationId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description 無菜單時為 null */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["OrderMenuResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  GcisController_findOne: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description 統一編號（8位數字） */
-        businessNo: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": Record<string, never>;
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  OrganizationsController_findAll: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["OrganizationResponseDto"][];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  OrganizationsController_findOne: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        slug: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["OrganizationResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  OrganizationsController_findMembers: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["OrganizationMemberResponseDto"][];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
+    AppController_getHello: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string;
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AppController_getTranslatedHello: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string;
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    UsersController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserResponseDto"][];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    UsersController_findList: {
+        parameters: {
+            query?: {
+                /** @description Column filter 欄位 */
+                filterField?: components["schemas"]["UserFilterField"];
+                /** @description Column filter 運算子 */
+                filterOperator?: components["schemas"]["UserFilterOperator"];
+                /** @description Column filter 值（isEmpty/isNotEmpty 時可省略，isAnyOf 時以逗號分隔多值） */
+                filterValue?: string;
+                /** @description 每頁筆數 */
+                limit?: number;
+                /** @description 偏移量 */
+                offset?: number;
+                /** @description Quick Filter 搜尋值。可傳一般文字，或 role:admin、banned:true、emailSubscribed:false 等欄位 token */
+                quickFilterValue?: string;
+                /** @description Search 欄位 */
+                searchField?: components["schemas"]["UserSearchField"];
+                /** @description Search 運算子 */
+                searchOperator?: components["schemas"]["UserSearchOperator"];
+                /** @description Search 值 */
+                searchValue?: string;
+                /** @description 排序欄位 */
+                sortBy?: components["schemas"]["UserSortField"];
+                /** @description 排序方向 */
+                sortDirection?: components["schemas"]["SortDirection"];
+                /** @description 時區，用於 createdAt 本地時間比對，例如 Asia/Taipei */
+                timezone?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    UsersController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    UsersController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    UsersController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateUserDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MailsController_test: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SendTestEmailDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DonateCodesController_getAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>[];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    EcpayController_checkout: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CheckoutEcpayDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CheckoutEcpayResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    EcpayController_return: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReturnEcpayDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    EcpayController_result: {
+        parameters: {
+            query: {
+                redirect: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReturnEcpayDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    EcpayController_getGovInvoiceWordSetting: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    EcpayController_issueInvoice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IssueInvoiceEcpayDecryptedResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    OrdersController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationSlug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateOrderDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    OrdersController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationSlug: string;
+                orderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_findAllMenus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MenuResponseDto"][];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_findMenu: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                menuId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MenuResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_updateMenu: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                menuId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateMenuDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MenuResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_findAllMenuSections: {
+        parameters: {
+            query?: {
+                filterField?: components["schemas"]["MenuFilterField"];
+                filterOperator?: components["schemas"]["FilterOperator"];
+                sortBy?: components["schemas"]["MenuSortField"];
+                sortDirection?: components["schemas"]["SortDirection"];
+                limit?: number;
+                offset?: number;
+                filterValue?: string;
+                quickFilterValue?: string;
+                searchField?: "name" | "description";
+                searchOperator?: "contains" | "startsWith" | "endsWith";
+                searchValue?: string;
+                timezone?: string;
+            };
+            header?: never;
+            path: {
+                menuId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_createMenuSection: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                menuId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateMenuSectionDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MenuSectionResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_reorderMenuSections: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                menuId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReorderDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_findMenuSection: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sectionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MenuSectionResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_deleteMenuSection: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sectionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MenuSectionResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_updateMenuSection: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sectionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateMenuSectionDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MenuSectionResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_findAllMenuSectionItems: {
+        parameters: {
+            query?: {
+                filterField?: components["schemas"]["MenuFilterField"];
+                filterOperator?: components["schemas"]["FilterOperator"];
+                sortBy?: components["schemas"]["MenuSortField"];
+                sortDirection?: components["schemas"]["SortDirection"];
+                limit?: number;
+                offset?: number;
+                filterValue?: string;
+                quickFilterValue?: string;
+                searchField?: "name" | "description";
+                searchOperator?: "contains" | "startsWith" | "endsWith";
+                searchValue?: string;
+                timezone?: string;
+            };
+            header?: never;
+            path: {
+                sectionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_createMenuItem: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sectionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateMenuItemDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MenuItemResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_reorderMenuItems: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sectionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReorderDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_findMenuItem: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                menuItemId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MenuItemResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_deleteMenuItem: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                menuItemId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MenuItemResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_updateMenuItem: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                menuItemId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateMenuItemDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MenuItemResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_findAllOffers: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                menuItemId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OfferResponseDto"][];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_createOffer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                menuItemId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateOfferDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OfferResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_deleteOffer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                offerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OfferResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_updateOffer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                offerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateOfferDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OfferResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_findAllMenuItemAddOns: {
+        parameters: {
+            query?: {
+                filterField?: components["schemas"]["AddOnFilterField"];
+                filterOperator?: components["schemas"]["FilterOperator"];
+                sortBy?: components["schemas"]["AddOnSortField"];
+                sortDirection?: components["schemas"]["SortDirection"];
+                limit?: number;
+                offset?: number;
+                filterValue?: string;
+                quickFilterValue?: string;
+                timezone?: string;
+            };
+            header?: never;
+            path: {
+                menuItemId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_createMenuItemAddOn: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                menuItemId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateMenuItemAddOnDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MenuItemAddOnResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_reorderMenuItemAddOns: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                menuItemId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReorderDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_deleteMenuItemAddOn: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                addOnId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MenuItemAddOnResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_updateMenuItemAddOn: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                addOnId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateMenuItemAddOnDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MenuItemAddOnResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_findAllModifierGroups: {
+        parameters: {
+            query?: {
+                filterField?: components["schemas"]["ModifierFilterField"];
+                filterOperator?: components["schemas"]["FilterOperator"];
+                sortBy?: components["schemas"]["ModifierSortField"];
+                sortDirection?: components["schemas"]["SortDirection"];
+                limit?: number;
+                offset?: number;
+                filterValue?: string;
+                quickFilterValue?: string;
+                timezone?: string;
+            };
+            header?: never;
+            path: {
+                menuId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_createModifierGroup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                menuId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateModifierGroupDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModifierGroupResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_reorderModifierGroups: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                menuId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReorderDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_findModifierGroup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                groupId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModifierGroupResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_deleteModifierGroup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                groupId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModifierGroupResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_updateModifierGroup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                groupId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateModifierGroupDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModifierGroupResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_findAllModifiers: {
+        parameters: {
+            query?: {
+                filterField?: components["schemas"]["ModifierFilterField"];
+                filterOperator?: components["schemas"]["FilterOperator"];
+                sortBy?: components["schemas"]["ModifierSortField"];
+                sortDirection?: components["schemas"]["SortDirection"];
+                limit?: number;
+                offset?: number;
+                filterValue?: string;
+                quickFilterValue?: string;
+                timezone?: string;
+            };
+            header?: never;
+            path: {
+                groupId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_createModifier: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                groupId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateModifierDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModifierResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_reorderModifiers: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                groupId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReorderDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_deleteModifier: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                modifierId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModifierResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_updateModifier: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                modifierId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateModifierDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModifierResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_findAllMenuItemModifierGroups: {
+        parameters: {
+            query?: {
+                filterField?: components["schemas"]["ModifierFilterField"];
+                filterOperator?: components["schemas"]["FilterOperator"];
+                sortBy?: components["schemas"]["ModifierSortField"];
+                sortDirection?: components["schemas"]["SortDirection"];
+                limit?: number;
+                offset?: number;
+                filterValue?: string;
+                quickFilterValue?: string;
+                timezone?: string;
+            };
+            header?: never;
+            path: {
+                menuItemId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_createMenuItemModifierGroup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                menuItemId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateMenuItemModifierGroupDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MenuItemModifierGroupResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_reorderMenuItemModifierGroups: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                menuItemId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReorderDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MenusController_deleteMenuItemModifierGroup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                linkId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MenuItemModifierGroupResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PublicMenusController_findOrderMenu: {
+        parameters: {
+            query: {
+                lang: "en" | "ja" | "ko" | "zh-CN" | "zh-TW";
+            };
+            header?: never;
+            path: {
+                organizationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 無菜單時為 null */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderMenuResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GcisController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description 統一編號（8位數字） */
+                businessNo: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    OrganizationsController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrganizationResponseDto"][];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    OrganizationsController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrganizationResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    OrganizationsController_findMembers: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrganizationMemberResponseDto"][];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
 }
 type FlattenedDeepRequired<T> = {
-  [K in keyof T]-?: FlattenedDeepRequired<
-    T[K] extends unknown[] | undefined | null
-      ? Extract<T[K], unknown[]>[number]
-      : T[K]
-  >;
+    [K in keyof T]-?: FlattenedDeepRequired<T[K] extends unknown[] | undefined | null ? Extract<T[K], unknown[]>[number] : T[K]>;
 };
-type ReadonlyArray<T> = [Exclude<T, undefined>] extends [unknown[]]
-  ? Readonly<Exclude<T, undefined>>
-  : Readonly<Exclude<T, undefined>[]>;
-export const pathsApiMenusMenuIdMenuSectionsGetParametersQuerySearchFieldValues: ReadonlyArray<
-  FlattenedDeepRequired<paths>["/api/menus/{menuId}/menu-sections"]["get"]["parameters"]["query"]["searchField"]
-> = ["name", "description"];
-export const pathsApiMenusMenuIdMenuSectionsGetParametersQuerySearchOperatorValues: ReadonlyArray<
-  FlattenedDeepRequired<paths>["/api/menus/{menuId}/menu-sections"]["get"]["parameters"]["query"]["searchOperator"]
-> = ["contains", "startsWith", "endsWith"];
-export const pathsApiMenuSectionsSectionIdMenuItemsGetParametersQuerySearchFieldValues: ReadonlyArray<
-  FlattenedDeepRequired<paths>["/api/menu-sections/{sectionId}/menu-items"]["get"]["parameters"]["query"]["searchField"]
-> = ["name", "description"];
-export const pathsApiMenuSectionsSectionIdMenuItemsGetParametersQuerySearchOperatorValues: ReadonlyArray<
-  FlattenedDeepRequired<paths>["/api/menu-sections/{sectionId}/menu-items"]["get"]["parameters"]["query"]["searchOperator"]
-> = ["contains", "startsWith", "endsWith"];
-export const pathsApiOrganizationsOrganizationIdOrderMenuGetParametersQueryLangValues: ReadonlyArray<
-  FlattenedDeepRequired<paths>["/api/organizations/{organizationId}/order-menu"]["get"]["parameters"]["query"]["lang"]
-> = ["en", "ja", "ko", "zh-CN", "zh-TW"];
-export const userResponseDtoLangValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["UserResponseDto"]["lang"]
-> = ["en", "ja", "ko", "zh-CN", "zh-TW"];
-export const userFilterFieldValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["UserFilterField"]
-> = ["name", "email", "role", "banned", "emailSubscribed", "createdAt"];
-export const userFilterOperatorValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["UserFilterOperator"]
-> = [
-  "contains",
-  "doesNotContain",
-  "equals",
-  "doesNotEqual",
-  "startsWith",
-  "endsWith",
-  "isEmpty",
-  "isNotEmpty",
-  "isAnyOf",
-  "is",
-  "not",
-  "after",
-  "onOrAfter",
-  "before",
-  "onOrBefore",
-];
-export const userSearchFieldValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["UserSearchField"]
-> = ["name", "email"];
-export const userSearchOperatorValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["UserSearchOperator"]
-> = ["contains", "startsWith", "endsWith"];
-export const userSortFieldValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["UserSortField"]
-> = ["name", "email", "role", "banned", "emailSubscribed", "createdAt"];
-export const sortDirectionValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["SortDirection"]
-> = ["asc", "desc"];
-export const updateUserDtoGenderValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["UpdateUserDto"]["gender"]
-> = ["female", "male", "other"];
-export const baseEcpayLanguageValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["BaseEcpayLanguage"]
-> = ["ENG", "KOR", "JPN", "CHI"];
-export const returnEcpayDtoSimulatePaidValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["ReturnEcpayDto"]["SimulatePaid"]
-> = [0, 1];
-export const issueInvoiceEcpayItemDtoItemTaxTypeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayItemDto"]["ItemTaxType"]
-> = ["1", "2", "3"];
-export const issueInvoiceEcpayDecryptedRequestDtoChannelPartnerValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["ChannelPartner"]
-> = ["1"];
-export const issueInvoiceEcpayDecryptedRequestDtoClearanceMarkValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["ClearanceMark"]
-> = ["1", "2"];
-export const issueInvoiceEcpayDecryptedRequestDtoPrintValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["Print"]
-> = ["0", "1"];
-export const issueInvoiceEcpayDecryptedRequestDtoDonationValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["Donation"]
-> = ["0", "1"];
-export const issueInvoiceEcpayDecryptedRequestDtoCarrierTypeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["CarrierType"]
-> = ["", "1", "2", "3", "4", "5"];
-export const issueInvoiceEcpayDecryptedRequestDtoTaxTypeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["TaxType"]
-> = ["1", "2", "3", "4", "9"];
-export const issueInvoiceEcpayDecryptedRequestDtoZeroTaxRateReasonValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["ZeroTaxRateReason"]
-> = ["71", "72", "73", "74", "75", "76", "77", "78", "79"];
-export const issueInvoiceEcpayDecryptedRequestDtoSpecialTaxTypeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["SpecialTaxType"]
-> = [1, 2, 3, 4, 5, 6, 7, 8];
-export const issueInvoiceEcpayDecryptedRequestDtoInvTypeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["InvType"]
-> = ["07", "08"];
-export const issueInvoiceEcpayDecryptedRequestDtoVatValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["vat"]
-> = ["1", "0"];
-export const createOrderInvoiceDtoTypeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["CreateOrderInvoiceDto"]["type"]
-> = ["personal", "company", "donate"];
-export const createOrderInvoiceDtoCarrierTypeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["CreateOrderInvoiceDto"]["carrierType"]
-> = ["individual", "mobile", "certificate"];
-export const createOrderDtoModeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["CreateOrderDto"]["mode"]
-> = ["counter", "dineIn", "kiosk", "pickup"];
-export const createOrderDtoPaymentValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["CreateOrderDto"]["payment"]
-> = ["ApplePay", "Cash", "Credit", "iPASS", "Jkopay", "TWQR", "WeiXin"];
-export const orderResponseDtoModeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["OrderResponseDto"]["mode"]
-> = ["counter", "dineIn", "kiosk", "pickup"];
-export const orderResponseDtoPaymentMethodValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["OrderResponseDto"]["paymentMethod"]
-> = ["ApplePay", "Cash", "Credit", "iPASS", "Jkopay", "TWQR", "WeiXin"];
-export const orderResponseDtoOrderStatusValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["OrderResponseDto"]["orderStatus"]
-> = [
-  "OrderCancelled",
-  "OrderDelivered",
-  "OrderPaymentDue",
-  "OrderPickupAvailable",
-  "OrderProcessing",
-  "OrderProblem",
-];
-export const menuFilterFieldValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["MenuFilterField"]
-> = ["name", "description", "createdAt", "updatedAt"];
-export const filterOperatorValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["FilterOperator"]
-> = [
-  "contains",
-  "doesNotContain",
-  "equals",
-  "doesNotEqual",
-  "startsWith",
-  "endsWith",
-  "isEmpty",
-  "isNotEmpty",
-  "isAnyOf",
-  "is",
-  "not",
-  "after",
-  "onOrAfter",
-  "before",
-  "onOrBefore",
-];
-export const menuSortFieldValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["MenuSortField"]
-> = ["name", "description", "createdAt", "updatedAt"];
-export const itemAvailabilityValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["ItemAvailability"]
-> = ["InStock", "SoldOut", "Discontinued"];
-export const createMenuItemDtoSuitableForDietValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["CreateMenuItemDto"]["suitableForDiet"]
-> = [
-  "DiabeticDiet",
-  "GlutenFreeDiet",
-  "HalalDiet",
-  "HinduDiet",
-  "KosherDiet",
-  "LowCalorieDiet",
-  "LowFatDiet",
-  "LowLactoseDiet",
-  "LowSaltDiet",
-  "VeganDiet",
-  "VegetarianDiet",
-];
-export const menuItemResponseDtoSuitableForDietValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["MenuItemResponseDto"]["suitableForDiet"]
-> = [
-  "DiabeticDiet",
-  "GlutenFreeDiet",
-  "HalalDiet",
-  "HinduDiet",
-  "KosherDiet",
-  "LowCalorieDiet",
-  "LowFatDiet",
-  "LowLactoseDiet",
-  "LowSaltDiet",
-  "VeganDiet",
-  "VegetarianDiet",
-];
-export const updateMenuItemDtoSuitableForDietValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["UpdateMenuItemDto"]["suitableForDiet"]
-> = [
-  "DiabeticDiet",
-  "GlutenFreeDiet",
-  "HalalDiet",
-  "HinduDiet",
-  "KosherDiet",
-  "LowCalorieDiet",
-  "LowFatDiet",
-  "LowLactoseDiet",
-  "LowSaltDiet",
-  "VeganDiet",
-  "VegetarianDiet",
-];
-export const addOnFilterFieldValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["AddOnFilterField"]
-> = ["addOnMenuSectionName", "addOnMenuItemName", "createdAt", "updatedAt"];
-export const addOnSortFieldValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["AddOnSortField"]
-> = ["addOnMenuSectionName", "addOnMenuItemName", "createdAt", "updatedAt"];
-export const modifierFilterFieldValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["ModifierFilterField"]
-> = ["displayName", "createdAt", "updatedAt"];
-export const modifierSortFieldValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["ModifierSortField"]
-> = ["displayName", "createdAt", "updatedAt"];
-export const orderMenuItemResponseDtoSuitableForDietValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["OrderMenuItemResponseDto"]["suitableForDiet"]
-> = [
-  "DiabeticDiet",
-  "GlutenFreeDiet",
-  "HalalDiet",
-  "HinduDiet",
-  "KosherDiet",
-  "LowCalorieDiet",
-  "LowFatDiet",
-  "LowLactoseDiet",
-  "LowSaltDiet",
-  "VeganDiet",
-  "VegetarianDiet",
-];
-export const organizationMemberResponseDtoRoleValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["OrganizationMemberResponseDto"]["role"]
-> = ["admin", "member", "owner"];
+type ReadonlyArray<T> = [
+    Exclude<T, undefined>
+] extends [
+    unknown[]
+] ? Readonly<Exclude<T, undefined>> : Readonly<Exclude<T, undefined>[]>;
+export const pathsApiMenusMenuIdMenuSectionsGetParametersQuerySearchFieldValues: ReadonlyArray<FlattenedDeepRequired<paths>["/api/menus/{menuId}/menu-sections"]["get"]["parameters"]["query"]["searchField"]> = ["name", "description"];
+export const pathsApiMenusMenuIdMenuSectionsGetParametersQuerySearchOperatorValues: ReadonlyArray<FlattenedDeepRequired<paths>["/api/menus/{menuId}/menu-sections"]["get"]["parameters"]["query"]["searchOperator"]> = ["contains", "startsWith", "endsWith"];
+export const pathsApiMenuSectionsSectionIdMenuItemsGetParametersQuerySearchFieldValues: ReadonlyArray<FlattenedDeepRequired<paths>["/api/menu-sections/{sectionId}/menu-items"]["get"]["parameters"]["query"]["searchField"]> = ["name", "description"];
+export const pathsApiMenuSectionsSectionIdMenuItemsGetParametersQuerySearchOperatorValues: ReadonlyArray<FlattenedDeepRequired<paths>["/api/menu-sections/{sectionId}/menu-items"]["get"]["parameters"]["query"]["searchOperator"]> = ["contains", "startsWith", "endsWith"];
+export const pathsApiOrganizationsOrganizationIdOrderMenuGetParametersQueryLangValues: ReadonlyArray<FlattenedDeepRequired<paths>["/api/organizations/{organizationId}/order-menu"]["get"]["parameters"]["query"]["lang"]> = ["en", "ja", "ko", "zh-CN", "zh-TW"];
+export const userResponseDtoLangValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["UserResponseDto"]["lang"]> = ["en", "ja", "ko", "zh-CN", "zh-TW"];
+export const userFilterFieldValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["UserFilterField"]> = ["name", "email", "role", "banned", "emailSubscribed", "createdAt"];
+export const userFilterOperatorValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["UserFilterOperator"]> = ["contains", "doesNotContain", "equals", "doesNotEqual", "startsWith", "endsWith", "isEmpty", "isNotEmpty", "isAnyOf", "is", "not", "after", "onOrAfter", "before", "onOrBefore"];
+export const userSearchFieldValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["UserSearchField"]> = ["name", "email"];
+export const userSearchOperatorValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["UserSearchOperator"]> = ["contains", "startsWith", "endsWith"];
+export const userSortFieldValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["UserSortField"]> = ["name", "email", "role", "banned", "emailSubscribed", "createdAt"];
+export const sortDirectionValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["SortDirection"]> = ["asc", "desc"];
+export const updateUserDtoGenderValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["UpdateUserDto"]["gender"]> = ["female", "male", "other"];
+export const baseEcpayLanguageValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["BaseEcpayLanguage"]> = ["ENG", "KOR", "JPN", "CHI"];
+export const returnEcpayDtoSimulatePaidValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["ReturnEcpayDto"]["SimulatePaid"]> = [0, 1];
+export const issueInvoiceEcpayItemDtoItemTaxTypeValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayItemDto"]["ItemTaxType"]> = ["1", "2", "3"];
+export const issueInvoiceEcpayDecryptedRequestDtoChannelPartnerValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["ChannelPartner"]> = ["1"];
+export const issueInvoiceEcpayDecryptedRequestDtoClearanceMarkValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["ClearanceMark"]> = ["1", "2"];
+export const issueInvoiceEcpayDecryptedRequestDtoPrintValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["Print"]> = ["0", "1"];
+export const issueInvoiceEcpayDecryptedRequestDtoDonationValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["Donation"]> = ["0", "1"];
+export const issueInvoiceEcpayDecryptedRequestDtoCarrierTypeValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["CarrierType"]> = ["", "1", "2", "3", "4", "5"];
+export const issueInvoiceEcpayDecryptedRequestDtoTaxTypeValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["TaxType"]> = ["1", "2", "3", "4", "9"];
+export const issueInvoiceEcpayDecryptedRequestDtoZeroTaxRateReasonValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["ZeroTaxRateReason"]> = ["71", "72", "73", "74", "75", "76", "77", "78", "79"];
+export const issueInvoiceEcpayDecryptedRequestDtoSpecialTaxTypeValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["SpecialTaxType"]> = [1, 2, 3, 4, 5, 6, 7, 8];
+export const issueInvoiceEcpayDecryptedRequestDtoInvTypeValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["InvType"]> = ["07", "08"];
+export const issueInvoiceEcpayDecryptedRequestDtoVatValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["vat"]> = ["1", "0"];
+export const createOrderInvoiceDtoTypeValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["CreateOrderInvoiceDto"]["type"]> = ["personal", "company", "donate"];
+export const createOrderInvoiceDtoCarrierTypeValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["CreateOrderInvoiceDto"]["carrierType"]> = ["individual", "mobile", "certificate"];
+export const createOrderDtoModeValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["CreateOrderDto"]["mode"]> = ["counter", "dineIn", "kiosk", "pickup"];
+export const createOrderDtoPaymentValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["CreateOrderDto"]["payment"]> = ["ApplePay", "Cash", "Credit", "iPASS", "Jkopay", "TWQR", "WeiXin"];
+export const orderResponseDtoModeValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["OrderResponseDto"]["mode"]> = ["counter", "dineIn", "kiosk", "pickup"];
+export const orderResponseDtoPaymentMethodValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["OrderResponseDto"]["paymentMethod"]> = ["ApplePay", "Cash", "Credit", "iPASS", "Jkopay", "TWQR", "WeiXin"];
+export const orderResponseDtoOrderStatusValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["OrderResponseDto"]["orderStatus"]> = ["OrderCancelled", "OrderDelivered", "OrderPaymentDue", "OrderPickupAvailable", "OrderProcessing", "OrderProblem"];
+export const menuFilterFieldValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["MenuFilterField"]> = ["name", "description", "createdAt", "updatedAt"];
+export const filterOperatorValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["FilterOperator"]> = ["contains", "doesNotContain", "equals", "doesNotEqual", "startsWith", "endsWith", "isEmpty", "isNotEmpty", "isAnyOf", "is", "not", "after", "onOrAfter", "before", "onOrBefore"];
+export const menuSortFieldValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["MenuSortField"]> = ["name", "description", "createdAt", "updatedAt"];
+export const itemAvailabilityValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["ItemAvailability"]> = ["InStock", "SoldOut", "Discontinued"];
+export const createMenuItemDtoSuitableForDietValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["CreateMenuItemDto"]["suitableForDiet"]> = ["DiabeticDiet", "GlutenFreeDiet", "HalalDiet", "HinduDiet", "KosherDiet", "LowCalorieDiet", "LowFatDiet", "LowLactoseDiet", "LowSaltDiet", "VeganDiet", "VegetarianDiet"];
+export const menuItemResponseDtoSuitableForDietValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["MenuItemResponseDto"]["suitableForDiet"]> = ["DiabeticDiet", "GlutenFreeDiet", "HalalDiet", "HinduDiet", "KosherDiet", "LowCalorieDiet", "LowFatDiet", "LowLactoseDiet", "LowSaltDiet", "VeganDiet", "VegetarianDiet"];
+export const updateMenuItemDtoSuitableForDietValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["UpdateMenuItemDto"]["suitableForDiet"]> = ["DiabeticDiet", "GlutenFreeDiet", "HalalDiet", "HinduDiet", "KosherDiet", "LowCalorieDiet", "LowFatDiet", "LowLactoseDiet", "LowSaltDiet", "VeganDiet", "VegetarianDiet"];
+export const addOnFilterFieldValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["AddOnFilterField"]> = ["addOnMenuSectionName", "addOnMenuItemName", "createdAt", "updatedAt"];
+export const addOnSortFieldValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["AddOnSortField"]> = ["addOnMenuSectionName", "addOnMenuItemName", "createdAt", "updatedAt"];
+export const modifierFilterFieldValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["ModifierFilterField"]> = ["displayName", "createdAt", "updatedAt"];
+export const modifierSortFieldValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["ModifierSortField"]> = ["displayName", "createdAt", "updatedAt"];
+export const orderMenuItemResponseDtoSuitableForDietValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["OrderMenuItemResponseDto"]["suitableForDiet"]> = ["DiabeticDiet", "GlutenFreeDiet", "HalalDiet", "HinduDiet", "KosherDiet", "LowCalorieDiet", "LowFatDiet", "LowLactoseDiet", "LowSaltDiet", "VeganDiet", "VegetarianDiet"];
+export const organizationMemberResponseDtoRoleValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["OrganizationMemberResponseDto"]["role"]> = ["admin", "member", "owner"];

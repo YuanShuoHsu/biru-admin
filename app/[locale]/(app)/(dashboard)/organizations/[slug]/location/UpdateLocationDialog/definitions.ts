@@ -48,7 +48,7 @@ export const useUpdateLocationFormSchema = () => {
       ) {
         ctx.addIssue({
           code: "custom",
-          message: tValidation("phone.invalid"),
+          message: tValidation("telephone.invalid"),
           path: ["telephone"],
         });
       }

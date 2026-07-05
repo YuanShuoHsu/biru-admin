@@ -56,7 +56,10 @@ import {
 import { useCartStore } from "@/providers/cart-store-provider";
 import { useMenuStore } from "@/providers/menu-store-provider";
 
-import type { CheckoutEcpayDto } from "@/types/ecpay";
+import type {
+  CheckoutEcpayDto,
+  CheckoutEcpayResponse,
+} from "@/types/ecpay";
 import type { CreateOrderDto, OrderResponse } from "@/types/orders";
 import type { PaymentMethod } from "@/types/payment";
 
@@ -119,8 +122,8 @@ const OrderModeOrganizationSlugCheckout = () => {
         countryCode: localeConfigs[locale].countryCode,
         email: "",
         name: "",
-        notes: "",
-        phone: "",
+        remark: "",
+        telephone: "",
       },
       invoice: {
         carrierType: "",
@@ -170,7 +173,7 @@ const OrderModeOrganizationSlugCheckout = () => {
 
   const { isMutating: isMutatingEcpay, trigger: triggerEcpay } = useSWRMutation(
     "/api/ecpay",
-    sendRequest<{ message: string }, CheckoutEcpayDto>(),
+    sendRequest<CheckoutEcpayResponse, CheckoutEcpayDto>(),
   );
 
   const { isMutating: isMutatingOrder, trigger: triggerOrder } = useSWRMutation(
@@ -254,10 +257,10 @@ const OrderModeOrganizationSlugCheckout = () => {
         customer: {
           email: values.customer.email || undefined,
           name: values.customer.name,
-          notes: values.customer.notes || undefined,
-          phone: values.customer.phone
+          remark: values.customer.remark || undefined,
+          telephone: values.customer.telephone
             ? parsePhoneNumberWithError(
-                values.customer.phone,
+                values.customer.telephone,
                 values.customer.countryCode as CountryCode,
               ).number
             : undefined,
@@ -299,7 +302,7 @@ const OrderModeOrganizationSlugCheckout = () => {
       //       ? values.customer.email
       //       : values.invoice.email,
       //     CustomerName: values.customer.name,
-      //     CustomerPhone: values.customer.phone,
+      //     CustomerPhone: values.customer.telephone,
       //     DelayDay: "0",
       //     Donation: "0",
       //     InvType: "07",
@@ -373,16 +376,20 @@ const OrderModeOrganizationSlugCheckout = () => {
         TradeDesc: tOrder("checkout.tradeDesc"),
       };
 
-      const { message: data } = await triggerEcpay(dto);
+      const { action, fields } = await triggerEcpay(dto);
 
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(data, "text/html");
-      const form = doc.getElementById("ecpayForm");
-
-      if (form instanceof HTMLFormElement) {
-        document.body.appendChild(form);
-        form.submit();
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = action;
+      for (const [name, value] of Object.entries(fields)) {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = name;
+        input.value = value;
+        form.appendChild(input);
       }
+      document.body.appendChild(form);
+      form.submit();
     } catch (error) {
       enqueueSnackbar(getErrorMessage(error), { variant: "error" });
     }
@@ -428,10 +435,10 @@ const OrderModeOrganizationSlugCheckout = () => {
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 autoComplete="tel"
-                error={!!errors.customer?.phone}
+                error={!!errors.customer?.telephone}
                 fullWidth
-                helperText={errors.customer?.phone?.message}
-                label={`${tOrder("checkout.customer.phone.label")}${isKiosk ? ` ${tCommon("optional")}` : ""}`}
+                helperText={errors.customer?.telephone?.message}
+                label={`${tOrder("checkout.customer.telephone.label")}${isKiosk ? ` ${tCommon("optional")}` : ""}`}
                 required={!isKiosk}
                 slotProps={{
                   input: {
@@ -441,7 +448,7 @@ const OrderModeOrganizationSlugCheckout = () => {
                   },
                 }}
                 type="tel"
-                {...register("customer.phone")}
+                {...register("customer.telephone")}
               />
             </Grid>
           </Grid>
@@ -455,19 +462,19 @@ const OrderModeOrganizationSlugCheckout = () => {
             {...register("customer.email")}
           />
           <TextField
-            error={!!errors.customer?.notes}
+            error={!!errors.customer?.remark}
             fullWidth
-            helperText={errors.customer?.notes?.message}
-            label={`${tOrder("checkout.customer.notes.label")} ${tCommon("optional")}`}
+            helperText={errors.customer?.remark?.message}
+            label={`${tOrder("checkout.customer.remark.label")} ${tCommon("optional")}`}
             maxRows={4}
             multiline
-            placeholder={tOrder("checkout.customer.notes.placeholder")}
+            placeholder={tOrder("checkout.customer.remark.placeholder")}
             slotProps={{
               htmlInput: {
                 maxLength: 160,
               },
             }}
-            {...register("customer.notes")}
+            {...register("customer.remark")}
           />
           {/* <CouponForm /> */}
           <Divider flexItem />

@@ -93,7 +93,7 @@
     "number": "包含至少一個數字。",
     "sameAsCurrent": "新密碼不能與目前密碼相同。"
   },
-  "notes": {
+  "remark": {
     "maxLength": "備註不能超過 160 個字元。"
   },
   "password": {
@@ -105,7 +105,7 @@
   "payment": {
     "notSelected": "請選擇您的付款方式。"
   },
-  "phone": {
+  "telephone": {
     "invalid": "電話格式無效。",
     "required": "電話為必填。"
   },

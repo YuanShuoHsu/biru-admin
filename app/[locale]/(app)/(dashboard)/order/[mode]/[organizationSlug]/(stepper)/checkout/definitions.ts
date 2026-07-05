@@ -28,16 +28,16 @@ export const useCustomerPaymentFormSchema = () => {
           .string()
           .trim()
           .min(1, { error: tValidation("name.required") }),
-        notes: z
+        remark: z
           .string()
           .trim()
-          .max(160, { error: tValidation("notes.maxLength") }),
-        phone: isKiosk
+          .max(160, { error: tValidation("remark.maxLength") }),
+        telephone: isKiosk
           ? z.string().trim()
           : z
               .string()
               .trim()
-              .min(1, { error: tValidation("phone.required") }),
+              .min(1, { error: tValidation("telephone.required") }),
       }),
       invoice: z.object({
         carrierType: z.union([
@@ -82,16 +82,16 @@ export const useCustomerPaymentFormSchema = () => {
     })
     .superRefine((data, ctx) => {
       if (
-        data.customer.phone &&
+        data.customer.telephone &&
         !isValidPhoneNumber(
-          data.customer.phone,
+          data.customer.telephone,
           data.customer.countryCode as CountryCode,
         )
       ) {
         ctx.addIssue({
           code: "custom",
-          message: tValidation("phone.invalid"),
-          path: ["customer", "phone"],
+          message: tValidation("telephone.invalid"),
+          path: ["customer", "telephone"],
         });
       }
 

@@ -22,11 +22,11 @@
         "label": "姓名",
         "placeholder": "請輸入您的姓名"
       },
-      "notes": {
+      "remark": {
         "label": "備註",
         "placeholder": "請輸入您的備註"
       },
-      "phone": {
+      "telephone": {
         "label": "電話"
       }
     },

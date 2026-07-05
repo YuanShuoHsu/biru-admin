@@ -22,11 +22,11 @@
         "label": "Name",
         "placeholder": "Please enter your name"
       },
-      "notes": {
+      "remark": {
         "label": "Notes",
         "placeholder": "Please enter your notes"
       },
-      "phone": {
+      "telephone": {
         "label": "Phone"
       }
     },

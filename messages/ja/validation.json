@@ -93,7 +93,7 @@
     "number": "数字を1文字以上含む。",
     "sameAsCurrent": "新しいパスワードは現在のパスワードと異なる必要があります。"
   },
-  "notes": {
+  "remark": {
     "maxLength": "備考は160文字以内で入力してください。"
   },
   "password": {
@@ -105,7 +105,7 @@
   "payment": {
     "notSelected": "お支払い方法を選択してください。"
   },
-  "phone": {
+  "telephone": {
     "invalid": "電話番号が無効です。",
     "required": "電話番号は必須です。"
   },
