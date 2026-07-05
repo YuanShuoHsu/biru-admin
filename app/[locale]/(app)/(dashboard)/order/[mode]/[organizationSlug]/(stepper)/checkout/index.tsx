@@ -70,7 +70,7 @@ const PaymentImage = ({ method }: { method: PaymentMethod }) => (
     alt={method}
     height={20}
     src={`/icons/payment/${method}.svg`}
-    style={{ objectFit: "contain" }}
+    style={{ height: 20, objectFit: "contain", width: 20 }}
     unoptimized
     width={20}
   />
