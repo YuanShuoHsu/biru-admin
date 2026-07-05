@@ -1,8 +1,12 @@
 "use client";
 
+import dayjs from "dayjs";
+import timezonePlugin from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import { useLocale, useTranslations } from "next-intl";
 import { useParams, useSearchParams } from "next/navigation";
 import { useSnackbar } from "notistack";
+import { useEffect } from "react";
 import useSWR from "swr";
 
 import { StyledCardContent } from "@/components/FormCard";
@@ -11,6 +15,8 @@ import LocationDetails from "@/components/LocationDetails";
 import { ORDER_MODE } from "@/constants/orderMode";
 
 import { useRouter } from "@/i18n/navigation";
+
+import { useCartStore } from "@/providers/cart-store-provider";
 
 import {
   CheckCircleOutline,
@@ -32,6 +38,9 @@ import { type CSSObject, styled } from "@mui/material/styles";
 
 import type { OrderResponse } from "@/types/orders";
 import type { OrganizationResponse } from "@/types/organizations";
+
+dayjs.extend(utc);
+dayjs.extend(timezonePlugin);
 
 const statusIconStyle: CSSObject = {
   alignSelf: "center",
@@ -95,6 +104,8 @@ const OrderModeOrganizationSlugComplete = ({
   order: initialOrder,
   organization,
 }: OrderModeOrganizationSlugCompleteProps) => {
+  const { cartKey, clearCart } = useCartStore((state) => state);
+
   const { enqueueSnackbar } = useSnackbar();
 
   const locale = useLocale();
@@ -142,6 +153,10 @@ const OrderModeOrganizationSlugComplete = ({
   );
 
   const showPickupInfo = mode === ORDER_MODE.Pickup && !!organization;
+
+  useEffect(() => {
+    if (cartKey && isSuccess) clearCart();
+  }, [cartKey, clearCart, isSuccess]);
 
   const status = isSuccess ? "success" : "error";
   const StatusIcon = STATUS_ICON[status];
@@ -336,7 +351,9 @@ const OrderModeOrganizationSlugComplete = ({
               {order.paymentDate && (
                 <InfoRow
                   label={tOrder("complete.transaction.paymentDate")}
-                  value={new Date(order.paymentDate).toLocaleString(locale)}
+                  value={dayjs(order.paymentDate)
+                    .tz("Asia/Taipei")
+                    .format("YYYY/MM/DD HH:mm:ss")}
                 />
               )}
               <InfoRow

@@ -92,9 +92,7 @@ const API_ORDER_MODE: Record<string, CreateOrderDto["mode"]> = {
 };
 
 const OrderModeOrganizationSlugCheckout = () => {
-  const { cartItemsList, clearCart, isCartEmpty } = useCartStore(
-    (state) => state,
-  );
+  const { cartItemsList, isCartEmpty } = useCartStore((state) => state);
   const { menu } = useMenuStore((state) => state);
 
   const hasInvalidItems = useCartHasInvalidItems();
@@ -276,8 +274,6 @@ const OrderModeOrganizationSlugCheckout = () => {
         mode: API_ORDER_MODE[String(mode)],
         payment: values.payment,
       });
-
-      clearCart();
 
       const completeSearchParams = new URLSearchParams(search);
       completeSearchParams.set("orderId", order.id);
