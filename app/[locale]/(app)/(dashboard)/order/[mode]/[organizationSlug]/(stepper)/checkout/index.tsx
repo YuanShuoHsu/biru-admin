@@ -291,6 +291,7 @@ const OrderModeOrganizationSlugCheckout = () => {
 
       const baseUrl = process.env.NEXT_PUBLIC_NEXT_URL;
       const completeUrl = `${baseUrl}/${locale}${completePath}`;
+      const OrderResultURL = `${process.env.NEXT_PUBLIC_NEST_URL}/api/ecpay/result?redirect=${encodeURIComponent(completeUrl)}`;
 
       // const buildInvoice = (): CreateEcpayDto["invoice"] => {
       //   const common = {
@@ -368,7 +369,7 @@ const OrderModeOrganizationSlugCheckout = () => {
           .join("#"),
         Language: localeConfigs[locale].ecpayLanguage,
         orderId: order.id,
-        OrderResultURL: completeUrl,
+        OrderResultURL,
         TradeDesc: tOrder("checkout.tradeDesc"),
       };
 
