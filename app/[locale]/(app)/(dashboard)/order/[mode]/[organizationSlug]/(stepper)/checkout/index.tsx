@@ -53,6 +53,7 @@ import {
   Typography,
 } from "@mui/material";
 
+import { useAuthStore } from "@/providers/auth-store-provider";
 import { useCartStore } from "@/providers/cart-store-provider";
 import { useMenuStore } from "@/providers/menu-store-provider";
 
@@ -60,6 +61,7 @@ import type { CheckoutEcpayDto, CheckoutEcpayResponse } from "@/types/ecpay";
 import type { CreateOrderDto, OrderResponse } from "@/types/orders";
 import type { PaymentMethod } from "@/types/payment";
 
+import { formatFullName } from "@/utils/auth";
 import { getPhoneFormatting } from "@/utils/countries";
 import { getErrorMessage } from "@/utils/errors";
 import { sendRequest } from "@/utils/fetcher";
@@ -92,6 +94,8 @@ const API_ORDER_MODE: Record<string, CreateOrderDto["mode"]> = {
 };
 
 const OrderModeOrganizationSlugCheckout = () => {
+  const session = useAuthStore((state) => state.session);
+
   const { cartItemsList, isCartEmpty } = useCartStore((state) => state);
   const { menu } = useMenuStore((state) => state);
 
@@ -115,8 +119,14 @@ const OrderModeOrganizationSlugCheckout = () => {
     defaultValues: {
       customer: {
         countryCode: localeConfigs[locale].countryCode,
-        email: "",
-        name: "",
+        email: session?.user.email || "",
+        name: session
+          ? formatFullName(
+              session.user.lang,
+              session.user.firstName,
+              session.user.lastName,
+            )
+          : "",
         remark: "",
         telephone: "",
       },
