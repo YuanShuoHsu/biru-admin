@@ -61,11 +61,6 @@ export const useCustomerPaymentFormSchema = () => {
             (val) => !val || /^\d{3,7}$/.test(val),
             tValidation("donateCode.invalid"),
           ),
-        email: z.union([
-          z.literal(""),
-          z.email({ error: tValidation("email.invalid") }),
-        ]),
-        emailSameAsCustomer: z.boolean(),
         type: z.enum(["company", "donate", "personal"]).nullable(),
       }),
       payment: z

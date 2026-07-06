@@ -127,8 +127,6 @@ const OrderModeOrganizationSlugCheckout = () => {
         customerIdentifier: "",
         customerName: "",
         donateCode: "",
-        email: "",
-        emailSameAsCustomer: true,
         type: null,
       },
       payment: null,
@@ -162,7 +160,6 @@ const OrderModeOrganizationSlugCheckout = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const search = searchParams.toString();
-  // const isDineIn = mode === ORDER_MODE.DineIn;
 
   const router = useRouter();
 
