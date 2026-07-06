@@ -1,0 +1,42 @@
+{
+  "label": "注文管理",
+  "actions": {
+    "label": "操作",
+    "viewOrder": {
+      "title": "注文詳細を表示"
+    }
+  },
+  "orderNumber": "受け取り番号",
+  "confirmationNumber": "注文番号",
+  "customerName": "お客様名",
+  "mode": "注文方法",
+  "paymentMethod": "支払い方法",
+  "orderStatus": "注文状況",
+  "total": "金額",
+  "paymentDate": "支払い日時",
+  "createdAt": "作成日時",
+  "status": {
+    "OrderCancelled": "キャンセル済み",
+    "OrderDelivered": "受け渡し済み",
+    "OrderPaymentDue": "支払い待ち",
+    "OrderPickupAvailable": "受け取り可能",
+    "OrderProcessing": "準備中",
+    "OrderProblem": "注文エラー"
+  },
+  "detail": {
+    "customer": {
+      "title": "お客様情報",
+      "name": "お名前",
+      "telephone": "電話番号",
+      "email": "メールアドレス",
+      "remark": "備考"
+    },
+    "transaction": {
+      "title": "取引情報"
+    },
+    "items": {
+      "title": "注文明細"
+    },
+    "total": "合計"
+  }
+}

@@ -32,6 +32,7 @@ import {
   MenuBook,
   Person,
   QrCodeScanner,
+  ReceiptLong,
   Restaurant,
   Security,
   ShoppingCart,
@@ -176,6 +177,7 @@ const useNavItems = (): MenuItem[] => {
   const tDashboard = useTranslations("dashboard");
   const tMenus = useTranslations("menus");
   const tOrder = useTranslations("order");
+  const tOrders = useTranslations("orders");
   const tOrganizations = useTranslations("organizations");
 
   const counterSlot: MenuItem[] =
@@ -301,6 +303,11 @@ const useNavItems = (): MenuItem[] => {
     },
     ...(defaultOrganizationSlug
       ? [
+          {
+            icon: ReceiptLong,
+            label: tOrders("label"),
+            to: `/orders?organization=${defaultOrganizationSlug}&page=1&pageSize=10`,
+          },
           {
             icon: MenuBook,
             label: tMenus("label"),

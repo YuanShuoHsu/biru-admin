@@ -50,6 +50,7 @@ import {
   Pets,
   Policy,
   QrCodeScanner,
+  ReceiptLong,
   Settings,
   ShoppingCart,
   Storefront,
@@ -215,6 +216,7 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
   const tDashboard = useTranslations("dashboard");
   const tMenus = useTranslations("menus");
   const tOrder = useTranslations("order");
+  const tOrders = useTranslations("orders");
   const tOrganizations = useTranslations("organizations");
 
   const modeLabelMap: Partial<Record<string, string>> = {
@@ -434,6 +436,11 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
       icon: ShoppingCart,
       label: tOrder("label"),
       to: "/order",
+    },
+    {
+      icon: ReceiptLong,
+      label: tOrders("label"),
+      to: `/orders?${menusQuery}`,
     },
     {
       children: [

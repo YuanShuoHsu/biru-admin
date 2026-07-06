@@ -74,3 +74,5 @@ export const DATE_FILTER_OPERATORS = [
   "isEmpty",
   "isNotEmpty",
 ] as const;
+
+export const ENUM_FILTER_OPERATORS = ["is", "not", "isAnyOf"] as const;

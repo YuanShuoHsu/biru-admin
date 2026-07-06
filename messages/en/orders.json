@@ -1,0 +1,42 @@
+{
+  "label": "Orders",
+  "actions": {
+    "label": "Actions",
+    "viewOrder": {
+      "title": "View order details"
+    }
+  },
+  "orderNumber": "Pickup number",
+  "confirmationNumber": "Order number",
+  "customerName": "Customer name",
+  "mode": "Order mode",
+  "paymentMethod": "Payment method",
+  "orderStatus": "Order status",
+  "total": "Amount",
+  "paymentDate": "Payment date",
+  "createdAt": "Created at",
+  "status": {
+    "OrderCancelled": "Cancelled",
+    "OrderDelivered": "Delivered",
+    "OrderPaymentDue": "Payment due",
+    "OrderPickupAvailable": "Ready for pickup",
+    "OrderProcessing": "Processing",
+    "OrderProblem": "Problem"
+  },
+  "detail": {
+    "customer": {
+      "title": "Customer",
+      "name": "Name",
+      "telephone": "Telephone",
+      "email": "Email",
+      "remark": "Remark"
+    },
+    "transaction": {
+      "title": "Transaction"
+    },
+    "items": {
+      "title": "Order summary"
+    },
+    "total": "Total"
+  }
+}

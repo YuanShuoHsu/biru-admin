@@ -7,9 +7,7 @@ import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
-import type { Order } from "@/types/orders";
-
-import { getOrders } from "@/utils/orders";
+import { getAdminOrders } from "@/utils/orders";
 
 interface DashboardPageProps {
   params: Promise<{ locale: Locale }>;
@@ -30,7 +28,12 @@ const DashboardPage = async ({ params }: DashboardPageProps) => {
   const { data: session } = await authClient.getSession({ fetchOptions });
   const isAdmin = session?.user?.role === "admin";
 
-  const [usersTotal, organizationsData, ordersData] = await Promise.all([
+  const { data: organizations } = await authClient.organization.list({
+    fetchOptions,
+  });
+  const organizationSlug = organizations?.[0]?.slug || "";
+
+  const [usersTotal, ordersData] = await Promise.all([
     isAdmin
       ? authClient.admin
           .listUsers({
@@ -44,27 +47,20 @@ const DashboardPage = async ({ params }: DashboardPageProps) => {
           })
           .then(({ data }) => data?.total || 0)
       : Promise.resolve(null),
-    authClient.organization
-      .list({ fetchOptions })
-      .then(({ data }) => ({ total: data?.length || 0 })),
-    getOrders({
-      page: 1,
-      limit: 5,
-      status: "",
-      search: "",
-      sortBy: "createdAt",
-      sortDir: "desc",
-    }).catch(() => ({ data: [] as Order[], total: 0, page: 1, limit: 5 })),
+    organizationSlug
+      ? getAdminOrders(organizationSlug, {}, fetchOptions)
+      : Promise.resolve(null),
   ]);
 
   return (
     <Dashboard
+      organizationSlug={organizationSlug}
       stats={{
         totalUsers: usersTotal,
-        totalOrganizations: organizationsData.total,
-        totalOrders: ordersData.total,
+        totalOrganizations: organizations?.length || 0,
+        totalOrders: ordersData?.total || 0,
       }}
-      recentOrders={ordersData.data}
+      recentOrders={ordersData?.orders || []}
     />
   );
 };

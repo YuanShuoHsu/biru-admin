@@ -1,0 +1,29 @@
+import { cookies } from "next/headers";
+
+import MenusOrganizationSelect from "@/components/MenusOrganizationSelect";
+
+import { getOrganizations } from "@/utils/organizations";
+
+interface ToolbarOrdersPageProps {
+  searchParams: Promise<{ organization?: string }>;
+}
+
+const ToolbarOrdersPage = async ({ searchParams }: ToolbarOrdersPageProps) => {
+  const [cookieStore, { organization = "" }] = await Promise.all([
+    cookies(),
+    searchParams,
+  ]);
+
+  const organizations = await getOrganizations({
+    headers: { cookie: cookieStore.toString() },
+  });
+
+  return (
+    <MenusOrganizationSelect
+      organizations={organizations}
+      organizationSlug={organization}
+    />
+  );
+};
+
+export default ToolbarOrdersPage;

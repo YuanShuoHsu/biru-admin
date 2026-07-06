@@ -209,7 +209,8 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get?: never;
+    /** 查詢訂單列表 */
+    get: operations["OrdersController_findAll"];
     put?: never;
     /** 建立訂單 */
     post: operations["OrdersController_create"];
@@ -1572,6 +1573,41 @@ export interface components {
       /** Format: date-time */
       updatedAt: string;
     };
+    /** @enum {string} */
+    OrderFilterField:
+      | "orderNumber"
+      | "confirmationNumber"
+      | "customerName"
+      | "mode"
+      | "paymentMethod"
+      | "orderStatus"
+      | "paymentDate"
+      | "createdAt";
+    /** @enum {string} */
+    FilterOperator:
+      | "contains"
+      | "doesNotContain"
+      | "equals"
+      | "doesNotEqual"
+      | "startsWith"
+      | "endsWith"
+      | "isEmpty"
+      | "isNotEmpty"
+      | "isAnyOf"
+      | "is"
+      | "not"
+      | "after"
+      | "onOrAfter"
+      | "before"
+      | "onOrBefore";
+    /** @enum {string} */
+    OrderSortField:
+      | "orderNumber"
+      | "mode"
+      | "paymentMethod"
+      | "orderStatus"
+      | "paymentDate"
+      | "createdAt";
     MenuResponseDto: {
       id: string;
       organizationId: string;
@@ -1621,23 +1657,6 @@ export interface components {
     };
     /** @enum {string} */
     MenuFilterField: "name" | "description" | "createdAt" | "updatedAt";
-    /** @enum {string} */
-    FilterOperator:
-      | "contains"
-      | "doesNotContain"
-      | "equals"
-      | "doesNotEqual"
-      | "startsWith"
-      | "endsWith"
-      | "isEmpty"
-      | "isNotEmpty"
-      | "isAnyOf"
-      | "is"
-      | "not"
-      | "after"
-      | "onOrAfter"
-      | "before"
-      | "onOrBefore";
     /** @enum {string} */
     MenuSortField: "name" | "description" | "createdAt" | "updatedAt";
     ReorderDto: {
@@ -2522,6 +2541,42 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["IssueInvoiceEcpayDecryptedResponseDto"];
         };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrdersController_findAll: {
+    parameters: {
+      query?: {
+        filterField?: components["schemas"]["OrderFilterField"];
+        filterOperator?: components["schemas"]["FilterOperator"];
+        sortBy?: components["schemas"]["OrderSortField"];
+        sortDirection?: components["schemas"]["SortDirection"];
+        limit?: number;
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+        timezone?: string;
+      };
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
       /** @description Internal server error */
       500: {
@@ -4082,9 +4137,18 @@ export const orderResponseDtoOrderStatusValues: ReadonlyArray<
   "OrderProcessing",
   "OrderProblem",
 ];
-export const menuFilterFieldValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["MenuFilterField"]
-> = ["name", "description", "createdAt", "updatedAt"];
+export const orderFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["OrderFilterField"]
+> = [
+  "orderNumber",
+  "confirmationNumber",
+  "customerName",
+  "mode",
+  "paymentMethod",
+  "orderStatus",
+  "paymentDate",
+  "createdAt",
+];
 export const filterOperatorValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["FilterOperator"]
 > = [
@@ -4104,6 +4168,19 @@ export const filterOperatorValues: ReadonlyArray<
   "before",
   "onOrBefore",
 ];
+export const orderSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["OrderSortField"]
+> = [
+  "orderNumber",
+  "mode",
+  "paymentMethod",
+  "orderStatus",
+  "paymentDate",
+  "createdAt",
+];
+export const menuFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["MenuFilterField"]
+> = ["name", "description", "createdAt", "updatedAt"];
 export const menuSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["MenuSortField"]
 > = ["name", "description", "createdAt", "updatedAt"];

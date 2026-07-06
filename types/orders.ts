@@ -1,33 +1,16 @@
-import type { components } from "@/types/api";
+import {
+  type components,
+  orderFilterFieldValues,
+  orderSortFieldValues,
+} from "@/types/api";
 
 export type CreateOrderDto = components["schemas"]["CreateOrderDto"];
 export type OrderResponse = components["schemas"]["OrderResponseDto"];
+export type OrderItemResponse = components["schemas"]["OrderItemResponseDto"];
 
-export type OrderStatus = "pending" | "completed" | "canceled";
+export type OrderMode = OrderResponse["mode"];
+export type OrderPaymentMethod = OrderResponse["paymentMethod"];
+export type OrderStatus = OrderResponse["orderStatus"];
 
-export interface Order {
-  id: string;
-  status: OrderStatus;
-  totalPrice: number;
-  storeId: string;
-  tableId: string | null;
-  userId: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface OrdersResponse {
-  data: Order[];
-  total: number;
-  page: number;
-  limit: number;
-}
-
-export interface OrdersQuery {
-  page: number;
-  limit: number;
-  status: OrderStatus | "";
-  search: string;
-  sortBy: string;
-  sortDir: "asc" | "desc";
-}
+export type OrderFilterField = (typeof orderFilterFieldValues)[number];
+export type OrderSortField = (typeof orderSortFieldValues)[number];

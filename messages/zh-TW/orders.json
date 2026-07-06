@@ -1,0 +1,42 @@
+{
+  "label": "訂單管理",
+  "actions": {
+    "label": "操作",
+    "viewOrder": {
+      "title": "檢視訂單明細"
+    }
+  },
+  "orderNumber": "取餐號碼",
+  "confirmationNumber": "訂單編號",
+  "customerName": "顧客姓名",
+  "mode": "點餐方式",
+  "paymentMethod": "付款方式",
+  "orderStatus": "訂單狀態",
+  "total": "金額",
+  "paymentDate": "付款時間",
+  "createdAt": "成立時間",
+  "status": {
+    "OrderCancelled": "已取消",
+    "OrderDelivered": "已送達",
+    "OrderPaymentDue": "待付款",
+    "OrderPickupAvailable": "可取餐",
+    "OrderProcessing": "準備中",
+    "OrderProblem": "訂單異常"
+  },
+  "detail": {
+    "customer": {
+      "title": "顧客資訊",
+      "name": "姓名",
+      "telephone": "電話",
+      "email": "電子信箱",
+      "remark": "備註"
+    },
+    "transaction": {
+      "title": "交易資訊"
+    },
+    "items": {
+      "title": "訂單明細"
+    },
+    "total": "總計"
+  }
+}

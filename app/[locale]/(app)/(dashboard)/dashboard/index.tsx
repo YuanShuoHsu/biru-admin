@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
 
 import { useRouter } from "@/i18n/navigation";
 
@@ -28,37 +28,58 @@ import {
   Typography,
 } from "@mui/material";
 
-import type { Order } from "@/types/orders";
+import type { OrderResponse, OrderStatus } from "@/types/orders";
+
+import { getOrderTotalAmount } from "@/utils/orders";
 
 interface DashboardProps {
+  organizationSlug: string;
   stats: {
     totalUsers: number | null;
     totalOrganizations: number;
     totalOrders: number;
   };
-  recentOrders: Order[];
+  recentOrders: OrderResponse[];
 }
 
-const statusColorMap: Record<string, "warning" | "success" | "error"> = {
-  pending: "warning",
-  completed: "success",
-  canceled: "error",
+const statusColorMap: Record<
+  OrderStatus,
+  "default" | "error" | "info" | "success" | "warning"
+> = {
+  OrderCancelled: "default",
+  OrderDelivered: "success",
+  OrderPaymentDue: "warning",
+  OrderPickupAvailable: "success",
+  OrderProcessing: "info",
+  OrderProblem: "error",
 };
 
-const Dashboard = ({ stats, recentOrders }: DashboardProps) => {
+const Dashboard = ({
+  organizationSlug,
+  stats,
+  recentOrders,
+}: DashboardProps) => {
+  const format = useFormatter();
+  const locale = useLocale();
   const t = useTranslations("dashboard");
-  const tOrder = useTranslations("order");
+  const tOrders = useTranslations("orders");
   const { session } = useAuthStore((state) => state);
   const router = useRouter();
 
   const firstName = session?.user?.firstName || session?.user?.name || "";
+
+  const ordersHref = `/orders?${new URLSearchParams({
+    ...(organizationSlug && { organization: organizationSlug }),
+    page: "1",
+    pageSize: "10",
+  }).toString()}`;
 
   const statCards = [
     {
       label: t("stats.totalOrders"),
       value: stats.totalOrders,
       icon: <ShoppingCart />,
-      href: "/order",
+      href: ordersHref,
     },
     ...(stats.totalUsers !== null
       ? [
@@ -123,7 +144,7 @@ const Dashboard = ({ stats, recentOrders }: DashboardProps) => {
             <Chip
               label={t("quickActions.viewOrders")}
               icon={<NavigateNext />}
-              onClick={() => router.push("/order")}
+              onClick={() => router.push(ordersHref)}
               variant="outlined"
               size="small"
             />
@@ -132,10 +153,10 @@ const Dashboard = ({ stats, recentOrders }: DashboardProps) => {
             <Table size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell>{tOrder("label")} ID</TableCell>
-                  <TableCell>Status</TableCell>
-                  <TableCell align="right">Amount</TableCell>
-                  <TableCell>Date</TableCell>
+                  <TableCell>{tOrders("orderNumber")}</TableCell>
+                  <TableCell>{tOrders("orderStatus")}</TableCell>
+                  <TableCell align="right">{tOrders("total")}</TableCell>
+                  <TableCell>{tOrders("createdAt")}</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -143,22 +164,23 @@ const Dashboard = ({ stats, recentOrders }: DashboardProps) => {
                   <TableRow key={order.id}>
                     <TableCell>
                       <Typography variant="body2" noWrap sx={{ maxWidth: 160 }}>
-                        {order.id}
+                        {order.orderNumber}
                       </Typography>
                     </TableCell>
                     <TableCell>
                       <Chip
-                        label={order.status}
-                        color={statusColorMap[order.status] || "default"}
+                        label={tOrders(`status.${order.orderStatus}`)}
+                        color={statusColorMap[order.orderStatus] || "default"}
                         size="small"
                         variant="outlined"
                       />
                     </TableCell>
                     <TableCell align="right">
-                      ${order.totalPrice.toLocaleString()}
+                      {order.items[0]?.priceCurrency || ""}{" "}
+                      {getOrderTotalAmount(order).toLocaleString(locale)}
                     </TableCell>
                     <TableCell>
-                      {new Date(order.createdAt).toLocaleDateString("zh-TW")}
+                      {format.dateTime(new Date(order.createdAt), "short")}
                     </TableCell>
                   </TableRow>
                 ))}
