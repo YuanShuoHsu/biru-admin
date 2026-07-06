@@ -381,8 +381,7 @@ const Orders = ({
         field: "customerName",
         filterOperators: stringFilterOperators,
         headerName: tOrders("customerName"),
-        valueGetter: (_value: unknown, row: OrderResponse) =>
-          row.customer.name,
+        valueGetter: (_value: unknown, row: OrderResponse) => row.customer.name,
       },
       {
         field: "total",
