@@ -4,7 +4,12 @@ import { useTranslations } from "next-intl";
 
 import { Link, usePathname } from "@/i18n/navigation";
 
-import { Lock, Person, type SvgIconComponent } from "@mui/icons-material";
+import {
+  Lock,
+  Person,
+  ReceiptLong,
+  type SvgIconComponent,
+} from "@mui/icons-material";
 import { Stack, Tab, Tabs } from "@mui/material";
 
 const AuthSettingsLayout = ({ children }: { children: React.ReactNode }) => {
@@ -26,6 +31,11 @@ const AuthSettingsLayout = ({ children }: { children: React.ReactNode }) => {
       Icon: Lock,
       label: tAuth("settings.security.label"),
       value: "/auth/settings/security",
+    },
+    {
+      Icon: ReceiptLong,
+      label: tAuth("settings.orders.label"),
+      value: "/auth/settings/orders",
     },
   ];
 

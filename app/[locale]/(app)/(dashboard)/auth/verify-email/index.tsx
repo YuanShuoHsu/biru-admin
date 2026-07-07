@@ -4,7 +4,6 @@ import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-
 import { type VerifyEmailForm, useVerifyEmailFormSchema } from "./definitions";
 
 import FormCard, {
@@ -49,6 +48,7 @@ const StyledAvatar = styled(Avatar, {
   const mainColor = theme.palette[color].main;
 
   return {
+    alignSelf: "center",
     width: theme.spacing(7),
     height: theme.spacing(7),
     backgroundColor: alpha(mainColor, 0.2),
@@ -115,6 +115,7 @@ const AuthVerifyEmail = ({
               errorMessage: "",
               status: VERIFY_STATUS.VERIFIED,
             });
+
             startCountdown("verify-email-redirect", 3, () => {
               router.replace(redirectTo || "/");
             });
