@@ -44,7 +44,7 @@ const AuthSettingsLayout = ({ children }: { children: React.ReactNode }) => {
     navItems[0].value;
 
   return (
-    <Stack gap={2}>
+    <Stack gap={2} marginBottom="auto">
       <Tabs
         aria-label="account settings tabs"
         scrollButtons="auto"
