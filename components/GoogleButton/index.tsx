@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { query } from "@/constants/query";
 import { DEFAULT_AUTHENTICATED_ROUTE } from "@/constants/route";
 
-import { authClient } from "@/lib/auth-client";
+import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { Button } from "@mui/material";
 
@@ -54,7 +54,9 @@ const GoogleButton = ({ action, redirectTo }: GoogleButtonProps) => {
       },
       {
         onError: ({ error }) => {
-          enqueueSnackbar(error.message, { variant: "error" });
+          enqueueSnackbar(getErrorMessage(error.code, locale), {
+            variant: "error",
+          });
 
           setLoading(false);
         },
