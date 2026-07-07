@@ -395,6 +395,11 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
               label: tAuth("settings.security.label"),
               to: "/security",
             },
+            {
+              icon: ReceiptLong,
+              label: tAuth("settings.orders.label"),
+              to: "/orders",
+            },
           ],
           disabled: true,
           icon: Settings,
