@@ -62,8 +62,10 @@ const Orders = () => {
   const orders = data?.data || [];
   const pageCount = Math.ceil((data?.total || 0) / PAGE_SIZE);
 
-  const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) =>
-    setPage(value);
+  const handlePageChange = (
+    _event: React.ChangeEvent<unknown>,
+    value: number,
+  ) => setPage(value);
 
   const getOrderItemName = ({
     addOns,
@@ -153,9 +155,9 @@ const Orders = () => {
                   </Typography>
                   <Typography flexShrink={0} variant="body2">
                     {currency}{" "}
-                    {(Number(item.unitPrice) * item.orderQuantity).toLocaleString(
-                      locale,
-                    )}
+                    {(
+                      Number(item.unitPrice) * item.orderQuantity
+                    ).toLocaleString(locale)}
                   </Typography>
                 </Stack>
               ))}
@@ -167,7 +169,11 @@ const Orders = () => {
                 <Typography color="text.secondary" variant="body2">
                   {tOrder(`checkout.payment.${order.paymentMethod}`)}
                 </Typography>
-                <Typography color="primary" fontWeight="bold" variant="subtitle1">
+                <Typography
+                  color="primary"
+                  fontWeight="bold"
+                  variant="subtitle1"
+                >
                   {tOrder("complete.summary.total")} {currency}{" "}
                   {totalAmount.toLocaleString(locale)}
                 </Typography>
