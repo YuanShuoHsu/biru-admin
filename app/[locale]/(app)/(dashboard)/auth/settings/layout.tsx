@@ -35,13 +35,13 @@ const AuthSettingsLayout = ({ children }: { children: React.ReactNode }) => {
     {
       Icon: ReceiptLong,
       label: tAuth("settings.orders.label"),
-      value: "/auth/settings/orders",
+      value: "/auth/settings/orders?page=1",
     },
   ];
 
   const value =
-    navItems.find(({ value }) => pathname.startsWith(value))?.value ||
-    navItems[0].value;
+    navItems.find(({ value }) => pathname.startsWith(value.split("?")[0]))
+      ?.value || navItems[0].value;
 
   return (
     <Stack gap={2} marginBottom="auto">

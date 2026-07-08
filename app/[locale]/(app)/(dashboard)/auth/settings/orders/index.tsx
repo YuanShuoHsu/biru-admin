@@ -5,9 +5,8 @@ import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
-import useSWR from "swr";
 
-import { getOrdersKey, PAGE_SIZE } from "./constants";
+import { PAGE_SIZE } from "./constants";
 
 import CustomizedAccordions from "@/components/CustomizedAccordions";
 import FormCard, {
@@ -25,8 +24,6 @@ import {
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-
-import { useAuthStore } from "@/providers/auth-store-provider";
 
 import type { UserOrderListResponse, UserOrderResponse } from "@/types/orders";
 
@@ -54,11 +51,8 @@ interface OrdersProps {
   page: number;
 }
 
-const Orders = ({ orders: initialOrders, page: initialPage }: OrdersProps) => {
+const Orders = ({ orders: data, page }: OrdersProps) => {
   const [expanded, setExpanded] = useState<string | false>(false);
-  const [page, setPage] = useState(initialPage);
-
-  const { session } = useAuthStore((state) => state);
 
   const locale = useLocale();
 
@@ -70,12 +64,6 @@ const Orders = ({ orders: initialOrders, page: initialPage }: OrdersProps) => {
   const tCommon = useTranslations("common");
   const tOrder = useTranslations("order");
 
-  const { data } = useSWR<UserOrderListResponse | null>(
-    session ? getOrdersKey(page) : null,
-    {
-      fallbackData: initialOrders,
-    },
-  );
   const orders = data?.data || [];
   const pageCount = Math.ceil((data?.total || 0) / PAGE_SIZE);
 
@@ -86,11 +74,7 @@ const Orders = ({ orders: initialOrders, page: initialPage }: OrdersProps) => {
   const handlePageChange = (
     _event: React.ChangeEvent<unknown>,
     value: number,
-  ) => {
-    setPage(value);
-
-    router.replace(`${pathname}?page=${value}`);
-  };
+  ) => router.replace(`${pathname}?page=${value}`);
 
   const getOrderItemName = ({
     addOns,
