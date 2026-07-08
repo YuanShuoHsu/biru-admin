@@ -3,7 +3,6 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useParams } from "next/navigation";
 import { useSnackbar } from "notistack";
 import { Suspense } from "react";
 
@@ -22,7 +21,7 @@ import {
 import { IMPERSONATE_RETURN_KEY } from "@/constants/route";
 import { SCROLL_TRIGGER_THRESHOLD } from "@/constants/scroll";
 
-import { useRouter } from "@/i18n/navigation";
+import { usePathname, useRouter } from "@/i18n/navigation";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
@@ -70,22 +69,22 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 const HideAppBar = () => {
   const { session, setSession } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
-  const toggleDrawer = useToggleDrawer();
-  const handleNavOpen = toggleDrawer("nav", true);
 
   const locale = useLocale();
 
+  const pathname = usePathname();
+
   const router = useRouter();
-
-  const { storeSlug } = useParams();
-
-  const { enqueueSnackbar } = useSnackbar();
-
-  const tAdmins = useTranslations("admins");
 
   const trigger = useScrollTrigger({
     threshold: SCROLL_TRIGGER_THRESHOLD,
   });
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const toggleDrawer = useToggleDrawer();
+
+  const tAdmins = useTranslations("admins");
 
   const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE === "true";
   const showAuthControls = !isMaintenanceMode && !!session;
@@ -141,7 +140,7 @@ const HideAppBar = () => {
               aria-label="open drawer"
               color="inherit"
               edge="start"
-              onClick={handleNavOpen}
+              onClick={toggleDrawer("nav", true)}
             >
               <Menu />
             </IconButton>
@@ -175,7 +174,7 @@ const HideAppBar = () => {
               <AccountMenu />
             </Suspense>
           )}
-          {!!storeSlug && <CartIconButton />}
+          {pathname.startsWith("/order/") && <CartIconButton />}
         </Stack>
       </StyledToolbar>
     </StyledAppBar>

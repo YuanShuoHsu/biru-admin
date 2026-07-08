@@ -2,26 +2,23 @@
 
 "use client";
 
-import { useTranslations } from "next-intl";
-import { useParams } from "next/navigation";
-import { useState } from "react";
-
-import CartItemList from "@/components/CartItemList";
+import { useId } from "react";
 
 import { ExpandMore } from "@mui/icons-material";
 import {
   Accordion,
   AccordionDetails,
+  type AccordionProps,
   AccordionSummary,
-  Box,
-  Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import useCartTotals from "@/hooks/useCartTotals";
-
 const StyledAccordion = styled(Accordion)(({ theme }) => ({
   transition: theme.transitions.create("background-color"),
+
+  "&::before": {
+    display: "none",
+  },
 }));
 
 const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
@@ -34,68 +31,37 @@ const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
   },
 }));
 
-const StyledExpandMore = styled(ExpandMore, {
-  shouldForwardProp: (prop) => prop !== "expanded",
-})<{ expanded: boolean }>(({ expanded, theme }) => ({
-  transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
-  transition: theme.transitions.create(["color", "transform"]),
-}));
-
 const StyledAccordionDetails = styled(AccordionDetails)(({ theme }) => ({
   padding: 0,
   borderTop: `1px solid ${theme.vars.palette.divider}`,
 }));
 
-interface CustomizedAccordionsProps {
-  defaultExpanded?: boolean;
+interface CustomizedAccordionsProps extends AccordionProps {
+  summary: React.ReactNode;
 }
 
 const CustomizedAccordions = ({
-  defaultExpanded = true,
+  children,
+  summary,
+  ...props
 }: CustomizedAccordionsProps) => {
-  const [expanded, setExpanded] = useState<string | false>(
-    defaultExpanded ? "panel1" : false,
-  );
-  const isPanel1Expanded = expanded === "panel1";
-
-  const { cartCurrency, cartTotalAmount } = useCartTotals();
-
-  const { locale } = useParams();
-
-  const tCommon = useTranslations("common");
-
-  const handleChange =
-    (panel: string) => (_: React.SyntheticEvent, newExpanded: boolean) =>
-      setExpanded(newExpanded ? panel : false);
+  const id = useId();
 
   return (
     <StyledAccordion
       disableGutters
-      expanded={isPanel1Expanded}
-      onChange={handleChange("panel1")}
       slotProps={{ transition: { unmountOnExit: true } }}
+      variant="outlined"
+      {...props}
     >
-      <StyledAccordionSummary aria-controls="panel1-content" id="panel1-header">
-        <Typography component="span" flex={1} variant="subtitle1">
-          {tCommon("totalAmount")}
-        </Typography>
-        <Typography
-          color="primary"
-          component="span"
-          flex="auto"
-          fontWeight="bold"
-          textAlign="center"
-          variant="h6"
-        >
-          {cartCurrency} {cartTotalAmount.toLocaleString(locale)}
-        </Typography>
-        <Box flex={1} display="flex" justifyContent="flex-end">
-          <StyledExpandMore expanded={isPanel1Expanded} />
-        </Box>
+      <StyledAccordionSummary
+        aria-controls={`${id}-content`}
+        expandIcon={<ExpandMore />}
+        id={`${id}-header`}
+      >
+        {summary}
       </StyledAccordionSummary>
-      <StyledAccordionDetails>
-        <CartItemList compact />
-      </StyledAccordionDetails>
+      <StyledAccordionDetails>{children}</StyledAccordionDetails>
     </StyledAccordion>
   );
 };

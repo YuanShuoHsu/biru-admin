@@ -16,8 +16,8 @@ import {
   useCustomerPaymentFormSchema,
 } from "./definitions";
 
+import CartAccordion from "@/components/CartAccordion";
 import CountrySelect from "@/components/CountrySelect";
-import CustomizedAccordions from "@/components/CustomizedAccordions";
 import DonateCodeSelect from "@/components/DonateCodeSelect";
 import FormBox from "@/components/FormBox";
 import { StyledCardContent } from "@/components/FormCard";
@@ -397,7 +397,7 @@ const OrderModeOrganizationSlugCheckout = () => {
 
   return (
     <FormBox onSubmit={onSubmit}>
-      <CustomizedAccordions defaultExpanded={false} />
+      <CartAccordion defaultExpanded={false} />
       <Card variant="outlined">
         <StyledCardContent>
           <Typography

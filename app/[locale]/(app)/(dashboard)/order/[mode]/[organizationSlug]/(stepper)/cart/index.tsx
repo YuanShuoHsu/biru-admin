@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useParams, useSearchParams } from "next/navigation";
 
-import CustomizedAccordions from "@/components/CustomizedAccordions";
+import CartAccordion from "@/components/CartAccordion";
 
 import useCartHasInvalidItems from "@/hooks/useCartHasInvalidItems";
 
@@ -34,7 +34,7 @@ const OrderModeOrganizationSlugCart = () => {
 
   return (
     <>
-      <CustomizedAccordions />
+      <CartAccordion />
       <Stack direction="row" justifyContent="space-between">
         <Button
           color="success"
