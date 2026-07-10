@@ -124,9 +124,7 @@ const CouponForm = ({ coupon, items, onChange }: CouponFormProps) => {
                   <LocalOffer color="disabled" fontSize="small" />
                   <Stack>
                     <Stack alignItems="center" direction="row" gap={0.5}>
-                      <Typography variant="subtitle2">
-                        {option.code}
-                      </Typography>
+                      <Typography variant="subtitle2">{option.code}</Typography>
                       {option.userCouponId && (
                         <Chip
                           color="primary"
