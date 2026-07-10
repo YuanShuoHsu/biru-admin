@@ -77,6 +77,7 @@
   "usage": "利用回数",
   "unlimited": "無制限",
   "isActive": {
+    "helperText": "無効にすると、いかなる方法でも使用できません",
     "label": "有効",
     "active": "有効",
     "inactive": "無効"
@@ -91,9 +92,11 @@
   "createdAt": "作成日時",
   "distribution": "取得方法",
   "isClaimable": {
+    "helperText": "会員はクーポンページからマイクーポンに受け取れます",
     "label": "受け取り可能"
   },
   "isPublic": {
+    "helperText": "チェックアウトページに自動表示されます。非公開でもコード入力で使用できます",
     "label": "公開"
   },
   "issueMinSpend": {

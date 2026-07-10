@@ -16,7 +16,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
   Autocomplete,
+  FormControl,
   FormControlLabel,
+  FormHelperText,
   Grid,
   InputAdornment,
   MenuItem,
@@ -525,36 +527,45 @@ const CouponDialog = ({
           </Grid>
         )}
       </Grid>
-      <FormControlLabel
-        control={
-          <Switch
-            checked={isPublic}
-            onChange={(_, checked) => setValue("isPublic", checked)}
-          />
-        }
-        label={tCoupons("isPublic.label")}
-        sx={{ alignSelf: "flex-start" }}
-      />
-      <FormControlLabel
-        control={
-          <Switch
-            checked={isClaimable}
-            onChange={(_, checked) => setValue("isClaimable", checked)}
-          />
-        }
-        label={tCoupons("isClaimable.label")}
-        sx={{ alignSelf: "flex-start" }}
-      />
-      <FormControlLabel
-        control={
-          <Switch
-            checked={isActive}
-            onChange={(_, checked) => setValue("isActive", checked)}
-          />
-        }
-        label={tCoupons("isActive.label")}
-        sx={{ alignSelf: "flex-start" }}
-      />
+      <FormControl>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={isActive}
+              onChange={(_, checked) => setValue("isActive", checked)}
+            />
+          }
+          label={tCoupons("isActive.label")}
+          sx={{ alignSelf: "flex-start" }}
+        />
+        <FormHelperText>{tCoupons("isActive.helperText")}</FormHelperText>
+      </FormControl>
+      <FormControl>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={isClaimable}
+              onChange={(_, checked) => setValue("isClaimable", checked)}
+            />
+          }
+          label={tCoupons("isClaimable.label")}
+          sx={{ alignSelf: "flex-start" }}
+        />
+        <FormHelperText>{tCoupons("isClaimable.helperText")}</FormHelperText>
+      </FormControl>
+      <FormControl>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={isPublic}
+              onChange={(_, checked) => setValue("isPublic", checked)}
+            />
+          }
+          label={tCoupons("isPublic.label")}
+          sx={{ alignSelf: "flex-start" }}
+        />
+        <FormHelperText>{tCoupons("isPublic.helperText")}</FormHelperText>
+      </FormControl>
     </FormBox>
   );
 };

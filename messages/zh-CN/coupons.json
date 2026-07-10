@@ -77,6 +77,7 @@
   "usage": "使用次数",
   "unlimited": "不限",
   "isActive": {
+    "helperText": "停用后即无法以任何方式使用",
     "label": "启用",
     "active": "启用中",
     "inactive": "已停用"
@@ -91,9 +92,11 @@
   "createdAt": "创建时间",
   "distribution": "获取方式",
   "isClaimable": {
+    "helperText": "会员可在优惠券页领取至我的优惠券",
     "label": "可领取"
   },
   "isPublic": {
+    "helperText": "自动显示于结账页；未公开仍可输入代码使用",
     "label": "公开"
   },
   "issueMinSpend": {

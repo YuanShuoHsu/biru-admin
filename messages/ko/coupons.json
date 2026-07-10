@@ -77,6 +77,7 @@
   "usage": "사용 횟수",
   "unlimited": "무제한",
   "isActive": {
+    "helperText": "비활성화하면 어떤 방식으로도 사용할 수 없습니다",
     "label": "활성화",
     "active": "활성",
     "inactive": "비활성"
@@ -91,9 +92,11 @@
   "createdAt": "생성 일시",
   "distribution": "획득 방법",
   "isClaimable": {
+    "helperText": "회원이 쿠폰 페이지에서 내 쿠폰으로 받을 수 있습니다",
     "label": "받기 가능"
   },
   "isPublic": {
+    "helperText": "결제 페이지에 자동으로 표시됩니다. 비공개여도 코드 입력으로 사용할 수 있습니다",
     "label": "공개"
   },
   "issueMinSpend": {
