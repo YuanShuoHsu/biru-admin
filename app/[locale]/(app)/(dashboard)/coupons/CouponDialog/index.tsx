@@ -148,6 +148,7 @@ const CouponDialog = ({
 
       const body: CreateCouponDto = {
         code: values.code,
+        ...(currency && { discountCurrency: currency }),
         discountType: values.discountType,
         discountValue: Number(values.discountValue),
         isActive: values.isActive,

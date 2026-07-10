@@ -193,13 +193,5 @@
       "label": "지점 선택",
       "placeholder": "귀하의 지점을 선택해 주세요"
     }
-  },
-  "coupons": {
-    "claim": "받기",
-    "claimSuccess": "쿠폰 {code}을(를) 받았습니다",
-    "claimed": "받기 완료",
-    "label": "쿠폰",
-    "noExpiry": "사용 기한 없음",
-    "validUntil": "{date}까지 유효"
   }
 }

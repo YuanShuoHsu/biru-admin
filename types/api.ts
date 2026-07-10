@@ -261,6 +261,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/users/me/coupons/claimable": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 可領取優惠券（跨店，排除已領取） */
+    get: operations["MyCouponsController_getAllClaimable"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/donate-codes": {
     parameters: {
       query?: never;
@@ -1043,6 +1060,8 @@ export interface components {
     };
     CreateCouponDto: {
       code: string;
+      /** @description 幣別（ISO 4217），未帶時預設 TWD；應與店家菜單幣別一致 */
+      discountCurrency?: string;
       /** @enum {string} */
       discountType: "fixed" | "percentage";
       /** @description fixed: 折抵金額；percentage: 折扣百分比（0 < value ≤ 100） */
@@ -1067,13 +1086,14 @@ export interface components {
       scope?: "order" | "item";
       totalLimit?: number;
       /** Format: date-time */
-      validFrom?: string;
+      validFrom?: string | null;
       /** Format: date-time */
-      validUntil?: string;
+      validUntil?: string | null;
     };
     CouponResponseDto: {
       id: string;
       code: string;
+      discountCurrency: string;
       /** @enum {string} */
       discountType: "fixed" | "percentage";
       discountValue: string;
@@ -1103,6 +1123,8 @@ export interface components {
     };
     UpdateCouponDto: {
       code?: string;
+      /** @description 幣別（ISO 4217），未帶時預設 TWD；應與店家菜單幣別一致 */
+      discountCurrency?: string;
       /** @enum {string} */
       discountType?: "fixed" | "percentage";
       /** @description fixed: 折抵金額；percentage: 折扣百分比（0 < value ≤ 100） */
@@ -1127,9 +1149,9 @@ export interface components {
       scope?: "order" | "item";
       totalLimit?: number;
       /** Format: date-time */
-      validFrom?: string;
+      validFrom?: string | null;
       /** Format: date-time */
-      validUntil?: string;
+      validUntil?: string | null;
     };
     CreateOrderItemAddOnDto: {
       menuItemId: string;
@@ -1160,6 +1182,7 @@ export interface components {
     AvailableCouponDto: {
       id: string;
       code: string;
+      discountCurrency: string;
       /** @enum {string} */
       discountType: "fixed" | "percentage";
       discountValue: string;
@@ -1175,6 +1198,7 @@ export interface components {
     ClaimableCouponDto: {
       id: string;
       code: string;
+      discountCurrency: string;
       /** @enum {string} */
       discountType: "fixed" | "percentage";
       discountValue: string;
@@ -1191,6 +1215,7 @@ export interface components {
     CustomerCouponDto: {
       id: string;
       code: string;
+      discountCurrency: string;
       /** @enum {string} */
       discountType: "fixed" | "percentage";
       discountValue: string;
@@ -1228,6 +1253,23 @@ export interface components {
       usedAt?: string | null;
       /** Format: date-time */
       createdAt: string;
+      organizationName: string;
+      organizationSlug: string;
+    };
+    MyClaimableCouponDto: {
+      id: string;
+      code: string;
+      discountCurrency: string;
+      /** @enum {string} */
+      discountType: "fixed" | "percentage";
+      discountValue: string;
+      minSubtotal?: string | null;
+      /** @enum {string} */
+      scope: "order" | "item";
+      /** Format: date-time */
+      validFrom?: string | null;
+      /** Format: date-time */
+      validUntil?: string | null;
       organizationName: string;
       organizationSlug: string;
     };
@@ -3124,6 +3166,32 @@ export interface operations {
       };
     };
   };
+  MyCouponsController_getAllClaimable: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["MyClaimableCouponDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   DonateCodesController_getAll: {
     parameters: {
       query?: never;
@@ -4893,6 +4961,12 @@ export const userCouponResponseDtoSourceValues: ReadonlyArray<
 export const myCouponResponseDtoSourceValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["MyCouponResponseDto"]["source"]
 > = ["granted", "claimed", "signup", "birthday", "spend"];
+export const myClaimableCouponDtoDiscountTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["MyClaimableCouponDto"]["discountType"]
+> = ["fixed", "percentage"];
+export const myClaimableCouponDtoScopeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["MyClaimableCouponDto"]["scope"]
+> = ["order", "item"];
 export const baseEcpayLanguageValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["BaseEcpayLanguage"]
 > = ["ENG", "KOR", "JPN", "CHI"];

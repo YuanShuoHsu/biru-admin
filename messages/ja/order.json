@@ -193,13 +193,5 @@
       "label": "店舗を選択",
       "placeholder": "あなたの店舗を選択してください"
     }
-  },
-  "coupons": {
-    "claim": "受け取る",
-    "claimSuccess": "クーポン {code} を受け取りました",
-    "claimed": "受け取り済み",
-    "label": "クーポン",
-    "noExpiry": "利用期限なし",
-    "validUntil": "{date} まで有効"
   }
 }

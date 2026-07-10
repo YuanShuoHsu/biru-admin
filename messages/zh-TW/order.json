@@ -193,13 +193,5 @@
       "label": "選擇門市",
       "placeholder": "請選擇您的門市"
     }
-  },
-  "coupons": {
-    "claim": "領取",
-    "claimSuccess": "已領取優惠券 {code}",
-    "claimed": "已領取",
-    "label": "優惠券",
-    "noExpiry": "無使用期限",
-    "validUntil": "有效期限至 {date}"
   }
 }

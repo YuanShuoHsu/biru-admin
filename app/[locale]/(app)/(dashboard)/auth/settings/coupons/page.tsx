@@ -7,7 +7,7 @@ import Coupons from ".";
 
 import { routing } from "@/i18n/routing";
 
-import type { MyCoupon } from "@/types/coupons";
+import type { MyClaimableCoupon, MyCoupon } from "@/types/coupons";
 
 import { fetcher } from "@/utils/fetcher";
 
@@ -20,11 +20,17 @@ const AuthSettingsCouponsPage = async ({
   setRequestLocale(locale);
 
   const reqHeaders = await headers();
-  const coupons = await fetcher<MyCoupon[]>("/api/users/me/coupons", {
-    headers: { cookie: reqHeaders.get("cookie") || "" },
-  }).catch(() => []);
+  const cookie = reqHeaders.get("cookie") || "";
+  const [claimableCoupons, coupons] = await Promise.all([
+    fetcher<MyClaimableCoupon[]>("/api/users/me/coupons/claimable", {
+      headers: { cookie },
+    }).catch(() => []),
+    fetcher<MyCoupon[]>("/api/users/me/coupons", {
+      headers: { cookie },
+    }).catch(() => []),
+  ]);
 
-  return <Coupons coupons={coupons} />;
+  return <Coupons claimableCoupons={claimableCoupons} coupons={coupons} />;
 };
 
 export default AuthSettingsCouponsPage;

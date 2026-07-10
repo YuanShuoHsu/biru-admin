@@ -193,13 +193,5 @@
       "label": "Select a store",
       "placeholder": "Please select your store"
     }
-  },
-  "coupons": {
-    "claim": "Claim",
-    "claimSuccess": "Coupon {code} claimed",
-    "claimed": "Claimed",
-    "label": "Coupons",
-    "noExpiry": "No expiry",
-    "validUntil": "Valid until {date}"
   }
 }

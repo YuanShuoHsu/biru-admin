@@ -193,13 +193,5 @@
       "label": "选择门店",
       "placeholder": "请选择您的门店"
     }
-  },
-  "coupons": {
-    "claim": "领取",
-    "claimSuccess": "已领取优惠券 {code}",
-    "claimed": "已领取",
-    "label": "优惠券",
-    "noExpiry": "无使用期限",
-    "validUntil": "有效期至 {date}"
   }
 }

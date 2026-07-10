@@ -205,7 +205,7 @@ const Coupons = ({
         valueGetter: (_value: unknown, coupon: Coupon) =>
           coupon.discountType === "percentage"
             ? `${Number(coupon.discountValue)}%`
-            : `-${Number(coupon.discountValue)}`,
+            : `${coupon.discountCurrency} ${Number(coupon.discountValue)}`,
       },
       {
         field: "scope",
