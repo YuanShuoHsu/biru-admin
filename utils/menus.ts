@@ -118,7 +118,7 @@ export const calcCartItemExtraCost = (
 
   const modifierExtraCost = getGroupsExtraCost(item.modifierGroups, modifiers);
 
-  const addOnMap = new Map(addOns.map((a) => [a.id, a]));
+  const addOnMap = new Map(addOns.map((a) => [a.menuItemId, a]));
   const selectedAddOnItems = getAddOnItems(item).filter(({ id }) =>
     addOnMap.has(id),
   );
@@ -171,8 +171,8 @@ export const getItemKey = (
       [...selected].sort().map((modifierId) => `${groupId}:${modifierId}`),
     ),
     ...[...addOns]
-      .sort((a, b) => a.id.localeCompare(b.id))
-      .flatMap(({ id: addOnId, modifiers }) => [
+      .sort((a, b) => a.menuItemId.localeCompare(b.menuItemId))
+      .flatMap(({ menuItemId: addOnId, modifiers }) => [
         `${ADD_ON_OPTION_ID}:${addOnId}`,
         ...Object.entries(modifiers).flatMap(([groupId, selected]) =>
           [...selected]
@@ -258,7 +258,7 @@ export const getLimitingAddOnsCap = (
   if (!item) return { cap: Infinity, names: [] };
 
   const selectedAddOnItems = getAddOnItems(item).filter(({ id }) =>
-    addOns.some((addOn) => addOn.id === id),
+    addOns.some((addOn) => addOn.menuItemId === id),
   );
 
   return getAddOnsCap(selectedAddOnItems, getChoiceAvailableQuantity);
@@ -310,7 +310,7 @@ export const getChoiceNames = (
 
   const addOnItems = getAddOnItems(item);
   const addOnNames = addOns
-    .map(({ id: addOnId, modifiers }) => {
+    .map(({ menuItemId: addOnId, modifiers }) => {
       const addOnItem = addOnItems.find(({ id }) => id === addOnId);
       if (!addOnItem) return "";
 

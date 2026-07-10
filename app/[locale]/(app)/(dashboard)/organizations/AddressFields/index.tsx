@@ -10,7 +10,7 @@ import {
   type UseFormSetValue,
 } from "react-hook-form";
 
-import CountrySelect from "@/components/CountrySelect";
+import CountryAutocomplete from "@/components/CountryAutocomplete";
 
 import { LocaleEnum } from "@/enums/Locale";
 
@@ -161,7 +161,7 @@ const AddressFields = ({
           onChange: (e) => handlePostalCodeChange(e.target.value),
         })}
       />
-      <CountrySelect
+      <CountryAutocomplete
         error={!!errors.addressCountry}
         helperText={errors.addressCountry?.message}
         label={`${tOrganizations("address.addressCountry.label")} ${tCommon("optional")}`}

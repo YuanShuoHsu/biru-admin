@@ -125,12 +125,17 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
       choices: cartItem
         ? {
             ...cartItem.modifiers,
-            [ADD_ON_OPTION_ID]: cartItem.addOns.map(({ id }) => id),
+            [ADD_ON_OPTION_ID]: cartItem.addOns.map(
+              ({ menuItemId }) => menuItemId,
+            ),
           }
         : {},
       addOnChoices: cartItem
         ? Object.fromEntries(
-            cartItem.addOns.map(({ id, modifiers }) => [id, modifiers]),
+            cartItem.addOns.map(({ menuItemId, modifiers }) => [
+              menuItemId,
+              modifiers,
+            ]),
           )
         : {},
     },
@@ -175,7 +180,7 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
     selectedAddOnItems,
     (choiceId, choiceStock) =>
       getChoiceAvailableQuantity(choiceId, choiceStock) +
-      (cartItem?.addOns.some(({ id }) => id === choiceId)
+      (cartItem?.addOns.some(({ menuItemId }) => menuItemId === choiceId)
         ? editingQuantity
         : 0),
   );
@@ -235,7 +240,7 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
       Object.entries(choices).filter(([key]) => key !== ADD_ON_OPTION_ID),
     );
     const addOns = selectedAddOnItems.map(({ id }) => ({
-      id,
+      menuItemId: id,
       modifiers: addOnChoices[id] || {},
     }));
 

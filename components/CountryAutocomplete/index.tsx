@@ -118,21 +118,21 @@ const filter = createFilterOptions<CountryType | CurrencyType>({
   stringify: getOptionLabel,
 });
 
-interface CountrySelectProps
+interface CountryAutocompleteProps
   extends Omit<TextFieldProps, "onBlur" | "onChange"> {
   mode: "country" | "currency";
   onBlur?: React.FocusEventHandler;
   onChange?: (event: { target: { name: string; value: string } }) => void;
 }
 
-const CountrySelect = ({
+const CountryAutocomplete = ({
   mode,
   name,
   onBlur,
   onChange,
   value: valueCode,
   ...textFieldProps
-}: CountrySelectProps) => {
+}: CountryAutocompleteProps) => {
   const isCurrency = mode === "currency";
   const options = isCurrency
     ? [...currencies].sort((a, b) => a.label[0].localeCompare(b.label[0]))
@@ -277,4 +277,4 @@ const CountrySelect = ({
   );
 };
 
-export default CountrySelect;
+export default CountryAutocomplete;

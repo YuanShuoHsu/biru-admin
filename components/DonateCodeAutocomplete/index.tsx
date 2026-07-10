@@ -101,19 +101,19 @@ const filter = createFilterOptions<DonateCodeType>({
   stringify: getDonateCodeLabel,
 });
 
-interface DonateCodeSelectProps
+interface DonateCodeAutocompleteProps
   extends Omit<TextFieldProps, "onBlur" | "onChange"> {
   onBlur?: React.FocusEventHandler;
   onChange?: (event: { target: { name: string; value: string } }) => void;
 }
 
-const DonateCodeSelect = ({
+const DonateCodeAutocomplete = ({
   name,
   onBlur,
   onChange,
   value: donateCode,
   ...textFieldProps
-}: DonateCodeSelectProps) => {
+}: DonateCodeAutocompleteProps) => {
   const { data = [] } = useSWR<DonateCodeType[]>("/api/donate-codes", fetcher);
   const options = [...data].sort((a, b) =>
     a.donateNm.localeCompare(b.donateNm),
@@ -237,4 +237,4 @@ const DonateCodeSelect = ({
   );
 };
 
-export default DonateCodeSelect;
+export default DonateCodeAutocomplete;

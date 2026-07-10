@@ -12,7 +12,7 @@ import {
   useUpdateMenuItemFormSchema,
 } from "./definitions";
 
-import CountrySelect from "@/components/CountrySelect";
+import CountryAutocomplete from "@/components/CountryAutocomplete";
 import FormBox from "@/components/FormBox";
 import LocalizedTextFields from "@/components/LocalizedTextFields";
 import NumberSpinner from "@/components/NumberSpinner";
@@ -239,7 +239,7 @@ const UpdateMenuItemDialog = ({ item, mutate }: UpdateMenuItemDialogProps) => {
       </Divider>
       <Grid container width="100%" spacing={2}>
         <Grid size={{ xs: 12, sm: 6 }}>
-          <CountrySelect
+          <CountryAutocomplete
             error={!!errors.offer?.priceCurrency}
             helperText={errors.offer?.priceCurrency?.message}
             label={tMenus("items.offers.priceCurrency.label")}

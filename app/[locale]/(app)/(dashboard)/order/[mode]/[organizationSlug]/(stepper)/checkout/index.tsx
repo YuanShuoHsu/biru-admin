@@ -5,7 +5,6 @@ import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams, useSearchParams } from "next/navigation";
 import { useSnackbar } from "notistack";
-import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import useSWR from "swr";
 import useSWRMutation from "swr/mutation";
@@ -18,9 +17,9 @@ import {
 } from "./definitions";
 
 import CartAccordion from "@/components/CartAccordion";
-import CountrySelect from "@/components/CountrySelect";
-import CouponForm from "@/components/CouponForm";
-import DonateCodeSelect from "@/components/DonateCodeSelect";
+import CountryAutocomplete from "@/components/CountryAutocomplete";
+import CouponAutocomplete from "@/components/CouponAutocomplete";
+import DonateCodeAutocomplete from "@/components/DonateCodeAutocomplete";
 import FormBox from "@/components/FormBox";
 import { StyledCardContent } from "@/components/FormCard";
 import ListRadioGroup from "@/components/ListRadioGroup";
@@ -60,7 +59,6 @@ import { useCartStore } from "@/providers/cart-store-provider";
 import { useMenuStore } from "@/providers/menu-store-provider";
 
 import type { CheckoutEcpayDto, CheckoutEcpayResponse } from "@/types/ecpay";
-import type { ValidateCouponResponse } from "@/types/coupons";
 import type { CreateOrderDto, OrderResponse } from "@/types/orders";
 import type { PaymentMethod } from "@/types/payment";
 
@@ -104,8 +102,6 @@ const OrderModeOrganizationSlugCheckout = () => {
 
   const hasInvalidItems = useCartHasInvalidItems();
 
-  const [coupon, setCoupon] = useState<ValidateCouponResponse | null>(null);
-
   const { enqueueSnackbar } = useSnackbar();
 
   const customerPaymentFormSchema = useCustomerPaymentFormSchema();
@@ -122,6 +118,7 @@ const OrderModeOrganizationSlugCheckout = () => {
     trigger: triggerValidation,
   } = useForm<CustomerPaymentFormValues>({
     defaultValues: {
+      coupon: "",
       customer: {
         countryCode: localeConfigs[locale].countryCode,
         email: session?.user.email || "",
@@ -256,18 +253,6 @@ const OrderModeOrganizationSlugCheckout = () => {
     },
   ];
 
-  const orderItems = cartItemsList.map(
-    ({ addOns, menuItemId, modifiers, quantity }) => ({
-      addOns: addOns.map(({ id, modifiers: addOnModifiers }) => ({
-        menuItemId: id,
-        modifiers: addOnModifiers,
-      })),
-      menuItemId,
-      modifiers,
-      quantity,
-    }),
-  );
-
   const onSubmit = handleSubmit(async (values) => {
     if (!values.payment) return;
 
@@ -284,8 +269,8 @@ const OrderModeOrganizationSlugCheckout = () => {
               ).number
             : undefined,
         },
-        discountCode: coupon?.code,
-        items: orderItems,
+        discountCode: values.coupon || undefined,
+        items: cartItemsList,
         mode: API_ORDER_MODE[String(mode)],
         payment: values.payment,
       });
@@ -430,7 +415,7 @@ const OrderModeOrganizationSlugCheckout = () => {
           />
           <Grid container spacing={2} width="100%">
             <Grid size={{ xs: 12, sm: 6 }}>
-              <CountrySelect
+              <CountryAutocomplete
                 error={!!errors.customer?.countryCode}
                 helperText={errors.customer?.countryCode?.message}
                 label={tOrder("checkout.customer.countryCode.label")}
@@ -487,10 +472,10 @@ const OrderModeOrganizationSlugCheckout = () => {
             }}
             {...register("customer.remark")}
           />
-          <CouponForm
-            coupon={coupon}
-            items={orderItems}
-            onChange={(_, value) => setCoupon(value)}
+          <CouponAutocomplete
+            label={tOrder("checkout.coupon.label")}
+            placeholder={tOrder("checkout.coupon.placeholder")}
+            {...register("coupon")}
           />
           <Divider flexItem />
           <ListRadioGroup
@@ -627,7 +612,7 @@ const OrderModeOrganizationSlugCheckout = () => {
             </>
           )}
           {invoiceType === "donate" && (
-            <DonateCodeSelect
+            <DonateCodeAutocomplete
               error={!!errors.invoice?.donateCode}
               helperText={errors.invoice?.donateCode?.message}
               label={tOrder("checkout.invoice.donateCode.label")}

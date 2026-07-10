@@ -16,6 +16,7 @@ export const useCustomerPaymentFormSchema = () => {
 
   return z
     .object({
+      coupon: z.string(),
       customer: z.object({
         countryCode: z
           .string()
