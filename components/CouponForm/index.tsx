@@ -8,9 +8,8 @@ import useSWRMutation from "swr/mutation";
 
 import { LocalOffer } from "@mui/icons-material";
 import {
+  Autocomplete,
   Button,
-  Card,
-  CardActionArea,
   Chip,
   Stack,
   TextField,
@@ -78,93 +77,83 @@ const CouponForm = ({ coupon, items, onChange }: CouponFormProps) => {
     onChange(event, null);
   };
 
+  const selected =
+    availableCoupons.find((available) => available.code === coupon?.code) ||
+    null;
+
   return (
     <>
-      {availableCoupons.length > 0 && (
-        <Stack gap={1} width="100%">
-          <Typography color="text.secondary" variant="body2">
-            {tOrder("checkout.coupon.available")}
-          </Typography>
-          {availableCoupons.map((available) => {
-            const applied = coupon?.code === available.code;
-
-            return (
-              <Card
-                key={available.userCouponId || available.id}
-                sx={{
-                  borderColor: applied ? "primary.main" : undefined,
-                }}
-                variant="outlined"
-              >
-                <CardActionArea
-                  disabled={isMutating || (!!coupon && !applied)}
-                  onClick={(event) =>
-                    applied
-                      ? handleRemove(event)
-                      : handleApply(event, available.code)
-                  }
-                >
-                  <Stack
-                    alignItems="center"
-                    direction="row"
-                    gap={1}
-                    justifyContent="space-between"
-                    px={2}
-                    py={1.5}
-                  >
-                    <Stack alignItems="center" direction="row" gap={1}>
-                      <LocalOffer
-                        color={applied ? "primary" : "disabled"}
-                        fontSize="small"
-                      />
-                      <Stack>
-                        <Stack alignItems="center" direction="row" gap={0.5}>
-                          <Typography variant="subtitle2">
-                            {available.code}
-                          </Typography>
-                          {available.userCouponId && (
-                            <Chip
-                              color="primary"
-                              label={tOrder("checkout.coupon.wallet")}
-                              size="small"
-                              variant="outlined"
-                            />
-                          )}
-                        </Stack>
-                        {available.minSubtotal && (
-                          <Typography color="text.secondary" variant="caption">
-                            {tOrder("checkout.coupon.minSubtotal", {
-                              amount: `${cartCurrency} ${Number(available.minSubtotal).toLocaleString(locale)}`,
-                            })}
-                          </Typography>
-                        )}
-                      </Stack>
-                    </Stack>
-                    <Typography color="primary" variant="subtitle2">
-                      {available.discountType === "percentage"
-                        ? `-${Number(available.discountValue)}%`
-                        : `-${cartCurrency} ${Number(available.discountValue).toLocaleString(locale)}`}
-                    </Typography>
-                  </Stack>
-                </CardActionArea>
-              </Card>
-            );
-          })}
-        </Stack>
-      )}
       <Stack alignItems="flex-start" direction="row" gap={1} width="100%">
-        <TextField
-          error={!!errorMessage}
+        <Autocomplete
+          freeSolo
           fullWidth
-          helperText={errorMessage}
-          label={tOrder("checkout.coupon.label")}
-          onChange={(e) => {
-            setCode(e.target.value);
+          getOptionLabel={(option) =>
+            typeof option === "string" ? option : option.code
+          }
+          inputValue={coupon ? coupon.code : code}
+          isOptionEqualToValue={(option, value) => option.code === value.code}
+          onChange={(event, value) => {
+            if (value && typeof value !== "string")
+              void handleApply(event, value.code);
+          }}
+          onInputChange={(event, value) => {
+            setCode(value);
             setErrorMessage("");
           }}
-          placeholder={tOrder("checkout.coupon.placeholder")}
-          slotProps={{ input: { readOnly: !!coupon } }}
-          value={coupon ? coupon.code : code}
+          options={availableCoupons}
+          readOnly={!!coupon}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              error={!!errorMessage}
+              helperText={errorMessage}
+              label={tOrder("checkout.coupon.label")}
+              placeholder={tOrder("checkout.coupon.placeholder")}
+            />
+          )}
+          renderOption={(props, option) => (
+            <li {...props} key={option.userCouponId || option.id}>
+              <Stack
+                alignItems="center"
+                direction="row"
+                gap={1}
+                justifyContent="space-between"
+                width="100%"
+              >
+                <Stack alignItems="center" direction="row" gap={1}>
+                  <LocalOffer color="disabled" fontSize="small" />
+                  <Stack>
+                    <Stack alignItems="center" direction="row" gap={0.5}>
+                      <Typography variant="subtitle2">
+                        {option.code}
+                      </Typography>
+                      {option.userCouponId && (
+                        <Chip
+                          color="primary"
+                          label={tOrder("checkout.coupon.wallet")}
+                          size="small"
+                          variant="outlined"
+                        />
+                      )}
+                    </Stack>
+                    {option.minSubtotal && (
+                      <Typography color="text.secondary" variant="caption">
+                        {tOrder("checkout.coupon.minSubtotal", {
+                          amount: `${cartCurrency} ${Number(option.minSubtotal).toLocaleString(locale)}`,
+                        })}
+                      </Typography>
+                    )}
+                  </Stack>
+                </Stack>
+                <Typography color="primary" variant="subtitle2">
+                  {option.discountType === "percentage"
+                    ? `-${Number(option.discountValue)}%`
+                    : `-${cartCurrency} ${Number(option.discountValue).toLocaleString(locale)}`}
+                </Typography>
+              </Stack>
+            </li>
+          )}
+          value={selected}
         />
         <Button
           disabled={!coupon && !code.trim()}

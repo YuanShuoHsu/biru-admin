@@ -11,7 +11,6 @@
     "back": "カートに戻る",
     "coupon": {
       "apply": "適用",
-      "available": "利用可能なクーポン",
       "discount": "割引",
       "label": "クーポンコード",
       "minSubtotal": "{amount} 以上で利用可能",

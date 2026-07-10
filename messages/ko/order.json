@@ -11,7 +11,6 @@
     "back": "장바구니로 돌아가기",
     "coupon": {
       "apply": "적용",
-      "available": "사용 가능한 쿠폰",
       "discount": "할인",
       "label": "쿠폰 코드",
       "minSubtotal": "{amount} 이상 사용 가능",

@@ -11,7 +11,6 @@
     "back": "返回购物车",
     "coupon": {
       "apply": "应用",
-      "available": "可用优惠券",
       "discount": "折扣",
       "label": "优惠码",
       "minSubtotal": "满 {amount} 可用",
