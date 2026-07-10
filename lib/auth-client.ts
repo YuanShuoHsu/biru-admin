@@ -20,6 +20,10 @@ export const authClient = createAuthClient({
           type: "string",
           required: false,
         },
+        birthDate: {
+          type: "date",
+          required: false,
+        },
         emailSubscribed: {
           type: "boolean",
           required: true,

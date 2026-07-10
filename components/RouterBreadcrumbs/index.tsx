@@ -22,6 +22,7 @@ import {
   Category,
   Checklist,
   Dashboard,
+  ConfirmationNumber,
   DeleteForever,
   Devices,
   Restaurant,
@@ -213,6 +214,7 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
   const tAdmins = useTranslations("admins");
   const tAuth = useTranslations("auth");
   const tCompany = useTranslations("company");
+  const tCoupons = useTranslations("coupons");
   const tDashboard = useTranslations("dashboard");
   const tMenus = useTranslations("menus");
   const tOrder = useTranslations("order");
@@ -446,6 +448,11 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
       icon: ReceiptLong,
       label: tOrders("label"),
       to: `/orders?${menusQuery}`,
+    },
+    {
+      icon: ConfirmationNumber,
+      label: tCoupons("label"),
+      to: `/coupons?${menusQuery}`,
     },
     {
       children: [

@@ -113,12 +113,14 @@ const Orders = ({ orders: data, page }: OrdersProps) => {
         )}
         {orders.map((order) => {
           const currency = order.items[0]?.priceCurrency || "";
+          const discount = Number(order.discount || 0);
           const isExpanded = expanded === order.id;
-          const totalAmount = order.items.reduce(
-            (sum, { orderQuantity, unitPrice }) =>
-              sum + Number(unitPrice) * orderQuantity,
-            0,
-          );
+          const totalAmount =
+            order.items.reduce(
+              (sum, { orderQuantity, unitPrice }) =>
+                sum + Number(unitPrice) * orderQuantity,
+              0,
+            ) - discount;
 
           return (
             <CustomizedAccordions
@@ -190,6 +192,19 @@ const Orders = ({ orders: data, page }: OrdersProps) => {
                     </Typography>
                   </Stack>
                 ))}
+                {discount > 0 && (
+                  <Stack direction="row" gap={1} justifyContent="space-between">
+                    <Typography variant="body2">
+                      {tOrder("complete.summary.discount")}
+                      {order.discountCode
+                        ? `${tCommon("parenthesisOpen")}${order.discountCode}${tCommon("parenthesisClose")}`
+                        : ""}
+                    </Typography>
+                    <Typography color="primary" flexShrink={0} variant="body2">
+                      -{currency} {discount.toLocaleString(locale)}
+                    </Typography>
+                  </Stack>
+                )}
                 <Typography color="text.secondary" variant="body2">
                   {tOrder(`checkout.payment.${order.paymentMethod}`)}
                 </Typography>

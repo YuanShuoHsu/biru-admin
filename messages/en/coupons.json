@@ -1,0 +1,117 @@
+{
+  "label": "Coupons",
+  "actions": {
+    "label": "Actions",
+    "createCoupon": {
+      "title": "Create coupon",
+      "success": "Coupon {code} created",
+      "error": "Failed to create coupon"
+    },
+    "updateCoupon": {
+      "title": "Edit coupon",
+      "success": "Coupon {code} updated",
+      "error": "Failed to update coupon"
+    },
+    "deleteCoupon": {
+      "title": "Delete coupon",
+      "confirm": "Are you sure you want to delete coupon <bold>{code}</bold>? This action cannot be undone.",
+      "success": "Coupon {code} deleted",
+      "error": "Failed to delete coupon"
+    },
+    "grantCoupon": {
+      "title": "Grant coupon",
+      "success": "Coupon {code} granted to {email}",
+      "error": "Failed to grant coupon",
+      "email": {
+        "label": "Member email",
+        "placeholder": "Please enter your member email",
+        "invalid": "Member email is not valid",
+        "hint": "The coupon will appear in the member's coupon wallet"
+      }
+    }
+  },
+  "code": {
+    "label": "Code",
+    "placeholder": "Please enter your coupon code",
+    "required": "Code is required"
+  },
+  "discountType": {
+    "label": "Discount type",
+    "fixed": "Fixed amount",
+    "percentage": "Percentage"
+  },
+  "discountValue": {
+    "label": "Discount value",
+    "placeholder": "Please enter your discount value",
+    "required": "Discount value is required",
+    "invalid": "Discount value is invalid"
+  },
+  "scope": {
+    "label": "Scope",
+    "order": "Entire order",
+    "item": "Specific items",
+    "itemHint": "Select at least one applicable section or item"
+  },
+  "menuItemIds": {
+    "label": "Applicable items",
+    "placeholder": "Please select your applicable items"
+  },
+  "menuSectionIds": {
+    "label": "Applicable sections",
+    "placeholder": "Please select your applicable sections"
+  },
+  "minSubtotal": {
+    "label": "Minimum order amount",
+    "placeholder": "Please enter your minimum order amount"
+  },
+  "totalLimit": {
+    "label": "Total usage limit",
+    "placeholder": "Please enter your total usage limit"
+  },
+  "perUserLimit": {
+    "label": "Per-user usage limit",
+    "placeholder": "Please enter your per-user usage limit",
+    "hint": "Members only when set"
+  },
+  "discount": "Discount",
+  "usage": "Usage",
+  "unlimited": "Unlimited",
+  "isActive": {
+    "label": "Active",
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "validFrom": {
+    "label": "Valid from"
+  },
+  "validUntil": {
+    "label": "Valid until"
+  },
+  "validity": "Validity",
+  "createdAt": "Created at",
+  "distribution": "Distribution",
+  "isClaimable": {
+    "label": "Claimable"
+  },
+  "isPublic": {
+    "label": "Public"
+  },
+  "issueMinSpend": {
+    "label": "Spend threshold",
+    "placeholder": "Please enter your spend threshold",
+    "required": "Spend threshold is required"
+  },
+  "issueTrigger": {
+    "label": "Auto issue",
+    "none": "None",
+    "signup": "Signup gift",
+    "birthday": "Birthday coupon",
+    "spend": "Spend reward",
+    "hint": {
+      "none": "No automatic issuance",
+      "signup": "New members automatically receive one",
+      "birthday": "Members automatically receive one in their birthday month",
+      "spend": "Automatically issued when a single order reaches the threshold"
+    }
+  }
+}

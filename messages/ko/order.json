@@ -9,6 +9,17 @@
   },
   "checkout": {
     "back": "장바구니로 돌아가기",
+    "coupon": {
+      "apply": "적용",
+      "available": "사용 가능한 쿠폰",
+      "discount": "할인",
+      "label": "쿠폰 코드",
+      "minSubtotal": "{amount} 이상 사용 가능",
+      "placeholder": "귀하의 쿠폰 코드를 입력해 주세요",
+      "remove": "삭제",
+      "total": "결제 금액",
+      "wallet": "내 쿠폰"
+    },
     "customer": {
       "countryCode": {
         "label": "국가 코드",
@@ -85,6 +96,7 @@
       "title": "결제 완료"
     },
     "summary": {
+      "discount": "할인",
       "title": "주문 내역",
       "total": "합계"
     },
@@ -183,5 +195,13 @@
       "label": "지점 선택",
       "placeholder": "귀하의 지점을 선택해 주세요"
     }
+  },
+  "coupons": {
+    "claim": "받기",
+    "claimSuccess": "쿠폰 {code}을(를) 받았습니다",
+    "claimed": "받기 완료",
+    "label": "쿠폰",
+    "noExpiry": "사용 기한 없음",
+    "validUntil": "{date}까지 유효"
   }
 }

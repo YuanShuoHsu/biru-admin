@@ -24,6 +24,7 @@ import {
   AccountCircle,
   AdminPanelSettings,
   Business,
+  ConfirmationNumber,
   Dashboard,
   Description,
   Group,
@@ -174,6 +175,7 @@ const useNavItems = (): MenuItem[] => {
   const tAdmin = useTranslations("admins");
   const tAuth = useTranslations("auth");
   const tCompany = useTranslations("company");
+  const tCoupons = useTranslations("coupons");
   const tDashboard = useTranslations("dashboard");
   const tMenus = useTranslations("menus");
   const tOrder = useTranslations("order");
@@ -307,6 +309,11 @@ const useNavItems = (): MenuItem[] => {
             icon: ReceiptLong,
             label: tOrders("label"),
             to: `/orders?organization=${defaultOrganizationSlug}&page=1&pageSize=10`,
+          },
+          {
+            icon: ConfirmationNumber,
+            label: tCoupons("label"),
+            to: `/coupons?organization=${defaultOrganizationSlug}`,
           },
           {
             icon: MenuBook,

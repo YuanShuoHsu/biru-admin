@@ -9,6 +9,17 @@
   },
   "checkout": {
     "back": "返回购物车",
+    "coupon": {
+      "apply": "应用",
+      "available": "可用优惠券",
+      "discount": "折扣",
+      "label": "优惠码",
+      "minSubtotal": "满 {amount} 可用",
+      "placeholder": "请输入您的优惠码",
+      "remove": "移除",
+      "total": "应付金额",
+      "wallet": "我的优惠券"
+    },
     "customer": {
       "countryCode": {
         "label": "国码",
@@ -85,6 +96,7 @@
       "title": "付款成功"
     },
     "summary": {
+      "discount": "折扣",
       "title": "订单明细",
       "total": "总计"
     },
@@ -183,5 +195,13 @@
       "label": "选择门店",
       "placeholder": "请选择您的门店"
     }
+  },
+  "coupons": {
+    "claim": "领取",
+    "claimSuccess": "已领取优惠券 {code}",
+    "claimed": "已领取",
+    "label": "优惠券",
+    "noExpiry": "无使用期限",
+    "validUntil": "有效期至 {date}"
   }
 }

@@ -3,6 +3,7 @@ import appBar from "./en/appBar.json";
 import auth from "./en/auth.json";
 import common from "./en/common.json";
 import company from "./en/company.json";
+import coupons from "./en/coupons.json";
 import dashboard from "./en/dashboard.json";
 import dataGrid from "./en/dataGrid.json";
 import dialog from "./en/dialog.json";
@@ -20,6 +21,7 @@ const messages = {
   auth,
   common,
   company,
+  coupons,
   dashboard,
   dataGrid,
   dialog,

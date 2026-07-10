@@ -9,6 +9,17 @@
   },
   "checkout": {
     "back": "返回購物車",
+    "coupon": {
+      "apply": "套用",
+      "available": "可用優惠券",
+      "discount": "折扣",
+      "label": "優惠碼",
+      "minSubtotal": "滿 {amount} 可用",
+      "placeholder": "請輸入您的優惠碼",
+      "remove": "移除",
+      "total": "應付金額",
+      "wallet": "我的優惠券"
+    },
     "customer": {
       "countryCode": {
         "label": "國碼",
@@ -85,6 +96,7 @@
       "title": "付款成功"
     },
     "summary": {
+      "discount": "折扣",
       "title": "訂單明細",
       "total": "總計"
     },
@@ -183,5 +195,13 @@
       "label": "選擇門市",
       "placeholder": "請選擇您的門市"
     }
+  },
+  "coupons": {
+    "claim": "領取",
+    "claimSuccess": "已領取優惠券 {code}",
+    "claimed": "已領取",
+    "label": "優惠券",
+    "noExpiry": "無使用期限",
+    "validUntil": "有效期限至 {date}"
   }
 }

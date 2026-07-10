@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import KioskSelect from "./KioskSelect";
 
+import CouponClaimSection from "@/components/CouponClaimSection";
 import OrderMenuContent from "@/components/OrderMenuContent";
 import OrderPartySizeTextField from "@/components/OrderPartySizeTextField";
 import OrderTableNumberChip from "@/components/OrderTableNumberChip";
@@ -39,7 +40,12 @@ const OrderModeOrganizationSlugPage = async ({
   setRequestLocale(locale);
 
   if (mode === ORDER_MODE.Counter || mode === ORDER_MODE.Pickup)
-    return <OrderMenuContent />;
+    return (
+      <>
+        <CouponClaimSection />
+        <OrderMenuContent />
+      </>
+    );
 
   if (mode === ORDER_MODE.Kiosk) {
     if (!type) return <KioskSelect />;
@@ -93,6 +99,7 @@ const OrderModeOrganizationSlugPage = async ({
           tableNumber={tableNumber}
         />
       </Stack>
+      <CouponClaimSection />
       <OrderMenuContent />
     </>
   );

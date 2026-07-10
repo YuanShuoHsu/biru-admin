@@ -146,11 +146,13 @@ const OrderModeOrganizationSlugComplete = ({
   const isPaid = !!order && order.orderStatus !== "OrderPaymentDue";
   const orderNo = order ? order.confirmationNumber || order.orderNumber : "";
   const currency = order?.items[0]?.priceCurrency || "";
-  const totalAmount = (order?.items || []).reduce(
-    (sum, { orderQuantity, unitPrice }) =>
-      sum + Number(unitPrice) * orderQuantity,
-    0,
-  );
+  const discount = Number(order?.discount || 0);
+  const totalAmount =
+    (order?.items || []).reduce(
+      (sum, { orderQuantity, unitPrice }) =>
+        sum + Number(unitPrice) * orderQuantity,
+      0,
+    ) - discount;
 
   const showPickupInfo = mode === ORDER_MODE.Pickup && !!organization;
 
@@ -286,6 +288,19 @@ const OrderModeOrganizationSlugComplete = ({
                   </Typography>
                 </Stack>
               ))}
+              {discount > 0 && (
+                <Stack direction="row" gap={1} justifyContent="space-between">
+                  <Typography variant="body2">
+                    {tOrder("complete.summary.discount")}
+                    {order.discountCode
+                      ? `${tCommon("parenthesisOpen")}${order.discountCode}${tCommon("parenthesisClose")}`
+                      : ""}
+                  </Typography>
+                  <Typography color="primary" flexShrink={0} variant="body2">
+                    -{currency} {discount.toLocaleString(locale)}
+                  </Typography>
+                </Stack>
+              )}
               <Divider />
               <Stack
                 alignItems="center"

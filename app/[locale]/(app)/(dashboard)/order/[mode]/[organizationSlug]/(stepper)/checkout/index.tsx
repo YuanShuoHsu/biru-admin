@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams, useSearchParams } from "next/navigation";
 import { useSnackbar } from "notistack";
+import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import useSWR from "swr";
 import useSWRMutation from "swr/mutation";
@@ -18,6 +19,7 @@ import {
 
 import CartAccordion from "@/components/CartAccordion";
 import CountrySelect from "@/components/CountrySelect";
+import CouponForm from "@/components/CouponForm";
 import DonateCodeSelect from "@/components/DonateCodeSelect";
 import FormBox from "@/components/FormBox";
 import { StyledCardContent } from "@/components/FormCard";
@@ -58,6 +60,7 @@ import { useCartStore } from "@/providers/cart-store-provider";
 import { useMenuStore } from "@/providers/menu-store-provider";
 
 import type { CheckoutEcpayDto, CheckoutEcpayResponse } from "@/types/ecpay";
+import type { ValidateCouponResponse } from "@/types/coupons";
 import type { CreateOrderDto, OrderResponse } from "@/types/orders";
 import type { PaymentMethod } from "@/types/payment";
 
@@ -100,6 +103,8 @@ const OrderModeOrganizationSlugCheckout = () => {
   const { menu } = useMenuStore((state) => state);
 
   const hasInvalidItems = useCartHasInvalidItems();
+
+  const [coupon, setCoupon] = useState<ValidateCouponResponse | null>(null);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -251,6 +256,18 @@ const OrderModeOrganizationSlugCheckout = () => {
     },
   ];
 
+  const orderItems = cartItemsList.map(
+    ({ addOns, menuItemId, modifiers, quantity }) => ({
+      addOns: addOns.map(({ id, modifiers: addOnModifiers }) => ({
+        menuItemId: id,
+        modifiers: addOnModifiers,
+      })),
+      menuItemId,
+      modifiers,
+      quantity,
+    }),
+  );
+
   const onSubmit = handleSubmit(async (values) => {
     if (!values.payment) return;
 
@@ -267,17 +284,8 @@ const OrderModeOrganizationSlugCheckout = () => {
               ).number
             : undefined,
         },
-        items: cartItemsList.map(
-          ({ addOns, menuItemId, modifiers, quantity }) => ({
-            addOns: addOns.map(({ id, modifiers: addOnModifiers }) => ({
-              menuItemId: id,
-              modifiers: addOnModifiers,
-            })),
-            menuItemId,
-            modifiers,
-            quantity,
-          }),
-        ),
+        discountCode: coupon?.code,
+        items: orderItems,
         mode: API_ORDER_MODE[String(mode)],
         payment: values.payment,
       });
@@ -286,7 +294,10 @@ const OrderModeOrganizationSlugCheckout = () => {
       completeSearchParams.set("orderId", order.id);
       const completePath = `${pathname.replace("/checkout", "/complete")}?${completeSearchParams}`;
 
-      if (values.payment === "Cash") {
+      if (
+        values.payment === "Cash" ||
+        order.orderStatus !== "OrderPaymentDue"
+      ) {
         router.replace(completePath);
 
         return;
@@ -476,7 +487,11 @@ const OrderModeOrganizationSlugCheckout = () => {
             }}
             {...register("customer.remark")}
           />
-          {/* <CouponForm /> */}
+          <CouponForm
+            coupon={coupon}
+            items={orderItems}
+            onChange={(_, value) => setCoupon(value)}
+          />
           <Divider flexItem />
           <ListRadioGroup
             error={!!errors.invoice?.type}

@@ -1,9 +1,10 @@
 "use client";
 
+import dayjs from "dayjs";
 import { useLocale, useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import { type BaseSyntheticEvent, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
 import { type ProfileForm, useProfileFormSchema } from "./definitions";
 
@@ -23,11 +24,17 @@ import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { Button, Stack, TextField, Typography } from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
+import { formatFullName } from "@/utils/auth";
+
 const PROFILE_UPLOAD_AVATAR_KEY = "profile-upload-avatar";
+
+const toBirthDateValue = (value: Date | string | null | undefined): string =>
+  value ? dayjs(value).format("YYYY-MM-DD") : "";
 
 const Profile = () => {
   const { session, setSession } = useAuthStore((state) => state);
@@ -38,30 +45,37 @@ const Profile = () => {
   const profileFormSchema = useProfileFormSchema();
 
   const {
+    control,
     formState: { errors, isDirty: isNameDirty, isSubmitting },
     handleSubmit,
     register,
     reset,
+    setValue,
   } = useForm<ProfileForm>({
     defaultValues: {
       lastName: session?.user.lastName || "",
       firstName: session?.user.firstName || "",
       bio: session?.user.bio || "",
+      birthDate: toBirthDateValue(session?.user.birthDate),
     },
     resolver: zodResolver(profileFormSchema),
   });
+
+  const birthDate = useWatch({ control, name: "birthDate" });
 
   useEffect(() => {
     reset({
       lastName: session?.user.lastName || "",
       firstName: session?.user.firstName || "",
       bio: session?.user.bio || "",
+      birthDate: toBirthDateValue(session?.user.birthDate),
     });
   }, [
     reset,
+    session?.user.bio,
+    session?.user.birthDate,
     session?.user.firstName,
     session?.user.lastName,
-    session?.user.bio,
   ]);
 
   const { enqueueSnackbar } = useSnackbar();
@@ -75,12 +89,13 @@ const Profile = () => {
   );
   const isAvatarDirty = avatarSrc !== (session?.user.image || undefined);
 
-  const updateProfile = async ({ lastName, firstName, bio }: ProfileForm) => {
-    const name = (
-      locale === LocaleEnum.En ? [firstName, lastName] : [lastName, firstName]
-    )
-      .filter(Boolean)
-      .join(locale === LocaleEnum.En ? " " : "");
+  const updateProfile = async ({
+    lastName,
+    firstName,
+    bio,
+    birthDate: birthDateValue,
+  }: ProfileForm) => {
+    const name = formatFullName(locale, firstName, lastName);
 
     await authClient.updateUser({
       image: avatarSrc,
@@ -88,6 +103,7 @@ const Profile = () => {
       firstName,
       name,
       bio,
+      ...(birthDateValue && { birthDate: new Date(birthDateValue) }),
       fetchOptions: {
         onError: ({ error }) => {
           enqueueSnackbar(getErrorMessage(error.code, locale), {
@@ -98,7 +114,7 @@ const Profile = () => {
           const { data } = await authClient.getSession();
           setSession(data);
 
-          enqueueSnackbar(tAuth("settings.profile.success"), {
+          enqueueSnackbar(tAuth("settings.profile.success", { name }), {
             variant: "success",
           });
         },
@@ -156,14 +172,30 @@ const Profile = () => {
             {...register("firstName")}
           />
         </Stack>
+        <DatePicker
+          disableFuture
+          label={`${tAuth("birthDate.label")} ${tCommon("optional")}`}
+          slotProps={{
+            textField: {
+              fullWidth: true,
+              helperText: tAuth("birthDate.hint"),
+            },
+          }}
+          value={birthDate ? dayjs(birthDate) : null}
+          onChange={(date) =>
+            setValue("birthDate", date ? date.format("YYYY-MM-DD") : "", {
+              shouldDirty: true,
+            })
+          }
+        />
         <TextField
           error={!!errors.bio}
           fullWidth
           helperText={errors.bio?.message}
-          label={`${tAuth("settings.profile.bio.label")} ${tCommon("optional")}`}
+          label={`${tAuth("bio.label")} ${tCommon("optional")}`}
           maxRows={4}
           multiline
-          placeholder={tAuth("settings.profile.bio.placeholder")}
+          placeholder={tAuth("bio.placeholder")}
           slotProps={{ htmlInput: { maxLength: 160 } }}
           {...register("bio")}
         />

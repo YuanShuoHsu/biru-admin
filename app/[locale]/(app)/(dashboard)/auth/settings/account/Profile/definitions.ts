@@ -15,6 +15,7 @@ export const useProfileFormSchema = () => {
       .trim()
       .max(160, { error: tValidation("bio.maxLength") })
       .optional(),
+    birthDate: z.string(),
   });
 };
 

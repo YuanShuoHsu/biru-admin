@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 
 import {
+  ConfirmationNumber,
   Lock,
   Person,
   ReceiptLong,
@@ -36,6 +37,11 @@ const AuthSettingsLayout = ({ children }: { children: React.ReactNode }) => {
       Icon: ReceiptLong,
       label: tAuth("settings.orders.label"),
       value: "/auth/settings/orders?page=1",
+    },
+    {
+      Icon: ConfirmationNumber,
+      label: tAuth("settings.coupons.label"),
+      value: "/auth/settings/coupons",
     },
   ];
 

@@ -1,0 +1,117 @@
+{
+  "label": "优惠券管理",
+  "actions": {
+    "label": "操作",
+    "createCoupon": {
+      "title": "新增优惠券",
+      "success": "已新增优惠券 {code}",
+      "error": "新增优惠券失败"
+    },
+    "updateCoupon": {
+      "title": "编辑优惠券",
+      "success": "已更新优惠券 {code}",
+      "error": "更新优惠券失败"
+    },
+    "deleteCoupon": {
+      "title": "删除优惠券",
+      "confirm": "确定要删除优惠券 <bold>{code}</bold> 吗？此操作无法撤销。",
+      "success": "已删除优惠券 {code}",
+      "error": "删除优惠券失败"
+    },
+    "grantCoupon": {
+      "title": "发放优惠券",
+      "success": "已将优惠券 {code} 发放给 {email}",
+      "error": "发放优惠券失败",
+      "email": {
+        "label": "会员电子邮箱",
+        "placeholder": "请输入您的会员电子邮箱",
+        "invalid": "会员电子邮箱格式无效",
+        "hint": "发放后将出现在该会员的优惠券钱包"
+      }
+    }
+  },
+  "code": {
+    "label": "优惠码",
+    "placeholder": "请输入您的优惠码",
+    "required": "优惠码为必填"
+  },
+  "discountType": {
+    "label": "折扣类型",
+    "fixed": "固定金额",
+    "percentage": "百分比"
+  },
+  "discountValue": {
+    "label": "折扣值",
+    "placeholder": "请输入您的折扣值",
+    "required": "折扣值为必填",
+    "invalid": "折扣值格式无效"
+  },
+  "scope": {
+    "label": "适用范围",
+    "order": "整笔订单",
+    "item": "指定商品",
+    "itemHint": "适用分类与适用商品至少选择一项"
+  },
+  "menuItemIds": {
+    "label": "适用商品",
+    "placeholder": "请选择您的适用商品"
+  },
+  "menuSectionIds": {
+    "label": "适用分类",
+    "placeholder": "请选择您的适用分类"
+  },
+  "minSubtotal": {
+    "label": "最低消费金额",
+    "placeholder": "请输入您的最低消费金额"
+  },
+  "totalLimit": {
+    "label": "总使用次数上限",
+    "placeholder": "请输入您的总使用次数上限"
+  },
+  "perUserLimit": {
+    "label": "每人使用次数上限",
+    "placeholder": "请输入您的每人使用次数上限",
+    "hint": "设置后仅限会员使用"
+  },
+  "discount": "折扣",
+  "usage": "使用次数",
+  "unlimited": "不限",
+  "isActive": {
+    "label": "启用",
+    "active": "启用中",
+    "inactive": "已停用"
+  },
+  "validFrom": {
+    "label": "生效时间"
+  },
+  "validUntil": {
+    "label": "失效时间"
+  },
+  "validity": "有效期间",
+  "createdAt": "创建时间",
+  "distribution": "获取方式",
+  "isClaimable": {
+    "label": "可领取"
+  },
+  "isPublic": {
+    "label": "公开"
+  },
+  "issueMinSpend": {
+    "label": "满额门槛",
+    "placeholder": "请输入您的满额门槛",
+    "required": "满额门槛为必填"
+  },
+  "issueTrigger": {
+    "label": "自动发放",
+    "none": "无",
+    "signup": "注册礼",
+    "birthday": "生日券",
+    "spend": "满额回馈",
+    "hint": {
+      "none": "不自动发放",
+      "signup": "新会员自动获得一张",
+      "birthday": "会员生日当月自动获得一张",
+      "spend": "单笔订单达门槛自动获得一张"
+    }
+  }
+}

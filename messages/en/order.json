@@ -9,6 +9,17 @@
   },
   "checkout": {
     "back": "Back to cart",
+    "coupon": {
+      "apply": "Apply",
+      "available": "Available coupons",
+      "discount": "Discount",
+      "label": "Promo code",
+      "minSubtotal": "Min. spend {amount}",
+      "placeholder": "Please enter your promo code",
+      "remove": "Remove",
+      "total": "Amount due",
+      "wallet": "My coupon"
+    },
     "customer": {
       "countryCode": {
         "label": "Country code",
@@ -85,6 +96,7 @@
       "title": "Payment successful"
     },
     "summary": {
+      "discount": "Discount",
       "title": "Order summary",
       "total": "Total"
     },
@@ -183,5 +195,13 @@
       "label": "Select a store",
       "placeholder": "Please select your store"
     }
+  },
+  "coupons": {
+    "claim": "Claim",
+    "claimSuccess": "Coupon {code} claimed",
+    "claimed": "Claimed",
+    "label": "Coupons",
+    "noExpiry": "No expiry",
+    "validUntil": "Valid until {date}"
   }
 }

@@ -9,6 +9,17 @@
   },
   "checkout": {
     "back": "カートに戻る",
+    "coupon": {
+      "apply": "適用",
+      "available": "利用可能なクーポン",
+      "discount": "割引",
+      "label": "クーポンコード",
+      "minSubtotal": "{amount} 以上で利用可能",
+      "placeholder": "あなたのクーポンコードを入力してください",
+      "remove": "削除",
+      "total": "お支払い金額",
+      "wallet": "マイクーポン"
+    },
     "customer": {
       "countryCode": {
         "label": "国番号",
@@ -85,6 +96,7 @@
       "title": "決済が完了しました"
     },
     "summary": {
+      "discount": "割引",
       "title": "注文明細",
       "total": "合計"
     },
@@ -183,5 +195,13 @@
       "label": "店舗を選択",
       "placeholder": "あなたの店舗を選択してください"
     }
+  },
+  "coupons": {
+    "claim": "受け取る",
+    "claimSuccess": "クーポン {code} を受け取りました",
+    "claimed": "受け取り済み",
+    "label": "クーポン",
+    "noExpiry": "利用期限なし",
+    "validUntil": "{date} まで有効"
   }
 }
