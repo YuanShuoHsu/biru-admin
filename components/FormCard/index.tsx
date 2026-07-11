@@ -14,6 +14,11 @@ import { styled } from "@mui/material/styles";
 export const StyledCardHeader = styled(CardHeader)(({ theme }) => ({
   padding: theme.spacing(2),
   paddingBottom: 0,
+
+  "& .MuiCardHeader-action": {
+    margin: 0,
+    alignSelf: "center",
+  },
 }));
 
 export const StyledCardContent = styled(CardContent)(({ theme }) => ({

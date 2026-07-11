@@ -27,6 +27,7 @@
     }
   },
   "maxQuantity": "You can buy up to {quantity} per item",
+  "middleDot": " · ",
   "multiply": "×",
   "optional": "(optional)",
   "parenthesisClose": ")",

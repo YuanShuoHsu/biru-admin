@@ -27,6 +27,7 @@
     }
   },
   "maxQuantity": "각 상품은 최대 {quantity} 개까지 구매할 수 있습니다",
+  "middleDot": " · ",
   "multiply": "×",
   "optional": "(선택)",
   "parenthesisClose": ")",

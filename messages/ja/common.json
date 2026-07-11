@@ -27,6 +27,7 @@
     }
   },
   "maxQuantity": "各商品は最大 {quantity} 個まで購入できます",
+  "middleDot": "・",
   "multiply": "×",
   "optional": "（任意）",
   "parenthesisClose": ")",

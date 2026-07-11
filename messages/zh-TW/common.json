@@ -27,6 +27,7 @@
     }
   },
   "maxQuantity": "每項商品最多只能購買 {quantity} 件",
+  "middleDot": "・",
   "multiply": "×",
   "optional": "（選填）",
   "parenthesisClose": "）",

@@ -4,17 +4,23 @@ import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 
+import FormCard, {
+  StyledCardActions,
+  StyledCardContent,
+  StyledCardHeader,
+} from "@/components/FormCard";
+
 import { ORDER_MODE } from "@/constants/orderMode";
 
 import { Link, useRouter } from "@/i18n/navigation";
 
 import { LocalOffer } from "@mui/icons-material";
 import {
+  Avatar,
   Button,
   Card,
   Chip,
   type ChipProps,
-  Stack,
   Typography,
 } from "@mui/material";
 
@@ -57,6 +63,7 @@ const Coupons = ({ claimableCoupons, coupons }: CouponsProps) => {
   const router = useRouter();
 
   const tAuth = useTranslations("auth");
+  const tCommon = useTranslations("common");
 
   const handleClaim = async (coupon: MyClaimableCoupon) => {
     try {
@@ -80,129 +87,132 @@ const Coupons = ({ claimableCoupons, coupons }: CouponsProps) => {
     }
   };
 
-  return (
-    <Stack gap={3}>
-      {claimableCoupons.length > 0 && (
-        <Stack gap={2}>
-          <Typography fontWeight="bold" variant="subtitle1">
-            {tAuth("settings.coupons.claimable")}
-          </Typography>
-          {claimableCoupons.map((coupon) => (
-            <Card key={coupon.id} sx={{ p: 2 }} variant="outlined">
-              <Stack
-                alignItems={{ sm: "center" }}
-                direction={{ sm: "row" }}
-                gap={1}
-                justifyContent="space-between"
-              >
-                <Stack gap={0.5}>
-                  <Stack alignItems="center" direction="row" gap={1}>
-                    <LocalOffer color="primary" fontSize="small" />
-                    <Typography variant="subtitle2">{coupon.code}</Typography>
-                  </Stack>
-                  <Typography color="text.secondary" variant="caption">
-                    {coupon.organizationName}
-                    {coupon.validUntil &&
-                      ` · ${tAuth("settings.coupons.validUntil", {
-                        date: format.dateTime(
-                          new Date(coupon.validUntil),
-                          "short",
-                        ),
-                      })}`}
-                  </Typography>
-                </Stack>
-                <Stack alignItems="center" direction="row" gap={2}>
-                  <Typography color="primary" fontWeight="bold" variant="h6">
-                    {coupon.discountType === "percentage"
-                      ? `-${Number(coupon.discountValue)}%`
-                      : `-${coupon.discountCurrency} ${Number(coupon.discountValue).toLocaleString(locale)}`}
-                  </Typography>
-                  <Button
-                    loading={claimingId === coupon.id}
-                    onClick={() => handleClaim(coupon)}
-                    size="small"
-                    variant="contained"
-                  >
-                    {tAuth("settings.coupons.claim")}
-                  </Button>
-                </Stack>
-              </Stack>
-            </Card>
-          ))}
-        </Stack>
-      )}
-      <Stack gap={2}>
-        <Typography fontWeight="bold" variant="subtitle1">
-          {tAuth("settings.coupons.mine")}
-        </Typography>
-        {coupons.length === 0 && (
-          <Typography color="text.secondary" variant="body2">
-            {tAuth("settings.coupons.empty")}
-          </Typography>
-        )}
-        {coupons.map((voucher) => {
-          const status = getStatus(voucher);
+  const sections: {
+    items: (MyClaimableCoupon | MyCoupon)[];
+    type: "claimable" | "mine";
+  }[] = [
+    { items: claimableCoupons, type: "claimable" },
+    { items: coupons, type: "mine" },
+  ];
 
-          return (
-            <Card key={voucher.id} sx={{ p: 2 }} variant="outlined">
-              <Stack
-                alignItems={{ sm: "center" }}
-                direction={{ sm: "row" }}
-                gap={1}
-                justifyContent="space-between"
-              >
-                <Stack gap={0.5}>
-                  <Stack alignItems="center" direction="row" gap={1}>
-                    <LocalOffer
-                      color={status === "available" ? "primary" : "disabled"}
-                      fontSize="small"
-                    />
-                    <Typography variant="subtitle2">
-                      {voucher.coupon.code}
-                    </Typography>
-                    <Chip
-                      color={STATUS_CHIP_COLORS[status]}
-                      label={tAuth(`settings.coupons.status.${status}`)}
-                      size="small"
-                      variant="outlined"
-                    />
-                  </Stack>
-                  <Typography color="text.secondary" variant="caption">
-                    {voucher.organizationName}
-                    {" · "}
-                    {tAuth(`settings.coupons.source.${voucher.source}`)}
-                    {voucher.coupon.validUntil &&
-                      ` · ${tAuth("settings.coupons.validUntil", {
-                        date: format.dateTime(
-                          new Date(voucher.coupon.validUntil),
-                          "short",
-                        ),
-                      })}`}
-                  </Typography>
-                </Stack>
-                <Stack alignItems="center" direction="row" gap={2}>
+  return (
+    <>
+      {sections.map(
+        ({ items, type }) =>
+          (type === "mine" || items.length > 0) && (
+            <FormCard key={type}>
+              <StyledCardHeader
+                title={
                   <Typography color="primary" fontWeight="bold" variant="h6">
-                    {voucher.coupon.discountType === "percentage"
-                      ? `-${Number(voucher.coupon.discountValue)}%`
-                      : `-${voucher.coupon.discountCurrency} ${Number(voucher.coupon.discountValue).toLocaleString(locale)}`}
+                    {tAuth(`settings.coupons.${type}`)}
                   </Typography>
-                  {status === "available" && voucher.organizationSlug && (
-                    <Button
-                      component={Link}
-                      href={`/order/${ORDER_MODE.Pickup}/${voucher.organizationSlug}`}
-                      size="small"
-                      variant="outlined"
-                    >
-                      {tAuth("settings.coupons.use")}
-                    </Button>
-                  )}
-                </Stack>
-              </Stack>
-            </Card>
-          );
-        })}
-      </Stack>
-    </Stack>
+                }
+              />
+              <StyledCardContent>
+                {items.length === 0 && (
+                  <Typography color="text.secondary" variant="body2">
+                    {tAuth("settings.coupons.empty")}
+                  </Typography>
+                )}
+                {items.map((item) => {
+                  const coupon = "coupon" in item ? item.coupon : item;
+                  const status =
+                    "coupon" in item ? getStatus(item) : "available";
+
+                  return (
+                    <Card key={item.id} variant="outlined">
+                      <StyledCardHeader
+                        action={
+                          "coupon" in item ? (
+                            <Chip
+                              color={STATUS_CHIP_COLORS[status]}
+                              label={tAuth(`settings.coupons.status.${status}`)}
+                              size="small"
+                              variant="outlined"
+                            />
+                          ) : null
+                        }
+                        avatar={
+                          <Avatar
+                            sx={{
+                              bgcolor:
+                                status === "available"
+                                  ? "primary.main"
+                                  : "action.disabled",
+                            }}
+                          >
+                            <LocalOffer fontSize="small" />
+                          </Avatar>
+                        }
+                        slotProps={{
+                          subheader: { variant: "caption" },
+                          title: { variant: "subtitle2" },
+                        }}
+                        subheader={[
+                          item.organizationName,
+                          "source" in item &&
+                            tAuth(`settings.coupons.source.${item.source}`),
+                          coupon.validUntil &&
+                            tAuth("settings.coupons.validUntil", {
+                              date: format.dateTime(
+                                new Date(coupon.validUntil),
+                                "short",
+                              ),
+                            }),
+                        ]
+                          .filter(Boolean)
+                          .join(tCommon("middleDot"))}
+                        title={coupon.code}
+                      />
+                      <StyledCardContent>
+                        <Typography
+                          color={
+                            status === "available" ? "primary" : "text.disabled"
+                          }
+                          fontWeight="bold"
+                          variant="h5"
+                        >
+                          {coupon.discountType === "percentage"
+                            ? `-${Number(coupon.discountValue)}%`
+                            : `-${coupon.discountCurrency} ${Number(coupon.discountValue).toLocaleString(locale)}`}
+                        </Typography>
+                      </StyledCardContent>
+                      {status === "available" && (
+                        <StyledCardActions
+                          disableSpacing
+                          sx={{ alignItems: "flex-end" }}
+                        >
+                          {"coupon" in item ? (
+                            item.organizationSlug && (
+                              <Button
+                                component={Link}
+                                href={`/order/${ORDER_MODE.Pickup}/${item.organizationSlug}`}
+                                size="small"
+                                variant="outlined"
+                              >
+                                {tAuth("settings.coupons.use")}
+                              </Button>
+                            )
+                          ) : (
+                            <Button
+                              loading={claimingId === item.id}
+                              onClick={() => handleClaim(item)}
+                              size="small"
+                              variant="contained"
+                            >
+                              {tAuth("settings.coupons.claim")}
+                            </Button>
+                          )}
+                        </StyledCardActions>
+                      )}
+                    </Card>
+                  );
+                })}
+              </StyledCardContent>
+            </FormCard>
+          ),
+      )}
+    </>
   );
 };
 
