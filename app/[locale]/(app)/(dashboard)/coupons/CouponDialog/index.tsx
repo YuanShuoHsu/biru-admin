@@ -227,62 +227,6 @@ const CouponDialog = ({
         required
         {...register("code")}
       />
-      <Grid container spacing={2} width="100%">
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <TextField
-            fullWidth
-            label={tCoupons("discountType.label")}
-            onChange={(e) =>
-              setValue(
-                "discountType",
-                e.target.value as CouponFormValues["discountType"],
-                { shouldValidate: isSubmitted },
-              )
-            }
-            required
-            select
-            value={discountType}
-          >
-            {couponResponseDtoDiscountTypeValues.map((type) => (
-              <MenuItem key={type} value={type}>
-                {tCoupons(`discountType.${type}`)}
-              </MenuItem>
-            ))}
-          </TextField>
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <NumericFormat
-            allowNegative={false}
-            customInput={TextField}
-            decimalScale={2}
-            error={!!errors.discountValue}
-            fullWidth
-            helperText={errors.discountValue?.message}
-            isAllowed={({ floatValue }) =>
-              floatValue === undefined || floatValue <= 99999999.99
-            }
-            label={tCoupons("discountValue.label")}
-            name="discountValue"
-            onValueChange={({ value }) =>
-              setValue("discountValue", value, { shouldValidate: isSubmitted })
-            }
-            placeholder={tCoupons("discountValue.placeholder")}
-            required
-            slotProps={{
-              input: {
-                endAdornment: (
-                  <InputAdornment position="end">
-                    {discountType === "percentage" ? "%" : currency}
-                  </InputAdornment>
-                ),
-              },
-            }}
-            thousandSeparator=","
-            value={discountValue}
-            valueIsNumericString
-          />
-        </Grid>
-      </Grid>
       <TextField
         fullWidth
         label={tCoupons("scope.label")}
@@ -355,6 +299,62 @@ const CouponDialog = ({
           />
         </>
       )}
+      <Grid container spacing={2} width="100%">
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <TextField
+            fullWidth
+            label={tCoupons("discountType.label")}
+            onChange={(e) =>
+              setValue(
+                "discountType",
+                e.target.value as CouponFormValues["discountType"],
+                { shouldValidate: isSubmitted },
+              )
+            }
+            required
+            select
+            value={discountType}
+          >
+            {couponResponseDtoDiscountTypeValues.map((type) => (
+              <MenuItem key={type} value={type}>
+                {tCoupons(`discountType.${type}`)}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <NumericFormat
+            allowNegative={false}
+            customInput={TextField}
+            decimalScale={2}
+            error={!!errors.discountValue}
+            fullWidth
+            helperText={errors.discountValue?.message}
+            isAllowed={({ floatValue }) =>
+              floatValue === undefined || floatValue <= 99999999.99
+            }
+            label={tCoupons("discountValue.label")}
+            name="discountValue"
+            onValueChange={({ value }) =>
+              setValue("discountValue", value, { shouldValidate: isSubmitted })
+            }
+            placeholder={tCoupons("discountValue.placeholder")}
+            required
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    {discountType === "percentage" ? "%" : currency}
+                  </InputAdornment>
+                ),
+              },
+            }}
+            thousandSeparator=","
+            value={discountValue}
+            valueIsNumericString
+          />
+        </Grid>
+      </Grid>
       <NumericFormat
         allowNegative={false}
         customInput={TextField}
