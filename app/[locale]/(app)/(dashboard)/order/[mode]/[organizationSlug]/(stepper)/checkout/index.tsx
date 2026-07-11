@@ -413,7 +413,7 @@ const OrderModeOrganizationSlugCheckout = () => {
             {...register("customer.remark")}
           />
           <CouponAutocomplete
-            label={tOrder("checkout.coupon.label")}
+            label={`${tOrder("checkout.coupon.label")} ${tCommon("optional")}`}
             placeholder={tOrder("checkout.coupon.placeholder")}
             {...register("coupon")}
           />
