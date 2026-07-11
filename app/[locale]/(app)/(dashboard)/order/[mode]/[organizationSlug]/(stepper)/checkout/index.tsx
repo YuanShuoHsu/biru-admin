@@ -397,6 +397,21 @@ const OrderModeOrganizationSlugCheckout = () => {
         <CartAccordion defaultExpanded={false} variant="elevation" />
         <Divider />
         <StyledCardContent>
+          <TextField
+            error={!!errors.customer?.remark}
+            fullWidth
+            helperText={errors.customer?.remark?.message}
+            label={`${tOrder("checkout.customer.remark.label")} ${tCommon("optional")}`}
+            maxRows={4}
+            multiline
+            placeholder={tOrder("checkout.customer.remark.placeholder")}
+            slotProps={{
+              htmlInput: {
+                maxLength: 160,
+              },
+            }}
+            {...register("customer.remark")}
+          />
           <CouponAutocomplete
             label={tOrder("checkout.coupon.label")}
             placeholder={tOrder("checkout.coupon.placeholder")}
@@ -466,21 +481,6 @@ const OrderModeOrganizationSlugCheckout = () => {
             placeholder={tOrder("checkout.customer.email.placeholder")}
             type="email"
             {...register("customer.email")}
-          />
-          <TextField
-            error={!!errors.customer?.remark}
-            fullWidth
-            helperText={errors.customer?.remark?.message}
-            label={`${tOrder("checkout.customer.remark.label")} ${tCommon("optional")}`}
-            maxRows={4}
-            multiline
-            placeholder={tOrder("checkout.customer.remark.placeholder")}
-            slotProps={{
-              htmlInput: {
-                maxLength: 160,
-              },
-            }}
-            {...register("customer.remark")}
           />
           <Divider flexItem />
           <ListRadioGroup
