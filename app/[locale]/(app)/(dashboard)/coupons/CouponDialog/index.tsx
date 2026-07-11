@@ -96,7 +96,7 @@ const CouponDialog = ({
       scope: coupon?.scope || "order",
       totalLimit: coupon?.totalLimit != null ? String(coupon.totalLimit) : "",
       validFrom: toDateTimeLocal(coupon?.validFrom),
-      validUntil: toDateTimeLocal(coupon?.validUntil),
+      validThrough: toDateTimeLocal(coupon?.validThrough),
     },
     resolver: zodResolver(couponFormSchema),
   });
@@ -116,7 +116,7 @@ const CouponDialog = ({
     scope,
     totalLimit,
     validFrom,
-    validUntil,
+    validThrough,
   ] = useWatch({
     control,
     name: [
@@ -134,7 +134,7 @@ const CouponDialog = ({
       "scope",
       "totalLimit",
       "validFrom",
-      "validUntil",
+      "validThrough",
     ],
   });
 
@@ -172,8 +172,8 @@ const CouponDialog = ({
         ...(values.validFrom && {
           validFrom: new Date(values.validFrom).toISOString(),
         }),
-        ...(values.validUntil && {
-          validUntil: new Date(values.validUntil).toISOString(),
+        ...(values.validThrough && {
+          validThrough: new Date(values.validThrough).toISOString(),
         }),
       };
 
@@ -422,7 +422,7 @@ const CouponDialog = ({
         <Grid size={{ xs: 12, sm: 6 }}>
           <DateTimePicker
             label={`${tCoupons("validFrom.label")} ${tCommon("optional")}`}
-            maxDateTime={validUntil ? dayjs(validUntil) : undefined}
+            maxDateTime={validThrough ? dayjs(validThrough) : undefined}
             slotProps={{
               field: { clearable: true },
               textField: {
@@ -451,16 +451,16 @@ const CouponDialog = ({
             slotProps={{
               field: { clearable: true },
               textField: {
-                error: !!errors.validUntil,
+                error: !!errors.validThrough,
                 fullWidth: true,
-                helperText: errors.validUntil?.message,
+                helperText: errors.validThrough?.message,
               },
             }}
-            value={validUntil ? dayjs(validUntil) : null}
-            {...register("validUntil")}
+            value={validThrough ? dayjs(validThrough) : null}
+            {...register("validThrough")}
             onChange={(date) =>
               setValue(
-                "validUntil",
+                "validThrough",
                 date ? date.format("YYYY-MM-DDTHH:mm") : "",
                 {
                   shouldValidate: isSubmitted,

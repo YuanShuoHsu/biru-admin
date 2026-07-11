@@ -31,7 +31,7 @@ export const useCouponFormSchema = () => {
       scope: z.enum(["item", "order"]),
       totalLimit: z.string().trim(),
       validFrom: z.string(),
-      validUntil: z.string(),
+      validThrough: z.string(),
     })
     .superRefine((data, ctx) => {
       if (

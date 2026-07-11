@@ -32,8 +32,8 @@ import { fetcher } from "@/utils/fetcher";
 const getStatus = (coupon: MyCoupon): "available" | "expired" | "used" => {
   if (coupon.usedAt) return "used";
   if (
-    coupon.coupon.validUntil &&
-    new Date(coupon.coupon.validUntil) < new Date()
+    coupon.coupon.validThrough &&
+    new Date(coupon.coupon.validThrough) < new Date()
   )
     return "expired";
   return "available";
@@ -152,10 +152,10 @@ const Coupons = ({ claimableCoupons, coupons }: CouponsProps) => {
                           item.organizationName,
                           "source" in item &&
                             tAuth(`settings.coupons.source.${item.source}`),
-                          coupon.validUntil &&
+                          coupon.validThrough &&
                             tAuth("settings.coupons.validUntil", {
                               date: format.dateTime(
-                                new Date(coupon.validUntil),
+                                new Date(coupon.validThrough),
                                 "short",
                               ),
                             }),

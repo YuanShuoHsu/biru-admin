@@ -266,12 +266,12 @@ const Coupons = ({
       {
         field: "validFrom",
         headerName: tCoupons("validity"),
-        valueGetter: (_value: unknown, { validFrom, validUntil }: Coupon) =>
-          validFrom || validUntil
+        valueGetter: (_value: unknown, { validFrom, validThrough }: Coupon) =>
+          validFrom || validThrough
             ? [
                 validFrom ? format.dateTime(new Date(validFrom), "short") : "",
-                validUntil
-                  ? format.dateTime(new Date(validUntil), "short")
+                validThrough
+                  ? format.dateTime(new Date(validThrough), "short")
                   : "",
               ].join(" ~ ")
             : tCoupons("unlimited"),

@@ -1088,7 +1088,7 @@ export interface components {
       /** Format: date-time */
       validFrom?: string | null;
       /** Format: date-time */
-      validUntil?: string | null;
+      validThrough?: string | null;
     };
     CouponResponseDto: {
       id: string;
@@ -1115,7 +1115,7 @@ export interface components {
       /** Format: date-time */
       validFrom?: string | null;
       /** Format: date-time */
-      validUntil?: string | null;
+      validThrough?: string | null;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -1151,7 +1151,7 @@ export interface components {
       /** Format: date-time */
       validFrom?: string | null;
       /** Format: date-time */
-      validUntil?: string | null;
+      validThrough?: string | null;
     };
     CreateOrderItemAddOnDto: {
       menuItemId: string;
@@ -1192,7 +1192,7 @@ export interface components {
       /** Format: date-time */
       validFrom?: string | null;
       /** Format: date-time */
-      validUntil?: string | null;
+      validThrough?: string | null;
       userCouponId?: string | null;
     };
     ClaimableCouponDto: {
@@ -1208,7 +1208,7 @@ export interface components {
       /** Format: date-time */
       validFrom?: string | null;
       /** Format: date-time */
-      validUntil?: string | null;
+      validThrough?: string | null;
       /** @description 目前登入者是否已領取 */
       claimed: boolean;
     };
@@ -1225,7 +1225,7 @@ export interface components {
       /** Format: date-time */
       validFrom?: string | null;
       /** Format: date-time */
-      validUntil?: string | null;
+      validThrough?: string | null;
     };
     UserCouponResponseDto: {
       id: string;
@@ -1269,7 +1269,7 @@ export interface components {
       /** Format: date-time */
       validFrom?: string | null;
       /** Format: date-time */
-      validUntil?: string | null;
+      validThrough?: string | null;
       organizationName: string;
       organizationSlug: string;
     };
