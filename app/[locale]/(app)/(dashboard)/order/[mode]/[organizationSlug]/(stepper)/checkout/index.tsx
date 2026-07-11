@@ -31,6 +31,7 @@ import { ORDER_MODE } from "@/constants/orderMode";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import useCartHasInvalidItems from "@/hooks/useCartHasInvalidItems";
+import useCartTotals from "@/hooks/useCartTotals";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
@@ -58,6 +59,10 @@ import { useAuthStore } from "@/providers/auth-store-provider";
 import { useCartStore } from "@/providers/cart-store-provider";
 import { useMenuStore } from "@/providers/menu-store-provider";
 
+import type {
+  ValidateCouponDto,
+  ValidateCouponResponse,
+} from "@/types/coupons";
 import type { CheckoutEcpayDto, CheckoutEcpayResponse } from "@/types/ecpay";
 import type { CreateOrderDto, OrderResponse } from "@/types/orders";
 import type { PaymentMethod } from "@/types/payment";
@@ -102,6 +107,8 @@ const OrderModeOrganizationSlugCheckout = () => {
 
   const hasInvalidItems = useCartHasInvalidItems();
 
+  const { cartCurrency } = useCartTotals();
+
   const { enqueueSnackbar } = useSnackbar();
 
   const customerPaymentFormSchema = useCustomerPaymentFormSchema();
@@ -109,6 +116,7 @@ const OrderModeOrganizationSlugCheckout = () => {
   const locale = useLocale();
 
   const {
+    clearErrors,
     control,
     formState: { errors, isSubmitted },
     handleSubmit,
@@ -147,6 +155,7 @@ const OrderModeOrganizationSlugCheckout = () => {
   });
 
   const [
+    couponCode,
     countryCode,
     carrierType,
     customerIdentifier,
@@ -156,6 +165,7 @@ const OrderModeOrganizationSlugCheckout = () => {
   ] = useWatch({
     control,
     name: [
+      "coupon",
       "customer.countryCode",
       "invoice.carrierType",
       "invoice.customerIdentifier",
@@ -210,6 +220,29 @@ const OrderModeOrganizationSlugCheckout = () => {
       });
     },
   });
+
+  const { data: coupon, isLoading: isValidatingCoupon } =
+    useSWR<ValidateCouponResponse>(
+      couponCode && cartItemsList.length
+        ? [
+            `/api/organizations/${String(organizationSlug)}/coupons/validate`,
+            couponCode,
+            cartItemsList,
+          ]
+        : null,
+      ([url, code, items]: [string, string, ValidateCouponDto["items"]]) =>
+        sendRequest<ValidateCouponResponse, ValidateCouponDto>()(url, {
+          arg: { code, items },
+        }),
+      {
+        onError: (error) => {
+          setError("coupon", { message: getErrorMessage(error) });
+        },
+        onSuccess: () => {
+          clearErrors("coupon");
+        },
+      },
+    );
 
   const paymentOptions = [
     {
@@ -269,7 +302,7 @@ const OrderModeOrganizationSlugCheckout = () => {
               ).number
             : undefined,
         },
-        discountCode: values.coupon || undefined,
+        discountCode: coupon?.code,
         items: cartItemsList,
         mode: API_ORDER_MODE[String(mode)],
         payment: values.payment,
@@ -413,10 +446,49 @@ const OrderModeOrganizationSlugCheckout = () => {
             {...register("customer.remark")}
           />
           <CouponAutocomplete
+            error={!!errors.coupon}
+            helperText={errors.coupon?.message}
             label={`${tOrder("checkout.coupon.label")} ${tCommon("optional")}`}
+            loading={isValidatingCoupon}
             placeholder={tOrder("checkout.coupon.placeholder")}
-            {...register("coupon")}
+            value={couponCode}
+            {...register("coupon", { onChange: () => clearErrors("coupon") })}
           />
+          {coupon && (
+            <>
+              <Stack direction="row" justifyContent="space-between" gap={1}>
+                <Typography variant="body2">
+                  {tCommon("totalAmount")}
+                </Typography>
+                <Typography variant="body2">
+                  {cartCurrency}{" "}
+                  {Number(coupon.subtotal).toLocaleString(locale)}
+                </Typography>
+              </Stack>
+              <Stack direction="row" justifyContent="space-between" gap={1}>
+                <Typography variant="body2">
+                  {tOrder("checkout.coupon.discount")}
+                </Typography>
+                <Typography color="primary" variant="body2">
+                  -{cartCurrency}{" "}
+                  {Number(coupon.discount).toLocaleString(locale)}
+                </Typography>
+              </Stack>
+              <Divider />
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Typography fontWeight="bold" variant="subtitle1">
+                  {tOrder("checkout.coupon.total")}
+                </Typography>
+                <Typography color="primary" fontWeight="bold" variant="h6">
+                  {cartCurrency} {Number(coupon.total).toLocaleString(locale)}
+                </Typography>
+              </Stack>
+            </>
+          )}
         </StyledCardContent>
       </Card>
       <Card variant="outlined">
@@ -660,7 +732,7 @@ const OrderModeOrganizationSlugCheckout = () => {
           {tOrder("checkout.back")}
         </Button>
         <Button
-          disabled={isCartEmpty || hasInvalidItems}
+          disabled={isCartEmpty || hasInvalidItems || isValidatingCoupon}
           endIcon={<TaskAlt />}
           loading={isMutatingEcpay || isMutatingOrder}
           loadingPosition="end"

@@ -1,5 +1,12 @@
 "use client";
 
+// https://mui.com/material-ui/react-autocomplete/#AutocompleteHint.tsx
+// https://mui.com/material-ui/react-autocomplete/#CountrySelect.tsx
+// https://mui.com/material-ui/react-autocomplete/#Filter.tsx
+// https://mui.com/material-ui/react-autocomplete/#GloballyCustomizedOptions.tsx
+// https://mui.com/material-ui/react-autocomplete/#Highlights.tsx
+// https://mui.com/material-ui/react-autocomplete/#RenderGroup.tsx
+
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
 import React, { useRef, useState } from "react";
@@ -16,8 +23,6 @@ import {
   TypographyProps,
 } from "@mui/material";
 import { darken, lighten, styled } from "@mui/material/styles";
-
-import { fetcher } from "@/utils/fetcher";
 
 const GroupHeader = styled("div")(({ theme }) => ({
   position: "sticky",
@@ -90,7 +95,7 @@ type DonateCodeType = {
   donateShortNm?: string;
 };
 
-const getDonateCodeLabel = ({
+const getOptionLabel = ({
   donateNm,
   donateCode,
   donateShortNm,
@@ -98,7 +103,7 @@ const getDonateCodeLabel = ({
   `${donateNm}${donateShortNm ? ` (${donateShortNm})` : ""} ${donateCode}`;
 
 const filter = createFilterOptions<DonateCodeType>({
-  stringify: getDonateCodeLabel,
+  stringify: getOptionLabel,
 });
 
 interface DonateCodeAutocompleteProps
@@ -114,14 +119,14 @@ const DonateCodeAutocomplete = ({
   value: donateCode,
   ...textFieldProps
 }: DonateCodeAutocompleteProps) => {
-  const { data = [] } = useSWR<DonateCodeType[]>("/api/donate-codes", fetcher);
+  const { data = [] } = useSWR<DonateCodeType[]>("/api/donate-codes");
   const options = [...data].sort((a, b) =>
     a.donateNm.localeCompare(b.donateNm),
   );
   const value =
     options.find((option) => option.donateCode === donateCode) || null;
 
-  const currentInputValue = value ? getDonateCodeLabel(value) : "";
+  const currentInputValue = value ? getOptionLabel(value) : "";
   const [inputValue, setInputValue] = useState(currentInputValue);
 
   const hint = useRef("");
@@ -136,16 +141,16 @@ const DonateCodeAutocomplete = ({
         return filter(options, params);
       }}
       fullWidth
-      getOptionLabel={getDonateCodeLabel}
+      getOptionLabel={getOptionLabel}
       groupBy={(option) => option.donateNm[0].toUpperCase()}
-      id="love-code-select"
+      id="donate-code-autocomplete"
       inputValue={inputValue}
       isOptionEqualToValue={(option, selected) =>
-        selected ? option.donateCode === selected.donateCode : false
+        option.donateCode === selected.donateCode
       }
       onBlur={onBlur}
       onChange={(_, newValue) => {
-        setInputValue(newValue ? getDonateCodeLabel(newValue) : "");
+        setInputValue(newValue ? getOptionLabel(newValue) : "");
 
         const value = newValue?.donateCode || "";
         onChange?.({ target: { name: name || "", value } });
@@ -185,12 +190,12 @@ const DonateCodeAutocomplete = ({
             {...textFieldProps}
             onChange={({ target: { value: newValue } }) => {
               const matchingOption = options.find((option) =>
-                getDonateCodeLabel(option).startsWith(newValue),
+                getOptionLabel(option).startsWith(newValue),
               );
 
               hint.current =
                 newValue && matchingOption
-                  ? getDonateCodeLabel(matchingOption)
+                  ? getOptionLabel(matchingOption)
                   : "";
             }}
             slotProps={{

@@ -19,13 +19,13 @@ import { currencies } from "@/constants/currencies";
 import {
   Autocomplete,
   Box,
+  type BoxProps,
   createFilterOptions,
   InputAdornment,
   TextField,
   type TextFieldProps,
   Typography,
   TypographyProps,
-  type BoxProps,
 } from "@mui/material";
 import { darken, lighten, styled } from "@mui/material/styles";
 
@@ -160,14 +160,12 @@ const CountryAutocomplete = ({
       groupBy={({ label }) =>
         /[0-9]/.test(label[0]) ? "0-9" : label[0].toUpperCase()
       }
-      id={isCurrency ? "currency-select" : "country-select"}
+      id={isCurrency ? "currency-autocomplete" : "country-autocomplete"}
       inputValue={inputValue}
       isOptionEqualToValue={(option, selected) =>
-        selected
-          ? "currency" in option && "currency" in selected
-            ? option.currency === selected.currency
-            : option.code === selected.code
-          : false
+        "currency" in option && "currency" in selected
+          ? option.currency === selected.currency
+          : option.code === selected.code
       }
       onBlur={onBlur}
       onChange={(_, newValue) => {
