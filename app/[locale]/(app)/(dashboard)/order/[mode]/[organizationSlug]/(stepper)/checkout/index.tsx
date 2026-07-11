@@ -393,7 +393,17 @@ const OrderModeOrganizationSlugCheckout = () => {
 
   return (
     <FormBox onSubmit={onSubmit}>
-      <CartAccordion defaultExpanded={false} />
+      <Card variant="outlined">
+        <CartAccordion defaultExpanded={false} variant="elevation" />
+        <Divider />
+        <StyledCardContent>
+          <CouponAutocomplete
+            label={tOrder("checkout.coupon.label")}
+            placeholder={tOrder("checkout.coupon.placeholder")}
+            {...register("coupon")}
+          />
+        </StyledCardContent>
+      </Card>
       <Card variant="outlined">
         <StyledCardContent>
           <Typography
@@ -471,11 +481,6 @@ const OrderModeOrganizationSlugCheckout = () => {
               },
             }}
             {...register("customer.remark")}
-          />
-          <CouponAutocomplete
-            label={tOrder("checkout.coupon.label")}
-            placeholder={tOrder("checkout.coupon.placeholder")}
-            {...register("coupon")}
           />
           <Divider flexItem />
           <ListRadioGroup

@@ -14,6 +14,7 @@ import {
 import { styled } from "@mui/material/styles";
 
 const StyledAccordion = styled(Accordion)(({ theme }) => ({
+  borderRadius: theme.vars.shape.borderRadius,
   transition: theme.transitions.create("background-color"),
 
   "&::before": {

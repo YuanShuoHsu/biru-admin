@@ -34,7 +34,7 @@ const OrderModeOrganizationSlugCart = () => {
 
   return (
     <>
-      <CartAccordion />
+      <CartAccordion defaultExpanded />
       <Stack direction="row" justifyContent="space-between">
         <Button
           color="success"

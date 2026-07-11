@@ -6,15 +6,13 @@ import { useParams } from "next/navigation";
 import CartItemList from "@/components/CartItemList";
 import CustomizedAccordions from "@/components/CustomizedAccordions";
 
-import { Box, Typography } from "@mui/material";
+import { type AccordionProps, Box, Typography } from "@mui/material";
 
 import useCartTotals from "@/hooks/useCartTotals";
 
-interface CartAccordionProps {
-  defaultExpanded?: boolean;
-}
+type CartAccordionProps = Omit<AccordionProps, "children">;
 
-const CartAccordion = ({ defaultExpanded = true }: CartAccordionProps) => {
+const CartAccordion = (props: CartAccordionProps) => {
   const { cartCurrency, cartTotalAmount } = useCartTotals();
 
   const { locale } = useParams();
@@ -23,7 +21,7 @@ const CartAccordion = ({ defaultExpanded = true }: CartAccordionProps) => {
 
   return (
     <CustomizedAccordions
-      defaultExpanded={defaultExpanded}
+      elevation={0}
       summary={
         <>
           <Typography component="span" flex={1} variant="subtitle1">
@@ -42,6 +40,7 @@ const CartAccordion = ({ defaultExpanded = true }: CartAccordionProps) => {
           <Box flex={1} />
         </>
       }
+      {...props}
     >
       <CartItemList compact />
     </CustomizedAccordions>
