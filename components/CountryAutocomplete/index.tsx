@@ -25,7 +25,7 @@ import {
   TextField,
   type TextFieldProps,
   Typography,
-  TypographyProps,
+  type TypographyProps,
 } from "@mui/material";
 import { darken, lighten, styled } from "@mui/material/styles";
 

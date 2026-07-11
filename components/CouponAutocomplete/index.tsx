@@ -16,6 +16,8 @@ import useSWR from "swr";
 
 import useCartTotals from "@/hooks/useCartTotals";
 
+import { useCartStore } from "@/providers/cart-store-provider";
+
 import { CheckCircle, LocalOffer } from "@mui/icons-material";
 import {
   Autocomplete,
@@ -28,11 +30,9 @@ import {
   TextField,
   type TextFieldProps,
   Typography,
-  TypographyProps,
+  type TypographyProps,
 } from "@mui/material";
 import { darken, lighten, styled } from "@mui/material/styles";
-
-import { useCartStore } from "@/providers/cart-store-provider";
 
 import type { AvailableCoupon } from "@/types/coupons";
 
@@ -85,10 +85,10 @@ const HighlightTypography = styled(Typography, {
   }),
 );
 
-const getOptionKey = (option: AvailableCoupon | string) =>
+const getOptionKey = (option: AvailableCoupon | string): string =>
   typeof option === "string" ? option : option.userCouponId || option.id;
 
-const getOptionLabel = (option: AvailableCoupon | string) =>
+const getOptionLabel = (option: AvailableCoupon | string): string =>
   typeof option === "string" ? option : option.code;
 
 const filter = createFilterOptions<AvailableCoupon>({
@@ -107,10 +107,10 @@ const CouponAutocomplete = ({
   name,
   onBlur,
   onChange,
-  value: couponCode,
+  value: valueCode,
   ...textFieldProps
 }: CouponAutocompleteProps) => {
-  const value = String(couponCode || "");
+  const couponCode = String(valueCode || "");
 
   const [code, setCode] = useState("");
 
@@ -130,8 +130,8 @@ const CouponAutocomplete = ({
     `/api/organizations/${String(organizationSlug)}/coupons/available`,
   );
 
-  const selectedOption =
-    availableCoupons.find((available) => available.code === value) || null;
+  const value =
+    availableCoupons.find((available) => available.code === couponCode) || null;
 
   return (
     <StyledAutocomplete
@@ -140,7 +140,7 @@ const CouponAutocomplete = ({
       disablePortal
       disabled={!cartItemsList.length}
       filterOptions={(options, params) => {
-        if (params.inputValue === value) return options;
+        if (params.inputValue === couponCode) return options;
 
         return filter(options, params);
       }}
@@ -154,7 +154,7 @@ const CouponAutocomplete = ({
           : tOrder("checkout.coupon.available")
       }
       id="coupon-autocomplete"
-      inputValue={value || code}
+      inputValue={couponCode || code}
       isOptionEqualToValue={(option, selected) => option.code === selected.code}
       onBlur={onBlur}
       onChange={(_, newValue) => {
@@ -173,7 +173,7 @@ const CouponAutocomplete = ({
       onInputChange={(_, newInputValue, reason) => {
         setCode(newInputValue);
 
-        if (value && (reason === "clear" || reason === "input")) {
+        if (couponCode && (reason === "clear" || reason === "input")) {
           onChange?.({ target: { name: name || "", value: "" } });
         }
       }}
@@ -221,7 +221,9 @@ const CouponAutocomplete = ({
                     ) : (
                       !!cartItemsList.length &&
                       !textFieldProps.error &&
-                      value && <CheckCircle color="success" fontSize="small" />
+                      couponCode && (
+                        <CheckCircle color="success" fontSize="small" />
+                      )
                     )}
                     {params.InputProps.endAdornment}
                   </>
@@ -233,15 +235,18 @@ const CouponAutocomplete = ({
       )}
       renderOption={(
         { key, ...optionProps },
-        { code, discountType, discountValue, minSubtotal },
+        option,
         { inputValue },
+        ownerState,
       ) => {
-        const searchValue = inputValue === value ? "" : inputValue;
-        const matches = match(code, searchValue, {
+        const { discountType, discountValue, minSubtotal } = option;
+        const optionLabelText = ownerState.getOptionLabel(option);
+        const searchValue = inputValue === couponCode ? "" : inputValue;
+        const matches = match(optionLabelText, searchValue, {
           findAllOccurrences: true,
           insideWords: true,
         });
-        const parts = parse(code, matches);
+        const parts = parse(optionLabelText, matches);
 
         return (
           <ListItem key={key} {...optionProps}>
@@ -278,7 +283,7 @@ const CouponAutocomplete = ({
           </ListItem>
         );
       }}
-      value={selectedOption}
+      value={value}
     />
   );
 };

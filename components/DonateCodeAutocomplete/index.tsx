@@ -20,9 +20,11 @@ import {
   TextField,
   type TextFieldProps,
   Typography,
-  TypographyProps,
+  type TypographyProps,
 } from "@mui/material";
 import { darken, lighten, styled } from "@mui/material/styles";
+
+import type { DonateCodeType } from "@/types/donateCodes";
 
 const GroupHeader = styled("div")(({ theme }) => ({
   position: "sticky",
@@ -88,12 +90,6 @@ const HighlightTypography = styled(Typography, {
       : theme.typography.fontWeightRegular,
   }),
 );
-
-type DonateCodeType = {
-  donateNm: string;
-  donateCode: string;
-  donateShortNm?: string;
-};
 
 const getOptionLabel = ({
   donateNm,
