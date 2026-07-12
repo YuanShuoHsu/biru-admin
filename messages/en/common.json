@@ -1,11 +1,4 @@
 {
-  "locales": {
-    "zh-TW": "Traditional Chinese",
-    "en": "English",
-    "ja": "Japanese",
-    "ko": "Korean",
-    "zh-CN": "Simplified Chinese"
-  },
   "colon": ": ",
   "currency": "NT$",
   "delimiter": ", ",
@@ -13,6 +6,13 @@
   "empty": "No items yet",
   "from": "from",
   "loading": "Loading...",
+  "locales": {
+    "zh-TW": "Traditional Chinese",
+    "en": "English",
+    "ja": "Japanese",
+    "ko": "Korean",
+    "zh-CN": "Simplified Chinese"
+  },
   "location": {
     "empty": "No location information available",
     "openingHours": {
@@ -38,6 +38,7 @@
   "parenthesisOpen": "(",
   "reachStockLimit": "Stock limit reached {label}",
   "soldOut": "Sold out",
-  "totalAmount": "Total",
+  "subtotal": "Subtotal",
+  "total": "Total",
   "unavailable": "Unavailable"
 }

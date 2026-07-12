@@ -1,11 +1,4 @@
 {
-  "locales": {
-    "zh-TW": "繁体中国語",
-    "en": "英語",
-    "ja": "日本語",
-    "ko": "韓国語",
-    "zh-CN": "簡体中国語"
-  },
   "colon": "：",
   "currency": "NT$",
   "delimiter": "、",
@@ -13,6 +6,13 @@
   "empty": "商品がありません",
   "from": "〜",
   "loading": "読み込み中...",
+  "locales": {
+    "zh-TW": "繁体中国語",
+    "en": "英語",
+    "ja": "日本語",
+    "ko": "韓国語",
+    "zh-CN": "簡体中国語"
+  },
   "location": {
     "empty": "位置情報が設定されていません",
     "openingHours": {
@@ -38,6 +38,7 @@
   "parenthesisOpen": "(",
   "reachStockLimit": "在庫の上限に達しました {label}",
   "soldOut": "売り切れ",
-  "totalAmount": "合計",
+  "subtotal": "小計",
+  "total": "合計",
   "unavailable": "取扱なし"
 }

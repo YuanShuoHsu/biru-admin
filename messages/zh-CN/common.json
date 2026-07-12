@@ -1,11 +1,4 @@
 {
-  "locales": {
-    "zh-TW": "繁体中文",
-    "en": "英文",
-    "ja": "日文",
-    "ko": "韩文",
-    "zh-CN": "简体中文"
-  },
   "colon": "：",
   "currency": "NT$",
   "delimiter": "、",
@@ -13,6 +6,13 @@
   "empty": "尚无商品",
   "from": "起",
   "loading": "加载中...",
+  "locales": {
+    "zh-TW": "繁体中文",
+    "en": "英文",
+    "ja": "日文",
+    "ko": "韩文",
+    "zh-CN": "简体中文"
+  },
   "location": {
     "empty": "尚未设置位置信息",
     "openingHours": {
@@ -38,6 +38,7 @@
   "parenthesisOpen": "（",
   "reachStockLimit": "{label} 已达库存上限",
   "soldOut": "售罄",
-  "totalAmount": "总计",
+  "subtotal": "小计",
+  "total": "总计",
   "unavailable": "无法供应"
 }

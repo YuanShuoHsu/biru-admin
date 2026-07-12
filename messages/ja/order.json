@@ -15,7 +15,7 @@
       "label": "クーポンコード",
       "minSubtotal": "{amount} 以上で利用可能",
       "placeholder": "あなたのクーポンコードを入力してください",
-      "total": "お支払い金額",
+      "total": "合計",
       "wallet": "マイクーポン"
     },
     "customer": {

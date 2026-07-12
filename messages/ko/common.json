@@ -1,11 +1,4 @@
 {
-  "locales": {
-    "zh-TW": "번체 중국어",
-    "en": "영어",
-    "ja": "일본어",
-    "ko": "한국어",
-    "zh-CN": "간체 중국어"
-  },
   "colon": ": ",
   "currency": "NT$",
   "delimiter": ", ",
@@ -13,6 +6,13 @@
   "empty": "상품이 없습니다",
   "from": "부터",
   "loading": "로딩 중...",
+  "locales": {
+    "zh-TW": "번체 중국어",
+    "en": "영어",
+    "ja": "일본어",
+    "ko": "한국어",
+    "zh-CN": "간체 중국어"
+  },
   "location": {
     "empty": "위치 정보가 설정되지 않았습니다",
     "openingHours": {
@@ -38,6 +38,7 @@
   "parenthesisOpen": "(",
   "reachStockLimit": "재고 한도에 도달했습니다 {label}",
   "soldOut": "품절",
-  "totalAmount": "합계",
+  "subtotal": "소계",
+  "total": "합계",
   "unavailable": "사용 불가"
 }

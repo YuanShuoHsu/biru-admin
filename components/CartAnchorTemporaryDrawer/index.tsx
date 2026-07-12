@@ -104,7 +104,7 @@ const CartAnchorTemporaryDrawer = () => {
           alignItems="center"
         >
           <Typography component="span" variant="subtitle1">
-            {tCommon("totalAmount")}
+            {tCommon("subtotal")}
           </Typography>
           <Typography
             color="primary"

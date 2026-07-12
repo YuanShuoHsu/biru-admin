@@ -15,7 +15,7 @@
       "label": "Promo code",
       "minSubtotal": "Min. spend {amount}",
       "placeholder": "Please enter your promo code",
-      "total": "Amount due",
+      "total": "Total",
       "wallet": "My coupon"
     },
     "customer": {

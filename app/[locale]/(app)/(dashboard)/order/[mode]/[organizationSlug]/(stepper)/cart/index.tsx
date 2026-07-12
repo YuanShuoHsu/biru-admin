@@ -34,7 +34,7 @@ const OrderModeOrganizationSlugCart = () => {
 
   return (
     <>
-      <CartAccordion defaultExpanded />
+      <CartAccordion coupon={null} defaultExpanded />
       <Stack direction="row" justifyContent="space-between">
         <Button
           color="success"

@@ -427,7 +427,11 @@ const OrderModeOrganizationSlugCheckout = () => {
   return (
     <FormBox onSubmit={onSubmit}>
       <Card variant="outlined">
-        <CartAccordion defaultExpanded={false} variant="elevation" />
+        <CartAccordion
+          coupon={coupon || null}
+          defaultExpanded={false}
+          variant="elevation"
+        />
         <Divider />
         <StyledCardContent>
           <TextField
@@ -458,7 +462,7 @@ const OrderModeOrganizationSlugCheckout = () => {
             <>
               <Stack direction="row" justifyContent="space-between" gap={1}>
                 <Typography variant="body2">
-                  {tCommon("totalAmount")}
+                  {tCommon("subtotal")}
                 </Typography>
                 <Typography variant="body2">
                   {cartCurrency}{" "}
