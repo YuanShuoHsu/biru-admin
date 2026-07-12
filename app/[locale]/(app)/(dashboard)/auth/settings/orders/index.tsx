@@ -140,11 +140,12 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
               key={order.id}
               onChange={handleChange(order.id)}
               summary={
-                <Stack flex={1} gap={0.5}>
+                <Stack flex={1} gap={1}>
                   <Stack
-                    alignItems="center"
                     direction="row"
                     justifyContent="space-between"
+                    alignItems="center"
+                    gap={1}
                   >
                     <Typography fontWeight="bold" variant="subtitle2">
                       {order.seller.name}
@@ -159,9 +160,10 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
                     />
                   </Stack>
                   <Stack
-                    alignItems="center"
                     direction="row"
                     justifyContent="space-between"
+                    alignItems="center"
+                    gap={1}
                   >
                     <Typography color="text.secondary" variant="caption">
                       {dayjs(order.createdAt)
@@ -180,7 +182,7 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
                 </Stack>
               }
             >
-              <Stack gap={1} padding={2}>
+              <Stack padding={2} gap={1}>
                 <Typography color="text.secondary" variant="caption">
                   {tOrder("complete.transaction.orderNo")}{" "}
                   {order.confirmationNumber || order.orderNumber}
@@ -188,15 +190,15 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
                 {order.items.map((item) => (
                   <Stack
                     direction="row"
-                    gap={1}
                     justifyContent="space-between"
+                    gap={1}
                     key={item.id}
                   >
                     <Typography variant="body2">
                       {getOrderItemName(item)} {tCommon("multiply")}{" "}
                       {item.orderQuantity}
                     </Typography>
-                    <Typography flexShrink={0} variant="body2">
+                    <Typography variant="body2">
                       {currency}{" "}
                       {(
                         Number(item.unitPrice) * item.orderQuantity
@@ -205,14 +207,14 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
                   </Stack>
                 ))}
                 {discount > 0 && (
-                  <Stack direction="row" gap={1} justifyContent="space-between">
+                  <Stack direction="row" justifyContent="space-between" gap={1}>
                     <Typography variant="body2">
                       {tOrder("complete.summary.discount")}
                       {order.discountCode
                         ? `${tCommon("parenthesisOpen")}${order.discountCode}${tCommon("parenthesisClose")}`
                         : ""}
                     </Typography>
-                    <Typography color="primary" flexShrink={0} variant="body2">
+                    <Typography color="primary" variant="body2">
                       -{currency} {discount.toLocaleString(locale)}
                     </Typography>
                   </Stack>
