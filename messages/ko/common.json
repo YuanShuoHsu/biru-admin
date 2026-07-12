@@ -30,6 +30,10 @@
   "middleDot": " · ",
   "multiply": "×",
   "optional": "(선택)",
+  "pagination": {
+    "labelDisplayedRows": "{from}–{to} of {count}",
+    "labelRowsPerPage": "페이지 당 행:"
+  },
   "parenthesisClose": ")",
   "parenthesisOpen": "(",
   "reachStockLimit": "재고 한도에 도달했습니다 {label}",

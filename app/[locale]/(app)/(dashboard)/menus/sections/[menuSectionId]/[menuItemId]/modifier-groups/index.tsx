@@ -16,6 +16,7 @@ import {
   autosizeOptions,
   DATA_GRID_PROPS,
   DATE_FILTER_OPERATORS,
+  getPageSizeOptions,
   NO_VALUE_FILTER_OPERATORS,
   STRING_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
@@ -646,6 +647,7 @@ const MenuItemModifierGroups = ({
           onFilterModelChange={handleFilterModelChange}
           onPaginationModelChange={handlePaginationModelChange}
           onSortModelChange={handleSortModelChange}
+          pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
           paginationMode="server"
           paginationModel={paginationModel}
           rowCount={rowCount}

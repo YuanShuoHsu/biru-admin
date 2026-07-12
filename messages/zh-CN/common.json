@@ -30,6 +30,10 @@
   "middleDot": "・",
   "multiply": "×",
   "optional": "（选填）",
+  "pagination": {
+    "labelDisplayedRows": "{from}–{to} 共 {count}",
+    "labelRowsPerPage": "每页行数:"
+  },
   "parenthesisClose": "）",
   "parenthesisOpen": "（",
   "reachStockLimit": "{label} 已达库存上限",

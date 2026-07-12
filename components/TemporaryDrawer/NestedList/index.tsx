@@ -311,14 +311,14 @@ const useNavItems = (): MenuItem[] => {
             to: `/orders?organization=${defaultOrganizationSlug}&page=1&pageSize=10`,
           },
           {
-            icon: ConfirmationNumber,
-            label: tCoupons("label"),
-            to: `/coupons?organization=${defaultOrganizationSlug}`,
-          },
-          {
             icon: MenuBook,
             label: tMenus("label"),
             to: `/menus/sections?organization=${defaultOrganizationSlug}&page=1&pageSize=10`,
+          },
+          {
+            icon: ConfirmationNumber,
+            label: tCoupons("label"),
+            to: `/coupons?organization=${defaultOrganizationSlug}`,
           },
         ]
       : []),

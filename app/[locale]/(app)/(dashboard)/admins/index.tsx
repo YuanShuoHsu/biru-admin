@@ -35,6 +35,7 @@ import DateFilterInputValue from "@/components/DateFilterInputValue";
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
+  getPageSizeOptions,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
 import {
@@ -923,6 +924,7 @@ const Admins = ({
         onFilterModelChange={handleFilterModelChange}
         onPaginationModelChange={handlePaginationModelChange}
         onSortModelChange={handleSortModelChange}
+        pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
         paginationMode="server"
         paginationModel={paginationModel}
         rowCount={rowCount}

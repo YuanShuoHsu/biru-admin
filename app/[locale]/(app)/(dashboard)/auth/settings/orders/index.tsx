@@ -6,33 +6,25 @@ import utc from "dayjs/plugin/utc";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
-import { PAGE_SIZE } from "./constants";
+import { PAGE_SIZE_OPTIONS } from "./constants";
 
 import CustomizedAccordions from "@/components/CustomizedAccordions";
 import FormCard, {
   StyledCardContent,
   StyledCardHeader,
 } from "@/components/FormCard";
+import PaginationActions, {
+  StyledTablePagination,
+} from "@/components/PaginationActions";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
-import {
-  Chip,
-  type ChipProps,
-  Pagination,
-  Stack,
-  Typography,
-} from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { Chip, type ChipProps, Stack, Typography } from "@mui/material";
 
 import type { UserOrderListResponse, UserOrderResponse } from "@/types/orders";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
-
-const StyledPagination = styled(Pagination)({
-  alignSelf: "center",
-});
 
 const STATUS_CHIP_COLORS: Record<
   UserOrderResponse["orderStatus"],
@@ -49,9 +41,10 @@ const STATUS_CHIP_COLORS: Record<
 interface OrdersProps {
   orders: UserOrderListResponse | null;
   page: number;
+  pageSize: number;
 }
 
-const Orders = ({ orders: data, page }: OrdersProps) => {
+const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
   const [expanded, setExpanded] = useState<string | false>(false);
 
   const locale = useLocale();
@@ -65,16 +58,35 @@ const Orders = ({ orders: data, page }: OrdersProps) => {
   const tOrder = useTranslations("order");
 
   const orders = data?.data || [];
-  const pageCount = Math.ceil((data?.total || 0) / PAGE_SIZE);
+  const rowsPerPageOptions = [
+    ...new Set([...PAGE_SIZE_OPTIONS, pageSize]),
+  ].sort((a, b) => a - b);
+  const total = data?.total || 0;
 
   const handleChange =
     (panel: string) => (_: React.SyntheticEvent, newExpanded: boolean) =>
       setExpanded(newExpanded ? panel : false);
 
   const handlePageChange = (
-    _event: React.ChangeEvent<unknown>,
-    value: number,
-  ) => router.replace(`${pathname}?page=${value}`);
+    _event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number,
+  ) =>
+    router.replace(
+      `${pathname}?${new URLSearchParams({
+        page: String(newPage + 1),
+        pageSize: String(pageSize),
+      })}`,
+    );
+
+  const handleRowsPerPageChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) =>
+    router.replace(
+      `${pathname}?${new URLSearchParams({
+        page: "1",
+        pageSize: event.target.value,
+      })}`,
+    );
 
   const getOrderItemName = ({
     addOns,
@@ -212,11 +224,20 @@ const Orders = ({ orders: data, page }: OrdersProps) => {
             </CustomizedAccordions>
           );
         })}
-        {pageCount > 0 && (
-          <StyledPagination
-            count={pageCount}
-            onChange={handlePageChange}
-            page={page}
+        {total > 0 && (
+          <StyledTablePagination
+            ActionsComponent={PaginationActions}
+            component="div"
+            count={total}
+            labelDisplayedRows={({ count, from, to }) =>
+              tCommon("pagination.labelDisplayedRows", { count, from, to })
+            }
+            labelRowsPerPage={tCommon("pagination.labelRowsPerPage")}
+            onPageChange={handlePageChange}
+            onRowsPerPageChange={handleRowsPerPageChange}
+            page={page - 1}
+            rowsPerPage={pageSize}
+            rowsPerPageOptions={rowsPerPageOptions}
           />
         )}
       </StyledCardContent>

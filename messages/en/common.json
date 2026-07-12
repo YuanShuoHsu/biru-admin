@@ -30,6 +30,10 @@
   "middleDot": " · ",
   "multiply": "×",
   "optional": "(optional)",
+  "pagination": {
+    "labelDisplayedRows": "{from}–{to} of {count}",
+    "labelRowsPerPage": "Rows per page:"
+  },
   "parenthesisClose": ")",
   "parenthesisOpen": "(",
   "reachStockLimit": "Stock limit reached {label}",

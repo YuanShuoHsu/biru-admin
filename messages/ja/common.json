@@ -30,6 +30,10 @@
   "middleDot": "・",
   "multiply": "×",
   "optional": "（任意）",
+  "pagination": {
+    "labelDisplayedRows": "{from}–{to} of {count}",
+    "labelRowsPerPage": "ページあたりの行数:"
+  },
   "parenthesisClose": ")",
   "parenthesisOpen": "(",
   "reachStockLimit": "在庫の上限に達しました {label}",

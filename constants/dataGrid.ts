@@ -47,6 +47,11 @@ export const DATA_GRID_PROPS = {
   },
 } as const;
 
+export const getPageSizeOptions = (pageSize: number) =>
+  [...new Set([...DATA_GRID_PROPS.pageSizeOptions, pageSize])].sort(
+    (a, b) => a - b,
+  );
+
 export const NO_VALUE_FILTER_OPERATORS: readonly string[] = [
   "isEmpty",
   "isNotEmpty",
