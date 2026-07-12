@@ -461,9 +461,7 @@ const OrderModeOrganizationSlugCheckout = () => {
           {coupon && (
             <>
               <Stack direction="row" justifyContent="space-between" gap={1}>
-                <Typography variant="body2">
-                  {tCommon("subtotal")}
-                </Typography>
+                <Typography variant="body2">{tCommon("subtotal")}</Typography>
                 <Typography variant="body2">
                   {cartCurrency}{" "}
                   {Number(coupon.subtotal).toLocaleString(locale)}
