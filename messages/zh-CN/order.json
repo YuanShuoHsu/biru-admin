@@ -15,7 +15,6 @@
       "label": "优惠码",
       "minSubtotal": "满 {amount} 可用",
       "placeholder": "请输入您的优惠码",
-      "total": "总计",
       "wallet": "我的优惠券"
     },
     "customer": {

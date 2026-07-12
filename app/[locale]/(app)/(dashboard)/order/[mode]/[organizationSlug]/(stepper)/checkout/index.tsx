@@ -476,19 +476,6 @@ const OrderModeOrganizationSlugCheckout = () => {
                   {Number(coupon.discount).toLocaleString(locale)}
                 </Typography>
               </Stack>
-              <Divider />
-              <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Typography fontWeight="bold" variant="subtitle1">
-                  {tOrder("checkout.coupon.total")}
-                </Typography>
-                <Typography color="primary" fontWeight="bold" variant="h6">
-                  {cartCurrency} {Number(coupon.total).toLocaleString(locale)}
-                </Typography>
-              </Stack>
             </>
           )}
         </StyledCardContent>
