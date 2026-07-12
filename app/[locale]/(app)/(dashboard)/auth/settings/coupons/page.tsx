@@ -30,7 +30,15 @@ const AuthSettingsCouponsPage = async ({
     }).catch(() => []),
   ]);
 
-  return <Coupons claimableCoupons={claimableCoupons} coupons={coupons} />;
+  const availableCoupons = coupons.filter(
+    ({ coupon, usedAt }) =>
+      !usedAt &&
+      (!coupon.validThrough || new Date(coupon.validThrough) >= new Date()),
+  );
+
+  return (
+    <Coupons claimableCoupons={claimableCoupons} coupons={availableCoupons} />
+  );
 };
 
 export default AuthSettingsCouponsPage;

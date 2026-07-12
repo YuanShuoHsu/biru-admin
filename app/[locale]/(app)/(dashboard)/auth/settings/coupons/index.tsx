@@ -5,7 +5,6 @@ import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 
 import FormCard, {
-  StyledCardActions,
   StyledCardContent,
   StyledCardHeader,
 } from "@/components/FormCard";
@@ -15,38 +14,22 @@ import { ORDER_MODE } from "@/constants/orderMode";
 import { Link, useRouter } from "@/i18n/navigation";
 
 import { LocalOffer } from "@mui/icons-material";
-import {
-  Avatar,
-  Button,
-  Card,
-  Chip,
-  type ChipProps,
-  Typography,
-} from "@mui/material";
+import { Avatar, Button, Card, CardActions, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import type { MyClaimableCoupon, MyCoupon } from "@/types/coupons";
 
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
-const getStatus = (coupon: MyCoupon): "available" | "expired" | "used" => {
-  if (coupon.usedAt) return "used";
-  if (
-    coupon.coupon.validThrough &&
-    new Date(coupon.coupon.validThrough) < new Date()
-  )
-    return "expired";
-  return "available";
-};
+const StyledAvatar = styled(Avatar)(({ theme }) => ({
+  backgroundColor: theme.vars.palette.primary.main,
+}));
 
-const STATUS_CHIP_COLORS: Record<
-  ReturnType<typeof getStatus>,
-  ChipProps["color"]
-> = {
-  available: "success",
-  expired: "default",
-  used: "default",
-};
+const StyledCardActions = styled(CardActions)(({ theme }) => ({
+  padding: theme.spacing(2),
+  justifyContent: "space-between",
+}));
 
 interface CouponsProps {
   claimableCoupons: MyClaimableCoupon[];
@@ -116,33 +99,14 @@ const Coupons = ({ claimableCoupons, coupons }: CouponsProps) => {
                 )}
                 {items.map((item) => {
                   const coupon = "coupon" in item ? item.coupon : item;
-                  const status =
-                    "coupon" in item ? getStatus(item) : "available";
 
                   return (
                     <Card key={item.id} variant="outlined">
                       <StyledCardHeader
-                        action={
-                          "coupon" in item ? (
-                            <Chip
-                              color={STATUS_CHIP_COLORS[status]}
-                              label={tAuth(`settings.coupons.status.${status}`)}
-                              size="small"
-                              variant="outlined"
-                            />
-                          ) : null
-                        }
                         avatar={
-                          <Avatar
-                            sx={{
-                              bgcolor:
-                                status === "available"
-                                  ? "primary.main"
-                                  : "action.disabled",
-                            }}
-                          >
+                          <StyledAvatar>
                             <LocalOffer fontSize="small" />
-                          </Avatar>
+                          </StyledAvatar>
                         }
                         slotProps={{
                           subheader: { variant: "caption" },
@@ -164,11 +128,9 @@ const Coupons = ({ claimableCoupons, coupons }: CouponsProps) => {
                           .join(tCommon("middleDot"))}
                         title={coupon.code}
                       />
-                      <StyledCardContent>
+                      <StyledCardActions disableSpacing>
                         <Typography
-                          color={
-                            status === "available" ? "primary" : "text.disabled"
-                          }
+                          color="primary"
                           fontWeight="bold"
                           variant="h5"
                         >
@@ -176,35 +138,28 @@ const Coupons = ({ claimableCoupons, coupons }: CouponsProps) => {
                             ? `-${Number(coupon.discountValue)}%`
                             : `-${coupon.discountCurrency} ${Number(coupon.discountValue).toLocaleString(locale)}`}
                         </Typography>
-                      </StyledCardContent>
-                      {status === "available" && (
-                        <StyledCardActions
-                          disableSpacing
-                          sx={{ alignItems: "flex-end" }}
-                        >
-                          {"coupon" in item ? (
-                            item.organizationSlug && (
-                              <Button
-                                component={Link}
-                                href={`/order/${ORDER_MODE.Pickup}/${item.organizationSlug}`}
-                                size="small"
-                                variant="outlined"
-                              >
-                                {tAuth("settings.coupons.use")}
-                              </Button>
-                            )
-                          ) : (
+                        {"coupon" in item ? (
+                          item.organizationSlug && (
                             <Button
-                              loading={claimingId === item.id}
-                              onClick={() => handleClaim(item)}
+                              component={Link}
+                              href={`/order/${ORDER_MODE.Pickup}/${item.organizationSlug}`}
                               size="small"
-                              variant="contained"
+                              variant="outlined"
                             >
-                              {tAuth("settings.coupons.claim")}
+                              {tAuth("settings.coupons.use")}
                             </Button>
-                          )}
-                        </StyledCardActions>
-                      )}
+                          )
+                        ) : (
+                          <Button
+                            loading={claimingId === item.id}
+                            onClick={() => handleClaim(item)}
+                            size="small"
+                            variant="contained"
+                          >
+                            {tAuth("settings.coupons.claim")}
+                          </Button>
+                        )}
+                      </StyledCardActions>
                     </Card>
                   );
                 })}
