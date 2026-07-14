@@ -116,5 +116,10 @@
       "birthday": "Members automatically receive one in their birthday month",
       "spend": "Automatically issued when a single order reaches the threshold"
     }
+  },
+  "pointsCost": {
+    "hint": "Members can redeem it to My Coupons with points on the points page",
+    "label": "Points cost",
+    "placeholder": "Please enter your points cost"
   }
 }

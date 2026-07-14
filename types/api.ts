@@ -902,6 +902,40 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/users/me/points": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 我的點數（跨店，含可兌換優惠券與明細） */
+    get: operations["MyPointsController_getAllMine"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/users/me/points/redeem": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 以點數兌換優惠券 */
+    post: operations["MyPointsController_redeem"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1082,6 +1116,8 @@ export interface components {
       menuSectionIds?: string[];
       minSubtotal?: number;
       perUserLimit?: number;
+      /** @description 兌換所需點數；null = 不可用點數兌換 */
+      pointsCost?: number | null;
       /** @enum {string} */
       scope?: "order" | "item";
       totalLimit?: number;
@@ -1108,6 +1144,7 @@ export interface components {
       minSubtotal?: string | null;
       organizationId: string;
       perUserLimit?: number | null;
+      pointsCost?: number | null;
       /** @enum {string} */
       scope: "order" | "item";
       totalLimit?: number | null;
@@ -1145,6 +1182,8 @@ export interface components {
       menuSectionIds?: string[];
       minSubtotal?: number;
       perUserLimit?: number;
+      /** @description 兌換所需點數；null = 不可用點數兌換 */
+      pointsCost?: number | null;
       /** @enum {string} */
       scope?: "order" | "item";
       totalLimit?: number;
@@ -1231,7 +1270,13 @@ export interface components {
       id: string;
       coupon: components["schemas"]["CustomerCouponDto"];
       /** @enum {string} */
-      source: "granted" | "claimed" | "signup" | "birthday" | "spend";
+      source:
+        | "granted"
+        | "claimed"
+        | "signup"
+        | "birthday"
+        | "spend"
+        | "redeemed";
       /** Format: date-time */
       usedAt?: string | null;
       /** Format: date-time */
@@ -1248,7 +1293,13 @@ export interface components {
       id: string;
       coupon: components["schemas"]["CustomerCouponDto"];
       /** @enum {string} */
-      source: "granted" | "claimed" | "signup" | "birthday" | "spend";
+      source:
+        | "granted"
+        | "claimed"
+        | "signup"
+        | "birthday"
+        | "spend"
+        | "redeemed";
       /** Format: date-time */
       usedAt?: string | null;
       /** Format: date-time */
@@ -2572,6 +2623,8 @@ export interface components {
       hasMap?: string | null;
       openingHours?: string | null;
       telephone?: string | null;
+      amountPerPoint?: string | null;
+      pointsValidityYears?: number | null;
     };
     OrganizationMemberTeamDto: {
       id: string;
@@ -2589,6 +2642,44 @@ export interface components {
       role: "admin" | "member" | "owner";
       teams: components["schemas"]["OrganizationMemberTeamDto"][];
       userId: string;
+    };
+    PointsCouponDto: {
+      id: string;
+      code: string;
+      discountCurrency: string;
+      /** @enum {string} */
+      discountType: "fixed" | "percentage";
+      discountValue: string;
+      minSubtotal?: string | null;
+      /** @enum {string} */
+      scope: "order" | "item";
+      /** Format: date-time */
+      validFrom?: string | null;
+      /** Format: date-time */
+      validThrough?: string | null;
+      /** @description 兌換所需點數 */
+      pointsCost: number;
+    };
+    PointTransactionDto: {
+      id: string;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      expiresAt?: string | null;
+      /** @description earn 為正、redeem 為負 */
+      points: number;
+      /** @enum {string} */
+      type: "earn" | "redeem";
+    };
+    MyPointsWalletDto: {
+      balance: number;
+      organizationName: string;
+      organizationSlug: string;
+      redeemableCoupons: components["schemas"]["PointsCouponDto"][];
+      transactions: components["schemas"]["PointTransactionDto"][];
+    };
+    RedeemPointsDto: {
+      couponId: string;
     };
   };
   responses: never;
@@ -4844,6 +4935,62 @@ export interface operations {
       };
     };
   };
+  MyPointsController_getAllMine: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["MyPointsWalletDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  MyPointsController_redeem: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["RedeemPointsDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["UserCouponResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
 }
 type FlattenedDeepRequired<T> = {
   [K in keyof T]-?: FlattenedDeepRequired<
@@ -4957,10 +5104,10 @@ export const customerCouponDtoScopeValues: ReadonlyArray<
 > = ["order", "item"];
 export const userCouponResponseDtoSourceValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UserCouponResponseDto"]["source"]
-> = ["granted", "claimed", "signup", "birthday", "spend"];
+> = ["granted", "claimed", "signup", "birthday", "spend", "redeemed"];
 export const myCouponResponseDtoSourceValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["MyCouponResponseDto"]["source"]
-> = ["granted", "claimed", "signup", "birthday", "spend"];
+> = ["granted", "claimed", "signup", "birthday", "spend", "redeemed"];
 export const myClaimableCouponDtoDiscountTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["MyClaimableCouponDto"]["discountType"]
 > = ["fixed", "percentage"];
@@ -5175,3 +5322,12 @@ export const orderMenuItemResponseDtoSuitableForDietValues: ReadonlyArray<
 export const organizationMemberResponseDtoRoleValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrganizationMemberResponseDto"]["role"]
 > = ["admin", "member", "owner"];
+export const pointsCouponDtoDiscountTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["PointsCouponDto"]["discountType"]
+> = ["fixed", "percentage"];
+export const pointsCouponDtoScopeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["PointsCouponDto"]["scope"]
+> = ["order", "item"];
+export const pointTransactionDtoTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["PointTransactionDto"]["type"]
+> = ["earn", "redeem"];

@@ -156,6 +156,27 @@
     "label": "组织名称",
     "placeholder": "请输入您的组织名称"
   },
+  "points": {
+    "actions": {
+      "updatePoints": {
+        "success": "成功更新点数设置",
+        "title": "编辑点数"
+      }
+    },
+    "amountPerPoint": {
+      "hint": "未设置时不启用点数",
+      "label": "累积 1 点所需消费金额",
+      "placeholder": "请输入您的累积 1 点所需消费金额"
+    },
+    "disabled": "未启用",
+    "label": "点数",
+    "perpetual": "永久有效",
+    "pointsValidityYears": {
+      "label": "点数效期（年）",
+      "placeholder": "请输入您的点数效期"
+    },
+    "validityYears": "{years} 年"
+  },
   "slug": {
     "label": "标识符",
     "placeholder": "请输入您的标识符"

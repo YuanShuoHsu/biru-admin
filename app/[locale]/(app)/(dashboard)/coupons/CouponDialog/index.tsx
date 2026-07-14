@@ -93,6 +93,7 @@ const CouponDialog = ({
         : "",
       perUserLimit:
         coupon?.perUserLimit != null ? String(coupon.perUserLimit) : "",
+      pointsCost: coupon?.pointsCost != null ? String(coupon.pointsCost) : "",
       scope: coupon?.scope || "order",
       totalLimit: coupon?.totalLimit != null ? String(coupon.totalLimit) : "",
       validFrom: toDateTimeLocal(coupon?.validFrom),
@@ -113,6 +114,7 @@ const CouponDialog = ({
     menuSectionIds,
     minSubtotal,
     perUserLimit,
+    pointsCost,
     scope,
     totalLimit,
     validFrom,
@@ -131,6 +133,7 @@ const CouponDialog = ({
       "menuSectionIds",
       "minSubtotal",
       "perUserLimit",
+      "pointsCost",
       "scope",
       "totalLimit",
       "validFrom",
@@ -167,6 +170,8 @@ const CouponDialog = ({
         ...(values.perUserLimit && {
           perUserLimit: Number(values.perUserLimit),
         }),
+        // null 表示清除，讓已設定的券可取消點數兌換
+        pointsCost: values.pointsCost ? Number(values.pointsCost) : null,
         scope: values.scope,
         ...(values.totalLimit && { totalLimit: Number(values.totalLimit) }),
         ...(values.validFrom && {
@@ -415,6 +420,25 @@ const CouponDialog = ({
             }
             placeholder={tCoupons("perUserLimit.placeholder")}
             value={perUserLimit !== "" ? Number(perUserLimit) : null}
+          />
+        </Grid>
+      </Grid>
+      <Grid container spacing={2} width="100%">
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <NumberSpinner
+            clearable
+            error={!!errors.pointsCost}
+            fullWidth
+            helperText={tCoupons("pointsCost.hint")}
+            label={`${tCoupons("pointsCost.label")} ${tCommon("optional")}`}
+            min={1}
+            onValueChange={(value) =>
+              setValue("pointsCost", value != null ? String(value) : "", {
+                shouldValidate: isSubmitted,
+              })
+            }
+            placeholder={tCoupons("pointsCost.placeholder")}
+            value={pointsCost !== "" ? Number(pointsCost) : null}
           />
         </Grid>
       </Grid>

@@ -12,6 +12,7 @@ import {
   LocationOn,
   Mail,
   People,
+  Stars,
   type SvgIconComponent,
 } from "@mui/icons-material";
 import { Chip, Stack, Tab, Tabs } from "@mui/material";
@@ -34,6 +35,7 @@ const OrganizationsSlugTabs = ({ children }: OrganizationsSlugTabsProps) => {
   const tTeams = useTranslations("organizations.teams");
   const tInvitations = useTranslations("organizations.invitations");
   const tLocation = useTranslations("organizations.location");
+  const tPoints = useTranslations("organizations.points");
 
   const tabs: {
     Icon: SvgIconComponent;
@@ -64,6 +66,11 @@ const OrganizationsSlugTabs = ({ children }: OrganizationsSlugTabsProps) => {
       Icon: LocationOn,
       label: tLocation("label"),
       value: `/organizations/${slug}/location`,
+    },
+    {
+      Icon: Stars,
+      label: tPoints("label"),
+      value: `/organizations/${slug}/points`,
     },
   ];
 

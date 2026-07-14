@@ -156,6 +156,27 @@
     "label": "Organization name",
     "placeholder": "Please enter your organization name"
   },
+  "points": {
+    "actions": {
+      "updatePoints": {
+        "success": "Points settings updated",
+        "title": "Edit points"
+      }
+    },
+    "amountPerPoint": {
+      "hint": "Points are disabled when not set",
+      "label": "Spend per point",
+      "placeholder": "Please enter your spend per point"
+    },
+    "disabled": "Disabled",
+    "label": "Points",
+    "perpetual": "Never expires",
+    "pointsValidityYears": {
+      "label": "Points validity (years)",
+      "placeholder": "Please enter your points validity"
+    },
+    "validityYears": "{years, plural, one {# year} other {# years}}"
+  },
   "slug": {
     "label": "Slug",
     "placeholder": "Please enter your slug"

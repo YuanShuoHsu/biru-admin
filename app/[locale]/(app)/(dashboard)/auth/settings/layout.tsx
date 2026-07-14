@@ -9,6 +9,7 @@ import {
   Lock,
   Person,
   ReceiptLong,
+  Stars,
   type SvgIconComponent,
 } from "@mui/icons-material";
 import { Stack, Tab, Tabs } from "@mui/material";
@@ -42,6 +43,11 @@ const AuthSettingsLayout = ({ children }: { children: React.ReactNode }) => {
       Icon: ConfirmationNumber,
       label: tAuth("settings.coupons.label"),
       value: "/auth/settings/coupons",
+    },
+    {
+      Icon: Stars,
+      label: tAuth("settings.points.label"),
+      value: "/auth/settings/points",
     },
   ];
 

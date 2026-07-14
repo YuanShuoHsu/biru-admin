@@ -156,6 +156,27 @@
     "label": "組織名",
     "placeholder": "あなたの組織名を入力してください"
   },
+  "points": {
+    "actions": {
+      "updatePoints": {
+        "success": "ポイント設定を更新しました",
+        "title": "ポイントを編集"
+      }
+    },
+    "amountPerPoint": {
+      "hint": "未設定の場合、ポイントは無効になります",
+      "label": "1ポイント獲得に必要な金額",
+      "placeholder": "1ポイント獲得に必要な金額を入力してください"
+    },
+    "disabled": "無効",
+    "label": "ポイント",
+    "perpetual": "無期限",
+    "pointsValidityYears": {
+      "label": "ポイント有効期限（年）",
+      "placeholder": "ポイント有効期限を入力してください"
+    },
+    "validityYears": "{years}年"
+  },
   "slug": {
     "label": "スラッグ",
     "placeholder": "あなたのスラッグを入力してください"

@@ -28,6 +28,7 @@ export const useCouponFormSchema = () => {
       menuSectionIds: z.array(z.string()),
       minSubtotal: z.string().trim(),
       perUserLimit: z.string().trim(),
+      pointsCost: z.string().trim(),
       scope: z.enum(["item", "order"]),
       totalLimit: z.string().trim(),
       validFrom: z.string(),
