@@ -4,10 +4,10 @@ import { useTranslations } from "next-intl";
 
 import { Link, usePathname } from "@/i18n/navigation";
 
-import { Lock, Person, type SvgIconComponent } from "@mui/icons-material";
+import { Stars, Storefront, type SvgIconComponent } from "@mui/icons-material";
 import { Stack, Tab, Tabs } from "@mui/material";
 
-const AuthSettingsLayout = ({ children }: { children: React.ReactNode }) => {
+const AuthPointsLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
 
   const tAuth = useTranslations("auth");
@@ -18,25 +18,25 @@ const AuthSettingsLayout = ({ children }: { children: React.ReactNode }) => {
     value: string;
   }[] = [
     {
-      Icon: Person,
-      label: tAuth("settings.account.label"),
-      value: "/auth/settings/account",
+      Icon: Stars,
+      label: tAuth("points.transactions"),
+      value: "/auth/points",
     },
     {
-      Icon: Lock,
-      label: tAuth("settings.security.label"),
-      value: "/auth/settings/security",
+      Icon: Storefront,
+      label: tAuth("store.label"),
+      value: "/auth/points/store",
     },
   ];
 
-  const value =
-    navItems.find(({ value }) => pathname.startsWith(value.split("?")[0]))
-      ?.value || navItems[0].value;
+  const value = pathname.startsWith("/auth/points/store")
+    ? "/auth/points/store"
+    : "/auth/points";
 
   return (
     <Stack gap={2} marginBottom="auto">
       <Tabs
-        aria-label="account settings tabs"
+        aria-label="points tabs"
         scrollButtons="auto"
         value={value}
         variant="scrollable"
@@ -58,4 +58,4 @@ const AuthSettingsLayout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default AuthSettingsLayout;
+export default AuthPointsLayout;

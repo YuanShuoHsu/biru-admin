@@ -69,9 +69,14 @@ export const proxy = async (request: NextRequest) => {
 
   const isRootPage = pathname === `/${locale}`;
   const isAuthPage = pathname.startsWith(`/${locale}/auth/`);
-  const isAuthSettingsPage = pathname.startsWith(`/${locale}/auth/settings`);
+  const isProtectedAuthPage = [
+    `/${locale}/auth/coupons`,
+    `/${locale}/auth/orders`,
+    `/${locale}/auth/points`,
+    `/${locale}/auth/settings`,
+  ].some((prefix) => pathname.startsWith(prefix));
   const isCompanyPage = pathname.startsWith(`/${locale}/company`);
-  const isPublicPage = (isAuthPage && !isAuthSettingsPage) || isCompanyPage;
+  const isPublicPage = (isAuthPage && !isProtectedAuthPage) || isCompanyPage;
 
   const redirectToSignIn = () => {
     const redirectTo =

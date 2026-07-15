@@ -387,6 +387,28 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
           to: "/delete-account",
         },
         {
+          icon: ReceiptLong,
+          label: tAuth("orders.label"),
+          to: "/orders",
+        },
+        {
+          icon: ConfirmationNumber,
+          label: tAuth("coupons.label"),
+          to: "/coupons",
+        },
+        {
+          children: [
+            {
+              icon: Storefront,
+              label: tAuth("store.label"),
+              to: "/store",
+            },
+          ],
+          icon: Stars,
+          label: tAuth("points.label"),
+          to: "/points",
+        },
+        {
           children: [
             {
               icon: Person,
@@ -397,21 +419,6 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
               icon: Lock,
               label: tAuth("settings.security.label"),
               to: "/security",
-            },
-            {
-              icon: ReceiptLong,
-              label: tAuth("settings.orders.label"),
-              to: "/orders",
-            },
-            {
-              icon: ConfirmationNumber,
-              label: tAuth("settings.coupons.label"),
-              to: "/coupons",
-            },
-            {
-              icon: Stars,
-              label: tAuth("settings.points.label"),
-              to: "/points",
             },
           ],
           disabled: true,

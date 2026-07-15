@@ -11,9 +11,9 @@ import type { MyClaimableCoupon, MyCoupon } from "@/types/coupons";
 
 import { fetcher } from "@/utils/fetcher";
 
-const AuthSettingsCouponsPage = async ({
+const AuthCouponsPage = async ({
   params,
-}: PageProps<"/[locale]/auth/settings/coupons">) => {
+}: PageProps<"/[locale]/auth/coupons">) => {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
 
@@ -41,4 +41,4 @@ const AuthSettingsCouponsPage = async ({
   );
 };
 
-export default AuthSettingsCouponsPage;
+export default AuthCouponsPage;

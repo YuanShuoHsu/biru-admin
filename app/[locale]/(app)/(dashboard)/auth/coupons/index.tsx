@@ -57,10 +57,9 @@ const Coupons = ({ claimableCoupons, coupons }: CouponsProps) => {
         { method: "POST" },
       );
 
-      enqueueSnackbar(
-        tAuth("settings.coupons.claimSuccess", { code: coupon.code }),
-        { variant: "success" },
-      );
+      enqueueSnackbar(tAuth("coupons.claimSuccess", { code: coupon.code }), {
+        variant: "success",
+      });
     } catch (error) {
       enqueueSnackbar(getErrorMessage(error), { variant: "error" });
     } finally {
@@ -87,14 +86,14 @@ const Coupons = ({ claimableCoupons, coupons }: CouponsProps) => {
               <StyledCardHeader
                 title={
                   <Typography color="primary" fontWeight="bold" variant="h6">
-                    {tAuth(`settings.coupons.${type}`)}
+                    {tAuth(`coupons.${type}`)}
                   </Typography>
                 }
               />
               <StyledCardContent>
                 {items.length === 0 && (
                   <Typography color="text.secondary" variant="body2">
-                    {tAuth("settings.coupons.empty")}
+                    {tAuth("coupons.empty")}
                   </Typography>
                 )}
                 {items.map((item) => {
@@ -115,9 +114,9 @@ const Coupons = ({ claimableCoupons, coupons }: CouponsProps) => {
                         subheader={[
                           item.organizationName,
                           "source" in item &&
-                            tAuth(`settings.coupons.source.${item.source}`),
+                            tAuth(`coupons.source.${item.source}`),
                           coupon.validThrough &&
-                            tAuth("settings.coupons.validUntil", {
+                            tAuth("coupons.validUntil", {
                               date: format.dateTime(
                                 new Date(coupon.validThrough),
                                 "short",
@@ -146,7 +145,7 @@ const Coupons = ({ claimableCoupons, coupons }: CouponsProps) => {
                               size="small"
                               variant="outlined"
                             >
-                              {tAuth("settings.coupons.use")}
+                              {tAuth("coupons.use")}
                             </Button>
                           )
                         ) : (
@@ -156,7 +155,7 @@ const Coupons = ({ claimableCoupons, coupons }: CouponsProps) => {
                             size="small"
                             variant="contained"
                           >
-                            {tAuth("settings.coupons.claim")}
+                            {tAuth("coupons.claim")}
                           </Button>
                         )}
                       </StyledCardActions>

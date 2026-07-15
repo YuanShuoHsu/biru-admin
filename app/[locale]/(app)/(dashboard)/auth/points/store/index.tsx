@@ -15,16 +15,7 @@ import FormCard, {
 import { useRouter } from "@/i18n/navigation";
 
 import { LocalOffer } from "@mui/icons-material";
-import {
-  Avatar,
-  Button,
-  Card,
-  CardActions,
-  List,
-  ListItem,
-  ListItemText,
-  Typography,
-} from "@mui/material";
+import { Avatar, Button, Card, CardActions, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -46,11 +37,11 @@ const StyledCardActions = styled(CardActions)(({ theme }) => ({
   justifyContent: "space-between",
 }));
 
-interface PointsProps {
+interface StoreProps {
   wallets: MyPointsWallet[];
 }
 
-const Points = ({ wallets }: PointsProps) => {
+const Store = ({ wallets }: StoreProps) => {
   const [redeemingId, setRedeemingId] = useState<string | null>(null);
 
   const { setDialog } = useDialogStore((state) => state);
@@ -72,10 +63,9 @@ const Points = ({ wallets }: PointsProps) => {
         method: "POST",
       });
 
-      enqueueSnackbar(
-        tAuth("settings.points.redeemSuccess", { code: coupon.code }),
-        { variant: "success" },
-      );
+      enqueueSnackbar(tAuth("points.redeemSuccess", { code: coupon.code }), {
+        variant: "success",
+      });
     } catch (error) {
       enqueueSnackbar(getErrorMessage(error), { variant: "error" });
     } finally {
@@ -87,13 +77,13 @@ const Points = ({ wallets }: PointsProps) => {
 
   const handleRedeemDialog = (coupon: PointsCoupon) =>
     setDialog({
-      contentText: tAuth("settings.points.redeemConfirm", {
+      contentText: tAuth("points.redeemConfirm", {
         code: coupon.code,
         points: format.number(coupon.pointsCost),
       }),
       onConfirm: () => handleRedeem(coupon),
       open: true,
-      title: tAuth("settings.points.redeem"),
+      title: tAuth("points.redeem"),
     });
 
   if (wallets.length === 0)
@@ -102,13 +92,13 @@ const Points = ({ wallets }: PointsProps) => {
         <StyledCardHeader
           title={
             <Typography color="primary" fontWeight="bold" variant="h6">
-              {tAuth("settings.points.label")}
+              {tAuth("store.label")}
             </Typography>
           }
         />
         <StyledCardContent>
           <Typography color="text.secondary" variant="body2">
-            {tAuth("settings.points.empty")}
+            {tAuth("points.empty")}
           </Typography>
         </StyledCardContent>
       </FormCard>
@@ -121,13 +111,13 @@ const Points = ({ wallets }: PointsProps) => {
           <StyledCardHeader
             action={
               <Typography color="primary" fontWeight="bold" variant="h5">
-                {tAuth("settings.points.points", {
+                {tAuth("points.points", {
                   points: format.number(wallet.balance),
                 })}
               </Typography>
             }
             slotProps={{ subheader: { variant: "caption" } }}
-            subheader={tAuth("settings.points.balance")}
+            subheader={tAuth("points.balance")}
             title={
               <Typography color="primary" fontWeight="bold" variant="h6">
                 {wallet.organizationName}
@@ -135,9 +125,9 @@ const Points = ({ wallets }: PointsProps) => {
             }
           />
           <StyledCardContent>
-            {wallet.redeemableCoupons.length > 0 && (
-              <Typography fontWeight="bold" variant="subtitle2">
-                {tAuth("settings.points.redeemable")}
+            {wallet.redeemableCoupons.length === 0 && (
+              <Typography color="text.secondary" variant="body2">
+                {tAuth("points.redeemableEmpty")}
               </Typography>
             )}
             {wallet.redeemableCoupons.map((coupon) => (
@@ -153,11 +143,11 @@ const Points = ({ wallets }: PointsProps) => {
                     title: { variant: "subtitle2" },
                   }}
                   subheader={[
-                    tAuth("settings.points.points", {
+                    tAuth("points.points", {
                       points: format.number(coupon.pointsCost),
                     }),
                     coupon.validThrough &&
-                      tAuth("settings.points.validUntil", {
+                      tAuth("points.validUntil", {
                         date: dayjs(coupon.validThrough)
                           .tz("Asia/Taipei")
                           .format("YYYY/MM/DD"),
@@ -180,57 +170,11 @@ const Points = ({ wallets }: PointsProps) => {
                     size="small"
                     variant="contained"
                   >
-                    {tAuth("settings.points.redeem")}
+                    {tAuth("points.redeem")}
                   </Button>
                 </StyledCardActions>
               </Card>
             ))}
-            <Typography fontWeight="bold" variant="subtitle2">
-              {tAuth("settings.points.transactions")}
-            </Typography>
-            <List dense disablePadding>
-              {wallet.transactions.map((transaction) => (
-                <ListItem
-                  disableGutters
-                  key={transaction.id}
-                  secondaryAction={
-                    <Typography
-                      color={
-                        transaction.type === "earn"
-                          ? "primary"
-                          : "text.secondary"
-                      }
-                      fontWeight="bold"
-                      variant="body2"
-                    >
-                      {tAuth("settings.points.points", {
-                        points: format.number(transaction.points, {
-                          signDisplay: "exceptZero",
-                        }),
-                      })}
-                    </Typography>
-                  }
-                >
-                  <ListItemText
-                    primary={tAuth(`settings.points.type.${transaction.type}`)}
-                    secondary={[
-                      dayjs(transaction.createdAt)
-                        .tz("Asia/Taipei")
-                        .format("YYYY/MM/DD HH:mm:ss"),
-                      transaction.expiresAt &&
-                        tAuth("settings.points.validUntil", {
-                          date: dayjs(transaction.expiresAt)
-                            .tz("Asia/Taipei")
-                            .format("YYYY/MM/DD"),
-                        }),
-                    ]
-                      .filter(Boolean)
-                      .join(tCommon("middleDot"))}
-                    slotProps={{ secondary: { variant: "caption" } }}
-                  />
-                </ListItem>
-              ))}
-            </List>
           </StyledCardContent>
         </FormCard>
       ))}
@@ -238,4 +182,4 @@ const Points = ({ wallets }: PointsProps) => {
   );
 };
 
-export default Points;
+export default Store;

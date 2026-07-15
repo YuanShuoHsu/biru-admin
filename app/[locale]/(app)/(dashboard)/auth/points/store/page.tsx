@@ -3,7 +3,7 @@ import { setRequestLocale } from "next-intl/server";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 
-import Points from ".";
+import Store from ".";
 
 import { routing } from "@/i18n/routing";
 
@@ -11,9 +11,9 @@ import type { MyPointsWallet } from "@/types/points";
 
 import { fetcher } from "@/utils/fetcher";
 
-const AuthSettingsPointsPage = async ({
+const AuthPointsStorePage = async ({
   params,
-}: PageProps<"/[locale]/auth/settings/points">) => {
+}: PageProps<"/[locale]/auth/points/store">) => {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
 
@@ -25,7 +25,7 @@ const AuthSettingsPointsPage = async ({
     headers: { cookie },
   }).catch(() => []);
 
-  return <Points wallets={wallets} />;
+  return <Store wallets={wallets} />;
 };
 
-export default AuthSettingsPointsPage;
+export default AuthPointsStorePage;

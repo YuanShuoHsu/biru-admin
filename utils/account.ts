@@ -4,7 +4,13 @@ import { useTranslations } from "next-intl";
 
 import { useRouter } from "@/i18n/navigation";
 
-import { PersonAdd, Settings } from "@mui/icons-material";
+import {
+  ConfirmationNumber,
+  PersonAdd,
+  ReceiptLong,
+  Settings,
+  Stars,
+} from "@mui/icons-material";
 
 import type { MenuItem } from "@/types/menuItem";
 
@@ -16,6 +22,36 @@ export const useAddAccountMenuItem = (): MenuItem => {
     icon: PersonAdd,
     label: tAuth("addAccount.label"),
     onClick: () => router.push("/auth/sign-in"),
+  };
+};
+
+export const useCouponsMenuItem = (): MenuItem => {
+  const tAuth = useTranslations("auth");
+
+  return {
+    icon: ConfirmationNumber,
+    label: tAuth("coupons.label"),
+    to: "/coupons",
+  };
+};
+
+export const useOrdersMenuItem = (): MenuItem => {
+  const tAuth = useTranslations("auth");
+
+  return {
+    icon: ReceiptLong,
+    label: tAuth("orders.label"),
+    to: "/orders",
+  };
+};
+
+export const usePointsMenuItem = (): MenuItem => {
+  const tAuth = useTranslations("auth");
+
+  return {
+    icon: Stars,
+    label: tAuth("points.label"),
+    to: "/points",
   };
 };
 

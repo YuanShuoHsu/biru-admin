@@ -41,7 +41,13 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { MenuItem as MenuItemData } from "@/types/menuItem";
 
-import { useAddAccountMenuItem, useSettingsMenuItem } from "@/utils/account";
+import {
+  useAddAccountMenuItem,
+  useCouponsMenuItem,
+  useOrdersMenuItem,
+  usePointsMenuItem,
+  useSettingsMenuItem,
+} from "@/utils/account";
 import { getDisplayName } from "@/utils/auth";
 
 const StyledAvatar = styled(Avatar, {
@@ -171,7 +177,10 @@ const AccountMenu = () => {
 
   const addAccountItem = useAddAccountMenuItem();
   const authMenuItems = useAuthMenuItems(redirectTarget || undefined);
+  const couponsItem = useCouponsMenuItem();
   const logoutMenuItem = useLogoutMenuItem();
+  const ordersItem = useOrdersMenuItem();
+  const pointsItem = usePointsMenuItem();
   const settingsItem = useSettingsMenuItem();
 
   const handleClick = (event: MouseEvent<HTMLElement>) => {
@@ -269,7 +278,13 @@ const AccountMenu = () => {
         )}
         {session && <Divider />}
         {session &&
-          renderMenuItems(pathname, "/auth", [settingsItem, logoutMenuItem])}
+          renderMenuItems(pathname, "/auth", [
+            ordersItem,
+            couponsItem,
+            pointsItem,
+            settingsItem,
+            logoutMenuItem,
+          ])}
         {session && <Divider />}
         {session &&
           otherSessions.map(({ session: { token }, user }) => {

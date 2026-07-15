@@ -113,14 +113,14 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
       <StyledCardHeader
         title={
           <Typography color="primary" fontWeight="bold" variant="h6">
-            {tAuth("settings.orders.label")}
+            {tAuth("orders.label")}
           </Typography>
         }
       />
       <StyledCardContent>
         {orders.length === 0 && (
           <Typography color="text.secondary" variant="body2">
-            {tAuth("settings.orders.empty")}
+            {tAuth("orders.empty")}
           </Typography>
         )}
         {orders.map((order) => {
@@ -152,9 +152,7 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
                     </Typography>
                     <Chip
                       color={STATUS_CHIP_COLORS[order.orderStatus]}
-                      label={tAuth(
-                        `settings.orders.status.${order.orderStatus}`,
-                      )}
+                      label={tAuth(`orders.status.${order.orderStatus}`)}
                       size="small"
                       variant="outlined"
                     />
