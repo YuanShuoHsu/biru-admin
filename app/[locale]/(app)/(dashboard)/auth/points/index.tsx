@@ -5,10 +5,17 @@ import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { useFormatter, useTranslations } from "next-intl";
 
+import { PAGE_SIZE_OPTIONS } from "./constants";
+
 import FormCard, {
   StyledCardContent,
   StyledCardHeader,
 } from "@/components/FormCard";
+import PaginationActions, {
+  StyledTablePagination,
+} from "@/components/PaginationActions";
+
+import { usePathname, useRouter } from "@/i18n/navigation";
 
 import { List, ListItem, ListItemText, Typography } from "@mui/material";
 
@@ -18,14 +25,45 @@ dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
 
 interface PointsProps {
+  page: number;
+  pageSize: number;
   wallets: MyPointsWallet[];
 }
 
-const Points = ({ wallets }: PointsProps) => {
+const Points = ({ page, pageSize, wallets }: PointsProps) => {
   const format = useFormatter();
+
+  const pathname = usePathname();
+
+  const router = useRouter();
 
   const tAuth = useTranslations("auth");
   const tCommon = useTranslations("common");
+
+  const rowsPerPageOptions = [
+    ...new Set([...PAGE_SIZE_OPTIONS, pageSize]),
+  ].sort((a, b) => a - b);
+
+  const handlePageChange = (
+    _event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number,
+  ) =>
+    router.replace(
+      `${pathname}?${new URLSearchParams({
+        page: String(newPage + 1),
+        pageSize: String(pageSize),
+      })}`,
+    );
+
+  const handleRowsPerPageChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) =>
+    router.replace(
+      `${pathname}?${new URLSearchParams({
+        page: "1",
+        pageSize: event.target.value,
+      })}`,
+    );
 
   if (wallets.length === 0)
     return (
@@ -109,6 +147,22 @@ const Points = ({ wallets }: PointsProps) => {
                 </ListItem>
               ))}
             </List>
+            {wallet.transactionsTotal > 0 && (
+              <StyledTablePagination
+                ActionsComponent={PaginationActions}
+                component="div"
+                count={wallet.transactionsTotal}
+                labelDisplayedRows={({ count, from, to }) =>
+                  tCommon("pagination.labelDisplayedRows", { count, from, to })
+                }
+                labelRowsPerPage={tCommon("pagination.labelRowsPerPage")}
+                onPageChange={handlePageChange}
+                onRowsPerPageChange={handleRowsPerPageChange}
+                page={page - 1}
+                rowsPerPage={pageSize}
+                rowsPerPageOptions={rowsPerPageOptions}
+              />
+            )}
           </StyledCardContent>
         </FormCard>
       ))}

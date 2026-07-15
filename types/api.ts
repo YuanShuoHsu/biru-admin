@@ -2677,6 +2677,8 @@ export interface components {
       organizationSlug: string;
       redeemableCoupons: components["schemas"]["PointsCouponDto"][];
       transactions: components["schemas"]["PointTransactionDto"][];
+      /** @description 明細總筆數 */
+      transactionsTotal: number;
     };
     RedeemPointsDto: {
       couponId: string;
@@ -4937,7 +4939,10 @@ export interface operations {
   };
   MyPointsController_getAllMine: {
     parameters: {
-      query?: never;
+      query?: {
+        limit?: number;
+        offset?: number;
+      };
       header?: never;
       path?: never;
       cookie?: never;
