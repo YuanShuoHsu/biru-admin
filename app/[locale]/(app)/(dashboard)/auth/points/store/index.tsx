@@ -86,26 +86,24 @@ const Store = ({ wallets }: StoreProps) => {
       title: tAuth("points.redeem"),
     });
 
-  if (wallets.length === 0)
-    return (
-      <FormCard>
-        <StyledCardHeader
-          title={
-            <Typography color="primary" fontWeight="bold" variant="h6">
-              {tAuth("store.label")}
-            </Typography>
-          }
-        />
-        <StyledCardContent>
-          <Typography color="text.secondary" variant="body2">
-            {tAuth("points.empty")}
-          </Typography>
-        </StyledCardContent>
-      </FormCard>
-    );
-
   return (
     <>
+      {wallets.length === 0 && (
+        <FormCard>
+          <StyledCardHeader
+            title={
+              <Typography color="primary" fontWeight="bold" variant="h6">
+                {tAuth("store.label")}
+              </Typography>
+            }
+          />
+          <StyledCardContent>
+            <Typography color="text.secondary" variant="body2">
+              {tAuth("points.empty")}
+            </Typography>
+          </StyledCardContent>
+        </FormCard>
+      )}
       {wallets.map((wallet) => (
         <FormCard key={wallet.organizationSlug}>
           <StyledCardHeader

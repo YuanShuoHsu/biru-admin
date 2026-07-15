@@ -2662,10 +2662,16 @@ export interface components {
     };
     PointTransactionDto: {
       id: string;
+      /** @description earn 來源訂單的取餐編號 */
+      confirmationNumber?: string | null;
+      /** @description redeem 兌換的優惠券代碼 */
+      couponCode?: string | null;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
       expiresAt?: string | null;
+      /** @description earn 來源訂單編號 */
+      orderNumber?: string | null;
       /** @description earn 為正、redeem 為負 */
       points: number;
       /** @enum {string} */

@@ -39,6 +39,7 @@ const Points = ({ page, pageSize, wallets }: PointsProps) => {
 
   const tAuth = useTranslations("auth");
   const tCommon = useTranslations("common");
+  const tOrder = useTranslations("order");
 
   const rowsPerPageOptions = [
     ...new Set([...PAGE_SIZE_OPTIONS, pageSize]),
@@ -65,26 +66,24 @@ const Points = ({ page, pageSize, wallets }: PointsProps) => {
       })}`,
     );
 
-  if (wallets.length === 0)
-    return (
-      <FormCard>
-        <StyledCardHeader
-          title={
-            <Typography color="primary" fontWeight="bold" variant="h6">
-              {tAuth("points.label")}
-            </Typography>
-          }
-        />
-        <StyledCardContent>
-          <Typography color="text.secondary" variant="body2">
-            {tAuth("points.empty")}
-          </Typography>
-        </StyledCardContent>
-      </FormCard>
-    );
-
   return (
     <>
+      {wallets.length === 0 && (
+        <FormCard>
+          <StyledCardHeader
+            title={
+              <Typography color="primary" fontWeight="bold" variant="h6">
+                {tAuth("points.label")}
+              </Typography>
+            }
+          />
+          <StyledCardContent>
+            <Typography color="text.secondary" variant="body2">
+              {tAuth("points.empty")}
+            </Typography>
+          </StyledCardContent>
+        </FormCard>
+      )}
       {wallets.map((wallet) => (
         <FormCard key={wallet.organizationSlug}>
           <StyledCardHeader
@@ -104,6 +103,11 @@ const Points = ({ page, pageSize, wallets }: PointsProps) => {
             }
           />
           <StyledCardContent>
+            {wallet.transactions.length === 0 && (
+              <Typography color="text.secondary" variant="body2">
+                {tAuth("points.transactionsEmpty")}
+              </Typography>
+            )}
             <List dense disablePadding>
               {wallet.transactions.map((transaction) => (
                 <ListItem
@@ -133,6 +137,12 @@ const Points = ({ page, pageSize, wallets }: PointsProps) => {
                       dayjs(transaction.createdAt)
                         .tz("Asia/Taipei")
                         .format("YYYY/MM/DD HH:mm:ss"),
+                      transaction.type === "earn"
+                        ? (transaction.confirmationNumber ||
+                            transaction.orderNumber) &&
+                          `${tOrder("complete.transaction.orderNo")} ${transaction.confirmationNumber || transaction.orderNumber}`
+                        : transaction.couponCode &&
+                          `${tAuth("coupons.label")} ${transaction.couponCode}`,
                       transaction.expiresAt &&
                         tAuth("points.validUntil", {
                           date: dayjs(transaction.expiresAt)
