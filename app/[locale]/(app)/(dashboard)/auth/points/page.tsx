@@ -37,9 +37,12 @@ const AuthPointsPage = async ({
   }
 
   const reqHeaders = await headers();
-  const wallets = await fetcher<MyPointsWallet[]>(getPointsKey(page, pageSize), {
-    headers: { cookie: reqHeaders.get("cookie") || "" },
-  }).catch(() => []);
+  const wallets = await fetcher<MyPointsWallet[]>(
+    getPointsKey(page, pageSize),
+    {
+      headers: { cookie: reqHeaders.get("cookie") || "" },
+    },
+  ).catch(() => []);
 
   return <Points page={page} pageSize={pageSize} wallets={wallets} />;
 };
