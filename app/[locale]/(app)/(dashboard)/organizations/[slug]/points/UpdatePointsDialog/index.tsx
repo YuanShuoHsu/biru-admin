@@ -6,7 +6,10 @@ import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 
-import { type UpdatePointsForm, updatePointsFormSchema } from "./definitions";
+import {
+  type UpdatePointsForm,
+  useUpdatePointsFormSchema,
+} from "./definitions";
 
 import FormBox from "@/components/FormBox";
 import NumberSpinner from "@/components/NumberSpinner";
@@ -37,6 +40,8 @@ const UpdatePointsDialog = ({
   const tCommon = useTranslations("common");
   const tOrganizations = useTranslations("organizations");
 
+  const updatePointsFormSchema = useUpdatePointsFormSchema();
+
   const {
     control,
     formState: { errors, isSubmitted },
@@ -62,12 +67,14 @@ const UpdatePointsDialog = ({
   });
 
   const onSubmitHandler = async (values: UpdatePointsForm) => {
+    const enabled = values.amountPerPoint !== "";
+
     await authClient.organization.update(
       {
         organizationId: organization.id,
         data: {
           // required:false 欄位 server 端為 nullish，null 用來清除設定；client 型別未涵蓋 null
-          amountPerPoint: (values.amountPerPoint
+          amountPerPoint: (enabled
             ? Number(values.amountPerPoint)
             : null) as unknown as number | undefined,
           pointsValidityYears: (values.pointsValidityYears
@@ -106,7 +113,10 @@ const UpdatePointsDialog = ({
         decimalScale={2}
         error={!!errors.amountPerPoint}
         fullWidth
-        helperText={tOrganizations("points.amountPerPoint.hint")}
+        helperText={
+          errors.amountPerPoint?.message ||
+          tOrganizations("points.amountPerPoint.hint")
+        }
         isAllowed={({ floatValue }) =>
           floatValue === undefined || floatValue <= 99999999.99
         }

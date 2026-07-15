@@ -1,5 +1,8 @@
 "use client";
 
+import dayjs from "dayjs";
+import timezonePlugin from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
@@ -24,10 +27,15 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
+import { useDialogStore } from "@/providers/dialog-store-provider";
+
 import type { MyPointsWallet, PointsCoupon } from "@/types/points";
 
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
+
+dayjs.extend(utc);
+dayjs.extend(timezonePlugin);
 
 const StyledAvatar = styled(Avatar)(({ theme }) => ({
   backgroundColor: theme.vars.palette.primary.main,
@@ -44,6 +52,8 @@ interface PointsProps {
 
 const Points = ({ wallets }: PointsProps) => {
   const [redeemingId, setRedeemingId] = useState<string | null>(null);
+
+  const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
 
@@ -74,6 +84,17 @@ const Points = ({ wallets }: PointsProps) => {
       router.refresh();
     }
   };
+
+  const handleRedeemDialog = (coupon: PointsCoupon) =>
+    setDialog({
+      contentText: tAuth("settings.points.redeemConfirm", {
+        code: coupon.code,
+        points: format.number(coupon.pointsCost),
+      }),
+      onConfirm: () => handleRedeem(coupon),
+      open: true,
+      title: tAuth("settings.points.redeem"),
+    });
 
   if (wallets.length === 0)
     return (
@@ -137,10 +158,9 @@ const Points = ({ wallets }: PointsProps) => {
                     }),
                     coupon.validThrough &&
                       tAuth("settings.points.validUntil", {
-                        date: format.dateTime(
-                          new Date(coupon.validThrough),
-                          "short",
-                        ),
+                        date: dayjs(coupon.validThrough)
+                          .tz("Asia/Taipei")
+                          .format("YYYY/MM/DD"),
                       }),
                   ]
                     .filter(Boolean)
@@ -156,7 +176,7 @@ const Points = ({ wallets }: PointsProps) => {
                   <Button
                     disabled={wallet.balance < coupon.pointsCost}
                     loading={redeemingId === coupon.id}
-                    onClick={() => handleRedeem(coupon)}
+                    onClick={() => handleRedeemDialog(coupon)}
                     size="small"
                     variant="contained"
                   >
@@ -194,13 +214,14 @@ const Points = ({ wallets }: PointsProps) => {
                   <ListItemText
                     primary={tAuth(`settings.points.type.${transaction.type}`)}
                     secondary={[
-                      format.dateTime(new Date(transaction.createdAt), "short"),
+                      dayjs(transaction.createdAt)
+                        .tz("Asia/Taipei")
+                        .format("YYYY/MM/DD HH:mm:ss"),
                       transaction.expiresAt &&
                         tAuth("settings.points.validUntil", {
-                          date: format.dateTime(
-                            new Date(transaction.expiresAt),
-                            "short",
-                          ),
+                          date: dayjs(transaction.expiresAt)
+                            .tz("Asia/Taipei")
+                            .format("YYYY/MM/DD"),
                         }),
                     ]
                       .filter(Boolean)

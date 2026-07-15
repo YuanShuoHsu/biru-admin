@@ -118,6 +118,7 @@
     }
   },
   "pointsCost": {
+    "exclusiveHint": "Points-redeemable coupons can only be obtained with points and cannot be claimed, public, or auto-issued",
     "hint": "Members can redeem it to My Coupons with points on the points page",
     "label": "Points cost",
     "placeholder": "Please enter your points cost"

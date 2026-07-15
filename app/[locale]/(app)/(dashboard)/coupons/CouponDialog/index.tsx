@@ -145,6 +145,9 @@ const CouponDialog = ({
   const itemOptions = sectionOptions.flatMap(({ menuItems }) => menuItems);
   const currency = itemOptions[0]?.offers[0]?.priceCurrency || "";
 
+  // 點數兌換券僅能以點數兌換取得，不參與領取／公開／自動發放
+  const isPointsRedeem = pointsCost !== "";
+
   const onSubmitHandler = async (values: CouponFormValues) => {
     try {
       setDialog({ confirmLoading: true });
@@ -155,11 +158,13 @@ const CouponDialog = ({
         discountType: values.discountType,
         discountValue: Number(values.discountValue),
         isActive: values.isActive,
+        // 點數兌換券的取得管道旗標由 server 寫入時正規化，client 不重複執行
         isClaimable: values.isClaimable,
         isPublic: values.isPublic,
-        ...(values.issueTrigger === "spend" && {
-          issueMinSpend: Number(values.issueMinSpend),
-        }),
+        ...(values.issueTrigger === "spend" &&
+          !values.pointsCost && {
+            issueMinSpend: Number(values.issueMinSpend),
+          }),
         issueTrigger:
           values.issueTrigger === "none" ? null : values.issueTrigger,
         ...(values.scope === "item" && {
@@ -497,8 +502,13 @@ const CouponDialog = ({
       <Grid container spacing={2} width="100%">
         <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
+            disabled={isPointsRedeem}
             fullWidth
-            helperText={tCoupons(`issueTrigger.hint.${issueTrigger}`)}
+            helperText={
+              isPointsRedeem
+                ? tCoupons("pointsCost.exclusiveHint")
+                : tCoupons(`issueTrigger.hint.${issueTrigger}`)
+            }
             label={tCoupons("issueTrigger.label")}
             onChange={(e) =>
               setValue(
@@ -517,7 +527,7 @@ const CouponDialog = ({
             ))}
           </TextField>
         </Grid>
-        {issueTrigger === "spend" && (
+        {issueTrigger === "spend" && !isPointsRedeem && (
           <Grid size={{ xs: 12, sm: 6 }}>
             <NumericFormat
               allowNegative={false}
@@ -569,27 +579,37 @@ const CouponDialog = ({
         <FormControlLabel
           control={
             <Switch
-              checked={isClaimable}
+              checked={isClaimable && !isPointsRedeem}
+              disabled={isPointsRedeem}
               onChange={(_, checked) => setValue("isClaimable", checked)}
             />
           }
           label={tCoupons("isClaimable.label")}
           sx={{ alignSelf: "flex-start" }}
         />
-        <FormHelperText>{tCoupons("isClaimable.helperText")}</FormHelperText>
+        <FormHelperText>
+          {isPointsRedeem
+            ? tCoupons("pointsCost.exclusiveHint")
+            : tCoupons("isClaimable.helperText")}
+        </FormHelperText>
       </FormControl>
       <FormControl>
         <FormControlLabel
           control={
             <Switch
-              checked={isPublic}
+              checked={isPublic && !isPointsRedeem}
+              disabled={isPointsRedeem}
               onChange={(_, checked) => setValue("isPublic", checked)}
             />
           }
           label={tCoupons("isPublic.label")}
           sx={{ alignSelf: "flex-start" }}
         />
-        <FormHelperText>{tCoupons("isPublic.helperText")}</FormHelperText>
+        <FormHelperText>
+          {isPointsRedeem
+            ? tCoupons("pointsCost.exclusiveHint")
+            : tCoupons("isPublic.helperText")}
+        </FormHelperText>
       </FormControl>
     </FormBox>
   );

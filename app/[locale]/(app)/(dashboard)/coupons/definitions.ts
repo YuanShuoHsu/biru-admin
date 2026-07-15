@@ -46,7 +46,12 @@ export const useCouponFormSchema = () => {
         });
       }
 
-      if (data.issueTrigger === "spend" && !Number(data.issueMinSpend)) {
+      // 點數兌換券不參與自動發放，spend 門檻無需填寫
+      if (
+        data.issueTrigger === "spend" &&
+        !data.pointsCost &&
+        !Number(data.issueMinSpend)
+      ) {
         ctx.addIssue({
           code: "custom",
           message: tCoupons("issueMinSpend.required"),

@@ -165,6 +165,7 @@
     },
     "amountPerPoint": {
       "hint": "Points are disabled when not set",
+      "invalid": "Spend per point is invalid",
       "label": "Spend per point",
       "placeholder": "Please enter your spend per point"
     },
