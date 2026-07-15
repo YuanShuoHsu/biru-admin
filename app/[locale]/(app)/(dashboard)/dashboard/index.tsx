@@ -7,10 +7,10 @@ import { useRouter } from "@/i18n/navigation";
 import { useAuthStore } from "@/providers/auth-store-provider";
 
 import {
+  AdminPanelSettings,
   Business,
-  Group,
   NavigateNext,
-  ShoppingCart,
+  ReceiptLong,
 } from "@mui/icons-material";
 import {
   Box,
@@ -78,7 +78,7 @@ const Dashboard = ({
     {
       label: t("stats.totalOrders"),
       value: stats.totalOrders,
-      icon: <ShoppingCart />,
+      icon: <ReceiptLong />,
       href: ordersHref,
     },
     ...(stats.totalUsers !== null
@@ -86,7 +86,7 @@ const Dashboard = ({
           {
             label: t("stats.totalUsers"),
             value: stats.totalUsers,
-            icon: <Group />,
+            icon: <AdminPanelSettings />,
             href: "/admins?page=1&pageSize=10",
           },
         ]
