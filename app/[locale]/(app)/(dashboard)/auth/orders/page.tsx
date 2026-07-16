@@ -26,7 +26,10 @@ const AuthOrdersPage = async ({
   const page = Math.max(1, Number(rawPage) || 1);
   const pageSize = Math.max(1, Number(rawPageSize) || 10);
 
-  if (rawPage !== String(page) || rawPageSize !== String(pageSize)) {
+  if (
+    (rawPage !== undefined && rawPage !== String(page)) ||
+    (rawPageSize !== undefined && rawPageSize !== String(pageSize))
+  ) {
     redirect({
       href: `/auth/orders?${new URLSearchParams({
         page: String(page),

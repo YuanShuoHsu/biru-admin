@@ -13,16 +13,19 @@ const AuthPointsLayout = ({ children }: { children: React.ReactNode }) => {
   const tAuth = useTranslations("auth");
 
   const navItems: {
+    href: string;
     Icon: SvgIconComponent;
     label: string;
     value: string;
   }[] = [
     {
+      href: "/auth/points/transactions?page=1&pageSize=10",
       Icon: Stars,
-      label: tAuth("points.transactions"),
-      value: "/auth/points",
+      label: tAuth("points.transactions.label"),
+      value: "/auth/points/transactions",
     },
     {
+      href: "/auth/points/store",
       Icon: Storefront,
       label: tAuth("store.label"),
       value: "/auth/points/store",
@@ -31,7 +34,7 @@ const AuthPointsLayout = ({ children }: { children: React.ReactNode }) => {
 
   const value = pathname.startsWith("/auth/points/store")
     ? "/auth/points/store"
-    : "/auth/points";
+    : "/auth/points/transactions";
 
   return (
     <Stack gap={2} marginBottom="auto">
@@ -41,10 +44,10 @@ const AuthPointsLayout = ({ children }: { children: React.ReactNode }) => {
         value={value}
         variant="scrollable"
       >
-        {navItems.map(({ Icon, label, value }) => (
+        {navItems.map(({ href, Icon, label, value }) => (
           <Tab
             component={Link}
-            href={value}
+            href={href}
             icon={<Icon fontSize="small" />}
             iconPosition="start"
             key={value}

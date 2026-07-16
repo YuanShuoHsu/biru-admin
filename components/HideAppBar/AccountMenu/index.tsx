@@ -107,8 +107,10 @@ const renderMenuItems = (
   items.map(({ disabled, icon: Icon, label, onClick, to }, index) => {
     const key = to || index;
     const href = to && `${basePath}${to}`;
-    const selected = href
-      ? pathname === href || pathname.startsWith(`${href}/`)
+    const toPathname = to && to.split("?")[0];
+    const selected = toPathname
+      ? pathname === `${basePath}${toPathname}` ||
+        pathname.startsWith(`${basePath}${toPathname}/`)
       : false;
 
     return (

@@ -16,7 +16,7 @@ import { fetcher } from "@/utils/fetcher";
 const AuthPointsPage = async ({
   params,
   searchParams,
-}: PageProps<"/[locale]/auth/points">) => {
+}: PageProps<"/[locale]/auth/points/transactions">) => {
   const [{ locale }, { page: rawPage, pageSize: rawPageSize }] =
     await Promise.all([params, searchParams]);
   if (!hasLocale(routing.locales, locale)) notFound();
@@ -28,7 +28,7 @@ const AuthPointsPage = async ({
 
   if (rawPage !== String(page) || rawPageSize !== String(pageSize)) {
     redirect({
-      href: `/auth/points?${new URLSearchParams({
+      href: `/auth/points/transactions?${new URLSearchParams({
         page: String(page),
         pageSize: String(pageSize),
       })}`,
