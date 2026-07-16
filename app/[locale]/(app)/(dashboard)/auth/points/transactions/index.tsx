@@ -20,6 +20,8 @@ import { usePathname, useRouter } from "@/i18n/navigation";
 import { LocalOffer, ShoppingBag, Stars } from "@mui/icons-material";
 import {
   Avatar,
+  Card,
+  CardHeader,
   List,
   ListItem,
   ListItemAvatar,
@@ -152,65 +154,61 @@ const Points = ({ page, pageSize, wallets }: PointsProps) => {
             {tAuth("points.transactions.empty")}
           </Typography>
         )}
-        {transactions.length > 0 && (
-          <List dense disablePadding>
-            {transactions.map((transaction) => (
-              <ListItem
-                disableGutters
-                key={transaction.id}
-                secondaryAction={
-                  <Typography
-                    color={
-                      transaction.type === "earn" ? "primary" : "text.secondary"
-                    }
-                    fontWeight="bold"
-                    variant="body2"
-                  >
-                    {tAuth("points.points", {
-                      points: format.number(transaction.points, {
-                        signDisplay: "exceptZero",
-                      }),
-                    })}
-                  </Typography>
-                }
-              >
-                <ListItemAvatar>
-                  <StyledAvatar>
-                    {transaction.type === "earn" ? (
-                      <ShoppingBag fontSize="small" />
-                    ) : (
-                      <LocalOffer fontSize="small" />
-                    )}
-                  </StyledAvatar>
-                </ListItemAvatar>
-                <ListItemText
-                  primary={tAuth(`points.type.${transaction.type}`)}
-                  secondary={[
-                    wallets.length > 1 && transaction.organizationName,
-                    dayjs(transaction.createdAt)
+        {transactions.map((transaction) => (
+          <Card key={transaction.id} variant="outlined">
+            <CardHeader
+              action={
+                <Typography
+                  color={
+                    transaction.type === "earn" ? "primary" : "text.secondary"
+                  }
+                  fontWeight="bold"
+                  variant="body2"
+                >
+                  {tAuth("points.points", {
+                    points: format.number(transaction.points, {
+                      signDisplay: "exceptZero",
+                    }),
+                  })}
+                </Typography>
+              }
+              avatar={
+                <StyledAvatar>
+                  {transaction.type === "earn" ? (
+                    <ShoppingBag fontSize="small" />
+                  ) : (
+                    <LocalOffer fontSize="small" />
+                  )}
+                </StyledAvatar>
+              }
+              slotProps={{
+                subheader: { variant: "caption" },
+                title: { variant: "subtitle2" },
+              }}
+              subheader={[
+                wallets.length > 1 && transaction.organizationName,
+                dayjs(transaction.createdAt)
+                  .tz("Asia/Taipei")
+                  .format("YYYY/MM/DD HH:mm:ss"),
+                transaction.type === "earn"
+                  ? (transaction.confirmationNumber ||
+                      transaction.orderNumber) &&
+                    `${tOrder("complete.transaction.orderNo")} ${transaction.confirmationNumber || transaction.orderNumber}`
+                  : transaction.couponCode &&
+                    `${tAuth("coupons.label")} ${transaction.couponCode}`,
+                transaction.expiresAt &&
+                  tAuth("points.validUntil", {
+                    date: dayjs(transaction.expiresAt)
                       .tz("Asia/Taipei")
-                      .format("YYYY/MM/DD HH:mm:ss"),
-                    transaction.type === "earn"
-                      ? (transaction.confirmationNumber ||
-                          transaction.orderNumber) &&
-                        `${tOrder("complete.transaction.orderNo")} ${transaction.confirmationNumber || transaction.orderNumber}`
-                      : transaction.couponCode &&
-                        `${tAuth("coupons.label")} ${transaction.couponCode}`,
-                    transaction.expiresAt &&
-                      tAuth("points.validUntil", {
-                        date: dayjs(transaction.expiresAt)
-                          .tz("Asia/Taipei")
-                          .format("YYYY/MM/DD"),
-                      }),
-                  ]
-                    .filter(Boolean)
-                    .join(tCommon("middleDot"))}
-                  slotProps={{ secondary: { variant: "caption" } }}
-                />
-              </ListItem>
-            ))}
-          </List>
-        )}
+                      .format("YYYY/MM/DD"),
+                  }),
+              ]
+                .filter(Boolean)
+                .join(tCommon("middleDot"))}
+              title={tAuth(`points.type.${transaction.type}`)}
+            />
+          </Card>
+        ))}
         {transactionsTotal > 0 && (
           <StyledTablePagination
             ActionsComponent={PaginationActions}
