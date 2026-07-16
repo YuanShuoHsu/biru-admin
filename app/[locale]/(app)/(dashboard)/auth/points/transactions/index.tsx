@@ -39,6 +39,13 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
   backgroundColor: theme.vars.palette.primary.main,
 }));
 
+const StyledTransactionCardHeader = styled(CardHeader)({
+  "& .MuiCardHeader-action": {
+    margin: 0,
+    alignSelf: "center",
+  },
+});
+
 interface PointsProps {
   page: number;
   pageSize: number;
@@ -156,7 +163,7 @@ const Points = ({ page, pageSize, wallets }: PointsProps) => {
         )}
         {transactions.map((transaction) => (
           <Card key={transaction.id} variant="outlined">
-            <CardHeader
+            <StyledTransactionCardHeader
               action={
                 <Typography
                   color={
