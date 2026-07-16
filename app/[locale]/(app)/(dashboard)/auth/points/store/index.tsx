@@ -21,6 +21,7 @@ import {
   Card,
   CardActions,
   Chip,
+  DialogContentText,
   List,
   ListItem,
   ListItemAvatar,
@@ -96,10 +97,15 @@ const Store = ({ wallets }: StoreProps) => {
 
   const handleRedeemDialog = (coupon: PointsCoupon) =>
     setDialog({
-      contentText: tAuth("points.redeemConfirm", {
-        code: coupon.code,
-        points: format.number(coupon.pointsCost),
-      }),
+      content: (
+        <DialogContentText>
+          {tAuth.rich("points.redeemConfirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            code: coupon.code,
+            points: format.number(coupon.pointsCost),
+          })}
+        </DialogContentText>
+      ),
       onConfirm: () => handleRedeem(coupon),
       open: true,
       title: tAuth("points.redeem"),
