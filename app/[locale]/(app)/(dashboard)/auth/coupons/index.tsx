@@ -69,6 +69,10 @@ const Coupons = ({ claimableCoupons, coupons }: CouponsProps) => {
     }
   };
 
+  const organizationCount = new Set(
+    [...claimableCoupons, ...coupons].map((item) => item.organizationSlug),
+  ).size;
+
   const sections: {
     items: (MyClaimableCoupon | MyCoupon)[];
     type: "claimable" | "mine";
@@ -112,7 +116,7 @@ const Coupons = ({ claimableCoupons, coupons }: CouponsProps) => {
                           title: { variant: "subtitle2" },
                         }}
                         subheader={[
-                          item.organizationName,
+                          organizationCount > 1 && item.organizationName,
                           "source" in item &&
                             tAuth(`coupons.source.${item.source}`),
                           coupon.validThrough &&
