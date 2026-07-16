@@ -17,12 +17,25 @@ import PaginationActions, {
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
-import { List, ListItem, ListItemText, Typography } from "@mui/material";
+import { LocalOffer, ShoppingBag, Stars } from "@mui/icons-material";
+import {
+  Avatar,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Typography,
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import type { MyPointsWallet } from "@/types/points";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
+
+const StyledAvatar = styled(Avatar)(({ theme }) => ({
+  backgroundColor: theme.vars.palette.primary.main,
+}));
 
 interface PointsProps {
   page: number;
@@ -44,6 +57,20 @@ const Points = ({ page, pageSize, wallets }: PointsProps) => {
   const rowsPerPageOptions = [
     ...new Set([...PAGE_SIZE_OPTIONS, pageSize]),
   ].sort((a, b) => a - b);
+  const transactions = wallets
+    .flatMap((wallet) =>
+      wallet.transactions.map((transaction) => ({
+        ...transaction,
+        organizationName: wallet.organizationName,
+      })),
+    )
+    .sort(
+      (a, b) => dayjs(b.createdAt).valueOf() - dayjs(a.createdAt).valueOf(),
+    );
+  const transactionsTotal = wallets.reduce(
+    (sum, wallet) => sum + wallet.transactionsTotal,
+    0,
+  );
 
   const handlePageChange = (
     _event: React.MouseEvent<HTMLButtonElement> | null,
@@ -67,116 +94,139 @@ const Points = ({ page, pageSize, wallets }: PointsProps) => {
     );
 
   return (
-    <>
-      {wallets.length === 0 && (
-        <FormCard>
-          <StyledCardHeader
-            title={
-              <Typography color="primary" fontWeight="bold" variant="h6">
-                {tAuth("points.label")}
-              </Typography>
-            }
-          />
-          <StyledCardContent>
-            <Typography color="text.secondary" variant="body2">
-              {tAuth("points.empty")}
-            </Typography>
-          </StyledCardContent>
-        </FormCard>
-      )}
-      {wallets.map((wallet) => (
-        <FormCard key={wallet.organizationSlug}>
-          <StyledCardHeader
-            action={
-              <Typography color="primary" fontWeight="bold" variant="h5">
-                {tAuth("points.points", {
-                  points: format.number(wallet.balance),
-                })}
-              </Typography>
-            }
-            slotProps={{ subheader: { variant: "caption" } }}
-            subheader={tAuth("points.balance")}
-            title={
-              <Typography color="primary" fontWeight="bold" variant="h6">
-                {wallet.organizationName}
-              </Typography>
-            }
-          />
-          <StyledCardContent>
-            {wallet.transactions.length === 0 && (
-              <Typography color="text.secondary" variant="body2">
-                {tAuth("points.transactionsEmpty")}
-              </Typography>
-            )}
-            <List dense disablePadding>
-              {wallet.transactions.map((transaction) => (
-                <ListItem
-                  disableGutters
-                  key={transaction.id}
-                  secondaryAction={
-                    <Typography
-                      color={
-                        transaction.type === "earn"
-                          ? "primary"
-                          : "text.secondary"
-                      }
-                      fontWeight="bold"
-                      variant="body2"
-                    >
-                      {tAuth("points.points", {
-                        points: format.number(transaction.points, {
-                          signDisplay: "exceptZero",
-                        }),
-                      })}
-                    </Typography>
-                  }
-                >
-                  <ListItemText
-                    primary={tAuth(`points.type.${transaction.type}`)}
-                    secondary={[
-                      dayjs(transaction.createdAt)
-                        .tz("Asia/Taipei")
-                        .format("YYYY/MM/DD HH:mm:ss"),
-                      transaction.type === "earn"
-                        ? (transaction.confirmationNumber ||
-                            transaction.orderNumber) &&
-                          `${tOrder("complete.transaction.orderNo")} ${transaction.confirmationNumber || transaction.orderNumber}`
-                        : transaction.couponCode &&
-                          `${tAuth("coupons.label")} ${transaction.couponCode}`,
-                      transaction.expiresAt &&
-                        tAuth("points.validUntil", {
-                          date: dayjs(transaction.expiresAt)
-                            .tz("Asia/Taipei")
-                            .format("YYYY/MM/DD"),
-                        }),
-                    ]
-                      .filter(Boolean)
-                      .join(tCommon("middleDot"))}
-                    slotProps={{ secondary: { variant: "caption" } }}
-                  />
-                </ListItem>
-              ))}
-            </List>
-            {wallet.transactionsTotal > 0 && (
-              <StyledTablePagination
-                ActionsComponent={PaginationActions}
-                component="div"
-                count={wallet.transactionsTotal}
-                labelDisplayedRows={({ count, from, to }) =>
-                  tCommon("pagination.labelDisplayedRows", { count, from, to })
+    <FormCard>
+      <StyledCardHeader
+        title={
+          <Typography color="primary" fontWeight="bold" variant="h6">
+            {tAuth("points.label")}
+          </Typography>
+        }
+      />
+      <StyledCardContent>
+        {wallets.length === 0 && (
+          <Typography color="text.secondary" variant="body2">
+            {tAuth("points.empty")}
+          </Typography>
+        )}
+        {wallets.length > 0 && (
+          <List disablePadding>
+            {wallets.map((wallet) => (
+              <ListItem
+                disableGutters
+                key={wallet.organizationSlug}
+                secondaryAction={
+                  <Typography color="primary" fontWeight="bold" variant="h5">
+                    {tAuth("points.points", {
+                      points: format.number(wallet.balance),
+                    })}
+                  </Typography>
                 }
-                labelRowsPerPage={tCommon("pagination.labelRowsPerPage")}
-                onPageChange={handlePageChange}
-                onRowsPerPageChange={handleRowsPerPageChange}
-                page={page - 1}
-                rowsPerPage={pageSize}
-                rowsPerPageOptions={rowsPerPageOptions}
-              />
-            )}
-          </StyledCardContent>
-        </FormCard>
-      ))}
-    </>
+              >
+                <ListItemAvatar>
+                  <StyledAvatar>
+                    <Stars fontSize="small" />
+                  </StyledAvatar>
+                </ListItemAvatar>
+                <ListItemText
+                  primary={
+                    wallets.length > 1
+                      ? wallet.organizationName
+                      : tAuth("points.balance")
+                  }
+                  secondary={
+                    wallets.length > 1 ? tAuth("points.balance") : null
+                  }
+                  slotProps={{
+                    primary: { fontWeight: "bold", variant: "subtitle2" },
+                    secondary: { variant: "caption" },
+                  }}
+                />
+              </ListItem>
+            ))}
+          </List>
+        )}
+        {wallets.length > 0 && transactions.length === 0 && (
+          <Typography color="text.secondary" variant="body2">
+            {tAuth("points.transactionsEmpty")}
+          </Typography>
+        )}
+        {transactions.length > 0 && (
+          <List dense disablePadding>
+            {transactions.map((transaction) => (
+              <ListItem
+                disableGutters
+                key={transaction.id}
+                secondaryAction={
+                  <Typography
+                    color={
+                      transaction.type === "earn" ? "primary" : "text.secondary"
+                    }
+                    fontWeight="bold"
+                    variant="body2"
+                  >
+                    {tAuth("points.points", {
+                      points: format.number(transaction.points, {
+                        signDisplay: "exceptZero",
+                      }),
+                    })}
+                  </Typography>
+                }
+              >
+                <ListItemAvatar>
+                  <StyledAvatar>
+                    {transaction.type === "earn" ? (
+                      <ShoppingBag fontSize="small" />
+                    ) : (
+                      <LocalOffer fontSize="small" />
+                    )}
+                  </StyledAvatar>
+                </ListItemAvatar>
+                <ListItemText
+                  primary={tAuth(`points.type.${transaction.type}`)}
+                  secondary={[
+                    wallets.length > 1 && transaction.organizationName,
+                    dayjs(transaction.createdAt)
+                      .tz("Asia/Taipei")
+                      .format("YYYY/MM/DD HH:mm:ss"),
+                    transaction.type === "earn"
+                      ? (transaction.confirmationNumber ||
+                          transaction.orderNumber) &&
+                        `${tOrder("complete.transaction.orderNo")} ${transaction.confirmationNumber || transaction.orderNumber}`
+                      : transaction.couponCode &&
+                        `${tAuth("coupons.label")} ${transaction.couponCode}`,
+                    transaction.expiresAt &&
+                      tAuth("points.validUntil", {
+                        date: dayjs(transaction.expiresAt)
+                          .tz("Asia/Taipei")
+                          .format("YYYY/MM/DD"),
+                      }),
+                  ]
+                    .filter(Boolean)
+                    .join(tCommon("middleDot"))}
+                  slotProps={{ secondary: { variant: "caption" } }}
+                />
+              </ListItem>
+            ))}
+          </List>
+        )}
+        {transactionsTotal > 0 && (
+          <StyledTablePagination
+            ActionsComponent={PaginationActions}
+            component="div"
+            count={transactionsTotal}
+            labelDisplayedRows={({ count, from, to }) =>
+              tCommon("pagination.labelDisplayedRows", { count, from, to })
+            }
+            labelRowsPerPage={tCommon("pagination.labelRowsPerPage")}
+            onPageChange={handlePageChange}
+            onRowsPerPageChange={handleRowsPerPageChange}
+            page={page - 1}
+            rowsPerPage={pageSize}
+            rowsPerPageOptions={rowsPerPageOptions}
+          />
+        )}
+      </StyledCardContent>
+    </FormCard>
   );
 };
 

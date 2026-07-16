@@ -14,8 +14,18 @@ import FormCard, {
 
 import { useRouter } from "@/i18n/navigation";
 
-import { LocalOffer } from "@mui/icons-material";
-import { Avatar, Button, Card, CardActions, Typography } from "@mui/material";
+import { LocalOffer, Stars } from "@mui/icons-material";
+import {
+  Avatar,
+  Button,
+  Card,
+  CardActions,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Typography,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -53,6 +63,14 @@ const Store = ({ wallets }: StoreProps) => {
   const tAuth = useTranslations("auth");
   const tCommon = useTranslations("common");
 
+  const coupons = wallets.flatMap((wallet) =>
+    wallet.redeemableCoupons.map((coupon) => ({
+      ...coupon,
+      balance: wallet.balance,
+      organizationName: wallet.organizationName,
+    })),
+  );
+
   const handleRedeem = async (coupon: PointsCoupon) => {
     try {
       setRedeemingId(coupon.id);
@@ -87,96 +105,110 @@ const Store = ({ wallets }: StoreProps) => {
     });
 
   return (
-    <>
-      {wallets.length === 0 && (
-        <FormCard>
-          <StyledCardHeader
-            title={
-              <Typography color="primary" fontWeight="bold" variant="h6">
-                {tAuth("store.label")}
-              </Typography>
-            }
-          />
-          <StyledCardContent>
-            <Typography color="text.secondary" variant="body2">
-              {tAuth("points.empty")}
-            </Typography>
-          </StyledCardContent>
-        </FormCard>
-      )}
-      {wallets.map((wallet) => (
-        <FormCard key={wallet.organizationSlug}>
-          <StyledCardHeader
-            action={
-              <Typography color="primary" fontWeight="bold" variant="h5">
-                {tAuth("points.points", {
-                  points: format.number(wallet.balance),
-                })}
-              </Typography>
-            }
-            slotProps={{ subheader: { variant: "caption" } }}
-            subheader={tAuth("points.balance")}
-            title={
-              <Typography color="primary" fontWeight="bold" variant="h6">
-                {wallet.organizationName}
-              </Typography>
-            }
-          />
-          <StyledCardContent>
-            {wallet.redeemableCoupons.length === 0 && (
-              <Typography color="text.secondary" variant="body2">
-                {tAuth("points.redeemableEmpty")}
-              </Typography>
-            )}
-            {wallet.redeemableCoupons.map((coupon) => (
-              <Card key={coupon.id} variant="outlined">
-                <StyledCardHeader
-                  avatar={
-                    <StyledAvatar>
-                      <LocalOffer fontSize="small" />
-                    </StyledAvatar>
+    <FormCard>
+      <StyledCardHeader
+        title={
+          <Typography color="primary" fontWeight="bold" variant="h6">
+            {tAuth("store.label")}
+          </Typography>
+        }
+      />
+      <StyledCardContent>
+        {wallets.length === 0 && (
+          <Typography color="text.secondary" variant="body2">
+            {tAuth("points.empty")}
+          </Typography>
+        )}
+        {wallets.length > 0 && (
+          <List disablePadding>
+            {wallets.map((wallet) => (
+              <ListItem
+                disableGutters
+                key={wallet.organizationSlug}
+                secondaryAction={
+                  <Typography color="primary" fontWeight="bold" variant="h5">
+                    {tAuth("points.points", {
+                      points: format.number(wallet.balance),
+                    })}
+                  </Typography>
+                }
+              >
+                <ListItemAvatar>
+                  <StyledAvatar>
+                    <Stars fontSize="small" />
+                  </StyledAvatar>
+                </ListItemAvatar>
+                <ListItemText
+                  primary={
+                    wallets.length > 1
+                      ? wallet.organizationName
+                      : tAuth("points.balance")
+                  }
+                  secondary={
+                    wallets.length > 1 ? tAuth("points.balance") : null
                   }
                   slotProps={{
-                    subheader: { variant: "caption" },
-                    title: { variant: "subtitle2" },
+                    primary: { fontWeight: "bold", variant: "subtitle2" },
+                    secondary: { variant: "caption" },
                   }}
-                  subheader={[
-                    tAuth("points.points", {
-                      points: format.number(coupon.pointsCost),
-                    }),
-                    coupon.validThrough &&
-                      tAuth("points.validUntil", {
-                        date: dayjs(coupon.validThrough)
-                          .tz("Asia/Taipei")
-                          .format("YYYY/MM/DD"),
-                      }),
-                  ]
-                    .filter(Boolean)
-                    .join(tCommon("middleDot"))}
-                  title={coupon.code}
                 />
-                <StyledCardActions disableSpacing>
-                  <Typography color="primary" fontWeight="bold" variant="h5">
-                    {coupon.discountType === "percentage"
-                      ? `-${Number(coupon.discountValue)}%`
-                      : `-${coupon.discountCurrency} ${format.number(Number(coupon.discountValue))}`}
-                  </Typography>
-                  <Button
-                    disabled={wallet.balance < coupon.pointsCost}
-                    loading={redeemingId === coupon.id}
-                    onClick={() => handleRedeemDialog(coupon)}
-                    size="small"
-                    variant="contained"
-                  >
-                    {tAuth("points.redeem")}
-                  </Button>
-                </StyledCardActions>
-              </Card>
+              </ListItem>
             ))}
-          </StyledCardContent>
-        </FormCard>
-      ))}
-    </>
+          </List>
+        )}
+        {wallets.length > 0 && coupons.length === 0 && (
+          <Typography color="text.secondary" variant="body2">
+            {tAuth("points.redeemableEmpty")}
+          </Typography>
+        )}
+        {coupons.map((coupon) => (
+          <Card key={coupon.id} variant="outlined">
+            <StyledCardHeader
+              avatar={
+                <StyledAvatar>
+                  <LocalOffer fontSize="small" />
+                </StyledAvatar>
+              }
+              slotProps={{
+                subheader: { variant: "caption" },
+                title: { variant: "subtitle2" },
+              }}
+              subheader={[
+                wallets.length > 1 && coupon.organizationName,
+                tAuth("points.points", {
+                  points: format.number(coupon.pointsCost),
+                }),
+                coupon.validThrough &&
+                  tAuth("points.validUntil", {
+                    date: dayjs(coupon.validThrough)
+                      .tz("Asia/Taipei")
+                      .format("YYYY/MM/DD"),
+                  }),
+              ]
+                .filter(Boolean)
+                .join(tCommon("middleDot"))}
+              title={coupon.code}
+            />
+            <StyledCardActions disableSpacing>
+              <Typography color="primary" fontWeight="bold" variant="h5">
+                {coupon.discountType === "percentage"
+                  ? `-${Number(coupon.discountValue)}%`
+                  : `-${coupon.discountCurrency} ${format.number(Number(coupon.discountValue))}`}
+              </Typography>
+              <Button
+                disabled={coupon.balance < coupon.pointsCost}
+                loading={redeemingId === coupon.id}
+                onClick={() => handleRedeemDialog(coupon)}
+                size="small"
+                variant="contained"
+              >
+                {tAuth("points.redeem")}
+              </Button>
+            </StyledCardActions>
+          </Card>
+        ))}
+      </StyledCardContent>
+    </FormCard>
   );
 };
 
