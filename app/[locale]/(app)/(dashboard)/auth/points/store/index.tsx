@@ -20,6 +20,7 @@ import {
   Button,
   Card,
   CardActions,
+  Chip,
   List,
   ListItem,
   ListItemAvatar,
@@ -164,6 +165,17 @@ const Store = ({ wallets }: StoreProps) => {
         {coupons.map((coupon) => (
           <Card key={coupon.id} variant="outlined">
             <StyledCardHeader
+              action={
+                <Chip
+                  color="primary"
+                  label={
+                    coupon.discountType === "percentage"
+                      ? `-${Number(coupon.discountValue)}%`
+                      : `-${coupon.discountCurrency} ${format.number(Number(coupon.discountValue))}`
+                  }
+                  size="small"
+                />
+              }
               avatar={
                 <StyledAvatar>
                   <LocalOffer fontSize="small" />
@@ -175,9 +187,6 @@ const Store = ({ wallets }: StoreProps) => {
               }}
               subheader={[
                 wallets.length > 1 && coupon.organizationName,
-                tAuth("points.points", {
-                  points: format.number(coupon.pointsCost),
-                }),
                 coupon.validThrough &&
                   tAuth("points.validUntil", {
                     date: dayjs(coupon.validThrough)
@@ -191,9 +200,9 @@ const Store = ({ wallets }: StoreProps) => {
             />
             <StyledCardActions disableSpacing>
               <Typography color="primary" fontWeight="bold" variant="h5">
-                {coupon.discountType === "percentage"
-                  ? `-${Number(coupon.discountValue)}%`
-                  : `-${coupon.discountCurrency} ${format.number(Number(coupon.discountValue))}`}
+                {tAuth("points.points", {
+                  points: format.number(coupon.pointsCost),
+                })}
               </Typography>
               <Button
                 disabled={coupon.balance < coupon.pointsCost}
