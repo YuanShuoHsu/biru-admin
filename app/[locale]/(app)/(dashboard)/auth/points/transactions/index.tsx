@@ -30,7 +30,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import type { MyPointsWallet } from "@/types/points";
+import type { MyPoints } from "@/types/points";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
@@ -49,10 +49,10 @@ const StyledTransactionCardHeader = styled(CardHeader)({
 interface PointsProps {
   page: number;
   pageSize: number;
-  wallets: MyPointsWallet[];
+  points: MyPoints | null;
 }
 
-const Points = ({ page, pageSize, wallets }: PointsProps) => {
+const Points = ({ page, pageSize, points }: PointsProps) => {
   const format = useFormatter();
 
   const pathname = usePathname();
@@ -67,21 +67,15 @@ const Points = ({ page, pageSize, wallets }: PointsProps) => {
     ...new Set([...PAGE_SIZE_OPTIONS, pageSize]),
   ].sort((a, b) => a - b);
 
-  const transactions = wallets
-    .flatMap((wallet) =>
-      wallet.transactions.map((transaction) => ({
-        ...transaction,
-        organizationName: wallet.organizationName,
-      })),
-    )
-    .sort(
-      (a, b) => dayjs(b.createdAt).valueOf() - dayjs(a.createdAt).valueOf(),
-    );
+  const transactions = points?.transactions || [];
 
-  const transactionsTotal = wallets.reduce(
-    (sum, wallet) => sum + wallet.transactionsTotal,
-    0,
-  );
+  const transactionsTotal = points?.transactionsTotal || 0;
+
+  const organizationCount = new Set(
+    transactions
+      .map((transaction) => transaction.organizationName)
+      .filter(Boolean),
+  ).size;
 
   const handlePageChange = (
     _event: React.MouseEvent<HTMLButtonElement> | null,
@@ -114,49 +108,38 @@ const Points = ({ page, pageSize, wallets }: PointsProps) => {
         }
       />
       <StyledCardContent>
-        {wallets.length === 0 && (
+        {!points && (
           <Typography color="text.secondary" variant="body2">
             {tAuth("points.empty")}
           </Typography>
         )}
-        {wallets.length > 0 && (
+        {points && (
           <List disablePadding>
-            {wallets.map((wallet) => (
-              <ListItem
-                disableGutters
-                key={wallet.organizationSlug}
-                secondaryAction={
-                  <Typography color="primary" fontWeight="bold" variant="h5">
-                    {tAuth("points.points", {
-                      points: format.number(wallet.balance),
-                    })}
-                  </Typography>
-                }
-              >
-                <ListItemAvatar>
-                  <StyledAvatar>
-                    <Stars fontSize="small" />
-                  </StyledAvatar>
-                </ListItemAvatar>
-                <ListItemText
-                  primary={
-                    wallets.length > 1
-                      ? wallet.organizationName
-                      : tAuth("points.balance")
-                  }
-                  secondary={
-                    wallets.length > 1 ? tAuth("points.balance") : null
-                  }
-                  slotProps={{
-                    primary: { fontWeight: "bold", variant: "subtitle2" },
-                    secondary: { variant: "caption" },
-                  }}
-                />
-              </ListItem>
-            ))}
+            <ListItem
+              disableGutters
+              secondaryAction={
+                <Typography color="primary" fontWeight="bold" variant="h5">
+                  {tAuth("points.points", {
+                    points: format.number(points.balance),
+                  })}
+                </Typography>
+              }
+            >
+              <ListItemAvatar>
+                <StyledAvatar>
+                  <Stars fontSize="small" />
+                </StyledAvatar>
+              </ListItemAvatar>
+              <ListItemText
+                primary={tAuth("points.balance")}
+                slotProps={{
+                  primary: { fontWeight: "bold", variant: "subtitle2" },
+                }}
+              />
+            </ListItem>
           </List>
         )}
-        {wallets.length > 0 && transactions.length === 0 && (
+        {points && transactions.length === 0 && (
           <Typography color="text.secondary" variant="body2">
             {tAuth("points.transactions.empty")}
           </Typography>
@@ -193,7 +176,7 @@ const Points = ({ page, pageSize, wallets }: PointsProps) => {
                 title: { variant: "subtitle2" },
               }}
               subheader={[
-                wallets.length > 1 && transaction.organizationName,
+                organizationCount > 1 && transaction.organizationName,
                 dayjs(transaction.createdAt)
                   .tz("Asia/Taipei")
                   .format("YYYY/MM/DD HH:mm:ss"),

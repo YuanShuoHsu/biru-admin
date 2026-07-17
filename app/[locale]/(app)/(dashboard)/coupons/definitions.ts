@@ -6,6 +6,7 @@ export const useCouponFormSchema = () => {
 
   return z
     .object({
+      applicableOrganizationIds: z.array(z.string()),
       code: z
         .string()
         .trim()
@@ -27,6 +28,7 @@ export const useCouponFormSchema = () => {
       menuItemIds: z.array(z.string()),
       menuSectionIds: z.array(z.string()),
       minSubtotal: z.string().trim(),
+      organizationScope: z.enum(["all", "specific"]),
       perUserLimit: z.string().trim(),
       pointsCost: z.string().trim(),
       scope: z.enum(["item", "order"]),
@@ -56,6 +58,30 @@ export const useCouponFormSchema = () => {
           code: "custom",
           message: tCoupons("issueMinSpend.required"),
           path: ["issueMinSpend"],
+        });
+      }
+
+      if (
+        data.scope === "order" &&
+        data.organizationScope === "specific" &&
+        data.applicableOrganizationIds.length === 0
+      ) {
+        ctx.addIssue({
+          code: "custom",
+          message: tCoupons("organizationScope.specificHint"),
+          path: ["applicableOrganizationIds"],
+        });
+      }
+
+      // 品項 ID 只存在於單一店家的菜單：品項券必須限定恰好一家店
+      if (
+        data.scope === "item" &&
+        data.applicableOrganizationIds.length !== 1
+      ) {
+        ctx.addIssue({
+          code: "custom",
+          message: tCoupons("applicableOrganizationIds.notSelected"),
+          path: ["applicableOrganizationIds"],
         });
       }
 

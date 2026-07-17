@@ -21,13 +21,9 @@ import { getErrorMessage } from "@/utils/errors";
 
 interface GrantCouponDialogProps {
   coupon: Coupon;
-  organizationSlug: string;
 }
 
-const GrantCouponDialog = ({
-  coupon,
-  organizationSlug,
-}: GrantCouponDialogProps) => {
+const GrantCouponDialog = ({ coupon }: GrantCouponDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const tCoupons = useTranslations("coupons");
@@ -49,14 +45,11 @@ const GrantCouponDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher(
-        `/api/organizations/${organizationSlug}/coupons/${coupon.id}/grant`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        },
-      );
+      await fetcher(`/api/coupons/${coupon.id}/grant`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
 
       enqueueSnackbar(
         tCoupons("actions.grantCoupon.success", { code: coupon.code, email }),

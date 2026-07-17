@@ -106,7 +106,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/api/organizations/{organizationSlug}/coupons": {
+  "/api/coupons": {
     parameters: {
       query?: never;
       header?: never;
@@ -114,17 +114,17 @@ export interface paths {
       cookie?: never;
     };
     /** 查詢優惠券列表 */
-    get: operations["CouponsController_findAll"];
+    get: operations["AdminCouponsController_findAll"];
     put?: never;
     /** 建立優惠券 */
-    post: operations["CouponsController_create"];
+    post: operations["AdminCouponsController_create"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/api/organizations/{organizationSlug}/coupons/{couponId}": {
+  "/api/coupons/{couponId}": {
     parameters: {
       query?: never;
       header?: never;
@@ -135,11 +135,28 @@ export interface paths {
     put?: never;
     post?: never;
     /** 刪除優惠券 */
-    delete: operations["CouponsController_remove"];
+    delete: operations["AdminCouponsController_remove"];
     options?: never;
     head?: never;
     /** 更新優惠券 */
-    patch: operations["CouponsController_update"];
+    patch: operations["AdminCouponsController_update"];
+    trace?: never;
+  };
+  "/api/coupons/{couponId}/grant": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 發放優惠券給指定會員 */
+    post: operations["AdminCouponsController_grant"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
     trace?: never;
   };
   "/api/organizations/{organizationSlug}/coupons/validate": {
@@ -210,40 +227,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/api/organizations/{organizationSlug}/coupons/{couponId}/claim": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** 領取優惠券 */
-    post: operations["CouponsController_claim"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/organizations/{organizationSlug}/coupons/{couponId}/grant": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** 發放優惠券給指定會員 */
-    post: operations["CouponsController_grant"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   "/api/users/me/coupons": {
     parameters: {
       query?: never;
@@ -272,6 +255,23 @@ export interface paths {
     get: operations["MyCouponsController_getAllClaimable"];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/users/me/coupons/{couponId}/claim": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 領取優惠券 */
+    post: operations["MyCouponsController_claim"];
     delete?: never;
     options?: never;
     head?: never;
@@ -909,7 +909,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** 我的點數（跨店，含可兌換優惠券與明細） */
+    /** 我的點數（全店家合併，含可兌換優惠券與明細） */
     get: operations["MyPointsController_getAllMine"];
     put?: never;
     post?: never;
@@ -1093,6 +1093,8 @@ export interface components {
       email: string;
     };
     CreateCouponDto: {
+      /** @description 適用店家；null = 全部店家通用，發行店永遠視為適用 */
+      applicableOrganizationIds?: string[] | null;
       code: string;
       /** @description 幣別（ISO 4217），未帶時預設 TWD；應與店家菜單幣別一致 */
       discountCurrency?: string;
@@ -1128,6 +1130,7 @@ export interface components {
     };
     CouponResponseDto: {
       id: string;
+      applicableOrganizationIds?: string[] | null;
       code: string;
       discountCurrency: string;
       /** @enum {string} */
@@ -1142,7 +1145,6 @@ export interface components {
       menuItemIds?: string[] | null;
       menuSectionIds?: string[] | null;
       minSubtotal?: string | null;
-      organizationId: string;
       perUserLimit?: number | null;
       pointsCost?: number | null;
       /** @enum {string} */
@@ -1159,6 +1161,8 @@ export interface components {
       updatedAt: string;
     };
     UpdateCouponDto: {
+      /** @description 適用店家；null = 全部店家通用，發行店永遠視為適用 */
+      applicableOrganizationIds?: string[] | null;
       code?: string;
       /** @description 幣別（ISO 4217），未帶時預設 TWD；應與店家菜單幣別一致 */
       discountCurrency?: string;
@@ -1191,6 +1195,44 @@ export interface components {
       validFrom?: string | null;
       /** Format: date-time */
       validThrough?: string | null;
+    };
+    GrantCouponDto: {
+      /**
+       * Format: email
+       * @description 發放對象的會員 email
+       */
+      email: string;
+    };
+    CustomerCouponDto: {
+      id: string;
+      code: string;
+      discountCurrency: string;
+      /** @enum {string} */
+      discountType: "fixed" | "percentage";
+      discountValue: string;
+      minSubtotal?: string | null;
+      /** @enum {string} */
+      scope: "order" | "item";
+      /** Format: date-time */
+      validFrom?: string | null;
+      /** Format: date-time */
+      validThrough?: string | null;
+    };
+    UserCouponResponseDto: {
+      id: string;
+      coupon: components["schemas"]["CustomerCouponDto"];
+      /** @enum {string} */
+      source:
+        | "granted"
+        | "claimed"
+        | "signup"
+        | "birthday"
+        | "spend"
+        | "redeemed";
+      /** Format: date-time */
+      usedAt?: string | null;
+      /** Format: date-time */
+      createdAt: string;
     };
     CreateOrderItemAddOnDto: {
       menuItemId: string;
@@ -1251,44 +1293,6 @@ export interface components {
       /** @description 目前登入者是否已領取 */
       claimed: boolean;
     };
-    CustomerCouponDto: {
-      id: string;
-      code: string;
-      discountCurrency: string;
-      /** @enum {string} */
-      discountType: "fixed" | "percentage";
-      discountValue: string;
-      minSubtotal?: string | null;
-      /** @enum {string} */
-      scope: "order" | "item";
-      /** Format: date-time */
-      validFrom?: string | null;
-      /** Format: date-time */
-      validThrough?: string | null;
-    };
-    UserCouponResponseDto: {
-      id: string;
-      coupon: components["schemas"]["CustomerCouponDto"];
-      /** @enum {string} */
-      source:
-        | "granted"
-        | "claimed"
-        | "signup"
-        | "birthday"
-        | "spend"
-        | "redeemed";
-      /** Format: date-time */
-      usedAt?: string | null;
-      /** Format: date-time */
-      createdAt: string;
-    };
-    GrantCouponDto: {
-      /**
-       * Format: email
-       * @description 發放對象的會員 email
-       */
-      email: string;
-    };
     MyCouponResponseDto: {
       id: string;
       coupon: components["schemas"]["CustomerCouponDto"];
@@ -1304,8 +1308,10 @@ export interface components {
       usedAt?: string | null;
       /** Format: date-time */
       createdAt: string;
-      organizationName: string;
-      organizationSlug: string;
+      /** @description 限定店家的店名清單；null = 全部店家通用 */
+      applicableOrganizationNames?: string[] | null;
+      /** @description 限定店家的 slug 清單；null = 全部店家通用 */
+      applicableOrganizationSlugs?: string[] | null;
     };
     MyClaimableCouponDto: {
       id: string;
@@ -1321,8 +1327,10 @@ export interface components {
       validFrom?: string | null;
       /** Format: date-time */
       validThrough?: string | null;
-      organizationName: string;
-      organizationSlug: string;
+      /** @description 限定店家的店名清單；null = 全部店家通用 */
+      applicableOrganizationNames?: string[] | null;
+      /** @description 限定店家的 slug 清單；null = 全部店家通用 */
+      applicableOrganizationSlugs?: string[] | null;
     };
     /**
      * @description 語系設定
@@ -2657,6 +2665,8 @@ export interface components {
       validFrom?: string | null;
       /** Format: date-time */
       validThrough?: string | null;
+      /** @description 限定店家的店名清單；null = 全部店家通用 */
+      applicableOrganizationNames?: string[] | null;
       /** @description 兌換所需點數 */
       pointsCost: number;
     };
@@ -2672,15 +2682,16 @@ export interface components {
       expiresAt?: string | null;
       /** @description earn 來源訂單編號 */
       orderNumber?: string | null;
+      /** @description 交易發生店家；redeem 屬品牌層為 null */
+      organizationName?: string | null;
       /** @description earn 為正、redeem 為負 */
       points: number;
       /** @enum {string} */
       type: "earn" | "redeem";
     };
-    MyPointsWalletDto: {
+    MyPointsDto: {
+      /** @description 全店家合併餘額 */
       balance: number;
-      organizationName: string;
-      organizationSlug: string;
       redeemableCoupons: components["schemas"]["PointsCouponDto"][];
       transactions: components["schemas"]["PointTransactionDto"][];
       /** @description 明細總筆數 */
@@ -2941,13 +2952,11 @@ export interface operations {
       };
     };
   };
-  CouponsController_findAll: {
+  AdminCouponsController_findAll: {
     parameters: {
       query?: never;
       header?: never;
-      path: {
-        organizationSlug: string;
-      };
+      path?: never;
       cookie?: never;
     };
     requestBody?: never;
@@ -2969,13 +2978,11 @@ export interface operations {
       };
     };
   };
-  CouponsController_create: {
+  AdminCouponsController_create: {
     parameters: {
       query?: never;
       header?: never;
-      path: {
-        organizationSlug: string;
-      };
+      path?: never;
       cookie?: never;
     };
     requestBody: {
@@ -3001,12 +3008,11 @@ export interface operations {
       };
     };
   };
-  CouponsController_remove: {
+  AdminCouponsController_remove: {
     parameters: {
       query?: never;
       header?: never;
       path: {
-        organizationSlug: string;
         couponId: string;
       };
       cookie?: never;
@@ -3028,12 +3034,11 @@ export interface operations {
       };
     };
   };
-  CouponsController_update: {
+  AdminCouponsController_update: {
     parameters: {
       query?: never;
       header?: never;
       path: {
-        organizationSlug: string;
         couponId: string;
       };
       cookie?: never;
@@ -3050,6 +3055,38 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["CouponResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminCouponsController_grant: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        couponId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["GrantCouponDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["UserCouponResponseDto"];
         };
       };
       /** @description Internal server error */
@@ -3177,68 +3214,6 @@ export interface operations {
       };
     };
   };
-  CouponsController_claim: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        organizationSlug: string;
-        couponId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["UserCouponResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  CouponsController_grant: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        organizationSlug: string;
-        couponId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["GrantCouponDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["UserCouponResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
   MyCouponsController_getAllMine: {
     parameters: {
       query?: never;
@@ -3280,6 +3255,34 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["MyClaimableCouponDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  MyCouponsController_claim: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        couponId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["UserCouponResponseDto"];
         };
       };
       /** @description Internal server error */
@@ -4960,7 +4963,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["MyPointsWalletDto"][];
+          "application/json": components["schemas"]["MyPointsDto"];
         };
       };
       /** @description Internal server error */
@@ -5095,6 +5098,15 @@ export const updateCouponDtoIssueTriggerValues: ReadonlyArray<
 export const updateCouponDtoScopeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UpdateCouponDto"]["scope"]
 > = ["order", "item"];
+export const customerCouponDtoDiscountTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CustomerCouponDto"]["discountType"]
+> = ["fixed", "percentage"];
+export const customerCouponDtoScopeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CustomerCouponDto"]["scope"]
+> = ["order", "item"];
+export const userCouponResponseDtoSourceValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["UserCouponResponseDto"]["source"]
+> = ["granted", "claimed", "signup", "birthday", "spend", "redeemed"];
 export const availableCouponDtoDiscountTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AvailableCouponDto"]["discountType"]
 > = ["fixed", "percentage"];
@@ -5107,15 +5119,6 @@ export const claimableCouponDtoDiscountTypeValues: ReadonlyArray<
 export const claimableCouponDtoScopeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["ClaimableCouponDto"]["scope"]
 > = ["order", "item"];
-export const customerCouponDtoDiscountTypeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["CustomerCouponDto"]["discountType"]
-> = ["fixed", "percentage"];
-export const customerCouponDtoScopeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["CustomerCouponDto"]["scope"]
-> = ["order", "item"];
-export const userCouponResponseDtoSourceValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["UserCouponResponseDto"]["source"]
-> = ["granted", "claimed", "signup", "birthday", "spend", "redeemed"];
 export const myCouponResponseDtoSourceValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["MyCouponResponseDto"]["source"]
 > = ["granted", "claimed", "signup", "birthday", "spend", "redeemed"];

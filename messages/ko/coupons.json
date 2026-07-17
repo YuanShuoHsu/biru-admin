@@ -1,96 +1,65 @@
 {
-  "label": "쿠폰 관리",
   "actions": {
-    "label": "작업",
     "createCoupon": {
-      "title": "쿠폰 추가",
+      "error": "쿠폰 추가에 실패했습니다",
       "success": "쿠폰 {code}을(를) 추가했습니다",
-      "error": "쿠폰 추가에 실패했습니다"
-    },
-    "updateCoupon": {
-      "title": "쿠폰 편집",
-      "success": "쿠폰 {code}을(를) 업데이트했습니다",
-      "error": "쿠폰 업데이트에 실패했습니다"
+      "title": "쿠폰 추가"
     },
     "deleteCoupon": {
-      "title": "쿠폰 삭제",
       "confirm": "쿠폰 <bold>{code}</bold>을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+      "error": "쿠폰 삭제에 실패했습니다",
       "success": "쿠폰 {code}을(를) 삭제했습니다",
-      "error": "쿠폰 삭제에 실패했습니다"
+      "title": "쿠폰 삭제"
     },
     "grantCoupon": {
-      "title": "쿠폰 발급",
-      "success": "쿠폰 {code}을(를) {email}에게 발급했습니다",
-      "error": "쿠폰 발급에 실패했습니다",
       "email": {
-        "label": "회원 이메일",
-        "placeholder": "회원 이메일을 입력해 주세요",
+        "hint": "발급 후 해당 회원의 쿠폰 지갑에 표시됩니다",
         "invalid": "회원 이메일이 유효하지 않습니다",
-        "hint": "발급 후 해당 회원의 쿠폰 지갑에 표시됩니다"
-      }
+        "label": "회원 이메일",
+        "placeholder": "회원 이메일을 입력해 주세요"
+      },
+      "error": "쿠폰 발급에 실패했습니다",
+      "success": "쿠폰 {code}을(를) {email}에게 발급했습니다",
+      "title": "쿠폰 발급"
+    },
+    "label": "작업",
+    "updateCoupon": {
+      "error": "쿠폰 업데이트에 실패했습니다",
+      "success": "쿠폰 {code}을(를) 업데이트했습니다",
+      "title": "쿠폰 편집"
     }
+  },
+  "applicableOrganizationIds": {
+    "itemHint": "지정 상품 쿠폰은 단일 매장에만 적용됩니다",
+    "label": "적용 매장",
+    "notSelected": "적용 매장을 선택해 주세요",
+    "placeholder": "적용 매장을 선택해 주세요"
   },
   "code": {
     "label": "쿠폰 코드",
     "placeholder": "쿠폰 코드를 입력해 주세요",
     "required": "쿠폰 코드는 필수입니다"
   },
+  "createdAt": "생성 일시",
+  "discount": "할인",
   "discountType": {
-    "label": "할인 유형",
     "fixed": "고정 금액",
+    "label": "할인 유형",
     "percentage": "퍼센트"
   },
   "discountValue": {
+    "invalid": "할인 값이 유효하지 않습니다",
     "label": "할인 값",
     "placeholder": "할인 값을 입력해 주세요",
-    "required": "할인 값은 필수입니다",
-    "invalid": "할인 값이 유효하지 않습니다"
+    "required": "할인 값은 필수입니다"
   },
-  "scope": {
-    "label": "적용 범위",
-    "order": "전체 주문",
-    "item": "지정 상품",
-    "itemHint": "적용 카테고리 또는 적용 상품을 하나 이상 선택해 주세요"
-  },
-  "menuItemIds": {
-    "label": "적용 상품",
-    "placeholder": "적용 상품을 선택해 주세요"
-  },
-  "menuSectionIds": {
-    "label": "적용 카테고리",
-    "placeholder": "적용 카테고리를 선택해 주세요"
-  },
-  "minSubtotal": {
-    "label": "최소 주문 금액",
-    "placeholder": "최소 주문 금액을 입력해 주세요"
-  },
-  "totalLimit": {
-    "label": "총 사용 횟수 제한",
-    "placeholder": "총 사용 횟수 제한을 입력해 주세요"
-  },
-  "perUserLimit": {
-    "label": "1인당 사용 횟수 제한",
-    "placeholder": "1인당 사용 횟수 제한을 입력해 주세요",
-    "hint": "설정 시 회원 전용입니다"
-  },
-  "discount": "할인",
-  "usage": "사용 횟수",
-  "unlimited": "무제한",
-  "isActive": {
-    "helperText": "비활성화하면 어떤 방식으로도 사용할 수 없습니다",
-    "label": "활성화",
-    "active": "활성",
-    "inactive": "비활성"
-  },
-  "validFrom": {
-    "label": "시작 일시"
-  },
-  "validUntil": {
-    "label": "종료 일시"
-  },
-  "validity": "유효 기간",
-  "createdAt": "생성 일시",
   "distribution": "획득 방법",
+  "isActive": {
+    "active": "활성",
+    "helperText": "비활성화하면 어떤 방식으로도 사용할 수 없습니다",
+    "inactive": "비활성",
+    "label": "활성화"
+  },
   "isClaimable": {
     "helperText": "회원이 쿠폰 페이지에서 내 쿠폰으로 받을 수 있습니다",
     "label": "받기 가능"
@@ -105,22 +74,65 @@
     "required": "최소 결제 금액은 필수입니다"
   },
   "issueTrigger": {
+    "birthday": "생일 쿠폰",
+    "hint": {
+      "birthday": "회원 생일 달에 자동으로 1장 발급됩니다",
+      "none": "자동 발급하지 않습니다",
+      "signup": "신규 회원에게 자동으로 1장 발급됩니다",
+      "spend": "1회 주문이 기준 금액에 도달하면 자동 발급됩니다"
+    },
     "label": "자동 발급",
     "none": "없음",
     "signup": "가입 축하 쿠폰",
-    "birthday": "생일 쿠폰",
-    "spend": "결제 금액 리워드",
-    "hint": {
-      "none": "자동 발급하지 않습니다",
-      "signup": "신규 회원에게 자동으로 1장 발급됩니다",
-      "birthday": "회원 생일 달에 자동으로 1장 발급됩니다",
-      "spend": "1회 주문이 기준 금액에 도달하면 자동 발급됩니다"
-    }
+    "spend": "결제 금액 리워드"
+  },
+  "label": "쿠폰 관리",
+  "menuItemIds": {
+    "label": "적용 상품",
+    "placeholder": "적용 상품을 선택해 주세요"
+  },
+  "menuSectionIds": {
+    "label": "적용 카테고리",
+    "placeholder": "적용 카테고리를 선택해 주세요"
+  },
+  "minSubtotal": {
+    "label": "최소 주문 금액",
+    "placeholder": "최소 주문 금액을 입력해 주세요"
+  },
+  "organizationScope": {
+    "all": "전체 매장",
+    "label": "적용 매장",
+    "specific": "지정 매장",
+    "specificHint": "적용 매장을 1개 이상 선택해 주세요"
+  },
+  "perUserLimit": {
+    "hint": "설정 시 회원 전용입니다",
+    "label": "1인당 사용 횟수 제한",
+    "placeholder": "1인당 사용 횟수 제한을 입력해 주세요"
   },
   "pointsCost": {
     "exclusiveHint": "포인트 교환 쿠폰은 포인트로만 획득할 수 있으며 수령·공개·자동 발급 대상이 아닙니다",
     "hint": "회원이 포인트 페이지에서 포인트로 내 쿠폰으로 교환할 수 있습니다",
     "label": "교환에 필요한 포인트",
     "placeholder": "교환에 필요한 포인트를 입력해 주세요"
-  }
+  },
+  "scope": {
+    "item": "지정 상품",
+    "itemHint": "적용 카테고리 또는 적용 상품을 하나 이상 선택해 주세요",
+    "label": "적용 범위",
+    "order": "전체 주문"
+  },
+  "totalLimit": {
+    "label": "총 사용 횟수 제한",
+    "placeholder": "총 사용 횟수 제한을 입력해 주세요"
+  },
+  "unlimited": "무제한",
+  "usage": "사용 횟수",
+  "validFrom": {
+    "label": "시작 일시"
+  },
+  "validUntil": {
+    "label": "종료 일시"
+  },
+  "validity": "유효 기간"
 }

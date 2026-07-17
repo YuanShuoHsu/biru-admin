@@ -315,11 +315,6 @@ const useNavItems = (): MenuItem[] => {
             label: tMenus("label"),
             to: `/menus/sections?organization=${defaultOrganizationSlug}&page=1&pageSize=10`,
           },
-          {
-            icon: ConfirmationNumber,
-            label: tCoupons("label"),
-            to: `/coupons?organization=${defaultOrganizationSlug}`,
-          },
         ]
       : []),
     {
@@ -329,6 +324,11 @@ const useNavItems = (): MenuItem[] => {
     },
     ...(isAdmin
       ? [
+          {
+            icon: ConfirmationNumber,
+            label: tCoupons("label"),
+            to: "/coupons",
+          },
           {
             icon: AdminPanelSettings,
             label: tAdmin("label"),

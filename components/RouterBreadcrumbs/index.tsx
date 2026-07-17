@@ -476,7 +476,7 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
     {
       icon: ConfirmationNumber,
       label: tCoupons("label"),
-      to: `/coupons?${menusQuery}`,
+      to: "/coupons",
     },
     {
       children: [

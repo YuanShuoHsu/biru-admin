@@ -52,10 +52,9 @@ const Coupons = ({ claimableCoupons, coupons }: CouponsProps) => {
     try {
       setClaimingId(coupon.id);
 
-      await fetcher(
-        `/api/organizations/${coupon.organizationSlug}/coupons/${coupon.id}/claim`,
-        { method: "POST" },
-      );
+      await fetcher(`/api/users/me/coupons/${coupon.id}/claim`, {
+        method: "POST",
+      });
 
       enqueueSnackbar(tAuth("coupons.claimSuccess", { code: coupon.code }), {
         variant: "success",
@@ -68,10 +67,6 @@ const Coupons = ({ claimableCoupons, coupons }: CouponsProps) => {
       router.refresh();
     }
   };
-
-  const organizationCount = new Set(
-    [...claimableCoupons, ...coupons].map((item) => item.organizationSlug),
-  ).size;
 
   const sections: {
     items: (MyClaimableCoupon | MyCoupon)[];
@@ -116,7 +111,13 @@ const Coupons = ({ claimableCoupons, coupons }: CouponsProps) => {
                           title: { variant: "subtitle2" },
                         }}
                         subheader={[
-                          organizationCount > 1 && item.organizationName,
+                          item.applicableOrganizationNames?.length &&
+                            tAuth("coupons.limitedToStores", {
+                              stores: format.list(
+                                item.applicableOrganizationNames,
+                                { type: "unit" },
+                              ),
+                            }),
                           "source" in item &&
                             tAuth(`coupons.source.${item.source}`),
                           coupon.validThrough &&
@@ -142,16 +143,18 @@ const Coupons = ({ claimableCoupons, coupons }: CouponsProps) => {
                             : `-${coupon.discountCurrency} ${Number(coupon.discountValue).toLocaleString(locale)}`}
                         </Typography>
                         {"coupon" in item ? (
-                          item.organizationSlug && (
-                            <Button
-                              component={Link}
-                              href={`/order/${ORDER_MODE.Pickup}/${item.organizationSlug}`}
-                              size="small"
-                              variant="outlined"
-                            >
-                              {tAuth("coupons.use")}
-                            </Button>
-                          )
+                          <Button
+                            component={Link}
+                            href={
+                              item.applicableOrganizationSlugs?.length === 1
+                                ? `/order/${ORDER_MODE.Pickup}/${item.applicableOrganizationSlugs[0]}`
+                                : `/order/${ORDER_MODE.Pickup}`
+                            }
+                            size="small"
+                            variant="outlined"
+                          >
+                            {tAuth("coupons.use")}
+                          </Button>
                         ) : (
                           <Button
                             loading={claimingId === item.id}

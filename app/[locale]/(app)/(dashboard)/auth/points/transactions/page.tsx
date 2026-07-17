@@ -9,7 +9,7 @@ import { getPointsKey } from "./constants";
 import { redirect } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 
-import type { MyPointsWallet } from "@/types/points";
+import type { MyPoints } from "@/types/points";
 
 import { fetcher } from "@/utils/fetcher";
 
@@ -37,14 +37,11 @@ const AuthPointsPage = async ({
   }
 
   const reqHeaders = await headers();
-  const wallets = await fetcher<MyPointsWallet[]>(
-    getPointsKey(page, pageSize),
-    {
-      headers: { cookie: reqHeaders.get("cookie") || "" },
-    },
-  ).catch(() => []);
+  const points = await fetcher<MyPoints>(getPointsKey(page, pageSize), {
+    headers: { cookie: reqHeaders.get("cookie") || "" },
+  }).catch(() => null);
 
-  return <Points page={page} pageSize={pageSize} wallets={wallets} />;
+  return <Points page={page} pageSize={pageSize} points={points} />;
 };
 
 export default AuthPointsPage;

@@ -32,7 +32,7 @@ import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { MyPointsWallet, PointsCoupon } from "@/types/points";
+import type { MyPoints, PointsCoupon } from "@/types/points";
 
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
@@ -50,10 +50,10 @@ const StyledCardActions = styled(CardActions)(({ theme }) => ({
 }));
 
 interface StoreProps {
-  wallets: MyPointsWallet[];
+  points: MyPoints | null;
 }
 
-const Store = ({ wallets }: StoreProps) => {
+const Store = ({ points }: StoreProps) => {
   const [redeemingId, setRedeemingId] = useState<string | null>(null);
 
   const { setDialog } = useDialogStore((state) => state);
@@ -65,13 +65,7 @@ const Store = ({ wallets }: StoreProps) => {
   const tAuth = useTranslations("auth");
   const tCommon = useTranslations("common");
 
-  const coupons = wallets.flatMap((wallet) =>
-    wallet.redeemableCoupons.map((coupon) => ({
-      ...coupon,
-      balance: wallet.balance,
-      organizationName: wallet.organizationName,
-    })),
-  );
+  const coupons = points?.redeemableCoupons || [];
 
   const handleRedeem = async (coupon: PointsCoupon) => {
     try {
@@ -121,49 +115,38 @@ const Store = ({ wallets }: StoreProps) => {
         }
       />
       <StyledCardContent>
-        {wallets.length === 0 && (
+        {!points && (
           <Typography color="text.secondary" variant="body2">
             {tAuth("points.empty")}
           </Typography>
         )}
-        {wallets.length > 0 && (
+        {points && (
           <List disablePadding>
-            {wallets.map((wallet) => (
-              <ListItem
-                disableGutters
-                key={wallet.organizationSlug}
-                secondaryAction={
-                  <Typography color="primary" fontWeight="bold" variant="h5">
-                    {tAuth("points.points", {
-                      points: format.number(wallet.balance),
-                    })}
-                  </Typography>
-                }
-              >
-                <ListItemAvatar>
-                  <StyledAvatar>
-                    <Stars fontSize="small" />
-                  </StyledAvatar>
-                </ListItemAvatar>
-                <ListItemText
-                  primary={
-                    wallets.length > 1
-                      ? wallet.organizationName
-                      : tAuth("points.balance")
-                  }
-                  secondary={
-                    wallets.length > 1 ? tAuth("points.balance") : null
-                  }
-                  slotProps={{
-                    primary: { fontWeight: "bold", variant: "subtitle2" },
-                    secondary: { variant: "caption" },
-                  }}
-                />
-              </ListItem>
-            ))}
+            <ListItem
+              disableGutters
+              secondaryAction={
+                <Typography color="primary" fontWeight="bold" variant="h5">
+                  {tAuth("points.points", {
+                    points: format.number(points.balance),
+                  })}
+                </Typography>
+              }
+            >
+              <ListItemAvatar>
+                <StyledAvatar>
+                  <Stars fontSize="small" />
+                </StyledAvatar>
+              </ListItemAvatar>
+              <ListItemText
+                primary={tAuth("points.balance")}
+                slotProps={{
+                  primary: { fontWeight: "bold", variant: "subtitle2" },
+                }}
+              />
+            </ListItem>
           </List>
         )}
-        {wallets.length > 0 && coupons.length === 0 && (
+        {points && coupons.length === 0 && (
           <Typography color="text.secondary" variant="body2">
             {tAuth("points.redeemableEmpty")}
           </Typography>
@@ -192,7 +175,12 @@ const Store = ({ wallets }: StoreProps) => {
                 title: { variant: "subtitle2" },
               }}
               subheader={[
-                wallets.length > 1 && coupon.organizationName,
+                coupon.applicableOrganizationNames?.length &&
+                  tAuth("coupons.limitedToStores", {
+                    stores: format.list(coupon.applicableOrganizationNames, {
+                      type: "unit",
+                    }),
+                  }),
                 coupon.validThrough &&
                   tAuth("points.validUntil", {
                     date: dayjs(coupon.validThrough)
@@ -211,7 +199,7 @@ const Store = ({ wallets }: StoreProps) => {
                 })}
               </Typography>
               <Button
-                disabled={coupon.balance < coupon.pointsCost}
+                disabled={(points?.balance || 0) < coupon.pointsCost}
                 loading={redeemingId === coupon.id}
                 onClick={() => handleRedeemDialog(coupon)}
                 size="small"

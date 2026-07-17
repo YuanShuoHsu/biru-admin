@@ -7,7 +7,7 @@ import Store from ".";
 
 import { routing } from "@/i18n/routing";
 
-import type { MyPointsWallet } from "@/types/points";
+import type { MyPoints } from "@/types/points";
 
 import { fetcher } from "@/utils/fetcher";
 
@@ -21,11 +21,11 @@ const AuthPointsStorePage = async ({
 
   const reqHeaders = await headers();
   const cookie = reqHeaders.get("cookie") || "";
-  const wallets = await fetcher<MyPointsWallet[]>("/api/users/me/points", {
+  const points = await fetcher<MyPoints>("/api/users/me/points", {
     headers: { cookie },
-  }).catch(() => []);
+  }).catch(() => null);
 
-  return <Store wallets={wallets} />;
+  return <Store points={points} />;
 };
 
 export default AuthPointsStorePage;

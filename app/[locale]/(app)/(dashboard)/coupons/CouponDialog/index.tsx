@@ -1,11 +1,12 @@
 "use client";
 
 import dayjs from "dayjs";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
+import useSWR from "swr";
 
 import { type CouponFormValues, useCouponFormSchema } from "../definitions";
 
@@ -36,6 +37,7 @@ import {
 } from "@/types/api";
 import type { Coupon, CreateCouponDto } from "@/types/coupons";
 import type { OrderMenu } from "@/types/menus";
+import type { OrganizationResponse } from "@/types/organizations";
 
 import { fetcher } from "@/utils/fetcher";
 
@@ -46,23 +48,24 @@ const issueTriggerOptions: CouponFormValues["issueTrigger"][] = [
   "spend",
 ];
 
+const organizationScopeOptions: CouponFormValues["organizationScope"][] = [
+  "all",
+  "specific",
+];
+
 const toDateTimeLocal = (value: string | null | undefined): string =>
   value ? dayjs(value).format("YYYY-MM-DDTHH:mm") : "";
 
 interface CouponDialogProps {
   coupon: Coupon | null;
-  menu: OrderMenu | null;
   mutate: () => void;
-  organizationSlug: string;
+  organizations: OrganizationResponse[];
 }
 
-const CouponDialog = ({
-  coupon,
-  menu,
-  mutate,
-  organizationSlug,
-}: CouponDialogProps) => {
+const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
+
+  const locale = useLocale();
 
   const tCommon = useTranslations("common");
   const tCoupons = useTranslations("coupons");
@@ -76,6 +79,7 @@ const CouponDialog = ({
     setValue,
   } = useForm<CouponFormValues>({
     defaultValues: {
+      applicableOrganizationIds: coupon?.applicableOrganizationIds || [],
       code: coupon?.code || "",
       discountType: coupon?.discountType || "fixed",
       discountValue: coupon ? String(Number(coupon.discountValue)) : "",
@@ -91,6 +95,9 @@ const CouponDialog = ({
       minSubtotal: coupon?.minSubtotal
         ? String(Number(coupon.minSubtotal))
         : "",
+      organizationScope: coupon?.applicableOrganizationIds?.length
+        ? "specific"
+        : "all",
       perUserLimit:
         coupon?.perUserLimit != null ? String(coupon.perUserLimit) : "",
       pointsCost: coupon?.pointsCost != null ? String(coupon.pointsCost) : "",
@@ -103,6 +110,7 @@ const CouponDialog = ({
   });
 
   const [
+    applicableOrganizationIds,
     discountType,
     discountValue,
     isActive,
@@ -113,6 +121,7 @@ const CouponDialog = ({
     menuItemIds,
     menuSectionIds,
     minSubtotal,
+    organizationScope,
     perUserLimit,
     pointsCost,
     scope,
@@ -122,6 +131,7 @@ const CouponDialog = ({
   ] = useWatch({
     control,
     name: [
+      "applicableOrganizationIds",
       "discountType",
       "discountValue",
       "isActive",
@@ -132,6 +142,7 @@ const CouponDialog = ({
       "menuItemIds",
       "menuSectionIds",
       "minSubtotal",
+      "organizationScope",
       "perUserLimit",
       "pointsCost",
       "scope",
@@ -141,9 +152,18 @@ const CouponDialog = ({
     ],
   });
 
+  // 品項券限定單一店家：菜單依所選店家載入（品項 ID 各店不同）
+  const itemOrganizationId =
+    scope === "item" ? applicableOrganizationIds[0] || "" : "";
+  const { data: menu = null } = useSWR<OrderMenu>(
+    itemOrganizationId
+      ? `/api/organizations/${itemOrganizationId}/order-menu?lang=${locale}`
+      : null,
+  );
+
   const sectionOptions = menu?.sections || [];
   const itemOptions = sectionOptions.flatMap(({ menuItems }) => menuItems);
-  const currency = itemOptions[0]?.offers[0]?.priceCurrency || "";
+  const currency = itemOptions[0]?.offers[0]?.priceCurrency || "TWD";
 
   // 點數兌換券僅能以點數兌換取得，不參與領取／公開／自動發放
   const isPointsRedeem = pointsCost !== "";
@@ -153,8 +173,13 @@ const CouponDialog = ({
       setDialog({ confirmLoading: true });
 
       const body: CreateCouponDto = {
+        // null 表示清除，讓已限定店家的券可改回全部店家通用
+        applicableOrganizationIds:
+          values.scope === "item" || values.organizationScope === "specific"
+            ? values.applicableOrganizationIds
+            : null,
         code: values.code,
-        ...(currency && { discountCurrency: currency }),
+        discountCurrency: currency,
         discountType: values.discountType,
         discountValue: Number(values.discountValue),
         isActive: values.isActive,
@@ -187,16 +212,11 @@ const CouponDialog = ({
         }),
       };
 
-      await fetcher(
-        coupon
-          ? `/api/organizations/${organizationSlug}/coupons/${coupon.id}`
-          : `/api/organizations/${organizationSlug}/coupons`,
-        {
-          method: coupon ? "PATCH" : "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        },
-      );
+      await fetcher(coupon ? `/api/coupons/${coupon.id}` : "/api/coupons", {
+        method: coupon ? "PATCH" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
 
       enqueueSnackbar(
         tCoupons(
@@ -237,14 +257,69 @@ const CouponDialog = ({
         required
         {...register("code")}
       />
+      {scope === "order" && (
+        <>
+          <TextField
+            fullWidth
+            label={tCoupons("organizationScope.label")}
+            onChange={(e) =>
+              setValue(
+                "organizationScope",
+                e.target.value as CouponFormValues["organizationScope"],
+                { shouldValidate: isSubmitted },
+              )
+            }
+            required
+            select
+            value={organizationScope}
+          >
+            {organizationScopeOptions.map((value) => (
+              <MenuItem key={value} value={value}>
+                {tCoupons(`organizationScope.${value}`)}
+              </MenuItem>
+            ))}
+          </TextField>
+          {organizationScope === "specific" && (
+            <Autocomplete
+              fullWidth
+              getOptionLabel={({ name }) => name}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              multiple
+              onChange={(_, value) =>
+                setValue(
+                  "applicableOrganizationIds",
+                  value.map(({ id }) => id),
+                  { shouldValidate: isSubmitted },
+                )
+              }
+              options={organizations}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  error={!!errors.applicableOrganizationIds}
+                  helperText={tCoupons("organizationScope.specificHint")}
+                  label={tCoupons("applicableOrganizationIds.label")}
+                  placeholder={tCoupons(
+                    "applicableOrganizationIds.placeholder",
+                  )}
+                />
+              )}
+              value={organizations.filter(({ id }) =>
+                applicableOrganizationIds.includes(id),
+              )}
+            />
+          )}
+        </>
+      )}
       <TextField
         fullWidth
         label={tCoupons("scope.label")}
-        onChange={(e) =>
-          setValue("scope", e.target.value as CouponFormValues["scope"], {
-            shouldValidate: isSubmitted,
-          })
-        }
+        onChange={(e) => {
+          const value = e.target.value as CouponFormValues["scope"];
+          // 品項券限定單一店家：切換適用範圍時重設適用店家
+          if (value === "item") setValue("applicableOrganizationIds", []);
+          setValue("scope", value, { shouldValidate: isSubmitted });
+        }}
         required
         select
         value={scope}
@@ -257,6 +332,38 @@ const CouponDialog = ({
       </TextField>
       {scope === "item" && (
         <>
+          <Autocomplete
+            fullWidth
+            getOptionLabel={({ name }) => name}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
+            onChange={(_, value) => {
+              setValue("applicableOrganizationIds", value ? [value.id] : [], {
+                shouldValidate: isSubmitted,
+              });
+              // 品項 ID 各店不同：換店家後清空已選品項
+              setValue("menuItemIds", []);
+              setValue("menuSectionIds", []);
+            }}
+            options={organizations}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                error={!!errors.applicableOrganizationIds}
+                helperText={
+                  errors.applicableOrganizationIds?.message ||
+                  tCoupons("applicableOrganizationIds.itemHint")
+                }
+                label={tCoupons("applicableOrganizationIds.label")}
+                placeholder={tCoupons("applicableOrganizationIds.placeholder")}
+                required
+              />
+            )}
+            value={
+              organizations.find(
+                ({ id }) => id === applicableOrganizationIds[0],
+              ) || null
+            }
+          />
           <Autocomplete
             fullWidth
             getOptionLabel={({ name }) => name}

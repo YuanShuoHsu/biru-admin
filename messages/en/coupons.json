@@ -1,96 +1,65 @@
 {
-  "label": "Coupons",
   "actions": {
-    "label": "Actions",
     "createCoupon": {
-      "title": "Create coupon",
+      "error": "Failed to create coupon",
       "success": "Coupon {code} created",
-      "error": "Failed to create coupon"
-    },
-    "updateCoupon": {
-      "title": "Edit coupon",
-      "success": "Coupon {code} updated",
-      "error": "Failed to update coupon"
+      "title": "Create coupon"
     },
     "deleteCoupon": {
-      "title": "Delete coupon",
       "confirm": "Are you sure you want to delete coupon <bold>{code}</bold>? This action cannot be undone.",
+      "error": "Failed to delete coupon",
       "success": "Coupon {code} deleted",
-      "error": "Failed to delete coupon"
+      "title": "Delete coupon"
     },
     "grantCoupon": {
-      "title": "Grant coupon",
-      "success": "Coupon {code} granted to {email}",
-      "error": "Failed to grant coupon",
       "email": {
-        "label": "Member email",
-        "placeholder": "Please enter your member email",
+        "hint": "The coupon will appear in the member's coupon wallet",
         "invalid": "Member email is not valid",
-        "hint": "The coupon will appear in the member's coupon wallet"
-      }
+        "label": "Member email",
+        "placeholder": "Please enter your member email"
+      },
+      "error": "Failed to grant coupon",
+      "success": "Coupon {code} granted to {email}",
+      "title": "Grant coupon"
+    },
+    "label": "Actions",
+    "updateCoupon": {
+      "error": "Failed to update coupon",
+      "success": "Coupon {code} updated",
+      "title": "Edit coupon"
     }
+  },
+  "applicableOrganizationIds": {
+    "itemHint": "Item-scope coupons apply to a single store only",
+    "label": "Applicable stores",
+    "notSelected": "Please select your applicable store",
+    "placeholder": "Select applicable stores"
   },
   "code": {
     "label": "Code",
     "placeholder": "Please enter your coupon code",
     "required": "Code is required"
   },
+  "createdAt": "Created at",
+  "discount": "Discount",
   "discountType": {
-    "label": "Discount type",
     "fixed": "Fixed amount",
+    "label": "Discount type",
     "percentage": "Percentage"
   },
   "discountValue": {
+    "invalid": "Discount value is invalid",
     "label": "Discount value",
     "placeholder": "Please enter your discount value",
-    "required": "Discount value is required",
-    "invalid": "Discount value is invalid"
+    "required": "Discount value is required"
   },
-  "scope": {
-    "label": "Scope",
-    "order": "Entire order",
-    "item": "Specific items",
-    "itemHint": "Select at least one applicable section or item"
-  },
-  "menuItemIds": {
-    "label": "Applicable items",
-    "placeholder": "Please select your applicable items"
-  },
-  "menuSectionIds": {
-    "label": "Applicable sections",
-    "placeholder": "Please select your applicable sections"
-  },
-  "minSubtotal": {
-    "label": "Minimum order amount",
-    "placeholder": "Please enter your minimum order amount"
-  },
-  "totalLimit": {
-    "label": "Total usage limit",
-    "placeholder": "Please enter your total usage limit"
-  },
-  "perUserLimit": {
-    "label": "Per-user usage limit",
-    "placeholder": "Please enter your per-user usage limit",
-    "hint": "Members only when set"
-  },
-  "discount": "Discount",
-  "usage": "Usage",
-  "unlimited": "Unlimited",
-  "isActive": {
-    "helperText": "When disabled, the code cannot be used in any way",
-    "label": "Active",
-    "active": "Active",
-    "inactive": "Inactive"
-  },
-  "validFrom": {
-    "label": "Valid from"
-  },
-  "validUntil": {
-    "label": "Valid until"
-  },
-  "validity": "Validity",
-  "createdAt": "Created at",
   "distribution": "Distribution",
+  "isActive": {
+    "active": "Active",
+    "helperText": "When disabled, the code cannot be used in any way",
+    "inactive": "Inactive",
+    "label": "Active"
+  },
   "isClaimable": {
     "helperText": "Members can claim it to My Coupons on the coupons page",
     "label": "Claimable"
@@ -105,22 +74,65 @@
     "required": "Spend threshold is required"
   },
   "issueTrigger": {
+    "birthday": "Birthday coupon",
+    "hint": {
+      "birthday": "Members automatically receive one in their birthday month",
+      "none": "No automatic issuance",
+      "signup": "New members automatically receive one",
+      "spend": "Automatically issued when a single order reaches the threshold"
+    },
     "label": "Auto issue",
     "none": "None",
     "signup": "Signup gift",
-    "birthday": "Birthday coupon",
-    "spend": "Spend reward",
-    "hint": {
-      "none": "No automatic issuance",
-      "signup": "New members automatically receive one",
-      "birthday": "Members automatically receive one in their birthday month",
-      "spend": "Automatically issued when a single order reaches the threshold"
-    }
+    "spend": "Spend reward"
+  },
+  "label": "Coupons",
+  "menuItemIds": {
+    "label": "Applicable items",
+    "placeholder": "Please select your applicable items"
+  },
+  "menuSectionIds": {
+    "label": "Applicable sections",
+    "placeholder": "Please select your applicable sections"
+  },
+  "minSubtotal": {
+    "label": "Minimum order amount",
+    "placeholder": "Please enter your minimum order amount"
+  },
+  "organizationScope": {
+    "all": "All stores",
+    "label": "Applicable stores",
+    "specific": "Specific stores",
+    "specificHint": "Select at least one applicable store"
+  },
+  "perUserLimit": {
+    "hint": "Members only when set",
+    "label": "Per-user usage limit",
+    "placeholder": "Please enter your per-user usage limit"
   },
   "pointsCost": {
     "exclusiveHint": "Points-redeemable coupons can only be obtained with points and cannot be claimed, public, or auto-issued",
     "hint": "Members can redeem it to My Coupons with points on the points page",
     "label": "Points cost",
     "placeholder": "Please enter your points cost"
-  }
+  },
+  "scope": {
+    "item": "Specific items",
+    "itemHint": "Select at least one applicable section or item",
+    "label": "Scope",
+    "order": "Entire order"
+  },
+  "totalLimit": {
+    "label": "Total usage limit",
+    "placeholder": "Please enter your total usage limit"
+  },
+  "unlimited": "Unlimited",
+  "usage": "Usage",
+  "validFrom": {
+    "label": "Valid from"
+  },
+  "validUntil": {
+    "label": "Valid until"
+  },
+  "validity": "Validity"
 }

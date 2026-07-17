@@ -25,7 +25,7 @@ import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { Coupon } from "@/types/coupons";
-import type { OrderMenu } from "@/types/menus";
+import type { OrganizationResponse } from "@/types/organizations";
 
 import { fetcher } from "@/utils/fetcher";
 
@@ -35,18 +35,11 @@ const DataGrid = dynamic(
 );
 
 interface CouponsProps {
-  canWrite: boolean;
   coupons: Coupon[];
-  menu: OrderMenu | null;
-  organizationSlug: string;
+  organizations: OrganizationResponse[];
 }
 
-const Coupons = ({
-  canWrite,
-  coupons: initialCoupons,
-  menu,
-  organizationSlug,
-}: CouponsProps) => {
+const Coupons = ({ coupons: initialCoupons, organizations }: CouponsProps) => {
   const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
@@ -54,7 +47,7 @@ const Coupons = ({
   const tCoupons = useTranslations("coupons");
 
   const { data: coupons = initialCoupons, mutate } = useSWR<Coupon[]>(
-    `/api/organizations/${organizationSlug}/coupons`,
+    "/api/coupons",
     { fallbackData: initialCoupons },
   );
 
@@ -63,16 +56,15 @@ const Coupons = ({
       content: (
         <CouponDialog
           coupon={null}
-          menu={menu}
           mutate={mutate}
-          organizationSlug={organizationSlug}
+          organizations={organizations}
         />
       ),
       formId: "coupon-form",
       open: true,
       title: tCoupons("actions.createCoupon.title"),
     });
-  }, [menu, mutate, organizationSlug, setDialog, tCoupons]);
+  }, [mutate, organizations, setDialog, tCoupons]);
 
   const handleUpdateCoupon = useCallback(
     (coupon: Coupon) => {
@@ -80,9 +72,8 @@ const Coupons = ({
         content: (
           <CouponDialog
             coupon={coupon}
-            menu={menu}
             mutate={mutate}
-            organizationSlug={organizationSlug}
+            organizations={organizations}
           />
         ),
         formId: "coupon-form",
@@ -90,24 +81,19 @@ const Coupons = ({
         title: tCoupons("actions.updateCoupon.title"),
       });
     },
-    [menu, mutate, organizationSlug, setDialog, tCoupons],
+    [mutate, organizations, setDialog, tCoupons],
   );
 
   const handleGrantCoupon = useCallback(
     (coupon: Coupon) => {
       setDialog({
-        content: (
-          <GrantCouponDialog
-            coupon={coupon}
-            organizationSlug={organizationSlug}
-          />
-        ),
+        content: <GrantCouponDialog coupon={coupon} />,
         formId: "grant-coupon-form",
         open: true,
         title: tCoupons("actions.grantCoupon.title"),
       });
     },
-    [organizationSlug, setDialog, tCoupons],
+    [setDialog, tCoupons],
   );
 
   const handleDeleteCoupon = useCallback(
@@ -123,10 +109,7 @@ const Coupons = ({
         ),
         onConfirm: async () => {
           try {
-            await fetcher(
-              `/api/organizations/${organizationSlug}/coupons/${id}`,
-              { method: "DELETE" },
-            );
+            await fetcher(`/api/coupons/${id}`, { method: "DELETE" });
 
             enqueueSnackbar(
               tCoupons("actions.deleteCoupon.success", { code }),
@@ -144,57 +127,42 @@ const Coupons = ({
         title: tCoupons("actions.deleteCoupon.title"),
       });
     },
-    [mutate, organizationSlug, setDialog, tCoupons],
+    [mutate, setDialog, tCoupons],
   );
 
   const columns = useMemo<GridColDef[]>(
     () => [
-      ...(canWrite
-        ? [
-            {
-              disableColumnMenu: true,
-              field: "actions",
-              filterable: false,
-              headerName: tCoupons("actions.label"),
-              renderCell: ({ row }: GridRenderCellParams<Coupon>) => (
-                <Stack
-                  alignItems="center"
-                  direction="row"
-                  gap={1}
-                  height="100%"
-                >
-                  <Tooltip title={tCoupons("actions.updateCoupon.title")}>
-                    <IconButton
-                      onClick={() => handleUpdateCoupon(row)}
-                      size="small"
-                    >
-                      <Edit fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title={tCoupons("actions.grantCoupon.title")}>
-                    <IconButton
-                      onClick={() => handleGrantCoupon(row)}
-                      size="small"
-                    >
-                      <CardGiftcard fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title={tCoupons("actions.deleteCoupon.title")}>
-                    <IconButton
-                      color="error"
-                      onClick={() => handleDeleteCoupon(row)}
-                      size="small"
-                    >
-                      <Delete fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                </Stack>
-              ),
-              resizable: false,
-              sortable: false,
-            },
-          ]
-        : []),
+      {
+        disableColumnMenu: true,
+        field: "actions",
+        filterable: false,
+        headerName: tCoupons("actions.label"),
+        renderCell: ({ row }: GridRenderCellParams<Coupon>) => (
+          <Stack alignItems="center" direction="row" gap={1} height="100%">
+            <Tooltip title={tCoupons("actions.updateCoupon.title")}>
+              <IconButton onClick={() => handleUpdateCoupon(row)} size="small">
+                <Edit fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title={tCoupons("actions.grantCoupon.title")}>
+              <IconButton onClick={() => handleGrantCoupon(row)} size="small">
+                <CardGiftcard fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title={tCoupons("actions.deleteCoupon.title")}>
+              <IconButton
+                color="error"
+                onClick={() => handleDeleteCoupon(row)}
+                size="small"
+              >
+                <Delete fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </Stack>
+        ),
+        resizable: false,
+        sortable: false,
+      },
       {
         field: "code",
         headerName: tCoupons("code.label"),
@@ -206,6 +174,22 @@ const Coupons = ({
           coupon.discountType === "percentage"
             ? `${Number(coupon.discountValue)}%`
             : `${coupon.discountCurrency} ${Number(coupon.discountValue)}`,
+      },
+      {
+        field: "applicableOrganizationIds",
+        headerName: tCoupons("organizationScope.label"),
+        valueGetter: (
+          _value: unknown,
+          { applicableOrganizationIds }: Coupon,
+        ) =>
+          applicableOrganizationIds?.length
+            ? applicableOrganizationIds
+                .map(
+                  (id) =>
+                    organizations.find((org) => org.id === id)?.name || id,
+                )
+                .join(", ")
+            : tCoupons("organizationScope.all"),
       },
       {
         field: "scope",
@@ -296,29 +280,27 @@ const Coupons = ({
       },
     ],
     [
-      canWrite,
       format,
       handleDeleteCoupon,
       handleGrantCoupon,
       handleUpdateCoupon,
+      organizations,
       tCoupons,
     ],
   );
 
   return (
     <>
-      {canWrite && (
-        <Stack alignItems="center" direction="row" flexWrap="wrap" gap={2}>
-          <Button
-            onClick={handleCreateCoupon}
-            size="small"
-            startIcon={<Add />}
-            variant="contained"
-          >
-            {tCoupons("actions.createCoupon.title")}
-          </Button>
-        </Stack>
-      )}
+      <Stack alignItems="center" direction="row" flexWrap="wrap" gap={2}>
+        <Button
+          onClick={handleCreateCoupon}
+          size="small"
+          startIcon={<Add />}
+          variant="contained"
+        >
+          {tCoupons("actions.createCoupon.title")}
+        </Button>
+      </Stack>
       <DataGrid {...DATA_GRID_PROPS} columns={columns} rows={coupons} />
     </>
   );

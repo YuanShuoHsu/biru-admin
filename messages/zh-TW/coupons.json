@@ -1,96 +1,65 @@
 {
-  "label": "優惠券管理",
   "actions": {
-    "label": "操作",
     "createCoupon": {
-      "title": "新增優惠券",
+      "error": "新增優惠券失敗",
       "success": "已新增優惠券 {code}",
-      "error": "新增優惠券失敗"
-    },
-    "updateCoupon": {
-      "title": "編輯優惠券",
-      "success": "已更新優惠券 {code}",
-      "error": "更新優惠券失敗"
+      "title": "新增優惠券"
     },
     "deleteCoupon": {
-      "title": "刪除優惠券",
       "confirm": "確定要刪除優惠券 <bold>{code}</bold> 嗎？此操作無法復原。",
+      "error": "刪除優惠券失敗",
       "success": "已刪除優惠券 {code}",
-      "error": "刪除優惠券失敗"
+      "title": "刪除優惠券"
     },
     "grantCoupon": {
-      "title": "發放優惠券",
-      "success": "已將優惠券 {code} 發放給 {email}",
-      "error": "發放優惠券失敗",
       "email": {
-        "label": "會員電子信箱",
-        "placeholder": "請輸入您的會員電子信箱",
+        "hint": "發放後將出現在該會員的優惠券錢包",
         "invalid": "會員電子信箱格式無效",
-        "hint": "發放後將出現在該會員的優惠券錢包"
-      }
+        "label": "會員電子信箱",
+        "placeholder": "請輸入您的會員電子信箱"
+      },
+      "error": "發放優惠券失敗",
+      "success": "已將優惠券 {code} 發放給 {email}",
+      "title": "發放優惠券"
+    },
+    "label": "操作",
+    "updateCoupon": {
+      "error": "更新優惠券失敗",
+      "success": "已更新優惠券 {code}",
+      "title": "編輯優惠券"
     }
+  },
+  "applicableOrganizationIds": {
+    "itemHint": "指定品項券僅適用單一店家",
+    "label": "適用店家",
+    "notSelected": "請選擇您的適用店家",
+    "placeholder": "請選擇適用店家"
   },
   "code": {
     "label": "優惠碼",
     "placeholder": "請輸入您的優惠碼",
     "required": "優惠碼為必填"
   },
+  "createdAt": "建立時間",
+  "discount": "折扣",
   "discountType": {
-    "label": "折扣類型",
     "fixed": "固定金額",
+    "label": "折扣類型",
     "percentage": "百分比"
   },
   "discountValue": {
+    "invalid": "折扣值格式無效",
     "label": "折扣值",
     "placeholder": "請輸入您的折扣值",
-    "required": "折扣值為必填",
-    "invalid": "折扣值格式無效"
+    "required": "折扣值為必填"
   },
-  "scope": {
-    "label": "適用範圍",
-    "order": "整筆訂單",
-    "item": "指定品項",
-    "itemHint": "適用分類與適用品項至少選擇一項"
-  },
-  "menuItemIds": {
-    "label": "適用品項",
-    "placeholder": "請選擇您的適用品項"
-  },
-  "menuSectionIds": {
-    "label": "適用分類",
-    "placeholder": "請選擇您的適用分類"
-  },
-  "minSubtotal": {
-    "label": "最低消費金額",
-    "placeholder": "請輸入您的最低消費金額"
-  },
-  "totalLimit": {
-    "label": "總使用次數上限",
-    "placeholder": "請輸入您的總使用次數上限"
-  },
-  "perUserLimit": {
-    "label": "每人使用次數上限",
-    "placeholder": "請輸入您的每人使用次數上限",
-    "hint": "設定後僅限會員使用"
-  },
-  "discount": "折扣",
-  "usage": "使用次數",
-  "unlimited": "不限",
-  "isActive": {
-    "helperText": "停用後即無法以任何方式使用",
-    "label": "啟用",
-    "active": "啟用中",
-    "inactive": "已停用"
-  },
-  "validFrom": {
-    "label": "生效時間"
-  },
-  "validUntil": {
-    "label": "失效時間"
-  },
-  "validity": "有效期間",
-  "createdAt": "建立時間",
   "distribution": "取得方式",
+  "isActive": {
+    "active": "啟用中",
+    "helperText": "停用後即無法以任何方式使用",
+    "inactive": "已停用",
+    "label": "啟用"
+  },
   "isClaimable": {
     "helperText": "會員可於優惠券頁領取至我的優惠券",
     "label": "可領取"
@@ -105,22 +74,65 @@
     "required": "滿額門檻為必填"
   },
   "issueTrigger": {
+    "birthday": "生日券",
+    "hint": {
+      "birthday": "會員生日當月自動獲得一張",
+      "none": "不自動發放",
+      "signup": "新會員自動獲得一張",
+      "spend": "單筆訂單達門檻自動獲得一張"
+    },
     "label": "自動發放",
     "none": "無",
     "signup": "註冊禮",
-    "birthday": "生日券",
-    "spend": "滿額回饋",
-    "hint": {
-      "none": "不自動發放",
-      "signup": "新會員自動獲得一張",
-      "birthday": "會員生日當月自動獲得一張",
-      "spend": "單筆訂單達門檻自動獲得一張"
-    }
+    "spend": "滿額回饋"
+  },
+  "label": "優惠券管理",
+  "menuItemIds": {
+    "label": "適用品項",
+    "placeholder": "請選擇您的適用品項"
+  },
+  "menuSectionIds": {
+    "label": "適用分類",
+    "placeholder": "請選擇您的適用分類"
+  },
+  "minSubtotal": {
+    "label": "最低消費金額",
+    "placeholder": "請輸入您的最低消費金額"
+  },
+  "organizationScope": {
+    "all": "全部店家",
+    "label": "適用店家",
+    "specific": "指定店家",
+    "specificHint": "適用店家至少選擇一家"
+  },
+  "perUserLimit": {
+    "hint": "設定後僅限會員使用",
+    "label": "每人使用次數上限",
+    "placeholder": "請輸入您的每人使用次數上限"
   },
   "pointsCost": {
     "exclusiveHint": "點數兌換券僅能以點數兌換取得，不開放領取、公開或自動發放",
     "hint": "設定後會員可於點數頁以點數兌換至我的優惠券",
     "label": "兌換所需點數",
     "placeholder": "請輸入您的兌換所需點數"
-  }
+  },
+  "scope": {
+    "item": "指定品項",
+    "itemHint": "適用分類與適用品項至少選擇一項",
+    "label": "適用範圍",
+    "order": "整筆訂單"
+  },
+  "totalLimit": {
+    "label": "總使用次數上限",
+    "placeholder": "請輸入您的總使用次數上限"
+  },
+  "unlimited": "不限",
+  "usage": "使用次數",
+  "validFrom": {
+    "label": "生效時間"
+  },
+  "validUntil": {
+    "label": "失效時間"
+  },
+  "validity": "有效期間"
 }
