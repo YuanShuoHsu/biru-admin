@@ -31,7 +31,6 @@ import { ORDER_MODE } from "@/constants/orderMode";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import useCartHasInvalidItems from "@/hooks/useCartHasInvalidItems";
-import useCartTotals from "@/hooks/useCartTotals";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
@@ -106,8 +105,6 @@ const OrderModeOrganizationSlugCheckout = () => {
   const { menu } = useMenuStore((state) => state);
 
   const hasInvalidItems = useCartHasInvalidItems();
-
-  const { cartCurrency } = useCartTotals();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -458,26 +455,6 @@ const OrderModeOrganizationSlugCheckout = () => {
             value={couponCode}
             {...register("coupon", { onChange: () => clearErrors("coupon") })}
           />
-          {coupon && (
-            <>
-              <Stack direction="row" justifyContent="space-between" gap={1}>
-                <Typography variant="body2">{tCommon("subtotal")}</Typography>
-                <Typography variant="body2">
-                  {cartCurrency}{" "}
-                  {Number(coupon.subtotal).toLocaleString(locale)}
-                </Typography>
-              </Stack>
-              <Stack direction="row" justifyContent="space-between" gap={1}>
-                <Typography variant="body2">
-                  {tOrder("checkout.coupon.discount")}
-                </Typography>
-                <Typography color="primary" variant="body2">
-                  -{cartCurrency}{" "}
-                  {Number(coupon.discount).toLocaleString(locale)}
-                </Typography>
-              </Stack>
-            </>
-          )}
         </StyledCardContent>
       </Card>
       <Card variant="outlined">

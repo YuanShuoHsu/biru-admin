@@ -27,6 +27,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  Stack,
   TextField,
   type TextFieldProps,
   Typography,
@@ -222,7 +223,18 @@ const CouponAutocomplete = ({
                       !!cartItemsList.length &&
                       !textFieldProps.error &&
                       couponCode && (
-                        <CheckCircle color="success" fontSize="small" />
+                        <Stack direction="row" alignItems="center" gap={1}>
+                          {value && (
+                            <Typography color="primary" variant="subtitle2">
+                              {value.discountType === "percentage"
+                                ? `-${Number(value.discountValue)}%`
+                                : `-${cartCurrency} ${Number(
+                                    value.discountValue,
+                                  ).toLocaleString(locale)}`}
+                            </Typography>
+                          )}
+                          <CheckCircle color="success" fontSize="small" />
+                        </Stack>
                       )
                     )}
                     {params.InputProps.endAdornment}

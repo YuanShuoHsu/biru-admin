@@ -176,6 +176,12 @@ const Coupons = ({ coupons: initialCoupons, organizations }: CouponsProps) => {
             : `${coupon.discountCurrency} ${Number(coupon.discountValue)}`,
       },
       {
+        field: "pointsCost",
+        headerName: tCoupons("pointsCost.label"),
+        valueGetter: (_value: unknown, { pointsCost }: Coupon) =>
+          pointsCost || "",
+      },
+      {
         field: "applicableOrganizationIds",
         headerName: tCoupons("organizationScope.label"),
         valueGetter: (
