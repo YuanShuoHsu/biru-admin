@@ -3,8 +3,17 @@ import { cookies } from "next/headers";
 
 import Coupons from ".";
 
+import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
+
+import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
+import {
+  couponFilterFieldValues,
+  couponSortFieldValues,
+  filterOperatorValues,
+  sortDirectionValues,
+} from "@/types/api";
 import type { Coupon } from "@/types/coupons";
 
 import { fetcher } from "@/utils/fetcher";
@@ -12,23 +21,119 @@ import { getOrganizations } from "@/utils/organizations";
 
 interface CouponsPageProps {
   params: Promise<{ locale: Locale }>;
+  searchParams: Promise<{
+    filterField?: string;
+    filterOperator?: string;
+    filterValue?: string;
+    page?: string;
+    pageSize?: string;
+    quickFilterValue?: string;
+    sortBy?: string;
+    sortDirection?: string;
+  }>;
 }
 
-const CouponsPage = async ({ params }: CouponsPageProps) => {
-  const [cookieStore, { locale }] = await Promise.all([cookies(), params]);
+const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
+  const [
+    cookieStore,
+    { locale },
+    {
+      filterField: rawFilterField,
+      filterOperator: rawFilterOperator,
+      filterValue,
+      page: rawPage,
+      pageSize: rawPageSize,
+      quickFilterValue,
+      sortBy: rawSortBy,
+      sortDirection: rawSortDirection,
+      ...restSearchParams
+    },
+  ] = await Promise.all([cookies(), params, searchParams]);
 
   setRequestLocale(locale);
 
+  const page = Math.max(1, Number(rawPage) || 1);
+  const pageSize = Math.max(1, Number(rawPageSize) || 10);
+
+  const sortBy = couponSortFieldValues.find((field) => field === rawSortBy);
+  const sortDirection = sortDirectionValues.find(
+    (direction) => direction === rawSortDirection,
+  );
+
+  const filterField = couponFilterFieldValues.find(
+    (field) => field === rawFilterField,
+  );
+  const filterOperator = filterOperatorValues.find(
+    (operator) => operator === rawFilterOperator,
+  );
+
+  if (
+    rawPage !== String(page) ||
+    rawPageSize !== String(pageSize) ||
+    rawSortBy !== sortBy ||
+    rawSortDirection !== sortDirection ||
+    !!sortBy !== !!sortDirection ||
+    rawFilterField !== filterField ||
+    rawFilterOperator !== filterOperator ||
+    !!(filterField || filterOperator || filterValue) !==
+      !!(
+        filterField &&
+        filterOperator &&
+        (filterValue || NO_VALUE_FILTER_OPERATORS.includes(filterOperator))
+      )
+  ) {
+    const params = new URLSearchParams({
+      ...restSearchParams,
+      page: String(page),
+      pageSize: String(pageSize),
+      ...(sortBy && sortDirection && { sortBy, sortDirection }),
+      ...(filterField &&
+        filterOperator &&
+        filterValue && { filterField, filterOperator, filterValue }),
+    });
+
+    redirect({ href: `/coupons?${params.toString()}`, locale });
+  }
+
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
+  const couponParams = new URLSearchParams({
+    lang: locale,
+    limit: String(pageSize),
+    offset: String((page - 1) * pageSize),
+    ...(sortBy && { sortBy }),
+    ...(sortDirection && { sortDirection }),
+    ...(filterField &&
+      filterOperator &&
+      filterValue && { filterField, filterOperator, filterValue }),
+    ...(quickFilterValue && { quickFilterValue }),
+  });
+
   const [coupons, organizations] = await Promise.all([
-    fetcher<Coupon[]>("/api/coupons", fetchOptions).catch(() => null),
+    fetcher<{ data: Coupon[]; total: number }>(
+      `/api/coupons?${couponParams.toString()}`,
+      fetchOptions,
+    ).catch(() => null),
     getOrganizations(fetchOptions),
   ]);
 
   if (!coupons) return null;
 
-  return <Coupons coupons={coupons} organizations={organizations} />;
+  return (
+    <Coupons
+      coupons={coupons.data}
+      filterField={filterField}
+      filterOperator={filterOperator}
+      filterValue={filterValue}
+      organizations={organizations}
+      page={page}
+      pageSize={pageSize}
+      quickFilterValue={quickFilterValue}
+      rowCount={coupons.total}
+      sortBy={sortBy}
+      sortDirection={sortDirection}
+    />
+  );
 };
 
 export default CouponsPage;

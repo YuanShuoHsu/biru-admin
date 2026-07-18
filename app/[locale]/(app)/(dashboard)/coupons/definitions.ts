@@ -28,7 +28,6 @@ export const useCouponFormSchema = () => {
       menuItemIds: z.array(z.string()),
       menuSectionIds: z.array(z.string()),
       minSubtotal: z.string().trim(),
-      organizationScope: z.enum(["all", "specific"]),
       perUserLimit: z.string().trim(),
       pointsCost: z.string().trim(),
       scope: z.enum(["item", "order"]),
@@ -58,18 +57,6 @@ export const useCouponFormSchema = () => {
           code: "custom",
           message: tCoupons("issueMinSpend.required"),
           path: ["issueMinSpend"],
-        });
-      }
-
-      if (
-        data.scope === "order" &&
-        data.organizationScope === "specific" &&
-        data.applicableOrganizationIds.length === 0
-      ) {
-        ctx.addIssue({
-          code: "custom",
-          message: tCoupons("organizationScope.specificHint"),
-          path: ["applicableOrganizationIds"],
         });
       }
 

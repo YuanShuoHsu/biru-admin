@@ -1143,7 +1143,11 @@ export interface components {
       /** @enum {string|null} */
       issueTrigger?: "signup" | "birthday" | "spend" | null;
       menuItemIds?: string[] | null;
+      /** @description 指定品項的名稱清單（依 menuItemIds 順序，管理列表顯示用） */
+      menuItemNames?: string[] | null;
       menuSectionIds?: string[] | null;
+      /** @description 指定分類的名稱清單（依 menuSectionIds 順序，管理列表顯示用） */
+      menuSectionNames?: string[] | null;
       minSubtotal?: string | null;
       perUserLimit?: number | null;
       pointsCost?: number | null;
@@ -1160,6 +1164,59 @@ export interface components {
       /** Format: date-time */
       updatedAt: string;
     };
+    /** @enum {string} */
+    CouponFilterField:
+      | "code"
+      | "scope"
+      | "isActive"
+      | "validFrom"
+      | "createdAt"
+      | "discountValue"
+      | "minSubtotal"
+      | "usedCount"
+      | "perUserLimit"
+      | "pointsCost"
+      | "applicableOrganizationIds"
+      | "distribution";
+    /** @enum {string} */
+    FilterOperator:
+      | "contains"
+      | "doesNotContain"
+      | "equals"
+      | "doesNotEqual"
+      | "startsWith"
+      | "endsWith"
+      | "isEmpty"
+      | "isNotEmpty"
+      | "isAnyOf"
+      | "is"
+      | "not"
+      | "after"
+      | "onOrAfter"
+      | "before"
+      | "onOrBefore"
+      | "="
+      | "!="
+      | ">"
+      | ">="
+      | "<"
+      | "<=";
+    /** @enum {string} */
+    CouponSortField:
+      | "code"
+      | "applicableOrganizationIds"
+      | "scope"
+      | "menuSectionIds"
+      | "menuItemIds"
+      | "discountValue"
+      | "minSubtotal"
+      | "usedCount"
+      | "perUserLimit"
+      | "pointsCost"
+      | "validFrom"
+      | "distribution"
+      | "isActive"
+      | "createdAt";
     UpdateCouponDto: {
       /** @description 適用店家；null = 全部店家通用，發行店永遠視為適用 */
       applicableOrganizationIds?: string[] | null;
@@ -2047,23 +2104,6 @@ export interface components {
       | "orderStatus"
       | "paymentDate"
       | "createdAt";
-    /** @enum {string} */
-    FilterOperator:
-      | "contains"
-      | "doesNotContain"
-      | "equals"
-      | "doesNotEqual"
-      | "startsWith"
-      | "endsWith"
-      | "isEmpty"
-      | "isNotEmpty"
-      | "isAnyOf"
-      | "is"
-      | "not"
-      | "after"
-      | "onOrAfter"
-      | "before"
-      | "onOrBefore";
     /** @enum {string} */
     OrderSortField:
       | "orderNumber"
@@ -2954,7 +2994,18 @@ export interface operations {
   };
   AdminCouponsController_findAll: {
     parameters: {
-      query?: never;
+      query?: {
+        filterField?: components["schemas"]["CouponFilterField"];
+        filterOperator?: components["schemas"]["FilterOperator"];
+        lang?: "en" | "ja" | "ko" | "zh-CN" | "zh-TW";
+        sortBy?: components["schemas"]["CouponSortField"];
+        sortDirection?: components["schemas"]["SortDirection"];
+        limit?: number;
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+        timezone?: string;
+      };
       header?: never;
       path?: never;
       cookie?: never;
@@ -2965,9 +3016,7 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content: {
-          "application/json": components["schemas"]["CouponResponseDto"][];
-        };
+        content?: never;
       };
       /** @description Internal server error */
       500: {
@@ -5016,6 +5065,9 @@ type FlattenedDeepRequired<T> = {
 type ReadonlyArray<T> = [Exclude<T, undefined>] extends [unknown[]]
   ? Readonly<Exclude<T, undefined>>
   : Readonly<Exclude<T, undefined>[]>;
+export const pathsApiCouponsGetParametersQueryLangValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/coupons"]["get"]["parameters"]["query"]["lang"]
+> = ["en", "ja", "ko", "zh-CN", "zh-TW"];
 export const pathsApiMenusMenuIdMenuSectionsGetParametersQuerySearchFieldValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/menus/{menuId}/menu-sections"]["get"]["parameters"]["query"]["searchField"]
 > = ["name", "description"];
@@ -5089,6 +5141,65 @@ export const couponResponseDtoIssueTriggerValues: ReadonlyArray<
 export const couponResponseDtoScopeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CouponResponseDto"]["scope"]
 > = ["order", "item"];
+export const couponFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CouponFilterField"]
+> = [
+  "code",
+  "scope",
+  "isActive",
+  "validFrom",
+  "createdAt",
+  "discountValue",
+  "minSubtotal",
+  "usedCount",
+  "perUserLimit",
+  "pointsCost",
+  "applicableOrganizationIds",
+  "distribution",
+];
+export const filterOperatorValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["FilterOperator"]
+> = [
+  "contains",
+  "doesNotContain",
+  "equals",
+  "doesNotEqual",
+  "startsWith",
+  "endsWith",
+  "isEmpty",
+  "isNotEmpty",
+  "isAnyOf",
+  "is",
+  "not",
+  "after",
+  "onOrAfter",
+  "before",
+  "onOrBefore",
+  "=",
+  "!=",
+  ">",
+  ">=",
+  "<",
+  "<=",
+];
+export const couponSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CouponSortField"]
+> = [
+  "code",
+  "applicableOrganizationIds",
+  "scope",
+  "menuSectionIds",
+  "menuItemIds",
+  "discountValue",
+  "minSubtotal",
+  "usedCount",
+  "perUserLimit",
+  "pointsCost",
+  "validFrom",
+  "distribution",
+  "isActive",
+  "createdAt",
+];
 export const updateCouponDtoDiscountTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UpdateCouponDto"]["discountType"]
 > = ["fixed", "percentage"];
@@ -5206,25 +5317,6 @@ export const orderFilterFieldValues: ReadonlyArray<
   "orderStatus",
   "paymentDate",
   "createdAt",
-];
-export const filterOperatorValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["FilterOperator"]
-> = [
-  "contains",
-  "doesNotContain",
-  "equals",
-  "doesNotEqual",
-  "startsWith",
-  "endsWith",
-  "isEmpty",
-  "isNotEmpty",
-  "isAnyOf",
-  "is",
-  "not",
-  "after",
-  "onOrAfter",
-  "before",
-  "onOrBefore",
 ];
 export const orderSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrderSortField"]

@@ -101,9 +101,7 @@
   },
   "organizationScope": {
     "all": "全店舗",
-    "label": "対象店舗",
-    "specific": "指定店舗",
-    "specificHint": "対象店舗を1店舗以上選択してください"
+    "label": "対象店舗"
   },
   "perUserLimit": {
     "hint": "設定すると会員限定になります",

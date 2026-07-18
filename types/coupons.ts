@@ -1,4 +1,8 @@
-import type { components } from "@/types/api";
+import {
+  type components,
+  couponFilterFieldValues,
+  couponSortFieldValues,
+} from "@/types/api";
 
 export type AvailableCoupon = components["schemas"]["AvailableCouponDto"];
 export type Coupon = components["schemas"]["CouponResponseDto"];
@@ -14,3 +18,6 @@ export type UserCoupon = components["schemas"]["UserCouponResponseDto"];
 export type ValidateCouponDto = components["schemas"]["ValidateCouponDto"];
 export type ValidateCouponResponse =
   components["schemas"]["ValidateCouponResponseDto"];
+
+export type CouponFilterField = (typeof couponFilterFieldValues)[number];
+export type CouponSortField = (typeof couponSortFieldValues)[number];

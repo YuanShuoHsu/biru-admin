@@ -29,6 +29,11 @@
         "onOrAfter": "以降",
         "onOrBefore": "以前",
         "startsWith": "で始まる"
+      },
+      "value": {
+        "any": "いずれか",
+        "false": "偽",
+        "true": "真"
       }
     },
     "filters": "フィルター",

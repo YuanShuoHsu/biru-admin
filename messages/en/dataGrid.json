@@ -29,6 +29,11 @@
         "onOrAfter": "Is on or after",
         "onOrBefore": "Is on or before",
         "startsWith": "Starts with"
+      },
+      "value": {
+        "any": "any",
+        "false": "false",
+        "true": "true"
       }
     },
     "filters": "Filters",

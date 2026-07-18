@@ -29,6 +29,11 @@
         "onOrAfter": "이후 포함",
         "onOrBefore": "이전 포함",
         "startsWith": "으로 시작"
+      },
+      "value": {
+        "any": "아무값",
+        "false": "거짓",
+        "true": "참"
       }
     },
     "filters": "필터",

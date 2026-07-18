@@ -69,6 +69,18 @@ export const STRING_FILTER_OPERATORS = [
   "isAnyOf",
 ] as const;
 
+export const NUMBER_FILTER_OPERATORS = [
+  "=",
+  "!=",
+  ">",
+  ">=",
+  "<",
+  "<=",
+  "isEmpty",
+  "isNotEmpty",
+  "isAnyOf",
+] as const;
+
 export const DATE_FILTER_OPERATORS = [
   "is",
   "not",

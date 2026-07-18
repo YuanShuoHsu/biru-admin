@@ -29,6 +29,11 @@
         "onOrAfter": "等於或晚於",
         "onOrBefore": "等於或早於",
         "startsWith": "開頭為"
+      },
+      "value": {
+        "any": "任何值",
+        "false": "假",
+        "true": "真"
       }
     },
     "filters": "篩選器",

@@ -101,9 +101,7 @@
   },
   "organizationScope": {
     "all": "전체 매장",
-    "label": "적용 매장",
-    "specific": "지정 매장",
-    "specificHint": "적용 매장을 1개 이상 선택해 주세요"
+    "label": "적용 매장"
   },
   "perUserLimit": {
     "hint": "설정 시 회원 전용입니다",

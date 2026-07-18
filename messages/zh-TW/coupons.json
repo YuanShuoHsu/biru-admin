@@ -101,9 +101,7 @@
   },
   "organizationScope": {
     "all": "全部店家",
-    "label": "適用店家",
-    "specific": "指定店家",
-    "specificHint": "適用店家至少選擇一家"
+    "label": "適用店家"
   },
   "perUserLimit": {
     "hint": "設定後僅限會員使用",

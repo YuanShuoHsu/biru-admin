@@ -101,9 +101,7 @@
   },
   "organizationScope": {
     "all": "All stores",
-    "label": "Applicable stores",
-    "specific": "Specific stores",
-    "specificHint": "Select at least one applicable store"
+    "label": "Applicable stores"
   },
   "perUserLimit": {
     "hint": "Members only when set",

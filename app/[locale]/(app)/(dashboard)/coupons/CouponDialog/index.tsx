@@ -48,11 +48,6 @@ const issueTriggerOptions: CouponFormValues["issueTrigger"][] = [
   "spend",
 ];
 
-const organizationScopeOptions: CouponFormValues["organizationScope"][] = [
-  "all",
-  "specific",
-];
-
 const toDateTimeLocal = (value: string | null | undefined): string =>
   value ? dayjs(value).format("YYYY-MM-DDTHH:mm") : "";
 
@@ -95,9 +90,6 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
       minSubtotal: coupon?.minSubtotal
         ? String(Number(coupon.minSubtotal))
         : "",
-      organizationScope: coupon?.applicableOrganizationIds?.length
-        ? "specific"
-        : "all",
       perUserLimit:
         coupon?.perUserLimit != null ? String(coupon.perUserLimit) : "",
       pointsCost: coupon?.pointsCost != null ? String(coupon.pointsCost) : "",
@@ -121,7 +113,6 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
     menuItemIds,
     menuSectionIds,
     minSubtotal,
-    organizationScope,
     perUserLimit,
     pointsCost,
     scope,
@@ -142,7 +133,6 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
       "menuItemIds",
       "menuSectionIds",
       "minSubtotal",
-      "organizationScope",
       "perUserLimit",
       "pointsCost",
       "scope",
@@ -168,16 +158,25 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
   // 點數兌換券僅能以點數兌換取得，不參與領取／公開／自動發放
   const isPointsRedeem = pointsCost !== "";
 
+  // 「全部店家」以空 id 佔位選項呈現,與指定店家共用同一個欄位
+  const allOrganizationsOption = {
+    id: "",
+    name: tCoupons("organizationScope.all"),
+  };
+  const organizationOptions = [
+    allOrganizationsOption,
+    ...organizations.map(({ id, name }) => ({ id, name })),
+  ];
+
   const onSubmitHandler = async (values: CouponFormValues) => {
     try {
       setDialog({ confirmLoading: true });
 
       const body: CreateCouponDto = {
         // null 表示清除，讓已限定店家的券可改回全部店家通用
-        applicableOrganizationIds:
-          values.scope === "item" || values.organizationScope === "specific"
-            ? values.applicableOrganizationIds
-            : null,
+        applicableOrganizationIds: values.applicableOrganizationIds.length
+          ? values.applicableOrganizationIds
+          : null,
         code: values.code,
         discountCurrency: currency,
         discountType: values.discountType,
@@ -257,60 +256,6 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
         required
         {...register("code")}
       />
-      {scope === "order" && (
-        <>
-          <TextField
-            fullWidth
-            label={tCoupons("organizationScope.label")}
-            onChange={(e) =>
-              setValue(
-                "organizationScope",
-                e.target.value as CouponFormValues["organizationScope"],
-                { shouldValidate: isSubmitted },
-              )
-            }
-            required
-            select
-            value={organizationScope}
-          >
-            {organizationScopeOptions.map((value) => (
-              <MenuItem key={value} value={value}>
-                {tCoupons(`organizationScope.${value}`)}
-              </MenuItem>
-            ))}
-          </TextField>
-          {organizationScope === "specific" && (
-            <Autocomplete
-              fullWidth
-              getOptionLabel={({ name }) => name}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              multiple
-              onChange={(_, value) =>
-                setValue(
-                  "applicableOrganizationIds",
-                  value.map(({ id }) => id),
-                  { shouldValidate: isSubmitted },
-                )
-              }
-              options={organizations}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  error={!!errors.applicableOrganizationIds}
-                  helperText={tCoupons("organizationScope.specificHint")}
-                  label={tCoupons("applicableOrganizationIds.label")}
-                  placeholder={tCoupons(
-                    "applicableOrganizationIds.placeholder",
-                  )}
-                />
-              )}
-              value={organizations.filter(({ id }) =>
-                applicableOrganizationIds.includes(id),
-              )}
-            />
-          )}
-        </>
-      )}
       <TextField
         fullWidth
         label={tCoupons("scope.label")}
@@ -330,6 +275,37 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
           </MenuItem>
         ))}
       </TextField>
+      {scope === "order" && (
+        <Autocomplete
+          fullWidth
+          getOptionLabel={({ name }) => name}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          multiple
+          onChange={(_, value) => {
+            const addedAll = value[value.length - 1]?.id === "";
+            setValue(
+              "applicableOrganizationIds",
+              addedAll ? [] : value.map(({ id }) => id).filter(Boolean),
+              { shouldValidate: isSubmitted },
+            );
+          }}
+          options={organizationOptions}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label={tCoupons("organizationScope.label")}
+              placeholder={tCoupons("applicableOrganizationIds.placeholder")}
+            />
+          )}
+          value={
+            applicableOrganizationIds.length
+              ? organizationOptions.filter(({ id }) =>
+                  applicableOrganizationIds.includes(id),
+                )
+              : [allOrganizationsOption]
+          }
+        />
+      )}
       {scope === "item" && (
         <>
           <Autocomplete
