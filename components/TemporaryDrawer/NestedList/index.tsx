@@ -317,11 +317,6 @@ const useNavItems = (): MenuItem[] => {
           },
         ]
       : []),
-    {
-      icon: Business,
-      label: tOrganizations("label"),
-      to: "/organizations",
-    },
     ...(isAdmin
       ? [
           {
@@ -329,6 +324,15 @@ const useNavItems = (): MenuItem[] => {
             label: tCoupons("label"),
             to: "/coupons",
           },
+        ]
+      : []),
+    {
+      icon: Business,
+      label: tOrganizations("label"),
+      to: "/organizations",
+    },
+    ...(isAdmin
+      ? [
           {
             icon: AdminPanelSettings,
             label: tAdmin("label"),

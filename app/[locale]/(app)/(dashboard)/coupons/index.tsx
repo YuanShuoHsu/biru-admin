@@ -168,20 +168,6 @@ const Coupons = ({ coupons: initialCoupons, organizations }: CouponsProps) => {
         headerName: tCoupons("code.label"),
       },
       {
-        field: "discountValue",
-        headerName: tCoupons("discount"),
-        valueGetter: (_value: unknown, coupon: Coupon) =>
-          coupon.discountType === "percentage"
-            ? `${Number(coupon.discountValue)}%`
-            : `${coupon.discountCurrency} ${Number(coupon.discountValue)}`,
-      },
-      {
-        field: "pointsCost",
-        headerName: tCoupons("pointsCost.label"),
-        valueGetter: (_value: unknown, { pointsCost }: Coupon) =>
-          pointsCost || "",
-      },
-      {
         field: "applicableOrganizationIds",
         headerName: tCoupons("organizationScope.label"),
         valueGetter: (
@@ -202,6 +188,51 @@ const Coupons = ({ coupons: initialCoupons, organizations }: CouponsProps) => {
         headerName: tCoupons("scope.label"),
         valueGetter: (_value: unknown, { scope }: Coupon) =>
           tCoupons(`scope.${scope}`),
+      },
+      {
+        field: "discountValue",
+        headerName: tCoupons("discount"),
+        valueGetter: (_value: unknown, coupon: Coupon) =>
+          coupon.discountType === "percentage"
+            ? `${Number(coupon.discountValue)}%`
+            : `${coupon.discountCurrency} ${Number(coupon.discountValue)}`,
+      },
+      {
+        field: "minSubtotal",
+        headerName: tCoupons("minSubtotal.label"),
+        valueGetter: (_value: unknown, { minSubtotal }: Coupon) =>
+          minSubtotal ? Number(minSubtotal) : "",
+      },
+      {
+        field: "usedCount",
+        headerName: tCoupons("usage"),
+        valueGetter: (_value: unknown, { totalLimit, usedCount }: Coupon) =>
+          `${usedCount} / ${totalLimit ?? tCoupons("unlimited")}`,
+      },
+      {
+        field: "perUserLimit",
+        headerName: tCoupons("perUserLimit.label"),
+        valueGetter: (_value: unknown, { perUserLimit }: Coupon) =>
+          perUserLimit ?? tCoupons("unlimited"),
+      },
+      {
+        field: "pointsCost",
+        headerName: tCoupons("pointsCost.label"),
+        valueGetter: (_value: unknown, { pointsCost }: Coupon) =>
+          pointsCost || "",
+      },
+      {
+        field: "validFrom",
+        headerName: tCoupons("validity"),
+        valueGetter: (_value: unknown, { validFrom, validThrough }: Coupon) =>
+          validFrom || validThrough
+            ? [
+                validFrom ? format.dateTime(new Date(validFrom), "short") : "",
+                validThrough
+                  ? format.dateTime(new Date(validThrough), "short")
+                  : "",
+              ].join(" ~ ")
+            : tCoupons("unlimited"),
       },
       {
         field: "isPublic",
@@ -233,38 +264,6 @@ const Coupons = ({ coupons: initialCoupons, organizations }: CouponsProps) => {
           </Stack>
         ),
         sortable: false,
-        width: 180,
-      },
-      {
-        field: "minSubtotal",
-        headerName: tCoupons("minSubtotal.label"),
-        valueGetter: (_value: unknown, { minSubtotal }: Coupon) =>
-          minSubtotal ? Number(minSubtotal) : "",
-      },
-      {
-        field: "usedCount",
-        headerName: tCoupons("usage"),
-        valueGetter: (_value: unknown, { totalLimit, usedCount }: Coupon) =>
-          `${usedCount} / ${totalLimit ?? tCoupons("unlimited")}`,
-      },
-      {
-        field: "perUserLimit",
-        headerName: tCoupons("perUserLimit.label"),
-        valueGetter: (_value: unknown, { perUserLimit }: Coupon) =>
-          perUserLimit ?? tCoupons("unlimited"),
-      },
-      {
-        field: "validFrom",
-        headerName: tCoupons("validity"),
-        valueGetter: (_value: unknown, { validFrom, validThrough }: Coupon) =>
-          validFrom || validThrough
-            ? [
-                validFrom ? format.dateTime(new Date(validFrom), "short") : "",
-                validThrough
-                  ? format.dateTime(new Date(validThrough), "short")
-                  : "",
-              ].join(" ~ ")
-            : tCoupons("unlimited"),
       },
       {
         field: "isActive",
