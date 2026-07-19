@@ -15,7 +15,7 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
 }));
 
 interface MenusOrganizationSelectProps {
-  organizations: OrganizationResponse[];
+  organizations: Pick<OrganizationResponse, "id" | "name" | "slug">[];
   organizationSlug: string;
 }
 
