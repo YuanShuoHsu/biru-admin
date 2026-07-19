@@ -723,11 +723,6 @@ const Coupons = ({
         filterMode="server"
         filterModel={filterModel}
         loading={loading}
-        localeText={{
-          filterValueAny: tToolbar("filter.value.any"),
-          filterValueFalse: tToolbar("filter.value.false"),
-          filterValueTrue: tToolbar("filter.value.true"),
-        }}
         onFilterModelChange={handleFilterModelChange}
         onPaginationModelChange={handlePaginationModelChange}
         onSortModelChange={handleSortModelChange}
