@@ -33,6 +33,7 @@ const AuthCouponsPage = async ({
   const availableCoupons = coupons.filter(
     ({ coupon, usedAt }) =>
       !usedAt &&
+      coupon.isActive &&
       (!coupon.validThrough || new Date(coupon.validThrough) >= new Date()),
   );
 

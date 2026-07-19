@@ -1274,6 +1274,7 @@ export interface components {
       validFrom?: string | null;
       /** Format: date-time */
       validThrough?: string | null;
+      isActive: boolean;
     };
     UserCouponResponseDto: {
       id: string;
@@ -1331,6 +1332,7 @@ export interface components {
       validFrom?: string | null;
       /** Format: date-time */
       validThrough?: string | null;
+      isActive: boolean;
       userCouponId?: string | null;
     };
     ClaimableCouponDto: {
@@ -1347,6 +1349,7 @@ export interface components {
       validFrom?: string | null;
       /** Format: date-time */
       validThrough?: string | null;
+      isActive: boolean;
       /** @description 目前登入者是否已領取 */
       claimed: boolean;
     };
@@ -1384,6 +1387,7 @@ export interface components {
       validFrom?: string | null;
       /** Format: date-time */
       validThrough?: string | null;
+      isActive: boolean;
       /** @description 限定店家的店名清單；null = 全部店家通用 */
       applicableOrganizationNames?: string[] | null;
       /** @description 限定店家的 slug 清單；null = 全部店家通用 */
@@ -2705,6 +2709,7 @@ export interface components {
       validFrom?: string | null;
       /** Format: date-time */
       validThrough?: string | null;
+      isActive: boolean;
       /** @description 限定店家的店名清單；null = 全部店家通用 */
       applicableOrganizationNames?: string[] | null;
       /** @description 兌換所需點數 */
