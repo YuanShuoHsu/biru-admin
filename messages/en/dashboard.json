@@ -14,5 +14,12 @@
     "viewOrders": "View Orders",
     "manageUsers": "Manage Users",
     "manageOrganizations": "Manage Organizations"
+  },
+  "charts": {
+    "avgOrderValue": "Average Order Value",
+    "orderModes": "Order Modes",
+    "paymentMethods": "Payment Methods",
+    "peakHours": "Peak Hours",
+    "topItems": "Top Items"
   }
 }

@@ -23,6 +23,7 @@ import { useRouter } from "@/i18n/navigation";
 
 import { NavigateNext } from "@mui/icons-material";
 import {
+  Button,
   Card,
   CardActionArea,
   CardContent,
@@ -32,6 +33,7 @@ import {
   Typography,
 } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
+import { BarChart } from "@mui/x-charts/BarChart";
 import { LineChart } from "@mui/x-charts/LineChart";
 import { SparkLineChart } from "@mui/x-charts/SparkLineChart";
 import type {
@@ -43,8 +45,16 @@ import type {
 } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
-import { orderResponseDtoOrderStatusValues } from "@/types/api";
-import type { OrderResponse } from "@/types/orders";
+import {
+  orderResponseDtoModeValues,
+  orderResponseDtoOrderStatusValues,
+  orderResponseDtoPaymentMethodValues,
+} from "@/types/api";
+import type {
+  OrderMode,
+  OrderPaymentMethod,
+  OrderResponse,
+} from "@/types/orders";
 
 import { getDataGridSearchParams } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
@@ -69,15 +79,29 @@ const StyledCardActionArea = styled(CardActionArea)({
 const StyledCardContent = styled(CardContent)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
-  gap: theme.spacing(1),
+  gap: theme.spacing(0.5),
 }));
 
 const TREND_NEUTRAL_THRESHOLD = 5;
 
 // https://github.com/mui/material-ui/blob/master/docs/data/material/getting-started/templates/dashboard/components/SessionsChart.tsx
-const AreaGradient = ({ color, id }: { color: string; id: string }) => (
+const AreaGradient = ({
+  color,
+  horizontal,
+  id,
+}: {
+  color: string;
+  horizontal?: boolean;
+  id: string;
+}) => (
   <defs>
-    <linearGradient id={id} x1="50%" y1="0%" x2="50%" y2="100%">
+    <linearGradient
+      id={id}
+      x1={horizontal ? "100%" : "50%"}
+      y1={horizontal ? "50%" : "0%"}
+      x2={horizontal ? "0%" : "50%"}
+      y2={horizontal ? "50%" : "100%"}
+    >
       <stop offset="0%" stopColor={color} stopOpacity={0.5} />
       <stop offset="100%" stopColor={color} stopOpacity={0} />
     </linearGradient>
@@ -100,12 +124,19 @@ interface DashboardProps {
     usersTrend: Trend | null;
     organizationsTrend: Trend;
   };
+  charts: {
+    topItems: { name: string; quantity: number }[];
+    hourlyOrders: number[];
+    modeCounts: Partial<Record<OrderMode, number>>;
+    paymentCounts: Partial<Record<OrderPaymentMethod, number>>;
+  };
   recentOrders: OrderResponse[];
 }
 
 const Dashboard = ({
   organizationSlug,
   stats,
+  charts,
   recentOrders,
 }: DashboardProps) => {
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
@@ -164,6 +195,7 @@ const Dashboard = ({
 
   const locale = useLocale();
   const tDashboard = useTranslations("dashboard");
+  const tOrder = useTranslations("order");
   const tOrders = useTranslations("orders");
 
   const stringFilterOperators = useStringFilterOperators();
@@ -242,6 +274,36 @@ const Dashboard = ({
     revenueChipColor === "default"
       ? theme.vars.palette.text.secondary
       : theme.vars.palette[revenueChipColor].main;
+
+  const chartColor = theme.vars.palette.primary.main;
+
+  const hourLabels = Array.from({ length: 24 }, (_, hour) => `${hour}:00`);
+
+  const modes = orderResponseDtoModeValues.map((mode) => ({
+    count: charts.modeCounts[mode] || 0,
+    label: tOrder(`mode.${mode}.label`),
+  }));
+
+  const payments = orderResponseDtoPaymentMethodValues
+    .map((method) => ({
+      count: charts.paymentCounts[method] || 0,
+      label: tOrder(`checkout.payment.${method}`),
+    }))
+    .filter(({ count }) => count > 0)
+    .sort((a, b) => b.count - a.count);
+
+  const avgOrderValues = stats.revenueTrend.data.map((revenue, index) =>
+    stats.ordersTrend.data[index]
+      ? Math.round(revenue / stats.ordersTrend.data[index])
+      : 0,
+  );
+  const periodOrderCount = stats.ordersTrend.data.reduce(
+    (sum, n) => sum + n,
+    0,
+  );
+  const avgOrderTotal = periodOrderCount
+    ? Math.round(revenueTotal / periodOrderCount)
+    : 0;
 
   const columns = useMemo<GridColDef[]>(
     () => [
@@ -361,76 +423,18 @@ const Dashboard = ({
           );
         })}
       </Grid>
-      <Card variant="outlined">
-        <StyledCardContent>
-          <Typography component="h2" variant="subtitle2">
-            {tDashboard("stats.revenue")}
-          </Typography>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            gap={1}
-          >
-            <Typography variant="h4">
-              {`${revenueCurrency} ${revenueTotal.toLocaleString(locale)}`.trim()}
-            </Typography>
-            <Chip
-              color={revenueChipColor}
-              label={`${stats.revenueTrend.percent > 0 ? "+" : ""}${stats.revenueTrend.percent}%`}
-              size="small"
-            />
-          </Stack>
-          <Typography color="text.secondary" variant="caption">
-            {tDashboard("stats.period")}
-          </Typography>
-          <LineChart
-            height={250}
-            hideLegend
-            grid={{ horizontal: true }}
-            margin={{ left: 0, bottom: 0 }}
-            series={[
-              {
-                area: true,
-                color: revenueTrendColor,
-                curve: "linear",
-                data: stats.revenueTrend.data,
-                id: "revenue",
-                label: tDashboard("stats.revenue"),
-                showMark: false,
-                valueFormatter: (value) =>
-                  `${revenueCurrency} ${(value ?? 0).toLocaleString(locale)}`.trim(),
-              },
-            ]}
-            sx={{
-              "& .MuiLineChart-area": {
-                fill: "url('#revenue')",
-              },
-            }}
-            xAxis={[
-              {
-                data: trendDayLabels,
-                scaleType: "point",
-                tickInterval: (_, index) => (index + 1) % 5 === 0,
-              },
-            ]}
-            yAxis={[{ width: "auto" }]}
-          >
-            <AreaGradient color={revenueTrendColor} id="revenue" />
-          </LineChart>
-        </StyledCardContent>
-      </Card>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Typography color="text.primary" variant="h6">
           {tDashboard("stats.details")}
         </Typography>
-        <Chip
-          icon={<NavigateNext />}
-          label={tDashboard("quickActions.viewOrders")}
+        <Button
+          endIcon={<NavigateNext />}
           onClick={() => router.push(ordersHref)}
           size="small"
           variant="outlined"
-        />
+        >
+          {tDashboard("quickActions.viewOrders")}
+        </Button>
       </Stack>
       <DataGrid
         {...DATA_GRID_PROPS}
@@ -450,6 +454,285 @@ const Dashboard = ({
         sortingMode="server"
         sortModel={sortModel}
       />
+      <Grid container spacing={2}>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <StyledCard variant="outlined">
+            <StyledCardContent>
+              <Typography component="h2" variant="subtitle2">
+                {tDashboard("stats.revenue")}
+              </Typography>
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+                gap={1}
+              >
+                <Typography variant="h4">
+                  {`${revenueCurrency} ${revenueTotal.toLocaleString(locale)}`.trim()}
+                </Typography>
+                <Chip
+                  color={revenueChipColor}
+                  label={`${stats.revenueTrend.percent > 0 ? "+" : ""}${stats.revenueTrend.percent}%`}
+                  size="small"
+                />
+              </Stack>
+              <Typography color="text.secondary" variant="caption">
+                {tDashboard("stats.period")}
+              </Typography>
+              <LineChart
+                height={250}
+                hideLegend
+                grid={{ horizontal: true }}
+                margin={{ left: 0, bottom: 0 }}
+                series={[
+                  {
+                    area: true,
+                    color: revenueTrendColor,
+                    curve: "linear",
+                    data: stats.revenueTrend.data,
+                    id: "revenue",
+                    label: tDashboard("stats.revenue"),
+                    showMark: false,
+                    valueFormatter: (value) =>
+                      `${revenueCurrency} ${(value ?? 0).toLocaleString(locale)}`.trim(),
+                  },
+                ]}
+                sx={{
+                  "& .MuiLineChart-area": {
+                    fill: "url('#revenue')",
+                  },
+                }}
+                xAxis={[
+                  {
+                    data: trendDayLabels,
+                    scaleType: "point",
+                    tickInterval: (_, index) => (index + 1) % 5 === 0,
+                  },
+                ]}
+                yAxis={[{ width: "auto" }]}
+              >
+                <AreaGradient color={revenueTrendColor} id="revenue" />
+              </LineChart>
+            </StyledCardContent>
+          </StyledCard>
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <StyledCard variant="outlined">
+            <StyledCardContent>
+              <Typography component="h2" variant="subtitle2">
+                {tDashboard("charts.avgOrderValue")}
+              </Typography>
+              <Typography variant="h4">
+                {`${revenueCurrency} ${avgOrderTotal.toLocaleString(locale)}`.trim()}
+              </Typography>
+              <Typography color="text.secondary" variant="caption">
+                {tDashboard("stats.period")}
+              </Typography>
+              <LineChart
+                height={250}
+                hideLegend
+                grid={{ horizontal: true }}
+                margin={{ left: 0, bottom: 0 }}
+                series={[
+                  {
+                    area: true,
+                    color: chartColor,
+                    curve: "linear",
+                    data: avgOrderValues,
+                    id: "avg-order-value",
+                    label: tDashboard("charts.avgOrderValue"),
+                    showMark: false,
+                    valueFormatter: (value) =>
+                      `${revenueCurrency} ${(value ?? 0).toLocaleString(locale)}`.trim(),
+                  },
+                ]}
+                sx={{
+                  "& .MuiLineChart-area": {
+                    fill: "url('#avg-order-value')",
+                  },
+                }}
+                xAxis={[
+                  {
+                    data: trendDayLabels,
+                    scaleType: "point",
+                    tickInterval: (_, index) => (index + 1) % 5 === 0,
+                  },
+                ]}
+                yAxis={[{ width: "auto" }]}
+              >
+                <AreaGradient color={chartColor} id="avg-order-value" />
+              </LineChart>
+            </StyledCardContent>
+          </StyledCard>
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <StyledCard variant="outlined">
+            <StyledCardContent>
+              <Typography component="h2" variant="subtitle2">
+                {tDashboard("charts.topItems")}
+              </Typography>
+              <Typography color="text.secondary" variant="caption">
+                {tDashboard("stats.period")}
+              </Typography>
+              <BarChart
+                height={300}
+                hideLegend
+                grid={{ vertical: true }}
+                margin={{ left: 0, bottom: 0 }}
+                series={[
+                  {
+                    color: chartColor,
+                    data: charts.topItems.map(({ quantity }) => quantity),
+                    label: tDashboard("charts.topItems"),
+                    layout: "horizontal",
+                  },
+                ]}
+                sx={{
+                  "& .MuiBarChart-element": {
+                    fill: "url('#top-items')",
+                  },
+                }}
+                xAxis={[{ tickMinStep: 1 }]}
+                yAxis={[
+                  {
+                    data: charts.topItems.map(({ name }) => name),
+                    scaleType: "band",
+                    width: "auto",
+                  },
+                ]}
+              >
+                <AreaGradient color={chartColor} horizontal id="top-items" />
+              </BarChart>
+            </StyledCardContent>
+          </StyledCard>
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <StyledCard variant="outlined">
+            <StyledCardContent>
+              <Typography component="h2" variant="subtitle2">
+                {tDashboard("charts.peakHours")}
+              </Typography>
+              <Typography color="text.secondary" variant="caption">
+                {tDashboard("stats.period")}
+              </Typography>
+              <BarChart
+                height={300}
+                hideLegend
+                grid={{ horizontal: true }}
+                margin={{ left: 0, bottom: 0 }}
+                series={[
+                  {
+                    color: chartColor,
+                    data: charts.hourlyOrders,
+                    label: tDashboard("charts.peakHours"),
+                  },
+                ]}
+                sx={{
+                  "& .MuiBarChart-element": {
+                    fill: "url('#peak-hours')",
+                  },
+                }}
+                xAxis={[
+                  {
+                    data: hourLabels,
+                    scaleType: "band",
+                    tickInterval: (_, index) => index % 3 === 0,
+                  },
+                ]}
+                yAxis={[{ tickMinStep: 1, width: "auto" }]}
+              >
+                <AreaGradient color={chartColor} id="peak-hours" />
+              </BarChart>
+            </StyledCardContent>
+          </StyledCard>
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <StyledCard variant="outlined">
+            <StyledCardContent>
+              <Typography component="h2" variant="subtitle2">
+                {tDashboard("charts.orderModes")}
+              </Typography>
+              <Typography color="text.secondary" variant="caption">
+                {tDashboard("stats.period")}
+              </Typography>
+              <BarChart
+                height={250}
+                hideLegend
+                grid={{ vertical: true }}
+                margin={{ left: 0, bottom: 0 }}
+                series={[
+                  {
+                    color: chartColor,
+                    data: modes.map(({ count }) => count),
+                    label: tDashboard("charts.orderModes"),
+                    layout: "horizontal",
+                  },
+                ]}
+                sx={{
+                  "& .MuiBarChart-element": {
+                    fill: "url('#order-modes')",
+                  },
+                }}
+                xAxis={[{ tickMinStep: 1 }]}
+                yAxis={[
+                  {
+                    data: modes.map(({ label }) => label),
+                    scaleType: "band",
+                    width: "auto",
+                  },
+                ]}
+              >
+                <AreaGradient color={chartColor} horizontal id="order-modes" />
+              </BarChart>
+            </StyledCardContent>
+          </StyledCard>
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <StyledCard variant="outlined">
+            <StyledCardContent>
+              <Typography component="h2" variant="subtitle2">
+                {tDashboard("charts.paymentMethods")}
+              </Typography>
+              <Typography color="text.secondary" variant="caption">
+                {tDashboard("stats.period")}
+              </Typography>
+              <BarChart
+                height={250}
+                hideLegend
+                grid={{ vertical: true }}
+                margin={{ left: 0, bottom: 0 }}
+                series={[
+                  {
+                    color: chartColor,
+                    data: payments.map(({ count }) => count),
+                    label: tDashboard("charts.paymentMethods"),
+                    layout: "horizontal",
+                  },
+                ]}
+                sx={{
+                  "& .MuiBarChart-element": {
+                    fill: "url('#payment-methods')",
+                  },
+                }}
+                xAxis={[{ tickMinStep: 1 }]}
+                yAxis={[
+                  {
+                    data: payments.map(({ label }) => label),
+                    scaleType: "band",
+                    width: "auto",
+                  },
+                ]}
+              >
+                <AreaGradient
+                  color={chartColor}
+                  horizontal
+                  id="payment-methods"
+                />
+              </BarChart>
+            </StyledCardContent>
+          </StyledCard>
+        </Grid>
+      </Grid>
     </>
   );
 };

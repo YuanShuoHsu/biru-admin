@@ -14,5 +14,12 @@
     "viewOrders": "注文を見る",
     "manageUsers": "ユーザー管理",
     "manageOrganizations": "組織管理"
+  },
+  "charts": {
+    "avgOrderValue": "平均注文金額",
+    "orderModes": "注文方式",
+    "paymentMethods": "支払い方法",
+    "peakHours": "ピーク時間帯",
+    "topItems": "人気商品"
   }
 }

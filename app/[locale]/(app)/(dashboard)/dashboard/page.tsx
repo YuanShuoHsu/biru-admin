@@ -7,6 +7,8 @@ import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
+import type { OrderResponse } from "@/types/orders";
+
 import {
   getDailyBuckets,
   getDailyValueBuckets,
@@ -98,6 +100,44 @@ const DashboardPage = async ({ params }: DashboardPageProps) => {
         : Promise.resolve([]),
     ]);
 
+  const periodStart = new Date();
+  periodStart.setUTCDate(periodStart.getUTCDate() - (TREND_PERIOD_DAYS - 1));
+  periodStart.setUTCHours(0, 0, 0, 0);
+  const periodOrders = trendOrders.filter(
+    (order) => new Date(order.createdAt) >= periodStart,
+  );
+
+  const itemQuantities = new Map<string, number>();
+  for (const order of periodOrders) {
+    for (const item of order.items) {
+      itemQuantities.set(
+        item.menuItemName,
+        (itemQuantities.get(item.menuItemName) || 0) + item.orderQuantity,
+      );
+    }
+  }
+  const topItems = [...itemQuantities.entries()]
+    .map(([name, quantity]) => ({ name, quantity }))
+    .sort((a, b) => b.quantity - a.quantity)
+    .slice(0, 10);
+
+  const hourlyOrders = Array<number>(24).fill(0);
+  for (const order of periodOrders) {
+    hourlyOrders[new Date(order.createdAt).getHours()] += 1;
+  }
+
+  const countBy = <Key extends string>(getKey: (order: OrderResponse) => Key) =>
+    periodOrders.reduce<Partial<Record<Key, number>>>((counts, order) => {
+      const key = getKey(order);
+
+      counts[key] = (counts[key] || 0) + 1;
+
+      return counts;
+    }, {});
+
+  const modeCounts = countBy((order) => order.mode);
+  const paymentCounts = countBy((order) => order.paymentMethod);
+
   const organizationsTrendCreatedAt = (organizations || [])
     .filter((organization) => new Date(organization.createdAt) >= trendStart)
     .map((organization) => organization.createdAt);
@@ -147,6 +187,12 @@ const DashboardPage = async ({ params }: DashboardPageProps) => {
           data: organizationsTrendBuckets.slice(TREND_PERIOD_DAYS),
           percent: getTrendPercent(organizationsTrendBuckets),
         },
+      }}
+      charts={{
+        topItems,
+        hourlyOrders,
+        modeCounts,
+        paymentCounts,
       }}
       recentOrders={ordersData?.orders || []}
     />

@@ -14,5 +14,12 @@
     "viewOrders": "查看订单",
     "manageUsers": "管理用户",
     "manageOrganizations": "管理组织"
+  },
+  "charts": {
+    "avgOrderValue": "平均客单价",
+    "orderModes": "点餐方式",
+    "paymentMethods": "付款方式",
+    "peakHours": "高峰时段",
+    "topItems": "热销品项"
   }
 }
