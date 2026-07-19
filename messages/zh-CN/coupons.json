@@ -65,6 +65,7 @@
     "label": "可领取"
   },
   "isPublic": {
+    "exclusiveHint": "已设定每人使用次数上限，仅限会员使用，无法公开",
     "helperText": "自动显示于结账页；未公开仍可输入代码使用",
     "label": "公开"
   },

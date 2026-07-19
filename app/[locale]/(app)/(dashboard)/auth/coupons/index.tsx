@@ -113,9 +113,8 @@ const Coupons = ({ claimableCoupons, coupons }: CouponsProps) => {
                         subheader={[
                           item.applicableOrganizationNames?.length &&
                             tAuth("coupons.limitedToStores", {
-                              stores: format.list(
-                                item.applicableOrganizationNames,
-                                { type: "unit" },
+                              stores: item.applicableOrganizationNames.join(
+                                tCommon("delimiter"),
                               ),
                             }),
                           "source" in item &&

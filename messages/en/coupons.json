@@ -65,6 +65,7 @@
     "label": "Claimable"
   },
   "isPublic": {
+    "exclusiveHint": "A per-user limit is set, so this coupon is members-only and cannot be public",
     "helperText": "Automatically shown at checkout; non-public codes can still be entered",
     "label": "Public"
   },

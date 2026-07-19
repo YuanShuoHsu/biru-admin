@@ -155,10 +155,10 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
   const itemOptions = sectionOptions.flatMap(({ menuItems }) => menuItems);
   const currency = itemOptions[0]?.offers[0]?.priceCurrency || "TWD";
 
-  // 點數兌換券僅能以點數兌換取得，不參與領取／公開／自動發放
   const isPointsRedeem = pointsCost !== "";
 
-  // 「全部店家」以空 id 佔位選項呈現,與指定店家共用同一個欄位
+  const hasPerUserLimit = perUserLimit !== "";
+
   const allOrganizationsOption = {
     id: "",
     name: tCoupons("organizationScope.all"),
@@ -501,11 +501,13 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
             helperText={tCoupons("perUserLimit.hint")}
             label={`${tCoupons("perUserLimit.label")} ${tCommon("optional")}`}
             min={1}
-            onValueChange={(value) =>
+            onValueChange={(value) => {
               setValue("perUserLimit", value != null ? String(value) : "", {
                 shouldValidate: isSubmitted,
-              })
-            }
+              });
+              // 每人上限僅會員可用：設定後強制關閉公開
+              if (value != null) setValue("isPublic", false);
+            }}
             placeholder={tCoupons("perUserLimit.placeholder")}
             value={perUserLimit !== "" ? Number(perUserLimit) : null}
           />
@@ -680,8 +682,8 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
         <FormControlLabel
           control={
             <Switch
-              checked={isPublic && !isPointsRedeem}
-              disabled={isPointsRedeem}
+              checked={isPublic && !isPointsRedeem && !hasPerUserLimit}
+              disabled={isPointsRedeem || hasPerUserLimit}
               onChange={(_, checked) => setValue("isPublic", checked)}
             />
           }
@@ -691,7 +693,9 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
         <FormHelperText>
           {isPointsRedeem
             ? tCoupons("pointsCost.exclusiveHint")
-            : tCoupons("isPublic.helperText")}
+            : hasPerUserLimit
+              ? tCoupons("isPublic.exclusiveHint")
+              : tCoupons("isPublic.helperText")}
         </FormHelperText>
       </FormControl>
     </FormBox>

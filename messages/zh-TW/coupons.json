@@ -65,6 +65,7 @@
     "label": "可領取"
   },
   "isPublic": {
+    "exclusiveHint": "已設定每人使用次數上限，僅限會員使用，無法公開",
     "helperText": "自動顯示於結帳頁；未公開仍可輸入代碼使用",
     "label": "公開"
   },
