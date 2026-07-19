@@ -524,14 +524,11 @@ const Coupons = ({
         }: GridRenderCellParams<Coupon>) => (
           <Stack alignItems="center" direction="row" gap={0.5} height="100%">
             {applicableOrganizationIds?.length ? (
-              applicableOrganizationIds.map((id) => (
-                <Chip
-                  key={id}
-                  label={organizations.find((org) => org.id === id)?.name || id}
-                  size="small"
-                  variant="outlined"
-                />
-              ))
+              organizations
+                .filter(({ id }) => applicableOrganizationIds.includes(id))
+                .map(({ id, name }) => (
+                  <Chip key={id} label={name} size="small" variant="outlined" />
+                ))
             ) : (
               <Chip
                 label={tCoupons("organizationScope.all")}
