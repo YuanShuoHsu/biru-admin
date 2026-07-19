@@ -19,9 +19,13 @@ import {
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
 
+import OrderDetailDialog from "@/app/[locale]/(app)/(dashboard)/orders/OrderDetailDialog";
+
 import { useRouter } from "@/i18n/navigation";
 
-import { NavigateNext } from "@mui/icons-material";
+import { useDialogStore } from "@/providers/dialog-store-provider";
+
+import { NavigateNext, ReceiptLong } from "@mui/icons-material";
 import {
   Button,
   Card,
@@ -29,7 +33,9 @@ import {
   CardContent,
   Chip,
   Grid,
+  IconButton,
   Stack,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
@@ -156,6 +162,8 @@ const Dashboard = ({
 
   const theme = useTheme();
 
+  const { setDialog } = useDialogStore((state) => state);
+
   const {
     data: { data: orders, total: rowCount } = {
       data: recentOrders,
@@ -212,6 +220,18 @@ const Dashboard = ({
     setFilterModel(newModel);
     setPaginationModel((prev) => ({ ...prev, page: 0 }));
   }, []);
+
+  const handleViewOrder = useCallback(
+    (order: OrderResponse) => {
+      setDialog({
+        content: <OrderDetailDialog order={order} />,
+        open: true,
+        showCancel: false,
+        title: tOrders("actions.viewOrder.title"),
+      });
+    },
+    [setDialog, tOrders],
+  );
 
   const ordersHref = `/orders?${new URLSearchParams({
     ...(organizationSlug && { organization: organizationSlug }),
@@ -308,6 +328,30 @@ const Dashboard = ({
   const columns = useMemo<GridColDef[]>(
     () => [
       {
+        disableColumnMenu: true,
+        field: "actions",
+        filterable: false,
+        headerName: tOrders("actions.label"),
+        renderCell: ({ row }: GridRenderCellParams<OrderResponse>) => (
+          <Stack height="100%" direction="row" alignItems="center" gap={1}>
+            <Tooltip title={tOrders("actions.viewOrder.title")}>
+              <IconButton
+                onClick={(event) => {
+                  event.stopPropagation();
+
+                  handleViewOrder(row);
+                }}
+                size="small"
+              >
+                <ReceiptLong fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </Stack>
+        ),
+        resizable: false,
+        sortable: false,
+      },
+      {
         field: "orderNumber",
         filterOperators: stringFilterOperators,
         headerName: tOrders("orderNumber"),
@@ -349,6 +393,7 @@ const Dashboard = ({
       dateFilterOperators,
       enumFilterOperators,
       format,
+      handleViewOrder,
       locale,
       numberFilterOperators,
       stringFilterOperators,
