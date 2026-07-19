@@ -5,18 +5,19 @@ import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
-import DateFilterInputValue from "@/components/DateFilterInputValue";
-
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
-  DATE_FILTER_OPERATORS,
-  ENUM_FILTER_OPERATORS,
   getPageSizeOptions,
-  NO_VALUE_FILTER_OPERATORS,
-  NUMBER_FILTER_OPERATORS,
-  STRING_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
+import { STATUS_COLORS } from "@/constants/orders";
+
+import {
+  useDateFilterOperators,
+  useEnumFilterOperators,
+  useNumberFilterOperators,
+  useStringFilterOperators,
+} from "@/hooks/useFilterOperators";
 
 import { useRouter } from "@/i18n/navigation";
 
@@ -35,25 +36,17 @@ import { styled, useTheme } from "@mui/material/styles";
 import { SparkLineChart } from "@mui/x-charts/SparkLineChart";
 import type {
   GridColDef,
-  GridFilterInputValueProps,
   GridFilterModel,
-  GridFilterOperator,
   GridPaginationModel,
   GridRenderCellParams,
   GridSortModel,
-  GridValidRowModel,
 } from "@mui/x-data-grid";
-import {
-  GridFilterInputMultipleSingleSelect,
-  GridFilterInputMultipleValue,
-  GridFilterInputSingleSelect,
-  GridFilterInputValue,
-  useGridApiRef,
-} from "@mui/x-data-grid";
+import { useGridApiRef } from "@mui/x-data-grid";
 
 import { orderResponseDtoOrderStatusValues } from "@/types/api";
-import type { OrderResponse, OrderStatus } from "@/types/orders";
+import type { OrderResponse } from "@/types/orders";
 
+import { getDataGridSearchParams } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
 import { getOrderTotalAmount } from "@/utils/orders";
 
@@ -73,6 +66,8 @@ const StyledCardActionArea = styled(CardActionArea)({
   alignItems: "stretch",
 });
 
+const TREND_NEUTRAL_THRESHOLD = 5;
+
 interface Trend {
   data: number[];
   percent: number;
@@ -91,20 +86,6 @@ interface DashboardProps {
   recentOrders: OrderResponse[];
 }
 
-const TREND_NEUTRAL_THRESHOLD = 5;
-
-const STATUS_COLORS: Record<
-  OrderStatus,
-  "default" | "error" | "info" | "success" | "warning"
-> = {
-  OrderCancelled: "default",
-  OrderDelivered: "success",
-  OrderPaymentDue: "warning",
-  OrderPickupAvailable: "success",
-  OrderProcessing: "info",
-  OrderProblem: "error",
-};
-
 const Dashboard = ({
   organizationSlug,
   stats,
@@ -121,19 +102,11 @@ const Dashboard = ({
 
   const apiRef = useGridApiRef();
 
-  const locale = useLocale();
-
   const format = useFormatter();
 
   const router = useRouter();
 
   const theme = useTheme();
-
-  const tOrders = useTranslations("orders");
-
-  const tDashboard = useTranslations("dashboard");
-
-  const tToolbar = useTranslations("dataGrid.toolbar");
 
   const {
     data: { data: orders, total: rowCount } = {
@@ -154,46 +127,32 @@ const Dashboard = ({
           sortModel,
         ]
       : null,
-    () => {
-      const filterItem = filterModel.items[0];
-      const quickFilterValue = (filterModel.quickFilterValues || [])
-        .join(" ")
-        .trim();
-      const isNoValueOperator =
-        !!filterItem?.operator &&
-        NO_VALUE_FILTER_OPERATORS.includes(filterItem.operator);
-      const filterValueString = Array.isArray(filterItem?.value)
-        ? filterItem.value.join(",")
-        : filterItem?.value;
-      const hasFilterValue = Array.isArray(filterItem?.value)
-        ? filterItem.value.length > 0
-        : !!filterItem?.value;
-
-      return fetcher<{ data: OrderResponse[]; total: number }>(
-        `/api/organizations/${organizationSlug}/orders?${new URLSearchParams({
-          limit: String(paginationModel.pageSize),
-          offset: String(paginationModel.page * paginationModel.pageSize),
-          ...(filterItem?.field &&
-            filterItem?.operator &&
-            (hasFilterValue || isNoValueOperator) && {
-              filterField: filterItem.field,
-              filterOperator: filterItem.operator,
-              ...(filterValueString && { filterValue: filterValueString }),
-            }),
-          ...(quickFilterValue && { quickFilterValue }),
-          ...(sortModel[0]?.field && { sortBy: sortModel[0].field }),
-          ...(sortModel[0]?.sort && { sortDirection: sortModel[0].sort }),
-          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        })}`,
-      );
-    },
+    async () =>
+      fetcher<{ data: OrderResponse[]; total: number }>(
+        `/api/organizations/${organizationSlug}/orders?${getDataGridSearchParams(
+          paginationModel,
+          filterModel,
+          sortModel,
+        )}`,
+      ),
     {
       fallbackData: { data: recentOrders, total: stats.totalOrders },
       onSuccess: () => {
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+        setTimeout(() => {
+          apiRef.current?.autosizeColumns(autosizeOptions);
+        }, 0);
       },
     },
   );
+
+  const locale = useLocale();
+  const tDashboard = useTranslations("dashboard");
+  const tOrders = useTranslations("orders");
+
+  const stringFilterOperators = useStringFilterOperators();
+  const enumFilterOperators = useEnumFilterOperators();
+  const dateFilterOperators = useDateFilterOperators();
+  const numberFilterOperators = useNumberFilterOperators();
 
   const handleSortModelChange = useCallback((newModel: GridSortModel) => {
     setSortModel(newModel);
@@ -254,81 +213,6 @@ const Dashboard = ({
       trend: stats.organizationsTrend,
     },
   ];
-
-  const stringFilterOperators = useMemo<GridFilterOperator[]>(
-    () =>
-      STRING_FILTER_OPERATORS.map((value) => ({
-        getApplyFilterFn: () => null,
-        ...(NO_VALUE_FILTER_OPERATORS.includes(value)
-          ? { InputComponent: undefined }
-          : value === "isAnyOf"
-            ? { InputComponent: GridFilterInputMultipleValue }
-            : { InputComponent: GridFilterInputValue }),
-        label: tToolbar(`filter.operator.${value}`),
-        value,
-      })),
-    [tToolbar],
-  );
-
-  const enumFilterOperators = useMemo<GridFilterOperator[]>(
-    () =>
-      ENUM_FILTER_OPERATORS.map((value) => ({
-        getApplyFilterFn: () => null,
-        InputComponent:
-          value === "isAnyOf"
-            ? GridFilterInputMultipleSingleSelect
-            : GridFilterInputSingleSelect,
-        label: tToolbar(`filter.operator.${value}`),
-        value,
-      })),
-    [tToolbar],
-  );
-
-  const dateFilterOperators = useMemo<GridFilterOperator[]>(
-    () =>
-      DATE_FILTER_OPERATORS.map((value) => ({
-        getApplyFilterFn: () => null,
-        ...(NO_VALUE_FILTER_OPERATORS.includes(value)
-          ? { InputComponent: undefined }
-          : { InputComponent: DateFilterInputValue }),
-        label: tToolbar(`filter.operator.${value}`),
-        value,
-      })),
-    [tToolbar],
-  );
-
-  const numberFilterOperators = useMemo<
-    GridFilterOperator<
-      GridValidRowModel,
-      number | string | null,
-      number | string | null,
-      GridFilterInputValueProps & { type?: "number" }
-    >[]
-  >(
-    () =>
-      NUMBER_FILTER_OPERATORS.map((value) =>
-        value === "isEmpty" || value === "isNotEmpty" || value === "isAnyOf"
-          ? {
-              getApplyFilterFn: () => null,
-              ...(value === "isAnyOf"
-                ? {
-                    InputComponent: GridFilterInputMultipleValue,
-                    InputComponentProps: { type: "number" as const },
-                  }
-                : { InputComponent: undefined }),
-              label: tToolbar(`filter.operator.${value}`),
-              value,
-            }
-          : {
-              getApplyFilterFn: () => null,
-              InputComponent: GridFilterInputValue,
-              InputComponentProps: { type: "number" as const },
-              label: value,
-              value,
-            },
-      ),
-    [tToolbar],
-  );
 
   const columns = useMemo<GridColDef[]>(
     () => [
@@ -413,12 +297,12 @@ const Dashboard = ({
                       alignItems="center"
                     >
                       <Typography variant="h4">
-                        {value.toLocaleString()}
+                        {value.toLocaleString(locale)}
                       </Typography>
                       <Chip
-                        size="small"
                         color={chipColor}
                         label={`${trend.percent > 0 ? "+" : ""}${trend.percent}%`}
+                        size="small"
                       />
                     </Stack>
                     <Typography variant="caption" color="text.secondary">
@@ -446,11 +330,11 @@ const Dashboard = ({
           {tDashboard("stats.details")}
         </Typography>
         <Chip
-          label={tDashboard("quickActions.viewOrders")}
           icon={<NavigateNext />}
+          label={tDashboard("quickActions.viewOrders")}
           onClick={() => router.push(ordersHref)}
-          variant="outlined"
           size="small"
+          variant="outlined"
         />
       </Stack>
       <DataGrid

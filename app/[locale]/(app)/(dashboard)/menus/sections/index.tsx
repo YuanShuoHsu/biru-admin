@@ -10,21 +10,23 @@ import useSWR from "swr";
 import CreateMenuSectionDialog from "./CreateMenuSectionDialog";
 import UpdateMenuSectionDialog from "./UpdateMenuSectionDialog";
 
-import DateFilterInputValue from "@/components/DateFilterInputValue";
 import { DragHandle, Sortable } from "@/components/Sortable";
 
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
-  DATE_FILTER_OPERATORS,
   getPageSizeOptions,
   NO_VALUE_FILTER_OPERATORS,
-  STRING_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
 
 import { arrayMove } from "@dnd-kit/helpers";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
 import { isSortableOperation } from "@dnd-kit/react/sortable";
+
+import {
+  useDateFilterOperators,
+  useStringFilterOperators,
+} from "@/hooks/useFilterOperators";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
@@ -47,16 +49,11 @@ import {
 import type {
   GridColDef,
   GridFilterModel,
-  GridFilterOperator,
   GridPaginationModel,
   GridRenderCellParams,
   GridSortModel,
 } from "@mui/x-data-grid";
-import {
-  GridFilterInputMultipleValue,
-  GridFilterInputValue,
-  useGridApiRef,
-} from "@mui/x-data-grid";
+import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -68,7 +65,11 @@ import type {
   MenuSortField,
 } from "@/types/menus";
 
-import { isFilteredOrSorted } from "@/utils/dataGrid";
+import {
+  getDataGridSearchParams,
+  getFilterItemParams,
+  isFilteredOrSorted,
+} from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
 
@@ -136,16 +137,22 @@ const MenusMenuId = ({
 
   const { setDialog } = useDialogStore((state) => state);
 
+  const dateFilterOperators = useDateFilterOperators();
+  const stringFilterOperators = useStringFilterOperators();
+
   const format = useFormatter();
 
   const apiRef = useGridApiRef();
 
+  const locale = useLocale();
+
   const pathname = usePathname();
-
   const router = useRouter();
-
   const searchParams = useSearchParams();
   const organization = searchParams.get("organization");
+
+  const tCommon = useTranslations("common");
+  const tMenus = useTranslations("menus");
 
   const {
     data: { data: sections, total: rowCount } = {
@@ -166,36 +173,8 @@ const MenusMenuId = ({
       sortModel,
     ],
     async () => {
-      const filterItem = filterModel.items[0];
-      const quickFilterValue = (filterModel.quickFilterValues || [])
-        .join(" ")
-        .trim();
-      const isNoValueOperator =
-        filterItem?.operator &&
-        NO_VALUE_FILTER_OPERATORS.includes(filterItem.operator);
-      const filterValueString = Array.isArray(filterItem?.value)
-        ? filterItem.value.join(",")
-        : filterItem?.value;
-      const hasFilterValue = Array.isArray(filterItem?.value)
-        ? filterItem.value.length > 0
-        : !!filterItem?.value;
-
       return fetcher<{ data: MenuSection[]; total: number }>(
-        `/api/menus/${menu.id}/menu-sections?${new URLSearchParams({
-          limit: String(paginationModel.pageSize),
-          offset: String(paginationModel.page * paginationModel.pageSize),
-          ...(filterItem?.field &&
-            filterItem?.operator &&
-            (hasFilterValue || isNoValueOperator) && {
-              filterField: filterItem.field,
-              filterOperator: filterItem.operator,
-              ...(filterValueString && { filterValue: filterValueString }),
-            }),
-          ...(quickFilterValue && { quickFilterValue }),
-          ...(sortModel[0]?.field && { sortBy: sortModel[0].field }),
-          ...(sortModel[0]?.sort && { sortDirection: sortModel[0].sort }),
-          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        })}`,
+        `/api/menus/${menu.id}/menu-sections?${getDataGridSearchParams(paginationModel, filterModel, sortModel)}`,
       );
     },
     {
@@ -210,11 +189,6 @@ const MenusMenuId = ({
 
   const isReorderDisabled =
     rowCount < 2 || isFilteredOrSorted(filterModel, sortModel);
-
-  const locale = useLocale();
-  const tCommon = useTranslations("common");
-  const tMenus = useTranslations("menus");
-  const tToolbar = useTranslations("dataGrid.toolbar");
 
   const handlePaginationModelChange = useCallback(
     (newModel: GridPaginationModel) => {
@@ -255,34 +229,6 @@ const MenusMenuId = ({
     [pathname, router, searchParams],
   );
 
-  const stringFilterOperators = useMemo<GridFilterOperator[]>(
-    () =>
-      STRING_FILTER_OPERATORS.map((value) => ({
-        getApplyFilterFn: () => null,
-        ...(NO_VALUE_FILTER_OPERATORS.includes(value)
-          ? { InputComponent: undefined }
-          : value === "isAnyOf"
-            ? { InputComponent: GridFilterInputMultipleValue }
-            : { InputComponent: GridFilterInputValue }),
-        label: tToolbar(`filter.operator.${value}`),
-        value,
-      })),
-    [tToolbar],
-  );
-
-  const dateFilterOperators = useMemo<GridFilterOperator[]>(
-    () =>
-      DATE_FILTER_OPERATORS.map((value) => ({
-        getApplyFilterFn: () => null,
-        ...(NO_VALUE_FILTER_OPERATORS.includes(value)
-          ? { InputComponent: undefined }
-          : { InputComponent: DateFilterInputValue }),
-        label: tToolbar(`filter.operator.${value}`),
-        value,
-      })),
-    [tToolbar],
-  );
-
   const handleFilterModelChange = useCallback(
     (newModel: GridFilterModel) => {
       setFilterModel(newModel);
@@ -304,26 +250,10 @@ const MenusMenuId = ({
         ...rest
       } = Object.fromEntries(searchParams);
 
-      const filterValueString = Array.isArray(filterItem?.value)
-        ? filterItem.value.join(",")
-        : filterItem?.value;
-      const hasFilterValue = Array.isArray(filterItem?.value)
-        ? filterItem.value.length > 0
-        : !!filterItem?.value;
-      const isNoValueOperator = filterItem?.operator
-        ? NO_VALUE_FILTER_OPERATORS.includes(filterItem.operator)
-        : false;
-
       const params = new URLSearchParams({
         ...rest,
         page: "1",
-        ...(filterItem?.field &&
-          filterItem?.operator &&
-          (hasFilterValue || isNoValueOperator) && {
-            filterField: filterItem.field,
-            filterOperator: filterItem.operator,
-            ...(filterValueString && { filterValue: filterValueString }),
-          }),
+        ...getFilterItemParams(filterItem),
         ...(newQuickFilterValue && { quickFilterValue: newQuickFilterValue }),
       });
       router.replace(`${pathname}?${params.toString()}`);

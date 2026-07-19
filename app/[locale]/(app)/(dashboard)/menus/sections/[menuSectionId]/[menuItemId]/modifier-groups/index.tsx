@@ -9,17 +9,19 @@ import useSWR from "swr";
 
 import AttachModifierGroupDialog from "./AttachModifierGroupDialog";
 
-import DateFilterInputValue from "@/components/DateFilterInputValue";
 import { DragHandle, Sortable } from "@/components/Sortable";
 
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
-  DATE_FILTER_OPERATORS,
   getPageSizeOptions,
   NO_VALUE_FILTER_OPERATORS,
-  STRING_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
+
+import {
+  useDateFilterOperators,
+  useStringFilterOperators,
+} from "@/hooks/useFilterOperators";
 
 import { arrayMove } from "@dnd-kit/helpers";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
@@ -38,16 +40,11 @@ import {
 import type {
   GridColDef,
   GridFilterModel,
-  GridFilterOperator,
   GridPaginationModel,
   GridRenderCellParams,
   GridSortModel,
 } from "@mui/x-data-grid";
-import {
-  GridFilterInputMultipleValue,
-  GridFilterInputValue,
-  useGridApiRef,
-} from "@mui/x-data-grid";
+import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -59,6 +56,7 @@ import type {
 } from "@/types/menus";
 
 import { isFilteredOrSorted } from "@/utils/dataGrid";
+import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
 
@@ -131,7 +129,8 @@ const MenuItemModifierGroups = ({
   const format = useFormatter();
   const locale = useLocale();
   const tMenus = useTranslations("menus");
-  const tToolbar = useTranslations("dataGrid.toolbar");
+  const stringFilterOperators = useStringFilterOperators();
+  const dateFilterOperators = useDateFilterOperators();
 
   const apiRef = useGridApiRef();
 
@@ -158,36 +157,8 @@ const MenuItemModifierGroups = ({
       sortModel,
     ],
     async () => {
-      const filterItem = filterModel.items[0];
-      const quickFilterValue = (filterModel.quickFilterValues || [])
-        .join(" ")
-        .trim();
-      const isNoValueOperator =
-        filterItem?.operator &&
-        NO_VALUE_FILTER_OPERATORS.includes(filterItem.operator);
-      const filterValueString = Array.isArray(filterItem?.value)
-        ? filterItem.value.join(",")
-        : filterItem?.value;
-      const hasFilterValue = Array.isArray(filterItem?.value)
-        ? filterItem.value.length > 0
-        : !!filterItem?.value;
-
       return fetcher<{ data: MenuItemModifierGroup[]; total: number }>(
-        `/api/menu-items/${menuItemId}/modifier-groups?${new URLSearchParams({
-          limit: String(paginationModel.pageSize),
-          offset: String(paginationModel.page * paginationModel.pageSize),
-          ...(filterItem?.field &&
-            filterItem?.operator &&
-            (hasFilterValue || isNoValueOperator) && {
-              filterField: filterItem.field,
-              filterOperator: filterItem.operator,
-              ...(filterValueString && { filterValue: filterValueString }),
-            }),
-          ...(quickFilterValue && { quickFilterValue }),
-          ...(sortModel[0]?.field && { sortBy: sortModel[0].field }),
-          ...(sortModel[0]?.sort && { sortDirection: sortModel[0].sort }),
-          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        })}`,
+        `/api/menu-items/${menuItemId}/modifier-groups?${getDataGridSearchParams(paginationModel, filterModel, sortModel)}`,
       );
     },
     {
@@ -263,26 +234,10 @@ const MenuItemModifierGroups = ({
         ...rest
       } = Object.fromEntries(searchParams);
 
-      const filterValueString = Array.isArray(filterItem?.value)
-        ? filterItem.value.join(",")
-        : filterItem?.value;
-      const hasFilterValue = Array.isArray(filterItem?.value)
-        ? filterItem.value.length > 0
-        : !!filterItem?.value;
-      const isNoValueOperator = filterItem?.operator
-        ? NO_VALUE_FILTER_OPERATORS.includes(filterItem.operator)
-        : false;
-
       const params = new URLSearchParams({
         ...rest,
         page: "1",
-        ...(filterItem?.field &&
-          filterItem?.operator &&
-          (hasFilterValue || isNoValueOperator) && {
-            filterField: filterItem.field,
-            filterOperator: filterItem.operator,
-            ...(filterValueString && { filterValue: filterValueString }),
-          }),
+        ...getFilterItemParams(filterItem),
         ...(newQuickFilterValue && { quickFilterValue: newQuickFilterValue }),
       });
       router.replace(`${pathname}?${params.toString()}`);
@@ -451,34 +406,6 @@ const MenuItemModifierGroups = ({
     const newLinks = arrayMove(links, fromIndex, toIndex);
     mutate({ data: newLinks, total: rowCount }, false);
   };
-
-  const stringFilterOperators = useMemo<GridFilterOperator[]>(
-    () =>
-      STRING_FILTER_OPERATORS.map((value) => ({
-        getApplyFilterFn: () => null,
-        ...(NO_VALUE_FILTER_OPERATORS.includes(value)
-          ? { InputComponent: undefined }
-          : value === "isAnyOf"
-            ? { InputComponent: GridFilterInputMultipleValue }
-            : { InputComponent: GridFilterInputValue }),
-        label: tToolbar(`filter.operator.${value}`),
-        value,
-      })),
-    [tToolbar],
-  );
-
-  const dateFilterOperators = useMemo<GridFilterOperator[]>(
-    () =>
-      DATE_FILTER_OPERATORS.map((value) => ({
-        getApplyFilterFn: () => null,
-        ...(NO_VALUE_FILTER_OPERATORS.includes(value)
-          ? { InputComponent: undefined }
-          : { InputComponent: DateFilterInputValue }),
-        label: tToolbar(`filter.operator.${value}`),
-        value,
-      })),
-    [tToolbar],
-  );
 
   const columns = useMemo<GridColDef[]>(
     () => [

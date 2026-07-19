@@ -20,28 +20,26 @@ import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import BanUserDialogContent from "./BanUserDialogContent";
-import {
-  DATE_FILTER_OPERATORS,
-  ENUM_FILTER_OPERATORS,
-  TEXT_FILTER_OPERATORS,
-} from "./constants";
 import CreateUserDialogContent from "./CreateUserDialogContent";
 import SetRoleDialogContent from "./SetRoleDialogContent";
 import SetUserPasswordDialogContent from "./SetUserPasswordDialogContent";
 import UpdateUserDialogContent from "./UpdateUserDialogContent";
 
-import DateFilterInputValue from "@/components/DateFilterInputValue";
-
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
   getPageSizeOptions,
-  NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
 import {
   DEFAULT_AUTHENTICATED_ROUTE,
   IMPERSONATE_RETURN_KEY,
 } from "@/constants/route";
+
+import {
+  useDateFilterOperators,
+  useEnumFilterOperators,
+  useStringFilterOperators,
+} from "@/hooks/useFilterOperators";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
@@ -75,18 +73,11 @@ import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
   GridFilterModel,
-  GridFilterOperator,
   GridPaginationModel,
   GridRenderCellParams,
   GridSortModel,
 } from "@mui/x-data-grid";
-import {
-  GridFilterInputMultipleSingleSelect,
-  GridFilterInputMultipleValue,
-  GridFilterInputSingleSelect,
-  GridFilterInputValue,
-  useGridApiRef,
-} from "@mui/x-data-grid";
+import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -106,6 +97,7 @@ import {
   type QuickFilterMessages,
   type UserSessions,
 } from "@/utils/admins";
+import { getFilterItemParams } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
 
 const DataGrid = dynamic(
@@ -209,7 +201,10 @@ const Admins = ({
 
   const tAdmins = useTranslations("admins");
   const tCommon = useTranslations("common");
-  const tToolbar = useTranslations("dataGrid.toolbar");
+
+  const textFilterOperators = useStringFilterOperators();
+  const enumFilterOperators = useEnumFilterOperators();
+  const dateFilterOperators = useDateFilterOperators();
 
   const {
     data: { rows, rowCount, userSessions } = {
@@ -236,25 +231,8 @@ const Admins = ({
         quickFilterMessages,
         (filterModel.quickFilterValues || []).join(" "),
       );
-      const isNoValueOperator =
-        filterItem?.operator &&
-        NO_VALUE_FILTER_OPERATORS.includes(filterItem.operator);
-
-      const filterValueString = Array.isArray(filterItem?.value)
-        ? filterItem.value.join(",")
-        : filterItem?.value;
-      const hasFilterValue = Array.isArray(filterItem?.value)
-        ? filterItem.value.length > 0
-        : !!filterItem?.value;
-
       const params = new URLSearchParams({
-        ...(filterItem?.field &&
-          filterItem?.operator &&
-          (hasFilterValue || isNoValueOperator) && {
-            filterField: filterItem.field,
-            filterOperator: filterItem.operator,
-            ...(filterValueString && { filterValue: filterValueString }),
-          }),
+        ...getFilterItemParams(filterItem),
         limit: String(paginationModel.pageSize),
         offset: String(paginationModel.page * paginationModel.pageSize),
         ...(quickFilterValue && { quickFilterValue }),
@@ -289,48 +267,6 @@ const Admins = ({
   const currentUserId = session?.user?.id;
   const hasImpersonableUser = rows.some(
     (row) => row.id !== currentUserId && row.role !== "admin",
-  );
-
-  const textFilterOperators = useMemo<GridFilterOperator[]>(
-    () =>
-      TEXT_FILTER_OPERATORS.map((value) => ({
-        getApplyFilterFn: () => null,
-        ...(NO_VALUE_FILTER_OPERATORS.includes(value)
-          ? { InputComponent: undefined }
-          : value === "isAnyOf"
-            ? { InputComponent: GridFilterInputMultipleValue }
-            : { InputComponent: GridFilterInputValue }),
-        label: tToolbar(`filter.operator.${value}`),
-        value,
-      })),
-    [tToolbar],
-  );
-
-  const enumFilterOperators = useMemo<GridFilterOperator[]>(
-    () =>
-      ENUM_FILTER_OPERATORS.map((value) => ({
-        getApplyFilterFn: () => null,
-        InputComponent:
-          value === "isAnyOf"
-            ? GridFilterInputMultipleSingleSelect
-            : GridFilterInputSingleSelect,
-        label: tToolbar(`filter.operator.${value}`),
-        value,
-      })),
-    [tToolbar],
-  );
-
-  const dateFilterOperators = useMemo<GridFilterOperator[]>(
-    () =>
-      DATE_FILTER_OPERATORS.map((value) => ({
-        getApplyFilterFn: () => null,
-        ...(NO_VALUE_FILTER_OPERATORS.includes(value)
-          ? { InputComponent: undefined }
-          : { InputComponent: DateFilterInputValue }),
-        label: tToolbar(`filter.operator.${value}`),
-        value,
-      })),
-    [tToolbar],
   );
 
   const handlePaginationModelChange = useCallback(
@@ -394,27 +330,10 @@ const Admins = ({
         ...rest
       } = Object.fromEntries(searchParams);
 
-      const isNoValueOperator =
-        filterItem?.operator &&
-        NO_VALUE_FILTER_OPERATORS.includes(filterItem.operator);
-
-      const filterValueString = Array.isArray(filterItem?.value)
-        ? filterItem.value.join(",")
-        : filterItem?.value;
-      const hasFilterValue = Array.isArray(filterItem?.value)
-        ? filterItem.value.length > 0
-        : !!filterItem?.value;
-
       const params = new URLSearchParams({
         ...rest,
         page: "1",
-        ...(filterItem?.field &&
-          filterItem?.operator &&
-          (hasFilterValue || isNoValueOperator) && {
-            filterField: filterItem.field,
-            filterOperator: filterItem.operator,
-            ...(filterValueString && { filterValue: filterValueString }),
-          }),
+        ...getFilterItemParams(filterItem),
         ...(newQuickFilterValue && { quickFilterValue: newQuickFilterValue }),
       });
       router.replace(`${pathname}?${params.toString()}`);
