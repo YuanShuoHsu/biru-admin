@@ -14,9 +14,8 @@ import {
   filterOperatorValues,
   sortDirectionValues,
 } from "@/types/api";
-import type { Coupon } from "@/types/coupons";
 
-import { fetcher } from "@/utils/fetcher";
+import { getCoupons } from "@/utils/coupons";
 import { getOrganizations } from "@/utils/organizations";
 
 interface CouponsPageProps {
@@ -97,31 +96,27 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const couponParams = new URLSearchParams({
-    lang: locale,
-    limit: String(pageSize),
-    offset: String((page - 1) * pageSize),
-    ...(sortBy && { sortBy }),
-    ...(sortDirection && { sortDirection }),
-    ...(filterField &&
-      filterOperator &&
-      filterValue && { filterField, filterOperator, filterValue }),
-    ...(quickFilterValue && { quickFilterValue }),
-  });
-
-  const [coupons, organizations] = await Promise.all([
-    fetcher<{ data: Coupon[]; total: number }>(
-      `/api/coupons?${couponParams.toString()}`,
+  const [{ coupons, total }, organizations] = await Promise.all([
+    getCoupons(
+      locale,
+      {
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+      },
       fetchOptions,
-    ).catch(() => null),
+    ),
     getOrganizations(fetchOptions),
   ]);
 
-  if (!coupons) return null;
-
   return (
     <Coupons
-      coupons={coupons.data}
+      coupons={coupons}
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
@@ -129,7 +124,7 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
       page={page}
       pageSize={pageSize}
       quickFilterValue={quickFilterValue}
-      rowCount={coupons.total}
+      rowCount={total}
       sortBy={sortBy}
       sortDirection={sortDirection}
     />

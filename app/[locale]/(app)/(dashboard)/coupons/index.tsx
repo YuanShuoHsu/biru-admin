@@ -350,7 +350,6 @@ const Coupons = ({
               getApplyFilterFn: () => null,
               InputComponent: GridFilterInputValue,
               InputComponentProps: { type: "number" as const },
-              // 數字 operator 面板標籤依 MUI 官方顯示符號本身,不翻譯
               label: value,
               value,
             },
