@@ -23,7 +23,6 @@ import { useRouter } from "@/i18n/navigation";
 
 import { NavigateNext } from "@mui/icons-material";
 import {
-  Box,
   Card,
   CardActionArea,
   CardContent,
@@ -33,6 +32,7 @@ import {
   Typography,
 } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
+import { LineChart } from "@mui/x-charts/LineChart";
 import { SparkLineChart } from "@mui/x-charts/SparkLineChart";
 import type {
   GridColDef,
@@ -66,7 +66,23 @@ const StyledCardActionArea = styled(CardActionArea)({
   alignItems: "stretch",
 });
 
+const StyledCardContent = styled(CardContent)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  gap: theme.spacing(1),
+}));
+
 const TREND_NEUTRAL_THRESHOLD = 5;
+
+// https://github.com/mui/material-ui/blob/master/docs/data/material/getting-started/templates/dashboard/components/SessionsChart.tsx
+const AreaGradient = ({ color, id }: { color: string; id: string }) => (
+  <defs>
+    <linearGradient id={id} x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stopColor={color} stopOpacity={0.5} />
+      <stop offset="100%" stopColor={color} stopOpacity={0} />
+    </linearGradient>
+  </defs>
+);
 
 interface Trend {
   data: number[];
@@ -80,6 +96,7 @@ interface DashboardProps {
     totalOrganizations: number;
     totalOrders: number;
     ordersTrend: Trend;
+    revenueTrend: Trend;
     usersTrend: Trend | null;
     organizationsTrend: Trend;
   };
@@ -184,7 +201,6 @@ const Dashboard = ({
         day: "numeric",
         month: "short",
         timeZone: "UTC",
-        year: "numeric",
       }),
     );
   }, [format, stats.ordersTrend.data.length]);
@@ -196,6 +212,12 @@ const Dashboard = ({
       href: ordersHref,
       trend: stats.ordersTrend,
     },
+    {
+      label: tDashboard("stats.totalOrganizations"),
+      value: stats.totalOrganizations,
+      href: "/organizations",
+      trend: stats.organizationsTrend,
+    },
     ...(stats.totalUsers !== null && stats.usersTrend
       ? [
           {
@@ -206,13 +228,20 @@ const Dashboard = ({
           },
         ]
       : []),
-    {
-      label: tDashboard("stats.totalOrganizations"),
-      value: stats.totalOrganizations,
-      href: "/organizations",
-      trend: stats.organizationsTrend,
-    },
   ];
+
+  const revenueTotal = stats.revenueTrend.data.reduce((sum, n) => sum + n, 0);
+  const revenueCurrency = recentOrders[0]?.items[0]?.priceCurrency || "";
+  const revenueChipColor =
+    stats.revenueTrend.percent > TREND_NEUTRAL_THRESHOLD
+      ? "success"
+      : stats.revenueTrend.percent < -TREND_NEUTRAL_THRESHOLD
+        ? "error"
+        : "default";
+  const revenueTrendColor =
+    revenueChipColor === "default"
+      ? theme.vars.palette.text.secondary
+      : theme.vars.palette[revenueChipColor].main;
 
   const columns = useMemo<GridColDef[]>(
     () => [
@@ -271,7 +300,7 @@ const Dashboard = ({
         {tDashboard("overview")}
       </Typography>
       <Grid container spacing={2}>
-        {statCards.map(({ label, value, href, trend }) => {
+        {statCards.map(({ label, value, href, trend }, index) => {
           const chipColor =
             trend.percent > TREND_NEUTRAL_THRESHOLD
               ? "success"
@@ -287,10 +316,8 @@ const Dashboard = ({
             <Grid key={label} size={{ xs: 12, sm: 6, md: 4 }}>
               <StyledCard variant="outlined">
                 <StyledCardActionArea onClick={() => router.push(href)}>
-                  <CardContent>
-                    <Typography variant="subtitle2" gutterBottom>
-                      {label}
-                    </Typography>
+                  <StyledCardContent>
+                    <Typography variant="subtitle2">{label}</Typography>
                     <Stack
                       direction="row"
                       justifyContent="space-between"
@@ -308,23 +335,91 @@ const Dashboard = ({
                     <Typography variant="caption" color="text.secondary">
                       {tDashboard("stats.period")}
                     </Typography>
-                    <Box sx={{ width: "100%", height: 50 }}>
-                      <SparkLineChart
-                        data={trend.data}
-                        area
-                        showHighlight
-                        showTooltip
+                    <SparkLineChart
+                      data={trend.data}
+                      area
+                      height={50}
+                      showHighlight
+                      showTooltip
+                      color={trendColor}
+                      sx={{
+                        "& .MuiLineChart-area": {
+                          fill: `url('#area-gradient-${index}')`,
+                        },
+                      }}
+                      xAxis={{ data: trendDayLabels, scaleType: "band" }}
+                    >
+                      <AreaGradient
                         color={trendColor}
-                        xAxis={{ data: trendDayLabels, scaleType: "band" }}
+                        id={`area-gradient-${index}`}
                       />
-                    </Box>
-                  </CardContent>
+                    </SparkLineChart>
+                  </StyledCardContent>
                 </StyledCardActionArea>
               </StyledCard>
             </Grid>
           );
         })}
       </Grid>
+      <Card variant="outlined">
+        <StyledCardContent>
+          <Typography component="h2" variant="subtitle2">
+            {tDashboard("stats.revenue")}
+          </Typography>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            gap={1}
+          >
+            <Typography variant="h4">
+              {`${revenueCurrency} ${revenueTotal.toLocaleString(locale)}`.trim()}
+            </Typography>
+            <Chip
+              color={revenueChipColor}
+              label={`${stats.revenueTrend.percent > 0 ? "+" : ""}${stats.revenueTrend.percent}%`}
+              size="small"
+            />
+          </Stack>
+          <Typography color="text.secondary" variant="caption">
+            {tDashboard("stats.period")}
+          </Typography>
+          <LineChart
+            height={250}
+            hideLegend
+            grid={{ horizontal: true }}
+            margin={{ left: 0, bottom: 0 }}
+            series={[
+              {
+                area: true,
+                color: revenueTrendColor,
+                curve: "linear",
+                data: stats.revenueTrend.data,
+                id: "revenue",
+                label: tDashboard("stats.revenue"),
+                showMark: false,
+                valueFormatter: (value) =>
+                  `${revenueCurrency} ${(value ?? 0).toLocaleString(locale)}`.trim(),
+              },
+            ]}
+            sx={{
+              "& .MuiLineChart-area": {
+                fill: "url('#revenue')",
+              },
+            }}
+            xAxis={[
+              {
+                data: trendDayLabels,
+                scaleType: "point",
+                tickInterval: (_, index) => (index + 1) % 5 === 0,
+              },
+            ]}
+            yAxis={[{ width: "auto" }]}
+          >
+            <AreaGradient color={revenueTrendColor} id="revenue" />
+          </LineChart>
+        </StyledCardContent>
+      </Card>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Typography color="text.primary" variant="h6">
           {tDashboard("stats.details")}

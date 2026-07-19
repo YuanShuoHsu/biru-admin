@@ -6,7 +6,8 @@
     "totalUsers": "总用户数",
     "totalOrganizations": "总组织数",
     "details": "详情",
-    "period": "近 30 天"
+    "period": "近 30 天",
+    "revenue": "营业额"
   },
   "quickActions": {
     "label": "快速操作",

@@ -6,7 +6,8 @@
     "totalUsers": "総ユーザー数",
     "totalOrganizations": "総組織数",
     "details": "詳細",
-    "period": "過去30日間"
+    "period": "過去30日間",
+    "revenue": "売上"
   },
   "quickActions": {
     "label": "クイックアクション",

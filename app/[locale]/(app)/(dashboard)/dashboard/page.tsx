@@ -7,8 +7,12 @@ import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
-import { getDailyBuckets, getTrendPercent } from "@/utils/dashboard";
-import { getAdminOrders } from "@/utils/orders";
+import {
+  getDailyBuckets,
+  getDailyValueBuckets,
+  getTrendPercent,
+} from "@/utils/dashboard";
+import { getAdminOrders, getOrderTotalAmount } from "@/utils/orders";
 
 const TREND_PERIOD_DAYS = 30;
 const TREND_FETCH_DAYS = TREND_PERIOD_DAYS * 2;
@@ -42,7 +46,7 @@ const DashboardPage = async ({ params }: DashboardPageProps) => {
   trendStart.setUTCHours(0, 0, 0, 0);
   const trendStartISO = trendStart.toISOString();
 
-  const [usersTotal, usersTrendCreatedAt, ordersData, ordersTrendCreatedAt] =
+  const [usersTotal, usersTrendCreatedAt, ordersData, trendOrders] =
     await Promise.all([
       isAdmin
         ? authClient.admin
@@ -90,7 +94,7 @@ const DashboardPage = async ({ params }: DashboardPageProps) => {
               pageSize: 1000,
             },
             fetchOptions,
-          ).then(({ orders }) => orders.map((order) => order.createdAt))
+          ).then(({ orders }) => orders)
         : Promise.resolve([]),
     ]);
 
@@ -99,7 +103,14 @@ const DashboardPage = async ({ params }: DashboardPageProps) => {
     .map((organization) => organization.createdAt);
 
   const ordersTrendBuckets = getDailyBuckets(
-    ordersTrendCreatedAt,
+    trendOrders.map((order) => order.createdAt),
+    TREND_FETCH_DAYS,
+  );
+  const revenueTrendBuckets = getDailyValueBuckets(
+    trendOrders.map((order) => ({
+      date: order.createdAt,
+      value: getOrderTotalAmount(order),
+    })),
     TREND_FETCH_DAYS,
   );
   const usersTrendBuckets = getDailyBuckets(
@@ -121,6 +132,10 @@ const DashboardPage = async ({ params }: DashboardPageProps) => {
         ordersTrend: {
           data: ordersTrendBuckets.slice(TREND_PERIOD_DAYS),
           percent: getTrendPercent(ordersTrendBuckets),
+        },
+        revenueTrend: {
+          data: revenueTrendBuckets.slice(TREND_PERIOD_DAYS),
+          percent: getTrendPercent(revenueTrendBuckets),
         },
         usersTrend: isAdmin
           ? {

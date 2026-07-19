@@ -6,7 +6,8 @@
     "totalUsers": "總使用者數",
     "totalOrganizations": "總組織數",
     "details": "詳情",
-    "period": "近 30 日"
+    "period": "近 30 日",
+    "revenue": "營業額"
   },
   "quickActions": {
     "label": "快速操作",

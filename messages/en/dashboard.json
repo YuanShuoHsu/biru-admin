@@ -6,7 +6,8 @@
     "totalUsers": "Total Users",
     "totalOrganizations": "Total Organizations",
     "details": "Details",
-    "period": "Last 30 days"
+    "period": "Last 30 days",
+    "revenue": "Revenue"
   },
   "quickActions": {
     "label": "Quick Actions",

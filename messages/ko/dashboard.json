@@ -6,7 +6,8 @@
     "totalUsers": "총 사용자 수",
     "totalOrganizations": "총 조직 수",
     "details": "세부 정보",
-    "period": "최근 30일"
+    "period": "최근 30일",
+    "revenue": "매출"
   },
   "quickActions": {
     "label": "빠른 작업",

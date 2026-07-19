@@ -1,5 +1,5 @@
-export const getDailyBuckets = (
-  createdAts: (string | Date)[],
+export const getDailyValueBuckets = (
+  entries: { date: string | Date; value: number }[],
   days: number,
   endDate = new Date(),
 ): number[] => {
@@ -10,8 +10,8 @@ export const getDailyBuckets = (
     endDate.getUTCDate(),
   );
 
-  for (const createdAt of createdAts) {
-    const date = new Date(createdAt);
+  for (const { date: entryDate, value } of entries) {
+    const date = new Date(entryDate);
     const day = Date.UTC(
       date.getUTCFullYear(),
       date.getUTCMonth(),
@@ -20,11 +20,22 @@ export const getDailyBuckets = (
     const diffDays = Math.round((end - day) / 86_400_000);
     const index = days - 1 - diffDays;
 
-    if (index >= 0 && index < days) buckets[index] += 1;
+    if (index >= 0 && index < days) buckets[index] += value;
   }
 
   return buckets;
 };
+
+export const getDailyBuckets = (
+  createdAts: (string | Date)[],
+  days: number,
+  endDate = new Date(),
+): number[] =>
+  getDailyValueBuckets(
+    createdAts.map((date) => ({ date, value: 1 })),
+    days,
+    endDate,
+  );
 
 export const getTrendPercent = (buckets: number[]): number => {
   const half = Math.floor(buckets.length / 2);
