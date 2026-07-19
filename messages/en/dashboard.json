@@ -1,11 +1,12 @@
 {
   "label": "Dashboard",
-  "welcome": "Welcome back, {name}",
+  "overview": "Overview",
   "stats": {
     "totalOrders": "Total Orders",
     "totalUsers": "Total Users",
     "totalOrganizations": "Total Organizations",
-    "recentOrders": "Recent Orders"
+    "details": "Details",
+    "period": "Last 30 days"
   },
   "quickActions": {
     "label": "Quick Actions",

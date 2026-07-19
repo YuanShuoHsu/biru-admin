@@ -2107,7 +2107,8 @@ export interface components {
       | "paymentMethod"
       | "orderStatus"
       | "paymentDate"
-      | "createdAt";
+      | "createdAt"
+      | "total";
     /** @enum {string} */
     OrderSortField:
       | "orderNumber"
@@ -2115,7 +2116,8 @@ export interface components {
       | "paymentMethod"
       | "orderStatus"
       | "paymentDate"
-      | "createdAt";
+      | "createdAt"
+      | "total";
     OrderSellerDto: {
       id: string;
       name: string;
@@ -5322,6 +5324,7 @@ export const orderFilterFieldValues: ReadonlyArray<
   "orderStatus",
   "paymentDate",
   "createdAt",
+  "total",
 ];
 export const orderSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrderSortField"]
@@ -5332,6 +5335,7 @@ export const orderSortFieldValues: ReadonlyArray<
   "orderStatus",
   "paymentDate",
   "createdAt",
+  "total",
 ];
 export const userOrderResponseDtoModeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UserOrderResponseDto"]["mode"]

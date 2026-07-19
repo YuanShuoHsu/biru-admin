@@ -1,11 +1,12 @@
 {
   "label": "总览",
-  "welcome": "欢迎回来，{name}",
+  "overview": "总览",
   "stats": {
     "totalOrders": "总订单数",
     "totalUsers": "总用户数",
     "totalOrganizations": "总组织数",
-    "recentOrders": "近期订单"
+    "details": "详情",
+    "period": "近 30 天"
   },
   "quickActions": {
     "label": "快速操作",

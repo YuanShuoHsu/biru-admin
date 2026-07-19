@@ -1,11 +1,12 @@
 {
   "label": "ダッシュボード",
-  "welcome": "おかえりなさい、{name}",
+  "overview": "概要",
   "stats": {
     "totalOrders": "総注文数",
     "totalUsers": "総ユーザー数",
     "totalOrganizations": "総組織数",
-    "recentOrders": "最近の注文"
+    "details": "詳細",
+    "period": "過去30日間"
   },
   "quickActions": {
     "label": "クイックアクション",

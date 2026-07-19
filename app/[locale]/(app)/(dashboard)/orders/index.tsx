@@ -17,6 +17,7 @@ import {
   ENUM_FILTER_OPERATORS,
   getPageSizeOptions,
   NO_VALUE_FILTER_OPERATORS,
+  NUMBER_FILTER_OPERATORS,
   STRING_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
 
@@ -26,11 +27,13 @@ import { ReceiptLong } from "@mui/icons-material";
 import { Chip, IconButton, Stack, Tooltip } from "@mui/material";
 import type {
   GridColDef,
+  GridFilterInputValueProps,
   GridFilterModel,
   GridFilterOperator,
   GridPaginationModel,
   GridRenderCellParams,
   GridSortModel,
+  GridValidRowModel,
 } from "@mui/x-data-grid";
 import {
   GridFilterInputMultipleSingleSelect,
@@ -287,6 +290,39 @@ const Orders = ({
     [tToolbar],
   );
 
+  const numberFilterOperators = useMemo<
+    GridFilterOperator<
+      GridValidRowModel,
+      number | string | null,
+      number | string | null,
+      GridFilterInputValueProps & { type?: "number" }
+    >[]
+  >(
+    () =>
+      NUMBER_FILTER_OPERATORS.map((value) =>
+        value === "isEmpty" || value === "isNotEmpty" || value === "isAnyOf"
+          ? {
+              getApplyFilterFn: () => null,
+              ...(value === "isAnyOf"
+                ? {
+                    InputComponent: GridFilterInputMultipleValue,
+                    InputComponentProps: { type: "number" as const },
+                  }
+                : { InputComponent: undefined }),
+              label: tToolbar(`filter.operator.${value}`),
+              value,
+            }
+          : {
+              getApplyFilterFn: () => null,
+              InputComponent: GridFilterInputValue,
+              InputComponentProps: { type: "number" as const },
+              label: value,
+              value,
+            },
+      ),
+    [tToolbar],
+  );
+
   const handleFilterModelChange = useCallback(
     (newModel: GridFilterModel) => {
       setFilterModel(newModel);
@@ -386,9 +422,8 @@ const Orders = ({
       },
       {
         field: "total",
-        filterable: false,
+        filterOperators: numberFilterOperators,
         headerName: tOrders("total"),
-        sortable: false,
         valueGetter: (_value: unknown, row: OrderResponse) =>
           `${row.items[0]?.priceCurrency || ""} ${getOrderTotalAmount(row).toLocaleString(locale)}`,
       },
@@ -456,6 +491,7 @@ const Orders = ({
       format,
       handleViewOrder,
       locale,
+      numberFilterOperators,
       stringFilterOperators,
       tOrder,
       tOrders,
