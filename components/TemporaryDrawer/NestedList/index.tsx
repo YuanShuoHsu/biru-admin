@@ -166,9 +166,18 @@ const useNavItems = (): MenuItem[] => {
   const { data: defaultOrganizationSlug = "" } = useSWR<string>(
     "default-organization-slug",
     async () => {
-      const { data } = await authClient.organization.list();
+      const [{ data: session }, { data: organizations }] = await Promise.all([
+        authClient.getSession(),
+        authClient.organization.list(),
+      ]);
 
-      return data?.[0].slug || "";
+      return (
+        organizations?.find(
+          ({ id }) => id === session?.session?.activeOrganizationId,
+        )?.slug ||
+        organizations?.[0]?.slug ||
+        ""
+      );
     },
   );
 
@@ -296,7 +305,11 @@ const useNavItems = (): MenuItem[] => {
   ];
 
   return [
-    { icon: Dashboard, label: tDashboard("label"), to: "/dashboard" },
+    {
+      icon: Dashboard,
+      label: tDashboard("label"),
+      to: getHref("/dashboard", { organization: defaultOrganizationSlug }),
+    },
     {
       children: orderChildren,
       icon: ShoppingCart,
