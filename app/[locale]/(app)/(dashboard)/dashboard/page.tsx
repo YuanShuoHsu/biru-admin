@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 
 import Dashboard from ".";
 
+import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
@@ -21,10 +22,15 @@ const TREND_FETCH_DAYS = TREND_PERIOD_DAYS * 2;
 
 interface DashboardPageProps {
   params: Promise<{ locale: Locale }>;
+  searchParams: Promise<{ organization?: string }>;
 }
 
-const DashboardPage = async ({ params }: DashboardPageProps) => {
-  const [cookieStore, { locale }] = await Promise.all([cookies(), params]);
+const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
+  const [cookieStore, { locale }, { organization = "" }] = await Promise.all([
+    cookies(),
+    params,
+    searchParams,
+  ]);
 
   setRequestLocale(locale);
 
@@ -41,7 +47,22 @@ const DashboardPage = async ({ params }: DashboardPageProps) => {
   const { data: organizations } = await authClient.organization.list({
     fetchOptions,
   });
-  const organizationSlug = organizations?.[0]?.slug || "";
+  const selectedOrganization = organizations?.find(
+    ({ slug }) => slug === organization,
+  );
+
+  if (!selectedOrganization) {
+    const fallbackSlug =
+      organizations?.find(
+        ({ id }) => id === session?.session?.activeOrganizationId,
+      )?.slug || organizations?.[0]?.slug;
+
+    if (fallbackSlug) {
+      redirect({ href: `/dashboard?organization=${fallbackSlug}`, locale });
+    }
+  }
+
+  const organizationSlug = selectedOrganization?.slug || "";
 
   const trendStart = new Date();
   trendStart.setUTCDate(trendStart.getUTCDate() - (TREND_FETCH_DAYS - 1));
