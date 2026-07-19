@@ -90,7 +90,7 @@ const Coupons = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  organizations,
+  organizations: initialOrganizations,
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,
@@ -141,6 +141,10 @@ const Coupons = ({
 
   const tCoupons = useTranslations("coupons");
   const tToolbar = useTranslations("dataGrid.toolbar");
+
+  const { data: organizations = initialOrganizations } = useSWR<
+    OrganizationResponse[]
+  >("/api/organizations", fetcher, { fallbackData: initialOrganizations });
 
   const {
     data: { data: coupons, total: rowCount } = {
