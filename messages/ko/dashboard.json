@@ -6,7 +6,13 @@
     "totalUsers": "총 사용자 수",
     "totalOrganizations": "총 조직 수",
     "details": "세부 정보",
-    "period": "최근 30일",
+    "period": {
+      "today": "오늘",
+      "7d": "최근 7일",
+      "30d": "최근 30일",
+      "90d": "최근 3개월",
+      "365d": "최근 1년"
+    },
     "revenue": "매출"
   },
   "quickActions": {

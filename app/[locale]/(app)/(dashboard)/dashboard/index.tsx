@@ -19,6 +19,8 @@ import {
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
 
+import { DASHBOARD_RANGES, type DashboardRange } from "./definitions";
+
 import OrderDetailDialog from "@/app/[locale]/(app)/(dashboard)/orders/OrderDetailDialog";
 
 import { useRouter } from "@/i18n/navigation";
@@ -121,6 +123,7 @@ interface Trend {
 
 interface DashboardProps {
   organizationSlug: string;
+  range: DashboardRange;
   stats: {
     totalUsers: number | null;
     totalOrganizations: number;
@@ -141,6 +144,7 @@ interface DashboardProps {
 
 const Dashboard = ({
   organizationSlug,
+  range,
   stats,
   charts,
   recentOrders,
@@ -239,23 +243,42 @@ const Dashboard = ({
     pageSize: "10",
   }).toString()}`;
 
-  const trendDayLabels = useMemo(() => {
-    const days = stats.ordersTrend.data.length;
+  const { hourly, bucketDays, tickStep } = DASHBOARD_RANGES[range];
+
+  const trendLabels = useMemo(() => {
+    const count = stats.ordersTrend.data.length;
     const now = new Date();
-    const end = Date.UTC(
+    const dayStart = Date.UTC(
       now.getUTCFullYear(),
       now.getUTCMonth(),
       now.getUTCDate(),
     );
 
-    return Array.from({ length: days }, (_, index) =>
-      format.dateTime(new Date(end - (days - 1 - index) * 86_400_000), {
-        day: "numeric",
-        month: "short",
-        timeZone: "UTC",
-      }),
+    if (hourly) {
+      return Array.from({ length: count }, (_, index) =>
+        format.dateTime(new Date(dayStart + index * 3_600_000), {
+          hour: "numeric",
+          minute: "numeric",
+          timeZone: "UTC",
+        }),
+      );
+    }
+
+    const stepMs = bucketDays * 86_400_000;
+    const dateFormat =
+      bucketDays >= 28
+        ? ({ month: "short", year: "numeric", timeZone: "UTC" } as const)
+        : ({ day: "numeric", month: "short", timeZone: "UTC" } as const);
+
+    return Array.from({ length: count }, (_, index) =>
+      format.dateTime(
+        new Date(dayStart - (count - 1 - index) * stepMs),
+        dateFormat,
+      ),
     );
-  }, [format, stats.ordersTrend.data.length]);
+  }, [bucketDays, format, hourly, stats.ordersTrend.data.length]);
+
+  const periodLabel = tDashboard(`stats.period.${range}`);
 
   const statCards = [
     {
@@ -282,18 +305,25 @@ const Dashboard = ({
       : []),
   ];
 
+  const getTrendColors = (percent: number) => {
+    const chipColor =
+      percent > TREND_NEUTRAL_THRESHOLD
+        ? "success"
+        : percent < -TREND_NEUTRAL_THRESHOLD
+          ? "error"
+          : "default";
+    const trendColor =
+      chipColor === "default"
+        ? theme.vars.palette.text.secondary
+        : theme.vars.palette[chipColor].main;
+
+    return { chipColor, trendColor } as const;
+  };
+
   const revenueTotal = stats.revenueTrend.data.reduce((sum, n) => sum + n, 0);
   const revenueCurrency = recentOrders[0]?.items[0]?.priceCurrency || "";
-  const revenueChipColor =
-    stats.revenueTrend.percent > TREND_NEUTRAL_THRESHOLD
-      ? "success"
-      : stats.revenueTrend.percent < -TREND_NEUTRAL_THRESHOLD
-        ? "error"
-        : "default";
-  const revenueTrendColor =
-    revenueChipColor === "default"
-      ? theme.vars.palette.text.secondary
-      : theme.vars.palette[revenueChipColor].main;
+  const { chipColor: revenueChipColor, trendColor: revenueTrendColor } =
+    getTrendColors(stats.revenueTrend.percent);
 
   const chartColor = theme.vars.palette.primary.main;
 
@@ -408,16 +438,7 @@ const Dashboard = ({
       </Typography>
       <Grid container spacing={2}>
         {statCards.map(({ label, value, href, trend }, index) => {
-          const chipColor =
-            trend.percent > TREND_NEUTRAL_THRESHOLD
-              ? "success"
-              : trend.percent < -TREND_NEUTRAL_THRESHOLD
-                ? "error"
-                : "default";
-          const trendColor =
-            chipColor === "default"
-              ? theme.vars.palette.text.secondary
-              : theme.vars.palette[chipColor].main;
+          const { chipColor, trendColor } = getTrendColors(trend.percent);
 
           return (
             <Grid key={label} size={{ xs: 12, sm: 6, md: 4 }}>
@@ -440,7 +461,7 @@ const Dashboard = ({
                       />
                     </Stack>
                     <Typography variant="caption" color="text.secondary">
-                      {tDashboard("stats.period")}
+                      {periodLabel}
                     </Typography>
                     <SparkLineChart
                       data={trend.data}
@@ -454,7 +475,7 @@ const Dashboard = ({
                           fill: `url('#area-gradient-${index}')`,
                         },
                       }}
-                      xAxis={{ data: trendDayLabels, scaleType: "band" }}
+                      xAxis={{ data: trendLabels, scaleType: "band" }}
                     >
                       <AreaGradient
                         color={trendColor}
@@ -522,7 +543,7 @@ const Dashboard = ({
                 />
               </Stack>
               <Typography color="text.secondary" variant="caption">
-                {tDashboard("stats.period")}
+                {periodLabel}
               </Typography>
               <LineChart
                 height={250}
@@ -549,9 +570,9 @@ const Dashboard = ({
                 }}
                 xAxis={[
                   {
-                    data: trendDayLabels,
+                    data: trendLabels,
                     scaleType: "point",
-                    tickInterval: (_, index) => (index + 1) % 5 === 0,
+                    tickInterval: (_, index) => (index + 1) % tickStep === 0,
                   },
                 ]}
                 yAxis={[{ width: "auto" }]}
@@ -571,7 +592,7 @@ const Dashboard = ({
                 {`${revenueCurrency} ${avgOrderTotal.toLocaleString(locale)}`.trim()}
               </Typography>
               <Typography color="text.secondary" variant="caption">
-                {tDashboard("stats.period")}
+                {periodLabel}
               </Typography>
               <LineChart
                 height={250}
@@ -598,9 +619,9 @@ const Dashboard = ({
                 }}
                 xAxis={[
                   {
-                    data: trendDayLabels,
+                    data: trendLabels,
                     scaleType: "point",
-                    tickInterval: (_, index) => (index + 1) % 5 === 0,
+                    tickInterval: (_, index) => (index + 1) % tickStep === 0,
                   },
                 ]}
                 yAxis={[{ width: "auto" }]}
@@ -617,7 +638,7 @@ const Dashboard = ({
                 {tDashboard("charts.topItems")}
               </Typography>
               <Typography color="text.secondary" variant="caption">
-                {tDashboard("stats.period")}
+                {periodLabel}
               </Typography>
               <BarChart
                 height={300}
@@ -658,7 +679,7 @@ const Dashboard = ({
                 {tDashboard("charts.peakHours")}
               </Typography>
               <Typography color="text.secondary" variant="caption">
-                {tDashboard("stats.period")}
+                {periodLabel}
               </Typography>
               <BarChart
                 height={300}
@@ -698,7 +719,7 @@ const Dashboard = ({
                 {tDashboard("charts.orderModes")}
               </Typography>
               <Typography color="text.secondary" variant="caption">
-                {tDashboard("stats.period")}
+                {periodLabel}
               </Typography>
               <BarChart
                 height={250}
@@ -739,7 +760,7 @@ const Dashboard = ({
                 {tDashboard("charts.paymentMethods")}
               </Typography>
               <Typography color="text.secondary" variant="caption">
-                {tDashboard("stats.period")}
+                {periodLabel}
               </Typography>
               <BarChart
                 height={250}

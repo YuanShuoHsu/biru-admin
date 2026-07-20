@@ -6,7 +6,13 @@
     "totalUsers": "總使用者數",
     "totalOrganizations": "總組織數",
     "details": "詳情",
-    "period": "近 30 日",
+    "period": {
+      "today": "今日",
+      "7d": "近 7 日",
+      "30d": "近 30 日",
+      "90d": "近 3 個月",
+      "365d": "近 1 年"
+    },
     "revenue": "營業額"
   },
   "quickActions": {
