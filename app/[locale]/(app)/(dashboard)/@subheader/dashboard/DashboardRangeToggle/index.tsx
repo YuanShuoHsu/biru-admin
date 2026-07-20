@@ -17,6 +17,17 @@ import {
 } from "@mui/material";
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
+  backgroundColor: theme.vars.palette.background.paper,
+  transition: theme.transitions.create("background-color"),
+
+  [`& .${toggleButtonGroupClasses.grouped}`]: {
+    transition: theme.transitions.create([
+      "background-color",
+      "border-color",
+      "color",
+    ]),
+  },
+
   [theme.breakpoints.up("sm")]: {
     width: "auto",
 
