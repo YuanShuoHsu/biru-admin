@@ -57,9 +57,12 @@ export const getAdminOrders = cache(
   },
 );
 
-export const getOrderTotalAmount = (order: OrderResponse): number =>
-  order.items.reduce(
+export const getOrderTotalAmount = (order: OrderResponse): number => {
+  const subtotal = order.items.reduce(
     (sum, { orderQuantity, unitPrice }) =>
       sum + Number(unitPrice) * orderQuantity,
     0,
   );
+
+  return subtotal - Number(order.discount || 0);
+};
