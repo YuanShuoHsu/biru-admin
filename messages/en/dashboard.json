@@ -26,6 +26,7 @@
     "orderModes": "Order Modes",
     "paymentMethods": "Payment Methods",
     "peakHours": "Peak Hours",
+    "slowItems": "Slow-Moving Items",
     "topItems": "Top Items"
   }
 }

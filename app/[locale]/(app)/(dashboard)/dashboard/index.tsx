@@ -135,6 +135,7 @@ interface DashboardProps {
   };
   charts: {
     topItems: { name: string; quantity: number }[];
+    slowItems: { name: string; quantity: number }[];
     hourlyOrders: number[];
     modeCounts: Partial<Record<OrderMode, number>>;
     paymentCounts: Partial<Record<OrderPaymentMethod, number>>;
@@ -326,6 +327,7 @@ const Dashboard = ({
     getTrendColors(stats.revenueTrend.percent);
 
   const chartColor = theme.vars.palette.primary.main;
+  const slowItemsColor = theme.vars.palette.warning.main;
 
   const hourLabels = Array.from({ length: 24 }, (_, hour) => `${hour}:00`);
 
@@ -668,6 +670,51 @@ const Dashboard = ({
                 ]}
               >
                 <AreaGradient color={chartColor} horizontal id="top-items" />
+              </BarChart>
+            </StyledCardContent>
+          </StyledCard>
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <StyledCard variant="outlined">
+            <StyledCardContent>
+              <Typography component="h2" variant="subtitle2">
+                {tDashboard("charts.slowItems")}
+              </Typography>
+              <Typography color="text.secondary" variant="caption">
+                {periodLabel}
+              </Typography>
+              <BarChart
+                height={300}
+                hideLegend
+                grid={{ vertical: true }}
+                margin={{ left: 0, bottom: 0 }}
+                series={[
+                  {
+                    color: slowItemsColor,
+                    data: charts.slowItems.map(({ quantity }) => quantity),
+                    label: tDashboard("charts.slowItems"),
+                    layout: "horizontal",
+                  },
+                ]}
+                sx={{
+                  "& .MuiBarChart-element": {
+                    fill: "url('#slow-items')",
+                  },
+                }}
+                xAxis={[{ tickMinStep: 1 }]}
+                yAxis={[
+                  {
+                    data: charts.slowItems.map(({ name }) => name),
+                    scaleType: "band",
+                    width: "auto",
+                  },
+                ]}
+              >
+                <AreaGradient
+                  color={slowItemsColor}
+                  horizontal
+                  id="slow-items"
+                />
               </BarChart>
             </StyledCardContent>
           </StyledCard>

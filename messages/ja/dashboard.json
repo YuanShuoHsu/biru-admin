@@ -26,6 +26,7 @@
     "orderModes": "注文方式",
     "paymentMethods": "支払い方法",
     "peakHours": "ピーク時間帯",
+    "slowItems": "不振商品",
     "topItems": "人気商品"
   }
 }

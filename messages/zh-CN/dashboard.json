@@ -26,6 +26,7 @@
     "orderModes": "点餐方式",
     "paymentMethods": "付款方式",
     "peakHours": "高峰时段",
+    "slowItems": "滞销品项",
     "topItems": "热销品项"
   }
 }

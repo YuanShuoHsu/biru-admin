@@ -9,6 +9,7 @@ import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
+import type { OrderMenu } from "@/types/menus";
 import type { OrderResponse } from "@/types/orders";
 
 import {
@@ -18,6 +19,7 @@ import {
   getHourlyValueBuckets,
   getTrendPercent,
 } from "@/utils/dashboard";
+import { fetcher } from "@/utils/fetcher";
 import { getAdminOrders, getOrderTotalAmount } from "@/utils/orders";
 
 interface DashboardPageProps {
@@ -67,13 +69,16 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
   }
 
   const organizationSlug = resolvedSlug || "";
+  const resolvedOrganizationId = organizations?.find(
+    ({ slug }) => slug === resolvedSlug,
+  )?.id;
 
   const trendStart = new Date();
   trendStart.setUTCDate(trendStart.getUTCDate() - (trendFetchDays - 1));
   trendStart.setUTCHours(0, 0, 0, 0);
   const trendStartISO = trendStart.toISOString();
 
-  const [usersTotal, usersTrendCreatedAt, ordersData, trendOrders] =
+  const [usersTotal, usersTrendCreatedAt, ordersData, trendOrders, orderMenu] =
     await Promise.all([
       isAdmin
         ? authClient.admin
@@ -123,6 +128,12 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
             fetchOptions,
           ).then(({ orders }) => orders)
         : Promise.resolve([]),
+      resolvedOrganizationId
+        ? fetcher<OrderMenu>(
+            `/api/organizations/${resolvedOrganizationId}/order-menu?lang=${locale}`,
+            fetchOptions,
+          ).catch(() => null)
+        : Promise.resolve(null),
     ]);
 
   const periodStart = new Date();
@@ -141,9 +152,25 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
       );
     }
   }
-  const topItems = [...itemQuantities.entries()]
-    .map(([name, quantity]) => ({ name, quantity }))
+  const itemsByQuantity = [...itemQuantities.entries()].map(
+    ([name, quantity]) => ({ name, quantity }),
+  );
+  const topItems = [...itemsByQuantity]
     .sort((a, b) => b.quantity - a.quantity)
+    .slice(0, 10);
+
+  const menuItemNames = new Set(
+    (orderMenu?.sections || []).flatMap(({ menuItems }) =>
+      menuItems.map(({ name }) => name),
+    ),
+  );
+  for (const name of itemQuantities.keys()) menuItemNames.delete(name);
+
+  const slowItems = [
+    ...[...menuItemNames].map((name) => ({ name, quantity: 0 })),
+    ...itemsByQuantity,
+  ]
+    .sort((a, b) => a.quantity - b.quantity)
     .slice(0, 10);
 
   const hourlyOrders = Array<number>(24).fill(0);
@@ -223,6 +250,7 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
       }}
       charts={{
         topItems,
+        slowItems,
         hourlyOrders,
         modeCounts,
         paymentCounts,
