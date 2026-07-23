@@ -37,6 +37,7 @@
     "items": {
       "title": "订单明细"
     },
+    "discount": "折扣",
     "total": "总计"
   }
 }

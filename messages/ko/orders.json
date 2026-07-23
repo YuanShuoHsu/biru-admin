@@ -37,6 +37,7 @@
     "items": {
       "title": "주문 내역"
     },
+    "discount": "할인",
     "total": "합계"
   }
 }

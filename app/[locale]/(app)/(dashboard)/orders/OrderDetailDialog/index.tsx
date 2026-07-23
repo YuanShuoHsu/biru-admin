@@ -45,6 +45,7 @@ const OrderDetailDialog = ({ order }: OrderDetailDialogProps) => {
   const tOrders = useTranslations("orders");
 
   const currency = order.items[0]?.priceCurrency || "";
+  const discount = Number(order.discount || 0);
   const totalAmount = getOrderTotalAmount(order);
 
   const getOrderItemName = ({
@@ -167,6 +168,19 @@ const OrderDetailDialog = ({ order }: OrderDetailDialogProps) => {
             </Typography>
           </Stack>
         ))}
+        {discount > 0 && (
+          <Stack direction="row" gap={1} justifyContent="space-between">
+            <Typography variant="body2">
+              {tOrders("detail.discount")}
+              {order.discountCode
+                ? `${tCommon("parenthesisOpen")}${order.discountCode}${tCommon("parenthesisClose")}`
+                : ""}
+            </Typography>
+            <Typography color="primary" flexShrink={0} variant="body2">
+              -{currency} {discount.toLocaleString(locale)}
+            </Typography>
+          </Stack>
+        )}
         <Divider />
         <Stack
           alignItems="center"

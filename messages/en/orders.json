@@ -37,6 +37,7 @@
     "items": {
       "title": "Order summary"
     },
+    "discount": "Discount",
     "total": "Total"
   }
 }
