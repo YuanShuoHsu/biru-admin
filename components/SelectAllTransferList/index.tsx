@@ -199,9 +199,7 @@ const SelectAllTransferList = <
     <ContainerGrid container spacing={2}>
       {columns.map((column, index) => (
         <Fragment key={column.title}>
-          <ColumnGrid size={column.size}>
-            {customList(column)}
-          </ColumnGrid>
+          <ColumnGrid size={column.size}>{customList(column)}</ColumnGrid>
           {index < columns.length - 1 && (
             <Stack gap={2}>
               {[
