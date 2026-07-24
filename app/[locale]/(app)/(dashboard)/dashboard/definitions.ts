@@ -8,7 +8,7 @@ export const DASHBOARD_RANGES = {
 
 export type DashboardRange = keyof typeof DASHBOARD_RANGES;
 
-const DEFAULT_DASHBOARD_RANGE: DashboardRange = "30d";
+export const DEFAULT_DASHBOARD_RANGE: DashboardRange = "30d";
 
 const isDashboardRange = (value: string): value is DashboardRange =>
   value in DASHBOARD_RANGES;

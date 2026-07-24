@@ -13,6 +13,8 @@ import { StyledListItemButton } from "./SelectedListItem/ListItemLink";
 import { ORDER_MODE } from "@/constants/orderMode";
 import { query } from "@/constants/query";
 
+import { DEFAULT_DASHBOARD_RANGE } from "@/app/[locale]/(app)/(dashboard)/dashboard/definitions";
+
 import { useOrganization } from "@/hooks/organizations";
 import { useAuthMenuItems, useLogoutMenuItem } from "@/hooks/useAuth";
 
@@ -308,7 +310,10 @@ const useNavItems = (): MenuItem[] => {
     {
       icon: Dashboard,
       label: tDashboard("label"),
-      to: getHref("/dashboard", { organization: defaultOrganizationSlug }),
+      to: getHref("/dashboard", {
+        organization: defaultOrganizationSlug,
+        range: DEFAULT_DASHBOARD_RANGE,
+      }),
     },
     {
       children: orderChildren,
