@@ -19,7 +19,7 @@
   },
   "board": {
     "empty": "没有订单",
-    "success": "已更新 {count} 笔订单",
+    "success": "已更新 {count} 笔订单（{orderNumbers}）",
     "title": "订单看板"
   },
   "confirmationNumber": "订单编号",

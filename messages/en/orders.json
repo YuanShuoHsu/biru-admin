@@ -19,7 +19,7 @@
   },
   "board": {
     "empty": "No orders",
-    "success": "Updated {count} orders",
+    "success": "Updated {count} orders ({orderNumbers})",
     "title": "Order Board"
   },
   "confirmationNumber": "Order number",

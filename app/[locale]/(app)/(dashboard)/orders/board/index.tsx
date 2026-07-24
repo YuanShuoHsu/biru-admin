@@ -122,6 +122,11 @@ const OrdersBoard = ({
   );
 
   const handleTransfer = async (ids: string[], endpoint: string) => {
+    const orderNumbers = orders
+      .filter((order) => ids.includes(order.id))
+      .map((order) => order.orderNumber)
+      .join("、");
+
     await Promise.all(
       ids.map((id) =>
         fetcher(
@@ -131,9 +136,10 @@ const OrdersBoard = ({
       ),
     );
 
-    enqueueSnackbar(tOrders("board.success", { count: ids.length }), {
-      variant: "success",
-    });
+    enqueueSnackbar(
+      tOrders("board.success", { count: ids.length, orderNumbers }),
+      { variant: "success" },
+    );
 
     mutate();
   };
@@ -195,7 +201,7 @@ const OrdersBoard = ({
         [
           {
             ariaLabel: tOrders("actions.confirmDelivered.title"),
-            onClick: (ids) => handleTransfer(ids, "pickedup"),
+            onClick: (ids) => handleTransfer(ids, "picked-up"),
           },
           {
             ariaLabel: tOrders("actions.revertToPickupAvailable.title"),

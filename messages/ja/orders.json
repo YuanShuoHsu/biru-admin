@@ -19,7 +19,7 @@
   },
   "board": {
     "empty": "注文はありません",
-    "success": "{count} 件の注文を更新しました",
+    "success": "{count} 件の注文を更新しました（{orderNumbers}）",
     "title": "注文ボード"
   },
   "confirmationNumber": "注文番号",

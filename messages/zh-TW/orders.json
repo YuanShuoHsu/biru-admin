@@ -19,7 +19,7 @@
   },
   "board": {
     "empty": "沒有訂單",
-    "success": "已更新 {count} 筆訂單",
+    "success": "已更新 {count} 筆訂單（{orderNumbers}）",
     "title": "訂單看板"
   },
   "confirmationNumber": "訂單編號",
