@@ -340,7 +340,7 @@ const useNavItems = (): MenuItem[] => {
           {
             icon: ConfirmationNumber,
             label: tCoupons("label"),
-            to: "/coupons",
+            to: "/coupons?page=1&pageSize=10",
           },
         ]
       : []),
