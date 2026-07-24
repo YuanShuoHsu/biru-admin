@@ -5,7 +5,6 @@
     "totalOrders": "총 주문 수",
     "totalUsers": "총 사용자 수",
     "totalOrganizations": "총 조직 수",
-    "details": "세부 정보",
     "period": {
       "today": "오늘",
       "7d": "최근 7일",
@@ -17,7 +16,6 @@
   },
   "quickActions": {
     "label": "빠른 작업",
-    "viewOrders": "주문 보기",
     "manageUsers": "사용자 관리",
     "manageOrganizations": "조직 관리"
   },

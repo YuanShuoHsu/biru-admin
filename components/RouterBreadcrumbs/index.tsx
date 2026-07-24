@@ -18,6 +18,7 @@ import { authClient } from "@/lib/auth-client";
 import {
   AccountCircle,
   AdminPanelSettings,
+  Assignment,
   Business,
   Category,
   Checklist,
@@ -59,6 +60,7 @@ import {
   LocalMall,
   TouchApp,
   Tune,
+  ViewKanban,
 } from "@mui/icons-material";
 import {
   Breadcrumbs,
@@ -145,6 +147,14 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
     ...(menuOrganizationSlug && { organization: menuOrganizationSlug }),
     page: "1",
     pageSize: "10",
+  }).toString();
+  const ordersListQuery = new URLSearchParams({
+    ...(menuOrganizationSlug && { organization: menuOrganizationSlug }),
+    page: "1",
+    pageSize: "10",
+  }).toString();
+  const ordersBoardQuery = new URLSearchParams({
+    ...(menuOrganizationSlug && { organization: menuOrganizationSlug }),
   }).toString();
 
   const { data: userEmail = "" } = useSWR(
@@ -469,9 +479,22 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
       to: "/order",
     },
     {
-      icon: ReceiptLong,
+      children: [
+        {
+          icon: ReceiptLong,
+          label: tOrders("list.label"),
+          to: `/list?${ordersListQuery}`,
+        },
+        {
+          icon: ViewKanban,
+          label: tOrders("board.title"),
+          to: `/board?${ordersBoardQuery}`,
+        },
+      ],
+      disabled: true,
+      icon: Assignment,
       label: tOrders("label"),
-      to: `/orders?${menusQuery}`,
+      to: "/orders",
     },
     {
       icon: ConfirmationNumber,

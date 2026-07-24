@@ -374,6 +374,42 @@ export const getAdminOrganizationMenu = cache(
   },
 );
 
+export const getResolvedAdminOrganization = cache(
+  async (organizationSlug?: string, init?: { headers: { cookie: string } }) => {
+    const [{ data: rawOrganizations }, { data: session }] = await Promise.all([
+      authClient.organization.list({ fetchOptions: init }),
+      authClient.getSession({ fetchOptions: init }),
+    ]);
+
+    const organizations = rawOrganizations ?? [];
+
+    return (
+      organizations.find(({ slug }) => slug === organizationSlug) ||
+      organizations.find(
+        ({ id }) => id === session?.session?.activeOrganizationId,
+      ) ||
+      organizations[0]
+    );
+  },
+);
+
+export const getResolvedAdminOrganizationMenu = cache(
+  async (organizationSlug?: string, init?: { headers: { cookie: string } }) => {
+    const organization = await getResolvedAdminOrganization(
+      organizationSlug,
+      init,
+    );
+    if (!organization) return { organization: null, menu: null };
+
+    const menus = await fetcher<Menu[]>(
+      `/api/organizations/${organization.id}/menus`,
+      init,
+    );
+
+    return { organization, menu: menus[0] };
+  },
+);
+
 export const getAdminMenu = cache(
   async (menuId: string, init?: RequestInit) => {
     try {

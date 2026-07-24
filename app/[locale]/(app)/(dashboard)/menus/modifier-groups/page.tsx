@@ -19,7 +19,7 @@ import {
 
 import {
   getAdminModifierGroups,
-  getAdminOrganizationMenu,
+  getResolvedAdminOrganizationMenu,
 } from "@/utils/menus";
 
 import MenusTabsLayout from "../MenusTabsLayout";
@@ -80,12 +80,13 @@ const ModifierGroupsPage = async ({
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
   const { organization: selectedOrganization, menu } =
-    await getAdminOrganizationMenu(organization, fetchOptions);
+    await getResolvedAdminOrganizationMenu(organization, fetchOptions);
 
   if (!selectedOrganization || !menu)
     return <MenusTabsLayout>{null}</MenusTabsLayout>;
 
   if (
+    organization !== selectedOrganization.slug ||
     rawPage !== String(page) ||
     rawPageSize !== String(pageSize) ||
     rawSortBy !== sortBy ||

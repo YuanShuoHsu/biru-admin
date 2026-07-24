@@ -15,8 +15,10 @@ import {
   sortDirectionValues,
 } from "@/types/api";
 
-import { getAdminOrganization } from "@/utils/menus";
+import { getResolvedAdminOrganization } from "@/utils/menus";
 import { getAdminOrders } from "@/utils/orders";
+
+import OrdersTabsLayout from "../OrdersTabsLayout";
 
 interface OrdersPageProps {
   params: Promise<{ locale: Locale }>;
@@ -70,14 +72,15 @@ const OrdersPage = async ({ params, searchParams }: OrdersPageProps) => {
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const selectedOrganization = await getAdminOrganization(
+  const selectedOrganization = await getResolvedAdminOrganization(
     organization,
     fetchOptions,
   );
 
-  if (!selectedOrganization) return null;
+  if (!selectedOrganization) return <OrdersTabsLayout>{null}</OrdersTabsLayout>;
 
   if (
+    organization !== selectedOrganization.slug ||
     rawPage !== String(page) ||
     rawPageSize !== String(pageSize) ||
     rawSortBy !== sortBy ||
@@ -103,7 +106,7 @@ const OrdersPage = async ({ params, searchParams }: OrdersPageProps) => {
         filterValue && { filterField, filterOperator, filterValue }),
     });
 
-    redirect({ href: `/orders?${params.toString()}`, locale });
+    redirect({ href: `/orders/list?${params.toString()}`, locale });
   }
 
   const { orders, total } = await getAdminOrders(
@@ -122,19 +125,21 @@ const OrdersPage = async ({ params, searchParams }: OrdersPageProps) => {
   );
 
   return (
-    <Orders
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      orders={orders}
-      organizationSlug={selectedOrganization.slug}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={total}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <OrdersTabsLayout>
+      <Orders
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        orders={orders}
+        organizationSlug={selectedOrganization.slug}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        rowCount={total}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+      />
+    </OrdersTabsLayout>
   );
 };
 

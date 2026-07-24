@@ -1,77 +1,31 @@
 "use client";
 
 import { useFormatter, useLocale, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
-import { useCallback, useMemo, useState } from "react";
-import useSWR from "swr";
-
-import {
-  autosizeOptions,
-  DATA_GRID_PROPS,
-  getPageSizeOptions,
-} from "@/constants/dataGrid";
-import { STATUS_COLORS } from "@/constants/orders";
-
-import {
-  useDateFilterOperators,
-  useEnumFilterOperators,
-  useNumberFilterOperators,
-  useStringFilterOperators,
-} from "@/hooks/useFilterOperators";
+import { useMemo } from "react";
 
 import { DASHBOARD_RANGES, type DashboardRange } from "./definitions";
 
-import OrderDetailDialog from "@/app/[locale]/(app)/(dashboard)/orders/OrderDetailDialog";
-
 import { useRouter } from "@/i18n/navigation";
 
-import { useDialogStore } from "@/providers/dialog-store-provider";
-
-import { NavigateNext, ReceiptLong } from "@mui/icons-material";
 import {
-  Button,
   Card,
   CardActionArea,
   CardContent,
   Chip,
   Grid,
-  IconButton,
   Stack,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { LineChart } from "@mui/x-charts/LineChart";
 import { SparkLineChart } from "@mui/x-charts/SparkLineChart";
-import type {
-  GridColDef,
-  GridFilterModel,
-  GridPaginationModel,
-  GridRenderCellParams,
-  GridSortModel,
-} from "@mui/x-data-grid";
-import { useGridApiRef } from "@mui/x-data-grid";
 
 import {
   orderResponseDtoModeValues,
-  orderResponseDtoOrderStatusValues,
   orderResponseDtoPaymentMethodValues,
 } from "@/types/api";
-import type {
-  OrderMode,
-  OrderPaymentMethod,
-  OrderResponse,
-} from "@/types/orders";
-
-import { getDataGridSearchParams } from "@/utils/dataGrid";
-import { fetcher } from "@/utils/fetcher";
-import { getOrderTotalAmount } from "@/utils/orders";
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
+import type { OrderMode, OrderPaymentMethod } from "@/types/orders";
 
 const StyledCard = styled(Card)({
   height: "100%",
@@ -122,6 +76,7 @@ interface Trend {
 }
 
 interface DashboardProps {
+  currency: string;
   organizationSlug: string;
   range: DashboardRange;
   stats: {
@@ -140,105 +95,26 @@ interface DashboardProps {
     modeCounts: Partial<Record<OrderMode, number>>;
     paymentCounts: Partial<Record<OrderPaymentMethod, number>>;
   };
-  recentOrders: OrderResponse[];
 }
 
 const Dashboard = ({
+  currency,
   organizationSlug,
   range,
   stats,
   charts,
-  recentOrders,
 }: DashboardProps) => {
-  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
-    page: 0,
-    pageSize: 10,
-  });
-  const [sortModel, setSortModel] = useState<GridSortModel>([]);
-  const [filterModel, setFilterModel] = useState<GridFilterModel>({
-    items: [],
-  });
-
-  const apiRef = useGridApiRef();
-
   const format = useFormatter();
 
   const router = useRouter();
 
   const theme = useTheme();
 
-  const { setDialog } = useDialogStore((state) => state);
-
-  const {
-    data: { data: orders, total: rowCount } = {
-      data: recentOrders,
-      total: stats.totalOrders,
-    },
-    isValidating: loading,
-  } = useSWR(
-    organizationSlug
-      ? [
-          `/api/organizations/${organizationSlug}/orders`,
-          filterModel.items[0]?.field,
-          filterModel.items[0]?.operator,
-          filterModel.items[0]?.value,
-          filterModel.quickFilterValues,
-          paginationModel.page,
-          paginationModel.pageSize,
-          sortModel,
-        ]
-      : null,
-    async () =>
-      fetcher<{ data: OrderResponse[]; total: number }>(
-        `/api/organizations/${organizationSlug}/orders?${getDataGridSearchParams(
-          paginationModel,
-          filterModel,
-          sortModel,
-        )}`,
-      ),
-    {
-      fallbackData: { data: recentOrders, total: stats.totalOrders },
-      onSuccess: () => {
-        setTimeout(() => {
-          apiRef.current?.autosizeColumns(autosizeOptions);
-        }, 0);
-      },
-    },
-  );
-
   const locale = useLocale();
   const tDashboard = useTranslations("dashboard");
   const tOrder = useTranslations("order");
-  const tOrders = useTranslations("orders");
 
-  const stringFilterOperators = useStringFilterOperators();
-  const enumFilterOperators = useEnumFilterOperators();
-  const dateFilterOperators = useDateFilterOperators();
-  const numberFilterOperators = useNumberFilterOperators();
-
-  const handleSortModelChange = useCallback((newModel: GridSortModel) => {
-    setSortModel(newModel);
-    setPaginationModel((prev) => ({ ...prev, page: 0 }));
-  }, []);
-
-  const handleFilterModelChange = useCallback((newModel: GridFilterModel) => {
-    setFilterModel(newModel);
-    setPaginationModel((prev) => ({ ...prev, page: 0 }));
-  }, []);
-
-  const handleViewOrder = useCallback(
-    (order: OrderResponse) => {
-      setDialog({
-        content: <OrderDetailDialog order={order} />,
-        open: true,
-        showCancel: false,
-        title: tOrders("actions.viewOrder.title"),
-      });
-    },
-    [setDialog, tOrders],
-  );
-
-  const ordersHref = `/orders?${new URLSearchParams({
+  const ordersHref = `/orders/list?${new URLSearchParams({
     ...(organizationSlug && { organization: organizationSlug }),
     page: "1",
     pageSize: "10",
@@ -322,7 +198,6 @@ const Dashboard = ({
   };
 
   const revenueTotal = stats.revenueTrend.data.reduce((sum, n) => sum + n, 0);
-  const revenueCurrency = recentOrders[0]?.items[0]?.priceCurrency || "";
   const { chipColor: revenueChipColor, trendColor: revenueTrendColor } =
     getTrendColors(stats.revenueTrend.percent);
 
@@ -356,82 +231,6 @@ const Dashboard = ({
   const avgOrderTotal = periodOrderCount
     ? Math.round(revenueTotal / periodOrderCount)
     : 0;
-
-  const columns = useMemo<GridColDef[]>(
-    () => [
-      {
-        disableColumnMenu: true,
-        field: "actions",
-        filterable: false,
-        headerName: tOrders("actions.label"),
-        renderCell: ({ row }: GridRenderCellParams<OrderResponse>) => (
-          <Stack height="100%" direction="row" alignItems="center" gap={1}>
-            <Tooltip title={tOrders("actions.viewOrder.title")}>
-              <IconButton
-                onClick={(event) => {
-                  event.stopPropagation();
-
-                  handleViewOrder(row);
-                }}
-                size="small"
-              >
-                <ReceiptLong fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </Stack>
-        ),
-        resizable: false,
-        sortable: false,
-      },
-      {
-        field: "orderNumber",
-        filterOperators: stringFilterOperators,
-        headerName: tOrders("orderNumber"),
-      },
-      {
-        field: "orderStatus",
-        filterOperators: enumFilterOperators,
-        headerName: tOrders("orderStatus"),
-        renderCell: ({ row }: GridRenderCellParams<OrderResponse>) => (
-          <Chip
-            color={STATUS_COLORS[row.orderStatus]}
-            label={tOrders(`status.${row.orderStatus}`)}
-            size="small"
-            variant="outlined"
-          />
-        ),
-        type: "singleSelect",
-        valueOptions: orderResponseDtoOrderStatusValues.map((value) => ({
-          label: tOrders(`status.${value}`),
-          value,
-        })),
-      },
-      {
-        field: "total",
-        filterOperators: numberFilterOperators,
-        headerName: tOrders("total"),
-        valueGetter: (_value: unknown, row: OrderResponse) =>
-          `${row.items[0]?.priceCurrency || ""} ${getOrderTotalAmount(row).toLocaleString(locale)}`,
-      },
-      {
-        field: "createdAt",
-        filterOperators: dateFilterOperators,
-        headerName: tOrders("createdAt"),
-        valueFormatter: (value: string) =>
-          format.dateTime(new Date(value), "short"),
-      },
-    ],
-    [
-      dateFilterOperators,
-      enumFilterOperators,
-      format,
-      handleViewOrder,
-      locale,
-      numberFilterOperators,
-      stringFilterOperators,
-      tOrders,
-    ],
-  );
 
   return (
     <>
@@ -491,37 +290,6 @@ const Dashboard = ({
           );
         })}
       </Grid>
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <Typography color="text.primary" variant="h6">
-          {tDashboard("stats.details")}
-        </Typography>
-        <Button
-          endIcon={<NavigateNext />}
-          onClick={() => router.push(ordersHref)}
-          size="small"
-          variant="outlined"
-        >
-          {tDashboard("quickActions.viewOrders")}
-        </Button>
-      </Stack>
-      <DataGrid
-        {...DATA_GRID_PROPS}
-        apiRef={apiRef}
-        columns={columns}
-        filterMode="server"
-        filterModel={filterModel}
-        loading={loading}
-        onFilterModelChange={handleFilterModelChange}
-        onPaginationModelChange={setPaginationModel}
-        onSortModelChange={handleSortModelChange}
-        pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
-        paginationMode="server"
-        paginationModel={paginationModel}
-        rowCount={rowCount}
-        rows={orders}
-        sortingMode="server"
-        sortModel={sortModel}
-      />
       <Grid container spacing={2}>
         <Grid size={{ xs: 12, md: 6 }}>
           <StyledCard variant="outlined">
@@ -536,7 +304,7 @@ const Dashboard = ({
                 gap={1}
               >
                 <Typography variant="h4">
-                  {`${revenueCurrency} ${revenueTotal.toLocaleString(locale)}`.trim()}
+                  {`${currency} ${revenueTotal.toLocaleString(locale)}`.trim()}
                 </Typography>
                 <Chip
                   color={revenueChipColor}
@@ -562,7 +330,7 @@ const Dashboard = ({
                     label: tDashboard("stats.revenue"),
                     showMark: false,
                     valueFormatter: (value) =>
-                      `${revenueCurrency} ${(value ?? 0).toLocaleString(locale)}`.trim(),
+                      `${currency} ${(value ?? 0).toLocaleString(locale)}`.trim(),
                   },
                 ]}
                 sx={{
@@ -591,7 +359,7 @@ const Dashboard = ({
                 {tDashboard("charts.avgOrderValue")}
               </Typography>
               <Typography variant="h4">
-                {`${revenueCurrency} ${avgOrderTotal.toLocaleString(locale)}`.trim()}
+                {`${currency} ${avgOrderTotal.toLocaleString(locale)}`.trim()}
               </Typography>
               <Typography color="text.secondary" variant="caption">
                 {periodLabel}
@@ -611,7 +379,7 @@ const Dashboard = ({
                     label: tDashboard("charts.avgOrderValue"),
                     showMark: false,
                     valueFormatter: (value) =>
-                      `${revenueCurrency} ${(value ?? 0).toLocaleString(locale)}`.trim(),
+                      `${currency} ${(value ?? 0).toLocaleString(locale)}`.trim(),
                   },
                 ]}
                 sx={{

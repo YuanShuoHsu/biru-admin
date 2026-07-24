@@ -1,43 +1,63 @@
 {
-  "label": "주문 관리",
   "actions": {
     "label": "작업",
+    "confirmDelivered": {
+      "title": "전달 완료 확인"
+    },
+    "confirmPickupAvailable": {
+      "title": "픽업 가능 확인"
+    },
+    "revertToPickupAvailable": {
+      "title": "픽업 가능으로 되돌리기"
+    },
+    "revertToProcessing": {
+      "title": "준비 중으로 되돌리기"
+    },
     "viewOrder": {
       "title": "주문 상세 보기"
     }
   },
-  "orderNumber": "픽업 번호",
+  "board": {
+    "empty": "주문이 없습니다",
+    "success": "{count}건의 주문을 업데이트했습니다",
+    "title": "주문 보드"
+  },
   "confirmationNumber": "주문 번호",
-  "customerName": "고객 이름",
-  "mode": "주문 방식",
-  "paymentMethod": "결제 수단",
-  "orderStatus": "주문 상태",
-  "total": "금액",
-  "paymentDate": "결제 일시",
   "createdAt": "생성 일시",
+  "customerName": "고객 이름",
+  "detail": {
+    "customer": {
+      "email": "이메일",
+      "name": "이름",
+      "remark": "비고",
+      "telephone": "전화번호",
+      "title": "고객 정보"
+    },
+    "discount": "할인",
+    "items": {
+      "title": "주문 내역"
+    },
+    "total": "합계",
+    "transaction": {
+      "title": "거래 정보"
+    }
+  },
+  "label": "주문 관리",
+  "list": {
+    "label": "주문 목록"
+  },
+  "mode": "주문 방식",
+  "orderNumber": "픽업 번호",
+  "orderStatus": "주문 상태",
+  "paymentDate": "결제 일시",
+  "paymentMethod": "결제 수단",
   "status": {
     "OrderCancelled": "취소됨",
     "OrderDelivered": "전달 완료",
     "OrderPaymentDue": "결제 대기",
     "OrderPickupAvailable": "픽업 가능",
-    "OrderProcessing": "준비 중",
-    "OrderProblem": "주문 오류"
+    "OrderProblem": "주문 오류",
+    "OrderProcessing": "준비 중"
   },
-  "detail": {
-    "customer": {
-      "title": "고객 정보",
-      "name": "이름",
-      "telephone": "전화번호",
-      "email": "이메일",
-      "remark": "비고"
-    },
-    "transaction": {
-      "title": "거래 정보"
-    },
-    "items": {
-      "title": "주문 내역"
-    },
-    "discount": "할인",
-    "total": "합계"
-  }
+  "total": "금액"
 }

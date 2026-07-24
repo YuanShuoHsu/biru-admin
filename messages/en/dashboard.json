@@ -5,7 +5,6 @@
     "totalOrders": "Total Orders",
     "totalUsers": "Total Users",
     "totalOrganizations": "Total Organizations",
-    "details": "Details",
     "period": {
       "today": "Today",
       "7d": "Last 7 days",
@@ -17,7 +16,6 @@
   },
   "quickActions": {
     "label": "Quick Actions",
-    "viewOrders": "View Orders",
     "manageUsers": "Manage Users",
     "manageOrganizations": "Manage Organizations"
   },

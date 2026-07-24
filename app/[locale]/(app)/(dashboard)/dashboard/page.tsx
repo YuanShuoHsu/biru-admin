@@ -112,7 +112,7 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
             )
         : Promise.resolve([]),
       organizationSlug
-        ? getAdminOrders(organizationSlug, {}, fetchOptions)
+        ? getAdminOrders(organizationSlug, { pageSize: 1 }, fetchOptions)
         : Promise.resolve(null),
       organizationSlug
         ? getAdminOrders(
@@ -207,6 +207,8 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
       ? getHourlyValueBuckets(entries, trendBucketCount, trendStart)
       : getBinnedValueBuckets(entries, trendBucketCount, bucketDays);
 
+  const currency = trendOrders[0]?.items[0]?.priceCurrency || "";
+
   const ordersTrendBuckets = getTrendBuckets(
     trendOrders.map((order) => order.createdAt),
   );
@@ -223,6 +225,7 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
 
   return (
     <Dashboard
+      currency={currency}
       organizationSlug={organizationSlug}
       range={range}
       stats={{
@@ -255,7 +258,6 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
         modeCounts,
         paymentCounts,
       }}
-      recentOrders={ordersData?.orders || []}
     />
   );
 };

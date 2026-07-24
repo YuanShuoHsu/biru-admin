@@ -10,7 +10,7 @@ import LocaleProvider from "@/components/LocaleProvider";
 import OAuthSnackbar from "@/components/OAuthSnackbar";
 
 import { Close } from "@mui/icons-material";
-import { CssBaseline, IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 
 import { AuthStoreProvider } from "@/providers/auth-store-provider";
@@ -38,7 +38,6 @@ const AppClientProviders = ({
 }: AppClientProvidersProps) => (
   <AppRouterCacheProvider options={{ enableCssLayer: true }}>
     <LocaleProvider>
-      <CssBaseline />
       <SnackbarProvider
         action={(snackbarId) => (
           <IconButton

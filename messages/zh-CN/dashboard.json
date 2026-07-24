@@ -5,7 +5,6 @@
     "totalOrders": "总订单数",
     "totalUsers": "总用户数",
     "totalOrganizations": "总组织数",
-    "details": "详情",
     "period": {
       "today": "今日",
       "7d": "近 7 天",
@@ -17,7 +16,6 @@
   },
   "quickActions": {
     "label": "快速操作",
-    "viewOrders": "查看订单",
     "manageUsers": "管理用户",
     "manageOrganizations": "管理组织"
   },

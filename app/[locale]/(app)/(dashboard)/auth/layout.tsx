@@ -4,7 +4,7 @@ import { Container } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 const StyledContainer = styled(Container)({
-  height: "100%",
+  flex: 1,
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",

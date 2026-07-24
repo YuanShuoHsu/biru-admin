@@ -1,43 +1,63 @@
 {
-  "label": "注文管理",
   "actions": {
     "label": "操作",
+    "confirmDelivered": {
+      "title": "受け渡し済みを確認する"
+    },
+    "confirmPickupAvailable": {
+      "title": "受け取り可能を確認する"
+    },
+    "revertToPickupAvailable": {
+      "title": "受け取り可能に戻す"
+    },
+    "revertToProcessing": {
+      "title": "準備中に戻す"
+    },
     "viewOrder": {
       "title": "注文詳細を表示"
     }
   },
-  "orderNumber": "受け取り番号",
+  "board": {
+    "empty": "注文はありません",
+    "success": "{count} 件の注文を更新しました",
+    "title": "注文ボード"
+  },
   "confirmationNumber": "注文番号",
-  "customerName": "お客様名",
-  "mode": "注文方法",
-  "paymentMethod": "支払い方法",
-  "orderStatus": "注文状況",
-  "total": "金額",
-  "paymentDate": "支払い日時",
   "createdAt": "作成日時",
+  "customerName": "お客様名",
+  "detail": {
+    "customer": {
+      "email": "メールアドレス",
+      "name": "お名前",
+      "remark": "備考",
+      "telephone": "電話番号",
+      "title": "お客様情報"
+    },
+    "discount": "割引",
+    "items": {
+      "title": "注文明細"
+    },
+    "total": "合計",
+    "transaction": {
+      "title": "取引情報"
+    }
+  },
+  "label": "注文管理",
+  "list": {
+    "label": "注文一覧"
+  },
+  "mode": "注文方法",
+  "orderNumber": "受け取り番号",
+  "orderStatus": "注文状況",
+  "paymentDate": "支払い日時",
+  "paymentMethod": "支払い方法",
   "status": {
     "OrderCancelled": "キャンセル済み",
     "OrderDelivered": "受け渡し済み",
     "OrderPaymentDue": "支払い待ち",
     "OrderPickupAvailable": "受け取り可能",
-    "OrderProcessing": "準備中",
-    "OrderProblem": "注文エラー"
+    "OrderProblem": "注文エラー",
+    "OrderProcessing": "準備中"
   },
-  "detail": {
-    "customer": {
-      "title": "お客様情報",
-      "name": "お名前",
-      "telephone": "電話番号",
-      "email": "メールアドレス",
-      "remark": "備考"
-    },
-    "transaction": {
-      "title": "取引情報"
-    },
-    "items": {
-      "title": "注文明細"
-    },
-    "discount": "割引",
-    "total": "合計"
-  }
+  "total": "金額"
 }

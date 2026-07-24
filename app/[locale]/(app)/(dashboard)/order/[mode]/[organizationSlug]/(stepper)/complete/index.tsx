@@ -6,13 +6,16 @@ import utc from "dayjs/plugin/utc";
 import { useLocale, useTranslations } from "next-intl";
 import { useParams, useSearchParams } from "next/navigation";
 import { useSnackbar } from "notistack";
-import { useEffect } from "react";
-import useSWR from "swr";
+import { useEffect, useState } from "react";
+
+import { menuSocket } from "@/app/socket";
 
 import { StyledCardContent } from "@/components/FormCard";
 import LocationDetails from "@/components/LocationDetails";
 
 import { ORDER_MODE } from "@/constants/orderMode";
+
+import { useSocketConnection } from "@/hooks/useSocketConnection";
 
 import { useRouter } from "@/i18n/navigation";
 
@@ -104,6 +107,8 @@ const OrderModeOrganizationSlugComplete = ({
   order: initialOrder,
   organization,
 }: OrderModeOrganizationSlugCompleteProps) => {
+  const [order, setOrder] = useState(initialOrder);
+
   const { cartKey, clearCart } = useCartStore((state) => state);
 
   const { enqueueSnackbar } = useSnackbar();
@@ -123,21 +128,32 @@ const OrderModeOrganizationSlugComplete = ({
   menuSearchParams.delete("orderId");
   const menuQuery = menuSearchParams.size ? `?${menuSearchParams}` : "";
 
+  const { isConnected } = useSocketConnection(menuSocket);
+
+  useEffect(() => {
+    if (!isConnected || !orderId) return;
+
+    const setOrderStatus = (data: {
+      orderStatus: OrderResponse["orderStatus"];
+    }) => {
+      setOrder((prev) => (prev ? { ...prev, ...data } : prev));
+    };
+
+    menuSocket
+      .timeout(5000)
+      .emitWithAck("joinOrder", { orderId })
+      .then(setOrderStatus)
+      .catch(() => {});
+
+    menuSocket.on("orderStatusUpdated", setOrderStatus);
+
+    return () => {
+      menuSocket.off("orderStatusUpdated", setOrderStatus);
+    };
+  }, [isConnected, orderId]);
+
   const tCommon = useTranslations("common");
   const tOrder = useTranslations("order");
-
-  const { data: order = initialOrder } = useSWR<OrderResponse | null>(
-    orderId ? `/api/organizations/${organizationSlug}/orders/${orderId}` : null,
-    {
-      fallbackData: initialOrder,
-      refreshInterval: (data) =>
-        data &&
-        data.paymentMethod !== "Cash" &&
-        data.orderStatus === "OrderPaymentDue"
-          ? 3000
-          : 0,
-    },
-  );
 
   const isSuccess =
     !!order &&

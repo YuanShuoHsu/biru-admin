@@ -6,8 +6,6 @@ import { useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
-import OrderDetailDialog from "./OrderDetailDialog";
-
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -25,8 +23,10 @@ import {
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
+import { useDialogStore } from "@/providers/dialog-store-provider";
+
 import { ReceiptLong } from "@mui/icons-material";
-import { Chip, IconButton, Stack, Tooltip } from "@mui/material";
+import { Chip, IconButton, Tooltip } from "@mui/material";
 import type {
   GridColDef,
   GridFilterModel,
@@ -35,8 +35,6 @@ import type {
   GridSortModel,
 } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
-
-import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import {
   orderResponseDtoModeValues,
@@ -53,6 +51,8 @@ import type {
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
 import { getOrderTotalAmount } from "@/utils/orders";
+
+import OrderDetailDialog from "../OrderDetailDialog";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -119,6 +119,8 @@ const Orders = ({
 
   const apiRef = useGridApiRef();
 
+  const locale = useLocale();
+
   const pathname = usePathname();
 
   const router = useRouter();
@@ -160,7 +162,6 @@ const Orders = ({
     },
   );
 
-  const locale = useLocale();
   const tOrder = useTranslations("order");
   const tOrders = useTranslations("orders");
 
@@ -245,7 +246,6 @@ const Orders = ({
       setDialog({
         content: <OrderDetailDialog order={order} />,
         open: true,
-        showCancel: false,
         title: tOrders("actions.viewOrder.title"),
       });
     },
@@ -260,20 +260,18 @@ const Orders = ({
         filterable: false,
         headerName: tOrders("actions.label"),
         renderCell: ({ row }: GridRenderCellParams<OrderResponse>) => (
-          <Stack height="100%" direction="row" alignItems="center" gap={1}>
-            <Tooltip title={tOrders("actions.viewOrder.title")}>
-              <IconButton
-                onClick={(event) => {
-                  event.stopPropagation();
+          <Tooltip title={tOrders("actions.viewOrder.title")}>
+            <IconButton
+              onClick={(event) => {
+                event.stopPropagation();
 
-                  handleViewOrder(row);
-                }}
-                size="small"
-              >
-                <ReceiptLong fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </Stack>
+                handleViewOrder(row);
+              }}
+              size="small"
+            >
+              <ReceiptLong fontSize="small" />
+            </IconButton>
+          </Tooltip>
         ),
         resizable: false,
         sortable: false,

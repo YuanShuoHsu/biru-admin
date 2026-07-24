@@ -23,6 +23,7 @@ import { authClient } from "@/lib/auth-client";
 import {
   AccountCircle,
   AdminPanelSettings,
+  Assignment,
   Business,
   ConfirmationNumber,
   Dashboard,
@@ -33,7 +34,6 @@ import {
   MenuBook,
   Person,
   QrCodeScanner,
-  ReceiptLong,
   Restaurant,
   Security,
   ShoppingCart,
@@ -319,9 +319,9 @@ const useNavItems = (): MenuItem[] => {
     ...(defaultOrganizationSlug
       ? [
           {
-            icon: ReceiptLong,
+            icon: Assignment,
             label: tOrders("label"),
-            to: `/orders?organization=${defaultOrganizationSlug}&page=1&pageSize=10`,
+            to: `/orders/list?organization=${defaultOrganizationSlug}&page=1&pageSize=10`,
           },
           {
             icon: MenuBook,

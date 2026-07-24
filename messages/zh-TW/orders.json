@@ -1,43 +1,63 @@
 {
-  "label": "訂單管理",
   "actions": {
     "label": "操作",
+    "confirmDelivered": {
+      "title": "確認已送達"
+    },
+    "confirmPickupAvailable": {
+      "title": "確認可取餐"
+    },
+    "revertToPickupAvailable": {
+      "title": "退回可取餐"
+    },
+    "revertToProcessing": {
+      "title": "退回準備中"
+    },
     "viewOrder": {
       "title": "檢視訂單明細"
     }
   },
-  "orderNumber": "取餐號碼",
+  "board": {
+    "empty": "沒有訂單",
+    "success": "已更新 {count} 筆訂單",
+    "title": "訂單看板"
+  },
   "confirmationNumber": "訂單編號",
-  "customerName": "顧客姓名",
-  "mode": "點餐方式",
-  "paymentMethod": "付款方式",
-  "orderStatus": "訂單狀態",
-  "total": "金額",
-  "paymentDate": "付款時間",
   "createdAt": "成立時間",
+  "customerName": "顧客姓名",
+  "detail": {
+    "customer": {
+      "email": "電子信箱",
+      "name": "姓名",
+      "remark": "備註",
+      "telephone": "電話",
+      "title": "顧客資訊"
+    },
+    "discount": "折扣",
+    "items": {
+      "title": "訂單明細"
+    },
+    "total": "總計",
+    "transaction": {
+      "title": "交易資訊"
+    }
+  },
+  "label": "訂單管理",
+  "list": {
+    "label": "訂單列表"
+  },
+  "mode": "點餐方式",
+  "orderNumber": "取餐號碼",
+  "orderStatus": "訂單狀態",
+  "paymentDate": "付款時間",
+  "paymentMethod": "付款方式",
   "status": {
     "OrderCancelled": "已取消",
     "OrderDelivered": "已送達",
     "OrderPaymentDue": "待付款",
     "OrderPickupAvailable": "可取餐",
-    "OrderProcessing": "準備中",
-    "OrderProblem": "訂單異常"
+    "OrderProblem": "訂單異常",
+    "OrderProcessing": "準備中"
   },
-  "detail": {
-    "customer": {
-      "title": "顧客資訊",
-      "name": "姓名",
-      "telephone": "電話",
-      "email": "電子信箱",
-      "remark": "備註"
-    },
-    "transaction": {
-      "title": "交易資訊"
-    },
-    "items": {
-      "title": "訂單明細"
-    },
-    "discount": "折扣",
-    "total": "總計"
-  }
+  "total": "金額"
 }

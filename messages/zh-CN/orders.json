@@ -1,43 +1,63 @@
 {
-  "label": "订单管理",
   "actions": {
     "label": "操作",
+    "confirmDelivered": {
+      "title": "确认已送达"
+    },
+    "confirmPickupAvailable": {
+      "title": "确认可取餐"
+    },
+    "revertToPickupAvailable": {
+      "title": "退回可取餐"
+    },
+    "revertToProcessing": {
+      "title": "退回准备中"
+    },
     "viewOrder": {
       "title": "查看订单明细"
     }
   },
-  "orderNumber": "取餐号码",
+  "board": {
+    "empty": "没有订单",
+    "success": "已更新 {count} 笔订单",
+    "title": "订单看板"
+  },
   "confirmationNumber": "订单编号",
-  "customerName": "顾客姓名",
-  "mode": "点餐方式",
-  "paymentMethod": "付款方式",
-  "orderStatus": "订单状态",
-  "total": "金额",
-  "paymentDate": "付款时间",
   "createdAt": "创建时间",
+  "customerName": "顾客姓名",
+  "detail": {
+    "customer": {
+      "email": "电子邮箱",
+      "name": "姓名",
+      "remark": "备注",
+      "telephone": "电话",
+      "title": "顾客信息"
+    },
+    "discount": "折扣",
+    "items": {
+      "title": "订单明细"
+    },
+    "total": "总计",
+    "transaction": {
+      "title": "交易信息"
+    }
+  },
+  "label": "订单管理",
+  "list": {
+    "label": "订单列表"
+  },
+  "mode": "点餐方式",
+  "orderNumber": "取餐号码",
+  "orderStatus": "订单状态",
+  "paymentDate": "付款时间",
+  "paymentMethod": "付款方式",
   "status": {
     "OrderCancelled": "已取消",
     "OrderDelivered": "已送达",
     "OrderPaymentDue": "待付款",
     "OrderPickupAvailable": "可取餐",
-    "OrderProcessing": "准备中",
-    "OrderProblem": "订单异常"
+    "OrderProblem": "订单异常",
+    "OrderProcessing": "准备中"
   },
-  "detail": {
-    "customer": {
-      "title": "顾客信息",
-      "name": "姓名",
-      "telephone": "电话",
-      "email": "电子邮箱",
-      "remark": "备注"
-    },
-    "transaction": {
-      "title": "交易信息"
-    },
-    "items": {
-      "title": "订单明细"
-    },
-    "discount": "折扣",
-    "total": "总计"
-  }
+  "total": "金额"
 }

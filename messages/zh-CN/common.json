@@ -37,6 +37,7 @@
   "parenthesisClose": "）",
   "parenthesisOpen": "（",
   "reachStockLimit": "{label} 已达库存上限",
+  "selectedCount": "已选择 {checked}/{total} 笔",
   "soldOut": "售罄",
   "subtotal": "小计",
   "total": "总计",

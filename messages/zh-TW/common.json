@@ -37,6 +37,7 @@
   "parenthesisClose": "）",
   "parenthesisOpen": "（",
   "reachStockLimit": "{label} 已達庫存上限",
+  "selectedCount": "已選取 {checked}/{total} 筆",
   "soldOut": "售完",
   "subtotal": "小計",
   "total": "總計",

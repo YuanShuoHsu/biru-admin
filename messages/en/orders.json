@@ -1,43 +1,63 @@
 {
-  "label": "Orders",
   "actions": {
     "label": "Actions",
+    "confirmDelivered": {
+      "title": "Confirm delivered"
+    },
+    "confirmPickupAvailable": {
+      "title": "Confirm ready for pickup"
+    },
+    "revertToPickupAvailable": {
+      "title": "Revert to ready for pickup"
+    },
+    "revertToProcessing": {
+      "title": "Revert to processing"
+    },
     "viewOrder": {
       "title": "View order details"
     }
   },
-  "orderNumber": "Pickup number",
+  "board": {
+    "empty": "No orders",
+    "success": "Updated {count} orders",
+    "title": "Order Board"
+  },
   "confirmationNumber": "Order number",
-  "customerName": "Customer name",
-  "mode": "Order mode",
-  "paymentMethod": "Payment method",
-  "orderStatus": "Order status",
-  "total": "Amount",
-  "paymentDate": "Payment date",
   "createdAt": "Created at",
+  "customerName": "Customer name",
+  "detail": {
+    "customer": {
+      "email": "Email",
+      "name": "Name",
+      "remark": "Remark",
+      "telephone": "Telephone",
+      "title": "Customer"
+    },
+    "discount": "Discount",
+    "items": {
+      "title": "Order summary"
+    },
+    "total": "Total",
+    "transaction": {
+      "title": "Transaction"
+    }
+  },
+  "label": "Orders",
+  "list": {
+    "label": "Order List"
+  },
+  "mode": "Order mode",
+  "orderNumber": "Pickup number",
+  "orderStatus": "Order status",
+  "paymentDate": "Payment date",
+  "paymentMethod": "Payment method",
   "status": {
     "OrderCancelled": "Cancelled",
     "OrderDelivered": "Delivered",
     "OrderPaymentDue": "Payment due",
     "OrderPickupAvailable": "Ready for pickup",
-    "OrderProcessing": "Processing",
-    "OrderProblem": "Problem"
+    "OrderProblem": "Problem",
+    "OrderProcessing": "Processing"
   },
-  "detail": {
-    "customer": {
-      "title": "Customer",
-      "name": "Name",
-      "telephone": "Telephone",
-      "email": "Email",
-      "remark": "Remark"
-    },
-    "transaction": {
-      "title": "Transaction"
-    },
-    "items": {
-      "title": "Order summary"
-    },
-    "discount": "Discount",
-    "total": "Total"
-  }
+  "total": "Amount"
 }

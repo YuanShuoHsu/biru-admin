@@ -25,7 +25,7 @@ const DashboardLayout = async ({
   setRequestLocale(locale);
 
   return (
-    <Stack padding={2} height="100%" gap={2}>
+    <Stack padding={2} minHeight={0} flex={1} gap={2}>
       <Stack flexDirection="row" flexWrap="wrap" alignItems="center" gap={2}>
         {breadcrumb}
         {toolbar}
