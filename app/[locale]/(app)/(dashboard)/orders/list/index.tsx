@@ -277,40 +277,20 @@ const Orders = ({
         sortable: false,
       },
       {
-        field: "orderNumber",
-        filterOperators: stringFilterOperators,
-        headerName: tOrders("orderNumber"),
-      },
-      {
         field: "customerName",
         filterOperators: stringFilterOperators,
         headerName: tOrders("customerName"),
         valueGetter: (_value: unknown, row: OrderResponse) => row.customer.name,
       },
       {
-        field: "total",
-        filterOperators: numberFilterOperators,
-        headerName: tOrders("total"),
-        valueGetter: (_value: unknown, row: OrderResponse) =>
-          `${row.items[0]?.priceCurrency || ""} ${getOrderTotalAmount(row).toLocaleString(locale)}`,
+        field: "orderNumber",
+        filterOperators: stringFilterOperators,
+        headerName: tOrders("orderNumber"),
       },
       {
-        field: "orderStatus",
-        filterOperators: enumFilterOperators,
-        headerName: tOrders("orderStatus"),
-        renderCell: ({ row }: GridRenderCellParams<OrderResponse>) => (
-          <Chip
-            color={STATUS_COLORS[row.orderStatus]}
-            label={tOrders(`status.${row.orderStatus}`)}
-            size="small"
-            variant="outlined"
-          />
-        ),
-        type: "singleSelect",
-        valueOptions: orderResponseDtoOrderStatusValues.map((value) => ({
-          label: tOrders(`status.${value}`),
-          value,
-        })),
+        field: "confirmationNumber",
+        filterOperators: stringFilterOperators,
+        headerName: tOrders("confirmationNumber"),
       },
       {
         field: "mode",
@@ -333,9 +313,22 @@ const Orders = ({
         })),
       },
       {
-        field: "confirmationNumber",
-        filterOperators: stringFilterOperators,
-        headerName: tOrders("confirmationNumber"),
+        field: "orderStatus",
+        filterOperators: enumFilterOperators,
+        headerName: tOrders("orderStatus"),
+        renderCell: ({ row }: GridRenderCellParams<OrderResponse>) => (
+          <Chip
+            color={STATUS_COLORS[row.orderStatus]}
+            label={tOrders(`status.${row.orderStatus}`)}
+            size="small"
+            variant="outlined"
+          />
+        ),
+        type: "singleSelect",
+        valueOptions: orderResponseDtoOrderStatusValues.map((value) => ({
+          label: tOrders(`status.${value}`),
+          value,
+        })),
       },
       {
         field: "paymentDate",
@@ -350,6 +343,13 @@ const Orders = ({
         headerName: tOrders("createdAt"),
         valueFormatter: (value: string) =>
           format.dateTime(new Date(value), "short"),
+      },
+      {
+        field: "total",
+        filterOperators: numberFilterOperators,
+        headerName: tOrders("total"),
+        valueGetter: (_value: unknown, row: OrderResponse) =>
+          `${row.items[0]?.priceCurrency || ""} ${getOrderTotalAmount(row).toLocaleString(locale)}`,
       },
     ],
     [
