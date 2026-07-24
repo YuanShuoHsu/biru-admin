@@ -122,9 +122,8 @@ const OrdersBoard = ({
   );
 
   const handleTransfer = async (ids: string[], endpoint: string) => {
-    const orderNumbers = orders
-      .filter((order) => ids.includes(order.id))
-      .map((order) => order.orderNumber)
+    const orderNumbers = ids
+      .map((id) => orders.find((order) => order.id === id)?.orderNumber)
       .join("、");
 
     await Promise.all(
