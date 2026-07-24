@@ -15,6 +15,7 @@ import LocationDetails from "@/components/LocationDetails";
 
 import { ORDER_MODE } from "@/constants/orderMode";
 
+import { useOrderItemName } from "@/hooks/useOrderItemName";
 import { useSocketConnection } from "@/hooks/useSocketConnection";
 
 import { useRouter } from "@/i18n/navigation";
@@ -111,9 +112,11 @@ const OrderModeOrganizationSlugComplete = ({
 
   const { cartKey, clearCart } = useCartStore((state) => state);
 
-  const { enqueueSnackbar } = useSnackbar();
-
   const locale = useLocale();
+
+  const getOrderItemName = useOrderItemName();
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const { mode, organizationSlug } = useParams<{
     mode: string;
@@ -183,26 +186,6 @@ const OrderModeOrganizationSlugComplete = ({
     await navigator.clipboard.writeText(orderNo);
 
     enqueueSnackbar(tOrder("complete.copied"), { variant: "success" });
-  };
-
-  const getOrderItemName = ({
-    addOns,
-    menuItemName,
-    modifiers,
-  }: OrderResponse["items"][number]) => {
-    const choiceNames = [
-      ...(modifiers || []).map(({ modifierName }) => modifierName),
-      ...(addOns || []).flatMap(
-        ({ menuItemName: addOnName, modifiers: addOnModifiers }) => [
-          addOnName,
-          ...addOnModifiers.map(({ modifierName }) => modifierName),
-        ],
-      ),
-    ].join(tCommon("delimiter"));
-
-    return choiceNames
-      ? `${menuItemName}${tCommon("parenthesisOpen")}${choiceNames}${tCommon("parenthesisClose")}`
-      : menuItemName;
   };
 
   return (

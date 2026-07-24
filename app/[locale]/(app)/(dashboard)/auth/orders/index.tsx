@@ -17,6 +17,8 @@ import PaginationActions, {
   StyledTablePagination,
 } from "@/components/PaginationActions";
 
+import { useOrderItemName } from "@/hooks/useOrderItemName";
+
 import { usePathname, useRouter } from "@/i18n/navigation";
 
 import { Chip, type ChipProps, Stack, Typography } from "@mui/material";
@@ -48,6 +50,8 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
   const [expanded, setExpanded] = useState<string | false>(false);
 
   const locale = useLocale();
+
+  const getOrderItemName = useOrderItemName();
 
   const pathname = usePathname();
 
@@ -87,26 +91,6 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
         pageSize: event.target.value,
       })}`,
     );
-
-  const getOrderItemName = ({
-    addOns,
-    menuItemName,
-    modifiers,
-  }: UserOrderResponse["items"][number]) => {
-    const choiceNames = [
-      ...(modifiers || []).map(({ modifierName }) => modifierName),
-      ...(addOns || []).flatMap(
-        ({ menuItemName: addOnName, modifiers: addOnModifiers }) => [
-          addOnName,
-          ...addOnModifiers.map(({ modifierName }) => modifierName),
-        ],
-      ),
-    ].join(tCommon("delimiter"));
-
-    return choiceNames
-      ? `${menuItemName}${tCommon("parenthesisOpen")}${choiceNames}${tCommon("parenthesisClose")}`
-      : menuItemName;
-  };
 
   return (
     <FormCard>

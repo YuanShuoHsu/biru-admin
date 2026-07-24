@@ -1,12 +1,14 @@
-// vibe coding
-
 "use client";
 
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 
-import { Divider, Stack, Typography } from "@mui/material";
+import { STATUS_COLORS } from "@/constants/orders";
 
-import type { OrderItemResponse, OrderResponse } from "@/types/orders";
+import { useOrderItemName } from "@/hooks/useOrderItemName";
+
+import { Chip, Divider, Stack, Typography } from "@mui/material";
+
+import type { OrderResponse } from "@/types/orders";
 
 import { getOrderTotalAmount } from "@/utils/orders";
 
@@ -26,9 +28,13 @@ const InfoRow = ({
     <Typography color="text.secondary" variant="body2">
       {label}
     </Typography>
-    <Typography sx={{ wordBreak: "break-all" }} variant="body2">
-      {value}
-    </Typography>
+    {typeof value === "string" ? (
+      <Typography sx={{ wordBreak: "break-all" }} variant="body2">
+        {value}
+      </Typography>
+    ) : (
+      value
+    )}
   </Stack>
 );
 
@@ -40,6 +46,9 @@ const OrderDetailDialog = ({ order }: OrderDetailDialogProps) => {
   const format = useFormatter();
 
   const locale = useLocale();
+
+  const getOrderItemName = useOrderItemName();
+
   const tCommon = useTranslations("common");
   const tOrder = useTranslations("order");
   const tOrders = useTranslations("orders");
@@ -47,26 +56,6 @@ const OrderDetailDialog = ({ order }: OrderDetailDialogProps) => {
   const currency = order.items[0]?.priceCurrency || "";
   const discount = Number(order.discount || 0);
   const totalAmount = getOrderTotalAmount(order);
-
-  const getOrderItemName = ({
-    addOns,
-    menuItemName,
-    modifiers,
-  }: OrderItemResponse) => {
-    const choiceNames = [
-      ...(modifiers || []).map(({ modifierName }) => modifierName),
-      ...(addOns || []).flatMap(
-        ({ menuItemName: addOnName, modifiers: addOnModifiers }) => [
-          addOnName,
-          ...addOnModifiers.map(({ modifierName }) => modifierName),
-        ],
-      ),
-    ].join(tCommon("delimiter"));
-
-    return choiceNames
-      ? `${menuItemName}${tCommon("parenthesisOpen")}${choiceNames}${tCommon("parenthesisClose")}`
-      : menuItemName;
-  };
 
   return (
     <Stack gap={2}>
@@ -127,7 +116,14 @@ const OrderDetailDialog = ({ order }: OrderDetailDialogProps) => {
         />
         <InfoRow
           label={tOrders("orderStatus")}
-          value={tOrders(`status.${order.orderStatus}`)}
+          value={
+            <Chip
+              color={STATUS_COLORS[order.orderStatus]}
+              label={tOrders(`status.${order.orderStatus}`)}
+              size="small"
+              variant="outlined"
+            />
+          }
         />
         {order.paymentDate && (
           <InfoRow
