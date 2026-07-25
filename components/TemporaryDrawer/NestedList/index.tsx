@@ -30,15 +30,15 @@ import {
   Business,
   ConfirmationNumber,
   Dashboard,
-  Description,
+  Gavel,
   Group,
   Info,
   LocalMall,
   MenuBook,
   Person,
+  Policy,
   QrCodeScanner,
   Restaurant,
-  Security,
   ShoppingCart,
   Storefront,
   TableBar,
@@ -298,6 +298,27 @@ const useNavItems = (): MenuItem[] => {
         ]
       : [];
 
+  const adminItems: MenuItem[] = isAdmin
+    ? [
+        { slot: ({ level }) => <StyledDivider level={level} /> },
+        {
+          icon: ConfirmationNumber,
+          label: tCoupons("label"),
+          to: "/coupons?page=1&pageSize=10",
+        },
+        {
+          icon: ViewCarousel,
+          label: tBanners("label"),
+          to: "/banners?page=1&pageSize=10",
+        },
+        {
+          icon: AdminPanelSettings,
+          label: tAdmin("label"),
+          to: "/admins?page=1&pageSize=10",
+        },
+      ]
+    : [];
+
   const orderChildren: MenuItem[] = [
     ...counterSlot,
     ...dineInSlot,
@@ -338,34 +359,13 @@ const useNavItems = (): MenuItem[] => {
           },
         ]
       : []),
-    ...(isAdmin
-      ? [
-          {
-            icon: ConfirmationNumber,
-            label: tCoupons("label"),
-            to: "/coupons?page=1&pageSize=10",
-          },
-          {
-            icon: ViewCarousel,
-            label: tBanners("label"),
-            to: "/banners?page=1&pageSize=10",
-          },
-        ]
-      : []),
     {
       icon: Business,
       label: tOrganizations("label"),
       to: "/organizations",
     },
-    ...(isAdmin
-      ? [
-          {
-            icon: AdminPanelSettings,
-            label: tAdmin("label"),
-            to: "/admins?page=1&pageSize=10",
-          },
-        ]
-      : []),
+    ...adminItems,
+    { slot: ({ level }) => <StyledDivider level={level} /> },
     {
       children: session ? accountChildren : authChildren,
       icon: AccountCircle,
@@ -380,7 +380,7 @@ const useNavItems = (): MenuItem[] => {
           to: "/about",
         },
         {
-          icon: Description,
+          icon: Gavel,
           label: tCompany("legal.terms.label"),
           to: getHref("/terms", {
             [query.back]: pathname,
@@ -388,7 +388,7 @@ const useNavItems = (): MenuItem[] => {
           }),
         },
         {
-          icon: Security,
+          icon: Policy,
           label: tCompany("legal.privacy.label"),
           to: getHref("/privacy", {
             [query.back]: pathname,
