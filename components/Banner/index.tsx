@@ -84,6 +84,10 @@ const StyledImage = styled("img")({
   objectFit: "cover",
 });
 
+const StyledViewCarousel = styled(ViewCarousel)(({ theme }) => ({
+  fontSize: theme.spacing(8),
+}));
+
 interface BannerProps {
   banners: BannerType[];
 }
@@ -134,7 +138,7 @@ const Banner = ({ banners }: BannerProps) => (
         <NavigationButton direction="prev" icon={ChevronLeft} />
       </>
     ) : (
-      <ViewCarousel color="disabled" fontSize="large" />
+      <StyledViewCarousel color="disabled" />
     )}
   </StyledBox>
 );
