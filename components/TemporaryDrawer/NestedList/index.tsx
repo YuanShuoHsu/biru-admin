@@ -48,6 +48,7 @@ import {
 import {
   Chip,
   Divider,
+  type DividerProps,
   List,
   ListItemIcon,
   ListItemText,
@@ -70,9 +71,13 @@ const StyledChip = styled(Chip)(({ theme }) => ({
   padding: theme.spacing(0.5),
 }));
 
+interface StyledDividerProps extends DividerProps {
+  level: number;
+}
+
 const StyledDivider = styled(Divider, {
   shouldForwardProp: (prop) => prop !== "level",
-})<{ level: number }>(({ level, theme }) => ({
+})<StyledDividerProps>(({ level, theme }) => ({
   marginBlock: theme.spacing(1),
   marginLeft: theme.spacing(level * 2),
 }));
@@ -158,7 +163,7 @@ const useNavItems = (): MenuItem[] => {
   const accountChildren: MenuItem[] = [
     settingsItem,
     logoutMenuItem,
-    { slot: ({ level }) => <StyledDivider level={level} /> },
+    { slot: ({ level }) => <StyledDivider component="li" level={level} /> },
     addAccountItem,
   ];
 
@@ -300,7 +305,7 @@ const useNavItems = (): MenuItem[] => {
 
   const adminItems: MenuItem[] = isAdmin
     ? [
-        { slot: ({ level }) => <StyledDivider level={level} /> },
+        { slot: ({ level }) => <StyledDivider component="li" level={level} /> },
         {
           icon: ConfirmationNumber,
           label: tCoupons("label"),
@@ -365,7 +370,7 @@ const useNavItems = (): MenuItem[] => {
       to: "/organizations",
     },
     ...adminItems,
-    { slot: ({ level }) => <StyledDivider level={level} /> },
+    { slot: ({ level }) => <StyledDivider component="li" level={level} /> },
     {
       children: session ? accountChildren : authChildren,
       icon: AccountCircle,
