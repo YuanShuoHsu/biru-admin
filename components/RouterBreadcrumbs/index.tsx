@@ -18,6 +18,7 @@ import { authClient } from "@/lib/auth-client";
 import {
   AccountCircle,
   AdminPanelSettings,
+  Apartment,
   Assignment,
   Business,
   Category,
@@ -469,7 +470,7 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
         },
       ],
       disabled: true,
-      icon: Business,
+      icon: Apartment,
       label: tCompany("label"),
       to: "/company",
     },

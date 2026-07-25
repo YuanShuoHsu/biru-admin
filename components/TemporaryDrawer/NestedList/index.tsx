@@ -25,6 +25,7 @@ import { authClient } from "@/lib/auth-client";
 import {
   AccountCircle,
   AdminPanelSettings,
+  Apartment,
   Assignment,
   Business,
   ConfirmationNumber,
@@ -395,7 +396,7 @@ const useNavItems = (): MenuItem[] => {
           }),
         },
       ],
-      icon: Business,
+      icon: Apartment,
       label: tCompany("label"),
       to: "/company",
     },

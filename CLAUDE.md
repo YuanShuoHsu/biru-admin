@@ -39,7 +39,7 @@ The `(dashboard)` layout uses three **parallel route slots** colocated with each
 The middleware at `proxy.ts` handles:
 
 - Auth check via `better-auth` session + org membership (`isOrganizationMember`)
-- Redirecting authenticated users at `/` to `/order`
+- Redirecting authenticated users at `/` to `DEFAULT_AUTHENTICATED_ROUTE` (`/dashboard`, see `constants/route.ts`)
 - Redirecting unauthenticated users to `/auth/sign-in?redirectTo=...`
 - Global maintenance mode (`NEXT_PUBLIC_MAINTENANCE` env flag)
 - Public pages: `/auth/*` (except `/auth/settings`) and `/company/*`
@@ -70,7 +70,7 @@ MUI v7 with a custom theme (`theme.ts`) supporting light/dark via CSS variables 
 
 ### Auth
 
-`better-auth` client in `lib/auth-client.ts` with `adminClient` and `organizationClient` plugins. Auth flow: sign in → verify org membership → redirect to `/order`.
+`better-auth` client in `lib/auth-client.ts` with `adminClient` and `organizationClient` plugins. Auth flow: sign in → verify org membership → redirect to `DEFAULT_AUTHENTICATED_ROUTE` (`/dashboard`).
 
 ### WebSocket
 
