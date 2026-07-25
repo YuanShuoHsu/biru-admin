@@ -5,6 +5,7 @@
   "discontinued": "Discontinued",
   "empty": "No items yet",
   "from": "from",
+  "imageProcessingFailed": "Failed to process image",
   "loading": "Loading...",
   "locales": {
     "zh-TW": "Traditional Chinese",

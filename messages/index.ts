@@ -1,6 +1,7 @@
 import admins from "./en/admins.json";
 import appBar from "./en/appBar.json";
 import auth from "./en/auth.json";
+import banners from "./en/banners.json";
 import common from "./en/common.json";
 import company from "./en/company.json";
 import coupons from "./en/coupons.json";
@@ -19,6 +20,7 @@ const messages = {
   admins,
   appBar,
   auth,
+  banners,
   common,
   company,
   coupons,

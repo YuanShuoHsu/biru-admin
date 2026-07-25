@@ -1,0 +1,51 @@
+{
+  "actions": {
+    "createBanner": {
+      "error": "배너 추가에 실패했습니다",
+      "success": "배너를 추가했습니다",
+      "title": "배너 추가"
+    },
+    "deleteBanner": {
+      "confirm": "이 <bold>배너</bold>를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+      "error": "배너 삭제에 실패했습니다",
+      "success": "배너를 삭제했습니다",
+      "title": "배너 삭제"
+    },
+    "label": "작업",
+    "reorderBanner": {
+      "cancel": {
+        "confirm": "<bold>배너</bold> 정렬을 취소하시겠습니까? 저장되지 않은 변경 사항은 사라집니다.",
+        "label": "배너 정렬 취소"
+      },
+      "confirm": "<bold>배너</bold>를 정렬하시겠습니까?",
+      "save": {
+        "confirm": "<bold>배너</bold> 정렬을 저장하시겠습니까?",
+        "error": "정렬 저장에 실패했습니다",
+        "label": "배너 정렬 저장",
+        "success": "정렬이 저장되었습니다"
+      },
+      "title": "배너 정렬"
+    },
+    "updateBanner": {
+      "error": "배너 업데이트에 실패했습니다",
+      "success": "배너를 업데이트했습니다",
+      "title": "배너 편집"
+    }
+  },
+  "createdAt": "생성일",
+  "image": {
+    "label": "이미지",
+    "notSelected": "이미지를 선택해 주세요"
+  },
+  "isActive": {
+    "active": "활성",
+    "inactive": "비활성",
+    "label": "활성화"
+  },
+  "label": "배너 관리",
+  "reorder": "순서",
+  "sortOrder": {
+    "label": "표시 순서"
+  },
+  "updatedAt": "수정일"
+}

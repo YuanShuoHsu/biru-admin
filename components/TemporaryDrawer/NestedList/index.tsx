@@ -42,6 +42,7 @@ import {
   Storefront,
   TableBar,
   TouchApp,
+  ViewCarousel,
 } from "@mui/icons-material";
 import {
   Chip,
@@ -185,6 +186,7 @@ const useNavItems = (): MenuItem[] => {
 
   const tAdmin = useTranslations("admins");
   const tAuth = useTranslations("auth");
+  const tBanners = useTranslations("banners");
   const tCompany = useTranslations("company");
   const tCoupons = useTranslations("coupons");
   const tDashboard = useTranslations("dashboard");
@@ -341,6 +343,11 @@ const useNavItems = (): MenuItem[] => {
             icon: ConfirmationNumber,
             label: tCoupons("label"),
             to: "/coupons?page=1&pageSize=10",
+          },
+          {
+            icon: ViewCarousel,
+            label: tBanners("label"),
+            to: "/banners?page=1&pageSize=10",
           },
         ]
       : []),

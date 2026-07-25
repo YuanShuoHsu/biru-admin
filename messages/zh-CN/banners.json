@@ -1,0 +1,51 @@
+{
+  "actions": {
+    "createBanner": {
+      "error": "新增轮播图失败",
+      "success": "已新增轮播图",
+      "title": "新增轮播图"
+    },
+    "deleteBanner": {
+      "confirm": "确定要删除这张<bold>轮播图</bold>吗？此操作无法撤销。",
+      "error": "删除轮播图失败",
+      "success": "已删除轮播图",
+      "title": "删除轮播图"
+    },
+    "label": "操作",
+    "reorderBanner": {
+      "cancel": {
+        "confirm": "确定要取消<bold>轮播图</bold>排序吗？未保存的更改将会丢失。",
+        "label": "取消轮播图排序"
+      },
+      "confirm": "确定要进行<bold>轮播图</bold>排序吗？",
+      "save": {
+        "confirm": "确定要保存<bold>轮播图</bold>排序吗？",
+        "error": "排序保存失败",
+        "label": "保存轮播图排序",
+        "success": "排序已保存"
+      },
+      "title": "轮播图排序"
+    },
+    "updateBanner": {
+      "error": "更新轮播图失败",
+      "success": "已更新轮播图",
+      "title": "编辑轮播图"
+    }
+  },
+  "createdAt": "创建时间",
+  "image": {
+    "label": "图片",
+    "notSelected": "请选择您的图片"
+  },
+  "isActive": {
+    "active": "启用中",
+    "inactive": "已停用",
+    "label": "启用"
+  },
+  "label": "轮播图管理",
+  "reorder": "排序",
+  "sortOrder": {
+    "label": "显示顺序"
+  },
+  "updatedAt": "更新时间"
+}

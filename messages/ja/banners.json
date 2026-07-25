@@ -1,0 +1,51 @@
+{
+  "actions": {
+    "createBanner": {
+      "error": "バナーの追加に失敗しました",
+      "success": "バナーを追加しました",
+      "title": "バナーを追加"
+    },
+    "deleteBanner": {
+      "confirm": "この<bold>バナー</bold>を削除してもよろしいですか？この操作は元に戻せません。",
+      "error": "バナーの削除に失敗しました",
+      "success": "バナーを削除しました",
+      "title": "バナーを削除"
+    },
+    "label": "操作",
+    "reorderBanner": {
+      "cancel": {
+        "confirm": "<bold>バナー</bold>の並び替えをキャンセルしますか？保存されていない変更は失われます。",
+        "label": "バナーの並び替えをキャンセル"
+      },
+      "confirm": "<bold>バナー</bold>を並び替えますか？",
+      "save": {
+        "confirm": "<bold>バナー</bold>の並び順を保存しますか？",
+        "error": "並び替えの保存に失敗しました",
+        "label": "バナーの並び順を保存",
+        "success": "並び替えを保存しました"
+      },
+      "title": "バナーを並び替え"
+    },
+    "updateBanner": {
+      "error": "バナーの更新に失敗しました",
+      "success": "バナーを更新しました",
+      "title": "バナーを編集"
+    }
+  },
+  "createdAt": "作成日時",
+  "image": {
+    "label": "画像",
+    "notSelected": "画像を選択してください"
+  },
+  "isActive": {
+    "active": "有効",
+    "inactive": "無効",
+    "label": "有効"
+  },
+  "label": "バナー管理",
+  "reorder": "並び替え",
+  "sortOrder": {
+    "label": "表示順"
+  },
+  "updatedAt": "更新日時"
+}

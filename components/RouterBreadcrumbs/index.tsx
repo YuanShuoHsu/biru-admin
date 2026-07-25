@@ -60,6 +60,7 @@ import {
   LocalMall,
   TouchApp,
   Tune,
+  ViewCarousel,
   ViewKanban,
 } from "@mui/icons-material";
 import {
@@ -224,6 +225,7 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
 
   const tAdmins = useTranslations("admins");
   const tAuth = useTranslations("auth");
+  const tBanners = useTranslations("banners");
   const tCompany = useTranslations("company");
   const tCoupons = useTranslations("coupons");
   const tDashboard = useTranslations("dashboard");
@@ -500,6 +502,11 @@ const useBreadcrumbs = (organizationName: string): BreadcrumbItem[] => {
       icon: ConfirmationNumber,
       label: tCoupons("label"),
       to: "/coupons",
+    },
+    {
+      icon: ViewCarousel,
+      label: tBanners("label"),
+      to: "/banners",
     },
     {
       children: [

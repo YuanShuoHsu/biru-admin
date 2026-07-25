@@ -21,7 +21,7 @@ const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  aspectRatio: "16 / 9",
+  aspectRatio: "16/9",
   flexShrink: 0,
 
   [theme.breakpoints.up("sm")]: {

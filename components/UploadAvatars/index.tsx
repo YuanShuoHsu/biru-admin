@@ -2,6 +2,8 @@
 // https://mui.com/material-ui/react-button/#InputFileUpload.tsx
 
 import imageCompression, { type Options } from "browser-image-compression";
+import { useTranslations } from "next-intl";
+import { enqueueSnackbar } from "notistack";
 
 import BadgeAvatars from "@/components/BadgeAvatars";
 
@@ -65,9 +67,18 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 const COMPRESSION_OPTIONS: Options = {
-  maxSizeMB: 0.02,
+  maxSizeMB: 0.1,
   maxWidthOrHeight: 512,
-  fileType: "image/jpeg",
+  fileType: "image/webp",
+  initialQuality: 0.8,
+  useWebWorker: true,
+};
+
+const HIGH_QUALITY_COMPRESSION_OPTIONS: Options = {
+  maxSizeMB: 0.4,
+  maxWidthOrHeight: 1920,
+  alwaysKeepResolution: true,
+  fileType: "image/webp",
   initialQuality: 0.8,
   useWebWorker: true,
 };
@@ -75,6 +86,7 @@ const COMPRESSION_OPTIONS: Options = {
 interface UploadAvatarsProps {
   aspectRatio?: string;
   fullWidth?: boolean;
+  highQuality?: boolean;
   initialSrc?: string | null;
   shape?: "circle" | "square";
   uploadKey: string;
@@ -83,6 +95,7 @@ interface UploadAvatarsProps {
 const UploadAvatars = ({
   aspectRatio = "1/1",
   fullWidth = false,
+  highQuality = false,
   initialSrc,
   shape = "circle",
   uploadKey,
@@ -90,6 +103,9 @@ const UploadAvatars = ({
   const { resetAvatarSrc, setAvatarSrc } = useUploadAvatarStore(
     (state) => state,
   );
+
+  const tCommon = useTranslations("common");
+
   const avatarSrc = useUploadAvatarSrc(uploadKey, initialSrc);
   const canRestore = !!initialSrc && avatarSrc !== initialSrc;
 
@@ -100,11 +116,18 @@ const UploadAvatars = ({
     event.target.value = "";
     if (!file) return;
 
-    const compressed = await imageCompression(file, COMPRESSION_OPTIONS);
+    try {
+      const compressed = await imageCompression(
+        file,
+        highQuality ? HIGH_QUALITY_COMPRESSION_OPTIONS : COMPRESSION_OPTIONS,
+      );
 
-    const reader = new FileReader();
-    reader.onload = () => setAvatarSrc(uploadKey, reader.result as string);
-    reader.readAsDataURL(compressed);
+      const reader = new FileReader();
+      reader.onload = () => setAvatarSrc(uploadKey, reader.result as string);
+      reader.readAsDataURL(compressed);
+    } catch {
+      enqueueSnackbar(tCommon("imageProcessingFailed"), { variant: "error" });
+    }
   };
 
   const handleRemoveAvatar = (e: React.MouseEvent) => {

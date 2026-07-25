@@ -1,0 +1,51 @@
+{
+  "actions": {
+    "createBanner": {
+      "error": "Failed to create banner",
+      "success": "Banner created",
+      "title": "Create banner"
+    },
+    "deleteBanner": {
+      "confirm": "Are you sure you want to delete this <bold>banner</bold>? This action cannot be undone.",
+      "error": "Failed to delete banner",
+      "success": "Banner deleted",
+      "title": "Delete banner"
+    },
+    "label": "Actions",
+    "reorderBanner": {
+      "cancel": {
+        "confirm": "Are you sure you want to cancel <bold>banners</bold> reorder? Unsaved changes will be lost.",
+        "label": "Cancel Banners Reorder"
+      },
+      "confirm": "Are you sure you want to reorder <bold>banners</bold>?",
+      "save": {
+        "confirm": "Are you sure you want to save <bold>banners</bold> reorder?",
+        "error": "Failed to save reorder",
+        "label": "Save Banners Reorder",
+        "success": "Reorder saved"
+      },
+      "title": "Reorder Banners"
+    },
+    "updateBanner": {
+      "error": "Failed to update banner",
+      "success": "Banner updated",
+      "title": "Edit banner"
+    }
+  },
+  "createdAt": "Created",
+  "image": {
+    "label": "Image",
+    "notSelected": "Please select your image"
+  },
+  "isActive": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "label": "Active"
+  },
+  "label": "Banners",
+  "reorder": "Order",
+  "sortOrder": {
+    "label": "Display order"
+  },
+  "updatedAt": "Updated"
+}

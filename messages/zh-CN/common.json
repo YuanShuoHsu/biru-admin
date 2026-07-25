@@ -5,6 +5,7 @@
   "discontinued": "已停售",
   "empty": "尚无商品",
   "from": "起",
+  "imageProcessingFailed": "图片处理失败",
   "loading": "加载中...",
   "locales": {
     "zh-TW": "繁体中文",

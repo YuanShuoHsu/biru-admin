@@ -5,6 +5,7 @@
   "discontinued": "단종",
   "empty": "상품이 없습니다",
   "from": "부터",
+  "imageProcessingFailed": "이미지 처리에 실패했습니다",
   "loading": "로딩 중...",
   "locales": {
     "zh-TW": "번체 중국어",

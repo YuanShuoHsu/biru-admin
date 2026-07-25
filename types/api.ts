@@ -89,6 +89,76 @@ export interface paths {
     patch: operations["UsersController_update"];
     trace?: never;
   };
+  "/api/banners/active": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得前台輪播圖 */
+    get: operations["BannersController_findAllActive"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/banners": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢輪播圖列表 */
+    get: operations["AdminBannersController_findAll"];
+    put?: never;
+    /** 建立輪播圖 */
+    post: operations["AdminBannersController_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/banners/reorder": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** 重新排序輪播圖 */
+    patch: operations["AdminBannersController_reorder"];
+    trace?: never;
+  };
+  "/api/banners/{bannerId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** 刪除輪播圖 */
+    delete: operations["AdminBannersController_remove"];
+    options?: never;
+    head?: never;
+    /** 更新輪播圖 */
+    patch: operations["AdminBannersController_update"];
+    trace?: never;
+  };
   "/api/mails/test": {
     parameters: {
       query?: never;
@@ -407,6 +477,57 @@ export interface paths {
     options?: never;
     head?: never;
     patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/orders/{orderId}/ready": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** 標記訂單可取餐 */
+    patch: operations["OrdersController_markReady"];
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/orders/{orderId}/picked-up": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** 確認已取餐 */
+    patch: operations["OrdersController_confirmPickup"];
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/orders/{orderId}/processing": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** 取消標記完成（退回上一個狀態：已送達→可取餐、可取餐→準備中） */
+    patch: operations["OrdersController_revertReady"];
     trace?: never;
   };
   "/api/users/me/orders": {
@@ -1084,6 +1205,63 @@ export interface components {
        */
       phoneNumber?: string;
     };
+    BannerResponseDto: {
+      id: string;
+      /** @description 圖片來源（data URL） */
+      image: string;
+      isActive: boolean;
+      sortOrder: number;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    CreateBannerDto: {
+      /** @description 圖片來源（data URL） */
+      image: string;
+      isActive?: boolean;
+      /** @description 未帶時排在最後 */
+      sortOrder?: number;
+    };
+    /** @enum {string} */
+    BannerFilterField: "isActive" | "createdAt" | "updatedAt" | "sortOrder";
+    /** @enum {string} */
+    FilterOperator:
+      | "contains"
+      | "doesNotContain"
+      | "equals"
+      | "doesNotEqual"
+      | "startsWith"
+      | "endsWith"
+      | "isEmpty"
+      | "isNotEmpty"
+      | "isAnyOf"
+      | "is"
+      | "not"
+      | "after"
+      | "onOrAfter"
+      | "before"
+      | "onOrBefore"
+      | "="
+      | "!="
+      | ">"
+      | ">="
+      | "<"
+      | "<=";
+    /** @enum {string} */
+    BannerSortField: "sortOrder" | "isActive" | "createdAt" | "updatedAt";
+    ReorderBannersDto: {
+      ids: string[];
+      /** @default 0 */
+      offset: number;
+    };
+    UpdateBannerDto: {
+      /** @description 圖片來源（data URL） */
+      image?: string;
+      isActive?: boolean;
+      /** @description 未帶時排在最後 */
+      sortOrder?: number;
+    };
     SendTestEmailDto: {
       /**
        * Format: email
@@ -1178,29 +1356,6 @@ export interface components {
       | "pointsCost"
       | "applicableOrganizationIds"
       | "distribution";
-    /** @enum {string} */
-    FilterOperator:
-      | "contains"
-      | "doesNotContain"
-      | "equals"
-      | "doesNotEqual"
-      | "startsWith"
-      | "endsWith"
-      | "isEmpty"
-      | "isNotEmpty"
-      | "isAnyOf"
-      | "is"
-      | "not"
-      | "after"
-      | "onOrAfter"
-      | "before"
-      | "onOrBefore"
-      | "="
-      | "!="
-      | ">"
-      | ">="
-      | "<"
-      | "<=";
     /** @enum {string} */
     CouponSortField:
       | "code"
@@ -2971,6 +3126,182 @@ export interface operations {
       };
     };
   };
+  BannersController_findAllActive: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["BannerResponseDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminBannersController_findAll: {
+    parameters: {
+      query?: {
+        filterField?: components["schemas"]["BannerFilterField"];
+        filterOperator?: components["schemas"]["FilterOperator"];
+        sortBy?: components["schemas"]["BannerSortField"];
+        sortDirection?: components["schemas"]["SortDirection"];
+        limit?: number;
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+        timezone?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminBannersController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateBannerDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["BannerResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminBannersController_reorder: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ReorderBannersDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminBannersController_remove: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        bannerId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminBannersController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        bannerId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateBannerDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["BannerResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   MailsController_test: {
     parameters: {
       query?: never;
@@ -3589,6 +3920,93 @@ export interface operations {
     };
   };
   OrdersController_findOne: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        orderId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrdersController_markReady: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        orderId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrdersController_confirmPickup: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        orderId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrdersController_revertReady: {
     parameters: {
       query?: never;
       header?: never;
@@ -5130,6 +5548,37 @@ export const sortDirectionValues: ReadonlyArray<
 export const updateUserDtoGenderValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UpdateUserDto"]["gender"]
 > = ["female", "male", "other"];
+export const bannerFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["BannerFilterField"]
+> = ["isActive", "createdAt", "updatedAt", "sortOrder"];
+export const filterOperatorValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["FilterOperator"]
+> = [
+  "contains",
+  "doesNotContain",
+  "equals",
+  "doesNotEqual",
+  "startsWith",
+  "endsWith",
+  "isEmpty",
+  "isNotEmpty",
+  "isAnyOf",
+  "is",
+  "not",
+  "after",
+  "onOrAfter",
+  "before",
+  "onOrBefore",
+  "=",
+  "!=",
+  ">",
+  ">=",
+  "<",
+  "<=",
+];
+export const bannerSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["BannerSortField"]
+> = ["sortOrder", "isActive", "createdAt", "updatedAt"];
 export const createCouponDtoDiscountTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CreateCouponDto"]["discountType"]
 > = ["fixed", "percentage"];
@@ -5163,31 +5612,6 @@ export const couponFilterFieldValues: ReadonlyArray<
   "pointsCost",
   "applicableOrganizationIds",
   "distribution",
-];
-export const filterOperatorValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["FilterOperator"]
-> = [
-  "contains",
-  "doesNotContain",
-  "equals",
-  "doesNotEqual",
-  "startsWith",
-  "endsWith",
-  "isEmpty",
-  "isNotEmpty",
-  "isAnyOf",
-  "is",
-  "not",
-  "after",
-  "onOrAfter",
-  "before",
-  "onOrBefore",
-  "=",
-  "!=",
-  ">",
-  ">=",
-  "<",
-  "<=",
 ];
 export const couponSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CouponSortField"]

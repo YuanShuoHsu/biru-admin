@@ -1,6 +1,20 @@
 "use client";
 
-import Image from "next/image";
+import { Swiper, SwiperSlide } from "swiper/react";
+
+import NavigationButton from "./NavigationButton";
+
+import { ChevronLeft, ChevronRight } from "@mui/icons-material";
+import { Box } from "@mui/material";
+import { styled } from "@mui/material/styles";
+
+import type { Banner as BannerType } from "@/types/banners";
+
+import "swiper/css";
+import "swiper/css/free-mode";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+
 import {
   Autoplay,
   FreeMode,
@@ -8,41 +22,18 @@ import {
   Navigation,
   Pagination,
 } from "swiper/modules";
-import { Swiper, SwiperSlide } from "swiper/react";
-
-import NavigationButton from "./NavigationButton";
-
-import {
-  APP_BAR_TOOLBAR_HEIGHT,
-  APP_BAR_TOOLBAR_HEIGHT_SM_UP,
-  APP_BAR_TOOLBAR_HEIGHT_XS_UP_LANDSCAPE,
-} from "@/constants/appBar";
-
-import { ChevronLeft, ChevronRight } from "@mui/icons-material";
-import { Box } from "@mui/material";
-import { styled } from "@mui/material/styles";
-
-import "swiper/css";
-import "swiper/css/free-mode";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
 
 const StyledBox = styled(Box)(({ theme }) => ({
   position: "relative",
   width: "100%",
-  maxHeight: `calc(100vh - ${APP_BAR_TOOLBAR_HEIGHT}px)`,
-  aspectRatio: 4 / 3,
+  aspectRatio: "4/3",
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
 
-  [`${theme.breakpoints.up("xs")} and (orientation: landscape)`]: {
-    maxHeight: `calc(100vh - ${APP_BAR_TOOLBAR_HEIGHT_XS_UP_LANDSCAPE}px)`,
-  },
   [theme.breakpoints.up("sm")]: {
-    maxHeight: `calc(100vh - ${APP_BAR_TOOLBAR_HEIGHT_SM_UP}px)`,
-    aspectRatio: 16 / 9,
+    aspectRatio: "16/9",
   },
 }));
 
@@ -86,7 +77,17 @@ const StyledSlide = styled(SwiperSlide)({
   alignItems: "center",
 });
 
-const Banner = () => (
+const StyledImage = styled("img")({
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+});
+
+interface BannerProps {
+  banners: BannerType[];
+}
+
+const Banner = ({ banners }: BannerProps) => (
   <StyledBox>
     <StyledSwiper
       autoplay={{
@@ -120,18 +121,9 @@ const Banner = () => (
       slidesPerView={1}
       spaceBetween={0}
     >
-      {Array.from({ length: 9 }, (_, index) => (
-        <StyledSlide key={index}>
-          <Image
-            alt={`Slide ${index + 1}`}
-            fill
-            priority={index === 0}
-            sizes="100vw"
-            src="/images/IMG_4590.jpg"
-            style={{
-              objectFit: "cover",
-            }}
-          />
+      {banners.map(({ id, image }, index) => (
+        <StyledSlide key={id}>
+          <StyledImage alt={`Slide ${index + 1}`} src={image} />
         </StyledSlide>
       ))}
     </StyledSwiper>
