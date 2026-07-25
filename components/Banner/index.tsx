@@ -4,7 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 import NavigationButton from "./NavigationButton";
 
-import { ChevronLeft, ChevronRight } from "@mui/icons-material";
+import { ChevronLeft, ChevronRight, ViewCarousel } from "@mui/icons-material";
 import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -27,6 +27,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
   position: "relative",
   width: "100%",
   aspectRatio: "4/3",
+  backgroundColor: theme.vars.palette.action.hover,
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
@@ -89,46 +90,52 @@ interface BannerProps {
 
 const Banner = ({ banners }: BannerProps) => (
   <StyledBox>
-    <StyledSwiper
-      autoplay={{
-        delay: 2500,
-        disableOnInteraction: false,
-      }}
-      freeMode={{
-        sticky: true,
-      }}
-      grabCursor={true}
-      keyboard={{
-        enabled: true,
-      }}
-      loop={true}
-      modules={[
-        Autoplay,
-        FreeMode,
-        Keyboard,
-        // Mousewheel,
-        Navigation,
-        Pagination,
-      ]}
-      // mousewheel={true}
-      navigation={{
-        nextEl: ".custom-swiper-button-next",
-        prevEl: ".custom-swiper-button-prev",
-      }}
-      pagination={{
-        clickable: true,
-      }}
-      slidesPerView={1}
-      spaceBetween={0}
-    >
-      {banners.map(({ id, image }, index) => (
-        <StyledSlide key={id}>
-          <StyledImage alt={`Slide ${index + 1}`} src={image} />
-        </StyledSlide>
-      ))}
-    </StyledSwiper>
-    <NavigationButton direction="next" icon={ChevronRight} />
-    <NavigationButton direction="prev" icon={ChevronLeft} />
+    {banners.length ? (
+      <>
+        <StyledSwiper
+          autoplay={{
+            delay: 2500,
+            disableOnInteraction: false,
+          }}
+          freeMode={{
+            sticky: true,
+          }}
+          grabCursor={true}
+          keyboard={{
+            enabled: true,
+          }}
+          loop={true}
+          modules={[
+            Autoplay,
+            FreeMode,
+            Keyboard,
+            // Mousewheel,
+            Navigation,
+            Pagination,
+          ]}
+          // mousewheel={true}
+          navigation={{
+            nextEl: ".custom-swiper-button-next",
+            prevEl: ".custom-swiper-button-prev",
+          }}
+          pagination={{
+            clickable: true,
+          }}
+          slidesPerView={1}
+          spaceBetween={0}
+        >
+          {banners.map(({ id, image }, index) => (
+            <StyledSlide key={id}>
+              <StyledImage alt={`Slide ${index + 1}`} src={image} />
+            </StyledSlide>
+          ))}
+        </StyledSwiper>
+        <NavigationButton direction="next" icon={ChevronRight} />
+        <NavigationButton direction="prev" icon={ChevronLeft} />
+      </>
+    ) : (
+      <ViewCarousel color="disabled" fontSize="large" />
+    )}
   </StyledBox>
 );
 
