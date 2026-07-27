@@ -51,8 +51,8 @@ const LinkSection = () => {
 
   return (
     <Grid container spacing={2}>
-      {footerItems.map(({ children, label: parentLabel, to: parentTo }) => (
-        <StyledGrid key={parentTo} size={{ xs: 6, md: 2 }}>
+      {footerItems.map(({ children, label: parentLabel, path: parentPath }) => (
+        <StyledGrid key={parentPath} size={{ xs: 6, md: 2 }}>
           <Typography color="text.primary" variant="subtitle2">
             {parentLabel}
           </Typography>
