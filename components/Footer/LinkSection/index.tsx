@@ -14,8 +14,6 @@ import { useAuthStore } from "@/providers/auth-store-provider";
 import type { NavItem } from "@/types/navItem";
 
 import { useAccountNavItems } from "@/utils/account";
-import { getHref } from "@/utils/href";
-
 const StyledGrid = styled(Grid)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
@@ -35,12 +33,7 @@ const useFooterItems = (): NavItem[] => {
   return [
     {
       ...navItem("/order"),
-      children: [
-        navItem(
-          `/order/${ORDER_MODE.Pickup}`,
-          getHref("/order", { mode: ORDER_MODE.Pickup }),
-        ),
-      ],
+      children: [navItem(`/order/${ORDER_MODE.Pickup}`)],
     },
     {
       ...navItem("/auth"),
