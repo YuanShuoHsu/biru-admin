@@ -116,7 +116,7 @@ const Dashboard = ({
   const tDashboard = useTranslations("dashboard");
   const tOrder = useTranslations("order");
 
-  const navItem = useRoutes(organizationSlug);
+  const navItem = useRoutes({ defaultOrganization: organizationSlug });
   const ordersHref = navItem("/orders/list").to;
 
   const { hourly, bucketDays, tickStep } = DASHBOARD_RANGES[range];

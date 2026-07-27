@@ -4,12 +4,16 @@ import {
   type MessageKeys,
   type Messages,
   type NestedKeyOf,
+  useLocale,
   useTranslations,
 } from "next-intl";
-import { useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
+import useSWR from "swr";
 
 import { ORDER_MODE } from "@/constants/orderMode";
 import { DEFAULT_PAGINATION_QUERY } from "@/constants/pagination";
+
+import { authClient } from "@/lib/auth-client";
 
 import {
   AccountCircle,
@@ -60,9 +64,13 @@ import {
 } from "@mui/icons-material";
 import type { SvgIconProps } from "@mui/material";
 
+import type { MenuItem, MenuSection, ModifierGroup } from "@/types/menus";
 import type { NavItem } from "@/types/navItem";
+import type { RouteParams } from "@/types/routeParams";
 
+import { fetcher } from "@/utils/fetcher";
 import { getHref } from "@/utils/href";
+import { localize } from "@/utils/locale";
 
 type LabelKey = MessageKeys<Messages, NestedKeyOf<Messages>>;
 
@@ -332,9 +340,103 @@ export const findRoute = (path: string): MatchedRoute | undefined => {
   return matched;
 };
 
-export const useRoutes = (defaultOrganization?: string | null) => {
+const useDynamicLabels = (
+  organizationName?: string,
+): Partial<Record<string, string>> => {
+  const locale = useLocale();
+
+  const { groupId, menuItemId, menuSectionId, slug, teamId, userId } =
+    useParams<RouteParams>();
+
+  const { data: userEmail = "" } = useSWR(
+    userId ? `admin-user-${userId}` : null,
+    async () => {
+      const { data } = await authClient.admin.getUser({
+        query: { id: userId },
+      });
+
+      return data?.email;
+    },
+  );
+
+  const decodedSlug = decodeURIComponent(slug);
+  const { data: organizationData } = useSWR(
+    slug ? `organization-${slug}` : null,
+    async () => {
+      const { data } = await authClient.organization.getFullOrganization({
+        query: { organizationSlug: decodedSlug },
+      });
+
+      return data;
+    },
+  );
+  const organizationSlugName = organizationData?.name || "";
+  const teamName =
+    organizationData?.teams.find(({ id }) => id === teamId)?.name || "";
+
+  const { data: menuSectionName = "" } = useSWR(
+    menuSectionId ? `/api/menu-sections/${menuSectionId}` : null,
+    async (url) => {
+      try {
+        const { name } = await fetcher<MenuSection>(url);
+
+        return localize(name, locale);
+      } catch {
+        return "";
+      }
+    },
+  );
+
+  const { data: menuItemName = "" } = useSWR(
+    menuItemId ? `/api/menu-items/${menuItemId}` : null,
+    async (url) => {
+      try {
+        const { name } = await fetcher<MenuItem>(url);
+
+        return localize(name, locale);
+      } catch {
+        return "";
+      }
+    },
+  );
+
+  const { data: modifierGroupName = "" } = useSWR(
+    groupId ? `/api/modifier-groups/${groupId}` : null,
+    async (url) => {
+      try {
+        const { displayName } = await fetcher<ModifierGroup>(url);
+
+        return localize(displayName, locale);
+      } catch {
+        return "";
+      }
+    },
+  );
+
+  return {
+    groupId: modifierGroupName,
+    menuItemId: menuItemName,
+    menuSectionId: menuSectionName,
+    organizationSlug: organizationName,
+    slug: organizationSlugName,
+    teamId: teamName,
+    userId: userEmail,
+  };
+};
+
+interface UseRoutesOptions {
+  defaultOrganization?: string | null;
+  organizationName?: string;
+}
+
+export const useRoutes = ({
+  defaultOrganization,
+  organizationName,
+}: UseRoutesOptions = {}) => {
   const t = useTranslations();
   const searchParams = useSearchParams();
+
+  const labels = useDynamicLabels(organizationName);
 
   const values: Record<RouteQuery, string | null> = {
     organization:
@@ -346,8 +448,7 @@ export const useRoutes = (defaultOrganization?: string | null) => {
     tableNumber: searchParams.get("tableNumber"),
   };
 
-  const buildHref = (href: string) => {
-    const { query } = findRoute(href) || {};
+  const buildHref = (href: string, query = findRoute(href)?.query) => {
     if (!query) return href;
 
     return getHref(
@@ -356,15 +457,18 @@ export const useRoutes = (defaultOrganization?: string | null) => {
     );
   };
 
-  return (path: string, href?: string): NavItem & { param?: string } => {
-    const { icon, label, param, to } = findRoute(path) || {};
+  return (path: string, href?: string): NavItem => {
+    const { icon, label, param, query, to } = findRoute(path) || {};
+    const target = to === null ? undefined : (href ?? to ?? path);
 
     return {
       icon,
-      label: label && t(label),
-      param,
+      label:
+        (param && labels[param]) ??
+        (label && t(label)) ??
+        path.split("/").at(-1),
       path,
-      to: to === null ? undefined : buildHref(href ?? to ?? path),
+      to: target && buildHref(target, target === path ? query : undefined),
     };
   };
 };

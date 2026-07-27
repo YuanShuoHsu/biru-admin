@@ -225,7 +225,7 @@ const useNavItems = (): NavItem[] => {
     },
   );
 
-  const navItem = useRoutes(defaultOrganizationSlug);
+  const navItem = useRoutes({ defaultOrganization: defaultOrganizationSlug });
 
   const legalQuery = {
     [query.back]: pathname,
