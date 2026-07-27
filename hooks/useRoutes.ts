@@ -88,19 +88,15 @@ type RouteQuery =
   | "redirectTo"
   | "tableNumber";
 
-interface RouteMeta {
-  children?: Record<string, RouteMeta>;
+interface Route {
+  children?: Record<string, Route>;
   icon: React.ComponentType<SvgIconProps>;
   label?: LabelKey;
   query?: readonly RouteQuery[];
   to?: string | null;
 }
 
-interface MatchedRoute extends RouteMeta {
-  param?: string;
-}
-
-const orderModeChildren: Record<string, RouteMeta> = {
+const orderModeChildren: Record<string, Route> = {
   "[organizationSlug]": {
     children: {
       cart: {
@@ -121,7 +117,7 @@ const orderModeChildren: Record<string, RouteMeta> = {
   },
 };
 
-const routes: Record<string, RouteMeta> = {
+const routes: Record<string, Route> = {
   admins: {
     children: { "[userId]": { icon: Devices } },
     icon: AdminPanelSettings,
@@ -338,9 +334,9 @@ const routes: Record<string, RouteMeta> = {
   },
 };
 
-export const findRoute = (path: string): MatchedRoute | undefined => {
-  let children: RouteMeta["children"] = routes;
-  let matched: MatchedRoute | undefined;
+const findRoute = (path: string) => {
+  let children: Route["children"] = routes;
+  let matched: (Route & { param?: string }) | undefined;
 
   for (const segment of path.split("/").filter(Boolean)) {
     if (!children) return;
@@ -349,7 +345,7 @@ export const findRoute = (path: string): MatchedRoute | undefined => {
       segment in children
         ? segment
         : Object.keys(children).find((child) => child.startsWith("["));
-    const meta: RouteMeta | undefined = key ? children[key] : undefined;
+    const meta: Route | undefined = key ? children[key] : undefined;
     if (!key || !meta) return;
 
     matched = {
