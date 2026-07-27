@@ -574,8 +574,6 @@ export const useRoutes = () => {
   };
 };
 
-// 側邊欄頂層項目：順序與分隔線由 routes 決定，hidden 內的 segment 不顯示。
-// 項目被濾掉後落單或連續的分隔線會一併收掉，所以分隔線本身不需要條件。
 export const useNavigation = (hidden: readonly string[] = []): NavItem[] => {
   const navItem = useRoutes();
 
