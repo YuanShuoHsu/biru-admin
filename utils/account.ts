@@ -9,9 +9,9 @@ import { useRouter } from "@/i18n/navigation";
 
 import { PersonAdd } from "@mui/icons-material";
 
-import type { NavItem } from "@/types/navItem";
+import type { NavItem, Slot } from "@/types/navItem";
 
-export const useAccountNavItems = (divider: NavItem["slot"]): NavItem[] => {
+export const useAccountNavItems = (divider: Slot): NavItem[] => {
   const addAccountItem = useAddAccountNavItem();
   const logoutItem = useLogoutNavItem();
   const settingsItem = useSettingsNavItem();

@@ -3,174 +3,26 @@
 
 "use client";
 
-import { useTranslations } from "next-intl";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 
+import DividerSlot from "./DividerSlot";
 import SelectedListItem from "./SelectedListItem";
-import { StyledListItemButton } from "./SelectedListItem/ListItemLink";
 
 import { ORDER_MODE } from "@/constants/orderMode";
 
-import { useDefaultOrganization, useOrganization } from "@/hooks/organizations";
+import { useDefaultOrganization } from "@/hooks/organizations";
 import { useAuthNavItems } from "@/hooks/useAuth";
 import { useCompanyNavItems } from "@/hooks/useCompany";
 import { useRoutes } from "@/hooks/useRoutes";
 
-import { Link } from "@/i18n/navigation";
-
-import {
-  Group,
-  LocalMall,
-  Person,
-  Restaurant,
-  Storefront,
-  TableBar,
-} from "@mui/icons-material";
-import {
-  Chip,
-  Divider,
-  type DividerProps,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  ListSubheader,
-  Stack,
-  Toolbar,
-} from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { List, ListSubheader, Toolbar } from "@mui/material";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
 
 import type { NavItem } from "@/types/navItem";
-import type { OrderMode } from "@/types/orderMode";
 import type { RouteParams } from "@/types/routeParams";
 
 import { useAccountNavItems } from "@/utils/account";
-
-const StyledChip = styled(Chip)(({ theme }) => ({
-  marginLeft: "auto",
-  padding: theme.spacing(0.5),
-}));
-
-interface StyledDividerProps extends DividerProps {
-  level: number;
-}
-
-const StyledDivider = styled(Divider, {
-  shouldForwardProp: (prop) => prop !== "level",
-})<StyledDividerProps>(({ level, theme }) => ({
-  marginBlock: theme.spacing(1),
-  marginLeft: theme.spacing(level * 2),
-}));
-
-const divider: NavItem["slot"] = ({ level }) => (
-  <StyledDivider component="li" level={level} />
-);
-
-const OrderModeMenuItem = ({
-  level,
-  mode,
-  organizationSlug,
-}: {
-  level: number;
-  mode: OrderMode;
-  organizationSlug: string;
-}) => {
-  const organization = useOrganization();
-  const storeName = organization?.name || "";
-
-  const searchParams = useSearchParams();
-
-  const navItem = useRoutes();
-  const { icon: ModeIcon, label } = navItem(`/order/${mode}`);
-  const { to } = navItem(`/order/${mode}/${organizationSlug}`);
-
-  const tOrder = useTranslations("order");
-
-  if (!storeName || !to) return null;
-
-  const partySize = searchParams.get("partySize");
-  const tableNumber = searchParams.get("tableNumber");
-  const type = searchParams.get("type");
-
-  const extra =
-    mode === ORDER_MODE.DineIn
-      ? [
-          ...(tableNumber
-            ? [
-                {
-                  icon: <TableBar />,
-                  primary: tOrder("mode.dineIn.storeSlug.tableNumber.value", {
-                    tableNumber,
-                  }),
-                },
-              ]
-            : []),
-          ...(partySize
-            ? [
-                {
-                  icon: partySize === "1" ? <Person /> : <Group />,
-                  primary: tOrder(
-                    "mode.dineIn.storeSlug.tableNumber.partySize.select.value",
-                    { count: partySize },
-                  ),
-                },
-              ]
-            : []),
-        ]
-      : mode === ORDER_MODE.Kiosk && type
-        ? [
-            {
-              icon: type === "dine-in" ? <Restaurant /> : <LocalMall />,
-              primary: tOrder(
-                type === "dine-in" ? "mode.kiosk.dineIn" : "mode.kiosk.takeout",
-              ),
-            },
-          ]
-        : [];
-
-  return (
-    <ListItem disablePadding>
-      <StyledListItemButton
-        {...{ component: Link, href: to }}
-        level={level}
-        selected
-      >
-        <Stack
-          width="100%"
-          flexDirection="row"
-          flexWrap="wrap"
-          justifyContent="space-between"
-          alignItems="center"
-          gap={1}
-        >
-          <Stack gap={1}>
-            <Stack flexDirection="row" alignItems="center" gap={4}>
-              <ListItemIcon>
-                <Storefront />
-              </ListItemIcon>
-              <ListItemText primary={storeName} />
-            </Stack>
-            {extra.map(({ icon, primary }, i) => (
-              <Stack key={i} flexDirection="row" alignItems="center" gap={4}>
-                <ListItemIcon>{icon}</ListItemIcon>
-                <ListItemText primary={primary} />
-              </Stack>
-            ))}
-          </Stack>
-          <StyledChip
-            color="primary"
-            icon={ModeIcon && <ModeIcon />}
-            label={label}
-            size="small"
-            variant="outlined"
-          />
-        </Stack>
-      </StyledListItemButton>
-    </ListItem>
-  );
-};
 
 const useNavItems = (): NavItem[] => {
   const session = useAuthStore((state) => state.session);
@@ -179,33 +31,19 @@ const useNavItems = (): NavItem[] => {
 
   const isAdmin = session?.user?.role === "admin";
 
-  const accountChildren = useAccountNavItems(divider);
+  const accountChildren = useAccountNavItems(DividerSlot);
   const authChildren = useAuthNavItems();
+  const companyChildren = useCompanyNavItems();
 
   const defaultOrganizationSlug = useDefaultOrganization();
 
   const navItem = useRoutes();
 
-  const companyChildren = useCompanyNavItems();
-
-  const orderModeSlot: NavItem[] =
-    mode && organizationSlug && mode !== ORDER_MODE.Pickup
-      ? [
-          {
-            slot: ({ level }) => (
-              <OrderModeMenuItem
-                level={level}
-                mode={mode}
-                organizationSlug={organizationSlug}
-              />
-            ),
-          },
-        ]
-      : [];
+  const orderModeItem = navItem(`/order/${mode}/current-store`);
 
   const adminItems: NavItem[] = isAdmin
     ? [
-        { slot: divider },
+        navItem("/divider"),
         navItem("/coupons"),
         navItem("/banners"),
         navItem("/admins"),
@@ -213,7 +51,7 @@ const useNavItems = (): NavItem[] => {
     : [];
 
   const orderChildren: NavItem[] = [
-    ...orderModeSlot,
+    ...(organizationSlug && orderModeItem.slot ? [orderModeItem] : []),
     navItem(`/order/${ORDER_MODE.Pickup}`),
   ];
 
@@ -226,7 +64,7 @@ const useNavItems = (): NavItem[] => {
     ...(defaultOrganizationSlug ? [navItem("/orders"), navItem("/menus")] : []),
     navItem("/organizations"),
     ...adminItems,
-    { slot: divider },
+    navItem("/divider"),
     {
       ...navItem("/auth"),
       children: session ? accountChildren : authChildren,

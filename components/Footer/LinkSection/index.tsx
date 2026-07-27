@@ -11,7 +11,7 @@ import { styled } from "@mui/material/styles";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
 
-import type { NavItem } from "@/types/navItem";
+import type { NavItem, Slot } from "@/types/navItem";
 
 import { useAccountNavItems } from "@/utils/account";
 const StyledGrid = styled(Grid)(({ theme }) => ({
@@ -21,12 +21,14 @@ const StyledGrid = styled(Grid)(({ theme }) => ({
   alignItems: "flex-start",
 }));
 
+const DividerSlot: Slot = () => <Divider flexItem />;
+
 const useFooterItems = (): NavItem[] => {
   const { session } = useAuthStore((state) => state);
 
   const navItem = useRoutes();
 
-  const accountChildren = useAccountNavItems(() => <Divider flexItem />);
+  const accountChildren = useAccountNavItems(DividerSlot);
   const authChildren = useAuthNavItems();
   const companyChildren = useCompanyNavItems();
 

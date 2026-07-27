@@ -10,6 +10,9 @@ import {
 import { useParams, useSearchParams } from "next/navigation";
 import useSWR from "swr";
 
+import DividerSlot from "@/components/TemporaryDrawer/NestedList/DividerSlot";
+import OrderModeMenuItem from "@/components/TemporaryDrawer/NestedList/OrderModeMenuItem";
+
 import { ORDER_MODE } from "@/constants/orderMode";
 import { DEFAULT_PAGINATION_QUERY } from "@/constants/pagination";
 
@@ -69,7 +72,7 @@ import {
 import type { SvgIconProps } from "@mui/material";
 
 import type { MenuItem, MenuSection, ModifierGroup } from "@/types/menus";
-import type { NavItem } from "@/types/navItem";
+import type { NavItem, Slot } from "@/types/navItem";
 import type { RouteParams } from "@/types/routeParams";
 
 import { fetcher } from "@/utils/fetcher";
@@ -89,7 +92,11 @@ type RouteQuery =
   | "tableNumber"
   | "type";
 
-interface Route {
+interface RouteSlot {
+  slot: Slot;
+}
+
+interface RoutePath {
   children?: Record<string, Route>;
   icon: React.ComponentType<SvgIconProps>;
   label?: LabelKey;
@@ -97,25 +104,34 @@ interface Route {
   to?: string | null;
 }
 
-const orderModeChildren: Record<string, Route> = {
-  "[organizationSlug]": {
-    children: {
-      cart: {
-        icon: ShoppingCart,
-        label: "order.mode.storeSlug.tableNumber.stepper.cart.label",
-      },
-      checkout: {
-        icon: Payment,
-        label: "order.mode.storeSlug.tableNumber.stepper.checkout.label",
-      },
-      complete: {
-        icon: Pets,
-        label: "order.mode.storeSlug.tableNumber.stepper.complete.label",
-      },
+type Route = RoutePath | RouteSlot;
+
+const storeRoute: RoutePath = {
+  children: {
+    cart: {
+      icon: ShoppingCart,
+      label: "order.mode.storeSlug.tableNumber.stepper.cart.label",
     },
-    icon: Storefront,
-    query: ["partySize", "tableNumber", "type"],
+    checkout: {
+      icon: Payment,
+      label: "order.mode.storeSlug.tableNumber.stepper.checkout.label",
+    },
+    complete: {
+      icon: Pets,
+      label: "order.mode.storeSlug.tableNumber.stepper.complete.label",
+    },
   },
+  icon: Storefront,
+  query: ["partySize", "tableNumber", "type"],
+};
+
+const orderModeChildren: Record<string, Route> = {
+  "[organizationSlug]": storeRoute,
+};
+
+const onSiteOrderModeChildren: Record<string, Route> = {
+  "current-store": { slot: OrderModeMenuItem },
+  "[organizationSlug]": storeRoute,
 };
 
 const routes: Record<string, Route> = {
@@ -216,6 +232,7 @@ const routes: Record<string, Route> = {
     label: "dashboard.label",
     query: ["organization", "range"],
   },
+  divider: { slot: DividerSlot },
   menus: {
     children: {
       "modifier-groups": {
@@ -259,19 +276,19 @@ const routes: Record<string, Route> = {
   order: {
     children: {
       [ORDER_MODE.Counter]: {
-        children: orderModeChildren,
+        children: onSiteOrderModeChildren,
         icon: QrCodeScanner,
         label: "order.mode.counter.label",
         to: null,
       },
       [ORDER_MODE.DineIn]: {
-        children: orderModeChildren,
+        children: onSiteOrderModeChildren,
         icon: Restaurant,
         label: "order.mode.dineIn.label",
         to: null,
       },
       [ORDER_MODE.Kiosk]: {
-        children: orderModeChildren,
+        children: onSiteOrderModeChildren,
         icon: TouchApp,
         label: "order.mode.kiosk.label",
         to: null,
@@ -333,7 +350,7 @@ const routes: Record<string, Route> = {
 };
 
 const findRoute = (path: string) => {
-  let children: Route["children"] = routes;
+  let children: RoutePath["children"] = routes;
   let matched: (Route & { param?: string }) | undefined;
 
   for (const segment of path.split("/").filter(Boolean)) {
@@ -350,10 +367,16 @@ const findRoute = (path: string) => {
       ...meta,
       ...(key.startsWith("[") && { param: key.slice(1, -1) }),
     };
-    children = meta.children;
+    children = "slot" in meta ? undefined : meta.children;
   }
 
   return matched;
+};
+
+const findRoutePath = (path: string) => {
+  const route = findRoute(path);
+
+  return route && !("slot" in route) ? route : undefined;
 };
 
 const useDynamicLabels = (): Partial<Record<string, string>> => {
@@ -461,7 +484,7 @@ export const useRoutes = () => {
     type: searchParams.get("type"),
   };
 
-  const buildHref = (href: string, query = findRoute(href)?.query) => {
+  const buildHref = (href: string, query = findRoutePath(href)?.query) => {
     if (!query) return href;
 
     return getHref(
@@ -471,7 +494,11 @@ export const useRoutes = () => {
   };
 
   return (path: string, href?: string): NavItem => {
-    const { icon, label, param, query, to } = findRoute(path) || {};
+    const route = findRoute(path);
+
+    if (route && "slot" in route) return { slot: route.slot };
+
+    const { icon, label, param, query, to } = route ?? {};
     const target = to === null ? undefined : (href ?? to ?? path);
 
     return {
