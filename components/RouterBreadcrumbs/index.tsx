@@ -9,7 +9,6 @@ import { useParams } from "next/navigation";
 import { useState } from "react";
 import useSWR from "swr";
 
-
 import { findRoute, useRoutes } from "@/hooks/useRoutes";
 
 import { Link, usePathname } from "@/i18n/navigation";

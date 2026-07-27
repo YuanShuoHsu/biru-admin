@@ -269,12 +269,7 @@ const useNavItems = (): NavItem[] => {
       ...navItem("/order"),
       children: orderChildren,
     },
-    ...(defaultOrganizationSlug
-      ? [
-          navItem("/orders"),
-          navItem("/menus"),
-        ]
-      : []),
+    ...(defaultOrganizationSlug ? [navItem("/orders"), navItem("/menus")] : []),
     navItem("/organizations"),
     ...adminItems,
     { slot: divider },
