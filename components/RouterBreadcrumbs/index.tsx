@@ -65,15 +65,11 @@ const ITEMS_BEFORE_COLLAPSE = 1;
 const ITEMS_AFTER_COLLAPSE = 2;
 const MAX_ITEMS = ITEMS_BEFORE_COLLAPSE + ITEMS_AFTER_COLLAPSE + 1;
 
-interface RouterBreadcrumbsProps {
-  organizationName: string;
-}
-
-const RouterBreadcrumbs = ({ organizationName }: RouterBreadcrumbsProps) => {
+const RouterBreadcrumbs = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const open = Boolean(anchorEl);
 
-  const navItem = useRoutes({ organizationName });
+  const navItem = useRoutes();
 
   const pathnames = usePathname().split("/").filter(Boolean);
 

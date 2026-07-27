@@ -79,7 +79,6 @@ interface Trend {
 
 interface DashboardProps {
   currency: string;
-  organizationSlug: string;
   range: DashboardRange;
   stats: {
     totalUsers: number | null;
@@ -99,13 +98,7 @@ interface DashboardProps {
   };
 }
 
-const Dashboard = ({
-  currency,
-  organizationSlug,
-  range,
-  stats,
-  charts,
-}: DashboardProps) => {
+const Dashboard = ({ currency, range, stats, charts }: DashboardProps) => {
   const format = useFormatter();
 
   const router = useRouter();
@@ -116,7 +109,7 @@ const Dashboard = ({
   const tDashboard = useTranslations("dashboard");
   const tOrder = useTranslations("order");
 
-  const navItem = useRoutes({ defaultOrganization: organizationSlug });
+  const navItem = useRoutes();
   const ordersHref = navItem("/orders/list").to;
 
   const { hourly, bucketDays, tickStep } = DASHBOARD_RANGES[range];

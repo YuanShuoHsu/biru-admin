@@ -5,22 +5,18 @@
 
 import { useTranslations } from "next-intl";
 import { useParams, useSearchParams } from "next/navigation";
-import useSWR from "swr";
 
 import SelectedListItem from "./SelectedListItem";
 import { StyledListItemButton } from "./SelectedListItem/ListItemLink";
 
 import { ORDER_MODE } from "@/constants/orderMode";
-import { query } from "@/constants/query";
 
-import { useOrganization } from "@/hooks/organizations";
+import { useDefaultOrganization, useOrganization } from "@/hooks/organizations";
 import { useAuthNavItems } from "@/hooks/useAuth";
 import { useCompanyNavItems } from "@/hooks/useCompany";
 import { useRoutes } from "@/hooks/useRoutes";
 
-import { usePathname, useRouter } from "@/i18n/navigation";
-
-import { authClient } from "@/lib/auth-client";
+import { useRouter } from "@/i18n/navigation";
 
 import {
   Group,
@@ -50,7 +46,6 @@ import type { OrderMode } from "@/types/orderMode";
 import type { RouteParams } from "@/types/routeParams";
 
 import { useAccountNavItems } from "@/utils/account";
-import { getHref } from "@/utils/href";
 
 const StyledChip = styled(Chip)(({ theme }) => ({
   marginLeft: "auto",
@@ -138,8 +133,8 @@ const OrderModeMenuItem = ({
       : [],
   };
 
-  const hrefByMode: Partial<Record<OrderMode, string>> = {
-    [ORDER_MODE.DineIn]: getHref(storePath, { tableNumber, partySize }),
+  const hrefByMode: Partial<Record<OrderMode, string | undefined>> = {
+    [ORDER_MODE.DineIn]: navItem(storePath).to,
     [ORDER_MODE.Kiosk]: `${storePath}?${searchParams.toString()}`,
   };
 
@@ -190,49 +185,16 @@ const useNavItems = (): NavItem[] => {
 
   const { mode, organizationSlug } = useParams<Partial<RouteParams>>();
 
-  const pathname = usePathname();
-
-  const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo");
-
-  const isAuthPage = pathname.startsWith("/auth");
-  const isCompanyPage = pathname.startsWith("/company");
-
   const isAdmin = session?.user?.role === "admin";
 
   const accountChildren = useAccountNavItems(divider);
+  const authChildren = useAuthNavItems();
 
-  const redirect =
-    (isAuthPage || isCompanyPage) && redirectTo ? redirectTo : pathname;
+  const defaultOrganizationSlug = useDefaultOrganization();
 
-  const authChildren = useAuthNavItems(redirect);
+  const navItem = useRoutes();
 
-  const { data: defaultOrganizationSlug = "" } = useSWR<string>(
-    "default-organization-slug",
-    async () => {
-      const [{ data: session }, { data: organizations }] = await Promise.all([
-        authClient.getSession(),
-        authClient.organization.list(),
-      ]);
-
-      return (
-        organizations?.find(
-          ({ id }) => id === session?.session?.activeOrganizationId,
-        )?.slug ||
-        organizations?.[0]?.slug ||
-        ""
-      );
-    },
-  );
-
-  const navItem = useRoutes({ defaultOrganization: defaultOrganizationSlug });
-
-  const legalQuery = {
-    [query.back]: pathname,
-    [query.redirectTo]: redirectTo,
-  };
-
-  const companyChildren = useCompanyNavItems(legalQuery);
+  const companyChildren = useCompanyNavItems();
 
   const orderModeSlot: NavItem[] =
     mode && organizationSlug && mode !== ORDER_MODE.Pickup

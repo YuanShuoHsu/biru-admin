@@ -1,7 +1,5 @@
 import RouterBreadcrumbs from "@/components/RouterBreadcrumbs";
 
-const BreadcrumbOrganizationsSlugPage = () => (
-  <RouterBreadcrumbs organizationName="" />
-);
+const BreadcrumbOrganizationsSlugPage = () => <RouterBreadcrumbs />;
 
 export default BreadcrumbOrganizationsSlugPage;

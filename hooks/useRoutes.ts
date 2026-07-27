@@ -13,6 +13,10 @@ import useSWR from "swr";
 import { ORDER_MODE } from "@/constants/orderMode";
 import { DEFAULT_PAGINATION_QUERY } from "@/constants/pagination";
 
+import { useDefaultOrganization, useOrganization } from "@/hooks/organizations";
+
+import { usePathname } from "@/i18n/navigation";
+
 import { authClient } from "@/lib/auth-client";
 
 import {
@@ -75,11 +79,13 @@ import { localize } from "@/utils/locale";
 type LabelKey = MessageKeys<Messages, NestedKeyOf<Messages>>;
 
 type RouteQuery =
+  | "back"
   | "organization"
   | "page"
   | "pageSize"
   | "partySize"
   | "range"
+  | "redirectTo"
   | "tableNumber";
 
 interface RouteMeta {
@@ -164,8 +170,16 @@ const routes: Record<string, RouteMeta> = {
         label: "auth.settings.label",
         to: "/auth/settings/account",
       },
-      "sign-in": { icon: Login, label: "auth.signIn.label" },
-      "sign-up": { icon: PersonAdd, label: "auth.signUp.label" },
+      "sign-in": {
+        icon: Login,
+        label: "auth.signIn.label",
+        query: ["redirectTo"],
+      },
+      "sign-up": {
+        icon: PersonAdd,
+        label: "auth.signUp.label",
+        query: ["redirectTo"],
+      },
       "verify-email": { icon: Email, label: "auth.verifyEmail.label" },
     },
     icon: AccountCircle,
@@ -180,8 +194,16 @@ const routes: Record<string, RouteMeta> = {
   company: {
     children: {
       about: { icon: Info, label: "company.about.label" },
-      privacy: { icon: Policy, label: "company.legal.privacy.label" },
-      terms: { icon: Gavel, label: "company.legal.terms.label" },
+      privacy: {
+        icon: Policy,
+        label: "company.legal.privacy.label",
+        query: ["back", "redirectTo"],
+      },
+      terms: {
+        icon: Gavel,
+        label: "company.legal.terms.label",
+        query: ["back", "redirectTo"],
+      },
     },
     icon: Apartment,
     label: "company.label",
@@ -340,10 +362,10 @@ export const findRoute = (path: string): MatchedRoute | undefined => {
   return matched;
 };
 
-const useDynamicLabels = (
-  organizationName?: string,
-): Partial<Record<string, string>> => {
+const useDynamicLabels = (): Partial<Record<string, string>> => {
   const locale = useLocale();
+
+  const organization = useOrganization();
 
   const { groupId, menuItemId, menuSectionId, slug, teamId, userId } =
     useParams<RouteParams>();
@@ -417,34 +439,30 @@ const useDynamicLabels = (
     groupId: modifierGroupName,
     menuItemId: menuItemName,
     menuSectionId: menuSectionName,
-    organizationSlug: organizationName,
+    organizationSlug: organization?.name || "",
     slug: organizationSlugName,
     teamId: teamName,
     userId: userEmail,
   };
 };
 
-interface UseRoutesOptions {
-  defaultOrganization?: string | null;
-  organizationName?: string;
-}
-
-export const useRoutes = ({
-  defaultOrganization,
-  organizationName,
-}: UseRoutesOptions = {}) => {
+export const useRoutes = () => {
   const t = useTranslations();
   const searchParams = useSearchParams();
 
-  const labels = useDynamicLabels(organizationName);
+  const labels = useDynamicLabels();
+
+  const pathname = usePathname();
+  const defaultOrganization = useDefaultOrganization() || null;
 
   const values: Record<RouteQuery, string | null> = {
-    organization:
-      searchParams.get("organization") || defaultOrganization || null,
+    back: pathname,
+    organization: searchParams.get("organization") || defaultOrganization,
     page: DEFAULT_PAGINATION_QUERY.page,
     pageSize: DEFAULT_PAGINATION_QUERY.pageSize,
     partySize: searchParams.get("partySize"),
     range: searchParams.get("range"),
+    redirectTo: searchParams.get("redirectTo") || pathname,
     tableNumber: searchParams.get("tableNumber"),
   };
 

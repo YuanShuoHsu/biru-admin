@@ -6,7 +6,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useSnackbar } from "notistack";
 import { useState, type MouseEvent } from "react";
 import useSWR, { useSWRConfig } from "swr";
@@ -142,14 +142,6 @@ const AccountMenu = () => {
 
   const router = useRouter();
 
-  const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo");
-  const isAuthPage = pathname.startsWith("/auth");
-  const isCompanyPage = pathname.startsWith("/company");
-
-  const redirectTarget =
-    (isAuthPage || isCompanyPage) && redirectTo ? redirectTo : pathname;
-
   const { enqueueSnackbar } = useSnackbar();
 
   const { data: deviceSessions = [] } = useSWR<DeviceSession[]>(
@@ -171,7 +163,7 @@ const AccountMenu = () => {
   const tooltipTitle = session ? session.user.email : tAuth("label");
 
   const addAccountItem = useAddAccountNavItem();
-  const authNavItems = useAuthNavItems(redirectTarget || undefined);
+  const authNavItems = useAuthNavItems();
   const couponsItem = useCouponsNavItem();
   const logoutItem = useLogoutNavItem();
   const ordersItem = useOrdersNavItem();

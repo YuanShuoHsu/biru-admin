@@ -226,7 +226,6 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
   return (
     <Dashboard
       currency={currency}
-      organizationSlug={organizationSlug}
       range={range}
       stats={{
         totalUsers: usersTotal,
