@@ -13,7 +13,7 @@ import { ORDER_MODE } from "@/constants/orderMode";
 import { useDefaultOrganization } from "@/hooks/organizations";
 import { useAuthNavItems } from "@/hooks/useAuth";
 import { useCompanyNavItems } from "@/hooks/useCompany";
-import { useRoutes } from "@/hooks/useRoutes";
+import { getRouteSlots, useNavigation, useRoutes } from "@/hooks/useRoutes";
 
 import { List, ListSubheader, Toolbar } from "@mui/material";
 
@@ -29,8 +29,6 @@ const useNavItems = (): NavItem[] => {
 
   const { mode, organizationSlug } = useParams<Partial<RouteParams>>();
 
-  const isAdmin = session?.user?.role === "admin";
-
   const accountChildren = useAccountNavItems(DividerSlot);
   const authChildren = useAuthNavItems();
   const companyChildren = useCompanyNavItems();
@@ -39,41 +37,28 @@ const useNavItems = (): NavItem[] => {
 
   const navItem = useRoutes();
 
-  const orderModeItem = navItem(`/order/${mode}/current-store`);
+  const isAdmin = session?.user?.role === "admin";
+  const orderModeSlots = getRouteSlots(`/order/${mode}`);
 
-  const adminItems: NavItem[] = isAdmin
-    ? [
-        navItem("/divider"),
-        navItem("/coupons"),
-        navItem("/banners"),
-        navItem("/admins"),
-      ]
-    : [];
+  const navItems = useNavigation([
+    ...(isAdmin ? [] : ["admins", "banners", "coupons"]),
+    ...(defaultOrganizationSlug ? [] : ["menus", "orders"]),
+  ]);
 
-  const orderChildren: NavItem[] = [
-    ...(organizationSlug && orderModeItem.slot ? [orderModeItem] : []),
-    navItem(`/order/${ORDER_MODE.Pickup}`),
-  ];
+  const childrenByPath: Record<string, NavItem[]> = {
+    "/auth": session ? accountChildren : authChildren,
+    "/company": companyChildren,
+    "/order": [
+      ...(organizationSlug ? orderModeSlots.map((slot) => ({ slot })) : []),
+      navItem(`/order/${ORDER_MODE.Pickup}`),
+    ],
+  };
 
-  return [
-    navItem("/dashboard"),
-    {
-      ...navItem("/order"),
-      children: orderChildren,
-    },
-    ...(defaultOrganizationSlug ? [navItem("/orders"), navItem("/menus")] : []),
-    navItem("/organizations"),
-    ...adminItems,
-    navItem("/divider"),
-    {
-      ...navItem("/auth"),
-      children: session ? accountChildren : authChildren,
-    },
-    {
-      ...navItem("/company"),
-      children: companyChildren,
-    },
-  ];
+  return navItems.map((item) =>
+    item.path && childrenByPath[item.path]
+      ? { ...item, children: childrenByPath[item.path] }
+      : item,
+  );
 };
 
 const NestedList = () => {
