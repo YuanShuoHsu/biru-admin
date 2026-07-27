@@ -4,7 +4,7 @@ import { ORDER_MODE } from "@/constants/orderMode";
 
 import { useAuthNavItems } from "@/hooks/useAuth";
 import { useCompanyNavItems } from "@/hooks/useCompany";
-import { useNavItem } from "@/hooks/useNavItem";
+import { useRoutes } from "@/hooks/useRoutes";
 
 import { Divider, Grid, Link, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -26,7 +26,7 @@ const StyledGrid = styled(Grid)(({ theme }) => ({
 const useFooterItems = (): NavItem[] => {
   const { session } = useAuthStore((state) => state);
 
-  const navItem = useNavItem();
+  const navItem = useRoutes();
 
   const accountChildren = useAccountNavItems(() => <Divider flexItem />);
   const authChildren = useAuthNavItems();

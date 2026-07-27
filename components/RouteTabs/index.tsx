@@ -1,6 +1,6 @@
 "use client";
 
-import { useNavItem } from "@/hooks/useNavItem";
+import { useRoutes } from "@/hooks/useRoutes";
 
 import { Link, usePathname } from "@/i18n/navigation";
 
@@ -19,7 +19,7 @@ interface RouteTabsProps {
 const RouteTabs = ({ ariaLabel, tabs }: RouteTabsProps) => {
   const pathname = usePathname();
 
-  const navItem = useNavItem();
+  const navItem = useRoutes();
 
   const value =
     tabs.find(({ path }) => pathname.startsWith(path))?.path || tabs[0].path;

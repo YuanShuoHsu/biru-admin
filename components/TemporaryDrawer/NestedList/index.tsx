@@ -16,7 +16,7 @@ import { query } from "@/constants/query";
 import { useOrganization } from "@/hooks/organizations";
 import { useAuthNavItems } from "@/hooks/useAuth";
 import { useCompanyNavItems } from "@/hooks/useCompany";
-import { useNavItem } from "@/hooks/useNavItem";
+import { useRoutes } from "@/hooks/useRoutes";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
@@ -87,7 +87,7 @@ const OrderModeMenuItem = ({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const navItem = useNavItem();
+  const navItem = useRoutes();
   const { icon: ModeIcon, label } = navItem(`/order/${mode}`);
 
   const tOrder = useTranslations("order");
@@ -225,7 +225,7 @@ const useNavItems = (): NavItem[] => {
     },
   );
 
-  const navItem = useNavItem(defaultOrganizationSlug);
+  const navItem = useRoutes(defaultOrganizationSlug);
 
   const legalQuery = {
     [query.back]: pathname,
@@ -271,8 +271,8 @@ const useNavItems = (): NavItem[] => {
     },
     ...(defaultOrganizationSlug
       ? [
-          navItem("/orders", "/orders/list"),
-          navItem("/menus", "/menus/sections"),
+          navItem("/orders"),
+          navItem("/menus"),
         ]
       : []),
     navItem("/organizations"),

@@ -5,7 +5,7 @@ import { useMemo } from "react";
 
 import { DASHBOARD_RANGES, type DashboardRange } from "./definitions";
 
-import { useNavItem } from "@/hooks/useNavItem";
+import { useRoutes } from "@/hooks/useRoutes";
 
 import { useRouter } from "@/i18n/navigation";
 
@@ -116,7 +116,7 @@ const Dashboard = ({
   const tDashboard = useTranslations("dashboard");
   const tOrder = useTranslations("order");
 
-  const navItem = useNavItem(organizationSlug);
+  const navItem = useRoutes(organizationSlug);
   const ordersHref = navItem("/orders/list").to;
 
   const { hourly, bucketDays, tickStep } = DASHBOARD_RANGES[range];

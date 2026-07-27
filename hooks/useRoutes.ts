@@ -1,6 +1,15 @@
-import type { MessageKeys, Messages, NestedKeyOf } from "next-intl";
+"use client";
+
+import {
+  type MessageKeys,
+  type Messages,
+  type NestedKeyOf,
+  useTranslations,
+} from "next-intl";
+import { useSearchParams } from "next/navigation";
 
 import { ORDER_MODE } from "@/constants/orderMode";
+import { DEFAULT_PAGINATION_QUERY } from "@/constants/pagination";
 
 import {
   AccountCircle,
@@ -51,9 +60,13 @@ import {
 } from "@mui/icons-material";
 import type { SvgIconProps } from "@mui/material";
 
+import type { NavItem } from "@/types/navItem";
+
+import { getHref } from "@/utils/href";
+
 type LabelKey = MessageKeys<Messages, NestedKeyOf<Messages>>;
 
-export type RouteQuery =
+type RouteQuery =
   | "organization"
   | "page"
   | "pageSize"
@@ -65,8 +78,9 @@ interface RouteMeta {
   children?: Record<string, RouteMeta>;
   disabled?: true;
   icon: React.ComponentType<SvgIconProps>;
-  labelKey?: LabelKey;
+  label?: LabelKey;
   query?: readonly RouteQuery[];
+  to?: string;
 }
 
 interface MatchedRoute extends RouteMeta {
@@ -78,15 +92,15 @@ const orderModeChildren: Record<string, RouteMeta> = {
     children: {
       cart: {
         icon: ShoppingCart,
-        labelKey: "order.mode.storeSlug.tableNumber.stepper.cart.label",
+        label: "order.mode.storeSlug.tableNumber.stepper.cart.label",
       },
       checkout: {
         icon: Payment,
-        labelKey: "order.mode.storeSlug.tableNumber.stepper.checkout.label",
+        label: "order.mode.storeSlug.tableNumber.stepper.checkout.label",
       },
       complete: {
         icon: Pets,
-        labelKey: "order.mode.storeSlug.tableNumber.stepper.complete.label",
+        label: "order.mode.storeSlug.tableNumber.stepper.complete.label",
       },
     },
     icon: Storefront,
@@ -98,82 +112,84 @@ const routes: Record<string, RouteMeta> = {
   admins: {
     children: { "[userId]": { icon: Devices } },
     icon: AdminPanelSettings,
-    labelKey: "admins.label",
+    label: "admins.label",
     query: ["page", "pageSize"],
   },
   auth: {
     children: {
-      coupons: { icon: ConfirmationNumber, labelKey: "auth.coupons.label" },
+      coupons: { icon: ConfirmationNumber, label: "auth.coupons.label" },
       "delete-account": {
         icon: DeleteForever,
-        labelKey: "auth.deleteAccount.label",
+        label: "auth.deleteAccount.label",
       },
       "forgot-password": {
         icon: HelpOutline,
-        labelKey: "auth.forgotPassword.label",
+        label: "auth.forgotPassword.label",
       },
       orders: {
         icon: ReceiptLong,
-        labelKey: "auth.orders.label",
+        label: "auth.orders.label",
         query: ["page", "pageSize"],
       },
       points: {
         children: {
-          store: { icon: Storefront, labelKey: "auth.store.label" },
+          store: { icon: Storefront, label: "auth.store.label" },
           transactions: {
             icon: Stars,
-            labelKey: "auth.points.transactions.label",
+            label: "auth.points.transactions.label",
             query: ["page", "pageSize"],
           },
         },
         disabled: true,
         icon: Stars,
-        labelKey: "auth.points.label",
+        label: "auth.points.label",
+        to: "/auth/points/transactions",
       },
       "reset-password": {
         icon: LockReset,
-        labelKey: "auth.resetPassword.label",
+        label: "auth.resetPassword.label",
       },
       settings: {
         children: {
-          account: { icon: Person, labelKey: "auth.settings.account.label" },
-          security: { icon: Lock, labelKey: "auth.settings.security.label" },
+          account: { icon: Person, label: "auth.settings.account.label" },
+          security: { icon: Lock, label: "auth.settings.security.label" },
         },
         disabled: true,
         icon: Settings,
-        labelKey: "auth.settings.label",
+        label: "auth.settings.label",
+        to: "/auth/settings/account",
       },
-      "sign-in": { icon: Login, labelKey: "auth.signIn.label" },
-      "sign-up": { icon: PersonAdd, labelKey: "auth.signUp.label" },
-      "verify-email": { icon: Email, labelKey: "auth.verifyEmail.label" },
+      "sign-in": { icon: Login, label: "auth.signIn.label" },
+      "sign-up": { icon: PersonAdd, label: "auth.signUp.label" },
+      "verify-email": { icon: Email, label: "auth.verifyEmail.label" },
     },
     disabled: true,
     icon: AccountCircle,
-    labelKey: "auth.label",
+    label: "auth.label",
   },
   banners: {
     icon: ViewCarousel,
-    labelKey: "banners.label",
+    label: "banners.label",
     query: ["page", "pageSize"],
   },
   company: {
     children: {
-      about: { icon: Info, labelKey: "company.about.label" },
-      privacy: { icon: Policy, labelKey: "company.legal.privacy.label" },
-      terms: { icon: Gavel, labelKey: "company.legal.terms.label" },
+      about: { icon: Info, label: "company.about.label" },
+      privacy: { icon: Policy, label: "company.legal.privacy.label" },
+      terms: { icon: Gavel, label: "company.legal.terms.label" },
     },
     disabled: true,
     icon: Apartment,
-    labelKey: "company.label",
+    label: "company.label",
   },
   coupons: {
     icon: ConfirmationNumber,
-    labelKey: "coupons.label",
+    label: "coupons.label",
     query: ["page", "pageSize"],
   },
   dashboard: {
     icon: Dashboard,
-    labelKey: "dashboard.label",
+    label: "dashboard.label",
     query: ["organization", "range"],
   },
   menus: {
@@ -181,7 +197,7 @@ const routes: Record<string, RouteMeta> = {
       "modifier-groups": {
         children: { "[groupId]": { icon: Checklist } },
         icon: Tune,
-        labelKey: "menus.modifierGroups.label",
+        label: "menus.modifierGroups.label",
         query: ["organization", "page", "pageSize"],
       },
       sections: {
@@ -192,11 +208,11 @@ const routes: Record<string, RouteMeta> = {
                 children: {
                   "add-ons": {
                     icon: Extension,
-                    labelKey: "menus.items.addOns.label",
+                    label: "menus.items.addOns.label",
                   },
                   "modifier-groups": {
                     icon: Tune,
-                    labelKey: "menus.items.modifierGroups.label",
+                    label: "menus.items.modifierGroups.label",
                   },
                 },
                 disabled: true,
@@ -208,13 +224,14 @@ const routes: Record<string, RouteMeta> = {
           },
         },
         icon: Category,
-        labelKey: "menus.sections.label",
+        label: "menus.sections.label",
         query: ["organization", "page", "pageSize"],
       },
     },
     disabled: true,
     icon: MenuBook,
-    labelKey: "menus.label",
+    label: "menus.label",
+    to: "/menus/sections",
   },
 
   order: {
@@ -223,47 +240,48 @@ const routes: Record<string, RouteMeta> = {
         children: orderModeChildren,
         disabled: true,
         icon: QrCodeScanner,
-        labelKey: "order.mode.counter.label",
+        label: "order.mode.counter.label",
       },
       [ORDER_MODE.DineIn]: {
         children: orderModeChildren,
         disabled: true,
         icon: Restaurant,
-        labelKey: "order.mode.dineIn.label",
+        label: "order.mode.dineIn.label",
       },
       [ORDER_MODE.Kiosk]: {
         children: orderModeChildren,
         disabled: true,
         icon: TouchApp,
-        labelKey: "order.mode.kiosk.label",
+        label: "order.mode.kiosk.label",
       },
       [ORDER_MODE.Pickup]: {
         children: orderModeChildren,
         icon: LocalMall,
-        labelKey: "order.mode.pickup.label",
+        label: "order.mode.pickup.label",
       },
     },
     disabled: true,
     icon: ShoppingCart,
-    labelKey: "order.label",
+    label: "order.label",
   },
 
   orders: {
     children: {
       board: {
         icon: ViewKanban,
-        labelKey: "orders.board.title",
+        label: "orders.board.title",
         query: ["organization"],
       },
       list: {
         icon: ReceiptLong,
-        labelKey: "orders.list.label",
+        label: "orders.list.label",
         query: ["organization", "page", "pageSize"],
       },
     },
     disabled: true,
     icon: Assignment,
-    labelKey: "orders.label",
+    label: "orders.label",
+    to: "/orders/list",
   },
 
   organizations: {
@@ -272,18 +290,18 @@ const routes: Record<string, RouteMeta> = {
         children: {
           invitations: {
             icon: Mail,
-            labelKey: "organizations.invitations.label",
+            label: "organizations.invitations.label",
           },
           location: {
             icon: LocationOn,
-            labelKey: "organizations.location.label",
+            label: "organizations.location.label",
           },
-          members: { icon: People, labelKey: "organizations.members.label" },
-          points: { icon: Stars, labelKey: "organizations.points.label" },
+          members: { icon: People, label: "organizations.members.label" },
+          points: { icon: Stars, label: "organizations.points.label" },
           teams: {
             children: { "[teamId]": { icon: Group } },
             icon: Groups,
-            labelKey: "organizations.teams.label",
+            label: "organizations.teams.label",
           },
         },
         disabled: true,
@@ -291,7 +309,7 @@ const routes: Record<string, RouteMeta> = {
       },
     },
     icon: Business,
-    labelKey: "organizations.label",
+    label: "organizations.label",
   },
 };
 
@@ -317,4 +335,39 @@ export const findRoute = (path: string): MatchedRoute | undefined => {
   }
 
   return matched;
+};
+
+export const useRoutes = (defaultOrganization?: string | null) => {
+  const t = useTranslations();
+  const searchParams = useSearchParams();
+
+  const values: Record<RouteQuery, string | null> = {
+    organization:
+      searchParams.get("organization") || defaultOrganization || null,
+    page: DEFAULT_PAGINATION_QUERY.page,
+    pageSize: DEFAULT_PAGINATION_QUERY.pageSize,
+    partySize: searchParams.get("partySize"),
+    range: searchParams.get("range"),
+    tableNumber: searchParams.get("tableNumber"),
+  };
+
+  const buildHref = (href: string) => {
+    const { query } = findRoute(href) || {};
+    if (!query) return href;
+
+    return getHref(
+      href,
+      Object.fromEntries(query.map((key) => [key, values[key]])),
+    );
+  };
+
+  return (path: string, href?: string): NavItem & { to: string } => {
+    const { icon, label, to } = findRoute(path) || {};
+
+    return {
+      icon,
+      label: label && t(label),
+      to: buildHref(href ?? to ?? path),
+    };
+  };
 };

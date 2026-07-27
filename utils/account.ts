@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 
 import { useLogoutNavItem } from "@/hooks/useAuth";
-import { useNavItem } from "@/hooks/useNavItem";
+import { useRoutes } from "@/hooks/useRoutes";
 
 import { useRouter } from "@/i18n/navigation";
 
@@ -31,25 +31,25 @@ export const useAddAccountNavItem = (): NavItem => {
 };
 
 export const useCouponsNavItem = (): NavItem => {
-  const navItem = useNavItem();
+  const navItem = useRoutes();
 
   return navItem("/auth/coupons");
 };
 
 export const useOrdersNavItem = (): NavItem => {
-  const navItem = useNavItem();
+  const navItem = useRoutes();
 
   return navItem("/auth/orders");
 };
 
 export const usePointsNavItem = (): NavItem => {
-  const navItem = useNavItem();
+  const navItem = useRoutes();
 
-  return navItem("/auth/points", "/auth/points/transactions");
+  return navItem("/auth/points");
 };
 
 export const useSettingsNavItem = (): NavItem => {
-  const navItem = useNavItem();
+  const navItem = useRoutes();
 
-  return navItem("/auth/settings", "/auth/settings/account");
+  return navItem("/auth/settings");
 };

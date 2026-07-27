@@ -9,9 +9,8 @@ import { useParams } from "next/navigation";
 import { useState } from "react";
 import useSWR from "swr";
 
-import { findRoute } from "@/constants/routes";
 
-import { useNavItem } from "@/hooks/useNavItem";
+import { findRoute, useRoutes } from "@/hooks/useRoutes";
 
 import { Link, usePathname } from "@/i18n/navigation";
 
@@ -169,7 +168,7 @@ const RouterBreadcrumbs = ({ organizationName }: RouterBreadcrumbsProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const open = Boolean(anchorEl);
 
-  const navItem = useNavItem();
+  const navItem = useRoutes();
   const labels = useBreadcrumbLabels(organizationName);
 
   const pathname = usePathname();

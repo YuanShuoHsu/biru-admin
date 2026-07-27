@@ -21,7 +21,7 @@ import {
 import { IMPERSONATE_RETURN_KEY } from "@/constants/route";
 import { SCROLL_TRIGGER_THRESHOLD } from "@/constants/scroll";
 
-import { useNavItem } from "@/hooks/useNavItem";
+import { useRoutes } from "@/hooks/useRoutes";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
@@ -78,7 +78,7 @@ const HideAppBar = () => {
 
   const router = useRouter();
 
-  const navItem = useNavItem();
+  const navItem = useRoutes();
 
   const trigger = useScrollTrigger({
     threshold: SCROLL_TRIGGER_THRESHOLD,

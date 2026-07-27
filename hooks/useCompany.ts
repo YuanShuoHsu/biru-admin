@@ -1,6 +1,6 @@
 "use client";
 
-import { useNavItem } from "@/hooks/useNavItem";
+import { useRoutes } from "@/hooks/useRoutes";
 
 import type { NavItem } from "@/types/navItem";
 
@@ -9,7 +9,7 @@ import { getHref } from "@/utils/href";
 export const useCompanyNavItems = (
   legalQuery?: Record<string, string | null>,
 ): NavItem[] => {
-  const navItem = useNavItem();
+  const navItem = useRoutes();
 
   return [
     navItem("/company/about"),

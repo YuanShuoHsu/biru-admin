@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { query } from "@/constants/query";
 
 import { useLogout } from "@/hooks/useLogout";
-import { useNavItem } from "@/hooks/useNavItem";
+import { useRoutes } from "@/hooks/useRoutes";
 
 import { Logout } from "@mui/icons-material";
 
@@ -14,7 +14,7 @@ import type { NavItem } from "@/types/navItem";
 import { getHref } from "@/utils/href";
 
 export const useAuthNavItems = (redirectTo?: string): NavItem[] => {
-  const navItem = useNavItem();
+  const navItem = useRoutes();
 
   return [
     navItem(
