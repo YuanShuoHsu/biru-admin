@@ -6,6 +6,6 @@ export interface NavItem {
   label?: string;
   onClick?: () => void;
   path?: string;
-  slot?: (props: { level: number }) => React.ReactNode;
+  slot?: React.ComponentType<{ level: number }>;
   to?: string;
 }

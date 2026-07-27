@@ -16,7 +16,7 @@ import { useAuthNavItems } from "@/hooks/useAuth";
 import { useCompanyNavItems } from "@/hooks/useCompany";
 import { useRoutes } from "@/hooks/useRoutes";
 
-import { useRouter } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
 
 import {
   Group,
@@ -31,6 +31,7 @@ import {
   Divider,
   type DividerProps,
   List,
+  ListItem,
   ListItemIcon,
   ListItemText,
   ListSubheader,
@@ -79,109 +80,100 @@ const OrderModeMenuItem = ({
   const organization = useOrganization();
   const storeName = organization?.name || "";
 
-  const router = useRouter();
   const searchParams = useSearchParams();
 
   const navItem = useRoutes();
   const { icon: ModeIcon, label } = navItem(`/order/${mode}`);
+  const { to } = navItem(`/order/${mode}/${organizationSlug}`);
 
   const tOrder = useTranslations("order");
 
-  if (!storeName) return null;
+  if (!storeName || !to) return null;
 
   const partySize = searchParams.get("partySize");
   const tableNumber = searchParams.get("tableNumber");
   const type = searchParams.get("type");
 
-  const storePath = `/order/${mode}/${organizationSlug}`;
-
-  const extraByMode: Partial<
-    Record<OrderMode, { icon: React.ReactElement; primary: string }[]>
-  > = {
-    [ORDER_MODE.DineIn]: [
-      ...(tableNumber
+  const extra =
+    mode === ORDER_MODE.DineIn
+      ? [
+          ...(tableNumber
+            ? [
+                {
+                  icon: <TableBar />,
+                  primary: tOrder("mode.dineIn.storeSlug.tableNumber.value", {
+                    tableNumber,
+                  }),
+                },
+              ]
+            : []),
+          ...(partySize
+            ? [
+                {
+                  icon: partySize === "1" ? <Person /> : <Group />,
+                  primary: tOrder(
+                    "mode.dineIn.storeSlug.tableNumber.partySize.select.value",
+                    { count: partySize },
+                  ),
+                },
+              ]
+            : []),
+        ]
+      : mode === ORDER_MODE.Kiosk && type
         ? [
             {
-              icon: <TableBar />,
-              primary: tOrder("mode.dineIn.storeSlug.tableNumber.value", {
-                tableNumber,
-              }),
-            },
-          ]
-        : []),
-      ...(partySize
-        ? [
-            {
-              icon: partySize === "1" ? <Person /> : <Group />,
+              icon: type === "dine-in" ? <Restaurant /> : <LocalMall />,
               primary: tOrder(
-                "mode.dineIn.storeSlug.tableNumber.partySize.select.value",
-                { count: partySize },
+                type === "dine-in" ? "mode.kiosk.dineIn" : "mode.kiosk.takeout",
               ),
             },
           ]
-        : []),
-    ],
-    [ORDER_MODE.Kiosk]: type
-      ? [
-          {
-            icon: type === "dine-in" ? <Restaurant /> : <LocalMall />,
-            primary: tOrder(
-              type === "dine-in" ? "mode.kiosk.dineIn" : "mode.kiosk.takeout",
-            ),
-          },
-        ]
-      : [],
-  };
-
-  const hrefByMode: Partial<Record<OrderMode, string | undefined>> = {
-    [ORDER_MODE.DineIn]: navItem(storePath).to,
-    [ORDER_MODE.Kiosk]: `${storePath}?${searchParams.toString()}`,
-  };
-
-  const extra = extraByMode[mode] || [];
+        : [];
 
   return (
-    <StyledListItemButton
-      level={level}
-      onClick={() => router.push(hrefByMode[mode] || storePath)}
-      selected
-    >
-      <Stack
-        width="100%"
-        flexDirection="row"
-        flexWrap="wrap"
-        justifyContent="space-between"
-        alignItems="center"
-        gap={1}
+    <ListItem disablePadding>
+      <StyledListItemButton
+        {...{ component: Link, href: to }}
+        level={level}
+        selected
       >
-        <Stack gap={1}>
-          <Stack flexDirection="row" alignItems="center" gap={4}>
-            <ListItemIcon>
-              <Storefront />
-            </ListItemIcon>
-            <ListItemText primary={storeName} />
-          </Stack>
-          {extra.map(({ icon, primary }, i) => (
-            <Stack key={i} flexDirection="row" alignItems="center" gap={4}>
-              <ListItemIcon>{icon}</ListItemIcon>
-              <ListItemText primary={primary} />
+        <Stack
+          width="100%"
+          flexDirection="row"
+          flexWrap="wrap"
+          justifyContent="space-between"
+          alignItems="center"
+          gap={1}
+        >
+          <Stack gap={1}>
+            <Stack flexDirection="row" alignItems="center" gap={4}>
+              <ListItemIcon>
+                <Storefront />
+              </ListItemIcon>
+              <ListItemText primary={storeName} />
             </Stack>
-          ))}
+            {extra.map(({ icon, primary }, i) => (
+              <Stack key={i} flexDirection="row" alignItems="center" gap={4}>
+                <ListItemIcon>{icon}</ListItemIcon>
+                <ListItemText primary={primary} />
+              </Stack>
+            ))}
+          </Stack>
+          <StyledChip
+            color="primary"
+            icon={ModeIcon && <ModeIcon />}
+            label={label}
+            size="small"
+            variant="outlined"
+          />
         </Stack>
-        <StyledChip
-          color="primary"
-          icon={ModeIcon && <ModeIcon />}
-          label={label}
-          size="small"
-          variant="outlined"
-        />
-      </Stack>
-    </StyledListItemButton>
+      </StyledListItemButton>
+    </ListItem>
   );
 };
 
 const useNavItems = (): NavItem[] => {
-  const { session } = useAuthStore((state) => state);
+  const session = useAuthStore((state) => state.session);
 
   const { mode, organizationSlug } = useParams<Partial<RouteParams>>();
 
@@ -259,7 +251,7 @@ const NestedList = () => {
       }
     >
       {navItems.map((item, index) => (
-        <SelectedListItem item={item} key={item.to || index} />
+        <SelectedListItem item={item} key={item.path || index} />
       ))}
     </List>
   );

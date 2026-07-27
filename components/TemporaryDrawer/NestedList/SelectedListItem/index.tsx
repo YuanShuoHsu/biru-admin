@@ -16,14 +16,14 @@ interface SelectedListItemProps {
 }
 
 const SelectedListItem = ({
-  item: { children, icon, label, onClick, path, slot, to },
+  item: { children, icon, label, onClick, path, slot: Slot, to },
   level = 0,
 }: SelectedListItemProps) => {
   const [open, setOpen] = useState(false);
 
   const pathname = usePathname();
 
-  if (slot) return slot({ level });
+  if (Slot) return <Slot level={level} />;
 
   const basePath = (path ?? to)?.split("?")[0];
   const isExpandable = Boolean(children?.length);
@@ -36,6 +36,7 @@ const SelectedListItem = ({
     if (isExpandable) {
       event.stopPropagation();
       setOpen((prev) => !prev);
+
       return;
     }
 
@@ -60,7 +61,7 @@ const SelectedListItem = ({
             {children!.map((child, index) => (
               <SelectedListItem
                 item={child}
-                key={child.to || `${level + 1}-${index}`}
+                key={child.path || `${level + 1}-${index}`}
                 level={level + 1}
               />
             ))}
