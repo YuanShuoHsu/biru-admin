@@ -23,10 +23,13 @@ export const useAddAccountNavItem = (): NavItem => {
   const tAuth = useTranslations("auth");
   const router = useRouter();
 
+  const navItem = useRoutes();
+  const { to } = navItem("/auth/sign-in");
+
   return {
     icon: PersonAdd,
     label: tAuth("addAccount.label"),
-    onClick: () => router.push("/auth/sign-in"),
+    onClick: () => to && router.push(to),
   };
 };
 
