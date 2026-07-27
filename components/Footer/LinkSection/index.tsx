@@ -1,19 +1,20 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-
 import { ORDER_MODE } from "@/constants/orderMode";
 
-import { useAuthMenuItems, useLogoutMenuItem } from "@/hooks/useAuth";
+import { useAuthNavItems } from "@/hooks/useAuth";
+import { useCompanyNavItems } from "@/hooks/useCompany";
+import { useNavItem } from "@/hooks/useNavItem";
 
 import { Divider, Grid, Link, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
 
-import type { MenuItem } from "@/types/menuItem";
+import type { NavItem } from "@/types/navItem";
 
-import { useAddAccountMenuItem, useSettingsMenuItem } from "@/utils/account";
+import { useAccountNavItems } from "@/utils/account";
+import { getHref } from "@/utils/href";
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
   display: "flex",
@@ -22,58 +23,32 @@ const StyledGrid = styled(Grid)(({ theme }) => ({
   alignItems: "flex-start",
 }));
 
-const useFooterItems = (): MenuItem[] => {
+const useFooterItems = (): NavItem[] => {
   const { session } = useAuthStore((state) => state);
 
-  const tAuth = useTranslations("auth");
-  const tCompany = useTranslations("company");
-  const tOrder = useTranslations("order");
+  const navItem = useNavItem();
 
-  const addAccountItem = useAddAccountMenuItem();
-  const authChildren = useAuthMenuItems();
-  const logoutMenuItem = useLogoutMenuItem();
-  const settingsItem = useSettingsMenuItem();
-
-  const accountChildren: MenuItem[] = [
-    settingsItem,
-    logoutMenuItem,
-    { slot: () => <Divider flexItem /> },
-    addAccountItem,
-  ];
+  const accountChildren = useAccountNavItems(() => <Divider flexItem />);
+  const authChildren = useAuthNavItems();
+  const companyChildren = useCompanyNavItems();
 
   return [
     {
+      ...navItem("/order"),
       children: [
-        {
-          label: tOrder("mode.pickup.label"),
-          to: `?mode=${ORDER_MODE.Pickup}`,
-        },
+        navItem(
+          `/order/${ORDER_MODE.Pickup}`,
+          getHref("/order", { mode: ORDER_MODE.Pickup }),
+        ),
       ],
-      label: tOrder("label"),
-      to: "/order",
     },
     {
+      ...navItem("/auth"),
       children: session ? accountChildren : authChildren,
-      label: tAuth("label"),
-      to: "/auth",
     },
     {
-      children: [
-        {
-          label: tCompany("about.label"),
-          to: `/about`,
-        },
-        {
-          label: tCompany("legal.terms.label"),
-          to: `/terms`,
-        },
-        {
-          label: tCompany("legal.privacy.label"),
-          to: `/privacy`,
-        },
-      ],
-      label: tCompany("label"),
-      to: "/company",
+      ...navItem("/company"),
+      children: companyChildren,
     },
   ];
 };
@@ -99,7 +74,7 @@ const LinkSection = () => {
                 <Link
                   color="text.secondary"
                   component={onClick ? "button" : "a"}
-                  href={onClick ? undefined : `${parentTo}${childTo}`}
+                  href={onClick ? undefined : childTo}
                   key={itemIndex}
                   onClick={onClick}
                   underline="hover"

@@ -8,6 +8,9 @@ import {
   UnsortedIcon,
 } from "@/components/CustomSortIcons";
 import CustomToolbar from "@/components/CustomToolbar";
+
+import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "@/constants/pagination";
+
 import { GridAutosizeOptions } from "@mui/x-data-grid";
 
 export const autosizeOptions: GridAutosizeOptions = {
@@ -25,9 +28,9 @@ export const DATA_GRID_PROPS = {
     indexRelativeToCurrentPage: number;
   }) => (indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"),
   initialState: {
-    pagination: { paginationModel: { pageSize: 10 } },
+    pagination: { paginationModel: { pageSize: DEFAULT_PAGE_SIZE } },
   },
-  pageSizeOptions: [5, 10, 50, 100],
+  pageSizeOptions: PAGE_SIZE_OPTIONS,
   showToolbar: true,
   slotProps: {
     basePagination: {
@@ -46,11 +49,6 @@ export const DATA_GRID_PROPS = {
     toolbar: CustomToolbar,
   },
 } as const;
-
-export const getPageSizeOptions = (pageSize: number) =>
-  [...new Set([...DATA_GRID_PROPS.pageSizeOptions, pageSize])].sort(
-    (a, b) => a - b,
-  );
 
 export const NO_VALUE_FILTER_OPERATORS: readonly string[] = [
   "isEmpty",

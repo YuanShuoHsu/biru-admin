@@ -21,6 +21,8 @@ import {
 import { IMPERSONATE_RETURN_KEY } from "@/constants/route";
 import { SCROLL_TRIGGER_THRESHOLD } from "@/constants/scroll";
 
+import { useNavItem } from "@/hooks/useNavItem";
+
 import { usePathname, useRouter } from "@/i18n/navigation";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
@@ -76,6 +78,8 @@ const HideAppBar = () => {
 
   const router = useRouter();
 
+  const navItem = useNavItem();
+
   const trigger = useScrollTrigger({
     threshold: SCROLL_TRIGGER_THRESHOLD,
   });
@@ -118,7 +122,7 @@ const HideAppBar = () => {
 
               const returnTo =
                 sessionStorage.getItem(IMPERSONATE_RETURN_KEY) ||
-                "/admins?page=1&pageSize=10";
+                navItem("/admins").to;
               sessionStorage.removeItem(IMPERSONATE_RETURN_KEY);
 
               router.replace(returnTo);

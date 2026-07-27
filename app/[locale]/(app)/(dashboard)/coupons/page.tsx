@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import Coupons from ".";
 
 import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
+import { DEFAULT_PAGE_SIZE } from "@/constants/pagination";
 
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
@@ -52,7 +53,7 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
   setRequestLocale(locale);
 
   const page = Math.max(1, Number(rawPage) || 1);
-  const pageSize = Math.max(1, Number(rawPageSize) || 10);
+  const pageSize = Math.max(1, Number(rawPageSize) || DEFAULT_PAGE_SIZE);
 
   const sortBy = couponSortFieldValues.find((field) => field === rawSortBy);
   const sortDirection = sortDirectionValues.find(

@@ -25,11 +25,8 @@ import SetRoleDialogContent from "./SetRoleDialogContent";
 import SetUserPasswordDialogContent from "./SetUserPasswordDialogContent";
 import UpdateUserDialogContent from "./UpdateUserDialogContent";
 
-import {
-  autosizeOptions,
-  DATA_GRID_PROPS,
-  getPageSizeOptions,
-} from "@/constants/dataGrid";
+import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
+import { getPageSizeOptions } from "@/constants/pagination";
 import {
   DEFAULT_AUTHENTICATED_ROUTE,
   IMPERSONATE_RETURN_KEY,

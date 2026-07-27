@@ -2,11 +2,15 @@
 
 import { useTranslations } from "next-intl";
 
+import { DEFAULT_PAGINATION_QUERY } from "@/constants/pagination";
+
 import { usePathname, useRouter } from "@/i18n/navigation";
 
 import type { OrganizationResponse } from "@/types/organizations";
 
 import { MenuItem, TextField, styled } from "@mui/material";
+
+import { getHref } from "@/utils/href";
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
   [theme.breakpoints.up("sm")]: {
@@ -33,12 +37,12 @@ const MenusOrganizationSelect = ({
   );
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const params = new URLSearchParams({
-      organization: event.target.value,
-      page: "1",
-      pageSize: "10",
-    });
-    router.push(`${pathname}?${params.toString()}`);
+    router.push(
+      getHref(pathname, {
+        organization: event.target.value,
+        ...DEFAULT_PAGINATION_QUERY,
+      }),
+    );
   };
 
   return (

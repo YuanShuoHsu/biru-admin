@@ -3,19 +3,11 @@
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 
+import RouteTabs from "@/components/RouteTabs";
+
 import { countKeys } from "@/constants/organizations";
 
-import { Link, usePathname } from "@/i18n/navigation";
-
-import {
-  Groups,
-  LocationOn,
-  Mail,
-  People,
-  Stars,
-  type SvgIconComponent,
-} from "@mui/icons-material";
-import { Chip, Stack, Tab, Tabs } from "@mui/material";
+import { Chip, Stack } from "@mui/material";
 
 import { useCountStore } from "@/providers/count-store-provider";
 
@@ -29,75 +21,30 @@ const OrganizationsSlugTabs = ({ children }: OrganizationsSlugTabsProps) => {
 
   const { slug } = useParams<{ slug: string }>();
 
-  const pathname = usePathname();
-
-  const tMembers = useTranslations("organizations.members");
-  const tTeams = useTranslations("organizations.teams");
   const tInvitations = useTranslations("organizations.invitations");
-  const tLocation = useTranslations("organizations.location");
-  const tPoints = useTranslations("organizations.points");
-
-  const tabs: {
-    Icon: SvgIconComponent;
-    label: React.ReactNode;
-    value: string;
-  }[] = [
-    {
-      Icon: People,
-      label: tMembers("label"),
-      value: `/organizations/${slug}/members`,
-    },
-    {
-      Icon: Groups,
-      label: tTeams("label"),
-      value: `/organizations/${slug}/teams`,
-    },
-    {
-      Icon: Mail,
-      label: (
-        <Stack alignItems="center" direction="row" gap={1}>
-          {tInvitations("label")}
-          {count > 0 && <Chip color="secondary" label={count} size="small" />}
-        </Stack>
-      ),
-      value: `/organizations/${slug}/invitations`,
-    },
-    {
-      Icon: LocationOn,
-      label: tLocation("label"),
-      value: `/organizations/${slug}/location`,
-    },
-    {
-      Icon: Stars,
-      label: tPoints("label"),
-      value: `/organizations/${slug}/points`,
-    },
-  ];
-
-  const currentTab =
-    tabs.find(({ value }) => pathname.startsWith(value))?.value ||
-    tabs[0].value;
 
   return (
     <Stack height="100%" gap={2}>
-      <Tabs
-        aria-label="organization tabs"
-        scrollButtons="auto"
-        value={currentTab}
-        variant="scrollable"
-      >
-        {tabs.map(({ Icon, label, value }) => (
-          <Tab
-            component={Link}
-            href={value}
-            icon={<Icon fontSize="small" />}
-            iconPosition="start"
-            key={value}
-            label={label}
-            value={value}
-          />
-        ))}
-      </Tabs>
+      <RouteTabs
+        ariaLabel="organization tabs"
+        tabs={[
+          { path: `/organizations/${slug}/members` },
+          { path: `/organizations/${slug}/teams` },
+          {
+            label: (
+              <Stack alignItems="center" direction="row" gap={1}>
+                {tInvitations("label")}
+                {count > 0 && (
+                  <Chip color="secondary" label={count} size="small" />
+                )}
+              </Stack>
+            ),
+            path: `/organizations/${slug}/invitations`,
+          },
+          { path: `/organizations/${slug}/location` },
+          { path: `/organizations/${slug}/points` },
+        ]}
+      />
       {children}
     </Stack>
   );

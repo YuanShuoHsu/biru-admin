@@ -15,9 +15,12 @@ import { DragHandle, Sortable } from "@/components/Sortable";
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
-  getPageSizeOptions,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
+import {
+  DEFAULT_PAGINATION_QUERY,
+  getPageSizeOptions,
+} from "@/constants/pagination";
 
 import { arrayMove } from "@dnd-kit/helpers";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
@@ -376,8 +379,7 @@ const MenusMenuId = ({
     (section: MenuSection) => {
       const searchParams = new URLSearchParams({
         ...(organization && { organization }),
-        page: "1",
-        pageSize: "10",
+        ...DEFAULT_PAGINATION_QUERY,
       });
       router.push(`/menus/sections/${section.id}?${searchParams.toString()}`);
     },

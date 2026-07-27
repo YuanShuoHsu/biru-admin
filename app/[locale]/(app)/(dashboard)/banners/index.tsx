@@ -14,9 +14,9 @@ import { DragHandle, Sortable } from "@/components/Sortable";
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
-  getPageSizeOptions,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
+import { getPageSizeOptions } from "@/constants/pagination";
 
 import { arrayMove } from "@dnd-kit/helpers";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";

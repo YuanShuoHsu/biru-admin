@@ -5,6 +5,8 @@ import { useMemo } from "react";
 
 import { DASHBOARD_RANGES, type DashboardRange } from "./definitions";
 
+import { useNavItem } from "@/hooks/useNavItem";
+
 import { useRouter } from "@/i18n/navigation";
 
 import {
@@ -114,11 +116,8 @@ const Dashboard = ({
   const tDashboard = useTranslations("dashboard");
   const tOrder = useTranslations("order");
 
-  const ordersHref = `/orders/list?${new URLSearchParams({
-    ...(organizationSlug && { organization: organizationSlug }),
-    page: "1",
-    pageSize: "10",
-  }).toString()}`;
+  const navItem = useNavItem(organizationSlug);
+  const ordersHref = navItem("/orders/list").to;
 
   const { hourly, bucketDays, tickStep } = DASHBOARD_RANGES[range];
 
@@ -175,7 +174,7 @@ const Dashboard = ({
           {
             label: tDashboard("stats.totalUsers"),
             value: stats.totalUsers,
-            href: "/admins?page=1&pageSize=10",
+            href: navItem("/admins").to,
             trend: stats.usersTrend,
           },
         ]

@@ -1,7 +1,9 @@
 import { cache } from "react";
 
 import { fetcher } from "./fetcher";
+import { getHref } from "./href";
 
+import { DEFAULT_PAGINATION_QUERY } from "@/constants/pagination";
 import { LOW_STOCK_THRESHOLD } from "@/constants/menus";
 
 import { authClient } from "@/lib/auth-client";
@@ -348,7 +350,10 @@ export const getChoiceNames = (
   ].join(delimiter);
 };
 
-export const DEFAULT_MENUS_HREF = "/menus/sections?page=1&pageSize=10";
+export const DEFAULT_MENUS_HREF = getHref(
+  "/menus/sections",
+  DEFAULT_PAGINATION_QUERY,
+);
 
 export const getAdminOrganization = cache(
   async (organizationSlug?: string, init?: { headers: { cookie: string } }) => {

@@ -3,6 +3,8 @@
 import { useTranslations } from "next-intl";
 import { useParams, useSearchParams } from "next/navigation";
 
+import { DEFAULT_PAGINATION_QUERY } from "@/constants/pagination";
+
 import { Link, usePathname } from "@/i18n/navigation";
 
 import { Extension, Tune, type SvgIconComponent } from "@mui/icons-material";
@@ -22,8 +24,7 @@ const MenuItemLayout = ({ children }: { children: React.ReactNode }) => {
   const basePath = `/menus/sections/${menuSectionId}/${menuItemId}`;
   const tabQuery = `?${new URLSearchParams({
     ...(organization && { organization }),
-    page: "1",
-    pageSize: "10",
+    ...DEFAULT_PAGINATION_QUERY,
   }).toString()}`;
 
   const tMenus = useTranslations("menus");

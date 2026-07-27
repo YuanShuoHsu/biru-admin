@@ -1,17 +1,12 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useSearchParams } from "next/navigation";
 
-import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import RouteTabs from "@/components/RouteTabs";
 
-import {
-  Category,
-  Edit,
-  RestaurantMenu,
-  Tune,
-  type SvgIconComponent,
-} from "@mui/icons-material";
+import { useRouter } from "@/i18n/navigation";
+
+import { Edit, RestaurantMenu } from "@mui/icons-material";
 import {
   Button,
   Card,
@@ -19,8 +14,6 @@ import {
   CardContent,
   CardMedia,
   Stack,
-  Tab,
-  Tabs,
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -87,39 +80,9 @@ const MenusTabsLayout = ({
   const { setDialog } = useDialogStore((state) => state);
 
   const locale = useLocale();
-  const pathname = usePathname();
   const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const organization = searchParams.get("organization");
-  const query = new URLSearchParams({
-    ...(organization && { organization }),
-    page: "1",
-    pageSize: "10",
-  }).toString();
 
   const tMenus = useTranslations("menus");
-
-  const tabs: {
-    Icon: SvgIconComponent;
-    label: string;
-    value: string;
-  }[] = [
-    {
-      Icon: Category,
-      label: tMenus("sections.label"),
-      value: "/menus/sections",
-    },
-    {
-      Icon: Tune,
-      label: tMenus("modifierGroups.label"),
-      value: "/menus/modifier-groups",
-    },
-  ];
-
-  const currentTab =
-    tabs.find(({ value }) => pathname.startsWith(value))?.value ??
-    tabs[0].value;
 
   const handleEditMenu = () => {
     if (!menu) return;
@@ -167,24 +130,10 @@ const MenusTabsLayout = ({
           </Stack>
         </StyledCard>
       )}
-      <Tabs
-        aria-label="menu tabs"
-        scrollButtons="auto"
-        value={currentTab}
-        variant="scrollable"
-      >
-        {tabs.map(({ Icon, label, value }) => (
-          <Tab
-            component={Link}
-            href={`${value}?${query}`}
-            icon={<Icon fontSize="small" />}
-            iconPosition="start"
-            key={value}
-            label={label}
-            value={value}
-          />
-        ))}
-      </Tabs>
+      <RouteTabs
+        ariaLabel="menu tabs"
+        tabs={[{ path: "/menus/sections" }, { path: "/menus/modifier-groups" }]}
+      />
       {children}
     </Stack>
   );

@@ -5,8 +5,6 @@ import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { useFormatter, useTranslations } from "next-intl";
 
-import { PAGE_SIZE_OPTIONS } from "./constants";
-
 import FormCard, {
   StyledCardContent,
   StyledCardHeader,
@@ -14,6 +12,8 @@ import FormCard, {
 import PaginationActions, {
   StyledTablePagination,
 } from "@/components/PaginationActions";
+
+import { getPageSizeOptions } from "@/constants/pagination";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
@@ -63,9 +63,7 @@ const Points = ({ page, pageSize, points }: PointsProps) => {
   const tCommon = useTranslations("common");
   const tOrder = useTranslations("order");
 
-  const rowsPerPageOptions = [
-    ...new Set([...PAGE_SIZE_OPTIONS, pageSize]),
-  ].sort((a, b) => a - b);
+  const rowsPerPageOptions = getPageSizeOptions(pageSize);
 
   const transactions = points?.transactions || [];
 

@@ -17,9 +17,12 @@ import { DragHandle, Sortable } from "@/components/Sortable";
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
-  getPageSizeOptions,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
+import {
+  DEFAULT_PAGINATION_QUERY,
+  getPageSizeOptions,
+} from "@/constants/pagination";
 
 import { ITEM_AVAILABILITY_COLOR_MAP } from "@/constants/itemAvailability";
 
@@ -382,8 +385,7 @@ const MenusMenuIdSectionId = ({
     ({ id }: MenuItem) => {
       const params = new URLSearchParams({
         ...Object.fromEntries(searchParams),
-        page: "1",
-        pageSize: "10",
+        ...DEFAULT_PAGINATION_QUERY,
       });
       router.push(
         `/menus/sections/${menuSectionId}/${id}/add-ons?${params.toString()}`,

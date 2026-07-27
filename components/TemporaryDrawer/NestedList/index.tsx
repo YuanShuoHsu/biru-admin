@@ -13,37 +13,22 @@ import { StyledListItemButton } from "./SelectedListItem/ListItemLink";
 import { ORDER_MODE } from "@/constants/orderMode";
 import { query } from "@/constants/query";
 
-import { DEFAULT_DASHBOARD_RANGE } from "@/app/[locale]/(app)/(dashboard)/dashboard/definitions";
-
 import { useOrganization } from "@/hooks/organizations";
-import { useAuthMenuItems, useLogoutMenuItem } from "@/hooks/useAuth";
+import { useAuthNavItems } from "@/hooks/useAuth";
+import { useCompanyNavItems } from "@/hooks/useCompany";
+import { useNavItem } from "@/hooks/useNavItem";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
 import { authClient } from "@/lib/auth-client";
 
 import {
-  AccountCircle,
-  AdminPanelSettings,
-  Apartment,
-  Assignment,
-  Business,
-  ConfirmationNumber,
-  Dashboard,
-  Gavel,
   Group,
-  Info,
   LocalMall,
-  MenuBook,
   Person,
-  Policy,
-  QrCodeScanner,
   Restaurant,
-  ShoppingCart,
   Storefront,
   TableBar,
-  TouchApp,
-  ViewCarousel,
 } from "@mui/icons-material";
 import {
   Chip,
@@ -60,10 +45,11 @@ import { styled } from "@mui/material/styles";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
 
-import type { MenuItem } from "@/types/menuItem";
+import type { NavItem } from "@/types/navItem";
+import type { OrderMode } from "@/types/orderMode";
 import type { RouteParams } from "@/types/routeParams";
 
-import { useAddAccountMenuItem, useSettingsMenuItem } from "@/utils/account";
+import { useAccountNavItems } from "@/utils/account";
 import { getHref } from "@/utils/href";
 
 const StyledChip = styled(Chip)(({ theme }) => ({
@@ -82,26 +68,89 @@ const StyledDivider = styled(Divider, {
   marginLeft: theme.spacing(level * 2),
 }));
 
+const divider: NavItem["slot"] = ({ level }) => (
+  <StyledDivider component="li" level={level} />
+);
+
 const OrderModeMenuItem = ({
-  chipIcon,
-  chipLabel,
-  extra,
   level,
-  onClick,
+  mode,
+  organizationSlug,
 }: {
-  chipIcon: React.ReactElement;
-  chipLabel: string;
-  extra?: { icon: React.ReactElement; primary: string }[];
   level: number;
-  onClick: () => void;
+  mode: OrderMode;
+  organizationSlug: string;
 }) => {
   const organization = useOrganization();
   const storeName = organization?.name || "";
 
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const navItem = useNavItem();
+  const { icon: ModeIcon, label } = navItem(`/order/${mode}`);
+
+  const tOrder = useTranslations("order");
+
   if (!storeName) return null;
 
+  const partySize = searchParams.get("partySize");
+  const tableNumber = searchParams.get("tableNumber");
+  const type = searchParams.get("type");
+
+  const storePath = `/order/${mode}/${organizationSlug}`;
+
+  const extraByMode: Partial<
+    Record<OrderMode, { icon: React.ReactElement; primary: string }[]>
+  > = {
+    [ORDER_MODE.DineIn]: [
+      ...(tableNumber
+        ? [
+            {
+              icon: <TableBar />,
+              primary: tOrder("mode.dineIn.storeSlug.tableNumber.value", {
+                tableNumber,
+              }),
+            },
+          ]
+        : []),
+      ...(partySize
+        ? [
+            {
+              icon: partySize === "1" ? <Person /> : <Group />,
+              primary: tOrder(
+                "mode.dineIn.storeSlug.tableNumber.partySize.select.value",
+                { count: partySize },
+              ),
+            },
+          ]
+        : []),
+    ],
+    [ORDER_MODE.Kiosk]: type
+      ? [
+          {
+            icon: type === "dine-in" ? <Restaurant /> : <LocalMall />,
+            primary: tOrder(
+              type === "dine-in" ? "mode.kiosk.dineIn" : "mode.kiosk.takeout",
+            ),
+          },
+        ]
+      : [],
+  };
+
+  const hrefByMode: Partial<Record<OrderMode, string>> = {
+    [ORDER_MODE.DineIn]: getHref(storePath, { tableNumber, partySize }),
+    [ORDER_MODE.Kiosk]: `${storePath}?${searchParams.toString()}`,
+  };
+
+  const extra = extraByMode[mode] || [];
+
   return (
-    <StyledListItemButton level={level} onClick={onClick} selected>
+    <StyledListItemButton
+      level={level}
+      onClick={() => router.push(hrefByMode[mode] || storePath)}
+      selected
+    >
       <Stack
         width="100%"
         flexDirection="row"
@@ -117,7 +166,7 @@ const OrderModeMenuItem = ({
             </ListItemIcon>
             <ListItemText primary={storeName} />
           </Stack>
-          {extra?.map(({ icon, primary }, i) => (
+          {extra.map(({ icon, primary }, i) => (
             <Stack key={i} flexDirection="row" alignItems="center" gap={4}>
               <ListItemIcon>{icon}</ListItemIcon>
               <ListItemText primary={primary} />
@@ -126,8 +175,8 @@ const OrderModeMenuItem = ({
         </Stack>
         <StyledChip
           color="primary"
-          icon={chipIcon}
-          label={chipLabel}
+          icon={ModeIcon && <ModeIcon />}
+          label={label}
           size="small"
           variant="outlined"
         />
@@ -136,41 +185,27 @@ const OrderModeMenuItem = ({
   );
 };
 
-// 未來需要跟 breadcrumbs 一起復用重構
-const useNavItems = (): MenuItem[] => {
+const useNavItems = (): NavItem[] => {
   const { session } = useAuthStore((state) => state);
 
   const { mode, organizationSlug } = useParams<Partial<RouteParams>>();
 
   const pathname = usePathname();
-  const router = useRouter();
 
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirectTo");
-  const tableNumber = searchParams.get("tableNumber");
-  const partySize = searchParams.get("partySize");
-  const type = searchParams.get("type");
 
   const isAuthPage = pathname.startsWith("/auth");
   const isCompanyPage = pathname.startsWith("/company");
 
   const isAdmin = session?.user?.role === "admin";
 
-  const settingsItem = useSettingsMenuItem();
-  const addAccountItem = useAddAccountMenuItem();
-  const logoutMenuItem = useLogoutMenuItem();
-
-  const accountChildren: MenuItem[] = [
-    settingsItem,
-    logoutMenuItem,
-    { slot: ({ level }) => <StyledDivider component="li" level={level} /> },
-    addAccountItem,
-  ];
+  const accountChildren = useAccountNavItems(divider);
 
   const redirect =
     (isAuthPage || isCompanyPage) && redirectTo ? redirectTo : pathname;
 
-  const authChildren = useAuthMenuItems(redirect);
+  const authChildren = useAuthNavItems(redirect);
 
   const { data: defaultOrganizationSlug = "" } = useSWR<string>(
     "default-organization-slug",
@@ -190,220 +225,66 @@ const useNavItems = (): MenuItem[] => {
     },
   );
 
-  const tAdmin = useTranslations("admins");
-  const tAuth = useTranslations("auth");
-  const tBanners = useTranslations("banners");
-  const tCompany = useTranslations("company");
-  const tCoupons = useTranslations("coupons");
-  const tDashboard = useTranslations("dashboard");
-  const tMenus = useTranslations("menus");
-  const tOrder = useTranslations("order");
-  const tOrders = useTranslations("orders");
-  const tOrganizations = useTranslations("organizations");
+  const navItem = useNavItem(defaultOrganizationSlug);
 
-  const counterSlot: MenuItem[] =
-    mode === ORDER_MODE.Counter && organizationSlug
+  const legalQuery = {
+    [query.back]: pathname,
+    [query.redirectTo]: redirectTo,
+  };
+
+  const companyChildren = useCompanyNavItems(legalQuery);
+
+  const orderModeSlot: NavItem[] =
+    mode && organizationSlug && mode !== ORDER_MODE.Pickup
       ? [
           {
             slot: ({ level }) => (
               <OrderModeMenuItem
-                chipIcon={<QrCodeScanner />}
-                chipLabel={tOrder("mode.counter.label")}
                 level={level}
-                onClick={() =>
-                  router.push(
-                    `/order/${ORDER_MODE.Counter}/${organizationSlug}`,
-                  )
-                }
+                mode={mode}
+                organizationSlug={organizationSlug}
               />
             ),
           },
         ]
       : [];
 
-  const dineInSlot: MenuItem[] =
-    mode === ORDER_MODE.DineIn && organizationSlug
-      ? [
-          {
-            slot: ({ level }) => (
-              <OrderModeMenuItem
-                chipIcon={<Restaurant />}
-                chipLabel={tOrder("mode.dineIn.label")}
-                extra={[
-                  ...(tableNumber
-                    ? [
-                        {
-                          icon: <TableBar />,
-                          primary: tOrder(
-                            "mode.dineIn.storeSlug.tableNumber.value",
-                            { tableNumber },
-                          ),
-                        },
-                      ]
-                    : []),
-                  ...(partySize
-                    ? [
-                        {
-                          icon: partySize === "1" ? <Person /> : <Group />,
-                          primary: tOrder(
-                            "mode.dineIn.storeSlug.tableNumber.partySize.select.value",
-                            { count: partySize },
-                          ),
-                        },
-                      ]
-                    : []),
-                ]}
-                level={level}
-                onClick={() =>
-                  router.push(
-                    getHref(`/order/${ORDER_MODE.DineIn}/${organizationSlug}`, {
-                      tableNumber,
-                      partySize,
-                    }),
-                  )
-                }
-              />
-            ),
-          },
-        ]
-      : [];
-
-  const kioskSlot: MenuItem[] =
-    mode === ORDER_MODE.Kiosk && organizationSlug
-      ? [
-          {
-            slot: ({ level }) => (
-              <OrderModeMenuItem
-                chipIcon={<TouchApp />}
-                chipLabel={tOrder("mode.kiosk.label")}
-                extra={
-                  type
-                    ? [
-                        {
-                          icon:
-                            type === "dine-in" ? <Restaurant /> : <LocalMall />,
-                          primary: tOrder(
-                            type === "dine-in"
-                              ? "mode.kiosk.dineIn"
-                              : "mode.kiosk.takeout",
-                          ),
-                        },
-                      ]
-                    : []
-                }
-                level={level}
-                onClick={() =>
-                  router.push(
-                    `/order/${ORDER_MODE.Kiosk}/${organizationSlug}?${searchParams.toString()}`,
-                  )
-                }
-              />
-            ),
-          },
-        ]
-      : [];
-
-  const adminItems: MenuItem[] = isAdmin
+  const adminItems: NavItem[] = isAdmin
     ? [
-        { slot: ({ level }) => <StyledDivider component="li" level={level} /> },
-        {
-          icon: ConfirmationNumber,
-          label: tCoupons("label"),
-          to: "/coupons?page=1&pageSize=10",
-        },
-        {
-          icon: ViewCarousel,
-          label: tBanners("label"),
-          to: "/banners?page=1&pageSize=10",
-        },
-        {
-          icon: AdminPanelSettings,
-          label: tAdmin("label"),
-          to: "/admins?page=1&pageSize=10",
-        },
+        { slot: divider },
+        navItem("/coupons"),
+        navItem("/banners"),
+        navItem("/admins"),
       ]
     : [];
 
-  const orderChildren: MenuItem[] = [
-    ...counterSlot,
-    ...dineInSlot,
-    ...kioskSlot,
-    {
-      icon: LocalMall,
-      label: tOrder("mode.pickup.label"),
-      to: `/${ORDER_MODE.Pickup}`,
-    },
+  const orderChildren: NavItem[] = [
+    ...orderModeSlot,
+    navItem(`/order/${ORDER_MODE.Pickup}`),
   ];
 
   return [
+    navItem("/dashboard"),
     {
-      icon: Dashboard,
-      label: tDashboard("label"),
-      to: getHref("/dashboard", {
-        organization: defaultOrganizationSlug,
-        range: DEFAULT_DASHBOARD_RANGE,
-      }),
-    },
-    {
+      ...navItem("/order"),
       children: orderChildren,
-      icon: ShoppingCart,
-      label: tOrder("label"),
-      to: "/order",
     },
     ...(defaultOrganizationSlug
       ? [
-          {
-            icon: Assignment,
-            label: tOrders("label"),
-            to: `/orders/list?organization=${defaultOrganizationSlug}&page=1&pageSize=10`,
-          },
-          {
-            icon: MenuBook,
-            label: tMenus("label"),
-            to: `/menus/sections?organization=${defaultOrganizationSlug}&page=1&pageSize=10`,
-          },
+          navItem("/orders", "/orders/list"),
+          navItem("/menus", "/menus/sections"),
         ]
       : []),
-    {
-      icon: Business,
-      label: tOrganizations("label"),
-      to: "/organizations",
-    },
+    navItem("/organizations"),
     ...adminItems,
-    { slot: ({ level }) => <StyledDivider component="li" level={level} /> },
+    { slot: divider },
     {
+      ...navItem("/auth"),
       children: session ? accountChildren : authChildren,
-      icon: AccountCircle,
-      label: tAuth("label"),
-      to: "/auth",
     },
     {
-      children: [
-        {
-          icon: Info,
-          label: tCompany("about.label"),
-          to: "/about",
-        },
-        {
-          icon: Gavel,
-          label: tCompany("legal.terms.label"),
-          to: getHref("/terms", {
-            [query.back]: pathname,
-            [query.redirectTo]: redirectTo,
-          }),
-        },
-        {
-          icon: Policy,
-          label: tCompany("legal.privacy.label"),
-          to: getHref("/privacy", {
-            [query.back]: pathname,
-            [query.redirectTo]: redirectTo,
-          }),
-        },
-      ],
-      icon: Apartment,
-      label: tCompany("label"),
-      to: "/company",
+      ...navItem("/company"),
+      children: companyChildren,
     },
   ];
 };

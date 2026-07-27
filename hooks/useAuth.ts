@@ -5,39 +5,30 @@ import { useTranslations } from "next-intl";
 import { query } from "@/constants/query";
 
 import { useLogout } from "@/hooks/useLogout";
+import { useNavItem } from "@/hooks/useNavItem";
 
-import { Login, Logout, PersonAdd } from "@mui/icons-material";
+import { Logout } from "@mui/icons-material";
 
-import type { MenuItem } from "@/types/menuItem";
+import type { NavItem } from "@/types/navItem";
 
 import { getHref } from "@/utils/href";
 
-export const useAuthMenuItems = (redirectTo?: string): MenuItem[] => {
-  const tAuth = useTranslations("auth");
-
-  const signInTo = getHref("/sign-in", {
-    [query.redirectTo]: redirectTo,
-  });
-
-  const signUpTo = getHref("/sign-up", {
-    [query.redirectTo]: redirectTo,
-  });
+export const useAuthNavItems = (redirectTo?: string): NavItem[] => {
+  const navItem = useNavItem();
 
   return [
-    {
-      icon: Login,
-      label: tAuth("signIn.label"),
-      to: signInTo,
-    },
-    {
-      icon: PersonAdd,
-      label: tAuth("signUp.label"),
-      to: signUpTo,
-    },
+    navItem(
+      "/auth/sign-in",
+      getHref("/auth/sign-in", { [query.redirectTo]: redirectTo }),
+    ),
+    navItem(
+      "/auth/sign-up",
+      getHref("/auth/sign-up", { [query.redirectTo]: redirectTo }),
+    ),
   ];
 };
 
-export const useLogoutMenuItem = (): MenuItem => {
+export const useLogoutNavItem = (): NavItem => {
   const tAuth = useTranslations("auth");
   const { handleLogoutDialog } = useLogout();
 

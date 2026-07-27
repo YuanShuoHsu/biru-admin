@@ -6,8 +6,6 @@ import utc from "dayjs/plugin/utc";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
-import { PAGE_SIZE_OPTIONS } from "./constants";
-
 import CustomizedAccordions from "@/components/CustomizedAccordions";
 import FormCard, {
   StyledCardContent,
@@ -16,6 +14,8 @@ import FormCard, {
 import PaginationActions, {
   StyledTablePagination,
 } from "@/components/PaginationActions";
+
+import { getPageSizeOptions } from "@/constants/pagination";
 
 import { useOrderItemName } from "@/hooks/useOrderItemName";
 
@@ -62,9 +62,7 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
   const tOrder = useTranslations("order");
 
   const orders = data?.data || [];
-  const rowsPerPageOptions = [
-    ...new Set([...PAGE_SIZE_OPTIONS, pageSize]),
-  ].sort((a, b) => a - b);
+  const rowsPerPageOptions = getPageSizeOptions(pageSize);
   const total = data?.total || 0;
 
   const handleChange =

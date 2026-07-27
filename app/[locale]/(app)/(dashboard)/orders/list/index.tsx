@@ -9,9 +9,9 @@ import useSWR from "swr";
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
-  getPageSizeOptions,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
+import { getPageSizeOptions } from "@/constants/pagination";
 import { STATUS_COLORS } from "@/constants/orders";
 
 import {

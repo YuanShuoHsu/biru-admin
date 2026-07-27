@@ -2,19 +2,24 @@
 
 import { useTranslations } from "next-intl";
 
+import { useLogoutNavItem } from "@/hooks/useAuth";
+import { useNavItem } from "@/hooks/useNavItem";
+
 import { useRouter } from "@/i18n/navigation";
 
-import {
-  ConfirmationNumber,
-  PersonAdd,
-  ReceiptLong,
-  Settings,
-  Stars,
-} from "@mui/icons-material";
+import { PersonAdd } from "@mui/icons-material";
 
-import type { MenuItem } from "@/types/menuItem";
+import type { NavItem } from "@/types/navItem";
 
-export const useAddAccountMenuItem = (): MenuItem => {
+export const useAccountNavItems = (divider: NavItem["slot"]): NavItem[] => {
+  const addAccountItem = useAddAccountNavItem();
+  const logoutItem = useLogoutNavItem();
+  const settingsItem = useSettingsNavItem();
+
+  return [settingsItem, logoutItem, { slot: divider }, addAccountItem];
+};
+
+export const useAddAccountNavItem = (): NavItem => {
   const tAuth = useTranslations("auth");
   const router = useRouter();
 
@@ -25,42 +30,26 @@ export const useAddAccountMenuItem = (): MenuItem => {
   };
 };
 
-export const useCouponsMenuItem = (): MenuItem => {
-  const tAuth = useTranslations("auth");
+export const useCouponsNavItem = (): NavItem => {
+  const navItem = useNavItem();
 
-  return {
-    icon: ConfirmationNumber,
-    label: tAuth("coupons.label"),
-    to: "/coupons",
-  };
+  return navItem("/auth/coupons");
 };
 
-export const useOrdersMenuItem = (): MenuItem => {
-  const tAuth = useTranslations("auth");
+export const useOrdersNavItem = (): NavItem => {
+  const navItem = useNavItem();
 
-  return {
-    icon: ReceiptLong,
-    label: tAuth("orders.label"),
-    to: "/orders?page=1&pageSize=10",
-  };
+  return navItem("/auth/orders");
 };
 
-export const usePointsMenuItem = (): MenuItem => {
-  const tAuth = useTranslations("auth");
+export const usePointsNavItem = (): NavItem => {
+  const navItem = useNavItem();
 
-  return {
-    icon: Stars,
-    label: tAuth("points.label"),
-    to: "/points/transactions?page=1&pageSize=10",
-  };
+  return navItem("/auth/points", "/auth/points/transactions");
 };
 
-export const useSettingsMenuItem = (): MenuItem => {
-  const tAuth = useTranslations("auth");
+export const useSettingsNavItem = (): NavItem => {
+  const navItem = useNavItem();
 
-  return {
-    icon: Settings,
-    label: tAuth("settings.label"),
-    to: "/settings/account",
-  };
+  return navItem("/auth/settings", "/auth/settings/account");
 };

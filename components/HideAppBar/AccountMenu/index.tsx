@@ -15,7 +15,7 @@ import BadgeAvatars from "@/components/BadgeAvatars";
 
 import { swrKeys } from "@/constants/swr";
 
-import { useAuthMenuItems, useLogoutMenuItem } from "@/hooks/useAuth";
+import { useAuthNavItems, useLogoutNavItem } from "@/hooks/useAuth";
 
 import { Link, usePathname } from "@/i18n/navigation";
 
@@ -39,14 +39,14 @@ import { styled } from "@mui/material/styles";
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { MenuItem as MenuItemData } from "@/types/menuItem";
+import type { NavItem } from "@/types/navItem";
 
 import {
-  useAddAccountMenuItem,
-  useCouponsMenuItem,
-  useOrdersMenuItem,
-  usePointsMenuItem,
-  useSettingsMenuItem,
+  useAddAccountNavItem,
+  useCouponsNavItem,
+  useOrdersNavItem,
+  usePointsNavItem,
+  useSettingsNavItem,
 } from "@/utils/account";
 import { getDisplayName } from "@/utils/auth";
 
@@ -99,18 +99,12 @@ const StyledListAvatar = styled(StyledAvatar)(({ theme }) => ({
   },
 }));
 
-const renderMenuItems = (
-  pathname: string,
-  basePath: string,
-  items: MenuItemData[],
-) =>
+const renderMenuItems = (pathname: string, items: NavItem[]) =>
   items.map(({ disabled, icon: Icon, label, onClick, to }, index) => {
     const key = to || index;
-    const href = to && `${basePath}${to}`;
-    const toPathname = to && to.split("?")[0];
-    const selected = toPathname
-      ? pathname === `${basePath}${toPathname}` ||
-        pathname.startsWith(`${basePath}${toPathname}/`)
+    const basePath = to?.split("?")[0];
+    const selected = basePath
+      ? pathname === basePath || pathname.startsWith(`${basePath}/`)
       : false;
 
     return (
@@ -119,7 +113,7 @@ const renderMenuItems = (
         key={key}
         onClick={onClick}
         selected={selected}
-        {...(href ? { component: Link, href } : {})}
+        {...(to ? { component: Link, href: to } : {})}
       >
         {Icon && (
           <ListItemIcon>
@@ -177,13 +171,13 @@ const AccountMenu = () => {
   const tAuth = useTranslations("auth");
   const tooltipTitle = session ? session.user.email : tAuth("label");
 
-  const addAccountItem = useAddAccountMenuItem();
-  const authMenuItems = useAuthMenuItems(redirectTarget || undefined);
-  const couponsItem = useCouponsMenuItem();
-  const logoutMenuItem = useLogoutMenuItem();
-  const ordersItem = useOrdersMenuItem();
-  const pointsItem = usePointsMenuItem();
-  const settingsItem = useSettingsMenuItem();
+  const addAccountItem = useAddAccountNavItem();
+  const authNavItems = useAuthNavItems(redirectTarget || undefined);
+  const couponsItem = useCouponsNavItem();
+  const logoutItem = useLogoutNavItem();
+  const ordersItem = useOrdersNavItem();
+  const pointsItem = usePointsNavItem();
+  const settingsItem = useSettingsNavItem();
 
   const handleClick = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -280,12 +274,12 @@ const AccountMenu = () => {
         )}
         {session && <Divider />}
         {session &&
-          renderMenuItems(pathname, "/auth", [
+          renderMenuItems(pathname, [
             ordersItem,
             couponsItem,
             pointsItem,
             settingsItem,
-            logoutMenuItem,
+            logoutItem,
           ])}
         {session && <Divider />}
         {session &&
@@ -315,8 +309,8 @@ const AccountMenu = () => {
             );
           })}
         {session && otherSessions.length > 0 && <Divider />}
-        {session && renderMenuItems(pathname, "/auth", [addAccountItem])}
-        {!session && renderMenuItems(pathname, "/auth", authMenuItems)}
+        {session && renderMenuItems(pathname, [addAccountItem])}
+        {!session && renderMenuItems(pathname, authNavItems)}
       </StyledMenu>
     </>
   );
