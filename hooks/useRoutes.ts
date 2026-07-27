@@ -256,7 +256,6 @@ const routes: Record<string, Route> = {
     label: "menus.label",
     to: "/menus/sections",
   },
-
   order: {
     children: {
       [ORDER_MODE.Counter]: {
@@ -287,7 +286,6 @@ const routes: Record<string, Route> = {
     label: "order.label",
     to: null,
   },
-
   orders: {
     children: {
       board: {
@@ -305,7 +303,6 @@ const routes: Record<string, Route> = {
     label: "orders.label",
     to: "/orders/list",
   },
-
   organizations: {
     children: {
       "[slug]": {
