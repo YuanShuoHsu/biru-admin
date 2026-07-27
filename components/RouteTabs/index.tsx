@@ -36,8 +36,7 @@ const RouteTabs = ({ ariaLabel, tabs }: RouteTabsProps) => {
 
         return (
           <Tab
-            component={Link}
-            href={to}
+            {...(to ? { component: Link, href: to } : {})}
             icon={Icon && <Icon fontSize="small" />}
             iconPosition="start"
             key={path}

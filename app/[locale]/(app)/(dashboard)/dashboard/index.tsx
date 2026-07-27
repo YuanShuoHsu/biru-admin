@@ -243,7 +243,7 @@ const Dashboard = ({
           return (
             <Grid key={label} size={{ xs: 12, sm: 6, md: 4 }}>
               <StyledCard variant="outlined">
-                <StyledCardActionArea onClick={() => router.push(href)}>
+                <StyledCardActionArea onClick={() => href && router.push(href)}>
                   <StyledCardContent>
                     <Typography variant="subtitle2">{label}</Typography>
                     <Stack

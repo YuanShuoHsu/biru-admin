@@ -9,7 +9,7 @@ import { useParams } from "next/navigation";
 import { useState } from "react";
 import useSWR from "swr";
 
-import { findRoute, useRoutes } from "@/hooks/useRoutes";
+import { useRoutes } from "@/hooks/useRoutes";
 
 import { Link, usePathname } from "@/i18n/navigation";
 
@@ -177,13 +177,11 @@ const RouterBreadcrumbs = ({ organizationName }: RouterBreadcrumbsProps) => {
     const segmentPath = pathnames.slice(0, index + 1).join("/");
     const path = `/${segmentPath}`;
 
-    const { icon, label, to } = navItem(path);
-    const { disabled, param } = findRoute(path) || {};
+    const { icon, label, param, to } = navItem(path);
 
     const dynamicLabel = param ? labels[param] : undefined;
 
     return {
-      disabled,
       icon,
       label: dynamicLabel ?? label ?? value,
       to,
@@ -201,9 +199,9 @@ const RouterBreadcrumbs = ({ organizationName }: RouterBreadcrumbsProps) => {
   const handleClose = () => setAnchorEl(null);
 
   const renderSegment = (segment: NavItem) => {
-    const { disabled, icon: Icon, label, to } = segment;
+    const { icon: Icon, label, to } = segment;
     const isLast = segment === lastSegment;
-    const isText = isLast || disabled;
+    const isText = isLast || !to;
     const color = isLast ? "text.primary" : "text.secondary";
 
     return isText ? (
@@ -234,12 +232,12 @@ const RouterBreadcrumbs = ({ organizationName }: RouterBreadcrumbsProps) => {
           onClose={handleClose}
           open={open}
         >
-          {collapsedItems.map(({ disabled, icon: Icon, label, to }) => (
+          {collapsedItems.map(({ icon: Icon, label, to }) => (
             <StyledMenuItem
-              disabled={disabled}
+              disabled={!to}
               key={to}
               onClick={handleClose}
-              {...(disabled ? {} : { component: Link, href: to })}
+              {...(to ? { component: Link, href: to } : {})}
             >
               {Icon && <Icon fontSize="inherit" />}
               {label}

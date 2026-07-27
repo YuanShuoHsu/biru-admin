@@ -100,16 +100,15 @@ const StyledListAvatar = styled(StyledAvatar)(({ theme }) => ({
 }));
 
 const renderMenuItems = (pathname: string, items: NavItem[]) =>
-  items.map(({ disabled, icon: Icon, label, onClick, to }, index) => {
+  items.map(({ icon: Icon, label, onClick, path, to }, index) => {
     const key = to || index;
-    const basePath = to?.split("?")[0];
+    const basePath = (path ?? to)?.split("?")[0];
     const selected = basePath
       ? pathname === basePath || pathname.startsWith(`${basePath}/`)
       : false;
 
     return (
       <MenuItem
-        disabled={disabled}
         key={key}
         onClick={onClick}
         selected={selected}

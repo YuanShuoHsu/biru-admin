@@ -18,7 +18,10 @@ import {
   APP_BAR_TOOLBAR_HEIGHT_SM_UP,
   APP_BAR_TOOLBAR_HEIGHT_XS_UP_LANDSCAPE,
 } from "@/constants/appBar";
-import { IMPERSONATE_RETURN_KEY } from "@/constants/route";
+import {
+  DEFAULT_AUTHENTICATED_ROUTE,
+  IMPERSONATE_RETURN_KEY,
+} from "@/constants/route";
 import { SCROLL_TRIGGER_THRESHOLD } from "@/constants/scroll";
 
 import { useRoutes } from "@/hooks/useRoutes";
@@ -122,7 +125,8 @@ const HideAppBar = () => {
 
               const returnTo =
                 sessionStorage.getItem(IMPERSONATE_RETURN_KEY) ||
-                navItem("/admins").to;
+                navItem("/admins").to ||
+                DEFAULT_AUTHENTICATED_ROUTE;
               sessionStorage.removeItem(IMPERSONATE_RETURN_KEY);
 
               router.replace(returnTo);

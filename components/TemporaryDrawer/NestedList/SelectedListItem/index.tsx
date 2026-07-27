@@ -16,7 +16,7 @@ interface SelectedListItemProps {
 }
 
 const SelectedListItem = ({
-  item: { children, disabled, icon, label, onClick, slot, to },
+  item: { children, icon, label, onClick, path, slot, to },
   level = 0,
 }: SelectedListItemProps) => {
   const [open, setOpen] = useState(false);
@@ -25,7 +25,7 @@ const SelectedListItem = ({
 
   if (slot) return slot({ level });
 
-  const basePath = to?.split("?")[0];
+  const basePath = (path ?? to)?.split("?")[0];
   const isExpandable = Boolean(children?.length);
   const href = to && !isExpandable ? to : undefined;
   const selected = basePath
@@ -45,7 +45,6 @@ const SelectedListItem = ({
   return (
     <>
       <ListItemLink
-        disabled={disabled}
         href={href}
         icon={icon}
         isExpandable={isExpandable}

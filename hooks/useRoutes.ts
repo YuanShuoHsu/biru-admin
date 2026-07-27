@@ -76,11 +76,10 @@ type RouteQuery =
 
 interface RouteMeta {
   children?: Record<string, RouteMeta>;
-  disabled?: true;
   icon: React.ComponentType<SvgIconProps>;
   label?: LabelKey;
   query?: readonly RouteQuery[];
-  to?: string;
+  to?: string | null;
 }
 
 interface MatchedRoute extends RouteMeta {
@@ -140,7 +139,6 @@ const routes: Record<string, RouteMeta> = {
             query: ["page", "pageSize"],
           },
         },
-        disabled: true,
         icon: Stars,
         label: "auth.points.label",
         to: "/auth/points/transactions",
@@ -154,7 +152,6 @@ const routes: Record<string, RouteMeta> = {
           account: { icon: Person, label: "auth.settings.account.label" },
           security: { icon: Lock, label: "auth.settings.security.label" },
         },
-        disabled: true,
         icon: Settings,
         label: "auth.settings.label",
         to: "/auth/settings/account",
@@ -163,9 +160,9 @@ const routes: Record<string, RouteMeta> = {
       "sign-up": { icon: PersonAdd, label: "auth.signUp.label" },
       "verify-email": { icon: Email, label: "auth.verifyEmail.label" },
     },
-    disabled: true,
     icon: AccountCircle,
     label: "auth.label",
+    to: null,
   },
   banners: {
     icon: ViewCarousel,
@@ -178,9 +175,9 @@ const routes: Record<string, RouteMeta> = {
       privacy: { icon: Policy, label: "company.legal.privacy.label" },
       terms: { icon: Gavel, label: "company.legal.terms.label" },
     },
-    disabled: true,
     icon: Apartment,
     label: "company.label",
+    to: null,
   },
   coupons: {
     icon: ConfirmationNumber,
@@ -215,8 +212,8 @@ const routes: Record<string, RouteMeta> = {
                     label: "menus.items.modifierGroups.label",
                   },
                 },
-                disabled: true,
                 icon: Fastfood,
+                to: null,
               },
             },
             icon: ListAlt,
@@ -228,7 +225,6 @@ const routes: Record<string, RouteMeta> = {
         query: ["organization", "page", "pageSize"],
       },
     },
-    disabled: true,
     icon: MenuBook,
     label: "menus.label",
     to: "/menus/sections",
@@ -238,21 +234,21 @@ const routes: Record<string, RouteMeta> = {
     children: {
       [ORDER_MODE.Counter]: {
         children: orderModeChildren,
-        disabled: true,
         icon: QrCodeScanner,
         label: "order.mode.counter.label",
+        to: null,
       },
       [ORDER_MODE.DineIn]: {
         children: orderModeChildren,
-        disabled: true,
         icon: Restaurant,
         label: "order.mode.dineIn.label",
+        to: null,
       },
       [ORDER_MODE.Kiosk]: {
         children: orderModeChildren,
-        disabled: true,
         icon: TouchApp,
         label: "order.mode.kiosk.label",
+        to: null,
       },
       [ORDER_MODE.Pickup]: {
         children: orderModeChildren,
@@ -260,9 +256,9 @@ const routes: Record<string, RouteMeta> = {
         label: "order.mode.pickup.label",
       },
     },
-    disabled: true,
     icon: ShoppingCart,
     label: "order.label",
+    to: null,
   },
 
   orders: {
@@ -278,7 +274,6 @@ const routes: Record<string, RouteMeta> = {
         query: ["organization", "page", "pageSize"],
       },
     },
-    disabled: true,
     icon: Assignment,
     label: "orders.label",
     to: "/orders/list",
@@ -304,8 +299,8 @@ const routes: Record<string, RouteMeta> = {
             label: "organizations.teams.label",
           },
         },
-        disabled: true,
         icon: ManageAccounts,
+        to: null,
       },
     },
     icon: Business,
@@ -361,13 +356,15 @@ export const useRoutes = (defaultOrganization?: string | null) => {
     );
   };
 
-  return (path: string, href?: string): NavItem & { to: string } => {
-    const { icon, label, to } = findRoute(path) || {};
+  return (path: string, href?: string): NavItem & { param?: string } => {
+    const { icon, label, param, to } = findRoute(path) || {};
 
     return {
       icon,
       label: label && t(label),
-      to: buildHref(href ?? to ?? path),
+      param,
+      path,
+      to: to === null ? undefined : buildHref(href ?? to ?? path),
     };
   };
 };

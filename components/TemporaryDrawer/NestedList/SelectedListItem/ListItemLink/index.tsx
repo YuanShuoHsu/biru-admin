@@ -48,7 +48,6 @@ const StyledExpandMore = styled(ExpandMore, {
 }));
 
 export interface ListItemLinkProps {
-  disabled?: boolean;
   href?: string;
   icon?: React.ElementType;
   isExpandable?: boolean;
@@ -60,7 +59,6 @@ export interface ListItemLinkProps {
 }
 
 const ListItemLink = ({
-  disabled,
   href,
   icon: Icon,
   isExpandable,
@@ -73,7 +71,6 @@ const ListItemLink = ({
   <ListItem disablePadding>
     <StyledListItemButton
       {...(href ? { component: Link, href } : {})}
-      disabled={disabled}
       level={level}
       onClick={onClick}
       selected={selected}
