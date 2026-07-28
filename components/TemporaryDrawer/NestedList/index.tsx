@@ -3,9 +3,12 @@
 
 "use client";
 
+import { Fragment } from "react";
+
 import { useParams } from "next/navigation";
 
 import DividerSlot from "./DividerSlot";
+import OrderModeMenuItem from "./OrderModeMenuItem";
 import SelectedListItem from "./SelectedListItem";
 
 import { ORDER_MODE } from "@/constants/orderMode";
@@ -13,7 +16,7 @@ import { ORDER_MODE } from "@/constants/orderMode";
 import { useDefaultOrganization } from "@/hooks/organizations";
 import { useAuthNavItems } from "@/hooks/useAuth";
 import { useCompanyNavItems } from "@/hooks/useCompany";
-import { getRouteSlots, useNavigation, useRoutes } from "@/hooks/useRoutes";
+import { useNavigation, useRoutes } from "@/hooks/useRoutes";
 
 import { List, ListSubheader, Toolbar } from "@mui/material";
 
@@ -24,12 +27,12 @@ import type { RouteParams } from "@/types/routeParams";
 
 import { useAccountNavItems } from "@/utils/account";
 
-const useNavItems = (): NavItem[] => {
+const useNavGroups = (): NavItem[][] => {
   const session = useAuthStore((state) => state.session);
 
   const { mode, organizationSlug } = useParams<Partial<RouteParams>>();
 
-  const accountChildren = useAccountNavItems(DividerSlot);
+  const accountChildren = useAccountNavItems();
   const authChildren = useAuthNavItems();
   const companyChildren = useCompanyNavItems();
 
@@ -38,9 +41,13 @@ const useNavItems = (): NavItem[] => {
   const navItem = useRoutes();
 
   const isAdmin = session?.user?.role === "admin";
-  const orderModeSlots = getRouteSlots(`/order/${mode}`);
+  const isInStoreOrder =
+    Boolean(organizationSlug) &&
+    [ORDER_MODE.Counter, ORDER_MODE.DineIn, ORDER_MODE.Kiosk].some(
+      (orderMode) => orderMode === mode,
+    );
 
-  const navItems = useNavigation([
+  const navGroups = useNavigation([
     ...(isAdmin ? [] : ["admins", "banners", "coupons"]),
     ...(defaultOrganizationSlug ? [] : ["menus", "orders"]),
   ]);
@@ -49,20 +56,22 @@ const useNavItems = (): NavItem[] => {
     "/auth": session ? accountChildren : authChildren,
     "/company": companyChildren,
     "/order": [
-      ...(organizationSlug ? orderModeSlots.map((slot) => ({ slot })) : []),
+      ...(isInStoreOrder ? [{ slot: OrderModeMenuItem }] : []),
       navItem(`/order/${ORDER_MODE.Pickup}`),
     ],
   };
 
-  return navItems.map((item) =>
-    item.path && childrenByPath[item.path]
-      ? { ...item, children: childrenByPath[item.path] }
-      : item,
+  return navGroups.map((group) =>
+    group.map((item) =>
+      item.path && childrenByPath[item.path]
+        ? { ...item, children: childrenByPath[item.path] }
+        : item,
+    ),
   );
 };
 
 const NestedList = () => {
-  const navItems = useNavItems();
+  const navGroups = useNavGroups();
 
   return (
     <List
@@ -73,8 +82,13 @@ const NestedList = () => {
         </ListSubheader>
       }
     >
-      {navItems.map((item, index) => (
-        <SelectedListItem item={item} key={item.path || index} />
+      {navGroups.map((group, groupIndex) => (
+        <Fragment key={group[0]?.path || groupIndex}>
+          {groupIndex > 0 && <DividerSlot level={0} />}
+          {group.map((item, index) => (
+            <SelectedListItem item={item} key={item.path || index} />
+          ))}
+        </Fragment>
       ))}
     </List>
   );

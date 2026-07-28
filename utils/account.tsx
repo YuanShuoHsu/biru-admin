@@ -8,15 +8,18 @@ import { useRoutes } from "@/hooks/useRoutes";
 import { useRouter } from "@/i18n/navigation";
 
 import { PersonAdd } from "@mui/icons-material";
+import { Divider } from "@mui/material";
 
 import type { NavItem, Slot } from "@/types/navItem";
 
-export const useAccountNavItems = (divider: Slot): NavItem[] => {
+const DividerSlot: Slot = () => <Divider flexItem />;
+
+export const useAccountNavItems = (): NavItem[] => {
   const addAccountItem = useAddAccountNavItem();
   const logoutItem = useLogoutNavItem();
   const settingsItem = useSettingsNavItem();
 
-  return [settingsItem, logoutItem, { slot: divider }, addAccountItem];
+  return [settingsItem, logoutItem, { slot: DividerSlot }, addAccountItem];
 };
 
 export const useAddAccountNavItem = (): NavItem => {
