@@ -38,7 +38,7 @@ const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
   },
 }));
 
-const iconTextBaseStyles = ({ theme }: { theme: Theme }): CSSObject => ({
+const iconTextStyles = ({ theme }: { theme: Theme }): CSSObject => ({
   display: "flex",
   alignItems: "flex-start",
   gap: theme.spacing(0.5),
@@ -49,11 +49,11 @@ const iconTextBaseStyles = ({ theme }: { theme: Theme }): CSSObject => ({
   },
 });
 
-const StyledTypography = styled(Typography)(iconTextBaseStyles);
+const StyledTypography = styled(Typography)(iconTextStyles);
 
-const StyledLink = styled(MuiLink)<LinkProps>(iconTextBaseStyles);
+const StyledLink = styled(MuiLink)<LinkProps>(iconTextStyles);
 
-const StyledMenuItem = styled(MuiMenuItem)<MenuItemProps>(iconTextBaseStyles);
+const StyledMenuItem = styled(MuiMenuItem)<MenuItemProps>(iconTextStyles);
 
 const ITEMS_BEFORE_COLLAPSE = 1;
 const ITEMS_AFTER_COLLAPSE = 2;
@@ -74,7 +74,9 @@ const RouterBreadcrumbs = () => {
   const lastSegment = segments.at(-1);
   const isCollapsed = segments.length > MAX_ITEMS;
   const afterStart = segments.length - ITEMS_AFTER_COLLAPSE;
-  const collapsedItems = segments.slice(ITEMS_BEFORE_COLLAPSE, afterStart);
+  const collapsedItems = isCollapsed
+    ? segments.slice(ITEMS_BEFORE_COLLAPSE, afterStart)
+    : [];
 
   const handleOpen = (event: React.MouseEvent<HTMLButtonElement> | null) => {
     if (event) setAnchorEl(event.currentTarget);
@@ -85,10 +87,12 @@ const RouterBreadcrumbs = () => {
     const { icon: Icon, label, path, to } = segment;
     const isLast = segment === lastSegment;
     const isText = isLast || !to;
-    const color = isLast ? "text.primary" : "text.secondary";
 
     return isText ? (
-      <StyledTypography color={color} key={path}>
+      <StyledTypography
+        color={isLast ? "text.primary" : "text.secondary"}
+        key={path}
+      >
         {Icon && <Icon fontSize="inherit" />}
         {label}
       </StyledTypography>
