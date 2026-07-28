@@ -88,13 +88,13 @@ const RouterBreadcrumbs = () => {
   const handleClose = () => setAnchorEl(null);
 
   const renderSegment = (segment: NavItem) => {
-    const { icon: Icon, label, to } = segment;
+    const { icon: Icon, label, path, to } = segment;
     const isLast = segment === lastSegment;
     const isText = isLast || !to;
     const color = isLast ? "text.primary" : "text.secondary";
 
     return isText ? (
-      <StyledTypography color={color} key={to}>
+      <StyledTypography color={color} key={path}>
         {Icon && <Icon fontSize="inherit" />}
         {label}
       </StyledTypography>
@@ -103,7 +103,7 @@ const RouterBreadcrumbs = () => {
         color="text.secondary"
         component={Link}
         href={to}
-        key={to}
+        key={path}
         underline="always"
       >
         {Icon && <Icon fontSize="inherit" />}
@@ -121,10 +121,10 @@ const RouterBreadcrumbs = () => {
           onClose={handleClose}
           open={open}
         >
-          {collapsedItems.map(({ icon: Icon, label, to }) => (
+          {collapsedItems.map(({ icon: Icon, label, path, to }) => (
             <StyledMenuItem
               disabled={!to}
-              key={to}
+              key={path}
               onClick={handleClose}
               {...(to ? { component: Link, href: to } : {})}
             >
@@ -139,6 +139,9 @@ const RouterBreadcrumbs = () => {
           ? [
               ...segments.slice(0, ITEMS_BEFORE_COLLAPSE).map(renderSegment),
               <IconButton
+                aria-expanded={open ? "true" : undefined}
+                aria-haspopup="true"
+                aria-label="show more breadcrumbs"
                 color="inherit"
                 id="breadcrumbs-menu-trigger"
                 key="collapsed-trigger"
