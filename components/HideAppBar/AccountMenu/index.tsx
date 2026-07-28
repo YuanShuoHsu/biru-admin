@@ -16,6 +16,7 @@ import BadgeAvatars from "@/components/BadgeAvatars";
 import { swrKeys } from "@/constants/swr";
 
 import { useAuthNavItems, useLogoutNavItem } from "@/hooks/useAuth";
+import { useRoutes } from "@/hooks/useRoutes";
 
 import { Link, usePathname } from "@/i18n/navigation";
 
@@ -41,13 +42,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { NavItem } from "@/types/navItem";
 
-import {
-  useAddAccountNavItem,
-  useCouponsNavItem,
-  useOrdersNavItem,
-  usePointsNavItem,
-  useSettingsNavItem,
-} from "@/utils/account";
+import { useAddAccountNavItem } from "@/utils/account";
 import { getDisplayName } from "@/utils/auth";
 
 const StyledAvatar = styled(Avatar, {
@@ -162,13 +157,11 @@ const AccountMenu = () => {
   const tAuth = useTranslations("auth");
   const tooltipTitle = session ? session.user.email : tAuth("label");
 
+  const navItem = useRoutes();
+
   const addAccountItem = useAddAccountNavItem();
   const authNavItems = useAuthNavItems();
-  const couponsItem = useCouponsNavItem();
   const logoutItem = useLogoutNavItem();
-  const ordersItem = useOrdersNavItem();
-  const pointsItem = usePointsNavItem();
-  const settingsItem = useSettingsNavItem();
 
   const handleClick = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -266,10 +259,10 @@ const AccountMenu = () => {
         {session && <Divider />}
         {session &&
           renderMenuItems(pathname, [
-            ordersItem,
-            couponsItem,
-            pointsItem,
-            settingsItem,
+            navItem("/auth/orders"),
+            navItem("/auth/coupons"),
+            navItem("/auth/points"),
+            navItem("/auth/settings"),
             logoutItem,
           ])}
         {session && <Divider />}

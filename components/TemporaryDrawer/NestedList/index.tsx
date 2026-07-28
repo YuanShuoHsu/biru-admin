@@ -14,9 +14,8 @@ import SelectedListItem from "./SelectedListItem";
 import { ORDER_MODE } from "@/constants/orderMode";
 
 import { useDefaultOrganization } from "@/hooks/organizations";
-import { useAuthNavItems } from "@/hooks/useAuth";
-import { useCompanyNavItems } from "@/hooks/useCompany";
-import { useNavigation, useRoutes } from "@/hooks/useRoutes";
+import { useNavChildren } from "@/hooks/useNavChildren";
+import { useRoutes } from "@/hooks/useRoutes";
 
 import { List, ListSubheader, Toolbar } from "@mui/material";
 
@@ -25,19 +24,14 @@ import { useAuthStore } from "@/providers/auth-store-provider";
 import type { NavItem } from "@/types/navItem";
 import type { RouteParams } from "@/types/routeParams";
 
-import { useAccountNavItems } from "@/utils/account";
-
-const useNavGroups = (): NavItem[][] => {
+const useNavItems = (): NavItem[][] => {
   const session = useAuthStore((state) => state.session);
 
   const { mode, organizationSlug } = useParams<Partial<RouteParams>>();
 
-  const accountChildren = useAccountNavItems();
-  const authChildren = useAuthNavItems();
-  const companyChildren = useCompanyNavItems();
-
   const defaultOrganizationSlug = useDefaultOrganization();
 
+  const navChildren = useNavChildren();
   const navItem = useRoutes();
 
   const isAdmin = session?.user?.role === "admin";
@@ -47,31 +41,33 @@ const useNavGroups = (): NavItem[][] => {
       (orderMode) => orderMode === mode,
     );
 
-  const navGroups = useNavigation([
-    ...(isAdmin ? [] : ["admins", "banners", "coupons"]),
-    ...(defaultOrganizationSlug ? [] : ["menus", "orders"]),
-  ]);
-
-  const childrenByPath: Record<string, NavItem[]> = {
-    "/auth": session ? accountChildren : authChildren,
-    "/company": companyChildren,
-    "/order": [
-      ...(isInStoreOrder ? [{ slot: OrderModeMenuItem }] : []),
-      navItem(`/order/${ORDER_MODE.Pickup}`),
+  return [
+    [
+      navItem("/dashboard"),
+      {
+        ...navItem("/order"),
+        children: [
+          ...(isInStoreOrder ? [{ slot: OrderModeMenuItem }] : []),
+          navItem(`/order/${ORDER_MODE.Pickup}`),
+        ],
+      },
+      ...(defaultOrganizationSlug
+        ? [navItem("/orders"), navItem("/menus")]
+        : []),
+      navItem("/organizations"),
     ],
-  };
-
-  return navGroups.map((group) =>
-    group.map((item) =>
-      item.path && childrenByPath[item.path]
-        ? { ...item, children: childrenByPath[item.path] }
-        : item,
-    ),
-  );
+    ...(isAdmin
+      ? [[navItem("/coupons"), navItem("/banners"), navItem("/admins")]]
+      : []),
+    [
+      { ...navItem("/auth"), children: navChildren["/auth"] },
+      { ...navItem("/company"), children: navChildren["/company"] },
+    ],
+  ];
 };
 
 const NestedList = () => {
-  const navGroups = useNavGroups();
+  const navItems = useNavItems();
 
   return (
     <List
@@ -82,7 +78,7 @@ const NestedList = () => {
         </ListSubheader>
       }
     >
-      {navGroups.map((group, groupIndex) => (
+      {navItems.map((group, groupIndex) => (
         <Fragment key={group[0]?.path || groupIndex}>
           {groupIndex > 0 && <DividerSlot level={0} />}
           {group.map((item, index) => (

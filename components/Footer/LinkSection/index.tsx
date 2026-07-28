@@ -2,18 +2,14 @@
 
 import { ORDER_MODE } from "@/constants/orderMode";
 
-import { useAuthNavItems } from "@/hooks/useAuth";
-import { useCompanyNavItems } from "@/hooks/useCompany";
+import { useNavChildren } from "@/hooks/useNavChildren";
 import { useRoutes } from "@/hooks/useRoutes";
 
 import { Grid, Link, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import { useAuthStore } from "@/providers/auth-store-provider";
-
 import type { NavItem } from "@/types/navItem";
 
-import { useAccountNavItems } from "@/utils/account";
 const StyledGrid = styled(Grid)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
@@ -22,13 +18,9 @@ const StyledGrid = styled(Grid)(({ theme }) => ({
 }));
 
 const useFooterItems = (): NavItem[] => {
-  const { session } = useAuthStore((state) => state);
-
   const navItem = useRoutes();
 
-  const accountChildren = useAccountNavItems();
-  const authChildren = useAuthNavItems();
-  const companyChildren = useCompanyNavItems();
+  const navChildren = useNavChildren();
 
   return [
     {
@@ -37,11 +29,11 @@ const useFooterItems = (): NavItem[] => {
     },
     {
       ...navItem("/auth"),
-      children: session ? accountChildren : authChildren,
+      children: navChildren["/auth"],
     },
     {
       ...navItem("/company"),
-      children: companyChildren,
+      children: navChildren["/company"],
     },
   ];
 };

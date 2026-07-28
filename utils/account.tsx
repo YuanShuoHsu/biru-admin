@@ -15,11 +15,17 @@ import type { NavItem, Slot } from "@/types/navItem";
 const DividerSlot: Slot = () => <Divider flexItem />;
 
 export const useAccountNavItems = (): NavItem[] => {
+  const navItem = useRoutes();
+
   const addAccountItem = useAddAccountNavItem();
   const logoutItem = useLogoutNavItem();
-  const settingsItem = useSettingsNavItem();
 
-  return [settingsItem, logoutItem, { slot: DividerSlot }, addAccountItem];
+  return [
+    navItem("/auth/settings"),
+    logoutItem,
+    { slot: DividerSlot },
+    addAccountItem,
+  ];
 };
 
 export const useAddAccountNavItem = (): NavItem => {
@@ -34,28 +40,4 @@ export const useAddAccountNavItem = (): NavItem => {
     label: tAuth("addAccount.label"),
     onClick: () => to && router.push(to),
   };
-};
-
-export const useCouponsNavItem = (): NavItem => {
-  const navItem = useRoutes();
-
-  return navItem("/auth/coupons");
-};
-
-export const useOrdersNavItem = (): NavItem => {
-  const navItem = useRoutes();
-
-  return navItem("/auth/orders");
-};
-
-export const usePointsNavItem = (): NavItem => {
-  const navItem = useRoutes();
-
-  return navItem("/auth/points");
-};
-
-export const useSettingsNavItem = (): NavItem => {
-  const navItem = useRoutes();
-
-  return navItem("/auth/settings");
 };

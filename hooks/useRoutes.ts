@@ -121,7 +121,7 @@ const storeRoute: Route = {
   segment: "[organizationSlug]",
 };
 
-const mainRoutes: Route[] = [
+const routes: Route[] = [
   {
     icon: Dashboard,
     label: "dashboard.label",
@@ -270,9 +270,6 @@ const mainRoutes: Route[] = [
     label: "organizations.label",
     segment: "organizations",
   },
-];
-
-const adminRoutes: Route[] = [
   {
     icon: ConfirmationNumber,
     label: "coupons.label",
@@ -292,9 +289,6 @@ const adminRoutes: Route[] = [
     query: ["page", "pageSize"],
     segment: "admins",
   },
-];
-
-const accountRoutes: Route[] = [
   {
     children: [
       {
@@ -383,16 +377,16 @@ const accountRoutes: Route[] = [
     children: [
       { icon: Info, label: "company.about.label", segment: "about" },
       {
-        icon: Policy,
-        label: "company.legal.privacy.label",
-        query: ["back", "redirectTo"],
-        segment: "privacy",
-      },
-      {
         icon: Gavel,
         label: "company.legal.terms.label",
         query: ["back", "redirectTo"],
         segment: "terms",
+      },
+      {
+        icon: Policy,
+        label: "company.legal.privacy.label",
+        query: ["back", "redirectTo"],
+        segment: "privacy",
       },
     ],
     icon: Apartment,
@@ -401,10 +395,6 @@ const accountRoutes: Route[] = [
     to: null,
   },
 ];
-
-const routeGroups: Route[][] = [mainRoutes, adminRoutes, accountRoutes];
-
-const routes: Route[] = routeGroups.flat();
 
 const findRoute = (path: string) => {
   let children: Route["children"] = routes;
@@ -558,16 +548,4 @@ export const useRoutes = () => {
       to: target && buildHref(target, target === path ? query : undefined),
     };
   };
-};
-
-export const useNavigation = (hidden: readonly string[] = []): NavItem[][] => {
-  const navItem = useRoutes();
-
-  return routeGroups
-    .map((group) =>
-      group
-        .filter(({ segment }) => !hidden.includes(segment))
-        .map(({ segment }) => navItem(`/${segment}`)),
-    )
-    .filter((group) => group.length > 0);
 };
