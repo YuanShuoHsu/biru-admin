@@ -14,7 +14,7 @@ import { MoreHoriz } from "@mui/icons-material";
 import {
   Breadcrumbs,
   IconButton,
-  LinkProps,
+  type LinkProps,
   Menu,
   type MenuItemProps,
   Link as MuiLink,
@@ -38,7 +38,7 @@ const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
   },
 }));
 
-const iconTextBaseStyles = (theme: Theme): CSSObject => ({
+const iconTextBaseStyles = ({ theme }: { theme: Theme }): CSSObject => ({
   display: "flex",
   alignItems: "flex-start",
   gap: theme.spacing(0.5),
@@ -49,17 +49,11 @@ const iconTextBaseStyles = (theme: Theme): CSSObject => ({
   },
 });
 
-const StyledTypography = styled(Typography)(({ theme }) => ({
-  ...iconTextBaseStyles(theme),
-}));
+const StyledTypography = styled(Typography)(iconTextBaseStyles);
 
-const StyledLink = styled(MuiLink)<LinkProps>(({ theme }) => ({
-  ...iconTextBaseStyles(theme),
-}));
+const StyledLink = styled(MuiLink)<LinkProps>(iconTextBaseStyles);
 
-const StyledMenuItem = styled(MuiMenuItem)<MenuItemProps>(({ theme }) => ({
-  ...iconTextBaseStyles(theme),
-}));
+const StyledMenuItem = styled(MuiMenuItem)<MenuItemProps>(iconTextBaseStyles);
 
 const ITEMS_BEFORE_COLLAPSE = 1;
 const ITEMS_AFTER_COLLAPSE = 2;
