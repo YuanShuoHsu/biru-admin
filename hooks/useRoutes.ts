@@ -404,7 +404,7 @@ const accountRoutes: Route[] = [
 
 const routeGroups: Route[][] = [mainRoutes, adminRoutes, accountRoutes];
 
-const routes = routeGroups.flat();
+const routes: Route[] = routeGroups.flat();
 
 const findRoute = (path: string) => {
   let children: Route["children"] = routes;
