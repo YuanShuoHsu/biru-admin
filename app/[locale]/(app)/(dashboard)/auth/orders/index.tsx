@@ -119,6 +119,15 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
           const currency = order.items[0]?.priceCurrency || "";
           const discount = Number(order.discount || 0);
           const isExpanded = expanded === order.id;
+          const modeLabel = [
+            tOrder(`mode.${order.mode}.label`),
+            order.tableNumber &&
+              tOrder("mode.dineIn.storeSlug.tableNumber.value", {
+                tableNumber: order.tableNumber,
+              }),
+          ]
+            .filter(Boolean)
+            .join(tCommon("delimiter"));
           const totalAmount =
             order.items.reduce(
               (sum, { orderQuantity, unitPrice }) =>
@@ -176,6 +185,9 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
                 <Typography color="text.secondary" variant="caption">
                   {tOrder("complete.transaction.orderNo")}{" "}
                   {order.confirmationNumber || order.orderNumber}
+                </Typography>
+                <Typography color="text.secondary" variant="caption">
+                  {modeLabel}
                 </Typography>
                 {order.items.map((item) => (
                   <Stack

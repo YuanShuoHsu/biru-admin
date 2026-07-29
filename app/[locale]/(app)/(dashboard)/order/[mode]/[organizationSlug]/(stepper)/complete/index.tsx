@@ -359,6 +359,10 @@ const OrderModeOrganizationSlugComplete = ({
                 label={tOrder("complete.transaction.orderNo")}
                 value={orderNo}
               />
+              <InfoRow
+                label={tOrder("complete.transaction.mode")}
+                value={tOrder(`mode.${order.mode}.label`)}
+              />
               {order.tradeNo && (
                 <InfoRow
                   label={tOrder("complete.transaction.tradeNo")}

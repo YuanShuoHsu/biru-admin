@@ -99,6 +99,7 @@
     },
     "transaction": {
       "amount": "Amount paid",
+      "mode": "Order mode",
       "orderNo": "Order number",
       "paid": "Paid",
       "paymentDate": "Paid at",

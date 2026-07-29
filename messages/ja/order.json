@@ -99,6 +99,7 @@
     },
     "transaction": {
       "amount": "お支払い金額",
+      "mode": "注文方法",
       "orderNo": "注文番号",
       "paid": "支払い済み",
       "paymentDate": "お支払い日時",

@@ -99,6 +99,7 @@
     },
     "transaction": {
       "amount": "付款金额",
+      "mode": "点餐方式",
       "orderNo": "订单编号",
       "paid": "已付款",
       "paymentDate": "付款时间",

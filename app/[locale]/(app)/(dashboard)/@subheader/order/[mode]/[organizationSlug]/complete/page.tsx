@@ -1,5 +1,5 @@
-import OrderTableNumberChip from "@/components/OrderTableNumberChip";
 import OrderPartySizeTextField from "@/components/OrderPartySizeTextField";
+import OrderTableNumberChip from "@/components/OrderTableNumberChip";
 
 import { ORDER_MODE } from "@/constants/orderMode";
 
@@ -30,6 +30,7 @@ const SubheaderOrderModeOrganizationSlugCompletePage = async ({
       <OrderPartySizeTextField
         organizationSlug={organizationSlug}
         partySize={partySize}
+        readOnly
         tableNumber={tableNumber}
       />
     </Stack>

@@ -49,6 +49,7 @@
   "mode": "点餐方式",
   "orderNumber": "取餐号码",
   "orderStatus": "订单状态",
+  "partySize": "用餐人数",
   "paymentDate": "付款时间",
   "paymentMethod": "付款方式",
   "status": {

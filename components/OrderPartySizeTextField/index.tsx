@@ -22,12 +22,14 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
 interface OrderPartySizeTextFieldProps {
   organizationSlug: Organization["slug"];
   partySize?: string;
+  readOnly?: boolean;
   tableNumber: string;
 }
 
 const OrderPartySizeTextField = ({
   organizationSlug,
   partySize,
+  readOnly = false,
   tableNumber,
 }: OrderPartySizeTextFieldProps) => {
   const router = useRouter();
@@ -52,6 +54,7 @@ const OrderPartySizeTextField = ({
         inputLabel: { shrink: true },
         select: {
           displayEmpty: true,
+          readOnly,
           renderValue: (selected) =>
             selected ? (
               tOrder(

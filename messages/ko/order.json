@@ -99,6 +99,7 @@
     },
     "transaction": {
       "amount": "결제 금액",
+      "mode": "주문 방식",
       "orderNo": "주문 번호",
       "paid": "결제 완료",
       "paymentDate": "결제 시간",

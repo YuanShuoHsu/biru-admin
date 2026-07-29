@@ -110,6 +110,21 @@ const OrderDetailDialog = ({ order }: OrderDetailDialogProps) => {
           label={tOrders("mode")}
           value={tOrder(`mode.${order.mode}.label`)}
         />
+        {!!order.tableNumber && (
+          <InfoRow
+            label={tOrders("tableNumber")}
+            value={String(order.tableNumber)}
+          />
+        )}
+        {!!order.partySize && (
+          <InfoRow
+            label={tOrders("partySize")}
+            value={tOrder(
+              "mode.dineIn.storeSlug.tableNumber.partySize.select.value",
+              { count: order.partySize },
+            )}
+          />
+        )}
         <InfoRow
           label={tOrders("paymentMethod")}
           value={tOrder(`checkout.payment.${order.paymentMethod}`)}

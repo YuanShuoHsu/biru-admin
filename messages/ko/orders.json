@@ -49,6 +49,7 @@
   "mode": "주문 방식",
   "orderNumber": "픽업 번호",
   "orderStatus": "주문 상태",
+  "partySize": "인원수",
   "paymentDate": "결제 일시",
   "paymentMethod": "결제 수단",
   "status": {

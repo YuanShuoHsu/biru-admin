@@ -49,6 +49,7 @@
   "mode": "注文方法",
   "orderNumber": "受け取り番号",
   "orderStatus": "注文状況",
+  "partySize": "人数",
   "paymentDate": "支払い日時",
   "paymentMethod": "支払い方法",
   "status": {

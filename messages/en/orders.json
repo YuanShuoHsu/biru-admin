@@ -49,6 +49,7 @@
   "mode": "Order mode",
   "orderNumber": "Pickup number",
   "orderStatus": "Order status",
+  "partySize": "Party size",
   "paymentDate": "Payment date",
   "paymentMethod": "Payment method",
   "status": {
