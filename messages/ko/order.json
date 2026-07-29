@@ -68,9 +68,9 @@
       "ApplePay": "Apple Pay",
       "Cash": "현금",
       "Credit": "신용카드",
-      "dineInOnly": "매장 내 식사 전용",
       "iPASS": "iPASS MONEY",
       "Jkopay": "JKO Pay",
+      "pickupUnavailable": "온라인 포장은 이용할 수 없습니다",
       "TWQR": "모바일 결제",
       "WeiXin": "위챗페이"
     },
@@ -152,11 +152,8 @@
         }
       }
     },
-    "kiosk": {
-      "dineIn": "매장 식사",
-      "label": "키오스크",
-      "takeout": "포장",
-      "title": "식사 방법을 선택해 주세요"
+    "driveThru": {
+      "label": "드라이브 스루"
     },
     "pickup": {
       "label": "포장 수령"

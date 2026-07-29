@@ -12,14 +12,7 @@ import { useRoutes } from "@/hooks/useRoutes";
 
 import { Link } from "@/i18n/navigation";
 
-import {
-  Group,
-  LocalMall,
-  Person,
-  Restaurant,
-  Storefront,
-  TableBar,
-} from "@mui/icons-material";
+import { Group, Person, Storefront, TableBar } from "@mui/icons-material";
 import {
   Chip,
   ListItem,
@@ -55,7 +48,6 @@ const OrderModeMenuItem: Slot = ({ level }) => {
 
   const partySize = searchParams.get("partySize");
   const tableNumber = searchParams.get("tableNumber");
-  const type = searchParams.get("type");
 
   const extra =
     mode === ORDER_MODE.DineIn
@@ -82,16 +74,7 @@ const OrderModeMenuItem: Slot = ({ level }) => {
               ]
             : []),
         ]
-      : mode === ORDER_MODE.Kiosk && type
-        ? [
-            {
-              icon: type === "dine-in" ? <Restaurant /> : <LocalMall />,
-              primary: tOrder(
-                type === "dine-in" ? "mode.kiosk.dineIn" : "mode.kiosk.takeout",
-              ),
-            },
-          ]
-        : [];
+      : [];
 
   return (
     <ListItem disablePadding>

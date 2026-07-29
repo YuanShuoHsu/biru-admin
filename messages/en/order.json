@@ -68,9 +68,9 @@
       "ApplePay": "Apple Pay",
       "Cash": "Cash",
       "Credit": "Credit Card",
-      "dineInOnly": "Dine-in only",
       "iPASS": "iPASS MONEY",
       "Jkopay": "JKO Pay",
+      "pickupUnavailable": "Not available for online takeout",
       "TWQR": "Mobile Payment",
       "WeiXin": "WeChat Pay"
     },
@@ -152,11 +152,8 @@
         }
       }
     },
-    "kiosk": {
-      "dineIn": "Dine in",
-      "label": "Kiosk",
-      "takeout": "Takeout",
-      "title": "Please select your dining option"
+    "driveThru": {
+      "label": "Drive-thru"
     },
     "pickup": {
       "label": "Pickup"

@@ -30,6 +30,7 @@ import {
   ConfirmationNumber,
   Dashboard,
   DeleteForever,
+  DirectionsCar,
   Devices,
   Email,
   Extension,
@@ -61,7 +62,6 @@ import {
   ShoppingCart,
   Stars,
   Storefront,
-  TouchApp,
   Tune,
   ViewCarousel,
   ViewKanban,
@@ -86,8 +86,7 @@ type RouteQuery =
   | "partySize"
   | "range"
   | "redirectTo"
-  | "tableNumber"
-  | "type";
+  | "tableNumber";
 
 interface Route {
   children?: Route[];
@@ -117,7 +116,7 @@ const storeRoute: Route = {
     },
   ],
   icon: Storefront,
-  query: ["partySize", "tableNumber", "type"],
+  query: ["partySize", "tableNumber"],
   segment: "[organizationSlug]",
 };
 
@@ -146,9 +145,9 @@ const routes: Route[] = [
       },
       {
         children: [storeRoute],
-        icon: TouchApp,
-        label: "order.mode.kiosk.label",
-        segment: ORDER_MODE.Kiosk,
+        icon: DirectionsCar,
+        label: "order.mode.driveThru.label",
+        segment: ORDER_MODE.DriveThru,
         to: null,
       },
       {
@@ -522,7 +521,6 @@ export const useRoutes = () => {
     range: searchParams.get("range"),
     redirectTo: searchParams.get("redirectTo") || pathname,
     tableNumber: searchParams.get("tableNumber"),
-    type: searchParams.get("type"),
   };
 
   const buildHref = (href: string, query = findRoute(href)?.query) => {

@@ -1,12 +1,12 @@
 {
   "actions": {
-    "label": "Actions",
     "confirmDelivered": {
       "title": "Confirm delivered"
     },
     "confirmPickupAvailable": {
       "title": "Confirm ready for pickup"
     },
+    "label": "Actions",
     "revertToPickupAvailable": {
       "title": "Revert to ready for pickup"
     },
@@ -59,5 +59,6 @@
     "OrderProblem": "Problem",
     "OrderProcessing": "Processing"
   },
+  "tableNumber": "Table",
   "total": "Amount"
 }

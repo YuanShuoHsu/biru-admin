@@ -1,6 +1,6 @@
 export const ORDER_MODE = {
   Counter: "counter",
   DineIn: "dine-in",
-  Kiosk: "kiosk",
+  DriveThru: "drive-thru",
   Pickup: "pickup",
 } as const;

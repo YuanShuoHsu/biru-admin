@@ -2158,7 +2158,7 @@ export interface components {
     };
     CreateOrderDto: {
       /** @enum {string} */
-      mode: "counter" | "dineIn" | "kiosk" | "pickup";
+      mode: "counter" | "dineIn" | "driveThru" | "pickup";
       customer: components["schemas"]["CreateOrderCustomerDto"];
       /** @enum {string} */
       payment:
@@ -2172,6 +2172,8 @@ export interface components {
       discountCode?: string;
       invoice?: components["schemas"]["CreateOrderInvoiceDto"];
       items: components["schemas"]["CreateOrderItemDto"][];
+      partySize?: number;
+      tableNumber?: number;
     };
     OrderCustomerDto: {
       email?: string | null;
@@ -2214,7 +2216,7 @@ export interface components {
       sellerId: string;
       userId?: string | null;
       /** @enum {string} */
-      mode: "counter" | "dineIn" | "kiosk" | "pickup";
+      mode: "counter" | "dineIn" | "driveThru" | "pickup";
       orderNumber: string;
       customer: components["schemas"]["OrderCustomerDto"];
       /** @enum {string} */
@@ -2243,6 +2245,8 @@ export interface components {
       /** Format: date-time */
       paymentDueDate?: string | null;
       tradeNo?: string | null;
+      partySize?: number | null;
+      tableNumber?: number | null;
       discount?: string | null;
       discountCode?: string | null;
       discountCurrency?: string | null;
@@ -2263,6 +2267,7 @@ export interface components {
       | "orderStatus"
       | "paymentDate"
       | "createdAt"
+      | "tableNumber"
       | "total";
     /** @enum {string} */
     OrderSortField:
@@ -2272,6 +2277,7 @@ export interface components {
       | "orderStatus"
       | "paymentDate"
       | "createdAt"
+      | "tableNumber"
       | "total";
     OrderSellerDto: {
       id: string;
@@ -2285,7 +2291,7 @@ export interface components {
       sellerId: string;
       userId?: string | null;
       /** @enum {string} */
-      mode: "counter" | "dineIn" | "kiosk" | "pickup";
+      mode: "counter" | "dineIn" | "driveThru" | "pickup";
       orderNumber: string;
       customer: components["schemas"]["OrderCustomerDto"];
       /** @enum {string} */
@@ -2314,6 +2320,8 @@ export interface components {
       /** Format: date-time */
       paymentDueDate?: string | null;
       tradeNo?: string | null;
+      partySize?: number | null;
+      tableNumber?: number | null;
       discount?: string | null;
       discountCode?: string | null;
       discountCurrency?: string | null;
@@ -5717,13 +5725,13 @@ export const createOrderInvoiceDtoCarrierTypeValues: ReadonlyArray<
 > = ["individual", "mobile", "certificate"];
 export const createOrderDtoModeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CreateOrderDto"]["mode"]
-> = ["counter", "dineIn", "kiosk", "pickup"];
+> = ["counter", "dineIn", "driveThru", "pickup"];
 export const createOrderDtoPaymentValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CreateOrderDto"]["payment"]
 > = ["ApplePay", "Cash", "Credit", "iPASS", "Jkopay", "TWQR", "WeiXin"];
 export const orderResponseDtoModeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrderResponseDto"]["mode"]
-> = ["counter", "dineIn", "kiosk", "pickup"];
+> = ["counter", "dineIn", "driveThru", "pickup"];
 export const orderResponseDtoPaymentMethodValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrderResponseDto"]["paymentMethod"]
 > = ["ApplePay", "Cash", "Credit", "iPASS", "Jkopay", "TWQR", "WeiXin"];
@@ -5748,6 +5756,7 @@ export const orderFilterFieldValues: ReadonlyArray<
   "orderStatus",
   "paymentDate",
   "createdAt",
+  "tableNumber",
   "total",
 ];
 export const orderSortFieldValues: ReadonlyArray<
@@ -5759,11 +5768,12 @@ export const orderSortFieldValues: ReadonlyArray<
   "orderStatus",
   "paymentDate",
   "createdAt",
+  "tableNumber",
   "total",
 ];
 export const userOrderResponseDtoModeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UserOrderResponseDto"]["mode"]
-> = ["counter", "dineIn", "kiosk", "pickup"];
+> = ["counter", "dineIn", "driveThru", "pickup"];
 export const userOrderResponseDtoPaymentMethodValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UserOrderResponseDto"]["paymentMethod"]
 > = ["ApplePay", "Cash", "Credit", "iPASS", "Jkopay", "TWQR", "WeiXin"];

@@ -1,8 +1,6 @@
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
-import KioskSelect from "./KioskSelect";
-
 import OrderMenuContent from "@/components/OrderMenuContent";
 import OrderPartySizeTextField from "@/components/OrderPartySizeTextField";
 import OrderTableNumberChip from "@/components/OrderTableNumberChip";
@@ -25,7 +23,6 @@ interface OrderModeOrganizationSlugPageProps {
   searchParams: Promise<{
     partySize?: string;
     tableNumber?: string;
-    type?: string;
   }>;
 }
 
@@ -33,19 +30,17 @@ const OrderModeOrganizationSlugPage = async ({
   params,
   searchParams,
 }: OrderModeOrganizationSlugPageProps) => {
-  const [{ locale, mode, organizationSlug }, { partySize, tableNumber, type }] =
+  const [{ locale, mode, organizationSlug }, { partySize, tableNumber }] =
     await Promise.all([params, searchParams]);
 
   setRequestLocale(locale);
 
-  if (mode === ORDER_MODE.Counter || mode === ORDER_MODE.Pickup)
+  if (
+    mode === ORDER_MODE.Counter ||
+    mode === ORDER_MODE.DriveThru ||
+    mode === ORDER_MODE.Pickup
+  )
     return <OrderMenuContent />;
-
-  if (mode === ORDER_MODE.Kiosk) {
-    if (!type) return <KioskSelect />;
-
-    return <OrderMenuContent />;
-  }
 
   if (mode !== ORDER_MODE.DineIn) return notFound();
 

@@ -68,9 +68,9 @@
       "ApplePay": "Apple Pay",
       "Cash": "現金",
       "Credit": "クレジットカード",
-      "dineInOnly": "店内飲食のみ",
       "iPASS": "iPASS MONEY",
       "Jkopay": "街口Pay",
+      "pickupUnavailable": "オンライン持ち帰りではご利用いただけません",
       "TWQR": "モバイル決済",
       "WeiXin": "WeChat Pay"
     },
@@ -152,11 +152,8 @@
         }
       }
     },
-    "kiosk": {
-      "dineIn": "店内",
-      "label": "キオスク",
-      "takeout": "テイクアウト",
-      "title": "お食事方法をお選びください"
+    "driveThru": {
+      "label": "ドライブスルー"
     },
     "pickup": {
       "label": "お持ち帰り"

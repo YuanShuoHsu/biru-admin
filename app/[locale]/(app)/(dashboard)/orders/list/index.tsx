@@ -303,6 +303,11 @@ const Orders = ({
         })),
       },
       {
+        field: "tableNumber",
+        filterOperators: numberFilterOperators,
+        headerName: tOrders("tableNumber"),
+      },
+      {
         field: "paymentMethod",
         filterOperators: enumFilterOperators,
         headerName: tOrders("paymentMethod"),

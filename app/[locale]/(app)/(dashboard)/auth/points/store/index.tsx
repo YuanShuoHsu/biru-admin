@@ -77,7 +77,7 @@ const Store = ({ points }: StoreProps) => {
         method: "POST",
       });
 
-      enqueueSnackbar(tAuth("points.redeemSuccess", { code: coupon.code }), {
+      enqueueSnackbar(tAuth("points.redeem.success", { code: coupon.code }), {
         variant: "success",
       });
     } catch (error) {
@@ -93,7 +93,7 @@ const Store = ({ points }: StoreProps) => {
     setDialog({
       content: (
         <DialogContentText>
-          {tAuth.rich("points.redeemConfirm", {
+          {tAuth.rich("points.redeem.confirmContentText", {
             bold: (chunks) => <strong>{chunks}</strong>,
             code: coupon.code,
             points: format.number(coupon.pointsCost),
@@ -102,7 +102,7 @@ const Store = ({ points }: StoreProps) => {
       ),
       onConfirm: () => handleRedeem(coupon),
       open: true,
-      title: tAuth("points.redeem"),
+      title: tAuth("points.redeem.label"),
     });
 
   return (
@@ -205,7 +205,7 @@ const Store = ({ points }: StoreProps) => {
                 size="small"
                 variant="contained"
               >
-                {tAuth("points.redeem")}
+                {tAuth("points.redeem.label")}
               </Button>
             </StyledCardActions>
           </Card>

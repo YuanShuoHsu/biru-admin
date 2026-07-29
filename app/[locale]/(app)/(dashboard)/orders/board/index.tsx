@@ -63,6 +63,8 @@ const OrdersBoard = ({
 }: OrdersBoardProps) => {
   const { setDialog } = useDialogStore((state) => state);
 
+  const tCommon = useTranslations("common");
+  const tOrder = useTranslations("order");
   const tOrders = useTranslations("orders");
 
   const { data: orders = initialOrders, mutate } = useSWR(
@@ -111,14 +113,24 @@ const OrdersBoard = ({
                 new Date(a.createdAt).getTime() -
                 new Date(b.createdAt).getTime(),
             )
-            .map((order) => ({
-              ...order,
-              primary: order.orderNumber,
-              secondary: order.customer.name,
-            })),
+            .map((order) => {
+              const modeLabel = order.tableNumber
+                ? tOrder("mode.dineIn.storeSlug.tableNumber.value", {
+                    tableNumber: order.tableNumber,
+                  })
+                : tOrder(`mode.${order.mode}.label`);
+
+              return {
+                ...order,
+                primary: order.orderNumber,
+                secondary: [modeLabel, order.customer.name].join(
+                  tCommon("delimiter"),
+                ),
+              };
+            }),
         ]),
       ) as Record<BoardStatus, Array<OrderResponse & BoardListItem>>,
-    [orders],
+    [orders, tCommon, tOrder],
   );
 
   const handleTransfer = async (ids: string[], endpoint: string) => {

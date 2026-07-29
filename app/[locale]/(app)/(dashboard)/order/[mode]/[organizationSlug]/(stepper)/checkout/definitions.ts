@@ -10,7 +10,7 @@ export type CarrierType = "certificate" | "individual" | "mobile";
 
 export const useCustomerPaymentFormSchema = () => {
   const { mode } = useParams();
-  const isKiosk = mode === ORDER_MODE.Kiosk;
+  const isPickup = mode === ORDER_MODE.Pickup;
 
   const tValidation = useTranslations("validation");
 
@@ -33,12 +33,12 @@ export const useCustomerPaymentFormSchema = () => {
           .string()
           .trim()
           .max(160, { error: tValidation("remark.maxLength") }),
-        telephone: isKiosk
-          ? z.string().trim()
-          : z
+        telephone: isPickup
+          ? z
               .string()
               .trim()
-              .min(1, { error: tValidation("telephone.required") }),
+              .min(1, { error: tValidation("telephone.required") })
+          : z.string().trim(),
       }),
       invoice: z.object({
         carrierType: z.union([

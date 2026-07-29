@@ -1,4 +1,5 @@
 import { setRequestLocale } from "next-intl/server";
+import { headers } from "next/headers";
 
 import type { Locale } from "@/i18n/routing";
 
@@ -23,10 +24,13 @@ const OrderModeOrganizationSlugCompletePage = async ({
 
   setRequestLocale(locale);
 
+  const reqHeaders = await headers();
+
   const [order, organization] = await Promise.all([
     orderId
       ? fetcher<OrderResponse>(
           `/api/organizations/${organizationSlug}/orders/${orderId}`,
+          { headers: { cookie: reqHeaders.get("cookie") || "" } },
         ).catch(() => null)
       : null,
     fetcher<OrganizationResponse>(

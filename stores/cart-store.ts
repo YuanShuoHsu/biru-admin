@@ -27,6 +27,7 @@ interface CartState {
   cartItemsList: CartItem[];
   cartTotalQuantity: number;
   isCartEmpty: boolean;
+  lastOrderId: string | null;
 }
 
 interface CartActions {
@@ -39,6 +40,7 @@ interface CartActions {
     mode: OrderMode | null,
     slug: Organization["slug"] | null,
   ) => void;
+  setLastOrderId: (orderId: string | null) => void;
   updateCartItem: (oldItem: CartItem, newItem: CartItem) => void;
 }
 
@@ -64,6 +66,7 @@ const defaultInitState: CartState = {
   carts: {},
   cartKey: null,
   ...deriveCartState({}),
+  lastOrderId: null,
 };
 
 export const createCartStore = (initState: CartState = defaultInitState) => {
@@ -137,6 +140,7 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
               ...deriveCartState((key && carts[key]) || {}),
             }));
           },
+          setLastOrderId: (orderId) => set({ lastOrderId: orderId }),
           updateCartItem: (oldItem, newItem) => {
             const { cartItemsMap } = get();
             const oldKey = getItemKey(
@@ -179,7 +183,7 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
       {
         name: "biru-cart",
         storage: createJSONStorage(() => localStorage),
-        partialize: ({ carts }) => ({ carts }),
+        partialize: ({ carts, lastOrderId }) => ({ carts, lastOrderId }),
         version: 6,
         migrate: () => ({ carts: {} }),
       },

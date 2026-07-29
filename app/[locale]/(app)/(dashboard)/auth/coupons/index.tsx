@@ -56,7 +56,7 @@ const Coupons = ({ claimableCoupons, coupons }: CouponsProps) => {
         method: "POST",
       });
 
-      enqueueSnackbar(tAuth("coupons.claimSuccess", { code: coupon.code }), {
+      enqueueSnackbar(tAuth("coupons.claim.success", { code: coupon.code }), {
         variant: "success",
       });
     } catch (error) {
@@ -161,7 +161,7 @@ const Coupons = ({ claimableCoupons, coupons }: CouponsProps) => {
                             size="small"
                             variant="contained"
                           >
-                            {tAuth("coupons.claim")}
+                            {tAuth("coupons.claim.label")}
                           </Button>
                         )}
                       </StyledCardActions>

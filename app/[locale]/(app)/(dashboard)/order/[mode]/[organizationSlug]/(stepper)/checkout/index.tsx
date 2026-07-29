@@ -94,14 +94,16 @@ const CARRIER_TYPES: CarrierType[] = ["individual", "mobile", "certificate"];
 const API_ORDER_MODE: Record<string, CreateOrderDto["mode"]> = {
   [ORDER_MODE.Counter]: "counter",
   [ORDER_MODE.DineIn]: "dineIn",
-  [ORDER_MODE.Kiosk]: "kiosk",
+  [ORDER_MODE.DriveThru]: "driveThru",
   [ORDER_MODE.Pickup]: "pickup",
 };
 
 const OrderModeOrganizationSlugCheckout = () => {
   const session = useAuthStore((state) => state.session);
 
-  const { cartItemsList, isCartEmpty } = useCartStore((state) => state);
+  const { cartItemsList, isCartEmpty, setLastOrderId } = useCartStore(
+    (state) => state,
+  );
   const { menu } = useMenuStore((state) => state);
 
   const hasInvalidItems = useCartHasInvalidItems();
@@ -175,7 +177,7 @@ const OrderModeOrganizationSlugCheckout = () => {
   const { mask, placeholder } = getPhoneFormatting(countryCode);
 
   const { mode, organizationSlug } = useParams();
-  const isKiosk = mode === ORDER_MODE.Kiosk;
+  const isPickup = mode === ORDER_MODE.Pickup;
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const search = searchParams.toString();
@@ -243,9 +245,9 @@ const OrderModeOrganizationSlugCheckout = () => {
 
   const paymentOptions = [
     {
-      ...(mode === ORDER_MODE.Pickup && {
+      ...(isPickup && {
         disabled: true,
-        disabledReason: tOrder("checkout.payment.dineInOnly"),
+        disabledReason: tOrder("checkout.payment.pickupUnavailable"),
       }),
       icon: <Payments fontSize="small" />,
       id: "Cash",
@@ -302,8 +304,12 @@ const OrderModeOrganizationSlugCheckout = () => {
         discountCode: coupon?.code,
         items: cartItemsList,
         mode: API_ORDER_MODE[String(mode)],
+        partySize: Number(searchParams.get("partySize")) || undefined,
         payment: values.payment,
+        tableNumber: Number(searchParams.get("tableNumber")) || undefined,
       });
+
+      setLastOrderId(order.id);
 
       const completeSearchParams = new URLSearchParams(search);
       completeSearchParams.set("orderId", order.id);
@@ -497,8 +503,8 @@ const OrderModeOrganizationSlugCheckout = () => {
                 error={!!errors.customer?.telephone}
                 fullWidth
                 helperText={errors.customer?.telephone?.message}
-                label={`${tOrder("checkout.customer.telephone.label")}${isKiosk ? ` ${tCommon("optional")}` : ""}`}
-                required={!isKiosk}
+                label={`${tOrder("checkout.customer.telephone.label")}${isPickup ? "" : ` ${tCommon("optional")}`}`}
+                required={isPickup}
                 slotProps={{
                   input: {
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any

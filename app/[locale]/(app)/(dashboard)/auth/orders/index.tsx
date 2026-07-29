@@ -15,18 +15,34 @@ import PaginationActions, {
   StyledTablePagination,
 } from "@/components/PaginationActions";
 
+import { ORDER_MODE } from "@/constants/orderMode";
 import { getPageSizeOptions } from "@/constants/pagination";
 
 import { useOrderItemName } from "@/hooks/useOrderItemName";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
-import { Chip, type ChipProps, Stack, Typography } from "@mui/material";
+import {
+  Button,
+  Chip,
+  type ChipProps,
+  Stack,
+  Typography,
+} from "@mui/material";
 
 import type { UserOrderListResponse, UserOrderResponse } from "@/types/orders";
 
+import { getHref } from "@/utils/href";
+
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
+
+const ORDER_MODE_PATH: Record<UserOrderResponse["mode"], string> = {
+  counter: ORDER_MODE.Counter,
+  dineIn: ORDER_MODE.DineIn,
+  driveThru: ORDER_MODE.DriveThru,
+  pickup: ORDER_MODE.Pickup,
+};
 
 const STATUS_CHIP_COLORS: Record<
   UserOrderResponse["orderStatus"],
@@ -49,9 +65,9 @@ interface OrdersProps {
 const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
   const [expanded, setExpanded] = useState<string | false>(false);
 
-  const locale = useLocale();
-
   const getOrderItemName = useOrderItemName();
+
+  const locale = useLocale();
 
   const pathname = usePathname();
 
@@ -199,9 +215,30 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
                     </Typography>
                   </Stack>
                 )}
-                <Typography color="text.secondary" variant="body2">
-                  {tOrder(`checkout.payment.${order.paymentMethod}`)}
-                </Typography>
+                <Stack
+                  alignItems="center"
+                  direction="row"
+                  gap={1}
+                  justifyContent="space-between"
+                >
+                  <Typography color="text.secondary" variant="body2">
+                    {tOrder(`checkout.payment.${order.paymentMethod}`)}
+                  </Typography>
+                  <Button
+                    href={getHref(
+                      `/order/${ORDER_MODE_PATH[order.mode]}/${order.seller.slug}/complete`,
+                      {
+                        orderId: order.id,
+                        partySize: order.partySize,
+                        tableNumber: order.tableNumber,
+                      },
+                    )}
+                    size="small"
+                    variant="outlined"
+                  >
+                    {tAuth("orders.detail")}
+                  </Button>
+                </Stack>
               </Stack>
             </CustomizedAccordions>
           );

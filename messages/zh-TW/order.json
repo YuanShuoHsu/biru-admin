@@ -68,9 +68,9 @@
       "ApplePay": "Apple Pay",
       "Cash": "現金",
       "Credit": "信用卡",
-      "dineInOnly": "僅限內用",
       "iPASS": "iPASS MONEY",
       "Jkopay": "街口支付",
+      "pickupUnavailable": "線上外帶不支援現金",
       "TWQR": "行動支付",
       "WeiXin": "微信支付"
     },
@@ -152,11 +152,8 @@
         }
       }
     },
-    "kiosk": {
-      "dineIn": "內用",
-      "label": "自助點餐",
-      "takeout": "外帶",
-      "title": "請選擇用餐方式"
+    "driveThru": {
+      "label": "得來速"
     },
     "pickup": {
       "label": "外帶自取"

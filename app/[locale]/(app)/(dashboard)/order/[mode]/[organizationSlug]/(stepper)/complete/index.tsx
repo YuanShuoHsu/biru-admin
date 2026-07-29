@@ -6,7 +6,8 @@ import utc from "dayjs/plugin/utc";
 import { useLocale, useTranslations } from "next-intl";
 import { useParams, useSearchParams } from "next/navigation";
 import { useSnackbar } from "notistack";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import useSWR from "swr";
 
 import { menuSocket } from "@/app/socket";
 
@@ -108,9 +109,9 @@ const OrderModeOrganizationSlugComplete = ({
   order: initialOrder,
   organization,
 }: OrderModeOrganizationSlugCompleteProps) => {
-  const [order, setOrder] = useState(initialOrder);
-
-  const { cartKey, clearCart } = useCartStore((state) => state);
+  const { cartKey, clearCart, lastOrderId, setLastOrderId } = useCartStore(
+    (state) => state,
+  );
 
   const locale = useLocale();
 
@@ -131,29 +132,32 @@ const OrderModeOrganizationSlugComplete = ({
   menuSearchParams.delete("orderId");
   const menuQuery = menuSearchParams.size ? `?${menuSearchParams}` : "";
 
+  const { data: order = initialOrder, mutate } = useSWR<OrderResponse | null>(
+    orderId ? `/api/organizations/${organizationSlug}/orders/${orderId}` : null,
+    { fallbackData: initialOrder },
+  );
+
   const { isConnected } = useSocketConnection(menuSocket);
 
   useEffect(() => {
     if (!isConnected || !orderId) return;
 
-    const setOrderStatus = (data: {
-      orderStatus: OrderResponse["orderStatus"];
-    }) => {
-      setOrder((prev) => (prev ? { ...prev, ...data } : prev));
+    const handleOrderStatusUpdated = () => {
+      mutate();
     };
 
     menuSocket
       .timeout(5000)
       .emitWithAck("joinOrder", { orderId })
-      .then(setOrderStatus)
+      .then(handleOrderStatusUpdated)
       .catch(() => {});
 
-    menuSocket.on("orderStatusUpdated", setOrderStatus);
+    menuSocket.on("orderStatusUpdated", handleOrderStatusUpdated);
 
     return () => {
-      menuSocket.off("orderStatusUpdated", setOrderStatus);
+      menuSocket.off("orderStatusUpdated", handleOrderStatusUpdated);
     };
-  }, [isConnected, orderId]);
+  }, [isConnected, mutate, orderId]);
 
   const tCommon = useTranslations("common");
   const tOrder = useTranslations("order");
@@ -176,8 +180,11 @@ const OrderModeOrganizationSlugComplete = ({
   const showPickupInfo = mode === ORDER_MODE.Pickup && !!organization;
 
   useEffect(() => {
-    if (cartKey && isSuccess) clearCart();
-  }, [cartKey, clearCart, isSuccess]);
+    if (!cartKey || !isSuccess || order?.id !== lastOrderId) return;
+
+    clearCart();
+    setLastOrderId(null);
+  }, [cartKey, clearCart, isSuccess, lastOrderId, order?.id, setLastOrderId]);
 
   const status = isSuccess ? "success" : "error";
   const StatusIcon = STATUS_ICON[status];
@@ -288,7 +295,7 @@ const OrderModeOrganizationSlugComplete = ({
                 </Stack>
               ))}
               {discount > 0 && (
-                <Stack direction="row" gap={1} justifyContent="space-between">
+                <Stack direction="row" justifyContent="space-between" gap={1}>
                   <Typography variant="body2">
                     {tOrder("complete.summary.discount")}
                     {order.discountCode
