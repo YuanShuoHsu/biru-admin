@@ -22,13 +22,7 @@ import { useOrderItemName } from "@/hooks/useOrderItemName";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
-import {
-  Button,
-  Chip,
-  type ChipProps,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Button, Chip, type ChipProps, Stack, Typography } from "@mui/material";
 
 import type { UserOrderListResponse, UserOrderResponse } from "@/types/orders";
 
