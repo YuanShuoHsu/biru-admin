@@ -1,3 +1,12 @@
+import dayjs from "dayjs";
+import timezonePlugin from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+
+import { STORE_TIMEZONE } from "@/constants/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezonePlugin);
+
 export const getBinnedValueBuckets = (
   entries: { date: string | Date; value: number }[],
   bucketCount: number,
@@ -5,20 +14,11 @@ export const getBinnedValueBuckets = (
   endDate = new Date(),
 ): number[] => {
   const buckets = Array(bucketCount).fill(0);
-  const end = Date.UTC(
-    endDate.getUTCFullYear(),
-    endDate.getUTCMonth(),
-    endDate.getUTCDate(),
-  );
+  const end = dayjs(endDate).tz(STORE_TIMEZONE).startOf("day");
 
   for (const { date: entryDate, value } of entries) {
-    const date = new Date(entryDate);
-    const day = Date.UTC(
-      date.getUTCFullYear(),
-      date.getUTCMonth(),
-      date.getUTCDate(),
-    );
-    const diffDays = Math.round((end - day) / 86_400_000);
+    const day = dayjs(entryDate).tz(STORE_TIMEZONE).startOf("day");
+    const diffDays = end.diff(day, "day");
     const index = bucketCount - 1 - Math.floor(diffDays / bucketSizeDays);
 
     if (index >= 0 && index < bucketCount) buckets[index] += value;

@@ -12,6 +12,8 @@ import FormCard, {
   StyledCardHeader,
 } from "@/components/FormCard";
 
+import { PLATFORM_TIMEZONE } from "@/constants/timezone";
+
 import { useRouter } from "@/i18n/navigation";
 
 import { LocalOffer, Stars } from "@mui/icons-material";
@@ -184,7 +186,7 @@ const Store = ({ points }: StoreProps) => {
                 coupon.validThrough &&
                   tAuth("points.validUntil", {
                     date: dayjs(coupon.validThrough)
-                      .tz("Asia/Taipei")
+                      .tz(PLATFORM_TIMEZONE)
                       .format("YYYY/MM/DD"),
                   }),
               ]

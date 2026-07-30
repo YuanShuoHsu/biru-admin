@@ -15,6 +15,7 @@ import { StyledCardContent } from "@/components/FormCard";
 import LocationDetails from "@/components/LocationDetails";
 
 import { ORDER_MODE } from "@/constants/orderMode";
+import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { useOrderItemName } from "@/hooks/useOrderItemName";
 import { useSocketConnection } from "@/hooks/useSocketConnection";
@@ -377,7 +378,7 @@ const OrderModeOrganizationSlugComplete = ({
                 <InfoRow
                   label={tOrder("complete.transaction.paymentDate")}
                   value={dayjs(order.paymentDate)
-                    .tz("Asia/Taipei")
+                    .tz(STORE_TIMEZONE)
                     .format("YYYY/MM/DD HH:mm:ss")}
                 />
               )}

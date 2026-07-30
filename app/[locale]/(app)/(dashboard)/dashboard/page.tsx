@@ -1,8 +1,13 @@
+import dayjs from "dayjs";
+import timezonePlugin from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import { setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 
 import Dashboard from ".";
 import { DASHBOARD_RANGES, resolveDashboardRange } from "./definitions";
+
+import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
@@ -25,6 +30,9 @@ import {
   getOrderTotalAmount,
   isCountedOrder,
 } from "@/utils/orders";
+
+dayjs.extend(utc);
+dayjs.extend(timezonePlugin);
 
 interface DashboardPageProps {
   params: Promise<{ locale: Locale }>;
@@ -77,14 +85,18 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
     ({ slug }) => slug === resolvedSlug,
   )?.id;
 
-  const trendStart = new Date();
-  trendStart.setUTCDate(trendStart.getUTCDate() - (trendFetchDays - 1));
-  trendStart.setUTCHours(0, 0, 0, 0);
+  const trendStart = dayjs()
+    .tz(STORE_TIMEZONE)
+    .startOf("day")
+    .subtract(trendFetchDays - 1, "day")
+    .toDate();
   const trendStartISO = trendStart.toISOString();
 
-  const periodStart = new Date();
-  periodStart.setUTCDate(periodStart.getUTCDate() - (trendPeriodDays - 1));
-  periodStart.setUTCHours(0, 0, 0, 0);
+  const periodStart = dayjs()
+    .tz(STORE_TIMEZONE)
+    .startOf("day")
+    .subtract(trendPeriodDays - 1, "day")
+    .toDate();
 
   const [
     usersTotal,
@@ -188,7 +200,7 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
 
   const hourlyOrders = Array<number>(24).fill(0);
   for (const order of periodOrders) {
-    hourlyOrders[new Date(order.createdAt).getHours()] += 1;
+    hourlyOrders[dayjs(order.createdAt).tz(STORE_TIMEZONE).hour()] += 1;
   }
 
   const countBy = <Key extends string>(getKey: (order: OrderResponse) => Key) =>

@@ -17,6 +17,7 @@ import PaginationActions, {
 
 import { ORDER_MODE } from "@/constants/orderMode";
 import { getPageSizeOptions } from "@/constants/pagination";
+import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { useOrderItemName } from "@/hooks/useOrderItemName";
 
@@ -166,7 +167,7 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
                   >
                     <Typography color="text.secondary" variant="caption">
                       {dayjs(order.createdAt)
-                        .tz("Asia/Taipei")
+                        .tz(STORE_TIMEZONE)
                         .format("YYYY/MM/DD HH:mm:ss")}
                     </Typography>
                     <Typography

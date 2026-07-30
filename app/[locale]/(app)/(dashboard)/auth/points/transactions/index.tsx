@@ -14,6 +14,7 @@ import PaginationActions, {
 } from "@/components/PaginationActions";
 
 import { getPageSizeOptions } from "@/constants/pagination";
+import { PLATFORM_TIMEZONE } from "@/constants/timezone";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
@@ -176,7 +177,7 @@ const Points = ({ page, pageSize, points }: PointsProps) => {
               subheader={[
                 organizationCount > 1 && transaction.organizationName,
                 dayjs(transaction.createdAt)
-                  .tz("Asia/Taipei")
+                  .tz(PLATFORM_TIMEZONE)
                   .format("YYYY/MM/DD HH:mm:ss"),
                 transaction.type === "earn"
                   ? (transaction.confirmationNumber ||
@@ -187,7 +188,7 @@ const Points = ({ page, pageSize, points }: PointsProps) => {
                 transaction.expiresAt &&
                   tAuth("points.validUntil", {
                     date: dayjs(transaction.expiresAt)
-                      .tz("Asia/Taipei")
+                      .tz(PLATFORM_TIMEZONE)
                       .format("YYYY/MM/DD"),
                   }),
               ]
