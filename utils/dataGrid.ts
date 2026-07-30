@@ -59,6 +59,5 @@ export const getDataGridSearchParams = (
     ...(quickFilterValue && { quickFilterValue }),
     ...(sortModel[0]?.field && { sortBy: sortModel[0].field }),
     ...(sortModel[0]?.sort && { sortDirection: sortModel[0].sort }),
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
   });
 };
