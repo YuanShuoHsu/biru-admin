@@ -3048,11 +3048,6 @@ export interface operations {
         sortBy?: components["schemas"]["UserSortField"];
         /** @description 排序方向 */
         sortDirection?: components["schemas"]["SortDirection"];
-        /**
-         * @deprecated
-         * @description 已忽略；日期與關鍵字比對一律以平台時區判斷
-         */
-        timezone?: string;
       };
       header?: never;
       path?: never;
@@ -3196,11 +3191,6 @@ export interface operations {
         filterOperator?: components["schemas"]["FilterOperator"];
         sortBy?: components["schemas"]["BannerSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
-        /**
-         * @deprecated
-         * @description 已忽略；日期與關鍵字比對一律以平台時區判斷
-         */
-        timezone?: string;
         limit?: number;
         offset?: number;
         filterValue?: string;
@@ -3379,11 +3369,6 @@ export interface operations {
         lang?: "en" | "ja" | "ko" | "zh-CN" | "zh-TW";
         sortBy?: components["schemas"]["CouponSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
-        /**
-         * @deprecated
-         * @description 已忽略；日期與關鍵字比對一律以平台時區判斷
-         */
-        timezone?: string;
         limit?: number;
         offset?: number;
         filterValue?: string;
@@ -3934,11 +3919,6 @@ export interface operations {
         filterOperator?: components["schemas"]["FilterOperator"];
         sortBy?: components["schemas"]["OrderSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
-        /**
-         * @deprecated
-         * @description 已忽略；日期與關鍵字比對一律以平台時區判斷
-         */
-        timezone?: string;
         limit?: number;
         offset?: number;
         filterValue?: string;
@@ -4239,11 +4219,6 @@ export interface operations {
         filterOperator?: components["schemas"]["FilterOperator"];
         sortBy?: components["schemas"]["MenuSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
-        /**
-         * @deprecated
-         * @description 已忽略；日期與關鍵字比對一律以平台時區判斷
-         */
-        timezone?: string;
         limit?: number;
         offset?: number;
         filterValue?: string;
@@ -4432,11 +4407,6 @@ export interface operations {
         filterOperator?: components["schemas"]["FilterOperator"];
         sortBy?: components["schemas"]["MenuSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
-        /**
-         * @deprecated
-         * @description 已忽略；日期與關鍵字比對一律以平台時區判斷
-         */
-        timezone?: string;
         limit?: number;
         offset?: number;
         filterValue?: string;
@@ -4745,11 +4715,6 @@ export interface operations {
         filterOperator?: components["schemas"]["FilterOperator"];
         sortBy?: components["schemas"]["AddOnSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
-        /**
-         * @deprecated
-         * @description 已忽略；日期與關鍵字比對一律以平台時區判斷
-         */
-        timezone?: string;
         limit?: number;
         offset?: number;
         filterValue?: string;
@@ -4907,11 +4872,6 @@ export interface operations {
         filterOperator?: components["schemas"]["FilterOperator"];
         sortBy?: components["schemas"]["ModifierSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
-        /**
-         * @deprecated
-         * @description 已忽略；日期與關鍵字比對一律以平台時區判斷
-         */
-        timezone?: string;
         limit?: number;
         offset?: number;
         filterValue?: string;
@@ -5097,11 +5057,6 @@ export interface operations {
         filterOperator?: components["schemas"]["FilterOperator"];
         sortBy?: components["schemas"]["ModifierSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
-        /**
-         * @deprecated
-         * @description 已忽略；日期與關鍵字比對一律以平台時區判斷
-         */
-        timezone?: string;
         limit?: number;
         offset?: number;
         filterValue?: string;
@@ -5259,11 +5214,6 @@ export interface operations {
         filterOperator?: components["schemas"]["FilterOperator"];
         sortBy?: components["schemas"]["ModifierSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
-        /**
-         * @deprecated
-         * @description 已忽略；日期與關鍵字比對一律以平台時區判斷
-         */
-        timezone?: string;
         limit?: number;
         offset?: number;
         filterValue?: string;
