@@ -18,6 +18,7 @@ const ToolbarOrderModeOrganizationSlugCartPage = async ({
       mode={mode}
       organizations={organizations}
       organizationSlug={organizationSlug}
+      readOnly
     />
   );
 };

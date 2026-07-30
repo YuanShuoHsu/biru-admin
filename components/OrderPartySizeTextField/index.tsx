@@ -19,6 +19,8 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   },
 }));
 
+const HiddenSelectIcon = () => null;
+
 interface OrderPartySizeTextFieldProps {
   organizationSlug: Organization["slug"];
   partySize?: string;
@@ -54,6 +56,7 @@ const OrderPartySizeTextField = ({
         inputLabel: { shrink: true },
         select: {
           displayEmpty: true,
+          IconComponent: readOnly ? HiddenSelectIcon : undefined,
           readOnly,
           renderValue: (selected) =>
             selected ? (

@@ -16,16 +16,20 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   },
 }));
 
+const HiddenSelectIcon = () => null;
+
 interface OrderOrganizationTextFieldProps {
   mode: string;
   organizations: OrganizationResponse[];
   organizationSlug: string;
+  readOnly?: boolean;
 }
 
 const OrderOrganizationTextField = ({
   mode,
   organizations,
   organizationSlug,
+  readOnly = false,
 }: OrderOrganizationTextFieldProps) => {
   const router = useRouter();
 
@@ -58,6 +62,8 @@ const OrderOrganizationTextField = ({
           ? undefined
           : {
               displayEmpty: true,
+              IconComponent: readOnly ? HiddenSelectIcon : undefined,
+              readOnly,
               renderValue: (selected) => {
                 const selectedOrganization = organizations.find(
                   ({ slug }) => slug === selected,

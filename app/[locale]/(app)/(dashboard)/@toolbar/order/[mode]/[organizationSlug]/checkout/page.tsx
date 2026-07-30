@@ -18,6 +18,7 @@ const ToolbarOrderModeOrganizationSlugCheckoutPage = async ({
       mode={mode}
       organizations={organizations}
       organizationSlug={organizationSlug}
+      readOnly
     />
   );
 };

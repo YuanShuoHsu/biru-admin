@@ -18,6 +18,7 @@ const ToolbarOrderModeOrganizationSlugCompletePage = async ({
       mode={mode}
       organizations={organizations}
       organizationSlug={organizationSlug}
+      readOnly
     />
   );
 };
