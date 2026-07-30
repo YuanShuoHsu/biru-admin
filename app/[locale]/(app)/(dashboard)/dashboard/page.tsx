@@ -10,7 +10,7 @@ import type { Locale } from "@/i18n/routing";
 import { authClient } from "@/lib/auth-client";
 
 import type { OrderMenu } from "@/types/menus";
-import type { OrderResponse } from "@/types/orders";
+import type { MenuItemSalesResponse, OrderResponse } from "@/types/orders";
 
 import {
   getBinnedBuckets,
@@ -20,7 +20,11 @@ import {
   getTrendPercent,
 } from "@/utils/dashboard";
 import { fetcher } from "@/utils/fetcher";
-import { getAdminOrders, getOrderTotalAmount } from "@/utils/orders";
+import {
+  getAdminOrders,
+  getOrderTotalAmount,
+  isCountedOrder,
+} from "@/utils/orders";
 
 interface DashboardPageProps {
   params: Promise<{ locale: Locale }>;
@@ -78,98 +82,107 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
   trendStart.setUTCHours(0, 0, 0, 0);
   const trendStartISO = trendStart.toISOString();
 
-  const [usersTotal, usersTrendCreatedAt, ordersData, trendOrders, orderMenu] =
-    await Promise.all([
-      isAdmin
-        ? authClient.admin
-            .listUsers({
-              query: {
-                limit: 1,
-                offset: 0,
-                sortBy: "createdAt",
-                sortDirection: "desc",
-              },
-              fetchOptions,
-            })
-            .then(({ data }) => data?.total || 0)
-        : Promise.resolve(null),
-      isAdmin
-        ? authClient.admin
-            .listUsers({
-              query: {
-                limit: 1000,
-                offset: 0,
-                sortBy: "createdAt",
-                sortDirection: "asc",
-                filterField: "createdAt",
-                filterOperator: "gte",
-                filterValue: trendStartISO,
-              },
-              fetchOptions,
-            })
-            .then(
-              ({ data }) => data?.users?.map((user) => user.createdAt) || [],
-            )
-        : Promise.resolve([]),
-      organizationSlug
-        ? getAdminOrders(organizationSlug, { pageSize: 1 }, fetchOptions)
-        : Promise.resolve(null),
-      organizationSlug
-        ? getAdminOrders(
-            organizationSlug,
-            {
-              filterField: "createdAt",
-              filterOperator: "onOrAfter",
-              filterValue: trendStartISO,
-              sortBy: "createdAt",
-              sortDirection: "asc",
-              pageSize: 1000,
-            },
-            fetchOptions,
-          ).then(({ orders }) => orders)
-        : Promise.resolve([]),
-      resolvedOrganizationId
-        ? fetcher<OrderMenu>(
-            `/api/organizations/${resolvedOrganizationId}/order-menu?lang=${locale}`,
-            fetchOptions,
-          ).catch(() => null)
-        : Promise.resolve(null),
-    ]);
-
   const periodStart = new Date();
   periodStart.setUTCDate(periodStart.getUTCDate() - (trendPeriodDays - 1));
   periodStart.setUTCHours(0, 0, 0, 0);
+
+  const [
+    usersTotal,
+    usersTrendCreatedAt,
+    ordersData,
+    trendOrders,
+    orderMenu,
+    sales,
+  ] = await Promise.all([
+    isAdmin
+      ? authClient.admin
+          .listUsers({
+            query: {
+              limit: 1,
+              offset: 0,
+              sortBy: "createdAt",
+              sortDirection: "desc",
+            },
+            fetchOptions,
+          })
+          .then(({ data }) => data?.total || 0)
+      : Promise.resolve(null),
+    isAdmin
+      ? authClient.admin
+          .listUsers({
+            query: {
+              limit: 1000,
+              offset: 0,
+              sortBy: "createdAt",
+              sortDirection: "asc",
+              filterField: "createdAt",
+              filterOperator: "gte",
+              filterValue: trendStartISO,
+            },
+            fetchOptions,
+          })
+          .then(({ data }) => data?.users?.map((user) => user.createdAt) || [])
+      : Promise.resolve([]),
+    organizationSlug
+      ? // 後端篩選僅支援單一欄位，無法完整表達 isCountedOrder 的口徑，
+        // 這裡排除佔最大宗的已取消訂單；付款失敗與尚未付款的線上訂單仍會計入
+        getAdminOrders(
+          organizationSlug,
+          {
+            filterField: "orderStatus",
+            filterOperator: "not",
+            filterValue: "OrderCancelled",
+            pageSize: 1,
+          },
+          fetchOptions,
+        )
+      : Promise.resolve(null),
+    organizationSlug
+      ? getAdminOrders(
+          organizationSlug,
+          {
+            filterField: "createdAt",
+            filterOperator: "onOrAfter",
+            filterValue: trendStartISO,
+            sortBy: "createdAt",
+            sortDirection: "asc",
+            pageSize: 1000,
+          },
+          fetchOptions,
+        ).then(({ orders }) => orders.filter(isCountedOrder))
+      : Promise.resolve([]),
+    resolvedOrganizationId
+      ? fetcher<OrderMenu>(
+          `/api/organizations/${resolvedOrganizationId}/order-menu?lang=${locale}`,
+          fetchOptions,
+        ).catch(() => null)
+      : Promise.resolve(null),
+    organizationSlug
+      ? fetcher<MenuItemSalesResponse[]>(
+          `/api/organizations/${organizationSlug}/menu-item-sales?since=${periodStart.toISOString()}`,
+          fetchOptions,
+        ).catch(() => [])
+      : Promise.resolve([]),
+  ]);
+
   const periodOrders = trendOrders.filter(
     (order) => new Date(order.createdAt) >= periodStart,
   );
 
-  const itemQuantities = new Map<string, number>();
-  for (const order of periodOrders) {
-    for (const item of order.items) {
-      itemQuantities.set(
-        item.menuItemName,
-        (itemQuantities.get(item.menuItemName) || 0) + item.orderQuantity,
-      );
-    }
-  }
-  const itemsByQuantity = [...itemQuantities.entries()].map(
-    ([name, quantity]) => ({ name, quantity }),
-  );
-  const topItems = [...itemsByQuantity]
-    .sort((a, b) => b.quantity - a.quantity)
-    .slice(0, 10);
+  const topItems = [...sales]
+    .sort((a, b) => b.sold - a.sold)
+    .slice(0, 10)
+    .map(({ menuItemName, sold }) => ({ name: menuItemName, quantity: sold }));
 
-  const menuItemNames = new Set(
-    (orderMenu?.sections || []).flatMap(({ menuItems }) =>
-      menuItems.map(({ name }) => name),
-    ),
+  const menuItems = (orderMenu?.sections || []).flatMap(
+    ({ menuItems }) => menuItems,
   );
-  for (const name of itemQuantities.keys()) menuItemNames.delete(name);
+  const soldByMenuItemId = new Map(
+    sales.map(({ menuItemId, sold }) => [menuItemId, sold]),
+  );
 
-  const slowItems = [
-    ...[...menuItemNames].map((name) => ({ name, quantity: 0 })),
-    ...itemsByQuantity,
-  ]
+  const slowItems = menuItems
+    .map(({ id, name }) => ({ name, quantity: soldByMenuItemId.get(id) || 0 }))
     .sort((a, b) => a.quantity - b.quantity)
     .slice(0, 10);
 

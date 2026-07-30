@@ -3,6 +3,7 @@
 
 "use client";
 
+import dayjs from "dayjs";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
@@ -19,6 +20,12 @@ import {
   APP_BAR_TOOLBAR_HEIGHT_XS_UP_LANDSCAPE,
 } from "@/constants/appBar";
 import { SCROLL_TRIGGER_THRESHOLD } from "@/constants/scroll";
+import {
+  FEATURED_LIMIT,
+  LATEST,
+  NEW_PRODUCT_DAYS,
+  TOP_SOLD,
+} from "@/constants/tab";
 
 import { Box, Tab, Tabs, Typography, useScrollTrigger } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -113,41 +120,42 @@ const OrderMenuContent = () => {
 
   const tOrder = useTranslations("order");
 
-  // const allItems = sections.flatMap(({ menuItems }) => menuItems);
-
-  // TODO: 需等訂單系統完成後，後端補上 sold 欄位才能啟用
-  // const topSoldItems = [...allItems]
-  //   .sort((a, b) => b.sold - a.sold)
-  //   .slice(0, TOP_SOLD_LIMIT);
-
-  // const topSoldSection =
-  //   topSoldItems.length > 0
-  //     ? {
-  //         id: TOP_SOLD,
-  //         items: topSoldItems,
-  //         label: tOrder("mode.storeSlug.tableNumber.topSold"),
-  //       }
-  //     : null;
-
-  // const latestItems = allItems.filter(
-  //   ({ createdAt }) =>
-  //     dayjs().diff(dayjs(createdAt), "day") <= NEW_PRODUCT_DAYS,
-  // );
-
-  // const latestSection =
-  //   latestItems.length > 0
-  //     ? ({
-  //         id: LATEST,
-  //         name: tOrder("mode.storeSlug.tableNumber.latest"),
-  //         menuItems: latestItems,
-  //       } as components["schemas"]["OrderMenuSectionResponseDto"])
-  //     : null;
-
   const sections = menu?.sections || [];
 
+  const allItems = sections.flatMap(({ menuItems }) => menuItems);
+
+  const topSoldItems = allItems
+    .filter(({ sold }) => sold > 0)
+    .sort((a, b) => b.sold - a.sold)
+    .slice(0, FEATURED_LIMIT);
+
+  const latestItems = allItems
+    .filter(
+      ({ createdAt }) =>
+        dayjs().diff(dayjs(createdAt), "day") <= NEW_PRODUCT_DAYS,
+    )
+    .sort((a, b) => dayjs(b.createdAt).diff(dayjs(a.createdAt)))
+    .slice(0, FEATURED_LIMIT);
+
   const combinedSections = [
-    // ...(topSoldSection ? [topSoldSection] : []),
-    // ...(latestSection ? [latestSection] : []),
+    ...(topSoldItems.length
+      ? [
+          {
+            id: TOP_SOLD,
+            menuItems: topSoldItems,
+            name: tOrder("mode.storeSlug.tableNumber.topSold"),
+          },
+        ]
+      : []),
+    ...(latestItems.length
+      ? [
+          {
+            id: LATEST,
+            menuItems: latestItems,
+            name: tOrder("mode.storeSlug.tableNumber.latest"),
+          },
+        ]
+      : []),
     ...sections,
   ];
 

@@ -444,6 +444,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/menu-item-sales": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢品項銷量 */
+    get: operations["MenuItemSalesController_findAll"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/orders": {
     parameters: {
       query?: never;
@@ -2136,6 +2153,13 @@ export interface components {
        */
       RandomNumber: string;
     };
+    MenuItemSalesResponseDto: {
+      menuItemId: string;
+      /** @description 最近一次的訂單品項名稱快照 */
+      menuItemName: string;
+      /** @description 視窗內售出數量，含被加購的次數 */
+      sold: number;
+    };
     CreateOrderCustomerDto: {
       /** Format: email */
       email?: string;
@@ -2790,6 +2814,8 @@ export interface components {
         | null;
       nutrition?: components["schemas"]["NutritionInformationDto"] | null;
       sortOrder: number;
+      /** @description 近期售出數量，含被加購的次數 */
+      sold: number;
       offers: components["schemas"]["OrderMenuOfferResponseDto"][];
       addOns: components["schemas"]["OrderMenuAddOnResponseDto"][];
       modifierGroups: components["schemas"]["OrderMenuModifierGroupResponseDto"][];
@@ -3848,6 +3874,37 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["IssueInvoiceEcpayDecryptedResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  MenuItemSalesController_findAll: {
+    parameters: {
+      query?: {
+        /** @description 統計起始時間；預設為近 30 天 */
+        since?: string;
+      };
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["MenuItemSalesResponseDto"][];
         };
       };
       /** @description Internal server error */

@@ -2,7 +2,13 @@ import { cache } from "react";
 
 import { fetcher } from "./fetcher";
 
-import type { OrderResponse } from "@/types/orders";
+import type { OrderResponse, OrderStatus } from "@/types/orders";
+
+const PAID_ORDER_STATUSES: OrderStatus[] = [
+  "OrderDelivered",
+  "OrderPickupAvailable",
+  "OrderProcessing",
+];
 
 interface GetAdminOrdersQuery {
   page?: number;
@@ -56,6 +62,14 @@ export const getAdminOrders = cache(
     }
   },
 );
+
+export const isCountedOrder = ({
+  orderStatus,
+  paymentMethod,
+}: OrderResponse): boolean =>
+  orderStatus !== "OrderCancelled" &&
+  orderStatus !== "OrderProblem" &&
+  (paymentMethod === "Cash" || PAID_ORDER_STATUSES.includes(orderStatus));
 
 export const getOrderTotalAmount = (order: OrderResponse): number => {
   const subtotal = order.items.reduce(
