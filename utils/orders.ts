@@ -2,8 +2,6 @@ import { cache } from "react";
 
 import { fetcher } from "./fetcher";
 
-import { STORE_TIMEZONE } from "@/constants/timezone";
-
 import type { OrderResponse, OrderStatus } from "@/types/orders";
 
 const PAID_ORDER_STATUSES: OrderStatus[] = [
@@ -48,7 +46,7 @@ export const getAdminOrders = cache(
         ...(filterField &&
           filterOperator &&
           filterValue && { filterField, filterOperator, filterValue }),
-        ...(quickFilterValue && { quickFilterValue, timezone: STORE_TIMEZONE }),
+        ...(quickFilterValue && { quickFilterValue }),
       });
       const result = await fetcher<{ data: OrderResponse[]; total: number }>(
         `/api/organizations/${organizationSlug}/orders?${params.toString()}`,
