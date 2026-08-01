@@ -1,4 +1,5 @@
-import { setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 
 import Coupons from ".";
@@ -32,6 +33,15 @@ interface CouponsPageProps {
     sortDirection?: string;
   }>;
 }
+
+export const generateMetadata = async ({
+  params,
+}: CouponsPageProps): Promise<Metadata> => {
+  const { locale } = await params;
+  const t = await getTranslations({ locale });
+
+  return { title: t("coupons.label") };
+};
 
 const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
   const [

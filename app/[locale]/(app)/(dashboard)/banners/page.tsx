@@ -1,4 +1,5 @@
-import { setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 
 import Banners from ".";
@@ -31,6 +32,15 @@ interface BannersPageProps {
     sortDirection?: string;
   }>;
 }
+
+export const generateMetadata = async ({
+  params,
+}: BannersPageProps): Promise<Metadata> => {
+  const { locale } = await params;
+  const t = await getTranslations({ locale });
+
+  return { title: t("banners.label") };
+};
 
 const BannersPage = async ({ params, searchParams }: BannersPageProps) => {
   const [

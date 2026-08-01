@@ -1,4 +1,5 @@
-import { setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 
 import OrdersBoard from ".";
@@ -15,6 +16,15 @@ interface OrdersBoardPageProps {
   params: Promise<{ locale: Locale }>;
   searchParams: Promise<{ organization?: string }>;
 }
+
+export const generateMetadata = async ({
+  params,
+}: OrdersBoardPageProps): Promise<Metadata> => {
+  const { locale } = await params;
+  const t = await getTranslations({ locale });
+
+  return { title: t("orders.board.title") };
+};
 
 const OrdersBoardPage = async ({
   params,

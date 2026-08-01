@@ -1,5 +1,10 @@
 import type { UserWithRole } from "better-auth/client/plugins";
-import { getMessages, setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import {
+  getMessages,
+  getTranslations,
+  setRequestLocale,
+} from "next-intl/server";
 import { cookies } from "next/headers";
 
 import Admins from ".";
@@ -36,6 +41,15 @@ interface AdminsPageProps {
     sortDirection?: string;
   }>;
 }
+
+export const generateMetadata = async ({
+  params,
+}: AdminsPageProps): Promise<Metadata> => {
+  const { locale } = await params;
+  const t = await getTranslations({ locale });
+
+  return { title: t("admins.label") };
+};
 
 const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
   const [

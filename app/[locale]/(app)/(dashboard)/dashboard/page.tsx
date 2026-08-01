@@ -1,7 +1,8 @@
 import dayjs from "dayjs";
 import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
-import { setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 
 import Dashboard from ".";
@@ -38,6 +39,15 @@ interface DashboardPageProps {
   params: Promise<{ locale: Locale }>;
   searchParams: Promise<{ organization?: string; range?: string }>;
 }
+
+export const generateMetadata = async ({
+  params,
+}: DashboardPageProps): Promise<Metadata> => {
+  const { locale } = await params;
+  const t = await getTranslations({ locale });
+
+  return { title: t("dashboard.label") };
+};
 
 const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
   const [cookieStore, { locale }, { organization = "", range: rangeParam }] =

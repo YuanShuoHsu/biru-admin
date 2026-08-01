@@ -1,4 +1,5 @@
-import { setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
@@ -13,6 +14,15 @@ import { buildTeamMembers } from "@/utils/teams";
 interface OrganizationsSlugTeamsTeamIdPageProps {
   params: Promise<{ locale: Locale; slug: string; teamId: string }>;
 }
+
+export const generateMetadata = async ({
+  params,
+}: OrganizationsSlugTeamsTeamIdPageProps): Promise<Metadata> => {
+  const { locale } = await params;
+  const t = await getTranslations({ locale });
+
+  return { title: t("organizations.teams.label") };
+};
 
 const OrganizationsSlugTeamsTeamIdPage = async ({
   params,

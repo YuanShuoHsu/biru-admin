@@ -1,4 +1,5 @@
-import { setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
@@ -45,6 +46,15 @@ interface MenuItemAddOnsPageProps {
     sortDirection?: string;
   }>;
 }
+
+export const generateMetadata = async ({
+  params,
+}: MenuItemAddOnsPageProps): Promise<Metadata> => {
+  const { locale } = await params;
+  const t = await getTranslations({ locale });
+
+  return { title: t("menus.items.addOns.label") };
+};
 
 const MenuItemAddOnsPage = async ({
   params,

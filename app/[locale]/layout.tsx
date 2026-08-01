@@ -15,7 +15,7 @@ import { routing } from "@/i18n/routing";
 
 import InitColorSchemeScript from "@mui/material/InitColorSchemeScript";
 
-import { buildOpenGraph, buildTwitter, SITE_NAME } from "@/utils/metadata";
+import { buildOpenGraph, buildTwitter } from "@/utils/metadata";
 import { getSiteMeta } from "@/utils/siteMeta";
 
 const geistSans = Geist({
@@ -44,7 +44,7 @@ export const generateMetadata = async ({
     metadataBase: new URL(getSiteMeta().siteUrl),
     openGraph: buildOpenGraph({ description, locale, title }),
     robots: { follow: false, index: false },
-    title: { default: title, template: `%s | ${SITE_NAME}` },
+    title: { default: title, template: `%s | ${title}` },
     twitter: buildTwitter({ description, title }),
   };
 };

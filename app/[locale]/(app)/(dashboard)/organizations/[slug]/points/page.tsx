@@ -1,4 +1,5 @@
-import { setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
@@ -11,6 +12,15 @@ import { authClient } from "@/lib/auth-client";
 interface OrganizationsSlugPointsPageProps {
   params: Promise<{ locale: Locale; slug: string }>;
 }
+
+export const generateMetadata = async ({
+  params,
+}: OrganizationsSlugPointsPageProps): Promise<Metadata> => {
+  const { locale } = await params;
+  const t = await getTranslations({ locale });
+
+  return { title: t("organizations.points.label") };
+};
 
 const OrganizationsSlugPointsPage = async ({
   params,

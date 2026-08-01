@@ -1,4 +1,5 @@
-import { setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
@@ -11,6 +12,15 @@ import { authClient } from "@/lib/auth-client";
 interface UserSessionsPageProps {
   params: Promise<{ locale: Locale; userId: string }>;
 }
+
+export const generateMetadata = async ({
+  params,
+}: UserSessionsPageProps): Promise<Metadata> => {
+  const { locale } = await params;
+  const t = await getTranslations({ locale });
+
+  return { title: t("admins.label") };
+};
 
 const UserSessionsPage = async ({ params }: UserSessionsPageProps) => {
   const [cookieStore, { locale, userId }] = await Promise.all([

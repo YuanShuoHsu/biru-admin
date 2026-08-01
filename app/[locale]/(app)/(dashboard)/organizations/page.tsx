@@ -1,4 +1,5 @@
-import { setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 
 import Organizations from ".";
@@ -12,6 +13,15 @@ import { getOrganizationPermissions } from "@/utils/organizations";
 interface OrganizationsPageProps {
   params: Promise<{ locale: Locale }>;
 }
+
+export const generateMetadata = async ({
+  params,
+}: OrganizationsPageProps): Promise<Metadata> => {
+  const { locale } = await params;
+  const t = await getTranslations({ locale });
+
+  return { title: t("organizations.label") };
+};
 
 const OrganizationsPage = async ({ params }: OrganizationsPageProps) => {
   const [cookieStore, { locale }] = await Promise.all([cookies(), params]);
