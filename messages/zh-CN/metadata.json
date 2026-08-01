@@ -1,0 +1,21 @@
+{
+  "about": {
+    "description": "认识 Biru Coffee：2026 年诞生于桃园大园，以每日新鲜食材与全日供应的餐点，为每位宾客冲煮一杯好咖啡。"
+  },
+  "description": "Biru Coffee 管理后台。管理门店、菜单、订单、优惠券与会员积分。",
+  "home": {
+    "title": "Biru Coffee 管理后台"
+  },
+  "order": {
+    "description": "选择 Biru Coffee 门店，浏览最新菜单与价格，在线完成外带自取点餐。"
+  },
+  "organization": {
+    "description": "浏览 {name} 的最新菜单与价格，直接在线完成点餐。"
+  },
+  "privacy": {
+    "description": "了解 Biru Coffee 如何收集、使用与保护您的个人资料。"
+  },
+  "terms": {
+    "description": "使用 Biru Coffee 在线点餐服务前，请详阅本服务条款。"
+  }
+}

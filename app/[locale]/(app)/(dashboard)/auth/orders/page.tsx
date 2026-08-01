@@ -1,5 +1,6 @@
+import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 
@@ -14,6 +15,17 @@ import { routing } from "@/i18n/routing";
 import type { UserOrderListResponse } from "@/types/orders";
 
 import { fetcher } from "@/utils/fetcher";
+
+export const generateMetadata = async ({
+  params,
+}: PageProps<"/[locale]/auth/orders">): Promise<Metadata> => {
+  const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) notFound();
+
+  const t = await getTranslations({ locale });
+
+  return { title: t("auth.orders.label") };
+};
 
 const AuthOrdersPage = async ({
   params,

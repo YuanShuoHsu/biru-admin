@@ -11,6 +11,7 @@ import dialog from "./en/dialog.json";
 import home from "./en/home.json";
 import maintenance from "./en/maintenance.json";
 import menus from "./en/menus.json";
+import metadata from "./en/metadata.json";
 import order from "./en/order.json";
 import orders from "./en/orders.json";
 import organizations from "./en/organizations.json";
@@ -30,6 +31,7 @@ const messages = {
   home,
   maintenance,
   menus,
+  metadata,
   order,
   orders,
   organizations,

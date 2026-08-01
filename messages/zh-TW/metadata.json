@@ -1,0 +1,21 @@
+{
+  "about": {
+    "description": "認識 Biru Coffee：2026 年誕生於桃園大園，以每日新鮮食材與全日供應的餐點，為每位賓客沖煮一杯好咖啡。"
+  },
+  "description": "Biru Coffee 管理後台。管理門市、菜單、訂單、優惠券與會員點數。",
+  "home": {
+    "title": "Biru Coffee 管理後台"
+  },
+  "order": {
+    "description": "選擇 Biru Coffee 門市，瀏覽最新菜單與價格，線上完成外帶自取點餐。"
+  },
+  "organization": {
+    "description": "瀏覽 {name} 的最新菜單與價格，直接在線上完成點餐。"
+  },
+  "privacy": {
+    "description": "了解 Biru Coffee 如何蒐集、使用與保護您的個人資料。"
+  },
+  "terms": {
+    "description": "使用 Biru Coffee 線上點餐服務前，請詳閱本服務條款。"
+  }
+}

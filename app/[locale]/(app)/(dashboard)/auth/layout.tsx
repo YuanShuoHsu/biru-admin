@@ -1,23 +1,17 @@
-"use client";
+import type { Metadata } from "next";
 
-import { Container } from "@mui/material";
-import { styled } from "@mui/material/styles";
-
-const StyledContainer = styled(Container)({
-  flex: 1,
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-});
+import AuthContainer from "./AuthContainer";
 
 interface MemberAuthLayoutProps {
   children: React.ReactNode;
 }
 
+export const metadata: Metadata = {
+  robots: { follow: true, index: false },
+};
+
 const MemberAuthLayout = ({ children }: MemberAuthLayoutProps) => (
-  <StyledContainer disableGutters maxWidth="sm">
-    {children}
-  </StyledContainer>
+  <AuthContainer>{children}</AuthContainer>
 );
 
 export default MemberAuthLayout;

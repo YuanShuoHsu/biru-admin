@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -10,6 +11,10 @@ interface OrderModeOrganizationSlugStepperLayoutProps {
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }
+
+export const metadata: Metadata = {
+  robots: { follow: true, index: false },
+};
 
 const OrderModeOrganizationSlugStepperLayout = async ({
   children,

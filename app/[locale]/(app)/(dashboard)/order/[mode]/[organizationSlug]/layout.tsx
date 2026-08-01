@@ -11,9 +11,9 @@ import { routing } from "@/i18n/routing";
 import { MenuStoreProvider } from "@/providers/menu-store-provider";
 
 import type { OrderMenu } from "@/types/menus";
-import type { OrganizationResponse } from "@/types/organizations";
 
 import { fetcher } from "@/utils/fetcher";
+import { getOrganization } from "@/utils/organizations";
 
 interface OrderModeOrganizationSlugLayoutProps {
   children: React.ReactNode;
@@ -33,9 +33,7 @@ const OrderModeOrganizationSlugLayout = async ({
 
   setRequestLocale(locale);
 
-  const organization = await fetcher<OrganizationResponse>(
-    `/api/organizations/${organizationSlug}`,
-  ).catch(() => null);
+  const organization = await getOrganization(organizationSlug);
   if (!organization) return notFound();
 
   const initialMenu = await fetcher<OrderMenu>(

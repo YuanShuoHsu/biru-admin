@@ -1,0 +1,21 @@
+{
+  "about": {
+    "description": "Meet Biru Coffee — founded in Dayuan, Taoyuan in 2026, serving all-day meals made with fresh daily ingredients alongside a great cup of coffee."
+  },
+  "description": "Biru Coffee admin console. Manage stores, menus, orders, coupons, and member points.",
+  "home": {
+    "title": "Biru Coffee Admin"
+  },
+  "order": {
+    "description": "Pick a Biru Coffee store, browse the latest menu and prices, and place your pickup order online."
+  },
+  "organization": {
+    "description": "Browse the latest menu and prices at {name}, and place your order online."
+  },
+  "privacy": {
+    "description": "Learn how Biru Coffee collects, uses, and protects your personal data."
+  },
+  "terms": {
+    "description": "Please read these terms of service before using Biru Coffee's online ordering."
+  }
+}

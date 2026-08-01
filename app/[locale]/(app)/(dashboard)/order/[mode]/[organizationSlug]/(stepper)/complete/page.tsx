@@ -1,4 +1,5 @@
-import { setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { headers } from "next/headers";
 
 import type { Locale } from "@/i18n/routing";
@@ -14,6 +15,17 @@ interface OrderModeOrganizationSlugCompletePageProps {
   params: Promise<{ locale: Locale; mode: string; organizationSlug: string }>;
   searchParams: Promise<{ orderId?: string }>;
 }
+
+export const generateMetadata = async ({
+  params,
+}: OrderModeOrganizationSlugCompletePageProps): Promise<Metadata> => {
+  const { locale } = await params;
+  const t = await getTranslations({ locale });
+
+  return {
+    title: t("order.mode.storeSlug.tableNumber.stepper.complete.label"),
+  };
+};
 
 const OrderModeOrganizationSlugCompletePage = async ({
   params,

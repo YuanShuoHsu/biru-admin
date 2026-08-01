@@ -1,4 +1,5 @@
-import { setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import OrderMenuContent from "@/components/OrderMenuContent";
@@ -14,6 +15,9 @@ import { Stack } from "@mui/material";
 
 import type { Organization } from "@/types/organizations";
 
+import { buildMetadata } from "@/utils/metadata";
+import { getOrganization } from "@/utils/organizations";
+
 interface OrderModeOrganizationSlugPageProps {
   params: Promise<{
     locale: Locale;
@@ -25,6 +29,29 @@ interface OrderModeOrganizationSlugPageProps {
     tableNumber?: string;
   }>;
 }
+
+export const generateMetadata = async ({
+  params,
+}: OrderModeOrganizationSlugPageProps): Promise<Metadata> => {
+  const { locale, mode, organizationSlug } = await params;
+
+  const organization = await getOrganization(organizationSlug);
+  if (!organization) return {};
+
+  if (mode !== ORDER_MODE.Pickup)
+    return { robots: { follow: true, index: false }, title: organization.name };
+
+  const t = await getTranslations({ locale });
+
+  return buildMetadata({
+    description: t("metadata.organization.description", {
+      name: organization.name,
+    }),
+    locale,
+    pathname: `/order/${ORDER_MODE.Pickup}/${organizationSlug}`,
+    title: organization.name,
+  });
+};
 
 const OrderModeOrganizationSlugPage = async ({
   params,

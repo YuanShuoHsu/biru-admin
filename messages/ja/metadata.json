@@ -1,0 +1,21 @@
+{
+  "about": {
+    "description": "Biru Coffee について。2026年に桃園市大園で誕生し、毎日仕入れる新鮮な食材と終日提供のメニューで、一杯のおいしいコーヒーをお届けします。"
+  },
+  "description": "Biru Coffee 管理画面。店舗、メニュー、注文、クーポン、会員ポイントを管理します。",
+  "home": {
+    "title": "Biru Coffee 管理画面"
+  },
+  "order": {
+    "description": "Biru Coffee の店舗を選び、最新のメニューと価格を見て、テイクアウトをオンラインで注文できます。"
+  },
+  "organization": {
+    "description": "{name} の最新メニューと価格を見て、そのままオンラインで注文できます。"
+  },
+  "privacy": {
+    "description": "Biru Coffee がお客様の個人情報をどのように収集・利用・保護するかをご説明します。"
+  },
+  "terms": {
+    "description": "Biru Coffee のオンライン注文サービスをご利用の前に、本利用規約をお読みください。"
+  }
+}
