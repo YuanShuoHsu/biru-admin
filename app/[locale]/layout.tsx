@@ -37,6 +37,7 @@ export const generateMetadata = async ({
   const t = await getTranslations({ locale, namespace: "metadata" });
 
   const description = t("description");
+  const siteName = t("siteName");
   const title = t("home.title");
 
   return {
@@ -44,7 +45,7 @@ export const generateMetadata = async ({
     metadataBase: new URL(getSiteMeta().siteUrl),
     openGraph: buildOpenGraph({ description, locale, title }),
     robots: { follow: false, index: false },
-    title: { default: title, template: `%s | ${title}` },
+    title: { default: title, template: `%s | ${siteName}` },
     twitter: buildTwitter({ description, title }),
   };
 };
