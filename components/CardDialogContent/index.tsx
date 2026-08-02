@@ -26,8 +26,8 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { CartItem } from "@/stores/cart-store";
 
 import type {
+  ItemAvailability,
   OrderMenuItem,
-  OrderMenuModifier,
   OrderMenuModifierGroup,
 } from "@/types/menus";
 import type { ApiOrderMode } from "@/types/orderMode";
@@ -267,7 +267,7 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
   });
 
   const getUnavailableLabel = (
-    availability: OrderMenuModifier["availability"],
+    availability: ItemAvailability | null | undefined,
     availableModes: ApiOrderMode[],
   ) =>
     !availableModes.includes(apiMode)

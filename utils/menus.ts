@@ -3,8 +3,8 @@ import { cache } from "react";
 import { fetcher } from "./fetcher";
 import { getHref } from "./href";
 
-import { DEFAULT_PAGINATION_QUERY } from "@/constants/pagination";
 import { LOW_STOCK_THRESHOLD } from "@/constants/menus";
+import { DEFAULT_PAGINATION_QUERY } from "@/constants/pagination";
 
 import { authClient } from "@/lib/auth-client";
 
@@ -229,6 +229,44 @@ export const getItemStock = (
   if (!item.availableModes.includes(mode)) return 0;
 
   return getOfferStock(item.offers[0]);
+};
+
+export const hasUnavailableChoices = (
+  menu: OrderMenu | null,
+  item: CartItem,
+  mode: ApiOrderMode,
+): boolean => {
+  const menuItem = findItemById(menu, item.menuItemId);
+  if (!menuItem) return false;
+
+  const hasUnavailableModifier = (
+    modifierGroups: OrderMenuModifierGroup[],
+    selections: Record<string, string[]>,
+  ) => {
+    const selectedIds = Object.values(selections).flat();
+
+    return modifierGroups
+      .flatMap(({ modifiers }) => modifiers)
+      .some(
+        ({ availableModes, id }) =>
+          selectedIds.includes(id) && !availableModes.includes(mode),
+      );
+  };
+
+  if (hasUnavailableModifier(menuItem.modifierGroups, item.modifiers))
+    return true;
+
+  const addOnItems = getAddOnItems(menuItem);
+
+  return item.addOns.some(({ menuItemId, modifiers }) => {
+    const addOnItem = addOnItems.find(({ id }) => id === menuItemId);
+    if (!addOnItem) return false;
+
+    return (
+      !addOnItem.availableModes.includes(mode) ||
+      hasUnavailableModifier(addOnItem.modifierGroups, modifiers)
+    );
+  });
 };
 
 type AddOnLimitResult = { cap: number; names: string[] };

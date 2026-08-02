@@ -1483,6 +1483,8 @@ export interface components {
     ValidateCouponDto: {
       code: string;
       items: components["schemas"]["CreateOrderItemDto"][];
+      /** @enum {string} */
+      mode: "counter" | "dineIn" | "driveThru" | "pickup";
     };
     ValidateCouponResponseDto: {
       code: string;
@@ -5726,6 +5728,9 @@ export const customerCouponDtoScopeValues: ReadonlyArray<
 export const userCouponResponseDtoSourceValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UserCouponResponseDto"]["source"]
 > = ["granted", "claimed", "signup", "birthday", "spend", "redeemed"];
+export const validateCouponDtoModeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["ValidateCouponDto"]["mode"]
+> = ["counter", "dineIn", "driveThru", "pickup"];
 export const availableCouponDtoDiscountTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AvailableCouponDto"]["discountType"]
 > = ["fixed", "percentage"];

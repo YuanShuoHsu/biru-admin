@@ -36,6 +36,7 @@ import {
   getChoiceNames,
   getItemStock,
   getLimitingAddOnsCap,
+  hasUnavailableChoices,
 } from "@/utils/menus";
 
 const StyledListItem = styled(ListItem)(({ theme }) => ({
@@ -159,6 +160,13 @@ const CartItemRow = ({ compact = false, item }: CartItemRowProps) => {
     addOnCapLeft,
   );
 
+  const unavailableLabel =
+    menuItem &&
+    (!menuItem.availableModes.includes(apiMode) ||
+      hasUnavailableChoices(menu, item, apiMode))
+      ? tOrder(`mode.${apiMode}.unavailable`)
+      : "";
+
   const formHelperText =
     perItemCapLeft === availableToAdd
       ? tCommon("maxQuantity", { quantity: MAX_QUANTITY })
@@ -208,9 +216,7 @@ const CartItemRow = ({ compact = false, item }: CartItemRowProps) => {
         item={item}
         itemStockCapLeft={itemStockCapLeft}
         limitingAddOnsLabel={limitingAddOnsLabel}
-        modeUnavailable={
-          !!menuItem && !menuItem.availableModes.includes(apiMode)
-        }
+        unavailableLabel={unavailableLabel}
       />
       <Stack width="100%" gap={2}>
         <Stack direction="row" gap={2}>

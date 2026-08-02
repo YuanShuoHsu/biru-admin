@@ -10,7 +10,11 @@ import { useMenuStore } from "@/providers/menu-store-provider";
 
 import type { RouteParams } from "@/types/routeParams";
 
-import { getItemStock, getLimitingAddOnsCap } from "@/utils/menus";
+import {
+  getItemStock,
+  getLimitingAddOnsCap,
+  hasUnavailableChoices,
+} from "@/utils/menus";
 
 const useCartHasInvalidItems = (): boolean => {
   const {
@@ -23,7 +27,8 @@ const useCartHasInvalidItems = (): boolean => {
   const { mode } = useParams<RouteParams<"mode">>();
   const apiMode = API_ORDER_MODE[mode];
 
-  return cartItemsList.some(({ menuItemId, addOns }) => {
+  return cartItemsList.some((item) => {
+    const { addOns, menuItemId } = item;
     const itemStock = getItemStock(menu, menuItemId, apiMode);
     const itemStockLeft = itemStock === null ? Infinity : itemStock;
     const cartItemTotalQuantity = getCartItemTotalQuantity(menuItemId);
@@ -37,7 +42,10 @@ const useCartHasInvalidItems = (): boolean => {
       getChoiceAvailableQuantity,
     );
 
-    return Math.min(perItemCapLeft, itemStockCapLeft, addOnCapLeft) < 0;
+    return (
+      hasUnavailableChoices(menu, item, apiMode) ||
+      Math.min(perItemCapLeft, itemStockCapLeft, addOnCapLeft) < 0
+    );
   });
 };
 

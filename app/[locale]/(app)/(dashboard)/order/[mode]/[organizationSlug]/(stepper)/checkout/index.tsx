@@ -222,11 +222,17 @@ const OrderModeOrganizationSlugCheckout = () => {
             `/api/organizations/${String(organizationSlug)}/coupons/validate`,
             couponCode,
             cartItemsList,
+            API_ORDER_MODE[mode],
           ]
         : null,
-      ([url, code, items]: [string, string, ValidateCouponDto["items"]]) =>
+      ([url, code, items, mode]: [
+        string,
+        string,
+        ValidateCouponDto["items"],
+        ValidateCouponDto["mode"],
+      ]) =>
         sendRequest<ValidateCouponResponse, ValidateCouponDto>()(url, {
-          arg: { code, items },
+          arg: { code, items, mode },
         }),
       {
         onError: (error) => {
