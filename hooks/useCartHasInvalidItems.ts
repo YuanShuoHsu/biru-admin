@@ -17,11 +17,9 @@ import {
 } from "@/utils/menus";
 
 const useCartHasInvalidItems = (): boolean => {
-  const {
-    cartItemsList,
-    getCartItemTotalQuantity,
-    getChoiceAvailableQuantity,
-  } = useCartStore((state) => state);
+  const { cartItemsList, getCartItemTotalQuantity } = useCartStore(
+    (state) => state,
+  );
   const { menu } = useMenuStore((state) => state);
 
   const { mode } = useParams<RouteParams<"mode">>();
@@ -31,7 +29,7 @@ const useCartHasInvalidItems = (): boolean => {
     const { addOns, menuItemId } = item;
     const itemStock = getItemStock(menu, menuItemId, apiMode);
     const itemStockLeft = itemStock === null ? Infinity : itemStock;
-    const cartItemTotalQuantity = getCartItemTotalQuantity(menuItemId);
+    const cartItemTotalQuantity = getCartItemTotalQuantity(menuItemId, null);
 
     const perItemCapLeft = MAX_QUANTITY - cartItemTotalQuantity;
     const itemStockCapLeft = itemStockLeft - cartItemTotalQuantity;
@@ -39,7 +37,7 @@ const useCartHasInvalidItems = (): boolean => {
       menu,
       menuItemId,
       addOns,
-      getChoiceAvailableQuantity,
+      (addOnId) => getCartItemTotalQuantity(addOnId, null),
     );
 
     return (

@@ -128,16 +128,12 @@ const CartItemRow = ({ compact = false, item }: CartItemRowProps) => {
     parenthesisClose: tCommon("parenthesisClose"),
   });
 
-  const {
-    addCartItem,
-    deleteCartItem,
-    getCartItemTotalQuantity,
-    getChoiceAvailableQuantity,
-  } = useCartStore((state) => state);
+  const { addCartItem, deleteCartItem, getCartItemTotalQuantity } =
+    useCartStore((state) => state);
 
   const itemStock = getItemStock(menu, menuItemId, apiMode);
   const itemStockLeft = itemStock === null ? Infinity : itemStock;
-  const cartItemTotalQuantity = getCartItemTotalQuantity(menuItemId);
+  const cartItemTotalQuantity = getCartItemTotalQuantity(menuItemId, null);
 
   const perItemCapLeft = MAX_QUANTITY - cartItemTotalQuantity;
   const itemStockCapLeft = itemStockLeft - cartItemTotalQuantity;
@@ -146,7 +142,7 @@ const CartItemRow = ({ compact = false, item }: CartItemRowProps) => {
     menu,
     menuItemId,
     addOns,
-    getChoiceAvailableQuantity,
+    (addOnId) => getCartItemTotalQuantity(addOnId, null),
   );
 
   const limitingAddOnsLabel =

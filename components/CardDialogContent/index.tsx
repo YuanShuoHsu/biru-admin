@@ -107,12 +107,8 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
   const price = promoInfo?.price || basePrice;
   const showLowStock = isLowStock(offer);
 
-  const {
-    addCartItem,
-    getCartItemTotalQuantity,
-    getChoiceAvailableQuantity,
-    updateCartItem,
-  } = useCartStore((state) => state);
+  const { addCartItem, getCartItemTotalQuantity, updateCartItem } =
+    useCartStore((state) => state);
 
   const locale = useLocale();
 
@@ -180,8 +176,8 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
 
   const extraCost = modifierExtraCost + addOnExtraCost;
 
-  const editingQuantity = cartItem?.quantity || 0;
-  const cartItemTotalQuantity = getCartItemTotalQuantity(id) - editingQuantity;
+  const editingItem = cartItem || null;
+  const cartItemTotalQuantity = getCartItemTotalQuantity(id, editingItem);
   const itemStockLeft = stock === null ? Infinity : stock;
 
   const perItemCapLeft = MAX_QUANTITY - cartItemTotalQuantity;
@@ -189,11 +185,7 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
 
   const { names: limitingAddOnNames, cap: addOnCapLeft } = getAddOnsCap(
     selectedAddOnItems,
-    (choiceId, choiceStock) =>
-      getChoiceAvailableQuantity(choiceId, choiceStock) +
-      (cartItem?.addOns.some(({ menuItemId }) => menuItemId === choiceId)
-        ? editingQuantity
-        : 0),
+    (addOnId) => getCartItemTotalQuantity(addOnId, editingItem),
   );
 
   const availableToAdd = Math.min(
@@ -484,12 +476,21 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
           options={addOnItems.map((addOnItem) => {
             const { availableModes, id, name, offers, modifierGroups } =
               addOnItem;
+            const checked = selectedAddOnIds.includes(id);
+            const addOnStock = getOfferStock(offers[0]);
+            // 已勾選的不擋，否則超賣的購物車項目無法取消該加購
+            const outOfStockInCart =
+              !checked &&
+              addOnStock !== null &&
+              addOnStock - getCartItemTotalQuantity(id, editingItem) <= 0;
             const unavailableLabel =
               getUnavailableLabel(offers[0]?.availability, availableModes) ||
               (hasUnsatisfiableModifierGroup(modifierGroups, apiMode)
                 ? tCommon("soldOut")
+                : "") ||
+              (outOfStockInCart
+                ? tCommon("reachStockLimit", { label: "" })
                 : "");
-            const checked = selectedAddOnIds.includes(id);
 
             return {
               children: checked && modifierGroups.length > 0 && (

@@ -34,8 +34,10 @@ interface CartActions {
   addCartItem: (item: CartItem) => void;
   clearCart: () => void;
   deleteCartItem: (item: CartItem) => void;
-  getCartItemTotalQuantity: (menuItemId: string) => number;
-  getChoiceAvailableQuantity: (choiceId: string, choiceStock: number) => number;
+  getCartItemTotalQuantity: (
+    menuItemId: string,
+    excludedItem: CartItem | null,
+  ) => number;
   setCartKey: (
     mode: OrderMode | null,
     slug: Organization["slug"] | null,
@@ -114,23 +116,29 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
             ];
             setActiveCart(newMap);
           },
-          getCartItemTotalQuantity: (menuItemId) =>
-            get().cartItemsList.reduce(
-              (sum, item) =>
-                item.menuItemId === menuItemId ? sum + item.quantity : sum,
-              0,
-            ),
-          getChoiceAvailableQuantity: (choiceId, choiceStock) => {
-            const used = get().cartItemsList.reduce(
-              (sum, { addOns, quantity }) =>
-                sum +
-                (addOns.some(({ menuItemId }) => menuItemId === choiceId)
-                  ? quantity
-                  : 0),
+          getCartItemTotalQuantity: (menuItemId, excludedItem) => {
+            const excludedKey =
+              excludedItem &&
+              getItemKey(
+                excludedItem.menuItemId,
+                excludedItem.modifiers,
+                excludedItem.addOns,
+              );
+
+            return Object.entries(get().cartItemsMap).reduce(
+              (sum, [key, { addOns, menuItemId: id, quantity }]) => {
+                if (key === excludedKey) return sum;
+
+                const usage =
+                  (id === menuItemId ? 1 : 0) +
+                  (addOns.some((addOn) => addOn.menuItemId === menuItemId)
+                    ? 1
+                    : 0);
+
+                return sum + usage * quantity;
+              },
               0,
             );
-
-            return choiceStock - used;
           },
           setCartKey: (mode, slug) => {
             const key = slug && mode && `${slug}:${mode}`;
