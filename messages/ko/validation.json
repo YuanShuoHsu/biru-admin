@@ -2,6 +2,9 @@
   "addOnMenuSectionId": {
     "required": "추가 섹션을 선택해 주세요."
   },
+  "availableModes": {
+    "notSelected": "판매 방식을 선택해 주세요."
+  },
   "banReason": {
     "maxLength": "정지 사유는 160자를 초과할 수 없습니다."
   },

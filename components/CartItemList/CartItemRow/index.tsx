@@ -1,5 +1,6 @@
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 
 import CartItemSoldOut from "./CartItemSoldOut";
 
@@ -7,6 +8,7 @@ import CardDialogContent from "@/components/CardDialogContent";
 import NumberSpinner from "@/components/NumberSpinner";
 
 import { MAX_QUANTITY } from "@/constants/cart";
+import { API_ORDER_MODE } from "@/constants/orderMode";
 
 import { Delete, RestaurantMenu } from "@mui/icons-material";
 import {
@@ -25,6 +27,8 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import { useMenuStore } from "@/providers/menu-store-provider";
 
 import { type CartItem } from "@/stores/cart-store";
+
+import type { RouteParams } from "@/types/routeParams";
 
 import {
   calcCartItemAmount,
@@ -99,6 +103,9 @@ const CartItemRow = ({ compact = false, item }: CartItemRowProps) => {
 
   const locale = useLocale();
 
+  const { mode } = useParams<RouteParams<"mode">>();
+  const apiMode = API_ORDER_MODE[mode];
+
   const { menu } = useMenuStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
 
@@ -127,7 +134,7 @@ const CartItemRow = ({ compact = false, item }: CartItemRowProps) => {
     getChoiceAvailableQuantity,
   } = useCartStore((state) => state);
 
-  const itemStock = getItemStock(menu, menuItemId);
+  const itemStock = getItemStock(menu, menuItemId, apiMode);
   const itemStockLeft = itemStock === null ? Infinity : itemStock;
   const cartItemTotalQuantity = getCartItemTotalQuantity(menuItemId);
 
@@ -201,6 +208,9 @@ const CartItemRow = ({ compact = false, item }: CartItemRowProps) => {
         item={item}
         itemStockCapLeft={itemStockCapLeft}
         limitingAddOnsLabel={limitingAddOnsLabel}
+        modeUnavailable={
+          !!menuItem && !menuItem.availableModes.includes(apiMode)
+        }
       />
       <Stack width="100%" gap={2}>
         <Stack direction="row" gap={2}>

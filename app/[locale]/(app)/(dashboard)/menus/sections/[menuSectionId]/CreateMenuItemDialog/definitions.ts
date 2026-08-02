@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-import { itemAvailabilityValues } from "@/types/api";
+import { itemAvailabilityValues, orderModeValues } from "@/types/api";
 
 import {
   refineRequiredLocalizedText,
@@ -39,6 +39,9 @@ export const useCreateMenuItemFormSchema = () => {
           tValidation("localizedText.completeOrEmpty"),
         ),
       ),
+    availableModes: z
+      .array(z.enum(orderModeValues))
+      .min(1, { error: tValidation("availableModes.notSelected") }),
     offer: z
       .object({
         priceCurrency: z.string().trim().min(1),

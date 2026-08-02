@@ -27,6 +27,10 @@
     },
     "placeholder": "공급 상태를 선택해 주세요"
   },
+  "availableModes": {
+    "helperText": "선택하지 않은 방식은 주문 페이지에서 미제공으로 표시됩니다",
+    "label": "판매 방식"
+  },
   "createdAt": "생성일",
   "description": {
     "label": "설명",

@@ -2,6 +2,9 @@
   "addOnMenuSectionId": {
     "required": "請選擇加購區塊。"
   },
+  "availableModes": {
+    "notSelected": "請選擇您的販售方式。"
+  },
   "banReason": {
     "maxLength": "封禁原因不能超過 160 個字元。"
   },

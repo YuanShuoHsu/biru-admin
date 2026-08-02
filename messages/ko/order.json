@@ -135,7 +135,8 @@
   },
   "mode": {
     "counter": {
-      "label": "카운터 주문"
+      "label": "카운터 주문",
+      "unavailable": "카운터 주문 미제공"
     },
     "dineIn": {
       "label": "매장 식사",
@@ -151,13 +152,16 @@
           },
           "value": "테이블 {tableNumber}"
         }
-      }
+      },
+      "unavailable": "매장 식사 미제공"
     },
     "driveThru": {
-      "label": "드라이브 스루"
+      "label": "드라이브 스루",
+      "unavailable": "드라이브 스루 미제공"
     },
     "pickup": {
-      "label": "포장 수령"
+      "label": "포장 수령",
+      "unavailable": "포장 수령 미제공"
     },
     "storeSlug": {
       "selectTable": "테이블 선택",

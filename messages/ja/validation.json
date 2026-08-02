@@ -2,6 +2,9 @@
   "addOnMenuSectionId": {
     "required": "アドオンセクションを選択してください。"
   },
+  "availableModes": {
+    "notSelected": "提供方式を選択してください。"
+  },
   "banReason": {
     "maxLength": "BAN理由は160文字以内で入力してください。"
   },

@@ -26,7 +26,7 @@ import ListRadioGroup from "@/components/ListRadioGroup";
 import TextMaskCustom from "@/components/TextMaskCustom";
 
 import { localeConfigs } from "@/constants/locale";
-import { ORDER_MODE } from "@/constants/orderMode";
+import { API_ORDER_MODE, ORDER_MODE } from "@/constants/orderMode";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -65,6 +65,7 @@ import type {
 import type { CheckoutEcpayDto, CheckoutEcpayResponse } from "@/types/ecpay";
 import type { CreateOrderDto, OrderResponse } from "@/types/orders";
 import type { PaymentMethod } from "@/types/payment";
+import type { RouteParams } from "@/types/routeParams";
 
 import { formatFullName } from "@/utils/auth";
 import { getPhoneFormatting } from "@/utils/countries";
@@ -90,13 +91,6 @@ const INVOICE_TYPES: { icon: React.ElementType; type: InvoiceType }[] = [
 ];
 
 const CARRIER_TYPES: CarrierType[] = ["individual", "mobile", "certificate"];
-
-const API_ORDER_MODE: Record<string, CreateOrderDto["mode"]> = {
-  [ORDER_MODE.Counter]: "counter",
-  [ORDER_MODE.DineIn]: "dineIn",
-  [ORDER_MODE.DriveThru]: "driveThru",
-  [ORDER_MODE.Pickup]: "pickup",
-};
 
 const OrderModeOrganizationSlugCheckout = () => {
   const session = useAuthStore((state) => state.session);
@@ -176,7 +170,8 @@ const OrderModeOrganizationSlugCheckout = () => {
 
   const { mask, placeholder } = getPhoneFormatting(countryCode);
 
-  const { mode, organizationSlug } = useParams();
+  const { mode, organizationSlug } =
+    useParams<RouteParams<"mode" | "organizationSlug">>();
   const isPickup = mode === ORDER_MODE.Pickup;
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -303,7 +298,7 @@ const OrderModeOrganizationSlugCheckout = () => {
         },
         discountCode: coupon?.code,
         items: cartItemsList,
-        mode: API_ORDER_MODE[String(mode)],
+        mode: API_ORDER_MODE[mode],
         partySize: Number(searchParams.get("partySize")) || undefined,
         payment: values.payment,
         tableNumber: Number(searchParams.get("tableNumber")) || undefined,

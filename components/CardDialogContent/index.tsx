@@ -1,5 +1,6 @@
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 import { Fragment, useEffect, useMemo } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
@@ -11,6 +12,7 @@ import NumberSpinner from "@/components/NumberSpinner";
 import RadioButtonsGroup from "@/components/RadioButtonsGroup";
 
 import { MAX_QUANTITY } from "@/constants/cart";
+import { API_ORDER_MODE } from "@/constants/orderMode";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -23,7 +25,13 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { CartItem } from "@/stores/cart-store";
 
-import type { OrderMenuItem, OrderMenuModifierGroup } from "@/types/menus";
+import type {
+  OrderMenuItem,
+  OrderMenuModifier,
+  OrderMenuModifierGroup,
+} from "@/types/menus";
+import type { ApiOrderMode } from "@/types/orderMode";
+import type { RouteParams } from "@/types/routeParams";
 
 import {
   ADD_ON_OPTION_ID,
@@ -107,6 +115,9 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
   } = useCartStore((state) => state);
 
   const locale = useLocale();
+
+  const { mode } = useParams<RouteParams<"mode">>();
+  const apiMode = API_ORDER_MODE[mode];
 
   const tCommon = useTranslations("common");
   const tDialog = useTranslations("dialog");
@@ -255,10 +266,20 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
     closeDialog();
   });
 
+  const getUnavailableLabel = (
+    availability: OrderMenuModifier["availability"],
+    availableModes: ApiOrderMode[],
+  ) =>
+    !availableModes.includes(apiMode)
+      ? tOrder(`mode.${apiMode}.unavailable`)
+      : availability === "SoldOut" || availability === "Discontinued"
+        ? tCommon("soldOut")
+        : "";
+
   const renderChoiceLabel = (
     choiceName: string,
     choiceExtraCost: number,
-    soldOut: boolean,
+    unavailableLabel: string,
   ) => (
     <Stack direction="row" alignItems="center" gap={1}>
       <WrapTypography variant="body2">{choiceName}</WrapTypography>
@@ -268,9 +289,9 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
           {priceCurrency} {Math.abs(choiceExtraCost).toLocaleString(locale)}
         </Typography>
       )}
-      {soldOut && (
+      {unavailableLabel && (
         <Typography color="error" variant="caption">
-          {tCommon("soldOut")}
+          {unavailableLabel}
         </Typography>
       )}
     </Stack>
@@ -320,17 +341,25 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
         label={displayName}
         onChange={(event, next) => onGroupChange(groupId, [next])}
         options={modifiers.map(
-          ({ availability, displayName, id, priceAdjustment }) => {
-            const soldOut =
-              availability === "SoldOut" || availability === "Discontinued";
+          ({
+            availability,
+            availableModes,
+            displayName,
+            id,
+            priceAdjustment,
+          }) => {
+            const unavailableLabel = getUnavailableLabel(
+              availability,
+              availableModes,
+            );
 
             return {
               control: <Radio size="small" />,
-              disabled: soldOut,
+              disabled: !!unavailableLabel,
               label: renderChoiceLabel(
                 displayName,
                 Number(priceAdjustment || 0),
-                soldOut,
+                unavailableLabel,
               ),
               value: id,
             };
@@ -348,17 +377,25 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
         label={displayName}
         onChange={(event, next) => onGroupChange(groupId, next)}
         options={modifiers.map(
-          ({ availability, displayName, id, priceAdjustment }) => {
-            const soldOut =
-              availability === "SoldOut" || availability === "Discontinued";
+          ({
+            availability,
+            availableModes,
+            displayName,
+            id,
+            priceAdjustment,
+          }) => {
+            const unavailableLabel = getUnavailableLabel(
+              availability,
+              availableModes,
+            );
 
             return {
               children: null,
-              disabled: soldOut || (!selected.includes(id) && atMax),
+              disabled: !!unavailableLabel || (!selected.includes(id) && atMax),
               label: renderChoiceLabel(
                 displayName,
                 Number(priceAdjustment || 0),
-                soldOut,
+                unavailableLabel,
               ),
               value: id,
             };
@@ -445,11 +482,13 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
             setValue(`choices.${ADD_ON_OPTION_ID}`, next)
           }
           options={addOnItems.map((addOnItem) => {
-            const { id, name, offers, modifierGroups } = addOnItem;
-            const soldOut =
-              offers[0]?.availability === "SoldOut" ||
-              offers[0]?.availability === "Discontinued" ||
-              hasUnsatisfiableModifierGroup(modifierGroups);
+            const { availableModes, id, name, offers, modifierGroups } =
+              addOnItem;
+            const unavailableLabel =
+              getUnavailableLabel(offers[0]?.availability, availableModes) ||
+              (hasUnsatisfiableModifierGroup(modifierGroups, apiMode)
+                ? tCommon("soldOut")
+                : "");
             const checked = selectedAddOnIds.includes(id);
 
             return {
@@ -468,8 +507,12 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
                   ))}
                 </Stack>
               ),
-              disabled: soldOut,
-              label: renderChoiceLabel(name, getAddOnPrice(addOnItem), soldOut),
+              disabled: !!unavailableLabel,
+              label: renderChoiceLabel(
+                name,
+                getAddOnPrice(addOnItem),
+                unavailableLabel,
+              ),
               value: id,
             };
           })}

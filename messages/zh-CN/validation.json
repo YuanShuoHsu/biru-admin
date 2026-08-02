@@ -2,6 +2,9 @@
   "addOnMenuSectionId": {
     "required": "请选择加购区块。"
   },
+  "availableModes": {
+    "notSelected": "请选择您的销售方式。"
+  },
   "banReason": {
     "maxLength": "封禁原因不能超过 160 个字符。"
   },

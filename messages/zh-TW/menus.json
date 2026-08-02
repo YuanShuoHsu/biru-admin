@@ -27,6 +27,10 @@
     },
     "placeholder": "請選擇您的供應狀態"
   },
+  "availableModes": {
+    "helperText": "未勾選的方式在點餐頁會顯示為不供應",
+    "label": "販售方式"
+  },
   "createdAt": "建立時間",
   "description": {
     "label": "描述",

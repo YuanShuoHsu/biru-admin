@@ -27,6 +27,10 @@
     },
     "placeholder": "Please select your availability"
   },
+  "availableModes": {
+    "helperText": "Unchecked modes are shown as unavailable on the ordering page",
+    "label": "Sold in"
+  },
   "createdAt": "Created",
   "description": {
     "label": "Description",

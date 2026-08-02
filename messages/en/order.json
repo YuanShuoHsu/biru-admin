@@ -135,7 +135,8 @@
   },
   "mode": {
     "counter": {
-      "label": "Counter"
+      "label": "Counter",
+      "unavailable": "Unavailable for counter"
     },
     "dineIn": {
       "label": "Dine-in",
@@ -151,13 +152,16 @@
           },
           "value": "Table {tableNumber}"
         }
-      }
+      },
+      "unavailable": "Unavailable for dine-in"
     },
     "driveThru": {
-      "label": "Drive-thru"
+      "label": "Drive-thru",
+      "unavailable": "Unavailable for drive-thru"
     },
     "pickup": {
-      "label": "Pickup"
+      "label": "Pickup",
+      "unavailable": "Unavailable for pickup"
     },
     "storeSlug": {
       "selectTable": "Select a table",

@@ -10,6 +10,7 @@ import {
   useCreateModifierFormSchema,
 } from "./definitions";
 
+import CheckboxesGroup from "@/components/CheckboxesGroup";
 import FormBox from "@/components/FormBox";
 import LocalizedTextFields from "@/components/LocalizedTextFields";
 import NumberSpinner from "@/components/NumberSpinner";
@@ -20,8 +21,9 @@ import { MenuItem, TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { itemAvailabilityValues } from "@/types/api";
+import { itemAvailabilityValues, orderModeValues } from "@/types/api";
 import type { Modifier } from "@/types/menus";
+import type { ApiOrderMode } from "@/types/orderMode";
 
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
@@ -40,6 +42,7 @@ const CreateModifierDialog = ({
   const locale = useLocale();
   const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
+  const tOrder = useTranslations("order");
 
   const createModifierFormSchema = useCreateModifierFormSchema();
   const {
@@ -53,17 +56,20 @@ const CreateModifierDialog = ({
       displayName: {},
       priceAdjustment: "",
       availability: "InStock",
+      availableModes: [...orderModeValues],
     },
     resolver: zodResolver(createModifierFormSchema),
   });
 
   const displayNameValue = useWatch({ control, name: "displayName" });
   const priceAdjustment = useWatch({ control, name: "priceAdjustment" });
+  const availableModes = useWatch({ control, name: "availableModes" });
 
   const onSubmitHandler = async ({
     displayName,
     priceAdjustment,
     availability,
+    availableModes,
   }: CreateModifierForm) => {
     try {
       setDialog({ confirmLoading: true });
@@ -77,6 +83,7 @@ const CreateModifierDialog = ({
             displayName,
             ...(priceAdjustment?.trim() && { priceAdjustment }),
             ...(availability && { availability }),
+            availableModes,
           }),
         },
       );
@@ -151,6 +158,24 @@ const CreateModifierDialog = ({
           </MenuItem>
         ))}
       </TextField>
+      <CheckboxesGroup
+        error={!!errors.availableModes}
+        fullWidth
+        helperText={
+          errors.availableModes?.message || tMenus("availableModes.helperText")
+        }
+        label={tMenus("availableModes.label")}
+        onChange={(event, value) =>
+          setValue("availableModes", value as ApiOrderMode[])
+        }
+        options={orderModeValues.map((value) => ({
+          children: null,
+          label: tOrder(`mode.${value}.label`),
+          value,
+        }))}
+        required
+        value={availableModes}
+      />
     </FormBox>
   );
 };

@@ -2430,6 +2430,11 @@ export interface components {
       description?: Record<string, never>;
       image?: string;
     };
+    /**
+     * @description 可販售的點餐模式；省略代表四種全開
+     * @enum {string}
+     */
+    OrderMode: "counter" | "dineIn" | "driveThru" | "pickup";
     NutritionInformationDto: {
       calories?: string;
       carbohydrateContent?: string;
@@ -2501,6 +2506,8 @@ export interface components {
         | "VeganDiet"
         | "VegetarianDiet"
       )[];
+      /** @description 可販售的點餐模式；省略代表四種全開 */
+      availableModes?: components["schemas"]["OrderMode"][];
       nutrition?: components["schemas"]["NutritionInformationDto"];
       offer?: components["schemas"]["CreateOfferDto"];
     };
@@ -2543,6 +2550,8 @@ export interface components {
             | "VegetarianDiet"
           )[]
         | null;
+      /** @description 可販售的點餐模式 */
+      availableModes: components["schemas"]["OrderMode"][];
       nutrition?: components["schemas"]["NutritionInformationDto"] | null;
       offer?: components["schemas"]["OfferResponseDto"] | null;
       /** Format: date-time */
@@ -2573,6 +2582,8 @@ export interface components {
         | "VeganDiet"
         | "VegetarianDiet"
       )[];
+      /** @description 可販售的點餐模式；省略代表四種全開 */
+      availableModes?: components["schemas"]["OrderMode"][];
       nutrition?: components["schemas"]["NutritionInformationDto"];
       offer?: components["schemas"]["CreateOfferDto"];
     };
@@ -2650,6 +2661,8 @@ export interface components {
       /** @description 加價金額；null 代表不影響價格 */
       priceAdjustment?: string | null;
       availability?: components["schemas"]["ItemAvailability"] | null;
+      /** @description 可販售的點餐模式 */
+      availableModes: components["schemas"]["OrderMode"][];
       sortOrder: number;
       /** Format: date-time */
       createdAt: string;
@@ -2699,6 +2712,8 @@ export interface components {
        */
       priceAdjustment?: string;
       availability?: components["schemas"]["ItemAvailability"];
+      /** @description 可販售的點餐模式；省略代表四種全開 */
+      availableModes?: components["schemas"]["OrderMode"][];
     };
     UpdateModifierDto: {
       /** @description 選項名稱 */
@@ -2750,6 +2765,8 @@ export interface components {
       /** @description 加價金額；null 代表不影響價格 */
       priceAdjustment?: string | null;
       availability?: components["schemas"]["ItemAvailability"] | null;
+      /** @description 可販售的點餐模式 */
+      availableModes: components["schemas"]["OrderMode"][];
       sortOrder: number;
       /** Format: date-time */
       createdAt: string;
@@ -2774,6 +2791,8 @@ export interface components {
       id: string;
       name: string;
       image?: string | null;
+      /** @description 可販售的點餐模式 */
+      availableModes: components["schemas"]["OrderMode"][];
       offers: components["schemas"]["OrderMenuOfferResponseDto"][];
       modifierGroups: components["schemas"]["OrderMenuModifierGroupResponseDto"][];
     };
@@ -2812,6 +2831,8 @@ export interface components {
             | "VegetarianDiet"
           )[]
         | null;
+      /** @description 可販售的點餐模式 */
+      availableModes: components["schemas"]["OrderMode"][];
       nutrition?: components["schemas"]["NutritionInformationDto"] | null;
       sortOrder: number;
       /** @description 近期售出數量，含被加購的次數 */
@@ -5839,6 +5860,9 @@ export const menuFilterFieldValues: ReadonlyArray<
 export const menuSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["MenuSortField"]
 > = ["name", "description", "createdAt", "updatedAt"];
+export const orderModeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["OrderMode"]
+> = ["counter", "dineIn", "driveThru", "pickup"];
 export const itemAvailabilityValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["ItemAvailability"]
 > = ["InStock", "SoldOut", "Discontinued"];

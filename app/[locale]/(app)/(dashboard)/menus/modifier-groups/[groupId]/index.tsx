@@ -147,7 +147,9 @@ const Modifiers = ({
 
   const searchParams = useSearchParams();
 
+  const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
+  const tOrder = useTranslations("order");
 
   const {
     data: { data: modifiers, total: rowCount } = {
@@ -512,6 +514,16 @@ const Modifiers = ({
         sortable: false,
       },
       {
+        field: "availableModes",
+        filterable: false,
+        headerName: tMenus("availableModes.label"),
+        valueFormatter: (_value: unknown, { availableModes }: Modifier) =>
+          availableModes
+            .map((mode) => tOrder(`mode.${mode}.label`))
+            .join(tCommon("delimiter")),
+        sortable: false,
+      },
+      {
         field: "createdAt",
         filterOperators: dateFilterOperators,
         headerName: tMenus("createdAt"),
@@ -535,7 +547,9 @@ const Modifiers = ({
       isReorderMode,
       locale,
       stringFilterOperators,
+      tCommon,
       tMenus,
+      tOrder,
     ],
   );
 

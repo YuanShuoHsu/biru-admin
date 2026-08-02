@@ -1,10 +1,12 @@
 import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 
 import ItemSoldOut from "./ItemSoldOut";
 
 import CardDialogContent from "@/components/CardDialogContent";
 
+import { API_ORDER_MODE } from "@/constants/orderMode";
 import { ViewDirections } from "@/constants/view";
 
 import { RestaurantMenu } from "@mui/icons-material";
@@ -22,6 +24,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import { useViewStore } from "@/providers/view-store-provider";
 
 import type { OrderMenuItem } from "@/types/menus";
+import type { RouteParams } from "@/types/routeParams";
 import type { ViewDirection } from "@/types/view";
 
 import {
@@ -102,7 +105,7 @@ interface ActionAreaCardProps {
 }
 
 const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
-  const { name, description, image, offers } = menuItem;
+  const { availableModes, name, description, image, offers } = menuItem;
   const offer = offers[0];
   const price = Number(offer.price);
   const priceCurrency = offer.priceCurrency;
@@ -111,6 +114,9 @@ const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
   const availability = offer.availability;
 
   const promoInfo = getActivePromo(offer);
+
+  const { mode } = useParams<RouteParams<"mode">>();
+  const apiMode = API_ORDER_MODE[mode];
 
   const { setDialog } = useDialogStore((state) => state);
   const { view } = useViewStore((state) => state);
@@ -121,19 +127,23 @@ const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
 
   const viewDirection = ViewDirections[view];
 
+  const isModeUnavailable = !availableModes.includes(apiMode);
   const isItemOutOfStock =
+    isModeUnavailable ||
     stock === 0 ||
     availability === "SoldOut" ||
     availability === "Discontinued" ||
-    hasUnsatisfiableModifierGroup(menuItem.modifierGroups);
+    hasUnsatisfiableModifierGroup(menuItem.modifierGroups, apiMode);
   const showLowStock = !isItemOutOfStock && isLowStock(offer);
 
   const soldOutLabel =
     availability === "Discontinued"
       ? tCommon("discontinued")
-      : isItemOutOfStock
-        ? tCommon("soldOut")
-        : "";
+      : isModeUnavailable
+        ? tOrder(`mode.${apiMode}.unavailable`)
+        : isItemOutOfStock
+          ? tCommon("soldOut")
+          : "";
 
   const handleDialogClick = () => {
     if (isItemOutOfStock) return;

@@ -12,6 +12,7 @@ import {
   useCreateMenuItemFormSchema,
 } from "./definitions";
 
+import CheckboxesGroup from "@/components/CheckboxesGroup";
 import CountryAutocomplete from "@/components/CountryAutocomplete";
 import FormBox from "@/components/FormBox";
 import LocalizedTextFields from "@/components/LocalizedTextFields";
@@ -27,8 +28,9 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { itemAvailabilityValues } from "@/types/api";
+import { itemAvailabilityValues, orderModeValues } from "@/types/api";
 import type { MenuItem as MenuItemType } from "@/types/menus";
+import type { ApiOrderMode } from "@/types/orderMode";
 
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
@@ -49,6 +51,7 @@ const CreateMenuItemDialog = ({
   const locale = useLocale();
   const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
+  const tOrder = useTranslations("order");
 
   const imageSrc = useUploadAvatarSrc(CREATE_MENU_ITEM_IMAGE_KEY);
 
@@ -63,6 +66,7 @@ const CreateMenuItemDialog = ({
     defaultValues: {
       name: {},
       description: {},
+      availableModes: [...orderModeValues],
       offer: {
         priceCurrency: "TWD",
         price: "",
@@ -84,6 +88,7 @@ const CreateMenuItemDialog = ({
     name: "offer.priceSpecification.price",
   });
   const availability = useWatch({ control, name: "offer.availability" });
+  const availableModes = useWatch({ control, name: "availableModes" });
   const deliveryLeadTimeValue = useWatch({
     control,
     name: "offer.deliveryLeadTime.value",
@@ -104,6 +109,7 @@ const CreateMenuItemDialog = ({
   const onSubmitHandler = async ({
     name,
     description,
+    availableModes,
     offer,
   }: CreateMenuItemForm) => {
     try {
@@ -118,6 +124,7 @@ const CreateMenuItemDialog = ({
             name,
             description,
             ...(imageSrc && { image: imageSrc }),
+            availableModes,
             offer: {
               priceCurrency: offer?.priceCurrency,
               price: offer?.price,
@@ -294,6 +301,24 @@ const CreateMenuItemDialog = ({
           </MenuItem>
         ))}
       </TextField>
+      <CheckboxesGroup
+        error={!!errors.availableModes}
+        fullWidth
+        helperText={
+          errors.availableModes?.message || tMenus("availableModes.helperText")
+        }
+        label={tMenus("availableModes.label")}
+        onChange={(event, value) =>
+          setValue("availableModes", value as ApiOrderMode[])
+        }
+        options={orderModeValues.map((value) => ({
+          children: null,
+          label: tOrder(`mode.${value}.label`),
+          value,
+        }))}
+        required
+        value={availableModes}
+      />
       <Grid container width="100%" alignItems="flex-end" spacing={2}>
         <Grid size={{ xs: 12, sm: 6 }}>
           <NumberSpinner

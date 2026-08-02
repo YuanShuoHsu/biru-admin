@@ -27,6 +27,10 @@
     },
     "placeholder": "请选择您的供应状态"
   },
+  "availableModes": {
+    "helperText": "未勾选的方式在点餐页会显示为不供应",
+    "label": "销售方式"
+  },
   "createdAt": "创建时间",
   "description": {
     "label": "描述",

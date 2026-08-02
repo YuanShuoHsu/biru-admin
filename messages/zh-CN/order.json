@@ -135,7 +135,8 @@
   },
   "mode": {
     "counter": {
-      "label": "到店点餐"
+      "label": "到店点餐",
+      "unavailable": "到店点餐不供应"
     },
     "dineIn": {
       "label": "堂食",
@@ -151,13 +152,16 @@
           },
           "value": "桌号 {tableNumber}"
         }
-      }
+      },
+      "unavailable": "堂食不供应"
     },
     "driveThru": {
-      "label": "得来速"
+      "label": "得来速",
+      "unavailable": "得来速不供应"
     },
     "pickup": {
-      "label": "自取"
+      "label": "自取",
+      "unavailable": "自取不供应"
     },
     "storeSlug": {
       "selectTable": "选择桌号",

@@ -2,6 +2,9 @@
   "addOnMenuSectionId": {
     "required": "Please select an add-on section."
   },
+  "availableModes": {
+    "notSelected": "Please select your sold in modes."
+  },
   "banReason": {
     "maxLength": "Ban reason must not exceed 160 characters."
   },

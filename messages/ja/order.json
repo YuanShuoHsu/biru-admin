@@ -135,7 +135,8 @@
   },
   "mode": {
     "counter": {
-      "label": "カウンター注文"
+      "label": "カウンター注文",
+      "unavailable": "カウンター注文は対象外"
     },
     "dineIn": {
       "label": "店内",
@@ -151,13 +152,16 @@
           },
           "value": "テーブル {tableNumber}"
         }
-      }
+      },
+      "unavailable": "店内は対象外"
     },
     "driveThru": {
-      "label": "ドライブスルー"
+      "label": "ドライブスルー",
+      "unavailable": "ドライブスルーは対象外"
     },
     "pickup": {
-      "label": "お持ち帰り"
+      "label": "お持ち帰り",
+      "unavailable": "お持ち帰りは対象外"
     },
     "storeSlug": {
       "selectTable": "テーブルを選択",

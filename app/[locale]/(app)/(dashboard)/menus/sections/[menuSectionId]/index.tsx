@@ -169,6 +169,7 @@ const MenusMenuIdSectionId = ({
 
   const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
+  const tOrder = useTranslations("order");
 
   const {
     data: { data: items, total: rowCount } = {
@@ -608,6 +609,16 @@ const MenusMenuIdSectionId = ({
           ),
       },
       {
+        field: "availableModes",
+        headerName: tMenus("availableModes.label"),
+        sortable: false,
+        filterable: false,
+        valueFormatter: (_value: unknown, { availableModes }: MenuItem) =>
+          availableModes
+            .map((mode) => tOrder(`mode.${mode}.label`))
+            .join(tCommon("delimiter")),
+      },
+      {
         field: "inventoryLevel",
         headerName: `${tMenus("items.offers.inventoryLevel.value.label")} ${tCommon("optional")}`,
         sortable: false,
@@ -679,6 +690,7 @@ const MenusMenuIdSectionId = ({
       stringFilterOperators,
       tCommon,
       tMenus,
+      tOrder,
     ],
   );
 

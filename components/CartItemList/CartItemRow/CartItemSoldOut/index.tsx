@@ -1,4 +1,7 @@
 import { useTranslations } from "next-intl";
+import { useParams } from "next/navigation";
+
+import { API_ORDER_MODE } from "@/constants/orderMode";
 
 import { Delete, Edit } from "@mui/icons-material";
 import { Box, Button, Typography } from "@mui/material";
@@ -7,6 +10,8 @@ import { styled } from "@mui/material/styles";
 import { useCartStore } from "@/providers/cart-store-provider";
 
 import type { CartItem } from "@/stores/cart-store";
+
+import type { RouteParams } from "@/types/routeParams";
 
 import { getTypographyVariant } from "@/utils/soldOut";
 
@@ -59,6 +64,7 @@ interface CartItemSoldOutProps {
   item: CartItem;
   itemStockCapLeft: number;
   limitingAddOnsLabel: string;
+  modeUnavailable: boolean;
 }
 
 const CartItemSoldOut = ({
@@ -68,10 +74,14 @@ const CartItemSoldOut = ({
   item,
   itemStockCapLeft,
   limitingAddOnsLabel,
+  modeUnavailable,
 }: CartItemSoldOutProps) => {
   const { quantity } = item;
 
   const { addCartItem, deleteCartItem } = useCartStore((state) => state);
+
+  const { mode } = useParams<RouteParams<"mode">>();
+  const apiMode = API_ORDER_MODE[mode];
 
   const tCommon = useTranslations("common");
   const tOrder = useTranslations("order");
@@ -84,7 +94,9 @@ const CartItemSoldOut = ({
   const message = shouldDeleteItem
     ? discontinued
       ? tCommon("discontinued")
-      : tCommon("soldOut")
+      : modeUnavailable
+        ? tOrder(`mode.${apiMode}.unavailable`)
+        : tCommon("soldOut")
     : shouldEditItem
       ? itemStockCapLeft === availableToAdd
         ? tOrder("cart.quantityExceedsStock", {
