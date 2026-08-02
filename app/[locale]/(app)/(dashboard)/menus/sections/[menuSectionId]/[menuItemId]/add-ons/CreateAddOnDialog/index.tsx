@@ -252,7 +252,11 @@ const CreateAddOnDialog = ({
             <em>{tMenus("items.addOns.addOnMenuItemId.placeholder")}</em>
           </MenuItem>
           {sectionItems.map(({ id, name }) => (
-            <MenuItem disabled={usedItemIds.has(id)} key={id} value={id}>
+            <MenuItem
+              disabled={id === menuItemId || usedItemIds.has(id)}
+              key={id}
+              value={id}
+            >
               {localize(name, locale)}
             </MenuItem>
           ))}

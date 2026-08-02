@@ -260,7 +260,10 @@ const UpdateAddOnDialog = ({
           </MenuItem>
           {sectionItems.map(({ id, name }) => (
             <MenuItem
-              disabled={id !== addOnMenuItemId && usedItemIds.has(id)}
+              disabled={
+                id === addOn.menuItemId ||
+                (id !== addOnMenuItemId && usedItemIds.has(id))
+              }
               key={id}
               value={id}
             >
