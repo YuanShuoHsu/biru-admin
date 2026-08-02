@@ -2724,6 +2724,8 @@ export interface components {
        */
       priceAdjustment?: string;
       availability?: components["schemas"]["ItemAvailability"];
+      /** @description 可販售的點餐模式 */
+      availableModes?: components["schemas"]["OrderMode"][];
     };
     CreateMenuItemModifierGroupDto: {
       /** @description 要掛到此品項的選項群組 ID */
