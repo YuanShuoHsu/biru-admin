@@ -7,6 +7,7 @@ import dayjs from "dayjs";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
+import FeaturedSlider from "./FeaturedSlider";
 import MenuCard from "./MenuCard";
 import OrderBottomBar from "./OrderBottomBar";
 import ResponsiveGrid from "./ResponsiveGrid";
@@ -288,7 +289,11 @@ const OrderMenuContent = () => {
           >
             {name}
           </SectionTypography>
-          <ResponsiveGrid menuItems={menuItems} />
+          {id === TOP_SOLD || id === LATEST ? (
+            <FeaturedSlider menuItems={menuItems} />
+          ) : (
+            <ResponsiveGrid menuItems={menuItems} />
+          )}
         </SectionBox>
       ))}
       <OrderBottomBar />

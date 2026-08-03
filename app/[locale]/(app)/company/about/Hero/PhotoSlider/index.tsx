@@ -1,17 +1,17 @@
 "use client";
 
 import Image from "next/image";
-import { Autoplay, FreeMode, Keyboard } from "swiper/modules";
-import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from "swiper/modules";
 
+import Carousel from "@/components/Carousel";
+
+import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
-
-import "swiper/css";
-import "swiper/css/free-mode";
 
 const SLIDE_COUNT = 10;
 
-const StyledSwiper = styled(Swiper)(({ theme }) => ({
+const MaskBox = styled(Box)(({ theme }) => ({
+  position: "relative",
   width: "100%",
   height: "100%",
   borderRadius: theme.shape.borderRadius,
@@ -37,7 +37,7 @@ const StyledSwiper = styled(Swiper)(({ theme }) => ({
   },
 }));
 
-const StyledSlide = styled(SwiperSlide)(({ theme }) => ({
+const PhotoBox = styled(Box)(({ theme }) => ({
   position: "relative",
   aspectRatio: "4/3",
   borderRadius: theme.shape.borderRadius,
@@ -45,38 +45,38 @@ const StyledSlide = styled(SwiperSlide)(({ theme }) => ({
 }));
 
 const PhotoSlider = () => (
-  <StyledSwiper
-    autoplay={{ delay: 0, disableOnInteraction: false }}
-    breakpoints={{
-      0: { slidesPerView: 1, spaceBetween: 8 },
-      600: { slidesPerView: 2, spaceBetween: 12 },
-      900: { slidesPerView: 3, spaceBetween: 16 },
-      1200: { slidesPerView: 4, spaceBetween: 16 },
-    }}
-    freeMode={{ sticky: true }}
-    grabCursor={true}
-    keyboard={{ enabled: true }}
-    loop={true}
-    modules={[Autoplay, FreeMode, Keyboard]}
-    onSetTransition={(swiper) => {
-      swiper.wrapperEl.style.transitionTimingFunction = "linear";
-    }}
-    spaceBetween={8}
-    speed={4000}
-  >
-    {Array.from({ length: SLIDE_COUNT }, (_, index) => (
-      <StyledSlide key={index}>
-        <Image
-          alt={`Photo ${index + 1}`}
-          fill
-          priority={index < 4}
-          sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 25vw"
-          src="/images/IMG_4590.jpg"
-          style={{ objectFit: "cover" }}
-        />
-      </StyledSlide>
-    ))}
-  </StyledSwiper>
+  <MaskBox>
+    <Carousel
+      autoplay={{ delay: 0, disableOnInteraction: false }}
+      breakpoints={{
+        0: { slidesPerView: 1, spaceBetween: 8 },
+        600: { slidesPerView: 2, spaceBetween: 12 },
+        900: { slidesPerView: 3, spaceBetween: 16 },
+        1200: { slidesPerView: 4, spaceBetween: 16 },
+      }}
+      loop={true}
+      modules={[Autoplay]}
+      onSetTransition={(swiper) => {
+        swiper.wrapperEl.style.transitionTimingFunction = "linear";
+      }}
+      pagination={false}
+      spaceBetween={8}
+      speed={4000}
+    >
+      {Array.from({ length: SLIDE_COUNT }, (_, index) => (
+        <PhotoBox key={index}>
+          <Image
+            alt={`Photo ${index + 1}`}
+            fill
+            priority={index < 4}
+            sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 25vw"
+            src="/images/IMG_4590.jpg"
+            style={{ objectFit: "cover" }}
+          />
+        </PhotoBox>
+      ))}
+    </Carousel>
+  </MaskBox>
 );
 
 export default PhotoSlider;

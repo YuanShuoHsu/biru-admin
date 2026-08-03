@@ -36,6 +36,7 @@ import {
 const StyledCard = styled(Card)({
   position: "relative",
   width: "100%",
+  height: "100%",
 });
 
 const StyledCardActionArea = styled(CardActionArea, {

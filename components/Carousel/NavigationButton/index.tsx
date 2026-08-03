@@ -5,15 +5,26 @@ const StyledButton = styled(Button, {
   shouldForwardProp: (prop) => prop !== "direction",
 })<{ direction: "prev" | "next" }>(({ direction, theme }) => ({
   position: "absolute",
+  top: "50%",
   ...(direction === "prev"
     ? { left: theme.spacing(2) }
     : { right: theme.spacing(2) }),
+  transform: "translateY(-50%)",
   padding: 0,
   minWidth: 0,
   width: theme.spacing(4.5),
   height: theme.spacing(4.5),
   borderRadius: "50%",
   zIndex: 1,
+  transition: theme.transitions.create("opacity"),
+
+  "&.swiper-button-disabled": {
+    opacity: 0.5,
+  },
+
+  "&.swiper-button-lock": {
+    display: "none",
+  },
 }));
 
 interface NavigationButtonProps {
