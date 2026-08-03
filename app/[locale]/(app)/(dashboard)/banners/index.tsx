@@ -460,7 +460,13 @@ const Banners = ({
         filterable: false,
         headerName: tBanners("image.label"),
         renderCell: ({ row: { image } }: GridRenderCellParams<Banner>) => (
-          <StyledAvatar alt={tBanners("image.label")} src={image} />
+          <Stack height="100%" direction="row" alignItems="center">
+            <StyledAvatar
+              alt={tBanners("image.label")}
+              src={image}
+              variant="rounded"
+            />
+          </Stack>
         ),
         sortable: false,
       },
