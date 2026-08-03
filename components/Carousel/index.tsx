@@ -16,6 +16,9 @@ const StyledSwiper = styled(Swiper)(({ theme }) => ({
   width: "100%",
   height: "100%",
 
+  "--swiper-pagination-bullet-inactive-color": theme.vars.palette.text.primary,
+  "--swiper-pagination-color": theme.vars.palette.primary.main,
+
   ".swiper-button-prev": {
     "&::after": {},
   },
@@ -23,16 +26,18 @@ const StyledSwiper = styled(Swiper)(({ theme }) => ({
     "&::after": {},
   },
 
-  ".swiper-pagination-bullet-active": {
-    width: `${theme.spacing(2)} !important`,
-    backgroundColor: `${theme.vars.palette.primary.main} !important`,
-    borderRadius: `${theme.shape.borderRadius}px !important`,
+  ".swiper-pagination-bullet": {
+    transition: theme.transitions.create([
+      "width",
+      "background-color",
+      "border-radius",
+      "opacity",
+    ]),
   },
 
-  [theme.getColorSchemeSelector("dark")]: {
-    ".swiper-pagination-bullet-active": {
-      backgroundColor: `${theme.vars.palette.background.paper} !important`,
-    },
+  ".swiper-pagination-bullet-active": {
+    "--swiper-pagination-bullet-border-radius": `${theme.shape.borderRadius}px`,
+    "--swiper-pagination-bullet-width": theme.spacing(2),
   },
 }));
 

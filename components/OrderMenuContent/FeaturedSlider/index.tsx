@@ -6,9 +6,19 @@ import Carousel from "@/components/Carousel";
 
 import { ViewSwiperBreakpoints } from "@/constants/view";
 
+import { styled } from "@mui/material/styles";
+
 import { useViewStore } from "@/providers/view-store-provider";
 
 import type { OrderMenuItem } from "@/types/menus";
+
+const StyledCarousel = styled(Carousel)(({ theme }) => ({
+  paddingBottom: `${theme.spacing(5)} !important`,
+
+  ".custom-swiper-button-prev, .custom-swiper-button-next": {
+    top: `calc(50% - ${theme.spacing(2.5)})`,
+  },
+}));
 
 interface FeaturedSliderProps {
   menuItems: OrderMenuItem[];
@@ -18,7 +28,7 @@ const FeaturedSlider = ({ menuItems }: FeaturedSliderProps) => {
   const { view } = useViewStore((state) => state);
 
   return (
-    <Carousel
+    <StyledCarousel
       breakpoints={ViewSwiperBreakpoints[view]}
       key={view}
       modules={[Mousewheel, Navigation]}
@@ -29,7 +39,7 @@ const FeaturedSlider = ({ menuItems }: FeaturedSliderProps) => {
       {menuItems.map((menuItem) => (
         <ActionAreaCard key={menuItem.id} menuItem={menuItem} />
       ))}
-    </Carousel>
+    </StyledCarousel>
   );
 };
 

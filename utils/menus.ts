@@ -215,6 +215,7 @@ export const getOfferStock = (offer?: OrderMenuOffer): number | null => {
     offer?.availability === "Discontinued"
   )
     return 0;
+
   // || 把 0 當 null，null 代表無追蹤，缺貨變無限制
   return offer?.inventoryLevel?.value ?? null;
 };
