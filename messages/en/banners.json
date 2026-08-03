@@ -44,8 +44,5 @@
   },
   "label": "Banners",
   "reorder": "Order",
-  "sortOrder": {
-    "label": "Display order"
-  },
   "updatedAt": "Updated"
 }

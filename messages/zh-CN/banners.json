@@ -44,8 +44,5 @@
   },
   "label": "轮播图管理",
   "reorder": "排序",
-  "sortOrder": {
-    "label": "显示顺序"
-  },
   "updatedAt": "更新时间"
 }

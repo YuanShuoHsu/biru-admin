@@ -44,8 +44,5 @@
   },
   "label": "バナー管理",
   "reorder": "並び替え",
-  "sortOrder": {
-    "label": "表示順"
-  },
   "updatedAt": "更新日時"
 }

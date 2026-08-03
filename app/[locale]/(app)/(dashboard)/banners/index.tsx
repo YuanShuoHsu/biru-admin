@@ -25,7 +25,6 @@ import { isSortableOperation } from "@dnd-kit/react/sortable";
 import {
   useBooleanFilterOperators,
   useDateFilterOperators,
-  useNumberFilterOperators,
 } from "@/hooks/useFilterOperators";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
@@ -134,7 +133,6 @@ const Banners = ({
 
   const booleanFilterOperators = useBooleanFilterOperators();
   const dateFilterOperators = useDateFilterOperators();
-  const numberFilterOperators = useNumberFilterOperators();
 
   const format = useFormatter();
 
@@ -467,12 +465,6 @@ const Banners = ({
         sortable: false,
       },
       {
-        field: "sortOrder",
-        filterOperators: numberFilterOperators,
-        headerName: tBanners("sortOrder.label"),
-        type: "number",
-      },
-      {
         field: "isActive",
         filterOperators: booleanFilterOperators,
         headerName: tBanners("isActive.label"),
@@ -508,7 +500,6 @@ const Banners = ({
       handleDeleteBanner,
       handleUpdateBanner,
       isReorderMode,
-      numberFilterOperators,
       tBanners,
     ],
   );

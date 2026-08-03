@@ -44,8 +44,5 @@
   },
   "label": "배너 관리",
   "reorder": "순서",
-  "sortOrder": {
-    "label": "표시 순서"
-  },
   "updatedAt": "수정일"
 }

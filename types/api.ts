@@ -1241,7 +1241,7 @@ export interface components {
       sortOrder?: number;
     };
     /** @enum {string} */
-    BannerFilterField: "isActive" | "createdAt" | "updatedAt" | "sortOrder";
+    BannerFilterField: "isActive" | "createdAt" | "updatedAt";
     /** @enum {string} */
     FilterOperator:
       | "contains"
@@ -1266,7 +1266,7 @@ export interface components {
       | "<"
       | "<=";
     /** @enum {string} */
-    BannerSortField: "sortOrder" | "isActive" | "createdAt" | "updatedAt";
+    BannerSortField: "isActive" | "createdAt" | "updatedAt";
     ReorderBannersDto: {
       ids: string[];
       /** @default 0 */
@@ -5629,7 +5629,7 @@ export const updateUserDtoGenderValues: ReadonlyArray<
 > = ["female", "male", "other"];
 export const bannerFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["BannerFilterField"]
-> = ["isActive", "createdAt", "updatedAt", "sortOrder"];
+> = ["isActive", "createdAt", "updatedAt"];
 export const filterOperatorValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["FilterOperator"]
 > = [
@@ -5657,7 +5657,7 @@ export const filterOperatorValues: ReadonlyArray<
 ];
 export const bannerSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["BannerSortField"]
-> = ["sortOrder", "isActive", "createdAt", "updatedAt"];
+> = ["isActive", "createdAt", "updatedAt"];
 export const createCouponDtoDiscountTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CreateCouponDto"]["discountType"]
 > = ["fixed", "percentage"];
