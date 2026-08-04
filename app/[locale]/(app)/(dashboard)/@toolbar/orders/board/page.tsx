@@ -4,13 +4,13 @@ import MenusOrganizationSelect from "@/components/MenusOrganizationSelect";
 
 import { authClient } from "@/lib/auth-client";
 
-interface ToolbarOrdersDefaultProps {
+interface ToolbarOrdersBoardPageProps {
   searchParams: Promise<{ organization?: string }>;
 }
 
-const ToolbarOrdersDefault = async ({
+const ToolbarOrdersBoardPage = async ({
   searchParams,
-}: ToolbarOrdersDefaultProps) => {
+}: ToolbarOrdersBoardPageProps) => {
   const [cookieStore, { organization = "" }] = await Promise.all([
     cookies(),
     searchParams,
@@ -33,4 +33,4 @@ const ToolbarOrdersDefault = async ({
   );
 };
 
-export default ToolbarOrdersDefault;
+export default ToolbarOrdersBoardPage;
