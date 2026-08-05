@@ -29,6 +29,34 @@ export const getOrganizations = cache(
   },
 );
 
+export async function canGrantOrganizationCoupon(
+  organizationId?: string,
+  fetchOptions?: { headers: { cookie: string; origin: string } },
+): Promise<boolean> {
+  if (!organizationId) return false;
+
+  try {
+    const { success } = await fetcher<{ success: boolean }>(
+      "/api/auth/organization/has-permission",
+      {
+        body: JSON.stringify({
+          organizationId,
+          permissions: { coupon: ["create"] },
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          ...fetchOptions?.headers,
+        },
+        method: "POST",
+      },
+    );
+
+    return success;
+  } catch {
+    return false;
+  }
+}
+
 export type OrganizationPermissions = Record<
   string,
   { canUpdateOrganization: boolean; canDeleteOrganization: boolean }

@@ -348,6 +348,40 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/coupons": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢本店適用的優惠券列表 */
+    get: operations["OrganizationCouponsController_findAll"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/coupons/{couponId}/grant": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 發放本店專屬優惠券給指定會員 */
+    post: operations["OrganizationCouponsController_grant"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/donate-codes": {
     parameters: {
       query?: never;
@@ -3736,6 +3770,75 @@ export interface operations {
       };
     };
   };
+  OrganizationCouponsController_findAll: {
+    parameters: {
+      query?: {
+        filterField?: components["schemas"]["CouponFilterField"];
+        filterOperator?: components["schemas"]["FilterOperator"];
+        lang?: "en" | "ja" | "ko" | "zh-CN" | "zh-TW";
+        sortBy?: components["schemas"]["CouponSortField"];
+        sortDirection?: components["schemas"]["SortDirection"];
+        limit?: number;
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+      };
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrganizationCouponsController_grant: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        couponId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["GrantCouponDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["UserCouponResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   DonateCodesController_getAll: {
     parameters: {
       query?: never;
@@ -5571,6 +5674,9 @@ type ReadonlyArray<T> = [Exclude<T, undefined>] extends [unknown[]]
   : Readonly<Exclude<T, undefined>[]>;
 export const pathsApiCouponsGetParametersQueryLangValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/coupons"]["get"]["parameters"]["query"]["lang"]
+> = ["en", "ja", "ko", "zh-CN", "zh-TW"];
+export const pathsApiOrganizationsOrganizationSlugCouponsGetParametersQueryLangValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/organizations/{organizationSlug}/coupons"]["get"]["parameters"]["query"]["lang"]
 > = ["en", "ja", "ko", "zh-CN", "zh-TW"];
 export const pathsApiMenusMenuIdMenuSectionsGetParametersQuerySearchFieldValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/menus/{menuId}/menu-sections"]["get"]["parameters"]["query"]["searchField"]

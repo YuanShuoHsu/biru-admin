@@ -102,7 +102,9 @@
   },
   "organizationScope": {
     "all": "全店舗",
-    "label": "対象店舗"
+    "exclusive": "自店舗専用",
+    "label": "対象店舗",
+    "shared": "複数店舗共通"
   },
   "perUserLimit": {
     "hint": "設定すると会員限定になります",

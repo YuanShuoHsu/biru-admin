@@ -16,14 +16,19 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { Coupon } from "@/types/coupons";
 
+import { getCouponsPath } from "@/utils/coupons";
 import { fetcher } from "@/utils/fetcher";
 import { getErrorMessage } from "@/utils/errors";
 
 interface GrantCouponDialogProps {
   coupon: Coupon;
+  organizationSlug?: string;
 }
 
-const GrantCouponDialog = ({ coupon }: GrantCouponDialogProps) => {
+const GrantCouponDialog = ({
+  coupon,
+  organizationSlug,
+}: GrantCouponDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const tCoupons = useTranslations("coupons");
@@ -45,7 +50,7 @@ const GrantCouponDialog = ({ coupon }: GrantCouponDialogProps) => {
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher(`/api/coupons/${coupon.id}/grant`, {
+      await fetcher(`${getCouponsPath(organizationSlug)}/${coupon.id}/grant`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),

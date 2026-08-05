@@ -102,7 +102,9 @@
   },
   "organizationScope": {
     "all": "전체 매장",
-    "label": "적용 매장"
+    "exclusive": "자기 매장 전용",
+    "label": "적용 매장",
+    "shared": "여러 매장 공용"
   },
   "perUserLimit": {
     "hint": "설정 시 회원 전용입니다",

@@ -36,6 +36,7 @@ import {
   Stack,
   Tooltip,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
   GridFilterModel,
@@ -54,8 +55,12 @@ import type {
   CouponSortField,
 } from "@/types/coupons";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
-import type { OrganizationResponse } from "@/types/organizations";
+import type {
+  Organization,
+  OrganizationResponse,
+} from "@/types/organizations";
 
+import { getCouponsPath } from "@/utils/coupons";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
 
@@ -64,11 +69,20 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
+const StyledIconButton = styled(IconButton, {
+  shouldForwardProp: (prop) => prop !== "visible",
+})<{ visible: boolean }>(({ visible }) => ({
+  visibility: visible ? "visible" : "hidden",
+}));
+
 interface CouponsProps {
+  canGrantCoupon: boolean;
+  canManageCoupon: boolean;
   coupons: Coupon[];
   filterField?: CouponFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
+  organization?: Organization;
   organizations: OrganizationResponse[];
   page: number;
   pageSize: number;
@@ -78,11 +92,22 @@ interface CouponsProps {
   sortDirection?: SortDirection;
 }
 
+const isExclusiveTo = (
+  { applicableOrganizationIds }: Coupon,
+  organizationId?: string,
+) =>
+  !!organizationId &&
+  applicableOrganizationIds?.length === 1 &&
+  applicableOrganizationIds[0] === organizationId;
+
 const Coupons = ({
+  canGrantCoupon,
+  canManageCoupon,
   coupons: initialCoupons,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
+  organization,
   organizations: initialOrganizations,
   page,
   pageSize,
@@ -140,9 +165,18 @@ const Coupons = ({
   const booleanFilterOperators = useBooleanFilterOperators();
   const dateFilterOperators = useDateFilterOperators();
 
+  // 店家角色不該取得全平台組織清單，只有平台管理員的建立／編輯表單需要
   const { data: organizations = initialOrganizations } = useSWR<
     OrganizationResponse[]
-  >("/api/organizations", fetcher, { fallbackData: initialOrganizations });
+  >(canManageCoupon ? "/api/organizations" : null, fetcher, {
+    fallbackData: initialOrganizations,
+  });
+
+  // 店家角色尚未選到店家時不打 API，否則會落到平台管理員專用端點
+  const couponsPath =
+    canManageCoupon || organization
+      ? getCouponsPath(organization?.slug)
+      : null;
 
   const {
     data: { data: coupons, total: rowCount } = {
@@ -152,16 +186,18 @@ const Coupons = ({
     isValidating: loading,
     mutate,
   } = useSWR(
-    [
-      "/api/coupons",
-      filterModel.items[0]?.field,
-      filterModel.items[0]?.operator,
-      filterModel.items[0]?.value,
-      filterModel.quickFilterValues,
-      paginationModel.page,
-      paginationModel.pageSize,
-      sortModel,
-    ],
+    couponsPath
+      ? [
+          couponsPath,
+          filterModel.items[0]?.field,
+          filterModel.items[0]?.operator,
+          filterModel.items[0]?.value,
+          filterModel.quickFilterValues,
+          paginationModel.page,
+          paginationModel.pageSize,
+          sortModel,
+        ]
+      : null,
     async () => {
       const params = getDataGridSearchParams(
         paginationModel,
@@ -171,7 +207,7 @@ const Coupons = ({
       params.set("lang", locale);
 
       return fetcher<{ data: Coupon[]; total: number }>(
-        `/api/coupons?${params}`,
+        `${couponsPath}?${params}`,
       );
     },
     {
@@ -291,13 +327,18 @@ const Coupons = ({
   const handleGrantCoupon = useCallback(
     (coupon: Coupon) => {
       setDialog({
-        content: <GrantCouponDialog coupon={coupon} />,
+        content: (
+          <GrantCouponDialog
+            coupon={coupon}
+            organizationSlug={organization?.slug}
+          />
+        ),
         formId: "grant-coupon-form",
         open: true,
         title: tCoupons("actions.grantCoupon.title"),
       });
     },
-    [setDialog, tCoupons],
+    [organization?.slug, setDialog, tCoupons],
   );
 
   const handleDeleteCoupon = useCallback(
@@ -343,25 +384,40 @@ const Coupons = ({
         headerName: tCoupons("actions.label"),
         renderCell: ({ row }: GridRenderCellParams<Coupon>) => (
           <Stack alignItems="center" direction="row" gap={1} height="100%">
-            <Tooltip title={tCoupons("actions.updateCoupon.title")}>
-              <IconButton onClick={() => handleUpdateCoupon(row)} size="small">
-                <Edit fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title={tCoupons("actions.grantCoupon.title")}>
-              <IconButton onClick={() => handleGrantCoupon(row)} size="small">
-                <CardGiftcard fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title={tCoupons("actions.deleteCoupon.title")}>
-              <IconButton
-                color="error"
-                onClick={() => handleDeleteCoupon(row)}
-                size="small"
-              >
-                <Delete fontSize="small" />
-              </IconButton>
-            </Tooltip>
+            {canManageCoupon && (
+              <Tooltip title={tCoupons("actions.updateCoupon.title")}>
+                <IconButton
+                  onClick={() => handleUpdateCoupon(row)}
+                  size="small"
+                >
+                  <Edit fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            )}
+            {canGrantCoupon && (
+              <Tooltip title={tCoupons("actions.grantCoupon.title")}>
+                <StyledIconButton
+                  onClick={() => handleGrantCoupon(row)}
+                  size="small"
+                  visible={
+                    canManageCoupon || isExclusiveTo(row, organization?.id)
+                  }
+                >
+                  <CardGiftcard fontSize="small" />
+                </StyledIconButton>
+              </Tooltip>
+            )}
+            {canManageCoupon && (
+              <Tooltip title={tCoupons("actions.deleteCoupon.title")}>
+                <IconButton
+                  color="error"
+                  onClick={() => handleDeleteCoupon(row)}
+                  size="small"
+                >
+                  <Delete fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            )}
           </Stack>
         ),
         resizable: false,
@@ -382,38 +438,75 @@ const Coupons = ({
           value,
         })),
       },
-      {
-        field: "applicableOrganizationIds",
-        filterOperators: enumFilterOperators,
-        headerName: tCoupons("organizationScope.label"),
-        renderCell: ({
-          row: { applicableOrganizationIds },
-        }: GridRenderCellParams<Coupon>) => (
-          <Stack alignItems="center" direction="row" gap={0.5} height="100%">
-            {applicableOrganizationIds?.length ? (
-              organizations
-                .filter(({ id }) => applicableOrganizationIds.includes(id))
-                .map(({ id, name }) => (
-                  <Chip key={id} label={name} size="small" variant="outlined" />
-                ))
-            ) : (
-              <Chip
-                label={tCoupons("organizationScope.all")}
-                size="small"
-                variant="outlined"
-              />
-            )}
-          </Stack>
-        ),
-        type: "singleSelect",
-        valueOptions: [
-          { label: tCoupons("organizationScope.all"), value: "all" },
-          ...organizations.map(({ id, name }) => ({
-            label: name,
-            value: id,
-          })),
-        ],
-      },
+      // 店家角色不逐一列出適用店家：會揭露其他店家名稱
+      canManageCoupon
+        ? {
+            field: "applicableOrganizationIds",
+            filterOperators: enumFilterOperators,
+            headerName: tCoupons("organizationScope.label"),
+            renderCell: ({
+              row: { applicableOrganizationIds },
+            }: GridRenderCellParams<Coupon>) => (
+              <Stack
+                alignItems="center"
+                direction="row"
+                gap={0.5}
+                height="100%"
+              >
+                {applicableOrganizationIds?.length ? (
+                  organizations
+                    .filter(({ id }) => applicableOrganizationIds.includes(id))
+                    .map(({ id, name }) => (
+                      <Chip
+                        key={id}
+                        label={name}
+                        size="small"
+                        variant="outlined"
+                      />
+                    ))
+                ) : (
+                  <Chip
+                    label={tCoupons("organizationScope.all")}
+                    size="small"
+                    variant="outlined"
+                  />
+                )}
+              </Stack>
+            ),
+            type: "singleSelect",
+            valueOptions: [
+              { label: tCoupons("organizationScope.all"), value: "all" },
+              ...organizations.map(({ id, name }) => ({
+                label: name,
+                value: id,
+              })),
+            ],
+          }
+        : {
+            field: "applicableOrganizationIds",
+            filterable: false,
+            headerName: tCoupons("organizationScope.label"),
+            renderCell: ({ row }: GridRenderCellParams<Coupon>) => (
+              <Stack
+                alignItems="center"
+                direction="row"
+                gap={0.5}
+                height="100%"
+              >
+                <Chip
+                  label={tCoupons(
+                    !row.applicableOrganizationIds?.length
+                      ? "organizationScope.all"
+                      : isExclusiveTo(row, organization?.id)
+                        ? "organizationScope.exclusive"
+                        : "organizationScope.shared",
+                  )}
+                  size="small"
+                  variant="outlined"
+                />
+              </Stack>
+            ),
+          },
       {
         field: "menuSectionIds",
         filterable: false,
@@ -558,6 +651,8 @@ const Coupons = ({
     ],
     [
       booleanFilterOperators,
+      canGrantCoupon,
+      canManageCoupon,
       dateFilterOperators,
       enumFilterOperators,
       format,
@@ -565,6 +660,7 @@ const Coupons = ({
       handleGrantCoupon,
       handleUpdateCoupon,
       numberFilterOperators,
+      organization?.id,
       organizations,
       stringFilterOperators,
       tCoupons,
@@ -573,16 +669,18 @@ const Coupons = ({
 
   return (
     <>
-      <Stack alignItems="center" direction="row" flexWrap="wrap" gap={2}>
-        <Button
-          onClick={handleCreateCoupon}
-          size="small"
-          startIcon={<Add />}
-          variant="contained"
-        >
-          {tCoupons("actions.createCoupon.title")}
-        </Button>
-      </Stack>
+      {canManageCoupon && (
+        <Stack alignItems="center" direction="row" flexWrap="wrap" gap={2}>
+          <Button
+            onClick={handleCreateCoupon}
+            size="small"
+            startIcon={<Add />}
+            variant="contained"
+          >
+            {tCoupons("actions.createCoupon.title")}
+          </Button>
+        </Stack>
+      )}
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}

@@ -272,7 +272,7 @@ const routes: Route[] = [
   {
     icon: ConfirmationNumber,
     label: "coupons.label",
-    query: ["page", "pageSize"],
+    query: ["organization", "page", "pageSize"],
     segment: "coupons",
   },
   {

@@ -10,6 +10,8 @@ import { DEFAULT_PAGE_SIZE } from "@/constants/pagination";
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
+import { authClient } from "@/lib/auth-client";
+
 import {
   couponFilterFieldValues,
   couponSortFieldValues,
@@ -18,7 +20,11 @@ import {
 } from "@/types/api";
 
 import { getCoupons } from "@/utils/coupons";
-import { getOrganizations } from "@/utils/organizations";
+import { getResolvedAdminOrganization } from "@/utils/menus";
+import {
+  canGrantOrganizationCoupon,
+  getOrganizations,
+} from "@/utils/organizations";
 
 interface CouponsPageProps {
   params: Promise<{ locale: Locale }>;
@@ -26,6 +32,7 @@ interface CouponsPageProps {
     filterField?: string;
     filterOperator?: string;
     filterValue?: string;
+    organization?: string;
     page?: string;
     pageSize?: string;
     quickFilterValue?: string;
@@ -51,6 +58,7 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
       filterField: rawFilterField,
       filterOperator: rawFilterOperator,
       filterValue,
+      organization,
       page: rawPage,
       pageSize: rawPageSize,
       quickFilterValue,
@@ -77,7 +85,26 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
     (operator) => operator === rawFilterOperator,
   );
 
+  const fetchOptions = { headers: { cookie: cookieStore.toString() } };
+  const authFetchOptions = {
+    headers: {
+      cookie: cookieStore.toString(),
+      origin: process.env.NEXT_PUBLIC_ADMIN_URL!,
+    },
+  };
+
+  const { data: session } = await authClient.getSession({
+    fetchOptions: authFetchOptions,
+  });
+
+  const isAdmin = session?.user?.role === "admin";
+
+  const selectedOrganization = isAdmin
+    ? undefined
+    : await getResolvedAdminOrganization(organization, fetchOptions);
+
   if (
+    (!isAdmin && organization !== selectedOrganization?.slug) ||
     rawPage !== String(page) ||
     rawPageSize !== String(pageSize) ||
     rawSortBy !== sortBy ||
@@ -94,6 +121,7 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
   ) {
     const params = new URLSearchParams({
       ...restSearchParams,
+      ...(selectedOrganization && { organization: selectedOrganization.slug }),
       page: String(page),
       pageSize: String(pageSize),
       ...(sortBy && sortDirection && { sortBy, sortDirection }),
@@ -105,32 +133,43 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
     redirect({ href: `/coupons?${params.toString()}`, locale });
   }
 
-  const fetchOptions = { headers: { cookie: cookieStore.toString() } };
+  const canGrantCoupon = isAdmin
+    ? true
+    : await canGrantOrganizationCoupon(
+        selectedOrganization?.id,
+        authFetchOptions,
+      );
 
   const [{ coupons, total }, organizations] = await Promise.all([
-    getCoupons(
-      locale,
-      {
-        page,
-        pageSize,
-        filterField,
-        filterOperator,
-        filterValue,
-        quickFilterValue,
-        sortBy,
-        sortDirection,
-      },
-      fetchOptions,
-    ),
-    getOrganizations(fetchOptions),
+    isAdmin || selectedOrganization
+      ? getCoupons(
+          locale,
+          {
+            page,
+            pageSize,
+            filterField,
+            filterOperator,
+            filterValue,
+            organizationSlug: selectedOrganization?.slug,
+            quickFilterValue,
+            sortBy,
+            sortDirection,
+          },
+          fetchOptions,
+        )
+      : { coupons: [], total: 0 },
+    isAdmin ? getOrganizations(fetchOptions) : [],
   ]);
 
   return (
     <Coupons
+      canGrantCoupon={canGrantCoupon}
+      canManageCoupon={isAdmin}
       coupons={coupons}
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
+      organization={selectedOrganization}
       organizations={organizations}
       page={page}
       pageSize={pageSize}

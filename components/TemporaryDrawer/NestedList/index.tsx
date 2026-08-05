@@ -54,11 +54,10 @@ const useNavItems = (): NavItem[][] => {
       ...(defaultOrganizationSlug
         ? [navItem("/orders"), navItem("/menus")]
         : []),
+      ...(isAdmin || defaultOrganizationSlug ? [navItem("/coupons")] : []),
       navItem("/organizations"),
     ],
-    ...(isAdmin
-      ? [[navItem("/coupons"), navItem("/banners"), navItem("/admins")]]
-      : []),
+    ...(isAdmin ? [[navItem("/banners"), navItem("/admins")]] : []),
     [
       { ...navItem("/auth"), children: navChildren["/auth"] },
       { ...navItem("/company"), children: navChildren["/company"] },

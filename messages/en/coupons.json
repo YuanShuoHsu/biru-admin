@@ -102,7 +102,9 @@
   },
   "organizationScope": {
     "all": "All stores",
-    "label": "Applicable stores"
+    "exclusive": "This store only",
+    "label": "Applicable stores",
+    "shared": "Shared with other stores"
   },
   "perUserLimit": {
     "hint": "Members only when set",

@@ -17,10 +17,16 @@ interface GetCouponsQuery {
   filterField?: CouponFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
+  organizationSlug?: string;
   quickFilterValue?: string;
   sortBy?: CouponSortField;
   sortDirection?: SortDirection;
 }
+
+export const getCouponsPath = (organizationSlug?: string) =>
+  organizationSlug
+    ? `/api/organizations/${organizationSlug}/coupons`
+    : "/api/coupons";
 
 export const getCoupons = cache(
   async (
@@ -31,6 +37,7 @@ export const getCoupons = cache(
       filterField,
       filterOperator,
       filterValue,
+      organizationSlug,
       quickFilterValue,
       sortBy,
       sortDirection,
@@ -57,7 +64,7 @@ export const getCoupons = cache(
         ...(quickFilterValue && { quickFilterValue }),
       });
       const result = await fetcher<{ data: Coupon[]; total: number }>(
-        `/api/coupons?${params.toString()}`,
+        `${getCouponsPath(organizationSlug)}?${params.toString()}`,
         init,
       );
 

@@ -102,7 +102,9 @@
   },
   "organizationScope": {
     "all": "全部店家",
-    "label": "适用店家"
+    "exclusive": "本店专属",
+    "label": "适用店家",
+    "shared": "多店联合"
   },
   "perUserLimit": {
     "hint": "设置后仅限会员使用",

@@ -102,7 +102,9 @@
   },
   "organizationScope": {
     "all": "全部店家",
-    "label": "適用店家"
+    "exclusive": "本店專屬",
+    "label": "適用店家",
+    "shared": "多店聯合"
   },
   "perUserLimit": {
     "hint": "設定後僅限會員使用",
