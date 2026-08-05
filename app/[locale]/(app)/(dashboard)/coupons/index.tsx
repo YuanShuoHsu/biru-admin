@@ -55,10 +55,7 @@ import type {
   CouponSortField,
 } from "@/types/coupons";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
-import type {
-  Organization,
-  OrganizationResponse,
-} from "@/types/organizations";
+import type { Organization, OrganizationResponse } from "@/types/organizations";
 
 import { getCouponsPath } from "@/utils/coupons";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
@@ -165,18 +162,14 @@ const Coupons = ({
   const booleanFilterOperators = useBooleanFilterOperators();
   const dateFilterOperators = useDateFilterOperators();
 
-  // 店家角色不該取得全平台組織清單，只有平台管理員的建立／編輯表單需要
   const { data: organizations = initialOrganizations } = useSWR<
     OrganizationResponse[]
   >(canManageCoupon ? "/api/organizations" : null, fetcher, {
     fallbackData: initialOrganizations,
   });
 
-  // 店家角色尚未選到店家時不打 API，否則會落到平台管理員專用端點
   const couponsPath =
-    canManageCoupon || organization
-      ? getCouponsPath(organization?.slug)
-      : null;
+    canManageCoupon || organization ? getCouponsPath(organization?.slug) : null;
 
   const {
     data: { data: coupons, total: rowCount } = {
@@ -438,7 +431,6 @@ const Coupons = ({
           value,
         })),
       },
-      // 店家角色不逐一列出適用店家：會揭露其他店家名稱
       canManageCoupon
         ? {
             field: "applicableOrganizationIds",
