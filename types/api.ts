@@ -201,7 +201,8 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get?: never;
+    /** 查詢優惠券 */
+    get: operations["AdminCouponsController_findOne"];
     put?: never;
     post?: never;
     /** 刪除優惠券 */
@@ -210,6 +211,23 @@ export interface paths {
     head?: never;
     /** 更新優惠券 */
     patch: operations["AdminCouponsController_update"];
+    trace?: never;
+  };
+  "/api/coupons/{couponId}/recipients": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢優惠券持券紀錄 */
+    get: operations["AdminCouponsController_findRecipients"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
     trace?: never;
   };
   "/api/coupons/{couponId}/grant": {
@@ -1321,14 +1339,22 @@ export interface components {
        */
       email: string;
     };
+    /** @enum {string} */
+    CouponDiscountType: "fixed" | "percentage";
+    /**
+     * @description 自動發放觸發：signup 註冊禮／birthday 生日月／spend 單筆滿額
+     * @enum {string}
+     */
+    CouponIssueTrigger: "signup" | "birthday" | "spend";
+    /** @enum {string} */
+    CouponScope: "order" | "item";
     CreateCouponDto: {
       /** @description 適用店家；null = 全部店家通用，發行店永遠視為適用 */
       applicableOrganizationIds?: string[] | null;
       code: string;
       /** @description 幣別（ISO 4217），未帶時預設 TWD；應與店家菜單幣別一致 */
       discountCurrency?: string;
-      /** @enum {string} */
-      discountType: "fixed" | "percentage";
+      discountType: components["schemas"]["CouponDiscountType"];
       /** @description fixed: 折抵金額；percentage: 折扣百分比（0 < value ≤ 100） */
       discountValue: number;
       isActive?: boolean;
@@ -1338,19 +1364,14 @@ export interface components {
       isPublic?: boolean;
       /** @description issueTrigger=spend 的單筆滿額門檻 */
       issueMinSpend?: number;
-      /**
-       * @description 自動發放觸發：signup 註冊禮／birthday 生日月／spend 單筆滿額
-       * @enum {string|null}
-       */
-      issueTrigger?: "signup" | "birthday" | "spend" | null;
+      issueTrigger?: components["schemas"]["CouponIssueTrigger"] | null;
       menuItemIds?: string[];
       menuSectionIds?: string[];
       minSubtotal?: number;
       perUserLimit?: number;
       /** @description 兌換所需點數；null = 不可用點數兌換 */
       pointsCost?: number | null;
-      /** @enum {string} */
-      scope?: "order" | "item";
+      scope?: components["schemas"]["CouponScope"];
       totalLimit?: number;
       /** Format: date-time */
       validFrom?: string | null;
@@ -1362,15 +1383,13 @@ export interface components {
       applicableOrganizationIds?: string[] | null;
       code: string;
       discountCurrency: string;
-      /** @enum {string} */
-      discountType: "fixed" | "percentage";
+      discountType: components["schemas"]["CouponDiscountType"];
       discountValue: string;
       isActive: boolean;
       isClaimable: boolean;
       isPublic: boolean;
       issueMinSpend?: string | null;
-      /** @enum {string|null} */
-      issueTrigger?: "signup" | "birthday" | "spend" | null;
+      issueTrigger?: components["schemas"]["CouponIssueTrigger"] | null;
       menuItemIds?: string[] | null;
       /** @description 指定品項的名稱清單（依 menuItemIds 順序，管理列表顯示用） */
       menuItemNames?: string[] | null;
@@ -1380,8 +1399,7 @@ export interface components {
       minSubtotal?: string | null;
       perUserLimit?: number | null;
       pointsCost?: number | null;
-      /** @enum {string} */
-      scope: "order" | "item";
+      scope: components["schemas"]["CouponScope"];
       totalLimit?: number | null;
       usedCount: number;
       /** Format: date-time */
@@ -1429,8 +1447,7 @@ export interface components {
       code?: string;
       /** @description 幣別（ISO 4217），未帶時預設 TWD；應與店家菜單幣別一致 */
       discountCurrency?: string;
-      /** @enum {string} */
-      discountType?: "fixed" | "percentage";
+      discountType?: components["schemas"]["CouponDiscountType"];
       /** @description fixed: 折抵金額；percentage: 折扣百分比（0 < value ≤ 100） */
       discountValue?: number;
       isActive?: boolean;
@@ -1440,24 +1457,55 @@ export interface components {
       isPublic?: boolean;
       /** @description issueTrigger=spend 的單筆滿額門檻 */
       issueMinSpend?: number;
-      /**
-       * @description 自動發放觸發：signup 註冊禮／birthday 生日月／spend 單筆滿額
-       * @enum {string|null}
-       */
-      issueTrigger?: "signup" | "birthday" | "spend" | null;
+      issueTrigger?: components["schemas"]["CouponIssueTrigger"] | null;
       menuItemIds?: string[];
       menuSectionIds?: string[];
       minSubtotal?: number;
       perUserLimit?: number;
       /** @description 兌換所需點數；null = 不可用點數兌換 */
       pointsCost?: number | null;
-      /** @enum {string} */
-      scope?: "order" | "item";
+      scope?: components["schemas"]["CouponScope"];
       totalLimit?: number;
       /** Format: date-time */
       validFrom?: string | null;
       /** Format: date-time */
       validThrough?: string | null;
+    };
+    /** @enum {string} */
+    CouponRecipientFilterField:
+      | "userEmail"
+      | "grantedByEmail"
+      | "source"
+      | "createdAt"
+      | "usedAt";
+    /** @enum {string} */
+    CouponRecipientSortField:
+      | "userEmail"
+      | "source"
+      | "grantedByEmail"
+      | "createdAt"
+      | "usedAt";
+    /** @enum {string} */
+    UserCouponSource:
+      | "granted"
+      | "claimed"
+      | "signup"
+      | "birthday"
+      | "spend"
+      | "redeemed";
+    CouponRecipientResponseDto: {
+      id: string;
+      grantedByEmail?: string | null;
+      source: components["schemas"]["UserCouponSource"];
+      userEmail: string;
+      /** Format: date-time */
+      usedAt?: string | null;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    CouponRecipientListResponseDto: {
+      data: components["schemas"]["CouponRecipientResponseDto"][];
+      total: number;
     };
     GrantCouponDto: {
       /**
@@ -1470,12 +1518,10 @@ export interface components {
       id: string;
       code: string;
       discountCurrency: string;
-      /** @enum {string} */
-      discountType: "fixed" | "percentage";
+      discountType: components["schemas"]["CouponDiscountType"];
       discountValue: string;
       minSubtotal?: string | null;
-      /** @enum {string} */
-      scope: "order" | "item";
+      scope: components["schemas"]["CouponScope"];
       /** Format: date-time */
       validFrom?: string | null;
       /** Format: date-time */
@@ -1485,14 +1531,7 @@ export interface components {
     UserCouponResponseDto: {
       id: string;
       coupon: components["schemas"]["CustomerCouponDto"];
-      /** @enum {string} */
-      source:
-        | "granted"
-        | "claimed"
-        | "signup"
-        | "birthday"
-        | "spend"
-        | "redeemed";
+      source: components["schemas"]["UserCouponSource"];
       /** Format: date-time */
       usedAt?: string | null;
       /** Format: date-time */
@@ -1530,12 +1569,10 @@ export interface components {
       id: string;
       code: string;
       discountCurrency: string;
-      /** @enum {string} */
-      discountType: "fixed" | "percentage";
+      discountType: components["schemas"]["CouponDiscountType"];
       discountValue: string;
       minSubtotal?: string | null;
-      /** @enum {string} */
-      scope: "order" | "item";
+      scope: components["schemas"]["CouponScope"];
       /** Format: date-time */
       validFrom?: string | null;
       /** Format: date-time */
@@ -1547,12 +1584,10 @@ export interface components {
       id: string;
       code: string;
       discountCurrency: string;
-      /** @enum {string} */
-      discountType: "fixed" | "percentage";
+      discountType: components["schemas"]["CouponDiscountType"];
       discountValue: string;
       minSubtotal?: string | null;
-      /** @enum {string} */
-      scope: "order" | "item";
+      scope: components["schemas"]["CouponScope"];
       /** Format: date-time */
       validFrom?: string | null;
       /** Format: date-time */
@@ -1564,14 +1599,7 @@ export interface components {
     MyCouponResponseDto: {
       id: string;
       coupon: components["schemas"]["CustomerCouponDto"];
-      /** @enum {string} */
-      source:
-        | "granted"
-        | "claimed"
-        | "signup"
-        | "birthday"
-        | "spend"
-        | "redeemed";
+      source: components["schemas"]["UserCouponSource"];
       /** Format: date-time */
       usedAt?: string | null;
       /** Format: date-time */
@@ -1585,12 +1613,10 @@ export interface components {
       id: string;
       code: string;
       discountCurrency: string;
-      /** @enum {string} */
-      discountType: "fixed" | "percentage";
+      discountType: components["schemas"]["CouponDiscountType"];
       discountValue: string;
       minSubtotal?: string | null;
-      /** @enum {string} */
-      scope: "order" | "item";
+      scope: components["schemas"]["CouponScope"];
       /** Format: date-time */
       validFrom?: string | null;
       /** Format: date-time */
@@ -2949,12 +2975,10 @@ export interface components {
       id: string;
       code: string;
       discountCurrency: string;
-      /** @enum {string} */
-      discountType: "fixed" | "percentage";
+      discountType: components["schemas"]["CouponDiscountType"];
       discountValue: string;
       minSubtotal?: string | null;
-      /** @enum {string} */
-      scope: "order" | "item";
+      scope: components["schemas"]["CouponScope"];
       /** Format: date-time */
       validFrom?: string | null;
       /** Format: date-time */
@@ -3425,6 +3449,8 @@ export interface operations {
       query?: {
         filterField?: components["schemas"]["CouponFilterField"];
         filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
         lang?: "en" | "ja" | "ko" | "zh-CN" | "zh-TW";
         sortBy?: components["schemas"]["CouponSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
@@ -3468,6 +3494,34 @@ export interface operations {
     };
     responses: {
       201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CouponResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminCouponsController_findOne: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        couponId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
         headers: {
           [name: string]: unknown;
         };
@@ -3531,6 +3585,45 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["CouponResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminCouponsController_findRecipients: {
+    parameters: {
+      query?: {
+        filterField?: components["schemas"]["CouponRecipientFilterField"];
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortBy?: components["schemas"]["CouponRecipientSortField"];
+        sortDirection?: components["schemas"]["SortDirection"];
+        limit?: number;
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+      };
+      header?: never;
+      path: {
+        couponId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CouponRecipientListResponseDto"];
         };
       };
       /** @description Internal server error */
@@ -3775,6 +3868,8 @@ export interface operations {
       query?: {
         filterField?: components["schemas"]["CouponFilterField"];
         filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
         lang?: "en" | "ja" | "ko" | "zh-CN" | "zh-TW";
         sortBy?: components["schemas"]["CouponSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
@@ -5764,23 +5859,14 @@ export const filterOperatorValues: ReadonlyArray<
 export const bannerSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["BannerSortField"]
 > = ["isActive", "createdAt", "updatedAt"];
-export const createCouponDtoDiscountTypeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["CreateCouponDto"]["discountType"]
+export const couponDiscountTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CouponDiscountType"]
 > = ["fixed", "percentage"];
-export const createCouponDtoIssueTriggerValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["CreateCouponDto"]["issueTrigger"]
+export const couponIssueTriggerValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CouponIssueTrigger"]
 > = ["signup", "birthday", "spend"];
-export const createCouponDtoScopeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["CreateCouponDto"]["scope"]
-> = ["order", "item"];
-export const couponResponseDtoDiscountTypeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["CouponResponseDto"]["discountType"]
-> = ["fixed", "percentage"];
-export const couponResponseDtoIssueTriggerValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["CouponResponseDto"]["issueTrigger"]
-> = ["signup", "birthday", "spend"];
-export const couponResponseDtoScopeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["CouponResponseDto"]["scope"]
+export const couponScopeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CouponScope"]
 > = ["order", "item"];
 export const couponFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CouponFilterField"]
@@ -5816,48 +5902,18 @@ export const couponSortFieldValues: ReadonlyArray<
   "isActive",
   "createdAt",
 ];
-export const updateCouponDtoDiscountTypeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["UpdateCouponDto"]["discountType"]
-> = ["fixed", "percentage"];
-export const updateCouponDtoIssueTriggerValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["UpdateCouponDto"]["issueTrigger"]
-> = ["signup", "birthday", "spend"];
-export const updateCouponDtoScopeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["UpdateCouponDto"]["scope"]
-> = ["order", "item"];
-export const customerCouponDtoDiscountTypeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["CustomerCouponDto"]["discountType"]
-> = ["fixed", "percentage"];
-export const customerCouponDtoScopeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["CustomerCouponDto"]["scope"]
-> = ["order", "item"];
-export const userCouponResponseDtoSourceValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["UserCouponResponseDto"]["source"]
+export const couponRecipientFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CouponRecipientFilterField"]
+> = ["userEmail", "grantedByEmail", "source", "createdAt", "usedAt"];
+export const couponRecipientSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CouponRecipientSortField"]
+> = ["userEmail", "source", "grantedByEmail", "createdAt", "usedAt"];
+export const userCouponSourceValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["UserCouponSource"]
 > = ["granted", "claimed", "signup", "birthday", "spend", "redeemed"];
 export const validateCouponDtoModeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["ValidateCouponDto"]["mode"]
 > = ["counter", "dineIn", "driveThru", "pickup"];
-export const availableCouponDtoDiscountTypeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["AvailableCouponDto"]["discountType"]
-> = ["fixed", "percentage"];
-export const availableCouponDtoScopeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["AvailableCouponDto"]["scope"]
-> = ["order", "item"];
-export const claimableCouponDtoDiscountTypeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["ClaimableCouponDto"]["discountType"]
-> = ["fixed", "percentage"];
-export const claimableCouponDtoScopeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["ClaimableCouponDto"]["scope"]
-> = ["order", "item"];
-export const myCouponResponseDtoSourceValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["MyCouponResponseDto"]["source"]
-> = ["granted", "claimed", "signup", "birthday", "spend", "redeemed"];
-export const myClaimableCouponDtoDiscountTypeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["MyClaimableCouponDto"]["discountType"]
-> = ["fixed", "percentage"];
-export const myClaimableCouponDtoScopeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["MyClaimableCouponDto"]["scope"]
-> = ["order", "item"];
 export const baseEcpayLanguageValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["BaseEcpayLanguage"]
 > = ["ENG", "KOR", "JPN", "CHI"];
@@ -6054,12 +6110,6 @@ export const orderMenuItemResponseDtoSuitableForDietValues: ReadonlyArray<
 export const organizationMemberResponseDtoRoleValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrganizationMemberResponseDto"]["role"]
 > = ["admin", "member", "owner"];
-export const pointsCouponDtoDiscountTypeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["PointsCouponDto"]["discountType"]
-> = ["fixed", "percentage"];
-export const pointsCouponDtoScopeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["PointsCouponDto"]["scope"]
-> = ["order", "item"];
 export const pointTransactionDtoTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["PointTransactionDto"]["type"]
 > = ["earn", "redeem"];

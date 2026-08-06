@@ -32,8 +32,9 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import {
-  couponResponseDtoDiscountTypeValues,
-  couponResponseDtoScopeValues,
+  couponDiscountTypeValues,
+  couponIssueTriggerValues,
+  couponScopeValues,
 } from "@/types/api";
 import type { Coupon, CreateCouponDto } from "@/types/coupons";
 import type { OrderMenu } from "@/types/menus";
@@ -43,9 +44,7 @@ import { fetcher } from "@/utils/fetcher";
 
 const issueTriggerOptions: CouponFormValues["issueTrigger"][] = [
   "none",
-  "signup",
-  "birthday",
-  "spend",
+  ...couponIssueTriggerValues,
 ];
 
 const toDateTimeLocal = (value: string | null | undefined): string =>
@@ -269,7 +268,7 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
         select
         value={scope}
       >
-        {couponResponseDtoScopeValues.map((value) => (
+        {couponScopeValues.map((value) => (
           <MenuItem key={value} value={value}>
             {tCoupons(`scope.${value}`)}
           </MenuItem>
@@ -408,7 +407,7 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
             select
             value={discountType}
           >
-            {couponResponseDtoDiscountTypeValues.map((type) => (
+            {couponDiscountTypeValues.map((type) => (
               <MenuItem key={type} value={type}>
                 {tCoupons(`discountType.${type}`)}
               </MenuItem>

@@ -117,11 +117,30 @@
     "label": "Points cost",
     "placeholder": "Please enter your points cost"
   },
+  "recipients": {
+    "grantedBy": "Granted by",
+    "label": "Recipients",
+    "receivedAt": "Received at",
+    "recipient": "Member",
+    "source": "Source",
+    "status": "Status",
+    "unknownGranter": "Account deleted",
+    "unused": "Unused",
+    "used": "Used"
+  },
   "scope": {
     "item": "Specific items",
     "itemHint": "Select at least one applicable section or item",
     "label": "Scope",
     "order": "Entire order"
+  },
+  "source": {
+    "birthday": "Birthday gift",
+    "claimed": "Claimed",
+    "granted": "Granted",
+    "redeemed": "Points redemption",
+    "signup": "Sign-up gift",
+    "spend": "Spend reward"
   },
   "totalLimit": {
     "label": "Total usage limit",

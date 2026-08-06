@@ -117,11 +117,30 @@
     "label": "교환에 필요한 포인트",
     "placeholder": "교환에 필요한 포인트를 입력해 주세요"
   },
+  "recipients": {
+    "grantedBy": "발급자",
+    "label": "보유 내역",
+    "receivedAt": "획득 일시",
+    "recipient": "보유 회원",
+    "source": "획득 방법",
+    "status": "상태",
+    "unknownGranter": "계정 삭제됨",
+    "unused": "미사용",
+    "used": "사용됨"
+  },
   "scope": {
     "item": "지정 상품",
     "itemHint": "적용 카테고리 또는 적용 상품을 하나 이상 선택해 주세요",
     "label": "적용 범위",
     "order": "전체 주문"
+  },
+  "source": {
+    "birthday": "생일 선물",
+    "claimed": "회원 수령",
+    "granted": "관리자 발급",
+    "redeemed": "포인트 교환",
+    "signup": "가입 선물",
+    "spend": "구매 보상"
   },
   "totalLimit": {
     "label": "총 사용 횟수 제한",

@@ -4,6 +4,7 @@ import type { Organization } from "./organizations";
 import type { Locale } from "@/i18n/routing";
 
 interface RouteParam {
+  couponId: string;
   groupId: string;
   locale: Locale;
   menuItemId: string;

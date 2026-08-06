@@ -117,11 +117,30 @@
     "label": "兑换所需点数",
     "placeholder": "请输入您的兑换所需点数"
   },
+  "recipients": {
+    "grantedBy": "发放者",
+    "label": "持券记录",
+    "receivedAt": "获取时间",
+    "recipient": "持券会员",
+    "source": "获取方式",
+    "status": "状态",
+    "unknownGranter": "账号已删除",
+    "unused": "未使用",
+    "used": "已使用"
+  },
   "scope": {
     "item": "指定商品",
     "itemHint": "适用分类与适用商品至少选择一项",
     "label": "适用范围",
     "order": "整笔订单"
+  },
+  "source": {
+    "birthday": "生日礼",
+    "claimed": "会员领取",
+    "granted": "后台发放",
+    "redeemed": "积分兑换",
+    "signup": "注册礼",
+    "spend": "消费赠礼"
   },
   "totalLimit": {
     "label": "总使用次数上限",

@@ -117,11 +117,30 @@
     "label": "交換に必要なポイント",
     "placeholder": "交換に必要なポイントを入力してください"
   },
+  "recipients": {
+    "grantedBy": "配布者",
+    "label": "保有履歴",
+    "receivedAt": "取得日時",
+    "recipient": "保有会員",
+    "source": "取得方法",
+    "status": "状態",
+    "unknownGranter": "アカウント削除済み",
+    "unused": "未使用",
+    "used": "使用済み"
+  },
   "scope": {
     "item": "指定商品",
     "itemHint": "適用カテゴリまたは適用商品を少なくとも1つ選択してください",
     "label": "適用範囲",
     "order": "注文全体"
+  },
+  "source": {
+    "birthday": "誕生日特典",
+    "claimed": "会員が取得",
+    "granted": "管理画面から配布",
+    "redeemed": "ポイント交換",
+    "signup": "登録特典",
+    "spend": "購入特典"
   },
   "totalLimit": {
     "label": "合計利用回数上限",

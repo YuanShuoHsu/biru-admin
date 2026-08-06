@@ -117,11 +117,30 @@
     "label": "兌換所需點數",
     "placeholder": "請輸入您的兌換所需點數"
   },
+  "recipients": {
+    "grantedBy": "發放者",
+    "label": "持券紀錄",
+    "receivedAt": "取得時間",
+    "recipient": "持券會員",
+    "source": "取得方式",
+    "status": "狀態",
+    "unknownGranter": "帳號已刪除",
+    "unused": "未使用",
+    "used": "已使用"
+  },
   "scope": {
     "item": "指定品項",
     "itemHint": "適用分類與適用品項至少選擇一項",
     "label": "適用範圍",
     "order": "整筆訂單"
+  },
+  "source": {
+    "birthday": "生日禮",
+    "claimed": "會員領取",
+    "granted": "後台發放",
+    "redeemed": "點數兌換",
+    "signup": "註冊禮",
+    "spend": "消費贈禮"
   },
   "totalLimit": {
     "label": "總使用次數上限",

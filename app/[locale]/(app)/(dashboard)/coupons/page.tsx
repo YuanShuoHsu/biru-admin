@@ -35,6 +35,7 @@ interface CouponsPageProps {
     organization?: string;
     page?: string;
     pageSize?: string;
+    quickFilterEnums?: string | string[];
     quickFilterValue?: string;
     sortBy?: string;
     sortDirection?: string;
@@ -61,6 +62,7 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
       organization,
       page: rawPage,
       pageSize: rawPageSize,
+      quickFilterEnums: rawQuickFilterEnums,
       quickFilterValue,
       sortBy: rawSortBy,
       sortDirection: rawSortDirection,
@@ -77,6 +79,8 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
   const sortDirection = sortDirectionValues.find(
     (direction) => direction === rawSortDirection,
   );
+
+  const quickFilterEnums = [rawQuickFilterEnums ?? []].flat();
 
   const filterField = couponFilterFieldValues.find(
     (field) => field === rawFilterField,
@@ -128,7 +132,10 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
       ...(filterField &&
         filterOperator &&
         filterValue && { filterField, filterOperator, filterValue }),
+      ...(quickFilterValue && { quickFilterValue }),
     });
+    for (const entry of quickFilterEnums)
+      params.append("quickFilterEnums", entry);
 
     redirect({ href: `/coupons?${params.toString()}`, locale });
   }
@@ -151,6 +158,7 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
             filterOperator,
             filterValue,
             organizationSlug: selectedOrganization?.slug,
+            quickFilterEnums,
             quickFilterValue,
             sortBy,
             sortDirection,

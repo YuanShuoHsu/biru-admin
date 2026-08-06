@@ -43,16 +43,38 @@ export const getFilterItemParams = (filterItem?: GridFilterItem) => {
   };
 };
 
+export type QuickFilterEnumOptions = Record<
+  string,
+  { label: string; value: string }[]
+>;
+
+export const getQuickFilterEnums = (
+  quickFilterValue: string,
+  enumOptions: QuickFilterEnumOptions,
+) => {
+  const keyword = quickFilterValue.trim().toLocaleLowerCase();
+  if (!keyword) return [];
+
+  return Object.entries(enumOptions).flatMap(([field, options]) => {
+    const values = options
+      .filter(({ label }) => label.toLocaleLowerCase().includes(keyword))
+      .map(({ value }) => value);
+
+    return values.length ? [`${field}:${values.join(",")}`] : [];
+  });
+};
+
 export const getDataGridSearchParams = (
   paginationModel: GridPaginationModel,
   filterModel: GridFilterModel,
   sortModel: GridSortModel,
+  enumOptions?: QuickFilterEnumOptions,
 ) => {
   const quickFilterValue = (filterModel.quickFilterValues || [])
     .join(" ")
     .trim();
 
-  return new URLSearchParams({
+  const params = new URLSearchParams({
     limit: String(paginationModel.pageSize),
     offset: String(paginationModel.page * paginationModel.pageSize),
     ...getFilterItemParams(filterModel.items[0]),
@@ -60,4 +82,10 @@ export const getDataGridSearchParams = (
     ...(sortModel[0]?.field && { sortBy: sortModel[0].field }),
     ...(sortModel[0]?.sort && { sortDirection: sortModel[0].sort }),
   });
+
+  if (quickFilterValue && enumOptions)
+    for (const entry of getQuickFilterEnums(quickFilterValue, enumOptions))
+      params.append("quickFilterEnums", entry);
+
+  return params;
 };

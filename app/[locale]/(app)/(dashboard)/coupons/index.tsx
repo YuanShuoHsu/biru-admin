@@ -15,7 +15,10 @@ import {
   DATA_GRID_PROPS,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
-import { getPageSizeOptions } from "@/constants/pagination";
+import {
+  DEFAULT_PAGINATION_QUERY,
+  getPageSizeOptions,
+} from "@/constants/pagination";
 
 import {
   useBooleanFilterOperators,
@@ -25,9 +28,9 @@ import {
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
 
-import { usePathname, useRouter } from "@/i18n/navigation";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
 
-import { Add, CardGiftcard, Delete, Edit } from "@mui/icons-material";
+import { Add, CardGiftcard, Delete, Edit, History } from "@mui/icons-material";
 import {
   Button,
   Chip,
@@ -48,7 +51,7 @@ import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { couponResponseDtoScopeValues } from "@/types/api";
+import { couponIssueTriggerValues, couponScopeValues } from "@/types/api";
 import type {
   Coupon,
   CouponFilterField,
@@ -58,8 +61,13 @@ import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization, OrganizationResponse } from "@/types/organizations";
 
 import { getCouponsPath } from "@/utils/coupons";
-import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
+import {
+  getDataGridSearchParams,
+  getFilterItemParams,
+  getQuickFilterEnums,
+} from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
+import { getHref } from "@/utils/href";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -168,6 +176,32 @@ const Coupons = ({
     fallbackData: initialOrganizations,
   });
 
+  const enumOptions = useMemo(
+    () => ({
+      applicableOrganizationIds: [
+        { label: tCoupons("organizationScope.all"), value: "all" },
+        ...organizations.map(({ id, name }) => ({ label: name, value: id })),
+      ],
+      distribution: [
+        { label: tCoupons("isPublic.label"), value: "isPublic" },
+        { label: tCoupons("isClaimable.label"), value: "isClaimable" },
+        ...couponIssueTriggerValues.map((value) => ({
+          label: tCoupons(`issueTrigger.${value}`),
+          value,
+        })),
+      ],
+      isActive: [
+        { label: tCoupons("isActive.active"), value: "true" },
+        { label: tCoupons("isActive.inactive"), value: "false" },
+      ],
+      scope: couponScopeValues.map((value) => ({
+        label: tCoupons(`scope.${value}`),
+        value,
+      })),
+    }),
+    [organizations, tCoupons],
+  );
+
   const couponsPath =
     canManageCoupon || organization ? getCouponsPath(organization?.slug) : null;
 
@@ -196,6 +230,7 @@ const Coupons = ({
         paginationModel,
         filterModel,
         sortModel,
+        enumOptions,
       );
       params.set("lang", locale);
 
@@ -270,6 +305,8 @@ const Coupons = ({
         filterValue: _filterValue,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         quickFilterValue: _quickFilterValue,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        quickFilterEnums: _quickFilterEnums,
         ...rest
       } = Object.fromEntries(searchParams);
 
@@ -279,9 +316,16 @@ const Coupons = ({
         ...getFilterItemParams(filterItem),
         ...(newQuickFilterValue && { quickFilterValue: newQuickFilterValue }),
       });
+      if (newQuickFilterValue)
+        for (const entry of getQuickFilterEnums(
+          newQuickFilterValue,
+          enumOptions,
+        ))
+          params.append("quickFilterEnums", entry);
+
       router.replace(`${pathname}?${params.toString()}`);
     },
-    [pathname, router, searchParams],
+    [enumOptions, pathname, router, searchParams],
   );
 
   const handleCreateCoupon = useCallback(() => {
@@ -401,6 +445,17 @@ const Coupons = ({
               </Tooltip>
             )}
             {canManageCoupon && (
+              <Tooltip title={tCoupons("recipients.label")}>
+                <IconButton
+                  component={Link}
+                  href={getHref(`/coupons/${row.id}`, DEFAULT_PAGINATION_QUERY)}
+                  size="small"
+                >
+                  <History fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            )}
+            {canManageCoupon && (
               <Tooltip title={tCoupons("actions.deleteCoupon.title")}>
                 <IconButton
                   color="error"
@@ -426,10 +481,7 @@ const Coupons = ({
         filterOperators: enumFilterOperators,
         headerName: tCoupons("scope.label"),
         type: "singleSelect",
-        valueOptions: couponResponseDtoScopeValues.map((value) => ({
-          label: tCoupons(`scope.${value}`),
-          value,
-        })),
+        valueOptions: enumOptions.scope,
       },
       canManageCoupon
         ? {
@@ -466,13 +518,7 @@ const Coupons = ({
               </Stack>
             ),
             type: "singleSelect",
-            valueOptions: [
-              { label: tCoupons("organizationScope.all"), value: "all" },
-              ...organizations.map(({ id, name }) => ({
-                label: name,
-                value: id,
-              })),
-            ],
+            valueOptions: enumOptions.applicableOrganizationIds,
           }
         : {
             field: "applicableOrganizationIds",
@@ -611,13 +657,7 @@ const Coupons = ({
           </Stack>
         ),
         type: "singleSelect",
-        valueOptions: [
-          { label: tCoupons("isPublic.label"), value: "isPublic" },
-          { label: tCoupons("isClaimable.label"), value: "isClaimable" },
-          { label: tCoupons("issueTrigger.signup"), value: "signup" },
-          { label: tCoupons("issueTrigger.birthday"), value: "birthday" },
-          { label: tCoupons("issueTrigger.spend"), value: "spend" },
-        ],
+        valueOptions: enumOptions.distribution,
       },
       {
         field: "isActive",
@@ -647,6 +687,7 @@ const Coupons = ({
       canManageCoupon,
       dateFilterOperators,
       enumFilterOperators,
+      enumOptions,
       format,
       handleDeleteCoupon,
       handleGrantCoupon,

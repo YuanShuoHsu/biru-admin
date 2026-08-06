@@ -39,6 +39,7 @@ import {
   Group,
   Groups,
   HelpOutline,
+  History,
   Info,
   ListAlt,
   LocalMall,
@@ -68,6 +69,7 @@ import {
 } from "@mui/icons-material";
 import type { SvgIconProps } from "@mui/material";
 
+import type { Coupon } from "@/types/coupons";
 import type { MenuItem, MenuSection, ModifierGroup } from "@/types/menus";
 import type { NavItem } from "@/types/navItem";
 import type { RouteParams } from "@/types/routeParams";
@@ -270,6 +272,9 @@ const routes: Route[] = [
     segment: "organizations",
   },
   {
+    children: [
+      { icon: History, query: ["page", "pageSize"], segment: "[couponId]" },
+    ],
     icon: ConfirmationNumber,
     label: "coupons.label",
     query: ["organization", "page", "pageSize"],
@@ -424,7 +429,7 @@ const useDynamicLabels = (): Partial<Record<string, string>> => {
 
   const organization = useOrganization();
 
-  const { groupId, menuItemId, menuSectionId, slug, teamId, userId } =
+  const { couponId, groupId, menuItemId, menuSectionId, slug, teamId, userId } =
     useParams<RouteParams>();
 
   const { data: userEmail = "" } = useSWR(
@@ -479,6 +484,19 @@ const useDynamicLabels = (): Partial<Record<string, string>> => {
     },
   );
 
+  const { data: couponCode = "" } = useSWR(
+    couponId ? `/api/coupons/${couponId}` : null,
+    async (url) => {
+      try {
+        const { code } = await fetcher<Coupon>(url);
+
+        return code;
+      } catch {
+        return "";
+      }
+    },
+  );
+
   const { data: modifierGroupName = "" } = useSWR(
     groupId ? `/api/modifier-groups/${groupId}` : null,
     async (url) => {
@@ -493,6 +511,7 @@ const useDynamicLabels = (): Partial<Record<string, string>> => {
   );
 
   return {
+    couponId: couponCode,
     groupId: modifierGroupName,
     menuItemId: menuItemName,
     menuSectionId: menuSectionName,

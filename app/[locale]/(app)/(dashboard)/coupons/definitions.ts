@@ -1,6 +1,12 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
+import {
+  couponDiscountTypeValues,
+  couponIssueTriggerValues,
+  couponScopeValues,
+} from "@/types/api";
+
 export const useCouponFormSchema = () => {
   const tCoupons = useTranslations("coupons");
 
@@ -11,7 +17,7 @@ export const useCouponFormSchema = () => {
         .string()
         .trim()
         .min(1, { error: tCoupons("code.required") }),
-      discountType: z.enum(["fixed", "percentage"]),
+      discountType: z.enum(couponDiscountTypeValues),
       discountValue: z
         .string()
         .trim()
@@ -24,13 +30,13 @@ export const useCouponFormSchema = () => {
       isClaimable: z.boolean(),
       isPublic: z.boolean(),
       issueMinSpend: z.string().trim(),
-      issueTrigger: z.enum(["none", "signup", "birthday", "spend"]),
+      issueTrigger: z.enum(["none", ...couponIssueTriggerValues]),
       menuItemIds: z.array(z.string()),
       menuSectionIds: z.array(z.string()),
       minSubtotal: z.string().trim(),
       perUserLimit: z.string().trim(),
       pointsCost: z.string().trim(),
-      scope: z.enum(["item", "order"]),
+      scope: z.enum(couponScopeValues),
       totalLimit: z.string().trim(),
       validFrom: z.string(),
       validThrough: z.string(),
@@ -47,7 +53,6 @@ export const useCouponFormSchema = () => {
         });
       }
 
-      // 點數兌換券不參與自動發放，spend 門檻無需填寫
       if (
         data.issueTrigger === "spend" &&
         !data.pointsCost &&
@@ -60,7 +65,6 @@ export const useCouponFormSchema = () => {
         });
       }
 
-      // 品項 ID 只存在於單一店家的菜單：品項券必須限定恰好一家店
       if (
         data.scope === "item" &&
         data.applicableOrganizationIds.length !== 1
