@@ -122,7 +122,10 @@ const CouponRecipientsPage = async ({
   const tCoupons = await getTranslations({ locale, namespace: "coupons" });
 
   const quickFilterEnums = quickFilterValue
-    ? getQuickFilterEnums(quickFilterValue, getCouponRecipientEnumOptions(tCoupons))
+    ? getQuickFilterEnums(
+        quickFilterValue,
+        getCouponRecipientEnumOptions(tCoupons),
+      )
     : [];
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
