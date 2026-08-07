@@ -149,7 +149,6 @@ const Modifiers = ({
 
   const searchParams = useSearchParams();
 
-  const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
   const tOrder = useTranslations("order");
 
@@ -529,10 +528,22 @@ const Modifiers = ({
         field: "availableModes",
         filterable: false,
         headerName: tMenus("availableModes.label"),
-        valueFormatter: (_value: unknown, { availableModes }: Modifier) =>
-          availableModes
-            .map((mode) => tOrder(`mode.${mode}.label`))
-            .join(tCommon("delimiter")),
+        renderCell: ({
+          row: { availableModes },
+        }: GridRenderCellParams<Modifier>) => (
+          <Stack alignItems="center" direction="row" gap={0.5} height="100%">
+            {orderModeValues
+              .filter((mode) => availableModes.includes(mode))
+              .map((mode) => (
+                <Chip
+                  key={mode}
+                  label={tOrder(`mode.${mode}.label`)}
+                  size="small"
+                  variant="outlined"
+                />
+              ))}
+          </Stack>
+        ),
         sortable: false,
       },
       {
@@ -559,7 +570,6 @@ const Modifiers = ({
       isReorderMode,
       locale,
       stringFilterOperators,
-      tCommon,
       tMenus,
       tOrder,
     ],

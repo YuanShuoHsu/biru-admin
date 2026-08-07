@@ -625,10 +625,22 @@ const MenusMenuIdSectionId = ({
         headerName: tMenus("availableModes.label"),
         sortable: false,
         filterable: false,
-        valueFormatter: (_value: unknown, { availableModes }: MenuItem) =>
-          availableModes
-            .map((mode) => tOrder(`mode.${mode}.label`))
-            .join(tCommon("delimiter")),
+        renderCell: ({
+          row: { availableModes },
+        }: GridRenderCellParams<MenuItem>) => (
+          <Stack alignItems="center" direction="row" gap={0.5} height="100%">
+            {orderModeValues
+              .filter((mode) => availableModes.includes(mode))
+              .map((mode) => (
+                <Chip
+                  key={mode}
+                  label={tOrder(`mode.${mode}.label`)}
+                  size="small"
+                  variant="outlined"
+                />
+              ))}
+          </Stack>
+        ),
       },
       {
         field: "inventoryLevel",
