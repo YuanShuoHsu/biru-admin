@@ -20,6 +20,8 @@ import {
 import type { User } from "@/types/admins";
 
 import { getUserSessions } from "@/utils/admins";
+import { getQuickFilterEnums } from "@/utils/dataGrid";
+import { getAdminEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
 
 interface AdminsPageProps {
@@ -68,8 +70,6 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
 
   setRequestLocale(locale);
 
-  const quickFilterEnums = [rawQuickFilterEnums || []].flat();
-
   const page = Math.max(1, Number(rawPage) || 1);
   const pageSize = Math.max(1, Number(rawPageSize) || DEFAULT_PAGE_SIZE);
 
@@ -86,6 +86,7 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
   );
 
   if (
+    rawQuickFilterEnums !== undefined ||
     rawPage !== String(page) ||
     rawPageSize !== String(pageSize) ||
     rawSortBy !== sortBy ||
@@ -113,11 +114,15 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
         }),
       ...(rawQuickFilterValue && { quickFilterValue: rawQuickFilterValue }),
     });
-    for (const entry of quickFilterEnums)
-      params.append("quickFilterEnums", entry);
 
     redirect({ href: `/admins?${params.toString()}`, locale });
   }
+
+  const tAdmins = await getTranslations({ locale, namespace: "admins" });
+
+  const quickFilterEnums = rawQuickFilterValue
+    ? getQuickFilterEnums(rawQuickFilterValue, getAdminEnumOptions(tAdmins))
+    : [];
 
   const fetchOptions = {
     headers: {

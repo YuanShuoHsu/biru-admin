@@ -15,11 +15,13 @@ import { authClient } from "@/lib/auth-client";
 
 import {
   filterOperatorValues,
-  menuFilterFieldValues,
-  menuSortFieldValues,
+  menuItemFilterFieldValues,
+  menuItemSortFieldValues,
   sortDirectionValues,
 } from "@/types/api";
 
+import { getQuickFilterEnums } from "@/utils/dataGrid";
+import { getMenuEnumOptions } from "@/utils/enumOptions";
 import {
   DEFAULT_MENUS_HREF,
   getAdminMenu,
@@ -77,17 +79,15 @@ const MenusMenuIdSectionIdPage = async ({
 
   setRequestLocale(locale);
 
-  const quickFilterEnums = [rawQuickFilterEnums || []].flat();
-
   const page = Math.max(1, Number(rawPage) || 1);
   const pageSize = Math.max(1, Number(rawPageSize) || DEFAULT_PAGE_SIZE);
 
-  const sortBy = menuSortFieldValues.find((field) => field === rawSortBy);
+  const sortBy = menuItemSortFieldValues.find((field) => field === rawSortBy);
   const sortDirection = sortDirectionValues.find(
     (direction) => direction === rawSortDirection,
   );
 
-  const filterField = menuFilterFieldValues.find(
+  const filterField = menuItemFilterFieldValues.find(
     (field) => field === rawFilterField,
   );
   const filterOperator = filterOperatorValues.find(
@@ -108,6 +108,7 @@ const MenusMenuIdSectionIdPage = async ({
     return redirect({ href: DEFAULT_MENUS_HREF, locale });
 
   if (
+    rawQuickFilterEnums !== undefined ||
     rawPage !== String(page) ||
     rawPageSize !== String(pageSize) ||
     rawSortBy !== sortBy ||
@@ -137,14 +138,20 @@ const MenusMenuIdSectionIdPage = async ({
         }),
       ...(quickFilterValue && { quickFilterValue }),
     });
-    for (const entry of quickFilterEnums)
-      params.append("quickFilterEnums", entry);
-
     redirect({
       href: `/menus/sections/${menuSectionId}?${params.toString()}`,
       locale,
     });
   }
+
+  const [tMenus, tOrder] = await Promise.all([
+    getTranslations({ locale, namespace: "menus" }),
+    getTranslations({ locale, namespace: "order" }),
+  ]);
+
+  const quickFilterEnums = quickFilterValue
+    ? getQuickFilterEnums(quickFilterValue, getMenuEnumOptions(tMenus, tOrder))
+    : [];
 
   const [{ items, total }, sessionData, fullOrgData] = await Promise.all([
     getAdminMenuSectionItems(

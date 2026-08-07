@@ -15,8 +15,8 @@ import { authClient } from "@/lib/auth-client";
 
 import {
   filterOperatorValues,
-  modifierFilterFieldValues,
-  modifierSortFieldValues,
+  modifierGroupFilterFieldValues,
+  modifierGroupSortFieldValues,
   sortDirectionValues,
 } from "@/types/api";
 
@@ -82,12 +82,14 @@ const MenuItemModifierGroupsPage = async ({
   const page = Math.max(1, Number(rawPage) || 1);
   const pageSize = Math.max(1, Number(rawPageSize) || DEFAULT_PAGE_SIZE);
 
-  const sortBy = modifierSortFieldValues.find((field) => field === rawSortBy);
+  const sortBy = modifierGroupSortFieldValues.find(
+    (field) => field === rawSortBy,
+  );
   const sortDirection = sortDirectionValues.find(
     (direction) => direction === rawSortDirection,
   );
 
-  const filterField = modifierFilterFieldValues.find(
+  const filterField = modifierGroupFilterFieldValues.find(
     (field) => field === rawFilterField,
   );
   const filterOperator = filterOperatorValues.find(

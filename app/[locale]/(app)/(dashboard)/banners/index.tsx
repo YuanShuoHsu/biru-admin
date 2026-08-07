@@ -61,9 +61,9 @@ import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import {
   getDataGridSearchParams,
   getFilterItemParams,
-  getQuickFilterEnums,
   isFilteredOrSorted,
 } from "@/utils/dataGrid";
+import { getBannerEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
 
 const DataGrid = dynamic(
@@ -145,15 +145,7 @@ const Banners = ({
 
   const tBanners = useTranslations("banners");
 
-  const enumOptions = useMemo(
-    () => ({
-      isActive: [
-        { label: tBanners("isActive.active"), value: "true" },
-        { label: tBanners("isActive.inactive"), value: "false" },
-      ],
-    }),
-    [tBanners],
-  );
+  const enumOptions = useMemo(() => getBannerEnumOptions(tBanners), [tBanners]);
 
   const {
     data: { data: banners, total: rowCount } = {
@@ -237,23 +229,16 @@ const Banners = ({
       params.delete("filterOperator");
       params.delete("filterValue");
       params.delete("quickFilterValue");
-      params.delete("quickFilterEnums");
       params.set("page", "1");
       if (filterField) params.set("filterField", filterField);
       if (filterOperator) params.set("filterOperator", filterOperator);
       if (filterValue) params.set("filterValue", filterValue);
-      if (newQuickFilterValue) {
+      if (newQuickFilterValue)
         params.set("quickFilterValue", newQuickFilterValue);
-        for (const entry of getQuickFilterEnums(
-          newQuickFilterValue,
-          enumOptions,
-        ))
-          params.append("quickFilterEnums", entry);
-      }
 
       router.replace(`${pathname}?${params.toString()}`);
     },
-    [enumOptions, pathname, router, searchParams],
+    [pathname, router, searchParams],
   );
 
   const handleEnterReorderMode = useCallback(() => {

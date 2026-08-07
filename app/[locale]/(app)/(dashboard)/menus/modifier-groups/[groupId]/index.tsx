@@ -27,6 +27,8 @@ import { isSortableOperation } from "@dnd-kit/react/sortable";
 
 import {
   useDateFilterOperators,
+  useEnumFilterOperators,
+  useNumberFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
 
@@ -52,7 +54,7 @@ import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { itemAvailabilityValues, orderModeValues } from "@/types/api";
+import { orderModeValues } from "@/types/api";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type {
   Modifier,
@@ -64,9 +66,9 @@ import type {
 import {
   getDataGridSearchParams,
   getFilterItemParams,
-  getQuickFilterEnums,
   isFilteredOrSorted,
 } from "@/utils/dataGrid";
+import { getMenuEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
 
@@ -135,6 +137,8 @@ const Modifiers = ({
   const { setDialog } = useDialogStore((state) => state);
 
   const dateFilterOperators = useDateFilterOperators();
+  const enumFilterOperators = useEnumFilterOperators();
+  const numberFilterOperators = useNumberFilterOperators();
   const stringFilterOperators = useStringFilterOperators();
 
   const format = useFormatter();
@@ -153,16 +157,7 @@ const Modifiers = ({
   const tOrder = useTranslations("order");
 
   const enumOptions = useMemo(
-    () => ({
-      availability: itemAvailabilityValues.map((value) => ({
-        label: tMenus(`availability.options.${value}`),
-        value,
-      })),
-      availableModes: orderModeValues.map((value) => ({
-        label: tOrder(`mode.${value}.label`),
-        value,
-      })),
-    }),
+    () => getMenuEnumOptions(tMenus, tOrder),
     [tMenus, tOrder],
   );
 
@@ -221,7 +216,6 @@ const Modifiers = ({
       setPaginationModel((prev) => ({ ...prev, page: 0 }));
 
       const sortItem = newModel[0];
-      // quickFilterEnums 是多值參數,逐項複製才不會被壓成單一值
       const params = new URLSearchParams(searchParams);
       params.delete("sortBy");
       params.delete("sortDirection");
@@ -250,23 +244,16 @@ const Modifiers = ({
       params.delete("filterOperator");
       params.delete("filterValue");
       params.delete("quickFilterValue");
-      params.delete("quickFilterEnums");
       params.set("page", "1");
       if (filterField) params.set("filterField", filterField);
       if (filterOperator) params.set("filterOperator", filterOperator);
       if (filterValue) params.set("filterValue", filterValue);
-      if (newQuickFilterValue) {
+      if (newQuickFilterValue)
         params.set("quickFilterValue", newQuickFilterValue);
-        for (const entry of getQuickFilterEnums(
-          newQuickFilterValue,
-          enumOptions,
-        ))
-          params.append("quickFilterEnums", entry);
-      }
 
       router.replace(`${pathname}?${params.toString()}`);
     },
-    [enumOptions, pathname, router, searchParams],
+    [pathname, router, searchParams],
   );
 
   const handleEnterReorderMode = useCallback(() => {
@@ -500,16 +487,15 @@ const Modifiers = ({
       },
       {
         field: "priceAdjustment",
-        filterable: false,
+        filterOperators: numberFilterOperators,
         headerName: tMenus("modifiers.priceAdjustment.label"),
         renderCell: ({
           row: { priceAdjustment },
         }: GridRenderCellParams<Modifier>) => priceAdjustment ?? "—",
-        sortable: false,
       },
       {
         field: "availability",
-        filterable: false,
+        filterOperators: enumFilterOperators,
         headerName: tMenus("availability.label"),
         renderCell: ({
           row: { availability },
@@ -522,12 +508,16 @@ const Modifiers = ({
               variant="outlined"
             />
           ),
-        sortable: false,
+        type: "singleSelect",
+        valueOptions: enumOptions.availability,
       },
       {
         field: "availableModes",
-        filterable: false,
+        filterOperators: enumFilterOperators,
         headerName: tMenus("availableModes.label"),
+        sortable: false,
+        type: "singleSelect",
+        valueOptions: enumOptions.availableModes,
         renderCell: ({
           row: { availableModes },
         }: GridRenderCellParams<Modifier>) => (
@@ -544,7 +534,6 @@ const Modifiers = ({
               ))}
           </Stack>
         ),
-        sortable: false,
       },
       {
         field: "createdAt",
@@ -564,11 +553,14 @@ const Modifiers = ({
     [
       canWrite,
       dateFilterOperators,
+      enumFilterOperators,
+      enumOptions,
       format,
       handleDeleteModifier,
       handleUpdateModifier,
       isReorderMode,
       locale,
+      numberFilterOperators,
       stringFilterOperators,
       tMenus,
       tOrder,

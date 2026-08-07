@@ -2502,9 +2502,9 @@ export interface components {
       updatedAt: string;
     };
     /** @enum {string} */
-    MenuFilterField: "name" | "description" | "createdAt" | "updatedAt";
+    MenuSectionFilterField: "name" | "description" | "createdAt" | "updatedAt";
     /** @enum {string} */
-    MenuSortField: "name" | "description" | "createdAt" | "updatedAt";
+    MenuSectionSortField: "name" | "description" | "createdAt" | "updatedAt";
     ReorderDto: {
       ids: string[];
       /** @default 0 */
@@ -2652,6 +2652,35 @@ export interface components {
       /** Format: date-time */
       updatedAt: string;
     };
+    /** @enum {string} */
+    MenuItemFilterField:
+      | "name"
+      | "description"
+      | "priceCurrency"
+      | "price"
+      | "inventoryLevel"
+      | "deliveryLeadTime"
+      | "priceSpecification"
+      | "availability"
+      | "availableModes"
+      | "createdAt"
+      | "updatedAt"
+      | "priceSpecificationValidFrom"
+      | "priceSpecificationValidThrough";
+    /** @enum {string} */
+    MenuItemSortField:
+      | "name"
+      | "description"
+      | "priceCurrency"
+      | "price"
+      | "inventoryLevel"
+      | "deliveryLeadTime"
+      | "priceSpecification"
+      | "availability"
+      | "createdAt"
+      | "updatedAt"
+      | "priceSpecificationValidFrom"
+      | "priceSpecificationValidThrough";
     UpdateMenuItemDto: {
       /**
        * @example {
@@ -2779,9 +2808,19 @@ export interface components {
       updatedAt: string;
     };
     /** @enum {string} */
-    ModifierFilterField: "displayName" | "createdAt" | "updatedAt";
+    ModifierGroupFilterField:
+      | "displayName"
+      | "minSelectionCount"
+      | "maxSelectionCount"
+      | "createdAt"
+      | "updatedAt";
     /** @enum {string} */
-    ModifierSortField: "displayName" | "createdAt" | "updatedAt";
+    ModifierGroupSortField:
+      | "displayName"
+      | "minSelectionCount"
+      | "maxSelectionCount"
+      | "createdAt"
+      | "updatedAt";
     UpdateModifierGroupDto: {
       /** @description 群組名稱 */
       displayName?: Record<string, never>;
@@ -2808,6 +2847,21 @@ export interface components {
       /** @description 可販售的點餐模式；省略代表四種全開 */
       availableModes?: components["schemas"]["OrderMode"][];
     };
+    /** @enum {string} */
+    ModifierFilterField:
+      | "displayName"
+      | "priceAdjustment"
+      | "availability"
+      | "availableModes"
+      | "createdAt"
+      | "updatedAt";
+    /** @enum {string} */
+    ModifierSortField:
+      | "displayName"
+      | "priceAdjustment"
+      | "availability"
+      | "createdAt"
+      | "updatedAt";
     UpdateModifierDto: {
       /** @description 選項名稱 */
       displayName?: Record<string, never>;
@@ -4475,11 +4529,9 @@ export interface operations {
   MenusController_findAllMenuSections: {
     parameters: {
       query?: {
-        filterField?: components["schemas"]["MenuFilterField"];
+        filterField?: components["schemas"]["MenuSectionFilterField"];
         filterOperator?: components["schemas"]["FilterOperator"];
-        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
-        quickFilterEnums?: string[];
-        sortBy?: components["schemas"]["MenuSortField"];
+        sortBy?: components["schemas"]["MenuSectionSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
         limit?: number;
         offset?: number;
@@ -4665,11 +4717,11 @@ export interface operations {
   MenusController_findAllMenuSectionItems: {
     parameters: {
       query?: {
-        filterField?: components["schemas"]["MenuFilterField"];
+        filterField?: components["schemas"]["MenuItemFilterField"];
         filterOperator?: components["schemas"]["FilterOperator"];
         /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
         quickFilterEnums?: string[];
-        sortBy?: components["schemas"]["MenuSortField"];
+        sortBy?: components["schemas"]["MenuItemSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
         limit?: number;
         offset?: number;
@@ -5132,11 +5184,9 @@ export interface operations {
   MenusController_findAllModifierGroups: {
     parameters: {
       query?: {
-        filterField?: components["schemas"]["ModifierFilterField"];
+        filterField?: components["schemas"]["ModifierGroupFilterField"];
         filterOperator?: components["schemas"]["FilterOperator"];
-        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
-        quickFilterEnums?: string[];
-        sortBy?: components["schemas"]["ModifierSortField"];
+        sortBy?: components["schemas"]["ModifierGroupSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
         limit?: number;
         offset?: number;
@@ -5478,11 +5528,9 @@ export interface operations {
   MenusController_findAllMenuItemModifierGroups: {
     parameters: {
       query?: {
-        filterField?: components["schemas"]["ModifierFilterField"];
+        filterField?: components["schemas"]["ModifierGroupFilterField"];
         filterOperator?: components["schemas"]["FilterOperator"];
-        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
-        quickFilterEnums?: string[];
-        sortBy?: components["schemas"]["ModifierSortField"];
+        sortBy?: components["schemas"]["ModifierGroupSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
         limit?: number;
         offset?: number;
@@ -6073,11 +6121,11 @@ export const userOrderResponseDtoOrderStatusValues: ReadonlyArray<
   "OrderProcessing",
   "OrderProblem",
 ];
-export const menuFilterFieldValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["MenuFilterField"]
+export const menuSectionFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["MenuSectionFilterField"]
 > = ["name", "description", "createdAt", "updatedAt"];
-export const menuSortFieldValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["MenuSortField"]
+export const menuSectionSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["MenuSectionSortField"]
 > = ["name", "description", "createdAt", "updatedAt"];
 export const orderModeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrderMode"]
@@ -6115,6 +6163,39 @@ export const menuItemResponseDtoSuitableForDietValues: ReadonlyArray<
   "VeganDiet",
   "VegetarianDiet",
 ];
+export const menuItemFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["MenuItemFilterField"]
+> = [
+  "name",
+  "description",
+  "priceCurrency",
+  "price",
+  "inventoryLevel",
+  "deliveryLeadTime",
+  "priceSpecification",
+  "availability",
+  "availableModes",
+  "createdAt",
+  "updatedAt",
+  "priceSpecificationValidFrom",
+  "priceSpecificationValidThrough",
+];
+export const menuItemSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["MenuItemSortField"]
+> = [
+  "name",
+  "description",
+  "priceCurrency",
+  "price",
+  "inventoryLevel",
+  "deliveryLeadTime",
+  "priceSpecification",
+  "availability",
+  "createdAt",
+  "updatedAt",
+  "priceSpecificationValidFrom",
+  "priceSpecificationValidThrough",
+];
 export const updateMenuItemDtoSuitableForDietValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UpdateMenuItemDto"]["suitableForDiet"]
 > = [
@@ -6136,12 +6217,43 @@ export const addOnFilterFieldValues: ReadonlyArray<
 export const addOnSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AddOnSortField"]
 > = ["addOnMenuSectionName", "addOnMenuItemName", "createdAt", "updatedAt"];
+export const modifierGroupFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["ModifierGroupFilterField"]
+> = [
+  "displayName",
+  "minSelectionCount",
+  "maxSelectionCount",
+  "createdAt",
+  "updatedAt",
+];
+export const modifierGroupSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["ModifierGroupSortField"]
+> = [
+  "displayName",
+  "minSelectionCount",
+  "maxSelectionCount",
+  "createdAt",
+  "updatedAt",
+];
 export const modifierFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["ModifierFilterField"]
-> = ["displayName", "createdAt", "updatedAt"];
+> = [
+  "displayName",
+  "priceAdjustment",
+  "availability",
+  "availableModes",
+  "createdAt",
+  "updatedAt",
+];
 export const modifierSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["ModifierSortField"]
-> = ["displayName", "createdAt", "updatedAt"];
+> = [
+  "displayName",
+  "priceAdjustment",
+  "availability",
+  "createdAt",
+  "updatedAt",
+];
 export const orderMenuItemResponseDtoSuitableForDietValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrderMenuItemResponseDto"]["suitableForDiet"]
 > = [

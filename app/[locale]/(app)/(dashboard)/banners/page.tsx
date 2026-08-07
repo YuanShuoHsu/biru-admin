@@ -18,6 +18,8 @@ import {
 } from "@/types/api";
 
 import { getBanners } from "@/utils/banners";
+import { getQuickFilterEnums } from "@/utils/dataGrid";
+import { getBannerEnumOptions } from "@/utils/enumOptions";
 
 interface BannersPageProps {
   params: Promise<{ locale: Locale }>;
@@ -63,8 +65,6 @@ const BannersPage = async ({ params, searchParams }: BannersPageProps) => {
 
   setRequestLocale(locale);
 
-  const quickFilterEnums = [rawQuickFilterEnums || []].flat();
-
   const page = Math.max(1, Number(rawPage) || 1);
   const pageSize = Math.max(1, Number(rawPageSize) || DEFAULT_PAGE_SIZE);
 
@@ -81,6 +81,7 @@ const BannersPage = async ({ params, searchParams }: BannersPageProps) => {
   );
 
   if (
+    rawQuickFilterEnums !== undefined ||
     rawPage !== String(page) ||
     rawPageSize !== String(pageSize) ||
     rawSortBy !== sortBy ||
@@ -109,11 +110,15 @@ const BannersPage = async ({ params, searchParams }: BannersPageProps) => {
         }),
       ...(quickFilterValue && { quickFilterValue }),
     });
-    for (const entry of quickFilterEnums)
-      params.append("quickFilterEnums", entry);
 
     redirect({ href: `/banners?${params.toString()}`, locale });
   }
+
+  const tBanners = await getTranslations({ locale, namespace: "banners" });
+
+  const quickFilterEnums = quickFilterValue
+    ? getQuickFilterEnums(quickFilterValue, getBannerEnumOptions(tBanners))
+    : [];
 
   const { banners, total } = await getBanners(
     {

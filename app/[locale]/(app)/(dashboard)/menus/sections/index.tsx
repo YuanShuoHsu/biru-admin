@@ -63,9 +63,9 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type {
   Menu,
-  MenuFilterField,
+  MenuSectionFilterField,
   MenuSection,
-  MenuSortField,
+  MenuSectionSortField,
 } from "@/types/menus";
 
 import {
@@ -83,7 +83,7 @@ const DataGrid = dynamic(
 
 interface MenuDetailProps {
   canWrite: boolean;
-  filterField?: MenuFilterField;
+  filterField?: MenuSectionFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
   menu: Menu;
@@ -92,7 +92,7 @@ interface MenuDetailProps {
   quickFilterValue?: string;
   rowCount: number;
   sections: MenuSection[];
-  sortBy?: MenuSortField;
+  sortBy?: MenuSectionSortField;
   sortDirection?: SortDirection;
 }
 

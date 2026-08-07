@@ -36,11 +36,6 @@ import type {
 } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
-import {
-  orderResponseDtoModeValues,
-  orderResponseDtoOrderStatusValues,
-  orderResponseDtoPaymentMethodValues,
-} from "@/types/api";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type {
   OrderFilterField,
@@ -48,11 +43,8 @@ import type {
   OrderSortField,
 } from "@/types/orders";
 
-import {
-  getDataGridSearchParams,
-  getFilterItemParams,
-  getQuickFilterEnums,
-} from "@/utils/dataGrid";
+import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
+import { getOrderEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
 import { getOrderTotalAmount } from "@/utils/orders";
 
@@ -135,20 +127,7 @@ const Orders = ({
   const tOrders = useTranslations("orders");
 
   const enumOptions = useMemo(
-    () => ({
-      mode: orderResponseDtoModeValues.map((value) => ({
-        label: tOrder(`mode.${value}.label`),
-        value,
-      })),
-      orderStatus: orderResponseDtoOrderStatusValues.map((value) => ({
-        label: tOrders(`status.${value}`),
-        value,
-      })),
-      paymentMethod: orderResponseDtoPaymentMethodValues.map((value) => ({
-        label: tOrder(`checkout.payment.${value}`),
-        value,
-      })),
-    }),
+    () => getOrderEnumOptions(tOrder, tOrders),
     [tOrder, tOrders],
   );
 
@@ -240,23 +219,16 @@ const Orders = ({
       params.delete("filterOperator");
       params.delete("filterValue");
       params.delete("quickFilterValue");
-      params.delete("quickFilterEnums");
       params.set("page", "1");
       if (filterField) params.set("filterField", filterField);
       if (filterOperator) params.set("filterOperator", filterOperator);
       if (filterValue) params.set("filterValue", filterValue);
-      if (newQuickFilterValue) {
+      if (newQuickFilterValue)
         params.set("quickFilterValue", newQuickFilterValue);
-        for (const entry of getQuickFilterEnums(
-          newQuickFilterValue,
-          enumOptions,
-        ))
-          params.append("quickFilterEnums", entry);
-      }
 
       router.replace(`${pathname}?${params.toString()}`);
     },
-    [enumOptions, pathname, router, searchParams],
+    [pathname, router, searchParams],
   );
 
   const handleViewOrder = useCallback(

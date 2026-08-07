@@ -34,7 +34,6 @@ import {
   DEFAULT_AUTHENTICATED_ROUTE,
   IMPERSONATE_RETURN_KEY,
 } from "@/constants/route";
-import { userRoleValues } from "@/types/api";
 
 import {
   useDateFilterOperators,
@@ -93,11 +92,8 @@ import type {
 import type { SortDirection } from "@/types/dataGrid";
 
 import { getUserSessions, type UserSessions } from "@/utils/admins";
-import {
-  getDataGridSearchParams,
-  getFilterItemParams,
-  getQuickFilterEnums,
-} from "@/utils/dataGrid";
+import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
+import { getAdminEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
 
 const DataGrid = dynamic(
@@ -207,23 +203,7 @@ const Admins = ({
   const enumFilterOperators = useEnumFilterOperators();
   const dateFilterOperators = useDateFilterOperators();
 
-  const enumOptions = useMemo(
-    () => ({
-      banned: [
-        { label: tAdmins("status.banned"), value: "true" },
-        { label: tAdmins("status.active"), value: "false" },
-      ],
-      emailSubscribed: [
-        { label: tAdmins("emailSubscribed.subscribed"), value: "true" },
-        { label: tAdmins("emailSubscribed.unsubscribed"), value: "false" },
-      ],
-      role: userRoleValues.map((value) => ({
-        label: tAdmins(`role.${value}`),
-        value,
-      })),
-    }),
-    [tAdmins],
-  );
+  const enumOptions = useMemo(() => getAdminEnumOptions(tAdmins), [tAdmins]);
 
   const {
     data: { rows, rowCount, userSessions } = {
@@ -328,23 +308,16 @@ const Admins = ({
       params.delete("filterOperator");
       params.delete("filterValue");
       params.delete("quickFilterValue");
-      params.delete("quickFilterEnums");
       params.set("page", "1");
       if (filterField) params.set("filterField", filterField);
       if (filterOperator) params.set("filterOperator", filterOperator);
       if (filterValue) params.set("filterValue", filterValue);
-      if (newQuickFilterValue) {
+      if (newQuickFilterValue)
         params.set("quickFilterValue", newQuickFilterValue);
-        for (const entry of getQuickFilterEnums(
-          newQuickFilterValue,
-          enumOptions,
-        ))
-          params.append("quickFilterEnums", entry);
-      }
 
       router.replace(`${pathname}?${params.toString()}`);
     },
-    [enumOptions, pathname, router, searchParams],
+    [pathname, router, searchParams],
   );
 
   const handleCreateUser = () => {

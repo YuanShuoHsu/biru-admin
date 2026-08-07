@@ -20,6 +20,8 @@ import {
 } from "@/types/api";
 
 import { getCoupons } from "@/utils/coupons";
+import { getQuickFilterEnums } from "@/utils/dataGrid";
+import { getCouponEnumOptions } from "@/utils/enumOptions";
 import { getResolvedAdminOrganization } from "@/utils/menus";
 import {
   canGrantOrganizationCoupon,
@@ -80,8 +82,6 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
     (direction) => direction === rawSortDirection,
   );
 
-  const quickFilterEnums = [rawQuickFilterEnums || []].flat();
-
   const filterField = couponFilterFieldValues.find(
     (field) => field === rawFilterField,
   );
@@ -108,6 +108,7 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
     : await getResolvedAdminOrganization(organization, fetchOptions);
 
   if (
+    rawQuickFilterEnums !== undefined ||
     (!isAdmin && organization !== selectedOrganization?.slug) ||
     rawPage !== String(page) ||
     rawPageSize !== String(pageSize) ||
@@ -138,8 +139,6 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
         }),
       ...(quickFilterValue && { quickFilterValue }),
     });
-    for (const entry of quickFilterEnums)
-      params.append("quickFilterEnums", entry);
 
     redirect({ href: `/coupons?${params.toString()}`, locale });
   }
@@ -150,6 +149,20 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
         selectedOrganization?.id,
         authFetchOptions,
       );
+
+  const organizationsPromise = isAdmin
+    ? getOrganizations(fetchOptions)
+    : Promise.resolve([]);
+
+  const quickFilterEnums = quickFilterValue
+    ? getQuickFilterEnums(
+        quickFilterValue,
+        getCouponEnumOptions(
+          await getTranslations({ locale, namespace: "coupons" }),
+          await organizationsPromise,
+        ),
+      )
+    : [];
 
   const [{ coupons, total }, organizations] = await Promise.all([
     isAdmin || selectedOrganization
@@ -170,7 +183,7 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
           fetchOptions,
         )
       : { coupons: [], total: 0 },
-    isAdmin ? getOrganizations(fetchOptions) : [],
+    organizationsPromise,
   ]);
 
   return (

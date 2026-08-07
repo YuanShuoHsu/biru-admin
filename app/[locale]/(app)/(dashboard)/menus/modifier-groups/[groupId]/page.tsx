@@ -20,6 +20,8 @@ import {
   sortDirectionValues,
 } from "@/types/api";
 
+import { getQuickFilterEnums } from "@/utils/dataGrid";
+import { getMenuEnumOptions } from "@/utils/enumOptions";
 import {
   DEFAULT_MENUS_HREF,
   getAdminMenu,
@@ -74,8 +76,6 @@ const ModifiersPage = async ({ params, searchParams }: ModifiersPageProps) => {
 
   setRequestLocale(locale);
 
-  const quickFilterEnums = [rawQuickFilterEnums || []].flat();
-
   const page = Math.max(1, Number(rawPage) || 1);
   const pageSize = Math.max(1, Number(rawPageSize) || DEFAULT_PAGE_SIZE);
 
@@ -105,6 +105,7 @@ const ModifiersPage = async ({ params, searchParams }: ModifiersPageProps) => {
     return redirect({ href: DEFAULT_MENUS_HREF, locale });
 
   if (
+    rawQuickFilterEnums !== undefined ||
     rawPage !== String(page) ||
     rawPageSize !== String(pageSize) ||
     rawSortBy !== sortBy ||
@@ -134,14 +135,20 @@ const ModifiersPage = async ({ params, searchParams }: ModifiersPageProps) => {
         }),
       ...(quickFilterValue && { quickFilterValue }),
     });
-    for (const entry of quickFilterEnums)
-      params.append("quickFilterEnums", entry);
-
     redirect({
       href: `/menus/modifier-groups/${groupId}?${params.toString()}`,
       locale,
     });
   }
+
+  const [tMenus, tOrder] = await Promise.all([
+    getTranslations({ locale, namespace: "menus" }),
+    getTranslations({ locale, namespace: "order" }),
+  ]);
+
+  const quickFilterEnums = quickFilterValue
+    ? getQuickFilterEnums(quickFilterValue, getMenuEnumOptions(tMenus, tOrder))
+    : [];
 
   const [{ modifiers, total }, sessionData, fullOrgData] = await Promise.all([
     getAdminModifiers(

@@ -19,6 +19,8 @@ import {
 } from "@/types/api";
 
 import { getCoupon, getCouponRecipients } from "@/utils/coupons";
+import { getQuickFilterEnums } from "@/utils/dataGrid";
+import { getCouponRecipientEnumOptions } from "@/utils/enumOptions";
 
 interface CouponRecipientsPageProps {
   params: Promise<{ couponId: string; locale: Locale }>;
@@ -83,14 +85,13 @@ const CouponRecipientsPage = async ({
   const filterOperator = filterOperatorValues.find(
     (operator) => operator === rawFilterOperator,
   );
-  const quickFilterEnums = [rawQuickFilterEnums || []].flat();
-
   const isNoValueOperator =
     !!filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
   const hasFilter =
     !!filterField && !!filterOperator && (!!filterValue || isNoValueOperator);
 
   if (
+    rawQuickFilterEnums !== undefined ||
     rawPage !== String(page) ||
     rawPageSize !== String(pageSize) ||
     rawSortBy !== sortBy ||
@@ -114,11 +115,15 @@ const CouponRecipientsPage = async ({
         }),
       ...(quickFilterValue && { quickFilterValue }),
     });
-    for (const entry of quickFilterEnums)
-      params.append("quickFilterEnums", entry);
 
     redirect({ href: `/coupons/${couponId}?${params.toString()}`, locale });
   }
+
+  const tCoupons = await getTranslations({ locale, namespace: "coupons" });
+
+  const quickFilterEnums = quickFilterValue
+    ? getQuickFilterEnums(quickFilterValue, getCouponRecipientEnumOptions(tCoupons))
+    : [];
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 

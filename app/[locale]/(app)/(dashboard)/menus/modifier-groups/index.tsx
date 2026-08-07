@@ -28,6 +28,7 @@ import { isSortableOperation } from "@dnd-kit/react/sortable";
 
 import {
   useDateFilterOperators,
+  useNumberFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
 
@@ -63,9 +64,9 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type {
   Menu,
-  ModifierFilterField,
+  ModifierGroupFilterField,
   ModifierGroup,
-  ModifierSortField,
+  ModifierGroupSortField,
 } from "@/types/menus";
 
 import {
@@ -83,7 +84,7 @@ const DataGrid = dynamic(
 
 interface ModifierGroupsProps {
   canWrite: boolean;
-  filterField?: ModifierFilterField;
+  filterField?: ModifierGroupFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
   groups: ModifierGroup[];
@@ -92,7 +93,7 @@ interface ModifierGroupsProps {
   pageSize: number;
   quickFilterValue?: string;
   rowCount: number;
-  sortBy?: ModifierSortField;
+  sortBy?: ModifierGroupSortField;
   sortDirection?: SortDirection;
 }
 
@@ -141,6 +142,7 @@ const ModifierGroups = ({
   const { setDialog } = useDialogStore((state) => state);
 
   const dateFilterOperators = useDateFilterOperators();
+  const numberFilterOperators = useNumberFilterOperators();
   const stringFilterOperators = useStringFilterOperators();
 
   const format = useFormatter();
@@ -511,20 +513,18 @@ const ModifierGroups = ({
       },
       {
         field: "minSelectionCount",
-        filterable: false,
+        filterOperators: numberFilterOperators,
         headerName: tMenus("modifierGroups.minSelectionCount.label"),
-        sortable: false,
       },
       {
         field: "maxSelectionCount",
-        filterable: false,
+        filterOperators: numberFilterOperators,
         headerName: tMenus("modifierGroups.maxSelectionCount.label"),
         renderCell: ({
           row: { maxSelectionCount },
         }: GridRenderCellParams<ModifierGroup>) =>
           maxSelectionCount ??
           tMenus("modifierGroups.maxSelectionCount.unlimited"),
-        sortable: false,
       },
       {
         field: "createdAt",
@@ -550,6 +550,7 @@ const ModifierGroups = ({
       handleViewModifiers,
       isReorderMode,
       locale,
+      numberFilterOperators,
       stringFilterOperators,
       tMenus,
     ],

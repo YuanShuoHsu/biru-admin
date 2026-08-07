@@ -14,8 +14,8 @@ import { authClient } from "@/lib/auth-client";
 
 import {
   filterOperatorValues,
-  menuFilterFieldValues,
-  menuSortFieldValues,
+  menuSectionFilterFieldValues,
+  menuSectionSortFieldValues,
   sortDirectionValues,
 } from "@/types/api";
 
@@ -76,12 +76,14 @@ const MenusSectionsPage = async ({
   const page = Math.max(1, Number(rawPage) || 1);
   const pageSize = Math.max(1, Number(rawPageSize) || DEFAULT_PAGE_SIZE);
 
-  const sortBy = menuSortFieldValues.find((field) => field === rawSortBy);
+  const sortBy = menuSectionSortFieldValues.find(
+    (field) => field === rawSortBy,
+  );
   const sortDirection = sortDirectionValues.find(
     (direction) => direction === rawSortDirection,
   );
 
-  const filterField = menuFilterFieldValues.find(
+  const filterField = menuSectionFilterFieldValues.find(
     (field) => field === rawFilterField,
   );
   const filterOperator = filterOperatorValues.find(

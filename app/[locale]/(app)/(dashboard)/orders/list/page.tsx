@@ -17,6 +17,8 @@ import {
   sortDirectionValues,
 } from "@/types/api";
 
+import { getQuickFilterEnums } from "@/utils/dataGrid";
+import { getOrderEnumOptions } from "@/utils/enumOptions";
 import { getResolvedAdminOrganization } from "@/utils/menus";
 import { getAdminOrders } from "@/utils/orders";
 
@@ -68,8 +70,6 @@ const OrdersPage = async ({ params, searchParams }: OrdersPageProps) => {
 
   setRequestLocale(locale);
 
-  const quickFilterEnums = [rawQuickFilterEnums || []].flat();
-
   const page = Math.max(1, Number(rawPage) || 1);
   const pageSize = Math.max(1, Number(rawPageSize) || DEFAULT_PAGE_SIZE);
 
@@ -95,6 +95,7 @@ const OrdersPage = async ({ params, searchParams }: OrdersPageProps) => {
   if (!selectedOrganization) return <OrdersTabsLayout>{null}</OrdersTabsLayout>;
 
   if (
+    rawQuickFilterEnums !== undefined ||
     organization !== selectedOrganization.slug ||
     rawPage !== String(page) ||
     rawPageSize !== String(pageSize) ||
@@ -125,11 +126,21 @@ const OrdersPage = async ({ params, searchParams }: OrdersPageProps) => {
         }),
       ...(quickFilterValue && { quickFilterValue }),
     });
-    for (const entry of quickFilterEnums)
-      params.append("quickFilterEnums", entry);
 
     redirect({ href: `/orders/list?${params.toString()}`, locale });
   }
+
+  const [tOrder, tOrders] = await Promise.all([
+    getTranslations({ locale, namespace: "order" }),
+    getTranslations({ locale, namespace: "orders" }),
+  ]);
+
+  const quickFilterEnums = quickFilterValue
+    ? getQuickFilterEnums(
+        quickFilterValue,
+        getOrderEnumOptions(tOrder, tOrders),
+      )
+    : [];
 
   const { orders, total } = await getAdminOrders(
     selectedOrganization.slug,

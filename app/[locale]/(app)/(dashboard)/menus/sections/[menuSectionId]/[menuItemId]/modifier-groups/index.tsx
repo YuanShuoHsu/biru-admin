@@ -20,6 +20,7 @@ import { getPageSizeOptions } from "@/constants/pagination";
 
 import {
   useDateFilterOperators,
+  useNumberFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
 
@@ -51,8 +52,8 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type {
   MenuItemModifierGroup,
-  ModifierFilterField,
-  ModifierSortField,
+  ModifierGroupFilterField,
+  ModifierGroupSortField,
 } from "@/types/menus";
 
 import {
@@ -70,7 +71,7 @@ const DataGrid = dynamic(
 
 interface MenuItemModifierGroupsProps {
   canWrite: boolean;
-  filterField?: ModifierFilterField;
+  filterField?: ModifierGroupFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
   links: MenuItemModifierGroup[];
@@ -80,7 +81,7 @@ interface MenuItemModifierGroupsProps {
   pageSize: number;
   quickFilterValue?: string;
   rowCount: number;
-  sortBy?: ModifierSortField;
+  sortBy?: ModifierGroupSortField;
   sortDirection?: SortDirection;
 }
 
@@ -134,6 +135,7 @@ const MenuItemModifierGroups = ({
   const tMenus = useTranslations("menus");
   const stringFilterOperators = useStringFilterOperators();
   const dateFilterOperators = useDateFilterOperators();
+  const numberFilterOperators = useNumberFilterOperators();
 
   const apiRef = useGridApiRef();
 
@@ -461,9 +463,8 @@ const MenuItemModifierGroups = ({
       },
       {
         field: "minSelectionCount",
-        filterable: false,
+        filterOperators: numberFilterOperators,
         headerName: tMenus("modifierGroups.minSelectionCount.label"),
-        sortable: false,
         valueGetter: (
           _value: unknown,
           { modifierGroup }: MenuItemModifierGroup,
@@ -471,9 +472,8 @@ const MenuItemModifierGroups = ({
       },
       {
         field: "maxSelectionCount",
-        filterable: false,
+        filterOperators: numberFilterOperators,
         headerName: tMenus("modifierGroups.maxSelectionCount.label"),
-        sortable: false,
         valueGetter: (
           _value: unknown,
           { modifierGroup }: MenuItemModifierGroup,
@@ -503,6 +503,7 @@ const MenuItemModifierGroups = ({
       handleDetach,
       isReorderMode,
       locale,
+      numberFilterOperators,
       stringFilterOperators,
       tMenus,
     ],
