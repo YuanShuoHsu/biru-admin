@@ -11,7 +11,6 @@
 
 "use client";
 
-import type { UserWithRole } from "better-auth/client/plugins";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
@@ -25,12 +24,17 @@ import SetRoleDialogContent from "./SetRoleDialogContent";
 import SetUserPasswordDialogContent from "./SetUserPasswordDialogContent";
 import UpdateUserDialogContent from "./UpdateUserDialogContent";
 
-import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
+import {
+  autosizeOptions,
+  DATA_GRID_PROPS,
+  NO_VALUE_FILTER_OPERATORS,
+} from "@/constants/dataGrid";
 import { getPageSizeOptions } from "@/constants/pagination";
 import {
   DEFAULT_AUTHENTICATED_ROUTE,
   IMPERSONATE_RETURN_KEY,
 } from "@/constants/route";
+import { userRoleValues } from "@/types/api";
 
 import {
   useDateFilterOperators,
@@ -80,21 +84,20 @@ import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
-  AdminRole,
-  AdminUser,
+  User,
   UserFilterField,
   UserFilterOperator,
+  UserRole,
   UserSortField,
 } from "@/types/admins";
 import type { SortDirection } from "@/types/dataGrid";
 
+import { getUserSessions, type UserSessions } from "@/utils/admins";
 import {
-  getQuickFilterValue,
-  getUserSessions,
-  type QuickFilterMessages,
-  type UserSessions,
-} from "@/utils/admins";
-import { getFilterItemParams } from "@/utils/dataGrid";
+  getDataGridSearchParams,
+  getFilterItemParams,
+  getQuickFilterEnums,
+} from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
 
 const DataGrid = dynamic(
@@ -123,7 +126,7 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
   },
 }));
 
-const ROLE_COLOR_MAP: Record<AdminRole, "error" | "default"> = {
+const ROLE_COLOR_MAP: Record<UserRole, "error" | "default"> = {
   admin: "error",
   user: "default",
 };
@@ -134,10 +137,9 @@ interface AdminsProps {
   filterValue?: string;
   page: number;
   pageSize: number;
-  quickFilterMessages: QuickFilterMessages;
   quickFilterValue?: string;
   rowCount: number;
-  rows: UserWithRole[];
+  rows: User[];
   sortBy?: UserSortField;
   sortDirection?: SortDirection;
   userSessions: UserSessions;
@@ -149,7 +151,6 @@ const Admins = ({
   filterValue: initialFilterValue,
   page,
   pageSize,
-  quickFilterMessages,
   quickFilterValue: initialQuickFilterValue,
   rowCount: initialRowCount,
   rows: initialRows,
@@ -166,14 +167,17 @@ const Admins = ({
   );
   const [filterModel, setFilterModel] = useState<GridFilterModel>({
     items:
-      initialFilterField && initialFilterOperator && initialFilterValue
+      initialFilterField &&
+      initialFilterOperator &&
+      (initialFilterValue ||
+        NO_VALUE_FILTER_OPERATORS.includes(initialFilterOperator))
         ? [
             {
               field: initialFilterField,
               operator: initialFilterOperator,
               value:
                 initialFilterOperator === "isAnyOf"
-                  ? initialFilterValue.split(",")
+                  ? initialFilterValue?.split(",")
                   : initialFilterValue,
             },
           ]
@@ -203,6 +207,24 @@ const Admins = ({
   const enumFilterOperators = useEnumFilterOperators();
   const dateFilterOperators = useDateFilterOperators();
 
+  const enumOptions = useMemo(
+    () => ({
+      banned: [
+        { label: tAdmins("status.banned"), value: "true" },
+        { label: tAdmins("status.active"), value: "false" },
+      ],
+      emailSubscribed: [
+        { label: tAdmins("emailSubscribed.subscribed"), value: "true" },
+        { label: tAdmins("emailSubscribed.unsubscribed"), value: "false" },
+      ],
+      role: userRoleValues.map((value) => ({
+        label: tAdmins(`role.${value}`),
+        value,
+      })),
+    }),
+    [tAdmins],
+  );
+
   const {
     data: { rows, rowCount, userSessions } = {
       rows: initialRows,
@@ -223,22 +245,15 @@ const Admins = ({
       sortModel,
     ],
     async () => {
-      const filterItem = filterModel.items[0];
-      const quickFilterValue = getQuickFilterValue(
-        quickFilterMessages,
-        (filterModel.quickFilterValues || []).join(" "),
+      const params = getDataGridSearchParams(
+        paginationModel,
+        filterModel,
+        sortModel,
+        enumOptions,
       );
-      const params = new URLSearchParams({
-        ...getFilterItemParams(filterItem),
-        limit: String(paginationModel.pageSize),
-        offset: String(paginationModel.page * paginationModel.pageSize),
-        ...(quickFilterValue && { quickFilterValue }),
-        sortBy: sortModel[0]?.field || "createdAt",
-        sortDirection: sortModel[0]?.sort || "desc",
-      });
 
       const { data: userRows, total } = await fetcher<{
-        data: UserWithRole[];
+        data: User[];
         total: number;
       }>(`/api/users/list?${params}`);
 
@@ -269,11 +284,10 @@ const Admins = ({
     (newModel: GridPaginationModel) => {
       setPaginationModel(newModel);
 
-      const params = new URLSearchParams({
-        ...Object.fromEntries(searchParams),
-        page: String(newModel.page + 1),
-        pageSize: String(newModel.pageSize),
-      });
+      const params = new URLSearchParams(searchParams);
+      params.set("page", String(newModel.page + 1));
+      params.set("pageSize", String(newModel.pageSize));
+
       router.replace(`${pathname}?${params.toString()}`);
     },
     [pathname, router, searchParams],
@@ -285,19 +299,12 @@ const Admins = ({
       setPaginationModel((prev) => ({ ...prev, page: 0 }));
 
       const sortItem = newModel[0];
-      const {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        sortBy: _sortBy,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        sortDirection: _sortDirection,
-        ...rest
-      } = Object.fromEntries(searchParams);
-      const params = new URLSearchParams({
-        ...rest,
-        page: "1",
-        ...(sortItem?.field && { sortBy: sortItem.field }),
-        ...(sortItem?.sort && { sortDirection: sortItem.sort }),
-      });
+      const params = new URLSearchParams(searchParams);
+      params.delete("sortBy");
+      params.delete("sortDirection");
+      params.set("page", "1");
+      if (sortItem?.field) params.set("sortBy", sortItem.field);
+      if (sortItem?.sort) params.set("sortDirection", sortItem.sort);
 
       router.replace(`${pathname}?${params.toString()}`);
     },
@@ -314,27 +321,30 @@ const Admins = ({
         .join(" ")
         .trim();
 
-      const {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        filterField: _filterField,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        filterOperator: _filterOperator,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        filterValue: _filterValue,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        quickFilterValue: _quickFilterValue,
-        ...rest
-      } = Object.fromEntries(searchParams);
+      const params = new URLSearchParams(searchParams);
+      const { filterField, filterOperator, filterValue } =
+        getFilterItemParams(filterItem);
+      params.delete("filterField");
+      params.delete("filterOperator");
+      params.delete("filterValue");
+      params.delete("quickFilterValue");
+      params.delete("quickFilterEnums");
+      params.set("page", "1");
+      if (filterField) params.set("filterField", filterField);
+      if (filterOperator) params.set("filterOperator", filterOperator);
+      if (filterValue) params.set("filterValue", filterValue);
+      if (newQuickFilterValue) {
+        params.set("quickFilterValue", newQuickFilterValue);
+        for (const entry of getQuickFilterEnums(
+          newQuickFilterValue,
+          enumOptions,
+        ))
+          params.append("quickFilterEnums", entry);
+      }
 
-      const params = new URLSearchParams({
-        ...rest,
-        page: "1",
-        ...getFilterItemParams(filterItem),
-        ...(newQuickFilterValue && { quickFilterValue: newQuickFilterValue }),
-      });
       router.replace(`${pathname}?${params.toString()}`);
     },
-    [pathname, router, searchParams],
+    [enumOptions, pathname, router, searchParams],
   );
 
   const handleCreateUser = () => {
@@ -347,7 +357,7 @@ const Admins = ({
   };
 
   const handleUpdateUser = useCallback(
-    (user: AdminUser) => {
+    (user: User) => {
       setDialog({
         content: (
           <UpdateUserDialogContent mutateAdmins={mutateAdmins} user={user} />
@@ -361,7 +371,7 @@ const Admins = ({
   );
 
   const handleSetRole = useCallback(
-    (user: UserWithRole) => {
+    (user: User) => {
       setDialog({
         content: (
           <SetRoleDialogContent mutateAdmins={mutateAdmins} user={user} />
@@ -375,7 +385,7 @@ const Admins = ({
   );
 
   const handleSetUserPassword = useCallback(
-    (user: UserWithRole) => {
+    (user: User) => {
       setDialog({
         content: <SetUserPasswordDialogContent user={user} />,
         formId: "set-user-password-form",
@@ -387,7 +397,7 @@ const Admins = ({
   );
 
   const handleBanUser = useCallback(
-    (user: UserWithRole) => {
+    (user: User) => {
       setDialog({
         content: (
           <BanUserDialogContent mutateAdmins={mutateAdmins} user={user} />
@@ -401,7 +411,7 @@ const Admins = ({
   );
 
   const handleUnbanUser = useCallback(
-    ({ id, email }: UserWithRole) => {
+    ({ id, email }: User) => {
       setDialog({
         content: (
           <DialogContentText>
@@ -436,7 +446,7 @@ const Admins = ({
   );
 
   const handleImpersonateUser = useCallback(
-    (user: UserWithRole) => {
+    (user: User) => {
       setDialog({
         content: (
           <DialogContentText>
@@ -484,7 +494,7 @@ const Admins = ({
   );
 
   const handleRemoveUser = useCallback(
-    ({ id, email }: UserWithRole) => {
+    ({ id, email }: User) => {
       setDialog({
         content: (
           <DialogContentText>
@@ -525,7 +535,7 @@ const Admins = ({
         field: "actions",
         filterable: false,
         headerName: tAdmins("actions.label"),
-        renderCell: ({ row }: GridRenderCellParams<UserWithRole>) => {
+        renderCell: ({ row }: GridRenderCellParams<User>) => {
           const isBanned =
             row.banned &&
             (!row.banExpires || new Date(row.banExpires) > new Date());
@@ -541,7 +551,7 @@ const Admins = ({
                   onClick={(event) => {
                     event.stopPropagation();
 
-                    handleUpdateUser(row as AdminUser);
+                    handleUpdateUser(row);
                   }}
                   size="small"
                 >
@@ -655,9 +665,7 @@ const Admins = ({
         field: "image",
         filterable: false,
         headerName: tAdmins("image"),
-        renderCell: ({
-          row: { image, name },
-        }: GridRenderCellParams<AdminUser>) => (
+        renderCell: ({ row: { image, name } }: GridRenderCellParams<User>) => (
           <Stack height="100%" direction="row" alignItems="center">
             <StyledAvatar alt={name} src={image || undefined}>
               {name[0]}
@@ -685,25 +693,23 @@ const Admins = ({
         field: "role",
         textFilterOperators: enumFilterOperators,
         headerName: tAdmins("role.label"),
-        renderCell: ({ row: { role } }: GridRenderCellParams<AdminUser>) => (
-          <Chip
-            color={ROLE_COLOR_MAP[role]}
-            label={tAdmins(`role.${role}`)}
-            size="small"
-            variant="outlined"
-          />
-        ),
+        renderCell: ({ row: { role } }: GridRenderCellParams<User>) =>
+          role && (
+            <Chip
+              color={ROLE_COLOR_MAP[role]}
+              label={tAdmins(`role.${role}`)}
+              size="small"
+              variant="outlined"
+            />
+          ),
         type: "singleSelect",
-        valueOptions: [
-          { label: tAdmins("role.admin"), value: "admin" },
-          { label: tAdmins("role.user"), value: "user" },
-        ],
+        valueOptions: enumOptions.role,
       },
       {
         field: "banned",
         textFilterOperators: enumFilterOperators,
         headerName: tAdmins("status.label"),
-        renderCell: ({ row }: GridRenderCellParams<UserWithRole>) => {
+        renderCell: ({ row }: GridRenderCellParams<User>) => {
           const isBanned =
             row.banned &&
             (!row.banExpires || new Date(row.banExpires) > new Date());
@@ -761,7 +767,7 @@ const Admins = ({
         field: "emailSubscribed",
         textFilterOperators: enumFilterOperators,
         headerName: tAdmins("emailSubscribed.label"),
-        renderCell: ({ row }: GridRenderCellParams<AdminUser>) => (
+        renderCell: ({ row }: GridRenderCellParams<User>) => (
           <Chip
             color={row.emailSubscribed ? "primary" : "default"}
             icon={
@@ -800,6 +806,7 @@ const Admins = ({
       currentUserId,
       dateFilterOperators,
       enumFilterOperators,
+      enumOptions,
       format,
       handleBanUser,
       handleImpersonateUser,

@@ -80,7 +80,7 @@ export const getCoupons = cache(
           }),
         ...(quickFilterValue && { quickFilterValue }),
       });
-      for (const entry of quickFilterEnums ?? [])
+      for (const entry of quickFilterEnums || [])
         params.append("quickFilterEnums", entry);
 
       const result = await fetcher<{ data: Coupon[]; total: number }>(
@@ -140,7 +140,7 @@ export const getCouponRecipients = cache(
           }),
         ...(quickFilterValue && { quickFilterValue }),
       });
-      for (const entry of quickFilterEnums ?? [])
+      for (const entry of quickFilterEnums || [])
         params.append("quickFilterEnums", entry);
 
       const result = await fetcher<{ data: CouponRecipient[]; total: number }>(

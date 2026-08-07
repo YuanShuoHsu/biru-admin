@@ -37,6 +37,7 @@ interface ModifiersPageProps {
     organization?: string;
     page?: string;
     pageSize?: string;
+    quickFilterEnums?: string | string[];
     quickFilterValue?: string;
     sortBy?: string;
     sortDirection?: string;
@@ -63,6 +64,7 @@ const ModifiersPage = async ({ params, searchParams }: ModifiersPageProps) => {
       organization,
       page: rawPage,
       pageSize: rawPageSize,
+      quickFilterEnums: rawQuickFilterEnums,
       quickFilterValue,
       sortBy: rawSortBy,
       sortDirection: rawSortDirection,
@@ -71,6 +73,8 @@ const ModifiersPage = async ({ params, searchParams }: ModifiersPageProps) => {
   ] = await Promise.all([cookies(), params, searchParams]);
 
   setRequestLocale(locale);
+
+  const quickFilterEnums = [rawQuickFilterEnums || []].flat();
 
   const page = Math.max(1, Number(rawPage) || 1);
   const pageSize = Math.max(1, Number(rawPageSize) || DEFAULT_PAGE_SIZE);
@@ -123,8 +127,15 @@ const ModifiersPage = async ({ params, searchParams }: ModifiersPageProps) => {
       ...(sortBy && sortDirection && { sortBy, sortDirection }),
       ...(filterField &&
         filterOperator &&
-        filterValue && { filterField, filterOperator, filterValue }),
+        (filterValue || NO_VALUE_FILTER_OPERATORS.includes(filterOperator)) && {
+          filterField,
+          filterOperator,
+          ...(filterValue && { filterValue }),
+        }),
+      ...(quickFilterValue && { quickFilterValue }),
     });
+    for (const entry of quickFilterEnums)
+      params.append("quickFilterEnums", entry);
 
     redirect({
       href: `/menus/modifier-groups/${groupId}?${params.toString()}`,
@@ -141,6 +152,7 @@ const ModifiersPage = async ({ params, searchParams }: ModifiersPageProps) => {
       filterOperator,
       filterValue,
       quickFilterValue,
+      quickFilterEnums,
       sortBy,
       sortDirection,
       fetchOptions,

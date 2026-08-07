@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-import { roles } from "@/constants/admins";
+import { userRoleValues } from "@/types/api";
 
 export const useSetRoleFormSchema = () => {
   const tValidation = useTranslations("validation");
@@ -10,7 +10,7 @@ export const useSetRoleFormSchema = () => {
     email: z.email({ error: tValidation("email.invalid") }).trim(),
     role: z
       .string()
-      .pipe(z.enum(roles, { error: tValidation("role.required") })),
+      .pipe(z.enum(userRoleValues, { error: tValidation("role.required") })),
   });
 };
 

@@ -12,7 +12,7 @@ export const isFilteredOrSorted = (
   sortModel: GridSortModel,
 ) =>
   sortModel.length > 0 ||
-  (filterModel.quickFilterValues ?? []).some((value) => value.trim() !== "") ||
+  (filterModel.quickFilterValues || []).some((value) => value.trim() !== "") ||
   filterModel.items.some(
     ({ operator, value }) =>
       NO_VALUE_FILTER_OPERATORS.includes(operator) ||

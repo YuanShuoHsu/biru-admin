@@ -2,6 +2,8 @@ import { cache } from "react";
 
 import { fetcher } from "./fetcher";
 
+import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
+
 import type { OrderResponse, OrderStatus } from "@/types/orders";
 
 const PAID_ORDER_STATUSES: OrderStatus[] = [
@@ -16,6 +18,7 @@ interface GetAdminOrdersQuery {
   filterField?: string;
   filterOperator?: string;
   filterValue?: string;
+  quickFilterEnums?: string[];
   quickFilterValue?: string;
   sortBy?: string;
   sortDirection?: "asc" | "desc";
@@ -30,6 +33,7 @@ export const getAdminOrders = cache(
       filterField,
       filterOperator,
       filterValue,
+      quickFilterEnums,
       quickFilterValue,
       sortBy,
       sortDirection,
@@ -38,6 +42,8 @@ export const getAdminOrders = cache(
   ) => {
     try {
       const offset = (page - 1) * pageSize;
+      const isNoValueOperator =
+        filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
       const params = new URLSearchParams({
         limit: String(pageSize),
         offset: String(offset),
@@ -45,9 +51,16 @@ export const getAdminOrders = cache(
         ...(sortDirection && { sortDirection }),
         ...(filterField &&
           filterOperator &&
-          filterValue && { filterField, filterOperator, filterValue }),
+          (filterValue || isNoValueOperator) && {
+            filterField,
+            filterOperator,
+            ...(filterValue && { filterValue }),
+          }),
         ...(quickFilterValue && { quickFilterValue }),
       });
+      for (const entry of quickFilterEnums || [])
+        params.append("quickFilterEnums", entry);
+
       const result = await fetcher<{ data: OrderResponse[]; total: number }>(
         `/api/organizations/${organizationSlug}/orders?${params.toString()}`,
         init,

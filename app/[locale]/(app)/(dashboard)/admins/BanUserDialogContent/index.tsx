@@ -1,6 +1,5 @@
 "use client";
 
-import type { UserWithRole } from "better-auth/client/plugins";
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
@@ -19,13 +18,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
+import type { User } from "@/types/admins";
+
 import { MenuItem, TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 interface BanUserDialogContentProps {
   mutateAdmins: () => void;
-  user: UserWithRole;
+  user: User;
 }
 
 const BanUserDialogContent = ({

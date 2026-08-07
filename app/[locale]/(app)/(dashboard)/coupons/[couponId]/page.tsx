@@ -83,7 +83,7 @@ const CouponRecipientsPage = async ({
   const filterOperator = filterOperatorValues.find(
     (operator) => operator === rawFilterOperator,
   );
-  const quickFilterEnums = [rawQuickFilterEnums ?? []].flat();
+  const quickFilterEnums = [rawQuickFilterEnums || []].flat();
 
   const isNoValueOperator =
     !!filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);

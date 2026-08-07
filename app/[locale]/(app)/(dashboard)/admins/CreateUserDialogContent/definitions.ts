@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-import { roles } from "@/constants/admins";
+import { userRoleValues } from "@/types/api";
 import { PASSWORD_MIN_LENGTH } from "@/constants/password";
 
 export const useCreateUserFormSchema = () => {
@@ -30,7 +30,7 @@ export const useCreateUserFormSchema = () => {
       emailSubscribed: z.boolean(),
       role: z
         .string()
-        .pipe(z.enum(roles, { error: tValidation("role.required") })),
+        .pipe(z.enum(userRoleValues, { error: tValidation("role.required") })),
     })
     .refine(({ password, confirmPassword }) => password === confirmPassword, {
       path: ["confirmPassword"],

@@ -1,6 +1,5 @@
 "use client";
 
-import type { UserWithRole } from "better-auth/client/plugins";
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
@@ -14,11 +13,13 @@ import {
 
 import FormBox from "@/components/FormBox";
 
-import { roles } from "@/constants/admins";
+import { userRoleValues } from "@/types/api";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
+
+import type { User } from "@/types/admins";
 
 import { MenuItem, TextField } from "@mui/material";
 
@@ -26,7 +27,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 interface SetRoleDialogContentProps {
   mutateAdmins: () => void;
-  user: UserWithRole;
+  user: User;
 }
 
 const SetRoleDialogContent = ({
@@ -47,7 +48,7 @@ const SetRoleDialogContent = ({
     handleSubmit,
     register,
   } = useForm<SetRoleFormInput, unknown, SetRoleFormOutput>({
-    defaultValues: { email: user.email, role: user.role },
+    defaultValues: { email: user.email, role: user.role ?? undefined },
     resolver: zodResolver(setRoleFormSchema),
   });
 
@@ -103,7 +104,9 @@ const SetRoleDialogContent = ({
           select: {
             displayEmpty: true,
             renderValue: (selected) => {
-              const selectedRole = roles.find((role) => role === selected);
+              const selectedRole = userRoleValues.find(
+                (role) => role === selected,
+              );
 
               return selectedRole ? (
                 tAdmins(`role.${selectedRole}`)
@@ -119,7 +122,7 @@ const SetRoleDialogContent = ({
         <MenuItem disabled value="">
           <em>{tAdmins("role.placeholder")}</em>
         </MenuItem>
-        {roles.map((role) => (
+        {userRoleValues.map((role) => (
           <MenuItem key={role} value={role}>
             {tAdmins(`role.${role}`)}
           </MenuItem>

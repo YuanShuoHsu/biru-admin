@@ -17,6 +17,7 @@ interface GetBannersQuery {
   filterField?: BannerFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
+  quickFilterEnums?: string[];
   quickFilterValue?: string;
   sortBy?: BannerSortField;
   sortDirection?: SortDirection;
@@ -30,6 +31,7 @@ export const getBanners = cache(
       filterField,
       filterOperator,
       filterValue,
+      quickFilterEnums,
       quickFilterValue,
       sortBy,
       sortDirection,
@@ -54,6 +56,9 @@ export const getBanners = cache(
           }),
         ...(quickFilterValue && { quickFilterValue }),
       });
+      for (const entry of quickFilterEnums || [])
+        params.append("quickFilterEnums", entry);
+
       const result = await fetcher<{ data: Banner[]; total: number }>(
         `/api/banners?${params.toString()}`,
         init,

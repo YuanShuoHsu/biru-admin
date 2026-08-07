@@ -28,11 +28,11 @@ import {
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { AdminUser } from "@/types/admins";
+import type { User } from "@/types/admins";
 
 interface UpdateUserDialogContentProps {
   mutateAdmins: () => void;
-  user: AdminUser;
+  user: User;
 }
 
 const UpdateUserDialogContent = ({
@@ -58,7 +58,7 @@ const UpdateUserDialogContent = ({
     register,
   } = useForm<UpdateUserForm>({
     defaultValues: {
-      lastName: user.lastName,
+      lastName: user.lastName || undefined,
       firstName: user.firstName,
       email: user.email,
       bio: user.bio || "",

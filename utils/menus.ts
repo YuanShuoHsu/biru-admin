@@ -3,6 +3,7 @@ import { cache } from "react";
 import { fetcher } from "./fetcher";
 import { getHref } from "./href";
 
+import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
 import { LOW_STOCK_THRESHOLD } from "@/constants/menus";
 import { DEFAULT_PAGINATION_QUERY } from "@/constants/pagination";
 
@@ -484,6 +485,8 @@ export const getAdminMenuSections = cache(
   ) => {
     try {
       const offset = (page - 1) * pageSize;
+      const isNoValueOperator =
+        filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
       const params = new URLSearchParams({
         limit: String(pageSize),
         offset: String(offset),
@@ -491,7 +494,11 @@ export const getAdminMenuSections = cache(
         ...(sortDirection && { sortDirection }),
         ...(filterField &&
           filterOperator &&
-          filterValue && { filterField, filterOperator, filterValue }),
+          (filterValue || isNoValueOperator) && {
+            filterField,
+            filterOperator,
+            ...(filterValue && { filterValue }),
+          }),
         ...(quickFilterValue && { quickFilterValue }),
       });
       const result = await fetcher<{ data: MenuSection[]; total: number }>(
@@ -530,12 +537,15 @@ export const getAdminMenuSectionItems = cache(
     filterOperator?: string,
     filterValue?: string,
     quickFilterValue?: string,
+    quickFilterEnums?: string[],
     sortBy?: string,
     sortDirection?: "asc" | "desc",
     init?: RequestInit,
   ) => {
     try {
       const offset = (page - 1) * pageSize;
+      const isNoValueOperator =
+        filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
       const params = new URLSearchParams({
         limit: String(pageSize),
         offset: String(offset),
@@ -543,9 +553,16 @@ export const getAdminMenuSectionItems = cache(
         ...(sortDirection && { sortDirection }),
         ...(filterField &&
           filterOperator &&
-          filterValue && { filterField, filterOperator, filterValue }),
+          (filterValue || isNoValueOperator) && {
+            filterField,
+            filterOperator,
+            ...(filterValue && { filterValue }),
+          }),
         ...(quickFilterValue && { quickFilterValue }),
       });
+      for (const entry of quickFilterEnums || [])
+        params.append("quickFilterEnums", entry);
+
       const result = await fetcher<{ data: MenuItem[]; total: number }>(
         `/api/menu-sections/${sectionId}/menu-items?${params.toString()}`,
         init,
@@ -575,6 +592,8 @@ export const getAdminMenuItemAddOns = cache(
   ) => {
     try {
       const offset = (page - 1) * pageSize;
+      const isNoValueOperator =
+        filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
       const params = new URLSearchParams({
         limit: String(pageSize),
         offset: String(offset),
@@ -582,7 +601,11 @@ export const getAdminMenuItemAddOns = cache(
         ...(sortDirection && { sortDirection }),
         ...(filterField &&
           filterOperator &&
-          filterValue && { filterField, filterOperator, filterValue }),
+          (filterValue || isNoValueOperator) && {
+            filterField,
+            filterOperator,
+            ...(filterValue && { filterValue }),
+          }),
         ...(quickFilterValue && { quickFilterValue }),
       });
       const result = await fetcher<{
@@ -614,6 +637,8 @@ export const getAdminModifierGroups = cache(
   ) => {
     try {
       const offset = (page - 1) * pageSize;
+      const isNoValueOperator =
+        filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
       const params = new URLSearchParams({
         limit: String(pageSize),
         offset: String(offset),
@@ -621,7 +646,11 @@ export const getAdminModifierGroups = cache(
         ...(sortDirection && { sortDirection }),
         ...(filterField &&
           filterOperator &&
-          filterValue && { filterField, filterOperator, filterValue }),
+          (filterValue || isNoValueOperator) && {
+            filterField,
+            filterOperator,
+            ...(filterValue && { filterValue }),
+          }),
         ...(quickFilterValue && { quickFilterValue }),
       });
       const result = await fetcher<{ data: ModifierGroup[]; total: number }>(
@@ -660,12 +689,15 @@ export const getAdminModifiers = cache(
     filterOperator?: string,
     filterValue?: string,
     quickFilterValue?: string,
+    quickFilterEnums?: string[],
     sortBy?: string,
     sortDirection?: "asc" | "desc",
     init?: RequestInit,
   ) => {
     try {
       const offset = (page - 1) * pageSize;
+      const isNoValueOperator =
+        filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
       const params = new URLSearchParams({
         limit: String(pageSize),
         offset: String(offset),
@@ -673,9 +705,16 @@ export const getAdminModifiers = cache(
         ...(sortDirection && { sortDirection }),
         ...(filterField &&
           filterOperator &&
-          filterValue && { filterField, filterOperator, filterValue }),
+          (filterValue || isNoValueOperator) && {
+            filterField,
+            filterOperator,
+            ...(filterValue && { filterValue }),
+          }),
         ...(quickFilterValue && { quickFilterValue }),
       });
+      for (const entry of quickFilterEnums || [])
+        params.append("quickFilterEnums", entry);
+
       const result = await fetcher<{ data: Modifier[]; total: number }>(
         `/api/modifier-groups/${groupId}/modifiers?${params.toString()}`,
         init,
@@ -705,6 +744,8 @@ export const getAdminMenuItemModifierGroups = cache(
   ) => {
     try {
       const offset = (page - 1) * pageSize;
+      const isNoValueOperator =
+        filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
       const params = new URLSearchParams({
         limit: String(pageSize),
         offset: String(offset),
@@ -712,7 +753,11 @@ export const getAdminMenuItemModifierGroups = cache(
         ...(sortDirection && { sortDirection }),
         ...(filterField &&
           filterOperator &&
-          filterValue && { filterField, filterOperator, filterValue }),
+          (filterValue || isNoValueOperator) && {
+            filterField,
+            filterOperator,
+            ...(filterValue && { filterValue }),
+          }),
         ...(quickFilterValue && { quickFilterValue }),
       });
       const result = await fetcher<{

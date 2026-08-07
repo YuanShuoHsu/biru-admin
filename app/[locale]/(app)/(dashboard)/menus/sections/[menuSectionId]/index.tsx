@@ -69,12 +69,14 @@ import { useGridApiRef } from "@mui/x-data-grid";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import { currencies } from "@/constants/currencies";
+import { itemAvailabilityValues, orderModeValues } from "@/types/api";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { MenuFilterField, MenuItem, MenuSortField } from "@/types/menus";
 
 import {
   getDataGridSearchParams,
   getFilterItemParams,
+  getQuickFilterEnums,
   isFilteredOrSorted,
 } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
@@ -171,6 +173,21 @@ const MenusMenuIdSectionId = ({
   const tMenus = useTranslations("menus");
   const tOrder = useTranslations("order");
 
+  // availability 與 availableModes 沒有開放 column filter,只供快速搜尋比對標籤
+  const enumOptions = useMemo(
+    () => ({
+      availability: itemAvailabilityValues.map((value) => ({
+        label: tMenus(`availability.options.${value}`),
+        value,
+      })),
+      availableModes: orderModeValues.map((value) => ({
+        label: tOrder(`mode.${value}.label`),
+        value,
+      })),
+    }),
+    [tMenus, tOrder],
+  );
+
   const {
     data: { data: items, total: rowCount } = {
       data: initialItems,
@@ -191,7 +208,7 @@ const MenusMenuIdSectionId = ({
     ],
     async () => {
       return fetcher<{ data: MenuItem[]; total: number }>(
-        `/api/menu-sections/${menuSectionId}/menu-items?${getDataGridSearchParams(paginationModel, filterModel, sortModel)}`,
+        `/api/menu-sections/${menuSectionId}/menu-items?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
       );
     },
     {
@@ -211,11 +228,10 @@ const MenusMenuIdSectionId = ({
     (newModel: GridPaginationModel) => {
       setPaginationModel(newModel);
 
-      const params = new URLSearchParams({
-        ...Object.fromEntries(searchParams),
-        page: String(newModel.page + 1),
-        pageSize: String(newModel.pageSize),
-      });
+      const params = new URLSearchParams(searchParams);
+      params.set("page", String(newModel.page + 1));
+      params.set("pageSize", String(newModel.pageSize));
+
       router.replace(`${pathname}?${params.toString()}`);
     },
     [pathname, router, searchParams],
@@ -227,19 +243,13 @@ const MenusMenuIdSectionId = ({
       setPaginationModel((prev) => ({ ...prev, page: 0 }));
 
       const sortItem = newModel[0];
-      const {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        sortBy: _sortBy,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        sortDirection: _sortDirection,
-        ...rest
-      } = Object.fromEntries(searchParams);
-      const params = new URLSearchParams({
-        ...rest,
-        page: "1",
-        ...(sortItem?.field && { sortBy: sortItem.field }),
-        ...(sortItem?.sort && { sortDirection: sortItem.sort }),
-      });
+      // quickFilterEnums 是多值參數,逐項複製才不會被壓成單一值
+      const params = new URLSearchParams(searchParams);
+      params.delete("sortBy");
+      params.delete("sortDirection");
+      params.set("page", "1");
+      if (sortItem?.field) params.set("sortBy", sortItem.field);
+      if (sortItem?.sort) params.set("sortDirection", sortItem.sort);
 
       router.replace(`${pathname}?${params.toString()}`);
     },
@@ -255,27 +265,30 @@ const MenusMenuIdSectionId = ({
       const newQuickFilterValue = (newModel.quickFilterValues || [])
         .join(" ")
         .trim();
-      const {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        filterField: _filterField,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        filterOperator: _filterOperator,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        filterValue: _filterValue,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        quickFilterValue: _quickFilterValue,
-        ...rest
-      } = Object.fromEntries(searchParams);
+      const params = new URLSearchParams(searchParams);
+      const { filterField, filterOperator, filterValue } =
+        getFilterItemParams(filterItem);
+      params.delete("filterField");
+      params.delete("filterOperator");
+      params.delete("filterValue");
+      params.delete("quickFilterValue");
+      params.delete("quickFilterEnums");
+      params.set("page", "1");
+      if (filterField) params.set("filterField", filterField);
+      if (filterOperator) params.set("filterOperator", filterOperator);
+      if (filterValue) params.set("filterValue", filterValue);
+      if (newQuickFilterValue) {
+        params.set("quickFilterValue", newQuickFilterValue);
+        for (const entry of getQuickFilterEnums(
+          newQuickFilterValue,
+          enumOptions,
+        ))
+          params.append("quickFilterEnums", entry);
+      }
 
-      const params = new URLSearchParams({
-        ...rest,
-        page: "1",
-        ...getFilterItemParams(filterItem),
-        ...(newQuickFilterValue && { quickFilterValue: newQuickFilterValue }),
-      });
       router.replace(`${pathname}?${params.toString()}`);
     },
-    [pathname, router, searchParams],
+    [enumOptions, pathname, router, searchParams],
   );
 
   const handleEnterReorderMode = useCallback(() => {

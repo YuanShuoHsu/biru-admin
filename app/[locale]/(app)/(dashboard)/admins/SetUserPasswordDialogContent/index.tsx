@@ -1,6 +1,5 @@
 "use client";
 
-import type { UserWithRole } from "better-auth/client/plugins";
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent, useState } from "react";
@@ -20,6 +19,8 @@ import { usePasswordValidation } from "@/hooks/usePasswordValidation";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
+import type { User } from "@/types/admins";
+
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 
@@ -31,7 +32,7 @@ import {
 } from "@/utils/password";
 
 interface SetUserPasswordDialogContentProps {
-  user: UserWithRole;
+  user: User;
 }
 
 const SetUserPasswordDialogContent = ({

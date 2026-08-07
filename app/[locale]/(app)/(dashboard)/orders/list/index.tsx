@@ -11,8 +11,8 @@ import {
   DATA_GRID_PROPS,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
-import { getPageSizeOptions } from "@/constants/pagination";
 import { STATUS_COLORS } from "@/constants/orders";
+import { getPageSizeOptions } from "@/constants/pagination";
 
 import {
   useDateFilterOperators,
@@ -48,7 +48,11 @@ import type {
   OrderSortField,
 } from "@/types/orders";
 
-import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
+import {
+  getDataGridSearchParams,
+  getFilterItemParams,
+  getQuickFilterEnums,
+} from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
 import { getOrderTotalAmount } from "@/utils/orders";
 
@@ -127,6 +131,27 @@ const Orders = ({
 
   const searchParams = useSearchParams();
 
+  const tOrder = useTranslations("order");
+  const tOrders = useTranslations("orders");
+
+  const enumOptions = useMemo(
+    () => ({
+      mode: orderResponseDtoModeValues.map((value) => ({
+        label: tOrder(`mode.${value}.label`),
+        value,
+      })),
+      orderStatus: orderResponseDtoOrderStatusValues.map((value) => ({
+        label: tOrders(`status.${value}`),
+        value,
+      })),
+      paymentMethod: orderResponseDtoPaymentMethodValues.map((value) => ({
+        label: tOrder(`checkout.payment.${value}`),
+        value,
+      })),
+    }),
+    [tOrder, tOrders],
+  );
+
   const {
     data: { data: orders, total: rowCount } = {
       data: initialOrders,
@@ -150,6 +175,7 @@ const Orders = ({
           paginationModel,
           filterModel,
           sortModel,
+          enumOptions,
         )}`,
       ),
     {
@@ -162,9 +188,6 @@ const Orders = ({
     },
   );
 
-  const tOrder = useTranslations("order");
-  const tOrders = useTranslations("orders");
-
   const stringFilterOperators = useStringFilterOperators();
   const enumFilterOperators = useEnumFilterOperators();
   const dateFilterOperators = useDateFilterOperators();
@@ -174,11 +197,10 @@ const Orders = ({
     (newModel: GridPaginationModel) => {
       setPaginationModel(newModel);
 
-      const params = new URLSearchParams({
-        ...Object.fromEntries(searchParams),
-        page: String(newModel.page + 1),
-        pageSize: String(newModel.pageSize),
-      });
+      const params = new URLSearchParams(searchParams);
+      params.set("page", String(newModel.page + 1));
+      params.set("pageSize", String(newModel.pageSize));
+
       router.replace(`${pathname}?${params.toString()}`);
     },
     [pathname, router, searchParams],
@@ -190,19 +212,12 @@ const Orders = ({
       setPaginationModel((prev) => ({ ...prev, page: 0 }));
 
       const sortItem = newModel[0];
-      const {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        sortBy: _sortBy,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        sortDirection: _sortDirection,
-        ...rest
-      } = Object.fromEntries(searchParams);
-      const params = new URLSearchParams({
-        ...rest,
-        page: "1",
-        ...(sortItem?.field && { sortBy: sortItem.field }),
-        ...(sortItem?.sort && { sortDirection: sortItem.sort }),
-      });
+      const params = new URLSearchParams(searchParams);
+      params.delete("sortBy");
+      params.delete("sortDirection");
+      params.set("page", "1");
+      if (sortItem?.field) params.set("sortBy", sortItem.field);
+      if (sortItem?.sort) params.set("sortDirection", sortItem.sort);
 
       router.replace(`${pathname}?${params.toString()}`);
     },
@@ -218,27 +233,30 @@ const Orders = ({
       const newQuickFilterValue = (newModel.quickFilterValues || [])
         .join(" ")
         .trim();
-      const {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        filterField: _filterField,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        filterOperator: _filterOperator,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        filterValue: _filterValue,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        quickFilterValue: _quickFilterValue,
-        ...rest
-      } = Object.fromEntries(searchParams);
+      const params = new URLSearchParams(searchParams);
+      const { filterField, filterOperator, filterValue } =
+        getFilterItemParams(filterItem);
+      params.delete("filterField");
+      params.delete("filterOperator");
+      params.delete("filterValue");
+      params.delete("quickFilterValue");
+      params.delete("quickFilterEnums");
+      params.set("page", "1");
+      if (filterField) params.set("filterField", filterField);
+      if (filterOperator) params.set("filterOperator", filterOperator);
+      if (filterValue) params.set("filterValue", filterValue);
+      if (newQuickFilterValue) {
+        params.set("quickFilterValue", newQuickFilterValue);
+        for (const entry of getQuickFilterEnums(
+          newQuickFilterValue,
+          enumOptions,
+        ))
+          params.append("quickFilterEnums", entry);
+      }
 
-      const params = new URLSearchParams({
-        ...rest,
-        page: "1",
-        ...getFilterItemParams(filterItem),
-        ...(newQuickFilterValue && { quickFilterValue: newQuickFilterValue }),
-      });
       router.replace(`${pathname}?${params.toString()}`);
     },
-    [pathname, router, searchParams],
+    [enumOptions, pathname, router, searchParams],
   );
 
   const handleViewOrder = useCallback(
@@ -297,10 +315,7 @@ const Orders = ({
         filterOperators: enumFilterOperators,
         headerName: tOrders("mode"),
         type: "singleSelect",
-        valueOptions: orderResponseDtoModeValues.map((value) => ({
-          label: tOrder(`mode.${value}.label`),
-          value,
-        })),
+        valueOptions: enumOptions.mode,
       },
       {
         field: "tableNumber",
@@ -312,10 +327,7 @@ const Orders = ({
         filterOperators: enumFilterOperators,
         headerName: tOrders("paymentMethod"),
         type: "singleSelect",
-        valueOptions: orderResponseDtoPaymentMethodValues.map((value) => ({
-          label: tOrder(`checkout.payment.${value}`),
-          value,
-        })),
+        valueOptions: enumOptions.paymentMethod,
       },
       {
         field: "orderStatus",
@@ -330,10 +342,7 @@ const Orders = ({
           />
         ),
         type: "singleSelect",
-        valueOptions: orderResponseDtoOrderStatusValues.map((value) => ({
-          label: tOrders(`status.${value}`),
-          value,
-        })),
+        valueOptions: enumOptions.orderStatus,
       },
       {
         field: "paymentDate",
@@ -360,12 +369,12 @@ const Orders = ({
     [
       dateFilterOperators,
       enumFilterOperators,
+      enumOptions,
       format,
       handleViewOrder,
       locale,
       numberFilterOperators,
       stringFilterOperators,
-      tOrder,
       tOrders,
     ],
   );

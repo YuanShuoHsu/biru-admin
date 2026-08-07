@@ -80,7 +80,7 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
     (direction) => direction === rawSortDirection,
   );
 
-  const quickFilterEnums = [rawQuickFilterEnums ?? []].flat();
+  const quickFilterEnums = [rawQuickFilterEnums || []].flat();
 
   const filterField = couponFilterFieldValues.find(
     (field) => field === rawFilterField,
@@ -131,7 +131,11 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
       ...(sortBy && sortDirection && { sortBy, sortDirection }),
       ...(filterField &&
         filterOperator &&
-        filterValue && { filterField, filterOperator, filterValue }),
+        (filterValue || NO_VALUE_FILTER_OPERATORS.includes(filterOperator)) && {
+          filterField,
+          filterOperator,
+          ...(filterValue && { filterValue }),
+        }),
       ...(quickFilterValue && { quickFilterValue }),
     });
     for (const entry of quickFilterEnums)

@@ -1,10 +1,5 @@
-import type { UserWithRole } from "better-auth/client/plugins";
 import type { Metadata } from "next";
-import {
-  getMessages,
-  getTranslations,
-  setRequestLocale,
-} from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 
 import Admins from ".";
@@ -22,7 +17,9 @@ import {
   userSortFieldValues,
 } from "@/types/api";
 
-import { getQuickFilterValue, getUserSessions } from "@/utils/admins";
+import type { User } from "@/types/admins";
+
+import { getUserSessions } from "@/utils/admins";
 import { fetcher } from "@/utils/fetcher";
 
 interface AdminsPageProps {
@@ -33,6 +30,7 @@ interface AdminsPageProps {
     filterField?: string;
     filterOperator?: string;
     filterValue?: string;
+    quickFilterEnums?: string | string[];
     quickFilterValue?: string;
     searchField?: string;
     searchOperator?: string;
@@ -61,6 +59,7 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
       filterValue,
       page: rawPage,
       pageSize: rawPageSize,
+      quickFilterEnums: rawQuickFilterEnums,
       quickFilterValue: rawQuickFilterValue,
       sortBy: rawSortBy,
       sortDirection: rawSortDirection,
@@ -68,6 +67,8 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
   ] = await Promise.all([cookies(), params, searchParams]);
 
   setRequestLocale(locale);
+
+  const quickFilterEnums = [rawQuickFilterEnums || []].flat();
 
   const page = Math.max(1, Number(rawPage) || 1);
   const pageSize = Math.max(1, Number(rawPageSize) || DEFAULT_PAGE_SIZE);
@@ -105,9 +106,16 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
       ...(sortBy && sortDirection && { sortBy, sortDirection }),
       ...(filterField &&
         filterOperator &&
-        filterValue && { filterField, filterOperator, filterValue }),
+        (filterValue || NO_VALUE_FILTER_OPERATORS.includes(filterOperator)) && {
+          filterField,
+          filterOperator,
+          ...(filterValue && { filterValue }),
+        }),
       ...(rawQuickFilterValue && { quickFilterValue: rawQuickFilterValue }),
     });
+    for (const entry of quickFilterEnums)
+      params.append("quickFilterEnums", entry);
+
     redirect({ href: `/admins?${params.toString()}`, locale });
   }
 
@@ -117,13 +125,6 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
       origin: process.env.NEXT_PUBLIC_ADMIN_URL!,
     },
   };
-
-  const messages = await getMessages();
-  const quickFilterMessages = messages.admins;
-  const quickFilterValue = getQuickFilterValue(
-    quickFilterMessages,
-    rawQuickFilterValue || "",
-  );
 
   const queryParams = new URLSearchParams({
     ...(filterField &&
@@ -135,17 +136,19 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
       }),
     limit: String(pageSize),
     offset: String((page - 1) * pageSize),
-    ...(quickFilterValue && { quickFilterValue }),
+    ...(rawQuickFilterValue && { quickFilterValue: rawQuickFilterValue }),
     sortBy: sortBy || "createdAt",
     sortDirection: sortDirection || "desc",
   });
+  for (const entry of quickFilterEnums)
+    queryParams.append("quickFilterEnums", entry);
 
   const { data, total } = await fetcher<{
-    data: UserWithRole[];
+    data: User[];
     total: number;
   }>(`/api/users/list?${queryParams}`, { headers: fetchOptions.headers });
 
-  const rows: UserWithRole[] = data || [];
+  const rows: User[] = data || [];
   const rowCount = total || 0;
 
   const userSessions = await getUserSessions(rows, fetchOptions);
@@ -157,7 +160,6 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
       filterValue={filterValue}
       page={page}
       pageSize={pageSize}
-      quickFilterMessages={quickFilterMessages}
       quickFilterValue={rawQuickFilterValue}
       rows={rows}
       rowCount={rowCount}

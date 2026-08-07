@@ -27,6 +27,7 @@ interface BannersPageProps {
     filterValue?: string;
     page?: string;
     pageSize?: string;
+    quickFilterEnums?: string | string[];
     quickFilterValue?: string;
     sortBy?: string;
     sortDirection?: string;
@@ -52,6 +53,7 @@ const BannersPage = async ({ params, searchParams }: BannersPageProps) => {
       filterValue,
       page: rawPage,
       pageSize: rawPageSize,
+      quickFilterEnums: rawQuickFilterEnums,
       quickFilterValue,
       sortBy: rawSortBy,
       sortDirection: rawSortDirection,
@@ -60,6 +62,8 @@ const BannersPage = async ({ params, searchParams }: BannersPageProps) => {
   ] = await Promise.all([cookies(), params, searchParams]);
 
   setRequestLocale(locale);
+
+  const quickFilterEnums = [rawQuickFilterEnums || []].flat();
 
   const page = Math.max(1, Number(rawPage) || 1);
   const pageSize = Math.max(1, Number(rawPageSize) || DEFAULT_PAGE_SIZE);
@@ -98,8 +102,15 @@ const BannersPage = async ({ params, searchParams }: BannersPageProps) => {
       ...(sortBy && sortDirection && { sortBy, sortDirection }),
       ...(filterField &&
         filterOperator &&
-        filterValue && { filterField, filterOperator, filterValue }),
+        (filterValue || NO_VALUE_FILTER_OPERATORS.includes(filterOperator)) && {
+          filterField,
+          filterOperator,
+          ...(filterValue && { filterValue }),
+        }),
+      ...(quickFilterValue && { quickFilterValue }),
     });
+    for (const entry of quickFilterEnums)
+      params.append("quickFilterEnums", entry);
 
     redirect({ href: `/banners?${params.toString()}`, locale });
   }
@@ -111,6 +122,7 @@ const BannersPage = async ({ params, searchParams }: BannersPageProps) => {
       filterField,
       filterOperator,
       filterValue,
+      quickFilterEnums,
       quickFilterValue,
       sortBy,
       sortDirection,

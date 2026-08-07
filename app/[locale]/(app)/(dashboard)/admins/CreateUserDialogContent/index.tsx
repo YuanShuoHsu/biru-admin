@@ -15,7 +15,7 @@ import FormBox from "@/components/FormBox";
 import PasswordRuleList from "@/components/PasswordRuleList";
 import UploadAvatars from "@/components/UploadAvatars";
 
-import { roles } from "@/constants/admins";
+import { userRoleValues } from "@/types/api";
 
 import { LocaleEnum } from "@/enums/Locale";
 
@@ -303,7 +303,9 @@ const CreateUserDialogContent = ({
           select: {
             displayEmpty: true,
             renderValue: (selected) => {
-              const selectedRole = roles.find((role) => role === selected);
+              const selectedRole = userRoleValues.find(
+                (role) => role === selected,
+              );
 
               return selectedRole ? (
                 tAdmins(`role.${selectedRole}`)
@@ -319,7 +321,7 @@ const CreateUserDialogContent = ({
         <MenuItem disabled value="">
           <em>{tAdmins("role.placeholder")}</em>
         </MenuItem>
-        {roles.map((role) => (
+        {userRoleValues.map((role) => (
           <MenuItem key={role} value={role}>
             {tAdmins(`role.${role}`)}
           </MenuItem>

@@ -1130,12 +1130,43 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
+    /**
+     * @description 角色
+     * @enum {string}
+     */
+    UserRole: "admin" | "user";
     UserResponseDto: {
       /**
        * @description ID
        * @example 123e4567-e89b-12d3-a456-426614174000
        */
       id: string;
+      /**
+       * @description 角色
+       * @example user
+       */
+      role: components["schemas"]["UserRole"] | null;
+      /**
+       * @description 是否已封鎖
+       * @example false
+       */
+      banned: boolean | null;
+      /**
+       * @description 封鎖原因
+       * @example 違反使用條款
+       */
+      banReason?: string | null;
+      /**
+       * Format: date-time
+       * @description 封鎖到期時間；null 為永久
+       * @example 2025-12-31T23:59:59.000Z
+       */
+      banExpires?: string | null;
+      /**
+       * @description 個人簡介
+       * @example 喜歡精釀啤酒
+       */
+      bio?: string | null;
       /**
        * @description 姓名
        * @example Coffee
@@ -3119,8 +3150,10 @@ export interface operations {
         limit?: number;
         /** @description 偏移量 */
         offset?: number;
-        /** @description Quick Filter 搜尋值。可傳一般文字，或 role:admin、banned:true、emailSubscribed:false 等欄位 token */
+        /** @description Quick Filter 搜尋值 */
         quickFilterValue?: string;
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
         /** @description Search 欄位 */
         searchField?: components["schemas"]["UserSearchField"];
         /** @description Search 運算子 */
@@ -3272,6 +3305,8 @@ export interface operations {
       query?: {
         filterField?: components["schemas"]["BannerFilterField"];
         filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
         sortBy?: components["schemas"]["BannerSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
         limit?: number;
@@ -4140,6 +4175,8 @@ export interface operations {
       query?: {
         filterField?: components["schemas"]["OrderFilterField"];
         filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
         sortBy?: components["schemas"]["OrderSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
         limit?: number;
@@ -4440,6 +4477,8 @@ export interface operations {
       query?: {
         filterField?: components["schemas"]["MenuFilterField"];
         filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
         sortBy?: components["schemas"]["MenuSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
         limit?: number;
@@ -4628,6 +4667,8 @@ export interface operations {
       query?: {
         filterField?: components["schemas"]["MenuFilterField"];
         filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
         sortBy?: components["schemas"]["MenuSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
         limit?: number;
@@ -5093,6 +5134,8 @@ export interface operations {
       query?: {
         filterField?: components["schemas"]["ModifierFilterField"];
         filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
         sortBy?: components["schemas"]["ModifierSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
         limit?: number;
@@ -5278,6 +5321,8 @@ export interface operations {
       query?: {
         filterField?: components["schemas"]["ModifierFilterField"];
         filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
         sortBy?: components["schemas"]["ModifierSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
         limit?: number;
@@ -5435,6 +5480,8 @@ export interface operations {
       query?: {
         filterField?: components["schemas"]["ModifierFilterField"];
         filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
         sortBy?: components["schemas"]["ModifierSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
         limit?: number;
@@ -5788,6 +5835,9 @@ export const pathsApiMenuSectionsSectionIdMenuItemsGetParametersQuerySearchOpera
 export const pathsApiOrganizationsOrganizationIdOrderMenuGetParametersQueryLangValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/organizations/{organizationId}/order-menu"]["get"]["parameters"]["query"]["lang"]
 > = ["en", "ja", "ko", "zh-CN", "zh-TW"];
+export const userRoleValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["UserRole"]
+> = ["admin", "user"];
 export const userResponseDtoLangValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UserResponseDto"]["lang"]
 > = ["en", "ja", "ko", "zh-CN", "zh-TW"];

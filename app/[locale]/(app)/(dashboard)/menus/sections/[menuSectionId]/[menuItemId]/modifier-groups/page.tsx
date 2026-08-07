@@ -130,7 +130,12 @@ const MenuItemModifierGroupsPage = async ({
       ...(sortBy && sortDirection && { sortBy, sortDirection }),
       ...(filterField &&
         filterOperator &&
-        filterValue && { filterField, filterOperator, filterValue }),
+        (filterValue || NO_VALUE_FILTER_OPERATORS.includes(filterOperator)) && {
+          filterField,
+          filterOperator,
+          ...(filterValue && { filterValue }),
+        }),
+      ...(quickFilterValue && { quickFilterValue }),
     });
 
     redirect({
