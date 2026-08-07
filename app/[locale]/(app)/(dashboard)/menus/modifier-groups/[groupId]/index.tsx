@@ -153,7 +153,6 @@ const Modifiers = ({
   const tMenus = useTranslations("menus");
   const tOrder = useTranslations("order");
 
-  // availability 與 availableModes 沒有開放 column filter,只供快速搜尋比對標籤
   const enumOptions = useMemo(
     () => ({
       availability: itemAvailabilityValues.map((value) => ({
