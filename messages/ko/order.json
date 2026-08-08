@@ -70,7 +70,7 @@
       "Credit": "신용카드",
       "iPASS": "iPASS MONEY",
       "Jkopay": "JKO Pay",
-      "pickupUnavailable": "온라인 포장은 이용할 수 없습니다",
+      "pickupUnavailable": "온라인 포장 수령은 이용할 수 없습니다",
       "TWQR": "모바일 결제",
       "WeiXin": "위챗페이"
     },
@@ -160,8 +160,8 @@
       "unavailable": "드라이브 스루 미제공"
     },
     "pickup": {
-      "label": "포장 수령",
-      "unavailable": "포장 수령 미제공"
+      "label": "온라인 포장 수령",
+      "unavailable": "온라인 포장 수령 미제공"
     },
     "storeSlug": {
       "selectTable": "테이블 선택",

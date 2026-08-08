@@ -70,7 +70,7 @@
       "Credit": "信用卡",
       "iPASS": "iPASS MONEY",
       "Jkopay": "街口支付",
-      "pickupUnavailable": "線上外帶不支援現金",
+      "pickupUnavailable": "線上外帶自取不支援現金",
       "TWQR": "行動支付",
       "WeiXin": "微信支付"
     },
@@ -160,8 +160,8 @@
       "unavailable": "得來速不供應"
     },
     "pickup": {
-      "label": "外帶自取",
-      "unavailable": "外帶自取不供應"
+      "label": "線上外帶自取",
+      "unavailable": "線上外帶自取不供應"
     },
     "storeSlug": {
       "selectTable": "選擇桌號",

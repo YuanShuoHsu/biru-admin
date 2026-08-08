@@ -1,6 +1,7 @@
 "use client";
 
 import dayjs from "dayjs";
+import { type CountryCode, parsePhoneNumberWithError } from "libphonenumber-js";
 import { useLocale, useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import { type BaseSyntheticEvent, useEffect } from "react";
@@ -8,11 +9,13 @@ import { useForm, useWatch } from "react-hook-form";
 
 import { type ProfileForm, useProfileFormSchema } from "./definitions";
 
+import CountryAutocomplete from "@/components/CountryAutocomplete";
 import FormCard, {
   StyledCardActions,
   StyledCardContent,
   StyledCardHeader,
 } from "@/components/FormCard";
+import TextMaskCustom from "@/components/TextMaskCustom";
 import UploadAvatars from "@/components/UploadAvatars";
 
 import { LocaleEnum } from "@/enums/Locale";
@@ -23,13 +26,14 @@ import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { Button, Stack, TextField, Typography } from "@mui/material";
+import { Button, Grid, Stack, TextField, Typography } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import { formatFullName } from "@/utils/auth";
+import { getPhoneDefaults, getPhoneFormatting } from "@/utils/countries";
 
 const PROFILE_UPLOAD_AVATAR_KEY = "profile-upload-avatar";
 
@@ -57,11 +61,17 @@ const Profile = () => {
       firstName: session?.user.firstName || "",
       bio: session?.user.bio || "",
       birthDate: toBirthDateValue(session?.user.birthDate),
+      ...getPhoneDefaults(session?.user.phoneNumber, locale),
     },
     resolver: zodResolver(profileFormSchema),
   });
 
-  const birthDate = useWatch({ control, name: "birthDate" });
+  const [birthDate, countryCode, telephone] = useWatch({
+    control,
+    name: ["birthDate", "countryCode", "telephone"],
+  });
+
+  const { mask, placeholder } = getPhoneFormatting(countryCode);
 
   useEffect(() => {
     reset({
@@ -69,13 +79,16 @@ const Profile = () => {
       firstName: session?.user.firstName || "",
       bio: session?.user.bio || "",
       birthDate: toBirthDateValue(session?.user.birthDate),
+      ...getPhoneDefaults(session?.user.phoneNumber, locale),
     });
   }, [
+    locale,
     reset,
     session?.user.bio,
     session?.user.birthDate,
     session?.user.firstName,
     session?.user.lastName,
+    session?.user.phoneNumber,
   ]);
 
   const { enqueueSnackbar } = useSnackbar();
@@ -94,6 +107,8 @@ const Profile = () => {
     firstName,
     bio,
     birthDate: birthDateValue,
+    countryCode: countryCodeValue,
+    telephone: telephoneValue,
   }: ProfileForm) => {
     const name = formatFullName(locale, firstName, lastName);
 
@@ -104,6 +119,12 @@ const Profile = () => {
       name,
       bio,
       ...(birthDateValue && { birthDate: new Date(birthDateValue) }),
+      phoneNumber: telephoneValue
+        ? parsePhoneNumberWithError(
+            telephoneValue,
+            countryCodeValue as CountryCode,
+          ).number
+        : "",
       fetchOptions: {
         onError: ({ error }) => {
           enqueueSnackbar(getErrorMessage(error.code, locale), {
@@ -188,6 +209,39 @@ const Profile = () => {
             })
           }
         />
+        <Grid container spacing={2} width="100%">
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <CountryAutocomplete
+              error={!!errors.countryCode}
+              helperText={errors.countryCode?.message}
+              label={tAuth("countryCode.label")}
+              mode="country"
+              placeholder={tAuth("countryCode.placeholder")}
+              required
+              value={countryCode}
+              {...register("countryCode")}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              autoComplete="tel"
+              error={!!errors.telephone}
+              fullWidth
+              helperText={errors.telephone?.message || tAuth("telephone.hint")}
+              label={`${tAuth("telephone.label")} ${tCommon("optional")}`}
+              slotProps={{
+                input: {
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  inputComponent: TextMaskCustom as any,
+                  inputProps: { mask, placeholder },
+                },
+              }}
+              type="tel"
+              value={telephone}
+              {...register("telephone")}
+            />
+          </Grid>
+        </Grid>
         <TextField
           error={!!errors.bio}
           fullWidth

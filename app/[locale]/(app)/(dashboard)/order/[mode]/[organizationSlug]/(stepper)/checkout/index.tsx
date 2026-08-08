@@ -68,7 +68,7 @@ import type { PaymentMethod } from "@/types/payment";
 import type { RouteParams } from "@/types/routeParams";
 
 import { formatFullName } from "@/utils/auth";
-import { getPhoneFormatting } from "@/utils/countries";
+import { getPhoneDefaults, getPhoneFormatting } from "@/utils/countries";
 import { getErrorMessage } from "@/utils/errors";
 import { sendRequest } from "@/utils/fetcher";
 import { getChoiceNames, getItemName } from "@/utils/menus";
@@ -108,6 +108,8 @@ const OrderModeOrganizationSlugCheckout = () => {
 
   const locale = useLocale();
 
+  const phoneDefaults = getPhoneDefaults(session?.user.phoneNumber, locale);
+
   const {
     clearErrors,
     control,
@@ -121,7 +123,7 @@ const OrderModeOrganizationSlugCheckout = () => {
     defaultValues: {
       coupon: "",
       customer: {
-        countryCode: localeConfigs[locale].countryCode,
+        countryCode: phoneDefaults.countryCode,
         email: session?.user.email || "",
         name: session
           ? formatFullName(
@@ -131,7 +133,7 @@ const OrderModeOrganizationSlugCheckout = () => {
             )
           : "",
         remark: "",
-        telephone: "",
+        telephone: phoneDefaults.telephone,
       },
       invoice: {
         carrierType: "",
@@ -150,6 +152,7 @@ const OrderModeOrganizationSlugCheckout = () => {
   const [
     couponCode,
     countryCode,
+    telephone,
     carrierType,
     customerIdentifier,
     donateCode,
@@ -160,6 +163,7 @@ const OrderModeOrganizationSlugCheckout = () => {
     name: [
       "coupon",
       "customer.countryCode",
+      "customer.telephone",
       "invoice.carrierType",
       "invoice.customerIdentifier",
       "invoice.donateCode",
@@ -176,6 +180,7 @@ const OrderModeOrganizationSlugCheckout = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const search = searchParams.toString();
+  const query = search ? `?${search}` : "";
 
   const router = useRouter();
 
@@ -475,6 +480,7 @@ const OrderModeOrganizationSlugCheckout = () => {
             {tOrder("checkout.title")}
           </Typography>
           <TextField
+            autoComplete="name"
             error={!!errors.customer?.name}
             fullWidth
             helperText={errors.customer?.name?.message}
@@ -514,11 +520,13 @@ const OrderModeOrganizationSlugCheckout = () => {
                   },
                 }}
                 type="tel"
+                value={telephone}
                 {...register("customer.telephone")}
               />
             </Grid>
           </Grid>
           <TextField
+            autoComplete="email"
             error={!!errors.customer?.email}
             fullWidth
             helperText={errors.customer?.email?.message}
@@ -698,7 +706,9 @@ const OrderModeOrganizationSlugCheckout = () => {
       <Stack direction="row" justifyContent="space-between">
         <Button
           disabled={isMutatingEcpay || isMutatingOrder}
-          onClick={() => router.push(pathname.replace("/checkout", "/cart"))}
+          onClick={() =>
+            router.push(`${pathname.replace("/checkout", "/cart")}${query}`)
+          }
           startIcon={<ShoppingCart />}
           variant="outlined"
         >

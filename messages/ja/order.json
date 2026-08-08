@@ -70,7 +70,7 @@
       "Credit": "クレジットカード",
       "iPASS": "iPASS MONEY",
       "Jkopay": "街口Pay",
-      "pickupUnavailable": "オンライン持ち帰りではご利用いただけません",
+      "pickupUnavailable": "オンラインお持ち帰りではご利用いただけません",
       "TWQR": "モバイル決済",
       "WeiXin": "WeChat Pay"
     },
@@ -160,8 +160,8 @@
       "unavailable": "ドライブスルーは対象外"
     },
     "pickup": {
-      "label": "お持ち帰り",
-      "unavailable": "お持ち帰りは対象外"
+      "label": "オンラインお持ち帰り",
+      "unavailable": "オンラインお持ち帰りは対象外"
     },
     "storeSlug": {
       "selectTable": "テーブルを選択",

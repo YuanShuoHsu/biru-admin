@@ -70,7 +70,7 @@
       "Credit": "Credit Card",
       "iPASS": "iPASS MONEY",
       "Jkopay": "JKO Pay",
-      "pickupUnavailable": "Not available for online takeout",
+      "pickupUnavailable": "Not available for online pickup",
       "TWQR": "Mobile Payment",
       "WeiXin": "WeChat Pay"
     },
@@ -160,8 +160,8 @@
       "unavailable": "Unavailable for drive-thru"
     },
     "pickup": {
-      "label": "Pickup",
-      "unavailable": "Unavailable for pickup"
+      "label": "Online pickup",
+      "unavailable": "Unavailable for online pickup"
     },
     "storeSlug": {
       "selectTable": "Select a table",

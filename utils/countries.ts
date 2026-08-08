@@ -1,4 +1,8 @@
-import { type CountryCode, getExampleNumber } from "libphonenumber-js";
+import {
+  type CountryCode,
+  getExampleNumber,
+  parsePhoneNumberFromString,
+} from "libphonenumber-js";
 import examples from "libphonenumber-js/mobile/examples";
 
 import { countries } from "@/constants/countries";
@@ -14,6 +18,20 @@ export const getDefaultCountry = (locale: Locale) => {
   const countryCode = localeConfigs[locale].countryCode;
 
   return countries.find(({ code }) => code === countryCode);
+};
+
+export const getPhoneDefaults = (
+  phoneNumber: string | null | undefined,
+  locale: Locale,
+) => {
+  const parsed = phoneNumber
+    ? parsePhoneNumberFromString(phoneNumber)
+    : undefined;
+
+  return {
+    countryCode: parsed?.country || localeConfigs[locale].countryCode,
+    telephone: parsed?.formatNational() || "",
+  };
 };
 
 export const getPhoneFormatting = (countryCode?: string) => {

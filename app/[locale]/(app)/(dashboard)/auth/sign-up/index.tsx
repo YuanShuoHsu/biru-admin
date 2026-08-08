@@ -447,7 +447,7 @@ const AuthSignUp = ({ locale, redirectTo }: AuthSignUpProps) => {
                   error={!!error}
                   fullWidth
                   helperText={error?.message}
-                  label={tAuth("phone")}
+                  label={tAuth("telephone.label")}
                   onChange={onChange}
                   required
                   slotProps={{

@@ -42,6 +42,10 @@ export const authClient = createAuthClient({
           type: "string",
           required: false,
         },
+        phoneNumber: {
+          type: "string",
+          required: false,
+        },
       },
     }),
     multiSessionClient(),
