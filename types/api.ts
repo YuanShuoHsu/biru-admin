@@ -2384,6 +2384,8 @@ export interface components {
       discount?: string | null;
       discountCode?: string | null;
       discountCurrency?: string | null;
+      subtotal: string;
+      total: string;
       invoice?: Record<string, never> | null;
       items: components["schemas"]["OrderItemResponseDto"][];
       /** Format: date-time */
@@ -2483,6 +2485,8 @@ export interface components {
       discount?: string | null;
       discountCode?: string | null;
       discountCurrency?: string | null;
+      subtotal: string;
+      total: string;
       invoice?: Record<string, never> | null;
       items: components["schemas"]["OrderItemResponseDto"][];
       /** Format: date-time */
@@ -2541,6 +2545,8 @@ export interface components {
       discount?: string | null;
       discountCode?: string | null;
       discountCurrency?: string | null;
+      subtotal: string;
+      total: string;
       invoice?: Record<string, never> | null;
       items: components["schemas"]["OrderItemResponseDto"][];
       /** Format: date-time */

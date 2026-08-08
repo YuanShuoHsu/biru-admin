@@ -26,11 +26,7 @@ import {
   getTrendPercent,
 } from "@/utils/dashboard";
 import { fetcher } from "@/utils/fetcher";
-import {
-  getAdminOrders,
-  getOrderTotalAmount,
-  isCountedOrder,
-} from "@/utils/orders";
+import { getAdminOrders, isCountedOrder } from "@/utils/orders";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
@@ -250,7 +246,7 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
   const revenueTrendBuckets = getTrendValueBuckets(
     trendOrders.map((order) => ({
       date: order.createdAt,
-      value: getOrderTotalAmount(order),
+      value: Number(order.total),
     })),
   );
   const usersTrendBuckets = getTrendBuckets(usersTrendCreatedAt);

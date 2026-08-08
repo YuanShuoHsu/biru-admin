@@ -10,8 +10,6 @@ import { Chip, Divider, Stack, Typography } from "@mui/material";
 
 import type { OrderResponse } from "@/types/orders";
 
-import { getOrderTotalAmount } from "@/utils/orders";
-
 const InfoRow = ({
   label,
   value,
@@ -55,7 +53,7 @@ const OrderDetailDialog = ({ order }: OrderDetailDialogProps) => {
 
   const currency = order.items[0]?.priceCurrency || "";
   const discount = Number(order.discount || 0);
-  const totalAmount = getOrderTotalAmount(order);
+  const totalAmount = Number(order.total);
 
   return (
     <Stack gap={2}>

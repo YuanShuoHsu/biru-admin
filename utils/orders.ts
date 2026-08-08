@@ -109,13 +109,3 @@ export const isCountedOrder = ({
   orderStatus !== "OrderCancelled" &&
   orderStatus !== "OrderProblem" &&
   (paymentMethod === "Cash" || PAID_ORDER_STATUSES.includes(orderStatus));
-
-export const getOrderTotalAmount = (order: OrderResponse): number => {
-  const subtotal = order.items.reduce(
-    (sum, { orderQuantity, unitPrice }) =>
-      sum + Number(unitPrice) * orderQuantity,
-    0,
-  );
-
-  return subtotal - Number(order.discount || 0);
-};

@@ -28,13 +28,13 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import {
   Cancel,
-  DoneAll,
   ErrorOutline,
+  LocalAtm,
   MoneyOff,
-  Payments,
+  NotificationsActive,
   ReceiptLong,
   Restaurant,
-  ShoppingBag,
+  SoupKitchen,
   type SvgIconComponent,
 } from "@mui/icons-material";
 import { Chip, IconButton, Stack, Tooltip } from "@mui/material";
@@ -61,7 +61,6 @@ import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getOrderEnumOptions } from "@/utils/enumOptions";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
-import { getOrderTotalAmount } from "@/utils/orders";
 
 import OrderDetailDialog from "../OrderDetailDialog";
 
@@ -76,26 +75,23 @@ const StyledIconButton = styled(IconButton, {
   visibility: visible ? "visible" : "hidden",
 }));
 
-// 色票沿用狀態 Chip，讓按鈕與使用者已認得的狀態標籤同色
 const TRANSITION_APPEARANCE: Record<
   OrderStatus,
   { color: (typeof STATUS_COLORS)[OrderStatus]; Icon: SvgIconComponent }
 > = {
   OrderCancelled: { color: "error", Icon: Cancel },
-  OrderDelivered: { color: STATUS_COLORS.OrderDelivered, Icon: DoneAll },
+  OrderDelivered: { color: STATUS_COLORS.OrderDelivered, Icon: Restaurant },
   OrderPaymentDue: { color: STATUS_COLORS.OrderPaymentDue, Icon: MoneyOff },
   OrderPickupAvailable: {
     color: STATUS_COLORS.OrderPickupAvailable,
-    Icon: ShoppingBag,
+    Icon: NotificationsActive,
   },
   OrderProblem: { color: STATUS_COLORS.OrderProblem, Icon: ErrorOutline },
-  OrderProcessing: { color: STATUS_COLORS.OrderProcessing, Icon: Restaurant },
+  OrderProcessing: { color: STATUS_COLORS.OrderProcessing, Icon: SoupKitchen },
 };
 
-// 佔位鈕是隱形的，取哪一列都不會被看到
 const PLACEHOLDER_APPEARANCE = TRANSITION_APPEARANCE.OrderCancelled;
 
-// 左格放退回或取消、右格放推進；兩格都固定存在，否則同一欄的按鈕會在不同列落到不同的 x 座標
 const TRANSITION_SLOTS: OrderTransition["direction"][][] = [
   ["revert", "cancel"],
   ["advance"],
@@ -108,9 +104,8 @@ const getTransitionAppearance = ({
 }: OrderTransition) => {
   const appearance = TRANSITION_APPEARANCE[toStatus];
 
-  // 現金訂單的推進實際上是收款
   return direction === "advance" && cashOnly
-    ? { ...appearance, Icon: Payments }
+    ? { ...appearance, Icon: LocalAtm }
     : appearance;
 };
 
@@ -465,7 +460,7 @@ const Orders = ({
         filterOperators: numberFilterOperators,
         headerName: tOrders("total"),
         valueGetter: (_value: unknown, row: AdminOrderResponse) =>
-          `${row.items[0]?.priceCurrency || ""} ${getOrderTotalAmount(row).toLocaleString(locale)}`.trim(),
+          `${row.items[0]?.priceCurrency || ""} ${Number(row.total).toLocaleString(locale)}`.trim(),
       },
     ],
     [
