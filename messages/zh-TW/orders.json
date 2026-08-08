@@ -1,18 +1,10 @@
 {
   "actions": {
-    "confirmDelivered": {
-      "title": "確認已送達"
-    },
-    "confirmPickupAvailable": {
-      "title": "確認可取餐"
-    },
+    "advance": "設為{status}",
+    "cancel": "取消訂單",
     "label": "操作",
-    "revertToPickupAvailable": {
-      "title": "退回可取餐"
-    },
-    "revertToProcessing": {
-      "title": "退回準備中"
-    },
+    "revert": "退回{status}",
+    "success": "已將訂單 {orderNumber} 更新為「{status}」",
     "viewOrder": {
       "title": "檢視訂單明細"
     }

@@ -1,18 +1,10 @@
 {
   "actions": {
-    "confirmDelivered": {
-      "title": "Confirm delivered"
-    },
-    "confirmPickupAvailable": {
-      "title": "Confirm ready for pickup"
-    },
+    "advance": "Set to {status}",
+    "cancel": "Cancel order",
     "label": "Actions",
-    "revertToPickupAvailable": {
-      "title": "Revert to ready for pickup"
-    },
-    "revertToProcessing": {
-      "title": "Revert to processing"
-    },
+    "revert": "Back to {status}",
+    "success": "Order {orderNumber} updated to \"{status}\"",
     "viewOrder": {
       "title": "View order details"
     }

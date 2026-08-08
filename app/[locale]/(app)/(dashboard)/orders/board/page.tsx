@@ -8,7 +8,7 @@ import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
 import { getResolvedAdminOrganization } from "@/utils/menus";
-import { getAdminOrders } from "@/utils/orders";
+import { getAdminOrderBoard } from "@/utils/orders";
 
 import OrdersTabsLayout from "../OrdersTabsLayout";
 
@@ -55,40 +55,14 @@ const OrdersBoardPage = async ({
     redirect({ href: `/orders/board?${params.toString()}`, locale });
   }
 
-  const [{ orders: activeOrders }, { orders: deliveredOrders }] =
-    await Promise.all([
-      getAdminOrders(
-        selectedOrganization.slug,
-        {
-          filterField: "orderStatus",
-          filterOperator: "isAnyOf",
-          filterValue: "OrderProcessing,OrderPickupAvailable",
-          pageSize: 1000,
-          sortBy: "createdAt",
-          sortDirection: "desc",
-        },
-        fetchOptions,
-      ),
-      getAdminOrders(
-        selectedOrganization.slug,
-        {
-          filterField: "orderStatus",
-          filterOperator: "isAnyOf",
-          filterValue: "OrderDelivered",
-          pageSize: 100,
-          sortBy: "createdAt",
-          sortDirection: "desc",
-        },
-        fetchOptions,
-      ),
-    ]);
+  const columns = await getAdminOrderBoard(
+    selectedOrganization.slug,
+    fetchOptions,
+  );
 
   return (
     <OrdersTabsLayout>
-      <OrdersBoard
-        orders={[...activeOrders, ...deliveredOrders]}
-        organization={selectedOrganization}
-      />
+      <OrdersBoard columns={columns} organization={selectedOrganization} />
     </OrdersTabsLayout>
   );
 };

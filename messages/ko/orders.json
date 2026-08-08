@@ -1,18 +1,10 @@
 {
   "actions": {
-    "confirmDelivered": {
-      "title": "전달 완료 확인"
-    },
-    "confirmPickupAvailable": {
-      "title": "픽업 가능 확인"
-    },
+    "advance": "{status}(으)로 변경",
+    "cancel": "주문 취소",
     "label": "작업",
-    "revertToPickupAvailable": {
-      "title": "픽업 가능으로 되돌리기"
-    },
-    "revertToProcessing": {
-      "title": "준비 중으로 되돌리기"
-    },
+    "revert": "{status}(으)로 되돌리기",
+    "success": "주문 {orderNumber}을(를) '{status}'(으)로 변경했습니다",
     "viewOrder": {
       "title": "주문 상세 보기"
     }

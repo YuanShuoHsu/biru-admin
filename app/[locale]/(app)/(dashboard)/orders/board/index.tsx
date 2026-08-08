@@ -12,54 +12,32 @@ import { menuSocket } from "@/app/socket";
 import { ReceiptLong } from "@mui/icons-material";
 import { IconButton, Tooltip } from "@mui/material";
 
-import SelectAllTransferList from "@/components/SelectAllTransferList";
+import SelectAllTransferList, {
+  type SelectAllTransferListAction,
+} from "@/components/SelectAllTransferList";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { OrderResponse, OrderStatus } from "@/types/orders";
+import { orderFlowStatusValues } from "@/types/api";
+import type {
+  AdminOrderBoardColumn,
+  AdminOrderResponse,
+  OrderStatus,
+} from "@/types/orders";
 import type { Organization } from "@/types/organizations";
 
 import { fetcher } from "@/utils/fetcher";
 
 import OrderDetailDialog from "../OrderDetailDialog";
 
-const COLUMN_STATUSES = [
-  "OrderProcessing",
-  "OrderPickupAvailable",
-  "OrderDelivered",
-] as const satisfies OrderStatus[];
-
-type BoardStatus = (typeof COLUMN_STATUSES)[number];
-
-interface BoardListItem {
-  primary: string;
-  secondary: string;
-}
-
 interface OrdersBoardProps {
+  columns: AdminOrderBoardColumn[];
   organization: Organization;
-  orders: OrderResponse[];
 }
-
-const fetchOrdersByStatus = (
-  organizationSlug: string,
-  filterValue: string,
-  limit: string,
-) =>
-  fetcher<{ data: OrderResponse[]; total: number }>(
-    `/api/organizations/${organizationSlug}/orders?${new URLSearchParams({
-      filterField: "orderStatus",
-      filterOperator: "isAnyOf",
-      filterValue,
-      limit,
-      sortBy: "createdAt",
-      sortDirection: "desc",
-    })}`,
-  ).then((result) => result.data);
 
 const OrdersBoard = ({
+  columns: initialColumns,
   organization: { id: organizationId, slug: organizationSlug },
-  orders: initialOrders,
 }: OrdersBoardProps) => {
   const { setDialog } = useDialogStore((state) => state);
 
@@ -67,22 +45,11 @@ const OrdersBoard = ({
   const tOrder = useTranslations("order");
   const tOrders = useTranslations("orders");
 
-  const { data: orders = initialOrders, mutate } = useSWR(
-    [`/api/organizations/${organizationSlug}/orders`, "board"],
-    async () => {
-      const [activeOrders, deliveredOrders] = await Promise.all([
-        fetchOrdersByStatus(
-          organizationSlug,
-          "OrderProcessing,OrderPickupAvailable",
-          "1000",
-        ),
-        fetchOrdersByStatus(organizationSlug, "OrderDelivered", "100"),
-      ]);
-
-      return [...activeOrders, ...deliveredOrders];
-    },
-    { fallbackData: initialOrders },
-  );
+  const { data: boardColumns = initialColumns, mutate } = useSWR<
+    AdminOrderBoardColumn[]
+  >(`/api/organizations/${organizationSlug}/orders/board/admin`, {
+    fallbackData: initialColumns,
+  });
 
   const { isConnected } = useSocketConnection(menuSocket);
 
@@ -103,37 +70,43 @@ const OrdersBoard = ({
 
   const columns = useMemo(
     () =>
-      Object.fromEntries(
-        COLUMN_STATUSES.map((status) => [
-          status,
-          orders
-            .filter((order) => order.orderStatus === status)
-            .sort(
-              (a, b) =>
-                new Date(a.createdAt).getTime() -
-                new Date(b.createdAt).getTime(),
-            )
-            .map((order) => {
-              const modeLabel = order.tableNumber
-                ? tOrder("mode.dineIn.storeSlug.tableNumber.value", {
-                    tableNumber: order.tableNumber,
-                  })
-                : tOrder(`mode.${order.mode}.label`);
+      orderFlowStatusValues.map((status) => ({
+        emptyLabel: tOrders("board.empty"),
+        items: [
+          ...(boardColumns.find(({ orderStatus }) => orderStatus === status)
+            ?.orders || []),
+        ]
+          .sort(
+            (a, b) =>
+              new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+          )
+          .map((order) => {
+            const modeLabel = order.tableNumber
+              ? tOrder("mode.dineIn.storeSlug.tableNumber.value", {
+                  tableNumber: order.tableNumber,
+                })
+              : tOrder(`mode.${order.mode}.label`);
 
-              return {
-                ...order,
-                primary: order.orderNumber,
-                secondary: [modeLabel, order.customer.name].join(
-                  tCommon("delimiter"),
-                ),
-              };
-            }),
-        ]),
-      ) as Record<BoardStatus, Array<OrderResponse & BoardListItem>>,
-    [orders, tCommon, tOrder],
+            return {
+              ...order,
+              primary: order.orderNumber,
+              secondary: [modeLabel, order.customer.name].join(
+                tCommon("delimiter"),
+              ),
+            };
+          }),
+        size: { xs: 12, md: 3 },
+        title: tOrders(`status.${status}`),
+      })),
+    [boardColumns, tCommon, tOrder, tOrders],
   );
 
-  const handleTransfer = async (ids: string[], endpoint: string) => {
+  const orders = useMemo(
+    () => boardColumns.flatMap(({ orders }) => orders),
+    [boardColumns],
+  );
+
+  const handleTransfer = async (ids: string[], toStatus: OrderStatus) => {
     const orderNumbers = ids
       .map((id) => orders.find((order) => order.id === id)?.orderNumber)
       .join("、");
@@ -141,7 +114,7 @@ const OrdersBoard = ({
     await Promise.all(
       ids.map((id) =>
         fetcher(
-          `/api/organizations/${organizationSlug}/orders/${id}/${endpoint}`,
+          `/api/organizations/${organizationSlug}/orders/${id}/transitions/${toStatus}`,
           { method: "PATCH" },
         ),
       ),
@@ -155,7 +128,49 @@ const OrdersBoard = ({
     mutate();
   };
 
-  const renderAction = (order: OrderResponse) => (
+  const isTransferable = (id: string, toStatus: OrderStatus) =>
+    orders
+      .find((order) => order.id === id)
+      ?.availableTransitions.some(
+        (transition) => transition.toStatus === toStatus,
+      ) || false;
+
+  const toTransferAction = (
+    ariaLabel: string,
+    toStatus: OrderStatus,
+  ): SelectAllTransferListAction => ({
+    ariaLabel,
+    disabled: (ids) => ids.some((id) => !isTransferable(id, toStatus)),
+    onClick: (ids) => handleTransfer(ids, toStatus),
+  });
+
+  const transferActions = orderFlowStatusValues
+    .slice(0, -1)
+    .map(
+      (
+        fromStatus,
+        index,
+      ): [SelectAllTransferListAction, SelectAllTransferListAction] => {
+        const nextStatus = orderFlowStatusValues[index + 1];
+
+        return [
+          toTransferAction(
+            tOrders("actions.advance", {
+              status: tOrders(`status.${nextStatus}`),
+            }),
+            nextStatus,
+          ),
+          toTransferAction(
+            tOrders("actions.revert", {
+              status: tOrders(`status.${fromStatus}`),
+            }),
+            fromStatus,
+          ),
+        ];
+      },
+    );
+
+  const renderAction = (order: AdminOrderResponse) => (
     <Tooltip title={tOrders("actions.viewOrder.title")}>
       <IconButton
         edge="end"
@@ -177,49 +192,9 @@ const OrdersBoard = ({
 
   return (
     <SelectAllTransferList
-      columns={[
-        {
-          emptyLabel: tOrders("board.empty"),
-          items: columns.OrderProcessing,
-          size: { xs: 12, md: 4 },
-          title: tOrders("status.OrderProcessing"),
-        },
-        {
-          emptyLabel: tOrders("board.empty"),
-          items: columns.OrderPickupAvailable,
-          size: { xs: 12, md: 4 },
-          title: tOrders("status.OrderPickupAvailable"),
-        },
-        {
-          emptyLabel: tOrders("board.empty"),
-          items: columns.OrderDelivered,
-          size: { xs: 12, md: 4 },
-          title: tOrders("status.OrderDelivered"),
-        },
-      ]}
+      columns={columns}
       renderAction={renderAction}
-      transferActions={[
-        [
-          {
-            ariaLabel: tOrders("actions.confirmPickupAvailable.title"),
-            onClick: (ids) => handleTransfer(ids, "ready"),
-          },
-          {
-            ariaLabel: tOrders("actions.revertToProcessing.title"),
-            onClick: (ids) => handleTransfer(ids, "processing"),
-          },
-        ],
-        [
-          {
-            ariaLabel: tOrders("actions.confirmDelivered.title"),
-            onClick: (ids) => handleTransfer(ids, "picked-up"),
-          },
-          {
-            ariaLabel: tOrders("actions.revertToPickupAvailable.title"),
-            onClick: (ids) => handleTransfer(ids, "processing"),
-          },
-        ],
-      ]}
+      transferActions={transferActions}
     />
   );
 };

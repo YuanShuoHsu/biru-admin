@@ -4,7 +4,12 @@ import { fetcher } from "./fetcher";
 
 import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
 
-import type { OrderResponse, OrderStatus } from "@/types/orders";
+import type {
+  AdminOrderBoardColumn,
+  AdminOrderResponse,
+  OrderResponse,
+  OrderStatus,
+} from "@/types/orders";
 
 const PAID_ORDER_STATUSES: OrderStatus[] = [
   "OrderDelivered",
@@ -61,7 +66,10 @@ export const getAdminOrders = cache(
       for (const entry of quickFilterEnums || [])
         params.append("quickFilterEnums", entry);
 
-      const result = await fetcher<{ data: OrderResponse[]; total: number }>(
+      const result = await fetcher<{
+        data: AdminOrderResponse[];
+        total: number;
+      }>(
         `/api/organizations/${organizationSlug}/orders?${params.toString()}`,
         init,
       );
@@ -72,6 +80,24 @@ export const getAdminOrders = cache(
       };
     } catch {
       return { orders: [], total: 0 };
+    }
+  },
+);
+
+export const getAdminOrderBoard = cache(
+  async (
+    organizationSlug: string,
+    init?: RequestInit,
+  ): Promise<AdminOrderBoardColumn[]> => {
+    try {
+      const columns = await fetcher<AdminOrderBoardColumn[]>(
+        `/api/organizations/${organizationSlug}/orders/board/admin`,
+        init,
+      );
+
+      return Array.isArray(columns) ? columns : [];
+    } catch {
+      return [];
     }
   },
 );

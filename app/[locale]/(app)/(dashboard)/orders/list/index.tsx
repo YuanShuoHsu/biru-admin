@@ -3,6 +3,7 @@
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
+import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
@@ -25,8 +26,19 @@ import { usePathname, useRouter } from "@/i18n/navigation";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { ReceiptLong } from "@mui/icons-material";
-import { Chip, IconButton, Tooltip } from "@mui/material";
+import {
+  Cancel,
+  DoneAll,
+  ErrorOutline,
+  MoneyOff,
+  Payments,
+  ReceiptLong,
+  Restaurant,
+  ShoppingBag,
+  type SvgIconComponent,
+} from "@mui/icons-material";
+import { Chip, IconButton, Stack, Tooltip } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
   GridFilterModel,
@@ -38,13 +50,16 @@ import { useGridApiRef } from "@mui/x-data-grid";
 
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type {
+  AdminOrderResponse,
   OrderFilterField,
-  OrderResponse,
   OrderSortField,
+  OrderStatus,
+  OrderTransition,
 } from "@/types/orders";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getOrderEnumOptions } from "@/utils/enumOptions";
+import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 import { getOrderTotalAmount } from "@/utils/orders";
 
@@ -55,11 +70,55 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
+const StyledIconButton = styled(IconButton, {
+  shouldForwardProp: (prop) => prop !== "visible",
+})<{ visible: boolean }>(({ visible }) => ({
+  visibility: visible ? "visible" : "hidden",
+}));
+
+// 色票沿用狀態 Chip，讓按鈕與使用者已認得的狀態標籤同色
+const TRANSITION_APPEARANCE: Record<
+  OrderStatus,
+  { color: (typeof STATUS_COLORS)[OrderStatus]; Icon: SvgIconComponent }
+> = {
+  OrderCancelled: { color: "error", Icon: Cancel },
+  OrderDelivered: { color: STATUS_COLORS.OrderDelivered, Icon: DoneAll },
+  OrderPaymentDue: { color: STATUS_COLORS.OrderPaymentDue, Icon: MoneyOff },
+  OrderPickupAvailable: {
+    color: STATUS_COLORS.OrderPickupAvailable,
+    Icon: ShoppingBag,
+  },
+  OrderProblem: { color: STATUS_COLORS.OrderProblem, Icon: ErrorOutline },
+  OrderProcessing: { color: STATUS_COLORS.OrderProcessing, Icon: Restaurant },
+};
+
+// 佔位鈕是隱形的，取哪一列都不會被看到
+const PLACEHOLDER_APPEARANCE = TRANSITION_APPEARANCE.OrderCancelled;
+
+// 左格放退回或取消、右格放推進；兩格都固定存在，否則同一欄的按鈕會在不同列落到不同的 x 座標
+const TRANSITION_SLOTS: OrderTransition["direction"][][] = [
+  ["revert", "cancel"],
+  ["advance"],
+];
+
+const getTransitionAppearance = ({
+  cashOnly,
+  direction,
+  toStatus,
+}: OrderTransition) => {
+  const appearance = TRANSITION_APPEARANCE[toStatus];
+
+  // 現金訂單的推進實際上是收款
+  return direction === "advance" && cashOnly
+    ? { ...appearance, Icon: Payments }
+    : appearance;
+};
+
 interface OrdersProps {
   filterField?: OrderFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  orders: OrderResponse[];
+  orders: AdminOrderResponse[];
   organizationSlug: string;
   page: number;
   pageSize: number;
@@ -137,6 +196,7 @@ const Orders = ({
       total: initialRowCount,
     },
     isValidating: loading,
+    mutate,
   } = useSWR(
     [
       `/api/organizations/${organizationSlug}/orders`,
@@ -149,7 +209,7 @@ const Orders = ({
       sortModel,
     ],
     async () =>
-      fetcher<{ data: OrderResponse[]; total: number }>(
+      fetcher<{ data: AdminOrderResponse[]; total: number }>(
         `/api/organizations/${organizationSlug}/orders?${getDataGridSearchParams(
           paginationModel,
           filterModel,
@@ -232,7 +292,7 @@ const Orders = ({
   );
 
   const handleViewOrder = useCallback(
-    (order: OrderResponse) => {
+    (order: AdminOrderResponse) => {
       setDialog({
         content: <OrderDetailDialog order={order} />,
         open: true,
@@ -242,6 +302,36 @@ const Orders = ({
     [setDialog, tOrders],
   );
 
+  const handleStatusAction = useCallback(
+    async (order: AdminOrderResponse, toStatus: OrderStatus) => {
+      try {
+        const { orderStatus } = await fetcher<AdminOrderResponse>(
+          `/api/organizations/${organizationSlug}/orders/${order.id}/transitions/${toStatus}`,
+          { method: "PATCH" },
+        );
+
+        enqueueSnackbar(
+          tOrders("actions.success", {
+            orderNumber: order.orderNumber,
+            status: tOrders(`status.${orderStatus}`),
+          }),
+          { variant: "success" },
+        );
+
+        mutate();
+      } catch (error) {
+        enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+      }
+    },
+    [mutate, organizationSlug, tOrders],
+  );
+
+  const hasTransitions = useMemo(
+    () =>
+      orders.some(({ availableTransitions }) => availableTransitions.length),
+    [orders],
+  );
+
   const columns = useMemo<GridColDef[]>(
     () => [
       {
@@ -249,19 +339,58 @@ const Orders = ({
         field: "actions",
         filterable: false,
         headerName: tOrders("actions.label"),
-        renderCell: ({ row }: GridRenderCellParams<OrderResponse>) => (
-          <Tooltip title={tOrders("actions.viewOrder.title")}>
-            <IconButton
-              onClick={(event) => {
-                event.stopPropagation();
+        renderCell: ({ row }: GridRenderCellParams<AdminOrderResponse>) => (
+          <Stack height="100%" direction="row" alignItems="center" gap={0.5}>
+            <Tooltip title={tOrders("actions.viewOrder.title")}>
+              <IconButton
+                onClick={(event) => {
+                  event.stopPropagation();
 
-                handleViewOrder(row);
-              }}
-              size="small"
-            >
-              <ReceiptLong fontSize="small" />
-            </IconButton>
-          </Tooltip>
+                  handleViewOrder(row);
+                }}
+                size="small"
+              >
+                <ReceiptLong fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            {hasTransitions &&
+              TRANSITION_SLOTS.map((directions) => {
+                const transition = row.availableTransitions.find(
+                  ({ direction }) => directions.includes(direction),
+                );
+                // 隱形佔位也要塞圖示，IconButton 的寬度是由內容撐出來的
+                const { color, Icon } = transition
+                  ? getTransitionAppearance(transition)
+                  : PLACEHOLDER_APPEARANCE;
+
+                return (
+                  <Tooltip
+                    key={directions[0]}
+                    title={
+                      transition
+                        ? tOrders(`actions.${transition.direction}`, {
+                            status: tOrders(`status.${transition.toStatus}`),
+                          })
+                        : ""
+                    }
+                  >
+                    <StyledIconButton
+                      color={color}
+                      onClick={(event) => {
+                        event.stopPropagation();
+
+                        if (transition)
+                          handleStatusAction(row, transition.toStatus);
+                      }}
+                      size="small"
+                      visible={!!transition}
+                    >
+                      <Icon fontSize="small" />
+                    </StyledIconButton>
+                  </Tooltip>
+                );
+              })}
+          </Stack>
         ),
         resizable: false,
         sortable: false,
@@ -270,7 +399,8 @@ const Orders = ({
         field: "customerName",
         filterOperators: stringFilterOperators,
         headerName: tOrders("customerName"),
-        valueGetter: (_value: unknown, row: OrderResponse) => row.customer.name,
+        valueGetter: (_value: unknown, row: AdminOrderResponse) =>
+          row.customer.name,
       },
       {
         field: "orderNumber",
@@ -305,7 +435,7 @@ const Orders = ({
         field: "orderStatus",
         filterOperators: enumFilterOperators,
         headerName: tOrders("orderStatus"),
-        renderCell: ({ row }: GridRenderCellParams<OrderResponse>) => (
+        renderCell: ({ row }: GridRenderCellParams<AdminOrderResponse>) => (
           <Chip
             color={STATUS_COLORS[row.orderStatus]}
             label={tOrders(`status.${row.orderStatus}`)}
@@ -334,8 +464,8 @@ const Orders = ({
         field: "total",
         filterOperators: numberFilterOperators,
         headerName: tOrders("total"),
-        valueGetter: (_value: unknown, row: OrderResponse) =>
-          `${row.items[0]?.priceCurrency || ""} ${getOrderTotalAmount(row).toLocaleString(locale)}`,
+        valueGetter: (_value: unknown, row: AdminOrderResponse) =>
+          `${row.items[0]?.priceCurrency || ""} ${getOrderTotalAmount(row).toLocaleString(locale)}`.trim(),
       },
     ],
     [
@@ -343,7 +473,9 @@ const Orders = ({
       enumFilterOperators,
       enumOptions,
       format,
+      handleStatusAction,
       handleViewOrder,
+      hasTransitions,
       locale,
       numberFilterOperators,
       stringFilterOperators,

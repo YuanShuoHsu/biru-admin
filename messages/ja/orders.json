@@ -1,18 +1,10 @@
 {
   "actions": {
-    "confirmDelivered": {
-      "title": "受け渡し済みを確認する"
-    },
-    "confirmPickupAvailable": {
-      "title": "受け取り可能を確認する"
-    },
+    "advance": "{status}にする",
+    "cancel": "注文をキャンセル",
     "label": "操作",
-    "revertToPickupAvailable": {
-      "title": "受け取り可能に戻す"
-    },
-    "revertToProcessing": {
-      "title": "準備中に戻す"
-    },
+    "revert": "{status}に戻す",
+    "success": "注文 {orderNumber} を「{status}」に更新しました",
     "viewOrder": {
       "title": "注文詳細を表示"
     }

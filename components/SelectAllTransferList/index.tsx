@@ -56,8 +56,9 @@ interface SelectAllTransferListColumn<T> {
   title: string;
 }
 
-interface SelectAllTransferListAction {
+export interface SelectAllTransferListAction {
   ariaLabel: string;
+  disabled?: (ids: string[]) => boolean;
   onClick: (ids: string[]) => void | Promise<void>;
 }
 
@@ -224,7 +225,7 @@ const SelectAllTransferList = <
                     <span>
                       <Button
                         aria-label={action.ariaLabel}
-                        disabled={ids.length === 0}
+                        disabled={ids.length === 0 || !!action.disabled?.(ids)}
                         onClick={() => handleTransfer(action, ids)}
                         size="small"
                         variant="outlined"
