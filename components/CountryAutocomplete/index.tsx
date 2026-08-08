@@ -130,6 +130,8 @@ const CountryAutocomplete = ({
   name,
   onBlur,
   onChange,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  ref: _,
   value: valueCode,
   ...textFieldProps
 }: CountryAutocompleteProps) => {

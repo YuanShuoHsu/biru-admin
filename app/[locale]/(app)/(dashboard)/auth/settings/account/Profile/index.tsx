@@ -227,7 +227,7 @@ const Profile = () => {
               autoComplete="tel"
               error={!!errors.telephone}
               fullWidth
-              helperText={errors.telephone?.message || tAuth("telephone.hint")}
+              helperText={errors.telephone?.message}
               label={`${tAuth("telephone.label")} ${tCommon("optional")}`}
               slotProps={{
                 input: {

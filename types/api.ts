@@ -1237,6 +1237,11 @@ export interface components {
        */
       phoneNumber?: string | null;
       /**
+       * @description 是否已驗證電話
+       * @example false
+       */
+      phoneNumberVerified: boolean;
+      /**
        * Format: date-time
        * @description 最後更新時間
        * @example 2025-10-14T12:34:56.000Z

@@ -46,6 +46,12 @@ export const authClient = createAuthClient({
           type: "string",
           required: false,
         },
+        phoneNumberVerified: {
+          type: "boolean",
+          required: true,
+          defaultValue: false,
+          input: false,
+        },
       },
     }),
     multiSessionClient(),
@@ -173,6 +179,13 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
   //   [LocaleEnum.Ko]: "팀을 찾을 수 없습니다",
   //   [LocaleEnum.ZhCN]: "找不到该团队",
   // },
+  PHONE_NUMBER_ALREADY_EXISTS: {
+    [LocaleEnum.ZhTW]: "此電話號碼已被註冊",
+    [LocaleEnum.En]: "This phone number is already registered.",
+    [LocaleEnum.Ja]: "この電話番号は既に登録されています",
+    [LocaleEnum.Ko]: "이 전화번호는 이미 등록되어 있습니다",
+    [LocaleEnum.ZhCN]: "此电话号码已被注册",
+  },
   UNAUTHORIZED: {
     [LocaleEnum.ZhTW]: "請先登入",
     [LocaleEnum.En]: "Please sign in first",
