@@ -36,13 +36,13 @@ const theme = createTheme({
           main: "#ffcc80", // orange[200]
         },
         info: {
-          main: "#a1887f", // brown[300]
+          main: "#80cbc4", // teal[200]
         },
         success: {
           main: "#bcaaa4", // brown[200]
         },
         error: {
-          main: "#f44336", // red[500]
+          main: "#ef9a9a", // red[200]
         },
         background: {
           default: "#212121", // grey[900]
@@ -63,16 +63,16 @@ const theme = createTheme({
           main: "#f8bbd0", // pink[100]
         },
         warning: {
-          main: "#ffe0b2", // orange[100]
+          main: "#8f6000", // orange[900]
         },
         info: {
-          main: "#bcaaa4", // brown[200]
+          main: "#00695c", // teal[800]
         },
         success: {
           main: "#5d4037", // brown[700]
         },
         error: {
-          main: "#e57373", // red[300]
+          main: "#c62828", // red[800]
         },
         background: {
           default: "#eceff1", // blueGrey[50]

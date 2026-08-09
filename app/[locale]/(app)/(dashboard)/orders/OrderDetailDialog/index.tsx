@@ -36,6 +36,21 @@ const InfoRow = ({
   </Stack>
 );
 
+const Section = ({
+  children,
+  title,
+}: {
+  children: React.ReactNode;
+  title: string;
+}) => (
+  <Stack gap={1}>
+    <Typography color="text.secondary" fontWeight="bold" variant="subtitle2">
+      {title}
+    </Typography>
+    {children}
+  </Stack>
+);
+
 interface OrderDetailDialogProps {
   order: OrderResponse;
 }
@@ -56,15 +71,8 @@ const OrderDetailDialog = ({ order }: OrderDetailDialogProps) => {
   const totalAmount = Number(order.total);
 
   return (
-    <Stack gap={2}>
-      <Stack gap={1}>
-        <Typography
-          color="text.secondary"
-          fontWeight="bold"
-          variant="subtitle2"
-        >
-          {tOrders("detail.customer.title")}
-        </Typography>
+    <Stack divider={<Divider />} gap={2}>
+      <Section title={tOrders("detail.customer.title")}>
         <InfoRow
           label={tOrders("detail.customer.name")}
           value={order.customer.name}
@@ -87,16 +95,8 @@ const OrderDetailDialog = ({ order }: OrderDetailDialogProps) => {
             value={order.customer.remark}
           />
         )}
-      </Stack>
-      <Divider />
-      <Stack gap={1}>
-        <Typography
-          color="text.secondary"
-          fontWeight="bold"
-          variant="subtitle2"
-        >
-          {tOrders("detail.transaction.title")}
-        </Typography>
+      </Section>
+      <Section title={tOrders("detail.transaction.title")}>
         <InfoRow label={tOrders("orderNumber")} value={order.orderNumber} />
         {order.confirmationNumber && (
           <InfoRow
@@ -148,16 +148,8 @@ const OrderDetailDialog = ({ order }: OrderDetailDialogProps) => {
           label={tOrders("createdAt")}
           value={format.dateTime(new Date(order.createdAt), "short")}
         />
-      </Stack>
-      <Divider />
-      <Stack gap={1}>
-        <Typography
-          color="text.secondary"
-          fontWeight="bold"
-          variant="subtitle2"
-        >
-          {tOrders("detail.items.title")}
-        </Typography>
+      </Section>
+      <Section title={tOrders("detail.items.title")}>
         {order.items.map((item) => (
           <Stack
             direction="row"
@@ -203,7 +195,7 @@ const OrderDetailDialog = ({ order }: OrderDetailDialogProps) => {
             {currency} {totalAmount.toLocaleString(locale)}
           </Typography>
         </Stack>
-      </Stack>
+      </Section>
     </Stack>
   );
 };

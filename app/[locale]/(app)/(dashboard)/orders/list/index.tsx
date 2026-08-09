@@ -28,16 +28,19 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import {
   Cancel,
-  ErrorOutline,
-  LocalAtm,
-  MoneyOff,
-  NotificationsActive,
+  Edit,
   ReceiptLong,
-  Restaurant,
-  SoupKitchen,
+  Redo,
   type SvgIconComponent,
+  Undo,
 } from "@mui/icons-material";
-import { Chip, IconButton, Stack, Tooltip } from "@mui/material";
+import {
+  Chip,
+  DialogContentText,
+  IconButton,
+  Stack,
+  Tooltip,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
@@ -63,6 +66,9 @@ import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
 import OrderDetailDialog from "../OrderDetailDialog";
+import UpdateOrderCustomerDialogContent, {
+  UPDATE_ORDER_CUSTOMER_FORM_ID,
+} from "../UpdateOrderCustomerDialogContent";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -75,39 +81,28 @@ const StyledIconButton = styled(IconButton, {
   visibility: visible ? "visible" : "hidden",
 }));
 
-const TRANSITION_APPEARANCE: Record<
-  OrderStatus,
-  { color: (typeof STATUS_COLORS)[OrderStatus]; Icon: SvgIconComponent }
-> = {
-  OrderCancelled: { color: "error", Icon: Cancel },
-  OrderDelivered: { color: STATUS_COLORS.OrderDelivered, Icon: Restaurant },
-  OrderPaymentDue: { color: STATUS_COLORS.OrderPaymentDue, Icon: MoneyOff },
-  OrderPickupAvailable: {
-    color: STATUS_COLORS.OrderPickupAvailable,
-    Icon: NotificationsActive,
-  },
-  OrderProblem: { color: STATUS_COLORS.OrderProblem, Icon: ErrorOutline },
-  OrderProcessing: { color: STATUS_COLORS.OrderProcessing, Icon: SoupKitchen },
-};
-
-const PLACEHOLDER_APPEARANCE = TRANSITION_APPEARANCE.OrderCancelled;
+const DIRECTION_ICONS: Record<OrderTransition["direction"], SvgIconComponent> =
+  {
+    advance: Redo,
+    cancel: Cancel,
+    revert: Undo,
+  };
 
 const TRANSITION_SLOTS: OrderTransition["direction"][][] = [
   ["revert", "cancel"],
   ["advance"],
 ];
 
-const getTransitionAppearance = ({
-  cashOnly,
-  direction,
-  toStatus,
-}: OrderTransition) => {
-  const appearance = TRANSITION_APPEARANCE[toStatus];
-
-  return direction === "advance" && cashOnly
-    ? { ...appearance, Icon: LocalAtm }
-    : appearance;
-};
+const getTransitionAppearance = (transition?: OrderTransition) =>
+  transition
+    ? {
+        color:
+          transition.direction === "cancel"
+            ? STATUS_COLORS.OrderProblem
+            : STATUS_COLORS[transition.toStatus],
+        Icon: DIRECTION_ICONS[transition.direction],
+      }
+    : { color: undefined, Icon: Undo };
 
 interface OrdersProps {
   filterField?: OrderFilterField;
@@ -297,6 +292,24 @@ const Orders = ({
     [setDialog, tOrders],
   );
 
+  const handleUpdateCustomer = useCallback(
+    (order: AdminOrderResponse) => {
+      setDialog({
+        content: (
+          <UpdateOrderCustomerDialogContent
+            mutate={mutate}
+            order={order}
+            organizationSlug={organizationSlug}
+          />
+        ),
+        formId: UPDATE_ORDER_CUSTOMER_FORM_ID,
+        open: true,
+        title: tOrders("actions.updateCustomer.title"),
+      });
+    },
+    [mutate, organizationSlug, setDialog, tOrders],
+  );
+
   const handleStatusAction = useCallback(
     async (order: AdminOrderResponse, toStatus: OrderStatus) => {
       try {
@@ -319,6 +332,34 @@ const Orders = ({
       }
     },
     [mutate, organizationSlug, tOrders],
+  );
+
+  const handleConfirmStatusAction = useCallback(
+    (order: AdminOrderResponse, { direction, toStatus }: OrderTransition) => {
+      const status = tOrders(`status.${toStatus}`);
+
+      setDialog({
+        content: (
+          <DialogContentText>
+            {tOrders.rich(
+              // 取消是規則表裡唯一沒有回頭路的轉移，文案要比其他方向重
+              direction === "cancel"
+                ? "actions.confirm.cancel"
+                : "actions.confirm.default",
+              {
+                bold: (chunks) => <strong>{chunks}</strong>,
+                orderNumber: order.orderNumber,
+                status,
+              },
+            )}
+          </DialogContentText>
+        ),
+        onConfirm: () => handleStatusAction(order, toStatus),
+        open: true,
+        title: tOrders(`actions.${direction}`, { status }),
+      });
+    },
+    [handleStatusAction, setDialog, tOrders],
   );
 
   const hasTransitions = useMemo(
@@ -348,15 +389,24 @@ const Orders = ({
                 <ReceiptLong fontSize="small" />
               </IconButton>
             </Tooltip>
+            <Tooltip title={tOrders("actions.updateCustomer.title")}>
+              <IconButton
+                onClick={(event) => {
+                  event.stopPropagation();
+
+                  handleUpdateCustomer(row);
+                }}
+                size="small"
+              >
+                <Edit fontSize="small" />
+              </IconButton>
+            </Tooltip>
             {hasTransitions &&
               TRANSITION_SLOTS.map((directions) => {
                 const transition = row.availableTransitions.find(
                   ({ direction }) => directions.includes(direction),
                 );
-                // 隱形佔位也要塞圖示，IconButton 的寬度是由內容撐出來的
-                const { color, Icon } = transition
-                  ? getTransitionAppearance(transition)
-                  : PLACEHOLDER_APPEARANCE;
+                const { color, Icon } = getTransitionAppearance(transition);
 
                 return (
                   <Tooltip
@@ -375,7 +425,7 @@ const Orders = ({
                         event.stopPropagation();
 
                         if (transition)
-                          handleStatusAction(row, transition.toStatus);
+                          handleConfirmStatusAction(row, transition);
                       }}
                       size="small"
                       visible={!!transition}
@@ -391,40 +441,9 @@ const Orders = ({
         sortable: false,
       },
       {
-        field: "customerName",
-        filterOperators: stringFilterOperators,
-        headerName: tOrders("customerName"),
-        valueGetter: (_value: unknown, row: AdminOrderResponse) =>
-          row.customer.name,
-      },
-      {
         field: "orderNumber",
         filterOperators: stringFilterOperators,
         headerName: tOrders("orderNumber"),
-      },
-      {
-        field: "confirmationNumber",
-        filterOperators: stringFilterOperators,
-        headerName: tOrders("confirmationNumber"),
-      },
-      {
-        field: "mode",
-        filterOperators: enumFilterOperators,
-        headerName: tOrders("mode"),
-        type: "singleSelect",
-        valueOptions: enumOptions.mode,
-      },
-      {
-        field: "tableNumber",
-        filterOperators: numberFilterOperators,
-        headerName: tOrders("tableNumber"),
-      },
-      {
-        field: "paymentMethod",
-        filterOperators: enumFilterOperators,
-        headerName: tOrders("paymentMethod"),
-        type: "singleSelect",
-        valueOptions: enumOptions.paymentMethod,
       },
       {
         field: "orderStatus",
@@ -442,18 +461,23 @@ const Orders = ({
         valueOptions: enumOptions.orderStatus,
       },
       {
-        field: "paymentDate",
-        filterOperators: dateFilterOperators,
-        headerName: tOrders("paymentDate"),
-        valueFormatter: (value: string | null) =>
-          value ? format.dateTime(new Date(value), "short") : "",
+        field: "customerName",
+        filterOperators: stringFilterOperators,
+        headerName: tOrders("customerName"),
+        valueGetter: (_value: unknown, row: AdminOrderResponse) =>
+          row.customer.name,
       },
       {
-        field: "createdAt",
-        filterOperators: dateFilterOperators,
-        headerName: tOrders("createdAt"),
-        valueFormatter: (value: string) =>
-          format.dateTime(new Date(value), "short"),
+        field: "mode",
+        filterOperators: enumFilterOperators,
+        headerName: tOrders("mode"),
+        type: "singleSelect",
+        valueOptions: enumOptions.mode,
+      },
+      {
+        field: "tableNumber",
+        filterOperators: numberFilterOperators,
+        headerName: tOrders("tableNumber"),
       },
       {
         field: "total",
@@ -462,13 +486,40 @@ const Orders = ({
         valueGetter: (_value: unknown, row: AdminOrderResponse) =>
           `${row.items[0]?.priceCurrency || ""} ${Number(row.total).toLocaleString(locale)}`.trim(),
       },
+      {
+        field: "paymentMethod",
+        filterOperators: enumFilterOperators,
+        headerName: tOrders("paymentMethod"),
+        type: "singleSelect",
+        valueOptions: enumOptions.paymentMethod,
+      },
+      {
+        field: "paymentDate",
+        filterOperators: dateFilterOperators,
+        headerName: tOrders("paymentDate"),
+        valueFormatter: (value: string | null) =>
+          value ? format.dateTime(new Date(value), "short") : "",
+      },
+      {
+        field: "confirmationNumber",
+        filterOperators: stringFilterOperators,
+        headerName: tOrders("confirmationNumber"),
+      },
+      {
+        field: "createdAt",
+        filterOperators: dateFilterOperators,
+        headerName: tOrders("createdAt"),
+        valueFormatter: (value: string) =>
+          format.dateTime(new Date(value), "short"),
+      },
     ],
     [
       dateFilterOperators,
       enumFilterOperators,
       enumOptions,
       format,
-      handleStatusAction,
+      handleConfirmStatusAction,
+      handleUpdateCustomer,
       handleViewOrder,
       hasTransitions,
       locale,

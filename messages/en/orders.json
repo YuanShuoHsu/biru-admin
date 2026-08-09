@@ -2,9 +2,17 @@
   "actions": {
     "advance": "Set to {status}",
     "cancel": "Cancel order",
+    "confirm": {
+      "cancel": "Are you sure you want to cancel order <bold>{orderNumber}</bold>? This action cannot be undone.",
+      "default": "Are you sure you want to change order <bold>{orderNumber}</bold> to <bold>{status}</bold>?"
+    },
     "label": "Actions",
     "revert": "Back to {status}",
     "success": "Order {orderNumber} updated to \"{status}\"",
+    "updateCustomer": {
+      "success": "Customer information for order {orderNumber} updated",
+      "title": "Edit customer information"
+    },
     "viewOrder": {
       "title": "View order details"
     }

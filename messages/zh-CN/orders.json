@@ -2,9 +2,17 @@
   "actions": {
     "advance": "设为{status}",
     "cancel": "取消订单",
+    "confirm": {
+      "cancel": "确定要取消订单 <bold>{orderNumber}</bold> 吗？此操作无法撤销。",
+      "default": "确定要将订单 <bold>{orderNumber}</bold> 变更为 <bold>{status}</bold> 吗？"
+    },
     "label": "操作",
     "revert": "退回{status}",
     "success": "已将订单 {orderNumber} 更新为「{status}」",
+    "updateCustomer": {
+      "success": "已更新订单 {orderNumber} 的顾客信息",
+      "title": "编辑顾客信息"
+    },
     "viewOrder": {
       "title": "查看订单明细"
     }
