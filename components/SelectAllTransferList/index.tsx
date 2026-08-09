@@ -11,6 +11,7 @@ import {
   Card,
   CardHeader,
   Checkbox,
+  type ChipProps,
   Divider,
   Grid,
   List,
@@ -38,6 +39,30 @@ const ColumnGrid = styled(Grid)({
   alignSelf: "stretch",
 });
 
+const StyledCard = styled(Card, {
+  shouldForwardProp: (prop) => prop !== "color",
+})<{ color?: ChipProps["color"] }>(({ color, theme }) => ({
+  height: "100%",
+  display: "flex",
+  flexDirection: "column",
+  overflow: "hidden",
+
+  ...(color &&
+    color !== "default" && {
+      borderTop: `3px solid ${theme.vars.palette[color].main}`,
+    }),
+}));
+
+const StyledCardHeader = styled(CardHeader, {
+  shouldForwardProp: (prop) => prop !== "color",
+})<{ color?: ChipProps["color"] }>(({ color, theme }) =>
+  color && color !== "default"
+    ? {
+        backgroundColor: `rgba(${theme.vars.palette[color].mainChannel} / 0.12)`,
+      }
+    : {},
+);
+
 const not = (a: readonly string[], b: readonly string[]) =>
   a.filter((value) => !b.includes(value));
 
@@ -50,6 +75,7 @@ const union = (a: readonly string[], b: readonly string[]) => [
 ];
 
 interface SelectAllTransferListColumn<T> {
+  color?: ChipProps["color"];
   emptyLabel: string;
   items: T[];
   size?: React.ComponentProps<typeof Grid>["size"];
@@ -58,7 +84,6 @@ interface SelectAllTransferListColumn<T> {
 
 export interface SelectAllTransferListAction {
   disabled?: (ids: string[]) => boolean;
-  // 回傳 false（例如確認對話框被取消）時保留勾選
   onTransfer: (ids: string[]) => boolean | Promise<boolean>;
   title: string;
 }
@@ -117,16 +142,8 @@ const SelectAllTransferList = <
     const ids = column.items.map((item) => item.id);
 
     return (
-      <Card
-        sx={{
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-          overflow: "hidden",
-        }}
-        variant="outlined"
-      >
-        <CardHeader
+      <StyledCard color={column.color} variant="outlined">
+        <StyledCardHeader
           avatar={
             <Checkbox
               checked={numberOfChecked(ids) === ids.length && ids.length !== 0}
@@ -141,6 +158,7 @@ const SelectAllTransferList = <
               }}
             />
           }
+          color={column.color}
           subheader={tCommon("selectedCount", {
             checked: numberOfChecked(ids),
             total: ids.length,
@@ -151,6 +169,7 @@ const SelectAllTransferList = <
         <List
           component="div"
           dense
+          disablePadding
           role="list"
           sx={{
             overflow: "auto",
@@ -166,11 +185,12 @@ const SelectAllTransferList = <
               {column.emptyLabel}
             </Typography>
           )}
-          {column.items.map((item) => {
+          {column.items.map((item, index) => {
             const labelId = `transfer-list-item-${item.id}-label`;
 
             return (
               <ListItemButton
+                divider={index < column.items.length - 1}
                 key={item.id}
                 onClick={() => handleToggle(item.id)}
                 role="listitem"
@@ -187,13 +207,18 @@ const SelectAllTransferList = <
                   id={labelId}
                   primary={item.primary}
                   secondary={item.secondary}
+                  slotProps={{
+                    primary: { component: "div" },
+                    secondary: { component: "div" },
+                  }}
+                  sx={{ minWidth: 0 }}
                 />
                 {renderAction?.(item)}
               </ListItemButton>
             );
           })}
         </List>
-      </Card>
+      </StyledCard>
     );
   };
 

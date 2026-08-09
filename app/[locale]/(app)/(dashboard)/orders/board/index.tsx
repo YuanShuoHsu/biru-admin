@@ -5,12 +5,21 @@ import { enqueueSnackbar } from "notistack";
 import { useEffect, useMemo } from "react";
 import useSWR from "swr";
 
+import { STATUS_COLORS } from "@/constants/orders";
+
 import { useSocketConnection } from "@/hooks/useSocketConnection";
 
 import { menuSocket } from "@/app/socket";
 
 import { ReceiptLong } from "@mui/icons-material";
-import { DialogContentText, IconButton, Tooltip } from "@mui/material";
+import {
+  Chip,
+  DialogContentText,
+  IconButton,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 
 import SelectAllTransferList, {
   type SelectAllTransferListAction,
@@ -71,6 +80,7 @@ const OrdersBoard = ({
   const columns = useMemo(
     () =>
       orderFlowStatusValues.map((status) => ({
+        color: STATUS_COLORS[status],
         emptyLabel: tOrders("board.empty"),
         items: [
           ...(boardColumns.find(({ orderStatus }) => orderStatus === status)
@@ -89,16 +99,33 @@ const OrdersBoard = ({
 
             return {
               ...order,
-              primary: order.orderNumber,
-              secondary: [modeLabel, order.customer.name].join(
-                tCommon("delimiter"),
+              primary: (
+                <Stack
+                  flexWrap="wrap"
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  columnGap={1}
+                >
+                  <Typography variant="body1">{order.orderNumber}</Typography>
+                  <Chip label={modeLabel} size="small" variant="outlined" />
+                </Stack>
+              ),
+              secondary: (
+                <Typography
+                  color="text.secondary"
+                  sx={{ overflowWrap: "anywhere" }}
+                  variant="caption"
+                >
+                  {order.customer.name}
+                </Typography>
               ),
             };
           }),
         size: { xs: 12, md: 3 },
         title: tOrders(`status.${status}`),
       })),
-    [boardColumns, tCommon, tOrder, tOrders],
+    [boardColumns, tOrder, tOrders],
   );
 
   const orders = useMemo(
