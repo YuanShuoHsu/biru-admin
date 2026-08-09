@@ -1,17 +1,21 @@
 {
   "actions": {
-    "advance": "Set to {status}",
-    "cancel": "Cancel order",
-    "confirm": {
-      "cancel": "Are you sure you want to cancel order <bold>{orderNumber}</bold>? This action cannot be undone.",
-      "default": "Are you sure you want to change order <bold>{orderNumber}</bold> to <bold>{status}</bold>?"
-    },
     "label": "Actions",
-    "revert": "Back to {status}",
-    "success": "Order {orderNumber} updated to \"{status}\"",
     "updateCustomer": {
       "success": "Customer information for order {orderNumber} updated",
       "title": "Edit customer information"
+    },
+    "updateStatus": {
+      "confirm": {
+        "cancel": "Are you sure you want to cancel {count, plural, one {order} other {orders}} <bold>{orderNumbers}</bold>? This action cannot be undone.",
+        "default": "Are you sure you want to change {count, plural, one {order} other {orders}} <bold>{orderNumbers}</bold> to <bold>{status}</bold>?"
+      },
+      "success": "{count, plural, one {Order} other {Orders}} {orderNumbers} updated to \"{status}\"",
+      "title": {
+        "advance": "Set to {status}",
+        "cancel": "Cancel order",
+        "revert": "Back to {status}"
+      }
     },
     "viewOrder": {
       "title": "View order details"
@@ -19,7 +23,6 @@
   },
   "board": {
     "empty": "No orders",
-    "success": "Updated {count} orders ({orderNumbers})",
     "title": "Order Board"
   },
   "confirmationNumber": "Order number",

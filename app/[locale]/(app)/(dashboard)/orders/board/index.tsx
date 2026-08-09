@@ -10,7 +10,7 @@ import { useSocketConnection } from "@/hooks/useSocketConnection";
 import { menuSocket } from "@/app/socket";
 
 import { ReceiptLong } from "@mui/icons-material";
-import { IconButton, Tooltip } from "@mui/material";
+import { DialogContentText, IconButton, Tooltip } from "@mui/material";
 
 import SelectAllTransferList, {
   type SelectAllTransferListAction,
@@ -106,10 +106,13 @@ const OrdersBoard = ({
     [boardColumns],
   );
 
-  const handleTransfer = async (ids: string[], toStatus: OrderStatus) => {
-    const orderNumbers = ids
+  const getOrderNumbers = (ids: string[]) =>
+    ids
       .map((id) => orders.find((order) => order.id === id)?.orderNumber)
-      .join("、");
+      .join(tCommon("delimiter"));
+
+  const handleTransfer = async (ids: string[], toStatus: OrderStatus) => {
+    const orderNumbers = getOrderNumbers(ids);
 
     await Promise.all(
       ids.map((id) =>
@@ -121,7 +124,11 @@ const OrdersBoard = ({
     );
 
     enqueueSnackbar(
-      tOrders("board.success", { count: ids.length, orderNumbers }),
+      tOrders("actions.updateStatus.success", {
+        count: ids.length,
+        orderNumbers,
+        status: tOrders(`status.${toStatus}`),
+      }),
       { variant: "success" },
     );
 
@@ -135,13 +142,41 @@ const OrdersBoard = ({
         (transition) => transition.toStatus === toStatus,
       ) || false;
 
+  const confirmTransfer = (
+    ids: string[],
+    toStatus: OrderStatus,
+    title: string,
+  ) =>
+    new Promise<boolean>((resolve) => {
+      setDialog({
+        content: (
+          <DialogContentText>
+            {tOrders.rich("actions.updateStatus.confirm.default", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              count: ids.length,
+              orderNumbers: getOrderNumbers(ids),
+              status: tOrders(`status.${toStatus}`),
+            })}
+          </DialogContentText>
+        ),
+        onCancel: async () => resolve(false),
+        onConfirm: async () => {
+          await handleTransfer(ids, toStatus);
+
+          resolve(true);
+        },
+        open: true,
+        title,
+      });
+    });
+
   const toTransferAction = (
-    ariaLabel: string,
+    title: string,
     toStatus: OrderStatus,
   ): SelectAllTransferListAction => ({
-    ariaLabel,
     disabled: (ids) => ids.some((id) => !isTransferable(id, toStatus)),
-    onClick: (ids) => handleTransfer(ids, toStatus),
+    onTransfer: (ids) => confirmTransfer(ids, toStatus, title),
+    title,
   });
 
   const transferActions = orderFlowStatusValues
@@ -155,13 +190,13 @@ const OrdersBoard = ({
 
         return [
           toTransferAction(
-            tOrders("actions.advance", {
+            tOrders("actions.updateStatus.title.advance", {
               status: tOrders(`status.${nextStatus}`),
             }),
             nextStatus,
           ),
           toTransferAction(
-            tOrders("actions.revert", {
+            tOrders("actions.updateStatus.title.revert", {
               status: tOrders(`status.${fromStatus}`),
             }),
             fromStatus,

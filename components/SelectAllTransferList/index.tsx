@@ -57,9 +57,10 @@ interface SelectAllTransferListColumn<T> {
 }
 
 export interface SelectAllTransferListAction {
-  ariaLabel: string;
   disabled?: (ids: string[]) => boolean;
-  onClick: (ids: string[]) => void | Promise<void>;
+  // 回傳 false（例如確認對話框被取消）時保留勾選
+  onTransfer: (ids: string[]) => boolean | Promise<boolean>;
+  title: string;
 }
 
 interface SelectAllTransferListProps<
@@ -107,7 +108,7 @@ const SelectAllTransferList = <
     action: SelectAllTransferListAction,
     ids: string[],
   ) => {
-    await action.onClick(ids);
+    if (!(await action.onTransfer(ids))) return;
 
     setChecked((prev) => not(prev, ids));
   };
@@ -221,10 +222,10 @@ const SelectAllTransferList = <
                 );
 
                 return (
-                  <Tooltip key={action.ariaLabel} title={action.ariaLabel}>
+                  <Tooltip key={action.title} title={action.title}>
                     <span>
                       <Button
-                        aria-label={action.ariaLabel}
+                        aria-label={action.title}
                         disabled={ids.length === 0 || !!action.disabled?.(ids)}
                         onClick={() => handleTransfer(action, ids)}
                         size="small"

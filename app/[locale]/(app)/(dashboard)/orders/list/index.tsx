@@ -319,8 +319,9 @@ const Orders = ({
         );
 
         enqueueSnackbar(
-          tOrders("actions.success", {
-            orderNumber: order.orderNumber,
+          tOrders("actions.updateStatus.success", {
+            count: 1,
+            orderNumbers: order.orderNumber,
             status: tOrders(`status.${orderStatus}`),
           }),
           { variant: "success" },
@@ -344,11 +345,12 @@ const Orders = ({
             {tOrders.rich(
               // 取消是規則表裡唯一沒有回頭路的轉移，文案要比其他方向重
               direction === "cancel"
-                ? "actions.confirm.cancel"
-                : "actions.confirm.default",
+                ? "actions.updateStatus.confirm.cancel"
+                : "actions.updateStatus.confirm.default",
               {
                 bold: (chunks) => <strong>{chunks}</strong>,
-                orderNumber: order.orderNumber,
+                count: 1,
+                orderNumbers: order.orderNumber,
                 status,
               },
             )}
@@ -356,7 +358,7 @@ const Orders = ({
         ),
         onConfirm: () => handleStatusAction(order, toStatus),
         open: true,
-        title: tOrders(`actions.${direction}`, { status }),
+        title: tOrders(`actions.updateStatus.title.${direction}`, { status }),
       });
     },
     [handleStatusAction, setDialog, tOrders],
@@ -413,9 +415,12 @@ const Orders = ({
                     key={directions[0]}
                     title={
                       transition
-                        ? tOrders(`actions.${transition.direction}`, {
-                            status: tOrders(`status.${transition.toStatus}`),
-                          })
+                        ? tOrders(
+                            `actions.updateStatus.title.${transition.direction}`,
+                            {
+                              status: tOrders(`status.${transition.toStatus}`),
+                            },
+                          )
                         : ""
                     }
                   >

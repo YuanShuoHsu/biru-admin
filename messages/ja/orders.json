@@ -1,17 +1,21 @@
 {
   "actions": {
-    "advance": "{status}にする",
-    "cancel": "注文をキャンセル",
-    "confirm": {
-      "cancel": "注文 <bold>{orderNumber}</bold> をキャンセルしてもよろしいですか？この操作は元に戻せません。",
-      "default": "注文 <bold>{orderNumber}</bold> を <bold>{status}</bold> に変更してもよろしいですか？"
-    },
     "label": "操作",
-    "revert": "{status}に戻す",
-    "success": "注文 {orderNumber} を「{status}」に更新しました",
     "updateCustomer": {
       "success": "注文 {orderNumber} のお客様情報を更新しました",
       "title": "お客様情報を編集"
+    },
+    "updateStatus": {
+      "confirm": {
+        "cancel": "注文 <bold>{orderNumbers}</bold> をキャンセルしてもよろしいですか？この操作は元に戻せません。",
+        "default": "注文 <bold>{orderNumbers}</bold> を <bold>{status}</bold> に変更してもよろしいですか？"
+      },
+      "success": "注文 {orderNumbers} を「{status}」に更新しました",
+      "title": {
+        "advance": "{status}にする",
+        "cancel": "注文をキャンセル",
+        "revert": "{status}に戻す"
+      }
     },
     "viewOrder": {
       "title": "注文詳細を表示"
@@ -19,7 +23,6 @@
   },
   "board": {
     "empty": "注文はありません",
-    "success": "{count} 件の注文を更新しました（{orderNumbers}）",
     "title": "注文ボード"
   },
   "confirmationNumber": "注文番号",
