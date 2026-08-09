@@ -5,6 +5,7 @@ import { enqueueSnackbar } from "notistack";
 import { useEffect, useMemo } from "react";
 import useSWR from "swr";
 
+import { MODE_COLORS } from "@/constants/orderMode";
 import { STATUS_COLORS } from "@/constants/orders";
 
 import { useSocketConnection } from "@/hooks/useSocketConnection";
@@ -108,7 +109,12 @@ const OrdersBoard = ({
                   columnGap={1}
                 >
                   <Typography variant="body1">{order.orderNumber}</Typography>
-                  <Chip label={modeLabel} size="small" variant="outlined" />
+                  <Chip
+                    color={MODE_COLORS[order.mode]}
+                    label={modeLabel}
+                    size="small"
+                    variant="outlined"
+                  />
                 </Stack>
               ),
               secondary: (

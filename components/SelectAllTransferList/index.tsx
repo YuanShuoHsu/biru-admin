@@ -15,9 +15,11 @@ import {
   Divider,
   Grid,
   List,
+  ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  type ListProps,
   Stack,
   Tooltip,
   Typography,
@@ -25,8 +27,6 @@ import {
 import { styled } from "@mui/material/styles";
 
 const ContainerGrid = styled(Grid)(({ theme }) => ({
-  flex: 1,
-  minHeight: 0,
   justifyContent: "center",
   alignItems: "center",
 
@@ -61,6 +61,12 @@ const StyledCardHeader = styled(CardHeader, {
         backgroundColor: `rgba(${theme.vars.palette[color].mainChannel} / 0.12)`,
       }
     : {},
+);
+
+const StyledList = styled(List, {
+  shouldForwardProp: (prop) => prop !== "empty",
+})<ListProps<"div"> & { empty: boolean }>(({ empty, theme }) =>
+  empty ? { padding: theme.spacing(2) } : {},
 );
 
 const not = (a: readonly string[], b: readonly string[]) =>
@@ -166,15 +172,12 @@ const SelectAllTransferList = <
           title={column.title}
         />
         <Divider />
-        <List
+        <StyledList
           component="div"
           dense
           disablePadding
+          empty={column.items.length === 0}
           role="list"
-          sx={{
-            overflow: "auto",
-            ...(column.items.length === 0 && { padding: 2 }),
-          }}
         >
           {column.items.length === 0 && (
             <Typography
@@ -189,35 +192,38 @@ const SelectAllTransferList = <
             const labelId = `transfer-list-item-${item.id}-label`;
 
             return (
-              <ListItemButton
+              <ListItem
+                component="div"
+                disablePadding
                 divider={index < column.items.length - 1}
                 key={item.id}
-                onClick={() => handleToggle(item.id)}
                 role="listitem"
+                secondaryAction={renderAction?.(item)}
               >
-                <ListItemIcon>
-                  <Checkbox
-                    checked={checked.includes(item.id)}
-                    disableRipple
-                    slotProps={{ input: { "aria-labelledby": labelId } }}
-                    tabIndex={-1}
+                <ListItemButton onClick={() => handleToggle(item.id)}>
+                  <ListItemIcon>
+                    <Checkbox
+                      checked={checked.includes(item.id)}
+                      disableRipple
+                      slotProps={{ input: { "aria-labelledby": labelId } }}
+                      tabIndex={-1}
+                    />
+                  </ListItemIcon>
+                  <ListItemText
+                    id={labelId}
+                    primary={item.primary}
+                    secondary={item.secondary}
+                    slotProps={{
+                      primary: { component: "div" },
+                      secondary: { component: "div" },
+                    }}
+                    sx={{ minWidth: 0 }}
                   />
-                </ListItemIcon>
-                <ListItemText
-                  id={labelId}
-                  primary={item.primary}
-                  secondary={item.secondary}
-                  slotProps={{
-                    primary: { component: "div" },
-                    secondary: { component: "div" },
-                  }}
-                  sx={{ minWidth: 0 }}
-                />
-                {renderAction?.(item)}
-              </ListItemButton>
+                </ListItemButton>
+              </ListItem>
             );
           })}
-        </List>
+        </StyledList>
       </StyledCard>
     );
   };

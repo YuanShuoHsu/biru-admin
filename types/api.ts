@@ -2426,6 +2426,7 @@ export interface components {
       | "OrderProcessing"
       | "OrderPickupAvailable";
     OrderBoardItemDto: {
+      orderId: string;
       orderNumber: string;
       orderStatus: components["schemas"]["OrderBoardStatus"];
     };

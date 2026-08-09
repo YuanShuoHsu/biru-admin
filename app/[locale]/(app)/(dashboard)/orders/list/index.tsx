@@ -38,6 +38,7 @@ import {
   Chip,
   DialogContentText,
   IconButton,
+  type IconButtonProps,
   Stack,
   Tooltip,
 } from "@mui/material";
@@ -93,16 +94,14 @@ const TRANSITION_SLOTS: OrderTransition["direction"][][] = [
   ["advance"],
 ];
 
-const getTransitionAppearance = (transition?: OrderTransition) =>
-  transition
-    ? {
-        color:
-          transition.direction === "cancel"
-            ? STATUS_COLORS.OrderProblem
-            : STATUS_COLORS[transition.toStatus],
-        Icon: DIRECTION_ICONS[transition.direction],
-      }
-    : { color: undefined, Icon: Undo };
+const DIRECTION_COLORS: Record<
+  OrderTransition["direction"],
+  IconButtonProps["color"]
+> = {
+  advance: "default",
+  cancel: "error",
+  revert: "default",
+};
 
 interface OrdersProps {
   filterField?: OrderFilterField;
@@ -408,7 +407,8 @@ const Orders = ({
                 const transition = row.availableTransitions.find(
                   ({ direction }) => directions.includes(direction),
                 );
-                const { color, Icon } = getTransitionAppearance(transition);
+                const direction = transition?.direction ?? directions[0];
+                const Icon = DIRECTION_ICONS[direction];
 
                 return (
                   <Tooltip
@@ -425,7 +425,7 @@ const Orders = ({
                     }
                   >
                     <StyledIconButton
-                      color={color}
+                      color={DIRECTION_COLORS[direction]}
                       onClick={(event) => {
                         event.stopPropagation();
 
