@@ -63,6 +63,15 @@ const StyledCardHeader = styled(CardHeader, {
     : {},
 );
 
+const ActionStack = styled(Stack)(({ theme }) => ({
+  [theme.breakpoints.up("md")]: {
+    position: "sticky",
+    top: "50%",
+    bottom: "50%",
+    transform: "translateY(-50%)",
+  },
+}));
+
 const StyledList = styled(List, {
   shouldForwardProp: (prop) => prop !== "empty",
 })<ListProps<"div"> & { empty: boolean }>(({ empty, theme }) =>
@@ -234,7 +243,7 @@ const SelectAllTransferList = <
         <Fragment key={column.title}>
           <ColumnGrid size={column.size}>{customList(column)}</ColumnGrid>
           {index < columns.length - 1 && (
-            <Stack gap={2}>
+            <ActionStack gap={2}>
               {[
                 {
                   action: transferActions[index][0],
@@ -268,7 +277,7 @@ const SelectAllTransferList = <
                   </Tooltip>
                 );
               })}
-            </Stack>
+            </ActionStack>
           )}
         </Fragment>
       ))}
