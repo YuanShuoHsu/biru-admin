@@ -6,12 +6,19 @@ import {
 import { styled } from "@mui/material/styles";
 
 export const StyledTablePagination = styled(TablePagination)(({ theme }) => ({
-  [theme.breakpoints.down("sm")]: {
+  "& .MuiTablePagination-input": {
+    display: "none",
+  },
+  "& .MuiTablePagination-selectLabel": {
+    display: "none",
+  },
+
+  [theme.breakpoints.up("sm")]: {
     "& .MuiTablePagination-input": {
-      display: "none",
+      display: "inline-flex",
     },
     "& .MuiTablePagination-selectLabel": {
-      display: "none",
+      display: "block",
     },
   },
 })) as typeof TablePagination;
