@@ -303,23 +303,27 @@ const Orders = ({
   const handleStatusAction = useCallback(
     async (order: AdminOrderResponse, toStatus: OrderStatus) => {
       try {
-        const { orderStatus } = await fetcher<AdminOrderResponse>(
-          `/api/organizations/${organizationSlug}/orders/${order.id}/transitions/${toStatus}`,
-          { method: "PATCH" },
+        await fetcher(
+          `/api/organizations/${organizationSlug}/orders/transitions/${toStatus}`,
+          {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ orderIds: [order.id] }),
+          },
         );
 
         enqueueSnackbar(
           tOrders("actions.updateStatus.success", {
             count: 1,
             orderNumbers: order.orderNumber,
-            status: tOrders(`status.${orderStatus}`),
+            status: tOrders(`status.${toStatus}`),
           }),
           { variant: "success" },
         );
-
-        mutate();
       } catch (error) {
         enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+      } finally {
+        mutate();
       }
     },
     [mutate, organizationSlug, tOrders],

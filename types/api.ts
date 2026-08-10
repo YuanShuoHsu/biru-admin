@@ -599,7 +599,7 @@ export interface paths {
     patch: operations["OrdersController_updateCustomer"];
     trace?: never;
   };
-  "/api/organizations/{organizationSlug}/orders/{orderId}/transitions/{toStatus}": {
+  "/api/organizations/{organizationSlug}/orders/transitions/{toStatus}": {
     parameters: {
       query?: never;
       header?: never;
@@ -612,8 +612,8 @@ export interface paths {
     delete?: never;
     options?: never;
     head?: never;
-    /** 變更訂單狀態（可用的目標見該訂單的 availableTransitions） */
-    patch: operations["OrdersController_applyTransition"];
+    /** 變更訂單狀態，任一筆不可轉換則整批失敗（可用的目標見各訂單的 availableTransitions） */
+    patch: operations["OrdersController_applyTransitions"];
     trace?: never;
   };
   "/api/users/me/orders": {
@@ -2504,6 +2504,9 @@ export interface components {
     AdminOrderBoardColumnDto: {
       orderStatus: components["schemas"]["OrderFlowStatus"];
       orders: components["schemas"]["AdminOrderResponseDto"][];
+    };
+    ApplyTransitionsDto: {
+      orderIds: string[];
     };
     OrderSellerDto: {
       id: string;
@@ -4522,25 +4525,28 @@ export interface operations {
       };
     };
   };
-  OrdersController_applyTransition: {
+  OrdersController_applyTransitions: {
     parameters: {
       query?: never;
       header?: never;
       path: {
         organizationSlug: string;
-        orderId: string;
         toStatus: string;
       };
       cookie?: never;
     };
-    requestBody?: never;
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ApplyTransitionsDto"];
+      };
+    };
     responses: {
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["AdminOrderResponseDto"];
+          "application/json": components["schemas"]["AdminOrderResponseDto"][];
         };
       };
       /** @description Internal server error */

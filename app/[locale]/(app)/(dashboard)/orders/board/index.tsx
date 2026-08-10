@@ -37,6 +37,7 @@ import type {
 } from "@/types/orders";
 import type { Organization } from "@/types/organizations";
 
+import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
 import OrderDetailDialog from "../OrderDetailDialog";
@@ -70,7 +71,9 @@ const OrdersBoard = ({
     menuSocket
       .timeout(5000)
       .emitWithAck("joinOrdersBoard", { organizationId })
-      .catch(() => {});
+      .catch((error) =>
+        enqueueSnackbar(getErrorMessage(error), { variant: "error" }),
+      );
 
     menuSocket.on("orderUpdated", mutate);
 
@@ -148,25 +151,27 @@ const OrdersBoard = ({
   const handleTransfer = async (ids: string[], toStatus: OrderStatus) => {
     const orderNumbers = getOrderNumbers(ids);
 
-    await Promise.all(
-      ids.map((id) =>
-        fetcher(
-          `/api/organizations/${organizationSlug}/orders/${id}/transitions/${toStatus}`,
-          { method: "PATCH" },
-        ),
-      ),
-    );
+    try {
+      await fetcher(
+        `/api/organizations/${organizationSlug}/orders/transitions/${toStatus}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderIds: ids }),
+        },
+      );
 
-    enqueueSnackbar(
-      tOrders("actions.updateStatus.success", {
-        count: ids.length,
-        orderNumbers,
-        status: tOrders(`status.${toStatus}`),
-      }),
-      { variant: "success" },
-    );
-
-    mutate();
+      enqueueSnackbar(
+        tOrders("actions.updateStatus.success", {
+          count: ids.length,
+          orderNumbers,
+          status: tOrders(`status.${toStatus}`),
+        }),
+        { variant: "success" },
+      );
+    } finally {
+      mutate();
+    }
   };
 
   const isTransferable = (id: string, toStatus: OrderStatus) =>
