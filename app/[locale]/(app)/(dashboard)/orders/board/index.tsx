@@ -6,7 +6,7 @@ import { useEffect, useMemo } from "react";
 import useSWR from "swr";
 
 import { MODE_COLORS } from "@/constants/orderMode";
-import { STATUS_COLORS } from "@/constants/orders";
+import { STATUS_COLORS, STATUS_TEXT_COLORS } from "@/constants/orders";
 
 import { useSocketConnection } from "@/hooks/useSocketConnection";
 
@@ -14,6 +14,7 @@ import { menuSocket } from "@/app/socket";
 
 import { ReceiptLong } from "@mui/icons-material";
 import {
+  Box,
   Chip,
   DialogContentText,
   IconButton,
@@ -178,7 +179,7 @@ const OrdersBoard = ({
   const confirmTransfer = (
     ids: string[],
     toStatus: OrderStatus,
-    title: string,
+    title: React.ReactNode,
   ) =>
     new Promise<boolean>((resolve) => {
       setDialog({
@@ -189,6 +190,11 @@ const OrdersBoard = ({
               count: ids.length,
               orderNumbers: getOrderNumbers(ids),
               status: tOrders(`status.${toStatus}`),
+              statusText: (chunks) => (
+                <Box color={STATUS_TEXT_COLORS[toStatus]} component="strong">
+                  {chunks}
+                </Box>
+              ),
             })}
           </DialogContentText>
         ),
@@ -204,13 +210,30 @@ const OrdersBoard = ({
     });
 
   const toTransferAction = (
-    title: string,
+    direction: "advance" | "revert",
     toStatus: OrderStatus,
-  ): SelectAllTransferListAction => ({
-    disabled: (ids) => ids.some((id) => !isTransferable(id, toStatus)),
-    onTransfer: (ids) => confirmTransfer(ids, toStatus, title),
-    title,
-  });
+  ): SelectAllTransferListAction => {
+    const key = `actions.updateStatus.title.${direction}` as const;
+    const status = tOrders(`status.${toStatus}`);
+
+    return {
+      disabled: (ids) => ids.some((id) => !isTransferable(id, toStatus)),
+      onTransfer: (ids) =>
+        confirmTransfer(
+          ids,
+          toStatus,
+          tOrders.rich(key, {
+            status,
+            statusText: (chunks) => (
+              <Box color={STATUS_TEXT_COLORS[toStatus]} component="span">
+                {chunks}
+              </Box>
+            ),
+          }),
+        ),
+      title: tOrders.markup(key, { status, statusText: (chunks) => chunks }),
+    };
+  };
 
   const transferActions = orderFlowStatusValues
     .slice(0, -1)
@@ -218,24 +241,10 @@ const OrdersBoard = ({
       (
         fromStatus,
         index,
-      ): [SelectAllTransferListAction, SelectAllTransferListAction] => {
-        const nextStatus = orderFlowStatusValues[index + 1];
-
-        return [
-          toTransferAction(
-            tOrders("actions.updateStatus.title.advance", {
-              status: tOrders(`status.${nextStatus}`),
-            }),
-            nextStatus,
-          ),
-          toTransferAction(
-            tOrders("actions.updateStatus.title.revert", {
-              status: tOrders(`status.${fromStatus}`),
-            }),
-            fromStatus,
-          ),
-        ];
-      },
+      ): [SelectAllTransferListAction, SelectAllTransferListAction] => [
+        toTransferAction("advance", orderFlowStatusValues[index + 1]),
+        toTransferAction("revert", fromStatus),
+      ],
     );
 
   const renderAction = (order: AdminOrderResponse) => (

@@ -8,13 +8,13 @@
     "updateStatus": {
       "confirm": {
         "cancel": "주문 <bold>{orderNumbers}</bold>을(를) 취소하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
-        "default": "주문 <bold>{orderNumbers}</bold>을(를) <bold>{status}</bold>(으)로 변경하시겠습니까?"
+        "default": "주문 <bold>{orderNumbers}</bold>을(를) <statusText>{status}</statusText>(으)로 변경하시겠습니까?"
       },
       "success": "주문 {orderNumbers}을(를) '{status}'(으)로 변경했습니다",
       "title": {
-        "advance": "{status}(으)로 변경",
+        "advance": "<statusText>{status}</statusText>(으)로 변경",
         "cancel": "주문 취소",
-        "revert": "{status}(으)로 되돌리기"
+        "revert": "<statusText>{status}</statusText>(으)로 되돌리기"
       }
     },
     "viewOrder": {

@@ -12,7 +12,7 @@ import {
   DATA_GRID_PROPS,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
-import { STATUS_COLORS } from "@/constants/orders";
+import { STATUS_COLORS, STATUS_TEXT_COLORS } from "@/constants/orders";
 import { getPageSizeOptions } from "@/constants/pagination";
 
 import {
@@ -35,10 +35,10 @@ import {
   Undo,
 } from "@mui/icons-material";
 import {
+  Box,
   Chip,
   DialogContentText,
   IconButton,
-  type IconButtonProps,
   Stack,
   Tooltip,
 } from "@mui/material";
@@ -93,15 +93,6 @@ const TRANSITION_SLOTS: OrderTransition["direction"][][] = [
   ["revert", "cancel"],
   ["advance"],
 ];
-
-const DIRECTION_COLORS: Record<
-  OrderTransition["direction"],
-  IconButtonProps["color"]
-> = {
-  advance: "default",
-  cancel: "error",
-  revert: "default",
-};
 
 interface OrdersProps {
   filterField?: OrderFilterField;
@@ -342,7 +333,6 @@ const Orders = ({
         content: (
           <DialogContentText>
             {tOrders.rich(
-              // 取消是規則表裡唯一沒有回頭路的轉移，文案要比其他方向重
               direction === "cancel"
                 ? "actions.updateStatus.confirm.cancel"
                 : "actions.updateStatus.confirm.default",
@@ -351,13 +341,25 @@ const Orders = ({
                 count: 1,
                 orderNumbers: order.orderNumber,
                 status,
+                statusText: (chunks) => (
+                  <Box color={STATUS_TEXT_COLORS[toStatus]} component="strong">
+                    {chunks}
+                  </Box>
+                ),
               },
             )}
           </DialogContentText>
         ),
         onConfirm: () => handleStatusAction(order, toStatus),
         open: true,
-        title: tOrders(`actions.updateStatus.title.${direction}`, { status }),
+        title: tOrders.rich(`actions.updateStatus.title.${direction}`, {
+          status,
+          statusText: (chunks) => (
+            <Box color={STATUS_TEXT_COLORS[toStatus]} component="span">
+              {chunks}
+            </Box>
+          ),
+        }),
       });
     },
     [handleStatusAction, setDialog, tOrders],
@@ -407,25 +409,30 @@ const Orders = ({
                 const transition = row.availableTransitions.find(
                   ({ direction }) => directions.includes(direction),
                 );
-                const direction = transition?.direction ?? directions[0];
+                const direction = transition?.direction || directions[0];
                 const Icon = DIRECTION_ICONS[direction];
+                const color =
+                  direction === "cancel"
+                    ? "error"
+                    : transition && STATUS_COLORS[transition.toStatus];
 
                 return (
                   <Tooltip
                     key={directions[0]}
                     title={
                       transition
-                        ? tOrders(
+                        ? tOrders.markup(
                             `actions.updateStatus.title.${transition.direction}`,
                             {
                               status: tOrders(`status.${transition.toStatus}`),
+                              statusText: (chunks) => chunks,
                             },
                           )
                         : ""
                     }
                   >
                     <StyledIconButton
-                      color={DIRECTION_COLORS[direction]}
+                      color={color}
                       onClick={(event) => {
                         event.stopPropagation();
 

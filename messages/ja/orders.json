@@ -8,13 +8,13 @@
     "updateStatus": {
       "confirm": {
         "cancel": "注文 <bold>{orderNumbers}</bold> をキャンセルしてもよろしいですか？この操作は元に戻せません。",
-        "default": "注文 <bold>{orderNumbers}</bold> を <bold>{status}</bold> に変更してもよろしいですか？"
+        "default": "注文 <bold>{orderNumbers}</bold> を <statusText>{status}</statusText> に変更してもよろしいですか？"
       },
       "success": "注文 {orderNumbers} を「{status}」に更新しました",
       "title": {
-        "advance": "{status}にする",
+        "advance": "<statusText>{status}</statusText>にする",
         "cancel": "注文をキャンセル",
-        "revert": "{status}に戻す"
+        "revert": "<statusText>{status}</statusText>に戻す"
       }
     },
     "viewOrder": {

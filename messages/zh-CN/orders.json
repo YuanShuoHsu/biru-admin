@@ -8,13 +8,13 @@
     "updateStatus": {
       "confirm": {
         "cancel": "确定要取消订单 <bold>{orderNumbers}</bold> 吗？此操作无法撤销。",
-        "default": "确定要将订单 <bold>{orderNumbers}</bold> 变更为 <bold>{status}</bold> 吗？"
+        "default": "确定要将订单 <bold>{orderNumbers}</bold> 变更为 <statusText>{status}</statusText> 吗？"
       },
       "success": "已将订单 {orderNumbers} 更新为「{status}」",
       "title": {
-        "advance": "设为{status}",
+        "advance": "设为<statusText>{status}</statusText>",
         "cancel": "取消订单",
-        "revert": "退回{status}"
+        "revert": "退回<statusText>{status}</statusText>"
       }
     },
     "viewOrder": {

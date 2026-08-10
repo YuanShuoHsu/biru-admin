@@ -8,13 +8,13 @@
     "updateStatus": {
       "confirm": {
         "cancel": "確定要取消訂單 <bold>{orderNumbers}</bold> 嗎？此操作無法復原。",
-        "default": "確定要將訂單 <bold>{orderNumbers}</bold> 變更為 <bold>{status}</bold> 嗎？"
+        "default": "確定要將訂單 <bold>{orderNumbers}</bold> 變更為 <statusText>{status}</statusText> 嗎？"
       },
       "success": "已將訂單 {orderNumbers} 更新為「{status}」",
       "title": {
-        "advance": "設為{status}",
+        "advance": "設為<statusText>{status}</statusText>",
         "cancel": "取消訂單",
-        "revert": "退回{status}"
+        "revert": "退回<statusText>{status}</statusText>"
       }
     },
     "viewOrder": {

@@ -8,13 +8,13 @@
     "updateStatus": {
       "confirm": {
         "cancel": "Are you sure you want to cancel {count, plural, one {order} other {orders}} <bold>{orderNumbers}</bold>? This action cannot be undone.",
-        "default": "Are you sure you want to change {count, plural, one {order} other {orders}} <bold>{orderNumbers}</bold> to <bold>{status}</bold>?"
+        "default": "Are you sure you want to change {count, plural, one {order} other {orders}} <bold>{orderNumbers}</bold> to <statusText>{status}</statusText>?"
       },
       "success": "{count, plural, one {Order} other {Orders}} {orderNumbers} updated to \"{status}\"",
       "title": {
-        "advance": "Set to {status}",
+        "advance": "Set to <statusText>{status}</statusText>",
         "cancel": "Cancel order",
-        "revert": "Back to {status}"
+        "revert": "Back to <statusText>{status}</statusText>"
       }
     },
     "viewOrder": {
