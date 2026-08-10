@@ -72,6 +72,14 @@ const ActionStack = styled(Stack)(({ theme }) => ({
   },
 }));
 
+const ActionButton = styled(Button)(({ theme }) => ({
+  svg: { transform: "rotate(90deg)" },
+
+  [theme.breakpoints.up("md")]: {
+    svg: { transform: "none" },
+  },
+}));
+
 const StyledList = styled(List, {
   shouldForwardProp: (prop) => prop !== "empty",
 })<ListProps<"div"> & { empty: boolean }>(({ empty, theme }) =>
@@ -243,7 +251,10 @@ const SelectAllTransferList = <
         <Fragment key={column.title}>
           <ColumnGrid size={column.size}>{customList(column)}</ColumnGrid>
           {index < columns.length - 1 && (
-            <ActionStack gap={2}>
+            <ActionStack
+              direction={{ xs: "row-reverse", md: "column" }}
+              gap={2}
+            >
               {[
                 {
                   action: transferActions[index][0],
@@ -264,7 +275,7 @@ const SelectAllTransferList = <
                 return (
                   <Tooltip key={action.title} title={action.title}>
                     <span>
-                      <Button
+                      <ActionButton
                         aria-label={action.title}
                         disabled={ids.length === 0 || !!action.disabled?.(ids)}
                         onClick={() => handleTransfer(action, ids)}
@@ -272,7 +283,7 @@ const SelectAllTransferList = <
                         variant="outlined"
                       >
                         <Icon />
-                      </Button>
+                      </ActionButton>
                     </span>
                   </Tooltip>
                 );
