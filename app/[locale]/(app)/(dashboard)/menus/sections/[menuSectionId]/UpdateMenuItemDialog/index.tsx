@@ -133,7 +133,7 @@ const UpdateMenuItemDialog = ({ item, mutate }: UpdateMenuItemDialogProps) => {
         body: JSON.stringify({
           name,
           description,
-          image: imageSrc || null,
+          ...(imageSrc !== item.image && { image: imageSrc || null }),
           availableModes,
           offer: {
             priceCurrency: offer?.priceCurrency,
