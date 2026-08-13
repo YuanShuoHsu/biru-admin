@@ -33,8 +33,8 @@ const BrandMark = ({ color }: BrandMarkProps) => (
         alt="biru coffee"
         draggable={false}
         fill
-        priority
-        sizes="(min-width: 808px) 50vw, 100vw"
+        loading="eager"
+        sizes="32px"
         src="/images/IMG_4590.jpg"
         style={{ objectFit: "cover" }}
       />

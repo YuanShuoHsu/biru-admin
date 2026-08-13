@@ -269,7 +269,7 @@ const OrderMenuContent = () => {
           {tOrder("mode.storeSlug.tableNumber.search.noResults")}
         </Typography>
       )}
-      {filteredSections.map(({ id, menuItems, name }) => (
+      {filteredSections.map(({ id, menuItems, name }, sectionIndex) => (
         <SectionBox
           key={id}
           ref={(node: HTMLDivElement) => {
@@ -290,9 +290,15 @@ const OrderMenuContent = () => {
             {name}
           </SectionTypography>
           {id === TOP_SOLD || id === LATEST ? (
-            <FeaturedSlider menuItems={menuItems} />
+            <FeaturedSlider
+              menuItems={menuItems}
+              priority={sectionIndex === 0}
+            />
           ) : (
-            <ResponsiveGrid menuItems={menuItems} />
+            <ResponsiveGrid
+              menuItems={menuItems}
+              priority={sectionIndex === 0}
+            />
           )}
         </SectionBox>
       ))}

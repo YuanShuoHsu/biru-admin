@@ -100,7 +100,7 @@ const Profile = () => {
     PROFILE_UPLOAD_AVATAR_KEY,
     session?.user.image,
   );
-  const isAvatarDirty = avatarSrc !== (session?.user.image || undefined);
+  const isAvatarDirty = avatarSrc !== (session?.user.image || null);
 
   const updateProfile = async ({
     lastName,

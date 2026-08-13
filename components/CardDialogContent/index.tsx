@@ -405,7 +405,7 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
             alt={name}
             draggable={false}
             fill
-            sizes="(min-width: 808px) 50vw, 100vw"
+            sizes="(min-width: 600px) 600px, 100vw"
             src={image}
             style={{ objectFit: "cover" }}
           />

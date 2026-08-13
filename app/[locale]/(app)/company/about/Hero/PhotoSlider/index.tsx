@@ -69,7 +69,7 @@ const PhotoSlider = () => (
             alt={`Photo ${index + 1}`}
             fill
             priority={index < 4}
-            sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 25vw"
+            sizes="(min-width: 1200px) 288px, (min-width: 900px) 33vw, (min-width: 600px) 50vw, 100vw"
             src="/images/IMG_4590.jpg"
             style={{ objectFit: "cover" }}
           />

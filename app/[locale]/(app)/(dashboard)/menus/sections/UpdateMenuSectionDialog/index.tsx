@@ -73,7 +73,7 @@ const UpdateMenuSectionDialog = ({
         body: JSON.stringify({
           name,
           description,
-          image: imageSrc || null,
+          ...(imageSrc !== (section.image || null) && { image: imageSrc }),
         }),
       });
 

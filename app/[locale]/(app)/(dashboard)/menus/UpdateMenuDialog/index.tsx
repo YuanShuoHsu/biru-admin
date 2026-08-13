@@ -36,7 +36,7 @@ const UpdateMenuDialog = ({ menu, mutate }: UpdateMenuDialogProps) => {
   const tMenus = useTranslations("menus");
 
   const uploadKey = `update-menu-image-${menu.id}`;
-  const imageSrc = useUploadAvatarSrc(uploadKey, menu.image ?? undefined);
+  const imageSrc = useUploadAvatarSrc(uploadKey, menu.image);
 
   const updateMenuFormSchema = useUpdateMenuFormSchema();
   const {
@@ -68,7 +68,7 @@ const UpdateMenuDialog = ({ menu, mutate }: UpdateMenuDialogProps) => {
         body: JSON.stringify({
           name,
           description,
-          image: imageSrc || null,
+          ...(imageSrc !== (menu.image || null) && { image: imageSrc }),
         }),
       });
 

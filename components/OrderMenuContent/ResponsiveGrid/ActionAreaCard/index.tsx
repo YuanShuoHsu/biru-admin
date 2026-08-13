@@ -7,7 +7,7 @@ import ItemSoldOut from "./ItemSoldOut";
 import CardDialogContent from "@/components/CardDialogContent";
 
 import { API_ORDER_MODE } from "@/constants/orderMode";
-import { ViewDirections } from "@/constants/view";
+import { ViewDirections, ViewImageSizes } from "@/constants/view";
 
 import { RestaurantMenu } from "@mui/icons-material";
 import {
@@ -103,9 +103,10 @@ const OriginalPriceTypography = styled(Typography, {
 
 interface ActionAreaCardProps {
   menuItem: OrderMenuItem;
+  priority: boolean;
 }
 
-const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
+const ActionAreaCard = ({ menuItem, priority }: ActionAreaCardProps) => {
   const { availableModes, name, description, image, offers } = menuItem;
   const offer = offers[0];
   const price = Number(offer.price);
@@ -174,8 +175,8 @@ const ActionAreaCard = ({ menuItem }: ActionAreaCardProps) => {
               alt={name}
               draggable={false}
               fill
-              priority
-              sizes="(min-width: 808px) 50vw, 100vw"
+              priority={priority}
+              sizes={ViewImageSizes[view]}
               src={image}
               style={{ objectFit: "cover" }}
             />

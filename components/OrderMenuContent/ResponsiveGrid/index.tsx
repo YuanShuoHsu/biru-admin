@@ -10,17 +10,21 @@ import type { OrderMenuItem } from "@/types/menus";
 
 interface ResponsiveGridProps {
   menuItems: OrderMenuItem[];
+  priority: boolean;
 }
 
-const ResponsiveGrid = ({ menuItems }: ResponsiveGridProps) => {
+const ResponsiveGrid = ({ menuItems, priority }: ResponsiveGridProps) => {
   const { view } = useViewStore((state) => state);
   const viewGridSizes = ViewGridSizes[view];
 
   return (
     <Grid container spacing={2}>
-      {menuItems.map((menuItem) => (
+      {menuItems.map((menuItem, index) => (
         <Grid display="flex" key={menuItem.id} size={viewGridSizes}>
-          <ActionAreaCard menuItem={menuItem} />
+          <ActionAreaCard
+            menuItem={menuItem}
+            priority={priority && index === 0}
+          />
         </Grid>
       ))}
     </Grid>

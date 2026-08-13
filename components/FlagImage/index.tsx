@@ -18,7 +18,6 @@ const FlagImage = ({ code, label }: { code: CountryCode; label: string }) => (
       alt={label}
       fill
       loading="lazy"
-      sizes="(min-width: 808px) 50vw, 100vw"
       src={`/images/flags/w20/${code.toLowerCase()}.png`}
       style={{ objectFit: "contain" }}
       unoptimized

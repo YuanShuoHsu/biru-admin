@@ -223,7 +223,7 @@ const CartItemRow = ({ compact = false, item }: CartItemRowProps) => {
                   alt={itemName}
                   draggable={false}
                   fill
-                  sizes="(min-width: 808px) 50vw, 100vw"
+                  sizes={compact ? "(min-width: 600px) 280px, 50vw" : "104px"}
                   src={image}
                   style={{ objectFit: "cover" }}
                 />

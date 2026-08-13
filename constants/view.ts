@@ -3,6 +3,12 @@ export const ViewGridSizes = {
   module: { xs: 6, sm: 4, md: 3, lg: 2 },
 } as const;
 
+export const ViewImageSizes = {
+  list: "200px",
+  module:
+    "(min-width: 1200px) 190px, (min-width: 900px) 25vw, (min-width: 600px) 33vw, 50vw",
+} as const;
+
 export const ViewDirections = {
   list: "row-reverse",
   module: "column",

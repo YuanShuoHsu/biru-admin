@@ -544,6 +544,7 @@ const MenusMenuIdSectionId = ({
                 <Image
                   alt={value}
                   fill
+                  sizes="32px"
                   src={value}
                   style={{ objectFit: "cover" }}
                 />

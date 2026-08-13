@@ -22,9 +22,10 @@ const StyledCarousel = styled(Carousel)(({ theme }) => ({
 
 interface FeaturedSliderProps {
   menuItems: OrderMenuItem[];
+  priority: boolean;
 }
 
-const FeaturedSlider = ({ menuItems }: FeaturedSliderProps) => {
+const FeaturedSlider = ({ menuItems, priority }: FeaturedSliderProps) => {
   const { view } = useViewStore((state) => state);
 
   return (
@@ -36,8 +37,12 @@ const FeaturedSlider = ({ menuItems }: FeaturedSliderProps) => {
       navigation={true}
       spaceBetween={16}
     >
-      {menuItems.map((menuItem) => (
-        <ActionAreaCard key={menuItem.id} menuItem={menuItem} />
+      {menuItems.map((menuItem, index) => (
+        <ActionAreaCard
+          key={menuItem.id}
+          menuItem={menuItem}
+          priority={priority && index === 0}
+        />
       ))}
     </StyledCarousel>
   );
