@@ -11,6 +11,7 @@ import { ViewDirections, ViewImageSizes } from "@/constants/view";
 
 import { RestaurantMenu } from "@mui/icons-material";
 import {
+  Badge,
   Box,
   Card,
   CardActionArea,
@@ -20,6 +21,7 @@ import {
 } from "@mui/material";
 import { type CSSObject, styled } from "@mui/material/styles";
 
+import { useCartStore } from "@/providers/cart-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 import { useViewStore } from "@/providers/view-store-provider";
 
@@ -38,6 +40,28 @@ const StyledCard = styled(Card)({
   width: "100%",
   height: "100%",
 });
+
+const QuantityBadge = styled(Badge)(({ theme }) => ({
+  position: "absolute",
+  top: theme.spacing(1),
+  right: theme.spacing(1),
+  pointerEvents: "none",
+  zIndex: 3,
+
+  "& .MuiBadge-badge": {
+    minWidth: theme.spacing(3.5),
+    height: theme.spacing(3.5),
+    border: `2px solid ${theme.vars.palette.background.paper}`,
+    borderRadius: theme.spacing(1.75),
+    fontSize: theme.typography.subtitle2.fontSize,
+    fontWeight: "bold",
+    transform: "scale(1)",
+  },
+
+  "& .MuiBadge-invisible": {
+    transform: "scale(0)",
+  },
+}));
 
 const StyledCardActionArea = styled(CardActionArea, {
   shouldForwardProp: (prop) => prop !== "inStock" && prop !== "viewDirection",
@@ -120,6 +144,9 @@ const ActionAreaCard = ({ menuItem, priority }: ActionAreaCardProps) => {
   const { mode } = useParams<RouteParams<"mode">>();
   const apiMode = API_ORDER_MODE[mode];
 
+  const cartItemQuantity = useCartStore((state) =>
+    state.getCartItemTotalQuantity(menuItem.id, null),
+  );
   const { setDialog } = useDialogStore((state) => state);
   const { view } = useViewStore((state) => state);
 
@@ -163,6 +190,7 @@ const ActionAreaCard = ({ menuItem, priority }: ActionAreaCardProps) => {
   return (
     <StyledCard variant="outlined">
       <ItemSoldOut soldOutLabel={soldOutLabel} />
+      <QuantityBadge badgeContent={cartItemQuantity} color="secondary" />
       <StyledCardActionArea
         disableRipple={isItemOutOfStock}
         inStock={!isItemOutOfStock}
