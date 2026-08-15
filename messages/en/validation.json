@@ -121,9 +121,6 @@
   "role": {
     "required": "Please select a role."
   },
-  "searchField": {
-    "required": "Please select a search field."
-  },
   "slug": {
     "letter": "Slug must contain at least one letter.",
     "required": "Slug is required."

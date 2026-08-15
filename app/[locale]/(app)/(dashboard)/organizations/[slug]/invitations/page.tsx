@@ -9,6 +9,8 @@ import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
+import { hasRolePermission } from "@/utils/organizations";
+
 interface OrganizationsSlugInvitationsPageProps {
   params: Promise<{ locale: Locale; slug: string }>;
 }
@@ -55,12 +57,9 @@ const OrganizationsSlugInvitationsPage = async ({
     ({ userId }) => userId === session?.user?.id,
   )?.role;
 
-  const canCancelInvitation = currentUserRole
-    ? authClient.organization.checkRolePermission({
-        role: currentUserRole,
-        permissions: { invitation: ["cancel"] },
-      })
-    : false;
+  const canCancelInvitation = hasRolePermission(currentUserRole, {
+    invitation: ["cancel"],
+  });
 
   return (
     <OrganizationsSlugInvitations

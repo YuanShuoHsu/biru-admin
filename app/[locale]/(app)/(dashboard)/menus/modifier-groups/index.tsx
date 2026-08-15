@@ -10,6 +10,7 @@ import useSWR from "swr";
 import CreateModifierGroupDialog from "./CreateModifierGroupDialog";
 import UpdateModifierGroupDialog from "./UpdateModifierGroupDialog";
 
+import AuditLogButton from "@/components/AuditLogButton";
 import { DragHandle, Sortable } from "@/components/Sortable";
 
 import {
@@ -83,6 +84,7 @@ const DataGrid = dynamic(
 );
 
 interface ModifierGroupsProps {
+  canViewAuditLog: boolean;
   canWrite: boolean;
   filterField?: ModifierGroupFilterField;
   filterOperator?: FilterOperator;
@@ -98,6 +100,7 @@ interface ModifierGroupsProps {
 }
 
 const ModifierGroups = ({
+  canViewAuditLog,
   canWrite,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
@@ -482,6 +485,7 @@ const ModifierGroups = ({
                 </IconButton>
               </Tooltip>
             )}
+            {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
             {canWrite && (
               <Tooltip
                 title={tMenus("modifierGroups.actions.deleteGroup.title")}
@@ -542,6 +546,7 @@ const ModifierGroups = ({
       },
     ],
     [
+      canViewAuditLog,
       canWrite,
       dateFilterOperators,
       format,

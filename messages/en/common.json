@@ -31,6 +31,10 @@
   "middleDot": " · ",
   "multiply": "×",
   "optional": "(optional)",
+  "organization": {
+    "label": "Organization",
+    "placeholder": "Please select your organization"
+  },
   "pagination": {
     "labelDisplayedRows": "{from}–{to} of {count}",
     "labelRowsPerPage": "Rows per page:"

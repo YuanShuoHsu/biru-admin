@@ -13,7 +13,10 @@ import SelectedListItem from "./SelectedListItem";
 
 import { ORDER_MODE } from "@/constants/orderMode";
 
-import { useDefaultOrganization } from "@/hooks/organizations";
+import {
+  useActiveMemberRole,
+  useDefaultOrganization,
+} from "@/hooks/organizations";
 import { useNavChildren } from "@/hooks/useNavChildren";
 import { useRoutes } from "@/hooks/useRoutes";
 
@@ -24,12 +27,15 @@ import { useAuthStore } from "@/providers/auth-store-provider";
 import type { NavItem } from "@/types/navItem";
 import type { RouteParams } from "@/types/routeParams";
 
+import { hasRolePermission } from "@/utils/organizations";
+
 const useNavItems = (): NavItem[][] => {
   const session = useAuthStore((state) => state.session);
 
   const { mode, organizationSlug } = useParams<Partial<RouteParams>>();
 
   const defaultOrganizationSlug = useDefaultOrganization();
+  const memberRole = useActiveMemberRole();
 
   const navChildren = useNavChildren();
   const navItem = useRoutes();
@@ -55,6 +61,10 @@ const useNavItems = (): NavItem[][] => {
         ? [navItem("/orders"), navItem("/menus")]
         : []),
       ...(isAdmin || defaultOrganizationSlug ? [navItem("/coupons")] : []),
+      // 沒有 auditLog:read 的成員進頁面會 notFound，不能只靠有沒有組織來顯示
+      ...(hasRolePermission(memberRole, { auditLog: ["read"] })
+        ? [navItem("/audit-logs")]
+        : []),
       navItem("/organizations"),
     ],
     ...(isAdmin ? [[navItem("/banners"), navItem("/admins")]] : []),

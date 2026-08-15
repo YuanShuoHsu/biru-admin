@@ -6,6 +6,8 @@ import {
 } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
 
+import { ac, admin, member, owner } from "./permissions";
+
 import { LocaleEnum } from "@/enums/Locale";
 
 import { type Locale, routing } from "@/i18n/routing";
@@ -56,6 +58,8 @@ export const authClient = createAuthClient({
     }),
     multiSessionClient(),
     organizationClient({
+      ac,
+      roles: { owner, admin, member },
       teams: { enabled: true },
       schema: {
         organization: {

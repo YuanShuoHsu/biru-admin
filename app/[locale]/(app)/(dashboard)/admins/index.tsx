@@ -664,7 +664,7 @@ const Admins = ({
       },
       {
         field: "role",
-        textFilterOperators: enumFilterOperators,
+        filterOperators: enumFilterOperators,
         headerName: tAdmins("role.label"),
         renderCell: ({ row: { role } }: GridRenderCellParams<User>) =>
           role && (
@@ -680,7 +680,7 @@ const Admins = ({
       },
       {
         field: "banned",
-        textFilterOperators: enumFilterOperators,
+        filterOperators: enumFilterOperators,
         headerName: tAdmins("status.label"),
         renderCell: ({ row }: GridRenderCellParams<User>) => {
           const isBanned =
@@ -731,14 +731,11 @@ const Admins = ({
           );
         },
         type: "singleSelect",
-        valueOptions: [
-          { label: tAdmins("status.banned"), value: true },
-          { label: tAdmins("status.active"), value: false },
-        ],
+        valueOptions: enumOptions.banned,
       },
       {
         field: "emailSubscribed",
-        textFilterOperators: enumFilterOperators,
+        filterOperators: enumFilterOperators,
         headerName: tAdmins("emailSubscribed.label"),
         renderCell: ({ row }: GridRenderCellParams<User>) => (
           <Chip
@@ -760,10 +757,7 @@ const Admins = ({
           />
         ),
         type: "singleSelect",
-        valueOptions: [
-          { label: tAdmins("emailSubscribed.subscribed"), value: true },
-          { label: tAdmins("emailSubscribed.unsubscribed"), value: false },
-        ],
+        valueOptions: enumOptions.emailSubscribed,
       },
       {
         field: "createdAt",

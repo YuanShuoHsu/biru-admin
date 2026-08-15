@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 
-import MenusOrganizationSelect from "@/components/MenusOrganizationSelect";
+import OrganizationSelect from "@/components/OrganizationSelect";
 
 import { authClient } from "@/lib/auth-client";
 
@@ -26,7 +26,7 @@ const ToolbarOrdersBoardPage = async ({
   });
 
   return (
-    <MenusOrganizationSelect
+    <OrganizationSelect
       organizations={organizations || []}
       organizationSlug={organization}
     />

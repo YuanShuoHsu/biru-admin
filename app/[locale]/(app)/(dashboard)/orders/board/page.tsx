@@ -42,7 +42,7 @@ const OrdersBoardPage = async ({
 
   const selectedOrganization = await getResolvedAdminOrganization(
     organization,
-    fetchOptions,
+    cookieStore.toString(),
   );
 
   if (!selectedOrganization) return <OrdersTabsLayout>{null}</OrdersTabsLayout>;

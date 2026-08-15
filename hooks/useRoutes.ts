@@ -71,6 +71,7 @@ import type { SvgIconProps } from "@mui/material";
 
 import type { Coupon } from "@/types/coupons";
 import type { MenuItem, MenuSection, ModifierGroup } from "@/types/menus";
+import type { AdminOrderResponse } from "@/types/orders";
 import type { NavItem } from "@/types/navItem";
 import type { RouteParams } from "@/types/routeParams";
 
@@ -173,6 +174,21 @@ const routes: Route[] = [
         segment: "board",
       },
       {
+        children: [
+          {
+            children: [
+              {
+                icon: History,
+                label: "audit.title",
+                query: ["organization", "page", "pageSize"],
+                segment: "audit-logs",
+              },
+            ],
+            icon: ReceiptLong,
+            segment: "[orderId]",
+            to: null,
+          },
+        ],
         icon: ReceiptLong,
         label: "orders.list.label",
         query: ["organization", "page", "pageSize"],
@@ -187,7 +203,40 @@ const routes: Route[] = [
   {
     children: [
       {
-        children: [{ icon: Checklist, segment: "[groupId]" }],
+        icon: History,
+        label: "audit.title",
+        query: ["organization", "page", "pageSize"],
+        segment: "audit-logs",
+      },
+      {
+        children: [
+          {
+            children: [
+              {
+                icon: History,
+                label: "audit.title",
+                query: ["organization", "page", "pageSize"],
+                segment: "audit-logs",
+              },
+              {
+                children: [
+                  {
+                    icon: History,
+                    label: "audit.title",
+                    query: ["organization", "page", "pageSize"],
+                    segment: "audit-logs",
+                  },
+                ],
+                icon: Checklist,
+                label: "menus.modifiers.label",
+                segment: "[modifierId]",
+                to: null,
+              },
+            ],
+            icon: Checklist,
+            segment: "[groupId]",
+          },
+        ],
         icon: Tune,
         label: "menus.modifierGroups.label",
         query: ["organization", "page", "pageSize"],
@@ -198,13 +247,57 @@ const routes: Route[] = [
           {
             children: [
               {
+                icon: History,
+                label: "audit.title",
+                query: ["organization", "page", "pageSize"],
+                segment: "audit-logs",
+              },
+              {
                 children: [
                   {
+                    children: [
+                      {
+                        children: [
+                          {
+                            icon: History,
+                            label: "audit.title",
+                            query: ["organization", "page", "pageSize"],
+                            segment: "audit-logs",
+                          },
+                        ],
+                        icon: Extension,
+                        label: "menus.items.addOns.label",
+                        segment: "[addOnId]",
+                        to: null,
+                      },
+                    ],
                     icon: Extension,
                     label: "menus.items.addOns.label",
                     segment: "add-ons",
                   },
                   {
+                    icon: History,
+                    label: "audit.title",
+                    query: ["organization", "page", "pageSize"],
+                    segment: "audit-logs",
+                  },
+                  {
+                    children: [
+                      {
+                        children: [
+                          {
+                            icon: History,
+                            label: "audit.title",
+                            query: ["organization", "page", "pageSize"],
+                            segment: "audit-logs",
+                          },
+                        ],
+                        icon: Tune,
+                        label: "menus.items.modifierGroups.label",
+                        segment: "[linkId]",
+                        to: null,
+                      },
+                    ],
                     icon: Tune,
                     label: "menus.items.modifierGroups.label",
                     segment: "modifier-groups",
@@ -230,6 +323,12 @@ const routes: Route[] = [
     label: "menus.label",
     segment: "menus",
     to: "/menus/sections",
+  },
+  {
+    icon: History,
+    label: "audit.title",
+    query: ["organization", "page", "pageSize"],
+    segment: "audit-logs",
   },
   {
     children: [
@@ -429,8 +528,18 @@ const useDynamicLabels = (): Partial<Record<string, string>> => {
 
   const organization = useOrganization();
 
-  const { couponId, groupId, menuItemId, menuSectionId, slug, teamId, userId } =
-    useParams<RouteParams>();
+  const {
+    couponId,
+    groupId,
+    menuItemId,
+    menuSectionId,
+    orderId,
+    slug,
+    teamId,
+    userId,
+  } = useParams<RouteParams>();
+
+  const organizationQuery = useSearchParams().get("organization");
 
   const { data: userEmail = "" } = useSWR(
     userId ? `admin-user-${userId}` : null,
@@ -497,6 +606,21 @@ const useDynamicLabels = (): Partial<Record<string, string>> => {
     },
   );
 
+  const { data: orderNumber = "" } = useSWR(
+    orderId && organizationQuery
+      ? `/api/organizations/${organizationQuery}/orders/${orderId}`
+      : null,
+    async (url) => {
+      try {
+        const { orderNumber } = await fetcher<AdminOrderResponse>(url);
+
+        return orderNumber;
+      } catch {
+        return "";
+      }
+    },
+  );
+
   const { data: modifierGroupName = "" } = useSWR(
     groupId ? `/api/modifier-groups/${groupId}` : null,
     async (url) => {
@@ -515,6 +639,7 @@ const useDynamicLabels = (): Partial<Record<string, string>> => {
     groupId: modifierGroupName,
     menuItemId: menuItemName,
     menuSectionId: menuSectionName,
+    orderId: orderNumber,
     organizationSlug: organization?.name || "",
     slug: organizationSlugName,
     teamId: teamName,

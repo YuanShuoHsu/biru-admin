@@ -9,6 +9,7 @@ import useSWR from "swr";
 
 import AttachModifierGroupDialog from "./AttachModifierGroupDialog";
 
+import AuditLogButton from "@/components/AuditLogButton";
 import { DragHandle, Sortable } from "@/components/Sortable";
 
 import {
@@ -70,6 +71,7 @@ const DataGrid = dynamic(
 );
 
 interface MenuItemModifierGroupsProps {
+  canViewAuditLog: boolean;
   canWrite: boolean;
   filterField?: ModifierGroupFilterField;
   filterOperator?: FilterOperator;
@@ -86,6 +88,7 @@ interface MenuItemModifierGroupsProps {
 }
 
 const MenuItemModifierGroups = ({
+  canViewAuditLog,
   canWrite,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
@@ -415,7 +418,7 @@ const MenuItemModifierGroups = ({
             },
           ]
         : []),
-      ...(canWrite && !isReorderMode
+      ...((canWrite || canViewAuditLog) && !isReorderMode
         ? [
             {
               disableColumnMenu: true,
@@ -431,20 +434,25 @@ const MenuItemModifierGroups = ({
                   alignItems="center"
                   gap={1}
                 >
-                  <Tooltip
-                    title={tMenus("items.modifierGroups.actions.detach.title")}
-                  >
-                    <IconButton
-                      color="error"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        handleDetach(row);
-                      }}
-                      size="small"
+                  {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
+                  {canWrite && (
+                    <Tooltip
+                      title={tMenus(
+                        "items.modifierGroups.actions.detach.title",
+                      )}
                     >
-                      <Delete fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
+                      <IconButton
+                        color="error"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleDetach(row);
+                        }}
+                        size="small"
+                      >
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
                 </Stack>
               ),
               resizable: false,
@@ -497,6 +505,7 @@ const MenuItemModifierGroups = ({
       },
     ],
     [
+      canViewAuditLog,
       canWrite,
       dateFilterOperators,
       format,

@@ -121,9 +121,6 @@
   "role": {
     "required": "역할을 선택해 주세요."
   },
-  "searchField": {
-    "required": "검색 필드를 선택해 주세요."
-  },
   "slug": {
     "letter": "슬러그에는 최소 하나의 영문자가 포함되어야 합니다.",
     "required": "슬러그는 필수입니다."

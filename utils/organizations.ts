@@ -29,33 +29,15 @@ export const getOrganizations = cache(
   },
 );
 
-export async function canGrantOrganizationCoupon(
-  organizationId?: string,
-  fetchOptions?: { headers: { cookie: string; origin: string } },
-): Promise<boolean> {
-  if (!organizationId) return false;
+type CheckRolePermissionInput = Parameters<
+  typeof authClient.organization.checkRolePermission
+>[0];
 
-  try {
-    const { success } = await fetcher<{ success: boolean }>(
-      "/api/auth/organization/has-permission",
-      {
-        body: JSON.stringify({
-          organizationId,
-          permissions: { coupon: ["create"] },
-        }),
-        headers: {
-          "Content-Type": "application/json",
-          ...fetchOptions?.headers,
-        },
-        method: "POST",
-      },
-    );
-
-    return success;
-  } catch {
-    return false;
-  }
-}
+export const hasRolePermission = (
+  role: CheckRolePermissionInput["role"] | undefined,
+  permissions: CheckRolePermissionInput["permissions"],
+): boolean =>
+  !!role && authClient.organization.checkRolePermission({ role, permissions });
 
 export type OrganizationPermissions = Record<
   string,
@@ -80,23 +62,12 @@ export async function getOrganizationPermissions(
   organizations.forEach(({ id }, index) => {
     const role = memberRoles[index].data?.role;
 
-    if (!role) {
-      permissions[id] = {
-        canUpdateOrganization: false,
-        canDeleteOrganization: false,
-      };
-
-      return;
-    }
-
     permissions[id] = {
-      canUpdateOrganization: authClient.organization.checkRolePermission({
-        role,
-        permissions: { organization: ["update"] },
+      canUpdateOrganization: hasRolePermission(role, {
+        organization: ["update"],
       }),
-      canDeleteOrganization: authClient.organization.checkRolePermission({
-        role,
-        permissions: { organization: ["delete"] },
+      canDeleteOrganization: hasRolePermission(role, {
+        organization: ["delete"],
       }),
     };
   });

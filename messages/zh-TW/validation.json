@@ -121,9 +121,6 @@
   "role": {
     "required": "請選擇角色。"
   },
-  "searchField": {
-    "required": "請選擇搜尋欄位。"
-  },
   "slug": {
     "letter": "網址識別碼必須包含至少一個英文字母。",
     "required": "網址識別碼為必填。"

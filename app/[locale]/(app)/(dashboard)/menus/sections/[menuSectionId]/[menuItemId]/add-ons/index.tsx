@@ -10,6 +10,7 @@ import useSWR from "swr";
 import CreateAddOnDialog from "./CreateAddOnDialog";
 import UpdateAddOnDialog from "./UpdateAddOnDialog";
 
+import AuditLogButton from "@/components/AuditLogButton";
 import { DragHandle, Sortable } from "@/components/Sortable";
 
 import {
@@ -71,6 +72,7 @@ const DataGrid = dynamic(
 
 interface MenuItemAddOnsProps {
   addOns: MenuItemAddOn[];
+  canViewAuditLog: boolean;
   canWrite: boolean;
   filterField?: AddOnFilterField;
   filterOperator?: FilterOperator;
@@ -87,6 +89,7 @@ interface MenuItemAddOnsProps {
 
 const MenuItemAddOns = ({
   addOns: initialAddOns,
+  canViewAuditLog,
   canWrite,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
@@ -447,7 +450,7 @@ const MenuItemAddOns = ({
             },
           ]
         : []),
-      ...(canWrite && !isReorderMode
+      ...((canWrite || canViewAuditLog) && !isReorderMode
         ? [
             {
               disableColumnMenu: true,
@@ -461,33 +464,38 @@ const MenuItemAddOns = ({
                   alignItems="center"
                   gap={1}
                 >
-                  <Tooltip
-                    title={tMenus("items.addOns.actions.updateAddOn.title")}
-                  >
-                    <IconButton
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        handleUpdateAddOn(row);
-                      }}
-                      size="small"
+                  {canWrite && (
+                    <Tooltip
+                      title={tMenus("items.addOns.actions.updateAddOn.title")}
                     >
-                      <Edit fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip
-                    title={tMenus("items.addOns.actions.deleteAddOn.title")}
-                  >
-                    <IconButton
-                      color="error"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        handleDeleteAddOn(row);
-                      }}
-                      size="small"
+                      <IconButton
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleUpdateAddOn(row);
+                        }}
+                        size="small"
+                      >
+                        <Edit fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                  {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
+                  {canWrite && (
+                    <Tooltip
+                      title={tMenus("items.addOns.actions.deleteAddOn.title")}
                     >
-                      <Delete fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
+                      <IconButton
+                        color="error"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleDeleteAddOn(row);
+                        }}
+                        size="small"
+                      >
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
                 </Stack>
               ),
               resizable: false,
@@ -527,6 +535,7 @@ const MenuItemAddOns = ({
       },
     ],
     [
+      canViewAuditLog,
       canWrite,
       dateFilterOperators,
       format,

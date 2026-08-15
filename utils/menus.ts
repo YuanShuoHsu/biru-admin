@@ -410,22 +410,10 @@ export const getAdminOrganization = cache(
   },
 );
 
-export const getAdminOrganizationMenu = cache(
-  async (organizationSlug?: string, init?: { headers: { cookie: string } }) => {
-    const organization = await getAdminOrganization(organizationSlug, init);
-    if (!organization) return { organization: null, menu: null };
-
-    const menus = await fetcher<Menu[]>(
-      `/api/organizations/${organization.id}/menus`,
-      init,
-    );
-
-    return { organization, menu: menus[0] };
-  },
-);
-
 export const getResolvedAdminOrganization = cache(
-  async (organizationSlug?: string, init?: { headers: { cookie: string } }) => {
+  async (organizationSlug?: string, cookie?: string) => {
+    const init = cookie ? { headers: { cookie } } : undefined;
+
     const [{ data: rawOrganizations }, { data: session }] = await Promise.all([
       authClient.organization.list({ fetchOptions: init }),
       authClient.getSession({ fetchOptions: init }),
@@ -447,7 +435,7 @@ export const getResolvedAdminOrganizationMenu = cache(
   async (organizationSlug?: string, init?: { headers: { cookie: string } }) => {
     const organization = await getResolvedAdminOrganization(
       organizationSlug,
-      init,
+      init?.headers.cookie,
     );
     if (!organization) return { organization: null, menu: null };
 

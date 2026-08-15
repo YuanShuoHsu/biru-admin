@@ -121,9 +121,6 @@
   "role": {
     "required": "请选择角色。"
   },
-  "searchField": {
-    "required": "请选择搜索字段。"
-  },
   "slug": {
     "letter": "网址识别码必须包含至少一个英文字母。",
     "required": "网址识别码为必填。"

@@ -27,6 +27,7 @@ import {
   getAdminMenuSection,
   getAdminOrganization,
 } from "@/utils/menus";
+import { hasRolePermission } from "@/utils/organizations";
 
 interface MenuItemModifierGroupsPageProps {
   params: Promise<{
@@ -169,10 +170,14 @@ const MenuItemModifierGroupsPage = async ({
   const currentUserId = sessionData.data?.user?.id;
   const members = fullOrgData.data?.members || [];
   const role = members.find(({ userId }) => userId === currentUserId)?.role;
-  const canWrite = role === "owner" || role === "admin";
+  const canWrite = hasRolePermission(role, { menu: ["update"] });
+  const canViewAuditLog = hasRolePermission(role, {
+    auditLog: ["read"],
+  });
 
   return (
     <MenuItemModifierGroups
+      canViewAuditLog={canViewAuditLog}
       canWrite={canWrite}
       filterField={filterField}
       filterOperator={filterOperator}

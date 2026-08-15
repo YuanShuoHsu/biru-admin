@@ -66,6 +66,8 @@ import { getOrderEnumOptions } from "@/utils/enumOptions";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
+import AuditLogButton from "@/components/AuditLogButton";
+
 import OrderDetailDialog from "../OrderDetailDialog";
 import UpdateOrderCustomerDialogContent, {
   UPDATE_ORDER_CUSTOMER_FORM_ID,
@@ -95,6 +97,7 @@ const TRANSITION_SLOTS: OrderTransition["direction"][][] = [
 ];
 
 interface OrdersProps {
+  canViewAuditLog: boolean;
   filterField?: OrderFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
@@ -109,6 +112,7 @@ interface OrdersProps {
 }
 
 const Orders = ({
+  canViewAuditLog,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
@@ -408,6 +412,7 @@ const Orders = ({
                 <Edit fontSize="small" />
               </IconButton>
             </Tooltip>
+            {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
             {hasTransitions &&
               TRANSITION_SLOTS.map((directions) => {
                 const transition = row.availableTransitions.find(
@@ -530,6 +535,7 @@ const Orders = ({
       },
     ],
     [
+      canViewAuditLog,
       dateFilterOperators,
       enumFilterOperators,
       enumOptions,

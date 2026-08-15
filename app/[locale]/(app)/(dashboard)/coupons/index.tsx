@@ -368,63 +368,76 @@ const Coupons = ({
 
   const columns = useMemo<GridColDef[]>(
     () => [
-      {
-        disableColumnMenu: true,
-        field: "actions",
-        filterable: false,
-        headerName: tCoupons("actions.label"),
-        renderCell: ({ row }: GridRenderCellParams<Coupon>) => (
-          <Stack alignItems="center" direction="row" gap={1} height="100%">
-            {canManageCoupon && (
-              <Tooltip title={tCoupons("actions.updateCoupon.title")}>
-                <IconButton
-                  onClick={() => handleUpdateCoupon(row)}
-                  size="small"
+      ...(canManageCoupon || canGrantCoupon
+        ? [
+            {
+              disableColumnMenu: true,
+              field: "actions",
+              filterable: false,
+              headerName: tCoupons("actions.label"),
+              renderCell: ({ row }: GridRenderCellParams<Coupon>) => (
+                <Stack
+                  height="100%"
+                  direction="row"
+                  alignItems="center"
+                  gap={1}
                 >
-                  <Edit fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
-            {canGrantCoupon && (
-              <Tooltip title={tCoupons("actions.grantCoupon.title")}>
-                <StyledIconButton
-                  onClick={() => handleGrantCoupon(row)}
-                  size="small"
-                  visible={
-                    canManageCoupon || isExclusiveTo(row, organization?.id)
-                  }
-                >
-                  <CardGiftcard fontSize="small" />
-                </StyledIconButton>
-              </Tooltip>
-            )}
-            {canManageCoupon && (
-              <Tooltip title={tCoupons("recipients.label")}>
-                <IconButton
-                  component={Link}
-                  href={getHref(`/coupons/${row.id}`, DEFAULT_PAGINATION_QUERY)}
-                  size="small"
-                >
-                  <History fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
-            {canManageCoupon && (
-              <Tooltip title={tCoupons("actions.deleteCoupon.title")}>
-                <IconButton
-                  color="error"
-                  onClick={() => handleDeleteCoupon(row)}
-                  size="small"
-                >
-                  <Delete fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
-          </Stack>
-        ),
-        resizable: false,
-        sortable: false,
-      },
+                  {canManageCoupon && (
+                    <Tooltip title={tCoupons("actions.updateCoupon.title")}>
+                      <IconButton
+                        onClick={() => handleUpdateCoupon(row)}
+                        size="small"
+                      >
+                        <Edit fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                  {canGrantCoupon && (
+                    <Tooltip title={tCoupons("actions.grantCoupon.title")}>
+                      <StyledIconButton
+                        onClick={() => handleGrantCoupon(row)}
+                        size="small"
+                        visible={
+                          canManageCoupon ||
+                          isExclusiveTo(row, organization?.id)
+                        }
+                      >
+                        <CardGiftcard fontSize="small" />
+                      </StyledIconButton>
+                    </Tooltip>
+                  )}
+                  {canManageCoupon && (
+                    <Tooltip title={tCoupons("recipients.label")}>
+                      <IconButton
+                        component={Link}
+                        href={getHref(
+                          `/coupons/${row.id}`,
+                          DEFAULT_PAGINATION_QUERY,
+                        )}
+                        size="small"
+                      >
+                        <History fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                  {canManageCoupon && (
+                    <Tooltip title={tCoupons("actions.deleteCoupon.title")}>
+                      <IconButton
+                        color="error"
+                        onClick={() => handleDeleteCoupon(row)}
+                        size="small"
+                      >
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </Stack>
+              ),
+              resizable: false,
+              sortable: false,
+            },
+          ]
+        : []),
       {
         field: "code",
         filterOperators: stringFilterOperators,

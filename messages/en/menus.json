@@ -349,10 +349,6 @@
     "label": "Menu name",
     "placeholder": "Please enter your menu name"
   },
-  "organization": {
-    "label": "Organization",
-    "placeholder": "Please select your organization"
-  },
   "reorder": "Order",
   "sections": {
     "actions": {

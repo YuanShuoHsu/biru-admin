@@ -36,6 +36,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/audit-logs": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢異動紀錄；帶 resource + resourceId 可取單一資源的歷史 */
+    get: operations["AuditController_findAll"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/users": {
     parameters: {
       query?: never;
@@ -1147,6 +1164,73 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
+    /** @enum {string} */
+    AuditResource:
+      | "menu"
+      | "menuSection"
+      | "menuItem"
+      | "menuItemAddOn"
+      | "modifierGroup"
+      | "modifier"
+      | "menuItemModifierGroup"
+      | "order"
+      | "userCoupon";
+    /** @enum {string} */
+    AuditAction: "create" | "update" | "delete";
+    AuditLogResponseDto: {
+      id: string;
+      /** @description 操作者帳號被刪除後為 null，actorName / actorEmail 仍保留 */
+      actorId?: string | null;
+      actorName: string;
+      actorEmail: string;
+      resource: components["schemas"]["AuditResource"];
+      resourceId: string;
+      action: components["schemas"]["AuditAction"];
+      /** @description 欄位名 → 變更前後值；建立的 before 與刪除的 after 為 null */
+      changes: {
+        [key: string]: {
+          after?: unknown;
+          before?: unknown;
+        };
+      };
+      /** Format: date-time */
+      createdAt: string;
+    };
+    /** @enum {string} */
+    AuditLogFilterField:
+      | "actorName"
+      | "actorEmail"
+      | "resourceId"
+      | "resource"
+      | "action"
+      | "createdAt";
+    /** @enum {string} */
+    FilterOperator:
+      | "contains"
+      | "doesNotContain"
+      | "equals"
+      | "doesNotEqual"
+      | "startsWith"
+      | "endsWith"
+      | "isEmpty"
+      | "isNotEmpty"
+      | "isAnyOf"
+      | "is"
+      | "not"
+      | "after"
+      | "onOrAfter"
+      | "before"
+      | "onOrBefore"
+      | "="
+      | "!="
+      | ">"
+      | ">="
+      | "<"
+      | "<=";
+    /** @enum {string} */
+    AuditLogSortField: "actorName" | "resource" | "action" | "createdAt";
+    /** @enum {string} */
+    SortDirection: "asc" | "desc";
     /**
      * @description 角色
      * @enum {string}
@@ -1285,8 +1369,6 @@ export interface components {
       | "banned"
       | "emailSubscribed"
       | "createdAt";
-    /** @enum {string} */
-    SortDirection: "asc" | "desc";
     UpdateUserDto: {
       /**
        * Format: date
@@ -1347,29 +1429,6 @@ export interface components {
     };
     /** @enum {string} */
     BannerFilterField: "isActive" | "createdAt" | "updatedAt";
-    /** @enum {string} */
-    FilterOperator:
-      | "contains"
-      | "doesNotContain"
-      | "equals"
-      | "doesNotEqual"
-      | "startsWith"
-      | "endsWith"
-      | "isEmpty"
-      | "isNotEmpty"
-      | "isAnyOf"
-      | "is"
-      | "not"
-      | "after"
-      | "onOrAfter"
-      | "before"
-      | "onOrBefore"
-      | "="
-      | "!="
-      | ">"
-      | ">="
-      | "<"
-      | "<=";
     /** @enum {string} */
     BannerSortField: "isActive" | "createdAt" | "updatedAt";
     ReorderBannersDto: {
@@ -3269,6 +3328,45 @@ export interface operations {
         content: {
           "application/json": string;
         };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AuditController_findAll: {
+    parameters: {
+      query?: {
+        resource?: components["schemas"]["AuditResource"];
+        resourceId?: string;
+        filterField?: components["schemas"]["AuditLogFilterField"];
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortBy?: components["schemas"]["AuditLogSortField"];
+        sortDirection?: components["schemas"]["SortDirection"];
+        limit?: number;
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+      };
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
       /** @description Internal server error */
       500: {
@@ -6032,6 +6130,63 @@ export const pathsApiMenuSectionsSectionIdMenuItemsGetParametersQuerySearchOpera
 export const pathsApiOrganizationsOrganizationIdOrderMenuGetParametersQueryLangValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/organizations/{organizationId}/order-menu"]["get"]["parameters"]["query"]["lang"]
 > = ["en", "ja", "ko", "zh-CN", "zh-TW"];
+export const auditResourceValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["AuditResource"]
+> = [
+  "menu",
+  "menuSection",
+  "menuItem",
+  "menuItemAddOn",
+  "modifierGroup",
+  "modifier",
+  "menuItemModifierGroup",
+  "order",
+  "userCoupon",
+];
+export const auditActionValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["AuditAction"]
+> = ["create", "update", "delete"];
+export const auditLogFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["AuditLogFilterField"]
+> = [
+  "actorName",
+  "actorEmail",
+  "resourceId",
+  "resource",
+  "action",
+  "createdAt",
+];
+export const filterOperatorValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["FilterOperator"]
+> = [
+  "contains",
+  "doesNotContain",
+  "equals",
+  "doesNotEqual",
+  "startsWith",
+  "endsWith",
+  "isEmpty",
+  "isNotEmpty",
+  "isAnyOf",
+  "is",
+  "not",
+  "after",
+  "onOrAfter",
+  "before",
+  "onOrBefore",
+  "=",
+  "!=",
+  ">",
+  ">=",
+  "<",
+  "<=",
+];
+export const auditLogSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["AuditLogSortField"]
+> = ["actorName", "resource", "action", "createdAt"];
+export const sortDirectionValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["SortDirection"]
+> = ["asc", "desc"];
 export const userRoleValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UserRole"]
 > = ["admin", "user"];
@@ -6069,40 +6224,12 @@ export const userSearchOperatorValues: ReadonlyArray<
 export const userSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UserSortField"]
 > = ["name", "email", "role", "banned", "emailSubscribed", "createdAt"];
-export const sortDirectionValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["SortDirection"]
-> = ["asc", "desc"];
 export const updateUserDtoGenderValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UpdateUserDto"]["gender"]
 > = ["female", "male", "other"];
 export const bannerFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["BannerFilterField"]
 > = ["isActive", "createdAt", "updatedAt"];
-export const filterOperatorValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["FilterOperator"]
-> = [
-  "contains",
-  "doesNotContain",
-  "equals",
-  "doesNotEqual",
-  "startsWith",
-  "endsWith",
-  "isEmpty",
-  "isNotEmpty",
-  "isAnyOf",
-  "is",
-  "not",
-  "after",
-  "onOrAfter",
-  "before",
-  "onOrBefore",
-  "=",
-  "!=",
-  ">",
-  ">=",
-  "<",
-  "<=",
-];
 export const bannerSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["BannerSortField"]
 > = ["isActive", "createdAt", "updatedAt"];

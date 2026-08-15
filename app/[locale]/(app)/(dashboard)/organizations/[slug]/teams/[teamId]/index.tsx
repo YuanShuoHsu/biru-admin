@@ -186,32 +186,32 @@ const OrganizationsSlugTeamsTeamId = ({
 
   const columns = useMemo<GridColDef[]>(
     () => [
-      {
-        disableColumnMenu: true,
-        field: "actions",
-        filterable: false,
-        headerName: tTeams("actions.label"),
-        renderCell: ({ row }: GridRenderCellParams<TeamMemberRow>) => (
-          <>
-            {canUpdateTeam && (
-              <Tooltip title={tMembers("actions.removeTeamMember.title")}>
-                <IconButton
-                  color="error"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    handleRemoveTeamMember(row.userId);
-                  }}
-                  size="small"
-                >
-                  <PersonRemove fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
-          </>
-        ),
-        resizable: false,
-        sortable: false,
-      },
+      ...(canUpdateTeam
+        ? [
+            {
+              disableColumnMenu: true,
+              field: "actions",
+              filterable: false,
+              headerName: tTeams("actions.label"),
+              renderCell: ({ row }: GridRenderCellParams<TeamMemberRow>) => (
+                <Tooltip title={tMembers("actions.removeTeamMember.title")}>
+                  <IconButton
+                    color="error"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      handleRemoveTeamMember(row.userId);
+                    }}
+                    size="small"
+                  >
+                    <PersonRemove fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              ),
+              resizable: false,
+              sortable: false,
+            },
+          ]
+        : []),
       {
         field: "avatar",
         headerName: tMembers("avatar"),

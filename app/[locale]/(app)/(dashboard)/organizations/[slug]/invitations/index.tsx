@@ -145,32 +145,32 @@ const OrganizationsSlugInvitations = ({
 
   const columns = useMemo<GridColDef[]>(
     () => [
-      {
-        disableColumnMenu: true,
-        field: "actions",
-        filterable: false,
-        headerName: tInvitations("actions.label"),
-        renderCell: ({ row }: GridRenderCellParams<Invitation>) => (
-          <>
-            {canCancelInvitation && (
-              <Tooltip title={tInvitations("actions.cancelInvitation.title")}>
-                <IconButton
-                  color="error"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    handleCancelInvitation(row);
-                  }}
-                  size="small"
-                >
-                  <Delete fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
-          </>
-        ),
-        resizable: false,
-        sortable: false,
-      },
+      ...(canCancelInvitation
+        ? [
+            {
+              disableColumnMenu: true,
+              field: "actions",
+              filterable: false,
+              headerName: tInvitations("actions.label"),
+              renderCell: ({ row }: GridRenderCellParams<Invitation>) => (
+                <Tooltip title={tInvitations("actions.cancelInvitation.title")}>
+                  <IconButton
+                    color="error"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      handleCancelInvitation(row);
+                    }}
+                    size="small"
+                  >
+                    <Delete fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              ),
+              resizable: false,
+              sortable: false,
+            },
+          ]
+        : []),
       {
         field: "email",
         headerName: tInvitations("email"),

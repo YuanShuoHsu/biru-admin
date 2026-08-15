@@ -1,6 +1,8 @@
 import type { useTranslations } from "next-intl";
 
 import {
+  auditActionValues,
+  auditResourceValues,
   couponIssueTriggerValues,
   couponScopeValues,
   itemAvailabilityValues,
@@ -12,6 +14,22 @@ import {
   userRoleValues,
 } from "@/types/api";
 import type { OrganizationResponse } from "@/types/organizations";
+
+export const getAuditLogEnumOptions = (
+  tAudit: ReturnType<typeof useTranslations<"audit">>,
+  hasResourceColumn = false,
+) => ({
+  action: auditActionValues.map((value) => ({
+    label: tAudit(`action.${value}`),
+    value,
+  })),
+  resource: hasResourceColumn
+    ? auditResourceValues.map((value) => ({
+        label: tAudit(`resource.${value}`),
+        value,
+      }))
+    : [],
+});
 
 export const getAdminEnumOptions = (
   tAdmins: ReturnType<typeof useTranslations<"admins">>,

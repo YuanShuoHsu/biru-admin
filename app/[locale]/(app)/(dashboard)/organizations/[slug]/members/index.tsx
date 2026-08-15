@@ -325,69 +325,85 @@ const OrganizationsSlugMembers = ({
 
   const columns = useMemo<GridColDef[]>(
     () => [
-      {
-        disableColumnMenu: true,
-        field: "actions",
-        filterable: false,
-        headerName: tMembers("actions.label"),
-        renderCell: ({ row }: GridRenderCellParams<Member>) => {
-          const { canUpdateMemberRole, canRemoveMember, canLeaveOrganization } =
-            getMemberPermissions(row);
+      ...(canUpdateMemberRoles || canRemoveMembers || canLeaveOrganizations
+        ? [
+            {
+              disableColumnMenu: true,
+              field: "actions",
+              filterable: false,
+              headerName: tMembers("actions.label"),
+              renderCell: ({ row }: GridRenderCellParams<Member>) => {
+                const {
+                  canUpdateMemberRole,
+                  canRemoveMember,
+                  canLeaveOrganization,
+                } = getMemberPermissions(row);
 
-          return (
-            <Stack height="100%" direction="row" alignItems="center" gap={0.5}>
-              {canUpdateMemberRoles && (
-                <Tooltip title={tMembers("actions.updateMemberRole.title")}>
-                  <StyledIconButton
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      handleUpdateMemberRole(row);
-                    }}
-                    size="small"
-                    visible={canUpdateMemberRole}
+                return (
+                  <Stack
+                    height="100%"
+                    direction="row"
+                    alignItems="center"
+                    gap={0.5}
                   >
-                    <Edit fontSize="small" />
-                  </StyledIconButton>
-                </Tooltip>
-              )}
-              {canRemoveMembers && (
-                <Tooltip title={tMembers("actions.removeMember.title")}>
-                  <StyledIconButton
-                    color="error"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      handleRemoveMember(row);
-                    }}
-                    size="small"
-                    visible={canRemoveMember}
-                  >
-                    <PersonRemove fontSize="small" />
-                  </StyledIconButton>
-                </Tooltip>
-              )}
-              {canLeaveOrganizations && (
-                <Tooltip
-                  title={tOrganizations("actions.leaveOrganization.title")}
-                >
-                  <StyledIconButton
-                    color="error"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      handleLeaveOrganization();
-                    }}
-                    size="small"
-                    visible={canLeaveOrganization}
-                  >
-                    <ExitToApp fontSize="small" />
-                  </StyledIconButton>
-                </Tooltip>
-              )}
-            </Stack>
-          );
-        },
-        resizable: false,
-        sortable: false,
-      },
+                    {canUpdateMemberRoles && (
+                      <Tooltip
+                        title={tMembers("actions.updateMemberRole.title")}
+                      >
+                        <StyledIconButton
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleUpdateMemberRole(row);
+                          }}
+                          size="small"
+                          visible={canUpdateMemberRole}
+                        >
+                          <Edit fontSize="small" />
+                        </StyledIconButton>
+                      </Tooltip>
+                    )}
+                    {canRemoveMembers && (
+                      <Tooltip title={tMembers("actions.removeMember.title")}>
+                        <StyledIconButton
+                          color="error"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleRemoveMember(row);
+                          }}
+                          size="small"
+                          visible={canRemoveMember}
+                        >
+                          <PersonRemove fontSize="small" />
+                        </StyledIconButton>
+                      </Tooltip>
+                    )}
+                    {canLeaveOrganizations && (
+                      <Tooltip
+                        title={tOrganizations(
+                          "actions.leaveOrganization.title",
+                        )}
+                      >
+                        <StyledIconButton
+                          color="error"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleLeaveOrganization();
+                          }}
+                          size="small"
+                          visible={canLeaveOrganization}
+                        >
+                          <ExitToApp fontSize="small" />
+                        </StyledIconButton>
+                      </Tooltip>
+                    )}
+                  </Stack>
+                );
+              },
+              resizable: false,
+              sortable: false,
+            },
+          ]
+        : []),
       {
         field: "avatar",
         headerName: tMembers("avatar"),

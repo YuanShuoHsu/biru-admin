@@ -34,9 +34,6 @@ interface AdminsPageProps {
     filterValue?: string;
     quickFilterEnums?: string | string[];
     quickFilterValue?: string;
-    searchField?: string;
-    searchOperator?: string;
-    searchValue?: string;
     sortBy?: string;
     sortDirection?: string;
   }>;

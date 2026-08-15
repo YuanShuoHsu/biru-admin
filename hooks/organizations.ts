@@ -32,6 +32,23 @@ export const useDefaultOrganization = () => {
   return defaultOrganizationSlug;
 };
 
+export const useActiveMemberRole = () => {
+  const organizationSlug = useDefaultOrganization();
+
+  const { data: role } = useSWR(
+    organizationSlug ? [swrKeys.activeMemberRole, organizationSlug] : null,
+    async ([, slug]: [string, string]) => {
+      const { data } = await authClient.organization.getActiveMemberRole({
+        query: { organizationSlug: slug },
+      });
+
+      return data?.role ?? null;
+    },
+  );
+
+  return role ?? undefined;
+};
+
 export const useOrganization = () => {
   const { organizationSlug } = useParams<RouteParams>();
 

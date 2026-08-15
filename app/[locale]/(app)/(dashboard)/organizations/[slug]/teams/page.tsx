@@ -9,6 +9,8 @@ import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
+import { hasRolePermission } from "@/utils/organizations";
+
 interface OrganizationsSlugTeamsPageProps {
   params: Promise<{ locale: Locale; slug: string }>;
 }
@@ -55,22 +57,15 @@ const OrganizationsSlugTeamsPage = async ({
     ({ userId }) => userId === session?.user?.id,
   )?.role;
 
-  const { canCreateTeam, canDeleteTeam, canUpdateTeam } = currentUserRole
-    ? {
-        canCreateTeam: authClient.organization.checkRolePermission({
-          role: currentUserRole,
-          permissions: { team: ["create"] },
-        }),
-        canDeleteTeam: authClient.organization.checkRolePermission({
-          role: currentUserRole,
-          permissions: { team: ["delete"] },
-        }),
-        canUpdateTeam: authClient.organization.checkRolePermission({
-          role: currentUserRole,
-          permissions: { team: ["update"] },
-        }),
-      }
-    : { canCreateTeam: false, canDeleteTeam: false, canUpdateTeam: false };
+  const canCreateTeam = hasRolePermission(currentUserRole, {
+    team: ["create"],
+  });
+  const canDeleteTeam = hasRolePermission(currentUserRole, {
+    team: ["delete"],
+  });
+  const canUpdateTeam = hasRolePermission(currentUserRole, {
+    team: ["update"],
+  });
 
   return (
     <OrganizationsSlugTeams

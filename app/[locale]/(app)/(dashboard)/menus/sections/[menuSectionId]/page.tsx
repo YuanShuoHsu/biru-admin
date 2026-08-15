@@ -29,6 +29,7 @@ import {
   getAdminMenuSectionItems,
   getAdminOrganization,
 } from "@/utils/menus";
+import { hasRolePermission } from "@/utils/organizations";
 
 interface MenusMenuIdSectionIdPageProps {
   params: Promise<{ locale: Locale; menuSectionId: string }>;
@@ -177,10 +178,14 @@ const MenusMenuIdSectionIdPage = async ({
   const currentUserId = sessionData.data?.user?.id;
   const members = fullOrgData.data?.members || [];
   const role = members.find(({ userId }) => userId === currentUserId)?.role;
-  const canWrite = role === "owner" || role === "admin";
+  const canWrite = hasRolePermission(role, { menu: ["update"] });
+  const canViewAuditLog = hasRolePermission(role, {
+    auditLog: ["read"],
+  });
 
   return (
     <MenusMenuIdSectionId
+      canViewAuditLog={canViewAuditLog}
       canWrite={canWrite}
       filterField={filterField}
       filterOperator={filterOperator}

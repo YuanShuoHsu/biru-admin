@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 
-import MenusOrganizationSelect from "@/components/MenusOrganizationSelect";
+import OrganizationSelect from "@/components/OrganizationSelect";
 
 import { authClient } from "@/lib/auth-client";
 
@@ -31,7 +31,7 @@ const ToolbarCouponsPage = async ({
   if (session?.user?.role === "admin") return null;
 
   return (
-    <MenusOrganizationSelect
+    <OrganizationSelect
       organizations={organizations || []}
       organizationSlug={organization}
     />

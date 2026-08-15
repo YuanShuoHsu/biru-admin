@@ -10,6 +10,7 @@ import useSWR from "swr";
 import CreateModifierDialog from "./CreateModifierDialog";
 import UpdateModifierDialog from "./UpdateModifierDialog";
 
+import AuditLogButton from "@/components/AuditLogButton";
 import { DragHandle, Sortable } from "@/components/Sortable";
 
 import {
@@ -78,6 +79,7 @@ const DataGrid = dynamic(
 );
 
 interface ModifiersProps {
+  canViewAuditLog: boolean;
   canWrite: boolean;
   filterField?: ModifierFilterField;
   filterOperator?: FilterOperator;
@@ -93,6 +95,7 @@ interface ModifiersProps {
 }
 
 const Modifiers = ({
+  canViewAuditLog,
   canWrite,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
@@ -437,47 +440,61 @@ const Modifiers = ({
             },
           ]
         : []),
-      {
-        disableColumnMenu: true,
-        field: "actions",
-        filterable: false,
-        headerName: tMenus("modifiers.actions.label"),
-        renderCell: ({ row }: GridRenderCellParams<Modifier>) => (
-          <Stack height="100%" direction="row" alignItems="center" gap={1}>
-            {canWrite && (
-              <Tooltip title={tMenus("modifiers.actions.updateModifier.title")}>
-                <IconButton
-                  onClick={(event) => {
-                    event.stopPropagation();
-
-                    handleUpdateModifier(row);
-                  }}
-                  size="small"
+      ...((canWrite || canViewAuditLog) && !isReorderMode
+        ? [
+            {
+              disableColumnMenu: true,
+              field: "actions",
+              filterable: false,
+              headerName: tMenus("modifiers.actions.label"),
+              renderCell: ({ row }: GridRenderCellParams<Modifier>) => (
+                <Stack
+                  height="100%"
+                  direction="row"
+                  alignItems="center"
+                  gap={1}
                 >
-                  <Edit fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
-            {canWrite && (
-              <Tooltip title={tMenus("modifiers.actions.deleteModifier.title")}>
-                <IconButton
-                  color="error"
-                  onClick={(event) => {
-                    event.stopPropagation();
+                  {canWrite && (
+                    <Tooltip
+                      title={tMenus("modifiers.actions.updateModifier.title")}
+                    >
+                      <IconButton
+                        onClick={(event) => {
+                          event.stopPropagation();
 
-                    handleDeleteModifier(row);
-                  }}
-                  size="small"
-                >
-                  <Delete fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
-          </Stack>
-        ),
-        resizable: false,
-        sortable: false,
-      },
+                          handleUpdateModifier(row);
+                        }}
+                        size="small"
+                      >
+                        <Edit fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                  {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
+                  {canWrite && (
+                    <Tooltip
+                      title={tMenus("modifiers.actions.deleteModifier.title")}
+                    >
+                      <IconButton
+                        color="error"
+                        onClick={(event) => {
+                          event.stopPropagation();
+
+                          handleDeleteModifier(row);
+                        }}
+                        size="small"
+                      >
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </Stack>
+              ),
+              resizable: false,
+              sortable: false,
+            },
+          ]
+        : []),
       {
         field: "displayName",
         filterOperators: stringFilterOperators,
@@ -551,6 +568,7 @@ const Modifiers = ({
       },
     ],
     [
+      canViewAuditLog,
       canWrite,
       dateFilterOperators,
       enumFilterOperators,

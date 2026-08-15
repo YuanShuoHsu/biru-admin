@@ -23,10 +23,7 @@ import { getCoupons } from "@/utils/coupons";
 import { getQuickFilterEnums } from "@/utils/dataGrid";
 import { getCouponEnumOptions } from "@/utils/enumOptions";
 import { getResolvedAdminOrganization } from "@/utils/menus";
-import {
-  canGrantOrganizationCoupon,
-  getOrganizations,
-} from "@/utils/organizations";
+import { getOrganizations, hasRolePermission } from "@/utils/organizations";
 
 interface CouponsPageProps {
   params: Promise<{ locale: Locale }>;
@@ -105,7 +102,7 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
 
   const selectedOrganization = isAdmin
     ? undefined
-    : await getResolvedAdminOrganization(organization, fetchOptions);
+    : await getResolvedAdminOrganization(organization, cookieStore.toString());
 
   if (
     rawQuickFilterEnums !== undefined ||
@@ -143,12 +140,15 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
     redirect({ href: `/coupons?${params.toString()}`, locale });
   }
 
-  const canGrantCoupon = isAdmin
-    ? true
-    : await canGrantOrganizationCoupon(
-        selectedOrganization?.id,
-        authFetchOptions,
-      );
+  const { data: memberRole } = selectedOrganization
+    ? await authClient.organization.getActiveMemberRole({
+        query: { organizationId: selectedOrganization.id },
+        fetchOptions,
+      })
+    : { data: undefined };
+
+  const canGrantCoupon =
+    isAdmin || hasRolePermission(memberRole?.role, { coupon: ["create"] });
 
   const organizationsPromise = isAdmin
     ? getOrganizations(fetchOptions)

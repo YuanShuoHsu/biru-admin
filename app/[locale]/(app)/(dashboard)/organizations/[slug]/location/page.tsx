@@ -9,6 +9,8 @@ import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
+import { hasRolePermission } from "@/utils/organizations";
+
 interface OrganizationsSlugLocationPageProps {
   params: Promise<{ locale: Locale; slug: string }>;
 }
@@ -53,12 +55,9 @@ const OrganizationsSlugLocationPage = async ({
     ({ userId }) => userId === session?.user?.id,
   )?.role;
 
-  const canUpdateLocation = currentUserRole
-    ? authClient.organization.checkRolePermission({
-        role: currentUserRole,
-        permissions: { organization: ["update"] },
-      })
-    : false;
+  const canUpdateLocation = hasRolePermission(currentUserRole, {
+    organization: ["update"],
+  });
 
   return (
     <OrganizationsSlugLocation

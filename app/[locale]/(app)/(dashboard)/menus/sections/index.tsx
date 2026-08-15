@@ -10,6 +10,7 @@ import useSWR from "swr";
 import CreateMenuSectionDialog from "./CreateMenuSectionDialog";
 import UpdateMenuSectionDialog from "./UpdateMenuSectionDialog";
 
+import AuditLogButton from "@/components/AuditLogButton";
 import { DragHandle, Sortable } from "@/components/Sortable";
 
 import {
@@ -82,6 +83,7 @@ const DataGrid = dynamic(
 );
 
 interface MenuDetailProps {
+  canViewAuditLog: boolean;
   canWrite: boolean;
   filterField?: MenuSectionFilterField;
   filterOperator?: FilterOperator;
@@ -97,6 +99,7 @@ interface MenuDetailProps {
 }
 
 const MenusMenuId = ({
+  canViewAuditLog,
   canWrite,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
@@ -475,6 +478,7 @@ const MenusMenuId = ({
                 </IconButton>
               </Tooltip>
             )}
+            {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
             {canWrite && (
               <Tooltip title={tMenus("sections.actions.deleteSection.title")}>
                 <IconButton
@@ -525,12 +529,13 @@ const MenusMenuId = ({
       },
     ],
     [
+      canViewAuditLog,
       canWrite,
       dateFilterOperators,
       format,
       handleDeleteSection,
-      handleViewSection,
       handleUpdateSection,
+      handleViewSection,
       isReorderMode,
       locale,
       stringFilterOperators,

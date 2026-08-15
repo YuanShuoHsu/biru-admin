@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
 
 import MenusSections from ".";
 
@@ -23,6 +24,7 @@ import {
   getAdminMenuSections,
   getResolvedAdminOrganizationMenu,
 } from "@/utils/menus";
+import { hasRolePermission } from "@/utils/organizations";
 
 import MenusTabsLayout from "../MenusTabsLayout";
 
@@ -95,8 +97,7 @@ const MenusSectionsPage = async ({
   const { organization: selectedOrganization, menu } =
     await getResolvedAdminOrganizationMenu(organization, fetchOptions);
 
-  if (!selectedOrganization || !menu)
-    return <MenusTabsLayout>{null}</MenusTabsLayout>;
+  if (!selectedOrganization || !menu) notFound();
 
   if (
     organization !== selectedOrganization.slug ||
@@ -156,11 +157,19 @@ const MenusSectionsPage = async ({
   const currentUserId = sessionData.data?.user?.id;
   const members = fullOrgData.data?.members || [];
   const role = members.find(({ userId }) => userId === currentUserId)?.role;
-  const canWrite = role === "owner" || role === "admin";
+  const canWrite = hasRolePermission(role, { menu: ["update"] });
+  const canViewAuditLog = hasRolePermission(role, {
+    auditLog: ["read"],
+  });
 
   return (
-    <MenusTabsLayout canWrite={canWrite} menu={menu}>
+    <MenusTabsLayout
+      canViewAuditLog={canViewAuditLog}
+      canWrite={canWrite}
+      menu={menu}
+    >
       <MenusSections
+        canViewAuditLog={canViewAuditLog}
         canWrite={canWrite}
         filterField={filterField}
         filterOperator={filterOperator}

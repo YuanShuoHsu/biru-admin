@@ -12,6 +12,7 @@ import CreateMenuItemDialog from "./CreateMenuItemDialog";
 import UpdateMenuItemDialog from "./UpdateMenuItemDialog";
 
 import FlagImage from "@/components/FlagImage";
+import AuditLogButton from "@/components/AuditLogButton";
 import { DragHandle, Sortable } from "@/components/Sortable";
 
 import {
@@ -102,6 +103,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
 }));
 
 interface MenusMenuIdSectionIdProps {
+  canViewAuditLog: boolean;
   canWrite: boolean;
   filterField?: MenuItemFilterField;
   filterOperator?: FilterOperator;
@@ -117,6 +119,7 @@ interface MenusMenuIdSectionIdProps {
 }
 
 const MenusMenuIdSectionId = ({
+  canViewAuditLog,
   canWrite,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
@@ -475,7 +478,7 @@ const MenusMenuIdSectionId = ({
             },
           ]
         : []),
-      ...(canWrite
+      ...((canWrite || canViewAuditLog) && !isReorderMode
         ? [
             {
               disableColumnMenu: true,
@@ -501,31 +504,36 @@ const MenusMenuIdSectionId = ({
                       <Extension fontSize="small" />
                     </IconButton>
                   </Tooltip>
-                  <Tooltip title={tMenus("items.actions.updateItem.title")}>
-                    <IconButton
-                      onClick={(event) => {
-                        event.stopPropagation();
+                  {canWrite && (
+                    <Tooltip title={tMenus("items.actions.updateItem.title")}>
+                      <IconButton
+                        onClick={(event) => {
+                          event.stopPropagation();
 
-                        handleUpdateItem(row);
-                      }}
-                      size="small"
-                    >
-                      <Edit fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title={tMenus("items.actions.deleteItem.title")}>
-                    <IconButton
-                      color="error"
-                      onClick={(event) => {
-                        event.stopPropagation();
+                          handleUpdateItem(row);
+                        }}
+                        size="small"
+                      >
+                        <Edit fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                  {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
+                  {canWrite && (
+                    <Tooltip title={tMenus("items.actions.deleteItem.title")}>
+                      <IconButton
+                        color="error"
+                        onClick={(event) => {
+                          event.stopPropagation();
 
-                        handleDeleteItem(row);
-                      }}
-                      size="small"
-                    >
-                      <Delete fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
+                          handleDeleteItem(row);
+                        }}
+                        size="small"
+                      >
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
                 </Stack>
               ),
               resizable: false,
@@ -694,6 +702,7 @@ const MenusMenuIdSectionId = ({
       },
     ],
     [
+      canViewAuditLog,
       canWrite,
       dateFilterOperators,
       enumFilterOperators,

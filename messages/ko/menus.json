@@ -349,10 +349,6 @@
     "label": "메뉴 이름",
     "placeholder": "메뉴 이름을 입력해 주세요"
   },
-  "organization": {
-    "label": "조직",
-    "placeholder": "조직을 선택해 주세요"
-  },
   "reorder": "순서",
   "sections": {
     "actions": {

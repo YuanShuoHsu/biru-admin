@@ -11,6 +11,8 @@ import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
+import { hasRolePermission } from "@/utils/organizations";
+
 interface OrganizationsSlugMembersPageProps {
   params: Promise<{ locale: Locale; slug: string }>;
 }
@@ -60,17 +62,14 @@ const OrganizationsSlugMembersPage = async ({
   if (!currentUserRole) notFound();
 
   const { canCreateInvitation, canDeleteMember, canUpdateMember } = {
-    canCreateInvitation: authClient.organization.checkRolePermission({
-      role: currentUserRole,
-      permissions: { invitation: ["create"] },
+    canCreateInvitation: hasRolePermission(currentUserRole, {
+      invitation: ["create"],
     }),
-    canDeleteMember: authClient.organization.checkRolePermission({
-      role: currentUserRole,
-      permissions: { member: ["delete"] },
+    canDeleteMember: hasRolePermission(currentUserRole, {
+      member: ["delete"],
     }),
-    canUpdateMember: authClient.organization.checkRolePermission({
-      role: currentUserRole,
-      permissions: { member: ["update"] },
+    canUpdateMember: hasRolePermission(currentUserRole, {
+      member: ["update"],
     }),
   };
 

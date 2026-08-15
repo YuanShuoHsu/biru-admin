@@ -9,6 +9,8 @@ import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
+import { hasRolePermission } from "@/utils/organizations";
+
 import { buildTeamMembers } from "@/utils/teams";
 
 interface OrganizationsSlugTeamsTeamIdPageProps {
@@ -73,12 +75,9 @@ const OrganizationsSlugTeamsTeamIdPage = async ({
     ({ userId }) => userId === session.user.id,
   )?.role;
 
-  const canUpdateTeam = currentUserRole
-    ? authClient.organization.checkRolePermission({
-        role: currentUserRole,
-        permissions: { team: ["update"] },
-      })
-    : false;
+  const canUpdateTeam = hasRolePermission(currentUserRole, {
+    team: ["update"],
+  });
 
   return (
     <OrganizationsSlugTeamsTeamId
