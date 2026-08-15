@@ -99,7 +99,18 @@ For each changed file, read both versions and decide:
 
 When unsure whether a difference is intentional, read the biru file first before deciding.
 
+## Code Comments
+
+**Write a comment only when its absence would cause a mistake** — it states a consequence or precondition that lives outside the code:
+
+- `// 店家角色尚未選到店家時不打 API，否則會落到平台管理員專用端點` (would 403)
+- `// palette 色位名不能含小寫 "mode"，否則 MUI 產不出 CSS 變數` (framework trap)
+
+Not: restating the next line, conclusions from the chat, or defending your own tradeoffs. Don't hardcode identifiers into comments — they rot into misinformation after a rename.
+
 ## Behavioral Guidelines
+
+Vendored from <https://github.com/multica-ai/andrej-karpathy-skills/blob/main/CLAUDE.md> (headings demoted one level). Don't add rules here — put project rules in the sections above, so this stays diffable against upstream.
 
 Behavioral guidelines to reduce common LLM coding mistakes.
 
