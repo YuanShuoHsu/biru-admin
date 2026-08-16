@@ -5,8 +5,6 @@ import { useTranslations } from "next-intl";
 import { useLogoutNavItem } from "@/hooks/useAuth";
 import { useRoutes } from "@/hooks/useRoutes";
 
-import { useRouter } from "@/i18n/navigation";
-
 import { PersonAdd } from "@mui/icons-material";
 import { Divider } from "@mui/material";
 
@@ -30,14 +28,12 @@ export const useAccountNavItems = (): NavItem[] => {
 
 export const useAddAccountNavItem = (): NavItem => {
   const tAuth = useTranslations("auth");
-  const router = useRouter();
 
   const navItem = useRoutes();
-  const { to } = navItem("/auth/sign-in");
 
   return {
+    ...navItem("/auth/sign-in"),
     icon: PersonAdd,
     label: tAuth("addAccount.label"),
-    onClick: () => to && router.push(to),
   };
 };
