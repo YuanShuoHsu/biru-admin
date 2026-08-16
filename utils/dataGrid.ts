@@ -1,5 +1,9 @@
 import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
-import { DEFAULT_PAGE_SIZE } from "@/constants/pagination";
+import {
+  DEFAULT_PAGE,
+  DEFAULT_PAGE_SIZE,
+  MAX_PAGE_SIZE,
+} from "@/constants/pagination";
 
 import { sortDirectionValues } from "@/types/api";
 
@@ -80,6 +84,17 @@ interface GridSearchParams {
   sortDirection?: string;
 }
 
+const toBoundedInt = (
+  raw: string | undefined,
+  fallback: number,
+  max = Infinity,
+) => {
+  const value = Math.floor(Number(raw));
+  if (!Number.isSafeInteger(value) || value < 1) return fallback;
+
+  return Math.min(value, max);
+};
+
 interface ResolveGridSearchParamsOptions<
   SortField extends string,
   FilterField extends string,
@@ -117,8 +132,8 @@ export const resolveGridSearchParams = <
     ...restSearchParams
   } = searchParams;
 
-  const page = Math.max(1, Number(rawPage) || 1);
-  const pageSize = Math.max(1, Number(rawPageSize) || DEFAULT_PAGE_SIZE);
+  const page = toBoundedInt(rawPage, DEFAULT_PAGE);
+  const pageSize = toBoundedInt(rawPageSize, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE);
 
   const sortBy = sortFields.find((field) => field === rawSortBy);
   const sortDirection = sortDirectionValues.find(
