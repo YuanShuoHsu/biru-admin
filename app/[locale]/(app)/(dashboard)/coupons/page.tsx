@@ -100,9 +100,12 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
 
   const isAdmin = session?.user?.role === "admin";
 
-  const selectedOrganization = isAdmin
-    ? undefined
-    : await getResolvedAdminOrganization(organization, cookieStore.toString());
+  const memberOrganization = await getResolvedAdminOrganization(
+    organization,
+    cookieStore.toString(),
+  );
+
+  const selectedOrganization = isAdmin ? undefined : memberOrganization;
 
   if (
     rawQuickFilterEnums !== undefined ||
@@ -140,15 +143,19 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
     redirect({ href: `/coupons?${params.toString()}`, locale });
   }
 
-  const { data: memberRole } = selectedOrganization
+  const { data: memberRole } = memberOrganization
     ? await authClient.organization.getActiveMemberRole({
-        query: { organizationId: selectedOrganization.id },
+        query: { organizationId: memberOrganization.id },
         fetchOptions,
       })
     : { data: undefined };
 
   const canGrantCoupon =
     isAdmin || hasRolePermission(memberRole?.role, { coupon: ["create"] });
+
+  const canViewAuditLog = hasRolePermission(memberRole?.role, {
+    auditLog: ["read"],
+  });
 
   const organizationsPromise = isAdmin
     ? getOrganizations(fetchOptions)
@@ -190,6 +197,7 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
     <Coupons
       canGrantCoupon={canGrantCoupon}
       canManageCoupon={isAdmin}
+      canViewAuditLog={canViewAuditLog}
       coupons={coupons}
       filterField={filterField}
       filterOperator={filterOperator}

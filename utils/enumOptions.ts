@@ -17,7 +17,7 @@ import type { OrganizationResponse } from "@/types/organizations";
 
 export const getAuditLogEnumOptions = (
   tAudit: ReturnType<typeof useTranslations<"audit">>,
-  hasResourceColumn = false,
+  hasResourceColumn: boolean,
 ) => ({
   action: auditActionValues.map((value) => ({
     label: tAudit(`action.${value}`),

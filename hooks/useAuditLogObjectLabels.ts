@@ -5,6 +5,21 @@ const QUANTITATIVE_KEYS = ["unitText", "value"] as const;
 
 const CUSTOMER_KEYS = ["email", "name", "remark", "telephone"] as const;
 
+const NUTRITION_KEYS = [
+  "calories",
+  "carbohydrateContent",
+  "cholesterolContent",
+  "fatContent",
+  "fiberContent",
+  "proteinContent",
+  "saturatedFatContent",
+  "servingSize",
+  "sodiumContent",
+  "sugarContent",
+  "transFatContent",
+  "unsaturatedFatContent",
+] as const;
+
 export const useAuditLogObjectLabels = () => {
   const tAudit = useTranslations("audit");
   const tMenus = useTranslations("menus");
@@ -29,6 +44,9 @@ export const useAuditLogObjectLabels = () => {
           key,
           tMenus(`items.offers.inventoryLevel.${key}.label`),
         ]),
+      ),
+      nutrition: Object.fromEntries(
+        NUTRITION_KEYS.map((key) => [key, tAudit(`nutrition.${key}`)]),
       ),
       priceSpecification: {
         price: tMenus("items.offers.priceSpecification.price.label"),

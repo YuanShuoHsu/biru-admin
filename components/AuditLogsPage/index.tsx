@@ -40,6 +40,7 @@ export interface AuditLogSearchParams {
 }
 
 interface AuditLogsPageProps {
+  ancestorId?: string;
   href: string;
   locale: Locale;
   resource?: AuditResource;
@@ -48,6 +49,7 @@ interface AuditLogsPageProps {
 }
 
 const AuditLogsPage = async ({
+  ancestorId,
   href,
   locale,
   resource,
@@ -148,6 +150,7 @@ const AuditLogsPage = async ({
     selectedOrganization.slug,
     resource,
     resourceId,
+    ancestorId,
     {
       page,
       pageSize,
@@ -164,6 +167,7 @@ const AuditLogsPage = async ({
 
   return (
     <AuditLogs
+      ancestorId={ancestorId}
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}

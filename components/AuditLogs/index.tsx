@@ -11,7 +11,10 @@ import {
   DATA_GRID_PROPS,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
-import { getPageSizeOptions } from "@/constants/pagination";
+import {
+  DEFAULT_PAGINATION_QUERY,
+  getPageSizeOptions,
+} from "@/constants/pagination";
 
 import { useAuditLogObjectLabels } from "@/hooks/useAuditLogObjectLabels";
 import { useAuditLogValueLabels } from "@/hooks/useAuditLogValueLabels";
@@ -21,10 +24,10 @@ import {
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
 
-import { usePathname, useRouter } from "@/i18n/navigation";
-import { routing } from "@/i18n/routing";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { routing, type Locale } from "@/i18n/routing";
 
-import { Chip, Stack, Typography } from "@mui/material";
+import { Chip, Link as MuiLink, Stack, Typography } from "@mui/material";
 import type {
   GridColDef,
   GridFilterModel,
@@ -44,10 +47,11 @@ import type {
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { LocalizedText } from "@/types/locale";
 
-import { getAuditLogsPath } from "@/utils/audit";
+import { getAuditLogHref, getAuditLogsPath } from "@/utils/audit";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAuditLogEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
+import { getHref } from "@/utils/href";
 import { localize } from "@/utils/locale";
 
 const DataGrid = dynamic(
@@ -64,36 +68,46 @@ const ACTION_COLORS: Record<AuditAction, "error" | "info" | "success"> = {
 const FIELD_LABEL_KEYS = {
   addOnMenuItemId: "field.addOnMenuItem",
   addOnMenuSectionId: "field.addOnMenuSection",
+  amountPerPoint: "field.amountPerPoint",
   availability: "field.availability",
   availableModes: "field.availableModes",
   confirmationNumber: "field.confirmationNumber",
+  couponId: "field.coupon",
   customer: "field.customer",
   deliveryLeadTime: "field.deliveryLeadTime",
   description: "field.description",
   discount: "field.discount",
   displayName: "field.displayName",
+  grantedBy: "field.grantedBy",
   image: "field.image",
   inventoryLevel: "field.inventoryLevel",
   maxSelectionCount: "field.maxSelectionCount",
+  menuId: "field.menu",
+  menuItemId: "field.menuItem",
   menuSectionId: "field.menuSection",
   minSelectionCount: "field.minSelectionCount",
   modifierGroupId: "field.modifierGroup",
   name: "field.name",
   nutrition: "field.nutrition",
+  orderId: "field.order",
   orderStatus: "field.orderStatus",
+  parentSectionId: "field.parentSection",
   partySize: "field.partySize",
   paymentDate: "field.paymentDate",
   paymentMethod: "field.paymentMethod",
+  pointsValidityYears: "field.pointsValidityYears",
   price: "field.price",
   priceAdjustment: "field.priceAdjustment",
   priceCurrency: "field.priceCurrency",
   priceSpecification: "field.priceSpecification",
   sortOrder: "field.sortOrder",
+  source: "field.source",
   subtotal: "field.subtotal",
   suitableForDiet: "field.suitableForDiet",
   tableNumber: "field.tableNumber",
   total: "field.total",
   usedAt: "field.usedAt",
+  userId: "field.user",
 } as const;
 
 const LOCALES = new Set<string>(routing.locales);
@@ -112,6 +126,13 @@ const isTranslatableField = (
   field: string,
 ): field is keyof typeof FIELD_LABEL_KEYS => field in FIELD_LABEL_KEYS;
 
+// 名稱快照可能是多語物件，也可能是訂單編號那種單語字串
+const getTargetLabel = (
+  label: AuditLogResponse["resourceLabel"],
+  locale: Locale,
+): string =>
+  typeof label === "string" ? label : localize(label ?? undefined, locale);
+
 const isLocalizedField = (
   value: object,
   field: string,
@@ -122,6 +143,7 @@ const isLocalizedField = (
   );
 
 interface AuditLogsProps {
+  ancestorId?: string;
   filterField?: AuditLogFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
@@ -138,6 +160,7 @@ interface AuditLogsProps {
 }
 
 const AuditLogs = ({
+  ancestorId,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
@@ -215,6 +238,7 @@ const AuditLogs = ({
       getAuditLogsPath(organizationSlug),
       resource,
       resourceId,
+      ancestorId,
       filterModel.items[0]?.field,
       filterModel.items[0]?.operator,
       filterModel.items[0]?.value,
@@ -232,6 +256,7 @@ const AuditLogs = ({
       );
       if (resource) params.set("resource", resource);
       if (resourceId) params.set("resourceId", resourceId);
+      if (ancestorId) params.set("ancestorId", ancestorId);
 
       return fetcher<{ data: AuditLogResponse[]; total: number }>(
         `${path}?${params.toString()}`,
@@ -383,6 +408,34 @@ const AuditLogs = ({
               type: "singleSelect" as const,
               valueOptions: enumOptions.resource,
             },
+            {
+              field: "resourceLabel",
+              filterable: false,
+              headerName: tAudit("target"),
+              renderCell: ({ row }: GridRenderCellParams<AuditLogResponse>) => {
+                const label = getTargetLabel(row.resourceLabel, locale);
+                const href = getAuditLogHref(
+                  row.resource,
+                  row.resourceId,
+                  row.ancestorIds ?? [],
+                );
+
+                return label && href ? (
+                  <MuiLink
+                    component={Link}
+                    href={getHref(href, {
+                      ...DEFAULT_PAGINATION_QUERY,
+                      organization: searchParams.get("organization"),
+                    })}
+                  >
+                    {label}
+                  </MuiLink>
+                ) : (
+                  label
+                );
+              },
+              sortable: false,
+            },
           ]),
       {
         field: "action",
@@ -437,7 +490,9 @@ const AuditLogs = ({
       enumOptions,
       format,
       getValueText,
+      locale,
       resource,
+      searchParams,
       stringFilterOperators,
       tAudit,
     ],

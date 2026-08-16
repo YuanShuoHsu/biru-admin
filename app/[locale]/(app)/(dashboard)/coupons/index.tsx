@@ -10,6 +10,8 @@ import useSWR from "swr";
 import CouponDialog from "./CouponDialog";
 import GrantCouponDialog from "./GrantCouponDialog";
 
+import AuditLogButton from "@/components/AuditLogButton";
+
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -30,7 +32,13 @@ import {
 
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 
-import { Add, CardGiftcard, Delete, Edit, History } from "@mui/icons-material";
+import {
+  Add,
+  CardGiftcard,
+  Delete,
+  Edit,
+  ManageSearch,
+} from "@mui/icons-material";
 import {
   Button,
   Chip,
@@ -79,6 +87,7 @@ const StyledIconButton = styled(IconButton, {
 interface CouponsProps {
   canGrantCoupon: boolean;
   canManageCoupon: boolean;
+  canViewAuditLog: boolean;
   coupons: Coupon[];
   filterField?: CouponFilterField;
   filterOperator?: FilterOperator;
@@ -104,6 +113,7 @@ const isExclusiveTo = (
 const Coupons = ({
   canGrantCoupon,
   canManageCoupon,
+  canViewAuditLog,
   coupons: initialCoupons,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
@@ -368,7 +378,7 @@ const Coupons = ({
 
   const columns = useMemo<GridColDef[]>(
     () => [
-      ...(canManageCoupon || canGrantCoupon
+      ...(canManageCoupon || canGrantCoupon || canViewAuditLog
         ? [
             {
               disableColumnMenu: true,
@@ -416,10 +426,11 @@ const Coupons = ({
                         )}
                         size="small"
                       >
-                        <History fontSize="small" />
+                        <ManageSearch fontSize="small" />
                       </IconButton>
                     </Tooltip>
                   )}
+                  {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
                   {canManageCoupon && (
                     <Tooltip title={tCoupons("actions.deleteCoupon.title")}>
                       <IconButton
@@ -652,6 +663,7 @@ const Coupons = ({
       booleanFilterOperators,
       canGrantCoupon,
       canManageCoupon,
+      canViewAuditLog,
       dateFilterOperators,
       enumFilterOperators,
       enumOptions,

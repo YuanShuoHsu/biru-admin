@@ -28,11 +28,49 @@ interface GetAuditLogsQuery {
 export const getAuditLogsPath = (organizationSlug: string) =>
   `/api/organizations/${organizationSlug}/audit-logs`;
 
+export const getAuditLogHref = (
+  resource: AuditResource,
+  resourceId: string,
+  ancestorIds: string[] = [],
+): string | null => {
+  const [rootId, parentId] = ancestorIds;
+
+  switch (resource) {
+    case "menu":
+      return "/menus/audit-logs";
+    case "menuSection":
+      return `/menus/sections/${resourceId}/audit-logs`;
+    case "menuItem":
+      return rootId
+        ? `/menus/sections/${rootId}/${resourceId}/audit-logs`
+        : null;
+    case "menuItemAddOn":
+      return rootId && parentId
+        ? `/menus/sections/${rootId}/${parentId}/add-ons/${resourceId}/audit-logs`
+        : null;
+    case "menuItemModifierGroup":
+      return rootId && parentId
+        ? `/menus/sections/${rootId}/${parentId}/modifier-groups/${resourceId}/audit-logs`
+        : null;
+    case "modifierGroup":
+      return `/menus/modifier-groups/${resourceId}/audit-logs`;
+    case "modifier":
+      return rootId
+        ? `/menus/modifier-groups/${rootId}/${resourceId}/audit-logs`
+        : null;
+    case "order":
+      return `/orders/list/${resourceId}/audit-logs`;
+    case "userCoupon":
+      return null;
+  }
+};
+
 export const getAuditLogs = cache(
   async (
     organizationSlug: string,
     resource: AuditResource | undefined,
     resourceId: string | undefined,
+    ancestorId: string | undefined,
     {
       page = 1,
       pageSize = DEFAULT_PAGE_SIZE,
@@ -52,6 +90,7 @@ export const getAuditLogs = cache(
       const params = new URLSearchParams({
         ...(resource && { resource }),
         ...(resourceId && { resourceId }),
+        ...(ancestorId && { ancestorId }),
         limit: String(pageSize),
         offset: String((page - 1) * pageSize),
         ...(sortBy && { sortBy }),

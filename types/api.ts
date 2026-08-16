@@ -1185,6 +1185,17 @@ export interface components {
       actorEmail: string;
       resource: components["schemas"]["AuditResource"];
       resourceId: string;
+      /** @description 寫入當下的名稱快照；多語名稱為 locale → 名稱的物件，訂單編號等單語識別為字串 */
+      resourceLabel?:
+        | (
+            | string
+            | {
+                [key: string]: string;
+              }
+          )
+        | null;
+      /** @description 由根到父的 id，供前端拼出巢狀路由；頂層資源為空陣列 */
+      ancestorIds?: string[] | null;
       action: components["schemas"]["AuditAction"];
       /** @description 欄位名 → 變更前後值；建立的 before 與刪除的 after 為 null */
       changes: {
@@ -3343,6 +3354,8 @@ export interface operations {
       query?: {
         resource?: components["schemas"]["AuditResource"];
         resourceId?: string;
+        /** @description 篩出祖先含此 id 的紀錄,例如某張券的所有發放 */
+        ancestorId?: string;
         filterField?: components["schemas"]["AuditLogFilterField"];
         filterOperator?: components["schemas"]["FilterOperator"];
         /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */

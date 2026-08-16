@@ -7,9 +7,11 @@ import {
   orderModeValues,
   orderResponseDtoPaymentMethodValues,
   orderStatusValues,
+  userCouponSourceValues,
 } from "@/types/api";
 
 export const useAuditLogValueLabels = () => {
+  const tCoupons = useTranslations("coupons");
   const tMenus = useTranslations("menus");
   const tOrder = useTranslations("order");
   const tOrders = useTranslations("orders");
@@ -37,6 +39,12 @@ export const useAuditLogValueLabels = () => {
           tOrder(`checkout.payment.${value}`),
         ]),
       ),
+      source: Object.fromEntries(
+        userCouponSourceValues.map((value) => [
+          value,
+          tCoupons(`source.${value}`),
+        ]),
+      ),
       suitableForDiet: Object.fromEntries(
         createMenuItemDtoSuitableForDietValues.map((value) => [
           value,
@@ -44,6 +52,6 @@ export const useAuditLogValueLabels = () => {
         ]),
       ),
     }),
-    [tMenus, tOrder, tOrders],
+    [tCoupons, tMenus, tOrder, tOrders],
   );
 };

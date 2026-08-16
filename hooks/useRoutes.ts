@@ -49,6 +49,7 @@ import {
   Login,
   Mail,
   ManageAccounts,
+  ManageSearch,
   MenuBook,
   Payment,
   People,
@@ -372,7 +373,19 @@ const routes: Route[] = [
   },
   {
     children: [
-      { icon: History, query: ["page", "pageSize"], segment: "[couponId]" },
+      {
+        children: [
+          {
+            icon: History,
+            label: "audit.title",
+            query: ["organization", "page", "pageSize"],
+            segment: "audit-logs",
+          },
+        ],
+        icon: ManageSearch,
+        query: ["page", "pageSize"],
+        segment: "[couponId]",
+      },
     ],
     icon: ConfirmationNumber,
     label: "coupons.label",
