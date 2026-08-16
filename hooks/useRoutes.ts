@@ -332,12 +332,6 @@ const routes: Route[] = [
     segment: "audit-logs",
   },
   {
-    icon: History,
-    label: "audit.platformTitle",
-    query: ["page", "pageSize"],
-    segment: "platform-audit-logs",
-  },
-  {
     children: [
       {
         children: [

@@ -33,7 +33,8 @@
   "optional": "(optional)",
   "organization": {
     "label": "Organization",
-    "placeholder": "Please select your organization"
+    "placeholder": "Please select your organization",
+    "platform": "Platform"
   },
   "pagination": {
     "labelDisplayedRows": "{from}–{to} of {count}",

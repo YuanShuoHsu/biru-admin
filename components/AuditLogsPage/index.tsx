@@ -43,7 +43,8 @@ interface AuditLogsPageProps {
   ancestorId?: string;
   href: string;
   locale: Locale;
-  platform?: boolean;
+  /** 只有全站時間軸傳：管理員未指定店家時看的是平台層紀錄 */
+  platformScope?: boolean;
   resource?: AuditResource;
   resourceId?: string;
   searchParams: AuditLogSearchParams;
@@ -53,7 +54,7 @@ const AuditLogsPage = async ({
   ancestorId,
   href,
   locale,
-  platform = false,
+  platformScope = false,
   resource,
   resourceId,
   searchParams,
@@ -95,7 +96,14 @@ const AuditLogsPage = async ({
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  // 平台層紀錄不屬於任何店家，解析組織只會把它導到某一家店去
+  // 平台層紀錄不屬於任何店家，解析組織只會把它導到某一家店去。用「沒指定店家」表示
+  // 平台範圍而不是另闢參數值：slug 只要求含字母，任何哨兵字串都可能被店家用掉
+  const session = platformScope
+    ? await authClient.getSession({ fetchOptions })
+    : undefined;
+  const platform =
+    platformScope && !organization && session?.data?.user?.role === "admin";
+
   const selectedOrganization = platform
     ? undefined
     : await getResolvedAdminOrganization(organization, cookieStore.toString());
@@ -132,6 +140,7 @@ const AuditLogsPage = async ({
     redirect({ href: `${href}?${params.toString()}`, locale });
   }
 
+  // 平台範圍在上面已經驗過是管理員，這裡只剩店家範圍要查組織角色
   if (selectedOrganization) {
     const { data: memberRole } =
       await authClient.organization.getActiveMemberRole({
@@ -140,9 +149,6 @@ const AuditLogsPage = async ({
       });
     if (!hasRolePermission(memberRole?.role, { auditLog: ["read"] }))
       notFound();
-  } else {
-    const session = await authClient.getSession({ fetchOptions });
-    if (session.data?.user?.role !== "admin") notFound();
   }
 
   const tAudit = await getTranslations({ locale, namespace: "audit" });

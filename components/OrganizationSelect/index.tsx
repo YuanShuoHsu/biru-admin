@@ -21,12 +21,14 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
 interface OrganizationSelectProps {
   organizations: Pick<OrganizationResponse, "id" | "name" | "slug">[];
   organizationSlug: string;
+  platformOption?: boolean;
   readOnly?: boolean;
 }
 
 const OrganizationSelect = ({
   organizations,
   organizationSlug,
+  platformOption = false,
   readOnly = false,
 }: OrganizationSelectProps) => {
   const pathname = usePathname();
@@ -37,6 +39,11 @@ const OrganizationSelect = ({
   const currentOrganization = organizations.find(
     ({ slug }) => slug === organizationSlug,
   );
+
+  // 沒選店家在別處是「還沒選」，在平台模式下是一個真的選項，不能沿用 disabled 的提示項
+  const emptyLabel = platformOption
+    ? tCommon("organization.platform")
+    : tCommon("organization.placeholder");
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     router.push(
@@ -60,12 +67,11 @@ const OrganizationSelect = ({
           ? undefined
           : {
               displayEmpty: true,
-              renderValue: () =>
-                currentOrganization ? (
-                  currentOrganization.name
-                ) : (
-                  <em>{tCommon("organization.placeholder")}</em>
-                ),
+              renderValue: () => {
+                if (currentOrganization) return currentOrganization.name;
+
+                return platformOption ? emptyLabel : <em>{emptyLabel}</em>;
+              },
             },
       }}
       value={
@@ -78,8 +84,8 @@ const OrganizationSelect = ({
       {readOnly
         ? null
         : [
-            <MenuItem disabled key="" value="">
-              <em>{tCommon("organization.placeholder")}</em>
+            <MenuItem disabled={!platformOption} key="" value="">
+              {platformOption ? emptyLabel : <em>{emptyLabel}</em>}
             </MenuItem>,
             ...organizations.map(({ id, name, slug }) => (
               <MenuItem key={id} value={slug}>

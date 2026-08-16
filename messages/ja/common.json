@@ -33,7 +33,8 @@
   "optional": "（任意）",
   "organization": {
     "label": "組織",
-    "placeholder": "組織を選択してください"
+    "placeholder": "組織を選択してください",
+    "platform": "プラットフォーム"
   },
   "pagination": {
     "labelDisplayedRows": "{from}–{to} of {count}",

@@ -33,7 +33,8 @@
   "optional": "（選填）",
   "organization": {
     "label": "組織",
-    "placeholder": "請選擇您的組織"
+    "placeholder": "請選擇您的組織",
+    "platform": "平台"
   },
   "pagination": {
     "labelDisplayedRows": "{from}–{to} 共 {count}",

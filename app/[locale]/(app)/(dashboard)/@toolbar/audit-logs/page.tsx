@@ -16,19 +16,24 @@ const ToolbarAuditLogsPage = async ({
     searchParams,
   ]);
 
-  const { data: organizations } = await authClient.organization.list({
-    fetchOptions: {
-      headers: {
-        cookie: cookieStore.toString(),
-        origin: process.env.NEXT_PUBLIC_ADMIN_URL!,
-      },
+  const fetchOptions = {
+    headers: {
+      cookie: cookieStore.toString(),
+      origin: process.env.NEXT_PUBLIC_ADMIN_URL!,
     },
-  });
+  };
+
+  const [{ data: organizations }, session] = await Promise.all([
+    authClient.organization.list({ fetchOptions }),
+    authClient.getSession({ fetchOptions }),
+  ]);
 
   return (
     <OrganizationSelect
       organizations={organizations || []}
       organizationSlug={organization}
+      // 只有平台管理員讀得到平台層紀錄，給別人選只會被導回自己的店家
+      platformOption={session.data?.user?.role === "admin"}
     />
   );
 };

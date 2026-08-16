@@ -30,7 +30,12 @@ const OrganizationAuditLogsPage = async ({
   setRequestLocale(locale);
 
   return (
-    <AuditLogsPage href="/audit-logs" locale={locale} searchParams={query} />
+    <AuditLogsPage
+      href="/audit-logs"
+      locale={locale}
+      platformScope
+      searchParams={query}
+    />
   );
 };
 
