@@ -30,8 +30,8 @@ import {
   ConfirmationNumber,
   Dashboard,
   DeleteForever,
-  DirectionsCar,
   Devices,
+  DirectionsCar,
   Email,
   Extension,
   Fastfood,
@@ -72,8 +72,8 @@ import type { SvgIconProps } from "@mui/material";
 
 import type { Coupon } from "@/types/coupons";
 import type { MenuItem, MenuSection, ModifierGroup } from "@/types/menus";
-import type { AdminOrderResponse } from "@/types/orders";
 import type { NavItem } from "@/types/navItem";
+import type { AdminOrderResponse } from "@/types/orders";
 import type { RouteParams } from "@/types/routeParams";
 
 import { fetcher } from "@/utils/fetcher";
@@ -328,7 +328,7 @@ const routes: Route[] = [
   {
     icon: History,
     label: "audit.title",
-    query: ["organization", "page", "pageSize"],
+    query: ["page", "pageSize"],
     segment: "audit-logs",
   },
   {
