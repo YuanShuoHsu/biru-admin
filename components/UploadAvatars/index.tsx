@@ -77,7 +77,6 @@ const COMPRESSION_OPTIONS: Options = {
 const HIGH_QUALITY_COMPRESSION_OPTIONS: Options = {
   maxSizeMB: 0.4,
   maxWidthOrHeight: 1920,
-  alwaysKeepResolution: true,
   fileType: "image/webp",
   initialQuality: 0.8,
   useWebWorker: true,
