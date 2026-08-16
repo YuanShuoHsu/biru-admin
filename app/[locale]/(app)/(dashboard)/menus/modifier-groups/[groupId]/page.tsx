@@ -5,9 +5,6 @@ import { notFound } from "next/navigation";
 
 import Modifiers from ".";
 
-import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
-import { DEFAULT_PAGE_SIZE } from "@/constants/pagination";
-
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -17,10 +14,9 @@ import {
   filterOperatorValues,
   modifierFilterFieldValues,
   modifierSortFieldValues,
-  sortDirectionValues,
 } from "@/types/api";
 
-import { getQuickFilterEnums } from "@/utils/dataGrid";
+import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getMenuEnumOptions } from "@/utils/enumOptions";
 import {
   DEFAULT_MENUS_HREF,
@@ -30,6 +26,7 @@ import {
   getAdminOrganization,
 } from "@/utils/menus";
 import { hasRolePermission } from "@/utils/organizations";
+import { getSession } from "@/utils/session";
 
 interface ModifiersPageProps {
   params: Promise<{ locale: Locale; groupId: string }>;
@@ -57,40 +54,11 @@ export const generateMetadata = async ({
 };
 
 const ModifiersPage = async ({ params, searchParams }: ModifiersPageProps) => {
-  const [
-    cookieStore,
-    { locale, groupId },
-    {
-      filterField: rawFilterField,
-      filterOperator: rawFilterOperator,
-      filterValue,
-      organization,
-      page: rawPage,
-      pageSize: rawPageSize,
-      quickFilterEnums: rawQuickFilterEnums,
-      quickFilterValue,
-      sortBy: rawSortBy,
-      sortDirection: rawSortDirection,
-      ...restSearchParams
-    },
-  ] = await Promise.all([cookies(), params, searchParams]);
+  const [cookieStore, { locale, groupId }, rawSearchParams] = await Promise.all(
+    [cookies(), params, searchParams],
+  );
 
   setRequestLocale(locale);
-
-  const page = Math.max(1, Number(rawPage) || 1);
-  const pageSize = Math.max(1, Number(rawPageSize) || DEFAULT_PAGE_SIZE);
-
-  const sortBy = modifierSortFieldValues.find((field) => field === rawSortBy);
-  const sortDirection = sortDirectionValues.find(
-    (direction) => direction === rawSortDirection,
-  );
-
-  const filterField = modifierFilterFieldValues.find(
-    (field) => field === rawFilterField,
-  );
-  const filterOperator = filterOperatorValues.find(
-    (operator) => operator === rawFilterOperator,
-  );
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
   const group = await getAdminModifierGroup(groupId, fetchOptions);
@@ -99,48 +67,35 @@ const ModifiersPage = async ({ params, searchParams }: ModifiersPageProps) => {
 
   const [menu, selectedOrganization] = await Promise.all([
     getAdminMenu(group.menuId, fetchOptions),
-    getAdminOrganization(organization, fetchOptions),
+    getAdminOrganization(rawSearchParams.organization, fetchOptions),
   ]);
 
   if (!selectedOrganization || selectedOrganization.id !== menu?.organizationId)
     return redirect({ href: DEFAULT_MENUS_HREF, locale });
 
-  if (
-    rawQuickFilterEnums !== undefined ||
-    rawPage !== String(page) ||
-    rawPageSize !== String(pageSize) ||
-    rawSortBy !== sortBy ||
-    rawSortDirection !== sortDirection ||
-    !!sortBy !== !!sortDirection ||
-    rawFilterField !== filterField ||
-    rawFilterOperator !== filterOperator ||
-    !!(filterField || filterOperator || filterValue) !==
-      !!(
-        filterField &&
-        filterOperator &&
-        (filterValue || NO_VALUE_FILTER_OPERATORS.includes(filterOperator))
-      )
-  ) {
-    const params = new URLSearchParams({
-      ...restSearchParams,
-      organization: selectedOrganization.slug,
-      page: String(page),
-      pageSize: String(pageSize),
-      ...(sortBy && sortDirection && { sortBy, sortDirection }),
-      ...(filterField &&
-        filterOperator &&
-        (filterValue || NO_VALUE_FILTER_OPERATORS.includes(filterOperator)) && {
-          filterField,
-          filterOperator,
-          ...(filterValue && { filterValue }),
-        }),
-      ...(quickFilterValue && { quickFilterValue }),
-    });
+  const {
+    filterField,
+    filterOperator,
+    filterValue,
+    page,
+    pageSize,
+    quickFilterValue,
+    redirectParams,
+    sortBy,
+    sortDirection,
+  } = resolveGridSearchParams({
+    searchParams: rawSearchParams,
+    sortFields: modifierSortFieldValues,
+    filterFields: modifierFilterFieldValues,
+    filterOperators: filterOperatorValues,
+    organizationSlug: selectedOrganization.slug,
+  });
+
+  if (redirectParams)
     redirect({
-      href: `/menus/modifier-groups/${groupId}?${params.toString()}`,
+      href: `/menus/modifier-groups/${groupId}?${redirectParams.toString()}`,
       locale,
     });
-  }
 
   const [tMenus, tOrder] = await Promise.all([
     getTranslations({ locale, namespace: "menus" }),
@@ -151,7 +106,7 @@ const ModifiersPage = async ({ params, searchParams }: ModifiersPageProps) => {
     ? getQuickFilterEnums(quickFilterValue, getMenuEnumOptions(tMenus, tOrder))
     : [];
 
-  const [{ modifiers, total }, sessionData, fullOrgData] = await Promise.all([
+  const [{ modifiers, total }, session, fullOrgData] = await Promise.all([
     getAdminModifiers(
       groupId,
       page,
@@ -165,14 +120,14 @@ const ModifiersPage = async ({ params, searchParams }: ModifiersPageProps) => {
       sortDirection,
       fetchOptions,
     ),
-    authClient.getSession({ fetchOptions }),
+    getSession(),
     authClient.organization.getFullOrganization({
       query: { organizationId: menu.organizationId },
       fetchOptions,
     }),
   ]);
 
-  const currentUserId = sessionData.data?.user?.id;
+  const currentUserId = session?.user?.id;
   const members = fullOrgData.data?.members || [];
   const role = members.find(({ userId }) => userId === currentUserId)?.role;
   const canWrite = hasRolePermission(role, { menu: ["update"] });

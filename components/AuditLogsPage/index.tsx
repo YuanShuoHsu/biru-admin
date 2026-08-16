@@ -25,6 +25,7 @@ import { getQuickFilterEnums } from "@/utils/dataGrid";
 import { getAuditLogEnumOptions } from "@/utils/enumOptions";
 import { getResolvedAdminOrganization } from "@/utils/menus";
 import { getOrganizations, hasRolePermission } from "@/utils/organizations";
+import { getSession } from "@/utils/session";
 
 export interface AuditLogSearchParams {
   filterField?: string;
@@ -95,11 +96,9 @@ const AuditLogsPage = async ({
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const session = adminScope
-    ? await authClient.getSession({ fetchOptions })
-    : undefined;
+  const session = adminScope ? await getSession() : undefined;
 
-  const isAdmin = session?.data?.user?.role === "admin";
+  const isAdmin = session?.user?.role === "admin";
 
   const selectedOrganization = isAdmin
     ? undefined

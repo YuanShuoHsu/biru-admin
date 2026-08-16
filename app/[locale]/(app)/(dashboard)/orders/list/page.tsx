@@ -4,9 +4,6 @@ import { cookies } from "next/headers";
 
 import Orders from ".";
 
-import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
-import { DEFAULT_PAGE_SIZE } from "@/constants/pagination";
-
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -16,10 +13,9 @@ import {
   filterOperatorValues,
   orderFilterFieldValues,
   orderSortFieldValues,
-  sortDirectionValues,
 } from "@/types/api";
 
-import { getQuickFilterEnums } from "@/utils/dataGrid";
+import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getOrderEnumOptions } from "@/utils/enumOptions";
 import { getResolvedAdminOrganization } from "@/utils/menus";
 import { hasRolePermission } from "@/utils/organizations";
@@ -53,85 +49,43 @@ export const generateMetadata = async ({
 };
 
 const OrdersPage = async ({ params, searchParams }: OrdersPageProps) => {
-  const [
-    cookieStore,
-    { locale },
-    {
-      filterField: rawFilterField,
-      filterOperator: rawFilterOperator,
-      filterValue,
-      organization,
-      page: rawPage,
-      pageSize: rawPageSize,
-      quickFilterEnums: rawQuickFilterEnums,
-      quickFilterValue,
-      sortBy: rawSortBy,
-      sortDirection: rawSortDirection,
-      ...restSearchParams
-    },
-  ] = await Promise.all([cookies(), params, searchParams]);
+  const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
+    cookies(),
+    params,
+    searchParams,
+  ]);
 
   setRequestLocale(locale);
-
-  const page = Math.max(1, Number(rawPage) || 1);
-  const pageSize = Math.max(1, Number(rawPageSize) || DEFAULT_PAGE_SIZE);
-
-  const sortBy = orderSortFieldValues.find((field) => field === rawSortBy);
-  const sortDirection = sortDirectionValues.find(
-    (direction) => direction === rawSortDirection,
-  );
-
-  const filterField = orderFilterFieldValues.find(
-    (field) => field === rawFilterField,
-  );
-  const filterOperator = filterOperatorValues.find(
-    (operator) => operator === rawFilterOperator,
-  );
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
   const selectedOrganization = await getResolvedAdminOrganization(
-    organization,
+    rawSearchParams.organization,
     cookieStore.toString(),
   );
 
   if (!selectedOrganization) return <OrdersTabsLayout>{null}</OrdersTabsLayout>;
 
-  if (
-    rawQuickFilterEnums !== undefined ||
-    organization !== selectedOrganization.slug ||
-    rawPage !== String(page) ||
-    rawPageSize !== String(pageSize) ||
-    rawSortBy !== sortBy ||
-    rawSortDirection !== sortDirection ||
-    !!sortBy !== !!sortDirection ||
-    rawFilterField !== filterField ||
-    rawFilterOperator !== filterOperator ||
-    !!(filterField || filterOperator || filterValue) !==
-      !!(
-        filterField &&
-        filterOperator &&
-        (filterValue || NO_VALUE_FILTER_OPERATORS.includes(filterOperator))
-      )
-  ) {
-    const params = new URLSearchParams({
-      ...restSearchParams,
-      organization: selectedOrganization.slug,
-      page: String(page),
-      pageSize: String(pageSize),
-      ...(sortBy && sortDirection && { sortBy, sortDirection }),
-      ...(filterField &&
-        filterOperator &&
-        (filterValue || NO_VALUE_FILTER_OPERATORS.includes(filterOperator)) && {
-          filterField,
-          filterOperator,
-          ...(filterValue && { filterValue }),
-        }),
-      ...(quickFilterValue && { quickFilterValue }),
-    });
+  const {
+    filterField,
+    filterOperator,
+    filterValue,
+    page,
+    pageSize,
+    quickFilterValue,
+    redirectParams,
+    sortBy,
+    sortDirection,
+  } = resolveGridSearchParams({
+    searchParams: rawSearchParams,
+    sortFields: orderSortFieldValues,
+    filterFields: orderFilterFieldValues,
+    filterOperators: filterOperatorValues,
+    organizationSlug: selectedOrganization.slug,
+  });
 
-    redirect({ href: `/orders/list?${params.toString()}`, locale });
-  }
+  if (redirectParams)
+    redirect({ href: `/orders/list?${redirectParams.toString()}`, locale });
 
   const [tOrder, tOrders] = await Promise.all([
     getTranslations({ locale, namespace: "order" }),

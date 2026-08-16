@@ -10,6 +10,8 @@ import { authClient } from "@/lib/auth-client";
 import type { Organization, OrganizationMember } from "@/types/organizations";
 import type { RouteParams } from "@/types/routeParams";
 
+import { resolveDefaultOrganizationSlug } from "@/utils/organizations";
+
 export const useDefaultOrganization = () => {
   const { data: defaultOrganizationSlug = "" } = useSWR<string>(
     swrKeys.defaultOrganizationSlug,
@@ -19,12 +21,9 @@ export const useDefaultOrganization = () => {
         authClient.organization.list(),
       ]);
 
-      return (
-        organizations?.find(
-          ({ id }) => id === session?.session?.activeOrganizationId,
-        )?.slug ||
-        organizations?.[0]?.slug ||
-        ""
+      return resolveDefaultOrganizationSlug(
+        session?.session?.activeOrganizationId,
+        organizations,
       );
     },
   );

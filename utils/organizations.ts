@@ -29,6 +29,14 @@ export const getOrganizations = cache(
   },
 );
 
+export const resolveDefaultOrganizationSlug = (
+  activeOrganizationId: string | null | undefined,
+  organizations: { id: string; slug: string }[] | null | undefined,
+) =>
+  organizations?.find(({ id }) => id === activeOrganizationId)?.slug ||
+  organizations?.[0]?.slug ||
+  "";
+
 type CheckRolePermissionInput = Parameters<
   typeof authClient.organization.checkRolePermission
 >[0];

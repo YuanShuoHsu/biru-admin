@@ -4,6 +4,8 @@ import OrganizationSelect from "@/components/OrganizationSelect";
 
 import { authClient } from "@/lib/auth-client";
 
+import { getSession } from "@/utils/session";
+
 interface ToolbarAuditLogsPageProps {
   searchParams: Promise<{ organization?: string }>;
 }
@@ -19,12 +21,11 @@ const ToolbarAuditLogsPage = async ({
   const fetchOptions = {
     headers: {
       cookie: cookieStore.toString(),
-      origin: process.env.NEXT_PUBLIC_ADMIN_URL!,
     },
   };
 
-  const [{ data: session }, { data: organizations }] = await Promise.all([
-    authClient.getSession({ fetchOptions }),
+  const [session, { data: organizations }] = await Promise.all([
+    getSession(),
     authClient.organization.list({ fetchOptions }),
   ]);
 

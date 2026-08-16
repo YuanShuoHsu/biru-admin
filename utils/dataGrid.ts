@@ -1,4 +1,7 @@
 import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
+import { DEFAULT_PAGE_SIZE } from "@/constants/pagination";
+
+import { sortDirectionValues } from "@/types/api";
 
 import type {
   GridFilterItem,
@@ -62,6 +65,114 @@ export const getQuickFilterEnums = (
 
     return values.length ? [`${field}:${values.join(",")}`] : [];
   });
+};
+
+interface GridSearchParams {
+  filterField?: string;
+  filterOperator?: string;
+  filterValue?: string;
+  organization?: string;
+  page?: string;
+  pageSize?: string;
+  quickFilterEnums?: string | string[];
+  quickFilterValue?: string;
+  sortBy?: string;
+  sortDirection?: string;
+}
+
+interface ResolveGridSearchParamsOptions<
+  SortField extends string,
+  FilterField extends string,
+  FilterOperator extends string,
+> {
+  searchParams: GridSearchParams;
+  sortFields: readonly SortField[];
+  filterFields: readonly FilterField[];
+  filterOperators: readonly FilterOperator[];
+  organizationSlug?: string;
+}
+
+export const resolveGridSearchParams = <
+  SortField extends string,
+  FilterField extends string,
+  FilterOperator extends string,
+>({
+  searchParams,
+  sortFields,
+  filterFields,
+  filterOperators,
+  organizationSlug,
+}: ResolveGridSearchParamsOptions<SortField, FilterField, FilterOperator>) => {
+  const {
+    filterField: rawFilterField,
+    filterOperator: rawFilterOperator,
+    filterValue,
+    organization,
+    page: rawPage,
+    pageSize: rawPageSize,
+    quickFilterEnums: rawQuickFilterEnums,
+    quickFilterValue,
+    sortBy: rawSortBy,
+    sortDirection: rawSortDirection,
+    ...restSearchParams
+  } = searchParams;
+
+  const page = Math.max(1, Number(rawPage) || 1);
+  const pageSize = Math.max(1, Number(rawPageSize) || DEFAULT_PAGE_SIZE);
+
+  const sortBy = sortFields.find((field) => field === rawSortBy);
+  const sortDirection = sortDirectionValues.find(
+    (direction) => direction === rawSortDirection,
+  );
+
+  const filterField = filterFields.find((field) => field === rawFilterField);
+  const filterOperator = filterOperators.find(
+    (operator) => operator === rawFilterOperator,
+  );
+  const isNoValueOperator =
+    !!filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
+  const hasFilter =
+    !!filterField && !!filterOperator && (!!filterValue || isNoValueOperator);
+
+  const isNormalized =
+    (!organizationSlug || organization === organizationSlug) &&
+    rawQuickFilterEnums === undefined &&
+    rawPage === String(page) &&
+    rawPageSize === String(pageSize) &&
+    rawSortBy === sortBy &&
+    rawSortDirection === sortDirection &&
+    !!sortBy === !!sortDirection &&
+    rawFilterField === filterField &&
+    rawFilterOperator === filterOperator &&
+    !!(filterField || filterOperator || filterValue) === hasFilter;
+
+  return {
+    filterField,
+    filterOperator,
+    filterValue,
+    page,
+    pageSize,
+    quickFilterValue,
+    redirectParams: isNormalized
+      ? null
+      : new URLSearchParams({
+          ...restSearchParams,
+          ...(organizationSlug && { organization: organizationSlug }),
+          page: String(page),
+          pageSize: String(pageSize),
+          ...(sortBy && sortDirection && { sortBy, sortDirection }),
+          ...(hasFilter &&
+            filterField &&
+            filterOperator && {
+              filterField,
+              filterOperator,
+              ...(filterValue && { filterValue }),
+            }),
+          ...(quickFilterValue && { quickFilterValue }),
+        }),
+    sortBy,
+    sortDirection,
+  };
 };
 
 export const getDataGridSearchParams = (

@@ -4,9 +4,6 @@ import { cookies } from "next/headers";
 
 import Coupons from ".";
 
-import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
-import { DEFAULT_PAGE_SIZE } from "@/constants/pagination";
-
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -16,14 +13,14 @@ import {
   couponFilterFieldValues,
   couponSortFieldValues,
   filterOperatorValues,
-  sortDirectionValues,
 } from "@/types/api";
 
 import { getCoupons } from "@/utils/coupons";
-import { getQuickFilterEnums } from "@/utils/dataGrid";
+import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getCouponEnumOptions } from "@/utils/enumOptions";
 import { getResolvedAdminOrganization } from "@/utils/menus";
 import { getOrganizations, hasRolePermission } from "@/utils/organizations";
+import { getSession } from "@/utils/session";
 
 interface CouponsPageProps {
   params: Promise<{ locale: Locale }>;
@@ -51,97 +48,47 @@ export const generateMetadata = async ({
 };
 
 const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
-  const [
-    cookieStore,
-    { locale },
-    {
-      filterField: rawFilterField,
-      filterOperator: rawFilterOperator,
-      filterValue,
-      organization,
-      page: rawPage,
-      pageSize: rawPageSize,
-      quickFilterEnums: rawQuickFilterEnums,
-      quickFilterValue,
-      sortBy: rawSortBy,
-      sortDirection: rawSortDirection,
-      ...restSearchParams
-    },
-  ] = await Promise.all([cookies(), params, searchParams]);
+  const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
+    cookies(),
+    params,
+    searchParams,
+  ]);
 
   setRequestLocale(locale);
 
-  const page = Math.max(1, Number(rawPage) || 1);
-  const pageSize = Math.max(1, Number(rawPageSize) || DEFAULT_PAGE_SIZE);
-
-  const sortBy = couponSortFieldValues.find((field) => field === rawSortBy);
-  const sortDirection = sortDirectionValues.find(
-    (direction) => direction === rawSortDirection,
-  );
-
-  const filterField = couponFilterFieldValues.find(
-    (field) => field === rawFilterField,
-  );
-  const filterOperator = filterOperatorValues.find(
-    (operator) => operator === rawFilterOperator,
-  );
-
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
-  const authFetchOptions = {
-    headers: {
-      cookie: cookieStore.toString(),
-      origin: process.env.NEXT_PUBLIC_ADMIN_URL!,
-    },
-  };
 
-  const { data: session } = await authClient.getSession({
-    fetchOptions: authFetchOptions,
-  });
+  const session = await getSession();
 
   const isAdmin = session?.user?.role === "admin";
 
   const memberOrganization = await getResolvedAdminOrganization(
-    organization,
+    rawSearchParams.organization,
     cookieStore.toString(),
   );
 
   const selectedOrganization = isAdmin ? undefined : memberOrganization;
 
-  if (
-    rawQuickFilterEnums !== undefined ||
-    (!isAdmin && organization !== selectedOrganization?.slug) ||
-    rawPage !== String(page) ||
-    rawPageSize !== String(pageSize) ||
-    rawSortBy !== sortBy ||
-    rawSortDirection !== sortDirection ||
-    !!sortBy !== !!sortDirection ||
-    rawFilterField !== filterField ||
-    rawFilterOperator !== filterOperator ||
-    !!(filterField || filterOperator || filterValue) !==
-      !!(
-        filterField &&
-        filterOperator &&
-        (filterValue || NO_VALUE_FILTER_OPERATORS.includes(filterOperator))
-      )
-  ) {
-    const params = new URLSearchParams({
-      ...restSearchParams,
-      ...(selectedOrganization && { organization: selectedOrganization.slug }),
-      page: String(page),
-      pageSize: String(pageSize),
-      ...(sortBy && sortDirection && { sortBy, sortDirection }),
-      ...(filterField &&
-        filterOperator &&
-        (filterValue || NO_VALUE_FILTER_OPERATORS.includes(filterOperator)) && {
-          filterField,
-          filterOperator,
-          ...(filterValue && { filterValue }),
-        }),
-      ...(quickFilterValue && { quickFilterValue }),
-    });
+  const {
+    filterField,
+    filterOperator,
+    filterValue,
+    page,
+    pageSize,
+    quickFilterValue,
+    redirectParams,
+    sortBy,
+    sortDirection,
+  } = resolveGridSearchParams({
+    searchParams: rawSearchParams,
+    sortFields: couponSortFieldValues,
+    filterFields: couponFilterFieldValues,
+    filterOperators: filterOperatorValues,
+    organizationSlug: selectedOrganization?.slug,
+  });
 
-    redirect({ href: `/coupons?${params.toString()}`, locale });
-  }
+  if (redirectParams)
+    redirect({ href: `/coupons?${redirectParams.toString()}`, locale });
 
   const { data: memberRole } = memberOrganization
     ? await authClient.organization.getActiveMemberRole({

@@ -5,13 +5,11 @@ import { cookies } from "next/headers";
 import Admins from ".";
 
 import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
-import { DEFAULT_PAGE_SIZE } from "@/constants/pagination";
 
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
 import {
-  sortDirectionValues,
   userFilterFieldValues,
   userFilterOperatorValues,
   userSortFieldValues,
@@ -20,7 +18,7 @@ import {
 import type { User } from "@/types/admins";
 
 import { getUserSessions } from "@/utils/admins";
-import { getQuickFilterEnums } from "@/utils/dataGrid";
+import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAdminEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
 
@@ -49,76 +47,38 @@ export const generateMetadata = async ({
 };
 
 const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
-  const [
-    cookieStore,
-    { locale },
-    {
-      filterField: rawFilterField,
-      filterOperator: rawFilterOperator,
-      filterValue,
-      page: rawPage,
-      pageSize: rawPageSize,
-      quickFilterEnums: rawQuickFilterEnums,
-      quickFilterValue: rawQuickFilterValue,
-      sortBy: rawSortBy,
-      sortDirection: rawSortDirection,
-    },
-  ] = await Promise.all([cookies(), params, searchParams]);
+  const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
+    cookies(),
+    params,
+    searchParams,
+  ]);
 
   setRequestLocale(locale);
 
-  const page = Math.max(1, Number(rawPage) || 1);
-  const pageSize = Math.max(1, Number(rawPageSize) || DEFAULT_PAGE_SIZE);
+  const {
+    filterField,
+    filterOperator,
+    filterValue,
+    page,
+    pageSize,
+    quickFilterValue,
+    redirectParams,
+    sortBy,
+    sortDirection,
+  } = resolveGridSearchParams({
+    searchParams: rawSearchParams,
+    sortFields: userSortFieldValues,
+    filterFields: userFilterFieldValues,
+    filterOperators: userFilterOperatorValues,
+  });
 
-  const sortBy = userSortFieldValues.find((field) => field === rawSortBy);
-  const sortDirection = sortDirectionValues.find(
-    (direction) => direction === rawSortDirection,
-  );
-
-  const filterField = userFilterFieldValues.find(
-    (field) => field === rawFilterField,
-  );
-  const filterOperator = userFilterOperatorValues.find(
-    (operator) => operator === rawFilterOperator,
-  );
-
-  if (
-    rawQuickFilterEnums !== undefined ||
-    rawPage !== String(page) ||
-    rawPageSize !== String(pageSize) ||
-    rawSortBy !== sortBy ||
-    rawSortDirection !== sortDirection ||
-    !!sortBy !== !!sortDirection ||
-    rawFilterField !== filterField ||
-    rawFilterOperator !== filterOperator ||
-    !!(filterField || filterOperator || filterValue) !==
-      !!(
-        filterField &&
-        filterOperator &&
-        (filterValue || NO_VALUE_FILTER_OPERATORS.includes(filterOperator))
-      )
-  ) {
-    const params = new URLSearchParams({
-      page: String(page),
-      pageSize: String(pageSize),
-      ...(sortBy && sortDirection && { sortBy, sortDirection }),
-      ...(filterField &&
-        filterOperator &&
-        (filterValue || NO_VALUE_FILTER_OPERATORS.includes(filterOperator)) && {
-          filterField,
-          filterOperator,
-          ...(filterValue && { filterValue }),
-        }),
-      ...(rawQuickFilterValue && { quickFilterValue: rawQuickFilterValue }),
-    });
-
-    redirect({ href: `/admins?${params.toString()}`, locale });
-  }
+  if (redirectParams)
+    redirect({ href: `/admins?${redirectParams.toString()}`, locale });
 
   const tAdmins = await getTranslations({ locale, namespace: "admins" });
 
-  const quickFilterEnums = rawQuickFilterValue
-    ? getQuickFilterEnums(rawQuickFilterValue, getAdminEnumOptions(tAdmins))
+  const quickFilterEnums = quickFilterValue
+    ? getQuickFilterEnums(quickFilterValue, getAdminEnumOptions(tAdmins))
     : [];
 
   const fetchOptions = {
@@ -138,7 +98,7 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
       }),
     limit: String(pageSize),
     offset: String((page - 1) * pageSize),
-    ...(rawQuickFilterValue && { quickFilterValue: rawQuickFilterValue }),
+    ...(quickFilterValue && { quickFilterValue }),
     sortBy: sortBy || "createdAt",
     sortDirection: sortDirection || "desc",
   });
@@ -162,7 +122,7 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
       filterValue={filterValue}
       page={page}
       pageSize={pageSize}
-      quickFilterValue={rawQuickFilterValue}
+      quickFilterValue={quickFilterValue}
       rows={rows}
       rowCount={rowCount}
       sortBy={sortBy}

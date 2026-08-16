@@ -10,6 +10,7 @@ import type { Locale } from "@/i18n/routing";
 import { authClient } from "@/lib/auth-client";
 
 import { hasRolePermission } from "@/utils/organizations";
+import { getSession } from "@/utils/session";
 
 interface OrganizationsSlugLocationPageProps {
   params: Promise<{ locale: Locale; slug: string }>;
@@ -34,19 +35,12 @@ const OrganizationsSlugLocationPage = async ({
 
   setRequestLocale(locale);
 
-  const [{ data }, { data: session }] = await Promise.all([
+  const [{ data }, session] = await Promise.all([
     authClient.organization.getFullOrganization({
       query: { organizationSlug: decodeURIComponent(slug) },
       fetchOptions: { headers: { cookie: cookieStore.toString() } },
     }),
-    authClient.getSession({
-      fetchOptions: {
-        headers: {
-          cookie: cookieStore.toString(),
-          origin: process.env.NEXT_PUBLIC_ADMIN_URL!,
-        },
-      },
-    }),
+    getSession(),
   ]);
 
   if (!data) notFound();

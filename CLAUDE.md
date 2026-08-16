@@ -44,7 +44,7 @@ The middleware at `proxy.ts` handles:
 - Global maintenance mode (`NEXT_PUBLIC_MAINTENANCE` env flag)
 - Public pages: `/auth/*` (except `/auth/settings`) and `/company/*`
 
-Next.js rewrites (`next.config.ts`) proxy `/api/:path*` → `NEXT_PUBLIC_NEST_URL/api/:path*` for client-side calls. Local API routes under `app/api/` (ecpay, user, company) are NOT proxied.
+Next.js rewrites (`next.config.ts`) proxy `/api/:path*` → `NEXT_PUBLIC_NEST_URL/api/:path*` for client-side calls. Local API routes under `app/api/` (user) are NOT proxied.
 
 ### State Management
 

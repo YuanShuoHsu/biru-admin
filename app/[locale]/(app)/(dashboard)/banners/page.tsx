@@ -4,9 +4,6 @@ import { cookies } from "next/headers";
 
 import Banners from ".";
 
-import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
-import { DEFAULT_PAGE_SIZE } from "@/constants/pagination";
-
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -14,11 +11,10 @@ import {
   bannerFilterFieldValues,
   bannerSortFieldValues,
   filterOperatorValues,
-  sortDirectionValues,
 } from "@/types/api";
 
 import { getBanners } from "@/utils/banners";
-import { getQuickFilterEnums } from "@/utils/dataGrid";
+import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getBannerEnumOptions } from "@/utils/enumOptions";
 
 interface BannersPageProps {
@@ -46,73 +42,33 @@ export const generateMetadata = async ({
 };
 
 const BannersPage = async ({ params, searchParams }: BannersPageProps) => {
-  const [
-    cookieStore,
-    { locale },
-    {
-      filterField: rawFilterField,
-      filterOperator: rawFilterOperator,
-      filterValue,
-      page: rawPage,
-      pageSize: rawPageSize,
-      quickFilterEnums: rawQuickFilterEnums,
-      quickFilterValue,
-      sortBy: rawSortBy,
-      sortDirection: rawSortDirection,
-      ...restSearchParams
-    },
-  ] = await Promise.all([cookies(), params, searchParams]);
+  const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
+    cookies(),
+    params,
+    searchParams,
+  ]);
 
   setRequestLocale(locale);
 
-  const page = Math.max(1, Number(rawPage) || 1);
-  const pageSize = Math.max(1, Number(rawPageSize) || DEFAULT_PAGE_SIZE);
+  const {
+    filterField,
+    filterOperator,
+    filterValue,
+    page,
+    pageSize,
+    quickFilterValue,
+    redirectParams,
+    sortBy,
+    sortDirection,
+  } = resolveGridSearchParams({
+    searchParams: rawSearchParams,
+    sortFields: bannerSortFieldValues,
+    filterFields: bannerFilterFieldValues,
+    filterOperators: filterOperatorValues,
+  });
 
-  const sortBy = bannerSortFieldValues.find((field) => field === rawSortBy);
-  const sortDirection = sortDirectionValues.find(
-    (direction) => direction === rawSortDirection,
-  );
-
-  const filterField = bannerFilterFieldValues.find(
-    (field) => field === rawFilterField,
-  );
-  const filterOperator = filterOperatorValues.find(
-    (operator) => operator === rawFilterOperator,
-  );
-
-  if (
-    rawQuickFilterEnums !== undefined ||
-    rawPage !== String(page) ||
-    rawPageSize !== String(pageSize) ||
-    rawSortBy !== sortBy ||
-    rawSortDirection !== sortDirection ||
-    !!sortBy !== !!sortDirection ||
-    rawFilterField !== filterField ||
-    rawFilterOperator !== filterOperator ||
-    !!(filterField || filterOperator || filterValue) !==
-      !!(
-        filterField &&
-        filterOperator &&
-        (filterValue || NO_VALUE_FILTER_OPERATORS.includes(filterOperator))
-      )
-  ) {
-    const params = new URLSearchParams({
-      ...restSearchParams,
-      page: String(page),
-      pageSize: String(pageSize),
-      ...(sortBy && sortDirection && { sortBy, sortDirection }),
-      ...(filterField &&
-        filterOperator &&
-        (filterValue || NO_VALUE_FILTER_OPERATORS.includes(filterOperator)) && {
-          filterField,
-          filterOperator,
-          ...(filterValue && { filterValue }),
-        }),
-      ...(quickFilterValue && { quickFilterValue }),
-    });
-
-    redirect({ href: `/banners?${params.toString()}`, locale });
-  }
+  if (redirectParams)
+    redirect({ href: `/banners?${redirectParams.toString()}`, locale });
 
   const tBanners = await getTranslations({ locale, namespace: "banners" });
 

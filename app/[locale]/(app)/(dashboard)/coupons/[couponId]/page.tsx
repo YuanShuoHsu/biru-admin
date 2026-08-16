@@ -5,9 +5,6 @@ import { notFound } from "next/navigation";
 
 import CouponRecipients from ".";
 
-import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
-import { DEFAULT_PAGE_SIZE } from "@/constants/pagination";
-
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -15,11 +12,10 @@ import {
   couponRecipientFilterFieldValues,
   couponRecipientSortFieldValues,
   filterOperatorValues,
-  sortDirectionValues,
 } from "@/types/api";
 
 import { getCoupon, getCouponRecipients } from "@/utils/coupons";
-import { getQuickFilterEnums } from "@/utils/dataGrid";
+import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getCouponRecipientEnumOptions } from "@/utils/enumOptions";
 
 interface CouponRecipientsPageProps {
@@ -50,74 +46,33 @@ const CouponRecipientsPage = async ({
   params,
   searchParams,
 }: CouponRecipientsPageProps) => {
-  const [
-    cookieStore,
-    { couponId, locale },
-    {
-      filterField: rawFilterField,
-      filterOperator: rawFilterOperator,
-      filterValue,
-      page: rawPage,
-      pageSize: rawPageSize,
-      quickFilterEnums: rawQuickFilterEnums,
-      quickFilterValue,
-      sortBy: rawSortBy,
-      sortDirection: rawSortDirection,
-      ...restSearchParams
-    },
-  ] = await Promise.all([cookies(), params, searchParams]);
+  const [cookieStore, { couponId, locale }, rawSearchParams] =
+    await Promise.all([cookies(), params, searchParams]);
 
   setRequestLocale(locale);
 
-  const page = Math.max(1, Number(rawPage) || 1);
-  const pageSize = Math.max(1, Number(rawPageSize) || DEFAULT_PAGE_SIZE);
+  const {
+    filterField,
+    filterOperator,
+    filterValue,
+    page,
+    pageSize,
+    quickFilterValue,
+    redirectParams,
+    sortBy,
+    sortDirection,
+  } = resolveGridSearchParams({
+    searchParams: rawSearchParams,
+    sortFields: couponRecipientSortFieldValues,
+    filterFields: couponRecipientFilterFieldValues,
+    filterOperators: filterOperatorValues,
+  });
 
-  const sortBy = couponRecipientSortFieldValues.find(
-    (field) => field === rawSortBy,
-  );
-  const sortDirection = sortDirectionValues.find(
-    (direction) => direction === rawSortDirection,
-  );
-
-  const filterField = couponRecipientFilterFieldValues.find(
-    (field) => field === rawFilterField,
-  );
-  const filterOperator = filterOperatorValues.find(
-    (operator) => operator === rawFilterOperator,
-  );
-  const isNoValueOperator =
-    !!filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
-  const hasFilter =
-    !!filterField && !!filterOperator && (!!filterValue || isNoValueOperator);
-
-  if (
-    rawQuickFilterEnums !== undefined ||
-    rawPage !== String(page) ||
-    rawPageSize !== String(pageSize) ||
-    rawSortBy !== sortBy ||
-    rawSortDirection !== sortDirection ||
-    !!sortBy !== !!sortDirection ||
-    rawFilterField !== filterField ||
-    rawFilterOperator !== filterOperator ||
-    !!(filterField || filterOperator || filterValue) !== hasFilter
-  ) {
-    const params = new URLSearchParams({
-      ...restSearchParams,
-      page: String(page),
-      pageSize: String(pageSize),
-      ...(sortBy && sortDirection && { sortBy, sortDirection }),
-      ...(filterField &&
-        filterOperator &&
-        (filterValue || isNoValueOperator) && {
-          filterField,
-          filterOperator,
-          ...(filterValue && { filterValue }),
-        }),
-      ...(quickFilterValue && { quickFilterValue }),
+  if (redirectParams)
+    redirect({
+      href: `/coupons/${couponId}?${redirectParams.toString()}`,
+      locale,
     });
-
-    redirect({ href: `/coupons/${couponId}?${params.toString()}`, locale });
-  }
 
   const tCoupons = await getTranslations({ locale, namespace: "coupons" });
 

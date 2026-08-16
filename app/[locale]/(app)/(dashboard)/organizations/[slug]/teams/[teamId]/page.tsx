@@ -10,7 +10,7 @@ import type { Locale } from "@/i18n/routing";
 import { authClient } from "@/lib/auth-client";
 
 import { hasRolePermission } from "@/utils/organizations";
-
+import { getSession } from "@/utils/session";
 import { buildTeamMembers } from "@/utils/teams";
 
 interface OrganizationsSlugTeamsTeamIdPageProps {
@@ -38,28 +38,18 @@ const OrganizationsSlugTeamsTeamIdPage = async ({
 
   const cookieHeader = { cookie: cookieStore.toString() };
 
-  const [
-    { data: activeOrganization },
-    { data: teamMemberData },
-    { data: session },
-  ] = await Promise.all([
-    authClient.organization.getFullOrganization({
-      query: { organizationSlug: decodeURIComponent(slug) },
-      fetchOptions: { headers: cookieHeader },
-    }),
-    authClient.organization.listTeamMembers({
-      query: { teamId },
-      fetchOptions: { headers: cookieHeader },
-    }),
-    authClient.getSession({
-      fetchOptions: {
-        headers: {
-          ...cookieHeader,
-          origin: process.env.NEXT_PUBLIC_ADMIN_URL!,
-        },
-      },
-    }),
-  ]);
+  const [{ data: activeOrganization }, { data: teamMemberData }, session] =
+    await Promise.all([
+      authClient.organization.getFullOrganization({
+        query: { organizationSlug: decodeURIComponent(slug) },
+        fetchOptions: { headers: cookieHeader },
+      }),
+      authClient.organization.listTeamMembers({
+        query: { teamId },
+        fetchOptions: { headers: cookieHeader },
+      }),
+      getSession(),
+    ]);
 
   if (!activeOrganization || !session?.user?.id) notFound();
 

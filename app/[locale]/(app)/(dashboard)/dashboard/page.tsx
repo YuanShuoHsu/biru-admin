@@ -27,6 +27,7 @@ import {
 } from "@/utils/dashboard";
 import { fetcher } from "@/utils/fetcher";
 import { getAdminOrders, isCountedOrder } from "@/utils/orders";
+import { getSession } from "@/utils/session";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
@@ -59,11 +60,10 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
   const fetchOptions = {
     headers: {
       cookie: cookieStore.toString(),
-      origin: process.env.NEXT_PUBLIC_ADMIN_URL!,
     },
   };
 
-  const { data: session } = await authClient.getSession({ fetchOptions });
+  const session = await getSession();
   const isAdmin = session?.user?.role === "admin";
 
   const { data: organizations } = await authClient.organization.list({

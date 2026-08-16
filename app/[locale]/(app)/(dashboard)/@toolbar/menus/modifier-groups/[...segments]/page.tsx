@@ -20,7 +20,6 @@ const ToolbarMenusModifierGroupsSegmentsPage = async ({
     fetchOptions: {
       headers: {
         cookie: cookieStore.toString(),
-        origin: process.env.NEXT_PUBLIC_ADMIN_URL!,
       },
     },
   });
