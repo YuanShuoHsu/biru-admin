@@ -25,8 +25,10 @@ interface GetAuditLogsQuery {
   sortDirection?: SortDirection;
 }
 
-export const getAuditLogsPath = (organizationSlug: string) =>
-  `/api/organizations/${organizationSlug}/audit-logs`;
+export const getAuditLogsPath = (organizationSlug?: string) =>
+  organizationSlug
+    ? `/api/organizations/${organizationSlug}/audit-logs`
+    : "/api/audit-logs";
 
 export const getAuditLogHref = (
   resource: AuditResource,
@@ -61,13 +63,15 @@ export const getAuditLogHref = (
     case "order":
       return `/orders/list/${resourceId}/audit-logs`;
     case "userCoupon":
+    case "coupon":
+    case "banner":
       return null;
   }
 };
 
 export const getAuditLogs = cache(
   async (
-    organizationSlug: string,
+    organizationSlug: string | undefined,
     resource: AuditResource | undefined,
     resourceId: string | undefined,
     ancestorId: string | undefined,

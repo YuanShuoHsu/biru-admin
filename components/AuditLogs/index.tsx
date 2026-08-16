@@ -148,7 +148,7 @@ interface AuditLogsProps {
   filterOperator?: FilterOperator;
   filterValue?: string;
   logs: AuditLogResponse[];
-  organizationSlug: string;
+  organizationSlug?: string;
   page: number;
   pageSize: number;
   quickFilterValue?: string;

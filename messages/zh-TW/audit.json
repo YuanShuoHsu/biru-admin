@@ -67,7 +67,10 @@
     "transFatContent": "反式脂肪",
     "unsaturatedFatContent": "不飽和脂肪"
   },
+  "platformTitle": "平台異動紀錄",
   "resource": {
+    "banner": "輪播圖",
+    "coupon": "優惠券",
     "label": "資源",
     "menu": "菜單",
     "menuItem": "品項",

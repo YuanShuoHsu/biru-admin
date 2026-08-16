@@ -36,6 +36,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/audit-logs": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢平台層異動紀錄（不含任何店家的紀錄） */
+    get: operations["AdminAuditController_findAll"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/audit-logs": {
     parameters: {
       query?: never;
@@ -1174,7 +1191,9 @@ export interface components {
       | "modifier"
       | "menuItemModifierGroup"
       | "order"
-      | "userCoupon";
+      | "userCoupon"
+      | "coupon"
+      | "banner";
     /** @enum {string} */
     AuditAction: "create" | "update" | "delete";
     AuditLogResponseDto: {
@@ -3339,6 +3358,45 @@ export interface operations {
         content: {
           "application/json": string;
         };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminAuditController_findAll: {
+    parameters: {
+      query?: {
+        resource?: components["schemas"]["AuditResource"];
+        resourceId?: string;
+        /** @description 篩出祖先含此 id 的紀錄,例如某張券的所有發放 */
+        ancestorId?: string;
+        filterField?: components["schemas"]["AuditLogFilterField"];
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortBy?: components["schemas"]["AuditLogSortField"];
+        sortDirection?: components["schemas"]["SortDirection"];
+        limit?: number;
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
       /** @description Internal server error */
       500: {
@@ -6155,6 +6213,8 @@ export const auditResourceValues: ReadonlyArray<
   "menuItemModifierGroup",
   "order",
   "userCoupon",
+  "coupon",
+  "banner",
 ];
 export const auditActionValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AuditAction"]

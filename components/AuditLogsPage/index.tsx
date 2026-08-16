@@ -43,6 +43,7 @@ interface AuditLogsPageProps {
   ancestorId?: string;
   href: string;
   locale: Locale;
+  platform?: boolean;
   resource?: AuditResource;
   resourceId?: string;
   searchParams: AuditLogSearchParams;
@@ -52,6 +53,7 @@ const AuditLogsPage = async ({
   ancestorId,
   href,
   locale,
+  platform = false,
   resource,
   resourceId,
   searchParams,
@@ -93,15 +95,15 @@ const AuditLogsPage = async ({
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const selectedOrganization = await getResolvedAdminOrganization(
-    organization,
-    cookieStore.toString(),
-  );
-  if (!selectedOrganization) notFound();
+  // 平台層紀錄不屬於任何店家，解析組織只會把它導到某一家店去
+  const selectedOrganization = platform
+    ? undefined
+    : await getResolvedAdminOrganization(organization, cookieStore.toString());
+  if (!platform && !selectedOrganization) notFound();
 
   if (
     rawQuickFilterEnums !== undefined ||
-    organization !== selectedOrganization.slug ||
+    (!platform && organization !== selectedOrganization?.slug) ||
     rawPage !== String(page) ||
     rawPageSize !== String(pageSize) ||
     rawSortBy !== sortBy ||
@@ -113,7 +115,7 @@ const AuditLogsPage = async ({
   ) {
     const params = new URLSearchParams({
       ...restSearchParams,
-      organization: selectedOrganization.slug,
+      ...(selectedOrganization && { organization: selectedOrganization.slug }),
       page: String(page),
       pageSize: String(pageSize),
       ...(sortBy && sortDirection && { sortBy, sortDirection }),
@@ -130,12 +132,18 @@ const AuditLogsPage = async ({
     redirect({ href: `${href}?${params.toString()}`, locale });
   }
 
-  const { data: memberRole } =
-    await authClient.organization.getActiveMemberRole({
-      query: { organizationId: selectedOrganization.id },
-      fetchOptions,
-    });
-  if (!hasRolePermission(memberRole?.role, { auditLog: ["read"] })) notFound();
+  if (selectedOrganization) {
+    const { data: memberRole } =
+      await authClient.organization.getActiveMemberRole({
+        query: { organizationId: selectedOrganization.id },
+        fetchOptions,
+      });
+    if (!hasRolePermission(memberRole?.role, { auditLog: ["read"] }))
+      notFound();
+  } else {
+    const session = await authClient.getSession({ fetchOptions });
+    if (session.data?.user?.role !== "admin") notFound();
+  }
 
   const tAudit = await getTranslations({ locale, namespace: "audit" });
 
@@ -147,7 +155,7 @@ const AuditLogsPage = async ({
     : [];
 
   const { logs, total } = await getAuditLogs(
-    selectedOrganization.slug,
+    selectedOrganization?.slug,
     resource,
     resourceId,
     ancestorId,
@@ -172,7 +180,7 @@ const AuditLogsPage = async ({
       filterOperator={filterOperator}
       filterValue={filterValue}
       logs={logs}
-      organizationSlug={selectedOrganization.slug}
+      organizationSlug={selectedOrganization?.slug}
       page={page}
       pageSize={pageSize}
       quickFilterValue={quickFilterValue}

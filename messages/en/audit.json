@@ -67,7 +67,10 @@
     "transFatContent": "Trans fat",
     "unsaturatedFatContent": "Unsaturated fat"
   },
+  "platformTitle": "Platform change history",
   "resource": {
+    "banner": "Banner",
+    "coupon": "Coupon",
     "label": "Resource",
     "menu": "Menu",
     "menuItem": "Item",

@@ -67,7 +67,10 @@
     "transFatContent": "トランス脂肪酸",
     "unsaturatedFatContent": "不飽和脂肪酸"
   },
+  "platformTitle": "プラットフォーム変更履歴",
   "resource": {
+    "banner": "バナー",
+    "coupon": "クーポン",
     "label": "リソース",
     "menu": "メニュー",
     "menuItem": "品目",
