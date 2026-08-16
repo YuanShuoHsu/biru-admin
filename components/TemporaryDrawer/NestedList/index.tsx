@@ -60,11 +60,13 @@ const useNavItems = (): NavItem[][] => {
       ...(defaultOrganizationSlug
         ? [navItem("/orders"), navItem("/menus")]
         : []),
+    ],
+    [
       ...(isAdmin || defaultOrganizationSlug ? [navItem("/coupons")] : []),
+      navItem("/organizations"),
       ...(isAdmin || hasRolePermission(memberRole, { auditLog: ["read"] })
         ? [navItem("/audit-logs")]
         : []),
-      navItem("/organizations"),
     ],
     ...(isAdmin ? [[navItem("/banners"), navItem("/admins")]] : []),
     [
