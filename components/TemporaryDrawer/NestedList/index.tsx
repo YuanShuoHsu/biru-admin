@@ -61,8 +61,6 @@ const useNavItems = (): NavItem[][] => {
         ? [navItem("/orders"), navItem("/menus")]
         : []),
       ...(isAdmin || defaultOrganizationSlug ? [navItem("/coupons")] : []),
-      // 沒有 auditLog:read 的成員進頁面會 notFound，不能只靠有沒有組織來顯示；
-      // 平台管理員即使不屬於任何店家，這頁仍看得到平台層紀錄
       ...(isAdmin || hasRolePermission(memberRole, { auditLog: ["read"] })
         ? [navItem("/audit-logs")]
         : []),

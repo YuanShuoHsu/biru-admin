@@ -67,6 +67,8 @@
     "transFatContent": "反式脂肪",
     "unsaturatedFatContent": "不饱和脂肪"
   },
+  "organization": "店家",
+  "platform": "平台",
   "resource": {
     "banner": "轮播图",
     "coupon": "优惠券",

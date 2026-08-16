@@ -1,5 +1,7 @@
 import type { useTranslations } from "next-intl";
 
+import { PLATFORM_ORGANIZATION_ID } from "@/constants/organizations";
+
 import {
   auditActionValues,
   auditResourceValues,
@@ -18,11 +20,18 @@ import type { OrganizationResponse } from "@/types/organizations";
 export const getAuditLogEnumOptions = (
   tAudit: ReturnType<typeof useTranslations<"audit">>,
   hasResourceColumn: boolean,
+  organizations: OrganizationResponse[],
 ) => ({
   action: auditActionValues.map((value) => ({
     label: tAudit(`action.${value}`),
     value,
   })),
+  organizationId: organizations.length
+    ? [
+        { label: tAudit("platform"), value: PLATFORM_ORGANIZATION_ID },
+        ...organizations.map(({ id, name }) => ({ label: name, value: id })),
+      ]
+    : [],
   resource: hasResourceColumn
     ? auditResourceValues.map((value) => ({
         label: tAudit(`resource.${value}`),

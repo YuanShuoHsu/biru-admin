@@ -33,7 +33,6 @@ const CouponAuditLogsPage = async ({
   setRequestLocale(locale);
 
   return (
-    // 發放紀錄的 resourceId 是 userCoupon 自己的 id，券只能從 ancestorIds 篩
     <AuditLogsPage
       ancestorId={couponId}
       href={`/coupons/${couponId}/audit-logs`}

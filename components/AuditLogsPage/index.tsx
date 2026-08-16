@@ -24,7 +24,7 @@ import { getAuditLogs } from "@/utils/audit";
 import { getQuickFilterEnums } from "@/utils/dataGrid";
 import { getAuditLogEnumOptions } from "@/utils/enumOptions";
 import { getResolvedAdminOrganization } from "@/utils/menus";
-import { hasRolePermission } from "@/utils/organizations";
+import { getOrganizations, hasRolePermission } from "@/utils/organizations";
 
 export interface AuditLogSearchParams {
   filterField?: string;
@@ -41,10 +41,9 @@ export interface AuditLogSearchParams {
 
 interface AuditLogsPageProps {
   ancestorId?: string;
+  adminScope?: boolean;
   href: string;
   locale: Locale;
-  /** 只有全站時間軸傳：管理員未指定店家時看的是平台層紀錄 */
-  platformScope?: boolean;
   resource?: AuditResource;
   resourceId?: string;
   searchParams: AuditLogSearchParams;
@@ -52,9 +51,9 @@ interface AuditLogsPageProps {
 
 const AuditLogsPage = async ({
   ancestorId,
+  adminScope = false,
   href,
   locale,
-  platformScope = false,
   resource,
   resourceId,
   searchParams,
@@ -96,22 +95,20 @@ const AuditLogsPage = async ({
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  // 平台層紀錄不屬於任何店家，解析組織只會把它導到某一家店去。用「沒指定店家」表示
-  // 平台範圍而不是另闢參數值：slug 只要求含字母，任何哨兵字串都可能被店家用掉
-  const session = platformScope
+  const session = adminScope
     ? await authClient.getSession({ fetchOptions })
     : undefined;
-  const platform =
-    platformScope && !organization && session?.data?.user?.role === "admin";
 
-  const selectedOrganization = platform
+  const isAdmin = session?.data?.user?.role === "admin";
+
+  const selectedOrganization = isAdmin
     ? undefined
     : await getResolvedAdminOrganization(organization, cookieStore.toString());
-  if (!platform && !selectedOrganization) notFound();
+  if (!isAdmin && !selectedOrganization) notFound();
 
   if (
     rawQuickFilterEnums !== undefined ||
-    (!platform && organization !== selectedOrganization?.slug) ||
+    (!isAdmin && organization !== selectedOrganization?.slug) ||
     rawPage !== String(page) ||
     rawPageSize !== String(pageSize) ||
     rawSortBy !== sortBy ||
@@ -140,7 +137,6 @@ const AuditLogsPage = async ({
     redirect({ href: `${href}?${params.toString()}`, locale });
   }
 
-  // 平台範圍在上面已經驗過是管理員，這裡只剩店家範圍要查組織角色
   if (selectedOrganization) {
     const { data: memberRole } =
       await authClient.organization.getActiveMemberRole({
@@ -151,12 +147,15 @@ const AuditLogsPage = async ({
       notFound();
   }
 
-  const tAudit = await getTranslations({ locale, namespace: "audit" });
+  const [tAudit, organizations] = await Promise.all([
+    getTranslations({ locale, namespace: "audit" }),
+    isAdmin ? getOrganizations(fetchOptions) : [],
+  ]);
 
   const quickFilterEnums = quickFilterValue
     ? getQuickFilterEnums(
         quickFilterValue,
-        getAuditLogEnumOptions(tAudit, !resource),
+        getAuditLogEnumOptions(tAudit, !resource, organizations),
       )
     : [];
 
@@ -186,6 +185,7 @@ const AuditLogsPage = async ({
       filterOperator={filterOperator}
       filterValue={filterValue}
       logs={logs}
+      organizations={organizations}
       organizationSlug={selectedOrganization?.slug}
       page={page}
       pageSize={pageSize}

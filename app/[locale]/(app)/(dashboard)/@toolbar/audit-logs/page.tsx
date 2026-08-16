@@ -23,17 +23,17 @@ const ToolbarAuditLogsPage = async ({
     },
   };
 
-  const [{ data: organizations }, session] = await Promise.all([
-    authClient.organization.list({ fetchOptions }),
+  const [{ data: session }, { data: organizations }] = await Promise.all([
     authClient.getSession({ fetchOptions }),
+    authClient.organization.list({ fetchOptions }),
   ]);
+
+  if (session?.user?.role === "admin") return null;
 
   return (
     <OrganizationSelect
       organizations={organizations || []}
       organizationSlug={organization}
-      // 只有平台管理員讀得到平台層紀錄，給別人選只會被導回自己的店家
-      platformOption={session.data?.user?.role === "admin"}
     />
   );
 };

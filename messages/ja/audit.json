@@ -67,6 +67,8 @@
     "transFatContent": "トランス脂肪酸",
     "unsaturatedFatContent": "不飽和脂肪酸"
   },
+  "organization": "店舗",
+  "platform": "プラットフォーム",
   "resource": {
     "banner": "バナー",
     "coupon": "クーポン",

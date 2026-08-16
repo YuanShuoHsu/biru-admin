@@ -328,7 +328,7 @@ const routes: Route[] = [
   {
     icon: History,
     label: "audit.title",
-    query: ["page", "pageSize"],
+    query: ["organization", "page", "pageSize"],
     segment: "audit-logs",
   },
   {

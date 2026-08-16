@@ -43,7 +43,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** 查詢平台層異動紀錄（不含任何店家的紀錄） */
+    /** 查詢全平台異動紀錄（含所有店家與平台層的紀錄） */
     get: operations["AdminAuditController_findAll"];
     put?: never;
     post?: never;
@@ -1202,6 +1202,8 @@ export interface components {
       actorId?: string | null;
       actorName: string;
       actorEmail: string;
+      /** @description 異動所屬店家；平台層異動（優惠券定義、輪播圖）為 null */
+      organizationId?: string | null;
       resource: components["schemas"]["AuditResource"];
       resourceId: string;
       /** @description 寫入當下的名稱快照；多語名稱為 locale → 名稱的物件，訂單編號等單語識別為字串 */
@@ -1231,6 +1233,7 @@ export interface components {
       | "actorName"
       | "actorEmail"
       | "resourceId"
+      | "organizationId"
       | "resource"
       | "action"
       | "createdAt";
@@ -6225,6 +6228,7 @@ export const auditLogFilterFieldValues: ReadonlyArray<
   "actorName",
   "actorEmail",
   "resourceId",
+  "organizationId",
   "resource",
   "action",
   "createdAt",

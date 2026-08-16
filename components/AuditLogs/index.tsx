@@ -15,6 +15,7 @@ import {
   DEFAULT_PAGINATION_QUERY,
   getPageSizeOptions,
 } from "@/constants/pagination";
+import { PLATFORM_ORGANIZATION_ID } from "@/constants/organizations";
 
 import { useAuditLogObjectLabels } from "@/hooks/useAuditLogObjectLabels";
 import { useAuditLogValueLabels } from "@/hooks/useAuditLogValueLabels";
@@ -46,6 +47,7 @@ import type {
 } from "@/types/audit";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { LocalizedText } from "@/types/locale";
+import type { OrganizationResponse } from "@/types/organizations";
 
 import { getAuditLogHref, getAuditLogsPath } from "@/utils/audit";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
@@ -148,6 +150,7 @@ interface AuditLogsProps {
   filterOperator?: FilterOperator;
   filterValue?: string;
   logs: AuditLogResponse[];
+  organizations: OrganizationResponse[];
   organizationSlug?: string;
   page: number;
   pageSize: number;
@@ -165,6 +168,7 @@ const AuditLogs = ({
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
   logs: initialLogs,
+  organizations,
   organizationSlug,
   page,
   pageSize,
@@ -221,8 +225,8 @@ const AuditLogs = ({
   const dateFilterOperators = useDateFilterOperators();
 
   const enumOptions = useMemo(
-    () => getAuditLogEnumOptions(tAudit, !resource),
-    [resource, tAudit],
+    () => getAuditLogEnumOptions(tAudit, !resource, organizations),
+    [organizations, resource, tAudit],
   );
   const valueLabels = useAuditLogValueLabels();
   const objectLabels = useAuditLogObjectLabels();
@@ -398,6 +402,20 @@ const AuditLogs = ({
         filterOperators: stringFilterOperators,
         headerName: tAudit("actorEmail"),
       },
+      // 只有跨店家範圍才有這欄：單一店家的頁面每一列都是同一家，顯示只是重複
+      ...(organizations.length
+        ? [
+            {
+              field: "organizationId",
+              filterOperators: enumFilterOperators,
+              headerName: tAudit("organization"),
+              type: "singleSelect" as const,
+              valueGetter: (value: string | null) =>
+                value ?? PLATFORM_ORGANIZATION_ID,
+              valueOptions: enumOptions.organizationId,
+            },
+          ]
+        : []),
       ...(resource
         ? []
         : [
@@ -491,6 +509,7 @@ const AuditLogs = ({
       format,
       getValueText,
       locale,
+      organizations,
       resource,
       searchParams,
       stringFilterOperators,

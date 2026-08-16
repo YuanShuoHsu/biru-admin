@@ -67,6 +67,8 @@
     "transFatContent": "트랜스지방",
     "unsaturatedFatContent": "불포화지방"
   },
+  "organization": "매장",
+  "platform": "플랫폼",
   "resource": {
     "banner": "배너",
     "coupon": "쿠폰",

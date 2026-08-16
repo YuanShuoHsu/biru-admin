@@ -67,6 +67,8 @@
     "transFatContent": "Trans fat",
     "unsaturatedFatContent": "Unsaturated fat"
   },
+  "organization": "Store",
+  "platform": "Platform",
   "resource": {
     "banner": "Banner",
     "coupon": "Coupon",

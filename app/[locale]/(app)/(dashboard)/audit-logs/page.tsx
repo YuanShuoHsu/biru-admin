@@ -31,9 +31,9 @@ const OrganizationAuditLogsPage = async ({
 
   return (
     <AuditLogsPage
+      adminScope
       href="/audit-logs"
       locale={locale}
-      platformScope
       searchParams={query}
     />
   );
