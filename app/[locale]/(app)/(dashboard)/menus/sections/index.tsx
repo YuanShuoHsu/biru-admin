@@ -64,8 +64,8 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type {
   Menu,
-  MenuSectionFilterField,
   MenuSection,
+  MenuSectionFilterField,
   MenuSectionSortField,
 } from "@/types/menus";
 
@@ -445,60 +445,73 @@ const MenusMenuId = ({
             },
           ]
         : []),
-      {
-        disableColumnMenu: true,
-        field: "actions",
-        filterable: false,
-        headerName: tMenus("sections.actions.label"),
-        renderCell: ({ row }: GridRenderCellParams<MenuSection>) => (
-          <Stack height="100%" direction="row" alignItems="center" gap={1}>
-            <Tooltip title={tMenus("sections.actions.viewItems.title")}>
-              <IconButton
-                onClick={(event) => {
-                  event.stopPropagation();
-
-                  handleViewSection(row);
-                }}
-                size="small"
-              >
-                <ListAlt fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            {canWrite && (
-              <Tooltip title={tMenus("sections.actions.updateSection.title")}>
-                <IconButton
-                  onClick={(event) => {
-                    event.stopPropagation();
-
-                    handleUpdateSection(row);
-                  }}
-                  size="small"
+      ...(!isReorderMode
+        ? [
+            {
+              disableColumnMenu: true,
+              field: "actions",
+              filterable: false,
+              headerName: tMenus("sections.actions.label"),
+              renderCell: ({ row }: GridRenderCellParams<MenuSection>) => (
+                <Stack
+                  height="100%"
+                  direction="row"
+                  alignItems="center"
+                  gap={1}
                 >
-                  <Edit fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
-            {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
-            {canWrite && (
-              <Tooltip title={tMenus("sections.actions.deleteSection.title")}>
-                <IconButton
-                  color="error"
-                  onClick={(event) => {
-                    event.stopPropagation();
+                  <Tooltip title={tMenus("sections.actions.viewItems.title")}>
+                    <IconButton
+                      onClick={(event) => {
+                        event.stopPropagation();
 
-                    handleDeleteSection(row);
-                  }}
-                  size="small"
-                >
-                  <Delete fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
-          </Stack>
-        ),
-        resizable: false,
-        sortable: false,
-      },
+                        handleViewSection(row);
+                      }}
+                      size="small"
+                    >
+                      <ListAlt fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                  {canWrite && (
+                    <Tooltip
+                      title={tMenus("sections.actions.updateSection.title")}
+                    >
+                      <IconButton
+                        onClick={(event) => {
+                          event.stopPropagation();
+
+                          handleUpdateSection(row);
+                        }}
+                        size="small"
+                      >
+                        <Edit fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                  {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
+                  {canWrite && (
+                    <Tooltip
+                      title={tMenus("sections.actions.deleteSection.title")}
+                    >
+                      <IconButton
+                        color="error"
+                        onClick={(event) => {
+                          event.stopPropagation();
+
+                          handleDeleteSection(row);
+                        }}
+                        size="small"
+                      >
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </Stack>
+              ),
+              resizable: false,
+              sortable: false,
+            },
+          ]
+        : []),
       {
         field: "name",
         filterOperators: stringFilterOperators,

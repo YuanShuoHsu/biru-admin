@@ -65,8 +65,8 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type {
   Menu,
-  ModifierGroupFilterField,
   ModifierGroup,
+  ModifierGroupFilterField,
   ModifierGroupSortField,
 } from "@/types/menus";
 
@@ -448,66 +448,75 @@ const ModifierGroups = ({
             },
           ]
         : []),
-      {
-        disableColumnMenu: true,
-        field: "actions",
-        filterable: false,
-        headerName: tMenus("modifierGroups.actions.label"),
-        renderCell: ({ row }: GridRenderCellParams<ModifierGroup>) => (
-          <Stack height="100%" direction="row" alignItems="center" gap={1}>
-            <Tooltip
-              title={tMenus("modifierGroups.actions.viewModifiers.title")}
-            >
-              <IconButton
-                onClick={(event) => {
-                  event.stopPropagation();
-
-                  handleViewModifiers(row);
-                }}
-                size="small"
-              >
-                <Checklist fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            {canWrite && (
-              <Tooltip
-                title={tMenus("modifierGroups.actions.updateGroup.title")}
-              >
-                <IconButton
-                  onClick={(event) => {
-                    event.stopPropagation();
-
-                    handleUpdateModifierGroup(row);
-                  }}
-                  size="small"
+      ...(!isReorderMode
+        ? [
+            {
+              disableColumnMenu: true,
+              field: "actions",
+              filterable: false,
+              headerName: tMenus("modifierGroups.actions.label"),
+              renderCell: ({ row }: GridRenderCellParams<ModifierGroup>) => (
+                <Stack
+                  height="100%"
+                  direction="row"
+                  alignItems="center"
+                  gap={1}
                 >
-                  <Edit fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
-            {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
-            {canWrite && (
-              <Tooltip
-                title={tMenus("modifierGroups.actions.deleteGroup.title")}
-              >
-                <IconButton
-                  color="error"
-                  onClick={(event) => {
-                    event.stopPropagation();
+                  <Tooltip
+                    title={tMenus("modifierGroups.actions.viewModifiers.title")}
+                  >
+                    <IconButton
+                      onClick={(event) => {
+                        event.stopPropagation();
 
-                    handleDeleteModifierGroup(row);
-                  }}
-                  size="small"
-                >
-                  <Delete fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
-          </Stack>
-        ),
-        resizable: false,
-        sortable: false,
-      },
+                        handleViewModifiers(row);
+                      }}
+                      size="small"
+                    >
+                      <Checklist fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                  {canWrite && (
+                    <Tooltip
+                      title={tMenus("modifierGroups.actions.updateGroup.title")}
+                    >
+                      <IconButton
+                        onClick={(event) => {
+                          event.stopPropagation();
+
+                          handleUpdateModifierGroup(row);
+                        }}
+                        size="small"
+                      >
+                        <Edit fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                  {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
+                  {canWrite && (
+                    <Tooltip
+                      title={tMenus("modifierGroups.actions.deleteGroup.title")}
+                    >
+                      <IconButton
+                        color="error"
+                        onClick={(event) => {
+                          event.stopPropagation();
+
+                          handleDeleteModifierGroup(row);
+                        }}
+                        size="small"
+                      >
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </Stack>
+              ),
+              resizable: false,
+              sortable: false,
+            },
+          ]
+        : []),
       {
         field: "displayName",
         filterOperators: stringFilterOperators,

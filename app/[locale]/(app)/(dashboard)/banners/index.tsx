@@ -408,43 +408,52 @@ const Banners = ({
             },
           ]
         : []),
-      {
-        disableColumnMenu: true,
-        field: "actions",
-        filterable: false,
-        headerName: tBanners("actions.label"),
-        renderCell: ({ row }: GridRenderCellParams<Banner>) => (
-          <Stack height="100%" direction="row" alignItems="center" gap={1}>
-            <Tooltip title={tBanners("actions.updateBanner.title")}>
-              <IconButton
-                onClick={(event) => {
-                  event.stopPropagation();
+      ...(!isReorderMode
+        ? [
+            {
+              disableColumnMenu: true,
+              field: "actions",
+              filterable: false,
+              headerName: tBanners("actions.label"),
+              renderCell: ({ row }: GridRenderCellParams<Banner>) => (
+                <Stack
+                  height="100%"
+                  direction="row"
+                  alignItems="center"
+                  gap={1}
+                >
+                  <Tooltip title={tBanners("actions.updateBanner.title")}>
+                    <IconButton
+                      onClick={(event) => {
+                        event.stopPropagation();
 
-                  handleUpdateBanner(row);
-                }}
-                size="small"
-              >
-                <Edit fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title={tBanners("actions.deleteBanner.title")}>
-              <IconButton
-                color="error"
-                onClick={(event) => {
-                  event.stopPropagation();
+                        handleUpdateBanner(row);
+                      }}
+                      size="small"
+                    >
+                      <Edit fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title={tBanners("actions.deleteBanner.title")}>
+                    <IconButton
+                      color="error"
+                      onClick={(event) => {
+                        event.stopPropagation();
 
-                  handleDeleteBanner(row);
-                }}
-                size="small"
-              >
-                <Delete fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </Stack>
-        ),
-        resizable: false,
-        sortable: false,
-      },
+                        handleDeleteBanner(row);
+                      }}
+                      size="small"
+                    >
+                      <Delete fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </Stack>
+              ),
+              resizable: false,
+              sortable: false,
+            },
+          ]
+        : []),
       {
         disableColumnMenu: true,
         field: "image",
