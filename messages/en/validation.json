@@ -49,7 +49,8 @@
     "required": "Current password is required."
   },
   "customerAddr": {
-    "required": "Company address is required."
+    "required": "Company address is required.",
+    "requiredForPaper": "Address is required when requesting a printed invoice."
   },
   "customerIdentifier": {
     "invalid": "Tax ID is not valid.",

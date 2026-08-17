@@ -57,6 +57,11 @@
       "individual": "ECPay キャリア",
       "mobile": "携帯バーコード",
       "none": "紙で受け取る",
+      "paperAddr": {
+        "helper": "紙のインボイス発行に必要です。インボイスには印字されません",
+        "label": "住所",
+        "placeholder": "あなたの住所を入力してください"
+      },
       "personal": "個人インボイス",
       "title": "インボイスの種類"
     },

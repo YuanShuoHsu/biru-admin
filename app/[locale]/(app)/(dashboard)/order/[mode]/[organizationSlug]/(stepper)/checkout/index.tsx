@@ -637,6 +637,20 @@ const OrderModeOrganizationSlugCheckout = () => {
                 {...register("invoice.carrierNum")}
               />
             )}
+          {invoiceType === "personal" && carrierType === "none" && (
+            <TextField
+              error={!!errors.invoice?.customerAddr}
+              fullWidth
+              helperText={
+                errors.invoice?.customerAddr?.message ??
+                tOrder("checkout.invoice.paperAddr.helper")
+              }
+              label={tOrder("checkout.invoice.paperAddr.label")}
+              placeholder={tOrder("checkout.invoice.paperAddr.placeholder")}
+              required
+              {...register("invoice.customerAddr")}
+            />
+          )}
           {invoiceType === "company" && (
             <>
               <TextField

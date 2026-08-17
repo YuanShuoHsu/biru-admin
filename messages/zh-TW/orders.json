@@ -6,6 +6,10 @@
       "title": "補開發票"
     },
     "label": "操作",
+    "printInvoice": {
+      "blocked": "瀏覽器擋下了列印視窗，請允許彈出視窗後再試一次。",
+      "title": "列印發票"
+    },
     "updateCustomer": {
       "success": "已更新訂單 {orderNumber} 的顧客資訊",
       "title": "編輯顧客資訊"

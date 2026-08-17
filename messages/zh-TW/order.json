@@ -57,6 +57,11 @@
       "individual": "綠界載具",
       "mobile": "手機條碼",
       "none": "索取紙本",
+      "paperAddr": {
+        "helper": "開立紙本發票需要，不會印在發票上",
+        "label": "地址",
+        "placeholder": "請輸入您的地址"
+      },
       "personal": "個人發票",
       "title": "發票類型"
     },

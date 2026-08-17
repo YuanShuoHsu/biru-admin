@@ -6,6 +6,10 @@
       "title": "インボイスを発行"
     },
     "label": "操作",
+    "printInvoice": {
+      "blocked": "ブラウザが印刷ウィンドウをブロックしました。ポップアップを許可して再試行してください。",
+      "title": "インボイスを印刷"
+    },
     "updateCustomer": {
       "success": "注文 {orderNumber} のお客様情報を更新しました",
       "title": "お客様情報を編集"

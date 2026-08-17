@@ -547,6 +547,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/orders/{orderId}/invoice/print": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 取得發票列印網址（熱感應紙，1 小時內有效） */
+    post: operations["EcpayOrderInvoiceController_print"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/menu-item-sales": {
     parameters: {
       query?: never;
@@ -2031,6 +2048,13 @@ export interface components {
       createdAt: string;
       /** Format: date-time */
       updatedAt: string;
+    };
+    OrderInvoicePrintDto: {
+      /**
+       * @description 發票列印網址（熱感應紙格式），自取得起 1 小時內有效
+       * @example https://vendor.ecpay.com.tw/Einvoice/...
+       */
+      printUrl: string;
     };
     MenuItemSalesResponseDto: {
       menuItemId: string;
@@ -4171,6 +4195,35 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["OrderInvoiceDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  EcpayOrderInvoiceController_print: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        orderId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderInvoicePrintDto"];
         };
       };
       /** @description Internal server error */

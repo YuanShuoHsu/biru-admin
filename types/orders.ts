@@ -16,6 +16,8 @@ export type AdminOrderBoardColumn =
   components["schemas"]["AdminOrderBoardColumnDto"];
 export type AdminOrderResponse = components["schemas"]["AdminOrderResponseDto"];
 export type OrderInvoice = components["schemas"]["OrderInvoiceDto"];
+
+export type OrderInvoicePrint = components["schemas"]["OrderInvoicePrintDto"];
 export type OrderTransition = components["schemas"]["OrderTransitionDto"];
 
 export type OrderMode = OrderResponse["mode"];

@@ -57,6 +57,11 @@
       "individual": "ECPay 캐리어",
       "mobile": "모바일 바코드",
       "none": "종이로 받기",
+      "paperAddr": {
+        "helper": "종이 영수증 발행에 필요하며, 영수증에는 표시되지 않습니다",
+        "label": "주소",
+        "placeholder": "귀하의 주소를 입력해 주세요"
+      },
       "personal": "개인 영수증",
       "title": "영수증 유형"
     },

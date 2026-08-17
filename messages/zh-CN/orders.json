@@ -6,6 +6,10 @@
       "title": "补开发票"
     },
     "label": "操作",
+    "printInvoice": {
+      "blocked": "浏览器拦截了打印窗口，请允许弹出窗口后再试一次。",
+      "title": "打印发票"
+    },
     "updateCustomer": {
       "success": "已更新订单 {orderNumber} 的顾客信息",
       "title": "编辑顾客信息"

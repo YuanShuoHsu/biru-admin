@@ -6,6 +6,10 @@
       "title": "Issue invoice"
     },
     "label": "Actions",
+    "printInvoice": {
+      "blocked": "The browser blocked the print window. Allow pop-ups and try again.",
+      "title": "Print invoice"
+    },
     "updateCustomer": {
       "success": "Customer information for order {orderNumber} updated",
       "title": "Edit customer information"

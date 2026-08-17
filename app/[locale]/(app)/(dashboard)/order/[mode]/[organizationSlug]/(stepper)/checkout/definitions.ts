@@ -140,6 +140,16 @@ export const useCustomerPaymentFormSchema = () => {
                 path: ["invoice", "carrierNum"],
               });
             }
+          } else if (
+            data.invoice.carrierType === "none" &&
+            !data.invoice.customerAddr
+          ) {
+            // 綠界 Print=1 才給列印網址，而它要求一併帶買受人地址，少了紙就印不出來
+            ctx.addIssue({
+              code: "custom",
+              message: tValidation("customerAddr.requiredForPaper"),
+              path: ["invoice", "customerAddr"],
+            });
           }
           break;
         case "company":

@@ -57,6 +57,11 @@
       "individual": "绿界载具",
       "mobile": "手机条码",
       "none": "索取纸本",
+      "paperAddr": {
+        "helper": "开立纸本发票需要，不会印在发票上",
+        "label": "地址",
+        "placeholder": "请输入您的地址"
+      },
       "personal": "个人发票",
       "title": "发票类型"
     },

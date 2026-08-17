@@ -6,6 +6,10 @@
       "title": "영수증 발행"
     },
     "label": "작업",
+    "printInvoice": {
+      "blocked": "브라우저가 인쇄 창을 차단했습니다. 팝업을 허용한 후 다시 시도해 주세요.",
+      "title": "영수증 인쇄"
+    },
     "updateCustomer": {
       "success": "주문 {orderNumber}의 고객 정보를 수정했습니다",
       "title": "고객 정보 수정"

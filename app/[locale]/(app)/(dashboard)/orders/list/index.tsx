@@ -29,6 +29,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import {
   Cancel,
   Edit,
+  Print,
   Receipt,
   ReceiptLong,
   Redo,
@@ -58,6 +59,7 @@ import type {
   AdminOrderResponse,
   OrderFilterField,
   OrderInvoice,
+  OrderInvoicePrint,
   OrderSortField,
   OrderStatus,
   OrderTransition,
@@ -100,6 +102,12 @@ const TRANSITION_SLOTS: OrderTransition["direction"][][] = [
 
 const canIssueInvoice = ({ invoice, paymentDate }: AdminOrderResponse) =>
   !!paymentDate && invoice?.status === "pending";
+
+// 存進載具或捐出去的發票沒有紙本，綠界也不會給列印網址
+const canPrintInvoice = ({ invoice }: AdminOrderResponse) =>
+  invoice?.status === "issued" &&
+  !invoice.carrierType &&
+  invoice.type !== "donate";
 
 interface OrdersProps {
   canViewAuditLog: boolean;
@@ -421,8 +429,34 @@ const Orders = ({
     [handleIssueInvoice, setDialog, tOrders],
   );
 
+  const handlePrintInvoice = useCallback(
+    async (order: AdminOrderResponse) => {
+      try {
+        const { printUrl } = await fetcher<OrderInvoicePrint>(
+          `/api/organizations/${organizationSlug}/orders/${order.id}/invoice/print`,
+          { method: "POST" },
+        );
+
+        // 開新視窗才印得到綠界的列印頁；被瀏覽器擋掉時至少讓使用者知道
+        const printWindow = window.open(printUrl, "_blank");
+        if (!printWindow)
+          enqueueSnackbar(tOrders("actions.printInvoice.blocked"), {
+            variant: "warning",
+          });
+      } catch (error) {
+        enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+      }
+    },
+    [organizationSlug, tOrders],
+  );
+
   const hasPendingInvoice = useMemo(
     () => orders.some(canIssueInvoice),
+    [orders],
+  );
+
+  const hasPrintableInvoice = useMemo(
+    () => orders.some(canPrintInvoice),
     [orders],
   );
 
@@ -478,6 +512,21 @@ const Orders = ({
                   visible={canIssueInvoice(row)}
                 >
                   <Receipt fontSize="small" />
+                </StyledIconButton>
+              </Tooltip>
+            )}
+            {hasPrintableInvoice && (
+              <Tooltip title={tOrders("actions.printInvoice.title")}>
+                <StyledIconButton
+                  onClick={(event) => {
+                    event.stopPropagation();
+
+                    if (canPrintInvoice(row)) void handlePrintInvoice(row);
+                  }}
+                  size="small"
+                  visible={canPrintInvoice(row)}
+                >
+                  <Print fontSize="small" />
                 </StyledIconButton>
               </Tooltip>
             )}
@@ -610,9 +659,11 @@ const Orders = ({
       format,
       handleConfirmIssueInvoice,
       handleConfirmStatusAction,
+      handlePrintInvoice,
       handleUpdateCustomer,
       handleViewOrder,
       hasPendingInvoice,
+      hasPrintableInvoice,
       hasTransitions,
       locale,
       numberFilterOperators,

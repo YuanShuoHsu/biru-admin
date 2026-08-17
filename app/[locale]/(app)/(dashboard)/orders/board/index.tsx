@@ -8,6 +8,7 @@ import useSWR from "swr";
 import { MODE_COLORS } from "@/constants/orderMode";
 import { STATUS_COLORS, STATUS_TEXT_COLORS } from "@/constants/orders";
 
+import useInvoiceAutoPrint from "@/hooks/useInvoiceAutoPrint";
 import { useSocketConnection } from "@/hooks/useSocketConnection";
 
 import { menuSocket } from "@/app/socket";
@@ -64,6 +65,8 @@ const OrdersBoard = ({
   });
 
   const { isConnected } = useSocketConnection(menuSocket);
+
+  useInvoiceAutoPrint(isConnected);
 
   useEffect(() => {
     if (!isConnected) return;
