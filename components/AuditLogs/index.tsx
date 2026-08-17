@@ -11,11 +11,11 @@ import {
   DATA_GRID_PROPS,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
+import { PLATFORM_ORGANIZATION_ID } from "@/constants/organizations";
 import {
   DEFAULT_PAGINATION_QUERY,
   getPageSizeOptions,
 } from "@/constants/pagination";
-import { PLATFORM_ORGANIZATION_ID } from "@/constants/organizations";
 
 import { useAuditLogObjectLabels } from "@/hooks/useAuditLogObjectLabels";
 import { useAuditLogValueLabels } from "@/hooks/useAuditLogValueLabels";
@@ -385,24 +385,6 @@ const AuditLogs = ({
 
   const columns = useMemo<GridColDef[]>(
     () => [
-      {
-        field: "createdAt",
-        filterOperators: dateFilterOperators,
-        headerName: tAudit("createdAt"),
-        valueFormatter: (value: string) =>
-          format.dateTime(new Date(value), "short"),
-      },
-      {
-        field: "actorName",
-        filterOperators: stringFilterOperators,
-        headerName: tAudit("actor"),
-      },
-      {
-        field: "actorEmail",
-        filterOperators: stringFilterOperators,
-        headerName: tAudit("actorEmail"),
-      },
-      // 只有跨店家範圍才有這欄：單一店家的頁面每一列都是同一家，顯示只是重複
       ...(organizations.length
         ? [
             {
@@ -416,6 +398,30 @@ const AuditLogs = ({
             },
           ]
         : []),
+      {
+        field: "actorName",
+        filterOperators: stringFilterOperators,
+        headerName: tAudit("actor"),
+      },
+      {
+        field: "actorEmail",
+        filterOperators: stringFilterOperators,
+        headerName: tAudit("actorEmail"),
+      },
+      {
+        field: "action",
+        filterOperators: enumFilterOperators,
+        headerName: tAudit("action.label"),
+        type: "singleSelect",
+        valueOptions: enumOptions.action,
+        renderCell: ({ row }: GridRenderCellParams<AuditLogResponse>) => (
+          <Chip
+            color={ACTION_COLORS[row.action]}
+            label={tAudit(`action.${row.action}`)}
+            size="small"
+          />
+        ),
+      },
       ...(resource
         ? []
         : [
@@ -456,20 +462,6 @@ const AuditLogs = ({
             },
           ]),
       {
-        field: "action",
-        filterOperators: enumFilterOperators,
-        headerName: tAudit("action.label"),
-        type: "singleSelect",
-        valueOptions: enumOptions.action,
-        renderCell: ({ row }: GridRenderCellParams<AuditLogResponse>) => (
-          <Chip
-            color={ACTION_COLORS[row.action]}
-            label={tAudit(`action.${row.action}`)}
-            size="small"
-          />
-        ),
-      },
-      {
         field: "changes",
         filterable: false,
         headerName: tAudit("changes"),
@@ -500,6 +492,13 @@ const AuditLogs = ({
           </Stack>
         ),
         sortable: false,
+      },
+      {
+        field: "createdAt",
+        filterOperators: dateFilterOperators,
+        headerName: tAudit("createdAt"),
+        valueFormatter: (value: string) =>
+          format.dateTime(new Date(value), "short"),
       },
     ],
     [

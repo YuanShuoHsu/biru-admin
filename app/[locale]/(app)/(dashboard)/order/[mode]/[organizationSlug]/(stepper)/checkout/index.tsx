@@ -291,27 +291,38 @@ const OrderModeOrganizationSlugCheckout = () => {
     },
   ];
 
-  const onSubmit = handleSubmit(async (values) => {
-    if (!values.payment) return;
+  const onSubmit = handleSubmit(async ({ customer, invoice, payment }) => {
+    if (!payment) return;
 
     try {
       const order = await triggerOrder({
         customer: {
-          email: values.customer.email || undefined,
-          name: values.customer.name,
-          remark: values.customer.remark || undefined,
-          telephone: values.customer.telephone
+          email: customer.email || undefined,
+          name: customer.name,
+          remark: customer.remark || undefined,
+          telephone: customer.telephone
             ? parsePhoneNumberWithError(
-                values.customer.telephone,
-                values.customer.countryCode as CountryCode,
+                customer.telephone,
+                customer.countryCode as CountryCode,
               ).number
             : undefined,
         },
         discountCode: coupon?.code,
+        invoice: invoice.type
+          ? {
+              carrierType: invoice.carrierType || undefined,
+              carruerNum: invoice.carruerNum || undefined,
+              customerAddr: invoice.customerAddr || undefined,
+              customerIdentifier: invoice.customerIdentifier || undefined,
+              customerName: invoice.customerName || undefined,
+              donateCode: invoice.donateCode || undefined,
+              type: invoice.type,
+            }
+          : undefined,
         items: cartItemsList,
         mode: API_ORDER_MODE[mode],
         partySize: Number(searchParams.get("partySize")) || undefined,
-        payment: values.payment,
+        payment,
         tableNumber: Number(searchParams.get("tableNumber")) || undefined,
       });
 
@@ -321,10 +332,7 @@ const OrderModeOrganizationSlugCheckout = () => {
       completeSearchParams.set("orderId", order.id);
       const completePath = `${pathname.replace("/checkout", "/complete")}?${completeSearchParams}`;
 
-      if (
-        values.payment === "Cash" ||
-        order.orderStatus !== "OrderPaymentDue"
-      ) {
+      if (payment === "Cash" || order.orderStatus !== "OrderPaymentDue") {
         router.replace(completePath);
 
         return;
@@ -333,57 +341,6 @@ const OrderModeOrganizationSlugCheckout = () => {
       const baseUrl = process.env.NEXT_PUBLIC_NEXT_URL;
       const completeUrl = `${baseUrl}/${locale}${completePath}`;
       const OrderResultURL = `${process.env.NEXT_PUBLIC_NEST_URL}/api/ecpay/result?redirect=${encodeURIComponent(completeUrl)}`;
-
-      // const buildInvoice = (): CreateEcpayDto["invoice"] => {
-      //   const common = {
-      //     CustomerEmail: values.invoice.emailSameAsCustomer
-      //       ? values.customer.email
-      //       : values.invoice.email,
-      //     CustomerName: values.customer.name,
-      //     CustomerPhone: values.customer.telephone,
-      //     DelayDay: "0",
-      //     Donation: "0",
-      //     InvType: "07",
-      //     TaxType: "1",
-      //   };
-      //   switch (values.invoice.type) {
-      //     case "personal":
-      //       if (values.invoice.carrierType === "mobile") {
-      //         return {
-      //           ...common,
-      //           CarruerNum: values.invoice.carruerNum,
-      //           CarruerType: "3",
-      //           Print: "0",
-      //         };
-      //       }
-      //       if (values.invoice.carrierType === "certificate") {
-      //         return {
-      //           ...common,
-      //           CarruerNum: values.invoice.carruerNum,
-      //           CarruerType: "2",
-      //           Print: "0",
-      //         };
-      //       }
-      //       return { ...common, CarruerType: "", Donation: "0", Print: "0" };
-      //     case "company":
-      //       return {
-      //         ...common,
-      //         CarruerType: "",
-      //         CustomerAddr: values.invoice.customerAddr,
-      //         CustomerIdentifier: values.invoice.customerIdentifier,
-      //         CustomerName: values.invoice.customerName,
-      //         Print: "1",
-      //       };
-      //     case "donate":
-      //       return {
-      //         ...common,
-      //         CarruerType: "",
-      //         Donation: "1",
-      //         LoveCode: values.invoice.donateCode,
-      //         Print: "0",
-      //       };
-      //   }
-      // };
 
       const dto: CheckoutEcpayDto = {
         ClientBackURL: completeUrl,

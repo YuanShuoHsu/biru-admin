@@ -2679,7 +2679,7 @@ export interface components {
        *     }
        */
       name?: Record<string, never>;
-      description?: Record<string, never>;
+      description?: Record<string, never> | null;
       image?: string;
     };
     CreateMenuSectionDto: {
@@ -2692,7 +2692,7 @@ export interface components {
        *     }
        */
       name: Record<string, never>;
-      description?: Record<string, never>;
+      description?: Record<string, never> | null;
       image?: string;
     };
     MenuSectionResponseDto: {
@@ -2726,7 +2726,7 @@ export interface components {
        *     }
        */
       name?: Record<string, never>;
-      description?: Record<string, never>;
+      description?: Record<string, never> | null;
       image?: string;
     };
     /**
@@ -2790,7 +2790,7 @@ export interface components {
        *     }
        */
       name: Record<string, never>;
-      description?: Record<string, never>;
+      description?: Record<string, never> | null;
       image?: string;
       suitableForDiet?: (
         | "DiabeticDiet"
@@ -2895,7 +2895,7 @@ export interface components {
        *     }
        */
       name?: Record<string, never>;
-      description?: Record<string, never>;
+      description?: Record<string, never> | null;
       image?: string;
       suitableForDiet?: (
         | "DiabeticDiet"
