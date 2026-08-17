@@ -28,7 +28,13 @@ import {
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { routing, type Locale } from "@/i18n/routing";
 
-import { Chip, Link as MuiLink, Stack, Typography } from "@mui/material";
+import {
+  Chip,
+  Divider,
+  Link as MuiLink,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
@@ -90,6 +96,7 @@ const FIELD_LABEL_KEYS = {
   grantedBy: "field.grantedBy",
   image: "field.image",
   inventoryLevel: "field.inventoryLevel",
+  isActive: "field.isActive",
   maxSelectionCount: "field.maxSelectionCount",
   menuId: "field.menu",
   menuItemId: "field.menuItem",
@@ -476,25 +483,38 @@ const AuditLogs = ({
         filterable: false,
         headerName: tAudit("changes"),
         renderCell: ({ row }: GridRenderCellParams<AuditLogResponse>) => (
-          <Stack alignItems="center" direction="row" gap={2} height="100%">
+          <Stack
+            alignItems="center"
+            direction="row"
+            divider={
+              <Divider flexItem orientation="vertical" sx={{ my: 1.5 }} />
+            }
+            gap={1.5}
+            height="100%"
+          >
             {Object.entries(row.changes).map(([field, change]) => {
               const label = isTranslatableField(field)
                 ? tAudit(FIELD_LABEL_KEYS[field])
                 : field;
 
-              const renderValue = (value: unknown, isBefore: boolean) =>
+              const renderValue = (
+                value: unknown,
+                state?: "previous" | "removed",
+              ) =>
                 isImageValue(value) ? (
                   <ChangeImage
-                    alt={label}
+                    alt={tAudit("value.image")}
                     src={value}
-                    sx={isBefore ? { opacity: 0.5 } : undefined}
+                    sx={state ? { opacity: 0.5 } : undefined}
                   />
                 ) : (
                   <Typography
                     sx={
-                      isBefore ? { textDecoration: "line-through" } : undefined
+                      state === "removed"
+                        ? { textDecoration: "line-through" }
+                        : undefined
                     }
-                    color={isBefore ? "text.disabled" : undefined}
+                    color={state ? "text.disabled" : undefined}
                     variant="caption"
                   >
                     {getValueText(field, value)}
@@ -511,11 +531,20 @@ const AuditLogs = ({
                   <Typography color="text.secondary" variant="caption">
                     {label}
                   </Typography>
-                  {renderValue(change.before, true)}
-                  <Typography color="text.secondary" variant="caption">
-                    →
-                  </Typography>
-                  {renderValue(change.after, false)}
+                  {/* 箭頭代表「舊值變成新值」，建立與刪除只有單邊值，硬補一個 — 當另一端會讀成該欄位曾是空的 */}
+                  {row.action === "create" ? (
+                    renderValue(change.after)
+                  ) : row.action === "delete" ? (
+                    renderValue(change.before, "removed")
+                  ) : (
+                    <>
+                      {renderValue(change.before, "previous")}
+                      <Typography color="text.secondary" variant="caption">
+                        →
+                      </Typography>
+                      {renderValue(change.after)}
+                    </>
+                  )}
                 </Stack>
               );
             })}

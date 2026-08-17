@@ -25,6 +25,7 @@
     "grantedBy": "发放者",
     "image": "图片网址",
     "inventoryLevel": "库存数量",
+    "isActive": "启用",
     "maxSelectionCount": "最多选择数量",
     "menu": "菜单",
     "menuItem": "品项",
@@ -88,6 +89,7 @@
   "value": {
     "empty": "—",
     "false": "否",
+    "image": "图片",
     "true": "是"
   }
 }

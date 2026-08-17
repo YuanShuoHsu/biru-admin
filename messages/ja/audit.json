@@ -25,6 +25,7 @@
     "grantedBy": "配布者",
     "image": "画像URL",
     "inventoryLevel": "在庫数",
+    "isActive": "有効",
     "maxSelectionCount": "最大選択数",
     "menu": "メニュー",
     "menuItem": "品目",
@@ -88,6 +89,7 @@
   "value": {
     "empty": "—",
     "false": "いいえ",
+    "image": "画像",
     "true": "はい"
   }
 }

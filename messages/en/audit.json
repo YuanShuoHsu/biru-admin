@@ -25,6 +25,7 @@
     "grantedBy": "Granted by",
     "image": "Image URL",
     "inventoryLevel": "Inventory",
+    "isActive": "Active",
     "maxSelectionCount": "Max selections",
     "menu": "Menu",
     "menuItem": "Item",
@@ -88,6 +89,7 @@
   "value": {
     "empty": "—",
     "false": "No",
+    "image": "Image",
     "true": "Yes"
   }
 }

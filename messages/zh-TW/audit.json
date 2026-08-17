@@ -25,6 +25,7 @@
     "grantedBy": "發放者",
     "image": "圖片網址",
     "inventoryLevel": "庫存數量",
+    "isActive": "啟用",
     "maxSelectionCount": "最多選擇數量",
     "menu": "菜單",
     "menuItem": "品項",
@@ -88,6 +89,7 @@
   "value": {
     "empty": "—",
     "false": "否",
+    "image": "圖片",
     "true": "是"
   }
 }

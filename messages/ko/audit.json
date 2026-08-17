@@ -25,6 +25,7 @@
     "grantedBy": "발급자",
     "image": "이미지 URL",
     "inventoryLevel": "재고 수량",
+    "isActive": "활성화",
     "maxSelectionCount": "최대 선택 수",
     "menu": "메뉴",
     "menuItem": "항목",
@@ -88,6 +89,7 @@
   "value": {
     "empty": "—",
     "false": "아니요",
+    "image": "이미지",
     "true": "예"
   }
 }
