@@ -393,6 +393,21 @@ const routes: Route[] = [
     segment: "coupons",
   },
   {
+    children: [
+      {
+        children: [
+          {
+            icon: History,
+            label: "audit.title",
+            query: ["page", "pageSize"],
+            segment: "audit-logs",
+          },
+        ],
+        icon: ViewCarousel,
+        segment: "[bannerId]",
+        to: null,
+      },
+    ],
     icon: ViewCarousel,
     label: "banners.label",
     query: ["page", "pageSize"],

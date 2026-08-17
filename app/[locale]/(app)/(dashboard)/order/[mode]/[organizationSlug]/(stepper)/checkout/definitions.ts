@@ -6,7 +6,7 @@ import * as z from "zod";
 import { ORDER_MODE } from "@/constants/orderMode";
 
 export type InvoiceType = "company" | "donate" | "personal";
-export type CarrierType = "certificate" | "individual" | "mobile";
+export type CarrierType = "certificate" | "mobile" | "none";
 
 export const useCustomerPaymentFormSchema = () => {
   const { mode } = useParams();
@@ -42,10 +42,10 @@ export const useCustomerPaymentFormSchema = () => {
       }),
       invoice: z.object({
         carrierType: z.union([
-          z.enum(["certificate", "individual", "mobile"]),
+          z.enum(["certificate", "mobile", "none"]),
           z.literal(""),
         ]),
-        carruerNum: z.string().trim(),
+        carrierNum: z.string().trim(),
         customerAddr: z.string().trim(),
         customerIdentifier: z
           .string()
@@ -97,6 +97,15 @@ export const useCustomerPaymentFormSchema = () => {
           message: tValidation("invoiceType.notSelected"),
           path: ["invoice", "type"],
         });
+      } else if (!data.customer.email && !data.customer.telephone) {
+        // 綠界 B2C 發票規定 CustomerEmail 與 CustomerPhone 擇一必填，兩欄皆空會被退件
+        for (const field of ["email", "telephone"] as const) {
+          ctx.addIssue({
+            code: "custom",
+            message: tValidation("contact.requiredForInvoice"),
+            path: ["customer", field],
+          });
+        }
       }
 
       if (!data.payment) {
@@ -116,19 +125,19 @@ export const useCustomerPaymentFormSchema = () => {
               path: ["invoice", "carrierType"],
             });
           } else if (data.invoice.carrierType === "mobile") {
-            if (!/^\/[A-Z0-9+\-.]{7}$/.test(data.invoice.carruerNum)) {
+            if (!/^\/[A-Z0-9+\-.]{7}$/.test(data.invoice.carrierNum)) {
               ctx.addIssue({
                 code: "custom",
-                message: tValidation("carruerNum.mobile.invalid"),
-                path: ["invoice", "carruerNum"],
+                message: tValidation("carrierNum.mobile.invalid"),
+                path: ["invoice", "carrierNum"],
               });
             }
           } else if (data.invoice.carrierType === "certificate") {
-            if (!/^[A-Z]{2}\d{14}$/.test(data.invoice.carruerNum)) {
+            if (!/^[A-Z]{2}\d{14}$/.test(data.invoice.carrierNum)) {
               ctx.addIssue({
                 code: "custom",
-                message: tValidation("carruerNum.certificate.invalid"),
-                path: ["invoice", "carruerNum"],
+                message: tValidation("carrierNum.certificate.invalid"),
+                path: ["invoice", "carrierNum"],
               });
             }
           }

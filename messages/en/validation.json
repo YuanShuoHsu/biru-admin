@@ -17,16 +17,17 @@
     "minDate": "Please select a birth date on or after 1900-01-01.",
     "required": "Birth date is required."
   },
-  "carrierType": {
-    "notSelected": "Please select your carrier type."
-  },
-  "carruerNum": {
+  "carrierNum": {
     "certificate": {
       "invalid": "Certificate is not valid."
     },
     "mobile": {
-      "invalid": "Mobile barcode is not valid."
+      "invalid": "Mobile barcode is not valid.",
+      "notFound": "This mobile barcode was not found. Please check and re-enter it."
     }
+  },
+  "carrierType": {
+    "notSelected": "Please select your carrier type."
   },
   "confirmNewPassword": {
     "mismatch": "Passwords do not match.",
@@ -35,6 +36,9 @@
   "confirmPassword": {
     "mismatch": "Passwords do not match.",
     "required": "Confirm password is required."
+  },
+  "contact": {
+    "requiredForInvoice": "An invoice needs a contact method — provide either an email or a phone number."
   },
   "countryCode": {
     "invalid": "Country code is not valid.",

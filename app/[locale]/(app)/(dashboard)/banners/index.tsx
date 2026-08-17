@@ -9,6 +9,7 @@ import useSWR from "swr";
 
 import BannerDialog from "./BannerDialog";
 
+import AuditLogButton from "@/components/AuditLogButton";
 import { DragHandle, Sortable } from "@/components/Sortable";
 
 import {
@@ -434,6 +435,7 @@ const Banners = ({
                       <Edit fontSize="small" />
                     </IconButton>
                   </Tooltip>
+                  <AuditLogButton resourceId={row.id} />
                   <Tooltip title={tBanners("actions.deleteBanner.title")}>
                     <IconButton
                       color="error"

@@ -466,6 +466,22 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/ecpay/check-barcode": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["EcpayController_checkBarcode"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/ecpay/return": {
     parameters: {
       query?: never;
@@ -498,7 +514,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/api/ecpay/get-gov-invoice-word-setting": {
+  "/api/ecpay/sync-invoice-word-settings": {
     parameters: {
       query?: never;
       header?: never;
@@ -507,14 +523,14 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    post: operations["EcpayController_getGovInvoiceWordSetting"];
+    post: operations["EcpayController_syncInvoiceWordSettings"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/api/ecpay/issue-invoice": {
+  "/api/organizations/{organizationSlug}/orders/{orderId}/invoice": {
     parameters: {
       query?: never;
       header?: never;
@@ -523,7 +539,8 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    post: operations["EcpayController_issueInvoice"];
+    /** 補開發票（開立失敗後由後台重試） */
+    post: operations["EcpayOrderInvoiceController_issue"];
     delete?: never;
     options?: never;
     head?: never;
@@ -1843,6 +1860,21 @@ export interface components {
         [key: string]: string;
       };
     };
+    CheckBarcodeEcpayDto: {
+      /**
+       * @description 手機條碼（必填）
+       *     固定長度為 8 碼字元，第 1 碼為【/】，其餘 7 碼由 0-9、A-Z、+、-、. 組成
+       * @example /AB12345
+       */
+      barCode: string;
+    };
+    CheckBarcodeEcpayResponseDto: {
+      /**
+       * @description 手機條碼是否存在於財政部系統
+       * @example true
+       */
+      isExist: boolean;
+    };
     ReturnEcpayDto: {
       /**
        * @description 特店編號
@@ -1966,399 +1998,39 @@ export interface components {
        */
       CheckMacValue: string;
     };
-    IssueInvoiceEcpayItemDto: {
-      /**
-       * @description 商品序號
-       *     請帶入1~999整數數字
-       * @example 1
-       */
-      ItemSeq?: number;
-      /**
-       * @description 商品名稱（必填）
-       * @example 經典拿鐵
-       */
-      ItemName: string;
-      /**
-       * @description 商品數量（必填）
-       *     支援整數8位，小數7位
-       * @example 1
-       */
-      ItemCount: number;
-      /**
-       * @description 商品單位（必填）
-       * @example 件
-       */
-      ItemWord: string;
-      /**
-       * @description 商品單價（必填）
-       *     - 支援整數 10 位，小數 7 位
-       *     - 若 vat=0（未稅），商品金額需為未稅金額
-       *     若 vat=1（含稅），商品金額需為含稅金額
-       * @example 50
-       */
-      ItemPrice: number;
-      /**
-       * @description 商品課稅別
-       *     - 當課稅類別 [TaxType] = 9 時，此欄位不可為空。
-       *     1：應稅
-       *     2：零稅率
-       *     3：免稅
-       *
-       *     注意事項：
-       *     - 當課稅類別 [TaxType] = 9 時，免稅和零稅率發票不能同時開立。商品課稅類別 [ItemTaxType] 只能為以下組合：
-       *     （應稅 + 免稅）或（應稅 + 零稅率）
-       *     - 當課稅類別 [TaxType] 不等於 9（混稅）時，商品課稅類別 [ItemTaxType] 無效不需填寫
-       * @example 1
-       * @enum {string}
-       */
-      ItemTaxType?: "1" | "2" | "3";
-      /**
-       * @description 商品合計（必填）
-       *     - 支援整數 12 位，小數 7 位
-       *     - 此為含稅小計金額
-       *     - 所有商品的 ItemAmount 加總後四捨五入=SalesAmount（含稅）
-       *
-       *     注意事項：
-       *     - ItemAmount 需統一為含稅金額，且商品金額需符合以下規則：
-       *     1. 當 vat = 1, 且 TaxType = 1：
-       *     ItemPrice（含稅）* ItemCount = ItemAmount（含稅）
-       *     ex: 500 * 5 = 2500
-       *     2. 當 vat = 0, 且 TaxType = 1（稅率5%）：
-       *     ItemPrice（不含稅）* ItemCount * 1.05 = ItemAmount（含稅）
-       *     ex: 500 * 5 * 1.05 = 2625
-       * @example 50
-       */
-      ItemAmount: number;
-      /**
-       * @description 商品備註
-       * @example item01_desc
-       */
-      ItemRemark?: string;
-    };
-    IssueInvoiceEcpayDecryptedRequestDto: {
-      /**
-       * @description 特店編號（必填）
-       * @example 2000132
-       */
-      MerchantID: string;
-      /**
-       * @description 特店自訂編號（必填）
-       *     需為唯一值不可重複使用
-       *
-       *     注意事項：
-       *     - 請勿使用特殊符號
-       *     - 大小寫英文視為相同 (e.g. 123abc456=123ABC456)
-       * @example 20181028000000001
-       */
-      RelateNumber: string;
-      /**
-       * @description 通路商編號
-       *     1：蝦皮
-       *     其餘數值忽略無效
-       * @enum {string}
-       */
-      ChannelPartner?: "1";
-      /**
-       * @description 客戶編號
-       *     格式為『英文、數字、下底線』等字元
-       * @example
-       */
-      CustomerID?: string;
-      /**
-       * @description 產品服務別代號
-       *     - 該參數必須由英文字母（A-Z, a-z）和數字（0-9）組成，其長度必須在 1 到 10 個字符之間。
-       *     - 此參數只有在【B2C 系統多組字軌】開關為【啟用】時，帶入值才會進行處理，否則會忽略此參數。如需啟用請洽所屬業務。
-       *     - 具體步驟參考如下：
-       *     1. 聯繫所屬業務 <啟用> B2C 系統多組字軌功能
-       *     2. 至廠商後台 <字軌分類管理> 節點，新增商品/服務別，例如 A0001-餐具、A0002-清潔用品，可參考 電子發票系統操作手冊 <字軌分類管理> 章節說明
-       *     3. 至廠商後台 <字軌與配號設定> 節點，新增字軌配號，可參考 電子發票系統操作手冊 <字軌與配號設定> 章節說明
-       *     4. 透過開立發票 API，此參數 [ProductServiceID] 帶入先前廠商後台設定的 A0001 或 A0002，即可完成發票開立
-       */
-      ProductServiceID?: string;
-      /**
-       * @description 統一編號
-       *     - 格式為數字，固定長度為 8 碼
-       *     - 根據財政部的最新公告，針對統一編號的檢核方式做了調整。
-       *     您可以點擊以下連結查看：
-       *     [財政部財政資訊中心營利事業統一編號檢查碼邏輯修正說明]
-       *     - 如未符合上述檢核邏輯，則開立發票、設定交易對象維護資料時將會失敗，請營業人務必提供正確的統一編號
-       *     - 只會做格式邏輯檢核，不會去查詢公開資料庫是否存在
-       * @example
-       */
-      CustomerIdentifier?: string;
-      /**
-       * @description 客戶名稱
-       *     - 當列印註記 [Print]=1（列印）時，此參數為必填
-       *     - 格式為中、英文及數字等。
-       *     - 當統一編號 [CustomerIdentifier] 有值時，請帶入相對應的營業人名稱，可參照以下 API 取得多數的對應公司名稱統一編號驗證 API
-       * @example 綠界科技股份有限公司
-       */
-      CustomerName?: string;
-      /**
-       * @description 客戶地址
-       *     當列印註記 [Print]=1（列印）時，此參數為必填
-       * @example 106台北市南港區發票一街1號1樓
-       */
-      CustomerAddr?: string;
-      /**
-       * @description 客戶手機號碼
-       *     - 當客戶電子信箱 [CustomerEmail] 為空字串時，為必填。
-       *     - 格式為數字
-       * @example
-       */
-      CustomerPhone?: string;
-      /**
-       * @description 客戶電子信箱
-       *     - 當客戶手機號碼 [CustomerPhone] 為空字串時，為必填。
-       *     - 需為有效的 Email 格式，且僅可填寫一組 Email。
-       *     - 格式檢核正規表達式為：
-       *
-       *     注意事項：
-       *     - 測試環境請勿帶入之真實電子信箱，避免個資外洩。
-       *     - 測試環境僅作 API 串接測試使用，僅以 API 回覆成功或失敗；不提供發信測試，僅驗規則。
-       *     - 格式檢核正規表達式為：```/^((([A-Za-z]|\d|[!#\$%&’\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([A-Za-z]|\d|[!#\$%&’\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([A-Za-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([A-Za-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([A-Za-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([A-Za-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([A-Za-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([A-Za-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([A-Za-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([A-Za-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/u```
-       * @example test@ecpay.com.tw
-       */
-      CustomerEmail?: string;
-      /**
-       * @description 通關方式
-       *     - 當課稅類別 [TaxType] 為 2（零稅率）或 9（混合應稅與零稅率）時，為必填
-       *     1：非經海關出口
-       *     2：經海關出口
-       * @example 1
-       * @enum {string}
-       */
-      ClearanceMark?: "1" | "2";
-      /**
-       * @description 列印註記（必填）
-       *     0：不列印
-       *     1：列印
-       *
-       *     注意事項：
-       *     1. 請注意此參數的意義為註記這張發票之後會被廠商自行印出紙本，綠界上傳財政部時也會提供這個參數讓財政部知道這張發票是被列印成紙本的，並不是指由綠界代為列印與寄送
-       *     2. 當捐贈註記 [Donation]=1（要捐贈），此參數請帶 0
-       *     3. 當統一編號 [CustomerIdentifier] 有值時
-       *     2.a 載具類別 [CarrierType] 為空值時，此參數請帶 1
-       *     2.b 載具類別 [CarrierType]=1 或 2 時，此參數請帶 0
-       *     2.c 載具類別 [CarrierType]=3 時，此參數可帶 0 或 1
-       *
-       *     注意事項：
-       *
-       *     超商 KIOSK 事務機列印注意事項（除須向業務申請開通外，請按以下需求帶入參數）
-       *     1. 要列印消費發票（ibon）
-       *     Print=1，CarrierType=””，CustomerIdentifier=””，Donation=0，只能列印一次（之後中獎也無法再次列印）
-       *     2. 要列印中獎發票（ibon, FamiPort）
-       *     Print=0，CarrierType=1，CustomerIdentifier=””，Donation=0，只能列印一次
-       *     3. 折讓後發票金額為 0 元，不可列印
-       * @example 1
-       * @enum {string}
-       */
-      Print: "0" | "1";
-      /**
-       * @description 捐贈註記（必填）
-       *     0：不捐贈
-       *     1：捐贈
-       *
-       *     注意事項：
-       *     1. 當統一編號 [CustomerIdentifier] 有值時，此參數請帶 0
-       *     2. 當載具類別 [CarrierType] 不為空字串且捐贈註記 [Donation]=1 時，代表此張發票開立當下是存在載具內，之後消費者將此張發票進行捐贈成功，所以此張發票最終狀態是捐贈成功
-       * @example 0
-       * @enum {string}
-       */
-      Donation: "0" | "1";
-      /**
-       * @description 捐贈碼
-       *     - 當捐贈註記 [Donation]=1（要捐贈）時，為必填。
-       *     - 格式為阿拉伯數字為限，最少三碼，最多七碼，首位可以為零。
-       *
-       *     注意事項：使用捐贈碼時，請先呼叫捐贈碼驗證進行檢核，避免輸入錯誤。
-       *
-       *     推薦捐贈碼 168001
-       *     OMG 關懷社會愛心基金會
-       *     成立於 2009 年，希望能集結網友族群的心意，將愛傳遞到社會的每一個角落。
-       *     本基金會致力於：清寒學生及偏遠學校助學、流浪動物與動物保育議題、老人及弱勢團體、急難救助、人道救援、社會公益活動推廣及廣告贊助…等。
-       * @example
-       */
-      LoveCode?: string;
-      /**
-       * @description 載具類別
-       *     空字串：無載具
-       *     1：綠界電子發票載具
-       *     2：自然人憑證號碼
-       *     3：手機條碼載具
-       *     4：悠遊卡
-       *     5：一卡通
-       *
-       *     注意事項：
-       *     - 當列印參數 [Print]=1（需列印）且發票含統編時，若同時需存放載具，則僅能使用手機條碼載具（值為 3）；若不使用載具，則請傳入空字串。
-       *     - 當列印註記 [Print]=0（不列印），且統一編號 [CustomerIdentifier] 有值時，此參數不可帶空字串。
-       *     - 只有存在綠界電子發票載具（此參數帶 1）的發票，中獎後才能在 ibon 列印領取必填
-       * @example
-       * @enum {string}
-       */
-      CarrierType?: "" | "1" | "2" | "3" | "4" | "5";
-      /**
-       * @description 載具編號
-       *     - 當 [CarrierType]=”” 時，請帶空字串。
-       *     - 當[CarrierType]=1
-       *     請帶空字串，系統會自動帶入值，為客戶電子信箱或客戶手機號碼擇一（以客戶電子信箱優先），請注意，綠界會重新編碼後產出綠界載具編號。
-       *     - [CarrierType]=2
-       *     請帶固定長度為 16 且格式為 2 碼大寫英文字母加上 14 碼數字
-       *     - [CarrierType]=3
-       *     請帶固定長度為 8 碼字元，第 1 碼為【/】; 其餘 7 碼則由數字【0-9】、大寫英文【A-Z】與特殊符號【+】【-】【.】這 39 個字元組成的編號。
-       *     - 當[CarrierType]=4 或 5
-       *     必填，請帶入實體卡片的 <隱碼id>，不會檢核。
-       *
-       *     注意事項：
-       *     1. 英文、數字、符號僅接受半形字元，格式錯誤會造成開立失敗
-       *     2. 若為手機條碼載具時，請先呼叫手機條碼驗證進行檢核，一旦手機條碼有誤，會造成發票歸戶失敗。
-       *     3. 針對悠遊卡或一卡通如何取得卡片隱碼（內碼）：您的設備需配備能讀取悠遊卡或一卡通的讀卡機，並確保該設備能讀取卡片內碼
-       *     4. 查詢發票 API，當載具類別為悠遊卡/一卡通，因有資安考量，不會回傳 <隱碼id>
-       * @example
-       */
-      CarrierNum?: string;
-      /**
-       * @description 第二載具編號
-       *     - 當 [CarrierType]=4 或 5
-       *     必填，請帶入實體卡片的 <顯碼id>，以便發票查詢可以顯示用來識別不同的實體卡片，不會檢核。
-       *     - 當 [CarrierType]=不等於 4 或 5 時，此參數不須帶入。
-       *
-       *     注意事項：
-       *     1. 英文、數字、符號僅接受半形字元，格式錯誤會造成開立失敗
-       *     2. 當 CarrierType 數值為 1、2 或 3 時，請廠商無須填入此欄位，以避免系統阻擋。
-       *     3. 針對悠遊卡或一卡通的顯碼（外碼）指的是卡片上外顯的號碼，用來方便持有卡片者區別不同的實體卡片
-       *     4. 查詢發票 API，會於參數 IIS_Carrier_Num 內回傳 <顯碼id>
-       */
-      CarrierNum2?: string;
-      /**
-       * @description 課稅類別（必填）
-       *     - 當字軌類別 [InvType] 為 07 時，則此欄位請填入 1、2、3 或 9
-       *     - 當字軌類別 [InvType] 為 08 時，則此欄位請填入 3 或 4
-       *     1：應稅。
-       *     2：零稅率。
-       *     3：免稅。
-       *     4：應稅（特種稅率）
-       *     9：混合應稅與免稅或零稅率，必需通過申請核可。
-       *     - 綠界稅額計算方式
-       *     一般發票（非混稅、非特種）：
-       *     （發票金額 / 1.05）* 0.05 並四捨五入至整數
-       *     混稅發票：
-       *     （應稅品項小計總和 / 1.05）* 0.05 並四捨五入至整數
-       * @example 1
-       * @enum {string}
-       */
-      TaxType: "1" | "2" | "3" | "4" | "9";
-      /**
-       * @description 零稅率原因
-       *     - 自 115 年 1 月 1 日起，當課稅類別 [TaxType] 為 2（零稅率）或 9（混合應稅與零稅率）時，此欄位必填或廠商後台必須設定以便程式抓取，否則將會開立失敗，其值如下
-       *     71：第一款 外銷貨物
-       *     72：第二款 與外銷有關之勞務，或在國內提供而在國外使用之勞務
-       *     73：第三款 依法設立之免稅商店銷售與過境或出境旅客之貨物
-       *     74：第四款 銷售與保稅區營業人供營運之貨物或勞務
-       *     75：第五款 國際間之運輸。但外國運輸事業在中華民國境內經營國際運輸業務者，應以各該國對中華民國國際運輸事業予以相等待遇或免徵類似稅捐者為限
-       *     76：第六款 國際運輸用之船舶、航空器及遠洋漁船
-       *     77：第七款 銷售與國際運輸用之船舶、航空器及遠洋漁船所使用之貨物或修繕勞務
-       *     78：第八款 保稅區營業人銷售與課稅區營業人未輸往課稅區而直接出口之貨物
-       *     79：第九款 保稅區營業人銷售與課稅區營業人存入自由港區事業或海關管理之保稅倉庫、物流中心以供外銷之貨物
-       * @enum {string}
-       */
-      ZeroTaxRateReason?:
-        | "71"
-        | "72"
-        | "73"
-        | "74"
-        | "75"
-        | "76"
-        | "77"
-        | "78"
-        | "79";
-      /**
-       * @description 特種稅額類別
-       *     - 當課稅類別 [TaxType] 為 1 / 2 / 9 時，系統將會自動帶入數字【0】
-       *     - 當課稅類別 [TaxType] 為 3 時，則該參數必填，請填入數字【8】
-       *     - 當課稅類別 [TaxType] 為 4 時，則該參數必填，可填入數字【1-8】
-       *     - 並分別代表以下類別與稅率
-       *     1：代表酒家及有陪侍服務之茶室、咖啡廳、酒吧之營業稅稅率，稅率為 25 %
-       *     2：代表夜總會、有娛樂節目之餐飲店之營業稅稅率，稅率為 15 %
-       *     3：代表銀行業、保險業、信託投資業、證券業、期貨業、票券業及典當業之專屬本業收入（不含銀行業、保險業經營銀行、保險本業收入）之營業稅稅率，稅率為 2 %
-       *     4：代表保險業之再保費收入之營業稅稅率，稅率為 1 %
-       *     5：代表銀行業、保險業、信託投資業、證券業、期貨業、票券業及典當業之非專屬本業收入之營業稅稅率，稅率為 5 %
-       *     6：代表銀行業、保險業經營銀行、保險本業收入之營業稅稅率（適用於民國 103 年 07 月以後銷售額），稅率為 5 %
-       *     7：代表銀行業、保險業經營銀行、保險本業收入之營業稅稅率（適用於民國 103 年 06 月以前銷售額），稅率為 5 %
-       *     8：代表空白為免稅或非銷項特種稅額之資料
-       * @enum {number}
-       */
-      SpecialTaxType?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
-      /**
-       * @description 發票總金額（含稅）（必填）
-       *     - 請帶整數，支援至12位，不可有小數點。
-       *     - 僅限新台幣。
-       * @example 100
-       */
-      SalesAmount: number;
-      /**
-       * @description 發票備註
-       *     由於配合 MIG 4.0 改版，
-       *     系統暫時性限制接受字元長度為 100 字元 – String(100)，
-       *     將於 Q2 搭配 MIG 4.0 上線後重新恢復支援 200 字元 – String(200)。
-       * @example 發票備註
-       */
-      InvoiceRemark?: string;
-      /**
-       * @description 商品
-       *     - 可多筆
-       *     - 商品最多支援999項
-       */
-      Items: components["schemas"]["IssueInvoiceEcpayItemDto"][];
-      /**
-       * @description 字軌類別（必填）
-       *     - 該張發票的字軌類型
-       *     07：一般稅額
-       *     08：特種稅額
-       * @example 07
-       * @enum {string}
-       */
-      InvType: "07" | "08";
-      /**
-       * @description 商品單價是否含稅
-       *     - 預設為含稅價
-       *     1：含稅
-       *     0：未稅
-       * @example 1
-       * @enum {string}
-       */
-      vat?: "1" | "0";
-    };
-    IssueInvoiceEcpayDecryptedResponseDto: {
-      /**
-       * @description 回應代碼
-       *     1 代表 API 執行成功，其餘代碼均為失敗。
-       * @example 1
-       */
-      RtnCode: number;
-      /**
-       * @description 回應訊息
-       * @example 開立發票成功
-       */
-      RtnMsg: string;
-      /**
-       * @description 發票號碼
-       *     - 若開立成功，則會回傳一組發票號碼
-       *     - 若開立失敗，則會回傳空值
-       * @example UV11100012
-       */
-      InvoiceNo: string;
-      /**
-       * @description 發票開立時間
-       *     格式為「yyyy-MM-dd HH:mm:ss」或「 yyyy/MM/dd HH:mm:ss」
-       * @example 2019-09-17 17:17:31
-       */
-      InvoiceDate: string;
-      /**
-       * @description 隨機碼
-       * @example 6866
-       */
-      RandomNumber: string;
+    /** @enum {string} */
+    InvoiceType: "personal" | "company" | "donate";
+    /** @enum {string} */
+    InvoiceCarrierType: "individual" | "mobile" | "certificate";
+    /** @enum {string} */
+    InvoicePaymentStatus:
+      | "PaymentDue"
+      | "PaymentPastDue"
+      | "PaymentComplete"
+      | "PaymentDeclined";
+    /** @enum {string} */
+    InvoiceStatus: "pending" | "issued" | "voided";
+    OrderInvoiceDto: {
+      id: string;
+      orderId: string;
+      type: components["schemas"]["InvoiceType"];
+      carrierType?: components["schemas"]["InvoiceCarrierType"] | null;
+      carrierNum?: string | null;
+      email?: string | null;
+      customerIdentifier?: string | null;
+      customerName?: string | null;
+      customerAddr?: string | null;
+      donateCode?: string | null;
+      paymentStatus: components["schemas"]["InvoicePaymentStatus"];
+      status: components["schemas"]["InvoiceStatus"];
+      invoiceNumber?: string | null;
+      /** Format: date-time */
+      invoiceDate?: string | null;
+      randomNumber?: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
     };
     MenuItemSalesResponseDto: {
       menuItemId: string;
@@ -2378,8 +2050,8 @@ export interface components {
       /** @enum {string} */
       type: "personal" | "company" | "donate";
       /** @enum {string} */
-      carrierType?: "individual" | "mobile" | "certificate";
-      carruerNum?: string;
+      carrierType?: "mobile" | "certificate";
+      carrierNum?: string;
       /** Format: email */
       email?: string;
       customerIdentifier?: string;
@@ -2483,7 +2155,7 @@ export interface components {
       discountCurrency?: string | null;
       subtotal: string;
       total: string;
-      invoice?: Record<string, never> | null;
+      invoice?: components["schemas"]["OrderInvoiceDto"] | null;
       items: components["schemas"]["OrderItemResponseDto"][];
       /** Format: date-time */
       createdAt: string;
@@ -2585,7 +2257,7 @@ export interface components {
       discountCurrency?: string | null;
       subtotal: string;
       total: string;
-      invoice?: Record<string, never> | null;
+      invoice?: components["schemas"]["OrderInvoiceDto"] | null;
       items: components["schemas"]["OrderItemResponseDto"][];
       /** Format: date-time */
       createdAt: string;
@@ -2648,7 +2320,7 @@ export interface components {
       discountCurrency?: string | null;
       subtotal: string;
       total: string;
-      invoice?: Record<string, never> | null;
+      invoice?: components["schemas"]["OrderInvoiceDto"] | null;
       items: components["schemas"]["OrderItemResponseDto"][];
       /** Format: date-time */
       createdAt: string;
@@ -4365,6 +4037,36 @@ export interface operations {
       };
     };
   };
+  EcpayController_checkBarcode: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CheckBarcodeEcpayDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CheckBarcodeEcpayResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   EcpayController_return: {
     parameters: {
       query?: never;
@@ -4425,7 +4127,7 @@ export interface operations {
       };
     };
   };
-  EcpayController_getGovInvoiceWordSetting: {
+  EcpayController_syncInvoiceWordSettings: {
     parameters: {
       query?: never;
       header?: never;
@@ -4438,7 +4140,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": Record<string, never>[];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -4449,25 +4153,24 @@ export interface operations {
       };
     };
   };
-  EcpayController_issueInvoice: {
+  EcpayOrderInvoiceController_issue: {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+        orderId: string;
+      };
       cookie?: never;
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"];
-      };
-    };
+    requestBody?: never;
     responses: {
       201: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["IssueInvoiceEcpayDecryptedResponseDto"];
+          "application/json": components["schemas"]["OrderInvoiceDto"];
         };
       };
       /** @description Internal server error */
@@ -6371,45 +6074,24 @@ export const baseEcpayLanguageValues: ReadonlyArray<
 export const returnEcpayDtoSimulatePaidValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["ReturnEcpayDto"]["SimulatePaid"]
 > = [0, 1];
-export const issueInvoiceEcpayItemDtoItemTaxTypeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayItemDto"]["ItemTaxType"]
-> = ["1", "2", "3"];
-export const issueInvoiceEcpayDecryptedRequestDtoChannelPartnerValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["ChannelPartner"]
-> = ["1"];
-export const issueInvoiceEcpayDecryptedRequestDtoClearanceMarkValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["ClearanceMark"]
-> = ["1", "2"];
-export const issueInvoiceEcpayDecryptedRequestDtoPrintValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["Print"]
-> = ["0", "1"];
-export const issueInvoiceEcpayDecryptedRequestDtoDonationValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["Donation"]
-> = ["0", "1"];
-export const issueInvoiceEcpayDecryptedRequestDtoCarrierTypeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["CarrierType"]
-> = ["", "1", "2", "3", "4", "5"];
-export const issueInvoiceEcpayDecryptedRequestDtoTaxTypeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["TaxType"]
-> = ["1", "2", "3", "4", "9"];
-export const issueInvoiceEcpayDecryptedRequestDtoZeroTaxRateReasonValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["ZeroTaxRateReason"]
-> = ["71", "72", "73", "74", "75", "76", "77", "78", "79"];
-export const issueInvoiceEcpayDecryptedRequestDtoSpecialTaxTypeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["SpecialTaxType"]
-> = [1, 2, 3, 4, 5, 6, 7, 8];
-export const issueInvoiceEcpayDecryptedRequestDtoInvTypeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["InvType"]
-> = ["07", "08"];
-export const issueInvoiceEcpayDecryptedRequestDtoVatValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["IssueInvoiceEcpayDecryptedRequestDto"]["vat"]
-> = ["1", "0"];
+export const invoiceTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["InvoiceType"]
+> = ["personal", "company", "donate"];
+export const invoiceCarrierTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["InvoiceCarrierType"]
+> = ["individual", "mobile", "certificate"];
+export const invoicePaymentStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["InvoicePaymentStatus"]
+> = ["PaymentDue", "PaymentPastDue", "PaymentComplete", "PaymentDeclined"];
+export const invoiceStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["InvoiceStatus"]
+> = ["pending", "issued", "voided"];
 export const createOrderInvoiceDtoTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CreateOrderInvoiceDto"]["type"]
 > = ["personal", "company", "donate"];
 export const createOrderInvoiceDtoCarrierTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CreateOrderInvoiceDto"]["carrierType"]
-> = ["individual", "mobile", "certificate"];
+> = ["mobile", "certificate"];
 export const createOrderDtoModeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CreateOrderDto"]["mode"]
 > = ["counter", "dineIn", "driveThru", "pickup"];

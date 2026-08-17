@@ -2,7 +2,7 @@
 
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 
-import { STATUS_COLORS } from "@/constants/orders";
+import { INVOICE_STATUS_COLORS, STATUS_COLORS } from "@/constants/orders";
 
 import { useOrderItemName } from "@/hooks/useOrderItemName";
 
@@ -149,6 +149,76 @@ const OrderDetailDialog = ({ order }: OrderDetailDialogProps) => {
           value={format.dateTime(new Date(order.createdAt), "short")}
         />
       </Section>
+      {order.invoice && (
+        <Section title={tOrders("detail.invoice.title")}>
+          <InfoRow
+            label={tOrders("detail.invoice.status")}
+            value={
+              <Chip
+                color={INVOICE_STATUS_COLORS[order.invoice.status]}
+                label={tOrders(`invoiceStatus.${order.invoice.status}`)}
+                size="small"
+                variant="outlined"
+              />
+            }
+          />
+          {order.invoice.invoiceNumber && (
+            <InfoRow
+              label={tOrders("detail.invoice.invoiceNumber")}
+              value={order.invoice.invoiceNumber}
+            />
+          )}
+          {order.invoice.invoiceDate && (
+            <InfoRow
+              label={tOrders("detail.invoice.invoiceDate")}
+              value={format.dateTime(
+                new Date(order.invoice.invoiceDate),
+                "short",
+              )}
+            />
+          )}
+          <InfoRow
+            label={tOrder("checkout.invoice.title")}
+            value={tOrder(`checkout.invoice.${order.invoice.type}`)}
+          />
+          {order.invoice.carrierType && (
+            <InfoRow
+              label={tOrder("checkout.invoice.carrierType.label")}
+              value={tOrder(`checkout.invoice.${order.invoice.carrierType}`)}
+            />
+          )}
+          {order.invoice.carrierNum && (
+            <InfoRow
+              label={tOrder("checkout.invoice.carrierNum")}
+              value={order.invoice.carrierNum}
+            />
+          )}
+          {order.invoice.customerIdentifier && (
+            <InfoRow
+              label={tOrder("checkout.invoice.customerIdentifier")}
+              value={order.invoice.customerIdentifier}
+            />
+          )}
+          {order.invoice.customerName && (
+            <InfoRow
+              label={tOrder("checkout.invoice.customerName")}
+              value={order.invoice.customerName}
+            />
+          )}
+          {order.invoice.customerAddr && (
+            <InfoRow
+              label={tOrder("checkout.invoice.customerAddr")}
+              value={order.invoice.customerAddr}
+            />
+          )}
+          {order.invoice.donateCode && (
+            <InfoRow
+              label={tOrder("checkout.invoice.donateCode.label")}
+              value={order.invoice.donateCode}
+            />
+          )}
+        </Section>
+      )}
       <Section title={tOrders("detail.items.title")}>
         {order.items.map((item) => (
           <Stack

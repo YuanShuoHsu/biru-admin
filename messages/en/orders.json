@@ -1,5 +1,10 @@
 {
   "actions": {
+    "issueInvoice": {
+      "confirm": "Are you sure you want to issue an invoice for order <bold>{orderNumber}</bold>? An issued invoice cannot be cancelled here.",
+      "success": "Invoice {invoiceNumber} issued for order {orderNumber}",
+      "title": "Issue invoice"
+    },
     "label": "Actions",
     "updateCustomer": {
       "success": "Customer information for order {orderNumber} updated",
@@ -37,6 +42,12 @@
       "title": "Customer"
     },
     "discount": "Discount",
+    "invoice": {
+      "invoiceDate": "Issued at",
+      "invoiceNumber": "Invoice number",
+      "status": "Status",
+      "title": "Invoice"
+    },
     "items": {
       "title": "Order summary"
     },
@@ -44,6 +55,11 @@
     "transaction": {
       "title": "Transaction"
     }
+  },
+  "invoiceStatus": {
+    "issued": "Issued",
+    "pending": "Not issued",
+    "voided": "Voided"
   },
   "label": "Orders",
   "list": {

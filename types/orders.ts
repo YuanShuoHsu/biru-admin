@@ -15,12 +15,14 @@ export type MenuItemSalesResponse =
 export type AdminOrderBoardColumn =
   components["schemas"]["AdminOrderBoardColumnDto"];
 export type AdminOrderResponse = components["schemas"]["AdminOrderResponseDto"];
+export type OrderInvoice = components["schemas"]["OrderInvoiceDto"];
 export type OrderTransition = components["schemas"]["OrderTransitionDto"];
 
 export type OrderMode = OrderResponse["mode"];
 export type OrderPaymentMethod = OrderResponse["paymentMethod"];
 export type OrderStatus = OrderResponse["orderStatus"];
 export type OrderFlowStatus = components["schemas"]["OrderFlowStatus"];
+export type InvoiceStatus = components["schemas"]["InvoiceStatus"];
 
 export type OrderFilterField = (typeof orderFilterFieldValues)[number];
 export type OrderSortField = (typeof orderSortFieldValues)[number];

@@ -39,11 +39,11 @@
       }
     },
     "invoice": {
+      "carrierNum": "载具号码",
       "carrierType": {
-        "label": "载具类型",
-        "placeholder": "请选择您的载具类型"
+        "label": "发票开立方式",
+        "placeholder": "请选择您的发票开立方式"
       },
-      "carruerNum": "载具号码",
       "certificate": "自然人凭证",
       "company": "公司发票",
       "customerAddr": "公司地址",
@@ -54,13 +54,9 @@
         "label": "爱心码",
         "placeholder": "请选择您的爱心码"
       },
-      "individual": "电子发票",
-      "invoiceEmail": {
-        "label": "发票电子邮箱",
-        "placeholder": "请输入您的发票电子邮箱",
-        "sameAsCustomer": "与顾客电子邮箱相同"
-      },
+      "individual": "绿界载具",
       "mobile": "手机条码",
+      "none": "索取纸本",
       "personal": "个人发票",
       "title": "发票类型"
     },

@@ -62,7 +62,12 @@ import type {
   ValidateCouponDto,
   ValidateCouponResponse,
 } from "@/types/coupons";
-import type { CheckoutEcpayDto, CheckoutEcpayResponse } from "@/types/ecpay";
+import type {
+  CheckBarcodeEcpayDto,
+  CheckBarcodeEcpayResponse,
+  CheckoutEcpayDto,
+  CheckoutEcpayResponse,
+} from "@/types/ecpay";
 import type { CreateOrderDto, OrderResponse } from "@/types/orders";
 import type { PaymentMethod } from "@/types/payment";
 import type { RouteParams } from "@/types/routeParams";
@@ -90,7 +95,7 @@ const INVOICE_TYPES: { icon: React.ElementType; type: InvoiceType }[] = [
   { icon: VolunteerActivism, type: "donate" },
 ];
 
-const CARRIER_TYPES: CarrierType[] = ["individual", "mobile", "certificate"];
+const CARRIER_TYPES: CarrierType[] = ["mobile", "certificate", "none"];
 
 const OrderModeOrganizationSlugCheckout = () => {
   const session = useAuthStore((state) => state.session);
@@ -137,7 +142,7 @@ const OrderModeOrganizationSlugCheckout = () => {
       },
       invoice: {
         carrierType: "",
-        carruerNum: "",
+        carrierNum: "",
         customerAddr: "",
         customerIdentifier: "",
         customerName: "",
@@ -152,6 +157,7 @@ const OrderModeOrganizationSlugCheckout = () => {
   const [
     couponCode,
     countryCode,
+    email,
     telephone,
     carrierType,
     customerIdentifier,
@@ -163,6 +169,7 @@ const OrderModeOrganizationSlugCheckout = () => {
     name: [
       "coupon",
       "customer.countryCode",
+      "customer.email",
       "customer.telephone",
       "invoice.carrierType",
       "invoice.customerIdentifier",
@@ -189,6 +196,11 @@ const OrderModeOrganizationSlugCheckout = () => {
     sendRequest<CheckoutEcpayResponse, CheckoutEcpayDto>(),
   );
 
+  const { trigger: triggerCheckBarcode } = useSWRMutation(
+    "/api/ecpay/check-barcode",
+    sendRequest<CheckBarcodeEcpayResponse, CheckBarcodeEcpayDto>(),
+  );
+
   const { isMutating: isMutatingOrder, trigger: triggerOrder } = useSWRMutation(
     `/api/organizations/${String(organizationSlug)}/orders`,
     sendRequest<OrderResponse, CreateOrderDto>(),
@@ -196,6 +208,10 @@ const OrderModeOrganizationSlugCheckout = () => {
 
   const shouldFetch =
     invoiceType === "company" && /^\d{8}$/.test(customerIdentifier);
+
+  // 綠界 B2C 發票規定信箱與手機擇一必填，所以另一欄有值時這欄就不是必填
+  const isEmailRequired = !!invoiceType && !telephone;
+  const isTelephoneRequired = isPickup || (!!invoiceType && !email);
 
   const tCommon = useTranslations("common");
   const tOrder = useTranslations("order");
@@ -294,6 +310,22 @@ const OrderModeOrganizationSlugCheckout = () => {
   const onSubmit = handleSubmit(async ({ customer, invoice, payment }) => {
     if (!payment) return;
 
+    const carrier = invoice.type === "personal" ? invoice.carrierType : "";
+
+    if (carrier === "mobile") {
+      const barcode = await triggerCheckBarcode({
+        barCode: invoice.carrierNum,
+      }).catch(() => null);
+
+      if (barcode && !barcode.isExist) {
+        setError("invoice.carrierNum", {
+          message: tValidation("carrierNum.mobile.notFound"),
+        });
+
+        return;
+      }
+    }
+
     try {
       const order = await triggerOrder({
         customer: {
@@ -310,8 +342,11 @@ const OrderModeOrganizationSlugCheckout = () => {
         discountCode: coupon?.code,
         invoice: invoice.type
           ? {
-              carrierType: invoice.carrierType || undefined,
-              carruerNum: invoice.carruerNum || undefined,
+              carrierType: carrier && carrier !== "none" ? carrier : undefined,
+              carrierNum:
+                carrier === "mobile" || carrier === "certificate"
+                  ? invoice.carrierNum
+                  : undefined,
               customerAddr: invoice.customerAddr || undefined,
               customerIdentifier: invoice.customerIdentifier || undefined,
               customerName: invoice.customerName || undefined,
@@ -463,12 +498,20 @@ const OrderModeOrganizationSlugCheckout = () => {
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
+                {...register("customer.telephone")}
                 autoComplete="tel"
                 error={!!errors.customer?.telephone}
                 fullWidth
                 helperText={errors.customer?.telephone?.message}
-                label={`${tOrder("checkout.customer.telephone.label")}${isPickup ? "" : ` ${tCommon("optional")}`}`}
-                required={isPickup}
+                label={`${tOrder("checkout.customer.telephone.label")}${isTelephoneRequired ? "" : ` ${tCommon("optional")}`}`}
+                onChange={(e) => {
+                  setValue("customer.telephone", e.target.value, {
+                    shouldValidate: isSubmitted,
+                  });
+                  // 信箱與手機擇一必填，只驗改動的那欄會留下已不成立的錯誤
+                  if (isSubmitted) void triggerValidation("customer.email");
+                }}
+                required={isTelephoneRequired}
                 slotProps={{
                   input: {
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -478,30 +521,48 @@ const OrderModeOrganizationSlugCheckout = () => {
                 }}
                 type="tel"
                 value={telephone}
-                {...register("customer.telephone")}
               />
             </Grid>
           </Grid>
           <TextField
+            {...register("customer.email")}
             autoComplete="email"
             error={!!errors.customer?.email}
             fullWidth
             helperText={errors.customer?.email?.message}
-            label={`${tOrder("checkout.customer.email.label")} ${tCommon("optional")}`}
+            label={
+              isEmailRequired
+                ? tOrder("checkout.customer.email.label")
+                : `${tOrder("checkout.customer.email.label")} ${tCommon("optional")}`
+            }
+            onChange={(e) => {
+              setValue("customer.email", e.target.value, {
+                shouldValidate: isSubmitted,
+              });
+              // 信箱與手機擇一必填，只驗改動的那欄會留下已不成立的錯誤
+              if (isSubmitted) void triggerValidation("customer.telephone");
+            }}
             placeholder={tOrder("checkout.customer.email.placeholder")}
+            required={isEmailRequired}
             type="email"
-            {...register("customer.email")}
+            value={email}
           />
           <Divider flexItem />
           <ListRadioGroup
             error={!!errors.invoice?.type}
             helperText={errors.invoice?.type?.message}
             label={tOrder("checkout.invoice.title")}
-            onChange={(_, value) =>
+            onChange={(_, value) => {
               setValue("invoice.type", value as InvoiceType, {
                 shouldValidate: isSubmitted,
-              })
-            }
+              });
+              // 未選發票類型時不要求聯絡方式，選了才要求，兩欄都得重驗
+              if (isSubmitted)
+                void triggerValidation([
+                  "customer.email",
+                  "customer.telephone",
+                ]);
+            }}
             options={INVOICE_TYPES.map(({ icon: Icon, type }) => ({
               icon: <Icon fontSize="small" />,
               label: tOrder(`checkout.invoice.${type}`),
@@ -515,11 +576,11 @@ const OrderModeOrganizationSlugCheckout = () => {
               fullWidth
               helperText={errors.invoice?.carrierType?.message}
               label={tOrder("checkout.invoice.carrierType.label")}
-              onChange={(e) =>
+              onChange={(e) => {
                 setValue("invoice.carrierType", e.target.value as CarrierType, {
                   shouldValidate: isSubmitted,
-                })
-              }
+                });
+              }}
               required
               select
               slotProps={{
@@ -551,10 +612,10 @@ const OrderModeOrganizationSlugCheckout = () => {
           {invoiceType === "personal" &&
             (carrierType === "mobile" || carrierType === "certificate") && (
               <TextField
-                error={!!errors.invoice?.carruerNum}
+                error={!!errors.invoice?.carrierNum}
                 fullWidth
-                helperText={errors.invoice?.carruerNum?.message}
-                label={tOrder("checkout.invoice.carruerNum")}
+                helperText={errors.invoice?.carrierNum?.message}
+                label={tOrder("checkout.invoice.carrierNum")}
                 required
                 slotProps={{
                   input: {
@@ -573,7 +634,7 @@ const OrderModeOrganizationSlugCheckout = () => {
                     },
                   },
                 }}
-                {...register("invoice.carruerNum")}
+                {...register("invoice.carrierNum")}
               />
             )}
           {invoiceType === "company" && (

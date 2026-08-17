@@ -1,5 +1,10 @@
 {
   "actions": {
+    "issueInvoice": {
+      "confirm": "確定要為訂單 <bold>{orderNumber}</bold> 開立發票嗎？發票一經開立即無法自行取消。",
+      "success": "已為訂單 {orderNumber} 開立發票 {invoiceNumber}",
+      "title": "補開發票"
+    },
     "label": "操作",
     "updateCustomer": {
       "success": "已更新訂單 {orderNumber} 的顧客資訊",
@@ -37,6 +42,12 @@
       "title": "顧客資訊"
     },
     "discount": "折扣",
+    "invoice": {
+      "invoiceDate": "開立時間",
+      "invoiceNumber": "發票號碼",
+      "status": "開立狀態",
+      "title": "發票資訊"
+    },
     "items": {
       "title": "訂單明細"
     },
@@ -44,6 +55,11 @@
     "transaction": {
       "title": "交易資訊"
     }
+  },
+  "invoiceStatus": {
+    "issued": "已開立",
+    "pending": "尚未開立",
+    "voided": "已作廢"
   },
   "label": "訂單管理",
   "list": {

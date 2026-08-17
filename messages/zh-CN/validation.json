@@ -17,16 +17,17 @@
     "minDate": "请选择 1900-01-01 或之后的出生日期。",
     "required": "出生日期为必填。"
   },
-  "carrierType": {
-    "notSelected": "请选择您的载具类型。"
-  },
-  "carruerNum": {
+  "carrierNum": {
     "certificate": {
       "invalid": "自然人凭证格式无效。"
     },
     "mobile": {
-      "invalid": "手机条码格式无效。"
+      "invalid": "手机条码格式无效。",
+      "notFound": "查无此手机条码，请确认后重新输入。"
     }
+  },
+  "carrierType": {
+    "notSelected": "请选择您的载具类型。"
   },
   "confirmNewPassword": {
     "mismatch": "两次输入的密码不一致。",
@@ -35,6 +36,9 @@
   "confirmPassword": {
     "mismatch": "两次输入的密码不一致。",
     "required": "确认密码为必填。"
+  },
+  "contact": {
+    "requiredForInvoice": "开立发票需要联络方式，电子邮箱与电话请至少填写一项。"
   },
   "countryCode": {
     "invalid": "国家代码无效。",

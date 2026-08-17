@@ -39,11 +39,11 @@
       }
     },
     "invoice": {
+      "carrierNum": "캐리어 번호",
       "carrierType": {
-        "label": "캐리어 유형",
-        "placeholder": "귀하의 캐리어 유형을 선택해 주세요"
+        "label": "영수증 수령 방법",
+        "placeholder": "귀하의 영수증 수령 방법을 선택해 주세요"
       },
-      "carruerNum": "캐리어 번호",
       "certificate": "자연인 인증서",
       "company": "사업자 영수증",
       "customerAddr": "회사 주소",
@@ -54,13 +54,9 @@
         "label": "러브코드",
         "placeholder": "귀하의 러브코드를 선택해 주세요"
       },
-      "individual": "전자 영수증",
-      "invoiceEmail": {
-        "label": "청구서 이메일",
-        "placeholder": "귀하의 청구서 이메일을 입력해 주세요",
-        "sameAsCustomer": "고객 이메일과 동일"
-      },
+      "individual": "ECPay 캐리어",
       "mobile": "모바일 바코드",
+      "none": "종이로 받기",
       "personal": "개인 영수증",
       "title": "영수증 유형"
     },

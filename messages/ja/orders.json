@@ -1,5 +1,10 @@
 {
   "actions": {
+    "issueInvoice": {
+      "confirm": "注文 <bold>{orderNumber}</bold> のインボイスを発行してもよろしいですか？発行後はこの画面では取り消せません。",
+      "success": "注文 {orderNumber} のインボイス {invoiceNumber} を発行しました",
+      "title": "インボイスを発行"
+    },
     "label": "操作",
     "updateCustomer": {
       "success": "注文 {orderNumber} のお客様情報を更新しました",
@@ -37,6 +42,12 @@
       "title": "お客様情報"
     },
     "discount": "割引",
+    "invoice": {
+      "invoiceDate": "発行日時",
+      "invoiceNumber": "インボイス番号",
+      "status": "発行状況",
+      "title": "インボイス情報"
+    },
     "items": {
       "title": "注文明細"
     },
@@ -44,6 +55,11 @@
     "transaction": {
       "title": "取引情報"
     }
+  },
+  "invoiceStatus": {
+    "issued": "発行済み",
+    "pending": "未発行",
+    "voided": "無効"
   },
   "label": "注文管理",
   "list": {

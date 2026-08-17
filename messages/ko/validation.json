@@ -17,16 +17,17 @@
     "minDate": "1900-01-01 이후 날짜를 선택해 주세요.",
     "required": "생년월일은 필수입니다."
   },
-  "carrierType": {
-    "notSelected": "캐리어 유형을 선택해 주세요."
-  },
-  "carruerNum": {
+  "carrierNum": {
     "certificate": {
       "invalid": "자연인 인증서가 유효하지 않습니다."
     },
     "mobile": {
-      "invalid": "휴대폰 바코드가 유효하지 않습니다."
+      "invalid": "휴대폰 바코드가 유효하지 않습니다.",
+      "notFound": "해당 모바일 바코드를 찾을 수 없습니다. 확인 후 다시 입력해 주세요."
     }
+  },
+  "carrierType": {
+    "notSelected": "캐리어 유형을 선택해 주세요."
   },
   "confirmNewPassword": {
     "mismatch": "비밀번호가 일치하지 않습니다.",
@@ -35,6 +36,9 @@
   "confirmPassword": {
     "mismatch": "비밀번호가 일치하지 않습니다.",
     "required": "비밀번호 확인은 필수입니다."
+  },
+  "contact": {
+    "requiredForInvoice": "영수증 발행에는 연락처가 필요합니다. 이메일 또는 전화번호 중 하나를 입력해 주세요."
   },
   "countryCode": {
     "invalid": "국가 코드가 유효하지 않습니다.",

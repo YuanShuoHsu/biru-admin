@@ -39,11 +39,11 @@
       }
     },
     "invoice": {
+      "carrierNum": "キャリア番号",
       "carrierType": {
-        "label": "キャリアタイプ",
-        "placeholder": "あなたのキャリアタイプを選択してください"
+        "label": "インボイスの受取方法",
+        "placeholder": "あなたのインボイスの受取方法を選択してください"
       },
-      "carruerNum": "キャリア番号",
       "certificate": "自然人証明書",
       "company": "法人インボイス",
       "customerAddr": "会社住所",
@@ -54,13 +54,9 @@
         "label": "ラブコード",
         "placeholder": "あなたのラブコードを選択してください"
       },
-      "individual": "電子インボイス",
-      "invoiceEmail": {
-        "label": "請求書メールアドレス",
-        "placeholder": "あなたの請求書メールアドレスを入力してください",
-        "sameAsCustomer": "顧客メールアドレスと同じ"
-      },
+      "individual": "ECPay キャリア",
       "mobile": "携帯バーコード",
+      "none": "紙で受け取る",
       "personal": "個人インボイス",
       "title": "インボイスの種類"
     },

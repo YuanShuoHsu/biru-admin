@@ -17,16 +17,17 @@
     "minDate": "1900-01-01以降の生年月日を選択してください。",
     "required": "生年月日は必須です。"
   },
-  "carrierType": {
-    "notSelected": "キャリアタイプを選択してください。"
-  },
-  "carruerNum": {
+  "carrierNum": {
     "certificate": {
       "invalid": "自然人証明書が無効です。"
     },
     "mobile": {
-      "invalid": "スマホバーコードが無効です。"
+      "invalid": "スマホバーコードが無効です。",
+      "notFound": "この携帯バーコードは見つかりませんでした。ご確認のうえ再入力してください。"
     }
+  },
+  "carrierType": {
+    "notSelected": "キャリアタイプを選択してください。"
   },
   "confirmNewPassword": {
     "mismatch": "パスワードが一致しません。",
@@ -35,6 +36,9 @@
   "confirmPassword": {
     "mismatch": "パスワードが一致しません。",
     "required": "確認用パスワードは必須です。"
+  },
+  "contact": {
+    "requiredForInvoice": "インボイスの発行には連絡先が必要です。メールアドレスまたは電話番号のいずれかをご入力ください。"
   },
   "countryCode": {
     "invalid": "国コードが無効です。",

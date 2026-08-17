@@ -17,16 +17,17 @@
     "minDate": "請選擇 1900-01-01 或之後的出生日期。",
     "required": "出生日期為必填。"
   },
-  "carrierType": {
-    "notSelected": "請選擇您的載具類型。"
-  },
-  "carruerNum": {
+  "carrierNum": {
     "certificate": {
       "invalid": "自然人憑證格式無效。"
     },
     "mobile": {
-      "invalid": "手機條碼格式無效。"
+      "invalid": "手機條碼格式無效。",
+      "notFound": "查無此手機條碼，請確認後重新輸入。"
     }
+  },
+  "carrierType": {
+    "notSelected": "請選擇您的載具類型。"
   },
   "confirmNewPassword": {
     "mismatch": "兩次輸入的密碼不一致。",
@@ -35,6 +36,9 @@
   "confirmPassword": {
     "mismatch": "兩次輸入的密碼不一致。",
     "required": "確認密碼為必填。"
+  },
+  "contact": {
+    "requiredForInvoice": "開立發票需要聯絡方式，電子信箱與電話請至少填寫一項。"
   },
   "countryCode": {
     "invalid": "國家代碼無效。",

@@ -1,5 +1,10 @@
 {
   "actions": {
+    "issueInvoice": {
+      "confirm": "주문 <bold>{orderNumber}</bold>의 영수증을 발행하시겠습니까? 발행 후에는 이 화면에서 취소할 수 없습니다.",
+      "success": "주문 {orderNumber}의 영수증 {invoiceNumber}을(를) 발행했습니다",
+      "title": "영수증 발행"
+    },
     "label": "작업",
     "updateCustomer": {
       "success": "주문 {orderNumber}의 고객 정보를 수정했습니다",
@@ -37,6 +42,12 @@
       "title": "고객 정보"
     },
     "discount": "할인",
+    "invoice": {
+      "invoiceDate": "발행 일시",
+      "invoiceNumber": "영수증 번호",
+      "status": "발행 상태",
+      "title": "영수증 정보"
+    },
     "items": {
       "title": "주문 내역"
     },
@@ -44,6 +55,11 @@
     "transaction": {
       "title": "거래 정보"
     }
+  },
+  "invoiceStatus": {
+    "issued": "발행됨",
+    "pending": "미발행",
+    "voided": "취소됨"
   },
   "label": "주문 관리",
   "list": {

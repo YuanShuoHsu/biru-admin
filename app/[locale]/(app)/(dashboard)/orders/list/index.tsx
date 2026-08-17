@@ -29,6 +29,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import {
   Cancel,
   Edit,
+  Receipt,
   ReceiptLong,
   Redo,
   type SvgIconComponent,
@@ -56,6 +57,7 @@ import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type {
   AdminOrderResponse,
   OrderFilterField,
+  OrderInvoice,
   OrderSortField,
   OrderStatus,
   OrderTransition,
@@ -95,6 +97,9 @@ const TRANSITION_SLOTS: OrderTransition["direction"][][] = [
   ["revert", "cancel"],
   ["advance"],
 ];
+
+const canIssueInvoice = ({ invoice, paymentDate }: AdminOrderResponse) =>
+  !!paymentDate && invoice?.status === "pending";
 
 interface OrdersProps {
   canViewAuditLog: boolean;
@@ -373,6 +378,54 @@ const Orders = ({
     [handleStatusAction, setDialog, tOrders],
   );
 
+  const handleIssueInvoice = useCallback(
+    async (order: AdminOrderResponse) => {
+      try {
+        const issued = await fetcher<OrderInvoice>(
+          `/api/organizations/${organizationSlug}/orders/${order.id}/invoice`,
+          { method: "POST" },
+        );
+
+        enqueueSnackbar(
+          tOrders("actions.issueInvoice.success", {
+            invoiceNumber: issued.invoiceNumber || "",
+            orderNumber: order.orderNumber,
+          }),
+          { variant: "success" },
+        );
+      } catch (error) {
+        enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+      } finally {
+        mutate();
+      }
+    },
+    [mutate, organizationSlug, tOrders],
+  );
+
+  const handleConfirmIssueInvoice = useCallback(
+    (order: AdminOrderResponse) => {
+      setDialog({
+        content: (
+          <DialogContentText>
+            {tOrders.rich("actions.issueInvoice.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              orderNumber: order.orderNumber,
+            })}
+          </DialogContentText>
+        ),
+        onConfirm: () => handleIssueInvoice(order),
+        open: true,
+        title: tOrders("actions.issueInvoice.title"),
+      });
+    },
+    [handleIssueInvoice, setDialog, tOrders],
+  );
+
+  const hasPendingInvoice = useMemo(
+    () => orders.some(canIssueInvoice),
+    [orders],
+  );
+
   const hasTransitions = useMemo(
     () =>
       orders.some(({ availableTransitions }) => availableTransitions.length),
@@ -413,6 +466,21 @@ const Orders = ({
               </IconButton>
             </Tooltip>
             {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
+            {hasPendingInvoice && (
+              <Tooltip title={tOrders("actions.issueInvoice.title")}>
+                <StyledIconButton
+                  onClick={(event) => {
+                    event.stopPropagation();
+
+                    if (canIssueInvoice(row)) handleConfirmIssueInvoice(row);
+                  }}
+                  size="small"
+                  visible={canIssueInvoice(row)}
+                >
+                  <Receipt fontSize="small" />
+                </StyledIconButton>
+              </Tooltip>
+            )}
             {hasTransitions &&
               TRANSITION_SLOTS.map((directions) => {
                 const transition = row.availableTransitions.find(
@@ -540,9 +608,11 @@ const Orders = ({
       enumFilterOperators,
       enumOptions,
       format,
+      handleConfirmIssueInvoice,
       handleConfirmStatusAction,
       handleUpdateCustomer,
       handleViewOrder,
+      hasPendingInvoice,
       hasTransitions,
       locale,
       numberFilterOperators,

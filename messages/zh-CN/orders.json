@@ -1,5 +1,10 @@
 {
   "actions": {
+    "issueInvoice": {
+      "confirm": "确定要为订单 <bold>{orderNumber}</bold> 开立发票吗？发票一经开立即无法自行撤销。",
+      "success": "已为订单 {orderNumber} 开立发票 {invoiceNumber}",
+      "title": "补开发票"
+    },
     "label": "操作",
     "updateCustomer": {
       "success": "已更新订单 {orderNumber} 的顾客信息",
@@ -37,6 +42,12 @@
       "title": "顾客信息"
     },
     "discount": "折扣",
+    "invoice": {
+      "invoiceDate": "开立时间",
+      "invoiceNumber": "发票号码",
+      "status": "开立状态",
+      "title": "发票信息"
+    },
     "items": {
       "title": "订单明细"
     },
@@ -44,6 +55,11 @@
     "transaction": {
       "title": "交易信息"
     }
+  },
+  "invoiceStatus": {
+    "issued": "已开立",
+    "pending": "尚未开立",
+    "voided": "已作废"
   },
   "label": "订单管理",
   "list": {

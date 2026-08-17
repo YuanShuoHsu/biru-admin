@@ -29,6 +29,7 @@ import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { routing, type Locale } from "@/i18n/routing";
 
 import { Chip, Link as MuiLink, Stack, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
   GridFilterModel,
@@ -60,6 +61,12 @@ const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
   { ssr: false },
 );
+
+const ChangeImage = styled("img")(({ theme }) => ({
+  height: theme.spacing(4),
+  width: "auto",
+  borderRadius: theme.shape.borderRadius,
+}));
 
 const ACTION_COLORS: Record<AuditAction, "error" | "info" | "success"> = {
   create: "success",
@@ -115,6 +122,9 @@ const FIELD_LABEL_KEYS = {
 const LOCALES = new Set<string>(routing.locales);
 
 const LOCALIZED_FIELDS = new Set(["description", "displayName", "name"]);
+
+const isImageValue = (value: unknown): value is string =>
+  typeof value === "string" && value.startsWith("data:image/");
 
 const NUMERIC_FIELDS = new Set([
   "discount",
@@ -467,28 +477,48 @@ const AuditLogs = ({
         headerName: tAudit("changes"),
         renderCell: ({ row }: GridRenderCellParams<AuditLogResponse>) => (
           <Stack alignItems="center" direction="row" gap={2} height="100%">
-            {Object.entries(row.changes).map(([field, change]) => (
-              <Stack alignItems="center" direction="row" gap={0.5} key={field}>
-                <Typography color="text.secondary" variant="caption">
-                  {isTranslatableField(field)
-                    ? tAudit(FIELD_LABEL_KEYS[field])
-                    : field}
-                </Typography>
-                <Typography
-                  sx={{ textDecoration: "line-through" }}
-                  color="text.disabled"
-                  variant="caption"
+            {Object.entries(row.changes).map(([field, change]) => {
+              const label = isTranslatableField(field)
+                ? tAudit(FIELD_LABEL_KEYS[field])
+                : field;
+
+              const renderValue = (value: unknown, isBefore: boolean) =>
+                isImageValue(value) ? (
+                  <ChangeImage
+                    alt={label}
+                    src={value}
+                    sx={isBefore ? { opacity: 0.5 } : undefined}
+                  />
+                ) : (
+                  <Typography
+                    sx={
+                      isBefore ? { textDecoration: "line-through" } : undefined
+                    }
+                    color={isBefore ? "text.disabled" : undefined}
+                    variant="caption"
+                  >
+                    {getValueText(field, value)}
+                  </Typography>
+                );
+
+              return (
+                <Stack
+                  alignItems="center"
+                  direction="row"
+                  gap={0.5}
+                  key={field}
                 >
-                  {getValueText(field, change.before)}
-                </Typography>
-                <Typography color="text.secondary" variant="caption">
-                  →
-                </Typography>
-                <Typography variant="caption">
-                  {getValueText(field, change.after)}
-                </Typography>
-              </Stack>
-            ))}
+                  <Typography color="text.secondary" variant="caption">
+                    {label}
+                  </Typography>
+                  {renderValue(change.before, true)}
+                  <Typography color="text.secondary" variant="caption">
+                    →
+                  </Typography>
+                  {renderValue(change.after, false)}
+                </Stack>
+              );
+            })}
           </Stack>
         ),
         sortable: false,

@@ -39,11 +39,11 @@
       }
     },
     "invoice": {
+      "carrierNum": "Carrier number",
       "carrierType": {
-        "label": "Carrier type",
-        "placeholder": "Please select your carrier type"
+        "label": "Invoice method",
+        "placeholder": "Please select your invoice method"
       },
-      "carruerNum": "Carrier number",
       "certificate": "Natural person certificate",
       "company": "Company invoice",
       "customerAddr": "Company address",
@@ -54,13 +54,9 @@
         "label": "Love code",
         "placeholder": "Please select your love code"
       },
-      "individual": "E-Invoice",
-      "invoiceEmail": {
-        "label": "Invoice email",
-        "placeholder": "Please enter your invoice email",
-        "sameAsCustomer": "Same as customer email"
-      },
+      "individual": "ECPay carrier",
       "mobile": "Mobile barcode",
+      "none": "Printed copy",
       "personal": "Personal invoice",
       "title": "Invoice type"
     },
