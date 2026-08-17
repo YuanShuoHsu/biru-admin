@@ -5,6 +5,7 @@ import type { InvoiceStatus, OrderStatus } from "@/types/orders";
 export const INVOICE_STATUS_COLORS: Record<InvoiceStatus, ChipProps["color"]> =
   {
     issued: "success",
+    issuing: "info",
     pending: "warning",
     voided: "default",
   };

@@ -73,6 +73,7 @@
   "resource": {
     "banner": "Banner",
     "coupon": "Coupon",
+    "invoice": "Invoice",
     "label": "Resource",
     "menu": "Menu",
     "menuItem": "Item",

@@ -7,6 +7,8 @@ import {
   auditResourceValues,
   couponIssueTriggerValues,
   couponScopeValues,
+  invoiceStatusValues,
+  invoiceTypeValues,
   itemAvailabilityValues,
   orderModeValues,
   orderResponseDtoModeValues,
@@ -133,6 +135,14 @@ export const getOrderEnumOptions = (
   })),
   paymentMethod: orderResponseDtoPaymentMethodValues.map((value) => ({
     label: tOrder(`checkout.payment.${value}`),
+    value,
+  })),
+  invoiceType: invoiceTypeValues.map((value) => ({
+    label: tOrder(`checkout.invoice.${value}`),
+    value,
+  })),
+  invoiceStatus: invoiceStatusValues.map((value) => ({
+    label: tOrders(`invoiceStatusValue.${value}`),
     value,
   })),
 });

@@ -1227,7 +1227,8 @@ export interface components {
       | "order"
       | "userCoupon"
       | "coupon"
-      | "banner";
+      | "banner"
+      | "invoice";
     /** @enum {string} */
     AuditAction: "create" | "update" | "delete";
     AuditLogResponseDto: {
@@ -2026,7 +2027,7 @@ export interface components {
       | "PaymentComplete"
       | "PaymentDeclined";
     /** @enum {string} */
-    InvoiceStatus: "pending" | "issued" | "voided";
+    InvoiceStatus: "pending" | "issuing" | "issued" | "voided";
     OrderInvoiceDto: {
       id: string;
       orderId: string;
@@ -2191,9 +2192,13 @@ export interface components {
       | "orderNumber"
       | "confirmationNumber"
       | "customerName"
+      | "customerTelephone"
+      | "customerEmail"
       | "mode"
       | "paymentMethod"
       | "orderStatus"
+      | "invoiceType"
+      | "invoiceStatus"
       | "paymentDate"
       | "createdAt"
       | "tableNumber"
@@ -2207,7 +2212,12 @@ export interface components {
       | "paymentDate"
       | "createdAt"
       | "tableNumber"
-      | "total";
+      | "total"
+      | "customerName"
+      | "customerTelephone"
+      | "customerEmail"
+      | "invoiceType"
+      | "invoiceStatus";
     /** @enum {string} */
     OrderBoardStatus:
       | "OrderPaymentDue"
@@ -5974,6 +5984,7 @@ export const auditResourceValues: ReadonlyArray<
   "userCoupon",
   "coupon",
   "banner",
+  "invoice",
 ];
 export const auditActionValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AuditAction"]
@@ -6138,7 +6149,7 @@ export const invoicePaymentStatusValues: ReadonlyArray<
 > = ["PaymentDue", "PaymentPastDue", "PaymentComplete", "PaymentDeclined"];
 export const invoiceStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["InvoiceStatus"]
-> = ["pending", "issued", "voided"];
+> = ["pending", "issuing", "issued", "voided"];
 export const createOrderInvoiceDtoTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CreateOrderInvoiceDto"]["type"]
 > = ["personal", "company", "donate"];
@@ -6173,9 +6184,13 @@ export const orderFilterFieldValues: ReadonlyArray<
   "orderNumber",
   "confirmationNumber",
   "customerName",
+  "customerTelephone",
+  "customerEmail",
   "mode",
   "paymentMethod",
   "orderStatus",
+  "invoiceType",
+  "invoiceStatus",
   "paymentDate",
   "createdAt",
   "tableNumber",
@@ -6192,6 +6207,11 @@ export const orderSortFieldValues: ReadonlyArray<
   "createdAt",
   "tableNumber",
   "total",
+  "customerName",
+  "customerTelephone",
+  "customerEmail",
+  "invoiceType",
+  "invoiceStatus",
 ];
 export const orderBoardStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrderBoardStatus"]

@@ -36,7 +36,9 @@
   },
   "confirmationNumber": "Order number",
   "createdAt": "Created at",
+  "customerEmail": "Customer email",
   "customerName": "Customer name",
+  "customerTelephone": "Customer phone",
   "detail": {
     "customer": {
       "email": "Email",
@@ -60,11 +62,14 @@
       "title": "Transaction"
     }
   },
-  "invoiceStatus": {
+  "invoiceStatus": "Invoice status",
+  "invoiceStatusValue": {
     "issued": "Issued",
+    "issuing": "Issuing",
     "pending": "Not issued",
     "voided": "Voided"
   },
+  "invoiceType": "Invoice type",
   "label": "Orders",
   "list": {
     "label": "Order List"

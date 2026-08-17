@@ -156,7 +156,7 @@ const OrderDetailDialog = ({ order }: OrderDetailDialogProps) => {
             value={
               <Chip
                 color={INVOICE_STATUS_COLORS[order.invoice.status]}
-                label={tOrders(`invoiceStatus.${order.invoice.status}`)}
+                label={tOrders(`invoiceStatusValue.${order.invoice.status}`)}
                 size="small"
                 variant="outlined"
               />

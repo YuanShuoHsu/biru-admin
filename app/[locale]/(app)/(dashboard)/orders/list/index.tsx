@@ -12,7 +12,11 @@ import {
   DATA_GRID_PROPS,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
-import { STATUS_COLORS, STATUS_TEXT_COLORS } from "@/constants/orders";
+import {
+  INVOICE_STATUS_COLORS,
+  STATUS_COLORS,
+  STATUS_TEXT_COLORS,
+} from "@/constants/orders";
 import { getPageSizeOptions } from "@/constants/pagination";
 
 import {
@@ -606,6 +610,20 @@ const Orders = ({
           row.customer.name,
       },
       {
+        field: "customerTelephone",
+        filterOperators: stringFilterOperators,
+        headerName: tOrders("customerTelephone"),
+        valueGetter: (_value: unknown, row: AdminOrderResponse) =>
+          row.customer.telephone || "",
+      },
+      {
+        field: "customerEmail",
+        filterOperators: stringFilterOperators,
+        headerName: tOrders("customerEmail"),
+        valueGetter: (_value: unknown, row: AdminOrderResponse) =>
+          row.customer.email || "",
+      },
+      {
         field: "mode",
         filterOperators: enumFilterOperators,
         headerName: tOrders("mode"),
@@ -637,6 +655,33 @@ const Orders = ({
         headerName: tOrders("paymentDate"),
         valueFormatter: (value: string | null) =>
           value ? format.dateTime(new Date(value), "short") : "",
+      },
+      {
+        field: "invoiceType",
+        filterOperators: enumFilterOperators,
+        headerName: tOrders("invoiceType"),
+        type: "singleSelect",
+        valueGetter: (_value: unknown, row: AdminOrderResponse) =>
+          row.invoice?.type || "",
+        valueOptions: enumOptions.invoiceType,
+      },
+      {
+        field: "invoiceStatus",
+        filterOperators: enumFilterOperators,
+        headerName: tOrders("invoiceStatus"),
+        renderCell: ({ row }: GridRenderCellParams<AdminOrderResponse>) =>
+          row.invoice && (
+            <Chip
+              color={INVOICE_STATUS_COLORS[row.invoice.status]}
+              label={tOrders(`invoiceStatusValue.${row.invoice.status}`)}
+              size="small"
+              variant="outlined"
+            />
+          ),
+        type: "singleSelect",
+        valueGetter: (_value: unknown, row: AdminOrderResponse) =>
+          row.invoice?.status || "",
+        valueOptions: enumOptions.invoiceStatus,
       },
       {
         field: "confirmationNumber",

@@ -36,7 +36,9 @@
   },
   "confirmationNumber": "訂單編號",
   "createdAt": "成立時間",
+  "customerEmail": "顧客電子信箱",
   "customerName": "顧客姓名",
+  "customerTelephone": "顧客電話",
   "detail": {
     "customer": {
       "email": "電子信箱",
@@ -60,11 +62,14 @@
       "title": "交易資訊"
     }
   },
-  "invoiceStatus": {
+  "invoiceStatus": "發票狀態",
+  "invoiceStatusValue": {
     "issued": "已開立",
+    "issuing": "開立中",
     "pending": "尚未開立",
     "voided": "已作廢"
   },
+  "invoiceType": "發票類型",
   "label": "訂單管理",
   "list": {
     "label": "訂單列表"

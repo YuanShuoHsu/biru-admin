@@ -73,6 +73,7 @@
   "resource": {
     "banner": "배너",
     "coupon": "쿠폰",
+    "invoice": "영수증",
     "label": "리소스",
     "menu": "메뉴",
     "menuItem": "항목",

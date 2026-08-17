@@ -36,7 +36,9 @@
   },
   "confirmationNumber": "주문 번호",
   "createdAt": "생성 일시",
+  "customerEmail": "고객 이메일",
   "customerName": "고객 이름",
+  "customerTelephone": "고객 전화번호",
   "detail": {
     "customer": {
       "email": "이메일",
@@ -60,11 +62,14 @@
       "title": "거래 정보"
     }
   },
-  "invoiceStatus": {
+  "invoiceStatus": "영수증 상태",
+  "invoiceStatusValue": {
     "issued": "발행됨",
+    "issuing": "발행 중",
     "pending": "미발행",
     "voided": "취소됨"
   },
+  "invoiceType": "영수증 유형",
   "label": "주문 관리",
   "list": {
     "label": "주문 목록"

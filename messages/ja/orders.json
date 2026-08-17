@@ -36,7 +36,9 @@
   },
   "confirmationNumber": "注文番号",
   "createdAt": "作成日時",
+  "customerEmail": "顧客メールアドレス",
   "customerName": "お客様名",
+  "customerTelephone": "顧客電話番号",
   "detail": {
     "customer": {
       "email": "メールアドレス",
@@ -60,11 +62,14 @@
       "title": "取引情報"
     }
   },
-  "invoiceStatus": {
+  "invoiceStatus": "インボイス状態",
+  "invoiceStatusValue": {
     "issued": "発行済み",
+    "issuing": "発行中",
     "pending": "未発行",
     "voided": "無効"
   },
+  "invoiceType": "インボイス種別",
   "label": "注文管理",
   "list": {
     "label": "注文一覧"

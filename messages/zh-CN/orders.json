@@ -36,7 +36,9 @@
   },
   "confirmationNumber": "订单编号",
   "createdAt": "创建时间",
+  "customerEmail": "顾客电子邮箱",
   "customerName": "顾客姓名",
+  "customerTelephone": "顾客电话",
   "detail": {
     "customer": {
       "email": "电子邮箱",
@@ -60,11 +62,14 @@
       "title": "交易信息"
     }
   },
-  "invoiceStatus": {
+  "invoiceStatus": "发票状态",
+  "invoiceStatusValue": {
     "issued": "已开立",
+    "issuing": "开立中",
     "pending": "尚未开立",
     "voided": "已作废"
   },
+  "invoiceType": "发票类型",
   "label": "订单管理",
   "list": {
     "label": "订单列表"
