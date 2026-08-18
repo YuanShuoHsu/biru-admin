@@ -9,44 +9,35 @@ import type { OrderInvoicePrint } from "@/types/orders";
 
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
+import { printDocument } from "@/utils/print";
 
 interface InvoicePrintReadyPayload {
   invoiceNumber: string;
   orderId: string;
 }
 
+/**
+ * 開票完成後在櫃檯自動印出證明聯。
+ *
+ * 瀏覽器不會靜默列印，一般模式仍會跳出列印對話框；
+ * 要免點擊直接出紙，櫃檯那台 Chrome 需以 --kiosk-printing 啟動。
+ */
 const useInvoiceAutoPrint = (enabled: boolean, organizationSlug: string) => {
   useEffect(() => {
     if (!enabled) return;
 
     const print = async ({ orderId }: InvoicePrintReadyPayload) => {
-      let printHtml: string;
       try {
-        ({ printHtml } = await fetcher<OrderInvoicePrint>(
+        const { printHtml } = await fetcher<OrderInvoicePrint>(
           `/api/organizations/${organizationSlug}/orders/${orderId}/invoice/print`,
           { method: "POST" },
-        ));
+        );
+
+        printDocument(printHtml);
       } catch (error) {
+        // 自動列印沒出紙，櫃檯要知道才會改用手動列印
         enqueueSnackbar(getErrorMessage(error), { variant: "error" });
-
-        return;
       }
-
-      const frame = document.createElement("iframe");
-
-      // display: none 的 iframe 不會排版，印出來是空白；只能移到畫面外
-      frame.style.border = "0";
-      frame.style.bottom = "0";
-      frame.style.height = "0";
-      frame.style.position = "fixed";
-      frame.style.right = "0";
-      frame.style.width = "0";
-
-      frame.onload = () => frame.contentWindow?.print();
-      frame.srcdoc = printHtml;
-      document.body.appendChild(frame);
-
-      window.setTimeout(() => frame.remove(), 60_000);
     };
 
     menuSocket.on("invoicePrintReady", print);

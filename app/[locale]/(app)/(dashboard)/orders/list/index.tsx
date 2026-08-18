@@ -74,6 +74,7 @@ import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getOrderEnumOptions } from "@/utils/enumOptions";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
+import { printDocument } from "@/utils/print";
 
 import AuditLogButton from "@/components/AuditLogButton";
 
@@ -441,23 +442,44 @@ const Orders = ({
   const handlePrintInvoice = useCallback(
     async (order: AdminOrderResponse) => {
       try {
-        const { printUrl } = await fetcher<OrderInvoicePrint>(
+        const { printHtml } = await fetcher<OrderInvoicePrint>(
           `/api/organizations/${organizationSlug}/orders/${order.id}/invoice/print`,
           { method: "POST" },
         );
 
-        const printWindow = window.open(printUrl, "_blank");
-        if (!printWindow)
-          enqueueSnackbar(tOrders("actions.printInvoice.blocked"), {
-            variant: "warning",
-          });
+        printDocument(printHtml);
       } catch (error) {
         enqueueSnackbar(getErrorMessage(error), { variant: "error" });
       } finally {
         mutate();
       }
     },
-    [mutate, organizationSlug, tOrders],
+    [mutate, organizationSlug],
+  );
+
+  const handleConfirmPrintInvoice = useCallback(
+    (order: AdminOrderResponse) => {
+      if (!order.invoice?.printedAt) {
+        void handlePrintInvoice(order);
+
+        return;
+      }
+
+      setDialog({
+        content: (
+          <DialogContentText>
+            {tOrders.rich("actions.printInvoice.reprintConfirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              orderNumber: order.orderNumber,
+            })}
+          </DialogContentText>
+        ),
+        onConfirm: () => handlePrintInvoice(order),
+        open: true,
+        title: tOrders("actions.printInvoice.reprintTitle"),
+      });
+    },
+    [handlePrintInvoice, setDialog, tOrders],
   );
 
   const handleResetInvoicePrint = useCallback(
@@ -584,7 +606,7 @@ const Orders = ({
                   onClick={(event) => {
                     event.stopPropagation();
 
-                    if (canPrintInvoice(row)) void handlePrintInvoice(row);
+                    if (canPrintInvoice(row)) handleConfirmPrintInvoice(row);
                   }}
                   size="small"
                   visible={canPrintInvoice(row)}
@@ -780,7 +802,7 @@ const Orders = ({
       handleConfirmIssueInvoice,
       handleConfirmResetInvoicePrint,
       handleConfirmStatusAction,
-      handlePrintInvoice,
+      handleConfirmPrintInvoice,
       handleUpdateCustomer,
       handleViewOrder,
       hasPendingInvoice,

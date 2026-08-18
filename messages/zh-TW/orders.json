@@ -7,7 +7,7 @@
     },
     "label": "操作",
     "printInvoice": {
-      "blocked": "瀏覽器擋下了列印視窗，請允許彈出視窗後再試一次。",
+      "reprintConfirm": "確定要補印訂單 <bold>{orderNumber}</bold> 的發票嗎？正本已經列印過，補印聯不能用來對獎。若正本沒有真的印出來，請先重設為未列印。",
       "reprintTitle": "補印發票（正本已列印）",
       "title": "列印發票"
     },

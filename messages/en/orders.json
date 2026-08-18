@@ -7,7 +7,7 @@
     },
     "label": "Actions",
     "printInvoice": {
-      "blocked": "The browser blocked the print window. Allow pop-ups and try again.",
+      "reprintConfirm": "Reprint the invoice for order <bold>{orderNumber}</bold>? The original has already been printed, and a reprinted copy is not eligible for the lottery. If the original never came out of the printer, reset it to not printed first.",
       "reprintTitle": "Print invoice copy (original already printed)",
       "title": "Print invoice"
     },

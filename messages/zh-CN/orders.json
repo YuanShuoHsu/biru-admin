@@ -7,7 +7,7 @@
     },
     "label": "操作",
     "printInvoice": {
-      "blocked": "浏览器拦截了打印窗口，请允许弹出窗口后再试一次。",
+      "reprintConfirm": "确定要补印订单 <bold>{orderNumber}</bold> 的发票吗？正本已经打印过，补印联不能用来对奖。若正本没有真的打印出来，请先重设为未打印。",
       "reprintTitle": "补印发票（正本已打印）",
       "title": "打印发票"
     },
