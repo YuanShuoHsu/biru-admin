@@ -177,6 +177,15 @@ const OrderDetailDialog = ({ order }: OrderDetailDialogProps) => {
               )}
             />
           )}
+          {order.invoice.printedAt && (
+            <InfoRow
+              label={tOrders("detail.invoice.printedAt")}
+              value={format.dateTime(
+                new Date(order.invoice.printedAt),
+                "short",
+              )}
+            />
+          )}
           <InfoRow
             label={tOrder("checkout.invoice.title")}
             value={tOrder(`checkout.invoice.${order.invoice.type}`)}

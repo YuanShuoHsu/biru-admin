@@ -8,7 +8,13 @@
     "label": "작업",
     "printInvoice": {
       "blocked": "브라우저가 인쇄 창을 차단했습니다. 팝업을 허용한 후 다시 시도해 주세요.",
+      "reprintTitle": "영수증 재인쇄 (정본 인쇄됨)",
       "title": "영수증 인쇄"
+    },
+    "resetInvoicePrint": {
+      "confirm": "주문 <bold>{orderNumber}</bold>의 영수증을 미인쇄로 되돌리시겠습니까? 정본이 실제로 출력되지 않은 경우에만 사용하세요. 되돌린 후 인쇄하면 추첨 대상 정본이 두 번째로 발행됩니다.",
+      "success": "주문 {orderNumber}의 영수증을 미인쇄로 되돌렸습니다",
+      "title": "미인쇄로 되돌리기"
     },
     "updateCustomer": {
       "success": "주문 {orderNumber}의 고객 정보를 수정했습니다",
@@ -51,6 +57,7 @@
     "invoice": {
       "invoiceDate": "발행 일시",
       "invoiceNumber": "영수증 번호",
+      "printedAt": "정본 인쇄 일시",
       "status": "발행 상태",
       "title": "영수증 정보"
     },

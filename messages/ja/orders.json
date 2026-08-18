@@ -8,7 +8,13 @@
     "label": "操作",
     "printInvoice": {
       "blocked": "ブラウザが印刷ウィンドウをブロックしました。ポップアップを許可して再試行してください。",
+      "reprintTitle": "インボイスを再印刷（正本は印刷済み）",
       "title": "インボイスを印刷"
+    },
+    "resetInvoicePrint": {
+      "confirm": "注文 <bold>{orderNumber}</bold> のインボイスを未印刷に戻してもよろしいですか？正本が実際に出力されなかった場合のみ行ってください。戻した後に印刷すると、当選対象となる正本が 2 枚目として発行されます。",
+      "success": "注文 {orderNumber} のインボイスを未印刷に戻しました",
+      "title": "未印刷に戻す"
     },
     "updateCustomer": {
       "success": "注文 {orderNumber} のお客様情報を更新しました",
@@ -51,6 +57,7 @@
     "invoice": {
       "invoiceDate": "発行日時",
       "invoiceNumber": "インボイス番号",
+      "printedAt": "正本印刷日時",
       "status": "発行状況",
       "title": "インボイス情報"
     },

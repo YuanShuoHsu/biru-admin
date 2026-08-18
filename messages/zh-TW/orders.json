@@ -8,7 +8,13 @@
     "label": "操作",
     "printInvoice": {
       "blocked": "瀏覽器擋下了列印視窗，請允許彈出視窗後再試一次。",
+      "reprintTitle": "補印發票（正本已列印）",
       "title": "列印發票"
+    },
+    "resetInvoicePrint": {
+      "confirm": "確定要將訂單 <bold>{orderNumber}</bold> 的發票重設為未列印嗎？只有在正本沒有真的印出來時才這樣做，重設後再列印會印出第二張可對獎的正本。",
+      "success": "已將訂單 {orderNumber} 的發票重設為未列印",
+      "title": "重設為未列印"
     },
     "updateCustomer": {
       "success": "已更新訂單 {orderNumber} 的顧客資訊",
@@ -51,6 +57,7 @@
     "invoice": {
       "invoiceDate": "開立時間",
       "invoiceNumber": "發票號碼",
+      "printedAt": "正本列印時間",
       "status": "開立狀態",
       "title": "發票資訊"
     },

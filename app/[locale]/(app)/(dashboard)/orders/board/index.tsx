@@ -66,7 +66,7 @@ const OrdersBoard = ({
 
   const { isConnected } = useSocketConnection(menuSocket);
 
-  useInvoiceAutoPrint(isConnected);
+  useInvoiceAutoPrint(isConnected, organizationSlug);
 
   useEffect(() => {
     if (!isConnected) return;

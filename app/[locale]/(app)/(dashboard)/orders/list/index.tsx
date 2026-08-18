@@ -37,6 +37,7 @@ import {
   Receipt,
   ReceiptLong,
   Redo,
+  RestartAlt,
   type SvgIconComponent,
   Undo,
 } from "@mui/icons-material";
@@ -112,6 +113,10 @@ const canPrintInvoice = ({ invoice }: AdminOrderResponse) =>
   invoice?.status === "issued" &&
   !invoice.carrierType &&
   invoice.type !== "donate";
+
+// 網址一取得就算已印，紙其實沒出來時得還原正本，否則顧客只拿得到不能對獎的補印聯
+const canResetInvoicePrint = (order: AdminOrderResponse) =>
+  canPrintInvoice(order) && !!order.invoice?.printedAt;
 
 interface OrdersProps {
   canViewAuditLog: boolean;
@@ -441,7 +446,6 @@ const Orders = ({
           { method: "POST" },
         );
 
-        // 開新視窗才印得到綠界的列印頁；被瀏覽器擋掉時至少讓使用者知道
         const printWindow = window.open(printUrl, "_blank");
         if (!printWindow)
           enqueueSnackbar(tOrders("actions.printInvoice.blocked"), {
@@ -449,9 +453,53 @@ const Orders = ({
           });
       } catch (error) {
         enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+      } finally {
+        mutate();
       }
     },
-    [organizationSlug, tOrders],
+    [mutate, organizationSlug, tOrders],
+  );
+
+  const handleResetInvoicePrint = useCallback(
+    async (order: AdminOrderResponse) => {
+      try {
+        await fetcher(
+          `/api/organizations/${organizationSlug}/orders/${order.id}/invoice/print`,
+          { method: "PATCH" },
+        );
+
+        enqueueSnackbar(
+          tOrders("actions.resetInvoicePrint.success", {
+            orderNumber: order.orderNumber,
+          }),
+          { variant: "success" },
+        );
+      } catch (error) {
+        enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+      } finally {
+        mutate();
+      }
+    },
+    [mutate, organizationSlug, tOrders],
+  );
+
+  const handleConfirmResetInvoicePrint = useCallback(
+    (order: AdminOrderResponse) => {
+      setDialog({
+        content: (
+          <DialogContentText>
+            {tOrders.rich("actions.resetInvoicePrint.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              orderNumber: order.orderNumber,
+            })}
+          </DialogContentText>
+        ),
+        onConfirm: () => handleResetInvoicePrint(order),
+        open: true,
+        title: tOrders("actions.resetInvoicePrint.title"),
+      });
+    },
+    [handleResetInvoicePrint, setDialog, tOrders],
   );
 
   const hasPendingInvoice = useMemo(
@@ -461,6 +509,11 @@ const Orders = ({
 
   const hasPrintableInvoice = useMemo(
     () => orders.some(canPrintInvoice),
+    [orders],
+  );
+
+  const hasResettableInvoicePrint = useMemo(
+    () => orders.some(canResetInvoicePrint),
     [orders],
   );
 
@@ -520,7 +573,13 @@ const Orders = ({
               </Tooltip>
             )}
             {hasPrintableInvoice && (
-              <Tooltip title={tOrders("actions.printInvoice.title")}>
+              <Tooltip
+                title={tOrders(
+                  row.invoice?.printedAt
+                    ? "actions.printInvoice.reprintTitle"
+                    : "actions.printInvoice.title",
+                )}
+              >
                 <StyledIconButton
                   onClick={(event) => {
                     event.stopPropagation();
@@ -531,6 +590,22 @@ const Orders = ({
                   visible={canPrintInvoice(row)}
                 >
                   <Print fontSize="small" />
+                </StyledIconButton>
+              </Tooltip>
+            )}
+            {hasResettableInvoicePrint && (
+              <Tooltip title={tOrders("actions.resetInvoicePrint.title")}>
+                <StyledIconButton
+                  onClick={(event) => {
+                    event.stopPropagation();
+
+                    if (canResetInvoicePrint(row))
+                      handleConfirmResetInvoicePrint(row);
+                  }}
+                  size="small"
+                  visible={canResetInvoicePrint(row)}
+                >
+                  <RestartAlt fontSize="small" />
                 </StyledIconButton>
               </Tooltip>
             )}
@@ -703,12 +778,14 @@ const Orders = ({
       enumOptions,
       format,
       handleConfirmIssueInvoice,
+      handleConfirmResetInvoicePrint,
       handleConfirmStatusAction,
       handlePrintInvoice,
       handleUpdateCustomer,
       handleViewOrder,
       hasPendingInvoice,
       hasPrintableInvoice,
+      hasResettableInvoicePrint,
       hasTransitions,
       locale,
       numberFilterOperators,

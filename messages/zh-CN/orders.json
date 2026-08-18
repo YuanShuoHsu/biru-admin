@@ -8,7 +8,13 @@
     "label": "操作",
     "printInvoice": {
       "blocked": "浏览器拦截了打印窗口，请允许弹出窗口后再试一次。",
+      "reprintTitle": "补印发票（正本已打印）",
       "title": "打印发票"
+    },
+    "resetInvoicePrint": {
+      "confirm": "确定要将订单 <bold>{orderNumber}</bold> 的发票重设为未打印吗？只有在正本没有真的打印出来时才这样做，重设后再打印会打印出第二张可对奖的正本。",
+      "success": "已将订单 {orderNumber} 的发票重设为未打印",
+      "title": "重设为未打印"
     },
     "updateCustomer": {
       "success": "已更新订单 {orderNumber} 的顾客信息",
@@ -51,6 +57,7 @@
     "invoice": {
       "invoiceDate": "开立时间",
       "invoiceNumber": "发票号码",
+      "printedAt": "正本打印时间",
       "status": "开立状态",
       "title": "发票信息"
     },

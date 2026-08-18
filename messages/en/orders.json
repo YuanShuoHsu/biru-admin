@@ -8,7 +8,13 @@
     "label": "Actions",
     "printInvoice": {
       "blocked": "The browser blocked the print window. Allow pop-ups and try again.",
+      "reprintTitle": "Print invoice copy (original already printed)",
       "title": "Print invoice"
+    },
+    "resetInvoicePrint": {
+      "confirm": "Reset the invoice for order <bold>{orderNumber}</bold> to not printed? Do this only if the original never came out of the printer — after resetting, the next print produces a second prize-eligible original.",
+      "success": "Invoice for order {orderNumber} reset to not printed",
+      "title": "Reset to not printed"
     },
     "updateCustomer": {
       "success": "Customer information for order {orderNumber} updated",
@@ -51,6 +57,7 @@
     "invoice": {
       "invoiceDate": "Issued at",
       "invoiceNumber": "Invoice number",
+      "printedAt": "Original printed at",
       "status": "Status",
       "title": "Invoice"
     },
