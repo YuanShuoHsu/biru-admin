@@ -1,14 +1,24 @@
 "use client";
 
 import { useFormatter, useLocale, useTranslations } from "next-intl";
+import { enqueueSnackbar } from "notistack";
+import { useState } from "react";
+import useSWR from "swr";
 
 import { INVOICE_STATUS_COLORS, STATUS_COLORS } from "@/constants/orders";
 
 import { useOrderItemName } from "@/hooks/useOrderItemName";
 
-import { Chip, Divider, Stack, Typography } from "@mui/material";
+import { Button, Chip, Divider, Stack, Typography } from "@mui/material";
 
-import type { OrderResponse } from "@/types/orders";
+import type {
+  OrderInvoiceVerification,
+  OrderRefund,
+  OrderResponse,
+} from "@/types/orders";
+
+import { getErrorMessage } from "@/utils/errors";
+import { fetcher } from "@/utils/fetcher";
 
 const InfoRow = ({
   label,
@@ -53,9 +63,13 @@ const Section = ({
 
 interface OrderDetailDialogProps {
   order: OrderResponse;
+  organizationSlug?: string;
 }
 
-const OrderDetailDialog = ({ order }: OrderDetailDialogProps) => {
+const OrderDetailDialog = ({
+  order,
+  organizationSlug,
+}: OrderDetailDialogProps) => {
   const format = useFormatter();
 
   const locale = useLocale();
@@ -65,6 +79,33 @@ const OrderDetailDialog = ({ order }: OrderDetailDialogProps) => {
   const tCommon = useTranslations("common");
   const tOrder = useTranslations("order");
   const tOrders = useTranslations("orders");
+
+  const { data: refunds } = useSWR<OrderRefund[]>(
+    organizationSlug
+      ? `/api/organizations/${organizationSlug}/orders/${order.id}/refunds`
+      : null,
+    fetcher,
+  );
+
+  const [verification, setVerification] =
+    useState<OrderInvoiceVerification | null>(null);
+  const [verifying, setVerifying] = useState(false);
+
+  const handleVerifyInvoice = async () => {
+    setVerifying(true);
+
+    try {
+      setVerification(
+        await fetcher<OrderInvoiceVerification>(
+          `/api/organizations/${organizationSlug}/orders/${order.id}/invoice/verification`,
+        ),
+      );
+    } catch (error) {
+      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+    } finally {
+      setVerifying(false);
+    }
+  };
 
   const currency = order.items[0]?.priceCurrency || "";
   const discount = Number(order.discount || 0);
@@ -186,6 +227,46 @@ const OrderDetailDialog = ({ order }: OrderDetailDialogProps) => {
               )}
             />
           )}
+          {!!organizationSlug && !!order.invoice.invoiceNumber && (
+            <Stack alignItems="flex-start" gap={1}>
+              <Button
+                loading={verifying}
+                onClick={handleVerifyInvoice}
+                size="small"
+                variant="outlined"
+              >
+                {tOrders("detail.invoice.verification.label")}
+              </Button>
+              {!!verification && (
+                <Stack gap={0.5}>
+                  <Typography
+                    color={
+                      verification.matchesLocal ? "success.main" : "error.main"
+                    }
+                    variant="body2"
+                  >
+                    {tOrders(
+                      verification.matchesLocal
+                        ? "detail.invoice.verification.matched"
+                        : "detail.invoice.verification.mismatched",
+                    )}
+                  </Typography>
+                  {verification.invalidated && (
+                    <Typography color="text.secondary" variant="body2">
+                      {tOrders("detail.invoice.verification.invalidated")}
+                    </Typography>
+                  )}
+                  <Typography color="text.secondary" variant="body2">
+                    {tOrders(
+                      verification.uploaded
+                        ? "detail.invoice.verification.uploaded"
+                        : "detail.invoice.verification.notUploaded",
+                    )}
+                  </Typography>
+                </Stack>
+              )}
+            </Stack>
+          )}
           <InfoRow
             label={tOrder("checkout.invoice.title")}
             value={tOrder(`checkout.invoice.${order.invoice.type}`)}
@@ -226,6 +307,45 @@ const OrderDetailDialog = ({ order }: OrderDetailDialogProps) => {
               value={order.invoice.donateCode}
             />
           )}
+        </Section>
+      )}
+      {!!refunds?.length && (
+        <Section title={tOrders("detail.refunds.title")}>
+          {refunds.map((refund) => (
+            <Stack gap={0.5} key={refund.id}>
+              <Stack direction="row" justifyContent="space-between" gap={2}>
+                <Typography variant="body2">
+                  {tOrders(`detail.refunds.scope.${refund.scope}`)}
+                  {tCommon("parenthesisOpen")}
+                  {tOrders(`detail.refunds.channel.${refund.channel}`)}
+                  {tCommon("parenthesisClose")}
+                </Typography>
+                <Typography color="error" flexShrink={0} variant="body2">
+                  -{currency} {Number(refund.amount).toLocaleString(locale)}
+                </Typography>
+              </Stack>
+              <InfoRow
+                label={format.dateTime(new Date(refund.createdAt), "short")}
+                value={
+                  <Chip
+                    color={
+                      refund.invoiceAction === "failed" ? "error" : "default"
+                    }
+                    label={tOrders(
+                      `detail.refunds.invoiceAction.${refund.invoiceAction}`,
+                    )}
+                    size="small"
+                  />
+                }
+              />
+              {!!refund.reason && (
+                <InfoRow
+                  label={tOrders("detail.refunds.reason")}
+                  value={refund.reason}
+                />
+              )}
+            </Stack>
+          ))}
         </Section>
       )}
       <Section title={tOrders("detail.items.title")}>

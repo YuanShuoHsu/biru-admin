@@ -11,6 +11,17 @@
       "reprintTitle": "补印发票（正本已打印）",
       "title": "打印发票"
     },
+    "refund": {
+      "allocatedDiscount": "分摊折扣",
+      "amount": "退款金额",
+      "invoiceFailed": "款项已退，但发票处理失败，请至绿界后台手动处理。",
+      "invoiceHint": "整单退款将一并作废发票；若发票已跨期无法作废，会改开立折让单。",
+      "itemsLabel": "选择要退款的商品数量",
+      "manualChannel": "此付款方式绿界不支持在线退款，本操作只会同步系统记录与发票，实际款项请至绿界后台或直接退还顾客。",
+      "reason": "退款原因（选填）",
+      "success": "订单 {orderNumber} 已退款 {amount} 元",
+      "title": "退款"
+    },
     "resetInvoicePrint": {
       "confirm": "确定要将订单 <bold>{orderNumber}</bold> 的发票重设为未打印吗？只有在正本没有真的打印出来时才这样做，重设后再打印会打印出第二张可对奖的正本。",
       "success": "已将订单 {orderNumber} 的发票重设为未打印",
@@ -59,10 +70,37 @@
       "invoiceNumber": "发票号码",
       "printedAt": "正本打印时间",
       "status": "开立状态",
-      "title": "发票信息"
+      "title": "发票信息",
+      "verification": {
+        "invalidated": "绿界端显示已作废",
+        "label": "向绿界查证",
+        "matched": "绿界记录与系统一致",
+        "mismatched": "绿界记录与系统不一致，请人工确认",
+        "notUploaded": "尚未上传财政部",
+        "uploaded": "已上传财政部"
+      }
     },
     "items": {
       "title": "订单明细"
+    },
+    "refunds": {
+      "amount": "退款金额",
+      "channel": {
+        "ecpay": "绿界退刷",
+        "manual": "自行退款"
+      },
+      "invoiceAction": {
+        "allowance": "已开立折让",
+        "failed": "发票处理失败",
+        "none": "无发票",
+        "voided": "发票已作废"
+      },
+      "reason": "原因",
+      "scope": {
+        "full": "整单退款",
+        "partial": "部分退款"
+      },
+      "title": "退款记录"
     },
     "total": "总计",
     "transaction": {
@@ -93,7 +131,8 @@
     "OrderPaymentDue": "待付款",
     "OrderPickupAvailable": "可取餐",
     "OrderProblem": "订单异常",
-    "OrderProcessing": "准备中"
+    "OrderProcessing": "准备中",
+    "OrderReturned": "已退款"
   },
   "tableNumber": "桌号",
   "total": "金额"

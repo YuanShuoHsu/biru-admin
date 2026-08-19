@@ -49,6 +49,7 @@ const STATUS_CHIP_COLORS: Record<
   OrderPickupAvailable: "info",
   OrderProblem: "error",
   OrderProcessing: "info",
+  OrderReturned: "secondary",
 };
 
 interface OrdersProps {

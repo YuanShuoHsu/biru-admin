@@ -523,6 +523,7 @@ export interface paths {
     };
     get?: never;
     put?: never;
+    /** 以財政部配號同步綠界字軌（新增缺少的並啟用） */
     post: operations["EcpayController_syncInvoiceWordSettings"];
     delete?: never;
     options?: never;
@@ -563,6 +564,41 @@ export interface paths {
     head?: never;
     /** 清除列印紀錄（紙沒印出來時還原正本） */
     patch: operations["EcpayOrderInvoiceController_resetPrint"];
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/orders/{orderId}/invoice/verification": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 向綠界查證發票狀態 */
+    get: operations["EcpayOrderInvoiceController_verify"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/orders/{orderId}/refunds": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢訂單的退款紀錄 */
+    get: operations["EcpayOrderRefundController_findAll"];
+    put?: never;
+    /** 退款（省略 items 為整單全額退）；非信用卡付款方式僅登錄，需另至綠界後台或直接退現 */
+    post: operations["EcpayOrderRefundController_refund"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
     trace?: never;
   };
   "/api/organizations/{organizationSlug}/menu-item-sales": {
@@ -696,6 +732,40 @@ export interface paths {
     get: operations["UserOrdersController_findAll"];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/users/me/points": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 我的點數（全店家合併，含可兌換優惠券與明細） */
+    get: operations["MyPointsController_getAllMine"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/users/me/points/redeem": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 以點數兌換優惠券 */
+    post: operations["MyPointsController_redeem"];
     delete?: never;
     options?: never;
     head?: never;
@@ -1172,40 +1242,6 @@ export interface paths {
     get: operations["OrganizationsController_findMembers"];
     put?: never;
     post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/users/me/points": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** 我的點數（全店家合併，含可兌換優惠券與明細） */
-    get: operations["MyPointsController_getAllMine"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/users/me/points/redeem": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** 以點數兌換優惠券 */
-    post: operations["MyPointsController_redeem"];
     delete?: never;
     options?: never;
     head?: never;
@@ -2017,6 +2053,47 @@ export interface components {
        */
       CheckMacValue: string;
     };
+    /**
+     * @description 期別，1 為 1-2 月、2 為 3-4 月，依此類推
+     * @enum {number}
+     */
+    InvoiceTerm: 1 | 2 | 3 | 4 | 5 | 6;
+    /**
+     * @description added：新增並啟用
+     *     enabled：既有字軌已啟用
+     *     inUse：已在使用中，未變動
+     *     skipped：已被人工停用，自動同步不翻回啟用
+     *     failed：處理失敗，詳見 message
+     * @enum {string}
+     */
+    SyncInvoiceWordSettingOutcome:
+      | "added"
+      | "enabled"
+      | "failed"
+      | "inUse"
+      | "skipped";
+    SyncInvoiceWordSettingResultDto: {
+      /** @description 期別，1 為 1-2 月、2 為 3-4 月，依此類推 */
+      invoiceTerm: components["schemas"]["InvoiceTerm"];
+      /** @description 字軌，兩碼英文 */
+      invoiceHeader: string;
+      /** @description 起始號碼 */
+      invoiceStart: string;
+      /** @description 結束號碼 */
+      invoiceEnd: string;
+      /**
+       * @description added：新增並啟用
+       *     enabled：既有字軌已啟用
+       *     inUse：已在使用中，未變動
+       *     skipped：已被人工停用，自動同步不翻回啟用
+       *     failed：處理失敗，詳見 message
+       */
+      outcome: components["schemas"]["SyncInvoiceWordSettingOutcome"];
+      /** @description 綠界字軌編號 */
+      trackId?: string;
+      /** @description 失敗原因 */
+      message?: string;
+    };
     /** @enum {string} */
     InvoiceType: "personal" | "company" | "donate";
     /** @enum {string} */
@@ -2059,6 +2136,67 @@ export interface components {
        * @example <html>…</html>
        */
       printHtml: string;
+    };
+    OrderInvoiceVerificationDto: {
+      /** @description 綠界端的發票號碼 */
+      invoiceNumber: string;
+      /** @description 綠界端的開立時間 */
+      invoiceDate: string;
+      /** @description 綠界端的發票金額 */
+      salesAmount: string;
+      /** @description 綠界端是否已作廢 */
+      invalidated: boolean;
+      /** @description 是否已上傳財政部 */
+      uploaded: boolean;
+      /** @description 綠界端狀態是否與本機一致；false 代表兩邊對不起來，需人工處理 */
+      matchesLocal: boolean;
+    };
+    OrderRefundDto: {
+      /** @description 退款 ID */
+      id: string;
+      /** @description 退款金額 */
+      amount: string;
+      /**
+       * @description full：整單退款；partial：部分品項退款
+       * @enum {string}
+       */
+      scope: "full" | "partial";
+      /**
+       * @description ecpay：已透過綠界退刷；manual：綠界不支援此付款方式的退款 API，需店家自行退款，系統僅登錄
+       * @enum {string}
+       */
+      channel: "ecpay" | "manual";
+      /** @description 退款品項；整單退款為 null */
+      items: Record<string, never>[] | null;
+      /**
+       * @description none：無發票需處理；voided：發票已作廢；allowance：已開立折讓；failed：錢已退但發票處理失敗
+       * @enum {string}
+       */
+      invoiceAction: "none" | "voided" | "allowance" | "failed";
+      /** @description 發票處理失敗的原因 */
+      invoiceError: string | null;
+      /** @description 退款原因 */
+      reason: string | null;
+      /**
+       * Format: date-time
+       * @description 建立時間
+       */
+      createdAt: string;
+    };
+    RefundItemInputDto: {
+      /** @description 訂單品項 ID */
+      orderItemId: string;
+      /**
+       * @description 退款數量
+       * @example 1
+       */
+      quantity: number;
+    };
+    CreateOrderRefundDto: {
+      /** @description 退款品項與數量；省略代表整單全額退款。金額由後端依原單價計算，不接受自訂金額，否則湊不出合法的發票折讓明細 */
+      items?: components["schemas"]["RefundItemInputDto"][];
+      /** @description 退款原因 */
+      reason?: string;
     };
     MenuItemSalesResponseDto: {
       menuItemId: string;
@@ -2167,7 +2305,8 @@ export interface components {
         | "OrderPickupAvailable"
         | "OrderDelivered"
         | "OrderCancelled"
-        | "OrderProblem";
+        | "OrderProblem"
+        | "OrderReturned";
       confirmationNumber?: string | null;
       /** Format: date-time */
       orderDate: string;
@@ -2246,7 +2385,8 @@ export interface components {
       | "OrderPickupAvailable"
       | "OrderDelivered"
       | "OrderCancelled"
-      | "OrderProblem";
+      | "OrderProblem"
+      | "OrderReturned";
     OrderTransitionDto: {
       /** @description 此轉換僅適用現金訂單，動作實際上是收款或取消收款 */
       cashOnly?: boolean;
@@ -2278,7 +2418,8 @@ export interface components {
         | "OrderPickupAvailable"
         | "OrderDelivered"
         | "OrderCancelled"
-        | "OrderProblem";
+        | "OrderProblem"
+        | "OrderReturned";
       confirmationNumber?: string | null;
       /** Format: date-time */
       orderDate: string;
@@ -2301,6 +2442,8 @@ export interface components {
       /** Format: date-time */
       updatedAt: string;
       availableTransitions: components["schemas"]["OrderTransitionDto"][];
+      /** @description 是否可退款；退款不走 transitions，須呼叫 orders/{orderId}/refunds */
+      refundable: boolean;
     };
     AdminOrderBoardColumnDto: {
       orderStatus: components["schemas"]["OrderFlowStatus"];
@@ -2341,7 +2484,8 @@ export interface components {
         | "OrderPickupAvailable"
         | "OrderDelivered"
         | "OrderCancelled"
-        | "OrderProblem";
+        | "OrderProblem"
+        | "OrderReturned";
       confirmationNumber?: string | null;
       /** Format: date-time */
       orderDate: string;
@@ -2368,6 +2512,54 @@ export interface components {
     UserOrderListResponseDto: {
       data: components["schemas"]["UserOrderResponseDto"][];
       total: number;
+    };
+    PointsCouponDto: {
+      id: string;
+      code: string;
+      discountCurrency: string;
+      discountType: components["schemas"]["CouponDiscountType"];
+      discountValue: string;
+      minSubtotal?: string | null;
+      scope: components["schemas"]["CouponScope"];
+      /** Format: date-time */
+      validFrom?: string | null;
+      /** Format: date-time */
+      validThrough?: string | null;
+      isActive: boolean;
+      /** @description 限定店家的店名清單；null = 全部店家通用 */
+      applicableOrganizationNames?: string[] | null;
+      /** @description 兌換所需點數 */
+      pointsCost: number;
+    };
+    PointTransactionDto: {
+      id: string;
+      /** @description earn 來源訂單的取餐編號 */
+      confirmationNumber?: string | null;
+      /** @description redeem 兌換的優惠券代碼 */
+      couponCode?: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      expiresAt?: string | null;
+      /** @description earn 來源訂單編號 */
+      orderNumber?: string | null;
+      /** @description 交易發生店家；redeem 屬品牌層為 null */
+      organizationName?: string | null;
+      /** @description earn 為正、redeem 為負 */
+      points: number;
+      /** @enum {string} */
+      type: "earn" | "redeem" | "revoke";
+    };
+    MyPointsDto: {
+      /** @description 全店家合併餘額 */
+      balance: number;
+      redeemableCoupons: components["schemas"]["PointsCouponDto"][];
+      transactions: components["schemas"]["PointTransactionDto"][];
+      /** @description 明細總筆數 */
+      transactionsTotal: number;
+    };
+    RedeemPointsDto: {
+      couponId: string;
     };
     MenuResponseDto: {
       id: string;
@@ -2970,54 +3162,6 @@ export interface components {
       role: "admin" | "member" | "owner";
       teams: components["schemas"]["OrganizationMemberTeamDto"][];
       userId: string;
-    };
-    PointsCouponDto: {
-      id: string;
-      code: string;
-      discountCurrency: string;
-      discountType: components["schemas"]["CouponDiscountType"];
-      discountValue: string;
-      minSubtotal?: string | null;
-      scope: components["schemas"]["CouponScope"];
-      /** Format: date-time */
-      validFrom?: string | null;
-      /** Format: date-time */
-      validThrough?: string | null;
-      isActive: boolean;
-      /** @description 限定店家的店名清單；null = 全部店家通用 */
-      applicableOrganizationNames?: string[] | null;
-      /** @description 兌換所需點數 */
-      pointsCost: number;
-    };
-    PointTransactionDto: {
-      id: string;
-      /** @description earn 來源訂單的取餐編號 */
-      confirmationNumber?: string | null;
-      /** @description redeem 兌換的優惠券代碼 */
-      couponCode?: string | null;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      expiresAt?: string | null;
-      /** @description earn 來源訂單編號 */
-      orderNumber?: string | null;
-      /** @description 交易發生店家；redeem 屬品牌層為 null */
-      organizationName?: string | null;
-      /** @description earn 為正、redeem 為負 */
-      points: number;
-      /** @enum {string} */
-      type: "earn" | "redeem";
-    };
-    MyPointsDto: {
-      /** @description 全店家合併餘額 */
-      balance: number;
-      redeemableCoupons: components["schemas"]["PointsCouponDto"][];
-      transactions: components["schemas"]["PointTransactionDto"][];
-      /** @description 明細總筆數 */
-      transactionsTotal: number;
-    };
-    RedeemPointsDto: {
-      couponId: string;
     };
   };
   responses: never;
@@ -4178,7 +4322,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": Record<string, never>[];
+          "application/json": components["schemas"]["SyncInvoiceWordSettingResultDto"][];
         };
       };
       /** @description Internal server error */
@@ -4266,6 +4410,97 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["OrderInvoiceDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  EcpayOrderInvoiceController_verify: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        orderId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderInvoiceVerificationDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  EcpayOrderRefundController_findAll: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        orderId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderRefundDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  EcpayOrderRefundController_refund: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        orderId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateOrderRefundDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderRefundDto"];
         };
       };
       /** @description Internal server error */
@@ -4546,6 +4781,65 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["UserOrderListResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  MyPointsController_getAllMine: {
+    parameters: {
+      query?: {
+        limit?: number;
+        offset?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["MyPointsDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  MyPointsController_redeem: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["RedeemPointsDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["UserCouponResponseDto"];
         };
       };
       /** @description Internal server error */
@@ -5911,65 +6205,6 @@ export interface operations {
       };
     };
   };
-  MyPointsController_getAllMine: {
-    parameters: {
-      query?: {
-        limit?: number;
-        offset?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["MyPointsDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MyPointsController_redeem: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["RedeemPointsDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["UserCouponResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
 }
 type FlattenedDeepRequired<T> = {
   [K in keyof T]-?: FlattenedDeepRequired<
@@ -6170,6 +6405,12 @@ export const baseEcpayLanguageValues: ReadonlyArray<
 export const returnEcpayDtoSimulatePaidValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["ReturnEcpayDto"]["SimulatePaid"]
 > = [0, 1];
+export const invoiceTermValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["InvoiceTerm"]
+> = [1, 2, 3, 4, 5, 6];
+export const syncInvoiceWordSettingOutcomeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["SyncInvoiceWordSettingOutcome"]
+> = ["added", "enabled", "failed", "inUse", "skipped"];
 export const invoiceTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["InvoiceType"]
 > = ["personal", "company", "donate"];
@@ -6182,6 +6423,15 @@ export const invoicePaymentStatusValues: ReadonlyArray<
 export const invoiceStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["InvoiceStatus"]
 > = ["pending", "issuing", "issued", "voided"];
+export const orderRefundDtoScopeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["OrderRefundDto"]["scope"]
+> = ["full", "partial"];
+export const orderRefundDtoChannelValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["OrderRefundDto"]["channel"]
+> = ["ecpay", "manual"];
+export const orderRefundDtoInvoiceActionValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["OrderRefundDto"]["invoiceAction"]
+> = ["none", "voided", "allowance", "failed"];
 export const createOrderInvoiceDtoTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CreateOrderInvoiceDto"]["type"]
 > = ["personal", "company", "donate"];
@@ -6209,6 +6459,7 @@ export const orderResponseDtoOrderStatusValues: ReadonlyArray<
   "OrderDelivered",
   "OrderCancelled",
   "OrderProblem",
+  "OrderReturned",
 ];
 export const orderFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrderFilterField"]
@@ -6268,6 +6519,7 @@ export const orderStatusValues: ReadonlyArray<
   "OrderDelivered",
   "OrderCancelled",
   "OrderProblem",
+  "OrderReturned",
 ];
 export const adminOrderResponseDtoModeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AdminOrderResponseDto"]["mode"]
@@ -6284,6 +6536,7 @@ export const adminOrderResponseDtoOrderStatusValues: ReadonlyArray<
   "OrderDelivered",
   "OrderCancelled",
   "OrderProblem",
+  "OrderReturned",
 ];
 export const userOrderResponseDtoModeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UserOrderResponseDto"]["mode"]
@@ -6300,7 +6553,11 @@ export const userOrderResponseDtoOrderStatusValues: ReadonlyArray<
   "OrderDelivered",
   "OrderCancelled",
   "OrderProblem",
+  "OrderReturned",
 ];
+export const pointTransactionDtoTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["PointTransactionDto"]["type"]
+> = ["earn", "redeem", "revoke"];
 export const menuSectionFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["MenuSectionFilterField"]
 > = ["name", "description", "createdAt", "updatedAt"];
@@ -6452,6 +6709,3 @@ export const orderMenuItemResponseDtoSuitableForDietValues: ReadonlyArray<
 export const organizationMemberResponseDtoRoleValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrganizationMemberResponseDto"]["role"]
 > = ["admin", "member", "owner"];
-export const pointTransactionDtoTypeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["PointTransactionDto"]["type"]
-> = ["earn", "redeem"];

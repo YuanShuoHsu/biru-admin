@@ -18,6 +18,11 @@ export type AdminOrderResponse = components["schemas"]["AdminOrderResponseDto"];
 export type OrderInvoice = components["schemas"]["OrderInvoiceDto"];
 
 export type OrderInvoicePrint = components["schemas"]["OrderInvoicePrintDto"];
+export type OrderInvoiceVerification =
+  components["schemas"]["OrderInvoiceVerificationDto"];
+export type OrderRefund = components["schemas"]["OrderRefundDto"];
+export type CreateOrderRefundDto =
+  components["schemas"]["CreateOrderRefundDto"];
 export type OrderTransition = components["schemas"]["OrderTransitionDto"];
 
 export type OrderMode = OrderResponse["mode"];

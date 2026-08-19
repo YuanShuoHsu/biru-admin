@@ -11,6 +11,17 @@
       "reprintTitle": "補印發票（正本已列印）",
       "title": "列印發票"
     },
+    "refund": {
+      "allocatedDiscount": "分攤折扣",
+      "amount": "退款金額",
+      "invoiceFailed": "款項已退，但發票處理失敗，請至綠界後台手動處理。",
+      "invoiceHint": "整單退款將一併作廢發票；若發票已跨期無法作廢，會改開立折讓單。",
+      "itemsLabel": "選擇要退款的品項數量",
+      "manualChannel": "此付款方式綠界不支援線上退款，本操作只會同步系統紀錄與發票，實際款項請至綠界後台或直接退還顧客。",
+      "reason": "退款原因（選填）",
+      "success": "訂單 {orderNumber} 已退款 {amount} 元",
+      "title": "退款"
+    },
     "resetInvoicePrint": {
       "confirm": "確定要將訂單 <bold>{orderNumber}</bold> 的發票重設為未列印嗎？只有在正本沒有真的印出來時才這樣做，重設後再列印會印出第二張可對獎的正本。",
       "success": "已將訂單 {orderNumber} 的發票重設為未列印",
@@ -59,10 +70,37 @@
       "invoiceNumber": "發票號碼",
       "printedAt": "正本列印時間",
       "status": "開立狀態",
-      "title": "發票資訊"
+      "title": "發票資訊",
+      "verification": {
+        "invalidated": "綠界端顯示已作廢",
+        "label": "向綠界查證",
+        "matched": "綠界紀錄與系統一致",
+        "mismatched": "綠界紀錄與系統不一致，請人工確認",
+        "notUploaded": "尚未上傳財政部",
+        "uploaded": "已上傳財政部"
+      }
     },
     "items": {
       "title": "訂單明細"
+    },
+    "refunds": {
+      "amount": "退款金額",
+      "channel": {
+        "ecpay": "綠界退刷",
+        "manual": "自行退款"
+      },
+      "invoiceAction": {
+        "allowance": "已開立折讓",
+        "failed": "發票處理失敗",
+        "none": "無發票",
+        "voided": "發票已作廢"
+      },
+      "reason": "原因",
+      "scope": {
+        "full": "整單退款",
+        "partial": "部分退款"
+      },
+      "title": "退款紀錄"
     },
     "total": "總計",
     "transaction": {
@@ -93,7 +131,8 @@
     "OrderPaymentDue": "待付款",
     "OrderPickupAvailable": "可取餐",
     "OrderProblem": "訂單異常",
-    "OrderProcessing": "準備中"
+    "OrderProcessing": "準備中",
+    "OrderReturned": "已退款"
   },
   "tableNumber": "桌號",
   "total": "金額"

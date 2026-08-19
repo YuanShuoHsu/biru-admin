@@ -11,6 +11,17 @@
       "reprintTitle": "Print invoice copy (original already printed)",
       "title": "Print invoice"
     },
+    "refund": {
+      "allocatedDiscount": "Allocated discount",
+      "amount": "Refund amount",
+      "invoiceFailed": "The refund went through, but the invoice could not be processed. Handle it in the ECPay portal.",
+      "invoiceHint": "A full refund voids the invoice; if it can no longer be voided, a credit note is issued instead.",
+      "itemsLabel": "Select the quantity to refund",
+      "manualChannel": "ECPay does not support online refunds for this payment method. This only updates the system record and the invoice — refund the customer via the ECPay portal or in person.",
+      "reason": "Reason (optional)",
+      "success": "Refunded {amount} for order {orderNumber}",
+      "title": "Refund"
+    },
     "resetInvoicePrint": {
       "confirm": "Reset the invoice for order <bold>{orderNumber}</bold> to not printed? Do this only if the original never came out of the printer — after resetting, the next print produces a second prize-eligible original.",
       "success": "Invoice for order {orderNumber} reset to not printed",
@@ -59,10 +70,37 @@
       "invoiceNumber": "Invoice number",
       "printedAt": "Original printed at",
       "status": "Status",
-      "title": "Invoice"
+      "title": "Invoice",
+      "verification": {
+        "invalidated": "Voided on ECPay",
+        "label": "Verify with ECPay",
+        "matched": "ECPay matches this system",
+        "mismatched": "ECPay does not match this system — check manually",
+        "notUploaded": "Not yet uploaded to the tax authority",
+        "uploaded": "Uploaded to the tax authority"
+      }
     },
     "items": {
       "title": "Order summary"
+    },
+    "refunds": {
+      "amount": "Amount",
+      "channel": {
+        "ecpay": "Refunded via ECPay",
+        "manual": "Refunded manually"
+      },
+      "invoiceAction": {
+        "allowance": "Credit note issued",
+        "failed": "Invoice failed",
+        "none": "No invoice",
+        "voided": "Invoice voided"
+      },
+      "reason": "Reason",
+      "scope": {
+        "full": "Full refund",
+        "partial": "Partial refund"
+      },
+      "title": "Refunds"
     },
     "total": "Total",
     "transaction": {
@@ -93,7 +131,8 @@
     "OrderPaymentDue": "Payment due",
     "OrderPickupAvailable": "Ready for pickup",
     "OrderProblem": "Problem",
-    "OrderProcessing": "Processing"
+    "OrderProcessing": "Processing",
+    "OrderReturned": "Refunded"
   },
   "tableNumber": "Table",
   "total": "Amount"

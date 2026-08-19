@@ -263,7 +263,12 @@ const OrdersBoard = ({
           event.stopPropagation();
 
           setDialog({
-            content: <OrderDetailDialog order={order} />,
+            content: (
+              <OrderDetailDialog
+                order={order}
+                organizationSlug={organizationSlug}
+              />
+            ),
             open: true,
             title: tOrders("actions.viewOrder.title"),
           });

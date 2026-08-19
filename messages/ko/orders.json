@@ -11,6 +11,17 @@
       "reprintTitle": "영수증 재인쇄 (정본 인쇄됨)",
       "title": "영수증 인쇄"
     },
+    "refund": {
+      "allocatedDiscount": "분배된 할인",
+      "amount": "환불 금액",
+      "invoiceFailed": "환불은 완료되었지만 세금계산서 처리에 실패했습니다. ECPay 관리자 페이지에서 처리해 주세요.",
+      "invoiceHint": "전액 환불 시 세금계산서도 함께 취소됩니다. 기간이 지나 취소할 수 없으면 에누리 전표를 발행합니다.",
+      "itemsLabel": "환불할 수량을 선택하세요",
+      "manualChannel": "이 결제 수단은 ECPay 온라인 환불을 지원하지 않습니다. 이 작업은 시스템 기록과 세금계산서만 반영하므로, 실제 환불은 ECPay 관리자 페이지나 직접 처리해 주세요.",
+      "reason": "환불 사유(선택)",
+      "success": "주문 {orderNumber}에 대해 {amount} 환불했습니다",
+      "title": "환불"
+    },
     "resetInvoicePrint": {
       "confirm": "주문 <bold>{orderNumber}</bold>의 영수증을 미인쇄로 되돌리시겠습니까? 정본이 실제로 출력되지 않은 경우에만 사용하세요. 되돌린 후 인쇄하면 추첨 대상 정본이 두 번째로 발행됩니다.",
       "success": "주문 {orderNumber}의 영수증을 미인쇄로 되돌렸습니다",
@@ -59,10 +70,37 @@
       "invoiceNumber": "영수증 번호",
       "printedAt": "정본 인쇄 일시",
       "status": "발행 상태",
-      "title": "영수증 정보"
+      "title": "영수증 정보",
+      "verification": {
+        "invalidated": "ECPay에서 취소됨으로 표시",
+        "label": "ECPay에서 조회",
+        "matched": "ECPay 기록과 일치합니다",
+        "mismatched": "ECPay 기록과 일치하지 않습니다. 직접 확인해 주세요",
+        "notUploaded": "국세청 미업로드",
+        "uploaded": "국세청 업로드 완료"
+      }
     },
     "items": {
       "title": "주문 내역"
+    },
+    "refunds": {
+      "amount": "환불 금액",
+      "channel": {
+        "ecpay": "ECPay 환불",
+        "manual": "매장 직접 환불"
+      },
+      "invoiceAction": {
+        "allowance": "에누리 전표 발행",
+        "failed": "세금계산서 처리 실패",
+        "none": "세금계산서 없음",
+        "voided": "세금계산서 취소됨"
+      },
+      "reason": "사유",
+      "scope": {
+        "full": "전액 환불",
+        "partial": "부분 환불"
+      },
+      "title": "환불 내역"
     },
     "total": "합계",
     "transaction": {
@@ -93,7 +131,8 @@
     "OrderPaymentDue": "결제 대기",
     "OrderPickupAvailable": "픽업 가능",
     "OrderProblem": "주문 오류",
-    "OrderProcessing": "준비 중"
+    "OrderProcessing": "준비 중",
+    "OrderReturned": "환불 완료"
   },
   "tableNumber": "테이블",
   "total": "금액"

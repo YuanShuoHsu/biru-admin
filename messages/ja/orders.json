@@ -11,6 +11,17 @@
       "reprintTitle": "インボイスを再印刷（正本は印刷済み）",
       "title": "インボイスを印刷"
     },
+    "refund": {
+      "allocatedDiscount": "按分された割引",
+      "amount": "返金額",
+      "invoiceFailed": "返金は完了しましたが、領収書の処理に失敗しました。ECPay管理画面で対応してください。",
+      "invoiceHint": "全額返金では領収書も無効化されます。期をまたいで無効化できない場合は、返品値引伝票を発行します。",
+      "itemsLabel": "返金する数量を選択してください",
+      "manualChannel": "この支払い方法はECPayのオンライン返金に対応していません。この操作はシステムの記録と請求書のみを更新します。返金はECPay管理画面または直接お客様へ行ってください。",
+      "reason": "返金理由（任意）",
+      "success": "注文 {orderNumber} に {amount} を返金しました",
+      "title": "返金"
+    },
     "resetInvoicePrint": {
       "confirm": "注文 <bold>{orderNumber}</bold> のインボイスを未印刷に戻してもよろしいですか？正本が実際に出力されなかった場合のみ行ってください。戻した後に印刷すると、当選対象となる正本が 2 枚目として発行されます。",
       "success": "注文 {orderNumber} のインボイスを未印刷に戻しました",
@@ -59,10 +70,37 @@
       "invoiceNumber": "インボイス番号",
       "printedAt": "正本印刷日時",
       "status": "発行状況",
-      "title": "インボイス情報"
+      "title": "インボイス情報",
+      "verification": {
+        "invalidated": "ECPay側では無効化済みです",
+        "label": "ECPayで照会",
+        "matched": "ECPayの記録と一致しています",
+        "mismatched": "ECPayの記録と一致しません。手動で確認してください",
+        "notUploaded": "税務当局へ未アップロード",
+        "uploaded": "税務当局へアップロード済み"
+      }
     },
     "items": {
       "title": "注文明細"
+    },
+    "refunds": {
+      "amount": "返金額",
+      "channel": {
+        "ecpay": "ECPayで返金",
+        "manual": "店舗側で返金"
+      },
+      "invoiceAction": {
+        "allowance": "返品値引伝票を発行",
+        "failed": "領収書の処理に失敗",
+        "none": "領収書なし",
+        "voided": "領収書を無効化"
+      },
+      "reason": "理由",
+      "scope": {
+        "full": "全額返金",
+        "partial": "一部返金"
+      },
+      "title": "返金履歴"
     },
     "total": "合計",
     "transaction": {
@@ -93,7 +131,8 @@
     "OrderPaymentDue": "支払い待ち",
     "OrderPickupAvailable": "受け取り可能",
     "OrderProblem": "注文エラー",
-    "OrderProcessing": "準備中"
+    "OrderProcessing": "準備中",
+    "OrderReturned": "返金済み"
   },
   "tableNumber": "テーブル",
   "total": "金額"

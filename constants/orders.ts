@@ -17,6 +17,7 @@ export const STATUS_COLORS: Record<OrderStatus, ChipProps["color"]> = {
   OrderPickupAvailable: "info",
   OrderProcessing: "warning",
   OrderProblem: "success",
+  OrderReturned: "secondary",
 };
 
 export const STATUS_TEXT_COLORS: Record<OrderStatus, string> = {
@@ -26,4 +27,5 @@ export const STATUS_TEXT_COLORS: Record<OrderStatus, string> = {
   OrderPickupAvailable: "info.main",
   OrderProcessing: "warning.main",
   OrderProblem: "success.main",
+  OrderReturned: "secondary.main",
 };

@@ -32,6 +32,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import {
   Cancel,
+  CurrencyExchange,
   Edit,
   Print,
   Receipt,
@@ -79,6 +80,9 @@ import { printDocument } from "@/utils/print";
 import AuditLogButton from "@/components/AuditLogButton";
 
 import OrderDetailDialog from "../OrderDetailDialog";
+import RefundOrderDialogContent, {
+  REFUND_ORDER_FORM_ID,
+} from "../RefundOrderDialogContent";
 import UpdateOrderCustomerDialogContent, {
   UPDATE_ORDER_CUSTOMER_FORM_ID,
 } from "../UpdateOrderCustomerDialogContent";
@@ -301,12 +305,17 @@ const Orders = ({
   const handleViewOrder = useCallback(
     (order: AdminOrderResponse) => {
       setDialog({
-        content: <OrderDetailDialog order={order} />,
+        content: (
+          <OrderDetailDialog
+            order={order}
+            organizationSlug={organizationSlug}
+          />
+        ),
         open: true,
         title: tOrders("actions.viewOrder.title"),
       });
     },
-    [setDialog, tOrders],
+    [organizationSlug, setDialog, tOrders],
   );
 
   const handleUpdateCustomer = useCallback(
@@ -394,6 +403,24 @@ const Orders = ({
       });
     },
     [handleStatusAction, setDialog, tOrders],
+  );
+
+  const handleRefund = useCallback(
+    (order: AdminOrderResponse) => {
+      setDialog({
+        content: (
+          <RefundOrderDialogContent
+            mutate={mutate}
+            order={order}
+            organizationSlug={organizationSlug}
+          />
+        ),
+        formId: REFUND_ORDER_FORM_ID,
+        open: true,
+        title: tOrders("actions.refund.title"),
+      });
+    },
+    [mutate, organizationSlug, setDialog, tOrders],
   );
 
   const handleIssueInvoice = useCallback(
@@ -539,6 +566,11 @@ const Orders = ({
     [orders],
   );
 
+  const hasRefundable = useMemo(
+    () => orders.some(({ refundable }) => refundable),
+    [orders],
+  );
+
   const hasTransitions = useMemo(
     () =>
       orders.some(({ availableTransitions }) => availableTransitions.length),
@@ -628,6 +660,21 @@ const Orders = ({
                   visible={canResetInvoicePrint(row)}
                 >
                   <RestartAlt fontSize="small" />
+                </StyledIconButton>
+              </Tooltip>
+            )}
+            {hasRefundable && (
+              <Tooltip title={tOrders("actions.refund.title")}>
+                <StyledIconButton
+                  onClick={(event) => {
+                    event.stopPropagation();
+
+                    if (row.refundable) handleRefund(row);
+                  }}
+                  size="small"
+                  visible={row.refundable}
+                >
+                  <CurrencyExchange fontSize="small" />
                 </StyledIconButton>
               </Tooltip>
             )}
@@ -801,6 +848,8 @@ const Orders = ({
       format,
       handleConfirmIssueInvoice,
       handleConfirmResetInvoicePrint,
+      handleRefund,
+      hasRefundable,
       handleConfirmStatusAction,
       handleConfirmPrintInvoice,
       handleUpdateCustomer,
