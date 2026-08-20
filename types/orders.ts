@@ -20,6 +20,8 @@ export type OrderInvoice = components["schemas"]["OrderInvoiceDto"];
 export type OrderInvoicePrint = components["schemas"]["OrderInvoicePrintDto"];
 export type OrderInvoiceVerification =
   components["schemas"]["OrderInvoiceVerificationDto"];
+export type OrderPaymentNotification =
+  components["schemas"]["OrderPaymentNotificationDto"];
 export type OrderRefund = components["schemas"]["OrderRefundDto"];
 export type CreateOrderRefundDto =
   components["schemas"]["CreateOrderRefundDto"];

@@ -15,8 +15,10 @@
       "allocatedDiscount": "按分された割引",
       "amount": "返金額",
       "invoiceFailed": "返金は完了しましたが、領収書の処理に失敗しました。ECPay管理画面で対応してください。",
-      "invoiceHint": "全額返金では領収書も無効化されます。期をまたいで無効化できない場合は、返品値引伝票を発行します。",
+      "invoiceFailedWithReason": "返金は完了しましたが、領収書の処理に失敗しました（{reason}）。ECPay管理画面で対応してください。",
+      "invoiceHint": "全額返金ではまず領収書の無効化を試みます。無効化できない場合（期をまたいだ、既に値引済みなど）は返品値引伝票を発行します。",
       "itemsLabel": "返金する数量を選択してください",
+      "loadFailed": "返金履歴を読み込めませんでした。閉じてからやり直してください",
       "manualChannel": "この支払い方法はECPayのオンライン返金に対応していません。この操作はシステムの記録と請求書のみを更新します。返金はECPay管理画面または直接お客様へ行ってください。",
       "reason": "返金理由（任意）",
       "success": "注文 {orderNumber} に {amount} を返金しました",
@@ -73,18 +75,32 @@
       "title": "インボイス情報",
       "verification": {
         "invalidated": "ECPay側では無効化済みです",
+        "invoiceDate": "ECPayの発行日",
+        "invoiceNumber": "ECPayの領収書番号",
         "label": "ECPayで照会",
         "matched": "ECPayの記録と一致しています",
         "mismatched": "ECPayの記録と一致しません。手動で確認してください",
         "notUploaded": "税務当局へ未アップロード",
+        "salesAmount": "ECPayの金額",
         "uploaded": "税務当局へアップロード済み"
       }
     },
     "items": {
       "title": "注文明細"
     },
+    "notifications": {
+      "endpoint": {
+        "query": "ECPayへ照会",
+        "result": "顧客リダイレクト通知",
+        "return": "ECPay決済通知"
+      },
+      "failed": "署名検証に失敗",
+      "handled": "注文に反映済み",
+      "title": "決済通知の履歴",
+      "unhandled": "注文に未反映"
+    },
     "refunds": {
-      "amount": "返金額",
+      "allowanceNo": "返品値引伝票番号",
       "channel": {
         "ecpay": "ECPayで返金",
         "manual": "店舗側で返金"
@@ -93,8 +109,10 @@
         "allowance": "返品値引伝票を発行",
         "failed": "領収書の処理に失敗",
         "none": "領収書なし",
+        "pending": "領収書の処理中",
         "voided": "領収書を無効化"
       },
+      "invoiceError": "領収書エラー",
       "reason": "理由",
       "scope": {
         "full": "全額返金",

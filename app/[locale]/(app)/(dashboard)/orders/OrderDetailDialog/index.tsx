@@ -13,6 +13,7 @@ import { Button, Chip, Divider, Stack, Typography } from "@mui/material";
 
 import type {
   OrderInvoiceVerification,
+  OrderPaymentNotification,
   OrderRefund,
   OrderResponse,
 } from "@/types/orders";
@@ -83,6 +84,13 @@ const OrderDetailDialog = ({
   const { data: refunds } = useSWR<OrderRefund[]>(
     organizationSlug
       ? `/api/organizations/${organizationSlug}/orders/${order.id}/refunds`
+      : null,
+    fetcher,
+  );
+
+  const { data: notifications } = useSWR<OrderPaymentNotification[]>(
+    organizationSlug
+      ? `/api/organizations/${organizationSlug}/orders/${order.id}/payment-notifications`
       : null,
     fetcher,
   );
@@ -263,6 +271,30 @@ const OrderDetailDialog = ({
                         : "detail.invoice.verification.notUploaded",
                     )}
                   </Typography>
+                  {!verification.matchesLocal && (
+                    <>
+                      <InfoRow
+                        label={tOrders(
+                          "detail.invoice.verification.invoiceNumber",
+                        )}
+                        value={verification.invoiceNumber}
+                      />
+                      <InfoRow
+                        label={tOrders(
+                          "detail.invoice.verification.invoiceDate",
+                        )}
+                        value={verification.invoiceDate}
+                      />
+                      <InfoRow
+                        label={tOrders(
+                          "detail.invoice.verification.salesAmount",
+                        )}
+                        value={`${currency} ${Number(
+                          verification.salesAmount,
+                        ).toLocaleString(locale)}`}
+                      />
+                    </>
+                  )}
                 </Stack>
               )}
             </Stack>
@@ -332,7 +364,7 @@ const OrderDetailDialog = ({
                       refund.invoiceAction === "failed" ? "error" : "default"
                     }
                     label={tOrders(
-                      `detail.refunds.invoiceAction.${refund.invoiceAction}`,
+                      `detail.refunds.invoiceAction.${refund.invoiceAction ?? "pending"}`,
                     )}
                     size="small"
                   />
@@ -344,7 +376,60 @@ const OrderDetailDialog = ({
                   value={refund.reason}
                 />
               )}
+              {!!refund.allowanceNo && (
+                <InfoRow
+                  label={tOrders("detail.refunds.allowanceNo")}
+                  value={refund.allowanceNo}
+                />
+              )}
+              {!!refund.invoiceError && (
+                <InfoRow
+                  label={tOrders("detail.refunds.invoiceError")}
+                  value={refund.invoiceError}
+                />
+              )}
             </Stack>
+          ))}
+        </Section>
+      )}
+      {!!notifications?.length && (
+        <Section title={tOrders("detail.notifications.title")}>
+          {notifications.map((notification) => (
+            <InfoRow
+              key={notification.id}
+              label={format.dateTime(new Date(notification.createdAt), "short")}
+              value={
+                <Stack alignItems="flex-end" gap={0.5}>
+                  <Typography variant="body2">
+                    {tOrders(
+                      `detail.notifications.endpoint.${notification.endpoint}`,
+                    )}
+                  </Typography>
+                  <Chip
+                    color={
+                      !notification.macValid
+                        ? "error"
+                        : notification.handled
+                          ? "success"
+                          : "default"
+                    }
+                    label={tOrders(
+                      !notification.macValid
+                        ? "detail.notifications.failed"
+                        : notification.handled
+                          ? "detail.notifications.handled"
+                          : "detail.notifications.unhandled",
+                    )}
+                    size="small"
+                  />
+                  {!!notification.error && (
+                    <Typography color="error" variant="caption">
+                      {notification.error}
+                    </Typography>
+                  )}
+                </Stack>
+              }
+            />
           ))}
         </Section>
       )}

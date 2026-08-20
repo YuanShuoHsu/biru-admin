@@ -7,6 +7,12 @@ export interface RefundPreview {
   isFull: boolean;
 }
 
+const allocate = (discount: number, part: number, total: number): number =>
+  total ? Math.round((discount * part) / total) : 0;
+
+const sumItemAmounts = (refund: OrderRefund): number =>
+  (refund.items ?? []).reduce((sum, item) => sum + Number(item.amount), 0);
+
 export const getRefundedQuantities = (
   refunds: OrderRefund[] | undefined,
 ): Map<string, number> => {
@@ -24,20 +30,22 @@ export const getRefundedQuantities = (
 
 export const getRefundPreview = (
   order: AdminOrderResponse,
-  refundedQuantities: Map<string, number>,
+  refunds: OrderRefund[] | undefined,
   selected: Map<string, number>,
 ): RefundPreview => {
-  const itemTotal = Math.round(
-    order.items.reduce(
-      (sum, item) => sum + Number(item.unitPrice) * item.orderQuantity,
-      0,
-    ),
+  const refundedQuantities = getRefundedQuantities(refunds);
+
+  // 單價允許小數，逐項取整後再加總才與後端同基準
+  const itemTotal = order.items.reduce(
+    (sum, item) => sum + Math.round(Number(item.unitPrice) * item.orderQuantity),
+    0,
   );
   const salesAmount = Math.round(Number(order.total));
   const discount = itemTotal - salesAmount;
 
   const refundItemTotal = order.items.reduce(
-    (sum, item) => sum + Number(item.unitPrice) * (selected.get(item.id) ?? 0),
+    (sum, item) =>
+      sum + Math.round(Number(item.unitPrice) * (selected.get(item.id) ?? 0)),
     0,
   );
 
@@ -47,14 +55,19 @@ export const getRefundPreview = (
       item.orderQuantity,
   );
 
-  // 原發票把折扣開成一筆負數品項，部分退款要按原價比例把它分攤回去
-  const allocatedDiscount = itemTotal
-    ? Math.round((discount * refundItemTotal) / itemTotal)
-    : 0;
+  // 原發票把折扣開成一筆負數品項，部分退款要按原價比例把它分攤回去；
+  // 退到最後一筆時改為補齊剩下的餘數，總和才會剛好等於實收金額
+  const previouslyAllocated = (refunds ?? []).reduce(
+    (sum, refund) => sum + allocate(discount, sumItemAmounts(refund), itemTotal),
+    0,
+  );
+  const allocatedDiscount = isFull
+    ? discount - previouslyAllocated
+    : allocate(discount, refundItemTotal, itemTotal);
 
   return {
     allocatedDiscount,
-    amount: Math.round(refundItemTotal) - allocatedDiscount,
+    amount: refundItemTotal - allocatedDiscount,
     isFull,
   };
 };

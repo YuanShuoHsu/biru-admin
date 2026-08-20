@@ -15,11 +15,13 @@
       "allocatedDiscount": "分摊折扣",
       "amount": "退款金额",
       "invoiceFailed": "款项已退，但发票处理失败，请至绿界后台手动处理。",
-      "invoiceHint": "整单退款将一并作废发票；若发票已跨期无法作废，会改开立折让单。",
+      "invoiceFailedWithReason": "款项已退，但发票处理失败（{reason}），请至绿界后台手动处理。",
+      "invoiceHint": "整单退款会先尝试作废发票；若无法作废（已跨期、已开过折让等），会改开立折让单。",
       "itemsLabel": "选择要退款的商品数量",
+      "loadFailed": "无法读取已退款记录，请关闭后重试",
       "manualChannel": "此付款方式绿界不支持在线退款，本操作只会同步系统记录与发票，实际款项请至绿界后台或直接退还顾客。",
       "reason": "退款原因（选填）",
-      "success": "订单 {orderNumber} 已退款 {amount} 元",
+      "success": "订单 {orderNumber} 已退款 {amount}",
       "title": "退款"
     },
     "resetInvoicePrint": {
@@ -73,18 +75,32 @@
       "title": "发票信息",
       "verification": {
         "invalidated": "绿界端显示已作废",
+        "invoiceDate": "绿界开立日期",
+        "invoiceNumber": "绿界发票号码",
         "label": "向绿界查证",
         "matched": "绿界记录与系统一致",
         "mismatched": "绿界记录与系统不一致，请人工确认",
         "notUploaded": "尚未上传财政部",
+        "salesAmount": "绿界金额",
         "uploaded": "已上传财政部"
       }
     },
     "items": {
       "title": "订单明细"
     },
+    "notifications": {
+      "endpoint": {
+        "query": "主动向绿界查证",
+        "result": "顾客导回通知",
+        "return": "绿界付款通知"
+      },
+      "failed": "验签失败",
+      "handled": "已更新订单",
+      "title": "付款通知记录",
+      "unhandled": "未更新订单"
+    },
     "refunds": {
-      "amount": "退款金额",
+      "allowanceNo": "折让单号",
       "channel": {
         "ecpay": "绿界退刷",
         "manual": "自行退款"
@@ -93,8 +109,10 @@
         "allowance": "已开立折让",
         "failed": "发票处理失败",
         "none": "无发票",
+        "pending": "发票处理中",
         "voided": "发票已作废"
       },
+      "invoiceError": "发票错误",
       "reason": "原因",
       "scope": {
         "full": "整单退款",

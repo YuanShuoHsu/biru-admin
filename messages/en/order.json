@@ -56,12 +56,7 @@
       },
       "individual": "ECPay carrier",
       "mobile": "Mobile barcode",
-      "none": "Printed copy",
-      "paperAddr": {
-        "helper": "Required to issue a printed invoice; it is not shown on the invoice",
-        "label": "Address",
-        "placeholder": "Please enter your address"
-      },
+      "none": "Paper invoice",
       "personal": "Personal invoice",
       "title": "Invoice type"
     },

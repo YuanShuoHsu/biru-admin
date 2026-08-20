@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams, useSearchParams } from "next/navigation";
 import { useSnackbar } from "notistack";
+import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import useSWR from "swr";
 import useSWRMutation from "swr/mutation";
@@ -95,7 +96,7 @@ const INVOICE_TYPES: { icon: React.ElementType; type: InvoiceType }[] = [
   { icon: VolunteerActivism, type: "donate" },
 ];
 
-const CARRIER_TYPES: CarrierType[] = ["mobile", "certificate", "none"];
+const CARRIER_TYPES: CarrierType[] = ["none", "mobile", "certificate"];
 
 const OrderModeOrganizationSlugCheckout = () => {
   const session = useAuthStore((state) => state.session);
@@ -118,7 +119,7 @@ const OrderModeOrganizationSlugCheckout = () => {
   const {
     clearErrors,
     control,
-    formState: { errors, isSubmitted },
+    formState: { errors, isSubmitted, isSubmitting },
     handleSubmit,
     register,
     setError,
@@ -191,7 +192,9 @@ const OrderModeOrganizationSlugCheckout = () => {
 
   const router = useRouter();
 
-  const { isMutating: isMutatingEcpay, trigger: triggerEcpay } = useSWRMutation(
+  const [idempotencyKey] = useState(() => crypto.randomUUID());
+
+  const { trigger: triggerEcpay } = useSWRMutation(
     "/api/ecpay",
     sendRequest<CheckoutEcpayResponse, CheckoutEcpayDto>(),
   );
@@ -201,9 +204,11 @@ const OrderModeOrganizationSlugCheckout = () => {
     sendRequest<CheckBarcodeEcpayResponse, CheckBarcodeEcpayDto>(),
   );
 
-  const { isMutating: isMutatingOrder, trigger: triggerOrder } = useSWRMutation(
+  const { trigger: triggerOrder } = useSWRMutation(
     `/api/organizations/${String(organizationSlug)}/orders`,
-    sendRequest<OrderResponse, CreateOrderDto>(),
+    sendRequest<OrderResponse, CreateOrderDto>({
+      headers: { "Idempotency-Key": idempotencyKey },
+    }),
   );
 
   const shouldFetch =
@@ -637,20 +642,6 @@ const OrderModeOrganizationSlugCheckout = () => {
                 {...register("invoice.carrierNum")}
               />
             )}
-          {invoiceType === "personal" && carrierType === "none" && (
-            <TextField
-              error={!!errors.invoice?.customerAddr}
-              fullWidth
-              helperText={
-                errors.invoice?.customerAddr?.message ??
-                tOrder("checkout.invoice.paperAddr.helper")
-              }
-              label={tOrder("checkout.invoice.paperAddr.label")}
-              placeholder={tOrder("checkout.invoice.paperAddr.placeholder")}
-              required
-              {...register("invoice.customerAddr")}
-            />
-          )}
           {invoiceType === "company" && (
             <>
               <TextField
@@ -737,7 +728,7 @@ const OrderModeOrganizationSlugCheckout = () => {
       </Card>
       <Stack direction="row" justifyContent="space-between">
         <Button
-          disabled={isMutatingEcpay || isMutatingOrder}
+          disabled={isSubmitting}
           onClick={() =>
             router.push(`${pathname.replace("/checkout", "/cart")}${query}`)
           }
@@ -749,7 +740,7 @@ const OrderModeOrganizationSlugCheckout = () => {
         <Button
           disabled={isCartEmpty || hasInvalidItems || isValidatingCoupon}
           endIcon={<TaskAlt />}
-          loading={isMutatingEcpay || isMutatingOrder}
+          loading={isSubmitting}
           loadingPosition="end"
           type="submit"
           variant="contained"

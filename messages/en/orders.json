@@ -15,8 +15,10 @@
       "allocatedDiscount": "Allocated discount",
       "amount": "Refund amount",
       "invoiceFailed": "The refund went through, but the invoice could not be processed. Handle it in the ECPay portal.",
-      "invoiceHint": "A full refund voids the invoice; if it can no longer be voided, a credit note is issued instead.",
+      "invoiceFailedWithReason": "The refund went through, but the invoice could not be processed ({reason}). Handle it in the ECPay portal.",
+      "invoiceHint": "A full refund first tries to void the invoice; if it cannot be voided (past the filing period, already credited, etc.), a credit note is issued instead.",
       "itemsLabel": "Select the quantity to refund",
+      "loadFailed": "Could not load previous refunds. Close and try again.",
       "manualChannel": "ECPay does not support online refunds for this payment method. This only updates the system record and the invoice — refund the customer via the ECPay portal or in person.",
       "reason": "Reason (optional)",
       "success": "Refunded {amount} for order {orderNumber}",
@@ -73,18 +75,32 @@
       "title": "Invoice",
       "verification": {
         "invalidated": "Voided on ECPay",
+        "invoiceDate": "Issue date on ECPay",
+        "invoiceNumber": "Invoice number on ECPay",
         "label": "Verify with ECPay",
         "matched": "ECPay matches this system",
         "mismatched": "ECPay does not match this system — check manually",
         "notUploaded": "Not yet uploaded to the tax authority",
+        "salesAmount": "Amount on ECPay",
         "uploaded": "Uploaded to the tax authority"
       }
     },
     "items": {
       "title": "Order summary"
     },
+    "notifications": {
+      "endpoint": {
+        "query": "Verified with ECPay",
+        "result": "Customer redirect notice",
+        "return": "ECPay payment notice"
+      },
+      "failed": "Signature check failed",
+      "handled": "Order updated",
+      "title": "Payment notifications",
+      "unhandled": "Order not updated"
+    },
     "refunds": {
-      "amount": "Amount",
+      "allowanceNo": "Credit note number",
       "channel": {
         "ecpay": "Refunded via ECPay",
         "manual": "Refunded manually"
@@ -93,8 +109,10 @@
         "allowance": "Credit note issued",
         "failed": "Invoice failed",
         "none": "No invoice",
+        "pending": "Invoice pending",
         "voided": "Invoice voided"
       },
+      "invoiceError": "Invoice error",
       "reason": "Reason",
       "scope": {
         "full": "Full refund",

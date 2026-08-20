@@ -49,8 +49,7 @@
     "required": "現在のパスワードは必須です。"
   },
   "customerAddr": {
-    "required": "会社住所は必須です。",
-    "requiredForPaper": "紙のインボイスを希望する場合、住所は必須です。"
+    "required": "会社住所は必須です。"
   },
   "customerIdentifier": {
     "invalid": "統一番号が無効です。",

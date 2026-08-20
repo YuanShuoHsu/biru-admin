@@ -15,8 +15,10 @@
       "allocatedDiscount": "분배된 할인",
       "amount": "환불 금액",
       "invoiceFailed": "환불은 완료되었지만 세금계산서 처리에 실패했습니다. ECPay 관리자 페이지에서 처리해 주세요.",
-      "invoiceHint": "전액 환불 시 세금계산서도 함께 취소됩니다. 기간이 지나 취소할 수 없으면 에누리 전표를 발행합니다.",
+      "invoiceFailedWithReason": "환불은 완료되었지만 세금계산서 처리에 실패했습니다({reason}). ECPay 관리자 페이지에서 처리해 주세요.",
+      "invoiceHint": "전액 환불은 먼저 세금계산서 취소를 시도합니다. 취소할 수 없으면(기간 경과, 이미 에누리 발행 등) 에누리 전표를 발행합니다.",
       "itemsLabel": "환불할 수량을 선택하세요",
+      "loadFailed": "환불 내역을 불러오지 못했습니다. 닫은 뒤 다시 시도해 주세요",
       "manualChannel": "이 결제 수단은 ECPay 온라인 환불을 지원하지 않습니다. 이 작업은 시스템 기록과 세금계산서만 반영하므로, 실제 환불은 ECPay 관리자 페이지나 직접 처리해 주세요.",
       "reason": "환불 사유(선택)",
       "success": "주문 {orderNumber}에 대해 {amount} 환불했습니다",
@@ -73,18 +75,32 @@
       "title": "영수증 정보",
       "verification": {
         "invalidated": "ECPay에서 취소됨으로 표시",
+        "invoiceDate": "ECPay 발행일",
+        "invoiceNumber": "ECPay 세금계산서 번호",
         "label": "ECPay에서 조회",
         "matched": "ECPay 기록과 일치합니다",
         "mismatched": "ECPay 기록과 일치하지 않습니다. 직접 확인해 주세요",
         "notUploaded": "국세청 미업로드",
+        "salesAmount": "ECPay 금액",
         "uploaded": "국세청 업로드 완료"
       }
     },
     "items": {
       "title": "주문 내역"
     },
+    "notifications": {
+      "endpoint": {
+        "query": "ECPay 조회",
+        "result": "고객 리다이렉트 알림",
+        "return": "ECPay 결제 알림"
+      },
+      "failed": "서명 검증 실패",
+      "handled": "주문 반영됨",
+      "title": "결제 알림 기록",
+      "unhandled": "주문 미반영"
+    },
     "refunds": {
-      "amount": "환불 금액",
+      "allowanceNo": "에누리 전표 번호",
       "channel": {
         "ecpay": "ECPay 환불",
         "manual": "매장 직접 환불"
@@ -93,8 +109,10 @@
         "allowance": "에누리 전표 발행",
         "failed": "세금계산서 처리 실패",
         "none": "세금계산서 없음",
+        "pending": "세금계산서 처리 중",
         "voided": "세금계산서 취소됨"
       },
+      "invoiceError": "세금계산서 오류",
       "reason": "사유",
       "scope": {
         "full": "전액 환불",

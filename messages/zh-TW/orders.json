@@ -15,11 +15,13 @@
       "allocatedDiscount": "分攤折扣",
       "amount": "退款金額",
       "invoiceFailed": "款項已退，但發票處理失敗，請至綠界後台手動處理。",
-      "invoiceHint": "整單退款將一併作廢發票；若發票已跨期無法作廢，會改開立折讓單。",
+      "invoiceFailedWithReason": "款項已退，但發票處理失敗（{reason}），請至綠界後台手動處理。",
+      "invoiceHint": "整單退款會先嘗試作廢發票；若無法作廢（已跨期、已開過折讓等），會改開立折讓單。",
       "itemsLabel": "選擇要退款的品項數量",
+      "loadFailed": "無法讀取已退款紀錄，請關閉後重試",
       "manualChannel": "此付款方式綠界不支援線上退款，本操作只會同步系統紀錄與發票，實際款項請至綠界後台或直接退還顧客。",
       "reason": "退款原因（選填）",
-      "success": "訂單 {orderNumber} 已退款 {amount} 元",
+      "success": "訂單 {orderNumber} 已退款 {amount}",
       "title": "退款"
     },
     "resetInvoicePrint": {
@@ -73,18 +75,32 @@
       "title": "發票資訊",
       "verification": {
         "invalidated": "綠界端顯示已作廢",
+        "invoiceDate": "綠界開立日期",
+        "invoiceNumber": "綠界發票號碼",
         "label": "向綠界查證",
         "matched": "綠界紀錄與系統一致",
         "mismatched": "綠界紀錄與系統不一致，請人工確認",
         "notUploaded": "尚未上傳財政部",
+        "salesAmount": "綠界金額",
         "uploaded": "已上傳財政部"
       }
     },
     "items": {
       "title": "訂單明細"
     },
+    "notifications": {
+      "endpoint": {
+        "query": "主動向綠界查證",
+        "result": "顧客導回通知",
+        "return": "綠界付款通知"
+      },
+      "failed": "驗簽失敗",
+      "handled": "已更新訂單",
+      "title": "付款通知紀錄",
+      "unhandled": "未更新訂單"
+    },
     "refunds": {
-      "amount": "退款金額",
+      "allowanceNo": "折讓單號",
       "channel": {
         "ecpay": "綠界退刷",
         "manual": "自行退款"
@@ -93,8 +109,10 @@
         "allowance": "已開立折讓",
         "failed": "發票處理失敗",
         "none": "無發票",
+        "pending": "發票處理中",
         "voided": "發票已作廢"
       },
+      "invoiceError": "發票錯誤",
       "reason": "原因",
       "scope": {
         "full": "整單退款",

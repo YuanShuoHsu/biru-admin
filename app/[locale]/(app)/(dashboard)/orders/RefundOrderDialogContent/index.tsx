@@ -2,7 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent, useMemo, useState } from "react";
+import { type BaseSyntheticEvent, useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import {
@@ -19,6 +19,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type {
   AdminOrderResponse,
   CreateOrderRefundDto,
+  OrderPaymentMethod,
   OrderRefund,
 } from "@/types/orders";
 
@@ -31,7 +32,10 @@ import { useOrderItemName } from "@/hooks/useOrderItemName";
 export const REFUND_ORDER_FORM_ID = "refund-order-form";
 
 // 綠界的請退款 API 只支援信用卡，其餘付款方式必須由店家自行退款
-const ECPAY_REFUNDABLE_METHODS = ["ApplePay", "Credit"];
+const ECPAY_REFUNDABLE_METHODS: readonly OrderPaymentMethod[] = [
+  "ApplePay",
+  "Credit",
+];
 
 interface RefundOrderDialogContentProps {
   mutate: () => void;
@@ -44,7 +48,9 @@ const RefundOrderDialogContent = ({
   order,
   organizationSlug,
 }: RefundOrderDialogContentProps) => {
-  const { closeDialog } = useDialogStore((state) => state);
+  const { closeDialog, confirmLoading, setDialog } = useDialogStore(
+    (state) => state,
+  );
 
   const locale = useLocale();
 
@@ -53,10 +59,14 @@ const RefundOrderDialogContent = ({
 
   const getOrderItemName = useOrderItemName();
 
-  const { data: refunds, isLoading } = useSWR<OrderRefund[]>(
-    `/api/organizations/${organizationSlug}/orders/${order.id}/refunds`,
-    fetcher,
-  );
+  const refundsKey = `/api/organizations/${organizationSlug}/orders/${order.id}/refunds`;
+
+  const {
+    data: refunds,
+    error,
+    isLoading,
+    mutate: mutateRefunds,
+  } = useSWR<OrderRefund[]>(refundsKey, fetcher);
 
   const refundedQuantities = useMemo(
     () => getRefundedQuantities(refunds),
@@ -65,9 +75,7 @@ const RefundOrderDialogContent = ({
 
   const [quantities, setQuantities] = useState<Map<string, number>>(new Map());
   const [reason, setReason] = useState("");
-  const [submitting, setSubmitting] = useState(false);
 
-  // 未選過時預設整單退款，這是最常見的情境
   const selected = useMemo(() => {
     if (quantities.size) return quantities;
 
@@ -80,9 +88,21 @@ const RefundOrderDialogContent = ({
   }, [order.items, quantities, refundedQuantities]);
 
   const preview = useMemo(
-    () => getRefundPreview(order, refundedQuantities, selected),
-    [order, refundedQuantities, selected],
+    () => getRefundPreview(order, refunds, selected),
+    [order, refunds, selected],
   );
+
+  const selectedQuantity = [...selected.values()].reduce(
+    (sum, quantity) => sum + quantity,
+    0,
+  );
+
+  // 已退數量還沒載進來就送出的話，金額會用整單去算而退超過
+  const disabled = isLoading || !!error || !selectedQuantity;
+
+  useEffect(() => {
+    setDialog({ confirmDisabled: disabled });
+  }, [disabled, setDialog]);
 
   const isEcpayRefund = ECPAY_REFUNDABLE_METHODS.includes(order.paymentMethod);
   const currency = order.items[0]?.priceCurrency || "";
@@ -90,45 +110,49 @@ const RefundOrderDialogContent = ({
   const onSubmit = async (event: BaseSyntheticEvent) => {
     event.preventDefault();
 
-    if (preview.amount <= 0) return;
+    if (confirmLoading || disabled) return;
 
-    setSubmitting(true);
+    setDialog({ confirmLoading: true });
 
     try {
       const items = [...selected]
         .filter(([, quantity]) => quantity > 0)
         .map(([orderItemId, quantity]) => ({ orderItemId, quantity }));
 
-      const created = await fetcher<OrderRefund>(
-        `/api/organizations/${organizationSlug}/orders/${order.id}/refunds`,
-        {
-          body: JSON.stringify({
-            ...(preview.isFull ? {} : { items }),
-            ...(reason ? { reason } : {}),
-          } satisfies CreateOrderRefundDto),
-          headers: { "Content-Type": "application/json" },
-          method: "POST",
-        },
-      );
+      const created = await fetcher<OrderRefund>(refundsKey, {
+        body: JSON.stringify({
+          ...(preview.isFull ? {} : { items }),
+          ...(reason ? { reason } : {}),
+        } satisfies CreateOrderRefundDto),
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+      });
 
       enqueueSnackbar(
         tOrders("actions.refund.success", {
-          amount: Number(created.amount).toLocaleString(locale),
+          amount: `${currency} ${Number(created.amount).toLocaleString(locale)}`,
           orderNumber: order.orderNumber,
         }),
         { variant: "success" },
       );
 
       if (created.invoiceAction === "failed")
-        enqueueSnackbar(tOrders("actions.refund.invoiceFailed"), {
-          variant: "warning",
-        });
+        enqueueSnackbar(
+          created.invoiceError
+            ? tOrders("actions.refund.invoiceFailedWithReason", {
+                reason: created.invoiceError,
+              })
+            : tOrders("actions.refund.invoiceFailed"),
+          { persist: true, variant: "warning" },
+        );
 
       closeDialog();
-    } catch (error) {
-      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+    } catch (submitError) {
+      enqueueSnackbar(getErrorMessage(submitError), { variant: "error" });
     } finally {
-      setSubmitting(false);
+      setDialog({ confirmLoading: false });
+      // 對話框再次開啟時要用得到最新的已退數量，否則預設值會沿用舊的
+      await mutateRefunds();
       mutate();
     }
   };
@@ -140,12 +164,15 @@ const RefundOrderDialogContent = ({
       id={REFUND_ORDER_FORM_ID}
       onSubmit={onSubmit}
     >
+      {!!error && (
+        <Alert severity="error">{tOrders("actions.refund.loadFailed")}</Alert>
+      )}
       {!isEcpayRefund && (
         <Alert severity="warning">
           {tOrders("actions.refund.manualChannel")}
         </Alert>
       )}
-      {preview.isFull && (
+      {preview.isFull && order.invoice?.status === "issued" && (
         <Alert severity="info">{tOrders("actions.refund.invoiceHint")}</Alert>
       )}
       <Typography variant="body2">
@@ -167,11 +194,10 @@ const RefundOrderDialogContent = ({
               color={remaining ? "text.primary" : "text.disabled"}
               variant="body2"
             >
-              {getOrderItemName(item)} {tCommon("multiply")}{" "}
-              {item.orderQuantity}
+              {getOrderItemName(item)} {tCommon("multiply")} {remaining}
             </Typography>
             <TextField
-              disabled={!remaining || submitting || isLoading}
+              disabled={!remaining || confirmLoading}
               onChange={({ target }) =>
                 setQuantities(
                   new Map(selected).set(item.id, Number(target.value)),
@@ -195,7 +221,7 @@ const RefundOrderDialogContent = ({
         );
       })}
       <TextField
-        disabled={submitting}
+        disabled={confirmLoading}
         label={tOrders("actions.refund.reason")}
         onChange={({ target }) => setReason(target.value)}
         size="small"
