@@ -117,7 +117,6 @@ const CartAnchorTemporaryDrawer = () => {
         </Stack>
         {(isCartPage || isCheckoutPage) && (
           <Button
-            color="success"
             fullWidth
             href={menuHref}
             onClick={handleClose}

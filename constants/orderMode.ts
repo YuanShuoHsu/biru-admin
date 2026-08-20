@@ -19,6 +19,6 @@ export const API_ORDER_MODE: Record<OrderMode, ApiOrderMode> = {
 export const MODE_COLORS: Record<ApiOrderMode, ChipProps["color"]> = {
   counter: "default",
   dineIn: "info",
-  driveThru: "warning",
+  driveThru: "primary",
   pickup: "error",
 };

@@ -37,7 +37,6 @@ const OrderModeOrganizationSlugCart = () => {
       <CartAccordion coupon={null} defaultExpanded />
       <Stack direction="row" justifyContent="space-between">
         <Button
-          color="success"
           onClick={() =>
             router.push(`/order/${mode}/${organizationSlug}${query}`)
           }
