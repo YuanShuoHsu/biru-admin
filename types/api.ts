@@ -2431,6 +2431,9 @@ export interface components {
       orderId: string;
       orderNumber: string;
       orderStatus: components["schemas"]["OrderBoardStatus"];
+      /** @enum {string} */
+      mode: "counter" | "dineIn" | "driveThru" | "pickup";
+      tableNumber?: number | null;
     };
     /** @enum {string} */
     OrderFlowStatus:
@@ -6599,6 +6602,9 @@ export const orderSortFieldValues: ReadonlyArray<
 export const orderBoardStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrderBoardStatus"]
 > = ["OrderPaymentDue", "OrderProcessing", "OrderPickupAvailable"];
+export const orderBoardItemDtoModeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["OrderBoardItemDto"]["mode"]
+> = ["counter", "dineIn", "driveThru", "pickup"];
 export const orderFlowStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrderFlowStatus"]
 > = [

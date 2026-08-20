@@ -50,7 +50,7 @@
     }
   },
   "board": {
-    "empty": "沒有訂單",
+    "empty": "目前沒有訂單",
     "title": "訂單看板"
   },
   "confirmationNumber": "訂單編號",

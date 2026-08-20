@@ -50,7 +50,7 @@
     }
   },
   "board": {
-    "empty": "주문이 없습니다",
+    "empty": "현재 주문이 없습니다",
     "title": "주문 보드"
   },
   "confirmationNumber": "주문 번호",

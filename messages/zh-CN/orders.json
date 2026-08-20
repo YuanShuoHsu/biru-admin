@@ -50,7 +50,7 @@
     }
   },
   "board": {
-    "empty": "没有订单",
+    "empty": "目前没有订单",
     "title": "订单看板"
   },
   "confirmationNumber": "订单编号",

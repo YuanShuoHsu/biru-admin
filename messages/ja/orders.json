@@ -50,7 +50,7 @@
     }
   },
   "board": {
-    "empty": "注文はありません",
+    "empty": "現在ご注文はありません",
     "title": "注文ボード"
   },
   "confirmationNumber": "注文番号",

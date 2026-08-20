@@ -50,7 +50,7 @@
     }
   },
   "board": {
-    "empty": "No orders",
+    "empty": "No orders right now",
     "title": "Order Board"
   },
   "confirmationNumber": "Order number",
