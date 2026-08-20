@@ -1,6 +1,5 @@
 import type { AdminOrderResponse, OrderRefund } from "@/types/orders";
 
-// 與後端 src/ecpay/utils/refund-plan.ts 對應；金額仍以後端計算結果為準
 export interface RefundPreview {
   allocatedDiscount: number;
   amount: number;
@@ -35,9 +34,9 @@ export const getRefundPreview = (
 ): RefundPreview => {
   const refundedQuantities = getRefundedQuantities(refunds);
 
-  // 單價允許小數，逐項取整後再加總才與後端同基準
   const itemTotal = order.items.reduce(
-    (sum, item) => sum + Math.round(Number(item.unitPrice) * item.orderQuantity),
+    (sum, item) =>
+      sum + Math.round(Number(item.unitPrice) * item.orderQuantity),
     0,
   );
   const salesAmount = Math.round(Number(order.total));
@@ -55,10 +54,9 @@ export const getRefundPreview = (
       item.orderQuantity,
   );
 
-  // 原發票把折扣開成一筆負數品項，部分退款要按原價比例把它分攤回去；
-  // 退到最後一筆時改為補齊剩下的餘數，總和才會剛好等於實收金額
   const previouslyAllocated = (refunds ?? []).reduce(
-    (sum, refund) => sum + allocate(discount, sumItemAmounts(refund), itemTotal),
+    (sum, refund) =>
+      sum + allocate(discount, sumItemAmounts(refund), itemTotal),
     0,
   );
   const allocatedDiscount = isFull
