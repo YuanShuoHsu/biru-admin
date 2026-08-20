@@ -39,7 +39,7 @@ const theme = createTheme({
           main: "#80cbc4", // teal[200]
         },
         success: {
-          main: "#bcaaa4", // brown[200]
+          main: "#a5d6a7", // green[200]
         },
         error: {
           main: "#ef9a9a", // red[200]
@@ -69,7 +69,7 @@ const theme = createTheme({
           main: "#00695c", // teal[800]
         },
         success: {
-          main: "#5d4037", // brown[700]
+          main: "#2e7d32", // green[800]
         },
         error: {
           main: "#c62828", // red[800]
