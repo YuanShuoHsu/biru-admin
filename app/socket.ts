@@ -6,9 +6,7 @@ import { Manager } from "socket.io-client";
 
 const url = process.env.NEXT_PUBLIC_NEST_URL;
 
-const manager = new Manager(url, {
-  transports: ["websocket"],
-});
+const manager = new Manager(url);
 
 // export const socket = manager.socket("/");
 

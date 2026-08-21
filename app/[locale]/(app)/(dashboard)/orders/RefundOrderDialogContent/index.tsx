@@ -21,17 +21,17 @@ import type {
   CreateOrderRefundDto,
   OrderPaymentMethod,
   OrderRefund,
+  OrderRefundPreview,
 } from "@/types/orders";
 
 import { getErrorMessage } from "@/utils/errors";
-import { fetcher } from "@/utils/fetcher";
-import { getRefundPreview, getRefundedQuantities } from "@/utils/refunds";
+import { type FetchError, fetcher, sendRequest } from "@/utils/fetcher";
+import { getRefundedQuantities } from "@/utils/refunds";
 
 import { useOrderItemName } from "@/hooks/useOrderItemName";
 
 export const REFUND_ORDER_FORM_ID = "refund-order-form";
 
-// 綠界的請退款 API 只支援信用卡，其餘付款方式必須由店家自行退款
 const ECPAY_REFUNDABLE_METHODS: readonly OrderPaymentMethod[] = [
   "ApplePay",
   "Credit",
@@ -87,18 +87,19 @@ const RefundOrderDialogContent = ({
     );
   }, [order.items, quantities, refundedQuantities]);
 
-  const preview = useMemo(
-    () => getRefundPreview(order, refunds, selected),
-    [order, refunds, selected],
+  const items = [...selected]
+    .filter(([, quantity]) => quantity > 0)
+    .map(([orderItemId, quantity]) => ({ orderItemId, quantity }));
+
+  const { data: preview } = useSWR<OrderRefundPreview>(
+    items.length ? [`${refundsKey}/preview`, items] : null,
+    ([url, body]: [string, CreateOrderRefundDto["items"]]) =>
+      sendRequest<OrderRefundPreview, CreateOrderRefundDto>()(url, {
+        arg: { items: body },
+      }),
   );
 
-  const selectedQuantity = [...selected.values()].reduce(
-    (sum, quantity) => sum + quantity,
-    0,
-  );
-
-  // 已退數量還沒載進來就送出的話，金額會用整單去算而退超過
-  const disabled = isLoading || !!error || !selectedQuantity;
+  const disabled = isLoading || !!error || !preview;
 
   useEffect(() => {
     setDialog({ confirmDisabled: disabled });
@@ -110,15 +111,11 @@ const RefundOrderDialogContent = ({
   const onSubmit = async (event: BaseSyntheticEvent) => {
     event.preventDefault();
 
-    if (confirmLoading || disabled) return;
+    if (confirmLoading || disabled || !preview) return;
 
     setDialog({ confirmLoading: true });
 
     try {
-      const items = [...selected]
-        .filter(([, quantity]) => quantity > 0)
-        .map(([orderItemId, quantity]) => ({ orderItemId, quantity }));
-
       const created = await fetcher<OrderRefund>(refundsKey, {
         body: JSON.stringify({
           ...(preview.isFull ? {} : { items }),
@@ -148,10 +145,16 @@ const RefundOrderDialogContent = ({
 
       closeDialog();
     } catch (submitError) {
-      enqueueSnackbar(getErrorMessage(submitError), { variant: "error" });
+      const isUnconfirmed = (submitError as FetchError).status === 503;
+
+      enqueueSnackbar(getErrorMessage(submitError), {
+        persist: isUnconfirmed,
+        variant: isUnconfirmed ? "warning" : "error",
+      });
+
+      if (isUnconfirmed) closeDialog();
     } finally {
       setDialog({ confirmLoading: false });
-      // 對話框再次開啟時要用得到最新的已退數量，否則預設值會沿用舊的
       await mutateRefunds();
       mutate();
     }
@@ -172,7 +175,7 @@ const RefundOrderDialogContent = ({
           {tOrders("actions.refund.manualChannel")}
         </Alert>
       )}
-      {preview.isFull && order.invoice?.status === "issued" && (
+      {preview?.isFull && order.invoice?.status === "issued" && (
         <Alert severity="info">{tOrders("actions.refund.invoiceHint")}</Alert>
       )}
       <Typography variant="body2">
@@ -229,7 +232,7 @@ const RefundOrderDialogContent = ({
         value={reason}
       />
       <Divider />
-      {preview.allocatedDiscount > 0 && (
+      {!!preview?.allocatedDiscount && (
         <Stack direction="row" justifyContent="space-between">
           <Typography variant="body2">
             {tOrders("actions.refund.allocatedDiscount")}
@@ -244,7 +247,7 @@ const RefundOrderDialogContent = ({
           {tOrders("actions.refund.amount")}
         </Typography>
         <Typography color="error" fontWeight="bold" variant="h6">
-          {currency} {preview.amount.toLocaleString(locale)}
+          {currency} {(preview?.amount ?? 0).toLocaleString(locale)}
         </Typography>
       </Stack>
     </Stack>

@@ -118,6 +118,9 @@
         "full": "全額返金",
         "partial": "一部返金"
       },
+      "status": {
+        "pending": "返金結果は未確認"
+      },
       "title": "返金履歴"
     },
     "total": "合計",

@@ -118,6 +118,9 @@
         "full": "Full refund",
         "partial": "Partial refund"
       },
+      "status": {
+        "pending": "Refund result unconfirmed"
+      },
       "title": "Refunds"
     },
     "total": "Total",

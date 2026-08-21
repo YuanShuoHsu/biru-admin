@@ -359,15 +359,24 @@ const OrderDetailDialog = ({
               <InfoRow
                 label={format.dateTime(new Date(refund.createdAt), "short")}
                 value={
-                  <Chip
-                    color={
-                      refund.invoiceAction === "failed" ? "error" : "default"
-                    }
-                    label={tOrders(
-                      `detail.refunds.invoiceAction.${refund.invoiceAction ?? "pending"}`,
+                  <Stack direction="row" gap={0.5}>
+                    {refund.status === "pending" && (
+                      <Chip
+                        color="warning"
+                        label={tOrders("detail.refunds.status.pending")}
+                        size="small"
+                      />
                     )}
-                    size="small"
-                  />
+                    <Chip
+                      color={
+                        refund.invoiceAction === "failed" ? "error" : "default"
+                      }
+                      label={tOrders(
+                        `detail.refunds.invoiceAction.${refund.invoiceAction ?? "pending"}`,
+                      )}
+                      size="small"
+                    />
+                  </Stack>
                 }
               />
               {!!refund.reason && (

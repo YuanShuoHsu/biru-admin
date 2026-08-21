@@ -118,6 +118,9 @@
         "full": "전액 환불",
         "partial": "부분 환불"
       },
+      "status": {
+        "pending": "환불 결과 미확인"
+      },
       "title": "환불 내역"
     },
     "total": "합계",

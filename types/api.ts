@@ -618,6 +618,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/orders/{orderId}/refunds/preview": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 試算這批品項會退多少，不會真的退款 */
+    post: operations["EcpayOrderRefundController_preview"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/menu-item-sales": {
     parameters: {
       query?: never;
@@ -2203,10 +2220,10 @@ export interface components {
       amount: string;
     };
     /**
-     * @description pending：錢動了沒尚未確認；refunded：款項已退，後續處理未完成；settled：發票、點數、優惠券與訂單狀態都已處理完
+     * @description pending：錢動了沒尚未確認，等待與綠界對帳；refunded：款項已退，後續處理未完成；settling：後續處理進行中；settled：發票、點數、優惠券與訂單狀態都已處理完
      * @enum {string}
      */
-    RefundStatus: "pending" | "refunded" | "settled";
+    RefundStatus: "pending" | "refunded" | "settling" | "settled";
     /**
      * @description null：發票尚未處理；none：無發票需處理；voided：發票已作廢；allowance：已開立折讓；failed：錢已退但發票處理失敗
      * @enum {string}
@@ -2229,7 +2246,7 @@ export interface components {
       channel: "ecpay" | "manual";
       /** @description 此次退款的品項與數量 */
       items: components["schemas"]["RefundItemSnapshotDto"][] | null;
-      /** @description pending：錢動了沒尚未確認；refunded：款項已退，後續處理未完成；settled：發票、點數、優惠券與訂單狀態都已處理完 */
+      /** @description pending：錢動了沒尚未確認，等待與綠界對帳；refunded：款項已退，後續處理未完成；settling：後續處理進行中；settled：發票、點數、優惠券與訂單狀態都已處理完 */
       status: components["schemas"]["RefundStatus"];
       /** @description null：發票尚未處理；none：無發票需處理；voided：發票已作廢；allowance：已開立折讓；failed：錢已退但發票處理失敗 */
       invoiceAction: components["schemas"]["RefundInvoiceAction"] | null;
@@ -2259,6 +2276,14 @@ export interface components {
       items?: components["schemas"]["RefundItemInputDto"][];
       /** @description 退款原因 */
       reason?: string;
+    };
+    OrderRefundPreviewDto: {
+      /** @description 此次會退給顧客的金額 */
+      amount: number;
+      /** @description 此次退款分攤掉的折扣金額 */
+      allocatedDiscount: number;
+      /** @description 這次退完後整張訂單是否已全額退款 */
+      isFull: boolean;
     };
     MenuItemSalesResponseDto: {
       menuItemId: string;
@@ -4606,6 +4631,47 @@ export interface operations {
       };
     };
   };
+  EcpayOrderRefundController_preview: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        orderId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateOrderRefundDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderRefundPreviewDto"];
+        };
+      };
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderRefundPreviewDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   MenuItemSalesController_findAll: {
     parameters: {
       query?: {
@@ -6525,7 +6591,7 @@ export const ecpayCallbackEndpointValues: ReadonlyArray<
 > = ["return", "result", "query"];
 export const refundStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["RefundStatus"]
-> = ["pending", "refunded", "settled"];
+> = ["pending", "refunded", "settling", "settled"];
 export const refundInvoiceActionValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["RefundInvoiceAction"]
 > = ["none", "voided", "allowance", "failed"];

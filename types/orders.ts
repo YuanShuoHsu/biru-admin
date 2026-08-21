@@ -25,6 +25,7 @@ export type OrderPaymentNotification =
 export type OrderRefund = components["schemas"]["OrderRefundDto"];
 export type CreateOrderRefundDto =
   components["schemas"]["CreateOrderRefundDto"];
+export type OrderRefundPreview = components["schemas"]["OrderRefundPreviewDto"];
 export type OrderTransition = components["schemas"]["OrderTransitionDto"];
 
 export type OrderMode = OrderResponse["mode"];

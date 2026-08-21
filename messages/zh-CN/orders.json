@@ -118,6 +118,9 @@
         "full": "整单退款",
         "partial": "部分退款"
       },
+      "status": {
+        "pending": "退款结果未确认"
+      },
       "title": "退款记录"
     },
     "total": "总计",
