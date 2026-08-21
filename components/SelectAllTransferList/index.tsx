@@ -161,15 +161,21 @@ const SelectAllTransferList = <
     setChecked((prev) => not(prev, ids));
   };
 
-  const customList = (column: SelectAllTransferListColumn<T>) => {
-    const ids = column.items.map((item) => item.id);
+  const customList = ({
+    color,
+    emptyLabel,
+    items,
+    title,
+  }: SelectAllTransferListColumn<T>) => {
+    const ids = items.map((item) => item.id);
 
     return (
-      <StyledCard color={column.color} variant="outlined">
+      <StyledCard color={color} variant="outlined">
         <StyledCardHeader
           avatar={
             <Checkbox
               checked={numberOfChecked(ids) === ids.length && ids.length !== 0}
+              color={color}
               disabled={ids.length === 0}
               indeterminate={
                 numberOfChecked(ids) !== ids.length &&
@@ -177,42 +183,42 @@ const SelectAllTransferList = <
               }
               onClick={() => handleToggleAll(ids)}
               slotProps={{
-                input: { "aria-label": `${column.title} - select all` },
+                input: { "aria-label": `${title} - select all` },
               }}
             />
           }
-          color={column.color}
+          color={color}
           subheader={tCommon("selectedCount", {
             checked: numberOfChecked(ids),
             total: ids.length,
           })}
-          title={column.title}
+          title={title}
         />
         <Divider />
         <StyledList
           component="div"
           dense
           disablePadding
-          empty={column.items.length === 0}
+          empty={items.length === 0}
           role="list"
         >
-          {column.items.length === 0 && (
+          {items.length === 0 && (
             <Typography
               color="text.secondary"
               textAlign="center"
               variant="body2"
             >
-              {column.emptyLabel}
+              {emptyLabel}
             </Typography>
           )}
-          {column.items.map((item, index) => {
+          {items.map((item, index) => {
             const labelId = `transfer-list-item-${item.id}-label`;
 
             return (
               <ListItem
                 component="div"
                 disablePadding
-                divider={index < column.items.length - 1}
+                divider={index < items.length - 1}
                 key={item.id}
                 role="listitem"
                 secondaryAction={renderAction?.(item)}
@@ -221,6 +227,7 @@ const SelectAllTransferList = <
                   <ListItemIcon>
                     <Checkbox
                       checked={checked.includes(item.id)}
+                      color={color}
                       disableRipple
                       slotProps={{ input: { "aria-labelledby": labelId } }}
                       tabIndex={-1}

@@ -12,6 +12,7 @@ import {
   DATA_GRID_PROPS,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
+import { MODE_COLORS } from "@/constants/orderMode";
 import {
   INVOICE_STATUS_COLORS,
   STATUS_COLORS,
@@ -771,6 +772,16 @@ const Orders = ({
         field: "mode",
         filterOperators: enumFilterOperators,
         headerName: tOrders("mode"),
+        renderCell: ({
+          row: { mode },
+        }: GridRenderCellParams<AdminOrderResponse>) => (
+          <Chip
+            color={MODE_COLORS[mode]}
+            label={tOrder(`mode.${mode}.label`)}
+            size="small"
+            variant="outlined"
+          />
+        ),
         type: "singleSelect",
         valueOptions: enumOptions.mode,
       },
@@ -861,6 +872,7 @@ const Orders = ({
       locale,
       numberFilterOperators,
       stringFilterOperators,
+      tOrder,
       tOrders,
     ],
   );
