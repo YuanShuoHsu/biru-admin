@@ -27,6 +27,8 @@ interface CartState {
   cartItemsList: CartItem[];
   cartTotalQuantity: number;
   isCartEmpty: boolean;
+  checkoutKey: string | null;
+  checkoutKeys: Record<string, string>;
   lastOrderId: string | null;
 }
 
@@ -68,6 +70,8 @@ const defaultInitState: CartState = {
   carts: {},
   cartKey: null,
   ...deriveCartState({}),
+  checkoutKey: null,
+  checkoutKeys: {},
   lastOrderId: null,
 };
 
@@ -76,11 +80,15 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
     persist(
       (set, get) => {
         const setActiveCart = (cartItemsMap: CartItemsMap) => {
-          const { cartKey, carts } = get();
+          const { cartKey, carts, checkoutKeys } = get();
           if (!cartKey) return;
+
+          const checkoutKey = crypto.randomUUID();
 
           set({
             carts: { ...carts, [cartKey]: cartItemsMap },
+            checkoutKey,
+            checkoutKeys: { ...checkoutKeys, [cartKey]: checkoutKey },
             ...deriveCartState(cartItemsMap),
           });
         };
@@ -143,8 +151,9 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
           setCartKey: (mode, slug) => {
             const key = slug && mode && `${slug}:${mode}`;
 
-            set(({ carts }) => ({
+            set(({ carts, checkoutKeys }) => ({
               cartKey: key,
+              checkoutKey: (key && checkoutKeys[key]) || null,
               ...deriveCartState((key && carts[key]) || {}),
             }));
           },
@@ -191,8 +200,12 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
       {
         name: "biru-cart",
         storage: createJSONStorage(() => localStorage),
-        partialize: ({ carts, lastOrderId }) => ({ carts, lastOrderId }),
-        version: 6,
+        partialize: ({ carts, checkoutKeys, lastOrderId }) => ({
+          carts,
+          checkoutKeys,
+          lastOrderId,
+        }),
+        version: 7,
         migrate: () => ({ carts: {} }),
       },
     ),

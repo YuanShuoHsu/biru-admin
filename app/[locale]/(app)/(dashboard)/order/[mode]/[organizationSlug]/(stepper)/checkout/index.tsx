@@ -5,7 +5,6 @@ import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams, useSearchParams } from "next/navigation";
 import { useSnackbar } from "notistack";
-import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import useSWR from "swr";
 import useSWRMutation from "swr/mutation";
@@ -101,9 +100,8 @@ const CARRIER_TYPES: CarrierType[] = ["none", "mobile", "certificate"];
 const OrderModeOrganizationSlugCheckout = () => {
   const session = useAuthStore((state) => state.session);
 
-  const { cartItemsList, isCartEmpty, setLastOrderId } = useCartStore(
-    (state) => state,
-  );
+  const { cartItemsList, checkoutKey, isCartEmpty, setLastOrderId } =
+    useCartStore((state) => state);
   const { menu } = useMenuStore((state) => state);
 
   const hasInvalidItems = useCartHasInvalidItems();
@@ -192,8 +190,6 @@ const OrderModeOrganizationSlugCheckout = () => {
 
   const router = useRouter();
 
-  const [idempotencyKey] = useState(() => crypto.randomUUID());
-
   const { trigger: triggerEcpay } = useSWRMutation(
     "/api/ecpay",
     sendRequest<CheckoutEcpayResponse, CheckoutEcpayDto>(),
@@ -207,7 +203,7 @@ const OrderModeOrganizationSlugCheckout = () => {
   const { trigger: triggerOrder } = useSWRMutation(
     `/api/organizations/${String(organizationSlug)}/orders`,
     sendRequest<OrderResponse, CreateOrderDto>({
-      headers: { "Idempotency-Key": idempotencyKey },
+      ...(checkoutKey && { headers: { "Idempotency-Key": checkoutKey } }),
     }),
   );
 
