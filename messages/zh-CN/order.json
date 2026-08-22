@@ -66,7 +66,7 @@
       "Credit": "信用卡",
       "iPASS": "iPASS MONEY",
       "Jkopay": "街口支付",
-      "pickupUnavailable": "线上外带自取不支持现金",
+      "pickupUnavailable": "线上自取不支持现金",
       "TWQR": "移动支付",
       "WeiXin": "微信支付"
     },
@@ -131,8 +131,8 @@
   },
   "mode": {
     "counter": {
-      "label": "到店点餐",
-      "unavailable": "到店点餐不供应"
+      "label": "现场外带",
+      "unavailable": "现场外带不供应"
     },
     "dineIn": {
       "label": "堂食",
@@ -152,12 +152,12 @@
       "unavailable": "堂食不供应"
     },
     "driveThru": {
-      "label": "得来速",
-      "unavailable": "得来速不供应"
+      "label": "猫速通",
+      "unavailable": "猫速通不供应"
     },
     "pickup": {
-      "label": "线上外带自取",
-      "unavailable": "线上外带自取不供应"
+      "label": "线上自取",
+      "unavailable": "线上自取不供应"
     },
     "storeSlug": {
       "selectTable": "选择桌号",

@@ -131,8 +131,8 @@
   },
   "mode": {
     "counter": {
-      "label": "Counter",
-      "unavailable": "Unavailable for counter"
+      "label": "In-store takeout",
+      "unavailable": "Unavailable for in-store takeout"
     },
     "dineIn": {
       "label": "Dine-in",
@@ -152,8 +152,8 @@
       "unavailable": "Unavailable for dine-in"
     },
     "driveThru": {
-      "label": "Drive-thru",
-      "unavailable": "Unavailable for drive-thru"
+      "label": "Meow-thru",
+      "unavailable": "Unavailable for Meow-thru"
     },
     "pickup": {
       "label": "Online pickup",
