@@ -1,6 +1,6 @@
 import type { ChipProps } from "@mui/material/Chip";
 
-import type { InvoiceStatus, OrderStatus } from "@/types/orders";
+import type { InvoiceStatus, OrderStatus, RefundStatus } from "@/types/orders";
 
 export const INVOICE_STATUS_COLORS: Record<InvoiceStatus, ChipProps["color"]> =
   {
@@ -9,6 +9,13 @@ export const INVOICE_STATUS_COLORS: Record<InvoiceStatus, ChipProps["color"]> =
     pending: "warning",
     voided: "default",
   };
+
+export const REFUND_STATUS_COLORS: Record<RefundStatus, ChipProps["color"]> = {
+  pending: "warning",
+  refunded: "info",
+  settling: "info",
+  settled: "success",
+};
 
 export const STATUS_COLORS: Record<OrderStatus, ChipProps["color"]> = {
   OrderCancelled: "default",

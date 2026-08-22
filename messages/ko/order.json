@@ -104,6 +104,24 @@
       "title": "거래 정보",
       "tradeNo": "ECPay 거래 번호",
       "unpaid": "결제 대기"
+    },
+    "invoice": {
+      "copied": "영수증 번호가 복사되었습니다",
+      "invoiceDate": "발행 시간",
+      "invoiceNumber": "영수증 번호",
+      "status": {
+        "issued": "발행 완료",
+        "issuing": "발행 중",
+        "label": "발행 상태",
+        "pending": "발행 대기",
+        "voided": "무효 처리됨"
+      },
+      "title": "영수증 정보"
+    },
+    "pending": {
+      "retry": "다시 결제하기",
+      "subtitle": "주문은 생성되었지만 결제가 확인되지 않았습니다. 이미 결제하셨다면 잠시 후 이 페이지가 자동으로 갱신됩니다. 아직이라면 직원에게 문의해 주세요.",
+      "title": "결제가 완료되지 않았습니다"
     }
   },
   "label": "주문",

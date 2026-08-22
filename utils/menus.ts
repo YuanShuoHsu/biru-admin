@@ -203,13 +203,6 @@ export const findItemById = (
     ?.flatMap(({ menuItems }) => menuItems)
     .find(({ id }) => id === itemId);
 
-export const getItemName = (menu: OrderMenu | null, itemId: string): string => {
-  const item = findItemById(menu, itemId);
-  if (!item) return "";
-
-  return item.name;
-};
-
 export const getOfferStock = (offer?: OrderMenuOffer): number | null => {
   if (
     offer?.availability === "SoldOut" ||
@@ -233,7 +226,7 @@ export const getItemStock = (
   return getOfferStock(item.offers[0]);
 };
 
-export const hasUnavailableChoices = (
+export const hasInvalidChoices = (
   menu: OrderMenu | null,
   item: CartItem,
   mode: ApiOrderMode,
@@ -241,32 +234,43 @@ export const hasUnavailableChoices = (
   const menuItem = findItemById(menu, item.menuItemId);
   if (!menuItem) return false;
 
-  const hasUnavailableModifier = (
+  const hasInvalidSelections = (
     modifierGroups: OrderMenuModifierGroup[],
     selections: Record<string, string[]>,
   ) => {
-    const selectedIds = Object.values(selections).flat();
+    const modifiers = modifierGroups.flatMap(({ modifiers }) => modifiers);
 
-    return modifierGroups
-      .flatMap(({ modifiers }) => modifiers)
-      .some(
-        ({ availableModes, id }) =>
-          selectedIds.includes(id) && !availableModes.includes(mode),
-      );
+    return (
+      Object.values(selections)
+        .flat()
+        .some((selectedId) => {
+          const modifier = modifiers.find(({ id }) => id === selectedId);
+
+          return !modifier || !modifier.availableModes.includes(mode);
+        }) ||
+      modifierGroups.some(({ id, maxSelectionCount, minSelectionCount }) => {
+        const selected = selections[id] || [];
+
+        return (
+          selected.length < minSelectionCount ||
+          (maxSelectionCount != null && selected.length > maxSelectionCount)
+        );
+      })
+    );
   };
 
-  if (hasUnavailableModifier(menuItem.modifierGroups, item.modifiers))
+  if (hasInvalidSelections(menuItem.modifierGroups, item.modifiers))
     return true;
 
   const addOnItems = getAddOnItems(menuItem);
 
   return item.addOns.some(({ menuItemId, modifiers }) => {
     const addOnItem = addOnItems.find(({ id }) => id === menuItemId);
-    if (!addOnItem) return false;
+    if (!addOnItem) return true;
 
     return (
       !addOnItem.availableModes.includes(mode) ||
-      hasUnavailableModifier(addOnItem.modifierGroups, modifiers)
+      hasInvalidSelections(addOnItem.modifierGroups, modifiers)
     );
   });
 };

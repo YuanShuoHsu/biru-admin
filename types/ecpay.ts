@@ -12,3 +12,4 @@ export type CheckoutEcpayResponse =
   components["schemas"]["CheckoutEcpayResponseDto"];
 
 export type EcpayLanguage = components["schemas"]["BaseEcpayLanguage"];
+export type EcpayAttentionItem = components["schemas"]["EcpayAttentionItemDto"];

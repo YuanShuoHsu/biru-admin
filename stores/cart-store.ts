@@ -20,6 +20,9 @@ export interface CartItem {
 
 type CartItemsMap = Record<string, CartItem>;
 
+export const getCartKey = (mode: OrderMode, slug: Organization["slug"]) =>
+  `${slug}:${mode}`;
+
 interface CartState {
   carts: Record<string, CartItemsMap>;
   cartKey: string | null;
@@ -40,6 +43,11 @@ interface CartActions {
     menuItemId: string,
     excludedItem: CartItem | null,
   ) => number;
+  replaceCart: (
+    mode: OrderMode,
+    slug: Organization["slug"],
+    items: CartItem[],
+  ) => void;
   setCartKey: (
     mode: OrderMode | null,
     slug: Organization["slug"] | null,
@@ -148,8 +156,38 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
               0,
             );
           },
+          replaceCart: (mode, slug, items) => {
+            const key = getCartKey(mode, slug);
+            const cartItemsMap: CartItemsMap = {};
+
+            for (const item of items) {
+              const itemKey = getItemKey(
+                item.menuItemId,
+                item.modifiers,
+                item.addOns,
+              );
+              const existing = cartItemsMap[itemKey];
+
+              cartItemsMap[itemKey] = existing
+                ? { ...existing, quantity: existing.quantity + item.quantity }
+                : item;
+            }
+
+            set(({ cartKey, carts, checkoutKeys }) => {
+              const checkoutKey = crypto.randomUUID();
+
+              return {
+                carts: { ...carts, [key]: cartItemsMap },
+                checkoutKeys: { ...checkoutKeys, [key]: checkoutKey },
+                ...(cartKey === key && {
+                  checkoutKey,
+                  ...deriveCartState(cartItemsMap),
+                }),
+              };
+            });
+          },
           setCartKey: (mode, slug) => {
-            const key = slug && mode && `${slug}:${mode}`;
+            const key = slug && mode && getCartKey(mode, slug);
 
             set(({ carts, checkoutKeys }) => ({
               cartKey: key,

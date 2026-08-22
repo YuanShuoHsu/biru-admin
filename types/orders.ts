@@ -5,6 +5,7 @@ import {
 } from "@/types/api";
 
 export type CreateOrderDto = components["schemas"]["CreateOrderDto"];
+export type CreateOrderPayment = CreateOrderDto["payment"];
 export type OrderResponse = components["schemas"]["OrderResponseDto"];
 export type UserOrderListResponse =
   components["schemas"]["UserOrderListResponseDto"];
@@ -33,6 +34,7 @@ export type OrderPaymentMethod = OrderResponse["paymentMethod"];
 export type OrderStatus = OrderResponse["orderStatus"];
 export type OrderFlowStatus = components["schemas"]["OrderFlowStatus"];
 export type InvoiceStatus = components["schemas"]["InvoiceStatus"];
+export type RefundStatus = components["schemas"]["RefundStatus"];
 
 export type OrderFilterField = (typeof orderFilterFieldValues)[number];
 export type OrderSortField = (typeof orderSortFieldValues)[number];

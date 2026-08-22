@@ -6,7 +6,7 @@ import utc from "dayjs/plugin/utc";
 import { useLocale, useTranslations } from "next-intl";
 import { useParams, useSearchParams } from "next/navigation";
 import { useSnackbar } from "notistack";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 
 import { menuSocket } from "@/app/socket";
@@ -14,6 +14,7 @@ import { menuSocket } from "@/app/socket";
 import { StyledCardContent } from "@/components/FormCard";
 import LocationDetails from "@/components/LocationDetails";
 
+import { localeConfigs } from "@/constants/locale";
 import { ORDER_MODE } from "@/constants/orderMode";
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
@@ -28,12 +29,14 @@ import {
   CheckCircleOutline,
   ContentCopy,
   ErrorOutline,
+  HourglassEmpty,
   MenuBook,
 } from "@mui/icons-material";
 import {
   Button,
   Card,
   Chip,
+  type ChipProps,
   Divider,
   IconButton,
   Stack,
@@ -42,8 +45,13 @@ import {
 } from "@mui/material";
 import { type CSSObject, styled } from "@mui/material/styles";
 
-import type { OrderResponse } from "@/types/orders";
+import type { CheckoutEcpayDto, CheckoutEcpayResponse } from "@/types/ecpay";
+import type { OrderInvoice, OrderResponse } from "@/types/orders";
 import type { OrganizationResponse } from "@/types/organizations";
+
+import { submitEcpayCheckout } from "@/utils/ecpay";
+import { getErrorMessage } from "@/utils/errors";
+import { fetcher } from "@/utils/fetcher";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
@@ -57,14 +65,27 @@ const StyledCheckCircleOutline = styled(CheckCircleOutline)(statusIconStyle);
 
 const StyledErrorOutline = styled(ErrorOutline)(statusIconStyle);
 
+const StyledHourglassEmpty = styled(HourglassEmpty)(statusIconStyle);
+
 const STATUS_ICON = {
   error: StyledErrorOutline,
+  pending: StyledHourglassEmpty,
   success: StyledCheckCircleOutline,
 } as const;
 
 const StyledTypography = styled(Typography)({
   wordBreak: "break-all",
 });
+
+const INVOICE_STATUS_CHIP_COLORS: Record<
+  OrderInvoice["status"],
+  ChipProps["color"]
+> = {
+  issued: "success",
+  issuing: "info",
+  pending: "warning",
+  voided: "default",
+};
 
 const SUCCESS_ORDER_STATUSES: OrderResponse["orderStatus"][] = [
   "OrderDelivered",
@@ -178,6 +199,7 @@ const OrderModeOrganizationSlugComplete = ({
       0,
     ) - discount;
 
+  const invoice = order?.invoice;
   const showPickupInfo = mode === ORDER_MODE.Pickup && !!organization;
 
   useEffect(() => {
@@ -187,7 +209,41 @@ const OrderModeOrganizationSlugComplete = ({
     setLastOrderId(null);
   }, [cartKey, clearCart, isSuccess, lastOrderId, order?.id, setLastOrderId]);
 
-  const status = isSuccess ? "success" : "error";
+  const [isPaying, setIsPaying] = useState(false);
+
+  const handleRetryPayment = async () => {
+    if (!order) return;
+
+    setIsPaying(true);
+
+    try {
+      const completeUrl = window.location.href;
+
+      submitEcpayCheckout(
+        await fetcher<CheckoutEcpayResponse>("/api/ecpay", {
+          body: JSON.stringify({
+            ClientBackURL: completeUrl,
+            Language: localeConfigs[locale].ecpayLanguage,
+            orderId: order.id,
+            OrderResultURL: `${process.env.NEXT_PUBLIC_NEST_URL}/api/ecpay/result?redirect=${encodeURIComponent(completeUrl)}`,
+            TradeDesc: tOrder("checkout.tradeDesc"),
+          } satisfies CheckoutEcpayDto),
+          headers: { "Content-Type": "application/json" },
+          method: "POST",
+        }),
+      );
+    } catch (error) {
+      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+      setIsPaying(false);
+    }
+  };
+
+  // 待付款不是失敗；畫成「付款失敗，請重新結帳」會讓顧客再下一筆單
+  const status: keyof typeof STATUS_ICON = isSuccess
+    ? "success"
+    : order?.orderStatus === "OrderPaymentDue"
+      ? "pending"
+      : "error";
   const StatusIcon = STATUS_ICON[status];
 
   const handleCopy = async () => {
@@ -196,11 +252,17 @@ const OrderModeOrganizationSlugComplete = ({
     enqueueSnackbar(tOrder("complete.copied"), { variant: "success" });
   };
 
+  const handleCopyInvoiceNumber = async () => {
+    await navigator.clipboard.writeText(invoice?.invoiceNumber || "");
+
+    enqueueSnackbar(tOrder("complete.invoice.copied"), { variant: "success" });
+  };
+
   return (
     <>
       <Card variant="outlined">
         <StyledCardContent>
-          <StatusIcon color={status} />
+          <StatusIcon color={status === "pending" ? "warning" : status} />
           <Stack>
             <Typography
               fontWeight="bold"
@@ -218,6 +280,15 @@ const OrderModeOrganizationSlugComplete = ({
               {tOrder(`complete.${status}.subtitle`)}
             </Typography>
           </Stack>
+          {status === "pending" && order?.paymentMethod !== "Cash" && (
+            <Button
+              loading={isPaying}
+              onClick={handleRetryPayment}
+              variant="contained"
+            >
+              {tOrder("complete.pending.retry")}
+            </Button>
+          )}
         </StyledCardContent>
       </Card>
       {order && isSuccess && (
@@ -388,6 +459,91 @@ const OrderModeOrganizationSlugComplete = ({
               />
             </StyledCardContent>
           </Card>
+          {invoice && (
+            <Card variant="outlined">
+              <StyledCardContent>
+                <Typography
+                  color="text.secondary"
+                  fontWeight="bold"
+                  variant="subtitle2"
+                >
+                  {tOrder("complete.invoice.title")}
+                </Typography>
+                <InfoRow
+                  label={tOrder("complete.invoice.status.label")}
+                  value={
+                    <Chip
+                      color={INVOICE_STATUS_CHIP_COLORS[invoice.status]}
+                      label={tOrder(
+                        `complete.invoice.status.${invoice.status}`,
+                      )}
+                      size="small"
+                      variant="outlined"
+                    />
+                  }
+                />
+                {invoice.invoiceNumber && (
+                  <InfoRow
+                    action={
+                      <IconButton
+                        aria-label={tOrder("complete.invoice.invoiceNumber")}
+                        onClick={handleCopyInvoiceNumber}
+                        size="small"
+                      >
+                        <ContentCopy fontSize="inherit" />
+                      </IconButton>
+                    }
+                    label={tOrder("complete.invoice.invoiceNumber")}
+                    value={invoice.invoiceNumber}
+                  />
+                )}
+                {invoice.invoiceDate && (
+                  <InfoRow
+                    label={tOrder("complete.invoice.invoiceDate")}
+                    value={dayjs(invoice.invoiceDate)
+                      .tz(STORE_TIMEZONE)
+                      .format("YYYY/MM/DD HH:mm:ss")}
+                  />
+                )}
+                <InfoRow
+                  label={tOrder("checkout.invoice.title")}
+                  value={tOrder(`checkout.invoice.${invoice.type}`)}
+                />
+                {invoice.type === "personal" && (
+                  <InfoRow
+                    label={tOrder("checkout.invoice.carrierType.label")}
+                    value={tOrder(
+                      `checkout.invoice.${invoice.carrierType || "none"}`,
+                    )}
+                  />
+                )}
+                {invoice.carrierNum && (
+                  <InfoRow
+                    label={tOrder("checkout.invoice.carrierNum")}
+                    value={invoice.carrierNum}
+                  />
+                )}
+                {invoice.customerIdentifier && (
+                  <InfoRow
+                    label={tOrder("checkout.invoice.customerIdentifier")}
+                    value={invoice.customerIdentifier}
+                  />
+                )}
+                {invoice.customerName && (
+                  <InfoRow
+                    label={tOrder("checkout.invoice.customerName")}
+                    value={invoice.customerName}
+                  />
+                )}
+                {invoice.donateCode && (
+                  <InfoRow
+                    label={tOrder("checkout.invoice.donateCode.label")}
+                    value={invoice.donateCode}
+                  />
+                )}
+              </StyledCardContent>
+            </Card>
+          )}
         </>
       )}
       <Button

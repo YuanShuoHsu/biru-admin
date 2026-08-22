@@ -46,7 +46,7 @@ const OrderPartySizeTextField = ({
   return (
     <StyledTextField
       fullWidth
-      label={tOrder("mode.dineIn.storeSlug.tableNumber.partySize.select.label")}
+      label={tOrder("mode.dineIn.partySize.select.label")}
       name="partySize"
       onChange={handleChange}
       required
@@ -60,37 +60,23 @@ const OrderPartySizeTextField = ({
           readOnly,
           renderValue: (selected) =>
             selected ? (
-              tOrder(
-                "mode.dineIn.storeSlug.tableNumber.partySize.select.value",
-                { count: Number(selected) },
-              )
+              tOrder("mode.dineIn.partySize.select.value", {
+                count: Number(selected),
+              })
             ) : (
-              <em>
-                {tOrder(
-                  "mode.dineIn.storeSlug.tableNumber.partySize.select.placeholder",
-                )}
-              </em>
+              <em>{tOrder("mode.dineIn.partySize.select.placeholder")}</em>
             ),
         },
       }}
       value={partySize ? Number(partySize) : ""}
     >
       <MenuItem disabled value="">
-        <em>
-          {tOrder(
-            "mode.dineIn.storeSlug.tableNumber.partySize.select.placeholder",
-          )}
-        </em>
+        <em>{tOrder("mode.dineIn.partySize.select.placeholder")}</em>
       </MenuItem>
       {Array.from({ length: PARTY_SIZE_MAX }, (_, index) => index + 1).map(
         (count) => (
           <MenuItem key={count} value={count}>
-            {tOrder(
-              "mode.dineIn.storeSlug.tableNumber.partySize.select.value",
-              {
-                count,
-              },
-            )}
+            {tOrder("mode.dineIn.partySize.select.value", { count })}
           </MenuItem>
         ),
       )}

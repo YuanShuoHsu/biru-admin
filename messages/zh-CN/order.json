@@ -104,6 +104,24 @@
       "title": "交易信息",
       "tradeNo": "绿界交易编号",
       "unpaid": "待付款"
+    },
+    "invoice": {
+      "copied": "已复制发票号码",
+      "invoiceDate": "开立时间",
+      "invoiceNumber": "发票号码",
+      "status": {
+        "issued": "已开立",
+        "issuing": "开立中",
+        "label": "开立状态",
+        "pending": "待开立",
+        "voided": "已作废"
+      },
+      "title": "发票信息"
+    },
+    "pending": {
+      "retry": "重新付款",
+      "subtitle": "订单已创建但尚未收到付款。若您已完成付款，稍候片刻本页会自动更新；若尚未付款，请联系现场工作人员协助。",
+      "title": "尚未完成付款"
     }
   },
   "label": "点餐",

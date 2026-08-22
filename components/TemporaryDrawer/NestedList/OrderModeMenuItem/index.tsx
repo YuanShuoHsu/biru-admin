@@ -56,7 +56,7 @@ const OrderModeMenuItem: Slot = ({ level }) => {
             ? [
                 {
                   icon: <TableBar />,
-                  primary: tOrder("mode.dineIn.storeSlug.tableNumber.value", {
+                  primary: tOrder("mode.dineIn.tableNumber.value", {
                     tableNumber,
                   }),
                 },
@@ -66,10 +66,9 @@ const OrderModeMenuItem: Slot = ({ level }) => {
             ? [
                 {
                   icon: partySize === "1" ? <Person /> : <Group />,
-                  primary: tOrder(
-                    "mode.dineIn.storeSlug.tableNumber.partySize.select.value",
-                    { count: partySize },
-                  ),
+                  primary: tOrder("mode.dineIn.partySize.select.value", {
+                    count: partySize,
+                  }),
                 },
               ]
             : []),

@@ -104,6 +104,24 @@
       "title": "Transaction details",
       "tradeNo": "ECPay trade number",
       "unpaid": "Awaiting payment"
+    },
+    "invoice": {
+      "copied": "Invoice number copied",
+      "invoiceDate": "Issued at",
+      "invoiceNumber": "Invoice number",
+      "status": {
+        "issued": "Issued",
+        "issuing": "Issuing",
+        "label": "Issue status",
+        "pending": "Pending",
+        "voided": "Voided"
+      },
+      "title": "Invoice details"
+    },
+    "pending": {
+      "retry": "Pay again",
+      "subtitle": "Your order was created but payment has not been received. If you have already paid, this page will update shortly; if not, please ask our staff for assistance.",
+      "title": "Payment not completed"
     }
   },
   "label": "Order",

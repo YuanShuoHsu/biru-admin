@@ -9,6 +9,7 @@ import { MODE_COLORS } from "@/constants/orderMode";
 import { STATUS_COLORS, STATUS_TEXT_COLORS } from "@/constants/orders";
 
 import useInvoiceAutoPrint from "@/hooks/useInvoiceAutoPrint";
+import { useOrderModeLabel } from "@/hooks/useOrderModeLabel";
 import { useSocketConnection } from "@/hooks/useSocketConnection";
 
 import { menuSocket } from "@/app/socket";
@@ -55,7 +56,8 @@ const OrdersBoard = ({
   const { setDialog } = useDialogStore((state) => state);
 
   const tCommon = useTranslations("common");
-  const tOrder = useTranslations("order");
+  const getOrderModeLabel = useOrderModeLabel();
+
   const tOrders = useTranslations("orders");
 
   const { data: boardColumns = initialColumns, mutate } = useSWR<
@@ -99,11 +101,7 @@ const OrdersBoard = ({
               new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
           )
           .map((order) => {
-            const modeLabel = order.tableNumber
-              ? tOrder("mode.dineIn.storeSlug.tableNumber.value", {
-                  tableNumber: order.tableNumber,
-                })
-              : tOrder(`mode.${order.mode}.label`);
+            const modeLabel = getOrderModeLabel(order.mode, order.tableNumber);
 
             return {
               ...order,
@@ -138,7 +136,7 @@ const OrdersBoard = ({
         size: { xs: 12, md: 3 },
         title: tOrders(`status.${status}`),
       })),
-    [boardColumns, tOrder, tOrders],
+    [boardColumns, getOrderModeLabel, tOrders],
   );
 
   const orders = useMemo(

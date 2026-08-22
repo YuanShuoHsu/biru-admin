@@ -13,7 +13,7 @@ import type { RouteParams } from "@/types/routeParams";
 import {
   getItemStock,
   getLimitingAddOnsCap,
-  hasUnavailableChoices,
+  hasInvalidChoices,
 } from "@/utils/menus";
 
 const useCartHasInvalidItems = (): boolean => {
@@ -41,7 +41,7 @@ const useCartHasInvalidItems = (): boolean => {
     );
 
     return (
-      hasUnavailableChoices(menu, item, apiMode) ||
+      hasInvalidChoices(menu, item, apiMode) ||
       Math.min(perItemCapLeft, itemStockCapLeft, addOnCapLeft) < 0
     );
   });

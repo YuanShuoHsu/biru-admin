@@ -15,19 +15,27 @@ import PaginationActions, {
   StyledTablePagination,
 } from "@/components/PaginationActions";
 
-import { ORDER_MODE } from "@/constants/orderMode";
+import { MODE_COLORS, ORDER_MODE } from "@/constants/orderMode";
 import { getPageSizeOptions } from "@/constants/pagination";
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { useOrderItemName } from "@/hooks/useOrderItemName";
+import { useOrderModeLabel } from "@/hooks/useOrderModeLabel";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
+import { useCartStore } from "@/providers/cart-store-provider";
+import { useDialogStore } from "@/providers/dialog-store-provider";
+
 import { Button, Chip, type ChipProps, Stack, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
+
+import { getCartKey } from "@/stores/cart-store";
 
 import type { UserOrderListResponse, UserOrderResponse } from "@/types/orders";
 
 import { getHref } from "@/utils/href";
+import { getCartItems } from "@/utils/orders";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
@@ -52,6 +60,10 @@ const STATUS_CHIP_COLORS: Record<
   OrderReturned: "secondary",
 };
 
+const StyledChip = styled(Chip)({
+  alignSelf: "flex-start",
+});
+
 interface OrdersProps {
   orders: UserOrderListResponse | null;
   page: number;
@@ -61,7 +73,13 @@ interface OrdersProps {
 const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
   const [expanded, setExpanded] = useState<string | false>(false);
 
+  const { carts, replaceCart } = useCartStore((state) => state);
+
+  const { setDialog } = useDialogStore((state) => state);
+
   const getOrderItemName = useOrderItemName();
+
+  const getOrderModeLabel = useOrderModeLabel();
 
   const locale = useLocale();
 
@@ -80,6 +98,36 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
   const handleChange =
     (panel: string) => (_: React.SyntheticEvent, newExpanded: boolean) =>
       setExpanded(newExpanded ? panel : false);
+
+  const getReorderLabel = (mode: UserOrderResponse["mode"]) =>
+    mode === "pickup"
+      ? tAuth("orders.reorder")
+      : tAuth("orders.reorderAs", { mode: tOrder("mode.pickup.label") });
+
+  const handleReorder = (order: UserOrderResponse) => () => {
+    const { slug } = order.seller;
+
+    const applyReorder = () => {
+      replaceCart(ORDER_MODE.Pickup, slug, getCartItems(order.items));
+      router.push(`/order/${ORDER_MODE.Pickup}/${slug}/cart`);
+    };
+
+    const targetCart = carts[getCartKey(ORDER_MODE.Pickup, slug)];
+
+    if (!targetCart || Object.keys(targetCart).length === 0) {
+      applyReorder();
+      return;
+    }
+
+    setDialog({
+      contentText: tAuth("orders.reorderConfirmContentText", {
+        name: order.seller.name,
+      }),
+      onConfirm: async () => applyReorder(),
+      open: true,
+      title: getReorderLabel(order.mode),
+    });
+  };
 
   const handlePageChange = (
     _event: React.MouseEvent<HTMLButtonElement> | null,
@@ -121,15 +169,6 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
           const currency = order.items[0]?.priceCurrency || "";
           const discount = Number(order.discount || 0);
           const isExpanded = expanded === order.id;
-          const modeLabel = [
-            tOrder(`mode.${order.mode}.label`),
-            order.tableNumber &&
-              tOrder("mode.dineIn.storeSlug.tableNumber.value", {
-                tableNumber: order.tableNumber,
-              }),
-          ]
-            .filter(Boolean)
-            .join(tCommon("delimiter"));
           const totalAmount =
             order.items.reduce(
               (sum, { orderQuantity, unitPrice }) =>
@@ -188,9 +227,12 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
                   {tOrder("complete.transaction.orderNo")}{" "}
                   {order.confirmationNumber || order.orderNumber}
                 </Typography>
-                <Typography color="text.secondary" variant="caption">
-                  {modeLabel}
-                </Typography>
+                <StyledChip
+                  color={MODE_COLORS[order.mode]}
+                  label={getOrderModeLabel(order.mode, order.tableNumber)}
+                  size="small"
+                  variant="outlined"
+                />
                 {order.items.map((item) => (
                   <Stack
                     direction="row"
@@ -223,6 +265,12 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
                     </Typography>
                   </Stack>
                 )}
+                {order.invoice?.invoiceNumber && (
+                  <Typography color="text.secondary" variant="caption">
+                    {tOrder("complete.invoice.invoiceNumber")}{" "}
+                    {order.invoice.invoiceNumber}
+                  </Typography>
+                )}
                 <Stack
                   alignItems="center"
                   direction="row"
@@ -232,20 +280,29 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
                   <Typography color="text.secondary" variant="body2">
                     {tOrder(`checkout.payment.${order.paymentMethod}`)}
                   </Typography>
-                  <Button
-                    href={getHref(
-                      `/order/${ORDER_MODE_PATH[order.mode]}/${order.seller.slug}/complete`,
-                      {
-                        orderId: order.id,
-                        partySize: order.partySize,
-                        tableNumber: order.tableNumber,
-                      },
-                    )}
-                    size="small"
-                    variant="outlined"
-                  >
-                    {tAuth("orders.detail")}
-                  </Button>
+                  <Stack direction="row" gap={1}>
+                    <Button
+                      href={getHref(
+                        `/order/${ORDER_MODE_PATH[order.mode]}/${order.seller.slug}/complete`,
+                        {
+                          orderId: order.id,
+                          partySize: order.partySize,
+                          tableNumber: order.tableNumber,
+                        },
+                      )}
+                      size="small"
+                      variant="outlined"
+                    >
+                      {tAuth("orders.detail")}
+                    </Button>
+                    <Button
+                      onClick={handleReorder(order)}
+                      size="small"
+                      variant="contained"
+                    >
+                      {getReorderLabel(order.mode)}
+                    </Button>
+                  </Stack>
                 </Stack>
               </Stack>
             </CustomizedAccordions>

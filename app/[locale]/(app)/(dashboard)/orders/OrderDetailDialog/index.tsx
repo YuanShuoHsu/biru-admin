@@ -5,7 +5,11 @@ import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 import useSWR from "swr";
 
-import { INVOICE_STATUS_COLORS, STATUS_COLORS } from "@/constants/orders";
+import {
+  INVOICE_STATUS_COLORS,
+  REFUND_STATUS_COLORS,
+  STATUS_COLORS,
+} from "@/constants/orders";
 
 import { useOrderItemName } from "@/hooks/useOrderItemName";
 
@@ -166,10 +170,9 @@ const OrderDetailDialog = ({
         {!!order.partySize && (
           <InfoRow
             label={tOrders("partySize")}
-            value={tOrder(
-              "mode.dineIn.storeSlug.tableNumber.partySize.select.value",
-              { count: order.partySize },
-            )}
+            value={tOrder("mode.dineIn.partySize.select.value", {
+              count: order.partySize,
+            })}
           />
         )}
         <InfoRow
@@ -360,13 +363,11 @@ const OrderDetailDialog = ({
                 label={format.dateTime(new Date(refund.createdAt), "short")}
                 value={
                   <Stack direction="row" gap={0.5}>
-                    {refund.status === "pending" && (
-                      <Chip
-                        color="warning"
-                        label={tOrders("detail.refunds.status.pending")}
-                        size="small"
-                      />
-                    )}
+                    <Chip
+                      color={REFUND_STATUS_COLORS[refund.status]}
+                      label={tOrders(`detail.refunds.status.${refund.status}`)}
+                      size="small"
+                    />
                     <Chip
                       color={
                         refund.invoiceAction === "failed" ? "error" : "default"

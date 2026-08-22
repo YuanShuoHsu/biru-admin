@@ -104,6 +104,24 @@
       "title": "交易資訊",
       "tradeNo": "綠界交易編號",
       "unpaid": "待付款"
+    },
+    "invoice": {
+      "copied": "已複製發票號碼",
+      "invoiceDate": "開立時間",
+      "invoiceNumber": "發票號碼",
+      "status": {
+        "issued": "已開立",
+        "issuing": "開立中",
+        "label": "開立狀態",
+        "pending": "待開立",
+        "voided": "已作廢"
+      },
+      "title": "發票資訊"
+    },
+    "pending": {
+      "retry": "重新付款",
+      "subtitle": "訂單已建立但尚未收到付款。若您已完成付款，稍候片刻本頁會自動更新；若尚未付款，請洽現場工作人員協助。",
+      "title": "尚未完成付款"
     }
   },
   "label": "點餐",

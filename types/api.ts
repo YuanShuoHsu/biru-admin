@@ -450,6 +450,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/ecpay/attention": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 列出綠界流程中需要人工處理的項目（補正 cron 收斂不掉的殘留） */
+    get: operations["EcpayAttentionController_findAll"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/ecpay": {
     parameters: {
       query?: never;
@@ -542,7 +559,8 @@ export interface paths {
     put?: never;
     /** 補開發票（開立失敗後由後台重試） */
     post: operations["EcpayOrderInvoiceController_issue"];
-    delete?: never;
+    /** 作廢發票（統編或抬頭開錯但不需退款時） */
+    delete: operations["EcpayOrderInvoiceController_void"];
     options?: never;
     head?: never;
     patch?: never;
@@ -1879,6 +1897,42 @@ export interface components {
       applicableOrganizationSlugs?: string[] | null;
     };
     /**
+     * @description 需要人工處理的類型
+     *     - invoiceSettlementFailed：退款完成但發票沒作廢也沒折讓
+     *     - refundUnconfirmed：退刷送出後沒收到綠界結果，可退數量被佔住
+     *     - invoiceStuck：發票卡在開立中，查證失敗需人工到綠界後台確認
+     *     - invoiceOverdue：訂單已付款但發票遲遲沒開出來
+     *     - paymentProblem：綠界回報付款異常
+     *     - callbackFailed：綠界通知驗簽失敗或處理失敗
+     * @enum {string}
+     */
+    EcpayAttentionType:
+      | "invoiceSettlementFailed"
+      | "refundUnconfirmed"
+      | "invoiceStuck"
+      | "invoiceOverdue"
+      | "paymentProblem"
+      | "callbackFailed";
+    EcpayAttentionItemDto: {
+      /**
+       * @description 需要人工處理的類型
+       *     - invoiceSettlementFailed：退款完成但發票沒作廢也沒折讓
+       *     - refundUnconfirmed：退刷送出後沒收到綠界結果，可退數量被佔住
+       *     - invoiceStuck：發票卡在開立中，查證失敗需人工到綠界後台確認
+       *     - invoiceOverdue：訂單已付款但發票遲遲沒開出來
+       *     - paymentProblem：綠界回報付款異常
+       *     - callbackFailed：綠界通知驗簽失敗或處理失敗
+       */
+      type: components["schemas"]["EcpayAttentionType"];
+      orderId: string | null;
+      orderNumber: string | null;
+      confirmationNumber: string | null;
+      /** @description 錯誤訊息或補充說明 */
+      detail: string | null;
+      /** Format: date-time */
+      occurredAt: string;
+    };
+    /**
      * @description 語系設定
      *     預設語系為中文，若要變更語系參數值請帶：
      *     - ENG：英語
@@ -1895,13 +1949,6 @@ export interface components {
        * @example 商品訂購
        */
       TradeDesc: string;
-      /**
-       * @description 商品名稱（必填）
-       *     - 如果商品名稱有多筆，需在金流選擇頁一行一行顯示商品名稱的話，商品名稱請以符號 # 分隔。
-       *     - 商品名稱字數限制為中英數 400 字內，超過此限制系統將自動截斷。 詳細的使用注意事項請參考 FAQ。
-       * @example 商品A#商品B
-       */
-      ItemName: string;
       /**
        * Format: uri
        * @description Client 端返回特店的按鈕連結
@@ -2185,6 +2232,14 @@ export interface components {
       /** @description 綠界端狀態是否與本機一致；false 代表兩邊對不起來，需人工處理 */
       matchesLocal: boolean;
     };
+    VoidInvoiceDto: {
+      /** @description 作廢原因 */
+      reason: string;
+    };
+    ResetInvoicePrintDto: {
+      /** @description 重設列印的理由 */
+      reason: string;
+    };
     /**
      * @description return：綠界背景付款通知；result：顧客導回時的通知；query：本站主動向綠界查證
      * @enum {string}
@@ -2207,6 +2262,11 @@ export interface components {
        */
       createdAt: string;
     };
+    /**
+     * @description ecpay：已透過綠界退刷；manual：綠界不支援此付款方式的退款 API，需店家自行退款，系統僅登錄
+     * @enum {string}
+     */
+    RefundChannel: "ecpay" | "manual";
     RefundItemSnapshotDto: {
       /** @description 訂單品項 ID */
       orderItemId: string;
@@ -2239,11 +2299,8 @@ export interface components {
        * @enum {string}
        */
       scope: "full" | "partial";
-      /**
-       * @description ecpay：已透過綠界退刷；manual：綠界不支援此付款方式的退款 API，需店家自行退款，系統僅登錄
-       * @enum {string}
-       */
-      channel: "ecpay" | "manual";
+      /** @description ecpay：已透過綠界退刷；manual：綠界不支援此付款方式的退款 API，需店家自行退款，系統僅登錄 */
+      channel: components["schemas"]["RefundChannel"];
       /** @description 此次退款的品項與數量 */
       items: components["schemas"]["RefundItemSnapshotDto"][] | null;
       /** @description pending：錢動了沒尚未確認，等待與綠界對帳；refunded：款項已退，後續處理未完成；settling：後續處理進行中；settled：發票、點數、優惠券與訂單狀態都已處理完 */
@@ -2326,7 +2383,7 @@ export interface components {
         | "TWQR"
         | "WeiXin";
       discountCode?: string;
-      invoice?: components["schemas"]["CreateOrderInvoiceDto"];
+      invoice: components["schemas"]["CreateOrderInvoiceDto"];
       items: components["schemas"]["CreateOrderItemDto"][];
       partySize?: number;
       tableNumber?: number;
@@ -2534,6 +2591,8 @@ export interface components {
       availableTransitions: components["schemas"]["OrderTransitionDto"][];
       /** @description 是否可退款；退款不走 transitions，須呼叫 orders/{orderId}/refunds */
       refundable: boolean;
+      /** @description ecpay：可直接透過綠界退刷；manual：綠界不支援此付款方式的退款 API，系統僅登錄，需店家自行退款 */
+      refundChannel: components["schemas"]["RefundChannel"];
     };
     AdminOrderBoardColumnDto: {
       orderStatus: components["schemas"]["OrderFlowStatus"];
@@ -4278,6 +4337,34 @@ export interface operations {
       };
     };
   };
+  EcpayAttentionController_findAll: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["EcpayAttentionItemDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   EcpayController_checkout: {
     parameters: {
       query?: never;
@@ -4351,7 +4438,7 @@ export interface operations {
       };
     };
     responses: {
-      201: {
+      200: {
         headers: {
           [name: string]: unknown;
         };
@@ -4453,6 +4540,39 @@ export interface operations {
       };
     };
   };
+  EcpayOrderInvoiceController_void: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        orderId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["VoidInvoiceDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderInvoiceDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   EcpayOrderInvoiceController_print: {
     parameters: {
       query?: never;
@@ -4492,7 +4612,11 @@ export interface operations {
       };
       cookie?: never;
     };
-    requestBody?: never;
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ResetInvoicePrintDto"];
+      };
+    };
     responses: {
       200: {
         headers: {
@@ -6562,6 +6686,16 @@ export const userCouponSourceValues: ReadonlyArray<
 export const validateCouponDtoModeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["ValidateCouponDto"]["mode"]
 > = ["counter", "dineIn", "driveThru", "pickup"];
+export const ecpayAttentionTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["EcpayAttentionType"]
+> = [
+  "invoiceSettlementFailed",
+  "refundUnconfirmed",
+  "invoiceStuck",
+  "invoiceOverdue",
+  "paymentProblem",
+  "callbackFailed",
+];
 export const baseEcpayLanguageValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["BaseEcpayLanguage"]
 > = ["ENG", "KOR", "JPN", "CHI"];
@@ -6589,6 +6723,9 @@ export const invoiceStatusValues: ReadonlyArray<
 export const ecpayCallbackEndpointValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["EcpayCallbackEndpoint"]
 > = ["return", "result", "query"];
+export const refundChannelValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["RefundChannel"]
+> = ["ecpay", "manual"];
 export const refundStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["RefundStatus"]
 > = ["pending", "refunded", "settling", "settled"];
@@ -6598,9 +6735,6 @@ export const refundInvoiceActionValues: ReadonlyArray<
 export const orderRefundDtoScopeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrderRefundDto"]["scope"]
 > = ["full", "partial"];
-export const orderRefundDtoChannelValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["OrderRefundDto"]["channel"]
-> = ["ecpay", "manual"];
 export const createOrderInvoiceDtoTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CreateOrderInvoiceDto"]["type"]
 > = ["personal", "company", "donate"];

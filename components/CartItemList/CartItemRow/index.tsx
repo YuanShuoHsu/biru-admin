@@ -36,7 +36,7 @@ import {
   getChoiceNames,
   getItemStock,
   getLimitingAddOnsCap,
-  hasUnavailableChoices,
+  hasInvalidChoices,
 } from "@/utils/menus";
 
 const StyledListItem = styled(ListItem)(({ theme }) => ({
@@ -159,7 +159,7 @@ const CartItemRow = ({ compact = false, item }: CartItemRowProps) => {
   const unavailableLabel =
     menuItem &&
     (!menuItem.availableModes.includes(apiMode) ||
-      hasUnavailableChoices(menu, item, apiMode))
+      hasInvalidChoices(menu, item, apiMode))
       ? tOrder(`mode.${apiMode}.unavailable`)
       : "";
 

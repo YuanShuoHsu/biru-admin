@@ -25,7 +25,7 @@ const OrderTableNumberChip = ({ tableNumber }: OrderTableNumberChipProps) => {
       label={
         <Stack>
           <Typography variant="caption">
-            {tOrder("mode.dineIn.storeSlug.tableNumber.label")}
+            {tOrder("mode.dineIn.tableNumber.label")}
           </Typography>
           <Typography fontWeight="bold" variant="body2">
             {tableNumber}

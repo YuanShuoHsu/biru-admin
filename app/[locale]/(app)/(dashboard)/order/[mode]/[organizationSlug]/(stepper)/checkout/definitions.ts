@@ -5,8 +5,16 @@ import * as z from "zod";
 
 import { ORDER_MODE } from "@/constants/orderMode";
 
-export type InvoiceType = "company" | "donate" | "personal";
-export type CarrierType = "certificate" | "mobile" | "none";
+import {
+  createOrderDtoPaymentValues,
+  createOrderInvoiceDtoCarrierTypeValues,
+  createOrderInvoiceDtoTypeValues,
+} from "@/types/api";
+
+export type InvoiceType = (typeof createOrderInvoiceDtoTypeValues)[number];
+export type CarrierType =
+  | (typeof createOrderInvoiceDtoCarrierTypeValues)[number]
+  | "none";
 
 export const useCustomerPaymentFormSchema = () => {
   const { mode } = useParams();
@@ -42,7 +50,8 @@ export const useCustomerPaymentFormSchema = () => {
       }),
       invoice: z.object({
         carrierType: z.union([
-          z.enum(["certificate", "mobile", "none"]),
+          z.enum(createOrderInvoiceDtoCarrierTypeValues),
+          z.literal("none"),
           z.literal(""),
         ]),
         carrierNum: z.string().trim(),
@@ -62,19 +71,9 @@ export const useCustomerPaymentFormSchema = () => {
             (val) => !val || /^\d{3,7}$/.test(val),
             tValidation("donateCode.invalid"),
           ),
-        type: z.enum(["company", "donate", "personal"]).nullable(),
+        type: z.enum(createOrderInvoiceDtoTypeValues).nullable(),
       }),
-      payment: z
-        .enum([
-          "ApplePay",
-          "Cash",
-          "Credit",
-          "iPASS",
-          "Jkopay",
-          "TWQR",
-          "WeiXin",
-        ])
-        .nullable(),
+      payment: z.enum(createOrderDtoPaymentValues).nullable(),
     })
     .superRefine((data, ctx) => {
       if (

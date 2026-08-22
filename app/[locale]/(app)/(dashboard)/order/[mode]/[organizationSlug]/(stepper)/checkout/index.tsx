@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams, useSearchParams } from "next/navigation";
 import { useSnackbar } from "notistack";
+import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import useSWR from "swr";
 import useSWRMutation from "swr/mutation";
@@ -56,7 +57,6 @@ import {
 
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useCartStore } from "@/providers/cart-store-provider";
-import { useMenuStore } from "@/providers/menu-store-provider";
 
 import type {
   ValidateCouponDto,
@@ -68,17 +68,20 @@ import type {
   CheckoutEcpayDto,
   CheckoutEcpayResponse,
 } from "@/types/ecpay";
-import type { CreateOrderDto, OrderResponse } from "@/types/orders";
-import type { PaymentMethod } from "@/types/payment";
+import type {
+  CreateOrderDto,
+  CreateOrderPayment,
+  OrderResponse,
+} from "@/types/orders";
 import type { RouteParams } from "@/types/routeParams";
 
 import { formatFullName } from "@/utils/auth";
 import { getPhoneDefaults, getPhoneFormatting } from "@/utils/countries";
+import { submitEcpayCheckout } from "@/utils/ecpay";
 import { getErrorMessage } from "@/utils/errors";
 import { sendRequest } from "@/utils/fetcher";
-import { getChoiceNames, getItemName } from "@/utils/menus";
 
-const PaymentImage = ({ method }: { method: PaymentMethod }) => (
+const PaymentImage = ({ method }: { method: CreateOrderPayment }) => (
   <Image
     alt={method}
     height={20}
@@ -102,9 +105,10 @@ const OrderModeOrganizationSlugCheckout = () => {
 
   const { cartItemsList, checkoutKey, isCartEmpty, setLastOrderId } =
     useCartStore((state) => state);
-  const { menu } = useMenuStore((state) => state);
 
   const hasInvalidItems = useCartHasInvalidItems();
+
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -210,7 +214,6 @@ const OrderModeOrganizationSlugCheckout = () => {
   const shouldFetch =
     invoiceType === "company" && /^\d{8}$/.test(customerIdentifier);
 
-  // 綠界 B2C 發票規定信箱與手機擇一必填，所以另一欄有值時這欄就不是必填
   const isEmailRequired = !!invoiceType && !telephone;
   const isTelephoneRequired = isPickup || (!!invoiceType && !email);
 
@@ -218,13 +221,19 @@ const OrderModeOrganizationSlugCheckout = () => {
   const tOrder = useTranslations("order");
   const tValidation = useTranslations("validation");
 
-  const { data: businessInfo } = useSWR<{
+  const { data: businessInfo, error: businessInfoError } = useSWR<{
     address: string;
     name: string;
   }>(shouldFetch ? `/api/gcis/${customerIdentifier}` : null, {
     onError: () => {
       setError("invoice.customerIdentifier", {
         message: tValidation("customerIdentifier.notFound"),
+      });
+      setValue("invoice.customerAddr", "", {
+        shouldValidate: isSubmitted,
+      });
+      setValue("invoice.customerName", "", {
+        shouldValidate: isSubmitted,
       });
     },
     onSuccess: (data) => {
@@ -235,6 +244,8 @@ const OrderModeOrganizationSlugCheckout = () => {
         shouldValidate: isSubmitted,
       });
     },
+    revalidateOnFocus: false,
+    shouldRetryOnError: false,
   });
 
   const { data: coupon, isLoading: isValidatingCoupon } =
@@ -309,7 +320,7 @@ const OrderModeOrganizationSlugCheckout = () => {
   ];
 
   const onSubmit = handleSubmit(async ({ customer, invoice, payment }) => {
-    if (!payment) return;
+    if (!payment || !invoice.type) return;
 
     const carrier = invoice.type === "personal" ? invoice.carrierType : "";
 
@@ -327,6 +338,8 @@ const OrderModeOrganizationSlugCheckout = () => {
       }
     }
 
+    let completePath: string | null = null;
+
     try {
       const order = await triggerOrder({
         customer: {
@@ -341,20 +354,18 @@ const OrderModeOrganizationSlugCheckout = () => {
             : undefined,
         },
         discountCode: coupon?.code,
-        invoice: invoice.type
-          ? {
-              carrierType: carrier && carrier !== "none" ? carrier : undefined,
-              carrierNum:
-                carrier === "mobile" || carrier === "certificate"
-                  ? invoice.carrierNum
-                  : undefined,
-              customerAddr: invoice.customerAddr || undefined,
-              customerIdentifier: invoice.customerIdentifier || undefined,
-              customerName: invoice.customerName || undefined,
-              donateCode: invoice.donateCode || undefined,
-              type: invoice.type,
-            }
-          : undefined,
+        invoice: {
+          carrierType: carrier && carrier !== "none" ? carrier : undefined,
+          carrierNum:
+            carrier === "mobile" || carrier === "certificate"
+              ? invoice.carrierNum
+              : undefined,
+          customerAddr: invoice.customerAddr || undefined,
+          customerIdentifier: invoice.customerIdentifier || undefined,
+          customerName: invoice.customerName || undefined,
+          donateCode: invoice.donateCode || undefined,
+          type: invoice.type,
+        },
         items: cartItemsList,
         mode: API_ORDER_MODE[mode],
         partySize: Number(searchParams.get("partySize")) || undefined,
@@ -366,7 +377,9 @@ const OrderModeOrganizationSlugCheckout = () => {
 
       const completeSearchParams = new URLSearchParams(search);
       completeSearchParams.set("orderId", order.id);
-      const completePath = `${pathname.replace("/checkout", "/complete")}?${completeSearchParams}`;
+      completePath = `${pathname.replace("/checkout", "/complete")}?${completeSearchParams}`;
+
+      setIsRedirecting(true);
 
       if (payment === "Cash" || order.orderStatus !== "OrderPaymentDue") {
         router.replace(completePath);
@@ -380,49 +393,17 @@ const OrderModeOrganizationSlugCheckout = () => {
 
       const dto: CheckoutEcpayDto = {
         ClientBackURL: completeUrl,
-        ItemName: cartItemsList
-          .map(({ menuItemId, modifiers, addOns, quantity }) => {
-            const itemName = getItemName(menu, menuItemId);
-            const choiceNames = getChoiceNames(
-              menu,
-              menuItemId,
-              modifiers,
-              addOns,
-              {
-                addOnLabel: tOrder("menuItem.addOn"),
-                colon: tCommon("colon"),
-                delimiter: tCommon("delimiter"),
-                parenthesisOpen: tCommon("parenthesisOpen"),
-                parenthesisClose: tCommon("parenthesisClose"),
-              },
-            );
-            const formattedChoices = choiceNames ? `[${choiceNames}]` : "";
-
-            return `${itemName} ${formattedChoices} ${tCommon("multiply")} ${quantity}`;
-          })
-          .join("#"),
         Language: localeConfigs[locale].ecpayLanguage,
         orderId: order.id,
         OrderResultURL,
         TradeDesc: tOrder("checkout.tradeDesc"),
       };
 
-      const { action, fields } = await triggerEcpay(dto);
-
-      const form = document.createElement("form");
-      form.method = "POST";
-      form.action = action;
-      for (const [name, value] of Object.entries(fields)) {
-        const input = document.createElement("input");
-        input.type = "hidden";
-        input.name = name;
-        input.value = value;
-        form.appendChild(input);
-      }
-      document.body.appendChild(form);
-      form.submit();
+      submitEcpayCheckout(await triggerEcpay(dto));
     } catch (error) {
       enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+
+      if (completePath) router.replace(completePath);
     }
   });
 
@@ -509,7 +490,6 @@ const OrderModeOrganizationSlugCheckout = () => {
                   setValue("customer.telephone", e.target.value, {
                     shouldValidate: isSubmitted,
                   });
-                  // 信箱與手機擇一必填，只驗改動的那欄會留下已不成立的錯誤
                   if (isSubmitted) void triggerValidation("customer.email");
                 }}
                 required={isTelephoneRequired}
@@ -540,7 +520,6 @@ const OrderModeOrganizationSlugCheckout = () => {
               setValue("customer.email", e.target.value, {
                 shouldValidate: isSubmitted,
               });
-              // 信箱與手機擇一必填，只驗改動的那欄會留下已不成立的錯誤
               if (isSubmitted) void triggerValidation("customer.telephone");
             }}
             placeholder={tOrder("checkout.customer.email.placeholder")}
@@ -557,7 +536,6 @@ const OrderModeOrganizationSlugCheckout = () => {
               setValue("invoice.type", value as InvoiceType, {
                 shouldValidate: isSubmitted,
               });
-              // 未選發票類型時不要求聯絡方式，選了才要求，兩欄都得重驗
               if (isSubmitted)
                 void triggerValidation([
                   "customer.email",
@@ -658,7 +636,7 @@ const OrderModeOrganizationSlugCheckout = () => {
                     triggerValidation("invoice.customerIdentifier"),
                 })}
               />
-              {businessInfo && (
+              {shouldFetch && (
                 <>
                   <TextField
                     error={!!errors.invoice?.customerName}
@@ -667,8 +645,8 @@ const OrderModeOrganizationSlugCheckout = () => {
                     label={tOrder("checkout.invoice.customerName")}
                     required
                     slotProps={{
-                      input: { readOnly: true },
-                      inputLabel: { shrink: true },
+                      input: { readOnly: !businessInfoError },
+                      inputLabel: { shrink: !!businessInfo || undefined },
                     }}
                     {...register("invoice.customerName")}
                   />
@@ -679,8 +657,8 @@ const OrderModeOrganizationSlugCheckout = () => {
                     label={tOrder("checkout.invoice.customerAddr")}
                     required
                     slotProps={{
-                      input: { readOnly: true },
-                      inputLabel: { shrink: true },
+                      input: { readOnly: !businessInfoError },
+                      inputLabel: { shrink: !!businessInfo || undefined },
                     }}
                     {...register("invoice.customerAddr")}
                   />
@@ -705,7 +683,7 @@ const OrderModeOrganizationSlugCheckout = () => {
             helperText={errors.payment?.message}
             label={tOrder("checkout.paymentMethod")}
             onChange={(_, value) =>
-              setValue("payment", value as PaymentMethod, {
+              setValue("payment", value as CreateOrderPayment, {
                 shouldValidate: isSubmitted,
               })
             }
@@ -724,7 +702,7 @@ const OrderModeOrganizationSlugCheckout = () => {
       </Card>
       <Stack direction="row" justifyContent="space-between">
         <Button
-          disabled={isSubmitting}
+          disabled={isSubmitting || isRedirecting}
           onClick={() =>
             router.push(`${pathname.replace("/checkout", "/cart")}${query}`)
           }
@@ -736,7 +714,7 @@ const OrderModeOrganizationSlugCheckout = () => {
         <Button
           disabled={isCartEmpty || hasInvalidItems || isValidatingCoupon}
           endIcon={<TaskAlt />}
-          loading={isSubmitting}
+          loading={isSubmitting || isRedirecting}
           loadingPosition="end"
           type="submit"
           variant="contained"
