@@ -1,5 +1,8 @@
 import { cookies } from "next/headers";
 
+import { Stack } from "@mui/material";
+
+import EcpayAttentionButton from "@/components/EcpayAttentionButton";
 import OrganizationSelect from "@/components/OrganizationSelect";
 
 import { authClient } from "@/lib/auth-client";
@@ -25,10 +28,13 @@ const ToolbarOrdersListPage = async ({
   });
 
   return (
-    <OrganizationSelect
-      organizations={organizations || []}
-      organizationSlug={organization}
-    />
+    <Stack direction="row" alignItems="center" gap={1}>
+      <EcpayAttentionButton organizationSlug={organization} />
+      <OrganizationSelect
+        organizations={organizations || []}
+        organizationSlug={organization}
+      />
+    </Stack>
   );
 };
 

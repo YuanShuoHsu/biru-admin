@@ -154,18 +154,16 @@
     },
     "dineIn": {
       "label": "內用",
-      "storeSlug": {
-        "tableNumber": {
-          "label": "桌號",
-          "partySize": {
-            "select": {
-              "label": "用餐人數",
-              "placeholder": "請選擇您的用餐人數",
-              "value": "{count} 位"
-            }
-          },
-          "value": "桌號 {tableNumber}"
+      "partySize": {
+        "select": {
+          "label": "用餐人數",
+          "placeholder": "請選擇您的用餐人數",
+          "value": "{count} 位"
         }
+      },
+      "tableNumber": {
+        "label": "桌號",
+        "value": "桌號 {tableNumber}"
       },
       "unavailable": "內用不供應"
     },

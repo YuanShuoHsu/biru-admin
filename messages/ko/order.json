@@ -154,18 +154,16 @@
     },
     "dineIn": {
       "label": "매장 식사",
-      "storeSlug": {
-        "tableNumber": {
-          "label": "테이블",
-          "partySize": {
-            "select": {
-              "label": "인원",
-              "placeholder": "귀하의 인원을 선택해 주세요",
-              "value": "{count} 명"
-            }
-          },
-          "value": "테이블 {tableNumber}"
+      "partySize": {
+        "select": {
+          "label": "인원",
+          "placeholder": "귀하의 인원을 선택해 주세요",
+          "value": "{count} 명"
         }
+      },
+      "tableNumber": {
+        "label": "테이블",
+        "value": "테이블 {tableNumber}"
       },
       "unavailable": "매장 식사 미제공"
     },

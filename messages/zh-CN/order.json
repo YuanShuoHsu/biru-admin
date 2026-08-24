@@ -154,18 +154,16 @@
     },
     "dineIn": {
       "label": "堂食",
-      "storeSlug": {
-        "tableNumber": {
-          "label": "桌号",
-          "partySize": {
-            "select": {
-              "label": "用餐人数",
-              "placeholder": "请选择您的用餐人数",
-              "value": "{count} 位"
-            }
-          },
-          "value": "桌号 {tableNumber}"
+      "partySize": {
+        "select": {
+          "label": "用餐人数",
+          "placeholder": "请选择您的用餐人数",
+          "value": "{count} 位"
         }
+      },
+      "tableNumber": {
+        "label": "桌号",
+        "value": "桌号 {tableNumber}"
       },
       "unavailable": "堂食不供应"
     },

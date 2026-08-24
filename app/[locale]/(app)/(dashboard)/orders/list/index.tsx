@@ -32,6 +32,7 @@ import { usePathname, useRouter } from "@/i18n/navigation";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import {
+  Block,
   Cancel,
   CurrencyExchange,
   Edit,
@@ -84,9 +85,15 @@ import OrderDetailDialog from "../OrderDetailDialog";
 import RefundOrderDialogContent, {
   REFUND_ORDER_FORM_ID,
 } from "../RefundOrderDialogContent";
+import ResetInvoicePrintDialogContent, {
+  RESET_INVOICE_PRINT_FORM_ID,
+} from "../ResetInvoicePrintDialogContent";
 import UpdateOrderCustomerDialogContent, {
   UPDATE_ORDER_CUSTOMER_FORM_ID,
 } from "../UpdateOrderCustomerDialogContent";
+import VoidInvoiceDialogContent, {
+  VOID_INVOICE_FORM_ID,
+} from "../VoidInvoiceDialogContent";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -123,6 +130,10 @@ const canPrintInvoice = ({ invoice }: AdminOrderResponse) =>
 // 網址一取得就算已印，紙其實沒出來時得還原正本，否則顧客只拿得到不能對獎的補印聯
 const canResetInvoicePrint = (order: AdminOrderResponse) =>
   canPrintInvoice(order) && !!order.invoice?.printedAt;
+
+// 折讓過或跨期都不能作廢，但那要查綠界與稅期，判定留在後端
+const canVoidInvoice = ({ invoice }: AdminOrderResponse) =>
+  invoice?.status === "issued";
 
 interface OrdersProps {
   canViewAuditLog: boolean;
@@ -510,46 +521,40 @@ const Orders = ({
     [handlePrintInvoice, setDialog, tOrders],
   );
 
-  const handleResetInvoicePrint = useCallback(
-    async (order: AdminOrderResponse) => {
-      try {
-        await fetcher(
-          `/api/organizations/${organizationSlug}/orders/${order.id}/invoice/print`,
-          { method: "PATCH" },
-        );
-
-        enqueueSnackbar(
-          tOrders("actions.resetInvoicePrint.success", {
-            orderNumber: order.orderNumber,
-          }),
-          { variant: "success" },
-        );
-      } catch (error) {
-        enqueueSnackbar(getErrorMessage(error), { variant: "error" });
-      } finally {
-        mutate();
-      }
+  const handleConfirmVoidInvoice = useCallback(
+    (order: AdminOrderResponse) => {
+      setDialog({
+        content: (
+          <VoidInvoiceDialogContent
+            mutate={mutate}
+            order={order}
+            organizationSlug={organizationSlug}
+          />
+        ),
+        formId: VOID_INVOICE_FORM_ID,
+        open: true,
+        title: tOrders("actions.voidInvoice.title"),
+      });
     },
-    [mutate, organizationSlug, tOrders],
+    [mutate, organizationSlug, setDialog, tOrders],
   );
 
   const handleConfirmResetInvoicePrint = useCallback(
     (order: AdminOrderResponse) => {
       setDialog({
         content: (
-          <DialogContentText>
-            {tOrders.rich("actions.resetInvoicePrint.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              orderNumber: order.orderNumber,
-            })}
-          </DialogContentText>
+          <ResetInvoicePrintDialogContent
+            mutate={mutate}
+            order={order}
+            organizationSlug={organizationSlug}
+          />
         ),
-        onConfirm: () => handleResetInvoicePrint(order),
+        formId: RESET_INVOICE_PRINT_FORM_ID,
         open: true,
         title: tOrders("actions.resetInvoicePrint.title"),
       });
     },
-    [handleResetInvoicePrint, setDialog, tOrders],
+    [mutate, organizationSlug, setDialog, tOrders],
   );
 
   const hasPendingInvoice = useMemo(
@@ -564,6 +569,11 @@ const Orders = ({
 
   const hasResettableInvoicePrint = useMemo(
     () => orders.some(canResetInvoicePrint),
+    [orders],
+  );
+
+  const hasVoidableInvoice = useMemo(
+    () => orders.some(canVoidInvoice),
     [orders],
   );
 
@@ -661,6 +671,21 @@ const Orders = ({
                   visible={canResetInvoicePrint(row)}
                 >
                   <RestartAlt fontSize="small" />
+                </StyledIconButton>
+              </Tooltip>
+            )}
+            {hasVoidableInvoice && (
+              <Tooltip title={tOrders("actions.voidInvoice.title")}>
+                <StyledIconButton
+                  onClick={(event) => {
+                    event.stopPropagation();
+
+                    if (canVoidInvoice(row)) handleConfirmVoidInvoice(row);
+                  }}
+                  size="small"
+                  visible={canVoidInvoice(row)}
+                >
+                  <Block fontSize="small" />
                 </StyledIconButton>
               </Tooltip>
             )}
@@ -859,8 +884,10 @@ const Orders = ({
       format,
       handleConfirmIssueInvoice,
       handleConfirmResetInvoicePrint,
+      handleConfirmVoidInvoice,
       handleRefund,
       hasRefundable,
+      hasVoidableInvoice,
       handleConfirmStatusAction,
       handleConfirmPrintInvoice,
       handleUpdateCustomer,

@@ -14,18 +14,26 @@
     "refund": {
       "allocatedDiscount": "按分された割引",
       "amount": "返金額",
-      "invoiceFailed": "返金は完了しましたが、領収書の処理に失敗しました。ECPay管理画面で対応してください。",
-      "invoiceFailedWithReason": "返金は完了しましたが、領収書の処理に失敗しました（{reason}）。ECPay管理画面で対応してください。",
-      "invoiceHint": "全額返金ではまず領収書の無効化を試みます。無効化できない場合（期をまたいだ、既に値引済みなど）は返品値引伝票を発行します。",
+      "invoiceFailed": "返金は完了しましたが、インボイスの処理に失敗しました。ECPay管理画面で対応してください。",
+      "invoiceFailedWithReason": "返金は完了しましたが、インボイスの処理に失敗しました（{reason}）。ECPay管理画面で対応してください。",
+      "invoiceHint": "全額返金ではまずインボイスの無効化を試みます。無効化できない場合（期をまたいだ、既に値引済みなど）は返品値引伝票を発行します。",
       "itemsLabel": "返金する数量を選択してください",
       "loadFailed": "返金履歴を読み込めませんでした。閉じてからやり直してください",
       "manualChannel": "この支払い方法はECPayのオンライン返金に対応していません。この操作はシステムの記録と請求書のみを更新します。返金はECPay管理画面または直接お客様へ行ってください。",
+      "previewFailedWithReason": "返金額を試算できませんでした（{reason}）。数量を調整するか、閉じてからやり直してください。",
       "reason": "返金理由（任意）",
+      "retryBlocked": "今回の返金は正常に送信されませんでした。返金は取り消せないため、上の返金可能数量が変わっていないか確認してから、数量を調整して再試行してください。",
+      "selectAtLeastOne": "返金する商品の数量を1つ以上選択してください。",
       "success": "注文 {orderNumber} に {amount} を返金しました",
       "title": "返金"
     },
     "resetInvoicePrint": {
       "confirm": "注文 <bold>{orderNumber}</bold> のインボイスを未印刷に戻してもよろしいですか？正本が実際に出力されなかった場合のみ行ってください。戻した後に印刷すると、当選対象となる正本が 2 枚目として発行されます。",
+      "reason": {
+        "label": "リセット理由",
+        "placeholder": "例：プリンターが詰まり、正本が印刷されなかった"
+      },
+      "resetCount": "このインボイスは印刷を {count} 回リセット済みです",
       "success": "注文 {orderNumber} のインボイスを未印刷に戻しました",
       "title": "未印刷に戻す"
     },
@@ -47,6 +55,37 @@
     },
     "viewOrder": {
       "title": "注文詳細を表示"
+    },
+    "voidInvoice": {
+      "confirm": "インボイス <bold>{invoiceNumber}</bold> を無効化しますか？無効化は取り消せません。下記の買受人情報ですぐに再発行されます。値引伝票を発行済み、または期をまたいだインボイスは無効化できません。",
+      "customerIdentifier": {
+        "helperText": "空欄の場合は元のインボイスの買受人情報を引き継ぎます",
+        "invalid": "統一番号は 8 桁の数字で入力してください",
+        "label": "統一番号の訂正"
+      },
+      "customerName": {
+        "helperText": "空欄の場合は元のインボイスの名義を引き継ぎます",
+        "label": "買受人名義の訂正"
+      },
+      "reason": {
+        "label": "無効化の理由",
+        "placeholder": "例：統一番号の誤り"
+      },
+      "success": "注文 {orderNumber} のインボイスを無効化しました",
+      "title": "インボイスを無効化"
+    }
+  },
+  "attention": {
+    "orderLabel": "注文 {orderNumber}",
+    "title": "要対応の項目",
+    "tooltip": "ECPay の要対応項目",
+    "type": {
+      "callbackFailed": "ECPay 通知の検証または処理に失敗",
+      "invoiceOverdue": "支払い済みだがインボイスが発行されていない",
+      "invoiceSettlementFailed": "返金済みだがインボイスが無効化も値引もされていない",
+      "invoiceStuck": "インボイスが発行中のまま。ECPay 管理画面で確認が必要",
+      "paymentProblem": "ECPay が支払い異常を報告",
+      "refundUnconfirmed": "返金結果が未確認で、返金可能数量が確保されたまま"
     }
   },
   "board": {
@@ -76,7 +115,7 @@
       "verification": {
         "invalidated": "ECPay側では無効化済みです",
         "invoiceDate": "ECPayの発行日",
-        "invoiceNumber": "ECPayの領収書番号",
+        "invoiceNumber": "ECPayのインボイス番号",
         "label": "ECPayで照会",
         "matched": "ECPayの記録と一致しています",
         "mismatched": "ECPayの記録と一致しません。手動で確認してください",
@@ -107,19 +146,22 @@
       },
       "invoiceAction": {
         "allowance": "返品値引伝票を発行",
-        "failed": "領収書の処理に失敗",
-        "none": "領収書なし",
-        "pending": "領収書の処理中",
-        "voided": "領収書を無効化"
+        "failed": "インボイスの処理に失敗",
+        "none": "インボイスなし",
+        "pending": "インボイスの処理中",
+        "voided": "インボイスを無効化"
       },
-      "invoiceError": "領収書エラー",
+      "invoiceError": "インボイスエラー",
       "reason": "理由",
       "scope": {
         "full": "全額返金",
         "partial": "一部返金"
       },
       "status": {
-        "pending": "返金結果は未確認"
+        "pending": "返金結果は未確認",
+        "refunded": "返金済み、後処理中",
+        "settled": "完了",
+        "settling": "後処理中"
       },
       "title": "返金履歴"
     },

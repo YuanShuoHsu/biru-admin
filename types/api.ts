@@ -559,8 +559,7 @@ export interface paths {
     put?: never;
     /** 補開發票（開立失敗後由後台重試） */
     post: operations["EcpayOrderInvoiceController_issue"];
-    /** 作廢發票（統編或抬頭開錯但不需退款時） */
-    delete: operations["EcpayOrderInvoiceController_void"];
+    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -595,6 +594,23 @@ export interface paths {
     get: operations["EcpayOrderInvoiceController_verify"];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/orders/{orderId}/invoice/void": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 作廢發票並重新開立（統編或抬頭開錯但不需退款時），回傳新的發票 */
+    post: operations["EcpayOrderInvoiceController_void"];
     delete?: never;
     options?: never;
     head?: never;
@@ -1964,18 +1980,6 @@ export interface components {
        */
       ClientBackURL?: string;
       /**
-       * Format: uri
-       * @description Client 端回傳付款結果網址
-       *     有別於 ReturnURL（server端的網址），OrderResultURL 為特店的 client 端（前端）網址。消費者付款完成後，綠界會將付款結果參數以 POST 方式回傳到到該網址。詳細說明請參考付款結果通知。
-       *     注意事項：
-       *     1. 若與 [ClientBackURL] 同時設定，將會以此參數為主。
-       *     2. 銀聯卡及非即時交易（ATM、CVS、BARCODE）不支援此參數。
-       *     3. 付款結果通知請依 ReturnURL（server端的網址）為主,避免因前端操作或網路問題未收到 OrderResultURL 特店的 client 端（前端）的通知。
-       *     4. 參數內容若有包含 %26(&) 及 %3C(<) 這二個值時，請先進行 urldecode() 避免呼叫 API 失敗。
-       * @example https://your-domain.com/ecpay/result
-       */
-      OrderResultURL?: string;
-      /**
        * @description 語系設定
        *     預設語系為中文，若要變更語系參數值請帶：
        *     - ENG：英語
@@ -2206,6 +2210,8 @@ export interface components {
       randomNumber?: string | null;
       /** Format: date-time */
       printedAt?: string | null;
+      /** @description 已重設列印的次數 */
+      printResetCount: number;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -2235,6 +2241,10 @@ export interface components {
     VoidInvoiceDto: {
       /** @description 作廢原因 */
       reason: string;
+      /** @description 重新開立時要更正的統一編號；省略則沿用作廢那張的買受人資訊 */
+      customerIdentifier?: string;
+      /** @description 重新開立時要更正的買受人抬頭 */
+      customerName?: string;
     };
     ResetInvoicePrintDto: {
       /** @description 重設列印的理由 */
@@ -4540,39 +4550,6 @@ export interface operations {
       };
     };
   };
-  EcpayOrderInvoiceController_void: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        organizationSlug: string;
-        orderId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["VoidInvoiceDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["OrderInvoiceDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
   EcpayOrderInvoiceController_print: {
     parameters: {
       query?: never;
@@ -4653,6 +4630,39 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["OrderInvoiceVerificationDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  EcpayOrderInvoiceController_void: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        orderId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["VoidInvoiceDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderInvoiceDto"];
         };
       };
       /** @description Internal server error */

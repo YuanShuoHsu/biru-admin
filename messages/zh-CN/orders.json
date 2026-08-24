@@ -20,12 +20,20 @@
       "itemsLabel": "选择要退款的商品数量",
       "loadFailed": "无法读取已退款记录，请关闭后重试",
       "manualChannel": "此付款方式绿界不支持在线退款，本操作只会同步系统记录与发票，实际款项请至绿界后台或直接退还顾客。",
+      "previewFailedWithReason": "无法试算退款金额（{reason}），请调整商品数量或关闭后重试。",
       "reason": "退款原因（选填）",
+      "retryBlocked": "这次退款没有成功送出。退款不可逆，请先确认上方的可退数量是否已变动，再调整商品数量重试。",
+      "selectAtLeastOne": "请至少选择一项要退款的商品数量。",
       "success": "订单 {orderNumber} 已退款 {amount}",
       "title": "退款"
     },
     "resetInvoicePrint": {
       "confirm": "确定要将订单 <bold>{orderNumber}</bold> 的发票重设为未打印吗？只有在正本没有真的打印出来时才这样做，重设后再打印会打印出第二张可对奖的正本。",
+      "reason": {
+        "label": "重设理由",
+        "placeholder": "例如：打印机卡纸，正本没有打印出来"
+      },
+      "resetCount": "这张发票已重设过 {count} 次打印",
       "success": "已将订单 {orderNumber} 的发票重设为未打印",
       "title": "重设为未打印"
     },
@@ -47,6 +55,37 @@
     },
     "viewOrder": {
       "title": "查看订单明细"
+    },
+    "voidInvoice": {
+      "confirm": "确定要作废发票 <bold>{invoiceNumber}</bold> 吗？作废后无法恢复；系统会立即以下方的买受人信息重新开立一张。已开过折让或已跨税期的发票无法作废。",
+      "customerIdentifier": {
+        "helperText": "留空则沿用原发票的买受人信息",
+        "invalid": "统一编号需为 8 位数字",
+        "label": "更正统一编号"
+      },
+      "customerName": {
+        "helperText": "留空则沿用原发票的抬头",
+        "label": "更正买受人抬头"
+      },
+      "reason": {
+        "label": "作废原因",
+        "placeholder": "例如：统编开错"
+      },
+      "success": "订单 {orderNumber} 的发票已作废",
+      "title": "作废发票"
+    }
+  },
+  "attention": {
+    "orderLabel": "订单 {orderNumber}",
+    "title": "待处理项目",
+    "tooltip": "绿界待处理项目",
+    "type": {
+      "callbackFailed": "绿界通知验签或处理失败",
+      "invoiceOverdue": "订单已付款但发票迟未开立",
+      "invoiceSettlementFailed": "退款完成但发票未作废也未折让",
+      "invoiceStuck": "发票卡在开立中，需至绿界后台确认",
+      "paymentProblem": "绿界回报付款异常",
+      "refundUnconfirmed": "退刷结果未确认，可退数量被占住"
     }
   },
   "board": {
@@ -119,7 +158,10 @@
         "partial": "部分退款"
       },
       "status": {
-        "pending": "退款结果未确认"
+        "pending": "退款结果未确认",
+        "refunded": "已退款，后续处理中",
+        "settled": "已完成",
+        "settling": "后续处理中"
       },
       "title": "退款记录"
     },

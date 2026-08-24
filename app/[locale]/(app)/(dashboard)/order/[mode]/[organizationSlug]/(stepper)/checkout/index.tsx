@@ -389,13 +389,11 @@ const OrderModeOrganizationSlugCheckout = () => {
 
       const baseUrl = process.env.NEXT_PUBLIC_NEXT_URL;
       const completeUrl = `${baseUrl}/${locale}${completePath}`;
-      const OrderResultURL = `${process.env.NEXT_PUBLIC_NEST_URL}/api/ecpay/result?redirect=${encodeURIComponent(completeUrl)}`;
 
       const dto: CheckoutEcpayDto = {
         ClientBackURL: completeUrl,
         Language: localeConfigs[locale].ecpayLanguage,
         orderId: order.id,
-        OrderResultURL,
         TradeDesc: tOrder("checkout.tradeDesc"),
       };
 

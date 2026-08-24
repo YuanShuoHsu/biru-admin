@@ -154,18 +154,16 @@
     },
     "dineIn": {
       "label": "店内",
-      "storeSlug": {
-        "tableNumber": {
-          "label": "テーブル",
-          "partySize": {
-            "select": {
-              "label": "来店人数",
-              "placeholder": "あなたの来店人数を選択してください",
-              "value": "{count} 名"
-            }
-          },
-          "value": "テーブル {tableNumber}"
+      "partySize": {
+        "select": {
+          "label": "来店人数",
+          "placeholder": "あなたの来店人数を選択してください",
+          "value": "{count} 名"
         }
+      },
+      "tableNumber": {
+        "label": "テーブル",
+        "value": "テーブル {tableNumber}"
       },
       "unavailable": "店内は対象外"
     },

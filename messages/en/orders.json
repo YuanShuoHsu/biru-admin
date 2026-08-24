@@ -20,12 +20,20 @@
       "itemsLabel": "Select the quantity to refund",
       "loadFailed": "Could not load previous refunds. Close and try again.",
       "manualChannel": "ECPay does not support online refunds for this payment method. This only updates the system record and the invoice — refund the customer via the ECPay portal or in person.",
+      "previewFailedWithReason": "Could not calculate the refund amount ({reason}). Adjust the quantities or close and try again.",
       "reason": "Reason (optional)",
+      "retryBlocked": "This refund was not submitted successfully. Refunds cannot be undone — check whether the refundable quantities above have changed, then adjust the quantities to try again.",
+      "selectAtLeastOne": "Select a quantity for at least one item to refund.",
       "success": "Refunded {amount} for order {orderNumber}",
       "title": "Refund"
     },
     "resetInvoicePrint": {
       "confirm": "Reset the invoice for order <bold>{orderNumber}</bold> to not printed? Do this only if the original never came out of the printer — after resetting, the next print produces a second prize-eligible original.",
+      "reason": {
+        "label": "Reason for resetting",
+        "placeholder": "e.g. Printer jammed, the original never came out"
+      },
+      "resetCount": "This invoice has already been reset for printing {count} times",
       "success": "Invoice for order {orderNumber} reset to not printed",
       "title": "Reset to not printed"
     },
@@ -47,6 +55,37 @@
     },
     "viewOrder": {
       "title": "View order details"
+    },
+    "voidInvoice": {
+      "confirm": "Void invoice <bold>{invoiceNumber}</bold>? Voiding cannot be undone. A replacement invoice is issued right away with the buyer details below. Invoices that already have a credit note, or that fall outside the filing period, cannot be voided.",
+      "customerIdentifier": {
+        "helperText": "Leave blank to keep the buyer details from the voided invoice",
+        "invalid": "The tax ID must be 8 digits",
+        "label": "Correct the tax ID"
+      },
+      "customerName": {
+        "helperText": "Leave blank to keep the name from the voided invoice",
+        "label": "Correct the buyer name"
+      },
+      "reason": {
+        "label": "Reason for voiding",
+        "placeholder": "e.g. Wrong tax ID"
+      },
+      "success": "The invoice for order {orderNumber} has been voided",
+      "title": "Void invoice"
+    }
+  },
+  "attention": {
+    "orderLabel": "Order {orderNumber}",
+    "title": "Needs attention",
+    "tooltip": "ECPay items needing attention",
+    "type": {
+      "callbackFailed": "ECPay notification failed verification or processing",
+      "invoiceOverdue": "Order is paid but the invoice has not been issued",
+      "invoiceSettlementFailed": "Refunded, but the invoice was neither voided nor credited",
+      "invoiceStuck": "Invoice stuck while issuing — check the ECPay portal",
+      "paymentProblem": "ECPay reported a payment problem",
+      "refundUnconfirmed": "Refund result unconfirmed; the quantity stays reserved"
     }
   },
   "board": {
@@ -119,7 +158,10 @@
         "partial": "Partial refund"
       },
       "status": {
-        "pending": "Refund result unconfirmed"
+        "pending": "Refund result unconfirmed",
+        "refunded": "Refunded, follow-up in progress",
+        "settled": "Completed",
+        "settling": "Follow-up in progress"
       },
       "title": "Refunds"
     },

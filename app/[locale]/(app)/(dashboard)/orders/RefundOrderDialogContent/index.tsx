@@ -19,7 +19,6 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type {
   AdminOrderResponse,
   CreateOrderRefundDto,
-  OrderPaymentMethod,
   OrderRefund,
   OrderRefundPreview,
 } from "@/types/orders";
@@ -31,11 +30,6 @@ import { getRefundedQuantities } from "@/utils/refunds";
 import { useOrderItemName } from "@/hooks/useOrderItemName";
 
 export const REFUND_ORDER_FORM_ID = "refund-order-form";
-
-const ECPAY_REFUNDABLE_METHODS: readonly OrderPaymentMethod[] = [
-  "ApplePay",
-  "Credit",
-];
 
 interface RefundOrderDialogContentProps {
   mutate: () => void;
@@ -75,6 +69,7 @@ const RefundOrderDialogContent = ({
 
   const [quantities, setQuantities] = useState<Map<string, number>>(new Map());
   const [reason, setReason] = useState("");
+  const [failed, setFailed] = useState(false);
 
   const selected = useMemo(() => {
     if (quantities.size) return quantities;
@@ -91,7 +86,7 @@ const RefundOrderDialogContent = ({
     .filter(([, quantity]) => quantity > 0)
     .map(([orderItemId, quantity]) => ({ orderItemId, quantity }));
 
-  const { data: preview } = useSWR<OrderRefundPreview>(
+  const { data: preview, error: previewError } = useSWR<OrderRefundPreview>(
     items.length ? [`${refundsKey}/preview`, items] : null,
     ([url, body]: [string, CreateOrderRefundDto["items"]]) =>
       sendRequest<OrderRefundPreview, CreateOrderRefundDto>()(url, {
@@ -99,13 +94,13 @@ const RefundOrderDialogContent = ({
       }),
   );
 
-  const disabled = isLoading || !!error || !preview;
+  const disabled = isLoading || !!error || !!previewError || !preview || failed;
 
   useEffect(() => {
     setDialog({ confirmDisabled: disabled });
   }, [disabled, setDialog]);
 
-  const isEcpayRefund = ECPAY_REFUNDABLE_METHODS.includes(order.paymentMethod);
+  const isEcpayRefund = order.refundChannel === "ecpay";
   const currency = order.items[0]?.priceCurrency || "";
 
   const onSubmit = async (event: BaseSyntheticEvent) => {
@@ -152,6 +147,8 @@ const RefundOrderDialogContent = ({
         variant: isUnconfirmed ? "warning" : "error",
       });
 
+      setFailed(true);
+
       if (isUnconfirmed) closeDialog();
     } finally {
       setDialog({ confirmLoading: false });
@@ -169,6 +166,23 @@ const RefundOrderDialogContent = ({
     >
       {!!error && (
         <Alert severity="error">{tOrders("actions.refund.loadFailed")}</Alert>
+      )}
+      {!!previewError && (
+        <Alert severity="error">
+          {tOrders("actions.refund.previewFailedWithReason", {
+            reason: getErrorMessage(previewError),
+          })}
+        </Alert>
+      )}
+      {!items.length && (
+        <Alert severity="info">
+          {tOrders("actions.refund.selectAtLeastOne")}
+        </Alert>
+      )}
+      {failed && (
+        <Alert severity="warning">
+          {tOrders("actions.refund.retryBlocked")}
+        </Alert>
       )}
       {!isEcpayRefund && (
         <Alert severity="warning">
@@ -201,11 +215,12 @@ const RefundOrderDialogContent = ({
             </Typography>
             <TextField
               disabled={!remaining || confirmLoading}
-              onChange={({ target }) =>
+              onChange={({ target }) => {
+                setFailed(false);
                 setQuantities(
                   new Map(selected).set(item.id, Number(target.value)),
-                )
-              }
+                );
+              }}
               select
               size="small"
               slotProps={{

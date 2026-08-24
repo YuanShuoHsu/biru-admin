@@ -20,12 +20,20 @@
       "itemsLabel": "選擇要退款的品項數量",
       "loadFailed": "無法讀取已退款紀錄，請關閉後重試",
       "manualChannel": "此付款方式綠界不支援線上退款，本操作只會同步系統紀錄與發票，實際款項請至綠界後台或直接退還顧客。",
+      "previewFailedWithReason": "無法試算退款金額（{reason}），請調整品項數量或關閉後重試。",
       "reason": "退款原因（選填）",
+      "retryBlocked": "這次退款沒有成功送出。退款不可逆，請先確認上方的可退數量是否已變動，再調整品項數量重試。",
+      "selectAtLeastOne": "請至少選擇一項要退款的品項數量。",
       "success": "訂單 {orderNumber} 已退款 {amount}",
       "title": "退款"
     },
     "resetInvoicePrint": {
       "confirm": "確定要將訂單 <bold>{orderNumber}</bold> 的發票重設為未列印嗎？只有在正本沒有真的印出來時才這樣做，重設後再列印會印出第二張可對獎的正本。",
+      "reason": {
+        "label": "重設理由",
+        "placeholder": "例如：印表機卡紙，正本沒有印出來"
+      },
+      "resetCount": "這張發票已重設過 {count} 次列印",
       "success": "已將訂單 {orderNumber} 的發票重設為未列印",
       "title": "重設為未列印"
     },
@@ -47,6 +55,37 @@
     },
     "viewOrder": {
       "title": "檢視訂單明細"
+    },
+    "voidInvoice": {
+      "confirm": "確定要作廢發票 <bold>{invoiceNumber}</bold> 嗎？作廢無法復原；系統會立即以下方的買受人資訊重新開立一張。已開過折讓或已跨稅期的發票無法作廢。",
+      "customerIdentifier": {
+        "helperText": "留空則沿用原發票的買受人資訊",
+        "invalid": "統一編號需為 8 位數字",
+        "label": "更正統一編號"
+      },
+      "customerName": {
+        "helperText": "留空則沿用原發票的抬頭",
+        "label": "更正買受人抬頭"
+      },
+      "reason": {
+        "label": "作廢原因",
+        "placeholder": "例如：統編開錯"
+      },
+      "success": "訂單 {orderNumber} 的發票已作廢",
+      "title": "作廢發票"
+    }
+  },
+  "attention": {
+    "orderLabel": "訂單 {orderNumber}",
+    "title": "待處理項目",
+    "tooltip": "綠界待處理項目",
+    "type": {
+      "callbackFailed": "綠界通知驗簽或處理失敗",
+      "invoiceOverdue": "訂單已付款但發票遲未開立",
+      "invoiceSettlementFailed": "退款完成但發票未作廢也未折讓",
+      "invoiceStuck": "發票卡在開立中，需至綠界後台確認",
+      "paymentProblem": "綠界回報付款異常",
+      "refundUnconfirmed": "退刷結果未確認，可退數量被佔住"
     }
   },
   "board": {
@@ -119,7 +158,10 @@
         "partial": "部分退款"
       },
       "status": {
-        "pending": "退款結果未確認"
+        "pending": "退款結果未確認",
+        "refunded": "已退款，後續處理中",
+        "settled": "已完成",
+        "settling": "後續處理中"
       },
       "title": "退款紀錄"
     },

@@ -154,18 +154,16 @@
     },
     "dineIn": {
       "label": "Dine-in",
-      "storeSlug": {
-        "tableNumber": {
-          "label": "Table",
-          "partySize": {
-            "select": {
-              "label": "Party size",
-              "placeholder": "Please select your party size",
-              "value": "{count} people"
-            }
-          },
-          "value": "Table {tableNumber}"
+      "partySize": {
+        "select": {
+          "label": "Party size",
+          "placeholder": "Please select your party size",
+          "value": "{count} people"
         }
+      },
+      "tableNumber": {
+        "label": "Table",
+        "value": "Table {tableNumber}"
       },
       "unavailable": "Unavailable for dine-in"
     },

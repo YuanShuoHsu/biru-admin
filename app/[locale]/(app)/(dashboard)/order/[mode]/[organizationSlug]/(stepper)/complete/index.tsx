@@ -225,7 +225,6 @@ const OrderModeOrganizationSlugComplete = ({
             ClientBackURL: completeUrl,
             Language: localeConfigs[locale].ecpayLanguage,
             orderId: order.id,
-            OrderResultURL: `${process.env.NEXT_PUBLIC_NEST_URL}/api/ecpay/result?redirect=${encodeURIComponent(completeUrl)}`,
             TradeDesc: tOrder("checkout.tradeDesc"),
           } satisfies CheckoutEcpayDto),
           headers: { "Content-Type": "application/json" },

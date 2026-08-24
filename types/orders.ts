@@ -21,6 +21,9 @@ export type OrderInvoice = components["schemas"]["OrderInvoiceDto"];
 export type OrderInvoicePrint = components["schemas"]["OrderInvoicePrintDto"];
 export type OrderInvoiceVerification =
   components["schemas"]["OrderInvoiceVerificationDto"];
+export type ResetInvoicePrintDto =
+  components["schemas"]["ResetInvoicePrintDto"];
+export type VoidInvoiceDto = components["schemas"]["VoidInvoiceDto"];
 export type OrderPaymentNotification =
   components["schemas"]["OrderPaymentNotificationDto"];
 export type OrderRefund = components["schemas"]["OrderRefundDto"];
