@@ -9,19 +9,24 @@ const DAYS_SET = new Set<string>(DAYS);
 const isDayCode = (code: string): code is Day => DAYS_SET.has(code);
 
 const parseDays = (daysPart: string): Day[] => {
-  if (daysPart.includes(",")) return daysPart.split(",").filter(isDayCode);
+  const days = new Set<Day>();
 
-  const parts = daysPart.split("-");
-  if (parts.length === 2 && isDayCode(parts[0]) && isDayCode(parts[1])) {
-    const startIdx = DAYS.indexOf(parts[0]);
-    const endIdx = DAYS.indexOf(parts[1]);
-    if (startIdx !== -1 && endIdx !== -1 && startIdx <= endIdx)
-      return DAYS.slice(startIdx, endIdx + 1);
+  for (const segment of daysPart.split(",")) {
+    if (isDayCode(segment)) {
+      days.add(segment);
+      continue;
+    }
+
+    const [start, end, ...rest] = segment.split("-");
+    if (rest.length > 0 || !isDayCode(start) || !isDayCode(end)) continue;
+
+    const startIdx = DAYS.indexOf(start);
+    const endIdx = DAYS.indexOf(end);
+    if (startIdx <= endIdx)
+      for (const day of DAYS.slice(startIdx, endIdx + 1)) days.add(day);
   }
 
-  if (isDayCode(daysPart)) return [daysPart];
-
-  return [];
+  return DAYS.filter((day) => days.has(day));
 };
 
 const toMinutes = (time: string): number => {
@@ -72,34 +77,35 @@ export interface Schedule {
 export const parseOpeningHours = (value: string): Schedule[] => {
   if (!value?.trim()) return [];
 
-  return value
-    .split("\n")
-    .filter(Boolean)
-    .map((line) => {
-      const trimmed = line.trim();
-      const spaceIdx = trimmed.indexOf(" ");
-      if (spaceIdx === -1)
+  return value.split("\n").flatMap((line) => {
+    const trimmed = line.trim();
+    const spaceIdx = trimmed.indexOf(" ");
+
+    const days = parseDays(
+      spaceIdx === -1 ? trimmed : trimmed.slice(0, spaceIdx),
+    );
+    if (days.length === 0) return [];
+
+    if (spaceIdx === -1)
+      return [
+        { id: crypto.randomUUID(), days, startTime: "00:00", endTime: "00:00" },
+      ];
+
+    return trimmed
+      .slice(spaceIdx + 1)
+      .split(",")
+      .map((segment) => {
+        const dashIdx = segment.indexOf("-");
+
         return {
           id: crypto.randomUUID(),
-          days: parseDays(trimmed),
-          startTime: "00:00",
-          endTime: "00:00",
+          days,
+          startTime:
+            dashIdx !== -1 ? segment.slice(0, dashIdx).trim() : segment.trim(),
+          endTime: dashIdx !== -1 ? segment.slice(dashIdx + 1).trim() : "",
         };
-
-      const daysPart = trimmed.slice(0, spaceIdx);
-      const timePart = trimmed.slice(spaceIdx + 1);
-      const dashIdx = timePart.indexOf("-");
-      const startTime = dashIdx !== -1 ? timePart.slice(0, dashIdx) : timePart;
-      const endTime = dashIdx !== -1 ? timePart.slice(dashIdx + 1) : "";
-
-      return {
-        id: crypto.randomUUID(),
-        days: parseDays(daysPart),
-        startTime,
-        endTime,
-      };
-    })
-    .filter((schedule) => schedule.days.length > 0);
+      });
+  });
 };
 
 type PartialSchedule = Pick<Schedule, "days" | "startTime" | "endTime">;
