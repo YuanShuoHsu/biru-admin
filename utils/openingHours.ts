@@ -50,22 +50,23 @@ const isAllDay = ({ startTime, endTime }: Schedule): boolean =>
 export const toTimeDayjs = (time: string): Dayjs | null =>
   time ? dayjs(`2000-01-01T${time}`) : null;
 
-const serializeDays = (days: Day[]): string => {
-  const indices = days
-    .map((day) => DAYS.indexOf(day))
-    .sort((indexA, indexB) => indexA - indexB);
-  if (indices.length === 0) return "";
-  if (indices.length === 1) return DAYS[indices[0]];
+const groupConsecutiveDays = (days: Day[]): Day[][] =>
+  DAYS.filter((day) => days.includes(day)).reduce<Day[][]>((runs, day) => {
+    const run = runs[runs.length - 1];
 
-  const isConsecutive = indices.every(
-    (dayIndex, position) =>
-      position === 0 || dayIndex === indices[position - 1] + 1,
-  );
-  if (isConsecutive)
-    return `${DAYS[indices[0]]}-${DAYS[indices[indices.length - 1]]}`;
+    if (run && DAYS.indexOf(day) === DAYS.indexOf(run[run.length - 1]) + 1)
+      run.push(day);
+    else runs.push([day]);
 
-  return indices.map((dayIndex) => DAYS[dayIndex]).join(",");
-};
+    return runs;
+  }, []);
+
+const serializeDays = (days: Day[]): string =>
+  groupConsecutiveDays(days)
+    .map((run) =>
+      run.length === 1 ? run[0] : `${run[0]}-${run[run.length - 1]}`,
+    )
+    .join(",");
 
 export interface Schedule {
   id: string;
@@ -372,19 +373,14 @@ export interface OpeningHoursDisplayConfig {
 const formatDisplayDays = (
   days: Day[],
   { formatDay, rangeSeparator, delimiter }: OpeningHoursDisplayConfig,
-): string => {
-  if (days.length === 0) return "";
-  if (days.length === 1) return formatDay(days[0]);
-
-  const first = DAYS.indexOf(days[0]);
-  const last = DAYS.indexOf(days[days.length - 1]);
-  const isConsecutive = last - first === days.length - 1;
-
-  if (isConsecutive)
-    return `${formatDay(days[0])}${rangeSeparator}${formatDay(days[days.length - 1])}`;
-
-  return days.map(formatDay).join(delimiter);
-};
+): string =>
+  groupConsecutiveDays(days)
+    .map((run) =>
+      run.length === 1
+        ? formatDay(run[0])
+        : `${formatDay(run[0])}${rangeSeparator}${formatDay(run[run.length - 1])}`,
+    )
+    .join(delimiter);
 
 export const formatOpeningHoursForDisplay = (
   value: string,
