@@ -1,5 +1,8 @@
 "use client";
 
+import dayjs, { type Dayjs } from "dayjs";
+import timezonePlugin from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import { type CountryCode, parsePhoneNumberWithError } from "libphonenumber-js";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
@@ -28,6 +31,8 @@ import TextMaskCustom from "@/components/TextMaskCustom";
 
 import { localeConfigs } from "@/constants/locale";
 import { API_ORDER_MODE, ORDER_MODE } from "@/constants/orderMode";
+import { PICKUP_MINUTES_STEP } from "@/constants/pickup";
+import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -54,9 +59,11 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useCartStore } from "@/providers/cart-store-provider";
+import { useMenuStore } from "@/providers/menu-store-provider";
 
 import type {
   ValidateCouponDto,
@@ -73,6 +80,7 @@ import type {
   CreateOrderPayment,
   OrderResponse,
 } from "@/types/orders";
+import type { OrganizationResponse } from "@/types/organizations";
 import type { RouteParams } from "@/types/routeParams";
 
 import { formatFullName } from "@/utils/auth";
@@ -80,6 +88,11 @@ import { getPhoneDefaults, getPhoneFormatting } from "@/utils/countries";
 import { submitEcpayCheckout } from "@/utils/ecpay";
 import { getErrorMessage } from "@/utils/errors";
 import { sendRequest } from "@/utils/fetcher";
+import { getCartAvailableHours } from "@/utils/menus";
+import { getCloseTimeAt, isOpenAt, isOpenOn } from "@/utils/openingHours";
+
+dayjs.extend(utc);
+dayjs.extend(timezonePlugin);
 
 const PaymentImage = ({ method }: { method: CreateOrderPayment }) => (
   <Image
@@ -100,11 +113,19 @@ const INVOICE_TYPES: { icon: React.ElementType; type: InvoiceType }[] = [
 
 const CARRIER_TYPES: CarrierType[] = ["none", "mobile", "certificate"];
 
-const OrderModeOrganizationSlugCheckout = () => {
+interface OrderModeOrganizationSlugCheckoutProps {
+  organization: OrganizationResponse;
+}
+
+const OrderModeOrganizationSlugCheckout = ({
+  organization,
+}: OrderModeOrganizationSlugCheckoutProps) => {
   const session = useAuthStore((state) => state.session);
 
   const { cartItemsList, checkoutKey, isCartEmpty, setLastOrderId } =
     useCartStore((state) => state);
+
+  const { menu } = useMenuStore((state) => state);
 
   const hasInvalidItems = useCartHasInvalidItems();
 
@@ -112,7 +133,7 @@ const OrderModeOrganizationSlugCheckout = () => {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const customerPaymentFormSchema = useCustomerPaymentFormSchema();
+  const customerPaymentFormSchema = useCustomerPaymentFormSchema(organization);
 
   const locale = useLocale();
 
@@ -153,6 +174,7 @@ const OrderModeOrganizationSlugCheckout = () => {
         type: null,
       },
       payment: null,
+      pickupTime: "",
     },
     resolver: zodResolver(customerPaymentFormSchema),
   });
@@ -167,6 +189,7 @@ const OrderModeOrganizationSlugCheckout = () => {
     donateCode,
     invoiceType,
     payment,
+    pickupTime,
   ] = useWatch({
     control,
     name: [
@@ -179,6 +202,7 @@ const OrderModeOrganizationSlugCheckout = () => {
       "invoice.donateCode",
       "invoice.type",
       "payment",
+      "pickupTime",
     ],
   });
 
@@ -191,6 +215,44 @@ const OrderModeOrganizationSlugCheckout = () => {
   const searchParams = useSearchParams();
   const search = searchParams.toString();
   const query = search ? `?${search}` : "";
+
+  const showPickupTime = isPickup && organization.pickupSchedulingEnabled;
+  const openingHours = organization.openingHours || "";
+  const leadMinutes = organization.pickupLeadMinutes;
+  const advanceDays = organization.pickupMaxAdvanceDays;
+  const cutoffMinutes = organization.pickupCutoffMinutes;
+  const cartAvailableHours = getCartAvailableHours(menu, cartItemsList);
+
+  const minPickupTime = dayjs().tz(STORE_TIMEZONE).add(leadMinutes, "minute");
+  const maxPickupTime = dayjs()
+    .tz(STORE_TIMEZONE)
+    .add(advanceDays, "day")
+    .endOf("day");
+
+  const isPickupTimeAllowed = (value: Dayjs) => {
+    const at = value.second(0).millisecond(0);
+
+    if (at.isBefore(minPickupTime) || at.isAfter(maxPickupTime)) return false;
+    if (!isOpenAt(openingHours, at)) return false;
+
+    const closeTime = getCloseTimeAt(openingHours, at);
+    if (closeTime && closeTime.diff(at, "minute") < cutoffMinutes) return false;
+
+    return cartAvailableHours.every(({ availableHours }) =>
+      isOpenAt(availableHours, at),
+    );
+  };
+
+  const hasPickupTimeInHour = (at: Dayjs) =>
+    Array.from({ length: 60 / PICKUP_MINUTES_STEP }, (_, index) =>
+      at.minute(index * PICKUP_MINUTES_STEP),
+    ).some(isPickupTimeAllowed);
+
+  const hasPickupTimeOnDate = (date: Dayjs) =>
+    isOpenOn(openingHours, date) &&
+    Array.from({ length: 24 }, (_, hour) => date.hour(hour)).some(
+      hasPickupTimeInHour,
+    );
 
   const router = useRouter();
 
@@ -370,6 +432,7 @@ const OrderModeOrganizationSlugCheckout = () => {
         mode: API_ORDER_MODE[mode],
         partySize: Number(searchParams.get("partySize")) || undefined,
         payment,
+        pickupTime: pickupTime || undefined,
         tableNumber: Number(searchParams.get("tableNumber")) || undefined,
       });
 
@@ -525,6 +588,48 @@ const OrderModeOrganizationSlugCheckout = () => {
             type="email"
             value={email}
           />
+          {showPickupTime && (
+            <>
+              <Divider flexItem />
+              <DateTimePicker
+                disablePast
+                label={tOrder("checkout.pickupTime.label")}
+                maxDateTime={maxPickupTime}
+                minDateTime={minPickupTime}
+                minutesStep={PICKUP_MINUTES_STEP}
+                onChange={(value) =>
+                  setValue(
+                    "pickupTime",
+                    value?.isValid()
+                      ? value.second(0).millisecond(0).toISOString()
+                      : "",
+                    {
+                      shouldValidate: isSubmitted,
+                    },
+                  )
+                }
+                shouldDisableDate={(date) => !hasPickupTimeOnDate(date)}
+                shouldDisableTime={(value, view) =>
+                  view === "hours"
+                    ? !hasPickupTimeInHour(value)
+                    : !isPickupTimeAllowed(value)
+                }
+                skipDisabled
+                slotProps={{
+                  field: { clearable: true },
+                  textField: {
+                    error: !!errors.pickupTime,
+                    fullWidth: true,
+                    helperText: errors.pickupTime?.message,
+                    required: true,
+                  },
+                }}
+                timeSteps={{ minutes: PICKUP_MINUTES_STEP }}
+                timezone={STORE_TIMEZONE}
+                value={pickupTime ? dayjs(pickupTime).tz(STORE_TIMEZONE) : null}
+              />
+            </>
+          )}
           <Divider flexItem />
           <ListRadioGroup
             error={!!errors.invoice?.type}

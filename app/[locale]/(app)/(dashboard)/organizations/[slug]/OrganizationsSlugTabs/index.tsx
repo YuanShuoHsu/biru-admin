@@ -42,6 +42,7 @@ const OrganizationsSlugTabs = ({ children }: OrganizationsSlugTabsProps) => {
             path: `/organizations/${slug}/invitations`,
           },
           { path: `/organizations/${slug}/location` },
+          { path: `/organizations/${slug}/pickup` },
           { path: `/organizations/${slug}/points` },
         ]}
       />

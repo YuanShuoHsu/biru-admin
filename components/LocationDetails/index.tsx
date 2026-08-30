@@ -125,6 +125,9 @@ const LocationDetails = ({
           <Stack gap={0.5}>
             {formatOpeningHoursForDisplay(organization.openingHours, {
               formatDay: (day) => tCommon(`location.openingHours.${day}`),
+              formatNextDayTime: (time) =>
+                tCommon("location.openingHours.nextDayTime", { time }),
+              allDayLabel: tCommon("location.openingHours.allDay"),
               rangeSeparator: tCommon("location.openingHours.rangeSeparator"),
               delimiter: tCommon("delimiter"),
             }).map((line, index) => (

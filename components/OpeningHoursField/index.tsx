@@ -48,12 +48,14 @@ const StyledGrid = styled(Grid)(({ theme }) => ({
 
 interface OpeningHoursFieldProps {
   error?: boolean;
+  label: string;
   onChange: (value: string) => void;
   value?: string;
 }
 
 const OpeningHoursField = ({
   error,
+  label,
   onChange,
   value = "",
 }: OpeningHoursFieldProps) => {
@@ -96,7 +98,7 @@ const OpeningHoursField = ({
   return (
     <Stack width="100%" gap={2}>
       <Typography color={error ? "error" : "text.secondary"} variant="body2">
-        {tOrganizations("localBusiness.openingHours.label")}
+        {label}
       </Typography>
       {schedules.map(({ id, days, startTime, endTime }) => {
         const conflictingDays = scheduleConflicts.get(id);
@@ -140,7 +142,6 @@ const OpeningHoursField = ({
               <StyledGrid size={{ xs: 12, sm: "grow" }}>
                 <TimePicker
                   format="HH:mm"
-                  maxTime={toTimeDayjs(endTime)?.subtract(1, "minute")}
                   onChange={(time) =>
                     handleScheduleChange(id, {
                       startTime: time?.isValid() ? time.format("HH:mm") : "",
@@ -165,7 +166,6 @@ const OpeningHoursField = ({
                 </Typography>
                 <TimePicker
                   format="HH:mm"
-                  minTime={toTimeDayjs(startTime)?.add(1, "minute")}
                   onChange={(time) =>
                     handleScheduleChange(id, {
                       endTime: time?.isValid() ? time.format("HH:mm") : "",

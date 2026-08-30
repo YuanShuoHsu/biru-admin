@@ -188,6 +188,7 @@
   "partySize": "Party size",
   "paymentDate": "Payment date",
   "paymentMethod": "Payment method",
+  "pickupTime": "Pickup time",
   "status": {
     "OrderCancelled": "Cancelled",
     "OrderDelivered": "Delivered",

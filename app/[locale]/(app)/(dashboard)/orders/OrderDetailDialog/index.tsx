@@ -175,6 +175,12 @@ const OrderDetailDialog = ({
             })}
           />
         )}
+        {order.pickupTime && (
+          <InfoRow
+            label={tOrders("pickupTime")}
+            value={format.dateTime(new Date(order.pickupTime), "short")}
+          />
+        )}
         <InfoRow
           label={tOrders("paymentMethod")}
           value={tOrder(`checkout.payment.${order.paymentMethod}`)}

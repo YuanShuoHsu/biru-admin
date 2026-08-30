@@ -17,6 +17,7 @@ import CountryAutocomplete from "@/components/CountryAutocomplete";
 import FormBox from "@/components/FormBox";
 import LocalizedTextFields from "@/components/LocalizedTextFields";
 import NumberSpinner from "@/components/NumberSpinner";
+import OpeningHoursField from "@/components/OpeningHoursField";
 import UploadAvatars from "@/components/UploadAvatars";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -67,6 +68,7 @@ const UpdateMenuItemDialog = ({ item, mutate }: UpdateMenuItemDialogProps) => {
         priceCurrency: item.offer?.priceCurrency || "TWD",
         price: item.offer?.price || "",
         availability: item.offer?.availability || "InStock",
+        availableHours: item.offer?.availableHours || "",
         inventoryLevel: {
           value:
             item.offer?.inventoryLevel?.value != null
@@ -100,6 +102,7 @@ const UpdateMenuItemDialog = ({ item, mutate }: UpdateMenuItemDialogProps) => {
     name: "offer.priceSpecification.price",
   });
   const availability = useWatch({ control, name: "offer.availability" });
+  const availableHours = useWatch({ control, name: "offer.availableHours" });
   const availableModes = useWatch({ control, name: "availableModes" });
   const deliveryLeadTimeValue = useWatch({
     control,
@@ -139,6 +142,7 @@ const UpdateMenuItemDialog = ({ item, mutate }: UpdateMenuItemDialogProps) => {
             priceCurrency: offer?.priceCurrency,
             price: offer?.price,
             availability: offer?.availability,
+            availableHours: offer?.availableHours || null,
             deliveryLeadTime:
               offer?.deliveryLeadTime?.value ||
               offer?.deliveryLeadTime?.unitText
@@ -328,6 +332,12 @@ const UpdateMenuItemDialog = ({ item, mutate }: UpdateMenuItemDialogProps) => {
         }))}
         required
         value={availableModes}
+      />
+      <OpeningHoursField
+        error={!!errors.offer?.availableHours}
+        label={`${tMenus("items.offers.availableHours.label")} ${tCommon("optional")}`}
+        onChange={(value) => setValue("offer.availableHours", value)}
+        value={availableHours}
       />
       <Grid container width="100%" alignItems="flex-end" spacing={2}>
         <Grid size={{ xs: 12, sm: 6 }}>

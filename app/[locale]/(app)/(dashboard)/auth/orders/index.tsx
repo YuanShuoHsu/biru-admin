@@ -16,6 +16,7 @@ import PaginationActions, {
 } from "@/components/PaginationActions";
 
 import { MODE_COLORS, ORDER_MODE } from "@/constants/orderMode";
+import { STATUS_COLORS } from "@/constants/orders";
 import { getPageSizeOptions } from "@/constants/pagination";
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
@@ -27,7 +28,7 @@ import { usePathname, useRouter } from "@/i18n/navigation";
 import { useCartStore } from "@/providers/cart-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { Button, Chip, type ChipProps, Stack, Typography } from "@mui/material";
+import { Button, Chip, Stack, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { getCartKey } from "@/stores/cart-store";
@@ -45,19 +46,6 @@ const ORDER_MODE_PATH: Record<UserOrderResponse["mode"], string> = {
   dineIn: ORDER_MODE.DineIn,
   driveThru: ORDER_MODE.DriveThru,
   pickup: ORDER_MODE.Pickup,
-};
-
-const STATUS_CHIP_COLORS: Record<
-  UserOrderResponse["orderStatus"],
-  ChipProps["color"]
-> = {
-  OrderCancelled: "default",
-  OrderDelivered: "success",
-  OrderPaymentDue: "warning",
-  OrderPickupAvailable: "info",
-  OrderProblem: "error",
-  OrderProcessing: "info",
-  OrderReturned: "secondary",
 };
 
 const StyledChip = styled(Chip)({
@@ -193,7 +181,7 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
                       {order.seller.name}
                     </Typography>
                     <Chip
-                      color={STATUS_CHIP_COLORS[order.orderStatus]}
+                      color={STATUS_COLORS[order.orderStatus]}
                       label={tAuth(`orders.status.${order.orderStatus}`)}
                       size="small"
                       variant="outlined"
@@ -233,6 +221,14 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
                   size="small"
                   variant="outlined"
                 />
+                {order.pickupTime && (
+                  <Typography color="text.secondary" variant="caption">
+                    {tOrder("complete.transaction.pickupTime")}{" "}
+                    {dayjs(order.pickupTime)
+                      .tz(STORE_TIMEZONE)
+                      .format("YYYY/MM/DD HH:mm")}
+                  </Typography>
+                )}
                 {order.items.map((item) => (
                   <Stack
                     direction="row"

@@ -71,6 +71,9 @@
       "WeiXin": "위챗페이"
     },
     "paymentMethod": "결제 방법",
+    "pickupTime": {
+      "label": "픽업 시간"
+    },
     "placeOrder": "주문하기",
     "title": "고객 정보",
     "tradeDesc": "식사 결제"
@@ -100,6 +103,7 @@
       "paid": "결제 완료",
       "paymentDate": "결제 시간",
       "paymentMethod": "결제 수단",
+      "pickupTime": "픽업 시간",
       "status": "거래 상태",
       "title": "거래 정보",
       "tradeNo": "ECPay 거래 번호",
@@ -127,6 +131,7 @@
   "label": "주문",
   "menuItem": {
     "addOn": "추가 옵션",
+    "availableHours": "제공 시간 {value}",
     "calories": "{value} kcal",
     "diet": {
       "DiabeticDiet": "당뇨병식",
@@ -141,6 +146,7 @@
       "VeganDiet": "비건",
       "VegetarianDiet": "채식"
     },
+    "outsideAvailableHours": "제공 시간 외",
     "preparationTime": "준비 시간 약 {value}분",
     "promoUntil": "{date}까지",
     "selectAtLeast": "최소 {count}개를 선택해 주세요",

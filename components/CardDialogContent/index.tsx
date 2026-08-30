@@ -14,9 +14,16 @@ import RadioButtonsGroup from "@/components/RadioButtonsGroup";
 import { MAX_QUANTITY } from "@/constants/cart";
 import { API_ORDER_MODE } from "@/constants/orderMode";
 
+import { useAvailableHoursLabel } from "@/hooks/useAvailableHoursLabel";
+import { useOutsideAvailableHours } from "@/hooks/useOutsideAvailableHours";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { AccessTime, RestaurantMenu } from "@mui/icons-material";
+import {
+  AccessTime,
+  EventAvailable,
+  RestaurantMenu,
+} from "@mui/icons-material";
 import { Box, Chip, Divider, Radio, Stack, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -114,6 +121,10 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
 
   const { mode } = useParams<RouteParams<"mode">>();
   const apiMode = API_ORDER_MODE[mode];
+
+  const getAvailableHoursLabel = useAvailableHoursLabel();
+  const isOutsideAvailableHours = useOutsideAvailableHours();
+  const itemAvailableHoursLabel = getAvailableHoursLabel(offer?.availableHours);
 
   const tCommon = useTranslations("common");
   const tDialog = useTranslations("dialog");
@@ -259,24 +270,33 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
   const getUnavailableLabel = (
     availability: ItemAvailability | null | undefined,
     availableModes: ApiOrderMode[],
+    availableHours: string | null | undefined,
   ) =>
     !availableModes.includes(apiMode)
       ? tOrder(`mode.${apiMode}.unavailable`)
-      : availability === "SoldOut" || availability === "Discontinued"
-        ? tCommon("soldOut")
-        : "";
+      : isOutsideAvailableHours(availableHours)
+        ? tOrder("menuItem.outsideAvailableHours")
+        : availability === "SoldOut" || availability === "Discontinued"
+          ? tCommon("soldOut")
+          : "";
 
   const renderChoiceLabel = (
     choiceName: string,
     choiceExtraCost: number,
     unavailableLabel: string,
+    availableHoursLabel: string,
   ) => (
-    <Stack direction="row" alignItems="center" gap={1}>
+    <Stack direction="row" alignItems="center" flexWrap="wrap" gap={1}>
       <WrapTypography variant="body2">{choiceName}</WrapTypography>
       {choiceExtraCost !== 0 && (
         <Typography color="text.secondary" variant="caption">
           {choiceExtraCost > 0 ? "+" : "-"}
           {priceCurrency} {Math.abs(choiceExtraCost).toLocaleString(locale)}
+        </Typography>
+      )}
+      {availableHoursLabel && (
+        <Typography color="text.secondary" variant="caption">
+          {availableHoursLabel}
         </Typography>
       )}
       {unavailableLabel && (
@@ -341,6 +361,7 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
             const unavailableLabel = getUnavailableLabel(
               availability,
               availableModes,
+              null,
             );
 
             return {
@@ -350,6 +371,7 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
                 displayName,
                 Number(priceAdjustment || 0),
                 unavailableLabel,
+                "",
               ),
               value: id,
             };
@@ -374,18 +396,21 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
             id,
             priceAdjustment,
           }) => {
+            const checked = selected.includes(id);
             const unavailableLabel = getUnavailableLabel(
               availability,
               availableModes,
+              null,
             );
 
             return {
               children: null,
-              disabled: !!unavailableLabel || (!selected.includes(id) && atMax),
+              disabled: !checked && (!!unavailableLabel || atMax),
               label: renderChoiceLabel(
                 displayName,
                 Number(priceAdjustment || 0),
                 unavailableLabel,
+                "",
               ),
               value: id,
             };
@@ -434,6 +459,19 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
           {tOrder("menuItem.calories", { value: nutrition.calories })}
         </Typography>
       )}
+      {itemAvailableHoursLabel && (
+        <Stack
+          direction="row"
+          alignItems="center"
+          alignSelf="flex-start"
+          gap={0.5}
+        >
+          <EventAvailable color="disabled" fontSize="small" />
+          <Typography color="text.secondary" variant="caption">
+            {itemAvailableHoursLabel}
+          </Typography>
+        </Stack>
+      )}
       {leadTime !== undefined && (
         <Stack
           direction="row"
@@ -481,7 +519,11 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
               addOnStock !== null &&
               addOnStock - getCartItemTotalQuantity(id, editingItem) <= 0;
             const unavailableLabel =
-              getUnavailableLabel(offers[0]?.availability, availableModes) ||
+              getUnavailableLabel(
+                offers[0]?.availability,
+                availableModes,
+                offers[0]?.availableHours,
+              ) ||
               (hasUnsatisfiableModifierGroup(modifierGroups, apiMode)
                 ? tCommon("soldOut")
                 : "") ||
@@ -505,11 +547,12 @@ const CardDialogContent = ({ cartItem, menuItem }: CardDialogContentProps) => {
                   ))}
                 </Stack>
               ),
-              disabled: !!unavailableLabel,
+              disabled: !checked && !!unavailableLabel,
               label: renderChoiceLabel(
                 name,
                 getAddOnPrice(addOnItem),
                 unavailableLabel,
+                getAvailableHoursLabel(offers[0]?.availableHours),
               ),
               value: id,
             };

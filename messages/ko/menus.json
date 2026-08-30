@@ -182,6 +182,9 @@
       "placeholder": "항목 이름을 입력해 주세요"
     },
     "offers": {
+      "availableHours": {
+        "label": "제공 시간대"
+      },
       "deliveryLeadTime": {
         "maxValue": {
           "label": "최대 준비 시간",

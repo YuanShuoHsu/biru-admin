@@ -9,7 +9,7 @@ import {
   type UseFormSetValue,
 } from "react-hook-form";
 
-import OpeningHoursField from "./OpeningHoursField";
+import OpeningHoursField from "@/components/OpeningHoursField";
 
 import TextMaskCustom from "@/components/TextMaskCustom";
 
@@ -54,6 +54,7 @@ const LocalBusinessFields = ({
     <>
       <OpeningHoursField
         error={!!errors.openingHours}
+        label={tOrganizations("localBusiness.openingHours.label")}
         onChange={(value) => setValue("openingHours", value)}
         value={openingHours}
       />

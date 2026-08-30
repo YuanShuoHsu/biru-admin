@@ -2,7 +2,10 @@ import { type CountryCode, isValidPhoneNumber } from "libphonenumber-js";
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-import { hasOpeningHoursConflict } from "@/utils/openingHours";
+import {
+  hasIncompleteOpeningHours,
+  hasOpeningHoursConflict,
+} from "@/utils/openingHours";
 
 export const useUpdateLocationFormSchema = () => {
   const tValidation = useTranslations("validation");
@@ -29,14 +32,7 @@ export const useUpdateLocationFormSchema = () => {
         .string()
         .trim()
         .optional()
-        .refine(
-          (value) =>
-            !value ||
-            value
-              .split("\n")
-              .filter(Boolean)
-              .every((line) => line.indexOf(" ") > 0),
-        )
+        .refine((value) => !value || !hasIncompleteOpeningHours(value))
         .refine((value) => !value || !hasOpeningHoursConflict(value)),
       telephone: z.string().trim().optional(),
     })

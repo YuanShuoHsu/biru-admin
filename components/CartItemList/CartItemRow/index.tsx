@@ -10,6 +10,8 @@ import NumberSpinner from "@/components/NumberSpinner";
 import { MAX_QUANTITY } from "@/constants/cart";
 import { API_ORDER_MODE } from "@/constants/orderMode";
 
+import { useOutsideAvailableHours } from "@/hooks/useOutsideAvailableHours";
+
 import { Delete, RestaurantMenu } from "@mui/icons-material";
 import {
   Box,
@@ -33,6 +35,7 @@ import type { RouteParams } from "@/types/routeParams";
 import {
   calcCartItemAmount,
   findItemById,
+  getCartAvailableHours,
   getChoiceNames,
   getItemStock,
   getLimitingAddOnsCap,
@@ -110,6 +113,8 @@ const CartItemRow = ({ compact = false, item }: CartItemRowProps) => {
   const { menu } = useMenuStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
 
+  const isOutsideAvailableHours = useOutsideAvailableHours();
+
   const tCommon = useTranslations("common");
   const tDialog = useTranslations("dialog");
   const tOrder = useTranslations("order");
@@ -161,7 +166,11 @@ const CartItemRow = ({ compact = false, item }: CartItemRowProps) => {
     (!menuItem.availableModes.includes(apiMode) ||
       hasInvalidChoices(menu, item, apiMode))
       ? tOrder(`mode.${apiMode}.unavailable`)
-      : "";
+      : getCartAvailableHours(menu, [item]).some(({ availableHours }) =>
+            isOutsideAvailableHours(availableHours),
+          )
+        ? tOrder("menuItem.outsideAvailableHours")
+        : "";
 
   const formHelperText =
     perItemCapLeft === availableToAdd

@@ -24,6 +24,8 @@
       "Th": "木",
       "Tu": "火",
       "We": "水",
+      "allDay": "24 時間営業",
+      "nextDayTime": "翌日 {time}",
       "rangeSeparator": "～"
     }
   },

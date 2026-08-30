@@ -24,6 +24,8 @@
       "Th": "Thu",
       "Tu": "Tue",
       "We": "Wed",
+      "allDay": "Open 24 hours",
+      "nextDayTime": "{time} (next day)",
       "rangeSeparator": "–"
     }
   },

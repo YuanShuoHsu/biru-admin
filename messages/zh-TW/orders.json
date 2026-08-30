@@ -188,6 +188,7 @@
   "partySize": "用餐人數",
   "paymentDate": "付款時間",
   "paymentMethod": "付款方式",
+  "pickupTime": "取餐時間",
   "status": {
     "OrderCancelled": "已取消",
     "OrderDelivered": "已送達",

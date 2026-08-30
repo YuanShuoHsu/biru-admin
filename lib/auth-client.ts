@@ -81,12 +81,14 @@ export const authClient = createAuthClient({
             openingHours: { type: "string", required: false },
             telephone: { type: "string", required: false },
 
-            // 點數設定：每累積 1 點所需消費金額；null = 未啟用點數
             amountPerPoint: { type: "number", required: false },
-            // 點數啟用時間；僅累計此時間之後付款的訂單
             pointsEnabledAt: { type: "date", required: false },
-            // 點數效期（年）；null = 永久有效
             pointsValidityYears: { type: "number", required: false },
+
+            pickupSchedulingEnabled: { type: "boolean", required: false },
+            pickupLeadMinutes: { type: "number", required: false },
+            pickupMaxAdvanceDays: { type: "number", required: false },
+            pickupCutoffMinutes: { type: "number", required: false },
           },
         },
       },

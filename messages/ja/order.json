@@ -71,6 +71,9 @@
       "WeiXin": "WeChat Pay"
     },
     "paymentMethod": "お支払い方法",
+    "pickupTime": {
+      "label": "受け取り時間"
+    },
     "placeOrder": "注文する",
     "title": "お客様情報",
     "tradeDesc": "お食事代"
@@ -100,6 +103,7 @@
       "paid": "支払い済み",
       "paymentDate": "お支払い日時",
       "paymentMethod": "お支払い方法",
+      "pickupTime": "受け取り時間",
       "status": "取引ステータス",
       "title": "取引情報",
       "tradeNo": "ECPay取引番号",
@@ -127,6 +131,7 @@
   "label": "注文",
   "menuItem": {
     "addOn": "追加",
+    "availableHours": "提供時間 {value}",
     "calories": "{value} kcal",
     "diet": {
       "DiabeticDiet": "糖尿病食",
@@ -141,6 +146,7 @@
       "VeganDiet": "ビーガン",
       "VegetarianDiet": "ベジタリアン"
     },
+    "outsideAvailableHours": "提供時間外",
     "preparationTime": "提供まで約{value}分",
     "promoUntil": "{date}まで",
     "selectAtLeast": "{count}個以上お選びください",

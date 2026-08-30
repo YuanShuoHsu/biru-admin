@@ -71,6 +71,9 @@
       "WeiXin": "WeChat Pay"
     },
     "paymentMethod": "Payment method",
+    "pickupTime": {
+      "label": "Pickup time"
+    },
     "placeOrder": "Place order",
     "title": "Customer info",
     "tradeDesc": "Meal payment"
@@ -100,6 +103,7 @@
       "paid": "Paid",
       "paymentDate": "Paid at",
       "paymentMethod": "Payment method",
+      "pickupTime": "Pickup time",
       "status": "Status",
       "title": "Transaction details",
       "tradeNo": "ECPay trade number",
@@ -127,6 +131,7 @@
   "label": "Order",
   "menuItem": {
     "addOn": "Add-ons",
+    "availableHours": "Available {value}",
     "calories": "{value} kcal",
     "diet": {
       "DiabeticDiet": "Diabetic",
@@ -141,6 +146,7 @@
       "VeganDiet": "Vegan",
       "VegetarianDiet": "Vegetarian"
     },
+    "outsideAvailableHours": "Outside serving hours",
     "preparationTime": "Ready in about {value} min",
     "promoUntil": "Offer ends {date}",
     "selectAtLeast": "Select at least {count}",

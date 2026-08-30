@@ -156,6 +156,38 @@
     "label": "組織名稱",
     "placeholder": "請輸入您的組織名稱"
   },
+  "pickup": {
+    "actions": {
+      "updatePickup": {
+        "success": "成功更新預約設定",
+        "title": "編輯預約"
+      }
+    },
+    "days": "{days} 天",
+    "enabled": {
+      "helperText": "關閉時線上自取不提供預約，顧客下單即製作",
+      "label": "開放預約取餐",
+      "off": "未開放",
+      "on": "已開放"
+    },
+    "label": "預約",
+    "minutes": "{minutes} 分鐘",
+    "pickupCutoffMinutes": {
+      "helperText": "打烊前這段時間不再接受該時段的預約",
+      "label": "打烊前截止時間（分鐘）",
+      "placeholder": "請輸入您的打烊前截止時間"
+    },
+    "pickupLeadMinutes": {
+      "helperText": "顧客下單後最快多久可以取餐",
+      "label": "最短前置時間（分鐘）",
+      "placeholder": "請輸入您的最短前置時間"
+    },
+    "pickupMaxAdvanceDays": {
+      "helperText": "設為 0 代表只能預約當日",
+      "label": "最遠可預約天數",
+      "placeholder": "請輸入您的最遠可預約天數"
+    }
+  },
   "points": {
     "actions": {
       "updatePoints": {

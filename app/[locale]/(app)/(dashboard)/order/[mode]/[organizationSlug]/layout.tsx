@@ -1,6 +1,7 @@
 import { hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { SWRConfig } from "swr";
 
 import MenuSocketInitializer from "./MenuSocketInitializer";
 
@@ -40,12 +41,18 @@ const OrderModeOrganizationSlugLayout = async ({
     `/api/organizations/${organization.id}/order-menu?lang=${locale}`,
   ).catch(() => null);
 
+  const fallback = {
+    [`/api/organizations/${organizationSlug}`]: organization,
+  };
+
   return (
-    <MenuStoreProvider initialMenu={initialMenu}>
-      <MenuSocketInitializer organizationId={organization.id} />
-      <CartAnchorTemporaryDrawer />
-      {children}
-    </MenuStoreProvider>
+    <SWRConfig value={{ fallback }}>
+      <MenuStoreProvider initialMenu={initialMenu}>
+        <MenuSocketInitializer organizationId={organization.id} />
+        <CartAnchorTemporaryDrawer />
+        {children}
+      </MenuStoreProvider>
+    </SWRConfig>
   );
 };
 

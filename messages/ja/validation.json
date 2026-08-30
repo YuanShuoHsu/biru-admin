@@ -112,6 +112,28 @@
   "payment": {
     "notSelected": "お支払い方法を選択してください。"
   },
+  "pickupCutoffMinutes": {
+    "invalid": "閉店前の締め切りが無効です。",
+    "required": "閉店前の締め切りは必須です。"
+  },
+  "pickupLeadMinutes": {
+    "invalid": "最短リードタイムが無効です。",
+    "required": "最短リードタイムは必須です。"
+  },
+  "pickupMaxAdvanceDays": {
+    "invalid": "予約可能な最大日数が無効です。",
+    "required": "予約可能な最大日数は必須です。"
+  },
+  "pickupTime": {
+    "beforeClosing": "閉店の {minutes} 分前までの受け取り時間を選択してください。",
+    "closed": "営業時間内の受け取り時間を選択してください。",
+    "invalid": "受け取り時間が無効です。",
+    "itemUnavailable": "{name}は選択された受け取り時間には提供していません。",
+    "maxDateTime": "{days} 日以内の受け取り時間を選択してください。",
+    "minDateTime": "{minutes} 分後以降の受け取り時間を選択してください。",
+    "minutesStep": "受け取り時間は {minutes} 分単位で選択してください。",
+    "notSelected": "受け取り時間を選択してください。"
+  },
   "telephone": {
     "invalid": "電話番号が無効です。",
     "required": "電話番号は必須です。"

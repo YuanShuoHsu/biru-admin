@@ -112,6 +112,28 @@
   "payment": {
     "notSelected": "請選擇您的付款方式。"
   },
+  "pickupCutoffMinutes": {
+    "invalid": "打烊前截止時間格式無效。",
+    "required": "打烊前截止時間為必填。"
+  },
+  "pickupLeadMinutes": {
+    "invalid": "最短前置時間格式無效。",
+    "required": "最短前置時間為必填。"
+  },
+  "pickupMaxAdvanceDays": {
+    "invalid": "最遠可預約天數格式無效。",
+    "required": "最遠可預約天數為必填。"
+  },
+  "pickupTime": {
+    "beforeClosing": "請選擇打烊 {minutes} 分鐘前的取餐時間。",
+    "closed": "請選擇營業時間內的取餐時間。",
+    "invalid": "取餐時間無效。",
+    "itemUnavailable": "{name}在所選取餐時間不供應。",
+    "maxDateTime": "請選擇 {days} 天內的取餐時間。",
+    "minDateTime": "請選擇 {minutes} 分鐘後的取餐時間。",
+    "minutesStep": "請以 {minutes} 分鐘為間隔選擇取餐時間。",
+    "notSelected": "請選擇您的取餐時間。"
+  },
   "telephone": {
     "invalid": "電話格式無效。",
     "required": "電話為必填。"

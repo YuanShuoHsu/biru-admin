@@ -156,6 +156,38 @@
     "label": "Organization name",
     "placeholder": "Please enter your organization name"
   },
+  "pickup": {
+    "actions": {
+      "updatePickup": {
+        "success": "Pickup settings updated",
+        "title": "Edit pickup"
+      }
+    },
+    "days": "{days} days",
+    "enabled": {
+      "helperText": "When off, online pickup orders are made right away with no scheduling.",
+      "label": "Allow scheduled pickup",
+      "off": "Off",
+      "on": "On"
+    },
+    "label": "Pickup",
+    "minutes": "{minutes} minutes",
+    "pickupCutoffMinutes": {
+      "helperText": "Stop accepting pickups this long before closing.",
+      "label": "Cutoff before closing (minutes)",
+      "placeholder": "Enter the cutoff before closing"
+    },
+    "pickupLeadMinutes": {
+      "helperText": "How soon after ordering a pickup can be collected.",
+      "label": "Minimum lead time (minutes)",
+      "placeholder": "Enter the minimum lead time"
+    },
+    "pickupMaxAdvanceDays": {
+      "helperText": "Set to 0 to allow same-day pickup only.",
+      "label": "Maximum days in advance",
+      "placeholder": "Enter the maximum days in advance"
+    }
+  },
   "points": {
     "actions": {
       "updatePoints": {

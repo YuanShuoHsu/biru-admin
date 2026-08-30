@@ -156,6 +156,38 @@
     "label": "组织名称",
     "placeholder": "请输入您的组织名称"
   },
+  "pickup": {
+    "actions": {
+      "updatePickup": {
+        "success": "成功更新预约设置",
+        "title": "编辑预约"
+      }
+    },
+    "days": "{days} 天",
+    "enabled": {
+      "helperText": "关闭时线上自取不提供预约，顾客下单即制作",
+      "label": "开放预约取餐",
+      "off": "未开放",
+      "on": "已开放"
+    },
+    "label": "预约",
+    "minutes": "{minutes} 分钟",
+    "pickupCutoffMinutes": {
+      "helperText": "打烊前这段时间不再接受该时段的预约",
+      "label": "打烊前截止时间（分钟）",
+      "placeholder": "请输入您的打烊前截止时间"
+    },
+    "pickupLeadMinutes": {
+      "helperText": "顾客下单后最快多久可以取餐",
+      "label": "最短前置时间（分钟）",
+      "placeholder": "请输入您的最短前置时间"
+    },
+    "pickupMaxAdvanceDays": {
+      "helperText": "设为 0 代表只能预约当日",
+      "label": "最远可预约天数",
+      "placeholder": "请输入您的最远可预约天数"
+    }
+  },
   "points": {
     "actions": {
       "updatePoints": {

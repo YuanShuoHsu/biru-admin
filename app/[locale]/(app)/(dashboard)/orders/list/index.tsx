@@ -837,6 +837,13 @@ const Orders = ({
           value ? format.dateTime(new Date(value), "short") : "",
       },
       {
+        field: "pickupTime",
+        filterOperators: dateFilterOperators,
+        headerName: tOrders("pickupTime"),
+        valueFormatter: (value: string | null) =>
+          value ? format.dateTime(new Date(value), "short") : "",
+      },
+      {
         field: "invoiceType",
         filterOperators: enumFilterOperators,
         headerName: tOrders("invoiceType"),

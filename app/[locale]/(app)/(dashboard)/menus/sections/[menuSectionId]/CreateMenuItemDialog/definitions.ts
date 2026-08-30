@@ -7,6 +7,10 @@ import {
   refineRequiredLocalizedText,
   refineOptionalLocalizedText,
 } from "@/utils/locale";
+import {
+  hasIncompleteOpeningHours,
+  hasOpeningHoursConflict,
+} from "@/utils/openingHours";
 
 const quantitativeValueSchema = z.object({
   unitText: z.string().trim().optional(),
@@ -50,6 +54,12 @@ export const useCreateMenuItemFormSchema = () => {
           .trim()
           .min(1, { error: tValidation("price.required") }),
         availability: z.enum(itemAvailabilityValues),
+        availableHours: z
+          .string()
+          .trim()
+          .optional()
+          .refine((value) => !value || !hasIncompleteOpeningHours(value))
+          .refine((value) => !value || !hasOpeningHoursConflict(value)),
         inventoryLevel: quantitativeValueSchema.optional(),
         deliveryLeadTime: quantitativeValueSchema.optional(),
         priceSpecification: z

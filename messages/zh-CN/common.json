@@ -24,6 +24,8 @@
       "Th": "周四",
       "Tu": "周二",
       "We": "周三",
+      "allDay": "24 小时营业",
+      "nextDayTime": "次日 {time}",
       "rangeSeparator": "～"
     }
   },

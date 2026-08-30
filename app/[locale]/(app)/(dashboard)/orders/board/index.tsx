@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useEffect, useMemo } from "react";
 import useSWR from "swr";
@@ -55,6 +55,8 @@ const OrdersBoard = ({
 }: OrdersBoardProps) => {
   const { setDialog } = useDialogStore((state) => state);
 
+  const format = useFormatter();
+
   const tCommon = useTranslations("common");
   const getOrderModeLabel = useOrderModeLabel();
 
@@ -98,7 +100,8 @@ const OrdersBoard = ({
         ]
           .sort(
             (a, b) =>
-              new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+              new Date(a.pickupTime || a.createdAt).getTime() -
+              new Date(b.pickupTime || b.createdAt).getTime(),
           )
           .map((order) => {
             const modeLabel = getOrderModeLabel(order.mode, order.tableNumber);
@@ -128,7 +131,12 @@ const OrdersBoard = ({
                   sx={{ overflowWrap: "anywhere" }}
                   variant="caption"
                 >
-                  {order.customer.name}
+                  {order.pickupTime
+                    ? [
+                        format.dateTime(new Date(order.pickupTime), "compact"),
+                        order.customer.name,
+                      ].join(tCommon("delimiter"))
+                    : order.customer.name}
                 </Typography>
               ),
             };
@@ -136,7 +144,7 @@ const OrdersBoard = ({
         size: { xs: 12, md: 3 },
         title: tOrders(`status.${status}`),
       })),
-    [boardColumns, getOrderModeLabel, tOrders],
+    [boardColumns, format, getOrderModeLabel, tCommon, tOrders],
   );
 
   const orders = useMemo(

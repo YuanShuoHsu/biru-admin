@@ -33,6 +33,7 @@ import {
   Devices,
   DirectionsCar,
   Email,
+  EventAvailable,
   Extension,
   Fastfood,
   Gavel,
@@ -349,6 +350,11 @@ const routes: Route[] = [
             icon: People,
             label: "organizations.members.label",
             segment: "members",
+          },
+          {
+            icon: EventAvailable,
+            label: "organizations.pickup.label",
+            segment: "pickup",
           },
           {
             icon: Stars,

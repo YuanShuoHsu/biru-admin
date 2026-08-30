@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { notFound } from "next/navigation";
 
 import OrderModeOrganizationSlugCheckout from ".";
 
 import type { Locale } from "@/i18n/routing";
 
+import { getOrganization } from "@/utils/organizations";
+
 interface OrderModeOrganizationSlugCheckoutPageProps {
-  params: Promise<{ locale: Locale }>;
+  params: Promise<{ locale: Locale; organizationSlug: string }>;
 }
 
 export const generateMetadata = async ({
@@ -23,11 +26,14 @@ export const generateMetadata = async ({
 const OrderModeOrganizationSlugCheckoutPage = async ({
   params,
 }: OrderModeOrganizationSlugCheckoutPageProps) => {
-  const { locale } = await params;
+  const { locale, organizationSlug } = await params;
 
   setRequestLocale(locale);
 
-  return <OrderModeOrganizationSlugCheckout />;
+  const organization = await getOrganization(organizationSlug);
+  if (!organization) return notFound();
+
+  return <OrderModeOrganizationSlugCheckout organization={organization} />;
 };
 
 export default OrderModeOrganizationSlugCheckoutPage;

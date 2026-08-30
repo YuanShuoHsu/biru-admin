@@ -182,6 +182,9 @@
       "placeholder": "请输入您的品项名称"
     },
     "offers": {
+      "availableHours": {
+        "label": "可供应时段"
+      },
       "deliveryLeadTime": {
         "maxValue": {
           "label": "最长备餐时间",

@@ -24,6 +24,8 @@
       "Th": "週四",
       "Tu": "週二",
       "We": "週三",
+      "allDay": "24 小時營業",
+      "nextDayTime": "隔日 {time}",
       "rangeSeparator": "～"
     }
   },

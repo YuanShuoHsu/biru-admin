@@ -188,6 +188,7 @@
   "partySize": "인원수",
   "paymentDate": "결제 일시",
   "paymentMethod": "결제 수단",
+  "pickupTime": "픽업 시간",
   "status": {
     "OrderCancelled": "취소됨",
     "OrderDelivered": "전달 완료",

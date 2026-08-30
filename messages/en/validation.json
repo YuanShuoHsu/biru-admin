@@ -112,6 +112,28 @@
   "payment": {
     "notSelected": "Please select your payment method."
   },
+  "pickupCutoffMinutes": {
+    "invalid": "Cutoff before closing is not valid.",
+    "required": "Cutoff before closing is required."
+  },
+  "pickupLeadMinutes": {
+    "invalid": "Minimum lead time is not valid.",
+    "required": "Minimum lead time is required."
+  },
+  "pickupMaxAdvanceDays": {
+    "invalid": "Maximum days in advance is not valid.",
+    "required": "Maximum days in advance is required."
+  },
+  "pickupTime": {
+    "beforeClosing": "Please select a pickup time at least {minutes} minutes before closing.",
+    "closed": "Please select a pickup time within the opening hours.",
+    "invalid": "Pickup time is not valid.",
+    "itemUnavailable": "{name} is not available at the selected pickup time.",
+    "maxDateTime": "Please select a pickup time within {days} days.",
+    "minDateTime": "Please select a pickup time at least {minutes} minutes from now.",
+    "minutesStep": "Please select a pickup time in {minutes}-minute intervals.",
+    "notSelected": "Please select your pickup time."
+  },
   "telephone": {
     "invalid": "Phone is not valid.",
     "required": "Phone is required."

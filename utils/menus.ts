@@ -168,6 +168,27 @@ export const getCartCurrency = (
   return item?.offers[0]?.priceCurrency || "";
 };
 
+export const getCartAvailableHours = (
+  menu: OrderMenu | null,
+  cartItemsList: CartItem[],
+): { availableHours: string; name: string }[] =>
+  cartItemsList.flatMap(({ addOns, menuItemId }) => {
+    const item = findItemById(menu, menuItemId);
+    if (!item) return [];
+
+    const addOnItems = getAddOnItems(item);
+
+    return [
+      item,
+      ...addOns.flatMap(({ menuItemId }) =>
+        addOnItems.filter(({ id }) => id === menuItemId),
+      ),
+    ].map(({ name, offers }) => ({
+      availableHours: offers[0]?.availableHours || "",
+      name,
+    }));
+  });
+
 export const getItemKey = (
   menuItemId: string,
   modifiers: Record<string, string[]>,

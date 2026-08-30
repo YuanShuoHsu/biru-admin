@@ -182,6 +182,9 @@
       "placeholder": "Please enter your item name"
     },
     "offers": {
+      "availableHours": {
+        "label": "Available hours"
+      },
       "deliveryLeadTime": {
         "maxValue": {
           "label": "Max preparation time",

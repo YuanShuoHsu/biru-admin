@@ -9,6 +9,9 @@ import CardDialogContent from "@/components/CardDialogContent";
 import { API_ORDER_MODE } from "@/constants/orderMode";
 import { ViewDirections, ViewImageSizes } from "@/constants/view";
 
+import { useAvailableHoursLabel } from "@/hooks/useAvailableHoursLabel";
+import { useOutsideAvailableHours } from "@/hooks/useOutsideAvailableHours";
+
 import { RestaurantMenu } from "@mui/icons-material";
 import {
   Badge,
@@ -150,6 +153,9 @@ const ActionAreaCard = ({ menuItem, priority }: ActionAreaCardProps) => {
   const { setDialog } = useDialogStore((state) => state);
   const { view } = useViewStore((state) => state);
 
+  const getAvailableHoursLabel = useAvailableHoursLabel();
+  const isOutsideAvailableHours = useOutsideAvailableHours();
+
   const tCommon = useTranslations("common");
   const tDialog = useTranslations("dialog");
   const tOrder = useTranslations("order");
@@ -157,22 +163,27 @@ const ActionAreaCard = ({ menuItem, priority }: ActionAreaCardProps) => {
   const viewDirection = ViewDirections[view];
 
   const isModeUnavailable = !availableModes.includes(apiMode);
+  const isOutsideHours = isOutsideAvailableHours(offer.availableHours);
   const isItemOutOfStock =
     isModeUnavailable ||
+    isOutsideHours ||
     stock === 0 ||
     availability === "SoldOut" ||
     availability === "Discontinued" ||
     hasUnsatisfiableModifierGroup(menuItem.modifierGroups, apiMode);
   const showLowStock = !isItemOutOfStock && isLowStock(offer);
+  const availableHoursLabel = getAvailableHoursLabel(offer.availableHours);
 
   const soldOutLabel =
     availability === "Discontinued"
       ? tCommon("discontinued")
       : isModeUnavailable
         ? tOrder(`mode.${apiMode}.unavailable`)
-        : isItemOutOfStock
-          ? tCommon("soldOut")
-          : "";
+        : isOutsideHours
+          ? tOrder("menuItem.outsideAvailableHours")
+          : isItemOutOfStock
+            ? tCommon("soldOut")
+            : "";
 
   const handleDialogClick = () => {
     if (isItemOutOfStock) return;
@@ -244,6 +255,11 @@ const ActionAreaCard = ({ menuItem, priority }: ActionAreaCardProps) => {
                 {tOrder("menuItem.stockLeft", {
                   stock: [stock, stockUnit].filter(Boolean).join(" "),
                 })}
+              </Typography>
+            )}
+            {availableHoursLabel && (
+              <Typography color="text.secondary" variant="caption">
+                {availableHoursLabel}
               </Typography>
             )}
           </Stack>

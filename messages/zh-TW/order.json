@@ -71,6 +71,9 @@
       "WeiXin": "微信支付"
     },
     "paymentMethod": "付款方式",
+    "pickupTime": {
+      "label": "取餐時間"
+    },
     "placeOrder": "下單",
     "title": "顧客資訊",
     "tradeDesc": "餐點付款"
@@ -100,6 +103,7 @@
       "paid": "已付款",
       "paymentDate": "付款時間",
       "paymentMethod": "付款方式",
+      "pickupTime": "取餐時間",
       "status": "交易狀態",
       "title": "交易資訊",
       "tradeNo": "綠界交易編號",
@@ -127,6 +131,7 @@
   "label": "點餐",
   "menuItem": {
     "addOn": "加購",
+    "availableHours": "供應時段 {value}",
     "calories": "熱量 {value} kcal",
     "diet": {
       "DiabeticDiet": "糖尿病飲食",
@@ -141,6 +146,7 @@
       "VeganDiet": "純素",
       "VegetarianDiet": "素食"
     },
+    "outsideAvailableHours": "非供應時間",
     "preparationTime": "預計準備約 {value} 分鐘",
     "promoUntil": "優惠至 {date}",
     "selectAtLeast": "請至少選擇 {count} 項",

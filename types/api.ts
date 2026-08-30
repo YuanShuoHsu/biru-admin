@@ -1914,7 +1914,7 @@ export interface components {
     };
     /**
      * @description 需要人工處理的類型
-     *     - invoiceSettlementFailed：退款完成但發票沒作廢也沒折讓
+     *     - invoiceSettlementFailed：退款完成但發票需人工處理（沒作廢也沒折讓，或已在綠界完成但本機沒記到）
      *     - refundUnconfirmed：退刷送出後沒收到綠界結果，可退數量被佔住
      *     - invoiceStuck：發票卡在開立中，查證失敗需人工到綠界後台確認
      *     - invoiceOverdue：訂單已付款但發票遲遲沒開出來
@@ -1932,7 +1932,7 @@ export interface components {
     EcpayAttentionItemDto: {
       /**
        * @description 需要人工處理的類型
-       *     - invoiceSettlementFailed：退款完成但發票沒作廢也沒折讓
+       *     - invoiceSettlementFailed：退款完成但發票需人工處理（沒作廢也沒折讓，或已在綠界完成但本機沒記到）
        *     - refundUnconfirmed：退刷送出後沒收到綠界結果，可退數量被佔住
        *     - invoiceStuck：發票卡在開立中，查證失敗需人工到綠界後台確認
        *     - invoiceOverdue：訂單已付款但發票遲遲沒開出來
@@ -2396,6 +2396,7 @@ export interface components {
       invoice: components["schemas"]["CreateOrderInvoiceDto"];
       items: components["schemas"]["CreateOrderItemDto"][];
       partySize?: number;
+      pickupTime?: string;
       tableNumber?: number;
     };
     OrderCustomerDto: {
@@ -2470,6 +2471,8 @@ export interface components {
       paymentDueDate?: string | null;
       tradeNo?: string | null;
       partySize?: number | null;
+      /** Format: date-time */
+      pickupTime?: string | null;
       tableNumber?: number | null;
       discount?: string | null;
       discountCode?: string | null;
@@ -2496,6 +2499,7 @@ export interface components {
       | "invoiceType"
       | "invoiceStatus"
       | "paymentDate"
+      | "pickupTime"
       | "createdAt"
       | "tableNumber"
       | "total";
@@ -2506,6 +2510,7 @@ export interface components {
       | "paymentMethod"
       | "orderStatus"
       | "paymentDate"
+      | "pickupTime"
       | "createdAt"
       | "tableNumber"
       | "total"
@@ -2525,6 +2530,8 @@ export interface components {
       orderStatus: components["schemas"]["OrderBoardStatus"];
       /** @enum {string} */
       mode: "counter" | "dineIn" | "driveThru" | "pickup";
+      /** Format: date-time */
+      pickupTime?: string | null;
       tableNumber?: number | null;
     };
     /** @enum {string} */
@@ -2586,6 +2593,8 @@ export interface components {
       paymentDueDate?: string | null;
       tradeNo?: string | null;
       partySize?: number | null;
+      /** Format: date-time */
+      pickupTime?: string | null;
       tableNumber?: number | null;
       discount?: string | null;
       discountCode?: string | null;
@@ -2654,6 +2663,8 @@ export interface components {
       paymentDueDate?: string | null;
       tradeNo?: string | null;
       partySize?: number | null;
+      /** Format: date-time */
+      pickupTime?: string | null;
       tableNumber?: number | null;
       discount?: string | null;
       discountCode?: string | null;
@@ -2836,6 +2847,8 @@ export interface components {
       /** @default TWD */
       priceCurrency: string;
       availability?: components["schemas"]["ItemAvailability"];
+      /** @description 可供應時段，格式同組織營業時間（如 "Mo-Fr 07:00-11:00"）；null 代表全時段供應 */
+      availableHours?: string;
       /** @description 預計準備時間，unitText 建議用 "minute" */
       deliveryLeadTime?: components["schemas"]["QuantitativeValueDto"];
       /** @description 當日剩餘庫存數量 */
@@ -2877,6 +2890,8 @@ export interface components {
       price?: string | null;
       priceCurrency?: string | null;
       availability?: components["schemas"]["ItemAvailability"] | null;
+      /** @description 可供應時段；null 代表全時段供應 */
+      availableHours?: string | null;
       deliveryLeadTime?: components["schemas"]["QuantitativeValueDto"] | null;
       inventoryLevel?: components["schemas"]["QuantitativeValueDto"] | null;
       priceSpecification?:
@@ -2981,6 +2996,8 @@ export interface components {
       /** @default TWD */
       priceCurrency: string;
       availability?: components["schemas"]["ItemAvailability"];
+      /** @description 可供應時段，格式同組織營業時間（如 "Mo-Fr 07:00-11:00"）；null 代表全時段供應 */
+      availableHours?: string;
       /** @description 預計準備時間，unitText 建議用 "minute" */
       deliveryLeadTime?: components["schemas"]["QuantitativeValueDto"];
       /** @description 當日剩餘庫存數量 */
@@ -3163,6 +3180,8 @@ export interface components {
       price?: string | null;
       priceCurrency?: string | null;
       availability?: components["schemas"]["ItemAvailability"] | null;
+      /** @description 可供應時段；null 代表全時段供應 */
+      availableHours?: string | null;
       deliveryLeadTime?: components["schemas"]["QuantitativeValueDto"] | null;
       inventoryLevel?: components["schemas"]["QuantitativeValueDto"] | null;
       priceSpecification?:
@@ -3304,6 +3323,10 @@ export interface components {
       telephone?: string | null;
       amountPerPoint?: string | null;
       pointsValidityYears?: number | null;
+      pickupSchedulingEnabled: boolean;
+      pickupLeadMinutes: number;
+      pickupMaxAdvanceDays: number;
+      pickupCutoffMinutes: number;
     };
     OrganizationMemberTeamDto: {
       id: string;
@@ -6788,6 +6811,7 @@ export const orderFilterFieldValues: ReadonlyArray<
   "invoiceType",
   "invoiceStatus",
   "paymentDate",
+  "pickupTime",
   "createdAt",
   "tableNumber",
   "total",
@@ -6800,6 +6824,7 @@ export const orderSortFieldValues: ReadonlyArray<
   "paymentMethod",
   "orderStatus",
   "paymentDate",
+  "pickupTime",
   "createdAt",
   "tableNumber",
   "total",

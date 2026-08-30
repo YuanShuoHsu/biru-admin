@@ -188,6 +188,7 @@
   "partySize": "人数",
   "paymentDate": "支払い日時",
   "paymentMethod": "支払い方法",
+  "pickupTime": "受け取り時間",
   "status": {
     "OrderCancelled": "キャンセル済み",
     "OrderDelivered": "受け渡し済み",

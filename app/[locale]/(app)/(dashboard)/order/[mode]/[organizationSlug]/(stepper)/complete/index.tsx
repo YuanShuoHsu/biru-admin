@@ -16,6 +16,7 @@ import LocationDetails from "@/components/LocationDetails";
 
 import { localeConfigs } from "@/constants/locale";
 import { ORDER_MODE } from "@/constants/orderMode";
+import { INVOICE_STATUS_COLORS } from "@/constants/orders";
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { useOrderItemName } from "@/hooks/useOrderItemName";
@@ -36,7 +37,6 @@ import {
   Button,
   Card,
   Chip,
-  type ChipProps,
   Divider,
   IconButton,
   Stack,
@@ -46,7 +46,7 @@ import {
 import { type CSSObject, styled } from "@mui/material/styles";
 
 import type { CheckoutEcpayDto, CheckoutEcpayResponse } from "@/types/ecpay";
-import type { OrderInvoice, OrderResponse } from "@/types/orders";
+import type { OrderResponse } from "@/types/orders";
 import type { OrganizationResponse } from "@/types/organizations";
 
 import { submitEcpayCheckout } from "@/utils/ecpay";
@@ -76,16 +76,6 @@ const STATUS_ICON = {
 const StyledTypography = styled(Typography)({
   wordBreak: "break-all",
 });
-
-const INVOICE_STATUS_CHIP_COLORS: Record<
-  OrderInvoice["status"],
-  ChipProps["color"]
-> = {
-  issued: "success",
-  issuing: "info",
-  pending: "warning",
-  voided: "default",
-};
 
 const SUCCESS_ORDER_STATUSES: OrderResponse["orderStatus"][] = [
   "OrderDelivered",
@@ -434,6 +424,14 @@ const OrderModeOrganizationSlugComplete = ({
                 label={tOrder("complete.transaction.mode")}
                 value={tOrder(`mode.${order.mode}.label`)}
               />
+              {order.pickupTime && (
+                <InfoRow
+                  label={tOrder("complete.transaction.pickupTime")}
+                  value={dayjs(order.pickupTime)
+                    .tz(STORE_TIMEZONE)
+                    .format("YYYY/MM/DD HH:mm")}
+                />
+              )}
               {order.tradeNo && (
                 <InfoRow
                   label={tOrder("complete.transaction.tradeNo")}
@@ -472,7 +470,7 @@ const OrderModeOrganizationSlugComplete = ({
                   label={tOrder("complete.invoice.status.label")}
                   value={
                     <Chip
-                      color={INVOICE_STATUS_CHIP_COLORS[invoice.status]}
+                      color={INVOICE_STATUS_COLORS[invoice.status]}
                       label={tOrder(
                         `complete.invoice.status.${invoice.status}`,
                       )}

@@ -24,6 +24,8 @@
       "Th": "목",
       "Tu": "화",
       "We": "수",
+      "allDay": "24시간 영업",
+      "nextDayTime": "다음 날 {time}",
       "rangeSeparator": "～"
     }
   },

@@ -182,6 +182,9 @@
       "placeholder": "品目名を入力してください"
     },
     "offers": {
+      "availableHours": {
+        "label": "提供時間帯"
+      },
       "deliveryLeadTime": {
         "maxValue": {
           "label": "最大準備時間",

@@ -156,6 +156,38 @@
     "label": "組織名",
     "placeholder": "あなたの組織名を入力してください"
   },
+  "pickup": {
+    "actions": {
+      "updatePickup": {
+        "success": "予約設定を更新しました",
+        "title": "予約を編集"
+      }
+    },
+    "days": "{days} 日",
+    "enabled": {
+      "helperText": "オフの場合、オンライン受け取りは予約なしで即時調理となります。",
+      "label": "受け取り予約を有効にする",
+      "off": "無効",
+      "on": "有効"
+    },
+    "label": "予約",
+    "minutes": "{minutes} 分",
+    "pickupCutoffMinutes": {
+      "helperText": "閉店前のこの時間は予約を受け付けません。",
+      "label": "閉店前の締め切り（分）",
+      "placeholder": "閉店前の締め切りを入力してください"
+    },
+    "pickupLeadMinutes": {
+      "helperText": "注文後、最短で受け取れるまでの時間です。",
+      "label": "最短リードタイム（分）",
+      "placeholder": "最短リードタイムを入力してください"
+    },
+    "pickupMaxAdvanceDays": {
+      "helperText": "0 に設定すると当日のみ予約できます。",
+      "label": "予約可能な最大日数",
+      "placeholder": "予約可能な最大日数を入力してください"
+    }
+  },
   "points": {
     "actions": {
       "updatePoints": {
