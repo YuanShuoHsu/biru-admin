@@ -54,6 +54,7 @@ const LocalBusinessFields = ({
     <>
       <OpeningHoursField
         error={!!errors.openingHours}
+        fullWidth
         label={tOrganizations("localBusiness.openingHours.label")}
         onChange={(value) => setValue("openingHours", value)}
         value={openingHours}

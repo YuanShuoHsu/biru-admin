@@ -323,83 +323,7 @@ const CreateMenuItemDialog = ({
         required
         value={availableModes}
       />
-      <OpeningHoursField
-        error={!!errors.offer?.availableHours}
-        label={`${tMenus("items.offers.availableHours.label")} ${tCommon("optional")}`}
-        onChange={(value) => setValue("offer.availableHours", value)}
-        value={availableHours}
-      />
       <Grid container width="100%" alignItems="flex-end" spacing={2}>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <NumberSpinner
-            clearable
-            error={!!errors.offer?.inventoryLevel?.value}
-            fullWidth
-            helperText={errors.offer?.inventoryLevel?.value?.message}
-            label={`${tMenus("items.offers.inventoryLevel.value.label")} ${tCommon("optional")}`}
-            min={0}
-            placeholder={tMenus(
-              "items.offers.inventoryLevel.value.placeholder",
-            )}
-            value={
-              inventoryLevelValue !== "" ? Number(inventoryLevelValue) : null
-            }
-            onValueChange={(value) =>
-              setValue(
-                "offer.inventoryLevel.value",
-                value != null ? String(value) : "",
-              )
-            }
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <TextField
-            error={!!errors.offer?.inventoryLevel?.unitText}
-            fullWidth
-            helperText={errors.offer?.inventoryLevel?.unitText?.message}
-            label={`${tMenus("items.offers.inventoryLevel.unitText.label")} ${tCommon("optional")}`}
-            placeholder={tMenus(
-              "items.offers.inventoryLevel.unitText.placeholder",
-            )}
-            {...register("offer.inventoryLevel.unitText")}
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <NumberSpinner
-            clearable
-            error={!!errors.offer?.deliveryLeadTime?.value}
-            fullWidth
-            helperText={errors.offer?.deliveryLeadTime?.value?.message}
-            label={`${tMenus("items.offers.deliveryLeadTime.value.label")} ${tCommon("optional")}`}
-            min={0}
-            placeholder={tMenus(
-              "items.offers.deliveryLeadTime.value.placeholder",
-            )}
-            value={
-              deliveryLeadTimeValue !== ""
-                ? Number(deliveryLeadTimeValue)
-                : null
-            }
-            onValueChange={(value) =>
-              setValue(
-                "offer.deliveryLeadTime.value",
-                value != null ? String(value) : "",
-              )
-            }
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <TextField
-            error={!!errors.offer?.deliveryLeadTime?.unitText}
-            fullWidth
-            helperText={errors.offer?.deliveryLeadTime?.unitText?.message}
-            label={`${tMenus("items.offers.deliveryLeadTime.unitText.label")} ${tCommon("optional")}`}
-            placeholder={tMenus(
-              "items.offers.deliveryLeadTime.unitText.placeholder",
-            )}
-            {...register("offer.deliveryLeadTime.unitText")}
-          />
-        </Grid>
         <Grid size={{ xs: 12 }}>
           <NumericFormat
             allowNegative={false}
@@ -487,7 +411,84 @@ const CreateMenuItemDialog = ({
             }
           />
         </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <NumberSpinner
+            clearable
+            error={!!errors.offer?.inventoryLevel?.value}
+            fullWidth
+            helperText={errors.offer?.inventoryLevel?.value?.message}
+            label={`${tMenus("items.offers.inventoryLevel.value.label")} ${tCommon("optional")}`}
+            min={0}
+            placeholder={tMenus(
+              "items.offers.inventoryLevel.value.placeholder",
+            )}
+            value={
+              inventoryLevelValue !== "" ? Number(inventoryLevelValue) : null
+            }
+            onValueChange={(value) =>
+              setValue(
+                "offer.inventoryLevel.value",
+                value != null ? String(value) : "",
+              )
+            }
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <TextField
+            error={!!errors.offer?.inventoryLevel?.unitText}
+            fullWidth
+            helperText={errors.offer?.inventoryLevel?.unitText?.message}
+            label={`${tMenus("items.offers.inventoryLevel.unitText.label")} ${tCommon("optional")}`}
+            placeholder={tMenus(
+              "items.offers.inventoryLevel.unitText.placeholder",
+            )}
+            {...register("offer.inventoryLevel.unitText")}
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <NumberSpinner
+            clearable
+            error={!!errors.offer?.deliveryLeadTime?.value}
+            fullWidth
+            helperText={errors.offer?.deliveryLeadTime?.value?.message}
+            label={`${tMenus("items.offers.deliveryLeadTime.value.label")} ${tCommon("optional")}`}
+            min={0}
+            placeholder={tMenus(
+              "items.offers.deliveryLeadTime.value.placeholder",
+            )}
+            value={
+              deliveryLeadTimeValue !== ""
+                ? Number(deliveryLeadTimeValue)
+                : null
+            }
+            onValueChange={(value) =>
+              setValue(
+                "offer.deliveryLeadTime.value",
+                value != null ? String(value) : "",
+              )
+            }
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <TextField
+            error={!!errors.offer?.deliveryLeadTime?.unitText}
+            fullWidth
+            helperText={errors.offer?.deliveryLeadTime?.unitText?.message}
+            label={`${tMenus("items.offers.deliveryLeadTime.unitText.label")} ${tCommon("optional")}`}
+            placeholder={tMenus(
+              "items.offers.deliveryLeadTime.unitText.placeholder",
+            )}
+            {...register("offer.deliveryLeadTime.unitText")}
+          />
+        </Grid>
       </Grid>
+      <OpeningHoursField
+        error={!!errors.offer?.availableHours}
+        fullWidth
+        label={`${tMenus("items.offers.availableHours.label")} ${tCommon("optional")}`}
+        onChange={(value) => setValue("offer.availableHours", value)}
+        value={availableHours}
+      />
     </FormBox>
   );
 };
