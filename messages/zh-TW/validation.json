@@ -122,6 +122,7 @@
   },
   "pickupMaxAdvanceDays": {
     "invalid": "最遠可預約天數格式無效。",
+    "max": "最遠可預約天數不可超過 {days} 天。",
     "required": "最遠可預約天數為必填。"
   },
   "pickupTime": {
@@ -129,10 +130,12 @@
     "closed": "請選擇營業時間內的取餐時間。",
     "invalid": "取餐時間無效。",
     "itemUnavailable": "{name}在所選取餐時間不供應。",
+    "itemsConflict": "購物車中的品項在可預約時間內沒有共同的供應時段，請調整購物車內容。",
     "maxDateTime": "請選擇 {days} 天內的取餐時間。",
     "minDateTime": "請選擇 {minutes} 分鐘後的取餐時間。",
     "minutesStep": "請以 {minutes} 分鐘為間隔選擇取餐時間。",
-    "notSelected": "請選擇您的取餐時間。"
+    "notSelected": "請選擇您的取餐時間。",
+    "storeUnavailable": "本店近期沒有可預約的取餐時間，請稍後再試或聯繫店家。"
   },
   "telephone": {
     "invalid": "電話格式無效。",

@@ -122,6 +122,7 @@
   },
   "pickupMaxAdvanceDays": {
     "invalid": "Maximum days in advance is not valid.",
+    "max": "Maximum days in advance cannot exceed {days} days.",
     "required": "Maximum days in advance is required."
   },
   "pickupTime": {
@@ -129,10 +130,12 @@
     "closed": "Please select a pickup time within the opening hours.",
     "invalid": "Pickup time is not valid.",
     "itemUnavailable": "{name} is not available at the selected pickup time.",
+    "itemsConflict": "The items in your cart have no shared availability within the schedulable window. Please adjust your cart.",
     "maxDateTime": "Please select a pickup time within {days} days.",
     "minDateTime": "Please select a pickup time at least {minutes} minutes from now.",
     "minutesStep": "Please select a pickup time in {minutes}-minute intervals.",
-    "notSelected": "Please select your pickup time."
+    "notSelected": "Please select your pickup time.",
+    "storeUnavailable": "This store has no pickup times available within the schedulable window. Please try again later or contact the store."
   },
   "telephone": {
     "invalid": "Phone is not valid.",

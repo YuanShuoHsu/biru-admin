@@ -109,6 +109,7 @@ interface MenusMenuIdSectionIdProps {
   filterOperator?: FilterOperator;
   filterValue?: string;
   items: MenuItem[];
+  openingHours?: string | null;
   page: number;
   pageSize: number;
   quickFilterValue?: string;
@@ -125,6 +126,7 @@ const MenusMenuIdSectionId = ({
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
   items: initialItems,
+  openingHours,
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,
@@ -404,24 +406,34 @@ const MenusMenuIdSectionId = ({
   const handleCreateItem = useCallback(() => {
     setDialog({
       content: (
-        <CreateMenuItemDialog mutate={mutate} menuSectionId={menuSectionId} />
+        <CreateMenuItemDialog
+          mutate={mutate}
+          menuSectionId={menuSectionId}
+          openingHours={openingHours}
+        />
       ),
       formId: "create-menu-item-form",
       open: true,
       title: tMenus("items.actions.createItem.title"),
     });
-  }, [mutate, menuSectionId, setDialog, tMenus]);
+  }, [mutate, menuSectionId, openingHours, setDialog, tMenus]);
 
   const handleUpdateItem = useCallback(
     (item: MenuItem) => {
       setDialog({
-        content: <UpdateMenuItemDialog item={item} mutate={mutate} />,
+        content: (
+          <UpdateMenuItemDialog
+            item={item}
+            mutate={mutate}
+            openingHours={openingHours}
+          />
+        ),
         formId: "update-menu-item-form",
         open: true,
         title: tMenus("items.actions.updateItem.title"),
       });
     },
-    [mutate, setDialog, tMenus],
+    [mutate, openingHours, setDialog, tMenus],
   );
 
   const handleDeleteItem = useCallback(

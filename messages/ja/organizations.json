@@ -74,7 +74,7 @@
     "label": "ビジネス",
     "openingHours": {
       "addSchedule": "時間帯を追加",
-      "conflict": "この時間帯は他の時間帯と重複しています",
+      "conflict": "{days}は他の時間帯と重複しています",
       "days": {
         "Fr": "金",
         "Mo": "月",
@@ -88,6 +88,9 @@
       "missingDays": "曜日を選択してください",
       "missingEndTime": "終了時刻を入力してください",
       "missingStartTime": "開始時刻を入力してください",
+      "nextDay": "翌日",
+      "outsideOpeningHours": "{days}は営業時間を超えています。お客様は営業時間内のみ注文できます",
+      "reference": "営業時間：{value}",
       "to": "〜"
     },
     "telephone": {
@@ -164,12 +167,6 @@
       }
     },
     "days": "{days} 日",
-    "enabled": {
-      "helperText": "オフの場合、オンライン受け取りは予約なしで即時調理となります。",
-      "label": "受け取り予約を有効にする",
-      "off": "無効",
-      "on": "有効"
-    },
     "label": "予約",
     "minutes": "{minutes} 分",
     "pickupCutoffMinutes": {
@@ -183,7 +180,7 @@
       "placeholder": "最短リードタイムを入力してください"
     },
     "pickupMaxAdvanceDays": {
-      "helperText": "0 に設定すると当日のみ予約できます。",
+      "helperText": "0 に設定すると当日のみ予約できます。最大 {days} 日です。",
       "label": "予約可能な最大日数",
       "placeholder": "予約可能な最大日数を入力してください"
     }

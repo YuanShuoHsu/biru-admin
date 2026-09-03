@@ -8,7 +8,7 @@ import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams, useSearchParams } from "next/navigation";
 import { useSnackbar } from "notistack";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import useSWR from "swr";
 import useSWRMutation from "swr/mutation";
@@ -60,6 +60,7 @@ import {
   Typography,
 } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import type { TimeView } from "@mui/x-date-pickers/models";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useCartStore } from "@/providers/cart-store-provider";
@@ -89,7 +90,14 @@ import { submitEcpayCheckout } from "@/utils/ecpay";
 import { getErrorMessage } from "@/utils/errors";
 import { sendRequest } from "@/utils/fetcher";
 import { getCartAvailableHours } from "@/utils/menus";
-import { getCloseTimeAt, isOpenAt, isOpenOn } from "@/utils/openingHours";
+import { isOpenAt } from "@/utils/openingHours";
+import {
+  getPickupWindow,
+  hasPickupTimeInHour,
+  hasPickupTimeInWindow,
+  hasPickupTimeOnDate,
+  isStorePickupTime,
+} from "@/utils/pickup";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
@@ -216,43 +224,56 @@ const OrderModeOrganizationSlugCheckout = ({
   const search = searchParams.toString();
   const query = search ? `?${search}` : "";
 
-  const showPickupTime = isPickup && organization.pickupSchedulingEnabled;
-  const openingHours = organization.openingHours || "";
-  const leadMinutes = organization.pickupLeadMinutes;
-  const advanceDays = organization.pickupMaxAdvanceDays;
-  const cutoffMinutes = organization.pickupCutoffMinutes;
-  const cartAvailableHours = getCartAvailableHours(menu, cartItemsList);
+  const cartAvailableHours = useMemo(
+    () => getCartAvailableHours(menu, cartItemsList),
+    [cartItemsList, menu],
+  );
 
-  const minPickupTime = dayjs().tz(STORE_TIMEZONE).add(leadMinutes, "minute");
-  const maxPickupTime = dayjs()
-    .tz(STORE_TIMEZONE)
-    .add(advanceDays, "day")
-    .endOf("day");
+  const [now, setNow] = useState(() => dayjs().tz(STORE_TIMEZONE));
+  const handleRefreshNow = () => setNow(dayjs().tz(STORE_TIMEZONE));
 
-  const isPickupTimeAllowed = (value: Dayjs) => {
-    const at = value.second(0).millisecond(0);
+  const pickupWindow = useMemo(
+    () => getPickupWindow(organization, now),
+    [now, organization],
+  );
 
-    if (at.isBefore(minPickupTime) || at.isAfter(maxPickupTime)) return false;
-    if (!isOpenAt(openingHours, at)) return false;
+  const isPickupTimeAllowed = useCallback(
+    (at: Dayjs) =>
+      isStorePickupTime(pickupWindow, at) &&
+      cartAvailableHours.every(({ availableHours }) =>
+        isOpenAt(availableHours, at),
+      ),
+    [cartAvailableHours, pickupWindow],
+  );
 
-    const closeTime = getCloseTimeAt(openingHours, at);
-    if (closeTime && closeTime.diff(at, "minute") < cutoffMinutes) return false;
+  const pickupUnavailableReason = useMemo(() => {
+    if (!isPickup) return null;
 
-    return cartAvailableHours.every(({ availableHours }) =>
-      isOpenAt(availableHours, at),
-    );
-  };
+    if (
+      !hasPickupTimeInWindow(pickupWindow, (at) =>
+        isStorePickupTime(pickupWindow, at),
+      )
+    )
+      return "storeUnavailable";
 
-  const hasPickupTimeInHour = (at: Dayjs) =>
-    Array.from({ length: 60 / PICKUP_MINUTES_STEP }, (_, index) =>
-      at.minute(index * PICKUP_MINUTES_STEP),
-    ).some(isPickupTimeAllowed);
+    return hasPickupTimeInWindow(pickupWindow, isPickupTimeAllowed)
+      ? null
+      : "itemsConflict";
+  }, [isPickup, isPickupTimeAllowed, pickupWindow]);
 
-  const hasPickupTimeOnDate = (date: Dayjs) =>
-    isOpenOn(openingHours, date) &&
-    Array.from({ length: 24 }, (_, hour) => date.hour(hour)).some(
-      hasPickupTimeInHour,
-    );
+  const handleDisableDate = useCallback(
+    (date: Dayjs) =>
+      !hasPickupTimeOnDate(pickupWindow, date, isPickupTimeAllowed),
+    [isPickupTimeAllowed, pickupWindow],
+  );
+
+  const handleDisableTime = useCallback(
+    (value: Dayjs, view: TimeView) =>
+      view === "hours"
+        ? !hasPickupTimeInHour(value, isPickupTimeAllowed)
+        : !isPickupTimeAllowed(value),
+    [isPickupTimeAllowed],
+  );
 
   const router = useRouter();
 
@@ -466,7 +487,7 @@ const OrderModeOrganizationSlugCheckout = ({
 
       if (completePath) router.replace(completePath);
     }
-  });
+  }, handleRefreshNow);
 
   return (
     <FormBox onSubmit={onSubmit}>
@@ -588,14 +609,14 @@ const OrderModeOrganizationSlugCheckout = ({
             type="email"
             value={email}
           />
-          {showPickupTime && (
+          {isPickup && (
             <>
               <Divider flexItem />
               <DateTimePicker
                 disablePast
                 label={tOrder("checkout.pickupTime.label")}
-                maxDateTime={maxPickupTime}
-                minDateTime={minPickupTime}
+                maxDateTime={pickupWindow.to}
+                minDateTime={pickupWindow.from}
                 minutesStep={PICKUP_MINUTES_STEP}
                 onChange={(value) =>
                   setValue(
@@ -608,19 +629,18 @@ const OrderModeOrganizationSlugCheckout = ({
                     },
                   )
                 }
-                shouldDisableDate={(date) => !hasPickupTimeOnDate(date)}
-                shouldDisableTime={(value, view) =>
-                  view === "hours"
-                    ? !hasPickupTimeInHour(value)
-                    : !isPickupTimeAllowed(value)
-                }
+                onOpen={handleRefreshNow}
+                shouldDisableDate={handleDisableDate}
+                shouldDisableTime={handleDisableTime}
                 skipDisabled
                 slotProps={{
                   field: { clearable: true },
                   textField: {
-                    error: !!errors.pickupTime,
+                    error: !!pickupUnavailableReason || !!errors.pickupTime,
                     fullWidth: true,
-                    helperText: errors.pickupTime?.message,
+                    helperText: pickupUnavailableReason
+                      ? tValidation(`pickupTime.${pickupUnavailableReason}`)
+                      : errors.pickupTime?.message,
                     required: true,
                   },
                 }}

@@ -15,13 +15,16 @@ const CartIconButton = () => {
   const { cartTotalQuantity } = useCartStore((state) => state);
 
   const toggleDrawer = useToggleDrawer();
-  const handleCartOpen = toggleDrawer("cart", true);
 
   const tAppBar = useTranslations("appBar");
 
   return (
     <Tooltip title={tAppBar("cart")}>
-      <IconButton aria-label="cart" color="inherit" onClick={handleCartOpen}>
+      <IconButton
+        aria-label="cart"
+        color="inherit"
+        onClick={toggleDrawer("cart", true)}
+      >
         <CustomizedBadges badgeContent={cartTotalQuantity}>
           <ShoppingCart />
         </CustomizedBadges>

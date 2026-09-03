@@ -145,6 +145,7 @@ const MenusMenuIdSectionIdPage = async ({
       filterOperator={filterOperator}
       filterValue={filterValue}
       items={items}
+      openingHours={selectedOrganization.openingHours}
       page={page}
       pageSize={pageSize}
       quickFilterValue={quickFilterValue}

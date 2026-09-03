@@ -122,6 +122,7 @@
   },
   "pickupMaxAdvanceDays": {
     "invalid": "최대 예약 가능 일수가 유효하지 않습니다.",
+    "max": "최대 예약 가능 일수는 {days}일을 초과할 수 없습니다.",
     "required": "최대 예약 가능 일수는 필수입니다."
   },
   "pickupTime": {
@@ -129,10 +130,12 @@
     "closed": "영업시간 내의 픽업 시간을 선택해 주세요.",
     "invalid": "픽업 시간이 유효하지 않습니다.",
     "itemUnavailable": "{name}은(는) 선택한 픽업 시간에 제공되지 않습니다.",
+    "itemsConflict": "장바구니의 상품에 예약 가능한 기간 내 공통 제공 시간대가 없습니다. 장바구니를 조정해 주세요.",
     "maxDateTime": "{days}일 이내의 픽업 시간을 선택해 주세요.",
     "minDateTime": "{minutes}분 후 이후의 픽업 시간을 선택해 주세요.",
     "minutesStep": "픽업 시간은 {minutes}분 단위로 선택해 주세요.",
-    "notSelected": "픽업 시간을 선택해 주세요."
+    "notSelected": "픽업 시간을 선택해 주세요.",
+    "storeUnavailable": "예약 가능한 기간 내에 픽업 가능한 시간이 없습니다. 잠시 후 다시 시도하거나 매장에 문의해 주세요."
   },
   "telephone": {
     "invalid": "전화번호가 유효하지 않습니다.",

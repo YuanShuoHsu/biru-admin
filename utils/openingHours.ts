@@ -1,5 +1,3 @@
-// vibe coding
-
 import dayjs, { type Dayjs } from "dayjs";
 
 export const DAYS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"] as const;
@@ -41,8 +39,9 @@ const isOvernight = ({
 }: Pick<Schedule, "startTime" | "endTime">): boolean =>
   toMinutes(endTime) <= toMinutes(startTime);
 
-const hasNextDayTail = (schedule: Schedule): boolean =>
-  isOvernight(schedule) && toMinutes(schedule.endTime) > 0;
+export const hasNextDayTail = (
+  schedule: Pick<Schedule, "startTime" | "endTime">,
+): boolean => isOvernight(schedule) && toMinutes(schedule.endTime) > 0;
 
 const isAllDay = ({ startTime, endTime }: Schedule): boolean =>
   toMinutes(startTime) === 0 && toMinutes(endTime) === 0;
@@ -223,7 +222,8 @@ export const serializeOpeningHours = (schedules: Schedule[]): string => {
   return [completePart, incompletePart].filter(Boolean).join("\n");
 };
 
-const WEEK_MINUTES = DAYS.length * 24 * 60;
+const DAY_MINUTES = 24 * 60;
+const WEEK_MINUTES = DAYS.length * DAY_MINUTES;
 
 interface WeekInterval {
   day: Day;
@@ -235,7 +235,7 @@ const getWeekIntervals = ({
   days,
   startTime,
   endTime,
-}: Schedule): WeekInterval[] => {
+}: Pick<Schedule, "days" | "startTime" | "endTime">): WeekInterval[] => {
   const start = toMinutes(startTime);
   const end = toMinutes(endTime);
   const length = isOvernight({ startTime, endTime })
@@ -317,6 +317,123 @@ export const hasIncompleteOpeningHours = (value: string): boolean =>
     .filter(Boolean)
     .some((line) => line.indexOf(" ") < 1);
 
+const intervalCache = new Map<string, WeekInterval[]>();
+
+const getOpenIntervals = (openingHours: string): WeekInterval[] => {
+  const cached = intervalCache.get(openingHours);
+  if (cached) return cached;
+
+  const intervals = getSchedules(openingHours)
+    .filter(({ startTime, endTime }) => startTime && endTime)
+    .flatMap(getWeekIntervals);
+  intervalCache.set(openingHours, intervals);
+
+  if (intervalCache.size > SCHEDULE_CACHE_LIMIT) {
+    const oldest = intervalCache.keys().next().value;
+    if (oldest !== undefined) intervalCache.delete(oldest);
+  }
+
+  return intervals;
+};
+
+const containsWeekMinute = ({ start, end }: WeekInterval, minute: number) =>
+  [-WEEK_MINUTES, 0, WEEK_MINUTES].some(
+    (shift) => start + shift <= minute && minute < end + shift,
+  );
+
+const isWeekMinuteOpen = (openIntervals: WeekInterval[], minute: number) =>
+  openIntervals.some((interval) => containsWeekMinute(interval, minute));
+
+// 中間跨過店休空檔是允許的（兩班制的店寫 11:00-21:00 才不會被擋），但跨午夜只有店家自己
+// 跨夜營業時才成立 —— 否則 20:00-09:00 會被讀成隔天，在不跨夜的店等於整晚都不供應
+const isIntervalWithinOpeningHours = (
+  openIntervals: WeekInterval[],
+  { start, end }: WeekInterval,
+): boolean => {
+  const midnight = (Math.floor(start / DAY_MINUTES) + 1) * DAY_MINUTES;
+
+  return (
+    isWeekMinuteOpen(openIntervals, start) &&
+    isWeekMinuteOpen(openIntervals, end - 1) &&
+    (midnight >= end || isWeekMinuteOpen(openIntervals, midnight))
+  );
+};
+
+export const isBoundWithinOpeningHours = (
+  openingHours: string,
+  {
+    days,
+    startTime,
+    endTime,
+  }: Pick<Schedule, "days" | "startTime" | "endTime">,
+  bound: "start" | "end",
+): boolean => {
+  const openIntervals = getOpenIntervals(openingHours);
+  if (openIntervals.length === 0) return true;
+
+  const selectedDays = days.length > 0 ? days : [...DAYS];
+
+  if (startTime && endTime)
+    return getWeekIntervals({ days: selectedDays, startTime, endTime }).some(
+      (interval) => isIntervalWithinOpeningHours(openIntervals, interval),
+    );
+
+  if (bound === "start")
+    return selectedDays.some((day) =>
+      isWeekMinuteOpen(
+        openIntervals,
+        DAYS.indexOf(day) * DAY_MINUTES + toMinutes(startTime),
+      ),
+    );
+
+  const end = toMinutes(endTime);
+  const offsets =
+    end === 0 ? [DAY_MINUTES - 1] : [end - 1, DAY_MINUTES + end - 1];
+
+  return selectedDays.some((day) =>
+    offsets.some((offset) =>
+      isWeekMinuteOpen(
+        openIntervals,
+        (DAYS.indexOf(day) * DAY_MINUTES + offset) % WEEK_MINUTES,
+      ),
+    ),
+  );
+};
+
+const isDayOpen = (openIntervals: WeekInterval[], day: Day): boolean => {
+  const start = DAYS.indexOf(day) * DAY_MINUTES;
+
+  return openIntervals.some((interval) =>
+    isOverlapping({ day, start, end: start + DAY_MINUTES }, interval),
+  );
+};
+
+export const getSchedulesOutsideOpeningHours = (
+  schedules: Schedule[],
+  openingHours: string,
+): Map<string, Set<Day>> => {
+  const result = new Map<string, Set<Day>>();
+
+  const openIntervals = getOpenIntervals(openingHours);
+  if (openIntervals.length === 0) return result;
+
+  for (const schedule of schedules) {
+    const days =
+      schedule.startTime && schedule.endTime
+        ? getWeekIntervals(schedule)
+            .filter(
+              (interval) =>
+                !isIntervalWithinOpeningHours(openIntervals, interval),
+            )
+            .map(({ day }) => day)
+        : schedule.days.filter((day) => !isDayOpen(openIntervals, day));
+
+    if (days.length > 0) result.set(schedule.id, new Set(days));
+  }
+
+  return result;
+};
+
 const getDaySchedules = (value: string, at: Dayjs): Schedule[] => {
   const day = DAYS[(at.day() + 6) % 7];
 
@@ -326,7 +443,7 @@ const getDaySchedules = (value: string, at: Dayjs): Schedule[] => {
   );
 };
 
-const isUnrestricted = (value: string): boolean =>
+export const isUnrestricted = (value: string): boolean =>
   getSchedules(value).length === 0;
 
 export const isOpenOn = (value: string, at: Dayjs): boolean =>
@@ -370,9 +487,16 @@ export interface OpeningHoursDisplayConfig {
   delimiter: string;
 }
 
-const formatDisplayDays = (
+export const formatDays = (
   days: Day[],
-  { formatDay, rangeSeparator, delimiter }: OpeningHoursDisplayConfig,
+  {
+    formatDay,
+    rangeSeparator,
+    delimiter,
+  }: Pick<
+    OpeningHoursDisplayConfig,
+    "formatDay" | "rangeSeparator" | "delimiter"
+  >,
 ): string =>
   groupConsecutiveDays(days)
     .map((run) =>
@@ -403,7 +527,7 @@ export const formatOpeningHoursForDisplay = (
             }`,
       );
 
-    const daysLabel = formatDisplayDays(group[0].days, config);
+    const daysLabel = formatDays(group[0].days, config);
 
     return times.length === 0
       ? daysLabel

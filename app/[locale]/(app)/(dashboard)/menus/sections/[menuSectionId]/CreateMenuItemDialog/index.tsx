@@ -41,11 +41,13 @@ const CREATE_MENU_ITEM_IMAGE_KEY = "create-menu-item-image";
 interface CreateMenuItemDialogProps {
   mutate: () => void;
   menuSectionId: string;
+  openingHours?: string | null;
 }
 
 const CreateMenuItemDialog = ({
   mutate,
   menuSectionId,
+  openingHours,
 }: CreateMenuItemDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
@@ -487,6 +489,7 @@ const CreateMenuItemDialog = ({
         fullWidth
         label={`${tMenus("items.offers.availableHours.label")} ${tCommon("optional")}`}
         onChange={(value) => setValue("offer.availableHours", value)}
+        openingHours={openingHours}
         value={availableHours}
       />
     </FormBox>

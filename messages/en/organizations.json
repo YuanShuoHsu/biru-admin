@@ -74,7 +74,7 @@
     "label": "Business",
     "openingHours": {
       "addSchedule": "Add time slot",
-      "conflict": "This slot overlaps with another time slot",
+      "conflict": "Overlaps with another time slot on {days}",
       "days": {
         "Fr": "Fr",
         "Mo": "Mo",
@@ -88,6 +88,9 @@
       "missingDays": "Please select at least one day",
       "missingEndTime": "Please fill in the end time",
       "missingStartTime": "Please fill in the start time",
+      "nextDay": "Next day",
+      "outsideOpeningHours": "Extends beyond opening hours on {days}; customers can only order within opening hours",
+      "reference": "Opening hours: {value}",
       "to": "to"
     },
     "telephone": {
@@ -164,12 +167,6 @@
       }
     },
     "days": "{days} days",
-    "enabled": {
-      "helperText": "When off, online pickup orders are made right away with no scheduling.",
-      "label": "Allow scheduled pickup",
-      "off": "Off",
-      "on": "On"
-    },
     "label": "Pickup",
     "minutes": "{minutes} minutes",
     "pickupCutoffMinutes": {
@@ -183,7 +180,7 @@
       "placeholder": "Enter the minimum lead time"
     },
     "pickupMaxAdvanceDays": {
-      "helperText": "Set to 0 to allow same-day pickup only.",
+      "helperText": "Set to 0 to allow same-day pickup only. Up to {days} days.",
       "label": "Maximum days in advance",
       "placeholder": "Enter the maximum days in advance"
     }

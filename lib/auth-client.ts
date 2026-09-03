@@ -85,7 +85,6 @@ export const authClient = createAuthClient({
             pointsEnabledAt: { type: "date", required: false },
             pointsValidityYears: { type: "number", required: false },
 
-            pickupSchedulingEnabled: { type: "boolean", required: false },
             pickupLeadMinutes: { type: "number", required: false },
             pickupMaxAdvanceDays: { type: "number", required: false },
             pickupCutoffMinutes: { type: "number", required: false },

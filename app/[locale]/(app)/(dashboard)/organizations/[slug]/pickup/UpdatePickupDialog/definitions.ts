@@ -1,6 +1,8 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
+import { PICKUP_MAX_ADVANCE_DAYS } from "@/constants/pickup";
+
 export const usePickupFormSchema = () => {
   const tValidation = useTranslations("validation");
 
@@ -12,7 +14,6 @@ export const usePickupFormSchema = () => {
 
   return z
     .object({
-      enabled: z.boolean(),
       pickupCutoffMinutes: nonNegativeInteger(
         tValidation("pickupCutoffMinutes.invalid"),
       ),
@@ -24,8 +25,6 @@ export const usePickupFormSchema = () => {
       ),
     })
     .superRefine((data, ctx) => {
-      if (!data.enabled) return;
-
       const { pickupCutoffMinutes, pickupLeadMinutes, pickupMaxAdvanceDays } =
         data;
 
@@ -40,6 +39,14 @@ export const usePickupFormSchema = () => {
         ctx.addIssue({
           code: "custom",
           message: tValidation("pickupMaxAdvanceDays.required"),
+          path: ["pickupMaxAdvanceDays"],
+        });
+      else if (Number(pickupMaxAdvanceDays) > PICKUP_MAX_ADVANCE_DAYS)
+        ctx.addIssue({
+          code: "custom",
+          message: tValidation("pickupMaxAdvanceDays.max", {
+            days: PICKUP_MAX_ADVANCE_DAYS,
+          }),
           path: ["pickupMaxAdvanceDays"],
         });
 

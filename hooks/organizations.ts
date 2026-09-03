@@ -7,7 +7,10 @@ import { swrKeys } from "@/constants/swr";
 
 import { authClient } from "@/lib/auth-client";
 
-import type { Organization, OrganizationMember } from "@/types/organizations";
+import type {
+  OrganizationMember,
+  OrganizationResponse,
+} from "@/types/organizations";
 import type { RouteParams } from "@/types/routeParams";
 
 import { resolveDefaultOrganizationSlug } from "@/utils/organizations";
@@ -51,7 +54,7 @@ export const useActiveMemberRole = () => {
 export const useOrganization = () => {
   const { organizationSlug } = useParams<RouteParams>();
 
-  const { data: organization = null } = useSWR<Organization>(
+  const { data: organization = null } = useSWR<OrganizationResponse>(
     organizationSlug ? `/api/organizations/${organizationSlug}` : null,
   );
 

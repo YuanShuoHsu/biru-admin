@@ -2396,6 +2396,7 @@ export interface components {
       invoice: components["schemas"]["CreateOrderInvoiceDto"];
       items: components["schemas"]["CreateOrderItemDto"][];
       partySize?: number;
+      /** @example 2026-08-31T09:15:00+08:00 */
       pickupTime?: string;
       tableNumber?: number;
     };
@@ -3323,7 +3324,6 @@ export interface components {
       telephone?: string | null;
       amountPerPoint?: string | null;
       pointsValidityYears?: number | null;
-      pickupSchedulingEnabled: boolean;
       pickupLeadMinutes: number;
       pickupMaxAdvanceDays: number;
       pickupCutoffMinutes: number;

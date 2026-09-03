@@ -16,8 +16,6 @@ import useSWR from "swr";
 
 import useCartTotals from "@/hooks/useCartTotals";
 
-import { useCartStore } from "@/providers/cart-store-provider";
-
 import { CheckCircle, LocalOffer } from "@mui/icons-material";
 import {
   Autocomplete,
@@ -34,6 +32,8 @@ import {
   type TypographyProps,
 } from "@mui/material";
 import { darken, lighten, styled } from "@mui/material/styles";
+
+import { useCartStore } from "@/providers/cart-store-provider";
 
 import type { AvailableCoupon } from "@/types/coupons";
 

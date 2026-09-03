@@ -1,7 +1,8 @@
-import { Locale } from "next-intl";
 import { UAParser } from "ua-parser-js";
 
 import { LocaleEnum } from "@/enums/Locale";
+
+import type { Locale } from "@/i18n/routing";
 
 import type { Session } from "@/types/auth";
 
@@ -31,14 +32,7 @@ export const formatFullName = (
 export const getDisplayName = (user?: Session["user"] | null) => {
   if (!user) return "";
 
-  const nameParts =
-    user.lang === LocaleEnum.En
-      ? [user.firstName, user.lastName]
-      : [user.lastName, user.firstName];
-
-  const name = nameParts
-    .filter(Boolean)
-    .join(user.lang === LocaleEnum.En ? " " : "");
+  const name = formatFullName(user.lang, user.firstName, user.lastName);
 
   return name || user.email || "";
 };

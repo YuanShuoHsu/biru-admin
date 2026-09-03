@@ -22,6 +22,7 @@ import type { OrganizationResponse } from "@/types/organizations";
 
 import { getCartAvailableHours } from "@/utils/menus";
 import { getCloseTimeAt, isOpenAt } from "@/utils/openingHours";
+import { getPickupWindow } from "@/utils/pickup";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
@@ -135,12 +136,14 @@ export const useCustomerPaymentFormSchema = (
         });
       }
 
-      if (isPickup && organization.pickupSchedulingEnabled) {
+      if (isPickup) {
         const pickupTime = dayjs(data.pickupTime).tz(STORE_TIMEZONE);
-        const openingHours = organization.openingHours || "";
         const leadMinutes = organization.pickupLeadMinutes;
         const advanceDays = organization.pickupMaxAdvanceDays;
-        const cutoffMinutes = organization.pickupCutoffMinutes;
+        const { cutoffMinutes, from, openingHours, to } = getPickupWindow(
+          organization,
+          dayjs().tz(STORE_TIMEZONE),
+        );
 
         const addPickupTimeIssue = (message: string) =>
           ctx.addIssue({ code: "custom", message, path: ["pickupTime"] });
@@ -149,15 +152,11 @@ export const useCustomerPaymentFormSchema = (
           addPickupTimeIssue(tValidation("pickupTime.notSelected"));
         } else if (!pickupTime.isValid()) {
           addPickupTimeIssue(tValidation("pickupTime.invalid"));
-        } else if (pickupTime.isBefore(dayjs().add(leadMinutes, "minute"))) {
+        } else if (pickupTime.isBefore(from)) {
           addPickupTimeIssue(
             tValidation("pickupTime.minDateTime", { minutes: leadMinutes }),
           );
-        } else if (
-          pickupTime.isAfter(
-            dayjs().tz(STORE_TIMEZONE).add(advanceDays, "day").endOf("day"),
-          )
-        ) {
+        } else if (pickupTime.isAfter(to)) {
           addPickupTimeIssue(
             tValidation("pickupTime.maxDateTime", { days: advanceDays }),
           );

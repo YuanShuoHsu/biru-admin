@@ -39,9 +39,14 @@ import { localize } from "@/utils/locale";
 interface UpdateMenuItemDialogProps {
   item: MenuItemType;
   mutate: () => void;
+  openingHours?: string | null;
 }
 
-const UpdateMenuItemDialog = ({ item, mutate }: UpdateMenuItemDialogProps) => {
+const UpdateMenuItemDialog = ({
+  item,
+  mutate,
+  openingHours,
+}: UpdateMenuItemDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const locale = useLocale();
@@ -495,6 +500,7 @@ const UpdateMenuItemDialog = ({ item, mutate }: UpdateMenuItemDialogProps) => {
         fullWidth
         label={`${tMenus("items.offers.availableHours.label")} ${tCommon("optional")}`}
         onChange={(value) => setValue("offer.availableHours", value)}
+        openingHours={openingHours}
         value={availableHours}
       />
     </FormBox>

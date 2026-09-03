@@ -74,7 +74,7 @@
     "label": "商业",
     "openingHours": {
       "addSchedule": "新增时段",
-      "conflict": "此时段与其他时段时间重叠",
+      "conflict": "{days}与其他时段时间重叠",
       "days": {
         "Fr": "五",
         "Mo": "一",
@@ -88,6 +88,9 @@
       "missingDays": "请选择星期",
       "missingEndTime": "请填写结束时间",
       "missingStartTime": "请填写开始时间",
+      "nextDay": "次日",
+      "outsideOpeningHours": "{days}超出营业时间，顾客只能在营业时间内选购",
+      "reference": "营业时间：{value}",
       "to": "至"
     },
     "telephone": {
@@ -164,12 +167,6 @@
       }
     },
     "days": "{days} 天",
-    "enabled": {
-      "helperText": "关闭时线上自取不提供预约，顾客下单即制作",
-      "label": "开放预约取餐",
-      "off": "未开放",
-      "on": "已开放"
-    },
     "label": "预约",
     "minutes": "{minutes} 分钟",
     "pickupCutoffMinutes": {
@@ -183,7 +180,7 @@
       "placeholder": "请输入您的最短前置时间"
     },
     "pickupMaxAdvanceDays": {
-      "helperText": "设为 0 代表只能预约当日",
+      "helperText": "设为 0 代表只能预约当日，最多 {days} 天",
       "label": "最远可预约天数",
       "placeholder": "请输入您的最远可预约天数"
     }

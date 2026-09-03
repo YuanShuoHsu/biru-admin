@@ -10,16 +10,11 @@ import { type UpdatePickupForm, usePickupFormSchema } from "./definitions";
 import FormBox from "@/components/FormBox";
 import NumberSpinner from "@/components/NumberSpinner";
 
+import { PICKUP_MAX_ADVANCE_DAYS } from "@/constants/pickup";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
-
-import {
-  FormControl,
-  FormControlLabel,
-  FormHelperText,
-  Switch,
-} from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -49,7 +44,6 @@ const UpdatePickupDialog = ({
     setValue,
   } = useForm<UpdatePickupForm>({
     defaultValues: {
-      enabled: organization.pickupSchedulingEnabled,
       pickupCutoffMinutes: String(organization.pickupCutoffMinutes),
       pickupLeadMinutes: String(organization.pickupLeadMinutes),
       pickupMaxAdvanceDays: String(organization.pickupMaxAdvanceDays),
@@ -57,27 +51,21 @@ const UpdatePickupDialog = ({
     resolver: zodResolver(pickupFormSchema),
   });
 
-  const [
-    enabled,
-    pickupCutoffMinutes,
-    pickupLeadMinutes,
-    pickupMaxAdvanceDays,
-  ] = useWatch({
-    control,
-    name: [
-      "enabled",
-      "pickupCutoffMinutes",
-      "pickupLeadMinutes",
-      "pickupMaxAdvanceDays",
-    ],
-  });
+  const [pickupCutoffMinutes, pickupLeadMinutes, pickupMaxAdvanceDays] =
+    useWatch({
+      control,
+      name: [
+        "pickupCutoffMinutes",
+        "pickupLeadMinutes",
+        "pickupMaxAdvanceDays",
+      ],
+    });
 
   const onSubmitHandler = async (values: UpdatePickupForm) => {
     await authClient.organization.update(
       {
         organizationId: organization.id,
         data: {
-          pickupSchedulingEnabled: values.enabled,
           pickupCutoffMinutes: Number(
             values.pickupCutoffMinutes || organization.pickupCutoffMinutes,
           ),
@@ -114,23 +102,7 @@ const UpdatePickupDialog = ({
 
   return (
     <FormBox id="update-pickup-form" onSubmit={onSubmit}>
-      <FormControl>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={enabled}
-              onChange={(_, checked) => setValue("enabled", checked)}
-            />
-          }
-          label={tOrganizations("pickup.enabled.label")}
-          sx={{ alignSelf: "flex-start" }}
-        />
-        <FormHelperText>
-          {tOrganizations("pickup.enabled.helperText")}
-        </FormHelperText>
-      </FormControl>
       <NumberSpinner
-        disabled={!enabled}
         error={!!errors.pickupLeadMinutes}
         fullWidth
         helperText={
@@ -148,14 +120,16 @@ const UpdatePickupDialog = ({
         value={pickupLeadMinutes !== "" ? Number(pickupLeadMinutes) : null}
       />
       <NumberSpinner
-        disabled={!enabled}
         error={!!errors.pickupMaxAdvanceDays}
         fullWidth
         helperText={
           errors.pickupMaxAdvanceDays?.message ||
-          tOrganizations("pickup.pickupMaxAdvanceDays.helperText")
+          tOrganizations("pickup.pickupMaxAdvanceDays.helperText", {
+            days: PICKUP_MAX_ADVANCE_DAYS,
+          })
         }
         label={tOrganizations("pickup.pickupMaxAdvanceDays.label")}
+        max={PICKUP_MAX_ADVANCE_DAYS}
         min={0}
         onValueChange={(value) =>
           setValue("pickupMaxAdvanceDays", value != null ? String(value) : "", {
@@ -168,7 +142,6 @@ const UpdatePickupDialog = ({
         }
       />
       <NumberSpinner
-        disabled={!enabled}
         error={!!errors.pickupCutoffMinutes}
         fullWidth
         helperText={

@@ -67,8 +67,6 @@ const OrganizationsSlugPickup = ({
     });
   };
 
-  const isEnabled = organization.pickupSchedulingEnabled;
-
   const settings = [
     {
       key: "pickupLeadMinutes",
@@ -106,23 +104,14 @@ const OrganizationsSlugPickup = ({
       )}
       <StyledPaper variant="outlined">
         <List dense disablePadding>
-          <ListItem disableGutters>
-            <ListItemText
-              primary={tOrganizations("pickup.enabled.label")}
-              secondary={tOrganizations(
-                isEnabled ? "pickup.enabled.on" : "pickup.enabled.off",
-              )}
-            />
-          </ListItem>
-          {isEnabled &&
-            settings.map(({ key, value }) => (
-              <ListItem disableGutters key={key}>
-                <ListItemText
-                  primary={tOrganizations(`pickup.${key}.label`)}
-                  secondary={value}
-                />
-              </ListItem>
-            ))}
+          {settings.map(({ key, value }) => (
+            <ListItem disableGutters key={key}>
+              <ListItemText
+                primary={tOrganizations(`pickup.${key}.label`)}
+                secondary={value}
+              />
+            </ListItem>
+          ))}
         </List>
       </StyledPaper>
     </>
