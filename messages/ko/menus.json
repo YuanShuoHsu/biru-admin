@@ -254,7 +254,7 @@
       "placeholder": "URL을 입력해 주세요"
     }
   },
-  "label": "메뉴 관리",
+  "label": "메뉴",
   "modifierGroups": {
     "actions": {
       "createGroup": {

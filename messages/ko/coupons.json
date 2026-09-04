@@ -87,7 +87,7 @@
     "signup": "가입 축하 쿠폰",
     "spend": "결제 금액 리워드"
   },
-  "label": "쿠폰 관리",
+  "label": "쿠폰",
   "menuItemIds": {
     "label": "적용 상품",
     "placeholder": "적용 상품을 선택해 주세요"

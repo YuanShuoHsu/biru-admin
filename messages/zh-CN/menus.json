@@ -254,7 +254,7 @@
       "placeholder": "请输入您的链接网址"
     }
   },
-  "label": "菜单管理",
+  "label": "菜单",
   "modifierGroups": {
     "actions": {
       "createGroup": {

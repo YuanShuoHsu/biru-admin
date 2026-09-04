@@ -87,7 +87,7 @@
     "signup": "新規登録特典",
     "spend": "利用金額特典"
   },
-  "label": "クーポン管理",
+  "label": "クーポン",
   "menuItemIds": {
     "label": "適用商品",
     "placeholder": "適用商品を選択してください"

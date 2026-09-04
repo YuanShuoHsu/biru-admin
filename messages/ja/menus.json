@@ -254,7 +254,7 @@
       "placeholder": "URLを入力してください"
     }
   },
-  "label": "メニュー管理",
+  "label": "メニュー",
   "modifierGroups": {
     "actions": {
       "createGroup": {

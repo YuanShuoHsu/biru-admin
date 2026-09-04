@@ -87,7 +87,7 @@
     "signup": "註冊禮",
     "spend": "滿額回饋"
   },
-  "label": "優惠券管理",
+  "label": "優惠券",
   "menuItemIds": {
     "label": "適用品項",
     "placeholder": "請選擇您的適用品項"

@@ -87,7 +87,7 @@
     "signup": "注册礼",
     "spend": "满额回馈"
   },
-  "label": "优惠券管理",
+  "label": "优惠券",
   "menuItemIds": {
     "label": "适用商品",
     "placeholder": "请选择您的适用商品"

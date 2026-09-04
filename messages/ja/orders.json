@@ -178,7 +178,7 @@
     "voided": "無効"
   },
   "invoiceType": "インボイス種別",
-  "label": "注文管理",
+  "label": "注文",
   "list": {
     "label": "注文一覧"
   },

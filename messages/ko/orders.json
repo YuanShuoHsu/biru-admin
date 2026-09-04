@@ -178,7 +178,7 @@
     "voided": "취소됨"
   },
   "invoiceType": "영수증 유형",
-  "label": "주문 관리",
+  "label": "주문",
   "list": {
     "label": "주문 목록"
   },

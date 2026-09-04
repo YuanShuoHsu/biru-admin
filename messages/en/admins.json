@@ -136,7 +136,7 @@
   },
   "bio": "Bio",
   "image": "Avatar",
-  "label": "User Management",
+  "label": "Users",
   "name": "Name",
   "role": {
     "admin": "Admin",

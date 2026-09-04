@@ -178,7 +178,7 @@
     "voided": "已作废"
   },
   "invoiceType": "发票类型",
-  "label": "订单管理",
+  "label": "订单",
   "list": {
     "label": "订单列表"
   },
