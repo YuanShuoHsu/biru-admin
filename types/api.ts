@@ -3436,6 +3436,10 @@ export interface components {
       /** Format: date-time */
       updatedAt: string;
     };
+    MenuItemRecipeResponseDto: {
+      id: string;
+      name: Record<string, never>;
+    };
     MenuItemResponseDto: {
       id: string;
       menuId?: string | null;
@@ -3462,6 +3466,7 @@ export interface components {
       availableModes: components["schemas"]["OrderMode"][];
       nutrition?: components["schemas"]["NutritionInformationDto"] | null;
       offer?: components["schemas"]["OfferResponseDto"] | null;
+      recipe?: components["schemas"]["MenuItemRecipeResponseDto"] | null;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -3472,6 +3477,7 @@ export interface components {
       | "name"
       | "description"
       | "priceCurrency"
+      | "recipe"
       | "price"
       | "inventoryLevel"
       | "deliveryLeadTime"
@@ -3487,6 +3493,7 @@ export interface components {
       | "name"
       | "description"
       | "priceCurrency"
+      | "recipe"
       | "price"
       | "inventoryLevel"
       | "deliveryLeadTime"
@@ -8277,6 +8284,7 @@ export const menuItemFilterFieldValues: ReadonlyArray<
   "name",
   "description",
   "priceCurrency",
+  "recipe",
   "price",
   "inventoryLevel",
   "deliveryLeadTime",
@@ -8294,6 +8302,7 @@ export const menuItemSortFieldValues: ReadonlyArray<
   "name",
   "description",
   "priceCurrency",
+  "recipe",
   "price",
   "inventoryLevel",
   "deliveryLeadTime",
