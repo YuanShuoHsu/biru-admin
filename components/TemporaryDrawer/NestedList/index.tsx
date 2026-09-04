@@ -37,13 +37,21 @@ const useNavItems = (): NavItem[][] => {
   return [
     [
       navItem("/dashboard"),
-      ...(defaultOrganizationSlug
-        ? [navItem("/orders"), navItem("/menus")]
-        : []),
+      ...(defaultOrganizationSlug ? [navItem("/orders")] : []),
     ],
-    ...(defaultOrganizationSlug &&
-    hasRolePermission(memberRole, { inventory: ["read"] })
-      ? [[navItem("/ingredients"), navItem("/suppliers"), navItem("/recipes")]]
+    ...(defaultOrganizationSlug
+      ? [
+          [
+            navItem("/menus"),
+            ...(hasRolePermission(memberRole, { inventory: ["read"] })
+              ? [
+                  navItem("/ingredients"),
+                  navItem("/suppliers"),
+                  navItem("/recipes"),
+                ]
+              : []),
+          ],
+        ]
       : []),
     [
       ...(isAdmin || defaultOrganizationSlug ? [navItem("/coupons")] : []),
