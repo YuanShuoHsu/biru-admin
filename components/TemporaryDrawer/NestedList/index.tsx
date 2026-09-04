@@ -5,13 +5,8 @@
 
 import { Fragment } from "react";
 
-import { useParams } from "next/navigation";
-
 import DividerSlot from "./DividerSlot";
-import OrderModeMenuItem from "./OrderModeMenuItem";
 import SelectedListItem from "./SelectedListItem";
-
-import { ORDER_MODE } from "@/constants/orderMode";
 
 import {
   useActiveMemberRole,
@@ -25,14 +20,11 @@ import { List, ListSubheader, Toolbar } from "@mui/material";
 import { useAuthStore } from "@/providers/auth-store-provider";
 
 import type { NavItem } from "@/types/navItem";
-import type { RouteParams } from "@/types/routeParams";
 
 import { hasRolePermission } from "@/utils/organizations";
 
 const useNavItems = (): NavItem[][] => {
   const session = useAuthStore((state) => state.session);
-
-  const { mode, organizationSlug } = useParams<Partial<RouteParams>>();
 
   const defaultOrganizationSlug = useDefaultOrganization();
   const memberRole = useActiveMemberRole();
@@ -41,22 +33,10 @@ const useNavItems = (): NavItem[][] => {
   const navItem = useRoutes();
 
   const isAdmin = session?.user?.role === "admin";
-  const isInStoreOrder =
-    Boolean(organizationSlug) &&
-    [ORDER_MODE.Counter, ORDER_MODE.DineIn, ORDER_MODE.DriveThru].some(
-      (orderMode) => orderMode === mode,
-    );
 
   return [
     [
       navItem("/dashboard"),
-      {
-        ...navItem("/order"),
-        children: [
-          ...(isInStoreOrder ? [{ slot: OrderModeMenuItem }] : []),
-          navItem(`/order/${ORDER_MODE.Pickup}`),
-        ],
-      },
       ...(defaultOrganizationSlug
         ? [navItem("/orders"), navItem("/menus")]
         : []),

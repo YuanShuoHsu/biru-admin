@@ -1,17 +1,12 @@
 "use client";
 
-import { useParams } from "next/navigation";
 import useSWR from "swr";
 
 import { swrKeys } from "@/constants/swr";
 
 import { authClient } from "@/lib/auth-client";
 
-import type {
-  OrganizationMember,
-  OrganizationResponse,
-} from "@/types/organizations";
-import type { RouteParams } from "@/types/routeParams";
+import type { OrganizationMember } from "@/types/organizations";
 
 import { resolveDefaultOrganizationSlug } from "@/utils/organizations";
 
@@ -49,16 +44,6 @@ export const useActiveMemberRole = () => {
   );
 
   return role ?? undefined;
-};
-
-export const useOrganization = () => {
-  const { organizationSlug } = useParams<RouteParams>();
-
-  const { data: organization = null } = useSWR<OrganizationResponse>(
-    organizationSlug ? `/api/organizations/${organizationSlug}` : null,
-  );
-
-  return organization;
 };
 
 export const useOrganizationMembers = (organizationId: string) => {

@@ -15,7 +15,7 @@ import PaginationActions, {
   StyledTablePagination,
 } from "@/components/PaginationActions";
 
-import { MODE_COLORS, ORDER_MODE } from "@/constants/orderMode";
+import { MODE_COLORS } from "@/constants/orderMode";
 import { STATUS_COLORS } from "@/constants/orders";
 import { getPageSizeOptions } from "@/constants/pagination";
 import { STORE_TIMEZONE } from "@/constants/timezone";
@@ -25,28 +25,13 @@ import { useOrderModeLabel } from "@/hooks/useOrderModeLabel";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
-import { useCartStore } from "@/providers/cart-store-provider";
-import { useDialogStore } from "@/providers/dialog-store-provider";
-
-import { Button, Chip, Stack, Typography } from "@mui/material";
+import { Chip, Stack, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import { getCartKey } from "@/stores/cart-store";
-
-import type { UserOrderListResponse, UserOrderResponse } from "@/types/orders";
-
-import { getHref } from "@/utils/href";
-import { getCartItems } from "@/utils/orders";
+import type { UserOrderListResponse } from "@/types/orders";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
-
-const ORDER_MODE_PATH: Record<UserOrderResponse["mode"], string> = {
-  counter: ORDER_MODE.Counter,
-  dineIn: ORDER_MODE.DineIn,
-  driveThru: ORDER_MODE.DriveThru,
-  pickup: ORDER_MODE.Pickup,
-};
 
 const StyledChip = styled(Chip)({
   alignSelf: "flex-start",
@@ -60,10 +45,6 @@ interface OrdersProps {
 
 const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
   const [expanded, setExpanded] = useState<string | false>(false);
-
-  const { carts, replaceCart } = useCartStore((state) => state);
-
-  const { setDialog } = useDialogStore((state) => state);
 
   const getOrderItemName = useOrderItemName();
 
@@ -86,36 +67,6 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
   const handleChange =
     (panel: string) => (_: React.SyntheticEvent, newExpanded: boolean) =>
       setExpanded(newExpanded ? panel : false);
-
-  const getReorderLabel = (mode: UserOrderResponse["mode"]) =>
-    mode === "pickup"
-      ? tAuth("orders.reorder")
-      : tAuth("orders.reorderAs", { mode: tOrder("mode.pickup.label") });
-
-  const handleReorder = (order: UserOrderResponse) => () => {
-    const { slug } = order.seller;
-
-    const applyReorder = () => {
-      replaceCart(ORDER_MODE.Pickup, slug, getCartItems(order.items));
-      router.push(`/order/${ORDER_MODE.Pickup}/${slug}/cart`);
-    };
-
-    const targetCart = carts[getCartKey(ORDER_MODE.Pickup, slug)];
-
-    if (!targetCart || Object.keys(targetCart).length === 0) {
-      applyReorder();
-      return;
-    }
-
-    setDialog({
-      contentText: tAuth("orders.reorderConfirmContentText", {
-        name: order.seller.name,
-      }),
-      onConfirm: async () => applyReorder(),
-      open: true,
-      title: getReorderLabel(order.mode),
-    });
-  };
 
   const handlePageChange = (
     _event: React.MouseEvent<HTMLButtonElement> | null,
@@ -267,39 +218,9 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
                     {order.invoice.invoiceNumber}
                   </Typography>
                 )}
-                <Stack
-                  alignItems="center"
-                  direction="row"
-                  gap={1}
-                  justifyContent="space-between"
-                >
-                  <Typography color="text.secondary" variant="body2">
-                    {tOrder(`checkout.payment.${order.paymentMethod}`)}
-                  </Typography>
-                  <Stack direction="row" gap={1}>
-                    <Button
-                      href={getHref(
-                        `/order/${ORDER_MODE_PATH[order.mode]}/${order.seller.slug}/complete`,
-                        {
-                          orderId: order.id,
-                          partySize: order.partySize,
-                          tableNumber: order.tableNumber,
-                        },
-                      )}
-                      size="small"
-                      variant="outlined"
-                    >
-                      {tAuth("orders.detail")}
-                    </Button>
-                    <Button
-                      onClick={handleReorder(order)}
-                      size="small"
-                      variant="contained"
-                    >
-                      {getReorderLabel(order.mode)}
-                    </Button>
-                  </Stack>
-                </Stack>
+                <Typography color="text.secondary" variant="body2">
+                  {tOrder(`checkout.payment.${order.paymentMethod}`)}
+                </Typography>
               </Stack>
             </CustomizedAccordions>
           );

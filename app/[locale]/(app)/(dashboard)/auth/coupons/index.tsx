@@ -9,9 +9,7 @@ import FormCard, {
   StyledCardHeader,
 } from "@/components/FormCard";
 
-import { ORDER_MODE } from "@/constants/orderMode";
-
-import { Link, useRouter } from "@/i18n/navigation";
+import { useRouter } from "@/i18n/navigation";
 
 import { LocalOffer } from "@mui/icons-material";
 import { Avatar, Button, Card, CardActions, Typography } from "@mui/material";
@@ -141,20 +139,7 @@ const Coupons = ({ claimableCoupons, coupons }: CouponsProps) => {
                             ? `-${Number(coupon.discountValue)}%`
                             : `-${coupon.discountCurrency} ${Number(coupon.discountValue).toLocaleString(locale)}`}
                         </Typography>
-                        {"coupon" in item ? (
-                          <Button
-                            component={Link}
-                            href={
-                              item.applicableOrganizationSlugs?.length === 1
-                                ? `/order/${ORDER_MODE.Pickup}/${item.applicableOrganizationSlugs[0]}`
-                                : `/order/${ORDER_MODE.Pickup}`
-                            }
-                            size="small"
-                            variant="outlined"
-                          >
-                            {tAuth("coupons.use")}
-                          </Button>
-                        ) : (
+                        {!("coupon" in item) && (
                           <Button
                             loading={claimingId === item.id}
                             onClick={() => handleClaim(item)}

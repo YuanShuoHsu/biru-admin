@@ -7,7 +7,6 @@ import { useSnackbar } from "notistack";
 import { Suspense } from "react";
 
 import AccountMenu from "./AccountMenu";
-import CartIconButton from "./CartIconButton";
 import LanguageMenu from "./LanguageMenu";
 import ThemeSwitcher from "./ThemeSwitcher";
 
@@ -26,7 +25,7 @@ import { SCROLL_TRIGGER_THRESHOLD } from "@/constants/scroll";
 
 import { useRoutes } from "@/hooks/useRoutes";
 
-import { usePathname, useRouter } from "@/i18n/navigation";
+import { useRouter } from "@/i18n/navigation";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
@@ -76,8 +75,6 @@ const HideAppBar = () => {
   const { setDialog } = useDialogStore((state) => state);
 
   const locale = useLocale();
-
-  const pathname = usePathname();
 
   const router = useRouter();
 
@@ -182,7 +179,6 @@ const HideAppBar = () => {
               <AccountMenu />
             </Suspense>
           )}
-          {pathname.startsWith("/order/") && <CartIconButton />}
         </Stack>
       </StyledToolbar>
     </StyledAppBar>

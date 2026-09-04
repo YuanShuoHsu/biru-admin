@@ -1,7 +1,5 @@
 "use client";
 
-import { ORDER_MODE } from "@/constants/orderMode";
-
 import { useNavChildren } from "@/hooks/useNavChildren";
 import { useRoutes } from "@/hooks/useRoutes";
 
@@ -23,10 +21,6 @@ const useFooterItems = (): NavItem[] => {
   const navChildren = useNavChildren();
 
   return [
-    {
-      ...navItem("/order"),
-      children: [navItem(`/order/${ORDER_MODE.Pickup}`)],
-    },
     {
       ...navItem("/auth"),
       children: navChildren["/auth"],

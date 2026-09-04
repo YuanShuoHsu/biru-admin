@@ -10,10 +10,9 @@ import {
 import { useParams, useSearchParams } from "next/navigation";
 import useSWR from "swr";
 
-import { ORDER_MODE } from "@/constants/orderMode";
 import { DEFAULT_PAGINATION_QUERY } from "@/constants/pagination";
 
-import { useDefaultOrganization, useOrganization } from "@/hooks/organizations";
+import { useDefaultOrganization } from "@/hooks/organizations";
 
 import { usePathname } from "@/i18n/navigation";
 
@@ -31,7 +30,6 @@ import {
   Dashboard,
   DeleteForever,
   Devices,
-  DirectionsCar,
   Email,
   EventAvailable,
   Extension,
@@ -44,7 +42,6 @@ import {
   Info,
   Kitchen,
   ListAlt,
-  LocalMall,
   LocationOn,
   Lock,
   LockReset,
@@ -54,18 +51,13 @@ import {
   ManageAccounts,
   ManageSearch,
   MenuBook,
-  Payment,
   People,
   Person,
   PersonAdd,
-  Pets,
   Policy,
-  QrCodeScanner,
   ReceiptLong,
-  Restaurant,
   Sell,
   Settings,
-  ShoppingCart,
   SoupKitchen,
   Stars,
   Storefront,
@@ -94,10 +86,8 @@ type RouteQuery =
   | "organization"
   | "page"
   | "pageSize"
-  | "partySize"
   | "range"
-  | "redirectTo"
-  | "tableNumber";
+  | "redirectTo";
 
 interface Route {
   children?: Route[];
@@ -108,70 +98,12 @@ interface Route {
   to?: string | null;
 }
 
-const storeRoute: Route = {
-  children: [
-    {
-      icon: ShoppingCart,
-      label: "order.mode.storeSlug.tableNumber.stepper.cart.label",
-      segment: "cart",
-    },
-    {
-      icon: Payment,
-      label: "order.mode.storeSlug.tableNumber.stepper.checkout.label",
-      segment: "checkout",
-    },
-    {
-      icon: Pets,
-      label: "order.mode.storeSlug.tableNumber.stepper.complete.label",
-      segment: "complete",
-    },
-  ],
-  icon: Storefront,
-  query: ["partySize", "tableNumber"],
-  segment: "[organizationSlug]",
-};
-
 const routes: Route[] = [
   {
     icon: Dashboard,
     label: "dashboard.label",
     query: ["organization", "range"],
     segment: "dashboard",
-  },
-  {
-    children: [
-      {
-        children: [storeRoute],
-        icon: QrCodeScanner,
-        label: "order.mode.counter.label",
-        segment: ORDER_MODE.Counter,
-        to: null,
-      },
-      {
-        children: [storeRoute],
-        icon: Restaurant,
-        label: "order.mode.dineIn.label",
-        segment: ORDER_MODE.DineIn,
-        to: null,
-      },
-      {
-        children: [storeRoute],
-        icon: DirectionsCar,
-        label: "order.mode.driveThru.label",
-        segment: ORDER_MODE.DriveThru,
-        to: null,
-      },
-      {
-        children: [storeRoute],
-        icon: LocalMall,
-        label: "order.mode.pickup.label",
-        segment: ORDER_MODE.Pickup,
-      },
-    ],
-    icon: ShoppingCart,
-    label: "order.label",
-    segment: "order",
-    to: null,
   },
   {
     children: [
@@ -641,8 +573,6 @@ const findRoute = (path: string) => {
 const useDynamicLabels = (): Partial<Record<string, string>> => {
   const locale = useLocale();
 
-  const organization = useOrganization();
-
   const {
     couponId,
     groupId,
@@ -798,7 +728,6 @@ const useDynamicLabels = (): Partial<Record<string, string>> => {
     menuItemId: menuItemName,
     menuSectionId: menuSectionName,
     orderId: orderNumber,
-    organizationSlug: organization?.name || "",
     recipeId: recipeName,
     slug: organizationSlugName,
     supplierId: supplierName,
@@ -821,10 +750,8 @@ export const useRoutes = () => {
     organization: searchParams.get("organization") || defaultOrganization,
     page: DEFAULT_PAGINATION_QUERY.page,
     pageSize: DEFAULT_PAGINATION_QUERY.pageSize,
-    partySize: searchParams.get("partySize"),
     range: searchParams.get("range"),
     redirectTo: searchParams.get("redirectTo") || pathname,
-    tableNumber: searchParams.get("tableNumber"),
   };
 
   const buildHref = (href: string, query = findRoute(href)?.query) => {
