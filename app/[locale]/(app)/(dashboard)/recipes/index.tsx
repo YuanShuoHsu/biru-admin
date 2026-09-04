@@ -7,9 +7,8 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
-import RecipeDialog from "./RecipeDialog";
-
 import AuditLogButton from "@/components/AuditLogButton";
+import RecipeDialog from "@/components/RecipeDialog";
 
 import {
   autosizeOptions,
@@ -63,6 +62,7 @@ const DataGrid = dynamic(
 );
 
 interface RecipesProps {
+  canCreate: boolean;
   canViewAuditLog: boolean;
   canWrite: boolean;
   filterField?: RecipeFilterField;
@@ -80,6 +80,7 @@ interface RecipesProps {
 }
 
 const Recipes = ({
+  canCreate,
   canViewAuditLog,
   canWrite,
   filterField: initialFilterField,
@@ -236,6 +237,8 @@ const Recipes = ({
     setDialog({
       content: (
         <RecipeDialog
+          defaultMenuItemId={null}
+          defaultName={null}
           menuItems={menuItems}
           mutate={mutate}
           organizationSlug={organizationSlug}
@@ -253,6 +256,8 @@ const Recipes = ({
       setDialog({
         content: (
           <RecipeDialog
+            defaultMenuItemId={null}
+            defaultName={null}
             menuItems={menuItems}
             mutate={mutate}
             organizationSlug={organizationSlug}
@@ -384,7 +389,8 @@ const Recipes = ({
         filterable: false,
         headerName: tInventory("recipes.cost.label"),
         sortable: false,
-        valueFormatter: (value: number) => format.number(Math.round(value)),
+        valueFormatter: (value: number) =>
+          format.number(value, { maximumFractionDigits: 2 }),
       },
       {
         field: "costPerServing",
@@ -392,7 +398,9 @@ const Recipes = ({
         headerName: tInventory("recipes.costPerServing.label"),
         sortable: false,
         valueGetter: (_value: unknown, row: Recipe) =>
-          format.number(Math.round(row.cost / row.recipeYield)),
+          format.number(row.cost / row.recipeYield, {
+            maximumFractionDigits: 2,
+          }),
       },
       {
         field: "price",
@@ -448,7 +456,7 @@ const Recipes = ({
   return (
     <>
       <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
-        {canWrite && (
+        {canCreate && (
           <Button
             onClick={handleCreateRecipe}
             size="small"

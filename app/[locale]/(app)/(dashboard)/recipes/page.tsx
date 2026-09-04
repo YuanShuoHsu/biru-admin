@@ -33,6 +33,7 @@ interface RecipesPageProps {
     filterField?: string;
     filterOperator?: string;
     filterValue?: string;
+    menuItemId?: string;
     organization?: string;
     page?: string;
     pageSize?: string;
@@ -146,6 +147,7 @@ const RecipesPage = async ({ params, searchParams }: RecipesPageProps) => {
 
   return (
     <Recipes
+      canCreate={hasRolePermission(memberRole?.role, { inventory: ["create"] })}
       canViewAuditLog={hasRolePermission(memberRole?.role, {
         auditLog: ["read"],
       })}

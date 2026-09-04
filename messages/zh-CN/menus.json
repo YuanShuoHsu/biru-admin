@@ -65,6 +65,9 @@
         "title": "删除品项"
       },
       "label": "操作",
+      "manageItem": {
+        "title": "管理品项"
+      },
       "reorderItem": {
         "cancel": {
           "confirm": "确定要取消<bold>品项</bold>排序吗？未保存的更改将会丢失。",
@@ -131,7 +134,7 @@
         "menuItem": "加购分组 {menuSection} 加购品项 {menuItem}",
         "menuSection": "加购分组 {menuSection}"
       },
-      "label": "加购设置"
+      "label": "加购"
     },
     "description": {
       "label": "描述",
@@ -175,7 +178,7 @@
         "label": "选项组",
         "placeholder": "请选择您的选项组"
       },
-      "label": "选项设置"
+      "label": "选项"
     },
     "name": {
       "label": "品项名称",

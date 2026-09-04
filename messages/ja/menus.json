@@ -65,6 +65,9 @@
         "title": "品目を削除"
       },
       "label": "操作",
+      "manageItem": {
+        "title": "品目を管理"
+      },
       "reorderItem": {
         "cancel": {
           "confirm": "<bold>品目</bold>の並び替えをキャンセルしますか？保存されていない変更は失われます。",
@@ -131,7 +134,7 @@
         "menuItem": "グループ {menuSection} 品目 {menuItem}",
         "menuSection": "グループ {menuSection}"
       },
-      "label": "追加オプション設定"
+      "label": "追加オプション"
     },
     "description": {
       "label": "説明",
@@ -175,7 +178,7 @@
         "label": "オプショングループ",
         "placeholder": "オプショングループを選択してください"
       },
-      "label": "オプション設定"
+      "label": "オプション"
     },
     "name": {
       "label": "品目名",

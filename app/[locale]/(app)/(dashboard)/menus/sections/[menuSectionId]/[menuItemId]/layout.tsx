@@ -7,7 +7,12 @@ import { DEFAULT_PAGINATION_QUERY } from "@/constants/pagination";
 
 import { Link, usePathname } from "@/i18n/navigation";
 
-import { Extension, Tune, type SvgIconComponent } from "@mui/icons-material";
+import {
+  Extension,
+  Kitchen,
+  Tune,
+  type SvgIconComponent,
+} from "@mui/icons-material";
 import { Stack, Tab, Tabs } from "@mui/material";
 
 const MenuItemLayout = ({ children }: { children: React.ReactNode }) => {
@@ -27,6 +32,7 @@ const MenuItemLayout = ({ children }: { children: React.ReactNode }) => {
     ...DEFAULT_PAGINATION_QUERY,
   }).toString()}`;
 
+  const tInventory = useTranslations("inventory");
   const tMenus = useTranslations("menus");
 
   const tabs: {
@@ -35,14 +41,19 @@ const MenuItemLayout = ({ children }: { children: React.ReactNode }) => {
     value: string;
   }[] = [
     {
+      Icon: Tune,
+      label: tMenus("items.modifierGroups.label"),
+      value: `${basePath}/modifier-groups`,
+    },
+    {
       Icon: Extension,
       label: tMenus("items.addOns.label"),
       value: `${basePath}/add-ons`,
     },
     {
-      Icon: Tune,
-      label: tMenus("items.modifierGroups.label"),
-      value: `${basePath}/modifier-groups`,
+      Icon: Kitchen,
+      label: tInventory("recipes.ingredients.label"),
+      value: `${basePath}/ingredients`,
     },
   ];
 

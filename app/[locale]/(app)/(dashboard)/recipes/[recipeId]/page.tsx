@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
-import RecipeIngredients from ".";
+import RecipeIngredients from "@/components/RecipeIngredients";
 
 import type { Locale } from "@/i18n/routing";
 
@@ -12,7 +12,6 @@ import { authClient } from "@/lib/auth-client";
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
 import { getIngredients, getRecipe } from "@/utils/inventory";
-import { getResolvedAdminOrganization } from "@/utils/menus";
 import { hasRolePermission } from "@/utils/organizations";
 
 interface RecipeIngredientsPageProps {
@@ -44,9 +43,12 @@ const RecipeIngredientsPage = async ({
 
   if (!recipe) notFound();
 
-  const organization = await getResolvedAdminOrganization(
-    undefined,
-    cookieStore.toString(),
+  const { data: organizations } = await authClient.organization.list({
+    fetchOptions,
+  });
+
+  const organization = organizations?.find(
+    ({ id }) => id === recipe.organizationId,
   );
 
   const [{ data: memberRole }, { ingredients }] = await Promise.all([
@@ -65,8 +67,11 @@ const RecipeIngredientsPage = async ({
 
   return (
     <RecipeIngredients
+      canCreate={hasRolePermission(memberRole?.role, { inventory: ["create"] })}
       canWrite={hasRolePermission(memberRole?.role, { inventory: ["update"] })}
       ingredients={ingredients}
+      menuItem={null}
+      organizationSlug={organization?.slug || null}
       recipe={recipe}
     />
   );

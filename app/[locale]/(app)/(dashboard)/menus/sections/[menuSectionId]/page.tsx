@@ -133,12 +133,14 @@ const MenusMenuIdSectionIdPage = async ({
   const members = fullOrgData.data?.members || [];
   const role = members.find(({ userId }) => userId === currentUserId)?.role;
   const canWrite = hasRolePermission(role, { menu: ["update"] });
+  const canManageRecipe = hasRolePermission(role, { inventory: ["create"] });
   const canViewAuditLog = hasRolePermission(role, {
     auditLog: ["read"],
   });
 
   return (
     <MenusMenuIdSectionId
+      canManageRecipe={canManageRecipe}
       canViewAuditLog={canViewAuditLog}
       canWrite={canWrite}
       filterField={filterField}
@@ -146,6 +148,7 @@ const MenusMenuIdSectionIdPage = async ({
       filterValue={filterValue}
       items={items}
       openingHours={selectedOrganization.openingHours}
+      organizationSlug={selectedOrganization.slug}
       page={page}
       pageSize={pageSize}
       quickFilterValue={quickFilterValue}

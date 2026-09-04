@@ -222,6 +222,12 @@ const routes: Route[] = [
                     segment: "audit-logs",
                   },
                   {
+                    icon: Kitchen,
+                    label: "inventory.recipes.ingredients.label",
+                    query: ["organization"],
+                    segment: "ingredients",
+                  },
+                  {
                     children: [
                       {
                         children: [

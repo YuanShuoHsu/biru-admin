@@ -129,6 +129,9 @@
     "costPerServing": {
       "label": "Cost per serving"
     },
+    "grossProfit": {
+      "label": "Gross profit"
+    },
     "ingredients": {
       "actions": {
         "createRecipeIngredient": {
@@ -152,11 +155,12 @@
       "cost": {
         "label": "Total cost"
       },
+      "empty": "This item has no recipe yet. Once added, its ingredients are deducted automatically when it sells.",
       "ingredientId": {
         "label": "Ingredient",
         "placeholder": "Please select your Ingredient"
       },
-      "label": "Recipe ingredient",
+      "label": "Recipe ingredients",
       "requiredQuantity": {
         "label": "Amount",
         "placeholder": "Please enter your Amount"
@@ -170,6 +174,7 @@
       "label": "Margin"
     },
     "menuItemId": {
+      "helperText": "Leave empty to match a menu item with the same name automatically",
       "label": "Menu item",
       "placeholder": "Please select your Menu item"
     },
@@ -182,7 +187,8 @@
     },
     "recipeYield": {
       "label": "Servings",
-      "placeholder": "Please enter your Servings"
+      "placeholder": "Please enter your Servings",
+      "unit": "servings"
     }
   },
   "suppliers": {

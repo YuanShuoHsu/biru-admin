@@ -149,6 +149,16 @@ export const getAdminMenuSection = cache(
   },
 );
 
+export const getAdminMenuItem = cache(
+  async (menuItemId: string, init?: RequestInit) => {
+    try {
+      return await fetcher<MenuItem>(`/api/menu-items/${menuItemId}`, init);
+    } catch {
+      return null;
+    }
+  },
+);
+
 export const getAdminMenuSectionItems = cache(
   async (
     sectionId: string,

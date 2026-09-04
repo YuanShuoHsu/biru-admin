@@ -38,16 +38,16 @@ import {
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
 
-import { usePathname, useRouter } from "@/i18n/navigation";
+import { Link as NextLink, usePathname, useRouter } from "@/i18n/navigation";
 
 import {
   Add,
   Cancel,
   Delete,
   Edit,
-  Extension,
   Save,
   Sort,
+  Widgets,
 } from "@mui/icons-material";
 import {
   Box,
@@ -55,6 +55,7 @@ import {
   Chip,
   DialogContentText,
   IconButton,
+  Link,
   Stack,
   styled,
   Tooltip,
@@ -87,6 +88,7 @@ import {
 } from "@/utils/dataGrid";
 import { getMenuEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
+import { getHref } from "@/utils/href";
 import { localize } from "@/utils/locale";
 
 const DataGrid = dynamic(
@@ -103,6 +105,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
 }));
 
 interface MenusMenuIdSectionIdProps {
+  canManageRecipe: boolean;
   canViewAuditLog: boolean;
   canWrite: boolean;
   filterField?: MenuItemFilterField;
@@ -110,6 +113,7 @@ interface MenusMenuIdSectionIdProps {
   filterValue?: string;
   items: MenuItem[];
   openingHours?: string | null;
+  organizationSlug: string;
   page: number;
   pageSize: number;
   quickFilterValue?: string;
@@ -120,6 +124,7 @@ interface MenusMenuIdSectionIdProps {
 }
 
 const MenusMenuIdSectionId = ({
+  canManageRecipe,
   canViewAuditLog,
   canWrite,
   filterField: initialFilterField,
@@ -127,6 +132,7 @@ const MenusMenuIdSectionId = ({
   filterValue: initialFilterValue,
   items: initialItems,
   openingHours,
+  organizationSlug,
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,
@@ -183,6 +189,7 @@ const MenusMenuIdSectionId = ({
   const searchParams = useSearchParams();
 
   const tCommon = useTranslations("common");
+  const tInventory = useTranslations("inventory");
   const tMenus = useTranslations("menus");
   const tOrder = useTranslations("order");
 
@@ -397,7 +404,7 @@ const MenusMenuIdSectionId = ({
         ...DEFAULT_PAGINATION_QUERY,
       });
       router.push(
-        `/menus/sections/${menuSectionId}/${id}/add-ons?${params.toString()}`,
+        `/menus/sections/${menuSectionId}/${id}/modifier-groups?${params.toString()}`,
       );
     },
     [router, searchParams, menuSectionId],
@@ -504,7 +511,7 @@ const MenusMenuIdSectionId = ({
                   alignItems="center"
                   gap={1}
                 >
-                  <Tooltip title={tMenus("items.addOns.label")}>
+                  <Tooltip title={tMenus("items.actions.manageItem.title")}>
                     <IconButton
                       onClick={(event) => {
                         event.stopPropagation();
@@ -513,7 +520,7 @@ const MenusMenuIdSectionId = ({
                       }}
                       size="small"
                     >
-                      <Extension fontSize="small" />
+                      <Widgets fontSize="small" />
                     </IconButton>
                   </Tooltip>
                   {canWrite && (
@@ -587,6 +594,45 @@ const MenusMenuIdSectionId = ({
         headerName: `${tMenus("items.description.label")} ${tCommon("optional")}`,
         valueGetter: (_value: unknown, row: MenuItem) =>
           localize(row.description, locale),
+      },
+      {
+        field: "recipe",
+        filterOperators: stringFilterOperators,
+        headerName: `${tInventory("recipes.label")} ${tCommon("optional")}`,
+        renderCell: ({
+          row: { id, recipe },
+        }: GridRenderCellParams<MenuItem>) => (
+          <Stack alignItems="center" direction="row" height="100%">
+            {recipe ? (
+              <Link
+                component={NextLink}
+                href={getHref(`/recipes/${recipe.id}`, {
+                  organization: organizationSlug,
+                })}
+                underline="hover"
+                variant="body2"
+              >
+                {localize(recipe.name, locale)}
+              </Link>
+            ) : (
+              canManageRecipe && (
+                <Button
+                  component={NextLink}
+                  href={getHref(
+                    `/menus/sections/${menuSectionId}/${id}/ingredients`,
+                    { organization: organizationSlug },
+                  )}
+                  size="small"
+                  startIcon={<Add />}
+                >
+                  {tInventory("recipes.actions.createRecipe.title")}
+                </Button>
+              )
+            )}
+          </Stack>
+        ),
+        valueGetter: (_value: unknown, row: MenuItem) =>
+          localize(row.recipe?.name, locale),
       },
       {
         field: "priceCurrency",
@@ -714,6 +760,7 @@ const MenusMenuIdSectionId = ({
       },
     ],
     [
+      canManageRecipe,
       canViewAuditLog,
       canWrite,
       dateFilterOperators,
@@ -725,9 +772,12 @@ const MenusMenuIdSectionId = ({
       handleUpdateItem,
       isReorderMode,
       locale,
+      menuSectionId,
       numberFilterOperators,
+      organizationSlug,
       stringFilterOperators,
       tCommon,
+      tInventory,
       tMenus,
       tOrder,
     ],

@@ -65,6 +65,9 @@
         "title": "Delete item"
       },
       "label": "Actions",
+      "manageItem": {
+        "title": "Manage item"
+      },
       "reorderItem": {
         "cancel": {
           "confirm": "Are you sure you want to cancel <bold>items</bold> reorder? Unsaved changes will be lost.",
@@ -131,7 +134,7 @@
         "menuItem": "section {menuSection} item {menuItem}",
         "menuSection": "section {menuSection}"
       },
-      "label": "Add-on setup"
+      "label": "Add-ons"
     },
     "description": {
       "label": "Description",
@@ -175,7 +178,7 @@
         "label": "Modifier group",
         "placeholder": "Please select your modifier group"
       },
-      "label": "Modifier setup"
+      "label": "Modifiers"
     },
     "name": {
       "label": "Item name",

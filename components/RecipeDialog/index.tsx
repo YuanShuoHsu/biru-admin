@@ -24,6 +24,8 @@ import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
 
 interface RecipeDialogProps {
+  defaultMenuItemId: string | null;
+  defaultName: Recipe["name"] | null;
   menuItems: MenuItem[];
   mutate: () => void;
   organizationSlug: string;
@@ -31,6 +33,8 @@ interface RecipeDialogProps {
 }
 
 const RecipeDialog = ({
+  defaultMenuItemId,
+  defaultName,
   menuItems,
   mutate,
   organizationSlug,
@@ -51,8 +55,8 @@ const RecipeDialog = ({
     setValue,
   } = useForm<RecipeForm>({
     defaultValues: {
-      menuItemId: recipe?.menuItemId || "",
-      name: recipe?.name || {},
+      menuItemId: recipe?.menuItemId || defaultMenuItemId || "",
+      name: recipe?.name || defaultName || {},
       recipeYield: String(recipe?.recipeYield || 1),
     },
     resolver: zodResolver(recipeFormSchema),
@@ -122,7 +126,10 @@ const RecipeDialog = ({
       <TextField
         error={!!errors.menuItemId}
         fullWidth
-        helperText={errors.menuItemId?.message}
+        helperText={
+          errors.menuItemId?.message ||
+          tInventory("recipes.menuItemId.helperText")
+        }
         label={`${tInventory("recipes.menuItemId.label")} ${tCommon("optional")}`}
         select
         slotProps={{

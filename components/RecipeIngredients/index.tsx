@@ -8,22 +8,32 @@ import useSWR from "swr";
 
 import RecipeIngredientDialog from "./RecipeIngredientDialog";
 
+import RecipeDialog from "@/components/RecipeDialog";
+
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
+
+import { useRouter } from "@/i18n/navigation";
 
 import { Add, Delete, Edit } from "@mui/icons-material";
 import {
   Button,
   DialogContentText,
   IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  Paper,
   Stack,
   Tooltip,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { Ingredient, Recipe, RecipeIngredient } from "@/types/inventory";
+import type { MenuItem } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
@@ -33,20 +43,32 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(2),
+}));
+
 interface RecipeIngredientsProps {
+  canCreate: boolean;
   canWrite: boolean;
   ingredients: Ingredient[];
-  recipe: Recipe;
+  menuItem: MenuItem | null;
+  organizationSlug: string | null;
+  recipe: Recipe | null;
 }
 
 const RecipeIngredients = ({
+  canCreate,
   canWrite,
   ingredients,
+  menuItem,
+  organizationSlug,
   recipe,
 }: RecipeIngredientsProps) => {
   const { setDialog } = useDialogStore((state) => state);
 
   const apiRef = useGridApiRef();
+
+  const router = useRouter();
 
   const format = useFormatter();
 
@@ -55,14 +77,14 @@ const RecipeIngredients = ({
   const tInventory = useTranslations("inventory");
 
   const {
-    data: materials = recipe.recipeIngredients || [],
+    data: materials,
     mutate,
     isValidating: loading,
   } = useSWR(
-    `/api/recipes/${recipe.id}/recipe-ingredients`,
+    recipe && `/api/recipes/${recipe.id}/recipe-ingredients`,
     async (url) => fetcher<RecipeIngredient[]>(url),
     {
-      fallbackData: recipe.recipeIngredients || [],
+      fallbackData: recipe?.recipeIngredients || [],
       onSuccess: () => {
         setTimeout(() => {
           apiRef.current?.autosizeColumns(autosizeOptions);
@@ -71,7 +93,31 @@ const RecipeIngredients = ({
     },
   );
 
+  const handleEditRecipe = useCallback(() => {
+    if (!menuItem || !organizationSlug) return;
+
+    setDialog({
+      content: (
+        <RecipeDialog
+          defaultMenuItemId={recipe ? null : menuItem.id}
+          defaultName={recipe ? null : menuItem.name}
+          menuItems={[menuItem]}
+          mutate={() => router.refresh()}
+          organizationSlug={organizationSlug}
+          recipe={recipe}
+        />
+      ),
+      formId: "recipe-form",
+      open: true,
+      title: tInventory(
+        `recipes.actions.${recipe ? "updateRecipe" : "createRecipe"}.title`,
+      ),
+    });
+  }, [menuItem, organizationSlug, recipe, router, setDialog, tInventory]);
+
   const handleCreateRecipeIngredient = useCallback(() => {
+    if (!recipe) return;
+
     setDialog({
       content: (
         <RecipeIngredientDialog
@@ -91,6 +137,8 @@ const RecipeIngredients = ({
 
   const handleUpdateRecipeIngredient = useCallback(
     (material: RecipeIngredient) => {
+      if (!recipe) return;
+
       setDialog({
         content: (
           <RecipeIngredientDialog
@@ -112,6 +160,8 @@ const RecipeIngredients = ({
 
   const handleDeleteRecipeIngredient = useCallback(
     ({ id, ingredientName }: RecipeIngredient) => {
+      if (!recipe) return;
+
       setDialog({
         content: (
           <DialogContentText>
@@ -154,7 +204,7 @@ const RecipeIngredients = ({
         ),
       });
     },
-    [locale, mutate, recipe.id, setDialog, tInventory],
+    [locale, mutate, recipe, setDialog, tInventory],
   );
 
   const columns = useMemo<GridColDef[]>(
@@ -247,7 +297,19 @@ const RecipeIngredients = ({
   return (
     <>
       <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
-        {canWrite && (
+        {menuItem && (recipe ? canWrite : canCreate) && (
+          <Button
+            onClick={handleEditRecipe}
+            size="small"
+            startIcon={recipe ? <Edit /> : <Add />}
+            variant={recipe ? "outlined" : "contained"}
+          >
+            {tInventory(
+              `recipes.actions.${recipe ? "updateRecipe" : "createRecipe"}.title`,
+            )}
+          </Button>
+        )}
+        {canWrite && recipe && (
           <Button
             onClick={handleCreateRecipeIngredient}
             size="small"
@@ -260,6 +322,64 @@ const RecipeIngredients = ({
           </Button>
         )}
       </Stack>
+      <StyledPaper variant="outlined">
+        <List dense disablePadding>
+          {recipe ? (
+            [
+              {
+                primary: tInventory("recipes.recipeYield.label"),
+                secondary: `${format.number(recipe.recipeYield)} ${tInventory("recipes.recipeYield.unit")}`,
+              },
+              {
+                primary: tInventory("recipes.cost.label"),
+                secondary: format.number(recipe.cost, {
+                  maximumFractionDigits: 2,
+                }),
+              },
+              {
+                primary: tInventory("recipes.costPerServing.label"),
+                secondary: format.number(recipe.cost / recipe.recipeYield, {
+                  maximumFractionDigits: 2,
+                }),
+              },
+              ...(recipe.price == null
+                ? []
+                : [
+                    {
+                      primary: tInventory("recipes.price.label"),
+                      secondary: format.number(recipe.price),
+                    },
+                    {
+                      primary: tInventory("recipes.grossProfit.label"),
+                      secondary: format.number(
+                        recipe.price - recipe.cost / recipe.recipeYield,
+                        { maximumFractionDigits: 2 },
+                      ),
+                    },
+                    {
+                      primary: tInventory("recipes.margin.label"),
+                      secondary: format.number(
+                        (recipe.price - recipe.cost / recipe.recipeYield) /
+                          recipe.price,
+                        { style: "percent" },
+                      ),
+                    },
+                  ]),
+            ].map(({ primary, secondary }) => (
+              <ListItem disableGutters key={primary}>
+                <ListItemText primary={primary} secondary={secondary} />
+              </ListItem>
+            ))
+          ) : (
+            <ListItem disableGutters>
+              <ListItemText
+                primary={tInventory("recipes.label")}
+                secondary={tInventory("recipes.ingredients.empty")}
+              />
+            </ListItem>
+          )}
+        </List>
+      </StyledPaper>
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}
