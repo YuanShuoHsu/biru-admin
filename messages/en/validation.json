@@ -156,5 +156,29 @@
   },
   "validFrom": {
     "beforeValidThrough": "Start date must be before end date."
+  },
+  "eligibleQuantity": {
+    "required": "Package size is required."
+  },
+  "ingredientId": {
+    "notSelected": "Please select your ingredient."
+  },
+  "quantity": {
+    "required": "Quantity is required."
+  },
+  "recipeYield": {
+    "required": "Servings is required."
+  },
+  "requiredQuantity": {
+    "required": "Amount is required."
+  },
+  "supplierName": {
+    "required": "Supplier name is required."
+  },
+  "transactionType": {
+    "notSelected": "Please select your type."
+  },
+  "unitCode": {
+    "notSelected": "Please select your unit."
   }
 }

@@ -73,6 +73,7 @@
   "resource": {
     "banner": "Banner",
     "coupon": "Coupon",
+    "ingredient": "Ingredient",
     "invoice": "Invoice",
     "label": "Resource",
     "menu": "Menu",
@@ -83,6 +84,8 @@
     "modifier": "Modifier",
     "modifierGroup": "Modifier group",
     "order": "Order",
+    "recipe": "Recipe",
+    "supplier": "Supplier",
     "userCoupon": "Coupon recipient"
   },
   "target": "Target",

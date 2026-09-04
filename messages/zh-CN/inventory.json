@@ -1,0 +1,270 @@
+{
+  "createdAt": "创建时间",
+  "ingredients": {
+    "actions": {
+      "createIngredient": {
+        "error": "新增食材失败",
+        "success": "已新增食材",
+        "title": "新增食材"
+      },
+      "deleteIngredient": {
+        "confirm": "确定要删除 <bold>{name}</bold> 吗？此操作无法复原。",
+        "error": "删除食材失败",
+        "success": "已删除食材",
+        "title": "删除食材"
+      },
+      "label": "操作",
+      "updateIngredient": {
+        "error": "更新食材失败",
+        "success": "已更新食材",
+        "title": "编辑食材"
+      },
+      "viewOffers": {
+        "title": "查看采购规格"
+      },
+      "viewTransactions": {
+        "title": "查看库存变动"
+      }
+    },
+    "brand": {
+      "label": "品牌",
+      "placeholder": "请输入您的品牌"
+    },
+    "inventoryLevel": {
+      "label": "当前库存"
+    },
+    "label": "食材",
+    "lowStock": "低库存",
+    "lowStockThreshold": {
+      "label": "低库存警示量",
+      "placeholder": "请输入您的低库存警示量"
+    },
+    "name": {
+      "label": "食材名称",
+      "placeholder": "请输入您的食材名称"
+    },
+    "unitCode": {
+      "label": "单位",
+      "placeholder": "请选择您的单位"
+    },
+    "unitPrice": {
+      "label": "单位成本"
+    }
+  },
+  "offers": {
+    "actions": {
+      "createOffer": {
+        "error": "新增采购规格失败",
+        "success": "已新增采购规格",
+        "title": "新增采购规格"
+      },
+      "deleteOffer": {
+        "confirm": "确定要删除 <bold>{name}</bold> 吗？此操作无法复原。",
+        "error": "删除采购规格失败",
+        "success": "已删除采购规格",
+        "title": "删除采购规格"
+      },
+      "label": "操作",
+      "updateOffer": {
+        "error": "更新采购规格失败",
+        "success": "已更新采购规格",
+        "title": "编辑采购规格"
+      }
+    },
+    "eligibleQuantity": {
+      "label": "包装容量",
+      "placeholder": "请输入您的包装容量"
+    },
+    "eligibleQuantityUnitCode": {
+      "label": "单位",
+      "placeholder": "请选择您的单位"
+    },
+    "label": "采购规格",
+    "price": {
+      "label": "价格",
+      "placeholder": "请输入您的价格"
+    },
+    "sortOrder": {
+      "label": "排序"
+    },
+    "supplierId": {
+      "label": "供应商",
+      "placeholder": "请选择您的供应商"
+    },
+    "unitPrice": {
+      "label": "单位成本"
+    },
+    "url": {
+      "label": "商品链接",
+      "placeholder": "请输入您的商品链接"
+    }
+  },
+  "recipes": {
+    "actions": {
+      "createRecipe": {
+        "error": "新增食谱失败",
+        "success": "已新增食谱",
+        "title": "新增食谱"
+      },
+      "deleteRecipe": {
+        "confirm": "确定要删除 <bold>{name}</bold> 吗？此操作无法复原。",
+        "error": "删除食谱失败",
+        "success": "已删除食谱",
+        "title": "删除食谱"
+      },
+      "label": "操作",
+      "updateRecipe": {
+        "error": "更新食谱失败",
+        "success": "已更新食谱",
+        "title": "编辑食谱"
+      },
+      "viewIngredients": {
+        "title": "查看材料"
+      }
+    },
+    "cost": {
+      "label": "总成本"
+    },
+    "costPerServing": {
+      "label": "每份成本"
+    },
+    "ingredients": {
+      "actions": {
+        "createRecipeIngredient": {
+          "error": "新增材料失败",
+          "success": "已新增材料",
+          "title": "新增材料"
+        },
+        "deleteRecipeIngredient": {
+          "confirm": "确定要删除 <bold>{name}</bold> 吗？此操作无法复原。",
+          "error": "删除材料失败",
+          "success": "已删除材料",
+          "title": "删除材料"
+        },
+        "label": "操作",
+        "updateRecipeIngredient": {
+          "error": "更新材料失败",
+          "success": "已更新材料",
+          "title": "编辑材料"
+        }
+      },
+      "cost": {
+        "label": "总成本"
+      },
+      "ingredientId": {
+        "label": "食材",
+        "placeholder": "请选择您的食材"
+      },
+      "label": "材料",
+      "requiredQuantity": {
+        "label": "用量",
+        "placeholder": "请输入您的用量"
+      },
+      "unitPrice": {
+        "label": "单位成本"
+      }
+    },
+    "label": "食谱",
+    "margin": {
+      "label": "毛利率"
+    },
+    "menuItemId": {
+      "label": "对应品项",
+      "placeholder": "请选择您的对应品项"
+    },
+    "name": {
+      "label": "食谱名称",
+      "placeholder": "请输入您的食谱名称"
+    },
+    "price": {
+      "label": "售价"
+    },
+    "recipeYield": {
+      "label": "份量",
+      "placeholder": "请输入您的份量"
+    }
+  },
+  "suppliers": {
+    "actions": {
+      "createSupplier": {
+        "error": "新增供应商失败",
+        "success": "已新增供应商",
+        "title": "新增供应商"
+      },
+      "deleteSupplier": {
+        "confirm": "确定要删除 <bold>{name}</bold> 吗？此操作无法复原。",
+        "error": "删除供应商失败",
+        "success": "已删除供应商",
+        "title": "删除供应商"
+      },
+      "label": "操作",
+      "updateSupplier": {
+        "error": "更新供应商失败",
+        "success": "已更新供应商",
+        "title": "编辑供应商"
+      }
+    },
+    "label": "供应商",
+    "name": {
+      "label": "供应商名称",
+      "placeholder": "请输入您的供应商名称"
+    },
+    "note": {
+      "label": "备注",
+      "placeholder": "请输入您的备注"
+    },
+    "telephone": {
+      "label": "电话",
+      "placeholder": "请输入您的电话"
+    },
+    "url": {
+      "label": "网站",
+      "placeholder": "请输入您的网站"
+    }
+  },
+  "transactions": {
+    "actions": {
+      "label": "操作",
+      "recordTransaction": {
+        "error": "更新食材失败",
+        "success": "已更新食材",
+        "title": "登记库存变动"
+      }
+    },
+    "label": "库存变动",
+    "note": {
+      "label": "备注",
+      "placeholder": "请输入您的备注"
+    },
+    "orderId": {
+      "label": "订单扣账"
+    },
+    "quantity": {
+      "label": "数量",
+      "placeholder": "请输入您的数量",
+      "stocktakeLabel": "盘点后数量",
+      "stocktakePlaceholder": "请输入您的盘点后数量"
+    },
+    "type": {
+      "adjustment": "盘点调整",
+      "consumption": "耗用",
+      "label": "类型",
+      "placeholder": "请选择您的类型",
+      "purchase": "进货",
+      "restoration": "订单退回",
+      "waste": "报废"
+    },
+    "unitCost": {
+      "label": "进货单价",
+      "placeholder": "请输入您的进货单价"
+    }
+  },
+  "units": {
+    "GRM": "克",
+    "H87": "个",
+    "KGM": "公斤",
+    "LTR": "升",
+    "MLT": "毫升"
+  },
+  "updatedAt": "更新时间"
+}

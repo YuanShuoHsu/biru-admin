@@ -42,11 +42,13 @@ import {
   HelpOutline,
   History,
   Info,
+  Inventory2,
   ListAlt,
   LocalMall,
   LocationOn,
   Lock,
   LockReset,
+  LocalShipping,
   Login,
   Mail,
   ManageAccounts,
@@ -61,6 +63,7 @@ import {
   QrCodeScanner,
   ReceiptLong,
   Restaurant,
+  Sell,
   Settings,
   ShoppingCart,
   Stars,
@@ -72,6 +75,7 @@ import {
 import type { SvgIconProps } from "@mui/material";
 
 import type { Coupon } from "@/types/coupons";
+import type { Ingredient, Recipe, Supplier } from "@/types/inventory";
 import type { MenuItem, MenuSection, ModifierGroup } from "@/types/menus";
 import type { NavItem } from "@/types/navItem";
 import type { AdminOrderResponse } from "@/types/orders";
@@ -327,6 +331,81 @@ const routes: Route[] = [
     to: "/menus/sections",
   },
   {
+    children: [
+      {
+        children: [
+          {
+            icon: History,
+            label: "audit.title",
+            query: ["organization", "page", "pageSize"],
+            segment: "audit-logs",
+          },
+          {
+            icon: Sell,
+            label: "inventory.offers.label",
+            query: ["organization"],
+            segment: "offers",
+          },
+          {
+            icon: History,
+            label: "inventory.transactions.label",
+            query: ["organization", "page", "pageSize"],
+            segment: "transactions",
+          },
+        ],
+        icon: Inventory2,
+        segment: "[ingredientId]",
+        to: null,
+      },
+    ],
+    icon: Inventory2,
+    label: "inventory.ingredients.label",
+    query: ["organization", "page", "pageSize"],
+    segment: "ingredients",
+  },
+  {
+    children: [
+      {
+        children: [
+          {
+            icon: History,
+            label: "audit.title",
+            query: ["organization", "page", "pageSize"],
+            segment: "audit-logs",
+          },
+        ],
+        icon: Restaurant,
+        query: ["organization"],
+        segment: "[recipeId]",
+      },
+    ],
+    icon: Restaurant,
+    label: "inventory.recipes.label",
+    query: ["organization", "page", "pageSize"],
+    segment: "recipes",
+  },
+  {
+    children: [
+      {
+        children: [
+          {
+            icon: History,
+            label: "audit.title",
+            query: ["organization", "page", "pageSize"],
+            segment: "audit-logs",
+          },
+        ],
+        icon: LocalShipping,
+        segment: "[supplierId]",
+        to: null,
+      },
+    ],
+    icon: LocalShipping,
+    label: "inventory.suppliers.label",
+    query: ["organization", "page", "pageSize"],
+    segment: "suppliers",
+  },
+  {
     icon: History,
     label: "audit.title",
     query: ["organization", "page", "pageSize"],
@@ -565,10 +644,13 @@ const useDynamicLabels = (): Partial<Record<string, string>> => {
   const {
     couponId,
     groupId,
+    ingredientId,
     menuItemId,
     menuSectionId,
     orderId,
+    recipeId,
     slug,
+    supplierId,
     teamId,
     userId,
   } = useParams<RouteParams>();
@@ -627,6 +709,45 @@ const useDynamicLabels = (): Partial<Record<string, string>> => {
     },
   );
 
+  const { data: ingredientName = "" } = useSWR(
+    ingredientId ? `/api/ingredients/${ingredientId}` : null,
+    async (url) => {
+      try {
+        const { name } = await fetcher<Ingredient>(url);
+
+        return localize(name, locale);
+      } catch {
+        return "";
+      }
+    },
+  );
+
+  const { data: supplierName = "" } = useSWR(
+    supplierId ? `/api/suppliers/${supplierId}` : null,
+    async (url) => {
+      try {
+        const { name } = await fetcher<Supplier>(url);
+
+        return name;
+      } catch {
+        return "";
+      }
+    },
+  );
+
+  const { data: recipeName = "" } = useSWR(
+    recipeId ? `/api/recipes/${recipeId}` : null,
+    async (url) => {
+      try {
+        const { name } = await fetcher<Recipe>(url);
+
+        return localize(name, locale);
+      } catch {
+        return "";
+      }
+    },
+  );
+
   const { data: couponCode = "" } = useSWR(
     couponId ? `/api/coupons/${couponId}` : null,
     async (url) => {
@@ -671,11 +792,14 @@ const useDynamicLabels = (): Partial<Record<string, string>> => {
   return {
     couponId: couponCode,
     groupId: modifierGroupName,
+    ingredientId: ingredientName,
     menuItemId: menuItemName,
     menuSectionId: menuSectionName,
     orderId: orderNumber,
     organizationSlug: organization?.name || "",
+    recipeId: recipeName,
     slug: organizationSlugName,
+    supplierId: supplierName,
     teamId: teamName,
     userId: userEmail,
   };

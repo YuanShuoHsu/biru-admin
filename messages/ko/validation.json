@@ -156,5 +156,29 @@
   },
   "validFrom": {
     "beforeValidThrough": "시작일은 종료일보다 앞서야 합니다."
+  },
+  "eligibleQuantity": {
+    "required": "포장 용량은 필수입니다."
+  },
+  "ingredientId": {
+    "notSelected": "식자재를 선택해 주세요."
+  },
+  "quantity": {
+    "required": "수량은 필수입니다."
+  },
+  "recipeYield": {
+    "required": "분량은 필수입니다."
+  },
+  "requiredQuantity": {
+    "required": "사용량은 필수입니다."
+  },
+  "supplierName": {
+    "required": "공급업체 이름은 필수입니다."
+  },
+  "transactionType": {
+    "notSelected": "유형을 선택해 주세요."
+  },
+  "unitCode": {
+    "notSelected": "단위를 선택해 주세요."
   }
 }

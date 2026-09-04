@@ -156,5 +156,29 @@
   },
   "validFrom": {
     "beforeValidThrough": "生效日期必须早于截止日期。"
+  },
+  "eligibleQuantity": {
+    "required": "包装容量为必填。"
+  },
+  "ingredientId": {
+    "notSelected": "请选择您的食材。"
+  },
+  "quantity": {
+    "required": "数量为必填。"
+  },
+  "recipeYield": {
+    "required": "份量为必填。"
+  },
+  "requiredQuantity": {
+    "required": "用量为必填。"
+  },
+  "supplierName": {
+    "required": "供应商名称为必填。"
+  },
+  "transactionType": {
+    "notSelected": "请选择您的类型。"
+  },
+  "unitCode": {
+    "notSelected": "请选择您的单位。"
   }
 }

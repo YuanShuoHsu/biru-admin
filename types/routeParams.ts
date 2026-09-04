@@ -7,6 +7,7 @@ interface RouteParam {
   addOnId: string;
   couponId: string;
   groupId: string;
+  ingredientId: string;
   linkId: string;
   locale: Locale;
   menuItemId: string;
@@ -14,8 +15,10 @@ interface RouteParam {
   mode: OrderMode;
   modifierId: string;
   orderId: string;
+  recipeId: string;
   organizationSlug: Organization["slug"];
   slug: string;
+  supplierId: string;
   teamId: string;
   userId: string;
 }

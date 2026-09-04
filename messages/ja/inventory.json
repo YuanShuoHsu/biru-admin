@@ -1,0 +1,270 @@
+{
+  "createdAt": "作成日時",
+  "ingredients": {
+    "actions": {
+      "createIngredient": {
+        "error": "食材の追加に失敗しました",
+        "success": "食材を追加しました",
+        "title": "食材を追加"
+      },
+      "deleteIngredient": {
+        "confirm": "<bold>{name}</bold> を削除しますか？この操作は取り消せません。",
+        "error": "食材の削除に失敗しました",
+        "success": "食材を削除しました",
+        "title": "食材を削除"
+      },
+      "label": "操作",
+      "updateIngredient": {
+        "error": "食材の更新に失敗しました",
+        "success": "食材を更新しました",
+        "title": "食材を編集"
+      },
+      "viewOffers": {
+        "title": "仕入規格を表示"
+      },
+      "viewTransactions": {
+        "title": "在庫変動を表示"
+      }
+    },
+    "brand": {
+      "label": "ブランド",
+      "placeholder": "ブランドを入力してください"
+    },
+    "inventoryLevel": {
+      "label": "現在の在庫"
+    },
+    "label": "食材",
+    "lowStock": "在庫僅少",
+    "lowStockThreshold": {
+      "label": "在庫僅少のしきい値",
+      "placeholder": "在庫僅少のしきい値を入力してください"
+    },
+    "name": {
+      "label": "食材名",
+      "placeholder": "食材名を入力してください"
+    },
+    "unitCode": {
+      "label": "単位",
+      "placeholder": "単位を選択してください"
+    },
+    "unitPrice": {
+      "label": "単位原価"
+    }
+  },
+  "offers": {
+    "actions": {
+      "createOffer": {
+        "error": "仕入規格の追加に失敗しました",
+        "success": "仕入規格を追加しました",
+        "title": "仕入規格を追加"
+      },
+      "deleteOffer": {
+        "confirm": "<bold>{name}</bold> を削除しますか？この操作は取り消せません。",
+        "error": "仕入規格の削除に失敗しました",
+        "success": "仕入規格を削除しました",
+        "title": "仕入規格を削除"
+      },
+      "label": "操作",
+      "updateOffer": {
+        "error": "仕入規格の更新に失敗しました",
+        "success": "仕入規格を更新しました",
+        "title": "仕入規格を編集"
+      }
+    },
+    "eligibleQuantity": {
+      "label": "内容量",
+      "placeholder": "内容量を入力してください"
+    },
+    "eligibleQuantityUnitCode": {
+      "label": "単位",
+      "placeholder": "単位を選択してください"
+    },
+    "label": "仕入規格",
+    "price": {
+      "label": "価格",
+      "placeholder": "価格を入力してください"
+    },
+    "sortOrder": {
+      "label": "並び順"
+    },
+    "supplierId": {
+      "label": "仕入先",
+      "placeholder": "仕入先を選択してください"
+    },
+    "unitPrice": {
+      "label": "単位原価"
+    },
+    "url": {
+      "label": "商品リンク",
+      "placeholder": "商品リンクを入力してください"
+    }
+  },
+  "recipes": {
+    "actions": {
+      "createRecipe": {
+        "error": "レシピの追加に失敗しました",
+        "success": "レシピを追加しました",
+        "title": "レシピを追加"
+      },
+      "deleteRecipe": {
+        "confirm": "<bold>{name}</bold> を削除しますか？この操作は取り消せません。",
+        "error": "レシピの削除に失敗しました",
+        "success": "レシピを削除しました",
+        "title": "レシピを削除"
+      },
+      "label": "操作",
+      "updateRecipe": {
+        "error": "レシピの更新に失敗しました",
+        "success": "レシピを更新しました",
+        "title": "レシピを編集"
+      },
+      "viewIngredients": {
+        "title": "材料を表示"
+      }
+    },
+    "cost": {
+      "label": "原価合計"
+    },
+    "costPerServing": {
+      "label": "1食あたり原価"
+    },
+    "ingredients": {
+      "actions": {
+        "createRecipeIngredient": {
+          "error": "材料の追加に失敗しました",
+          "success": "材料を追加しました",
+          "title": "材料を追加"
+        },
+        "deleteRecipeIngredient": {
+          "confirm": "<bold>{name}</bold> を削除しますか？この操作は取り消せません。",
+          "error": "材料の削除に失敗しました",
+          "success": "材料を削除しました",
+          "title": "材料を削除"
+        },
+        "label": "操作",
+        "updateRecipeIngredient": {
+          "error": "材料の更新に失敗しました",
+          "success": "材料を更新しました",
+          "title": "材料を編集"
+        }
+      },
+      "cost": {
+        "label": "原価合計"
+      },
+      "ingredientId": {
+        "label": "食材",
+        "placeholder": "食材を選択してください"
+      },
+      "label": "材料",
+      "requiredQuantity": {
+        "label": "使用量",
+        "placeholder": "使用量を入力してください"
+      },
+      "unitPrice": {
+        "label": "単位原価"
+      }
+    },
+    "label": "レシピ",
+    "margin": {
+      "label": "粗利率"
+    },
+    "menuItemId": {
+      "label": "対象品目",
+      "placeholder": "対象品目を選択してください"
+    },
+    "name": {
+      "label": "レシピ名",
+      "placeholder": "レシピ名を入力してください"
+    },
+    "price": {
+      "label": "販売価格"
+    },
+    "recipeYield": {
+      "label": "出来上がり分量",
+      "placeholder": "出来上がり分量を入力してください"
+    }
+  },
+  "suppliers": {
+    "actions": {
+      "createSupplier": {
+        "error": "仕入先の追加に失敗しました",
+        "success": "仕入先を追加しました",
+        "title": "仕入先を追加"
+      },
+      "deleteSupplier": {
+        "confirm": "<bold>{name}</bold> を削除しますか？この操作は取り消せません。",
+        "error": "仕入先の削除に失敗しました",
+        "success": "仕入先を削除しました",
+        "title": "仕入先を削除"
+      },
+      "label": "操作",
+      "updateSupplier": {
+        "error": "仕入先の更新に失敗しました",
+        "success": "仕入先を更新しました",
+        "title": "仕入先を編集"
+      }
+    },
+    "label": "仕入先",
+    "name": {
+      "label": "仕入先名",
+      "placeholder": "仕入先名を入力してください"
+    },
+    "note": {
+      "label": "備考",
+      "placeholder": "備考を入力してください"
+    },
+    "telephone": {
+      "label": "電話番号",
+      "placeholder": "電話番号を入力してください"
+    },
+    "url": {
+      "label": "ウェブサイト",
+      "placeholder": "ウェブサイトを入力してください"
+    }
+  },
+  "transactions": {
+    "actions": {
+      "label": "操作",
+      "recordTransaction": {
+        "error": "食材の更新に失敗しました",
+        "success": "食材を更新しました",
+        "title": "在庫変動を登録"
+      }
+    },
+    "label": "在庫変動",
+    "note": {
+      "label": "備考",
+      "placeholder": "備考を入力してください"
+    },
+    "orderId": {
+      "label": "注文による引き落とし"
+    },
+    "quantity": {
+      "label": "数量",
+      "placeholder": "数量を入力してください",
+      "stocktakeLabel": "棚卸後の数量",
+      "stocktakePlaceholder": "棚卸後の数量を入力してください"
+    },
+    "type": {
+      "adjustment": "棚卸調整",
+      "consumption": "消費",
+      "label": "種別",
+      "placeholder": "種別を選択してください",
+      "purchase": "仕入",
+      "restoration": "注文取消による戻し",
+      "waste": "廃棄"
+    },
+    "unitCost": {
+      "label": "仕入単価",
+      "placeholder": "仕入単価を入力してください"
+    }
+  },
+  "units": {
+    "GRM": "グラム",
+    "H87": "個",
+    "KGM": "キログラム",
+    "LTR": "リットル",
+    "MLT": "ミリリットル"
+  },
+  "updatedAt": "更新日時"
+}

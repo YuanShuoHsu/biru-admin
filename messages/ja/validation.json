@@ -156,5 +156,29 @@
   },
   "validFrom": {
     "beforeValidThrough": "開始日は終了日より前でなければなりません。"
+  },
+  "eligibleQuantity": {
+    "required": "内容量は必須です。"
+  },
+  "ingredientId": {
+    "notSelected": "食材を選択してください。"
+  },
+  "quantity": {
+    "required": "数量は必須です。"
+  },
+  "recipeYield": {
+    "required": "出来上がり分量は必須です。"
+  },
+  "requiredQuantity": {
+    "required": "使用量は必須です。"
+  },
+  "supplierName": {
+    "required": "仕入先名は必須です。"
+  },
+  "transactionType": {
+    "notSelected": "種別を選択してください。"
+  },
+  "unitCode": {
+    "notSelected": "単位を選択してください。"
   }
 }

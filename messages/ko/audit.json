@@ -73,6 +73,7 @@
   "resource": {
     "banner": "배너",
     "coupon": "쿠폰",
+    "ingredient": "식자재",
     "invoice": "영수증",
     "label": "리소스",
     "menu": "메뉴",
@@ -83,6 +84,8 @@
     "modifier": "옵션",
     "modifierGroup": "옵션 그룹",
     "order": "주문",
+    "recipe": "레시피",
+    "supplier": "공급업체",
     "userCoupon": "쿠폰 보유"
   },
   "target": "대상",

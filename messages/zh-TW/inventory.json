@@ -1,0 +1,270 @@
+{
+  "createdAt": "建立時間",
+  "ingredients": {
+    "actions": {
+      "createIngredient": {
+        "error": "新增食材失敗",
+        "success": "已新增食材",
+        "title": "新增食材"
+      },
+      "deleteIngredient": {
+        "confirm": "確定要刪除 <bold>{name}</bold> 嗎？此操作無法復原。",
+        "error": "刪除食材失敗",
+        "success": "已刪除食材",
+        "title": "刪除食材"
+      },
+      "label": "操作",
+      "updateIngredient": {
+        "error": "更新食材失敗",
+        "success": "已更新食材",
+        "title": "編輯食材"
+      },
+      "viewOffers": {
+        "title": "查看採購規格"
+      },
+      "viewTransactions": {
+        "title": "查看庫存異動"
+      }
+    },
+    "brand": {
+      "label": "品牌",
+      "placeholder": "請輸入您的品牌"
+    },
+    "inventoryLevel": {
+      "label": "目前庫存"
+    },
+    "label": "食材",
+    "lowStock": "低庫存",
+    "lowStockThreshold": {
+      "label": "低庫存警示量",
+      "placeholder": "請輸入您的低庫存警示量"
+    },
+    "name": {
+      "label": "食材名稱",
+      "placeholder": "請輸入您的食材名稱"
+    },
+    "unitCode": {
+      "label": "單位",
+      "placeholder": "請選擇您的單位"
+    },
+    "unitPrice": {
+      "label": "單位成本"
+    }
+  },
+  "offers": {
+    "actions": {
+      "createOffer": {
+        "error": "新增採購規格失敗",
+        "success": "已新增採購規格",
+        "title": "新增採購規格"
+      },
+      "deleteOffer": {
+        "confirm": "確定要刪除 <bold>{name}</bold> 嗎？此操作無法復原。",
+        "error": "刪除採購規格失敗",
+        "success": "已刪除採購規格",
+        "title": "刪除採購規格"
+      },
+      "label": "操作",
+      "updateOffer": {
+        "error": "更新採購規格失敗",
+        "success": "已更新採購規格",
+        "title": "編輯採購規格"
+      }
+    },
+    "eligibleQuantity": {
+      "label": "包裝容量",
+      "placeholder": "請輸入您的包裝容量"
+    },
+    "eligibleQuantityUnitCode": {
+      "label": "單位",
+      "placeholder": "請選擇您的單位"
+    },
+    "label": "採購規格",
+    "price": {
+      "label": "價格",
+      "placeholder": "請輸入您的價格"
+    },
+    "sortOrder": {
+      "label": "排序"
+    },
+    "supplierId": {
+      "label": "供應商",
+      "placeholder": "請選擇您的供應商"
+    },
+    "unitPrice": {
+      "label": "單位成本"
+    },
+    "url": {
+      "label": "商品連結",
+      "placeholder": "請輸入您的商品連結"
+    }
+  },
+  "recipes": {
+    "actions": {
+      "createRecipe": {
+        "error": "新增食譜失敗",
+        "success": "已新增食譜",
+        "title": "新增食譜"
+      },
+      "deleteRecipe": {
+        "confirm": "確定要刪除 <bold>{name}</bold> 嗎？此操作無法復原。",
+        "error": "刪除食譜失敗",
+        "success": "已刪除食譜",
+        "title": "刪除食譜"
+      },
+      "label": "操作",
+      "updateRecipe": {
+        "error": "更新食譜失敗",
+        "success": "已更新食譜",
+        "title": "編輯食譜"
+      },
+      "viewIngredients": {
+        "title": "查看材料"
+      }
+    },
+    "cost": {
+      "label": "總成本"
+    },
+    "costPerServing": {
+      "label": "每份成本"
+    },
+    "ingredients": {
+      "actions": {
+        "createRecipeIngredient": {
+          "error": "新增材料失敗",
+          "success": "已新增材料",
+          "title": "新增材料"
+        },
+        "deleteRecipeIngredient": {
+          "confirm": "確定要刪除 <bold>{name}</bold> 嗎？此操作無法復原。",
+          "error": "刪除材料失敗",
+          "success": "已刪除材料",
+          "title": "刪除材料"
+        },
+        "label": "操作",
+        "updateRecipeIngredient": {
+          "error": "更新材料失敗",
+          "success": "已更新材料",
+          "title": "編輯材料"
+        }
+      },
+      "cost": {
+        "label": "總成本"
+      },
+      "ingredientId": {
+        "label": "食材",
+        "placeholder": "請選擇您的食材"
+      },
+      "label": "材料",
+      "requiredQuantity": {
+        "label": "用量",
+        "placeholder": "請輸入您的用量"
+      },
+      "unitPrice": {
+        "label": "單位成本"
+      }
+    },
+    "label": "食譜",
+    "margin": {
+      "label": "毛利率"
+    },
+    "menuItemId": {
+      "label": "對應品項",
+      "placeholder": "請選擇您的對應品項"
+    },
+    "name": {
+      "label": "食譜名稱",
+      "placeholder": "請輸入您的食譜名稱"
+    },
+    "price": {
+      "label": "售價"
+    },
+    "recipeYield": {
+      "label": "份量",
+      "placeholder": "請輸入您的份量"
+    }
+  },
+  "suppliers": {
+    "actions": {
+      "createSupplier": {
+        "error": "新增供應商失敗",
+        "success": "已新增供應商",
+        "title": "新增供應商"
+      },
+      "deleteSupplier": {
+        "confirm": "確定要刪除 <bold>{name}</bold> 嗎？此操作無法復原。",
+        "error": "刪除供應商失敗",
+        "success": "已刪除供應商",
+        "title": "刪除供應商"
+      },
+      "label": "操作",
+      "updateSupplier": {
+        "error": "更新供應商失敗",
+        "success": "已更新供應商",
+        "title": "編輯供應商"
+      }
+    },
+    "label": "供應商",
+    "name": {
+      "label": "供應商名稱",
+      "placeholder": "請輸入您的供應商名稱"
+    },
+    "note": {
+      "label": "備註",
+      "placeholder": "請輸入您的備註"
+    },
+    "telephone": {
+      "label": "電話",
+      "placeholder": "請輸入您的電話"
+    },
+    "url": {
+      "label": "網站",
+      "placeholder": "請輸入您的網站"
+    }
+  },
+  "transactions": {
+    "actions": {
+      "label": "操作",
+      "recordTransaction": {
+        "error": "更新食材失敗",
+        "success": "已更新食材",
+        "title": "登記庫存異動"
+      }
+    },
+    "label": "庫存異動",
+    "note": {
+      "label": "備註",
+      "placeholder": "請輸入您的備註"
+    },
+    "orderId": {
+      "label": "訂單扣帳"
+    },
+    "quantity": {
+      "label": "數量",
+      "placeholder": "請輸入您的數量",
+      "stocktakeLabel": "盤點後數量",
+      "stocktakePlaceholder": "請輸入您的盤點後數量"
+    },
+    "type": {
+      "adjustment": "盤點調整",
+      "consumption": "耗用",
+      "label": "類型",
+      "placeholder": "請選擇您的類型",
+      "purchase": "進貨",
+      "restoration": "訂單退回",
+      "waste": "報廢"
+    },
+    "unitCost": {
+      "label": "進貨單價",
+      "placeholder": "請輸入您的進貨單價"
+    }
+  },
+  "units": {
+    "GRM": "公克",
+    "H87": "個",
+    "KGM": "公斤",
+    "LTR": "公升",
+    "MLT": "毫升"
+  },
+  "updatedAt": "更新時間"
+}

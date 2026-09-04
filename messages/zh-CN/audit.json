@@ -73,6 +73,7 @@
   "resource": {
     "banner": "轮播图",
     "coupon": "优惠券",
+    "ingredient": "食材",
     "invoice": "发票",
     "label": "资源",
     "menu": "菜单",
@@ -83,6 +84,8 @@
     "modifier": "选项",
     "modifierGroup": "选项组",
     "order": "订单",
+    "recipe": "食谱",
+    "supplier": "供应商",
     "userCoupon": "持券记录"
   },
   "target": "对象",

@@ -156,5 +156,29 @@
   },
   "validFrom": {
     "beforeValidThrough": "生效日期必須早於截止日期。"
+  },
+  "eligibleQuantity": {
+    "required": "包裝容量為必填。"
+  },
+  "ingredientId": {
+    "notSelected": "請選擇您的食材。"
+  },
+  "quantity": {
+    "required": "數量為必填。"
+  },
+  "recipeYield": {
+    "required": "份量為必填。"
+  },
+  "requiredQuantity": {
+    "required": "用量為必填。"
+  },
+  "supplierName": {
+    "required": "供應商名稱為必填。"
+  },
+  "transactionType": {
+    "notSelected": "請選擇您的類型。"
+  },
+  "unitCode": {
+    "notSelected": "請選擇您的單位。"
   }
 }

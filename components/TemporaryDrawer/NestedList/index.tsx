@@ -61,6 +61,10 @@ const useNavItems = (): NavItem[][] => {
         ? [navItem("/orders"), navItem("/menus")]
         : []),
     ],
+    ...(defaultOrganizationSlug &&
+    hasRolePermission(memberRole, { inventory: ["read"] })
+      ? [[navItem("/ingredients"), navItem("/suppliers"), navItem("/recipes")]]
+      : []),
     [
       ...(isAdmin || defaultOrganizationSlug ? [navItem("/coupons")] : []),
       navItem("/organizations"),

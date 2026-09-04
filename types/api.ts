@@ -669,6 +669,206 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/ingredients": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢食材列表 */
+    get: operations["OrganizationInventoryController_findAllIngredients"];
+    put?: never;
+    /** 建立食材 */
+    post: operations["OrganizationInventoryController_createIngredient"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/suppliers": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢供應商列表 */
+    get: operations["OrganizationInventoryController_findAllSuppliers"];
+    put?: never;
+    /** 建立供應商 */
+    post: operations["OrganizationInventoryController_createSupplier"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/recipes": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢食譜列表 */
+    get: operations["OrganizationInventoryController_findAllRecipes"];
+    put?: never;
+    /** 建立食譜 */
+    post: operations["OrganizationInventoryController_createRecipe"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/ingredients/{ingredientId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得食材 */
+    get: operations["IngredientsController_findOne"];
+    put?: never;
+    post?: never;
+    /** 刪除食材 */
+    delete: operations["IngredientsController_remove"];
+    options?: never;
+    head?: never;
+    /** 更新食材 */
+    patch: operations["IngredientsController_update"];
+    trace?: never;
+  };
+  "/api/ingredients/{ingredientId}/offers": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢食材採購規格 */
+    get: operations["IngredientsController_findAllOffers"];
+    put?: never;
+    /** 建立食材採購規格 */
+    post: operations["IngredientsController_createOffer"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/ingredients/{ingredientId}/offers/{ingredientOfferId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** 刪除食材採購規格 */
+    delete: operations["IngredientsController_removeOffer"];
+    options?: never;
+    head?: never;
+    /** 更新食材採購規格 */
+    patch: operations["IngredientsController_updateOffer"];
+    trace?: never;
+  };
+  "/api/ingredients/{ingredientId}/inventory-transactions": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢食材庫存異動 */
+    get: operations["IngredientsController_findAllTransactions"];
+    put?: never;
+    /** 登記食材庫存異動 */
+    post: operations["IngredientsController_createTransaction"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/recipes/{recipeId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得食譜 */
+    get: operations["RecipesController_findOne"];
+    put?: never;
+    post?: never;
+    /** 刪除食譜 */
+    delete: operations["RecipesController_remove"];
+    options?: never;
+    head?: never;
+    /** 更新食譜 */
+    patch: operations["RecipesController_update"];
+    trace?: never;
+  };
+  "/api/recipes/{recipeId}/recipe-ingredients": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢食譜材料 */
+    get: operations["RecipesController_findAllIngredients"];
+    put?: never;
+    /** 新增食譜材料 */
+    post: operations["RecipesController_createIngredient"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/recipes/{recipeId}/recipe-ingredients/{recipeIngredientId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** 刪除食譜材料 */
+    delete: operations["RecipesController_removeIngredient"];
+    options?: never;
+    head?: never;
+    /** 更新食譜材料 */
+    patch: operations["RecipesController_updateIngredient"];
+    trace?: never;
+  };
+  "/api/suppliers/{supplierId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** 刪除供應商 */
+    delete: operations["SuppliersController_remove"];
+    options?: never;
+    head?: never;
+    /** 更新供應商 */
+    patch: operations["SuppliersController_update"];
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/menu-item-sales": {
     parameters: {
       query?: never;
@@ -1333,7 +1533,10 @@ export interface components {
       | "userCoupon"
       | "coupon"
       | "banner"
-      | "invoice";
+      | "invoice"
+      | "supplier"
+      | "ingredient"
+      | "recipe";
     /** @enum {string} */
     AuditAction: "create" | "update" | "delete";
     AuditLogResponseDto: {
@@ -2351,6 +2554,336 @@ export interface components {
       allocatedDiscount: number;
       /** @description 這次退完後整張訂單是否已全額退款 */
       isFull: boolean;
+    };
+    /** @enum {string} */
+    IngredientFilterField:
+      | "name"
+      | "brand"
+      | "unitCode"
+      | "inventoryLevel"
+      | "lowStockThreshold"
+      | "createdAt"
+      | "updatedAt";
+    /** @enum {string} */
+    IngredientSortField:
+      | "name"
+      | "brand"
+      | "unitCode"
+      | "inventoryLevel"
+      | "lowStockThreshold"
+      | "createdAt"
+      | "updatedAt";
+    /** @enum {string} */
+    BaseUnitCode: "GRM" | "MLT" | "H87";
+    CreateIngredientDto: {
+      /**
+       * @example {
+       *       "zh-TW": "抹茶粉",
+       *       "en": "Matcha Powder"
+       *     }
+       */
+      name: Record<string, never>;
+      /** @example 森半宇治抹茶粉 PCT-2 茗（無糖） */
+      brand?: string | null;
+      image?: string | null;
+      unitCode: components["schemas"]["BaseUnitCode"];
+      /**
+       * @description 低於此量顯示警示
+       * @example 100.000
+       */
+      lowStockThreshold?: string | null;
+    };
+    /** @enum {string} */
+    UnitCode: "GRM" | "KGM" | "LTR" | "MLT" | "H87";
+    IngredientResponseDto: {
+      id: string;
+      organizationId: string;
+      name: Record<string, never>;
+      brand?: string | null;
+      image?: string | null;
+      unitCode: components["schemas"]["UnitCode"];
+      inventoryLevel: string;
+      lowStockThreshold?: string | null;
+      /** @description 取排序第一筆採購規格換算 */
+      unitPrice?: number | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    /** @enum {string} */
+    SupplierFilterField:
+      | "name"
+      | "telephone"
+      | "url"
+      | "note"
+      | "createdAt"
+      | "updatedAt";
+    /** @enum {string} */
+    SupplierSortField:
+      | "name"
+      | "telephone"
+      | "url"
+      | "note"
+      | "createdAt"
+      | "updatedAt";
+    CreateSupplierDto: {
+      /** @example 全國食材廣場 */
+      name: string;
+      telephone?: string | null;
+      url?: string | null;
+      note?: string | null;
+    };
+    SupplierResponseDto: {
+      id: string;
+      organizationId: string;
+      name: string;
+      telephone?: string | null;
+      url?: string | null;
+      note?: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    /** @enum {string} */
+    RecipeFilterField: "name" | "recipeYield" | "createdAt" | "updatedAt";
+    /** @enum {string} */
+    RecipeSortField: "name" | "recipeYield" | "createdAt" | "updatedAt";
+    CreateRecipeDto: {
+      /**
+       * @example {
+       *       "zh-TW": "抹茶奶酪",
+       *       "en": "Matcha Panna Cotta"
+       *     }
+       */
+      name: Record<string, never>;
+      /** @description 對應的菜單品項，一個品項只能有一份食譜 */
+      menuItemId?: string | null;
+      /**
+       * @description 份量
+       * @default 1
+       */
+      recipeYield: number;
+      /**
+       * @example [
+       *       {
+       *         "zh-TW": "吉利丁片泡冷水軟化，約 5 分鐘。"
+       *       }
+       *     ]
+       */
+      recipeInstructions?: Record<string, never>[];
+    };
+    RecipeIngredientResponseDto: {
+      id: string;
+      recipeId: string;
+      ingredientId: string;
+      ingredientName: Record<string, never>;
+      unitCode: components["schemas"]["UnitCode"];
+      requiredQuantity: string;
+      unitPrice?: number | null;
+      /** @description 用量 × 單價 */
+      cost?: number | null;
+      sortOrder: number;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    RecipeResponseDto: {
+      id: string;
+      organizationId: string;
+      menuItemId?: string | null;
+      menuItemName?: Record<string, never> | null;
+      name: Record<string, never>;
+      recipeYield: number;
+      recipeInstructions?: Record<string, never>[] | null;
+      /** @description 全部材料成本合計 */
+      cost: number;
+      /** @description 對應品項售價 */
+      price?: number | null;
+      recipeIngredients?: components["schemas"]["RecipeIngredientResponseDto"][];
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    UpdateIngredientDto: {
+      /**
+       * @example {
+       *       "zh-TW": "抹茶粉",
+       *       "en": "Matcha Powder"
+       *     }
+       */
+      name?: Record<string, never>;
+      /** @example 森半宇治抹茶粉 PCT-2 茗（無糖） */
+      brand?: string | null;
+      image?: string | null;
+      unitCode?: components["schemas"]["BaseUnitCode"];
+      /**
+       * @description 低於此量顯示警示
+       * @example 100.000
+       */
+      lowStockThreshold?: string | null;
+    };
+    IngredientOfferResponseDto: {
+      id: string;
+      ingredientId: string;
+      supplierId?: string | null;
+      supplierName?: string | null;
+      price: string;
+      priceCurrency: string;
+      eligibleQuantity: string;
+      eligibleQuantityUnitCode: components["schemas"]["UnitCode"];
+      /** @description 每基準單位價格 */
+      unitPrice: number;
+      url?: string | null;
+      sortOrder: number;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    CreateIngredientOfferDto: {
+      /** @example 950.00 */
+      price: string;
+      /** @example TWD */
+      priceCurrency?: string;
+      /**
+       * @description 包裝容量
+       * @example 100.000
+       */
+      eligibleQuantity: string;
+      eligibleQuantityUnitCode: components["schemas"]["UnitCode"];
+      supplierId?: string | null;
+      /** @description 商品連結 */
+      url?: string | null;
+      /** @description 未帶時排在最後；成本取排序第一筆 */
+      sortOrder?: number;
+    };
+    UpdateIngredientOfferDto: {
+      /** @example 950.00 */
+      price?: string;
+      /** @example TWD */
+      priceCurrency?: string;
+      /**
+       * @description 包裝容量
+       * @example 100.000
+       */
+      eligibleQuantity?: string;
+      eligibleQuantityUnitCode?: components["schemas"]["UnitCode"];
+      supplierId?: string | null;
+      /** @description 商品連結 */
+      url?: string | null;
+      /** @description 未帶時排在最後；成本取排序第一筆 */
+      sortOrder?: number;
+    };
+    /** @enum {string} */
+    InventoryTransactionFilterField:
+      | "note"
+      | "type"
+      | "quantity"
+      | "unitCost"
+      | "createdAt";
+    /** @enum {string} */
+    InventoryTransactionSortField:
+      | "note"
+      | "type"
+      | "quantity"
+      | "unitCost"
+      | "createdAt";
+    /** @enum {string} */
+    ManualInventoryTransactionType:
+      | "purchase"
+      | "consumption"
+      | "adjustment"
+      | "waste";
+    CreateInventoryTransactionDto: {
+      type: components["schemas"]["ManualInventoryTransactionType"];
+      /**
+       * @description adjustment 帶盤點後實數，其餘帶異動量（一律為正）
+       * @example 500.000
+       */
+      quantity: string;
+      /**
+       * @description 進貨單價
+       * @example 9.5000
+       */
+      unitCost?: string;
+      note?: string | null;
+    };
+    /** @enum {string} */
+    InventoryTransactionType:
+      | "purchase"
+      | "consumption"
+      | "adjustment"
+      | "waste"
+      | "restoration";
+    InventoryTransactionResponseDto: {
+      id: string;
+      ingredientId: string;
+      organizationId: string;
+      type: components["schemas"]["InventoryTransactionType"];
+      /** @description 帶正負的異動量 */
+      quantity: string;
+      unitCost?: string | null;
+      orderId?: string | null;
+      note?: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    UpdateRecipeDto: {
+      /**
+       * @example {
+       *       "zh-TW": "抹茶奶酪",
+       *       "en": "Matcha Panna Cotta"
+       *     }
+       */
+      name?: Record<string, never>;
+      /** @description 對應的菜單品項，一個品項只能有一份食譜 */
+      menuItemId?: string | null;
+      /**
+       * @description 份量
+       * @default 1
+       */
+      recipeYield: number;
+      /**
+       * @example [
+       *       {
+       *         "zh-TW": "吉利丁片泡冷水軟化，約 5 分鐘。"
+       *       }
+       *     ]
+       */
+      recipeInstructions?: Record<string, never>[];
+    };
+    CreateRecipeIngredientDto: {
+      ingredientId: string;
+      /**
+       * @description 基準單位用量
+       * @example 4.000
+       */
+      requiredQuantity: string;
+      /** @description 未帶時排在最後 */
+      sortOrder?: number;
+    };
+    UpdateRecipeIngredientDto: {
+      ingredientId?: string;
+      /**
+       * @description 基準單位用量
+       * @example 4.000
+       */
+      requiredQuantity?: string;
+      /** @description 未帶時排在最後 */
+      sortOrder?: number;
+    };
+    UpdateSupplierDto: {
+      /** @example 全國食材廣場 */
+      name?: string;
+      telephone?: string | null;
+      url?: string | null;
+      note?: string | null;
     };
     MenuItemSalesResponseDto: {
       menuItemId: string;
@@ -4829,6 +5362,748 @@ export interface operations {
       };
     };
   };
+  OrganizationInventoryController_findAllIngredients: {
+    parameters: {
+      query?: {
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        filterField?: components["schemas"]["IngredientFilterField"];
+        sortBy?: components["schemas"]["IngredientSortField"];
+        limit?: number;
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+      };
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrganizationInventoryController_createIngredient: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateIngredientDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["IngredientResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrganizationInventoryController_findAllSuppliers: {
+    parameters: {
+      query?: {
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        filterField?: components["schemas"]["SupplierFilterField"];
+        sortBy?: components["schemas"]["SupplierSortField"];
+        limit?: number;
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+      };
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrganizationInventoryController_createSupplier: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateSupplierDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SupplierResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrganizationInventoryController_findAllRecipes: {
+    parameters: {
+      query?: {
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        filterField?: components["schemas"]["RecipeFilterField"];
+        sortBy?: components["schemas"]["RecipeSortField"];
+        limit?: number;
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+      };
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrganizationInventoryController_createRecipe: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateRecipeDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["RecipeResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  IngredientsController_findOne: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        ingredientId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["IngredientResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  IngredientsController_remove: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        ingredientId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  IngredientsController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        ingredientId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateIngredientDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["IngredientResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  IngredientsController_findAllOffers: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        ingredientId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["IngredientOfferResponseDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  IngredientsController_createOffer: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        ingredientId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateIngredientOfferDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["IngredientOfferResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  IngredientsController_removeOffer: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        ingredientOfferId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  IngredientsController_updateOffer: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        ingredientOfferId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateIngredientOfferDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["IngredientOfferResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  IngredientsController_findAllTransactions: {
+    parameters: {
+      query?: {
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        filterField?: components["schemas"]["InventoryTransactionFilterField"];
+        sortBy?: components["schemas"]["InventoryTransactionSortField"];
+        limit?: number;
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+      };
+      header?: never;
+      path: {
+        ingredientId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  IngredientsController_createTransaction: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        ingredientId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateInventoryTransactionDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["InventoryTransactionResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  RecipesController_findOne: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        recipeId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["RecipeResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  RecipesController_remove: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        recipeId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  RecipesController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        recipeId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateRecipeDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["RecipeResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  RecipesController_findAllIngredients: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        recipeId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["RecipeIngredientResponseDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  RecipesController_createIngredient: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        recipeId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateRecipeIngredientDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["RecipeIngredientResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  RecipesController_removeIngredient: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        recipeIngredientId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  RecipesController_updateIngredient: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        recipeIngredientId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateRecipeIngredientDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["RecipeIngredientResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  SuppliersController_remove: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        supplierId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  SuppliersController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        supplierId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateSupplierDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SupplierResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   MenuItemSalesController_findAll: {
     parameters: {
       query?: {
@@ -6572,6 +7847,9 @@ export const auditResourceValues: ReadonlyArray<
   "coupon",
   "banner",
   "invoice",
+  "supplier",
+  "ingredient",
+  "recipe",
 ];
 export const auditActionValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AuditAction"]
@@ -6768,6 +8046,58 @@ export const refundInvoiceActionValues: ReadonlyArray<
 export const orderRefundDtoScopeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrderRefundDto"]["scope"]
 > = ["full", "partial"];
+export const ingredientFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["IngredientFilterField"]
+> = [
+  "name",
+  "brand",
+  "unitCode",
+  "inventoryLevel",
+  "lowStockThreshold",
+  "createdAt",
+  "updatedAt",
+];
+export const ingredientSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["IngredientSortField"]
+> = [
+  "name",
+  "brand",
+  "unitCode",
+  "inventoryLevel",
+  "lowStockThreshold",
+  "createdAt",
+  "updatedAt",
+];
+export const baseUnitCodeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["BaseUnitCode"]
+> = ["GRM", "MLT", "H87"];
+export const unitCodeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["UnitCode"]
+> = ["GRM", "KGM", "LTR", "MLT", "H87"];
+export const supplierFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["SupplierFilterField"]
+> = ["name", "telephone", "url", "note", "createdAt", "updatedAt"];
+export const supplierSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["SupplierSortField"]
+> = ["name", "telephone", "url", "note", "createdAt", "updatedAt"];
+export const recipeFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["RecipeFilterField"]
+> = ["name", "recipeYield", "createdAt", "updatedAt"];
+export const recipeSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["RecipeSortField"]
+> = ["name", "recipeYield", "createdAt", "updatedAt"];
+export const inventoryTransactionFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["InventoryTransactionFilterField"]
+> = ["note", "type", "quantity", "unitCost", "createdAt"];
+export const inventoryTransactionSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["InventoryTransactionSortField"]
+> = ["note", "type", "quantity", "unitCost", "createdAt"];
+export const manualInventoryTransactionTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["ManualInventoryTransactionType"]
+> = ["purchase", "consumption", "adjustment", "waste"];
+export const inventoryTransactionTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["InventoryTransactionType"]
+> = ["purchase", "consumption", "adjustment", "waste", "restoration"];
 export const createOrderInvoiceDtoTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CreateOrderInvoiceDto"]["type"]
 > = ["personal", "company", "donate"];

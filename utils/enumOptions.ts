@@ -5,8 +5,10 @@ import { PLATFORM_ORGANIZATION_ID } from "@/constants/organizations";
 import {
   auditActionValues,
   auditResourceValues,
+  baseUnitCodeValues,
   couponIssueTriggerValues,
   couponScopeValues,
+  inventoryTransactionTypeValues,
   invoiceStatusValues,
   invoiceTypeValues,
   itemAvailabilityValues,
@@ -143,6 +145,24 @@ export const getOrderEnumOptions = (
   })),
   invoiceStatus: invoiceStatusValues.map((value) => ({
     label: tOrders(`invoiceStatusValue.${value}`),
+    value,
+  })),
+});
+
+export const getIngredientEnumOptions = (
+  tInventory: ReturnType<typeof useTranslations<"inventory">>,
+) => ({
+  unitCode: baseUnitCodeValues.map((value) => ({
+    label: tInventory(`units.${value}`),
+    value,
+  })),
+});
+
+export const getInventoryTransactionEnumOptions = (
+  tInventory: ReturnType<typeof useTranslations<"inventory">>,
+) => ({
+  type: inventoryTransactionTypeValues.map((value) => ({
+    label: tInventory(`transactions.type.${value}`),
     value,
   })),
 });

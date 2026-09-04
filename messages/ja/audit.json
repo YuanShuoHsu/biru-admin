@@ -73,6 +73,7 @@
   "resource": {
     "banner": "バナー",
     "coupon": "クーポン",
+    "ingredient": "食材",
     "invoice": "インボイス",
     "label": "リソース",
     "menu": "メニュー",
@@ -83,6 +84,8 @@
     "modifier": "オプション",
     "modifierGroup": "オプショングループ",
     "order": "注文",
+    "recipe": "レシピ",
+    "supplier": "仕入先",
     "userCoupon": "クーポン保有"
   },
   "target": "対象",
