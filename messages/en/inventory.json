@@ -43,6 +43,7 @@
       "label": "Ingredient name",
       "placeholder": "Please enter your ingredient name"
     },
+    "outOfStock": "Out of stock",
     "unitCode": {
       "label": "Unit",
       "placeholder": "Please select your Unit"

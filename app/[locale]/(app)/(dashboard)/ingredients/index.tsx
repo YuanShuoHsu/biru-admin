@@ -38,10 +38,10 @@ import {
   Inventory,
   Sell,
   SwapVert,
+  Warning,
 } from "@mui/icons-material";
 import {
   Button,
-  Chip,
   DialogContentText,
   IconButton,
   Stack,
@@ -443,19 +443,41 @@ const Ingredients = ({
         filterOperators: numberFilterOperators,
         headerName: tInventory("ingredients.inventoryLevel.label"),
         renderCell: ({
-          row: { inventoryLevel, lowStockThreshold, unitCode },
+          row: { inventoryLevel, lowStockThreshold },
         }: GridRenderCellParams<Ingredient>) => {
+          const isOutOfStock = Number(inventoryLevel) <= 0;
           const isLowStock =
             lowStockThreshold != null &&
             Number(inventoryLevel) <= Number(lowStockThreshold);
 
           return (
-            <Chip
-              color={isLowStock ? "warning" : "default"}
-              label={`${format.number(Number(inventoryLevel))} ${tInventory(`units.${unitCode}`)}`}
-              size="small"
-              variant="outlined"
-            />
+            <Tooltip
+              title={
+                isOutOfStock
+                  ? tInventory("ingredients.outOfStock")
+                  : isLowStock
+                    ? tInventory("ingredients.lowStock")
+                    : ""
+              }
+            >
+              <Stack
+                alignItems="center"
+                color={
+                  isOutOfStock
+                    ? "error.main"
+                    : isLowStock
+                      ? "warning.main"
+                      : undefined
+                }
+                direction="row"
+                gap={0.5}
+                height="100%"
+                justifyContent="flex-end"
+              >
+                {(isOutOfStock || isLowStock) && <Warning fontSize="small" />}
+                {format.number(Number(inventoryLevel))}
+              </Stack>
+            </Tooltip>
           );
         },
         type: "number",

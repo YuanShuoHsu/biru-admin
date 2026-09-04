@@ -23,7 +23,7 @@
         "title": "查看采购规格"
       },
       "viewTransactions": {
-        "title": "查看库存变动"
+        "title": "查看库存进出"
       }
     },
     "brand": {
@@ -43,6 +43,7 @@
       "label": "食材名称",
       "placeholder": "请输入您的食材名称"
     },
+    "outOfStock": "无库存",
     "unitCode": {
       "label": "单位",
       "placeholder": "请选择您的单位"
@@ -228,10 +229,10 @@
       "recordTransaction": {
         "error": "更新食材失败",
         "success": "已更新食材",
-        "title": "登记库存变动"
+        "title": "登记库存进出"
       }
     },
-    "label": "库存变动",
+    "label": "库存进出",
     "note": {
       "label": "备注",
       "placeholder": "请输入您的备注"

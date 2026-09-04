@@ -43,6 +43,7 @@
       "label": "食材名",
       "placeholder": "食材名を入力してください"
     },
+    "outOfStock": "在庫切れ",
     "unitCode": {
       "label": "単位",
       "placeholder": "単位を選択してください"

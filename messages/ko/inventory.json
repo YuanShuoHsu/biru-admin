@@ -43,6 +43,7 @@
       "label": "식자재 이름",
       "placeholder": "식자재 이름을(를) 입력해 주세요"
     },
+    "outOfStock": "재고 없음",
     "unitCode": {
       "label": "단위",
       "placeholder": "단위을(를) 선택해 주세요"

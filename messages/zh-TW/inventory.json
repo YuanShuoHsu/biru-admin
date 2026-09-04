@@ -23,7 +23,7 @@
         "title": "查看採購規格"
       },
       "viewTransactions": {
-        "title": "查看庫存異動"
+        "title": "查看庫存進出"
       }
     },
     "brand": {
@@ -43,6 +43,7 @@
       "label": "食材名稱",
       "placeholder": "請輸入您的食材名稱"
     },
+    "outOfStock": "無庫存",
     "unitCode": {
       "label": "單位",
       "placeholder": "請選擇您的單位"
@@ -228,10 +229,10 @@
       "recordTransaction": {
         "error": "更新食材失敗",
         "success": "已更新食材",
-        "title": "登記庫存異動"
+        "title": "登記庫存進出"
       }
     },
-    "label": "庫存異動",
+    "label": "庫存進出",
     "note": {
       "label": "備註",
       "placeholder": "請輸入您的備註"
