@@ -146,6 +146,9 @@ const MenuItemIngredientsPage = async ({
     <RecipeIngredients
       canCreate={hasRolePermission(memberRole?.role, { inventory: ["create"] })}
       canDelete={hasRolePermission(memberRole?.role, { inventory: ["delete"] })}
+      canViewAuditLog={hasRolePermission(memberRole?.role, {
+        auditLog: ["read"],
+      })}
       canWrite={hasRolePermission(memberRole?.role, { inventory: ["update"] })}
       filterField={filterField}
       filterOperator={filterOperator}

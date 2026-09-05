@@ -8,7 +8,12 @@ import AuditLogsPage, {
 import type { Locale } from "@/i18n/routing";
 
 interface RecipeAuditLogsPageProps {
-  params: Promise<{ locale: Locale; recipeId: string }>;
+  params: Promise<{
+    locale: Locale;
+    menuSectionId: string;
+    menuItemId: string;
+    recipeId: string;
+  }>;
   searchParams: Promise<AuditLogSearchParams>;
 }
 
@@ -25,16 +30,14 @@ const RecipeAuditLogsPage = async ({
   params,
   searchParams,
 }: RecipeAuditLogsPageProps) => {
-  const [{ locale, recipeId }, query] = await Promise.all([
-    params,
-    searchParams,
-  ]);
+  const [{ locale, menuSectionId, menuItemId, recipeId }, query] =
+    await Promise.all([params, searchParams]);
 
   setRequestLocale(locale);
 
   return (
     <AuditLogsPage
-      href={`/recipes/${recipeId}/audit-logs`}
+      href={`/menus/sections/${menuSectionId}/${menuItemId}/ingredients/${recipeId}/audit-logs`}
       locale={locale}
       resource="recipe"
       resourceId={recipeId}

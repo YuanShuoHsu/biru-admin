@@ -9,6 +9,7 @@ import useSWR from "swr";
 
 import RecipeIngredientDialog from "./RecipeIngredientDialog";
 
+import AuditLogButton from "@/components/AuditLogButton";
 import RecipeDialog from "@/components/RecipeDialog";
 
 import {
@@ -67,6 +68,7 @@ const DataGrid = dynamic(
 interface RecipeIngredientsProps {
   canCreate: boolean;
   canDelete: boolean;
+  canViewAuditLog: boolean;
   canWrite: boolean;
   filterField?: RecipeIngredientFilterField;
   filterOperator?: FilterOperator;
@@ -87,6 +89,7 @@ interface RecipeIngredientsProps {
 const RecipeIngredients = ({
   canCreate,
   canDelete,
+  canViewAuditLog,
   canWrite,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
@@ -414,7 +417,7 @@ const RecipeIngredients = ({
 
   const columns = useMemo<GridColDef[]>(
     () => [
-      ...(canWrite
+      ...(canWrite || canDelete
         ? [
             {
               disableColumnMenu: true,
@@ -428,31 +431,35 @@ const RecipeIngredients = ({
                   alignItems="center"
                   gap={1}
                 >
-                  <Tooltip
-                    title={tInventory(
-                      "recipes.ingredients.actions.updateRecipeIngredient.title",
-                    )}
-                  >
-                    <IconButton
-                      onClick={() => handleUpdateRecipeIngredient(row)}
-                      size="small"
+                  {canWrite && (
+                    <Tooltip
+                      title={tInventory(
+                        "recipes.ingredients.actions.updateRecipeIngredient.title",
+                      )}
                     >
-                      <Edit fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip
-                    title={tInventory(
-                      "recipes.ingredients.actions.deleteRecipeIngredient.title",
-                    )}
-                  >
-                    <IconButton
-                      color="error"
-                      onClick={() => handleDeleteRecipeIngredient(row)}
-                      size="small"
+                      <IconButton
+                        onClick={() => handleUpdateRecipeIngredient(row)}
+                        size="small"
+                      >
+                        <Edit fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                  {canDelete && (
+                    <Tooltip
+                      title={tInventory(
+                        "recipes.ingredients.actions.deleteRecipeIngredient.title",
+                      )}
                     >
-                      <Delete fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
+                      <IconButton
+                        color="error"
+                        onClick={() => handleDeleteRecipeIngredient(row)}
+                        size="small"
+                      >
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
                 </Stack>
               ),
               resizable: false,
@@ -512,6 +519,7 @@ const RecipeIngredients = ({
       },
     ],
     [
+      canDelete,
       canWrite,
       dateFilterOperators,
       format,
@@ -531,7 +539,7 @@ const RecipeIngredients = ({
       <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
         {recipe ? (
           <>
-            {canWrite && (
+            {canCreate && (
               <Button
                 onClick={handleCreateRecipeIngredient}
                 size="small"
@@ -553,6 +561,7 @@ const RecipeIngredients = ({
                 {tInventory("recipes.actions.updateRecipe.title")}
               </Button>
             )}
+            {canViewAuditLog && <AuditLogButton resourceId={recipe.id} />}
             {canDelete && (
               <Button
                 color="error"

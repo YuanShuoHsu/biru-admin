@@ -30,7 +30,11 @@ import { unitCodeValues } from "@/types/api";
 import type { Ingredient, Supplier, UnitCode } from "@/types/inventory";
 
 import { fetcher } from "@/utils/fetcher";
-import { labelWithPackageUnit } from "@/utils/ingredients";
+import {
+  labelWithPackageUnit,
+  toBaseQuantity,
+  toPackages,
+} from "@/utils/ingredients";
 import { localize } from "@/utils/locale";
 
 const INGREDIENT_IMAGE_KEY = "ingredient-image";
@@ -77,8 +81,10 @@ const IngredientDialog = ({
       lowStockThreshold:
         ingredient?.lowStockThreshold && ingredient.packageBaseQuantity
           ? String(
-              Number(ingredient.lowStockThreshold) /
+              toPackages(
+                Number(ingredient.lowStockThreshold),
                 ingredient.packageBaseQuantity,
+              ),
             )
           : "",
       price: ingredient?.price || "",
@@ -132,15 +138,23 @@ const IngredientDialog = ({
             eligibleQuantityUnitCode: values.unitCode,
             unitCode: BASE_UNIT_CODES[values.unitCode],
             lowStockThreshold:
-              baseQuantity > 0
-                ? values.lowStockThreshold
-                  ? String(Number(values.lowStockThreshold) * baseQuantity)
-                  : null
-                : undefined,
+              values.lowStockThreshold && baseQuantity > 0
+                ? String(
+                    toBaseQuantity(
+                      Number(values.lowStockThreshold),
+                      baseQuantity,
+                    ),
+                  )
+                : null,
             ...(!ingredient && {
               inventoryLevel:
                 values.inventoryLevel && baseQuantity > 0
-                  ? String(Number(values.inventoryLevel) * baseQuantity)
+                  ? String(
+                      toBaseQuantity(
+                        Number(values.inventoryLevel),
+                        baseQuantity,
+                      ),
+                    )
                   : null,
             }),
             price: values.price || null,

@@ -98,6 +98,12 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
+const StyledIconButton = styled(IconButton, {
+  shouldForwardProp: (prop) => prop !== "visible",
+})<{ visible: boolean }>(({ visible }) => ({
+  visibility: visible ? "visible" : "hidden",
+}));
+
 const StyledBox = styled(Box)(({ theme }) => ({
   position: "relative",
   width: theme.spacing(4),
@@ -535,12 +541,15 @@ const Ingredients = ({
                   "transactions.actions.recordTransaction.title",
                 )}
               >
-                <IconButton
-                  onClick={() => handleRecordTransaction(row)}
+                <StyledIconButton
+                  onClick={() => {
+                    if (row.packageBaseQuantity) handleRecordTransaction(row);
+                  }}
                   size="small"
+                  visible={!!row.packageBaseQuantity}
                 >
                   <FactCheck fontSize="small" />
-                </IconButton>
+                </StyledIconButton>
               </Tooltip>
             )}
             {canWrite && (

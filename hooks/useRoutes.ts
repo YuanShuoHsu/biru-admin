@@ -221,6 +221,21 @@ const routes: Route[] = [
                     segment: "audit-logs",
                   },
                   {
+                    children: [
+                      {
+                        children: [
+                          {
+                            icon: History,
+                            label: "audit.title",
+                            query: ["organization", "page", "pageSize"],
+                            segment: "audit-logs",
+                          },
+                        ],
+                        icon: SoupKitchen,
+                        segment: "[recipeId]",
+                        to: null,
+                      },
+                    ],
                     icon: Kitchen,
                     label: "inventory.recipes.ingredients.label",
                     query: ["organization"],
@@ -295,27 +310,6 @@ const routes: Route[] = [
     label: "inventory.ingredients.label",
     query: ["organization", "page", "pageSize"],
     segment: "ingredients",
-  },
-  {
-    children: [
-      {
-        children: [
-          {
-            icon: History,
-            label: "audit.title",
-            query: ["organization", "page", "pageSize"],
-            segment: "audit-logs",
-          },
-        ],
-        icon: SoupKitchen,
-        segment: "[recipeId]",
-        to: null,
-      },
-    ],
-    icon: SoupKitchen,
-    label: "inventory.recipes.label",
-    segment: "recipes",
-    to: null,
   },
   {
     children: [

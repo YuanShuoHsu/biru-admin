@@ -24,6 +24,12 @@ export const packagesOf = (quantity: number, packageBaseQuantity: number) => {
   };
 };
 
+export const toPackages = (baseQuantity: number, packageBaseQuantity: number) =>
+  Math.round((baseQuantity / packageBaseQuantity) * 1000) / 1000;
+
+export const toBaseQuantity = (packages: number, packageBaseQuantity: number) =>
+  Math.round(packages * packageBaseQuantity * 1000) / 1000;
+
 export const labelWithPackageUnit = (
   label: string,
   tCommon: IngredientFormatters["tCommon"],

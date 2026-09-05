@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormatter, useTranslations } from "next-intl";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -27,7 +27,10 @@ import {
   formatPackage,
   formatUnitPrice,
   labelWithPackageUnit,
+  toBaseQuantity,
+  toPackages,
 } from "@/utils/ingredients";
+import { localize } from "@/utils/locale";
 
 interface TransactionDialogProps {
   ingredient: Ingredient;
@@ -38,9 +41,16 @@ const TransactionDialog = ({ ingredient, mutate }: TransactionDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
+  const locale = useLocale();
 
   const tCommon = useTranslations("common");
   const tInventory = useTranslations("inventory");
+
+  const packageQuantity = ingredient.packageBaseQuantity;
+  const currentLevel = Number(ingredient.inventoryLevel);
+  const currentPackages = packageQuantity
+    ? toPackages(currentLevel, packageQuantity)
+    : 0;
 
   const transactionFormSchema = useTransactionFormSchema();
   const {
@@ -50,24 +60,21 @@ const TransactionDialog = ({ ingredient, mutate }: TransactionDialogProps) => {
     setValue,
   } = useForm<TransactionFormInput, unknown, TransactionFormOutput>({
     defaultValues: {
-      inventoryLevel: ingredient.packageBaseQuantity
-        ? String(
-            Number(ingredient.inventoryLevel) / ingredient.packageBaseQuantity,
-          )
-        : "",
+      inventoryLevel: packageQuantity ? String(currentPackages) : "",
     },
     resolver: zodResolver(transactionFormSchema),
   });
 
   const inventoryLevel = useWatch({ control, name: "inventoryLevel" });
 
-  const packageQuantity = ingredient.packageBaseQuantity;
-  const delta = packageQuantity
-    ? Number(inventoryLevel || 0) * packageQuantity -
-      Number(ingredient.inventoryLevel)
-    : 0;
+  // 帳上數量未必剛好是整數包，使用者沒動數字時要原值送回，否則換算誤差會被記成一筆盤盈
+  const targetLevel =
+    !packageQuantity || Number(inventoryLevel || 0) === currentPackages
+      ? currentLevel
+      : toBaseQuantity(Number(inventoryLevel), packageQuantity);
+  const delta = targetLevel - currentLevel;
 
-  const onSubmitHandler = async (values: TransactionFormOutput) => {
+  const onSubmitHandler = async () => {
     if (!packageQuantity) {
       enqueueSnackbar(tInventory("transactions.package.empty"), {
         variant: "error",
@@ -85,9 +92,7 @@ const TransactionDialog = ({ ingredient, mutate }: TransactionDialogProps) => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            inventoryLevel: String(
-              Number(values.inventoryLevel) * packageQuantity,
-            ),
+            inventoryLevel: String(targetLevel),
             // 數量變多才是進貨，此時記下當下的採購單價
             ...(delta > 0 &&
               ingredient.unitPrice != null && {
@@ -98,7 +103,9 @@ const TransactionDialog = ({ ingredient, mutate }: TransactionDialogProps) => {
       );
 
       enqueueSnackbar(
-        tInventory("transactions.actions.recordTransaction.success"),
+        tInventory("transactions.actions.recordTransaction.success", {
+          name: localize(ingredient.name, locale),
+        }),
         { variant: "success" },
       );
 
@@ -139,7 +146,7 @@ const TransactionDialog = ({ ingredient, mutate }: TransactionDialogProps) => {
           errors.inventoryLevel?.message ||
           (packageQuantity
             ? [
-                `${format.number(Number(inventoryLevel || 0) * packageQuantity)} ${tInventory(`units.${ingredient.unitCode}`)}`,
+                `${format.number(targetLevel)} ${tInventory(`units.${ingredient.unitCode}`)}`,
                 ...(delta
                   ? [
                       `${tCommon("parenthesisOpen")}${format.number(delta, { signDisplay: "exceptZero" })} ${tInventory(`units.${ingredient.unitCode}`)}${tCommon("parenthesisClose")}`,
