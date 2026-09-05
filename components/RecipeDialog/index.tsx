@@ -29,7 +29,7 @@ interface RecipeDialogProps {
   menuItems: MenuItem[];
   mutate: () => void;
   organizationSlug: string;
-  recipe: Recipe | null;
+  recipe: Pick<Recipe, "id" | "menuItemId" | "name" | "recipeYield"> | null;
 }
 
 const RecipeDialog = ({

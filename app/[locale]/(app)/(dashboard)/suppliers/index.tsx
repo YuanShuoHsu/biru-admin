@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormatter, useTranslations } from "next-intl";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
@@ -28,6 +28,7 @@ import { usePathname, useRouter } from "@/i18n/navigation";
 import { Add, Delete, Edit } from "@mui/icons-material";
 import {
   Button,
+  Chip,
   DialogContentText,
   IconButton,
   Link,
@@ -54,6 +55,7 @@ import type {
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
+import { localize } from "@/utils/locale";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -124,6 +126,8 @@ const Suppliers = ({
   const stringFilterOperators = useStringFilterOperators();
 
   const format = useFormatter();
+
+  const locale = useLocale();
 
   const apiRef = useGridApiRef();
 
@@ -344,11 +348,6 @@ const Suppliers = ({
         headerName: tInventory("suppliers.name.label"),
       },
       {
-        field: "telephone",
-        filterOperators: stringFilterOperators,
-        headerName: `${tInventory("suppliers.telephone.label")} ${tCommon("optional")}`,
-      },
-      {
         field: "url",
         filterOperators: stringFilterOperators,
         headerName: `${tInventory("suppliers.url.label")} ${tCommon("optional")}`,
@@ -358,6 +357,31 @@ const Suppliers = ({
               {url}
             </Link>
           ),
+      },
+      {
+        field: "telephone",
+        filterOperators: stringFilterOperators,
+        headerName: `${tInventory("suppliers.telephone.label")} ${tCommon("optional")}`,
+      },
+      {
+        field: "ingredientNames",
+        filterable: false,
+        headerName: tInventory("suppliers.ingredientNames.label"),
+        sortable: false,
+        renderCell: ({
+          row: { ingredientNames },
+        }: GridRenderCellParams<Supplier>) => (
+          <Stack alignItems="center" direction="row" gap={0.5} height="100%">
+            {ingredientNames.map((name) => (
+              <Chip
+                key={localize(name, locale)}
+                label={localize(name, locale)}
+                size="small"
+                variant="outlined"
+              />
+            ))}
+          </Stack>
+        ),
       },
       {
         field: "note",
@@ -386,6 +410,7 @@ const Suppliers = ({
       format,
       handleDeleteSupplier,
       handleUpdateSupplier,
+      locale,
       stringFilterOperators,
       tCommon,
       tInventory,

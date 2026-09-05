@@ -45,6 +45,7 @@
   "parenthesisOpen": "(",
   "reachStockLimit": "在庫の上限に達しました {label}",
   "selectedCount": "{checked}/{total} 件選択中",
+  "slash": "／",
   "soldOut": "売り切れ",
   "subtotal": "小計",
   "total": "合計",

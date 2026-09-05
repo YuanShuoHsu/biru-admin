@@ -8,14 +8,14 @@ import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type {
   Ingredient,
   IngredientFilterField,
-  IngredientOffer,
   IngredientSortField,
   InventoryTransaction,
   InventoryTransactionFilterField,
   InventoryTransactionSortField,
   Recipe,
-  RecipeFilterField,
-  RecipeSortField,
+  RecipeIngredient,
+  RecipeIngredientFilterField,
+  RecipeIngredientSortField,
   Supplier,
   SupplierFilterField,
   SupplierSortField,
@@ -104,21 +104,6 @@ export const getIngredient = cache(
   },
 );
 
-export const getIngredientOffers = cache(
-  async (ingredientId: string, init?: RequestInit) => {
-    try {
-      const result = await fetcher<IngredientOffer[]>(
-        `/api/ingredients/${ingredientId}/offers`,
-        init,
-      );
-
-      return Array.isArray(result) ? result : [];
-    } catch {
-      return [];
-    }
-  },
-);
-
 export const getInventoryTransactions = cache(
   async (
     ingredientId: string,
@@ -169,24 +154,30 @@ export const getSuppliers = cache(
   },
 );
 
-export const getRecipes = cache(
+export const getRecipeIngredients = cache(
   async (
-    organizationSlug: string,
-    query: GridQuery<RecipeFilterField, RecipeSortField> = {},
+    recipeId: string,
+    query: GridQuery<
+      RecipeIngredientFilterField,
+      RecipeIngredientSortField
+    > = {},
     init?: RequestInit,
   ) => {
     try {
-      const result = await fetcher<{ data: Recipe[]; total: number }>(
-        `/api/organizations/${organizationSlug}/recipes?${getGridSearchParams(query).toString()}`,
+      const result = await fetcher<{
+        data: RecipeIngredient[];
+        total: number;
+      }>(
+        `/api/recipes/${recipeId}/recipe-ingredients?${getGridSearchParams(query).toString()}`,
         init,
       );
 
       return {
-        recipes: Array.isArray(result.data) ? result.data : [],
+        materials: Array.isArray(result.data) ? result.data : [],
         total: result.total || 0,
       };
     } catch {
-      return { recipes: [], total: 0 };
+      return { materials: [], total: 0 };
     }
   },
 );

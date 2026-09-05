@@ -4,34 +4,56 @@
     "actions": {
       "createIngredient": {
         "error": "新增食材失败",
-        "success": "已新增食材",
+        "success": "已新增食材 {name}",
         "title": "新增食材"
       },
       "deleteIngredient": {
         "confirm": "确定要删除 <bold>{name}</bold> 吗？此操作无法复原。",
         "error": "删除食材失败",
-        "success": "已删除食材",
+        "success": "已删除食材 {name}",
         "title": "删除食材"
       },
       "label": "操作",
+      "reorderIngredient": {
+        "cancel": {
+          "confirm": "确定要取消<bold>食材</bold>排序吗？未保存的更改将会丢失。",
+          "label": "取消食材排序"
+        },
+        "confirm": "确定要进行<bold>食材</bold>排序吗？",
+        "save": {
+          "confirm": "确定要保存<bold>食材</bold>排序吗？",
+          "error": "排序保存失败",
+          "label": "保存食材排序",
+          "success": "排序已保存"
+        },
+        "title": "食材排序"
+      },
       "updateIngredient": {
         "error": "更新食材失败",
-        "success": "已更新食材",
+        "success": "已更新食材 {name}",
         "title": "编辑食材"
-      },
-      "viewOffers": {
-        "title": "查看采购规格"
       },
       "viewTransactions": {
         "title": "查看库存进出"
       }
     },
+    "baseUnitCode": {
+      "label": "基准单位"
+    },
     "brand": {
       "label": "品牌",
       "placeholder": "请输入您的品牌"
     },
+    "eligibleQuantity": {
+      "label": "内容量",
+      "placeholder": "请输入您的内容量"
+    },
+    "image": {
+      "label": "图片"
+    },
     "inventoryLevel": {
-      "label": "当前库存"
+      "label": "当前库存",
+      "placeholder": "请输入您的当前库存"
     },
     "label": "食材",
     "lowStock": "低库存",
@@ -44,53 +66,19 @@
       "placeholder": "请输入您的食材名称"
     },
     "outOfStock": "无库存",
-    "unitCode": {
-      "label": "单位",
-      "placeholder": "请选择您的单位"
-    },
-    "unitPrice": {
-      "label": "单位成本"
-    }
-  },
-  "offers": {
-    "actions": {
-      "createOffer": {
-        "error": "新增采购规格失败",
-        "success": "已新增采购规格",
-        "title": "新增采购规格"
-      },
-      "deleteOffer": {
-        "confirm": "确定要删除 <bold>{name}</bold> 吗？此操作无法复原。",
-        "error": "删除采购规格失败",
-        "success": "已删除采购规格",
-        "title": "删除采购规格"
-      },
-      "label": "操作",
-      "updateOffer": {
-        "error": "更新采购规格失败",
-        "success": "已更新采购规格",
-        "title": "编辑采购规格"
-      }
-    },
-    "eligibleQuantity": {
-      "label": "包装容量",
-      "placeholder": "请输入您的包装容量"
-    },
-    "eligibleQuantityUnitCode": {
-      "label": "单位",
-      "placeholder": "请选择您的单位"
-    },
-    "label": "采购规格",
+    "packageRequired": "请先填写内容量与单位",
+    "packageUnit": "包",
     "price": {
       "label": "价格",
       "placeholder": "请输入您的价格"
     },
-    "sortOrder": {
-      "label": "排序"
-    },
     "supplierId": {
       "label": "供应商",
       "placeholder": "请选择您的供应商"
+    },
+    "unitCode": {
+      "label": "单位",
+      "placeholder": "请选择您的单位"
     },
     "unitPrice": {
       "label": "单位成本"
@@ -113,14 +101,10 @@
         "success": "已删除食谱",
         "title": "删除食谱"
       },
-      "label": "操作",
       "updateRecipe": {
         "error": "更新食谱失败",
         "success": "已更新食谱",
         "title": "编辑食谱"
-      },
-      "viewIngredients": {
-        "title": "查看材料"
       }
     },
     "cost": {
@@ -128,9 +112,6 @@
     },
     "costPerServing": {
       "label": "每份成本"
-    },
-    "grossProfit": {
-      "label": "毛利"
     },
     "ingredients": {
       "actions": {
@@ -155,7 +136,6 @@
       "cost": {
         "label": "总成本"
       },
-      "empty": "这道餐点还没有食谱，新增后售出时会自动扣除食材。",
       "ingredientId": {
         "label": "食材",
         "placeholder": "请选择您的食材"
@@ -182,15 +162,13 @@
       "label": "食谱名称",
       "placeholder": "请输入您的食谱名称"
     },
-    "price": {
-      "label": "售价"
-    },
     "recipeYield": {
       "label": "份量",
       "placeholder": "请输入您的份量",
       "unit": "份"
     }
   },
+  "reorder": "排序",
   "suppliers": {
     "actions": {
       "createSupplier": {
@@ -210,6 +188,9 @@
         "success": "已更新供应商",
         "title": "编辑供应商"
       }
+    },
+    "ingredientNames": {
+      "label": "品项"
     },
     "label": "供应商",
     "name": {
@@ -234,36 +215,27 @@
       "label": "操作",
       "recordTransaction": {
         "error": "更新食材失败",
-        "success": "已更新食材",
-        "title": "登记库存进出"
+        "success": "已更新食材 {name}",
+        "title": "登记现有数量"
       }
     },
-    "label": "库存进出",
-    "note": {
-      "label": "备注",
-      "placeholder": "请输入您的备注"
+    "inventoryLevel": {
+      "label": "当前库存",
+      "placeholder": "请输入您的当前库存"
     },
+    "label": "库存进出",
     "orderId": {
       "label": "订单扣账"
     },
-    "quantity": {
-      "label": "数量",
-      "placeholder": "请输入您的数量",
-      "stocktakeLabel": "盘点后数量",
-      "stocktakePlaceholder": "请输入您的盘点后数量"
+    "package": {
+      "empty": "此食材尚未设定采购规格，请先新增后再登记",
+      "label": "包装"
     },
-    "type": {
-      "adjustment": "盘点调整",
-      "consumption": "耗用",
-      "label": "类型",
-      "placeholder": "请选择您的类型",
-      "purchase": "进货",
-      "restoration": "订单退回",
-      "waste": "报废"
+    "quantity": {
+      "label": "异动量"
     },
     "unitCost": {
-      "label": "进货单价",
-      "placeholder": "请输入您的进货单价"
+      "label": "进货单价"
     }
   },
   "units": {

@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 
 import Ingredients from ".";
 
+import { MAX_PAGE_SIZE } from "@/constants/pagination";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -18,7 +20,7 @@ import {
 
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getIngredientEnumOptions } from "@/utils/enumOptions";
-import { getIngredients } from "@/utils/inventory";
+import { getIngredients, getSuppliers } from "@/utils/inventory";
 import { getResolvedAdminOrganization } from "@/utils/menus";
 import { hasRolePermission } from "@/utils/organizations";
 
@@ -104,21 +106,28 @@ const IngredientsPage = async ({
       )
     : [];
 
-  const { ingredients, total } = await getIngredients(
-    organization.slug,
-    {
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterEnums,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-    },
-    fetchOptions,
-  );
+  const [{ ingredients, total }, { suppliers }] = await Promise.all([
+    getIngredients(
+      organization.slug,
+      {
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterEnums,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+      },
+      fetchOptions,
+    ),
+    getSuppliers(
+      organization.slug,
+      { pageSize: MAX_PAGE_SIZE, sortBy: "name", sortDirection: "asc" },
+      fetchOptions,
+    ),
+  ]);
 
   return (
     <Ingredients
@@ -142,6 +151,7 @@ const IngredientsPage = async ({
       rowCount={total}
       sortBy={sortBy}
       sortDirection={sortDirection}
+      suppliers={suppliers}
     />
   );
 };

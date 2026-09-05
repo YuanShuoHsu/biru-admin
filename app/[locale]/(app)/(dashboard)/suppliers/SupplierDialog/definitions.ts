@@ -13,7 +13,15 @@ export const useSupplierFormSchema = () => {
       }),
     note: z.string().trim().optional(),
     telephone: z.string().trim().optional(),
-    url: z.string().trim().optional(),
+    url: z
+      .string()
+      .trim()
+      .refine(
+        (value) =>
+          !value || z.url({ protocol: /^https?$/ }).safeParse(value).success,
+        { error: tValidation("url.invalid") },
+      )
+      .optional(),
   });
 };
 

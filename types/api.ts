@@ -687,6 +687,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/ingredients/reorder": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** 重新排序食材 */
+    patch: operations["OrganizationInventoryController_reorderIngredients"];
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/suppliers": {
     parameters: {
       query?: never;
@@ -740,42 +757,6 @@ export interface paths {
     head?: never;
     /** 更新食材 */
     patch: operations["IngredientsController_update"];
-    trace?: never;
-  };
-  "/api/ingredients/{ingredientId}/offers": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** 查詢食材採購規格 */
-    get: operations["IngredientsController_findAllOffers"];
-    put?: never;
-    /** 建立食材採購規格 */
-    post: operations["IngredientsController_createOffer"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/ingredients/{ingredientId}/offers/{ingredientOfferId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** 刪除食材採購規格 */
-    delete: operations["IngredientsController_removeOffer"];
-    options?: never;
-    head?: never;
-    /** 更新食材採購規格 */
-    patch: operations["IngredientsController_updateOffer"];
     trace?: never;
   };
   "/api/ingredients/{ingredientId}/inventory-transactions": {
@@ -2559,6 +2540,7 @@ export interface components {
     IngredientFilterField:
       | "name"
       | "brand"
+      | "supplierName"
       | "unitCode"
       | "inventoryLevel"
       | "lowStockThreshold"
@@ -2568,13 +2550,22 @@ export interface components {
     IngredientSortField:
       | "name"
       | "brand"
+      | "supplierName"
       | "unitCode"
       | "inventoryLevel"
       | "lowStockThreshold"
       | "createdAt"
-      | "updatedAt";
+      | "updatedAt"
+      | "price"
+      | "eligibleQuantity"
+      | "unitPrice";
     /** @enum {string} */
     BaseUnitCode: "GRM" | "MLT" | "H87";
+    /**
+     * @description eligibleQuantity 的單位，需與 unitCode 同維度
+     * @enum {string}
+     */
+    UnitCode: "GRM" | "KGM" | "LTR" | "MLT" | "H87";
     CreateIngredientDto: {
       /**
        * @example {
@@ -2586,30 +2577,74 @@ export interface components {
       /** @example 森半宇治抹茶粉 PCT-2 茗（無糖） */
       brand?: string | null;
       image?: string | null;
+      /** @description 向哪一家採購 */
+      supplierId?: string | null;
       unitCode: components["schemas"]["BaseUnitCode"];
       /**
        * @description 低於此量顯示警示
        * @example 100.000
        */
       lowStockThreshold?: string | null;
+      /**
+       * @description 一個包裝的價錢
+       * @example 950.00
+       */
+      price?: string | null;
+      /** @example TWD */
+      priceCurrency?: string;
+      /**
+       * @description 一個包裝的量
+       * @example 100.000
+       */
+      eligibleQuantity?: string | null;
+      /** @description eligibleQuantity 的單位，需與 unitCode 同維度 */
+      eligibleQuantityUnitCode?: components["schemas"]["UnitCode"] | null;
+      /**
+       * Format: uri
+       * @description 採購連結
+       */
+      url?: string | null;
+      /**
+       * @description 開帳數量；系統會一併寫入盤點帳本
+       * @example 500.000
+       */
+      inventoryLevel?: string | null;
     };
-    /** @enum {string} */
-    UnitCode: "GRM" | "KGM" | "LTR" | "MLT" | "H87";
     IngredientResponseDto: {
       id: string;
       organizationId: string;
       name: Record<string, never>;
       brand?: string | null;
       image?: string | null;
+      supplierId?: string | null;
+      supplierName?: string | null;
       unitCode: components["schemas"]["UnitCode"];
       inventoryLevel: string;
       lowStockThreshold?: string | null;
-      /** @description 取排序第一筆採購規格換算 */
+      /** @description 一個包裝的價錢 */
+      price?: string | null;
+      priceCurrency: string;
+      eligibleQuantity?: string | null;
+      /** @description eligibleQuantity 的單位 */
+      eligibleQuantityUnitCode?: components["schemas"]["UnitCode"] | null;
+      url?: string | null;
+      /** @description 每基準單位價格 */
       unitPrice?: number | null;
+      /** @description 包裝量，與 eligibleQuantity 相同 */
+      packageQuantity?: string | null;
+      /** @description packageQuantity 的單位 */
+      packageUnitCode?: components["schemas"]["UnitCode"] | null;
+      /** @description 一個包裝換算為基準單位的量 */
+      packageBaseQuantity?: number | null;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
       updatedAt: string;
+    };
+    ReorderDto: {
+      ids: string[];
+      /** @default 0 */
+      offset: number;
     };
     /** @enum {string} */
     SupplierFilterField:
@@ -2631,6 +2666,7 @@ export interface components {
       /** @example 全國食材廣場 */
       name: string;
       telephone?: string | null;
+      /** Format: uri */
       url?: string | null;
       note?: string | null;
     };
@@ -2641,6 +2677,8 @@ export interface components {
       telephone?: string | null;
       url?: string | null;
       note?: string | null;
+      /** @description 此供應商有採購規格的食材 */
+      ingredientNames: Record<string, never>[];
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -2719,111 +2757,64 @@ export interface components {
       /** @example 森半宇治抹茶粉 PCT-2 茗（無糖） */
       brand?: string | null;
       image?: string | null;
+      /** @description 向哪一家採購 */
+      supplierId?: string | null;
       unitCode?: components["schemas"]["BaseUnitCode"];
       /**
        * @description 低於此量顯示警示
        * @example 100.000
        */
       lowStockThreshold?: string | null;
-    };
-    IngredientOfferResponseDto: {
-      id: string;
-      ingredientId: string;
-      supplierId?: string | null;
-      supplierName?: string | null;
-      price: string;
-      priceCurrency: string;
-      eligibleQuantity: string;
-      eligibleQuantityUnitCode: components["schemas"]["UnitCode"];
-      /** @description 每基準單位價格 */
-      unitPrice: number;
-      url?: string | null;
-      sortOrder: number;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    CreateIngredientOfferDto: {
-      /** @example 950.00 */
-      price: string;
+      /**
+       * @description 一個包裝的價錢
+       * @example 950.00
+       */
+      price?: string | null;
       /** @example TWD */
       priceCurrency?: string;
       /**
-       * @description 包裝容量
+       * @description 一個包裝的量
        * @example 100.000
        */
-      eligibleQuantity: string;
-      eligibleQuantityUnitCode: components["schemas"]["UnitCode"];
-      supplierId?: string | null;
-      /** @description 商品連結 */
-      url?: string | null;
-      /** @description 未帶時排在最後；成本取排序第一筆 */
-      sortOrder?: number;
-    };
-    UpdateIngredientOfferDto: {
-      /** @example 950.00 */
-      price?: string;
-      /** @example TWD */
-      priceCurrency?: string;
+      eligibleQuantity?: string | null;
+      /** @description eligibleQuantity 的單位，需與 unitCode 同維度 */
+      eligibleQuantityUnitCode?: components["schemas"]["UnitCode"] | null;
       /**
-       * @description 包裝容量
-       * @example 100.000
+       * Format: uri
+       * @description 採購連結
        */
-      eligibleQuantity?: string;
-      eligibleQuantityUnitCode?: components["schemas"]["UnitCode"];
-      supplierId?: string | null;
-      /** @description 商品連結 */
       url?: string | null;
-      /** @description 未帶時排在最後；成本取排序第一筆 */
-      sortOrder?: number;
     };
     /** @enum {string} */
     InventoryTransactionFilterField:
       | "note"
-      | "type"
       | "quantity"
       | "unitCost"
       | "createdAt";
     /** @enum {string} */
     InventoryTransactionSortField:
       | "note"
-      | "type"
       | "quantity"
       | "unitCost"
       | "createdAt";
-    /** @enum {string} */
-    ManualInventoryTransactionType:
-      | "purchase"
-      | "consumption"
-      | "adjustment"
-      | "waste";
     CreateInventoryTransactionDto: {
-      type: components["schemas"]["ManualInventoryTransactionType"];
       /**
-       * @description adjustment 帶盤點後實數，其餘帶異動量（一律為正）
+       * @description 清點後的現有數量；異動量由系統與帳上數量相減求得
        * @example 500.000
        */
-      quantity: string;
+      inventoryLevel: string;
       /**
        * @description 進貨單價
        * @example 9.5000
        */
       unitCost?: string;
+      /** @description 異動原因，自由填寫 */
       note?: string | null;
     };
-    /** @enum {string} */
-    InventoryTransactionType:
-      | "purchase"
-      | "consumption"
-      | "adjustment"
-      | "waste"
-      | "restoration";
     InventoryTransactionResponseDto: {
       id: string;
       ingredientId: string;
       organizationId: string;
-      type: components["schemas"]["InventoryTransactionType"];
       /** @description 帶正負的異動量 */
       quantity: string;
       unitCost?: string | null;
@@ -2858,6 +2849,18 @@ export interface components {
        */
       recipeInstructions?: Record<string, never>[];
     };
+    /** @enum {string} */
+    RecipeIngredientFilterField:
+      | "ingredientName"
+      | "requiredQuantity"
+      | "createdAt"
+      | "updatedAt";
+    /** @enum {string} */
+    RecipeIngredientSortField:
+      | "ingredientName"
+      | "requiredQuantity"
+      | "createdAt"
+      | "updatedAt";
     CreateRecipeIngredientDto: {
       ingredientId: string;
       /**
@@ -2882,6 +2885,7 @@ export interface components {
       /** @example 全國食材廣場 */
       name?: string;
       telephone?: string | null;
+      /** Format: uri */
       url?: string | null;
       note?: string | null;
     };
@@ -3316,11 +3320,6 @@ export interface components {
     MenuSectionFilterField: "name" | "description" | "createdAt" | "updatedAt";
     /** @enum {string} */
     MenuSectionSortField: "name" | "description" | "createdAt" | "updatedAt";
-    ReorderDto: {
-      ids: string[];
-      /** @default 0 */
-      offset: number;
-    };
     UpdateMenuSectionDto: {
       /** @description Parent section ID for nested sections */
       parentSectionId?: string;
@@ -3439,6 +3438,8 @@ export interface components {
     MenuItemRecipeResponseDto: {
       id: string;
       name: Record<string, never>;
+      recipeYield: number;
+      cost: number;
     };
     MenuItemResponseDto: {
       id: string;
@@ -5438,6 +5439,36 @@ export interface operations {
       };
     };
   };
+  OrganizationInventoryController_reorderIngredients: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ReorderDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   OrganizationInventoryController_findAllSuppliers: {
     parameters: {
       query?: {
@@ -5662,124 +5693,6 @@ export interface operations {
       };
     };
   };
-  IngredientsController_findAllOffers: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        ingredientId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["IngredientOfferResponseDto"][];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  IngredientsController_createOffer: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        ingredientId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateIngredientOfferDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["IngredientOfferResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  IngredientsController_removeOffer: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        ingredientOfferId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  IngredientsController_updateOffer: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        ingredientOfferId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateIngredientOfferDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["IngredientOfferResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
   IngredientsController_findAllTransactions: {
     parameters: {
       query?: {
@@ -5937,7 +5850,18 @@ export interface operations {
   };
   RecipesController_findAllIngredients: {
     parameters: {
-      query?: never;
+      query?: {
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        filterField?: components["schemas"]["RecipeIngredientFilterField"];
+        sortBy?: components["schemas"]["RecipeIngredientSortField"];
+        limit?: number;
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+      };
       header?: never;
       path: {
         recipeId: string;
@@ -5950,9 +5874,7 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content: {
-          "application/json": components["schemas"]["RecipeIngredientResponseDto"][];
-        };
+        content?: never;
       };
       /** @description Internal server error */
       500: {
@@ -8058,6 +7980,7 @@ export const ingredientFilterFieldValues: ReadonlyArray<
 > = [
   "name",
   "brand",
+  "supplierName",
   "unitCode",
   "inventoryLevel",
   "lowStockThreshold",
@@ -8069,11 +7992,15 @@ export const ingredientSortFieldValues: ReadonlyArray<
 > = [
   "name",
   "brand",
+  "supplierName",
   "unitCode",
   "inventoryLevel",
   "lowStockThreshold",
   "createdAt",
   "updatedAt",
+  "price",
+  "eligibleQuantity",
+  "unitPrice",
 ];
 export const baseUnitCodeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["BaseUnitCode"]
@@ -8095,16 +8022,16 @@ export const recipeSortFieldValues: ReadonlyArray<
 > = ["name", "recipeYield", "createdAt", "updatedAt"];
 export const inventoryTransactionFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["InventoryTransactionFilterField"]
-> = ["note", "type", "quantity", "unitCost", "createdAt"];
+> = ["note", "quantity", "unitCost", "createdAt"];
 export const inventoryTransactionSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["InventoryTransactionSortField"]
-> = ["note", "type", "quantity", "unitCost", "createdAt"];
-export const manualInventoryTransactionTypeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["ManualInventoryTransactionType"]
-> = ["purchase", "consumption", "adjustment", "waste"];
-export const inventoryTransactionTypeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["InventoryTransactionType"]
-> = ["purchase", "consumption", "adjustment", "waste", "restoration"];
+> = ["note", "quantity", "unitCost", "createdAt"];
+export const recipeIngredientFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["RecipeIngredientFilterField"]
+> = ["ingredientName", "requiredQuantity", "createdAt", "updatedAt"];
+export const recipeIngredientSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["RecipeIngredientSortField"]
+> = ["ingredientName", "requiredQuantity", "createdAt", "updatedAt"];
 export const createOrderInvoiceDtoTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CreateOrderInvoiceDto"]["type"]
 > = ["personal", "company", "donate"];

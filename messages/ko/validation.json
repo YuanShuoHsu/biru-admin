@@ -66,6 +66,9 @@
     "invalid": "기부코드가 유효하지 않습니다.",
     "required": "기부코드는 필수입니다."
   },
+  "eligibleQuantity": {
+    "required": "포장 용량은 필수입니다."
+  },
   "email": {
     "invalid": "이메일이 유효하지 않습니다.",
     "required": "이메일은 필수입니다."
@@ -75,6 +78,12 @@
   },
   "gender": {
     "required": "성별은 필수입니다."
+  },
+  "ingredientId": {
+    "notSelected": "식자재를 선택해 주세요."
+  },
+  "inventoryLevel": {
+    "required": "현재 수량은 필수입니다."
   },
   "invoiceType": {
     "notSelected": "영수증 유형을 선택해 주세요."
@@ -99,9 +108,6 @@
     "minLength": "8자 이상 길이.",
     "number": "숫자를 최소 1개 포함.",
     "sameAsCurrent": "새 비밀번호는 현재 비밀번호와 달라야 합니다."
-  },
-  "remark": {
-    "maxLength": "메모는 160자를 초과할 수 없습니다."
   },
   "password": {
     "letter": "영문자를 최소 1개 포함.",
@@ -137,15 +143,23 @@
     "notSelected": "픽업 시간을 선택해 주세요.",
     "storeUnavailable": "예약 가능한 기간 내에 픽업 가능한 시간이 없습니다. 잠시 후 다시 시도하거나 매장에 문의해 주세요."
   },
-  "telephone": {
-    "invalid": "전화번호가 유효하지 않습니다.",
-    "required": "전화번호는 필수입니다."
-  },
   "postalCode": {
     "format": "우편번호 형식이 올바르지 않습니다."
   },
   "price": {
     "required": "가격을 입력해 주세요."
+  },
+  "quantity": {
+    "required": "수량은 필수입니다."
+  },
+  "recipeYield": {
+    "required": "분량은 필수입니다."
+  },
+  "remark": {
+    "maxLength": "메모는 160자를 초과할 수 없습니다."
+  },
+  "requiredQuantity": {
+    "required": "사용량은 필수입니다."
   },
   "role": {
     "required": "역할을 선택해 주세요."
@@ -154,31 +168,20 @@
     "letter": "슬러그에는 최소 하나의 영문자가 포함되어야 합니다.",
     "required": "슬러그는 필수입니다."
   },
-  "validFrom": {
-    "beforeValidThrough": "시작일은 종료일보다 앞서야 합니다."
-  },
-  "eligibleQuantity": {
-    "required": "포장 용량은 필수입니다."
-  },
-  "ingredientId": {
-    "notSelected": "식자재를 선택해 주세요."
-  },
-  "quantity": {
-    "required": "수량은 필수입니다."
-  },
-  "recipeYield": {
-    "required": "분량은 필수입니다."
-  },
-  "requiredQuantity": {
-    "required": "사용량은 필수입니다."
-  },
   "supplierName": {
     "required": "공급업체 이름은 필수입니다."
   },
-  "transactionType": {
-    "notSelected": "유형을 선택해 주세요."
+  "telephone": {
+    "invalid": "전화번호가 유효하지 않습니다.",
+    "required": "전화번호는 필수입니다."
   },
   "unitCode": {
     "notSelected": "단위를 선택해 주세요."
+  },
+  "url": {
+    "invalid": "URL 형식이 올바르지 않습니다."
+  },
+  "validFrom": {
+    "beforeValidThrough": "시작일은 종료일보다 앞서야 합니다."
   }
 }

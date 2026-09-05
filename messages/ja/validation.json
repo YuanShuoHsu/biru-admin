@@ -66,6 +66,9 @@
     "invalid": "寄付コードが無効です。",
     "required": "寄付コードは必須です。"
   },
+  "eligibleQuantity": {
+    "required": "内容量は必須です。"
+  },
   "email": {
     "invalid": "メールアドレスが無効です。",
     "required": "メールアドレスは必須です。"
@@ -75,6 +78,12 @@
   },
   "gender": {
     "required": "性別は必須です。"
+  },
+  "ingredientId": {
+    "notSelected": "食材を選択してください。"
+  },
+  "inventoryLevel": {
+    "required": "現在の数量は必須です。"
   },
   "invoiceType": {
     "notSelected": "インボイスの種類を選択してください。"
@@ -99,9 +108,6 @@
     "minLength": "8文字以上の長さ。",
     "number": "数字を1文字以上含む。",
     "sameAsCurrent": "新しいパスワードは現在のパスワードと異なる必要があります。"
-  },
-  "remark": {
-    "maxLength": "備考は160文字以内で入力してください。"
   },
   "password": {
     "letter": "英字を1文字以上含む。",
@@ -137,15 +143,23 @@
     "notSelected": "受け取り時間を選択してください。",
     "storeUnavailable": "予約可能な期間内に受け取り可能な時間がありません。しばらくしてからもう一度お試しいただくか、店舗にお問い合わせください。"
   },
-  "telephone": {
-    "invalid": "電話番号が無効です。",
-    "required": "電話番号は必須です。"
-  },
   "postalCode": {
     "format": "郵便番号の形式が無効です。"
   },
   "price": {
     "required": "価格を入力してください。"
+  },
+  "quantity": {
+    "required": "数量は必須です。"
+  },
+  "recipeYield": {
+    "required": "出来上がり分量は必須です。"
+  },
+  "remark": {
+    "maxLength": "備考は160文字以内で入力してください。"
+  },
+  "requiredQuantity": {
+    "required": "使用量は必須です。"
   },
   "role": {
     "required": "役割を選択してください。"
@@ -154,31 +168,20 @@
     "letter": "スラッグには少なくとも1つのアルファベットを含める必要があります。",
     "required": "スラッグは必須です。"
   },
-  "validFrom": {
-    "beforeValidThrough": "開始日は終了日より前でなければなりません。"
-  },
-  "eligibleQuantity": {
-    "required": "内容量は必須です。"
-  },
-  "ingredientId": {
-    "notSelected": "食材を選択してください。"
-  },
-  "quantity": {
-    "required": "数量は必須です。"
-  },
-  "recipeYield": {
-    "required": "出来上がり分量は必須です。"
-  },
-  "requiredQuantity": {
-    "required": "使用量は必須です。"
-  },
   "supplierName": {
     "required": "仕入先名は必須です。"
   },
-  "transactionType": {
-    "notSelected": "種別を選択してください。"
+  "telephone": {
+    "invalid": "電話番号が無効です。",
+    "required": "電話番号は必須です。"
   },
   "unitCode": {
     "notSelected": "単位を選択してください。"
+  },
+  "url": {
+    "invalid": "URLの形式が無効です。"
+  },
+  "validFrom": {
+    "beforeValidThrough": "開始日は終了日より前でなければなりません。"
   }
 }

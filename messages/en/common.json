@@ -45,6 +45,7 @@
   "parenthesisOpen": "(",
   "reachStockLimit": "Stock limit reached {label}",
   "selectedCount": "{checked}/{total} selected",
+  "slash": "/",
   "soldOut": "Sold out",
   "subtotal": "Subtotal",
   "total": "Total",

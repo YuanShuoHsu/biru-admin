@@ -66,6 +66,9 @@
     "invalid": "捐贈碼格式無效。",
     "required": "捐贈碼為必填。"
   },
+  "eligibleQuantity": {
+    "required": "包裝容量為必填。"
+  },
   "email": {
     "invalid": "電子郵件無效。",
     "required": "電子郵件為必填。"
@@ -75,6 +78,12 @@
   },
   "gender": {
     "required": "性別為必填。"
+  },
+  "ingredientId": {
+    "notSelected": "請選擇您的食材。"
+  },
+  "inventoryLevel": {
+    "required": "目前數量為必填。"
   },
   "invoiceType": {
     "notSelected": "請選擇您的發票類型。"
@@ -99,9 +108,6 @@
     "minLength": "至少 8 個字元長度。",
     "number": "包含至少一個數字。",
     "sameAsCurrent": "新密碼不能與目前密碼相同。"
-  },
-  "remark": {
-    "maxLength": "備註不能超過 160 個字元。"
   },
   "password": {
     "letter": "包含至少一個英文字母。",
@@ -137,15 +143,23 @@
     "notSelected": "請選擇您的取餐時間。",
     "storeUnavailable": "本店近期沒有可預約的取餐時間，請稍後再試或聯繫店家。"
   },
-  "telephone": {
-    "invalid": "電話格式無效。",
-    "required": "電話為必填。"
-  },
   "postalCode": {
     "format": "郵遞區號格式無效。"
   },
   "price": {
     "required": "請輸入價格。"
+  },
+  "quantity": {
+    "required": "數量為必填。"
+  },
+  "recipeYield": {
+    "required": "份量為必填。"
+  },
+  "remark": {
+    "maxLength": "備註不能超過 160 個字元。"
+  },
+  "requiredQuantity": {
+    "required": "用量為必填。"
   },
   "role": {
     "required": "請選擇角色。"
@@ -154,31 +168,20 @@
     "letter": "網址識別碼必須包含至少一個英文字母。",
     "required": "網址識別碼為必填。"
   },
-  "validFrom": {
-    "beforeValidThrough": "生效日期必須早於截止日期。"
-  },
-  "eligibleQuantity": {
-    "required": "包裝容量為必填。"
-  },
-  "ingredientId": {
-    "notSelected": "請選擇您的食材。"
-  },
-  "quantity": {
-    "required": "數量為必填。"
-  },
-  "recipeYield": {
-    "required": "份量為必填。"
-  },
-  "requiredQuantity": {
-    "required": "用量為必填。"
-  },
   "supplierName": {
     "required": "供應商名稱為必填。"
   },
-  "transactionType": {
-    "notSelected": "請選擇您的類型。"
+  "telephone": {
+    "invalid": "電話格式無效。",
+    "required": "電話為必填。"
   },
   "unitCode": {
     "notSelected": "請選擇您的單位。"
+  },
+  "url": {
+    "invalid": "網址格式無效。"
+  },
+  "validFrom": {
+    "beforeValidThrough": "生效日期必須早於截止日期。"
   }
 }

@@ -12,7 +12,18 @@ import { authClient } from "@/lib/auth-client";
 
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
-import { getIngredients, getRecipe } from "@/utils/inventory";
+import {
+  filterOperatorValues,
+  recipeIngredientFilterFieldValues,
+  recipeIngredientSortFieldValues,
+} from "@/types/api";
+
+import { resolveGridSearchParams } from "@/utils/dataGrid";
+import {
+  getIngredients,
+  getRecipe,
+  getRecipeIngredients,
+} from "@/utils/inventory";
 import {
   DEFAULT_MENUS_HREF,
   getAdminMenu,
@@ -28,7 +39,17 @@ interface MenuItemIngredientsPageProps {
     menuSectionId: string;
     menuItemId: string;
   }>;
-  searchParams: Promise<{ organization?: string }>;
+  searchParams: Promise<{
+    filterField?: string;
+    filterOperator?: string;
+    filterValue?: string;
+    organization?: string;
+    page?: string;
+    pageSize?: string;
+    quickFilterValue?: string;
+    sortBy?: string;
+    sortDirection?: string;
+  }>;
 }
 
 export const generateMetadata = async ({
@@ -80,14 +101,66 @@ const MenuItemIngredientsPage = async ({
 
   if (menuItem.recipe && !recipe) notFound();
 
+  const {
+    filterField,
+    filterOperator,
+    filterValue,
+    page,
+    pageSize,
+    quickFilterValue,
+    redirectParams,
+    sortBy,
+    sortDirection,
+  } = resolveGridSearchParams({
+    searchParams: rawSearchParams,
+    sortFields: recipeIngredientSortFieldValues,
+    filterFields: recipeIngredientFilterFieldValues,
+    filterOperators: filterOperatorValues,
+    organizationSlug: selectedOrganization.slug,
+  });
+
+  if (redirectParams)
+    redirect({
+      href: `/menus/sections/${menuSectionId}/${menuItemId}/ingredients?${redirectParams.toString()}`,
+      locale,
+    });
+
+  const { materials, total } = recipe
+    ? await getRecipeIngredients(
+        recipe.id,
+        {
+          page,
+          pageSize,
+          filterField,
+          filterOperator,
+          filterValue,
+          quickFilterValue,
+          sortBy,
+          sortDirection,
+        },
+        fetchOptions,
+      )
+    : { materials: [], total: 0 };
+
   return (
     <RecipeIngredients
       canCreate={hasRolePermission(memberRole?.role, { inventory: ["create"] })}
+      canDelete={hasRolePermission(memberRole?.role, { inventory: ["delete"] })}
       canWrite={hasRolePermission(memberRole?.role, { inventory: ["update"] })}
+      filterField={filterField}
+      filterOperator={filterOperator}
+      filterValue={filterValue}
       ingredients={ingredients}
+      materials={materials}
       menuItem={menuItem}
       organizationSlug={selectedOrganization.slug}
+      page={page}
+      pageSize={pageSize}
+      quickFilterValue={quickFilterValue}
       recipe={recipe}
+      rowCount={total}
+      sortBy={sortBy}
+      sortDirection={sortDirection}
     />
   );
 };

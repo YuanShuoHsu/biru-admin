@@ -1,25 +1,16 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-import { manualInventoryTransactionTypeValues } from "@/types/api";
-
 export const useTransactionFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z.object({
-    note: z.string().trim().optional(),
-    quantity: z
+    inventoryLevel: z
       .string()
       .trim()
       .min(1, {
-        error: tValidation("quantity.required"),
+        error: tValidation("inventoryLevel.required"),
       }),
-    type: z.string().pipe(
-      z.enum(manualInventoryTransactionTypeValues, {
-        error: tValidation("transactionType.notSelected"),
-      }),
-    ),
-    unitCost: z.string().trim().optional(),
   });
 };
 

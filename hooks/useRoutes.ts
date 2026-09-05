@@ -56,7 +56,6 @@ import {
   PersonAdd,
   Policy,
   ReceiptLong,
-  Sell,
   Settings,
   SoupKitchen,
   Stars,
@@ -281,12 +280,6 @@ const routes: Route[] = [
             segment: "audit-logs",
           },
           {
-            icon: Sell,
-            label: "inventory.offers.label",
-            query: ["organization"],
-            segment: "offers",
-          },
-          {
             icon: SwapVert,
             label: "inventory.transactions.label",
             query: ["organization", "page", "pageSize"],
@@ -315,14 +308,14 @@ const routes: Route[] = [
           },
         ],
         icon: SoupKitchen,
-        query: ["organization"],
         segment: "[recipeId]",
+        to: null,
       },
     ],
     icon: SoupKitchen,
     label: "inventory.recipes.label",
-    query: ["organization", "page", "pageSize"],
     segment: "recipes",
+    to: null,
   },
   {
     children: [

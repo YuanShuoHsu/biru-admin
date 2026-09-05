@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -16,14 +16,18 @@ import NumberSpinner from "@/components/NumberSpinner";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { MenuItem, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { manualInventoryTransactionTypeValues } from "@/types/api";
 import type { Ingredient, InventoryTransaction } from "@/types/inventory";
 
 import { fetcher } from "@/utils/fetcher";
+import {
+  formatPackage,
+  formatUnitPrice,
+  labelWithPackageUnit,
+} from "@/utils/ingredients";
 
 interface TransactionDialogProps {
   ingredient: Ingredient;
@@ -33,6 +37,8 @@ interface TransactionDialogProps {
 const TransactionDialog = ({ ingredient, mutate }: TransactionDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
+  const format = useFormatter();
+
   const tCommon = useTranslations("common");
   const tInventory = useTranslations("inventory");
 
@@ -41,20 +47,35 @@ const TransactionDialog = ({ ingredient, mutate }: TransactionDialogProps) => {
     control,
     formState: { errors, isSubmitted },
     handleSubmit,
-    register,
     setValue,
   } = useForm<TransactionFormInput, unknown, TransactionFormOutput>({
-    defaultValues: { note: "", quantity: "", type: "purchase", unitCost: "" },
+    defaultValues: {
+      inventoryLevel: ingredient.packageBaseQuantity
+        ? String(
+            Number(ingredient.inventoryLevel) / ingredient.packageBaseQuantity,
+          )
+        : "",
+    },
     resolver: zodResolver(transactionFormSchema),
   });
 
-  const quantity = useWatch({ control, name: "quantity" });
-  const type = useWatch({ control, name: "type" });
-  const unitCost = useWatch({ control, name: "unitCost" });
+  const inventoryLevel = useWatch({ control, name: "inventoryLevel" });
 
-  const isStocktake = type === "adjustment";
+  const packageQuantity = ingredient.packageBaseQuantity;
+  const delta = packageQuantity
+    ? Number(inventoryLevel || 0) * packageQuantity -
+      Number(ingredient.inventoryLevel)
+    : 0;
 
   const onSubmitHandler = async (values: TransactionFormOutput) => {
+    if (!packageQuantity) {
+      enqueueSnackbar(tInventory("transactions.package.empty"), {
+        variant: "error",
+      });
+
+      return;
+    }
+
     try {
       setDialog({ confirmLoading: true });
 
@@ -64,11 +85,14 @@ const TransactionDialog = ({ ingredient, mutate }: TransactionDialogProps) => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            note: values.note || null,
-            quantity: values.quantity,
-            type: values.type,
-            ...(values.type === "purchase" &&
-              values.unitCost && { unitCost: values.unitCost }),
+            inventoryLevel: String(
+              Number(values.inventoryLevel) * packageQuantity,
+            ),
+            // 數量變多才是進貨，此時記下當下的採購單價
+            ...(delta > 0 &&
+              ingredient.unitPrice != null && {
+                unitCost: String(ingredient.unitPrice),
+              }),
           }),
         },
       );
@@ -97,70 +121,47 @@ const TransactionDialog = ({ ingredient, mutate }: TransactionDialogProps) => {
   return (
     <FormBox id="transaction-form" onSubmit={onSubmit}>
       <TextField
-        error={!!errors.type}
-        fullWidth
-        helperText={errors.type?.message}
-        label={tInventory("transactions.type.label")}
-        required
-        select
-        value={type}
-        {...register("type")}
-      >
-        {manualInventoryTransactionTypeValues.map((value) => (
-          <MenuItem key={value} value={value}>
-            {tInventory(`transactions.type.${value}`)}
-          </MenuItem>
-        ))}
-      </TextField>
-      <NumberSpinner
-        error={!!errors.quantity}
+        disabled
+        error={!packageQuantity}
         fullWidth
         helperText={
-          errors.quantity?.message || tInventory(`units.${ingredient.unitCode}`)
+          packageQuantity
+            ? formatUnitPrice(ingredient, { format, tCommon, tInventory })
+            : tInventory("transactions.package.empty")
         }
-        label={tInventory(
-          isStocktake
-            ? "transactions.quantity.stocktakeLabel"
-            : "transactions.quantity.label",
+        label={tInventory("transactions.package.label")}
+        value={formatPackage(ingredient, { format, tCommon, tInventory })}
+      />
+      <NumberSpinner
+        error={!!errors.inventoryLevel}
+        fullWidth
+        helperText={
+          errors.inventoryLevel?.message ||
+          (packageQuantity
+            ? [
+                `${format.number(Number(inventoryLevel || 0) * packageQuantity)} ${tInventory(`units.${ingredient.unitCode}`)}`,
+                ...(delta
+                  ? [
+                      `${tCommon("parenthesisOpen")}${format.number(delta, { signDisplay: "exceptZero" })} ${tInventory(`units.${ingredient.unitCode}`)}${tCommon("parenthesisClose")}`,
+                    ]
+                  : []),
+              ].join("")
+            : "")
+        }
+        label={labelWithPackageUnit(
+          tInventory("transactions.inventoryLevel.label"),
+          tCommon,
+          tInventory,
         )}
         min={0}
         onValueChange={(value) =>
-          setValue("quantity", value != null ? String(value) : "", {
+          setValue("inventoryLevel", value != null ? String(value) : "", {
             shouldValidate: isSubmitted,
           })
         }
-        placeholder={tInventory(
-          isStocktake
-            ? "transactions.quantity.stocktakePlaceholder"
-            : "transactions.quantity.placeholder",
-        )}
+        placeholder={tInventory("transactions.inventoryLevel.placeholder")}
         required
-        value={quantity ? Number(quantity) : null}
-      />
-      {type === "purchase" && (
-        <NumberSpinner
-          clearable
-          error={!!errors.unitCost}
-          fullWidth
-          helperText={errors.unitCost?.message}
-          label={`${tInventory("transactions.unitCost.label")} ${tCommon("optional")}`}
-          min={0}
-          onValueChange={(value) =>
-            setValue("unitCost", value != null ? String(value) : "", {
-              shouldValidate: isSubmitted,
-            })
-          }
-          placeholder={tInventory("transactions.unitCost.placeholder")}
-          value={unitCost ? Number(unitCost) : null}
-        />
-      )}
-      <TextField
-        error={!!errors.note}
-        fullWidth
-        helperText={errors.note?.message}
-        label={`${tInventory("transactions.note.label")} ${tCommon("optional")}`}
-        placeholder={tInventory("transactions.note.placeholder")}
-        {...register("note")}
+        value={inventoryLevel ? Number(inventoryLevel) : null}
       />
     </FormBox>
   );

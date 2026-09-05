@@ -66,6 +66,9 @@
     "invalid": "Donation code is not valid.",
     "required": "Donation code is required."
   },
+  "eligibleQuantity": {
+    "required": "Package size is required."
+  },
   "email": {
     "invalid": "Email is not valid.",
     "required": "Email is required."
@@ -75,6 +78,12 @@
   },
   "gender": {
     "required": "Gender is required."
+  },
+  "ingredientId": {
+    "notSelected": "Please select your ingredient."
+  },
+  "inventoryLevel": {
+    "required": "Current quantity is required."
   },
   "invoiceType": {
     "notSelected": "Please select your invoice type."
@@ -99,9 +108,6 @@
     "minLength": "Be at least 8 characters long.",
     "number": "Contain at least one number.",
     "sameAsCurrent": "New password must be different from your current password."
-  },
-  "remark": {
-    "maxLength": "Notes must not exceed 160 characters."
   },
   "password": {
     "letter": "Contain at least one letter.",
@@ -137,15 +143,23 @@
     "notSelected": "Please select your pickup time.",
     "storeUnavailable": "This store has no pickup times available within the schedulable window. Please try again later or contact the store."
   },
-  "telephone": {
-    "invalid": "Phone is not valid.",
-    "required": "Phone is required."
-  },
   "postalCode": {
     "format": "Postal code format is invalid."
   },
   "price": {
     "required": "Please enter a price."
+  },
+  "quantity": {
+    "required": "Quantity is required."
+  },
+  "recipeYield": {
+    "required": "Servings is required."
+  },
+  "remark": {
+    "maxLength": "Notes must not exceed 160 characters."
+  },
+  "requiredQuantity": {
+    "required": "Amount is required."
   },
   "role": {
     "required": "Please select a role."
@@ -154,31 +168,20 @@
     "letter": "Slug must contain at least one letter.",
     "required": "Slug is required."
   },
-  "validFrom": {
-    "beforeValidThrough": "Start date must be before end date."
-  },
-  "eligibleQuantity": {
-    "required": "Package size is required."
-  },
-  "ingredientId": {
-    "notSelected": "Please select your ingredient."
-  },
-  "quantity": {
-    "required": "Quantity is required."
-  },
-  "recipeYield": {
-    "required": "Servings is required."
-  },
-  "requiredQuantity": {
-    "required": "Amount is required."
-  },
   "supplierName": {
     "required": "Supplier name is required."
   },
-  "transactionType": {
-    "notSelected": "Please select your type."
+  "telephone": {
+    "invalid": "Phone is not valid.",
+    "required": "Phone is required."
   },
   "unitCode": {
     "notSelected": "Please select your unit."
+  },
+  "url": {
+    "invalid": "URL format is invalid."
+  },
+  "validFrom": {
+    "beforeValidThrough": "Start date must be before end date."
   }
 }

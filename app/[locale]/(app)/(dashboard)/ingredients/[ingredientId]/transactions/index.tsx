@@ -15,9 +15,7 @@ import { getPageSizeOptions } from "@/constants/pagination";
 
 import {
   useDateFilterOperators,
-  useEnumFilterOperators,
   useNumberFilterOperators,
-  useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
@@ -41,21 +39,12 @@ import type {
 } from "@/types/inventory";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
-import { getInventoryTransactionEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
   { ssr: false },
 );
-
-const TRANSACTION_TYPE_COLOR = {
-  adjustment: "info",
-  consumption: "default",
-  purchase: "success",
-  restoration: "info",
-  waste: "error",
-} as const;
 
 interface IngredientTransactionsProps {
   filterField?: InventoryTransactionFilterField;
@@ -112,9 +101,7 @@ const IngredientTransactions = ({
   });
 
   const dateFilterOperators = useDateFilterOperators();
-  const enumFilterOperators = useEnumFilterOperators();
   const numberFilterOperators = useNumberFilterOperators();
-  const stringFilterOperators = useStringFilterOperators();
 
   const format = useFormatter();
 
@@ -126,11 +113,6 @@ const IngredientTransactions = ({
 
   const tCommon = useTranslations("common");
   const tInventory = useTranslations("inventory");
-
-  const enumOptions = useMemo(
-    () => getInventoryTransactionEnumOptions(tInventory),
-    [tInventory],
-  );
 
   const {
     data: { data: transactions, total: rowCount } = {
@@ -151,7 +133,7 @@ const IngredientTransactions = ({
     ],
     async () =>
       fetcher<{ data: InventoryTransaction[]; total: number }>(
-        `/api/ingredients/${ingredient.id}/inventory-transactions?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
+        `/api/ingredients/${ingredient.id}/inventory-transactions?${getDataGridSearchParams(paginationModel, filterModel, sortModel)}`,
       ),
     {
       fallbackData: { data: initialTransactions, total: initialRowCount },
@@ -225,29 +207,20 @@ const IngredientTransactions = ({
   const columns = useMemo<GridColDef[]>(
     () => [
       {
-        field: "type",
-        filterOperators: enumFilterOperators,
-        headerName: tInventory("transactions.type.label"),
+        field: "quantity",
+        filterOperators: numberFilterOperators,
+        headerName: tInventory("transactions.quantity.label"),
         renderCell: ({
-          row: { type },
+          row: { quantity },
         }: GridRenderCellParams<InventoryTransaction>) => (
           <Chip
-            color={TRANSACTION_TYPE_COLOR[type]}
-            label={tInventory(`transactions.type.${type}`)}
+            color={Number(quantity) < 0 ? "error" : "success"}
+            label={`${format.number(Number(quantity), { signDisplay: "exceptZero" })} ${tInventory(`units.${ingredient.unitCode}`)}`}
             size="small"
             variant="outlined"
           />
         ),
-        type: "singleSelect",
-        valueOptions: enumOptions.type,
-      },
-      {
-        field: "quantity",
-        filterOperators: numberFilterOperators,
-        headerName: tInventory("transactions.quantity.label"),
         type: "number",
-        valueGetter: (_value: unknown, row: InventoryTransaction) =>
-          `${format.number(Number(row.quantity), { signDisplay: "exceptZero" })} ${tInventory(`units.${ingredient.unitCode}`)}`,
       },
       {
         field: "unitCost",
@@ -258,11 +231,6 @@ const IngredientTransactions = ({
           value == null
             ? ""
             : format.number(Number(value), { maximumFractionDigits: 4 }),
-      },
-      {
-        field: "note",
-        filterOperators: stringFilterOperators,
-        headerName: `${tInventory("transactions.note.label")} ${tCommon("optional")}`,
       },
       {
         field: "orderId",
@@ -280,12 +248,9 @@ const IngredientTransactions = ({
     ],
     [
       dateFilterOperators,
-      enumFilterOperators,
-      enumOptions.type,
       format,
       ingredient.unitCode,
       numberFilterOperators,
-      stringFilterOperators,
       tCommon,
       tInventory,
     ],

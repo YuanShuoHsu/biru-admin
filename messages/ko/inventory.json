@@ -4,34 +4,56 @@
     "actions": {
       "createIngredient": {
         "error": "식자재 추가에 실패했습니다",
-        "success": "식자재이(가) 추가되었습니다",
+        "success": "식자재 {name}이(가) 추가되었습니다",
         "title": "식자재 추가"
       },
       "deleteIngredient": {
         "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
         "error": "식자재 삭제에 실패했습니다",
-        "success": "식자재이(가) 삭제되었습니다",
+        "success": "식자재 {name}이(가) 삭제되었습니다",
         "title": "식자재 삭제"
       },
       "label": "작업",
+      "reorderIngredient": {
+        "cancel": {
+          "confirm": "<bold>식자재</bold> 정렬을 취소하시겠습니까? 저장하지 않은 변경 사항은 사라집니다.",
+          "label": "식자재 정렬 취소"
+        },
+        "confirm": "<bold>식자재</bold>를 정렬하시겠습니까?",
+        "save": {
+          "confirm": "<bold>식자재</bold> 정렬을 저장하시겠습니까?",
+          "error": "정렬 저장에 실패했습니다",
+          "label": "식자재 정렬 저장",
+          "success": "정렬이 저장되었습니다"
+        },
+        "title": "식자재 정렬"
+      },
       "updateIngredient": {
         "error": "식자재 업데이트에 실패했습니다",
-        "success": "식자재이(가) 업데이트되었습니다",
+        "success": "식자재 {name}이(가) 업데이트되었습니다",
         "title": "식자재 편집"
-      },
-      "viewOffers": {
-        "title": "구매 규격 보기"
       },
       "viewTransactions": {
         "title": "재고 변동 보기"
       }
     },
+    "baseUnitCode": {
+      "label": "기준 단위"
+    },
     "brand": {
       "label": "브랜드",
       "placeholder": "브랜드을(를) 입력해 주세요"
     },
+    "eligibleQuantity": {
+      "label": "내용량",
+      "placeholder": "내용량을 입력해 주세요"
+    },
+    "image": {
+      "label": "이미지"
+    },
     "inventoryLevel": {
-      "label": "현재 재고"
+      "label": "현재 재고",
+      "placeholder": "현재 재고을(를) 입력해 주세요"
     },
     "label": "식자재",
     "lowStock": "재고 부족",
@@ -44,53 +66,19 @@
       "placeholder": "식자재 이름을(를) 입력해 주세요"
     },
     "outOfStock": "재고 없음",
-    "unitCode": {
-      "label": "단위",
-      "placeholder": "단위을(를) 선택해 주세요"
-    },
-    "unitPrice": {
-      "label": "단위 원가"
-    }
-  },
-  "offers": {
-    "actions": {
-      "createOffer": {
-        "error": "구매 규격 추가에 실패했습니다",
-        "success": "구매 규격이(가) 추가되었습니다",
-        "title": "구매 규격 추가"
-      },
-      "deleteOffer": {
-        "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
-        "error": "구매 규격 삭제에 실패했습니다",
-        "success": "구매 규격이(가) 삭제되었습니다",
-        "title": "구매 규격 삭제"
-      },
-      "label": "작업",
-      "updateOffer": {
-        "error": "구매 규격 업데이트에 실패했습니다",
-        "success": "구매 규격이(가) 업데이트되었습니다",
-        "title": "구매 규격 편집"
-      }
-    },
-    "eligibleQuantity": {
-      "label": "포장 용량",
-      "placeholder": "포장 용량을(를) 입력해 주세요"
-    },
-    "eligibleQuantityUnitCode": {
-      "label": "단위",
-      "placeholder": "단위을(를) 선택해 주세요"
-    },
-    "label": "구매 규격",
+    "packageRequired": "먼저 내용량과 단위를 입력해 주세요",
+    "packageUnit": "팩",
     "price": {
       "label": "가격",
-      "placeholder": "가격을(를) 입력해 주세요"
-    },
-    "sortOrder": {
-      "label": "정렬"
+      "placeholder": "가격을 입력해 주세요"
     },
     "supplierId": {
       "label": "공급업체",
       "placeholder": "공급업체을(를) 선택해 주세요"
+    },
+    "unitCode": {
+      "label": "단위",
+      "placeholder": "단위를 선택해 주세요"
     },
     "unitPrice": {
       "label": "단위 원가"
@@ -113,14 +101,10 @@
         "success": "레시피이(가) 삭제되었습니다",
         "title": "레시피 삭제"
       },
-      "label": "작업",
       "updateRecipe": {
         "error": "레시피 업데이트에 실패했습니다",
         "success": "레시피이(가) 업데이트되었습니다",
         "title": "레시피 편집"
-      },
-      "viewIngredients": {
-        "title": "재료 보기"
       }
     },
     "cost": {
@@ -128,9 +112,6 @@
     },
     "costPerServing": {
       "label": "1인분 원가"
-    },
-    "grossProfit": {
-      "label": "매출총이익"
     },
     "ingredients": {
       "actions": {
@@ -155,7 +136,6 @@
       "cost": {
         "label": "총원가"
       },
-      "empty": "이 상품에는 아직 레시피가 없습니다. 추가하면 판매 시 재료가 자동으로 차감됩니다.",
       "ingredientId": {
         "label": "식자재",
         "placeholder": "식자재을(를) 선택해 주세요"
@@ -182,15 +162,13 @@
       "label": "레시피 이름",
       "placeholder": "레시피 이름을(를) 입력해 주세요"
     },
-    "price": {
-      "label": "판매가"
-    },
     "recipeYield": {
       "label": "분량",
       "placeholder": "분량을(를) 입력해 주세요",
       "unit": "인분"
     }
   },
+  "reorder": "순서",
   "suppliers": {
     "actions": {
       "createSupplier": {
@@ -210,6 +188,9 @@
         "success": "공급업체이(가) 업데이트되었습니다",
         "title": "공급업체 편집"
       }
+    },
+    "ingredientNames": {
+      "label": "품목"
     },
     "label": "공급업체",
     "name": {
@@ -234,36 +215,27 @@
       "label": "작업",
       "recordTransaction": {
         "error": "식자재 업데이트에 실패했습니다",
-        "success": "식자재이(가) 업데이트되었습니다",
-        "title": "재고 변동 등록"
+        "success": "식자재 {name}이(가) 업데이트되었습니다",
+        "title": "현재 수량 등록"
       }
     },
-    "label": "재고 변동",
-    "note": {
-      "label": "비고",
-      "placeholder": "비고을(를) 입력해 주세요"
+    "inventoryLevel": {
+      "label": "현재 재고",
+      "placeholder": "현재 재고를 입력해 주세요"
     },
+    "label": "재고 변동",
     "orderId": {
       "label": "주문 차감"
     },
-    "quantity": {
-      "label": "수량",
-      "placeholder": "수량을(를) 입력해 주세요",
-      "stocktakeLabel": "실사 후 수량",
-      "stocktakePlaceholder": "실사 후 수량을(를) 입력해 주세요"
+    "package": {
+      "empty": "이 재료에는 구매 규격이 없습니다. 먼저 추가해 주세요.",
+      "label": "포장"
     },
-    "type": {
-      "adjustment": "실사 조정",
-      "consumption": "사용",
-      "label": "유형",
-      "placeholder": "유형을(를) 선택해 주세요",
-      "purchase": "입고",
-      "restoration": "주문 반환",
-      "waste": "폐기"
+    "quantity": {
+      "label": "변동량"
     },
     "unitCost": {
-      "label": "매입 단가",
-      "placeholder": "매입 단가을(를) 입력해 주세요"
+      "label": "매입 단가"
     }
   },
   "units": {

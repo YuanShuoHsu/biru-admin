@@ -103,20 +103,20 @@ const SupplierDialog = ({
         {...register("name")}
       />
       <TextField
-        error={!!errors.telephone}
-        fullWidth
-        helperText={errors.telephone?.message}
-        label={`${tInventory("suppliers.telephone.label")} ${tCommon("optional")}`}
-        placeholder={tInventory("suppliers.telephone.placeholder")}
-        {...register("telephone")}
-      />
-      <TextField
         error={!!errors.url}
         fullWidth
         helperText={errors.url?.message}
         label={`${tInventory("suppliers.url.label")} ${tCommon("optional")}`}
         placeholder={tInventory("suppliers.url.placeholder")}
         {...register("url")}
+      />
+      <TextField
+        error={!!errors.telephone}
+        fullWidth
+        helperText={errors.telephone?.message}
+        label={`${tInventory("suppliers.telephone.label")} ${tCommon("optional")}`}
+        placeholder={tInventory("suppliers.telephone.placeholder")}
+        {...register("telephone")}
       />
       <TextField
         error={!!errors.note}

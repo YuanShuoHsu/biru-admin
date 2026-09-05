@@ -27,6 +27,7 @@ import { localize } from "@/utils/locale";
 interface RecipeIngredientDialogProps {
   ingredients: Ingredient[];
   material: RecipeIngredient | null;
+  materials: RecipeIngredient[];
   mutate: () => void;
   recipe: Recipe;
 }
@@ -34,6 +35,7 @@ interface RecipeIngredientDialogProps {
 const RecipeIngredientDialog = ({
   ingredients,
   material,
+  materials,
   mutate,
   recipe,
 }: RecipeIngredientDialogProps) => {
@@ -62,6 +64,12 @@ const RecipeIngredientDialog = ({
 
   const action = material ? "updateRecipeIngredient" : "createRecipeIngredient";
   const unitCode = ingredients.find(({ id }) => id === ingredientId)?.unitCode;
+  // 同一個食材在一份食譜裡只能有一列，否則兩列的用量會各自扣一次庫存
+  const usedIngredientIds = new Set(
+    materials.flatMap(({ id, ingredientId }) =>
+      id === material?.id ? [] : ingredientId,
+    ),
+  );
 
   const onSubmitHandler = async (values: RecipeIngredientForm) => {
     try {
@@ -132,7 +140,7 @@ const RecipeIngredientDialog = ({
           <em>{tInventory("recipes.ingredients.ingredientId.placeholder")}</em>
         </MenuItem>
         {ingredients.map(({ id, name }) => (
-          <MenuItem key={id} value={id}>
+          <MenuItem disabled={usedIngredientIds.has(id)} key={id} value={id}>
             {localize(name, locale)}
           </MenuItem>
         ))}

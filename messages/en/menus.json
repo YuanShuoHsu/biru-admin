@@ -169,7 +169,7 @@
             "confirm": "Are you sure you want to save <bold>modifier groups</bold> reorder?",
             "error": "Failed to save reorder",
             "label": "Save Modifier Groups Reorder",
-            "success": "Order saved"
+            "success": "Reorder saved"
           },
           "title": "Reorder Modifier Groups"
         }
@@ -279,7 +279,7 @@
           "confirm": "Are you sure you want to save <bold>modifier groups</bold> reorder?",
           "error": "Failed to save reorder",
           "label": "Save Modifier Groups Reorder",
-          "success": "Order saved"
+          "success": "Reorder saved"
         },
         "title": "Reorder Modifier Groups"
       },
@@ -331,7 +331,7 @@
           "confirm": "Are you sure you want to save <bold>modifiers</bold> reorder?",
           "error": "Failed to save reorder",
           "label": "Save Modifiers Reorder",
-          "success": "Order saved"
+          "success": "Reorder saved"
         },
         "title": "Reorder Modifiers"
       },

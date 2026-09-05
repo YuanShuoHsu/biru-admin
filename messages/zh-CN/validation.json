@@ -66,6 +66,9 @@
     "invalid": "捐赠码格式无效。",
     "required": "捐赠码为必填。"
   },
+  "eligibleQuantity": {
+    "required": "包装容量为必填。"
+  },
   "email": {
     "invalid": "电子邮件无效。",
     "required": "电子邮件为必填。"
@@ -75,6 +78,12 @@
   },
   "gender": {
     "required": "性别为必填。"
+  },
+  "ingredientId": {
+    "notSelected": "请选择您的食材。"
+  },
+  "inventoryLevel": {
+    "required": "现有数量为必填。"
   },
   "invoiceType": {
     "notSelected": "请选择您的发票类型。"
@@ -99,9 +108,6 @@
     "minLength": "至少 8 个字符长度。",
     "number": "包含至少一个数字。",
     "sameAsCurrent": "新密码不能与当前密码相同。"
-  },
-  "remark": {
-    "maxLength": "备注不能超过 160 个字符。"
   },
   "password": {
     "letter": "包含至少一个英文字母。",
@@ -137,15 +143,23 @@
     "notSelected": "请选择您的取餐时间。",
     "storeUnavailable": "本店近期没有可预约的取餐时间，请稍后再试或联系店家。"
   },
-  "telephone": {
-    "invalid": "电话格式无效。",
-    "required": "电话为必填。"
-  },
   "postalCode": {
     "format": "邮政编码格式无效。"
   },
   "price": {
     "required": "请输入价格。"
+  },
+  "quantity": {
+    "required": "数量为必填。"
+  },
+  "recipeYield": {
+    "required": "份量为必填。"
+  },
+  "remark": {
+    "maxLength": "备注不能超过 160 个字符。"
+  },
+  "requiredQuantity": {
+    "required": "用量为必填。"
   },
   "role": {
     "required": "请选择角色。"
@@ -154,31 +168,20 @@
     "letter": "网址识别码必须包含至少一个英文字母。",
     "required": "网址识别码为必填。"
   },
-  "validFrom": {
-    "beforeValidThrough": "生效日期必须早于截止日期。"
-  },
-  "eligibleQuantity": {
-    "required": "包装容量为必填。"
-  },
-  "ingredientId": {
-    "notSelected": "请选择您的食材。"
-  },
-  "quantity": {
-    "required": "数量为必填。"
-  },
-  "recipeYield": {
-    "required": "份量为必填。"
-  },
-  "requiredQuantity": {
-    "required": "用量为必填。"
-  },
   "supplierName": {
     "required": "供应商名称为必填。"
   },
-  "transactionType": {
-    "notSelected": "请选择您的类型。"
+  "telephone": {
+    "invalid": "电话格式无效。",
+    "required": "电话为必填。"
   },
   "unitCode": {
     "notSelected": "请选择您的单位。"
+  },
+  "url": {
+    "invalid": "网址格式无效。"
+  },
+  "validFrom": {
+    "beforeValidThrough": "生效日期必须早于截止日期。"
   }
 }

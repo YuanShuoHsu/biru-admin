@@ -133,14 +133,14 @@ const MenusMenuIdSectionIdPage = async ({
   const members = fullOrgData.data?.members || [];
   const role = members.find(({ userId }) => userId === currentUserId)?.role;
   const canWrite = hasRolePermission(role, { menu: ["update"] });
-  const canManageRecipe = hasRolePermission(role, { inventory: ["create"] });
+  const canCreateRecipe = hasRolePermission(role, { inventory: ["create"] });
   const canViewAuditLog = hasRolePermission(role, {
     auditLog: ["read"],
   });
 
   return (
     <MenusMenuIdSectionId
-      canManageRecipe={canManageRecipe}
+      canCreateRecipe={canCreateRecipe}
       canViewAuditLog={canViewAuditLog}
       canWrite={canWrite}
       filterField={filterField}

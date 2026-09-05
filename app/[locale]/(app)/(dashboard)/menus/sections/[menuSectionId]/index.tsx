@@ -11,8 +11,8 @@ import useSWR from "swr";
 import CreateMenuItemDialog from "./CreateMenuItemDialog";
 import UpdateMenuItemDialog from "./UpdateMenuItemDialog";
 
-import FlagImage from "@/components/FlagImage";
 import AuditLogButton from "@/components/AuditLogButton";
+import FlagImage from "@/components/FlagImage";
 import { DragHandle, Sortable } from "@/components/Sortable";
 
 import {
@@ -105,7 +105,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
 }));
 
 interface MenusMenuIdSectionIdProps {
-  canManageRecipe: boolean;
+  canCreateRecipe: boolean;
   canViewAuditLog: boolean;
   canWrite: boolean;
   filterField?: MenuItemFilterField;
@@ -124,7 +124,7 @@ interface MenusMenuIdSectionIdProps {
 }
 
 const MenusMenuIdSectionId = ({
-  canManageRecipe,
+  canCreateRecipe,
   canViewAuditLog,
   canWrite,
   filterField: initialFilterField,
@@ -596,9 +596,31 @@ const MenusMenuIdSectionId = ({
           localize(row.description, locale),
       },
       {
+        field: "recipeYield",
+        filterable: false,
+        headerName: tInventory("recipes.recipeYield.label"),
+        sortable: false,
+        valueGetter: (_value: unknown, { recipe }: MenuItem) =>
+          recipe
+            ? `${format.number(recipe.recipeYield)} ${tInventory("recipes.recipeYield.unit")}`
+            : "",
+      },
+      {
+        field: "cost",
+        filterable: false,
+        headerName: tInventory("recipes.cost.label"),
+        sortable: false,
+        valueGetter: (_value: unknown, { recipe }: MenuItem) =>
+          recipe
+            ? format.number(recipe.cost, { maximumFractionDigits: 2 })
+            : "",
+      },
+      {
         field: "recipe",
-        filterOperators: stringFilterOperators,
-        headerName: `${tInventory("recipes.label")} ${tCommon("optional")}`,
+        filterOperators: stringFilterOperators.filter(({ value }) =>
+          ["isEmpty", "isNotEmpty"].includes(value),
+        ),
+        headerName: `${tInventory("recipes.costPerServing.label")} ${tCommon("optional")}`,
         renderCell: ({
           row: { id, recipe },
         }: GridRenderCellParams<MenuItem>) => (
@@ -606,16 +628,19 @@ const MenusMenuIdSectionId = ({
             {recipe ? (
               <Link
                 component={NextLink}
-                href={getHref(`/recipes/${recipe.id}`, {
-                  organization: organizationSlug,
-                })}
+                href={getHref(
+                  `/menus/sections/${menuSectionId}/${id}/ingredients`,
+                  { organization: organizationSlug },
+                )}
                 underline="hover"
                 variant="body2"
               >
-                {localize(recipe.name, locale)}
+                {format.number(recipe.cost / recipe.recipeYield, {
+                  maximumFractionDigits: 2,
+                })}
               </Link>
             ) : (
-              canManageRecipe && (
+              canCreateRecipe && (
                 <Button
                   component={NextLink}
                   href={getHref(
@@ -631,8 +656,22 @@ const MenusMenuIdSectionId = ({
             )}
           </Stack>
         ),
-        valueGetter: (_value: unknown, row: MenuItem) =>
-          localize(row.recipe?.name, locale),
+      },
+      {
+        field: "margin",
+        filterable: false,
+        headerName: tInventory("recipes.margin.label"),
+        sortable: false,
+        valueGetter: (_value: unknown, { offer, recipe }: MenuItem) => {
+          const price = Number(offer?.price);
+
+          if (!recipe || !price) return "";
+
+          return format.number(
+            (price - recipe.cost / recipe.recipeYield) / price,
+            { style: "percent" },
+          );
+        },
       },
       {
         field: "priceCurrency",
@@ -760,7 +799,7 @@ const MenusMenuIdSectionId = ({
       },
     ],
     [
-      canManageRecipe,
+      canCreateRecipe,
       canViewAuditLog,
       canWrite,
       dateFilterOperators,

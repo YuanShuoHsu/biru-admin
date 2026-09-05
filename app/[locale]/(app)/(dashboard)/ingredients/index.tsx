@@ -2,6 +2,7 @@
 
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
@@ -11,6 +12,7 @@ import IngredientDialog from "./IngredientDialog";
 import TransactionDialog from "./TransactionDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
+import { DragHandle, Sortable } from "@/components/Sortable";
 
 import {
   autosizeOptions,
@@ -21,6 +23,10 @@ import {
   DEFAULT_PAGINATION_QUERY,
   getPageSizeOptions,
 } from "@/constants/pagination";
+
+import { arrayMove } from "@dnd-kit/helpers";
+import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
+import { isSortableOperation } from "@dnd-kit/react/sortable";
 
 import {
   useDateFilterOperators,
@@ -33,18 +39,24 @@ import { usePathname, useRouter } from "@/i18n/navigation";
 
 import {
   Add,
+  Cancel,
   Delete,
   Edit,
-  Inventory,
-  Sell,
+  Error as ErrorIcon,
+  FactCheck,
+  Save,
+  Sort,
   SwapVert,
   Warning,
 } from "@mui/icons-material";
 import {
+  Box,
   Button,
   DialogContentText,
   IconButton,
+  Link,
   Stack,
+  styled,
   Tooltip,
 } from "@mui/material";
 import type {
@@ -63,11 +75,22 @@ import type {
   Ingredient,
   IngredientFilterField,
   IngredientSortField,
+  Supplier,
 } from "@/types/inventory";
 
-import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
+import {
+  getDataGridSearchParams,
+  getFilterItemParams,
+  isFilteredOrSorted,
+} from "@/utils/dataGrid";
 import { getIngredientEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
+import {
+  formatPackagePrice,
+  formatPackageQuantity,
+  formatStock,
+  formatUnitPrice,
+} from "@/utils/ingredients";
 import { localize } from "@/utils/locale";
 
 const DataGrid = dynamic(
@@ -75,7 +98,16 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
+const StyledBox = styled(Box)(({ theme }) => ({
+  position: "relative",
+  width: theme.spacing(4),
+  height: theme.spacing(4),
+  borderRadius: theme.shape.borderRadius,
+  overflow: "hidden",
+}));
+
 interface IngredientsProps {
+  suppliers: Supplier[];
   canRecordTransaction: boolean;
   canViewAuditLog: boolean;
   canWrite: boolean;
@@ -107,7 +139,9 @@ const Ingredients = ({
   rowCount: initialRowCount,
   sortBy,
   sortDirection,
+  suppliers,
 }: IngredientsProps) => {
+  const [isReorderMode, setIsReorderMode] = useState(false);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -252,6 +286,119 @@ const Ingredients = ({
     [pathname, router, searchParams],
   );
 
+  const isReorderDisabled =
+    rowCount < 2 || isFilteredOrSorted(filterModel, sortModel);
+
+  const handleEnterReorderMode = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tInventory.rich("ingredients.actions.reorderIngredient.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsReorderMode(true);
+
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tInventory("ingredients.actions.reorderIngredient.title"),
+    });
+  }, [apiRef, setDialog, tInventory]);
+
+  const handleSaveReorder = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tInventory.rich(
+            "ingredients.actions.reorderIngredient.save.confirm",
+            { bold: (chunks) => <strong>{chunks}</strong> },
+          )}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        try {
+          await fetcher(
+            `/api/organizations/${organizationSlug}/ingredients/reorder`,
+            {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                ids: ingredients.map(({ id }) => id),
+                offset: paginationModel.page * paginationModel.pageSize,
+              }),
+            },
+          );
+
+          setIsReorderMode(false);
+
+          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+
+          enqueueSnackbar(
+            tInventory("ingredients.actions.reorderIngredient.save.success"),
+            { variant: "success" },
+          );
+        } catch {
+          mutate();
+
+          enqueueSnackbar(
+            tInventory("ingredients.actions.reorderIngredient.save.error"),
+            { variant: "error" },
+          );
+        }
+      },
+      open: true,
+      title: tInventory("ingredients.actions.reorderIngredient.save.label"),
+    });
+  }, [
+    apiRef,
+    ingredients,
+    mutate,
+    organizationSlug,
+    paginationModel.page,
+    paginationModel.pageSize,
+    setDialog,
+    tInventory,
+  ]);
+
+  const handleCancelReorder = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tInventory.rich(
+            "ingredients.actions.reorderIngredient.cancel.confirm",
+            { bold: (chunks) => <strong>{chunks}</strong> },
+          )}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsReorderMode(false);
+
+        mutate();
+      },
+      open: true,
+      title: tInventory("ingredients.actions.reorderIngredient.cancel.label"),
+    });
+  }, [mutate, setDialog, tInventory]);
+
+  const handleDragEnd = ({ operation }: DragEndEvent) => {
+    if (!isSortableOperation(operation)) return;
+
+    const { canceled, source } = operation;
+    if (canceled || !source) return;
+
+    const fromIndex = source.initialIndex;
+    const toIndex = source.index;
+    if (fromIndex === toIndex) return;
+
+    mutate(
+      { data: arrayMove(ingredients, fromIndex, toIndex), total: rowCount },
+      false,
+    );
+  };
+
   const handleCreateIngredient = useCallback(() => {
     setDialog({
       content: (
@@ -259,13 +406,14 @@ const Ingredients = ({
           ingredient={null}
           mutate={mutate}
           organizationSlug={organizationSlug}
+          suppliers={suppliers}
         />
       ),
       formId: "ingredient-form",
       open: true,
       title: tInventory("ingredients.actions.createIngredient.title"),
     });
-  }, [mutate, organizationSlug, setDialog, tInventory]);
+  }, [mutate, organizationSlug, setDialog, suppliers, tInventory]);
 
   const handleUpdateIngredient = useCallback(
     (ingredient: Ingredient) => {
@@ -275,6 +423,7 @@ const Ingredients = ({
             ingredient={ingredient}
             mutate={mutate}
             organizationSlug={organizationSlug}
+            suppliers={suppliers}
           />
         ),
         formId: "ingredient-form",
@@ -282,7 +431,7 @@ const Ingredients = ({
         title: tInventory("ingredients.actions.updateIngredient.title"),
       });
     },
-    [mutate, organizationSlug, setDialog, tInventory],
+    [mutate, organizationSlug, setDialog, suppliers, tInventory],
   );
 
   const handleRecordTransaction = useCallback(
@@ -295,17 +444,6 @@ const Ingredients = ({
       });
     },
     [mutate, setDialog, tInventory],
-  );
-
-  const handleViewOffers = useCallback(
-    ({ id }: Ingredient) => {
-      const params = new URLSearchParams({
-        ...(organization && { organization }),
-      });
-
-      router.push(`/ingredients/${id}/offers?${params.toString()}`);
-    },
-    [organization, router],
   );
 
   const handleViewTransactions = useCallback(
@@ -338,7 +476,9 @@ const Ingredients = ({
             await fetcher(`/api/ingredients/${id}`, { method: "DELETE" });
 
             enqueueSnackbar(
-              tInventory("ingredients.actions.deleteIngredient.success"),
+              tInventory("ingredients.actions.deleteIngredient.success", {
+                name: displayName,
+              }),
               { variant: "success" },
             );
 
@@ -359,6 +499,19 @@ const Ingredients = ({
 
   const columns = useMemo<GridColDef[]>(
     () => [
+      ...(isReorderMode
+        ? [
+            {
+              disableColumnMenu: true,
+              field: "reorder",
+              filterable: false,
+              headerName: tInventory("reorder"),
+              renderCell: () => <DragHandle />,
+              resizable: false,
+              sortable: false,
+            },
+          ]
+        : []),
       {
         disableColumnMenu: true,
         field: "actions",
@@ -366,11 +519,6 @@ const Ingredients = ({
         headerName: tInventory("ingredients.actions.label"),
         renderCell: ({ row }: GridRenderCellParams<Ingredient>) => (
           <Stack height="100%" direction="row" alignItems="center" gap={1}>
-            <Tooltip title={tInventory("ingredients.actions.viewOffers.title")}>
-              <IconButton onClick={() => handleViewOffers(row)} size="small">
-                <Sell fontSize="small" />
-              </IconButton>
-            </Tooltip>
             <Tooltip
               title={tInventory("ingredients.actions.viewTransactions.title")}
             >
@@ -391,7 +539,7 @@ const Ingredients = ({
                   onClick={() => handleRecordTransaction(row)}
                   size="small"
                 >
-                  <Inventory fontSize="small" />
+                  <FactCheck fontSize="small" />
                 </IconButton>
               </Tooltip>
             )}
@@ -427,6 +575,27 @@ const Ingredients = ({
         sortable: false,
       },
       {
+        field: "image",
+        filterable: false,
+        headerName: `${tInventory("ingredients.image.label")} ${tCommon("optional")}`,
+        renderCell: ({ value }: { value?: string | null }) =>
+          value && (
+            <Stack height="100%" flexDirection="row" alignItems="center">
+              <StyledBox>
+                <Image
+                  alt={value}
+                  fill
+                  sizes="32px"
+                  src={value}
+                  style={{ objectFit: "cover" }}
+                />
+              </StyledBox>
+            </Stack>
+          ),
+        resizable: false,
+        sortable: false,
+      },
+      {
         field: "name",
         filterOperators: stringFilterOperators,
         headerName: tInventory("ingredients.name.label"),
@@ -439,16 +608,43 @@ const Ingredients = ({
         headerName: `${tInventory("ingredients.brand.label")} ${tCommon("optional")}`,
       },
       {
+        field: "price",
+        filterable: false,
+        headerName: tInventory("ingredients.price.label"),
+        valueGetter: (_value: unknown, row: Ingredient) =>
+          formatPackagePrice(row, { format, tCommon, tInventory }),
+      },
+      {
+        field: "eligibleQuantity",
+        filterable: false,
+        headerName: tInventory("ingredients.eligibleQuantity.label"),
+        valueGetter: (_value: unknown, row: Ingredient) =>
+          formatPackageQuantity(row, { format, tCommon, tInventory }),
+      },
+      {
+        field: "unitCode",
+        filterOperators: enumFilterOperators,
+        headerName: tInventory("ingredients.baseUnitCode.label"),
+        type: "singleSelect",
+        valueOptions: enumOptions.unitCode,
+      },
+      {
+        field: "unitPrice",
+        filterable: false,
+        headerName: tInventory("ingredients.unitPrice.label"),
+        valueGetter: (_value: unknown, row: Ingredient) =>
+          formatUnitPrice(row, { format, tCommon, tInventory }),
+      },
+      {
         field: "inventoryLevel",
         filterOperators: numberFilterOperators,
         headerName: tInventory("ingredients.inventoryLevel.label"),
-        renderCell: ({
-          row: { inventoryLevel, lowStockThreshold },
-        }: GridRenderCellParams<Ingredient>) => {
-          const isOutOfStock = Number(inventoryLevel) <= 0;
+        renderCell: ({ row }: GridRenderCellParams<Ingredient>) => {
+          const { inventoryLevel, lowStockThreshold } = row;
+          const level = Number(inventoryLevel);
+          const isOutOfStock = level <= 0;
           const isLowStock =
-            lowStockThreshold != null &&
-            Number(inventoryLevel) <= Number(lowStockThreshold);
+            lowStockThreshold != null && level <= Number(lowStockThreshold);
 
           return (
             <Tooltip
@@ -474,8 +670,12 @@ const Ingredients = ({
                 height="100%"
                 justifyContent="flex-end"
               >
-                {(isOutOfStock || isLowStock) && <Warning fontSize="small" />}
-                {format.number(Number(inventoryLevel))}
+                {isOutOfStock ? (
+                  <ErrorIcon fontSize="small" />
+                ) : (
+                  isLowStock && <Warning fontSize="small" />
+                )}
+                {formatStock(level, row, { format, tCommon, tInventory })}
               </Stack>
             </Tooltip>
           );
@@ -483,31 +683,36 @@ const Ingredients = ({
         type: "number",
       },
       {
-        field: "unitCode",
-        filterOperators: enumFilterOperators,
-        headerName: tInventory("ingredients.unitCode.label"),
-        type: "singleSelect",
-        valueFormatter: (value: Ingredient["unitCode"]) =>
-          tInventory(`units.${value}`),
-        valueOptions: enumOptions.unitCode,
-      },
-      {
-        field: "unitPrice",
-        filterable: false,
-        headerName: tInventory("ingredients.unitPrice.label"),
-        sortable: false,
-        valueFormatter: (value: Ingredient["unitPrice"]) =>
-          value == null
-            ? ""
-            : format.number(value, { maximumFractionDigits: 4 }),
-      },
-      {
         field: "lowStockThreshold",
         filterOperators: numberFilterOperators,
         headerName: `${tInventory("ingredients.lowStockThreshold.label")} ${tCommon("optional")}`,
         type: "number",
-        valueFormatter: (value: Ingredient["lowStockThreshold"]) =>
-          value == null ? "" : format.number(Number(value)),
+        // 這個數字是拿來跟目前庫存比的，兩欄的寫法必須一致才看得出誰大誰小
+        valueGetter: (_value: unknown, row: Ingredient) =>
+          row.lowStockThreshold == null
+            ? ""
+            : formatStock(Number(row.lowStockThreshold), row, {
+                format,
+                tCommon,
+                tInventory,
+              }),
+      },
+      {
+        field: "supplierName",
+        filterOperators: stringFilterOperators,
+        headerName: `${tInventory("ingredients.supplierId.label")} ${tCommon("optional")}`,
+      },
+      {
+        field: "url",
+        filterable: false,
+        headerName: tInventory("ingredients.url.label"),
+        sortable: false,
+        renderCell: ({ row: { url } }: GridRenderCellParams<Ingredient>) =>
+          url && (
+            <Link href={url} rel="noopener" target="_blank">
+              {url}
+            </Link>
+          ),
       },
       {
         field: "createdAt",
@@ -530,13 +735,13 @@ const Ingredients = ({
       canWrite,
       dateFilterOperators,
       enumFilterOperators,
-      enumOptions.unitCode,
+      enumOptions,
       format,
       handleDeleteIngredient,
       handleRecordTransaction,
       handleUpdateIngredient,
-      handleViewOffers,
       handleViewTransactions,
+      isReorderMode,
       locale,
       numberFilterOperators,
       stringFilterOperators,
@@ -548,35 +753,73 @@ const Ingredients = ({
   return (
     <>
       <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
-        {canWrite && (
-          <Button
-            onClick={handleCreateIngredient}
-            size="small"
-            startIcon={<Add />}
-            variant="contained"
-          >
-            {tInventory("ingredients.actions.createIngredient.title")}
-          </Button>
+        {!isReorderMode ? (
+          canWrite && (
+            <>
+              <Button
+                onClick={handleCreateIngredient}
+                size="small"
+                startIcon={<Add />}
+                variant="contained"
+              >
+                {tInventory("ingredients.actions.createIngredient.title")}
+              </Button>
+              <Button
+                disabled={isReorderDisabled}
+                onClick={handleEnterReorderMode}
+                size="small"
+                startIcon={<Sort />}
+                variant="outlined"
+              >
+                {tInventory("ingredients.actions.reorderIngredient.title")}
+              </Button>
+            </>
+          )
+        ) : (
+          <>
+            <Button
+              onClick={handleCancelReorder}
+              size="small"
+              startIcon={<Cancel />}
+              variant="outlined"
+            >
+              {tInventory("ingredients.actions.reorderIngredient.cancel.label")}
+            </Button>
+            <Button
+              onClick={handleSaveReorder}
+              size="small"
+              startIcon={<Save />}
+              variant="contained"
+            >
+              {tInventory("ingredients.actions.reorderIngredient.save.label")}
+            </Button>
+          </>
         )}
       </Stack>
-      <DataGrid
-        {...DATA_GRID_PROPS}
-        apiRef={apiRef}
-        columns={columns}
-        filterMode="server"
-        filterModel={filterModel}
-        loading={loading}
-        onFilterModelChange={handleFilterModelChange}
-        onPaginationModelChange={handlePaginationModelChange}
-        onSortModelChange={handleSortModelChange}
-        pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
-        paginationMode="server"
-        paginationModel={paginationModel}
-        rowCount={rowCount}
-        rows={ingredients}
-        sortingMode="server"
-        sortModel={sortModel}
-      />
+      <DragDropProvider onDragEnd={handleDragEnd}>
+        <DataGrid
+          {...DATA_GRID_PROPS}
+          apiRef={apiRef}
+          columns={columns}
+          filterMode="server"
+          filterModel={filterModel}
+          loading={loading}
+          onFilterModelChange={handleFilterModelChange}
+          onPaginationModelChange={handlePaginationModelChange}
+          onSortModelChange={handleSortModelChange}
+          pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
+          paginationMode="server"
+          paginationModel={paginationModel}
+          rowCount={rowCount}
+          rows={ingredients}
+          slots={{
+            ...DATA_GRID_PROPS.slots,
+            row: isReorderMode ? Sortable : undefined,
+          }}
+          sortingMode="server"
+          sortModel={sortModel}
+        />
+      </DragDropProvider>
     </>
   );
 };
