@@ -373,7 +373,11 @@ const AuditLogs = ({
   );
 
   const getValueText = useMemo(() => {
-    const toText = (field: string, value: unknown): string => {
+    const toText = (
+      field: string,
+      value: unknown,
+      changeLabels: AuditLogResponse["changeLabels"],
+    ): string => {
       if (value === null || value === undefined || value === "")
         return tAudit("value.empty");
 
@@ -381,6 +385,9 @@ const AuditLogs = ({
         return tAudit(value ? "value.true" : "value.false");
 
       if (typeof value === "string") {
+        const snapshot = changeLabels?.[field]?.[value];
+        if (snapshot) return getTargetLabel(snapshot, locale);
+
         if (ingredient && STOCK_FIELDS.has(field))
           return formatStock(Number(value), ingredient, {
             format,
@@ -413,7 +420,8 @@ const AuditLogs = ({
             ([, item]) => item !== null && item !== undefined && item !== "",
           )
           .map(
-            ([key, item]) => `${labels?.[key] ?? key}: ${toText(key, item)}`,
+            ([key, item]) =>
+              `${labels?.[key] ?? key}: ${toText(key, item, changeLabels)}`,
           );
 
         return entries.length
@@ -553,7 +561,7 @@ const AuditLogs = ({
                     color={state ? "text.disabled" : undefined}
                     variant="caption"
                   >
-                    {getValueText(field, value)}
+                    {getValueText(field, value, row.changeLabels)}
                   </Typography>
                 );
 

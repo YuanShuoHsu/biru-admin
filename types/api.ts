@@ -1549,6 +1549,16 @@ export interface components {
           before?: unknown;
         };
       };
+      /** @description 外鍵欄位名 → id → 寫入當下的名稱快照；沒有外鍵異動時為 null */
+      changeLabels?: {
+        [key: string]: {
+          [key: string]:
+            | string
+            | {
+                [key: string]: string;
+              };
+        };
+      } | null;
       /** Format: date-time */
       createdAt: string;
     };
