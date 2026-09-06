@@ -715,7 +715,9 @@ const Ingredients = ({
               filterable: false,
               headerName: tInventory("ingredients.url.label"),
               sortable: false,
-              renderCell: ({ row: { url } }: GridRenderCellParams<Ingredient>) =>
+              renderCell: ({
+                row: { url },
+              }: GridRenderCellParams<Ingredient>) =>
                 url && (
                   <Link href={url} rel="noopener" target="_blank">
                     {url}
