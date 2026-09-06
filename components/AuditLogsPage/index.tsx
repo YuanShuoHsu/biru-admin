@@ -19,6 +19,7 @@ import {
   sortDirectionValues,
 } from "@/types/api";
 import type { AuditResource } from "@/types/audit";
+import type { Ingredient } from "@/types/inventory";
 
 import { getAuditLogs } from "@/utils/audit";
 import { getQuickFilterEnums } from "@/utils/dataGrid";
@@ -44,6 +45,7 @@ interface AuditLogsPageProps {
   ancestorId?: string;
   adminScope?: boolean;
   href: string;
+  ingredient?: Ingredient;
   locale: Locale;
   resource?: AuditResource;
   resourceId?: string;
@@ -54,6 +56,7 @@ const AuditLogsPage = async ({
   ancestorId,
   adminScope = false,
   href,
+  ingredient,
   locale,
   resource,
   resourceId,
@@ -183,6 +186,7 @@ const AuditLogsPage = async ({
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
+      ingredient={ingredient}
       logs={logs}
       organizations={organizations}
       organizationSlug={selectedOrganization?.slug}

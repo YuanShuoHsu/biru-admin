@@ -53,6 +53,7 @@ import type {
   AuditResource,
 } from "@/types/audit";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Ingredient } from "@/types/inventory";
 import type { LocalizedText } from "@/types/locale";
 import type { OrganizationResponse } from "@/types/organizations";
 
@@ -61,6 +62,7 @@ import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAuditLogEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
 import { getHref } from "@/utils/href";
+import { formatStock } from "@/utils/ingredients";
 import { localize } from "@/utils/locale";
 
 const DataGrid = dynamic(
@@ -141,10 +143,16 @@ const LOCALIZED_FIELDS = new Set(["description", "displayName", "name"]);
 const isImageValue = (value: unknown): value is string =>
   typeof value === "string" && value.startsWith("data:image/");
 
+const STOCK_FIELDS = new Set(["inventoryLevel", "lowStockThreshold"]);
+
 const NUMERIC_FIELDS = new Set([
   "discount",
+  "eligibleQuantity",
+  "inventoryLevel",
+  "lowStockThreshold",
   "price",
   "priceAdjustment",
+  "requiredQuantity",
   "subtotal",
   "total",
 ]);
@@ -173,6 +181,7 @@ interface AuditLogsProps {
   filterField?: AuditLogFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
+  ingredient?: Ingredient;
   logs: AuditLogResponse[];
   organizations: OrganizationResponse[];
   organizationSlug?: string;
@@ -191,6 +200,7 @@ const AuditLogs = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
+  ingredient,
   logs: initialLogs,
   organizations,
   organizationSlug,
@@ -243,6 +253,8 @@ const AuditLogs = ({
   const searchParams = useSearchParams();
 
   const tAudit = useTranslations("audit");
+  const tCommon = useTranslations("common");
+  const tInventory = useTranslations("inventory");
 
   const stringFilterOperators = useStringFilterOperators();
   const enumFilterOperators = useEnumFilterOperators();
@@ -368,10 +380,18 @@ const AuditLogs = ({
       if (typeof value === "boolean")
         return tAudit(value ? "value.true" : "value.false");
 
-      if (typeof value === "string")
+      if (typeof value === "string") {
+        if (ingredient && STOCK_FIELDS.has(field))
+          return formatStock(Number(value), ingredient, {
+            format,
+            tCommon,
+            tInventory,
+          });
+
         return NUMERIC_FIELDS.has(field)
           ? Number(value).toLocaleString(locale)
           : (valueLabels[field]?.[value] ?? value);
+      }
 
       if (Array.isArray(value))
         return value.length
@@ -405,7 +425,16 @@ const AuditLogs = ({
     };
 
     return toText;
-  }, [format, locale, objectLabels, tAudit, valueLabels]);
+  }, [
+    format,
+    ingredient,
+    locale,
+    objectLabels,
+    tAudit,
+    tCommon,
+    tInventory,
+    valueLabels,
+  ]);
 
   const columns = useMemo<GridColDef[]>(
     () => [
