@@ -83,58 +83,63 @@ const ACTION_COLORS: Record<AuditAction, "error" | "info" | "success"> = {
 };
 
 const FIELD_LABEL_KEYS = {
-  addOnMenuItemId: "field.addOnMenuItem",
-  addOnMenuSectionId: "field.addOnMenuSection",
-  amountPerPoint: "field.amountPerPoint",
+  name: "field.name",
+  displayName: "field.displayName",
+  description: "field.description",
+  image: "field.image",
+  brand: "field.brand",
+  nutrition: "field.nutrition",
+  suitableForDiet: "field.suitableForDiet",
   availability: "field.availability",
   availableModes: "field.availableModes",
-  brand: "field.brand",
-  confirmationNumber: "field.confirmationNumber",
-  couponId: "field.coupon",
-  customer: "field.customer",
-  deliveryLeadTime: "field.deliveryLeadTime",
-  description: "field.description",
-  discount: "field.discount",
-  displayName: "field.displayName",
+  isActive: "field.isActive",
+  priceCurrency: "field.priceCurrency",
+  price: "field.price",
+  priceSpecification: "field.priceSpecification",
+  priceAdjustment: "field.priceAdjustment",
   eligibleQuantity: "field.eligibleQuantity",
   eligibleQuantityUnitCode: "field.eligibleQuantityUnitCode",
-  grantedBy: "field.grantedBy",
-  image: "field.image",
+  unitCode: "field.unitCode",
   inventoryLevel: "field.inventoryLevel",
-  isActive: "field.isActive",
   lowStockThreshold: "field.lowStockThreshold",
-  maxSelectionCount: "field.maxSelectionCount",
-  menuId: "field.menu",
-  menuItemId: "field.menuItem",
-  menuSectionId: "field.menuSection",
+  supplierId: "field.supplier",
   minSelectionCount: "field.minSelectionCount",
+  maxSelectionCount: "field.maxSelectionCount",
   modifierGroupId: "field.modifierGroup",
-  name: "field.name",
-  note: "field.note",
-  nutrition: "field.nutrition",
+  menuId: "field.menu",
+  menuSectionId: "field.menuSection",
+  parentSectionId: "field.parentSection",
+  menuItemId: "field.menuItem",
+  addOnMenuSectionId: "field.addOnMenuSection",
+  addOnMenuItemId: "field.addOnMenuItem",
+  couponId: "field.coupon",
+  discount: "field.discount",
+  source: "field.source",
+  grantedBy: "field.grantedBy",
+  userId: "field.user",
+  usedAt: "field.usedAt",
   orderId: "field.order",
   orderStatus: "field.orderStatus",
-  parentSectionId: "field.parentSection",
+  customer: "field.customer",
   partySize: "field.partySize",
-  paymentDate: "field.paymentDate",
-  paymentMethod: "field.paymentMethod",
-  pointsValidityYears: "field.pointsValidityYears",
-  price: "field.price",
-  priceAdjustment: "field.priceAdjustment",
-  priceCurrency: "field.priceCurrency",
-  priceSpecification: "field.priceSpecification",
-  sortOrder: "field.sortOrder",
-  source: "field.source",
-  subtotal: "field.subtotal",
-  suitableForDiet: "field.suitableForDiet",
-  supplierId: "field.supplier",
   tableNumber: "field.tableNumber",
+  confirmationNumber: "field.confirmationNumber",
+  paymentMethod: "field.paymentMethod",
+  paymentDate: "field.paymentDate",
+  subtotal: "field.subtotal",
   total: "field.total",
-  unitCode: "field.unitCode",
-  usedAt: "field.usedAt",
+  amountPerPoint: "field.amountPerPoint",
+  pointsValidityYears: "field.pointsValidityYears",
+  deliveryLeadTime: "field.deliveryLeadTime",
   url: "field.url",
-  userId: "field.user",
+  telephone: "field.telephone",
+  note: "field.note",
+  sortOrder: "field.sortOrder",
 } as const;
+
+const FIELD_RANK = new Map(
+  Object.keys(FIELD_LABEL_KEYS).map((field, index) => [field, index]),
+);
 
 const LOCALES = new Set<string>(routing.locales);
 
@@ -142,6 +147,9 @@ const LOCALIZED_FIELDS = new Set(["description", "displayName", "name"]);
 
 const isImageValue = (value: unknown): value is string =>
   typeof value === "string" && value.startsWith("data:image/");
+
+const isUrlValue = (value: unknown): value is string =>
+  typeof value === "string" && /^https?:\/\//.test(value);
 
 const STOCK_FIELDS = new Set(["inventoryLevel", "lowStockThreshold"]);
 
@@ -536,62 +544,87 @@ const AuditLogs = ({
             gap={1.5}
             height="100%"
           >
-            {Object.entries(row.changes).map(([field, change]) => {
-              const label = isTranslatableField(field)
-                ? tAudit(FIELD_LABEL_KEYS[field])
-                : field;
+            {Object.entries(row.changes)
+              .sort(
+                ([a], [b]) =>
+                  (FIELD_RANK.get(a) ?? FIELD_RANK.size) -
+                  (FIELD_RANK.get(b) ?? FIELD_RANK.size),
+              )
+              .map(([field, change]) => {
+                const label = isTranslatableField(field)
+                  ? tAudit(FIELD_LABEL_KEYS[field])
+                  : field;
 
-              const renderValue = (
-                value: unknown,
-                state?: "previous" | "removed",
-              ) =>
-                isImageValue(value) ? (
-                  <ChangeImage
-                    alt={tAudit("value.image")}
-                    src={value}
-                    sx={state ? { opacity: 0.5 } : undefined}
-                  />
-                ) : (
-                  <Typography
-                    sx={
-                      state === "removed"
-                        ? { textDecoration: "line-through" }
-                        : undefined
-                    }
-                    color={state ? "text.disabled" : undefined}
-                    variant="caption"
-                  >
-                    {getValueText(field, value, row.changeLabels)}
-                  </Typography>
-                );
-
-              return (
-                <Stack
-                  alignItems="center"
-                  direction="row"
-                  gap={0.5}
-                  key={field}
-                >
-                  <Typography color="text.secondary" variant="caption">
-                    {label}
-                  </Typography>
-                  {/* 箭頭代表「舊值變成新值」，建立與刪除只有單邊值，硬補一個 — 當另一端會讀成該欄位曾是空的 */}
-                  {row.action === "create" ? (
-                    renderValue(change.after)
-                  ) : row.action === "delete" ? (
-                    renderValue(change.before, "removed")
+                const renderValue = (
+                  value: unknown,
+                  state?: "previous" | "removed",
+                ) =>
+                  isImageValue(value) ? (
+                    <ChangeImage
+                      alt={tAudit("value.image")}
+                      src={value}
+                      sx={state ? { opacity: 0.5 } : undefined}
+                    />
+                  ) : isUrlValue(value) ? (
+                    <MuiLink
+                      color={state ? "text.disabled" : undefined}
+                      href={value}
+                      rel="noopener"
+                      sx={{
+                        display: "block",
+                        maxWidth: "20ch",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        ...(state === "removed" && {
+                          textDecoration: "line-through",
+                        }),
+                      }}
+                      target="_blank"
+                      variant="caption"
+                    >
+                      {value}
+                    </MuiLink>
                   ) : (
-                    <>
-                      {renderValue(change.before, "previous")}
-                      <Typography color="text.secondary" variant="caption">
-                        →
-                      </Typography>
-                      {renderValue(change.after)}
-                    </>
-                  )}
-                </Stack>
-              );
-            })}
+                    <Typography
+                      sx={
+                        state === "removed"
+                          ? { textDecoration: "line-through" }
+                          : undefined
+                      }
+                      color={state ? "text.disabled" : undefined}
+                      variant="caption"
+                    >
+                      {getValueText(field, value, row.changeLabels)}
+                    </Typography>
+                  );
+
+                return (
+                  <Stack
+                    alignItems="center"
+                    direction="row"
+                    gap={0.5}
+                    key={field}
+                  >
+                    <Typography color="text.secondary" variant="caption">
+                      {label}
+                    </Typography>
+                    {row.action === "create" ? (
+                      renderValue(change.after)
+                    ) : row.action === "delete" ? (
+                      renderValue(change.before, "removed")
+                    ) : (
+                      <>
+                        {renderValue(change.before, "previous")}
+                        <Typography color="text.secondary" variant="caption">
+                          →
+                        </Typography>
+                        {renderValue(change.after)}
+                      </>
+                    )}
+                  </Stack>
+                );
+              })}
           </Stack>
         ),
         sortable: false,
