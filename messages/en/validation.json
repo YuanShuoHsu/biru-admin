@@ -149,6 +149,9 @@
   "price": {
     "required": "Please enter a price."
   },
+  "priceCurrency": {
+    "notSelected": "Please select your currency."
+  },
   "quantity": {
     "required": "Quantity is required."
   },
@@ -176,7 +179,7 @@
     "required": "Phone is required."
   },
   "unitCode": {
-    "notSelected": "Please select your unit."
+    "notSelected": "Please select your content unit."
   },
   "url": {
     "invalid": "URL format is invalid."

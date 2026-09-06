@@ -15,7 +15,9 @@ import { getPageSizeOptions } from "@/constants/pagination";
 
 import {
   useDateFilterOperators,
+  useEnumFilterOperators,
   useNumberFilterOperators,
+  useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
@@ -39,7 +41,9 @@ import type {
 } from "@/types/inventory";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
+import { getInventoryTransactionEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
+import { formatUnitPriceOf } from "@/utils/ingredients";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -101,7 +105,9 @@ const IngredientTransactions = ({
   });
 
   const dateFilterOperators = useDateFilterOperators();
+  const enumFilterOperators = useEnumFilterOperators();
   const numberFilterOperators = useNumberFilterOperators();
+  const stringFilterOperators = useStringFilterOperators();
 
   const format = useFormatter();
 
@@ -113,6 +119,11 @@ const IngredientTransactions = ({
 
   const tCommon = useTranslations("common");
   const tInventory = useTranslations("inventory");
+
+  const enumOptions = useMemo(
+    () => getInventoryTransactionEnumOptions(tInventory),
+    [tInventory],
+  );
 
   const {
     data: { data: transactions, total: rowCount } = {
@@ -133,7 +144,7 @@ const IngredientTransactions = ({
     ],
     async () =>
       fetcher<{ data: InventoryTransaction[]; total: number }>(
-        `/api/ingredients/${ingredient.id}/inventory-transactions?${getDataGridSearchParams(paginationModel, filterModel, sortModel)}`,
+        `/api/ingredients/${ingredient.id}/inventory-transactions?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
       ),
     {
       fallbackData: { data: initialTransactions, total: initialRowCount },
@@ -207,6 +218,13 @@ const IngredientTransactions = ({
   const columns = useMemo<GridColDef[]>(
     () => [
       {
+        field: "reason",
+        filterOperators: enumFilterOperators,
+        headerName: tInventory("transactions.reason.label"),
+        type: "singleSelect",
+        valueOptions: enumOptions.reason,
+      },
+      {
         field: "quantity",
         filterOperators: numberFilterOperators,
         headerName: tInventory("transactions.quantity.label"),
@@ -230,13 +248,22 @@ const IngredientTransactions = ({
         valueFormatter: (value: InventoryTransaction["unitCost"]) =>
           value == null
             ? ""
-            : format.number(Number(value), { maximumFractionDigits: 4 }),
+            : formatUnitPriceOf(Number(value), ingredient, {
+                format,
+                tCommon,
+                tInventory,
+              }),
       },
       {
-        field: "orderId",
+        field: "orderNumber",
         filterable: false,
-        headerName: tInventory("transactions.orderId.label"),
+        headerName: tInventory("transactions.orderNumber.label"),
         sortable: false,
+      },
+      {
+        field: "note",
+        filterOperators: stringFilterOperators,
+        headerName: `${tInventory("transactions.note.label")} ${tCommon("optional")}`,
       },
       {
         field: "createdAt",
@@ -248,9 +275,12 @@ const IngredientTransactions = ({
     ],
     [
       dateFilterOperators,
+      enumFilterOperators,
+      enumOptions,
       format,
-      ingredient.unitCode,
+      ingredient,
       numberFilterOperators,
+      stringFilterOperators,
       tCommon,
       tInventory,
     ],

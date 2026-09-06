@@ -4,6 +4,7 @@ import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { NumericFormat } from "react-number-format";
 
 import {
   useIngredientFormSchema,
@@ -11,6 +12,7 @@ import {
   type IngredientFormOutput,
 } from "./definitions";
 
+import CountryAutocomplete from "@/components/CountryAutocomplete";
 import FormBox from "@/components/FormBox";
 import LocalizedTextFields from "@/components/LocalizedTextFields";
 import NumberSpinner from "@/components/NumberSpinner";
@@ -31,7 +33,7 @@ import type { Ingredient, Supplier, UnitCode } from "@/types/inventory";
 
 import { fetcher } from "@/utils/fetcher";
 import {
-  labelWithPackageUnit,
+  formatUnitPriceOf,
   toBaseQuantity,
   toPackages,
 } from "@/utils/ingredients";
@@ -77,17 +79,9 @@ const IngredientDialog = ({
       brand: ingredient?.brand || "",
       eligibleQuantity: ingredient?.eligibleQuantity || "",
       inventoryLevel: "",
-      // 員工按包清點，警示量也用包數填；資料庫存的是基準單位，載入時換算回來
-      lowStockThreshold:
-        ingredient?.lowStockThreshold && ingredient.packageBaseQuantity
-          ? String(
-              toPackages(
-                Number(ingredient.lowStockThreshold),
-                ingredient.packageBaseQuantity,
-              ),
-            )
-          : "",
+      lowStockThreshold: ingredient?.lowStockThreshold || "",
       price: ingredient?.price || "",
+      priceCurrency: ingredient?.priceCurrency || "TWD",
       url: ingredient?.url || "",
       name: ingredient?.name || {},
       supplierId: ingredient?.supplierId || "",
@@ -101,6 +95,7 @@ const IngredientDialog = ({
   const inventoryLevel = useWatch({ control, name: "inventoryLevel" });
   const lowStockThreshold = useWatch({ control, name: "lowStockThreshold" });
   const price = useWatch({ control, name: "price" });
+  const priceCurrency = useWatch({ control, name: "priceCurrency" });
   const name = useWatch({ control, name: "name" });
   const supplierId = useWatch({ control, name: "supplierId" });
   const unitCode = useWatch({ control, name: "unitCode" });
@@ -114,7 +109,23 @@ const IngredientDialog = ({
   // 單位成本是存檔後才算得出來的衍生值，先即時算給使用者看，才知道填對了沒
   const unitCostHint =
     baseQuantity > 0 && Number(price) > 0 && baseUnitCode
-      ? `${format.number(Number(price) / baseQuantity, { maximumFractionDigits: 4 })}${tCommon("slash")}${tInventory(`units.${baseUnitCode}`)}`
+      ? formatUnitPriceOf(
+          Number(price) / baseQuantity,
+          { priceCurrency, unitCode: baseUnitCode },
+          { format, tCommon, tInventory },
+        )
+      : "";
+
+  // 開帳量按包數填，警示量按基準單位填——各自用最好讀的單位，也是它們在資料庫的形式
+  const stockHint =
+    baseQuantity && baseUnitCode
+      ? Number(inventoryLevel)
+        ? `${format.number(toBaseQuantity(Number(inventoryLevel), baseQuantity))} ${tInventory(`units.${baseUnitCode}`)}`
+        : ""
+      : tInventory("ingredients.packageRequired");
+  const stockOnHand =
+    ingredient && baseQuantity > 0
+      ? `×${format.number(toPackages(Number(ingredient.inventoryLevel), baseQuantity))}`
       : "";
 
   const action = ingredient ? "updateIngredient" : "createIngredient";
@@ -134,18 +145,10 @@ const IngredientDialog = ({
             name: values.name,
             brand: values.brand || null,
             image: imageSrc || null,
-            eligibleQuantity: values.eligibleQuantity || null,
+            eligibleQuantity: values.eligibleQuantity,
             eligibleQuantityUnitCode: values.unitCode,
             unitCode: BASE_UNIT_CODES[values.unitCode],
-            lowStockThreshold:
-              values.lowStockThreshold && baseQuantity > 0
-                ? String(
-                    toBaseQuantity(
-                      Number(values.lowStockThreshold),
-                      baseQuantity,
-                    ),
-                  )
-                : null,
+            lowStockThreshold: values.lowStockThreshold || null,
             ...(!ingredient && {
               inventoryLevel:
                 values.inventoryLevel && baseQuantity > 0
@@ -157,7 +160,8 @@ const IngredientDialog = ({
                     )
                   : null,
             }),
-            price: values.price || null,
+            price: values.price,
+            priceCurrency: values.priceCurrency,
             supplierId: values.supplierId || null,
             url: values.url || null,
           }),
@@ -218,22 +222,65 @@ const IngredientDialog = ({
         placeholder={tInventory("ingredients.brand.placeholder")}
         {...register("brand")}
       />
-      <Grid container width="100%" alignItems="flex-end" spacing={2}>
+      <Grid container width="100%" spacing={2}>
         <Grid size={{ xs: 12, sm: 6 }}>
-          <NumberSpinner
-            clearable
+          <CountryAutocomplete
+            error={!!errors.priceCurrency}
+            helperText={errors.priceCurrency?.message}
+            label={tInventory("ingredients.priceCurrency.label")}
+            mode="currency"
+            placeholder={tInventory("ingredients.priceCurrency.placeholder")}
+            required
+            value={priceCurrency || ""}
+            {...register("priceCurrency")}
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <NumericFormat
+            allowNegative={false}
+            customInput={TextField}
+            decimalScale={2}
+            error={!!errors.price}
+            fullWidth
+            helperText={errors.price?.message || unitCostHint}
+            isAllowed={({ floatValue }) =>
+              floatValue === undefined || floatValue <= 99999999.99
+            }
+            label={tInventory("ingredients.price.label")}
+            onValueChange={({ value }) =>
+              setValue("price", value, { shouldValidate: isSubmitted })
+            }
+            placeholder={tInventory("ingredients.price.placeholder")}
+            required
+            thousandSeparator=","
+            value={price}
+            valueIsNumericString
+          />
+        </Grid>
+      </Grid>
+      <Grid container width="100%" spacing={2}>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <NumericFormat
+            allowNegative={false}
+            customInput={TextField}
+            decimalScale={3}
             error={!!errors.eligibleQuantity}
             fullWidth
             helperText={errors.eligibleQuantity?.message}
-            label={`${tInventory("ingredients.eligibleQuantity.label")} ${tCommon("optional")}`}
-            min={0}
-            onValueChange={(value) =>
-              setValue("eligibleQuantity", value != null ? String(value) : "", {
+            isAllowed={({ floatValue }) =>
+              floatValue === undefined || floatValue <= 999999999.999
+            }
+            label={tInventory("ingredients.eligibleQuantity.label")}
+            onValueChange={({ value }) =>
+              setValue("eligibleQuantity", value, {
                 shouldValidate: isSubmitted,
               })
             }
             placeholder={tInventory("ingredients.eligibleQuantity.placeholder")}
-            value={eligibleQuantity ? Number(eligibleQuantity) : null}
+            required
+            thousandSeparator=","
+            value={eligibleQuantity}
+            valueIsNumericString
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
@@ -241,7 +288,7 @@ const IngredientDialog = ({
             error={!!errors.unitCode}
             fullWidth
             helperText={errors.unitCode?.message}
-            label={tInventory("ingredients.unitCode.label")}
+            label={tInventory("ingredients.eligibleQuantityUnitCode.label")}
             required
             select
             slotProps={{
@@ -256,7 +303,11 @@ const IngredientDialog = ({
                   return value ? (
                     tInventory(`units.${value}`)
                   ) : (
-                    <em>{tInventory("ingredients.unitCode.placeholder")}</em>
+                    <em>
+                      {tInventory(
+                        "ingredients.eligibleQuantityUnitCode.placeholder",
+                      )}
+                    </em>
                   );
                 },
               },
@@ -265,7 +316,9 @@ const IngredientDialog = ({
             {...register("unitCode")}
           >
             <MenuItem disabled value="">
-              <em>{tInventory("ingredients.unitCode.placeholder")}</em>
+              <em>
+                {tInventory("ingredients.eligibleQuantityUnitCode.placeholder")}
+              </em>
             </MenuItem>
             {unitCodeValues.map((value) => (
               <MenuItem key={value} value={value}>
@@ -275,46 +328,36 @@ const IngredientDialog = ({
           </TextField>
         </Grid>
       </Grid>
-      <NumberSpinner
-        clearable
-        error={!!errors.price}
-        fullWidth
-        helperText={errors.price?.message || unitCostHint}
-        label={`${tInventory("ingredients.price.label")} ${tCommon("optional")}`}
-        min={0}
-        onValueChange={(value) =>
-          setValue("price", value != null ? String(value) : "", {
-            shouldValidate: isSubmitted,
-          })
-        }
-        placeholder={tInventory("ingredients.price.placeholder")}
-        value={price ? Number(price) : null}
-      />
-      {!ingredient && (
-        <NumberSpinner
-          clearable
+      {ingredient ? (
+        <TextField
+          disabled
+          fullWidth
+          helperText={tInventory("ingredients.inventoryLevel.readOnly")}
+          label={tInventory("ingredients.inventoryLevel.label")}
+          value={stockOnHand}
+        />
+      ) : (
+        <NumericFormat
+          allowNegative={false}
+          customInput={TextField}
+          decimalScale={3}
           disabled={!baseQuantity}
           error={!!errors.inventoryLevel}
           fullWidth
-          helperText={
-            errors.inventoryLevel?.message ||
-            (baseQuantity && baseUnitCode
-              ? `${format.number(Number(inventoryLevel || 0) * baseQuantity)} ${tInventory(`units.${baseUnitCode}`)}`
-              : tInventory("ingredients.packageRequired"))
+          helperText={errors.inventoryLevel?.message || stockHint}
+          isAllowed={({ floatValue }) =>
+            floatValue === undefined || floatValue <= 999999999.999
           }
-          label={`${labelWithPackageUnit(
-            tInventory("ingredients.inventoryLevel.label"),
-            tCommon,
-            tInventory,
-          )} ${tCommon("optional")}`}
-          min={0}
-          onValueChange={(value) =>
-            setValue("inventoryLevel", value != null ? String(value) : "", {
+          label={`${tInventory("ingredients.inventoryLevel.label")} ${tCommon("optional")}`}
+          onValueChange={({ value }) =>
+            setValue("inventoryLevel", value, {
               shouldValidate: isSubmitted,
             })
           }
           placeholder={tInventory("ingredients.inventoryLevel.placeholder")}
-          value={inventoryLevel ? Number(inventoryLevel) : null}
+          thousandSeparator=","
+          value={inventoryLevel}
+          valueIsNumericString
         />
       )}
       <NumberSpinner
@@ -324,15 +367,11 @@ const IngredientDialog = ({
         fullWidth
         helperText={
           errors.lowStockThreshold?.message ||
-          (baseQuantity && baseUnitCode
-            ? `${format.number(Number(lowStockThreshold || 0) * baseQuantity)} ${tInventory(`units.${baseUnitCode}`)}`
+          (baseUnitCode
+            ? tInventory(`units.${baseUnitCode}`)
             : tInventory("ingredients.packageRequired"))
         }
-        label={`${labelWithPackageUnit(
-          tInventory("ingredients.lowStockThreshold.label"),
-          tCommon,
-          tInventory,
-        )} ${tCommon("optional")}`}
+        label={`${tInventory("ingredients.lowStockThreshold.label")} ${tCommon("optional")}`}
         min={0}
         onValueChange={(value) =>
           setValue("lowStockThreshold", value != null ? String(value) : "", {

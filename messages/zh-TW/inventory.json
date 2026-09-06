@@ -37,9 +37,6 @@
         "title": "查看庫存進出"
       }
     },
-    "baseUnitCode": {
-      "label": "基準單位"
-    },
     "brand": {
       "label": "品牌",
       "placeholder": "請輸入您的品牌"
@@ -48,12 +45,17 @@
       "label": "內容量",
       "placeholder": "請輸入您的內容量"
     },
+    "eligibleQuantityUnitCode": {
+      "label": "內容量單位",
+      "placeholder": "請選擇您的內容量單位"
+    },
     "image": {
       "label": "圖片"
     },
     "inventoryLevel": {
-      "label": "目前庫存",
-      "placeholder": "請輸入您的目前庫存"
+      "label": "庫存",
+      "placeholder": "請輸入您的庫存",
+      "readOnly": "庫存變動請用食材列表的「登記目前數量」，異動才會留下紀錄"
     },
     "label": "食材",
     "lowStock": "低庫存",
@@ -67,18 +69,17 @@
     },
     "outOfStock": "無庫存",
     "packageRequired": "請先填寫內容量與單位",
-    "packageUnit": "包",
     "price": {
       "label": "價格",
       "placeholder": "請輸入您的價格"
     },
+    "priceCurrency": {
+      "label": "幣別",
+      "placeholder": "請選擇您的幣別"
+    },
     "supplierId": {
       "label": "供應商",
       "placeholder": "請選擇您的供應商"
-    },
-    "unitCode": {
-      "label": "單位",
-      "placeholder": "請選擇您的單位"
     },
     "unitPrice": {
       "label": "單位成本"
@@ -108,7 +109,8 @@
       }
     },
     "cost": {
-      "label": "總成本"
+      "label": "總成本",
+      "unavailable": "無法計算"
     },
     "costPerServing": {
       "label": "每份成本"
@@ -219,12 +221,16 @@
       }
     },
     "inventoryLevel": {
-      "label": "目前庫存",
-      "placeholder": "請輸入您的目前庫存"
+      "label": "庫存",
+      "placeholder": "請輸入您的庫存"
     },
     "label": "庫存進出",
-    "orderId": {
-      "label": "訂單扣帳"
+    "note": {
+      "label": "備註",
+      "placeholder": "請輸入您的備註"
+    },
+    "orderNumber": {
+      "label": "訂單編號"
     },
     "package": {
       "empty": "此食材尚未設定採購規格，請先新增後再登記",
@@ -232,6 +238,14 @@
     },
     "quantity": {
       "label": "異動量"
+    },
+    "reason": {
+      "label": "原因",
+      "options": {
+        "count": "人工盤點",
+        "consume": "訂單耗用",
+        "restore": "退單回補"
+      }
     },
     "unitCost": {
       "label": "進貨單價"

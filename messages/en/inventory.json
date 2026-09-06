@@ -37,9 +37,6 @@
         "title": "View stock movements"
       }
     },
-    "baseUnitCode": {
-      "label": "Base unit"
-    },
     "brand": {
       "label": "Brand",
       "placeholder": "Please enter your Brand"
@@ -48,12 +45,17 @@
       "label": "Content",
       "placeholder": "Please enter your content"
     },
+    "eligibleQuantityUnitCode": {
+      "label": "Content unit",
+      "placeholder": "Please select your content unit"
+    },
     "image": {
       "label": "Image"
     },
     "inventoryLevel": {
-      "label": "Stock on hand",
-      "placeholder": "Please enter your stock on hand"
+      "label": "Stock",
+      "placeholder": "Please enter your stock",
+      "readOnly": "Change stock via “Record current quantity” in the ingredient list so the change is recorded"
     },
     "label": "Ingredient",
     "lowStock": "Low stock",
@@ -67,18 +69,17 @@
     },
     "outOfStock": "Out of stock",
     "packageRequired": "Please fill in content and unit first",
-    "packageUnit": "pack",
     "price": {
       "label": "Price",
       "placeholder": "Please enter your price"
     },
+    "priceCurrency": {
+      "label": "Currency",
+      "placeholder": "Select your currency"
+    },
     "supplierId": {
       "label": "Supplier",
       "placeholder": "Please select your Supplier"
-    },
-    "unitCode": {
-      "label": "Unit",
-      "placeholder": "Please select your unit"
     },
     "unitPrice": {
       "label": "Unit cost"
@@ -108,7 +109,8 @@
       }
     },
     "cost": {
-      "label": "Total cost"
+      "label": "Total cost",
+      "unavailable": "Not available"
     },
     "costPerServing": {
       "label": "Cost per serving"
@@ -219,12 +221,16 @@
       }
     },
     "inventoryLevel": {
-      "label": "Stock on hand",
-      "placeholder": "Please enter your stock on hand"
+      "label": "Stock",
+      "placeholder": "Please enter your stock"
     },
     "label": "Stock movement",
-    "orderId": {
-      "label": "From order"
+    "note": {
+      "label": "Notes",
+      "placeholder": "Please enter your Notes"
+    },
+    "orderNumber": {
+      "label": "Order number"
     },
     "package": {
       "empty": "This ingredient has no purchase spec yet; add one before recording.",
@@ -232,6 +238,14 @@
     },
     "quantity": {
       "label": "Change"
+    },
+    "reason": {
+      "label": "Reason",
+      "options": {
+        "count": "Stock count",
+        "consume": "Order usage",
+        "restore": "Order refund"
+      }
     },
     "unitCost": {
       "label": "Purchase unit price"

@@ -8,6 +8,7 @@ import {
   baseUnitCodeValues,
   couponIssueTriggerValues,
   couponScopeValues,
+  inventoryTransactionReasonValues,
   invoiceStatusValues,
   invoiceTypeValues,
   itemAvailabilityValues,
@@ -153,6 +154,15 @@ export const getIngredientEnumOptions = (
 ) => ({
   unitCode: baseUnitCodeValues.map((value) => ({
     label: tInventory(`units.${value}`),
+    value,
+  })),
+});
+
+export const getInventoryTransactionEnumOptions = (
+  tInventory: ReturnType<typeof useTranslations<"inventory">>,
+) => ({
+  reason: inventoryTransactionReasonValues.map((value) => ({
+    label: tInventory(`transactions.reason.options.${value}`),
     value,
   })),
 });

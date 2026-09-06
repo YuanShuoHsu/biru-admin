@@ -610,10 +610,13 @@ const MenusMenuIdSectionId = ({
         filterable: false,
         headerName: tInventory("recipes.cost.label"),
         sortable: false,
-        valueGetter: (_value: unknown, { recipe }: MenuItem) =>
-          recipe
-            ? format.number(recipe.cost, { maximumFractionDigits: 2 })
-            : "",
+        valueGetter: (_value: unknown, { recipe }: MenuItem) => {
+          if (!recipe) return "";
+
+          return recipe.cost == null
+            ? tInventory("recipes.cost.unavailable")
+            : format.number(recipe.cost, { maximumFractionDigits: 2 });
+        },
       },
       {
         field: "recipe",
@@ -635,9 +638,11 @@ const MenusMenuIdSectionId = ({
                 underline="hover"
                 variant="body2"
               >
-                {format.number(recipe.cost / recipe.recipeYield, {
-                  maximumFractionDigits: 2,
-                })}
+                {recipe.cost == null
+                  ? tInventory("recipes.cost.unavailable")
+                  : format.number(recipe.cost / recipe.recipeYield, {
+                      maximumFractionDigits: 2,
+                    })}
               </Link>
             ) : (
               canCreateRecipe && (
@@ -666,6 +671,8 @@ const MenusMenuIdSectionId = ({
           const price = Number(offer?.price);
 
           if (!recipe || !price) return "";
+          if (recipe.cost == null)
+            return tInventory("recipes.cost.unavailable");
 
           return format.number(
             (price - recipe.cost / recipe.recipeYield) / price,

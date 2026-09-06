@@ -26,7 +26,6 @@ import { fetcher } from "@/utils/fetcher";
 import {
   formatPackage,
   formatUnitPrice,
-  labelWithPackageUnit,
   toBaseQuantity,
   toPackages,
 } from "@/utils/ingredients";
@@ -57,6 +56,7 @@ const TransactionDialog = ({ ingredient, mutate }: TransactionDialogProps) => {
     control,
     formState: { errors, isSubmitted },
     handleSubmit,
+    register,
     setValue,
   } = useForm<TransactionFormInput, unknown, TransactionFormOutput>({
     defaultValues: {
@@ -67,14 +67,13 @@ const TransactionDialog = ({ ingredient, mutate }: TransactionDialogProps) => {
 
   const inventoryLevel = useWatch({ control, name: "inventoryLevel" });
 
-  // 帳上數量未必剛好是整數包，使用者沒動數字時要原值送回，否則換算誤差會被記成一筆盤盈
   const targetLevel =
     !packageQuantity || Number(inventoryLevel || 0) === currentPackages
       ? currentLevel
       : toBaseQuantity(Number(inventoryLevel), packageQuantity);
   const delta = targetLevel - currentLevel;
 
-  const onSubmitHandler = async () => {
+  const onSubmitHandler = async (values: TransactionFormOutput) => {
     if (!packageQuantity) {
       enqueueSnackbar(tInventory("transactions.package.empty"), {
         variant: "error",
@@ -93,7 +92,7 @@ const TransactionDialog = ({ ingredient, mutate }: TransactionDialogProps) => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             inventoryLevel: String(targetLevel),
-            // 數量變多才是進貨，此時記下當下的採購單價
+            note: values.note || null,
             ...(delta > 0 &&
               ingredient.unitPrice != null && {
                 unitCost: String(ingredient.unitPrice),
@@ -144,7 +143,7 @@ const TransactionDialog = ({ ingredient, mutate }: TransactionDialogProps) => {
         fullWidth
         helperText={
           errors.inventoryLevel?.message ||
-          (packageQuantity
+          (packageQuantity && (Number(inventoryLevel) || delta)
             ? [
                 `${format.number(targetLevel)} ${tInventory(`units.${ingredient.unitCode}`)}`,
                 ...(delta
@@ -155,11 +154,7 @@ const TransactionDialog = ({ ingredient, mutate }: TransactionDialogProps) => {
               ].join("")
             : "")
         }
-        label={labelWithPackageUnit(
-          tInventory("transactions.inventoryLevel.label"),
-          tCommon,
-          tInventory,
-        )}
+        label={tInventory("transactions.inventoryLevel.label")}
         min={0}
         onValueChange={(value) =>
           setValue("inventoryLevel", value != null ? String(value) : "", {
@@ -169,6 +164,14 @@ const TransactionDialog = ({ ingredient, mutate }: TransactionDialogProps) => {
         placeholder={tInventory("transactions.inventoryLevel.placeholder")}
         required
         value={inventoryLevel ? Number(inventoryLevel) : null}
+      />
+      <TextField
+        error={!!errors.note}
+        fullWidth
+        helperText={errors.note?.message}
+        label={`${tInventory("transactions.note.label")} ${tCommon("optional")}`}
+        placeholder={tInventory("transactions.note.placeholder")}
+        {...register("note")}
       />
     </FormBox>
   );

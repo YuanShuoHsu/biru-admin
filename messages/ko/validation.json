@@ -149,6 +149,9 @@
   "price": {
     "required": "가격을 입력해 주세요."
   },
+  "priceCurrency": {
+    "notSelected": "통화를 선택해 주세요."
+  },
   "quantity": {
     "required": "수량은 필수입니다."
   },
@@ -176,7 +179,7 @@
     "required": "전화번호는 필수입니다."
   },
   "unitCode": {
-    "notSelected": "단위를 선택해 주세요."
+    "notSelected": "내용량 단위를 선택해 주세요."
   },
   "url": {
     "invalid": "URL 형식이 올바르지 않습니다."

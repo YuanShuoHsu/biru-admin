@@ -11,6 +11,7 @@ export const useTransactionFormSchema = () => {
       .min(1, {
         error: tValidation("inventoryLevel.required"),
       }),
+    note: z.string().trim().optional(),
   });
 };
 

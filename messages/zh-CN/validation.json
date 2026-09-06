@@ -149,6 +149,9 @@
   "price": {
     "required": "请输入价格。"
   },
+  "priceCurrency": {
+    "notSelected": "请选择您的币别。"
+  },
   "quantity": {
     "required": "数量为必填。"
   },
@@ -176,7 +179,7 @@
     "required": "电话为必填。"
   },
   "unitCode": {
-    "notSelected": "请选择您的单位。"
+    "notSelected": "请选择您的内容量单位。"
   },
   "url": {
     "invalid": "网址格式无效。"

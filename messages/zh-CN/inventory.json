@@ -37,9 +37,6 @@
         "title": "查看库存进出"
       }
     },
-    "baseUnitCode": {
-      "label": "基准单位"
-    },
     "brand": {
       "label": "品牌",
       "placeholder": "请输入您的品牌"
@@ -48,12 +45,17 @@
       "label": "内容量",
       "placeholder": "请输入您的内容量"
     },
+    "eligibleQuantityUnitCode": {
+      "label": "内容量单位",
+      "placeholder": "请选择您的内容量单位"
+    },
     "image": {
       "label": "图片"
     },
     "inventoryLevel": {
-      "label": "当前库存",
-      "placeholder": "请输入您的当前库存"
+      "label": "库存",
+      "placeholder": "请输入您的库存",
+      "readOnly": "库存变动请用食材列表的“登记当前数量”，异动才会留下记录"
     },
     "label": "食材",
     "lowStock": "低库存",
@@ -67,18 +69,17 @@
     },
     "outOfStock": "无库存",
     "packageRequired": "请先填写内容量与单位",
-    "packageUnit": "包",
     "price": {
       "label": "价格",
       "placeholder": "请输入您的价格"
     },
+    "priceCurrency": {
+      "label": "币别",
+      "placeholder": "请选择您的币别"
+    },
     "supplierId": {
       "label": "供应商",
       "placeholder": "请选择您的供应商"
-    },
-    "unitCode": {
-      "label": "单位",
-      "placeholder": "请选择您的单位"
     },
     "unitPrice": {
       "label": "单位成本"
@@ -108,7 +109,8 @@
       }
     },
     "cost": {
-      "label": "总成本"
+      "label": "总成本",
+      "unavailable": "无法计算"
     },
     "costPerServing": {
       "label": "每份成本"
@@ -219,12 +221,16 @@
       }
     },
     "inventoryLevel": {
-      "label": "当前库存",
-      "placeholder": "请输入您的当前库存"
+      "label": "库存",
+      "placeholder": "请输入您的库存"
     },
     "label": "库存进出",
-    "orderId": {
-      "label": "订单扣账"
+    "note": {
+      "label": "备注",
+      "placeholder": "请输入您的备注"
+    },
+    "orderNumber": {
+      "label": "订单编号"
     },
     "package": {
       "empty": "此食材尚未设定采购规格，请先新增后再登记",
@@ -232,6 +238,14 @@
     },
     "quantity": {
       "label": "异动量"
+    },
+    "reason": {
+      "label": "原因",
+      "options": {
+        "count": "人工盘点",
+        "consume": "订单耗用",
+        "restore": "退单回补"
+      }
     },
     "unitCost": {
       "label": "进货单价"

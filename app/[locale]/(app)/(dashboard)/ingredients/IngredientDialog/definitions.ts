@@ -10,10 +10,26 @@ export const useIngredientFormSchema = () => {
 
   return z.object({
     brand: z.string().trim().optional(),
-    eligibleQuantity: z.string().trim().optional(),
+    eligibleQuantity: z
+      .string()
+      .trim()
+      .min(1, {
+        error: tValidation("eligibleQuantity.required"),
+      }),
     inventoryLevel: z.string().trim().optional(),
     lowStockThreshold: z.string().trim().optional(),
-    price: z.string().trim().optional(),
+    price: z
+      .string()
+      .trim()
+      .min(1, {
+        error: tValidation("price.required"),
+      }),
+    priceCurrency: z
+      .string()
+      .trim()
+      .min(1, {
+        error: tValidation("priceCurrency.notSelected"),
+      }),
     supplierId: z.string().trim().optional(),
     name: z
       .record(z.string(), z.string().trim())

@@ -149,6 +149,9 @@
   "price": {
     "required": "請輸入價格。"
   },
+  "priceCurrency": {
+    "notSelected": "請選擇您的幣別。"
+  },
   "quantity": {
     "required": "數量為必填。"
   },
@@ -176,7 +179,7 @@
     "required": "電話為必填。"
   },
   "unitCode": {
-    "notSelected": "請選擇您的單位。"
+    "notSelected": "請選擇您的內容量單位。"
   },
   "url": {
     "invalid": "網址格式無效。"

@@ -14,7 +14,8 @@ import {
   inventoryTransactionSortFieldValues,
 } from "@/types/api";
 
-import { resolveGridSearchParams } from "@/utils/dataGrid";
+import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
+import { getInventoryTransactionEnumOptions } from "@/utils/enumOptions";
 import { getIngredient, getInventoryTransactions } from "@/utils/inventory";
 
 interface IngredientTransactionsPageProps {
@@ -80,6 +81,15 @@ const IngredientTransactionsPage = async ({
       locale,
     });
 
+  const quickFilterEnums = quickFilterValue
+    ? getQuickFilterEnums(
+        quickFilterValue,
+        getInventoryTransactionEnumOptions(
+          await getTranslations({ locale, namespace: "inventory" }),
+        ),
+      )
+    : [];
+
   const { transactions, total } = await getInventoryTransactions(
     ingredientId,
     {
@@ -88,6 +98,7 @@ const IngredientTransactionsPage = async ({
       filterField,
       filterOperator,
       filterValue,
+      quickFilterEnums,
       quickFilterValue,
       sortBy,
       sortDirection,

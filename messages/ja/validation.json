@@ -149,6 +149,9 @@
   "price": {
     "required": "価格を入力してください。"
   },
+  "priceCurrency": {
+    "notSelected": "通貨を選択してください。"
+  },
   "quantity": {
     "required": "数量は必須です。"
   },
@@ -176,7 +179,7 @@
     "required": "電話番号は必須です。"
   },
   "unitCode": {
-    "notSelected": "単位を選択してください。"
+    "notSelected": "内容量の単位を選択してください。"
   },
   "url": {
     "invalid": "URLの形式が無効です。"

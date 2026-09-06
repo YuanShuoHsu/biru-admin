@@ -30,14 +30,6 @@ export const toPackages = (baseQuantity: number, packageBaseQuantity: number) =>
 export const toBaseQuantity = (packages: number, packageBaseQuantity: number) =>
   Math.round(packages * packageBaseQuantity * 1000) / 1000;
 
-export const labelWithPackageUnit = (
-  label: string,
-  tCommon: IngredientFormatters["tCommon"],
-  tInventory: IngredientFormatters["tInventory"],
-) =>
-  `${label}${tCommon("parenthesisOpen")}${tInventory("ingredients.packageUnit")}${tCommon("parenthesisClose")}`;
-
-// 三個 formatter 一律是「主要數值（補充說明）」，庫存、包裝、單位成本才對得起來
 const withSuffix = (
   value: string,
   suffix: string[],
@@ -62,7 +54,7 @@ export const formatStock = (
     `${format.number(quantity)} ${tInventory(`units.${unitCode}`)}`,
     showPackages
       ? [
-          `${format.number(packages)} ${tInventory("ingredients.packageUnit")}`,
+          `×${format.number(packages)}`,
           ...(remainder
             ? [
                 `${format.number(remainder, { maximumFractionDigits: 3 })} ${tInventory(`units.${unitCode}`)}`,
@@ -99,10 +91,17 @@ export const formatPackage = (
     : "";
 };
 
-export const formatUnitPrice = (
-  { priceCurrency, unitCode, unitPrice }: Ingredient,
+export const formatUnitPriceOf = (
+  value: number,
+  { priceCurrency, unitCode }: Pick<Ingredient, "priceCurrency" | "unitCode">,
   { format, tCommon, tInventory }: IngredientFormatters,
 ) =>
-  unitPrice == null
+  `${priceCurrency} ${format.number(value, { maximumFractionDigits: 4 })}${tCommon("slash")}${tInventory(`units.${unitCode}`)}`;
+
+export const formatUnitPrice = (
+  ingredient: Ingredient,
+  formatters: IngredientFormatters,
+) =>
+  ingredient.unitPrice == null
     ? ""
-    : `${priceCurrency} ${format.number(unitPrice, { maximumFractionDigits: 4 })}${tCommon("slash")}${tInventory(`units.${unitCode}`)}`;
+    : formatUnitPriceOf(ingredient.unitPrice, ingredient, formatters);

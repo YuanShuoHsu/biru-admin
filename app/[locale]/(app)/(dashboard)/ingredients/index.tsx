@@ -30,7 +30,6 @@ import { isSortableOperation } from "@dnd-kit/react/sortable";
 
 import {
   useDateFilterOperators,
-  useEnumFilterOperators,
   useNumberFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
@@ -178,7 +177,6 @@ const Ingredients = ({
   const { setDialog } = useDialogStore((state) => state);
 
   const dateFilterOperators = useDateFilterOperators();
-  const enumFilterOperators = useEnumFilterOperators();
   const numberFilterOperators = useNumberFilterOperators();
   const stringFilterOperators = useStringFilterOperators();
 
@@ -631,13 +629,6 @@ const Ingredients = ({
           formatPackageQuantity(row, { format, tCommon, tInventory }),
       },
       {
-        field: "unitCode",
-        filterOperators: enumFilterOperators,
-        headerName: tInventory("ingredients.baseUnitCode.label"),
-        type: "singleSelect",
-        valueOptions: enumOptions.unitCode,
-      },
-      {
         field: "unitPrice",
         filterable: false,
         headerName: tInventory("ingredients.unitPrice.label"),
@@ -666,7 +657,7 @@ const Ingredients = ({
               }
             >
               <Stack
-                alignItems="center"
+                height="100%"
                 color={
                   isOutOfStock
                     ? "error.main"
@@ -675,9 +666,9 @@ const Ingredients = ({
                       : undefined
                 }
                 direction="row"
-                gap={0.5}
-                height="100%"
                 justifyContent="flex-end"
+                alignItems="center"
+                gap={1}
               >
                 {isOutOfStock ? (
                   <ErrorIcon fontSize="small" />
@@ -696,7 +687,6 @@ const Ingredients = ({
         filterOperators: numberFilterOperators,
         headerName: `${tInventory("ingredients.lowStockThreshold.label")} ${tCommon("optional")}`,
         type: "number",
-        // 這個數字是拿來跟目前庫存比的，兩欄的寫法必須一致才看得出誰大誰小
         valueGetter: (_value: unknown, row: Ingredient) =>
           row.lowStockThreshold == null
             ? ""
@@ -743,8 +733,6 @@ const Ingredients = ({
       canViewAuditLog,
       canWrite,
       dateFilterOperators,
-      enumFilterOperators,
-      enumOptions,
       format,
       handleDeleteIngredient,
       handleRecordTransaction,
