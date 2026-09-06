@@ -7,11 +7,13 @@ import {
   orderModeValues,
   orderResponseDtoPaymentMethodValues,
   orderStatusValues,
+  unitCodeValues,
   userCouponSourceValues,
 } from "@/types/api";
 
 export const useAuditLogValueLabels = () => {
   const tCoupons = useTranslations("coupons");
+  const tInventory = useTranslations("inventory");
   const tMenus = useTranslations("menus");
   const tOrder = useTranslations("order");
   const tOrders = useTranslations("orders");
@@ -26,6 +28,9 @@ export const useAuditLogValueLabels = () => {
       ),
       availableModes: Object.fromEntries(
         orderModeValues.map((value) => [value, tOrder(`mode.${value}.label`)]),
+      ),
+      eligibleQuantityUnitCode: Object.fromEntries(
+        unitCodeValues.map((value) => [value, tInventory(`units.${value}`)]),
       ),
       mode: Object.fromEntries(
         orderModeValues.map((value) => [value, tOrder(`mode.${value}.label`)]),
@@ -51,7 +56,10 @@ export const useAuditLogValueLabels = () => {
           tOrder(`menuItem.diet.${value}`),
         ]),
       ),
+      unitCode: Object.fromEntries(
+        unitCodeValues.map((value) => [value, tInventory(`units.${value}`)]),
+      ),
     }),
-    [tCoupons, tMenus, tOrder, tOrders],
+    [tCoupons, tInventory, tMenus, tOrder, tOrders],
   );
 };

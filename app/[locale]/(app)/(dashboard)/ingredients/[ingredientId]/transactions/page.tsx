@@ -6,8 +6,9 @@ import { notFound } from "next/navigation";
 import IngredientTransactions from ".";
 
 import { redirect } from "@/i18n/navigation";
-import { authClient } from "@/lib/auth-client";
 import type { Locale } from "@/i18n/routing";
+
+import { authClient } from "@/lib/auth-client";
 
 import {
   filterOperatorValues,
@@ -63,6 +64,7 @@ const IngredientTransactionsPage = async ({
   const { data: memberRole } =
     await authClient.organization.getActiveMemberRole({
       query: { organizationId: ingredient.organizationId },
+      fetchOptions,
     });
 
   const canViewPurchasing = hasRolePermission(memberRole?.role, {

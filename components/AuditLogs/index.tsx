@@ -86,6 +86,7 @@ const FIELD_LABEL_KEYS = {
   amountPerPoint: "field.amountPerPoint",
   availability: "field.availability",
   availableModes: "field.availableModes",
+  brand: "field.brand",
   confirmationNumber: "field.confirmationNumber",
   couponId: "field.coupon",
   customer: "field.customer",
@@ -93,10 +94,13 @@ const FIELD_LABEL_KEYS = {
   description: "field.description",
   discount: "field.discount",
   displayName: "field.displayName",
+  eligibleQuantity: "field.eligibleQuantity",
+  eligibleQuantityUnitCode: "field.eligibleQuantityUnitCode",
   grantedBy: "field.grantedBy",
   image: "field.image",
   inventoryLevel: "field.inventoryLevel",
   isActive: "field.isActive",
+  lowStockThreshold: "field.lowStockThreshold",
   maxSelectionCount: "field.maxSelectionCount",
   menuId: "field.menu",
   menuItemId: "field.menuItem",
@@ -104,6 +108,7 @@ const FIELD_LABEL_KEYS = {
   minSelectionCount: "field.minSelectionCount",
   modifierGroupId: "field.modifierGroup",
   name: "field.name",
+  note: "field.note",
   nutrition: "field.nutrition",
   orderId: "field.order",
   orderStatus: "field.orderStatus",
@@ -120,9 +125,12 @@ const FIELD_LABEL_KEYS = {
   source: "field.source",
   subtotal: "field.subtotal",
   suitableForDiet: "field.suitableForDiet",
+  supplierId: "field.supplier",
   tableNumber: "field.tableNumber",
   total: "field.total",
+  unitCode: "field.unitCode",
   usedAt: "field.usedAt",
+  url: "field.url",
   userId: "field.user",
 } as const;
 
@@ -145,7 +153,6 @@ const isTranslatableField = (
   field: string,
 ): field is keyof typeof FIELD_LABEL_KEYS => field in FIELD_LABEL_KEYS;
 
-// 名稱快照可能是多語物件，也可能是訂單編號那種單語字串
 const getTargetLabel = (
   label: AuditLogResponse["resourceLabel"],
   locale: Locale,
