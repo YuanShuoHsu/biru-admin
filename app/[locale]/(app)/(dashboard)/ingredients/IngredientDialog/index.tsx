@@ -43,6 +43,9 @@ import { localize } from "@/utils/locale";
 const INGREDIENT_IMAGE_KEY = "ingredient-image";
 
 interface IngredientDialogProps {
+  canRecordTransaction: boolean;
+  canViewPurchasing: boolean;
+  canWrite: boolean;
   ingredient: Ingredient | null;
   mutate: () => void;
   organizationSlug: string;
@@ -50,6 +53,9 @@ interface IngredientDialogProps {
 }
 
 const IngredientDialog = ({
+  canRecordTransaction,
+  canViewPurchasing,
+  canWrite,
   ingredient,
   mutate,
   organizationSlug,
@@ -68,7 +74,17 @@ const IngredientDialog = ({
     ingredient?.image || null,
   );
 
-  const ingredientFormSchema = useIngredientFormSchema();
+  const initialStock =
+    ingredient?.packageBaseQuantity && ingredient.inventoryLevel
+      ? String(
+          toPackages(
+            Number(ingredient.inventoryLevel),
+            Number(ingredient.packageBaseQuantity),
+          ),
+        )
+      : "";
+
+  const ingredientFormSchema = useIngredientFormSchema(canViewPurchasing);
   const {
     control,
     formState: { errors, isSubmitted },
@@ -79,7 +95,8 @@ const IngredientDialog = ({
     defaultValues: {
       brand: ingredient?.brand || "",
       eligibleQuantity: ingredient?.eligibleQuantity || "",
-      inventoryLevel: "",
+      inventoryLevel: initialStock,
+      note: "",
       lowStockThreshold:
         ingredient?.lowStockThreshold && ingredient.packageBaseQuantity
           ? String(
@@ -131,62 +148,87 @@ const IngredientDialog = ({
         : ""
       : tInventory("ingredients.packageRequired");
 
-  const stockOnHand =
-    ingredient && baseQuantity > 0
-      ? toPackages(Number(ingredient.inventoryLevel), baseQuantity)
-      : null;
+  const editable = !ingredient || canWrite;
+  const stockEditable = !ingredient || canRecordTransaction;
 
-  const action = ingredient ? "updateIngredient" : "createIngredient";
+  // 只認使用者親手改過的份數。改包裝內容量會讓同一個份數換算出不同的基準單位量，
+  // 拿換算結果比對會把「只改了規格」誤判成盤點
+  const toStockPayload = (packages?: string) =>
+    packages === initialStock
+      ? null
+      : packages && baseQuantity > 0
+        ? String(toBaseQuantity(Number(packages), baseQuantity))
+        : null;
+
+  const action = ingredient
+    ? "ingredients.actions.updateIngredient"
+    : "ingredients.actions.createIngredient";
 
   const onSubmitHandler = async (values: IngredientFormOutput) => {
+    const inventoryLevel = toStockPayload(values.inventoryLevel);
+
+    // 只能盤點的員工改不了規格，直接寫帳本；規格與庫存一起送才需要後端的同一個交易
+    if (ingredient && !editable) {
+      if (inventoryLevel == null) {
+        closeDialog();
+
+        return;
+      }
+
+      await submit(
+        `/api/ingredients/${ingredient.id}/inventory-transactions`,
+        "POST",
+        { inventoryLevel, note: values.note || null },
+      );
+
+      return;
+    }
+
+    await submit(
+      ingredient
+        ? `/api/ingredients/${ingredient.id}`
+        : `/api/organizations/${organizationSlug}/ingredients`,
+      ingredient ? "PATCH" : "POST",
+      {
+        name: values.name,
+        brand: values.brand || null,
+        image: imageSrc || null,
+        eligibleQuantity: values.eligibleQuantity,
+        eligibleQuantityUnitCode: values.unitCode,
+        unitCode: BASE_UNIT_CODES[values.unitCode],
+        lowStockThreshold:
+          values.lowStockThreshold && baseQuantity > 0
+            ? String(
+                toBaseQuantity(Number(values.lowStockThreshold), baseQuantity),
+              )
+            : null,
+        inventoryLevel,
+        ...(ingredient && stockEditable && { note: values.note || null }),
+        price: values.price,
+        priceCurrency: values.priceCurrency,
+        supplierId: values.supplierId || null,
+        url: values.url || null,
+      },
+    );
+  };
+
+  const submit = async (
+    url: string,
+    method: string,
+    body: Record<string, unknown>,
+  ) => {
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher<Ingredient>(
-        ingredient
-          ? `/api/ingredients/${ingredient.id}`
-          : `/api/organizations/${organizationSlug}/ingredients`,
-        {
-          method: ingredient ? "PATCH" : "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: values.name,
-            brand: values.brand || null,
-            image: imageSrc || null,
-            eligibleQuantity: values.eligibleQuantity,
-            eligibleQuantityUnitCode: values.unitCode,
-            unitCode: BASE_UNIT_CODES[values.unitCode],
-            lowStockThreshold:
-              values.lowStockThreshold && baseQuantity > 0
-                ? String(
-                    toBaseQuantity(
-                      Number(values.lowStockThreshold),
-                      baseQuantity,
-                    ),
-                  )
-                : null,
-            ...(!ingredient && {
-              inventoryLevel:
-                values.inventoryLevel && baseQuantity > 0
-                  ? String(
-                      toBaseQuantity(
-                        Number(values.inventoryLevel),
-                        baseQuantity,
-                      ),
-                    )
-                  : null,
-            }),
-            price: values.price,
-            priceCurrency: values.priceCurrency,
-            supplierId: values.supplierId || null,
-            url: values.url || null,
-          }),
-        },
-      );
+      await fetcher<Ingredient>(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
 
       enqueueSnackbar(
-        tInventory(`ingredients.actions.${action}.success`, {
-          name: localize(values.name, locale),
+        tInventory(`${action}.success`, {
+          name: localize(name || {}, locale),
         }),
         { variant: "success" },
       );
@@ -195,7 +237,7 @@ const IngredientDialog = ({
 
       mutate();
     } catch {
-      enqueueSnackbar(tInventory(`ingredients.actions.${action}.error`), {
+      enqueueSnackbar(tInventory(`${action}.error`), {
         variant: "error",
       });
 
@@ -210,6 +252,7 @@ const IngredientDialog = ({
     <FormBox id="ingredient-form" onSubmit={onSubmit}>
       <UploadAvatars
         aspectRatio="16/9"
+        disabled={!editable}
         fullWidth
         initialSrc={ingredient?.image || null}
         shape="square"
@@ -218,6 +261,7 @@ const IngredientDialog = ({
       <LocalizedTextFields
         fields={(lang) => [
           {
+            disabled: !editable,
             error: !!errors.name?.[lang],
             fullWidth: true,
             helperText: errors.name?.[lang]?.message,
@@ -231,6 +275,7 @@ const IngredientDialog = ({
         ]}
       />
       <TextField
+        disabled={!editable}
         error={!!errors.brand}
         fullWidth
         helperText={errors.brand?.message}
@@ -238,48 +283,53 @@ const IngredientDialog = ({
         placeholder={tInventory("ingredients.brand.placeholder")}
         {...register("brand")}
       />
-      <Grid container width="100%" spacing={2}>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <CountryAutocomplete
-            error={!!errors.priceCurrency}
-            helperText={errors.priceCurrency?.message}
-            label={tInventory("ingredients.priceCurrency.label")}
-            mode="currency"
-            placeholder={tInventory("ingredients.priceCurrency.placeholder")}
-            required
-            value={priceCurrency || ""}
-            {...register("priceCurrency")}
-          />
+      {canViewPurchasing && (
+        <Grid container width="100%" spacing={2}>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <CountryAutocomplete
+              disabled={!editable}
+              error={!!errors.priceCurrency}
+              helperText={errors.priceCurrency?.message}
+              label={tInventory("ingredients.priceCurrency.label")}
+              mode="currency"
+              placeholder={tInventory("ingredients.priceCurrency.placeholder")}
+              required
+              value={priceCurrency || ""}
+              {...register("priceCurrency")}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <NumericFormat
+              allowNegative={false}
+              customInput={TextField}
+              decimalScale={2}
+              disabled={!editable}
+              error={!!errors.price}
+              fullWidth
+              helperText={errors.price?.message || unitCostHint}
+              isAllowed={({ floatValue }) =>
+                floatValue === undefined || floatValue <= 99999999.99
+              }
+              label={tInventory("ingredients.price.label")}
+              onValueChange={({ value }) =>
+                setValue("price", value, { shouldValidate: isSubmitted })
+              }
+              placeholder={tInventory("ingredients.price.placeholder")}
+              required
+              thousandSeparator=","
+              value={price}
+              valueIsNumericString
+            />
+          </Grid>
         </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <NumericFormat
-            allowNegative={false}
-            customInput={TextField}
-            decimalScale={2}
-            error={!!errors.price}
-            fullWidth
-            helperText={errors.price?.message || unitCostHint}
-            isAllowed={({ floatValue }) =>
-              floatValue === undefined || floatValue <= 99999999.99
-            }
-            label={tInventory("ingredients.price.label")}
-            onValueChange={({ value }) =>
-              setValue("price", value, { shouldValidate: isSubmitted })
-            }
-            placeholder={tInventory("ingredients.price.placeholder")}
-            required
-            thousandSeparator=","
-            value={price}
-            valueIsNumericString
-          />
-        </Grid>
-      </Grid>
+      )}
       <Grid container width="100%" spacing={2}>
         <Grid size={{ xs: 12, sm: 6 }}>
           <NumericFormat
             allowNegative={false}
             customInput={TextField}
             decimalScale={3}
+            disabled={!editable}
             error={!!errors.eligibleQuantity}
             fullWidth
             helperText={errors.eligibleQuantity?.message}
@@ -301,6 +351,7 @@ const IngredientDialog = ({
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
+            disabled={!editable}
             error={!!errors.unitCode}
             fullWidth
             helperText={errors.unitCode?.message}
@@ -344,40 +395,39 @@ const IngredientDialog = ({
           </TextField>
         </Grid>
       </Grid>
-      {ingredient ? (
-        <NumberSpinner
-          disabled
-          format={{ maximumFractionDigits: 3 }}
+      <NumberSpinner
+        clearable
+        disabled={!baseQuantity || !stockEditable}
+        error={!!errors.inventoryLevel}
+        format={{ maximumFractionDigits: 3 }}
+        fullWidth
+        helperText={
+          errors.inventoryLevel?.message || packageHint(inventoryLevel)
+        }
+        label={`${tInventory("ingredients.inventoryLevel.label")} ${tCommon("optional")}`}
+        max={maxPackages(baseQuantity)}
+        min={0}
+        onValueChange={(value) =>
+          setValue("inventoryLevel", value != null ? String(value) : "", {
+            shouldValidate: isSubmitted,
+          })
+        }
+        placeholder={tInventory("ingredients.inventoryLevel.placeholder")}
+        value={inventoryLevel ? Number(inventoryLevel) : null}
+      />
+      {ingredient && stockEditable && (
+        <TextField
+          error={!!errors.note}
           fullWidth
-          helperText={tInventory("ingredients.inventoryLevel.readOnly")}
-          label={tInventory("ingredients.inventoryLevel.label")}
-          value={stockOnHand}
-        />
-      ) : (
-        <NumberSpinner
-          clearable
-          disabled={!baseQuantity}
-          error={!!errors.inventoryLevel}
-          format={{ maximumFractionDigits: 3 }}
-          fullWidth
-          helperText={
-            errors.inventoryLevel?.message || packageHint(inventoryLevel)
-          }
-          label={`${tInventory("ingredients.inventoryLevel.label")} ${tCommon("optional")}`}
-          max={maxPackages(baseQuantity)}
-          min={0}
-          onValueChange={(value) =>
-            setValue("inventoryLevel", value != null ? String(value) : "", {
-              shouldValidate: isSubmitted,
-            })
-          }
-          placeholder={tInventory("ingredients.inventoryLevel.placeholder")}
-          value={inventoryLevel ? Number(inventoryLevel) : null}
+          helperText={errors.note?.message}
+          label={`${tInventory("transactions.note.label")} ${tCommon("optional")}`}
+          placeholder={tInventory("transactions.note.placeholder")}
+          {...register("note")}
         />
       )}
       <NumberSpinner
         clearable
-        disabled={!baseQuantity}
+        disabled={!baseQuantity || !editable}
         error={!!errors.lowStockThreshold}
         format={{ maximumFractionDigits: 0 }}
         fullWidth
@@ -396,47 +446,53 @@ const IngredientDialog = ({
         smallStep={1}
         value={lowStockThreshold ? Number(lowStockThreshold) : null}
       />
-      <TextField
-        error={!!errors.supplierId}
-        fullWidth
-        helperText={errors.supplierId?.message}
-        label={`${tInventory("ingredients.supplierId.label")} ${tCommon("optional")}`}
-        select
-        slotProps={{
-          inputLabel: { shrink: true },
-          select: {
-            displayEmpty: true,
-            renderValue: (selected) => {
-              const supplier = suppliers.find(({ id }) => id === selected);
+      {canViewPurchasing && (
+        <>
+          <TextField
+            disabled={!editable}
+            error={!!errors.supplierId}
+            fullWidth
+            helperText={errors.supplierId?.message}
+            label={`${tInventory("ingredients.supplierId.label")} ${tCommon("optional")}`}
+            select
+            slotProps={{
+              inputLabel: { shrink: true },
+              select: {
+                displayEmpty: true,
+                renderValue: (selected) => {
+                  const supplier = suppliers.find(({ id }) => id === selected);
 
-              return supplier ? (
-                supplier.name
-              ) : (
-                <em>{tInventory("ingredients.supplierId.placeholder")}</em>
-              );
-            },
-          },
-        }}
-        value={supplierId}
-        {...register("supplierId")}
-      >
-        <MenuItem value="">
-          <em>{tInventory("ingredients.supplierId.placeholder")}</em>
-        </MenuItem>
-        {suppliers.map(({ id, name }) => (
-          <MenuItem key={id} value={id}>
-            {name}
-          </MenuItem>
-        ))}
-      </TextField>
-      <TextField
-        error={!!errors.url}
-        fullWidth
-        helperText={errors.url?.message}
-        label={`${tInventory("ingredients.url.label")} ${tCommon("optional")}`}
-        placeholder={tInventory("ingredients.url.placeholder")}
-        {...register("url")}
-      />
+                  return supplier ? (
+                    supplier.name
+                  ) : (
+                    <em>{tInventory("ingredients.supplierId.placeholder")}</em>
+                  );
+                },
+              },
+            }}
+            value={supplierId}
+            {...register("supplierId")}
+          >
+            <MenuItem value="">
+              <em>{tInventory("ingredients.supplierId.placeholder")}</em>
+            </MenuItem>
+            {suppliers.map(({ id, name }) => (
+              <MenuItem key={id} value={id}>
+                {name}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            disabled={!editable}
+            error={!!errors.url}
+            fullWidth
+            helperText={errors.url?.message}
+            label={`${tInventory("ingredients.url.label")} ${tCommon("optional")}`}
+            placeholder={tInventory("ingredients.url.placeholder")}
+            {...register("url")}
+          />
+        </>
+      )}
     </FormBox>
   );
 };

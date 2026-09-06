@@ -54,8 +54,7 @@
     },
     "inventoryLevel": {
       "label": "库存",
-      "placeholder": "请输入您的库存",
-      "readOnly": "库存变动请用食材列表的“登记当前数量”，异动才会留下记录"
+      "placeholder": "请输入您的库存"
     },
     "label": "食材",
     "lowStock": "低库存",
@@ -212,18 +211,6 @@
     }
   },
   "transactions": {
-    "actions": {
-      "label": "操作",
-      "recordTransaction": {
-        "error": "更新食材失败",
-        "success": "已更新食材 {name}",
-        "title": "登记现有数量"
-      }
-    },
-    "inventoryLevel": {
-      "label": "库存",
-      "placeholder": "请输入您的库存"
-    },
     "label": "库存进出",
     "note": {
       "label": "备注",
@@ -231,10 +218,6 @@
     },
     "orderNumber": {
       "label": "订单编号"
-    },
-    "package": {
-      "empty": "此食材尚未设定采购规格，请先新增后再登记",
-      "label": "包装"
     },
     "quantity": {
       "label": "异动量"

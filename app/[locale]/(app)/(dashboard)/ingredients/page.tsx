@@ -97,6 +97,19 @@ const IngredientsPage = async ({
       fetchOptions,
     });
 
+  const canRecordTransaction = hasRolePermission(memberRole?.role, {
+    inventoryTransaction: ["create"],
+  });
+  const canViewAuditLog = hasRolePermission(memberRole?.role, {
+    auditLog: ["read"],
+  });
+  const canViewPurchasing = hasRolePermission(memberRole?.role, {
+    purchasing: ["read"],
+  });
+  const canWrite = hasRolePermission(memberRole?.role, {
+    inventory: ["update"],
+  });
+
   const quickFilterEnums = quickFilterValue
     ? getQuickFilterEnums(
         quickFilterValue,
@@ -122,24 +135,21 @@ const IngredientsPage = async ({
       },
       fetchOptions,
     ),
-    getSuppliers(
-      organization.slug,
-      { pageSize: MAX_PAGE_SIZE, sortBy: "name", sortDirection: "asc" },
-      fetchOptions,
-    ),
+    canViewPurchasing
+      ? getSuppliers(
+          organization.slug,
+          { pageSize: MAX_PAGE_SIZE, sortBy: "name", sortDirection: "asc" },
+          fetchOptions,
+        )
+      : { suppliers: [] },
   ]);
 
   return (
     <Ingredients
-      canRecordTransaction={hasRolePermission(memberRole?.role, {
-        inventoryTransaction: ["create"],
-      })}
-      canViewAuditLog={hasRolePermission(memberRole?.role, {
-        auditLog: ["read"],
-      })}
-      canWrite={hasRolePermission(memberRole?.role, {
-        inventory: ["update"],
-      })}
+      canRecordTransaction={canRecordTransaction}
+      canViewAuditLog={canViewAuditLog}
+      canViewPurchasing={canViewPurchasing}
+      canWrite={canWrite}
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}

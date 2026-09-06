@@ -84,6 +84,7 @@ const HIGH_QUALITY_COMPRESSION_OPTIONS: Options = {
 
 interface UploadAvatarsProps {
   aspectRatio?: string;
+  disabled?: boolean;
   fullWidth?: boolean;
   highQuality?: boolean;
   initialSrc?: string | null;
@@ -93,6 +94,7 @@ interface UploadAvatarsProps {
 
 const UploadAvatars = ({
   aspectRatio = "1/1",
+  disabled = false,
   fullWidth = false,
   highQuality = false,
   initialSrc,
@@ -150,6 +152,7 @@ const UploadAvatars = ({
       aria-label="Avatar image"
       aspectRatio={aspectRatio}
       component="label"
+      disabled={disabled}
       fullWidth={fullWidth}
       role={undefined}
       shape={shape}
@@ -158,7 +161,7 @@ const UploadAvatars = ({
       <BadgeAvatars
         anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
         badgeContent={
-          canRestore ? (
+          canRestore && !disabled ? (
             <IconButton
               aria-label="restore avatar"
               component="span"
@@ -174,16 +177,18 @@ const UploadAvatars = ({
       >
         <BadgeAvatars
           badgeContent={
-            <IconButton
-              aria-label={label}
-              component="span"
-              onClick={onClick}
-              role={undefined}
-              size="small"
-              tabIndex={-1}
-            >
-              <Icon fontSize="inherit" />
-            </IconButton>
+            disabled ? null : (
+              <IconButton
+                aria-label={label}
+                component="span"
+                onClick={onClick}
+                role={undefined}
+                size="small"
+                tabIndex={-1}
+              >
+                <Icon fontSize="inherit" />
+              </IconButton>
+            )
           }
         >
           <StyledAvatar
@@ -195,6 +200,7 @@ const UploadAvatars = ({
           />
           <VisuallyHiddenInput
             accept="image/*"
+            disabled={disabled}
             onChange={handleAvatarChange}
             type="file"
           />

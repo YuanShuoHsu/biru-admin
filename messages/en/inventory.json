@@ -54,8 +54,7 @@
     },
     "inventoryLevel": {
       "label": "Stock",
-      "placeholder": "Please enter your stock",
-      "readOnly": "Change stock via “Record current quantity” in the ingredient list so the change is recorded"
+      "placeholder": "Please enter your stock"
     },
     "label": "Ingredient",
     "lowStock": "Low stock",
@@ -212,18 +211,6 @@
     }
   },
   "transactions": {
-    "actions": {
-      "label": "Actions",
-      "recordTransaction": {
-        "error": "Failed to update ingredient",
-        "success": "Ingredient {name} updated",
-        "title": "Record current quantity"
-      }
-    },
-    "inventoryLevel": {
-      "label": "Stock",
-      "placeholder": "Please enter your stock"
-    },
     "label": "Stock movement",
     "note": {
       "label": "Notes",
@@ -231,10 +218,6 @@
     },
     "orderNumber": {
       "label": "Order number"
-    },
-    "package": {
-      "empty": "This ingredient has no purchase spec yet; add one before recording.",
-      "label": "Package"
     },
     "quantity": {
       "label": "Change"

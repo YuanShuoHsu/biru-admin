@@ -54,8 +54,7 @@
     },
     "inventoryLevel": {
       "label": "在庫",
-      "placeholder": "在庫を入力してください",
-      "readOnly": "在庫の変更は食材一覧の「現在数量の登録」から行うと履歴が残ります"
+      "placeholder": "在庫を入力してください"
     },
     "label": "食材",
     "lowStock": "在庫僅少",
@@ -212,18 +211,6 @@
     }
   },
   "transactions": {
-    "actions": {
-      "label": "操作",
-      "recordTransaction": {
-        "error": "食材の更新に失敗しました",
-        "success": "食材 {name} を更新しました",
-        "title": "現在の数量を登録"
-      }
-    },
-    "inventoryLevel": {
-      "label": "在庫",
-      "placeholder": "在庫を入力してください"
-    },
     "label": "在庫変動",
     "note": {
       "label": "備考",
@@ -231,10 +218,6 @@
     },
     "orderNumber": {
       "label": "注文番号"
-    },
-    "package": {
-      "empty": "この食材には仕入れ規格がありません。先に追加してください。",
-      "label": "パッケージ"
     },
     "quantity": {
       "label": "変動量"

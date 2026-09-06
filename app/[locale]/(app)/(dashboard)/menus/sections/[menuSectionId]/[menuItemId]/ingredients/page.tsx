@@ -142,14 +142,29 @@ const MenuItemIngredientsPage = async ({
       )
     : { materials: [], total: 0 };
 
+  const canCreate = hasRolePermission(memberRole?.role, {
+    inventory: ["create"],
+  });
+  const canDelete = hasRolePermission(memberRole?.role, {
+    inventory: ["delete"],
+  });
+  const canViewAuditLog = hasRolePermission(memberRole?.role, {
+    auditLog: ["read"],
+  });
+  const canViewPurchasing = hasRolePermission(memberRole?.role, {
+    purchasing: ["read"],
+  });
+  const canWrite = hasRolePermission(memberRole?.role, {
+    inventory: ["update"],
+  });
+
   return (
     <RecipeIngredients
-      canCreate={hasRolePermission(memberRole?.role, { inventory: ["create"] })}
-      canDelete={hasRolePermission(memberRole?.role, { inventory: ["delete"] })}
-      canViewAuditLog={hasRolePermission(memberRole?.role, {
-        auditLog: ["read"],
-      })}
-      canWrite={hasRolePermission(memberRole?.role, { inventory: ["update"] })}
+      canCreate={canCreate}
+      canDelete={canDelete}
+      canViewAuditLog={canViewAuditLog}
+      canViewPurchasing={canViewPurchasing}
+      canWrite={canWrite}
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}

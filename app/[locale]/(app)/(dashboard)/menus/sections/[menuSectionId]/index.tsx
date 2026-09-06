@@ -106,6 +106,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
 
 interface MenusMenuIdSectionIdProps {
   canCreateRecipe: boolean;
+  canViewPurchasing: boolean;
   canViewAuditLog: boolean;
   canWrite: boolean;
   filterField?: MenuItemFilterField;
@@ -125,6 +126,7 @@ interface MenusMenuIdSectionIdProps {
 
 const MenusMenuIdSectionId = ({
   canCreateRecipe,
+  canViewPurchasing,
   canViewAuditLog,
   canWrite,
   filterField: initialFilterField,
@@ -482,8 +484,45 @@ const MenusMenuIdSectionId = ({
     [locale, mutate, setDialog, tMenus],
   );
 
-  const columns = useMemo<GridColDef[]>(
-    () => [
+  const columns = useMemo<GridColDef[]>(() => {
+    const costColumns: GridColDef[] = [
+      {
+        field: "cost",
+        filterable: false,
+        headerName: tInventory("recipes.cost.label"),
+        sortable: false,
+        valueGetter: (_value: unknown, { recipe }: MenuItem) => {
+          if (!recipe) return "";
+
+          return recipe.cost == null
+            ? tInventory("recipes.cost.unavailable")
+            : format.number(recipe.cost, { maximumFractionDigits: 2 });
+        },
+      },
+    ];
+
+    const marginColumns: GridColDef[] = [
+      {
+        field: "margin",
+        filterable: false,
+        headerName: tInventory("recipes.margin.label"),
+        sortable: false,
+        valueGetter: (_value: unknown, { offer, recipe }: MenuItem) => {
+          const price = Number(offer?.price);
+
+          if (!recipe || !price) return "";
+          if (recipe.cost == null)
+            return tInventory("recipes.cost.unavailable");
+
+          return format.number(
+            (price - recipe.cost / recipe.recipeYield) / price,
+            { style: "percent" },
+          );
+        },
+      },
+    ];
+
+    return [
       ...(isReorderMode
         ? [
             {
@@ -605,25 +644,15 @@ const MenusMenuIdSectionId = ({
             ? `${format.number(recipe.recipeYield)} ${tInventory("recipes.recipeYield.unit")}`
             : "",
       },
-      {
-        field: "cost",
-        filterable: false,
-        headerName: tInventory("recipes.cost.label"),
-        sortable: false,
-        valueGetter: (_value: unknown, { recipe }: MenuItem) => {
-          if (!recipe) return "";
-
-          return recipe.cost == null
-            ? tInventory("recipes.cost.unavailable")
-            : format.number(recipe.cost, { maximumFractionDigits: 2 });
-        },
-      },
+      ...(canViewPurchasing ? costColumns : []),
       {
         field: "recipe",
         filterOperators: stringFilterOperators.filter(({ value }) =>
           ["isEmpty", "isNotEmpty"].includes(value),
         ),
-        headerName: `${tInventory("recipes.costPerServing.label")} ${tCommon("optional")}`,
+        headerName: canViewPurchasing
+          ? `${tInventory("recipes.costPerServing.label")} ${tCommon("optional")}`
+          : `${tInventory("recipes.name.label")} ${tCommon("optional")}`,
         renderCell: ({
           row: { id, recipe },
         }: GridRenderCellParams<MenuItem>) => (
@@ -638,11 +667,13 @@ const MenusMenuIdSectionId = ({
                 underline="hover"
                 variant="body2"
               >
-                {recipe.cost == null
-                  ? tInventory("recipes.cost.unavailable")
-                  : format.number(recipe.cost / recipe.recipeYield, {
-                      maximumFractionDigits: 2,
-                    })}
+                {!canViewPurchasing
+                  ? localize(recipe.name, locale)
+                  : recipe.cost == null
+                    ? tInventory("recipes.cost.unavailable")
+                    : format.number(recipe.cost / recipe.recipeYield, {
+                        maximumFractionDigits: 2,
+                      })}
               </Link>
             ) : (
               canCreateRecipe && (
@@ -662,24 +693,7 @@ const MenusMenuIdSectionId = ({
           </Stack>
         ),
       },
-      {
-        field: "margin",
-        filterable: false,
-        headerName: tInventory("recipes.margin.label"),
-        sortable: false,
-        valueGetter: (_value: unknown, { offer, recipe }: MenuItem) => {
-          const price = Number(offer?.price);
-
-          if (!recipe || !price) return "";
-          if (recipe.cost == null)
-            return tInventory("recipes.cost.unavailable");
-
-          return format.number(
-            (price - recipe.cost / recipe.recipeYield) / price,
-            { style: "percent" },
-          );
-        },
-      },
+      ...(canViewPurchasing ? marginColumns : []),
       {
         field: "priceCurrency",
         filterOperators: stringFilterOperators,
@@ -804,30 +818,30 @@ const MenusMenuIdSectionId = ({
         valueFormatter: (value: string) =>
           format.dateTime(new Date(value), "short"),
       },
-    ],
-    [
-      canCreateRecipe,
-      canViewAuditLog,
-      canWrite,
-      dateFilterOperators,
-      enumFilterOperators,
-      enumOptions,
-      format,
-      handleDeleteItem,
-      handleManageItem,
-      handleUpdateItem,
-      isReorderMode,
-      locale,
-      menuSectionId,
-      numberFilterOperators,
-      organizationSlug,
-      stringFilterOperators,
-      tCommon,
-      tInventory,
-      tMenus,
-      tOrder,
-    ],
-  );
+    ];
+  }, [
+    canCreateRecipe,
+    canViewAuditLog,
+    canViewPurchasing,
+    canWrite,
+    dateFilterOperators,
+    enumFilterOperators,
+    enumOptions,
+    format,
+    handleDeleteItem,
+    handleManageItem,
+    handleUpdateItem,
+    isReorderMode,
+    locale,
+    menuSectionId,
+    numberFilterOperators,
+    organizationSlug,
+    stringFilterOperators,
+    tCommon,
+    tInventory,
+    tMenus,
+    tOrder,
+  ]);
 
   return (
     <>

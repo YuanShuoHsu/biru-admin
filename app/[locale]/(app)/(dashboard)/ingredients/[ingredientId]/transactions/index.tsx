@@ -51,6 +51,7 @@ const DataGrid = dynamic(
 );
 
 interface IngredientTransactionsProps {
+  canViewPurchasing: boolean;
   filterField?: InventoryTransactionFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
@@ -65,6 +66,7 @@ interface IngredientTransactionsProps {
 }
 
 const IngredientTransactions = ({
+  canViewPurchasing,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
@@ -215,8 +217,25 @@ const IngredientTransactions = ({
     [pathname, router, searchParams],
   );
 
-  const columns = useMemo<GridColDef[]>(
-    () => [
+  const columns = useMemo<GridColDef[]>(() => {
+    const costColumns: GridColDef[] = [
+      {
+        field: "unitCost",
+        filterOperators: numberFilterOperators,
+        headerName: `${tInventory("transactions.unitCost.label")} ${tCommon("optional")}`,
+        type: "number",
+        valueFormatter: (value: InventoryTransaction["unitCost"]) =>
+          value == null
+            ? ""
+            : formatUnitPriceOf(Number(value), ingredient, {
+                format,
+                tCommon,
+                tInventory,
+              }),
+      },
+    ];
+
+    return [
       {
         field: "reason",
         filterOperators: enumFilterOperators,
@@ -240,20 +259,7 @@ const IngredientTransactions = ({
         ),
         type: "number",
       },
-      {
-        field: "unitCost",
-        filterOperators: numberFilterOperators,
-        headerName: `${tInventory("transactions.unitCost.label")} ${tCommon("optional")}`,
-        type: "number",
-        valueFormatter: (value: InventoryTransaction["unitCost"]) =>
-          value == null
-            ? ""
-            : formatUnitPriceOf(Number(value), ingredient, {
-                format,
-                tCommon,
-                tInventory,
-              }),
-      },
+      ...(canViewPurchasing ? costColumns : []),
       {
         field: "orderNumber",
         filterable: false,
@@ -272,19 +278,19 @@ const IngredientTransactions = ({
         valueFormatter: (value: string) =>
           format.dateTime(new Date(value), "short"),
       },
-    ],
-    [
-      dateFilterOperators,
-      enumFilterOperators,
-      enumOptions,
-      format,
-      ingredient,
-      numberFilterOperators,
-      stringFilterOperators,
-      tCommon,
-      tInventory,
-    ],
-  );
+    ];
+  }, [
+    canViewPurchasing,
+    dateFilterOperators,
+    enumFilterOperators,
+    enumOptions,
+    format,
+    ingredient,
+    numberFilterOperators,
+    stringFilterOperators,
+    tCommon,
+    tInventory,
+  ]);
 
   return (
     <DataGrid

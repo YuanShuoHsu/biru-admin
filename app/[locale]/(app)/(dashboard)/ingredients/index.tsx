@@ -9,7 +9,6 @@ import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import IngredientDialog from "./IngredientDialog";
-import TransactionDialog from "./TransactionDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
 import { DragHandle, Sortable } from "@/components/Sortable";
@@ -42,7 +41,6 @@ import {
   Delete,
   Edit,
   Error as ErrorIcon,
-  FactCheck,
   Save,
   Sort,
   SwapVert,
@@ -115,6 +113,7 @@ interface IngredientsProps {
   suppliers: Supplier[];
   canRecordTransaction: boolean;
   canViewAuditLog: boolean;
+  canViewPurchasing: boolean;
   canWrite: boolean;
   filterField?: IngredientFilterField;
   filterOperator?: FilterOperator;
@@ -132,6 +131,7 @@ interface IngredientsProps {
 const Ingredients = ({
   canRecordTransaction,
   canViewAuditLog,
+  canViewPurchasing,
   canWrite,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
@@ -407,6 +407,9 @@ const Ingredients = ({
     setDialog({
       content: (
         <IngredientDialog
+          canRecordTransaction={canRecordTransaction}
+          canViewPurchasing={canViewPurchasing}
+          canWrite={canWrite}
           ingredient={null}
           mutate={mutate}
           organizationSlug={organizationSlug}
@@ -417,13 +420,25 @@ const Ingredients = ({
       open: true,
       title: tInventory("ingredients.actions.createIngredient.title"),
     });
-  }, [mutate, organizationSlug, setDialog, suppliers, tInventory]);
+  }, [
+    canRecordTransaction,
+    canViewPurchasing,
+    canWrite,
+    mutate,
+    organizationSlug,
+    setDialog,
+    suppliers,
+    tInventory,
+  ]);
 
   const handleUpdateIngredient = useCallback(
     (ingredient: Ingredient) => {
       setDialog({
         content: (
           <IngredientDialog
+            canRecordTransaction={canRecordTransaction}
+            canViewPurchasing={canViewPurchasing}
+            canWrite={canWrite}
             ingredient={ingredient}
             mutate={mutate}
             organizationSlug={organizationSlug}
@@ -435,19 +450,16 @@ const Ingredients = ({
         title: tInventory("ingredients.actions.updateIngredient.title"),
       });
     },
-    [mutate, organizationSlug, setDialog, suppliers, tInventory],
-  );
-
-  const handleRecordTransaction = useCallback(
-    (ingredient: Ingredient) => {
-      setDialog({
-        content: <TransactionDialog ingredient={ingredient} mutate={mutate} />,
-        formId: "transaction-form",
-        open: true,
-        title: tInventory("transactions.actions.recordTransaction.title"),
-      });
-    },
-    [mutate, setDialog, tInventory],
+    [
+      canRecordTransaction,
+      canViewPurchasing,
+      canWrite,
+      mutate,
+      organizationSlug,
+      setDialog,
+      suppliers,
+      tInventory,
+    ],
   );
 
   const handleViewTransactions = useCallback(
@@ -533,33 +545,20 @@ const Ingredients = ({
                 <SwapVert fontSize="small" />
               </IconButton>
             </Tooltip>
-            {canRecordTransaction && (
-              <Tooltip
-                title={tInventory(
-                  "transactions.actions.recordTransaction.title",
-                )}
-              >
-                <StyledIconButton
-                  onClick={() => {
-                    if (row.packageBaseQuantity) handleRecordTransaction(row);
-                  }}
-                  size="small"
-                  visible={!!row.packageBaseQuantity}
-                >
-                  <FactCheck fontSize="small" />
-                </StyledIconButton>
-              </Tooltip>
-            )}
-            {canWrite && (
+            {(canWrite || canRecordTransaction) && (
               <Tooltip
                 title={tInventory("ingredients.actions.updateIngredient.title")}
               >
-                <IconButton
-                  onClick={() => handleUpdateIngredient(row)}
+                <StyledIconButton
+                  onClick={() => {
+                    if (canWrite || row.packageBaseQuantity)
+                      handleUpdateIngredient(row);
+                  }}
                   size="small"
+                  visible={canWrite || !!row.packageBaseQuantity}
                 >
                   <Edit fontSize="small" />
-                </IconButton>
+                </StyledIconButton>
               </Tooltip>
             )}
             {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
@@ -614,13 +613,17 @@ const Ingredients = ({
         filterOperators: stringFilterOperators,
         headerName: `${tInventory("ingredients.brand.label")} ${tCommon("optional")}`,
       },
-      {
-        field: "price",
-        filterable: false,
-        headerName: tInventory("ingredients.price.label"),
-        valueGetter: (_value: unknown, row: Ingredient) =>
-          formatPackagePrice(row, { format, tCommon, tInventory }),
-      },
+      ...(canViewPurchasing
+        ? [
+            {
+              field: "price",
+              filterable: false,
+              headerName: tInventory("ingredients.price.label"),
+              valueGetter: (_value: unknown, row: Ingredient) =>
+                formatPackagePrice(row, { format, tCommon, tInventory }),
+            },
+          ]
+        : []),
       {
         field: "eligibleQuantity",
         filterable: false,
@@ -628,13 +631,17 @@ const Ingredients = ({
         valueGetter: (_value: unknown, row: Ingredient) =>
           formatPackageQuantity(row, { format, tCommon, tInventory }),
       },
-      {
-        field: "unitPrice",
-        filterable: false,
-        headerName: tInventory("ingredients.unitPrice.label"),
-        valueGetter: (_value: unknown, row: Ingredient) =>
-          formatUnitPrice(row, { format, tCommon, tInventory }),
-      },
+      ...(canViewPurchasing
+        ? [
+            {
+              field: "unitPrice",
+              filterable: false,
+              headerName: tInventory("ingredients.unitPrice.label"),
+              valueGetter: (_value: unknown, row: Ingredient) =>
+                formatUnitPrice(row, { format, tCommon, tInventory }),
+            },
+          ]
+        : []),
       {
         field: "inventoryLevel",
         filterOperators: numberFilterOperators,
@@ -696,23 +703,27 @@ const Ingredients = ({
                 tInventory,
               }),
       },
-      {
-        field: "supplierName",
-        filterOperators: stringFilterOperators,
-        headerName: `${tInventory("ingredients.supplierId.label")} ${tCommon("optional")}`,
-      },
-      {
-        field: "url",
-        filterable: false,
-        headerName: tInventory("ingredients.url.label"),
-        sortable: false,
-        renderCell: ({ row: { url } }: GridRenderCellParams<Ingredient>) =>
-          url && (
-            <Link href={url} rel="noopener" target="_blank">
-              {url}
-            </Link>
-          ),
-      },
+      ...(canViewPurchasing
+        ? [
+            {
+              field: "supplierName",
+              filterOperators: stringFilterOperators,
+              headerName: `${tInventory("ingredients.supplierId.label")} ${tCommon("optional")}`,
+            },
+            {
+              field: "url",
+              filterable: false,
+              headerName: tInventory("ingredients.url.label"),
+              sortable: false,
+              renderCell: ({ row: { url } }: GridRenderCellParams<Ingredient>) =>
+                url && (
+                  <Link href={url} rel="noopener" target="_blank">
+                    {url}
+                  </Link>
+                ),
+            },
+          ]
+        : []),
       {
         field: "createdAt",
         filterOperators: dateFilterOperators,
@@ -731,11 +742,11 @@ const Ingredients = ({
     [
       canRecordTransaction,
       canViewAuditLog,
+      canViewPurchasing,
       canWrite,
       dateFilterOperators,
       format,
       handleDeleteIngredient,
-      handleRecordTransaction,
       handleUpdateIngredient,
       handleViewTransactions,
       isReorderMode,
@@ -749,9 +760,9 @@ const Ingredients = ({
 
   return (
     <>
-      <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
-        {!isReorderMode ? (
-          canWrite && (
+      {canWrite && (
+        <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
+          {!isReorderMode ? (
             <>
               <Button
                 onClick={handleCreateIngredient}
@@ -771,28 +782,30 @@ const Ingredients = ({
                 {tInventory("ingredients.actions.reorderIngredient.title")}
               </Button>
             </>
-          )
-        ) : (
-          <>
-            <Button
-              onClick={handleCancelReorder}
-              size="small"
-              startIcon={<Cancel />}
-              variant="outlined"
-            >
-              {tInventory("ingredients.actions.reorderIngredient.cancel.label")}
-            </Button>
-            <Button
-              onClick={handleSaveReorder}
-              size="small"
-              startIcon={<Save />}
-              variant="contained"
-            >
-              {tInventory("ingredients.actions.reorderIngredient.save.label")}
-            </Button>
-          </>
-        )}
-      </Stack>
+          ) : (
+            <>
+              <Button
+                onClick={handleCancelReorder}
+                size="small"
+                startIcon={<Cancel />}
+                variant="outlined"
+              >
+                {tInventory(
+                  "ingredients.actions.reorderIngredient.cancel.label",
+                )}
+              </Button>
+              <Button
+                onClick={handleSaveReorder}
+                size="small"
+                startIcon={<Save />}
+                variant="contained"
+              >
+                {tInventory("ingredients.actions.reorderIngredient.save.label")}
+              </Button>
+            </>
+          )}
+        </Stack>
+      )}
       <DragDropProvider onDragEnd={handleDragEnd}>
         <DataGrid
           {...DATA_GRID_PROPS}

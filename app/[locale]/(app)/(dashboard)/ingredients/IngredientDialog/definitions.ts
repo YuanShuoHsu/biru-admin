@@ -5,7 +5,7 @@ import { unitCodeValues } from "@/types/api";
 
 import { refineRequiredLocalizedText } from "@/utils/locale";
 
-export const useIngredientFormSchema = () => {
+export const useIngredientFormSchema = (canViewPurchasing: boolean) => {
   const tValidation = useTranslations("validation");
 
   return z.object({
@@ -18,16 +18,17 @@ export const useIngredientFormSchema = () => {
       }),
     inventoryLevel: z.string().trim().optional(),
     lowStockThreshold: z.string().trim().optional(),
+    note: z.string().trim().optional(),
     price: z
       .string()
       .trim()
-      .min(1, {
+      .min(canViewPurchasing ? 1 : 0, {
         error: tValidation("price.required"),
       }),
     priceCurrency: z
       .string()
       .trim()
-      .min(1, {
+      .min(canViewPurchasing ? 1 : 0, {
         error: tValidation("priceCurrency.notSelected"),
       }),
     supplierId: z.string().trim().optional(),

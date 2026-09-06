@@ -105,12 +105,22 @@ const SuppliersPage = async ({ params, searchParams }: SuppliersPageProps) => {
     ),
   ]);
 
+  const canViewAuditLog = hasRolePermission(memberRole?.role, {
+    auditLog: ["read"],
+  });
+  const canViewPurchasing = hasRolePermission(memberRole?.role, {
+    purchasing: ["read"],
+  });
+  const canWrite = hasRolePermission(memberRole?.role, {
+    purchasing: ["update"],
+  });
+
+  if (!canViewPurchasing) notFound();
+
   return (
     <Suppliers
-      canViewAuditLog={hasRolePermission(memberRole?.role, {
-        auditLog: ["read"],
-      })}
-      canWrite={hasRolePermission(memberRole?.role, { inventory: ["update"] })}
+      canViewAuditLog={canViewAuditLog}
+      canWrite={canWrite}
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}

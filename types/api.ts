@@ -2617,16 +2617,18 @@ export interface components {
       brand?: string | null;
       image?: string | null;
       supplierId?: string | null;
+      /** @description 無 purchasing 權限時不回傳 */
       supplierName?: string | null;
       unitCode: components["schemas"]["UnitCode"];
       inventoryLevel: string;
       lowStockThreshold?: string | null;
-      /** @description 一個包裝的價錢 */
+      /** @description 一個包裝的價錢；無 purchasing 權限時不回傳 */
       price?: string | null;
       priceCurrency: string;
       eligibleQuantity?: string | null;
       /** @description eligibleQuantity 的單位 */
       eligibleQuantityUnitCode?: components["schemas"]["UnitCode"] | null;
+      /** @description 採購連結；無 purchasing 權限時不回傳 */
       url?: string | null;
       /** @description 每基準單位價格 */
       unitPrice?: number | null;
@@ -2719,8 +2721,9 @@ export interface components {
       ingredientName: Record<string, never>;
       unitCode: components["schemas"]["UnitCode"];
       requiredQuantity: string;
+      /** @description 無 purchasing 權限時不回傳 */
       unitPrice?: number | null;
-      /** @description 用量 × 單價 */
+      /** @description 用量 × 單價；無 purchasing 權限時不回傳 */
       cost?: number | null;
       sortOrder: number;
       /** Format: date-time */
@@ -2736,7 +2739,7 @@ export interface components {
       name: Record<string, never>;
       recipeYield: number;
       recipeInstructions?: Record<string, never>[] | null;
-      /** @description 全部材料成本合計；任一材料缺單價時為 null */
+      /** @description 全部材料成本合計；任一材料缺單價時為 null，無 purchasing 權限時不回傳 */
       cost?: number | null;
       /** @description 對應品項售價 */
       price?: number | null;
@@ -2784,6 +2787,13 @@ export interface components {
        * @description 採購連結
        */
       url?: string | null;
+      /**
+       * @description 開帳數量；系統會一併寫入盤點帳本
+       * @example 500.000
+       */
+      inventoryLevel?: string | null;
+      /** @description inventoryLevel 寫入帳本時的異動原因；不會存到 ingredient */
+      note?: string | null;
     };
     /** @enum {string} */
     InventoryTransactionFilterField:
@@ -2805,11 +2815,6 @@ export interface components {
        * @example 500.000
        */
       inventoryLevel: string;
-      /**
-       * @description 每基準單位進價
-       * @example 9.500000
-       */
-      unitCost?: string;
       /** @description 異動原因，自由填寫 */
       note?: string | null;
     };
@@ -2822,6 +2827,7 @@ export interface components {
       /** @description 帶正負的異動量 */
       quantity: string;
       reason: components["schemas"]["InventoryTransactionReason"];
+      /** @description 無 purchasing 權限時不回傳 */
       unitCost?: string | null;
       orderId?: string | null;
       orderNumber?: string | null;

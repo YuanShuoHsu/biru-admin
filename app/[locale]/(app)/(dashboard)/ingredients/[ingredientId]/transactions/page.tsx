@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import IngredientTransactions from ".";
 
 import { redirect } from "@/i18n/navigation";
+import { authClient } from "@/lib/auth-client";
 import type { Locale } from "@/i18n/routing";
 
 import {
@@ -17,6 +18,7 @@ import {
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getInventoryTransactionEnumOptions } from "@/utils/enumOptions";
 import { getIngredient, getInventoryTransactions } from "@/utils/inventory";
+import { hasRolePermission } from "@/utils/organizations";
 
 interface IngredientTransactionsPageProps {
   params: Promise<{ ingredientId: string; locale: Locale }>;
@@ -57,6 +59,15 @@ const IngredientTransactionsPage = async ({
   const ingredient = await getIngredient(ingredientId, fetchOptions);
 
   if (!ingredient) notFound();
+
+  const { data: memberRole } =
+    await authClient.organization.getActiveMemberRole({
+      query: { organizationId: ingredient.organizationId },
+    });
+
+  const canViewPurchasing = hasRolePermission(memberRole?.role, {
+    purchasing: ["read"],
+  });
 
   const {
     filterField,
@@ -108,6 +119,7 @@ const IngredientTransactionsPage = async ({
 
   return (
     <IngredientTransactions
+      canViewPurchasing={canViewPurchasing}
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}

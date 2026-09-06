@@ -69,6 +69,7 @@ interface RecipeIngredientsProps {
   canCreate: boolean;
   canDelete: boolean;
   canViewAuditLog: boolean;
+  canViewPurchasing: boolean;
   canWrite: boolean;
   filterField?: RecipeIngredientFilterField;
   filterOperator?: FilterOperator;
@@ -90,6 +91,7 @@ const RecipeIngredients = ({
   canCreate,
   canDelete,
   canViewAuditLog,
+  canViewPurchasing,
   canWrite,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
@@ -415,8 +417,31 @@ const RecipeIngredients = ({
     [handleMutate, locale, recipe, setDialog, tInventory],
   );
 
-  const columns = useMemo<GridColDef[]>(
-    () => [
+  const columns = useMemo<GridColDef[]>(() => {
+    const costColumns: GridColDef[] = [
+      {
+        field: "unitPrice",
+        filterable: false,
+        headerName: tInventory("recipes.ingredients.unitPrice.label"),
+        sortable: false,
+        valueFormatter: (value: RecipeIngredient["unitPrice"]) =>
+          value == null
+            ? ""
+            : format.number(value, { maximumFractionDigits: 6 }),
+      },
+      {
+        field: "cost",
+        filterable: false,
+        headerName: tInventory("recipes.ingredients.cost.label"),
+        sortable: false,
+        valueFormatter: (value: RecipeIngredient["cost"]) =>
+          value == null
+            ? ""
+            : format.number(value, { maximumFractionDigits: 2 }),
+      },
+    ];
+
+    return [
       ...(canWrite || canDelete
         ? [
             {
@@ -483,26 +508,7 @@ const RecipeIngredients = ({
         valueGetter: (_value: unknown, row: RecipeIngredient) =>
           `${format.number(Number(row.requiredQuantity))} ${tInventory(`units.${row.unitCode}`)}`,
       },
-      {
-        field: "unitPrice",
-        filterable: false,
-        headerName: tInventory("recipes.ingredients.unitPrice.label"),
-        sortable: false,
-        valueFormatter: (value: RecipeIngredient["unitPrice"]) =>
-          value == null
-            ? ""
-            : format.number(value, { maximumFractionDigits: 6 }),
-      },
-      {
-        field: "cost",
-        filterable: false,
-        headerName: tInventory("recipes.ingredients.cost.label"),
-        sortable: false,
-        valueFormatter: (value: RecipeIngredient["cost"]) =>
-          value == null
-            ? ""
-            : format.number(value, { maximumFractionDigits: 2 }),
-      },
+      ...(canViewPurchasing ? costColumns : []),
       {
         field: "createdAt",
         filterOperators: dateFilterOperators,
@@ -517,22 +523,22 @@ const RecipeIngredients = ({
         valueFormatter: (value: string) =>
           format.dateTime(new Date(value), "short"),
       },
-    ],
-    [
-      canDelete,
-      canWrite,
-      dateFilterOperators,
-      format,
-      handleDeleteRecipeIngredient,
-      handleUpdateRecipeIngredient,
-      locale,
-      numberFilterOperators,
-      recipe,
-      stringFilterOperators,
-      tCommon,
-      tInventory,
-    ],
-  );
+    ];
+  }, [
+    canDelete,
+    canViewPurchasing,
+    canWrite,
+    dateFilterOperators,
+    format,
+    handleDeleteRecipeIngredient,
+    handleUpdateRecipeIngredient,
+    locale,
+    numberFilterOperators,
+    recipe,
+    stringFilterOperators,
+    tCommon,
+    tInventory,
+  ]);
 
   return (
     <>

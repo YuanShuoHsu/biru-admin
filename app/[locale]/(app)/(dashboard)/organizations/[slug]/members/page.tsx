@@ -55,42 +55,38 @@ const OrganizationsSlugMembersPage = async ({
 
   if (!currentUserRole) notFound();
 
-  const { canCreateInvitation, canDeleteMember, canUpdateMember } = {
-    canCreateInvitation: hasRolePermission(currentUserRole, {
-      invitation: ["create"],
-    }),
-    canDeleteMember: hasRolePermission(currentUserRole, {
-      member: ["delete"],
-    }),
-    canUpdateMember: hasRolePermission(currentUserRole, {
-      member: ["update"],
-    }),
-  };
+  const canCreateInvitation = hasRolePermission(currentUserRole, {
+    invitation: ["create"],
+  });
+  const canDeleteMember = hasRolePermission(currentUserRole, {
+    member: ["delete"],
+  });
+  const canUpdateMember = hasRolePermission(currentUserRole, {
+    member: ["update"],
+  });
 
   const members = data.members.toReversed();
   const ownerCount = members.filter(({ role }) => role === "owner").length;
 
-  const { canUpdateMemberRoles, canRemoveMembers, canLeaveOrganizations } = {
-    canUpdateMemberRoles:
-      canUpdateMember &&
-      members.some(({ role }) => {
-        const isOnlyOwner = role === "owner" && ownerCount === 1;
-        const isHigherRoleRank = ROLE_RANK[currentUserRole] >= ROLE_RANK[role];
+  const canUpdateMemberRoles =
+    canUpdateMember &&
+    members.some(({ role }) => {
+      const isOnlyOwner = role === "owner" && ownerCount === 1;
+      const isHigherRoleRank = ROLE_RANK[currentUserRole] >= ROLE_RANK[role];
 
-        return !isOnlyOwner && isHigherRoleRank;
-      }),
-    canRemoveMembers:
-      canDeleteMember &&
-      members.some(({ role, userId }) => {
-        const isOnlyOwner = role === "owner" && ownerCount === 1;
-        const isCurrentUser = userId === session.user.id;
+      return !isOnlyOwner && isHigherRoleRank;
+    });
+  const canRemoveMembers =
+    canDeleteMember &&
+    members.some(({ role, userId }) => {
+      const isOnlyOwner = role === "owner" && ownerCount === 1;
+      const isCurrentUser = userId === session.user.id;
 
-        return !isCurrentUser && !isOnlyOwner;
-      }),
-    canLeaveOrganizations: members.some(
-      ({ userId }) => userId === session.user.id && ownerCount > 1,
-    ),
-  };
+      return !isCurrentUser && !isOnlyOwner;
+    });
+  const canLeaveOrganizations = members.some(
+    ({ userId }) => userId === session.user.id && ownerCount > 1,
+  );
 
   return (
     <OrganizationsSlugMembers

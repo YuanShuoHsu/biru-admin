@@ -44,7 +44,10 @@ const useNavItems = (): NavItem[][] => {
           [
             navItem("/menus"),
             ...(hasRolePermission(memberRole, { inventory: ["read"] })
-              ? [navItem("/ingredients"), navItem("/suppliers")]
+              ? [navItem("/ingredients")]
+              : []),
+            ...(hasRolePermission(memberRole, { purchasing: ["read"] })
+              ? [navItem("/suppliers")]
               : []),
           ],
         ]
