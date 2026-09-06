@@ -96,7 +96,8 @@ const IngredientDialog = ({
       brand: ingredient?.brand || "",
       eligibleQuantity: ingredient?.eligibleQuantity || "",
       inventoryLevel: initialStock,
-      note: "",
+      note: ingredient?.note || "",
+      transactionNote: "",
       lowStockThreshold:
         ingredient?.lowStockThreshold && ingredient.packageBaseQuantity
           ? String(
@@ -160,16 +161,20 @@ const IngredientDialog = ({
         ? String(toBaseQuantity(Number(packages), baseQuantity))
         : null;
 
+  const stockPayload = toStockPayload(inventoryLevel);
+  // 新增時開帳量為 0 不會產生帳本，異動備註沒有可掛的交易，填了會被丟掉
+  const stockChanged = ingredient
+    ? stockPayload != null
+    : Number(stockPayload) > 0;
+
   const action = ingredient
     ? "ingredients.actions.updateIngredient"
     : "ingredients.actions.createIngredient";
 
   const onSubmitHandler = async (values: IngredientFormOutput) => {
-    const inventoryLevel = toStockPayload(values.inventoryLevel);
-
     // 只能盤點的員工改不了規格，直接寫帳本；規格與庫存一起送才需要後端的同一個交易
     if (ingredient && !editable) {
-      if (inventoryLevel == null) {
+      if (stockPayload == null) {
         closeDialog();
 
         return;
@@ -178,7 +183,10 @@ const IngredientDialog = ({
       await submit(
         `/api/ingredients/${ingredient.id}/inventory-transactions`,
         "POST",
-        { inventoryLevel, note: values.note || null },
+        {
+          inventoryLevel: stockPayload,
+          note: values.transactionNote || null,
+        },
       );
 
       return;
@@ -202,8 +210,11 @@ const IngredientDialog = ({
                 toBaseQuantity(Number(values.lowStockThreshold), baseQuantity),
               )
             : null,
-        inventoryLevel,
-        ...(ingredient && stockEditable && { note: values.note || null }),
+        inventoryLevel: stockPayload,
+        note: values.note || null,
+        ...(stockChanged && {
+          transactionNote: values.transactionNote || null,
+        }),
         price: values.price,
         priceCurrency: values.priceCurrency,
         supplierId: values.supplierId || null,
@@ -415,14 +426,14 @@ const IngredientDialog = ({
         placeholder={tInventory("ingredients.inventoryLevel.placeholder")}
         value={inventoryLevel ? Number(inventoryLevel) : null}
       />
-      {ingredient && stockEditable && (
+      {stockEditable && stockChanged && (
         <TextField
-          error={!!errors.note}
+          error={!!errors.transactionNote}
           fullWidth
-          helperText={errors.note?.message}
-          label={`${tInventory("transactions.note.label")} ${tCommon("optional")}`}
-          placeholder={tInventory("transactions.note.placeholder")}
-          {...register("note")}
+          helperText={errors.transactionNote?.message}
+          label={`${tInventory("ingredients.transactionNote.label")} ${tCommon("optional")}`}
+          placeholder={tInventory("ingredients.transactionNote.placeholder")}
+          {...register("transactionNote")}
         />
       )}
       <NumberSpinner
@@ -493,6 +504,15 @@ const IngredientDialog = ({
           />
         </>
       )}
+      <TextField
+        disabled={!editable}
+        error={!!errors.note}
+        fullWidth
+        helperText={errors.note?.message}
+        label={`${tInventory("ingredients.note.label")} ${tCommon("optional")}`}
+        placeholder={tInventory("ingredients.note.placeholder")}
+        {...register("note")}
+      />
     </FormBox>
   );
 };

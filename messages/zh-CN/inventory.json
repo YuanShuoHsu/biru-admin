@@ -66,6 +66,10 @@
       "label": "食材名称",
       "placeholder": "请输入您的食材名称"
     },
+    "note": {
+      "label": "备注",
+      "placeholder": "请输入您的备注"
+    },
     "outOfStock": "无库存",
     "packageRequired": "请先填写内容量与单位",
     "price": {
@@ -79,6 +83,10 @@
     "supplierId": {
       "label": "供应商",
       "placeholder": "请选择您的供应商"
+    },
+    "transactionNote": {
+      "label": "库存异动备注",
+      "placeholder": "请输入您的库存异动备注"
     },
     "unitPrice": {
       "label": "单位成本"

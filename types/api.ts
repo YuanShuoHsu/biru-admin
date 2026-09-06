@@ -2541,6 +2541,7 @@ export interface components {
       | "name"
       | "brand"
       | "supplierName"
+      | "note"
       | "unitCode"
       | "inventoryLevel"
       | "lowStockThreshold"
@@ -2551,6 +2552,7 @@ export interface components {
       | "name"
       | "brand"
       | "supplierName"
+      | "note"
       | "unitCode"
       | "inventoryLevel"
       | "lowStockThreshold"
@@ -2604,11 +2606,14 @@ export interface components {
        * @description 採購連結
        */
       url?: string | null;
+      note?: string | null;
       /**
        * @description 開帳數量；系統會一併寫入盤點帳本
        * @example 500.000
        */
       inventoryLevel?: string | null;
+      /** @description inventoryLevel 寫入帳本時的異動原因；不會存到 ingredient */
+      transactionNote?: string | null;
     };
     IngredientResponseDto: {
       id: string;
@@ -2616,6 +2621,7 @@ export interface components {
       name: Record<string, never>;
       brand?: string | null;
       image?: string | null;
+      /** @description 無 purchasing 權限時不回傳 */
       supplierId?: string | null;
       /** @description 無 purchasing 權限時不回傳 */
       supplierName?: string | null;
@@ -2630,6 +2636,7 @@ export interface components {
       eligibleQuantityUnitCode?: components["schemas"]["UnitCode"] | null;
       /** @description 採購連結；無 purchasing 權限時不回傳 */
       url?: string | null;
+      note?: string | null;
       /** @description 每基準單位價格 */
       unitPrice?: number | null;
       /** @description 包裝量，與 eligibleQuantity 相同 */
@@ -2787,13 +2794,14 @@ export interface components {
        * @description 採購連結
        */
       url?: string | null;
+      note?: string | null;
       /**
        * @description 開帳數量；系統會一併寫入盤點帳本
        * @example 500.000
        */
       inventoryLevel?: string | null;
       /** @description inventoryLevel 寫入帳本時的異動原因；不會存到 ingredient */
-      note?: string | null;
+      transactionNote?: string | null;
     };
     /** @enum {string} */
     InventoryTransactionFilterField:
@@ -7994,6 +8002,7 @@ export const ingredientFilterFieldValues: ReadonlyArray<
   "name",
   "brand",
   "supplierName",
+  "note",
   "unitCode",
   "inventoryLevel",
   "lowStockThreshold",
@@ -8006,6 +8015,7 @@ export const ingredientSortFieldValues: ReadonlyArray<
   "name",
   "brand",
   "supplierName",
+  "note",
   "unitCode",
   "inventoryLevel",
   "lowStockThreshold",

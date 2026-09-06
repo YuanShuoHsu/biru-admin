@@ -19,6 +19,7 @@ export const useIngredientFormSchema = (canViewPurchasing: boolean) => {
     inventoryLevel: z.string().trim().optional(),
     lowStockThreshold: z.string().trim().optional(),
     note: z.string().trim().optional(),
+    transactionNote: z.string().trim().optional(),
     price: z
       .string()
       .trim()

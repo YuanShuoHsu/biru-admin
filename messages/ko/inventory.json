@@ -66,6 +66,10 @@
       "label": "식자재 이름",
       "placeholder": "식자재 이름을(를) 입력해 주세요"
     },
+    "note": {
+      "label": "비고",
+      "placeholder": "비고을(를) 입력해 주세요"
+    },
     "outOfStock": "재고 없음",
     "packageRequired": "먼저 내용량과 단위를 입력해 주세요",
     "price": {
@@ -79,6 +83,10 @@
     "supplierId": {
       "label": "공급업체",
       "placeholder": "공급업체을(를) 선택해 주세요"
+    },
+    "transactionNote": {
+      "label": "재고 변동 비고",
+      "placeholder": "재고 변동 비고을(를) 입력해 주세요"
     },
     "unitPrice": {
       "label": "단위 원가"

@@ -727,6 +727,11 @@ const Ingredients = ({
           ]
         : []),
       {
+        field: "note",
+        filterOperators: stringFilterOperators,
+        headerName: `${tInventory("ingredients.note.label")} ${tCommon("optional")}`,
+      },
+      {
         field: "createdAt",
         filterOperators: dateFilterOperators,
         headerName: tInventory("createdAt"),

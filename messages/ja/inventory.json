@@ -66,6 +66,10 @@
       "label": "食材名",
       "placeholder": "食材名を入力してください"
     },
+    "note": {
+      "label": "備考",
+      "placeholder": "備考を入力してください"
+    },
     "outOfStock": "在庫切れ",
     "packageRequired": "先に内容量と単位を入力してください",
     "price": {
@@ -79,6 +83,10 @@
     "supplierId": {
       "label": "仕入先",
       "placeholder": "仕入先を選択してください"
+    },
+    "transactionNote": {
+      "label": "在庫変動の備考",
+      "placeholder": "在庫変動の備考を入力してください"
     },
     "unitPrice": {
       "label": "単位原価"

@@ -66,6 +66,10 @@
       "label": "Ingredient name",
       "placeholder": "Please enter your ingredient name"
     },
+    "note": {
+      "label": "Notes",
+      "placeholder": "Please enter your Notes"
+    },
     "outOfStock": "Out of stock",
     "packageRequired": "Please fill in content and unit first",
     "price": {
@@ -79,6 +83,10 @@
     "supplierId": {
       "label": "Supplier",
       "placeholder": "Please select your Supplier"
+    },
+    "transactionNote": {
+      "label": "Stock change notes",
+      "placeholder": "Please enter your Stock change notes"
     },
     "unitPrice": {
       "label": "Unit cost"
