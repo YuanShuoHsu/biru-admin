@@ -6,7 +6,7 @@ import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
 import {
-  useTransactionFormSchema,
+  transactionFormSchema,
   type TransactionFormInput,
   type TransactionFormOutput,
 } from "./definitions";
@@ -26,6 +26,7 @@ import { fetcher } from "@/utils/fetcher";
 import {
   formatPackage,
   formatUnitPrice,
+  maxPackages,
   toBaseQuantity,
   toPackages,
 } from "@/utils/ingredients";
@@ -51,7 +52,6 @@ const TransactionDialog = ({ ingredient, mutate }: TransactionDialogProps) => {
     ? toPackages(currentLevel, packageQuantity)
     : 0;
 
-  const transactionFormSchema = useTransactionFormSchema();
   const {
     control,
     formState: { errors, isSubmitted },
@@ -68,7 +68,9 @@ const TransactionDialog = ({ ingredient, mutate }: TransactionDialogProps) => {
   const inventoryLevel = useWatch({ control, name: "inventoryLevel" });
 
   const targetLevel =
-    !packageQuantity || Number(inventoryLevel || 0) === currentPackages
+    !packageQuantity ||
+    !inventoryLevel ||
+    Number(inventoryLevel) === currentPackages
       ? currentLevel
       : toBaseQuantity(Number(inventoryLevel), packageQuantity);
   const delta = targetLevel - currentLevel;
@@ -78,6 +80,12 @@ const TransactionDialog = ({ ingredient, mutate }: TransactionDialogProps) => {
       enqueueSnackbar(tInventory("transactions.package.empty"), {
         variant: "error",
       });
+
+      return;
+    }
+
+    if (!delta) {
+      closeDialog();
 
       return;
     }
@@ -139,7 +147,9 @@ const TransactionDialog = ({ ingredient, mutate }: TransactionDialogProps) => {
         value={formatPackage(ingredient, { format, tCommon, tInventory })}
       />
       <NumberSpinner
+        clearable
         error={!!errors.inventoryLevel}
+        format={{ maximumFractionDigits: 3 }}
         fullWidth
         helperText={
           errors.inventoryLevel?.message ||
@@ -154,7 +164,8 @@ const TransactionDialog = ({ ingredient, mutate }: TransactionDialogProps) => {
               ].join("")
             : "")
         }
-        label={tInventory("transactions.inventoryLevel.label")}
+        label={`${tInventory("transactions.inventoryLevel.label")} ${tCommon("optional")}`}
+        max={maxPackages(packageQuantity)}
         min={0}
         onValueChange={(value) =>
           setValue("inventoryLevel", value != null ? String(value) : "", {
@@ -162,7 +173,6 @@ const TransactionDialog = ({ ingredient, mutate }: TransactionDialogProps) => {
           })
         }
         placeholder={tInventory("transactions.inventoryLevel.placeholder")}
-        required
         value={inventoryLevel ? Number(inventoryLevel) : null}
       />
       <TextField

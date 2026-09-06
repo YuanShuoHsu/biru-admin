@@ -29,11 +29,12 @@ import { Grid, MenuItem, TextField } from "@mui/material";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import { unitCodeValues } from "@/types/api";
-import type { Ingredient, Supplier, UnitCode } from "@/types/inventory";
+import type { Ingredient, Supplier } from "@/types/inventory";
 
 import { fetcher } from "@/utils/fetcher";
 import {
   formatUnitPriceOf,
+  maxPackages,
   toBaseQuantity,
   toPackages,
 } from "@/utils/ingredients";
@@ -79,7 +80,15 @@ const IngredientDialog = ({
       brand: ingredient?.brand || "",
       eligibleQuantity: ingredient?.eligibleQuantity || "",
       inventoryLevel: "",
-      lowStockThreshold: ingredient?.lowStockThreshold || "",
+      lowStockThreshold:
+        ingredient?.lowStockThreshold && ingredient.packageBaseQuantity
+          ? String(
+              toPackages(
+                Number(ingredient.lowStockThreshold),
+                Number(ingredient.packageBaseQuantity),
+              ),
+            )
+          : "",
       price: ingredient?.price || "",
       priceCurrency: ingredient?.priceCurrency || "TWD",
       url: ingredient?.url || "",
@@ -100,13 +109,12 @@ const IngredientDialog = ({
   const supplierId = useWatch({ control, name: "supplierId" });
   const unitCode = useWatch({ control, name: "unitCode" });
 
-  // 使用者只選一次單位；庫存與食譜用的基準單位由它推導，兩者必然同維度
-  const packageUnitCode = unitCode ? (unitCode as UnitCode) : null;
+  const packageUnitCode =
+    unitCodeValues.find((unit) => unit === unitCode) ?? null;
   const baseUnitCode = packageUnitCode && BASE_UNIT_CODES[packageUnitCode];
   const baseQuantity =
     Number(eligibleQuantity) *
     (packageUnitCode ? UNIT_FACTORS[packageUnitCode] : 0);
-  // 單位成本是存檔後才算得出來的衍生值，先即時算給使用者看，才知道填對了沒
   const unitCostHint =
     baseQuantity > 0 && Number(price) > 0 && baseUnitCode
       ? formatUnitPriceOf(
@@ -116,17 +124,17 @@ const IngredientDialog = ({
         )
       : "";
 
-  // 開帳量按包數填，警示量按基準單位填——各自用最好讀的單位，也是它們在資料庫的形式
-  const stockHint =
+  const packageHint = (packages?: string) =>
     baseQuantity && baseUnitCode
-      ? Number(inventoryLevel)
-        ? `${format.number(toBaseQuantity(Number(inventoryLevel), baseQuantity))} ${tInventory(`units.${baseUnitCode}`)}`
+      ? Number(packages)
+        ? `${format.number(toBaseQuantity(Number(packages), baseQuantity))} ${tInventory(`units.${baseUnitCode}`)}`
         : ""
       : tInventory("ingredients.packageRequired");
+
   const stockOnHand =
     ingredient && baseQuantity > 0
-      ? `×${format.number(toPackages(Number(ingredient.inventoryLevel), baseQuantity))}`
-      : "";
+      ? toPackages(Number(ingredient.inventoryLevel), baseQuantity)
+      : null;
 
   const action = ingredient ? "updateIngredient" : "createIngredient";
 
@@ -148,7 +156,15 @@ const IngredientDialog = ({
             eligibleQuantity: values.eligibleQuantity,
             eligibleQuantityUnitCode: values.unitCode,
             unitCode: BASE_UNIT_CODES[values.unitCode],
-            lowStockThreshold: values.lowStockThreshold || null,
+            lowStockThreshold:
+              values.lowStockThreshold && baseQuantity > 0
+                ? String(
+                    toBaseQuantity(
+                      Number(values.lowStockThreshold),
+                      baseQuantity,
+                    ),
+                  )
+                : null,
             ...(!ingredient && {
               inventoryLevel:
                 values.inventoryLevel && baseQuantity > 0
@@ -329,49 +345,47 @@ const IngredientDialog = ({
         </Grid>
       </Grid>
       {ingredient ? (
-        <TextField
+        <NumberSpinner
           disabled
+          format={{ maximumFractionDigits: 3 }}
           fullWidth
           helperText={tInventory("ingredients.inventoryLevel.readOnly")}
           label={tInventory("ingredients.inventoryLevel.label")}
           value={stockOnHand}
         />
       ) : (
-        <NumericFormat
-          allowNegative={false}
-          customInput={TextField}
-          decimalScale={3}
+        <NumberSpinner
+          clearable
           disabled={!baseQuantity}
           error={!!errors.inventoryLevel}
+          format={{ maximumFractionDigits: 3 }}
           fullWidth
-          helperText={errors.inventoryLevel?.message || stockHint}
-          isAllowed={({ floatValue }) =>
-            floatValue === undefined || floatValue <= 999999999.999
+          helperText={
+            errors.inventoryLevel?.message || packageHint(inventoryLevel)
           }
           label={`${tInventory("ingredients.inventoryLevel.label")} ${tCommon("optional")}`}
-          onValueChange={({ value }) =>
-            setValue("inventoryLevel", value, {
+          max={maxPackages(baseQuantity)}
+          min={0}
+          onValueChange={(value) =>
+            setValue("inventoryLevel", value != null ? String(value) : "", {
               shouldValidate: isSubmitted,
             })
           }
           placeholder={tInventory("ingredients.inventoryLevel.placeholder")}
-          thousandSeparator=","
-          value={inventoryLevel}
-          valueIsNumericString
+          value={inventoryLevel ? Number(inventoryLevel) : null}
         />
       )}
       <NumberSpinner
         clearable
         disabled={!baseQuantity}
         error={!!errors.lowStockThreshold}
+        format={{ maximumFractionDigits: 0 }}
         fullWidth
         helperText={
-          errors.lowStockThreshold?.message ||
-          (baseUnitCode
-            ? tInventory(`units.${baseUnitCode}`)
-            : tInventory("ingredients.packageRequired"))
+          errors.lowStockThreshold?.message || packageHint(lowStockThreshold)
         }
         label={`${tInventory("ingredients.lowStockThreshold.label")} ${tCommon("optional")}`}
+        max={maxPackages(baseQuantity)}
         min={0}
         onValueChange={(value) =>
           setValue("lowStockThreshold", value != null ? String(value) : "", {
@@ -379,6 +393,7 @@ const IngredientDialog = ({
           })
         }
         placeholder={tInventory("ingredients.lowStockThreshold.placeholder")}
+        smallStep={1}
         value={lowStockThreshold ? Number(lowStockThreshold) : null}
       />
       <TextField

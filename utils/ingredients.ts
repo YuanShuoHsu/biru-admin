@@ -30,6 +30,11 @@ export const toPackages = (baseQuantity: number, packageBaseQuantity: number) =>
 export const toBaseQuantity = (packages: number, packageBaseQuantity: number) =>
   Math.round(packages * packageBaseQuantity * 1000) / 1000;
 
+export const maxPackages = (packageBaseQuantity: number | null | undefined) =>
+  packageBaseQuantity
+    ? Math.floor(999999999.999 / packageBaseQuantity)
+    : undefined;
+
 const withSuffix = (
   value: string,
   suffix: string[],
@@ -96,7 +101,7 @@ export const formatUnitPriceOf = (
   { priceCurrency, unitCode }: Pick<Ingredient, "priceCurrency" | "unitCode">,
   { format, tCommon, tInventory }: IngredientFormatters,
 ) =>
-  `${priceCurrency} ${format.number(value, { maximumFractionDigits: 4 })}${tCommon("slash")}${tInventory(`units.${unitCode}`)}`;
+  `${priceCurrency} ${format.number(value, { maximumFractionDigits: 6 })}${tCommon("slash")}${tInventory(`units.${unitCode}`)}`;
 
 export const formatUnitPrice = (
   ingredient: Ingredient,

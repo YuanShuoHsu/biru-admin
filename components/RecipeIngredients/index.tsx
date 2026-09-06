@@ -491,7 +491,7 @@ const RecipeIngredients = ({
         valueFormatter: (value: RecipeIngredient["unitPrice"]) =>
           value == null
             ? ""
-            : format.number(value, { maximumFractionDigits: 4 }),
+            : format.number(value, { maximumFractionDigits: 6 }),
       },
       {
         field: "cost",

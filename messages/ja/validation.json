@@ -82,9 +82,6 @@
   "ingredientId": {
     "notSelected": "食材を選択してください。"
   },
-  "inventoryLevel": {
-    "required": "現在の数量は必須です。"
-  },
   "invoiceType": {
     "notSelected": "インボイスの種類を選択してください。"
   },

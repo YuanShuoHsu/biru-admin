@@ -82,9 +82,6 @@
   "ingredientId": {
     "notSelected": "식자재를 선택해 주세요."
   },
-  "inventoryLevel": {
-    "required": "현재 수량은 필수입니다."
-  },
   "invoiceType": {
     "notSelected": "영수증 유형을 선택해 주세요."
   },

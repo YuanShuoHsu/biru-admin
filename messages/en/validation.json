@@ -82,9 +82,6 @@
   "ingredientId": {
     "notSelected": "Please select your ingredient."
   },
-  "inventoryLevel": {
-    "required": "Current quantity is required."
-  },
   "invoiceType": {
     "notSelected": "Please select your invoice type."
   },

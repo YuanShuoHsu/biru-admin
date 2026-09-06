@@ -82,9 +82,6 @@
   "ingredientId": {
     "notSelected": "请选择您的食材。"
   },
-  "inventoryLevel": {
-    "required": "现有数量为必填。"
-  },
   "invoiceType": {
     "notSelected": "请选择您的发票类型。"
   },
