@@ -26,6 +26,7 @@ import {
   useNumberFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
+import { useFormatMoney } from "@/hooks/useFormatMoney";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
@@ -73,7 +74,6 @@ import type {
   OrderTransition,
 } from "@/types/orders";
 
-import { formatMoney } from "@/utils/currency";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getOrderEnumOptions } from "@/utils/enumOptions";
 import { getErrorMessage } from "@/utils/errors";
@@ -196,6 +196,8 @@ const Orders = ({
   const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
+
+  const formatMoney = useFormatMoney();
 
   const apiRef = useGridApiRef();
 
@@ -824,7 +826,7 @@ const Orders = ({
         filterOperators: numberFilterOperators,
         headerName: tOrders("total"),
         valueGetter: (_value: unknown, row: AdminOrderResponse) =>
-          formatMoney(Number(row.total), row.items[0]?.priceCurrency, format),
+          formatMoney(Number(row.total), row.items[0]?.priceCurrency),
       },
       {
         field: "paymentMethod",
@@ -900,6 +902,7 @@ const Orders = ({
       enumFilterOperators,
       enumOptions,
       format,
+      formatMoney,
       handleConfirmIssueInvoice,
       handleConfirmResetInvoicePrint,
       handleConfirmVoidInvoice,

@@ -3,7 +3,7 @@
 import dayjs from "dayjs";
 import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
-import { useFormatter, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import CustomizedAccordions from "@/components/CustomizedAccordions";
@@ -20,6 +20,7 @@ import { STATUS_COLORS } from "@/constants/orders";
 import { getPageSizeOptions } from "@/constants/pagination";
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
+import { useFormatMoney } from "@/hooks/useFormatMoney";
 import { useOrderItemName } from "@/hooks/useOrderItemName";
 import { useOrderModeLabel } from "@/hooks/useOrderModeLabel";
 
@@ -29,8 +30,6 @@ import { Chip, Stack, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import type { UserOrderListResponse } from "@/types/orders";
-
-import { formatMoney } from "@/utils/currency";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
@@ -52,7 +51,7 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
 
   const getOrderModeLabel = useOrderModeLabel();
 
-  const format = useFormatter();
+  const formatMoney = useFormatMoney();
 
   const pathname = usePathname();
 
@@ -157,7 +156,7 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
                       variant="subtitle2"
                     >
                       {tOrder("complete.summary.total")}{" "}
-                      {formatMoney(totalAmount, currency, format)}
+                      {formatMoney(totalAmount, currency)}
                     </Typography>
                   </Stack>
                 </Stack>
@@ -197,7 +196,6 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
                       {formatMoney(
                         Number(item.unitPrice) * item.orderQuantity,
                         currency,
-                        format,
                       )}
                     </Typography>
                   </Stack>
@@ -211,7 +209,7 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
                         : ""}
                     </Typography>
                     <Typography color="primary" variant="body2">
-                      -{formatMoney(discount, currency, format)}
+                      -{formatMoney(discount, currency)}
                     </Typography>
                   </Stack>
                 )}

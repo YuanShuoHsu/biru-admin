@@ -6,6 +6,8 @@ import { useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
+import StockCell from "../../StockCell";
+
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
 import {
@@ -21,6 +23,7 @@ import {
   useNumberFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
+import { useFormatMoney } from "@/hooks/useFormatMoney";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
@@ -45,11 +48,7 @@ import type {
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getInventoryTransactionEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
-import {
-  formatStock,
-  formatStockDelta,
-  formatUnitPriceOf,
-} from "@/utils/ingredients";
+import { formatStockDelta, formatUnitPriceOf } from "@/utils/ingredients";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -118,6 +117,8 @@ const IngredientTransactions = ({
   const stringFilterOperators = useStringFilterOperators();
 
   const format = useFormatter();
+
+  const formatMoney = useFormatMoney();
 
   const apiRef = useGridApiRef();
 
@@ -236,6 +237,7 @@ const IngredientTransactions = ({
             ? ""
             : formatUnitPriceOf(Number(value), ingredient, {
                 format,
+                formatMoney,
                 tCommon,
                 tInventory,
               }),
@@ -274,14 +276,13 @@ const IngredientTransactions = ({
         field: "balance",
         filterable: false,
         headerName: tInventory("transactions.balance.label"),
+        renderCell: ({
+          row: { balance },
+        }: GridRenderCellParams<InventoryTransaction>) => (
+          <StockCell ingredient={ingredient} quantity={Number(balance)} />
+        ),
         sortable: false,
         type: "number",
-        valueGetter: (_value: unknown, row: InventoryTransaction) =>
-          formatStock(Number(row.balance), ingredient, {
-            format,
-            tCommon,
-            tInventory,
-          }),
       },
       ...(canViewPurchasing ? costColumns : []),
       {
@@ -311,6 +312,7 @@ const IngredientTransactions = ({
     enumFilterOperators,
     enumOptions,
     format,
+    formatMoney,
     ingredient,
     numberFilterOperators,
     stringFilterOperators,

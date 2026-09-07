@@ -37,6 +37,7 @@ import {
   useNumberFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
+import { useFormatMoney } from "@/hooks/useFormatMoney";
 
 import { Link as NextLink, usePathname, useRouter } from "@/i18n/navigation";
 
@@ -79,7 +80,6 @@ import type {
   MenuItemSortField,
 } from "@/types/menus";
 
-import { formatMoney } from "@/utils/currency";
 import {
   getDataGridSearchParams,
   getFilterItemParams,
@@ -180,6 +180,8 @@ const MenusMenuIdSectionId = ({
   const stringFilterOperators = useStringFilterOperators();
 
   const format = useFormatter();
+
+  const formatMoney = useFormatMoney();
 
   const apiRef = useGridApiRef();
 
@@ -499,7 +501,7 @@ const MenusMenuIdSectionId = ({
 
           return recipe.cost == null
             ? tInventory("recipes.cost.unavailable")
-            : formatMoney(recipe.cost, offer?.priceCurrency, format, {
+            : formatMoney(recipe.cost, offer?.priceCurrency, {
                 maximumFractionDigits: 2,
               });
         },
@@ -683,7 +685,6 @@ const MenusMenuIdSectionId = ({
                     : formatMoney(
                         recipe.cost / recipe.recipeYield,
                         offer?.priceCurrency,
-                        format,
                         { maximumFractionDigits: 2 },
                       )}
               </Link>
@@ -714,7 +715,7 @@ const MenusMenuIdSectionId = ({
         valueGetter: (_value: unknown, { offer }: MenuItem) =>
           offer?.price == null
             ? ""
-            : formatMoney(Number(offer.price), offer.priceCurrency, format),
+            : formatMoney(Number(offer.price), offer.priceCurrency),
       },
       {
         field: "availability",
@@ -832,6 +833,7 @@ const MenusMenuIdSectionId = ({
     enumFilterOperators,
     enumOptions,
     format,
+    formatMoney,
     handleDeleteItem,
     handleManageItem,
     handleUpdateItem,

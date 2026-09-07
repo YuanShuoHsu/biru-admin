@@ -30,6 +30,7 @@ import {
   useNumberFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
+import { useFormatMoney } from "@/hooks/useFormatMoney";
 
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 
@@ -69,7 +70,6 @@ import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization, OrganizationResponse } from "@/types/organizations";
 
 import { getCouponsPath } from "@/utils/coupons";
-import { formatMoney } from "@/utils/currency";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getCouponEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
@@ -159,6 +159,8 @@ const Coupons = ({
   const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
+
+  const formatMoney = useFormatMoney();
 
   const apiRef = useGridApiRef();
 
@@ -565,7 +567,6 @@ const Coupons = ({
             : formatMoney(
                 Number(coupon.discountValue),
                 coupon.discountCurrency,
-                format,
               ),
       },
       {
@@ -579,7 +580,7 @@ const Coupons = ({
         ) =>
           minSubtotal == null
             ? ""
-            : formatMoney(Number(minSubtotal), discountCurrency, format),
+            : formatMoney(Number(minSubtotal), discountCurrency),
       },
       {
         field: "usedCount",
@@ -681,6 +682,7 @@ const Coupons = ({
       enumFilterOperators,
       enumOptions,
       format,
+      formatMoney,
       handleDeleteCoupon,
       handleGrantCoupon,
       handleUpdateCoupon,

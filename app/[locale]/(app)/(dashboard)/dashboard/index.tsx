@@ -7,6 +7,7 @@ import { DASHBOARD_RANGES, type DashboardRange } from "./definitions";
 
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
+import { useFormatMoney } from "@/hooks/useFormatMoney";
 import { useRoutes } from "@/hooks/useRoutes";
 
 import { useRouter } from "@/i18n/navigation";
@@ -30,8 +31,6 @@ import {
   orderResponseDtoPaymentMethodValues,
 } from "@/types/api";
 import type { OrderMode, OrderPaymentMethod } from "@/types/orders";
-
-import { formatMoney } from "@/utils/currency";
 
 const StyledCard = styled(Card)({
   height: "100%",
@@ -111,6 +110,8 @@ const Dashboard = ({
   charts,
 }: DashboardProps) => {
   const format = useFormatter();
+
+  const formatMoney = useFormatMoney();
 
   const router = useRouter();
 
@@ -306,7 +307,7 @@ const Dashboard = ({
                 gap={1}
               >
                 <Typography variant="h4">
-                  {formatMoney(revenueTotal, currency, format)}
+                  {formatMoney(revenueTotal, currency)}
                 </Typography>
                 <Chip
                   color={revenueChipColor}
@@ -332,7 +333,7 @@ const Dashboard = ({
                     label: tDashboard("stats.revenue"),
                     showMark: false,
                     valueFormatter: (value) =>
-                      formatMoney(value ?? 0, currency, format),
+                      formatMoney(value ?? 0, currency),
                   },
                 ]}
                 sx={{
@@ -361,7 +362,7 @@ const Dashboard = ({
                 {tDashboard("charts.avgOrderValue")}
               </Typography>
               <Typography variant="h4">
-                {formatMoney(avgOrderTotal, currency, format)}
+                {formatMoney(avgOrderTotal, currency)}
               </Typography>
               <Typography color="text.secondary" variant="caption">
                 {periodLabel}
@@ -381,7 +382,7 @@ const Dashboard = ({
                     label: tDashboard("charts.avgOrderValue"),
                     showMark: false,
                     valueFormatter: (value) =>
-                      formatMoney(value ?? 0, currency, format),
+                      formatMoney(value ?? 0, currency),
                   },
                 ]}
                 sx={{

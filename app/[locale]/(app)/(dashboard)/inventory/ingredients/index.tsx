@@ -9,6 +9,7 @@ import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import IngredientDialog from "./IngredientDialog";
+import StockCell from "./StockCell";
 
 import AuditLogButton from "@/components/AuditLogButton";
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
@@ -33,6 +34,7 @@ import {
   useNumberFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
+import { useFormatMoney } from "@/hooks/useFormatMoney";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
@@ -86,7 +88,6 @@ import { fetcher } from "@/utils/fetcher";
 import {
   formatPackagePrice,
   formatPackageQuantity,
-  formatStock,
   formatUnitPrice,
 } from "@/utils/ingredients";
 import { localize } from "@/utils/locale";
@@ -182,6 +183,8 @@ const Ingredients = ({
   const stringFilterOperators = useStringFilterOperators();
 
   const format = useFormatter();
+
+  const formatMoney = useFormatMoney();
 
   const apiRef = useGridApiRef();
 
@@ -625,7 +628,12 @@ const Ingredients = ({
               headerName: tInventory("ingredients.price.label"),
               renderCell: renderEmptyableCell,
               valueGetter: (_value: unknown, row: Ingredient) =>
-                formatPackagePrice(row, { format, tCommon, tInventory }),
+                formatPackagePrice(row, {
+                  format,
+                  formatMoney,
+                  tCommon,
+                  tInventory,
+                }),
             },
           ]
         : []),
@@ -635,7 +643,11 @@ const Ingredients = ({
         headerName: tInventory("ingredients.eligibleQuantity.label"),
         renderCell: renderEmptyableCell,
         valueGetter: (_value: unknown, row: Ingredient) =>
-          formatPackageQuantity(row, { format, tCommon, tInventory }),
+          formatPackageQuantity(row, {
+            format,
+            tCommon,
+            tInventory,
+          }),
       },
       ...(canViewPurchasing
         ? [
@@ -645,7 +657,12 @@ const Ingredients = ({
               headerName: tInventory("ingredients.unitPrice.label"),
               renderCell: renderEmptyableCell,
               valueGetter: (_value: unknown, row: Ingredient) =>
-                formatUnitPrice(row, { format, tCommon, tInventory }),
+                formatUnitPrice(row, {
+                  format,
+                  formatMoney,
+                  tCommon,
+                  tInventory,
+                }),
             },
           ]
         : []),
@@ -689,7 +706,7 @@ const Ingredients = ({
                 ) : (
                   isLowStock && <Warning fontSize="small" />
                 )}
-                {formatStock(level, row, { format, tCommon, tInventory })}
+                <StockCell ingredient={row} quantity={level} />
               </Stack>
             </Tooltip>
           );
@@ -700,16 +717,16 @@ const Ingredients = ({
         field: "lowStockThreshold",
         filterOperators: numberFilterOperators,
         headerName: `${tInventory("ingredients.lowStockThreshold.label")} ${tCommon("optional")}`,
-        renderCell: renderEmptyableCell,
+        renderCell: ({ row }: GridRenderCellParams<Ingredient>) =>
+          row.lowStockThreshold == null ? (
+            <EmptyCell />
+          ) : (
+            <StockCell
+              ingredient={row}
+              quantity={Number(row.lowStockThreshold)}
+            />
+          ),
         type: "number",
-        valueGetter: (_value: unknown, row: Ingredient) =>
-          row.lowStockThreshold == null
-            ? ""
-            : formatStock(Number(row.lowStockThreshold), row, {
-                format,
-                tCommon,
-                tInventory,
-              }),
       },
       ...(canViewPurchasing
         ? [
@@ -765,6 +782,7 @@ const Ingredients = ({
       canWrite,
       dateFilterOperators,
       format,
+      formatMoney,
       handleDeleteIngredient,
       handleUpdateIngredient,
       handleViewTransactions,

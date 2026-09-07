@@ -25,6 +25,7 @@ import {
   useNumberFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
+import { useFormatMoney } from "@/hooks/useFormatMoney";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
@@ -57,7 +58,6 @@ import type {
 } from "@/types/inventory";
 import type { MenuItem } from "@/types/menus";
 
-import { formatMoney } from "@/utils/currency";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
@@ -150,6 +150,8 @@ const RecipeIngredients = ({
   const searchParams = useSearchParams();
 
   const format = useFormatter();
+
+  const formatMoney = useFormatMoney();
 
   const priceCurrency = menuItem?.offer?.priceCurrency;
 
@@ -432,7 +434,7 @@ const RecipeIngredients = ({
         valueFormatter: (value: RecipeIngredient["unitPrice"]) =>
           value == null
             ? ""
-            : formatMoney(value, priceCurrency, format, {
+            : formatMoney(value, priceCurrency, {
                 maximumFractionDigits: 6,
               }),
       },
@@ -445,7 +447,7 @@ const RecipeIngredients = ({
         valueFormatter: (value: RecipeIngredient["cost"]) =>
           value == null
             ? ""
-            : formatMoney(value, priceCurrency, format, {
+            : formatMoney(value, priceCurrency, {
                 maximumFractionDigits: 2,
               }),
       },
@@ -540,6 +542,7 @@ const RecipeIngredients = ({
     canWrite,
     dateFilterOperators,
     format,
+    formatMoney,
     handleDeleteRecipeIngredient,
     handleUpdateRecipeIngredient,
     locale,

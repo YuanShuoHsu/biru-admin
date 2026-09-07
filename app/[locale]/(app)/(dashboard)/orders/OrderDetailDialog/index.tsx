@@ -11,6 +11,7 @@ import {
   STATUS_COLORS,
 } from "@/constants/orders";
 
+import { useFormatMoney } from "@/hooks/useFormatMoney";
 import { useOrderItemName } from "@/hooks/useOrderItemName";
 
 import { Button, Chip, Divider, Stack, Typography } from "@mui/material";
@@ -22,7 +23,6 @@ import type {
   OrderResponse,
 } from "@/types/orders";
 
-import { formatMoney } from "@/utils/currency";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
@@ -77,6 +77,8 @@ const OrderDetailDialog = ({
   organizationSlug,
 }: OrderDetailDialogProps) => {
   const format = useFormatter();
+
+  const formatMoney = useFormatMoney();
 
   const getOrderItemName = useOrderItemName();
 
@@ -300,7 +302,6 @@ const OrderDetailDialog = ({
                         value={formatMoney(
                           Number(verification.salesAmount),
                           currency,
-                          format,
                         )}
                       />
                     </>
@@ -363,7 +364,7 @@ const OrderDetailDialog = ({
                   {tCommon("parenthesisClose")}
                 </Typography>
                 <Typography color="error" flexShrink={0} variant="body2">
-                  -{formatMoney(Number(refund.amount), currency, format)}
+                  -{formatMoney(Number(refund.amount), currency)}
                 </Typography>
               </Stack>
               <InfoRow
@@ -466,7 +467,6 @@ const OrderDetailDialog = ({
               {formatMoney(
                 Number(item.unitPrice) * item.orderQuantity,
                 item.priceCurrency,
-                format,
               )}
             </Typography>
           </Stack>
@@ -480,7 +480,7 @@ const OrderDetailDialog = ({
                 : ""}
             </Typography>
             <Typography color="primary" flexShrink={0} variant="body2">
-              -{formatMoney(discount, currency, format)}
+              -{formatMoney(discount, currency)}
             </Typography>
           </Stack>
         )}
@@ -494,7 +494,7 @@ const OrderDetailDialog = ({
             {tOrders("detail.total")}
           </Typography>
           <Typography color="primary" fontWeight="bold" variant="h6">
-            {formatMoney(totalAmount, currency, format)}
+            {formatMoney(totalAmount, currency)}
           </Typography>
         </Stack>
       </Section>

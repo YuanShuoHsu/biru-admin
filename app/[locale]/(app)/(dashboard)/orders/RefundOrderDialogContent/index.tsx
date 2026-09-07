@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormatter, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent, useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
@@ -23,11 +23,11 @@ import type {
   OrderRefundPreview,
 } from "@/types/orders";
 
-import { formatMoney } from "@/utils/currency";
 import { getErrorMessage } from "@/utils/errors";
 import { type FetchError, fetcher, sendRequest } from "@/utils/fetcher";
 import { getRefundedQuantities } from "@/utils/refunds";
 
+import { useFormatMoney } from "@/hooks/useFormatMoney";
 import { useOrderItemName } from "@/hooks/useOrderItemName";
 
 export const REFUND_ORDER_FORM_ID = "refund-order-form";
@@ -47,7 +47,7 @@ const RefundOrderDialogContent = ({
     (state) => state,
   );
 
-  const format = useFormatter();
+  const formatMoney = useFormatMoney();
 
   const tCommon = useTranslations("common");
   const tOrders = useTranslations("orders");
@@ -123,7 +123,7 @@ const RefundOrderDialogContent = ({
 
       enqueueSnackbar(
         tOrders("actions.refund.success", {
-          amount: formatMoney(Number(created.amount), currency, format),
+          amount: formatMoney(Number(created.amount), currency),
           orderNumber: order.orderNumber,
         }),
         { variant: "success" },
@@ -254,7 +254,7 @@ const RefundOrderDialogContent = ({
             {tOrders("actions.refund.allocatedDiscount")}
           </Typography>
           <Typography variant="body2">
-            -{formatMoney(preview.allocatedDiscount, currency, format)}
+            -{formatMoney(preview.allocatedDiscount, currency)}
           </Typography>
         </Stack>
       )}
@@ -263,7 +263,7 @@ const RefundOrderDialogContent = ({
           {tOrders("actions.refund.amount")}
         </Typography>
         <Typography color="error" fontWeight="bold" variant="h6">
-          {formatMoney(preview?.amount ?? 0, currency, format)}
+          {formatMoney(preview?.amount ?? 0, currency)}
         </Typography>
       </Stack>
     </Stack>

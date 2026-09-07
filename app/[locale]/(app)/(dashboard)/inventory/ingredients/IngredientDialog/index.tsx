@@ -22,6 +22,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { BASE_UNIT_CODES, UNIT_FACTORS } from "@/constants/inventory";
 
+import { useFormatMoney } from "@/hooks/useFormatMoney";
 import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
 import { Grid, MenuItem, TextField } from "@mui/material";
@@ -64,6 +65,8 @@ const IngredientDialog = ({
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
+
+  const formatMoney = useFormatMoney();
   const locale = useLocale();
 
   const tCommon = useTranslations("common");
@@ -140,7 +143,7 @@ const IngredientDialog = ({
       ? formatUnitPriceOf(
           Number(price) / baseQuantity,
           { priceCurrency, unitCode: baseUnitCode },
-          { format, tCommon, tInventory },
+          { format, formatMoney, tCommon, tInventory },
         )
       : "";
 

@@ -14,6 +14,8 @@ import FormCard, {
 
 import { PLATFORM_TIMEZONE } from "@/constants/timezone";
 
+import { useFormatMoney } from "@/hooks/useFormatMoney";
+
 import { useRouter } from "@/i18n/navigation";
 
 import { LocalOffer, Stars } from "@mui/icons-material";
@@ -61,6 +63,8 @@ const Store = ({ points }: StoreProps) => {
   const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
+
+  const formatMoney = useFormatMoney();
 
   const router = useRouter();
 
@@ -162,7 +166,7 @@ const Store = ({ points }: StoreProps) => {
                   label={
                     coupon.discountType === "percentage"
                       ? `-${Number(coupon.discountValue)}%`
-                      : `-${coupon.discountCurrency} ${format.number(Number(coupon.discountValue))}`
+                      : `-${formatMoney(Number(coupon.discountValue), coupon.discountCurrency)}`
                   }
                   size="small"
                 />

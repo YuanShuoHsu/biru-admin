@@ -1,13 +1,17 @@
 import type { useFormatter, useTranslations } from "next-intl";
 
-import type { Ingredient } from "@/types/inventory";
+import type { useFormatMoney } from "@/hooks/useFormatMoney";
 
-import { formatMoney } from "@/utils/currency";
+import type { Ingredient } from "@/types/inventory";
 
 interface IngredientFormatters {
   format: ReturnType<typeof useFormatter>;
   tCommon: ReturnType<typeof useTranslations<"common">>;
   tInventory: ReturnType<typeof useTranslations<"inventory">>;
+}
+
+interface IngredientPriceFormatters extends IngredientFormatters {
+  formatMoney: ReturnType<typeof useFormatMoney>;
 }
 
 const showsPackages = (packageBaseQuantity: number) => {
@@ -52,7 +56,7 @@ const withSuffix = (
     ? `${value}${tCommon("parenthesisOpen")}${suffix.join(tCommon("delimiter"))}${tCommon("parenthesisClose")}`
     : value;
 
-export const formatStock = (
+export const stockParts = (
   quantity: number,
   ingredient: Ingredient,
   { format, tCommon, tInventory }: IngredientFormatters,
@@ -63,20 +67,38 @@ export const formatStock = (
     Number(packageBaseQuantity),
   );
 
-  return withSuffix(
-    `${format.number(quantity)} ${tInventory(`units.${unitCode}`)}`,
-    showPackages && packages > 0
-      ? [
-          `${tCommon("multiply")}${format.number(packages)}`,
-          ...(remainder
-            ? [
-                `${format.number(remainder, { maximumFractionDigits: 3 })} ${tInventory(`units.${unitCode}`)}`,
-              ]
-            : []),
-        ]
-      : [],
-    tCommon,
+  return {
+    hasSuffix: showPackages,
+    suffix: withSuffix(
+      "",
+      showPackages
+        ? [
+            `${tCommon("multiply")}${format.number(packages)}`,
+            ...(remainder
+              ? [
+                  `${format.number(remainder, { maximumFractionDigits: 3 })} ${tInventory(`units.${unitCode}`)}`,
+                ]
+              : []),
+          ]
+        : [`${tCommon("multiply")}${format.number(0)}`],
+      tCommon,
+    ),
+    value: `${format.number(quantity)} ${tInventory(`units.${unitCode}`)}`,
+  };
+};
+
+export const formatStock = (
+  quantity: number,
+  ingredient: Ingredient,
+  formatters: IngredientFormatters,
+) => {
+  const { hasSuffix, suffix, value } = stockParts(
+    quantity,
+    ingredient,
+    formatters,
   );
+
+  return hasSuffix ? `${value}${suffix}` : value;
 };
 
 export const formatStockDelta = (
@@ -107,12 +129,12 @@ export const formatPackageQuantity = (
 
 export const formatPackagePrice = (
   { price, priceCurrency }: Ingredient,
-  { format }: IngredientFormatters,
-) => (price == null ? "" : formatMoney(Number(price), priceCurrency, format));
+  { formatMoney }: IngredientPriceFormatters,
+) => (price == null ? "" : formatMoney(Number(price), priceCurrency));
 
 export const formatPackage = (
   ingredient: Ingredient,
-  formatters: IngredientFormatters,
+  formatters: IngredientPriceFormatters,
 ) => {
   const quantity = formatPackageQuantity(ingredient, formatters);
   const price = formatPackagePrice(ingredient, formatters);
@@ -125,13 +147,13 @@ export const formatPackage = (
 export const formatUnitPriceOf = (
   value: number,
   { priceCurrency, unitCode }: Pick<Ingredient, "priceCurrency" | "unitCode">,
-  { format, tCommon, tInventory }: IngredientFormatters,
+  { formatMoney, tCommon, tInventory }: IngredientPriceFormatters,
 ) =>
-  `${formatMoney(value, priceCurrency, format, { maximumFractionDigits: 6 })}${tCommon("slash")}${tInventory(`units.${unitCode}`)}`;
+  `${formatMoney(value, priceCurrency, { maximumFractionDigits: 6 })}${tCommon("slash")}${tInventory(`units.${unitCode}`)}`;
 
 export const formatUnitPrice = (
   ingredient: Ingredient,
-  formatters: IngredientFormatters,
+  formatters: IngredientPriceFormatters,
 ) =>
   ingredient.unitPrice == null
     ? ""

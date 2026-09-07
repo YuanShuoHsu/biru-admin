@@ -9,6 +9,8 @@ import FormCard, {
   StyledCardHeader,
 } from "@/components/FormCard";
 
+import { useFormatMoney } from "@/hooks/useFormatMoney";
+
 import { useRouter } from "@/i18n/navigation";
 
 import { LocalOffer } from "@mui/icons-material";
@@ -17,7 +19,6 @@ import { styled } from "@mui/material/styles";
 
 import type { MyClaimableCoupon, MyCoupon } from "@/types/coupons";
 
-import { formatMoney } from "@/utils/currency";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
@@ -39,6 +40,8 @@ const Coupons = ({ claimableCoupons, coupons }: CouponsProps) => {
   const [claimingId, setClaimingId] = useState<string | null>(null);
 
   const format = useFormatter();
+
+  const formatMoney = useFormatMoney();
 
   const router = useRouter();
 
@@ -136,7 +139,7 @@ const Coupons = ({ claimableCoupons, coupons }: CouponsProps) => {
                         >
                           {coupon.discountType === "percentage"
                             ? `-${format.number(Number(coupon.discountValue))}%`
-                            : `-${formatMoney(Number(coupon.discountValue), coupon.discountCurrency, format)}`}
+                            : `-${formatMoney(Number(coupon.discountValue), coupon.discountCurrency)}`}
                         </Typography>
                         {!("coupon" in item) && (
                           <Button
