@@ -220,6 +220,9 @@
     }
   },
   "transactions": {
+    "balance": {
+      "label": "異動後庫存"
+    },
     "label": "庫存進出",
     "note": {
       "label": "備註",
@@ -240,7 +243,7 @@
       }
     },
     "unitCost": {
-      "label": "進貨單價"
+      "label": "單位成本"
     }
   },
   "units": {

@@ -220,6 +220,9 @@
     }
   },
   "transactions": {
+    "balance": {
+      "label": "异动后库存"
+    },
     "label": "库存进出",
     "note": {
       "label": "备注",
@@ -240,7 +243,7 @@
       }
     },
     "unitCost": {
-      "label": "进货单价"
+      "label": "单位成本"
     }
   },
   "units": {

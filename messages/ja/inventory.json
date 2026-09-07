@@ -220,6 +220,9 @@
     }
   },
   "transactions": {
+    "balance": {
+      "label": "変動後在庫"
+    },
     "label": "在庫変動",
     "note": {
       "label": "備考",
@@ -240,7 +243,7 @@
       }
     },
     "unitCost": {
-      "label": "仕入単価"
+      "label": "単位原価"
     }
   },
   "units": {

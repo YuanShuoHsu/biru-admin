@@ -71,6 +71,27 @@ export const formatStock = (
   );
 };
 
+export const formatStockDelta = (
+  quantity: number,
+  { packageBaseQuantity, unitCode }: Ingredient,
+  { format, tCommon, tInventory }: IngredientFormatters,
+) => {
+  const packageMilli = Math.round(Number(packageBaseQuantity) * 1000);
+
+  return withSuffix(
+    `${format.number(quantity, { signDisplay: "exceptZero" })} ${tInventory(`units.${unitCode}`)}`,
+    packageMilli > 0 && packageMilli !== 1000
+      ? [
+          format.number(toPackages(quantity, Number(packageBaseQuantity)), {
+            maximumFractionDigits: 3,
+            signDisplay: "exceptZero",
+          }),
+        ]
+      : [],
+    tCommon,
+  );
+};
+
 export const formatPackageQuantity = (
   { eligibleQuantity, eligibleQuantityUnitCode }: Ingredient,
   { format, tInventory }: IngredientFormatters,

@@ -2850,6 +2850,8 @@ export interface components {
       organizationId: string;
       /** @description 帶正負的異動量 */
       quantity: string;
+      /** @description 這筆異動之後的帳上結存 */
+      balance: string;
       reason: components["schemas"]["InventoryTransactionReason"];
       /** @description 無 purchasing 權限時不回傳 */
       unitCost?: string | null;

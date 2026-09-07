@@ -43,7 +43,11 @@ import type {
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getInventoryTransactionEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
-import { formatUnitPriceOf } from "@/utils/ingredients";
+import {
+  formatStock,
+  formatStockDelta,
+  formatUnitPriceOf,
+} from "@/utils/ingredients";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -222,7 +226,7 @@ const IngredientTransactions = ({
       {
         field: "unitCost",
         filterOperators: numberFilterOperators,
-        headerName: `${tInventory("transactions.unitCost.label")} ${tCommon("optional")}`,
+        headerName: tInventory("transactions.unitCost.label"),
         type: "number",
         valueFormatter: (value: InventoryTransaction["unitCost"]) =>
           value == null
@@ -252,12 +256,29 @@ const IngredientTransactions = ({
         }: GridRenderCellParams<InventoryTransaction>) => (
           <Chip
             color={Number(quantity) < 0 ? "error" : "success"}
-            label={`${format.number(Number(quantity), { signDisplay: "exceptZero" })} ${tInventory(`units.${ingredient.unitCode}`)}`}
+            label={formatStockDelta(Number(quantity), ingredient, {
+              format,
+              tCommon,
+              tInventory,
+            })}
             size="small"
             variant="outlined"
           />
         ),
         type: "number",
+      },
+      {
+        field: "balance",
+        filterable: false,
+        headerName: tInventory("transactions.balance.label"),
+        sortable: false,
+        type: "number",
+        valueGetter: (_value: unknown, row: InventoryTransaction) =>
+          formatStock(Number(row.balance), ingredient, {
+            format,
+            tCommon,
+            tInventory,
+          }),
       },
       ...(canViewPurchasing ? costColumns : []),
       {
@@ -269,7 +290,7 @@ const IngredientTransactions = ({
       {
         field: "note",
         filterOperators: stringFilterOperators,
-        headerName: `${tInventory("transactions.note.label")} ${tCommon("optional")}`,
+        headerName: tInventory("transactions.note.label"),
       },
       {
         field: "createdAt",
