@@ -126,6 +126,7 @@ interface CountryAutocompleteProps
 }
 
 const CountryAutocomplete = ({
+  disabled,
   mode,
   name,
   onBlur,
@@ -151,6 +152,7 @@ const CountryAutocomplete = ({
   return (
     <Autocomplete
       autoHighlight
+      disabled={disabled}
       disablePortal
       filterOptions={(options, params) => {
         if (params.inputValue === currentInputValue) return options;

@@ -109,6 +109,7 @@ interface DonateCodeAutocompleteProps
 }
 
 const DonateCodeAutocomplete = ({
+  disabled,
   name,
   onBlur,
   onChange,
@@ -130,6 +131,7 @@ const DonateCodeAutocomplete = ({
   return (
     <Autocomplete
       autoHighlight
+      disabled={disabled}
       disablePortal
       filterOptions={(options, params) => {
         if (params.inputValue === currentInputValue) return options;

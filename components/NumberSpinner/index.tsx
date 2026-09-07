@@ -154,6 +154,7 @@ const NumberSpinner = ({
           </BaseNumberField.ScrubArea>
           {clearable && (
             <ClearButton
+              disabled={other.disabled}
               onClick={() => other.onValueChange?.(null, {} as never)}
               size="small"
               tabIndex={-1}
