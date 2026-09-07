@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 
 import Ingredients from ".";
 
+import InventoryTabsLayout from "../InventoryTabsLayout";
+
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
 import { redirect } from "@/i18n/navigation";
@@ -89,7 +91,10 @@ const IngredientsPage = async ({
   });
 
   if (redirectParams)
-    redirect({ href: `/ingredients?${redirectParams.toString()}`, locale });
+    redirect({
+      href: `/inventory/ingredients?${redirectParams.toString()}`,
+      locale,
+    });
 
   const { data: memberRole } =
     await authClient.organization.getActiveMemberRole({
@@ -103,12 +108,17 @@ const IngredientsPage = async ({
   const canViewAuditLog = hasRolePermission(memberRole?.role, {
     auditLog: ["read"],
   });
+  const canViewInventory = hasRolePermission(memberRole?.role, {
+    inventory: ["read"],
+  });
   const canViewPurchasing = hasRolePermission(memberRole?.role, {
     purchasing: ["read"],
   });
   const canWrite = hasRolePermission(memberRole?.role, {
     inventory: ["update"],
   });
+
+  if (!canViewInventory) notFound();
 
   const quickFilterEnums = quickFilterValue
     ? getQuickFilterEnums(
@@ -145,24 +155,29 @@ const IngredientsPage = async ({
   ]);
 
   return (
-    <Ingredients
-      canRecordTransaction={canRecordTransaction}
-      canViewAuditLog={canViewAuditLog}
+    <InventoryTabsLayout
+      canViewInventory={canViewInventory}
       canViewPurchasing={canViewPurchasing}
-      canWrite={canWrite}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      ingredients={ingredients}
-      organizationSlug={organization.slug}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={total}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-      suppliers={suppliers}
-    />
+    >
+      <Ingredients
+        canRecordTransaction={canRecordTransaction}
+        canViewAuditLog={canViewAuditLog}
+        canViewPurchasing={canViewPurchasing}
+        canWrite={canWrite}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        ingredients={ingredients}
+        organizationSlug={organization.slug}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        rowCount={total}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+        suppliers={suppliers}
+      />
+    </InventoryTabsLayout>
   );
 };
 

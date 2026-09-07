@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 
 import Suppliers from ".";
 
+import InventoryTabsLayout from "../InventoryTabsLayout";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -84,7 +86,10 @@ const SuppliersPage = async ({ params, searchParams }: SuppliersPageProps) => {
   });
 
   if (redirectParams)
-    redirect({ href: `/suppliers?${redirectParams.toString()}`, locale });
+    redirect({
+      href: `/inventory/suppliers?${redirectParams.toString()}`,
+      locale,
+    });
 
   const [{ data: memberRole }, { suppliers, total }] = await Promise.all([
     authClient.organization.getActiveMemberRole({
@@ -110,6 +115,9 @@ const SuppliersPage = async ({ params, searchParams }: SuppliersPageProps) => {
   const canViewAuditLog = hasRolePermission(memberRole?.role, {
     auditLog: ["read"],
   });
+  const canViewInventory = hasRolePermission(memberRole?.role, {
+    inventory: ["read"],
+  });
   const canViewPurchasing = hasRolePermission(memberRole?.role, {
     purchasing: ["read"],
   });
@@ -128,22 +136,27 @@ const SuppliersPage = async ({ params, searchParams }: SuppliersPageProps) => {
     : { ingredients: [] };
 
   return (
-    <Suppliers
-      canViewAuditLog={canViewAuditLog}
-      canWrite={canWrite}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      ingredients={ingredients}
-      organizationSlug={organization.slug}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={total}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-      suppliers={suppliers}
-    />
+    <InventoryTabsLayout
+      canViewInventory={canViewInventory}
+      canViewPurchasing={canViewPurchasing}
+    >
+      <Suppliers
+        canViewAuditLog={canViewAuditLog}
+        canWrite={canWrite}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        ingredients={ingredients}
+        organizationSlug={organization.slug}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        rowCount={total}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+        suppliers={suppliers}
+      />
+    </InventoryTabsLayout>
   );
 };
 

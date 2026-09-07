@@ -469,7 +469,9 @@ const Ingredients = ({
         ...DEFAULT_PAGINATION_QUERY,
       });
 
-      router.push(`/ingredients/${id}/transactions?${params.toString()}`);
+      router.push(
+        `/inventory/ingredients/${id}/transactions?${params.toString()}`,
+      );
     },
     [organization, router],
   );

@@ -90,7 +90,7 @@ const IngredientTransactionsPage = async ({
 
   if (redirectParams)
     redirect({
-      href: `/ingredients/${ingredientId}/transactions?${redirectParams.toString()}`,
+      href: `/inventory/ingredients/${ingredientId}/transactions?${redirectParams.toString()}`,
       locale,
     });
 

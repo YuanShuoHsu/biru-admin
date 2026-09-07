@@ -45,7 +45,7 @@ const IngredientAuditLogsPage = async ({
 
   return (
     <AuditLogsPage
-      href={`/ingredients/${ingredientId}/audit-logs`}
+      href={`/inventory/ingredients/${ingredientId}/audit-logs`}
       ingredient={ingredient}
       locale={locale}
       resource="ingredient"

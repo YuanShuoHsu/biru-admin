@@ -96,6 +96,7 @@
       "placeholder": "상품 링크을(를) 입력해 주세요"
     }
   },
+  "label": "재고",
   "recipes": {
     "actions": {
       "createRecipe": {

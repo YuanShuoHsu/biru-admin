@@ -96,6 +96,7 @@
       "placeholder": "請輸入您的商品連結"
     }
   },
+  "label": "庫存",
   "recipes": {
     "actions": {
       "createRecipe": {

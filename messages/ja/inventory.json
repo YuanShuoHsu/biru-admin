@@ -96,6 +96,7 @@
       "placeholder": "商品リンクを入力してください"
     }
   },
+  "label": "在庫",
   "recipes": {
     "actions": {
       "createRecipe": {

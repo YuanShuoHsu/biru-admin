@@ -96,6 +96,7 @@
       "placeholder": "Please enter your Product link"
     }
   },
+  "label": "Inventory",
   "recipes": {
     "actions": {
       "createRecipe": {

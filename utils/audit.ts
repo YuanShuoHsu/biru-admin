@@ -65,9 +65,9 @@ export const getAuditLogHref = (
     case "invoice":
       return rootId ? `/orders/list/${rootId}/audit-logs` : null;
     case "supplier":
-      return `/suppliers/${resourceId}/audit-logs`;
+      return `/inventory/suppliers/${resourceId}/audit-logs`;
     case "ingredient":
-      return `/ingredients/${resourceId}/audit-logs`;
+      return `/inventory/ingredients/${resourceId}/audit-logs`;
     case "recipe":
       return `/recipes/${resourceId}/audit-logs`;
     case "userCoupon":

@@ -34,6 +34,13 @@ const useNavItems = (): NavItem[][] => {
 
   const isAdmin = session?.user?.role === "admin";
 
+  const canViewInventory = hasRolePermission(memberRole, {
+    inventory: ["read"],
+  });
+  const canViewPurchasing = hasRolePermission(memberRole, {
+    purchasing: ["read"],
+  });
+
   return [
     [
       navItem("/dashboard"),
@@ -43,11 +50,13 @@ const useNavItems = (): NavItem[][] => {
       ? [
           [
             navItem("/menus"),
-            ...(hasRolePermission(memberRole, { inventory: ["read"] })
-              ? [navItem("/ingredients")]
-              : []),
-            ...(hasRolePermission(memberRole, { purchasing: ["read"] })
-              ? [navItem("/suppliers")]
+            ...(canViewInventory || canViewPurchasing
+              ? [
+                  navItem(
+                    "/inventory",
+                    canViewInventory ? undefined : "/inventory/suppliers",
+                  ),
+                ]
               : []),
           ],
         ]
