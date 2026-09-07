@@ -61,11 +61,15 @@ export const stockParts = (
   ingredient: Ingredient,
   { format, tCommon, tInventory }: IngredientFormatters,
 ) => {
-  const { packageBaseQuantity, unitCode } = ingredient;
+  const { inventoryLevelUnitText, packageBaseQuantity, unitCode } = ingredient;
   const { packages, remainder, showPackages } = packagesOf(
     quantity,
     Number(packageBaseQuantity),
   );
+  const formatPackages = (count: number) =>
+    inventoryLevelUnitText
+      ? `${format.number(count)} ${inventoryLevelUnitText}`
+      : `${tCommon("multiply")}${format.number(count)}`;
 
   return {
     hasSuffix: showPackages,
@@ -73,14 +77,14 @@ export const stockParts = (
       "",
       showPackages
         ? [
-            `${tCommon("multiply")}${format.number(packages)}`,
+            formatPackages(packages),
             ...(remainder
               ? [
                   `${format.number(remainder, { maximumFractionDigits: 3 })} ${tInventory(`units.${unitCode}`)}`,
                 ]
               : []),
           ]
-        : [`${tCommon("multiply")}${format.number(0)}`],
+        : [formatPackages(0)],
       tCommon,
     ),
     value: `${format.number(quantity)} ${tInventory(`units.${unitCode}`)}`,
