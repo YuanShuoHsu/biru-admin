@@ -28,6 +28,7 @@
     "grantedBy": "发放者",
     "image": "图片网址",
     "inventoryLevel": "库存数量",
+    "inventoryLevelUnitText": "库存单位",
     "isActive": "启用",
     "lowStockThreshold": "低库存警示量",
     "maxSelectionCount": "最多选择数量",

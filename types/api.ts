@@ -2656,6 +2656,11 @@ export interface components {
        * @example 500.000
        */
       inventoryLevel?: string | null;
+      /**
+       * @description inventoryLevel 顯示用的單位；不參與 unitCode 的換算
+       * @example 公克
+       */
+      inventoryLevelUnitText?: string | null;
       /** @description inventoryLevel 寫入帳本時的異動原因；不會存到 ingredient */
       transactionNote?: string | null;
     };
@@ -2671,6 +2676,8 @@ export interface components {
       supplierName?: string | null;
       unitCode: components["schemas"]["UnitCode"];
       inventoryLevel: string;
+      /** @description inventoryLevel 顯示用的單位；不參與 unitCode 的換算 */
+      inventoryLevelUnitText?: string | null;
       lowStockThreshold?: string | null;
       /** @description 一個包裝的價錢；無 purchasing 權限時不回傳 */
       price?: string | null;
@@ -2850,6 +2857,11 @@ export interface components {
        * @example 500.000
        */
       inventoryLevel?: string | null;
+      /**
+       * @description inventoryLevel 顯示用的單位；不參與 unitCode 的換算
+       * @example 公克
+       */
+      inventoryLevelUnitText?: string | null;
       /** @description inventoryLevel 寫入帳本時的異動原因；不會存到 ingredient */
       transactionNote?: string | null;
     };

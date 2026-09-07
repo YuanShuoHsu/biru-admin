@@ -28,6 +28,7 @@
     "grantedBy": "Granted by",
     "image": "Image URL",
     "inventoryLevel": "Inventory",
+    "inventoryLevelUnitText": "Inventory unit",
     "isActive": "Active",
     "lowStockThreshold": "Low stock threshold",
     "maxSelectionCount": "Max selections",

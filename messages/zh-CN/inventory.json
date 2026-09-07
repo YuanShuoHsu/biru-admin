@@ -56,6 +56,10 @@
       "label": "库存",
       "placeholder": "请输入您的库存"
     },
+    "inventoryLevelUnitText": {
+      "label": "库存单位",
+      "placeholder": "请输入您的库存单位"
+    },
     "label": "食材",
     "lowStock": "低库存",
     "lowStockThreshold": {

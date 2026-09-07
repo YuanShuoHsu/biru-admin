@@ -28,6 +28,7 @@
     "grantedBy": "發放者",
     "image": "圖片網址",
     "inventoryLevel": "庫存數量",
+    "inventoryLevelUnitText": "庫存單位",
     "isActive": "啟用",
     "lowStockThreshold": "低庫存警示量",
     "maxSelectionCount": "最多選擇數量",

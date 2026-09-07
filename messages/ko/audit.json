@@ -28,6 +28,7 @@
     "grantedBy": "발급자",
     "image": "이미지 URL",
     "inventoryLevel": "재고 수량",
+    "inventoryLevelUnitText": "재고 단위",
     "isActive": "활성화",
     "lowStockThreshold": "재고 부족 기준",
     "maxSelectionCount": "최대 선택 수",

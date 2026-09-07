@@ -56,6 +56,10 @@
       "label": "Stock",
       "placeholder": "Please enter your stock"
     },
+    "inventoryLevelUnitText": {
+      "label": "Inventory unit",
+      "placeholder": "Please enter your inventory unit"
+    },
     "label": "Ingredient",
     "lowStock": "Low stock",
     "lowStockThreshold": {

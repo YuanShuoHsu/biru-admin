@@ -109,6 +109,7 @@ const IngredientDialog = ({
       brand: ingredient?.brand || "",
       eligibleQuantity: ingredient?.eligibleQuantity || "",
       inventoryLevel: initialStock,
+      inventoryLevelUnitText: ingredient?.inventoryLevelUnitText || "",
       note: ingredient?.note || "",
       transactionNote: "",
       lowStockThreshold: initialLowStockThreshold,
@@ -266,6 +267,7 @@ const IngredientDialog = ({
               )
             : null,
         inventoryLevel: stockPayload,
+        inventoryLevelUnitText: values.inventoryLevelUnitText || null,
         note: values.note || null,
         ...(stockChanged && {
           transactionNote: values.transactionNote || null,
@@ -461,27 +463,48 @@ const IngredientDialog = ({
           </TextField>
         </Grid>
       </Grid>
-      <NumberSpinner
-        clearable
-        disabled={!baseQuantity || !stockEditable}
-        error={!!errors.inventoryLevel}
-        format={{ maximumFractionDigits: 3 }}
-        fullWidth
-        helperText={
-          errors.inventoryLevel?.message ||
-          packageHint(inventoryLevel, stockDelta, stockNote ? [stockNote] : [])
-        }
-        label={`${tInventory("ingredients.inventoryLevel.label")} ${tCommon("optional")}`}
-        max={maxPackages(baseQuantity)}
-        min={0}
-        onValueChange={(value) =>
-          setValue("inventoryLevel", value != null ? String(value) : "", {
-            shouldValidate: isSubmitted,
-          })
-        }
-        placeholder={tInventory("ingredients.inventoryLevel.placeholder")}
-        value={inventoryLevel ? Number(inventoryLevel) : null}
-      />
+      <Grid container width="100%" spacing={2}>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <NumberSpinner
+            clearable
+            disabled={!baseQuantity || !stockEditable}
+            error={!!errors.inventoryLevel}
+            format={{ maximumFractionDigits: 3 }}
+            fullWidth
+            helperText={
+              errors.inventoryLevel?.message ||
+              packageHint(
+                inventoryLevel,
+                stockDelta,
+                stockNote ? [stockNote] : [],
+              )
+            }
+            label={`${tInventory("ingredients.inventoryLevel.label")} ${tCommon("optional")}`}
+            max={maxPackages(baseQuantity)}
+            min={0}
+            onValueChange={(value) =>
+              setValue("inventoryLevel", value != null ? String(value) : "", {
+                shouldValidate: isSubmitted,
+              })
+            }
+            placeholder={tInventory("ingredients.inventoryLevel.placeholder")}
+            value={inventoryLevel ? Number(inventoryLevel) : null}
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <TextField
+            disabled={!editable}
+            error={!!errors.inventoryLevelUnitText}
+            fullWidth
+            helperText={errors.inventoryLevelUnitText?.message}
+            label={`${tInventory("ingredients.inventoryLevelUnitText.label")} ${tCommon("optional")}`}
+            placeholder={tInventory(
+              "ingredients.inventoryLevelUnitText.placeholder",
+            )}
+            {...register("inventoryLevelUnitText")}
+          />
+        </Grid>
+      </Grid>
       {stockEditable && stockChanged && (
         <TextField
           error={!!errors.transactionNote}

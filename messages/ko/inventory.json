@@ -56,6 +56,10 @@
       "label": "재고",
       "placeholder": "재고를 입력해 주세요"
     },
+    "inventoryLevelUnitText": {
+      "label": "재고 단위",
+      "placeholder": "재고 단위를 입력해 주세요"
+    },
     "label": "식자재",
     "lowStock": "재고 부족",
     "lowStockThreshold": {

@@ -17,6 +17,7 @@ export const useIngredientFormSchema = (canViewPurchasing: boolean) => {
         error: tValidation("eligibleQuantity.required"),
       }),
     inventoryLevel: z.string().trim().optional(),
+    inventoryLevelUnitText: z.string().trim().optional(),
     lowStockThreshold: z.string().trim().optional(),
     note: z.string().trim().optional(),
     transactionNote: z.string().trim().optional(),

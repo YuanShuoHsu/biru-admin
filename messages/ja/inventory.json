@@ -56,6 +56,10 @@
       "label": "在庫",
       "placeholder": "在庫を入力してください"
     },
+    "inventoryLevelUnitText": {
+      "label": "在庫単位",
+      "placeholder": "在庫単位を入力してください"
+    },
     "label": "食材",
     "lowStock": "在庫僅少",
     "lowStockThreshold": {

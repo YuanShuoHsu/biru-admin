@@ -28,6 +28,7 @@
     "grantedBy": "配布者",
     "image": "画像URL",
     "inventoryLevel": "在庫数",
+    "inventoryLevelUnitText": "在庫単位",
     "isActive": "有効",
     "lowStockThreshold": "在庫僅少のしきい値",
     "maxSelectionCount": "最大選択数",
