@@ -34,29 +34,17 @@ const useNavItems = (): NavItem[][] => {
 
   const isAdmin = session?.user?.role === "admin";
 
-  const canViewInventory = hasRolePermission(memberRole, {
-    inventory: ["read"],
-  });
-  const canViewPurchasing = hasRolePermission(memberRole, {
-    purchasing: ["read"],
-  });
+  const inventoryChildren = navChildren["/inventory"];
 
   return [
-    [
-      navItem("/dashboard"),
-      ...(defaultOrganizationSlug ? [navItem("/orders")] : []),
-    ],
+    [navItem("/dashboard")],
     ...(defaultOrganizationSlug
       ? [
           [
-            navItem("/menus"),
-            ...(canViewInventory || canViewPurchasing
-              ? [
-                  navItem(
-                    "/inventory",
-                    canViewInventory ? undefined : "/inventory/suppliers",
-                  ),
-                ]
+            { ...navItem("/orders"), children: navChildren["/orders"] },
+            { ...navItem("/menus"), children: navChildren["/menus"] },
+            ...(inventoryChildren.length
+              ? [{ ...navItem("/inventory"), children: inventoryChildren }]
               : []),
           ],
         ]
