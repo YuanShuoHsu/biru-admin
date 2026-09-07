@@ -8,6 +8,12 @@ interface IngredientFormatters {
   tInventory: ReturnType<typeof useTranslations<"inventory">>;
 }
 
+const showsPackages = (packageBaseQuantity: number) => {
+  const packageMilli = Math.round(packageBaseQuantity * 1000);
+
+  return packageMilli > 0 && packageMilli !== 1000;
+};
+
 export const packagesOf = (quantity: number, packageBaseQuantity: number) => {
   const quantityMilli = Math.round(quantity * 1000);
   const packageMilli = Math.round(packageBaseQuantity * 1000);
@@ -20,7 +26,7 @@ export const packagesOf = (quantity: number, packageBaseQuantity: number) => {
     packages,
     remainder:
       packages > 0 ? (quantityMilli - packages * packageMilli) / 1000 : 0,
-    showPackages: packageMilli > 0 && packageMilli !== 1000,
+    showPackages: showsPackages(packageBaseQuantity),
   };
 };
 
@@ -59,7 +65,7 @@ export const formatStock = (
     `${format.number(quantity)} ${tInventory(`units.${unitCode}`)}`,
     showPackages
       ? [
-          `×${format.number(packages)}`,
+          `${tCommon("multiply")}${format.number(packages)}`,
           ...(remainder
             ? [
                 `${format.number(remainder, { maximumFractionDigits: 3 })} ${tInventory(`units.${unitCode}`)}`,
@@ -75,12 +81,10 @@ export const formatStockDelta = (
   quantity: number,
   { packageBaseQuantity, unitCode }: Ingredient,
   { format, tCommon, tInventory }: IngredientFormatters,
-) => {
-  const packageMilli = Math.round(Number(packageBaseQuantity) * 1000);
-
-  return withSuffix(
+) =>
+  withSuffix(
     `${format.number(quantity, { signDisplay: "exceptZero" })} ${tInventory(`units.${unitCode}`)}`,
-    packageMilli > 0 && packageMilli !== 1000
+    showsPackages(Number(packageBaseQuantity))
       ? [
           format.number(toPackages(quantity, Number(packageBaseQuantity)), {
             maximumFractionDigits: 3,
@@ -90,7 +94,6 @@ export const formatStockDelta = (
       : [],
     tCommon,
   );
-};
 
 export const formatPackageQuantity = (
   { eligibleQuantity, eligibleQuantityUnitCode }: Ingredient,
