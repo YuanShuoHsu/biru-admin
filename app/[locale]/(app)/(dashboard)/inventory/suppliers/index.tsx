@@ -10,6 +10,7 @@ import useSWR from "swr";
 import SupplierDialog from "./SupplierDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
+import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
 
 import {
   autosizeOptions,
@@ -356,16 +357,19 @@ const Suppliers = ({
         field: "telephone",
         filterOperators: stringFilterOperators,
         headerName: `${tInventory("suppliers.telephone.label")} ${tCommon("optional")}`,
+        renderCell: renderEmptyableCell,
       },
       {
         field: "url",
         filterOperators: stringFilterOperators,
         headerName: `${tInventory("suppliers.url.label")} ${tCommon("optional")}`,
         renderCell: ({ row: { url } }: GridRenderCellParams<Supplier>) =>
-          url && (
+          url ? (
             <Link href={url} rel="noopener" target="_blank">
               {url}
             </Link>
+          ) : (
+            <EmptyCell />
           ),
       },
       {
@@ -392,6 +396,7 @@ const Suppliers = ({
         field: "note",
         filterOperators: stringFilterOperators,
         headerName: `${tInventory("suppliers.note.label")} ${tCommon("optional")}`,
+        renderCell: renderEmptyableCell,
       },
       {
         field: "createdAt",

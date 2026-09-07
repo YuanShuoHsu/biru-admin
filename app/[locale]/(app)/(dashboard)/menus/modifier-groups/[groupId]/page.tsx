@@ -134,9 +134,13 @@ const ModifiersPage = async ({ params, searchParams }: ModifiersPageProps) => {
   const canViewAuditLog = hasRolePermission(role, {
     auditLog: ["read"],
   });
+  const canUpdateAvailability = hasRolePermission(role, {
+    itemAvailability: ["update"],
+  });
 
   return (
     <Modifiers
+      canUpdateAvailability={canUpdateAvailability}
       canViewAuditLog={canViewAuditLog}
       canWrite={canWrite}
       filterField={filterField}

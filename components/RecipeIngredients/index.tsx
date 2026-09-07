@@ -10,6 +10,7 @@ import useSWR from "swr";
 import RecipeIngredientDialog from "./RecipeIngredientDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
+import { renderEmptyableCell } from "@/components/EmptyCell";
 import RecipeDialog from "@/components/RecipeDialog";
 
 import {
@@ -56,6 +57,7 @@ import type {
 } from "@/types/inventory";
 import type { MenuItem } from "@/types/menus";
 
+import { formatMoney } from "@/utils/currency";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
@@ -148,6 +150,8 @@ const RecipeIngredients = ({
   const searchParams = useSearchParams();
 
   const format = useFormatter();
+
+  const priceCurrency = menuItem?.offer?.priceCurrency;
 
   const locale = useLocale();
 
@@ -423,21 +427,27 @@ const RecipeIngredients = ({
         field: "unitPrice",
         filterable: false,
         headerName: tInventory("recipes.ingredients.unitPrice.label"),
+        renderCell: renderEmptyableCell,
         sortable: false,
         valueFormatter: (value: RecipeIngredient["unitPrice"]) =>
           value == null
             ? ""
-            : format.number(value, { maximumFractionDigits: 6 }),
+            : formatMoney(value, priceCurrency, format, {
+                maximumFractionDigits: 6,
+              }),
       },
       {
         field: "cost",
         filterable: false,
         headerName: tInventory("recipes.ingredients.cost.label"),
+        renderCell: renderEmptyableCell,
         sortable: false,
         valueFormatter: (value: RecipeIngredient["cost"]) =>
           value == null
             ? ""
-            : format.number(value, { maximumFractionDigits: 2 }),
+            : formatMoney(value, priceCurrency, format, {
+                maximumFractionDigits: 2,
+              }),
       },
     ];
 
@@ -534,6 +544,7 @@ const RecipeIngredients = ({
     handleUpdateRecipeIngredient,
     locale,
     numberFilterOperators,
+    priceCurrency,
     recipe,
     stringFilterOperators,
     tCommon,

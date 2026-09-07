@@ -1,6 +1,6 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent, useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
@@ -23,6 +23,7 @@ import type {
   OrderRefundPreview,
 } from "@/types/orders";
 
+import { formatMoney } from "@/utils/currency";
 import { getErrorMessage } from "@/utils/errors";
 import { type FetchError, fetcher, sendRequest } from "@/utils/fetcher";
 import { getRefundedQuantities } from "@/utils/refunds";
@@ -46,7 +47,7 @@ const RefundOrderDialogContent = ({
     (state) => state,
   );
 
-  const locale = useLocale();
+  const format = useFormatter();
 
   const tCommon = useTranslations("common");
   const tOrders = useTranslations("orders");
@@ -101,7 +102,7 @@ const RefundOrderDialogContent = ({
   }, [disabled, setDialog]);
 
   const isEcpayRefund = order.refundChannel === "ecpay";
-  const currency = order.items[0]?.priceCurrency || "";
+  const currency = order.items[0]?.priceCurrency;
 
   const onSubmit = async (event: BaseSyntheticEvent) => {
     event.preventDefault();
@@ -122,7 +123,7 @@ const RefundOrderDialogContent = ({
 
       enqueueSnackbar(
         tOrders("actions.refund.success", {
-          amount: `${currency} ${Number(created.amount).toLocaleString(locale)}`,
+          amount: formatMoney(Number(created.amount), currency, format),
           orderNumber: order.orderNumber,
         }),
         { variant: "success" },
@@ -253,7 +254,7 @@ const RefundOrderDialogContent = ({
             {tOrders("actions.refund.allocatedDiscount")}
           </Typography>
           <Typography variant="body2">
-            -{currency} {preview.allocatedDiscount.toLocaleString(locale)}
+            -{formatMoney(preview.allocatedDiscount, currency, format)}
           </Typography>
         </Stack>
       )}
@@ -262,7 +263,7 @@ const RefundOrderDialogContent = ({
           {tOrders("actions.refund.amount")}
         </Typography>
         <Typography color="error" fontWeight="bold" variant="h6">
-          {currency} {(preview?.amount ?? 0).toLocaleString(locale)}
+          {formatMoney(preview?.amount ?? 0, currency, format)}
         </Typography>
       </Stack>
     </Stack>

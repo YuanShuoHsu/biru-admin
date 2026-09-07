@@ -6,6 +6,8 @@ import { useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
+import { renderEmptyableCell } from "@/components/EmptyCell";
+
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -247,6 +249,7 @@ const CouponRecipients = ({
         field: "grantedByEmail",
         filterOperators: stringFilterOperators,
         headerName: tCoupons("recipients.grantedBy"),
+        renderCell: renderEmptyableCell,
         valueGetter: (
           _value: unknown,
           { grantedByEmail, source }: CouponRecipient,

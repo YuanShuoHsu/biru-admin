@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormatter, useLocale, useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 
@@ -17,6 +17,7 @@ import { styled } from "@mui/material/styles";
 
 import type { MyClaimableCoupon, MyCoupon } from "@/types/coupons";
 
+import { formatMoney } from "@/utils/currency";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
@@ -38,8 +39,6 @@ const Coupons = ({ claimableCoupons, coupons }: CouponsProps) => {
   const [claimingId, setClaimingId] = useState<string | null>(null);
 
   const format = useFormatter();
-
-  const locale = useLocale();
 
   const router = useRouter();
 
@@ -136,8 +135,8 @@ const Coupons = ({ claimableCoupons, coupons }: CouponsProps) => {
                           variant="h5"
                         >
                           {coupon.discountType === "percentage"
-                            ? `-${Number(coupon.discountValue)}%`
-                            : `-${coupon.discountCurrency} ${Number(coupon.discountValue).toLocaleString(locale)}`}
+                            ? `-${format.number(Number(coupon.discountValue))}%`
+                            : `-${formatMoney(Number(coupon.discountValue), coupon.discountCurrency, format)}`}
                         </Typography>
                         {!("coupon" in item) && (
                           <Button

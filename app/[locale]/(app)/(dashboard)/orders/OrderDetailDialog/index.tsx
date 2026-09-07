@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormatter, useLocale, useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 import useSWR from "swr";
@@ -22,6 +22,7 @@ import type {
   OrderResponse,
 } from "@/types/orders";
 
+import { formatMoney } from "@/utils/currency";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
@@ -76,8 +77,6 @@ const OrderDetailDialog = ({
   organizationSlug,
 }: OrderDetailDialogProps) => {
   const format = useFormatter();
-
-  const locale = useLocale();
 
   const getOrderItemName = useOrderItemName();
 
@@ -298,9 +297,11 @@ const OrderDetailDialog = ({
                         label={tOrders(
                           "detail.invoice.verification.salesAmount",
                         )}
-                        value={`${currency} ${Number(
-                          verification.salesAmount,
-                        ).toLocaleString(locale)}`}
+                        value={formatMoney(
+                          Number(verification.salesAmount),
+                          currency,
+                          format,
+                        )}
                       />
                     </>
                   )}
@@ -362,7 +363,7 @@ const OrderDetailDialog = ({
                   {tCommon("parenthesisClose")}
                 </Typography>
                 <Typography color="error" flexShrink={0} variant="body2">
-                  -{currency} {Number(refund.amount).toLocaleString(locale)}
+                  -{formatMoney(Number(refund.amount), currency, format)}
                 </Typography>
               </Stack>
               <InfoRow
@@ -462,9 +463,10 @@ const OrderDetailDialog = ({
               {item.orderQuantity}
             </Typography>
             <Typography flexShrink={0} variant="body2">
-              {item.priceCurrency}{" "}
-              {(Number(item.unitPrice) * item.orderQuantity).toLocaleString(
-                locale,
+              {formatMoney(
+                Number(item.unitPrice) * item.orderQuantity,
+                item.priceCurrency,
+                format,
               )}
             </Typography>
           </Stack>
@@ -478,7 +480,7 @@ const OrderDetailDialog = ({
                 : ""}
             </Typography>
             <Typography color="primary" flexShrink={0} variant="body2">
-              -{currency} {discount.toLocaleString(locale)}
+              -{formatMoney(discount, currency, format)}
             </Typography>
           </Stack>
         )}
@@ -492,7 +494,7 @@ const OrderDetailDialog = ({
             {tOrders("detail.total")}
           </Typography>
           <Typography color="primary" fontWeight="bold" variant="h6">
-            {currency} {totalAmount.toLocaleString(locale)}
+            {formatMoney(totalAmount, currency, format)}
           </Typography>
         </Stack>
       </Section>

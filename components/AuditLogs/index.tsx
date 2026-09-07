@@ -6,6 +6,8 @@ import { useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
+import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
+
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -404,7 +406,7 @@ const AuditLogs = ({
           });
 
         return NUMERIC_FIELDS.has(field)
-          ? Number(value).toLocaleString(locale)
+          ? format.number(Number(value))
           : (valueLabels[field]?.[value] ?? value);
       }
 
@@ -471,11 +473,13 @@ const AuditLogs = ({
         field: "actorName",
         filterOperators: stringFilterOperators,
         headerName: tAudit("actor"),
+        renderCell: renderEmptyableCell,
       },
       {
         field: "actorEmail",
         filterOperators: stringFilterOperators,
         headerName: tAudit("actorEmail"),
+        renderCell: renderEmptyableCell,
       },
       {
         field: "action",
@@ -524,7 +528,7 @@ const AuditLogs = ({
                     {label}
                   </MuiLink>
                 ) : (
-                  label
+                  label || <EmptyCell />
                 );
               },
               sortable: false,

@@ -11,6 +11,7 @@ import useSWR from "swr";
 import IngredientDialog from "./IngredientDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
+import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
 import { DragHandle, Sortable } from "@/components/Sortable";
 
 import {
@@ -614,6 +615,7 @@ const Ingredients = ({
         field: "brand",
         filterOperators: stringFilterOperators,
         headerName: `${tInventory("ingredients.brand.label")} ${tCommon("optional")}`,
+        renderCell: renderEmptyableCell,
       },
       ...(canViewPurchasing
         ? [
@@ -621,6 +623,7 @@ const Ingredients = ({
               field: "price",
               filterable: false,
               headerName: tInventory("ingredients.price.label"),
+              renderCell: renderEmptyableCell,
               valueGetter: (_value: unknown, row: Ingredient) =>
                 formatPackagePrice(row, { format, tCommon, tInventory }),
             },
@@ -630,6 +633,7 @@ const Ingredients = ({
         field: "eligibleQuantity",
         filterable: false,
         headerName: tInventory("ingredients.eligibleQuantity.label"),
+        renderCell: renderEmptyableCell,
         valueGetter: (_value: unknown, row: Ingredient) =>
           formatPackageQuantity(row, { format, tCommon, tInventory }),
       },
@@ -639,6 +643,7 @@ const Ingredients = ({
               field: "unitPrice",
               filterable: false,
               headerName: tInventory("ingredients.unitPrice.label"),
+              renderCell: renderEmptyableCell,
               valueGetter: (_value: unknown, row: Ingredient) =>
                 formatUnitPrice(row, { format, tCommon, tInventory }),
             },
@@ -695,6 +700,7 @@ const Ingredients = ({
         field: "lowStockThreshold",
         filterOperators: numberFilterOperators,
         headerName: `${tInventory("ingredients.lowStockThreshold.label")} ${tCommon("optional")}`,
+        renderCell: renderEmptyableCell,
         type: "number",
         valueGetter: (_value: unknown, row: Ingredient) =>
           row.lowStockThreshold == null
@@ -711,6 +717,7 @@ const Ingredients = ({
               field: "supplierName",
               filterOperators: stringFilterOperators,
               headerName: `${tInventory("ingredients.supplierId.label")} ${tCommon("optional")}`,
+              renderCell: renderEmptyableCell,
             },
             {
               field: "url",
@@ -720,10 +727,12 @@ const Ingredients = ({
               renderCell: ({
                 row: { url },
               }: GridRenderCellParams<Ingredient>) =>
-                url && (
+                url ? (
                   <Link href={url} rel="noopener" target="_blank">
                     {url}
                   </Link>
+                ) : (
+                  <EmptyCell />
                 ),
             },
           ]
@@ -732,6 +741,7 @@ const Ingredients = ({
         field: "note",
         filterOperators: stringFilterOperators,
         headerName: `${tInventory("ingredients.note.label")} ${tCommon("optional")}`,
+        renderCell: renderEmptyableCell,
       },
       {
         field: "createdAt",

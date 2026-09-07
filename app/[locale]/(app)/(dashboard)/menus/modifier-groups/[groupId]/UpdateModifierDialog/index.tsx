@@ -29,11 +29,13 @@ import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
 
 interface UpdateModifierDialogProps {
+  canWrite: boolean;
   modifier: Modifier;
   mutate: () => void;
 }
 
 const UpdateModifierDialog = ({
+  canWrite,
   modifier,
   mutate,
 }: UpdateModifierDialogProps) => {
@@ -74,16 +76,28 @@ const UpdateModifierDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher<Modifier>(`/api/modifiers/${modifier.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          displayName,
-          priceAdjustment: priceAdjustment?.trim() ? priceAdjustment : null,
-          ...(availability && { availability }),
-          availableModes,
-        }),
-      });
+      // 只有 itemAvailability 權限時打窄端點，整包 PATCH 會被後端的 menu:update 擋掉
+      await fetcher<Modifier>(
+        canWrite
+          ? `/api/modifiers/${modifier.id}`
+          : `/api/modifiers/${modifier.id}/availability`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(
+            canWrite
+              ? {
+                  displayName,
+                  priceAdjustment: priceAdjustment?.trim()
+                    ? priceAdjustment
+                    : null,
+                  ...(availability && { availability }),
+                  availableModes,
+                }
+              : { availability },
+          ),
+        },
+      );
 
       enqueueSnackbar(
         tMenus("modifiers.actions.updateModifier.success", {
@@ -112,6 +126,7 @@ const UpdateModifierDialog = ({
       <LocalizedTextFields
         fields={(lang) => [
           {
+            disabled: !canWrite,
             error: !!errors.displayName?.[lang],
             fullWidth: true,
             helperText: errors.displayName?.[lang]?.message,
@@ -129,6 +144,7 @@ const UpdateModifierDialog = ({
       />
       <NumberSpinner
         clearable
+        disabled={!canWrite}
         error={!!errors.priceAdjustment}
         fullWidth
         helperText={errors.priceAdjustment?.message}
@@ -156,6 +172,7 @@ const UpdateModifierDialog = ({
         ))}
       </TextField>
       <CheckboxesGroup
+        disabled={!canWrite}
         error={!!errors.availableModes}
         fullWidth
         helperText={

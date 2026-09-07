@@ -6,6 +6,8 @@ import { useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
+import { renderEmptyableCell } from "@/components/EmptyCell";
+
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -227,6 +229,7 @@ const IngredientTransactions = ({
         field: "unitCost",
         filterOperators: numberFilterOperators,
         headerName: tInventory("transactions.unitCost.label"),
+        renderCell: renderEmptyableCell,
         type: "number",
         valueFormatter: (value: InventoryTransaction["unitCost"]) =>
           value == null
@@ -285,12 +288,14 @@ const IngredientTransactions = ({
         field: "orderNumber",
         filterable: false,
         headerName: tInventory("transactions.orderNumber.label"),
+        renderCell: renderEmptyableCell,
         sortable: false,
       },
       {
         field: "note",
         filterOperators: stringFilterOperators,
         headerName: tInventory("transactions.note.label"),
+        renderCell: renderEmptyableCell,
       },
       {
         field: "createdAt",

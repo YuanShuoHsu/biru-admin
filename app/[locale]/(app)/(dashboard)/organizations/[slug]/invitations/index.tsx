@@ -7,6 +7,8 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo } from "react";
 import useSWR from "swr";
 
+import EmptyCell from "@/components/EmptyCell";
+
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { countKeys, ROLE_RANK } from "@/constants/organizations";
 
@@ -192,12 +194,14 @@ const OrganizationsSlugInvitations = ({
         field: "teamId",
         headerName: `${tTeams("label")} ${tCommon("optional")}`,
         renderCell: ({ row: { teamId } }: GridRenderCellParams<Invitation>) =>
-          teamId && (
+          teamId ? (
             <Chip
               label={teams.find(({ id }) => id === teamId)?.name}
               size="small"
               variant="outlined"
             />
+          ) : (
+            <EmptyCell />
           ),
         valueGetter: (teamId?: string | null) => {
           if (!teamId) return "";

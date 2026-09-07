@@ -91,18 +91,14 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
     ({ slug }) => slug === resolvedSlug,
   )?.id;
 
-  const trendStart = dayjs()
-    .tz(STORE_TIMEZONE)
-    .startOf("day")
-    .subtract(trendFetchDays - 1, "day")
-    .toDate();
+  const storeToday = dayjs().tz(STORE_TIMEZONE).startOf("day");
+
+  const trendEnd = storeToday.toDate();
+
+  const trendStart = storeToday.subtract(trendFetchDays - 1, "day").toDate();
   const trendStartISO = trendStart.toISOString();
 
-  const periodStart = dayjs()
-    .tz(STORE_TIMEZONE)
-    .startOf("day")
-    .subtract(trendPeriodDays - 1, "day")
-    .toDate();
+  const periodStart = storeToday.subtract(trendPeriodDays - 1, "day").toDate();
 
   const [
     usersTotal,
@@ -230,13 +226,13 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
   const getTrendBuckets = (createdAts: (string | Date)[]) =>
     hourly
       ? getHourlyBuckets(createdAts, trendBucketCount, trendStart)
-      : getBinnedBuckets(createdAts, trendBucketCount, bucketDays);
+      : getBinnedBuckets(createdAts, trendBucketCount, bucketDays, trendEnd);
   const getTrendValueBuckets = (
     entries: { date: string | Date; value: number }[],
   ) =>
     hourly
       ? getHourlyValueBuckets(entries, trendBucketCount, trendStart)
-      : getBinnedValueBuckets(entries, trendBucketCount, bucketDays);
+      : getBinnedValueBuckets(entries, trendBucketCount, bucketDays, trendEnd);
 
   const currency = trendOrders[0]?.items[0]?.priceCurrency || "";
 
@@ -258,6 +254,7 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
     <Dashboard
       currency={currency}
       range={range}
+      trendEnd={trendEnd.toISOString()}
       stats={{
         totalUsers: usersTotal,
         totalOrganizations: organizations?.length || 0,

@@ -138,10 +138,14 @@ const MenusMenuIdSectionIdPage = async ({
     auditLog: ["read"],
   });
   const canViewPurchasing = hasRolePermission(role, { purchasing: ["read"] });
+  const canUpdateAvailability = hasRolePermission(role, {
+    itemAvailability: ["update"],
+  });
 
   return (
     <MenusMenuIdSectionId
       canCreateRecipe={canCreateRecipe}
+      canUpdateAvailability={canUpdateAvailability}
       canViewAuditLog={canViewAuditLog}
       canViewPurchasing={canViewPurchasing}
       canWrite={canWrite}

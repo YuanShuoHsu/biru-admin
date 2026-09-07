@@ -1200,6 +1200,23 @@ export interface paths {
     patch: operations["MenusController_updateOffer"];
     trace?: never;
   };
+  "/api/offers/{offerId}/availability": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** 更新品項供應狀態 */
+    patch: operations["MenusController_updateOfferAvailability"];
+    trace?: never;
+  };
   "/api/menu-items/{menuItemId}/add-ons": {
     parameters: {
       query?: never;
@@ -1358,6 +1375,23 @@ export interface paths {
     head?: never;
     /** 更新選項 */
     patch: operations["MenusController_updateModifier"];
+    trace?: never;
+  };
+  "/api/modifiers/{modifierId}/availability": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** 更新選項供應狀態 */
+    patch: operations["MenusController_updateModifierAvailability"];
     trace?: never;
   };
   "/api/menu-items/{menuItemId}/modifier-groups": {
@@ -3586,6 +3620,9 @@ export interface components {
       /** @description 當日剩餘庫存數量 */
       inventoryLevel?: components["schemas"]["QuantitativeValueDto"];
       priceSpecification?: components["schemas"]["PriceSpecificationDto"];
+    };
+    UpdateItemAvailabilityDto: {
+      availability: components["schemas"]["ItemAvailability"];
     };
     CreateMenuItemAddOnDto: {
       /** @description Add-on menu item ID */
@@ -7002,6 +7039,38 @@ export interface operations {
       };
     };
   };
+  MenusController_updateOfferAvailability: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        offerId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateItemAvailabilityDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OfferResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   MenusController_findAllMenuItemAddOns: {
     parameters: {
       query?: {
@@ -7483,6 +7552,38 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": components["schemas"]["UpdateModifierDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ModifierResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  MenusController_updateModifierAvailability: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        modifierId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateItemAvailabilityDto"];
       };
     };
     responses: {

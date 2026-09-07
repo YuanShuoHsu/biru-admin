@@ -37,12 +37,14 @@ import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
 
 interface UpdateMenuItemDialogProps {
+  canWrite: boolean;
   item: MenuItemType;
   mutate: () => void;
   openingHours?: string | null;
 }
 
 const UpdateMenuItemDialog = ({
+  canWrite,
   item,
   mutate,
   openingHours,
@@ -135,6 +137,28 @@ const UpdateMenuItemDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
+      if (!canWrite) {
+        // 只有 itemAvailability 權限時打窄端點，整包 PATCH 會被後端的 menu:update 擋掉
+        await fetcher(`/api/offers/${item.offer?.id}/availability`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ availability: offer?.availability }),
+        });
+
+        enqueueSnackbar(
+          tMenus("items.actions.updateItem.success", {
+            name: localize(name, locale),
+          }),
+          { variant: "success" },
+        );
+
+        closeDialog();
+
+        mutate();
+
+        return;
+      }
+
       await fetcher(`/api/menu-items/${item.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -214,6 +238,7 @@ const UpdateMenuItemDialog = ({
     <FormBox id="update-menu-item-form" onSubmit={onSubmit}>
       <UploadAvatars
         aspectRatio="16/9"
+        disabled={!canWrite}
         fullWidth
         initialSrc={item.image}
         shape="square"
@@ -222,6 +247,7 @@ const UpdateMenuItemDialog = ({
       <LocalizedTextFields
         fields={(lang) => [
           {
+            disabled: !canWrite,
             error: !!errors.name?.[lang],
             fullWidth: true,
             helperText: errors.name?.[lang]?.message,
@@ -233,6 +259,7 @@ const UpdateMenuItemDialog = ({
             value: nameValue?.[lang] || "",
           },
           {
+            disabled: !canWrite,
             error: !!errors.description?.[lang],
             fullWidth: true,
             helperText: errors.description?.[lang]?.message,
@@ -256,6 +283,7 @@ const UpdateMenuItemDialog = ({
       <Grid container width="100%" spacing={2}>
         <Grid size={{ xs: 12, sm: 6 }}>
           <CountryAutocomplete
+            disabled={!canWrite}
             error={!!errors.offer?.priceCurrency}
             helperText={errors.offer?.priceCurrency?.message}
             label={tMenus("items.offers.priceCurrency.label")}
@@ -271,6 +299,7 @@ const UpdateMenuItemDialog = ({
             allowNegative={false}
             customInput={TextField}
             decimalScale={2}
+            disabled={!canWrite}
             error={!!errors.offer?.price}
             fullWidth
             helperText={errors.offer?.price?.message}
@@ -321,6 +350,7 @@ const UpdateMenuItemDialog = ({
         ))}
       </TextField>
       <CheckboxesGroup
+        disabled={!canWrite}
         error={!!errors.availableModes}
         fullWidth
         helperText={
@@ -344,6 +374,7 @@ const UpdateMenuItemDialog = ({
             allowNegative={false}
             customInput={TextField}
             decimalScale={2}
+            disabled={!canWrite}
             error={!!errors.offer?.priceSpecification?.price}
             fullWidth
             helperText={errors.offer?.priceSpecification?.price?.message}
@@ -366,6 +397,7 @@ const UpdateMenuItemDialog = ({
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
           <DatePicker
+            disabled={!canWrite}
             label={`${tMenus("items.offers.priceSpecification.validFrom.label")} ${tCommon("optional")}`}
             maxDate={
               priceSpecificationValidThrough
@@ -397,6 +429,7 @@ const UpdateMenuItemDialog = ({
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
           <DatePicker
+            disabled={!canWrite}
             label={`${tMenus("items.offers.priceSpecification.validThrough.label")} ${tCommon("optional")}`}
             minDate={
               priceSpecificationValidFrom
@@ -429,6 +462,7 @@ const UpdateMenuItemDialog = ({
         <Grid size={{ xs: 12, sm: 6 }}>
           <NumberSpinner
             clearable
+            disabled={!canWrite}
             error={!!errors.offer?.inventoryLevel?.value}
             fullWidth
             helperText={errors.offer?.inventoryLevel?.value?.message}
@@ -448,6 +482,7 @@ const UpdateMenuItemDialog = ({
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
+            disabled={!canWrite}
             error={!!errors.offer?.inventoryLevel?.unitText}
             fullWidth
             helperText={errors.offer?.inventoryLevel?.unitText?.message}
@@ -461,6 +496,7 @@ const UpdateMenuItemDialog = ({
         <Grid size={{ xs: 12, sm: 6 }}>
           <NumberSpinner
             clearable
+            disabled={!canWrite}
             error={!!errors.offer?.deliveryLeadTime?.value}
             fullWidth
             helperText={errors.offer?.deliveryLeadTime?.value?.message}
@@ -484,6 +520,7 @@ const UpdateMenuItemDialog = ({
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
+            disabled={!canWrite}
             error={!!errors.offer?.deliveryLeadTime?.unitText}
             fullWidth
             helperText={errors.offer?.deliveryLeadTime?.unitText?.message}

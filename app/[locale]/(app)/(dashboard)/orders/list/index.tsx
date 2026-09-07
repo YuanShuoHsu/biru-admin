@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormatter, useLocale, useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
@@ -73,6 +73,7 @@ import type {
   OrderTransition,
 } from "@/types/orders";
 
+import { formatMoney } from "@/utils/currency";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getOrderEnumOptions } from "@/utils/enumOptions";
 import { getErrorMessage } from "@/utils/errors";
@@ -80,6 +81,7 @@ import { fetcher } from "@/utils/fetcher";
 import { printDocument } from "@/utils/print";
 
 import AuditLogButton from "@/components/AuditLogButton";
+import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
 
 import OrderDetailDialog from "../OrderDetailDialog";
 import RefundOrderDialogContent, {
@@ -196,8 +198,6 @@ const Orders = ({
   const format = useFormatter();
 
   const apiRef = useGridApiRef();
-
-  const locale = useLocale();
 
   const pathname = usePathname();
 
@@ -776,6 +776,7 @@ const Orders = ({
         field: "customerName",
         filterOperators: stringFilterOperators,
         headerName: tOrders("customerName"),
+        renderCell: renderEmptyableCell,
         valueGetter: (_value: unknown, row: AdminOrderResponse) =>
           row.customer.name,
       },
@@ -783,6 +784,7 @@ const Orders = ({
         field: "customerTelephone",
         filterOperators: stringFilterOperators,
         headerName: tOrders("customerTelephone"),
+        renderCell: renderEmptyableCell,
         valueGetter: (_value: unknown, row: AdminOrderResponse) =>
           row.customer.telephone || "",
       },
@@ -790,6 +792,7 @@ const Orders = ({
         field: "customerEmail",
         filterOperators: stringFilterOperators,
         headerName: tOrders("customerEmail"),
+        renderCell: renderEmptyableCell,
         valueGetter: (_value: unknown, row: AdminOrderResponse) =>
           row.customer.email || "",
       },
@@ -814,18 +817,20 @@ const Orders = ({
         field: "tableNumber",
         filterOperators: numberFilterOperators,
         headerName: tOrders("tableNumber"),
+        renderCell: renderEmptyableCell,
       },
       {
         field: "total",
         filterOperators: numberFilterOperators,
         headerName: tOrders("total"),
         valueGetter: (_value: unknown, row: AdminOrderResponse) =>
-          `${row.items[0]?.priceCurrency || ""} ${Number(row.total).toLocaleString(locale)}`.trim(),
+          formatMoney(Number(row.total), row.items[0]?.priceCurrency, format),
       },
       {
         field: "paymentMethod",
         filterOperators: enumFilterOperators,
         headerName: tOrders("paymentMethod"),
+        renderCell: renderEmptyableCell,
         type: "singleSelect",
         valueOptions: enumOptions.paymentMethod,
       },
@@ -833,6 +838,7 @@ const Orders = ({
         field: "paymentDate",
         filterOperators: dateFilterOperators,
         headerName: tOrders("paymentDate"),
+        renderCell: renderEmptyableCell,
         valueFormatter: (value: string | null) =>
           value ? format.dateTime(new Date(value), "short") : "",
       },
@@ -840,6 +846,7 @@ const Orders = ({
         field: "pickupTime",
         filterOperators: dateFilterOperators,
         headerName: tOrders("pickupTime"),
+        renderCell: renderEmptyableCell,
         valueFormatter: (value: string | null) =>
           value ? format.dateTime(new Date(value), "short") : "",
       },
@@ -847,6 +854,7 @@ const Orders = ({
         field: "invoiceType",
         filterOperators: enumFilterOperators,
         headerName: tOrders("invoiceType"),
+        renderCell: renderEmptyableCell,
         type: "singleSelect",
         valueGetter: (_value: unknown, row: AdminOrderResponse) =>
           row.invoice?.type || "",
@@ -857,13 +865,15 @@ const Orders = ({
         filterOperators: enumFilterOperators,
         headerName: tOrders("invoiceStatus"),
         renderCell: ({ row }: GridRenderCellParams<AdminOrderResponse>) =>
-          row.invoice && (
+          row.invoice ? (
             <Chip
               color={INVOICE_STATUS_COLORS[row.invoice.status]}
               label={tOrders(`invoiceStatusValue.${row.invoice.status}`)}
               size="small"
               variant="outlined"
             />
+          ) : (
+            <EmptyCell />
           ),
         type: "singleSelect",
         valueGetter: (_value: unknown, row: AdminOrderResponse) =>
@@ -874,6 +884,7 @@ const Orders = ({
         field: "confirmationNumber",
         filterOperators: stringFilterOperators,
         headerName: tOrders("confirmationNumber"),
+        renderCell: renderEmptyableCell,
       },
       {
         field: "createdAt",
@@ -903,7 +914,6 @@ const Orders = ({
       hasPrintableInvoice,
       hasResettableInvoicePrint,
       hasTransitions,
-      locale,
       numberFilterOperators,
       stringFilterOperators,
       tOrder,

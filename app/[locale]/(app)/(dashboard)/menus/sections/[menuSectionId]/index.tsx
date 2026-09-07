@@ -12,7 +12,7 @@ import CreateMenuItemDialog from "./CreateMenuItemDialog";
 import UpdateMenuItemDialog from "./UpdateMenuItemDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
-import FlagImage from "@/components/FlagImage";
+import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
 import { DragHandle, Sortable } from "@/components/Sortable";
 
 import {
@@ -59,7 +59,6 @@ import {
   Stack,
   styled,
   Tooltip,
-  Typography,
 } from "@mui/material";
 import type {
   GridColDef,
@@ -72,7 +71,6 @@ import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { currencies } from "@/constants/currencies";
 import { orderModeValues } from "@/types/api";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type {
@@ -81,6 +79,7 @@ import type {
   MenuItemSortField,
 } from "@/types/menus";
 
+import { formatMoney } from "@/utils/currency";
 import {
   getDataGridSearchParams,
   getFilterItemParams,
@@ -107,6 +106,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
 interface MenusMenuIdSectionIdProps {
   canCreateRecipe: boolean;
   canViewPurchasing: boolean;
+  canUpdateAvailability: boolean;
   canViewAuditLog: boolean;
   canWrite: boolean;
   filterField?: MenuItemFilterField;
@@ -127,6 +127,7 @@ interface MenusMenuIdSectionIdProps {
 const MenusMenuIdSectionId = ({
   canCreateRecipe,
   canViewPurchasing,
+  canUpdateAvailability,
   canViewAuditLog,
   canWrite,
   filterField: initialFilterField,
@@ -432,6 +433,7 @@ const MenusMenuIdSectionId = ({
       setDialog({
         content: (
           <UpdateMenuItemDialog
+            canWrite={canWrite}
             item={item}
             mutate={mutate}
             openingHours={openingHours}
@@ -442,7 +444,7 @@ const MenusMenuIdSectionId = ({
         title: tMenus("items.actions.updateItem.title"),
       });
     },
-    [mutate, openingHours, setDialog, tMenus],
+    [canWrite, mutate, openingHours, setDialog, tMenus],
   );
 
   const handleDeleteItem = useCallback(
@@ -490,13 +492,16 @@ const MenusMenuIdSectionId = ({
         field: "cost",
         filterable: false,
         headerName: tInventory("recipes.cost.label"),
+        renderCell: renderEmptyableCell,
         sortable: false,
-        valueGetter: (_value: unknown, { recipe }: MenuItem) => {
+        valueGetter: (_value: unknown, { offer, recipe }: MenuItem) => {
           if (!recipe) return "";
 
           return recipe.cost == null
             ? tInventory("recipes.cost.unavailable")
-            : format.number(recipe.cost, { maximumFractionDigits: 2 });
+            : formatMoney(recipe.cost, offer?.priceCurrency, format, {
+                maximumFractionDigits: 2,
+              });
         },
       },
     ];
@@ -506,6 +511,7 @@ const MenusMenuIdSectionId = ({
         field: "margin",
         filterable: false,
         headerName: tInventory("recipes.margin.label"),
+        renderCell: renderEmptyableCell,
         sortable: false,
         valueGetter: (_value: unknown, { offer, recipe }: MenuItem) => {
           const price = Number(offer?.price);
@@ -536,7 +542,8 @@ const MenusMenuIdSectionId = ({
             },
           ]
         : []),
-      ...((canWrite || canViewAuditLog) && !isReorderMode
+      ...((canWrite || canUpdateAvailability || canViewAuditLog) &&
+      !isReorderMode
         ? [
             {
               disableColumnMenu: true,
@@ -562,7 +569,7 @@ const MenusMenuIdSectionId = ({
                       <Widgets fontSize="small" />
                     </IconButton>
                   </Tooltip>
-                  {canWrite && (
+                  {(canWrite || (canUpdateAvailability && !!row.offer)) && (
                     <Tooltip title={tMenus("items.actions.updateItem.title")}>
                       <IconButton
                         onClick={(event) => {
@@ -631,6 +638,7 @@ const MenusMenuIdSectionId = ({
         field: "description",
         filterOperators: stringFilterOperators,
         headerName: `${tMenus("items.description.label")} ${tCommon("optional")}`,
+        renderCell: renderEmptyableCell,
         valueGetter: (_value: unknown, row: MenuItem) =>
           localize(row.description, locale),
       },
@@ -638,6 +646,7 @@ const MenusMenuIdSectionId = ({
         field: "recipeYield",
         filterable: false,
         headerName: tInventory("recipes.recipeYield.label"),
+        renderCell: renderEmptyableCell,
         sortable: false,
         valueGetter: (_value: unknown, { recipe }: MenuItem) =>
           recipe
@@ -654,7 +663,7 @@ const MenusMenuIdSectionId = ({
           ? `${tInventory("recipes.costPerServing.label")} ${tCommon("optional")}`
           : `${tInventory("recipes.name.label")} ${tCommon("optional")}`,
         renderCell: ({
-          row: { id, recipe },
+          row: { id, offer, recipe },
         }: GridRenderCellParams<MenuItem>) => (
           <Stack alignItems="center" direction="row" height="100%">
             {recipe ? (
@@ -671,9 +680,12 @@ const MenusMenuIdSectionId = ({
                   ? localize(recipe.name, locale)
                   : recipe.cost == null
                     ? tInventory("recipes.cost.unavailable")
-                    : format.number(recipe.cost / recipe.recipeYield, {
-                        maximumFractionDigits: 2,
-                      })}
+                    : formatMoney(
+                        recipe.cost / recipe.recipeYield,
+                        offer?.priceCurrency,
+                        format,
+                        { maximumFractionDigits: 2 },
+                      )}
               </Link>
             ) : (
               canCreateRecipe && (
@@ -695,44 +707,29 @@ const MenusMenuIdSectionId = ({
       },
       ...(canViewPurchasing ? marginColumns : []),
       {
-        field: "priceCurrency",
-        filterOperators: stringFilterOperators,
-        headerName: tMenus("items.offers.priceCurrency.label"),
-        valueGetter: (_value: unknown, { offer }: MenuItem) =>
-          offer?.priceCurrency,
-        renderCell: ({ value }: { value?: string }) => {
-          const currency = currencies.find(
-            ({ currency }) => currency === value,
-          );
-          return (
-            <Stack height="100%" direction="row" alignItems="center" gap={1}>
-              {currency && (
-                <FlagImage code={currency.code} label={currency.label} />
-              )}
-              <Typography variant="body2">{value}</Typography>
-            </Stack>
-          );
-        },
-      },
-      {
         field: "price",
         filterOperators: numberFilterOperators,
         headerName: tMenus("items.offers.price.label"),
+        renderCell: renderEmptyableCell,
         valueGetter: (_value: unknown, { offer }: MenuItem) =>
-          offer?.price && Number(offer.price),
+          offer?.price == null
+            ? ""
+            : formatMoney(Number(offer.price), offer.priceCurrency, format),
       },
       {
         field: "availability",
         filterOperators: enumFilterOperators,
         headerName: tMenus("availability.label"),
         renderCell: ({ row: { offer } }: GridRenderCellParams<MenuItem>) =>
-          offer?.availability && (
+          offer?.availability ? (
             <Chip
               color={ITEM_AVAILABILITY_COLOR_MAP[offer.availability]}
               label={tMenus(`availability.options.${offer.availability}`)}
               size="small"
               variant="outlined"
             />
+          ) : (
+            <EmptyCell />
           ),
         type: "singleSelect",
         valueGetter: (_value: unknown, { offer }: MenuItem) =>
@@ -768,6 +765,7 @@ const MenusMenuIdSectionId = ({
         field: "inventoryLevel",
         filterOperators: numberFilterOperators,
         headerName: `${tMenus("items.offers.inventoryLevel.value.label")} ${tCommon("optional")}`,
+        renderCell: renderEmptyableCell,
         valueGetter: (_value: unknown, { offer }: MenuItem) =>
           [offer?.inventoryLevel?.value, offer?.inventoryLevel?.unitText]
             .join(" ")
@@ -777,6 +775,7 @@ const MenusMenuIdSectionId = ({
         field: "deliveryLeadTime",
         filterOperators: numberFilterOperators,
         headerName: `${tMenus("items.offers.deliveryLeadTime.value.label")} ${tCommon("optional")}`,
+        renderCell: renderEmptyableCell,
         valueGetter: (_value: unknown, { offer }: MenuItem) =>
           [offer?.deliveryLeadTime?.value, offer?.deliveryLeadTime?.unitText]
             .join(" ")
@@ -786,14 +785,17 @@ const MenusMenuIdSectionId = ({
         field: "priceSpecification",
         filterOperators: numberFilterOperators,
         headerName: `${tMenus("items.offers.priceSpecification.price.label")} ${tCommon("optional")}`,
+        renderCell: renderEmptyableCell,
         valueGetter: (_value: unknown, { offer }: MenuItem) =>
-          offer?.priceSpecification?.price &&
-          Number(offer.priceSpecification.price),
+          offer?.priceSpecification?.price == null
+            ? ""
+            : Number(offer.priceSpecification.price),
       },
       {
         field: "priceSpecificationValidFrom",
         filterOperators: dateFilterOperators,
         headerName: `${tMenus("items.offers.priceSpecification.validFrom.label")} ${tCommon("optional")}`,
+        renderCell: renderEmptyableCell,
         valueGetter: (_value: unknown, { offer }: MenuItem) =>
           offer?.priceSpecification?.validFrom,
       },
@@ -801,6 +803,7 @@ const MenusMenuIdSectionId = ({
         field: "priceSpecificationValidThrough",
         filterOperators: dateFilterOperators,
         headerName: `${tMenus("items.offers.priceSpecification.validThrough.label")} ${tCommon("optional")}`,
+        renderCell: renderEmptyableCell,
         valueGetter: (_value: unknown, { offer }: MenuItem) =>
           offer?.priceSpecification?.validThrough,
       },
@@ -821,6 +824,7 @@ const MenusMenuIdSectionId = ({
     ];
   }, [
     canCreateRecipe,
+    canUpdateAvailability,
     canViewAuditLog,
     canViewPurchasing,
     canWrite,

@@ -11,6 +11,7 @@ import CouponDialog from "./CouponDialog";
 import GrantCouponDialog from "./GrantCouponDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
+import { renderEmptyableCell } from "@/components/EmptyCell";
 
 import {
   autosizeOptions,
@@ -68,6 +69,7 @@ import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization, OrganizationResponse } from "@/types/organizations";
 
 import { getCouponsPath } from "@/utils/coupons";
+import { formatMoney } from "@/utils/currency";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getCouponEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
@@ -559,15 +561,25 @@ const Coupons = ({
         headerName: tCoupons("discount"),
         valueGetter: (_value: unknown, coupon: Coupon) =>
           coupon.discountType === "percentage"
-            ? `${Number(coupon.discountValue)}%`
-            : `${coupon.discountCurrency} ${Number(coupon.discountValue)}`,
+            ? `${format.number(Number(coupon.discountValue))}%`
+            : formatMoney(
+                Number(coupon.discountValue),
+                coupon.discountCurrency,
+                format,
+              ),
       },
       {
         field: "minSubtotal",
         filterOperators: numberFilterOperators,
         headerName: tCoupons("minSubtotal.label"),
-        valueGetter: (_value: unknown, { minSubtotal }: Coupon) =>
-          minSubtotal ? Number(minSubtotal) : "",
+        renderCell: renderEmptyableCell,
+        valueGetter: (
+          _value: unknown,
+          { discountCurrency, minSubtotal }: Coupon,
+        ) =>
+          minSubtotal == null
+            ? ""
+            : formatMoney(Number(minSubtotal), discountCurrency, format),
       },
       {
         field: "usedCount",
@@ -587,8 +599,9 @@ const Coupons = ({
         field: "pointsCost",
         filterOperators: numberFilterOperators,
         headerName: tCoupons("pointsCost.label"),
+        renderCell: renderEmptyableCell,
         valueGetter: (_value: unknown, { pointsCost }: Coupon) =>
-          pointsCost || "",
+          pointsCost ?? "",
       },
       {
         field: "validFrom",

@@ -1,9 +1,11 @@
 "use client";
 
-import { useFormatter, useLocale, useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { useMemo } from "react";
 
 import { DASHBOARD_RANGES, type DashboardRange } from "./definitions";
+
+import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { useRoutes } from "@/hooks/useRoutes";
 
@@ -28,6 +30,8 @@ import {
   orderResponseDtoPaymentMethodValues,
 } from "@/types/api";
 import type { OrderMode, OrderPaymentMethod } from "@/types/orders";
+
+import { formatMoney } from "@/utils/currency";
 
 const StyledCard = styled(Card)({
   height: "100%",
@@ -80,6 +84,7 @@ interface Trend {
 interface DashboardProps {
   currency: string;
   range: DashboardRange;
+  trendEnd: string;
   stats: {
     totalUsers: number | null;
     totalOrganizations: number;
@@ -98,14 +103,19 @@ interface DashboardProps {
   };
 }
 
-const Dashboard = ({ currency, range, stats, charts }: DashboardProps) => {
+const Dashboard = ({
+  currency,
+  range,
+  trendEnd,
+  stats,
+  charts,
+}: DashboardProps) => {
   const format = useFormatter();
 
   const router = useRouter();
 
   const theme = useTheme();
 
-  const locale = useLocale();
   const tDashboard = useTranslations("dashboard");
   const tOrder = useTranslations("order");
 
@@ -116,19 +126,14 @@ const Dashboard = ({ currency, range, stats, charts }: DashboardProps) => {
 
   const trendLabels = useMemo(() => {
     const count = stats.ordersTrend.data.length;
-    const now = new Date();
-    const dayStart = Date.UTC(
-      now.getUTCFullYear(),
-      now.getUTCMonth(),
-      now.getUTCDate(),
-    );
+    const end = new Date(trendEnd).getTime();
 
     if (hourly) {
       return Array.from({ length: count }, (_, index) =>
-        format.dateTime(new Date(dayStart + index * 3_600_000), {
+        format.dateTime(new Date(end + index * 3_600_000), {
           hour: "numeric",
           minute: "numeric",
-          timeZone: "UTC",
+          timeZone: STORE_TIMEZONE,
         }),
       );
     }
@@ -136,16 +141,21 @@ const Dashboard = ({ currency, range, stats, charts }: DashboardProps) => {
     const stepMs = bucketDays * 86_400_000;
     const dateFormat =
       bucketDays >= 28
-        ? ({ month: "short", year: "numeric", timeZone: "UTC" } as const)
-        : ({ day: "numeric", month: "short", timeZone: "UTC" } as const);
+        ? ({
+            month: "short",
+            year: "numeric",
+            timeZone: STORE_TIMEZONE,
+          } as const)
+        : ({
+            day: "numeric",
+            month: "short",
+            timeZone: STORE_TIMEZONE,
+          } as const);
 
     return Array.from({ length: count }, (_, index) =>
-      format.dateTime(
-        new Date(dayStart - (count - 1 - index) * stepMs),
-        dateFormat,
-      ),
+      format.dateTime(new Date(end - (count - 1 - index) * stepMs), dateFormat),
     );
-  }, [bucketDays, format, hourly, stats.ordersTrend.data.length]);
+  }, [bucketDays, format, hourly, stats.ordersTrend.data.length, trendEnd]);
 
   const periodLabel = tDashboard(`stats.period.${range}`);
 
@@ -245,7 +255,7 @@ const Dashboard = ({ currency, range, stats, charts }: DashboardProps) => {
                       alignItems="center"
                     >
                       <Typography variant="h4">
-                        {value.toLocaleString(locale)}
+                        {format.number(value)}
                       </Typography>
                       <Chip
                         color={chipColor}
@@ -296,7 +306,7 @@ const Dashboard = ({ currency, range, stats, charts }: DashboardProps) => {
                 gap={1}
               >
                 <Typography variant="h4">
-                  {`${currency} ${revenueTotal.toLocaleString(locale)}`.trim()}
+                  {formatMoney(revenueTotal, currency, format)}
                 </Typography>
                 <Chip
                   color={revenueChipColor}
@@ -322,7 +332,7 @@ const Dashboard = ({ currency, range, stats, charts }: DashboardProps) => {
                     label: tDashboard("stats.revenue"),
                     showMark: false,
                     valueFormatter: (value) =>
-                      `${currency} ${(value ?? 0).toLocaleString(locale)}`.trim(),
+                      formatMoney(value ?? 0, currency, format),
                   },
                 ]}
                 sx={{
@@ -351,7 +361,7 @@ const Dashboard = ({ currency, range, stats, charts }: DashboardProps) => {
                 {tDashboard("charts.avgOrderValue")}
               </Typography>
               <Typography variant="h4">
-                {`${currency} ${avgOrderTotal.toLocaleString(locale)}`.trim()}
+                {formatMoney(avgOrderTotal, currency, format)}
               </Typography>
               <Typography color="text.secondary" variant="caption">
                 {periodLabel}
@@ -371,7 +381,7 @@ const Dashboard = ({ currency, range, stats, charts }: DashboardProps) => {
                     label: tDashboard("charts.avgOrderValue"),
                     showMark: false,
                     valueFormatter: (value) =>
-                      `${currency} ${(value ?? 0).toLocaleString(locale)}`.trim(),
+                      formatMoney(value ?? 0, currency, format),
                   },
                 ]}
                 sx={{

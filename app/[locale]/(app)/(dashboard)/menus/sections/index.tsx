@@ -11,6 +11,7 @@ import CreateMenuSectionDialog from "./CreateMenuSectionDialog";
 import UpdateMenuSectionDialog from "./UpdateMenuSectionDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
+import { renderEmptyableCell } from "@/components/EmptyCell";
 import { DragHandle, Sortable } from "@/components/Sortable";
 
 import {
@@ -523,6 +524,7 @@ const MenusMenuId = ({
         field: "description",
         filterOperators: stringFilterOperators,
         headerName: `${tMenus("sections.description.label")} ${tCommon("optional")}`,
+        renderCell: renderEmptyableCell,
         valueGetter: (_value: unknown, row: MenuSection) =>
           localize(row.description, locale),
       },

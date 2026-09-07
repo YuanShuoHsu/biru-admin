@@ -3,7 +3,7 @@
 import dayjs from "dayjs";
 import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
-import { useLocale, useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { useState } from "react";
 
 import CustomizedAccordions from "@/components/CustomizedAccordions";
@@ -30,6 +30,8 @@ import { styled } from "@mui/material/styles";
 
 import type { UserOrderListResponse } from "@/types/orders";
 
+import { formatMoney } from "@/utils/currency";
+
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
 
@@ -50,7 +52,7 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
 
   const getOrderModeLabel = useOrderModeLabel();
 
-  const locale = useLocale();
+  const format = useFormatter();
 
   const pathname = usePathname();
 
@@ -105,7 +107,7 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
           </Typography>
         )}
         {orders.map((order) => {
-          const currency = order.items[0]?.priceCurrency || "";
+          const currency = order.items[0]?.priceCurrency;
           const discount = Number(order.discount || 0);
           const isExpanded = expanded === order.id;
           const totalAmount =
@@ -154,8 +156,8 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
                       fontWeight="bold"
                       variant="subtitle2"
                     >
-                      {tOrder("complete.summary.total")} {currency}{" "}
-                      {totalAmount.toLocaleString(locale)}
+                      {tOrder("complete.summary.total")}{" "}
+                      {formatMoney(totalAmount, currency, format)}
                     </Typography>
                   </Stack>
                 </Stack>
@@ -192,10 +194,11 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
                       {item.orderQuantity}
                     </Typography>
                     <Typography variant="body2">
-                      {currency}{" "}
-                      {(
-                        Number(item.unitPrice) * item.orderQuantity
-                      ).toLocaleString(locale)}
+                      {formatMoney(
+                        Number(item.unitPrice) * item.orderQuantity,
+                        currency,
+                        format,
+                      )}
                     </Typography>
                   </Stack>
                 ))}
@@ -208,7 +211,7 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
                         : ""}
                     </Typography>
                     <Typography color="primary" variant="body2">
-                      -{currency} {discount.toLocaleString(locale)}
+                      -{formatMoney(discount, currency, format)}
                     </Typography>
                   </Stack>
                 )}

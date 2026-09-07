@@ -11,6 +11,7 @@ import CreateAddOnDialog from "./CreateAddOnDialog";
 import UpdateAddOnDialog from "./UpdateAddOnDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
+import { renderEmptyableCell } from "@/components/EmptyCell";
 import { DragHandle, Sortable } from "@/components/Sortable";
 
 import {
@@ -507,6 +508,7 @@ const MenuItemAddOns = ({
         field: "addOnMenuSectionName",
         filterOperators: stringFilterOperators,
         headerName: `${tMenus("items.addOns.addOnMenuSectionId.label")} ${tCommon("optional")}`,
+        renderCell: renderEmptyableCell,
         valueGetter: (
           _value: unknown,
           { addOnMenuSectionName, addOnMenuItemSectionName }: MenuItemAddOn,
@@ -516,6 +518,7 @@ const MenuItemAddOns = ({
         field: "addOnMenuItemName",
         filterOperators: stringFilterOperators,
         headerName: `${tMenus("items.addOns.addOnMenuItemId.label")} ${tCommon("optional")}`,
+        renderCell: renderEmptyableCell,
         valueGetter: (_value: unknown, { addOnMenuItemName }: MenuItemAddOn) =>
           localize(addOnMenuItemName, locale),
       },

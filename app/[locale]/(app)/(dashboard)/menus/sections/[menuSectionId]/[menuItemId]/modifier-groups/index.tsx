@@ -10,6 +10,7 @@ import useSWR from "swr";
 import AttachModifierGroupDialog from "./AttachModifierGroupDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
+import { renderEmptyableCell } from "@/components/EmptyCell";
 import { DragHandle, Sortable } from "@/components/Sortable";
 
 import {
@@ -464,6 +465,7 @@ const MenuItemModifierGroups = ({
         field: "displayName",
         filterOperators: stringFilterOperators,
         headerName: tMenus("modifierGroups.displayName.label"),
+        renderCell: renderEmptyableCell,
         valueGetter: (
           _value: unknown,
           { modifierGroup }: MenuItemModifierGroup,
@@ -473,6 +475,7 @@ const MenuItemModifierGroups = ({
         field: "minSelectionCount",
         filterOperators: numberFilterOperators,
         headerName: tMenus("modifierGroups.minSelectionCount.label"),
+        renderCell: renderEmptyableCell,
         valueGetter: (
           _value: unknown,
           { modifierGroup }: MenuItemModifierGroup,

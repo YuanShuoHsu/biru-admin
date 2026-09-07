@@ -24,6 +24,8 @@ import SetRoleDialogContent from "./SetRoleDialogContent";
 import SetUserPasswordDialogContent from "./SetUserPasswordDialogContent";
 import UpdateUserDialogContent from "./UpdateUserDialogContent";
 
+import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
+
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -656,6 +658,7 @@ const Admins = ({
         field: "bio",
         filterable: false,
         headerName: `${tAdmins("bio")} ${tCommon("optional")}`,
+        renderCell: renderEmptyableCell,
       },
       {
         field: "email",
@@ -667,13 +670,15 @@ const Admins = ({
         filterOperators: enumFilterOperators,
         headerName: tAdmins("role.label"),
         renderCell: ({ row: { role } }: GridRenderCellParams<User>) =>
-          role && (
+          role ? (
             <Chip
               color={ROLE_COLOR_MAP[role]}
               label={tAdmins(`role.${role}`)}
               size="small"
               variant="outlined"
             />
+          ) : (
+            <EmptyCell />
           ),
         type: "singleSelect",
         valueOptions: enumOptions.role,

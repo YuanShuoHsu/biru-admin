@@ -11,6 +11,7 @@ import CreateModifierDialog from "./CreateModifierDialog";
 import UpdateModifierDialog from "./UpdateModifierDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
+import EmptyCell from "@/components/EmptyCell";
 import { DragHandle, Sortable } from "@/components/Sortable";
 
 import {
@@ -80,6 +81,7 @@ const DataGrid = dynamic(
 
 interface ModifiersProps {
   canViewAuditLog: boolean;
+  canUpdateAvailability: boolean;
   canWrite: boolean;
   filterField?: ModifierFilterField;
   filterOperator?: FilterOperator;
@@ -96,6 +98,7 @@ interface ModifiersProps {
 
 const Modifiers = ({
   canViewAuditLog,
+  canUpdateAvailability,
   canWrite,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
@@ -375,13 +378,19 @@ const Modifiers = ({
   const handleUpdateModifier = useCallback(
     (modifier: Modifier) => {
       setDialog({
-        content: <UpdateModifierDialog modifier={modifier} mutate={mutate} />,
+        content: (
+          <UpdateModifierDialog
+            canWrite={canWrite}
+            modifier={modifier}
+            mutate={mutate}
+          />
+        ),
         formId: "update-modifier-form",
         open: true,
         title: tMenus("modifiers.actions.updateModifier.title"),
       });
     },
-    [mutate, setDialog, tMenus],
+    [canWrite, mutate, setDialog, tMenus],
   );
 
   const handleDeleteModifier = useCallback(
@@ -440,7 +449,8 @@ const Modifiers = ({
             },
           ]
         : []),
-      ...((canWrite || canViewAuditLog) && !isReorderMode
+      ...((canWrite || canUpdateAvailability || canViewAuditLog) &&
+      !isReorderMode
         ? [
             {
               disableColumnMenu: true,
@@ -454,7 +464,7 @@ const Modifiers = ({
                   alignItems="center"
                   gap={1}
                 >
-                  {canWrite && (
+                  {(canWrite || canUpdateAvailability) && (
                     <Tooltip
                       title={tMenus("modifiers.actions.updateModifier.title")}
                     >
@@ -508,7 +518,7 @@ const Modifiers = ({
         headerName: tMenus("modifiers.priceAdjustment.label"),
         renderCell: ({
           row: { priceAdjustment },
-        }: GridRenderCellParams<Modifier>) => priceAdjustment ?? "—",
+        }: GridRenderCellParams<Modifier>) => priceAdjustment ?? <EmptyCell />,
       },
       {
         field: "availability",
@@ -517,13 +527,15 @@ const Modifiers = ({
         renderCell: ({
           row: { availability },
         }: GridRenderCellParams<Modifier>) =>
-          availability && (
+          availability ? (
             <Chip
               color={ITEM_AVAILABILITY_COLOR_MAP[availability]}
               label={tMenus(`availability.options.${availability}`)}
               size="small"
               variant="outlined"
             />
+          ) : (
+            <EmptyCell />
           ),
         type: "singleSelect",
         valueOptions: enumOptions.availability,
@@ -568,6 +580,7 @@ const Modifiers = ({
       },
     ],
     [
+      canUpdateAvailability,
       canViewAuditLog,
       canWrite,
       dateFilterOperators,

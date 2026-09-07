@@ -2,6 +2,8 @@ import type { useFormatter, useTranslations } from "next-intl";
 
 import type { Ingredient } from "@/types/inventory";
 
+import { formatMoney } from "@/utils/currency";
+
 interface IngredientFormatters {
   format: ReturnType<typeof useFormatter>;
   tCommon: ReturnType<typeof useTranslations<"common">>;
@@ -106,7 +108,7 @@ export const formatPackageQuantity = (
 export const formatPackagePrice = (
   { price, priceCurrency }: Ingredient,
   { format }: IngredientFormatters,
-) => (price ? `${priceCurrency} ${format.number(Number(price))}` : "");
+) => (price == null ? "" : formatMoney(Number(price), priceCurrency, format));
 
 export const formatPackage = (
   ingredient: Ingredient,
@@ -125,7 +127,7 @@ export const formatUnitPriceOf = (
   { priceCurrency, unitCode }: Pick<Ingredient, "priceCurrency" | "unitCode">,
   { format, tCommon, tInventory }: IngredientFormatters,
 ) =>
-  `${priceCurrency} ${format.number(value, { maximumFractionDigits: 6 })}${tCommon("slash")}${tInventory(`units.${unitCode}`)}`;
+  `${formatMoney(value, priceCurrency, format, { maximumFractionDigits: 6 })}${tCommon("slash")}${tInventory(`units.${unitCode}`)}`;
 
 export const formatUnitPrice = (
   ingredient: Ingredient,
