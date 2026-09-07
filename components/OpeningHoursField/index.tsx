@@ -174,6 +174,7 @@ interface OpeningHoursFieldProps extends Omit<FormControlProps, "onChange"> {
 }
 
 const OpeningHoursField = ({
+  disabled,
   error,
   label,
   onChange,
@@ -234,6 +235,7 @@ const OpeningHoursField = ({
   return (
     <FormControl
       component="fieldset"
+      disabled={disabled}
       error={error}
       variant="standard"
       {...props}
@@ -265,6 +267,7 @@ const OpeningHoursField = ({
               <Grid container alignItems="start" spacing={2}>
                 <Grid size={{ xs: 12, sm: "auto" }}>
                   <StyledToggleButtonGroup
+                    disabled={disabled}
                     onChange={(_, newDays: Day[]) =>
                       handleScheduleChange(id, { days: newDays })
                     }
@@ -298,6 +301,7 @@ const OpeningHoursField = ({
                 <StyledGrid size={{ xs: 12, sm: "grow" }}>
                   <TimePicker
                     ampm={false}
+                    disabled={disabled}
                     format="HH:mm"
                     onChange={(time) =>
                       handleScheduleChange(id, {
@@ -336,6 +340,7 @@ const OpeningHoursField = ({
                   </Typography>
                   <TimePicker
                     ampm={false}
+                    disabled={disabled}
                     format="HH:mm"
                     onChange={(time) =>
                       handleScheduleChange(id, {
@@ -374,6 +379,7 @@ const OpeningHoursField = ({
                     value={toTimeDayjs(endTime)}
                   />
                   <IconButton
+                    disabled={disabled}
                     onClick={() => handleScheduleRemove(id)}
                     size="small"
                   >
@@ -400,6 +406,7 @@ const OpeningHoursField = ({
           );
         })}
         <Button
+          disabled={disabled}
           onClick={handleScheduleAdd}
           startIcon={<Add />}
           variant="outlined"

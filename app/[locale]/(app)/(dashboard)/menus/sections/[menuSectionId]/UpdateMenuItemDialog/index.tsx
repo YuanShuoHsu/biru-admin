@@ -533,6 +533,7 @@ const UpdateMenuItemDialog = ({
         </Grid>
       </Grid>
       <OpeningHoursField
+        disabled={!canWrite}
         error={!!errors.offer?.availableHours}
         fullWidth
         label={`${tMenus("items.offers.availableHours.label")} ${tCommon("optional")}`}
