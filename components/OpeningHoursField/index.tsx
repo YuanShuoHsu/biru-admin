@@ -242,7 +242,9 @@ const OpeningHoursField = ({
     >
       <FormLabel component="legend">{label}</FormLabel>
       {!!openingHours && (
-        <FormHelperText sx={{ color: "text.secondary" }}>
+        <FormHelperText
+          sx={{ color: disabled ? "text.disabled" : "text.secondary" }}
+        >
           {tOrganizations("localBusiness.openingHours.reference", {
             value: formatOpeningHoursForDisplay(
               openingHours,
@@ -335,7 +337,11 @@ const OpeningHoursField = ({
                     timeSteps={TIME_STEPS}
                     value={toTimeDayjs(startTime)}
                   />
-                  <Typography textAlign="center" variant="body2">
+                  <Typography
+                    color={disabled ? "text.disabled" : undefined}
+                    textAlign="center"
+                    variant="body2"
+                  >
                     {tOrganizations("localBusiness.openingHours.to")}
                   </Typography>
                   <TimePicker
