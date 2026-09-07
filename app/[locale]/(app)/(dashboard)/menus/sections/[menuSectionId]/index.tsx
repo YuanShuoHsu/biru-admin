@@ -768,7 +768,12 @@ const MenusMenuIdSectionId = ({
         headerName: `${tMenus("items.offers.inventoryLevel.value.label")} ${tCommon("optional")}`,
         renderCell: renderEmptyableCell,
         valueGetter: (_value: unknown, { offer }: MenuItem) =>
-          [offer?.inventoryLevel?.value, offer?.inventoryLevel?.unitText]
+          [
+            offer?.inventoryLevel?.value == null
+              ? ""
+              : format.number(offer.inventoryLevel.value),
+            offer?.inventoryLevel?.unitText,
+          ]
             .join(" ")
             .trim(),
       },
@@ -778,7 +783,12 @@ const MenusMenuIdSectionId = ({
         headerName: `${tMenus("items.offers.deliveryLeadTime.value.label")} ${tCommon("optional")}`,
         renderCell: renderEmptyableCell,
         valueGetter: (_value: unknown, { offer }: MenuItem) =>
-          [offer?.deliveryLeadTime?.value, offer?.deliveryLeadTime?.unitText]
+          [
+            offer?.deliveryLeadTime?.value == null
+              ? ""
+              : format.number(offer.deliveryLeadTime.value),
+            offer?.deliveryLeadTime?.unitText,
+          ]
             .join(" ")
             .trim(),
       },
