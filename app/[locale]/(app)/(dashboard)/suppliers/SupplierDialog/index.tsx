@@ -1,9 +1,9 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
 import { useSupplierFormSchema, type SupplierForm } from "./definitions";
 
@@ -11,37 +11,45 @@ import FormBox from "@/components/FormBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { TextField } from "@mui/material";
+import { Autocomplete, TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { Supplier } from "@/types/inventory";
+import type { Ingredient, Supplier } from "@/types/inventory";
 
 import { fetcher } from "@/utils/fetcher";
+import { localize } from "@/utils/locale";
 
 interface SupplierDialogProps {
+  ingredients: Ingredient[];
   mutate: () => void;
   organizationSlug: string;
   supplier: Supplier | null;
 }
 
 const SupplierDialog = ({
+  ingredients,
   mutate,
   organizationSlug,
   supplier,
 }: SupplierDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
+  const locale = useLocale();
+
   const tCommon = useTranslations("common");
   const tInventory = useTranslations("inventory");
 
   const supplierFormSchema = useSupplierFormSchema();
   const {
-    formState: { errors },
+    control,
+    formState: { errors, isSubmitted },
     handleSubmit,
     register,
+    setValue,
   } = useForm<SupplierForm>({
     defaultValues: {
+      ingredientIds: supplier?.ingredients.map(({ id }) => id) || [],
       name: supplier?.name || "",
       note: supplier?.note || "",
       telephone: supplier?.telephone || "",
@@ -49,6 +57,12 @@ const SupplierDialog = ({
     },
     resolver: zodResolver(supplierFormSchema),
   });
+
+  const ingredientIds = useWatch({ control, name: "ingredientIds" });
+
+  const assignableIngredients = ingredients.filter(
+    ({ supplierId }) => !supplierId || supplierId === supplier?.id,
+  );
 
   const action = supplier ? "updateSupplier" : "createSupplier";
 
@@ -64,6 +78,7 @@ const SupplierDialog = ({
           method: supplier ? "PATCH" : "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
+            ingredientIds: values.ingredientIds,
             name: values.name,
             note: values.note || null,
             telephone: values.telephone || null,
@@ -117,6 +132,31 @@ const SupplierDialog = ({
         label={`${tInventory("suppliers.telephone.label")} ${tCommon("optional")}`}
         placeholder={tInventory("suppliers.telephone.placeholder")}
         {...register("telephone")}
+      />
+      <Autocomplete
+        disableCloseOnSelect
+        fullWidth
+        getOptionLabel={({ name }) => localize(name, locale)}
+        isOptionEqualToValue={(option, value) => option.id === value.id}
+        multiple
+        onChange={(_, value) =>
+          setValue(
+            "ingredientIds",
+            value.map(({ id }) => id),
+            { shouldValidate: isSubmitted },
+          )
+        }
+        options={assignableIngredients}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label={`${tInventory("suppliers.ingredients.label")} ${tCommon("optional")}`}
+            placeholder={tInventory("suppliers.ingredients.placeholder")}
+          />
+        )}
+        value={assignableIngredients.filter(({ id }) =>
+          ingredientIds.includes(id),
+        )}
       />
       <TextField
         error={!!errors.note}

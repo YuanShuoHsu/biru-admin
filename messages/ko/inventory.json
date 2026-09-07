@@ -197,8 +197,9 @@
         "title": "공급업체 편집"
       }
     },
-    "ingredientNames": {
-      "label": "품목"
+    "ingredients": {
+      "label": "식자재",
+      "placeholder": "식자재을(를) 선택해 주세요"
     },
     "label": "공급업체",
     "name": {

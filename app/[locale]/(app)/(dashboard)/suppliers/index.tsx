@@ -48,6 +48,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type {
+  Ingredient,
   Supplier,
   SupplierFilterField,
   SupplierSortField,
@@ -68,6 +69,7 @@ interface SuppliersProps {
   filterField?: SupplierFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
+  ingredients: Ingredient[];
   organizationSlug: string;
   page: number;
   pageSize: number;
@@ -84,6 +86,7 @@ const Suppliers = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
+  ingredients,
   organizationSlug,
   page,
   pageSize,
@@ -233,6 +236,7 @@ const Suppliers = ({
     setDialog({
       content: (
         <SupplierDialog
+          ingredients={ingredients}
           mutate={mutate}
           organizationSlug={organizationSlug}
           supplier={null}
@@ -242,13 +246,14 @@ const Suppliers = ({
       open: true,
       title: tInventory("suppliers.actions.createSupplier.title"),
     });
-  }, [mutate, organizationSlug, setDialog, tInventory]);
+  }, [ingredients, mutate, organizationSlug, setDialog, tInventory]);
 
   const handleUpdateSupplier = useCallback(
     (supplier: Supplier) => {
       setDialog({
         content: (
           <SupplierDialog
+            ingredients={ingredients}
             mutate={mutate}
             organizationSlug={organizationSlug}
             supplier={supplier}
@@ -259,7 +264,7 @@ const Suppliers = ({
         title: tInventory("suppliers.actions.updateSupplier.title"),
       });
     },
-    [mutate, organizationSlug, setDialog, tInventory],
+    [ingredients, mutate, organizationSlug, setDialog, tInventory],
   );
 
   const handleDeleteSupplier = useCallback(
@@ -348,6 +353,11 @@ const Suppliers = ({
         headerName: tInventory("suppliers.name.label"),
       },
       {
+        field: "telephone",
+        filterOperators: stringFilterOperators,
+        headerName: `${tInventory("suppliers.telephone.label")} ${tCommon("optional")}`,
+      },
+      {
         field: "url",
         filterOperators: stringFilterOperators,
         headerName: `${tInventory("suppliers.url.label")} ${tCommon("optional")}`,
@@ -359,22 +369,17 @@ const Suppliers = ({
           ),
       },
       {
-        field: "telephone",
-        filterOperators: stringFilterOperators,
-        headerName: `${tInventory("suppliers.telephone.label")} ${tCommon("optional")}`,
-      },
-      {
-        field: "ingredientNames",
+        field: "ingredients",
         filterable: false,
-        headerName: tInventory("suppliers.ingredientNames.label"),
+        headerName: tInventory("suppliers.ingredients.label"),
         sortable: false,
         renderCell: ({
-          row: { ingredientNames },
+          row: { ingredients: supplied },
         }: GridRenderCellParams<Supplier>) => (
           <Stack alignItems="center" direction="row" gap={0.5} height="100%">
-            {ingredientNames.map((name) => (
+            {supplied.map(({ id, name }) => (
               <Chip
-                key={localize(name, locale)}
+                key={id}
                 label={localize(name, locale)}
                 size="small"
                 variant="outlined"

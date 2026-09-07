@@ -84,6 +84,16 @@ const IngredientDialog = ({
         )
       : "";
 
+  const initialLowStockThreshold =
+    ingredient?.lowStockThreshold && ingredient.packageBaseQuantity
+      ? String(
+          toPackages(
+            Number(ingredient.lowStockThreshold),
+            Number(ingredient.packageBaseQuantity),
+          ),
+        )
+      : "";
+
   const ingredientFormSchema = useIngredientFormSchema(canViewPurchasing);
   const {
     control,
@@ -98,15 +108,7 @@ const IngredientDialog = ({
       inventoryLevel: initialStock,
       note: ingredient?.note || "",
       transactionNote: "",
-      lowStockThreshold:
-        ingredient?.lowStockThreshold && ingredient.packageBaseQuantity
-          ? String(
-              toPackages(
-                Number(ingredient.lowStockThreshold),
-                Number(ingredient.packageBaseQuantity),
-              ),
-            )
-          : "",
+      lowStockThreshold: initialLowStockThreshold,
       price: ingredient?.price || "",
       priceCurrency: ingredient?.priceCurrency || "TWD",
       url: ingredient?.url || "",
@@ -142,12 +144,50 @@ const IngredientDialog = ({
         )
       : "";
 
-  const packageHint = (packages?: string) =>
-    baseQuantity && baseUnitCode
-      ? Number(packages)
-        ? `${format.number(toBaseQuantity(Number(packages), baseQuantity))} ${tInventory(`units.${baseUnitCode}`)}`
-        : ""
-      : tInventory("ingredients.packageRequired");
+  // 比照列表：無庫存優先於低庫存，且不受警示量是否設定影響
+  const stockNote =
+    baseQuantity > 0 && inventoryLevel
+      ? Number(inventoryLevel) <= 0
+        ? tInventory("ingredients.outOfStock")
+        : Number(lowStockThreshold) > 0 &&
+            Number(inventoryLevel) <= Number(lowStockThreshold)
+          ? tInventory("ingredients.lowStock")
+          : null
+      : null;
+
+  const packageHint = (packages?: string, delta = 0, extra: string[] = []) => {
+    if (!baseQuantity || !baseUnitCode) {
+      return tInventory("ingredients.packageRequired");
+    }
+
+    const unit = tInventory(`units.${baseUnitCode}`);
+    const notes = [
+      ...(delta
+        ? [
+            // 一份等於一個基準單位時份數差與量差會是同一個數字，只印一次
+            ...(baseQuantity === 1
+              ? []
+              : [
+                  format.number(toPackages(delta, baseQuantity), {
+                    signDisplay: "exceptZero",
+                  }),
+                ]),
+            `${format.number(delta, { signDisplay: "exceptZero" })} ${unit}`,
+          ]
+        : []),
+      ...extra,
+    ];
+
+    if (!Number(packages) && !notes.length) {
+      return "";
+    }
+
+    const amount = `${format.number(toBaseQuantity(Number(packages) || 0, baseQuantity))} ${unit}`;
+
+    return notes.length
+      ? `${amount}${tCommon("parenthesisOpen")}${notes.join(tCommon("delimiter"))}${tCommon("parenthesisClose")}`
+      : amount;
+  };
 
   const editable = !ingredient || canWrite;
   const stockEditable = !ingredient || canRecordTransaction;
@@ -162,6 +202,18 @@ const IngredientDialog = ({
         : null;
 
   const stockPayload = toStockPayload(inventoryLevel);
+  const stockDelta =
+    ingredient && stockPayload != null
+      ? Number(stockPayload) - Number(ingredient.inventoryLevel)
+      : 0;
+  const lowStockThresholdDelta =
+    ingredient &&
+    lowStockThreshold &&
+    baseQuantity > 0 &&
+    lowStockThreshold !== initialLowStockThreshold
+      ? toBaseQuantity(Number(lowStockThreshold), baseQuantity) -
+        Number(ingredient.lowStockThreshold)
+      : 0;
   // 新增時開帳量為 0 不會產生帳本，異動備註沒有可掛的交易，填了會被丟掉
   const stockChanged = ingredient
     ? stockPayload != null
@@ -413,7 +465,8 @@ const IngredientDialog = ({
         format={{ maximumFractionDigits: 3 }}
         fullWidth
         helperText={
-          errors.inventoryLevel?.message || packageHint(inventoryLevel)
+          errors.inventoryLevel?.message ||
+          packageHint(inventoryLevel, stockDelta, stockNote ? [stockNote] : [])
         }
         label={`${tInventory("ingredients.inventoryLevel.label")} ${tCommon("optional")}`}
         max={maxPackages(baseQuantity)}
@@ -443,7 +496,8 @@ const IngredientDialog = ({
         format={{ maximumFractionDigits: 0 }}
         fullWidth
         helperText={
-          errors.lowStockThreshold?.message || packageHint(lowStockThreshold)
+          errors.lowStockThreshold?.message ||
+          packageHint(lowStockThreshold, lowStockThresholdDelta)
         }
         label={`${tInventory("ingredients.lowStockThreshold.label")} ${tCommon("optional")}`}
         max={maxPackages(baseQuantity)}

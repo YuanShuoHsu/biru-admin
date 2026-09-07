@@ -5,6 +5,7 @@ export const useSupplierFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z.object({
+    ingredientIds: z.array(z.string()),
     name: z
       .string()
       .trim()

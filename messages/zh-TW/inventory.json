@@ -197,8 +197,9 @@
         "title": "編輯供應商"
       }
     },
-    "ingredientNames": {
-      "label": "品項"
+    "ingredients": {
+      "label": "食材",
+      "placeholder": "請選擇您的食材"
     },
     "label": "供應商",
     "name": {

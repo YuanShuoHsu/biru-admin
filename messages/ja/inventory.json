@@ -197,8 +197,9 @@
         "title": "仕入先を編集"
       }
     },
-    "ingredientNames": {
-      "label": "品目"
+    "ingredients": {
+      "label": "食材",
+      "placeholder": "食材を選択してください"
     },
     "label": "仕入先",
     "name": {

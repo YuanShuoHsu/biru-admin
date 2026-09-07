@@ -197,8 +197,9 @@
         "title": "Edit supplier"
       }
     },
-    "ingredientNames": {
-      "label": "Items"
+    "ingredients": {
+      "label": "Ingredients",
+      "placeholder": "Please select your Ingredients"
     },
     "label": "Supplier",
     "name": {

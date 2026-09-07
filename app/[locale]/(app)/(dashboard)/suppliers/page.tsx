@@ -8,6 +8,8 @@ import Suppliers from ".";
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
+import { MAX_PAGE_SIZE } from "@/constants/pagination";
+
 import { authClient } from "@/lib/auth-client";
 
 import {
@@ -17,7 +19,7 @@ import {
 } from "@/types/api";
 
 import { resolveGridSearchParams } from "@/utils/dataGrid";
-import { getSuppliers } from "@/utils/inventory";
+import { getIngredients, getSuppliers } from "@/utils/inventory";
 import { getResolvedAdminOrganization } from "@/utils/menus";
 import { hasRolePermission } from "@/utils/organizations";
 
@@ -117,6 +119,14 @@ const SuppliersPage = async ({ params, searchParams }: SuppliersPageProps) => {
 
   if (!canViewPurchasing) notFound();
 
+  const { ingredients } = canWrite
+    ? await getIngredients(
+        organization.slug,
+        { pageSize: MAX_PAGE_SIZE, sortBy: "name", sortDirection: "asc" },
+        fetchOptions,
+      )
+    : { ingredients: [] };
+
   return (
     <Suppliers
       canViewAuditLog={canViewAuditLog}
@@ -124,6 +134,7 @@ const SuppliersPage = async ({ params, searchParams }: SuppliersPageProps) => {
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
+      ingredients={ingredients}
       organizationSlug={organization.slug}
       page={page}
       pageSize={pageSize}

@@ -2688,6 +2688,12 @@ export interface components {
       /** Format: uri */
       url?: string | null;
       note?: string | null;
+      /** @description 由這家供應的食材；一個食材只屬於一家供應商，選入原本屬於別家的食材會改綁到這家 */
+      ingredientIds?: string[];
+    };
+    SupplierIngredientResponseDto: {
+      id: string;
+      name: Record<string, never>;
     };
     SupplierResponseDto: {
       id: string;
@@ -2696,8 +2702,8 @@ export interface components {
       telephone?: string | null;
       url?: string | null;
       note?: string | null;
-      /** @description 此供應商有採購規格的食材 */
-      ingredientNames: Record<string, never>[];
+      /** @description 由這家供應的食材 */
+      ingredients: components["schemas"]["SupplierIngredientResponseDto"][];
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -2918,6 +2924,8 @@ export interface components {
       /** Format: uri */
       url?: string | null;
       note?: string | null;
+      /** @description 由這家供應的食材；一個食材只屬於一家供應商，選入原本屬於別家的食材會改綁到這家 */
+      ingredientIds?: string[];
     };
     MenuItemSalesResponseDto: {
       menuItemId: string;
