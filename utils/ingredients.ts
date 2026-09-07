@@ -63,7 +63,7 @@ export const formatStock = (
 
   return withSuffix(
     `${format.number(quantity)} ${tInventory(`units.${unitCode}`)}`,
-    showPackages
+    showPackages && packages > 0
       ? [
           `${tCommon("multiply")}${format.number(packages)}`,
           ...(remainder
