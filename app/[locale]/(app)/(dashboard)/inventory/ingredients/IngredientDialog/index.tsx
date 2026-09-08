@@ -26,6 +26,7 @@ import { useFormatMoney } from "@/hooks/useFormatMoney";
 import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
 import { Grid, MenuItem, TextField } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -42,6 +43,12 @@ import {
 import { localize } from "@/utils/locale";
 
 const INGREDIENT_IMAGE_KEY = "ingredient-image";
+
+const StyledTextField = styled(TextField)(({ theme }) => ({
+  [theme.breakpoints.up("sm")]: {
+    marginTop: theme.spacing(3.75),
+  },
+}));
 
 interface IngredientDialogProps {
   canRecordTransaction: boolean;
@@ -492,7 +499,7 @@ const IngredientDialog = ({
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
-          <TextField
+          <StyledTextField
             disabled={!editable}
             error={!!errors.inventoryLevelUnitText}
             fullWidth
