@@ -797,7 +797,7 @@ const MenusMenuIdSectionId = ({
             ? ""
             : formatMoney(
                 Number(offer.priceSpecification.price),
-                offer.priceSpecification.priceCurrency,
+                offer.priceCurrency,
               ),
       },
       {

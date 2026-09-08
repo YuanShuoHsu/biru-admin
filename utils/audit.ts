@@ -73,6 +73,7 @@ export const getAuditLogHref = (
     case "userCoupon":
     case "coupon":
     case "banner":
+    case "organization":
       return null;
   }
 };

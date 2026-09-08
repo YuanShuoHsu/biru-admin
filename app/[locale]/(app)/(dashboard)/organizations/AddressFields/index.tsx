@@ -12,6 +12,8 @@ import {
 
 import CountryAutocomplete from "@/components/CountryAutocomplete";
 
+import { COUNTRY_CURRENCIES } from "@/constants/countryCurrencies";
+
 import { LocaleEnum } from "@/enums/Locale";
 
 import { Stack, TextField } from "@mui/material";
@@ -68,6 +70,12 @@ const AddressFields = ({
   );
 
   const isTaiwan = addressCountry === "TW";
+
+  const handleAddressCountryChange = (value: string) => {
+    const currency = COUNTRY_CURRENCIES[value];
+
+    if (currency) setValue("currency", currency, { shouldDirty: true });
+  };
 
   const handlePostalCodeChange = (value: string) => {
     if (!isTaiwan) return;
@@ -168,7 +176,9 @@ const AddressFields = ({
         mode="country"
         placeholder={tOrganizations("address.addressCountry.placeholder")}
         value={addressCountry || ""}
-        {...register("addressCountry")}
+        {...register("addressCountry", {
+          onChange: (e) => handleAddressCountryChange(e.target.value),
+        })}
       />
     </Stack>
   );

@@ -44,7 +44,6 @@ export const useAuditLogObjectLabels = () => {
       ),
       priceSpecification: {
         price: tMenus("items.offers.priceSpecification.price.label"),
-        priceCurrency: tAudit("field.priceCurrency"),
         validFrom: tMenus("items.offers.priceSpecification.validFrom.label"),
         validThrough: tMenus(
           "items.offers.priceSpecification.validThrough.label",

@@ -45,6 +45,9 @@
     "notSelected": "請選擇您的國碼。",
     "required": "國碼為必填。"
   },
+  "currency": {
+    "notSelected": "請選擇您的幣別。"
+  },
   "currentPassword": {
     "required": "目前密碼為必填。"
   },
@@ -145,9 +148,6 @@
   },
   "price": {
     "required": "請輸入價格。"
-  },
-  "priceCurrency": {
-    "notSelected": "請選擇您的幣別。"
   },
   "quantity": {
     "required": "數量為必填。"

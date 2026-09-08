@@ -216,10 +216,6 @@
         "label": "가격",
         "placeholder": "가격을 입력해 주세요"
       },
-      "priceCurrency": {
-        "label": "통화",
-        "placeholder": "귀하의 통화를 선택해 주세요"
-      },
       "priceSpecification": {
         "price": {
           "label": "할인가（선택）",

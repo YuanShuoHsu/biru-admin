@@ -80,10 +80,6 @@
       "label": "価格",
       "placeholder": "価格を入力してください"
     },
-    "priceCurrency": {
-      "label": "通貨",
-      "placeholder": "通貨を選択してください"
-    },
     "supplierId": {
       "label": "仕入先",
       "placeholder": "仕入先を選択してください"

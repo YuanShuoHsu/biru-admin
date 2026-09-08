@@ -9,6 +9,8 @@ import {
   type UseFormSetValue,
 } from "react-hook-form";
 
+import CountryAutocomplete from "@/components/CountryAutocomplete";
+
 import OpeningHoursField from "@/components/OpeningHoursField";
 
 import TextMaskCustom from "@/components/TextMaskCustom";
@@ -25,7 +27,7 @@ type OrganizationForm = UpdateLocationForm;
 
 type LocalBusinessFieldName = keyof Pick<
   Organization,
-  "openingHours" | "telephone" | "hasMap"
+  "currency" | "openingHours" | "telephone" | "hasMap"
 >;
 
 interface LocalBusinessFieldsProps {
@@ -45,6 +47,7 @@ const LocalBusinessFields = ({
   const tOrganizations = useTranslations("organizations");
 
   const addressCountry = useWatch({ control, name: "addressCountry" });
+  const currency = useWatch({ control, name: "currency" });
   const openingHours = useWatch({ control, name: "openingHours" });
   const telephone = useWatch({ control, name: "telephone" });
 
@@ -52,6 +55,16 @@ const LocalBusinessFields = ({
 
   return (
     <>
+      <CountryAutocomplete
+        error={!!errors.currency}
+        helperText={errors.currency?.message}
+        label={tOrganizations("currency.label")}
+        mode="currency"
+        placeholder={tOrganizations("currency.placeholder")}
+        required
+        value={currency || ""}
+        {...register("currency")}
+      />
       <OpeningHoursField
         error={!!errors.openingHours}
         fullWidth

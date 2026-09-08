@@ -45,6 +45,9 @@
     "notSelected": "国番号を選択してください。",
     "required": "国コードは必須です."
   },
+  "currency": {
+    "notSelected": "通貨を選択してください。"
+  },
   "currentPassword": {
     "required": "現在のパスワードは必須です。"
   },
@@ -145,9 +148,6 @@
   },
   "price": {
     "required": "価格を入力してください。"
-  },
-  "priceCurrency": {
-    "notSelected": "通貨を選択してください。"
   },
   "quantity": {
     "required": "数量は必須です。"

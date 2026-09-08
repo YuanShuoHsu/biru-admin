@@ -33,6 +33,7 @@ import {
   useNumberFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
+import { useFormatMoney } from "@/hooks/useFormatMoney";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
@@ -160,6 +161,8 @@ const Modifiers = ({
   const searchParams = useSearchParams();
 
   const tMenus = useTranslations("menus");
+
+  const formatMoney = useFormatMoney();
   const tOrder = useTranslations("order");
 
   const enumOptions = useMemo(
@@ -517,8 +520,13 @@ const Modifiers = ({
         filterOperators: numberFilterOperators,
         headerName: tMenus("modifiers.priceAdjustment.label"),
         renderCell: ({
-          row: { priceAdjustment },
-        }: GridRenderCellParams<Modifier>) => priceAdjustment ?? <EmptyCell />,
+          row: { priceAdjustment, priceCurrency },
+        }: GridRenderCellParams<Modifier>) =>
+          priceAdjustment == null ? (
+            <EmptyCell />
+          ) : (
+            formatMoney(Number(priceAdjustment), priceCurrency)
+          ),
       },
       {
         field: "availability",
@@ -586,6 +594,7 @@ const Modifiers = ({
       dateFilterOperators,
       enumFilterOperators,
       enumOptions,
+      formatMoney,
       format,
       handleDeleteModifier,
       handleUpdateModifier,

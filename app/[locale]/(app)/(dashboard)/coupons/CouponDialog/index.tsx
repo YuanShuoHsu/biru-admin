@@ -152,7 +152,9 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
 
   const sectionOptions = menu?.sections || [];
   const itemOptions = sectionOptions.flatMap(({ menuItems }) => menuItems);
-  const currency = itemOptions[0]?.offers[0]?.priceCurrency || "TWD";
+  const currency =
+    organizations.find(({ id }) => id === applicableOrganizationIds[0])
+      ?.currency ?? "";
 
   const isPointsRedeem = pointsCost !== "";
 
@@ -177,7 +179,7 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
           ? values.applicableOrganizationIds
           : null,
         code: values.code,
-        discountCurrency: currency,
+        ...(currency && { discountCurrency: currency }),
         discountType: values.discountType,
         discountValue: Number(values.discountValue),
         isActive: values.isActive,

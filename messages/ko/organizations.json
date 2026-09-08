@@ -51,6 +51,10 @@
     }
   },
   "createdAt": "생성일",
+  "currency": {
+    "label": "통화",
+    "placeholder": "귀하의 통화를 선택해 주세요"
+  },
   "invitations": {
     "actions": {
       "cancelInvitation": {

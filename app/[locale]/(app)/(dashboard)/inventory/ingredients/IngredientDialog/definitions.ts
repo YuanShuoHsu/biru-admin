@@ -27,12 +27,6 @@ export const useIngredientFormSchema = (canViewPurchasing: boolean) => {
       .min(canViewPurchasing ? 1 : 0, {
         error: tValidation("price.required"),
       }),
-    priceCurrency: z
-      .string()
-      .trim()
-      .min(canViewPurchasing ? 1 : 0, {
-        error: tValidation("priceCurrency.notSelected"),
-      }),
     supplierId: z.string().trim().optional(),
     name: z
       .record(z.string(), z.string().trim())

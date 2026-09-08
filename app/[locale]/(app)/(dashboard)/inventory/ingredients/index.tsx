@@ -117,6 +117,7 @@ interface IngredientsProps {
   canViewAuditLog: boolean;
   canViewPurchasing: boolean;
   canWrite: boolean;
+  currency: string;
   filterField?: IngredientFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
@@ -135,6 +136,7 @@ const Ingredients = ({
   canViewAuditLog,
   canViewPurchasing,
   canWrite,
+  currency,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
@@ -414,6 +416,7 @@ const Ingredients = ({
           canRecordTransaction={canRecordTransaction}
           canViewPurchasing={canViewPurchasing}
           canWrite={canWrite}
+          currency={currency}
           ingredient={null}
           mutate={mutate}
           organizationSlug={organizationSlug}
@@ -428,6 +431,7 @@ const Ingredients = ({
     canRecordTransaction,
     canViewPurchasing,
     canWrite,
+    currency,
     mutate,
     organizationSlug,
     setDialog,
@@ -443,6 +447,7 @@ const Ingredients = ({
             canRecordTransaction={canRecordTransaction}
             canViewPurchasing={canViewPurchasing}
             canWrite={canWrite}
+            currency={currency}
             ingredient={ingredient}
             mutate={mutate}
             organizationSlug={organizationSlug}
@@ -458,6 +463,7 @@ const Ingredients = ({
       canRecordTransaction,
       canViewPurchasing,
       canWrite,
+      currency,
       mutate,
       organizationSlug,
       setDialog,

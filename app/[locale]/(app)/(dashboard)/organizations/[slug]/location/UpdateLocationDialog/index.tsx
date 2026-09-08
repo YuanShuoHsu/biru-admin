@@ -6,8 +6,8 @@ import { type BaseSyntheticEvent } from "react";
 import { useForm } from "react-hook-form";
 
 import {
-  type UpdateLocationForm,
   useUpdateLocationFormSchema,
+  type UpdateLocationForm,
 } from "./definitions";
 
 import FormBox from "@/components/FormBox";
@@ -51,6 +51,7 @@ const UpdateLocationDialog = ({
   } = useForm<UpdateLocationForm>({
     defaultValues: {
       addressCountry: organization.addressCountry || "",
+      currency: organization.currency || "",
       addressLocality: organization.addressLocality || "",
       addressRegion: organization.addressRegion || "",
       extendedAddress: organization.extendedAddress || "",
@@ -65,6 +66,7 @@ const UpdateLocationDialog = ({
 
   const onSubmitHandler = async ({
     addressCountry,
+    currency,
     addressLocality,
     addressRegion,
     extendedAddress,
@@ -79,6 +81,7 @@ const UpdateLocationDialog = ({
         organizationId: organization.id,
         data: {
           addressCountry,
+          currency,
           addressLocality,
           addressRegion,
           extendedAddress,

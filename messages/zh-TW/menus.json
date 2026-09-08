@@ -216,10 +216,6 @@
         "label": "價格",
         "placeholder": "請輸入您的價格"
       },
-      "priceCurrency": {
-        "label": "幣別",
-        "placeholder": "請選擇您的幣別"
-      },
       "priceSpecification": {
         "price": {
           "label": "促銷價",

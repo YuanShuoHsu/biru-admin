@@ -51,6 +51,10 @@
     }
   },
   "createdAt": "Created",
+  "currency": {
+    "label": "Currency",
+    "placeholder": "Please select your currency"
+  },
   "invitations": {
     "actions": {
       "cancelInvitation": {

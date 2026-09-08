@@ -1551,7 +1551,8 @@ export interface components {
       | "invoice"
       | "supplier"
       | "ingredient"
-      | "recipe";
+      | "recipe"
+      | "organization";
     /** @enum {string} */
     AuditAction: "create" | "update" | "delete";
     AuditLogResponseDto: {
@@ -1865,7 +1866,7 @@ export interface components {
       /** @description 適用店家；null = 全部店家通用，發行店永遠視為適用 */
       applicableOrganizationIds?: string[] | null;
       code: string;
-      /** @description 幣別（ISO 4217），未帶時預設 TWD；應與店家菜單幣別一致 */
+      /** @description 幣別（ISO 4217）；限定單一店家時一律採用該店設定，此欄只對跨店與全平台券生效 */
       discountCurrency?: string;
       discountType: components["schemas"]["CouponDiscountType"];
       /** @description fixed: 折抵金額；percentage: 折扣百分比（0 < value ≤ 100） */
@@ -1958,7 +1959,7 @@ export interface components {
       /** @description 適用店家；null = 全部店家通用，發行店永遠視為適用 */
       applicableOrganizationIds?: string[] | null;
       code?: string;
-      /** @description 幣別（ISO 4217），未帶時預設 TWD；應與店家菜單幣別一致 */
+      /** @description 幣別（ISO 4217）；限定單一店家時一律採用該店設定，此欄只對跨店與全平台券生效 */
       discountCurrency?: string;
       discountType?: components["schemas"]["CouponDiscountType"];
       /** @description fixed: 折抵金額；percentage: 折扣百分比（0 < value ≤ 100） */
@@ -2636,8 +2637,6 @@ export interface components {
        * @example 950.00
        */
       price: string;
-      /** @example TWD */
-      priceCurrency: string;
       /**
        * @description 一個包裝的量
        * @example 100.000
@@ -2837,8 +2836,6 @@ export interface components {
        * @example 950.00
        */
       price?: string;
-      /** @example TWD */
-      priceCurrency?: string;
       /**
        * @description 一個包裝的量
        * @example 100.000
@@ -3447,8 +3444,6 @@ export interface components {
     PriceSpecificationDto: {
       /** @example 150.00 */
       price: string;
-      /** @example TWD */
-      priceCurrency: string;
       /**
        * @description 促銷開始時間（ISO 8601）
        * @example 2025-06-01T00:00:00+08:00
@@ -3463,8 +3458,6 @@ export interface components {
     CreateOfferDto: {
       /** @example 150.00 */
       price: string;
-      /** @default TWD */
-      priceCurrency: string;
       availability?: components["schemas"]["ItemAvailability"];
       /** @description 可供應時段，格式同組織營業時間（如 "Mo-Fr 07:00-11:00"）；null 代表全時段供應 */
       availableHours?: string;
@@ -3568,7 +3561,6 @@ export interface components {
     MenuItemFilterField:
       | "name"
       | "description"
-      | "priceCurrency"
       | "recipe"
       | "price"
       | "inventoryLevel"
@@ -3584,7 +3576,6 @@ export interface components {
     MenuItemSortField:
       | "name"
       | "description"
-      | "priceCurrency"
       | "recipe"
       | "price"
       | "inventoryLevel"
@@ -3626,8 +3617,6 @@ export interface components {
     UpdateOfferDto: {
       /** @example 150.00 */
       price?: string;
-      /** @default TWD */
-      priceCurrency: string;
       availability?: components["schemas"]["ItemAvailability"];
       /** @description 可供應時段，格式同組織營業時間（如 "Mo-Fr 07:00-11:00"）；null 代表全時段供應 */
       availableHours?: string;
@@ -3704,6 +3693,8 @@ export interface components {
       displayName: Record<string, never>;
       /** @description 加價金額；null 代表不影響價格 */
       priceAdjustment?: string | null;
+      /** @description priceAdjustment 的幣別；來自店家設定 */
+      priceCurrency: string;
       availability?: components["schemas"]["ItemAvailability"] | null;
       /** @description 可販售的點餐模式 */
       availableModes: components["schemas"]["OrderMode"][];
@@ -3838,6 +3829,8 @@ export interface components {
       displayName: string;
       /** @description 加價金額；null 代表不影響價格 */
       priceAdjustment?: string | null;
+      /** @description priceAdjustment 的幣別；來自店家設定 */
+      priceCurrency: string;
       availability?: components["schemas"]["ItemAvailability"] | null;
       /** @description 可販售的點餐模式 */
       availableModes: components["schemas"]["OrderMode"][];
@@ -3938,6 +3931,8 @@ export interface components {
       name: string;
       description?: string | null;
       image?: string | null;
+      /** @description 店家定價幣別；整份菜單共用一個 */
+      currency: string;
       sections: components["schemas"]["OrderMenuSectionResponseDto"][];
       /** Format: date-time */
       createdAt: string;
@@ -3961,6 +3956,11 @@ export interface components {
       hasMap?: string | null;
       openingHours?: string | null;
       telephone?: string | null;
+      /**
+       * @description 店家目錄定價幣別
+       * @example TWD
+       */
+      currency: string;
       amountPerPoint?: string | null;
       pointsValidityYears?: number | null;
       pickupLeadMinutes: number;
@@ -7941,6 +7941,7 @@ export const auditResourceValues: ReadonlyArray<
   "supplier",
   "ingredient",
   "recipe",
+  "organization",
 ];
 export const auditActionValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AuditAction"]
@@ -8377,7 +8378,6 @@ export const menuItemFilterFieldValues: ReadonlyArray<
 > = [
   "name",
   "description",
-  "priceCurrency",
   "recipe",
   "price",
   "inventoryLevel",
@@ -8395,7 +8395,6 @@ export const menuItemSortFieldValues: ReadonlyArray<
 > = [
   "name",
   "description",
-  "priceCurrency",
   "recipe",
   "price",
   "inventoryLevel",

@@ -216,10 +216,6 @@
         "label": "Price",
         "placeholder": "Please enter your price"
       },
-      "priceCurrency": {
-        "label": "Currency",
-        "placeholder": "Please select your currency"
-      },
       "priceSpecification": {
         "price": {
           "label": "Sale price",

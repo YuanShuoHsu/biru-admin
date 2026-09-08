@@ -1,4 +1,3 @@
-import type { CountryCode } from "libphonenumber-js";
 import Image from "next/image";
 
 import { Box } from "@mui/material";
@@ -12,7 +11,7 @@ const ImageBox = styled(Box)(({ theme }) => ({
   overflow: "hidden",
 }));
 
-const FlagImage = ({ code, label }: { code: CountryCode; label: string }) => (
+const FlagImage = ({ code, label }: { code: string; label: string }) => (
   <ImageBox>
     <Image
       alt={label}

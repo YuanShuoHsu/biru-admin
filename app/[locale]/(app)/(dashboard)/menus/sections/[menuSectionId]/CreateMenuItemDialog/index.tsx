@@ -13,7 +13,6 @@ import {
 } from "./definitions";
 
 import CheckboxesGroup from "@/components/CheckboxesGroup";
-import CountryAutocomplete from "@/components/CountryAutocomplete";
 import FormBox from "@/components/FormBox";
 import LocalizedTextFields from "@/components/LocalizedTextFields";
 import NumberSpinner from "@/components/NumberSpinner";
@@ -71,7 +70,6 @@ const CreateMenuItemDialog = ({
       description: {},
       availableModes: [...orderModeValues],
       offer: {
-        priceCurrency: "TWD",
         price: "",
         availability: "InStock",
         availableHours: "",
@@ -85,7 +83,6 @@ const CreateMenuItemDialog = ({
 
   const nameValue = useWatch({ control, name: "name" });
   const descriptionValue = useWatch({ control, name: "description" });
-  const priceCurrency = useWatch({ control, name: "offer.priceCurrency" });
   const price = useWatch({ control, name: "offer.price" });
   const priceSpecificationPrice = useWatch({
     control,
@@ -131,7 +128,6 @@ const CreateMenuItemDialog = ({
             ...(imageSrc && { image: imageSrc }),
             availableModes,
             offer: {
-              priceCurrency: offer?.priceCurrency,
               price: offer?.price,
               availability: offer?.availability,
               availableHours: offer?.availableHours || undefined,
@@ -152,7 +148,6 @@ const CreateMenuItemDialog = ({
               priceSpecification: offer?.priceSpecification?.price
                 ? {
                     price: offer.priceSpecification.price,
-                    priceCurrency: offer?.priceCurrency,
                     ...(offer.priceSpecification.validFrom && {
                       validFrom: offer.priceSpecification.validFrom,
                     }),
@@ -231,42 +226,26 @@ const CreateMenuItemDialog = ({
       <Divider flexItem>
         <Chip label={tMenus("items.offers.label")} size="small" />
       </Divider>
-      <Grid container width="100%" spacing={2}>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <CountryAutocomplete
-            error={!!errors.offer?.priceCurrency}
-            helperText={errors.offer?.priceCurrency?.message}
-            label={tMenus("items.offers.priceCurrency.label")}
-            mode="currency"
-            placeholder={tMenus("items.offers.priceCurrency.placeholder")}
-            required
-            value={priceCurrency || ""}
-            {...register("offer.priceCurrency")}
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <NumericFormat
-            allowNegative={false}
-            customInput={TextField}
-            decimalScale={2}
-            error={!!errors.offer?.price}
-            fullWidth
-            helperText={errors.offer?.price?.message}
-            isAllowed={({ floatValue }) =>
-              floatValue === undefined || floatValue <= 99999999.99
-            }
-            label={tMenus("items.offers.price.label")}
-            name="offer.price"
-            onBlur={register("offer.price").onBlur}
-            onValueChange={({ value }) => setValue("offer.price", value)}
-            placeholder={tMenus("items.offers.price.placeholder")}
-            required
-            thousandSeparator=","
-            value={price}
-            valueIsNumericString
-          />
-        </Grid>
-      </Grid>
+      <NumericFormat
+        allowNegative={false}
+        customInput={TextField}
+        decimalScale={2}
+        error={!!errors.offer?.price}
+        fullWidth
+        helperText={errors.offer?.price?.message}
+        isAllowed={({ floatValue }) =>
+          floatValue === undefined || floatValue <= 99999999.99
+        }
+        label={tMenus("items.offers.price.label")}
+        name="offer.price"
+        onBlur={register("offer.price").onBlur}
+        onValueChange={({ value }) => setValue("offer.price", value)}
+        placeholder={tMenus("items.offers.price.placeholder")}
+        required
+        thousandSeparator=","
+        value={price}
+        valueIsNumericString
+      />
       <TextField
         {...register("offer.availability")}
         error={!!errors.offer?.availability}

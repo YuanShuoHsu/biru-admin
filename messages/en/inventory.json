@@ -80,10 +80,6 @@
       "label": "Price",
       "placeholder": "Please enter your price"
     },
-    "priceCurrency": {
-      "label": "Currency",
-      "placeholder": "Select your currency"
-    },
     "supplierId": {
       "label": "Supplier",
       "placeholder": "Please select your Supplier"

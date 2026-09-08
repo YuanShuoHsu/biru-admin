@@ -12,7 +12,6 @@ import {
   type IngredientFormOutput,
 } from "./definitions";
 
-import CountryAutocomplete from "@/components/CountryAutocomplete";
 import FormBox from "@/components/FormBox";
 import LocalizedTextFields from "@/components/LocalizedTextFields";
 import NumberSpinner from "@/components/NumberSpinner";
@@ -54,6 +53,7 @@ interface IngredientDialogProps {
   canRecordTransaction: boolean;
   canViewPurchasing: boolean;
   canWrite: boolean;
+  currency: string;
   ingredient: Ingredient | null;
   mutate: () => void;
   organizationSlug: string;
@@ -64,6 +64,7 @@ const IngredientDialog = ({
   canRecordTransaction,
   canViewPurchasing,
   canWrite,
+  currency,
   ingredient,
   mutate,
   organizationSlug,
@@ -121,7 +122,6 @@ const IngredientDialog = ({
       transactionNote: "",
       lowStockThreshold: initialLowStockThreshold,
       price: ingredient?.price || "",
-      priceCurrency: ingredient?.priceCurrency || "TWD",
       url: ingredient?.url || "",
       name: ingredient?.name || {},
       supplierId: ingredient?.supplierId || "",
@@ -135,7 +135,6 @@ const IngredientDialog = ({
   const inventoryLevel = useWatch({ control, name: "inventoryLevel" });
   const lowStockThreshold = useWatch({ control, name: "lowStockThreshold" });
   const price = useWatch({ control, name: "price" });
-  const priceCurrency = useWatch({ control, name: "priceCurrency" });
   const name = useWatch({ control, name: "name" });
   const supplierId = useWatch({ control, name: "supplierId" });
   const unitCode = useWatch({ control, name: "unitCode" });
@@ -150,7 +149,7 @@ const IngredientDialog = ({
     baseQuantity > 0 && Number(price) > 0 && baseUnitCode
       ? formatUnitPriceOf(
           Number(price) / baseQuantity,
-          { priceCurrency, unitCode: baseUnitCode },
+          { priceCurrency: currency, unitCode: baseUnitCode },
           { format, formatMoney, tCommon, tInventory },
         )
       : "";
@@ -280,7 +279,6 @@ const IngredientDialog = ({
           transactionNote: values.transactionNote || null,
         }),
         price: values.price,
-        priceCurrency: values.priceCurrency,
         supplierId: values.supplierId || null,
         url: values.url || null,
       },
@@ -359,44 +357,27 @@ const IngredientDialog = ({
         {...register("brand")}
       />
       {canViewPurchasing && (
-        <Grid container width="100%" spacing={2}>
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <CountryAutocomplete
-              disabled={!editable}
-              error={!!errors.priceCurrency}
-              helperText={errors.priceCurrency?.message}
-              label={tInventory("ingredients.priceCurrency.label")}
-              mode="currency"
-              placeholder={tInventory("ingredients.priceCurrency.placeholder")}
-              required
-              value={priceCurrency || ""}
-              {...register("priceCurrency")}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <NumericFormat
-              allowNegative={false}
-              customInput={TextField}
-              decimalScale={2}
-              disabled={!editable}
-              error={!!errors.price}
-              fullWidth
-              helperText={errors.price?.message || unitCostHint}
-              isAllowed={({ floatValue }) =>
-                floatValue === undefined || floatValue <= 99999999.99
-              }
-              label={tInventory("ingredients.price.label")}
-              onValueChange={({ value }) =>
-                setValue("price", value, { shouldValidate: isSubmitted })
-              }
-              placeholder={tInventory("ingredients.price.placeholder")}
-              required
-              thousandSeparator=","
-              value={price}
-              valueIsNumericString
-            />
-          </Grid>
-        </Grid>
+        <NumericFormat
+          allowNegative={false}
+          customInput={TextField}
+          decimalScale={2}
+          disabled={!editable}
+          error={!!errors.price}
+          fullWidth
+          helperText={errors.price?.message || unitCostHint}
+          isAllowed={({ floatValue }) =>
+            floatValue === undefined || floatValue <= 99999999.99
+          }
+          label={tInventory("ingredients.price.label")}
+          onValueChange={({ value }) =>
+            setValue("price", value, { shouldValidate: isSubmitted })
+          }
+          placeholder={tInventory("ingredients.price.placeholder")}
+          required
+          thousandSeparator=","
+          value={price}
+          valueIsNumericString
+        />
       )}
       <Grid container width="100%" spacing={2}>
         <Grid size={{ xs: 12, sm: 6 }}>

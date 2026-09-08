@@ -164,6 +164,7 @@ const IngredientsPage = async ({
         canViewAuditLog={canViewAuditLog}
         canViewPurchasing={canViewPurchasing}
         canWrite={canWrite}
+        currency={organization.currency ?? ""}
         filterField={filterField}
         filterOperator={filterOperator}
         filterValue={filterValue}

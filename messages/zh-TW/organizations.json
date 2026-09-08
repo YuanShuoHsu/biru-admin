@@ -51,6 +51,10 @@
     }
   },
   "createdAt": "建立時間",
+  "currency": {
+    "label": "幣別",
+    "placeholder": "請選擇您的幣別"
+  },
   "invitations": {
     "actions": {
       "cancelInvitation": {

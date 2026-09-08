@@ -48,7 +48,6 @@ export const useCreateMenuItemFormSchema = () => {
       .min(1, { error: tValidation("availableModes.notSelected") }),
     offer: z
       .object({
-        priceCurrency: z.string().trim().min(1),
         price: z
           .string()
           .trim()

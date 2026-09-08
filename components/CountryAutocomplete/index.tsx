@@ -14,7 +14,6 @@ import React, { useRef, useState } from "react";
 import FlagImage from "@/components/FlagImage";
 
 import { countries } from "@/constants/countries";
-import { currencies } from "@/constants/currencies";
 
 import {
   Autocomplete,
@@ -30,6 +29,7 @@ import {
 import { darken, lighten, styled } from "@mui/material/styles";
 
 import type { CountryType } from "@/types/countries";
+import { useCurrencies } from "@/hooks/useCurrencies";
 import type { CurrencyType } from "@/types/currencies";
 
 import { formatPhone } from "@/utils/countries";
@@ -110,6 +110,9 @@ const getCountryLabel = ({ label, code, phone }: CountryType) =>
 const getCurrencyLabel = ({ currency, label }: CurrencyType) =>
   `${label} (${currency})`;
 
+const getCode = (option: CountryType | CurrencyType | null) =>
+  option && "code" in option ? option.code : undefined;
+
 const getOptionLabel = (option: CountryType | CurrencyType): string =>
   "currency" in option ? getCurrencyLabel(option) : getCountryLabel(option);
 
@@ -137,13 +140,15 @@ const CountryAutocomplete = ({
   ...textFieldProps
 }: CountryAutocompleteProps) => {
   const isCurrency = mode === "currency";
+  const currencies = useCurrencies();
   const options = isCurrency
-    ? [...currencies].sort((a, b) => a.label[0].localeCompare(b.label[0]))
+    ? currencies
     : [...countries].sort((a, b) => a.label[0].localeCompare(b.label[0]));
   const value = isCurrency
     ? currencies.find(({ currency }) => currency === valueCode) || null
     : countries.find(({ code }) => code === valueCode) || null;
 
+  const valueFlagCode = getCode(value);
   const currentInputValue = value ? getOptionLabel(value) : "";
   const [inputValue, setInputValue] = useState(currentInputValue);
 
@@ -161,15 +166,17 @@ const CountryAutocomplete = ({
       }}
       fullWidth
       getOptionLabel={getOptionLabel}
-      groupBy={({ label }) =>
-        /[0-9]/.test(label[0]) ? "0-9" : label[0].toUpperCase()
-      }
+      groupBy={(option) => {
+        const key = "currency" in option ? option.currency : option.label;
+
+        return /[0-9]/.test(key[0]) ? "0-9" : key[0].toUpperCase();
+      }}
       id={isCurrency ? "currency-autocomplete" : "country-autocomplete"}
       inputValue={inputValue}
       isOptionEqualToValue={(option, selected) =>
         "currency" in option && "currency" in selected
           ? option.currency === selected.currency
-          : option.code === selected.code
+          : getCode(option) === getCode(selected)
       }
       onBlur={onBlur}
       onChange={(_, newValue) => {
@@ -232,9 +239,9 @@ const CountryAutocomplete = ({
               },
               input: {
                 ...params.InputProps,
-                startAdornment: value && (
+                startAdornment: value && valueFlagCode && (
                   <StyledInputAdornment position="start">
-                    <FlagImage code={value.code} label={value.label} />
+                    <FlagImage code={valueFlagCode} label={value.label} />
                   </StyledInputAdornment>
                 ),
               },
@@ -248,7 +255,8 @@ const CountryAutocomplete = ({
         { inputValue, selected },
         ownerState,
       ) => {
-        const { code, label } = option;
+        const { label } = option;
+        const code = getCode(option);
         const optionLabelText = ownerState.getOptionLabel(option);
         const searchValue = inputValue === currentInputValue ? "" : inputValue;
         const matches = match(optionLabelText, searchValue, {
@@ -259,7 +267,7 @@ const CountryAutocomplete = ({
 
         return (
           <CountryOption key={key} selected={selected} {...optionProps}>
-            <FlagImage code={code} label={label} />
+            {code && <FlagImage code={code} label={label} />}
             <Box component="div">
               {parts.map(({ highlight, text }, index) => (
                 <HighlightTypography

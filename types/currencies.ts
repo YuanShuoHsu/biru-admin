@@ -1,7 +1,5 @@
-import type { CountryCode } from "libphonenumber-js";
-
 export interface CurrencyType {
-  code: CountryCode;
+  code?: string;
   currency: string;
   label: string;
 }

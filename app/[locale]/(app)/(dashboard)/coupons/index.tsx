@@ -172,6 +172,7 @@ const Coupons = ({
 
   const searchParams = useSearchParams();
 
+  const tAuth = useTranslations("auth");
   const tCoupons = useTranslations("coupons");
 
   const stringFilterOperators = useStringFilterOperators();
@@ -587,7 +588,11 @@ const Coupons = ({
         filterOperators: numberFilterOperators,
         headerName: tCoupons("usage"),
         valueGetter: (_value: unknown, { totalLimit, usedCount }: Coupon) =>
-          `${usedCount} / ${totalLimit ?? tCoupons("unlimited")}`,
+          `${format.number(usedCount)} / ${
+            totalLimit == null
+              ? tCoupons("unlimited")
+              : format.number(totalLimit)
+          }`,
       },
       {
         field: "perUserLimit",
@@ -602,7 +607,9 @@ const Coupons = ({
         headerName: tCoupons("pointsCost.label"),
         renderCell: renderEmptyableCell,
         valueGetter: (_value: unknown, { pointsCost }: Coupon) =>
-          pointsCost ?? "",
+          pointsCost == null
+            ? ""
+            : tAuth("points.points", { points: format.number(pointsCost) }),
       },
       {
         field: "validFrom",
@@ -690,6 +697,7 @@ const Coupons = ({
       organization?.id,
       organizations,
       stringFilterOperators,
+      tAuth,
       tCoupons,
     ],
   );

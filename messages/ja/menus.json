@@ -216,10 +216,6 @@
         "label": "価格",
         "placeholder": "価格を入力してください"
       },
-      "priceCurrency": {
-        "label": "通貨",
-        "placeholder": "あなたの通貨を選択してください"
-      },
       "priceSpecification": {
         "price": {
           "label": "セール価格",

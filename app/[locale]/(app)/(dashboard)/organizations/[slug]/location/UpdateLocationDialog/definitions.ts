@@ -14,6 +14,10 @@ export const useUpdateLocationFormSchema = () => {
     .object({
       // https://schema.org/PostalAddress
       addressCountry: z.string().trim().optional(),
+      currency: z
+        .string()
+        .trim()
+        .min(1, { error: tValidation("currency.notSelected") }),
       addressLocality: z.string().trim().optional(),
       addressRegion: z.string().trim().optional(),
       extendedAddress: z.string().trim().optional(),

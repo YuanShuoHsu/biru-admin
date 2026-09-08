@@ -51,6 +51,10 @@
     }
   },
   "createdAt": "作成日",
+  "currency": {
+    "label": "通貨",
+    "placeholder": "あなたの通貨を選択してください"
+  },
   "invitations": {
     "actions": {
       "cancelInvitation": {

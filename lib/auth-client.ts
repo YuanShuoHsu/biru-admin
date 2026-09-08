@@ -81,6 +81,8 @@ export const authClient = createAuthClient({
             openingHours: { type: "string", required: false },
             telephone: { type: "string", required: false },
 
+            currency: { type: "string", required: false },
+
             amountPerPoint: { type: "number", required: false },
             pointsEnabledAt: { type: "date", required: false },
             pointsValidityYears: { type: "number", required: false },

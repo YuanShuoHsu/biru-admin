@@ -45,6 +45,9 @@
     "notSelected": "Please select your country code.",
     "required": "Country code is required."
   },
+  "currency": {
+    "notSelected": "Please select your currency."
+  },
   "currentPassword": {
     "required": "Current password is required."
   },
@@ -145,9 +148,6 @@
   },
   "price": {
     "required": "Please enter a price."
-  },
-  "priceCurrency": {
-    "notSelected": "Please select your currency."
   },
   "quantity": {
     "required": "Quantity is required."

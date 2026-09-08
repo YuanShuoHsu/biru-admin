@@ -80,10 +80,6 @@
       "label": "가격",
       "placeholder": "가격을 입력해 주세요"
     },
-    "priceCurrency": {
-      "label": "통화",
-      "placeholder": "통화를 선택해 주세요"
-    },
     "supplierId": {
       "label": "공급업체",
       "placeholder": "공급업체을(를) 선택해 주세요"
