@@ -778,19 +778,14 @@ const MenusMenuIdSectionId = ({
             .trim(),
       },
       {
-        field: "deliveryLeadTime",
+        field: "deliveryLeadTimeMinutes",
         filterOperators: numberFilterOperators,
-        headerName: `${tMenus("items.offers.deliveryLeadTime.value.label")} ${tCommon("optional")}`,
+        headerName: `${tMenus("items.offers.deliveryLeadTimeMinutes.label")} ${tCommon("optional")}`,
         renderCell: renderEmptyableCell,
         valueGetter: (_value: unknown, { offer }: MenuItem) =>
-          [
-            offer?.deliveryLeadTime?.value == null
-              ? ""
-              : format.number(offer.deliveryLeadTime.value),
-            offer?.deliveryLeadTime?.unitText,
-          ]
-            .join(" ")
-            .trim(),
+          offer?.deliveryLeadTimeMinutes == null
+            ? ""
+            : `${format.number(offer.deliveryLeadTimeMinutes)} ${tMenus("items.offers.deliveryLeadTimeMinutes.unit")}`,
       },
       {
         field: "priceSpecification",
@@ -800,7 +795,10 @@ const MenusMenuIdSectionId = ({
         valueGetter: (_value: unknown, { offer }: MenuItem) =>
           offer?.priceSpecification?.price == null
             ? ""
-            : Number(offer.priceSpecification.price),
+            : formatMoney(
+                Number(offer.priceSpecification.price),
+                offer.priceSpecification.priceCurrency,
+              ),
       },
       {
         field: "priceSpecificationValidFrom",

@@ -188,23 +188,10 @@
       "availableHours": {
         "label": "Available hours"
       },
-      "deliveryLeadTime": {
-        "maxValue": {
-          "label": "Max preparation time",
-          "placeholder": "Please enter your max preparation time"
-        },
-        "minValue": {
-          "label": "Min preparation time",
-          "placeholder": "Please enter your min preparation time"
-        },
-        "unitText": {
-          "label": "Time unit",
-          "placeholder": "Please enter your unit"
-        },
-        "value": {
-          "label": "Preparation time",
-          "placeholder": "Please enter your preparation time"
-        }
+      "deliveryLeadTimeMinutes": {
+        "label": "Preparation time",
+        "placeholder": "Please enter your preparation time",
+        "unit": "min"
       },
       "inventoryLevel": {
         "maxValue": {

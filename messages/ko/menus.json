@@ -188,23 +188,10 @@
       "availableHours": {
         "label": "제공 시간대"
       },
-      "deliveryLeadTime": {
-        "maxValue": {
-          "label": "최대 준비 시간",
-          "placeholder": "최대 준비 시간을 입력해 주세요"
-        },
-        "minValue": {
-          "label": "최소 준비 시간",
-          "placeholder": "최소 준비 시간을 입력해 주세요"
-        },
-        "unitText": {
-          "label": "시간 단위",
-          "placeholder": "단위를 입력해 주세요"
-        },
-        "value": {
-          "label": "준비 시간",
-          "placeholder": "준비 시간을 입력해 주세요"
-        }
+      "deliveryLeadTimeMinutes": {
+        "label": "준비 시간",
+        "placeholder": "준비 시간을 입력해 주세요",
+        "unit": "분"
       },
       "inventoryLevel": {
         "maxValue": {

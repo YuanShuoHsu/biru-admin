@@ -61,7 +61,7 @@ export const useUpdateMenuItemFormSchema = () => {
           .refine((value) => !value || !hasIncompleteOpeningHours(value))
           .refine((value) => !value || !hasOpeningHoursConflict(value)),
         inventoryLevel: quantitativeValueSchema.optional(),
-        deliveryLeadTime: quantitativeValueSchema.optional(),
+        deliveryLeadTimeMinutes: z.string().optional(),
         priceSpecification: z
           .object({
             price: z.string().trim().optional(),

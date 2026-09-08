@@ -83,13 +83,10 @@ const UpdateMenuItemDialog = ({
               : "",
           unitText: item.offer?.inventoryLevel?.unitText || "",
         },
-        deliveryLeadTime: {
-          value:
-            item.offer?.deliveryLeadTime?.value != null
-              ? String(item.offer.deliveryLeadTime.value)
-              : "",
-          unitText: item.offer?.deliveryLeadTime?.unitText || "",
-        },
+        deliveryLeadTimeMinutes:
+          item.offer?.deliveryLeadTimeMinutes != null
+            ? String(item.offer.deliveryLeadTimeMinutes)
+            : "",
         priceSpecification: {
           price: item.offer?.priceSpecification?.price || "",
           validFrom: item.offer?.priceSpecification?.validFrom || "",
@@ -111,9 +108,9 @@ const UpdateMenuItemDialog = ({
   const availability = useWatch({ control, name: "offer.availability" });
   const availableHours = useWatch({ control, name: "offer.availableHours" });
   const availableModes = useWatch({ control, name: "availableModes" });
-  const deliveryLeadTimeValue = useWatch({
+  const deliveryLeadTimeMinutes = useWatch({
     control,
-    name: "offer.deliveryLeadTime.value",
+    name: "offer.deliveryLeadTimeMinutes",
   });
   const inventoryLevel = useWatch({
     control,
@@ -172,18 +169,9 @@ const UpdateMenuItemDialog = ({
             price: offer?.price,
             availability: offer?.availability,
             availableHours: offer?.availableHours || null,
-            deliveryLeadTime:
-              offer?.deliveryLeadTime?.value ||
-              offer?.deliveryLeadTime?.unitText
-                ? {
-                    ...(offer.deliveryLeadTime.value && {
-                      value: Number(offer.deliveryLeadTime.value),
-                    }),
-                    ...(offer.deliveryLeadTime.unitText && {
-                      unitText: offer.deliveryLeadTime.unitText,
-                    }),
-                  }
-                : null,
+            deliveryLeadTimeMinutes: offer?.deliveryLeadTimeMinutes
+              ? Number(offer.deliveryLeadTimeMinutes)
+              : null,
             inventoryLevel:
               offer?.inventoryLevel?.value || offer?.inventoryLevel?.unitText
                 ? {
@@ -493,42 +481,31 @@ const UpdateMenuItemDialog = ({
             {...register("offer.inventoryLevel.unitText")}
           />
         </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
+        <Grid size={{ xs: 12 }}>
           <NumberSpinner
             clearable
             disabled={!canWrite}
-            error={!!errors.offer?.deliveryLeadTime?.value}
+            error={!!errors.offer?.deliveryLeadTimeMinutes}
+            format={{ maximumFractionDigits: 0 }}
             fullWidth
-            helperText={errors.offer?.deliveryLeadTime?.value?.message}
-            label={`${tMenus("items.offers.deliveryLeadTime.value.label")} ${tCommon("optional")}`}
+            helperText={errors.offer?.deliveryLeadTimeMinutes?.message}
+            label={`${tMenus("items.offers.deliveryLeadTimeMinutes.label")}${tCommon("parenthesisOpen")}${tMenus("items.offers.deliveryLeadTimeMinutes.unit")}${tCommon("parenthesisClose")} ${tCommon("optional")}`}
             min={0}
             placeholder={tMenus(
-              "items.offers.deliveryLeadTime.value.placeholder",
+              "items.offers.deliveryLeadTimeMinutes.placeholder",
             )}
+            smallStep={1}
             value={
-              deliveryLeadTimeValue !== ""
-                ? Number(deliveryLeadTimeValue)
+              deliveryLeadTimeMinutes !== ""
+                ? Number(deliveryLeadTimeMinutes)
                 : null
             }
             onValueChange={(value) =>
               setValue(
-                "offer.deliveryLeadTime.value",
+                "offer.deliveryLeadTimeMinutes",
                 value != null ? String(value) : "",
               )
             }
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <TextField
-            disabled={!canWrite}
-            error={!!errors.offer?.deliveryLeadTime?.unitText}
-            fullWidth
-            helperText={errors.offer?.deliveryLeadTime?.unitText?.message}
-            label={`${tMenus("items.offers.deliveryLeadTime.unitText.label")} ${tCommon("optional")}`}
-            placeholder={tMenus(
-              "items.offers.deliveryLeadTime.unitText.placeholder",
-            )}
-            {...register("offer.deliveryLeadTime.unitText")}
           />
         </Grid>
       </Grid>

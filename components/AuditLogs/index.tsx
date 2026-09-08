@@ -132,7 +132,7 @@ const FIELD_LABEL_KEYS = {
   total: "field.total",
   amountPerPoint: "field.amountPerPoint",
   pointsValidityYears: "field.pointsValidityYears",
-  deliveryLeadTime: "field.deliveryLeadTime",
+  deliveryLeadTimeMinutes: "field.deliveryLeadTimeMinutes",
   url: "field.url",
   telephone: "field.telephone",
   note: "field.note",

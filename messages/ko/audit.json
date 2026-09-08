@@ -19,7 +19,7 @@
     "confirmationNumber": "수령 번호",
     "coupon": "쿠폰",
     "customer": "고객 정보",
-    "deliveryLeadTime": "준비 시간",
+    "deliveryLeadTimeMinutes": "준비 시간(분)",
     "description": "설명",
     "discount": "할인",
     "displayName": "그룹 이름",

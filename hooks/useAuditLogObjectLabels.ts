@@ -33,12 +33,6 @@ export const useAuditLogObjectLabels = () => {
           tOrder(`checkout.customer.${key}.label`),
         ]),
       ),
-      deliveryLeadTime: Object.fromEntries(
-        QUANTITATIVE_KEYS.map((key) => [
-          key,
-          tMenus(`items.offers.deliveryLeadTime.${key}.label`),
-        ]),
-      ),
       inventoryLevel: Object.fromEntries(
         QUANTITATIVE_KEYS.map((key) => [
           key,

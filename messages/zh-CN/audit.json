@@ -19,7 +19,7 @@
     "confirmationNumber": "取餐编号",
     "coupon": "优惠券",
     "customer": "顾客信息",
-    "deliveryLeadTime": "预计准备时间",
+    "deliveryLeadTimeMinutes": "预计准备时间（分钟）",
     "description": "描述",
     "discount": "折扣",
     "displayName": "组名称",

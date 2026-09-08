@@ -188,23 +188,10 @@
       "availableHours": {
         "label": "提供時間帯"
       },
-      "deliveryLeadTime": {
-        "maxValue": {
-          "label": "最大準備時間",
-          "placeholder": "最大準備時間を入力してください"
-        },
-        "minValue": {
-          "label": "最小準備時間",
-          "placeholder": "最小準備時間を入力してください"
-        },
-        "unitText": {
-          "label": "時間単位",
-          "placeholder": "単位を入力してください"
-        },
-        "value": {
-          "label": "準備時間",
-          "placeholder": "準備時間を入力してください"
-        }
+      "deliveryLeadTimeMinutes": {
+        "label": "準備時間",
+        "placeholder": "準備時間を入力してください",
+        "unit": "分"
       },
       "inventoryLevel": {
         "maxValue": {

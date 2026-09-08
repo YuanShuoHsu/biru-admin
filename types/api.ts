@@ -3468,8 +3468,11 @@ export interface components {
       availability?: components["schemas"]["ItemAvailability"];
       /** @description 可供應時段，格式同組織營業時間（如 "Mo-Fr 07:00-11:00"）；null 代表全時段供應 */
       availableHours?: string;
-      /** @description 預計準備時間，unitText 建議用 "minute" */
-      deliveryLeadTime?: components["schemas"]["QuantitativeValueDto"];
+      /**
+       * @description 預計準備時間（分鐘）
+       * @example 15
+       */
+      deliveryLeadTimeMinutes?: number;
       /** @description 當日剩餘庫存數量 */
       inventoryLevel?: components["schemas"]["QuantitativeValueDto"];
       priceSpecification?: components["schemas"]["PriceSpecificationDto"];
@@ -3511,7 +3514,8 @@ export interface components {
       availability?: components["schemas"]["ItemAvailability"] | null;
       /** @description 可供應時段；null 代表全時段供應 */
       availableHours?: string | null;
-      deliveryLeadTime?: components["schemas"]["QuantitativeValueDto"] | null;
+      /** @description 預計準備時間（分鐘） */
+      deliveryLeadTimeMinutes?: number | null;
       inventoryLevel?: components["schemas"]["QuantitativeValueDto"] | null;
       priceSpecification?:
         | components["schemas"]["PriceSpecificationDto"]
@@ -3568,7 +3572,7 @@ export interface components {
       | "recipe"
       | "price"
       | "inventoryLevel"
-      | "deliveryLeadTime"
+      | "deliveryLeadTimeMinutes"
       | "priceSpecification"
       | "availability"
       | "availableModes"
@@ -3584,7 +3588,7 @@ export interface components {
       | "recipe"
       | "price"
       | "inventoryLevel"
-      | "deliveryLeadTime"
+      | "deliveryLeadTimeMinutes"
       | "priceSpecification"
       | "availability"
       | "createdAt"
@@ -3627,8 +3631,11 @@ export interface components {
       availability?: components["schemas"]["ItemAvailability"];
       /** @description 可供應時段，格式同組織營業時間（如 "Mo-Fr 07:00-11:00"）；null 代表全時段供應 */
       availableHours?: string;
-      /** @description 預計準備時間，unitText 建議用 "minute" */
-      deliveryLeadTime?: components["schemas"]["QuantitativeValueDto"];
+      /**
+       * @description 預計準備時間（分鐘）
+       * @example 15
+       */
+      deliveryLeadTimeMinutes?: number;
       /** @description 當日剩餘庫存數量 */
       inventoryLevel?: components["schemas"]["QuantitativeValueDto"];
       priceSpecification?: components["schemas"]["PriceSpecificationDto"];
@@ -3814,7 +3821,8 @@ export interface components {
       availability?: components["schemas"]["ItemAvailability"] | null;
       /** @description 可供應時段；null 代表全時段供應 */
       availableHours?: string | null;
-      deliveryLeadTime?: components["schemas"]["QuantitativeValueDto"] | null;
+      /** @description 預計準備時間（分鐘） */
+      deliveryLeadTimeMinutes?: number | null;
       inventoryLevel?: components["schemas"]["QuantitativeValueDto"] | null;
       priceSpecification?:
         | components["schemas"]["PriceSpecificationDto"]
@@ -8373,7 +8381,7 @@ export const menuItemFilterFieldValues: ReadonlyArray<
   "recipe",
   "price",
   "inventoryLevel",
-  "deliveryLeadTime",
+  "deliveryLeadTimeMinutes",
   "priceSpecification",
   "availability",
   "availableModes",
@@ -8391,7 +8399,7 @@ export const menuItemSortFieldValues: ReadonlyArray<
   "recipe",
   "price",
   "inventoryLevel",
-  "deliveryLeadTime",
+  "deliveryLeadTimeMinutes",
   "priceSpecification",
   "availability",
   "createdAt",

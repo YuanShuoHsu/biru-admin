@@ -19,7 +19,7 @@
     "confirmationNumber": "Pickup number",
     "coupon": "Coupon",
     "customer": "Customer",
-    "deliveryLeadTime": "Preparation time",
+    "deliveryLeadTimeMinutes": "Preparation time (min)",
     "description": "Description",
     "discount": "Discount",
     "displayName": "Group name",

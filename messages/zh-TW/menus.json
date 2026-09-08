@@ -188,23 +188,10 @@
       "availableHours": {
         "label": "可供應時段"
       },
-      "deliveryLeadTime": {
-        "maxValue": {
-          "label": "最長備餐時間",
-          "placeholder": "請輸入您的最長備餐時間"
-        },
-        "minValue": {
-          "label": "最短備餐時間",
-          "placeholder": "請輸入您的最短備餐時間"
-        },
-        "unitText": {
-          "label": "時間單位",
-          "placeholder": "請輸入您的單位"
-        },
-        "value": {
-          "label": "備餐時間",
-          "placeholder": "請輸入您的備餐時間"
-        }
+      "deliveryLeadTimeMinutes": {
+        "label": "備餐時間",
+        "placeholder": "請輸入您的備餐時間",
+        "unit": "分鐘"
       },
       "inventoryLevel": {
         "maxValue": {

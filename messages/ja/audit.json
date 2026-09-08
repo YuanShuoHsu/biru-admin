@@ -19,7 +19,7 @@
     "confirmationNumber": "受取番号",
     "coupon": "クーポン",
     "customer": "お客様情報",
-    "deliveryLeadTime": "準備時間",
+    "deliveryLeadTimeMinutes": "準備時間（分）",
     "description": "説明",
     "discount": "割引",
     "displayName": "グループ名",
