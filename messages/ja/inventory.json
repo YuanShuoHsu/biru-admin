@@ -162,11 +162,6 @@
     "margin": {
       "label": "粗利率"
     },
-    "menuItemId": {
-      "helperText": "空欄のままにすると、同名のメニュー項目に自動で紐づきます",
-      "label": "対象品目",
-      "placeholder": "対象品目を選択してください"
-    },
     "name": {
       "label": "レシピ名",
       "placeholder": "レシピ名を入力してください"

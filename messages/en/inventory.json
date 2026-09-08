@@ -162,11 +162,6 @@
     "margin": {
       "label": "Margin"
     },
-    "menuItemId": {
-      "helperText": "Leave empty to match a menu item with the same name automatically",
-      "label": "Menu item",
-      "placeholder": "Please select your Menu item"
-    },
     "name": {
       "label": "Recipe name",
       "placeholder": "Please enter your recipe name"

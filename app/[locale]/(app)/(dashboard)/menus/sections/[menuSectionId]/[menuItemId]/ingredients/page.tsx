@@ -21,7 +21,7 @@ import {
 import { resolveGridSearchParams } from "@/utils/dataGrid";
 import {
   getIngredients,
-  getRecipe,
+  getRecipeByMenuItem,
   getRecipeIngredients,
 } from "@/utils/inventory";
 import {
@@ -96,7 +96,7 @@ const MenuItemIngredientsPage = async ({
       { pageSize: MAX_PAGE_SIZE },
       fetchOptions,
     ),
-    menuItem.recipe ? getRecipe(menuItem.recipe.id, fetchOptions) : null,
+    getRecipeByMenuItem(menuItemId, fetchOptions),
   ]);
 
   if (menuItem.recipe && !recipe) notFound();

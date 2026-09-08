@@ -15,6 +15,8 @@ export type Ingredient = components["schemas"]["IngredientResponseDto"];
 export type InventoryTransaction =
   components["schemas"]["InventoryTransactionResponseDto"];
 export type Recipe = components["schemas"]["RecipeResponseDto"];
+export type MenuItemRecipeDetail =
+  components["schemas"]["MenuItemRecipeDetailResponseDto"];
 export type RecipeIngredient =
   components["schemas"]["RecipeIngredientResponseDto"];
 export type Supplier = components["schemas"]["SupplierResponseDto"];

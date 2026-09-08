@@ -12,7 +12,7 @@ import type {
   InventoryTransaction,
   InventoryTransactionFilterField,
   InventoryTransactionSortField,
-  Recipe,
+  MenuItemRecipeDetail,
   RecipeIngredient,
   RecipeIngredientFilterField,
   RecipeIngredientSortField,
@@ -182,10 +182,17 @@ export const getRecipeIngredients = cache(
   },
 );
 
-export const getRecipe = cache(async (recipeId: string, init?: RequestInit) => {
-  try {
-    return await fetcher<Recipe>(`/api/recipes/${recipeId}`, init);
-  } catch {
-    return null;
-  }
-});
+export const getRecipeByMenuItem = cache(
+  async (menuItemId: string, init?: RequestInit) => {
+    try {
+      const { recipe } = await fetcher<MenuItemRecipeDetail>(
+        `/api/menu-items/${menuItemId}/recipe`,
+        init,
+      );
+
+      return recipe;
+    } catch {
+      return null;
+    }
+  },
+);

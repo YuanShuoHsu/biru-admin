@@ -88,6 +88,7 @@ import {
 import { getMenuEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
 import { getHref } from "@/utils/href";
+import { costPerServing, grossMargin } from "@/utils/recipes";
 import { localize } from "@/utils/locale";
 
 const DataGrid = dynamic(
@@ -489,26 +490,25 @@ const MenusMenuIdSectionId = ({
   );
 
   const columns = useMemo<GridColDef[]>(() => {
-    const costColumns: GridColDef[] = [
+    const purchasingColumns: GridColDef[] = [
       {
-        field: "cost",
+        field: "costPerServing",
         filterable: false,
-        headerName: tInventory("recipes.cost.label"),
+        headerName: tInventory("recipes.costPerServing.label"),
         renderCell: renderEmptyableCell,
         sortable: false,
         valueGetter: (_value: unknown, { offer, recipe }: MenuItem) => {
           if (!recipe) return "";
 
-          return recipe.cost == null
+          const perServing = costPerServing(recipe);
+
+          return perServing == null
             ? tInventory("recipes.cost.unavailable")
-            : formatMoney(recipe.cost, offer?.priceCurrency, {
+            : formatMoney(perServing, offer?.priceCurrency, {
                 maximumFractionDigits: 2,
               });
         },
       },
-    ];
-
-    const marginColumns: GridColDef[] = [
       {
         field: "margin",
         filterable: false,
@@ -519,13 +519,12 @@ const MenusMenuIdSectionId = ({
           const price = Number(offer?.price);
 
           if (!recipe || !price) return "";
-          if (recipe.cost == null)
-            return tInventory("recipes.cost.unavailable");
 
-          return format.number(
-            (price - recipe.cost / recipe.recipeYield) / price,
-            { style: "percent" },
-          );
+          const margin = grossMargin(recipe, price);
+
+          return margin == null
+            ? tInventory("recipes.cost.unavailable")
+            : format.number(margin, { style: "percent" });
         },
       },
     ];
@@ -645,27 +644,13 @@ const MenusMenuIdSectionId = ({
           localize(row.description, locale),
       },
       {
-        field: "recipeYield",
-        filterable: false,
-        headerName: tInventory("recipes.recipeYield.label"),
-        renderCell: renderEmptyableCell,
-        sortable: false,
-        valueGetter: (_value: unknown, { recipe }: MenuItem) =>
-          recipe
-            ? `${format.number(recipe.recipeYield)} ${tInventory("recipes.recipeYield.unit")}`
-            : "",
-      },
-      ...(canViewPurchasing ? costColumns : []),
-      {
         field: "recipe",
         filterOperators: stringFilterOperators.filter(({ value }) =>
           ["isEmpty", "isNotEmpty"].includes(value),
         ),
-        headerName: canViewPurchasing
-          ? `${tInventory("recipes.costPerServing.label")} ${tCommon("optional")}`
-          : `${tInventory("recipes.name.label")} ${tCommon("optional")}`,
+        headerName: `${tInventory("recipes.name.label")} ${tCommon("optional")}`,
         renderCell: ({
-          row: { id, offer, recipe },
+          row: { id, recipe },
         }: GridRenderCellParams<MenuItem>) => (
           <Stack alignItems="center" direction="row" height="100%">
             {recipe ? (
@@ -678,15 +663,7 @@ const MenusMenuIdSectionId = ({
                 underline="hover"
                 variant="body2"
               >
-                {!canViewPurchasing
-                  ? localize(recipe.name, locale)
-                  : recipe.cost == null
-                    ? tInventory("recipes.cost.unavailable")
-                    : formatMoney(
-                        recipe.cost / recipe.recipeYield,
-                        offer?.priceCurrency,
-                        { maximumFractionDigits: 2 },
-                      )}
+                {localize(recipe.name, locale)}
               </Link>
             ) : (
               canCreateRecipe && (
@@ -706,7 +683,7 @@ const MenusMenuIdSectionId = ({
           </Stack>
         ),
       },
-      ...(canViewPurchasing ? marginColumns : []),
+      ...(canViewPurchasing ? purchasingColumns : []),
       {
         field: "price",
         filterOperators: numberFilterOperators,

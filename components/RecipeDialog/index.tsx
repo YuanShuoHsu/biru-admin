@@ -1,6 +1,6 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -13,37 +13,29 @@ import NumberSpinner from "@/components/NumberSpinner";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { MenuItem as MuiMenuItem, TextField } from "@mui/material";
-
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { Recipe } from "@/types/inventory";
-import type { MenuItem } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
-import { localize } from "@/utils/locale";
 
 interface RecipeDialogProps {
-  defaultMenuItemId: string | null;
   defaultName: Recipe["name"] | null;
-  menuItems: MenuItem[];
+  menuItemId: string;
   mutate: () => void;
   organizationSlug: string;
-  recipe: Pick<Recipe, "id" | "menuItemId" | "name" | "recipeYield"> | null;
+  recipe: Pick<Recipe, "id" | "name" | "recipeYield"> | null;
 }
 
 const RecipeDialog = ({
-  defaultMenuItemId,
   defaultName,
-  menuItems,
+  menuItemId,
   mutate,
   organizationSlug,
   recipe,
 }: RecipeDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
-  const locale = useLocale();
-  const tCommon = useTranslations("common");
   const tInventory = useTranslations("inventory");
 
   const recipeFormSchema = useRecipeFormSchema();
@@ -51,18 +43,15 @@ const RecipeDialog = ({
     control,
     formState: { errors, isSubmitted },
     handleSubmit,
-    register,
     setValue,
   } = useForm<RecipeForm>({
     defaultValues: {
-      menuItemId: recipe?.menuItemId || defaultMenuItemId || "",
       name: recipe?.name || defaultName || {},
       recipeYield: String(recipe?.recipeYield || 1),
     },
     resolver: zodResolver(recipeFormSchema),
   });
 
-  const menuItemId = useWatch({ control, name: "menuItemId" });
   const name = useWatch({ control, name: "name" });
   const recipeYield = useWatch({ control, name: "recipeYield" });
 
@@ -80,7 +69,7 @@ const RecipeDialog = ({
           method: recipe ? "PATCH" : "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            menuItemId: values.menuItemId || null,
+            ...(recipe ? {} : { menuItemId }),
             name: values.name,
             recipeYield: Number(values.recipeYield),
           }),
@@ -123,42 +112,6 @@ const RecipeDialog = ({
           },
         ]}
       />
-      <TextField
-        error={!!errors.menuItemId}
-        fullWidth
-        helperText={
-          errors.menuItemId?.message ||
-          tInventory("recipes.menuItemId.helperText")
-        }
-        label={`${tInventory("recipes.menuItemId.label")} ${tCommon("optional")}`}
-        select
-        slotProps={{
-          inputLabel: { shrink: true },
-          select: {
-            displayEmpty: true,
-            renderValue: (selected) => {
-              const menuItem = menuItems.find(({ id }) => id === selected);
-
-              return menuItem ? (
-                localize(menuItem.name, locale)
-              ) : (
-                <em>{tInventory("recipes.menuItemId.placeholder")}</em>
-              );
-            },
-          },
-        }}
-        value={menuItemId}
-        {...register("menuItemId")}
-      >
-        <MuiMenuItem value="">
-          <em>{tInventory("recipes.menuItemId.placeholder")}</em>
-        </MuiMenuItem>
-        {menuItems.map(({ id, name: menuItemName }) => (
-          <MuiMenuItem key={id} value={id}>
-            {localize(menuItemName, locale)}
-          </MuiMenuItem>
-        ))}
-      </TextField>
       <NumberSpinner
         error={!!errors.recipeYield}
         fullWidth

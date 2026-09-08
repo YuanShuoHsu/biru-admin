@@ -162,11 +162,6 @@
     "margin": {
       "label": "毛利率"
     },
-    "menuItemId": {
-      "helperText": "留空時，會自動對應到同名的菜單品項",
-      "label": "對應品項",
-      "placeholder": "請選擇您的對應品項"
-    },
     "name": {
       "label": "食譜名稱",
       "placeholder": "請輸入您的食譜名稱"

@@ -777,6 +777,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/menu-items/{menuItemId}/recipe": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得品項食譜 */
+    get: operations["MenuItemInventoryController_findRecipe"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/recipes/{recipeId}": {
     parameters: {
       query?: never;
@@ -2906,6 +2923,9 @@ export interface components {
       /** Format: date-time */
       updatedAt: string;
     };
+    MenuItemRecipeDetailResponseDto: {
+      recipe: components["schemas"]["RecipeResponseDto"] | null;
+    };
     UpdateRecipeDto: {
       /**
        * @example {
@@ -3503,7 +3523,8 @@ export interface components {
       menuItemId?: string | null;
       menuSectionId?: string | null;
       price?: string | null;
-      priceCurrency?: string | null;
+      /** @description price 的幣別；來自店家設定 */
+      priceCurrency: string;
       availability?: components["schemas"]["ItemAvailability"] | null;
       /** @description 可供應時段；null 代表全時段供應 */
       availableHours?: string | null;
@@ -3808,7 +3829,8 @@ export interface components {
       menuItemId?: string | null;
       menuSectionId?: string | null;
       price?: string | null;
-      priceCurrency?: string | null;
+      /** @description price 的幣別；來自店家設定 */
+      priceCurrency: string;
       availability?: components["schemas"]["ItemAvailability"] | null;
       /** @description 可供應時段；null 代表全時段供應 */
       availableHours?: string | null;
@@ -5849,6 +5871,34 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["InventoryTransactionResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  MenuItemInventoryController_findRecipe: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        menuItemId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["MenuItemRecipeDetailResponseDto"];
         };
       };
       /** @description Internal server error */

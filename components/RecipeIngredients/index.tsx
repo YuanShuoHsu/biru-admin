@@ -36,6 +36,7 @@ import {
   IconButton,
   Stack,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import type {
   GridColDef,
@@ -51,6 +52,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type {
   Ingredient,
+  MenuItemRecipeDetail,
   Recipe,
   RecipeIngredient,
   RecipeIngredientFilterField,
@@ -60,6 +62,7 @@ import type { MenuItem } from "@/types/menus";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
+import { costPerServing, grossMargin } from "@/utils/recipes";
 import { localize } from "@/utils/locale";
 
 const DataGrid = dynamic(
@@ -105,7 +108,7 @@ const RecipeIngredients = ({
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,
-  recipe,
+  recipe: initialRecipe,
   rowCount: initialRowCount,
   sortBy,
   sortDirection,
@@ -160,6 +163,13 @@ const RecipeIngredients = ({
   const tCommon = useTranslations("common");
   const tInventory = useTranslations("inventory");
 
+  const { data: recipe, mutate: mutateRecipe } = useSWR(
+    menuItem ? `/api/menu-items/${menuItem.id}/recipe` : null,
+    (url: string) =>
+      fetcher<MenuItemRecipeDetail>(url).then(({ recipe }) => recipe),
+    { fallbackData: initialRecipe },
+  );
+
   const {
     data: { data: materials, total: rowCount } = {
       data: initialMaterials,
@@ -192,11 +202,10 @@ const RecipeIngredients = ({
     },
   );
 
-  // 分頁後格線只有當前頁，成本摘要與「哪些食材已用過」都要靠 SSR 的 recipe 一起更新
   const handleMutate = useCallback(() => {
     mutate();
-    router.refresh();
-  }, [mutate, router]);
+    mutateRecipe();
+  }, [mutate, mutateRecipe]);
 
   const handlePaginationModelChange = useCallback(
     (newModel: GridPaginationModel) => {
@@ -263,10 +272,9 @@ const RecipeIngredients = ({
     setDialog({
       content: (
         <RecipeDialog
-          defaultMenuItemId={menuItem.id}
           defaultName={menuItem.name}
-          menuItems={[menuItem]}
-          mutate={() => router.refresh()}
+          menuItemId={menuItem.id}
+          mutate={mutateRecipe}
           organizationSlug={organizationSlug}
           recipe={null}
         />
@@ -275,7 +283,7 @@ const RecipeIngredients = ({
       open: true,
       title: tInventory("recipes.actions.createRecipe.title"),
     });
-  }, [menuItem, organizationSlug, router, setDialog, tInventory]);
+  }, [menuItem, mutateRecipe, organizationSlug, setDialog, tInventory]);
 
   const handleUpdateRecipe = useCallback(() => {
     if (!menuItem || !organizationSlug || !recipe) return;
@@ -283,10 +291,9 @@ const RecipeIngredients = ({
     setDialog({
       content: (
         <RecipeDialog
-          defaultMenuItemId={null}
           defaultName={null}
-          menuItems={[menuItem]}
-          mutate={() => router.refresh()}
+          menuItemId={menuItem.id}
+          mutate={mutateRecipe}
           organizationSlug={organizationSlug}
           recipe={recipe}
         />
@@ -295,7 +302,7 @@ const RecipeIngredients = ({
       open: true,
       title: tInventory("recipes.actions.updateRecipe.title"),
     });
-  }, [menuItem, organizationSlug, recipe, router, setDialog, tInventory]);
+  }, [menuItem, mutateRecipe, organizationSlug, recipe, setDialog, tInventory]);
 
   const handleDeleteRecipe = useCallback(() => {
     if (!recipe) return;
@@ -317,7 +324,7 @@ const RecipeIngredients = ({
             variant: "success",
           });
 
-          router.refresh();
+          mutateRecipe();
         } catch {
           enqueueSnackbar(tInventory("recipes.actions.deleteRecipe.error"), {
             variant: "error",
@@ -327,7 +334,7 @@ const RecipeIngredients = ({
       open: true,
       title: tInventory("recipes.actions.deleteRecipe.title"),
     });
-  }, [locale, recipe, router, setDialog, tInventory]);
+  }, [locale, mutateRecipe, recipe, setDialog, tInventory]);
 
   const handleCreateRecipeIngredient = useCallback(() => {
     if (!recipe) return;
@@ -422,6 +429,50 @@ const RecipeIngredients = ({
     },
     [handleMutate, locale, recipe, setDialog, tInventory],
   );
+
+  const summaryItems = useMemo(() => {
+    if (!recipe) return [];
+
+    const unavailable = tInventory("recipes.cost.unavailable");
+    const money = (value: number | null) =>
+      value == null
+        ? unavailable
+        : formatMoney(value, priceCurrency, { maximumFractionDigits: 2 });
+    const margin = grossMargin(recipe, Number(recipe.price));
+
+    return [
+      {
+        label: tInventory("recipes.recipeYield.label"),
+        value: `${format.number(recipe.recipeYield)} ${tInventory("recipes.recipeYield.unit")}`,
+      },
+      ...(canViewPurchasing
+        ? [
+            {
+              label: tInventory("recipes.cost.label"),
+              value: money(recipe.cost ?? null),
+            },
+            {
+              label: tInventory("recipes.costPerServing.label"),
+              value: money(costPerServing(recipe)),
+            },
+            {
+              label: tInventory("recipes.margin.label"),
+              value:
+                margin == null
+                  ? unavailable
+                  : format.number(margin, { style: "percent" }),
+            },
+          ]
+        : []),
+    ];
+  }, [
+    canViewPurchasing,
+    format,
+    formatMoney,
+    priceCurrency,
+    recipe,
+    tInventory,
+  ]);
 
   const columns = useMemo<GridColDef[]>(() => {
     const costColumns: GridColDef[] = [
@@ -608,6 +659,19 @@ const RecipeIngredients = ({
           )
         )}
       </Stack>
+      {summaryItems.length > 0 && (
+        <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
+          {summaryItems.map(({ label, value }) => (
+            <Typography color="text.secondary" key={label} variant="body2">
+              {label}
+              {tCommon("colon")}
+              <Typography component="span" color="text.primary" variant="body2">
+                {value}
+              </Typography>
+            </Typography>
+          ))}
+        </Stack>
+      )}
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}

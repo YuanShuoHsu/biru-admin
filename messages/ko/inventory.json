@@ -162,11 +162,6 @@
     "margin": {
       "label": "마진율"
     },
-    "menuItemId": {
-      "helperText": "비워 두면 이름이 같은 메뉴 항목에 자동으로 연결됩니다",
-      "label": "연결된 메뉴",
-      "placeholder": "연결된 메뉴을(를) 선택해 주세요"
-    },
     "name": {
       "label": "레시피 이름",
       "placeholder": "레시피 이름을(를) 입력해 주세요"

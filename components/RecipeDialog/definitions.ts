@@ -7,7 +7,6 @@ export const useRecipeFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z.object({
-    menuItemId: z.string().trim().optional(),
     name: z
       .record(z.string(), z.string().trim())
       .superRefine(
