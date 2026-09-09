@@ -136,7 +136,14 @@ const UpdateMenuItemDialog = ({
         await fetcher(`/api/offers/${item.offer?.id}/availability`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ availability: offer?.availability }),
+          body: JSON.stringify({
+            availability: offer?.availability,
+            inventoryLevel: {
+              value: offer?.inventoryLevel?.value
+                ? Number(offer.inventoryLevel.value)
+                : null,
+            },
+          }),
         });
 
         enqueueSnackbar(
@@ -428,7 +435,6 @@ const UpdateMenuItemDialog = ({
         <Grid size={{ xs: 12, sm: 6 }}>
           <NumberSpinner
             clearable
-            disabled={!canWrite}
             error={!!errors.offer?.inventoryLevel?.value}
             fullWidth
             helperText={errors.offer?.inventoryLevel?.value?.message}

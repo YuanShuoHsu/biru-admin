@@ -1230,7 +1230,7 @@ export interface paths {
     delete?: never;
     options?: never;
     head?: never;
-    /** 更新品項供應狀態 */
+    /** 更新品項供應狀態與剩餘數量 */
     patch: operations["MenusController_updateOfferAvailability"];
     trace?: never;
   };
@@ -3650,8 +3650,14 @@ export interface components {
       inventoryLevel?: components["schemas"]["QuantitativeValueDto"];
       priceSpecification?: components["schemas"]["PriceSpecificationDto"];
     };
-    UpdateItemAvailabilityDto: {
+    OfferInventoryLevelValueDto: {
+      /** @description 當日剩餘庫存數量；null 代表不限量 */
+      value: number | null;
+    };
+    UpdateOfferAvailabilityDto: {
       availability: components["schemas"]["ItemAvailability"];
+      /** @description 僅含數量；單位 unitText 屬菜單定義，需 menu:update 才能改 */
+      inventoryLevel?: components["schemas"]["OfferInventoryLevelValueDto"];
     };
     CreateMenuItemAddOnDto: {
       /** @description Add-on menu item ID */
@@ -3807,6 +3813,9 @@ export interface components {
       availability?: components["schemas"]["ItemAvailability"];
       /** @description 可販售的點餐模式 */
       availableModes?: components["schemas"]["OrderMode"][];
+    };
+    UpdateItemAvailabilityDto: {
+      availability: components["schemas"]["ItemAvailability"];
     };
     CreateMenuItemModifierGroupDto: {
       /** @description 要掛到此品項的選項群組 ID */
@@ -7120,7 +7129,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["UpdateItemAvailabilityDto"];
+        "application/json": components["schemas"]["UpdateOfferAvailabilityDto"];
       };
     };
     responses: {
