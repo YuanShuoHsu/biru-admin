@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
-import RecipeIngredients from "@/components/RecipeIngredients";
+import MenuItemRecipe from ".";
 
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
@@ -12,18 +12,7 @@ import { authClient } from "@/lib/auth-client";
 
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
-import {
-  filterOperatorValues,
-  recipeIngredientFilterFieldValues,
-  recipeIngredientSortFieldValues,
-} from "@/types/api";
-
-import { resolveGridSearchParams } from "@/utils/dataGrid";
-import {
-  getIngredients,
-  getRecipeByMenuItem,
-  getRecipeIngredients,
-} from "@/utils/inventory";
+import { getIngredients, getRecipeByMenuItem } from "@/utils/inventory";
 import {
   DEFAULT_MENUS_HREF,
   getAdminMenu,
@@ -33,38 +22,28 @@ import {
 } from "@/utils/menus";
 import { hasRolePermission } from "@/utils/organizations";
 
-interface MenuItemIngredientsPageProps {
+interface MenuItemRecipePageProps {
   params: Promise<{
     locale: Locale;
     menuSectionId: string;
     menuItemId: string;
   }>;
-  searchParams: Promise<{
-    filterField?: string;
-    filterOperator?: string;
-    filterValue?: string;
-    organization?: string;
-    page?: string;
-    pageSize?: string;
-    quickFilterValue?: string;
-    sortBy?: string;
-    sortDirection?: string;
-  }>;
+  searchParams: Promise<{ organization?: string }>;
 }
 
 export const generateMetadata = async ({
   params,
-}: MenuItemIngredientsPageProps): Promise<Metadata> => {
+}: MenuItemRecipePageProps): Promise<Metadata> => {
   const { locale } = await params;
   const t = await getTranslations({ locale });
 
-  return { title: t("inventory.recipes.ingredients.label") };
+  return { title: t("inventory.recipes.label") };
 };
 
-const MenuItemIngredientsPage = async ({
+const MenuItemRecipePage = async ({
   params,
   searchParams,
-}: MenuItemIngredientsPageProps) => {
+}: MenuItemRecipePageProps) => {
   const [cookieStore, { locale, menuSectionId, menuItemId }, rawSearchParams] =
     await Promise.all([cookies(), params, searchParams]);
 
@@ -91,62 +70,20 @@ const MenuItemIngredientsPage = async ({
       query: { organizationId: menu.organizationId },
       fetchOptions,
     }),
-    getIngredients(
-      selectedOrganization.slug,
-      { pageSize: MAX_PAGE_SIZE },
-      fetchOptions,
-    ),
+    menuItem.recipe
+      ? { ingredients: [], total: 0 }
+      : getIngredients(
+          selectedOrganization.slug,
+          { pageSize: MAX_PAGE_SIZE },
+          fetchOptions,
+        ),
     getRecipeByMenuItem(menuItemId, fetchOptions),
   ]);
 
   if (menuItem.recipe && !recipe) notFound();
 
-  const {
-    filterField,
-    filterOperator,
-    filterValue,
-    page,
-    pageSize,
-    quickFilterValue,
-    redirectParams,
-    sortBy,
-    sortDirection,
-  } = resolveGridSearchParams({
-    searchParams: rawSearchParams,
-    sortFields: recipeIngredientSortFieldValues,
-    filterFields: recipeIngredientFilterFieldValues,
-    filterOperators: filterOperatorValues,
-    organizationSlug: selectedOrganization.slug,
-  });
-
-  if (redirectParams)
-    redirect({
-      href: `/menus/sections/${menuSectionId}/${menuItemId}/ingredients?${redirectParams.toString()}`,
-      locale,
-    });
-
-  const { materials, total } = recipe
-    ? await getRecipeIngredients(
-        recipe.id,
-        {
-          page,
-          pageSize,
-          filterField,
-          filterOperator,
-          filterValue,
-          quickFilterValue,
-          sortBy,
-          sortDirection,
-        },
-        fetchOptions,
-      )
-    : { materials: [], total: 0 };
-
   const canCreate = hasRolePermission(memberRole?.role, {
     inventory: ["create"],
-  });
-  const canDelete = hasRolePermission(memberRole?.role, {
-    inventory: ["delete"],
   });
   const canViewAuditLog = hasRolePermission(memberRole?.role, {
     auditLog: ["read"],
@@ -159,28 +96,17 @@ const MenuItemIngredientsPage = async ({
   });
 
   return (
-    <RecipeIngredients
+    <MenuItemRecipe
       canCreate={canCreate}
-      canDelete={canDelete}
       canViewAuditLog={canViewAuditLog}
       canViewPurchasing={canViewPurchasing}
       canWrite={canWrite}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
       ingredients={ingredients}
-      materials={materials}
       menuItem={menuItem}
       organizationSlug={selectedOrganization.slug}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
       recipe={recipe}
-      rowCount={total}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
     />
   );
 };
 
-export default MenuItemIngredientsPage;
+export default MenuItemRecipePage;

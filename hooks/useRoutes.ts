@@ -69,7 +69,7 @@ import {
 import type { SvgIconProps } from "@mui/material";
 
 import type { Coupon } from "@/types/coupons";
-import type { Ingredient, Recipe, Supplier } from "@/types/inventory";
+import type { Ingredient, Supplier } from "@/types/inventory";
 import type { MenuItem, MenuSection, ModifierGroup } from "@/types/menus";
 import type { NavItem } from "@/types/navItem";
 import type { AdminOrderResponse } from "@/types/orders";
@@ -233,12 +233,13 @@ const routes: Route[] = [
                           },
                         ],
                         icon: SoupKitchen,
+                        label: "inventory.recipes.ingredients.label",
+                        query: ["organization", "page", "pageSize"],
                         segment: "[recipeId]",
-                        to: null,
                       },
                     ],
                     icon: Kitchen,
-                    label: "inventory.recipes.ingredients.label",
+                    label: "inventory.recipes.label",
                     query: ["organization"],
                     segment: "ingredients",
                   },
@@ -582,7 +583,6 @@ const useDynamicLabels = (): Partial<Record<string, string>> => {
     menuItemId,
     menuSectionId,
     orderId,
-    recipeId,
     slug,
     supplierId,
     teamId,
@@ -669,19 +669,6 @@ const useDynamicLabels = (): Partial<Record<string, string>> => {
     },
   );
 
-  const { data: recipeName = "" } = useSWR(
-    recipeId ? `/api/recipes/${recipeId}` : null,
-    async (url) => {
-      try {
-        const { name } = await fetcher<Recipe>(url);
-
-        return localize(name, locale);
-      } catch {
-        return "";
-      }
-    },
-  );
-
   const { data: couponCode = "" } = useSWR(
     couponId ? `/api/coupons/${couponId}` : null,
     async (url) => {
@@ -730,7 +717,6 @@ const useDynamicLabels = (): Partial<Record<string, string>> => {
     menuItemId: menuItemName,
     menuSectionId: menuSectionName,
     orderId: orderNumber,
-    recipeId: recipeName,
     slug: organizationSlugName,
     supplierId: supplierName,
     teamId: teamName,

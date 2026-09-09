@@ -106,6 +106,9 @@
         "error": "出来上がり分量の更新に失敗しました",
         "success": "出来上がり分量を更新しました",
         "title": "出来上がり分量を編集"
+      },
+      "viewRecipeIngredients": {
+        "title": "材料を表示"
       }
     },
     "cost": {
@@ -132,6 +135,20 @@
           "title": "材料を削除"
         },
         "label": "操作",
+        "reorderRecipeIngredient": {
+          "cancel": {
+            "confirm": "<bold>材料</bold>の並び替えをキャンセルしますか？保存していない変更は失われます。",
+            "label": "材料の並び替えをキャンセル"
+          },
+          "confirm": "<bold>材料</bold>を並び替えますか？",
+          "save": {
+            "confirm": "<bold>材料</bold>の並び順を保存しますか？",
+            "error": "並び順の保存に失敗しました",
+            "label": "材料の並び順を保存",
+            "success": "並び順を保存しました"
+          },
+          "title": "材料を並び替え"
+        },
         "updateRecipeIngredient": {
           "error": "材料の更新に失敗しました",
           "success": "材料を更新しました",
@@ -154,6 +171,7 @@
         "label": "単位原価"
       }
     },
+    "label": "レシピ",
     "margin": {
       "label": "粗利率"
     },

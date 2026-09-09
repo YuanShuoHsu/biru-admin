@@ -249,7 +249,7 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
   );
 
   return (
-    <Stack gap={2}>
+    <>
       <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
         <Button
           color="error"
@@ -271,7 +271,7 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
         }
         rows={rows}
       />
-    </Stack>
+    </>
   );
 };
 

@@ -106,6 +106,9 @@
         "error": "更新份量失败",
         "success": "已更新份量",
         "title": "编辑份量"
+      },
+      "viewRecipeIngredients": {
+        "title": "查看材料"
       }
     },
     "cost": {
@@ -132,6 +135,20 @@
           "title": "删除材料"
         },
         "label": "操作",
+        "reorderRecipeIngredient": {
+          "cancel": {
+            "confirm": "确定要取消<bold>材料</bold>排序吗？未保存的更改将会丢失。",
+            "label": "取消材料排序"
+          },
+          "confirm": "确定要进行<bold>材料</bold>排序吗？",
+          "save": {
+            "confirm": "确定要保存<bold>材料</bold>排序吗？",
+            "error": "排序保存失败",
+            "label": "保存材料排序",
+            "success": "排序已保存"
+          },
+          "title": "材料排序"
+        },
         "updateRecipeIngredient": {
           "error": "更新材料失败",
           "success": "已更新材料",
@@ -154,6 +171,7 @@
         "label": "单位成本"
       }
     },
+    "label": "食谱",
     "margin": {
       "label": "毛利率"
     },

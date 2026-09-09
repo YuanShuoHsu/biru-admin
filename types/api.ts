@@ -831,6 +831,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/recipes/{recipeId}/recipe-ingredients/reorder": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** 重新排序食譜材料 */
+    patch: operations["RecipesController_reorderIngredients"];
+    trace?: never;
+  };
   "/api/recipes/{recipeId}/recipe-ingredients/{recipeIngredientId}": {
     parameters: {
       query?: never;
@@ -6066,6 +6083,36 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["RecipeIngredientResponseDto"];
         };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  RecipesController_reorderIngredients: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        recipeId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ReorderDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
       /** @description Internal server error */
       500: {

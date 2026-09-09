@@ -52,7 +52,7 @@ const MenuItemLayout = ({ children }: { children: React.ReactNode }) => {
     },
     {
       Icon: Kitchen,
-      label: tInventory("recipes.ingredients.label"),
+      label: tInventory("recipes.label"),
       value: `${basePath}/ingredients`,
     },
   ];
