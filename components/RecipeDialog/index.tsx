@@ -8,7 +8,6 @@ import { useForm, useWatch } from "react-hook-form";
 import { useRecipeFormSchema, type RecipeForm } from "./definitions";
 
 import FormBox from "@/components/FormBox";
-import LocalizedTextFields from "@/components/LocalizedTextFields";
 import NumberSpinner from "@/components/NumberSpinner";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,20 +19,11 @@ import type { Recipe } from "@/types/inventory";
 import { fetcher } from "@/utils/fetcher";
 
 interface RecipeDialogProps {
-  defaultName: Recipe["name"] | null;
-  menuItemId: string;
   mutate: () => void;
-  organizationSlug: string;
-  recipe: Pick<Recipe, "id" | "name" | "recipeYield"> | null;
+  recipe: Pick<Recipe, "id" | "recipeYield">;
 }
 
-const RecipeDialog = ({
-  defaultName,
-  menuItemId,
-  mutate,
-  organizationSlug,
-  recipe,
-}: RecipeDialogProps) => {
+const RecipeDialog = ({ mutate, recipe }: RecipeDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const tInventory = useTranslations("inventory");
@@ -45,38 +35,23 @@ const RecipeDialog = ({
     handleSubmit,
     setValue,
   } = useForm<RecipeForm>({
-    defaultValues: {
-      name: recipe?.name || defaultName || {},
-      recipeYield: String(recipe?.recipeYield || 1),
-    },
+    defaultValues: { recipeYield: String(recipe.recipeYield) },
     resolver: zodResolver(recipeFormSchema),
   });
 
-  const name = useWatch({ control, name: "name" });
   const recipeYield = useWatch({ control, name: "recipeYield" });
-
-  const action = recipe ? "updateRecipe" : "createRecipe";
 
   const onSubmitHandler = async (values: RecipeForm) => {
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher<Recipe>(
-        recipe
-          ? `/api/recipes/${recipe.id}`
-          : `/api/organizations/${organizationSlug}/recipes`,
-        {
-          method: recipe ? "PATCH" : "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ...(recipe ? {} : { menuItemId }),
-            name: values.name,
-            recipeYield: Number(values.recipeYield),
-          }),
-        },
-      );
+      await fetcher<Recipe>(`/api/recipes/${recipe.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ recipeYield: Number(values.recipeYield) }),
+      });
 
-      enqueueSnackbar(tInventory(`recipes.actions.${action}.success`), {
+      enqueueSnackbar(tInventory("recipes.actions.updateRecipe.success"), {
         variant: "success",
       });
 
@@ -84,7 +59,7 @@ const RecipeDialog = ({
 
       mutate();
     } catch {
-      enqueueSnackbar(tInventory(`recipes.actions.${action}.error`), {
+      enqueueSnackbar(tInventory("recipes.actions.updateRecipe.error"), {
         variant: "error",
       });
 
@@ -97,21 +72,6 @@ const RecipeDialog = ({
 
   return (
     <FormBox id="recipe-form" onSubmit={onSubmit}>
-      <LocalizedTextFields
-        fields={(lang) => [
-          {
-            error: !!errors.name?.[lang],
-            fullWidth: true,
-            helperText: errors.name?.[lang]?.message,
-            label: tInventory("recipes.name.label"),
-            onChange: (event) =>
-              setValue("name", { ...name, [lang]: event.target.value }),
-            placeholder: tInventory("recipes.name.placeholder"),
-            required: true,
-            value: name?.[lang] || "",
-          },
-        ]}
-      />
       <NumberSpinner
         error={!!errors.recipeYield}
         fullWidth

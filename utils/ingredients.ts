@@ -150,7 +150,12 @@ export const formatPackage = (
 
 export const formatUnitPriceOf = (
   value: number,
-  { priceCurrency, unitCode }: Pick<Ingredient, "priceCurrency" | "unitCode">,
+  {
+    priceCurrency,
+    unitCode,
+  }: Pick<Ingredient, "unitCode"> & {
+    priceCurrency?: Ingredient["priceCurrency"] | null;
+  },
   { formatMoney, tCommon, tInventory }: IngredientPriceFormatters,
 ) =>
   `${formatMoney(value, priceCurrency, { maximumFractionDigits: 6 })}${tCommon("slash")}${tInventory(`units.${unitCode}`)}`;

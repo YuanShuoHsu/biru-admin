@@ -62,7 +62,12 @@ import type { MenuItem } from "@/types/menus";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
-import { costPerServing, grossMargin } from "@/utils/recipes";
+import { formatUnitPriceOf } from "@/utils/ingredients";
+import {
+  costPerServing,
+  grossMargin,
+  grossProfitPerServing,
+} from "@/utils/recipes";
 import { localize } from "@/utils/locale";
 
 const DataGrid = dynamic(
@@ -266,87 +271,55 @@ const RecipeIngredients = ({
     [pathname, router, searchParams],
   );
 
-  const handleCreateRecipe = useCallback(() => {
-    if (!menuItem || !organizationSlug) return;
-
-    setDialog({
-      content: (
-        <RecipeDialog
-          defaultName={menuItem.name}
-          menuItemId={menuItem.id}
-          mutate={mutateRecipe}
-          organizationSlug={organizationSlug}
-          recipe={null}
-        />
-      ),
-      formId: "recipe-form",
-      open: true,
-      title: tInventory("recipes.actions.createRecipe.title"),
-    });
-  }, [menuItem, mutateRecipe, organizationSlug, setDialog, tInventory]);
-
   const handleUpdateRecipe = useCallback(() => {
-    if (!menuItem || !organizationSlug || !recipe) return;
+    if (!recipe) return;
 
     setDialog({
-      content: (
-        <RecipeDialog
-          defaultName={null}
-          menuItemId={menuItem.id}
-          mutate={mutateRecipe}
-          organizationSlug={organizationSlug}
-          recipe={recipe}
-        />
-      ),
+      content: <RecipeDialog mutate={mutateRecipe} recipe={recipe} />,
       formId: "recipe-form",
       open: true,
       title: tInventory("recipes.actions.updateRecipe.title"),
     });
-  }, [menuItem, mutateRecipe, organizationSlug, recipe, setDialog, tInventory]);
+  }, [mutateRecipe, recipe, setDialog, tInventory]);
 
-  const handleDeleteRecipe = useCallback(() => {
-    if (!recipe) return;
+  const handleCreateRecipeIngredient = useCallback(async () => {
+    if (!menuItem || !organizationSlug) return;
 
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tInventory.rich("recipes.actions.deleteRecipe.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-            name: localize(recipe.name, locale),
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        try {
-          await fetcher(`/api/recipes/${recipe.id}`, { method: "DELETE" });
+    let targetRecipe = recipe;
 
-          enqueueSnackbar(tInventory("recipes.actions.deleteRecipe.success"), {
-            variant: "success",
-          });
+    // 食譜對使用者不是獨立的東西，第一次加材料時才隱式建立；份量由後端預設帶 1
+    if (!targetRecipe) {
+      try {
+        targetRecipe = await fetcher<Recipe>(
+          `/api/organizations/${organizationSlug}/recipes`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              menuItemId: menuItem.id,
+              name: menuItem.name,
+            }),
+          },
+        );
 
-          mutateRecipe();
-        } catch {
-          enqueueSnackbar(tInventory("recipes.actions.deleteRecipe.error"), {
-            variant: "error",
-          });
-        }
-      },
-      open: true,
-      title: tInventory("recipes.actions.deleteRecipe.title"),
-    });
-  }, [locale, mutateRecipe, recipe, setDialog, tInventory]);
+        mutateRecipe(targetRecipe);
+      } catch {
+        enqueueSnackbar(tInventory("recipes.actions.createRecipe.error"), {
+          variant: "error",
+        });
 
-  const handleCreateRecipeIngredient = useCallback(() => {
-    if (!recipe) return;
+        return;
+      }
+    }
 
     setDialog({
       content: (
         <RecipeIngredientDialog
           ingredients={ingredients}
           material={null}
-          materials={recipe.recipeIngredients || []}
+          materials={targetRecipe.recipeIngredients || []}
           mutate={handleMutate}
-          recipe={recipe}
+          recipe={targetRecipe}
         />
       ),
       formId: "recipe-ingredient-form",
@@ -355,7 +328,16 @@ const RecipeIngredients = ({
         "recipes.ingredients.actions.createRecipeIngredient.title",
       ),
     });
-  }, [handleMutate, ingredients, recipe, setDialog, tInventory]);
+  }, [
+    handleMutate,
+    ingredients,
+    menuItem,
+    mutateRecipe,
+    organizationSlug,
+    recipe,
+    setDialog,
+    tInventory,
+  ]);
 
   const handleUpdateRecipeIngredient = useCallback(
     (material: RecipeIngredient) => {
@@ -430,7 +412,9 @@ const RecipeIngredients = ({
     [handleMutate, locale, recipe, setDialog, tInventory],
   );
 
-  const summaryItems = useMemo(() => {
+  const summaryItems = useMemo<
+    { color?: string; label: string; value: string }[]
+  >(() => {
     if (!recipe) return [];
 
     const unavailable = tInventory("recipes.cost.unavailable");
@@ -438,7 +422,11 @@ const RecipeIngredients = ({
       value == null
         ? unavailable
         : formatMoney(value, priceCurrency, { maximumFractionDigits: 2 });
-    const margin = grossMargin(recipe, Number(recipe.price));
+    const loss = (value: number | null) =>
+      value != null && value < 0 ? { color: "error.main" } : {};
+    const price = Number(recipe.price);
+    const profit = grossProfitPerServing(recipe, price);
+    const margin = grossMargin(recipe, price);
 
     return [
       {
@@ -456,11 +444,20 @@ const RecipeIngredients = ({
               value: money(costPerServing(recipe)),
             },
             {
+              ...loss(profit),
+              label: tInventory("recipes.grossProfitPerServing.label"),
+              value: money(profit),
+            },
+            {
+              ...loss(margin),
               label: tInventory("recipes.margin.label"),
               value:
                 margin == null
                   ? unavailable
-                  : format.number(margin, { style: "percent" }),
+                  : format.number(margin, {
+                      maximumFractionDigits: 1,
+                      style: "percent",
+                    }),
             },
           ]
         : []),
@@ -481,20 +478,23 @@ const RecipeIngredients = ({
         filterable: false,
         headerName: tInventory("recipes.ingredients.unitPrice.label"),
         renderCell: renderEmptyableCell,
-        sortable: false,
-        valueFormatter: (value: RecipeIngredient["unitPrice"]) =>
+        valueFormatter: (
+          value: RecipeIngredient["unitPrice"],
+          row: RecipeIngredient,
+        ) =>
           value == null
             ? ""
-            : formatMoney(value, priceCurrency, {
-                maximumFractionDigits: 6,
-              }),
+            : formatUnitPriceOf(
+                value,
+                { priceCurrency, unitCode: row.unitCode },
+                { format, formatMoney, tCommon, tInventory },
+              ),
       },
       {
         field: "cost",
         filterable: false,
         headerName: tInventory("recipes.ingredients.cost.label"),
         renderCell: renderEmptyableCell,
-        sortable: false,
         valueFormatter: (value: RecipeIngredient["cost"]) =>
           value == null
             ? ""
@@ -608,21 +608,21 @@ const RecipeIngredients = ({
   return (
     <>
       <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
-        {recipe ? (
-          <>
-            {canCreate && (
-              <Button
-                onClick={handleCreateRecipeIngredient}
-                size="small"
-                startIcon={<Add />}
-                variant="contained"
-              >
-                {tInventory(
-                  "recipes.ingredients.actions.createRecipeIngredient.title",
-                )}
-              </Button>
+        {canCreate && (
+          <Button
+            onClick={handleCreateRecipeIngredient}
+            size="small"
+            startIcon={<Add />}
+            variant="contained"
+          >
+            {tInventory(
+              "recipes.ingredients.actions.createRecipeIngredient.title",
             )}
-            {menuItem && canWrite && (
+          </Button>
+        )}
+        {recipe && (
+          <>
+            {canWrite && (
               <Button
                 onClick={handleUpdateRecipe}
                 size="small"
@@ -633,39 +633,20 @@ const RecipeIngredients = ({
               </Button>
             )}
             {canViewAuditLog && <AuditLogButton resourceId={recipe.id} />}
-            {canDelete && (
-              <Button
-                color="error"
-                onClick={handleDeleteRecipe}
-                size="small"
-                startIcon={<Delete />}
-                variant="outlined"
-              >
-                {tInventory("recipes.actions.deleteRecipe.title")}
-              </Button>
-            )}
           </>
-        ) : (
-          menuItem &&
-          canCreate && (
-            <Button
-              onClick={handleCreateRecipe}
-              size="small"
-              startIcon={<Add />}
-              variant="contained"
-            >
-              {tInventory("recipes.actions.createRecipe.title")}
-            </Button>
-          )
         )}
       </Stack>
       {summaryItems.length > 0 && (
         <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
-          {summaryItems.map(({ label, value }) => (
+          {summaryItems.map(({ color, label, value }) => (
             <Typography color="text.secondary" key={label} variant="body2">
               {label}
               {tCommon("colon")}
-              <Typography component="span" color="text.primary" variant="body2">
+              <Typography
+                component="span"
+                color={color ?? "text.primary"}
+                variant="body2"
+              >
                 {value}
               </Typography>
             </Typography>

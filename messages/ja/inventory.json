@@ -100,20 +100,12 @@
   "recipes": {
     "actions": {
       "createRecipe": {
-        "error": "レシピの追加に失敗しました",
-        "success": "レシピを追加しました",
-        "title": "レシピを追加"
-      },
-      "deleteRecipe": {
-        "confirm": "<bold>{name}</bold> を削除しますか？この操作は取り消せません。",
-        "error": "レシピの削除に失敗しました",
-        "success": "レシピを削除しました",
-        "title": "レシピを削除"
+        "error": "レシピの追加に失敗しました"
       },
       "updateRecipe": {
-        "error": "レシピの更新に失敗しました",
-        "success": "レシピを更新しました",
-        "title": "レシピを編集"
+        "error": "出来上がり分量の更新に失敗しました",
+        "success": "出来上がり分量を更新しました",
+        "title": "出来上がり分量を編集"
       }
     },
     "cost": {
@@ -122,6 +114,9 @@
     },
     "costPerServing": {
       "label": "1食あたり原価"
+    },
+    "grossProfitPerServing": {
+      "label": "1食あたり粗利"
     },
     "ingredients": {
       "actions": {
@@ -161,10 +156,6 @@
     },
     "margin": {
       "label": "粗利率"
-    },
-    "name": {
-      "label": "レシピ名",
-      "placeholder": "レシピ名を入力してください"
     },
     "recipeYield": {
       "label": "出来上がり分量",

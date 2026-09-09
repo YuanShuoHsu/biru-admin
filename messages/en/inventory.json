@@ -100,20 +100,12 @@
   "recipes": {
     "actions": {
       "createRecipe": {
-        "error": "Failed to create recipe",
-        "success": "Recipe created",
-        "title": "Create recipe"
-      },
-      "deleteRecipe": {
-        "confirm": "Are you sure you want to delete <bold>{name}</bold>? This action cannot be undone.",
-        "error": "Failed to delete recipe",
-        "success": "Recipe deleted",
-        "title": "Delete recipe"
+        "error": "Failed to create recipe"
       },
       "updateRecipe": {
-        "error": "Failed to update recipe",
-        "success": "Recipe updated",
-        "title": "Edit recipe"
+        "error": "Failed to update servings",
+        "success": "Servings updated",
+        "title": "Edit servings"
       }
     },
     "cost": {
@@ -122,6 +114,9 @@
     },
     "costPerServing": {
       "label": "Cost per serving"
+    },
+    "grossProfitPerServing": {
+      "label": "Profit per serving"
     },
     "ingredients": {
       "actions": {
@@ -161,10 +156,6 @@
     },
     "margin": {
       "label": "Margin"
-    },
-    "name": {
-      "label": "Recipe name",
-      "placeholder": "Please enter your recipe name"
     },
     "recipeYield": {
       "label": "Servings",

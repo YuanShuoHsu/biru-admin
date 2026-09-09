@@ -103,8 +103,14 @@ const FIELD_LABEL_KEYS = {
   eligibleQuantityUnitCode: "field.eligibleQuantityUnitCode",
   unitCode: "field.unitCode",
   inventoryLevel: "field.inventoryLevel",
+  inventoryLevelUnitText: "field.inventoryLevelUnitText",
   lowStockThreshold: "field.lowStockThreshold",
+  recipeYield: "field.recipeYield",
+  recipeInstructions: "field.recipeInstructions",
+  requiredQuantity: "field.requiredQuantity",
   supplierId: "field.supplier",
+  ingredientId: "field.ingredient",
+  recipeId: "field.recipe",
   minSelectionCount: "field.minSelectionCount",
   maxSelectionCount: "field.maxSelectionCount",
   modifierGroupId: "field.modifierGroup",
@@ -160,7 +166,12 @@ const FIELD_RANK = new Map(
 
 const LOCALES = new Set<string>(routing.locales);
 
-const LOCALIZED_FIELDS = new Set(["description", "displayName", "name"]);
+const LOCALIZED_FIELDS = new Set([
+  "description",
+  "displayName",
+  "name",
+  "recipeInstructions",
+]);
 
 const isImageValue = (value: unknown): value is string =>
   typeof value === "string" && value.startsWith("data:image/");
@@ -431,7 +442,7 @@ const AuditLogs = ({
               value.map((item) =>
                 typeof item === "string"
                   ? (valueLabels[field]?.[item] ?? item)
-                  : String(item),
+                  : toText(field, item, changeLabels),
               ),
             )
           : tAudit("value.empty");

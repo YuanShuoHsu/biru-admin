@@ -100,20 +100,12 @@
   "recipes": {
     "actions": {
       "createRecipe": {
-        "error": "新增食谱失败",
-        "success": "已新增食谱",
-        "title": "新增食谱"
-      },
-      "deleteRecipe": {
-        "confirm": "确定要删除 <bold>{name}</bold> 吗？此操作无法复原。",
-        "error": "删除食谱失败",
-        "success": "已删除食谱",
-        "title": "删除食谱"
+        "error": "新增食谱失败"
       },
       "updateRecipe": {
-        "error": "更新食谱失败",
-        "success": "已更新食谱",
-        "title": "编辑食谱"
+        "error": "更新份量失败",
+        "success": "已更新份量",
+        "title": "编辑份量"
       }
     },
     "cost": {
@@ -122,6 +114,9 @@
     },
     "costPerServing": {
       "label": "每份成本"
+    },
+    "grossProfitPerServing": {
+      "label": "每份毛利"
     },
     "ingredients": {
       "actions": {
@@ -161,10 +156,6 @@
     },
     "margin": {
       "label": "毛利率"
-    },
-    "name": {
-      "label": "食谱名称",
-      "placeholder": "请输入您的食谱名称"
     },
     "recipeYield": {
       "label": "份量",

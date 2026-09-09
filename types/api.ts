@@ -2961,7 +2961,9 @@ export interface components {
       | "ingredientName"
       | "requiredQuantity"
       | "createdAt"
-      | "updatedAt";
+      | "updatedAt"
+      | "unitPrice"
+      | "cost";
     CreateRecipeIngredientDto: {
       ingredientId: string;
       /**
@@ -8258,7 +8260,14 @@ export const recipeIngredientFilterFieldValues: ReadonlyArray<
 > = ["ingredientName", "requiredQuantity", "createdAt", "updatedAt"];
 export const recipeIngredientSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["RecipeIngredientSortField"]
-> = ["ingredientName", "requiredQuantity", "createdAt", "updatedAt"];
+> = [
+  "ingredientName",
+  "requiredQuantity",
+  "createdAt",
+  "updatedAt",
+  "unitPrice",
+  "cost",
+];
 export const createOrderInvoiceDtoTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CreateOrderInvoiceDto"]["type"]
 > = ["personal", "company", "donate"];

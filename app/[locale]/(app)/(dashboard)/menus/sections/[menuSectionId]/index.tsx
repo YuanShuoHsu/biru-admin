@@ -39,7 +39,7 @@ import {
 } from "@/hooks/useFilterOperators";
 import { useFormatMoney } from "@/hooks/useFormatMoney";
 
-import { Link as NextLink, usePathname, useRouter } from "@/i18n/navigation";
+import { usePathname, useRouter } from "@/i18n/navigation";
 
 import {
   Add,
@@ -56,7 +56,6 @@ import {
   Chip,
   DialogContentText,
   IconButton,
-  Link,
   Stack,
   styled,
   Tooltip,
@@ -87,8 +86,6 @@ import {
 } from "@/utils/dataGrid";
 import { getMenuEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
-import { getHref } from "@/utils/href";
-import { costPerServing, grossMargin } from "@/utils/recipes";
 import { localize } from "@/utils/locale";
 
 const DataGrid = dynamic(
@@ -105,8 +102,6 @@ const StyledBox = styled(Box)(({ theme }) => ({
 }));
 
 interface MenusMenuIdSectionIdProps {
-  canCreateRecipe: boolean;
-  canViewPurchasing: boolean;
   canUpdateAvailability: boolean;
   canViewAuditLog: boolean;
   canWrite: boolean;
@@ -115,7 +110,6 @@ interface MenusMenuIdSectionIdProps {
   filterValue?: string;
   items: MenuItem[];
   openingHours?: string | null;
-  organizationSlug: string;
   page: number;
   pageSize: number;
   quickFilterValue?: string;
@@ -126,8 +120,6 @@ interface MenusMenuIdSectionIdProps {
 }
 
 const MenusMenuIdSectionId = ({
-  canCreateRecipe,
-  canViewPurchasing,
   canUpdateAvailability,
   canViewAuditLog,
   canWrite,
@@ -136,7 +128,6 @@ const MenusMenuIdSectionId = ({
   filterValue: initialFilterValue,
   items: initialItems,
   openingHours,
-  organizationSlug,
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,
@@ -195,7 +186,6 @@ const MenusMenuIdSectionId = ({
   const searchParams = useSearchParams();
 
   const tCommon = useTranslations("common");
-  const tInventory = useTranslations("inventory");
   const tMenus = useTranslations("menus");
   const tOrder = useTranslations("order");
 
@@ -489,47 +479,8 @@ const MenusMenuIdSectionId = ({
     [locale, mutate, setDialog, tMenus],
   );
 
-  const columns = useMemo<GridColDef[]>(() => {
-    const purchasingColumns: GridColDef[] = [
-      {
-        field: "costPerServing",
-        filterable: false,
-        headerName: tInventory("recipes.costPerServing.label"),
-        renderCell: renderEmptyableCell,
-        sortable: false,
-        valueGetter: (_value: unknown, { offer, recipe }: MenuItem) => {
-          if (!recipe) return "";
-
-          const perServing = costPerServing(recipe);
-
-          return perServing == null
-            ? tInventory("recipes.cost.unavailable")
-            : formatMoney(perServing, offer?.priceCurrency, {
-                maximumFractionDigits: 2,
-              });
-        },
-      },
-      {
-        field: "margin",
-        filterable: false,
-        headerName: tInventory("recipes.margin.label"),
-        renderCell: renderEmptyableCell,
-        sortable: false,
-        valueGetter: (_value: unknown, { offer, recipe }: MenuItem) => {
-          const price = Number(offer?.price);
-
-          if (!recipe || !price) return "";
-
-          const margin = grossMargin(recipe, price);
-
-          return margin == null
-            ? tInventory("recipes.cost.unavailable")
-            : format.number(margin, { style: "percent" });
-        },
-      },
-    ];
-
-    return [
+  const columns = useMemo<GridColDef[]>(
+    () => [
       ...(isReorderMode
         ? [
             {
@@ -643,47 +594,6 @@ const MenusMenuIdSectionId = ({
         valueGetter: (_value: unknown, row: MenuItem) =>
           localize(row.description, locale),
       },
-      {
-        field: "recipe",
-        filterOperators: stringFilterOperators.filter(({ value }) =>
-          ["isEmpty", "isNotEmpty"].includes(value),
-        ),
-        headerName: `${tInventory("recipes.name.label")} ${tCommon("optional")}`,
-        renderCell: ({
-          row: { id, recipe },
-        }: GridRenderCellParams<MenuItem>) => (
-          <Stack alignItems="center" direction="row" height="100%">
-            {recipe ? (
-              <Link
-                component={NextLink}
-                href={getHref(
-                  `/menus/sections/${menuSectionId}/${id}/ingredients`,
-                  { organization: organizationSlug },
-                )}
-                underline="hover"
-                variant="body2"
-              >
-                {localize(recipe.name, locale)}
-              </Link>
-            ) : (
-              canCreateRecipe && (
-                <Button
-                  component={NextLink}
-                  href={getHref(
-                    `/menus/sections/${menuSectionId}/${id}/ingredients`,
-                    { organization: organizationSlug },
-                  )}
-                  size="small"
-                  startIcon={<Add />}
-                >
-                  {tInventory("recipes.actions.createRecipe.title")}
-                </Button>
-              )
-            )}
-          </Stack>
-        ),
-      },
-      ...(canViewPurchasing ? purchasingColumns : []),
       {
         field: "price",
         filterOperators: numberFilterOperators,
@@ -807,32 +717,28 @@ const MenusMenuIdSectionId = ({
         valueFormatter: (value: string) =>
           format.dateTime(new Date(value), "short"),
       },
-    ];
-  }, [
-    canCreateRecipe,
-    canUpdateAvailability,
-    canViewAuditLog,
-    canViewPurchasing,
-    canWrite,
-    dateFilterOperators,
-    enumFilterOperators,
-    enumOptions,
-    format,
-    formatMoney,
-    handleDeleteItem,
-    handleManageItem,
-    handleUpdateItem,
-    isReorderMode,
-    locale,
-    menuSectionId,
-    numberFilterOperators,
-    organizationSlug,
-    stringFilterOperators,
-    tCommon,
-    tInventory,
-    tMenus,
-    tOrder,
-  ]);
+    ],
+    [
+      canUpdateAvailability,
+      canViewAuditLog,
+      canWrite,
+      dateFilterOperators,
+      enumFilterOperators,
+      enumOptions,
+      format,
+      formatMoney,
+      handleDeleteItem,
+      handleManageItem,
+      handleUpdateItem,
+      isReorderMode,
+      locale,
+      numberFilterOperators,
+      stringFilterOperators,
+      tCommon,
+      tMenus,
+      tOrder,
+    ],
+  );
 
   return (
     <>

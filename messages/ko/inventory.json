@@ -100,20 +100,12 @@
   "recipes": {
     "actions": {
       "createRecipe": {
-        "error": "레시피 추가에 실패했습니다",
-        "success": "레시피이(가) 추가되었습니다",
-        "title": "레시피 추가"
-      },
-      "deleteRecipe": {
-        "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
-        "error": "레시피 삭제에 실패했습니다",
-        "success": "레시피이(가) 삭제되었습니다",
-        "title": "레시피 삭제"
+        "error": "레시피 추가에 실패했습니다"
       },
       "updateRecipe": {
-        "error": "레시피 업데이트에 실패했습니다",
-        "success": "레시피이(가) 업데이트되었습니다",
-        "title": "레시피 편집"
+        "error": "분량 업데이트에 실패했습니다",
+        "success": "분량이(가) 업데이트되었습니다",
+        "title": "분량 편집"
       }
     },
     "cost": {
@@ -122,6 +114,9 @@
     },
     "costPerServing": {
       "label": "1인분 원가"
+    },
+    "grossProfitPerServing": {
+      "label": "1인분 마진"
     },
     "ingredients": {
       "actions": {
@@ -161,10 +156,6 @@
     },
     "margin": {
       "label": "마진율"
-    },
-    "name": {
-      "label": "레시피 이름",
-      "placeholder": "레시피 이름을(를) 입력해 주세요"
     },
     "recipeYield": {
       "label": "분량",

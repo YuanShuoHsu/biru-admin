@@ -64,7 +64,7 @@ const MenuItemLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <Stack height="100%" gap={2}>
       <Tabs
-        aria-label="menu item tabs"
+        aria-label={tMenus("items.actions.manageItem.title")}
         scrollButtons="auto"
         value={currentTab}
         variant="scrollable"
