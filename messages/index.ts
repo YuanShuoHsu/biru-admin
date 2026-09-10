@@ -9,7 +9,6 @@ import coupons from "./en/coupons.json";
 import dashboard from "./en/dashboard.json";
 import dataGrid from "./en/dataGrid.json";
 import dialog from "./en/dialog.json";
-import home from "./en/home.json";
 import inventory from "./en/inventory.json";
 import maintenance from "./en/maintenance.json";
 import menus from "./en/menus.json";
@@ -31,7 +30,6 @@ const messages = {
   dashboard,
   dataGrid,
   dialog,
-  home,
   inventory,
   maintenance,
   menus,

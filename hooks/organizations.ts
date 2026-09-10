@@ -6,8 +6,6 @@ import { swrKeys } from "@/constants/swr";
 
 import { authClient } from "@/lib/auth-client";
 
-import type { OrganizationMember } from "@/types/organizations";
-
 import { resolveDefaultOrganizationSlug } from "@/utils/organizations";
 
 export const useDefaultOrganization = () => {
@@ -44,12 +42,4 @@ export const useActiveMemberRole = () => {
   );
 
   return role ?? undefined;
-};
-
-export const useOrganizationMembers = (organizationId: string) => {
-  const { data: organizationMembers = [] } = useSWR<OrganizationMember[]>(
-    organizationId ? `/api/organizations/${organizationId}/members` : null,
-  );
-
-  return organizationMembers;
 };

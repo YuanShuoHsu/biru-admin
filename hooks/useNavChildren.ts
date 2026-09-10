@@ -23,11 +23,7 @@ export const useNavChildren = (): Record<string, NavItem[]> => {
 
   return {
     "/auth": session ? accountChildren : authChildren,
-    "/company": [
-      navItem("/company/about"),
-      navItem("/company/terms"),
-      navItem("/company/privacy"),
-    ],
+    "/company": [navItem("/company/terms"), navItem("/company/privacy")],
     "/inventory": [
       ...(hasRolePermission(memberRole, { inventory: ["read"] })
         ? [navItem("/inventory/ingredients")]

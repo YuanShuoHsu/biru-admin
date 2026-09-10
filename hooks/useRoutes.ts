@@ -39,7 +39,6 @@ import {
   Groups,
   HelpOutline,
   History,
-  Info,
   Inventory,
   Kitchen,
   ListAlt,
@@ -529,7 +528,6 @@ const routes: Route[] = [
   },
   {
     children: [
-      { icon: Info, label: "company.about.label", segment: "about" },
       {
         icon: Gavel,
         label: "company.legal.terms.label",
