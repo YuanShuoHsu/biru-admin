@@ -18,7 +18,7 @@ import { useFormatMoney } from "@/hooks/useFormatMoney";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
-import { Add, Edit, SoupKitchen } from "@mui/icons-material";
+import { Add, Edit, Scale } from "@mui/icons-material";
 import { Button, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 
@@ -231,7 +231,7 @@ const MenuItemRecipe = ({
                 onClick={() => handleViewRecipeIngredients(row.id)}
                 size="small"
               >
-                <SoupKitchen fontSize="small" />
+                <Scale fontSize="small" />
               </IconButton>
             </Tooltip>
             {canWrite && (

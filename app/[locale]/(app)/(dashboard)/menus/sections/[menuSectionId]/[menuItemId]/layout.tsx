@@ -9,7 +9,7 @@ import { Link, usePathname } from "@/i18n/navigation";
 
 import {
   Extension,
-  Kitchen,
+  SoupKitchen,
   Tune,
   type SvgIconComponent,
 } from "@mui/icons-material";
@@ -51,7 +51,7 @@ const MenuItemLayout = ({ children }: { children: React.ReactNode }) => {
       value: `${basePath}/add-ons`,
     },
     {
-      Icon: Kitchen,
+      Icon: SoupKitchen,
       label: tInventory("recipes.label"),
       value: `${basePath}/ingredients`,
     },
