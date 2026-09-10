@@ -1,6 +1,8 @@
 // https://mui.com/store/terms/
 // https://vercel.com/legal/terms
 
+"use client";
+
 import { LocaleEnum } from "@/enums/Locale";
 
 import { type Locale, routing } from "@/i18n/routing";
