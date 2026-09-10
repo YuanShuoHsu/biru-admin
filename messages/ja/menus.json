@@ -1,0 +1,410 @@
+{
+  "actions": {
+    "createMenu": {
+      "success": "メニュー {name} を追加しました",
+      "title": "メニューを追加"
+    },
+    "deleteMenu": {
+      "confirm": "メニュー <bold>{name}</bold> を削除しますか？この操作は取り消せません。",
+      "success": "メニュー {name} を削除しました",
+      "title": "メニューを削除"
+    },
+    "label": "操作",
+    "updateMenu": {
+      "success": "メニュー {name} を更新しました",
+      "title": "メニューを編集"
+    },
+    "viewMenu": {
+      "title": "メニューを表示"
+    }
+  },
+  "availability": {
+    "label": "提供状況",
+    "options": {
+      "Discontinued": "販売終了",
+      "InStock": "提供中",
+      "SoldOut": "売り切れ"
+    },
+    "placeholder": "提供状況を選択してください"
+  },
+  "availableModes": {
+    "helperText": "チェックのない方式は注文ページで対象外と表示されます",
+    "label": "提供方式"
+  },
+  "createdAt": "作成日時",
+  "description": {
+    "label": "説明",
+    "placeholder": "メニューの説明を入力してください"
+  },
+  "image": {
+    "label": "カバー画像URL",
+    "placeholder": "画像URLを入力してください"
+  },
+  "inLanguage": {
+    "label": "言語",
+    "options": {
+      "en": "英語",
+      "ja": "日本語",
+      "ko": "韓国語",
+      "zh-CN": "中国語（簡体字）",
+      "zh-TW": "中国語（繁体字）"
+    },
+    "placeholder": "メニューの言語を選択してください"
+  },
+  "items": {
+    "actions": {
+      "createItem": {
+        "error": "品目の追加に失敗しました",
+        "success": "品目 {name} を追加しました",
+        "title": "品目を追加"
+      },
+      "deleteItem": {
+        "confirm": "<bold>{name}</bold> を削除しますか？価格設定もすべて削除されます。",
+        "error": "品目 {name} の削除に失敗しました",
+        "success": "品目 {name} を削除しました",
+        "title": "品目を削除"
+      },
+      "label": "操作",
+      "manageItem": {
+        "title": "品目を管理"
+      },
+      "reorderItem": {
+        "cancel": {
+          "confirm": "<bold>品目</bold>の並び替えをキャンセルしますか？保存されていない変更は失われます。",
+          "label": "品目の並び替えをキャンセル"
+        },
+        "confirm": "<bold>品目</bold>を並び替えますか？",
+        "save": {
+          "confirm": "<bold>品目</bold>の並び順を保存しますか？",
+          "error": "並び替えの保存に失敗しました",
+          "label": "品目の並び順を保存",
+          "success": "並び替えを保存しました"
+        },
+        "title": "品目を並び替え"
+      },
+      "updateItem": {
+        "error": "品目の更新に失敗しました",
+        "success": "品目 {name} を更新しました",
+        "title": "品目を編集"
+      }
+    },
+    "addOns": {
+      "actions": {
+        "createAddOn": {
+          "error": "{name}の追加に失敗しました",
+          "success": "{name}を追加しました",
+          "title": "追加オプションを追加"
+        },
+        "deleteAddOn": {
+          "confirm": "<bold>{name}</bold>を削除しますか？",
+          "error": "{name}の削除に失敗しました",
+          "success": "{name}を削除しました",
+          "title": "追加オプションを削除"
+        },
+        "label": "操作",
+        "reorderAddOn": {
+          "cancel": {
+            "confirm": "<bold>アドオン</bold>の並び替えをキャンセルしますか？保存されていない変更は失われます。",
+            "label": "アドオンの並び替えをキャンセル"
+          },
+          "confirm": "<bold>アドオン</bold>を並び替えますか？",
+          "save": {
+            "confirm": "<bold>アドオン</bold>の並び順を保存しますか？",
+            "error": "並び替えの保存に失敗しました",
+            "label": "アドオンの並び順を保存",
+            "success": "並び替えを保存しました"
+          },
+          "title": "アドオンを並び替え"
+        },
+        "updateAddOn": {
+          "error": "{name}の更新に失敗しました",
+          "success": "{name}を更新しました",
+          "title": "追加オプションを編集"
+        }
+      },
+      "addOnMenuItemId": {
+        "label": "追加品目",
+        "placeholder": "追加品目を選択してください"
+      },
+      "addOnMenuSectionId": {
+        "label": "追加セクション",
+        "placeholder": "追加セクションを選択してください"
+      },
+      "displayName": {
+        "menuItem": "グループ {menuSection} 品目 {menuItem}",
+        "menuSection": "グループ {menuSection}"
+      },
+      "label": "追加オプション"
+    },
+    "description": {
+      "label": "説明",
+      "placeholder": "品目の説明を入力してください"
+    },
+    "image": {
+      "label": "画像URL",
+      "placeholder": "画像URLを入力してください"
+    },
+    "label": "品目",
+    "modifierGroups": {
+      "actions": {
+        "attach": {
+          "error": "オプショングループの紐付けに失敗しました",
+          "success": "オプショングループ {name} を紐付けました",
+          "title": "オプショングループを紐付け"
+        },
+        "detach": {
+          "confirm": "<bold>{name}</bold> の紐付けを解除してもよろしいですか？グループ自体は削除されません。",
+          "error": "{name} の紐付け解除に失敗しました",
+          "success": "{name} の紐付けを解除しました",
+          "title": "紐付けを解除"
+        },
+        "label": "操作",
+        "reorder": {
+          "cancel": {
+            "confirm": "<bold>オプショングループ</bold>の並び替えをキャンセルしますか？保存していない変更は失われます。",
+            "label": "オプショングループの並び替えをキャンセル"
+          },
+          "confirm": "<bold>オプショングループ</bold>を並び替えますか？",
+          "save": {
+            "confirm": "<bold>オプショングループ</bold>の並び順を保存しますか？",
+            "error": "並び順の保存に失敗しました",
+            "label": "オプショングループの並び順を保存",
+            "success": "並び順を保存しました"
+          },
+          "title": "オプショングループを並び替え"
+        }
+      },
+      "group": {
+        "label": "オプショングループ",
+        "placeholder": "オプショングループを選択してください"
+      },
+      "label": "オプション"
+    },
+    "name": {
+      "label": "品目名",
+      "placeholder": "品目名を入力してください"
+    },
+    "offers": {
+      "availableHours": {
+        "label": "提供時間帯"
+      },
+      "deliveryLeadTimeMinutes": {
+        "label": "準備時間",
+        "placeholder": "準備時間を入力してください",
+        "unit": "分"
+      },
+      "inventoryLevel": {
+        "maxValue": {
+          "label": "最大在庫数",
+          "placeholder": "最大在庫数を入力してください"
+        },
+        "minValue": {
+          "label": "最小在庫数",
+          "placeholder": "最小在庫数を入力してください"
+        },
+        "unitText": {
+          "label": "在庫単位",
+          "placeholder": "在庫単位を入力してください"
+        },
+        "value": {
+          "label": "在庫数",
+          "placeholder": "在庫数を入力してください"
+        }
+      },
+      "label": "販売",
+      "price": {
+        "label": "価格",
+        "placeholder": "価格を入力してください"
+      },
+      "priceSpecification": {
+        "price": {
+          "label": "セール価格",
+          "placeholder": "セール価格を入力してください"
+        },
+        "validFrom": {
+          "label": "セール開始"
+        },
+        "validThrough": {
+          "label": "セール終了"
+        }
+      }
+    },
+    "suitableForDiet": {
+      "label": "食事制限"
+    },
+    "url": {
+      "label": "URL",
+      "placeholder": "URLを入力してください"
+    }
+  },
+  "label": "メニュー",
+  "modifierGroups": {
+    "actions": {
+      "createGroup": {
+        "error": "オプショングループの追加に失敗しました",
+        "success": "オプショングループ {name} を追加しました",
+        "title": "オプショングループを追加"
+      },
+      "deleteGroup": {
+        "confirm": "<bold>{name}</bold> を削除してもよろしいですか？グループ内のオプションも削除されます。",
+        "error": "オプショングループ {name} の削除に失敗しました",
+        "success": "オプショングループ {name} を削除しました",
+        "title": "オプショングループを削除"
+      },
+      "label": "操作",
+      "reorderGroup": {
+        "cancel": {
+          "confirm": "<bold>オプショングループ</bold>の並び替えをキャンセルしますか？保存していない変更は失われます。",
+          "label": "オプショングループの並び替えをキャンセル"
+        },
+        "confirm": "<bold>オプショングループ</bold>を並び替えますか？",
+        "save": {
+          "confirm": "<bold>オプショングループ</bold>の並び順を保存しますか？",
+          "error": "並び順の保存に失敗しました",
+          "label": "オプショングループの並び順を保存",
+          "success": "並び順を保存しました"
+        },
+        "title": "オプショングループを並び替え"
+      },
+      "updateGroup": {
+        "error": "オプショングループの更新に失敗しました",
+        "success": "オプショングループ {name} を更新しました",
+        "title": "オプショングループを編集"
+      },
+      "viewModifiers": {
+        "title": "オプションを表示"
+      }
+    },
+    "displayName": {
+      "label": "グループ名",
+      "placeholder": "グループ名を入力してください"
+    },
+    "label": "オプショングループ",
+    "maxSelectionCount": {
+      "label": "最大選択数",
+      "placeholder": "最大選択数を入力してください",
+      "unlimited": "無制限"
+    },
+    "minSelectionCount": {
+      "label": "最小選択数",
+      "placeholder": "最小選択数を入力してください"
+    }
+  },
+  "modifiers": {
+    "actions": {
+      "createModifier": {
+        "error": "オプションの追加に失敗しました",
+        "success": "オプション {name} を追加しました",
+        "title": "オプションを追加"
+      },
+      "deleteModifier": {
+        "confirm": "<bold>{name}</bold> を削除してもよろしいですか？",
+        "error": "オプション {name} の削除に失敗しました",
+        "success": "オプション {name} を削除しました",
+        "title": "オプションを削除"
+      },
+      "label": "操作",
+      "reorderModifier": {
+        "cancel": {
+          "confirm": "<bold>オプション</bold>の並び替えをキャンセルしますか？保存していない変更は失われます。",
+          "label": "オプションの並び替えをキャンセル"
+        },
+        "confirm": "<bold>オプション</bold>を並び替えますか？",
+        "save": {
+          "confirm": "<bold>オプション</bold>の並び順を保存しますか？",
+          "error": "並び順の保存に失敗しました",
+          "label": "オプションの並び順を保存",
+          "success": "並び順を保存しました"
+        },
+        "title": "オプションを並び替え"
+      },
+      "updateModifier": {
+        "error": "オプションの更新に失敗しました",
+        "success": "オプション {name} を更新しました",
+        "title": "オプションを編集"
+      }
+    },
+    "displayName": {
+      "label": "オプション名",
+      "placeholder": "オプション名を入力してください"
+    },
+    "label": "オプション",
+    "priceAdjustment": {
+      "label": "追加料金",
+      "placeholder": "価格調整を入力してください"
+    }
+  },
+  "name": {
+    "label": "メニュー名",
+    "placeholder": "メニュー名を入力してください"
+  },
+  "reorder": "並び替え",
+  "sections": {
+    "actions": {
+      "addSubsection": {
+        "title": "サブセクションを追加"
+      },
+      "backToSections": {
+        "title": "セクションに戻る"
+      },
+      "createSection": {
+        "error": "セクションの追加に失敗しました",
+        "success": "セクション {name} を追加しました",
+        "title": "セクションを追加"
+      },
+      "deleteSection": {
+        "confirm": "<bold>{name}</bold> を削除しますか？サブセクションと品目もすべて削除されます。",
+        "error": "グループ {name} の削除に失敗しました",
+        "success": "セクション {name} を削除しました",
+        "title": "セクションを削除"
+      },
+      "label": "操作",
+      "reorderSection": {
+        "cancel": {
+          "confirm": "<bold>グループ</bold>の並び替えをキャンセルしますか？保存されていない変更は失われます。",
+          "label": "グループの並び替えをキャンセル"
+        },
+        "confirm": "<bold>グループ</bold>を並び替えますか？",
+        "save": {
+          "confirm": "<bold>グループ</bold>の並び順を保存しますか？",
+          "error": "並び替えの保存に失敗しました",
+          "label": "グループの並び順を保存",
+          "success": "並び替えを保存しました"
+        },
+        "title": "グループを並び替え"
+      },
+      "updateSection": {
+        "success": "セクション {name} を更新しました",
+        "title": "セクションを編集"
+      },
+      "viewItems": {
+        "title": "品目を見る"
+      }
+    },
+    "allItems": "すべての品目",
+    "description": {
+      "label": "説明",
+      "placeholder": "セクションの説明を入力してください"
+    },
+    "label": "セクション",
+    "name": {
+      "label": "セクション名",
+      "placeholder": "セクション名を入力してください"
+    },
+    "unassigned": "未分類"
+  },
+  "settings": {
+    "actions": {
+      "save": {
+        "error": "{name} のメニュー設定の保存に失敗しました",
+        "label": "設定を保存",
+        "success": "{name} のメニュー設定を保存しました"
+      },
+      "update": {
+        "title": "メニューを編集"
+      }
+    },
+    "label": "設定"
+  },
+  "updatedAt": "更新日時"
+}

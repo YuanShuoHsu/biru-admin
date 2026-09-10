@@ -2,13 +2,52 @@
   "colon": ": ",
   "currency": "NT$",
   "delimiter": ", ",
+  "discontinued": "Discontinued",
   "empty": "No items yet",
   "from": "from",
+  "imageProcessingFailed": "Failed to process image",
   "loading": "Loading...",
+  "locales": {
+    "zh-TW": "Traditional Chinese",
+    "en": "English",
+    "ja": "Japanese",
+    "ko": "Korean",
+    "zh-CN": "Simplified Chinese"
+  },
+  "location": {
+    "empty": "No location information available",
+    "openingHours": {
+      "Fr": "Fri",
+      "Mo": "Mon",
+      "Sa": "Sat",
+      "Su": "Sun",
+      "Th": "Thu",
+      "Tu": "Tue",
+      "We": "Wed",
+      "allDay": "Open 24 hours",
+      "nextDayTime": "{time} (next day)",
+      "rangeSeparator": "–"
+    }
+  },
   "maxQuantity": "You can buy up to {quantity} per item",
+  "middleDot": " · ",
   "multiply": "×",
+  "optional": "(optional)",
+  "organization": {
+    "label": "Organization",
+    "placeholder": "Please select your organization"
+  },
+  "pagination": {
+    "labelDisplayedRows": "{from}–{to} of {count}",
+    "labelRowsPerPage": "Rows per page:"
+  },
+  "parenthesisClose": ")",
+  "parenthesisOpen": "(",
   "reachStockLimit": "Stock limit reached {label}",
-  "soldOut": "{label} Sold out",
-  "totalAmount": "Total",
+  "selectedCount": "{checked}/{total} selected",
+  "slash": "/",
+  "soldOut": "Sold out",
+  "subtotal": "Subtotal",
+  "total": "Total",
   "unavailable": "Unavailable"
 }

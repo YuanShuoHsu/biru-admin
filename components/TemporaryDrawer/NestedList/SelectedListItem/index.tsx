@@ -8,41 +8,35 @@ import { usePathname } from "@/i18n/navigation";
 
 import { Collapse, List } from "@mui/material";
 
-import type { MenuItem } from "@/types/menuItem";
+import type { NavItem } from "@/types/navItem";
 
 interface SelectedListItemProps {
-  item: MenuItem;
+  item: NavItem;
   level?: number;
-  parentPath?: string;
 }
 
 const SelectedListItem = ({
-  item: { children, disabled, icon, label, onClick, slot, to },
+  item: { children, icon, label, onClick, path, slot: Slot, to },
   level = 0,
-  parentPath = "/",
 }: SelectedListItemProps) => {
   const [open, setOpen] = useState(false);
 
   const pathname = usePathname();
 
-  if (slot) return slot({ level });
+  if (Slot) return <Slot level={level} />;
 
-  const [toPath, toQuery] = to?.split("?") || [];
-  const queryString = toQuery ? `?${toQuery}` : "";
-  const parentPrefix = parentPath === "/" ? "" : parentPath;
-  const basePath = toPath ? `${parentPrefix}${toPath}` : parentPath;
+  const basePath = (path ?? to)?.split("?")[0];
   const isExpandable = Boolean(children?.length);
-  const href = to && !isExpandable ? `${basePath}${queryString}` : undefined;
-  const selected = toPath
-    ? basePath === "/"
-      ? pathname === basePath
-      : pathname === basePath || pathname.startsWith(`${basePath}/`)
+  const href = to && !isExpandable ? to : undefined;
+  const selected = basePath
+    ? pathname === basePath || pathname.startsWith(`${basePath}/`)
     : false;
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (isExpandable) {
       event.stopPropagation();
       setOpen((prev) => !prev);
+
       return;
     }
 
@@ -52,7 +46,6 @@ const SelectedListItem = ({
   return (
     <>
       <ListItemLink
-        disabled={disabled}
         href={href}
         icon={icon}
         isExpandable={isExpandable}
@@ -68,9 +61,8 @@ const SelectedListItem = ({
             {children!.map((child, index) => (
               <SelectedListItem
                 item={child}
-                key={child.to || `${level + 1}-${index}`}
+                key={child.path || `${level + 1}-${index}`}
                 level={level + 1}
-                parentPath={basePath}
               />
             ))}
           </List>

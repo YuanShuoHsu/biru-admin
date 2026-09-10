@@ -1,12 +1,12 @@
 {
   "actions": {
     "createOrganization": {
-      "success": "조직이 성공적으로 생성되었습니다",
+      "success": "{name}이(가) 성공적으로 생성되었습니다",
       "title": "조직 추가"
     },
     "deleteOrganization": {
       "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까? 모든 멤버와 데이터가 영구적으로 삭제됩니다.",
-      "success": "조직이 성공적으로 삭제되었습니다",
+      "success": "{name}이(가) 성공적으로 삭제되었습니다",
       "title": "조직 삭제"
     },
     "label": "작업",
@@ -19,16 +19,47 @@
       "title": "관리"
     },
     "updateOrganization": {
-      "success": "조직이 성공적으로 업데이트되었습니다",
+      "success": "{name}이(가) 성공적으로 업데이트되었습니다",
       "title": "조직 편집"
     }
   },
+  "address": {
+    "addressCountry": {
+      "label": "국가/지역",
+      "placeholder": "귀하의 국가/지역을 선택해 주세요"
+    },
+    "addressLocality": {
+      "label": "시/군/구",
+      "placeholder": "귀하의 시, 군 또는 구를 입력해 주세요"
+    },
+    "addressRegion": {
+      "label": "시/도",
+      "placeholder": "귀하의 시 또는 도를 입력해 주세요"
+    },
+    "extendedAddress": {
+      "label": "상세 주소",
+      "placeholder": "귀하의 상세 주소를 입력해 주세요"
+    },
+    "label": "주소",
+    "postalCode": {
+      "label": "우편번호",
+      "placeholder": "귀하의 우편번호를 입력해 주세요"
+    },
+    "streetAddress": {
+      "label": "도로명 주소",
+      "placeholder": "귀하의 도로명 주소를 입력해 주세요"
+    }
+  },
   "createdAt": "생성일",
+  "currency": {
+    "label": "통화",
+    "placeholder": "귀하의 통화를 선택해 주세요"
+  },
   "invitations": {
     "actions": {
       "cancelInvitation": {
         "confirm": "<bold>{email}</bold>에 대한 초대를 취소하시겠습니까?",
-        "success": "초대가 성공적으로 취소되었습니다",
+        "success": "{email} 초대가 성공적으로 취소되었습니다",
         "title": "초대 취소"
       },
       "label": "작업"
@@ -38,7 +69,48 @@
     "label": "대기 중인 초대",
     "role": "역할"
   },
-  "label": "조직 관리",
+  "label": "조직",
+  "localBusiness": {
+    "hasMap": {
+      "label": "지도 링크",
+      "placeholder": "귀하의 Google 지도 URL을 입력해 주세요"
+    },
+    "label": "비즈니스",
+    "openingHours": {
+      "addSchedule": "시간대 추가",
+      "conflict": "{days}은(는) 다른 시간대와 겹칩니다",
+      "days": {
+        "Fr": "금",
+        "Mo": "월",
+        "Sa": "토",
+        "Su": "일",
+        "Th": "목",
+        "Tu": "화",
+        "We": "수"
+      },
+      "label": "영업 시간",
+      "missingDays": "요일을 선택해 주세요",
+      "missingEndTime": "종료 시간을 입력해 주세요",
+      "missingStartTime": "시작 시간을 입력해 주세요",
+      "nextDay": "다음 날",
+      "outsideOpeningHours": "{days}에는 영업 시간을 벗어나며, 고객은 영업 시간 내에만 주문할 수 있습니다",
+      "reference": "영업 시간: {value}",
+      "to": "~"
+    },
+    "telephone": {
+      "label": "전화번호",
+      "placeholder": "귀하의 전화번호를 입력해 주세요"
+    }
+  },
+  "location": {
+    "actions": {
+      "updateLocation": {
+        "success": "위치 정보가 업데이트되었습니다",
+        "title": "위치 편집"
+      }
+    },
+    "label": "위치"
+  },
   "logo": "로고",
   "members": {
     "actions": {
@@ -47,17 +119,25 @@
           "label": "이메일",
           "placeholder": "귀하의 이메일을 입력해 주세요"
         },
-        "success": "초대가 성공적으로 발송되었습니다",
+        "success": {
+          "default": "{email}로 초대가 성공적으로 발송되었습니다",
+          "withTeam": "{email}로 초대가 성공적으로 발송되었으며 {team} 팀에 추가되었습니다"
+        },
         "title": "멤버 초대"
       },
       "label": "작업",
       "removeMember": {
-        "confirm": "<bold>{name}</bold>을(를) 제거하시겠습니까?",
+        "confirm": "<bold>{email}</bold>을(를) 제거하시겠습니까?",
         "success": "멤버가 성공적으로 제거되었습니다",
         "title": "멤버 제거"
       },
+      "removeTeamMember": {
+        "confirm": "<bold>{email}</bold>을(를) <bold>{team}</bold> 팀에서 제거하시겠습니까？",
+        "success": "{email}이(가) {team} 팀에서 성공적으로 제거되었습니다",
+        "title": "팀에서 제거"
+      },
       "updateMemberRole": {
-        "success": "역할이 성공적으로 업데이트되었습니다",
+        "success": "{email} 멤버가 성공적으로 업데이트되었습니다",
         "title": "멤버 편집"
       }
     },
@@ -72,14 +152,105 @@
       "member": "멤버",
       "owner": "소유자",
       "placeholder": "귀하의 역할을 선택해 주세요"
+    },
+    "userId": {
+      "label": "멤버",
+      "option": "{name} ({email})",
+      "placeholder": "귀하의 멤버를 선택해 주세요"
     }
   },
   "name": {
     "label": "조직명",
     "placeholder": "귀하의 조직명을 입력해 주세요"
   },
+  "pickup": {
+    "actions": {
+      "updatePickup": {
+        "success": "픽업 설정을 업데이트했습니다",
+        "title": "픽업 편집"
+      }
+    },
+    "days": "{days}일",
+    "label": "픽업",
+    "minutes": "{minutes}분",
+    "pickupCutoffMinutes": {
+      "helperText": "마감 전 이 시간 동안은 예약을 받지 않습니다.",
+      "label": "마감 전 마감 시간(분)",
+      "placeholder": "마감 전 마감 시간을 입력해 주세요"
+    },
+    "pickupLeadMinutes": {
+      "helperText": "주문 후 가장 빠르게 받을 수 있는 시간입니다.",
+      "label": "최소 준비 시간(분)",
+      "placeholder": "최소 준비 시간을 입력해 주세요"
+    },
+    "pickupMaxAdvanceDays": {
+      "helperText": "0으로 설정하면 당일만 예약할 수 있습니다. 최대 {days}일입니다.",
+      "label": "최대 예약 가능 일수",
+      "placeholder": "최대 예약 가능 일수를 입력해 주세요"
+    }
+  },
+  "points": {
+    "actions": {
+      "updatePoints": {
+        "success": "포인트 설정을 업데이트했습니다",
+        "title": "포인트 편집"
+      }
+    },
+    "amountPerPoint": {
+      "hint": "설정하지 않으면 포인트가 비활성화됩니다",
+      "invalid": "1포인트 적립에 필요한 금액이 유효하지 않습니다",
+      "label": "1포인트 적립에 필요한 금액",
+      "placeholder": "1포인트 적립에 필요한 금액을 입력해 주세요"
+    },
+    "disabled": "사용 안 함",
+    "label": "포인트",
+    "perpetual": "무기한",
+    "pointsValidityYears": {
+      "label": "포인트 유효기간(년)",
+      "placeholder": "포인트 유효기간을 입력해 주세요"
+    },
+    "validityYears": "{years}년"
+  },
   "slug": {
     "label": "슬러그",
     "placeholder": "귀하의 슬러그를 입력해 주세요"
+  },
+  "teams": {
+    "actions": {
+      "addTeamMember": {
+        "success": "{email}이(가) {team} 팀에 성공적으로 추가되었습니다",
+        "title": "팀 멤버 추가"
+      },
+      "createTeam": {
+        "success": "{name}이(가) 성공적으로 생성되었습니다",
+        "title": "팀 추가"
+      },
+      "label": "작업",
+      "manageTeamMembers": {
+        "title": "멤버 관리"
+      },
+      "removeTeam": {
+        "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까?",
+        "success": "{name} 이(가) 성공적으로 삭제되었습니다",
+        "title": "팀 삭제"
+      },
+      "updateTeam": {
+        "success": "{name} 이(가) 성공적으로 업데이트되었습니다",
+        "title": "팀 편집"
+      }
+    },
+    "createdAt": "생성일",
+    "label": "팀",
+    "members": {
+      "empty": "이 팀에 멤버가 없습니다"
+    },
+    "name": {
+      "label": "팀 이름",
+      "placeholder": "귀하의 팀 이름을 입력해 주세요"
+    },
+    "teamId": {
+      "label": "팀",
+      "placeholder": "귀하의 팀을 선택해 주세요"
+    }
   }
 }

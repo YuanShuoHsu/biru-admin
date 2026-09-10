@@ -1,19 +1,22 @@
-import { Stack } from "@mui/material";
 import { hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
-import RouterBreadcrumbs from "@/components/RouterBreadcrumbs";
-
 import { routing } from "@/i18n/routing";
 
+import { Stack } from "@mui/material";
+
 interface DashboardLayoutProps extends LayoutProps<"/[locale]"> {
+  breadcrumb: React.ReactNode;
+  subheader: React.ReactNode;
   toolbar: React.ReactNode;
 }
 
 const DashboardLayout = async ({
+  breadcrumb,
   children,
   params,
+  subheader,
   toolbar,
 }: DashboardLayoutProps) => {
   const { locale } = await params;
@@ -22,19 +25,14 @@ const DashboardLayout = async ({
   setRequestLocale(locale);
 
   return (
-    <>
-      <Stack
-        flexWrap={{ xs: "wrap", sm: "nowrap" }}
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        gap={2}
-      >
-        <RouterBreadcrumbs />
+    <Stack padding={2} minHeight={0} flex={1} gap={2}>
+      <Stack flexDirection="row" flexWrap="wrap" alignItems="center" gap={2}>
+        {breadcrumb}
         {toolbar}
       </Stack>
+      {subheader}
       {children}
-    </>
+    </Stack>
   );
 };
 

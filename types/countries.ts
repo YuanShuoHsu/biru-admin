@@ -6,5 +6,3 @@ export interface CountryType {
   phone: string;
   suggested?: boolean;
 }
-
-export type CountryOption = CountryType & { firstLetter: string };

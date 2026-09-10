@@ -19,7 +19,7 @@ import { IconButton, Menu, MenuItem } from "@mui/material";
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { Session } from "@/stores/auth-store";
+import type { Session } from "@/types/auth";
 
 interface OtherAccountItemProps {
   token: string;

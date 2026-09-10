@@ -1,6 +1,5 @@
 "use client";
 
-import type { UserWithRole } from "better-auth/client/plugins";
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
@@ -12,30 +11,27 @@ import {
   useSetRoleFormSchema,
 } from "./definitions";
 
-import { roles } from "@/constants/admins";
+import FormBox from "@/components/FormBox";
+
+import { userRoleValues } from "@/types/api";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { Box, type BoxProps, MenuItem, styled, TextField } from "@mui/material";
+import type { User } from "@/types/admins";
+
+import { MenuItem, TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: theme.spacing(2),
-}));
-
 interface SetRoleDialogContentProps {
-  fetchListUsers: () => void;
-  user: UserWithRole;
+  mutateAdmins: () => void;
+  user: User;
 }
 
 const SetRoleDialogContent = ({
-  fetchListUsers,
+  mutateAdmins,
   user,
 }: SetRoleDialogContentProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
@@ -52,7 +48,7 @@ const SetRoleDialogContent = ({
     handleSubmit,
     register,
   } = useForm<SetRoleFormInput, unknown, SetRoleFormOutput>({
-    defaultValues: { email: user.email, role: user.role },
+    defaultValues: { email: user.email, role: user.role ?? undefined },
     resolver: zodResolver(setRoleFormSchema),
   });
 
@@ -76,14 +72,14 @@ const SetRoleDialogContent = ({
 
             closeDialog();
 
-            fetchListUsers();
+            mutateAdmins();
           },
         },
       );
     })(event);
 
   return (
-    <StyledBox component="form" id="set-role-form" onSubmit={onSubmit}>
+    <FormBox id="set-role-form" onSubmit={onSubmit}>
       <TextField
         autoComplete="email"
         error={!!errors.email}
@@ -103,19 +99,36 @@ const SetRoleDialogContent = ({
         label={tAdmins("role.label")}
         required
         select
+        slotProps={{
+          inputLabel: { shrink: true },
+          select: {
+            displayEmpty: true,
+            renderValue: (selected) => {
+              const selectedRole = userRoleValues.find(
+                (role) => role === selected,
+              );
+
+              return selectedRole ? (
+                tAdmins(`role.${selectedRole}`)
+              ) : (
+                <em>{tAdmins("role.placeholder")}</em>
+              );
+            },
+          },
+        }}
         value={role}
         {...register("role")}
       >
         <MenuItem disabled value="">
           <em>{tAdmins("role.placeholder")}</em>
         </MenuItem>
-        {roles.map((role) => (
+        {userRoleValues.map((role) => (
           <MenuItem key={role} value={role}>
             {tAdmins(`role.${role}`)}
           </MenuItem>
         ))}
       </TextField>
-    </StyledBox>
+    </FormBox>
   );
 };
 

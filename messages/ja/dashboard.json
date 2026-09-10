@@ -1,16 +1,30 @@
 {
   "label": "ダッシュボード",
-  "welcome": "おかえりなさい、{name}",
+  "overview": "概要",
   "stats": {
     "totalOrders": "総注文数",
     "totalUsers": "総ユーザー数",
     "totalOrganizations": "総組織数",
-    "recentOrders": "最近の注文"
+    "period": {
+      "today": "今日",
+      "7d": "過去7日間",
+      "30d": "過去30日間",
+      "90d": "過去3ヶ月",
+      "365d": "過去1年間"
+    },
+    "revenue": "売上"
   },
   "quickActions": {
     "label": "クイックアクション",
-    "viewOrders": "注文を見る",
     "manageUsers": "ユーザー管理",
     "manageOrganizations": "組織管理"
+  },
+  "charts": {
+    "avgOrderValue": "平均注文金額",
+    "orderModes": "注文方式",
+    "paymentMethods": "支払い方法",
+    "peakHours": "ピーク時間帯",
+    "slowItems": "不振商品",
+    "topItems": "人気商品"
   }
 }

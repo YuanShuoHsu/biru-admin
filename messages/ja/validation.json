@@ -1,9 +1,33 @@
 {
+  "addOnMenuSectionId": {
+    "required": "アドオンセクションを選択してください。"
+  },
+  "availableModes": {
+    "notSelected": "提供方式を選択してください。"
+  },
+  "banReason": {
+    "maxLength": "BAN理由は160文字以内で入力してください。"
+  },
+  "bio": {
+    "maxLength": "自己紹介は160文字以内で入力してください。"
+  },
   "birthDate": {
     "invalid": "生年月日が無効です。",
     "maxDate": "今日以前の生年月日を選択してください。",
     "minDate": "1900-01-01以降の生年月日を選択してください。",
     "required": "生年月日は必須です。"
+  },
+  "carrierNum": {
+    "certificate": {
+      "invalid": "自然人証明書が無効です。"
+    },
+    "mobile": {
+      "invalid": "スマホバーコードが無効です。",
+      "notFound": "この携帯バーコードは見つかりませんでした。ご確認のうえ再入力してください。"
+    }
+  },
+  "carrierType": {
+    "notSelected": "キャリアタイプを選択してください。"
   },
   "confirmNewPassword": {
     "mismatch": "パスワードが一致しません。",
@@ -13,24 +37,69 @@
     "mismatch": "パスワードが一致しません。",
     "required": "確認用パスワードは必須です。"
   },
+  "contact": {
+    "requiredForInvoice": "インボイスの発行には連絡先が必要です。メールアドレスまたは電話番号のいずれかをご入力ください。"
+  },
   "countryCode": {
     "invalid": "国コードが無効です。",
+    "notSelected": "国番号を選択してください。",
     "required": "国コードは必須です."
+  },
+  "currency": {
+    "notSelected": "通貨を選択してください。"
   },
   "currentPassword": {
     "required": "現在のパスワードは必須です。"
   },
+  "customerAddr": {
+    "required": "会社住所は必須です。"
+  },
+  "customerIdentifier": {
+    "invalid": "統一番号が無効です。",
+    "notFound": "該当する会社が見つかりません。",
+    "required": "統一番号は必須です。"
+  },
+  "customerName": {
+    "required": "会社名は必須です。"
+  },
+  "description": {
+    "maxLength": "説明は160文字以内で入力してください。"
+  },
+  "donateCode": {
+    "invalid": "寄付コードが無効です。",
+    "required": "寄付コードは必須です。"
+  },
+  "eligibleQuantity": {
+    "required": "内容量は必須です。"
+  },
   "email": {
-    "invalid": "メールアドレスが無効です。"
+    "invalid": "メールアドレスが無効です。",
+    "required": "メールアドレスは必須です。"
   },
   "firstName": {
-    "minLength": "名は1文字以上で入力してください。"
+    "required": "名は必須です。"
   },
   "gender": {
     "required": "性別は必須です。"
   },
+  "ingredientId": {
+    "notSelected": "食材を選択してください。"
+  },
+  "invoiceType": {
+    "notSelected": "インボイスの種類を選択してください。"
+  },
+  "localizedText": {
+    "completeOrEmpty": "すべての言語フィールドを入力するか、すべて空白にしてください。",
+    "required": "多言語テキストを入力してください。"
+  },
+  "member": {
+    "required": "メンバーを選択してください。"
+  },
+  "modifierGroupId": {
+    "required": "修飾グループを選択してください。"
+  },
   "name": {
-    "minLength": "名前は2文字以上で入力してください。"
+    "required": "氏名は必須です。"
   },
   "newPassword": {
     "differentFromCurrent": "現在のパスワードと異なる。",
@@ -46,15 +115,73 @@
     "minLength": "8文字以上の長さ。",
     "number": "数字を1文字以上含む。"
   },
-  "phone": {
+  "payment": {
+    "notSelected": "お支払い方法を選択してください。"
+  },
+  "pickupCutoffMinutes": {
+    "invalid": "閉店前の締め切りが無効です。",
+    "required": "閉店前の締め切りは必須です。"
+  },
+  "pickupLeadMinutes": {
+    "invalid": "最短リードタイムが無効です。",
+    "required": "最短リードタイムは必須です。"
+  },
+  "pickupMaxAdvanceDays": {
+    "invalid": "予約可能な最大日数が無効です。",
+    "max": "予約可能な最大日数は {days} 日を超えることはできません。",
+    "required": "予約可能な最大日数は必須です。"
+  },
+  "pickupTime": {
+    "beforeClosing": "閉店の {minutes} 分前までの受け取り時間を選択してください。",
+    "closed": "営業時間内の受け取り時間を選択してください。",
+    "invalid": "受け取り時間が無効です。",
+    "itemUnavailable": "{name}は選択された受け取り時間には提供していません。",
+    "itemsConflict": "カート内の商品には、予約可能な期間内に共通の提供時間帯がありません。カートの内容を調整してください。",
+    "maxDateTime": "{days} 日以内の受け取り時間を選択してください。",
+    "minDateTime": "{minutes} 分後以降の受け取り時間を選択してください。",
+    "minutesStep": "受け取り時間は {minutes} 分単位で選択してください。",
+    "notSelected": "受け取り時間を選択してください。",
+    "storeUnavailable": "予約可能な期間内に受け取り可能な時間がありません。しばらくしてからもう一度お試しいただくか、店舗にお問い合わせください。"
+  },
+  "postalCode": {
+    "format": "郵便番号の形式が無効です。"
+  },
+  "price": {
+    "required": "価格を入力してください。"
+  },
+  "quantity": {
+    "required": "数量は必須です。"
+  },
+  "recipeYield": {
+    "required": "出来上がり分量は必須です。"
+  },
+  "remark": {
+    "maxLength": "備考は160文字以内で入力してください。"
+  },
+  "requiredQuantity": {
+    "required": "使用量は必須です。"
+  },
+  "role": {
+    "required": "役割を選択してください。"
+  },
+  "slug": {
+    "letter": "スラッグには少なくとも1つのアルファベットを含める必要があります。",
+    "required": "スラッグは必須です。"
+  },
+  "supplierName": {
+    "required": "仕入先名は必須です。"
+  },
+  "telephone": {
     "invalid": "電話番号が無効です。",
     "required": "電話番号は必須です。"
   },
-  "role": {
-    "required": "役割は必須です。"
+  "unitCode": {
+    "notSelected": "内容量の単位を選択してください。"
   },
-  "slug": {
-    "letter": "英字を1文字以上含む。",
-    "minLength": "スラッグは1文字以上で入力してください。"
+  "url": {
+    "invalid": "URLの形式が無効です。"
+  },
+  "validFrom": {
+    "beforeValidThrough": "開始日は終了日より前でなければなりません。"
   }
 }

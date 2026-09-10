@@ -6,19 +6,19 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useSnackbar } from "notistack";
 import { useState, type MouseEvent } from "react";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 
 import BadgeAvatars from "@/components/BadgeAvatars";
 
-import { query } from "@/constants/query";
 import { swrKeys } from "@/constants/swr";
 
-import { useAuthMenuItems, useLogoutMenuItem } from "@/hooks/useAuth";
+import { useAuthNavItems, useLogoutNavItem } from "@/hooks/useAuth";
+import { useRoutes } from "@/hooks/useRoutes";
 
-import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
@@ -40,11 +40,10 @@ import { styled } from "@mui/material/styles";
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { MenuItem as MenuItemData } from "@/types/menuItem";
+import type { NavItem } from "@/types/navItem";
 
-import { useAddAccountMenuItem, useSettingsMenuItem } from "@/utils/account";
+import { useAddAccountNavItem } from "@/utils/account";
 import { getDisplayName } from "@/utils/auth";
-import { getHref } from "@/utils/href";
 
 const StyledAvatar = styled(Avatar, {
   shouldForwardProp: (prop) => prop !== "isSignedIn",
@@ -95,25 +94,20 @@ const StyledListAvatar = styled(StyledAvatar)(({ theme }) => ({
   },
 }));
 
-const renderMenuItems = (
-  pathname: string,
-  basePath: string,
-  items: MenuItemData[],
-) =>
-  items.map(({ disabled, icon: Icon, label, onClick, to }, index) => {
+const renderMenuItems = (pathname: string, items: NavItem[]) =>
+  items.map(({ icon: Icon, label, onClick, path, to }, index) => {
     const key = to || index;
-    const href = to && `${basePath}${to}`;
-    const selected = href
-      ? pathname === href || pathname.startsWith(`${href}/`)
+    const basePath = (path ?? to)?.split("?")[0];
+    const selected = basePath
+      ? pathname === basePath || pathname.startsWith(`${basePath}/`)
       : false;
 
     return (
       <MenuItem
-        disabled={disabled}
         key={key}
         onClick={onClick}
         selected={selected}
-        {...(href ? { component: Link, href } : {})}
+        {...(to ? { component: Link, href: to } : {})}
       >
         {Icon && (
           <ListItemIcon>
@@ -143,18 +137,6 @@ const AccountMenu = () => {
 
   const router = useRouter();
 
-  const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo");
-  const isAuthPage = pathname.startsWith("/auth");
-  const isCompanyPage = pathname.startsWith("/company");
-
-  const redirectTarget =
-    (isAuthPage || isCompanyPage) && redirectTo ? redirectTo : pathname;
-
-  const signInRedirectHref = getHref("/auth/sign-in", {
-    [query.redirectTo]: redirectTarget,
-  });
-
   const { enqueueSnackbar } = useSnackbar();
 
   const { data: deviceSessions = [] } = useSWR<DeviceSession[]>(
@@ -170,21 +152,18 @@ const AccountMenu = () => {
     ({ session: { token } }) => token !== session?.session.token,
   );
 
+  const { mutate } = useSWRConfig();
+
   const tAuth = useTranslations("auth");
   const tooltipTitle = session ? session.user.email : tAuth("label");
 
-  const addAccountItem = useAddAccountMenuItem();
-  const authMenuItems = useAuthMenuItems(redirectTarget || undefined);
-  const logoutMenuItem = useLogoutMenuItem();
-  const settingsItem = useSettingsMenuItem();
+  const navItem = useRoutes();
+
+  const addAccountItem = useAddAccountNavItem();
+  const authNavItems = useAuthNavItems();
+  const logoutItem = useLogoutNavItem();
 
   const handleClick = (event: MouseEvent<HTMLElement>) => {
-    if (!session) {
-      router.push(signInRedirectHref);
-
-      return;
-    }
-
     setAnchorEl(event.currentTarget);
   };
 
@@ -205,6 +184,9 @@ const AccountMenu = () => {
         onSuccess: async () => {
           const { data } = await authClient.getSession();
           setSession(data);
+
+          router.refresh();
+          await mutate(() => true);
 
           enqueueSnackbar(tAuth("switchSession.success", { email }), {
             variant: "success",
@@ -274,12 +256,15 @@ const AccountMenu = () => {
             />
           </StyledListSubheader>
         )}
-        {!session && (
-          <StyledListSubheader>{tAuth("label")}</StyledListSubheader>
-        )}
-        <Divider />
+        {session && <Divider />}
         {session &&
-          renderMenuItems(pathname, "/auth", [settingsItem, logoutMenuItem])}
+          renderMenuItems(pathname, [
+            navItem("/auth/orders"),
+            navItem("/auth/coupons"),
+            navItem("/auth/points"),
+            navItem("/auth/settings"),
+            logoutItem,
+          ])}
         {session && <Divider />}
         {session &&
           otherSessions.map(({ session: { token }, user }) => {
@@ -308,8 +293,8 @@ const AccountMenu = () => {
             );
           })}
         {session && otherSessions.length > 0 && <Divider />}
-        {session && renderMenuItems(pathname, "/auth", [addAccountItem])}
-        {!session && renderMenuItems(pathname, "/auth", authMenuItems)}
+        {session && renderMenuItems(pathname, [addAccountItem])}
+        {!session && renderMenuItems(pathname, authNavItems)}
       </StyledMenu>
     </>
   );

@@ -1,0 +1,24 @@
+import { useTranslations } from "next-intl";
+import * as z from "zod";
+
+import { roles } from "@/constants/organizations";
+
+export const useUpdateMemberRoleFormSchema = () => {
+  const tValidation = useTranslations("validation");
+
+  return z.object({
+    email: z.email({ error: tValidation("email.invalid") }).trim(),
+    role: z
+      .string()
+      .pipe(z.enum(roles, { error: tValidation("role.required") })),
+    teamId: z.string().trim().optional(),
+  });
+};
+
+export type UpdateMemberRoleFormInput = z.input<
+  ReturnType<typeof useUpdateMemberRoleFormSchema>
+>;
+
+export type UpdateMemberRoleFormOutput = z.output<
+  ReturnType<typeof useUpdateMemberRoleFormSchema>
+>;

@@ -1,16 +1,30 @@
 {
   "label": "總覽",
-  "welcome": "歡迎回來，{name}",
+  "overview": "總覽",
   "stats": {
     "totalOrders": "總訂單數",
     "totalUsers": "總使用者數",
     "totalOrganizations": "總組織數",
-    "recentOrders": "近期訂單"
+    "period": {
+      "today": "今日",
+      "7d": "近 7 日",
+      "30d": "近 30 日",
+      "90d": "近 3 個月",
+      "365d": "近 1 年"
+    },
+    "revenue": "營業額"
   },
   "quickActions": {
     "label": "快速操作",
-    "viewOrders": "查看訂單",
     "manageUsers": "管理使用者",
     "manageOrganizations": "管理組織"
+  },
+  "charts": {
+    "avgOrderValue": "平均客單價",
+    "orderModes": "點餐方式",
+    "paymentMethods": "付款方式",
+    "peakHours": "尖峰時段",
+    "slowItems": "滯銷品項",
+    "topItems": "熱銷品項"
   }
 }

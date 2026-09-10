@@ -1,28 +1,43 @@
-export type OrderStatus = "pending" | "completed" | "canceled";
+import {
+  type components,
+  orderFilterFieldValues,
+  orderSortFieldValues,
+} from "@/types/api";
 
-export interface Order {
-  id: string;
-  status: OrderStatus;
-  totalPrice: number;
-  storeId: string;
-  tableId: string | null;
-  userId: string;
-  createdAt: string;
-  updatedAt: string;
-}
+export type CreateOrderDto = components["schemas"]["CreateOrderDto"];
+export type CreateOrderPayment = CreateOrderDto["payment"];
+export type OrderResponse = components["schemas"]["OrderResponseDto"];
+export type UserOrderListResponse =
+  components["schemas"]["UserOrderListResponseDto"];
+export type UserOrderResponse = components["schemas"]["UserOrderResponseDto"];
+export type OrderItemResponse = components["schemas"]["OrderItemResponseDto"];
+export type MenuItemSalesResponse =
+  components["schemas"]["MenuItemSalesResponseDto"];
+export type AdminOrderBoardColumn =
+  components["schemas"]["AdminOrderBoardColumnDto"];
+export type AdminOrderResponse = components["schemas"]["AdminOrderResponseDto"];
+export type OrderInvoice = components["schemas"]["OrderInvoiceDto"];
 
-export interface OrdersResponse {
-  data: Order[];
-  total: number;
-  page: number;
-  limit: number;
-}
+export type OrderInvoicePrint = components["schemas"]["OrderInvoicePrintDto"];
+export type OrderInvoiceVerification =
+  components["schemas"]["OrderInvoiceVerificationDto"];
+export type ResetInvoicePrintDto =
+  components["schemas"]["ResetInvoicePrintDto"];
+export type VoidInvoiceDto = components["schemas"]["VoidInvoiceDto"];
+export type OrderPaymentNotification =
+  components["schemas"]["OrderPaymentNotificationDto"];
+export type OrderRefund = components["schemas"]["OrderRefundDto"];
+export type CreateOrderRefundDto =
+  components["schemas"]["CreateOrderRefundDto"];
+export type OrderRefundPreview = components["schemas"]["OrderRefundPreviewDto"];
+export type OrderTransition = components["schemas"]["OrderTransitionDto"];
 
-export interface OrdersQuery {
-  page: number;
-  limit: number;
-  status: OrderStatus | "";
-  search: string;
-  sortBy: string;
-  sortDir: "asc" | "desc";
-}
+export type OrderMode = OrderResponse["mode"];
+export type OrderPaymentMethod = OrderResponse["paymentMethod"];
+export type OrderStatus = OrderResponse["orderStatus"];
+export type OrderFlowStatus = components["schemas"]["OrderFlowStatus"];
+export type InvoiceStatus = components["schemas"]["InvoiceStatus"];
+export type RefundStatus = components["schemas"]["RefundStatus"];
+
+export type OrderFilterField = (typeof orderFilterFieldValues)[number];
+export type OrderSortField = (typeof orderSortFieldValues)[number];

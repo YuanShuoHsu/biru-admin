@@ -1,6 +1,8 @@
 // https://mui.com/store/terms/
 // https://vercel.com/legal/terms
 
+"use client";
+
 import { LocaleEnum } from "@/enums/Locale";
 
 import { type Locale, routing } from "@/i18n/routing";
@@ -546,7 +548,7 @@ interface CompanyLegalTermsProps {
 }
 
 const CompanyLegalTerms = ({ locale }: CompanyLegalTermsProps) => {
-  const content = termsByLocale[locale] ?? termsByLocale[routing.defaultLocale];
+  const content = termsByLocale[locale] || termsByLocale[routing.defaultLocale];
 
   return (
     <Box component="section" display="flex" flexDirection="column" gap={2}>

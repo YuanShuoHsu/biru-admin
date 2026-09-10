@@ -1,0 +1,410 @@
+{
+  "actions": {
+    "createMenu": {
+      "success": "Menu {name} created",
+      "title": "Add menu"
+    },
+    "deleteMenu": {
+      "confirm": "Are you sure you want to delete menu <bold>{name}</bold>? This action cannot be undone.",
+      "success": "Menu {name} deleted",
+      "title": "Delete menu"
+    },
+    "label": "Actions",
+    "updateMenu": {
+      "success": "Menu {name} updated",
+      "title": "Edit menu"
+    },
+    "viewMenu": {
+      "title": "View menu"
+    }
+  },
+  "availability": {
+    "label": "Availability",
+    "options": {
+      "Discontinued": "Discontinued",
+      "InStock": "In stock",
+      "SoldOut": "Sold out"
+    },
+    "placeholder": "Please select your availability"
+  },
+  "availableModes": {
+    "helperText": "Unchecked modes are shown as unavailable on the ordering page",
+    "label": "Sold in"
+  },
+  "createdAt": "Created",
+  "description": {
+    "label": "Description",
+    "placeholder": "Please enter your menu description"
+  },
+  "image": {
+    "label": "Cover image URL",
+    "placeholder": "Please enter your image URL"
+  },
+  "inLanguage": {
+    "label": "Language",
+    "options": {
+      "en": "English",
+      "ja": "Japanese",
+      "ko": "Korean",
+      "zh-CN": "Simplified Chinese",
+      "zh-TW": "Traditional Chinese"
+    },
+    "placeholder": "Please select your menu language"
+  },
+  "items": {
+    "actions": {
+      "createItem": {
+        "error": "Failed to add item",
+        "success": "Item {name} created",
+        "title": "Add item"
+      },
+      "deleteItem": {
+        "confirm": "Are you sure you want to delete <bold>{name}</bold>? All pricing settings will also be deleted.",
+        "error": "Failed to delete item {name}",
+        "success": "Item {name} deleted",
+        "title": "Delete item"
+      },
+      "label": "Actions",
+      "manageItem": {
+        "title": "Manage item"
+      },
+      "reorderItem": {
+        "cancel": {
+          "confirm": "Are you sure you want to cancel <bold>items</bold> reorder? Unsaved changes will be lost.",
+          "label": "Cancel Items Reorder"
+        },
+        "confirm": "Are you sure you want to reorder <bold>items</bold>?",
+        "save": {
+          "confirm": "Are you sure you want to save <bold>items</bold> reorder?",
+          "error": "Failed to save reorder",
+          "label": "Save Items Reorder",
+          "success": "Reorder saved"
+        },
+        "title": "Reorder Items"
+      },
+      "updateItem": {
+        "error": "Failed to update item",
+        "success": "Item {name} updated",
+        "title": "Edit item"
+      }
+    },
+    "addOns": {
+      "actions": {
+        "createAddOn": {
+          "error": "Failed to add {name}",
+          "success": "{name} added",
+          "title": "Add add-on"
+        },
+        "deleteAddOn": {
+          "confirm": "Are you sure you want to remove <bold>{name}</bold>?",
+          "error": "Failed to remove {name}",
+          "success": "{name} removed",
+          "title": "Remove add-on"
+        },
+        "label": "Actions",
+        "reorderAddOn": {
+          "cancel": {
+            "confirm": "Are you sure you want to cancel <bold>add-ons</bold> reorder? Unsaved changes will be lost.",
+            "label": "Cancel Add-ons Reorder"
+          },
+          "confirm": "Are you sure you want to reorder <bold>add-ons</bold>?",
+          "save": {
+            "confirm": "Are you sure you want to save <bold>add-ons</bold> reorder?",
+            "error": "Failed to save reorder",
+            "label": "Save Add-ons Reorder",
+            "success": "Reorder saved"
+          },
+          "title": "Reorder Add-ons"
+        },
+        "updateAddOn": {
+          "error": "Failed to update {name}",
+          "success": "{name} updated",
+          "title": "Edit add-on"
+        }
+      },
+      "addOnMenuItemId": {
+        "label": "Add-on item",
+        "placeholder": "Please select your add-on item"
+      },
+      "addOnMenuSectionId": {
+        "label": "Add-on section",
+        "placeholder": "Please select your add-on section"
+      },
+      "displayName": {
+        "menuItem": "section {menuSection} item {menuItem}",
+        "menuSection": "section {menuSection}"
+      },
+      "label": "Add-ons"
+    },
+    "description": {
+      "label": "Description",
+      "placeholder": "Please enter your item description"
+    },
+    "image": {
+      "label": "Image URL",
+      "placeholder": "Please enter your image URL"
+    },
+    "label": "Items",
+    "modifierGroups": {
+      "actions": {
+        "attach": {
+          "error": "Failed to attach modifier group",
+          "success": "Modifier group {name} attached",
+          "title": "Attach modifier group"
+        },
+        "detach": {
+          "confirm": "Are you sure you want to detach <bold>{name}</bold>? This does not delete the group itself.",
+          "error": "Failed to detach {name}",
+          "success": "{name} detached",
+          "title": "Detach"
+        },
+        "label": "Actions",
+        "reorder": {
+          "cancel": {
+            "confirm": "Are you sure you want to cancel <bold>modifier groups</bold> reorder? Unsaved changes will be lost.",
+            "label": "Cancel Modifier Groups Reorder"
+          },
+          "confirm": "Are you sure you want to reorder <bold>modifier groups</bold>?",
+          "save": {
+            "confirm": "Are you sure you want to save <bold>modifier groups</bold> reorder?",
+            "error": "Failed to save reorder",
+            "label": "Save Modifier Groups Reorder",
+            "success": "Reorder saved"
+          },
+          "title": "Reorder Modifier Groups"
+        }
+      },
+      "group": {
+        "label": "Modifier group",
+        "placeholder": "Please select your modifier group"
+      },
+      "label": "Modifiers"
+    },
+    "name": {
+      "label": "Item name",
+      "placeholder": "Please enter your item name"
+    },
+    "offers": {
+      "availableHours": {
+        "label": "Available hours"
+      },
+      "deliveryLeadTimeMinutes": {
+        "label": "Preparation time",
+        "placeholder": "Please enter your preparation time",
+        "unit": "min"
+      },
+      "inventoryLevel": {
+        "maxValue": {
+          "label": "Max inventory level",
+          "placeholder": "Please enter your max inventory level"
+        },
+        "minValue": {
+          "label": "Min inventory level",
+          "placeholder": "Please enter your min inventory level"
+        },
+        "unitText": {
+          "label": "Inventory unit",
+          "placeholder": "Please enter your inventory unit"
+        },
+        "value": {
+          "label": "Inventory quantity",
+          "placeholder": "Please enter your inventory quantity"
+        }
+      },
+      "label": "Offers",
+      "price": {
+        "label": "Price",
+        "placeholder": "Please enter your price"
+      },
+      "priceSpecification": {
+        "price": {
+          "label": "Sale price",
+          "placeholder": "Please enter your sale price"
+        },
+        "validFrom": {
+          "label": "Sale starts"
+        },
+        "validThrough": {
+          "label": "Sale ends"
+        }
+      }
+    },
+    "suitableForDiet": {
+      "label": "Dietary restrictions"
+    },
+    "url": {
+      "label": "URL",
+      "placeholder": "Please enter your URL"
+    }
+  },
+  "label": "Menus",
+  "modifierGroups": {
+    "actions": {
+      "createGroup": {
+        "error": "Failed to create modifier group",
+        "success": "Modifier group {name} created",
+        "title": "Create modifier group"
+      },
+      "deleteGroup": {
+        "confirm": "Are you sure you want to delete <bold>{name}</bold>? The modifiers in this group will also be deleted.",
+        "error": "Failed to delete modifier group {name}",
+        "success": "Modifier group {name} deleted",
+        "title": "Delete modifier group"
+      },
+      "label": "Actions",
+      "reorderGroup": {
+        "cancel": {
+          "confirm": "Are you sure you want to cancel <bold>modifier groups</bold> reorder? Unsaved changes will be lost.",
+          "label": "Cancel Modifier Groups Reorder"
+        },
+        "confirm": "Are you sure you want to reorder <bold>modifier groups</bold>?",
+        "save": {
+          "confirm": "Are you sure you want to save <bold>modifier groups</bold> reorder?",
+          "error": "Failed to save reorder",
+          "label": "Save Modifier Groups Reorder",
+          "success": "Reorder saved"
+        },
+        "title": "Reorder Modifier Groups"
+      },
+      "updateGroup": {
+        "error": "Failed to update modifier group",
+        "success": "Modifier group {name} updated",
+        "title": "Edit modifier group"
+      },
+      "viewModifiers": {
+        "title": "View modifiers"
+      }
+    },
+    "displayName": {
+      "label": "Group name",
+      "placeholder": "Please enter your group name"
+    },
+    "label": "Modifier groups",
+    "maxSelectionCount": {
+      "label": "Max selections",
+      "placeholder": "Please enter your max selections",
+      "unlimited": "Unlimited"
+    },
+    "minSelectionCount": {
+      "label": "Min selections",
+      "placeholder": "Please enter your min selections"
+    }
+  },
+  "modifiers": {
+    "actions": {
+      "createModifier": {
+        "error": "Failed to create modifier",
+        "success": "Modifier {name} created",
+        "title": "Create modifier"
+      },
+      "deleteModifier": {
+        "confirm": "Are you sure you want to delete <bold>{name}</bold>?",
+        "error": "Failed to delete modifier {name}",
+        "success": "Modifier {name} deleted",
+        "title": "Delete modifier"
+      },
+      "label": "Actions",
+      "reorderModifier": {
+        "cancel": {
+          "confirm": "Are you sure you want to cancel <bold>modifiers</bold> reorder? Unsaved changes will be lost.",
+          "label": "Cancel Modifiers Reorder"
+        },
+        "confirm": "Are you sure you want to reorder <bold>modifiers</bold>?",
+        "save": {
+          "confirm": "Are you sure you want to save <bold>modifiers</bold> reorder?",
+          "error": "Failed to save reorder",
+          "label": "Save Modifiers Reorder",
+          "success": "Reorder saved"
+        },
+        "title": "Reorder Modifiers"
+      },
+      "updateModifier": {
+        "error": "Failed to update modifier",
+        "success": "Modifier {name} updated",
+        "title": "Edit modifier"
+      }
+    },
+    "displayName": {
+      "label": "Modifier name",
+      "placeholder": "Please enter your modifier name"
+    },
+    "label": "Modifiers",
+    "priceAdjustment": {
+      "label": "Price adjustment",
+      "placeholder": "Please enter your price adjustment"
+    }
+  },
+  "name": {
+    "label": "Menu name",
+    "placeholder": "Please enter your menu name"
+  },
+  "reorder": "Order",
+  "sections": {
+    "actions": {
+      "addSubsection": {
+        "title": "Add subsection"
+      },
+      "backToSections": {
+        "title": "Back to sections"
+      },
+      "createSection": {
+        "error": "Failed to create section",
+        "success": "Section {name} created",
+        "title": "Add section"
+      },
+      "deleteSection": {
+        "confirm": "Are you sure you want to delete <bold>{name}</bold>? All subsections and items will also be deleted.",
+        "error": "Failed to delete section {name}",
+        "success": "Section {name} deleted",
+        "title": "Delete section"
+      },
+      "label": "Actions",
+      "reorderSection": {
+        "cancel": {
+          "confirm": "Are you sure you want to cancel <bold>sections</bold> reorder? Unsaved changes will be lost.",
+          "label": "Cancel Sections Reorder"
+        },
+        "confirm": "Are you sure you want to reorder <bold>sections</bold>?",
+        "save": {
+          "confirm": "Are you sure you want to save <bold>sections</bold> reorder?",
+          "error": "Failed to save reorder",
+          "label": "Save Sections Reorder",
+          "success": "Reorder saved"
+        },
+        "title": "Reorder Sections"
+      },
+      "updateSection": {
+        "success": "Section {name} updated",
+        "title": "Edit section"
+      },
+      "viewItems": {
+        "title": "View items"
+      }
+    },
+    "allItems": "All items",
+    "description": {
+      "label": "Description",
+      "placeholder": "Please enter your section description"
+    },
+    "label": "Sections",
+    "name": {
+      "label": "Section name",
+      "placeholder": "Please enter your section name"
+    },
+    "unassigned": "Unassigned"
+  },
+  "settings": {
+    "actions": {
+      "save": {
+        "error": "Failed to save {name} menu settings",
+        "label": "Save settings",
+        "success": "{name} menu settings saved"
+      },
+      "update": {
+        "title": "Edit menu"
+      }
+    },
+    "label": "Settings"
+  },
+  "updatedAt": "Updated"
+}

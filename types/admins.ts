@@ -1,15 +1,13 @@
-import type { UserWithRole } from "better-auth/client/plugins";
+import {
+  type components,
+  userFilterFieldValues,
+  userFilterOperatorValues,
+  userSortFieldValues,
+} from "@/types/api";
 
-import type { roles } from "@/constants/admins";
+export type User = components["schemas"]["UserResponseDto"];
+export type UserRole = NonNullable<User["role"]>;
 
-import type { Locale } from "@/i18n/routing";
-
-export type AdminRole = (typeof roles)[number];
-
-export type AdminUser = Omit<UserWithRole, "role"> & {
-  lastName?: string;
-  firstName: string;
-  emailSubscribed: boolean;
-  lang: Locale;
-  role: AdminRole;
-};
+export type UserFilterField = (typeof userFilterFieldValues)[number];
+export type UserFilterOperator = (typeof userFilterOperatorValues)[number];
+export type UserSortField = (typeof userSortFieldValues)[number];

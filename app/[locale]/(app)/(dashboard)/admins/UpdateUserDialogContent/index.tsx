@@ -7,6 +7,7 @@ import { Controller, useForm } from "react-hook-form";
 
 import { type UpdateUserForm, useUpdateUserFormSchema } from "./definitions";
 
+import FormBox from "@/components/FormBox";
 import UploadAvatars from "@/components/UploadAvatars";
 
 import { LocaleEnum } from "@/enums/Locale";
@@ -18,34 +19,24 @@ import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import {
-  Box,
-  type BoxProps,
   Checkbox,
   FormControlLabel,
   Stack,
   TextField,
   Typography,
-  styled,
 } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { AdminUser } from "@/types/admins";
-
-const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: theme.spacing(2),
-}));
+import type { User } from "@/types/admins";
 
 interface UpdateUserDialogContentProps {
-  fetchListUsers: () => void;
-  user: AdminUser;
+  mutateAdmins: () => void;
+  user: User;
 }
 
 const UpdateUserDialogContent = ({
-  fetchListUsers,
+  mutateAdmins,
   user,
 }: UpdateUserDialogContentProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
@@ -56,6 +47,7 @@ const UpdateUserDialogContent = ({
   const image = useUploadAvatarSrc(uploadKey, user.image);
 
   const tAdmins = useTranslations("admins");
+  const tCommon = useTranslations("common");
 
   const updateUserFormSchema = useUpdateUserFormSchema();
 
@@ -66,57 +58,63 @@ const UpdateUserDialogContent = ({
     register,
   } = useForm<UpdateUserForm>({
     defaultValues: {
-      lastName: user.lastName,
+      lastName: user.lastName || undefined,
       firstName: user.firstName,
       email: user.email,
+      bio: user.bio || "",
       emailSubscribed: user.emailSubscribed,
     },
     resolver: zodResolver(updateUserFormSchema),
   });
 
   const onSubmit = (event: BaseSyntheticEvent) =>
-    handleSubmit(async ({ lastName, firstName, email, emailSubscribed }) => {
-      await authClient.admin.updateUser(
-        {
-          userId: user.id,
-          data: {
-            name: (locale === LocaleEnum.En
-              ? [firstName, lastName]
-              : [lastName, firstName]
-            )
-              .filter(Boolean)
-              .join(locale === LocaleEnum.En ? " " : ""),
-            email,
-            firstName,
-            lastName,
-            emailSubscribed,
-            image,
+    handleSubmit(
+      async ({ lastName, firstName, email, bio, emailSubscribed }) => {
+        await authClient.admin.updateUser(
+          {
+            userId: user.id,
+            data: {
+              name: (locale === LocaleEnum.En
+                ? [firstName, lastName]
+                : [lastName, firstName]
+              )
+                .filter(Boolean)
+                .join(locale === LocaleEnum.En ? " " : ""),
+              email,
+              firstName,
+              lastName,
+              bio,
+              emailSubscribed,
+              image,
+            },
           },
-        },
-        {
-          onError: ({ error: { code } }) => {
-            console.log(code);
-            enqueueSnackbar(getErrorMessage(code, locale), {
-              variant: "error",
-            });
-            setDialog({ confirmLoading: false });
-          },
-          onRequest: () => setDialog({ confirmLoading: true }),
-          onSuccess: () => {
-            enqueueSnackbar(tAdmins("actions.updateUser.success"), {
-              variant: "success",
-            });
+          {
+            onError: ({ error: { code } }) => {
+              enqueueSnackbar(getErrorMessage(code, locale), {
+                variant: "error",
+              });
+              setDialog({ confirmLoading: false });
+            },
+            onRequest: () => setDialog({ confirmLoading: true }),
+            onSuccess: () => {
+              enqueueSnackbar(
+                tAdmins("actions.updateUser.success", { email }),
+                {
+                  variant: "success",
+                },
+              );
 
-            closeDialog();
+              closeDialog();
 
-            fetchListUsers();
+              mutateAdmins();
+            },
           },
-        },
-      );
-    })(event);
+        );
+      },
+    )(event);
 
   return (
-    <StyledBox component="form" id="update-user-form" onSubmit={onSubmit}>
+    <FormBox id="update-user-form" onSubmit={onSubmit}>
       <UploadAvatars initialSrc={user.image} uploadKey={uploadKey} />
       <Stack
         width="100%"
@@ -128,7 +126,7 @@ const UpdateUserDialogContent = ({
           error={!!errors.lastName}
           fullWidth
           helperText={errors.lastName?.message}
-          label={tAdmins("actions.updateUser.lastName.label")}
+          label={`${tAdmins("actions.updateUser.lastName.label")} ${tCommon("optional")}`}
           placeholder={tAdmins("actions.updateUser.lastName.placeholder")}
           {...register("lastName")}
         />
@@ -154,6 +152,17 @@ const UpdateUserDialogContent = ({
         type="email"
         {...register("email")}
       />
+      <TextField
+        error={!!errors.bio}
+        fullWidth
+        helperText={errors.bio?.message}
+        label={`${tAdmins("actions.updateUser.bio.label")} ${tCommon("optional")}`}
+        maxRows={4}
+        multiline
+        placeholder={tAdmins("actions.updateUser.bio.placeholder")}
+        slotProps={{ htmlInput: { maxLength: 160 } }}
+        {...register("bio")}
+      />
       <Stack width="100%" flexDirection="row" alignItems="center">
         <FormControlLabel
           control={
@@ -172,7 +181,7 @@ const UpdateUserDialogContent = ({
           }
         />
       </Stack>
-    </StyledBox>
+    </FormBox>
   );
 };
 

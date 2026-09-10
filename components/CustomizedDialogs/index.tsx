@@ -38,6 +38,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 const StyledDialogTitle = styled(DialogTitle)(({ theme }) => ({
   margin: 0,
   padding: theme.spacing(2),
+  overflowWrap: "anywhere",
 }));
 
 const StyledIconButton = styled(IconButton)(({ theme }) => ({

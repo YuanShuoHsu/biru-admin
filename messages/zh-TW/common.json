@@ -2,13 +2,52 @@
   "colon": "：",
   "currency": "NT$",
   "delimiter": "、",
+  "discontinued": "已停售",
   "empty": "尚未有商品",
   "from": "起",
+  "imageProcessingFailed": "圖片處理失敗",
   "loading": "載入中...",
+  "locales": {
+    "zh-TW": "繁體中文",
+    "en": "英文",
+    "ja": "日文",
+    "ko": "韓文",
+    "zh-CN": "簡體中文"
+  },
+  "location": {
+    "empty": "尚未設定位置資訊",
+    "openingHours": {
+      "Fr": "週五",
+      "Mo": "週一",
+      "Sa": "週六",
+      "Su": "週日",
+      "Th": "週四",
+      "Tu": "週二",
+      "We": "週三",
+      "allDay": "24 小時營業",
+      "nextDayTime": "隔日 {time}",
+      "rangeSeparator": "～"
+    }
+  },
   "maxQuantity": "每項商品最多只能購買 {quantity} 件",
+  "middleDot": "・",
   "multiply": "×",
+  "optional": "（選填）",
+  "organization": {
+    "label": "組織",
+    "placeholder": "請選擇您的組織"
+  },
+  "pagination": {
+    "labelDisplayedRows": "{from}–{to} 共 {count}",
+    "labelRowsPerPage": "每頁數量:"
+  },
+  "parenthesisClose": "）",
+  "parenthesisOpen": "（",
   "reachStockLimit": "{label} 已達庫存上限",
-  "soldOut": "{label} 售完",
-  "totalAmount": "總計",
+  "selectedCount": "已選取 {checked}/{total} 筆",
+  "slash": "／",
+  "soldOut": "售完",
+  "subtotal": "小計",
+  "total": "總計",
   "unavailable": "無法供應"
 }

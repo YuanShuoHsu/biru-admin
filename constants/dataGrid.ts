@@ -8,6 +8,9 @@ import {
   UnsortedIcon,
 } from "@/components/CustomSortIcons";
 import CustomToolbar from "@/components/CustomToolbar";
+
+import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from "@/constants/pagination";
+
 import { GridAutosizeOptions } from "@mui/x-data-grid";
 
 export const autosizeOptions: GridAutosizeOptions = {
@@ -25,9 +28,9 @@ export const DATA_GRID_PROPS = {
     indexRelativeToCurrentPage: number;
   }) => (indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"),
   initialState: {
-    pagination: { paginationModel: { pageSize: 10 } },
+    pagination: { paginationModel: { pageSize: DEFAULT_PAGE_SIZE } },
   },
-  pageSizeOptions: [5, 10, 50, 100],
+  pageSizeOptions: PAGE_SIZE_OPTIONS,
   showToolbar: true,
   slotProps: {
     basePagination: {
@@ -46,3 +49,45 @@ export const DATA_GRID_PROPS = {
     toolbar: CustomToolbar,
   },
 } as const;
+
+export const NO_VALUE_FILTER_OPERATORS: readonly string[] = [
+  "isEmpty",
+  "isNotEmpty",
+];
+
+export const STRING_FILTER_OPERATORS = [
+  "contains",
+  "doesNotContain",
+  "equals",
+  "doesNotEqual",
+  "startsWith",
+  "endsWith",
+  "isEmpty",
+  "isNotEmpty",
+  "isAnyOf",
+] as const;
+
+export const NUMBER_FILTER_OPERATORS = [
+  "=",
+  "!=",
+  ">",
+  ">=",
+  "<",
+  "<=",
+  "isEmpty",
+  "isNotEmpty",
+  "isAnyOf",
+] as const;
+
+export const DATE_FILTER_OPERATORS = [
+  "is",
+  "not",
+  "after",
+  "onOrAfter",
+  "before",
+  "onOrBefore",
+  "isEmpty",
+  "isNotEmpty",
+] as const;
+
+export const ENUM_FILTER_OPERATORS = ["is", "not", "isAnyOf"] as const;

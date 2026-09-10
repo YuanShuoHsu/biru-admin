@@ -2,6 +2,8 @@
 // https://mui.com/material-ui/react-button/#InputFileUpload.tsx
 
 import imageCompression, { type Options } from "browser-image-compression";
+import { useTranslations } from "next-intl";
+import { enqueueSnackbar } from "notistack";
 
 import BadgeAvatars from "@/components/BadgeAvatars";
 
@@ -18,21 +20,39 @@ import { styled } from "@mui/material/styles";
 
 import { useUploadAvatarStore } from "@/providers/upload-avatar-store-provider";
 
-const StyledButtonBase = styled(ButtonBase)<ButtonBaseProps>({
-  borderRadius: "50%",
+interface ShapeProps {
+  aspectRatio: string;
+  fullWidth: boolean;
+  shape: "circle" | "square";
+}
+
+const StyledButtonBase = styled(ButtonBase, {
+  shouldForwardProp: (prop) =>
+    prop !== "aspectRatio" && prop !== "fullWidth" && prop !== "shape",
+})<ButtonBaseProps & ShapeProps>(({ fullWidth, shape, theme }) => ({
+  borderRadius: shape === "square" ? theme.shape.borderRadius : "50%",
+  ...(fullWidth && {
+    width: "100%",
+
+    "& .MuiBadge-root": { width: "100%" },
+  }),
 
   "&:has(:focus-visible)": {
     outline: "2px solid",
     outlineOffset: "2px",
   },
-});
+}));
 
-const StyledAvatar = styled(Avatar)({
+const StyledAvatar = styled(Avatar, {
+  shouldForwardProp: (prop) =>
+    prop !== "aspectRatio" && prop !== "fullWidth" && prop !== "shape",
+})<ShapeProps>(({ aspectRatio, fullWidth, shape, theme }) => ({
   width: "100%",
-  maxWidth: "100px",
+  maxWidth: fullWidth ? "100%" : "100px",
   height: "auto",
-  aspectRatio: "1/1",
-});
+  aspectRatio,
+  borderRadius: shape === "square" ? theme.shape.borderRadius : "50%",
+}));
 
 const VisuallyHiddenInput = styled("input")({
   border: 0,
@@ -47,22 +67,46 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 const COMPRESSION_OPTIONS: Options = {
-  maxSizeMB: 0.02,
+  maxSizeMB: 0.1,
   maxWidthOrHeight: 512,
-  fileType: "image/jpeg",
+  fileType: "image/webp",
+  initialQuality: 0.8,
+  useWebWorker: true,
+};
+
+const HIGH_QUALITY_COMPRESSION_OPTIONS: Options = {
+  maxSizeMB: 0.4,
+  maxWidthOrHeight: 1920,
+  fileType: "image/webp",
   initialQuality: 0.8,
   useWebWorker: true,
 };
 
 interface UploadAvatarsProps {
-  uploadKey: string;
+  aspectRatio?: string;
+  disabled?: boolean;
+  fullWidth?: boolean;
+  highQuality?: boolean;
   initialSrc?: string | null;
+  shape?: "circle" | "square";
+  uploadKey: string;
 }
 
-const UploadAvatars = ({ uploadKey, initialSrc }: UploadAvatarsProps) => {
+const UploadAvatars = ({
+  aspectRatio = "1/1",
+  disabled = false,
+  fullWidth = false,
+  highQuality = false,
+  initialSrc,
+  shape = "circle",
+  uploadKey,
+}: UploadAvatarsProps) => {
   const { resetAvatarSrc, setAvatarSrc } = useUploadAvatarStore(
     (state) => state,
   );
+
+  const tCommon = useTranslations("common");
+
   const avatarSrc = useUploadAvatarSrc(uploadKey, initialSrc);
   const canRestore = !!initialSrc && avatarSrc !== initialSrc;
 
@@ -73,17 +117,24 @@ const UploadAvatars = ({ uploadKey, initialSrc }: UploadAvatarsProps) => {
     event.target.value = "";
     if (!file) return;
 
-    const compressed = await imageCompression(file, COMPRESSION_OPTIONS);
+    try {
+      const compressed = await imageCompression(
+        file,
+        highQuality ? HIGH_QUALITY_COMPRESSION_OPTIONS : COMPRESSION_OPTIONS,
+      );
 
-    const reader = new FileReader();
-    reader.onload = () => setAvatarSrc(uploadKey, reader.result as string);
-    reader.readAsDataURL(compressed);
+      const reader = new FileReader();
+      reader.onload = () => setAvatarSrc(uploadKey, reader.result as string);
+      reader.readAsDataURL(compressed);
+    } catch {
+      enqueueSnackbar(tCommon("imageProcessingFailed"), { variant: "error" });
+    }
   };
 
   const handleRemoveAvatar = (e: React.MouseEvent) => {
     e.preventDefault();
 
-    setAvatarSrc(uploadKey, undefined);
+    setAvatarSrc(uploadKey, null);
   };
 
   const handleRestoreAvatar = (e: React.MouseEvent) => {
@@ -99,14 +150,18 @@ const UploadAvatars = ({ uploadKey, initialSrc }: UploadAvatarsProps) => {
   return (
     <StyledButtonBase
       aria-label="Avatar image"
+      aspectRatio={aspectRatio}
       component="label"
+      disabled={disabled}
+      fullWidth={fullWidth}
       role={undefined}
+      shape={shape}
       tabIndex={-1}
     >
       <BadgeAvatars
         anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
         badgeContent={
-          canRestore ? (
+          canRestore && !disabled ? (
             <IconButton
               aria-label="restore avatar"
               component="span"
@@ -122,21 +177,30 @@ const UploadAvatars = ({ uploadKey, initialSrc }: UploadAvatarsProps) => {
       >
         <BadgeAvatars
           badgeContent={
-            <IconButton
-              aria-label={label}
-              component="span"
-              onClick={onClick}
-              role={undefined}
-              size="small"
-              tabIndex={-1}
-            >
-              <Icon fontSize="inherit" />
-            </IconButton>
+            disabled ? null : (
+              <IconButton
+                aria-label={label}
+                component="span"
+                onClick={onClick}
+                role={undefined}
+                size="small"
+                tabIndex={-1}
+              >
+                <Icon fontSize="inherit" />
+              </IconButton>
+            )
           }
         >
-          <StyledAvatar alt="Upload new avatar" src={avatarSrc} />
+          <StyledAvatar
+            alt="Upload new avatar"
+            aspectRatio={aspectRatio}
+            fullWidth={fullWidth}
+            shape={shape}
+            src={avatarSrc || undefined}
+          />
           <VisuallyHiddenInput
             accept="image/*"
+            disabled={disabled}
             onChange={handleAvatarChange}
             type="file"
           />

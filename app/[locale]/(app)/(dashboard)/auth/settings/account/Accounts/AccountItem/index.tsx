@@ -3,7 +3,7 @@ import { StyledListItem, StyledListItemText } from "@/components/FormCard";
 import { Avatar, ListItemIcon } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import type { Session } from "@/stores/auth-store";
+import type { Session } from "@/types/auth";
 
 import { getDisplayName } from "@/utils/auth";
 

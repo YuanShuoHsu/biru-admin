@@ -81,6 +81,10 @@
       "title": "停止解除"
     },
     "updateUser": {
+      "bio": {
+        "label": "自己紹介",
+        "placeholder": "あなたの自己紹介を入力してください"
+      },
       "firstName": {
         "label": "名",
         "placeholder": "あなたの名を入力してください"
@@ -89,7 +93,7 @@
         "label": "姓",
         "placeholder": "あなたの姓を入力してください"
       },
-      "success": "ユーザー情報を更新しました",
+      "success": "{email} の情報を更新しました",
       "title": "ユーザーを編集"
     }
   },
@@ -130,8 +134,9 @@
     "subscribed": "配信中",
     "unsubscribed": "未配信"
   },
+  "bio": "自己紹介",
   "image": "アバター",
-  "label": "ユーザー管理",
+  "label": "ユーザー",
   "name": "名前",
   "role": {
     "admin": "管理者",

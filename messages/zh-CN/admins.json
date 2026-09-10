@@ -81,6 +81,10 @@
       "title": "解除封禁"
     },
     "updateUser": {
+      "bio": {
+        "label": "个人简介",
+        "placeholder": "请输入您的个人简介"
+      },
       "firstName": {
         "label": "名字",
         "placeholder": "请输入您的名字"
@@ -89,7 +93,7 @@
         "label": "姓氏",
         "placeholder": "请输入您的姓氏"
       },
-      "success": "用户信息已更新",
+      "success": "{email} 的信息已更新",
       "title": "编辑用户"
     }
   },
@@ -130,8 +134,9 @@
     "subscribed": "已订阅",
     "unsubscribed": "未订阅"
   },
+  "bio": "个人简介",
   "image": "头像",
-  "label": "用户管理",
+  "label": "用户",
   "name": "姓名",
   "role": {
     "admin": "管理员",

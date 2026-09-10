@@ -1,7 +1,5 @@
 "use client";
 
-import React from "react";
-
 import {
   Card,
   CardActions,
@@ -16,12 +14,16 @@ import { styled } from "@mui/material/styles";
 export const StyledCardHeader = styled(CardHeader)(({ theme }) => ({
   padding: theme.spacing(2),
   paddingBottom: 0,
+
+  "& .MuiCardHeader-action": {
+    margin: 0,
+    alignSelf: "center",
+  },
 }));
 
 export const StyledCardContent = styled(CardContent)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
-  alignItems: "center",
   gap: theme.spacing(2),
 }));
 
@@ -52,8 +54,8 @@ export const StyledCardActions = styled(CardActions)(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-const FormCard = React.forwardRef<HTMLFormElement, CardProps<"form">>(
-  (props, ref) => <Card ref={ref} component="form" {...props} />,
+const FormCard = ({ ref, ...props }: CardProps<"form">) => (
+  <Card ref={ref} component="form" {...props} />
 );
 
 FormCard.displayName = "FormCard";

@@ -1,1 +1,1 @@
-export type DrawerType = "cart" | "nav";
+export type DrawerType = "nav";

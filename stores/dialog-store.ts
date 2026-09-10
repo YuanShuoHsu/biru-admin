@@ -14,7 +14,7 @@ type DialogState = {
   open: boolean;
   showCancel?: boolean;
   showConfirm?: boolean;
-  title: string;
+  title: React.ReactNode;
 };
 
 type DialogActions = {

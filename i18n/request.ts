@@ -5,12 +5,20 @@
 import { Formats, hasLocale } from "next-intl";
 import { getRequestConfig } from "next-intl/server";
 
+import { PLATFORM_TIMEZONE } from "@/constants/timezone";
+
 import { routing } from "@/i18n/routing";
 
 import enMessages from "@/messages";
 
 export const formats = {
   dateTime: {
+    compact: {
+      day: "numeric",
+      month: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+    },
     short: {
       day: "numeric",
       month: "short",
@@ -52,5 +60,6 @@ export default getRequestConfig(async ({ requestLocale }) => {
     formats,
     locale,
     messages,
+    timeZone: PLATFORM_TIMEZONE,
   };
 });

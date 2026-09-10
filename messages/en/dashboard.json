@@ -1,16 +1,30 @@
 {
   "label": "Dashboard",
-  "welcome": "Welcome back, {name}",
+  "overview": "Overview",
   "stats": {
     "totalOrders": "Total Orders",
     "totalUsers": "Total Users",
     "totalOrganizations": "Total Organizations",
-    "recentOrders": "Recent Orders"
+    "period": {
+      "today": "Today",
+      "7d": "Last 7 days",
+      "30d": "Last 30 days",
+      "90d": "Last 3 months",
+      "365d": "Last year"
+    },
+    "revenue": "Revenue"
   },
   "quickActions": {
     "label": "Quick Actions",
-    "viewOrders": "View Orders",
     "manageUsers": "Manage Users",
     "manageOrganizations": "Manage Organizations"
+  },
+  "charts": {
+    "avgOrderValue": "Average Order Value",
+    "orderModes": "Order Modes",
+    "paymentMethods": "Payment Methods",
+    "peakHours": "Peak Hours",
+    "slowItems": "Slow-Moving Items",
+    "topItems": "Top Items"
   }
 }

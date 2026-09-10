@@ -1,12 +1,12 @@
 {
   "actions": {
     "createOrganization": {
-      "success": "成功新增组织",
+      "success": "成功新增组织 {name}",
       "title": "新增组织"
     },
     "deleteOrganization": {
       "confirm": "确定要删除 <bold>{name}</bold> 吗？所有成员和数据将被永久删除，且无法撤销。",
-      "success": "成功删除组织",
+      "success": "成功删除组织 {name}",
       "title": "删除组织"
     },
     "label": "操作",
@@ -19,16 +19,47 @@
       "title": "管理"
     },
     "updateOrganization": {
-      "success": "成功更新组织",
+      "success": "成功更新组织 {name}",
       "title": "编辑组织"
     }
   },
+  "address": {
+    "addressCountry": {
+      "label": "国家/地区",
+      "placeholder": "请选择您的国家/地区"
+    },
+    "addressLocality": {
+      "label": "城市/区县",
+      "placeholder": "请输入您的城市或区县"
+    },
+    "addressRegion": {
+      "label": "省/市",
+      "placeholder": "请输入您的省或市"
+    },
+    "extendedAddress": {
+      "label": "地址补充",
+      "placeholder": "请输入您的地址补充信息"
+    },
+    "label": "地址",
+    "postalCode": {
+      "label": "邮政编码",
+      "placeholder": "请输入您的邮政编码"
+    },
+    "streetAddress": {
+      "label": "街道地址",
+      "placeholder": "请输入您的街道地址"
+    }
+  },
   "createdAt": "创建时间",
+  "currency": {
+    "label": "币别",
+    "placeholder": "请选择您的币别"
+  },
   "invitations": {
     "actions": {
       "cancelInvitation": {
         "confirm": "确定要取消对 <bold>{email}</bold> 的邀请吗？",
-        "success": "成功取消邀请",
+        "success": "成功取消对 {email} 的邀请",
         "title": "取消邀请"
       },
       "label": "操作"
@@ -38,7 +69,48 @@
     "label": "待处理邀请",
     "role": "角色"
   },
-  "label": "组织管理",
+  "label": "组织",
+  "localBusiness": {
+    "hasMap": {
+      "label": "地图链接",
+      "placeholder": "请输入您的 Google 地图链接"
+    },
+    "label": "商业",
+    "openingHours": {
+      "addSchedule": "新增时段",
+      "conflict": "{days}与其他时段时间重叠",
+      "days": {
+        "Fr": "五",
+        "Mo": "一",
+        "Sa": "六",
+        "Su": "日",
+        "Th": "四",
+        "Tu": "二",
+        "We": "三"
+      },
+      "label": "营业时间",
+      "missingDays": "请选择星期",
+      "missingEndTime": "请填写结束时间",
+      "missingStartTime": "请填写开始时间",
+      "nextDay": "次日",
+      "outsideOpeningHours": "{days}超出营业时间，顾客只能在营业时间内选购",
+      "reference": "营业时间：{value}",
+      "to": "至"
+    },
+    "telephone": {
+      "label": "电话",
+      "placeholder": "请输入您的电话号码"
+    }
+  },
+  "location": {
+    "actions": {
+      "updateLocation": {
+        "success": "成功更新位置信息",
+        "title": "编辑位置"
+      }
+    },
+    "label": "位置"
+  },
   "logo": "标志",
   "members": {
     "actions": {
@@ -47,17 +119,25 @@
           "label": "电子邮件",
           "placeholder": "请输入您的电子邮件"
         },
-        "success": "成功发送邀请",
+        "success": {
+          "default": "成功发送邀请至 {email}",
+          "withTeam": "成功发送邀请至 {email}，并加入 {team} 团队"
+        },
         "title": "邀请成员"
       },
       "label": "操作",
       "removeMember": {
-        "confirm": "确定要移除 <bold>{name}</bold> 吗？",
+        "confirm": "确定要移除 <bold>{email}</bold> 吗？",
         "success": "成功移除成员",
         "title": "移除成员"
       },
+      "removeTeamMember": {
+        "confirm": "确定要将 <bold>{email}</bold> 从 <bold>{team}</bold> 团队中移除吗？",
+        "success": "成功将 {email} 从 {team} 团队移除",
+        "title": "从团队移除"
+      },
       "updateMemberRole": {
-        "success": "成功更新角色",
+        "success": "成功更新成员 {email}",
         "title": "编辑成员"
       }
     },
@@ -72,14 +152,105 @@
       "member": "成员",
       "owner": "拥有者",
       "placeholder": "请选择您的角色"
+    },
+    "userId": {
+      "label": "成员",
+      "option": "{name} ({email})",
+      "placeholder": "请选择您的成员"
     }
   },
   "name": {
     "label": "组织名称",
     "placeholder": "请输入您的组织名称"
   },
+  "pickup": {
+    "actions": {
+      "updatePickup": {
+        "success": "成功更新预约设置",
+        "title": "编辑预约"
+      }
+    },
+    "days": "{days} 天",
+    "label": "预约",
+    "minutes": "{minutes} 分钟",
+    "pickupCutoffMinutes": {
+      "helperText": "打烊前这段时间不再接受该时段的预约",
+      "label": "打烊前截止时间（分钟）",
+      "placeholder": "请输入您的打烊前截止时间"
+    },
+    "pickupLeadMinutes": {
+      "helperText": "顾客下单后最快多久可以取餐",
+      "label": "最短前置时间（分钟）",
+      "placeholder": "请输入您的最短前置时间"
+    },
+    "pickupMaxAdvanceDays": {
+      "helperText": "设为 0 代表只能预约当日，最多 {days} 天",
+      "label": "最远可预约天数",
+      "placeholder": "请输入您的最远可预约天数"
+    }
+  },
+  "points": {
+    "actions": {
+      "updatePoints": {
+        "success": "成功更新点数设置",
+        "title": "编辑点数"
+      }
+    },
+    "amountPerPoint": {
+      "hint": "未设置时不启用点数",
+      "invalid": "累积 1 点所需消费金额格式无效",
+      "label": "累积 1 点所需消费金额",
+      "placeholder": "请输入您的累积 1 点所需消费金额"
+    },
+    "disabled": "未启用",
+    "label": "点数",
+    "perpetual": "永久有效",
+    "pointsValidityYears": {
+      "label": "点数效期（年）",
+      "placeholder": "请输入您的点数效期"
+    },
+    "validityYears": "{years} 年"
+  },
   "slug": {
     "label": "标识符",
     "placeholder": "请输入您的标识符"
+  },
+  "teams": {
+    "actions": {
+      "addTeamMember": {
+        "success": "成功将 {email} 新增至 {team} 团队",
+        "title": "新增团队成员"
+      },
+      "createTeam": {
+        "success": "成功新增团队 {name}",
+        "title": "新增团队"
+      },
+      "label": "操作",
+      "manageTeamMembers": {
+        "title": "管理成员"
+      },
+      "removeTeam": {
+        "confirm": "确定要删除 <bold>{name}</bold> 吗？",
+        "success": "成功删除团队 {name}",
+        "title": "删除团队"
+      },
+      "updateTeam": {
+        "success": "成功更新团队 {name}",
+        "title": "编辑团队"
+      }
+    },
+    "createdAt": "创建时间",
+    "label": "团队",
+    "members": {
+      "empty": "此团队暂无成员"
+    },
+    "name": {
+      "label": "团队名称",
+      "placeholder": "请输入您的团队名称"
+    },
+    "teamId": {
+      "label": "团队",
+      "placeholder": "请选择您的团队"
+    }
   }
 }

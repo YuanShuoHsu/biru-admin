@@ -138,7 +138,13 @@ const AuthSignIn = ({ locale, redirectTo, rememberMe }: AuthSignInProps) => {
           await authClient.organization.getActiveMemberRole({
             fetchOptions: {
               onError: async ({ error: { code } }) => {
-                await authClient.signOut();
+                const { data: session } = await authClient.getSession();
+
+                if (session) {
+                  await authClient.multiSession.revoke({
+                    sessionToken: session.session.token,
+                  });
+                }
 
                 enqueueSnackbar(getErrorMessage(code, locale), {
                   variant: "error",

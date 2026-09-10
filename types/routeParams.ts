@@ -1,13 +1,20 @@
-import type { OrderMode } from "./orderMode";
-import type { StoreSlug } from "./stores";
-
 import type { Locale } from "@/i18n/routing";
 
 interface RouteParam {
+  addOnId: string;
+  couponId: string;
+  groupId: string;
+  ingredientId: string;
+  linkId: string;
   locale: Locale;
-  mode: OrderMode;
+  menuItemId: string;
+  menuSectionId: string;
+  modifierId: string;
+  orderId: string;
+  recipeId: string;
   slug: string;
-  storeSlug: StoreSlug;
+  supplierId: string;
+  teamId: string;
   userId: string;
 }
 

@@ -3,11 +3,9 @@
 import { createContext, type ReactNode, useContext, useState } from "react";
 import { type StoreApi, useStore } from "zustand";
 
-import {
-  type AuthStore,
-  createAuthStore,
-  type Session,
-} from "@/stores/auth-store";
+import { type AuthStore, createAuthStore } from "@/stores/auth-store";
+
+import type { Session } from "@/types/auth";
 
 const AuthStoreContext = createContext<StoreApi<AuthStore> | undefined>(
   undefined,

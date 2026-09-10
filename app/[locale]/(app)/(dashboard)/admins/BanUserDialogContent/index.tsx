@@ -1,6 +1,5 @@
 "use client";
 
-import type { UserWithRole } from "better-auth/client/plugins";
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
@@ -13,28 +12,25 @@ import {
   useBanUserFormSchema,
 } from "./definitions";
 
+import FormBox from "@/components/FormBox";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { Box, type BoxProps, MenuItem, TextField, styled } from "@mui/material";
+import type { User } from "@/types/admins";
+
+import { MenuItem, TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: theme.spacing(2),
-}));
-
 interface BanUserDialogContentProps {
-  fetchListUsers: () => void;
-  user: UserWithRole;
+  mutateAdmins: () => void;
+  user: User;
 }
 
 const BanUserDialogContent = ({
-  fetchListUsers,
+  mutateAdmins,
   user,
 }: BanUserDialogContentProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
@@ -42,6 +38,7 @@ const BanUserDialogContent = ({
   const locale = useLocale();
 
   const tAdmins = useTranslations("admins");
+  const tCommon = useTranslations("common");
 
   const banUserFormSchema = useBanUserFormSchema();
 
@@ -79,14 +76,14 @@ const BanUserDialogContent = ({
 
             closeDialog();
 
-            fetchListUsers();
+            mutateAdmins();
           },
         },
       );
     })(event);
 
   return (
-    <StyledBox component="form" id="ban-user-form" onSubmit={onSubmit}>
+    <FormBox id="ban-user-form" onSubmit={onSubmit}>
       <TextField
         autoComplete="email"
         error={!!errors.email}
@@ -103,17 +100,36 @@ const BanUserDialogContent = ({
         error={!!errors.banReason}
         fullWidth
         helperText={errors.banReason?.message}
-        label={tAdmins("actions.banUser.banReason.label")}
+        label={`${tAdmins("actions.banUser.banReason.label")} ${tCommon("optional")}`}
+        maxRows={4}
         multiline
         placeholder={tAdmins("actions.banUser.banReason.placeholder")}
+        slotProps={{ htmlInput: { maxLength: 160 } }}
         {...register("banReason")}
       />
       <TextField
         error={!!errors.banExpiresIn}
         fullWidth
         helperText={errors.banExpiresIn?.message}
-        label={tAdmins("actions.banUser.banExpiresIn.label")}
+        label={`${tAdmins("actions.banUser.banExpiresIn.label")} ${tCommon("optional")}`}
         select
+        slotProps={{
+          inputLabel: { shrink: true },
+          select: {
+            displayEmpty: true,
+            renderValue: (selected) => {
+              const option = BAN_EXPIRES_OPTIONS.find(
+                ({ value }) => value === selected,
+              );
+
+              return option ? (
+                tAdmins(`actions.banUser.banExpiresIn.options.${option.label}`)
+              ) : (
+                <em>{tAdmins("actions.banUser.banExpiresIn.placeholder")}</em>
+              );
+            },
+          },
+        }}
         value={banExpiresIn}
         {...register("banExpiresIn")}
       >
@@ -126,7 +142,7 @@ const BanUserDialogContent = ({
           </MenuItem>
         ))}
       </TextField>
-    </StyledBox>
+    </FormBox>
   );
 };
 

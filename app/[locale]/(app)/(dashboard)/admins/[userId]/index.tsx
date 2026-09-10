@@ -10,6 +10,8 @@ import { flushSync } from "react-dom";
 
 import RevokeUserSessionDialogContent from "./RevokeUserSessionDialogContent";
 
+import { renderEmptyableCell } from "@/components/EmptyCell";
+
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
 import { useRouter } from "@/i18n/navigation";
@@ -185,6 +187,7 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
       {
         disableColumnMenu: true,
         field: "actions",
+        filterable: false,
         headerName: tUserSessions("actions.label"),
         renderCell: ({ row }: GridRenderCellParams<Session>) => {
           const isCurrent = row.token === currentSession?.session.token;
@@ -220,13 +223,14 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
       {
         field: "userAgent",
         headerName: tUserSessions("userAgent.label"),
+        renderCell: renderEmptyableCell,
         valueGetter: (_value: unknown, { userAgent }: Session) =>
           formatUserAgent(userAgent),
       },
       {
         field: "ipAddress",
         headerName: tUserSessions("ipAddress.label"),
-        valueFormatter: (value: string | null) => value,
+        renderCell: renderEmptyableCell,
       },
       {
         field: "createdAt",
@@ -245,7 +249,7 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
   );
 
   return (
-    <Stack gap={2}>
+    <>
       <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
         <Button
           color="error"
@@ -267,7 +271,7 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
         }
         rows={rows}
       />
-    </Stack>
+    </>
   );
 };
 

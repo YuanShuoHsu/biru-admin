@@ -2,13 +2,52 @@
   "colon": "：",
   "currency": "NT$",
   "delimiter": "、",
+  "discontinued": "已停售",
   "empty": "尚无商品",
   "from": "起",
+  "imageProcessingFailed": "图片处理失败",
   "loading": "加载中...",
+  "locales": {
+    "zh-TW": "繁体中文",
+    "en": "英文",
+    "ja": "日文",
+    "ko": "韩文",
+    "zh-CN": "简体中文"
+  },
+  "location": {
+    "empty": "尚未设置位置信息",
+    "openingHours": {
+      "Fr": "周五",
+      "Mo": "周一",
+      "Sa": "周六",
+      "Su": "周日",
+      "Th": "周四",
+      "Tu": "周二",
+      "We": "周三",
+      "allDay": "24 小时营业",
+      "nextDayTime": "次日 {time}",
+      "rangeSeparator": "～"
+    }
+  },
   "maxQuantity": "每项商品最多只能购买 {quantity} 件",
+  "middleDot": "・",
   "multiply": "×",
+  "optional": "（选填）",
+  "organization": {
+    "label": "组织",
+    "placeholder": "请选择您的组织"
+  },
+  "pagination": {
+    "labelDisplayedRows": "{from}–{to} 共 {count}",
+    "labelRowsPerPage": "每页行数:"
+  },
+  "parenthesisClose": "）",
+  "parenthesisOpen": "（",
   "reachStockLimit": "{label} 已达库存上限",
-  "soldOut": "{label} 售罄",
-  "totalAmount": "总计",
+  "selectedCount": "已选择 {checked}/{total} 笔",
+  "slash": "／",
+  "soldOut": "售罄",
+  "subtotal": "小计",
+  "total": "总计",
   "unavailable": "无法供应"
 }

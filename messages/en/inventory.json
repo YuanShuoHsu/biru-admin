@@ -1,0 +1,262 @@
+{
+  "createdAt": "Created at",
+  "ingredients": {
+    "actions": {
+      "createIngredient": {
+        "error": "Failed to create ingredient",
+        "success": "Ingredient {name} created",
+        "title": "Create ingredient"
+      },
+      "deleteIngredient": {
+        "confirm": "Are you sure you want to delete <bold>{name}</bold>? This action cannot be undone.",
+        "error": "Failed to delete ingredient",
+        "success": "Ingredient {name} deleted",
+        "title": "Delete ingredient"
+      },
+      "label": "Actions",
+      "reorderIngredient": {
+        "cancel": {
+          "confirm": "Are you sure you want to cancel <bold>ingredients</bold> reorder? Unsaved changes will be lost.",
+          "label": "Cancel Ingredients Reorder"
+        },
+        "confirm": "Are you sure you want to reorder <bold>ingredients</bold>?",
+        "save": {
+          "confirm": "Are you sure you want to save <bold>ingredients</bold> reorder?",
+          "error": "Failed to save reorder",
+          "label": "Save Ingredients Reorder",
+          "success": "Reorder saved"
+        },
+        "title": "Reorder Ingredients"
+      },
+      "updateIngredient": {
+        "error": "Failed to update ingredient",
+        "success": "Ingredient {name} updated",
+        "title": "Edit ingredient"
+      },
+      "viewTransactions": {
+        "title": "View stock movements"
+      }
+    },
+    "brand": {
+      "label": "Brand",
+      "placeholder": "Please enter your Brand"
+    },
+    "eligibleQuantity": {
+      "label": "Content",
+      "placeholder": "Please enter your content"
+    },
+    "eligibleQuantityUnitCode": {
+      "label": "Content unit",
+      "placeholder": "Please select your content unit"
+    },
+    "image": {
+      "label": "Image"
+    },
+    "inventoryLevel": {
+      "label": "Stock",
+      "placeholder": "Please enter your stock"
+    },
+    "inventoryLevelUnitText": {
+      "label": "Inventory unit",
+      "placeholder": "Please enter your inventory unit"
+    },
+    "label": "Ingredient",
+    "lowStock": "Low stock",
+    "lowStockThreshold": {
+      "label": "Low stock threshold",
+      "placeholder": "Please enter your Low stock threshold"
+    },
+    "name": {
+      "label": "Ingredient name",
+      "placeholder": "Please enter your ingredient name"
+    },
+    "note": {
+      "label": "Notes",
+      "placeholder": "Please enter your Notes"
+    },
+    "outOfStock": "Out of stock",
+    "packageRequired": "Please fill in content and unit first",
+    "price": {
+      "label": "Price",
+      "placeholder": "Please enter your price"
+    },
+    "supplierId": {
+      "label": "Supplier",
+      "placeholder": "Please select your Supplier"
+    },
+    "transactionNote": {
+      "label": "Stock change notes",
+      "placeholder": "Please enter your Stock change notes"
+    },
+    "unitPrice": {
+      "label": "Unit cost"
+    },
+    "url": {
+      "label": "Product link",
+      "placeholder": "Please enter your Product link"
+    }
+  },
+  "label": "Inventory",
+  "recipes": {
+    "actions": {
+      "createRecipe": {
+        "error": "Failed to create recipe"
+      },
+      "updateRecipe": {
+        "error": "Failed to update servings",
+        "success": "Servings updated",
+        "title": "Edit servings"
+      },
+      "viewRecipeIngredients": {
+        "title": "View recipe ingredients"
+      }
+    },
+    "cost": {
+      "label": "Total cost",
+      "unavailable": "Not available"
+    },
+    "costPerServing": {
+      "label": "Cost per serving"
+    },
+    "grossProfitPerServing": {
+      "label": "Profit per serving"
+    },
+    "ingredients": {
+      "actions": {
+        "createRecipeIngredient": {
+          "error": "Failed to create recipe ingredient",
+          "success": "Recipe ingredient created",
+          "title": "Create recipe ingredient"
+        },
+        "deleteRecipeIngredient": {
+          "confirm": "Are you sure you want to delete <bold>{name}</bold>? This action cannot be undone.",
+          "error": "Failed to delete recipe ingredient",
+          "success": "Recipe ingredient deleted",
+          "title": "Delete recipe ingredient"
+        },
+        "label": "Actions",
+        "reorderRecipeIngredient": {
+          "cancel": {
+            "confirm": "Are you sure you want to cancel <bold>recipe ingredients</bold> reorder? Unsaved changes will be lost.",
+            "label": "Cancel recipe ingredients reorder"
+          },
+          "confirm": "Are you sure you want to reorder <bold>recipe ingredients</bold>?",
+          "save": {
+            "confirm": "Are you sure you want to save <bold>recipe ingredients</bold> reorder?",
+            "error": "Failed to save reorder",
+            "label": "Save recipe ingredients reorder",
+            "success": "Reorder saved"
+          },
+          "title": "Reorder recipe ingredients"
+        },
+        "updateRecipeIngredient": {
+          "error": "Failed to update recipe ingredient",
+          "success": "Recipe ingredient updated",
+          "title": "Edit recipe ingredient"
+        }
+      },
+      "cost": {
+        "label": "Total cost"
+      },
+      "ingredientId": {
+        "label": "Ingredient",
+        "placeholder": "Please select your Ingredient"
+      },
+      "label": "Recipe ingredients",
+      "requiredQuantity": {
+        "label": "Amount",
+        "placeholder": "Please enter your Amount"
+      },
+      "unitPrice": {
+        "label": "Unit cost"
+      }
+    },
+    "label": "Recipe",
+    "margin": {
+      "label": "Margin"
+    },
+    "recipeYield": {
+      "label": "Servings",
+      "placeholder": "Please enter your Servings",
+      "unit": "servings"
+    }
+  },
+  "reorder": "Order",
+  "suppliers": {
+    "actions": {
+      "createSupplier": {
+        "error": "Failed to create supplier",
+        "success": "Supplier created",
+        "title": "Create supplier"
+      },
+      "deleteSupplier": {
+        "confirm": "Are you sure you want to delete <bold>{name}</bold>? This action cannot be undone.",
+        "error": "Failed to delete supplier",
+        "success": "Supplier deleted",
+        "title": "Delete supplier"
+      },
+      "label": "Actions",
+      "updateSupplier": {
+        "error": "Failed to update supplier",
+        "success": "Supplier updated",
+        "title": "Edit supplier"
+      }
+    },
+    "ingredients": {
+      "label": "Ingredients",
+      "placeholder": "Please select your Ingredients"
+    },
+    "label": "Supplier",
+    "name": {
+      "label": "Supplier name",
+      "placeholder": "Please enter your supplier name"
+    },
+    "note": {
+      "label": "Notes",
+      "placeholder": "Please enter your Notes"
+    },
+    "telephone": {
+      "label": "Phone",
+      "placeholder": "Please enter your Phone"
+    },
+    "url": {
+      "label": "Website",
+      "placeholder": "Please enter your Website"
+    }
+  },
+  "transactions": {
+    "balance": {
+      "label": "Stock after"
+    },
+    "label": "Stock movement",
+    "note": {
+      "label": "Notes",
+      "placeholder": "Please enter your Notes"
+    },
+    "orderNumber": {
+      "label": "Order number"
+    },
+    "quantity": {
+      "label": "Change"
+    },
+    "reason": {
+      "label": "Reason",
+      "options": {
+        "count": "Stock count",
+        "consume": "Order usage",
+        "restore": "Order refund"
+      }
+    },
+    "unitCost": {
+      "label": "Unit cost"
+    }
+  },
+  "units": {
+    "GRM": "g",
+    "H87": "pcs",
+    "KGM": "kg",
+    "LTR": "L",
+    "MLT": "ml"
+  },
+  "updatedAt": "Updated at"
+}

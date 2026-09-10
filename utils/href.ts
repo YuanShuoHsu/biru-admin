@@ -1,16 +1,12 @@
 export const getHref = (
   pathname: string,
-  params: Record<string, string | number | boolean | undefined | null>,
+  params: Record<string, string | number | boolean | undefined | null> = {},
 ) => {
-  const searchParams = new URLSearchParams();
+  const search = new URLSearchParams(
+    Object.entries(params)
+      .map(([key, value]) => [key, String(value ?? "")])
+      .filter(([, value]) => value),
+  ).toString();
 
-  Object.entries(params).forEach(([key, value]) => {
-    if (value) searchParams.set(key, String(value));
-  });
-
-  const search = searchParams.toString();
-  const query = search ? `?${search}` : "";
-  const href = `${pathname}${query}`;
-
-  return href;
+  return search ? `${pathname}?${search}` : pathname;
 };

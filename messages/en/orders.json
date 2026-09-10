@@ -1,0 +1,203 @@
+{
+  "actions": {
+    "issueInvoice": {
+      "confirm": "Are you sure you want to issue an invoice for order <bold>{orderNumber}</bold>? An issued invoice cannot be cancelled here.",
+      "success": "Invoice {invoiceNumber} issued for order {orderNumber}",
+      "title": "Issue invoice"
+    },
+    "label": "Actions",
+    "printInvoice": {
+      "reprintConfirm": "Reprint the invoice for order <bold>{orderNumber}</bold>? The original has already been printed, and a reprinted copy is not eligible for the lottery. If the original never came out of the printer, reset it to not printed first.",
+      "reprintTitle": "Print invoice copy (original already printed)",
+      "title": "Print invoice"
+    },
+    "refund": {
+      "allocatedDiscount": "Allocated discount",
+      "amount": "Refund amount",
+      "invoiceFailed": "The refund went through, but the invoice could not be processed. Handle it in the ECPay portal.",
+      "invoiceFailedWithReason": "The refund went through, but the invoice could not be processed ({reason}). Handle it in the ECPay portal.",
+      "invoiceHint": "A full refund first tries to void the invoice; if it cannot be voided (past the filing period, already credited, etc.), a credit note is issued instead.",
+      "itemsLabel": "Select the quantity to refund",
+      "loadFailed": "Could not load previous refunds. Close and try again.",
+      "manualChannel": "ECPay does not support online refunds for this payment method. This only updates the system record and the invoice — refund the customer via the ECPay portal or in person.",
+      "previewFailedWithReason": "Could not calculate the refund amount ({reason}). Adjust the quantities or close and try again.",
+      "reason": "Reason (optional)",
+      "retryBlocked": "This refund was not submitted successfully. Refunds cannot be undone — check whether the refundable quantities above have changed, then adjust the quantities to try again.",
+      "selectAtLeastOne": "Select a quantity for at least one item to refund.",
+      "success": "Refunded {amount} for order {orderNumber}",
+      "title": "Refund"
+    },
+    "resetInvoicePrint": {
+      "confirm": "Reset the invoice for order <bold>{orderNumber}</bold> to not printed? Do this only if the original never came out of the printer — after resetting, the next print produces a second prize-eligible original.",
+      "reason": {
+        "label": "Reason for resetting",
+        "placeholder": "e.g. Printer jammed, the original never came out"
+      },
+      "resetCount": "This invoice has already been reset for printing {count} times",
+      "success": "Invoice for order {orderNumber} reset to not printed",
+      "title": "Reset to not printed"
+    },
+    "updateCustomer": {
+      "success": "Customer information for order {orderNumber} updated",
+      "title": "Edit customer information"
+    },
+    "updateStatus": {
+      "confirm": {
+        "cancel": "Are you sure you want to cancel {count, plural, one {order} other {orders}} <bold>{orderNumbers}</bold>? This action cannot be undone.",
+        "default": "Are you sure you want to change {count, plural, one {order} other {orders}} <bold>{orderNumbers}</bold> to <statusText>{status}</statusText>?"
+      },
+      "success": "{count, plural, one {Order} other {Orders}} {orderNumbers} updated to \"{status}\"",
+      "title": {
+        "advance": "Set to <statusText>{status}</statusText>",
+        "cancel": "Cancel order",
+        "revert": "Back to <statusText>{status}</statusText>"
+      }
+    },
+    "viewOrder": {
+      "title": "View order details"
+    },
+    "voidInvoice": {
+      "confirm": "Void invoice <bold>{invoiceNumber}</bold>? Voiding cannot be undone. A replacement invoice is issued right away with the buyer details below. Invoices that already have a credit note, or that fall outside the filing period, cannot be voided.",
+      "customerIdentifier": {
+        "helperText": "Leave blank to keep the buyer details from the voided invoice",
+        "invalid": "The tax ID must be 8 digits",
+        "label": "Correct the tax ID"
+      },
+      "customerName": {
+        "helperText": "Leave blank to keep the name from the voided invoice",
+        "label": "Correct the buyer name"
+      },
+      "reason": {
+        "label": "Reason for voiding",
+        "placeholder": "e.g. Wrong tax ID"
+      },
+      "success": "The invoice for order {orderNumber} has been voided",
+      "title": "Void invoice"
+    }
+  },
+  "attention": {
+    "orderLabel": "Order {orderNumber}",
+    "title": "Needs attention",
+    "tooltip": "ECPay items needing attention",
+    "type": {
+      "callbackFailed": "ECPay notification failed verification or processing",
+      "invoiceOverdue": "Order is paid but the invoice has not been issued",
+      "invoiceSettlementFailed": "Refunded, but the invoice was neither voided nor credited",
+      "invoiceStuck": "Invoice stuck while issuing — check the ECPay portal",
+      "paymentProblem": "ECPay reported a payment problem",
+      "refundUnconfirmed": "Refund result unconfirmed; the quantity stays reserved"
+    }
+  },
+  "board": {
+    "empty": "No orders right now",
+    "title": "Order Board"
+  },
+  "confirmationNumber": "Order number",
+  "createdAt": "Created at",
+  "customerEmail": "Customer email",
+  "customerName": "Customer name",
+  "customerTelephone": "Customer phone",
+  "detail": {
+    "customer": {
+      "email": "Email",
+      "name": "Name",
+      "remark": "Remark",
+      "telephone": "Telephone",
+      "title": "Customer"
+    },
+    "discount": "Discount",
+    "invoice": {
+      "invoiceDate": "Issued at",
+      "invoiceNumber": "Invoice number",
+      "printedAt": "Original printed at",
+      "status": "Status",
+      "title": "Invoice",
+      "verification": {
+        "invalidated": "Voided on ECPay",
+        "invoiceDate": "Issue date on ECPay",
+        "invoiceNumber": "Invoice number on ECPay",
+        "label": "Verify with ECPay",
+        "matched": "ECPay matches this system",
+        "mismatched": "ECPay does not match this system — check manually",
+        "notUploaded": "Not yet uploaded to the tax authority",
+        "salesAmount": "Amount on ECPay",
+        "uploaded": "Uploaded to the tax authority"
+      }
+    },
+    "items": {
+      "title": "Order summary"
+    },
+    "notifications": {
+      "endpoint": {
+        "query": "Verified with ECPay",
+        "result": "Customer redirect notice",
+        "return": "ECPay payment notice"
+      },
+      "failed": "Signature check failed",
+      "handled": "Order updated",
+      "title": "Payment notifications",
+      "unhandled": "Order not updated"
+    },
+    "refunds": {
+      "allowanceNo": "Credit note number",
+      "channel": {
+        "ecpay": "Refunded via ECPay",
+        "manual": "Refunded manually"
+      },
+      "invoiceAction": {
+        "allowance": "Credit note issued",
+        "failed": "Invoice failed",
+        "none": "No invoice",
+        "pending": "Invoice pending",
+        "voided": "Invoice voided"
+      },
+      "invoiceError": "Invoice error",
+      "reason": "Reason",
+      "scope": {
+        "full": "Full refund",
+        "partial": "Partial refund"
+      },
+      "status": {
+        "pending": "Refund result unconfirmed",
+        "refunded": "Refunded, follow-up in progress",
+        "settled": "Completed",
+        "settling": "Follow-up in progress"
+      },
+      "title": "Refunds"
+    },
+    "total": "Total",
+    "transaction": {
+      "title": "Transaction"
+    }
+  },
+  "invoiceStatus": "Invoice status",
+  "invoiceStatusValue": {
+    "issued": "Issued",
+    "issuing": "Issuing",
+    "pending": "Not issued",
+    "voided": "Voided"
+  },
+  "invoiceType": "Invoice type",
+  "label": "Orders",
+  "list": {
+    "label": "Order List"
+  },
+  "mode": "Order mode",
+  "orderNumber": "Pickup number",
+  "orderStatus": "Order status",
+  "partySize": "Party size",
+  "paymentDate": "Payment date",
+  "paymentMethod": "Payment method",
+  "pickupTime": "Pickup time",
+  "status": {
+    "OrderCancelled": "Cancelled",
+    "OrderDelivered": "Delivered",
+    "OrderPaymentDue": "Payment due",
+    "OrderPickupAvailable": "Ready for pickup",
+    "OrderProblem": "Problem",
+    "OrderProcessing": "Processing",
+    "OrderReturned": "Refunded"
+  },
+  "tableNumber": "Table",
+  "total": "Amount"
+}

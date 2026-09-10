@@ -81,6 +81,10 @@
       "title": "Unban user"
     },
     "updateUser": {
+      "bio": {
+        "label": "Bio",
+        "placeholder": "Please enter your bio"
+      },
       "firstName": {
         "label": "First name",
         "placeholder": "Please enter your first name"
@@ -89,7 +93,7 @@
         "label": "Last name",
         "placeholder": "Please enter your last name"
       },
-      "success": "User updated",
+      "success": "{email} updated",
       "title": "Edit user"
     }
   },
@@ -130,8 +134,9 @@
     "subscribed": "Subscribed",
     "unsubscribed": "Unsubscribed"
   },
+  "bio": "Bio",
   "image": "Avatar",
-  "label": "User Management",
+  "label": "Users",
   "name": "Name",
   "role": {
     "admin": "Admin",

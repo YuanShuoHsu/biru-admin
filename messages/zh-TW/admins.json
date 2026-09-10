@@ -81,6 +81,10 @@
       "title": "解除封鎖"
     },
     "updateUser": {
+      "bio": {
+        "label": "個人簡介",
+        "placeholder": "請輸入您的個人簡介"
+      },
       "firstName": {
         "label": "名字",
         "placeholder": "請輸入您的名字"
@@ -89,7 +93,7 @@
         "label": "姓氏",
         "placeholder": "請輸入您的姓氏"
       },
-      "success": "使用者資料已更新",
+      "success": "{email} 的資料已更新",
       "title": "編輯使用者"
     }
   },
@@ -130,8 +134,9 @@
     "subscribed": "已訂閱",
     "unsubscribed": "未訂閱"
   },
+  "bio": "個人簡介",
   "image": "頭像",
-  "label": "使用者管理",
+  "label": "使用者",
   "name": "姓名",
   "role": {
     "admin": "管理員",

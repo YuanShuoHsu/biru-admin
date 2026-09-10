@@ -1,4 +1,5 @@
-import { setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import AuthVerifyEmail from ".";
@@ -13,6 +14,15 @@ interface AuthVerifyEmailPageProps {
     token?: string;
   }>;
 }
+
+export const generateMetadata = async ({
+  params,
+}: AuthVerifyEmailPageProps): Promise<Metadata> => {
+  const { locale } = await params;
+  const t = await getTranslations({ locale });
+
+  return { title: t("auth.verifyEmail.label") };
+};
 
 const AuthVerifyEmailPage = async ({
   params,

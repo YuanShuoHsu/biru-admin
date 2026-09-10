@@ -1,0 +1,158 @@
+{
+  "actions": {
+    "createCoupon": {
+      "error": "クーポンの追加に失敗しました",
+      "success": "クーポン {code} を追加しました",
+      "title": "クーポンを追加"
+    },
+    "deleteCoupon": {
+      "confirm": "クーポン <bold>{code}</bold> を削除してもよろしいですか？この操作は元に戻せません。",
+      "error": "クーポンの削除に失敗しました",
+      "success": "クーポン {code} を削除しました",
+      "title": "クーポンを削除"
+    },
+    "grantCoupon": {
+      "email": {
+        "hint": "発行後、会員のクーポンウォレットに表示されます",
+        "invalid": "会員メールアドレスが無効です",
+        "label": "会員メールアドレス",
+        "placeholder": "会員メールアドレスを入力してください"
+      },
+      "error": "クーポンの発行に失敗しました",
+      "success": "クーポン {code} を {email} に発行しました",
+      "title": "クーポンを発行"
+    },
+    "label": "操作",
+    "updateCoupon": {
+      "error": "クーポンの更新に失敗しました",
+      "success": "クーポン {code} を更新しました",
+      "title": "クーポンを編集"
+    }
+  },
+  "applicableOrganizationIds": {
+    "itemHint": "指定商品クーポンは単一店舗のみに適用されます",
+    "label": "対象店舗",
+    "notSelected": "対象店舗を選択してください",
+    "placeholder": "対象店舗を選択"
+  },
+  "code": {
+    "label": "クーポンコード",
+    "placeholder": "クーポンコードを入力してください",
+    "required": "クーポンコードは必須です"
+  },
+  "createdAt": "作成日時",
+  "discount": "割引",
+  "discountType": {
+    "fixed": "固定金額",
+    "label": "割引タイプ",
+    "percentage": "パーセント"
+  },
+  "discountValue": {
+    "invalid": "割引値が無効です",
+    "label": "割引値",
+    "placeholder": "割引値を入力してください",
+    "required": "割引値は必須です"
+  },
+  "distribution": "取得方法",
+  "isActive": {
+    "active": "有効",
+    "helperText": "無効にすると、いかなる方法でも使用できません",
+    "inactive": "無効",
+    "label": "有効"
+  },
+  "isClaimable": {
+    "helperText": "会員はクーポンページからマイクーポンに受け取れます",
+    "label": "受け取り可能"
+  },
+  "isPublic": {
+    "exclusiveHint": "毎人の使用回数上限が設定されているため、会員限定となり公開できません",
+    "helperText": "チェックアウトページに自動表示されます。非公開でもコード入力で使用できます",
+    "label": "公開"
+  },
+  "issueMinSpend": {
+    "label": "利用金額の条件",
+    "placeholder": "利用金額の条件を入力してください",
+    "required": "利用金額の条件は必須です"
+  },
+  "issueTrigger": {
+    "birthday": "バースデークーポン",
+    "hint": {
+      "birthday": "会員の誕生月に自動的に1枚発行されます",
+      "none": "自動発行しません",
+      "signup": "新規会員に自動的に1枚発行されます",
+      "spend": "1回の注文が条件金額に達すると自動的に発行されます"
+    },
+    "label": "自動発行",
+    "none": "なし",
+    "signup": "新規登録特典",
+    "spend": "利用金額特典"
+  },
+  "label": "クーポン",
+  "menuItemIds": {
+    "label": "適用商品",
+    "placeholder": "適用商品を選択してください"
+  },
+  "menuSectionIds": {
+    "label": "適用カテゴリ",
+    "placeholder": "適用カテゴリを選択してください"
+  },
+  "minSubtotal": {
+    "label": "最低注文金額",
+    "placeholder": "最低注文金額を入力してください"
+  },
+  "organizationScope": {
+    "all": "全店舗",
+    "exclusive": "自店舗専用",
+    "label": "対象店舗",
+    "shared": "複数店舗共通"
+  },
+  "perUserLimit": {
+    "hint": "設定すると会員限定になります",
+    "label": "1人あたりの利用回数上限",
+    "placeholder": "1人あたりの利用回数上限を入力してください"
+  },
+  "pointsCost": {
+    "exclusiveHint": "ポイント交換クーポンはポイントでのみ取得でき、受け取り・公開・自動配布の対象外です",
+    "hint": "会員はポイントページからポイントでマイクーポンに交換できます",
+    "label": "交換に必要なポイント",
+    "placeholder": "交換に必要なポイントを入力してください"
+  },
+  "recipients": {
+    "grantedBy": "配布者",
+    "label": "保有履歴",
+    "receivedAt": "取得日時",
+    "recipient": "保有会員",
+    "source": "取得方法",
+    "status": "状態",
+    "unknownGranter": "アカウント削除済み",
+    "unused": "未使用",
+    "used": "使用済み"
+  },
+  "scope": {
+    "item": "指定商品",
+    "itemHint": "適用カテゴリまたは適用商品を少なくとも1つ選択してください",
+    "label": "適用範囲",
+    "order": "注文全体"
+  },
+  "source": {
+    "birthday": "誕生日特典",
+    "claimed": "会員が取得",
+    "granted": "管理画面から配布",
+    "redeemed": "ポイント交換",
+    "signup": "登録特典",
+    "spend": "購入特典"
+  },
+  "totalLimit": {
+    "label": "合計利用回数上限",
+    "placeholder": "合計利用回数上限を入力してください"
+  },
+  "unlimited": "無制限",
+  "usage": "利用回数",
+  "validFrom": {
+    "label": "開始日時"
+  },
+  "validUntil": {
+    "label": "終了日時"
+  },
+  "validity": "有効期間"
+}

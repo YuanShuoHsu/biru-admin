@@ -1,4 +1,5 @@
-import { setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import AuthSignUp from ".";
 
@@ -8,6 +9,15 @@ interface AuthSignUpPageProps {
   params: Promise<{ locale: Locale }>;
   searchParams: Promise<{ redirectTo?: string }>;
 }
+
+export const generateMetadata = async ({
+  params,
+}: AuthSignUpPageProps): Promise<Metadata> => {
+  const { locale } = await params;
+  const t = await getTranslations({ locale });
+
+  return { title: t("auth.signUp.label") };
+};
 
 const AuthSignUpPage = async ({
   params,

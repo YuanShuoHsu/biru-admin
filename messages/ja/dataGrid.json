@@ -12,10 +12,42 @@
       "label": "エクスポート",
       "print": "印刷"
     },
+    "filter": {
+      "operator": {
+        "after": "より後",
+        "before": "より前",
+        "contains": "を含む",
+        "doesNotContain": "を含まない",
+        "doesNotEqual": "と等しくない",
+        "endsWith": "で終わる",
+        "equals": "と等しい",
+        "is": "と等しい",
+        "isAnyOf": "次のいずれか",
+        "isEmpty": "空である",
+        "isNotEmpty": "空でない",
+        "not": "と等しくない",
+        "onOrAfter": "以降",
+        "onOrBefore": "以前",
+        "startsWith": "で始まる"
+      },
+      "value": {
+        "any": "いずれか",
+        "false": "偽",
+        "true": "真"
+      }
+    },
     "filters": "フィルター",
     "search": {
       "clear": "検索をクリア",
+      "field": "検索フィールド",
+      "fieldPlaceholder": "あなたの検索フィールドを選択してください",
       "label": "検索",
+      "operator": {
+        "contains": "を含む",
+        "endsWith": "で終わる",
+        "label": "検索方法",
+        "startsWith": "で始まる"
+      },
       "placeholder": "あなたの検索キーワードを入力してください"
     }
   }

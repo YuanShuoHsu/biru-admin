@@ -4,5 +4,6 @@
   "cancel": "取消",
   "close": "关闭",
   "confirm": "确认",
-  "maxStock": "{label} 库存仅剩 {quantity} 件"
+  "maxStock": "{label} 库存仅剩 {quantity} 件",
+  "updateCart": "更新购物车"
 }

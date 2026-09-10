@@ -1,25 +1,185 @@
 {
-  "label": "주문",
-  "mode": {
-    "dineIn": {
-      "label": "매장 식사",
-      "storeSlug": {
-        "tableNumber": {
-          "value": "테이블 {tableNumber}",
-          "partySize": {
-            "select": {
-              "label": "인원을 선택하세요",
-              "value": "{count} 명"
-            }
-          }
-        }
+  "cart": {
+    "back": "메뉴로 돌아가기",
+    "next": "결제하기",
+    "quantityExceedsStock": "{label} {stock} 개 남음",
+    "title": "장바구니",
+    "totalQuantity": "총 {quantity} 개",
+    "view": "장바구니 보기"
+  },
+  "checkout": {
+    "back": "장바구니로 돌아가기",
+    "coupon": {
+      "available": "사용 가능한 쿠폰",
+      "discount": "할인",
+      "label": "쿠폰 코드",
+      "minSubtotal": "{amount} 이상 사용 가능",
+      "placeholder": "귀하의 쿠폰 코드를 입력해 주세요",
+      "wallet": "내 쿠폰"
+    },
+    "customer": {
+      "countryCode": {
+        "label": "국가 코드",
+        "placeholder": "국가 코드를 선택해 주세요"
+      },
+      "email": {
+        "label": "이메일",
+        "placeholder": "귀하의 이메일을 입력해 주세요"
+      },
+      "name": {
+        "label": "이름",
+        "placeholder": "귀하의 이름을 입력해 주세요"
+      },
+      "remark": {
+        "label": "메모",
+        "placeholder": "귀하의 메모를 입력해 주세요"
+      },
+      "telephone": {
+        "label": "전화번호"
       }
     },
+    "invoice": {
+      "carrierNum": "캐리어 번호",
+      "carrierType": {
+        "label": "영수증 수령 방법",
+        "placeholder": "귀하의 영수증 수령 방법을 선택해 주세요"
+      },
+      "certificate": "자연인 인증서",
+      "company": "사업자 영수증",
+      "customerAddr": "회사 주소",
+      "customerIdentifier": "사업자 번호",
+      "customerName": "회사명",
+      "donate": "기부 영수증",
+      "donateCode": {
+        "label": "러브코드",
+        "placeholder": "귀하의 러브코드를 선택해 주세요"
+      },
+      "individual": "ECPay 캐리어",
+      "mobile": "모바일 바코드",
+      "none": "종이 영수증",
+      "personal": "개인 영수증",
+      "title": "영수증 유형"
+    },
+    "payment": {
+      "ApplePay": "Apple Pay",
+      "Cash": "현금",
+      "Credit": "신용카드",
+      "iPASS": "iPASS MONEY",
+      "Jkopay": "JKO Pay",
+      "pickupUnavailable": "온라인 픽업은 이용할 수 없습니다",
+      "TWQR": "모바일 결제",
+      "WeiXin": "위챗페이"
+    },
+    "paymentMethod": "결제 방법",
+    "pickupTime": {
+      "label": "픽업 시간"
+    },
+    "placeOrder": "주문하기",
+    "title": "고객 정보",
+    "tradeDesc": "식사 결제"
+  },
+  "complete": {
+    "backToMenu": "계속 주문하기",
+    "copied": "주문 번호가 복사되었습니다",
+    "error": {
+      "subtitle": "결제가 완료되지 않았습니다. 다시 시도하시거나 직원에게 문의해 주세요.",
+      "title": "결제 실패"
+    },
+    "pickupLocation": "픽업 장소",
+    "pickupNumber": "픽업 번호",
+    "success": {
+      "subtitle": "주문이 접수되어 준비 중입니다",
+      "title": "결제 완료"
+    },
+    "summary": {
+      "discount": "할인",
+      "title": "주문 내역",
+      "total": "합계"
+    },
+    "transaction": {
+      "amount": "결제 금액",
+      "mode": "주문 방식",
+      "orderNo": "주문 번호",
+      "paid": "결제 완료",
+      "paymentDate": "결제 시간",
+      "paymentMethod": "결제 수단",
+      "pickupTime": "픽업 시간",
+      "status": "거래 상태",
+      "title": "거래 정보",
+      "tradeNo": "ECPay 거래 번호",
+      "unpaid": "결제 대기"
+    },
+    "invoice": {
+      "copied": "영수증 번호가 복사되었습니다",
+      "invoiceDate": "발행 시간",
+      "invoiceNumber": "영수증 번호",
+      "status": {
+        "issued": "발행 완료",
+        "issuing": "발행 중",
+        "label": "발행 상태",
+        "pending": "발행 대기",
+        "voided": "무효 처리됨"
+      },
+      "title": "영수증 정보"
+    },
+    "pending": {
+      "retry": "다시 결제하기",
+      "subtitle": "주문은 생성되었지만 결제가 확인되지 않았습니다. 이미 결제하셨다면 잠시 후 이 페이지가 자동으로 갱신됩니다. 아직이라면 직원에게 문의해 주세요.",
+      "title": "결제가 완료되지 않았습니다"
+    }
+  },
+  "label": "주문",
+  "menuItem": {
+    "addOn": "추가 옵션",
+    "availableHours": "제공 시간 {value}",
+    "calories": "{value} kcal",
+    "diet": {
+      "DiabeticDiet": "당뇨병식",
+      "GlutenFreeDiet": "글루텐프리",
+      "HalalDiet": "할랄",
+      "HinduDiet": "힌두교식",
+      "KosherDiet": "코셔",
+      "LowCalorieDiet": "저칼로리",
+      "LowFatDiet": "저지방",
+      "LowLactoseDiet": "저유당",
+      "LowSaltDiet": "저염",
+      "VeganDiet": "비건",
+      "VegetarianDiet": "채식"
+    },
+    "outsideAvailableHours": "제공 시간 외",
+    "preparationTime": "준비 시간 약 {value}분",
+    "promoUntil": "{date}까지",
+    "selectAtLeast": "최소 {count}개를 선택해 주세요",
+    "selectUpTo": "최대 {count}개까지 선택 가능합니다",
+    "stockLeft": "남은 수량 {stock}"
+  },
+  "mode": {
+    "counter": {
+      "label": "매장 포장",
+      "unavailable": "매장 포장 미제공"
+    },
+    "dineIn": {
+      "label": "매장 식사",
+      "partySize": {
+        "select": {
+          "label": "인원",
+          "placeholder": "귀하의 인원을 선택해 주세요",
+          "value": "{count} 명"
+        }
+      },
+      "tableNumber": {
+        "label": "테이블",
+        "value": "테이블 {tableNumber}"
+      },
+      "unavailable": "매장 식사 미제공"
+    },
+    "driveThru": {
+      "label": "냥스루",
+      "unavailable": "냥스루 미제공"
+    },
     "pickup": {
-      "label": "포장 수령",
-      "select": {
-        "label": "지점 선택"
-      }
+      "label": "온라인 픽업",
+      "unavailable": "온라인 픽업 미제공"
     },
     "storeSlug": {
       "selectTable": "테이블 선택",
@@ -27,9 +187,13 @@
         "latest": "신상품",
         "new": "신상품",
         "search": {
+          "noResults": "일치하는 메뉴가 없습니다",
           "placeholder": "귀하의 메뉴명을 입력해 주세요"
         },
         "stepper": {
+          "cart": {
+            "label": "장바구니"
+          },
           "checkout": {
             "label": "결제"
           },
@@ -40,6 +204,13 @@
         "top": "TOP",
         "topSold": "인기 상품"
       }
+    }
+  },
+  "organizationSlug": {
+    "label": "지점",
+    "select": {
+      "label": "지점 선택",
+      "placeholder": "귀하의 지점을 선택해 주세요"
     }
   }
 }

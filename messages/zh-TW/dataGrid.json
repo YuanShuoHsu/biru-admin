@@ -12,10 +12,42 @@
       "label": "匯出",
       "print": "列印"
     },
+    "filter": {
+      "operator": {
+        "after": "晚於",
+        "before": "早於",
+        "contains": "包含",
+        "doesNotContain": "不包含",
+        "doesNotEqual": "不等於",
+        "endsWith": "結尾為",
+        "equals": "等於",
+        "is": "等於",
+        "isAnyOf": "等於任一",
+        "isEmpty": "為空",
+        "isNotEmpty": "不為空",
+        "not": "不等於",
+        "onOrAfter": "等於或晚於",
+        "onOrBefore": "等於或早於",
+        "startsWith": "開頭為"
+      },
+      "value": {
+        "any": "任何值",
+        "false": "假",
+        "true": "真"
+      }
+    },
     "filters": "篩選器",
     "search": {
       "clear": "清除搜尋",
+      "field": "搜尋欄位",
+      "fieldPlaceholder": "請選擇您的搜尋欄位",
       "label": "搜尋",
+      "operator": {
+        "contains": "包含",
+        "endsWith": "結尾為",
+        "label": "搜尋方式",
+        "startsWith": "開頭為"
+      },
       "placeholder": "請輸入您的搜尋內容"
     }
   }

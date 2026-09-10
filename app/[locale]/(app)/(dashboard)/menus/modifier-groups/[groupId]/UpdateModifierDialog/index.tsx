@@ -1,0 +1,197 @@
+"use client";
+
+import { useLocale, useTranslations } from "next-intl";
+import { enqueueSnackbar } from "notistack";
+import { type BaseSyntheticEvent } from "react";
+import { useForm, useWatch } from "react-hook-form";
+
+import {
+  type UpdateModifierForm,
+  useUpdateModifierFormSchema,
+} from "./definitions";
+
+import CheckboxesGroup from "@/components/CheckboxesGroup";
+import FormBox from "@/components/FormBox";
+import LocalizedTextFields from "@/components/LocalizedTextFields";
+import NumberSpinner from "@/components/NumberSpinner";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import { MenuItem, TextField } from "@mui/material";
+
+import { useDialogStore } from "@/providers/dialog-store-provider";
+
+import { itemAvailabilityValues, orderModeValues } from "@/types/api";
+import type { Modifier } from "@/types/menus";
+import type { ApiOrderMode } from "@/types/orderMode";
+
+import { fetcher } from "@/utils/fetcher";
+import { localize } from "@/utils/locale";
+
+interface UpdateModifierDialogProps {
+  canWrite: boolean;
+  modifier: Modifier;
+  mutate: () => void;
+}
+
+const UpdateModifierDialog = ({
+  canWrite,
+  modifier,
+  mutate,
+}: UpdateModifierDialogProps) => {
+  const { closeDialog, setDialog } = useDialogStore((state) => state);
+
+  const locale = useLocale();
+  const tCommon = useTranslations("common");
+  const tMenus = useTranslations("menus");
+  const tOrder = useTranslations("order");
+
+  const updateModifierFormSchema = useUpdateModifierFormSchema();
+  const {
+    control,
+    formState: { errors },
+    handleSubmit,
+    register,
+    setValue,
+  } = useForm<UpdateModifierForm>({
+    defaultValues: {
+      displayName: modifier.displayName ?? {},
+      priceAdjustment: modifier.priceAdjustment ?? "",
+      availability: modifier.availability ?? "InStock",
+      availableModes: modifier.availableModes,
+    },
+    resolver: zodResolver(updateModifierFormSchema),
+  });
+
+  const displayNameValue = useWatch({ control, name: "displayName" });
+  const priceAdjustment = useWatch({ control, name: "priceAdjustment" });
+  const availableModes = useWatch({ control, name: "availableModes" });
+
+  const onSubmitHandler = async ({
+    displayName,
+    priceAdjustment,
+    availability,
+    availableModes,
+  }: UpdateModifierForm) => {
+    try {
+      setDialog({ confirmLoading: true });
+
+      // 只有 itemAvailability 權限時打窄端點，整包 PATCH 會被後端的 menu:update 擋掉
+      await fetcher<Modifier>(
+        canWrite
+          ? `/api/modifiers/${modifier.id}`
+          : `/api/modifiers/${modifier.id}/availability`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(
+            canWrite
+              ? {
+                  displayName,
+                  priceAdjustment: priceAdjustment?.trim()
+                    ? priceAdjustment
+                    : null,
+                  ...(availability && { availability }),
+                  availableModes,
+                }
+              : { availability },
+          ),
+        },
+      );
+
+      enqueueSnackbar(
+        tMenus("modifiers.actions.updateModifier.success", {
+          name: localize(displayName, locale),
+        }),
+        { variant: "success" },
+      );
+
+      closeDialog();
+
+      mutate();
+    } catch {
+      enqueueSnackbar(tMenus("modifiers.actions.updateModifier.error"), {
+        variant: "error",
+      });
+
+      setDialog({ confirmLoading: false });
+    }
+  };
+
+  const onSubmit = (event: BaseSyntheticEvent) =>
+    handleSubmit(onSubmitHandler)(event);
+
+  return (
+    <FormBox id="update-modifier-form" onSubmit={onSubmit}>
+      <LocalizedTextFields
+        fields={(lang) => [
+          {
+            disabled: !canWrite,
+            error: !!errors.displayName?.[lang],
+            fullWidth: true,
+            helperText: errors.displayName?.[lang]?.message,
+            label: tMenus("modifiers.displayName.label"),
+            onChange: (event) =>
+              setValue("displayName", {
+                ...displayNameValue,
+                [lang]: event.target.value,
+              }),
+            placeholder: tMenus("modifiers.displayName.placeholder"),
+            required: true,
+            value: displayNameValue?.[lang] || "",
+          },
+        ]}
+      />
+      <NumberSpinner
+        clearable
+        disabled={!canWrite}
+        error={!!errors.priceAdjustment}
+        fullWidth
+        helperText={errors.priceAdjustment?.message}
+        label={`${tMenus("modifiers.priceAdjustment.label")} ${tCommon("optional")}`}
+        min={0}
+        placeholder={tMenus("modifiers.priceAdjustment.placeholder")}
+        step={1}
+        value={priceAdjustment ? Number(priceAdjustment) : null}
+        onValueChange={(value) =>
+          setValue("priceAdjustment", value != null ? String(value) : "")
+        }
+      />
+      <TextField
+        error={!!errors.availability}
+        fullWidth
+        label={tMenus("availability.label")}
+        select
+        {...register("availability")}
+        defaultValue={modifier.availability ?? "InStock"}
+      >
+        {itemAvailabilityValues.map((value) => (
+          <MenuItem key={value} value={value}>
+            {tMenus(`availability.options.${value}`)}
+          </MenuItem>
+        ))}
+      </TextField>
+      <CheckboxesGroup
+        disabled={!canWrite}
+        error={!!errors.availableModes}
+        fullWidth
+        helperText={
+          errors.availableModes?.message || tMenus("availableModes.helperText")
+        }
+        label={tMenus("availableModes.label")}
+        onChange={(event, value) =>
+          setValue("availableModes", value as ApiOrderMode[])
+        }
+        options={orderModeValues.map((value) => ({
+          children: null,
+          label: tOrder(`mode.${value}.label`),
+          value,
+        }))}
+        required
+        value={availableModes}
+      />
+    </FormBox>
+  );
+};
+
+export default UpdateModifierDialog;

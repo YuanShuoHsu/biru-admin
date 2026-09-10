@@ -1,13 +1,12 @@
-import { type CountryCode, getExampleNumber } from "libphonenumber-js";
+import {
+  type CountryCode,
+  getExampleNumber,
+  parsePhoneNumberFromString,
+} from "libphonenumber-js";
 import examples from "libphonenumber-js/mobile/examples";
 
-import {
-  COUNTRY_OPTIONS,
-  DEFAULT_COUNTRY,
-  DEFAULT_NATIONAL_MASK,
-  DEFAULT_NATIONAL_PLACEHOLDER,
-} from "@/constants/countries";
-import { locales } from "@/constants/locale";
+import { countries } from "@/constants/countries";
+import { localeConfigs } from "@/constants/locale";
 
 import type { Locale } from "@/i18n/routing";
 
@@ -16,22 +15,30 @@ import type { CountryType } from "@/types/countries";
 export const formatPhone = (phone: CountryType["phone"]) => `+${phone}`;
 
 export const getDefaultCountry = (locale: Locale) => {
-  const countryCode = locales[locale].countryCode;
+  const countryCode = localeConfigs[locale].countryCode;
 
-  return (
-    COUNTRY_OPTIONS.find(({ code }) => code === countryCode) || DEFAULT_COUNTRY
-  );
+  return countries.find(({ code }) => code === countryCode);
 };
 
-export const getPhoneFormatting = (countryCode: CountryCode) => {
-  const exampleNumber = getExampleNumber(countryCode, examples);
+export const getPhoneDefaults = (
+  phoneNumber: string | null | undefined,
+  locale: Locale,
+) => {
+  const parsed = phoneNumber
+    ? parsePhoneNumberFromString(phoneNumber)
+    : undefined;
 
-  if (!exampleNumber) {
-    return {
-      mask: DEFAULT_NATIONAL_MASK,
-      placeholder: DEFAULT_NATIONAL_PLACEHOLDER,
-    };
-  }
+  return {
+    countryCode: parsed?.country || localeConfigs[locale].countryCode,
+    telephone: parsed?.formatNational() || "",
+  };
+};
+
+export const getPhoneFormatting = (countryCode?: string) => {
+  if (!countryCode) return { mask: "0000000000", placeholder: "0123456789" };
+
+  const exampleNumber = getExampleNumber(countryCode as CountryCode, examples);
+  if (!exampleNumber) return { mask: "0000000000", placeholder: "0123456789" };
 
   const nationalFormat = exampleNumber.formatNational();
 

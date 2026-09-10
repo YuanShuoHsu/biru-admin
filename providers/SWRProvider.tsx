@@ -21,8 +21,7 @@ const SWRProvider = ({ children, fallback }: SWRProviderProps) => {
       value={{
         fallback,
         fetcher,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        onError: (error, key) => {
+        onError: (error) => {
           if (error.status !== 403 && error.status !== 404) {
             enqueueSnackbar(getErrorMessage(error), {
               variant: "error",

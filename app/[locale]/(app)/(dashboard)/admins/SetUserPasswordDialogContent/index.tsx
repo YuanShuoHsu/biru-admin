@@ -1,6 +1,5 @@
 "use client";
 
-import type { UserWithRole } from "better-auth/client/plugins";
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent, useState } from "react";
@@ -11,6 +10,7 @@ import {
   useSetUserPasswordFormSchema,
 } from "./definitions";
 
+import FormBox from "@/components/FormBox";
 import PasswordRuleList from "@/components/PasswordRuleList";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,15 +19,10 @@ import { usePasswordValidation } from "@/hooks/usePasswordValidation";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
+import type { User } from "@/types/admins";
+
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import {
-  Box,
-  type BoxProps,
-  IconButton,
-  InputAdornment,
-  TextField,
-  styled,
-} from "@mui/material";
+import { IconButton, InputAdornment, TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -36,15 +31,8 @@ import {
   handleMouseUpPassword,
 } from "@/utils/password";
 
-const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: theme.spacing(2),
-}));
-
 interface SetUserPasswordDialogContentProps {
-  user: UserWithRole;
+  user: User;
 }
 
 const SetUserPasswordDialogContent = ({
@@ -113,7 +101,7 @@ const SetUserPasswordDialogContent = ({
     })(event);
 
   return (
-    <StyledBox component="form" id="set-user-password-form" onSubmit={onSubmit}>
+    <FormBox id="set-user-password-form" onSubmit={onSubmit}>
       <TextField
         autoComplete="email"
         error={!!errors.email}
@@ -209,7 +197,7 @@ const SetUserPasswordDialogContent = ({
         type={showPassword.confirmPassword ? "text" : "password"}
         {...register("confirmPassword")}
       />
-    </StyledBox>
+    </FormBox>
   );
 };
 

@@ -1,13 +1,13 @@
 import { createStore } from "zustand/vanilla";
 
 type UploadAvatarState = {
-  avatarSrcs: Record<string, string | undefined>;
+  avatarSrcs: Record<string, string | null | undefined>;
 };
 
 type UploadAvatarActions = {
   resetUploadAvatar: () => void;
   resetAvatarSrc: (key: string) => void;
-  setAvatarSrc: (key: string, src?: string) => void;
+  setAvatarSrc: (key: string, src?: string | null) => void;
 };
 
 export type UploadAvatarStore = UploadAvatarState & UploadAvatarActions;

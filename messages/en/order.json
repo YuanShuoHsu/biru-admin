@@ -1,35 +1,199 @@
 {
-  "label": "Order",
-  "mode": {
-    "dineIn": {
-      "label": "Dine-in",
-      "storeSlug": {
-        "tableNumber": {
-          "value": "Table {tableNumber}",
-          "partySize": {
-            "select": {
-              "label": "Select party size",
-              "value": "{count} people"
-            }
-          }
-        }
+  "cart": {
+    "back": "Back to menu",
+    "next": "Proceed to checkout",
+    "quantityExceedsStock": "{label} {stock} left",
+    "title": "Shopping cart",
+    "totalQuantity": "{quantity} items",
+    "view": "View cart"
+  },
+  "checkout": {
+    "back": "Back to cart",
+    "coupon": {
+      "available": "Available coupons",
+      "discount": "Discount",
+      "label": "Promo code",
+      "minSubtotal": "Min. spend {amount}",
+      "placeholder": "Please enter your promo code",
+      "wallet": "My coupon"
+    },
+    "customer": {
+      "countryCode": {
+        "label": "Country code",
+        "placeholder": "Please select your country code"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "Please enter your email"
+      },
+      "name": {
+        "label": "Name",
+        "placeholder": "Please enter your name"
+      },
+      "remark": {
+        "label": "Notes",
+        "placeholder": "Please enter your notes"
+      },
+      "telephone": {
+        "label": "Phone"
       }
     },
+    "invoice": {
+      "carrierNum": "Carrier number",
+      "carrierType": {
+        "label": "Invoice method",
+        "placeholder": "Please select your invoice method"
+      },
+      "certificate": "Natural person certificate",
+      "company": "Company invoice",
+      "customerAddr": "Company address",
+      "customerIdentifier": "Business ID number",
+      "customerName": "Company name",
+      "donate": "Donate invoice",
+      "donateCode": {
+        "label": "Love code",
+        "placeholder": "Please select your love code"
+      },
+      "individual": "ECPay carrier",
+      "mobile": "Mobile barcode",
+      "none": "Paper invoice",
+      "personal": "Personal invoice",
+      "title": "Invoice type"
+    },
+    "payment": {
+      "ApplePay": "Apple Pay",
+      "Cash": "Cash",
+      "Credit": "Credit Card",
+      "iPASS": "iPASS MONEY",
+      "Jkopay": "JKO Pay",
+      "pickupUnavailable": "Not available for online pickup",
+      "TWQR": "Mobile Payment",
+      "WeiXin": "WeChat Pay"
+    },
+    "paymentMethod": "Payment method",
+    "pickupTime": {
+      "label": "Pickup time"
+    },
+    "placeOrder": "Place order",
+    "title": "Customer info",
+    "tradeDesc": "Meal payment"
+  },
+  "complete": {
+    "backToMenu": "Order again",
+    "copied": "Order number copied",
+    "error": {
+      "subtitle": "The transaction was not completed. Please try again, or ask our staff for assistance.",
+      "title": "Payment failed"
+    },
+    "pickupLocation": "Pickup location",
+    "pickupNumber": "Pickup number",
+    "success": {
+      "subtitle": "We have received your order and are preparing it",
+      "title": "Payment successful"
+    },
+    "summary": {
+      "discount": "Discount",
+      "title": "Order summary",
+      "total": "Total"
+    },
+    "transaction": {
+      "amount": "Amount paid",
+      "mode": "Order mode",
+      "orderNo": "Order number",
+      "paid": "Paid",
+      "paymentDate": "Paid at",
+      "paymentMethod": "Payment method",
+      "pickupTime": "Pickup time",
+      "status": "Status",
+      "title": "Transaction details",
+      "tradeNo": "ECPay trade number",
+      "unpaid": "Awaiting payment"
+    },
+    "invoice": {
+      "copied": "Invoice number copied",
+      "invoiceDate": "Issued at",
+      "invoiceNumber": "Invoice number",
+      "status": {
+        "issued": "Issued",
+        "issuing": "Issuing",
+        "label": "Issue status",
+        "pending": "Pending",
+        "voided": "Voided"
+      },
+      "title": "Invoice details"
+    },
+    "pending": {
+      "retry": "Pay again",
+      "subtitle": "Your order was created but payment has not been received. If you have already paid, this page will update shortly; if not, please ask our staff for assistance.",
+      "title": "Payment not completed"
+    }
+  },
+  "label": "Order",
+  "menuItem": {
+    "addOn": "Add-ons",
+    "availableHours": "Available {value}",
+    "calories": "{value} kcal",
+    "diet": {
+      "DiabeticDiet": "Diabetic",
+      "GlutenFreeDiet": "Gluten-free",
+      "HalalDiet": "Halal",
+      "HinduDiet": "Hindu",
+      "KosherDiet": "Kosher",
+      "LowCalorieDiet": "Low-calorie",
+      "LowFatDiet": "Low-fat",
+      "LowLactoseDiet": "Low-lactose",
+      "LowSaltDiet": "Low-salt",
+      "VeganDiet": "Vegan",
+      "VegetarianDiet": "Vegetarian"
+    },
+    "outsideAvailableHours": "Outside serving hours",
+    "preparationTime": "Ready in about {value} min",
+    "promoUntil": "Offer ends {date}",
+    "selectAtLeast": "Select at least {count}",
+    "selectUpTo": "Select up to {count}",
+    "stockLeft": "Only {stock} left"
+  },
+  "mode": {
+    "counter": {
+      "label": "In-store takeout",
+      "unavailable": "Unavailable for in-store takeout"
+    },
+    "dineIn": {
+      "label": "Dine-in",
+      "partySize": {
+        "select": {
+          "label": "Party size",
+          "placeholder": "Please select your party size",
+          "value": "{count} people"
+        }
+      },
+      "tableNumber": {
+        "label": "Table",
+        "value": "Table {tableNumber}"
+      },
+      "unavailable": "Unavailable for dine-in"
+    },
+    "driveThru": {
+      "label": "Meow-thru",
+      "unavailable": "Unavailable for Meow-thru"
+    },
     "pickup": {
-      "label": "Pickup",
-      "select": {
-        "label": "Select a store"
-      }
+      "label": "Online pickup",
+      "unavailable": "Unavailable for online pickup"
     },
     "storeSlug": {
       "selectTable": "Select a table",
       "tableNumber": {
-        "latest": "New Arrivals",
+        "latest": "New arrivals",
         "new": "New",
         "search": {
+          "noResults": "No matching items found",
           "placeholder": "Please enter your menu name"
         },
         "stepper": {
+          "cart": {
+            "label": "Cart"
+          },
           "checkout": {
             "label": "Checkout"
           },
@@ -38,8 +202,15 @@
           }
         },
         "top": "TOP",
-        "topSold": "Best Sellers"
+        "topSold": "Best sellers"
       }
+    }
+  },
+  "organizationSlug": {
+    "label": "Store",
+    "select": {
+      "label": "Select a store",
+      "placeholder": "Please select your store"
     }
   }
 }

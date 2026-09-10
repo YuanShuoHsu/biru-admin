@@ -1,9 +1,33 @@
 {
+  "addOnMenuSectionId": {
+    "required": "Please select an add-on section."
+  },
+  "availableModes": {
+    "notSelected": "Please select your sold in modes."
+  },
+  "banReason": {
+    "maxLength": "Ban reason must not exceed 160 characters."
+  },
+  "bio": {
+    "maxLength": "Bio must not exceed 160 characters."
+  },
   "birthDate": {
     "invalid": "Birth date is not valid.",
     "maxDate": "Please select a birth date on or before today.",
     "minDate": "Please select a birth date on or after 1900-01-01.",
     "required": "Birth date is required."
+  },
+  "carrierNum": {
+    "certificate": {
+      "invalid": "Certificate is not valid."
+    },
+    "mobile": {
+      "invalid": "Mobile barcode is not valid.",
+      "notFound": "This mobile barcode was not found. Please check and re-enter it."
+    }
+  },
+  "carrierType": {
+    "notSelected": "Please select your carrier type."
   },
   "confirmNewPassword": {
     "mismatch": "Passwords do not match.",
@@ -13,24 +37,69 @@
     "mismatch": "Passwords do not match.",
     "required": "Confirm password is required."
   },
+  "contact": {
+    "requiredForInvoice": "An invoice needs a contact method — provide either an email or a phone number."
+  },
   "countryCode": {
     "invalid": "Country code is not valid.",
+    "notSelected": "Please select your country code.",
     "required": "Country code is required."
+  },
+  "currency": {
+    "notSelected": "Please select your currency."
   },
   "currentPassword": {
     "required": "Current password is required."
   },
+  "customerAddr": {
+    "required": "Company address is required."
+  },
+  "customerIdentifier": {
+    "invalid": "Tax ID is not valid.",
+    "notFound": "No company found for this Tax ID.",
+    "required": "Tax ID is required."
+  },
+  "customerName": {
+    "required": "Company name is required."
+  },
+  "description": {
+    "maxLength": "Description must not exceed 160 characters."
+  },
+  "donateCode": {
+    "invalid": "Donation code is not valid.",
+    "required": "Donation code is required."
+  },
+  "eligibleQuantity": {
+    "required": "Package size is required."
+  },
   "email": {
-    "invalid": "Email is not valid."
+    "invalid": "Email is not valid.",
+    "required": "Email is required."
   },
   "firstName": {
-    "minLength": "First name must be at least 1 character long."
+    "required": "First name is required."
   },
   "gender": {
     "required": "Gender is required."
   },
+  "ingredientId": {
+    "notSelected": "Please select your ingredient."
+  },
+  "invoiceType": {
+    "notSelected": "Please select your invoice type."
+  },
+  "localizedText": {
+    "completeOrEmpty": "All language fields must be filled in or left empty together.",
+    "required": "Please fill in the localized text."
+  },
+  "member": {
+    "required": "Please select a member."
+  },
+  "modifierGroupId": {
+    "required": "Please select a modifier group."
+  },
   "name": {
-    "minLength": "Name must be at least 2 characters long."
+    "required": "Name is required."
   },
   "newPassword": {
     "differentFromCurrent": "Be different from your current password.",
@@ -46,15 +115,73 @@
     "minLength": "Be at least 8 characters long.",
     "number": "Contain at least one number."
   },
-  "phone": {
-    "invalid": "Phone number is not valid.",
-    "required": "Phone is required."
+  "payment": {
+    "notSelected": "Please select your payment method."
+  },
+  "pickupCutoffMinutes": {
+    "invalid": "Cutoff before closing is not valid.",
+    "required": "Cutoff before closing is required."
+  },
+  "pickupLeadMinutes": {
+    "invalid": "Minimum lead time is not valid.",
+    "required": "Minimum lead time is required."
+  },
+  "pickupMaxAdvanceDays": {
+    "invalid": "Maximum days in advance is not valid.",
+    "max": "Maximum days in advance cannot exceed {days} days.",
+    "required": "Maximum days in advance is required."
+  },
+  "pickupTime": {
+    "beforeClosing": "Please select a pickup time at least {minutes} minutes before closing.",
+    "closed": "Please select a pickup time within the opening hours.",
+    "invalid": "Pickup time is not valid.",
+    "itemUnavailable": "{name} is not available at the selected pickup time.",
+    "itemsConflict": "The items in your cart have no shared availability within the schedulable window. Please adjust your cart.",
+    "maxDateTime": "Please select a pickup time within {days} days.",
+    "minDateTime": "Please select a pickup time at least {minutes} minutes from now.",
+    "minutesStep": "Please select a pickup time in {minutes}-minute intervals.",
+    "notSelected": "Please select your pickup time.",
+    "storeUnavailable": "This store has no pickup times available within the schedulable window. Please try again later or contact the store."
+  },
+  "postalCode": {
+    "format": "Postal code format is invalid."
+  },
+  "price": {
+    "required": "Please enter a price."
+  },
+  "quantity": {
+    "required": "Quantity is required."
+  },
+  "recipeYield": {
+    "required": "Servings is required."
+  },
+  "remark": {
+    "maxLength": "Notes must not exceed 160 characters."
+  },
+  "requiredQuantity": {
+    "required": "Amount is required."
   },
   "role": {
-    "required": "Role is required."
+    "required": "Please select a role."
   },
   "slug": {
-    "letter": "Contain at least one letter.",
-    "minLength": "Slug must be at least 1 character long."
+    "letter": "Slug must contain at least one letter.",
+    "required": "Slug is required."
+  },
+  "supplierName": {
+    "required": "Supplier name is required."
+  },
+  "telephone": {
+    "invalid": "Phone is not valid.",
+    "required": "Phone is required."
+  },
+  "unitCode": {
+    "notSelected": "Please select your content unit."
+  },
+  "url": {
+    "invalid": "URL format is invalid."
+  },
+  "validFrom": {
+    "beforeValidThrough": "Start date must be before end date."
   }
 }

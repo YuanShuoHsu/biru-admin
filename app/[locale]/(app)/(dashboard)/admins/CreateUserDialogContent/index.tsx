@@ -11,10 +11,11 @@ import {
   useCreateUserFormSchema,
 } from "./definitions";
 
+import FormBox from "@/components/FormBox";
 import PasswordRuleList from "@/components/PasswordRuleList";
 import UploadAvatars from "@/components/UploadAvatars";
 
-import { roles } from "@/constants/admins";
+import { userRoleValues } from "@/types/api";
 
 import { LocaleEnum } from "@/enums/Locale";
 
@@ -27,8 +28,6 @@ import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
-  Box,
-  type BoxProps,
   Checkbox,
   FormControlLabel,
   IconButton,
@@ -37,7 +36,6 @@ import {
   Stack,
   TextField,
   Typography,
-  styled,
 } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -49,19 +47,12 @@ import {
 
 const CREATE_USER_AVATAR_KEY = "create-user-avatar";
 
-const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: theme.spacing(2),
-}));
-
 interface CreateUserDialogContentProps {
-  fetchListUsers: () => Promise<void>;
+  mutateAdmins: () => void;
 }
 
 const CreateUserDialogContent = ({
-  fetchListUsers,
+  mutateAdmins,
 }: CreateUserDialogContentProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
   const avatarSrc = useUploadAvatarSrc(CREATE_USER_AVATAR_KEY);
@@ -74,6 +65,7 @@ const CreateUserDialogContent = ({
   const locale = useLocale();
 
   const tAdmins = useTranslations("admins");
+  const tCommon = useTranslations("common");
   const tAuth = useTranslations("auth");
 
   const createUserFormSchema = useCreateUserFormSchema();
@@ -158,7 +150,7 @@ const CreateUserDialogContent = ({
 
               closeDialog();
 
-              fetchListUsers();
+              mutateAdmins();
             },
           },
         );
@@ -166,7 +158,7 @@ const CreateUserDialogContent = ({
     )(event);
 
   return (
-    <StyledBox component="form" id="create-user-form" onSubmit={onSubmit}>
+    <FormBox id="create-user-form" onSubmit={onSubmit}>
       <UploadAvatars uploadKey={CREATE_USER_AVATAR_KEY} />
       <Stack
         width="100%"
@@ -178,7 +170,7 @@ const CreateUserDialogContent = ({
           error={!!errors.lastName}
           fullWidth
           helperText={errors.lastName?.message}
-          label={tAdmins("actions.createUser.lastName.label")}
+          label={`${tAdmins("actions.createUser.lastName.label")} ${tCommon("optional")}`}
           placeholder={tAdmins("actions.createUser.lastName.placeholder")}
           {...register("lastName")}
         />
@@ -306,19 +298,36 @@ const CreateUserDialogContent = ({
         label={tAdmins("role.label")}
         required
         select
+        slotProps={{
+          inputLabel: { shrink: true },
+          select: {
+            displayEmpty: true,
+            renderValue: (selected) => {
+              const selectedRole = userRoleValues.find(
+                (role) => role === selected,
+              );
+
+              return selectedRole ? (
+                tAdmins(`role.${selectedRole}`)
+              ) : (
+                <em>{tAdmins("role.placeholder")}</em>
+              );
+            },
+          },
+        }}
         value={role}
         {...register("role")}
       >
         <MenuItem disabled value="">
           <em>{tAdmins("role.placeholder")}</em>
         </MenuItem>
-        {roles.map((role) => (
+        {userRoleValues.map((role) => (
           <MenuItem key={role} value={role}>
             {tAdmins(`role.${role}`)}
           </MenuItem>
         ))}
       </TextField>
-    </StyledBox>
+    </FormBox>
   );
 };
 

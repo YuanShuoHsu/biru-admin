@@ -1,9 +1,33 @@
 {
+  "addOnMenuSectionId": {
+    "required": "请选择加购区块。"
+  },
+  "availableModes": {
+    "notSelected": "请选择您的销售方式。"
+  },
+  "banReason": {
+    "maxLength": "封禁原因不能超过 160 个字符。"
+  },
+  "bio": {
+    "maxLength": "个人简介不能超过 160 个字符。"
+  },
   "birthDate": {
     "invalid": "出生日期无效。",
     "maxDate": "请选择今天或之前的出生日期。",
     "minDate": "请选择 1900-01-01 或之后的出生日期。",
     "required": "出生日期为必填。"
+  },
+  "carrierNum": {
+    "certificate": {
+      "invalid": "自然人凭证格式无效。"
+    },
+    "mobile": {
+      "invalid": "手机条码格式无效。",
+      "notFound": "查无此手机条码，请确认后重新输入。"
+    }
+  },
+  "carrierType": {
+    "notSelected": "请选择您的载具类型。"
   },
   "confirmNewPassword": {
     "mismatch": "两次输入的密码不一致。",
@@ -13,24 +37,69 @@
     "mismatch": "两次输入的密码不一致。",
     "required": "确认密码为必填。"
   },
+  "contact": {
+    "requiredForInvoice": "开立发票需要联络方式，电子邮箱与电话请至少填写一项。"
+  },
   "countryCode": {
     "invalid": "国家代码无效。",
+    "notSelected": "请选择您的国码。",
     "required": "国家码为必填。"
+  },
+  "currency": {
+    "notSelected": "请选择您的币别。"
   },
   "currentPassword": {
     "required": "当前密码为必填。"
   },
+  "customerAddr": {
+    "required": "公司地址为必填。"
+  },
+  "customerIdentifier": {
+    "invalid": "统一编号格式无效。",
+    "notFound": "查无对应的公司资料。",
+    "required": "统一编号为必填。"
+  },
+  "customerName": {
+    "required": "公司名称为必填。"
+  },
+  "description": {
+    "maxLength": "描述不能超过 160 个字符。"
+  },
+  "donateCode": {
+    "invalid": "捐赠码格式无效。",
+    "required": "捐赠码为必填。"
+  },
+  "eligibleQuantity": {
+    "required": "包装容量为必填。"
+  },
   "email": {
-    "invalid": "电子邮件无效。"
+    "invalid": "电子邮件无效。",
+    "required": "电子邮件为必填。"
   },
   "firstName": {
-    "minLength": "名字至少需要 1 个字符。"
+    "required": "名字为必填。"
   },
   "gender": {
     "required": "性别为必填。"
   },
+  "ingredientId": {
+    "notSelected": "请选择您的食材。"
+  },
+  "invoiceType": {
+    "notSelected": "请选择您的发票类型。"
+  },
+  "localizedText": {
+    "completeOrEmpty": "所有语言字段必须同时填写或同时留空。",
+    "required": "请填写多语言文字。"
+  },
+  "member": {
+    "required": "请选择成员。"
+  },
+  "modifierGroupId": {
+    "required": "请选择修饰组。"
+  },
   "name": {
-    "minLength": "名称至少需要 2 个字符。"
+    "required": "姓名为必填。"
   },
   "newPassword": {
     "differentFromCurrent": "与当前密码不相同。",
@@ -46,15 +115,73 @@
     "minLength": "至少 8 个字符长度。",
     "number": "包含至少一个数字。"
   },
-  "phone": {
-    "invalid": "电话号码无效。",
-    "required": "电话号码为必填。"
+  "payment": {
+    "notSelected": "请选择您的付款方式。"
+  },
+  "pickupCutoffMinutes": {
+    "invalid": "打烊前截止时间格式无效。",
+    "required": "打烊前截止时间为必填。"
+  },
+  "pickupLeadMinutes": {
+    "invalid": "最短前置时间格式无效。",
+    "required": "最短前置时间为必填。"
+  },
+  "pickupMaxAdvanceDays": {
+    "invalid": "最远可预约天数格式无效。",
+    "max": "最远可预约天数不可超过 {days} 天。",
+    "required": "最远可预约天数为必填。"
+  },
+  "pickupTime": {
+    "beforeClosing": "请选择打烊 {minutes} 分钟前的取餐时间。",
+    "closed": "请选择营业时间内的取餐时间。",
+    "invalid": "取餐时间无效。",
+    "itemUnavailable": "{name}在所选取餐时间不供应。",
+    "itemsConflict": "购物车中的商品在可预约时间内没有共同的供应时段，请调整购物车内容。",
+    "maxDateTime": "请选择 {days} 天内的取餐时间。",
+    "minDateTime": "请选择 {minutes} 分钟后的取餐时间。",
+    "minutesStep": "请以 {minutes} 分钟为间隔选择取餐时间。",
+    "notSelected": "请选择您的取餐时间。",
+    "storeUnavailable": "本店近期没有可预约的取餐时间，请稍后再试或联系店家。"
+  },
+  "postalCode": {
+    "format": "邮政编码格式无效。"
+  },
+  "price": {
+    "required": "请输入价格。"
+  },
+  "quantity": {
+    "required": "数量为必填。"
+  },
+  "recipeYield": {
+    "required": "份量为必填。"
+  },
+  "remark": {
+    "maxLength": "备注不能超过 160 个字符。"
+  },
+  "requiredQuantity": {
+    "required": "用量为必填。"
   },
   "role": {
-    "required": "角色为必填。"
+    "required": "请选择角色。"
   },
   "slug": {
-    "letter": "包含至少一个英文字母。",
-    "minLength": "标识符至少需要 1 个字符。"
+    "letter": "网址识别码必须包含至少一个英文字母。",
+    "required": "网址识别码为必填。"
+  },
+  "supplierName": {
+    "required": "供应商名称为必填。"
+  },
+  "telephone": {
+    "invalid": "电话格式无效。",
+    "required": "电话为必填。"
+  },
+  "unitCode": {
+    "notSelected": "请选择您的内容量单位。"
+  },
+  "url": {
+    "invalid": "网址格式无效。"
+  },
+  "validFrom": {
+    "beforeValidThrough": "生效日期必须早于截止日期。"
   }
 }

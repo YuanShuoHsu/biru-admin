@@ -14,7 +14,6 @@ export type DrawerStore = DrawerState & DrawerActions;
 
 export const defaultInitState: DrawerState = {
   drawer: {
-    cart: false,
     nav: false,
   },
 };

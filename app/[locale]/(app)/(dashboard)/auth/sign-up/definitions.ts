@@ -36,7 +36,7 @@ export const useSignUpFormSchema = () => {
       lastName: z.string().trim().optional(),
       firstName: z
         .string()
-        .min(1, { error: tValidation("firstName.minLength") })
+        .min(1, { error: tValidation("firstName.required") })
         .trim(),
       // birthDate: z
       //   .string()

@@ -12,10 +12,42 @@
       "label": "Export",
       "print": "Print"
     },
+    "filter": {
+      "operator": {
+        "after": "Is after",
+        "before": "Is before",
+        "contains": "Contains",
+        "doesNotContain": "Does not contain",
+        "doesNotEqual": "Does not equal",
+        "endsWith": "Ends with",
+        "equals": "Equals",
+        "is": "Is",
+        "isAnyOf": "Is any of",
+        "isEmpty": "Is empty",
+        "isNotEmpty": "Is not empty",
+        "not": "Is not",
+        "onOrAfter": "Is on or after",
+        "onOrBefore": "Is on or before",
+        "startsWith": "Starts with"
+      },
+      "value": {
+        "any": "any",
+        "false": "false",
+        "true": "true"
+      }
+    },
     "filters": "Filters",
     "search": {
       "clear": "Clear search",
+      "field": "Search field",
+      "fieldPlaceholder": "Please select your search field",
       "label": "Search",
+      "operator": {
+        "contains": "Contains",
+        "endsWith": "Ends with",
+        "label": "Search operator",
+        "startsWith": "Starts with"
+      },
       "placeholder": "Please enter your search keywords"
     }
   }

@@ -1,12 +1,12 @@
 {
   "actions": {
     "createOrganization": {
-      "success": "組織の作成に成功しました",
+      "success": "{name} の作成に成功しました",
       "title": "組織を追加"
     },
     "deleteOrganization": {
       "confirm": "<bold>{name}</bold> を削除しますか？全メンバーとデータが完全に削除されます。",
-      "success": "組織の削除に成功しました",
+      "success": "{name} の削除に成功しました",
       "title": "組織を削除"
     },
     "label": "操作",
@@ -19,16 +19,47 @@
       "title": "管理"
     },
     "updateOrganization": {
-      "success": "組織の更新に成功しました",
+      "success": "{name} の更新に成功しました",
       "title": "組織を編集"
     }
   },
+  "address": {
+    "addressCountry": {
+      "label": "国/地域",
+      "placeholder": "あなたの国/地域を選択してください"
+    },
+    "addressLocality": {
+      "label": "市区町村",
+      "placeholder": "あなたの市区町村を入力してください"
+    },
+    "addressRegion": {
+      "label": "都道府県",
+      "placeholder": "あなたの都道府県を入力してください"
+    },
+    "extendedAddress": {
+      "label": "住所補足",
+      "placeholder": "あなたの住所補足を入力してください"
+    },
+    "label": "住所",
+    "postalCode": {
+      "label": "郵便番号",
+      "placeholder": "あなたの郵便番号を入力してください"
+    },
+    "streetAddress": {
+      "label": "番地",
+      "placeholder": "あなたの番地を入力してください"
+    }
+  },
   "createdAt": "作成日",
+  "currency": {
+    "label": "通貨",
+    "placeholder": "あなたの通貨を選択してください"
+  },
   "invitations": {
     "actions": {
       "cancelInvitation": {
         "confirm": "<bold>{email}</bold> への招待をキャンセルしますか？",
-        "success": "招待のキャンセルに成功しました",
+        "success": "{email} への招待のキャンセルに成功しました",
         "title": "招待をキャンセル"
       },
       "label": "操作"
@@ -38,7 +69,48 @@
     "label": "保留中の招待",
     "role": "役割"
   },
-  "label": "組織管理",
+  "label": "組織",
+  "localBusiness": {
+    "hasMap": {
+      "label": "地図リンク",
+      "placeholder": "あなたのGoogle マップURLを入力してください"
+    },
+    "label": "ビジネス",
+    "openingHours": {
+      "addSchedule": "時間帯を追加",
+      "conflict": "{days}は他の時間帯と重複しています",
+      "days": {
+        "Fr": "金",
+        "Mo": "月",
+        "Sa": "土",
+        "Su": "日",
+        "Th": "木",
+        "Tu": "火",
+        "We": "水"
+      },
+      "label": "営業時間",
+      "missingDays": "曜日を選択してください",
+      "missingEndTime": "終了時刻を入力してください",
+      "missingStartTime": "開始時刻を入力してください",
+      "nextDay": "翌日",
+      "outsideOpeningHours": "{days}は営業時間を超えています。お客様は営業時間内のみ注文できます",
+      "reference": "営業時間：{value}",
+      "to": "〜"
+    },
+    "telephone": {
+      "label": "電話番号",
+      "placeholder": "あなたの電話番号を入力してください"
+    }
+  },
+  "location": {
+    "actions": {
+      "updateLocation": {
+        "success": "所在地情報を更新しました",
+        "title": "所在地を編集"
+      }
+    },
+    "label": "所在地"
+  },
   "logo": "ロゴ",
   "members": {
     "actions": {
@@ -47,17 +119,25 @@
           "label": "メール",
           "placeholder": "あなたのメールアドレスを入力してください"
         },
-        "success": "招待の送信に成功しました",
+        "success": {
+          "default": "{email} への招待の送信に成功しました",
+          "withTeam": "{email} への招待の送信に成功し、{team} チームに追加されました"
+        },
         "title": "メンバーを招待"
       },
       "label": "操作",
       "removeMember": {
-        "confirm": "<bold>{name}</bold> を削除しますか？",
+        "confirm": "<bold>{email}</bold> を削除しますか？",
         "success": "メンバーの削除に成功しました",
         "title": "メンバーを削除"
       },
+      "removeTeamMember": {
+        "confirm": "<bold>{email}</bold> を <bold>{team}</bold> チームから削除しますか？",
+        "success": "{email} を {team} チームから削除しました",
+        "title": "チームから削除"
+      },
       "updateMemberRole": {
-        "success": "役割の更新に成功しました",
+        "success": "{email} の更新に成功しました",
         "title": "メンバーを編集"
       }
     },
@@ -72,14 +152,105 @@
       "member": "メンバー",
       "owner": "オーナー",
       "placeholder": "あなたの役割を選択してください"
+    },
+    "userId": {
+      "label": "メンバー",
+      "option": "{name} ({email})",
+      "placeholder": "あなたのメンバーを選択してください"
     }
   },
   "name": {
     "label": "組織名",
     "placeholder": "あなたの組織名を入力してください"
   },
+  "pickup": {
+    "actions": {
+      "updatePickup": {
+        "success": "予約設定を更新しました",
+        "title": "予約を編集"
+      }
+    },
+    "days": "{days} 日",
+    "label": "予約",
+    "minutes": "{minutes} 分",
+    "pickupCutoffMinutes": {
+      "helperText": "閉店前のこの時間は予約を受け付けません。",
+      "label": "閉店前の締め切り（分）",
+      "placeholder": "閉店前の締め切りを入力してください"
+    },
+    "pickupLeadMinutes": {
+      "helperText": "注文後、最短で受け取れるまでの時間です。",
+      "label": "最短リードタイム（分）",
+      "placeholder": "最短リードタイムを入力してください"
+    },
+    "pickupMaxAdvanceDays": {
+      "helperText": "0 に設定すると当日のみ予約できます。最大 {days} 日です。",
+      "label": "予約可能な最大日数",
+      "placeholder": "予約可能な最大日数を入力してください"
+    }
+  },
+  "points": {
+    "actions": {
+      "updatePoints": {
+        "success": "ポイント設定を更新しました",
+        "title": "ポイントを編集"
+      }
+    },
+    "amountPerPoint": {
+      "hint": "未設定の場合、ポイントは無効になります",
+      "invalid": "1ポイント獲得に必要な金額が無効です",
+      "label": "1ポイント獲得に必要な金額",
+      "placeholder": "1ポイント獲得に必要な金額を入力してください"
+    },
+    "disabled": "無効",
+    "label": "ポイント",
+    "perpetual": "無期限",
+    "pointsValidityYears": {
+      "label": "ポイント有効期限（年）",
+      "placeholder": "ポイント有効期限を入力してください"
+    },
+    "validityYears": "{years}年"
+  },
   "slug": {
     "label": "スラッグ",
     "placeholder": "あなたのスラッグを入力してください"
+  },
+  "teams": {
+    "actions": {
+      "addTeamMember": {
+        "success": "{email} を {team} チームに追加しました",
+        "title": "チームメンバーを追加"
+      },
+      "createTeam": {
+        "success": "{name} の作成に成功しました",
+        "title": "チームを追加"
+      },
+      "label": "操作",
+      "manageTeamMembers": {
+        "title": "メンバーを管理"
+      },
+      "removeTeam": {
+        "confirm": "<bold>{email}</bold> を削除しますか？",
+        "success": "{name} の削除に成功しました",
+        "title": "チームを削除"
+      },
+      "updateTeam": {
+        "success": "{name} の更新に成功しました",
+        "title": "チームを編集"
+      }
+    },
+    "createdAt": "作成日",
+    "label": "チーム",
+    "members": {
+      "empty": "このチームにメンバーがいません"
+    },
+    "name": {
+      "label": "チーム名",
+      "placeholder": "あなたのチーム名を入力してください"
+    },
+    "teamId": {
+      "label": "チーム",
+      "placeholder": "あなたのチームを選択してください"
+    }
   }
 }

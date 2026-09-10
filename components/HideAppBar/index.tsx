@@ -3,19 +3,27 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useParams } from "next/navigation";
 import { useSnackbar } from "notistack";
 import { Suspense } from "react";
 
 import AccountMenu from "./AccountMenu";
-import CartIconButton from "./CartIconButton";
 import LanguageMenu from "./LanguageMenu";
 import ThemeSwitcher from "./ThemeSwitcher";
 
 import BrandMark from "@/components/BrandMark";
 
-import { IMPERSONATE_RETURN_KEY } from "@/constants/route";
+import {
+  APP_BAR_TOOLBAR_HEIGHT,
+  APP_BAR_TOOLBAR_HEIGHT_SM_UP,
+  APP_BAR_TOOLBAR_HEIGHT_XS_UP_LANDSCAPE,
+} from "@/constants/appBar";
+import {
+  DEFAULT_AUTHENTICATED_ROUTE,
+  IMPERSONATE_RETURN_KEY,
+} from "@/constants/route";
 import { SCROLL_TRIGGER_THRESHOLD } from "@/constants/scroll";
+
+import { useRoutes } from "@/hooks/useRoutes";
 
 import { useRouter } from "@/i18n/navigation";
 
@@ -42,10 +50,17 @@ import { useToggleDrawer } from "@/utils/drawer";
 const StyledAppBar = styled(AppBar, {
   shouldForwardProp: (prop) => prop !== "trigger",
 })<{ trigger: boolean }>(({ theme, trigger }) => ({
+  top: trigger ? -APP_BAR_TOOLBAR_HEIGHT : 0,
   backgroundImage: "none",
-  transform: trigger ? "translateY(-100%)" : "translateY(0)",
-  transition: theme.transitions.create(["background-color", "transform"]),
-  willChange: "transform",
+  transition: theme.transitions.create(["background-color", "top"]),
+
+  [`${theme.breakpoints.up("xs")} and (orientation: landscape)`]: {
+    top: trigger ? -APP_BAR_TOOLBAR_HEIGHT_XS_UP_LANDSCAPE : 0,
+  },
+
+  [theme.breakpoints.up("sm")]: {
+    top: trigger ? -APP_BAR_TOOLBAR_HEIGHT_SM_UP : 0,
+  },
 }));
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
@@ -58,22 +73,22 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 const HideAppBar = () => {
   const { session, setSession } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
-  const toggleDrawer = useToggleDrawer();
-  const handleNavOpen = toggleDrawer("nav", true);
 
   const locale = useLocale();
 
   const router = useRouter();
 
-  const { storeSlug } = useParams();
-
-  const { enqueueSnackbar } = useSnackbar();
-
-  const tAdmins = useTranslations("admins");
+  const navItem = useRoutes();
 
   const trigger = useScrollTrigger({
     threshold: SCROLL_TRIGGER_THRESHOLD,
   });
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const toggleDrawer = useToggleDrawer();
+
+  const tAdmins = useTranslations("admins");
 
   const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE === "true";
   const showAuthControls = !isMaintenanceMode && !!session;
@@ -107,7 +122,8 @@ const HideAppBar = () => {
 
               const returnTo =
                 sessionStorage.getItem(IMPERSONATE_RETURN_KEY) ||
-                "/admins?page=1&pageSize=10";
+                navItem("/admins").to ||
+                DEFAULT_AUTHENTICATED_ROUTE;
               sessionStorage.removeItem(IMPERSONATE_RETURN_KEY);
 
               router.replace(returnTo);
@@ -129,7 +145,7 @@ const HideAppBar = () => {
               aria-label="open drawer"
               color="inherit"
               edge="start"
-              onClick={handleNavOpen}
+              onClick={toggleDrawer("nav", true)}
             >
               <Menu />
             </IconButton>
@@ -163,7 +179,6 @@ const HideAppBar = () => {
               <AccountMenu />
             </Suspense>
           )}
-          {!!storeSlug && <CartIconButton />}
         </Stack>
       </StyledToolbar>
     </StyledAppBar>

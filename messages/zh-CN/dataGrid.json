@@ -12,10 +12,42 @@
       "label": "导出",
       "print": "打印"
     },
+    "filter": {
+      "operator": {
+        "after": "晚于",
+        "before": "早于",
+        "contains": "包含",
+        "doesNotContain": "不包含",
+        "doesNotEqual": "不等于",
+        "endsWith": "结尾为",
+        "equals": "等于",
+        "is": "等于",
+        "isAnyOf": "等于任一",
+        "isEmpty": "为空",
+        "isNotEmpty": "不为空",
+        "not": "不等于",
+        "onOrAfter": "等于或晚于",
+        "onOrBefore": "等于或早于",
+        "startsWith": "开头为"
+      },
+      "value": {
+        "any": "任何",
+        "false": "假",
+        "true": "真"
+      }
+    },
     "filters": "筛选器",
     "search": {
       "clear": "清除搜索",
+      "field": "搜索字段",
+      "fieldPlaceholder": "请选择您的搜索字段",
       "label": "搜索",
+      "operator": {
+        "contains": "包含",
+        "endsWith": "结尾为",
+        "label": "搜索方式",
+        "startsWith": "开头为"
+      },
       "placeholder": "请输入您的搜索内容"
     }
   }

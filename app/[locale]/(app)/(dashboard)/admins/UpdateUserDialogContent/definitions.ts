@@ -5,12 +5,17 @@ export const useUpdateUserFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z.object({
-    lastName: z.string().trim(),
+    lastName: z.string().trim().optional(),
     firstName: z
       .string()
-      .min(1, { error: tValidation("firstName.minLength") })
+      .min(1, { error: tValidation("firstName.required") })
       .trim(),
     email: z.email({ error: tValidation("email.invalid") }).trim(),
+    bio: z
+      .string()
+      .trim()
+      .max(160, { error: tValidation("bio.maxLength") })
+      .optional(),
     emailSubscribed: z.boolean(),
   });
 };

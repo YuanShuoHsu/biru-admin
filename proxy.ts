@@ -9,19 +9,20 @@ import createMiddleware from "next-intl/middleware";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
+import { query } from "./constants/query";
 import { DEFAULT_AUTHENTICATED_ROUTE } from "./constants/route";
-import { routing } from "./i18n/routing";
-import { authClient } from "./lib/auth-client";
 
-const SESSION_COOKIE_NAME = "better-auth.session_token";
+import { routing } from "./i18n/routing";
+
+import { authClient } from "./lib/auth-client";
 
 const handleI18nRouting = createMiddleware(routing);
 
 const fetchWithCookies = (url: string, request: NextRequest) =>
   fetch(url, {
     headers: {
-      cookie: request.headers.get("cookie") ?? "",
-      "X-Forwarded-For": request.headers.get("X-Forwarded-For") ?? "",
+      cookie: request.headers.get("cookie") || "",
+      "X-Forwarded-For": request.headers.get("X-Forwarded-For") || "",
     },
   });
 
@@ -58,27 +59,32 @@ export const proxy = async (request: NextRequest) => {
   if (isMaintenanceMode) {
     if (isMaintenancePath) return response;
 
-    request.nextUrl.pathname = `/${locale}/maintenance`;
-    return NextResponse.redirect(request.nextUrl);
+    return NextResponse.redirect(
+      new URL(`/${locale}/maintenance`, request.url),
+    );
   }
 
-  if (isMaintenancePath) {
-    request.nextUrl.pathname = `/${locale}`;
-    return NextResponse.redirect(request.nextUrl);
-  }
+  if (isMaintenancePath)
+    return NextResponse.redirect(new URL(`/${locale}`, request.url));
 
   const isRootPage = pathname === `/${locale}`;
   const isAuthPage = pathname.startsWith(`/${locale}/auth/`);
-  const isAuthSettingsPage = pathname.startsWith(`/${locale}/auth/settings`);
+  const isProtectedAuthPage = [
+    `/${locale}/auth/coupons`,
+    `/${locale}/auth/orders`,
+    `/${locale}/auth/points`,
+    `/${locale}/auth/settings`,
+  ].some((prefix) => pathname.startsWith(prefix));
   const isCompanyPage = pathname.startsWith(`/${locale}/company`);
-  const isPublicPage = (isAuthPage && !isAuthSettingsPage) || isCompanyPage;
+  const isPublicPage = (isAuthPage && !isProtectedAuthPage) || isCompanyPage;
 
   const redirectToSignIn = () => {
-    const redirectTo = pathname.slice(`/${locale}`.length);
-    request.nextUrl.pathname = `/${locale}/auth/sign-in`;
-    if (redirectTo) request.nextUrl.searchParams.set("redirectTo", redirectTo);
+    const redirectTo =
+      pathname.slice(`/${locale}`.length) + request.nextUrl.search;
+    const url = new URL(`/${locale}/auth/sign-in`, request.url);
+    if (redirectTo) url.searchParams.set("redirectTo", redirectTo);
 
-    return request.nextUrl;
+    return url;
   };
 
   const { data: session } = await authClient.getSession({
@@ -89,17 +95,25 @@ export const proxy = async (request: NextRequest) => {
     return NextResponse.redirect(redirectToSignIn());
 
   if (session && isRootPage) {
-    request.nextUrl.pathname = `/${locale}${DEFAULT_AUTHENTICATED_ROUTE}`;
-
-    return NextResponse.redirect(request.nextUrl);
+    return NextResponse.redirect(
+      new URL(`/${locale}${DEFAULT_AUTHENTICATED_ROUTE}`, request.url),
+    );
   }
 
   if (session && !isPublicPage) {
     const isAuthorized = await isOrganizationMember(request);
 
     if (!isAuthorized) {
-      const redirectRes = NextResponse.redirect(redirectToSignIn());
-      redirectRes.cookies.delete(SESSION_COOKIE_NAME);
+      const oauthProvider = request.nextUrl.searchParams.get(query.oauth);
+      const signInUrl = redirectToSignIn();
+      if (oauthProvider)
+        signInUrl.searchParams.set("error", "NO_ACTIVE_ORGANIZATION");
+
+      const redirectRes = NextResponse.redirect(signInUrl);
+      redirectRes.cookies.delete("better-auth.session_token");
+      redirectRes.cookies.delete(
+        `better-auth.session_token_multi-${session.session.token.toLowerCase()}`,
+      );
 
       return redirectRes;
     }

@@ -6,7 +6,7 @@
 import { useLocale } from "next-intl";
 import { useMemo } from "react";
 
-import { locales } from "@/constants/locale";
+import { localeConfigs } from "@/constants/locale";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -28,14 +28,14 @@ const LocaleProvider = ({ children }: LocaleProviderProps) => {
   const locale = useLocale();
 
   const themeWithLocale = useMemo(
-    () => createTheme(theme, ...locales[locale].mui),
+    () => createTheme(theme, ...localeConfigs[locale].mui),
     [locale],
   );
 
   return (
     <ThemeProvider theme={themeWithLocale}>
       <LocalizationProvider
-        adapterLocale={locales[locale].dayjs}
+        adapterLocale={localeConfigs[locale].dayjs}
         dateAdapter={AdapterDayjs}
       >
         {children}

@@ -1,4 +1,51 @@
+import { cache } from "react";
+
+import { fetcher } from "./fetcher";
+
 import { authClient } from "@/lib/auth-client";
+
+import type { OrganizationResponse } from "@/types/organizations";
+
+export const getOrganization = cache(
+  async (slug: OrganizationResponse["slug"]) => {
+    try {
+      return await fetcher<OrganizationResponse>(`/api/organizations/${slug}`);
+    } catch {
+      return null;
+    }
+  },
+);
+
+export const getOrganizations = cache(
+  async (fetchOptions?: { headers: { cookie: string } }) => {
+    try {
+      return await fetcher<OrganizationResponse[]>(
+        "/api/organizations",
+        fetchOptions,
+      );
+    } catch {
+      return [];
+    }
+  },
+);
+
+export const resolveDefaultOrganizationSlug = (
+  activeOrganizationId: string | null | undefined,
+  organizations: { id: string; slug: string }[] | null | undefined,
+) =>
+  organizations?.find(({ id }) => id === activeOrganizationId)?.slug ||
+  organizations?.[0]?.slug ||
+  "";
+
+type CheckRolePermissionInput = Parameters<
+  typeof authClient.organization.checkRolePermission
+>[0];
+
+export const hasRolePermission = (
+  role: CheckRolePermissionInput["role"] | undefined,
+  permissions: CheckRolePermissionInput["permissions"],
+): boolean =>
+  !!role && authClient.organization.checkRolePermission({ role, permissions });
 
 export type OrganizationPermissions = Record<
   string,
@@ -22,16 +69,13 @@ export async function getOrganizationPermissions(
 
   organizations.forEach(({ id }, index) => {
     const role = memberRoles[index].data?.role;
-    if (!role) return;
 
     permissions[id] = {
-      canUpdateOrganization: authClient.organization.checkRolePermission({
-        role,
-        permissions: { organization: ["update"] },
+      canUpdateOrganization: hasRolePermission(role, {
+        organization: ["update"],
       }),
-      canDeleteOrganization: authClient.organization.checkRolePermission({
-        role,
-        permissions: { organization: ["delete"] },
+      canDeleteOrganization: hasRolePermission(role, {
+        organization: ["delete"],
       }),
     };
   });

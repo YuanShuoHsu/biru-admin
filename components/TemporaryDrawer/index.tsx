@@ -20,6 +20,7 @@ const StyledBox = styled(Box)({
 const TemporaryDrawer = () => {
   const { drawer } = useDrawerStore((state) => state);
   const open = drawer.nav;
+
   const toggleDrawer = useToggleDrawer();
   const handleClose = toggleDrawer("nav", false);
 

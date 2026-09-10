@@ -1,16 +1,22 @@
+// https://better-auth.com/docs/plugins/admin
+
 // https://mui.com/x/react-data-grid/column-dimensions/#ColumnAutosizingAsync.tsx
+// https://mui.com/x/react-data-grid/filtering/
+// https://mui.com/x/react-data-grid/filtering/customization/
+// https://mui.com/x/react-data-grid/filtering/quick-filter/
+// https://mui.com/x/react-data-grid/filtering/server-side/
 // https://mui.com/x/react-data-grid/pagination/
 // https://mui.com/x/react-data-grid/performance/
 // https://mui.com/x/react-data-grid/server-side-data/
 
 "use client";
 
-import type { UserWithRole } from "better-auth/client/plugins";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
+import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
-import { flushSync } from "react-dom";
+import useSWR from "swr";
 
 import BanUserDialogContent from "./BanUserDialogContent";
 import CreateUserDialogContent from "./CreateUserDialogContent";
@@ -18,11 +24,24 @@ import SetRoleDialogContent from "./SetRoleDialogContent";
 import SetUserPasswordDialogContent from "./SetUserPasswordDialogContent";
 import UpdateUserDialogContent from "./UpdateUserDialogContent";
 
-import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
+import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
+
+import {
+  autosizeOptions,
+  DATA_GRID_PROPS,
+  NO_VALUE_FILTER_OPERATORS,
+} from "@/constants/dataGrid";
+import { getPageSizeOptions } from "@/constants/pagination";
 import {
   DEFAULT_AUTHENTICATED_ROUTE,
   IMPERSONATE_RETURN_KEY,
 } from "@/constants/route";
+
+import {
+  useDateFilterOperators,
+  useEnumFilterOperators,
+  useStringFilterOperators,
+} from "@/hooks/useFilterOperators";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
@@ -55,17 +74,29 @@ import {
 import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
+  GridFilterModel,
   GridPaginationModel,
   GridRenderCellParams,
+  GridSortModel,
 } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { AdminRole, AdminUser } from "@/types/admins";
+import type {
+  User,
+  UserFilterField,
+  UserFilterOperator,
+  UserRole,
+  UserSortField,
+} from "@/types/admins";
+import type { SortDirection } from "@/types/dataGrid";
 
 import { getUserSessions, type UserSessions } from "@/utils/admins";
+import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
+import { getAdminEnumOptions } from "@/utils/enumOptions";
+import { fetcher } from "@/utils/fetcher";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -92,46 +123,72 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
     color: theme.vars.palette.primary.contrastText,
   },
 }));
-const ROLE_COLOR_MAP: Record<AdminRole, "error" | "default"> = {
+
+const ROLE_COLOR_MAP: Record<UserRole, "error" | "default"> = {
   admin: "error",
   user: "default",
 };
 
 interface AdminsProps {
+  filterField?: UserFilterField;
+  filterOperator?: UserFilterOperator;
+  filterValue?: string;
   page: number;
   pageSize: number;
-  rows: UserWithRole[];
+  quickFilterValue?: string;
   rowCount: number;
+  rows: User[];
+  sortBy?: UserSortField;
+  sortDirection?: SortDirection;
   userSessions: UserSessions;
 }
 
 const Admins = ({
+  filterField: initialFilterField,
+  filterOperator: initialFilterOperator,
+  filterValue: initialFilterValue,
   page,
   pageSize,
-  rows: initialRows,
+  quickFilterValue: initialQuickFilterValue,
   rowCount: initialRowCount,
+  rows: initialRows,
+  sortBy,
+  sortDirection,
   userSessions: initialUserSessions,
 }: AdminsProps) => {
-  const [loading, setLoading] = useState(false);
-  const [rows, setRows] = useState(initialRows);
-  const [rowCount, setRowCount] = useState(initialRowCount);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
-    page,
+    page: page - 1,
     pageSize,
   });
-  const [userSessions, setUserSessions] = useState(initialUserSessions);
-
-  const apiRef = useGridApiRef();
+  const [sortModel, setSortModel] = useState<GridSortModel>(
+    sortBy && sortDirection ? [{ field: sortBy, sort: sortDirection }] : [],
+  );
+  const [filterModel, setFilterModel] = useState<GridFilterModel>({
+    items:
+      initialFilterField &&
+      initialFilterOperator &&
+      (initialFilterValue ||
+        NO_VALUE_FILTER_OPERATORS.includes(initialFilterOperator))
+        ? [
+            {
+              field: initialFilterField,
+              operator: initialFilterOperator,
+              value:
+                initialFilterOperator === "isAnyOf"
+                  ? initialFilterValue?.split(",")
+                  : initialFilterValue,
+            },
+          ]
+        : [],
+    quickFilterValues: initialQuickFilterValue ? [initialQuickFilterValue] : [],
+  });
 
   const { session, setSession } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
 
-  const currentUserId = session?.user?.id;
-  const hasImpersonableUser = rows.some(
-    (row) => row.id !== currentUserId && row.role !== "admin",
-  );
-
   const format = useFormatter();
+
+  const apiRef = useGridApiRef();
 
   const locale = useLocale();
 
@@ -139,90 +196,171 @@ const Admins = ({
 
   const router = useRouter();
 
+  const searchParams = useSearchParams();
+
   const tAdmins = useTranslations("admins");
+  const tCommon = useTranslations("common");
 
-  const fetchListUsers = useCallback(
-    async ({ page, pageSize }: GridPaginationModel) => {
-      await authClient.admin.listUsers(
-        {
-          query: {
-            limit: pageSize,
-            offset: (page - 1) * pageSize,
-            sortBy: "createdAt",
-            sortDirection: "desc",
-          },
-        },
-        {
-          onError: ({ error: { code } }) => {
-            setLoading(false);
+  const textFilterOperators = useStringFilterOperators();
+  const enumFilterOperators = useEnumFilterOperators();
+  const dateFilterOperators = useDateFilterOperators();
 
-            enqueueSnackbar(getErrorMessage(code, locale), {
-              variant: "error",
-            });
-          },
-          onRequest: () => setLoading(true),
-          onSuccess: async ({ data: { users: rows, total: rowCount } }) => {
-            const userSessions = await getUserSessions(rows);
+  const enumOptions = useMemo(() => getAdminEnumOptions(tAdmins), [tAdmins]);
 
-            flushSync(() => {
-              setRows(rows);
-              setRowCount(rowCount);
-              setUserSessions(userSessions);
-
-              setLoading(false);
-            });
-
-            setTimeout(() => {
-              apiRef.current?.autosizeColumns(autosizeOptions);
-            }, 0);
-          },
-        },
-      );
+  const {
+    data: { rows, rowCount, userSessions } = {
+      rows: initialRows,
+      rowCount: initialRowCount,
+      userSessions: initialUserSessions,
     },
-    [apiRef, locale],
+    mutate: mutateAdmins,
+    isValidating,
+  } = useSWR(
+    [
+      "/api/admins",
+      filterModel.items[0]?.field,
+      filterModel.items[0]?.operator,
+      filterModel.items[0]?.value,
+      filterModel.quickFilterValues,
+      paginationModel.page,
+      paginationModel.pageSize,
+      sortModel,
+    ],
+    async () => {
+      const params = getDataGridSearchParams(
+        paginationModel,
+        filterModel,
+        sortModel,
+        enumOptions,
+      );
+
+      const { data: userRows, total } = await fetcher<{
+        data: User[];
+        total: number;
+      }>(`/api/users/list?${params}`);
+
+      const userSessions = await getUserSessions(userRows);
+
+      return { rows: userRows, rowCount: total, userSessions };
+    },
+    {
+      fallbackData: {
+        rows: initialRows,
+        rowCount: initialRowCount,
+        userSessions: initialUserSessions,
+      },
+      onSuccess: () => {
+        setTimeout(() => {
+          apiRef.current?.autosizeColumns(autosizeOptions);
+        }, 0);
+      },
+    },
+  );
+
+  const currentUserId = session?.user?.id;
+  const hasImpersonableUser = rows.some(
+    (row) => row.id !== currentUserId && row.role !== "admin",
   );
 
   const handlePaginationModelChange = useCallback(
     (newModel: GridPaginationModel) => {
-      const model = { ...newModel, page: newModel.page + 1 };
-      setPaginationModel(model);
-      fetchListUsers(model);
+      setPaginationModel(newModel);
+
+      const params = new URLSearchParams(searchParams);
+      params.set("page", String(newModel.page + 1));
+      params.set("pageSize", String(newModel.pageSize));
+
+      router.replace(`${pathname}?${params.toString()}`);
     },
-    [fetchListUsers],
+    [pathname, router, searchParams],
+  );
+
+  const handleSortModelChange = useCallback(
+    (newModel: GridSortModel) => {
+      setSortModel(newModel);
+      setPaginationModel((prev) => ({ ...prev, page: 0 }));
+
+      const sortItem = newModel[0];
+      const params = new URLSearchParams(searchParams);
+      params.delete("sortBy");
+      params.delete("sortDirection");
+      params.set("page", "1");
+      if (sortItem?.field) params.set("sortBy", sortItem.field);
+      if (sortItem?.sort) params.set("sortDirection", sortItem.sort);
+
+      router.replace(`${pathname}?${params.toString()}`);
+    },
+    [pathname, router, searchParams],
+  );
+
+  const handleFilterModelChange = useCallback(
+    (newModel: GridFilterModel) => {
+      setFilterModel(newModel);
+      setPaginationModel((prev) => ({ ...prev, page: 0 }));
+
+      const filterItem = newModel.items[0];
+      const newQuickFilterValue = (newModel.quickFilterValues || [])
+        .join(" ")
+        .trim();
+
+      const params = new URLSearchParams(searchParams);
+      const { filterField, filterOperator, filterValue } =
+        getFilterItemParams(filterItem);
+      params.delete("filterField");
+      params.delete("filterOperator");
+      params.delete("filterValue");
+      params.delete("quickFilterValue");
+      params.set("page", "1");
+      if (filterField) params.set("filterField", filterField);
+      if (filterOperator) params.set("filterOperator", filterOperator);
+      if (filterValue) params.set("filterValue", filterValue);
+      if (newQuickFilterValue)
+        params.set("quickFilterValue", newQuickFilterValue);
+
+      router.replace(`${pathname}?${params.toString()}`);
+    },
+    [pathname, router, searchParams],
   );
 
   const handleCreateUser = () => {
     setDialog({
-      content: (
-        <CreateUserDialogContent
-          fetchListUsers={() => fetchListUsers(paginationModel)}
-        />
-      ),
+      content: <CreateUserDialogContent mutateAdmins={mutateAdmins} />,
       formId: "create-user-form",
       open: true,
       title: tAdmins("actions.createUser.title"),
     });
   };
 
-  const handleSetRole = useCallback(
-    (user: UserWithRole) => {
+  const handleUpdateUser = useCallback(
+    (user: User) => {
       setDialog({
         content: (
-          <SetRoleDialogContent
-            fetchListUsers={() => fetchListUsers(paginationModel)}
-            user={user}
-          />
+          <UpdateUserDialogContent mutateAdmins={mutateAdmins} user={user} />
+        ),
+        formId: "update-user-form",
+        open: true,
+        title: tAdmins("actions.updateUser.title"),
+      });
+    },
+    [mutateAdmins, setDialog, tAdmins],
+  );
+
+  const handleSetRole = useCallback(
+    (user: User) => {
+      setDialog({
+        content: (
+          <SetRoleDialogContent mutateAdmins={mutateAdmins} user={user} />
         ),
         formId: "set-role-form",
         open: true,
         title: tAdmins("actions.setRole.title"),
       });
     },
-    [fetchListUsers, paginationModel, setDialog, tAdmins],
+    [mutateAdmins, setDialog, tAdmins],
   );
 
   const handleSetUserPassword = useCallback(
-    (user: UserWithRole) => {
+    (user: User) => {
       setDialog({
         content: <SetUserPasswordDialogContent user={user} />,
         formId: "set-user-password-form",
@@ -233,42 +371,22 @@ const Admins = ({
     [setDialog, tAdmins],
   );
 
-  const handleUpdateUser = useCallback(
-    (user: AdminUser) => {
-      setDialog({
-        content: (
-          <UpdateUserDialogContent
-            fetchListUsers={() => fetchListUsers(paginationModel)}
-            user={user}
-          />
-        ),
-        formId: "update-user-form",
-        open: true,
-        title: tAdmins("actions.updateUser.title"),
-      });
-    },
-    [fetchListUsers, paginationModel, setDialog, tAdmins],
-  );
-
   const handleBanUser = useCallback(
-    (user: UserWithRole) => {
+    (user: User) => {
       setDialog({
         content: (
-          <BanUserDialogContent
-            fetchListUsers={() => fetchListUsers(paginationModel)}
-            user={user}
-          />
+          <BanUserDialogContent mutateAdmins={mutateAdmins} user={user} />
         ),
         formId: "ban-user-form",
         open: true,
         title: tAdmins("actions.banUser.title"),
       });
     },
-    [fetchListUsers, paginationModel, setDialog, tAdmins],
+    [mutateAdmins, setDialog, tAdmins],
   );
 
   const handleUnbanUser = useCallback(
-    ({ id, email }: UserWithRole) => {
+    ({ id, email }: User) => {
       setDialog({
         content: (
           <DialogContentText>
@@ -290,7 +408,7 @@ const Admins = ({
                 const message = tAdmins("actions.unbanUser.success");
                 enqueueSnackbar(message, { variant: "success" });
 
-                fetchListUsers(paginationModel);
+                mutateAdmins();
               },
             },
           );
@@ -299,11 +417,11 @@ const Admins = ({
         title: tAdmins("actions.unbanUser.title"),
       });
     },
-    [fetchListUsers, locale, paginationModel, setDialog, tAdmins],
+    [locale, mutateAdmins, setDialog, tAdmins],
   );
 
   const handleImpersonateUser = useCallback(
-    (user: UserWithRole) => {
+    (user: User) => {
       setDialog({
         content: (
           <DialogContentText>
@@ -335,7 +453,7 @@ const Admins = ({
 
                 sessionStorage.setItem(
                   IMPERSONATE_RETURN_KEY,
-                  `${pathname}?page=${paginationModel.page}&pageSize=${paginationModel.pageSize}`,
+                  `${pathname}?page=${paginationModel.page + 1}&pageSize=${paginationModel.pageSize}`,
                 );
 
                 router.replace(DEFAULT_AUTHENTICATED_ROUTE);
@@ -351,7 +469,7 @@ const Admins = ({
   );
 
   const handleRemoveUser = useCallback(
-    ({ id, email }: UserWithRole) => {
+    ({ id, email }: User) => {
       setDialog({
         content: (
           <DialogContentText>
@@ -373,7 +491,7 @@ const Admins = ({
                 const message = tAdmins("actions.removeUser.success");
                 enqueueSnackbar(message, { variant: "success" });
 
-                fetchListUsers(paginationModel);
+                mutateAdmins();
               },
             },
           );
@@ -382,7 +500,7 @@ const Admins = ({
         title: tAdmins("actions.removeUser.title"),
       });
     },
-    [fetchListUsers, locale, paginationModel, setDialog, tAdmins],
+    [locale, mutateAdmins, setDialog, tAdmins],
   );
 
   const columns = useMemo<GridColDef[]>(
@@ -390,8 +508,9 @@ const Admins = ({
       {
         disableColumnMenu: true,
         field: "actions",
+        filterable: false,
         headerName: tAdmins("actions.label"),
-        renderCell: ({ row }: GridRenderCellParams<UserWithRole>) => {
+        renderCell: ({ row }: GridRenderCellParams<User>) => {
           const isBanned =
             row.banned &&
             (!row.banExpires || new Date(row.banExpires) > new Date());
@@ -402,6 +521,18 @@ const Admins = ({
 
           return (
             <Stack height="100%" direction="row" alignItems="center" gap={1}>
+              <Tooltip title={tAdmins("actions.updateUser.title")}>
+                <IconButton
+                  onClick={(event) => {
+                    event.stopPropagation();
+
+                    handleUpdateUser(row);
+                  }}
+                  size="small"
+                >
+                  <ManageAccounts fontSize="small" />
+                </IconButton>
+              </Tooltip>
               <Tooltip title={tAdmins("actions.setRole.title")}>
                 <IconButton
                   onClick={(event) => {
@@ -424,18 +555,6 @@ const Admins = ({
                   size="small"
                 >
                   <Password fontSize="small" />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title={tAdmins("actions.updateUser.title")}>
-                <IconButton
-                  onClick={(event) => {
-                    event.stopPropagation();
-
-                    handleUpdateUser(row as AdminUser);
-                  }}
-                  size="small"
-                >
-                  <ManageAccounts fontSize="small" />
                 </IconButton>
               </Tooltip>
               <Tooltip
@@ -519,10 +638,9 @@ const Admins = ({
       },
       {
         field: "image",
+        filterable: false,
         headerName: tAdmins("image"),
-        renderCell: ({
-          row: { image, name },
-        }: GridRenderCellParams<AdminUser>) => (
+        renderCell: ({ row: { image, name } }: GridRenderCellParams<User>) => (
           <Stack height="100%" direction="row" alignItems="center">
             <StyledAvatar alt={name} src={image || undefined}>
               {name[0]}
@@ -533,29 +651,43 @@ const Admins = ({
       },
       {
         field: "name",
+        filterOperators: textFilterOperators,
         headerName: tAdmins("name"),
       },
       {
+        field: "bio",
+        filterable: false,
+        headerName: `${tAdmins("bio")} ${tCommon("optional")}`,
+        renderCell: renderEmptyableCell,
+      },
+      {
         field: "email",
+        filterOperators: textFilterOperators,
         headerName: tAdmins("email.label"),
       },
       {
         field: "role",
+        filterOperators: enumFilterOperators,
         headerName: tAdmins("role.label"),
-        renderCell: ({ row: { role } }: GridRenderCellParams<AdminUser>) => (
-          <Chip
-            color={ROLE_COLOR_MAP[role]}
-            label={tAdmins(`role.${role}`)}
-            size="small"
-            variant="outlined"
-          />
-        ),
-        sortable: false,
+        renderCell: ({ row: { role } }: GridRenderCellParams<User>) =>
+          role ? (
+            <Chip
+              color={ROLE_COLOR_MAP[role]}
+              label={tAdmins(`role.${role}`)}
+              size="small"
+              variant="outlined"
+            />
+          ) : (
+            <EmptyCell />
+          ),
+        type: "singleSelect",
+        valueOptions: enumOptions.role,
       },
       {
         field: "banned",
+        filterOperators: enumFilterOperators,
         headerName: tAdmins("status.label"),
-        renderCell: ({ row }: GridRenderCellParams<UserWithRole>) => {
+        renderCell: ({ row }: GridRenderCellParams<User>) => {
           const isBanned =
             row.banned &&
             (!row.banExpires || new Date(row.banExpires) > new Date());
@@ -603,12 +735,14 @@ const Admins = ({
             </Tooltip>
           );
         },
-        sortable: false,
+        type: "singleSelect",
+        valueOptions: enumOptions.banned,
       },
       {
         field: "emailSubscribed",
+        filterOperators: enumFilterOperators,
         headerName: tAdmins("emailSubscribed.label"),
-        renderCell: ({ row }: GridRenderCellParams<AdminUser>) => (
+        renderCell: ({ row }: GridRenderCellParams<User>) => (
           <Chip
             color={row.emailSubscribed ? "primary" : "default"}
             icon={
@@ -627,17 +761,24 @@ const Admins = ({
             variant="outlined"
           />
         ),
-        sortable: false,
+        type: "singleSelect",
+        valueOptions: enumOptions.emailSubscribed,
       },
       {
         field: "createdAt",
+        filterOperators: dateFilterOperators,
         headerName: tAdmins("createdAt"),
+        type: "date",
         valueFormatter: (value: Date) =>
           format.dateTime(new Date(value), "short"),
+        valueGetter: (value: Date) => new Date(value),
       },
     ],
     [
       currentUserId,
+      dateFilterOperators,
+      enumFilterOperators,
+      enumOptions,
       format,
       handleBanUser,
       handleImpersonateUser,
@@ -649,13 +790,15 @@ const Admins = ({
       hasImpersonableUser,
       router,
       tAdmins,
+      tCommon,
+      textFilterOperators,
       userSessions,
     ],
   );
 
   return (
     <>
-      <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
+      <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
         <Button
           onClick={handleCreateUser}
           size="small"
@@ -669,12 +812,19 @@ const Admins = ({
         {...DATA_GRID_PROPS}
         apiRef={apiRef}
         columns={columns}
-        loading={loading}
+        filterMode="server"
+        filterModel={filterModel}
+        loading={isValidating}
+        onFilterModelChange={handleFilterModelChange}
         onPaginationModelChange={handlePaginationModelChange}
+        onSortModelChange={handleSortModelChange}
+        pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
         paginationMode="server"
-        paginationModel={{ ...paginationModel, page: paginationModel.page - 1 }}
+        paginationModel={paginationModel}
         rowCount={rowCount}
         rows={rows}
+        sortingMode="server"
+        sortModel={sortModel}
       />
     </>
   );

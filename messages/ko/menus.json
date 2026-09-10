@@ -1,0 +1,410 @@
+{
+  "actions": {
+    "createMenu": {
+      "success": "메뉴 {name}이(가) 추가되었습니다",
+      "title": "메뉴 추가"
+    },
+    "deleteMenu": {
+      "confirm": "메뉴 <bold>{name}</bold>을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+      "success": "메뉴 {name}이(가) 삭제되었습니다",
+      "title": "메뉴 삭제"
+    },
+    "label": "작업",
+    "updateMenu": {
+      "success": "메뉴 {name}이(가) 업데이트되었습니다",
+      "title": "메뉴 편집"
+    },
+    "viewMenu": {
+      "title": "메뉴 보기"
+    }
+  },
+  "availability": {
+    "label": "공급 상태",
+    "options": {
+      "Discontinued": "판매 종료",
+      "InStock": "공급 중",
+      "SoldOut": "품절"
+    },
+    "placeholder": "공급 상태를 선택해 주세요"
+  },
+  "availableModes": {
+    "helperText": "선택하지 않은 방식은 주문 페이지에서 미제공으로 표시됩니다",
+    "label": "판매 방식"
+  },
+  "createdAt": "생성일",
+  "description": {
+    "label": "설명",
+    "placeholder": "메뉴 설명을 입력해 주세요"
+  },
+  "image": {
+    "label": "커버 이미지 URL",
+    "placeholder": "이미지 URL을 입력해 주세요"
+  },
+  "inLanguage": {
+    "label": "언어",
+    "options": {
+      "en": "영어",
+      "ja": "일본어",
+      "ko": "한국어",
+      "zh-CN": "중국어 (간체)",
+      "zh-TW": "중국어 (번체)"
+    },
+    "placeholder": "메뉴 언어를 선택해 주세요"
+  },
+  "items": {
+    "actions": {
+      "createItem": {
+        "error": "항목 추가에 실패했습니다",
+        "success": "항목 {name}이(가) 추가되었습니다",
+        "title": "항목 추가"
+      },
+      "deleteItem": {
+        "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까? 가격 설정도 모두 삭제됩니다.",
+        "error": "메뉴 항목 {name} 삭제에 실패했습니다",
+        "success": "항목 {name}이(가) 삭제되었습니다",
+        "title": "항목 삭제"
+      },
+      "label": "작업",
+      "manageItem": {
+        "title": "항목 관리"
+      },
+      "reorderItem": {
+        "cancel": {
+          "confirm": "<bold>메뉴 항목</bold> 정렬을 취소하시겠습니까? 저장되지 않은 변경 사항은 사라집니다.",
+          "label": "메뉴 항목 정렬 취소"
+        },
+        "confirm": "<bold>메뉴 항목</bold>을 정렬하시겠습니까?",
+        "save": {
+          "confirm": "<bold>메뉴 항목</bold> 정렬을 저장하시겠습니까?",
+          "error": "정렬 저장에 실패했습니다",
+          "label": "메뉴 항목 정렬 저장",
+          "success": "정렬이 저장되었습니다"
+        },
+        "title": "메뉴 항목 정렬"
+      },
+      "updateItem": {
+        "error": "항목 업데이트에 실패했습니다",
+        "success": "항목 {name}이(가) 업데이트되었습니다",
+        "title": "항목 편집"
+      }
+    },
+    "addOns": {
+      "actions": {
+        "createAddOn": {
+          "error": "{name} 추가에 실패했습니다",
+          "success": "{name}이(가) 추가되었습니다",
+          "title": "추가 옵션 추가"
+        },
+        "deleteAddOn": {
+          "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까?",
+          "error": "{name} 삭제에 실패했습니다",
+          "success": "{name}이(가) 삭제되었습니다",
+          "title": "추가 옵션 삭제"
+        },
+        "label": "작업",
+        "reorderAddOn": {
+          "cancel": {
+            "confirm": "<bold>추가 옵션</bold> 정렬을 취소하시겠습니까? 저장되지 않은 변경 사항은 사라집니다.",
+            "label": "추가 옵션 정렬 취소"
+          },
+          "confirm": "<bold>추가 옵션</bold>을 정렬하시겠습니까?",
+          "save": {
+            "confirm": "<bold>추가 옵션</bold> 정렬을 저장하시겠습니까?",
+            "error": "정렬 저장에 실패했습니다",
+            "label": "추가 옵션 정렬 저장",
+            "success": "정렬이 저장되었습니다"
+          },
+          "title": "추가 옵션 정렬"
+        },
+        "updateAddOn": {
+          "error": "{name} 수정에 실패했습니다",
+          "success": "{name}이(가) 수정되었습니다",
+          "title": "추가 옵션 편집"
+        }
+      },
+      "addOnMenuItemId": {
+        "label": "추가 항목",
+        "placeholder": "추가 항목을 선택해 주세요"
+      },
+      "addOnMenuSectionId": {
+        "label": "추가 섹션",
+        "placeholder": "추가 섹션을 선택해 주세요"
+      },
+      "displayName": {
+        "menuItem": "그룹 {menuSection} 품목 {menuItem}",
+        "menuSection": "그룹 {menuSection}"
+      },
+      "label": "추가 옵션"
+    },
+    "description": {
+      "label": "설명",
+      "placeholder": "항목 설명을 입력해 주세요"
+    },
+    "image": {
+      "label": "이미지 URL",
+      "placeholder": "이미지 URL을 입력해 주세요"
+    },
+    "label": "항목",
+    "modifierGroups": {
+      "actions": {
+        "attach": {
+          "error": "옵션 그룹 연결에 실패했습니다",
+          "success": "옵션 그룹 {name}을(를) 연결했습니다",
+          "title": "옵션 그룹 연결"
+        },
+        "detach": {
+          "confirm": "<bold>{name}</bold> 연결을 해제하시겠습니까? 그룹 자체는 삭제되지 않습니다.",
+          "error": "{name} 연결 해제에 실패했습니다",
+          "success": "{name} 연결을 해제했습니다",
+          "title": "연결 해제"
+        },
+        "label": "작업",
+        "reorder": {
+          "cancel": {
+            "confirm": "<bold>옵션 그룹</bold> 정렬을 취소하시겠습니까? 저장하지 않은 변경 사항은 사라집니다.",
+            "label": "옵션 그룹 정렬 취소"
+          },
+          "confirm": "<bold>옵션 그룹</bold>을 정렬하시겠습니까?",
+          "save": {
+            "confirm": "<bold>옵션 그룹</bold> 정렬을 저장하시겠습니까?",
+            "error": "정렬 저장에 실패했습니다",
+            "label": "옵션 그룹 정렬 저장",
+            "success": "정렬이 저장되었습니다"
+          },
+          "title": "옵션 그룹 정렬"
+        }
+      },
+      "group": {
+        "label": "옵션 그룹",
+        "placeholder": "옵션 그룹을 선택해 주세요"
+      },
+      "label": "옵션"
+    },
+    "name": {
+      "label": "항목 이름",
+      "placeholder": "항목 이름을 입력해 주세요"
+    },
+    "offers": {
+      "availableHours": {
+        "label": "제공 시간대"
+      },
+      "deliveryLeadTimeMinutes": {
+        "label": "준비 시간",
+        "placeholder": "준비 시간을 입력해 주세요",
+        "unit": "분"
+      },
+      "inventoryLevel": {
+        "maxValue": {
+          "label": "최대 재고 수준",
+          "placeholder": "최대 재고 수준을 입력해 주세요"
+        },
+        "minValue": {
+          "label": "최소 재고 수준",
+          "placeholder": "최소 재고 수준을 입력해 주세요"
+        },
+        "unitText": {
+          "label": "재고 단위",
+          "placeholder": "재고 단위를 입력해 주세요"
+        },
+        "value": {
+          "label": "재고 수량",
+          "placeholder": "재고 수량을 입력해 주세요"
+        }
+      },
+      "label": "판매",
+      "price": {
+        "label": "가격",
+        "placeholder": "가격을 입력해 주세요"
+      },
+      "priceSpecification": {
+        "price": {
+          "label": "할인가（선택）",
+          "placeholder": "할인가를 입력해 주세요"
+        },
+        "validFrom": {
+          "label": "할인 시작（선택）"
+        },
+        "validThrough": {
+          "label": "할인 종료（선택）"
+        }
+      }
+    },
+    "suitableForDiet": {
+      "label": "식이 제한"
+    },
+    "url": {
+      "label": "URL",
+      "placeholder": "URL을 입력해 주세요"
+    }
+  },
+  "label": "메뉴",
+  "modifierGroups": {
+    "actions": {
+      "createGroup": {
+        "error": "옵션 그룹 추가에 실패했습니다",
+        "success": "옵션 그룹 {name}을(를) 추가했습니다",
+        "title": "옵션 그룹 추가"
+      },
+      "deleteGroup": {
+        "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까? 그룹 내 옵션도 함께 삭제됩니다.",
+        "error": "옵션 그룹 {name} 삭제에 실패했습니다",
+        "success": "옵션 그룹 {name}을(를) 삭제했습니다",
+        "title": "옵션 그룹 삭제"
+      },
+      "label": "작업",
+      "reorderGroup": {
+        "cancel": {
+          "confirm": "<bold>옵션 그룹</bold> 정렬을 취소하시겠습니까? 저장하지 않은 변경 사항은 사라집니다.",
+          "label": "옵션 그룹 정렬 취소"
+        },
+        "confirm": "<bold>옵션 그룹</bold>을 정렬하시겠습니까?",
+        "save": {
+          "confirm": "<bold>옵션 그룹</bold> 정렬을 저장하시겠습니까?",
+          "error": "정렬 저장에 실패했습니다",
+          "label": "옵션 그룹 정렬 저장",
+          "success": "정렬이 저장되었습니다"
+        },
+        "title": "옵션 그룹 정렬"
+      },
+      "updateGroup": {
+        "error": "옵션 그룹 수정에 실패했습니다",
+        "success": "옵션 그룹 {name}을(를) 수정했습니다",
+        "title": "옵션 그룹 편집"
+      },
+      "viewModifiers": {
+        "title": "옵션 보기"
+      }
+    },
+    "displayName": {
+      "label": "그룹 이름",
+      "placeholder": "그룹 이름을 입력해 주세요"
+    },
+    "label": "옵션 그룹",
+    "maxSelectionCount": {
+      "label": "최대 선택 수",
+      "placeholder": "최대 선택 수를 입력해 주세요",
+      "unlimited": "제한 없음"
+    },
+    "minSelectionCount": {
+      "label": "최소 선택 수",
+      "placeholder": "최소 선택 수를 입력해 주세요"
+    }
+  },
+  "modifiers": {
+    "actions": {
+      "createModifier": {
+        "error": "옵션 추가에 실패했습니다",
+        "success": "옵션 {name}을(를) 추가했습니다",
+        "title": "옵션 추가"
+      },
+      "deleteModifier": {
+        "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까?",
+        "error": "옵션 {name} 삭제에 실패했습니다",
+        "success": "옵션 {name}을(를) 삭제했습니다",
+        "title": "옵션 삭제"
+      },
+      "label": "작업",
+      "reorderModifier": {
+        "cancel": {
+          "confirm": "<bold>옵션</bold> 정렬을 취소하시겠습니까? 저장하지 않은 변경 사항은 사라집니다.",
+          "label": "옵션 정렬 취소"
+        },
+        "confirm": "<bold>옵션</bold>을 정렬하시겠습니까?",
+        "save": {
+          "confirm": "<bold>옵션</bold> 정렬을 저장하시겠습니까?",
+          "error": "정렬 저장에 실패했습니다",
+          "label": "옵션 정렬 저장",
+          "success": "정렬이 저장되었습니다"
+        },
+        "title": "옵션 정렬"
+      },
+      "updateModifier": {
+        "error": "옵션 수정에 실패했습니다",
+        "success": "옵션 {name}을(를) 수정했습니다",
+        "title": "옵션 편집"
+      }
+    },
+    "displayName": {
+      "label": "옵션 이름",
+      "placeholder": "옵션 이름을 입력해 주세요"
+    },
+    "label": "옵션",
+    "priceAdjustment": {
+      "label": "추가 금액",
+      "placeholder": "가격 조정을 입력해 주세요"
+    }
+  },
+  "name": {
+    "label": "메뉴 이름",
+    "placeholder": "메뉴 이름을 입력해 주세요"
+  },
+  "reorder": "순서",
+  "sections": {
+    "actions": {
+      "addSubsection": {
+        "title": "하위 섹션 추가"
+      },
+      "backToSections": {
+        "title": "섹션으로 돌아가기"
+      },
+      "createSection": {
+        "error": "섹션 추가에 실패했습니다",
+        "success": "섹션 {name}이(가) 추가되었습니다",
+        "title": "섹션 추가"
+      },
+      "deleteSection": {
+        "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까? 하위 섹션과 항목도 모두 삭제됩니다.",
+        "error": "그룹 {name} 삭제에 실패했습니다",
+        "success": "섹션 {name}이(가) 삭제되었습니다",
+        "title": "섹션 삭제"
+      },
+      "label": "작업",
+      "reorderSection": {
+        "cancel": {
+          "confirm": "<bold>그룹</bold> 정렬을 취소하시겠습니까? 저장되지 않은 변경 사항은 사라집니다.",
+          "label": "그룹 정렬 취소"
+        },
+        "confirm": "<bold>그룹</bold>을 정렬하시겠습니까?",
+        "save": {
+          "confirm": "<bold>그룹</bold> 정렬을 저장하시겠습니까?",
+          "error": "정렬 저장에 실패했습니다",
+          "label": "그룹 정렬 저장",
+          "success": "정렬이 저장되었습니다"
+        },
+        "title": "그룹 정렬"
+      },
+      "updateSection": {
+        "success": "섹션 {name}이(가) 업데이트되었습니다",
+        "title": "섹션 편집"
+      },
+      "viewItems": {
+        "title": "항목 보기"
+      }
+    },
+    "allItems": "모든 항목",
+    "description": {
+      "label": "설명",
+      "placeholder": "섹션 설명을 입력해 주세요"
+    },
+    "label": "섹션",
+    "name": {
+      "label": "섹션 이름",
+      "placeholder": "섹션 이름을 입력해 주세요"
+    },
+    "unassigned": "미분류"
+  },
+  "settings": {
+    "actions": {
+      "save": {
+        "error": "{name} 메뉴 설정 저장에 실패했습니다",
+        "label": "설정 저장",
+        "success": "{name} 메뉴 설정이 저장되었습니다"
+      },
+      "update": {
+        "title": "메뉴 편집"
+      }
+    },
+    "label": "설정"
+  },
+  "updatedAt": "수정일"
+}

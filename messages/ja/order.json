@@ -1,25 +1,185 @@
 {
-  "label": "注文",
-  "mode": {
-    "dineIn": {
-      "label": "店内",
-      "storeSlug": {
-        "tableNumber": {
-          "value": "テーブル {tableNumber}",
-          "partySize": {
-            "select": {
-              "label": "来店人数を選択",
-              "value": "{count} 名"
-            }
-          }
-        }
+  "cart": {
+    "back": "メニューに戻る",
+    "next": "レジへ進む",
+    "quantityExceedsStock": "{label} 残り {stock} 個",
+    "title": "カート",
+    "totalQuantity": "合計 {quantity} 点",
+    "view": "カートを見る"
+  },
+  "checkout": {
+    "back": "カートに戻る",
+    "coupon": {
+      "available": "利用可能なクーポン",
+      "discount": "割引",
+      "label": "クーポンコード",
+      "minSubtotal": "{amount} 以上で利用可能",
+      "placeholder": "あなたのクーポンコードを入力してください",
+      "wallet": "マイクーポン"
+    },
+    "customer": {
+      "countryCode": {
+        "label": "国番号",
+        "placeholder": "国番号を選択してください"
+      },
+      "email": {
+        "label": "メールアドレス",
+        "placeholder": "あなたのメールアドレスを入力してください"
+      },
+      "name": {
+        "label": "お名前",
+        "placeholder": "あなたのお名前を入力してください"
+      },
+      "remark": {
+        "label": "備考",
+        "placeholder": "あなたの備考を入力してください"
+      },
+      "telephone": {
+        "label": "電話番号"
       }
     },
+    "invoice": {
+      "carrierNum": "キャリア番号",
+      "carrierType": {
+        "label": "インボイスの受取方法",
+        "placeholder": "あなたのインボイスの受取方法を選択してください"
+      },
+      "certificate": "自然人証明書",
+      "company": "法人インボイス",
+      "customerAddr": "会社住所",
+      "customerIdentifier": "統一番号",
+      "customerName": "会社名",
+      "donate": "寄付インボイス",
+      "donateCode": {
+        "label": "ラブコード",
+        "placeholder": "あなたのラブコードを選択してください"
+      },
+      "individual": "ECPay キャリア",
+      "mobile": "携帯バーコード",
+      "none": "紙のインボイス",
+      "personal": "個人インボイス",
+      "title": "インボイスの種類"
+    },
+    "payment": {
+      "ApplePay": "Apple Pay",
+      "Cash": "現金",
+      "Credit": "クレジットカード",
+      "iPASS": "iPASS MONEY",
+      "Jkopay": "街口Pay",
+      "pickupUnavailable": "オンライン受取ではご利用いただけません",
+      "TWQR": "モバイル決済",
+      "WeiXin": "WeChat Pay"
+    },
+    "paymentMethod": "お支払い方法",
+    "pickupTime": {
+      "label": "受け取り時間"
+    },
+    "placeOrder": "注文する",
+    "title": "お客様情報",
+    "tradeDesc": "お食事代"
+  },
+  "complete": {
+    "backToMenu": "続けて注文する",
+    "copied": "注文番号をコピーしました",
+    "error": {
+      "subtitle": "決済が完了しませんでした。もう一度お試しいただくか、スタッフにお声がけください。",
+      "title": "決済に失敗しました"
+    },
+    "pickupLocation": "受け取り場所",
+    "pickupNumber": "受け取り番号",
+    "success": {
+      "subtitle": "ご注文を承りました。お料理を準備しています",
+      "title": "決済が完了しました"
+    },
+    "summary": {
+      "discount": "割引",
+      "title": "注文明細",
+      "total": "合計"
+    },
+    "transaction": {
+      "amount": "お支払い金額",
+      "mode": "注文方法",
+      "orderNo": "注文番号",
+      "paid": "支払い済み",
+      "paymentDate": "お支払い日時",
+      "paymentMethod": "お支払い方法",
+      "pickupTime": "受け取り時間",
+      "status": "取引ステータス",
+      "title": "取引情報",
+      "tradeNo": "ECPay取引番号",
+      "unpaid": "支払い待ち"
+    },
+    "invoice": {
+      "copied": "インボイス番号をコピーしました",
+      "invoiceDate": "発行日時",
+      "invoiceNumber": "インボイス番号",
+      "status": {
+        "issued": "発行済み",
+        "issuing": "発行中",
+        "label": "発行ステータス",
+        "pending": "発行待ち",
+        "voided": "無効"
+      },
+      "title": "インボイス情報"
+    },
+    "pending": {
+      "retry": "もう一度支払う",
+      "subtitle": "ご注文は作成されましたが、お支払いが確認できていません。すでにお支払い済みの場合はこのページが間もなく更新されます。まだの場合はスタッフにお声がけください。",
+      "title": "お支払いが未完了です"
+    }
+  },
+  "label": "注文",
+  "menuItem": {
+    "addOn": "追加",
+    "availableHours": "提供時間 {value}",
+    "calories": "{value} kcal",
+    "diet": {
+      "DiabeticDiet": "糖尿病食",
+      "GlutenFreeDiet": "グルテンフリー",
+      "HalalDiet": "ハラール",
+      "HinduDiet": "ヒンドゥー",
+      "KosherDiet": "コーシャ",
+      "LowCalorieDiet": "低カロリー",
+      "LowFatDiet": "低脂肪",
+      "LowLactoseDiet": "低乳糖",
+      "LowSaltDiet": "低塩",
+      "VeganDiet": "ビーガン",
+      "VegetarianDiet": "ベジタリアン"
+    },
+    "outsideAvailableHours": "提供時間外",
+    "preparationTime": "提供まで約{value}分",
+    "promoUntil": "{date}まで",
+    "selectAtLeast": "{count}個以上お選びください",
+    "selectUpTo": "最大{count}個まで選択できます",
+    "stockLeft": "残り {stock}"
+  },
+  "mode": {
+    "counter": {
+      "label": "店頭お持ち帰り",
+      "unavailable": "店頭お持ち帰りは対象外"
+    },
+    "dineIn": {
+      "label": "店内",
+      "partySize": {
+        "select": {
+          "label": "来店人数",
+          "placeholder": "あなたの来店人数を選択してください",
+          "value": "{count} 名"
+        }
+      },
+      "tableNumber": {
+        "label": "テーブル",
+        "value": "テーブル {tableNumber}"
+      },
+      "unavailable": "店内は対象外"
+    },
+    "driveThru": {
+      "label": "ニャンスルー",
+      "unavailable": "ニャンスルーは対象外"
+    },
     "pickup": {
-      "label": "お持ち帰り",
-      "select": {
-        "label": "店舗を選択"
-      }
+      "label": "オンライン受取",
+      "unavailable": "オンライン受取は対象外"
     },
     "storeSlug": {
       "selectTable": "テーブルを選択",
@@ -27,9 +187,13 @@
         "latest": "新着商品",
         "new": "新着",
         "search": {
+          "noResults": "該当する商品が見つかりません",
           "placeholder": "あなたのメニュー名を入力してください"
         },
         "stepper": {
+          "cart": {
+            "label": "カート"
+          },
           "checkout": {
             "label": "お会計"
           },
@@ -40,6 +204,13 @@
         "top": "TOP",
         "topSold": "人気商品"
       }
+    }
+  },
+  "organizationSlug": {
+    "label": "店舗",
+    "select": {
+      "label": "店舗を選択",
+      "placeholder": "あなたの店舗を選択してください"
     }
   }
 }

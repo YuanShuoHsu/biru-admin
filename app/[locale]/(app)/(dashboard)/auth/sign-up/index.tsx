@@ -9,7 +9,7 @@
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent, type ReactNode, useState } from "react";
-import { Controller, useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { type SignUpForm, useSignUpFormSchema } from "./definitions";
 
 import FormCard, {
@@ -114,6 +114,7 @@ const AuthSignUp = ({ locale, redirectTo }: AuthSignUpProps) => {
   const router = useRouter();
 
   const tAuth = useTranslations("auth");
+  const tCommon = useTranslations("common");
 
   const avatarSrc = useUploadAvatarSrc(SIGN_UP_AVATAR_KEY);
 
@@ -122,9 +123,9 @@ const AuthSignUp = ({ locale, redirectTo }: AuthSignUpProps) => {
   //   value,
   // }));
 
-  const [password, confirmPassword] = useWatch({
+  const [emailSubscribed, password, confirmPassword] = useWatch({
     control,
-    name: ["password", "confirmPassword"],
+    name: ["emailSubscribed", "password", "confirmPassword"],
   });
   // const country = watch("country");
 
@@ -187,7 +188,7 @@ const AuthSignUp = ({ locale, redirectTo }: AuthSignUpProps) => {
         emailSubscribed,
         firstName,
         // gender,
-        image: avatarSrc,
+        ...(avatarSrc && { image: avatarSrc }),
         lang: locale,
         lastName,
         name,
@@ -247,7 +248,7 @@ const AuthSignUp = ({ locale, redirectTo }: AuthSignUpProps) => {
             error={!!errors.lastName}
             fullWidth
             helperText={errors.lastName?.message}
-            label={tAuth("lastName.label")}
+            label={`${tAuth("lastName.label")} ${tCommon("optional")}`}
             placeholder={tAuth("lastName.placeholder")}
             {...register("lastName")}
           />
@@ -423,9 +424,10 @@ const AuthSignUp = ({ locale, redirectTo }: AuthSignUpProps) => {
                 field: { onChange, value },
                 fieldState: { error },
               }) => (
-                <CountrySelect
+                <CountryAutocomplete
                   error={!!error}
                   helperText={error?.message}
+                  mode="country"
                   onChange={onChange}
                   value={value}
                 />
@@ -445,7 +447,7 @@ const AuthSignUp = ({ locale, redirectTo }: AuthSignUpProps) => {
                   error={!!error}
                   fullWidth
                   helperText={error?.message}
-                  label={tAuth("phone")}
+                  label={tAuth("telephone.label")}
                   onChange={onChange}
                   required
                   slotProps={{
@@ -471,17 +473,14 @@ const AuthSignUp = ({ locale, redirectTo }: AuthSignUpProps) => {
         >
           <FormControlLabel
             control={
-              <Controller
-                control={control}
-                name="emailSubscribed"
-                render={({ field: { onChange, value } }) => (
-                  <Checkbox checked={value} onChange={onChange} size="small" />
-                )}
+              <Checkbox
+                checked={emailSubscribed}
+                size="small"
+                {...register("emailSubscribed")}
               />
             }
-            label={
-              <Typography variant="body2">{tAuth("emailUpdates")}</Typography>
-            }
+            label={tAuth("emailUpdates")}
+            slotProps={{ typography: { variant: "body2" } }}
           />
         </Stack>
       </StyledCardContent>

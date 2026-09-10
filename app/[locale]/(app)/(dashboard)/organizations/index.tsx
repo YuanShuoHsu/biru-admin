@@ -8,11 +8,11 @@
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
-import { useCallback, useMemo, useState } from "react";
-import { flushSync } from "react-dom";
+import { useCallback, useMemo } from "react";
+import useSWR from "swr";
 
-import CreateOrganizationDialogContent from "./CreateOrganizationDialogContent";
-import UpdateOrganizationDialogContent from "./UpdateOrganizationDialogContent";
+import CreateOrganizationDialog from "./CreateOrganizationDialog";
+import UpdateOrganizationDialog from "./UpdateOrganizationDialog";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
@@ -33,7 +33,6 @@ import {
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
-import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { Organization } from "@/types/organizations";
@@ -62,23 +61,55 @@ const StyledAvatar = styled(Avatar)({
 });
 
 interface OrganizationsProps {
+  canCreateOrganization: boolean;
   organizationPermissions: OrganizationPermissions;
   rows: Organization[];
 }
 
 const Organizations = ({
+  canCreateOrganization,
   organizationPermissions: initialOrganizationPermissions,
   rows: initialRows,
 }: OrganizationsProps) => {
-  const [loading, setLoading] = useState(false);
-  const [organizationPermissions, setOrganizationPermissions] = useState(
-    initialOrganizationPermissions,
-  );
-  const [rows, setRows] = useState(initialRows);
-
   const apiRef = useGridApiRef();
 
-  const { setSession } = useAuthStore((state) => state);
+  const {
+    data: { rows, organizationPermissions } = {
+      rows: initialRows,
+      organizationPermissions: initialOrganizationPermissions,
+    },
+    mutate,
+    isValidating: loading,
+  } = useSWR(
+    "organizations",
+    async () => {
+      const { data, error } = await authClient.organization.list();
+      if (error) throw error;
+
+      const organizations = data.toReversed();
+      const organizationPermissions =
+        await getOrganizationPermissions(organizations);
+
+      return { rows: organizations, organizationPermissions };
+    },
+    {
+      fallbackData: {
+        rows: initialRows,
+        organizationPermissions: initialOrganizationPermissions,
+      },
+      onError: (error) => {
+        enqueueSnackbar(getErrorMessage(error.code, locale), {
+          variant: "error",
+        });
+      },
+      onSuccess: () => {
+        setTimeout(() => {
+          apiRef.current?.autosizeColumns(autosizeOptions);
+        }, 0);
+      },
+    },
+  );
+
   const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
@@ -89,45 +120,9 @@ const Organizations = ({
 
   const tOrganizations = useTranslations("organizations");
 
-  const fetchOrganizationList = useCallback(async () => {
-    setLoading(true);
-
-    const { data } = await authClient.organization.list();
-    if (!data?.length) {
-      enqueueSnackbar(getErrorMessage("NO_ACTIVE_ORGANIZATION", locale), {
-        variant: "error",
-      });
-      await authClient.signOut();
-      setSession(null);
-
-      setLoading(false);
-
-      router.replace("/");
-
-      return;
-    }
-
-    const permissions = await getOrganizationPermissions(data);
-    setOrganizationPermissions(permissions);
-
-    flushSync(() => {
-      setRows(data.toReversed());
-
-      setLoading(false);
-    });
-
-    setTimeout(() => {
-      apiRef.current?.autosizeColumns(autosizeOptions);
-    }, 0);
-  }, [apiRef, locale, router, setSession]);
-
   const handleCreateOrganization = () => {
     setDialog({
-      content: (
-        <CreateOrganizationDialogContent
-          fetchOrganizationList={fetchOrganizationList}
-        />
-      ),
+      content: <CreateOrganizationDialog mutate={mutate} />,
       formId: "create-organization-form",
       open: true,
       title: tOrganizations("actions.createOrganization.title"),
@@ -138,8 +133,8 @@ const Organizations = ({
     (organization: Organization) => {
       setDialog({
         content: (
-          <UpdateOrganizationDialogContent
-            fetchOrganizationList={fetchOrganizationList}
+          <UpdateOrganizationDialog
+            mutate={mutate}
             organization={organization}
           />
         ),
@@ -148,7 +143,7 @@ const Organizations = ({
         title: tOrganizations("actions.updateOrganization.title"),
       });
     },
-    [fetchOrganizationList, setDialog, tOrganizations],
+    [mutate, setDialog, tOrganizations],
   );
 
   const handleDeleteOrganization = useCallback(
@@ -173,10 +168,11 @@ const Organizations = ({
               onSuccess: () => {
                 const message = tOrganizations(
                   "actions.deleteOrganization.success",
+                  { name },
                 );
                 enqueueSnackbar(message, { variant: "success" });
 
-                fetchOrganizationList();
+                mutate();
               },
             },
           );
@@ -185,7 +181,7 @@ const Organizations = ({
         title: tOrganizations("actions.deleteOrganization.title"),
       });
     },
-    [fetchOrganizationList, locale, setDialog, tOrganizations],
+    [locale, mutate, setDialog, tOrganizations],
   );
 
   const { canUpdateOrganizations, canDeleteOrganizations } = useMemo(() => {
@@ -210,6 +206,7 @@ const Organizations = ({
       {
         disableColumnMenu: true,
         field: "actions",
+        filterable: false,
         headerName: tOrganizations("actions.label"),
         renderCell: ({ row }: GridRenderCellParams<Organization>) => {
           const { canDeleteOrganization, canUpdateOrganization } =
@@ -224,7 +221,7 @@ const Organizations = ({
                   onClick={(event) => {
                     event.stopPropagation();
 
-                    router.push(`/organizations/${row.slug}`);
+                    router.push(`/organizations/${row.slug}/members`);
                   }}
                   size="small"
                 >
@@ -282,7 +279,7 @@ const Organizations = ({
             <StyledAvatar
               alt={name}
               src={logo || undefined}
-              {...stringAvatar(slug)}
+              {...stringAvatar(name, slug)}
             />
           </Stack>
         ),
@@ -318,16 +315,18 @@ const Organizations = ({
 
   return (
     <>
-      <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
-        <Button
-          onClick={handleCreateOrganization}
-          size="small"
-          startIcon={<AddBusiness />}
-          variant="contained"
-        >
-          {tOrganizations("actions.createOrganization.title")}
-        </Button>
-      </Stack>
+      {canCreateOrganization && (
+        <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
+          <Button
+            onClick={handleCreateOrganization}
+            size="small"
+            startIcon={<AddBusiness />}
+            variant="contained"
+          >
+            {tOrganizations("actions.createOrganization.title")}
+          </Button>
+        </Stack>
+      )}
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}

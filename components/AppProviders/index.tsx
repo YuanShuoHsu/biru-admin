@@ -1,5 +1,5 @@
 import { NextIntlClientProvider } from "next-intl";
-import { headers } from "next/headers";
+import { cookies } from "next/headers";
 
 import AppClientProviders from "./AppClientProviders";
 
@@ -7,18 +7,28 @@ import { swrKeys } from "@/constants/swr";
 
 import { authClient } from "@/lib/auth-client";
 
-import { getStores } from "@/utils/stores";
+import { resolveDefaultOrganizationSlug } from "@/utils/organizations";
+import { getSession } from "@/utils/session";
 
 interface AppProvidersProps {
   children: React.ReactNode;
 }
 
 const AppProviders = async ({ children }: AppProvidersProps) => {
-  const [stores, { data: initialSession }] = await Promise.all([
-    getStores(),
-    authClient.getSession({ fetchOptions: { headers: await headers() } }),
+  const cookieStore = await cookies();
+  const [initialSession, { data: organizations }] = await Promise.all([
+    getSession(),
+    authClient.organization.list({
+      fetchOptions: { headers: { cookie: cookieStore.toString() } },
+    }),
   ]);
-  const fallback = { [swrKeys.stores]: stores };
+
+  const fallback = {
+    [swrKeys.defaultOrganizationSlug]: resolveDefaultOrganizationSlug(
+      initialSession?.session?.activeOrganizationId,
+      organizations,
+    ),
+  };
 
   return (
     <NextIntlClientProvider>
