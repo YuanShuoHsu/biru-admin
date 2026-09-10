@@ -89,7 +89,7 @@ interface DashboardProps {
     totalOrganizations: number;
     totalOrders: number;
     ordersTrend: Trend;
-    revenueTrend: Trend;
+    revenueTrend: Trend | null;
     usersTrend: Trend | null;
     organizationsTrend: Trend;
   };
@@ -200,10 +200,6 @@ const Dashboard = ({
     return { chipColor, trendColor } as const;
   };
 
-  const revenueTotal = stats.revenueTrend.data.reduce((sum, n) => sum + n, 0);
-  const { chipColor: revenueChipColor, trendColor: revenueTrendColor } =
-    getTrendColors(stats.revenueTrend.percent);
-
   const chartColor = theme.vars.palette.primary.main;
   const slowItemsColor = theme.vars.palette.warning.main;
 
@@ -222,18 +218,27 @@ const Dashboard = ({
     .filter(({ count }) => count > 0)
     .sort((a, b) => b.count - a.count);
 
-  const avgOrderValues = stats.revenueTrend.data.map((revenue, index) =>
-    stats.ordersTrend.data[index]
-      ? Math.round(revenue / stats.ordersTrend.data[index])
-      : 0,
-  );
   const periodOrderCount = stats.ordersTrend.data.reduce(
     (sum, n) => sum + n,
     0,
   );
-  const avgOrderTotal = periodOrderCount
-    ? Math.round(revenueTotal / periodOrderCount)
-    : 0;
+  const revenueTotal =
+    stats.revenueTrend?.data.reduce((sum, n) => sum + n, 0) ?? 0;
+
+  const revenue = stats.revenueTrend && {
+    ...getTrendColors(stats.revenueTrend.percent),
+    data: stats.revenueTrend.data,
+    percent: stats.revenueTrend.percent,
+    total: revenueTotal,
+    avgTotal: periodOrderCount
+      ? Math.round(revenueTotal / periodOrderCount)
+      : 0,
+    avgValues: stats.revenueTrend.data.map((value, index) =>
+      stats.ordersTrend.data[index]
+        ? Math.round(value / stats.ordersTrend.data[index])
+        : 0,
+    ),
+  };
 
   return (
     <>
@@ -294,116 +299,122 @@ const Dashboard = ({
         })}
       </Grid>
       <Grid container spacing={2}>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <StyledCard variant="outlined">
-            <StyledCardContent>
-              <Typography component="h2" variant="subtitle2">
-                {tDashboard("stats.revenue")}
-              </Typography>
-              <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="center"
-                gap={1}
-              >
-                <Typography variant="h4">
-                  {formatMoney(revenueTotal, currency)}
-                </Typography>
-                <Chip
-                  color={revenueChipColor}
-                  label={`${stats.revenueTrend.percent > 0 ? "+" : ""}${stats.revenueTrend.percent}%`}
-                  size="small"
-                />
-              </Stack>
-              <Typography color="text.secondary" variant="caption">
-                {periodLabel}
-              </Typography>
-              <LineChart
-                height={250}
-                hideLegend
-                grid={{ horizontal: true }}
-                margin={{ left: 0, bottom: 0 }}
-                series={[
-                  {
-                    area: true,
-                    color: revenueTrendColor,
-                    curve: "linear",
-                    data: stats.revenueTrend.data,
-                    id: "revenue",
-                    label: tDashboard("stats.revenue"),
-                    showMark: false,
-                    valueFormatter: (value) =>
-                      formatMoney(value ?? 0, currency),
-                  },
-                ]}
-                sx={{
-                  "& .MuiLineChart-area": {
-                    fill: "url('#revenue')",
-                  },
-                }}
-                xAxis={[
-                  {
-                    data: trendLabels,
-                    scaleType: "point",
-                    tickInterval: (_, index) => (index + 1) % tickStep === 0,
-                  },
-                ]}
-                yAxis={[{ width: "auto" }]}
-              >
-                <AreaGradient color={revenueTrendColor} id="revenue" />
-              </LineChart>
-            </StyledCardContent>
-          </StyledCard>
-        </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <StyledCard variant="outlined">
-            <StyledCardContent>
-              <Typography component="h2" variant="subtitle2">
-                {tDashboard("charts.avgOrderValue")}
-              </Typography>
-              <Typography variant="h4">
-                {formatMoney(avgOrderTotal, currency)}
-              </Typography>
-              <Typography color="text.secondary" variant="caption">
-                {periodLabel}
-              </Typography>
-              <LineChart
-                height={250}
-                hideLegend
-                grid={{ horizontal: true }}
-                margin={{ left: 0, bottom: 0 }}
-                series={[
-                  {
-                    area: true,
-                    color: chartColor,
-                    curve: "linear",
-                    data: avgOrderValues,
-                    id: "avg-order-value",
-                    label: tDashboard("charts.avgOrderValue"),
-                    showMark: false,
-                    valueFormatter: (value) =>
-                      formatMoney(value ?? 0, currency),
-                  },
-                ]}
-                sx={{
-                  "& .MuiLineChart-area": {
-                    fill: "url('#avg-order-value')",
-                  },
-                }}
-                xAxis={[
-                  {
-                    data: trendLabels,
-                    scaleType: "point",
-                    tickInterval: (_, index) => (index + 1) % tickStep === 0,
-                  },
-                ]}
-                yAxis={[{ width: "auto" }]}
-              >
-                <AreaGradient color={chartColor} id="avg-order-value" />
-              </LineChart>
-            </StyledCardContent>
-          </StyledCard>
-        </Grid>
+        {revenue && (
+          <>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <StyledCard variant="outlined">
+                <StyledCardContent>
+                  <Typography component="h2" variant="subtitle2">
+                    {tDashboard("stats.revenue")}
+                  </Typography>
+                  <Stack
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    gap={1}
+                  >
+                    <Typography variant="h4">
+                      {formatMoney(revenue.total, currency)}
+                    </Typography>
+                    <Chip
+                      color={revenue.chipColor}
+                      label={`${revenue.percent > 0 ? "+" : ""}${revenue.percent}%`}
+                      size="small"
+                    />
+                  </Stack>
+                  <Typography color="text.secondary" variant="caption">
+                    {periodLabel}
+                  </Typography>
+                  <LineChart
+                    height={250}
+                    hideLegend
+                    grid={{ horizontal: true }}
+                    margin={{ left: 0, bottom: 0 }}
+                    series={[
+                      {
+                        area: true,
+                        color: revenue.trendColor,
+                        curve: "linear",
+                        data: revenue.data,
+                        id: "revenue",
+                        label: tDashboard("stats.revenue"),
+                        showMark: false,
+                        valueFormatter: (value) =>
+                          formatMoney(value ?? 0, currency),
+                      },
+                    ]}
+                    sx={{
+                      "& .MuiLineChart-area": {
+                        fill: "url('#revenue')",
+                      },
+                    }}
+                    xAxis={[
+                      {
+                        data: trendLabels,
+                        scaleType: "point",
+                        tickInterval: (_, index) =>
+                          (index + 1) % tickStep === 0,
+                      },
+                    ]}
+                    yAxis={[{ width: "auto" }]}
+                  >
+                    <AreaGradient color={revenue.trendColor} id="revenue" />
+                  </LineChart>
+                </StyledCardContent>
+              </StyledCard>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <StyledCard variant="outlined">
+                <StyledCardContent>
+                  <Typography component="h2" variant="subtitle2">
+                    {tDashboard("charts.avgOrderValue")}
+                  </Typography>
+                  <Typography variant="h4">
+                    {formatMoney(revenue.avgTotal, currency)}
+                  </Typography>
+                  <Typography color="text.secondary" variant="caption">
+                    {periodLabel}
+                  </Typography>
+                  <LineChart
+                    height={250}
+                    hideLegend
+                    grid={{ horizontal: true }}
+                    margin={{ left: 0, bottom: 0 }}
+                    series={[
+                      {
+                        area: true,
+                        color: chartColor,
+                        curve: "linear",
+                        data: revenue.avgValues,
+                        id: "avg-order-value",
+                        label: tDashboard("charts.avgOrderValue"),
+                        showMark: false,
+                        valueFormatter: (value) =>
+                          formatMoney(value ?? 0, currency),
+                      },
+                    ]}
+                    sx={{
+                      "& .MuiLineChart-area": {
+                        fill: "url('#avg-order-value')",
+                      },
+                    }}
+                    xAxis={[
+                      {
+                        data: trendLabels,
+                        scaleType: "point",
+                        tickInterval: (_, index) =>
+                          (index + 1) % tickStep === 0,
+                      },
+                    ]}
+                    yAxis={[{ width: "auto" }]}
+                  >
+                    <AreaGradient color={chartColor} id="avg-order-value" />
+                  </LineChart>
+                </StyledCardContent>
+              </StyledCard>
+            </Grid>
+          </>
+        )}
         <Grid size={{ xs: 12, md: 6 }}>
           <StyledCard variant="outlined">
             <StyledCardContent>

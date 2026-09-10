@@ -26,6 +26,7 @@ import {
   getTrendPercent,
 } from "@/utils/dashboard";
 import { fetcher } from "@/utils/fetcher";
+import { hasRolePermission } from "@/utils/organizations";
 import { getAdminOrders, isCountedOrder } from "@/utils/orders";
 import { getSession } from "@/utils/session";
 
@@ -107,6 +108,7 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
     trendOrders,
     orderMenu,
     sales,
+    memberRole,
   ] = await Promise.all([
     isAdmin
       ? authClient.admin
@@ -177,7 +179,18 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
           fetchOptions,
         ).catch(() => [])
       : Promise.resolve([]),
+    resolvedOrganizationId
+      ? authClient.organization
+          .getActiveMemberRole({
+            query: { organizationId: resolvedOrganizationId },
+            fetchOptions,
+          })
+          .then(({ data }) => data?.role)
+      : Promise.resolve(undefined),
   ]);
+
+  const canViewRevenue =
+    isAdmin || hasRolePermission(memberRole, { revenue: ["read"] });
 
   const periodOrders = trendOrders.filter(
     (order) => new Date(order.createdAt) >= periodStart,
@@ -240,10 +253,12 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
     trendOrders.map((order) => order.createdAt),
   );
   const revenueTrendBuckets = getTrendValueBuckets(
-    trendOrders.map((order) => ({
-      date: order.createdAt,
-      value: Number(order.total),
-    })),
+    canViewRevenue
+      ? trendOrders.map((order) => ({
+          date: order.createdAt,
+          value: Number(order.total),
+        }))
+      : [],
   );
   const usersTrendBuckets = getTrendBuckets(usersTrendCreatedAt);
   const organizationsTrendBuckets = getTrendBuckets(
@@ -263,10 +278,12 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
           data: ordersTrendBuckets.slice(buckets),
           percent: getTrendPercent(ordersTrendBuckets),
         },
-        revenueTrend: {
-          data: revenueTrendBuckets.slice(buckets),
-          percent: getTrendPercent(revenueTrendBuckets),
-        },
+        revenueTrend: canViewRevenue
+          ? {
+              data: revenueTrendBuckets.slice(buckets),
+              percent: getTrendPercent(revenueTrendBuckets),
+            }
+          : null,
         usersTrend: isAdmin
           ? {
               data: usersTrendBuckets.slice(buckets),
