@@ -50,9 +50,9 @@ export const generateMetadata = async ({
   params,
 }: MenuItemAddOnsPageProps): Promise<Metadata> => {
   const { locale } = await params;
-  const t = await getTranslations({ locale });
+  const tMenus = await getTranslations({ locale, namespace: "menus" });
 
-  return { title: t("menus.items.addOns.label") };
+  return { title: tMenus("items.addOns.label") };
 };
 
 const MenuItemAddOnsPage = async ({

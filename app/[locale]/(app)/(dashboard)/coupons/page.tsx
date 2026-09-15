@@ -42,9 +42,9 @@ export const generateMetadata = async ({
   params,
 }: CouponsPageProps): Promise<Metadata> => {
   const { locale } = await params;
-  const t = await getTranslations({ locale });
+  const tCoupons = await getTranslations({ locale, namespace: "coupons" });
 
-  return { title: t("coupons.label") };
+  return { title: tCoupons("label") };
 };
 
 const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {

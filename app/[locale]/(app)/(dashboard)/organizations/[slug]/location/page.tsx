@@ -20,9 +20,12 @@ export const generateMetadata = async ({
   params,
 }: OrganizationsSlugLocationPageProps): Promise<Metadata> => {
   const { locale } = await params;
-  const t = await getTranslations({ locale });
+  const tOrganizations = await getTranslations({
+    locale,
+    namespace: "organizations",
+  });
 
-  return { title: t("organizations.location.label") };
+  return { title: tOrganizations("location.label") };
 };
 
 const OrganizationsSlugLocationPage = async ({

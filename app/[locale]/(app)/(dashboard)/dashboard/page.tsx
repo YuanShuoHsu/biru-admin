@@ -42,9 +42,9 @@ export const generateMetadata = async ({
   params,
 }: DashboardPageProps): Promise<Metadata> => {
   const { locale } = await params;
-  const t = await getTranslations({ locale });
+  const tDashboard = await getTranslations({ locale, namespace: "dashboard" });
 
-  return { title: t("dashboard.label") };
+  return { title: tDashboard("label") };
 };
 
 const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {

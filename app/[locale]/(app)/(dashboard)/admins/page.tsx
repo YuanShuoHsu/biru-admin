@@ -41,9 +41,9 @@ export const generateMetadata = async ({
   params,
 }: AdminsPageProps): Promise<Metadata> => {
   const { locale } = await params;
-  const t = await getTranslations({ locale });
+  const tAdmins = await getTranslations({ locale, namespace: "admins" });
 
-  return { title: t("admins.label") };
+  return { title: tAdmins("label") };
 };
 
 const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {

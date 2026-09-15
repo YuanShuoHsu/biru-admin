@@ -13,9 +13,15 @@ export const generateMetadata = async ({
   params,
 }: MaintenancePageProps): Promise<Metadata> => {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "maintenance" });
+  const tMaintenance = await getTranslations({
+    locale,
+    namespace: "maintenance",
+  });
 
-  return { robots: { follow: false, index: false }, title: t("title") };
+  return {
+    robots: { follow: false, index: false },
+    title: tMaintenance("title"),
+  };
 };
 
 const MaintenancePage = async ({ params }: MaintenancePageProps) => {

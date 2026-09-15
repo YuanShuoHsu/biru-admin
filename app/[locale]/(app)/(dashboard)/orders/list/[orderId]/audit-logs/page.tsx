@@ -16,9 +16,9 @@ export const generateMetadata = async ({
   params,
 }: OrderAuditLogsPageProps): Promise<Metadata> => {
   const { locale } = await params;
-  const t = await getTranslations({ locale });
+  const tAudit = await getTranslations({ locale, namespace: "audit" });
 
-  return { title: t("audit.title") };
+  return { title: tAudit("title") };
 };
 
 const OrderAuditLogsPage = async ({

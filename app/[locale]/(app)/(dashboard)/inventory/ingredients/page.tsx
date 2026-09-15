@@ -46,9 +46,9 @@ export const generateMetadata = async ({
   params,
 }: IngredientsPageProps): Promise<Metadata> => {
   const { locale } = await params;
-  const t = await getTranslations({ locale });
+  const tInventory = await getTranslations({ locale, namespace: "inventory" });
 
-  return { title: t("inventory.ingredients.label") };
+  return { title: tInventory("ingredients.label") };
 };
 
 const IngredientsPage = async ({

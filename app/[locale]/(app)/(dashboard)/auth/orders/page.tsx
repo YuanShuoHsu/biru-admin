@@ -22,9 +22,9 @@ export const generateMetadata = async ({
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
 
-  const t = await getTranslations({ locale });
+  const tAuth = await getTranslations({ locale, namespace: "auth" });
 
-  return { title: t("auth.orders.label") };
+  return { title: tAuth("orders.label") };
 };
 
 const AuthOrdersPage = async ({

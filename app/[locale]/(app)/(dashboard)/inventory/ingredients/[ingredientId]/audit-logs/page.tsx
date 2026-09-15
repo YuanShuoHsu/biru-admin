@@ -20,9 +20,9 @@ export const generateMetadata = async ({
   params,
 }: IngredientAuditLogsPageProps): Promise<Metadata> => {
   const { locale } = await params;
-  const t = await getTranslations({ locale });
+  const tAudit = await getTranslations({ locale, namespace: "audit" });
 
-  return { title: t("audit.title") };
+  return { title: tAudit("title") };
 };
 
 const IngredientAuditLogsPage = async ({

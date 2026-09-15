@@ -18,9 +18,9 @@ export const generateMetadata = async ({
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
 
-  const t = await getTranslations({ locale });
+  const tAuth = await getTranslations({ locale, namespace: "auth" });
 
-  return { title: t("auth.store.label") };
+  return { title: tAuth("store.label") };
 };
 
 const AuthPointsStorePage = async ({

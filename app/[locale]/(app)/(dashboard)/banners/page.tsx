@@ -36,9 +36,9 @@ export const generateMetadata = async ({
   params,
 }: BannersPageProps): Promise<Metadata> => {
   const { locale } = await params;
-  const t = await getTranslations({ locale });
+  const tBanners = await getTranslations({ locale, namespace: "banners" });
 
-  return { title: t("banners.label") };
+  return { title: tBanners("label") };
 };
 
 const BannersPage = async ({ params, searchParams }: BannersPageProps) => {

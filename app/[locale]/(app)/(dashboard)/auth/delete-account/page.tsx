@@ -19,9 +19,9 @@ export const generateMetadata = async ({
   params,
 }: AuthDeleteAccountPageProps): Promise<Metadata> => {
   const { locale } = await params;
-  const t = await getTranslations({ locale });
+  const tAuth = await getTranslations({ locale, namespace: "auth" });
 
-  return { title: t("auth.deleteAccount.label") };
+  return { title: tAuth("deleteAccount.label") };
 };
 
 const AuthDeleteAccountPage = async ({

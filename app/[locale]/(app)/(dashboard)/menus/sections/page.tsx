@@ -45,9 +45,9 @@ export const generateMetadata = async ({
   params,
 }: MenusSectionsPageProps): Promise<Metadata> => {
   const { locale } = await params;
-  const t = await getTranslations({ locale });
+  const tMenus = await getTranslations({ locale, namespace: "menus" });
 
-  return { title: t("menus.sections.label") };
+  return { title: tMenus("sections.label") };
 };
 
 const MenusSectionsPage = async ({

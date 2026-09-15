@@ -34,11 +34,11 @@ export const generateMetadata = async ({
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
 
-  const t = await getTranslations({ locale, namespace: "metadata" });
+  const tMetadata = await getTranslations({ locale, namespace: "metadata" });
 
-  const description = t("description");
-  const siteName = t("siteName");
-  const title = t("home.title");
+  const description = tMetadata("description");
+  const siteName = tMetadata("siteName");
+  const title = tMetadata("home.title");
 
   return {
     description,

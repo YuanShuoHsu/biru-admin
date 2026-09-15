@@ -17,9 +17,9 @@ export const generateMetadata = async ({
   params,
 }: AuthSignInPageProps): Promise<Metadata> => {
   const { locale } = await params;
-  const t = await getTranslations({ locale });
+  const tAuth = await getTranslations({ locale, namespace: "auth" });
 
-  return { title: t("auth.signIn.label") };
+  return { title: tAuth("signIn.label") };
 };
 
 const AuthSignInPage = async ({

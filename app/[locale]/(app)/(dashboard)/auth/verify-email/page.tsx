@@ -19,9 +19,9 @@ export const generateMetadata = async ({
   params,
 }: AuthVerifyEmailPageProps): Promise<Metadata> => {
   const { locale } = await params;
-  const t = await getTranslations({ locale });
+  const tAuth = await getTranslations({ locale, namespace: "auth" });
 
-  return { title: t("auth.verifyEmail.label") };
+  return { title: tAuth("verifyEmail.label") };
 };
 
 const AuthVerifyEmailPage = async ({

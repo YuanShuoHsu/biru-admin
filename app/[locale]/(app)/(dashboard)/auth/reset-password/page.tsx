@@ -20,9 +20,9 @@ export const generateMetadata = async ({
   params,
 }: AuthResetPasswordPageProps): Promise<Metadata> => {
   const { locale } = await params;
-  const t = await getTranslations({ locale });
+  const tAuth = await getTranslations({ locale, namespace: "auth" });
 
-  return { title: t("auth.resetPassword.label") };
+  return { title: tAuth("resetPassword.label") };
 };
 
 const AuthResetPasswordPage = async ({

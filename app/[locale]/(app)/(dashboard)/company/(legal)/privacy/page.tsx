@@ -18,13 +18,14 @@ export const generateMetadata = async ({
   params,
 }: CompanyLegalPrivacyPageProps): Promise<Metadata> => {
   const { locale } = await params;
-  const t = await getTranslations({ locale });
+  const tCompany = await getTranslations({ locale, namespace: "company" });
+  const tMetadata = await getTranslations({ locale, namespace: "metadata" });
 
   return buildMetadata({
-    description: t("metadata.privacy.description"),
+    description: tMetadata("privacy.description"),
     locale,
     pathname: "/company/privacy",
-    title: t("company.legal.privacy.label"),
+    title: tCompany("legal.privacy.label"),
   });
 };
 
