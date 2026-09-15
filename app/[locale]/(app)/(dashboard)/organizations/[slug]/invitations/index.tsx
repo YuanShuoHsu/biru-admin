@@ -151,6 +151,7 @@ const OrganizationsSlugInvitations = ({
         ? [
             {
               disableColumnMenu: true,
+              disableExport: true,
               field: "actions",
               filterable: false,
               headerName: tInvitations("actions.label"),

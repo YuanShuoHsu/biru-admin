@@ -220,6 +220,8 @@ const MenuItemRecipe = ({
 
     return [
       {
+        disableColumnMenu: true,
+        disableExport: true,
         field: "actions",
         headerName: tInventory("recipes.ingredients.actions.label"),
         renderCell: ({ row }: GridRenderCellParams<Recipe>) => (

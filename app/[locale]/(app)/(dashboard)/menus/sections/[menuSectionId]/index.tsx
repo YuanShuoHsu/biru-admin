@@ -38,8 +38,9 @@ import {
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
 import { useFormatMoney } from "@/hooks/useFormatMoney";
+import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
-import { usePathname, useRouter } from "@/i18n/navigation";
+import { useRouter } from "@/i18n/navigation";
 
 import {
   Add,
@@ -179,8 +180,6 @@ const MenusMenuIdSectionId = ({
 
   const locale = useLocale();
 
-  const pathname = usePathname();
-
   const router = useRouter();
 
   const searchParams = useSearchParams();
@@ -188,6 +187,8 @@ const MenusMenuIdSectionId = ({
   const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
   const tOrder = useTranslations("order");
+
+  const updateQuery = useUpdateQuery();
 
   const enumOptions = useMemo(
     () => getMenuEnumOptions(tMenus, tOrder),
@@ -234,59 +235,48 @@ const MenusMenuIdSectionId = ({
     (newModel: GridPaginationModel) => {
       setPaginationModel(newModel);
 
-      const params = new URLSearchParams(searchParams);
-      params.set("page", String(newModel.page + 1));
-      params.set("pageSize", String(newModel.pageSize));
-
-      router.replace(`${pathname}?${params.toString()}`);
+      updateQuery({
+        page: String(newModel.page + 1),
+        pageSize: String(newModel.pageSize),
+      });
     },
-    [pathname, router, searchParams],
+    [updateQuery],
   );
 
   const handleSortModelChange = useCallback(
     (newModel: GridSortModel) => {
       setSortModel(newModel);
-      setPaginationModel((prev) => ({ ...prev, page: 0 }));
+      setPaginationModel((previous) => ({ ...previous, page: 0 }));
 
-      const sortItem = newModel[0];
-      const params = new URLSearchParams(searchParams);
-      params.delete("sortBy");
-      params.delete("sortDirection");
-      params.set("page", "1");
-      if (sortItem?.field) params.set("sortBy", sortItem.field);
-      if (sortItem?.sort) params.set("sortDirection", sortItem.sort);
-
-      router.replace(`${pathname}?${params.toString()}`);
+      updateQuery({
+        page: "1",
+        sortBy: newModel[0]?.field ?? "",
+        sortDirection: newModel[0]?.sort ?? "",
+      });
     },
-    [pathname, router, searchParams],
+    [updateQuery],
   );
 
   const handleFilterModelChange = useCallback(
     (newModel: GridFilterModel) => {
       setFilterModel(newModel);
-      setPaginationModel((prev) => ({ ...prev, page: 0 }));
+      setPaginationModel((previous) => ({ ...previous, page: 0 }));
 
-      const filterItem = newModel.items[0];
-      const newQuickFilterValue = (newModel.quickFilterValues || [])
-        .join(" ")
-        .trim();
-      const params = new URLSearchParams(searchParams);
-      const { filterField, filterOperator, filterValue } =
-        getFilterItemParams(filterItem);
-      params.delete("filterField");
-      params.delete("filterOperator");
-      params.delete("filterValue");
-      params.delete("quickFilterValue");
-      params.set("page", "1");
-      if (filterField) params.set("filterField", filterField);
-      if (filterOperator) params.set("filterOperator", filterOperator);
-      if (filterValue) params.set("filterValue", filterValue);
-      if (newQuickFilterValue)
-        params.set("quickFilterValue", newQuickFilterValue);
+      const {
+        filterField = "",
+        filterOperator = "",
+        filterValue = "",
+      } = getFilterItemParams(newModel.items[0]);
 
-      router.replace(`${pathname}?${params.toString()}`);
+      updateQuery({
+        filterField,
+        filterOperator,
+        filterValue,
+        page: "1",
+        quickFilterValue: (newModel.quickFilterValues ?? []).join(" ").trim(),
+      });
     },
-    [pathname, router, searchParams],
+    [updateQuery],
   );
 
   const handleEnterReorderMode = useCallback(() => {
@@ -499,6 +489,7 @@ const MenusMenuIdSectionId = ({
         ? [
             {
               disableColumnMenu: true,
+              disableExport: true,
               field: "actions",
               filterable: false,
               headerName: tMenus("items.actions.label"),

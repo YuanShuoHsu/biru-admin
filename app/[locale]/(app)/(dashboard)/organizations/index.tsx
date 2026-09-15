@@ -205,6 +205,7 @@ const Organizations = ({
     () => [
       {
         disableColumnMenu: true,
+        disableExport: true,
         field: "actions",
         filterable: false,
         headerName: tOrganizations("actions.label"),

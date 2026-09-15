@@ -186,6 +186,7 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
     () => [
       {
         disableColumnMenu: true,
+        disableExport: true,
         field: "actions",
         filterable: false,
         headerName: tUserSessions("actions.label"),

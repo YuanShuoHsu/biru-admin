@@ -329,6 +329,7 @@ const OrganizationsSlugMembers = ({
         ? [
             {
               disableColumnMenu: true,
+              disableExport: true,
               field: "actions",
               filterable: false,
               headerName: tMembers("actions.label"),

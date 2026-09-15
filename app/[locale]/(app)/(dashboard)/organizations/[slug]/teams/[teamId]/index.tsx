@@ -190,6 +190,7 @@ const OrganizationsSlugTeamsTeamId = ({
         ? [
             {
               disableColumnMenu: true,
+              disableExport: true,
               field: "actions",
               filterable: false,
               headerName: tTeams("actions.label"),
