@@ -117,6 +117,8 @@ Never write:
 
 **Adding more than one or two comments to a change is itself the signal** that the code isn't saying enough. Fix the naming or the structure instead; do not narrate.
 
+**Never reintroduce a removed comment.** Even when a comment would pass the test above, if the user has said they do not want one there, or the comment was deleted before, a later change must not add it back — the user's decision outranks this rule. If you have something to say about it, say it in your reply, not in the code.
+
 When a change makes an existing comment false, fix or delete it in the same change — a stale comment is worse than none. Don't hardcode identifiers into comments; they rot into misinformation after a rename.
 
 ## Behavioral Guidelines

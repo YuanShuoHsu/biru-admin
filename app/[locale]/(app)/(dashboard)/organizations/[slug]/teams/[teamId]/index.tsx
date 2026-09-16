@@ -9,6 +9,7 @@ import useSWR from "swr";
 import AddTeamMemberDialog from "./AddTeamMemberDialog";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
+import { ROLE_RANK } from "@/constants/organizations";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
@@ -247,7 +248,7 @@ const OrganizationsSlugTeamsTeamId = ({
             variant="outlined"
           />
         ),
-        sortable: false,
+        sortComparator: (a, b) => ROLE_RANK[a] - ROLE_RANK[b],
       },
       {
         field: "joinedAt",
