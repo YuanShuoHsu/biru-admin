@@ -90,12 +90,12 @@ interface ModifierGroupsProps {
   filterField?: ModifierGroupFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  groups: ModifierGroup[];
   menu: Menu;
   page: number;
   pageSize: number;
   quickFilterValue?: string;
   rowCount: number;
+  rows: ModifierGroup[];
   sortBy?: ModifierGroupSortField;
   sortDirection?: SortDirection;
 }
@@ -106,12 +106,12 @@ const ModifierGroups = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  groups: initialGroups,
   menu,
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,
   rowCount: initialRowCount,
+  rows: initialRows,
   sortBy,
   sortDirection,
 }: ModifierGroupsProps) => {
@@ -165,8 +165,8 @@ const ModifierGroups = ({
   const updateQuery = useUpdateQuery();
 
   const {
-    data: { data: groups, total: rowCount } = {
-      data: initialGroups,
+    data: { data: rows, total: rowCount } = {
+      data: initialRows,
       total: initialRowCount,
     },
     mutate,
@@ -188,7 +188,7 @@ const ModifierGroups = ({
       );
     },
     {
-      fallbackData: { data: initialGroups, total: initialRowCount },
+      fallbackData: { data: initialRows, total: initialRowCount },
       onSuccess: () => {
         setTimeout(() => {
           apiRef.current?.autosizeColumns(autosizeOptions);
@@ -281,7 +281,7 @@ const ModifierGroups = ({
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              ids: groups.map(({ id }) => id),
+              ids: rows.map(({ id }) => id),
               offset: paginationModel.page * paginationModel.pageSize,
             }),
           });
@@ -308,7 +308,7 @@ const ModifierGroups = ({
     });
   }, [
     apiRef,
-    groups,
+    rows,
     menu.id,
     mutate,
     paginationModel.page,
@@ -346,7 +346,7 @@ const ModifierGroups = ({
     const toIndex = source.index;
     if (fromIndex === toIndex) return;
 
-    const newGroups = arrayMove(groups, fromIndex, toIndex);
+    const newGroups = arrayMove(rows, fromIndex, toIndex);
     mutate({ data: newGroups, total: rowCount }, false);
   };
 
@@ -624,7 +624,7 @@ const ModifierGroups = ({
           paginationMode="server"
           paginationModel={paginationModel}
           rowCount={rowCount}
-          rows={groups}
+          rows={rows}
           slots={{
             ...DATA_GRID_PROPS.slots,
             row: isReorderMode ? Sortable : undefined,

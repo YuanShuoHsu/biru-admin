@@ -95,7 +95,7 @@ interface MenuDetailProps {
   pageSize: number;
   quickFilterValue?: string;
   rowCount: number;
-  sections: MenuSection[];
+  rows: MenuSection[];
   sortBy?: MenuSectionSortField;
   sortDirection?: SortDirection;
 }
@@ -111,7 +111,7 @@ const MenusMenuId = ({
   pageSize,
   quickFilterValue: initialQuickFilterValue,
   rowCount: initialRowCount,
-  sections: initialSections,
+  rows: initialRows,
   sortBy,
   sortDirection,
 }: MenuDetailProps) => {
@@ -164,8 +164,8 @@ const MenusMenuId = ({
   const updateQuery = useUpdateQuery();
 
   const {
-    data: { data: sections, total: rowCount } = {
-      data: initialSections,
+    data: { data: rows, total: rowCount } = {
+      data: initialRows,
       total: initialRowCount,
     },
     mutate,
@@ -187,7 +187,7 @@ const MenusMenuId = ({
       );
     },
     {
-      fallbackData: { data: initialSections, total: initialRowCount },
+      fallbackData: { data: initialRows, total: initialRowCount },
       onSuccess: () => {
         setTimeout(() => {
           apiRef.current?.autosizeColumns(autosizeOptions);
@@ -280,7 +280,7 @@ const MenusMenuId = ({
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              ids: sections.map(({ id }) => id),
+              ids: rows.map(({ id }) => id),
               offset: paginationModel.page * paginationModel.pageSize,
             }),
           });
@@ -311,7 +311,7 @@ const MenusMenuId = ({
     mutate,
     paginationModel.page,
     paginationModel.pageSize,
-    sections,
+    rows,
     setDialog,
     tMenus,
   ]);
@@ -345,7 +345,7 @@ const MenusMenuId = ({
     const toIndex = source.index;
     if (fromIndex === toIndex) return;
 
-    const newSections = arrayMove(sections, fromIndex, toIndex);
+    const newSections = arrayMove(rows, fromIndex, toIndex);
     mutate({ data: newSections, total: rowCount }, false);
   };
 
@@ -614,7 +614,7 @@ const MenusMenuId = ({
           paginationMode="server"
           paginationModel={paginationModel}
           rowCount={rowCount}
-          rows={sections}
+          rows={rows}
           slots={{
             ...DATA_GRID_PROPS.slots,
             row: isReorderMode ? Sortable : undefined,

@@ -90,7 +90,6 @@ interface CouponsProps {
   canGrantCoupon: boolean;
   canManageCoupon: boolean;
   canViewAuditLog: boolean;
-  coupons: Coupon[];
   filterField?: CouponFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
@@ -100,6 +99,7 @@ interface CouponsProps {
   pageSize: number;
   quickFilterValue?: string;
   rowCount: number;
+  rows: Coupon[];
   sortBy?: CouponSortField;
   sortDirection?: SortDirection;
 }
@@ -116,7 +116,6 @@ const Coupons = ({
   canGrantCoupon,
   canManageCoupon,
   canViewAuditLog,
-  coupons: initialCoupons,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
@@ -126,6 +125,7 @@ const Coupons = ({
   pageSize,
   quickFilterValue: initialQuickFilterValue,
   rowCount: initialRowCount,
+  rows: initialRows,
   sortBy,
   sortDirection,
 }: CouponsProps) => {
@@ -192,8 +192,8 @@ const Coupons = ({
     canManageCoupon || organization ? getCouponsPath(organization?.slug) : null;
 
   const {
-    data: { data: coupons, total: rowCount } = {
-      data: initialCoupons,
+    data: { data: rows, total: rowCount } = {
+      data: initialRows,
       total: initialRowCount,
     },
     isValidating: loading,
@@ -225,7 +225,7 @@ const Coupons = ({
       );
     },
     {
-      fallbackData: { data: initialCoupons, total: initialRowCount },
+      fallbackData: { data: initialRows, total: initialRowCount },
       onSuccess: () => {
         setTimeout(() => {
           apiRef.current?.autosizeColumns(autosizeOptions);
@@ -716,7 +716,7 @@ const Coupons = ({
         paginationMode="server"
         paginationModel={paginationModel}
         rowCount={rowCount}
-        rows={coupons}
+        rows={rows}
         sortingMode="server"
         sortModel={sortModel}
       />

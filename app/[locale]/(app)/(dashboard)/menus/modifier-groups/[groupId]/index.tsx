@@ -86,11 +86,11 @@ interface ModifiersProps {
   filterOperator?: FilterOperator;
   filterValue?: string;
   group: ModifierGroup;
-  modifiers: Modifier[];
   page: number;
   pageSize: number;
   quickFilterValue?: string;
   rowCount: number;
+  rows: Modifier[];
   sortBy?: ModifierSortField;
   sortDirection?: SortDirection;
 }
@@ -103,11 +103,11 @@ const Modifiers = ({
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
   group,
-  modifiers: initialModifiers,
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,
   rowCount: initialRowCount,
+  rows: initialRows,
   sortBy,
   sortDirection,
 }: ModifiersProps) => {
@@ -165,8 +165,8 @@ const Modifiers = ({
   );
 
   const {
-    data: { data: modifiers, total: rowCount } = {
-      data: initialModifiers,
+    data: { data: rows, total: rowCount } = {
+      data: initialRows,
       total: initialRowCount,
     },
     mutate,
@@ -188,7 +188,7 @@ const Modifiers = ({
       );
     },
     {
-      fallbackData: { data: initialModifiers, total: initialRowCount },
+      fallbackData: { data: initialRows, total: initialRowCount },
       onSuccess: () => {
         setTimeout(() => {
           apiRef.current?.autosizeColumns(autosizeOptions);
@@ -281,7 +281,7 @@ const Modifiers = ({
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              ids: modifiers.map(({ id }) => id),
+              ids: rows.map(({ id }) => id),
               offset: paginationModel.page * paginationModel.pageSize,
             }),
           });
@@ -309,7 +309,7 @@ const Modifiers = ({
   }, [
     apiRef,
     group.id,
-    modifiers,
+    rows,
     mutate,
     paginationModel.page,
     paginationModel.pageSize,
@@ -346,7 +346,7 @@ const Modifiers = ({
     const toIndex = source.index;
     if (fromIndex === toIndex) return;
 
-    const newModifiers = arrayMove(modifiers, fromIndex, toIndex);
+    const newModifiers = arrayMove(rows, fromIndex, toIndex);
     mutate({ data: newModifiers, total: rowCount }, false);
   };
 
@@ -654,7 +654,7 @@ const Modifiers = ({
           paginationMode="server"
           paginationModel={paginationModel}
           rowCount={rowCount}
-          rows={modifiers}
+          rows={rows}
           slots={{
             ...DATA_GRID_PROPS.slots,
             row: isReorderMode ? Sortable : undefined,

@@ -55,8 +55,8 @@ interface CouponRecipientsProps {
   page: number;
   pageSize: number;
   quickFilterValue?: string;
-  recipients: CouponRecipient[];
   rowCount: number;
+  rows: CouponRecipient[];
   sortBy?: CouponRecipientSortField;
   sortDirection?: SortDirection;
 }
@@ -69,8 +69,8 @@ const CouponRecipients = ({
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,
-  recipients: initialRecipients,
   rowCount: initialRowCount,
+  rows: initialRows,
   sortBy,
   sortDirection,
 }: CouponRecipientsProps) => {
@@ -119,8 +119,8 @@ const CouponRecipients = ({
   );
 
   const {
-    data: { data: recipients, total: rowCount } = {
-      data: initialRecipients,
+    data: { data: rows, total: rowCount } = {
+      data: initialRows,
       total: initialRowCount,
     },
     isValidating: loading,
@@ -145,7 +145,7 @@ const CouponRecipients = ({
         )}`,
       ),
     {
-      fallbackData: { data: initialRecipients, total: initialRowCount },
+      fallbackData: { data: initialRows, total: initialRowCount },
       keepPreviousData: true,
       onSuccess: () => {
         setTimeout(() => {
@@ -293,7 +293,7 @@ const CouponRecipients = ({
       paginationMode="server"
       paginationModel={paginationModel}
       rowCount={rowCount}
-      rows={recipients}
+      rows={rows}
       sortingMode="server"
       sortModel={sortModel}
     />

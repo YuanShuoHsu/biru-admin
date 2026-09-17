@@ -129,30 +129,31 @@ const IngredientsPage = async ({
       )
     : [];
 
-  const [{ ingredients, total }, { suppliers }] = await Promise.all([
-    getIngredients(
-      organization.slug,
-      {
-        page,
-        pageSize,
-        filterField,
-        filterOperator,
-        filterValue,
-        quickFilterEnums,
-        quickFilterValue,
-        sortBy,
-        sortDirection,
-      },
-      fetchOptions,
-    ),
-    canViewPurchasing
-      ? getSuppliers(
-          organization.slug,
-          { pageSize: MAX_PAGE_SIZE, sortBy: "name", sortDirection: "asc" },
-          fetchOptions,
-        )
-      : { suppliers: [] },
-  ]);
+  const [{ ingredients: rows, total: rowCount }, { suppliers }] =
+    await Promise.all([
+      getIngredients(
+        organization.slug,
+        {
+          page,
+          pageSize,
+          filterField,
+          filterOperator,
+          filterValue,
+          quickFilterEnums,
+          quickFilterValue,
+          sortBy,
+          sortDirection,
+        },
+        fetchOptions,
+      ),
+      canViewPurchasing
+        ? getSuppliers(
+            organization.slug,
+            { pageSize: MAX_PAGE_SIZE, sortBy: "name", sortDirection: "asc" },
+            fetchOptions,
+          )
+        : { suppliers: [] },
+    ]);
 
   return (
     <InventoryTabsLayout
@@ -168,12 +169,12 @@ const IngredientsPage = async ({
         filterField={filterField}
         filterOperator={filterOperator}
         filterValue={filterValue}
-        ingredients={ingredients}
         organizationSlug={organization.slug}
         page={page}
         pageSize={pageSize}
         quickFilterValue={quickFilterValue}
-        rowCount={total}
+        rowCount={rowCount}
+        rows={rows}
         sortBy={sortBy}
         sortDirection={sortDirection}
         suppliers={suppliers}

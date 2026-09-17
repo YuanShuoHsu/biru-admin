@@ -91,26 +91,27 @@ const SuppliersPage = async ({ params, searchParams }: SuppliersPageProps) => {
       locale,
     });
 
-  const [{ data: memberRole }, { suppliers, total }] = await Promise.all([
-    authClient.organization.getActiveMemberRole({
-      query: { organizationId: organization.id },
-      fetchOptions,
-    }),
-    getSuppliers(
-      organization.slug,
-      {
-        page,
-        pageSize,
-        filterField,
-        filterOperator,
-        filterValue,
-        quickFilterValue,
-        sortBy,
-        sortDirection,
-      },
-      fetchOptions,
-    ),
-  ]);
+  const [{ data: memberRole }, { suppliers: rows, total: rowCount }] =
+    await Promise.all([
+      authClient.organization.getActiveMemberRole({
+        query: { organizationId: organization.id },
+        fetchOptions,
+      }),
+      getSuppliers(
+        organization.slug,
+        {
+          page,
+          pageSize,
+          filterField,
+          filterOperator,
+          filterValue,
+          quickFilterValue,
+          sortBy,
+          sortDirection,
+        },
+        fetchOptions,
+      ),
+    ]);
 
   const canViewAuditLog = hasRolePermission(memberRole?.role, {
     auditLog: ["read"],
@@ -151,10 +152,10 @@ const SuppliersPage = async ({ params, searchParams }: SuppliersPageProps) => {
         page={page}
         pageSize={pageSize}
         quickFilterValue={quickFilterValue}
-        rowCount={total}
+        rowCount={rowCount}
+        rows={rows}
         sortBy={sortBy}
         sortDirection={sortDirection}
-        suppliers={suppliers}
       />
     </InventoryTabsLayout>
   );

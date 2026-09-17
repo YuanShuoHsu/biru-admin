@@ -74,9 +74,9 @@ interface SuppliersProps {
   pageSize: number;
   quickFilterValue?: string;
   rowCount: number;
+  rows: Supplier[];
   sortBy?: SupplierSortField;
   sortDirection?: SortDirection;
-  suppliers: Supplier[];
 }
 
 const Suppliers = ({
@@ -91,9 +91,9 @@ const Suppliers = ({
   pageSize,
   quickFilterValue: initialQuickFilterValue,
   rowCount: initialRowCount,
+  rows: initialRows,
   sortBy,
   sortDirection,
-  suppliers: initialSuppliers,
 }: SuppliersProps) => {
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
@@ -139,8 +139,8 @@ const Suppliers = ({
   const updateQuery = useUpdateQuery();
 
   const {
-    data: { data: suppliers, total: rowCount } = {
-      data: initialSuppliers,
+    data: { data: rows, total: rowCount } = {
+      data: initialRows,
       total: initialRowCount,
     },
     mutate,
@@ -161,7 +161,7 @@ const Suppliers = ({
         `/api/organizations/${organizationSlug}/suppliers?${getDataGridSearchParams(paginationModel, filterModel, sortModel)}`,
       ),
     {
-      fallbackData: { data: initialSuppliers, total: initialRowCount },
+      fallbackData: { data: initialRows, total: initialRowCount },
       onSuccess: () => {
         setTimeout(() => {
           apiRef.current?.autosizeColumns(autosizeOptions);
@@ -441,7 +441,7 @@ const Suppliers = ({
         paginationMode="server"
         paginationModel={paginationModel}
         rowCount={rowCount}
-        rows={suppliers}
+        rows={rows}
         sortingMode="server"
         sortModel={sortModel}
       />

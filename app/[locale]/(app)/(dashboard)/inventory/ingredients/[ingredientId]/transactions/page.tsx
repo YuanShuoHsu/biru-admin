@@ -103,21 +103,22 @@ const IngredientTransactionsPage = async ({
       )
     : [];
 
-  const { transactions, total } = await getInventoryTransactions(
-    ingredientId,
-    {
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterEnums,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-    },
-    fetchOptions,
-  );
+  const { transactions: rows, total: rowCount } =
+    await getInventoryTransactions(
+      ingredientId,
+      {
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterEnums,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+      },
+      fetchOptions,
+    );
 
   return (
     <IngredientTransactions
@@ -129,10 +130,10 @@ const IngredientTransactionsPage = async ({
       page={page}
       pageSize={pageSize}
       quickFilterValue={quickFilterValue}
-      rowCount={total}
+      rowCount={rowCount}
+      rows={rows}
       sortBy={sortBy}
       sortDirection={sortDirection}
-      transactions={transactions}
     />
   );
 };

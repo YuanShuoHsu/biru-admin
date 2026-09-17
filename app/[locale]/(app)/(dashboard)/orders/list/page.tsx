@@ -108,7 +108,7 @@ const OrdersPage = async ({ params, searchParams }: OrdersPageProps) => {
     auditLog: ["read"],
   });
 
-  const { orders, total } = await getAdminOrders(
+  const { orders: rows, total: rowCount } = await getAdminOrders(
     selectedOrganization.slug,
     {
       page,
@@ -131,12 +131,12 @@ const OrdersPage = async ({ params, searchParams }: OrdersPageProps) => {
         filterField={filterField}
         filterOperator={filterOperator}
         filterValue={filterValue}
-        orders={orders}
         organizationSlug={selectedOrganization.slug}
         page={page}
         pageSize={pageSize}
         quickFilterValue={quickFilterValue}
-        rowCount={total}
+        rowCount={rowCount}
+        rows={rows}
         sortBy={sortBy}
         sortDirection={sortDirection}
       />

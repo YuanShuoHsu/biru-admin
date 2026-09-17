@@ -63,9 +63,9 @@ interface IngredientTransactionsProps {
   pageSize: number;
   quickFilterValue?: string;
   rowCount: number;
+  rows: InventoryTransaction[];
   sortBy?: InventoryTransactionSortField;
   sortDirection?: SortDirection;
-  transactions: InventoryTransaction[];
 }
 
 const IngredientTransactions = ({
@@ -78,9 +78,9 @@ const IngredientTransactions = ({
   pageSize,
   quickFilterValue: initialQuickFilterValue,
   rowCount: initialRowCount,
+  rows: initialRows,
   sortBy,
   sortDirection,
-  transactions: initialTransactions,
 }: IngredientTransactionsProps) => {
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
@@ -131,8 +131,8 @@ const IngredientTransactions = ({
   );
 
   const {
-    data: { data: transactions, total: rowCount } = {
-      data: initialTransactions,
+    data: { data: rows, total: rowCount } = {
+      data: initialRows,
       total: initialRowCount,
     },
     isValidating: loading,
@@ -152,7 +152,7 @@ const IngredientTransactions = ({
         `/api/ingredients/${ingredient.id}/inventory-transactions?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
       ),
     {
-      fallbackData: { data: initialTransactions, total: initialRowCount },
+      fallbackData: { data: initialRows, total: initialRowCount },
       onSuccess: () => {
         setTimeout(() => {
           apiRef.current?.autosizeColumns(autosizeOptions);
@@ -320,7 +320,7 @@ const IngredientTransactions = ({
       paginationMode="server"
       paginationModel={paginationModel}
       rowCount={rowCount}
-      rows={transactions}
+      rows={rows}
       sortingMode="server"
       sortModel={sortModel}
     />

@@ -75,13 +75,13 @@ interface MenuItemModifierGroupsProps {
   filterField?: ModifierGroupFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  links: MenuItemModifierGroup[];
   menuId: string;
   menuItemId: string;
   page: number;
   pageSize: number;
   quickFilterValue?: string;
   rowCount: number;
+  rows: MenuItemModifierGroup[];
   sortBy?: ModifierGroupSortField;
   sortDirection?: SortDirection;
 }
@@ -92,13 +92,13 @@ const MenuItemModifierGroups = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  links: initialLinks,
   menuId,
   menuItemId,
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,
   rowCount: initialRowCount,
+  rows: initialRows,
   sortBy,
   sortDirection,
 }: MenuItemModifierGroupsProps) => {
@@ -144,8 +144,8 @@ const MenuItemModifierGroups = ({
   const updateQuery = useUpdateQuery();
 
   const {
-    data: { data: links, total: rowCount } = {
-      data: initialLinks,
+    data: { data: rows, total: rowCount } = {
+      data: initialRows,
       total: initialRowCount,
     },
     mutate,
@@ -167,7 +167,7 @@ const MenuItemModifierGroups = ({
       );
     },
     {
-      fallbackData: { data: initialLinks, total: initialRowCount },
+      fallbackData: { data: initialRows, total: initialRowCount },
       onSuccess: () => {
         setTimeout(() => {
           apiRef.current?.autosizeColumns(autosizeOptions);
@@ -321,7 +321,7 @@ const MenuItemModifierGroups = ({
               method: "PATCH",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
-                ids: links.map(({ id }) => id),
+                ids: rows.map(({ id }) => id),
                 offset: paginationModel.page * paginationModel.pageSize,
               }),
             },
@@ -348,7 +348,7 @@ const MenuItemModifierGroups = ({
     });
   }, [
     apiRef,
-    links,
+    rows,
     menuItemId,
     mutate,
     paginationModel.page,
@@ -385,7 +385,7 @@ const MenuItemModifierGroups = ({
     const toIndex = source.index;
     if (fromIndex === toIndex) return;
 
-    const newLinks = arrayMove(links, fromIndex, toIndex);
+    const newLinks = arrayMove(rows, fromIndex, toIndex);
     mutate({ data: newLinks, total: rowCount }, false);
   };
 
@@ -568,7 +568,7 @@ const MenuItemModifierGroups = ({
           paginationMode="server"
           paginationModel={paginationModel}
           rowCount={rowCount}
-          rows={links}
+          rows={rows}
           slots={{
             ...DATA_GRID_PROPS.slots,
             row: isReorderMode ? Sortable : undefined,

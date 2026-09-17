@@ -93,25 +93,26 @@ const MenusSectionsPage = async ({
   if (redirectParams)
     redirect({ href: `/menus/sections?${redirectParams.toString()}`, locale });
 
-  const [{ sections, total }, session, fullOrgData] = await Promise.all([
-    getAdminMenuSections(
-      menu.id,
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-      fetchOptions,
-    ),
-    getSession(),
-    authClient.organization.getFullOrganization({
-      query: { organizationId: menu.organizationId },
-      fetchOptions,
-    }),
-  ]);
+  const [{ sections: rows, total: rowCount }, session, fullOrgData] =
+    await Promise.all([
+      getAdminMenuSections(
+        menu.id,
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+        fetchOptions,
+      ),
+      getSession(),
+      authClient.organization.getFullOrganization({
+        query: { organizationId: menu.organizationId },
+        fetchOptions,
+      }),
+    ]);
 
   const currentUserId = session?.user?.id;
   const members = fullOrgData.data?.members || [];
@@ -137,8 +138,8 @@ const MenusSectionsPage = async ({
         page={page}
         pageSize={pageSize}
         quickFilterValue={quickFilterValue}
-        rowCount={total}
-        sections={sections}
+        rowCount={rowCount}
+        rows={rows}
         sortBy={sortBy}
         sortDirection={sortDirection}
       />

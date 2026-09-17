@@ -108,26 +108,27 @@ const MenusMenuIdSectionIdPage = async ({
     ? getQuickFilterEnums(quickFilterValue, getMenuEnumOptions(tMenus, tOrder))
     : [];
 
-  const [{ items, total }, session, fullOrgData] = await Promise.all([
-    getAdminMenuSectionItems(
-      menuSectionId,
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterValue,
-      quickFilterEnums,
-      sortBy,
-      sortDirection,
-      fetchOptions,
-    ),
-    getSession(),
-    authClient.organization.getFullOrganization({
-      query: { organizationId: menu.organizationId },
-      fetchOptions,
-    }),
-  ]);
+  const [{ items: rows, total: rowCount }, session, fullOrgData] =
+    await Promise.all([
+      getAdminMenuSectionItems(
+        menuSectionId,
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterValue,
+        quickFilterEnums,
+        sortBy,
+        sortDirection,
+        fetchOptions,
+      ),
+      getSession(),
+      authClient.organization.getFullOrganization({
+        query: { organizationId: menu.organizationId },
+        fetchOptions,
+      }),
+    ]);
 
   const currentUserId = session?.user?.id;
   const members = fullOrgData.data?.members || [];
@@ -148,12 +149,12 @@ const MenusMenuIdSectionIdPage = async ({
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
-      items={items}
       openingHours={selectedOrganization.openingHours}
       page={page}
       pageSize={pageSize}
       quickFilterValue={quickFilterValue}
-      rowCount={total}
+      rowCount={rowCount}
+      rows={rows}
       menuSectionId={menuSectionId}
       sortBy={sortBy}
       sortDirection={sortDirection}

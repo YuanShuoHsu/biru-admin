@@ -129,7 +129,7 @@ const RecipeIngredientsPage = async ({
       locale,
     });
 
-  const { materials, total } = await getRecipeIngredients(
+  const { materials: rows, total: rowCount } = await getRecipeIngredients(
     recipe.id,
     {
       page,
@@ -167,13 +167,13 @@ const RecipeIngredientsPage = async ({
       filterOperator={filterOperator}
       filterValue={filterValue}
       ingredients={ingredients}
-      materials={materials}
       menuItem={menuItem}
       page={page}
       pageSize={pageSize}
       quickFilterValue={quickFilterValue}
       recipe={recipe}
-      rowCount={total}
+      rowCount={rowCount}
+      rows={rows}
       sortBy={sortBy}
       sortDirection={sortDirection}
     />

@@ -101,25 +101,26 @@ const MenuItemModifierGroupsPage = async ({
       locale,
     });
 
-  const [{ links, total }, session, fullOrgData] = await Promise.all([
-    getAdminMenuItemModifierGroups(
-      menuItemId,
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-      fetchOptions,
-    ),
-    getSession(),
-    authClient.organization.getFullOrganization({
-      query: { organizationId: menu.organizationId },
-      fetchOptions,
-    }),
-  ]);
+  const [{ links: rows, total: rowCount }, session, fullOrgData] =
+    await Promise.all([
+      getAdminMenuItemModifierGroups(
+        menuItemId,
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+        fetchOptions,
+      ),
+      getSession(),
+      authClient.organization.getFullOrganization({
+        query: { organizationId: menu.organizationId },
+        fetchOptions,
+      }),
+    ]);
 
   const currentUserId = session?.user?.id;
   const members = fullOrgData.data?.members || [];
@@ -136,13 +137,13 @@ const MenuItemModifierGroupsPage = async ({
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
-      links={links}
       menuId={menu.id}
       menuItemId={menuItemId}
       page={page}
       pageSize={pageSize}
       quickFilterValue={quickFilterValue}
-      rowCount={total}
+      rowCount={rowCount}
+      rows={rows}
       sortBy={sortBy}
       sortDirection={sortDirection}
     />

@@ -77,7 +77,6 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
 }));
 
 interface BannersProps {
-  banners: Banner[];
   filterField?: BannerFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
@@ -85,12 +84,12 @@ interface BannersProps {
   pageSize: number;
   quickFilterValue?: string;
   rowCount: number;
+  rows: Banner[];
   sortBy?: BannerSortField;
   sortDirection?: SortDirection;
 }
 
 const Banners = ({
-  banners: initialBanners,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
@@ -98,6 +97,7 @@ const Banners = ({
   pageSize,
   quickFilterValue: initialQuickFilterValue,
   rowCount: initialRowCount,
+  rows: initialRows,
   sortBy,
   sortDirection,
 }: BannersProps) => {
@@ -145,8 +145,8 @@ const Banners = ({
   const enumOptions = useMemo(() => getBannerEnumOptions(tBanners), [tBanners]);
 
   const {
-    data: { data: banners, total: rowCount } = {
-      data: initialBanners,
+    data: { data: rows, total: rowCount } = {
+      data: initialRows,
       total: initialRowCount,
     },
     mutate,
@@ -167,7 +167,7 @@ const Banners = ({
         `/api/banners?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
       ),
     {
-      fallbackData: { data: initialBanners, total: initialRowCount },
+      fallbackData: { data: initialRows, total: initialRowCount },
       onSuccess: () => {
         setTimeout(() => {
           apiRef.current?.autosizeColumns(autosizeOptions);
@@ -260,7 +260,7 @@ const Banners = ({
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              ids: banners.map(({ id }) => id),
+              ids: rows.map(({ id }) => id),
               offset: paginationModel.page * paginationModel.pageSize,
             }),
           });
@@ -285,7 +285,7 @@ const Banners = ({
     });
   }, [
     apiRef,
-    banners,
+    rows,
     mutate,
     paginationModel.page,
     paginationModel.pageSize,
@@ -322,7 +322,7 @@ const Banners = ({
     const toIndex = source.index;
     if (fromIndex === toIndex) return;
 
-    const newBanners = arrayMove(banners, fromIndex, toIndex);
+    const newBanners = arrayMove(rows, fromIndex, toIndex);
     mutate({ data: newBanners, total: rowCount }, false);
   };
 
@@ -557,7 +557,7 @@ const Banners = ({
           paginationMode="server"
           paginationModel={paginationModel}
           rowCount={rowCount}
-          rows={banners}
+          rows={rows}
           slots={{
             ...DATA_GRID_PROPS.slots,
             row: isReorderMode ? Sortable : undefined,

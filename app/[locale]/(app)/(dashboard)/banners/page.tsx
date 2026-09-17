@@ -76,7 +76,7 @@ const BannersPage = async ({ params, searchParams }: BannersPageProps) => {
     ? getQuickFilterEnums(quickFilterValue, getBannerEnumOptions(tBanners))
     : [];
 
-  const { banners, total } = await getBanners(
+  const { banners: rows, total: rowCount } = await getBanners(
     {
       page,
       pageSize,
@@ -93,14 +93,14 @@ const BannersPage = async ({ params, searchParams }: BannersPageProps) => {
 
   return (
     <Banners
-      banners={banners}
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
       page={page}
       pageSize={pageSize}
       quickFilterValue={quickFilterValue}
-      rowCount={total}
+      rowCount={rowCount}
+      rows={rows}
       sortBy={sortBy}
       sortDirection={sortDirection}
     />

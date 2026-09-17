@@ -85,7 +85,7 @@ const CouponRecipientsPage = async ({
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const [coupon, { recipients, total }] = await Promise.all([
+  const [coupon, { recipients: rows, total: rowCount }] = await Promise.all([
     getCoupon(couponId, fetchOptions),
     getCouponRecipients(
       couponId,
@@ -115,8 +115,8 @@ const CouponRecipientsPage = async ({
       page={page}
       pageSize={pageSize}
       quickFilterValue={quickFilterValue}
-      recipients={recipients}
-      rowCount={total}
+      rowCount={rowCount}
+      rows={rows}
       sortBy={sortBy}
       sortDirection={sortDirection}
     />

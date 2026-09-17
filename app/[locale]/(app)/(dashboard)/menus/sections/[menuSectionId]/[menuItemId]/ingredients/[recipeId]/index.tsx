@@ -83,13 +83,13 @@ interface RecipeIngredientsProps {
   filterOperator?: FilterOperator;
   filterValue?: string;
   ingredients: Ingredient[];
-  materials: RecipeIngredient[];
   menuItem: MenuItem;
   page: number;
   pageSize: number;
   quickFilterValue?: string;
   recipe: Recipe;
   rowCount: number;
+  rows: RecipeIngredient[];
   sortBy?: RecipeIngredientSortField;
   sortDirection?: SortDirection;
 }
@@ -103,13 +103,13 @@ const RecipeIngredients = ({
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
   ingredients,
-  materials: initialMaterials,
   menuItem,
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,
   recipe: initialRecipe,
   rowCount: initialRowCount,
+  rows: initialRows,
   sortBy,
   sortDirection,
 }: RecipeIngredientsProps) => {
@@ -172,8 +172,8 @@ const RecipeIngredients = ({
   );
 
   const {
-    data: { data: materials, total: rowCount } = {
-      data: initialMaterials,
+    data: { data: rows, total: rowCount } = {
+      data: initialRows,
       total: initialRowCount,
     },
     mutate,
@@ -194,7 +194,7 @@ const RecipeIngredients = ({
         `${url}?${getDataGridSearchParams(paginationModel, filterModel, sortModel)}`,
       ),
     {
-      fallbackData: { data: initialMaterials, total: initialRowCount },
+      fallbackData: { data: initialRows, total: initialRowCount },
       onSuccess: () => {
         setTimeout(() => {
           apiRef.current?.autosizeColumns(autosizeOptions);
@@ -299,7 +299,7 @@ const RecipeIngredients = ({
               method: "PATCH",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
-                ids: materials.map(({ id }) => id),
+                ids: rows.map(({ id }) => id),
                 offset: paginationModel.page * paginationModel.pageSize,
               }),
             },
@@ -333,7 +333,7 @@ const RecipeIngredients = ({
     });
   }, [
     apiRef,
-    materials,
+    rows,
     mutate,
     paginationModel.page,
     paginationModel.pageSize,
@@ -375,7 +375,7 @@ const RecipeIngredients = ({
     if (fromIndex === toIndex) return;
 
     mutate(
-      { data: arrayMove(materials, fromIndex, toIndex), total: rowCount },
+      { data: arrayMove(rows, fromIndex, toIndex), total: rowCount },
       false,
     );
   };
@@ -688,7 +688,7 @@ const RecipeIngredients = ({
           paginationMode="server"
           paginationModel={paginationModel}
           rowCount={rowCount}
-          rows={materials}
+          rows={rows}
           slots={{
             ...DATA_GRID_PROPS.slots,
             row: isReorderMode ? Sortable : undefined,

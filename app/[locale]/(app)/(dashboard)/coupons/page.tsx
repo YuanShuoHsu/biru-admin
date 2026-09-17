@@ -118,34 +118,35 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
       )
     : [];
 
-  const [{ coupons, total }, organizations] = await Promise.all([
-    isAdmin || selectedOrganization
-      ? getCoupons(
-          locale,
-          {
-            page,
-            pageSize,
-            filterField,
-            filterOperator,
-            filterValue,
-            organizationSlug: selectedOrganization?.slug,
-            quickFilterEnums,
-            quickFilterValue,
-            sortBy,
-            sortDirection,
-          },
-          fetchOptions,
-        )
-      : { coupons: [], total: 0 },
-    organizationsPromise,
-  ]);
+  const [{ coupons: rows, total: rowCount }, organizations] = await Promise.all(
+    [
+      isAdmin || selectedOrganization
+        ? getCoupons(
+            locale,
+            {
+              page,
+              pageSize,
+              filterField,
+              filterOperator,
+              filterValue,
+              organizationSlug: selectedOrganization?.slug,
+              quickFilterEnums,
+              quickFilterValue,
+              sortBy,
+              sortDirection,
+            },
+            fetchOptions,
+          )
+        : { coupons: [], total: 0 },
+      organizationsPromise,
+    ],
+  );
 
   return (
     <Coupons
       canGrantCoupon={canGrantCoupon}
       canManageCoupon={isAdmin}
       canViewAuditLog={canViewAuditLog}
-      coupons={coupons}
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
@@ -154,7 +155,8 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
       page={page}
       pageSize={pageSize}
       quickFilterValue={quickFilterValue}
-      rowCount={total}
+      rowCount={rowCount}
+      rows={rows}
       sortBy={sortBy}
       sortDirection={sortDirection}
     />

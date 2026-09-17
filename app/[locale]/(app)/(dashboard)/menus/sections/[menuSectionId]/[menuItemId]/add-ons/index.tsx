@@ -70,7 +70,6 @@ const DataGrid = dynamic(
 );
 
 interface MenuItemAddOnsProps {
-  addOns: MenuItemAddOn[];
   canViewAuditLog: boolean;
   canWrite: boolean;
   filterField?: AddOnFilterField;
@@ -82,12 +81,12 @@ interface MenuItemAddOnsProps {
   pageSize: number;
   quickFilterValue?: string;
   rowCount: number;
+  rows: MenuItemAddOn[];
   sortBy?: AddOnSortField;
   sortDirection?: SortDirection;
 }
 
 const MenuItemAddOns = ({
-  addOns: initialAddOns,
   canViewAuditLog,
   canWrite,
   filterField: initialFilterField,
@@ -99,6 +98,7 @@ const MenuItemAddOns = ({
   pageSize,
   quickFilterValue: initialQuickFilterValue,
   rowCount: initialRowCount,
+  rows: initialRows,
   sortBy,
   sortDirection,
 }: MenuItemAddOnsProps) => {
@@ -147,8 +147,8 @@ const MenuItemAddOns = ({
   const updateQuery = useUpdateQuery();
 
   const {
-    data: { data: addOns, total: rowCount } = {
-      data: initialAddOns,
+    data: { data: rows, total: rowCount } = {
+      data: initialRows,
       total: initialRowCount,
     },
     mutate,
@@ -173,7 +173,7 @@ const MenuItemAddOns = ({
       );
     },
     {
-      fallbackData: { data: initialAddOns, total: initialRowCount },
+      fallbackData: { data: initialRows, total: initialRowCount },
       onSuccess: () => {
         setTimeout(() => {
           apiRef.current?.autosizeColumns(autosizeOptions);
@@ -350,7 +350,7 @@ const MenuItemAddOns = ({
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              ids: addOns.map(({ id }) => id),
+              ids: rows.map(({ id }) => id),
               offset: paginationModel.page * paginationModel.pageSize,
             }),
           });
@@ -379,7 +379,7 @@ const MenuItemAddOns = ({
       title: tMenus("items.addOns.actions.reorderAddOn.save.label"),
     });
   }, [
-    addOns,
+    rows,
     apiRef,
     menuItemId,
     mutate,
@@ -417,7 +417,7 @@ const MenuItemAddOns = ({
     const toIndex = source.index;
     if (fromIndex === toIndex) return;
 
-    const newAddOns = arrayMove(addOns, fromIndex, toIndex);
+    const newAddOns = arrayMove(rows, fromIndex, toIndex);
     mutate({ data: newAddOns, total: rowCount }, false);
   };
 
@@ -599,7 +599,7 @@ const MenuItemAddOns = ({
           paginationMode="server"
           paginationModel={paginationModel}
           rowCount={rowCount}
-          rows={addOns}
+          rows={rows}
           slots={{
             ...DATA_GRID_PROPS.slots,
             row: isReorderMode ? Sortable : undefined,

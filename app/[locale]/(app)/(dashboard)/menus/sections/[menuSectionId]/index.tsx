@@ -109,12 +109,12 @@ interface MenusMenuIdSectionIdProps {
   filterField?: MenuItemFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  items: MenuItem[];
   openingHours?: string | null;
   page: number;
   pageSize: number;
   quickFilterValue?: string;
   rowCount: number;
+  rows: MenuItem[];
   menuSectionId: string;
   sortBy?: MenuItemSortField;
   sortDirection?: SortDirection;
@@ -127,12 +127,12 @@ const MenusMenuIdSectionId = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  items: initialItems,
   openingHours,
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,
   rowCount: initialRowCount,
+  rows: initialRows,
   menuSectionId,
   sortBy,
   sortDirection,
@@ -196,8 +196,8 @@ const MenusMenuIdSectionId = ({
   );
 
   const {
-    data: { data: items, total: rowCount } = {
-      data: initialItems,
+    data: { data: rows, total: rowCount } = {
+      data: initialRows,
       total: initialRowCount,
     },
     mutate,
@@ -219,7 +219,7 @@ const MenusMenuIdSectionId = ({
       );
     },
     {
-      fallbackData: { data: initialItems, total: initialRowCount },
+      fallbackData: { data: initialRows, total: initialRowCount },
       onSuccess: () => {
         setTimeout(() => {
           apiRef.current?.autosizeColumns(autosizeOptions);
@@ -315,7 +315,7 @@ const MenusMenuIdSectionId = ({
               method: "PATCH",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
-                ids: items.map(({ id }) => id),
+                ids: rows.map(({ id }) => id),
                 offset: paginationModel.page * paginationModel.pageSize,
               }),
             },
@@ -341,7 +341,7 @@ const MenusMenuIdSectionId = ({
     });
   }, [
     apiRef,
-    items,
+    rows,
     mutate,
     paginationModel.page,
     paginationModel.pageSize,
@@ -379,7 +379,7 @@ const MenusMenuIdSectionId = ({
     const toIndex = source.index;
     if (fromIndex === toIndex) return;
 
-    const newItems = arrayMove(items, fromIndex, toIndex);
+    const newItems = arrayMove(rows, fromIndex, toIndex);
     mutate({ data: newItems, total: rowCount }, false);
   };
 
@@ -794,7 +794,7 @@ const MenusMenuIdSectionId = ({
           paginationMode="server"
           paginationModel={paginationModel}
           rowCount={rowCount}
-          rows={items}
+          rows={rows}
           slots={{
             ...DATA_GRID_PROPS.slots,
             row: isReorderMode ? Sortable : undefined,

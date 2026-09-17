@@ -121,17 +121,14 @@ const TRANSITION_SLOTS: OrderTransition["direction"][][] = [
 const canIssueInvoice = ({ invoice, paymentDate }: AdminOrderResponse) =>
   !!paymentDate && invoice?.status === "pending";
 
-// 存進載具或捐出去的發票沒有紙本，綠界也不會給列印網址
 const canPrintInvoice = ({ invoice }: AdminOrderResponse) =>
   invoice?.status === "issued" &&
   !invoice.carrierType &&
   invoice.type !== "donate";
 
-// 網址一取得就算已印，紙其實沒出來時得還原正本，否則顧客只拿得到不能對獎的補印聯
 const canResetInvoicePrint = (order: AdminOrderResponse) =>
   canPrintInvoice(order) && !!order.invoice?.printedAt;
 
-// 折讓過或跨期都不能作廢，但那要查綠界與稅期，判定留在後端
 const canVoidInvoice = ({ invoice }: AdminOrderResponse) =>
   invoice?.status === "issued";
 
@@ -140,12 +137,12 @@ interface OrdersProps {
   filterField?: OrderFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  orders: AdminOrderResponse[];
   organizationSlug: string;
   page: number;
   pageSize: number;
   quickFilterValue?: string;
   rowCount: number;
+  rows: AdminOrderResponse[];
   sortBy?: OrderSortField;
   sortDirection?: SortDirection;
 }
@@ -155,12 +152,12 @@ const Orders = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  orders: initialOrders,
   organizationSlug,
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,
   rowCount: initialRowCount,
+  rows: initialRows,
   sortBy,
   sortDirection,
 }: OrdersProps) => {
@@ -208,8 +205,8 @@ const Orders = ({
   );
 
   const {
-    data: { data: orders, total: rowCount } = {
-      data: initialOrders,
+    data: { data: rows, total: rowCount } = {
+      data: initialRows,
       total: initialRowCount,
     },
     isValidating: loading,
@@ -235,7 +232,7 @@ const Orders = ({
         )}`,
       ),
     {
-      fallbackData: { data: initialOrders, total: initialRowCount },
+      fallbackData: { data: initialRows, total: initialRowCount },
       onSuccess: () => {
         setTimeout(() => {
           apiRef.current?.autosizeColumns(autosizeOptions);
@@ -542,35 +539,25 @@ const Orders = ({
     [mutate, organizationSlug, setDialog, tOrders],
   );
 
-  const hasPendingInvoice = useMemo(
-    () => orders.some(canIssueInvoice),
-    [orders],
-  );
+  const hasPendingInvoice = useMemo(() => rows.some(canIssueInvoice), [rows]);
 
-  const hasPrintableInvoice = useMemo(
-    () => orders.some(canPrintInvoice),
-    [orders],
-  );
+  const hasPrintableInvoice = useMemo(() => rows.some(canPrintInvoice), [rows]);
 
   const hasResettableInvoicePrint = useMemo(
-    () => orders.some(canResetInvoicePrint),
-    [orders],
+    () => rows.some(canResetInvoicePrint),
+    [rows],
   );
 
-  const hasVoidableInvoice = useMemo(
-    () => orders.some(canVoidInvoice),
-    [orders],
-  );
+  const hasVoidableInvoice = useMemo(() => rows.some(canVoidInvoice), [rows]);
 
   const hasRefundable = useMemo(
-    () => orders.some(({ refundable }) => refundable),
-    [orders],
+    () => rows.some(({ refundable }) => refundable),
+    [rows],
   );
 
   const hasTransitions = useMemo(
-    () =>
-      orders.some(({ availableTransitions }) => availableTransitions.length),
-    [orders],
+    () => rows.some(({ availableTransitions }) => availableTransitions.length),
+    [rows],
   );
 
   const columns = useMemo<GridColDef[]>(
@@ -923,7 +910,7 @@ const Orders = ({
       paginationMode="server"
       paginationModel={paginationModel}
       rowCount={rowCount}
-      rows={orders}
+      rows={rows}
       sortingMode="server"
       sortModel={sortModel}
     />

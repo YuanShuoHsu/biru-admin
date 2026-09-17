@@ -106,26 +106,27 @@ const ModifiersPage = async ({ params, searchParams }: ModifiersPageProps) => {
     ? getQuickFilterEnums(quickFilterValue, getMenuEnumOptions(tMenus, tOrder))
     : [];
 
-  const [{ modifiers, total }, session, fullOrgData] = await Promise.all([
-    getAdminModifiers(
-      groupId,
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterValue,
-      quickFilterEnums,
-      sortBy,
-      sortDirection,
-      fetchOptions,
-    ),
-    getSession(),
-    authClient.organization.getFullOrganization({
-      query: { organizationId: menu.organizationId },
-      fetchOptions,
-    }),
-  ]);
+  const [{ modifiers: rows, total: rowCount }, session, fullOrgData] =
+    await Promise.all([
+      getAdminModifiers(
+        groupId,
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterValue,
+        quickFilterEnums,
+        sortBy,
+        sortDirection,
+        fetchOptions,
+      ),
+      getSession(),
+      authClient.organization.getFullOrganization({
+        query: { organizationId: menu.organizationId },
+        fetchOptions,
+      }),
+    ]);
 
   const currentUserId = session?.user?.id;
   const members = fullOrgData.data?.members || [];
@@ -147,11 +148,11 @@ const ModifiersPage = async ({ params, searchParams }: ModifiersPageProps) => {
       filterOperator={filterOperator}
       filterValue={filterValue}
       group={group}
-      modifiers={modifiers}
       page={page}
       pageSize={pageSize}
       quickFilterValue={quickFilterValue}
-      rowCount={total}
+      rowCount={rowCount}
+      rows={rows}
       sortBy={sortBy}
       sortDirection={sortDirection}
     />

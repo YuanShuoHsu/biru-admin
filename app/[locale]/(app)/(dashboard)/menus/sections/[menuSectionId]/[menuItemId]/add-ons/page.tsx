@@ -101,25 +101,26 @@ const MenuItemAddOnsPage = async ({
       locale,
     });
 
-  const [{ addOns, total }, session, fullOrgData] = await Promise.all([
-    getAdminMenuItemAddOns(
-      menuItemId,
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-      fetchOptions,
-    ),
-    getSession(),
-    authClient.organization.getFullOrganization({
-      query: { organizationId: menu.organizationId },
-      fetchOptions,
-    }),
-  ]);
+  const [{ addOns: rows, total: rowCount }, session, fullOrgData] =
+    await Promise.all([
+      getAdminMenuItemAddOns(
+        menuItemId,
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+        fetchOptions,
+      ),
+      getSession(),
+      authClient.organization.getFullOrganization({
+        query: { organizationId: menu.organizationId },
+        fetchOptions,
+      }),
+    ]);
 
   const currentUserId = session?.user?.id;
   const members = fullOrgData.data?.members || [];
@@ -131,7 +132,6 @@ const MenuItemAddOnsPage = async ({
 
   return (
     <MenuItemAddOns
-      addOns={addOns}
       canViewAuditLog={canViewAuditLog}
       canWrite={canWrite}
       filterField={filterField}
@@ -142,7 +142,8 @@ const MenuItemAddOnsPage = async ({
       page={page}
       pageSize={pageSize}
       quickFilterValue={quickFilterValue}
-      rowCount={total}
+      rowCount={rowCount}
+      rows={rows}
       sortBy={sortBy}
       sortDirection={sortDirection}
     />

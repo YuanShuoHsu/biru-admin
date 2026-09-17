@@ -96,25 +96,26 @@ const ModifierGroupsPage = async ({
       locale,
     });
 
-  const [{ groups, total }, session, fullOrgData] = await Promise.all([
-    getAdminModifierGroups(
-      menu.id,
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-      fetchOptions,
-    ),
-    getSession(),
-    authClient.organization.getFullOrganization({
-      query: { organizationId: menu.organizationId },
-      fetchOptions,
-    }),
-  ]);
+  const [{ groups: rows, total: rowCount }, session, fullOrgData] =
+    await Promise.all([
+      getAdminModifierGroups(
+        menu.id,
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+        fetchOptions,
+      ),
+      getSession(),
+      authClient.organization.getFullOrganization({
+        query: { organizationId: menu.organizationId },
+        fetchOptions,
+      }),
+    ]);
 
   const currentUserId = session?.user?.id;
   const members = fullOrgData.data?.members || [];
@@ -136,12 +137,12 @@ const ModifierGroupsPage = async ({
         filterField={filterField}
         filterOperator={filterOperator}
         filterValue={filterValue}
-        groups={groups}
         menu={menu}
         page={page}
         pageSize={pageSize}
         quickFilterValue={quickFilterValue}
-        rowCount={total}
+        rowCount={rowCount}
+        rows={rows}
         sortBy={sortBy}
         sortDirection={sortDirection}
       />
