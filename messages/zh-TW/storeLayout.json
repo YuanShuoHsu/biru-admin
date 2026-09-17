@@ -5,6 +5,10 @@
     "width": "寬 {value} m"
   },
   "empty": "此組織尚未建立店內配置。",
+  "floors": {
+    "ground": "一樓",
+    "upper": "二樓"
+  },
   "gridScale": "格線 1 m",
   "itemSize": "{width} × {depth} × {height} cm",
   "items": {
@@ -25,6 +29,7 @@
     "prepTable": "備料台",
     "returnCounter": "回收檯",
     "sink": "水槽與瀝乾",
+    "stair": "樓梯",
     "storageShelf": "儲物層架",
     "stove": "爐具",
     "table": "桌",

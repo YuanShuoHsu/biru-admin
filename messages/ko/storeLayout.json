@@ -5,6 +5,10 @@
     "width": "너비 {value} m"
   },
   "empty": "이 조직의 매장 배치는 아직 작성되지 않았습니다.",
+  "floors": {
+    "ground": "1층",
+    "upper": "2층"
+  },
   "gridScale": "격자 1 m",
   "itemSize": "{width} × {depth} × {height} cm",
   "items": {
@@ -25,6 +29,7 @@
     "prepTable": "준비대",
     "returnCounter": "반납 카운터",
     "sink": "싱크대와 건조대",
+    "stair": "계단",
     "storageShelf": "수납 선반",
     "stove": "화구",
     "table": "테이블",

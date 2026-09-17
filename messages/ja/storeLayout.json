@@ -5,6 +5,10 @@
     "width": "幅 {value} m"
   },
   "empty": "この組織の店内レイアウトはまだ作成されていません。",
+  "floors": {
+    "ground": "1階",
+    "upper": "2階"
+  },
   "gridScale": "グリッド 1 m",
   "itemSize": "{width} × {depth} × {height} cm",
   "items": {
@@ -25,6 +29,7 @@
     "prepTable": "仕込み台",
     "returnCounter": "返却カウンター",
     "sink": "シンクと水切り",
+    "stair": "階段",
     "storageShelf": "収納棚",
     "stove": "コンロ",
     "table": "テーブル",

@@ -5,6 +5,10 @@
     "width": "W {value} m"
   },
   "empty": "This organization has no store layout yet.",
+  "floors": {
+    "ground": "1F",
+    "upper": "2F"
+  },
   "gridScale": "Grid 1 m",
   "itemSize": "{width} × {depth} × {height} cm",
   "items": {
@@ -25,6 +29,7 @@
     "prepTable": "Prep table",
     "returnCounter": "Return counter",
     "sink": "Sink and drying rack",
+    "stair": "Stairs",
     "storageShelf": "Storage shelf",
     "stove": "Stove",
     "table": "Table",

@@ -1,9 +1,10 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { type ComponentRef, useRef, useState } from "react";
+import { type ComponentRef, useMemo, useRef, useState } from "react";
 
 import {
+  STORE_LAYOUT_FLOORS,
   STORE_LAYOUT_ITEMS,
   STORE_LAYOUT_KIND_COLORS,
   STORE_LAYOUT_PEOPLE,
@@ -35,7 +36,11 @@ import { Canvas } from "@react-three/fiber";
 
 import { DoubleSide } from "three";
 
-import type { StoreLayoutMove, StoreLayoutView } from "@/types/storeLayout";
+import type {
+  StoreLayoutFloor,
+  StoreLayoutMove,
+  StoreLayoutView,
+} from "@/types/storeLayout";
 
 import Avatar from "./Avatar";
 import Person from "./Person";
@@ -146,8 +151,25 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
   const [canvasElement, setCanvasElement] = useState<HTMLDivElement | null>(
     null,
   );
+  const [floor, setFloor] = useState<StoreLayoutFloor>("ground");
   const [showLabels, setShowLabels] = useState(true);
   const [view, setView] = useState<StoreLayoutView>("iso");
+
+  const items = useMemo(
+    () => STORE_LAYOUT_ITEMS.filter((item) => item.floor === floor),
+    [floor],
+  );
+  const people = useMemo(
+    () => STORE_LAYOUT_PEOPLE.filter((person) => person.floor === floor),
+    [floor],
+  );
+
+  const handleFloorChange = (
+    _event: React.MouseEvent<HTMLElement>,
+    value: StoreLayoutFloor | null,
+  ) => {
+    if (value) setFloor(value);
+  };
 
   const handleViewChange = (
     _event: React.MouseEvent<HTMLElement>,
@@ -192,6 +214,18 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
   return (
     <StyledStack gap={2}>
       <Toolbar gap={2}>
+        <ToggleButtonGroup
+          exclusive
+          onChange={handleFloorChange}
+          size="small"
+          value={floor}
+        >
+          {STORE_LAYOUT_FLOORS.map((value) => (
+            <ToggleButton key={value} value={value}>
+              {tStoreLayout(`floors.${value}`)}
+            </ToggleButton>
+          ))}
+        </ToggleButtonGroup>
         <ToggleButtonGroup
           exclusive
           onChange={handleViewChange}
@@ -281,7 +315,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                 </Dimension>
               </Html>
             ))}
-            {STORE_LAYOUT_ITEMS.map(
+            {items.map(
               ({ depth, elevation, height, kind, label, width, x, z }) => (
                 <mesh
                   key={`${label}-${x}-${z}`}
@@ -317,12 +351,12 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                 </mesh>
               ),
             )}
-            {STORE_LAYOUT_PEOPLE.map(({ role, x, z }) => (
+            {people.map(({ role, x, z }) => (
               <group key={`${role}-${x}-${z}`} position={[x, 0, z]}>
                 <Person color={STORE_LAYOUT_PERSON_COLORS[role]} />
               </group>
             ))}
-            <Avatar />
+            <Avatar floor={floor} key={floor} />
             <OrbitControls
               ref={controlsRef}
               target={[...STORE_LAYOUT_VIEWS.iso.target]}

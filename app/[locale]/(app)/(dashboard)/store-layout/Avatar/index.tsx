@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 
 import {
   STORE_LAYOUT_AVATAR,
@@ -13,11 +13,9 @@ import { useFrame, useThree } from "@react-three/fiber";
 
 import { type Group, Vector3 } from "three";
 
-import type { StoreLayoutMove } from "@/types/storeLayout";
+import type { StoreLayoutFloor, StoreLayoutMove } from "@/types/storeLayout";
 
 import Person from "../Person";
-
-const OBSTACLES = STORE_LAYOUT_ITEMS.filter(({ elevation }) => elevation === 0);
 
 const UP = new Vector3(0, 1, 0);
 const heading = new Vector3();
@@ -30,20 +28,32 @@ const START_POSITION: [number, number, number] = [start.x, 0, start.z];
 const clampToRoom = (value: number, size: number) =>
   Math.min(Math.max(value, radius), size - radius);
 
-const isBlocked = (x: number, z: number) =>
-  OBSTACLES.some(
-    (item) =>
-      x + radius > item.x &&
-      x - radius < item.x + item.width &&
-      z + radius > item.z &&
-      z - radius < item.z + item.depth,
-  );
+interface AvatarProps {
+  floor: StoreLayoutFloor;
+}
 
-const Avatar = () => {
+const Avatar = ({ floor }: AvatarProps) => {
   const groupRef = useRef<Group>(null);
   const verticalSpeedRef = useRef(0);
   const camera = useThree((state) => state.camera);
   const [, getMove] = useKeyboardControls<StoreLayoutMove>();
+
+  const obstacles = useMemo(
+    () =>
+      STORE_LAYOUT_ITEMS.filter(
+        (item) => item.floor === floor && item.elevation === 0,
+      ),
+    [floor],
+  );
+
+  const isBlocked = (x: number, z: number) =>
+    obstacles.some(
+      (item) =>
+        x + radius > item.x &&
+        x - radius < item.x + item.width &&
+        z + radius > item.z &&
+        z - radius < item.z + item.depth,
+    );
 
   useFrame((_state, delta) => {
     const group = groupRef.current;
