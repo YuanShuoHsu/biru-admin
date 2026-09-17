@@ -61,7 +61,6 @@ const EmptyOverlay = styled("div")({
   justifyContent: "center",
 });
 
-// Html 標籤渲染在獨立的 React root，拿不到 MUI theme context，只能直接引用 CSS 變數
 const Label = styled("span")({
   padding: "2px 6px",
   border: "1px solid var(--mui-palette-divider)",
@@ -72,7 +71,51 @@ const Label = styled("span")({
   whiteSpace: "nowrap",
 });
 
-const GRID_SIZE = Math.max(STORE_LAYOUT_ROOM.width, STORE_LAYOUT_ROOM.depth);
+const Size = styled("span")({
+  marginLeft: 4,
+  color: "var(--mui-palette-text-secondary)",
+});
+
+const Dimension = styled("span")({
+  color: "var(--mui-palette-text-secondary)",
+  fontSize: 12,
+  fontWeight: 500,
+  whiteSpace: "nowrap",
+  textShadow:
+    "0 0 3px var(--mui-palette-background-default), 0 0 3px var(--mui-palette-background-default)",
+});
+
+const GRID_SIZE = Math.ceil(
+  Math.max(STORE_LAYOUT_ROOM.width, STORE_LAYOUT_ROOM.depth),
+);
+
+const toCentimeters = (value: number) => Math.round(value * 1000) / 10;
+
+const ROOM_DIMENSIONS = [
+  {
+    key: "width",
+    position: [
+      STORE_LAYOUT_ROOM.width / 2,
+      0,
+      STORE_LAYOUT_ROOM.depth + 0.45,
+    ] as const,
+    value: STORE_LAYOUT_ROOM.width,
+  },
+  {
+    key: "depth",
+    position: [
+      STORE_LAYOUT_ROOM.width + 0.45,
+      0,
+      STORE_LAYOUT_ROOM.depth / 2,
+    ] as const,
+    value: STORE_LAYOUT_ROOM.depth,
+  },
+  {
+    key: "height",
+    position: [-0.35, STORE_LAYOUT_ROOM.height / 2, -0.35] as const,
+    value: STORE_LAYOUT_ROOM.height,
+  },
+] as const;
 
 interface StoreLayoutProps {
   empty?: boolean;
@@ -144,6 +187,9 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
           }
           label={tStoreLayout("showLabels")}
         />
+        <Typography color="text.secondary" variant="caption">
+          {tStoreLayout("gridScale")}
+        </Typography>
       </Toolbar>
       <CanvasContainer>
         <Canvas
@@ -187,6 +233,18 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
               />
             </mesh>
           ))}
+          {ROOM_DIMENSIONS.map(({ key, position, value }) => (
+            <Html
+              center
+              key={key}
+              pointerEvents="none"
+              position={[...position]}
+            >
+              <Dimension>
+                {tStoreLayout(`dimensions.${key}`, { value })}
+              </Dimension>
+            </Html>
+          ))}
           {STORE_LAYOUT_ITEMS.map(
             ({ depth, elevation, height, kind, label, width, x, z }) => (
               <mesh
@@ -206,7 +264,16 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                     pointerEvents="none"
                     position={[0, height / 2 + 0.08, 0]}
                   >
-                    <Label>{tStoreLayout(`items.${label}`)}</Label>
+                    <Label>
+                      {tStoreLayout(`items.${label}`)}
+                      <Size>
+                        {tStoreLayout("itemSize", {
+                          depth: toCentimeters(depth),
+                          height: toCentimeters(height),
+                          width: toCentimeters(width),
+                        })}
+                      </Size>
+                    </Label>
                   </Html>
                 )}
               </mesh>

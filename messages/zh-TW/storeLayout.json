@@ -1,5 +1,12 @@
 {
+  "dimensions": {
+    "depth": "深 {value} m",
+    "height": "高 {value} m",
+    "width": "寬 {value} m"
+  },
   "empty": "此組織尚未建立店內配置。",
+  "gridScale": "格線 1 m",
+  "itemSize": "{width} × {depth} × {height} cm",
   "items": {
     "blender": "果汁機",
     "cleanShelf": "潔淨餐具層架",
@@ -24,7 +31,7 @@
     "workCounter": "吧台工作檯"
   },
   "label": "店內配置",
-  "showLabels": "顯示名稱",
+  "showLabels": "顯示名稱與尺寸",
   "views": {
     "customer": "顧客視角",
     "iso": "斜視",

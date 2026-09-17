@@ -1,5 +1,12 @@
 {
+  "dimensions": {
+    "depth": "D {value} m",
+    "height": "H {value} m",
+    "width": "W {value} m"
+  },
   "empty": "This organization has no store layout yet.",
+  "gridScale": "Grid 1 m",
+  "itemSize": "{width} × {depth} × {height} cm",
   "items": {
     "blender": "Blender",
     "cleanShelf": "Clean tableware shelf",
@@ -24,7 +31,7 @@
     "workCounter": "Bar work counter"
   },
   "label": "Store Layout",
-  "showLabels": "Show labels",
+  "showLabels": "Show names and sizes",
   "views": {
     "customer": "Customer view",
     "iso": "Isometric",

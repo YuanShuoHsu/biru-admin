@@ -1,5 +1,12 @@
 {
+  "dimensions": {
+    "depth": "奥行 {value} m",
+    "height": "高さ {value} m",
+    "width": "幅 {value} m"
+  },
   "empty": "この組織の店内レイアウトはまだ作成されていません。",
+  "gridScale": "グリッド 1 m",
+  "itemSize": "{width} × {depth} × {height} cm",
   "items": {
     "blender": "ブレンダー",
     "cleanShelf": "清潔な食器棚",
@@ -24,7 +31,7 @@
     "workCounter": "バー作業台"
   },
   "label": "店内レイアウト",
-  "showLabels": "名称を表示",
+  "showLabels": "名称とサイズを表示",
   "views": {
     "customer": "お客様視点",
     "iso": "斜め視点",

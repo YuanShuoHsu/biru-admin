@@ -1,5 +1,12 @@
 {
+  "dimensions": {
+    "depth": "깊이 {value} m",
+    "height": "높이 {value} m",
+    "width": "너비 {value} m"
+  },
   "empty": "이 조직의 매장 배치는 아직 작성되지 않았습니다.",
+  "gridScale": "격자 1 m",
+  "itemSize": "{width} × {depth} × {height} cm",
   "items": {
     "blender": "블렌더",
     "cleanShelf": "세척 식기 선반",
@@ -24,7 +31,7 @@
     "workCounter": "바 작업대"
   },
   "label": "매장 배치",
-  "showLabels": "이름 표시",
+  "showLabels": "이름과 크기 표시",
   "views": {
     "customer": "고객 시점",
     "iso": "사선 시점",
