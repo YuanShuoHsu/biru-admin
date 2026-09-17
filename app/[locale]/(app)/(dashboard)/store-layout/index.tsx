@@ -14,12 +14,12 @@ import {
 } from "@/constants/storeLayout";
 
 import {
-  Alert,
   FormControlLabel,
   Stack,
   Switch,
   ToggleButton,
   ToggleButtonGroup,
+  Typography,
 } from "@mui/material";
 import { blueGrey, grey } from "@mui/material/colors";
 import { styled } from "@mui/material/styles";
@@ -54,6 +54,13 @@ const CanvasContainer = styled("div")(({ theme }) => ({
   },
 }));
 
+const EmptyOverlay = styled("div")({
+  height: "100%",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+});
+
 // Html 標籤渲染在獨立的 React root，拿不到 MUI theme context，只能直接引用 CSS 變數
 const Label = styled("span")({
   padding: "2px 6px",
@@ -67,7 +74,11 @@ const Label = styled("span")({
 
 const GRID_SIZE = Math.max(STORE_LAYOUT_ROOM.width, STORE_LAYOUT_ROOM.depth);
 
-const StoreLayout = () => {
+interface StoreLayoutProps {
+  empty?: boolean;
+}
+
+const StoreLayout = ({ empty }: StoreLayoutProps) => {
   const tStoreLayout = useTranslations("storeLayout");
 
   const controlsRef = useRef<ComponentRef<typeof OrbitControls>>(null);
@@ -97,9 +108,21 @@ const StoreLayout = () => {
     setShowLabels(checked);
   };
 
+  if (empty)
+    return (
+      <StyledStack gap={2}>
+        <CanvasContainer>
+          <EmptyOverlay>
+            <Typography color="text.secondary" variant="body2">
+              {tStoreLayout("empty")}
+            </Typography>
+          </EmptyOverlay>
+        </CanvasContainer>
+      </StyledStack>
+    );
+
   return (
     <StyledStack gap={2}>
-      <Alert severity="info">{tStoreLayout("assumption")}</Alert>
       <Toolbar gap={2}>
         <ToggleButtonGroup
           exclusive

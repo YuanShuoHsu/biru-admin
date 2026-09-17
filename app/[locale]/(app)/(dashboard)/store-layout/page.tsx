@@ -10,8 +10,6 @@ import type { Locale } from "@/i18n/routing";
 
 import { STORE_LAYOUT_ORGANIZATION_SLUG } from "@/constants/storeLayout";
 
-import { Alert } from "@mui/material";
-
 import { getResolvedAdminOrganization } from "@/utils/menus";
 
 interface StoreLayoutPageProps {
@@ -40,10 +38,10 @@ const StoreLayoutPage = async ({
 
   setRequestLocale(locale);
 
-  const [organization, tStoreLayout] = await Promise.all([
-    getResolvedAdminOrganization(organizationSlug, cookieStore.toString()),
-    getTranslations("storeLayout"),
-  ]);
+  const organization = await getResolvedAdminOrganization(
+    organizationSlug,
+    cookieStore.toString(),
+  );
 
   if (!organization) notFound();
 
@@ -53,10 +51,9 @@ const StoreLayoutPage = async ({
     redirect({ href: `/store-layout?${params.toString()}`, locale });
   }
 
-  if (organization.slug !== STORE_LAYOUT_ORGANIZATION_SLUG)
-    return <Alert severity="info">{tStoreLayout("empty")}</Alert>;
-
-  return <StoreLayout />;
+  return (
+    <StoreLayout empty={organization.slug !== STORE_LAYOUT_ORGANIZATION_SLUG} />
+  );
 };
 
 export default StoreLayoutPage;

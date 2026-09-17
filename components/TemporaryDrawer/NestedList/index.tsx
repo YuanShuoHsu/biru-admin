@@ -47,6 +47,7 @@ const useNavItems = (): NavItem[][] => {
             ...(inventoryChildren.length
               ? [{ ...navItem("/inventory"), children: inventoryChildren }]
               : []),
+            ...(isAdmin ? [navItem("/store-layout")] : []),
           ],
         ]
       : []),
@@ -58,7 +59,7 @@ const useNavItems = (): NavItem[][] => {
         : []),
     ],
     ...(isAdmin
-      ? [[navItem("/banners"), navItem("/admins"), navItem("/store-layout")]]
+      ? [[navItem("/banners"), navItem("/admins")]]
       : []),
     [
       { ...navItem("/auth"), children: navChildren["/auth"] },
