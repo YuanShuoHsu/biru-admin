@@ -31,6 +31,7 @@
     "workCounter": "Bar work counter"
   },
   "label": "Store Layout",
+  "moveHint": "Click the view, then move the character with the arrow keys or WASD and jump with the space bar",
   "showLabels": "Show names and sizes",
   "views": {
     "customer": "Customer view",
