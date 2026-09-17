@@ -32,6 +32,7 @@ import {
   Divider,
   Link,
   Stack,
+  type SvgIconProps,
   TextField,
   Typography,
 } from "@mui/material";
@@ -196,7 +197,7 @@ const AuthVerifyEmail = ({
     {
       actions: React.ReactNode;
       color: "error" | "primary";
-      icon: React.ElementType;
+      icon: React.ComponentType<SvgIconProps>;
       subtitle: string;
       title: string;
     }

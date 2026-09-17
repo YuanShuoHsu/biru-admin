@@ -79,6 +79,7 @@ import {
   SwapVert,
   Tune,
   ViewCarousel,
+  ViewInAr,
   ViewKanban,
 } from "@mui/icons-material";
 import type { SvgIconProps } from "@mui/material";
@@ -548,6 +549,11 @@ const routes: Route[] = [
     label: "admins.label",
     query: ["page", "pageSize"],
     segment: "admins",
+  },
+  {
+    icon: ViewInAr,
+    label: "storeLayout.label",
+    segment: "store-layout",
   },
   {
     children: [

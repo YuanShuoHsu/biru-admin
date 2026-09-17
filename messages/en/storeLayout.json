@@ -1,0 +1,33 @@
+{
+  "assumption": "Dimensions are assumptions and will be updated after on-site measurement. Drag to rotate, scroll to zoom.",
+  "items": {
+    "blender": "Blender",
+    "cleanShelf": "Clean tableware shelf",
+    "cupShelf": "Cup shelf",
+    "espressoMachine": "Espresso machine",
+    "freezer": "Freezer",
+    "fridge": "Refrigerator",
+    "frontCounter": "Front counter",
+    "grinder": "Grinder",
+    "iceMachine": "Ice machine",
+    "orderCounter": "Order counter",
+    "orderScreen": "Order screen",
+    "oven": "Oven",
+    "passCounter": "Pickup counter",
+    "prepTable": "Prep table",
+    "returnCounter": "Return counter",
+    "sink": "Sink and drying rack",
+    "storageShelf": "Storage shelf",
+    "stove": "Stove",
+    "table": "Table",
+    "workCounter": "Bar work counter"
+  },
+  "label": "Store Layout",
+  "showLabels": "Show labels",
+  "views": {
+    "customer": "Customer view",
+    "iso": "Isometric",
+    "staff": "Staff view",
+    "top": "Top view"
+  }
+}

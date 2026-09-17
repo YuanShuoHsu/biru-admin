@@ -1,0 +1,33 @@
+{
+  "assumption": "치수는 가정값이며 현장 실측 후 업데이트됩니다. 드래그로 회전하고 스크롤로 확대/축소합니다.",
+  "items": {
+    "blender": "블렌더",
+    "cleanShelf": "세척 식기 선반",
+    "cupShelf": "컵 선반",
+    "espressoMachine": "에스프레소 머신",
+    "freezer": "냉동고",
+    "fridge": "냉장고",
+    "frontCounter": "바 전면",
+    "grinder": "그라인더",
+    "iceMachine": "제빙기",
+    "orderCounter": "주문 카운터",
+    "orderScreen": "주문 화면",
+    "oven": "오븐",
+    "passCounter": "픽업 카운터",
+    "prepTable": "준비대",
+    "returnCounter": "반납 카운터",
+    "sink": "싱크대와 건조대",
+    "storageShelf": "수납 선반",
+    "stove": "화구",
+    "table": "테이블",
+    "workCounter": "바 작업대"
+  },
+  "label": "매장 배치",
+  "showLabels": "이름 표시",
+  "views": {
+    "customer": "고객 시점",
+    "iso": "사선 시점",
+    "staff": "직원 시점",
+    "top": "위에서 보기"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "assumption": "尺寸为假设值，现场测量后更新。拖拽旋转、滚轮缩放。",
+  "items": {
+    "blender": "果汁机",
+    "cleanShelf": "洁净餐具层架",
+    "cupShelf": "杯具层架",
+    "espressoMachine": "咖啡机",
+    "freezer": "冷冻柜",
+    "fridge": "冷藏柜",
+    "frontCounter": "吧台前沿",
+    "grinder": "磨豆机",
+    "iceMachine": "制冰机",
+    "orderCounter": "点餐台",
+    "orderScreen": "点餐屏幕",
+    "oven": "烤箱",
+    "passCounter": "出餐台",
+    "prepTable": "备料台",
+    "returnCounter": "回收台",
+    "sink": "水槽与沥干",
+    "storageShelf": "储物层架",
+    "stove": "炉具",
+    "table": "桌",
+    "workCounter": "吧台工作台"
+  },
+  "label": "店内布局",
+  "showLabels": "显示名称",
+  "views": {
+    "customer": "顾客视角",
+    "iso": "斜视",
+    "staff": "员工视角",
+    "top": "俯视"
+  }
+}

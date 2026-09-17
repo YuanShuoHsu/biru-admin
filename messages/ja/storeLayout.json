@@ -1,0 +1,33 @@
+{
+  "assumption": "寸法は仮の値です。現地採寸後に更新します。ドラッグで回転、スクロールでズームします。",
+  "items": {
+    "blender": "ブレンダー",
+    "cleanShelf": "清潔な食器棚",
+    "cupShelf": "カップ棚",
+    "espressoMachine": "エスプレッソマシン",
+    "freezer": "冷凍庫",
+    "fridge": "冷蔵庫",
+    "frontCounter": "フロントカウンター",
+    "grinder": "グラインダー",
+    "iceMachine": "製氷機",
+    "orderCounter": "注文カウンター",
+    "orderScreen": "注文画面",
+    "oven": "オーブン",
+    "passCounter": "受け渡しカウンター",
+    "prepTable": "仕込み台",
+    "returnCounter": "返却カウンター",
+    "sink": "シンクと水切り",
+    "storageShelf": "収納棚",
+    "stove": "コンロ",
+    "table": "テーブル",
+    "workCounter": "バー作業台"
+  },
+  "label": "店内レイアウト",
+  "showLabels": "名称を表示",
+  "views": {
+    "customer": "お客様視点",
+    "iso": "斜め視点",
+    "staff": "スタッフ視点",
+    "top": "俯瞰"
+  }
+}

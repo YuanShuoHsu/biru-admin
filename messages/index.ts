@@ -17,6 +17,7 @@ import metadata from "./en/metadata.json";
 import order from "./en/order.json";
 import orders from "./en/orders.json";
 import organizations from "./en/organizations.json";
+import storeLayout from "./en/storeLayout.json";
 import validation from "./en/validation.json";
 
 const messages = {
@@ -39,6 +40,7 @@ const messages = {
   order,
   orders,
   organizations,
+  storeLayout,
   validation,
 };
 

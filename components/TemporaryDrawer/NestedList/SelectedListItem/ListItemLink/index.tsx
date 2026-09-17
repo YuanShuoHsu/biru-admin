@@ -9,6 +9,7 @@ import {
   type ListItemButtonProps,
   ListItemIcon,
   ListItemText,
+  type SvgIconProps,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -49,7 +50,7 @@ const StyledExpandMore = styled(ExpandMore, {
 
 export interface ListItemLinkProps {
   href?: string;
-  icon?: React.ElementType;
+  icon?: React.ComponentType<SvgIconProps>;
   isExpandable?: boolean;
   label?: string;
   level?: number;

@@ -23,7 +23,13 @@ import {
   DeleteForever,
   ReportGmailerrorred,
 } from "@mui/icons-material";
-import { Avatar, Button, TextField, Typography } from "@mui/material";
+import {
+  Avatar,
+  Button,
+  type SvgIconProps,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { alpha, styled } from "@mui/material/styles";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
@@ -125,7 +131,7 @@ const AuthDeleteAccount = ({
     {
       actions: React.ReactNode;
       color: "error" | "primary";
-      icon: React.ElementType;
+      icon: React.ComponentType<SvgIconProps>;
       subtitle: string;
       title: string;
     }

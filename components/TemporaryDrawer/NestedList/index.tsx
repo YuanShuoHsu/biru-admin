@@ -57,7 +57,9 @@ const useNavItems = (): NavItem[][] => {
         ? [navItem("/audit-logs")]
         : []),
     ],
-    ...(isAdmin ? [[navItem("/banners"), navItem("/admins")]] : []),
+    ...(isAdmin
+      ? [[navItem("/banners"), navItem("/admins"), navItem("/store-layout")]]
+      : []),
     [
       { ...navItem("/auth"), children: navChildren["/auth"] },
       { ...navItem("/company"), children: navChildren["/company"] },
