@@ -3,6 +3,10 @@ import type { useTranslations } from "next-intl";
 import { PLATFORM_ORGANIZATION_ID } from "@/constants/organizations";
 
 import {
+  attendanceDayKindValues,
+  attendanceParentalReturnResponseDtoStatusValues,
+  attendanceRequestResponseDtoKindValues,
+  attendanceRequestResponseDtoStatusValues,
   auditActionValues,
   auditResourceValues,
   baseUnitCodeValues,
@@ -16,6 +20,8 @@ import {
   orderResponseDtoModeValues,
   orderResponseDtoOrderStatusValues,
   orderResponseDtoPaymentMethodValues,
+  payrollStatementResponseDtoStatusValues,
+  statutoryLeaveKindValues,
   userCouponSourceValues,
   userRoleValues,
 } from "@/types/api";
@@ -163,6 +169,55 @@ export const getInventoryTransactionEnumOptions = (
 ) => ({
   reason: inventoryTransactionReasonValues.map((value) => ({
     label: tInventory(`transactions.reason.options.${value}`),
+    value,
+  })),
+});
+
+export const getAttendanceDayKindEnumOptions = (
+  tAttendance: ReturnType<typeof useTranslations<"attendance">>,
+) => ({
+  dayKind: attendanceDayKindValues.map((value) => ({
+    label: tAttendance(`dayKind.options.${value}`),
+    value,
+  })),
+});
+
+export const getAttendanceRequestEnumOptions = (
+  tAttendance: ReturnType<typeof useTranslations<"attendance">>,
+) => ({
+  kind: attendanceRequestResponseDtoKindValues.map((value) => ({
+    label: tAttendance(`kind.options.${value}`),
+    value,
+  })),
+  status: attendanceRequestResponseDtoStatusValues.map((value) => ({
+    label: tAttendance(`status.options.${value}`),
+    value,
+  })),
+});
+
+export const getAttendanceLeaveTypeEnumOptions = (
+  tAttendance: ReturnType<typeof useTranslations<"attendance">>,
+) => ({
+  statutoryKind: statutoryLeaveKindValues.map((value) => ({
+    label: tAttendance(`statutoryKind.options.${value}`),
+    value,
+  })),
+});
+
+export const getAttendanceParentalReturnEnumOptions = (
+  tAttendance: ReturnType<typeof useTranslations<"attendance">>,
+) => ({
+  status: attendanceParentalReturnResponseDtoStatusValues.map((value) => ({
+    label: tAttendance(`status.options.${value}`),
+    value,
+  })),
+});
+
+export const getPayrollStatementEnumOptions = (
+  tAttendance: ReturnType<typeof useTranslations<"attendance">>,
+) => ({
+  status: payrollStatementResponseDtoStatusValues.map((value) => ({
+    label: tAttendance(`payrollStatus.options.${value}`),
     value,
   })),
 });

@@ -2,6 +2,9 @@
   "addOnMenuSectionId": {
     "required": "Please select an add-on section."
   },
+  "allowedIps": {
+    "required": "Public IPs are required."
+  },
   "availableModes": {
     "notSelected": "Please select your sold in modes."
   },
@@ -29,6 +32,18 @@
   "carrierType": {
     "notSelected": "Please select your carrier type."
   },
+  "caseReference": {
+    "required": "Event reference is required."
+  },
+  "cause": {
+    "notSelected": "Please select your statutory cause."
+  },
+  "childLabel": {
+    "required": "Child label is required."
+  },
+  "childReference": {
+    "required": "Verified child reference is required."
+  },
   "confirmNewPassword": {
     "mismatch": "Passwords do not match.",
     "required": "Confirm new password is required."
@@ -39,6 +54,9 @@
   },
   "contact": {
     "requiredForInvoice": "An invoice needs a contact method — provide either an email or a phone number."
+  },
+  "correctedEvents": {
+    "minLength": "Please enter at least two punch records."
   },
   "countryCode": {
     "invalid": "Country code is not valid.",
@@ -69,6 +87,9 @@
     "invalid": "Donation code is not valid.",
     "required": "Donation code is required."
   },
+  "effectiveFrom": {
+    "required": "Effective date is required."
+  },
   "eligibleQuantity": {
     "required": "Package size is required."
   },
@@ -76,11 +97,34 @@
     "invalid": "Email is not valid.",
     "required": "Email is required."
   },
+  "employee": {
+    "notSelected": "Please select your employee."
+  },
+  "endDate": {
+    "beforeStartDate": "End date cannot be before start date.",
+    "invalid": "End date is not valid."
+  },
+  "endTime": {
+    "invalid": "End time format is invalid."
+  },
+  "endsAt": {
+    "afterStartsAt": "End time must be after start time.",
+    "required": "End time is required."
+  },
+  "eventDate": {
+    "required": "Event date is required."
+  },
   "firstName": {
     "required": "First name is required."
   },
   "gender": {
     "required": "Gender is required."
+  },
+  "healthBasis": {
+    "notSelected": "Please select your health insured amount."
+  },
+  "hiredAt": {
+    "required": "Employment start is required."
   },
   "ingredientId": {
     "notSelected": "Please select your ingredient."
@@ -88,9 +132,31 @@
   "invoiceType": {
     "notSelected": "Please select your invoice type."
   },
+  "laborBasis": {
+    "notSelected": "Please select your declared labor insured salary."
+  },
+  "latitude": {
+    "required": "Store latitude is required."
+  },
+  "leaveType": {
+    "notSelected": "Please select your leave type."
+  },
+  "leaveTypeName": {
+    "required": "Leave type name is required."
+  },
   "localizedText": {
     "completeOrEmpty": "All language fields must be filled in or left empty together.",
     "required": "Please fill in the localized text."
+  },
+  "longitude": {
+    "required": "Store longitude is required."
+  },
+  "makeupEndsAt": {
+    "afterMakeupStartsAt": "Make-up rest end must be after its start.",
+    "required": "Make-up rest end is required."
+  },
+  "makeupStartsAt": {
+    "required": "Make-up rest start is required."
   },
   "member": {
     "required": "Please select a member."
@@ -109,6 +175,19 @@
     "number": "Contain at least one number.",
     "sameAsCurrent": "New password must be different from your current password."
   },
+  "number": {
+    "integer": "Please enter a whole number.",
+    "max": "Please enter a value no greater than {max}.",
+    "maxFractionDigits": "Please enter a value with at most {digits} decimal places.",
+    "min": "Please enter a value no less than {min}."
+  },
+  "occurredAt": {
+    "maxDateTime": "Please select a punch time on or before now.",
+    "required": "Punch time is required."
+  },
+  "parentalChild": {
+    "notSelected": "Please select your child."
+  },
   "password": {
     "letter": "Contain at least one letter.",
     "match": "Matches the password.",
@@ -117,6 +196,12 @@
   },
   "payment": {
     "notSelected": "Please select your payment method."
+  },
+  "payrollMonth": {
+    "invalid": "Payroll month is not valid."
+  },
+  "pensionBasis": {
+    "required": "Pension contribution basis is required."
   },
   "pickupCutoffMinutes": {
     "invalid": "Cutoff before closing is not valid.",
@@ -152,14 +237,26 @@
   "quantity": {
     "required": "Quantity is required."
   },
+  "reason": {
+    "required": "Reason is required."
+  },
   "recipeYield": {
     "required": "Servings is required."
   },
   "remark": {
     "maxLength": "Notes must not exceed 160 characters."
   },
+  "reportedAt": {
+    "required": "Reported time is required."
+  },
   "requiredQuantity": {
     "required": "Amount is required."
+  },
+  "returnsAt": {
+    "required": "Return date is required."
+  },
+  "reviewReason": {
+    "required": "Review reason is required."
   },
   "role": {
     "required": "Please select a role."
@@ -168,12 +265,30 @@
     "letter": "Slug must contain at least one letter.",
     "required": "Slug is required."
   },
+  "sourceNote": {
+    "required": "Insurance, tax and adjustment evidence is required."
+  },
+  "startDate": {
+    "invalid": "Start date is not valid."
+  },
+  "startTime": {
+    "invalid": "Start time format is invalid."
+  },
+  "startsAt": {
+    "required": "Start time is required."
+  },
   "supplierName": {
     "required": "Supplier name is required."
   },
   "telephone": {
     "invalid": "Phone is not valid.",
     "required": "Phone is required."
+  },
+  "templateName": {
+    "required": "Template name is required."
+  },
+  "terminatedAt": {
+    "afterHiredAt": "Employment end must be after employment start."
   },
   "unitCode": {
     "notSelected": "Please select your content unit."
@@ -183,5 +298,9 @@
   },
   "validFrom": {
     "beforeValidThrough": "Start date must be before end date."
+  },
+  "weeklyMinutesFrom": {
+    "notBeforeHiredAt": "Weekly hours effective date cannot be earlier than the employment start.",
+    "required": "Weekly hours effective date is required."
   }
 }

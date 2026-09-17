@@ -41,6 +41,7 @@ const useNavItems = (): NavItem[][] => {
     ...(defaultOrganizationSlug
       ? [
           [
+            { ...navItem("/attendance"), children: navChildren["/attendance"] },
             { ...navItem("/orders"), children: navChildren["/orders"] },
             { ...navItem("/menus"), children: navChildren["/menus"] },
             ...(inventoryChildren.length

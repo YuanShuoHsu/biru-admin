@@ -2,6 +2,9 @@
   "addOnMenuSectionId": {
     "required": "추가 섹션을 선택해 주세요."
   },
+  "allowedIps": {
+    "required": "고정 공인 IP는 필수입니다."
+  },
   "availableModes": {
     "notSelected": "판매 방식을 선택해 주세요."
   },
@@ -29,6 +32,18 @@
   "carrierType": {
     "notSelected": "캐리어 유형을 선택해 주세요."
   },
+  "caseReference": {
+    "required": "사유 번호는 필수입니다."
+  },
+  "cause": {
+    "notSelected": "법정 사유를 선택해 주세요."
+  },
+  "childLabel": {
+    "required": "자녀 표시 이름은 필수입니다."
+  },
+  "childReference": {
+    "required": "확인된 자녀 식별 번호는 필수입니다."
+  },
   "confirmNewPassword": {
     "mismatch": "비밀번호가 일치하지 않습니다.",
     "required": "새 비밀번호 확인은 필수입니다."
@@ -39,6 +54,9 @@
   },
   "contact": {
     "requiredForInvoice": "영수증 발행에는 연락처가 필요합니다. 이메일 또는 전화번호 중 하나를 입력해 주세요."
+  },
+  "correctedEvents": {
+    "minLength": "기록을 2건 이상 입력해 주세요."
   },
   "countryCode": {
     "invalid": "국가 코드가 유효하지 않습니다.",
@@ -69,6 +87,9 @@
     "invalid": "기부코드가 유효하지 않습니다.",
     "required": "기부코드는 필수입니다."
   },
+  "effectiveFrom": {
+    "required": "적용일은 필수입니다."
+  },
   "eligibleQuantity": {
     "required": "포장 용량은 필수입니다."
   },
@@ -76,11 +97,34 @@
     "invalid": "이메일이 유효하지 않습니다.",
     "required": "이메일은 필수입니다."
   },
+  "employee": {
+    "notSelected": "직원을 선택해 주세요."
+  },
+  "endDate": {
+    "beforeStartDate": "종료일은 시작일보다 앞설 수 없습니다.",
+    "invalid": "종료일이 유효하지 않습니다."
+  },
+  "endTime": {
+    "invalid": "종료 시간 형식이 올바르지 않습니다."
+  },
+  "endsAt": {
+    "afterStartsAt": "종료 시간은 시작 시간보다 늦어야 합니다.",
+    "required": "종료 시간은 필수입니다."
+  },
+  "eventDate": {
+    "required": "사유 발생일은 필수입니다."
+  },
   "firstName": {
     "required": "이름은 필수입니다."
   },
   "gender": {
     "required": "성별은 필수입니다."
+  },
+  "healthBasis": {
+    "notSelected": "건강 보험 금액을 선택해 주세요."
+  },
+  "hiredAt": {
+    "required": "입사 시간은 필수입니다."
   },
   "ingredientId": {
     "notSelected": "식자재를 선택해 주세요."
@@ -88,9 +132,31 @@
   "invoiceType": {
     "notSelected": "영수증 유형을 선택해 주세요."
   },
+  "laborBasis": {
+    "notSelected": "신고 노동 보험 급여를 선택해 주세요."
+  },
+  "latitude": {
+    "required": "매장 위도는 필수입니다."
+  },
+  "leaveType": {
+    "notSelected": "휴가 유형을 선택해 주세요."
+  },
+  "leaveTypeName": {
+    "required": "휴가 유형 이름은 필수입니다."
+  },
   "localizedText": {
     "completeOrEmpty": "모든 언어 필드를 함께 채우거나 비워두어야 합니다.",
     "required": "다국어 텍스트를 입력해 주세요."
+  },
+  "longitude": {
+    "required": "매장 경도는 필수입니다."
+  },
+  "makeupEndsAt": {
+    "afterMakeupStartsAt": "보상 휴일 종료는 시작보다 늦어야 합니다.",
+    "required": "보상 휴일 종료는 필수입니다."
+  },
+  "makeupStartsAt": {
+    "required": "보상 휴일 시작은 필수입니다."
   },
   "member": {
     "required": "멤버를 선택해 주세요."
@@ -109,6 +175,19 @@
     "number": "숫자를 최소 1개 포함.",
     "sameAsCurrent": "새 비밀번호는 현재 비밀번호와 달라야 합니다."
   },
+  "number": {
+    "integer": "정수를 입력해 주세요.",
+    "max": "{max} 이하의 값을 입력해 주세요.",
+    "maxFractionDigits": "소수점 이하 {digits}자리 이내의 값을 입력해 주세요.",
+    "min": "{min} 이상의 값을 입력해 주세요."
+  },
+  "occurredAt": {
+    "maxDateTime": "현재 또는 그 이전 시간을 선택해 주세요.",
+    "required": "기록 시간은 필수입니다."
+  },
+  "parentalChild": {
+    "notSelected": "자녀를 선택해 주세요."
+  },
   "password": {
     "letter": "영문자를 최소 1개 포함.",
     "match": "비밀번호와 일치.",
@@ -117,6 +196,12 @@
   },
   "payment": {
     "notSelected": "결제 방법을 선택해 주세요."
+  },
+  "payrollMonth": {
+    "invalid": "급여 월이 유효하지 않습니다."
+  },
+  "pensionBasis": {
+    "required": "연금 기여 기준은 필수입니다."
   },
   "pickupCutoffMinutes": {
     "invalid": "마감 전 마감 시간이 유효하지 않습니다.",
@@ -152,14 +237,26 @@
   "quantity": {
     "required": "수량은 필수입니다."
   },
+  "reason": {
+    "required": "사유는 필수입니다."
+  },
   "recipeYield": {
     "required": "분량은 필수입니다."
   },
   "remark": {
     "maxLength": "메모는 160자를 초과할 수 없습니다."
   },
+  "reportedAt": {
+    "required": "신고 일시는 필수입니다."
+  },
   "requiredQuantity": {
     "required": "사용량은 필수입니다."
+  },
+  "returnsAt": {
+    "required": "복직일은 필수입니다."
+  },
+  "reviewReason": {
+    "required": "검토 사유는 필수입니다."
   },
   "role": {
     "required": "역할을 선택해 주세요."
@@ -168,12 +265,30 @@
     "letter": "슬러그에는 최소 하나의 영문자가 포함되어야 합니다.",
     "required": "슬러그는 필수입니다."
   },
+  "sourceNote": {
+    "required": "보험, 세금 및 조정 근거는 필수입니다."
+  },
+  "startDate": {
+    "invalid": "시작일이 유효하지 않습니다."
+  },
+  "startTime": {
+    "invalid": "시작 시간 형식이 올바르지 않습니다."
+  },
+  "startsAt": {
+    "required": "시작 시간은 필수입니다."
+  },
   "supplierName": {
     "required": "공급업체 이름은 필수입니다."
   },
   "telephone": {
     "invalid": "전화번호가 유효하지 않습니다.",
     "required": "전화번호는 필수입니다."
+  },
+  "templateName": {
+    "required": "템플릿 이름은 필수입니다."
+  },
+  "terminatedAt": {
+    "afterHiredAt": "퇴사 일시는 입사 시간보다 늦어야 합니다."
   },
   "unitCode": {
     "notSelected": "내용량 단위를 선택해 주세요."
@@ -183,5 +298,9 @@
   },
   "validFrom": {
     "beforeValidThrough": "시작일은 종료일보다 앞서야 합니다."
+  },
+  "weeklyMinutesFrom": {
+    "notBeforeHiredAt": "근무시간 적용 시작일은 입사 시간보다 이전일 수 없습니다.",
+    "required": "근무시간 적용 시작일은 필수입니다."
   }
 }

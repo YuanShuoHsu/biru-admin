@@ -1,0 +1,431 @@
+{
+  "actions": "Actions",
+  "add": "Add",
+  "allowance": "Fixed allowance ({currency})",
+  "allowanceHours": "Monthly regular hours covered by the allowance",
+  "allowedIps": "Public IPs (one per line)",
+  "approve": "Approve",
+  "approveCancellation": "Approve cancellation",
+  "assignParentalChild": "Assign child",
+  "autoInsurance": "Calculate premiums from the current grades and rates",
+  "balances": {
+    "actions": {
+      "create": "Add leave balance"
+    },
+    "label": "Leave balances"
+  },
+  "breaks": "Break minutes",
+  "cancelLeave": "Request leave cancellation",
+  "cancelShift": "Cancel shift",
+  "caseReference": "Event reference (reuse for the same event)",
+  "cause": {
+    "label": "Statutory cause",
+    "options": {
+      "disaster": "Natural disaster",
+      "incident": "Public emergency",
+      "unexpected": "Unexpected emergency"
+    }
+  },
+  "childBirthDate": "Birth date",
+  "childLabel": "Child label",
+  "childReference": "Verified child reference",
+  "confirm": "Confirm this action?",
+  "correctionHint": "Include all work and break punches. Approval replaces the effective timeline while preserving originals.",
+  "dailyPayCents": "Verified full daily wage ({currency}, including applicable allowances)",
+  "dayKind": {
+    "label": "Day classification",
+    "options": {
+      "holiday": "Public holiday",
+      "regularLeave": "Regular day off",
+      "restDay": "Rest day",
+      "workday": "Workday"
+    }
+  },
+  "deductions": "Total deductions",
+  "disabled": "Disabled",
+  "early": "Left early",
+  "earlyParentalAgreed": "Employer and employee agreed to parental leave before six months of service",
+  "effectiveFrom": "Effective date",
+  "emergencyWork": "Emergency regular-leave-day work",
+  "employee": "Employee",
+  "employees": {
+    "actions": {
+      "create": "Add employee",
+      "update": "Edit employee"
+    },
+    "label": "Employees"
+  },
+  "employerPension": "Employer pension ({currency})",
+  "employerPercent": "Employer rate (%)",
+  "empty": "No records yet",
+  "enabled": "Enabled",
+  "endsAt": "End time",
+  "errors": {
+    "activeShiftExists": "Another shift is still open. Clock out or correct it first.",
+    "attendanceShortfall": "Attendance is shorter than scheduled; resolve corrections or leave first.",
+    "belowMinimumWage": "Pay is below the minimum wage in effect.",
+    "calendarLeaveInterval": "Use the statutory number of full calendar days, from midnight to midnight (exclusive end).",
+    "calendarLeavePayRequired": "An owner must provide the verified full daily wage for maternity leave. The paid percentage is calculated from seniority.",
+    "cannotReviewOwnDraft": "You cannot review a payslip you drafted. Another manager must review it.",
+    "cannotReviewSelf": "Another manager must review your request.",
+    "correctionSourceChanged": "The shift's punches changed after this request was submitted. Review it again before approving.",
+    "dailyHoursExceeded": "Daily hours exceed 12.",
+    "emergencyDetailsRequired": "Approve the emergency cause, report and make-up rest before settlement.",
+    "employeeNotEnabled": "Ask a manager to enable your employee attendance profile.",
+    "employmentWindowConflict": "Shifts are scheduled outside the employment window. Adjust the schedule first.",
+    "error": "The operation failed. Please try again.",
+    "futureCorrection": "Corrected times cannot be in the future.",
+    "hourlyAllowanceBasisRequired": "Hourly fixed allowances require an overtime basis not supported by this calculator.",
+    "idempotencyConflict": "The retry payload changed; close and reopen the form.",
+    "implausibleMinimumWage": "The confirmed minimum hourly wage is lower than the previous period. Please re-check the official announcement.",
+    "incompleteAttendance": "Some shifts need completed attendance or approved leave.",
+    "inconsistentDayKind": "Shifts on the same day have different day classifications.",
+    "insufficientLeaveBalance": "Insufficient leave balance. Ask a manager to check the allowance.",
+    "insuranceBasisOutdated": "Insurance bases are not in the current grade table. Re-check the labor and health insured amounts.",
+    "invalidBreak": "The break must fall within the shift.",
+    "invalidEmergencyDetails": "Check the report time and at least 24 continuous hours of make-up rest.",
+    "invalidEventSequence": "Invalid punch sequence or times. Check work and break entries.",
+    "invalidInsuranceBasis": "Insurance bases do not match the selected calculation method.",
+    "invalidInterval": "Invalid start and end times. The end must be later than the start.",
+    "invalidIp": "Invalid IP address. Enter one valid IPv4 or IPv6 address per line.",
+    "invalidLeaveCase": "The event, employee, leave type or eligible dates do not match.",
+    "invalidParentalInterval": "Parental leave requires eligible tenure, a child under three and whole calendar days. Continuous requests require at least 30 days.",
+    "invalidPayrollState": "Payroll status changed; reload the list.",
+    "ipNotAllowed": "This network is not allowed. Connect to the store network.",
+    "leaveCaseExists": "This employee already has this event reference for the leave type.",
+    "leaveCaseRequired": "Select an event allowance verified by a manager.",
+    "leaveOutsideShift": "Leave must overlap a scheduled shift.",
+    "leavePolicyRequired": "Configure and select an active leave policy.",
+    "locationNotAllowed": "The location is stale, inaccurate or outside the store radius. Try again.",
+    "medicalCertificateRequired": "Verify medical documentation before approval.",
+    "medicalLeaveInterval": "The medical leave interval is invalid. Check dates and available entitlement.",
+    "memberNotFound": "That organization member was not found.",
+    "menstrualDayLimit": "Menstrual leave is limited to one calendar day per month.",
+    "minimumWageUnconfirmed": "This period's hourly minimum wage has not been confirmed against the official announcement.",
+    "monthlyOvertimeExceeded": "Monthly overtime exceeds 46 hours.",
+    "negativeNetPay": "Deductions exceed gross pay.",
+    "noShifts": "No shifts exist for this month.",
+    "noTemplateDates": "No day in this range matches the template weekday.",
+    "outsideShiftWindow": "Clock-in is not available for this shift at this time.",
+    "overlappingAttendance": "Another attendance record already covers this period.",
+    "overlappingLeave": "The time overlaps an existing leave request.",
+    "overlappingLeaveAttendance": "Leave overlaps paid attendance; correct the records first.",
+    "overlappingShift": "This shift overlaps an existing schedule.",
+    "parentalChildExists": "This employee already has a child with this reference. Select the existing record.",
+    "parentalChildMismatch": "The child does not match the employee or birth date.",
+    "parentalChildRequired": "Select a verified child record first.",
+    "parentalChildUnassigned": "Child assignment required",
+    "parentalDailyLimit": "Daily parental leave exceeds 30 days for this child.",
+    "parentalInsuranceRequired": "For parental leave, turn off automatic insurance, enter verified insurance and pension amounts with their basis, then generate a new payroll draft.",
+    "parentalLeaveActive": "Parental leave is active. Cancellation must be approved before clocking in.",
+    "parentalReturnInvalid": "The return date must fall within the leave period and follow full calendar-day rules.",
+    "parentalReturnPending": "A return request is pending. Resolve it first.",
+    "parentalReturnStale": "The original leave changed. Submit a new return request.",
+    "parentalShortLimit": "More than two continuous parental leave periods shorter than six months.",
+    "parentalTotalLimit": "The shared two-year parental leave limit has been exceeded.",
+    "partTimeLadderRequiresPartTime": "The part-time ladder applies only to employees scheduled under 40 hours per week.",
+    "payrollBlocked": "Resolve the listed issues before review or publication.",
+    "payrollLocked": "Published payroll exists in the affected period; changes are blocked.",
+    "payrollPeriodOpen": "The payroll month has not ended.",
+    "payrollRuleSetMissing": "Insurance grades and rates for this month are not available yet. Contact the platform administrator.",
+    "payrollRuleSetStale": "Payroll rules have not been checked against official announcements for over a month. Update the rules first.",
+    "payrollSourceChanged": "Source data changed; create a new payroll draft.",
+    "payrollTermsRequired": "Create effective payroll terms first.",
+    "pendingRequestExists": "A request of this type is already pending for this shift.",
+    "pendingRequests": "Requests are awaiting review.",
+    "prorationRequired": "Set the partial-month salary agreement first.",
+    "reasonRequired": "Enter a reason for the request.",
+    "requestAlreadyReviewed": "This request has changed. Reload the page.",
+    "reservedMakeupRest": "The shift overlaps approved make-up rest.",
+    "settingsRequired": "The store owner must configure location and IP settings first.",
+    "shiftHasCorrection": "This shift already has an approved correction.",
+    "shiftHasRecords": "This shift has attendance or request records and cannot be cancelled.",
+    "shiftRequired": "This request kind requires a shift.",
+    "shiftTooLong": "A single shift cannot exceed 24 hours.",
+    "sourceRequired": "Enter the evidence for the verified amounts.",
+    "splitLeaveByYear": "Submit separate requests for each calendar year.",
+    "statutoryBalanceAutomatic": "Statutory balances are calculated automatically.",
+    "statutoryKindImmutable": "A statutory leave kind cannot be changed after creation.",
+    "statutoryPolicyExists": "This statutory leave rule already exists.",
+    "unresolvedOvertime": "Actual overtime intervals have not all been approved.",
+    "unsupportedDayKind": "Unsupported day classification.",
+    "weeklyMinutesFromRequired": "Changing the agreed weekly hours requires an effective date on or after the employment start.",
+    "weeklyScheduleRequiresReview": "Scheduled workdays exceed 40 hours in a week; review the schedule."
+  },
+  "eventAction": {
+    "options": {
+      "breakEnd": "End break",
+      "breakStart": "Start break",
+      "clockIn": "Clock in",
+      "clockOut": "Clock out"
+    }
+  },
+  "eventDate": "Event date",
+  "events": "Punch timeline",
+  "exportCsv": "Export CSV",
+  "extensionAgreed": "Agreement to extend marriage leave to 6 months obtained",
+  "from": "From",
+  "generate": "Generate shifts",
+  "graceMinutes": "Grace period (minutes)",
+  "grantedMinutes": "Granted minutes",
+  "gross": "Gross pay",
+  "healthBasis": "Health insured amount ({currency}; 0 if insured elsewhere)",
+  "healthDependents": "Health insurance dependents",
+  "healthInsurance": "Employee health insurance ({currency})",
+  "hiredAt": "Employment starts",
+  "ipHint": "Use the fixed public IP provided by your ISP, not the local Wi-Fi address.",
+  "kind": {
+    "label": "Request type",
+    "options": {
+      "correction": "Correction",
+      "leave": "Leave",
+      "overtime": "Overtime"
+    }
+  },
+  "label": "Staff attendance",
+  "laborBasis": "Declared labor insured salary ({currency})",
+  "laborCoverage": {
+    "label": "Labor insurance coverage",
+    "options": {
+      "both": "Labor and employment",
+      "employment": "Employment only",
+      "labor": "Labor only",
+      "none": "Not applicable"
+    }
+  },
+  "laborInsurance": "Employee labor / employment insurance ({currency})",
+  "laborLadder": {
+    "label": "Labor insurance grade table",
+    "options": {
+      "general": "General",
+      "partTime": "Part-time"
+    }
+  },
+  "late": "Late",
+  "latitude": "Store latitude",
+  "leaveCase": "Related event (required for event leave)",
+  "leaveCaseHint": "A manager must verify the event, relationship and eligible dates. Allowances are calculated automatically. Do not duplicate an event. Maternity periods include rest days and use full calendar days (midnight, exclusive end). Partner prenatal and childbirth leave share 7 days; verify the eligible dates for each request. An owner must provide the verified full daily wage for maternity leave. The paid percentage is calculated from seniority. For parental leave, use the child’s birth date as the event date and reuse the same reference for that child. The period must end by the third birthday. Service under six months requires employer–employee agreement. No daily wage is required.",
+  "leaveCases": {
+    "actions": {
+      "create": "Add event leave allowance"
+    },
+    "label": "Event leave allowances"
+  },
+  "leaveRequestHint": "Managers verify medical documentation for hospitalization and pregnancy bed rest. Sick and menstrual leave pay is split by used allowances; menstrual leave beyond the paid allowance is unpaid. For parental leave, select the child case created by a manager and use whole calendar days (midnight, exclusive end).",
+  "leaveType": "Leave type",
+  "leaveTypes": {
+    "actions": {
+      "create": "Add leave policy"
+    },
+    "label": "Leave policies"
+  },
+  "locationError": "Unable to obtain location. Check permissions or submit a correction request.",
+  "locationHint": "Every punch requires location permission and the store network.",
+  "longitude": "Store longitude",
+  "makeupEndsAt": "Make-up rest ends",
+  "makeupStartsAt": "Make-up rest starts",
+  "medicalCertified": "Medical documentation for hospitalization, cancer outpatient care or pregnancy bed rest verified",
+  "member": "Organization member",
+  "mine": {
+    "actions": {
+      "viewEvents": "View punch timeline"
+    },
+    "correctionNotStarted": "This shift has not started yet",
+    "label": "My attendance",
+    "punch": {
+      "empty": "No shifts are open for punching right now.",
+      "title": "Punch"
+    }
+  },
+  "month": "Payroll month",
+  "monthlyProration": {
+    "label": "Partial-month salary agreement",
+    "options": {
+      "calendarDays": "Actual calendar days",
+      "thirtyDays": "Divide by 30, multiply by days employed"
+    }
+  },
+  "name": "Name",
+  "net": "Net pay",
+  "nextDay": "Next day",
+  "no": "No",
+  "originalEvents": "Original punches",
+  "originalLeavePeriod": "Original leave period",
+  "otherDeduction": "Other verified deductions ({currency})",
+  "paidBreak": "Paid breaks for this shift",
+  "paidPercent": "Paid percentage (%)",
+  "parentalChild": "Child",
+  "parentalChildHint": "Reuse the existing record for the same child. A manager must verify evidence and assign a stable reference. Register twins separately; do not enter full national ID numbers. Assign legacy leave cases to a verified child.",
+  "parentalChildren": {
+    "actions": {
+      "create": "Add child"
+    },
+    "label": "Children"
+  },
+  "parentalContinuous": "Continuous period",
+  "parentalDaily": "Daily requests",
+  "parentalMode": "Parental leave request mode",
+  "parentalReturn": "Early return",
+  "parentalReturnHint": "Another manager must approve the return. Leave remains active until approval. Approval preserves leave already taken and the original record. Leave ends at the start of the return date.",
+  "parentalReturns": {
+    "label": "Return requests"
+  },
+  "payroll": {
+    "actions": {
+      "view": "View payslip details"
+    },
+    "label": "Payroll"
+  },
+  "payrollHint": "Use declared insurance values. For special status or subsidies, disable automatic premiums and enter verified amounts with evidence. Effective dates currently start at month boundaries.",
+  "payrollLine": {
+    "options": {
+      "allowance": "Fixed allowance",
+      "annualLeavePay": "Unused annual leave pay",
+      "basePay": "Base pay",
+      "calendarLeavePay": "Maternity leave pay",
+      "healthInsurance": "Employee health insurance",
+      "holidayPay": "Holiday premium",
+      "laborInsurance": "Employee labor / employment insurance",
+      "leaveDeduction": "Leave deduction",
+      "otherDeduction": "Other verified deductions",
+      "overtimePay": "Overtime pay",
+      "voluntaryPension": "Voluntary pension",
+      "withholding": "Tax withholding"
+    }
+  },
+  "payrollStatus": {
+    "options": {
+      "draft": "Draft calculation",
+      "published": "Published",
+      "reviewed": "Reviewed"
+    }
+  },
+  "payrollTerms": "Pay and insurance settings",
+  "payslips": {
+    "actions": {
+      "view": "View payslip details"
+    },
+    "label": "My payslips"
+  },
+  "pensionBasis": "Pension contribution basis ({currency})",
+  "print": "Print",
+  "publish": "Publish payslip",
+  "radiusMeters": "Radius (meters)",
+  "reason": "Reason",
+  "reject": "Reject",
+  "rejectCancellation": "Reject cancellation",
+  "repeatWeeks": "Weekly occurrences",
+  "reportedAt": "Reported at",
+  "requests": {
+    "actions": {
+      "create": "New leave request"
+    },
+    "label": "My requests"
+  },
+  "requiresBalance": "Balance required",
+  "returnsAt": "Return date",
+  "reviewReason": "Review reason",
+  "reviews": {
+    "label": "Approvals"
+  },
+  "salary": "Base salary / hourly rate ({currency})",
+  "salaryType": {
+    "label": "Salary type",
+    "options": {
+      "hourly": "Hourly",
+      "monthly": "Monthly"
+    }
+  },
+  "save": "Save",
+  "settings": {
+    "actions": {
+      "update": "Edit attendance settings"
+    },
+    "allowedIps": "Public IPs",
+    "label": "Attendance settings"
+  },
+  "shifts": {
+    "actions": {
+      "create": "Add shift",
+      "viewEvents": "View punch timeline"
+    },
+    "label": "Schedules"
+  },
+  "sourceNote": "Insurance, tax and adjustment evidence",
+  "startsAt": "Start time",
+  "state": {
+    "label": "Attendance status",
+    "options": {
+      "completed": "Clocked out",
+      "resting": "On break",
+      "scheduled": "Not clocked in",
+      "working": "Working"
+    }
+  },
+  "status": {
+    "label": "Status",
+    "options": {
+      "approved": "Approved",
+      "cancellationPending": "Cancellation pending",
+      "cancelled": "Cancelled",
+      "pending": "Pending",
+      "rejected": "Rejected",
+      "withdrawn": "Withdrawn"
+    }
+  },
+  "statutoryHint": "Statutory rules determine balances and pay rates from tenure and agreed hours.",
+  "statutoryKind": {
+    "label": "Leave rule",
+    "options": {
+      "annual": "Annual leave (anniversary year)",
+      "custom": "Custom leave",
+      "familyCare": "Family care leave",
+      "funeral3": "Bereavement (great-grandparents/siblings/spouse’s grandparents, 3 days)",
+      "funeral6": "Bereavement (grandparents/children/parents-in-law, 6 days)",
+      "funeral8": "Bereavement (parents/spouse, 8 days)",
+      "hospitalSick": "Hospitalized sick leave (including cancer outpatient care)",
+      "marriage": "Marriage leave",
+      "maternity": "Maternity (8 weeks)",
+      "menstrual": "Menstrual leave",
+      "miscarriage28": "Miscarriage (at least 3 months, 4 weeks)",
+      "miscarriage5": "Miscarriage (under 2 months, 5 days)",
+      "miscarriage7": "Miscarriage (2–3 months, 1 week)",
+      "parental": "Unpaid parental leave",
+      "paternity": "Partner prenatal and childbirth leave",
+      "personal": "Personal leave",
+      "pregnancyRest": "Pregnancy bed-rest leave",
+      "prenatal": "Prenatal checkup leave",
+      "sick": "Non-hospitalized sick leave"
+    }
+  },
+  "success": "Saved",
+  "taxMethod": {
+    "label": "Withholding method",
+    "options": {
+      "resident5": "Resident elected 5% withholding",
+      "verified": "Use verified withholding amount"
+    }
+  },
+  "templateHint": "Generate shifts for this period. Overlaps or leave conflicts reject the whole batch.",
+  "templates": {
+    "actions": {
+      "create": "Add weekly template"
+    },
+    "label": "Weekly templates"
+  },
+  "terminatedAt": "Employment end (optional)",
+  "to": "To",
+  "useCurrentLocation": "Use current location",
+  "usedMinutes": "Used minutes",
+  "version": "Version",
+  "voluntaryPension": "Voluntary pension ({currency})",
+  "voluntaryPercent": "Voluntary rate (%)",
+  "weekday": "Weekday",
+  "weeklyMinutes": "Agreed weekly regular hours (minutes)",
+  "weeklyMinutesFrom": "Weekly hours effective from",
+  "withdraw": "Withdraw",
+  "withholding": "Tax withholding ({currency})",
+  "worked": "Counted hours",
+  "year": "Year",
+  "yes": "Yes"
+}

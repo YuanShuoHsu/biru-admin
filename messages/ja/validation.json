@@ -2,6 +2,9 @@
   "addOnMenuSectionId": {
     "required": "アドオンセクションを選択してください。"
   },
+  "allowedIps": {
+    "required": "固定公開IPは必須です。"
+  },
   "availableModes": {
     "notSelected": "提供方式を選択してください。"
   },
@@ -29,6 +32,18 @@
   "carrierType": {
     "notSelected": "キャリアタイプを選択してください。"
   },
+  "caseReference": {
+    "required": "事由番号は必須です。"
+  },
+  "cause": {
+    "notSelected": "法定事由を選択してください。"
+  },
+  "childLabel": {
+    "required": "子どもの呼称は必須です。"
+  },
+  "childReference": {
+    "required": "確認済みの子ども識別番号は必須です。"
+  },
   "confirmNewPassword": {
     "mismatch": "パスワードが一致しません。",
     "required": "新しいパスワードの確認は必須です。"
@@ -39,6 +54,9 @@
   },
   "contact": {
     "requiredForInvoice": "インボイスの発行には連絡先が必要です。メールアドレスまたは電話番号のいずれかをご入力ください。"
+  },
+  "correctedEvents": {
+    "minLength": "打刻記録を2件以上入力してください。"
   },
   "countryCode": {
     "invalid": "国コードが無効です。",
@@ -69,6 +87,9 @@
     "invalid": "寄付コードが無効です。",
     "required": "寄付コードは必須です。"
   },
+  "effectiveFrom": {
+    "required": "適用開始日は必須です。"
+  },
   "eligibleQuantity": {
     "required": "内容量は必須です。"
   },
@@ -76,11 +97,34 @@
     "invalid": "メールアドレスが無効です。",
     "required": "メールアドレスは必須です。"
   },
+  "employee": {
+    "notSelected": "従業員を選択してください。"
+  },
+  "endDate": {
+    "beforeStartDate": "終了日は開始日より前にできません。",
+    "invalid": "終了日が無効です。"
+  },
+  "endTime": {
+    "invalid": "終了時刻の形式が無効です。"
+  },
+  "endsAt": {
+    "afterStartsAt": "終了日時は開始日時より後でなければなりません。",
+    "required": "終了日時は必須です。"
+  },
+  "eventDate": {
+    "required": "事由発生日は必須です。"
+  },
   "firstName": {
     "required": "名は必須です。"
   },
   "gender": {
     "required": "性別は必須です。"
+  },
+  "healthBasis": {
+    "notSelected": "健康保険月額を選択してください。"
+  },
+  "hiredAt": {
+    "required": "入社日時は必須です。"
   },
   "ingredientId": {
     "notSelected": "食材を選択してください。"
@@ -88,9 +132,31 @@
   "invoiceType": {
     "notSelected": "インボイスの種類を選択してください。"
   },
+  "laborBasis": {
+    "notSelected": "労働保険申告月額を選択してください。"
+  },
+  "latitude": {
+    "required": "店舗の緯度は必須です。"
+  },
+  "leaveType": {
+    "notSelected": "休暇種類を選択してください。"
+  },
+  "leaveTypeName": {
+    "required": "休暇種類名は必須です。"
+  },
   "localizedText": {
     "completeOrEmpty": "すべての言語フィールドを入力するか、すべて空白にしてください。",
     "required": "多言語テキストを入力してください。"
+  },
+  "longitude": {
+    "required": "店舗の経度は必須です。"
+  },
+  "makeupEndsAt": {
+    "afterMakeupStartsAt": "代休終了は代休開始より後でなければなりません。",
+    "required": "代休終了は必須です。"
+  },
+  "makeupStartsAt": {
+    "required": "代休開始は必須です。"
   },
   "member": {
     "required": "メンバーを選択してください。"
@@ -109,6 +175,19 @@
     "number": "数字を1文字以上含む。",
     "sameAsCurrent": "新しいパスワードは現在のパスワードと異なる必要があります。"
   },
+  "number": {
+    "integer": "整数を入力してください。",
+    "max": "{max} 以下の値を入力してください。",
+    "maxFractionDigits": "小数点以下 {digits} 桁以内の値を入力してください。",
+    "min": "{min} 以上の値を入力してください。"
+  },
+  "occurredAt": {
+    "maxDateTime": "現在以前の打刻時刻を選択してください。",
+    "required": "打刻日時は必須です。"
+  },
+  "parentalChild": {
+    "notSelected": "子どもを選択してください。"
+  },
   "password": {
     "letter": "英字を1文字以上含む。",
     "match": "パスワードと一致。",
@@ -117,6 +196,12 @@
   },
   "payment": {
     "notSelected": "お支払い方法を選択してください。"
+  },
+  "payrollMonth": {
+    "invalid": "給与月が無効です。"
+  },
+  "pensionBasis": {
+    "required": "年金拠出基準は必須です。"
   },
   "pickupCutoffMinutes": {
     "invalid": "閉店前の締め切りが無効です。",
@@ -152,14 +237,26 @@
   "quantity": {
     "required": "数量は必須です。"
   },
+  "reason": {
+    "required": "理由は必須です。"
+  },
   "recipeYield": {
     "required": "出来上がり分量は必須です。"
   },
   "remark": {
     "maxLength": "備考は160文字以内で入力してください。"
   },
+  "reportedAt": {
+    "required": "報告日時は必須です。"
+  },
   "requiredQuantity": {
     "required": "使用量は必須です。"
+  },
+  "returnsAt": {
+    "required": "復職日は必須です。"
+  },
+  "reviewReason": {
+    "required": "審査理由は必須です。"
   },
   "role": {
     "required": "役割を選択してください。"
@@ -168,12 +265,30 @@
     "letter": "スラッグには少なくとも1つのアルファベットを含める必要があります。",
     "required": "スラッグは必須です。"
   },
+  "sourceNote": {
+    "required": "保険・税・調整の根拠は必須です。"
+  },
+  "startDate": {
+    "invalid": "開始日が無効です。"
+  },
+  "startTime": {
+    "invalid": "開始時刻の形式が無効です。"
+  },
+  "startsAt": {
+    "required": "開始日時は必須です。"
+  },
   "supplierName": {
     "required": "仕入先名は必須です。"
   },
   "telephone": {
     "invalid": "電話番号が無効です。",
     "required": "電話番号は必須です。"
+  },
+  "templateName": {
+    "required": "テンプレート名は必須です。"
+  },
+  "terminatedAt": {
+    "afterHiredAt": "退職日時は入社日時より後でなければなりません。"
   },
   "unitCode": {
     "notSelected": "内容量の単位を選択してください。"
@@ -183,5 +298,9 @@
   },
   "validFrom": {
     "beforeValidThrough": "開始日は終了日より前でなければなりません。"
+  },
+  "weeklyMinutesFrom": {
+    "notBeforeHiredAt": "所定労働時間の適用開始日は入社日時より前に設定できません。",
+    "required": "所定労働時間の適用開始日は必須です。"
   }
 }

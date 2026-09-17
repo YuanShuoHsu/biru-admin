@@ -2,6 +2,9 @@
   "addOnMenuSectionId": {
     "required": "请选择加购区块。"
   },
+  "allowedIps": {
+    "required": "固定公网 IP 为必填。"
+  },
   "availableModes": {
     "notSelected": "请选择您的销售方式。"
   },
@@ -29,6 +32,18 @@
   "carrierType": {
     "notSelected": "请选择您的载具类型。"
   },
+  "caseReference": {
+    "required": "事件编号为必填。"
+  },
+  "cause": {
+    "notSelected": "请选择您的法定事由。"
+  },
+  "childLabel": {
+    "required": "子女称呼为必填。"
+  },
+  "childReference": {
+    "required": "子女识别依据编号为必填。"
+  },
   "confirmNewPassword": {
     "mismatch": "两次输入的密码不一致。",
     "required": "确认新密码为必填。"
@@ -39,6 +54,9 @@
   },
   "contact": {
     "requiredForInvoice": "开立发票需要联络方式，电子邮箱与电话请至少填写一项。"
+  },
+  "correctedEvents": {
+    "minLength": "请至少填写两笔打卡记录。"
   },
   "countryCode": {
     "invalid": "国家代码无效。",
@@ -69,6 +87,9 @@
     "invalid": "捐赠码格式无效。",
     "required": "捐赠码为必填。"
   },
+  "effectiveFrom": {
+    "required": "生效日期为必填。"
+  },
   "eligibleQuantity": {
     "required": "包装容量为必填。"
   },
@@ -76,11 +97,34 @@
     "invalid": "电子邮件无效。",
     "required": "电子邮件为必填。"
   },
+  "employee": {
+    "notSelected": "请选择您的员工。"
+  },
+  "endDate": {
+    "beforeStartDate": "结束日期不能早于开始日期。",
+    "invalid": "结束日期无效。"
+  },
+  "endTime": {
+    "invalid": "结束时间格式无效。"
+  },
+  "endsAt": {
+    "afterStartsAt": "结束时间必须晚于开始时间。",
+    "required": "结束时间为必填。"
+  },
+  "eventDate": {
+    "required": "事件日期为必填。"
+  },
   "firstName": {
     "required": "名字为必填。"
   },
   "gender": {
     "required": "性别为必填。"
+  },
+  "healthBasis": {
+    "notSelected": "请选择您的健保月投保金额。"
+  },
+  "hiredAt": {
+    "required": "入职时间为必填。"
   },
   "ingredientId": {
     "notSelected": "请选择您的食材。"
@@ -88,9 +132,31 @@
   "invoiceType": {
     "notSelected": "请选择您的发票类型。"
   },
+  "laborBasis": {
+    "notSelected": "请选择您的劳就保月投保工资。"
+  },
+  "latitude": {
+    "required": "门店纬度为必填。"
+  },
+  "leaveType": {
+    "notSelected": "请选择您的假别。"
+  },
+  "leaveTypeName": {
+    "required": "假别名称为必填。"
+  },
   "localizedText": {
     "completeOrEmpty": "所有语言字段必须同时填写或同时留空。",
     "required": "请填写多语言文字。"
+  },
+  "longitude": {
+    "required": "门店经度为必填。"
+  },
+  "makeupEndsAt": {
+    "afterMakeupStartsAt": "补假结束必须晚于补假开始。",
+    "required": "补假结束为必填。"
+  },
+  "makeupStartsAt": {
+    "required": "补假开始为必填。"
   },
   "member": {
     "required": "请选择成员。"
@@ -109,6 +175,19 @@
     "number": "包含至少一个数字。",
     "sameAsCurrent": "新密码不能与当前密码相同。"
   },
+  "number": {
+    "integer": "请输入整数。",
+    "max": "请输入不大于 {max} 的数值。",
+    "maxFractionDigits": "请输入最多 {digits} 位小数的数值。",
+    "min": "请输入不小于 {min} 的数值。"
+  },
+  "occurredAt": {
+    "maxDateTime": "请选择现在或之前的打卡时间。",
+    "required": "打卡时间为必填。"
+  },
+  "parentalChild": {
+    "notSelected": "请选择您的子女。"
+  },
   "password": {
     "letter": "包含至少一个英文字母。",
     "match": "与密码一致。",
@@ -117,6 +196,12 @@
   },
   "payment": {
     "notSelected": "请选择您的付款方式。"
+  },
+  "payrollMonth": {
+    "invalid": "薪资月份无效。"
+  },
+  "pensionBasis": {
+    "required": "劳退月提缴工资为必填。"
   },
   "pickupCutoffMinutes": {
     "invalid": "打烊前截止时间格式无效。",
@@ -152,14 +237,26 @@
   "quantity": {
     "required": "数量为必填。"
   },
+  "reason": {
+    "required": "申请理由为必填。"
+  },
   "recipeYield": {
     "required": "份量为必填。"
   },
   "remark": {
     "maxLength": "备注不能超过 160 个字符。"
   },
+  "reportedAt": {
+    "required": "已报备时间为必填。"
+  },
   "requiredQuantity": {
     "required": "用量为必填。"
+  },
+  "returnsAt": {
+    "required": "复职日期为必填。"
+  },
+  "reviewReason": {
+    "required": "审核说明为必填。"
   },
   "role": {
     "required": "请选择角色。"
@@ -168,12 +265,30 @@
     "letter": "网址识别码必须包含至少一个英文字母。",
     "required": "网址识别码为必填。"
   },
+  "sourceNote": {
+    "required": "投保、扣缴与调整依据为必填。"
+  },
+  "startDate": {
+    "invalid": "开始日期无效。"
+  },
+  "startTime": {
+    "invalid": "开始时间格式无效。"
+  },
+  "startsAt": {
+    "required": "开始时间为必填。"
+  },
   "supplierName": {
     "required": "供应商名称为必填。"
   },
   "telephone": {
     "invalid": "电话格式无效。",
     "required": "电话为必填。"
+  },
+  "templateName": {
+    "required": "模板名称为必填。"
+  },
+  "terminatedAt": {
+    "afterHiredAt": "离职时间必须晚于入职时间。"
   },
   "unitCode": {
     "notSelected": "请选择您的内容量单位。"
@@ -183,5 +298,9 @@
   },
   "validFrom": {
     "beforeValidThrough": "生效日期必须早于截止日期。"
+  },
+  "weeklyMinutesFrom": {
+    "notBeforeHiredAt": "工时生效日不能早于入职时间。",
+    "required": "工时生效日为必填。"
   }
 }

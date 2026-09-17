@@ -2,6 +2,9 @@
   "addOnMenuSectionId": {
     "required": "請選擇加購區塊。"
   },
+  "allowedIps": {
+    "required": "固定公網 IP 為必填。"
+  },
   "availableModes": {
     "notSelected": "請選擇您的販售方式。"
   },
@@ -29,6 +32,18 @@
   "carrierType": {
     "notSelected": "請選擇您的載具類型。"
   },
+  "caseReference": {
+    "required": "事件編號為必填。"
+  },
+  "cause": {
+    "notSelected": "請選擇您的法定事由。"
+  },
+  "childLabel": {
+    "required": "子女稱呼為必填。"
+  },
+  "childReference": {
+    "required": "子女識別依據編號為必填。"
+  },
   "confirmNewPassword": {
     "mismatch": "兩次輸入的密碼不一致。",
     "required": "確認新密碼為必填。"
@@ -39,6 +54,9 @@
   },
   "contact": {
     "requiredForInvoice": "開立發票需要聯絡方式，電子信箱與電話請至少填寫一項。"
+  },
+  "correctedEvents": {
+    "minLength": "請至少填寫兩筆打卡紀錄。"
   },
   "countryCode": {
     "invalid": "國家代碼無效。",
@@ -69,6 +87,9 @@
     "invalid": "捐贈碼格式無效。",
     "required": "捐贈碼為必填。"
   },
+  "effectiveFrom": {
+    "required": "生效日期為必填。"
+  },
   "eligibleQuantity": {
     "required": "包裝容量為必填。"
   },
@@ -76,11 +97,34 @@
     "invalid": "電子郵件無效。",
     "required": "電子郵件為必填。"
   },
+  "employee": {
+    "notSelected": "請選擇您的員工。"
+  },
+  "endDate": {
+    "beforeStartDate": "結束日期不能早於開始日期。",
+    "invalid": "結束日期無效。"
+  },
+  "endTime": {
+    "invalid": "結束時間格式無效。"
+  },
+  "endsAt": {
+    "afterStartsAt": "結束時間必須晚於開始時間。",
+    "required": "結束時間為必填。"
+  },
+  "eventDate": {
+    "required": "事件日期為必填。"
+  },
   "firstName": {
     "required": "名字為必填。"
   },
   "gender": {
     "required": "性別為必填。"
+  },
+  "healthBasis": {
+    "notSelected": "請選擇您的健保月投保金額。"
+  },
+  "hiredAt": {
+    "required": "到職時間為必填。"
   },
   "ingredientId": {
     "notSelected": "請選擇您的食材。"
@@ -88,9 +132,31 @@
   "invoiceType": {
     "notSelected": "請選擇您的發票類型。"
   },
+  "laborBasis": {
+    "notSelected": "請選擇您的勞就保月投保薪資。"
+  },
+  "latitude": {
+    "required": "店家緯度為必填。"
+  },
+  "leaveType": {
+    "notSelected": "請選擇您的假別。"
+  },
+  "leaveTypeName": {
+    "required": "假別名稱為必填。"
+  },
   "localizedText": {
     "completeOrEmpty": "所有語言欄位必須同時填寫或同時留空。",
     "required": "請填寫多語言文字。"
+  },
+  "longitude": {
+    "required": "店家經度為必填。"
+  },
+  "makeupEndsAt": {
+    "afterMakeupStartsAt": "補假結束必須晚於補假開始。",
+    "required": "補假結束為必填。"
+  },
+  "makeupStartsAt": {
+    "required": "補假開始為必填。"
   },
   "member": {
     "required": "請選擇成員。"
@@ -109,6 +175,19 @@
     "number": "包含至少一個數字。",
     "sameAsCurrent": "新密碼不能與目前密碼相同。"
   },
+  "number": {
+    "integer": "請輸入整數。",
+    "max": "請輸入不大於 {max} 的數值。",
+    "maxFractionDigits": "請輸入最多 {digits} 位小數的數值。",
+    "min": "請輸入不小於 {min} 的數值。"
+  },
+  "occurredAt": {
+    "maxDateTime": "請選擇現在或之前的打卡時間。",
+    "required": "打卡時間為必填。"
+  },
+  "parentalChild": {
+    "notSelected": "請選擇您的子女。"
+  },
   "password": {
     "letter": "包含至少一個英文字母。",
     "match": "與密碼一致。",
@@ -117,6 +196,12 @@
   },
   "payment": {
     "notSelected": "請選擇您的付款方式。"
+  },
+  "payrollMonth": {
+    "invalid": "薪資月份無效。"
+  },
+  "pensionBasis": {
+    "required": "勞退月提繳工資為必填。"
   },
   "pickupCutoffMinutes": {
     "invalid": "打烊前截止時間格式無效。",
@@ -152,14 +237,26 @@
   "quantity": {
     "required": "數量為必填。"
   },
+  "reason": {
+    "required": "申請理由為必填。"
+  },
   "recipeYield": {
     "required": "份量為必填。"
   },
   "remark": {
     "maxLength": "備註不能超過 160 個字元。"
   },
+  "reportedAt": {
+    "required": "已報備時間為必填。"
+  },
   "requiredQuantity": {
     "required": "用量為必填。"
+  },
+  "returnsAt": {
+    "required": "復職日期為必填。"
+  },
+  "reviewReason": {
+    "required": "審核說明為必填。"
   },
   "role": {
     "required": "請選擇角色。"
@@ -168,12 +265,30 @@
     "letter": "網址識別碼必須包含至少一個英文字母。",
     "required": "網址識別碼為必填。"
   },
+  "sourceNote": {
+    "required": "投保、扣繳與調整依據為必填。"
+  },
+  "startDate": {
+    "invalid": "開始日期無效。"
+  },
+  "startTime": {
+    "invalid": "開始時間格式無效。"
+  },
+  "startsAt": {
+    "required": "開始時間為必填。"
+  },
   "supplierName": {
     "required": "供應商名稱為必填。"
   },
   "telephone": {
     "invalid": "電話格式無效。",
     "required": "電話為必填。"
+  },
+  "templateName": {
+    "required": "範本名稱為必填。"
+  },
+  "terminatedAt": {
+    "afterHiredAt": "離職時間必須晚於到職時間。"
   },
   "unitCode": {
     "notSelected": "請選擇您的內容量單位。"
@@ -183,5 +298,9 @@
   },
   "validFrom": {
     "beforeValidThrough": "生效日期必須早於截止日期。"
+  },
+  "weeklyMinutesFrom": {
+    "notBeforeHiredAt": "工時生效日不能早於到職時間。",
+    "required": "工時生效日為必填。"
   }
 }

@@ -1,0 +1,431 @@
+{
+  "actions": "操作",
+  "add": "新增",
+  "allowance": "固定津贴（{currency}）",
+  "allowanceHours": "固定津贴对应每月正常工时（小时）",
+  "allowedIps": "固定公网 IP（每行一个）",
+  "approve": "批准",
+  "approveCancellation": "批准撤假",
+  "assignParentalChild": "确认子女归户",
+  "autoInsurance": "依当期投保级距与费率自动计算保费",
+  "balances": {
+    "actions": {
+      "create": "新增休假额度"
+    },
+    "label": "休假额度"
+  },
+  "breaks": "休息（分钟）",
+  "cancelLeave": "申请撤假",
+  "cancelShift": "取消班次",
+  "caseReference": "事件编号（同一事件请沿用）",
+  "cause": {
+    "label": "法定事由",
+    "options": {
+      "disaster": "天灾",
+      "incident": "事变",
+      "unexpected": "突发事件"
+    }
+  },
+  "childBirthDate": "出生日期",
+  "childLabel": "子女称呼",
+  "childReference": "子女识别依据编号",
+  "confirm": "确认执行此操作？",
+  "correctionHint": "补卡请填完整上下班及休息时间，批准后原始记录仍保留。",
+  "dailyPayCents": "核定每日全薪（{currency}，含应计入的津贴）",
+  "dayKind": {
+    "label": "日期类型",
+    "options": {
+      "holiday": "法定节假日",
+      "regularLeave": "例假",
+      "restDay": "休息日",
+      "workday": "工作日"
+    }
+  },
+  "deductions": "扣款合计",
+  "disabled": "已停用",
+  "early": "早退",
+  "earlyParentalAgreed": "任职未满六个月，已取得提前育婴留停的劳资同意",
+  "effectiveFrom": "生效日期",
+  "emergencyWork": "例假紧急出勤资料",
+  "employee": "员工",
+  "employees": {
+    "actions": {
+      "create": "新增员工",
+      "update": "编辑员工"
+    },
+    "label": "员工管理"
+  },
+  "employerPension": "雇主提缴（{currency}）",
+  "employerPercent": "雇主提缴比例（%）",
+  "empty": "目前没有数据",
+  "enabled": "启用",
+  "endsAt": "结束时间",
+  "errors": {
+    "activeShiftExists": "还有尚未下班的班次，请先完成下班或补卡。",
+    "attendanceShortfall": "出勤时数少于排班，请先处理补卡或请假。",
+    "belowMinimumWage": "薪资设置低于当期最低工资。",
+    "calendarLeaveInterval": "产假事件期间须为法定天数的完整日历日（起讫 00:00，结束日不含）。",
+    "calendarLeavePayRequired": "产假事件须由 owner 设置核定每日全薪，给薪比例由工龄自动计算。",
+    "cannotReviewOwnDraft": "不能复核自己创建的工资单，请由另一位管理者处理。",
+    "cannotReviewSelf": "不能审核自己的申请，请由另一位主管处理。",
+    "correctionSourceChanged": "提交申请后这个班次的打卡有变动，请重新确认后再送审。",
+    "dailyHoursExceeded": "每日工时超过 12 小时。",
+    "emergencyDetailsRequired": "例假出勤须先批准法定事由、报备及补假资料。",
+    "employeeNotEnabled": "请由主管先在员工管理启用你的出勤资格。",
+    "employmentWindowConflict": "任职期间之外已排定班次，请先调整排班。",
+    "error": "操作失败，请稍后重试。",
+    "futureCorrection": "补卡时间不能晚于现在。",
+    "hourlyAllowanceBasisRequired": "时薪固定津贴的加班基数暂不支持自动计算。",
+    "idempotencyConflict": "重试内容已变更，请关闭表单重新操作。",
+    "implausibleMinimumWage": "确认的每小时最低工资低于前一期，请重新核对官方公告。",
+    "incompleteAttendance": "尚有班次未完成打卡或请假。",
+    "inconsistentDayKind": "同一天的班次日期类型不一致。",
+    "insufficientLeaveBalance": "休假额度不足，请由主管确认年度额度。",
+    "insuranceBasisOutdated": "投保金额不在当期投保级距表内，请重新确认劳就保与健保投保金额。",
+    "invalidBreak": "休息时间必须在班次时间内。",
+    "invalidEmergencyDetails": "请确认报备时间与至少连续 24 小时的补假。",
+    "invalidEventSequence": "打卡顺序或时间不正确，请确认上下班与休息记录。",
+    "invalidInsuranceBasis": "投保金额不符合所选计算方式。",
+    "invalidInterval": "开始与结束时间不正确，结束必须晚于开始。",
+    "invalidIp": "IP 格式不正确，请一行填一个有效的 IPv4 或 IPv6 地址。",
+    "invalidLeaveCase": "事件、员工、假别或适用期间不符。",
+    "invalidParentalInterval": "育婴留停须符合任职资格、子女未满三岁及完整日历日规则；连续申请至少三十日。",
+    "invalidPayrollState": "薪资状态已变更，请重新加载。",
+    "ipNotAllowed": "当前网络不在门店白名单，请连接门店网络。",
+    "leaveCaseExists": "此员工的同假别事件编号已存在。",
+    "leaveCaseRequired": "请先选择主管已确认的事件额度。",
+    "leaveOutsideShift": "请假时间必须涵盖已排定的班次。",
+    "leavePolicyRequired": "请先设置并选择有效假别。",
+    "locationNotAllowed": "定位过旧、精度不足或超出门店范围，请重新定位。",
+    "medicalCertificateRequired": "核准前请先查验医疗证明。",
+    "medicalLeaveInterval": "医疗假期间不符合规则，请确认起讫时间与申请额度。",
+    "memberNotFound": "找不到这位组织成员。",
+    "menstrualDayLimit": "生理假每月限一个日历日，请确认日期。",
+    "minimumWageUnconfirmed": "本期每小时最低工资尚未依官方公告确认。",
+    "monthlyOvertimeExceeded": "每月加班超过 46 小时。",
+    "negativeNetPay": "扣款大于应发薪资。",
+    "noShifts": "此月份没有班表。",
+    "noTemplateDates": "这段日期范围内没有符合模板星期的日子。",
+    "outsideShiftWindow": "当前不在此班次可上班打卡的时间内。",
+    "overlappingAttendance": "这段时间已有其他出勤记录。",
+    "overlappingLeave": "时间与现有请假重叠，请先处理请假记录。",
+    "overlappingLeaveAttendance": "请假与实际计薪时段重叠，请先修正。",
+    "overlappingShift": "班次与现有排班重叠，请调整时间。",
+    "parentalChildExists": "此员工已有相同识别编号的子女资料，请选用现有资料。",
+    "parentalChildMismatch": "子女资料与员工或出生日期不符。",
+    "parentalChildRequired": "请先选择已核定的子女资料。",
+    "parentalChildUnassigned": "尚未确认子女归户",
+    "parentalDailyLimit": "同一子女按日育婴留停已超过三十日。",
+    "parentalInsuranceRequired": "育婴留停期间请关闭自动保费，填入已核定的保费、退休金与计算依据，再重新生成薪资草稿。",
+    "parentalLeaveActive": "此期间正在育婴留停，撤假核准后才能打卡。",
+    "parentalReturnInvalid": "复职日期须在原留停期间内，且符合完整历日规则。",
+    "parentalReturnPending": "已有待审核的复职申请，请先处理。",
+    "parentalReturnStale": "原留停资料已变更，请重新提出复职申请。",
+    "parentalShortLimit": "未满六个月的连续育婴留停已超过两次。",
+    "parentalTotalLimit": "育婴留停已超过两年共用上限。",
+    "partTimeLadderRequiresPartTime": "部分工时级距只适用于每周工时未满 40 小时的员工。",
+    "payrollBlocked": "有待处理项目，不能复核或发布。",
+    "payrollLocked": "受影响期间已有发布薪资，无法变更。",
+    "payrollPeriodOpen": "薪资月份尚未结束。",
+    "payrollRuleSetMissing": "尚未加载该月份的投保级距与费率，请联系平台管理员。",
+    "payrollRuleSetStale": "计薪规则超过一个月未与官方公告核对，请先更新规则。",
+    "payrollSourceChanged": "资料已变更，请重新建立薪资草稿。",
+    "payrollTermsRequired": "请先建立有效薪资设置。",
+    "pendingRequestExists": "此班次已有相同类型的待审申请。",
+    "pendingRequests": "尚有未完成审核的申请。",
+    "prorationRequired": "请先设置不足月薪资约定。",
+    "reasonRequired": "请填写申请原因。",
+    "requestAlreadyReviewed": "申请状态已更新，请重新加载。",
+    "reservedMakeupRest": "班次与已批准补假重叠。",
+    "settingsRequired": "请先由门店 owner 完成定位与 IP 设置。",
+    "shiftHasCorrection": "这个班次已有核准的补卡，不能重复申请。",
+    "shiftHasRecords": "班次已有打卡或申请记录，不能直接取消。",
+    "shiftRequired": "这类申请必须指定班次。",
+    "shiftTooLong": "单一班次不能超过 24 小时。",
+    "sourceRequired": "请填写核定依据。",
+    "splitLeaveByYear": "跨年度请假请分成两笔申请。",
+    "statutoryBalanceAutomatic": "法定额度按规则计算，不能手动覆盖。",
+    "statutoryKindImmutable": "法定假别类型创建后不能修改。",
+    "statutoryPolicyExists": "此法定假别已设置。",
+    "unresolvedOvertime": "实际加班时段尚未全部核准。",
+    "unsupportedDayKind": "不支持的日期类型。",
+    "weeklyMinutesFromRequired": "变更每周约定工时必须指定不早于入职时间的生效日。",
+    "weeklyScheduleRequiresReview": "每周排定工作日时数超过 40 小时，请确认班表。"
+  },
+  "eventAction": {
+    "options": {
+      "breakEnd": "结束休息",
+      "breakStart": "开始休息",
+      "clockIn": "上班打卡",
+      "clockOut": "下班打卡"
+    }
+  },
+  "eventDate": "事件日期",
+  "events": "打卡时间明细",
+  "exportCsv": "导出 CSV",
+  "extensionAgreed": "婚假延长至 6 个月已取得同意",
+  "from": "开始日期",
+  "generate": "生成班次",
+  "graceMinutes": "迟到早退宽限（分钟）",
+  "grantedMinutes": "核给额度（分钟）",
+  "gross": "应发工资",
+  "healthBasis": "健保月投保金额（{currency}，未在本店投保填 0）",
+  "healthDependents": "健保依附家属人数",
+  "healthInsurance": "员工健保（{currency}）",
+  "hiredAt": "入职时间",
+  "ipHint": "请填运营商提供的固定公网 IP，不能使用 Wi-Fi 内网 IP。",
+  "kind": {
+    "label": "申请类型",
+    "options": {
+      "correction": "补打卡",
+      "leave": "请假",
+      "overtime": "加班"
+    }
+  },
+  "label": "员工出勤",
+  "laborBasis": "劳就保月投保工资（{currency}）",
+  "laborCoverage": {
+    "label": "劳就保适用类型",
+    "options": {
+      "both": "劳保及就保",
+      "employment": "仅就保",
+      "labor": "仅劳保",
+      "none": "不适用"
+    }
+  },
+  "laborInsurance": "员工劳就保（{currency}）",
+  "laborLadder": {
+    "label": "劳保投保级距表",
+    "options": {
+      "general": "一般",
+      "partTime": "部分工时"
+    }
+  },
+  "late": "迟到",
+  "latitude": "门店纬度",
+  "leaveCase": "对应事件（事件型假别必填）",
+  "leaveCaseHint": "主管先确认事件、亲属关系与有效期间，系统自动核给额度。同一事件不得重复建立。产假含例休假日，请使用完整日历日（起讫 00:00，结束日不含）；陪产检与陪产共用 7 日，请确认各次申请符合适用期间。 产假事件须由 owner 设置核定每日全薪，给薪比例由工龄自动计算。 育婴留停事件日期请填子女出生日期，同一子女沿用事件编号，期间不得超过三岁；未满六个月任职须先取得劳资同意。育婴留停不需核定日薪。",
+  "leaveCases": {
+    "actions": {
+      "create": "新增事件假额度"
+    },
+    "label": "事件假额度"
+  },
+  "leaveRequestHint": "住院／安胎假由主管查验医疗证明；病假及生理假的给薪会依已用额度分段计算，超出给薪额度的生理假为无薪。育婴留停请先选择主管建立的子女事件，使用完整日历日（起讫 00:00，结束日不含）。",
+  "leaveType": "假别",
+  "leaveTypes": {
+    "actions": {
+      "create": "新增假别"
+    },
+    "label": "假别设置"
+  },
+  "locationError": "无法获取定位，请确认权限，或提出补卡申请。",
+  "locationHint": "所有打卡都需要允许定位并连接门店指定网络。",
+  "longitude": "门店经度",
+  "makeupEndsAt": "补假结束",
+  "makeupStartsAt": "补假开始",
+  "medicalCertified": "已查验住院、癌症门诊或安胎休养的医疗证明",
+  "member": "组织成员",
+  "mine": {
+    "actions": {
+      "viewEvents": "查看打卡明细"
+    },
+    "correctionNotStarted": "班次尚未开始，无需补卡",
+    "label": "我的出勤",
+    "punch": {
+      "empty": "目前没有可打卡的班次。",
+      "title": "打卡"
+    }
+  },
+  "month": "薪资月份",
+  "monthlyProration": {
+    "label": "不足月薪资约定",
+    "options": {
+      "calendarDays": "按当月实际天数比例",
+      "thirtyDays": "除以 30，按在职日数计算"
+    }
+  },
+  "name": "名称",
+  "net": "实领工资",
+  "nextDay": "次日",
+  "no": "否",
+  "originalEvents": "原始打卡",
+  "originalLeavePeriod": "原留停期间",
+  "otherDeduction": "其他核定扣款（{currency}）",
+  "paidBreak": "此班次休息计薪",
+  "paidPercent": "给薪比例（%）",
+  "parentalChild": "子女",
+  "parentalChildHint": "同一子女请重用现有资料。主管查验证明后设置固定识别编号；双胞胎分别建立，请勿输入完整身份证号。现有育婴案件须先完成子女归户。",
+  "parentalChildren": {
+    "actions": {
+      "create": "新增子女资料"
+    },
+    "label": "子女资料"
+  },
+  "parentalContinuous": "连续期间申请",
+  "parentalDaily": "按日申请",
+  "parentalMode": "育婴留停申请方式",
+  "parentalReturn": "提前复职",
+  "parentalReturnHint": "复职申请须由另一位主管核准。核准前原留停仍有效；核准后保留已休期间与原申请记录。请选择复职当日，该日起不再留停。",
+  "parentalReturns": {
+    "label": "复职申请"
+  },
+  "payroll": {
+    "actions": {
+      "view": "查看工资明细"
+    },
+    "label": "薪资管理"
+  },
+  "payrollHint": "投保资料请依有效申报填写；特殊身份或补助请关闭自动计算并填入核定金额及依据。生效日目前限月初。",
+  "payrollLine": {
+    "options": {
+      "allowance": "固定津贴",
+      "annualLeavePay": "未休年假工资",
+      "basePay": "基本工资",
+      "calendarLeavePay": "产假期间工资",
+      "healthInsurance": "员工健保",
+      "holidayPay": "假日出勤加给",
+      "laborInsurance": "员工劳就保",
+      "leaveDeduction": "请假扣款",
+      "otherDeduction": "其他核定扣款",
+      "overtimePay": "加班费",
+      "voluntaryPension": "劳退自提",
+      "withholding": "所得税扣缴"
+    }
+  },
+  "payrollStatus": {
+    "options": {
+      "draft": "试算草稿",
+      "published": "已发布",
+      "reviewed": "已复核"
+    }
+  },
+  "payrollTerms": "薪资与投保设置",
+  "payslips": {
+    "actions": {
+      "view": "查看工资明细"
+    },
+    "label": "我的工资单"
+  },
+  "pensionBasis": "劳退月提缴工资（{currency}）",
+  "print": "打印",
+  "publish": "发布工资单",
+  "radiusMeters": "允许半径（米）",
+  "reason": "申请理由",
+  "reject": "驳回",
+  "rejectCancellation": "驳回撤假",
+  "repeatWeeks": "每周重复次数",
+  "reportedAt": "已报备时间",
+  "requests": {
+    "actions": {
+      "create": "新增请假申请"
+    },
+    "label": "我的申请"
+  },
+  "requiresBalance": "需要休假额度",
+  "returnsAt": "复职日期",
+  "reviewReason": "审核说明",
+  "reviews": {
+    "label": "申请审核"
+  },
+  "salary": "基本工资／时薪（{currency}）",
+  "salaryType": {
+    "label": "薪资类型",
+    "options": {
+      "hourly": "时薪",
+      "monthly": "月薪"
+    }
+  },
+  "save": "保存",
+  "settings": {
+    "actions": {
+      "update": "编辑出勤设置"
+    },
+    "allowedIps": "固定公网 IP",
+    "label": "出勤设置"
+  },
+  "shifts": {
+    "actions": {
+      "create": "新增班次",
+      "viewEvents": "查看打卡明细"
+    },
+    "label": "班表管理"
+  },
+  "sourceNote": "投保、扣缴与调整依据",
+  "startsAt": "开始时间",
+  "state": {
+    "label": "出勤状态",
+    "options": {
+      "completed": "已下班",
+      "resting": "休息中",
+      "scheduled": "尚未上班",
+      "working": "工作中"
+    }
+  },
+  "status": {
+    "label": "状态",
+    "options": {
+      "approved": "已批准",
+      "cancellationPending": "撤假待审核",
+      "cancelled": "已取消",
+      "pending": "待审核",
+      "rejected": "已驳回",
+      "withdrawn": "已撤回"
+    }
+  },
+  "statutoryHint": "法定假别按年资和约定工时计算额度及给薪比例，自定义字段不会覆盖法定规则。",
+  "statutoryKind": {
+    "label": "假别规则",
+    "options": {
+      "annual": "年资年假（周年制）",
+      "custom": "自定义假别",
+      "familyCare": "家庭照顾假",
+      "funeral3": "丧假（曾祖父母／兄弟姐妹／配偶祖父母，3 日）",
+      "funeral6": "丧假（祖父母／子女／配偶父母，6 日）",
+      "funeral8": "丧假（父母／配偶，8 日）",
+      "hospitalSick": "住院伤病假（含癌症门诊）",
+      "marriage": "婚假",
+      "maternity": "产假（8 周）",
+      "menstrual": "生理假",
+      "miscarriage28": "流产假（妊娠满 3 个月，4 周）",
+      "miscarriage5": "流产假（妊娠未满 2 个月，5 日）",
+      "miscarriage7": "流产假（妊娠 2–3 个月，1 周）",
+      "parental": "育婴留职停薪",
+      "paternity": "陪产检及陪产假",
+      "personal": "事假",
+      "pregnancyRest": "安胎休养假",
+      "prenatal": "产检假",
+      "sick": "普通伤病假（未住院）"
+    }
+  },
+  "success": "已保存",
+  "taxMethod": {
+    "label": "扣缴方式",
+    "options": {
+      "resident5": "居住者已选择 5% 扣缴",
+      "verified": "使用已确认扣缴金额"
+    }
+  },
+  "templateHint": "依模板生成期间内的班次；若有重叠或请假冲突，整批不会保存。",
+  "templates": {
+    "actions": {
+      "create": "新增班表模板"
+    },
+    "label": "每周班表模板"
+  },
+  "terminatedAt": "离职时间（选填）",
+  "to": "结束日期",
+  "useCurrentLocation": "使用当前位置",
+  "usedMinutes": "已用额度（分钟）",
+  "version": "版本",
+  "voluntaryPension": "劳退自提（{currency}）",
+  "voluntaryPercent": "自提比例（%）",
+  "weekday": "星期",
+  "weeklyMinutes": "每周约定正常工时（分钟）",
+  "weeklyMinutesFrom": "工时生效日",
+  "withdraw": "撤回申请",
+  "withholding": "所得税扣缴（{currency}）",
+  "worked": "计入工时（小时）",
+  "year": "年度",
+  "yes": "是"
+}

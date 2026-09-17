@@ -9,6 +9,7 @@ import { useAuthStore } from "@/providers/auth-store-provider";
 import type { NavItem } from "@/types/navItem";
 
 import { useAccountNavItems } from "@/utils/account";
+import { attendanceNavPaths } from "@/utils/attendance";
 import { hasRolePermission } from "@/utils/organizations";
 
 export const useNavChildren = (): Record<string, NavItem[]> => {
@@ -22,6 +23,7 @@ export const useNavChildren = (): Record<string, NavItem[]> => {
   const authChildren = useAuthNavItems();
 
   return {
+    "/attendance": attendanceNavPaths(memberRole).map((path) => navItem(path)),
     "/auth": session ? accountChildren : authChildren,
     "/company": [navItem("/company/terms"), navItem("/company/privacy")],
     "/inventory": [

@@ -1,5 +1,6 @@
 import admins from "./en/admins.json";
 import appBar from "./en/appBar.json";
+import attendance from "./en/attendance.json";
 import audit from "./en/audit.json";
 import auth from "./en/auth.json";
 import banners from "./en/banners.json";
@@ -21,6 +22,7 @@ import validation from "./en/validation.json";
 const messages = {
   admins,
   appBar,
+  attendance,
   audit,
   auth,
   banners,

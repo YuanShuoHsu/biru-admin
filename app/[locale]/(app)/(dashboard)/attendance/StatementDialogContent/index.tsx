@@ -1,0 +1,165 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+
+import { useFormatMoney } from "@/hooks/useFormatMoney";
+
+import { Print } from "@mui/icons-material";
+import {
+  Alert,
+  Button,
+  Divider,
+  GlobalStyles,
+  Stack,
+  Typography,
+} from "@mui/material";
+
+import type { PayrollStatement } from "@/types/attendance";
+
+import { downloadAttendanceCsv, fromCents } from "@/utils/attendance";
+
+interface StatementDialogContentProps {
+  canManage: boolean;
+  currency: string;
+  onTransition?: () => void;
+  statement: PayrollStatement;
+}
+
+const StatementDialogContent = ({
+  canManage,
+  currency,
+  onTransition,
+  statement,
+}: StatementDialogContentProps) => {
+  const tAttendance = useTranslations("attendance");
+
+  const formatMoney = useFormatMoney();
+
+  const money = (value: string) =>
+    formatMoney(fromCents(value), currency, { minimumFractionDigits: 2 });
+
+  return (
+    <>
+      <Stack data-payroll-print gap={2}>
+        <Typography variant="h5">
+          {statement.employeeName} · {statement.month}
+        </Typography>
+        <Typography>
+          {tAttendance(`payrollStatus.options.${statement.status}`)} ·{" "}
+          {tAttendance("version")} {statement.version}
+        </Typography>
+        {statement.snapshot.blockers.length > 0 && (
+          <Alert severity="warning">
+            <Typography>{tAttendance("errors.payrollBlocked")}</Typography>
+            {statement.snapshot.blockers.map((blocker) => (
+              <Typography key={blocker} variant="body2">
+                {tAttendance(`errors.${blocker}`)}
+              </Typography>
+            ))}
+          </Alert>
+        )}
+        {statement.snapshot.lines.map((line) => (
+          <Stack
+            key={line.code}
+            direction="row"
+            justifyContent="space-between"
+            gap={2}
+          >
+            <Typography>
+              {tAttendance(`payrollLine.options.${line.code}`)}
+            </Typography>
+            <Typography>{money(line.amountCents)}</Typography>
+          </Stack>
+        ))}
+        <Divider />
+        <Typography>
+          {tAttendance("gross")}: {money(statement.snapshot.grossCents)}
+        </Typography>
+        <Typography>
+          {tAttendance("deductions")}:{" "}
+          {money(statement.snapshot.deductionCents)}
+        </Typography>
+        <Typography variant="h6">
+          {tAttendance("net")}: {money(statement.snapshot.netCents)}
+        </Typography>
+        <Typography variant="body2">
+          {tAttendance("employerPension")}:{" "}
+          {money(statement.snapshot.employerPensionCents)}
+        </Typography>
+        {canManage && (
+          <Typography variant="body2">
+            {tAttendance("sourceNote")}: {statement.snapshot.terms.sourceNote}
+          </Typography>
+        )}
+      </Stack>
+      <Stack direction="row" flexWrap="wrap" gap={1} pt={2}>
+        <Button
+          onClick={() =>
+            downloadAttendanceCsv(
+              `payslip-${statement.month}-v${statement.version}.csv`,
+              [
+                [tAttendance("employee"), statement.employeeName],
+                [tAttendance("month"), statement.month],
+                [tAttendance("version"), String(statement.version)],
+                [
+                  tAttendance("status.label"),
+                  tAttendance(`payrollStatus.options.${statement.status}`),
+                ],
+                ...statement.snapshot.lines.map((line) => [
+                  tAttendance(`payrollLine.options.${line.code}`),
+                  money(line.amountCents),
+                ]),
+                [tAttendance("gross"), money(statement.snapshot.grossCents)],
+                [
+                  tAttendance("deductions"),
+                  money(statement.snapshot.deductionCents),
+                ],
+                [tAttendance("net"), money(statement.snapshot.netCents)],
+                [
+                  tAttendance("employerPension"),
+                  money(statement.snapshot.employerPensionCents),
+                ],
+              ],
+            )
+          }
+        >
+          {tAttendance("exportCsv")}
+        </Button>
+        <Button onClick={() => window.print()} startIcon={<Print />}>
+          {tAttendance("print")}
+        </Button>
+        {canManage && statement.status !== "published" && (
+          <Button
+            disabled={statement.snapshot.blockers.length > 0}
+            onClick={onTransition}
+            variant="contained"
+          >
+            {tAttendance(statement.status === "draft" ? "approve" : "publish")}
+          </Button>
+        )}
+      </Stack>
+      <GlobalStyles
+        styles={{
+          "@media print": {
+            "body *": { visibility: "hidden" },
+            "[data-payroll-print], [data-payroll-print] *": {
+              visibility: "visible",
+            },
+            ".MuiDialog-root": { position: "absolute", inset: 0 },
+            ".MuiDialog-container": { height: "auto", display: "block" },
+            ".MuiDialog-paper": {
+              margin: 0,
+              maxWidth: "none",
+              maxHeight: "none",
+              overflow: "visible",
+              boxShadow: "none",
+            },
+            "[data-payroll-print]": { overflow: "visible" },
+          },
+        }}
+      />
+    </>
+  );
+};
+
+export default StatementDialogContent;

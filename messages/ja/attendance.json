@@ -1,0 +1,431 @@
+{
+  "actions": "操作",
+  "add": "追加",
+  "allowance": "固定手当（{currency}）",
+  "allowanceHours": "固定手当に対応する月の所定時間",
+  "allowedIps": "固定公開IP（1行に1件）",
+  "approve": "承認",
+  "approveCancellation": "取消を承認",
+  "assignParentalChild": "子どもを関連付ける",
+  "autoInsurance": "現行の等級と料率で保険料を自動計算",
+  "balances": {
+    "actions": {
+      "create": "休暇残数を追加"
+    },
+    "label": "休暇残数"
+  },
+  "breaks": "休憩（分）",
+  "cancelLeave": "休暇取消を申請",
+  "cancelShift": "シフト取消",
+  "caseReference": "事由番号（同じ事由には同じ番号）",
+  "cause": {
+    "label": "法定事由",
+    "options": {
+      "disaster": "天災",
+      "incident": "事変",
+      "unexpected": "突発事態"
+    }
+  },
+  "childBirthDate": "生年月日",
+  "childLabel": "子どもの呼称",
+  "childReference": "確認済みの子ども識別番号",
+  "confirm": "この操作を実行しますか？",
+  "correctionHint": "出退勤と休憩をすべて入力してください。承認後も元の記録は保持されます。",
+  "dailyPayCents": "確認済みの日額全額（{currency}、対象手当を含む）",
+  "dayKind": {
+    "label": "日区分",
+    "options": {
+      "holiday": "祝日",
+      "regularLeave": "法定休日",
+      "restDay": "休息日",
+      "workday": "勤務日"
+    }
+  },
+  "deductions": "控除合計",
+  "disabled": "無効",
+  "early": "早退",
+  "earlyParentalAgreed": "勤続6か月未満の育児休業について労使の合意を取得済み",
+  "effectiveFrom": "適用開始日",
+  "emergencyWork": "法定休日の緊急出勤",
+  "employee": "従業員",
+  "employees": {
+    "actions": {
+      "create": "従業員を追加",
+      "update": "従業員を編集"
+    },
+    "label": "従業員管理"
+  },
+  "employerPension": "雇用主年金拠出（{currency}）",
+  "employerPercent": "雇用主拠出率（%）",
+  "empty": "データはありません",
+  "enabled": "有効",
+  "endsAt": "終了日時",
+  "errors": {
+    "activeShiftExists": "未退勤のシフトがあります。先に退勤または修正してください。",
+    "attendanceShortfall": "勤務時間が予定より短いため、打刻訂正または休暇を処理してください。",
+    "belowMinimumWage": "給与設定が適用中の最低賃金を下回っています。",
+    "calendarLeaveInterval": "法定日数を暦日で指定してください（午前0時から午前0時、終了日を含まない）。",
+    "calendarLeavePayRequired": "産休の事由は owner が確認済みの日額賃金を設定してください。支給率は勤続期間から自動計算されます。",
+    "cannotReviewOwnDraft": "自分が作成した給与明細は確認できません。別の管理者が確認してください。",
+    "cannotReviewSelf": "自分の申請は別の管理者が審査する必要があります。",
+    "correctionSourceChanged": "申請後にこのシフトの打刻が変更されました。再確認してから審査してください。",
+    "dailyHoursExceeded": "1 日の労働時間が 12 時間を超えています。",
+    "emergencyDetailsRequired": "緊急出勤の事由、報告、代休を承認してください。",
+    "employeeNotEnabled": "管理者に勤怠の有効化を依頼してください。",
+    "employmentWindowConflict": "在職期間外にシフトが登録されています。先にシフトを調整してください。",
+    "error": "操作に失敗しました。再試行してください。",
+    "futureCorrection": "修正する打刻時刻を未来にはできません。",
+    "hourlyAllowanceBasisRequired": "時給の固定手当を含む残業単価は自動計算の対象外です。",
+    "idempotencyConflict": "再送内容が変更されています。フォームを開き直してください。",
+    "implausibleMinimumWage": "確認した最低時給が前期より低くなっています。官報の公告を再確認してください。",
+    "incompleteAttendance": "打刻または休暇の処理が未完了です。",
+    "inconsistentDayKind": "同日のシフトで日区分が異なります。",
+    "insufficientLeaveBalance": "休暇残数が不足しています。管理者に確認してください。",
+    "insuranceBasisOutdated": "保険の基準額が当期の等級表にありません。労働保険と健康保険の月額を確認してください。",
+    "invalidBreak": "休憩時間はシフト内に収めてください。",
+    "invalidEmergencyDetails": "報告日時と連続 24 時間以上の代休を確認してください。",
+    "invalidEventSequence": "打刻順序または時刻が不正です。出退勤と休憩を確認してください。",
+    "invalidInsuranceBasis": "保険の基準額が計算方法に適合しません。",
+    "invalidInterval": "開始と終了の時刻が不正です。終了は開始より後にしてください。",
+    "invalidIp": "IPアドレスの形式が不正です。1行に有効なIPv4またはIPv6を1件入力してください。",
+    "invalidLeaveCase": "事由、従業員、休暇種別または対象期間が一致しません。",
+    "invalidParentalInterval": "育児休業は勤続要件、子が3歳未満、暦日単位の指定が必要です。連続申請は30日以上です。",
+    "invalidPayrollState": "給与の状態が変更されました。再読み込みしてください。",
+    "ipNotAllowed": "許可されていないネットワークです。店舗のネットワークに接続してください。",
+    "leaveCaseExists": "この従業員の同じ休暇種別に事由番号が登録済みです。",
+    "leaveCaseRequired": "管理者が確認済みの事由を選択してください。",
+    "leaveOutsideShift": "休暇は登録済みシフトの時間内で申請してください。",
+    "leavePolicyRequired": "有効な休暇種類を設定して選択してください。",
+    "locationNotAllowed": "位置情報が古い、不正確、または店舗の範囲外です。再試行してください。",
+    "medicalCertificateRequired": "承認前に医療証明を確認してください。",
+    "medicalLeaveInterval": "医療休暇の期間が無効です。日時と残りの付与枠を確認してください。",
+    "memberNotFound": "該当する組織メンバーが見つかりません。",
+    "menstrualDayLimit": "生理休暇は月に 1 暦日までです。",
+    "minimumWageUnconfirmed": "この期間の最低時給は公式発表でまだ確認されていません。",
+    "monthlyOvertimeExceeded": "月の残業が 46 時間を超えています。",
+    "negativeNetPay": "控除額が支給額を超えています。",
+    "noShifts": "対象月にシフトがありません。",
+    "noTemplateDates": "この期間にテンプレートの曜日に該当する日がありません。",
+    "outsideShiftWindow": "現在このシフトに出勤打刻できません。",
+    "overlappingAttendance": "この期間には既に別の出勤記録があります。",
+    "overlappingLeave": "既存の休暇申請と重複しています。",
+    "overlappingLeaveAttendance": "休暇と有給勤務時間が重複しています。",
+    "overlappingShift": "既存シフトと重複しています。",
+    "parentalChildExists": "同じ識別番号の子どもが登録済みです。既存情報を選択してください。",
+    "parentalChildMismatch": "子どもの情報が従業員または生年月日と一致しません。",
+    "parentalChildRequired": "確認済みの子どもを選択してください。",
+    "parentalChildUnassigned": "子どもの関連付けが必要です",
+    "parentalDailyLimit": "同じ子の日単位の育児休業が30日を超えています。",
+    "parentalInsuranceRequired": "育児休業中は保険料の自動計算を無効にし、確認済みの保険料・年金額と根拠を入力して給与案を再作成してください。",
+    "parentalLeaveActive": "育児休業中です。取消が承認されるまで打刻できません。",
+    "parentalReturnInvalid": "復職日は休業期間内の暦日単位で指定してください。",
+    "parentalReturnPending": "審査待ちの復職申請を先に処理してください。",
+    "parentalReturnStale": "元の休業情報が変更されました。再申請してください。",
+    "parentalShortLimit": "6か月未満の連続育児休業が2回を超えています。",
+    "parentalTotalLimit": "育児休業の共通上限2年を超えています。",
+    "partTimeLadderRequiresPartTime": "パートタイム等級は週 40 時間未満の従業員にのみ適用できます。",
+    "payrollBlocked": "確認・公開前に問題を解決してください。",
+    "payrollLocked": "対象期間に公開済み給与があるため変更できません。",
+    "payrollPeriodOpen": "給与対象月が終了していません。",
+    "payrollRuleSetMissing": "この月の保険等級と料率がまだ登録されていません。プラットフォーム管理者にお問い合わせください。",
+    "payrollRuleSetStale": "給与計算ルールが 1 か月以上公式発表と照合されていません。先にルールを更新してください。",
+    "payrollSourceChanged": "元データが変更されました。給与草稿を再作成してください。",
+    "payrollTermsRequired": "有効な給与設定を先に登録してください。",
+    "pendingRequestExists": "このシフトには同じ種類の未審査申請があります。",
+    "pendingRequests": "未審査の申請があります。",
+    "prorationRequired": "月途中の給与計算方法を設定してください。",
+    "reasonRequired": "申請理由を入力してください。",
+    "requestAlreadyReviewed": "申請状態が変更されました。再読み込みしてください。",
+    "reservedMakeupRest": "シフトが承認済み代休と重複しています。",
+    "settingsRequired": "オーナーが位置情報とIPを設定する必要があります。",
+    "shiftHasCorrection": "このシフトには承認済みの打刻修正があるため再申請できません。",
+    "shiftHasRecords": "打刻または申請があるためシフトを取り消せません。",
+    "shiftRequired": "この種類の申請にはシフトの指定が必要です。",
+    "shiftTooLong": "1つのシフトは24時間を超えられません。",
+    "sourceRequired": "確認済み金額の根拠を入力してください。",
+    "splitLeaveByYear": "年をまたぐ休暇は年ごとに申請してください。",
+    "statutoryBalanceAutomatic": "法定休暇残高は自動計算されます。",
+    "statutoryKindImmutable": "法定休暇の種類は作成後に変更できません。",
+    "statutoryPolicyExists": "この法定休暇は登録済みです。",
+    "unresolvedOvertime": "実際の残業時間帯がすべて承認されていません。",
+    "unsupportedDayKind": "未対応の日区分です。",
+    "weeklyMinutesFromRequired": "週の所定労働時間を変更するには、入社日時以降の適用開始日を指定してください。",
+    "weeklyScheduleRequiresReview": "週の所定労働時間が 40 時間を超えています。シフトを確認してください。"
+  },
+  "eventAction": {
+    "options": {
+      "breakEnd": "休憩終了",
+      "breakStart": "休憩開始",
+      "clockIn": "出勤打刻",
+      "clockOut": "退勤打刻"
+    }
+  },
+  "eventDate": "事由発生日",
+  "events": "打刻明細",
+  "exportCsv": "CSV 出力",
+  "extensionAgreed": "結婚休暇の6か月延長に合意済み",
+  "from": "開始日",
+  "generate": "シフトを生成",
+  "graceMinutes": "猶予時間（分）",
+  "grantedMinutes": "付与時間（分）",
+  "gross": "支給総額",
+  "healthBasis": "健康保険月額（{currency}、他所加入は0）",
+  "healthDependents": "健康保険扶養人数",
+  "healthInsurance": "従業員健康保険（{currency}）",
+  "hiredAt": "入社日時",
+  "ipHint": "通信事業者の固定公開IPを設定してください。Wi-Fi内のIPは使えません。",
+  "kind": {
+    "label": "申請種類",
+    "options": {
+      "correction": "打刻修正",
+      "leave": "休暇",
+      "overtime": "残業"
+    }
+  },
+  "label": "スタッフ勤怠",
+  "laborBasis": "労働保険申告月額（{currency}）",
+  "laborCoverage": {
+    "label": "労働保険区分",
+    "options": {
+      "both": "労働・雇用保険",
+      "employment": "雇用保険のみ",
+      "labor": "労働保険のみ",
+      "none": "対象外"
+    }
+  },
+  "laborInsurance": "従業員労働・雇用保険（{currency}）",
+  "laborLadder": {
+    "label": "労働保険の等級表",
+    "options": {
+      "general": "一般",
+      "partTime": "パートタイム"
+    }
+  },
+  "late": "遅刻",
+  "latitude": "店舗の緯度",
+  "leaveCase": "対象事由（事由別休暇で必須）",
+  "leaveCaseHint": "管理者が事由・続柄・対象期間を確認すると、付与枠が自動計算されます。同じ事由を重複登録しないでください。産休は休日を含む暦日で指定します（午前0時、終了日を含まない）。配偶者の健診と出産は合計7日で、申請ごとに対象期間を確認してください。 産休の事由は owner が確認済みの日額賃金を設定してください。支給率は勤続期間から自動計算されます。 育児休業の事由発生日は子の生年月日を入力し、同じ子には同じ事由番号を使用してください。期間は3歳の誕生日までとし、勤続6か月未満の場合は労使合意が必要です。日額賃金の設定は不要です。",
+  "leaveCases": {
+    "actions": {
+      "create": "事由別休暇枠を追加"
+    },
+    "label": "事由別休暇枠"
+  },
+  "leaveRequestHint": "入院・妊娠中の安静休暇は管理者が医療証明を確認します。傷病・生理休暇の賃金は使用済み日数に応じて分割計算され、有給枠を超えた生理休暇は無給です。育児休業は管理者が登録した子の事由を選び、暦日単位で指定してください（午前0時、終了日を含まない）。",
+  "leaveType": "休暇種類",
+  "leaveTypes": {
+    "actions": {
+      "create": "休暇区分を追加"
+    },
+    "label": "休暇設定"
+  },
+  "locationError": "位置情報を取得できません。権限を確認するか修正申請を行ってください。",
+  "locationHint": "打刻には位置情報の許可と店舗ネットワークへの接続が必要です。",
+  "longitude": "店舗の経度",
+  "makeupEndsAt": "代休終了",
+  "makeupStartsAt": "代休開始",
+  "medicalCertified": "入院・がん外来・妊娠中の安静に関する医療証明を確認済み",
+  "member": "組織メンバー",
+  "mine": {
+    "actions": {
+      "viewEvents": "打刻明細を見る"
+    },
+    "correctionNotStarted": "シフトがまだ始まっていません",
+    "label": "自分の勤怠",
+    "punch": {
+      "empty": "現在打刻できるシフトはありません。",
+      "title": "打刻"
+    }
+  },
+  "month": "給与月",
+  "monthlyProration": {
+    "label": "月途中の給与計算方法",
+    "options": {
+      "calendarDays": "当月の暦日数で按分",
+      "thirtyDays": "30 日で割り在籍日数を乗じる"
+    }
+  },
+  "name": "名前",
+  "net": "手取り額",
+  "nextDay": "翌日",
+  "no": "なし",
+  "originalEvents": "元の打刻",
+  "originalLeavePeriod": "当初の休業期間",
+  "otherDeduction": "その他確認済み控除（{currency}）",
+  "paidBreak": "このシフトの休憩は有給",
+  "paidPercent": "有給割合（%）",
+  "parentalChild": "子ども",
+  "parentalChildHint": "同じ子どもには既存情報を使用してください。管理者が証明を確認し固定の識別番号を設定します。双子は別々に登録し、個人番号全体は入力しないでください。既存の休業案件も関連付けが必要です。",
+  "parentalChildren": {
+    "actions": {
+      "create": "子どもの情報を追加"
+    },
+    "label": "子どもの情報"
+  },
+  "parentalContinuous": "連続期間で申請",
+  "parentalDaily": "日単位で申請",
+  "parentalMode": "育児休業の申請方法",
+  "parentalReturn": "早期復職",
+  "parentalReturnHint": "別の管理者の承認が必要です。承認までは休業が有効で、承認後も取得済み期間と当初の記録を保存します。復職日の開始時点で休業が終了します。",
+  "parentalReturns": {
+    "label": "復職申請"
+  },
+  "payroll": {
+    "actions": {
+      "view": "給与明細を見る"
+    },
+    "label": "給与管理"
+  },
+  "payrollHint": "申告済み保険額を使用してください。特例・補助は自動計算を無効にし確認済み金額と根拠を入力してください。適用日は月初です。",
+  "payrollLine": {
+    "options": {
+      "allowance": "固定手当",
+      "annualLeavePay": "未消化有給休暇精算",
+      "basePay": "基本給",
+      "calendarLeavePay": "産休期間賃金",
+      "healthInsurance": "従業員健康保険",
+      "holidayPay": "休日手当",
+      "laborInsurance": "従業員労働・雇用保険",
+      "leaveDeduction": "休暇控除",
+      "otherDeduction": "その他確認済み控除",
+      "overtimePay": "残業手当",
+      "voluntaryPension": "任意年金拠出",
+      "withholding": "源泉徴収"
+    }
+  },
+  "payrollStatus": {
+    "options": {
+      "draft": "計算下書き",
+      "published": "公開済み",
+      "reviewed": "確認済み"
+    }
+  },
+  "payrollTerms": "給与・保険設定",
+  "payslips": {
+    "actions": {
+      "view": "給与明細を見る"
+    },
+    "label": "自分の給与明細"
+  },
+  "pensionBasis": "年金拠出基準（{currency}）",
+  "print": "印刷",
+  "publish": "給与明細を公開",
+  "radiusMeters": "許容半径（m）",
+  "reason": "理由",
+  "reject": "却下",
+  "rejectCancellation": "取消を却下",
+  "repeatWeeks": "毎週の繰り返し回数",
+  "reportedAt": "報告日時",
+  "requests": {
+    "actions": {
+      "create": "休暇を申請"
+    },
+    "label": "自分の申請"
+  },
+  "requiresBalance": "残数管理あり",
+  "returnsAt": "復職日",
+  "reviewReason": "審査理由",
+  "reviews": {
+    "label": "申請承認"
+  },
+  "salary": "基本給・時給（{currency}）",
+  "salaryType": {
+    "label": "給与形態",
+    "options": {
+      "hourly": "時給",
+      "monthly": "月給"
+    }
+  },
+  "save": "保存",
+  "settings": {
+    "actions": {
+      "update": "勤怠設定を編集"
+    },
+    "allowedIps": "固定グローバル IP",
+    "label": "勤怠設定"
+  },
+  "shifts": {
+    "actions": {
+      "create": "シフトを追加",
+      "viewEvents": "打刻明細を見る"
+    },
+    "label": "シフト管理"
+  },
+  "sourceNote": "保険・税・調整の根拠",
+  "startsAt": "開始日時",
+  "state": {
+    "label": "勤怠状況",
+    "options": {
+      "completed": "退勤済み",
+      "resting": "休憩中",
+      "scheduled": "未出勤",
+      "working": "勤務中"
+    }
+  },
+  "status": {
+    "label": "状態",
+    "options": {
+      "approved": "承認済み",
+      "cancellationPending": "取消申請の審査待ち",
+      "cancelled": "取消済み",
+      "pending": "審査待ち",
+      "rejected": "却下",
+      "withdrawn": "取り下げ済み"
+    }
+  },
+  "statutoryHint": "法定休暇の残高と支給率は勤続年数と所定時間で計算します。",
+  "statutoryKind": {
+    "label": "休暇規則",
+    "options": {
+      "annual": "年次有給休暇（入社日起算）",
+      "custom": "独自休暇",
+      "familyCare": "家族介護休暇",
+      "funeral3": "忌引（曾祖父母・兄弟姉妹・配偶者の祖父母、3日）",
+      "funeral6": "忌引（祖父母・子・配偶者の父母、6日）",
+      "funeral8": "忌引（父母・配偶者、8日）",
+      "hospitalSick": "入院傷病休暇（がん外来を含む）",
+      "marriage": "結婚休暇",
+      "maternity": "産休（8週間）",
+      "menstrual": "生理休暇",
+      "miscarriage28": "流産休暇（妊娠3か月以上、4週間）",
+      "miscarriage5": "流産休暇（妊娠2か月未満、5日）",
+      "miscarriage7": "流産休暇（妊娠2〜3か月、1週間）",
+      "parental": "育児休業（無給）",
+      "paternity": "配偶者の健診・出産休暇",
+      "personal": "私用休暇",
+      "pregnancyRest": "妊娠中の安静休暇",
+      "prenatal": "妊婦健診休暇",
+      "sick": "傷病休暇（入院なし）"
+    }
+  },
+  "success": "保存しました",
+  "taxMethod": {
+    "label": "源泉徴収方法",
+    "options": {
+      "resident5": "居住者が5%源泉徴収を選択",
+      "verified": "確認済み源泉徴収額を使用"
+    }
+  },
+  "templateHint": "期間内のシフトを生成します。重複や休暇との競合があれば全件保存されません。",
+  "templates": {
+    "actions": {
+      "create": "週間シフト雛形を追加"
+    },
+    "label": "週間シフト雛形"
+  },
+  "terminatedAt": "退職日時（任意）",
+  "to": "終了日",
+  "useCurrentLocation": "現在地を使用",
+  "usedMinutes": "使用時間（分）",
+  "version": "版",
+  "voluntaryPension": "任意年金拠出（{currency}）",
+  "voluntaryPercent": "任意拠出率（%）",
+  "weekday": "曜日",
+  "weeklyMinutes": "週の所定労働時間（分）",
+  "weeklyMinutesFrom": "所定労働時間の適用開始日",
+  "withdraw": "取り下げ",
+  "withholding": "源泉徴収（{currency}）",
+  "worked": "計上時間",
+  "year": "年度",
+  "yes": "あり"
+}
