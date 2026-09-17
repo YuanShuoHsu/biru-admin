@@ -79,9 +79,9 @@ export interface paths {
     };
     /** 員工清單 */
     get: operations["AttendanceEmployeesController_employees"];
-    put?: never;
     /** 新增或更新員工 */
-    post: operations["AttendanceEmployeesController_saveEmployee"];
+    put: operations["AttendanceEmployeesController_saveEmployee"];
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -97,9 +97,9 @@ export interface paths {
     };
     /** 取得打卡設定 */
     get: operations["AttendanceEmployeesController_settings"];
-    put?: never;
     /** 儲存打卡設定 */
-    post: operations["AttendanceEmployeesController_saveSettings"];
+    put: operations["AttendanceEmployeesController_saveSettings"];
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -202,8 +202,8 @@ export interface paths {
     /** 班表範本清單 */
     get: operations["AttendanceTemplatesController_templates"];
     put?: never;
-    /** 新增或更新班表範本 */
-    post: operations["AttendanceTemplatesController_saveTemplate"];
+    /** 新增班表範本 */
+    post: operations["AttendanceTemplatesController_createTemplate"];
     delete?: never;
     options?: never;
     head?: never;
@@ -224,7 +224,8 @@ export interface paths {
     delete: operations["AttendanceTemplatesController_deleteTemplate"];
     options?: never;
     head?: never;
-    patch?: never;
+    /** 更新班表範本 */
+    patch: operations["AttendanceTemplatesController_updateTemplate"];
     trace?: never;
   };
   "/api/organizations/{organizationSlug}/attendance/templates/{id}/generate": {
@@ -358,12 +359,29 @@ export interface paths {
     /** 假別清單 */
     get: operations["AttendanceLeavesController_leaveTypes"];
     put?: never;
-    /** 新增或更新假別 */
-    post: operations["AttendanceLeavesController_saveLeaveType"];
+    /** 新增假別 */
+    post: operations["AttendanceLeavesController_createLeaveType"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/attendance/leave-types/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** 更新假別 */
+    patch: operations["AttendanceLeavesController_updateLeaveType"];
     trace?: never;
   };
   "/api/organizations/{organizationSlug}/attendance/me/leave-balances": {
@@ -392,9 +410,9 @@ export interface paths {
     };
     /** 全店假別餘額 */
     get: operations["AttendanceLeavesController_leaveBalances"];
-    put?: never;
     /** 設定假別給假時數 */
-    post: operations["AttendanceLeavesController_saveLeaveBalance"];
+    put: operations["AttendanceLeavesController_saveLeaveBalance"];
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -2067,6 +2085,57 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/payroll/rule-sets": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 投保級距與費率版本清單 */
+    get: operations["AdminPayrollRulesController_list"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/payroll/rule-sets/ingest": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 從政府開放資料更新投保級距 */
+    post: operations["AdminPayrollRulesController_ingest"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/payroll/rule-sets/{effectiveFrom}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** 依官方公告確認每小時最低工資 */
+    patch: operations["AdminPayrollRulesController_confirm"];
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/payroll/terms": {
     parameters: {
       query?: never;
@@ -2076,9 +2145,9 @@ export interface paths {
     };
     /** 薪資條件清單 */
     get: operations["PayrollController_terms"];
-    put?: never;
     /** 新增或更新薪資條件 */
-    post: operations["PayrollController_saveTerms"];
+    put: operations["PayrollController_saveTerms"];
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -2186,57 +2255,6 @@ export interface paths {
     head?: never;
     /** 重新開帳已發布薪資單 */
     patch: operations["PayrollController_reopen"];
-    trace?: never;
-  };
-  "/api/payroll/rule-sets": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** 投保級距與費率版本清單 */
-    get: operations["PayrollRulesController_list"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/payroll/rule-sets/ingest": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** 從政府開放資料更新投保級距 */
-    post: operations["PayrollRulesController_ingest"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/payroll/rule-sets/{effectiveFrom}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /** 依官方公告確認每小時最低工資 */
-    patch: operations["PayrollRulesController_confirm"];
     trace?: never;
   };
 }
@@ -2395,7 +2413,7 @@ export interface components {
       data: components["schemas"]["AttendanceEmployeeResponseDto"][];
       total: number;
     };
-    EmployeeDto: {
+    SaveAttendanceEmployeeDto: {
       weeklyMinutes?: number;
       weeklyMinutesFrom?: string;
       userId: string;
@@ -2403,7 +2421,23 @@ export interface components {
       hiredAt: string;
       terminatedAt?: string;
     };
-    AttendanceSettingsDto: {
+    AttendanceSettingsResponseDto: {
+      /**
+       * @example [
+       *       "203.0.113.7",
+       *       "2001:db8::/32"
+       *     ]
+       */
+      allowedIps: string[];
+      organizationId: string;
+      /** Format: date-time */
+      updatedAt: string;
+      latitude: number;
+      longitude: number;
+      radiusMeters: number;
+      graceMinutes: number;
+    };
+    SaveAttendanceSettingsDto: {
       /**
        * @example [
        *       "203.0.113.7",
@@ -2471,7 +2505,7 @@ export interface components {
       data: components["schemas"]["AttendanceShiftResponseDto"][];
       total: number;
     };
-    ShiftDto: {
+    CreateAttendanceShiftDto: {
       dayKind: components["schemas"]["AttendanceDayKind"];
       /** Format: uuid */
       employeeId: string;
@@ -2481,10 +2515,31 @@ export interface components {
       breakStartsAt?: string;
       breakEndsAt?: string;
     };
-    ShiftBatchDto: {
-      shifts: components["schemas"]["ShiftDto"][];
+    CreateAttendanceShiftsDto: {
+      shifts: components["schemas"]["CreateAttendanceShiftDto"][];
     };
-    PunchDto: {
+    AttendanceShiftRecordResponseDto: {
+      id: string;
+      organizationId: string;
+      employeeId: string;
+      /** Format: date-time */
+      startsAt: string;
+      /** Format: date-time */
+      endsAt: string;
+      paidBreak: boolean;
+      /** Format: date-time */
+      breakStartsAt?: string | null;
+      /** Format: date-time */
+      breakEndsAt?: string | null;
+      dayKind: components["schemas"]["AttendanceDayKind"];
+      status: string;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    AttendanceIdResponseDto: {
+      id: string;
+    };
+    CreateAttendancePunchDto: {
       action: components["schemas"]["AttendanceEventAction"];
       /** Format: uuid */
       shiftId: string;
@@ -2494,6 +2549,11 @@ export interface components {
       longitude: number;
       accuracy: number;
       locatedAt: string;
+    };
+    AttendancePunchResponseDto: {
+      id: string;
+      /** Format: date-time */
+      occurredAt: string;
     };
     /** @enum {string} */
     AttendanceTemplateFilterField:
@@ -2534,10 +2594,8 @@ export interface components {
       data: components["schemas"]["AttendanceTemplateResponseDto"][];
       total: number;
     };
-    AttendanceTemplateDto: {
+    SaveAttendanceTemplateDto: {
       dayKind: components["schemas"]["AttendanceDayKind"];
-      /** Format: uuid */
-      id?: string;
       /** Format: uuid */
       employeeId: string;
       name: string;
@@ -2549,7 +2607,21 @@ export interface components {
       breakStartTime?: string;
       breakEndTime?: string;
     };
-    GenerateTemplateDto: {
+    AttendanceTemplateRecordResponseDto: {
+      id: string;
+      organizationId: string;
+      employeeId: string;
+      name: string;
+      weekday: number;
+      startTime: string;
+      endTime: string;
+      nextDay: boolean;
+      paidBreak: boolean;
+      breakStartTime?: string | null;
+      breakEndTime?: string | null;
+      dayKind: components["schemas"]["AttendanceDayKind"];
+    };
+    GenerateAttendanceTemplateDto: {
       from: string;
       to: string;
     };
@@ -2571,29 +2643,34 @@ export interface components {
       | "endsAt"
       | "kind"
       | "status";
+    /** @enum {string} */
+    AttendanceRequestKind: "correction" | "leave" | "overtime";
+    /** @enum {string} */
+    AttendanceRequestStatus:
+      | "pending"
+      | "approved"
+      | "rejected"
+      | "withdrawn"
+      | "cancellationPending"
+      | "cancelled";
+    /** @enum {string} */
+    AttendanceEmergencyCause: "disaster" | "incident" | "unexpected";
     EmergencyWorkResponseDto: {
-      /** @enum {string} */
-      cause: "disaster" | "incident" | "unexpected";
+      cause: components["schemas"]["AttendanceEmergencyCause"];
       reportedAt: string;
       makeupStartsAt: string;
       makeupEndsAt: string;
     };
+    /** @enum {string} */
+    AttendanceParentalMode: "daily" | "continuous";
     AttendanceRequestResponseDto: {
       id: string;
       organizationId: string;
       employeeId: string;
       employeeName: string;
       shiftId?: string | null;
-      /** @enum {string} */
-      kind: "correction" | "leave" | "overtime";
-      /** @enum {string} */
-      status:
-        | "pending"
-        | "approved"
-        | "rejected"
-        | "withdrawn"
-        | "cancellationPending"
-        | "cancelled";
+      kind: components["schemas"]["AttendanceRequestKind"];
+      status: components["schemas"]["AttendanceRequestStatus"];
       /** Format: date-time */
       startsAt: string;
       /** Format: date-time */
@@ -2606,8 +2683,7 @@ export interface components {
       paidPercent?: number | null;
       reviewedBy?: string | null;
       emergency?: components["schemas"]["EmergencyWorkResponseDto"] | null;
-      /** @enum {string|null} */
-      parentalMode: "daily" | "continuous" | null;
+      parentalMode: components["schemas"]["AttendanceParentalMode"] | null;
       returnPending: boolean;
       /** Format: date-time */
       originalEndsAt?: string | null;
@@ -2628,13 +2704,11 @@ export interface components {
       paidBreak?: boolean;
       occurredAt: string;
     };
-    AttendanceRequestDto: {
-      /** @enum {string} */
-      parentalMode?: "daily" | "continuous";
+    CreateAttendanceRequestDto: {
+      parentalMode?: components["schemas"]["AttendanceParentalMode"];
+      kind: components["schemas"]["AttendanceRequestKind"];
       /** Format: uuid */
       leaveCaseId?: string;
-      /** @enum {string} */
-      kind: "correction" | "leave" | "overtime";
       /** Format: uuid */
       shiftId?: string;
       startsAt: string;
@@ -2643,14 +2717,43 @@ export interface components {
       leaveTypeId?: string;
       correctedEvents?: components["schemas"]["CorrectedEventDto"][];
     };
+    AttendanceRequestRecordResponseDto: {
+      id: string;
+      organizationId: string;
+      employeeId: string;
+      shiftId?: string | null;
+      kind: components["schemas"]["AttendanceRequestKind"];
+      status: components["schemas"]["AttendanceRequestStatus"];
+      /** Format: date-time */
+      startsAt: string;
+      /** Format: date-time */
+      endsAt: string;
+      reason: string;
+      reviewReason?: string | null;
+      leaveTypeId?: string | null;
+      leaveCaseId?: string | null;
+      leaveMinutes?: number | null;
+      paidPercent?: number | null;
+      reviewedBy?: string | null;
+      emergency?: components["schemas"]["EmergencyWorkResponseDto"] | null;
+      parentalMode: components["schemas"]["AttendanceParentalMode"] | null;
+      /** Format: date-time */
+      originalEndsAt?: string | null;
+      correctedEvents?:
+        | components["schemas"]["AttendanceEventResponseDto"][]
+        | null;
+      /** Format: date-time */
+      reviewedAt?: string | null;
+      /** Format: date-time */
+      createdAt: string;
+    };
     EmergencyWorkDto: {
-      /** @enum {string} */
-      cause: "disaster" | "incident" | "unexpected";
+      cause: components["schemas"]["AttendanceEmergencyCause"];
       reportedAt: string;
       makeupStartsAt: string;
       makeupEndsAt: string;
     };
-    ReviewDto: {
+    ReviewAttendanceRequestDto: {
       medicalCertified?: boolean;
       emergency?: components["schemas"]["EmergencyWorkDto"];
       /** @enum {string} */
@@ -2702,7 +2805,7 @@ export interface components {
       data: components["schemas"]["AttendanceLeaveCaseResponseDto"][];
       total: number;
     };
-    LeaveCaseDto: {
+    CreateAttendanceLeaveCaseDto: {
       /** Format: uuid */
       childId?: string;
       earlyParentalAgreed?: boolean;
@@ -2717,6 +2820,22 @@ export interface components {
       endsAt: string;
       reason: string;
       extensionAgreed?: boolean;
+    };
+    AttendanceLeaveCaseRecordResponseDto: {
+      childId?: string | null;
+      id: string;
+      employeeId: string;
+      leaveTypeId: string;
+      reference: string;
+      /** Format: date-time */
+      eventDate: string;
+      /** Format: date-time */
+      startsAt: string;
+      /** Format: date-time */
+      endsAt: string;
+      grantedMinutes: number;
+      paidPercent: number;
+      reason: string;
     };
     /** @enum {string} */
     AttendanceLeaveTypeFilterField:
@@ -2769,10 +2888,8 @@ export interface components {
       data: components["schemas"]["AttendanceLeaveTypeResponseDto"][];
       total: number;
     };
-    LeaveTypeDto: {
+    SaveAttendanceLeaveTypeDto: {
       statutoryKind?: components["schemas"]["StatutoryLeaveKind"];
-      /** Format: uuid */
-      id?: string;
       name: string;
       paidPercent: number;
       requiresBalance: boolean;
@@ -2816,13 +2933,22 @@ export interface components {
       data: components["schemas"]["AttendanceLeaveBalanceResponseDto"][];
       total: number;
     };
-    LeaveBalanceDto: {
+    SaveAttendanceLeaveBalanceDto: {
       /** Format: uuid */
       employeeId: string;
       /** Format: uuid */
       leaveTypeId: string;
       year: number;
       grantedMinutes: number;
+    };
+    AttendanceLeaveBalanceRecordResponseDto: {
+      id: string;
+      organizationId: string;
+      employeeId: string;
+      leaveTypeId: string;
+      year: number;
+      grantedMinutes: number;
+      usedMinutes: number;
     };
     /** @enum {string} */
     AttendanceParentalChildFilterField:
@@ -2851,14 +2977,24 @@ export interface components {
       data: components["schemas"]["AttendanceParentalChildResponseDto"][];
       total: number;
     };
-    ParentalChildDto: {
+    CreateAttendanceParentalChildDto: {
       /** Format: uuid */
       employeeId: string;
       reference: string;
       label: string;
       birthDate: string;
     };
-    AssignParentalChildDto: {
+    AttendanceParentalChildRecordResponseDto: {
+      id: string;
+      employeeId: string;
+      reference: string;
+      label: string;
+      /** Format: date-time */
+      birthDate: string;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    AssignAttendanceParentalChildDto: {
       /** Format: uuid */
       childId: string;
       reason: string;
@@ -2881,6 +3017,12 @@ export interface components {
       | "originalStartsAt"
       | "originalEndsAt"
       | "status";
+    /** @enum {string} */
+    AttendanceParentalReturnStatus:
+      | "pending"
+      | "approved"
+      | "rejected"
+      | "withdrawn";
     AttendanceParentalReturnResponseDto: {
       id: string;
       employeeId: string;
@@ -2892,8 +3034,7 @@ export interface components {
       originalEndsAt: string;
       /** Format: date-time */
       returnsAt: string;
-      /** @enum {string} */
-      status: "pending" | "approved" | "rejected" | "withdrawn";
+      status: components["schemas"]["AttendanceParentalReturnStatus"];
       reason: string;
       reviewReason?: string | null;
       /** Format: date-time */
@@ -2905,9 +3046,27 @@ export interface components {
       data: components["schemas"]["AttendanceParentalReturnResponseDto"][];
       total: number;
     };
-    ParentalReturnDto: {
+    CreateAttendanceParentalReturnDto: {
       returnsAt: string;
       reason: string;
+    };
+    AttendanceParentalReturnRecordResponseDto: {
+      id: string;
+      employeeId: string;
+      requestId: string;
+      /** Format: date-time */
+      originalStartsAt: string;
+      /** Format: date-time */
+      originalEndsAt: string;
+      /** Format: date-time */
+      returnsAt: string;
+      status: components["schemas"]["AttendanceParentalReturnStatus"];
+      reason: string;
+      reviewReason?: string | null;
+      /** Format: date-time */
+      reviewedAt?: string | null;
+      /** Format: date-time */
+      createdAt: string;
     };
     /** @enum {string} */
     AuditResource:
@@ -5349,27 +5508,79 @@ export interface components {
       teams: components["schemas"]["OrganizationMemberTeamDto"][];
       userId: string;
     };
+    TaiwanRuleSetResponseDto: {
+      laborPercentBp: number;
+      employmentPercentBp: number;
+      healthPercentBp: number;
+      laborEmployeeShareBp: number;
+      healthEmployeeShareBp: number;
+      withholdingRateBp: number;
+      withholdingExemptTaxCents: string;
+      laborGrades: number[];
+      partTimeLaborGrades: number[];
+      healthGrades: number[];
+      minimumMonthlyWageCents: string;
+      minimumHourlyWageCents: string;
+    };
+    PayrollRuleSourceResponseDto: {
+      label: string;
+      url: string;
+    };
+    PayrollRuleSetResponseDto: {
+      id: string;
+      jurisdiction: string;
+      effectiveFrom: string;
+      ruleVersion: string;
+      rules: components["schemas"]["TaiwanRuleSetResponseDto"];
+      origin: string;
+      sources: components["schemas"]["PayrollRuleSourceResponseDto"][];
+      ratesCarriedFrom?: string | null;
+      /** Format: date-time */
+      fetchedAt?: string | null;
+      /** Format: date-time */
+      checkedAt?: string | null;
+      unconfirmed: "minimumHourlyWageCents"[];
+      /** Format: date-time */
+      createdAt: string;
+    };
+    PayrollRuleIngestResponseDto: {
+      written: string[];
+      skipped: string[];
+      rejected: string[];
+      checked: boolean;
+    };
+    ConfirmRuleSetDto: {
+      minimumHourlyWageCents: string;
+      sourceLabel: string;
+      /** Format: uri */
+      sourceUrl: string;
+    };
+    /** @enum {string} */
+    PayrollMonthlyProration: "thirtyDays" | "calendarDays";
+    /** @enum {string} */
+    PayrollSalaryType: "monthly" | "hourly";
+    /** @enum {string} */
+    PayrollLaborCoverage: "both" | "labor" | "employment" | "none";
+    /** @enum {string} */
+    PayrollLaborLadder: "general" | "partTime";
+    /** @enum {string} */
+    PayrollTaxMethod: "resident5" | "verified";
     TaiwanInsuranceDto: {
-      /** @enum {string} */
-      laborCoverage: "both" | "labor" | "employment" | "none";
-      /** @enum {string} */
-      laborLadder?: "general" | "partTime";
+      laborCoverage: components["schemas"]["PayrollLaborCoverage"];
+      laborLadder?: components["schemas"]["PayrollLaborLadder"];
+      taxMethod: components["schemas"]["PayrollTaxMethod"];
       laborBasis: number;
       healthBasis: number;
       healthDependents: number;
       pensionBasis: number;
       voluntaryPercent: number;
       employerPercent: number;
-      /** @enum {string} */
-      taxMethod: "resident5" | "verified";
     };
     PayrollTermsValuesDto: {
-      /** @enum {string} */
-      monthlyProration?: "thirtyDays" | "calendarDays";
+      monthlyProration?: components["schemas"]["PayrollMonthlyProration"];
+      salaryType: components["schemas"]["PayrollSalaryType"];
       allowanceHours?: number;
       insurance?: components["schemas"]["TaiwanInsuranceDto"];
-      /** @enum {string} */
-      salaryType: "monthly" | "hourly";
       salaryCents: string;
       laborInsuranceCents: string;
       healthInsuranceCents: string;
@@ -5398,15 +5609,13 @@ export interface components {
       healthGrades: number[];
     };
     PayrollTermsDto: {
-      /** @enum {string} */
-      monthlyProration?: "thirtyDays" | "calendarDays";
+      monthlyProration?: components["schemas"]["PayrollMonthlyProration"];
+      salaryType: components["schemas"]["PayrollSalaryType"];
       allowanceHours?: number;
       insurance?: components["schemas"]["TaiwanInsuranceDto"];
       /** Format: uuid */
       employeeId: string;
       effectiveFrom: string;
-      /** @enum {string} */
-      salaryType: "monthly" | "hourly";
       salaryCents: string;
       laborInsuranceCents: string;
       healthInsuranceCents: string;
@@ -5425,6 +5634,8 @@ export interface components {
       | "version";
     /** @enum {string} */
     PayrollStatementSortField: "employeeName" | "month" | "status" | "version";
+    /** @enum {string} */
+    PayrollStatementStatus: "draft" | "reviewed" | "published";
     /** @enum {string} */
     PayrollLineCode:
       | "basePay"
@@ -5490,8 +5701,7 @@ export interface components {
       employeeName: string;
       month: string;
       version: number;
-      /** @enum {string} */
-      status: "draft" | "reviewed" | "published";
+      status: components["schemas"]["PayrollStatementStatus"];
       idempotencyKey: string;
       snapshot: components["schemas"]["PayrollSnapshotResponseDto"];
       reason: string;
@@ -5522,53 +5732,6 @@ export interface components {
     };
     PayrollReviewDto: {
       reason: string;
-    };
-    TaiwanRuleSetResponseDto: {
-      laborPercentBp: number;
-      employmentPercentBp: number;
-      healthPercentBp: number;
-      laborEmployeeShareBp: number;
-      healthEmployeeShareBp: number;
-      withholdingRateBp: number;
-      withholdingExemptTaxCents: string;
-      laborGrades: number[];
-      partTimeLaborGrades: number[];
-      healthGrades: number[];
-      minimumMonthlyWageCents: string;
-      minimumHourlyWageCents: string;
-    };
-    PayrollRuleSourceResponseDto: {
-      label: string;
-      url: string;
-    };
-    PayrollRuleSetResponseDto: {
-      id: string;
-      jurisdiction: string;
-      effectiveFrom: string;
-      ruleVersion: string;
-      rules: components["schemas"]["TaiwanRuleSetResponseDto"];
-      origin: string;
-      sources: components["schemas"]["PayrollRuleSourceResponseDto"][];
-      ratesCarriedFrom?: string | null;
-      /** Format: date-time */
-      fetchedAt?: string | null;
-      /** Format: date-time */
-      checkedAt?: string | null;
-      unconfirmed: "minimumHourlyWageCents"[];
-      /** Format: date-time */
-      createdAt: string;
-    };
-    PayrollRuleIngestResponseDto: {
-      written: string[];
-      skipped: string[];
-      rejected: string[];
-      checked: boolean;
-    };
-    ConfirmRuleSetDto: {
-      minimumHourlyWageCents: string;
-      sourceLabel: string;
-      /** Format: uri */
-      sourceUrl: string;
     };
   };
   responses: never;
@@ -5729,15 +5892,17 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["EmployeeDto"];
+        "application/json": components["schemas"]["SaveAttendanceEmployeeDto"];
       };
     };
     responses: {
-      201: {
+      200: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["AttendanceEmployeeResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -5761,7 +5926,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["AttendanceSettingsResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -5781,15 +5948,17 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["AttendanceSettingsDto"];
+        "application/json": components["schemas"]["SaveAttendanceSettingsDto"];
       };
     };
     responses: {
-      201: {
+      200: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["AttendanceSettingsResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -5909,7 +6078,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["ShiftBatchDto"];
+        "application/json": components["schemas"]["CreateAttendanceShiftsDto"];
       };
     };
     responses: {
@@ -5917,7 +6086,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["AttendanceShiftRecordResponseDto"][];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -5943,7 +6114,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["AttendanceIdResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -5963,7 +6136,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["PunchDto"];
+        "application/json": components["schemas"]["CreateAttendancePunchDto"];
       };
     };
     responses: {
@@ -5971,7 +6144,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["AttendancePunchResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -6019,7 +6194,7 @@ export interface operations {
       };
     };
   };
-  AttendanceTemplatesController_saveTemplate: {
+  AttendanceTemplatesController_createTemplate: {
     parameters: {
       query?: never;
       header?: never;
@@ -6028,7 +6203,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["AttendanceTemplateDto"];
+        "application/json": components["schemas"]["SaveAttendanceTemplateDto"];
       };
     };
     responses: {
@@ -6036,7 +6211,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["AttendanceTemplateRecordResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -6062,7 +6239,41 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
+        content: {
+          "application/json": components["schemas"]["AttendanceIdResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
         content?: never;
+      };
+    };
+  };
+  AttendanceTemplatesController_updateTemplate: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SaveAttendanceTemplateDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceTemplateRecordResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -6084,7 +6295,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["GenerateTemplateDto"];
+        "application/json": components["schemas"]["GenerateAttendanceTemplateDto"];
       };
     };
     responses: {
@@ -6092,7 +6303,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["AttendanceShiftRecordResponseDto"][];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -6186,7 +6399,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["AttendanceRequestDto"];
+        "application/json": components["schemas"]["CreateAttendanceRequestDto"];
       };
     };
     responses: {
@@ -6194,7 +6407,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["AttendanceRequestRecordResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -6216,7 +6431,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["ReviewDto"];
+        "application/json": components["schemas"]["ReviewAttendanceRequestDto"];
       };
     };
     responses: {
@@ -6224,7 +6439,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["AttendanceRequestRecordResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -6250,7 +6467,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["AttendanceIdResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -6307,7 +6526,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["LeaveCaseDto"];
+        "application/json": components["schemas"]["CreateAttendanceLeaveCaseDto"];
       };
     };
     responses: {
@@ -6315,7 +6534,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["AttendanceLeaveCaseRecordResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -6400,7 +6621,7 @@ export interface operations {
       };
     };
   };
-  AttendanceLeavesController_saveLeaveType: {
+  AttendanceLeavesController_createLeaveType: {
     parameters: {
       query?: never;
       header?: never;
@@ -6409,7 +6630,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["LeaveTypeDto"];
+        "application/json": components["schemas"]["SaveAttendanceLeaveTypeDto"];
       };
     };
     responses: {
@@ -6417,7 +6638,41 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
+        content: {
+          "application/json": components["schemas"]["AttendanceLeaveTypeResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
         content?: never;
+      };
+    };
+  };
+  AttendanceLeavesController_updateLeaveType: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SaveAttendanceLeaveTypeDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceLeaveTypeResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -6511,15 +6766,17 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["LeaveBalanceDto"];
+        "application/json": components["schemas"]["SaveAttendanceLeaveBalanceDto"];
       };
     };
     responses: {
-      201: {
+      200: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["AttendanceLeaveBalanceRecordResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -6576,7 +6833,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["ParentalChildDto"];
+        "application/json": components["schemas"]["CreateAttendanceParentalChildDto"];
       };
     };
     responses: {
@@ -6584,7 +6841,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["AttendanceParentalChildRecordResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -6643,7 +6902,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["AssignParentalChildDto"];
+        "application/json": components["schemas"]["AssignAttendanceParentalChildDto"];
       };
     };
     responses: {
@@ -6651,7 +6910,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["AttendanceLeaveCaseRecordResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -6747,7 +7008,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["ParentalReturnDto"];
+        "application/json": components["schemas"]["CreateAttendanceParentalReturnDto"];
       };
     };
     responses: {
@@ -6755,7 +7016,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["AttendanceParentalReturnRecordResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -6777,7 +7040,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["ReviewDto"];
+        "application/json": components["schemas"]["ReviewAttendanceRequestDto"];
       };
     };
     responses: {
@@ -6785,7 +7048,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["AttendanceParentalReturnRecordResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -6811,7 +7076,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["AttendanceParentalReturnRecordResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -10726,6 +10993,90 @@ export interface operations {
       };
     };
   };
+  AdminPayrollRulesController_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PayrollRuleSetResponseDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminPayrollRulesController_ingest: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PayrollRuleIngestResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminPayrollRulesController_confirm: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        effectiveFrom: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ConfirmRuleSetDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PayrollRuleSetResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   PayrollController_terms: {
     parameters: {
       query?: never;
@@ -10765,11 +11116,13 @@ export interface operations {
       };
     };
     responses: {
-      201: {
+      200: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["PayrollTermsResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -10862,7 +11215,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["PayrollStatementResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -10929,7 +11284,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["PayrollStatementResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -10959,7 +11316,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["PayrollStatementResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -10989,90 +11348,8 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  PayrollRulesController_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
-          "application/json": components["schemas"]["PayrollRuleSetResponseDto"][];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  PayrollRulesController_ingest: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["PayrollRuleIngestResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  PayrollRulesController_confirm: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        effectiveFrom: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["ConfirmRuleSetDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["PayrollRuleSetResponseDto"];
+          "application/json": components["schemas"]["PayrollStatementResponseDto"];
         };
       };
       /** @description Internal server error */
@@ -11284,14 +11561,11 @@ export const attendanceRequestSortFieldValues: ReadonlyArray<
   "kind",
   "status",
 ];
-export const emergencyWorkResponseDtoCauseValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["EmergencyWorkResponseDto"]["cause"]
-> = ["disaster", "incident", "unexpected"];
-export const attendanceRequestResponseDtoKindValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["AttendanceRequestResponseDto"]["kind"]
+export const attendanceRequestKindValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["AttendanceRequestKind"]
 > = ["correction", "leave", "overtime"];
-export const attendanceRequestResponseDtoStatusValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["AttendanceRequestResponseDto"]["status"]
+export const attendanceRequestStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["AttendanceRequestStatus"]
 > = [
   "pending",
   "approved",
@@ -11300,20 +11574,14 @@ export const attendanceRequestResponseDtoStatusValues: ReadonlyArray<
   "cancellationPending",
   "cancelled",
 ];
-export const attendanceRequestResponseDtoParentalModeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["AttendanceRequestResponseDto"]["parentalMode"]
-> = ["daily", "continuous"];
-export const attendanceRequestDtoParentalModeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["AttendanceRequestDto"]["parentalMode"]
-> = ["daily", "continuous"];
-export const attendanceRequestDtoKindValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["AttendanceRequestDto"]["kind"]
-> = ["correction", "leave", "overtime"];
-export const emergencyWorkDtoCauseValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["EmergencyWorkDto"]["cause"]
+export const attendanceEmergencyCauseValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["AttendanceEmergencyCause"]
 > = ["disaster", "incident", "unexpected"];
-export const reviewDtoStatusValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["ReviewDto"]["status"]
+export const attendanceParentalModeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["AttendanceParentalMode"]
+> = ["daily", "continuous"];
+export const reviewAttendanceRequestDtoStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["ReviewAttendanceRequestDto"]["status"]
 > = ["approved", "rejected"];
 export const attendanceLeaveCaseFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceLeaveCaseFilterField"]
@@ -11420,8 +11688,8 @@ export const attendanceParentalReturnSortFieldValues: ReadonlyArray<
   "originalEndsAt",
   "status",
 ];
-export const attendanceParentalReturnResponseDtoStatusValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["AttendanceParentalReturnResponseDto"]["status"]
+export const attendanceParentalReturnStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["AttendanceParentalReturnStatus"]
 > = ["pending", "approved", "rejected", "withdrawn"];
 export const auditResourceValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AuditResource"]
@@ -11961,33 +12229,33 @@ export const orderMenuItemResponseDtoSuitableForDietValues: ReadonlyArray<
 export const organizationMemberResponseDtoRoleValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrganizationMemberResponseDto"]["role"]
 > = ["admin", "member", "owner"];
-export const taiwanInsuranceDtoLaborCoverageValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["TaiwanInsuranceDto"]["laborCoverage"]
+export const payrollRuleSetResponseDtoUnconfirmedValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["PayrollRuleSetResponseDto"]["unconfirmed"]
+> = ["minimumHourlyWageCents"];
+export const payrollMonthlyProrationValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["PayrollMonthlyProration"]
+> = ["thirtyDays", "calendarDays"];
+export const payrollSalaryTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["PayrollSalaryType"]
+> = ["monthly", "hourly"];
+export const payrollLaborCoverageValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["PayrollLaborCoverage"]
 > = ["both", "labor", "employment", "none"];
-export const taiwanInsuranceDtoLaborLadderValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["TaiwanInsuranceDto"]["laborLadder"]
+export const payrollLaborLadderValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["PayrollLaborLadder"]
 > = ["general", "partTime"];
-export const taiwanInsuranceDtoTaxMethodValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["TaiwanInsuranceDto"]["taxMethod"]
+export const payrollTaxMethodValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["PayrollTaxMethod"]
 > = ["resident5", "verified"];
-export const payrollTermsValuesDtoMonthlyProrationValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["PayrollTermsValuesDto"]["monthlyProration"]
-> = ["thirtyDays", "calendarDays"];
-export const payrollTermsValuesDtoSalaryTypeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["PayrollTermsValuesDto"]["salaryType"]
-> = ["monthly", "hourly"];
-export const payrollTermsDtoMonthlyProrationValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["PayrollTermsDto"]["monthlyProration"]
-> = ["thirtyDays", "calendarDays"];
-export const payrollTermsDtoSalaryTypeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["PayrollTermsDto"]["salaryType"]
-> = ["monthly", "hourly"];
 export const payrollStatementFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["PayrollStatementFilterField"]
 > = ["employeeName", "month", "status", "version"];
 export const payrollStatementSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["PayrollStatementSortField"]
 > = ["employeeName", "month", "status", "version"];
+export const payrollStatementStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["PayrollStatementStatus"]
+> = ["draft", "reviewed", "published"];
 export const payrollLineCodeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["PayrollLineCode"]
 > = [
@@ -12033,9 +12301,3 @@ export const payrollBlockerValues: ReadonlyArray<
   "unsupportedDayKind",
   "weeklyScheduleRequiresReview",
 ];
-export const payrollStatementResponseDtoStatusValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["PayrollStatementResponseDto"]["status"]
-> = ["draft", "reviewed", "published"];
-export const payrollRuleSetResponseDtoUnconfirmedValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["PayrollRuleSetResponseDto"]["unconfirmed"]
-> = ["minimumHourlyWageCents"];

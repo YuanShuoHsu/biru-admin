@@ -2,11 +2,11 @@ import { useTranslations } from "next-intl";
 import * as z from "zod";
 
 import {
-  payrollTermsDtoMonthlyProrationValues,
-  payrollTermsDtoSalaryTypeValues,
-  taiwanInsuranceDtoLaborCoverageValues,
-  taiwanInsuranceDtoLaborLadderValues,
-  taiwanInsuranceDtoTaxMethodValues,
+  payrollMonthlyProrationValues,
+  payrollSalaryTypeValues,
+  payrollLaborCoverageValues,
+  payrollLaborLadderValues,
+  payrollTaxMethodValues,
 } from "@/types/api";
 
 import { MONEY_FRACTION_DIGITS, MONEY_MAX } from "@/constants/attendance";
@@ -76,22 +76,22 @@ export const useTermsFormSchema = () => {
       healthDependents: number(0, 20),
       healthInsurance: money(),
       laborBasis: z.number().nullable(),
-      laborCoverage: z.enum(taiwanInsuranceDtoLaborCoverageValues),
+      laborCoverage: z.enum(payrollLaborCoverageValues),
       laborInsurance: money(),
-      laborLadder: z.enum(taiwanInsuranceDtoLaborLadderValues),
-      monthlyProration: z.enum(payrollTermsDtoMonthlyProrationValues),
+      laborLadder: z.enum(payrollLaborLadderValues),
+      monthlyProration: z.enum(payrollMonthlyProrationValues),
       otherDeduction: money(),
       pensionBasis: number(
         PENSION_BASIS_RANGE.min,
         PENSION_BASIS_RANGE.max,
       ).nullable(),
       salary: money(),
-      salaryType: z.enum(payrollTermsDtoSalaryTypeValues),
+      salaryType: z.enum(payrollSalaryTypeValues),
       sourceNote: z
         .string()
         .trim()
         .min(1, { error: tValidation("sourceNote.required") }),
-      taxMethod: z.enum(taiwanInsuranceDtoTaxMethodValues),
+      taxMethod: z.enum(payrollTaxMethodValues),
       voluntaryPension: money(),
       voluntaryPercent: number(0, 6),
       withholding: money(),

@@ -4,9 +4,9 @@ import { PLATFORM_ORGANIZATION_ID } from "@/constants/organizations";
 
 import {
   attendanceDayKindValues,
-  attendanceParentalReturnResponseDtoStatusValues,
-  attendanceRequestResponseDtoKindValues,
-  attendanceRequestResponseDtoStatusValues,
+  attendanceParentalReturnStatusValues,
+  attendanceRequestKindValues,
+  attendanceRequestStatusValues,
   auditActionValues,
   auditResourceValues,
   baseUnitCodeValues,
@@ -20,7 +20,7 @@ import {
   orderResponseDtoModeValues,
   orderResponseDtoOrderStatusValues,
   orderResponseDtoPaymentMethodValues,
-  payrollStatementResponseDtoStatusValues,
+  payrollStatementStatusValues,
   statutoryLeaveKindValues,
   userCouponSourceValues,
   userRoleValues,
@@ -185,11 +185,11 @@ export const getAttendanceDayKindEnumOptions = (
 export const getAttendanceRequestEnumOptions = (
   tAttendance: ReturnType<typeof useTranslations<"attendance">>,
 ) => ({
-  kind: attendanceRequestResponseDtoKindValues.map((value) => ({
+  kind: attendanceRequestKindValues.map((value) => ({
     label: tAttendance(`kind.options.${value}`),
     value,
   })),
-  status: attendanceRequestResponseDtoStatusValues.map((value) => ({
+  status: attendanceRequestStatusValues.map((value) => ({
     label: tAttendance(`status.options.${value}`),
     value,
   })),
@@ -207,7 +207,7 @@ export const getAttendanceLeaveTypeEnumOptions = (
 export const getAttendanceParentalReturnEnumOptions = (
   tAttendance: ReturnType<typeof useTranslations<"attendance">>,
 ) => ({
-  status: attendanceParentalReturnResponseDtoStatusValues.map((value) => ({
+  status: attendanceParentalReturnStatusValues.map((value) => ({
     label: tAttendance(`status.options.${value}`),
     value,
   })),
@@ -216,7 +216,7 @@ export const getAttendanceParentalReturnEnumOptions = (
 export const getPayrollStatementEnumOptions = (
   tAttendance: ReturnType<typeof useTranslations<"attendance">>,
 ) => ({
-  status: payrollStatementResponseDtoStatusValues.map((value) => ({
+  status: payrollStatementStatusValues.map((value) => ({
     label: tAttendance(`payrollStatus.options.${value}`),
     value,
   })),

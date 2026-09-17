@@ -7,6 +7,7 @@ import Settings from ".";
 
 import AttendanceTabsLayout from "../AttendanceTabsLayout";
 
+import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
 import { getAttendanceAccess, getAttendanceSettings } from "@/utils/attendance";
@@ -43,6 +44,12 @@ const SettingsPage = async ({ params, searchParams }: SettingsPageProps) => {
   if (!access) notFound();
 
   const { memberRole, organization } = access;
+
+  if (organizationSlug !== organization.slug) {
+    const params = new URLSearchParams({ organization: organization.slug });
+
+    redirect({ href: `/attendance/settings?${params.toString()}`, locale });
+  }
 
   if (!hasRolePermission(memberRole, { attendanceSetting: ["read"] }))
     notFound();

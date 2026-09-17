@@ -101,7 +101,7 @@ const EmployeeDialog = ({
       setDialog({ confirmLoading: true });
 
       await fetcher(attendancePath(organizationSlug, "all", "employees"), {
-        method: "POST",
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...values,

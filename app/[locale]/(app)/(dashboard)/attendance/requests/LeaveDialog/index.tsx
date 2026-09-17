@@ -21,7 +21,7 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { attendanceRequestDtoParentalModeValues } from "@/types/api";
+import { attendanceParentalModeValues } from "@/types/api";
 import type {
   AttendanceLeaveCase,
   AttendanceLeaveType,
@@ -184,7 +184,7 @@ const LeaveDialog = ({
           value={parentalMode}
           {...register("parentalMode")}
         >
-          {attendanceRequestDtoParentalModeValues.map((value) => (
+          {attendanceParentalModeValues.map((value) => (
             <MenuItem key={value} value={value}>
               {tAttendance(
                 value === "daily" ? "parentalDaily" : "parentalContinuous",

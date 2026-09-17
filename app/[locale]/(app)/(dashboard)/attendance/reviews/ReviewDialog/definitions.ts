@@ -1,14 +1,14 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-import { emergencyWorkDtoCauseValues } from "@/types/api";
+import { attendanceEmergencyCauseValues } from "@/types/api";
 
 export const useReviewFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z
     .object({
-      cause: z.enum(emergencyWorkDtoCauseValues).or(z.literal("")),
+      cause: z.enum(attendanceEmergencyCauseValues).or(z.literal("")),
       emergencyWork: z.boolean(),
       makeupEndsAt: z.string(),
       makeupStartsAt: z.string(),

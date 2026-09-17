@@ -28,7 +28,7 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { emergencyWorkDtoCauseValues } from "@/types/api";
+import { attendanceEmergencyCauseValues } from "@/types/api";
 import type {
   AttendanceLeaveType,
   AttendanceRequest,
@@ -232,7 +232,7 @@ const ReviewDialog = ({
                 value={cause}
                 {...register("cause")}
               >
-                {emergencyWorkDtoCauseValues.map((value) => (
+                {attendanceEmergencyCauseValues.map((value) => (
                   <MenuItem key={value} value={value}>
                     {tAttendance(`cause.options.${value}`)}
                   </MenuItem>

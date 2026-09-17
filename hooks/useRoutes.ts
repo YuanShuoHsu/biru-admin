@@ -553,6 +553,7 @@ const routes: Route[] = [
   {
     icon: ViewInAr,
     label: "storeLayout.label",
+    query: ["organization"],
     segment: "store-layout",
   },
   {

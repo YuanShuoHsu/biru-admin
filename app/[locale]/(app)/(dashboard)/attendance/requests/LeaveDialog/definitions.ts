@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-import { attendanceRequestDtoParentalModeValues } from "@/types/api";
+import { attendanceParentalModeValues } from "@/types/api";
 
 export const useLeaveFormSchema = () => {
   const tValidation = useTranslations("validation");
@@ -12,9 +12,7 @@ export const useLeaveFormSchema = () => {
         .string()
         .min(1, { error: tValidation("leaveType.notSelected") }),
       leaveCaseId: z.string(),
-      parentalMode: z
-        .enum(attendanceRequestDtoParentalModeValues)
-        .or(z.literal("")),
+      parentalMode: z.enum(attendanceParentalModeValues).or(z.literal("")),
       startsAt: z.string().min(1, { error: tValidation("startsAt.required") }),
       endsAt: z.string().min(1, { error: tValidation("endsAt.required") }),
       reason: z

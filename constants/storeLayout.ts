@@ -9,6 +9,8 @@ import {
   lightBlue,
 } from "@mui/material/colors";
 
+export const STORE_LAYOUT_ORGANIZATION_SLUG = "biru";
+
 export const STORE_LAYOUT_ROOM = { depth: 7, height: 2.8, width: 9 } as const;
 
 export const STORE_LAYOUT_KIND_COLORS = {
@@ -143,12 +145,12 @@ export const STORE_LAYOUT_ITEMS = [
     z: 2,
   },
   {
-    depth: 0.45,
+    depth: 0.34,
     elevation: 0.9,
-    height: 0.7,
+    height: 0.63,
     kind: "equipment",
     label: "grinder",
-    width: 0.3,
+    width: 0.24,
     x: 2.6,
     z: 2.1,
   },
@@ -173,6 +175,16 @@ export const STORE_LAYOUT_ITEMS = [
     z: 2,
   },
   {
+    depth: 0.17,
+    elevation: 0.9,
+    height: 0.2,
+    kind: "equipment",
+    label: "kettle",
+    width: 0.28,
+    x: 4.5,
+    z: 2.2,
+  },
+  {
     depth: 0.3,
     elevation: 0.9,
     height: 0.45,
@@ -183,14 +195,14 @@ export const STORE_LAYOUT_ITEMS = [
     z: 2.1,
   },
   {
-    depth: 0.6,
-    elevation: 0,
-    height: 0.85,
+    depth: 0.53,
+    elevation: 0.9,
+    height: 0.7,
     kind: "equipment",
     label: "iceMachine",
-    width: 0.6,
+    width: 0.35,
     x: 5.9,
-    z: 2,
+    z: 2.05,
   },
   {
     depth: 0.6,

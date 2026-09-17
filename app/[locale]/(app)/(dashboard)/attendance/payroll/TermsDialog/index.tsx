@@ -37,11 +37,11 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import {
-  payrollTermsDtoMonthlyProrationValues,
-  payrollTermsDtoSalaryTypeValues,
-  taiwanInsuranceDtoLaborCoverageValues,
-  taiwanInsuranceDtoLaborLadderValues,
-  taiwanInsuranceDtoTaxMethodValues,
+  payrollMonthlyProrationValues,
+  payrollSalaryTypeValues,
+  payrollLaborCoverageValues,
+  payrollLaborLadderValues,
+  payrollTaxMethodValues,
 } from "@/types/api";
 import type {
   AttendanceEmployee,
@@ -179,7 +179,7 @@ const TermsDialog = ({
       setDialog({ confirmLoading: true });
 
       await fetcher(payrollPath(organizationSlug, "all", "terms"), {
-        method: "POST",
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           effectiveFrom: dayjs(form.effectiveFrom)
@@ -293,7 +293,7 @@ const TermsDialog = ({
         value={values.salaryType ?? ""}
         {...register("salaryType")}
       >
-        {payrollTermsDtoSalaryTypeValues.map((value) => (
+        {payrollSalaryTypeValues.map((value) => (
           <MenuItem key={value} value={value}>
             {tAttendance(`salaryType.options.${value}`)}
           </MenuItem>
@@ -309,7 +309,7 @@ const TermsDialog = ({
         value={values.monthlyProration ?? ""}
         {...register("monthlyProration")}
       >
-        {payrollTermsDtoMonthlyProrationValues.map((value) => (
+        {payrollMonthlyProrationValues.map((value) => (
           <MenuItem key={value} value={value}>
             {tAttendance(`monthlyProration.options.${value}`)}
           </MenuItem>
@@ -374,7 +374,7 @@ const TermsDialog = ({
             value={values.laborCoverage ?? ""}
             {...register("laborCoverage")}
           >
-            {taiwanInsuranceDtoLaborCoverageValues.map((value) => (
+            {payrollLaborCoverageValues.map((value) => (
               <MenuItem key={value} value={value}>
                 {tAttendance(`laborCoverage.options.${value}`)}
               </MenuItem>
@@ -391,7 +391,7 @@ const TermsDialog = ({
               value={values.laborLadder ?? ""}
               {...register("laborLadder")}
             >
-              {taiwanInsuranceDtoLaborLadderValues.map((value) => (
+              {payrollLaborLadderValues.map((value) => (
                 <MenuItem key={value} value={value}>
                   {tAttendance(`laborLadder.options.${value}`)}
                 </MenuItem>
@@ -471,7 +471,7 @@ const TermsDialog = ({
             value={values.taxMethod ?? ""}
             {...register("taxMethod")}
           >
-            {taiwanInsuranceDtoTaxMethodValues.map((value) => (
+            {payrollTaxMethodValues.map((value) => (
               <MenuItem key={value} value={value}>
                 {tAttendance(`taxMethod.options.${value}`)}
               </MenuItem>

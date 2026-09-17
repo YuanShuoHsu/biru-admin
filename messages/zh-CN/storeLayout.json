@@ -1,5 +1,6 @@
 {
-  "assumption": "尺寸为假设值，现场测量后更新。拖拽旋转、滚轮缩放。",
+  "assumption": "房间与未定型号的设备为假设尺寸，现场测量后更新。拖拽旋转、滚轮缩放。",
+  "empty": "此组织尚未建立店内配置。",
   "items": {
     "blender": "果汁机",
     "cleanShelf": "洁净餐具层架",
@@ -10,6 +11,7 @@
     "frontCounter": "吧台前沿",
     "grinder": "磨豆机",
     "iceMachine": "制冰机",
+    "kettle": "手冲壶",
     "orderCounter": "点餐台",
     "orderScreen": "点餐屏幕",
     "oven": "烤箱",

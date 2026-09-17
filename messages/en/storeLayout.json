@@ -1,5 +1,6 @@
 {
-  "assumption": "Dimensions are assumptions and will be updated after on-site measurement. Drag to rotate, scroll to zoom.",
+  "assumption": "Room and unselected equipment dimensions are assumptions and will be updated after on-site measurement. Drag to rotate, scroll to zoom.",
+  "empty": "This organization has no store layout yet.",
   "items": {
     "blender": "Blender",
     "cleanShelf": "Clean tableware shelf",
@@ -10,6 +11,7 @@
     "frontCounter": "Front counter",
     "grinder": "Grinder",
     "iceMachine": "Ice machine",
+    "kettle": "Pour-over kettle",
     "orderCounter": "Order counter",
     "orderScreen": "Order screen",
     "oven": "Oven",
