@@ -151,6 +151,7 @@ const SpriteLabel = ({
         depthWrite={false}
         map={label.texture}
         sizeAttenuation={false}
+        toneMapped={false}
         transparent
       />
     </sprite>

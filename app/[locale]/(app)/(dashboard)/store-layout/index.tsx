@@ -365,14 +365,14 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                         <mesh
                           position={[
                             STORE_LAYOUT_ROOM.width / 2,
-                            0,
+                            -STORE_LAYOUT_SLAB_THICKNESS / 2,
                             STORE_LAYOUT_ROOM.depth / 2,
                           ]}
-                          rotation-x={-Math.PI / 2}
                         >
-                          <planeGeometry
+                          <boxGeometry
                             args={[
                               STORE_LAYOUT_ROOM.width,
+                              STORE_LAYOUT_SLAB_THICKNESS,
                               STORE_LAYOUT_ROOM.depth,
                             ]}
                           />
@@ -380,6 +380,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                             color={grey[300]}
                             {...ghostSurface(ghost)}
                           />
+                          <Edges color={grey[700]} {...ghostEdge(ghost)} />
                         </mesh>
                       ) : (
                         <>
