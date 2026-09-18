@@ -38,7 +38,13 @@ const followShift = new Vector3();
 const lookOffset = new Vector3();
 const lookSpherical = new Spherical();
 
-const { start } = STORE_LAYOUT_AVATAR;
+const { color, skin, start } = STORE_LAYOUT_AVATAR;
+
+const STRIDE_LENGTH = 0.75;
+
+const SWING_DAMPING = 8;
+
+const TURN_SPEED = 12;
 
 const { speed: lookSpeed } = STORE_LAYOUT_LOOK;
 
@@ -67,6 +73,12 @@ const Avatar = ({
   view,
 }: AvatarProps) => {
   const groupRef = useRef<Group>(null);
+  const previousRef = useRef<{ x: number; z: number }>({
+    x: start.x,
+    z: start.z,
+  });
+  const strideRef = useRef(0);
+  const swingRef = useRef(0);
   const floorIndexRef = useRef(0);
   const stairsRef = useRef(false);
   const cameraViewRef = useRef<StoreLayoutView | null>(null);
@@ -124,6 +136,26 @@ const Avatar = ({
     );
 
     group.position.set(state.x, state.y, state.z);
+
+    const stepX = state.x - previousRef.current.x;
+    const stepZ = state.z - previousRef.current.z;
+
+    previousRef.current.x = state.x;
+    previousRef.current.z = state.z;
+
+    const travelled = Math.hypot(stepX, stepZ);
+
+    if (travelled > 1e-4) {
+      strideRef.current += (travelled / STRIDE_LENGTH) * Math.PI * 2;
+      swingRef.current = Math.sin(strideRef.current);
+
+      const turn = Math.atan2(-stepX, -stepZ) - group.rotation.y;
+
+      group.rotation.y +=
+        Math.atan2(Math.sin(turn), Math.cos(turn)) *
+        Math.min(1, delta * TURN_SPEED);
+    } else
+      swingRef.current -= swingRef.current * Math.min(1, delta * SWING_DAMPING);
 
     const floorIndex = floorIndexAt(state.y);
 
@@ -199,7 +231,9 @@ const Avatar = ({
 
   return (
     <group position={START_POSITION} ref={groupRef}>
-      {view !== "first" && <Person color={STORE_LAYOUT_AVATAR.color} />}
+      {view !== "first" && (
+        <Person color={color} skin={skin} swingRef={swingRef} />
+      )}
     </group>
   );
 };

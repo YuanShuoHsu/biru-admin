@@ -915,6 +915,7 @@ export const STORE_LAYOUT_AVATAR = {
   gravity: 9.8,
   jumpSpeed: 3.2,
   radius: 0.25,
+  skin: brown[200],
   speed: 1.4,
   start: { x: STORE_LAYOUT_ROOM.width / 2, z: 20 },
 } as const;
