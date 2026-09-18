@@ -5,11 +5,12 @@
     "width": "幅 {value} m"
   },
   "empty": "この組織の店内レイアウトはまだ作成されていません。",
+  "export": "PNG 出力",
   "floors": {
     "ground": "1階",
     "upper": "2階"
   },
-  "gridScale": "グリッド 1 m",
+  "gridScale": "グリッド 1 m／太線 5 m",
   "itemSize": "{width} × {depth} × {height} cm",
   "items": {
     "blender": "ブレンダー",
@@ -37,9 +38,11 @@
   },
   "label": "店内レイアウト",
   "moveHint": "画面をクリックすると、矢印キーまたは WASD でキャラクターを移動、スペースキーでジャンプできます",
+  "repeatedSize": "{label} ×{count}　{size}",
   "showLabels": "名称とサイズを表示",
   "views": {
     "customer": "お客様視点",
+    "follow": "キャラクター追従",
     "iso": "斜め視点",
     "staff": "スタッフ視点",
     "top": "俯瞰"

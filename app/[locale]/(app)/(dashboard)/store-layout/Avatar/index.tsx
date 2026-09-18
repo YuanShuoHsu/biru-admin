@@ -1,14 +1,17 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { type ComponentRef, type RefObject, useEffect, useRef } from "react";
 
 import {
   STORE_LAYOUT_AVATAR,
-  STORE_LAYOUT_ITEMS,
-  STORE_LAYOUT_ROOM,
+  STORE_LAYOUT_FLOORS,
+  STORE_LAYOUT_FLOOR_BASE,
+  STORE_LAYOUT_FLOOR_ENTRY,
+  STORE_LAYOUT_FLOOR_HEIGHT,
+  STORE_LAYOUT_VIEWS,
 } from "@/constants/storeLayout";
 
-import { useKeyboardControls } from "@react-three/drei";
+import { OrbitControls, useKeyboardControls } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 
 import { type Group, Vector3 } from "three";
@@ -16,44 +19,55 @@ import { type Group, Vector3 } from "three";
 import type { StoreLayoutFloor, StoreLayoutMove } from "@/types/storeLayout";
 
 import Person from "../Person";
+import { type AvatarState, advanceAvatar } from "./movement";
 
-const UP = new Vector3(0, 1, 0);
 const heading = new Vector3();
-const strafe = new Vector3();
+const followTarget = new Vector3();
+const followShift = new Vector3();
 
-const { gravity, jumpSpeed, radius, speed, start } = STORE_LAYOUT_AVATAR;
+const { start } = STORE_LAYOUT_AVATAR;
+
+const { eye, offset } = STORE_LAYOUT_VIEWS.follow;
+
+const FOLLOW_OFFSET = new Vector3(...offset);
 
 const START_POSITION: [number, number, number] = [start.x, 0, start.z];
 
-const clampToRoom = (value: number, size: number) =>
-  Math.min(Math.max(value, radius), size - radius);
-
 interface AvatarProps {
+  controlsRef: RefObject<ComponentRef<typeof OrbitControls> | null>;
   floor: StoreLayoutFloor;
+  follow: boolean;
+  onFloorChange: (floor: StoreLayoutFloor) => void;
 }
 
-const Avatar = ({ floor }: AvatarProps) => {
+const Avatar = ({ controlsRef, floor, follow, onFloorChange }: AvatarProps) => {
   const groupRef = useRef<Group>(null);
-  const verticalSpeedRef = useRef(0);
+  const floorIndexRef = useRef(0);
+  const followingRef = useRef(false);
+  const stateRef = useRef<AvatarState>({
+    verticalSpeed: 0,
+    x: start.x,
+    y: 0,
+    z: start.z,
+  });
   const camera = useThree((state) => state.camera);
   const [, getMove] = useKeyboardControls<StoreLayoutMove>();
 
-  const obstacles = useMemo(
-    () =>
-      STORE_LAYOUT_ITEMS.filter(
-        (item) => item.floor === floor && item.elevation === 0,
-      ),
-    [floor],
-  );
+  useEffect(() => {
+    const floorIndex = STORE_LAYOUT_FLOORS.indexOf(floor);
+    if (floorIndex === floorIndexRef.current) return;
 
-  const isBlocked = (x: number, z: number) =>
-    obstacles.some(
-      (item) =>
-        x + radius > item.x &&
-        x - radius < item.x + item.width &&
-        z + radius > item.z &&
-        z - radius < item.z + item.depth,
-    );
+    floorIndexRef.current = floorIndex;
+
+    const entry = STORE_LAYOUT_FLOOR_ENTRY[floor];
+
+    Object.assign(stateRef.current, {
+      verticalSpeed: 0,
+      x: entry.x,
+      y: STORE_LAYOUT_FLOOR_BASE[floor],
+      z: entry.z,
+    });
+  }, [floor]);
 
   useFrame((_state, delta) => {
     const group = groupRef.current;
@@ -61,49 +75,53 @@ const Avatar = ({ floor }: AvatarProps) => {
 
     const move = getMove();
 
-    const grounded = group.position.y === 0;
-    if (grounded && move.jump) verticalSpeedRef.current = jumpSpeed;
-
-    if (!grounded || verticalSpeedRef.current > 0) {
-      verticalSpeedRef.current -= gravity * delta;
-      const nextY = group.position.y + verticalSpeedRef.current * delta;
-
-      if (nextY > 0) group.position.y = nextY;
-      else {
-        group.position.y = 0;
-        verticalSpeedRef.current = 0;
-      }
-    }
-
-    const sideways = Number(move.right) - Number(move.left);
-    const forwards = Number(move.forward) - Number(move.backward);
-    if (!sideways && !forwards) return;
-
     heading.set(0, 0, -1).applyQuaternion(camera.quaternion);
     heading.y = 0;
     if (heading.lengthSq() < 1e-6)
       heading.set(0, 1, 0).applyQuaternion(camera.quaternion).setY(0);
     heading.normalize();
 
-    strafe.crossVectors(heading, UP);
+    const state = stateRef.current;
 
-    heading
-      .multiplyScalar(forwards)
-      .addScaledVector(strafe, sideways)
-      .normalize()
-      .multiplyScalar(speed * delta);
-
-    const nextX = clampToRoom(
-      group.position.x + heading.x,
-      STORE_LAYOUT_ROOM.width,
-    );
-    const nextZ = clampToRoom(
-      group.position.z + heading.z,
-      STORE_LAYOUT_ROOM.depth,
+    advanceAvatar(
+      state,
+      {
+        forwardX: heading.x,
+        forwardZ: heading.z,
+        jump: move.jump,
+        sideways: Number(move.right) - Number(move.left),
+        towards: Number(move.forward) - Number(move.backward),
+      },
+      delta,
     );
 
-    if (!isBlocked(nextX, group.position.z)) group.position.x = nextX;
-    if (!isBlocked(group.position.x, nextZ)) group.position.z = nextZ;
+    group.position.set(state.x, state.y, state.z);
+
+    const floorIndex = Math.floor(state.y / STORE_LAYOUT_FLOOR_HEIGHT);
+
+    if (floorIndex !== floorIndexRef.current) {
+      floorIndexRef.current = floorIndex;
+      onFloorChange(STORE_LAYOUT_FLOORS[floorIndex]);
+    }
+
+    const controls = follow ? controlsRef.current : null;
+
+    if (!controls) {
+      followingRef.current = false;
+      return;
+    }
+
+    followTarget.set(state.x, state.y + eye, state.z);
+
+    if (followingRef.current)
+      // 相機與注視點位移同一個量，軌道半徑與角度才不會被覆寫，使用者轉過的視角得以保留
+      controls.object.position.add(
+        followShift.subVectors(followTarget, controls.target),
+      );
+    else controls.object.position.copy(followTarget).add(FOLLOW_OFFSET);
+
+    controls.target.copy(followTarget);
+    followingRef.current = true;
   });
 
   return (

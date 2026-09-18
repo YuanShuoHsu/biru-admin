@@ -13,7 +13,7 @@ import {
 export const STORE_LAYOUT_ORGANIZATION_SLUG = "biru";
 
 export const STORE_LAYOUT_ROOM = {
-  depth: 10.5,
+  depth: 21,
   height: 2.8,
   width: 15.75,
 } as const;
@@ -52,6 +52,15 @@ export const STORE_LAYOUT_WALLS = [
     ],
     rotationY: Math.PI / 2,
     width: STORE_LAYOUT_ROOM.depth,
+  },
+  {
+    position: [
+      STORE_LAYOUT_ROOM.width / 2,
+      STORE_LAYOUT_ROOM.height / 2,
+      STORE_LAYOUT_ROOM.depth,
+    ],
+    rotationY: 0,
+    width: STORE_LAYOUT_ROOM.width,
   },
 ] as const;
 
@@ -338,15 +347,15 @@ export const STORE_LAYOUT_ITEMS = [
     z: 4.2,
   },
   {
-    depth: 0.8,
+    depth: 0.6,
     elevation: 0,
-    floor: "ground",
-    height: 0.75,
-    kind: "seat",
-    label: "table",
-    width: 1.4,
-    x: 0.6,
-    z: 6,
+    floor: "upper",
+    height: 0.9,
+    kind: "wash",
+    label: "returnCounter",
+    width: 1.7,
+    x: 13.95,
+    z: 5,
   },
   {
     depth: 0.8,
@@ -357,6 +366,116 @@ export const STORE_LAYOUT_ITEMS = [
     label: "table",
     width: 1.4,
     x: 0.6,
+    z: 7.2,
+  },
+  {
+    depth: 0.8,
+    elevation: 0,
+    floor: "ground",
+    height: 0.75,
+    kind: "seat",
+    label: "table",
+    width: 1.4,
+    x: 0.6,
+    z: 9.6,
+  },
+  {
+    depth: 0.8,
+    elevation: 0,
+    floor: "ground",
+    height: 0.75,
+    kind: "seat",
+    label: "table",
+    width: 1.4,
+    x: 0.6,
+    z: 12,
+  },
+  {
+    depth: 0.8,
+    elevation: 0,
+    floor: "ground",
+    height: 0.75,
+    kind: "seat",
+    label: "table",
+    width: 1.4,
+    x: 0.6,
+    z: 14.4,
+  },
+  {
+    depth: 0.8,
+    elevation: 0,
+    floor: "ground",
+    height: 0.75,
+    kind: "seat",
+    label: "table",
+    width: 1.4,
+    x: 0.6,
+    z: 16.8,
+  },
+  {
+    depth: 0.8,
+    elevation: 0,
+    floor: "ground",
+    height: 0.75,
+    kind: "seat",
+    label: "table",
+    width: 1.4,
+    x: 0.6,
+    z: 19.2,
+  },
+  {
+    depth: 0.8,
+    elevation: 0,
+    floor: "ground",
+    height: 0.75,
+    kind: "seat",
+    label: "table",
+    width: 1.4,
+    x: 13.75,
+    z: 12,
+  },
+  {
+    depth: 0.8,
+    elevation: 0,
+    floor: "ground",
+    height: 0.75,
+    kind: "seat",
+    label: "table",
+    width: 1.4,
+    x: 13.75,
+    z: 14.4,
+  },
+  {
+    depth: 0.8,
+    elevation: 0,
+    floor: "ground",
+    height: 0.75,
+    kind: "seat",
+    label: "table",
+    width: 1.4,
+    x: 13.75,
+    z: 16.8,
+  },
+  {
+    depth: 0.8,
+    elevation: 0,
+    floor: "ground",
+    height: 0.75,
+    kind: "seat",
+    label: "table",
+    width: 1.4,
+    x: 13.75,
+    z: 19.2,
+  },
+  {
+    depth: 0.7,
+    elevation: 0,
+    floor: "ground",
+    height: 0.75,
+    kind: "seat",
+    label: "table",
+    width: 0.7,
+    x: 5.4,
     z: 8.4,
   },
   {
@@ -368,7 +487,29 @@ export const STORE_LAYOUT_ITEMS = [
     label: "table",
     width: 0.7,
     x: 5.4,
-    z: 7.2,
+    z: 11.4,
+  },
+  {
+    depth: 0.7,
+    elevation: 0,
+    floor: "ground",
+    height: 0.75,
+    kind: "seat",
+    label: "table",
+    width: 0.7,
+    x: 5.4,
+    z: 14.4,
+  },
+  {
+    depth: 0.7,
+    elevation: 0,
+    floor: "ground",
+    height: 0.75,
+    kind: "seat",
+    label: "table",
+    width: 0.7,
+    x: 5.4,
+    z: 17.4,
   },
   {
     depth: 0.7,
@@ -379,40 +520,40 @@ export const STORE_LAYOUT_ITEMS = [
     label: "table",
     width: 0.7,
     x: 9.65,
-    z: 7.2,
+    z: 8.4,
   },
   {
-    depth: 3.6,
+    depth: 0.7,
     elevation: 0,
     floor: "ground",
-    height: 2.8,
-    kind: "stair",
-    label: "stair",
-    width: 1.7,
-    x: 13.95,
-    z: 6.6,
+    height: 0.75,
+    kind: "seat",
+    label: "table",
+    width: 0.7,
+    x: 9.65,
+    z: 11.4,
   },
   {
-    depth: 3.6,
+    depth: 0.7,
     elevation: 0,
-    floor: "upper",
-    height: 1,
-    kind: "stair",
-    label: "stair",
-    width: 1.7,
-    x: 13.95,
-    z: 6.6,
+    floor: "ground",
+    height: 0.75,
+    kind: "seat",
+    label: "table",
+    width: 0.7,
+    x: 9.65,
+    z: 14.4,
   },
   {
-    depth: 0.6,
+    depth: 0.7,
     elevation: 0,
-    floor: "upper",
-    height: 0.9,
-    kind: "wash",
-    label: "returnCounter",
-    width: 1.7,
-    x: 13.95,
-    z: 5,
+    floor: "ground",
+    height: 0.75,
+    kind: "seat",
+    label: "table",
+    width: 0.7,
+    x: 9.65,
+    z: 17.4,
   },
   {
     depth: 0.8,
@@ -466,6 +607,61 @@ export const STORE_LAYOUT_ITEMS = [
     kind: "seat",
     label: "table",
     width: 1.4,
+    x: 0.6,
+    z: 10.2,
+  },
+  {
+    depth: 0.8,
+    elevation: 0,
+    floor: "upper",
+    height: 0.75,
+    kind: "seat",
+    label: "table",
+    width: 1.4,
+    x: 0.6,
+    z: 12.6,
+  },
+  {
+    depth: 0.8,
+    elevation: 0,
+    floor: "upper",
+    height: 0.75,
+    kind: "seat",
+    label: "table",
+    width: 1.4,
+    x: 0.6,
+    z: 15,
+  },
+  {
+    depth: 0.8,
+    elevation: 0,
+    floor: "upper",
+    height: 0.75,
+    kind: "seat",
+    label: "table",
+    width: 1.4,
+    x: 0.6,
+    z: 17.4,
+  },
+  {
+    depth: 0.8,
+    elevation: 0,
+    floor: "upper",
+    height: 0.75,
+    kind: "seat",
+    label: "table",
+    width: 1.4,
+    x: 0.6,
+    z: 19.8,
+  },
+  {
+    depth: 0.8,
+    elevation: 0,
+    floor: "upper",
+    height: 0.75,
+    kind: "seat",
+    label: "table",
+    width: 1.4,
     x: 13.75,
     z: 0.6,
   },
@@ -481,6 +677,50 @@ export const STORE_LAYOUT_ITEMS = [
     z: 3,
   },
   {
+    depth: 0.8,
+    elevation: 0,
+    floor: "upper",
+    height: 0.75,
+    kind: "seat",
+    label: "table",
+    width: 1.4,
+    x: 13.75,
+    z: 12.6,
+  },
+  {
+    depth: 0.8,
+    elevation: 0,
+    floor: "upper",
+    height: 0.75,
+    kind: "seat",
+    label: "table",
+    width: 1.4,
+    x: 13.75,
+    z: 15,
+  },
+  {
+    depth: 0.8,
+    elevation: 0,
+    floor: "upper",
+    height: 0.75,
+    kind: "seat",
+    label: "table",
+    width: 1.4,
+    x: 13.75,
+    z: 17.4,
+  },
+  {
+    depth: 0.8,
+    elevation: 0,
+    floor: "upper",
+    height: 0.75,
+    kind: "seat",
+    label: "table",
+    width: 1.4,
+    x: 13.75,
+    z: 19.8,
+  },
+  {
     depth: 0.7,
     elevation: 0,
     floor: "upper",
@@ -522,7 +762,40 @@ export const STORE_LAYOUT_ITEMS = [
     label: "table",
     width: 0.7,
     x: 5.4,
-    z: 9.4,
+    z: 10,
+  },
+  {
+    depth: 0.7,
+    elevation: 0,
+    floor: "upper",
+    height: 0.75,
+    kind: "seat",
+    label: "table",
+    width: 0.7,
+    x: 5.4,
+    z: 13,
+  },
+  {
+    depth: 0.7,
+    elevation: 0,
+    floor: "upper",
+    height: 0.75,
+    kind: "seat",
+    label: "table",
+    width: 0.7,
+    x: 5.4,
+    z: 16,
+  },
+  {
+    depth: 0.7,
+    elevation: 0,
+    floor: "upper",
+    height: 0.75,
+    kind: "seat",
+    label: "table",
+    width: 0.7,
+    x: 5.4,
+    z: 19,
   },
   {
     depth: 0.7,
@@ -566,7 +839,40 @@ export const STORE_LAYOUT_ITEMS = [
     label: "table",
     width: 0.7,
     x: 9.65,
-    z: 9.4,
+    z: 10,
+  },
+  {
+    depth: 0.7,
+    elevation: 0,
+    floor: "upper",
+    height: 0.75,
+    kind: "seat",
+    label: "table",
+    width: 0.7,
+    x: 9.65,
+    z: 13,
+  },
+  {
+    depth: 0.7,
+    elevation: 0,
+    floor: "upper",
+    height: 0.75,
+    kind: "seat",
+    label: "table",
+    width: 0.7,
+    x: 9.65,
+    z: 16,
+  },
+  {
+    depth: 0.7,
+    elevation: 0,
+    floor: "upper",
+    height: 0.75,
+    kind: "seat",
+    label: "table",
+    width: 0.7,
+    x: 9.65,
+    z: 19,
   },
 ] as const;
 
@@ -581,15 +887,16 @@ export const STORE_LAYOUT_PEOPLE = [
 
 export const STORE_LAYOUT_VIEWS = {
   customer: { position: [13, 1.55, 6.6], target: [8, 1.1, 3] },
+  follow: { eye: 1.55, offset: [0, 1.2, 3.2] },
   iso: {
-    position: [STORE_LAYOUT_ROOM.width + 6, 11, STORE_LAYOUT_ROOM.depth + 8],
+    position: [STORE_LAYOUT_ROOM.width + 9, 14, STORE_LAYOUT_ROOM.depth + 10],
     target: [STORE_LAYOUT_ROOM.width / 2, 1, STORE_LAYOUT_ROOM.depth / 2],
   },
   staff: { position: [9.5, 1.6, 3.4], target: [5, 1, 1.2] },
   top: {
     position: [
       STORE_LAYOUT_ROOM.width / 2,
-      16,
+      26,
       STORE_LAYOUT_ROOM.depth / 2 + 0.01,
     ],
     target: [STORE_LAYOUT_ROOM.width / 2, 0, STORE_LAYOUT_ROOM.depth / 2],
@@ -602,5 +909,106 @@ export const STORE_LAYOUT_AVATAR = {
   jumpSpeed: 3.2,
   radius: 0.25,
   speed: 1.4,
-  start: { x: STORE_LAYOUT_ROOM.width / 2, z: 9.8 },
+  start: { x: STORE_LAYOUT_ROOM.width / 2, z: 20 },
 } as const;
+
+export const STORE_LAYOUT_FLOOR_HEIGHT = 3.05;
+
+export const STORE_LAYOUT_SLAB_THICKNESS = 0.25;
+
+const STAIR_X = 13.95;
+const STAIR_Z = 6.6;
+const STAIR_WIDTH = 1.7;
+const STAIR_TREAD = 0.27;
+const STAIR_FLIGHT_TREADS = 8;
+const STAIR_LANDING_DEPTH = 1.2;
+const STAIR_RISER = STORE_LAYOUT_FLOOR_HEIGHT / 17;
+
+const STAIR_FLIGHT_WIDTH = STAIR_WIDTH / 2;
+const STAIR_FLIGHT_RUN = STAIR_FLIGHT_TREADS * STAIR_TREAD;
+const STAIR_LANDING_Z = STAIR_Z + STAIR_FLIGHT_RUN;
+
+const flightTreads = (count: number) =>
+  Array.from({ length: STAIR_FLIGHT_TREADS }, (_, index) => index + 1).map(
+    (tread) => ({
+      depth: STAIR_TREAD,
+      top: (count + tread) * STAIR_RISER,
+      width: STAIR_FLIGHT_WIDTH,
+      x: count ? STAIR_X + STAIR_FLIGHT_WIDTH : STAIR_X,
+      z: count
+        ? STAIR_LANDING_Z - tread * STAIR_TREAD
+        : STAIR_Z + (tread - 1) * STAIR_TREAD,
+    }),
+  );
+
+export const STORE_LAYOUT_STAIR_STEPS = [
+  ...flightTreads(0),
+  {
+    depth: STAIR_LANDING_DEPTH,
+    top: STAIR_FLIGHT_TREADS * STAIR_RISER,
+    width: STAIR_WIDTH,
+    x: STAIR_X,
+    z: STAIR_LANDING_Z,
+  },
+  ...flightTreads(STAIR_FLIGHT_TREADS),
+];
+
+export const STORE_LAYOUT_STAIRWELL = {
+  depth: STAIR_FLIGHT_RUN + STAIR_LANDING_DEPTH,
+  width: STAIR_WIDTH,
+  x: STAIR_X,
+  z: STAIR_Z,
+} as const;
+
+export const STORE_LAYOUT_STAIR_EXIT = {
+  x: STAIR_X + STAIR_FLIGHT_WIDTH / 2,
+  z: STAIR_Z - 0.5,
+} as const;
+
+export const STORE_LAYOUT_SLAB_PANELS = [
+  {
+    depth: STORE_LAYOUT_STAIRWELL.z,
+    width: STORE_LAYOUT_ROOM.width,
+    x: 0,
+    z: 0,
+  },
+  {
+    depth:
+      STORE_LAYOUT_ROOM.depth -
+      STORE_LAYOUT_STAIRWELL.z -
+      STORE_LAYOUT_STAIRWELL.depth,
+    width: STORE_LAYOUT_ROOM.width,
+    x: 0,
+    z: STORE_LAYOUT_STAIRWELL.z + STORE_LAYOUT_STAIRWELL.depth,
+  },
+  {
+    depth: STORE_LAYOUT_STAIRWELL.depth,
+    width: STORE_LAYOUT_STAIRWELL.x,
+    x: 0,
+    z: STORE_LAYOUT_STAIRWELL.z,
+  },
+  {
+    depth: STORE_LAYOUT_STAIRWELL.depth,
+    width:
+      STORE_LAYOUT_ROOM.width -
+      STORE_LAYOUT_STAIRWELL.x -
+      STORE_LAYOUT_STAIRWELL.width,
+    x: STORE_LAYOUT_STAIRWELL.x + STORE_LAYOUT_STAIRWELL.width,
+    z: STORE_LAYOUT_STAIRWELL.z,
+  },
+];
+
+export const STORE_LAYOUT_FLOOR_BASE = Object.fromEntries(
+  STORE_LAYOUT_FLOORS.map((floor, index) => [
+    floor,
+    index * STORE_LAYOUT_FLOOR_HEIGHT,
+  ]),
+) as Record<(typeof STORE_LAYOUT_FLOORS)[number], number>;
+
+export const STORE_LAYOUT_FLOOR_ENTRY = {
+  ground: STORE_LAYOUT_AVATAR.start,
+  upper: STORE_LAYOUT_STAIR_EXIT,
+} as const satisfies Record<
+  (typeof STORE_LAYOUT_FLOORS)[number],
+  { x: number; z: number }
+>;

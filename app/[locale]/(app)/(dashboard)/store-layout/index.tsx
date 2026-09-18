@@ -5,16 +5,24 @@ import { type ComponentRef, useMemo, useRef, useState } from "react";
 
 import {
   STORE_LAYOUT_FLOORS,
+  STORE_LAYOUT_FLOOR_BASE,
+  STORE_LAYOUT_FLOOR_HEIGHT,
   STORE_LAYOUT_ITEMS,
   STORE_LAYOUT_KIND_COLORS,
   STORE_LAYOUT_PEOPLE,
   STORE_LAYOUT_PERSON_COLORS,
   STORE_LAYOUT_ROOM,
+  STORE_LAYOUT_SLAB_PANELS,
+  STORE_LAYOUT_SLAB_THICKNESS,
+  STORE_LAYOUT_STAIRWELL,
+  STORE_LAYOUT_STAIR_STEPS,
   STORE_LAYOUT_VIEWS,
   STORE_LAYOUT_WALLS,
 } from "@/constants/storeLayout";
 
+import { Download } from "@mui/icons-material";
 import {
+  Button,
   FormControlLabel,
   Stack,
   Switch,
@@ -27,17 +35,19 @@ import { styled } from "@mui/material/styles";
 
 import {
   Edges,
+  Grid,
   Html,
   KeyboardControls,
   type KeyboardControlsEntry,
   OrbitControls,
 } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, type RootState } from "@react-three/fiber";
 
 import { DoubleSide } from "three";
 
 import type {
   StoreLayoutFloor,
+  StoreLayoutItem,
   StoreLayoutMove,
   StoreLayoutView,
 } from "@/types/storeLayout";
@@ -107,9 +117,13 @@ const MOVE_MAP: KeyboardControlsEntry<StoreLayoutMove>[] = [
   { keys: ["Space"], name: "jump" },
 ];
 
-const GRID_SIZE = Math.ceil(
-  Math.max(STORE_LAYOUT_ROOM.width, STORE_LAYOUT_ROOM.depth),
-);
+const REPEATED_AT_LEAST = 3;
+
+const GHOST_SURFACE = { depthWrite: false, opacity: 0.06, transparent: true };
+const GHOST_EDGE = { depthWrite: false, opacity: 0.4, transparent: true };
+
+const sizeKey = ({ depth, height, label, width }: StoreLayoutItem) =>
+  `${label}|${width}x${depth}x${height}`;
 
 const toCentimeters = (value: number) => Math.round(value * 1000) / 10;
 
@@ -147,6 +161,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
   const tStoreLayout = useTranslations("storeLayout");
 
   const controlsRef = useRef<ComponentRef<typeof OrbitControls>>(null);
+  const rootStateRef = useRef<RootState>(null);
 
   const [canvasElement, setCanvasElement] = useState<HTMLDivElement | null>(
     null,
@@ -155,40 +170,93 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
   const [showLabels, setShowLabels] = useState(true);
   const [view, setView] = useState<StoreLayoutView>("iso");
 
-  const items = useMemo(
+  const floorItems = useMemo(
     () => STORE_LAYOUT_ITEMS.filter((item) => item.floor === floor),
     [floor],
   );
+
+  const repeatedGroups = useMemo(() => {
+    const groups = new Map<string, StoreLayoutItem & { count: number }>();
+
+    for (const item of floorItems) {
+      const key = sizeKey(item);
+      const group = groups.get(key);
+
+      if (group) group.count += 1;
+      else groups.set(key, { ...item, count: 1 });
+    }
+
+    return [...groups.values()].filter(
+      ({ count }) => count >= REPEATED_AT_LEAST,
+    );
+  }, [floorItems]);
+
+  const repeatedKeys = useMemo(
+    () => new Set(repeatedGroups.map(sizeKey)),
+    [repeatedGroups],
+  );
+
   const people = useMemo(
     () => STORE_LAYOUT_PEOPLE.filter((person) => person.floor === floor),
     [floor],
   );
 
+  const applyView = (
+    nextView: StoreLayoutView,
+    nextFloor: StoreLayoutFloor,
+  ) => {
+    const controls = controlsRef.current;
+    if (!controls) return;
+
+    const entry = STORE_LAYOUT_VIEWS[nextView];
+    if (!("position" in entry)) return;
+
+    const { position, target } = entry;
+    const base = STORE_LAYOUT_FLOOR_BASE[nextFloor];
+
+    controls.object.position.set(position[0], position[1] + base, position[2]);
+    controls.target.set(target[0], target[1] + base, target[2]);
+    controls.update();
+  };
+
   const handleFloorChange = (
     _event: React.MouseEvent<HTMLElement>,
     value: StoreLayoutFloor | null,
   ) => {
-    if (value) setFloor(value);
+    if (!value) return;
+
+    setFloor(value);
+    applyView(view, value);
   };
 
   const handleViewChange = (
     _event: React.MouseEvent<HTMLElement>,
     value: StoreLayoutView | null,
   ) => {
-    const controls = controlsRef.current;
-    if (!value || !controls) return;
+    if (!value) return;
 
-    const { position, target } = STORE_LAYOUT_VIEWS[value];
-
-    controls.object.position.fromArray(position);
-    controls.target.fromArray(target);
-    controls.update();
+    applyView(value, floor);
     setView(value);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key.startsWith("Arrow") || event.code === "Space")
       event.preventDefault();
+  };
+
+  const handleExport = () => {
+    const state = rootStateRef.current;
+    if (!state) return;
+
+    state.gl.render(state.scene, state.camera);
+
+    const link = document.createElement("a");
+
+    link.href = state.gl.domElement.toDataURL("image/png");
+    link.download = `store-layout-${floor}-${view}.png`;
+    document.body.append(link);
+    link.click();
+    link.remove();
   };
 
   const handleShowLabelsChange = (
@@ -246,9 +314,29 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
           }
           label={tStoreLayout("showLabels")}
         />
+        <Button onClick={handleExport} size="small" startIcon={<Download />}>
+          {tStoreLayout("export")}
+        </Button>
         <Typography color="text.secondary" variant="caption">
           {tStoreLayout("gridScale")}
         </Typography>
+        {repeatedGroups.map((group) => (
+          <Typography
+            color="text.secondary"
+            key={sizeKey(group)}
+            variant="caption"
+          >
+            {tStoreLayout("repeatedSize", {
+              count: group.count,
+              label: tStoreLayout(`items.${group.label}`),
+              size: tStoreLayout("itemSize", {
+                depth: toCentimeters(group.depth),
+                height: toCentimeters(group.height),
+                width: toCentimeters(group.width),
+              }),
+            })}
+          </Typography>
+        ))}
         <Typography color="text.secondary" variant="caption">
           {tStoreLayout("moveHint")}
         </Typography>
@@ -264,45 +352,120 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
         >
           <Canvas
             camera={{ fov: 55, position: [...STORE_LAYOUT_VIEWS.iso.position] }}
+            // 合成後繪圖緩衝區的內容即失效，不保留的話 toDataURL 會匯出空白圖
+            gl={{ preserveDrawingBuffer: true }}
+            onCreated={(state) => {
+              rootStateRef.current = state;
+            }}
           >
             <hemisphereLight args={[grey[50], blueGrey[500], 2.2]} />
             <directionalLight intensity={1.1} position={[6, 8, 4]} />
-            <mesh
-              position={[
-                STORE_LAYOUT_ROOM.width / 2,
-                0,
-                STORE_LAYOUT_ROOM.depth / 2,
-              ]}
-              rotation-x={-Math.PI / 2}
-            >
-              <planeGeometry
-                args={[STORE_LAYOUT_ROOM.width, STORE_LAYOUT_ROOM.depth]}
-              />
-              <meshStandardMaterial color={grey[300]} />
-            </mesh>
-            <gridHelper
-              args={[GRID_SIZE, GRID_SIZE, grey[500], grey[500]]}
-              position={[
-                STORE_LAYOUT_ROOM.width / 2,
-                0.002,
-                STORE_LAYOUT_ROOM.depth / 2,
-              ]}
-            />
-            {STORE_LAYOUT_WALLS.map(({ position, rotationY, width }) => (
+            {STORE_LAYOUT_FLOORS.map((value) => {
+              const ghost = value !== floor;
+
+              return (
+                <group key={value} position-y={STORE_LAYOUT_FLOOR_BASE[value]}>
+                  {value === "ground" ? (
+                    <mesh
+                      position={[
+                        STORE_LAYOUT_ROOM.width / 2,
+                        0,
+                        STORE_LAYOUT_ROOM.depth / 2,
+                      ]}
+                      rotation-x={-Math.PI / 2}
+                    >
+                      <planeGeometry
+                        args={[
+                          STORE_LAYOUT_ROOM.width,
+                          STORE_LAYOUT_ROOM.depth,
+                        ]}
+                      />
+                      <meshStandardMaterial
+                        color={grey[300]}
+                        {...(ghost && GHOST_SURFACE)}
+                      />
+                    </mesh>
+                  ) : (
+                    STORE_LAYOUT_SLAB_PANELS.map(({ depth, width, x, z }) => (
+                      <mesh
+                        key={`${x}-${z}`}
+                        position={[
+                          x + width / 2,
+                          -STORE_LAYOUT_SLAB_THICKNESS / 2,
+                          z + depth / 2,
+                        ]}
+                      >
+                        <boxGeometry
+                          args={[width, STORE_LAYOUT_SLAB_THICKNESS, depth]}
+                        />
+                        <meshStandardMaterial
+                          color={grey[300]}
+                          {...(ghost && GHOST_SURFACE)}
+                        />
+                        <Edges color={grey[700]} {...(ghost && GHOST_EDGE)} />
+                      </mesh>
+                    ))
+                  )}
+                  {!ghost && (
+                    <Grid
+                      args={[STORE_LAYOUT_ROOM.width, STORE_LAYOUT_ROOM.depth]}
+                      cellColor={grey[500]}
+                      cellSize={1}
+                      fadeStrength={0}
+                      position={[
+                        STORE_LAYOUT_ROOM.width / 2,
+                        0.002,
+                        STORE_LAYOUT_ROOM.depth / 2,
+                      ]}
+                      sectionColor={grey[700]}
+                      sectionSize={5}
+                      side={DoubleSide}
+                    />
+                  )}
+                  {!ghost &&
+                    STORE_LAYOUT_WALLS.map(({ position, rotationY, width }) => (
+                      <mesh
+                        key={position.join()}
+                        position={[...position]}
+                        rotation-y={rotationY}
+                      >
+                        <planeGeometry
+                          args={[width, STORE_LAYOUT_ROOM.height]}
+                        />
+                        <meshStandardMaterial
+                          color={grey[200]}
+                          opacity={0.55}
+                          side={DoubleSide}
+                          transparent
+                        />
+                      </mesh>
+                    ))}
+                </group>
+              );
+            })}
+            {STORE_LAYOUT_STAIR_STEPS.map(({ depth, top, width, x, z }) => (
               <mesh
-                key={position.join()}
-                position={[...position]}
-                rotation-y={rotationY}
+                key={`${x}-${z}`}
+                position={[x + width / 2, top / 2, z + depth / 2]}
               >
-                <planeGeometry args={[width, STORE_LAYOUT_ROOM.height]} />
-                <meshStandardMaterial
-                  color={grey[200]}
-                  opacity={0.55}
-                  side={DoubleSide}
-                  transparent
-                />
+                <boxGeometry args={[width, top, depth]} />
+                <meshStandardMaterial color={STORE_LAYOUT_KIND_COLORS.stair} />
+                <Edges color={grey[700]} />
               </mesh>
             ))}
+            {showLabels && (
+              <Html
+                center
+                pointerEvents="none"
+                position={[
+                  STORE_LAYOUT_STAIRWELL.x + STORE_LAYOUT_STAIRWELL.width / 2,
+                  STORE_LAYOUT_FLOOR_HEIGHT,
+                  STORE_LAYOUT_STAIRWELL.z + STORE_LAYOUT_STAIRWELL.depth / 2,
+                ]}
+              >
+                <Label>{tStoreLayout("items.stair")}</Label>
+              </Html>
+            )}
             {ROOM_DIMENSIONS.map(({ key, position, value }) => (
               <Html
                 center
@@ -315,22 +478,29 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                 </Dimension>
               </Html>
             ))}
-            {items.map(
-              ({ depth, elevation, height, kind, label, width, x, z }) => (
+            {STORE_LAYOUT_ITEMS.map((item) => {
+              const { depth, elevation, height, kind, label, width, x, z } =
+                item;
+              const ghost = item.floor !== floor;
+
+              return (
                 <mesh
-                  key={`${label}-${x}-${z}`}
+                  key={`${item.floor}-${label}-${x}-${z}`}
                   position={[
                     x + width / 2,
-                    elevation + height / 2,
+                    STORE_LAYOUT_FLOOR_BASE[item.floor] +
+                      elevation +
+                      height / 2,
                     z + depth / 2,
                   ]}
                 >
                   <boxGeometry args={[width, height, depth]} />
                   <meshStandardMaterial
                     color={STORE_LAYOUT_KIND_COLORS[kind]}
+                    {...(ghost && GHOST_SURFACE)}
                   />
-                  <Edges color={grey[700]} />
-                  {showLabels && (
+                  <Edges color={grey[700]} {...(ghost && GHOST_EDGE)} />
+                  {showLabels && !ghost && (
                     <Html
                       center
                       pointerEvents="none"
@@ -338,25 +508,35 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                     >
                       <Label>
                         {tStoreLayout(`items.${label}`)}
-                        <Size>
-                          {tStoreLayout("itemSize", {
-                            depth: toCentimeters(depth),
-                            height: toCentimeters(height),
-                            width: toCentimeters(width),
-                          })}
-                        </Size>
+                        {!repeatedKeys.has(sizeKey(item)) && (
+                          <Size>
+                            {tStoreLayout("itemSize", {
+                              depth: toCentimeters(depth),
+                              height: toCentimeters(height),
+                              width: toCentimeters(width),
+                            })}
+                          </Size>
+                        )}
                       </Label>
                     </Html>
                   )}
                 </mesh>
-              ),
-            )}
-            {people.map(({ role, x, z }) => (
-              <group key={`${role}-${x}-${z}`} position={[x, 0, z]}>
+              );
+            })}
+            {people.map(({ floor: personFloor, role, x, z }) => (
+              <group
+                key={`${personFloor}-${role}-${x}-${z}`}
+                position={[x, STORE_LAYOUT_FLOOR_BASE[personFloor], z]}
+              >
                 <Person color={STORE_LAYOUT_PERSON_COLORS[role]} />
               </group>
             ))}
-            <Avatar floor={floor} key={floor} />
+            <Avatar
+              controlsRef={controlsRef}
+              floor={floor}
+              follow={view === "follow"}
+              onFloorChange={setFloor}
+            />
             <OrbitControls
               ref={controlsRef}
               target={[...STORE_LAYOUT_VIEWS.iso.target]}

@@ -5,11 +5,12 @@
     "width": "너비 {value} m"
   },
   "empty": "이 조직의 매장 배치는 아직 작성되지 않았습니다.",
+  "export": "PNG 내보내기",
   "floors": {
     "ground": "1층",
     "upper": "2층"
   },
-  "gridScale": "격자 1 m",
+  "gridScale": "격자 1 m / 굵은 선 5 m",
   "itemSize": "{width} × {depth} × {height} cm",
   "items": {
     "blender": "블렌더",
@@ -37,9 +38,11 @@
   },
   "label": "매장 배치",
   "moveHint": "화면을 클릭한 뒤 방향키 또는 WASD로 캐릭터를 이동하고 스페이스바로 점프할 수 있습니다",
+  "repeatedSize": "{label} ×{count} · {size}",
   "showLabels": "이름과 크기 표시",
   "views": {
     "customer": "고객 시점",
+    "follow": "캐릭터 따라가기",
     "iso": "사선 시점",
     "staff": "직원 시점",
     "top": "위에서 보기"

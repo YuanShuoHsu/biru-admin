@@ -5,11 +5,12 @@
     "width": "寬 {value} m"
   },
   "empty": "此組織尚未建立店內配置。",
+  "export": "匯出 PNG",
   "floors": {
     "ground": "一樓",
     "upper": "二樓"
   },
-  "gridScale": "格線 1 m",
+  "gridScale": "格線 1 m／粗線 5 m",
   "itemSize": "{width} × {depth} × {height} cm",
   "items": {
     "blender": "果汁機",
@@ -37,9 +38,11 @@
   },
   "label": "店內配置",
   "moveHint": "點擊畫面後，可用方向鍵或 WASD 移動角色，空白鍵跳躍",
+  "repeatedSize": "{label} ×{count}　{size}",
   "showLabels": "顯示名稱與尺寸",
   "views": {
     "customer": "顧客視角",
+    "follow": "跟隨角色",
     "iso": "斜視",
     "staff": "工作人員視角",
     "top": "俯瞰"

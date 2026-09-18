@@ -5,11 +5,12 @@
     "width": "W {value} m"
   },
   "empty": "This organization has no store layout yet.",
+  "export": "Export PNG",
   "floors": {
     "ground": "1F",
     "upper": "2F"
   },
-  "gridScale": "Grid 1 m",
+  "gridScale": "Grid 1 m / bold 5 m",
   "itemSize": "{width} × {depth} × {height} cm",
   "items": {
     "blender": "Blender",
@@ -37,9 +38,11 @@
   },
   "label": "Store Layout",
   "moveHint": "Click the view, then move the character with the arrow keys or WASD and jump with the space bar",
+  "repeatedSize": "{label} ×{count} · {size}",
   "showLabels": "Show names and sizes",
   "views": {
     "customer": "Customer view",
+    "follow": "Follow avatar",
     "iso": "Isometric",
     "staff": "Staff view",
     "top": "Top view"
