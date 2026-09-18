@@ -9,6 +9,7 @@ import {
   STORE_LAYOUT_FLOOR_HEIGHT,
   STORE_LAYOUT_ITEMS,
   STORE_LAYOUT_KIND_COLORS,
+  STORE_LAYOUT_LOOK,
   STORE_LAYOUT_ROOM,
   STORE_LAYOUT_SLAB_PANELS,
   STORE_LAYOUT_SLAB_THICKNESS,
@@ -125,6 +126,8 @@ const MOVE_MAP: KeyboardControlsEntry<StoreLayoutMove>[] = [
 ];
 
 const REPEATED_AT_LEAST = 3;
+
+const { pitchLimit } = STORE_LAYOUT_LOOK;
 
 // 每個 prop 都要一直在；改成 ghost 時才展開的話，R3F 會把消失的 opacity 設成 0 而不是 1，實心那層整層看不見
 const ghostSurface = (ghost: boolean) => ({
@@ -569,6 +572,10 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
               view={view}
             />
             <OrbitControls
+              maxPolarAngle={
+                view === "first" ? Math.PI / 2 + pitchLimit : Math.PI
+              }
+              minPolarAngle={view === "first" ? Math.PI / 2 - pitchLimit : 0}
               ref={controlsRef}
               target={[...STORE_LAYOUT_VIEWS.iso.target]}
             />

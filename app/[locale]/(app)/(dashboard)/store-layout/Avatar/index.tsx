@@ -15,7 +15,7 @@ import {
 import { OrbitControls, useKeyboardControls } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 
-import { type Group, Vector3 } from "three";
+import { type Group, Spherical, Vector3 } from "three";
 
 import type {
   StoreLayoutFloor,
@@ -30,13 +30,12 @@ const heading = new Vector3();
 const eyePoint = new Vector3();
 const look = new Vector3();
 const followShift = new Vector3();
+const lookOffset = new Vector3();
+const lookSpherical = new Spherical();
 
 const { start } = STORE_LAYOUT_AVATAR;
 
-const { pitchLimit, speed: lookSpeed } = STORE_LAYOUT_LOOK;
-
-const clamp = (value: number, limit: number) =>
-  Math.min(Math.max(value, -limit), limit);
+const { speed: lookSpeed } = STORE_LAYOUT_LOOK;
 
 const { eye: firstEye, lookAhead } = STORE_LAYOUT_VIEWS.first;
 const { eye: followEye, offset } = STORE_LAYOUT_VIEWS.follow;
@@ -116,10 +115,27 @@ const Avatar = ({ controlsRef, floor, onFloorChange, view }: AvatarProps) => {
       onFloorChange(STORE_LAYOUT_FLOORS[floorIndex]);
     }
 
-    const controls =
-      view === "first" || view === "follow" ? controlsRef.current : null;
+    const controls = controlsRef.current;
 
-    if (!controls) {
+    // 要留在視角分支之前；跑在後面的話，第一人稱那幀的相機會停在轉開的位置而不是眼睛上
+    if (controls) {
+      const yaw = Number(move.lookLeft) - Number(move.lookRight);
+      const pitch = Number(move.lookUp) - Number(move.lookDown);
+
+      if (yaw || pitch) {
+        lookOffset.subVectors(controls.object.position, controls.target);
+        lookSpherical.setFromVector3(lookOffset);
+        lookSpherical.theta += yaw * lookSpeed * delta;
+        lookSpherical.phi += pitch * lookSpeed * delta;
+        lookSpherical.makeSafe();
+
+        controls.object.position
+          .copy(controls.target)
+          .add(lookOffset.setFromSpherical(lookSpherical));
+      }
+    }
+
+    if (!controls || (view !== "first" && view !== "follow")) {
       cameraViewRef.current = null;
       return;
     }
@@ -135,24 +151,6 @@ const Avatar = ({ controlsRef, floor, onFloorChange, view }: AvatarProps) => {
       if (entering) look.y = 0;
       if (look.lengthSq() < 1e-6) look.set(0, 0, -1);
       look.normalize();
-
-      const yaw = Number(move.lookLeft) - Number(move.lookRight);
-      const pitch = Number(move.lookUp) - Number(move.lookDown);
-
-      if (yaw || pitch) {
-        const nextYaw = Math.atan2(look.x, look.z) + yaw * lookSpeed * delta;
-        const nextPitch = clamp(
-          Math.asin(clamp(look.y, 1)) + pitch * lookSpeed * delta,
-          pitchLimit,
-        );
-        const horizontal = Math.cos(nextPitch);
-
-        look.set(
-          Math.sin(nextYaw) * horizontal,
-          Math.sin(nextPitch),
-          Math.cos(nextYaw) * horizontal,
-        );
-      }
 
       controls.object.position.copy(eyePoint);
       controls.target.copy(eyePoint).addScaledVector(look, lookAhead);

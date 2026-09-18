@@ -37,7 +37,7 @@
     "workCounter": "Bar work counter"
   },
   "label": "Store Layout",
-  "moveHint": "Click the view, then move the character with the arrow keys or WASD and jump with the space bar; in first person, IJKL turns the view",
+  "moveHint": "Click the view, then move the character with the arrow keys or WASD, jump with the space bar and turn the view with IJKL",
   "repeatedSize": "{label} ×{count} · {size}",
   "showLabels": "Show names and sizes",
   "views": {
