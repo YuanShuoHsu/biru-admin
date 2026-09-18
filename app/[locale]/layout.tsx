@@ -60,10 +60,13 @@ const RootLayout = async ({ children, params }: LayoutProps<"/[locale]">) => {
   setRequestLocale(locale);
 
   return (
-    <html data-scroll-behavior="smooth" lang={locale} suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      data-scroll-behavior="smooth"
+      lang={locale}
+      suppressHydrationWarning
+    >
+      <body className="min-h-full flex flex-col">
         <InitColorSchemeScript attribute="class" />
         <AppProviders>{children}</AppProviders>
       </body>
