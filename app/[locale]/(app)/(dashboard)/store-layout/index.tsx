@@ -68,16 +68,18 @@ import type {
 
 const Joystick = dynamic(() => import("./Joystick"), { ssr: false });
 
-const Toolbar = styled(Stack)({
-  alignItems: "center",
-  flexDirection: "row",
-  flexWrap: "wrap",
-});
+const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
+  backgroundColor: theme.vars.palette.background.paper,
+  transition: theme.transitions.create("background-color"),
+}));
 
 const StyledPaper = styled(Paper)({
   position: "relative",
   flex: 1,
   minHeight: 240,
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
 
   "&:fullscreen": {
     border: "none",
@@ -89,13 +91,6 @@ const OverlayButton = styled(IconButton)(({ theme }) => ({
   border: `1px solid ${theme.vars.palette.divider}`,
   color: theme.vars.palette.text.primary,
 }));
-
-const EmptyOverlay = styled("div")({
-  height: "100%",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-});
 
 const KeyboardHint = styled(Typography)({
   [STORE_LAYOUT_TOUCH_MEDIA]: {
@@ -283,8 +278,8 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
   return (
     <>
       {!empty && (
-        <Toolbar gap={2}>
-          <ToggleButtonGroup
+        <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
+          <StyledToggleButtonGroup
             exclusive
             onChange={handleFloorsChange}
             size="small"
@@ -295,8 +290,8 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                 {tStoreLayout(`floors.${value}`)}
               </ToggleButton>
             ))}
-          </ToggleButtonGroup>
-          <ToggleButtonGroup
+          </StyledToggleButtonGroup>
+          <StyledToggleButtonGroup
             exclusive
             onChange={handleViewChange}
             size="small"
@@ -307,7 +302,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                 {tStoreLayout(`views.${value}`)}
               </ToggleButton>
             ))}
-          </ToggleButtonGroup>
+          </StyledToggleButtonGroup>
           <FormControlLabel
             control={
               <Switch checked={showLabels} onChange={handleShowLabelsChange} />
@@ -320,7 +315,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
           <KeyboardHint color="text.secondary" variant="caption">
             {tStoreLayout("moveHint")}
           </KeyboardHint>
-        </Toolbar>
+        </Stack>
       )}
       <StyledPaper
         ref={setCanvasElement}
@@ -328,11 +323,9 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
         {...(!empty && { onKeyDown: handleKeyDown, tabIndex: 0 })}
       >
         {empty ? (
-          <EmptyOverlay>
-            <Typography color="text.secondary" variant="body2">
-              {tStoreLayout("empty")}
-            </Typography>
-          </EmptyOverlay>
+          <Typography color="text.secondary" variant="body2">
+            {tStoreLayout("empty")}
+          </Typography>
         ) : (
           <>
             <KeyboardControls

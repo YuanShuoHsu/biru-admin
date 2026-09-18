@@ -62,7 +62,6 @@ const build = (text: string, note: string, plain: boolean) => {
   canvas.width = Math.ceil(textWidth + noteWidth + padding * 2);
   canvas.height = Math.ceil(FONT_SIZE * LINE_HEIGHT * SUPERSAMPLE);
 
-  // 改過尺寸的 canvas 會清空並重設繪圖狀態，字型要在這之後再給一次
   ctx.font = font;
   ctx.textBaseline = "middle";
 
@@ -132,7 +131,6 @@ const SpriteLabel = ({
 
   if (!label) return null;
 
-  // sizeAttenuation 關閉後 sprite 的 scale 是視角空間量，換算成固定像素高度才不會隨距離縮放
   const perPixel =
     (2 * Math.tan((STORE_LAYOUT_FOV * Math.PI) / 360)) / viewportHeight;
 
