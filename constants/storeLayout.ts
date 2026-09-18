@@ -876,8 +876,8 @@ export const STORE_LAYOUT_ITEMS = [
 ] as const;
 
 export const STORE_LAYOUT_VIEWS = {
-  first: { eye: 1.55, lookAhead: 1 },
-  follow: { eye: 1.55, offset: [0, 1.2, 3.2] },
+  first: { lookAhead: 1 },
+  follow: {},
   iso: {
     position: [STORE_LAYOUT_ROOM.width + 9, 14, STORE_LAYOUT_ROOM.depth + 10],
     target: [STORE_LAYOUT_ROOM.width / 2, 1, STORE_LAYOUT_ROOM.depth / 2],
@@ -911,14 +911,35 @@ export const STORE_LAYOUT_LOOK = {
 } as const;
 
 export const STORE_LAYOUT_AVATAR = {
-  color: deepOrange[600],
   gravity: 9.8,
   jumpSpeed: 3.2,
   radius: 0.25,
-  skin: brown[200],
   speed: 1.4,
   start: { x: STORE_LAYOUT_ROOM.width / 2, z: 20 },
 } as const;
+
+export const STORE_LAYOUT_CHARACTERS = {
+  person: {
+    color: deepOrange[600],
+    eye: 1.55,
+    followOffset: [0, 1.2, 3.2],
+    skin: brown[200],
+  },
+  cat: {
+    belly: grey[50],
+    eye: 0.4,
+    followOffset: [0, 1.1, 2.6],
+    fur: deepOrange[400],
+    iris: green[800],
+    nose: brown[300],
+    stripe: deepOrange[800],
+  },
+} as const;
+
+export const STORE_LAYOUT_CHARACTER_ORDER = [
+  "person",
+  "cat",
+] as const satisfies readonly (keyof typeof STORE_LAYOUT_CHARACTERS)[];
 
 export const STORE_LAYOUT_FLOOR_HEIGHT = 3.05;
 

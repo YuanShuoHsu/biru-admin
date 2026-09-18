@@ -4,6 +4,7 @@ import { type ComponentRef, type RefObject, useEffect, useRef } from "react";
 
 import {
   STORE_LAYOUT_AVATAR,
+  STORE_LAYOUT_CHARACTERS,
   STORE_LAYOUT_FLOORS,
   STORE_LAYOUT_FLOOR_BASE,
   STORE_LAYOUT_FLOOR_ENTRY,
@@ -17,12 +18,14 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { type Group, Spherical, Vector3 } from "three";
 
 import type {
+  StoreLayoutCharacter,
   StoreLayoutFloor,
   StoreLayoutMove,
   StoreLayoutTouchInput,
   StoreLayoutView,
 } from "@/types/storeLayout";
 
+import Cat from "../Cat";
 import Person from "../Person";
 import {
   type AvatarState,
@@ -37,8 +40,9 @@ const look = new Vector3();
 const followShift = new Vector3();
 const lookOffset = new Vector3();
 const lookSpherical = new Spherical();
+const followOffset = new Vector3();
 
-const { color, skin, start } = STORE_LAYOUT_AVATAR;
+const { start } = STORE_LAYOUT_AVATAR;
 
 const STRIDE_LENGTH = 0.75;
 
@@ -48,14 +52,12 @@ const TURN_SPEED = 12;
 
 const { speed: lookSpeed } = STORE_LAYOUT_LOOK;
 
-const { eye: firstEye, lookAhead } = STORE_LAYOUT_VIEWS.first;
-const { eye: followEye, offset } = STORE_LAYOUT_VIEWS.follow;
-
-const FOLLOW_OFFSET = new Vector3(...offset);
+const { lookAhead } = STORE_LAYOUT_VIEWS.first;
 
 const START_POSITION: [number, number, number] = [start.x, 0, start.z];
 
 interface AvatarProps {
+  character: StoreLayoutCharacter;
   controlsRef: RefObject<ComponentRef<typeof OrbitControls> | null>;
   floor: StoreLayoutFloor;
   onFloorChange: (floor: StoreLayoutFloor) => void;
@@ -65,6 +67,7 @@ interface AvatarProps {
 }
 
 const Avatar = ({
+  character,
   controlsRef,
   floor,
   onFloorChange,
@@ -81,13 +84,15 @@ const Avatar = ({
   const swingRef = useRef(0);
   const floorIndexRef = useRef(0);
   const stairsRef = useRef(false);
-  const cameraViewRef = useRef<StoreLayoutView | null>(null);
+  const cameraModeRef = useRef<string | null>(null);
   const stateRef = useRef<AvatarState>({
     verticalSpeed: 0,
     x: start.x,
     y: 0,
     z: start.z,
   });
+  const { eye, followOffset: characterOffset } =
+    STORE_LAYOUT_CHARACTERS[character];
   const camera = useThree((state) => state.camera);
   const [, getMove] = useKeyboardControls<StoreLayoutMove>();
 
@@ -194,13 +199,14 @@ const Avatar = ({
 
     if (!controls) return;
 
-    if (view !== "first" && view !== "follow") cameraViewRef.current = null;
+    if (view !== "first" && view !== "follow") cameraModeRef.current = null;
     else {
-      const entering = cameraViewRef.current !== view;
-      cameraViewRef.current = view;
+      const mode = `${view}:${character}`;
+      const entering = cameraModeRef.current !== mode;
+      cameraModeRef.current = mode;
 
       if (view === "first") {
-        eyePoint.set(state.x, state.y + firstEye, state.z);
+        eyePoint.set(state.x, state.y + eye, state.z);
 
         // 注視點擺在眼前 lookAhead 處，拖曳就是繞著它轉，等同第一人稱的轉頭
         look.subVectors(controls.target, controls.object.position);
@@ -211,10 +217,12 @@ const Avatar = ({
         controls.object.position.copy(eyePoint);
         controls.target.copy(eyePoint).addScaledVector(look, lookAhead);
       } else {
-        eyePoint.set(state.x, state.y + followEye, state.z);
+        eyePoint.set(state.x, state.y + eye, state.z);
 
         if (entering)
-          controls.object.position.copy(eyePoint).add(FOLLOW_OFFSET);
+          controls.object.position
+            .copy(eyePoint)
+            .add(followOffset.fromArray(characterOffset));
         // 相機與注視點位移同一個量，軌道半徑與角度才不會被覆寫，使用者轉過的視角得以保留
         else
           controls.object.position.add(
@@ -231,9 +239,12 @@ const Avatar = ({
 
   return (
     <group position={START_POSITION} ref={groupRef}>
-      {view !== "first" && (
-        <Person color={color} skin={skin} swingRef={swingRef} />
-      )}
+      {view !== "first" &&
+        (character === "cat" ? (
+          <Cat swingRef={swingRef} />
+        ) : (
+          <Person swingRef={swingRef} />
+        ))}
     </group>
   );
 };

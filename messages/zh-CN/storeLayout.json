@@ -1,4 +1,8 @@
 {
+  "characters": {
+    "cat": "猫",
+    "person": "人"
+  },
   "dimensions": {
     "depth": "深 {value} m",
     "height": "高 {value} m",

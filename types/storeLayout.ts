@@ -1,9 +1,12 @@
 import {
+  STORE_LAYOUT_CHARACTERS,
   STORE_LAYOUT_FLOORS,
   STORE_LAYOUT_FLOOR_FILTERS,
   STORE_LAYOUT_ITEMS,
   STORE_LAYOUT_VIEWS,
 } from "@/constants/storeLayout";
+
+export type StoreLayoutCharacter = keyof typeof STORE_LAYOUT_CHARACTERS;
 
 export type StoreLayoutFloor = (typeof STORE_LAYOUT_FLOORS)[number];
 

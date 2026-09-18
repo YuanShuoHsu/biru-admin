@@ -2,6 +2,8 @@
 
 import { type RefObject, useRef } from "react";
 
+import { STORE_LAYOUT_CHARACTERS } from "@/constants/storeLayout";
+
 import { useFrame } from "@react-three/fiber";
 
 import type { Group } from "three";
@@ -10,13 +12,13 @@ const ARM_SWING = 0.7;
 
 const LEG_SWING = 0.85;
 
+const { color, skin } = STORE_LAYOUT_CHARACTERS.person;
+
 interface PersonProps {
-  color: string;
-  skin: string;
   swingRef: RefObject<number>;
 }
 
-const Person = ({ color, skin, swingRef }: PersonProps) => {
+const Person = ({ swingRef }: PersonProps) => {
   const leftArmRef = useRef<Group>(null);
   const leftLegRef = useRef<Group>(null);
   const rightArmRef = useRef<Group>(null);

@@ -14,6 +14,7 @@ import Avatar from "./Avatar";
 import SpriteLabel from "./SpriteLabel";
 
 import {
+  STORE_LAYOUT_CHARACTER_ORDER,
   STORE_LAYOUT_FLOORS,
   STORE_LAYOUT_FLOOR_BASE,
   STORE_LAYOUT_FLOOR_FILTERS,
@@ -59,6 +60,7 @@ import {
 import { Canvas, type RootState } from "@react-three/fiber";
 
 import type {
+  StoreLayoutCharacter,
   StoreLayoutFloor,
   StoreLayoutFloorFilter,
   StoreLayoutMove,
@@ -191,6 +193,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
     () => false,
   );
 
+  const [character, setCharacter] = useState<StoreLayoutCharacter>("person");
   const [floor, setFloor] = useState<StoreLayoutFloor>("ground");
   const [floors, setFloors] = useState<StoreLayoutFloorFilter>("ground");
   const [stairs, setStairs] = useState(false);
@@ -242,6 +245,13 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
 
     applyView(value, floor);
     setView(value);
+  };
+
+  const handleCharacterChange = (
+    _event: React.MouseEvent<HTMLElement>,
+    value: StoreLayoutCharacter | null,
+  ) => {
+    if (value) setCharacter(value);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
@@ -301,6 +311,18 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
             {STORE_LAYOUT_VIEW_ORDER.map((value) => (
               <ToggleButton key={value} value={value}>
                 {tStoreLayout(`views.${value}`)}
+              </ToggleButton>
+            ))}
+          </StyledToggleButtonGroup>
+          <StyledToggleButtonGroup
+            exclusive
+            onChange={handleCharacterChange}
+            size="small"
+            value={character}
+          >
+            {STORE_LAYOUT_CHARACTER_ORDER.map((value) => (
+              <ToggleButton key={value} value={value}>
+                {tStoreLayout(`characters.${value}`)}
               </ToggleButton>
             ))}
           </StyledToggleButtonGroup>
@@ -550,6 +572,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                   );
                 })}
                 <Avatar
+                  character={character}
                   controlsRef={controlsRef}
                   floor={floor}
                   onFloorChange={showFloor}

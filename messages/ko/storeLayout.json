@@ -1,4 +1,8 @@
 {
+  "characters": {
+    "cat": "고양이",
+    "person": "사람"
+  },
   "dimensions": {
     "depth": "깊이 {value} m",
     "height": "높이 {value} m",
