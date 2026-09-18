@@ -85,17 +85,8 @@ const StyledPaper = styled(Paper)({
   },
 });
 
-const OverlayButtons = styled(Stack)({
-  position: "absolute",
-  right: 12,
-  bottom: 12,
-  flexDirection: "row",
-  gap: 8,
-});
-
 const OverlayButton = styled(IconButton)(({ theme }) => ({
   border: `1px solid ${theme.vars.palette.divider}`,
-  backgroundColor: `rgba(${theme.vars.palette.background.paperChannel} / 0.55)`,
   color: theme.vars.palette.text.primary,
 }));
 
@@ -582,7 +573,13 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
               </Canvas>
             </KeyboardControls>
             <Joystick inputRef={touchRef} />
-            <OverlayButtons>
+            <Stack
+              position="absolute"
+              bottom={12}
+              right={12}
+              flexDirection="row"
+              gap={1}
+            >
               <OverlayButton
                 aria-label={tStoreLayout("export")}
                 onClick={handleExport}
@@ -605,7 +602,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                   )}
                 </OverlayButton>
               )}
-            </OverlayButtons>
+            </Stack>
           </>
         )}
       </StyledPaper>
