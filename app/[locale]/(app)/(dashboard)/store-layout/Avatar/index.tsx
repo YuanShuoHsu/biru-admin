@@ -8,6 +8,7 @@ import {
   STORE_LAYOUT_FLOOR_BASE,
   STORE_LAYOUT_FLOOR_ENTRY,
   STORE_LAYOUT_FLOOR_HEIGHT,
+  STORE_LAYOUT_LOOK,
   STORE_LAYOUT_VIEWS,
 } from "@/constants/storeLayout";
 
@@ -31,6 +32,11 @@ const look = new Vector3();
 const followShift = new Vector3();
 
 const { start } = STORE_LAYOUT_AVATAR;
+
+const { pitchLimit, speed: lookSpeed } = STORE_LAYOUT_LOOK;
+
+const clamp = (value: number, limit: number) =>
+  Math.min(Math.max(value, -limit), limit);
 
 const { eye: firstEye, lookAhead } = STORE_LAYOUT_VIEWS.first;
 const { eye: followEye, offset } = STORE_LAYOUT_VIEWS.follow;
@@ -128,11 +134,28 @@ const Avatar = ({ controlsRef, floor, onFloorChange, view }: AvatarProps) => {
       look.subVectors(controls.target, controls.object.position);
       if (entering) look.y = 0;
       if (look.lengthSq() < 1e-6) look.set(0, 0, -1);
+      look.normalize();
+
+      const yaw = Number(move.lookLeft) - Number(move.lookRight);
+      const pitch = Number(move.lookUp) - Number(move.lookDown);
+
+      if (yaw || pitch) {
+        const nextYaw = Math.atan2(look.x, look.z) + yaw * lookSpeed * delta;
+        const nextPitch = clamp(
+          Math.asin(clamp(look.y, 1)) + pitch * lookSpeed * delta,
+          pitchLimit,
+        );
+        const horizontal = Math.cos(nextPitch);
+
+        look.set(
+          Math.sin(nextYaw) * horizontal,
+          Math.sin(nextPitch),
+          Math.cos(nextYaw) * horizontal,
+        );
+      }
 
       controls.object.position.copy(eyePoint);
-      controls.target
-        .copy(eyePoint)
-        .addScaledVector(look.normalize(), lookAhead);
+      controls.target.copy(eyePoint).addScaledVector(look, lookAhead);
 
       return;
     }

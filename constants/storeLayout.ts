@@ -894,6 +894,11 @@ export const STORE_LAYOUT_VIEW_ORDER = [
   "first",
 ] as const satisfies readonly (keyof typeof STORE_LAYOUT_VIEWS)[];
 
+export const STORE_LAYOUT_LOOK = {
+  pitchLimit: (Math.PI / 180) * 80,
+  speed: 1.6,
+} as const;
+
 export const STORE_LAYOUT_AVATAR = {
   color: deepOrange[600],
   gravity: 9.8,

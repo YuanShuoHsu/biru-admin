@@ -15,4 +15,8 @@ export type StoreLayoutMove =
   | "forward"
   | "jump"
   | "left"
+  | "lookDown"
+  | "lookLeft"
+  | "lookRight"
+  | "lookUp"
   | "right";

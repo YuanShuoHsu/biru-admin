@@ -37,7 +37,7 @@
     "workCounter": "吧台工作台"
   },
   "label": "店内布局",
-  "moveHint": "点击画面后，可用方向键或 WASD 移动角色，空格键跳跃",
+  "moveHint": "点击画面后，可用方向键或 WASD 移动角色，空格键跳跃；角色视角下 IJKL 可转动视角",
   "repeatedSize": "{label} ×{count}　{size}",
   "showLabels": "显示名称与尺寸",
   "views": {

@@ -66,15 +66,18 @@ const Toolbar = styled(Stack)({
   flexWrap: "wrap",
 });
 
+// md 以下外層沒有鎖 100dvh，畫布要自己給確定高度：只靠 flex 與 minHeight 的話計算值仍是 auto，Canvas 內層的 height: 100% 沒有基準可解析
 const CanvasContainer = styled("div")(({ theme }) => ({
-  flex: 1,
-  minHeight: 480,
+  flex: "none",
+  height: "70dvh",
   overflow: "hidden",
   border: `1px solid ${theme.vars.palette.divider}`,
   borderRadius: theme.shape.borderRadius,
 
   [theme.breakpoints.up("md")]: {
-    minHeight: 0,
+    flex: 1,
+    height: "auto",
+    minHeight: 240,
   },
 }));
 
@@ -115,6 +118,10 @@ const MOVE_MAP: KeyboardControlsEntry<StoreLayoutMove>[] = [
   { keys: ["ArrowLeft", "KeyA"], name: "left" },
   { keys: ["ArrowRight", "KeyD"], name: "right" },
   { keys: ["Space"], name: "jump" },
+  { keys: ["KeyI"], name: "lookUp" },
+  { keys: ["KeyK"], name: "lookDown" },
+  { keys: ["KeyJ"], name: "lookLeft" },
+  { keys: ["KeyL"], name: "lookRight" },
 ];
 
 const REPEATED_AT_LEAST = 3;
