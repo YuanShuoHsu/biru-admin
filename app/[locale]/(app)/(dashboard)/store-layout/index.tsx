@@ -17,6 +17,7 @@ import {
   STORE_LAYOUT_STAIRWELL,
   STORE_LAYOUT_STAIR_STEPS,
   STORE_LAYOUT_VIEWS,
+  STORE_LAYOUT_VIEW_ORDER,
   STORE_LAYOUT_WALLS,
 } from "@/constants/storeLayout";
 
@@ -219,14 +220,18 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
     controls.update();
   };
 
+  const showFloor = (value: StoreLayoutFloor) => {
+    setFloor(value);
+    applyView(view, value);
+  };
+
   const handleFloorChange = (
     _event: React.MouseEvent<HTMLElement>,
     value: StoreLayoutFloor | null,
   ) => {
     if (!value) return;
 
-    setFloor(value);
-    applyView(view, value);
+    showFloor(value);
   };
 
   const handleViewChange = (
@@ -300,13 +305,11 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
           size="small"
           value={view}
         >
-          {(Object.keys(STORE_LAYOUT_VIEWS) as StoreLayoutView[]).map(
-            (value) => (
-              <ToggleButton key={value} value={value}>
-                {tStoreLayout(`views.${value}`)}
-              </ToggleButton>
-            ),
-          )}
+          {STORE_LAYOUT_VIEW_ORDER.map((value) => (
+            <ToggleButton key={value} value={value}>
+              {tStoreLayout(`views.${value}`)}
+            </ToggleButton>
+          ))}
         </ToggleButtonGroup>
         <FormControlLabel
           control={
@@ -534,7 +537,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
             <Avatar
               controlsRef={controlsRef}
               floor={floor}
-              onFloorChange={setFloor}
+              onFloorChange={showFloor}
               view={view}
             />
             <OrbitControls
