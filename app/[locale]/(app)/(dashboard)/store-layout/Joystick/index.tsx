@@ -17,7 +17,8 @@ import {
 import type { StoreLayoutTouchInput } from "@/types/storeLayout";
 
 const STICK_RADIUS = 50;
-const STICK_INSET = 100;
+const STICK_SIDE_INSET = 100;
+const STICK_BOTTOM_INSET = 128;
 const EDGE_GAP = 16;
 
 const subscribeTouch = (onChange: () => void) => {
@@ -28,9 +29,15 @@ const subscribeTouch = (onChange: () => void) => {
   return () => query.removeEventListener("change", onChange);
 };
 
-const MOVE_POSITION = { bottom: `${STICK_INSET}px`, left: `${STICK_INSET}px` };
+const MOVE_POSITION = {
+  bottom: `${STICK_BOTTOM_INSET}px`,
+  left: `${STICK_SIDE_INSET}px`,
+};
 
-const LOOK_POSITION = { bottom: `${STICK_INSET}px`, right: `${STICK_INSET}px` };
+const LOOK_POSITION = {
+  bottom: `${STICK_BOTTOM_INSET}px`,
+  right: `${STICK_SIDE_INSET}px`,
+};
 
 const Zone = styled(Box)({
   position: "absolute",
@@ -51,7 +58,7 @@ const LookZone = styled(Zone)({ left: "50%" });
 const Jump = styled(IconButton)(({ theme }) => ({
   position: "absolute",
   right: EDGE_GAP,
-  bottom: STICK_INSET + STICK_RADIUS + EDGE_GAP,
+  bottom: STICK_BOTTOM_INSET + STICK_RADIUS + EDGE_GAP,
   border: `1px solid ${theme.vars.palette.divider}`,
   color: theme.vars.palette.text.primary,
   display: "none",
