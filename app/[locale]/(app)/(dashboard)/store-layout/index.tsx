@@ -52,10 +52,12 @@ import type {
   StoreLayoutFloor,
   StoreLayoutFloorFilter,
   StoreLayoutMove,
+  StoreLayoutTouchInput,
   StoreLayoutView,
 } from "@/types/storeLayout";
 
 import Avatar from "./Avatar";
+import Joystick from "./Joystick";
 import SpriteLabel from "./SpriteLabel";
 
 const StyledStack = styled(Stack)({
@@ -72,6 +74,7 @@ const Toolbar = styled(Stack)({
 // md 以下外層沒有鎖 100dvh，畫布要自己給確定高度：只靠 flex 與 minHeight 的話計算值仍是 auto，Canvas 內層的 height: 100% 沒有基準可解析
 const CanvasContainer = styled("div")(({ theme }) => ({
   flex: "none",
+  position: "relative",
   height: "70dvh",
   overflow: "hidden",
   border: `1px solid ${theme.vars.palette.divider}`,
@@ -155,6 +158,11 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
 
   const controlsRef = useRef<ComponentRef<typeof OrbitControls>>(null);
   const rootStateRef = useRef<RootState>(null);
+  const touchRef = useRef<StoreLayoutTouchInput>({
+    jump: false,
+    sideways: 0,
+    towards: 0,
+  });
 
   const [canvasElement, setCanvasElement] = useState<HTMLDivElement | null>(
     null,
@@ -501,6 +509,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
               controlsRef={controlsRef}
               floor={floor}
               onFloorChange={showFloor}
+              touchRef={touchRef}
               view={view}
             />
             <OrbitControls
@@ -513,6 +522,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
             />
           </Canvas>
         </KeyboardControls>
+        <Joystick inputRef={touchRef} />
       </CanvasContainer>
     </StyledStack>
   );

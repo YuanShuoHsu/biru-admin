@@ -121,7 +121,7 @@ export const advanceAvatar = (
     const stepX = forwardX * towards - forwardZ * sideways;
     const stepZ = forwardZ * towards + forwardX * sideways;
     const length = Math.hypot(stepX, stepZ) || 1;
-    const scale = (speed * delta) / length;
+    const scale = (speed * delta * Math.min(1, length)) / length;
 
     const nextX = clampToRoom(state.x + stepX * scale, STORE_LAYOUT_ROOM.width);
     const nextZ = clampToRoom(state.z + stepZ * scale, STORE_LAYOUT_ROOM.depth);

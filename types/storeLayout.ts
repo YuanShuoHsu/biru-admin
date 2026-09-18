@@ -14,6 +14,12 @@ export type StoreLayoutItem = (typeof STORE_LAYOUT_ITEMS)[number];
 
 export type StoreLayoutView = keyof typeof STORE_LAYOUT_VIEWS;
 
+export interface StoreLayoutTouchInput {
+  jump: boolean;
+  sideways: number;
+  towards: number;
+}
+
 export type StoreLayoutMove =
   | "backward"
   | "forward"

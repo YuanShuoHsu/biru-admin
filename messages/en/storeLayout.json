@@ -40,6 +40,10 @@
   "label": "Store Layout",
   "moveHint": "Click the view, then move the character with the arrow keys or WASD, jump with the space bar and turn the view with IJKL",
   "showLabels": "Show names and sizes",
+  "touchControls": {
+    "move": "Move the character",
+    "jump": "Jump"
+  },
   "views": {
     "first": "First person",
     "follow": "Follow avatar",

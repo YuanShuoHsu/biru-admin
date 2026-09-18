@@ -20,6 +20,7 @@ import { type Group, Spherical, Vector3 } from "three";
 import type {
   StoreLayoutFloor,
   StoreLayoutMove,
+  StoreLayoutTouchInput,
   StoreLayoutView,
 } from "@/types/storeLayout";
 
@@ -48,10 +49,17 @@ interface AvatarProps {
   controlsRef: RefObject<ComponentRef<typeof OrbitControls> | null>;
   floor: StoreLayoutFloor;
   onFloorChange: (floor: StoreLayoutFloor) => void;
+  touchRef: RefObject<StoreLayoutTouchInput>;
   view: StoreLayoutView;
 }
 
-const Avatar = ({ controlsRef, floor, onFloorChange, view }: AvatarProps) => {
+const Avatar = ({
+  controlsRef,
+  floor,
+  onFloorChange,
+  touchRef,
+  view,
+}: AvatarProps) => {
   const groupRef = useRef<Group>(null);
   const floorIndexRef = useRef(0);
   const cameraViewRef = useRef<StoreLayoutView | null>(null);
@@ -94,14 +102,16 @@ const Avatar = ({ controlsRef, floor, onFloorChange, view }: AvatarProps) => {
 
     const state = stateRef.current;
 
+    const touch = touchRef.current;
+
     advanceAvatar(
       state,
       {
         forwardX: heading.x,
         forwardZ: heading.z,
-        jump: move.jump,
-        sideways: Number(move.right) - Number(move.left),
-        towards: Number(move.forward) - Number(move.backward),
+        jump: move.jump || touch.jump,
+        sideways: Number(move.right) - Number(move.left) + touch.sideways,
+        towards: Number(move.forward) - Number(move.backward) + touch.towards,
       },
       delta,
     );
@@ -117,7 +127,6 @@ const Avatar = ({ controlsRef, floor, onFloorChange, view }: AvatarProps) => {
 
     const controls = controlsRef.current;
 
-    // 要留在視角分支之前；跑在後面的話，第一人稱那幀的相機會停在轉開的位置而不是眼睛上
     if (controls) {
       const yaw = Number(move.lookLeft) - Number(move.lookRight);
       const pitch = Number(move.lookUp) - Number(move.lookDown);
