@@ -38,7 +38,6 @@
   },
   "label": "Store Layout",
   "moveHint": "Click the view, then move the character with the arrow keys or WASD, jump with the space bar and turn the view with IJKL",
-  "repeatedSize": "{label} ×{count} · {size}",
   "showLabels": "Show names and sizes",
   "views": {
     "first": "First person",

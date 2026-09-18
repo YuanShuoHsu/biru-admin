@@ -38,7 +38,6 @@
   },
   "label": "店內配置",
   "moveHint": "點擊畫面後，可用方向鍵或 WASD 移動角色，空白鍵跳躍，IJKL 轉動視角",
-  "repeatedSize": "{label} ×{count}　{size}",
   "showLabels": "顯示名稱與尺寸",
   "views": {
     "first": "角色視角",

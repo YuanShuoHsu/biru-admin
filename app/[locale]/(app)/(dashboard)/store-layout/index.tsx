@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { type ComponentRef, useMemo, useRef, useState } from "react";
+import { type ComponentRef, useRef, useState } from "react";
 
 import {
   STORE_LAYOUT_FLOORS,
@@ -49,7 +49,6 @@ import { DoubleSide } from "three";
 
 import type {
   StoreLayoutFloor,
-  StoreLayoutItem,
   StoreLayoutMove,
   StoreLayoutView,
 } from "@/types/storeLayout";
@@ -125,8 +124,6 @@ const MOVE_MAP: KeyboardControlsEntry<StoreLayoutMove>[] = [
   { keys: ["KeyL"], name: "lookRight" },
 ];
 
-const REPEATED_AT_LEAST = 3;
-
 const { pitchLimit } = STORE_LAYOUT_LOOK;
 
 // 每個 prop 都要一直在；改成 ghost 時才展開的話，R3F 會把消失的 opacity 設成 0 而不是 1，實心那層整層看不見
@@ -141,9 +138,6 @@ const ghostEdge = (ghost: boolean) => ({
   opacity: ghost ? 0.4 : 1,
   transparent: ghost,
 });
-
-const sizeKey = ({ depth, height, label, width }: StoreLayoutItem) =>
-  `${label}|${width}x${depth}x${height}`;
 
 const toCentimeters = (value: number) => Math.round(value * 1000) / 10;
 
@@ -189,32 +183,6 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
   const [floor, setFloor] = useState<StoreLayoutFloor>("ground");
   const [showLabels, setShowLabels] = useState(true);
   const [view, setView] = useState<StoreLayoutView>("iso");
-
-  const floorItems = useMemo(
-    () => STORE_LAYOUT_ITEMS.filter((item) => item.floor === floor),
-    [floor],
-  );
-
-  const repeatedGroups = useMemo(() => {
-    const groups = new Map<string, StoreLayoutItem & { count: number }>();
-
-    for (const item of floorItems) {
-      const key = sizeKey(item);
-      const group = groups.get(key);
-
-      if (group) group.count += 1;
-      else groups.set(key, { ...item, count: 1 });
-    }
-
-    return [...groups.values()].filter(
-      ({ count }) => count >= REPEATED_AT_LEAST,
-    );
-  }, [floorItems]);
-
-  const repeatedKeys = useMemo(
-    () => new Set(repeatedGroups.map(sizeKey)),
-    [repeatedGroups],
-  );
 
   const applyView = (
     nextView: StoreLayoutView,
@@ -333,23 +301,6 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
         <Typography color="text.secondary" variant="caption">
           {tStoreLayout("gridScale")}
         </Typography>
-        {repeatedGroups.map((group) => (
-          <Typography
-            color="text.secondary"
-            key={sizeKey(group)}
-            variant="caption"
-          >
-            {tStoreLayout("repeatedSize", {
-              count: group.count,
-              label: tStoreLayout(`items.${group.label}`),
-              size: tStoreLayout("itemSize", {
-                depth: toCentimeters(group.depth),
-                height: toCentimeters(group.height),
-                width: toCentimeters(group.width),
-              }),
-            })}
-          </Typography>
-        ))}
         <Typography color="text.secondary" variant="caption">
           {tStoreLayout("moveHint")}
         </Typography>
@@ -550,15 +501,13 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                     >
                       <Label>
                         {tStoreLayout(`items.${label}`)}
-                        {!repeatedKeys.has(sizeKey(item)) && (
-                          <Size>
-                            {tStoreLayout("itemSize", {
-                              depth: toCentimeters(depth),
-                              height: toCentimeters(height),
-                              width: toCentimeters(width),
-                            })}
-                          </Size>
-                        )}
+                        <Size>
+                          {tStoreLayout("itemSize", {
+                            depth: toCentimeters(depth),
+                            height: toCentimeters(height),
+                            width: toCentimeters(width),
+                          })}
+                        </Size>
                       </Label>
                     </Html>
                   )}

@@ -135,39 +135,41 @@ const Avatar = ({ controlsRef, floor, onFloorChange, view }: AvatarProps) => {
       }
     }
 
-    if (!controls || (view !== "first" && view !== "follow")) {
-      cameraViewRef.current = null;
-      return;
+    if (!controls) return;
+
+    if (view !== "first" && view !== "follow") cameraViewRef.current = null;
+    else {
+      const entering = cameraViewRef.current !== view;
+      cameraViewRef.current = view;
+
+      if (view === "first") {
+        eyePoint.set(state.x, state.y + firstEye, state.z);
+
+        // 注視點擺在眼前 lookAhead 處，拖曳就是繞著它轉，等同第一人稱的轉頭
+        look.subVectors(controls.target, controls.object.position);
+        if (entering) look.y = 0;
+        if (look.lengthSq() < 1e-6) look.set(0, 0, -1);
+        look.normalize();
+
+        controls.object.position.copy(eyePoint);
+        controls.target.copy(eyePoint).addScaledVector(look, lookAhead);
+      } else {
+        eyePoint.set(state.x, state.y + followEye, state.z);
+
+        if (entering)
+          controls.object.position.copy(eyePoint).add(FOLLOW_OFFSET);
+        // 相機與注視點位移同一個量，軌道半徑與角度才不會被覆寫，使用者轉過的視角得以保留
+        else
+          controls.object.position.add(
+            followShift.subVectors(eyePoint, controls.target),
+          );
+
+        controls.target.copy(eyePoint);
+      }
     }
 
-    const entering = cameraViewRef.current !== view;
-    cameraViewRef.current = view;
-
-    if (view === "first") {
-      eyePoint.set(state.x, state.y + firstEye, state.z);
-
-      // 注視點擺在眼前 lookAhead 處，拖曳就是繞著它轉，等同第一人稱的轉頭
-      look.subVectors(controls.target, controls.object.position);
-      if (entering) look.y = 0;
-      if (look.lengthSq() < 1e-6) look.set(0, 0, -1);
-      look.normalize();
-
-      controls.object.position.copy(eyePoint);
-      controls.target.copy(eyePoint).addScaledVector(look, lookAhead);
-
-      return;
-    }
-
-    eyePoint.set(state.x, state.y + followEye, state.z);
-
-    if (entering) controls.object.position.copy(eyePoint).add(FOLLOW_OFFSET);
-    // 相機與注視點位移同一個量，軌道半徑與角度才不會被覆寫，使用者轉過的視角得以保留
-    else
-      controls.object.position.add(
-        followShift.subVectors(eyePoint, controls.target),
-      );
-
-    controls.target.copy(eyePoint);
+    // OrbitControls 的 update() 跑在這之前，不補這一下的話這幀會用上一幀的朝向算出畫面
+    controls.object.lookAt(controls.target);
   });
 
   return (
