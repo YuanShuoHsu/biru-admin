@@ -49,8 +49,8 @@
   },
   "label": "店内レイアウト",
   "moveHint": "画面をクリックすると、矢印キーまたは WASD でキャラクターを移動、スペースキーでジャンプ、IJKL で視線を動かせます",
-  "showDimensions": "サイズを表示",
-  "showLabels": "名称を表示",
+  "showDimensions": "サイズ",
+  "showLabels": "名称",
   "touchControls": {
     "jump": "ジャンプ",
     "look": "視点を回す",

@@ -49,8 +49,8 @@
   },
   "label": "Store Layout",
   "moveHint": "Click the view, then move the character with the arrow keys or WASD, jump with the space bar and turn the view with IJKL",
-  "showDimensions": "Show sizes",
-  "showLabels": "Show names",
+  "showDimensions": "Sizes",
+  "showLabels": "Names",
   "touchControls": {
     "jump": "Jump",
     "look": "Turn the view",

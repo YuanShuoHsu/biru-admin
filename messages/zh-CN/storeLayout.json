@@ -49,8 +49,8 @@
   },
   "label": "店内布局",
   "moveHint": "点击画面后，可用方向键或 WASD 移动角色，空格键跳跃，IJKL 转动视角",
-  "showDimensions": "显示尺寸",
-  "showLabels": "显示名称",
+  "showDimensions": "尺寸",
+  "showLabels": "名称",
   "touchControls": {
     "jump": "跳跃",
     "look": "转动视角摇杆",
