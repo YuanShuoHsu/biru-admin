@@ -17,6 +17,10 @@
     "upper": "二楼"
   },
   "fullscreen": "全屏",
+  "gridLegend": {
+    "cell": "1 m",
+    "section": "5 m"
+  },
   "gridScale": "网格 1 m／粗线 5 m",
   "itemDimensions": {
     "depth": "深 {value} cm",

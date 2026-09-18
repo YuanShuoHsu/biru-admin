@@ -53,7 +53,6 @@ const Jump = styled(IconButton)(({ theme }) => ({
   right: EDGE_GAP,
   bottom: STICK_INSET + STICK_RADIUS + EDGE_GAP,
   border: `1px solid ${theme.vars.palette.divider}`,
-  backgroundColor: `rgba(${theme.vars.palette.background.paperChannel} / 0.55)`,
   color: theme.vars.palette.text.primary,
   display: "none",
   touchAction: "none",

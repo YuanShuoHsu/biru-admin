@@ -95,6 +95,16 @@ const OverlayButton = styled(IconButton)(({ theme }) => ({
   color: theme.vars.palette.text.primary,
 }));
 
+const GridCellLine = styled("span")({
+  width: 24,
+  borderTop: `1px solid ${grey[500]}`,
+});
+
+const GridSectionLine = styled(GridCellLine)({
+  borderTopWidth: 2,
+  borderTopColor: grey[700],
+});
+
 const KeyboardHint = styled(Typography)({
   [STORE_LAYOUT_TOUCH_MEDIA]: {
     display: "none",
@@ -451,9 +461,25 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
             }
             label={tStoreLayout("showDimensions")}
           />
-          <Typography color="text.secondary" variant="caption">
-            {tStoreLayout("gridScale")}
-          </Typography>
+          <Stack
+            alignItems="center"
+            aria-label={tStoreLayout("gridScale")}
+            direction="row"
+            gap={1.5}
+          >
+            <Stack alignItems="center" direction="row" gap={0.5}>
+              <GridCellLine />
+              <Typography color="text.secondary" variant="caption">
+                {tStoreLayout("gridLegend.cell")}
+              </Typography>
+            </Stack>
+            <Stack alignItems="center" direction="row" gap={0.5}>
+              <GridSectionLine />
+              <Typography color="text.secondary" variant="caption">
+                {tStoreLayout("gridLegend.section")}
+              </Typography>
+            </Stack>
+          </Stack>
           <KeyboardHint color="text.secondary" variant="caption">
             {tStoreLayout("moveHint")}
           </KeyboardHint>

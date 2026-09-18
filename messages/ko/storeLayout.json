@@ -17,6 +17,10 @@
     "upper": "2층"
   },
   "fullscreen": "전체 화면",
+  "gridLegend": {
+    "cell": "1 m",
+    "section": "5 m"
+  },
   "gridScale": "격자 1 m / 굵은 선 5 m",
   "itemDimensions": {
     "depth": "깊이 {value} cm",

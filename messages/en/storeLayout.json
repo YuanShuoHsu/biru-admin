@@ -17,6 +17,10 @@
     "upper": "2F"
   },
   "fullscreen": "Fullscreen",
+  "gridLegend": {
+    "cell": "1 m",
+    "section": "5 m"
+  },
   "gridScale": "Grid 1 m / bold 5 m",
   "itemDimensions": {
     "depth": "D {value} cm",
