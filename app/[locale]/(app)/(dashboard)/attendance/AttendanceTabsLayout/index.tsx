@@ -25,13 +25,9 @@ const AttendanceTabsLayout = ({
 
   return (
     <>
-      <RouteTabs
-        ariaLabel="attendance group tabs"
-        tabs={groups.map(({ children, path }) => ({ href: children[0], path }))}
-      />
-      {active && active.children.length > 1 && (
+      {active && (
         <RouteTabs
-          ariaLabel="attendance section tabs"
+          ariaLabel="attendance tabs"
           tabs={active.children.map((path) => ({ path }))}
         />
       )}
