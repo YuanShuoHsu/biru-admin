@@ -6,6 +6,8 @@ import {
   STORE_LAYOUT_ROOM,
   STORE_LAYOUT_SLAB_PANELS,
   STORE_LAYOUT_SLAB_THICKNESS,
+  STORE_LAYOUT_STAIR_GUARDS,
+  STORE_LAYOUT_STAIR_GUARD_HEIGHT,
   STORE_LAYOUT_STAIR_STEPS,
 } from "@/constants/storeLayout";
 
@@ -51,16 +53,24 @@ const SOLIDS: Solid[] = [
     x,
     z,
   })),
+  ...STORE_LAYOUT_STAIR_GUARDS.map(({ depth, width, x, z }) => ({
+    bottom: STORE_LAYOUT_FLOOR_HEIGHT,
+    depth,
+    top: STORE_LAYOUT_FLOOR_HEIGHT + STORE_LAYOUT_STAIR_GUARD_HEIGHT,
+    width,
+    x,
+    z,
+  })),
 ];
 
 const clampToRoom = (value: number, size: number) =>
   Math.min(Math.max(value, radius), size - radius);
 
 const covers = (solid: Solid, x: number, z: number) =>
-  x > solid.x &&
-  x < solid.x + solid.width &&
-  z > solid.z &&
-  z < solid.z + solid.depth;
+  x >= solid.x &&
+  x <= solid.x + solid.width &&
+  z >= solid.z &&
+  z <= solid.z + solid.depth;
 
 const overlaps = (solid: Solid, x: number, z: number) =>
   x + radius > solid.x &&

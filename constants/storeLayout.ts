@@ -64,12 +64,6 @@ export const STORE_LAYOUT_WALLS = [
   },
 ] as const;
 
-export const STORE_LAYOUT_PERSON_COLORS = {
-  customer: blueGrey[500],
-  staff: lightBlue[600],
-} as const;
-
-// 單位公尺；x 由左至右，z 由後場往顧客入口，elevation 為離地高度
 export const STORE_LAYOUT_ITEMS = [
   {
     depth: 0.7,
@@ -876,15 +870,6 @@ export const STORE_LAYOUT_ITEMS = [
   },
 ] as const;
 
-export const STORE_LAYOUT_PEOPLE = [
-  { floor: "ground", role: "customer", x: 13.4, z: 5.4 },
-  { floor: "ground", role: "staff", x: 5, z: 3.4 },
-  { floor: "ground", role: "staff", x: 12.8, z: 3.4 },
-  { floor: "ground", role: "staff", x: 7.5, z: 1.4 },
-  { floor: "upper", role: "customer", x: 7.4, z: 5 },
-  { floor: "upper", role: "customer", x: 2.6, z: 2.2 },
-] as const;
-
 export const STORE_LAYOUT_VIEWS = {
   first: { eye: 1.55, lookAhead: 1 },
   follow: { eye: 1.55, offset: [0, 1.2, 3.2] },
@@ -1001,6 +986,38 @@ export const STORE_LAYOUT_SLAB_PANELS = [
       STORE_LAYOUT_STAIRWELL.width,
     x: STORE_LAYOUT_STAIRWELL.x + STORE_LAYOUT_STAIRWELL.width,
     z: STORE_LAYOUT_STAIRWELL.z,
+  },
+];
+
+export const STORE_LAYOUT_STAIR_GUARD_HEIGHT = 0.9;
+
+const STAIR_GUARD_THICKNESS = 0.08;
+
+// 第一段只擋上行梯段那半邊，剩下的半邊是出梯口；補成整寬會把二樓封死，上不去也下不來
+export const STORE_LAYOUT_STAIR_GUARDS = [
+  {
+    depth: STAIR_GUARD_THICKNESS,
+    width: STAIR_FLIGHT_WIDTH,
+    x: STORE_LAYOUT_STAIRWELL.x,
+    z: STORE_LAYOUT_STAIRWELL.z - STAIR_GUARD_THICKNESS,
+  },
+  {
+    depth: STORE_LAYOUT_STAIRWELL.depth,
+    width: STAIR_GUARD_THICKNESS,
+    x: STORE_LAYOUT_STAIRWELL.x - STAIR_GUARD_THICKNESS,
+    z: STORE_LAYOUT_STAIRWELL.z,
+  },
+  {
+    depth: STORE_LAYOUT_STAIRWELL.depth,
+    width: STAIR_GUARD_THICKNESS,
+    x: STORE_LAYOUT_STAIRWELL.x + STORE_LAYOUT_STAIRWELL.width,
+    z: STORE_LAYOUT_STAIRWELL.z,
+  },
+  {
+    depth: STAIR_GUARD_THICKNESS,
+    width: STORE_LAYOUT_STAIRWELL.width,
+    x: STORE_LAYOUT_STAIRWELL.x,
+    z: STORE_LAYOUT_STAIRWELL.z + STORE_LAYOUT_STAIRWELL.depth,
   },
 ];
 

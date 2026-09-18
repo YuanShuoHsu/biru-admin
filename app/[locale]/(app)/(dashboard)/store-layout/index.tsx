@@ -9,12 +9,12 @@ import {
   STORE_LAYOUT_FLOOR_HEIGHT,
   STORE_LAYOUT_ITEMS,
   STORE_LAYOUT_KIND_COLORS,
-  STORE_LAYOUT_PEOPLE,
-  STORE_LAYOUT_PERSON_COLORS,
   STORE_LAYOUT_ROOM,
   STORE_LAYOUT_SLAB_PANELS,
   STORE_LAYOUT_SLAB_THICKNESS,
   STORE_LAYOUT_STAIRWELL,
+  STORE_LAYOUT_STAIR_GUARDS,
+  STORE_LAYOUT_STAIR_GUARD_HEIGHT,
   STORE_LAYOUT_STAIR_STEPS,
   STORE_LAYOUT_VIEWS,
   STORE_LAYOUT_VIEW_ORDER,
@@ -54,7 +54,6 @@ import type {
 } from "@/types/storeLayout";
 
 import Avatar from "./Avatar";
-import Person from "./Person";
 
 const StyledStack = styled(Stack)({
   flex: 1,
@@ -120,8 +119,18 @@ const MOVE_MAP: KeyboardControlsEntry<StoreLayoutMove>[] = [
 
 const REPEATED_AT_LEAST = 3;
 
-const GHOST_SURFACE = { depthWrite: false, opacity: 0.06, transparent: true };
-const GHOST_EDGE = { depthWrite: false, opacity: 0.4, transparent: true };
+// 每個 prop 都要一直在；改成 ghost 時才展開的話，R3F 會把消失的 opacity 設成 0 而不是 1，實心那層整層看不見
+const ghostSurface = (ghost: boolean) => ({
+  depthWrite: !ghost,
+  opacity: ghost ? 0.06 : 1,
+  transparent: ghost,
+});
+
+const ghostEdge = (ghost: boolean) => ({
+  depthWrite: !ghost,
+  opacity: ghost ? 0.4 : 1,
+  transparent: ghost,
+});
 
 const sizeKey = ({ depth, height, label, width }: StoreLayoutItem) =>
   `${label}|${width}x${depth}x${height}`;
@@ -197,11 +206,6 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
     [repeatedGroups],
   );
 
-  const people = useMemo(
-    () => STORE_LAYOUT_PEOPLE.filter((person) => person.floor === floor),
-    [floor],
-  );
-
   const applyView = (
     nextView: StoreLayoutView,
     nextFloor: StoreLayoutFloor,
@@ -220,18 +224,14 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
     controls.update();
   };
 
-  const showFloor = (value: StoreLayoutFloor) => {
-    setFloor(value);
-    applyView(view, value);
-  };
-
   const handleFloorChange = (
     _event: React.MouseEvent<HTMLElement>,
     value: StoreLayoutFloor | null,
   ) => {
     if (!value) return;
 
-    showFloor(value);
+    setFloor(value);
+    applyView(view, value);
   };
 
   const handleViewChange = (
@@ -385,29 +385,58 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                       />
                       <meshStandardMaterial
                         color={grey[300]}
-                        {...(ghost && GHOST_SURFACE)}
+                        {...ghostSurface(ghost)}
                       />
                     </mesh>
                   ) : (
-                    STORE_LAYOUT_SLAB_PANELS.map(({ depth, width, x, z }) => (
-                      <mesh
-                        key={`${x}-${z}`}
-                        position={[
-                          x + width / 2,
-                          -STORE_LAYOUT_SLAB_THICKNESS / 2,
-                          z + depth / 2,
-                        ]}
-                      >
-                        <boxGeometry
-                          args={[width, STORE_LAYOUT_SLAB_THICKNESS, depth]}
-                        />
-                        <meshStandardMaterial
-                          color={grey[300]}
-                          {...(ghost && GHOST_SURFACE)}
-                        />
-                        <Edges color={grey[700]} {...(ghost && GHOST_EDGE)} />
-                      </mesh>
-                    ))
+                    <>
+                      {STORE_LAYOUT_SLAB_PANELS.map(
+                        ({ depth, width, x, z }) => (
+                          <mesh
+                            key={`${x}-${z}`}
+                            position={[
+                              x + width / 2,
+                              -STORE_LAYOUT_SLAB_THICKNESS / 2,
+                              z + depth / 2,
+                            ]}
+                          >
+                            <boxGeometry
+                              args={[width, STORE_LAYOUT_SLAB_THICKNESS, depth]}
+                            />
+                            <meshStandardMaterial
+                              color={grey[300]}
+                              {...ghostSurface(ghost)}
+                            />
+                            <Edges color={grey[700]} {...ghostEdge(ghost)} />
+                          </mesh>
+                        ),
+                      )}
+                      {STORE_LAYOUT_STAIR_GUARDS.map(
+                        ({ depth, width, x, z }) => (
+                          <mesh
+                            key={`guard-${x}-${z}`}
+                            position={[
+                              x + width / 2,
+                              STORE_LAYOUT_STAIR_GUARD_HEIGHT / 2,
+                              z + depth / 2,
+                            ]}
+                          >
+                            <boxGeometry
+                              args={[
+                                width,
+                                STORE_LAYOUT_STAIR_GUARD_HEIGHT,
+                                depth,
+                              ]}
+                            />
+                            <meshStandardMaterial
+                              color={STORE_LAYOUT_KIND_COLORS.stair}
+                              {...ghostSurface(ghost)}
+                            />
+                            <Edges color={grey[700]} {...ghostEdge(ghost)} />
+                          </mesh>
+                        ),
+                      )}
+                    </>
                   )}
                   {!ghost && (
                     <Grid
@@ -500,9 +529,9 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                   <boxGeometry args={[width, height, depth]} />
                   <meshStandardMaterial
                     color={STORE_LAYOUT_KIND_COLORS[kind]}
-                    {...(ghost && GHOST_SURFACE)}
+                    {...ghostSurface(ghost)}
                   />
-                  <Edges color={grey[700]} {...(ghost && GHOST_EDGE)} />
+                  <Edges color={grey[700]} {...ghostEdge(ghost)} />
                   {showLabels && !ghost && (
                     <Html
                       center
@@ -526,18 +555,10 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                 </mesh>
               );
             })}
-            {people.map(({ floor: personFloor, role, x, z }) => (
-              <group
-                key={`${personFloor}-${role}-${x}-${z}`}
-                position={[x, STORE_LAYOUT_FLOOR_BASE[personFloor], z]}
-              >
-                <Person color={STORE_LAYOUT_PERSON_COLORS[role]} />
-              </group>
-            ))}
             <Avatar
               controlsRef={controlsRef}
               floor={floor}
-              onFloorChange={showFloor}
+              onFloorChange={setFloor}
               view={view}
             />
             <OrbitControls
