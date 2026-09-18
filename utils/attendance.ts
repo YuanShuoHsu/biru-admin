@@ -3,10 +3,10 @@ import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { cache } from "react";
 
-import { ATTENDANCE_NAV_ITEMS } from "@/constants/attendance";
+import { ATTENDANCE_NAV_GROUPS } from "@/constants/attendance";
 import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "@/constants/pagination";
-import { PLATFORM_TIMEZONE } from "@/constants/timezone";
+import { PLATFORM_TIMEZONE, STORE_TIMEZONE } from "@/constants/timezone";
 
 import { authClient } from "@/lib/auth-client";
 
@@ -61,13 +61,29 @@ dayjs.extend(timezonePlugin);
 export const weekdayDate = (day: number) =>
   dayjs().tz(PLATFORM_TIMEZONE).day(day).toDate();
 
-export const attendanceNavPaths = (
+export const WEEK_DAYS = 7;
+
+// dayjs.tz 對無法解析的字串會丟 RangeError 而不是回傳 invalid，先擋掉格式不符的查詢字串
+export const weekStart = (week?: string) =>
+  (week && /^\d{4}-\d{2}-\d{2}$/.test(week)
+    ? dayjs.tz(week, STORE_TIMEZONE)
+    : dayjs().tz(STORE_TIMEZONE)
+  )
+    .startOf("week")
+    .format("YYYY-MM-DD");
+
+export const attendanceNavGroups = (
   memberRole: Parameters<typeof hasRolePermission>[0],
 ) =>
-  ATTENDANCE_NAV_ITEMS.filter(
-    ({ permission }) =>
-      !permission || hasRolePermission(memberRole, permission),
-  ).map(({ path }) => path);
+  ATTENDANCE_NAV_GROUPS.map(({ children, path }) => ({
+    children: children
+      .filter(
+        ({ permission }) =>
+          !permission || hasRolePermission(memberRole, permission),
+      )
+      .map(({ path }) => path),
+    path,
+  })).filter(({ children }) => children.length);
 
 export const getAttendanceAccess = cache(
   async (organizationSlug: string | undefined, cookie: string) => {
@@ -240,6 +256,31 @@ export const getAttendanceShifts = cache(
     >(attendancePath(organizationSlug, scope, "shifts"), query, init);
 
     return { shifts, total };
+  },
+);
+
+export const attendanceCalendarPath = (
+  organizationSlug: string,
+  from: string,
+  to: string,
+) =>
+  `${attendancePath(organizationSlug, "all", "shifts/calendar")}?${new URLSearchParams({ from, to })}`;
+
+export const getAttendanceCalendarShifts = cache(
+  async (
+    organizationSlug: string,
+    from: string,
+    to: string,
+    init?: RequestInit,
+  ) => {
+    try {
+      return await fetcher<AttendanceShift[]>(
+        attendanceCalendarPath(organizationSlug, from, to),
+        init,
+      );
+    } catch {
+      return [];
+    }
   },
 );
 

@@ -2,7 +2,9 @@
 
 import RouteTabs from "@/components/RouteTabs";
 
-import { attendanceNavPaths } from "@/utils/attendance";
+import { usePathname } from "@/i18n/navigation";
+
+import { attendanceNavGroups } from "@/utils/attendance";
 import { hasRolePermission } from "@/utils/organizations";
 
 interface AttendanceTabsLayoutProps {
@@ -13,14 +15,29 @@ interface AttendanceTabsLayoutProps {
 const AttendanceTabsLayout = ({
   children,
   memberRole,
-}: AttendanceTabsLayoutProps) => (
-  <>
-    <RouteTabs
-      ariaLabel="attendance tabs"
-      tabs={attendanceNavPaths(memberRole).map((path) => ({ path }))}
-    />
-    {children}
-  </>
-);
+}: AttendanceTabsLayoutProps) => {
+  const pathname = usePathname();
+
+  const groups = attendanceNavGroups(memberRole);
+
+  const active =
+    groups.find(({ path }) => pathname.startsWith(`${path}/`)) ?? groups[0];
+
+  return (
+    <>
+      <RouteTabs
+        ariaLabel="attendance group tabs"
+        tabs={groups.map(({ children, path }) => ({ href: children[0], path }))}
+      />
+      {active && active.children.length > 1 && (
+        <RouteTabs
+          ariaLabel="attendance section tabs"
+          tabs={active.children.map((path) => ({ path }))}
+        />
+      )}
+      {children}
+    </>
+  );
+};
 
 export default AttendanceTabsLayout;

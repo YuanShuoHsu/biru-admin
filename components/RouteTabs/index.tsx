@@ -7,6 +7,7 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { Tab, Tabs } from "@mui/material";
 
 interface RouteTab {
+  href?: string;
   label?: React.ReactNode;
   path: string;
 }
@@ -31,8 +32,8 @@ const RouteTabs = ({ ariaLabel, tabs }: RouteTabsProps) => {
       value={value}
       variant="scrollable"
     >
-      {tabs.map(({ label, path }) => {
-        const { icon: Icon, label: routeLabel, to } = navItem(path);
+      {tabs.map(({ href, label, path }) => {
+        const { icon: Icon, label: routeLabel, to } = navItem(path, href);
 
         return (
           <Tab

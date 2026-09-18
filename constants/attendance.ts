@@ -1,25 +1,79 @@
 import type { hasRolePermission } from "@/utils/organizations";
 
-export const ATTENDANCE_NAV_ITEMS: {
+interface AttendanceNavItem {
   path: string;
   permission?: Parameters<typeof hasRolePermission>[1];
+}
+
+export const ATTENDANCE_NAV_GROUPS: {
+  children: AttendanceNavItem[];
+  path: string;
 }[] = [
-  { path: "/attendance/mine" },
-  { path: "/attendance/requests" },
-  { path: "/attendance/balances" },
-  { path: "/attendance/leave-cases" },
-  { path: "/attendance/parental-children" },
-  { path: "/attendance/parental-returns" },
-  { path: "/attendance/payslips" },
-  { path: "/attendance/shifts", permission: { shift: ["read"] } },
-  { path: "/attendance/reviews", permission: { attendanceRequest: ["read"] } },
-  { path: "/attendance/employees", permission: { employee: ["read"] } },
-  { path: "/attendance/templates", permission: { shiftTemplate: ["read"] } },
-  { path: "/attendance/settings", permission: { attendanceSetting: ["read"] } },
-  { path: "/attendance/leave-types", permission: { leaveType: ["update"] } },
   {
+    children: [
+      { path: "/attendance/mine/shifts" },
+      { path: "/attendance/mine/requests" },
+      { path: "/attendance/mine/payslips" },
+    ],
+    path: "/attendance/mine",
+  },
+  {
+    children: [
+      {
+        path: "/attendance/schedule/calendar",
+        permission: { shift: ["read"] },
+      },
+      {
+        path: "/attendance/schedule/templates",
+        permission: { shiftTemplate: ["read"] },
+      },
+    ],
+    path: "/attendance/schedule",
+  },
+  {
+    children: [
+      { path: "/attendance/records/shifts", permission: { shift: ["read"] } },
+      {
+        path: "/attendance/records/reviews",
+        permission: { attendanceRequest: ["read"] },
+      },
+    ],
+    path: "/attendance/records",
+  },
+  {
+    children: [
+      { path: "/attendance/leave/balances" },
+      { path: "/attendance/leave/cases" },
+      { path: "/attendance/leave/parental-children" },
+      { path: "/attendance/leave/parental-returns" },
+    ],
+    path: "/attendance/leave",
+  },
+  {
+    children: [
+      {
+        path: "/attendance/payroll/statements",
+        permission: { payrollTerm: ["read"], payslip: ["read"] },
+      },
+    ],
     path: "/attendance/payroll",
-    permission: { payrollTerm: ["read"], payslip: ["read"] },
+  },
+  {
+    children: [
+      {
+        path: "/attendance/settings/general",
+        permission: { attendanceSetting: ["read"] },
+      },
+      {
+        path: "/attendance/settings/employees",
+        permission: { employee: ["read"] },
+      },
+      {
+        path: "/attendance/settings/leave-types",
+        permission: { leaveType: ["update"] },
+      },
+    ],
+    path: "/attendance/settings",
   },
 ];
 

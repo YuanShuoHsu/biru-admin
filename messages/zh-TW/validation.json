@@ -284,6 +284,9 @@
     "invalid": "電話格式無效。",
     "required": "電話為必填。"
   },
+  "template": {
+    "notSelected": "請選擇班表範本。"
+  },
   "templateName": {
     "required": "範本名稱為必填。"
   },

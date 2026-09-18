@@ -169,6 +169,14 @@
   "graceMinutes": "遲到早退寬限（分鐘）",
   "grantedMinutes": "核給額度（分鐘）",
   "gross": "應發薪資",
+  "groups": {
+    "leave": "請假",
+    "mine": "我的",
+    "payroll": "薪資",
+    "records": "出勤紀錄",
+    "schedule": "排班",
+    "settings": "設定"
+  },
   "healthBasis": "健保月投保金額（{currency}，未在本店投保填 0）",
   "healthDependents": "健保依附眷屬人數",
   "healthInsurance": "員工健保（{currency}）",
@@ -337,6 +345,13 @@
     }
   },
   "save": "儲存",
+  "schedule": {
+    "applyTemplate": "套用範本",
+    "label": "週班表",
+    "nextWeek": "下一週",
+    "previousWeek": "上一週",
+    "thisWeek": "本週"
+  },
   "settings": {
     "actions": {
       "update": "編輯出勤設定"

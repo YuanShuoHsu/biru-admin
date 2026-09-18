@@ -284,6 +284,9 @@
     "invalid": "電話番号が無効です。",
     "required": "電話番号は必須です。"
   },
+  "template": {
+    "notSelected": "シフト雛形を選択してください。"
+  },
   "templateName": {
     "required": "テンプレート名は必須です。"
   },

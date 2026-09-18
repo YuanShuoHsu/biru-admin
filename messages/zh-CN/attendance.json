@@ -169,6 +169,14 @@
   "graceMinutes": "迟到早退宽限（分钟）",
   "grantedMinutes": "核给额度（分钟）",
   "gross": "应发工资",
+  "groups": {
+    "leave": "请假",
+    "mine": "我的",
+    "payroll": "薪资",
+    "records": "出勤记录",
+    "schedule": "排班",
+    "settings": "设置"
+  },
   "healthBasis": "健保月投保金额（{currency}，未在本店投保填 0）",
   "healthDependents": "健保依附家属人数",
   "healthInsurance": "员工健保（{currency}）",
@@ -337,6 +345,13 @@
     }
   },
   "save": "保存",
+  "schedule": {
+    "applyTemplate": "套用模板",
+    "label": "周班表",
+    "nextWeek": "下一周",
+    "previousWeek": "上一周",
+    "thisWeek": "本周"
+  },
   "settings": {
     "actions": {
       "update": "编辑出勤设置"

@@ -284,6 +284,9 @@
     "invalid": "Phone is not valid.",
     "required": "Phone is required."
   },
+  "template": {
+    "notSelected": "Please select a shift template."
+  },
   "templateName": {
     "required": "Template name is required."
   },

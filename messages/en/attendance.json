@@ -169,6 +169,14 @@
   "graceMinutes": "Grace period (minutes)",
   "grantedMinutes": "Granted minutes",
   "gross": "Gross pay",
+  "groups": {
+    "leave": "Leave",
+    "mine": "Mine",
+    "payroll": "Payroll",
+    "records": "Attendance",
+    "schedule": "Scheduling",
+    "settings": "Settings"
+  },
   "healthBasis": "Health insured amount ({currency}; 0 if insured elsewhere)",
   "healthDependents": "Health insurance dependents",
   "healthInsurance": "Employee health insurance ({currency})",
@@ -337,6 +345,13 @@
     }
   },
   "save": "Save",
+  "schedule": {
+    "applyTemplate": "Apply template",
+    "label": "Weekly roster",
+    "nextWeek": "Next week",
+    "previousWeek": "Previous week",
+    "thisWeek": "This week"
+  },
   "settings": {
     "actions": {
       "update": "Edit attendance settings"

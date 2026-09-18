@@ -169,6 +169,14 @@
   "graceMinutes": "유예 시간(분)",
   "grantedMinutes": "부여 시간(분)",
   "gross": "총급여",
+  "groups": {
+    "leave": "휴가",
+    "mine": "내 정보",
+    "payroll": "급여",
+    "records": "근태 기록",
+    "schedule": "근무 편성",
+    "settings": "설정"
+  },
   "healthBasis": "건강 보험 금액({currency}, 다른 곳 가입 시 0)",
   "healthDependents": "건강 보험 피부양자 수",
   "healthInsurance": "직원 건강 보험({currency})",
@@ -337,6 +345,13 @@
     }
   },
   "save": "저장",
+  "schedule": {
+    "applyTemplate": "템플릿 적용",
+    "label": "주간 근무표",
+    "nextWeek": "다음 주",
+    "previousWeek": "이전 주",
+    "thisWeek": "이번 주"
+  },
   "settings": {
     "actions": {
       "update": "근태 설정 편집"

@@ -169,6 +169,14 @@
   "graceMinutes": "猶予時間（分）",
   "grantedMinutes": "付与時間（分）",
   "gross": "支給総額",
+  "groups": {
+    "leave": "休暇",
+    "mine": "自分",
+    "payroll": "給与",
+    "records": "勤怠記録",
+    "schedule": "シフト作成",
+    "settings": "設定"
+  },
   "healthBasis": "健康保険月額（{currency}、他所加入は0）",
   "healthDependents": "健康保険扶養人数",
   "healthInsurance": "従業員健康保険（{currency}）",
@@ -337,6 +345,13 @@
     }
   },
   "save": "保存",
+  "schedule": {
+    "applyTemplate": "雛形を適用",
+    "label": "週間シフト",
+    "nextWeek": "翌週",
+    "previousWeek": "前週",
+    "thisWeek": "今週"
+  },
   "settings": {
     "actions": {
       "update": "勤怠設定を編集"
