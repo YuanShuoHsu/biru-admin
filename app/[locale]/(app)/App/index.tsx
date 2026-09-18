@@ -33,11 +33,7 @@ const StyledBox = styled(Box, {
   backgroundColor: theme.vars.palette.background.default,
   transition: "background-color 300ms cubic-bezier(0.4, 0, 0.2, 1)",
 
-  ...(fillViewport && {
-    [theme.breakpoints.up("md")]: {
-      height: "100dvh",
-    },
-  }),
+  ...(fillViewport && { height: "100dvh" }),
 }));
 
 const StyledContainer = styled(Container)({

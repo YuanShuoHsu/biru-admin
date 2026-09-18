@@ -8,6 +8,10 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
+import { DoubleSide } from "three";
+
+import Avatar from "./Avatar";
+import SpriteLabel from "./SpriteLabel";
 
 import {
   STORE_LAYOUT_FLOORS,
@@ -35,6 +39,7 @@ import { Download, Fullscreen, FullscreenExit } from "@mui/icons-material";
 import {
   FormControlLabel,
   IconButton,
+  Paper,
   Stack,
   Switch,
   ToggleButton,
@@ -53,8 +58,6 @@ import {
 } from "@react-three/drei";
 import { Canvas, type RootState } from "@react-three/fiber";
 
-import { DoubleSide } from "three";
-
 import type {
   StoreLayoutFloor,
   StoreLayoutFloorFilter,
@@ -63,15 +66,7 @@ import type {
   StoreLayoutView,
 } from "@/types/storeLayout";
 
-import Avatar from "./Avatar";
-import SpriteLabel from "./SpriteLabel";
-
 const Joystick = dynamic(() => import("./Joystick"), { ssr: false });
-
-const StyledStack = styled(Stack)({
-  flex: 1,
-  minHeight: 0,
-});
 
 const Toolbar = styled(Stack)({
   alignItems: "center",
@@ -79,27 +74,16 @@ const Toolbar = styled(Stack)({
   flexWrap: "wrap",
 });
 
-const CanvasContainer = styled("div")(({ theme }) => ({
-  flex: "none",
+const StyledPaper = styled(Paper)({
   position: "relative",
-  height: "70dvh",
-  overflow: "hidden",
-  border: `1px solid ${theme.vars.palette.divider}`,
-  borderRadius: theme.shape.borderRadius,
-
-  [theme.breakpoints.up("md")]: {
-    flex: 1,
-    height: "auto",
-    minHeight: 240,
-  },
+  flex: 1,
+  minHeight: 240,
 
   "&:fullscreen": {
-    height: "100%",
     border: "none",
     borderRadius: 0,
-    backgroundColor: theme.vars.palette.background.default,
   },
-}));
+});
 
 const OverlayButtons = styled(Stack)({
   position: "absolute",
@@ -305,300 +289,327 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
     setShowLabels(checked);
   };
 
-  if (empty)
-    return (
-      <StyledStack gap={2}>
-        <CanvasContainer>
+  return (
+    <>
+      {!empty && (
+        <Toolbar gap={2}>
+          <ToggleButtonGroup
+            exclusive
+            onChange={handleFloorsChange}
+            size="small"
+            value={floors}
+          >
+            {STORE_LAYOUT_FLOOR_FILTERS.map((value) => (
+              <ToggleButton key={value} value={value}>
+                {tStoreLayout(`floors.${value}`)}
+              </ToggleButton>
+            ))}
+          </ToggleButtonGroup>
+          <ToggleButtonGroup
+            exclusive
+            onChange={handleViewChange}
+            size="small"
+            value={view}
+          >
+            {STORE_LAYOUT_VIEW_ORDER.map((value) => (
+              <ToggleButton key={value} value={value}>
+                {tStoreLayout(`views.${value}`)}
+              </ToggleButton>
+            ))}
+          </ToggleButtonGroup>
+          <FormControlLabel
+            control={
+              <Switch checked={showLabels} onChange={handleShowLabelsChange} />
+            }
+            label={tStoreLayout("showLabels")}
+          />
+          <Typography color="text.secondary" variant="caption">
+            {tStoreLayout("gridScale")}
+          </Typography>
+          <KeyboardHint color="text.secondary" variant="caption">
+            {tStoreLayout("moveHint")}
+          </KeyboardHint>
+        </Toolbar>
+      )}
+      <StyledPaper
+        ref={setCanvasElement}
+        variant="outlined"
+        {...(!empty && { onKeyDown: handleKeyDown, tabIndex: 0 })}
+      >
+        {empty ? (
           <EmptyOverlay>
             <Typography color="text.secondary" variant="body2">
               {tStoreLayout("empty")}
             </Typography>
           </EmptyOverlay>
-        </CanvasContainer>
-      </StyledStack>
-    );
+        ) : (
+          <>
+            <KeyboardControls
+              domElement={canvasElement ?? undefined}
+              map={MOVE_MAP}
+            >
+              <Canvas
+                camera={{
+                  fov: STORE_LAYOUT_FOV,
+                  position: [...STORE_LAYOUT_VIEWS.iso.position],
+                }}
+                gl={{ preserveDrawingBuffer: true }}
+                onCreated={(state) => {
+                  rootStateRef.current = state;
+                }}
+              >
+                <hemisphereLight args={[grey[50], blueGrey[500], 2.2]} />
+                <directionalLight intensity={1.1} position={[6, 8, 4]} />
+                {STORE_LAYOUT_FLOORS.map((value) => {
+                  if (floors !== "all" && floors !== value) return null;
 
-  return (
-    <StyledStack gap={2}>
-      <Toolbar gap={2}>
-        <ToggleButtonGroup
-          exclusive
-          onChange={handleFloorsChange}
-          size="small"
-          value={floors}
-        >
-          {STORE_LAYOUT_FLOOR_FILTERS.map((value) => (
-            <ToggleButton key={value} value={value}>
-              {tStoreLayout(`floors.${value}`)}
-            </ToggleButton>
-          ))}
-        </ToggleButtonGroup>
-        <ToggleButtonGroup
-          exclusive
-          onChange={handleViewChange}
-          size="small"
-          value={view}
-        >
-          {STORE_LAYOUT_VIEW_ORDER.map((value) => (
-            <ToggleButton key={value} value={value}>
-              {tStoreLayout(`views.${value}`)}
-            </ToggleButton>
-          ))}
-        </ToggleButtonGroup>
-        <FormControlLabel
-          control={
-            <Switch checked={showLabels} onChange={handleShowLabelsChange} />
-          }
-          label={tStoreLayout("showLabels")}
-        />
-        <Typography color="text.secondary" variant="caption">
-          {tStoreLayout("gridScale")}
-        </Typography>
-        <KeyboardHint color="text.secondary" variant="caption">
-          {tStoreLayout("moveHint")}
-        </KeyboardHint>
-      </Toolbar>
-      <CanvasContainer
-        onKeyDown={handleKeyDown}
-        ref={setCanvasElement}
-        tabIndex={0}
-      >
-        <KeyboardControls
-          domElement={canvasElement ?? undefined}
-          map={MOVE_MAP}
-        >
-          <Canvas
-            camera={{
-              fov: STORE_LAYOUT_FOV,
-              position: [...STORE_LAYOUT_VIEWS.iso.position],
-            }}
-            gl={{ preserveDrawingBuffer: true }}
-            onCreated={(state) => {
-              rootStateRef.current = state;
-            }}
-          >
-            <hemisphereLight args={[grey[50], blueGrey[500], 2.2]} />
-            <directionalLight intensity={1.1} position={[6, 8, 4]} />
-            {STORE_LAYOUT_FLOORS.map((value) => {
-              if (floors !== "all" && floors !== value) return null;
+                  const ghost = floors === "all" && value !== floor;
 
-              const ghost = floors === "all" && value !== floor;
-
-              return (
-                <group key={value} position-y={STORE_LAYOUT_FLOOR_BASE[value]}>
-                  {value === "ground" ? (
-                    <mesh
-                      position={[
-                        STORE_LAYOUT_ROOM.width / 2,
-                        0,
-                        STORE_LAYOUT_ROOM.depth / 2,
-                      ]}
-                      rotation-x={-Math.PI / 2}
+                  return (
+                    <group
+                      key={value}
+                      position-y={STORE_LAYOUT_FLOOR_BASE[value]}
                     >
-                      <planeGeometry
-                        args={[
-                          STORE_LAYOUT_ROOM.width,
-                          STORE_LAYOUT_ROOM.depth,
-                        ]}
-                      />
+                      {value === "ground" ? (
+                        <mesh
+                          position={[
+                            STORE_LAYOUT_ROOM.width / 2,
+                            0,
+                            STORE_LAYOUT_ROOM.depth / 2,
+                          ]}
+                          rotation-x={-Math.PI / 2}
+                        >
+                          <planeGeometry
+                            args={[
+                              STORE_LAYOUT_ROOM.width,
+                              STORE_LAYOUT_ROOM.depth,
+                            ]}
+                          />
+                          <meshStandardMaterial
+                            color={grey[300]}
+                            {...ghostSurface(ghost)}
+                          />
+                        </mesh>
+                      ) : (
+                        <>
+                          {STORE_LAYOUT_SLAB_PANELS.map(
+                            ({ depth, width, x, z }) => (
+                              <mesh
+                                key={`${x}-${z}`}
+                                position={[
+                                  x + width / 2,
+                                  -STORE_LAYOUT_SLAB_THICKNESS / 2,
+                                  z + depth / 2,
+                                ]}
+                              >
+                                <boxGeometry
+                                  args={[
+                                    width,
+                                    STORE_LAYOUT_SLAB_THICKNESS,
+                                    depth,
+                                  ]}
+                                />
+                                <meshStandardMaterial
+                                  color={grey[300]}
+                                  {...ghostSurface(ghost)}
+                                />
+                                <Edges
+                                  color={grey[700]}
+                                  {...ghostEdge(ghost)}
+                                />
+                              </mesh>
+                            ),
+                          )}
+                          {STORE_LAYOUT_STAIR_GUARDS.map(
+                            ({ depth, width, x, z }) => (
+                              <mesh
+                                key={`guard-${x}-${z}`}
+                                position={[
+                                  x + width / 2,
+                                  STORE_LAYOUT_STAIR_GUARD_HEIGHT / 2,
+                                  z + depth / 2,
+                                ]}
+                              >
+                                <boxGeometry
+                                  args={[
+                                    width,
+                                    STORE_LAYOUT_STAIR_GUARD_HEIGHT,
+                                    depth,
+                                  ]}
+                                />
+                                <meshStandardMaterial
+                                  color={STORE_LAYOUT_KIND_COLORS.stair}
+                                  {...ghostSurface(ghost)}
+                                />
+                                <Edges
+                                  color={grey[700]}
+                                  {...ghostEdge(ghost)}
+                                />
+                              </mesh>
+                            ),
+                          )}
+                        </>
+                      )}
+                      {!ghost && (
+                        <Grid
+                          args={[
+                            STORE_LAYOUT_ROOM.width,
+                            STORE_LAYOUT_ROOM.depth,
+                          ]}
+                          cellColor={grey[500]}
+                          cellSize={1}
+                          fadeStrength={0}
+                          position={[
+                            STORE_LAYOUT_ROOM.width / 2,
+                            0.002,
+                            STORE_LAYOUT_ROOM.depth / 2,
+                          ]}
+                          sectionColor={grey[700]}
+                          sectionSize={5}
+                          side={DoubleSide}
+                        />
+                      )}
+                      {!ghost &&
+                        STORE_LAYOUT_WALLS.map(
+                          ({ position, rotationY, width }) => (
+                            <mesh
+                              key={position.join()}
+                              position={[...position]}
+                              rotation-y={rotationY}
+                            >
+                              <planeGeometry
+                                args={[width, STORE_LAYOUT_ROOM.height]}
+                              />
+                              <meshStandardMaterial
+                                color={grey[200]}
+                                opacity={0.55}
+                                side={DoubleSide}
+                                transparent
+                              />
+                            </mesh>
+                          ),
+                        )}
+                    </group>
+                  );
+                })}
+                {STORE_LAYOUT_STAIR_STEPS.map(({ depth, top, width, x, z }) => (
+                  <mesh
+                    key={`${x}-${z}`}
+                    position={[x + width / 2, top / 2, z + depth / 2]}
+                  >
+                    <boxGeometry args={[width, top, depth]} />
+                    <meshStandardMaterial
+                      color={STORE_LAYOUT_KIND_COLORS.stair}
+                    />
+                    <Edges color={grey[700]} />
+                  </mesh>
+                ))}
+                {showLabels && (
+                  <SpriteLabel
+                    position={[
+                      STORE_LAYOUT_STAIRWELL.x +
+                        STORE_LAYOUT_STAIRWELL.width / 2,
+                      STORE_LAYOUT_FLOOR_HEIGHT,
+                      STORE_LAYOUT_STAIRWELL.z +
+                        STORE_LAYOUT_STAIRWELL.depth / 2,
+                    ]}
+                    text={tStoreLayout("items.stair")}
+                  />
+                )}
+                {ROOM_DIMENSIONS.map(({ key, position, value }) => (
+                  <SpriteLabel
+                    key={key}
+                    plain
+                    position={[...position]}
+                    text={tStoreLayout(`dimensions.${key}`, { value })}
+                  />
+                ))}
+                {STORE_LAYOUT_ITEMS.map((item) => {
+                  if (floors !== "all" && floors !== item.floor) return null;
+
+                  const { depth, elevation, height, kind, label, width, x, z } =
+                    item;
+                  const ghost = floors === "all" && item.floor !== floor;
+
+                  return (
+                    <mesh
+                      key={`${item.floor}-${label}-${x}-${z}`}
+                      position={[
+                        x + width / 2,
+                        STORE_LAYOUT_FLOOR_BASE[item.floor] +
+                          elevation +
+                          height / 2,
+                        z + depth / 2,
+                      ]}
+                    >
+                      <boxGeometry args={[width, height, depth]} />
                       <meshStandardMaterial
-                        color={grey[300]}
+                        color={STORE_LAYOUT_KIND_COLORS[kind]}
                         {...ghostSurface(ghost)}
                       />
+                      <Edges color={grey[700]} {...ghostEdge(ghost)} />
+                      {showLabels && !ghost && (
+                        <SpriteLabel
+                          note={tStoreLayout("itemSize", {
+                            depth: toCentimeters(depth),
+                            height: toCentimeters(height),
+                            width: toCentimeters(width),
+                          })}
+                          position={[0, height / 2 + 0.08, 0]}
+                          text={tStoreLayout(`items.${label}`)}
+                        />
+                      )}
                     </mesh>
-                  ) : (
-                    <>
-                      {STORE_LAYOUT_SLAB_PANELS.map(
-                        ({ depth, width, x, z }) => (
-                          <mesh
-                            key={`${x}-${z}`}
-                            position={[
-                              x + width / 2,
-                              -STORE_LAYOUT_SLAB_THICKNESS / 2,
-                              z + depth / 2,
-                            ]}
-                          >
-                            <boxGeometry
-                              args={[width, STORE_LAYOUT_SLAB_THICKNESS, depth]}
-                            />
-                            <meshStandardMaterial
-                              color={grey[300]}
-                              {...ghostSurface(ghost)}
-                            />
-                            <Edges color={grey[700]} {...ghostEdge(ghost)} />
-                          </mesh>
-                        ),
-                      )}
-                      {STORE_LAYOUT_STAIR_GUARDS.map(
-                        ({ depth, width, x, z }) => (
-                          <mesh
-                            key={`guard-${x}-${z}`}
-                            position={[
-                              x + width / 2,
-                              STORE_LAYOUT_STAIR_GUARD_HEIGHT / 2,
-                              z + depth / 2,
-                            ]}
-                          >
-                            <boxGeometry
-                              args={[
-                                width,
-                                STORE_LAYOUT_STAIR_GUARD_HEIGHT,
-                                depth,
-                              ]}
-                            />
-                            <meshStandardMaterial
-                              color={STORE_LAYOUT_KIND_COLORS.stair}
-                              {...ghostSurface(ghost)}
-                            />
-                            <Edges color={grey[700]} {...ghostEdge(ghost)} />
-                          </mesh>
-                        ),
-                      )}
-                    </>
-                  )}
-                  {!ghost && (
-                    <Grid
-                      args={[STORE_LAYOUT_ROOM.width, STORE_LAYOUT_ROOM.depth]}
-                      cellColor={grey[500]}
-                      cellSize={1}
-                      fadeStrength={0}
-                      position={[
-                        STORE_LAYOUT_ROOM.width / 2,
-                        0.002,
-                        STORE_LAYOUT_ROOM.depth / 2,
-                      ]}
-                      sectionColor={grey[700]}
-                      sectionSize={5}
-                      side={DoubleSide}
-                    />
-                  )}
-                  {!ghost &&
-                    STORE_LAYOUT_WALLS.map(({ position, rotationY, width }) => (
-                      <mesh
-                        key={position.join()}
-                        position={[...position]}
-                        rotation-y={rotationY}
-                      >
-                        <planeGeometry
-                          args={[width, STORE_LAYOUT_ROOM.height]}
-                        />
-                        <meshStandardMaterial
-                          color={grey[200]}
-                          opacity={0.55}
-                          side={DoubleSide}
-                          transparent
-                        />
-                      </mesh>
-                    ))}
-                </group>
-              );
-            })}
-            {STORE_LAYOUT_STAIR_STEPS.map(({ depth, top, width, x, z }) => (
-              <mesh
-                key={`${x}-${z}`}
-                position={[x + width / 2, top / 2, z + depth / 2]}
+                  );
+                })}
+                <Avatar
+                  controlsRef={controlsRef}
+                  floor={floor}
+                  onFloorChange={showFloor}
+                  touchRef={touchRef}
+                  view={view}
+                />
+                <OrbitControls
+                  maxPolarAngle={
+                    view === "first" ? Math.PI / 2 + pitchLimit : Math.PI
+                  }
+                  minPolarAngle={
+                    view === "first" ? Math.PI / 2 - pitchLimit : 0
+                  }
+                  ref={controlsRef}
+                  target={[...STORE_LAYOUT_VIEWS.iso.target]}
+                />
+              </Canvas>
+            </KeyboardControls>
+            <Joystick inputRef={touchRef} />
+            <OverlayButtons>
+              <OverlayButton
+                aria-label={tStoreLayout("export")}
+                onClick={handleExport}
+                size="small"
               >
-                <boxGeometry args={[width, top, depth]} />
-                <meshStandardMaterial color={STORE_LAYOUT_KIND_COLORS.stair} />
-                <Edges color={grey[700]} />
-              </mesh>
-            ))}
-            {showLabels && (
-              <SpriteLabel
-                position={[
-                  STORE_LAYOUT_STAIRWELL.x + STORE_LAYOUT_STAIRWELL.width / 2,
-                  STORE_LAYOUT_FLOOR_HEIGHT,
-                  STORE_LAYOUT_STAIRWELL.z + STORE_LAYOUT_STAIRWELL.depth / 2,
-                ]}
-                text={tStoreLayout("items.stair")}
-              />
-            )}
-            {ROOM_DIMENSIONS.map(({ key, position, value }) => (
-              <SpriteLabel
-                key={key}
-                plain
-                position={[...position]}
-                text={tStoreLayout(`dimensions.${key}`, { value })}
-              />
-            ))}
-            {STORE_LAYOUT_ITEMS.map((item) => {
-              if (floors !== "all" && floors !== item.floor) return null;
-
-              const { depth, elevation, height, kind, label, width, x, z } =
-                item;
-              const ghost = floors === "all" && item.floor !== floor;
-
-              return (
-                <mesh
-                  key={`${item.floor}-${label}-${x}-${z}`}
-                  position={[
-                    x + width / 2,
-                    STORE_LAYOUT_FLOOR_BASE[item.floor] +
-                      elevation +
-                      height / 2,
-                    z + depth / 2,
-                  ]}
-                >
-                  <boxGeometry args={[width, height, depth]} />
-                  <meshStandardMaterial
-                    color={STORE_LAYOUT_KIND_COLORS[kind]}
-                    {...ghostSurface(ghost)}
-                  />
-                  <Edges color={grey[700]} {...ghostEdge(ghost)} />
-                  {showLabels && !ghost && (
-                    <SpriteLabel
-                      note={tStoreLayout("itemSize", {
-                        depth: toCentimeters(depth),
-                        height: toCentimeters(height),
-                        width: toCentimeters(width),
-                      })}
-                      position={[0, height / 2 + 0.08, 0]}
-                      text={tStoreLayout(`items.${label}`)}
-                    />
+                <Download fontSize="small" />
+              </OverlayButton>
+              {fullscreenSupported && (
+                <OverlayButton
+                  aria-label={tStoreLayout(
+                    fullscreen ? "exitFullscreen" : "fullscreen",
                   )}
-                </mesh>
-              );
-            })}
-            <Avatar
-              controlsRef={controlsRef}
-              floor={floor}
-              onFloorChange={showFloor}
-              touchRef={touchRef}
-              view={view}
-            />
-            <OrbitControls
-              maxPolarAngle={
-                view === "first" ? Math.PI / 2 + pitchLimit : Math.PI
-              }
-              minPolarAngle={view === "first" ? Math.PI / 2 - pitchLimit : 0}
-              ref={controlsRef}
-              target={[...STORE_LAYOUT_VIEWS.iso.target]}
-            />
-          </Canvas>
-        </KeyboardControls>
-        <Joystick inputRef={touchRef} />
-        <OverlayButtons>
-          <OverlayButton
-            aria-label={tStoreLayout("export")}
-            onClick={handleExport}
-            size="small"
-          >
-            <Download />
-          </OverlayButton>
-          {fullscreenSupported && (
-            <OverlayButton
-              aria-label={tStoreLayout(
-                fullscreen ? "exitFullscreen" : "fullscreen",
+                  onClick={handleFullscreen}
+                  size="small"
+                >
+                  {fullscreen ? (
+                    <FullscreenExit fontSize="small" />
+                  ) : (
+                    <Fullscreen fontSize="small" />
+                  )}
+                </OverlayButton>
               )}
-              onClick={handleFullscreen}
-              size="small"
-            >
-              {fullscreen ? <FullscreenExit /> : <Fullscreen />}
-            </OverlayButton>
-          )}
-        </OverlayButtons>
-      </CanvasContainer>
-    </StyledStack>
+            </OverlayButtons>
+          </>
+        )}
+      </StyledPaper>
+    </>
   );
 };
 
