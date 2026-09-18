@@ -5,12 +5,14 @@
     "width": "幅 {value} m"
   },
   "empty": "この組織の店内レイアウトはまだ作成されていません。",
+  "exitFullscreen": "全画面を終了",
   "export": "PNG 出力",
   "floors": {
     "all": "全階",
     "ground": "1階",
     "upper": "2階"
   },
+  "fullscreen": "全画面",
   "gridScale": "グリッド 1 m／太線 5 m",
   "itemSize": "{width} × {depth} × {height} cm",
   "items": {
@@ -41,8 +43,9 @@
   "moveHint": "画面をクリックすると、矢印キーまたは WASD でキャラクターを移動、スペースキーでジャンプ、IJKL で視線を動かせます",
   "showLabels": "名称とサイズを表示",
   "touchControls": {
-    "move": "キャラクター移動スティック",
-    "jump": "ジャンプ"
+    "jump": "ジャンプ",
+    "look": "視点を回す",
+    "move": "キャラクター移動スティック"
   },
   "views": {
     "first": "キャラクター視点",

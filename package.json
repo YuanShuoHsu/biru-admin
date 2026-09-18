@@ -36,6 +36,7 @@
     "libphonenumber-js": "^1.12.38",
     "next": "16.3.2",
     "next-intl": "^4.8.3",
+    "nipplejs": "^1.0.4",
     "notistack": "^3.0.2",
     "react": "19.2.3",
     "react-dom": "19.2.3",

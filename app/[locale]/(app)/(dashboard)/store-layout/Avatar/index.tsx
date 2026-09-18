@@ -128,8 +128,10 @@ const Avatar = ({
     const controls = controlsRef.current;
 
     if (controls) {
-      const yaw = Number(move.lookLeft) - Number(move.lookRight);
-      const pitch = Number(move.lookUp) - Number(move.lookDown);
+      const yaw =
+        Number(move.lookLeft) - Number(move.lookRight) - touch.lookSideways;
+      const pitch =
+        Number(move.lookUp) - Number(move.lookDown) + touch.lookVertical;
 
       if (yaw || pitch) {
         lookOffset.subVectors(controls.object.position, controls.target);

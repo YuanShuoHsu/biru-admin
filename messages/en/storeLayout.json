@@ -5,12 +5,14 @@
     "width": "W {value} m"
   },
   "empty": "This organization has no store layout yet.",
+  "exitFullscreen": "Exit fullscreen",
   "export": "Export PNG",
   "floors": {
     "all": "All",
     "ground": "1F",
     "upper": "2F"
   },
+  "fullscreen": "Fullscreen",
   "gridScale": "Grid 1 m / bold 5 m",
   "itemSize": "{width} × {depth} × {height} cm",
   "items": {
@@ -41,8 +43,9 @@
   "moveHint": "Click the view, then move the character with the arrow keys or WASD, jump with the space bar and turn the view with IJKL",
   "showLabels": "Show names and sizes",
   "touchControls": {
-    "move": "Move the character",
-    "jump": "Jump"
+    "jump": "Jump",
+    "look": "Turn the view",
+    "move": "Move the character"
   },
   "views": {
     "first": "First person",

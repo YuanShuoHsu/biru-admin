@@ -1,59 +1,57 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { type RefObject, useRef } from "react";
+import { type RefObject, useEffect, useRef, useSyncExternalStore } from "react";
 
 import { ArrowUpward } from "@mui/icons-material";
-import { styled } from "@mui/material/styles";
+import { styled, useTheme } from "@mui/material/styles";
+
+import nipplejs from "nipplejs";
 
 import type { StoreLayoutTouchInput } from "@/types/storeLayout";
 
-import {
-  BASE_SIZE,
-  JUMP_SIZE,
-  KNOB_SIZE,
-  TRAVEL,
-  joystickVector,
-} from "./vector";
+const JUMP_SIZE = 64;
+const STICK_RADIUS = 50;
+const EDGE_GAP = 16;
 
-const Overlay = styled("div")({
+const TOUCH_QUERY = "(hover: none) and (pointer: coarse)";
+
+const subscribeTouch = (onChange: () => void) => {
+  const query = window.matchMedia(TOUCH_QUERY);
+
+  query.addEventListener("change", onChange);
+
+  return () => query.removeEventListener("change", onChange);
+};
+
+const STICK_INSET = `max(20%, ${STICK_RADIUS + 8}px)`;
+
+const MOVE_POSITION = { bottom: STICK_INSET, left: STICK_INSET };
+
+const LOOK_POSITION = { bottom: STICK_INSET, right: STICK_INSET };
+
+const Zone = styled("div")({
   display: "none",
   position: "absolute",
-  bottom: 16,
-  left: 16,
-  right: 16,
-  alignItems: "flex-end",
-  justifyContent: "space-between",
-  pointerEvents: "none",
+  bottom: 0,
+  width: "50%",
+  height: "50%",
 
-  "@media (hover: none) and (pointer: coarse)": {
-    display: "flex",
+  [`@media ${TOUCH_QUERY}`]: {
+    display: "block",
   },
 });
 
-const Base = styled("div")(({ theme }) => ({
-  position: "relative",
-  width: BASE_SIZE,
-  height: BASE_SIZE,
-  border: `1px solid ${theme.vars.palette.divider}`,
-  borderRadius: "50%",
-  backgroundColor: `rgba(${theme.vars.palette.background.paperChannel} / 0.55)`,
-  pointerEvents: "auto",
-  touchAction: "none",
-}));
+const MoveZone = styled(Zone)({ left: 0 });
 
-const Knob = styled("div")(({ theme }) => ({
-  position: "absolute",
-  top: TRAVEL,
-  left: TRAVEL,
-  width: KNOB_SIZE,
-  height: KNOB_SIZE,
-  border: `1px solid ${theme.vars.palette.divider}`,
-  borderRadius: "50%",
-  backgroundColor: `rgba(${theme.vars.palette.primary.mainChannel} / 0.35)`,
-}));
+const LookZone = styled(Zone)({ left: "50%" });
 
+// 疊在右搖桿正上方，右拇指不必離開操作區；zone 佔半高，所以搖桿的 20% 在這裡是 10%
 const Jump = styled("button")(({ theme }) => ({
+  display: "none",
+  position: "absolute",
+  right: EDGE_GAP,
+  bottom: `calc(max(10%, ${STICK_RADIUS + 8}px) + ${STICK_RADIUS + EDGE_GAP}px)`,
   width: JUMP_SIZE,
   height: JUMP_SIZE,
   padding: 0,
@@ -61,8 +59,11 @@ const Jump = styled("button")(({ theme }) => ({
   borderRadius: "50%",
   backgroundColor: `rgba(${theme.vars.palette.background.paperChannel} / 0.55)`,
   color: theme.vars.palette.text.primary,
-  pointerEvents: "auto",
   touchAction: "none",
+
+  [`@media ${TOUCH_QUERY}`]: {
+    display: "block",
+  },
 }));
 
 interface JoystickProps {
@@ -71,53 +72,82 @@ interface JoystickProps {
 
 const Joystick = ({ inputRef }: JoystickProps) => {
   const tStoreLayout = useTranslations("storeLayout");
+  const theme = useTheme();
 
-  const knobRef = useRef<HTMLDivElement>(null);
-  const originRef = useRef<{ id: number; x: number; y: number } | null>(null);
+  const moveZoneRef = useRef<HTMLDivElement>(null);
+  const lookZoneRef = useRef<HTMLDivElement>(null);
 
-  const setKnob = (x: number, y: number) => {
-    if (knobRef.current)
-      knobRef.current.style.transform = `translate(${x * TRAVEL}px, ${y * TRAVEL}px)`;
-  };
+  const touch = useSyncExternalStore(
+    subscribeTouch,
+    () => window.matchMedia(TOUCH_QUERY).matches,
+    () => false,
+  );
 
-  const setInput = (x: number, y: number) => {
-    inputRef.current.sideways = x;
-    inputRef.current.towards = -y;
-    setKnob(x, y);
-  };
+  const back = `rgba(${theme.vars.palette.background.paperChannel} / 0.55)`;
+  const moveFront = `rgba(${theme.vars.palette.primary.mainChannel} / 0.35)`;
+  const lookFront = `rgba(${theme.vars.palette.secondary.mainChannel} / 0.35)`;
 
-  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
-    const origin = originRef.current;
-    if (!origin || origin.id !== event.pointerId) return;
+  useEffect(() => {
+    if (!touch) return;
 
-    const { x, y } = joystickVector(
-      event.clientX - origin.x,
-      event.clientY - origin.y,
-    );
+    const moveZone = moveZoneRef.current;
+    const lookZone = lookZoneRef.current;
+    if (!moveZone || !lookZone) return;
 
-    setInput(x, y);
-  };
+    const input = inputRef.current;
 
-  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
-    const { height, left, top, width } =
-      event.currentTarget.getBoundingClientRect();
+    const move = nipplejs.create({
+      color: { back, front: moveFront },
+      mode: "static",
+      position: MOVE_POSITION,
+      zone: moveZone,
+    });
 
-    originRef.current = {
-      id: event.pointerId,
-      x: left + width / 2,
-      y: top + height / 2,
+    const look = nipplejs.create({
+      color: { back, front: lookFront },
+      mode: "static",
+      position: LOOK_POSITION,
+      zone: lookZone,
+    });
+
+    const restMove = () => {
+      input.sideways = 0;
+      input.towards = 0;
     };
 
-    event.currentTarget.setPointerCapture(event.pointerId);
-    handlePointerMove(event);
-  };
+    const restLook = () => {
+      input.lookSideways = 0;
+      input.lookVertical = 0;
+    };
 
-  const handlePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (originRef.current?.id !== event.pointerId) return;
+    move.on("move", ({ data }) => {
+      input.sideways = data.vector.x;
+      input.towards = data.vector.y;
+    });
 
-    originRef.current = null;
-    setInput(0, 0);
-  };
+    look.on("move", ({ data }) => {
+      input.lookSideways = data.vector.x;
+      input.lookVertical = data.vector.y;
+    });
+
+    move.on("end", restMove);
+    look.on("end", restLook);
+
+    const reposition = () => {
+      move.reposition();
+      look.reposition();
+    };
+
+    document.addEventListener("fullscreenchange", reposition);
+
+    return () => {
+      document.removeEventListener("fullscreenchange", reposition);
+      move.destroy();
+      look.destroy();
+      restMove();
+      restLook();
+    };
+  }, [back, inputRef, lookFront, moveFront, touch]);
 
   const handleJumpDown = () => {
     inputRef.current.jump = true;
@@ -128,17 +158,15 @@ const Joystick = ({ inputRef }: JoystickProps) => {
   };
 
   return (
-    <Overlay>
-      <Base
+    <>
+      <MoveZone
         aria-label={tStoreLayout("touchControls.move")}
-        onPointerCancel={handlePointerUp}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        role="application"
-      >
-        <Knob ref={knobRef} />
-      </Base>
+        ref={moveZoneRef}
+      />
+      <LookZone
+        aria-label={tStoreLayout("touchControls.look")}
+        ref={lookZoneRef}
+      />
       <Jump
         aria-label={tStoreLayout("touchControls.jump")}
         onPointerCancel={handleJumpUp}
@@ -149,7 +177,7 @@ const Joystick = ({ inputRef }: JoystickProps) => {
       >
         <ArrowUpward fontSize="small" />
       </Jump>
-    </Overlay>
+    </>
   );
 };
 

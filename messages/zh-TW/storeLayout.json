@@ -5,12 +5,14 @@
     "width": "寬 {value} m"
   },
   "empty": "此組織尚未建立店內配置。",
+  "exitFullscreen": "離開全螢幕",
   "export": "匯出 PNG",
   "floors": {
     "all": "全部",
     "ground": "一樓",
     "upper": "二樓"
   },
+  "fullscreen": "全螢幕",
   "gridScale": "格線 1 m／粗線 5 m",
   "itemSize": "{width} × {depth} × {height} cm",
   "items": {
@@ -41,8 +43,9 @@
   "moveHint": "點擊畫面後，可用方向鍵或 WASD 移動角色，空白鍵跳躍，IJKL 轉動視角",
   "showLabels": "顯示名稱與尺寸",
   "touchControls": {
-    "move": "移動角色搖桿",
-    "jump": "跳躍"
+    "jump": "跳躍",
+    "look": "轉動視角搖桿",
+    "move": "移動角色搖桿"
   },
   "views": {
     "first": "角色視角",

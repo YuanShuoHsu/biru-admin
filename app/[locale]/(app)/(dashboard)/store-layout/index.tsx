@@ -1,7 +1,13 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { type ComponentRef, useRef, useState } from "react";
+import dynamic from "next/dynamic";
+import {
+  type ComponentRef,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 
 import {
   STORE_LAYOUT_FLOORS,
@@ -24,10 +30,10 @@ import {
   STORE_LAYOUT_WALLS,
 } from "@/constants/storeLayout";
 
-import { Download } from "@mui/icons-material";
+import { Download, Fullscreen, FullscreenExit } from "@mui/icons-material";
 import {
-  Button,
   FormControlLabel,
+  IconButton,
   Stack,
   Switch,
   ToggleButton,
@@ -57,8 +63,9 @@ import type {
 } from "@/types/storeLayout";
 
 import Avatar from "./Avatar";
-import Joystick from "./Joystick";
 import SpriteLabel from "./SpriteLabel";
+
+const Joystick = dynamic(() => import("./Joystick"), { ssr: false });
 
 const StyledStack = styled(Stack)({
   flex: 1,
@@ -71,7 +78,6 @@ const Toolbar = styled(Stack)({
   flexWrap: "wrap",
 });
 
-// md 以下外層沒有鎖 100dvh，畫布要自己給確定高度：只靠 flex 與 minHeight 的話計算值仍是 auto，Canvas 內層的 height: 100% 沒有基準可解析
 const CanvasContainer = styled("div")(({ theme }) => ({
   flex: "none",
   position: "relative",
@@ -85,6 +91,27 @@ const CanvasContainer = styled("div")(({ theme }) => ({
     height: "auto",
     minHeight: 240,
   },
+
+  "&:fullscreen": {
+    height: "100%",
+    border: "none",
+    borderRadius: 0,
+    backgroundColor: theme.vars.palette.background.default,
+  },
+}));
+
+const OverlayButtons = styled(Stack)({
+  position: "absolute",
+  right: 12,
+  bottom: 12,
+  flexDirection: "row",
+  gap: 8,
+});
+
+const OverlayButton = styled(IconButton)(({ theme }) => ({
+  border: `1px solid ${theme.vars.palette.divider}`,
+  backgroundColor: `rgba(${theme.vars.palette.background.paperChannel} / 0.55)`,
+  color: theme.vars.palette.text.primary,
 }));
 
 const EmptyOverlay = styled("div")({
@@ -92,6 +119,12 @@ const EmptyOverlay = styled("div")({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
+});
+
+const KeyboardHint = styled(Typography)({
+  "@media (hover: none) and (pointer: coarse)": {
+    display: "none",
+  },
 });
 
 const MOVE_MAP: KeyboardControlsEntry<StoreLayoutMove>[] = [
@@ -108,7 +141,14 @@ const MOVE_MAP: KeyboardControlsEntry<StoreLayoutMove>[] = [
 
 const { pitchLimit } = STORE_LAYOUT_LOOK;
 
-// 每個 prop 都要一直在；改成 ghost 時才展開的話，R3F 會把消失的 opacity 設成 0 而不是 1，實心那層整層看不見
+const subscribeFullscreen = (onChange: () => void) => {
+  document.addEventListener("fullscreenchange", onChange);
+
+  return () => document.removeEventListener("fullscreenchange", onChange);
+};
+
+const subscribeNothing = () => () => {};
+
 const ghostSurface = (ghost: boolean) => ({
   depthWrite: !ghost,
   opacity: ghost ? 0.06 : 1,
@@ -160,6 +200,8 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
   const rootStateRef = useRef<RootState>(null);
   const touchRef = useRef<StoreLayoutTouchInput>({
     jump: false,
+    lookSideways: 0,
+    lookVertical: 0,
     sideways: 0,
     towards: 0,
   });
@@ -167,6 +209,17 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
   const [canvasElement, setCanvasElement] = useState<HTMLDivElement | null>(
     null,
   );
+  const fullscreen = useSyncExternalStore(
+    subscribeFullscreen,
+    () => Boolean(document.fullscreenElement),
+    () => false,
+  );
+  const fullscreenSupported = useSyncExternalStore(
+    subscribeNothing,
+    () => document.fullscreenEnabled,
+    () => false,
+  );
+
   const [floor, setFloor] = useState<StoreLayoutFloor>("ground");
   const [floors, setFloors] = useState<StoreLayoutFloorFilter>("ground");
   const [showLabels, setShowLabels] = useState(true);
@@ -204,7 +257,6 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
     applyView(view, value);
   };
 
-  // 只顯示單層時，角色走到另一層就得把顯示帶過去，否則他會走進沒畫出來的樓層
   const showFloor = (value: StoreLayoutFloor) => {
     setFloor(value);
     setFloors((current) => (current === "all" ? current : value));
@@ -223,6 +275,11 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key.startsWith("Arrow") || event.code === "Space")
       event.preventDefault();
+  };
+
+  const handleFullscreen = () => {
+    if (document.fullscreenElement) void document.exitFullscreen();
+    else void canvasElement?.requestFullscreen();
   };
 
   const handleExport = () => {
@@ -293,15 +350,12 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
           }
           label={tStoreLayout("showLabels")}
         />
-        <Button onClick={handleExport} size="small" startIcon={<Download />}>
-          {tStoreLayout("export")}
-        </Button>
         <Typography color="text.secondary" variant="caption">
           {tStoreLayout("gridScale")}
         </Typography>
-        <Typography color="text.secondary" variant="caption">
+        <KeyboardHint color="text.secondary" variant="caption">
           {tStoreLayout("moveHint")}
-        </Typography>
+        </KeyboardHint>
       </Toolbar>
       <CanvasContainer
         onKeyDown={handleKeyDown}
@@ -317,7 +371,6 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
               fov: STORE_LAYOUT_FOV,
               position: [...STORE_LAYOUT_VIEWS.iso.position],
             }}
-            // 合成後繪圖緩衝區的內容即失效，不保留的話 toDataURL 會匯出空白圖
             gl={{ preserveDrawingBuffer: true }}
             onCreated={(state) => {
               rootStateRef.current = state;
@@ -523,6 +576,26 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
           </Canvas>
         </KeyboardControls>
         <Joystick inputRef={touchRef} />
+        <OverlayButtons>
+          <OverlayButton
+            aria-label={tStoreLayout("export")}
+            onClick={handleExport}
+            size="small"
+          >
+            <Download />
+          </OverlayButton>
+          {fullscreenSupported && (
+            <OverlayButton
+              aria-label={tStoreLayout(
+                fullscreen ? "exitFullscreen" : "fullscreen",
+              )}
+              onClick={handleFullscreen}
+              size="small"
+            >
+              {fullscreen ? <FullscreenExit /> : <Fullscreen />}
+            </OverlayButton>
+          )}
+        </OverlayButtons>
       </CanvasContainer>
     </StyledStack>
   );

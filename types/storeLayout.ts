@@ -16,6 +16,8 @@ export type StoreLayoutView = keyof typeof STORE_LAYOUT_VIEWS;
 
 export interface StoreLayoutTouchInput {
   jump: boolean;
+  lookSideways: number;
+  lookVertical: number;
   sideways: number;
   towards: number;
 }
