@@ -89,9 +89,31 @@ const StyledPaper = styled(Paper)({
   },
 });
 
+const OverlayActions = styled(Stack)(({ theme }) => ({
+  position: "absolute",
+  right: theme.spacing(1.5),
+  bottom: theme.spacing(1.5),
+  flexDirection: "row",
+  gap: theme.spacing(1),
+}));
+
 const OverlayButton = styled(IconButton)(({ theme }) => ({
   border: `1px solid ${theme.vars.palette.divider}`,
   color: theme.vars.palette.text.primary,
+}));
+
+const GridLegend = styled(Stack)(({ theme }) => ({
+  position: "absolute",
+  bottom: theme.spacing(1.5),
+  left: theme.spacing(1.5),
+  flexDirection: "row",
+  alignItems: "center",
+  gap: theme.spacing(1.5),
+  padding: theme.spacing(0.25, 1),
+  border: `1px solid ${theme.vars.palette.divider}`,
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: theme.vars.palette.background.paper,
+  pointerEvents: "none",
 }));
 
 const GridCellLine = styled("span")({
@@ -482,25 +504,6 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
             }
             label={tStoreLayout("showDimensions")}
           />
-          <Stack
-            alignItems="center"
-            aria-label={tStoreLayout("gridScale")}
-            direction="row"
-            gap={1.5}
-          >
-            <Stack alignItems="center" direction="row" gap={0.5}>
-              <GridCellLine />
-              <Typography color="text.secondary" variant="caption">
-                {tStoreLayout("gridLegend.cell")}
-              </Typography>
-            </Stack>
-            <Stack alignItems="center" direction="row" gap={0.5}>
-              <GridSectionLine />
-              <Typography color="text.secondary" variant="caption">
-                {tStoreLayout("gridLegend.section")}
-              </Typography>
-            </Stack>
-          </Stack>
           <KeyboardHint color="text.secondary" variant="caption">
             {tStoreLayout("moveHint")}
           </KeyboardHint>
@@ -779,13 +782,21 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
               </Canvas>
             </KeyboardControls>
             <Joystick inputRef={touchRef} />
-            <Stack
-              position="absolute"
-              bottom={12}
-              right={12}
-              flexDirection="row"
-              gap={1}
-            >
+            <GridLegend aria-label={tStoreLayout("gridScale")}>
+              <Stack alignItems="center" direction="row" gap={0.5}>
+                <GridCellLine />
+                <Typography color="text.secondary" variant="caption">
+                  {tStoreLayout("gridLegend.cell")}
+                </Typography>
+              </Stack>
+              <Stack alignItems="center" direction="row" gap={0.5}>
+                <GridSectionLine />
+                <Typography color="text.secondary" variant="caption">
+                  {tStoreLayout("gridLegend.section")}
+                </Typography>
+              </Stack>
+            </GridLegend>
+            <OverlayActions>
               <OverlayButton
                 aria-label={tStoreLayout("export")}
                 onClick={handleExport}
@@ -808,7 +819,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                   )}
                 </OverlayButton>
               )}
-            </Stack>
+            </OverlayActions>
           </>
         )}
       </StyledPaper>
