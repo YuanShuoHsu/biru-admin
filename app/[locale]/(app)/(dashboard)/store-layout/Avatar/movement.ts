@@ -92,19 +92,19 @@ const overlaps = (solid: Solid, x: number, z: number) =>
   z + radius > solid.z &&
   z - radius < solid.z + solid.depth;
 
-export const supportAt = (x: number, z: number, feet: number) =>
+export const supportAt = (x: number, z: number, feet: number, reach: number) =>
   SOLIDS.reduce(
     (highest, solid) =>
-      covers(solid, x, z) && solid.top <= feet + STEP_UP && solid.top > highest
+      covers(solid, x, z) && solid.top <= feet + reach && solid.top > highest
         ? solid.top
         : highest,
     0,
   );
 
-const isBlocked = (x: number, z: number, feet: number) =>
+const isBlocked = (x: number, z: number, feet: number, reach: number) =>
   SOLIDS.some(
     (solid) =>
-      solid.top > feet + STEP_UP &&
+      solid.top > feet + reach &&
       solid.bottom < feet + PERSON_HEIGHT &&
       overlaps(solid, x, z),
   );
@@ -130,6 +130,8 @@ export const advanceAvatar = (
   delta: number,
 ) => {
   const feet = state.y;
+  const airborne = Boolean(state.verticalSpeed);
+  const reach = airborne ? 0 : STEP_UP;
 
   if (sideways || towards) {
     const stepX = forwardX * towards - forwardZ * sideways;
@@ -140,13 +142,13 @@ export const advanceAvatar = (
     const nextX = clampToRoom(state.x + stepX * scale, STORE_LAYOUT_ROOM.width);
     const nextZ = clampToRoom(state.z + stepZ * scale, STORE_LAYOUT_ROOM.depth);
 
-    const trapped = isBlocked(state.x, state.z, feet);
+    const trapped = !airborne && isBlocked(state.x, state.z, feet, reach);
 
-    if (trapped || !isBlocked(nextX, state.z, feet)) state.x = nextX;
-    if (trapped || !isBlocked(state.x, nextZ, feet)) state.z = nextZ;
+    if (trapped || !isBlocked(nextX, state.z, feet, reach)) state.x = nextX;
+    if (trapped || !isBlocked(state.x, nextZ, feet, reach)) state.z = nextZ;
   }
 
-  const support = supportAt(state.x, state.z, feet);
+  const support = supportAt(state.x, state.z, feet, reach);
   const grounded = feet <= support + 1e-4 && state.verticalSpeed <= 0;
 
   if (grounded) {
