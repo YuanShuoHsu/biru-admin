@@ -1,11 +1,13 @@
 import {
   STORE_LAYOUT_AVATAR,
+  STORE_LAYOUT_FLOORS,
   STORE_LAYOUT_FLOOR_BASE,
   STORE_LAYOUT_FLOOR_HEIGHT,
   STORE_LAYOUT_ITEMS,
   STORE_LAYOUT_ROOM,
   STORE_LAYOUT_SLAB_PANELS,
   STORE_LAYOUT_SLAB_THICKNESS,
+  STORE_LAYOUT_STAIRWELL,
   STORE_LAYOUT_STAIR_GUARDS,
   STORE_LAYOUT_STAIR_GUARD_HEIGHT,
   STORE_LAYOUT_STAIR_STEPS,
@@ -17,13 +19,16 @@ const PERSON_HEIGHT = 1.7;
 
 const STEP_UP = 0.45;
 
-interface Solid {
-  bottom: number;
+interface Footprint {
   depth: number;
-  top: number;
   width: number;
   x: number;
   z: number;
+}
+
+interface Solid extends Footprint {
+  bottom: number;
+  top: number;
 }
 
 const SOLIDS: Solid[] = [
@@ -66,11 +71,20 @@ const SOLIDS: Solid[] = [
 const clampToRoom = (value: number, size: number) =>
   Math.min(Math.max(value, radius), size - radius);
 
-const covers = (solid: Solid, x: number, z: number) =>
-  x >= solid.x &&
-  x <= solid.x + solid.width &&
-  z >= solid.z &&
-  z <= solid.z + solid.depth;
+const covers = (area: Footprint, x: number, z: number) =>
+  x >= area.x &&
+  x <= area.x + area.width &&
+  z >= area.z &&
+  z <= area.z + area.depth;
+
+export const isOnStairs = (x: number, z: number) =>
+  covers(STORE_LAYOUT_STAIRWELL, x, z);
+
+export const floorIndexAt = (feet: number) =>
+  Math.min(
+    STORE_LAYOUT_FLOORS.length - 1,
+    Math.floor((feet + STEP_UP) / STORE_LAYOUT_FLOOR_HEIGHT),
+  );
 
 const overlaps = (solid: Solid, x: number, z: number) =>
   x + radius > solid.x &&

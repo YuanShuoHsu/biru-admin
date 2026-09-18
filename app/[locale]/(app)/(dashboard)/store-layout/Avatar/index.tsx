@@ -7,7 +7,6 @@ import {
   STORE_LAYOUT_FLOORS,
   STORE_LAYOUT_FLOOR_BASE,
   STORE_LAYOUT_FLOOR_ENTRY,
-  STORE_LAYOUT_FLOOR_HEIGHT,
   STORE_LAYOUT_LOOK,
   STORE_LAYOUT_VIEWS,
 } from "@/constants/storeLayout";
@@ -25,7 +24,12 @@ import type {
 } from "@/types/storeLayout";
 
 import Person from "../Person";
-import { type AvatarState, advanceAvatar } from "./movement";
+import {
+  type AvatarState,
+  advanceAvatar,
+  floorIndexAt,
+  isOnStairs,
+} from "./movement";
 
 const heading = new Vector3();
 const eyePoint = new Vector3();
@@ -49,6 +53,7 @@ interface AvatarProps {
   controlsRef: RefObject<ComponentRef<typeof OrbitControls> | null>;
   floor: StoreLayoutFloor;
   onFloorChange: (floor: StoreLayoutFloor) => void;
+  onStairsChange: (stairs: boolean) => void;
   touchRef: RefObject<StoreLayoutTouchInput>;
   view: StoreLayoutView;
 }
@@ -57,11 +62,13 @@ const Avatar = ({
   controlsRef,
   floor,
   onFloorChange,
+  onStairsChange,
   touchRef,
   view,
 }: AvatarProps) => {
   const groupRef = useRef<Group>(null);
   const floorIndexRef = useRef(0);
+  const stairsRef = useRef(false);
   const cameraViewRef = useRef<StoreLayoutView | null>(null);
   const stateRef = useRef<AvatarState>({
     verticalSpeed: 0,
@@ -118,11 +125,18 @@ const Avatar = ({
 
     group.position.set(state.x, state.y, state.z);
 
-    const floorIndex = Math.floor(state.y / STORE_LAYOUT_FLOOR_HEIGHT);
+    const floorIndex = floorIndexAt(state.y);
 
     if (floorIndex !== floorIndexRef.current) {
       floorIndexRef.current = floorIndex;
       onFloorChange(STORE_LAYOUT_FLOORS[floorIndex]);
+    }
+
+    const stairs = isOnStairs(state.x, state.z);
+
+    if (stairs !== stairsRef.current) {
+      stairsRef.current = stairs;
+      onStairsChange(stairs);
     }
 
     const controls = controlsRef.current;

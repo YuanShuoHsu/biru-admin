@@ -193,6 +193,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
 
   const [floor, setFloor] = useState<StoreLayoutFloor>("ground");
   const [floors, setFloors] = useState<StoreLayoutFloorFilter>("ground");
+  const [stairs, setStairs] = useState(false);
   const [showLabels, setShowLabels] = useState(true);
   const [view, setView] = useState<StoreLayoutView>("iso");
 
@@ -347,7 +348,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                 {STORE_LAYOUT_FLOORS.map((value) => {
                   if (floors !== "all" && floors !== value) return null;
 
-                  const ghost = floors === "all" && value !== floor;
+                  const ghost = floors === "all" && !stairs && value !== floor;
 
                   return (
                     <group
@@ -514,7 +515,8 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
 
                   const { depth, elevation, height, kind, label, width, x, z } =
                     item;
-                  const ghost = floors === "all" && item.floor !== floor;
+                  const ghost =
+                    floors === "all" && !stairs && item.floor !== floor;
 
                   return (
                     <mesh
@@ -551,6 +553,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                   controlsRef={controlsRef}
                   floor={floor}
                   onFloorChange={showFloor}
+                  onStairsChange={setStairs}
                   touchRef={touchRef}
                   view={view}
                 />
