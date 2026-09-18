@@ -18,7 +18,11 @@
   },
   "fullscreen": "全画面",
   "gridScale": "グリッド 1 m／太線 5 m",
-  "itemSize": "{width} × {depth} × {height} cm",
+  "itemDimensions": {
+    "depth": "奥行 {value} cm",
+    "height": "高さ {value} cm",
+    "width": "幅 {value} cm"
+  },
   "items": {
     "blender": "ブレンダー",
     "cleanShelf": "清潔な食器棚",
@@ -45,7 +49,8 @@
   },
   "label": "店内レイアウト",
   "moveHint": "画面をクリックすると、矢印キーまたは WASD でキャラクターを移動、スペースキーでジャンプ、IJKL で視線を動かせます",
-  "showLabels": "名称とサイズを表示",
+  "showDimensions": "サイズを表示",
+  "showLabels": "名称を表示",
   "touchControls": {
     "jump": "ジャンプ",
     "look": "視点を回す",

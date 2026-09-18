@@ -18,7 +18,11 @@
   },
   "fullscreen": "Fullscreen",
   "gridScale": "Grid 1 m / bold 5 m",
-  "itemSize": "{width} × {depth} × {height} cm",
+  "itemDimensions": {
+    "depth": "D {value} cm",
+    "height": "H {value} cm",
+    "width": "W {value} cm"
+  },
   "items": {
     "blender": "Blender",
     "cleanShelf": "Clean tableware shelf",
@@ -45,7 +49,8 @@
   },
   "label": "Store Layout",
   "moveHint": "Click the view, then move the character with the arrow keys or WASD, jump with the space bar and turn the view with IJKL",
-  "showLabels": "Show names and sizes",
+  "showDimensions": "Show sizes",
+  "showLabels": "Show names",
   "touchControls": {
     "jump": "Jump",
     "look": "Turn the view",

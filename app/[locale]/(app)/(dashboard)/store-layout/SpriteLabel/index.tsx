@@ -14,7 +14,6 @@ const SUPERSAMPLE = 3;
 const FONT_SIZE = 11;
 const LINE_HEIGHT = 1.5;
 const PADDING_X = 6;
-const NOTE_GAP = 4;
 const RADIUS = 4;
 const HALO_WIDTH = 3;
 
@@ -44,7 +43,7 @@ const roundedRect = (
   ctx.closePath();
 };
 
-const build = (text: string, note: string, plain: boolean) => {
+const build = (text: string, plain: boolean) => {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
   if (!ctx) return null;
@@ -54,12 +53,9 @@ const build = (text: string, note: string, plain: boolean) => {
   ctx.font = font;
 
   const textWidth = ctx.measureText(text).width;
-  const noteWidth = note
-    ? NOTE_GAP * SUPERSAMPLE + ctx.measureText(note).width
-    : 0;
   const padding = plain ? HALO_WIDTH * SUPERSAMPLE : PADDING_X * SUPERSAMPLE;
 
-  canvas.width = Math.ceil(textWidth + noteWidth + padding * 2);
+  canvas.width = Math.ceil(textWidth + padding * 2);
   canvas.height = Math.ceil(FONT_SIZE * LINE_HEIGHT * SUPERSAMPLE);
 
   ctx.font = font;
@@ -84,11 +80,6 @@ const build = (text: string, note: string, plain: boolean) => {
 
     ctx.fillStyle = cssVar("--mui-palette-text-primary");
     ctx.fillText(text, padding, middle);
-
-    if (note) {
-      ctx.fillStyle = cssVar("--mui-palette-text-secondary");
-      ctx.fillText(note, padding + textWidth + NOTE_GAP * SUPERSAMPLE, middle);
-    }
   }
 
   const texture = new CanvasTexture(canvas);
@@ -99,35 +90,29 @@ const build = (text: string, note: string, plain: boolean) => {
 };
 
 interface SpriteLabelProps {
-  note?: string;
   plain?: boolean;
   position: [number, number, number];
   text: string;
 }
 
-const SpriteLabel = ({
-  note = "",
-  plain = false,
-  position,
-  text,
-}: SpriteLabelProps) => {
+const SpriteLabel = ({ plain = false, position, text }: SpriteLabelProps) => {
   const viewportHeight = useThree((state) => state.size.height);
   const { mode, systemMode } = useColorScheme();
 
   const scheme = (mode === "system" ? systemMode : mode) ?? "light";
 
   const label = useMemo(() => {
-    const key = `${scheme}|${plain}|${text}|${note}`;
+    const key = `${scheme}|${plain}|${text}`;
     const cached = cache.get(key);
 
     if (cached) return cached;
 
-    const built = build(text, note, plain);
+    const built = build(text, plain);
 
     if (built) cache.set(key, built);
 
     return built;
-  }, [note, plain, scheme, text]);
+  }, [plain, scheme, text]);
 
   if (!label) return null;
 

@@ -18,7 +18,11 @@
   },
   "fullscreen": "全螢幕",
   "gridScale": "格線 1 m／粗線 5 m",
-  "itemSize": "{width} × {depth} × {height} cm",
+  "itemDimensions": {
+    "depth": "深 {value} cm",
+    "height": "高 {value} cm",
+    "width": "寬 {value} cm"
+  },
   "items": {
     "blender": "果汁機",
     "cleanShelf": "潔淨餐具層架",
@@ -45,7 +49,8 @@
   },
   "label": "店內配置",
   "moveHint": "點擊畫面後，可用方向鍵或 WASD 移動角色，空白鍵跳躍，IJKL 轉動視角",
-  "showLabels": "顯示名稱與尺寸",
+  "showDimensions": "顯示尺寸",
+  "showLabels": "顯示名稱",
   "touchControls": {
     "jump": "跳躍",
     "look": "轉動視角搖桿",

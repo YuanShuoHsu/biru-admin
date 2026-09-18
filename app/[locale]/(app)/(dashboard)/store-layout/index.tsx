@@ -55,6 +55,7 @@ import {
   Grid,
   KeyboardControls,
   type KeyboardControlsEntry,
+  Line,
   OrbitControls,
 } from "@react-three/drei";
 import { Canvas, type RootState } from "@react-three/fiber";
@@ -136,31 +137,132 @@ const ghostEdge = (ghost: boolean) => ({
 
 const toCentimeters = (value: number) => Math.round(value * 1000) / 10;
 
-const ROOM_DIMENSIONS = [
+type Point = [number, number, number];
+
+const DIMENSION_TICK = 0.12;
+const DIMENSION_LABEL_GAP = 0.22;
+
+const shift = (
+  [x, y, z]: Point,
+  [towardsX, towardsY, towardsZ]: Point,
+  distance: number,
+): Point => [
+  x + towardsX * distance,
+  y + towardsY * distance,
+  z + towardsZ * distance,
+];
+
+const middleOf = (
+  [fromX, fromY, fromZ]: Point,
+  [toX, toY, toZ]: Point,
+): Point => [(fromX + toX) / 2, (fromY + toY) / 2, (fromZ + toZ) / 2];
+
+const ROOM_DIMENSIONS: {
+  from: Point;
+  key: "width" | "depth" | "height";
+  outwards: Point;
+  to: Point;
+  value: number;
+}[] = [
   {
+    from: [0, 0, STORE_LAYOUT_ROOM.depth + 0.45],
     key: "width",
-    position: [
-      STORE_LAYOUT_ROOM.width / 2,
-      0,
-      STORE_LAYOUT_ROOM.depth + 0.45,
-    ] as const,
+    outwards: [0, 0, 1],
+    to: [STORE_LAYOUT_ROOM.width, 0, STORE_LAYOUT_ROOM.depth + 0.45],
     value: STORE_LAYOUT_ROOM.width,
   },
   {
+    from: [STORE_LAYOUT_ROOM.width + 0.45, 0, 0],
     key: "depth",
-    position: [
-      STORE_LAYOUT_ROOM.width + 0.45,
-      0,
-      STORE_LAYOUT_ROOM.depth / 2,
-    ] as const,
+    outwards: [1, 0, 0],
+    to: [STORE_LAYOUT_ROOM.width + 0.45, 0, STORE_LAYOUT_ROOM.depth],
     value: STORE_LAYOUT_ROOM.depth,
   },
   {
+    from: [-0.35, 0, -0.35],
     key: "height",
-    position: [-0.35, STORE_LAYOUT_ROOM.height / 2, -0.35] as const,
+    outwards: [-1, 0, 0],
+    to: [-0.35, STORE_LAYOUT_ROOM.height, -0.35],
     value: STORE_LAYOUT_ROOM.height,
   },
-] as const;
+];
+
+const ITEM_DIMENSION_OFFSET = 0.06;
+const ITEM_DIMENSION_TICK = 0.04;
+const ITEM_DIMENSION_LABEL_GAP = 0.1;
+
+const itemDimensions = (width: number, height: number, depth: number) => {
+  const halfWidth = width / 2;
+  const halfHeight = height / 2;
+  const halfDepth = depth / 2;
+  const outside = halfDepth + ITEM_DIMENSION_OFFSET;
+  const beside = halfWidth + ITEM_DIMENSION_OFFSET;
+
+  return [
+    {
+      from: [-halfWidth, -halfHeight, outside] as Point,
+      key: "width" as const,
+      outwards: [0, 0, 1] as Point,
+      to: [halfWidth, -halfHeight, outside] as Point,
+      value: width,
+    },
+    {
+      from: [beside, -halfHeight, -halfDepth] as Point,
+      key: "depth" as const,
+      outwards: [1, 0, 0] as Point,
+      to: [beside, -halfHeight, halfDepth] as Point,
+      value: depth,
+    },
+    {
+      from: [-beside, -halfHeight, -outside] as Point,
+      key: "height" as const,
+      outwards: [-1, 0, 0] as Point,
+      to: [-beside, halfHeight, -outside] as Point,
+      value: height,
+    },
+  ];
+};
+
+interface DimensionLineProps {
+  from: Point;
+  labelGap: number;
+  outwards: Point;
+  text: string;
+  tick: number;
+  to: Point;
+}
+
+const DimensionLine = ({
+  from,
+  labelGap,
+  outwards,
+  text,
+  tick,
+  to,
+}: DimensionLineProps) => (
+  <>
+    <Line
+      color={grey[600]}
+      depthTest={false}
+      lineWidth={1}
+      points={[
+        from,
+        to,
+        shift(from, outwards, -tick),
+        shift(from, outwards, tick),
+        shift(to, outwards, -tick),
+        shift(to, outwards, tick),
+      ]}
+      renderOrder={1}
+      segments
+    />
+    <SpriteLabel
+      plain
+      position={shift(middleOf(from, to), outwards, labelGap)}
+      text={text}
+    />
+  </>
+);
 
 interface StoreLayoutProps {
   empty?: boolean;
@@ -198,6 +300,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
   const [floors, setFloors] = useState<StoreLayoutFloorFilter>("ground");
   const [stairs, setStairs] = useState(false);
   const [showLabels, setShowLabels] = useState(true);
+  const [showDimensions, setShowDimensions] = useState(true);
   const [view, setView] = useState<StoreLayoutView>("iso");
 
   const applyView = (
@@ -286,6 +389,13 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
     setShowLabels(checked);
   };
 
+  const handleShowDimensionsChange = (
+    _event: React.ChangeEvent<HTMLInputElement>,
+    checked: boolean,
+  ) => {
+    setShowDimensions(checked);
+  };
+
   return (
     <>
       {!empty && (
@@ -331,6 +441,15 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
               <Switch checked={showLabels} onChange={handleShowLabelsChange} />
             }
             label={tStoreLayout("showLabels")}
+          />
+          <FormControlLabel
+            control={
+              <Switch
+                checked={showDimensions}
+                onChange={handleShowDimensionsChange}
+              />
+            }
+            label={tStoreLayout("showDimensions")}
           />
           <Typography color="text.secondary" variant="caption">
             {tStoreLayout("gridScale")}
@@ -497,6 +616,23 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                             </mesh>
                           ),
                         )}
+                      {!ghost &&
+                        showDimensions &&
+                        ROOM_DIMENSIONS.map(
+                          ({ from, key, outwards, to, value }) => (
+                            <DimensionLine
+                              from={from}
+                              key={key}
+                              labelGap={DIMENSION_LABEL_GAP}
+                              outwards={outwards}
+                              text={tStoreLayout(`dimensions.${key}`, {
+                                value,
+                              })}
+                              tick={DIMENSION_TICK}
+                              to={to}
+                            />
+                          ),
+                        )}
                     </group>
                   );
                 })}
@@ -524,14 +660,6 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                     text={tStoreLayout("items.stair")}
                   />
                 )}
-                {ROOM_DIMENSIONS.map(({ key, position, value }) => (
-                  <SpriteLabel
-                    key={key}
-                    plain
-                    position={[...position]}
-                    text={tStoreLayout(`dimensions.${key}`, { value })}
-                  />
-                ))}
                 {STORE_LAYOUT_ITEMS.map((item) => {
                   if (floors !== "all" && floors !== item.floor) return null;
 
@@ -559,15 +687,27 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                       <Edges color={grey[700]} {...ghostEdge(ghost)} />
                       {showLabels && !ghost && (
                         <SpriteLabel
-                          note={tStoreLayout("itemSize", {
-                            depth: toCentimeters(depth),
-                            height: toCentimeters(height),
-                            width: toCentimeters(width),
-                          })}
                           position={[0, height / 2 + 0.08, 0]}
                           text={tStoreLayout(`items.${label}`)}
                         />
                       )}
+                      {showDimensions &&
+                        !ghost &&
+                        itemDimensions(width, height, depth).map(
+                          ({ from, key, outwards, to, value }) => (
+                            <DimensionLine
+                              from={from}
+                              key={key}
+                              labelGap={ITEM_DIMENSION_LABEL_GAP}
+                              outwards={outwards}
+                              text={tStoreLayout(`itemDimensions.${key}`, {
+                                value: toCentimeters(value),
+                              })}
+                              tick={ITEM_DIMENSION_TICK}
+                              to={to}
+                            />
+                          ),
+                        )}
                     </mesh>
                   );
                 })}
