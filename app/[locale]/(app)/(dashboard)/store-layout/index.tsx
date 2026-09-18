@@ -6,7 +6,9 @@ import { type ComponentRef, useRef, useState } from "react";
 import {
   STORE_LAYOUT_FLOORS,
   STORE_LAYOUT_FLOOR_BASE,
+  STORE_LAYOUT_FLOOR_FILTERS,
   STORE_LAYOUT_FLOOR_HEIGHT,
+  STORE_LAYOUT_FOV,
   STORE_LAYOUT_ITEMS,
   STORE_LAYOUT_KIND_COLORS,
   STORE_LAYOUT_LOOK,
@@ -38,7 +40,6 @@ import { styled } from "@mui/material/styles";
 import {
   Edges,
   Grid,
-  Html,
   KeyboardControls,
   type KeyboardControlsEntry,
   OrbitControls,
@@ -49,11 +50,13 @@ import { DoubleSide } from "three";
 
 import type {
   StoreLayoutFloor,
+  StoreLayoutFloorFilter,
   StoreLayoutMove,
   StoreLayoutView,
 } from "@/types/storeLayout";
 
 import Avatar from "./Avatar";
+import SpriteLabel from "./SpriteLabel";
 
 const StyledStack = styled(Stack)({
   flex: 1,
@@ -86,30 +89,6 @@ const EmptyOverlay = styled("div")({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-});
-
-const Label = styled("span")({
-  padding: "2px 6px",
-  border: "1px solid var(--mui-palette-divider)",
-  borderRadius: 4,
-  backgroundColor: "var(--mui-palette-background-paper)",
-  color: "var(--mui-palette-text-primary)",
-  fontSize: 11,
-  whiteSpace: "nowrap",
-});
-
-const Size = styled("span")({
-  marginLeft: 4,
-  color: "var(--mui-palette-text-secondary)",
-});
-
-const Dimension = styled("span")({
-  color: "var(--mui-palette-text-secondary)",
-  fontSize: 12,
-  fontWeight: 500,
-  whiteSpace: "nowrap",
-  textShadow:
-    "0 0 3px var(--mui-palette-background-default), 0 0 3px var(--mui-palette-background-default)",
 });
 
 const MOVE_MAP: KeyboardControlsEntry<StoreLayoutMove>[] = [
@@ -181,6 +160,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
     null,
   );
   const [floor, setFloor] = useState<StoreLayoutFloor>("ground");
+  const [floors, setFloors] = useState<StoreLayoutFloorFilter>("ground");
   const [showLabels, setShowLabels] = useState(true);
   const [view, setView] = useState<StoreLayoutView>("iso");
 
@@ -202,14 +182,24 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
     controls.update();
   };
 
-  const handleFloorChange = (
+  const handleFloorsChange = (
     _event: React.MouseEvent<HTMLElement>,
-    value: StoreLayoutFloor | null,
+    value: StoreLayoutFloorFilter | null,
   ) => {
     if (!value) return;
 
+    setFloors(value);
+
+    if (value === "all") return;
+
     setFloor(value);
     applyView(view, value);
+  };
+
+  // 只顯示單層時，角色走到另一層就得把顯示帶過去，否則他會走進沒畫出來的樓層
+  const showFloor = (value: StoreLayoutFloor) => {
+    setFloor(value);
+    setFloors((current) => (current === "all" ? current : value));
   };
 
   const handleViewChange = (
@@ -236,7 +226,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
     const link = document.createElement("a");
 
     link.href = state.gl.domElement.toDataURL("image/png");
-    link.download = `store-layout-${floor}-${view}.png`;
+    link.download = `store-layout-${floors}-${view}.png`;
     document.body.append(link);
     link.click();
     link.remove();
@@ -267,11 +257,11 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
       <Toolbar gap={2}>
         <ToggleButtonGroup
           exclusive
-          onChange={handleFloorChange}
+          onChange={handleFloorsChange}
           size="small"
-          value={floor}
+          value={floors}
         >
-          {STORE_LAYOUT_FLOORS.map((value) => (
+          {STORE_LAYOUT_FLOOR_FILTERS.map((value) => (
             <ToggleButton key={value} value={value}>
               {tStoreLayout(`floors.${value}`)}
             </ToggleButton>
@@ -315,7 +305,10 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
           map={MOVE_MAP}
         >
           <Canvas
-            camera={{ fov: 55, position: [...STORE_LAYOUT_VIEWS.iso.position] }}
+            camera={{
+              fov: STORE_LAYOUT_FOV,
+              position: [...STORE_LAYOUT_VIEWS.iso.position],
+            }}
             // 合成後繪圖緩衝區的內容即失效，不保留的話 toDataURL 會匯出空白圖
             gl={{ preserveDrawingBuffer: true }}
             onCreated={(state) => {
@@ -325,7 +318,9 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
             <hemisphereLight args={[grey[50], blueGrey[500], 2.2]} />
             <directionalLight intensity={1.1} position={[6, 8, 4]} />
             {STORE_LAYOUT_FLOORS.map((value) => {
-              const ghost = value !== floor;
+              if (floors !== "all" && floors !== value) return null;
+
+              const ghost = floors === "all" && value !== floor;
 
               return (
                 <group key={value} position-y={STORE_LAYOUT_FLOOR_BASE[value]}>
@@ -447,34 +442,29 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
               </mesh>
             ))}
             {showLabels && (
-              <Html
-                center
-                pointerEvents="none"
+              <SpriteLabel
                 position={[
                   STORE_LAYOUT_STAIRWELL.x + STORE_LAYOUT_STAIRWELL.width / 2,
                   STORE_LAYOUT_FLOOR_HEIGHT,
                   STORE_LAYOUT_STAIRWELL.z + STORE_LAYOUT_STAIRWELL.depth / 2,
                 ]}
-              >
-                <Label>{tStoreLayout("items.stair")}</Label>
-              </Html>
+                text={tStoreLayout("items.stair")}
+              />
             )}
             {ROOM_DIMENSIONS.map(({ key, position, value }) => (
-              <Html
-                center
+              <SpriteLabel
                 key={key}
-                pointerEvents="none"
+                plain
                 position={[...position]}
-              >
-                <Dimension>
-                  {tStoreLayout(`dimensions.${key}`, { value })}
-                </Dimension>
-              </Html>
+                text={tStoreLayout(`dimensions.${key}`, { value })}
+              />
             ))}
             {STORE_LAYOUT_ITEMS.map((item) => {
+              if (floors !== "all" && floors !== item.floor) return null;
+
               const { depth, elevation, height, kind, label, width, x, z } =
                 item;
-              const ghost = item.floor !== floor;
+              const ghost = floors === "all" && item.floor !== floor;
 
               return (
                 <mesh
@@ -494,22 +484,15 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                   />
                   <Edges color={grey[700]} {...ghostEdge(ghost)} />
                   {showLabels && !ghost && (
-                    <Html
-                      center
-                      pointerEvents="none"
+                    <SpriteLabel
+                      note={tStoreLayout("itemSize", {
+                        depth: toCentimeters(depth),
+                        height: toCentimeters(height),
+                        width: toCentimeters(width),
+                      })}
                       position={[0, height / 2 + 0.08, 0]}
-                    >
-                      <Label>
-                        {tStoreLayout(`items.${label}`)}
-                        <Size>
-                          {tStoreLayout("itemSize", {
-                            depth: toCentimeters(depth),
-                            height: toCentimeters(height),
-                            width: toCentimeters(width),
-                          })}
-                        </Size>
-                      </Label>
-                    </Html>
+                      text={tStoreLayout(`items.${label}`)}
+                    />
                   )}
                 </mesh>
               );
@@ -517,7 +500,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
             <Avatar
               controlsRef={controlsRef}
               floor={floor}
-              onFloorChange={setFloor}
+              onFloorChange={showFloor}
               view={view}
             />
             <OrbitControls

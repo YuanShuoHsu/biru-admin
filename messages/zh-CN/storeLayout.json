@@ -7,6 +7,7 @@
   "empty": "此组织尚未建立店内配置。",
   "export": "导出 PNG",
   "floors": {
+    "all": "全部",
     "ground": "一楼",
     "upper": "二楼"
   },

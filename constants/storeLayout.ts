@@ -20,6 +20,11 @@ export const STORE_LAYOUT_ROOM = {
 
 export const STORE_LAYOUT_FLOORS = ["ground", "upper"] as const;
 
+export const STORE_LAYOUT_FLOOR_FILTERS = [
+  ...STORE_LAYOUT_FLOORS,
+  "all",
+] as const;
+
 export const STORE_LAYOUT_KIND_COLORS = {
   bar: deepPurple[200],
   cold: blue[300],
@@ -893,6 +898,8 @@ export const STORE_LAYOUT_VIEW_ORDER = [
   "follow",
   "first",
 ] as const satisfies readonly (keyof typeof STORE_LAYOUT_VIEWS)[];
+
+export const STORE_LAYOUT_FOV = 55;
 
 export const STORE_LAYOUT_LOOK = {
   pitchLimit: (Math.PI / 180) * 80,

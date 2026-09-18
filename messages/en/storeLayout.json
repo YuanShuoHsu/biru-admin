@@ -7,6 +7,7 @@
   "empty": "This organization has no store layout yet.",
   "export": "Export PNG",
   "floors": {
+    "all": "All",
     "ground": "1F",
     "upper": "2F"
   },
