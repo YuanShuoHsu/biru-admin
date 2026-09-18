@@ -25,6 +25,7 @@ import {
   STORE_LAYOUT_STAIR_GUARDS,
   STORE_LAYOUT_STAIR_GUARD_HEIGHT,
   STORE_LAYOUT_STAIR_STEPS,
+  STORE_LAYOUT_TOUCH_MEDIA,
   STORE_LAYOUT_VIEWS,
   STORE_LAYOUT_VIEW_ORDER,
   STORE_LAYOUT_WALLS,
@@ -122,7 +123,7 @@ const EmptyOverlay = styled("div")({
 });
 
 const KeyboardHint = styled(Typography)({
-  "@media (hover: none) and (pointer: coarse)": {
+  [STORE_LAYOUT_TOUCH_MEDIA]: {
     display: "none",
   },
 });

@@ -901,6 +901,10 @@ export const STORE_LAYOUT_VIEW_ORDER = [
 
 export const STORE_LAYOUT_FOV = 55;
 
+export const STORE_LAYOUT_TOUCH_QUERY = "(hover: none) and (pointer: coarse)";
+
+export const STORE_LAYOUT_TOUCH_MEDIA = `@media ${STORE_LAYOUT_TOUCH_QUERY}`;
+
 export const STORE_LAYOUT_LOOK = {
   pitchLimit: (Math.PI / 180) * 80,
   speed: 1.6,
