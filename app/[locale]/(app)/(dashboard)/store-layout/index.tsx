@@ -52,7 +52,6 @@ import { styled } from "@mui/material/styles";
 
 import {
   Edges,
-  Grid,
   KeyboardControls,
   type KeyboardControlsEntry,
   Line,
@@ -196,6 +195,28 @@ const ROOM_DIMENSIONS: {
     value: STORE_LAYOUT_ROOM.height,
   },
 ];
+
+const GRID_CELL_SIZE = 1;
+const GRID_SECTION_SIZE = 5;
+
+const gridPoints = (step: number, keep: (value: number) => boolean) => {
+  const points: Point[] = [];
+
+  for (let x = 0; x <= STORE_LAYOUT_ROOM.width; x += step)
+    if (keep(x)) points.push([x, 0, 0], [x, 0, STORE_LAYOUT_ROOM.depth]);
+
+  for (let z = 0; z <= STORE_LAYOUT_ROOM.depth; z += step)
+    if (keep(z)) points.push([0, 0, z], [STORE_LAYOUT_ROOM.width, 0, z]);
+
+  return points;
+};
+
+const GRID_CELL_POINTS = gridPoints(
+  GRID_CELL_SIZE,
+  (value) => value % GRID_SECTION_SIZE !== 0,
+);
+
+const GRID_SECTION_POINTS = gridPoints(GRID_SECTION_SIZE, () => true);
 
 const ITEM_DIMENSION_OFFSET = 0.06;
 const ITEM_DIMENSION_TICK = 0.04;
@@ -604,23 +625,22 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                         </>
                       )}
                       {!ghost && (
-                        <Grid
-                          args={[
-                            STORE_LAYOUT_ROOM.width,
-                            STORE_LAYOUT_ROOM.depth,
-                          ]}
-                          cellColor={grey[500]}
-                          cellSize={1}
-                          fadeStrength={0}
-                          position={[
-                            STORE_LAYOUT_ROOM.width / 2,
-                            0.002,
-                            STORE_LAYOUT_ROOM.depth / 2,
-                          ]}
-                          sectionColor={grey[700]}
-                          sectionSize={5}
-                          side={DoubleSide}
-                        />
+                        <>
+                          <Line
+                            color={grey[500]}
+                            lineWidth={1}
+                            points={GRID_CELL_POINTS}
+                            position-y={0.002}
+                            segments
+                          />
+                          <Line
+                            color={grey[700]}
+                            lineWidth={2}
+                            points={GRID_SECTION_POINTS}
+                            position-y={0.003}
+                            segments
+                          />
+                        </>
                       )}
                       {!ghost &&
                         STORE_LAYOUT_WALLS.map(
