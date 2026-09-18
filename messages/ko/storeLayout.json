@@ -41,10 +41,9 @@
   "repeatedSize": "{label} ×{count} · {size}",
   "showLabels": "이름과 크기 표시",
   "views": {
-    "customer": "고객 시점",
+    "first": "캐릭터 시점",
     "follow": "캐릭터 따라가기",
     "iso": "사선 시점",
-    "staff": "직원 시점",
     "top": "위에서 보기"
   }
 }

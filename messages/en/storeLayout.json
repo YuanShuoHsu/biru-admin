@@ -41,10 +41,9 @@
   "repeatedSize": "{label} ×{count} · {size}",
   "showLabels": "Show names and sizes",
   "views": {
-    "customer": "Customer view",
+    "first": "First person",
     "follow": "Follow avatar",
     "iso": "Isometric",
-    "staff": "Staff view",
     "top": "Top view"
   }
 }

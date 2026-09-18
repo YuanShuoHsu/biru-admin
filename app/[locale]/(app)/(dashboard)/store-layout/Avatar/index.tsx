@@ -16,18 +16,24 @@ import { useFrame, useThree } from "@react-three/fiber";
 
 import { type Group, Vector3 } from "three";
 
-import type { StoreLayoutFloor, StoreLayoutMove } from "@/types/storeLayout";
+import type {
+  StoreLayoutFloor,
+  StoreLayoutMove,
+  StoreLayoutView,
+} from "@/types/storeLayout";
 
 import Person from "../Person";
 import { type AvatarState, advanceAvatar } from "./movement";
 
 const heading = new Vector3();
-const followTarget = new Vector3();
+const eyePoint = new Vector3();
+const look = new Vector3();
 const followShift = new Vector3();
 
 const { start } = STORE_LAYOUT_AVATAR;
 
-const { eye, offset } = STORE_LAYOUT_VIEWS.follow;
+const { eye: firstEye, lookAhead } = STORE_LAYOUT_VIEWS.first;
+const { eye: followEye, offset } = STORE_LAYOUT_VIEWS.follow;
 
 const FOLLOW_OFFSET = new Vector3(...offset);
 
@@ -36,14 +42,14 @@ const START_POSITION: [number, number, number] = [start.x, 0, start.z];
 interface AvatarProps {
   controlsRef: RefObject<ComponentRef<typeof OrbitControls> | null>;
   floor: StoreLayoutFloor;
-  follow: boolean;
   onFloorChange: (floor: StoreLayoutFloor) => void;
+  view: StoreLayoutView;
 }
 
-const Avatar = ({ controlsRef, floor, follow, onFloorChange }: AvatarProps) => {
+const Avatar = ({ controlsRef, floor, onFloorChange, view }: AvatarProps) => {
   const groupRef = useRef<Group>(null);
   const floorIndexRef = useRef(0);
-  const followingRef = useRef(false);
+  const cameraViewRef = useRef<StoreLayoutView | null>(null);
   const stateRef = useRef<AvatarState>({
     verticalSpeed: 0,
     x: start.x,
@@ -104,29 +110,48 @@ const Avatar = ({ controlsRef, floor, follow, onFloorChange }: AvatarProps) => {
       onFloorChange(STORE_LAYOUT_FLOORS[floorIndex]);
     }
 
-    const controls = follow ? controlsRef.current : null;
+    const controls =
+      view === "first" || view === "follow" ? controlsRef.current : null;
 
     if (!controls) {
-      followingRef.current = false;
+      cameraViewRef.current = null;
       return;
     }
 
-    followTarget.set(state.x, state.y + eye, state.z);
+    const entering = cameraViewRef.current !== view;
+    cameraViewRef.current = view;
 
-    if (followingRef.current)
-      // 相機與注視點位移同一個量，軌道半徑與角度才不會被覆寫，使用者轉過的視角得以保留
+    if (view === "first") {
+      eyePoint.set(state.x, state.y + firstEye, state.z);
+
+      // 注視點擺在眼前 lookAhead 處，拖曳就是繞著它轉，等同第一人稱的轉頭
+      look.subVectors(controls.target, controls.object.position);
+      if (entering) look.y = 0;
+      if (look.lengthSq() < 1e-6) look.set(0, 0, -1);
+
+      controls.object.position.copy(eyePoint);
+      controls.target
+        .copy(eyePoint)
+        .addScaledVector(look.normalize(), lookAhead);
+
+      return;
+    }
+
+    eyePoint.set(state.x, state.y + followEye, state.z);
+
+    if (entering) controls.object.position.copy(eyePoint).add(FOLLOW_OFFSET);
+    // 相機與注視點位移同一個量，軌道半徑與角度才不會被覆寫，使用者轉過的視角得以保留
+    else
       controls.object.position.add(
-        followShift.subVectors(followTarget, controls.target),
+        followShift.subVectors(eyePoint, controls.target),
       );
-    else controls.object.position.copy(followTarget).add(FOLLOW_OFFSET);
 
-    controls.target.copy(followTarget);
-    followingRef.current = true;
+    controls.target.copy(eyePoint);
   });
 
   return (
     <group position={START_POSITION} ref={groupRef}>
-      <Person color={STORE_LAYOUT_AVATAR.color} />
+      {view !== "first" && <Person color={STORE_LAYOUT_AVATAR.color} />}
     </group>
   );
 };

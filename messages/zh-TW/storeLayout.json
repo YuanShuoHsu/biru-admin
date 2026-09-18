@@ -41,10 +41,9 @@
   "repeatedSize": "{label} ×{count}　{size}",
   "showLabels": "顯示名稱與尺寸",
   "views": {
-    "customer": "顧客視角",
+    "first": "角色視角",
     "follow": "跟隨角色",
     "iso": "斜視",
-    "staff": "工作人員視角",
     "top": "俯瞰"
   }
 }

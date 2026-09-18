@@ -41,10 +41,9 @@
   "repeatedSize": "{label} ×{count}　{size}",
   "showLabels": "名称とサイズを表示",
   "views": {
-    "customer": "お客様視点",
+    "first": "キャラクター視点",
     "follow": "キャラクター追従",
     "iso": "斜め視点",
-    "staff": "スタッフ視点",
     "top": "俯瞰"
   }
 }

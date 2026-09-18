@@ -886,13 +886,12 @@ export const STORE_LAYOUT_PEOPLE = [
 ] as const;
 
 export const STORE_LAYOUT_VIEWS = {
-  customer: { position: [13, 1.55, 6.6], target: [8, 1.1, 3] },
+  first: { eye: 1.55, lookAhead: 1 },
   follow: { eye: 1.55, offset: [0, 1.2, 3.2] },
   iso: {
     position: [STORE_LAYOUT_ROOM.width + 9, 14, STORE_LAYOUT_ROOM.depth + 10],
     target: [STORE_LAYOUT_ROOM.width / 2, 1, STORE_LAYOUT_ROOM.depth / 2],
   },
-  staff: { position: [9.5, 1.6, 3.4], target: [5, 1, 1.2] },
   top: {
     position: [
       STORE_LAYOUT_ROOM.width / 2,

@@ -534,8 +534,8 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
             <Avatar
               controlsRef={controlsRef}
               floor={floor}
-              follow={view === "follow"}
               onFloorChange={setFloor}
+              view={view}
             />
             <OrbitControls
               ref={controlsRef}
