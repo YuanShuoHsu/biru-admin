@@ -533,6 +533,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                 onCreated={(state) => {
                   rootStateRef.current = state;
                 }}
+                style={{ position: "absolute", inset: 0 }}
               >
                 <hemisphereLight args={[grey[50], blueGrey[500], 2.2]} />
                 <directionalLight intensity={1.1} position={[6, 8, 4]} />
