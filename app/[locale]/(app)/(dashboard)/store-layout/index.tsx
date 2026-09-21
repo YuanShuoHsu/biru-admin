@@ -31,6 +31,7 @@ import {
   STORE_LAYOUT_STAIR_GUARD_HEIGHT,
   STORE_LAYOUT_STAIR_STEPS,
   STORE_LAYOUT_TOUCH_MEDIA,
+  STORE_LAYOUT_TOUCH_QUERY,
   STORE_LAYOUT_VIEWS,
   STORE_LAYOUT_VIEW_ORDER,
   STORE_LAYOUT_WALLS,
@@ -75,7 +76,9 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
   transition: theme.transitions.create("background-color"),
 }));
 
-const StyledPaper = styled(Paper)({
+const StyledPaper = styled(Paper, {
+  shouldForwardProp: (prop) => prop !== "fullscreen",
+})<{ fullscreen: boolean }>(({ fullscreen, theme }) => ({
   position: "relative",
   flex: 1,
   minHeight: 240,
@@ -87,7 +90,15 @@ const StyledPaper = styled(Paper)({
     border: "none",
     borderRadius: 0,
   },
-});
+
+  ...(fullscreen && {
+    position: "fixed",
+    inset: 0,
+    border: "none",
+    borderRadius: 0,
+    zIndex: theme.zIndex.modal,
+  }),
+}));
 
 const OverlayActions = styled(Stack)(({ theme }) => ({
   position: "absolute",
@@ -112,7 +123,7 @@ const GridLegend = styled(Stack)(({ theme }) => ({
   padding: theme.spacing(0.25, 1),
   border: `1px solid ${theme.vars.palette.divider}`,
   borderRadius: theme.shape.borderRadius,
-  backgroundColor: theme.vars.palette.background.paper,
+  transition: theme.transitions.create("border-color"),
   pointerEvents: "none",
 }));
 
@@ -153,6 +164,10 @@ const subscribeFullscreen = (onChange: () => void) => {
 };
 
 const subscribeNothing = () => () => {};
+
+const savesToPhotoLibrary = (file: File) =>
+  window.matchMedia(STORE_LAYOUT_TOUCH_QUERY).matches &&
+  Boolean(navigator.canShare?.({ files: [file] }));
 
 const ghostSurface = (ghost: boolean) => ({
   depthWrite: !ghost,
@@ -337,7 +352,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
   const [canvasElement, setCanvasElement] = useState<HTMLDivElement | null>(
     null,
   );
-  const fullscreen = useSyncExternalStore(
+  const nativeFullscreen = useSyncExternalStore(
     subscribeFullscreen,
     () => Boolean(document.fullscreenElement),
     () => false,
@@ -347,6 +362,9 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
     () => document.fullscreenEnabled,
     () => false,
   );
+  const [emulatedFullscreen, setEmulatedFullscreen] = useState(false);
+
+  const fullscreen = nativeFullscreen || emulatedFullscreen;
 
   const [character, setCharacter] = useState<StoreLayoutCharacter>("person");
   const [floor, setFloor] = useState<StoreLayoutFloor>("ground");
@@ -415,7 +433,13 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
       event.preventDefault();
   };
 
+  // iPhone Safari 沒有 Element.requestFullscreen，只能改用固定定位鋪滿視窗
   const handleFullscreen = () => {
+    if (!fullscreenSupported) {
+      setEmulatedFullscreen((on) => !on);
+      return;
+    }
+
     if (document.fullscreenElement) void document.exitFullscreen();
     else void canvasElement?.requestFullscreen();
   };
@@ -426,13 +450,29 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
 
     state.gl.render(state.scene, state.camera);
 
+    const name = `store-layout-${floors}-${view}.png`;
+    const dataUrl = state.gl.domElement.toDataURL("image/png");
+    const bytes = Uint8Array.from(
+      atob(dataUrl.slice(dataUrl.indexOf(",") + 1)),
+      (character) => character.charCodeAt(0),
+    );
+    const file = new File([bytes], name, { type: "image/png" });
+
+    if (savesToPhotoLibrary(file)) {
+      void navigator.share({ files: [file] }).catch(() => {});
+
+      return;
+    }
+
+    const url = URL.createObjectURL(file);
     const link = document.createElement("a");
 
-    link.href = state.gl.domElement.toDataURL("image/png");
-    link.download = `store-layout-${floors}-${view}.png`;
+    link.href = url;
+    link.download = name;
     document.body.append(link);
     link.click();
     link.remove();
+    setTimeout(() => URL.revokeObjectURL(url));
   };
 
   const handleShowLabelsChange = (
@@ -510,6 +550,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
         </Stack>
       )}
       <StyledPaper
+        fullscreen={emulatedFullscreen}
         ref={setCanvasElement}
         variant="outlined"
         {...(!empty && { onKeyDown: handleKeyDown, tabIndex: 0 })}
@@ -805,21 +846,19 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
               >
                 <Download fontSize="small" />
               </OverlayButton>
-              {fullscreenSupported && (
-                <OverlayButton
-                  aria-label={tStoreLayout(
-                    fullscreen ? "exitFullscreen" : "fullscreen",
-                  )}
-                  onClick={handleFullscreen}
-                  size="small"
-                >
-                  {fullscreen ? (
-                    <FullscreenExit fontSize="small" />
-                  ) : (
-                    <Fullscreen fontSize="small" />
-                  )}
-                </OverlayButton>
-              )}
+              <OverlayButton
+                aria-label={tStoreLayout(
+                  fullscreen ? "exitFullscreen" : "fullscreen",
+                )}
+                onClick={handleFullscreen}
+                size="small"
+              >
+                {fullscreen ? (
+                  <FullscreenExit fontSize="small" />
+                ) : (
+                  <Fullscreen fontSize="small" />
+                )}
+              </OverlayButton>
             </OverlayActions>
           </>
         )}

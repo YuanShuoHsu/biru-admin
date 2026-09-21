@@ -254,7 +254,10 @@ const theme = createTheme({
     MuiIconButton: {
       styleOverrides: {
         root: ({ theme }) => ({
-          transition: theme.transitions.create("background-color"),
+          transition: theme.transitions.create([
+            "background-color",
+            "border-color",
+          ]),
         }),
       },
     },

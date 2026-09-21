@@ -144,10 +144,13 @@ const Joystick = ({ inputRef }: JoystickProps) => {
       look.reposition();
     };
 
-    document.addEventListener("fullscreenchange", reposition);
+    const observer = new ResizeObserver(reposition);
+
+    observer.observe(moveZone);
+    observer.observe(lookZone);
 
     return () => {
-      document.removeEventListener("fullscreenchange", reposition);
+      observer.disconnect();
       move.destroy();
       look.destroy();
       restMove();
