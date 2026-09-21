@@ -3,8 +3,8 @@
 import { useTranslations } from "next-intl";
 import { type RefObject, useEffect, useRef, useSyncExternalStore } from "react";
 
-import { ArrowUpward } from "@mui/icons-material";
-import { Box, IconButton } from "@mui/material";
+import { ArrowUpward, DirectionsRun } from "@mui/icons-material";
+import { Box, IconButton, Stack } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 
 import nipplejs from "nipplejs";
@@ -55,19 +55,51 @@ const MoveZone = styled(Zone)({ left: 0 });
 
 const LookZone = styled(Zone)({ left: "50%" });
 
-const Jump = styled(IconButton)(({ theme }) => ({
+const Actions = styled(Stack)(({ theme }) => ({
   position: "absolute",
   right: EDGE_GAP,
   bottom: STICK_BOTTOM_INSET + STICK_RADIUS + EDGE_GAP,
-  border: `1px solid ${theme.vars.palette.divider}`,
-  color: theme.vars.palette.text.primary,
+  flexDirection: "column-reverse",
+  gap: theme.spacing(1),
   display: "none",
-  touchAction: "none",
 
   [STORE_LAYOUT_TOUCH_MEDIA]: {
-    display: "inline-flex",
+    display: "flex",
   },
 }));
+
+const ActionButton = styled(IconButton)(({ theme }) => ({
+  border: `1px solid ${theme.vars.palette.divider}`,
+  color: theme.vars.palette.text.primary,
+  touchAction: "none",
+}));
+
+const useHold = (onHold: (pressed: boolean) => void) => {
+  const pointerRef = useRef<number | null>(null);
+
+  const release = (event: React.PointerEvent<HTMLButtonElement>) => {
+    if (pointerRef.current !== event.pointerId) return;
+
+    pointerRef.current = null;
+    onHold(false);
+  };
+
+  return {
+    onContextMenu: (event: React.MouseEvent) => event.preventDefault(),
+    onLostPointerCapture: release,
+    onPointerCancel: release,
+    onPointerDown: (event: React.PointerEvent<HTMLButtonElement>) => {
+      event.preventDefault();
+
+      if (pointerRef.current !== null) return;
+
+      pointerRef.current = event.pointerId;
+      event.currentTarget.setPointerCapture(event.pointerId);
+      onHold(true);
+    },
+    onPointerUp: release,
+  };
+};
 
 interface JoystickProps {
   inputRef: RefObject<StoreLayoutTouchInput>;
@@ -79,7 +111,13 @@ const Joystick = ({ inputRef }: JoystickProps) => {
 
   const moveZoneRef = useRef<HTMLDivElement>(null);
   const lookZoneRef = useRef<HTMLDivElement>(null);
-  const jumpPointerRef = useRef<number | null>(null);
+
+  const jump = useHold((pressed) => {
+    inputRef.current.jump = pressed;
+  });
+  const sprint = useHold((pressed) => {
+    inputRef.current.sprint = pressed;
+  });
 
   const touch = useSyncExternalStore(
     subscribeTouch,
@@ -161,30 +199,10 @@ const Joystick = ({ inputRef }: JoystickProps) => {
   useEffect(
     () => () => {
       inputRef.current.jump = false;
+      inputRef.current.sprint = false;
     },
     [inputRef],
   );
-
-  const setJump = (pressed: boolean) => {
-    inputRef.current.jump = pressed;
-  };
-
-  const handleJumpDown = (event: React.PointerEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-
-    if (jumpPointerRef.current !== null) return;
-
-    jumpPointerRef.current = event.pointerId;
-    event.currentTarget.setPointerCapture(event.pointerId);
-    setJump(true);
-  };
-
-  const handleJumpUp = (event: React.PointerEvent<HTMLButtonElement>) => {
-    if (jumpPointerRef.current !== event.pointerId) return;
-
-    jumpPointerRef.current = null;
-    setJump(false);
-  };
 
   return (
     <>
@@ -196,17 +214,22 @@ const Joystick = ({ inputRef }: JoystickProps) => {
         aria-label={tStoreLayout("touchControls.look")}
         ref={lookZoneRef}
       />
-      <Jump
-        aria-label={tStoreLayout("touchControls.jump")}
-        onContextMenu={(event) => event.preventDefault()}
-        onLostPointerCapture={handleJumpUp}
-        onPointerCancel={handleJumpUp}
-        onPointerDown={handleJumpDown}
-        onPointerUp={handleJumpUp}
-        size="large"
-      >
-        <ArrowUpward />
-      </Jump>
+      <Actions>
+        <ActionButton
+          aria-label={tStoreLayout("touchControls.jump")}
+          size="large"
+          {...jump}
+        >
+          <ArrowUpward />
+        </ActionButton>
+        <ActionButton
+          aria-label={tStoreLayout("touchControls.sprint")}
+          size="large"
+          {...sprint}
+        >
+          <DirectionsRun />
+        </ActionButton>
+      </Actions>
     </>
   );
 };

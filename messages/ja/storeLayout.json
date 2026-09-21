@@ -52,13 +52,14 @@
     "workCounter": "バー作業台"
   },
   "label": "店内レイアウト",
-  "moveHint": "画面をクリックすると、矢印キーまたは WASD でキャラクターを移動、スペースキーでジャンプ、IJKL で視線を動かせます",
+  "moveHint": "画面をクリックすると、矢印キーまたは WASD でキャラクターを移動、Shift でダッシュ、スペースキーでジャンプ、IJKL で視線を動かせます",
   "showDimensions": "サイズ",
   "showLabels": "名称",
   "touchControls": {
     "jump": "ジャンプ",
     "look": "視点を回す",
-    "move": "キャラクター移動スティック"
+    "move": "キャラクター移動スティック",
+    "sprint": "ダッシュ"
   },
   "views": {
     "first": "キャラクター視点",

@@ -52,13 +52,14 @@
     "workCounter": "바 작업대"
   },
   "label": "매장 배치",
-  "moveHint": "화면을 클릭한 뒤 방향키 또는 WASD로 캐릭터를 이동하고 스페이스바로 점프하며 IJKL로 시야를 돌릴 수 있습니다",
+  "moveHint": "화면을 클릭한 뒤 방향키 또는 WASD로 캐릭터를 이동하고 Shift로 질주하며 스페이스바로 점프하고 IJKL로 시야를 돌릴 수 있습니다",
   "showDimensions": "크기",
   "showLabels": "이름",
   "touchControls": {
     "jump": "점프",
     "look": "시야 돌리기",
-    "move": "캐릭터 이동 조이스틱"
+    "move": "캐릭터 이동 조이스틱",
+    "sprint": "질주"
   },
   "views": {
     "first": "캐릭터 시점",

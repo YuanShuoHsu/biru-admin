@@ -135,6 +135,7 @@ const Avatar = ({
         forwardZ: heading.z,
         jump: move.jump || touch.jump,
         sideways: Number(move.right) - Number(move.left) + touch.sideways,
+        sprint: move.sprint || touch.sprint,
         towards: Number(move.forward) - Number(move.backward) + touch.towards,
       },
       delta,

@@ -52,13 +52,14 @@
     "workCounter": "Bar work counter"
   },
   "label": "Store Layout",
-  "moveHint": "Click the view, then move the character with the arrow keys or WASD, jump with the space bar and turn the view with IJKL",
+  "moveHint": "Click the view, then move the character with the arrow keys or WASD, sprint with Shift, jump with the space bar and turn the view with IJKL",
   "showDimensions": "Sizes",
   "showLabels": "Names",
   "touchControls": {
     "jump": "Jump",
     "look": "Turn the view",
-    "move": "Move the character"
+    "move": "Move the character",
+    "sprint": "Sprint"
   },
   "views": {
     "first": "First person",

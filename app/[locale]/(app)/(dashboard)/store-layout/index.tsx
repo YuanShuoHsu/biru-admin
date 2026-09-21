@@ -149,6 +149,7 @@ const MOVE_MAP: KeyboardControlsEntry<StoreLayoutMove>[] = [
   { keys: ["ArrowLeft", "KeyA"], name: "left" },
   { keys: ["ArrowRight", "KeyD"], name: "right" },
   { keys: ["Space"], name: "jump" },
+  { keys: ["ShiftLeft", "ShiftRight"], name: "sprint" },
   { keys: ["KeyI"], name: "lookUp" },
   { keys: ["KeyK"], name: "lookDown" },
   { keys: ["KeyJ"], name: "lookLeft" },
@@ -346,6 +347,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
     lookSideways: 0,
     lookVertical: 0,
     sideways: 0,
+    sprint: false,
     towards: 0,
   });
 

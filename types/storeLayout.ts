@@ -22,6 +22,7 @@ export interface StoreLayoutTouchInput {
   lookSideways: number;
   lookVertical: number;
   sideways: number;
+  sprint: boolean;
   towards: number;
 }
 
@@ -34,4 +35,5 @@ export type StoreLayoutMove =
   | "lookLeft"
   | "lookRight"
   | "lookUp"
-  | "right";
+  | "right"
+  | "sprint";
