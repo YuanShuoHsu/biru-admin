@@ -1,6 +1,6 @@
 "use client";
 
-import dayjs from "dayjs";
+import dayjs, { type Dayjs } from "dayjs";
 import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { useTranslations } from "next-intl";
@@ -87,6 +87,21 @@ const ShiftDialog = ({
       ],
     });
 
+  const handleStartsAtChange = (date: Dayjs | null) => {
+    setValue("startsAt", date?.isValid() ? date.toISOString() : "", {
+      shouldValidate: isSubmitted,
+    });
+
+    if (!date?.isValid() || !startsAt || !endsAt) return;
+
+    const duration = dayjs(endsAt).diff(startsAt);
+
+    if (duration > 0 && !date.isBefore(endsAt))
+      setValue("endsAt", date.add(duration, "millisecond").toISOString(), {
+        shouldValidate: isSubmitted,
+      });
+  };
+
   const onSubmitHandler = async ({ repeatWeeks, ...values }: ShiftForm) => {
     try {
       setDialog({ confirmLoading: true });
@@ -148,12 +163,7 @@ const ShiftDialog = ({
       </TextField>
       <DateTimePicker
         label={tAttendance("startsAt")}
-        maxDateTime={endsAt ? dayjs(endsAt) : undefined}
-        onChange={(date) =>
-          setValue("startsAt", date?.isValid() ? date.toISOString() : "", {
-            shouldValidate: isSubmitted,
-          })
-        }
+        onChange={handleStartsAtChange}
         slotProps={{
           textField: {
             error: !!errors.startsAt,

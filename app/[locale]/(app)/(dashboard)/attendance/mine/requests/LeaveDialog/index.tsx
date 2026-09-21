@@ -1,6 +1,6 @@
 "use client";
 
-import dayjs from "dayjs";
+import dayjs, { type Dayjs } from "dayjs";
 import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { useFormatter, useTranslations } from "next-intl";
@@ -84,6 +84,21 @@ const LeaveDialog = ({
   const isParentalLeave = leaveType?.statutoryKind === "parental";
 
   const date = (value: string) => format.dateTime(new Date(value), "short");
+
+  const handleStartsAtChange = (date: Dayjs | null) => {
+    setValue("startsAt", date?.isValid() ? date.toISOString() : "", {
+      shouldValidate: isSubmitted,
+    });
+
+    if (!date?.isValid() || !startsAt || !endsAt) return;
+
+    const duration = dayjs(endsAt).diff(startsAt);
+
+    if (duration > 0 && !date.isBefore(endsAt))
+      setValue("endsAt", date.add(duration, "millisecond").toISOString(), {
+        shouldValidate: isSubmitted,
+      });
+  };
 
   const onSubmitHandler = async ({
     leaveCaseId,
@@ -195,12 +210,7 @@ const LeaveDialog = ({
       )}
       <DateTimePicker
         label={tAttendance("startsAt")}
-        maxDateTime={endsAt ? dayjs(endsAt) : undefined}
-        onChange={(date) =>
-          setValue("startsAt", date?.isValid() ? date.toISOString() : "", {
-            shouldValidate: isSubmitted,
-          })
-        }
+        onChange={handleStartsAtChange}
         slotProps={{
           textField: {
             error: !!errors.startsAt,

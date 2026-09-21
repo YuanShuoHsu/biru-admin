@@ -83,7 +83,7 @@ const StatementDialogContent = ({
           {tAttendance("net")}: {money(statement.snapshot.netCents)}
         </Typography>
         <Typography variant="body2">
-          {tAttendance("employerPension")}:{" "}
+          {tAttendance("employerPension", { currency })}:{" "}
           {money(statement.snapshot.employerPensionCents)}
         </Typography>
         {canManage && (
@@ -116,7 +116,7 @@ const StatementDialogContent = ({
                 ],
                 [tAttendance("net"), money(statement.snapshot.netCents)],
                 [
-                  tAttendance("employerPension"),
+                  tAttendance("employerPension", { currency }),
                   money(statement.snapshot.employerPensionCents),
                 ],
               ],
