@@ -58,8 +58,7 @@
   "touchControls": {
     "jump": "점프",
     "look": "시야 돌리기",
-    "move": "캐릭터 이동 조이스틱",
-    "sprint": "질주"
+    "move": "캐릭터 이동 조이스틱"
   },
   "views": {
     "first": "캐릭터 시점",

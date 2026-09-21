@@ -347,7 +347,6 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
     lookSideways: 0,
     lookVertical: 0,
     sideways: 0,
-    sprint: false,
     towards: 0,
   });
 

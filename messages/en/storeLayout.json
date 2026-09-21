@@ -58,8 +58,7 @@
   "touchControls": {
     "jump": "Jump",
     "look": "Turn the view",
-    "move": "Move the character",
-    "sprint": "Sprint"
+    "move": "Move the character"
   },
   "views": {
     "first": "First person",

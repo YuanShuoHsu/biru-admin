@@ -42,7 +42,16 @@ const lookOffset = new Vector3();
 const lookSpherical = new Spherical();
 const followOffset = new Vector3();
 
-const { start } = STORE_LAYOUT_AVATAR;
+const { speed: walkSpeed, sprintSpeed, start } = STORE_LAYOUT_AVATAR;
+
+const SPRINT_FROM = 0.8;
+
+const paceFor = (deflection: number) =>
+  deflection <= SPRINT_FROM
+    ? walkSpeed
+    : walkSpeed +
+      ((sprintSpeed - walkSpeed) * (deflection - SPRINT_FROM)) /
+        (1 - SPRINT_FROM);
 
 const STRIDE_LENGTH = 0.75;
 
@@ -128,6 +137,8 @@ const Avatar = ({
 
     const touch = touchRef.current;
 
+    const deflection = Math.min(1, Math.hypot(touch.sideways, touch.towards));
+
     advanceAvatar(
       state,
       {
@@ -135,7 +146,7 @@ const Avatar = ({
         forwardZ: heading.z,
         jump: move.jump || touch.jump,
         sideways: Number(move.right) - Number(move.left) + touch.sideways,
-        sprint: move.sprint || touch.sprint,
+        speed: move.sprint ? sprintSpeed : paceFor(deflection),
         towards: Number(move.forward) - Number(move.backward) + touch.towards,
       },
       delta,

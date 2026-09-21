@@ -22,7 +22,6 @@ export interface StoreLayoutTouchInput {
   lookSideways: number;
   lookVertical: number;
   sideways: number;
-  sprint: boolean;
   towards: number;
 }
 

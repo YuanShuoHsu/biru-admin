@@ -58,8 +58,7 @@
   "touchControls": {
     "jump": "跳躍",
     "look": "轉動視角搖桿",
-    "move": "移動角色搖桿",
-    "sprint": "加速"
+    "move": "移動角色搖桿"
   },
   "views": {
     "first": "角色視角",

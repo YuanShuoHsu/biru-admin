@@ -13,7 +13,7 @@ import {
   STORE_LAYOUT_STAIR_STEPS,
 } from "@/constants/storeLayout";
 
-const { gravity, jumpSpeed, radius, speed, sprintSpeed } = STORE_LAYOUT_AVATAR;
+const { gravity, jumpSpeed, radius } = STORE_LAYOUT_AVATAR;
 
 const PERSON_HEIGHT = 1.7;
 
@@ -121,13 +121,13 @@ export interface AvatarInput {
   forwardZ: number;
   jump: boolean;
   sideways: number;
-  sprint: boolean;
+  speed: number;
   towards: number;
 }
 
 export const advanceAvatar = (
   state: AvatarState,
-  { forwardX, forwardZ, jump, sideways, sprint, towards }: AvatarInput,
+  { forwardX, forwardZ, jump, sideways, speed, towards }: AvatarInput,
   delta: number,
 ) => {
   const feet = state.y;
@@ -138,8 +138,7 @@ export const advanceAvatar = (
     const stepX = forwardX * towards - forwardZ * sideways;
     const stepZ = forwardZ * towards + forwardX * sideways;
     const length = Math.hypot(stepX, stepZ) || 1;
-    const pace = sprint ? sprintSpeed : speed;
-    const scale = (pace * delta * Math.min(1, length)) / length;
+    const scale = (speed * delta * Math.min(1, length)) / length;
 
     const nextX = clampToRoom(state.x + stepX * scale, STORE_LAYOUT_ROOM.width);
     const nextZ = clampToRoom(state.z + stepZ * scale, STORE_LAYOUT_ROOM.depth);
