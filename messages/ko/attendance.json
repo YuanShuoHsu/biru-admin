@@ -258,6 +258,8 @@
   "net": "실수령액",
   "nextDay": "다음 날",
   "no": "없음",
+  "noCorrectableShifts": "정정할 수 있는 근무가 없습니다. 근무가 시작된 뒤에 신청할 수 있습니다.",
+  "noShifts": "선택할 수 있는 근무가 없습니다. 관리자에게 근무 배정을 먼저 요청하세요.",
   "originalEvents": "원본 기록",
   "originalLeavePeriod": "원래 휴직 기간",
   "otherDeduction": "기타 확인된 공제({currency})",
@@ -327,7 +329,7 @@
   "reportedAt": "신고 일시",
   "requests": {
     "actions": {
-      "create": "휴가 신청 추가"
+      "create": "신청 추가"
     },
     "label": "내 신청"
   },
@@ -360,6 +362,7 @@
     "allowedIps": "고정 공인 IP",
     "label": "근태 설정"
   },
+  "shift": "근무",
   "shifts": {
     "actions": {
       "create": "근무 추가",

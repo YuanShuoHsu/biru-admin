@@ -323,6 +323,12 @@ const Reviews = ({
         valueOptions: enumOptions.kind,
       },
       {
+        field: "leaveTypeName",
+        filterOperators: stringFilterOperators,
+        headerName: tAttendance("leaveType"),
+        renderCell: renderEmptyableCell,
+      },
+      {
         field: "startsAt",
         filterOperators: dateFilterOperators,
         headerName: tAttendance("startsAt"),

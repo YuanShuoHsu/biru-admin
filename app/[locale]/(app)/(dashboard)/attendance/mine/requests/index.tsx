@@ -9,6 +9,7 @@ import useSWR from "swr";
 
 import LeaveDialog from "./LeaveDialog";
 import ReturnDialog from "./ReturnDialog";
+import ShiftRequestDialog from "./ShiftRequestDialog";
 
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -32,6 +33,8 @@ import {
   Button,
   Chip,
   IconButton,
+  Menu,
+  MenuItem,
   Stack,
   styled,
   Tooltip,
@@ -47,13 +50,17 @@ import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
+import { attendanceRequestKindValues } from "@/types/api";
+
 import type {
   AttendanceLeaveCase,
   AttendanceLeaveType,
   AttendanceRequest,
   AttendanceRequestFilterField,
+  AttendanceRequestKind,
   AttendanceRequestPage,
   AttendanceRequestSortField,
+  AttendanceShift,
 } from "@/types/attendance";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 
@@ -86,6 +93,7 @@ interface RequestsProps {
   quickFilterValue?: string;
   rowCount: number;
   rows: AttendanceRequest[];
+  shifts: AttendanceShift[];
   sortBy?: AttendanceRequestSortField;
   sortDirection?: SortDirection;
 }
@@ -103,6 +111,7 @@ const Requests = ({
   quickFilterValue: initialQuickFilterValue,
   rowCount: initialRowCount,
   rows: initialRows,
+  shifts,
   sortBy,
   sortDirection,
 }: RequestsProps) => {
@@ -114,6 +123,12 @@ const Requests = ({
   const [sortModel, setSortModel] = useState<GridSortModel>(
     sortBy && sortDirection ? [{ field: sortBy, sort: sortDirection }] : [],
   );
+
+  const [kindMenuTrigger, setKindMenuTrigger] = useState<HTMLElement | null>(
+    null,
+  );
+
+  const kindMenuOpen = Boolean(kindMenuTrigger);
 
   const [filterModel, setFilterModel] = useState<GridFilterModel>({
     items:
@@ -227,23 +242,52 @@ const Requests = ({
     [updateQuery],
   );
 
-  const handleCreateLeave = useCallback(
-    () =>
+  const correctableShifts = useMemo(
+    () => shifts.filter(({ startsAt }) => new Date(startsAt) <= new Date()),
+    [shifts],
+  );
+
+  const handleCreateRequest = useCallback(
+    (kind: AttendanceRequestKind) => {
+      setKindMenuTrigger(null);
+
+      const shiftRequestShifts =
+        kind === "correction" ? correctableShifts : shifts;
+
       setDialog({
+        confirmDisabled: kind !== "leave" && !shiftRequestShifts.length,
         confirmText: tAttendance("save"),
-        content: (
-          <LeaveDialog
-            leaveCases={leaveCases}
-            leaveTypes={leaveTypes}
-            mutate={mutate}
-            organizationSlug={organizationSlug}
-          />
-        ),
-        formId: "attendance-leave-form",
+        content:
+          kind === "leave" ? (
+            <LeaveDialog
+              leaveCases={leaveCases}
+              leaveTypes={leaveTypes}
+              mutate={mutate}
+              organizationSlug={organizationSlug}
+            />
+          ) : (
+            <ShiftRequestDialog
+              kind={kind}
+              mutate={mutate}
+              organizationSlug={organizationSlug}
+              shifts={shiftRequestShifts}
+            />
+          ),
+        formId: `attendance-${kind}-form`,
         open: true,
-        title: tAttendance("requests.actions.create"),
-      }),
-    [leaveCases, leaveTypes, mutate, organizationSlug, setDialog, tAttendance],
+        title: tAttendance(`kind.options.${kind}`),
+      });
+    },
+    [
+      correctableShifts,
+      leaveCases,
+      leaveTypes,
+      mutate,
+      organizationSlug,
+      setDialog,
+      shifts,
+      tAttendance,
+    ],
   );
 
   const handleReturn = useCallback(
@@ -357,6 +401,12 @@ const Requests = ({
         valueOptions: enumOptions.kind,
       },
       {
+        field: "leaveTypeName",
+        filterOperators: stringFilterOperators,
+        headerName: tAttendance("leaveType"),
+        renderCell: renderEmptyableCell,
+      },
+      {
         field: "startsAt",
         filterOperators: dateFilterOperators,
         headerName: tAttendance("startsAt"),
@@ -422,8 +472,12 @@ const Requests = ({
         </Alert>
       )}
       <Button
+        aria-controls="attendance-request-kind-menu"
+        aria-expanded={kindMenuOpen ? "true" : undefined}
+        aria-haspopup="true"
         disabled={!enabled}
-        onClick={handleCreateLeave}
+        id="attendance-request-kind-menu-trigger"
+        onClick={({ currentTarget }) => setKindMenuTrigger(currentTarget)}
         size="small"
         startIcon={<Add />}
         sx={{ alignSelf: "flex-start" }}
@@ -431,6 +485,21 @@ const Requests = ({
       >
         {tAttendance("requests.actions.create")}
       </Button>
+      <Menu
+        anchorEl={kindMenuTrigger}
+        id="attendance-request-kind-menu"
+        onClose={() => setKindMenuTrigger(null)}
+        open={kindMenuOpen}
+        slotProps={{
+          list: { "aria-labelledby": "attendance-request-kind-menu-trigger" },
+        }}
+      >
+        {attendanceRequestKindValues.map((value) => (
+          <MenuItem key={value} onClick={() => handleCreateRequest(value)}>
+            {tAttendance(`kind.options.${value}`)}
+          </MenuItem>
+        ))}
+      </Menu>
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}

@@ -258,6 +258,8 @@
   "net": "手取り額",
   "nextDay": "翌日",
   "no": "なし",
+  "noCorrectableShifts": "補正できるシフトがありません。シフトの開始後に申請できます。",
+  "noShifts": "選択できるシフトがありません。先に管理者へシフトの登録を依頼してください。",
   "originalEvents": "元の打刻",
   "originalLeavePeriod": "当初の休業期間",
   "otherDeduction": "その他確認済み控除（{currency}）",
@@ -327,7 +329,7 @@
   "reportedAt": "報告日時",
   "requests": {
     "actions": {
-      "create": "休暇を申請"
+      "create": "申請を追加"
     },
     "label": "自分の申請"
   },
@@ -360,6 +362,7 @@
     "allowedIps": "固定グローバル IP",
     "label": "勤怠設定"
   },
+  "shift": "シフト",
   "shifts": {
     "actions": {
       "create": "シフトを追加",

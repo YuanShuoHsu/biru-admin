@@ -24,6 +24,7 @@ import {
   getAttendanceLeaveCases,
   getAttendanceLeaveTypes,
   getAttendanceRequests,
+  getAttendanceShifts,
 } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceRequestEnumOptions } from "@/utils/enumOptions";
@@ -119,42 +120,54 @@ const RequestsPage = async ({ params, searchParams }: RequestsPageProps) => {
 
   const enabled = !!employee?.enabled;
 
-  const [{ requests: rows, total: rowCount }, { leaveTypes }, { leaveCases }] =
-    await Promise.all([
-      enabled
-        ? getAttendanceRequests(
-            organization.slug,
-            "me",
-            {
-              page,
-              pageSize,
-              filterField,
-              filterOperator,
-              filterValue,
-              quickFilterEnums,
-              quickFilterValue,
-              sortBy,
-              sortDirection,
-            },
-            fetchOptions,
-          )
-        : { requests: [], total: 0 },
-      enabled
-        ? getAttendanceLeaveTypes(
-            organization.slug,
-            { pageSize: MAX_PAGE_SIZE },
-            fetchOptions,
-          )
-        : { leaveTypes: [] },
-      enabled
-        ? getAttendanceLeaveCases(
-            organization.slug,
-            "me",
-            { pageSize: MAX_PAGE_SIZE },
-            fetchOptions,
-          )
-        : { leaveCases: [] },
-    ]);
+  const [
+    { requests: rows, total: rowCount },
+    { leaveTypes },
+    { leaveCases },
+    { shifts },
+  ] = await Promise.all([
+    enabled
+      ? getAttendanceRequests(
+          organization.slug,
+          "me",
+          {
+            page,
+            pageSize,
+            filterField,
+            filterOperator,
+            filterValue,
+            quickFilterEnums,
+            quickFilterValue,
+            sortBy,
+            sortDirection,
+          },
+          fetchOptions,
+        )
+      : { requests: [], total: 0 },
+    enabled
+      ? getAttendanceLeaveTypes(
+          organization.slug,
+          { pageSize: MAX_PAGE_SIZE },
+          fetchOptions,
+        )
+      : { leaveTypes: [] },
+    enabled
+      ? getAttendanceLeaveCases(
+          organization.slug,
+          "me",
+          { pageSize: MAX_PAGE_SIZE },
+          fetchOptions,
+        )
+      : { leaveCases: [] },
+    enabled
+      ? getAttendanceShifts(
+          organization.slug,
+          "me",
+          { pageSize: MAX_PAGE_SIZE },
+          fetchOptions,
+        )
+      : { shifts: [] },
+  ]);
 
   return (
     <AttendanceTabsLayout memberRole={memberRole}>
@@ -171,6 +184,7 @@ const RequestsPage = async ({ params, searchParams }: RequestsPageProps) => {
         quickFilterValue={quickFilterValue}
         rowCount={rowCount}
         rows={rows}
+        shifts={shifts}
         sortBy={sortBy}
         sortDirection={sortDirection}
       />

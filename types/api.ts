@@ -2645,6 +2645,7 @@ export interface components {
     /** @enum {string} */
     AttendanceRequestFilterField:
       | "employeeName"
+      | "leaveTypeName"
       | "reason"
       | "reviewReason"
       | "startsAt"
@@ -2654,6 +2655,7 @@ export interface components {
     /** @enum {string} */
     AttendanceRequestSortField:
       | "employeeName"
+      | "leaveTypeName"
       | "reason"
       | "reviewReason"
       | "startsAt"
@@ -2695,6 +2697,7 @@ export interface components {
       reason: string;
       reviewReason?: string | null;
       leaveTypeId?: string | null;
+      leaveTypeName?: string | null;
       leaveCaseId?: string | null;
       leaveMinutes?: number | null;
       paidPercent?: number | null;
@@ -11589,6 +11592,7 @@ export const attendanceRequestFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceRequestFilterField"]
 > = [
   "employeeName",
+  "leaveTypeName",
   "reason",
   "reviewReason",
   "startsAt",
@@ -11600,6 +11604,7 @@ export const attendanceRequestSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceRequestSortField"]
 > = [
   "employeeName",
+  "leaveTypeName",
   "reason",
   "reviewReason",
   "startsAt",

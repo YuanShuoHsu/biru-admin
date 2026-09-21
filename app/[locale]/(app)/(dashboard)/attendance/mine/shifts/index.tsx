@@ -6,11 +6,11 @@ import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
-import CorrectionDialog from "./CorrectionDialog";
-import OvertimeDialog from "./OvertimeDialog";
 import PunchCard from "./PunchCard";
 
+import CorrectionDialog from "../../CorrectionDialog";
 import EventsDialogContent from "../../EventsDialogContent";
+import OvertimeDialog from "../../OvertimeDialog";
 
 import {
   autosizeOptions,

@@ -258,6 +258,8 @@
   "net": "實領薪資",
   "nextDay": "隔日",
   "no": "否",
+  "noCorrectableShifts": "目前沒有可補卡的班次，班次開始後才能補卡。",
+  "noShifts": "目前沒有可選的班次，請先向主管確認排班。",
   "originalEvents": "原始打卡",
   "originalLeavePeriod": "原留停期間",
   "otherDeduction": "其他核定扣款（{currency}）",
@@ -327,7 +329,7 @@
   "reportedAt": "已報備時間",
   "requests": {
     "actions": {
-      "create": "新增請假申請"
+      "create": "新增申請"
     },
     "label": "我的申請"
   },
@@ -360,6 +362,7 @@
     "allowedIps": "固定公網 IP",
     "label": "出勤設定"
   },
+  "shift": "班次",
   "shifts": {
     "actions": {
       "create": "新增班次",

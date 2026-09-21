@@ -38,6 +38,8 @@ export type AttendanceEventAction =
   components["schemas"]["AttendanceEventAction"];
 export type AttendanceRequest =
   components["schemas"]["AttendanceRequestResponseDto"];
+export type AttendanceRequestKind =
+  components["schemas"]["AttendanceRequestKind"];
 export type AttendanceRequestPage =
   components["schemas"]["AttendanceRequestsResponseDto"];
 export type AttendanceLeaveType =
