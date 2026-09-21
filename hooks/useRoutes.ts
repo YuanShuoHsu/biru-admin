@@ -911,9 +911,9 @@ export const useRoutes = () => {
     );
   };
 
-  return (path: string, href?: string): NavItem => {
+  return (path: string): NavItem => {
     const { icon, label, param, query, to } = findRoute(path) ?? {};
-    const target = href ?? (to === null ? undefined : (to ?? path));
+    const target = to === null ? undefined : (to ?? path);
 
     return {
       icon,

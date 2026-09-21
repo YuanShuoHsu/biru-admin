@@ -25,7 +25,7 @@ export const useNavChildren = (): Record<string, NavItem[]> => {
   return {
     "/attendance": attendanceNavGroups(memberRole).map(({ children, path }) =>
       children.length === 1
-        ? navItem(path, children[0])
+        ? navItem(children[0])
         : {
             ...navItem(path),
             children: children.map((child) => navItem(child)),
