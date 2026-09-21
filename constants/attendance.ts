@@ -80,3 +80,5 @@ export const ATTENDANCE_NAV_GROUPS: {
 export const MONEY_MAX = 9_999_999_999.99;
 
 export const MONEY_FRACTION_DIGITS = 2;
+
+export const CORRECTION_LEAD_HOURS = 12;

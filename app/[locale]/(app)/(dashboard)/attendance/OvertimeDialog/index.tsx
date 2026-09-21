@@ -16,7 +16,7 @@ import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { TextField } from "@mui/material";
+import { Alert, TextField } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -54,9 +54,12 @@ const OvertimeDialog = ({
     setValue,
   } = useForm<OvertimeForm>({
     defaultValues: {
-      endsAt: shift.endsAt,
+      endsAt:
+        shift.dayKind === "workday"
+          ? dayjs(shift.endsAt).add(1, "hour").toISOString()
+          : shift.endsAt,
       reason: "",
-      startsAt: shift.startsAt,
+      startsAt: shift.dayKind === "workday" ? shift.endsAt : shift.startsAt,
     },
     resolver: zodResolver(overtimeFormSchema),
   });
@@ -65,6 +68,8 @@ const OvertimeDialog = ({
     control,
     name: ["endsAt", "startsAt"],
   });
+
+  const afterShift = shift.dayKind === "workday";
 
   const onSubmitHandler = async (values: OvertimeForm) => {
     try {
@@ -99,9 +104,14 @@ const OvertimeDialog = ({
 
   return (
     <FormBox id="attendance-overtime-form" onSubmit={onSubmit}>
+      <Alert severity="info">
+        {tAttendance(afterShift ? "overtimeAfterShift" : "overtimeOnShift")}
+      </Alert>
       <DateTimePicker
+        disabled={afterShift}
         label={tAttendance("startsAt")}
-        maxDateTime={endsAt ? dayjs(endsAt) : undefined}
+        maxDateTime={endsAt ? dayjs(endsAt) : dayjs(shift.endsAt)}
+        minDateTime={dayjs(shift.startsAt)}
         onChange={(date) =>
           setValue("startsAt", date?.isValid() ? date.toISOString() : "", {
             shouldValidate: isSubmitted,
@@ -119,7 +129,8 @@ const OvertimeDialog = ({
       />
       <DateTimePicker
         label={tAttendance("endsAt")}
-        minDateTime={startsAt ? dayjs(startsAt) : undefined}
+        maxDateTime={afterShift ? undefined : dayjs(shift.endsAt)}
+        minDateTime={startsAt ? dayjs(startsAt) : dayjs(shift.startsAt)}
         onChange={(date) =>
           setValue("endsAt", date?.isValid() ? date.toISOString() : "", {
             shouldValidate: isSubmitted,

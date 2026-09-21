@@ -12,6 +12,7 @@ import { type CorrectionForm, useCorrectionFormSchema } from "./definitions";
 
 import FormBox from "@/components/FormBox";
 
+import { CORRECTION_LEAD_HOURS } from "@/constants/attendance";
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -88,6 +89,13 @@ const CorrectionDialog = ({
 
   const correctedEvents = useWatch({ control, name: "correctedEvents" });
 
+  const earliest = dayjs(shift.startsAt).subtract(
+    CORRECTION_LEAD_HOURS,
+    "hour",
+  );
+
+  const latest = dayjs(shift.endsAt).add(1, "day");
+
   const onSubmitHandler = async ({
     correctedEvents,
     reason,
@@ -153,6 +161,8 @@ const CorrectionDialog = ({
           <DateTimePicker
             disableFuture
             label={tAttendance("startsAt")}
+            maxDateTime={latest}
+            minDateTime={earliest}
             onChange={(date) =>
               setValue(
                 `correctedEvents.${index}.occurredAt`,

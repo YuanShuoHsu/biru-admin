@@ -2286,6 +2286,7 @@ export interface components {
       | "cannotReviewOwnDraft"
       | "cannotReviewSelf"
       | "correctionSourceChanged"
+      | "dailyHoursExceeded"
       | "emergencyDetailsRequired"
       | "employeeNotEnabled"
       | "employmentWindowConflict"
@@ -2312,6 +2313,7 @@ export interface components {
       | "medicalLeaveInterval"
       | "memberNotFound"
       | "menstrualDayLimit"
+      | "monthlyOvertimeExceeded"
       | "noTemplateDates"
       | "outsideShiftWindow"
       | "overlappingAttendance"
@@ -11451,6 +11453,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "cannotReviewOwnDraft",
   "cannotReviewSelf",
   "correctionSourceChanged",
+  "dailyHoursExceeded",
   "emergencyDetailsRequired",
   "employeeNotEnabled",
   "employmentWindowConflict",
@@ -11477,6 +11480,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "medicalLeaveInterval",
   "memberNotFound",
   "menstrualDayLimit",
+  "monthlyOvertimeExceeded",
   "noTemplateDates",
   "outsideShiftWindow",
   "overlappingAttendance",
