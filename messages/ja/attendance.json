@@ -1,4 +1,5 @@
 {
+  "aboveStatutory": "法定を上回る",
   "actions": "操作",
   "add": "追加",
   "allowance": "固定手当（{currency}）",
@@ -53,10 +54,18 @@
       "create": "従業員を追加",
       "update": "従業員を編集"
     },
-    "label": "従業員管理"
+    "label": "従業員管理",
+    "unconfigured": "未設定"
   },
   "employerPension": "雇用主年金拠出（{currency}）",
   "employerPercent": "雇用主拠出率（%）",
+  "employmentType": {
+    "label": "雇用形態",
+    "options": {
+      "fullTime": "フルタイム",
+      "partTime": "パートタイム"
+    }
+  },
   "empty": "データはありません",
   "enabled": "有効",
   "endsAt": "終了日時",
@@ -64,6 +73,7 @@
     "activeShiftExists": "未退勤のシフトがあります。先に退勤または修正してください。",
     "attendanceShortfall": "勤務時間が予定より短いため、打刻訂正または休暇を処理してください。",
     "belowMinimumWage": "給与設定が適用中の最低賃金を下回っています。",
+    "belowStatutoryPaidPercent": "支給率は法定基準を下回れません。",
     "calendarLeaveInterval": "法定日数を暦日で指定してください（午前0時から午前0時、終了日を含まない）。",
     "calendarLeavePayRequired": "産休の事由は owner が確認済みの日額賃金を設定してください。支給率は勤続期間から自動計算されます。",
     "cannotReviewOwnDraft": "自分が作成した給与明細は確認できません。別の管理者が確認してください。",
@@ -96,6 +106,7 @@
     "leaveCaseRequired": "管理者が確認済みの事由を選択してください。",
     "leaveOutsideShift": "休暇は登録済みシフトの時間内で申請してください。",
     "leavePolicyRequired": "有効な休暇種類を設定して選択してください。",
+    "leavePolicyRulesRequired": "カスタム休暇には支給率の設定が必要です。",
     "locationNotAllowed": "位置情報が古い、不正確、または店舗の範囲外です。再試行してください。",
     "medicalCertificateRequired": "承認前に医療証明を確認してください。",
     "medicalLeaveInterval": "医療休暇の期間が無効です。日時と残りの付与枠を確認してください。",
@@ -145,8 +156,6 @@
     "sourceRequired": "確認済み金額の根拠を入力してください。",
     "splitLeaveByYear": "年をまたぐ休暇は年ごとに申請してください。",
     "statutoryBalanceAutomatic": "法定休暇残高は自動計算されます。",
-    "statutoryKindImmutable": "法定休暇の種類は作成後に変更できません。",
-    "statutoryPolicyExists": "この法定休暇は登録済みです。",
     "unresolvedOvertime": "実際の残業時間帯がすべて承認されていません。",
     "unsupportedDayKind": "未対応の日区分です。",
     "weeklyMinutesFromRequired": "週の所定労働時間を変更するには、入社日時以降の適用開始日を指定してください。",
@@ -179,7 +188,7 @@
   "healthBasis": "健康保険月額（{currency}、他所加入は0）",
   "healthDependents": "健康保険扶養人数",
   "healthInsurance": "従業員健康保険（{currency}）",
-  "hiredAt": "入社日時",
+  "hiredAt": "入社日",
   "ipHint": "通信事業者の固定公開IPを設定してください。Wi-Fi内のIPは使えません。",
   "kind": {
     "label": "申請種類",
@@ -220,6 +229,11 @@
   },
   "leaveRequestHint": "入院・妊娠中の安静休暇は管理者が医療証明を確認します。傷病・生理休暇の賃金は使用済み日数に応じて分割計算され、有給枠を超えた生理休暇は無給です。育児休業は管理者が登録した子の事由を選び、暦日単位で指定してください（午前0時、終了日を含まない）。",
   "leaveType": "休暇種類",
+  "leaveTypeGroups": {
+    "common": "よく使う",
+    "custom": "カスタム",
+    "event": "事前に案件が必要"
+  },
   "leaveTypes": {
     "actions": {
       "create": "休暇区分を追加",
@@ -233,7 +247,6 @@
   "makeupEndsAt": "代休終了",
   "makeupStartsAt": "代休開始",
   "medicalCertified": "入院・がん外来・妊娠中の安静に関する医療証明を確認済み",
-  "member": "組織メンバー",
   "mine": {
     "actions": {
       "viewEvents": "打刻明細を見る"
@@ -393,7 +406,7 @@
       "withdrawn": "取り下げ済み"
     }
   },
-  "statutoryHint": "法定休暇の残高と支給率は勤続年数と所定時間で計算します。",
+  "statutoryHint": "法定休暇の残高と支給率は法令と勤続年数から計算し、設定には保存しません。ここでは表示名の変更と、法定を上回る支給率の指定のみできます。",
   "statutoryKind": {
     "label": "休暇規則",
     "options": {
@@ -418,6 +431,7 @@
       "sick": "傷病休暇（入院なし）"
     }
   },
+  "statutoryPaidPercent": "法定支給率：{percent}%",
   "success": "保存しました",
   "taxMethod": {
     "label": "源泉徴収方法",
@@ -435,7 +449,7 @@
     },
     "label": "週間シフト雛形"
   },
-  "terminatedAt": "退職日時（任意）",
+  "terminatedAt": "退職日（任意）",
   "to": "終了日",
   "useCurrentLocation": "現在地を使用",
   "usedMinutes": "使用時間（分）",
@@ -443,7 +457,7 @@
   "voluntaryPension": "任意年金拠出（{currency}）",
   "voluntaryPercent": "任意拠出率（%）",
   "weekday": "曜日",
-  "weeklyMinutes": "週の所定労働時間（分）",
+  "weeklyMinutes": "週の所定労働時間（時間）",
   "weeklyMinutesFrom": "所定労働時間の適用開始日",
   "withdraw": "取り下げ",
   "withholding": "源泉徴収（{currency}）",

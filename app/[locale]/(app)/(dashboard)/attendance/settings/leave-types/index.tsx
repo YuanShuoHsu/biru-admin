@@ -7,6 +7,8 @@ import useSWR from "swr";
 
 import LeaveTypeDialog from "./LeaveTypeDialog";
 
+import EmptyCell from "@/components/EmptyCell";
+
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -259,6 +261,21 @@ const LeaveTypes = ({
         field: "paidPercent",
         filterOperators: numberFilterOperators,
         headerName: tAttendance("paidPercent"),
+        renderCell: ({
+          row: { paidPercent, statutoryPaidPercent },
+        }: GridRenderCellParams<AttendanceLeaveType>) => (
+          <Stack height="100%" direction="row" alignItems="center" gap={1}>
+            {paidPercent ?? statutoryPaidPercent}
+            {paidPercent != null && statutoryPaidPercent != null && (
+              <Chip
+                color="info"
+                label={tAttendance("aboveStatutory")}
+                size="small"
+                variant="outlined"
+              />
+            )}
+          </Stack>
+        ),
         type: "number",
       },
       {
@@ -268,14 +285,17 @@ const LeaveTypes = ({
         type: "boolean",
         renderCell: ({
           row: { requiresBalance },
-        }: GridRenderCellParams<AttendanceLeaveType>) => (
-          <Chip
-            color={requiresBalance ? "success" : "default"}
-            label={tAttendance(requiresBalance ? "yes" : "no")}
-            size="small"
-            variant="outlined"
-          />
-        ),
+        }: GridRenderCellParams<AttendanceLeaveType>) =>
+          requiresBalance == null ? (
+            <EmptyCell />
+          ) : (
+            <Chip
+              color={requiresBalance ? "success" : "default"}
+              label={tAttendance(requiresBalance ? "yes" : "no")}
+              size="small"
+              variant="outlined"
+            />
+          ),
       },
       {
         field: "enabled",

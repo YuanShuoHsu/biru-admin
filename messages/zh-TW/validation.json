@@ -302,6 +302,9 @@
   "validFrom": {
     "beforeValidThrough": "生效日期必須早於截止日期。"
   },
+  "weeklyMinutes": {
+    "partTime": "部分工時的每週工時必須少於 40 小時。"
+  },
   "weeklyMinutesFrom": {
     "notBeforeHiredAt": "工時生效日不能早於到職時間。",
     "required": "工時生效日為必填。"

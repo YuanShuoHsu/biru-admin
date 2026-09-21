@@ -60,7 +60,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** 可建立為員工的組織成員清單 */
+    /** 組織成員與其出勤設定清單 */
     get: operations["AttendanceEmployeesController_members"];
     put?: never;
     post?: never;
@@ -2281,6 +2281,7 @@ export interface components {
     /** @enum {string} */
     AttendanceErrorCode:
       | "activeShiftExists"
+      | "belowStatutoryPaidPercent"
       | "calendarLeaveInterval"
       | "calendarLeavePayRequired"
       | "cannotReviewOwnDraft"
@@ -2308,6 +2309,7 @@ export interface components {
       | "leaveCaseRequired"
       | "leaveOutsideShift"
       | "leavePolicyRequired"
+      | "leavePolicyRulesRequired"
       | "locationNotAllowed"
       | "medicalCertificateRequired"
       | "medicalLeaveInterval"
@@ -2348,8 +2350,6 @@ export interface components {
       | "sourceRequired"
       | "splitLeaveByYear"
       | "statutoryBalanceAutomatic"
-      | "statutoryKindImmutable"
-      | "statutoryPolicyExists"
       | "weeklyMinutesFromRequired";
     AttendanceErrorResponseDto: {
       message: components["schemas"]["AttendanceErrorCode"];
@@ -2384,10 +2384,6 @@ export interface components {
       canManage: boolean;
       canManageSettings: boolean;
       canManagePayroll: boolean;
-    };
-    AttendanceMemberResponseDto: {
-      userId: string;
-      name: string;
     };
     /** @enum {string} */
     FilterOperator:
@@ -2428,6 +2424,17 @@ export interface components {
       | "terminatedAt"
       | "weeklyMinutes"
       | "enabled";
+    AttendanceMemberResponseDto: {
+      userId: string;
+      name: string;
+      /** Format: date-time */
+      joinedAt: string;
+      employee?: components["schemas"]["AttendanceEmployeeResponseDto"] | null;
+    };
+    AttendanceMembersResponseDto: {
+      data: components["schemas"]["AttendanceMemberResponseDto"][];
+      total: number;
+    };
     AttendanceEmployeesResponseDto: {
       data: components["schemas"]["AttendanceEmployeeResponseDto"][];
       total: number;
@@ -2902,8 +2909,9 @@ export interface components {
       eventLeave: boolean;
       calendarLeave: boolean;
       medicalCertificateRequired: boolean;
-      paidPercent: number;
-      requiresBalance: boolean;
+      paidPercent?: number | null;
+      statutoryPaidPercent?: number | null;
+      requiresBalance?: boolean | null;
       enabled: boolean;
     };
     AttendanceLeaveTypesResponseDto: {
@@ -2911,10 +2919,9 @@ export interface components {
       total: number;
     };
     SaveAttendanceLeaveTypeDto: {
-      statutoryKind?: components["schemas"]["StatutoryLeaveKind"];
+      paidPercent?: number | null;
+      requiresBalance?: boolean | null;
       name: string;
-      paidPercent: number;
-      requiresBalance: boolean;
       enabled: boolean;
     };
     /** @enum {string} */
@@ -5844,7 +5851,18 @@ export interface operations {
   };
   AttendanceEmployeesController_members: {
     parameters: {
-      query?: never;
+      query?: {
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        filterField?: components["schemas"]["AttendanceEmployeeFilterField"];
+        sortBy?: components["schemas"]["AttendanceEmployeeSortField"];
+        limit?: number;
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+      };
       header?: never;
       path?: never;
       cookie?: never;
@@ -5856,7 +5874,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["AttendanceMemberResponseDto"][];
+          "application/json": components["schemas"]["AttendanceMembersResponseDto"];
         };
       };
       /** @description Internal server error */
@@ -11448,6 +11466,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceErrorCode"]
 > = [
   "activeShiftExists",
+  "belowStatutoryPaidPercent",
   "calendarLeaveInterval",
   "calendarLeavePayRequired",
   "cannotReviewOwnDraft",
@@ -11475,6 +11494,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "leaveCaseRequired",
   "leaveOutsideShift",
   "leavePolicyRequired",
+  "leavePolicyRulesRequired",
   "locationNotAllowed",
   "medicalCertificateRequired",
   "medicalLeaveInterval",
@@ -11515,8 +11535,6 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "sourceRequired",
   "splitLeaveByYear",
   "statutoryBalanceAutomatic",
-  "statutoryKindImmutable",
-  "statutoryPolicyExists",
   "weeklyMinutesFromRequired",
 ];
 export const filterOperatorValues: ReadonlyArray<

@@ -1,4 +1,5 @@
 {
+  "aboveStatutory": "Above statutory",
   "actions": "Actions",
   "add": "Add",
   "allowance": "Fixed allowance ({currency})",
@@ -53,10 +54,18 @@
       "create": "Add employee",
       "update": "Edit employee"
     },
-    "label": "Employees"
+    "label": "Employees",
+    "unconfigured": "Not set up"
   },
   "employerPension": "Employer pension ({currency})",
   "employerPercent": "Employer rate (%)",
+  "employmentType": {
+    "label": "Employment type",
+    "options": {
+      "fullTime": "Full-time",
+      "partTime": "Part-time"
+    }
+  },
   "empty": "No records yet",
   "enabled": "Enabled",
   "endsAt": "End time",
@@ -64,6 +73,7 @@
     "activeShiftExists": "Another shift is still open. Clock out or correct it first.",
     "attendanceShortfall": "Attendance is shorter than scheduled; resolve corrections or leave first.",
     "belowMinimumWage": "Pay is below the minimum wage in effect.",
+    "belowStatutoryPaidPercent": "The paid percentage cannot be below the statutory rate.",
     "calendarLeaveInterval": "Use the statutory number of full calendar days, from midnight to midnight (exclusive end).",
     "calendarLeavePayRequired": "An owner must provide the verified full daily wage for maternity leave. The paid percentage is calculated from seniority.",
     "cannotReviewOwnDraft": "You cannot review a payslip you drafted. Another manager must review it.",
@@ -96,6 +106,7 @@
     "leaveCaseRequired": "Select an event allowance verified by a manager.",
     "leaveOutsideShift": "Leave must overlap a scheduled shift.",
     "leavePolicyRequired": "Configure and select an active leave policy.",
+    "leavePolicyRulesRequired": "A custom leave type needs a paid percentage.",
     "locationNotAllowed": "The location is stale, inaccurate or outside the store radius. Try again.",
     "medicalCertificateRequired": "Verify medical documentation before approval.",
     "medicalLeaveInterval": "The medical leave interval is invalid. Check dates and available entitlement.",
@@ -145,8 +156,6 @@
     "sourceRequired": "Enter the evidence for the verified amounts.",
     "splitLeaveByYear": "Submit separate requests for each calendar year.",
     "statutoryBalanceAutomatic": "Statutory balances are calculated automatically.",
-    "statutoryKindImmutable": "A statutory leave kind cannot be changed after creation.",
-    "statutoryPolicyExists": "This statutory leave rule already exists.",
     "unresolvedOvertime": "Actual overtime intervals have not all been approved.",
     "unsupportedDayKind": "Unsupported day classification.",
     "weeklyMinutesFromRequired": "Changing the agreed weekly hours requires an effective date on or after the employment start.",
@@ -220,6 +229,11 @@
   },
   "leaveRequestHint": "Managers verify medical documentation for hospitalization and pregnancy bed rest. Sick and menstrual leave pay is split by used allowances; menstrual leave beyond the paid allowance is unpaid. For parental leave, select the child case created by a manager and use whole calendar days (midnight, exclusive end).",
   "leaveType": "Leave type",
+  "leaveTypeGroups": {
+    "common": "Common",
+    "custom": "Custom",
+    "event": "Requires a leave case"
+  },
   "leaveTypes": {
     "actions": {
       "create": "Add leave policy",
@@ -233,7 +247,6 @@
   "makeupEndsAt": "Make-up rest ends",
   "makeupStartsAt": "Make-up rest starts",
   "medicalCertified": "Medical documentation for hospitalization, cancer outpatient care or pregnancy bed rest verified",
-  "member": "Organization member",
   "mine": {
     "actions": {
       "viewEvents": "View punch timeline"
@@ -393,7 +406,7 @@
       "withdrawn": "Withdrawn"
     }
   },
-  "statutoryHint": "Statutory rules determine balances and pay rates from tenure and agreed hours.",
+  "statutoryHint": "Entitlement and paid percentage for statutory leave are derived from the law and seniority, never stored. Here you can only rename it or pay above the statutory rate.",
   "statutoryKind": {
     "label": "Leave rule",
     "options": {
@@ -418,6 +431,7 @@
       "sick": "Non-hospitalized sick leave"
     }
   },
+  "statutoryPaidPercent": "Statutory paid percentage: {percent}%",
   "success": "Saved",
   "taxMethod": {
     "label": "Withholding method",
@@ -443,7 +457,7 @@
   "voluntaryPension": "Voluntary pension ({currency})",
   "voluntaryPercent": "Voluntary rate (%)",
   "weekday": "Weekday",
-  "weeklyMinutes": "Agreed weekly regular hours (minutes)",
+  "weeklyMinutes": "Contracted weekly hours",
   "weeklyMinutesFrom": "Weekly hours effective from",
   "withdraw": "Withdraw",
   "withholding": "Tax withholding ({currency})",

@@ -134,11 +134,13 @@ const BalanceDialog = ({
         select
         value={leaveTypeId}
       >
-        {leaveTypes.map(({ id, name }) => (
-          <MenuItem key={id} value={id}>
-            {name}
-          </MenuItem>
-        ))}
+        {leaveTypes
+          .filter(({ statutoryKind }) => statutoryKind === "custom")
+          .map(({ id, name }) => (
+            <MenuItem key={id} value={id}>
+              {name}
+            </MenuItem>
+          ))}
       </TextField>
       <NumberSpinner
         error={!!errors.year}

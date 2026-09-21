@@ -16,13 +16,12 @@ import {
   Alert,
   Checkbox,
   FormControlLabel,
-  MenuItem,
   TextField,
+  Typography,
 } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { statutoryLeaveKindValues } from "@/types/api";
 import type { AttendanceLeaveType } from "@/types/attendance";
 
 import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
@@ -43,7 +42,9 @@ const LeaveTypeDialog = ({
 
   const tAttendance = useTranslations("attendance");
 
-  const leaveTypeFormSchema = useLeaveTypeFormSchema();
+  const statutoryPaidPercent = leaveType?.statutoryPaidPercent ?? null;
+
+  const leaveTypeFormSchema = useLeaveTypeFormSchema(statutoryPaidPercent ?? 0);
 
   const {
     control,
@@ -55,16 +56,16 @@ const LeaveTypeDialog = ({
     defaultValues: {
       enabled: leaveType?.enabled ?? true,
       name: leaveType?.name ?? "",
-      paidPercent: leaveType?.paidPercent ?? 0,
+      overridden: leaveType?.paidPercent != null,
+      paidPercent: leaveType?.paidPercent ?? statutoryPaidPercent ?? 0,
       requiresBalance: leaveType?.requiresBalance ?? true,
-      statutoryKind: leaveType?.statutoryKind ?? "custom",
     },
     resolver: zodResolver(leaveTypeFormSchema),
   });
 
-  const [enabled, paidPercent, requiresBalance, statutoryKind] = useWatch({
+  const [enabled, overridden, paidPercent, requiresBalance] = useWatch({
     control,
-    name: ["enabled", "paidPercent", "requiresBalance", "statutoryKind"],
+    name: ["enabled", "overridden", "paidPercent", "requiresBalance"],
   });
 
   const onSubmitHandler = async (values: LeaveTypeForm) => {
@@ -80,7 +81,20 @@ const LeaveTypeDialog = ({
         {
           method: leaveType ? "PATCH" : "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(values),
+          body: JSON.stringify(
+            statutoryPaidPercent === null
+              ? {
+                  enabled: values.enabled,
+                  name: values.name,
+                  paidPercent: values.paidPercent,
+                  requiresBalance: values.requiresBalance,
+                }
+              : {
+                  enabled: true,
+                  name: values.name,
+                  paidPercent: values.overridden ? values.paidPercent : null,
+                },
+          ),
         },
       );
 
@@ -103,7 +117,9 @@ const LeaveTypeDialog = ({
 
   return (
     <FormBox id="attendance-leave-type-form" onSubmit={onSubmit}>
-      <Alert severity="info">{tAttendance("statutoryHint")}</Alert>
+      {statutoryPaidPercent !== null && (
+        <Alert severity="info">{tAttendance("statutoryHint")}</Alert>
+      )}
       <TextField
         error={!!errors.name}
         fullWidth
@@ -112,54 +128,68 @@ const LeaveTypeDialog = ({
         required
         {...register("name")}
       />
-      <TextField
-        error={!!errors.statutoryKind}
-        fullWidth
-        helperText={errors.statutoryKind?.message}
-        label={tAttendance("statutoryKind.label")}
-        required
-        select
-        value={statutoryKind}
-        {...register("statutoryKind")}
-      >
-        {statutoryLeaveKindValues.map((value) => (
-          <MenuItem key={value} value={value}>
-            {tAttendance(`statutoryKind.options.${value}`)}
-          </MenuItem>
-        ))}
-      </TextField>
-      <NumberSpinner
-        error={!!errors.paidPercent}
-        fullWidth
-        helperText={errors.paidPercent?.message}
-        label={tAttendance("paidPercent")}
-        max={100}
-        min={0}
-        onValueChange={(value) =>
-          setValue("paidPercent", value ?? 0, { shouldValidate: isSubmitted })
-        }
-        value={paidPercent}
-      />
-      <FormControlLabel
-        control={
-          <Checkbox
-            checked={requiresBalance}
-            onChange={(_, checked) => setValue("requiresBalance", checked)}
+      {statutoryPaidPercent !== null && (
+        <>
+          <Typography color="text.secondary" variant="body2">
+            {tAttendance("statutoryPaidPercent", {
+              percent: statutoryPaidPercent,
+            })}
+          </Typography>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={overridden}
+                onChange={(_, checked) => {
+                  setValue("overridden", checked);
+                  if (!checked) setValue("paidPercent", statutoryPaidPercent);
+                }}
+              />
+            }
+            label={tAttendance("aboveStatutory")}
+            sx={{ alignSelf: "flex-start" }}
           />
-        }
-        label={tAttendance("requiresBalance")}
-        sx={{ alignSelf: "flex-start" }}
-      />
-      <FormControlLabel
-        control={
-          <Checkbox
-            checked={enabled}
-            onChange={(_, checked) => setValue("enabled", checked)}
+        </>
+      )}
+      {(statutoryPaidPercent === null || overridden) && (
+        <NumberSpinner
+          error={!!errors.paidPercent}
+          fullWidth
+          helperText={errors.paidPercent?.message}
+          label={tAttendance("paidPercent")}
+          max={100}
+          min={statutoryPaidPercent ?? 0}
+          onValueChange={(value) =>
+            setValue("paidPercent", value ?? statutoryPaidPercent ?? 0, {
+              shouldValidate: isSubmitted,
+            })
+          }
+          value={paidPercent}
+        />
+      )}
+      {statutoryPaidPercent === null && (
+        <>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={requiresBalance}
+                onChange={(_, checked) => setValue("requiresBalance", checked)}
+              />
+            }
+            label={tAttendance("requiresBalance")}
+            sx={{ alignSelf: "flex-start" }}
           />
-        }
-        label={tAttendance("enabled")}
-        sx={{ alignSelf: "flex-start" }}
-      />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={enabled}
+                onChange={(_, checked) => setValue("enabled", checked)}
+              />
+            }
+            label={tAttendance("enabled")}
+            sx={{ alignSelf: "flex-start" }}
+          />
+        </>
+      )}
     </FormBox>
   );
 };

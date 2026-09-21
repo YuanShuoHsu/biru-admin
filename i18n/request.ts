@@ -13,6 +13,11 @@ import enMessages from "@/messages";
 
 export const formats = {
   dateTime: {
+    date: {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    },
     compact: {
       day: "numeric",
       month: "numeric",

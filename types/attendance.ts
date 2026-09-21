@@ -68,6 +68,9 @@ export type AttendanceLeaveCase =
   components["schemas"]["AttendanceLeaveCaseResponseDto"];
 export type AttendanceMember =
   components["schemas"]["AttendanceMemberResponseDto"];
+
+export type AttendanceMemberPage =
+  components["schemas"]["AttendanceMembersResponseDto"];
 export type AttendanceSettings =
   components["schemas"]["AttendanceSettingsResponseDto"];
 export type AttendanceTemplate =

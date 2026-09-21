@@ -302,6 +302,9 @@
   "validFrom": {
     "beforeValidThrough": "Start date must be before end date."
   },
+  "weeklyMinutes": {
+    "partTime": "Part-time weekly hours must be under 40."
+  },
   "weeklyMinutesFrom": {
     "notBeforeHiredAt": "Weekly hours effective date cannot be earlier than the employment start.",
     "required": "Weekly hours effective date is required."

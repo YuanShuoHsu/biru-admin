@@ -28,7 +28,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { AttendanceEmployee, AttendanceMember } from "@/types/attendance";
+import type { AttendanceMember } from "@/types/attendance";
 
 import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
@@ -36,19 +36,21 @@ import { fetcher } from "@/utils/fetcher";
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
 
+const FULL_TIME_MINUTES = 2400;
+
 interface EmployeeDialogProps {
-  employee?: AttendanceEmployee;
-  members: AttendanceMember[];
+  member: AttendanceMember;
   mutate: () => void;
   organizationSlug: string;
 }
 
 const EmployeeDialog = ({
-  employee,
-  members,
+  member,
   mutate,
   organizationSlug,
 }: EmployeeDialogProps) => {
+  const employee = member.employee ?? undefined;
+
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const tAttendance = useTranslations("attendance");
@@ -65,10 +67,12 @@ const EmployeeDialog = ({
       enabled: employee?.enabled ?? true,
       hiredAt:
         employee?.hiredAt ??
-        dayjs().tz(STORE_TIMEZONE).startOf("day").toISOString(),
+        dayjs(member.joinedAt).tz(STORE_TIMEZONE).startOf("day").toISOString(),
       terminatedAt: employee?.terminatedAt ?? "",
-      userId: employee?.userId ?? "",
-      weeklyMinutes: employee?.weeklyMinutes ?? 2400,
+      partTime:
+        (employee?.weeklyMinutes ?? FULL_TIME_MINUTES) < FULL_TIME_MINUTES,
+      userId: member.userId,
+      weeklyMinutes: employee?.weeklyMinutes ?? FULL_TIME_MINUTES,
       weeklyMinutesFrom: "",
     },
     resolver: zodResolver(employeeFormSchema),
@@ -77,8 +81,8 @@ const EmployeeDialog = ({
   const [
     enabled,
     hiredAt,
+    partTime,
     terminatedAt,
-    userId,
     weeklyMinutes,
     weeklyMinutesFrom,
   ] = useWatch({
@@ -86,17 +90,14 @@ const EmployeeDialog = ({
     name: [
       "enabled",
       "hiredAt",
+      "partTime",
       "terminatedAt",
-      "userId",
       "weeklyMinutes",
       "weeklyMinutesFrom",
     ],
   });
 
-  const onSubmitHandler = async ({
-    weeklyMinutesFrom,
-    ...values
-  }: EmployeeForm) => {
+  const onSubmitHandler = async (values: EmployeeForm) => {
     try {
       setDialog({ confirmLoading: true });
 
@@ -104,9 +105,14 @@ const EmployeeDialog = ({
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          ...values,
+          enabled: values.enabled,
+          hiredAt: values.hiredAt,
           terminatedAt: values.terminatedAt || null,
-          ...(weeklyMinutesFrom && { weeklyMinutesFrom }),
+          userId: values.userId,
+          weeklyMinutes: values.weeklyMinutes,
+          ...(values.weeklyMinutesFrom && {
+            weeklyMinutesFrom: values.weeklyMinutesFrom,
+          }),
         }),
       });
 
@@ -129,30 +135,7 @@ const EmployeeDialog = ({
 
   return (
     <FormBox id="attendance-employee-form" onSubmit={onSubmit}>
-      {employee ? (
-        <Typography>{employee.name}</Typography>
-      ) : (
-        <TextField
-          error={!!errors.userId}
-          fullWidth
-          helperText={errors.userId?.message}
-          label={tAttendance("member")}
-          onChange={(event) =>
-            setValue("userId", event.target.value, {
-              shouldValidate: isSubmitted,
-            })
-          }
-          required
-          select
-          value={userId}
-        >
-          {members.map(({ name, userId: value }) => (
-            <MenuItem key={value} value={value}>
-              {name}
-            </MenuItem>
-          ))}
-        </TextField>
-      )}
+      <Typography>{member.name}</Typography>
       <DatePicker
         label={tAttendance("hiredAt")}
         maxDate={terminatedAt ? dayjs(terminatedAt) : undefined}
@@ -194,28 +177,47 @@ const EmployeeDialog = ({
         timezone={STORE_TIMEZONE}
         value={terminatedAt ? dayjs(terminatedAt) : null}
       />
-      <FormControlLabel
-        control={
-          <Checkbox
-            checked={enabled}
-            onChange={(_, checked) => setValue("enabled", checked)}
-          />
-        }
-        label={tAttendance("enabled")}
-        sx={{ alignSelf: "flex-start" }}
-      />
-      <NumberSpinner
-        error={!!errors.weeklyMinutes}
+      <TextField
         fullWidth
-        helperText={errors.weeklyMinutes?.message}
-        label={tAttendance("weeklyMinutes")}
-        max={2400}
-        min={1}
-        onValueChange={(value) =>
-          setValue("weeklyMinutes", value ?? 1, { shouldValidate: isSubmitted })
-        }
-        value={weeklyMinutes}
-      />
+        label={tAttendance("employmentType.label")}
+        onChange={({ target: { value } }) => {
+          const nextPartTime = value === "partTime";
+
+          setValue("partTime", nextPartTime);
+
+          if (!nextPartTime)
+            setValue("weeklyMinutes", FULL_TIME_MINUTES, {
+              shouldValidate: isSubmitted,
+            });
+        }}
+        required
+        select
+        value={partTime ? "partTime" : "fullTime"}
+      >
+        {(["fullTime", "partTime"] as const).map((value) => (
+          <MenuItem key={value} value={value}>
+            {tAttendance(`employmentType.options.${value}`)}
+          </MenuItem>
+        ))}
+      </TextField>
+      {partTime && (
+        <NumberSpinner
+          error={!!errors.weeklyMinutes}
+          format={{ maximumFractionDigits: 1 }}
+          fullWidth
+          helperText={errors.weeklyMinutes?.message}
+          label={tAttendance("weeklyMinutes")}
+          max={FULL_TIME_MINUTES / 60}
+          min={0.5}
+          onValueChange={(value) =>
+            setValue("weeklyMinutes", Math.round((value ?? 0.5) * 60), {
+              shouldValidate: isSubmitted,
+            })
+          }
+          step={0.5}
+          value={weeklyMinutes / 60}
+        />
+      )}
       {!!employee && weeklyMinutes !== employee.weeklyMinutes && (
         <DatePicker
           label={tAttendance("weeklyMinutesFrom")}
@@ -239,6 +241,16 @@ const EmployeeDialog = ({
           value={weeklyMinutesFrom ? dayjs(weeklyMinutesFrom) : null}
         />
       )}
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={enabled}
+            onChange={(_, checked) => setValue("enabled", checked)}
+          />
+        }
+        label={tAttendance("enabled")}
+        sx={{ alignSelf: "flex-start" }}
+      />
     </FormBox>
   );
 };

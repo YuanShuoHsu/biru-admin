@@ -1,4 +1,5 @@
 {
+  "aboveStatutory": "優於法令",
   "actions": "操作",
   "add": "新增",
   "allowance": "固定津貼（{currency}）",
@@ -53,10 +54,18 @@
       "create": "新增員工",
       "update": "編輯員工"
     },
-    "label": "員工管理"
+    "label": "員工管理",
+    "unconfigured": "未設定"
   },
   "employerPension": "雇主提繳（{currency}）",
   "employerPercent": "雇主提繳比例（%）",
+  "employmentType": {
+    "label": "僱用型態",
+    "options": {
+      "fullTime": "全時",
+      "partTime": "部分工時"
+    }
+  },
   "empty": "目前沒有資料",
   "enabled": "啟用",
   "endsAt": "結束時間",
@@ -64,6 +73,7 @@
     "activeShiftExists": "還有尚未下班的班次，請先完成下班或補卡。",
     "attendanceShortfall": "出勤時數少於排班，請先處理補卡或請假。",
     "belowMinimumWage": "薪資設定低於當期基本工資。",
+    "belowStatutoryPaidPercent": "給薪比例不得低於法定標準。",
     "calendarLeaveInterval": "產假事件期間須為法定天數的完整曆日（起訖 00:00，結束日不含）。",
     "calendarLeavePayRequired": "產假事件須由 owner 設定核定每日全薪，給薪比例由年資自動計算。",
     "cannotReviewOwnDraft": "不能覆核自己建立的薪資單，請由另一位管理者處理。",
@@ -96,6 +106,7 @@
     "leaveCaseRequired": "請先選擇主管已確認的事件額度。",
     "leaveOutsideShift": "請假時間必須涵蓋已排定的班次。",
     "leavePolicyRequired": "請先設定並選擇有效假別。",
+    "leavePolicyRulesRequired": "自訂假別必須設定給薪比例。",
     "locationNotAllowed": "定位過舊、精度不足或超出店家範圍，請重新定位。",
     "medicalCertificateRequired": "核准前請先查驗醫療證明。",
     "medicalLeaveInterval": "醫療假期間不符合規則，請確認起訖時間與申請額度。",
@@ -145,8 +156,6 @@
     "sourceRequired": "請填寫核定依據。",
     "splitLeaveByYear": "跨年度請假請分成兩筆申請。",
     "statutoryBalanceAutomatic": "法定額度依規則計算，不能手動覆寫。",
-    "statutoryKindImmutable": "法定假別類型建立後不能修改。",
-    "statutoryPolicyExists": "此法定假別已設定。",
     "unresolvedOvertime": "實際加班時段尚未全部核准。",
     "unsupportedDayKind": "不支援的日期類型。",
     "weeklyMinutesFromRequired": "變更每週約定工時必須指定不早於到職時間的生效日。",
@@ -179,7 +188,7 @@
   "healthBasis": "健保月投保金額（{currency}，未在本店投保填 0）",
   "healthDependents": "健保依附眷屬人數",
   "healthInsurance": "員工健保（{currency}）",
-  "hiredAt": "到職時間",
+  "hiredAt": "到職日",
   "ipHint": "請填電信業者提供的固定公網 IP；Wi-Fi 內的區域網路 IP 不適用。",
   "kind": {
     "label": "申請類型",
@@ -220,6 +229,11 @@
   },
   "leaveRequestHint": "住院／安胎假由主管查驗醫療證明；病假及生理假的給薪會依已用額度分段計算，超出給薪額度的生理假為無薪。育嬰留停請先選擇主管建立的子女事件，使用完整曆日（起訖 00:00，結束日不含）。",
   "leaveType": "假別",
+  "leaveTypeGroups": {
+    "common": "常用",
+    "custom": "自訂",
+    "event": "需先建立案件"
+  },
   "leaveTypes": {
     "actions": {
       "create": "新增假別",
@@ -233,7 +247,6 @@
   "makeupEndsAt": "補假結束",
   "makeupStartsAt": "補假開始",
   "medicalCertified": "已查驗住院、癌症門診或安胎休養的醫療證明",
-  "member": "組織成員",
   "mine": {
     "actions": {
       "viewEvents": "查看打卡明細"
@@ -393,7 +406,7 @@
       "withdrawn": "已撤回"
     }
   },
-  "statutoryHint": "法定假別會依年資與約定工時計算額度及給薪比例，自訂欄位不會覆蓋法定規則。",
+  "statutoryHint": "法定假別的額度與給薪比例依法令與年資計算，不會存進設定；這裡只能改顯示名稱，或給出優於法令的給薪比例。",
   "statutoryKind": {
     "label": "假別規則",
     "options": {
@@ -418,6 +431,7 @@
       "sick": "普通傷病假（未住院）"
     }
   },
+  "statutoryPaidPercent": "法定給薪比例：{percent}%",
   "success": "已儲存",
   "taxMethod": {
     "label": "扣繳方式",
@@ -435,7 +449,7 @@
     },
     "label": "每週班表範本"
   },
-  "terminatedAt": "離職時間（選填）",
+  "terminatedAt": "離職日（選填）",
   "to": "結束日期",
   "useCurrentLocation": "使用目前位置",
   "usedMinutes": "已用額度（分鐘）",
@@ -443,7 +457,7 @@
   "voluntaryPension": "勞退自提（{currency}）",
   "voluntaryPercent": "自提比例（%）",
   "weekday": "星期",
-  "weeklyMinutes": "每週約定正常工時（分鐘）",
+  "weeklyMinutes": "每週約定正常工時（小時）",
   "weeklyMinutesFrom": "工時生效日",
   "withdraw": "撤回申請",
   "withholding": "所得稅扣繳（{currency}）",

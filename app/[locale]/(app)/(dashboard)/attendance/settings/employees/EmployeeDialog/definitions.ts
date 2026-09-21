@@ -8,9 +8,8 @@ export const useEmployeeFormSchema = (employee?: AttendanceEmployee) => {
 
   return z
     .object({
-      userId: employee
-        ? z.string()
-        : z.string().min(1, { error: tValidation("member.required") }),
+      userId: z.string(),
+      partTime: z.boolean(),
       hiredAt: z.string().min(1, { error: tValidation("hiredAt.required") }),
       terminatedAt: z.string(),
       enabled: z.boolean(),
@@ -21,6 +20,13 @@ export const useEmployeeFormSchema = (employee?: AttendanceEmployee) => {
         .max(2400, { error: tValidation("number.max", { max: 2400 }) }),
       weeklyMinutesFrom: z.string(),
     })
+    .refine(
+      ({ partTime, weeklyMinutes }) => !partTime || weeklyMinutes < 2400,
+      {
+        error: tValidation("weeklyMinutes.partTime"),
+        path: ["weeklyMinutes"],
+      },
+    )
     .refine(
       ({ hiredAt, terminatedAt }) =>
         !terminatedAt || new Date(terminatedAt) > new Date(hiredAt),

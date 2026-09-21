@@ -5,7 +5,7 @@ import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent } from "react";
+import { type BaseSyntheticEvent, useMemo } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
 import { type LeaveForm, useLeaveFormSchema } from "./definitions";
@@ -16,12 +16,15 @@ import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Alert, MenuItem, TextField } from "@mui/material";
+import { Alert, ListSubheader, MenuItem, TextField } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { attendanceParentalModeValues } from "@/types/api";
+import {
+  attendanceParentalModeValues,
+  statutoryLeaveKindValues,
+} from "@/types/api";
 import type {
   AttendanceLeaveCase,
   AttendanceLeaveType,
@@ -32,6 +35,8 @@ import { fetcher } from "@/utils/fetcher";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
+
+const LEAVE_TYPE_GROUPS = ["common", "event", "custom"] as const;
 
 interface LeaveDialogProps {
   leaveCases: AttendanceLeaveCase[];
@@ -76,6 +81,29 @@ const LeaveDialog = ({
     control,
     name: ["endsAt", "leaveCaseId", "leaveTypeId", "parentalMode", "startsAt"],
   });
+
+  const leaveTypeGroups = useMemo(() => {
+    const available = leaveTypes.filter(({ enabled }) => enabled);
+
+    const matches = {
+      common: ({ eventLeave, statutoryKind }: AttendanceLeaveType) =>
+        !eventLeave && statutoryKind !== "custom",
+      event: ({ eventLeave }: AttendanceLeaveType) => eventLeave,
+      custom: ({ statutoryKind }: AttendanceLeaveType) =>
+        statutoryKind === "custom",
+    };
+
+    return LEAVE_TYPE_GROUPS.map((group) => ({
+      group,
+      items: available
+        .filter(matches[group])
+        .sort(
+          (first, second) =>
+            statutoryLeaveKindValues.indexOf(first.statutoryKind) -
+            statutoryLeaveKindValues.indexOf(second.statutoryKind),
+        ),
+    })).filter(({ items }) => items.length);
+  }, [leaveTypes]);
 
   const leaveType = leaveTypes.find(({ id }) => id === leaveTypeId);
 
@@ -156,13 +184,16 @@ const LeaveDialog = ({
         select
         value={leaveTypeId}
       >
-        {leaveTypes
-          .filter(({ enabled }) => enabled)
-          .map(({ id, name }) => (
+        {leaveTypeGroups.flatMap(({ group, items }) => [
+          <ListSubheader key={group}>
+            {tAttendance(`leaveTypeGroups.${group}`)}
+          </ListSubheader>,
+          ...items.map(({ id, name }) => (
             <MenuItem key={id} value={id}>
               {name}
             </MenuItem>
-          ))}
+          )),
+        ])}
       </TextField>
       {isEventLeave && (
         <TextField

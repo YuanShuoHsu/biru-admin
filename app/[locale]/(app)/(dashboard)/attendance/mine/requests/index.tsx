@@ -7,9 +7,8 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
-import LeaveDialog from "./LeaveDialog";
+import RequestDialog from "./RequestDialog";
 import ReturnDialog from "./ReturnDialog";
-import ShiftRequestDialog from "./ShiftRequestDialog";
 
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -33,8 +32,6 @@ import {
   Button,
   Chip,
   IconButton,
-  Menu,
-  MenuItem,
   Stack,
   styled,
   Tooltip,
@@ -50,14 +47,11 @@ import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { attendanceRequestKindValues } from "@/types/api";
-
 import type {
   AttendanceLeaveCase,
   AttendanceLeaveType,
   AttendanceRequest,
   AttendanceRequestFilterField,
-  AttendanceRequestKind,
   AttendanceRequestPage,
   AttendanceRequestSortField,
   AttendanceShift,
@@ -123,12 +117,6 @@ const Requests = ({
   const [sortModel, setSortModel] = useState<GridSortModel>(
     sortBy && sortDirection ? [{ field: sortBy, sort: sortDirection }] : [],
   );
-
-  const [kindMenuTrigger, setKindMenuTrigger] = useState<HTMLElement | null>(
-    null,
-  );
-
-  const kindMenuOpen = Boolean(kindMenuTrigger);
 
   const [filterModel, setFilterModel] = useState<GridFilterModel>({
     items:
@@ -248,36 +236,23 @@ const Requests = ({
   );
 
   const handleCreateRequest = useCallback(
-    (kind: AttendanceRequestKind) => {
-      setKindMenuTrigger(null);
-
-      const shiftRequestShifts =
-        kind === "correction" ? correctableShifts : shifts;
-
+    () =>
       setDialog({
-        confirmDisabled: kind !== "leave" && !shiftRequestShifts.length,
         confirmText: tAttendance("save"),
-        content:
-          kind === "leave" ? (
-            <LeaveDialog
-              leaveCases={leaveCases}
-              leaveTypes={leaveTypes}
-              mutate={mutate}
-              organizationSlug={organizationSlug}
-            />
-          ) : (
-            <ShiftRequestDialog
-              kind={kind}
-              mutate={mutate}
-              organizationSlug={organizationSlug}
-              shifts={shiftRequestShifts}
-            />
-          ),
-        formId: `attendance-${kind}-form`,
+        content: (
+          <RequestDialog
+            correctableShifts={correctableShifts}
+            leaveCases={leaveCases}
+            leaveTypes={leaveTypes}
+            mutate={mutate}
+            organizationSlug={organizationSlug}
+            shifts={shifts}
+          />
+        ),
+        formId: "attendance-leave-form",
         open: true,
-        title: tAttendance(`kind.options.${kind}`),
-      });
-    },
+        title: tAttendance("requests.actions.create"),
+      }),
     [
       correctableShifts,
       leaveCases,
@@ -472,12 +447,8 @@ const Requests = ({
         </Alert>
       )}
       <Button
-        aria-controls="attendance-request-kind-menu"
-        aria-expanded={kindMenuOpen ? "true" : undefined}
-        aria-haspopup="true"
         disabled={!enabled}
-        id="attendance-request-kind-menu-trigger"
-        onClick={({ currentTarget }) => setKindMenuTrigger(currentTarget)}
+        onClick={handleCreateRequest}
         size="small"
         startIcon={<Add />}
         sx={{ alignSelf: "flex-start" }}
@@ -485,21 +456,6 @@ const Requests = ({
       >
         {tAttendance("requests.actions.create")}
       </Button>
-      <Menu
-        anchorEl={kindMenuTrigger}
-        id="attendance-request-kind-menu"
-        onClose={() => setKindMenuTrigger(null)}
-        open={kindMenuOpen}
-        slotProps={{
-          list: { "aria-labelledby": "attendance-request-kind-menu-trigger" },
-        }}
-      >
-        {attendanceRequestKindValues.map((value) => (
-          <MenuItem key={value} onClick={() => handleCreateRequest(value)}>
-            {tAttendance(`kind.options.${value}`)}
-          </MenuItem>
-        ))}
-      </Menu>
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}

@@ -16,11 +16,7 @@ import {
   filterOperatorValues,
 } from "@/types/api";
 
-import {
-  getAttendanceAccess,
-  getAttendanceEmployees,
-  getAttendanceMembers,
-} from "@/utils/attendance";
+import { getAttendanceAccess, getAttendanceMembers } from "@/utils/attendance";
 import { resolveGridSearchParams } from "@/utils/dataGrid";
 import { hasRolePermission } from "@/utils/organizations";
 
@@ -98,23 +94,20 @@ const EmployeesPage = async ({ params, searchParams }: EmployeesPageProps) => {
       locale,
     });
 
-  const [{ employees: rows, total: rowCount }, members] = await Promise.all([
-    getAttendanceEmployees(
-      organization.slug,
-      {
-        page,
-        pageSize,
-        filterField,
-        filterOperator,
-        filterValue,
-        quickFilterValue,
-        sortBy,
-        sortDirection,
-      },
-      fetchOptions,
-    ),
-    getAttendanceMembers(organization.slug, fetchOptions),
-  ]);
+  const { members: rows, total: rowCount } = await getAttendanceMembers(
+    organization.slug,
+    {
+      page,
+      pageSize,
+      filterField,
+      filterOperator,
+      filterValue,
+      quickFilterValue,
+      sortBy,
+      sortDirection,
+    },
+    fetchOptions,
+  );
 
   return (
     <AttendanceTabsLayout memberRole={memberRole}>
@@ -125,7 +118,6 @@ const EmployeesPage = async ({ params, searchParams }: EmployeesPageProps) => {
         filterField={filterField}
         filterOperator={filterOperator}
         filterValue={filterValue}
-        members={members}
         organizationSlug={organization.slug}
         page={page}
         pageSize={pageSize}

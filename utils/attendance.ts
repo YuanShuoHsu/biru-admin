@@ -47,7 +47,7 @@ import type {
   PayrollStatementSortField,
   PayrollTerms,
 } from "@/types/attendance";
-import { type GridQuery, getGridSearchParams } from "@/utils/dataGrid";
+import { getGridSearchParams, type GridQuery } from "@/utils/dataGrid";
 import { fetcher, type FetchError } from "@/utils/fetcher";
 import { getResolvedAdminOrganization } from "@/utils/menus";
 import { hasRolePermission } from "@/utils/organizations";
@@ -60,7 +60,6 @@ export const weekdayDate = (day: number) =>
 
 export const WEEK_DAYS = 7;
 
-// dayjs.tz 對無法解析的字串會丟 RangeError 而不是回傳 invalid，先擋掉格式不符的查詢字串
 export const weekStart = (week?: string) =>
   (week && /^\d{4}-\d{2}-\d{2}$/.test(week)
     ? dayjs.tz(week, STORE_TIMEZONE)
@@ -136,7 +135,6 @@ export const attendancePath = (
 ) =>
   `/api/organizations/${organizationSlug}/attendance/${scope === "me" ? "me/" : ""}${resource}`;
 
-// 這支不能跟其他 getter 一樣把錯誤吞成空值，否則員工會看到「尚未建檔」而不是錯誤頁
 export const getAttendanceContext = cache(
   (organizationSlug: string, init?: RequestInit) =>
     fetcher<AttendanceContext>(
@@ -146,15 +144,21 @@ export const getAttendanceContext = cache(
 );
 
 export const getAttendanceMembers = cache(
-  async (organizationSlug: string, init?: RequestInit) => {
-    try {
-      return await fetcher<AttendanceMember[]>(
-        attendancePath(organizationSlug, "org", "members"),
-        init,
-      );
-    } catch {
-      return [];
-    }
+  async (
+    organizationSlug: string,
+    query: GridQuery<
+      AttendanceEmployeeFilterField,
+      AttendanceEmployeeSortField
+    > = {},
+    init?: RequestInit,
+  ) => {
+    const { data: members, total } = await getGrid<
+      AttendanceMember,
+      AttendanceEmployeeFilterField,
+      AttendanceEmployeeSortField
+    >(attendancePath(organizationSlug, "org", "members"), query, init);
+
+    return { members, total };
   },
 );
 

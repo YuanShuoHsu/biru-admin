@@ -19,13 +19,12 @@ import { getPageSizeOptions } from "@/constants/pagination";
 import {
   useBooleanFilterOperators,
   useDateFilterOperators,
-  useNumberFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
-import { Add, Settings } from "@mui/icons-material";
-import { Button, Chip, IconButton, Stack, Tooltip } from "@mui/material";
+import { Edit } from "@mui/icons-material";
+import { Chip, IconButton, Stack, Tooltip } from "@mui/material";
 import type {
   GridColDef,
   GridFilterModel,
@@ -38,11 +37,10 @@ import { useGridApiRef } from "@mui/x-data-grid";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
-  AttendanceEmployee,
   AttendanceEmployeeFilterField,
-  AttendanceEmployeePage,
   AttendanceEmployeeSortField,
   AttendanceMember,
+  AttendanceMemberPage,
 } from "@/types/attendance";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 
@@ -60,13 +58,12 @@ interface EmployeesProps {
   filterField?: AttendanceEmployeeFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  members: AttendanceMember[];
   organizationSlug: string;
   page: number;
   pageSize: number;
   quickFilterValue?: string;
   rowCount: number;
-  rows: AttendanceEmployee[];
+  rows: AttendanceMember[];
   sortBy?: AttendanceEmployeeSortField;
   sortDirection?: SortDirection;
 }
@@ -76,7 +73,6 @@ const Employees = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  members,
   organizationSlug,
   page,
   pageSize,
@@ -119,7 +115,6 @@ const Employees = ({
 
   const booleanFilterOperators = useBooleanFilterOperators();
   const dateFilterOperators = useDateFilterOperators();
-  const numberFilterOperators = useNumberFilterOperators();
   const stringFilterOperators = useStringFilterOperators();
 
   const apiRef = useGridApiRef();
@@ -131,11 +126,11 @@ const Employees = ({
   const updateQuery = useUpdateQuery();
 
   const date = useCallback(
-    (value: string) => format.dateTime(new Date(value), "short"),
+    (value: string) => format.dateTime(new Date(value), "date"),
     [format],
   );
 
-  const base = attendancePath(organizationSlug, "org", "employees");
+  const base = attendancePath(organizationSlug, "org", "members");
 
   const {
     data: { data: rows, total: rowCount } = {
@@ -147,7 +142,7 @@ const Employees = ({
   } = useSWR(
     [base, paginationModel, filterModel, sortModel],
     () =>
-      fetcher<AttendanceEmployeePage>(
+      fetcher<AttendanceMemberPage>(
         `${base}?${getDataGridSearchParams(paginationModel, filterModel, sortModel)}`,
       ),
     {
@@ -209,13 +204,12 @@ const Employees = ({
   );
 
   const handleEmployeeDialog = useCallback(
-    (employee?: AttendanceEmployee) =>
+    (member: AttendanceMember) =>
       setDialog({
         confirmText: tAttendance("save"),
         content: (
           <EmployeeDialog
-            employee={employee}
-            members={members}
+            member={member}
             mutate={mutate}
             organizationSlug={organizationSlug}
           />
@@ -223,10 +217,12 @@ const Employees = ({
         formId: "attendance-employee-form",
         open: true,
         title: tAttendance(
-          employee ? "employees.actions.update" : "employees.actions.create",
+          member.employee
+            ? "employees.actions.update"
+            : "employees.actions.create",
         ),
       }),
-    [members, mutate, organizationSlug, setDialog, tAttendance],
+    [mutate, organizationSlug, setDialog, tAttendance],
   );
 
   const columns = useMemo<GridColDef[]>(
@@ -239,16 +235,20 @@ const Employees = ({
               field: "actions",
               filterable: false,
               headerName: tAttendance("actions"),
-              renderCell: ({
-                row,
-              }: GridRenderCellParams<AttendanceEmployee>) => (
+              renderCell: ({ row }: GridRenderCellParams<AttendanceMember>) => (
                 <Stack height="100%" direction="row" alignItems="center">
-                  <Tooltip title={tAttendance("employees.actions.update")}>
+                  <Tooltip
+                    title={tAttendance(
+                      row.employee
+                        ? "employees.actions.update"
+                        : "employees.actions.create",
+                    )}
+                  >
                     <IconButton
                       onClick={() => handleEmployeeDialog(row)}
                       size="small"
                     >
-                      <Settings fontSize="small" />
+                      <Edit fontSize="small" />
                     </IconButton>
                   </Tooltip>
                 </Stack>
@@ -267,36 +267,59 @@ const Employees = ({
         field: "hiredAt",
         filterOperators: dateFilterOperators,
         headerName: tAttendance("hiredAt"),
-        valueFormatter: (value: string) => date(value),
+        renderCell: renderEmptyableCell,
+        valueGetter: (_, row: AttendanceMember) => row.employee?.hiredAt,
+        valueFormatter: (value: string | undefined) =>
+          value ? date(value) : "",
       },
       {
         field: "terminatedAt",
         filterOperators: dateFilterOperators,
         headerName: tAttendance("terminatedAt"),
         renderCell: renderEmptyableCell,
-        valueFormatter: (value: string | null) => (value ? date(value) : ""),
+        valueGetter: (_, row: AttendanceMember) => row.employee?.terminatedAt,
+        valueFormatter: (value: string | null | undefined) =>
+          value ? date(value) : "",
       },
       {
+        // 欄位顯示小時但後端以分鐘比對，開放篩選會讓輸入的數字對不上
         field: "weeklyMinutes",
-        filterOperators: numberFilterOperators,
+        filterable: false,
         headerName: tAttendance("weeklyMinutes"),
+        renderCell: renderEmptyableCell,
         type: "number",
+        valueFormatter: (value: number | undefined) =>
+          value == null
+            ? ""
+            : format.number(value / 60, {
+                maximumFractionDigits: 1,
+              }),
+        valueGetter: (_, row: AttendanceMember) => row.employee?.weeklyMinutes,
       },
       {
         field: "enabled",
         filterOperators: booleanFilterOperators,
         headerName: tAttendance("enabled"),
         renderCell: ({
-          row: { enabled },
-        }: GridRenderCellParams<AttendanceEmployee>) => (
+          row: { employee },
+        }: GridRenderCellParams<AttendanceMember>) => (
           <Chip
-            color={enabled ? "success" : "default"}
-            label={tAttendance(enabled ? "enabled" : "disabled")}
+            color={
+              !employee ? "warning" : employee.enabled ? "success" : "default"
+            }
+            label={tAttendance(
+              !employee
+                ? "employees.unconfigured"
+                : employee.enabled
+                  ? "enabled"
+                  : "disabled",
+            )}
             size="small"
             variant="outlined"
           />
         ),
         type: "boolean",
+        valueGetter: (_, row: AttendanceMember) => row.employee?.enabled,
       },
     ],
     [
@@ -304,8 +327,8 @@ const Employees = ({
       canWrite,
       date,
       dateFilterOperators,
+      format,
       handleEmployeeDialog,
-      numberFilterOperators,
       stringFilterOperators,
       tAttendance,
     ],
@@ -313,23 +336,13 @@ const Employees = ({
 
   return (
     <>
-      {canWrite && (
-        <Button
-          onClick={() => handleEmployeeDialog()}
-          size="small"
-          startIcon={<Add />}
-          sx={{ alignSelf: "flex-start" }}
-          variant="contained"
-        >
-          {tAttendance("employees.actions.create")}
-        </Button>
-      )}
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}
         columns={columns}
         filterMode="server"
         filterModel={filterModel}
+        getRowId={({ userId }) => userId}
         loading={loading}
         onFilterModelChange={handleFilterModelChange}
         onPaginationModelChange={handlePaginationModelChange}
