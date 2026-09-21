@@ -225,7 +225,7 @@ const Calendar = ({
         onConfirm: async () => {
           try {
             await fetcher(
-              `${attendancePath(organizationSlug, "all", "shifts")}/${id}/cancel`,
+              `${attendancePath(organizationSlug, "org", "shifts")}/${id}/cancel`,
               { method: "PATCH" },
             );
 

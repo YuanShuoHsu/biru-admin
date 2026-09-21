@@ -22,8 +22,8 @@ import {
 } from "@/hooks/useFilterOperators";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
-import { Add } from "@mui/icons-material";
-import { Button, Chip } from "@mui/material";
+import { Add, Edit } from "@mui/icons-material";
+import { Button, Chip, IconButton, Stack, Tooltip } from "@mui/material";
 import type {
   GridColDef,
   GridFilterModel,
@@ -127,7 +127,7 @@ const LeaveTypes = ({
     [tAttendance],
   );
 
-  const base = attendancePath(organizationSlug, "all", "leave-types");
+  const base = attendancePath(organizationSlug, "org", "leave-types");
 
   const {
     data: { data: rows, total: rowCount } = {
@@ -200,25 +200,49 @@ const LeaveTypes = ({
     [updateQuery],
   );
 
-  const handleCreateLeaveType = useCallback(
-    () =>
+  const handleLeaveTypeDialog = useCallback(
+    (leaveType?: AttendanceLeaveType) =>
       setDialog({
         confirmText: tAttendance("save"),
         content: (
           <LeaveTypeDialog
+            leaveType={leaveType}
             mutate={mutate}
             organizationSlug={organizationSlug}
           />
         ),
         formId: "attendance-leave-type-form",
         open: true,
-        title: tAttendance("leaveTypes.actions.create"),
+        title: tAttendance(
+          leaveType ? "leaveTypes.actions.update" : "leaveTypes.actions.create",
+        ),
       }),
     [mutate, organizationSlug, setDialog, tAttendance],
   );
 
   const columns = useMemo<GridColDef[]>(
     () => [
+      {
+        disableColumnMenu: true,
+        disableExport: true,
+        field: "actions",
+        filterable: false,
+        headerName: tAttendance("actions"),
+        renderCell: ({ row }: GridRenderCellParams<AttendanceLeaveType>) => (
+          <Stack height="100%" direction="row" alignItems="center">
+            <Tooltip title={tAttendance("leaveTypes.actions.update")}>
+              <IconButton
+                onClick={() => handleLeaveTypeDialog(row)}
+                size="small"
+              >
+                <Edit fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </Stack>
+        ),
+        resizable: false,
+        sortable: false,
+      },
       {
         field: "name",
         filterOperators: stringFilterOperators,
@@ -274,6 +298,7 @@ const LeaveTypes = ({
       booleanFilterOperators,
       enumFilterOperators,
       enumOptions.statutoryKind,
+      handleLeaveTypeDialog,
       numberFilterOperators,
       stringFilterOperators,
       tAttendance,
@@ -283,7 +308,7 @@ const LeaveTypes = ({
   return (
     <>
       <Button
-        onClick={handleCreateLeaveType}
+        onClick={() => handleLeaveTypeDialog()}
         startIcon={<Add />}
         sx={{ alignSelf: "flex-start" }}
         variant="contained"

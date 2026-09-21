@@ -64,6 +64,8 @@ const StyledIconButton = styled(IconButton, {
 }));
 
 interface ShiftsProps {
+  canCancel: boolean;
+  canCreate: boolean;
   employees: AttendanceEmployee[];
   filterField?: AttendanceShiftFilterField;
   filterOperator?: FilterOperator;
@@ -79,6 +81,8 @@ interface ShiftsProps {
 }
 
 const Shifts = ({
+  canCancel,
+  canCreate,
   employees,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
@@ -140,7 +144,7 @@ const Shifts = ({
     [tAttendance],
   );
 
-  const base = attendancePath(organizationSlug, "all", "shifts");
+  const base = attendancePath(organizationSlug, "org", "shifts");
 
   const {
     data: { data: rows, total: rowCount } = {
@@ -284,16 +288,18 @@ const Shifts = ({
                 <History fontSize="small" />
               </IconButton>
             </Tooltip>
-            <Tooltip title={tAttendance("cancelShift")}>
-              <StyledIconButton
-                color="error"
-                onClick={() => handleCancelShift(row)}
-                size="small"
-                visible={row.state === "scheduled"}
-              >
-                <Cancel fontSize="small" />
-              </StyledIconButton>
-            </Tooltip>
+            {canCancel && (
+              <Tooltip title={tAttendance("cancelShift")}>
+                <StyledIconButton
+                  color="error"
+                  onClick={() => handleCancelShift(row)}
+                  size="small"
+                  visible={row.state === "scheduled"}
+                >
+                  <Cancel fontSize="small" />
+                </StyledIconButton>
+              </Tooltip>
+            )}
           </Stack>
         ),
         resizable: false,
@@ -363,6 +369,7 @@ const Shifts = ({
       },
     ],
     [
+      canCancel,
       date,
       dateFilterOperators,
       enumFilterOperators,
@@ -377,16 +384,18 @@ const Shifts = ({
 
   return (
     <>
-      <Stack alignItems="center" direction="row" flexWrap="wrap" gap={2}>
-        <Button
-          onClick={handleCreateShift}
-          size="small"
-          startIcon={<Add />}
-          variant="contained"
-        >
-          {tAttendance("shifts.actions.create")}
-        </Button>
-      </Stack>
+      {canCreate && (
+        <Stack alignItems="center" direction="row" flexWrap="wrap" gap={2}>
+          <Button
+            onClick={handleCreateShift}
+            size="small"
+            startIcon={<Add />}
+            variant="contained"
+          >
+            {tAttendance("shifts.actions.create")}
+          </Button>
+        </Stack>
+      )}
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}

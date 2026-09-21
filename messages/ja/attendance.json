@@ -223,7 +223,8 @@
   "leaveType": "休暇種類",
   "leaveTypes": {
     "actions": {
-      "create": "休暇区分を追加"
+      "create": "休暇区分を追加",
+      "update": "休暇区分を編集"
     },
     "label": "休暇設定"
   },
@@ -424,7 +425,9 @@
   "templateHint": "期間内のシフトを生成します。重複や休暇との競合があれば全件保存されません。",
   "templates": {
     "actions": {
-      "create": "週間シフト雛形を追加"
+      "create": "週間シフト雛形を追加",
+      "delete": "週間シフト雛形を削除",
+      "update": "週間シフト雛形を編集"
     },
     "label": "週間シフト雛形"
   },

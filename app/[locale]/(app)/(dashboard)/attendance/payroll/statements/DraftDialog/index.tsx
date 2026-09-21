@@ -70,7 +70,7 @@ const DraftDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher(payrollPath(organizationSlug, "all", "statements"), {
+      await fetcher(payrollPath(organizationSlug, "org", "statements"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -91,7 +91,7 @@ const ShiftDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher(attendancePath(organizationSlug, "all", "shifts"), {
+      await fetcher(attendancePath(organizationSlug, "org", "shifts"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

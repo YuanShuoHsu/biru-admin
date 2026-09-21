@@ -116,7 +116,7 @@ const ParentalChildrenPage = async ({
   ] = await Promise.all([
     getAttendanceParentalChildren(
       organization.slug,
-      canViewAll ? "all" : "me",
+      canViewAll ? "org" : "me",
       {
         page,
         pageSize,

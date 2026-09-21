@@ -56,6 +56,7 @@ const DataGrid = dynamic(
 );
 
 interface EmployeesProps {
+  canWrite: boolean;
   filterField?: AttendanceEmployeeFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
@@ -71,6 +72,7 @@ interface EmployeesProps {
 }
 
 const Employees = ({
+  canWrite,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
@@ -133,7 +135,7 @@ const Employees = ({
     [format],
   );
 
-  const base = attendancePath(organizationSlug, "all", "employees");
+  const base = attendancePath(organizationSlug, "org", "employees");
 
   const {
     data: { data: rows, total: rowCount } = {
@@ -229,27 +231,33 @@ const Employees = ({
 
   const columns = useMemo<GridColDef[]>(
     () => [
-      {
-        disableColumnMenu: true,
-        disableExport: true,
-        field: "actions",
-        filterable: false,
-        headerName: tAttendance("actions"),
-        renderCell: ({ row }: GridRenderCellParams<AttendanceEmployee>) => (
-          <Stack height="100%" direction="row" alignItems="center">
-            <Tooltip title={tAttendance("employees.actions.update")}>
-              <IconButton
-                onClick={() => handleEmployeeDialog(row)}
-                size="small"
-              >
-                <Settings fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </Stack>
-        ),
-        resizable: false,
-        sortable: false,
-      },
+      ...(canWrite
+        ? [
+            {
+              disableColumnMenu: true,
+              disableExport: true,
+              field: "actions",
+              filterable: false,
+              headerName: tAttendance("actions"),
+              renderCell: ({
+                row,
+              }: GridRenderCellParams<AttendanceEmployee>) => (
+                <Stack height="100%" direction="row" alignItems="center">
+                  <Tooltip title={tAttendance("employees.actions.update")}>
+                    <IconButton
+                      onClick={() => handleEmployeeDialog(row)}
+                      size="small"
+                    >
+                      <Settings fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </Stack>
+              ),
+              resizable: false,
+              sortable: false,
+            },
+          ]
+        : []),
       {
         field: "name",
         filterOperators: stringFilterOperators,
@@ -293,6 +301,7 @@ const Employees = ({
     ],
     [
       booleanFilterOperators,
+      canWrite,
       date,
       dateFilterOperators,
       handleEmployeeDialog,
@@ -304,15 +313,17 @@ const Employees = ({
 
   return (
     <>
-      <Button
-        onClick={() => handleEmployeeDialog()}
-        size="small"
-        startIcon={<Add />}
-        sx={{ alignSelf: "flex-start" }}
-        variant="contained"
-      >
-        {tAttendance("employees.actions.create")}
-      </Button>
+      {canWrite && (
+        <Button
+          onClick={() => handleEmployeeDialog()}
+          size="small"
+          startIcon={<Add />}
+          sx={{ alignSelf: "flex-start" }}
+          variant="contained"
+        >
+          {tAttendance("employees.actions.create")}
+        </Button>
+      )}
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}

@@ -69,7 +69,7 @@ const SettingsDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher(attendancePath(organizationSlug, "all", "settings"), {
+      await fetcher(attendancePath(organizationSlug, "org", "settings"), {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

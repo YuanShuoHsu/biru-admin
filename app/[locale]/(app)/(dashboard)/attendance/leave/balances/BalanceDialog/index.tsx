@@ -75,7 +75,7 @@ const BalanceDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher(attendancePath(organizationSlug, "all", "leave-balances"), {
+      await fetcher(attendancePath(organizationSlug, "org", "leave-balances"), {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),

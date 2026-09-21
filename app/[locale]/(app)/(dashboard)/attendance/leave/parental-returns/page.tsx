@@ -120,7 +120,7 @@ const ParentalReturnsPage = async ({
     await Promise.all([
       getAttendanceParentalReturns(
         organization.slug,
-        canViewAll ? "all" : "me",
+        canViewAll ? "org" : "me",
         {
           page,
           pageSize,

@@ -62,7 +62,7 @@ const AssignChildDialog = ({
       await fetcher(
         attendancePath(
           organizationSlug,
-          "all",
+          "org",
           `leave-cases/${leaveCase.id}/child`,
         ),
         {

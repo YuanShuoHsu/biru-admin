@@ -23,16 +23,19 @@ import {
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import { statutoryLeaveKindValues } from "@/types/api";
+import type { AttendanceLeaveType } from "@/types/attendance";
 
 import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
 
 interface LeaveTypeDialogProps {
+  leaveType?: AttendanceLeaveType;
   mutate: () => void;
   organizationSlug: string;
 }
 
 const LeaveTypeDialog = ({
+  leaveType,
   mutate,
   organizationSlug,
 }: LeaveTypeDialogProps) => {
@@ -50,11 +53,11 @@ const LeaveTypeDialog = ({
     setValue,
   } = useForm<LeaveTypeForm>({
     defaultValues: {
-      enabled: true,
-      name: "",
-      paidPercent: 0,
-      requiresBalance: true,
-      statutoryKind: "custom",
+      enabled: leaveType?.enabled ?? true,
+      name: leaveType?.name ?? "",
+      paidPercent: leaveType?.paidPercent ?? 0,
+      requiresBalance: leaveType?.requiresBalance ?? true,
+      statutoryKind: leaveType?.statutoryKind ?? "custom",
     },
     resolver: zodResolver(leaveTypeFormSchema),
   });
@@ -68,11 +71,18 @@ const LeaveTypeDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher(attendancePath(organizationSlug, "all", "leave-types"), {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      });
+      await fetcher(
+        attendancePath(
+          organizationSlug,
+          "org",
+          leaveType ? `leave-types/${leaveType.id}` : "leave-types",
+        ),
+        {
+          method: leaveType ? "PATCH" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(values),
+        },
+      );
 
       enqueueSnackbar(tAttendance("success"), { variant: "success" });
 

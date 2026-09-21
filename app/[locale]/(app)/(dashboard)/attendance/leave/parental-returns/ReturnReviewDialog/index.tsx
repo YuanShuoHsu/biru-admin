@@ -62,7 +62,7 @@ const ReturnReviewDialog = ({
       await fetcher(
         attendancePath(
           organizationSlug,
-          "all",
+          "org",
           `return-requests/${parentalReturn.id}/review`,
         ),
         {

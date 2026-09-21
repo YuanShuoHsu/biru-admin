@@ -119,7 +119,7 @@ const LeaveCasesPage = async ({
   ] = await Promise.all([
     getAttendanceLeaveCases(
       organization.slug,
-      canViewAll ? "all" : "me",
+      canViewAll ? "org" : "me",
       {
         page,
         pageSize,
@@ -146,7 +146,7 @@ const LeaveCasesPage = async ({
     ),
     getAttendanceParentalChildren(
       organization.slug,
-      canViewAllParentalChildren ? "all" : "me",
+      canViewAllParentalChildren ? "org" : "me",
       { pageSize: MAX_PAGE_SIZE },
       fetchOptions,
     ),

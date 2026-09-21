@@ -100,7 +100,7 @@ const CorrectionDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher(attendancePath(organizationSlug, "all", "requests"), {
+      await fetcher(attendancePath(organizationSlug, "org", "requests"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -81,7 +81,7 @@ const GenerateDialog = ({
       await fetcher(
         attendancePath(
           organizationSlug,
-          "all",
+          "org",
           `templates/${values.templateId}/generate`,
         ),
         {

@@ -134,7 +134,7 @@ const ParentalChildren = ({
 
   const base = attendancePath(
     organizationSlug,
-    canViewAll ? "all" : "me",
+    canViewAll ? "org" : "me",
     "children",
   );
 

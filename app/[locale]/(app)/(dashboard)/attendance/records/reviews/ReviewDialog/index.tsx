@@ -120,7 +120,7 @@ const ReviewDialog = ({
       await fetcher(
         attendancePath(
           organizationSlug,
-          "all",
+          "org",
           `requests/${request.id}/review`,
         ),
         {

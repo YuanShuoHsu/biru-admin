@@ -223,7 +223,8 @@
   "leaveType": "假別",
   "leaveTypes": {
     "actions": {
-      "create": "新增假別"
+      "create": "新增假別",
+      "update": "編輯假別"
     },
     "label": "假別設定"
   },
@@ -424,7 +425,9 @@
   "templateHint": "依範本產生期間內的班次；若有重疊或請假衝突，整批不會儲存。",
   "templates": {
     "actions": {
-      "create": "新增班表範本"
+      "create": "新增班表範本",
+      "delete": "刪除班表範本",
+      "update": "編輯班表範本"
     },
     "label": "每週班表範本"
   },

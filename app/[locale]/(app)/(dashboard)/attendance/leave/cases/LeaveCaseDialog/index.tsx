@@ -133,7 +133,7 @@ const LeaveCaseDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher(attendancePath(organizationSlug, "all", "leave-cases"), {
+      await fetcher(attendancePath(organizationSlug, "org", "leave-cases"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

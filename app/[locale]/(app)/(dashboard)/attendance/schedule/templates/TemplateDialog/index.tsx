@@ -16,7 +16,10 @@ import { Checkbox, FormControlLabel, MenuItem, TextField } from "@mui/material";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import { attendanceDayKindValues } from "@/types/api";
-import type { AttendanceEmployee } from "@/types/attendance";
+import type {
+  AttendanceEmployee,
+  AttendanceTemplate,
+} from "@/types/attendance";
 
 import {
   attendanceErrorKey,
@@ -29,12 +32,14 @@ interface TemplateDialogProps {
   employees: AttendanceEmployee[];
   mutate: () => void;
   organizationSlug: string;
+  template?: AttendanceTemplate;
 }
 
 const TemplateDialog = ({
   employees,
   mutate,
   organizationSlug,
+  template,
 }: TemplateDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
@@ -52,14 +57,14 @@ const TemplateDialog = ({
     setValue,
   } = useForm<TemplateForm>({
     defaultValues: {
-      dayKind: "workday",
-      employeeId: "",
-      endTime: "17:00",
-      name: "",
-      nextDay: false,
-      paidBreak: false,
-      startTime: "09:00",
-      weekday: 1,
+      dayKind: template?.dayKind ?? "workday",
+      employeeId: template?.employeeId ?? "",
+      endTime: template?.endTime ?? "17:00",
+      name: template?.name ?? "",
+      nextDay: template?.nextDay ?? false,
+      paidBreak: template?.paidBreak ?? false,
+      startTime: template?.startTime ?? "09:00",
+      weekday: template?.weekday ?? 1,
     },
     resolver: zodResolver(templateFormSchema),
   });
@@ -73,11 +78,18 @@ const TemplateDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher(attendancePath(organizationSlug, "all", "templates"), {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      });
+      await fetcher(
+        attendancePath(
+          organizationSlug,
+          "org",
+          template ? `templates/${template.id}` : "templates",
+        ),
+        {
+          method: template ? "PATCH" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(values),
+        },
+      );
 
       enqueueSnackbar(tAttendance("success"), { variant: "success" });
 

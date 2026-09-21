@@ -73,7 +73,7 @@ const ChildDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher(attendancePath(organizationSlug, "all", "children"), {
+      await fetcher(attendancePath(organizationSlug, "org", "children"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -121,7 +121,7 @@ const PayrollPage = async ({ params, searchParams }: PayrollPageProps) => {
     await Promise.all([
       getPayrollStatements(
         organization.slug,
-        "all",
+        "org",
         {
           page,
           pageSize,
@@ -146,6 +146,11 @@ const PayrollPage = async ({ params, searchParams }: PayrollPageProps) => {
   return (
     <AttendanceTabsLayout memberRole={memberRole}>
       <Payroll
+        canCreate={hasRolePermission(memberRole, { payslip: ["create"] })}
+        canManage={hasRolePermission(memberRole, { payslip: ["update"] })}
+        canManageTerms={hasRolePermission(memberRole, {
+          payrollTerm: ["create", "update"],
+        })}
         currency={organization.currency ?? ""}
         employees={employees}
         filterField={filterField}

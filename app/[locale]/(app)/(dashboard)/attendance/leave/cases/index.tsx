@@ -152,7 +152,7 @@ const LeaveCases = ({
 
   const base = attendancePath(
     organizationSlug,
-    canViewAll ? "all" : "me",
+    canViewAll ? "org" : "me",
     "leave-cases",
   );
 

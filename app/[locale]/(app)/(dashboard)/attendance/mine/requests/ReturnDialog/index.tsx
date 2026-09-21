@@ -77,7 +77,7 @@ const ReturnDialog = ({
       await fetcher(
         attendancePath(
           organizationSlug,
-          "all",
+          "org",
           `requests/${request.id}/return`,
         ),
         {

@@ -116,7 +116,7 @@ const ShiftsPage = async ({ params, searchParams }: ShiftsPageProps) => {
   const [{ shifts: rows, total: rowCount }, { employees }] = await Promise.all([
     getAttendanceShifts(
       organization.slug,
-      "all",
+      "org",
       {
         page,
         pageSize,
@@ -140,6 +140,8 @@ const ShiftsPage = async ({ params, searchParams }: ShiftsPageProps) => {
   return (
     <AttendanceTabsLayout memberRole={memberRole}>
       <Shifts
+        canCancel={hasRolePermission(memberRole, { shift: ["update"] })}
+        canCreate={hasRolePermission(memberRole, { shift: ["create"] })}
         employees={employees}
         filterField={filterField}
         filterOperator={filterOperator}

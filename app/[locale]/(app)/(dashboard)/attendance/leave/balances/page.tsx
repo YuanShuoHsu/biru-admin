@@ -110,7 +110,7 @@ const BalancesPage = async ({ params, searchParams }: BalancesPageProps) => {
     await Promise.all([
       getAttendanceLeaveBalances(
         organization.slug,
-        canViewAll ? "all" : "me",
+        canViewAll ? "org" : "me",
         {
           page,
           pageSize,

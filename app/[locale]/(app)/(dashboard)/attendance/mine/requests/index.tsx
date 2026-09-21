@@ -273,7 +273,7 @@ const Requests = ({
             await fetcher(
               attendancePath(
                 organizationSlug,
-                "all",
+                "org",
                 `requests/${id}/withdraw`,
               ),
               { method: "PATCH" },

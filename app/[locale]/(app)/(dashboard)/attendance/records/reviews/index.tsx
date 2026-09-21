@@ -56,6 +56,7 @@ const DataGrid = dynamic(
 );
 
 interface ReviewsProps {
+  canReview: boolean;
   employeeId?: string;
   filterField?: AttendanceRequestFilterField;
   filterOperator?: FilterOperator;
@@ -72,6 +73,7 @@ interface ReviewsProps {
 }
 
 const Reviews = ({
+  canReview,
   employeeId,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
@@ -139,7 +141,7 @@ const Reviews = ({
     [format],
   );
 
-  const base = attendancePath(organizationSlug, "all", "requests");
+  const base = attendancePath(organizationSlug, "org", "requests");
 
   const {
     data: { data: rows, total: rowCount } = {
@@ -248,56 +250,66 @@ const Reviews = ({
 
   const columns = useMemo<GridColDef[]>(
     () => [
-      {
-        disableColumnMenu: true,
-        disableExport: true,
-        field: "actions",
-        filterable: false,
-        headerName: tAttendance("actions"),
-        renderCell: ({ row }: GridRenderCellParams<AttendanceRequest>) =>
-          row.status === "pending" || row.status === "cancellationPending" ? (
-            <Stack alignItems="center" direction="row" gap={1} height="100%">
-              <Tooltip
-                title={
-                  row.employeeId === employeeId
-                    ? tAttendance("errors.cannotReviewSelf")
-                    : reviewTitle(row, "approved")
-                }
-              >
-                <span>
-                  <IconButton
-                    color="success"
-                    disabled={row.employeeId === employeeId}
-                    onClick={() => handleReview(row, "approved")}
-                    size="small"
+      ...(canReview
+        ? [
+            {
+              disableColumnMenu: true,
+              disableExport: true,
+              field: "actions",
+              filterable: false,
+              headerName: tAttendance("actions"),
+              renderCell: ({ row }: GridRenderCellParams<AttendanceRequest>) =>
+                row.status === "pending" ||
+                row.status === "cancellationPending" ? (
+                  <Stack
+                    alignItems="center"
+                    direction="row"
+                    gap={1}
+                    height="100%"
                   >
-                    <Check fontSize="small" />
-                  </IconButton>
-                </span>
-              </Tooltip>
-              <Tooltip
-                title={
-                  row.employeeId === employeeId
-                    ? tAttendance("errors.cannotReviewSelf")
-                    : reviewTitle(row, "rejected")
-                }
-              >
-                <span>
-                  <IconButton
-                    color="error"
-                    disabled={row.employeeId === employeeId}
-                    onClick={() => handleReview(row, "rejected")}
-                    size="small"
-                  >
-                    <Close fontSize="small" />
-                  </IconButton>
-                </span>
-              </Tooltip>
-            </Stack>
-          ) : null,
-        resizable: false,
-        sortable: false,
-      },
+                    <Tooltip
+                      title={
+                        row.employeeId === employeeId
+                          ? tAttendance("errors.cannotReviewSelf")
+                          : reviewTitle(row, "approved")
+                      }
+                    >
+                      <span>
+                        <IconButton
+                          color="success"
+                          disabled={row.employeeId === employeeId}
+                          onClick={() => handleReview(row, "approved")}
+                          size="small"
+                        >
+                          <Check fontSize="small" />
+                        </IconButton>
+                      </span>
+                    </Tooltip>
+                    <Tooltip
+                      title={
+                        row.employeeId === employeeId
+                          ? tAttendance("errors.cannotReviewSelf")
+                          : reviewTitle(row, "rejected")
+                      }
+                    >
+                      <span>
+                        <IconButton
+                          color="error"
+                          disabled={row.employeeId === employeeId}
+                          onClick={() => handleReview(row, "rejected")}
+                          size="small"
+                        >
+                          <Close fontSize="small" />
+                        </IconButton>
+                      </span>
+                    </Tooltip>
+                  </Stack>
+                ) : null,
+              resizable: false,
+              sortable: false,
+            },
+          ]
+        : []),
       {
         field: "employeeName",
         filterOperators: stringFilterOperators,
@@ -356,6 +368,7 @@ const Reviews = ({
       },
     ],
     [
+      canReview,
       date,
       dateFilterOperators,
       employeeId,

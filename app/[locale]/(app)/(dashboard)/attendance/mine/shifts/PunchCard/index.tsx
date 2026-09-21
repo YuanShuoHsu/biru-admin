@@ -91,7 +91,7 @@ const PunchCard = ({
     punchKeys.current.set(pending, idempotencyKey);
 
     try {
-      await fetcher(attendancePath(organizationSlug, "all", "punch"), {
+      await fetcher(attendancePath(organizationSlug, "org", "punch"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

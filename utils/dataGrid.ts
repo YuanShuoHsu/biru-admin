@@ -7,12 +7,67 @@ import {
 
 import { sortDirectionValues } from "@/types/api";
 
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+
 import type {
   GridFilterItem,
   GridFilterModel,
   GridPaginationModel,
   GridSortModel,
 } from "@mui/x-data-grid";
+
+export interface GridQuery<
+  FilterField extends string,
+  SortField extends string,
+> {
+  page?: number;
+  pageSize?: number;
+  filterField?: FilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  quickFilterEnums?: string[];
+  quickFilterValue?: string;
+  sortBy?: SortField;
+  sortDirection?: SortDirection;
+}
+
+export const getGridSearchParams = <
+  FilterField extends string,
+  SortField extends string,
+>({
+  page = DEFAULT_PAGE,
+  pageSize = DEFAULT_PAGE_SIZE,
+  filterField,
+  filterOperator,
+  filterValue,
+  quickFilterEnums,
+  quickFilterValue,
+  sortBy,
+  sortDirection,
+}: GridQuery<FilterField, SortField>) => {
+  const isNoValueOperator =
+    filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
+
+  const params = new URLSearchParams({
+    limit: String(pageSize),
+    offset: String((page - 1) * pageSize),
+    ...(sortBy && { sortBy }),
+    ...(sortDirection && { sortDirection }),
+    ...(filterField &&
+      filterOperator &&
+      (filterValue || isNoValueOperator) && {
+        filterField,
+        filterOperator,
+        ...(filterValue && { filterValue }),
+      }),
+    ...(quickFilterValue && { quickFilterValue }),
+  });
+
+  for (const entry of quickFilterEnums || [])
+    params.append("quickFilterEnums", entry);
+
+  return params;
+};
 
 export const isFilteredOrSorted = (
   filterModel: GridFilterModel,

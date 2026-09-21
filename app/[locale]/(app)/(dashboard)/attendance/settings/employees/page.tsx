@@ -119,6 +119,9 @@ const EmployeesPage = async ({ params, searchParams }: EmployeesPageProps) => {
   return (
     <AttendanceTabsLayout memberRole={memberRole}>
       <Employees
+        canWrite={hasRolePermission(memberRole, {
+          employee: ["create", "update"],
+        })}
         filterField={filterField}
         filterOperator={filterOperator}
         filterValue={filterValue}

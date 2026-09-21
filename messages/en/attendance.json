@@ -223,7 +223,8 @@
   "leaveType": "Leave type",
   "leaveTypes": {
     "actions": {
-      "create": "Add leave policy"
+      "create": "Add leave policy",
+      "update": "Edit leave policy"
     },
     "label": "Leave policies"
   },
@@ -424,7 +425,9 @@
   "templateHint": "Generate shifts for this period. Overlaps or leave conflicts reject the whole batch.",
   "templates": {
     "actions": {
-      "create": "Add weekly template"
+      "create": "Add weekly template",
+      "delete": "Delete weekly template",
+      "update": "Edit weekly template"
     },
     "label": "Weekly templates"
   },

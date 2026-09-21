@@ -4,8 +4,6 @@ import utc from "dayjs/plugin/utc";
 import { cache } from "react";
 
 import { ATTENDANCE_NAV_GROUPS } from "@/constants/attendance";
-import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
-import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "@/constants/pagination";
 import { PLATFORM_TIMEZONE, STORE_TIMEZONE } from "@/constants/timezone";
 
 import { authClient } from "@/lib/auth-client";
@@ -49,8 +47,7 @@ import type {
   PayrollStatementSortField,
   PayrollTerms,
 } from "@/types/attendance";
-import type { FilterOperator, SortDirection } from "@/types/dataGrid";
-
+import { type GridQuery, getGridSearchParams } from "@/utils/dataGrid";
 import { fetcher, type FetchError } from "@/utils/fetcher";
 import { getResolvedAdminOrganization } from "@/utils/menus";
 import { hasRolePermission } from "@/utils/organizations";
@@ -106,57 +103,7 @@ export const getAttendanceAccess = cache(
   },
 );
 
-type AttendanceScope = "all" | "me";
-
-interface GridQuery<FilterField extends string, SortField extends string> {
-  page?: number;
-  pageSize?: number;
-  filterField?: FilterField;
-  filterOperator?: FilterOperator;
-  filterValue?: string;
-  quickFilterEnums?: string[];
-  quickFilterValue?: string;
-  sortBy?: SortField;
-  sortDirection?: SortDirection;
-}
-
-const getGridSearchParams = <
-  FilterField extends string,
-  SortField extends string,
->({
-  page = DEFAULT_PAGE,
-  pageSize = DEFAULT_PAGE_SIZE,
-  filterField,
-  filterOperator,
-  filterValue,
-  quickFilterEnums,
-  quickFilterValue,
-  sortBy,
-  sortDirection,
-}: GridQuery<FilterField, SortField>) => {
-  const isNoValueOperator =
-    filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
-
-  const params = new URLSearchParams({
-    limit: String(pageSize),
-    offset: String((page - 1) * pageSize),
-    ...(sortBy && { sortBy }),
-    ...(sortDirection && { sortDirection }),
-    ...(filterField &&
-      filterOperator &&
-      (filterValue || isNoValueOperator) && {
-        filterField,
-        filterOperator,
-        ...(filterValue && { filterValue }),
-      }),
-    ...(quickFilterValue && { quickFilterValue }),
-  });
-
-  for (const entry of quickFilterEnums || [])
-    params.append("quickFilterEnums", entry);
-
-  return params;
-};
+type AttendanceScope = "org" | "me";
 
 const getGrid = async <
   Row,
@@ -189,10 +136,11 @@ export const attendancePath = (
 ) =>
   `/api/organizations/${organizationSlug}/attendance/${scope === "me" ? "me/" : ""}${resource}`;
 
+// 這支不能跟其他 getter 一樣把錯誤吞成空值，否則員工會看到「尚未建檔」而不是錯誤頁
 export const getAttendanceContext = cache(
   (organizationSlug: string, init?: RequestInit) =>
     fetcher<AttendanceContext>(
-      attendancePath(organizationSlug, "all", "context"),
+      attendancePath(organizationSlug, "org", "context"),
       init,
     ),
 );
@@ -201,7 +149,7 @@ export const getAttendanceMembers = cache(
   async (organizationSlug: string, init?: RequestInit) => {
     try {
       return await fetcher<AttendanceMember[]>(
-        attendancePath(organizationSlug, "all", "members"),
+        attendancePath(organizationSlug, "org", "members"),
         init,
       );
     } catch {
@@ -214,7 +162,7 @@ export const getAttendanceSettings = cache(
   async (organizationSlug: string, init?: RequestInit) => {
     try {
       return await fetcher<AttendanceSettings>(
-        attendancePath(organizationSlug, "all", "settings"),
+        attendancePath(organizationSlug, "org", "settings"),
         init,
       );
     } catch {
@@ -236,7 +184,7 @@ export const getAttendanceEmployees = cache(
       AttendanceEmployee,
       AttendanceEmployeeFilterField,
       AttendanceEmployeeSortField
-    >(attendancePath(organizationSlug, "all", "employees"), query, init);
+    >(attendancePath(organizationSlug, "org", "employees"), query, init);
 
     return { employees, total };
   },
@@ -264,7 +212,7 @@ export const attendanceCalendarPath = (
   from: string,
   to: string,
 ) =>
-  `${attendancePath(organizationSlug, "all", "shifts/calendar")}?${new URLSearchParams({ from, to })}`;
+  `${attendancePath(organizationSlug, "org", "shifts/calendar")}?${new URLSearchParams({ from, to })}`;
 
 export const getAttendanceCalendarShifts = cache(
   async (
@@ -330,7 +278,7 @@ export const getAttendanceLeaveTypes = cache(
       AttendanceLeaveType,
       AttendanceLeaveTypeFilterField,
       AttendanceLeaveTypeSortField
-    >(attendancePath(organizationSlug, "all", "leave-types"), query, init);
+    >(attendancePath(organizationSlug, "org", "leave-types"), query, init);
 
     return { leaveTypes, total };
   },
@@ -389,7 +337,7 @@ export const getAttendanceTemplates = cache(
       AttendanceTemplate,
       AttendanceTemplateFilterField,
       AttendanceTemplateSortField
-    >(attendancePath(organizationSlug, "all", "templates"), query, init);
+    >(attendancePath(organizationSlug, "org", "templates"), query, init);
 
     return { templates, total };
   },
@@ -466,7 +414,7 @@ export const getPayrollTerms = cache(
   async (organizationSlug: string, init?: RequestInit) => {
     try {
       return await fetcher<PayrollTerms[]>(
-        payrollPath(organizationSlug, "all", "terms"),
+        payrollPath(organizationSlug, "org", "terms"),
         init,
       );
     } catch {

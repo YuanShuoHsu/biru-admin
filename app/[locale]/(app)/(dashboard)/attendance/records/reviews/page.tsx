@@ -119,7 +119,7 @@ const ReviewsPage = async ({ params, searchParams }: ReviewsPageProps) => {
     await Promise.all([
       getAttendanceRequests(
         organization.slug,
-        "all",
+        "org",
         {
           page,
           pageSize,
@@ -144,6 +144,9 @@ const ReviewsPage = async ({ params, searchParams }: ReviewsPageProps) => {
   return (
     <AttendanceTabsLayout memberRole={memberRole}>
       <Reviews
+        canReview={hasRolePermission(memberRole, {
+          attendanceRequest: ["update"],
+        })}
         employeeId={employee?.id}
         filterField={filterField}
         filterOperator={filterOperator}

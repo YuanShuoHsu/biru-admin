@@ -140,6 +140,16 @@ const TemplatesPage = async ({ params, searchParams }: TemplatesPageProps) => {
   return (
     <AttendanceTabsLayout memberRole={memberRole}>
       <Templates
+        canCreate={hasRolePermission(memberRole, {
+          shiftTemplate: ["create"],
+        })}
+        canDelete={hasRolePermission(memberRole, {
+          shiftTemplate: ["delete"],
+        })}
+        canGenerate={hasRolePermission(memberRole, { shift: ["create"] })}
+        canUpdate={hasRolePermission(memberRole, {
+          shiftTemplate: ["update"],
+        })}
         employees={employees}
         filterField={filterField}
         filterOperator={filterOperator}

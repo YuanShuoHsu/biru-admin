@@ -143,7 +143,7 @@ const ParentalReturns = ({
 
   const base = attendancePath(
     organizationSlug,
-    canViewAll ? "all" : "me",
+    canViewAll ? "org" : "me",
     "return-requests",
   );
 

@@ -223,7 +223,8 @@
   "leaveType": "휴가 유형",
   "leaveTypes": {
     "actions": {
-      "create": "휴가 정책 추가"
+      "create": "휴가 정책 추가",
+      "update": "휴가 정책 편집"
     },
     "label": "휴가 정책"
   },
@@ -424,7 +425,9 @@
   "templateHint": "기간 내 근무를 생성합니다. 중복이나 휴가 충돌이 있으면 전체가 저장되지 않습니다.",
   "templates": {
     "actions": {
-      "create": "주간 근무 템플릿 추가"
+      "create": "주간 근무 템플릿 추가",
+      "delete": "주간 근무 템플릿 삭제",
+      "update": "주간 근무 템플릿 편집"
     },
     "label": "주간 근무 템플릿"
   },

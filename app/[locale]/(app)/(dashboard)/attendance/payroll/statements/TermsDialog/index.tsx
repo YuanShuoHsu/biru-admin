@@ -138,7 +138,7 @@ const TermsDialog = ({
 
   const { data: grades, error: gradesError } = useSWR<PayrollInsuranceGrades>(
     values.autoInsurance && month
-      ? `${payrollPath(organizationSlug, "all", "insurance-grades")}?month=${month}`
+      ? `${payrollPath(organizationSlug, "org", "insurance-grades")}?month=${month}`
       : null,
     fetcher,
   );
@@ -178,7 +178,7 @@ const TermsDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher(payrollPath(organizationSlug, "all", "terms"), {
+      await fetcher(payrollPath(organizationSlug, "org", "terms"), {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

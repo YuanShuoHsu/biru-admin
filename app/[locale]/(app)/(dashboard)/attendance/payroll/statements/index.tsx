@@ -60,6 +60,9 @@ const DataGrid = dynamic(
 );
 
 interface PayrollProps {
+  canCreate: boolean;
+  canManage: boolean;
+  canManageTerms: boolean;
   currency: string;
   employees: AttendanceEmployee[];
   filterField?: PayrollStatementFilterField;
@@ -77,6 +80,9 @@ interface PayrollProps {
 }
 
 const Payroll = ({
+  canCreate,
+  canManage,
+  canManageTerms,
   currency,
   employees,
   filterField: initialFilterField,
@@ -148,11 +154,11 @@ const Payroll = ({
     [currency, formatMoney],
   );
 
-  const base = payrollPath(organizationSlug, "all", "statements");
+  const base = payrollPath(organizationSlug, "org", "statements");
 
   const { data: terms = initialTerms, mutate: mutateTerms } = useSWR<
     PayrollTerms[]
-  >(payrollPath(organizationSlug, "all", "terms"), fetcher, {
+  >(payrollPath(organizationSlug, "org", "terms"), fetcher, {
     fallbackData: initialTerms,
   });
 
@@ -299,7 +305,7 @@ const Payroll = ({
       setDialog({
         content: (
           <StatementDialogContent
-            canManage
+            canManage={canManage}
             currency={currency}
             onTransition={() => handleTransitionDialog(statement)}
             statement={statement}
@@ -309,7 +315,7 @@ const Payroll = ({
         showConfirm: false,
         title: `${statement.employeeName} · ${statement.month} · ${tAttendance(`payrollStatus.options.${statement.status}`)}`,
       }),
-    [currency, handleTransitionDialog, setDialog, tAttendance],
+    [canManage, currency, handleTransitionDialog, setDialog, tAttendance],
   );
 
   const columns = useMemo<GridColDef[]>(
@@ -390,19 +396,25 @@ const Payroll = ({
 
   return (
     <>
-      <Stack direction="row" flexWrap="wrap" gap={2}>
-        <Button onClick={handleTermsDialog} size="small">
-          {tAttendance("payrollTerms")}
-        </Button>
-        <Button
-          onClick={handleDraftDialog}
-          size="small"
-          startIcon={<Add />}
-          variant="contained"
-        >
-          {tAttendance("payrollStatus.options.draft")}
-        </Button>
-      </Stack>
+      {(canManageTerms || canCreate) && (
+        <Stack direction="row" flexWrap="wrap" gap={2}>
+          {canManageTerms && (
+            <Button onClick={handleTermsDialog} size="small">
+              {tAttendance("payrollTerms")}
+            </Button>
+          )}
+          {canCreate && (
+            <Button
+              onClick={handleDraftDialog}
+              size="small"
+              startIcon={<Add />}
+              variant="contained"
+            >
+              {tAttendance("payrollStatus.options.draft")}
+            </Button>
+          )}
+        </Stack>
+      )}
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}

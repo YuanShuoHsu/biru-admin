@@ -2,6 +2,7 @@
 
 import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
+import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
@@ -23,7 +24,7 @@ import {
 } from "@/hooks/useFilterOperators";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
-import { Add, EventRepeat } from "@mui/icons-material";
+import { Add, Delete, Edit, EventRepeat } from "@mui/icons-material";
 import { Button, Chip, IconButton, Stack, Tooltip } from "@mui/material";
 import type {
   GridColDef,
@@ -47,7 +48,11 @@ import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAttendanceDayKindEnumOptions } from "@/utils/enumOptions";
-import { attendancePath, weekdayDate } from "@/utils/attendance";
+import {
+  attendanceErrorKey,
+  attendancePath,
+  weekdayDate,
+} from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
 
 const DataGrid = dynamic(
@@ -56,6 +61,10 @@ const DataGrid = dynamic(
 );
 
 interface TemplatesProps {
+  canCreate: boolean;
+  canDelete: boolean;
+  canGenerate: boolean;
+  canUpdate: boolean;
   employees: AttendanceEmployee[];
   filterField?: AttendanceTemplateFilterField;
   filterOperator?: FilterOperator;
@@ -71,6 +80,10 @@ interface TemplatesProps {
 }
 
 const Templates = ({
+  canCreate,
+  canDelete,
+  canGenerate,
+  canUpdate,
   employees,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
@@ -179,7 +192,7 @@ const Templates = ({
     [updateQuery],
   );
 
-  const base = attendancePath(organizationSlug, "all", "templates");
+  const base = attendancePath(organizationSlug, "org", "templates");
 
   const {
     data: { data: rows, total: rowCount } = {
@@ -207,7 +220,7 @@ const Templates = ({
   const { setDialog } = useDialogStore((state) => state);
 
   const handleTemplateDialog = useCallback(
-    () =>
+    (template?: AttendanceTemplate) =>
       setDialog({
         confirmText: tAttendance("save"),
         content: (
@@ -215,13 +228,41 @@ const Templates = ({
             employees={employees}
             mutate={mutate}
             organizationSlug={organizationSlug}
+            template={template}
           />
         ),
         formId: "attendance-template-form",
         open: true,
-        title: tAttendance("templates.actions.create"),
+        title: tAttendance(
+          template ? "templates.actions.update" : "templates.actions.create",
+        ),
       }),
     [employees, mutate, organizationSlug, setDialog, tAttendance],
+  );
+
+  const handleDeleteTemplate = useCallback(
+    ({ id }: AttendanceTemplate) =>
+      setDialog({
+        contentText: tAttendance("confirm"),
+        onConfirm: async () => {
+          try {
+            await fetcher(
+              attendancePath(organizationSlug, "org", `templates/${id}`),
+              { method: "DELETE" },
+            );
+
+            enqueueSnackbar(tAttendance("success"), { variant: "success" });
+            mutate();
+          } catch (error) {
+            enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+              variant: "error",
+            });
+          }
+        },
+        open: true,
+        title: tAttendance("templates.actions.delete"),
+      }),
+    [mutate, organizationSlug, setDialog, tAttendance],
   );
 
   const handleGenerateDialog = useCallback(
@@ -249,27 +290,61 @@ const Templates = ({
 
   const columns = useMemo<GridColDef[]>(
     () => [
-      {
-        disableColumnMenu: true,
-        disableExport: true,
-        field: "actions",
-        filterable: false,
-        headerName: tAttendance("actions"),
-        renderCell: ({ row }: GridRenderCellParams<AttendanceTemplate>) => (
-          <Stack height="100%" direction="row" alignItems="center">
-            <Tooltip title={tAttendance("generate")}>
-              <IconButton
-                onClick={() => handleGenerateDialog(row)}
-                size="small"
-              >
-                <EventRepeat fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </Stack>
-        ),
-        resizable: false,
-        sortable: false,
-      },
+      ...(canGenerate || canUpdate || canDelete
+        ? [
+            {
+              disableColumnMenu: true,
+              disableExport: true,
+              field: "actions",
+              filterable: false,
+              headerName: tAttendance("actions"),
+              renderCell: ({
+                row,
+              }: GridRenderCellParams<AttendanceTemplate>) => (
+                <Stack
+                  height="100%"
+                  direction="row"
+                  alignItems="center"
+                  gap={1}
+                >
+                  {canGenerate && (
+                    <Tooltip title={tAttendance("generate")}>
+                      <IconButton
+                        onClick={() => handleGenerateDialog(row)}
+                        size="small"
+                      >
+                        <EventRepeat fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                  {canUpdate && (
+                    <Tooltip title={tAttendance("templates.actions.update")}>
+                      <IconButton
+                        onClick={() => handleTemplateDialog(row)}
+                        size="small"
+                      >
+                        <Edit fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                  {canDelete && (
+                    <Tooltip title={tAttendance("templates.actions.delete")}>
+                      <IconButton
+                        color="error"
+                        onClick={() => handleDeleteTemplate(row)}
+                        size="small"
+                      >
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </Stack>
+              ),
+              resizable: false,
+              sortable: false,
+            },
+          ]
+        : []),
       {
         field: "name",
         filterOperators: stringFilterOperators,
@@ -325,9 +400,14 @@ const Templates = ({
     ],
     [
       booleanFilterOperators,
+      canDelete,
+      canGenerate,
+      canUpdate,
       dayKindOptions,
       enumFilterOperators,
+      handleDeleteTemplate,
       handleGenerateDialog,
+      handleTemplateDialog,
       numberFilterOperators,
       stringFilterOperators,
       tAttendance,
@@ -337,15 +417,17 @@ const Templates = ({
 
   return (
     <>
-      <Button
-        onClick={handleTemplateDialog}
-        size="small"
-        startIcon={<Add />}
-        sx={{ alignSelf: "flex-start" }}
-        variant="contained"
-      >
-        {tAttendance("templates.actions.create")}
-      </Button>
+      {canCreate && (
+        <Button
+          onClick={() => handleTemplateDialog()}
+          size="small"
+          startIcon={<Add />}
+          sx={{ alignSelf: "flex-start" }}
+          variant="contained"
+        >
+          {tAttendance("templates.actions.create")}
+        </Button>
+      )}
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}

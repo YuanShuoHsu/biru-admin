@@ -55,7 +55,7 @@ const TransitionDialog = ({
       await fetcher(
         payrollPath(
           organizationSlug,
-          "all",
+          "org",
           `statements/${statement.id}/${action}`,
         ),
         {
