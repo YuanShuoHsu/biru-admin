@@ -172,7 +172,6 @@
   "groups": {
     "leave": "请假",
     "mine": "我的",
-    "payroll": "薪资",
     "records": "出勤记录",
     "schedule": "排班",
     "settings": "设置"
@@ -287,7 +286,7 @@
     "actions": {
       "view": "查看工资明细"
     },
-    "label": "薪资管理"
+    "label": "薪资"
   },
   "payrollHint": "投保资料请依有效申报填写；特殊身份或补助请关闭自动计算并填入核定金额及依据。生效日目前限月初。",
   "payrollLine": {

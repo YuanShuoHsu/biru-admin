@@ -52,7 +52,7 @@ export const ATTENDANCE_NAV_GROUPS: {
   {
     children: [
       {
-        path: "/attendance/payroll/statements",
+        path: "/attendance/payroll",
         permission: { payrollTerm: ["read"], payslip: ["read"] },
       },
     ],

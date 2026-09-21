@@ -9,7 +9,7 @@ import DraftDialog from "./DraftDialog";
 import TermsDialog from "./TermsDialog";
 import TransitionDialog from "./TransitionDialog";
 
-import StatementDialogContent from "../../StatementDialogContent";
+import StatementDialogContent from "../StatementDialogContent";
 
 import {
   autosizeOptions,

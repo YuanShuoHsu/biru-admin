@@ -223,18 +223,10 @@ const routes: Route[] = [
         to: null,
       },
       {
-        children: [
-          {
-            icon: ReceiptLong,
-            label: "attendance.payroll.label",
-            query: ["organization", "page", "pageSize"],
-            segment: "statements",
-          },
-        ],
         icon: Payments,
-        label: "attendance.groups.payroll",
+        label: "attendance.payroll.label",
+        query: ["organization", "page", "pageSize"],
         segment: "payroll",
-        to: null,
       },
       {
         children: [
@@ -921,7 +913,7 @@ export const useRoutes = () => {
 
   return (path: string, href?: string): NavItem => {
     const { icon, label, param, query, to } = findRoute(path) ?? {};
-    const target = to === null ? undefined : (href ?? to ?? path);
+    const target = href ?? (to === null ? undefined : (to ?? path));
 
     return {
       icon,

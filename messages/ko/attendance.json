@@ -172,7 +172,6 @@
   "groups": {
     "leave": "휴가",
     "mine": "내 정보",
-    "payroll": "급여",
     "records": "근태 기록",
     "schedule": "근무 편성",
     "settings": "설정"
@@ -287,7 +286,7 @@
     "actions": {
       "view": "급여 명세 보기"
     },
-    "label": "급여 관리"
+    "label": "급여"
   },
   "payrollHint": "신고된 보험 금액을 사용하세요. 특례나 보조금은 자동 계산을 끄고 확인된 금액과 근거를 입력하세요. 적용일은 월초입니다.",
   "payrollLine": {

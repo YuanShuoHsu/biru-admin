@@ -21,11 +21,13 @@ const AttendanceTabsLayout = ({
   const groups = attendanceNavGroups(memberRole);
 
   const active =
-    groups.find(({ path }) => pathname.startsWith(`${path}/`)) ?? groups[0];
+    groups.find(
+      ({ path }) => pathname === path || pathname.startsWith(`${path}/`),
+    ) ?? groups[0];
 
   return (
     <>
-      {active && (
+      {active && active.children.length > 1 && (
         <RouteTabs
           ariaLabel="attendance tabs"
           tabs={active.children.map((path) => ({ path }))}

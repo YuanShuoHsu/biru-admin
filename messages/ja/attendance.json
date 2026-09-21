@@ -172,7 +172,6 @@
   "groups": {
     "leave": "休暇",
     "mine": "自分",
-    "payroll": "給与",
     "records": "勤怠記録",
     "schedule": "シフト作成",
     "settings": "設定"
@@ -287,7 +286,7 @@
     "actions": {
       "view": "給与明細を見る"
     },
-    "label": "給与管理"
+    "label": "給与"
   },
   "payrollHint": "申告済み保険額を使用してください。特例・補助は自動計算を無効にし確認済み金額と根拠を入力してください。適用日は月初です。",
   "payrollLine": {

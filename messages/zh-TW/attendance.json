@@ -172,7 +172,6 @@
   "groups": {
     "leave": "請假",
     "mine": "我的",
-    "payroll": "薪資",
     "records": "出勤紀錄",
     "schedule": "排班",
     "settings": "設定"
@@ -287,7 +286,7 @@
     "actions": {
       "view": "查看薪資明細"
     },
-    "label": "薪資管理"
+    "label": "薪資"
   },
   "payrollHint": "投保資料請依有效申報填寫；特殊身分或補助請關閉自動計算並填入核定金額及依據。生效日目前限月初。",
   "payrollLine": {

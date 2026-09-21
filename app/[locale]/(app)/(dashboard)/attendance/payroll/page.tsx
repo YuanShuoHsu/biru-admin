@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 
 import Payroll from ".";
 
-import AttendanceTabsLayout from "../../AttendanceTabsLayout";
+import AttendanceTabsLayout from "../AttendanceTabsLayout";
 
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
@@ -101,7 +101,7 @@ const PayrollPage = async ({ params, searchParams }: PayrollPageProps) => {
 
   if (redirectParams)
     redirect({
-      href: `/attendance/payroll/statements?${redirectParams.toString()}`,
+      href: `/attendance/payroll?${redirectParams.toString()}`,
       locale,
     });
 
