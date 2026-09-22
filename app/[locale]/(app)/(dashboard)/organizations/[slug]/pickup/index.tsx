@@ -8,11 +8,11 @@ import UpdatePickupDialog from "./UpdatePickupDialog";
 import { Edit } from "@mui/icons-material";
 import {
   Button,
-  List,
-  ListItem,
-  ListItemText,
-  Paper,
+  Card,
+  CardContent,
+  Grid,
   Stack,
+  Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -22,12 +22,16 @@ import type { OrganizationResponse } from "@/types/organizations";
 
 import { fetcher } from "@/utils/fetcher";
 
-const StyledPaper = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(2),
-  flex: 1,
+const StyledCardContent = styled(CardContent)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   gap: theme.spacing(2),
+}));
+
+const StyledGrid = styled(Grid)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  gap: theme.spacing(0.5),
 }));
 
 interface OrganizationsSlugPickupProps {
@@ -102,18 +106,20 @@ const OrganizationsSlugPickup = ({
           </Button>
         </Stack>
       )}
-      <StyledPaper variant="outlined">
-        <List dense disablePadding>
-          {settings.map(({ key, value }) => (
-            <ListItem disableGutters key={key}>
-              <ListItemText
-                primary={tOrganizations(`pickup.${key}.label`)}
-                secondary={value}
-              />
-            </ListItem>
-          ))}
-        </List>
-      </StyledPaper>
+      <Card variant="outlined">
+        <StyledCardContent>
+          <Grid container spacing={2}>
+            {settings.map(({ key, value }) => (
+              <StyledGrid key={key} size={{ xs: 12, sm: 6, md: 4 }}>
+                <Typography color="text.secondary" variant="body2">
+                  {tOrganizations(`pickup.${key}.label`)}
+                </Typography>
+                <Typography variant="body1">{value}</Typography>
+              </StyledGrid>
+            ))}
+          </Grid>
+        </StyledCardContent>
+      </Card>
     </>
   );
 };

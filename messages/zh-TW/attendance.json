@@ -164,6 +164,7 @@
     "statutoryBalanceAutomatic": "法定額度依規則計算，不能手動覆寫。",
     "unresolvedOvertime": "實際加班時段尚未全部核准。",
     "unsupportedDayKind": "不支援的日期類型。",
+    "weeklyMinutesFromOutsideEmployment": "工時生效日必須早於離職時間。",
     "weeklyMinutesFromRequired": "變更每週約定工時必須指定不早於到職時間的生效日。",
     "weeklyScheduleRequiresReview": "每週排定工作日時數超過 40 小時，請確認班表。"
   },
@@ -473,6 +474,7 @@
   "voluntaryPercent": "自提比例（%）",
   "weekday": "星期",
   "weeklyMinutes": "每週約定正常工時（小時）",
+  "weeklyMinutesCurrentHint": "目前每週 {hours} 小時，調整會從生效日起套用；清除生效日即取消調整。",
   "weeklyMinutesFrom": "工時生效日",
   "weeklyMinutesFromHint": "填到職日表示更正原本填錯的工時；填其他日期則該日之前仍使用原本的工時。",
   "withdraw": "撤回申請",

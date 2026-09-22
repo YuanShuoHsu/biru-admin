@@ -52,6 +52,16 @@ export const useEmployeeFormSchema = (employee?: AttendanceEmployee) => {
         error: tValidation("weeklyMinutesFrom.notBeforeHiredAt"),
         path: ["weeklyMinutesFrom"],
       },
+    )
+    .refine(
+      ({ terminatedAt, weeklyMinutesFrom }) =>
+        !weeklyMinutesFrom ||
+        !terminatedAt ||
+        new Date(weeklyMinutesFrom) < new Date(terminatedAt),
+      {
+        error: tValidation("weeklyMinutesFrom.beforeTerminatedAt"),
+        path: ["weeklyMinutesFrom"],
+      },
     );
 };
 

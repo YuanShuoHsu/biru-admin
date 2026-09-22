@@ -10,11 +10,11 @@ import { authClient } from "@/lib/auth-client";
 import { Edit } from "@mui/icons-material";
 import {
   Button,
-  List,
-  ListItem,
-  ListItemText,
-  Paper,
+  Card,
+  CardContent,
+  Grid,
   Stack,
+  Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -22,12 +22,16 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { ActiveOrganization } from "@/types/organizations";
 
-const StyledPaper = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(2),
-  flex: 1,
+const StyledCardContent = styled(CardContent)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   gap: theme.spacing(2),
+}));
+
+const StyledGrid = styled(Grid)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  gap: theme.spacing(0.5),
 }));
 
 interface OrganizationsSlugPointsProps {
@@ -83,32 +87,34 @@ const OrganizationsSlugPoints = ({
           </Button>
         </Stack>
       )}
-      <StyledPaper variant="outlined">
-        <List dense disablePadding>
-          <ListItem disableGutters>
-            <ListItemText
-              primary={tOrganizations("points.amountPerPoint.label")}
-              secondary={
-                organization.amountPerPoint != null
+      <Card variant="outlined">
+        <StyledCardContent>
+          <Grid container spacing={2}>
+            <StyledGrid size={{ xs: 12, sm: 6, md: 4 }}>
+              <Typography color="text.secondary" variant="body2">
+                {tOrganizations("points.amountPerPoint.label")}
+              </Typography>
+              <Typography variant="body1">
+                {organization.amountPerPoint != null
                   ? format.number(Number(organization.amountPerPoint))
-                  : tOrganizations("points.disabled")
-              }
-            />
-          </ListItem>
-          <ListItem disableGutters>
-            <ListItemText
-              primary={tOrganizations("points.pointsValidityYears.label")}
-              secondary={
-                organization.pointsValidityYears != null
+                  : tOrganizations("points.disabled")}
+              </Typography>
+            </StyledGrid>
+            <StyledGrid size={{ xs: 12, sm: 6, md: 4 }}>
+              <Typography color="text.secondary" variant="body2">
+                {tOrganizations("points.pointsValidityYears.label")}
+              </Typography>
+              <Typography variant="body1">
+                {organization.pointsValidityYears != null
                   ? tOrganizations("points.validityYears", {
                       years: organization.pointsValidityYears,
                     })
-                  : tOrganizations("points.perpetual")
-              }
-            />
-          </ListItem>
-        </List>
-      </StyledPaper>
+                  : tOrganizations("points.perpetual")}
+              </Typography>
+            </StyledGrid>
+          </Grid>
+        </StyledCardContent>
+      </Card>
     </>
   );
 };

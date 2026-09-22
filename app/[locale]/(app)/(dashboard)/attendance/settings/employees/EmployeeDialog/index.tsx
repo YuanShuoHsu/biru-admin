@@ -3,7 +3,7 @@
 import dayjs from "dayjs";
 import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -17,12 +17,21 @@ import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Checkbox, FormControlLabel, MenuItem, TextField } from "@mui/material";
+import {
+  Alert,
+  Checkbox,
+  FormControlLabel,
+  MenuItem,
+  TextField,
+} from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { AttendanceMember } from "@/types/attendance";
+import type {
+  AttendanceMember,
+  SaveAttendanceEmployee,
+} from "@/types/attendance";
 
 import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
@@ -44,10 +53,14 @@ const EmployeeDialog = ({
   organizationSlug,
 }: EmployeeDialogProps) => {
   const employee = member.employee ?? undefined;
+  const scheduledChange = employee?.weeklyMinutesHistory.findLast(
+    ({ from }) => new Date(from) > new Date(),
+  );
 
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const tAttendance = useTranslations("attendance");
+  const format = useFormatter();
 
   const employeeFormSchema = useEmployeeFormSchema(employee);
 
@@ -64,10 +77,15 @@ const EmployeeDialog = ({
         dayjs(member.joinedAt).tz(STORE_TIMEZONE).startOf("day").toISOString(),
       terminatedAt: employee?.terminatedAt ?? "",
       partTime:
-        (employee?.weeklyMinutes ?? FULL_TIME_MINUTES) < FULL_TIME_MINUTES,
+        (scheduledChange?.minutes ??
+          employee?.weeklyMinutes ??
+          FULL_TIME_MINUTES) < FULL_TIME_MINUTES,
       userId: member.userId,
-      weeklyMinutes: employee?.weeklyMinutes ?? FULL_TIME_MINUTES,
-      weeklyMinutesFrom: "",
+      weeklyMinutes:
+        scheduledChange?.minutes ??
+        employee?.weeklyMinutes ??
+        FULL_TIME_MINUTES,
+      weeklyMinutesFrom: scheduledChange?.from ?? "",
     },
     resolver: zodResolver(employeeFormSchema),
   });
@@ -95,19 +113,21 @@ const EmployeeDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
+      const body: SaveAttendanceEmployee = {
+        enabled: values.enabled,
+        hiredAt: values.hiredAt,
+        userId: values.userId,
+        weeklyMinutes: values.weeklyMinutes,
+        ...(values.terminatedAt && { terminatedAt: values.terminatedAt }),
+        ...(values.weeklyMinutesFrom && {
+          weeklyMinutesFrom: values.weeklyMinutesFrom,
+        }),
+      };
+
       await fetcher(attendancePath(organizationSlug, "org", "employees"), {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          enabled: values.enabled,
-          hiredAt: values.hiredAt,
-          terminatedAt: values.terminatedAt || null,
-          userId: values.userId,
-          weeklyMinutes: values.weeklyMinutes,
-          ...(values.weeklyMinutesFrom && {
-            weeklyMinutesFrom: values.weeklyMinutesFrom,
-          }),
-        }),
+        body: JSON.stringify(body),
       });
 
       enqueueSnackbar(tAttendance("success"), { variant: "success" });
@@ -138,7 +158,9 @@ const EmployeeDialog = ({
       />
       <DatePicker
         label={tAttendance("hiredAt")}
-        maxDate={terminatedAt ? dayjs(terminatedAt) : undefined}
+        maxDate={
+          terminatedAt ? dayjs(terminatedAt).subtract(1, "day") : undefined
+        }
         onChange={(date) =>
           setValue(
             "hiredAt",
@@ -158,7 +180,7 @@ const EmployeeDialog = ({
       />
       <DatePicker
         label={tAttendance("terminatedAt")}
-        minDate={hiredAt ? dayjs(hiredAt) : undefined}
+        minDate={hiredAt ? dayjs(hiredAt).add(1, "day") : undefined}
         onChange={(date) =>
           setValue(
             "terminatedAt",
@@ -219,29 +241,50 @@ const EmployeeDialog = ({
         />
       )}
       {!!employee && weeklyMinutes !== employee.weeklyMinutes && (
-        <DatePicker
-          label={tAttendance("weeklyMinutesFrom")}
-          minDate={hiredAt ? dayjs(hiredAt) : undefined}
-          onChange={(date) =>
-            setValue(
-              "weeklyMinutesFrom",
-              date?.isValid() ? date.startOf("day").toISOString() : "",
-              { shouldValidate: isSubmitted },
-            )
-          }
-          slotProps={{
-            textField: {
-              error: !!errors.weeklyMinutesFrom,
-              fullWidth: true,
-              helperText:
-                errors.weeklyMinutesFrom?.message ??
-                tAttendance("weeklyMinutesFromHint"),
-              required: true,
-            },
-          }}
-          timezone={STORE_TIMEZONE}
-          value={weeklyMinutesFrom ? dayjs(weeklyMinutesFrom) : null}
-        />
+        <>
+          <Alert severity="info">
+            {tAttendance("weeklyMinutesCurrentHint", {
+              hours: format.number(employee.weeklyMinutes / 60, {
+                maximumFractionDigits: 1,
+              }),
+            })}
+          </Alert>
+          <DatePicker
+            label={tAttendance("weeklyMinutesFrom")}
+            maxDate={
+              terminatedAt ? dayjs(terminatedAt).subtract(1, "day") : undefined
+            }
+            minDate={hiredAt ? dayjs(hiredAt) : undefined}
+            onChange={(date) => {
+              if (!date) {
+                setValue("weeklyMinutes", employee.weeklyMinutes);
+                setValue(
+                  "partTime",
+                  employee.weeklyMinutes < FULL_TIME_MINUTES,
+                );
+              }
+
+              setValue(
+                "weeklyMinutesFrom",
+                date?.isValid() ? date.startOf("day").toISOString() : "",
+                { shouldValidate: isSubmitted },
+              );
+            }}
+            slotProps={{
+              field: { clearable: true },
+              textField: {
+                error: !!errors.weeklyMinutesFrom,
+                fullWidth: true,
+                helperText:
+                  errors.weeklyMinutesFrom?.message ??
+                  tAttendance("weeklyMinutesFromHint"),
+                required: true,
+              },
+            }}
+            timezone={STORE_TIMEZONE}
+            value={weeklyMinutesFrom ? dayjs(weeklyMinutesFrom) : null}
+          />
+        </>
       )}
       <FormControlLabel
         control={

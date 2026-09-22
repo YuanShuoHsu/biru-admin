@@ -2370,6 +2370,7 @@ export interface components {
       | "sourceRequired"
       | "splitLeaveByYear"
       | "statutoryBalanceAutomatic"
+      | "weeklyMinutesFromOutsideEmployment"
       | "weeklyMinutesFromRequired";
     AttendanceErrorResponseDto: {
       message: components["schemas"]["AttendanceErrorCode"];
@@ -11620,6 +11621,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "sourceRequired",
   "splitLeaveByYear",
   "statutoryBalanceAutomatic",
+  "weeklyMinutesFromOutsideEmployment",
   "weeklyMinutesFromRequired",
 ];
 export const filterOperatorValues: ReadonlyArray<

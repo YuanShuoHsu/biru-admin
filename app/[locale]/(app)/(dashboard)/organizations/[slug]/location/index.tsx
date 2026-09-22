@@ -10,16 +10,14 @@ import LocationDetails from "@/components/LocationDetails";
 import { authClient } from "@/lib/auth-client";
 
 import { Edit } from "@mui/icons-material";
-import { Button, Paper, Stack } from "@mui/material";
+import { Button, Card, CardContent, Stack } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { ActiveOrganization } from "@/types/organizations";
 
-const StyledPaper = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(2),
-  flex: 1,
+const StyledCardContent = styled(CardContent)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   gap: theme.spacing(2),
@@ -76,9 +74,11 @@ const OrganizationsSlugLocation = ({
           </Button>
         </Stack>
       )}
-      <StyledPaper variant="outlined">
-        <LocationDetails organization={organization} />
-      </StyledPaper>
+      <Card variant="outlined">
+        <StyledCardContent>
+          <LocationDetails organization={organization} />
+        </StyledCardContent>
+      </Card>
     </>
   );
 };

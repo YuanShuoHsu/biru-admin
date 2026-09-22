@@ -307,6 +307,7 @@
     "partTime": "部分工时的每周工时必须少于 40 小时。"
   },
   "weeklyMinutesFrom": {
+    "beforeTerminatedAt": "工时生效日必须早于离职时间。",
     "notBeforeHiredAt": "工时生效日不能早于入职时间。",
     "required": "工时生效日为必填。"
   }

@@ -307,6 +307,7 @@
     "partTime": "パートタイムの週所定労働時間は 40 時間未満である必要があります。"
   },
   "weeklyMinutesFrom": {
+    "beforeTerminatedAt": "所定労働時間の適用開始日は退職日時より前に設定してください。",
     "notBeforeHiredAt": "所定労働時間の適用開始日は入社日時より前に設定できません。",
     "required": "所定労働時間の適用開始日は必須です。"
   }

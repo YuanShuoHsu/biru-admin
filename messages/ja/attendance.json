@@ -164,6 +164,7 @@
     "statutoryBalanceAutomatic": "法定休暇残高は自動計算されます。",
     "unresolvedOvertime": "実際の残業時間帯がすべて承認されていません。",
     "unsupportedDayKind": "未対応の日区分です。",
+    "weeklyMinutesFromOutsideEmployment": "所定労働時間の適用開始日は退職日時より前に設定してください。",
     "weeklyMinutesFromRequired": "週の所定労働時間を変更するには、入社日時以降の適用開始日を指定してください。",
     "weeklyScheduleRequiresReview": "週の所定労働時間が 40 時間を超えています。シフトを確認してください。"
   },
@@ -473,6 +474,7 @@
   "voluntaryPercent": "任意拠出率（%）",
   "weekday": "曜日",
   "weeklyMinutes": "週の所定労働時間（時間）",
+  "weeklyMinutesCurrentHint": "現在は週 {hours} 時間です。変更は適用開始日から反映されます。適用開始日を空にすると変更を取り消せます。",
   "weeklyMinutesFrom": "所定労働時間の適用開始日",
   "weeklyMinutesFromHint": "入社日を指定すると誤りの修正として全期間に適用され、それ以外の日付ではその日より前は従来の時間のままです。",
   "withdraw": "取り下げ",

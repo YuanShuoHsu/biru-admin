@@ -307,6 +307,7 @@
     "partTime": "Part-time weekly hours must be under 40."
   },
   "weeklyMinutesFrom": {
+    "beforeTerminatedAt": "Weekly hours effective date must be earlier than the employment end.",
     "notBeforeHiredAt": "Weekly hours effective date cannot be earlier than the employment start.",
     "required": "Weekly hours effective date is required."
   }

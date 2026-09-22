@@ -87,7 +87,7 @@ const Settings = ({ organizationSlug, settings }: SettingsProps) => {
                 return (
                   <StyledGrid key={key} size={{ xs: 12, sm: 6, md: 4 }}>
                     <Typography color="text.secondary" variant="body2">
-                      {tAttendance(`${key}.label` as const)}
+                      {tAttendance(`${key}.label`)}
                     </Typography>
                     {Array.isArray(value) ? (
                       <Stack direction="row" flexWrap="wrap" gap={1}>

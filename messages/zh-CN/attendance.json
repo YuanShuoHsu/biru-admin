@@ -164,6 +164,7 @@
     "statutoryBalanceAutomatic": "法定额度按规则计算，不能手动覆盖。",
     "unresolvedOvertime": "实际加班时段尚未全部核准。",
     "unsupportedDayKind": "不支持的日期类型。",
+    "weeklyMinutesFromOutsideEmployment": "工时生效日必须早于离职时间。",
     "weeklyMinutesFromRequired": "变更每周约定工时必须指定不早于入职时间的生效日。",
     "weeklyScheduleRequiresReview": "每周排定工作日时数超过 40 小时，请确认班表。"
   },
@@ -473,6 +474,7 @@
   "voluntaryPercent": "自提比例（%）",
   "weekday": "星期",
   "weeklyMinutes": "每周约定正常工时（小时）",
+  "weeklyMinutesCurrentHint": "目前每周 {hours} 小时，调整会从生效日起套用；清除生效日即取消调整。",
   "weeklyMinutesFrom": "工时生效日",
   "weeklyMinutesFromHint": "填入职日表示更正原本填错的工时；填其他日期则该日之前仍使用原本的工时。",
   "withdraw": "撤回申请",

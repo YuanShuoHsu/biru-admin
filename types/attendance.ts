@@ -26,6 +26,8 @@ import {
 
 export type AttendanceEmployee =
   components["schemas"]["AttendanceEmployeeResponseDto"];
+export type SaveAttendanceEmployee =
+  components["schemas"]["SaveAttendanceEmployeeDto"];
 export type AttendanceContext =
   components["schemas"]["AttendanceContextResponseDto"];
 export type AttendanceShift =
