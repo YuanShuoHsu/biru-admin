@@ -17,8 +17,8 @@ import {
 import { getPageSizeOptions } from "@/constants/pagination";
 
 import {
-  useBooleanFilterOperators,
   useDateFilterOperators,
+  useEnumFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
@@ -39,6 +39,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type {
   AttendanceEmployeeFilterField,
   AttendanceEmployeeSortField,
+  AttendanceEmployeeStatus,
   AttendanceMember,
   AttendanceMemberPage,
 } from "@/types/attendance";
@@ -46,7 +47,19 @@ import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 
 import { attendancePath } from "@/utils/attendance";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
+import { getAttendanceEmployeeEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
+
+const STATUS_COLORS: Record<
+  AttendanceEmployeeStatus,
+  "default" | "info" | "success" | "warning"
+> = {
+  unconfigured: "warning",
+  upcoming: "info",
+  active: "success",
+  disabled: "default",
+  terminated: "default",
+};
 
 const pendingChange = ({ employee }: AttendanceMember) =>
   employee?.weeklyMinutesHistory.findLast(
@@ -118,8 +131,8 @@ const Employees = ({
 
   const { setDialog } = useDialogStore((state) => state);
 
-  const booleanFilterOperators = useBooleanFilterOperators();
   const dateFilterOperators = useDateFilterOperators();
+  const enumFilterOperators = useEnumFilterOperators();
   const stringFilterOperators = useStringFilterOperators();
 
   const apiRef = useGridApiRef();
@@ -129,6 +142,11 @@ const Employees = ({
   const tAttendance = useTranslations("attendance");
 
   const updateQuery = useUpdateQuery();
+
+  const enumOptions = useMemo(
+    () => getAttendanceEmployeeEnumOptions(tAttendance),
+    [tAttendance],
+  );
 
   const date = useCallback(
     (value: string) => format.dateTime(new Date(value), "date"),
@@ -154,7 +172,7 @@ const Employees = ({
     [base, paginationModel, filterModel, sortModel],
     () =>
       fetcher<AttendanceMemberPage>(
-        `${base}?${getDataGridSearchParams(paginationModel, filterModel, sortModel)}`,
+        `${base}?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
       ),
     {
       fallbackData: { data: initialRows, total: initialRowCount },
@@ -329,36 +347,29 @@ const Employees = ({
         valueGetter: (_, row: AttendanceMember) => pendingChange(row)?.from,
       },
       {
-        field: "enabled",
-        filterOperators: booleanFilterOperators,
-        headerName: tAttendance("enabled"),
+        field: "status",
+        filterOperators: enumFilterOperators,
+        headerName: tAttendance("employeeStatus.label"),
         renderCell: ({
-          row: { employee },
+          row: { status },
         }: GridRenderCellParams<AttendanceMember>) => (
           <Chip
-            color={
-              !employee ? "warning" : employee.enabled ? "success" : "default"
-            }
-            label={tAttendance(
-              !employee
-                ? "employees.unconfigured"
-                : employee.enabled
-                  ? "enabled"
-                  : "disabled",
-            )}
+            color={STATUS_COLORS[status]}
+            label={tAttendance(`employeeStatus.options.${status}`)}
             size="small"
             variant="outlined"
           />
         ),
-        type: "boolean",
-        valueGetter: (_, row: AttendanceMember) => row.employee?.enabled,
+        type: "singleSelect",
+        valueOptions: enumOptions.status,
       },
     ],
     [
-      booleanFilterOperators,
       canWrite,
       date,
       dateFilterOperators,
+      enumFilterOperators,
+      enumOptions.status,
       hours,
       handleEmployeeDialog,
       stringFilterOperators,
@@ -367,27 +378,25 @@ const Employees = ({
   );
 
   return (
-    <>
-      <DataGrid
-        {...DATA_GRID_PROPS}
-        apiRef={apiRef}
-        columns={columns}
-        filterMode="server"
-        filterModel={filterModel}
-        getRowId={({ userId }) => userId}
-        loading={loading}
-        onFilterModelChange={handleFilterModelChange}
-        onPaginationModelChange={handlePaginationModelChange}
-        onSortModelChange={handleSortModelChange}
-        pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
-        paginationMode="server"
-        paginationModel={paginationModel}
-        rowCount={rowCount}
-        rows={rows}
-        sortingMode="server"
-        sortModel={sortModel}
-      />
-    </>
+    <DataGrid
+      {...DATA_GRID_PROPS}
+      apiRef={apiRef}
+      columns={columns}
+      filterMode="server"
+      filterModel={filterModel}
+      getRowId={({ userId }) => userId}
+      loading={loading}
+      onFilterModelChange={handleFilterModelChange}
+      onPaginationModelChange={handlePaginationModelChange}
+      onSortModelChange={handleSortModelChange}
+      pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
+      paginationMode="server"
+      paginationModel={paginationModel}
+      rowCount={rowCount}
+      rows={rows}
+      sortingMode="server"
+      sortModel={sortModel}
+    />
   );
 };
 

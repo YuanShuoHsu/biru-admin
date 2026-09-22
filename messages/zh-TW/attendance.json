@@ -53,13 +53,22 @@
   "effectiveFrom": "生效日期",
   "emergencyWork": "例假緊急出勤資料",
   "employee": "員工",
+  "employeeStatus": {
+    "label": "任職狀態",
+    "options": {
+      "unconfigured": "未設定",
+      "upcoming": "尚未到職",
+      "active": "在職",
+      "disabled": "已停用",
+      "terminated": "已離職"
+    }
+  },
   "employees": {
     "actions": {
       "create": "新增員工",
       "update": "編輯員工"
     },
-    "label": "員工管理",
-    "unconfigured": "未設定"
+    "label": "員工管理"
   },
   "employerPension": "雇主提繳（{currency}）",
   "employerPercent": "雇主提繳比例（%）",
@@ -85,6 +94,7 @@
     "correctionSourceChanged": "送出申請後這個班次的打卡有變動，請重新確認後再送審。",
     "dailyHoursExceeded": "當日工時將超過 12 小時，請縮短加班時間。",
     "emergencyDetailsRequired": "例假出勤須先核准法定事由、報備及補假資料。",
+    "employeeDisableConflict": "停用前請先取消未來班次並處理待審申請。",
     "employeeNotEnabled": "請由主管先在員工管理啟用你的出勤資格。",
     "employmentWindowConflict": "任職期間之外已排定班次，請先調整班表。",
     "error": "操作失敗，請稍後重試。",
@@ -436,9 +446,28 @@
       "withdrawn": "已撤回"
     }
   },
-  "statutoryHint": "法定假別的額度與給薪比例依法令與年資計算，不會存進設定；這裡只能改顯示名稱，或給出優於法令的給薪比例。",
   "statutoryKind": {
     "label": "假別規則",
+    "names": {
+      "annual": "特別休假",
+      "familyCare": "家庭照顧假",
+      "funeral3": "喪假（曾祖父母／兄弟姊妹／配偶祖父母）",
+      "funeral6": "喪假（祖父母／子女／配偶父母）",
+      "funeral8": "喪假（父母／配偶）",
+      "hospitalSick": "住院傷病假",
+      "marriage": "婚假",
+      "maternity": "產假",
+      "menstrual": "生理假",
+      "miscarriage28": "流產假（妊娠滿 3 個月）",
+      "miscarriage5": "流產假（妊娠未滿 2 個月）",
+      "miscarriage7": "流產假（妊娠 2–3 個月）",
+      "parental": "育嬰留職停薪",
+      "paternity": "陪產檢及陪產假",
+      "personal": "事假",
+      "pregnancyRest": "安胎休養假",
+      "prenatal": "產檢假",
+      "sick": "普通傷病假"
+    },
     "options": {
       "annual": "年資特休（週年制）",
       "custom": "自訂假別",

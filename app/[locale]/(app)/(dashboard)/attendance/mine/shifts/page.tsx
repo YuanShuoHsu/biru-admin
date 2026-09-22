@@ -114,7 +114,9 @@ const MinePage = async ({ params, searchParams }: MinePageProps) => {
     fetchOptions,
   );
 
-  const [{ shifts: rows, total: rowCount }, punchableShifts] = employee?.enabled
+  const enabled = employee?.status === "active";
+
+  const [{ shifts: rows, total: rowCount }, punchableShifts] = enabled
     ? await Promise.all([
         getAttendanceShifts(
           organization.slug,
@@ -139,7 +141,7 @@ const MinePage = async ({ params, searchParams }: MinePageProps) => {
   return (
     <AttendanceTabsLayout memberRole={memberRole}>
       <Mine
-        enabled={!!employee?.enabled}
+        enabled={enabled}
         filterField={filterField}
         filterOperator={filterOperator}
         filterValue={filterValue}

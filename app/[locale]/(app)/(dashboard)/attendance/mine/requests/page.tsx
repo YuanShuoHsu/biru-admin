@@ -27,7 +27,10 @@ import {
   getAttendanceShifts,
 } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
-import { getAttendanceRequestEnumOptions } from "@/utils/enumOptions";
+import {
+  getAttendanceLeaveTypeNameEnumOptions,
+  getAttendanceRequestEnumOptions,
+} from "@/utils/enumOptions";
 
 interface RequestsPageProps {
   params: Promise<{ locale: Locale }>;
@@ -107,10 +110,10 @@ const RequestsPage = async ({ params, searchParams }: RequestsPageProps) => {
   });
 
   const quickFilterEnums = quickFilterValue
-    ? getQuickFilterEnums(
-        quickFilterValue,
-        getAttendanceRequestEnumOptions(tAttendance),
-      )
+    ? getQuickFilterEnums(quickFilterValue, {
+        ...getAttendanceRequestEnumOptions(tAttendance),
+        ...getAttendanceLeaveTypeNameEnumOptions(tAttendance),
+      })
     : [];
 
   const { employee } = await getAttendanceContext(
@@ -118,7 +121,7 @@ const RequestsPage = async ({ params, searchParams }: RequestsPageProps) => {
     fetchOptions,
   );
 
-  const enabled = !!employee?.enabled;
+  const enabled = employee?.status === "active";
 
   const [
     { requests: rows, total: rowCount },

@@ -21,7 +21,10 @@ import {
   getAttendanceLeaveTypes,
 } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
-import { getAttendanceLeaveTypeEnumOptions } from "@/utils/enumOptions";
+import {
+  getAttendanceLeaveTypeEnumOptions,
+  getAttendanceLeaveTypeNameEnumOptions,
+} from "@/utils/enumOptions";
 import { hasRolePermission } from "@/utils/organizations";
 
 interface LeaveTypesPageProps {
@@ -107,10 +110,14 @@ const LeaveTypesPage = async ({
   });
 
   const quickFilterEnums = quickFilterValue
-    ? getQuickFilterEnums(
-        quickFilterValue,
-        getAttendanceLeaveTypeEnumOptions(tAttendance),
-      )
+    ? getQuickFilterEnums(quickFilterValue, {
+        // 名稱欄顯示的是翻譯後的法定名稱，搜尋要連同名稱一起命中，不能只比對規則標籤
+        statutoryKind: [
+          ...getAttendanceLeaveTypeEnumOptions(tAttendance).statutoryKind,
+          ...getAttendanceLeaveTypeNameEnumOptions(tAttendance)
+            .leaveTypeStatutoryKind,
+        ],
+      })
     : [];
 
   const { leaveTypes: rows, total: rowCount } = await getAttendanceLeaveTypes(

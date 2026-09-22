@@ -55,7 +55,11 @@ import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAttendanceLeaveTypeEnumOptions } from "@/utils/enumOptions";
-import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
+import {
+  attendanceErrorKey,
+  attendancePath,
+  getStatutoryLeaveName,
+} from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
 
 const DataGrid = dynamic(
@@ -306,6 +310,8 @@ const LeaveTypes = ({
         field: "name",
         filterOperators: stringFilterOperators,
         headerName: tAttendance("name"),
+        renderCell: ({ row }: GridRenderCellParams<AttendanceLeaveType>) =>
+          getStatutoryLeaveName(tAttendance, row),
       },
       {
         field: "statutoryKind",

@@ -10,7 +10,7 @@ import useSWR from "swr";
 import RequestDialog from "./RequestDialog";
 import ReturnDialog from "./ReturnDialog";
 
-import { renderEmptyableCell } from "@/components/EmptyCell";
+import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
 
 import {
   autosizeOptions,
@@ -58,7 +58,7 @@ import type {
 } from "@/types/attendance";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 
-import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
+import { attendanceErrorKey, attendancePath, getStatutoryLeaveName } from "@/utils/attendance";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAttendanceRequestEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
@@ -317,6 +317,15 @@ const Requests = ({
     [format],
   );
 
+  const leaveTypeOptions = useMemo(
+    () =>
+      leaveTypes.map((leaveType) => ({
+        label: getStatutoryLeaveName(tAttendance, leaveType),
+        value: leaveType.name,
+      })),
+    [leaveTypes, tAttendance],
+  );
+
   const columns = useMemo<GridColDef[]>(
     () => [
       {
@@ -377,9 +386,21 @@ const Requests = ({
       },
       {
         field: "leaveTypeName",
-        filterOperators: stringFilterOperators,
+        filterOperators: enumFilterOperators,
         headerName: tAttendance("leaveType"),
-        renderCell: renderEmptyableCell,
+        renderCell: ({
+          row: { leaveTypeName, leaveTypeStatutoryKind },
+        }: GridRenderCellParams<AttendanceRequest>) =>
+          leaveTypeName && leaveTypeStatutoryKind ? (
+            getStatutoryLeaveName(tAttendance, {
+              name: leaveTypeName,
+              statutoryKind: leaveTypeStatutoryKind,
+            })
+          ) : (
+            <EmptyCell />
+          ),
+        type: "singleSelect",
+        valueOptions: leaveTypeOptions,
       },
       {
         field: "startsAt",
@@ -434,8 +455,10 @@ const Requests = ({
       enumOptions.status,
       handleReturn,
       handleWithdraw,
+      leaveTypeOptions,
       stringFilterOperators,
       tAttendance,
+
     ],
   );
 

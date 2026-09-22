@@ -7,8 +7,6 @@ import Templates from ".";
 
 import AttendanceTabsLayout from "../../AttendanceTabsLayout";
 
-import { MAX_PAGE_SIZE } from "@/constants/pagination";
-
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -21,6 +19,7 @@ import {
 import {
   getAttendanceAccess,
   getAttendanceEmployees,
+  SCHEDULABLE_EMPLOYEES_QUERY,
   getAttendanceTemplates,
 } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
@@ -132,7 +131,7 @@ const TemplatesPage = async ({ params, searchParams }: TemplatesPageProps) => {
       ),
       getAttendanceEmployees(
         organization.slug,
-        { pageSize: MAX_PAGE_SIZE },
+        SCHEDULABLE_EMPLOYEES_QUERY,
         fetchOptions,
       ),
     ]);

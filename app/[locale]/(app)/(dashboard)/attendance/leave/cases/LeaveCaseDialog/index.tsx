@@ -38,6 +38,7 @@ import type {
 import {
   attendanceErrorKey,
   attendancePath,
+  getStatutoryLeaveName,
   toCents,
 } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
@@ -247,9 +248,9 @@ const LeaveCaseDialog = ({
                 !calendarLeave ||
                 statutoryKind === "parental"),
           )
-          .map(({ id, name }) => (
-            <MenuItem key={id} value={id}>
-              {name}
+          .map((leaveType) => (
+            <MenuItem key={leaveType.id} value={leaveType.id}>
+              {getStatutoryLeaveName(tAttendance, leaveType)}
             </MenuItem>
           ))}
       </TextField>

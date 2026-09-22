@@ -53,13 +53,22 @@
   "effectiveFrom": "適用開始日",
   "emergencyWork": "法定休日の緊急出勤",
   "employee": "従業員",
+  "employeeStatus": {
+    "label": "在籍状態",
+    "options": {
+      "unconfigured": "未設定",
+      "upcoming": "入社前",
+      "active": "在籍中",
+      "disabled": "停止中",
+      "terminated": "退職済み"
+    }
+  },
   "employees": {
     "actions": {
       "create": "従業員を追加",
       "update": "従業員を編集"
     },
-    "label": "従業員管理",
-    "unconfigured": "未設定"
+    "label": "従業員管理"
   },
   "employerPension": "雇用主年金拠出（{currency}）",
   "employerPercent": "雇用主拠出率（%）",
@@ -85,6 +94,7 @@
     "correctionSourceChanged": "申請後にこのシフトの打刻が変更されました。再確認してから審査してください。",
     "dailyHoursExceeded": "1 日の労働時間が 12 時間を超えます。残業時間を短くしてください。",
     "emergencyDetailsRequired": "緊急出勤の事由、報告、代休を承認してください。",
+    "employeeDisableConflict": "停止する前に、今後のシフトを取り消し、審査待ちの申請を処理してください。",
     "employeeNotEnabled": "管理者に勤怠の有効化を依頼してください。",
     "employmentWindowConflict": "在職期間外にシフトが登録されています。先にシフトを調整してください。",
     "error": "操作に失敗しました。再試行してください。",
@@ -436,9 +446,28 @@
       "withdrawn": "取り下げ済み"
     }
   },
-  "statutoryHint": "法定休暇の残高と支給率は法令と勤続年数から計算し、設定には保存しません。ここでは表示名の変更と、法定を上回る支給率の指定のみできます。",
   "statutoryKind": {
     "label": "休暇規則",
+    "names": {
+      "annual": "年次有給休暇",
+      "familyCare": "家族介護休暇",
+      "funeral3": "忌引（曾祖父母・兄弟姉妹・配偶者の祖父母）",
+      "funeral6": "忌引（祖父母・子・配偶者の父母）",
+      "funeral8": "忌引（父母・配偶者）",
+      "hospitalSick": "入院傷病休暇",
+      "marriage": "結婚休暇",
+      "maternity": "産休",
+      "menstrual": "生理休暇",
+      "miscarriage28": "流産休暇（妊娠3か月以上）",
+      "miscarriage5": "流産休暇（妊娠2か月未満）",
+      "miscarriage7": "流産休暇（妊娠2〜3か月）",
+      "parental": "育児休業",
+      "paternity": "配偶者の健診・出産休暇",
+      "personal": "私用休暇",
+      "pregnancyRest": "妊娠中の安静休暇",
+      "prenatal": "妊婦健診休暇",
+      "sick": "傷病休暇"
+    },
     "options": {
       "annual": "年次有給休暇（入社日起算）",
       "custom": "独自休暇",

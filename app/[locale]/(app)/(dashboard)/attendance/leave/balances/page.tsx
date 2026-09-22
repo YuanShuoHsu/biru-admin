@@ -24,7 +24,8 @@ import {
   getAttendanceLeaveBalances,
   getAttendanceLeaveTypes,
 } from "@/utils/attendance";
-import { resolveGridSearchParams } from "@/utils/dataGrid";
+import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
+import { getAttendanceLeaveTypeNameEnumOptions } from "@/utils/enumOptions";
 import { hasRolePermission } from "@/utils/organizations";
 
 interface BalancesPageProps {
@@ -106,6 +107,18 @@ const BalancesPage = async ({ params, searchParams }: BalancesPageProps) => {
       locale,
     });
 
+  const tAttendance = await getTranslations({
+    locale,
+    namespace: "attendance",
+  });
+
+  const quickFilterEnums = quickFilterValue
+    ? getQuickFilterEnums(
+        quickFilterValue,
+        getAttendanceLeaveTypeNameEnumOptions(tAttendance),
+      )
+    : [];
+
   const [{ balances: rows, total: rowCount }, { employees }, { leaveTypes }] =
     await Promise.all([
       getAttendanceLeaveBalances(
@@ -117,6 +130,7 @@ const BalancesPage = async ({ params, searchParams }: BalancesPageProps) => {
           filterField,
           filterOperator,
           filterValue,
+          quickFilterEnums,
           quickFilterValue,
           sortBy,
           sortDirection,

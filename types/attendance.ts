@@ -26,6 +26,10 @@ import {
 
 export type AttendanceEmployee =
   components["schemas"]["AttendanceEmployeeResponseDto"];
+export type AttendanceEmployment =
+  components["schemas"]["AttendanceEmploymentResponseDto"];
+export type AttendanceEmployeeStatus =
+  components["schemas"]["AttendanceEmployeeStatus"];
 export type SaveAttendanceEmployee =
   components["schemas"]["SaveAttendanceEmployeeDto"];
 export type AttendanceContext =

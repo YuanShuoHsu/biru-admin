@@ -1,9 +1,9 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-import type { AttendanceEmployee } from "@/types/attendance";
+import type { AttendanceEmployment } from "@/types/attendance";
 
-export const useEmployeeFormSchema = (employee?: AttendanceEmployee) => {
+export const useEmployeeFormSchema = (employee?: AttendanceEmployment) => {
   const tValidation = useTranslations("validation");
 
   return z

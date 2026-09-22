@@ -25,7 +25,10 @@ import {
   getAttendanceRequests,
 } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
-import { getAttendanceRequestEnumOptions } from "@/utils/enumOptions";
+import {
+  getAttendanceLeaveTypeNameEnumOptions,
+  getAttendanceRequestEnumOptions,
+} from "@/utils/enumOptions";
 import { hasRolePermission } from "@/utils/organizations";
 
 interface ReviewsPageProps {
@@ -109,10 +112,10 @@ const ReviewsPage = async ({ params, searchParams }: ReviewsPageProps) => {
   });
 
   const quickFilterEnums = quickFilterValue
-    ? getQuickFilterEnums(
-        quickFilterValue,
-        getAttendanceRequestEnumOptions(tAttendance),
-      )
+    ? getQuickFilterEnums(quickFilterValue, {
+        ...getAttendanceRequestEnumOptions(tAttendance),
+        ...getAttendanceLeaveTypeNameEnumOptions(tAttendance),
+      })
     : [];
 
   const [{ requests: rows, total: rowCount }, { leaveTypes }, { employee }] =

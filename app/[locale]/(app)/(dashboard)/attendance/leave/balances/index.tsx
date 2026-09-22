@@ -18,6 +18,7 @@ import { getPageSizeOptions } from "@/constants/pagination";
 
 import {
   useDateFilterOperators,
+  useEnumFilterOperators,
   useNumberFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
@@ -27,6 +28,7 @@ import { Add } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import type {
   GridColDef,
+  GridRenderCellParams,
   GridFilterModel,
   GridPaginationModel,
   GridSortModel,
@@ -46,7 +48,7 @@ import type {
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
-import { attendancePath } from "@/utils/attendance";
+import { attendancePath, getStatutoryLeaveName } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
 
 const DataGrid = dynamic(
@@ -121,6 +123,7 @@ const Balances = ({
   const { setDialog } = useDialogStore((state) => state);
 
   const dateFilterOperators = useDateFilterOperators();
+  const enumFilterOperators = useEnumFilterOperators();
   const numberFilterOperators = useNumberFilterOperators();
   const stringFilterOperators = useStringFilterOperators();
 
@@ -233,6 +236,15 @@ const Balances = ({
     [employees, leaveTypes, mutate, organizationSlug, setDialog, tAttendance],
   );
 
+  const leaveTypeOptions = useMemo(
+    () =>
+      leaveTypes.map((leaveType) => ({
+        label: getStatutoryLeaveName(tAttendance, leaveType),
+        value: leaveType.name,
+      })),
+    [leaveTypes, tAttendance],
+  );
+
   const columns = useMemo<GridColDef[]>(
     () => [
       {
@@ -243,9 +255,17 @@ const Balances = ({
       },
       {
         field: "leaveTypeName",
-        filterOperators: stringFilterOperators,
+        filterOperators: enumFilterOperators,
         headerName: tAttendance("leaveType"),
-        renderCell: renderEmptyableCell,
+        renderCell: ({
+          row: { leaveTypeName, leaveTypeStatutoryKind },
+        }: GridRenderCellParams<AttendanceLeaveBalance>) =>
+          getStatutoryLeaveName(tAttendance, {
+            name: leaveTypeName,
+            statutoryKind: leaveTypeStatutoryKind,
+          }),
+        type: "singleSelect",
+        valueOptions: leaveTypeOptions,
       },
       {
         field: "year",
@@ -283,9 +303,12 @@ const Balances = ({
     [
       date,
       dateFilterOperators,
+      enumFilterOperators,
+      leaveTypeOptions,
       numberFilterOperators,
       stringFilterOperators,
       tAttendance,
+
     ],
   );
 

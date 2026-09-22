@@ -17,7 +17,8 @@ import {
 } from "@/types/api";
 
 import { getAttendanceAccess, getAttendanceMembers } from "@/utils/attendance";
-import { resolveGridSearchParams } from "@/utils/dataGrid";
+import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
+import { getAttendanceEmployeeEnumOptions } from "@/utils/enumOptions";
 import { hasRolePermission } from "@/utils/organizations";
 
 interface EmployeesPageProps {
@@ -94,6 +95,18 @@ const EmployeesPage = async ({ params, searchParams }: EmployeesPageProps) => {
       locale,
     });
 
+  const tAttendance = await getTranslations({
+    locale,
+    namespace: "attendance",
+  });
+
+  const quickFilterEnums = quickFilterValue
+    ? getQuickFilterEnums(
+        quickFilterValue,
+        getAttendanceEmployeeEnumOptions(tAttendance),
+      )
+    : [];
+
   const { members: rows, total: rowCount } = await getAttendanceMembers(
     organization.slug,
     {
@@ -102,6 +115,7 @@ const EmployeesPage = async ({ params, searchParams }: EmployeesPageProps) => {
       filterField,
       filterOperator,
       filterValue,
+      quickFilterEnums,
       quickFilterValue,
       sortBy,
       sortDirection,

@@ -26,7 +26,8 @@ import {
   getAttendanceLeaveTypes,
   getAttendanceParentalChildren,
 } from "@/utils/attendance";
-import { resolveGridSearchParams } from "@/utils/dataGrid";
+import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
+import { getAttendanceLeaveTypeNameEnumOptions } from "@/utils/enumOptions";
 import { hasRolePermission } from "@/utils/organizations";
 
 interface LeaveCasesPageProps {
@@ -110,6 +111,18 @@ const LeaveCasesPage = async ({
       locale,
     });
 
+  const tAttendance = await getTranslations({
+    locale,
+    namespace: "attendance",
+  });
+
+  const quickFilterEnums = quickFilterValue
+    ? getQuickFilterEnums(
+        quickFilterValue,
+        getAttendanceLeaveTypeNameEnumOptions(tAttendance),
+      )
+    : [];
+
   const [
     { leaveCases: rows, total: rowCount },
     { employees },
@@ -126,6 +139,7 @@ const LeaveCasesPage = async ({
         filterField,
         filterOperator,
         filterValue,
+        quickFilterEnums,
         quickFilterValue,
         sortBy,
         sortDirection,

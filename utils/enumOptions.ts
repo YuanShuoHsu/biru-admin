@@ -4,6 +4,7 @@ import { PLATFORM_ORGANIZATION_ID } from "@/constants/organizations";
 
 import {
   attendanceDayKindValues,
+  attendanceEmployeeStatusValues,
   attendanceParentalReturnStatusValues,
   attendanceRequestKindValues,
   attendanceRequestStatusValues,
@@ -193,6 +194,26 @@ export const getAttendanceRequestEnumOptions = (
     label: tAttendance(`status.options.${value}`),
     value,
   })),
+});
+
+export const getAttendanceEmployeeEnumOptions = (
+  tAttendance: ReturnType<typeof useTranslations<"attendance">>,
+) => ({
+  status: attendanceEmployeeStatusValues.map((value) => ({
+    label: tAttendance(`employeeStatus.options.${value}`),
+    value,
+  })),
+});
+
+export const getAttendanceLeaveTypeNameEnumOptions = (
+  tAttendance: ReturnType<typeof useTranslations<"attendance">>,
+) => ({
+  leaveTypeStatutoryKind: statutoryLeaveKindValues
+    .filter((value) => value !== "custom")
+    .map((value) => ({
+      label: tAttendance(`statutoryKind.names.${value}`),
+      value,
+    })),
 });
 
 export const getAttendanceLeaveTypeEnumOptions = (

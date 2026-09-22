@@ -20,6 +20,7 @@ import {
   getAttendanceAccess,
   getAttendanceCalendarShifts,
   getAttendanceEmployees,
+  SCHEDULABLE_EMPLOYEES_QUERY,
   getAttendanceTemplates,
   weekStart,
 } from "@/utils/attendance";
@@ -85,7 +86,7 @@ const CalendarPage = async ({ params, searchParams }: CalendarPageProps) => {
     getAttendanceCalendarShifts(organization.slug, from, to, fetchOptions),
     getAttendanceEmployees(
       organization.slug,
-      { pageSize: MAX_PAGE_SIZE },
+      SCHEDULABLE_EMPLOYEES_QUERY,
       fetchOptions,
     ),
     hasRolePermission(memberRole, { shiftTemplate: ["read"] })

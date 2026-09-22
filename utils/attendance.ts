@@ -1,9 +1,11 @@
+import type { useTranslations } from "next-intl";
 import dayjs from "dayjs";
 import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { cache } from "react";
 
 import { ATTENDANCE_NAV_GROUPS } from "@/constants/attendance";
+import { MAX_PAGE_SIZE } from "@/constants/pagination";
 import { PLATFORM_TIMEZONE, STORE_TIMEZONE } from "@/constants/timezone";
 
 import { authClient } from "@/lib/auth-client";
@@ -174,6 +176,16 @@ export const getAttendanceSettings = cache(
     }
   },
 );
+
+export const SCHEDULABLE_EMPLOYEES_QUERY: GridQuery<
+  AttendanceEmployeeFilterField,
+  AttendanceEmployeeSortField
+> = {
+  pageSize: MAX_PAGE_SIZE,
+  filterField: "status",
+  filterOperator: "isAnyOf",
+  filterValue: "active,upcoming",
+};
 
 export const getAttendanceEmployees = cache(
   async (
@@ -439,6 +451,17 @@ export const attendanceErrorKey = (
 
   return `errors.${attendanceErrorCodes.find((key) => key === code) ?? "error"}`;
 };
+
+export const getStatutoryLeaveName = (
+  tAttendance: ReturnType<typeof useTranslations<"attendance">>,
+  leaveType: {
+    name: string;
+    statutoryKind: AttendanceLeaveType["statutoryKind"];
+  },
+) =>
+  leaveType.statutoryKind === "custom"
+    ? leaveType.name
+    : tAttendance(`statutoryKind.names.${leaveType.statutoryKind}`);
 
 const money = /^(\d{1,10})(?:\.(\d{1,2}))?$/;
 

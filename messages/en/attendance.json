@@ -53,13 +53,22 @@
   "effectiveFrom": "Effective date",
   "emergencyWork": "Emergency regular-leave-day work",
   "employee": "Employee",
+  "employeeStatus": {
+    "label": "Employment status",
+    "options": {
+      "unconfigured": "Not set up",
+      "upcoming": "Not started",
+      "active": "Active",
+      "disabled": "Disabled",
+      "terminated": "Terminated"
+    }
+  },
   "employees": {
     "actions": {
       "create": "Add employee",
       "update": "Edit employee"
     },
-    "label": "Employees",
-    "unconfigured": "Not set up"
+    "label": "Employees"
   },
   "employerPension": "Employer pension ({currency})",
   "employerPercent": "Employer rate (%)",
@@ -85,6 +94,7 @@
     "correctionSourceChanged": "The shift's punches changed after this request was submitted. Review it again before approving.",
     "dailyHoursExceeded": "This would push the day past 12 working hours. Shorten the overtime.",
     "emergencyDetailsRequired": "Approve the emergency cause, report and make-up rest before settlement.",
+    "employeeDisableConflict": "Cancel upcoming shifts and settle pending requests before disabling.",
     "employeeNotEnabled": "Ask a manager to enable your employee attendance profile.",
     "employmentWindowConflict": "Shifts are scheduled outside the employment window. Adjust the schedule first.",
     "error": "The operation failed. Please try again.",
@@ -436,9 +446,28 @@
       "withdrawn": "Withdrawn"
     }
   },
-  "statutoryHint": "Entitlement and paid percentage for statutory leave are derived from the law and seniority, never stored. Here you can only rename it or pay above the statutory rate.",
   "statutoryKind": {
     "label": "Leave rule",
+    "names": {
+      "annual": "Annual leave",
+      "familyCare": "Family care leave",
+      "funeral3": "Bereavement leave (great-grandparents/siblings/spouse’s grandparents)",
+      "funeral6": "Bereavement leave (grandparents/children/parents-in-law)",
+      "funeral8": "Bereavement leave (parents/spouse)",
+      "hospitalSick": "Hospitalized sick leave",
+      "marriage": "Marriage leave",
+      "maternity": "Maternity leave",
+      "menstrual": "Menstrual leave",
+      "miscarriage28": "Miscarriage leave (at least 3 months)",
+      "miscarriage5": "Miscarriage leave (under 2 months)",
+      "miscarriage7": "Miscarriage leave (2–3 months)",
+      "parental": "Unpaid parental leave",
+      "paternity": "Partner prenatal and childbirth leave",
+      "personal": "Personal leave",
+      "pregnancyRest": "Pregnancy bed-rest leave",
+      "prenatal": "Prenatal checkup leave",
+      "sick": "Sick leave"
+    },
     "options": {
       "annual": "Annual leave (anniversary year)",
       "custom": "Custom leave",

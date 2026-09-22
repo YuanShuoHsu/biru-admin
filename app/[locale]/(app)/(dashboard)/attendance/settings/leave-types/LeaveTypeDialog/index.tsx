@@ -13,7 +13,6 @@ import NumberSpinner from "@/components/NumberSpinner";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
-  Alert,
   Checkbox,
   FormControlLabel,
   TextField,
@@ -125,15 +124,13 @@ const LeaveTypeDialog = ({
 
   return (
     <FormBox id="attendance-leave-type-form" onSubmit={onSubmit}>
-      {statutoryPaidPercent !== null && (
-        <Alert severity="info">{tAttendance("statutoryHint")}</Alert>
-      )}
       <TextField
         error={!!errors.name}
         fullWidth
         helperText={errors.name?.message}
         label={tAttendance("name")}
         required
+        slotProps={{ input: { readOnly: statutoryPaidPercent !== null } }}
         {...register("name")}
       />
       {statutoryPaidPercent !== null && (

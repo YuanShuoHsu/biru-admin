@@ -30,7 +30,11 @@ import type {
   AttendanceLeaveType,
 } from "@/types/attendance";
 
-import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
+import {
+  attendanceErrorKey,
+  attendancePath,
+  getStatutoryLeaveName,
+} from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
 
 dayjs.extend(utc);
@@ -188,9 +192,9 @@ const LeaveDialog = ({
           <ListSubheader key={group}>
             {tAttendance(`leaveTypeGroups.${group}`)}
           </ListSubheader>,
-          ...items.map(({ id, name }) => (
-            <MenuItem key={id} value={id}>
-              {name}
+          ...items.map((leaveType) => (
+            <MenuItem key={leaveType.id} value={leaveType.id}>
+              {getStatutoryLeaveName(tAttendance, leaveType)}
             </MenuItem>
           )),
         ])}

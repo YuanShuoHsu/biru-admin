@@ -7,7 +7,7 @@ import useSWR from "swr";
 
 import ReviewDialog from "./ReviewDialog";
 
-import { renderEmptyableCell } from "@/components/EmptyCell";
+import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
 
 import {
   autosizeOptions,
@@ -47,7 +47,7 @@ import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAttendanceRequestEnumOptions } from "@/utils/enumOptions";
-import { attendancePath } from "@/utils/attendance";
+import { attendancePath, getStatutoryLeaveName } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
 
 const DataGrid = dynamic(
@@ -248,6 +248,15 @@ const Reviews = ({
     [leaveTypes, mutate, organizationSlug, reviewTitle, setDialog, tAttendance],
   );
 
+  const leaveTypeOptions = useMemo(
+    () =>
+      leaveTypes.map((leaveType) => ({
+        label: getStatutoryLeaveName(tAttendance, leaveType),
+        value: leaveType.name,
+      })),
+    [leaveTypes, tAttendance],
+  );
+
   const columns = useMemo<GridColDef[]>(
     () => [
       ...(canReview
@@ -324,9 +333,21 @@ const Reviews = ({
       },
       {
         field: "leaveTypeName",
-        filterOperators: stringFilterOperators,
+        filterOperators: enumFilterOperators,
         headerName: tAttendance("leaveType"),
-        renderCell: renderEmptyableCell,
+        renderCell: ({
+          row: { leaveTypeName, leaveTypeStatutoryKind },
+        }: GridRenderCellParams<AttendanceRequest>) =>
+          leaveTypeName && leaveTypeStatutoryKind ? (
+            getStatutoryLeaveName(tAttendance, {
+              name: leaveTypeName,
+              statutoryKind: leaveTypeStatutoryKind,
+            })
+          ) : (
+            <EmptyCell />
+          ),
+        type: "singleSelect",
+        valueOptions: leaveTypeOptions,
       },
       {
         field: "startsAt",
@@ -382,9 +403,11 @@ const Reviews = ({
       enumOptions.kind,
       enumOptions.status,
       handleReview,
+      leaveTypeOptions,
       reviewTitle,
       stringFilterOperators,
       tAttendance,
+
     ],
   );
 

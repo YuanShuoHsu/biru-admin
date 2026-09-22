@@ -20,6 +20,7 @@ import { getPageSizeOptions } from "@/constants/pagination";
 
 import {
   useDateFilterOperators,
+  useEnumFilterOperators,
   useNumberFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
@@ -50,7 +51,11 @@ import type {
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
-import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
+import {
+  attendanceErrorKey,
+  attendancePath,
+  getStatutoryLeaveName,
+} from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
 
 const DataGrid = dynamic(
@@ -139,6 +144,7 @@ const LeaveCases = ({
   const { setDialog } = useDialogStore((state) => state);
 
   const dateFilterOperators = useDateFilterOperators();
+  const enumFilterOperators = useEnumFilterOperators();
   const numberFilterOperators = useNumberFilterOperators();
   const stringFilterOperators = useStringFilterOperators();
 
@@ -320,6 +326,15 @@ const LeaveCases = ({
     [leaveTypes],
   );
 
+  const leaveTypeOptions = useMemo(
+    () =>
+      leaveTypes.map((leaveType) => ({
+        label: getStatutoryLeaveName(tAttendance, leaveType),
+        value: leaveType.name,
+      })),
+    [leaveTypes, tAttendance],
+  );
+
   const columns = useMemo<GridColDef[]>(
     () => [
       ...(canAssignChild || canUpdate || canDelete
@@ -385,8 +400,17 @@ const LeaveCases = ({
       },
       {
         field: "leaveTypeName",
-        filterOperators: stringFilterOperators,
+        filterOperators: enumFilterOperators,
         headerName: tAttendance("leaveType"),
+        renderCell: ({
+          row: { leaveTypeName, leaveTypeStatutoryKind },
+        }: GridRenderCellParams<AttendanceLeaveCase>) =>
+          getStatutoryLeaveName(tAttendance, {
+            name: leaveTypeName,
+            statutoryKind: leaveTypeStatutoryKind,
+          }),
+        type: "singleSelect",
+        valueOptions: leaveTypeOptions,
       },
       {
         field: "reference",
@@ -450,14 +474,17 @@ const LeaveCases = ({
       date,
       dateFilterOperators,
       employeeId,
+      enumFilterOperators,
       handleAssignChild,
       handleDeleteLeaveCase,
       handleLeaveCaseDialog,
       isParentalLeave,
+      leaveTypeOptions,
       numberFilterOperators,
       parentalChildren,
       stringFilterOperators,
       tAttendance,
+
     ],
   );
 
