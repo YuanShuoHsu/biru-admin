@@ -1,10 +1,14 @@
 {
   "aboveStatutory": "法定を上回る",
+  "account": "アカウント",
   "actions": "操作",
   "add": "追加",
   "allowance": "固定手当（{currency}）",
   "allowanceHours": "固定手当に対応する月の所定時間",
-  "allowedIps": "固定公開IP（1行に1件）",
+  "allowedIps": {
+    "label": "固定グローバル IP",
+    "placeholder": "あなたの固定グローバルIPを入力してください"
+  },
   "approve": "承認",
   "approveCancellation": "取消を承認",
   "assignParentalChild": "子どもを関連付ける",
@@ -103,6 +107,8 @@
     "invalidPayrollState": "給与の状態が変更されました。再読み込みしてください。",
     "ipNotAllowed": "許可されていないネットワークです。店舗のネットワークに接続してください。",
     "leaveCaseExists": "この従業員の同じ休暇種別に事由番号が登録済みです。",
+    "leaveCaseInUse": "この案件には休暇の記録があるため削除できません。",
+    "leaveCaseIntervalConflict": "新しい案件期間が承認済みの休暇を含んでいません。",
     "leaveCaseRequired": "管理者が確認済みの事由を選択してください。",
     "leaveOutsideShift": "休暇は登録済みシフトの時間内で申請してください。",
     "leavePolicyRequired": "有効な休暇種類を設定して選択してください。",
@@ -175,7 +181,9 @@
   "extensionAgreed": "結婚休暇の6か月延長に合意済み",
   "from": "開始日",
   "generate": "シフトを生成",
-  "graceMinutes": "猶予時間（分）",
+  "graceMinutes": {
+    "label": "猶予時間（分）"
+  },
   "grantedMinutes": "付与時間（分）",
   "gross": "支給総額",
   "groups": {
@@ -189,7 +197,6 @@
   "healthDependents": "健康保険扶養人数",
   "healthInsurance": "従業員健康保険（{currency}）",
   "hiredAt": "入社日",
-  "ipHint": "通信事業者の固定公開IPを設定してください。Wi-Fi内のIPは使えません。",
   "kind": {
     "label": "申請種類",
     "options": {
@@ -218,12 +225,16 @@
     }
   },
   "late": "遅刻",
-  "latitude": "店舗の緯度",
+  "latitude": {
+    "label": "店舗の緯度"
+  },
   "leaveCase": "対象事由（事由別休暇で必須）",
   "leaveCaseHint": "管理者が事由・続柄・対象期間を確認すると、付与枠が自動計算されます。同じ事由を重複登録しないでください。産休は休日を含む暦日で指定します（午前0時、終了日を含まない）。配偶者の健診と出産は合計7日で、申請ごとに対象期間を確認してください。 産休の事由は owner が確認済みの日額賃金を設定してください。支給率は勤続期間から自動計算されます。 育児休業の事由発生日は子の生年月日を入力し、同じ子には同じ事由番号を使用してください。期間は3歳の誕生日までとし、勤続6か月未満の場合は労使合意が必要です。日額賃金の設定は不要です。",
   "leaveCases": {
     "actions": {
-      "create": "事由別休暇枠を追加"
+      "create": "事由別休暇枠を追加",
+      "delete": "案件を削除",
+      "update": "案件を編集"
     },
     "label": "事由別休暇枠"
   },
@@ -243,7 +254,9 @@
   },
   "locationError": "位置情報を取得できません。権限を確認するか修正申請を行ってください。",
   "locationHint": "打刻には位置情報の許可と店舗ネットワークへの接続が必要です。",
-  "longitude": "店舗の経度",
+  "longitude": {
+    "label": "店舗の経度"
+  },
   "makeupEndsAt": "代休終了",
   "makeupStartsAt": "代休開始",
   "medicalCertified": "入院・がん外来・妊娠中の安静に関する医療証明を確認済み",
@@ -332,10 +345,13 @@
     },
     "label": "自分の給与明細"
   },
+  "pendingWeeklyMinutes": "適用予定の所定労働時間（時間）",
   "pensionBasis": "年金拠出基準（{currency}）",
   "print": "印刷",
   "publish": "給与明細を公開",
-  "radiusMeters": "許容半径（m）",
+  "radiusMeters": {
+    "label": "許容半径（m）"
+  },
   "reason": "理由",
   "reject": "却下",
   "rejectCancellation": "取消を却下",
@@ -373,7 +389,6 @@
     "actions": {
       "update": "勤怠設定を編集"
     },
-    "allowedIps": "固定グローバル IP",
     "label": "勤怠設定"
   },
   "shift": "シフト",
@@ -459,6 +474,7 @@
   "weekday": "曜日",
   "weeklyMinutes": "週の所定労働時間（時間）",
   "weeklyMinutesFrom": "所定労働時間の適用開始日",
+  "weeklyMinutesFromHint": "入社日を指定すると誤りの修正として全期間に適用され、それ以外の日付ではその日より前は従来の時間のままです。",
   "withdraw": "取り下げ",
   "withholding": "源泉徴収（{currency}）",
   "worked": "計上時間",

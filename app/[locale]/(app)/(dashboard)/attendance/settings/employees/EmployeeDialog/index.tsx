@@ -17,13 +17,7 @@ import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import {
-  Checkbox,
-  FormControlLabel,
-  MenuItem,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Checkbox, FormControlLabel, MenuItem, TextField } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -135,7 +129,13 @@ const EmployeeDialog = ({
 
   return (
     <FormBox id="attendance-employee-form" onSubmit={onSubmit}>
-      <Typography>{member.name}</Typography>
+      <TextField
+        fullWidth
+        helperText={member.email}
+        label={tAttendance("employee")}
+        slotProps={{ input: { readOnly: true } }}
+        value={member.name}
+      />
       <DatePicker
         label={tAttendance("hiredAt")}
         maxDate={terminatedAt ? dayjs(terminatedAt) : undefined}
@@ -233,7 +233,9 @@ const EmployeeDialog = ({
             textField: {
               error: !!errors.weeklyMinutesFrom,
               fullWidth: true,
-              helperText: errors.weeklyMinutesFrom?.message,
+              helperText:
+                errors.weeklyMinutesFrom?.message ??
+                tAttendance("weeklyMinutesFromHint"),
               required: true,
             },
           }}

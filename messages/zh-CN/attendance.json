@@ -1,10 +1,14 @@
 {
   "aboveStatutory": "优于法令",
+  "account": "帐号",
   "actions": "操作",
   "add": "新增",
   "allowance": "固定津贴（{currency}）",
   "allowanceHours": "固定津贴对应每月正常工时（小时）",
-  "allowedIps": "固定公网 IP（每行一个）",
+  "allowedIps": {
+    "label": "固定公网 IP",
+    "placeholder": "请输入您的固定公网 IP"
+  },
   "approve": "批准",
   "approveCancellation": "批准撤假",
   "assignParentalChild": "确认子女归户",
@@ -103,6 +107,8 @@
     "invalidPayrollState": "薪资状态已变更，请重新加载。",
     "ipNotAllowed": "当前网络不在门店白名单，请连接门店网络。",
     "leaveCaseExists": "此员工的同假别事件编号已存在。",
+    "leaveCaseInUse": "此案件已有请假记录，无法删除。",
+    "leaveCaseIntervalConflict": "新的案件期间未涵盖已核准的请假。",
     "leaveCaseRequired": "请先选择主管已确认的事件额度。",
     "leaveOutsideShift": "请假时间必须涵盖已排定的班次。",
     "leavePolicyRequired": "请先设置并选择有效假别。",
@@ -175,7 +181,9 @@
   "extensionAgreed": "婚假延长至 6 个月已取得同意",
   "from": "开始日期",
   "generate": "生成班次",
-  "graceMinutes": "迟到早退宽限（分钟）",
+  "graceMinutes": {
+    "label": "迟到早退宽限（分钟）"
+  },
   "grantedMinutes": "核给额度（分钟）",
   "gross": "应发工资",
   "groups": {
@@ -189,7 +197,6 @@
   "healthDependents": "健保依附家属人数",
   "healthInsurance": "员工健保（{currency}）",
   "hiredAt": "入职日",
-  "ipHint": "请填运营商提供的固定公网 IP，不能使用 Wi-Fi 内网 IP。",
   "kind": {
     "label": "申请类型",
     "options": {
@@ -218,12 +225,16 @@
     }
   },
   "late": "迟到",
-  "latitude": "门店纬度",
+  "latitude": {
+    "label": "门店纬度"
+  },
   "leaveCase": "对应事件（事件型假别必填）",
   "leaveCaseHint": "主管先确认事件、亲属关系与有效期间，系统自动核给额度。同一事件不得重复建立。产假含例休假日，请使用完整日历日（起讫 00:00，结束日不含）；陪产检与陪产共用 7 日，请确认各次申请符合适用期间。 产假事件须由 owner 设置核定每日全薪，给薪比例由工龄自动计算。 育婴留停事件日期请填子女出生日期，同一子女沿用事件编号，期间不得超过三岁；未满六个月任职须先取得劳资同意。育婴留停不需核定日薪。",
   "leaveCases": {
     "actions": {
-      "create": "新增事件假额度"
+      "create": "新增事件假额度",
+      "delete": "删除案件",
+      "update": "编辑案件"
     },
     "label": "事件假额度"
   },
@@ -243,7 +254,9 @@
   },
   "locationError": "无法获取定位，请确认权限，或提出补卡申请。",
   "locationHint": "所有打卡都需要允许定位并连接门店指定网络。",
-  "longitude": "门店经度",
+  "longitude": {
+    "label": "门店经度"
+  },
   "makeupEndsAt": "补假结束",
   "makeupStartsAt": "补假开始",
   "medicalCertified": "已查验住院、癌症门诊或安胎休养的医疗证明",
@@ -332,10 +345,13 @@
     },
     "label": "我的工资单"
   },
+  "pendingWeeklyMinutes": "待生效工时（小时）",
   "pensionBasis": "劳退月提缴工资（{currency}）",
   "print": "打印",
   "publish": "发布工资单",
-  "radiusMeters": "允许半径（米）",
+  "radiusMeters": {
+    "label": "允许半径（米）"
+  },
   "reason": "申请理由",
   "reject": "驳回",
   "rejectCancellation": "驳回撤假",
@@ -373,7 +389,6 @@
     "actions": {
       "update": "编辑出勤设置"
     },
-    "allowedIps": "固定公网 IP",
     "label": "出勤设置"
   },
   "shift": "班次",
@@ -459,6 +474,7 @@
   "weekday": "星期",
   "weeklyMinutes": "每周约定正常工时（小时）",
   "weeklyMinutesFrom": "工时生效日",
+  "weeklyMinutesFromHint": "填入职日表示更正原本填错的工时；填其他日期则该日之前仍使用原本的工时。",
   "withdraw": "撤回申请",
   "withholding": "所得税扣缴（{currency}）",
   "worked": "计入工时（小时）",

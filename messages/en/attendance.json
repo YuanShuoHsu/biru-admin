@@ -1,10 +1,14 @@
 {
   "aboveStatutory": "Above statutory",
+  "account": "Account",
   "actions": "Actions",
   "add": "Add",
   "allowance": "Fixed allowance ({currency})",
   "allowanceHours": "Monthly regular hours covered by the allowance",
-  "allowedIps": "Public IPs (one per line)",
+  "allowedIps": {
+    "label": "Public IPs",
+    "placeholder": "Please enter your static public IP"
+  },
   "approve": "Approve",
   "approveCancellation": "Approve cancellation",
   "assignParentalChild": "Assign child",
@@ -103,6 +107,8 @@
     "invalidPayrollState": "Payroll status changed; reload the list.",
     "ipNotAllowed": "This network is not allowed. Connect to the store network.",
     "leaveCaseExists": "This employee already has this event reference for the leave type.",
+    "leaveCaseInUse": "This case already has leave records and cannot be deleted.",
+    "leaveCaseIntervalConflict": "The new case period does not cover the approved leave.",
     "leaveCaseRequired": "Select an event allowance verified by a manager.",
     "leaveOutsideShift": "Leave must overlap a scheduled shift.",
     "leavePolicyRequired": "Configure and select an active leave policy.",
@@ -175,7 +181,9 @@
   "extensionAgreed": "Agreement to extend marriage leave to 6 months obtained",
   "from": "From",
   "generate": "Generate shifts",
-  "graceMinutes": "Grace period (minutes)",
+  "graceMinutes": {
+    "label": "Grace period (minutes)"
+  },
   "grantedMinutes": "Granted minutes",
   "gross": "Gross pay",
   "groups": {
@@ -189,7 +197,6 @@
   "healthDependents": "Health insurance dependents",
   "healthInsurance": "Employee health insurance ({currency})",
   "hiredAt": "Employment starts",
-  "ipHint": "Use the fixed public IP provided by your ISP, not the local Wi-Fi address.",
   "kind": {
     "label": "Request type",
     "options": {
@@ -218,12 +225,16 @@
     }
   },
   "late": "Late",
-  "latitude": "Store latitude",
+  "latitude": {
+    "label": "Store latitude"
+  },
   "leaveCase": "Related event (required for event leave)",
   "leaveCaseHint": "A manager must verify the event, relationship and eligible dates. Allowances are calculated automatically. Do not duplicate an event. Maternity periods include rest days and use full calendar days (midnight, exclusive end). Partner prenatal and childbirth leave share 7 days; verify the eligible dates for each request. An owner must provide the verified full daily wage for maternity leave. The paid percentage is calculated from seniority. For parental leave, use the child’s birth date as the event date and reuse the same reference for that child. The period must end by the third birthday. Service under six months requires employer–employee agreement. No daily wage is required.",
   "leaveCases": {
     "actions": {
-      "create": "Add event leave allowance"
+      "create": "Add event leave allowance",
+      "delete": "Delete case",
+      "update": "Edit case"
     },
     "label": "Event leave allowances"
   },
@@ -243,7 +254,9 @@
   },
   "locationError": "Unable to obtain location. Check permissions or submit a correction request.",
   "locationHint": "Every punch requires location permission and the store network.",
-  "longitude": "Store longitude",
+  "longitude": {
+    "label": "Store longitude"
+  },
   "makeupEndsAt": "Make-up rest ends",
   "makeupStartsAt": "Make-up rest starts",
   "medicalCertified": "Medical documentation for hospitalization, cancer outpatient care or pregnancy bed rest verified",
@@ -332,10 +345,13 @@
     },
     "label": "My payslips"
   },
+  "pendingWeeklyMinutes": "Scheduled weekly hours",
   "pensionBasis": "Pension contribution basis ({currency})",
   "print": "Print",
   "publish": "Publish payslip",
-  "radiusMeters": "Radius (meters)",
+  "radiusMeters": {
+    "label": "Radius (meters)"
+  },
   "reason": "Reason",
   "reject": "Reject",
   "rejectCancellation": "Reject cancellation",
@@ -373,7 +389,6 @@
     "actions": {
       "update": "Edit attendance settings"
     },
-    "allowedIps": "Public IPs",
     "label": "Attendance settings"
   },
   "shift": "Shift",
@@ -459,6 +474,7 @@
   "weekday": "Weekday",
   "weeklyMinutes": "Contracted weekly hours",
   "weeklyMinutesFrom": "Weekly hours effective from",
+  "weeklyMinutesFromHint": "Use the hire date to correct a wrong value; any later date keeps the previous hours before it.",
   "withdraw": "Withdraw",
   "withholding": "Tax withholding ({currency})",
   "worked": "Counted hours",

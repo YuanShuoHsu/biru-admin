@@ -147,6 +147,12 @@ const hiddenOptionsSx = (
   return hidden.length ? { [hidden.join(", ")]: { display: "none" } } : {};
 };
 
+const StyledFormControl = styled(FormControl)<FormControlProps>(
+  ({ theme }) => ({
+    gap: theme.spacing(2),
+  }),
+);
+
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)({
   flexWrap: "wrap",
 });
@@ -233,7 +239,7 @@ const OpeningHoursField = ({
     );
 
   return (
-    <FormControl
+    <StyledFormControl
       component="fieldset"
       disabled={disabled}
       error={error}
@@ -253,174 +259,169 @@ const OpeningHoursField = ({
           })}
         </FormHelperText>
       )}
-      <Stack gap={2} mt={1}>
-        {schedules.map(({ id, days, startTime, endTime }) => {
-          const conflictingDays = scheduleConflicts.get(id);
-          const hasConflict = !!conflictingDays;
-          const outsideDays = schedulesOutsideOpeningHours.get(id);
-          const hasMissingDays =
-            error && days.length === 0 && (!!startTime || !!endTime);
-          const clockSchedule = { days, startTime, endTime };
-          const hasStartTimeError = error && days.length > 0 && !startTime;
-          const hasEndTimeError = error && days.length > 0 && !endTime;
+      {schedules.map(({ id, days, startTime, endTime }) => {
+        const conflictingDays = scheduleConflicts.get(id);
+        const hasConflict = !!conflictingDays;
+        const outsideDays = schedulesOutsideOpeningHours.get(id);
+        const hasMissingDays =
+          error && days.length === 0 && (!!startTime || !!endTime);
+        const clockSchedule = { days, startTime, endTime };
+        const hasStartTimeError = error && days.length > 0 && !startTime;
+        const hasEndTimeError = error && days.length > 0 && !endTime;
 
-          return (
-            <Stack key={id} gap={0.5}>
-              <Grid container alignItems="start" spacing={2}>
-                <Grid size={{ xs: 12, sm: "auto" }}>
-                  <StyledToggleButtonGroup
-                    disabled={disabled}
-                    onChange={(_, newDays: Day[]) =>
-                      handleScheduleChange(id, { days: newDays })
-                    }
-                    size="small"
-                    value={days}
-                  >
-                    {DAYS.map((day) => (
-                      <ToggleButton
-                        color={
-                          conflictingDays?.has(day) || hasMissingDays
-                            ? "error"
-                            : outsideDays?.has(day)
-                              ? "warning"
-                              : "standard"
-                        }
-                        key={day}
-                        value={day}
-                      >
-                        {tOrganizations(
-                          `localBusiness.openingHours.days.${day}`,
-                        )}
-                      </ToggleButton>
-                    ))}
-                  </StyledToggleButtonGroup>
-                  {hasMissingDays && (
-                    <FormHelperText error>
-                      {tOrganizations("localBusiness.openingHours.missingDays")}
-                    </FormHelperText>
-                  )}
-                </Grid>
-                <StyledGrid size={{ xs: 12, sm: "grow" }}>
-                  <TimePicker
-                    ampm={false}
-                    disabled={disabled}
-                    format="HH:mm"
-                    onChange={(time) =>
-                      handleScheduleChange(id, {
-                        startTime: time?.isValid() ? time.format("HH:mm") : "",
-                      })
-                    }
-                    shouldDisableTime={disableTimeOutsideOpeningHours(
-                      openingHours ?? "",
-                      clockSchedule,
-                      "start",
-                    )}
-                    slotProps={{
-                      field: { clearable: true },
-                      layout: {
-                        sx: hiddenOptionsSx(
-                          openingHours ?? "",
-                          clockSchedule,
-                          "start",
-                        ),
-                      },
-                      textField: {
-                        error: hasConflict || hasStartTimeError,
-                        helperText: hasStartTimeError
-                          ? tOrganizations(
-                              "localBusiness.openingHours.missingStartTime",
-                            )
-                          : undefined,
-                        size: "small",
-                      },
-                    }}
-                    timeSteps={TIME_STEPS}
-                    value={toTimeDayjs(startTime)}
-                  />
-                  <Typography
-                    color={disabled ? "text.disabled" : undefined}
-                    textAlign="center"
-                    variant="body2"
-                  >
-                    {tOrganizations("localBusiness.openingHours.to")}
-                  </Typography>
-                  <TimePicker
-                    ampm={false}
-                    disabled={disabled}
-                    format="HH:mm"
-                    onChange={(time) =>
-                      handleScheduleChange(id, {
-                        endTime: time?.isValid() ? time.format("HH:mm") : "",
-                      })
-                    }
-                    shouldDisableTime={disableTimeOutsideOpeningHours(
-                      openingHours ?? "",
-                      clockSchedule,
-                      "end",
-                    )}
-                    slotProps={{
-                      field: { clearable: true },
-                      layout: {
-                        sx: hiddenOptionsSx(
-                          openingHours ?? "",
-                          clockSchedule,
-                          "end",
-                        ),
-                      },
-                      textField: {
-                        error: hasConflict || hasEndTimeError,
-                        helperText: hasEndTimeError
-                          ? tOrganizations(
-                              "localBusiness.openingHours.missingEndTime",
-                            )
-                          : hasNextDayTail({ startTime, endTime })
-                            ? tOrganizations(
-                                "localBusiness.openingHours.nextDay",
-                              )
-                            : undefined,
-                        size: "small",
-                      },
-                    }}
-                    timeSteps={TIME_STEPS}
-                    value={toTimeDayjs(endTime)}
-                  />
-                  <IconButton
-                    disabled={disabled}
-                    onClick={() => handleScheduleRemove(id)}
-                    size="small"
-                  >
-                    <DeleteOutline fontSize="small" />
-                  </IconButton>
-                </StyledGrid>
+        return (
+          <Stack key={id} gap={0.5}>
+            <Grid container alignItems="start" spacing={2}>
+              <Grid size={{ xs: 12, sm: "auto" }}>
+                <StyledToggleButtonGroup
+                  disabled={disabled}
+                  onChange={(_, newDays: Day[]) =>
+                    handleScheduleChange(id, { days: newDays })
+                  }
+                  size="small"
+                  value={days}
+                >
+                  {DAYS.map((day) => (
+                    <ToggleButton
+                      color={
+                        conflictingDays?.has(day) || hasMissingDays
+                          ? "error"
+                          : outsideDays?.has(day)
+                            ? "warning"
+                            : "standard"
+                      }
+                      key={day}
+                      value={day}
+                    >
+                      {tOrganizations(`localBusiness.openingHours.days.${day}`)}
+                    </ToggleButton>
+                  ))}
+                </StyledToggleButtonGroup>
+                {hasMissingDays && (
+                  <FormHelperText error>
+                    {tOrganizations("localBusiness.openingHours.missingDays")}
+                  </FormHelperText>
+                )}
               </Grid>
-              {hasConflict && (
-                <FormHelperText error>
-                  {tOrganizations("localBusiness.openingHours.conflict", {
-                    days: formatDays([...conflictingDays], displayConfig),
-                  })}
-                </FormHelperText>
-              )}
-              {!hasConflict && outsideDays && (
-                <FormHelperText sx={{ color: "warning.main" }}>
-                  {tOrganizations(
-                    "localBusiness.openingHours.outsideOpeningHours",
-                    { days: formatDays([...outsideDays], displayConfig) },
+              <StyledGrid size={{ xs: 12, sm: "grow" }}>
+                <TimePicker
+                  ampm={false}
+                  disabled={disabled}
+                  format="HH:mm"
+                  onChange={(time) =>
+                    handleScheduleChange(id, {
+                      startTime: time?.isValid() ? time.format("HH:mm") : "",
+                    })
+                  }
+                  shouldDisableTime={disableTimeOutsideOpeningHours(
+                    openingHours ?? "",
+                    clockSchedule,
+                    "start",
                   )}
-                </FormHelperText>
-              )}
-            </Stack>
-          );
-        })}
-        <Button
-          disabled={disabled}
-          onClick={handleScheduleAdd}
-          startIcon={<Add />}
-          variant="outlined"
-        >
-          {tOrganizations("localBusiness.openingHours.addSchedule")}
-        </Button>
-      </Stack>
-    </FormControl>
+                  slotProps={{
+                    field: { clearable: true },
+                    layout: {
+                      sx: hiddenOptionsSx(
+                        openingHours ?? "",
+                        clockSchedule,
+                        "start",
+                      ),
+                    },
+                    textField: {
+                      error: hasConflict || hasStartTimeError,
+                      helperText: hasStartTimeError
+                        ? tOrganizations(
+                            "localBusiness.openingHours.missingStartTime",
+                          )
+                        : undefined,
+                      size: "small",
+                    },
+                  }}
+                  timeSteps={TIME_STEPS}
+                  value={toTimeDayjs(startTime)}
+                />
+                <Typography
+                  color={disabled ? "text.disabled" : undefined}
+                  textAlign="center"
+                  variant="body2"
+                >
+                  {tOrganizations("localBusiness.openingHours.to")}
+                </Typography>
+                <TimePicker
+                  ampm={false}
+                  disabled={disabled}
+                  format="HH:mm"
+                  onChange={(time) =>
+                    handleScheduleChange(id, {
+                      endTime: time?.isValid() ? time.format("HH:mm") : "",
+                    })
+                  }
+                  shouldDisableTime={disableTimeOutsideOpeningHours(
+                    openingHours ?? "",
+                    clockSchedule,
+                    "end",
+                  )}
+                  slotProps={{
+                    field: { clearable: true },
+                    layout: {
+                      sx: hiddenOptionsSx(
+                        openingHours ?? "",
+                        clockSchedule,
+                        "end",
+                      ),
+                    },
+                    textField: {
+                      error: hasConflict || hasEndTimeError,
+                      helperText: hasEndTimeError
+                        ? tOrganizations(
+                            "localBusiness.openingHours.missingEndTime",
+                          )
+                        : hasNextDayTail({ startTime, endTime })
+                          ? tOrganizations("localBusiness.openingHours.nextDay")
+                          : undefined,
+                      size: "small",
+                    },
+                  }}
+                  timeSteps={TIME_STEPS}
+                  value={toTimeDayjs(endTime)}
+                />
+                <IconButton
+                  color="error"
+                  disabled={disabled}
+                  onClick={() => handleScheduleRemove(id)}
+                  size="small"
+                >
+                  <DeleteOutline fontSize="small" />
+                </IconButton>
+              </StyledGrid>
+            </Grid>
+            {hasConflict && (
+              <FormHelperText error>
+                {tOrganizations("localBusiness.openingHours.conflict", {
+                  days: formatDays([...conflictingDays], displayConfig),
+                })}
+              </FormHelperText>
+            )}
+            {!hasConflict && outsideDays && (
+              <FormHelperText sx={{ color: "warning.main" }}>
+                {tOrganizations(
+                  "localBusiness.openingHours.outsideOpeningHours",
+                  { days: formatDays([...outsideDays], displayConfig) },
+                )}
+              </FormHelperText>
+            )}
+          </Stack>
+        );
+      })}
+      <Button
+        disabled={disabled}
+        onClick={handleScheduleAdd}
+        startIcon={<Add />}
+        variant="outlined"
+      >
+        {tOrganizations("localBusiness.openingHours.addSchedule")}
+      </Button>
+    </StyledFormControl>
   );
 };
 

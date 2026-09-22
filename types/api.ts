@@ -366,6 +366,24 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/attendance/leave-cases/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** 刪除尚未被使用的請假案件 */
+    delete: operations["AttendanceLeavesController_deleteLeaveCase"];
+    options?: never;
+    head?: never;
+    /** 修改請假案件 */
+    patch: operations["AttendanceLeavesController_updateLeaveCase"];
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/attendance/leave-types": {
     parameters: {
       query?: never;
@@ -2306,6 +2324,8 @@ export interface components {
       | "invalidPayrollState"
       | "ipNotAllowed"
       | "leaveCaseExists"
+      | "leaveCaseInUse"
+      | "leaveCaseIntervalConflict"
       | "leaveCaseRequired"
       | "leaveOutsideShift"
       | "leavePolicyRequired"
@@ -2413,6 +2433,7 @@ export interface components {
     /** @enum {string} */
     AttendanceEmployeeFilterField:
       | "name"
+      | "email"
       | "hiredAt"
       | "terminatedAt"
       | "weeklyMinutes"
@@ -2420,6 +2441,7 @@ export interface components {
     /** @enum {string} */
     AttendanceEmployeeSortField:
       | "name"
+      | "email"
       | "hiredAt"
       | "terminatedAt"
       | "weeklyMinutes"
@@ -2427,6 +2449,7 @@ export interface components {
     AttendanceMemberResponseDto: {
       userId: string;
       name: string;
+      email: string;
       /** Format: date-time */
       joinedAt: string;
       employee?: components["schemas"]["AttendanceEmployeeResponseDto"] | null;
@@ -6642,6 +6665,66 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["AttendanceLeaveCasesResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AttendanceLeavesController_deleteLeaveCase: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceIdResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AttendanceLeavesController_updateLeaveCase: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateAttendanceLeaveCaseDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceLeaveCaseRecordResponseDto"];
         };
       };
       /** @description Internal server error */
@@ -11491,6 +11574,8 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "invalidPayrollState",
   "ipNotAllowed",
   "leaveCaseExists",
+  "leaveCaseInUse",
+  "leaveCaseIntervalConflict",
   "leaveCaseRequired",
   "leaveOutsideShift",
   "leavePolicyRequired",
@@ -11567,10 +11652,10 @@ export const sortDirectionValues: ReadonlyArray<
 > = ["asc", "desc"];
 export const attendanceEmployeeFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceEmployeeFilterField"]
-> = ["name", "hiredAt", "terminatedAt", "weeklyMinutes", "enabled"];
+> = ["name", "email", "hiredAt", "terminatedAt", "weeklyMinutes", "enabled"];
 export const attendanceEmployeeSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceEmployeeSortField"]
-> = ["name", "hiredAt", "terminatedAt", "weeklyMinutes", "enabled"];
+> = ["name", "email", "hiredAt", "terminatedAt", "weeklyMinutes", "enabled"];
 export const attendanceShiftFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceShiftFilterField"]
 > = ["employeeName", "startsAt", "endsAt", "dayKind"];

@@ -3,6 +3,7 @@
     "required": "请选择加购区块。"
   },
   "allowedIps": {
+    "max": "最多 {max} 个固定公网 IP。",
     "required": "固定公网 IP 为必填。"
   },
   "availableModes": {

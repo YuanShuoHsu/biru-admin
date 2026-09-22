@@ -30,6 +30,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
   AttendanceEmployee,
+  AttendanceLeaveCase,
   AttendanceLeaveType,
   AttendanceParentalChild,
 } from "@/types/attendance";
@@ -49,6 +50,7 @@ interface LeaveCaseDialogProps {
   currency: string;
   employeeId?: string;
   employees: AttendanceEmployee[];
+  leaveCase?: AttendanceLeaveCase;
   leaveTypes: AttendanceLeaveType[];
   mutate: () => void;
   organizationSlug: string;
@@ -60,6 +62,7 @@ const LeaveCaseDialog = ({
   currency,
   employeeId: selfEmployeeId,
   employees,
+  leaveCase,
   leaveTypes,
   mutate,
   organizationSlug,
@@ -79,21 +82,23 @@ const LeaveCaseDialog = ({
     setValue,
   } = useForm<LeaveCaseForm>({
     defaultValues: {
-      childId: "",
+      childId: leaveCase?.childId ?? "",
       dailyPay: null,
       earlyParentalAgreed: false,
-      employeeId: "",
-      endsAt: dayjs()
-        .tz(STORE_TIMEZONE)
-        .add(1, "month")
-        .startOf("day")
-        .toISOString(),
-      eventDate: dayjs().tz(STORE_TIMEZONE).startOf("day").toISOString(),
+      employeeId: leaveCase?.employeeId ?? "",
+      endsAt:
+        leaveCase?.endsAt ??
+        dayjs().tz(STORE_TIMEZONE).add(1, "month").startOf("day").toISOString(),
+      eventDate:
+        leaveCase?.eventDate ??
+        dayjs().tz(STORE_TIMEZONE).startOf("day").toISOString(),
       extensionAgreed: false,
-      leaveTypeId: "",
-      reason: "",
-      reference: "",
-      startsAt: dayjs().tz(STORE_TIMEZONE).startOf("day").toISOString(),
+      leaveTypeId: leaveCase?.leaveTypeId ?? "",
+      reason: leaveCase?.reason ?? "",
+      reference: leaveCase?.reference ?? "",
+      startsAt:
+        leaveCase?.startsAt ??
+        dayjs().tz(STORE_TIMEZONE).startOf("day").toISOString(),
     },
     resolver: zodResolver(leaveCaseFormSchema),
   });
@@ -133,33 +138,40 @@ const LeaveCaseDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher(attendancePath(organizationSlug, "org", "leave-cases"), {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          employeeId: values.employeeId,
-          endsAt: values.endsAt,
-          leaveTypeId: values.leaveTypeId,
-          reason: values.reason,
-          reference: values.reference,
-          startsAt: values.startsAt,
-          ...(isParentalLeave
-            ? {
-                childId: values.childId,
-                earlyParentalAgreed: values.earlyParentalAgreed,
-                eventDate: parentalChildren.find(
-                  ({ id }) => id === values.childId,
-                )?.birthDate,
-              }
-            : { eventDate: values.eventDate }),
-          ...(isMarriageLeave
-            ? { extensionAgreed: values.extensionAgreed }
-            : {}),
-          ...(isCalendarPaidLeave && values.dailyPay !== null
-            ? { dailyPayCents: toCents(values.dailyPay) }
-            : {}),
-        }),
-      });
+      await fetcher(
+        attendancePath(
+          organizationSlug,
+          "org",
+          leaveCase ? `leave-cases/${leaveCase.id}` : "leave-cases",
+        ),
+        {
+          method: leaveCase ? "PATCH" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            employeeId: values.employeeId,
+            endsAt: values.endsAt,
+            leaveTypeId: values.leaveTypeId,
+            reason: values.reason,
+            reference: values.reference,
+            startsAt: values.startsAt,
+            ...(isParentalLeave
+              ? {
+                  childId: values.childId,
+                  earlyParentalAgreed: values.earlyParentalAgreed,
+                  eventDate: parentalChildren.find(
+                    ({ id }) => id === values.childId,
+                  )?.birthDate,
+                }
+              : { eventDate: values.eventDate }),
+            ...(isMarriageLeave
+              ? { extensionAgreed: values.extensionAgreed }
+              : {}),
+            ...(isCalendarPaidLeave && values.dailyPay !== null
+              ? { dailyPayCents: toCents(values.dailyPay) }
+              : {}),
+          }),
+        },
+      );
 
       enqueueSnackbar(tAttendance("success"), { variant: "success" });
 
@@ -182,6 +194,7 @@ const LeaveCaseDialog = ({
     <FormBox id="attendance-leave-case-form" onSubmit={onSubmit}>
       <Alert severity="info">{tAttendance("leaveCaseHint")}</Alert>
       <TextField
+        disabled={!!leaveCase}
         error={!!errors.employeeId}
         fullWidth
         helperText={errors.employeeId?.message}
@@ -206,6 +219,7 @@ const LeaveCaseDialog = ({
           ))}
       </TextField>
       <TextField
+        disabled={!!leaveCase}
         error={!!errors.leaveTypeId}
         fullWidth
         helperText={errors.leaveTypeId?.message}

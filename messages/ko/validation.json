@@ -3,6 +3,7 @@
     "required": "추가 섹션을 선택해 주세요."
   },
   "allowedIps": {
+    "max": "고정 공인 IP는 최대 {max}개입니다.",
     "required": "고정 공인 IP는 필수입니다."
   },
   "availableModes": {

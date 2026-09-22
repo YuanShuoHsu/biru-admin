@@ -1,6 +1,7 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
+import { enqueueSnackbar } from "notistack";
 import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
@@ -24,7 +25,7 @@ import {
 } from "@/hooks/useFilterOperators";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
-import { Add, ChildCare } from "@mui/icons-material";
+import { Add, ChildCare, Delete, Edit } from "@mui/icons-material";
 import { Alert, Button, IconButton, Stack, Tooltip } from "@mui/material";
 import type {
   GridColDef,
@@ -49,7 +50,7 @@ import type {
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
-import { attendancePath } from "@/utils/attendance";
+import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
 
 const DataGrid = dynamic(
@@ -59,6 +60,8 @@ const DataGrid = dynamic(
 
 interface LeaveCasesProps {
   canAssignChild: boolean;
+  canDelete: boolean;
+  canUpdate: boolean;
   canSetDailyPay: boolean;
   canViewAll: boolean;
   canWrite: boolean;
@@ -82,6 +85,8 @@ interface LeaveCasesProps {
 
 const LeaveCases = ({
   canAssignChild,
+  canDelete,
+  canUpdate,
   canSetDailyPay,
   canViewAll,
   canWrite,
@@ -227,8 +232,8 @@ const LeaveCases = ({
     [updateQuery],
   );
 
-  const handleCreateLeaveCase = useCallback(
-    () =>
+  const handleLeaveCaseDialog = useCallback(
+    (leaveCase?: AttendanceLeaveCase) =>
       setDialog({
         confirmText: tAttendance("save"),
         content: (
@@ -237,6 +242,7 @@ const LeaveCases = ({
             currency={currency}
             employeeId={employeeId}
             employees={employees}
+            leaveCase={leaveCase}
             leaveTypes={leaveTypes}
             mutate={mutate}
             organizationSlug={organizationSlug}
@@ -245,7 +251,9 @@ const LeaveCases = ({
         ),
         formId: "attendance-leave-case-form",
         open: true,
-        title: tAttendance("leaveCases.actions.create"),
+        title: tAttendance(
+          leaveCase ? "leaveCases.actions.update" : "leaveCases.actions.create",
+        ),
       }),
     [
       canSetDailyPay,
@@ -259,6 +267,31 @@ const LeaveCases = ({
       setDialog,
       tAttendance,
     ],
+  );
+
+  const handleDeleteLeaveCase = useCallback(
+    ({ id }: AttendanceLeaveCase) =>
+      setDialog({
+        contentText: tAttendance("confirm"),
+        onConfirm: async () => {
+          try {
+            await fetcher(
+              attendancePath(organizationSlug, "org", `leave-cases/${id}`),
+              { method: "DELETE" },
+            );
+
+            enqueueSnackbar(tAttendance("success"), { variant: "success" });
+            mutate();
+          } catch (error) {
+            enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+              variant: "error",
+            });
+          }
+        },
+        open: true,
+        title: tAttendance("leaveCases.actions.delete"),
+      }),
+    [mutate, organizationSlug, setDialog, tAttendance],
   );
 
   const handleAssignChild = useCallback(
@@ -289,7 +322,7 @@ const LeaveCases = ({
 
   const columns = useMemo<GridColDef[]>(
     () => [
-      ...(canAssignChild
+      ...(canAssignChild || canUpdate || canDelete
         ? [
             {
               disableColumnMenu: true,
@@ -299,21 +332,47 @@ const LeaveCases = ({
               headerName: tAttendance("actions"),
               renderCell: ({
                 row,
-              }: GridRenderCellParams<AttendanceLeaveCase>) =>
-                isParentalLeave(row.leaveTypeId) &&
-                row.employeeId !== employeeId &&
-                !row.childId ? (
+              }: GridRenderCellParams<AttendanceLeaveCase>) => {
+                const own = row.employeeId === employeeId;
+
+                return (
                   <Stack alignItems="center" direction="row" height="100%">
-                    <Tooltip title={tAttendance("assignParentalChild")}>
-                      <IconButton
-                        onClick={() => handleAssignChild(row)}
-                        size="small"
-                      >
-                        <ChildCare fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
+                    {canAssignChild &&
+                      isParentalLeave(row.leaveTypeId) &&
+                      !own &&
+                      !row.childId && (
+                        <Tooltip title={tAttendance("assignParentalChild")}>
+                          <IconButton
+                            onClick={() => handleAssignChild(row)}
+                            size="small"
+                          >
+                            <ChildCare fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                    {canUpdate && !own && (
+                      <Tooltip title={tAttendance("leaveCases.actions.update")}>
+                        <IconButton
+                          onClick={() => handleLeaveCaseDialog(row)}
+                          size="small"
+                        >
+                          <Edit fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                    {canDelete && !own && !row.usedMinutes && (
+                      <Tooltip title={tAttendance("leaveCases.actions.delete")}>
+                        <IconButton
+                          onClick={() => handleDeleteLeaveCase(row)}
+                          size="small"
+                        >
+                          <Delete fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    )}
                   </Stack>
-                ) : null,
+                );
+              },
               resizable: false,
               sortable: false,
             },
@@ -386,10 +445,14 @@ const LeaveCases = ({
     ],
     [
       canAssignChild,
+      canDelete,
+      canUpdate,
       date,
       dateFilterOperators,
       employeeId,
       handleAssignChild,
+      handleDeleteLeaveCase,
+      handleLeaveCaseDialog,
       isParentalLeave,
       numberFilterOperators,
       parentalChildren,
@@ -403,7 +466,7 @@ const LeaveCases = ({
       <Alert severity="info">{tAttendance("leaveCaseHint")}</Alert>
       {canWrite && (
         <Button
-          onClick={handleCreateLeaveCase}
+          onClick={() => handleLeaveCaseDialog()}
           size="small"
           startIcon={<Add />}
           sx={{ alignSelf: "flex-start" }}

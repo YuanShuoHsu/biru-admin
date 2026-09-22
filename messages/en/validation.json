@@ -3,6 +3,7 @@
     "required": "Please select an add-on section."
   },
   "allowedIps": {
+    "max": "At most {max} public IPs.",
     "required": "Public IPs are required."
   },
   "availableModes": {

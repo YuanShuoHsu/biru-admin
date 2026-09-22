@@ -1,6 +1,8 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
+import { ALLOWED_IPS_MAX } from "@/constants/attendance";
+
 export const useSettingsFormSchema = () => {
   const tValidation = useTranslations("validation");
 
@@ -13,9 +15,18 @@ export const useSettingsFormSchema = () => {
   return z
     .object({
       allowedIps: z
-        .string()
-        .trim()
-        .min(1, { error: tValidation("allowedIps.required") }),
+        .array(
+          z.object({
+            value: z
+              .string()
+              .trim()
+              .min(1, { error: tValidation("allowedIps.required") }),
+          }),
+        )
+        .min(1, { error: tValidation("allowedIps.required") })
+        .max(ALLOWED_IPS_MAX, {
+          error: tValidation("allowedIps.max", { max: ALLOWED_IPS_MAX }),
+        }),
       graceMinutes: range(0, 60),
       latitude: range(-90, 90).nullable(),
       longitude: range(-180, 180).nullable(),

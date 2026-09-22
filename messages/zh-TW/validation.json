@@ -3,6 +3,7 @@
     "required": "請選擇加購區塊。"
   },
   "allowedIps": {
+    "max": "最多 {max} 個固定公網 IP。",
     "required": "固定公網 IP 為必填。"
   },
   "availableModes": {

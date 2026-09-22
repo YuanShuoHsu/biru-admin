@@ -156,6 +156,8 @@ const LeaveCasesPage = async ({
   return (
     <AttendanceTabsLayout memberRole={memberRole}>
       <LeaveCases
+        canDelete={hasRolePermission(memberRole, { leaveCase: ["delete"] })}
+        canUpdate={hasRolePermission(memberRole, { leaveCase: ["update"] })}
         canAssignChild={hasRolePermission(memberRole, {
           leaveCase: ["update"],
         })}

@@ -1,10 +1,14 @@
 {
   "aboveStatutory": "법정 상회",
+  "account": "계정",
   "actions": "작업",
   "add": "추가",
   "allowance": "고정 수당({currency})",
   "allowanceHours": "고정 수당에 해당하는 월 소정 시간",
-  "allowedIps": "고정 공인 IP(한 줄에 하나)",
+  "allowedIps": {
+    "label": "고정 공인 IP",
+    "placeholder": "귀하의 고정 공인 IP를 입력해 주세요"
+  },
   "approve": "승인",
   "approveCancellation": "취소 승인",
   "assignParentalChild": "자녀 연결",
@@ -103,6 +107,8 @@
     "invalidPayrollState": "급여 상태가 변경되었습니다. 다시 불러오세요.",
     "ipNotAllowed": "허용된 네트워크가 아닙니다. 매장 네트워크에 연결하세요.",
     "leaveCaseExists": "이 직원의 같은 휴가 종류에 사유 번호가 이미 있습니다.",
+    "leaveCaseInUse": "이 케이스에는 휴가 기록이 있어 삭제할 수 없습니다.",
+    "leaveCaseIntervalConflict": "새 케이스 기간이 승인된 휴가를 포함하지 않습니다.",
     "leaveCaseRequired": "관리자가 확인한 사유별 한도를 선택하세요.",
     "leaveOutsideShift": "휴가는 예정된 근무 시간과 겹쳐야 합니다.",
     "leavePolicyRequired": "유효한 휴가 정책을 설정하고 선택하세요.",
@@ -175,7 +181,9 @@
   "extensionAgreed": "결혼 휴가 6개월 연장 합의 완료",
   "from": "시작일",
   "generate": "근무 생성",
-  "graceMinutes": "유예 시간(분)",
+  "graceMinutes": {
+    "label": "유예 시간(분)"
+  },
   "grantedMinutes": "부여 시간(분)",
   "gross": "총급여",
   "groups": {
@@ -189,7 +197,6 @@
   "healthDependents": "건강 보험 피부양자 수",
   "healthInsurance": "직원 건강 보험({currency})",
   "hiredAt": "입사일",
-  "ipHint": "통신사의 고정 공인 IP를 입력하세요. Wi-Fi 내부 IP는 사용할 수 없습니다.",
   "kind": {
     "label": "신청 유형",
     "options": {
@@ -218,12 +225,16 @@
     }
   },
   "late": "지각",
-  "latitude": "매장 위도",
+  "latitude": {
+    "label": "매장 위도"
+  },
   "leaveCase": "관련 사유(사유별 휴가 필수)",
   "leaveCaseHint": "관리자가 사유, 가족 관계, 적용 기간을 확인하면 한도가 자동 계산됩니다. 동일 사유를 중복 등록하지 마세요. 출산 휴가는 휴일을 포함한 전체 날짜로 입력합니다(자정, 종료일 제외). 배우자 검진과 출산 휴가는 합계 7일이며 신청별 적용 기간을 확인해야 합니다. 출산 휴가 사유는 owner가 확인된 일일 전액 임금을 설정해야 합니다. 지급 비율은 근속 기간으로 자동 계산됩니다. 육아 휴직의 사유 발생일은 자녀 생년월일이며, 같은 자녀에는 동일한 사유 번호를 사용하세요. 기간은 만 3세 생일까지이며, 근속 6개월 미만은 노사 합의가 필요합니다. 일급 설정은 필요하지 않습니다.",
   "leaveCases": {
     "actions": {
-      "create": "사유별 휴가 한도 추가"
+      "create": "사유별 휴가 한도 추가",
+      "delete": "케이스 삭제",
+      "update": "케이스 편집"
     },
     "label": "사유별 휴가 한도"
   },
@@ -243,7 +254,9 @@
   },
   "locationError": "위치를 가져올 수 없습니다. 권한을 확인하거나 정정을 신청하세요.",
   "locationHint": "기록하려면 위치 권한과 매장 네트워크가 필요합니다.",
-  "longitude": "매장 경도",
+  "longitude": {
+    "label": "매장 경도"
+  },
   "makeupEndsAt": "보상 휴일 종료",
   "makeupStartsAt": "보상 휴일 시작",
   "medicalCertified": "입원, 암 외래 진료 또는 임신 안정에 관한 의료 증빙을 확인함",
@@ -332,10 +345,13 @@
     },
     "label": "내 급여 명세서"
   },
+  "pendingWeeklyMinutes": "적용 예정 근무시간(시간)",
   "pensionBasis": "연금 기여 기준({currency})",
   "print": "인쇄",
   "publish": "급여 명세서 게시",
-  "radiusMeters": "허용 반경(m)",
+  "radiusMeters": {
+    "label": "허용 반경(m)"
+  },
   "reason": "사유",
   "reject": "반려",
   "rejectCancellation": "취소 반려",
@@ -373,7 +389,6 @@
     "actions": {
       "update": "근태 설정 편집"
     },
-    "allowedIps": "고정 공인 IP",
     "label": "근태 설정"
   },
   "shift": "근무",
@@ -459,6 +474,7 @@
   "weekday": "요일",
   "weeklyMinutes": "주 소정근로시간(시간)",
   "weeklyMinutesFrom": "근무시간 적용 시작일",
+  "weeklyMinutesFromHint": "입사일을 선택하면 잘못 입력한 값의 수정으로 전체 기간에 적용되고, 다른 날짜를 선택하면 그 전까지는 기존 시간이 유지됩니다.",
   "withdraw": "철회",
   "withholding": "원천징수({currency})",
   "worked": "계산 근무 시간",

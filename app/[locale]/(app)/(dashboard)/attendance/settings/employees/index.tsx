@@ -44,9 +44,14 @@ import type {
 } from "@/types/attendance";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 
-import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { attendancePath } from "@/utils/attendance";
+import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
+
+const pendingChange = ({ employee }: AttendanceMember) =>
+  employee?.weeklyMinutesHistory.findLast(
+    ({ from }) => new Date(from) > new Date(),
+  );
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -127,6 +132,12 @@ const Employees = ({
 
   const date = useCallback(
     (value: string) => format.dateTime(new Date(value), "date"),
+    [format],
+  );
+
+  const hours = useCallback(
+    (minutes: number) =>
+      format.number(minutes / 60, { maximumFractionDigits: 1 }),
     [format],
   );
 
@@ -264,6 +275,11 @@ const Employees = ({
         headerName: tAttendance("employee"),
       },
       {
+        field: "email",
+        filterOperators: stringFilterOperators,
+        headerName: tAttendance("account"),
+      },
+      {
         field: "hiredAt",
         filterOperators: dateFilterOperators,
         headerName: tAttendance("hiredAt"),
@@ -282,19 +298,35 @@ const Employees = ({
           value ? date(value) : "",
       },
       {
-        // 欄位顯示小時但後端以分鐘比對，開放篩選會讓輸入的數字對不上
         field: "weeklyMinutes",
         filterable: false,
         headerName: tAttendance("weeklyMinutes"),
         renderCell: renderEmptyableCell,
         type: "number",
         valueFormatter: (value: number | undefined) =>
-          value == null
-            ? ""
-            : format.number(value / 60, {
-                maximumFractionDigits: 1,
-              }),
+          value == null ? "" : hours(value),
         valueGetter: (_, row: AttendanceMember) => row.employee?.weeklyMinutes,
+      },
+      {
+        field: "pendingWeeklyMinutes",
+        filterable: false,
+        headerName: tAttendance("pendingWeeklyMinutes"),
+        renderCell: renderEmptyableCell,
+        sortable: false,
+        type: "number",
+        valueFormatter: (value: number | undefined) =>
+          value == null ? "" : hours(value),
+        valueGetter: (_, row: AttendanceMember) => pendingChange(row)?.minutes,
+      },
+      {
+        field: "weeklyMinutesFrom",
+        filterable: false,
+        headerName: tAttendance("weeklyMinutesFrom"),
+        renderCell: renderEmptyableCell,
+        sortable: false,
+        valueFormatter: (value: string | undefined) =>
+          value == null ? "" : date(value),
+        valueGetter: (_, row: AttendanceMember) => pendingChange(row)?.from,
       },
       {
         field: "enabled",
@@ -327,7 +359,7 @@ const Employees = ({
       canWrite,
       date,
       dateFilterOperators,
-      format,
+      hours,
       handleEmployeeDialog,
       stringFilterOperators,
       tAttendance,

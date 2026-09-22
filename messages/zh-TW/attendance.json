@@ -1,10 +1,14 @@
 {
   "aboveStatutory": "優於法令",
+  "account": "帳號",
   "actions": "操作",
   "add": "新增",
   "allowance": "固定津貼（{currency}）",
   "allowanceHours": "固定津貼對應每月正常工時（小時）",
-  "allowedIps": "固定公網 IP（每行一個）",
+  "allowedIps": {
+    "label": "固定公網 IP",
+    "placeholder": "請輸入您的固定公網 IP"
+  },
   "approve": "核准",
   "approveCancellation": "核准撤假",
   "assignParentalChild": "確認子女歸戶",
@@ -103,6 +107,8 @@
     "invalidPayrollState": "薪資狀態已變更，請重新載入。",
     "ipNotAllowed": "目前網路不在店家白名單，請連接店家網路。",
     "leaveCaseExists": "此員工的同假別事件編號已存在。",
+    "leaveCaseInUse": "此案件已有請假紀錄，無法刪除。",
+    "leaveCaseIntervalConflict": "新的案件期間未涵蓋已核准的請假。",
     "leaveCaseRequired": "請先選擇主管已確認的事件額度。",
     "leaveOutsideShift": "請假時間必須涵蓋已排定的班次。",
     "leavePolicyRequired": "請先設定並選擇有效假別。",
@@ -175,7 +181,9 @@
   "extensionAgreed": "婚假延長至 6 個月已取得同意",
   "from": "開始日期",
   "generate": "產生班次",
-  "graceMinutes": "遲到早退寬限（分鐘）",
+  "graceMinutes": {
+    "label": "遲到早退寬限（分鐘）"
+  },
   "grantedMinutes": "核給額度（分鐘）",
   "gross": "應發薪資",
   "groups": {
@@ -189,7 +197,6 @@
   "healthDependents": "健保依附眷屬人數",
   "healthInsurance": "員工健保（{currency}）",
   "hiredAt": "到職日",
-  "ipHint": "請填電信業者提供的固定公網 IP；Wi-Fi 內的區域網路 IP 不適用。",
   "kind": {
     "label": "申請類型",
     "options": {
@@ -218,12 +225,16 @@
     }
   },
   "late": "遲到",
-  "latitude": "店家緯度",
+  "latitude": {
+    "label": "店家緯度"
+  },
   "leaveCase": "對應事件（事件型假別必填）",
   "leaveCaseHint": "主管先確認事件、親屬關係與有效期間，系統自動核給額度。同一事件不得重複建立。產假含例休假日，請使用完整曆日（起訖 00:00，結束日不含）；陪產檢與陪產共用 7 日，請確認各次申請符合產檢或分娩前後的適用期間。 產假事件須由 owner 設定核定每日全薪，給薪比例由年資自動計算。 育嬰留停事件日期請填子女出生日期，同一子女沿用事件編號，期間不得超過三歲；未滿六個月任職須先取得勞資同意。育嬰留停不需核定日薪。",
   "leaveCases": {
     "actions": {
-      "create": "新增事件假額度"
+      "create": "新增事件假額度",
+      "delete": "刪除案件",
+      "update": "編輯案件"
     },
     "label": "事件假額度"
   },
@@ -243,7 +254,9 @@
   },
   "locationError": "無法取得定位，請確認定位權限；無法打卡時可提出補卡申請。",
   "locationHint": "所有打卡都需要允許定位並連接店家指定網路。",
-  "longitude": "店家經度",
+  "longitude": {
+    "label": "店家經度"
+  },
   "makeupEndsAt": "補假結束",
   "makeupStartsAt": "補假開始",
   "medicalCertified": "已查驗住院、癌症門診或安胎休養的醫療證明",
@@ -332,10 +345,13 @@
     },
     "label": "我的薪資單"
   },
+  "pendingWeeklyMinutes": "待生效工時（小時）",
   "pensionBasis": "勞退月提繳工資（{currency}）",
   "print": "列印",
   "publish": "發布薪資單",
-  "radiusMeters": "允許半徑（公尺）",
+  "radiusMeters": {
+    "label": "允許半徑（公尺）"
+  },
   "reason": "申請理由",
   "reject": "駁回",
   "rejectCancellation": "駁回撤假",
@@ -373,7 +389,6 @@
     "actions": {
       "update": "編輯出勤設定"
     },
-    "allowedIps": "固定公網 IP",
     "label": "出勤設定"
   },
   "shift": "班次",
@@ -459,6 +474,7 @@
   "weekday": "星期",
   "weeklyMinutes": "每週約定正常工時（小時）",
   "weeklyMinutesFrom": "工時生效日",
+  "weeklyMinutesFromHint": "填到職日表示更正原本填錯的工時；填其他日期則該日之前仍使用原本的工時。",
   "withdraw": "撤回申請",
   "withholding": "所得稅扣繳（{currency}）",
   "worked": "計入工時（小時）",

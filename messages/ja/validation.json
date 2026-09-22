@@ -3,6 +3,7 @@
     "required": "アドオンセクションを選択してください。"
   },
   "allowedIps": {
+    "max": "固定公開IPは最大 {max} 件です。",
     "required": "固定公開IPは必須です。"
   },
   "availableModes": {
