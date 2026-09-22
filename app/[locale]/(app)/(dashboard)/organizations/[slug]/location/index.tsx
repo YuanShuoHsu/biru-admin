@@ -5,23 +5,14 @@ import { useCallback, useState } from "react";
 
 import UpdateLocationDialog from "./UpdateLocationDialog";
 
+import DetailsCard from "@/components/DetailsCard";
 import LocationDetails from "@/components/LocationDetails";
 
 import { authClient } from "@/lib/auth-client";
 
-import { Edit } from "@mui/icons-material";
-import { Button, Card, CardContent, Stack } from "@mui/material";
-import { styled } from "@mui/material/styles";
-
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { ActiveOrganization } from "@/types/organizations";
-
-const StyledCardContent = styled(CardContent)(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  gap: theme.spacing(2),
-}));
 
 interface OrganizationsSlugLocationProps {
   activeOrganization: ActiveOrganization;
@@ -61,25 +52,19 @@ const OrganizationsSlugLocation = ({
   };
 
   return (
-    <>
-      {canUpdateLocation && (
-        <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
-          <Button
-            onClick={handleUpdateLocation}
-            size="small"
-            startIcon={<Edit />}
-            variant="contained"
-          >
-            {tOrganizations("location.actions.updateLocation.title")}
-          </Button>
-        </Stack>
-      )}
-      <Card variant="outlined">
-        <StyledCardContent>
-          <LocationDetails organization={organization} />
-        </StyledCardContent>
-      </Card>
-    </>
+    <DetailsCard
+      action={
+        canUpdateLocation
+          ? {
+              label: tOrganizations("location.actions.updateLocation.title"),
+              onClick: handleUpdateLocation,
+            }
+          : undefined
+      }
+      items={[]}
+    >
+      <LocationDetails organization={organization} />
+    </DetailsCard>
   );
 };
 

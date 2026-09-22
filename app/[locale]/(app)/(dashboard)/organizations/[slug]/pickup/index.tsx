@@ -5,16 +5,7 @@ import { useCallback, useState } from "react";
 
 import UpdatePickupDialog from "./UpdatePickupDialog";
 
-import { Edit } from "@mui/icons-material";
-import {
-  Button,
-  Card,
-  CardContent,
-  Grid,
-  Stack,
-  Typography,
-} from "@mui/material";
-import { styled } from "@mui/material/styles";
+import DetailsCard from "@/components/DetailsCard";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -22,17 +13,11 @@ import type { OrganizationResponse } from "@/types/organizations";
 
 import { fetcher } from "@/utils/fetcher";
 
-const StyledCardContent = styled(CardContent)(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  gap: theme.spacing(2),
-}));
-
-const StyledGrid = styled(Grid)(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  gap: theme.spacing(0.5),
-}));
+const SETTING_KEYS = [
+  "pickupLeadMinutes",
+  "pickupMaxAdvanceDays",
+  "pickupCutoffMinutes",
+] as const satisfies readonly (keyof OrganizationResponse)[];
 
 interface OrganizationsSlugPickupProps {
   canUpdatePickup: boolean;
@@ -71,56 +56,24 @@ const OrganizationsSlugPickup = ({
     });
   };
 
-  const settings = [
-    {
-      key: "pickupLeadMinutes",
-      value: tOrganizations("pickup.minutes", {
-        minutes: organization.pickupLeadMinutes,
-      }),
-    },
-    {
-      key: "pickupMaxAdvanceDays",
-      value: tOrganizations("pickup.days", {
-        days: organization.pickupMaxAdvanceDays,
-      }),
-    },
-    {
-      key: "pickupCutoffMinutes",
-      value: tOrganizations("pickup.minutes", {
-        minutes: organization.pickupCutoffMinutes,
-      }),
-    },
-  ] as const;
+  const items = SETTING_KEYS.map((key) => ({
+    key,
+    label: tOrganizations(`pickup.${key}.label`),
+    value: tOrganizations(`pickup.${key}.value`, { value: organization[key] }),
+  }));
 
   return (
-    <>
-      {canUpdatePickup && (
-        <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
-          <Button
-            onClick={handleUpdatePickup}
-            size="small"
-            startIcon={<Edit />}
-            variant="contained"
-          >
-            {tOrganizations("pickup.actions.updatePickup.title")}
-          </Button>
-        </Stack>
-      )}
-      <Card variant="outlined">
-        <StyledCardContent>
-          <Grid container spacing={2}>
-            {settings.map(({ key, value }) => (
-              <StyledGrid key={key} size={{ xs: 12, sm: 6, md: 4 }}>
-                <Typography color="text.secondary" variant="body2">
-                  {tOrganizations(`pickup.${key}.label`)}
-                </Typography>
-                <Typography variant="body1">{value}</Typography>
-              </StyledGrid>
-            ))}
-          </Grid>
-        </StyledCardContent>
-      </Card>
-    </>
+    <DetailsCard
+      action={
+        canUpdatePickup
+          ? {
+              label: tOrganizations("pickup.actions.updatePickup.title"),
+              onClick: handleUpdatePickup,
+            }
+          : undefined
+      }
+      items={items}
+    />
   );
 };
 

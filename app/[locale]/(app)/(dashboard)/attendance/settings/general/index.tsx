@@ -5,17 +5,9 @@ import { useCallback } from "react";
 
 import SettingsDialog from "./SettingsDialog";
 
-import {
-  Alert,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  Grid,
-  Stack,
-  Typography,
-} from "@mui/material";
-import { styled } from "@mui/material/styles";
+import DetailsCard from "@/components/DetailsCard";
+
+import { Chip, Stack, Typography } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -28,22 +20,6 @@ const SETTING_KEYS = [
   "allowedIps",
   "graceMinutes",
 ] as const satisfies readonly (keyof AttendanceSettings)[];
-
-const StyledButton = styled(Button)({
-  alignSelf: "flex-start",
-});
-
-const StyledCardContent = styled(CardContent)(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  gap: theme.spacing(2),
-}));
-
-const StyledGrid = styled(Grid)(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  gap: theme.spacing(0.5),
-}));
 
 interface SettingsProps {
   organizationSlug: string;
@@ -72,49 +48,40 @@ const Settings = ({ organizationSlug, settings }: SettingsProps) => {
     [organizationSlug, setDialog, settings, tAttendance],
   );
 
-  return (
-    <>
-      <StyledButton onClick={handleUpdateSettings} variant="contained">
-        {tAttendance("settings.actions.update")}
-      </StyledButton>
-      <Card variant="outlined">
-        <StyledCardContent>
-          {settings ? (
-            <Grid container spacing={2}>
-              {SETTING_KEYS.map((key) => {
-                const value = settings[key];
+  const items = settings
+    ? SETTING_KEYS.map((key) => {
+        const value = settings[key];
 
-                return (
-                  <StyledGrid key={key} size={{ xs: 12, sm: 6, md: 4 }}>
-                    <Typography color="text.secondary" variant="body2">
-                      {tAttendance(`${key}.label`)}
-                    </Typography>
-                    {Array.isArray(value) ? (
-                      <Stack direction="row" flexWrap="wrap" gap={1}>
-                        {value.map((ip) => (
-                          <Chip
-                            key={ip}
-                            label={ip}
-                            size="small"
-                            variant="outlined"
-                          />
-                        ))}
-                      </Stack>
-                    ) : (
-                      <Typography variant="body1">{value}</Typography>
-                    )}
-                  </StyledGrid>
-                );
-              })}
-            </Grid>
+        return {
+          key,
+          label: tAttendance(`${key}.label`),
+          value: Array.isArray(value) ? (
+            <Stack direction="row" flexWrap="wrap" gap={1}>
+              {value.map((ip) => (
+                <Chip key={ip} label={ip} size="small" variant="outlined" />
+              ))}
+            </Stack>
           ) : (
-            <Alert severity="warning">
-              {tAttendance("errors.settingsRequired")}
-            </Alert>
-          )}
-        </StyledCardContent>
-      </Card>
-    </>
+            value
+          ),
+        };
+      })
+    : [];
+
+  return (
+    <DetailsCard
+      action={{
+        label: tAttendance("settings.actions.update"),
+        onClick: handleUpdateSettings,
+      }}
+      items={items}
+    >
+      {!items.length && (
+        <Typography color="text.secondary" variant="body2">
+          {tAttendance("errors.settingsRequired")}
+        </Typography>
+      )}
+    </DetailsCard>
   );
 };
 

@@ -170,23 +170,24 @@
         "title": "编辑预约"
       }
     },
-    "days": "{days} 天",
     "label": "预约",
-    "minutes": "{minutes} 分钟",
     "pickupCutoffMinutes": {
       "helperText": "打烊前这段时间不再接受该时段的预约",
       "label": "打烊前截止时间（分钟）",
-      "placeholder": "请输入您的打烊前截止时间"
+      "placeholder": "请输入您的打烊前截止时间",
+      "value": "{value} 分钟"
     },
     "pickupLeadMinutes": {
       "helperText": "顾客下单后最快多久可以取餐",
       "label": "最短前置时间（分钟）",
-      "placeholder": "请输入您的最短前置时间"
+      "placeholder": "请输入您的最短前置时间",
+      "value": "{value} 分钟"
     },
     "pickupMaxAdvanceDays": {
       "helperText": "设为 0 代表只能预约当日，最多 {days} 天",
       "label": "最远可预约天数",
-      "placeholder": "请输入您的最远可预约天数"
+      "placeholder": "请输入您的最远可预约天数",
+      "value": "{value} 天"
     }
   },
   "points": {
@@ -197,19 +198,20 @@
       }
     },
     "amountPerPoint": {
+      "empty": "未启用",
       "hint": "未设置时不启用点数",
       "invalid": "累积 1 点所需消费金额格式无效",
       "label": "累积 1 点所需消费金额",
-      "placeholder": "请输入您的累积 1 点所需消费金额"
+      "placeholder": "请输入您的累积 1 点所需消费金额",
+      "value": "{value, number}"
     },
-    "disabled": "未启用",
     "label": "点数",
-    "perpetual": "永久有效",
     "pointsValidityYears": {
+      "empty": "永久有效",
       "label": "点数效期（年）",
-      "placeholder": "请输入您的点数效期"
-    },
-    "validityYears": "{years} 年"
+      "placeholder": "请输入您的点数效期",
+      "value": "{value} 年"
+    }
   },
   "slug": {
     "label": "标识符",

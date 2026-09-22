@@ -24,7 +24,7 @@ const OrganizationsSlugTabs = ({ children }: OrganizationsSlugTabsProps) => {
   const tInvitations = useTranslations("organizations.invitations");
 
   return (
-    <Stack height="100%" gap={2}>
+    <Stack flex={1} gap={2}>
       <RouteTabs
         ariaLabel="organization tabs"
         tabs={[
