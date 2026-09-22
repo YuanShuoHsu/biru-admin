@@ -67,7 +67,6 @@ const OrganizationsSlugLocation = ({
           : undefined
       }
       empty={hasLocation ? undefined : tCommon("location.empty")}
-      items={[]}
     >
       {hasLocation && <LocationDetails organization={organization} />}
     </DetailsCard>

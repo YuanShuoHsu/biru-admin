@@ -49,14 +49,19 @@ interface DetailsCardProps {
   };
   children?: ReactNode;
   empty?: string;
-  items: readonly {
+  items?: readonly {
     key: string;
     label: string;
     value: ReactNode;
   }[];
 }
 
-const DetailsCard = ({ action, children, empty, items }: DetailsCardProps) => {
+const DetailsCard = ({
+  action,
+  children,
+  empty,
+  items = [],
+}: DetailsCardProps) => {
   const showEmpty = !items.length && Boolean(empty);
 
   return (
