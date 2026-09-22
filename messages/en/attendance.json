@@ -390,6 +390,7 @@
     "actions": {
       "update": "Edit attendance settings"
     },
+    "empty": "This organization has no attendance settings yet.",
     "label": "Attendance settings"
   },
   "shift": "Shift",

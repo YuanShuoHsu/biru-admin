@@ -7,7 +7,7 @@ import SettingsDialog from "./SettingsDialog";
 
 import DetailsCard from "@/components/DetailsCard";
 
-import { Chip, Stack, Typography } from "@mui/material";
+import { Chip, Stack } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -74,14 +74,9 @@ const Settings = ({ organizationSlug, settings }: SettingsProps) => {
         label: tAttendance("settings.actions.update"),
         onClick: handleUpdateSettings,
       }}
+      empty={tAttendance("settings.empty")}
       items={items}
-    >
-      {!items.length && (
-        <Typography color="text.secondary" variant="body2">
-          {tAttendance("errors.settingsRequired")}
-        </Typography>
-      )}
-    </DetailsCard>
+    />
   );
 };
 
