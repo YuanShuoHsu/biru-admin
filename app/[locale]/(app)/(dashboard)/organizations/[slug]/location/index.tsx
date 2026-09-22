@@ -6,7 +6,9 @@ import { useCallback, useState } from "react";
 import UpdateLocationDialog from "./UpdateLocationDialog";
 
 import DetailsCard from "@/components/DetailsCard";
-import LocationDetails from "@/components/LocationDetails";
+import LocationDetails, {
+  hasLocationDetails,
+} from "@/components/LocationDetails";
 
 import { authClient } from "@/lib/auth-client";
 
@@ -27,6 +29,7 @@ const OrganizationsSlugLocation = ({
 
   const { setDialog } = useDialogStore((state) => state);
 
+  const tCommon = useTranslations("common");
   const tOrganizations = useTranslations("organizations");
 
   const fetchOrganization = useCallback(async () => {
@@ -51,6 +54,8 @@ const OrganizationsSlugLocation = ({
     });
   };
 
+  const hasLocation = hasLocationDetails(organization);
+
   return (
     <DetailsCard
       action={
@@ -61,9 +66,10 @@ const OrganizationsSlugLocation = ({
             }
           : undefined
       }
+      empty={hasLocation ? undefined : tCommon("location.empty")}
       items={[]}
     >
-      <LocationDetails organization={organization} />
+      {hasLocation && <LocationDetails organization={organization} />}
     </DetailsCard>
   );
 };

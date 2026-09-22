@@ -24,20 +24,35 @@ const StyledIframe = styled("iframe")(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
 }));
 
+type LocationOrganization = Pick<
+  OrganizationResponse,
+  | "addressCountry"
+  | "addressLocality"
+  | "addressRegion"
+  | "extendedAddress"
+  | "hasMap"
+  | "name"
+  | "openingHours"
+  | "postalCode"
+  | "streetAddress"
+  | "telephone"
+>;
+
+export const hasLocationDetails = (organization?: LocationOrganization) =>
+  Boolean(
+    organization?.streetAddress ||
+      organization?.extendedAddress ||
+      organization?.addressLocality ||
+      organization?.addressRegion ||
+      organization?.postalCode ||
+      organization?.addressCountry ||
+      organization?.openingHours ||
+      organization?.telephone ||
+      organization?.hasMap,
+  );
+
 interface LocationDetailsProps {
-  organization?: Pick<
-    OrganizationResponse,
-    | "addressCountry"
-    | "addressLocality"
-    | "addressRegion"
-    | "extendedAddress"
-    | "hasMap"
-    | "name"
-    | "openingHours"
-    | "postalCode"
-    | "streetAddress"
-    | "telephone"
-  >;
+  organization?: LocationOrganization;
   showMap?: boolean;
 }
 
@@ -86,11 +101,7 @@ const LocationDetails = ({
         )
       : undefined;
 
-  const hasContent =
-    address ||
-    organization?.openingHours ||
-    organization?.telephone ||
-    organization?.hasMap;
+  const hasContent = hasLocationDetails(organization);
 
   return (
     <>

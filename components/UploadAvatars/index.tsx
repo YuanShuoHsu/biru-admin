@@ -30,6 +30,7 @@ const StyledButtonBase = styled(ButtonBase, {
   shouldForwardProp: (prop) =>
     prop !== "aspectRatio" && prop !== "fullWidth" && prop !== "shape",
 })<ButtonBaseProps & ShapeProps>(({ fullWidth, shape, theme }) => ({
+  alignSelf: "center",
   borderRadius: shape === "square" ? theme.shape.borderRadius : "50%",
   ...(fullWidth && {
     width: "100%",
