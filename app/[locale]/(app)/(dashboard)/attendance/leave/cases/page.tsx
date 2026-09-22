@@ -141,7 +141,7 @@ const LeaveCasesPage = async ({
       : { employees: [] },
     getAttendanceLeaveTypes(
       organization.slug,
-      { pageSize: MAX_PAGE_SIZE },
+      { pageSize: MAX_PAGE_SIZE, sortDirection: "asc" },
       fetchOptions,
     ),
     getAttendanceParentalChildren(

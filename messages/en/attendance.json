@@ -113,6 +113,7 @@
     "leaveOutsideShift": "Leave must overlap a scheduled shift.",
     "leavePolicyRequired": "Configure and select an active leave policy.",
     "leavePolicyRulesRequired": "A custom leave type needs a paid percentage.",
+    "leaveTypeInUse": "This leave policy already has leave records and cannot be deleted. Disable it instead.",
     "locationNotAllowed": "The location is stale, inaccurate or outside the store radius. Try again.",
     "medicalCertificateRequired": "Verify medical documentation before approval.",
     "medicalLeaveInterval": "The medical leave interval is invalid. Check dates and available entitlement.",
@@ -162,6 +163,7 @@
     "sourceRequired": "Enter the evidence for the verified amounts.",
     "splitLeaveByYear": "Submit separate requests for each calendar year.",
     "statutoryBalanceAutomatic": "Statutory balances are calculated automatically.",
+    "statutoryLeaveTypeLocked": "Statutory leave policies cannot be deleted. Disable it instead.",
     "unresolvedOvertime": "Actual overtime intervals have not all been approved.",
     "unsupportedDayKind": "Unsupported day classification.",
     "weeklyMinutesFromOutsideEmployment": "The weekly-hours effective date must be earlier than the employment end.",
@@ -248,8 +250,19 @@
   },
   "leaveTypes": {
     "actions": {
-      "create": "Add leave policy",
-      "update": "Edit leave policy"
+      "create": {
+        "success": "Leave policy {name} created",
+        "title": "Add leave policy"
+      },
+      "delete": {
+        "confirm": "Are you sure you want to delete <bold>{name}</bold>? Unused leave balances will also be deleted, and this action cannot be undone.",
+        "success": "Leave policy {name} deleted",
+        "title": "Delete leave policy"
+      },
+      "update": {
+        "success": "Leave policy {name} updated",
+        "title": "Edit leave policy"
+      }
     },
     "label": "Leave policies"
   },

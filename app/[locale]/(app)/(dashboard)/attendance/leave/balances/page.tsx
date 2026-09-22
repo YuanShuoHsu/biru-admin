@@ -133,7 +133,7 @@ const BalancesPage = async ({ params, searchParams }: BalancesPageProps) => {
       canWrite
         ? getAttendanceLeaveTypes(
             organization.slug,
-            { pageSize: MAX_PAGE_SIZE },
+            { pageSize: MAX_PAGE_SIZE, sortDirection: "asc" },
             fetchOptions,
           )
         : { leaveTypes: [] },

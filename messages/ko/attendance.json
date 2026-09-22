@@ -113,6 +113,7 @@
     "leaveOutsideShift": "휴가는 예정된 근무 시간과 겹쳐야 합니다.",
     "leavePolicyRequired": "유효한 휴가 정책을 설정하고 선택하세요.",
     "leavePolicyRulesRequired": "사용자 지정 휴가에는 지급 비율이 필요합니다.",
+    "leaveTypeInUse": "이 휴가 정책에는 휴가 기록이 있어 삭제할 수 없습니다. 비활성화해 주세요.",
     "locationNotAllowed": "위치가 오래되었거나 부정확하거나 매장 범위 밖입니다. 다시 시도하세요.",
     "medicalCertificateRequired": "승인 전 의료 증빙을 확인하세요.",
     "medicalLeaveInterval": "의료 휴가 기간이 올바르지 않습니다. 날짜와 잔여 한도를 확인하세요.",
@@ -162,6 +163,7 @@
     "sourceRequired": "확인된 금액의 근거를 입력하세요.",
     "splitLeaveByYear": "연도가 바뀌는 휴가는 연도별로 신청하세요.",
     "statutoryBalanceAutomatic": "법정 휴가 잔액은 자동 계산됩니다.",
+    "statutoryLeaveTypeLocked": "법정 휴가 정책은 삭제할 수 없습니다. 비활성화해 주세요.",
     "unresolvedOvertime": "실제 초과 근무 시간대가 모두 승인되지 않았습니다.",
     "unsupportedDayKind": "지원되지 않는 근무일 구분입니다.",
     "weeklyMinutesFromOutsideEmployment": "근무시간 적용 시작일은 퇴사 시간보다 이전이어야 합니다.",
@@ -248,8 +250,19 @@
   },
   "leaveTypes": {
     "actions": {
-      "create": "휴가 정책 추가",
-      "update": "휴가 정책 편집"
+      "create": {
+        "success": "휴가 정책 {name}을(를) 추가했습니다",
+        "title": "휴가 정책 추가"
+      },
+      "delete": {
+        "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까? 사용하지 않은 휴가 잔액도 모두 삭제되며 이 작업은 되돌릴 수 없습니다.",
+        "success": "휴가 정책 {name}을(를) 삭제했습니다",
+        "title": "휴가 정책 삭제"
+      },
+      "update": {
+        "success": "휴가 정책 {name}을(를) 업데이트했습니다",
+        "title": "휴가 정책 편집"
+      }
     },
     "label": "휴가 정책"
   },

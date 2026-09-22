@@ -412,7 +412,8 @@ export interface paths {
     get?: never;
     put?: never;
     post?: never;
-    delete?: never;
+    /** 刪除尚未被使用的自訂假別 */
+    delete: operations["AttendanceLeavesController_deleteLeaveType"];
     options?: never;
     head?: never;
     /** 更新假別 */
@@ -2330,6 +2331,7 @@ export interface components {
       | "leaveOutsideShift"
       | "leavePolicyRequired"
       | "leavePolicyRulesRequired"
+      | "leaveTypeInUse"
       | "locationNotAllowed"
       | "medicalCertificateRequired"
       | "medicalLeaveInterval"
@@ -2370,6 +2372,7 @@ export interface components {
       | "sourceRequired"
       | "splitLeaveByYear"
       | "statutoryBalanceAutomatic"
+      | "statutoryLeaveTypeLocked"
       | "weeklyMinutesFromOutsideEmployment"
       | "weeklyMinutesFromRequired";
     AttendanceErrorResponseDto: {
@@ -6793,6 +6796,34 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["AttendanceLeaveTypeResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AttendanceLeavesController_deleteLeaveType: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceIdResponseDto"];
         };
       };
       /** @description Internal server error */
@@ -11581,6 +11612,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "leaveOutsideShift",
   "leavePolicyRequired",
   "leavePolicyRulesRequired",
+  "leaveTypeInUse",
   "locationNotAllowed",
   "medicalCertificateRequired",
   "medicalLeaveInterval",
@@ -11621,6 +11653,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "sourceRequired",
   "splitLeaveByYear",
   "statutoryBalanceAutomatic",
+  "statutoryLeaveTypeLocked",
   "weeklyMinutesFromOutsideEmployment",
   "weeklyMinutesFromRequired",
 ];

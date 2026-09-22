@@ -98,7 +98,15 @@ const LeaveTypeDialog = ({
         },
       );
 
-      enqueueSnackbar(tAttendance("success"), { variant: "success" });
+      enqueueSnackbar(
+        tAttendance(
+          leaveType
+            ? "leaveTypes.actions.update.success"
+            : "leaveTypes.actions.create.success",
+          { name: values.name },
+        ),
+        { variant: "success" },
+      );
 
       closeDialog();
 

@@ -113,6 +113,7 @@
     "leaveOutsideShift": "請假時間必須涵蓋已排定的班次。",
     "leavePolicyRequired": "請先設定並選擇有效假別。",
     "leavePolicyRulesRequired": "自訂假別必須設定給薪比例。",
+    "leaveTypeInUse": "此假別已有請假紀錄，無法刪除，請改為停用。",
     "locationNotAllowed": "定位過舊、精度不足或超出店家範圍，請重新定位。",
     "medicalCertificateRequired": "核准前請先查驗醫療證明。",
     "medicalLeaveInterval": "醫療假期間不符合規則，請確認起訖時間與申請額度。",
@@ -162,6 +163,7 @@
     "sourceRequired": "請填寫核定依據。",
     "splitLeaveByYear": "跨年度請假請分成兩筆申請。",
     "statutoryBalanceAutomatic": "法定額度依規則計算，不能手動覆寫。",
+    "statutoryLeaveTypeLocked": "法定假別不能刪除，請改為停用。",
     "unresolvedOvertime": "實際加班時段尚未全部核准。",
     "unsupportedDayKind": "不支援的日期類型。",
     "weeklyMinutesFromOutsideEmployment": "工時生效日必須早於離職時間。",
@@ -248,8 +250,19 @@
   },
   "leaveTypes": {
     "actions": {
-      "create": "新增假別",
-      "update": "編輯假別"
+      "create": {
+        "success": "已新增假別 {name}",
+        "title": "新增假別"
+      },
+      "delete": {
+        "confirm": "確定要刪除 <bold>{name}</bold> 嗎？尚未使用的假別額度將一併刪除，且無法復原。",
+        "success": "已刪除假別 {name}",
+        "title": "刪除假別"
+      },
+      "update": {
+        "success": "已更新假別 {name}",
+        "title": "編輯假別"
+      }
     },
     "label": "假別設定"
   },

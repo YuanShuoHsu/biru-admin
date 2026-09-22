@@ -135,7 +135,7 @@ const ReviewsPage = async ({ params, searchParams }: ReviewsPageProps) => {
       ),
       getAttendanceLeaveTypes(
         organization.slug,
-        { pageSize: MAX_PAGE_SIZE },
+        { pageSize: MAX_PAGE_SIZE, sortDirection: "asc" },
         fetchOptions,
       ),
       getAttendanceContext(organization.slug, fetchOptions),

@@ -113,6 +113,7 @@
     "leaveOutsideShift": "请假时间必须涵盖已排定的班次。",
     "leavePolicyRequired": "请先设置并选择有效假别。",
     "leavePolicyRulesRequired": "自定义假别必须设置给薪比例。",
+    "leaveTypeInUse": "此假别已有请假记录，无法删除，请改为停用。",
     "locationNotAllowed": "定位过旧、精度不足或超出门店范围，请重新定位。",
     "medicalCertificateRequired": "核准前请先查验医疗证明。",
     "medicalLeaveInterval": "医疗假期间不符合规则，请确认起讫时间与申请额度。",
@@ -162,6 +163,7 @@
     "sourceRequired": "请填写核定依据。",
     "splitLeaveByYear": "跨年度请假请分成两笔申请。",
     "statutoryBalanceAutomatic": "法定额度按规则计算，不能手动覆盖。",
+    "statutoryLeaveTypeLocked": "法定假别不能删除，请改为停用。",
     "unresolvedOvertime": "实际加班时段尚未全部核准。",
     "unsupportedDayKind": "不支持的日期类型。",
     "weeklyMinutesFromOutsideEmployment": "工时生效日必须早于离职时间。",
@@ -248,8 +250,19 @@
   },
   "leaveTypes": {
     "actions": {
-      "create": "新增假别",
-      "update": "编辑假别"
+      "create": {
+        "success": "已新增假别 {name}",
+        "title": "新增假别"
+      },
+      "delete": {
+        "confirm": "确定要删除 <bold>{name}</bold> 吗？尚未使用的假别额度将一并删除，且无法撤销。",
+        "success": "已删除假别 {name}",
+        "title": "删除假别"
+      },
+      "update": {
+        "success": "已更新假别 {name}",
+        "title": "编辑假别"
+      }
     },
     "label": "假别设置"
   },

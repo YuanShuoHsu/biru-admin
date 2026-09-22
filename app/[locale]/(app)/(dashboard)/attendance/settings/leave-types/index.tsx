@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { enqueueSnackbar } from "notistack";
 import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
@@ -24,8 +25,15 @@ import {
 } from "@/hooks/useFilterOperators";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
-import { Add, Edit } from "@mui/icons-material";
-import { Button, Chip, IconButton, Stack, Tooltip } from "@mui/material";
+import { Add, Delete, Edit } from "@mui/icons-material";
+import {
+  Button,
+  Chip,
+  DialogContentText,
+  IconButton,
+  Stack,
+  Tooltip,
+} from "@mui/material";
 import type {
   GridColDef,
   GridFilterModel,
@@ -47,7 +55,7 @@ import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAttendanceLeaveTypeEnumOptions } from "@/utils/enumOptions";
-import { attendancePath } from "@/utils/attendance";
+import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
 
 const DataGrid = dynamic(
@@ -216,8 +224,46 @@ const LeaveTypes = ({
         formId: "attendance-leave-type-form",
         open: true,
         title: tAttendance(
-          leaveType ? "leaveTypes.actions.update" : "leaveTypes.actions.create",
+          leaveType
+            ? "leaveTypes.actions.update.title"
+            : "leaveTypes.actions.create.title",
         ),
+      }),
+    [mutate, organizationSlug, setDialog, tAttendance],
+  );
+
+  const handleDeleteLeaveType = useCallback(
+    ({ id, name }: AttendanceLeaveType) =>
+      setDialog({
+        content: (
+          <DialogContentText>
+            {tAttendance.rich("leaveTypes.actions.delete.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              name,
+            })}
+          </DialogContentText>
+        ),
+        onConfirm: async () => {
+          try {
+            await fetcher(
+              attendancePath(organizationSlug, "org", `leave-types/${id}`),
+              { method: "DELETE" },
+            );
+
+            enqueueSnackbar(
+              tAttendance("leaveTypes.actions.delete.success", { name }),
+              { variant: "success" },
+            );
+
+            mutate();
+          } catch (error) {
+            enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+              variant: "error",
+            });
+          }
+        },
+        open: true,
+        title: tAttendance("leaveTypes.actions.delete.title"),
       }),
     [mutate, organizationSlug, setDialog, tAttendance],
   );
@@ -232,7 +278,7 @@ const LeaveTypes = ({
         headerName: tAttendance("actions"),
         renderCell: ({ row }: GridRenderCellParams<AttendanceLeaveType>) => (
           <Stack height="100%" direction="row" alignItems="center">
-            <Tooltip title={tAttendance("leaveTypes.actions.update")}>
+            <Tooltip title={tAttendance("leaveTypes.actions.update.title")}>
               <IconButton
                 onClick={() => handleLeaveTypeDialog(row)}
                 size="small"
@@ -240,6 +286,17 @@ const LeaveTypes = ({
                 <Edit fontSize="small" />
               </IconButton>
             </Tooltip>
+            {row.statutoryKind === "custom" && (
+              <Tooltip title={tAttendance("leaveTypes.actions.delete.title")}>
+                <IconButton
+                  color="error"
+                  onClick={() => handleDeleteLeaveType(row)}
+                  size="small"
+                >
+                  <Delete fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            )}
           </Stack>
         ),
         resizable: false,
@@ -318,6 +375,7 @@ const LeaveTypes = ({
       booleanFilterOperators,
       enumFilterOperators,
       enumOptions.statutoryKind,
+      handleDeleteLeaveType,
       handleLeaveTypeDialog,
       numberFilterOperators,
       stringFilterOperators,
@@ -333,7 +391,7 @@ const LeaveTypes = ({
         sx={{ alignSelf: "flex-start" }}
         variant="contained"
       >
-        {tAttendance("leaveTypes.actions.create")}
+        {tAttendance("leaveTypes.actions.create.title")}
       </Button>
       <DataGrid
         {...DATA_GRID_PROPS}

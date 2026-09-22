@@ -113,6 +113,7 @@
     "leaveOutsideShift": "休暇は登録済みシフトの時間内で申請してください。",
     "leavePolicyRequired": "有効な休暇種類を設定して選択してください。",
     "leavePolicyRulesRequired": "カスタム休暇には支給率の設定が必要です。",
+    "leaveTypeInUse": "この休暇区分には休暇の記録があるため削除できません。無効化してください。",
     "locationNotAllowed": "位置情報が古い、不正確、または店舗の範囲外です。再試行してください。",
     "medicalCertificateRequired": "承認前に医療証明を確認してください。",
     "medicalLeaveInterval": "医療休暇の期間が無効です。日時と残りの付与枠を確認してください。",
@@ -162,6 +163,7 @@
     "sourceRequired": "確認済み金額の根拠を入力してください。",
     "splitLeaveByYear": "年をまたぐ休暇は年ごとに申請してください。",
     "statutoryBalanceAutomatic": "法定休暇残高は自動計算されます。",
+    "statutoryLeaveTypeLocked": "法定休暇区分は削除できません。無効化してください。",
     "unresolvedOvertime": "実際の残業時間帯がすべて承認されていません。",
     "unsupportedDayKind": "未対応の日区分です。",
     "weeklyMinutesFromOutsideEmployment": "所定労働時間の適用開始日は退職日時より前に設定してください。",
@@ -248,8 +250,19 @@
   },
   "leaveTypes": {
     "actions": {
-      "create": "休暇区分を追加",
-      "update": "休暇区分を編集"
+      "create": {
+        "success": "休暇区分 {name} を追加しました",
+        "title": "休暇区分を追加"
+      },
+      "delete": {
+        "confirm": "<bold>{name}</bold> を削除しますか？未使用の休暇残高もすべて削除され、この操作は元に戻せません。",
+        "success": "休暇区分 {name} を削除しました",
+        "title": "休暇区分を削除"
+      },
+      "update": {
+        "success": "休暇区分 {name} を更新しました",
+        "title": "休暇区分を編集"
+      }
     },
     "label": "休暇設定"
   },
