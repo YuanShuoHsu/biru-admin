@@ -484,7 +484,6 @@ const LeaveCases = ({
       parentalChildren,
       stringFilterOperators,
       tAttendance,
-
     ],
   );
 

@@ -407,7 +407,6 @@ const Reviews = ({
       reviewTitle,
       stringFilterOperators,
       tAttendance,
-
     ],
   );
 

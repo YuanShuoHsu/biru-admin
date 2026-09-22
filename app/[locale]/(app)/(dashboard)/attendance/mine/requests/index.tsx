@@ -58,7 +58,11 @@ import type {
 } from "@/types/attendance";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 
-import { attendanceErrorKey, attendancePath, getStatutoryLeaveName } from "@/utils/attendance";
+import {
+  attendanceErrorKey,
+  attendancePath,
+  getStatutoryLeaveName,
+} from "@/utils/attendance";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAttendanceRequestEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
@@ -458,7 +462,6 @@ const Requests = ({
       leaveTypeOptions,
       stringFilterOperators,
       tAttendance,
-
     ],
   );
 

@@ -308,7 +308,6 @@ const Balances = ({
       numberFilterOperators,
       stringFilterOperators,
       tAttendance,
-
     ],
   );
 
