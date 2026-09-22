@@ -73,7 +73,7 @@
   "employerPension": "雇用主年金拠出（{currency}）",
   "employerPercent": "雇用主拠出率（%）",
   "employmentType": {
-    "label": "雇用形態",
+    "label": "勤務形態",
     "options": {
       "fullTime": "フルタイム",
       "partTime": "パートタイム"

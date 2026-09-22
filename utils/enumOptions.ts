@@ -199,6 +199,10 @@ export const getAttendanceRequestEnumOptions = (
 export const getAttendanceEmployeeEnumOptions = (
   tAttendance: ReturnType<typeof useTranslations<"attendance">>,
 ) => ({
+  employmentType: (["fullTime", "partTime"] as const).map((value) => ({
+    label: tAttendance(`employmentType.options.${value}`),
+    value,
+  })),
   status: attendanceEmployeeStatusValues.map((value) => ({
     label: tAttendance(`employeeStatus.options.${value}`),
     value,

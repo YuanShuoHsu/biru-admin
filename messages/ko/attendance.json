@@ -73,10 +73,10 @@
   "employerPension": "고용주 연금({currency})",
   "employerPercent": "고용주 기여율(%)",
   "employmentType": {
-    "label": "고용 형태",
+    "label": "근무 형태",
     "options": {
-      "fullTime": "전일제",
-      "partTime": "단시간"
+      "fullTime": "풀타임",
+      "partTime": "파트타임"
     }
   },
   "empty": "아직 기록이 없습니다",

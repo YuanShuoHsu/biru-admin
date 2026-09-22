@@ -2450,6 +2450,7 @@ export interface components {
       | "hiredAt"
       | "terminatedAt"
       | "weeklyMinutes"
+      | "employmentType"
       | "status";
     /** @enum {string} */
     AttendanceEmployeeSortField:
@@ -2458,6 +2459,7 @@ export interface components {
       | "hiredAt"
       | "terminatedAt"
       | "weeklyMinutes"
+      | "employmentType"
       | "status";
     AttendanceEmploymentResponseDto: {
       id: string;
@@ -11729,10 +11731,26 @@ export const sortDirectionValues: ReadonlyArray<
 > = ["asc", "desc"];
 export const attendanceEmployeeFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceEmployeeFilterField"]
-> = ["name", "email", "hiredAt", "terminatedAt", "weeklyMinutes", "status"];
+> = [
+  "name",
+  "email",
+  "hiredAt",
+  "terminatedAt",
+  "weeklyMinutes",
+  "employmentType",
+  "status",
+];
 export const attendanceEmployeeSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceEmployeeSortField"]
-> = ["name", "email", "hiredAt", "terminatedAt", "weeklyMinutes", "status"];
+> = [
+  "name",
+  "email",
+  "hiredAt",
+  "terminatedAt",
+  "weeklyMinutes",
+  "employmentType",
+  "status",
+];
 export const attendanceShiftFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceShiftFilterField"]
 > = ["employeeName", "startsAt", "endsAt", "dayKind"];

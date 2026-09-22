@@ -73,10 +73,10 @@
   "employerPension": "雇主提缴（{currency}）",
   "employerPercent": "雇主提缴比例（%）",
   "employmentType": {
-    "label": "雇用型态",
+    "label": "工作类型",
     "options": {
-      "fullTime": "全时",
-      "partTime": "部分工时"
+      "fullTime": "全职",
+      "partTime": "兼职"
     }
   },
   "empty": "目前没有数据",

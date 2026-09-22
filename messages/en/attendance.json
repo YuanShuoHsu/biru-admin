@@ -73,7 +73,7 @@
   "employerPension": "Employer pension ({currency})",
   "employerPercent": "Employer rate (%)",
   "employmentType": {
-    "label": "Employment type",
+    "label": "Work type",
     "options": {
       "fullTime": "Full-time",
       "partTime": "Part-time"

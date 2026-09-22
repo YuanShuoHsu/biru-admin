@@ -73,10 +73,10 @@
   "employerPension": "雇主提繳（{currency}）",
   "employerPercent": "雇主提繳比例（%）",
   "employmentType": {
-    "label": "僱用型態",
+    "label": "工作型態",
     "options": {
-      "fullTime": "全時",
-      "partTime": "部分工時"
+      "fullTime": "全職",
+      "partTime": "兼職"
     }
   },
   "empty": "目前沒有資料",

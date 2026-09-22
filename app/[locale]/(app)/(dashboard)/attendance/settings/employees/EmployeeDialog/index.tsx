@@ -13,6 +13,7 @@ import { type EmployeeForm, useEmployeeFormSchema } from "./definitions";
 import FormBox from "@/components/FormBox";
 import NumberSpinner from "@/components/NumberSpinner";
 
+import { FULL_TIME_MINUTES } from "@/constants/attendance";
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -38,8 +39,6 @@ import { fetcher } from "@/utils/fetcher";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
-
-const FULL_TIME_MINUTES = 2400;
 
 interface EmployeeDialogProps {
   member: AttendanceMember;
