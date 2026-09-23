@@ -2373,9 +2373,7 @@ export interface components {
       | "sourceRequired"
       | "splitLeaveByYear"
       | "statutoryBalanceAutomatic"
-      | "statutoryLeaveTypeLocked"
-      | "weeklyMinutesFromOutsideEmployment"
-      | "weeklyMinutesFromRequired";
+      | "statutoryLeaveTypeLocked";
     AttendanceErrorResponseDto: {
       message: components["schemas"]["AttendanceErrorCode"];
       /** @example Conflict */
@@ -2384,10 +2382,6 @@ export interface components {
       path: string;
       success: boolean;
       timestamp: string;
-    };
-    AttendanceWeeklyMinutesChangeResponseDto: {
-      from: string;
-      minutes: number;
     };
     /** @enum {string} */
     AttendanceEmploymentType: "fullTime" | "partTime";
@@ -2403,8 +2397,6 @@ export interface components {
       organizationId: string;
       userId: string;
       name: string;
-      weeklyMinutes: number;
-      weeklyMinutesHistory: components["schemas"]["AttendanceWeeklyMinutesChangeResponseDto"][];
       employmentType: components["schemas"]["AttendanceEmploymentType"];
       enabled: boolean;
       /** Format: date-time */
@@ -2467,8 +2459,6 @@ export interface components {
       organizationId: string;
       userId: string;
       name: string;
-      weeklyMinutes: number;
-      weeklyMinutesHistory: components["schemas"]["AttendanceWeeklyMinutesChangeResponseDto"][];
       employmentType: components["schemas"]["AttendanceEmploymentType"];
       enabled: boolean;
       /** Format: date-time */
@@ -2498,8 +2488,6 @@ export interface components {
       total: number;
     };
     SaveAttendanceEmployeeDto: {
-      weeklyMinutes?: number;
-      weeklyMinutesFrom?: string;
       userId: string;
       enabled: boolean;
       hiredAt: string;
@@ -11697,8 +11685,6 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "splitLeaveByYear",
   "statutoryBalanceAutomatic",
   "statutoryLeaveTypeLocked",
-  "weeklyMinutesFromOutsideEmployment",
-  "weeklyMinutesFromRequired",
 ];
 export const attendanceEmploymentTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceEmploymentType"]

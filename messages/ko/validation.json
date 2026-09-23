@@ -302,13 +302,5 @@
   },
   "validFrom": {
     "beforeValidThrough": "시작일은 종료일보다 앞서야 합니다."
-  },
-  "weeklyMinutes": {
-    "partTime": "단시간 근로의 주 소정근로시간은 40시간 미만이어야 합니다."
-  },
-  "weeklyMinutesFrom": {
-    "beforeTerminatedAt": "근무시간 적용 시작일은 퇴사 시간보다 이전이어야 합니다.",
-    "notBeforeHiredAt": "근무시간 적용 시작일은 입사 시간보다 이전일 수 없습니다.",
-    "required": "근무시간 적용 시작일은 필수입니다."
   }
 }

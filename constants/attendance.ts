@@ -84,5 +84,3 @@ export const MONEY_FRACTION_DIGITS = 2;
 export const CORRECTION_LEAD_HOURS = 12;
 
 export const ALLOWED_IPS_MAX = 30;
-
-export const FULL_TIME_MINUTES = 2400;

@@ -1,71 +1,22 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-import { FULL_TIME_MINUTES } from "@/constants/attendance";
-
-import type { AttendanceEmployment } from "@/types/attendance";
-
-export const useEmployeeFormSchema = (employee?: AttendanceEmployment) => {
+export const useEmployeeFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z
     .object({
       userId: z.string(),
-      partTime: z.boolean(),
       hiredAt: z.string().min(1, { error: tValidation("hiredAt.required") }),
       terminatedAt: z.string(),
       enabled: z.boolean(),
-      weeklyMinutes: z
-        .number()
-        .int({ error: tValidation("number.integer") })
-        .min(1, { error: tValidation("number.min", { min: 1 }) })
-        .max(FULL_TIME_MINUTES, {
-          error: tValidation("number.max", { max: FULL_TIME_MINUTES }),
-        }),
-      weeklyMinutesFrom: z.string(),
     })
-    .refine(
-      ({ partTime, weeklyMinutes }) =>
-        !partTime || weeklyMinutes < FULL_TIME_MINUTES,
-      {
-        error: tValidation("weeklyMinutes.partTime"),
-        path: ["weeklyMinutes"],
-      },
-    )
     .refine(
       ({ hiredAt, terminatedAt }) =>
         !terminatedAt || new Date(terminatedAt) > new Date(hiredAt),
       {
         error: tValidation("terminatedAt.afterHiredAt"),
         path: ["terminatedAt"],
-      },
-    )
-    .refine(
-      ({ weeklyMinutes, weeklyMinutesFrom }) =>
-        !employee ||
-        weeklyMinutes === employee.weeklyMinutes ||
-        !!weeklyMinutesFrom,
-      {
-        error: tValidation("weeklyMinutesFrom.required"),
-        path: ["weeklyMinutesFrom"],
-      },
-    )
-    .refine(
-      ({ hiredAt, weeklyMinutesFrom }) =>
-        !weeklyMinutesFrom || new Date(weeklyMinutesFrom) >= new Date(hiredAt),
-      {
-        error: tValidation("weeklyMinutesFrom.notBeforeHiredAt"),
-        path: ["weeklyMinutesFrom"],
-      },
-    )
-    .refine(
-      ({ terminatedAt, weeklyMinutesFrom }) =>
-        !weeklyMinutesFrom ||
-        !terminatedAt ||
-        new Date(weeklyMinutesFrom) < new Date(terminatedAt),
-      {
-        error: tValidation("weeklyMinutesFrom.beforeTerminatedAt"),
-        path: ["weeklyMinutesFrom"],
       },
     );
 };

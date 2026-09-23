@@ -177,8 +177,6 @@
     "statutoryLeaveTypeLocked": "법정 휴가 정책은 삭제할 수 없습니다. 비활성화해 주세요.",
     "unresolvedOvertime": "실제 초과 근무 시간대가 모두 승인되지 않았습니다.",
     "unsupportedDayKind": "지원되지 않는 근무일 구분입니다.",
-    "weeklyMinutesFromOutsideEmployment": "근무시간 적용 시작일은 퇴사 시간보다 이전이어야 합니다.",
-    "weeklyMinutesFromRequired": "주간 소정 근로 시간을 변경하려면 입사 시간 이후의 적용 시작일을 지정해야 합니다.",
     "weeklyScheduleRequiresReview": "주간 예정 근무가 40시간을 초과합니다. 일정을 확인하세요."
   },
   "eventAction": {
@@ -518,10 +516,6 @@
   "voluntaryPension": "자발적 연금({currency})",
   "voluntaryPercent": "자발적 기여율(%)",
   "weekday": "요일",
-  "weeklyMinutes": "주 소정근로시간(시간)",
-  "weeklyMinutesCurrentHint": "현재 주 {hours}시간입니다. 변경은 적용 시작일부터 반영되며, 적용 시작일을 지우면 변경이 취소됩니다.",
-  "weeklyMinutesFrom": "근무시간 적용 시작일",
-  "weeklyMinutesFromHint": "입사일을 선택하면 잘못 입력한 값의 수정으로 전체 기간에 적용되고, 다른 날짜를 선택하면 그 전까지는 기존 시간이 유지됩니다.",
   "withdraw": "철회",
   "withholding": "원천징수({currency})",
   "worked": "계산 근무 시간",

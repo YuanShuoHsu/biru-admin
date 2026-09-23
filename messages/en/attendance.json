@@ -177,8 +177,6 @@
     "statutoryLeaveTypeLocked": "Statutory leave policies cannot be deleted. Disable it instead.",
     "unresolvedOvertime": "Actual overtime intervals have not all been approved.",
     "unsupportedDayKind": "Unsupported day classification.",
-    "weeklyMinutesFromOutsideEmployment": "The weekly-hours effective date must be earlier than the employment end.",
-    "weeklyMinutesFromRequired": "Changing the agreed weekly hours requires an effective date on or after the employment start.",
     "weeklyScheduleRequiresReview": "Scheduled workdays exceed 40 hours in a week; review the schedule."
   },
   "eventAction": {
@@ -518,10 +516,6 @@
   "voluntaryPension": "Voluntary pension ({currency})",
   "voluntaryPercent": "Voluntary rate (%)",
   "weekday": "Weekday",
-  "weeklyMinutes": "Contracted weekly hours",
-  "weeklyMinutesCurrentHint": "Currently {hours} hours per week. The new value applies from the effective date; clear that date to cancel the change.",
-  "weeklyMinutesFrom": "Weekly hours effective from",
-  "weeklyMinutesFromHint": "Use the hire date to correct a wrong value; any later date keeps the previous hours before it.",
   "withdraw": "Withdraw",
   "withholding": "Tax withholding ({currency})",
   "worked": "Counted hours",
