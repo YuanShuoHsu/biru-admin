@@ -382,6 +382,7 @@ const Suppliers = ({
         field: "note",
         filterOperators: stringFilterOperators,
         headerName: `${tInventory("suppliers.note.label")} ${tCommon("optional")}`,
+        maxWidth: 320,
         renderCell: renderEmptyableCell,
       },
       {

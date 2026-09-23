@@ -226,7 +226,11 @@ const OpeningHoursField = ({
     ]);
 
   const handleScheduleRemove = (id: string) =>
-    updateSchedule(schedules.filter((schedule) => schedule.id !== id));
+    updateSchedule(
+      schedules.length > 1
+        ? schedules.filter((schedule) => schedule.id !== id)
+        : [{ id: crypto.randomUUID(), days: [], startTime: "", endTime: "" }],
+    );
 
   const handleScheduleChange = (
     id: string,
@@ -387,7 +391,13 @@ const OpeningHoursField = ({
                 />
                 <IconButton
                   color="error"
-                  disabled={disabled}
+                  disabled={
+                    disabled ||
+                    (schedules.length === 1 &&
+                      days.length === 0 &&
+                      !startTime &&
+                      !endTime)
+                  }
                   onClick={() => handleScheduleRemove(id)}
                   size="small"
                 >

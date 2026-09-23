@@ -229,6 +229,14 @@
         }
       }
     },
+    "servingTemperatures": {
+      "helperText": "Checked temperatures show as icons on the menu item card",
+      "label": "Serving temperature",
+      "options": {
+        "Hot": "Hot",
+        "Iced": "Iced"
+      }
+    },
     "suitableForDiet": {
       "label": "Dietary restrictions"
     },

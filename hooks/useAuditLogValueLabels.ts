@@ -7,6 +7,7 @@ import {
   orderModeValues,
   orderResponseDtoPaymentMethodValues,
   orderStatusValues,
+  servingTemperatureValues,
   unitCodeValues,
   userCouponSourceValues,
 } from "@/types/api";
@@ -48,6 +49,12 @@ export const useAuditLogValueLabels = () => {
         userCouponSourceValues.map((value) => [
           value,
           tCoupons(`source.${value}`),
+        ]),
+      ),
+      servingTemperatures: Object.fromEntries(
+        servingTemperatureValues.map((value) => [
+          value,
+          tMenus(`items.servingTemperatures.options.${value}`),
         ]),
       ),
       suitableForDiet: Object.fromEntries(

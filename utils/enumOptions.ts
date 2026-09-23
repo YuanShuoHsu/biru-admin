@@ -23,6 +23,7 @@ import {
   orderResponseDtoOrderStatusValues,
   orderResponseDtoPaymentMethodValues,
   payrollStatementStatusValues,
+  servingTemperatureValues,
   statutoryLeaveKindValues,
   userCouponSourceValues,
   userRoleValues,
@@ -127,6 +128,10 @@ export const getMenuEnumOptions = (
   })),
   availableModes: orderModeValues.map((value) => ({
     label: tOrder(`mode.${value}.label`),
+    value,
+  })),
+  servingTemperatures: servingTemperatureValues.map((value) => ({
+    label: tMenus(`items.servingTemperatures.options.${value}`),
     value,
   })),
 });

@@ -229,6 +229,14 @@
         }
       }
     },
+    "servingTemperatures": {
+      "helperText": "선택하면 주문 페이지의 메뉴 카드에 아이스/핫 아이콘이 표시됩니다",
+      "label": "제공 온도",
+      "options": {
+        "Hot": "핫",
+        "Iced": "아이스"
+      }
+    },
     "suitableForDiet": {
       "label": "식이 제한"
     },

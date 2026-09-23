@@ -331,6 +331,7 @@ const ParentalReturns = ({
         field: "reason",
         filterOperators: stringFilterOperators,
         headerName: tAttendance("reason"),
+        maxWidth: 320,
         renderCell: renderEmptyableCell,
       },
       {
@@ -359,6 +360,7 @@ const ParentalReturns = ({
         field: "reviewReason",
         filterOperators: stringFilterOperators,
         headerName: tAttendance("reviewReason"),
+        maxWidth: 320,
         renderCell: renderEmptyableCell,
       },
     ],

@@ -229,6 +229,14 @@
         }
       }
     },
+    "servingTemperatures": {
+      "helperText": "勾选后会在点餐页的品项卡片显示冰／热图标",
+      "label": "冷热供应",
+      "options": {
+        "Hot": "热",
+        "Iced": "冰"
+      }
+    },
     "suitableForDiet": {
       "label": "饮食限制"
     },

@@ -756,6 +756,7 @@ const Ingredients = ({
         field: "note",
         filterOperators: stringFilterOperators,
         headerName: `${tInventory("ingredients.note.label")} ${tCommon("optional")}`,
+        maxWidth: 320,
         renderCell: renderEmptyableCell,
       },
       {

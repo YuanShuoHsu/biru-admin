@@ -72,7 +72,7 @@ import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { orderModeValues } from "@/types/api";
+import { orderModeValues, servingTemperatureValues } from "@/types/api";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type {
   MenuItem,
@@ -581,9 +581,36 @@ const MenusMenuIdSectionId = ({
         field: "description",
         filterOperators: stringFilterOperators,
         headerName: `${tMenus("items.description.label")} ${tCommon("optional")}`,
+        maxWidth: 320,
         renderCell: renderEmptyableCell,
         valueGetter: (_value: unknown, row: MenuItem) =>
           localize(row.description, locale),
+      },
+      {
+        field: "servingTemperatures",
+        filterOperators: enumFilterOperators,
+        headerName: tMenus("items.servingTemperatures.label"),
+        type: "singleSelect",
+        valueOptions: enumOptions.servingTemperatures,
+        renderCell: ({
+          row: { servingTemperatures },
+        }: GridRenderCellParams<MenuItem>) =>
+          servingTemperatures.length ? (
+            <Stack alignItems="center" direction="row" gap={0.5} height="100%">
+              {servingTemperatureValues
+                .filter((value) => servingTemperatures.includes(value))
+                .map((value) => (
+                  <Chip
+                    key={value}
+                    label={tMenus(`items.servingTemperatures.options.${value}`)}
+                    size="small"
+                    variant="outlined"
+                  />
+                ))}
+            </Stack>
+          ) : (
+            <EmptyCell />
+          ),
       },
       {
         field: "price",

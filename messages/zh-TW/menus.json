@@ -229,6 +229,14 @@
         }
       }
     },
+    "servingTemperatures": {
+      "helperText": "勾選後會在點餐頁的品項卡片顯示冰／熱圖示",
+      "label": "冷熱供應",
+      "options": {
+        "Hot": "熱",
+        "Iced": "冰"
+      }
+    },
     "suitableForDiet": {
       "label": "飲食限制"
     },

@@ -5016,6 +5016,11 @@ export interface components {
       image?: string;
     };
     /**
+     * @description 可供應的飲品溫度；省略代表不適用
+     * @enum {string}
+     */
+    ServingTemperature: "Hot" | "Iced";
+    /**
      * @description 可販售的點餐模式；省略代表四種全開
      * @enum {string}
      */
@@ -5092,6 +5097,8 @@ export interface components {
         | "VeganDiet"
         | "VegetarianDiet"
       )[];
+      /** @description 可供應的飲品溫度；省略代表不適用 */
+      servingTemperatures?: components["schemas"]["ServingTemperature"][];
       /** @description 可販售的點餐模式；省略代表四種全開 */
       availableModes?: components["schemas"]["OrderMode"][];
       nutrition?: components["schemas"]["NutritionInformationDto"];
@@ -5147,6 +5154,8 @@ export interface components {
             | "VegetarianDiet"
           )[]
         | null;
+      /** @description 可供應的飲品溫度；空陣列代表不適用 */
+      servingTemperatures: components["schemas"]["ServingTemperature"][];
       /** @description 可販售的點餐模式 */
       availableModes: components["schemas"]["OrderMode"][];
       nutrition?: components["schemas"]["NutritionInformationDto"] | null;
@@ -5168,6 +5177,7 @@ export interface components {
       | "priceSpecification"
       | "availability"
       | "availableModes"
+      | "servingTemperatures"
       | "createdAt"
       | "updatedAt"
       | "priceSpecificationValidFrom"
@@ -5182,6 +5192,7 @@ export interface components {
       | "deliveryLeadTimeMinutes"
       | "priceSpecification"
       | "availability"
+      | "servingTemperatures"
       | "createdAt"
       | "updatedAt"
       | "priceSpecificationValidFrom"
@@ -5209,6 +5220,8 @@ export interface components {
         | "VeganDiet"
         | "VegetarianDiet"
       )[];
+      /** @description 可供應的飲品溫度；省略代表不適用 */
+      servingTemperatures?: components["schemas"]["ServingTemperature"][];
       /** @description 可販售的點餐模式；省略代表四種全開 */
       availableModes?: components["schemas"]["OrderMode"][];
       nutrition?: components["schemas"]["NutritionInformationDto"];
@@ -5508,6 +5521,8 @@ export interface components {
             | "VegetarianDiet"
           )[]
         | null;
+      /** @description 可供應的飲品溫度；空陣列代表不適用 */
+      servingTemperatures: components["schemas"]["ServingTemperature"][];
       /** @description 可販售的點餐模式 */
       availableModes: components["schemas"]["OrderMode"][];
       nutrition?: components["schemas"]["NutritionInformationDto"] | null;
@@ -12318,6 +12333,9 @@ export const menuSectionFilterFieldValues: ReadonlyArray<
 export const menuSectionSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["MenuSectionSortField"]
 > = ["name", "description", "createdAt", "updatedAt"];
+export const servingTemperatureValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["ServingTemperature"]
+> = ["Hot", "Iced"];
 export const orderModeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrderMode"]
 > = ["counter", "dineIn", "driveThru", "pickup"];
@@ -12366,6 +12384,7 @@ export const menuItemFilterFieldValues: ReadonlyArray<
   "priceSpecification",
   "availability",
   "availableModes",
+  "servingTemperatures",
   "createdAt",
   "updatedAt",
   "priceSpecificationValidFrom",
@@ -12382,6 +12401,7 @@ export const menuItemSortFieldValues: ReadonlyArray<
   "deliveryLeadTimeMinutes",
   "priceSpecification",
   "availability",
+  "servingTemperatures",
   "createdAt",
   "updatedAt",
   "priceSpecificationValidFrom",

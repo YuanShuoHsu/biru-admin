@@ -229,6 +229,14 @@
         }
       }
     },
+    "servingTemperatures": {
+      "helperText": "チェックすると注文ページの商品カードにアイス／ホットのアイコンが表示されます",
+      "label": "提供温度",
+      "options": {
+        "Hot": "ホット",
+        "Iced": "アイス"
+      }
+    },
     "suitableForDiet": {
       "label": "食事制限"
     },

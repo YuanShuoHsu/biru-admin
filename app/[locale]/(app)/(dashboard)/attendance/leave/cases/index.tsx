@@ -464,6 +464,7 @@ const LeaveCases = ({
         field: "reason",
         filterOperators: stringFilterOperators,
         headerName: tAttendance("reason"),
+        maxWidth: 320,
         renderCell: renderEmptyableCell,
       },
     ],

@@ -28,8 +28,15 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { itemAvailabilityValues, orderModeValues } from "@/types/api";
-import type { MenuItem as MenuItemType } from "@/types/menus";
+import {
+  itemAvailabilityValues,
+  orderModeValues,
+  servingTemperatureValues,
+} from "@/types/api";
+import type {
+  MenuItem as MenuItemType,
+  ServingTemperature,
+} from "@/types/menus";
 import type { ApiOrderMode } from "@/types/orderMode";
 
 import { fetcher } from "@/utils/fetcher";
@@ -69,6 +76,7 @@ const CreateMenuItemDialog = ({
       name: {},
       description: {},
       availableModes: [...orderModeValues],
+      servingTemperatures: [],
       offer: {
         price: "",
         availability: "InStock",
@@ -91,6 +99,10 @@ const CreateMenuItemDialog = ({
   const availability = useWatch({ control, name: "offer.availability" });
   const availableHours = useWatch({ control, name: "offer.availableHours" });
   const availableModes = useWatch({ control, name: "availableModes" });
+  const servingTemperatures = useWatch({
+    control,
+    name: "servingTemperatures",
+  });
   const deliveryLeadTimeMinutes = useWatch({
     control,
     name: "offer.deliveryLeadTimeMinutes",
@@ -112,6 +124,7 @@ const CreateMenuItemDialog = ({
     name,
     description,
     availableModes,
+    servingTemperatures,
     offer,
   }: CreateMenuItemForm) => {
     try {
@@ -127,6 +140,7 @@ const CreateMenuItemDialog = ({
             description,
             ...(imageSrc && { image: imageSrc }),
             availableModes,
+            servingTemperatures,
             offer: {
               price: offer?.price,
               availability: offer?.availability,
@@ -222,6 +236,24 @@ const CreateMenuItemDialog = ({
             value: descriptionValue?.[lang] || "",
           },
         ]}
+      />
+      <CheckboxesGroup
+        error={!!errors.servingTemperatures}
+        fullWidth
+        helperText={
+          errors.servingTemperatures?.message ||
+          tMenus("items.servingTemperatures.helperText")
+        }
+        label={`${tMenus("items.servingTemperatures.label")} ${tCommon("optional")}`}
+        onChange={(event, value) =>
+          setValue("servingTemperatures", value as ServingTemperature[])
+        }
+        options={servingTemperatureValues.map((value) => ({
+          children: null,
+          label: tMenus(`items.servingTemperatures.options.${value}`),
+          value,
+        }))}
+        value={servingTemperatures}
       />
       <Divider flexItem>
         <Chip label={tMenus("items.offers.label")} size="small" />

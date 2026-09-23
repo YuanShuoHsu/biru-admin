@@ -516,6 +516,7 @@ const MenusMenuId = ({
         field: "description",
         filterOperators: stringFilterOperators,
         headerName: `${tMenus("sections.description.label")} ${tCommon("optional")}`,
+        maxWidth: 320,
         renderCell: renderEmptyableCell,
         valueGetter: (_value: unknown, row: MenuSection) =>
           localize(row.description, locale),

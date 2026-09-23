@@ -90,6 +90,13 @@ const SettingsDialog = ({
     name: "allowedIps",
   });
 
+  const firstAllowedIp = useWatch({ control, name: "allowedIps.0.value" });
+
+  const handleAllowedIpRemove = (index: number) =>
+    fields.length > 1
+      ? remove(index)
+      : setValue("allowedIps.0.value", "", { shouldValidate: isSubmitted });
+
   const onSubmitHandler = async (values: SettingsForm) => {
     try {
       setDialog({ confirmLoading: true });
@@ -218,8 +225,8 @@ const SettingsDialog = ({
               />
               <IconButton
                 color="error"
-                disabled={fields.length <= 1}
-                onClick={() => remove(index)}
+                disabled={fields.length === 1 && !firstAllowedIp}
+                onClick={() => handleAllowedIpRemove(index)}
                 size="small"
               >
                 <DeleteOutline fontSize="small" />

@@ -281,6 +281,7 @@ const IngredientTransactions = ({
         field: "note",
         filterOperators: stringFilterOperators,
         headerName: tInventory("transactions.note.label"),
+        maxWidth: 320,
         renderCell: renderEmptyableCell,
       },
       {
