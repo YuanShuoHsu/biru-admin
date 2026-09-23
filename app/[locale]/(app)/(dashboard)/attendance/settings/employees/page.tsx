@@ -83,8 +83,12 @@ const EmployeesPage = async ({ params, searchParams }: EmployeesPageProps) => {
     sortDirection,
   } = resolveGridSearchParams({
     searchParams: rawSearchParams,
-    sortFields: attendanceEmployeeSortFieldValues,
-    filterFields: attendanceEmployeeFilterFieldValues,
+    sortFields: attendanceEmployeeSortFieldValues.filter(
+      (field) => field !== "weeklyMinutes",
+    ),
+    filterFields: attendanceEmployeeFilterFieldValues.filter(
+      (field) => field !== "weeklyMinutes",
+    ),
     filterOperators: filterOperatorValues,
     organizationSlug: organization.slug,
   });

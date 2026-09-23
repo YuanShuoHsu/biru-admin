@@ -403,6 +403,7 @@
   },
   "save": "保存",
   "schedule": {
+    "scheduledHours": "今週の予定：{hours}時間",
     "applyTemplate": "雛形を適用",
     "label": "週間シフト",
     "nextWeek": "翌週",

@@ -62,11 +62,6 @@ const STATUS_COLORS: Record<
   terminated: "default",
 };
 
-const pendingChange = ({ employee }: AttendanceMember) =>
-  employee?.weeklyMinutesHistory.findLast(
-    ({ from }) => new Date(from) > new Date(),
-  );
-
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
   { ssr: false },
@@ -151,12 +146,6 @@ const Employees = ({
 
   const date = useCallback(
     (value: string) => format.dateTime(new Date(value), "date"),
-    [format],
-  );
-
-  const hours = useCallback(
-    (minutes: number) =>
-      format.number(minutes / 60, { maximumFractionDigits: 1 }),
     [format],
   );
 
@@ -347,37 +336,6 @@ const Employees = ({
         valueOptions: enumOptions.employmentType,
       },
       {
-        field: "weeklyMinutes",
-        filterable: false,
-        headerName: tAttendance("weeklyMinutes"),
-        renderCell: renderEmptyableCell,
-        type: "number",
-        valueFormatter: (value: number | undefined) =>
-          value == null ? "" : hours(value),
-        valueGetter: (_, row: AttendanceMember) => row.employee?.weeklyMinutes,
-      },
-      {
-        field: "pendingWeeklyMinutes",
-        filterable: false,
-        headerName: tAttendance("pendingWeeklyMinutes"),
-        renderCell: renderEmptyableCell,
-        sortable: false,
-        type: "number",
-        valueFormatter: (value: number | undefined) =>
-          value == null ? "" : hours(value),
-        valueGetter: (_, row: AttendanceMember) => pendingChange(row)?.minutes,
-      },
-      {
-        field: "weeklyMinutesFrom",
-        filterable: false,
-        headerName: tAttendance("weeklyMinutesFrom"),
-        renderCell: renderEmptyableCell,
-        sortable: false,
-        valueFormatter: (value: string | undefined) =>
-          value == null ? "" : date(value),
-        valueGetter: (_, row: AttendanceMember) => pendingChange(row)?.from,
-      },
-      {
         field: "status",
         filterOperators: enumFilterOperators,
         headerName: tAttendance("employeeStatus.label"),
@@ -402,7 +360,6 @@ const Employees = ({
       enumFilterOperators,
       enumOptions.employmentType,
       enumOptions.status,
-      hours,
       handleEmployeeDialog,
       stringFilterOperators,
       tAttendance,

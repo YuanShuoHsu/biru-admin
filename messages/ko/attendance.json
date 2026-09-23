@@ -403,6 +403,7 @@
   },
   "save": "저장",
   "schedule": {
+    "scheduledHours": "이번 주 예정: {hours}시간",
     "applyTemplate": "템플릿 적용",
     "label": "주간 근무표",
     "nextWeek": "다음 주",

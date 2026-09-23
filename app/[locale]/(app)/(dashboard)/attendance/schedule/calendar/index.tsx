@@ -43,6 +43,7 @@ import {
   WEEK_DAYS,
 } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+import { scheduledHours } from "@/utils/scheduledHours";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
@@ -154,13 +155,37 @@ const Calendar = ({
     const grouped = new Map<string, AttendanceShift[]>();
 
     for (const shift of shifts) {
-      const key = `${shift.employeeId}:${dayjs(shift.startsAt).tz(STORE_TIMEZONE).format("YYYY-MM-DD")}`;
+      if (shift.status === "cancelled") continue;
 
-      grouped.set(key, [...(grouped.get(key) ?? []), shift]);
+      for (const day of days) {
+        if (
+          dayjs(shift.startsAt).valueOf() >= day.add(1, "day").valueOf() ||
+          dayjs(shift.endsAt).valueOf() <= day.valueOf()
+        )
+          continue;
+
+        const key = `${shift.employeeId}:${day.format("YYYY-MM-DD")}`;
+        grouped.set(key, [...(grouped.get(key) ?? []), shift]);
+      }
     }
 
     return grouped;
-  }, [shifts]);
+  }, [days, shifts]);
+
+  const hoursByEmployee = useMemo(() => {
+    const totals = new Map<string, number>();
+    const from = start.valueOf();
+    const to = start.add(WEEK_DAYS, "day").valueOf();
+
+    for (const shift of shifts) {
+      totals.set(
+        shift.employeeId,
+        (totals.get(shift.employeeId) ?? 0) + scheduledHours(shift, from, to),
+      );
+    }
+
+    return totals;
+  }, [shifts, start]);
 
   const goToWeek = useCallback(
     (value: string) => updateQuery({ week: value }),
@@ -244,7 +269,7 @@ const Calendar = ({
   );
 
   const time = useCallback(
-    (value: string) =>
+    (value: string | number) =>
       format.dateTime(new Date(value), {
         hour: "2-digit",
         minute: "2-digit",
@@ -332,6 +357,13 @@ const Calendar = ({
             <Box display="contents" key={employeeId}>
               <NameCell>
                 <Typography variant="body2">{name}</Typography>
+                <Typography color="text.secondary" variant="caption">
+                  {tAttendance("schedule.scheduledHours", {
+                    hours: format.number(hoursByEmployee.get(employeeId) ?? 0, {
+                      maximumFractionDigits: 2,
+                    }),
+                  })}
+                </Typography>
               </NameCell>
               {days.map((day) => {
                 const date = day.format("YYYY-MM-DD");
@@ -361,7 +393,19 @@ const Calendar = ({
                           type="button"
                         >
                           <Typography noWrap variant="caption">
-                            {`${time(shift.startsAt)}–${time(shift.endsAt)}`}
+                            {time(
+                              Math.max(
+                                dayjs(shift.startsAt).valueOf(),
+                                day.valueOf(),
+                              ),
+                            )}
+                            {"–"}
+                            {time(
+                              Math.min(
+                                dayjs(shift.endsAt).valueOf(),
+                                day.add(1, "day").valueOf(),
+                              ),
+                            )}
                           </Typography>
                         </Box>
                         {canCancel && shift.state === "scheduled" && (

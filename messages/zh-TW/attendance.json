@@ -403,6 +403,7 @@
   },
   "save": "儲存",
   "schedule": {
+    "scheduledHours": "本週已排 {hours} 小時",
     "applyTemplate": "套用範本",
     "label": "週班表",
     "nextWeek": "下一週",

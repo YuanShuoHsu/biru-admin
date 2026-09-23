@@ -403,6 +403,7 @@
   },
   "save": "Save",
   "schedule": {
+    "scheduledHours": "Scheduled this week: {hours} h",
     "applyTemplate": "Apply template",
     "label": "Weekly roster",
     "nextWeek": "Next week",
