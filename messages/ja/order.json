@@ -151,6 +151,10 @@
     "promoUntil": "{date}まで",
     "selectAtLeast": "{count}個以上お選びください",
     "selectUpTo": "最大{count}個まで選択できます",
+    "servingTemperatures": {
+      "Hot": "ホット",
+      "Iced": "アイス"
+    },
     "stockLeft": "残り {stock}"
   },
   "mode": {

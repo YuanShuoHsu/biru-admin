@@ -69,6 +69,7 @@
     "recipeInstructions": "조리법",
     "recipeYield": "분량",
     "requiredQuantity": "사용량",
+    "servingTemperature": "온도 제한",
     "servingTemperatures": "제공 온도",
     "slug": "매장 슬러그",
     "sortOrder": "정렬 순서",

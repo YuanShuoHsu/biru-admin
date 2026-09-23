@@ -151,6 +151,10 @@
     "promoUntil": "优惠至 {date}",
     "selectAtLeast": "请至少选择 {count} 项",
     "selectUpTo": "最多可选 {count} 项",
+    "servingTemperatures": {
+      "Hot": "热",
+      "Iced": "冰"
+    },
     "stockLeft": "剩余 {stock}"
   },
   "mode": {

@@ -230,7 +230,7 @@
       }
     },
     "servingTemperatures": {
-      "helperText": "선택하면 주문 페이지의 메뉴 카드에 아이스/핫 아이콘이 표시됩니다",
+      "helperText": "주문 시 고객이 온도를 선택하며, 메뉴 카드에도 아이스/핫 아이콘이 표시됩니다",
       "label": "제공 온도",
       "options": {
         "Hot": "핫",
@@ -296,6 +296,13 @@
     "minSelectionCount": {
       "label": "최소 선택 수",
       "placeholder": "최소 선택 수를 입력해 주세요"
+    },
+    "servingTemperature": {
+      "helperText": "고객이 이 온도를 선택했을 때만 제공됩니다(예: 얼음 양을 아이스로 설정)",
+      "label": "온도 제한",
+      "options": {
+        "none": "제한 없음"
+      }
     }
   },
   "modifiers": {

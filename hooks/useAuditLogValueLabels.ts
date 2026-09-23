@@ -51,6 +51,12 @@ export const useAuditLogValueLabels = () => {
           tCoupons(`source.${value}`),
         ]),
       ),
+      servingTemperature: Object.fromEntries(
+        servingTemperatureValues.map((value) => [
+          value,
+          tMenus(`items.servingTemperatures.options.${value}`),
+        ]),
+      ),
       servingTemperatures: Object.fromEntries(
         servingTemperatureValues.map((value) => [
           value,

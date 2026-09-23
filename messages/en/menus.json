@@ -230,7 +230,7 @@
       }
     },
     "servingTemperatures": {
-      "helperText": "Checked temperatures show as icons on the menu item card",
+      "helperText": "Customers choose a temperature when ordering, and the menu item card shows the icons",
       "label": "Serving temperature",
       "options": {
         "Hot": "Hot",
@@ -296,6 +296,13 @@
     "minSelectionCount": {
       "label": "Min selections",
       "placeholder": "Please enter your min selections"
+    },
+    "servingTemperature": {
+      "helperText": "Only offered when the customer picks this temperature, e.g. set ice level to Iced",
+      "label": "Temperature restriction",
+      "options": {
+        "none": "Any"
+      }
     }
   },
   "modifiers": {

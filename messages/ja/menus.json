@@ -230,7 +230,7 @@
       }
     },
     "servingTemperatures": {
-      "helperText": "チェックすると注文ページの商品カードにアイス／ホットのアイコンが表示されます",
+      "helperText": "注文時にお客様が温度を選び、商品カードにもアイス／ホットのアイコンが表示されます",
       "label": "提供温度",
       "options": {
         "Hot": "ホット",
@@ -296,6 +296,13 @@
     "minSelectionCount": {
       "label": "最小選択数",
       "placeholder": "最小選択数を入力してください"
+    },
+    "servingTemperature": {
+      "helperText": "お客様がこの温度を選んだときだけ表示されます（例：氷の量をアイスに設定）",
+      "label": "温度の限定",
+      "options": {
+        "none": "指定なし"
+      }
     }
   },
   "modifiers": {

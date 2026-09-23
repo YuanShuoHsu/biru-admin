@@ -151,6 +151,10 @@
     "promoUntil": "Offer ends {date}",
     "selectAtLeast": "Select at least {count}",
     "selectUpTo": "Select up to {count}",
+    "servingTemperatures": {
+      "Hot": "Hot",
+      "Iced": "Iced"
+    },
     "stockLeft": "Only {stock} left"
   },
   "mode": {
