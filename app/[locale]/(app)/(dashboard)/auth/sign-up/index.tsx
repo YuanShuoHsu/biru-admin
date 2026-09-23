@@ -53,6 +53,7 @@ import { styled } from "@mui/material/styles";
 
 import { useCountdownStore } from "@/providers/countdown-store-provider";
 
+import { formatFullName } from "@/utils/auth";
 import { getHref } from "@/utils/href";
 import {
   handleMouseDownPassword,
@@ -195,11 +196,7 @@ const AuthSignUp = ({ locale, redirectTo }: AuthSignUpProps) => {
     lastName,
     password,
   }: SignUpForm) => {
-    const name = (
-      locale === LocaleEnum.En ? [firstName, lastName] : [lastName, firstName]
-    )
-      .filter(Boolean)
-      .join(locale === LocaleEnum.En ? " " : "");
+    const name = formatFullName(locale, firstName, lastName);
     // const parsedPhoneNumber = parsePhoneNumberWithError(phoneNumber, code);
 
     await authClient.signUp.email(
@@ -319,17 +316,17 @@ const AuthSignUp = ({ locale, redirectTo }: AuthSignUpProps) => {
           slotProps={{
             select: {
               displayEmpty: isGenderFocused,
-              renderValue: (value: unknown) => {
-                if (!value)
-                  return (
-                    <Typography color="gray">
-                      {tAuth("gender.placeholder")}
-                    </Typography>
-                  );
-
-                return genderOptions.find(
-                  ({ value: optionValue }) => optionValue === value,
-                )?.label;
+              renderValue: (selected) => {
+                const option = genderOptions.find(
+                  ({ value }) => value === selected,
+                );
+                return option ? (
+                  option.label
+                ) : (
+                  <em>
+                    {tAuth("gender.placeholder")}
+                  </em>
+                );
               },
             },
           }}
