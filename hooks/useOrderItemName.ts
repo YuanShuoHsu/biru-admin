@@ -1,39 +1,28 @@
 import { useTranslations } from "next-intl";
 
-import type { ServingTemperature } from "@/types/menus";
 import type { OrderItemResponse } from "@/types/orders";
 
 export const useOrderItemName = () => {
   const tCommon = useTranslations("common");
   const tOrder = useTranslations("order");
 
-  const getServingTemperatureNames = (
-    servingTemperature: ServingTemperature | null | undefined,
-  ) =>
-    servingTemperature
-      ? [tOrder(`menuItem.servingTemperatures.${servingTemperature}`)]
+  const getServingTemperatureLevelNames = ({
+    servingTemperatureLevel,
+  }: Pick<OrderItemResponse, "servingTemperatureLevel">) =>
+    servingTemperatureLevel
+      ? [tOrder(`menuItem.servingTemperatureLevels.${servingTemperatureLevel}`)]
       : [];
 
-  return ({
-    addOns,
-    menuItemName,
-    modifiers,
-    servingTemperature,
-  }: OrderItemResponse) => {
+  return (item: OrderItemResponse) => {
+    const { addOns, menuItemName, modifiers } = item;
     const choiceNames = [
-      ...getServingTemperatureNames(servingTemperature),
+      ...getServingTemperatureLevelNames(item),
       ...(modifiers || []).map(({ modifierName }) => modifierName),
-      ...(addOns || []).flatMap(
-        ({
-          menuItemName: addOnName,
-          modifiers: addOnModifiers,
-          servingTemperature: addOnServingTemperature,
-        }) => [
-          addOnName,
-          ...getServingTemperatureNames(addOnServingTemperature),
-          ...addOnModifiers.map(({ modifierName }) => modifierName),
-        ],
-      ),
+      ...(addOns || []).flatMap((addOn) => [
+        addOn.menuItemName,
+        ...getServingTemperatureLevelNames(addOn),
+        ...addOn.modifiers.map(({ modifierName }) => modifierName),
+      ]),
     ].join(tCommon("delimiter"));
 
     return choiceNames

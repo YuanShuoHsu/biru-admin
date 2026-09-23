@@ -151,9 +151,13 @@
     "promoUntil": "{date}까지",
     "selectAtLeast": "최소 {count}개를 선택해 주세요",
     "selectUpTo": "최대 {count}개까지 선택 가능합니다",
-    "servingTemperatures": {
-      "Hot": "핫",
-      "Iced": "아이스"
+    "servingTemperatureLevels": {
+      "Hot": "뜨겁게",
+      "LessIce": "얼음 적게",
+      "LightIce": "얼음 조금",
+      "NoIce": "얼음 없이",
+      "RegularIce": "얼음 보통",
+      "Warm": "따뜻하게"
     },
     "stockLeft": "남은 수량 {stock}"
   },

@@ -296,13 +296,6 @@
     "minSelectionCount": {
       "label": "最小選択数",
       "placeholder": "最小選択数を入力してください"
-    },
-    "servingTemperature": {
-      "helperText": "お客様がこの温度を選んだときだけ表示されます（例：氷の量をアイスに設定）",
-      "label": "温度の限定",
-      "options": {
-        "none": "指定なし"
-      }
     }
   },
   "modifiers": {

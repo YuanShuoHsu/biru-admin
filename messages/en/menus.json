@@ -296,13 +296,6 @@
     "minSelectionCount": {
       "label": "Min selections",
       "placeholder": "Please enter your min selections"
-    },
-    "servingTemperature": {
-      "helperText": "Only offered when the customer picks this temperature, e.g. set ice level to Iced",
-      "label": "Temperature restriction",
-      "options": {
-        "none": "Any"
-      }
     }
   },
   "modifiers": {

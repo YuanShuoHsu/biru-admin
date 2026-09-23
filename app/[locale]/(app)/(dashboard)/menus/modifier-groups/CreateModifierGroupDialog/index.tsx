@@ -16,11 +16,8 @@ import NumberSpinner from "@/components/NumberSpinner";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { MenuItem, TextField } from "@mui/material";
-
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { servingTemperatureValues } from "@/types/api";
 import type { ModifierGroup } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
@@ -46,14 +43,12 @@ const CreateModifierGroupDialog = ({
     formState: { errors },
     control,
     handleSubmit,
-    register,
     setValue,
   } = useForm<CreateModifierGroupForm>({
     defaultValues: {
       displayName: {},
       minSelectionCount: "",
       maxSelectionCount: "",
-      servingTemperature: "",
     },
     resolver: zodResolver(createModifierGroupFormSchema),
   });
@@ -66,7 +61,6 @@ const CreateModifierGroupDialog = ({
     displayName,
     minSelectionCount,
     maxSelectionCount,
-    servingTemperature,
   }: CreateModifierGroupForm) => {
     try {
       setDialog({ confirmLoading: true });
@@ -82,7 +76,6 @@ const CreateModifierGroupDialog = ({
           ...(maxSelectionCount && {
             maxSelectionCount: Number(maxSelectionCount),
           }),
-          servingTemperature: servingTemperature || null,
         }),
       });
 
@@ -155,27 +148,6 @@ const CreateModifierGroupDialog = ({
           setValue("maxSelectionCount", value != null ? String(value) : "")
         }
       />
-      <TextField
-        error={!!errors.servingTemperature}
-        fullWidth
-        helperText={
-          errors.servingTemperature?.message ||
-          tMenus("modifierGroups.servingTemperature.helperText")
-        }
-        label={`${tMenus("modifierGroups.servingTemperature.label")} ${tCommon("optional")}`}
-        select
-        {...register("servingTemperature")}
-        defaultValue={""}
-      >
-        <MenuItem value="">
-          {tMenus("modifierGroups.servingTemperature.options.none")}
-        </MenuItem>
-        {servingTemperatureValues.map((value) => (
-          <MenuItem key={value} value={value}>
-            {tMenus(`items.servingTemperatures.options.${value}`)}
-          </MenuItem>
-        ))}
-      </TextField>
     </FormBox>
   );
 };

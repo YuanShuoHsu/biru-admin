@@ -151,9 +151,13 @@
     "promoUntil": "Offer ends {date}",
     "selectAtLeast": "Select at least {count}",
     "selectUpTo": "Select up to {count}",
-    "servingTemperatures": {
+    "servingTemperatureLevels": {
       "Hot": "Hot",
-      "Iced": "Iced"
+      "LessIce": "Less ice",
+      "LightIce": "Light ice",
+      "NoIce": "No ice",
+      "RegularIce": "Regular ice",
+      "Warm": "Warm"
     },
     "stockLeft": "Only {stock} left"
   },

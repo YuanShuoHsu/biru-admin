@@ -230,7 +230,7 @@
       }
     },
     "servingTemperatures": {
-      "helperText": "勾選後客人點餐時需選擇冷熱，品項卡片也會顯示冰／熱圖示",
+      "helperText": "勾選後客人點餐時需選擇溫度，品項卡片也會顯示冰／熱圖示",
       "label": "冷熱供應",
       "options": {
         "Hot": "熱",
@@ -296,13 +296,6 @@
     "minSelectionCount": {
       "label": "最少選擇數量",
       "placeholder": "請輸入您的最少選擇數量"
-    },
-    "servingTemperature": {
-      "helperText": "設定後只在客人選擇該溫度時提供，例如冰量設為「冰」",
-      "label": "限定冷熱",
-      "options": {
-        "none": "不限"
-      }
     }
   },
   "modifiers": {

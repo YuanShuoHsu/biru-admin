@@ -93,7 +93,6 @@ const FIELD_LABEL_KEYS = {
   brand: "field.brand",
   nutrition: "field.nutrition",
   suitableForDiet: "field.suitableForDiet",
-  servingTemperature: "field.servingTemperature",
   servingTemperatures: "field.servingTemperatures",
   availability: "field.availability",
   availableModes: "field.availableModes",

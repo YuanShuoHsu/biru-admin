@@ -3646,18 +3646,26 @@ export interface components {
       createdAt: string;
     };
     /**
-     * @description 選擇的溫度；品項有冷熱供應時必填，否則省略
+     * @description 選擇的溫度細項；品項有冷熱供應時必填，否則省略
      * @enum {string}
      */
-    ServingTemperature: "Hot" | "Iced";
+    ServingTemperatureLevel:
+      | "Warm"
+      | "Hot"
+      | "RegularIce"
+      | "LessIce"
+      | "LightIce"
+      | "NoIce";
     CreateOrderItemAddOnDto: {
       menuItemId: string;
       /** @description modifierGroupId → modifierIds[] */
       modifiers: {
         [key: string]: string[];
       };
-      /** @description 選擇的溫度；品項有冷熱供應時必填，否則省略 */
-      servingTemperature?: components["schemas"]["ServingTemperature"] | null;
+      /** @description 選擇的溫度細項；品項有冷熱供應時必填，否則省略 */
+      servingTemperatureLevel?:
+        | components["schemas"]["ServingTemperatureLevel"]
+        | null;
     };
     CreateOrderItemDto: {
       menuItemId: string;
@@ -3667,8 +3675,10 @@ export interface components {
         [key: string]: string[];
       };
       addOns: components["schemas"]["CreateOrderItemAddOnDto"][];
-      /** @description 選擇的溫度；品項有冷熱供應時必填，否則省略 */
-      servingTemperature?: components["schemas"]["ServingTemperature"] | null;
+      /** @description 選擇的溫度細項；品項有冷熱供應時必填，否則省略 */
+      servingTemperatureLevel?:
+        | components["schemas"]["ServingTemperatureLevel"]
+        | null;
     };
     ValidateCouponDto: {
       code: string;
@@ -4646,8 +4656,10 @@ export interface components {
       menuItemName: string;
       unitPrice: string;
       modifiers: components["schemas"]["OrderItemModifierSnapshotDto"][];
-      /** @description 選擇的溫度；品項不分冷熱時為 null */
-      servingTemperature?: components["schemas"]["ServingTemperature"] | null;
+      /** @description 選擇的溫度細項；品項不分冷熱時為 null */
+      servingTemperatureLevel?:
+        | components["schemas"]["ServingTemperatureLevel"]
+        | null;
     };
     OrderItemResponseDto: {
       id: string;
@@ -4657,8 +4669,10 @@ export interface components {
       unitPrice: string;
       priceCurrency?: string | null;
       orderQuantity: number;
-      /** @description 選擇的溫度；品項不分冷熱時為 null */
-      servingTemperature?: components["schemas"]["ServingTemperature"] | null;
+      /** @description 選擇的溫度細項；品項不分冷熱時為 null */
+      servingTemperatureLevel?:
+        | components["schemas"]["ServingTemperatureLevel"]
+        | null;
       modifiers?:
         | components["schemas"]["OrderItemModifierSnapshotDto"][]
         | null;
@@ -5029,6 +5043,11 @@ export interface components {
       image?: string;
     };
     /**
+     * @description 可供應的飲品溫度；省略代表不適用
+     * @enum {string}
+     */
+    ServingTemperature: "Hot" | "Iced";
+    /**
      * @description 可販售的點餐模式；省略代表四種全開
      * @enum {string}
      */
@@ -5313,8 +5332,6 @@ export interface components {
       minSelectionCount: number;
       /** @description 最多選擇數量；min=max=1 為單選，null 為不限 */
       maxSelectionCount?: number | null;
-      /** @description 僅在客人選擇此溫度時提供，如冰量只給冰飲；省略或 null 代表不限 */
-      servingTemperature?: components["schemas"]["ServingTemperature"] | null;
     };
     ModifierResponseDto: {
       id: string;
@@ -5341,8 +5358,6 @@ export interface components {
       minSelectionCount: number;
       /** @description 最多選擇數量；null 為不限 */
       maxSelectionCount?: number | null;
-      /** @description 僅在客人選擇此溫度時提供；null 代表不限 */
-      servingTemperature?: components["schemas"]["ServingTemperature"] | null;
       sortOrder: number;
       /** @description 群組底下的選項（依需求帶出） */
       modifiers?: components["schemas"]["ModifierResponseDto"][];
@@ -5356,7 +5371,6 @@ export interface components {
       | "displayName"
       | "minSelectionCount"
       | "maxSelectionCount"
-      | "servingTemperature"
       | "createdAt"
       | "updatedAt";
     /** @enum {string} */
@@ -5364,7 +5378,6 @@ export interface components {
       | "displayName"
       | "minSelectionCount"
       | "maxSelectionCount"
-      | "servingTemperature"
       | "createdAt"
       | "updatedAt";
     UpdateModifierGroupDto: {
@@ -5374,8 +5387,6 @@ export interface components {
       minSelectionCount?: number;
       /** @description 最多選擇數量；null 為不限 */
       maxSelectionCount?: number | null;
-      /** @description 僅在客人選擇此溫度時提供；null 代表不限 */
-      servingTemperature?: components["schemas"]["ServingTemperature"] | null;
     };
     CreateModifierDto: {
       /**
@@ -5486,8 +5497,6 @@ export interface components {
       minSelectionCount: number;
       /** @description 最多選擇數量；null 為不限 */
       maxSelectionCount?: number | null;
-      /** @description 僅在客人選擇此溫度時提供；null 代表不限 */
-      servingTemperature?: components["schemas"]["ServingTemperature"] | null;
       sortOrder: number;
       modifiers: components["schemas"]["OrderMenuModifierResponseDto"][];
       /** Format: date-time */
@@ -12095,9 +12104,9 @@ export const couponRecipientSortFieldValues: ReadonlyArray<
 export const userCouponSourceValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UserCouponSource"]
 > = ["granted", "claimed", "signup", "birthday", "spend", "redeemed"];
-export const servingTemperatureValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["ServingTemperature"]
-> = ["Hot", "Iced"];
+export const servingTemperatureLevelValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["ServingTemperatureLevel"]
+> = ["Warm", "Hot", "RegularIce", "LessIce", "LightIce", "NoIce"];
 export const validateCouponDtoModeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["ValidateCouponDto"]["mode"]
 > = ["counter", "dineIn", "driveThru", "pickup"];
@@ -12356,6 +12365,9 @@ export const menuSectionFilterFieldValues: ReadonlyArray<
 export const menuSectionSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["MenuSectionSortField"]
 > = ["name", "description", "createdAt", "updatedAt"];
+export const servingTemperatureValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["ServingTemperature"]
+> = ["Hot", "Iced"];
 export const orderModeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrderMode"]
 > = ["counter", "dineIn", "driveThru", "pickup"];
@@ -12454,7 +12466,6 @@ export const modifierGroupFilterFieldValues: ReadonlyArray<
   "displayName",
   "minSelectionCount",
   "maxSelectionCount",
-  "servingTemperature",
   "createdAt",
   "updatedAt",
 ];
@@ -12464,7 +12475,6 @@ export const modifierGroupSortFieldValues: ReadonlyArray<
   "displayName",
   "minSelectionCount",
   "maxSelectionCount",
-  "servingTemperature",
   "createdAt",
   "updatedAt",
 ];

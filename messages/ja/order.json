@@ -151,9 +151,13 @@
     "promoUntil": "{date}まで",
     "selectAtLeast": "{count}個以上お選びください",
     "selectUpTo": "最大{count}個まで選択できます",
-    "servingTemperatures": {
+    "servingTemperatureLevels": {
       "Hot": "ホット",
-      "Iced": "アイス"
+      "LessIce": "氷少なめ",
+      "LightIce": "氷ごく少なめ",
+      "NoIce": "氷なし",
+      "RegularIce": "氷普通",
+      "Warm": "ぬるめ"
     },
     "stockLeft": "残り {stock}"
   },

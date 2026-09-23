@@ -18,7 +18,6 @@ import {
   DATA_GRID_PROPS,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
-import { SERVING_TEMPERATURE_COLOR_MAP } from "@/constants/menus";
 import {
   DEFAULT_PAGINATION_QUERY,
   getPageSizeOptions,
@@ -30,7 +29,6 @@ import { isSortableOperation } from "@dnd-kit/react/sortable";
 
 import {
   useDateFilterOperators,
-  useEnumFilterOperators,
   useNumberFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
@@ -49,7 +47,6 @@ import {
 } from "@mui/icons-material";
 import {
   Button,
-  Chip,
   DialogContentText,
   IconButton,
   Stack,
@@ -66,7 +63,6 @@ import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { servingTemperatureValues } from "@/types/api";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type {
   Menu,
@@ -150,7 +146,6 @@ const ModifierGroups = ({
   const { setDialog } = useDialogStore((state) => state);
 
   const dateFilterOperators = useDateFilterOperators();
-  const enumFilterOperators = useEnumFilterOperators();
   const numberFilterOperators = useNumberFilterOperators();
   const stringFilterOperators = useStringFilterOperators();
 
@@ -536,31 +531,6 @@ const ModifierGroups = ({
           tMenus("modifierGroups.maxSelectionCount.unlimited"),
       },
       {
-        field: "servingTemperature",
-        filterOperators: enumFilterOperators,
-        headerName: tMenus("modifierGroups.servingTemperature.label"),
-        renderCell: ({
-          row: { servingTemperature },
-        }: GridRenderCellParams<ModifierGroup>) =>
-          servingTemperature ? (
-            <Chip
-              color={SERVING_TEMPERATURE_COLOR_MAP[servingTemperature]}
-              label={tMenus(
-                `items.servingTemperatures.options.${servingTemperature}`,
-              )}
-              size="small"
-              variant="outlined"
-            />
-          ) : (
-            tMenus("modifierGroups.servingTemperature.options.none")
-          ),
-        type: "singleSelect",
-        valueOptions: servingTemperatureValues.map((value) => ({
-          label: tMenus(`items.servingTemperatures.options.${value}`),
-          value,
-        })),
-      },
-      {
         field: "createdAt",
         filterOperators: dateFilterOperators,
         headerName: tMenus("createdAt"),
@@ -579,7 +549,6 @@ const ModifierGroups = ({
       canViewAuditLog,
       canWrite,
       dateFilterOperators,
-      enumFilterOperators,
       format,
       handleDeleteModifierGroup,
       handleUpdateModifierGroup,
