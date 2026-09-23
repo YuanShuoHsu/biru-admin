@@ -439,7 +439,7 @@ const routes: Route[] = [
     icon: MenuBook,
     label: "menus.label",
     segment: "menus",
-    to: "/menus/sections",
+    to: null,
   },
   {
     children: [
