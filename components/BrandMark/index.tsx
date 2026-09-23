@@ -16,13 +16,14 @@ const ImageBox = styled(Box)(({ theme }) => ({
 
 interface BrandMarkProps {
   color?: TypographyProps["color"];
+  href?: string;
 }
 
-const BrandMark = ({ color }: BrandMarkProps) => (
+const BrandMark = ({ color, href = "/" }: BrandMarkProps) => (
   <Link
     minWidth={0}
     color="inherit"
-    href="/"
+    href={href}
     display="flex"
     alignItems="center"
     gap={1}

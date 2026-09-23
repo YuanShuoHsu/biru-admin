@@ -150,7 +150,7 @@ const HideAppBar = () => {
               <Menu />
             </IconButton>
           )}
-          <BrandMark />
+          <BrandMark href={navItem("/dashboard").to} />
         </Stack>
         <Stack direction="row" alignItems="center" gap={0.5}>
           <ThemeSwitcher />
