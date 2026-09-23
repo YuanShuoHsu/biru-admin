@@ -24,6 +24,7 @@ import {
   orderResponseDtoPaymentMethodValues,
   payrollStatementStatusValues,
   servingTemperatureValues,
+  sweetnessValues,
   statutoryLeaveKindValues,
   userCouponSourceValues,
   userRoleValues,
@@ -132,6 +133,10 @@ export const getMenuEnumOptions = (
   })),
   servingTemperatures: servingTemperatureValues.map((value) => ({
     label: tMenus(`items.servingTemperatures.options.${value}`),
+    value,
+  })),
+  sweetness: sweetnessValues.map((value) => ({
+    label: tMenus(`items.sweetness.options.${value}`),
     value,
   })),
 });

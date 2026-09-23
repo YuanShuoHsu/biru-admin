@@ -5,6 +5,8 @@ import {
   itemAvailabilityValues,
   orderModeValues,
   servingTemperatureValues,
+  sweetnessLevelValues,
+  sweetnessValues,
 } from "@/types/api";
 
 import {
@@ -24,68 +26,79 @@ const quantitativeValueSchema = z.object({
 export const useUpdateMenuItemFormSchema = () => {
   const tValidation = useTranslations("validation");
 
-  return z.object({
-    image: z.string().trim().optional(),
-    name: z
-      .record(z.string(), z.string().trim())
-      .superRefine(
-        refineRequiredLocalizedText(tValidation("localizedText.required")),
-      ),
-    description: z
-      .record(
-        z.string(),
-        z
-          .string()
-          .trim()
-          .max(160, {
-            error: tValidation("description.maxLength"),
-          }),
-      )
-      .optional()
-      .superRefine(
-        refineOptionalLocalizedText(
-          tValidation("localizedText.completeOrEmpty"),
+  return z
+    .object({
+      image: z.string().trim().optional(),
+      name: z
+        .record(z.string(), z.string().trim())
+        .superRefine(
+          refineRequiredLocalizedText(tValidation("localizedText.required")),
         ),
-      ),
-    availableModes: z
-      .array(z.enum(orderModeValues))
-      .min(1, { error: tValidation("availableModes.notSelected") }),
-    servingTemperatures: z.array(z.enum(servingTemperatureValues)),
-    offer: z
-      .object({
-        price: z
-          .string()
-          .trim()
-          .min(1, { error: tValidation("price.required") }),
-        availability: z.enum(itemAvailabilityValues),
-        availableHours: z
-          .string()
-          .trim()
-          .optional()
-          .refine((value) => !value || !hasIncompleteOpeningHours(value))
-          .refine((value) => !value || !hasOpeningHoursConflict(value)),
-        inventoryLevel: quantitativeValueSchema.optional(),
-        deliveryLeadTimeMinutes: z.string().optional(),
-        priceSpecification: z
-          .object({
-            price: z.string().trim().optional(),
-            validFrom: z.string().trim().optional(),
-            validThrough: z.string().trim().optional(),
-          })
-          .refine(
-            ({ validFrom, validThrough }) => {
-              if (!validFrom || !validThrough) return true;
-              return new Date(validFrom) < new Date(validThrough);
-            },
-            {
-              message: tValidation("validFrom.beforeValidThrough"),
-              path: ["validThrough"],
-            },
-          )
-          .optional(),
-      })
-      .optional(),
-  });
+      description: z
+        .record(
+          z.string(),
+          z
+            .string()
+            .trim()
+            .max(160, {
+              error: tValidation("description.maxLength"),
+            }),
+        )
+        .optional()
+        .superRefine(
+          refineOptionalLocalizedText(
+            tValidation("localizedText.completeOrEmpty"),
+          ),
+        ),
+      availableModes: z
+        .array(z.enum(orderModeValues))
+        .min(1, { error: tValidation("availableModes.notSelected") }),
+      servingTemperatures: z.array(z.enum(servingTemperatureValues)),
+      sweetness: z.enum(sweetnessValues),
+      fixedSweetnessLevel: z.enum(sweetnessLevelValues).nullable(),
+      offer: z
+        .object({
+          price: z
+            .string()
+            .trim()
+            .min(1, { error: tValidation("price.required") }),
+          availability: z.enum(itemAvailabilityValues),
+          availableHours: z
+            .string()
+            .trim()
+            .optional()
+            .refine((value) => !value || !hasIncompleteOpeningHours(value))
+            .refine((value) => !value || !hasOpeningHoursConflict(value)),
+          inventoryLevel: quantitativeValueSchema.optional(),
+          deliveryLeadTimeMinutes: z.string().optional(),
+          priceSpecification: z
+            .object({
+              price: z.string().trim().optional(),
+              validFrom: z.string().trim().optional(),
+              validThrough: z.string().trim().optional(),
+            })
+            .refine(
+              ({ validFrom, validThrough }) => {
+                if (!validFrom || !validThrough) return true;
+                return new Date(validFrom) < new Date(validThrough);
+              },
+              {
+                message: tValidation("validFrom.beforeValidThrough"),
+                path: ["validThrough"],
+              },
+            )
+            .optional(),
+        })
+        .optional(),
+    })
+    .refine(
+      ({ fixedSweetnessLevel, sweetness }) =>
+        sweetness !== "Fixed" || !!fixedSweetnessLevel,
+      {
+        message: tValidation("fixedSweetnessLevel.notSelected"),
+        path: ["fixedSweetnessLevel"],
+      },
+    );
 };
 
 export type UpdateMenuItemForm = z.infer<

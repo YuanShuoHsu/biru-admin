@@ -159,7 +159,15 @@
       "RegularIce": "Regular ice",
       "Warm": "Warm"
     },
-    "stockLeft": "Only {stock} left"
+    "stockLeft": "Only {stock} left",
+    "sweetnessLevels": {
+      "FullSugar": "Full sugar",
+      "HalfSugar": "Half sugar",
+      "LessSugar": "Less sugar",
+      "LightSugar": "Light sugar",
+      "MinimalSugar": "Minimal sugar",
+      "NoSugar": "No sugar"
+    }
   },
   "mode": {
     "counter": {

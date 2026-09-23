@@ -32,6 +32,8 @@ import {
   itemAvailabilityValues,
   orderModeValues,
   servingTemperatureValues,
+  sweetnessLevelValues,
+  sweetnessValues,
 } from "@/types/api";
 import type {
   MenuItem as MenuItemType,
@@ -78,6 +80,8 @@ const UpdateMenuItemDialog = ({
       description: item.description || {},
       availableModes: item.availableModes,
       servingTemperatures: item.servingTemperatures,
+      sweetness: item.sweetness,
+      fixedSweetnessLevel: item.fixedSweetnessLevel || null,
       offer: {
         price: item.offer?.price || "",
         availability: item.offer?.availability || "InStock",
@@ -117,6 +121,11 @@ const UpdateMenuItemDialog = ({
     control,
     name: "servingTemperatures",
   });
+  const sweetness = useWatch({ control, name: "sweetness" });
+  const fixedSweetnessLevel = useWatch({
+    control,
+    name: "fixedSweetnessLevel",
+  });
   const deliveryLeadTimeMinutes = useWatch({
     control,
     name: "offer.deliveryLeadTimeMinutes",
@@ -139,6 +148,8 @@ const UpdateMenuItemDialog = ({
     description,
     availableModes,
     servingTemperatures,
+    sweetness,
+    fixedSweetnessLevel,
     offer,
   }: UpdateMenuItemForm) => {
     try {
@@ -182,6 +193,9 @@ const UpdateMenuItemDialog = ({
           ...(imageSrc !== (item.image || null) && { image: imageSrc }),
           availableModes,
           servingTemperatures,
+          sweetness,
+          fixedSweetnessLevel:
+            sweetness === "Fixed" ? fixedSweetnessLevel : null,
           offer: {
             price: offer?.price,
             availability: offer?.availability,
@@ -300,6 +314,59 @@ const UpdateMenuItemDialog = ({
         }))}
         value={servingTemperatures}
       />
+      <TextField
+        {...register("sweetness")}
+        disabled={!canWrite}
+        error={!!errors.sweetness}
+        fullWidth
+        helperText={
+          errors.sweetness?.message || tMenus("items.sweetness.helperText")
+        }
+        label={tMenus("items.sweetness.label")}
+        required
+        select
+        value={sweetness}
+      >
+        {sweetnessValues.map((value) => (
+          <MenuItem key={value} value={value}>
+            {tMenus(`items.sweetness.options.${value}`)}
+          </MenuItem>
+        ))}
+      </TextField>
+      {sweetness === "Fixed" && (
+        <TextField
+          {...register("fixedSweetnessLevel")}
+          disabled={!canWrite}
+          error={!!errors.fixedSweetnessLevel}
+          fullWidth
+          helperText={errors.fixedSweetnessLevel?.message}
+          label={tMenus("items.fixedSweetnessLevel.label")}
+          required
+          select
+          slotProps={{
+            inputLabel: { shrink: true },
+            select: {
+              displayEmpty: true,
+              renderValue: () =>
+                fixedSweetnessLevel ? (
+                  tOrder(`menuItem.sweetnessLevels.${fixedSweetnessLevel}`)
+                ) : (
+                  <em>{tMenus("items.fixedSweetnessLevel.placeholder")}</em>
+                ),
+            },
+          }}
+          value={fixedSweetnessLevel || ""}
+        >
+          <MenuItem disabled value="">
+            <em>{tMenus("items.fixedSweetnessLevel.placeholder")}</em>
+          </MenuItem>
+          {sweetnessLevelValues.map((value) => (
+            <MenuItem key={value} value={value}>
+              {tOrder(`menuItem.sweetnessLevels.${value}`)}
+            </MenuItem>
+          ))}
+        </TextField>
+      )}
       <Divider flexItem>
         <Chip label={tMenus("items.offers.label")} size="small" />
       </Divider>

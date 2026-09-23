@@ -140,6 +140,10 @@
       "label": "설명",
       "placeholder": "항목 설명을 입력해 주세요"
     },
+    "fixedSweetnessLevel": {
+      "label": "고정 당도",
+      "placeholder": "고정 당도를 선택해 주세요"
+    },
     "image": {
       "label": "이미지 URL",
       "placeholder": "이미지 URL을 입력해 주세요"
@@ -239,6 +243,15 @@
     },
     "suitableForDiet": {
       "label": "식이 제한"
+    },
+    "sweetness": {
+      "helperText": "고정: 주문 시 설정한 당도가 표시됩니다. 조절 가능: 주문 시 고객이 당도를 선택합니다",
+      "label": "당도",
+      "options": {
+        "Adjustable": "조절 가능",
+        "Fixed": "고정",
+        "NotApplicable": "해당 없음"
+      }
     },
     "url": {
       "label": "URL",

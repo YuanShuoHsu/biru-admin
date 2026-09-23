@@ -159,7 +159,15 @@
       "RegularIce": "얼음 보통",
       "Warm": "따뜻하게"
     },
-    "stockLeft": "남은 수량 {stock}"
+    "stockLeft": "남은 수량 {stock}",
+    "sweetnessLevels": {
+      "FullSugar": "설탕 보통",
+      "HalfSugar": "설탕 절반",
+      "LessSugar": "설탕 적게",
+      "LightSugar": "설탕 조금",
+      "MinimalSugar": "설탕 아주 조금",
+      "NoSugar": "무설탕"
+    }
   },
   "mode": {
     "counter": {

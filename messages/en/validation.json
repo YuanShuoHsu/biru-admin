@@ -118,6 +118,9 @@
   "firstName": {
     "required": "First name is required."
   },
+  "fixedSweetnessLevel": {
+    "notSelected": "Please select your fixed sweetness."
+  },
   "gender": {
     "required": "Gender is required."
   },

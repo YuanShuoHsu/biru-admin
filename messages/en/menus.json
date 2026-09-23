@@ -140,6 +140,10 @@
       "label": "Description",
       "placeholder": "Please enter your item description"
     },
+    "fixedSweetnessLevel": {
+      "label": "Fixed sweetness",
+      "placeholder": "Please select your fixed sweetness"
+    },
     "image": {
       "label": "Image URL",
       "placeholder": "Please enter your image URL"
@@ -239,6 +243,15 @@
     },
     "suitableForDiet": {
       "label": "Dietary restrictions"
+    },
+    "sweetness": {
+      "helperText": "Fixed: the set sweetness is shown when ordering. Adjustable: customers choose a sweetness when ordering",
+      "label": "Sweetness",
+      "options": {
+        "Adjustable": "Adjustable",
+        "Fixed": "Fixed",
+        "NotApplicable": "Not applicable"
+      }
     },
     "url": {
       "label": "URL",

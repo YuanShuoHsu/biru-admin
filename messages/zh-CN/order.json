@@ -159,7 +159,15 @@
       "RegularIce": "正常冰",
       "Warm": "温"
     },
-    "stockLeft": "剩余 {stock}"
+    "stockLeft": "剩余 {stock}",
+    "sweetnessLevels": {
+      "FullSugar": "全糖",
+      "HalfSugar": "半糖",
+      "LessSugar": "少糖",
+      "LightSugar": "微糖",
+      "MinimalSugar": "一分糖",
+      "NoSugar": "无糖"
+    }
   },
   "mode": {
     "counter": {

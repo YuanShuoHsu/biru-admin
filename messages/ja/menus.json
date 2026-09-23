@@ -140,6 +140,10 @@
       "label": "説明",
       "placeholder": "品目の説明を入力してください"
     },
+    "fixedSweetnessLevel": {
+      "label": "固定の甘さ",
+      "placeholder": "固定の甘さを選択してください"
+    },
     "image": {
       "label": "画像URL",
       "placeholder": "画像URLを入力してください"
@@ -239,6 +243,15 @@
     },
     "suitableForDiet": {
       "label": "食事制限"
+    },
+    "sweetness": {
+      "helperText": "固定：注文時に設定した甘さが表示されます。調整可：注文時にお客様が甘さを選びます",
+      "label": "甘さ",
+      "options": {
+        "Adjustable": "調整可",
+        "Fixed": "固定",
+        "NotApplicable": "対象外"
+      }
     },
     "url": {
       "label": "URL",

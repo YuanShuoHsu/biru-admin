@@ -118,6 +118,9 @@
   "firstName": {
     "required": "名は必須です。"
   },
+  "fixedSweetnessLevel": {
+    "notSelected": "固定の甘さを選択してください。"
+  },
   "gender": {
     "required": "性別は必須です。"
   },

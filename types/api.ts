@@ -3650,12 +3650,23 @@ export interface components {
      * @enum {string}
      */
     ServingTemperatureLevel:
-      | "Warm"
-      | "Hot"
       | "RegularIce"
       | "LessIce"
       | "LightIce"
-      | "NoIce";
+      | "NoIce"
+      | "Warm"
+      | "Hot";
+    /**
+     * @description 選擇的甜度；品項甜度可調時必填，其他情況忽略
+     * @enum {string}
+     */
+    SweetnessLevel:
+      | "FullSugar"
+      | "LessSugar"
+      | "HalfSugar"
+      | "LightSugar"
+      | "MinimalSugar"
+      | "NoSugar";
     CreateOrderItemAddOnDto: {
       menuItemId: string;
       /** @description modifierGroupId → modifierIds[] */
@@ -3666,6 +3677,8 @@ export interface components {
       servingTemperatureLevel?:
         | components["schemas"]["ServingTemperatureLevel"]
         | null;
+      /** @description 選擇的甜度；品項甜度可調時必填，其他情況忽略 */
+      sweetnessLevel?: components["schemas"]["SweetnessLevel"] | null;
     };
     CreateOrderItemDto: {
       menuItemId: string;
@@ -3679,6 +3692,8 @@ export interface components {
       servingTemperatureLevel?:
         | components["schemas"]["ServingTemperatureLevel"]
         | null;
+      /** @description 選擇的甜度；品項甜度可調時必填，其他情況忽略 */
+      sweetnessLevel?: components["schemas"]["SweetnessLevel"] | null;
     };
     ValidateCouponDto: {
       code: string;
@@ -4660,6 +4675,8 @@ export interface components {
       servingTemperatureLevel?:
         | components["schemas"]["ServingTemperatureLevel"]
         | null;
+      /** @description 甜度；可調為客人所選、固定為品項設定，不適用時為 null */
+      sweetnessLevel?: components["schemas"]["SweetnessLevel"] | null;
     };
     OrderItemResponseDto: {
       id: string;
@@ -4673,6 +4690,8 @@ export interface components {
       servingTemperatureLevel?:
         | components["schemas"]["ServingTemperatureLevel"]
         | null;
+      /** @description 甜度；可調為客人所選、固定為品項設定，不適用時為 null */
+      sweetnessLevel?: components["schemas"]["SweetnessLevel"] | null;
       modifiers?:
         | components["schemas"]["OrderItemModifierSnapshotDto"][]
         | null;
@@ -5046,7 +5065,12 @@ export interface components {
      * @description 可供應的飲品溫度；省略代表不適用
      * @enum {string}
      */
-    ServingTemperature: "Hot" | "Iced";
+    ServingTemperature: "Iced" | "Hot";
+    /**
+     * @description 甜度：不適用、固定、可調；省略代表不適用
+     * @enum {string}
+     */
+    Sweetness: "NotApplicable" | "Fixed" | "Adjustable";
     /**
      * @description 可販售的點餐模式；省略代表四種全開
      * @enum {string}
@@ -5126,6 +5150,10 @@ export interface components {
       )[];
       /** @description 可供應的飲品溫度；省略代表不適用 */
       servingTemperatures?: components["schemas"]["ServingTemperature"][];
+      /** @description 甜度：不適用、固定、可調；省略代表不適用 */
+      sweetness?: components["schemas"]["Sweetness"];
+      /** @description 甜度固定時的等級；sweetness 為 Fixed 時必填，其他情況一律存 null */
+      fixedSweetnessLevel?: components["schemas"]["SweetnessLevel"] | null;
       /** @description 可販售的點餐模式；省略代表四種全開 */
       availableModes?: components["schemas"]["OrderMode"][];
       nutrition?: components["schemas"]["NutritionInformationDto"];
@@ -5183,6 +5211,10 @@ export interface components {
         | null;
       /** @description 可供應的飲品溫度；空陣列代表不適用 */
       servingTemperatures: components["schemas"]["ServingTemperature"][];
+      /** @description 甜度：不適用、固定、可調 */
+      sweetness: components["schemas"]["Sweetness"];
+      /** @description 甜度固定時的等級；其他情況為 null */
+      fixedSweetnessLevel?: components["schemas"]["SweetnessLevel"] | null;
       /** @description 可販售的點餐模式 */
       availableModes: components["schemas"]["OrderMode"][];
       nutrition?: components["schemas"]["NutritionInformationDto"] | null;
@@ -5203,6 +5235,7 @@ export interface components {
       | "deliveryLeadTimeMinutes"
       | "priceSpecification"
       | "availability"
+      | "sweetness"
       | "availableModes"
       | "servingTemperatures"
       | "createdAt"
@@ -5219,6 +5252,7 @@ export interface components {
       | "deliveryLeadTimeMinutes"
       | "priceSpecification"
       | "availability"
+      | "sweetness"
       | "servingTemperatures"
       | "createdAt"
       | "updatedAt"
@@ -5249,6 +5283,10 @@ export interface components {
       )[];
       /** @description 可供應的飲品溫度；省略代表不適用 */
       servingTemperatures?: components["schemas"]["ServingTemperature"][];
+      /** @description 甜度：不適用、固定、可調；省略代表不適用 */
+      sweetness?: components["schemas"]["Sweetness"];
+      /** @description 甜度固定時的等級；sweetness 為 Fixed 時必填，其他情況一律存 null */
+      fixedSweetnessLevel?: components["schemas"]["SweetnessLevel"] | null;
       /** @description 可販售的點餐模式；省略代表四種全開 */
       availableModes?: components["schemas"]["OrderMode"][];
       nutrition?: components["schemas"]["NutritionInformationDto"];
@@ -5512,6 +5550,10 @@ export interface components {
       availableModes: components["schemas"]["OrderMode"][];
       /** @description 可供應的飲品溫度；空陣列代表不適用 */
       servingTemperatures: components["schemas"]["ServingTemperature"][];
+      /** @description 甜度：不適用、固定、可調 */
+      sweetness: components["schemas"]["Sweetness"];
+      /** @description 甜度固定時的等級；其他情況為 null */
+      fixedSweetnessLevel?: components["schemas"]["SweetnessLevel"] | null;
       offers: components["schemas"]["OrderMenuOfferResponseDto"][];
       modifierGroups: components["schemas"]["OrderMenuModifierGroupResponseDto"][];
     };
@@ -5552,6 +5594,10 @@ export interface components {
         | null;
       /** @description 可供應的飲品溫度；空陣列代表不適用 */
       servingTemperatures: components["schemas"]["ServingTemperature"][];
+      /** @description 甜度：不適用、固定、可調 */
+      sweetness: components["schemas"]["Sweetness"];
+      /** @description 甜度固定時的等級；其他情況為 null */
+      fixedSweetnessLevel?: components["schemas"]["SweetnessLevel"] | null;
       /** @description 可販售的點餐模式 */
       availableModes: components["schemas"]["OrderMode"][];
       nutrition?: components["schemas"]["NutritionInformationDto"] | null;
@@ -12106,7 +12152,17 @@ export const userCouponSourceValues: ReadonlyArray<
 > = ["granted", "claimed", "signup", "birthday", "spend", "redeemed"];
 export const servingTemperatureLevelValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["ServingTemperatureLevel"]
-> = ["Warm", "Hot", "RegularIce", "LessIce", "LightIce", "NoIce"];
+> = ["RegularIce", "LessIce", "LightIce", "NoIce", "Warm", "Hot"];
+export const sweetnessLevelValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["SweetnessLevel"]
+> = [
+  "FullSugar",
+  "LessSugar",
+  "HalfSugar",
+  "LightSugar",
+  "MinimalSugar",
+  "NoSugar",
+];
 export const validateCouponDtoModeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["ValidateCouponDto"]["mode"]
 > = ["counter", "dineIn", "driveThru", "pickup"];
@@ -12367,7 +12423,10 @@ export const menuSectionSortFieldValues: ReadonlyArray<
 > = ["name", "description", "createdAt", "updatedAt"];
 export const servingTemperatureValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["ServingTemperature"]
-> = ["Hot", "Iced"];
+> = ["Iced", "Hot"];
+export const sweetnessValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["Sweetness"]
+> = ["NotApplicable", "Fixed", "Adjustable"];
 export const orderModeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrderMode"]
 > = ["counter", "dineIn", "driveThru", "pickup"];
@@ -12415,6 +12474,7 @@ export const menuItemFilterFieldValues: ReadonlyArray<
   "deliveryLeadTimeMinutes",
   "priceSpecification",
   "availability",
+  "sweetness",
   "availableModes",
   "servingTemperatures",
   "createdAt",
@@ -12433,6 +12493,7 @@ export const menuItemSortFieldValues: ReadonlyArray<
   "deliveryLeadTimeMinutes",
   "priceSpecification",
   "availability",
+  "sweetness",
   "servingTemperatures",
   "createdAt",
   "updatedAt",

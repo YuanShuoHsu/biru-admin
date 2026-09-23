@@ -614,6 +614,29 @@ const MenusMenuIdSectionId = ({
           ),
       },
       {
+        field: "sweetness",
+        filterOperators: enumFilterOperators,
+        headerName: tMenus("items.sweetness.label"),
+        renderCell: ({
+          row: { fixedSweetnessLevel, sweetness },
+        }: GridRenderCellParams<MenuItem>) =>
+          sweetness === "NotApplicable" ? (
+            <EmptyCell />
+          ) : (
+            <Chip
+              label={
+                sweetness === "Fixed" && fixedSweetnessLevel
+                  ? `${tMenus("items.sweetness.options.Fixed")}${tCommon("parenthesisOpen")}${tOrder(`menuItem.sweetnessLevels.${fixedSweetnessLevel}`)}${tCommon("parenthesisClose")}`
+                  : tMenus(`items.sweetness.options.${sweetness}`)
+              }
+              size="small"
+              variant="outlined"
+            />
+          ),
+        type: "singleSelect",
+        valueOptions: enumOptions.sweetness,
+      },
+      {
         field: "price",
         filterOperators: numberFilterOperators,
         headerName: tMenus("items.offers.price.label"),

@@ -118,6 +118,9 @@
   "firstName": {
     "required": "이름은 필수입니다."
   },
+  "fixedSweetnessLevel": {
+    "notSelected": "고정 당도를 선택해 주세요."
+  },
   "gender": {
     "required": "성별은 필수입니다."
   },

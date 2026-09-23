@@ -8,6 +8,8 @@ import {
   orderResponseDtoPaymentMethodValues,
   orderStatusValues,
   servingTemperatureValues,
+  sweetnessLevelValues,
+  sweetnessValues,
   unitCodeValues,
   userCouponSourceValues,
 } from "@/types/api";
@@ -32,6 +34,12 @@ export const useAuditLogValueLabels = () => {
       ),
       eligibleQuantityUnitCode: Object.fromEntries(
         unitCodeValues.map((value) => [value, tInventory(`units.${value}`)]),
+      ),
+      fixedSweetnessLevel: Object.fromEntries(
+        sweetnessLevelValues.map((value) => [
+          value,
+          tOrder(`menuItem.sweetnessLevels.${value}`),
+        ]),
       ),
       mode: Object.fromEntries(
         orderModeValues.map((value) => [value, tOrder(`mode.${value}.label`)]),
@@ -61,6 +69,12 @@ export const useAuditLogValueLabels = () => {
         createMenuItemDtoSuitableForDietValues.map((value) => [
           value,
           tOrder(`menuItem.diet.${value}`),
+        ]),
+      ),
+      sweetness: Object.fromEntries(
+        sweetnessValues.map((value) => [
+          value,
+          tMenus(`items.sweetness.options.${value}`),
         ]),
       ),
       unitCode: Object.fromEntries(

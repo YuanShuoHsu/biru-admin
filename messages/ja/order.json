@@ -159,7 +159,15 @@
       "RegularIce": "氷普通",
       "Warm": "ぬるめ"
     },
-    "stockLeft": "残り {stock}"
+    "stockLeft": "残り {stock}",
+    "sweetnessLevels": {
+      "FullSugar": "砂糖普通",
+      "HalfSugar": "砂糖半分",
+      "LessSugar": "砂糖少なめ",
+      "LightSugar": "砂糖控えめ",
+      "MinimalSugar": "砂糖ごく少なめ",
+      "NoSugar": "無糖"
+    }
   },
   "mode": {
     "counter": {

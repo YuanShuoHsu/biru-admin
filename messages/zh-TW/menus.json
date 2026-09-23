@@ -140,6 +140,10 @@
       "label": "描述",
       "placeholder": "請輸入您的品項描述"
     },
+    "fixedSweetnessLevel": {
+      "label": "固定甜度",
+      "placeholder": "請選擇您的固定甜度"
+    },
     "image": {
       "label": "圖片網址",
       "placeholder": "請輸入您的圖片網址"
@@ -239,6 +243,15 @@
     },
     "suitableForDiet": {
       "label": "飲食限制"
+    },
+    "sweetness": {
+      "helperText": "固定：點餐時顯示設定的甜度；可調：客人點餐時需選擇甜度",
+      "label": "甜度",
+      "options": {
+        "Adjustable": "甜度可調",
+        "Fixed": "甜度固定",
+        "NotApplicable": "不適用"
+      }
     },
     "url": {
       "label": "連結網址",

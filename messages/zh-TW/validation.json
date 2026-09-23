@@ -118,6 +118,9 @@
   "firstName": {
     "required": "名字為必填。"
   },
+  "fixedSweetnessLevel": {
+    "notSelected": "請選擇您的固定甜度。"
+  },
   "gender": {
     "required": "性別為必填。"
   },
