@@ -21,9 +21,19 @@ import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { Logout } from "@mui/icons-material";
 import { Button, Divider, Stack, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
+
+const StyledTypography = styled(Typography)({
+  fontWeight: "bold",
+});
+
+const StyledStack = styled(Stack)(({ theme }) => ({
+  width: "100%",
+  gap: theme.spacing(2),
+}));
 
 export type UserSession = NonNullable<
   Awaited<ReturnType<typeof authClient.listSessions>>["data"]
@@ -100,13 +110,13 @@ const Sessions = () => {
     <FormCard component="form">
       <StyledCardHeader
         title={
-          <Typography color="primary" fontWeight="bold" variant="h6">
+          <StyledTypography color="primary" variant="h6">
             {tAuth("settings.sessions.label")}
-          </Typography>
+          </StyledTypography>
         }
       />
       <StyledCardContent>
-        <Stack gap={2} width="100%">
+        <StyledStack>
           {session && (
             <SessionItem
               isCurrent
@@ -131,7 +141,7 @@ const Sessions = () => {
               <OtherSessionItem session={session} />
             </Fragment>
           ))}
-        </Stack>
+        </StyledStack>
       </StyledCardContent>
     </FormCard>
   );

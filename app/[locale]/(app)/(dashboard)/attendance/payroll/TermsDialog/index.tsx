@@ -32,6 +32,7 @@ import {
   MenuItem,
   TextField,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -59,6 +60,10 @@ import { fetcher } from "@/utils/fetcher";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
+
+const StyledFormControlLabel = styled(FormControlLabel)({
+  alignSelf: "flex-start",
+});
 
 interface TermsDialogProps {
   currency: string;
@@ -328,7 +333,7 @@ const TermsDialog = ({
         }
         value={values.allowanceHours ?? null}
       />
-      <FormControlLabel
+      <StyledFormControlLabel
         control={
           <Checkbox
             checked={!!values.autoInsurance}
@@ -336,7 +341,6 @@ const TermsDialog = ({
           />
         }
         label={tAttendance("autoInsurance")}
-        sx={{ alignSelf: "flex-start" }}
       />
       {AMOUNT_FIELDS.filter(
         (name) =>

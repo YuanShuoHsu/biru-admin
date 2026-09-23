@@ -22,6 +22,7 @@ import {
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { Chip, Stack } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
   GridFilterModel,
@@ -41,6 +42,11 @@ import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getCouponRecipientEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
+
+const StyledStack = styled(Stack)({
+  alignItems: "center",
+  height: "100%",
+});
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -217,13 +223,13 @@ const CouponRecipients = ({
         renderCell: ({
           row: { source },
         }: GridRenderCellParams<CouponRecipient>) => (
-          <Stack alignItems="center" direction="row" height="100%">
+          <StyledStack direction="row">
             <Chip
               label={tCoupons(`source.${source}`)}
               size="small"
               variant="outlined"
             />
-          </Stack>
+          </StyledStack>
         ),
         type: "singleSelect",
         valueOptions: enumOptions.source,
@@ -255,14 +261,14 @@ const CouponRecipients = ({
         renderCell: ({
           row: { usedAt },
         }: GridRenderCellParams<CouponRecipient>) => (
-          <Stack alignItems="center" direction="row" height="100%">
+          <StyledStack direction="row">
             <Chip
               color={usedAt ? "default" : "success"}
               label={tCoupons(usedAt ? "recipients.used" : "recipients.unused")}
               size="small"
               variant="outlined"
             />
-          </Stack>
+          </StyledStack>
         ),
         type: "singleSelect",
         valueOptions: enumOptions.usedAt,

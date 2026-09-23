@@ -14,9 +14,18 @@ import FormCard, {
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { Button, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
+
+const StyledFormCard = styled(FormCard)(({ theme }) => ({
+  borderColor: theme.vars.palette.error.main,
+}));
+
+const StyledTypography = styled(Typography)({
+  fontWeight: "bold",
+});
 
 const Danger = () => {
   const [loading, setLoading] = useState(false);
@@ -60,12 +69,12 @@ const Danger = () => {
     });
 
   return (
-    <FormCard sx={{ borderColor: "error.main" }} variant="outlined">
+    <StyledFormCard variant="outlined">
       <StyledCardHeader
         title={
-          <Typography color="error" fontWeight="bold" variant="h6">
+          <StyledTypography color="error" variant="h6">
             {tAuth("settings.danger.label")}
-          </Typography>
+          </StyledTypography>
         }
       />
       <StyledCardContent>
@@ -90,7 +99,7 @@ const Danger = () => {
           />
         </StyledListItem>
       </StyledCardContent>
-    </FormCard>
+    </StyledFormCard>
   );
 };
 

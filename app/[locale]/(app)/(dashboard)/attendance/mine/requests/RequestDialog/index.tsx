@@ -7,6 +7,7 @@ import LeaveDialog from "../LeaveDialog";
 import ShiftRequestDialog from "../ShiftRequestDialog";
 
 import { MenuItem, Stack, TextField } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -17,6 +18,10 @@ import type {
   AttendanceRequestKind,
   AttendanceShift,
 } from "@/types/attendance";
+
+const StyledStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(2),
+}));
 
 interface RequestDialogProps {
   correctableShifts: AttendanceShift[];
@@ -55,7 +60,7 @@ const RequestDialog = ({
   };
 
   return (
-    <Stack gap={2}>
+    <StyledStack>
       <TextField
         fullWidth
         label={tAttendance("kind.label")}
@@ -87,7 +92,7 @@ const RequestDialog = ({
           shifts={shiftRequestShifts}
         />
       )}
-    </Stack>
+    </StyledStack>
   );
 };
 

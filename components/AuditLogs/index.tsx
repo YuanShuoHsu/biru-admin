@@ -73,10 +73,54 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
-const ChangeImage = styled("img")(({ theme }) => ({
+const ChangesStack = styled(Stack)(({ theme }) => ({
+  alignItems: "center",
+  gap: theme.spacing(1.5),
+  height: "100%",
+}));
+
+const StyledDivider = styled(Divider)(({ theme }) => ({
+  marginTop: theme.spacing(1.5),
+  marginBottom: theme.spacing(1.5),
+}));
+
+const ChangeImage = styled("img", {
+  shouldForwardProp: (prop) => prop !== "dimmed",
+})<{ dimmed: boolean }>(({ dimmed, theme }) => ({
   height: theme.spacing(4),
   width: "auto",
   borderRadius: theme.shape.borderRadius,
+
+  ...(dimmed && {
+    opacity: 0.5,
+  }),
+}));
+
+const StyledLink = styled(MuiLink, {
+  shouldForwardProp: (prop) => prop !== "removed",
+})<{ removed: boolean }>(({ removed }) => ({
+  display: "block",
+  maxWidth: "20ch",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+
+  ...(removed && {
+    textDecoration: "line-through",
+  }),
+}));
+
+const StyledTypography = styled(Typography, {
+  shouldForwardProp: (prop) => prop !== "removed",
+})<{ removed: boolean }>(({ removed }) => ({
+  ...(removed && {
+    textDecoration: "line-through",
+  }),
+}));
+
+const ChangeRowStack = styled(Stack)(({ theme }) => ({
+  alignItems: "center",
+  gap: theme.spacing(0.5),
 }));
 
 const ACTION_COLORS: Record<AuditAction, "error" | "info" | "success"> = {
@@ -559,14 +603,9 @@ const AuditLogs = ({
         filterable: false,
         headerName: tAudit("changes"),
         renderCell: ({ row }: GridRenderCellParams<AuditLogResponse>) => (
-          <Stack
-            alignItems="center"
+          <ChangesStack
             direction="row"
-            divider={
-              <Divider flexItem orientation="vertical" sx={{ my: 1.5 }} />
-            }
-            gap={1.5}
-            height="100%"
+            divider={<StyledDivider flexItem orientation="vertical" />}
           >
             {Object.entries(row.changes)
               .sort(
@@ -586,51 +625,33 @@ const AuditLogs = ({
                   isImageValue(value) ? (
                     <ChangeImage
                       alt={tAudit("value.image")}
+                      dimmed={!!state}
                       src={value}
-                      sx={state ? { opacity: 0.5 } : undefined}
                     />
                   ) : isUrlValue(value) ? (
-                    <MuiLink
-                      color={state ? "text.disabled" : undefined}
+                    <StyledLink
+                      color={state ? "textDisabled" : undefined}
                       href={value}
                       rel="noopener"
-                      sx={{
-                        display: "block",
-                        maxWidth: "20ch",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                        ...(state === "removed" && {
-                          textDecoration: "line-through",
-                        }),
-                      }}
+                      removed={state === "removed"}
                       target="_blank"
                       variant="caption"
                     >
                       {value}
-                    </MuiLink>
+                    </StyledLink>
                   ) : (
-                    <Typography
-                      sx={
-                        state === "removed"
-                          ? { textDecoration: "line-through" }
-                          : undefined
-                      }
-                      color={state ? "text.disabled" : undefined}
+                    <StyledTypography
+                      color={state ? "textDisabled" : undefined}
+                      removed={state === "removed"}
                       variant="caption"
                     >
                       {getValueText(field, value, row.changeLabels)}
-                    </Typography>
+                    </StyledTypography>
                   );
 
                 return (
-                  <Stack
-                    alignItems="center"
-                    direction="row"
-                    gap={0.5}
-                    key={field}
-                  >
-                    <Typography color="text.secondary" variant="caption">
+                  <ChangeRowStack direction="row" key={field}>
+                    <Typography color="textSecondary" variant="caption">
                       {label}
                     </Typography>
                     {row.action === "create" ? (
@@ -640,16 +661,16 @@ const AuditLogs = ({
                     ) : (
                       <>
                         {renderValue(change.before, "previous")}
-                        <Typography color="text.secondary" variant="caption">
+                        <Typography color="textSecondary" variant="caption">
                           →
                         </Typography>
                         {renderValue(change.after)}
                       </>
                     )}
-                  </Stack>
+                  </ChangeRowStack>
                 );
               })}
-          </Stack>
+          </ChangesStack>
         ),
         sortable: false,
       },

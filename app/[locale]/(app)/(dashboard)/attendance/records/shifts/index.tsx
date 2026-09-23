@@ -57,10 +57,28 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
+const ActionsStack = styled(Stack)(({ theme }) => ({
+  height: "100%",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
+
 const StyledIconButton = styled(IconButton, {
   shouldForwardProp: (prop) => prop !== "visible",
 })<{ visible: boolean }>(({ visible }) => ({
   visibility: visible ? "visible" : "hidden",
+}));
+
+const ChipsStack = styled(Stack)(({ theme }) => ({
+  alignItems: "center",
+  gap: theme.spacing(0.5),
+  height: "100%",
+}));
+
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  alignItems: "center",
+  flexWrap: "wrap",
+  gap: theme.spacing(2),
 }));
 
 interface ShiftsProps {
@@ -282,7 +300,7 @@ const Shifts = ({
         filterable: false,
         headerName: tAttendance("actions"),
         renderCell: ({ row }: GridRenderCellParams<AttendanceShift>) => (
-          <Stack height="100%" direction="row" alignItems="center" gap={1}>
+          <ActionsStack direction="row">
             <Tooltip title={tAttendance("shifts.actions.viewEvents")}>
               <IconButton onClick={() => handleViewEvents(row)} size="small">
                 <History fontSize="small" />
@@ -300,7 +318,7 @@ const Shifts = ({
                 </StyledIconButton>
               </Tooltip>
             )}
-          </Stack>
+          </ActionsStack>
         ),
         resizable: false,
         sortable: false,
@@ -334,7 +352,7 @@ const Shifts = ({
         filterable: false,
         headerName: tAttendance("state.label"),
         renderCell: ({ row }: GridRenderCellParams<AttendanceShift>) => (
-          <Stack alignItems="center" direction="row" gap={0.5} height="100%">
+          <ChipsStack direction="row">
             <Chip
               color={row.state === "working" ? "success" : "default"}
               label={tAttendance(`state.options.${row.state}`)}
@@ -346,7 +364,7 @@ const Shifts = ({
             {row.early && (
               <Chip color="warning" label={tAttendance("early")} size="small" />
             )}
-          </Stack>
+          </ChipsStack>
         ),
       },
       {
@@ -385,7 +403,7 @@ const Shifts = ({
   return (
     <>
       {canCreate && (
-        <Stack alignItems="center" direction="row" flexWrap="wrap" gap={2}>
+        <ToolbarStack direction="row">
           <Button
             onClick={handleCreateShift}
             size="small"
@@ -394,7 +412,7 @@ const Shifts = ({
           >
             {tAttendance("shifts.actions.create")}
           </Button>
-        </Stack>
+        </ToolbarStack>
       )}
       <DataGrid
         {...DATA_GRID_PROPS}

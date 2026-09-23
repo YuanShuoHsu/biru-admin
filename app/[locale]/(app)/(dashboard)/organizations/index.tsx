@@ -48,17 +48,35 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
+const ActionsStack = styled(Stack)(({ theme }) => ({
+  height: "100%",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
+
 const StyledIconButton = styled(IconButton, {
   shouldForwardProp: (prop) => prop !== "visible",
 })<{ visible: boolean }>(({ visible }) => ({
   visibility: visible ? "visible" : "hidden",
 }));
 
+const AvatarStack = styled(Stack)({
+  height: "100%",
+  flexDirection: "row",
+  alignItems: "center",
+});
+
 const StyledAvatar = styled(Avatar)({
   width: 24,
   height: 24,
   fontSize: 12,
 });
+
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
 
 interface OrganizationsProps {
   canCreateOrganization: boolean;
@@ -214,7 +232,7 @@ const Organizations = ({
             organizationPermissions[row.id];
 
           return (
-            <Stack height="100%" direction="row" alignItems="center" gap={1}>
+            <ActionsStack direction="row">
               <Tooltip
                 title={tOrganizations("actions.manageOrganization.title")}
               >
@@ -264,7 +282,7 @@ const Organizations = ({
                   </StyledIconButton>
                 </Tooltip>
               )}
-            </Stack>
+            </ActionsStack>
           );
         },
         resizable: false,
@@ -276,13 +294,13 @@ const Organizations = ({
         renderCell: ({
           row: { logo, name, slug },
         }: GridRenderCellParams<Organization>) => (
-          <Stack height="100%" flexDirection="row" alignItems="center">
+          <AvatarStack>
             <StyledAvatar
               alt={name}
               src={logo || undefined}
               {...stringAvatar(name, slug)}
             />
-          </Stack>
+          </AvatarStack>
         ),
         resizable: false,
         sortable: false,
@@ -317,7 +335,7 @@ const Organizations = ({
   return (
     <>
       {canCreateOrganization && (
-        <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
+        <ToolbarStack direction="row">
           <Button
             onClick={handleCreateOrganization}
             size="small"
@@ -326,7 +344,7 @@ const Organizations = ({
           >
             {tOrganizations("actions.createOrganization.title")}
           </Button>
-        </Stack>
+        </ToolbarStack>
       )}
       <DataGrid
         {...DATA_GRID_PROPS}

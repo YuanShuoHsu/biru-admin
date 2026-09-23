@@ -45,6 +45,7 @@ import {
   Stack,
   Tooltip,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
   GridFilterModel,
@@ -73,6 +74,24 @@ import {
 import { getMenuEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
+
+const ActionsStack = styled(Stack)(({ theme }) => ({
+  height: "100%",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
+
+const ChipsStack = styled(Stack)(({ theme }) => ({
+  alignItems: "center",
+  gap: theme.spacing(0.5),
+  height: "100%",
+}));
+
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(2),
+}));
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -446,12 +465,7 @@ const Modifiers = ({
               filterable: false,
               headerName: tMenus("modifiers.actions.label"),
               renderCell: ({ row }: GridRenderCellParams<Modifier>) => (
-                <Stack
-                  height="100%"
-                  direction="row"
-                  alignItems="center"
-                  gap={1}
-                >
+                <ActionsStack direction="row">
                   {(canWrite || canUpdateAvailability) && (
                     <Tooltip
                       title={tMenus("modifiers.actions.updateModifier.title")}
@@ -486,7 +500,7 @@ const Modifiers = ({
                       </IconButton>
                     </Tooltip>
                   )}
-                </Stack>
+                </ActionsStack>
               ),
               resizable: false,
               sortable: false,
@@ -543,7 +557,7 @@ const Modifiers = ({
         renderCell: ({
           row: { availableModes },
         }: GridRenderCellParams<Modifier>) => (
-          <Stack alignItems="center" direction="row" gap={0.5} height="100%">
+          <ChipsStack direction="row">
             {orderModeValues
               .filter((mode) => availableModes.includes(mode))
               .map((mode) => (
@@ -555,7 +569,7 @@ const Modifiers = ({
                   variant="outlined"
                 />
               ))}
-          </Stack>
+          </ChipsStack>
         ),
       },
       {
@@ -595,7 +609,7 @@ const Modifiers = ({
 
   return (
     <>
-      <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
+      <ToolbarStack direction="row">
         {!isReorderMode ? (
           <>
             {canWrite && (
@@ -640,7 +654,7 @@ const Modifiers = ({
             </Button>
           </>
         )}
-      </Stack>
+      </ToolbarStack>
       <DragDropProvider onDragEnd={handleDragEnd}>
         <DataGrid
           {...DATA_GRID_PROPS}

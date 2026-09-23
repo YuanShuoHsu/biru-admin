@@ -100,12 +100,36 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
+const ActionsStack = styled(Stack)(({ theme }) => ({
+  height: "100%",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
+
+const ImageStack = styled(Stack)({
+  height: "100%",
+  flexDirection: "row",
+  alignItems: "center",
+});
+
 const StyledBox = styled(Box)(({ theme }) => ({
   position: "relative",
   width: theme.spacing(4),
   height: theme.spacing(4),
   borderRadius: theme.shape.borderRadius,
   overflow: "hidden",
+}));
+
+const ChipsStack = styled(Stack)(({ theme }) => ({
+  alignItems: "center",
+  gap: theme.spacing(0.5),
+  height: "100%",
+}));
+
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(2),
 }));
 
 interface MenusMenuIdSectionIdProps {
@@ -500,12 +524,7 @@ const MenusMenuIdSectionId = ({
               filterable: false,
               headerName: tMenus("items.actions.label"),
               renderCell: ({ row }: GridRenderCellParams<MenuItem>) => (
-                <Stack
-                  height="100%"
-                  direction="row"
-                  alignItems="center"
-                  gap={1}
-                >
+                <ActionsStack direction="row">
                   <Tooltip title={tMenus("items.actions.manageItem.title")}>
                     <IconButton
                       onClick={(event) => {
@@ -548,7 +567,7 @@ const MenusMenuIdSectionId = ({
                       </IconButton>
                     </Tooltip>
                   )}
-                </Stack>
+                </ActionsStack>
               ),
               resizable: false,
               sortable: false,
@@ -561,7 +580,7 @@ const MenusMenuIdSectionId = ({
         headerName: tMenus("items.image.label"),
         renderCell: ({ value }: { value?: string | null }) =>
           value && (
-            <Stack height="100%" flexDirection="row" alignItems="center">
+            <ImageStack>
               <StyledBox>
                 <Image
                   alt={value}
@@ -571,7 +590,7 @@ const MenusMenuIdSectionId = ({
                   style={{ objectFit: "cover" }}
                 />
               </StyledBox>
-            </Stack>
+            </ImageStack>
           ),
         resizable: false,
         sortable: false,
@@ -602,7 +621,7 @@ const MenusMenuIdSectionId = ({
           row: { recommendedServingTemperatureLevel, servingTemperatures },
         }: GridRenderCellParams<MenuItem>) =>
           servingTemperatures.length ? (
-            <Stack alignItems="center" direction="row" gap={0.5} height="100%">
+            <ChipsStack direction="row">
               {servingTemperatures.map((value) => (
                 <Chip
                   color={SERVING_TEMPERATURE_COLOR_MAP[value]}
@@ -619,7 +638,7 @@ const MenusMenuIdSectionId = ({
                   variant="outlined"
                 />
               ))}
-            </Stack>
+            </ChipsStack>
           ) : (
             <EmptyCell />
           ),
@@ -691,7 +710,7 @@ const MenusMenuIdSectionId = ({
         renderCell: ({
           row: { availableModes },
         }: GridRenderCellParams<MenuItem>) => (
-          <Stack alignItems="center" direction="row" gap={0.5} height="100%">
+          <ChipsStack direction="row">
             {orderModeValues
               .filter((mode) => availableModes.includes(mode))
               .map((mode) => (
@@ -703,7 +722,7 @@ const MenusMenuIdSectionId = ({
                   variant="outlined"
                 />
               ))}
-          </Stack>
+          </ChipsStack>
         ),
       },
       {
@@ -799,7 +818,7 @@ const MenusMenuIdSectionId = ({
 
   return (
     <>
-      <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
+      <ToolbarStack direction="row">
         {!isReorderMode ? (
           <>
             {canWrite && (
@@ -844,7 +863,7 @@ const MenusMenuIdSectionId = ({
             </Button>
           </>
         )}
-      </Stack>
+      </ToolbarStack>
       <DragDropProvider onDragEnd={handleDragEnd}>
         <DataGrid
           {...DATA_GRID_PROPS}

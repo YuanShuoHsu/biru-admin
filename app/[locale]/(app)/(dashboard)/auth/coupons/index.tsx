@@ -22,6 +22,10 @@ import type { MyClaimableCoupon, MyCoupon } from "@/types/coupons";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
+const StyledTypography = styled(Typography)({
+  fontWeight: "bold",
+});
+
 const StyledAvatar = styled(Avatar)(({ theme }) => ({
   backgroundColor: theme.vars.palette.primary.main,
 }));
@@ -84,14 +88,14 @@ const Coupons = ({ claimableCoupons, coupons }: CouponsProps) => {
             <FormCard key={type}>
               <StyledCardHeader
                 title={
-                  <Typography color="primary" fontWeight="bold" variant="h6">
+                  <StyledTypography color="primary" variant="h6">
                     {tAuth(`coupons.${type}`)}
-                  </Typography>
+                  </StyledTypography>
                 }
               />
               <StyledCardContent>
                 {items.length === 0 && (
-                  <Typography color="text.secondary" variant="body2">
+                  <Typography color="textSecondary" variant="body2">
                     {tAuth("coupons.empty")}
                   </Typography>
                 )}
@@ -132,15 +136,11 @@ const Coupons = ({ claimableCoupons, coupons }: CouponsProps) => {
                         title={coupon.code}
                       />
                       <StyledCardActions disableSpacing>
-                        <Typography
-                          color="primary"
-                          fontWeight="bold"
-                          variant="h5"
-                        >
+                        <StyledTypography color="primary" variant="h5">
                           {coupon.discountType === "percentage"
                             ? `-${format.number(Number(coupon.discountValue))}%`
                             : `-${formatMoney(Number(coupon.discountValue), coupon.discountCurrency)}`}
-                        </Typography>
+                        </StyledTypography>
                         {!("coupon" in item) && (
                           <Button
                             loading={claimingId === item.id}

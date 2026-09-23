@@ -16,7 +16,6 @@ import { menuSocket } from "@/app/socket";
 
 import { ReceiptLong } from "@mui/icons-material";
 import {
-  Box,
   Chip,
   DialogContentText,
   IconButton,
@@ -24,6 +23,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import SelectAllTransferList, {
   type SelectAllTransferListAction,
@@ -43,6 +43,30 @@ import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
 import OrderDetailDialog from "../OrderDetailDialog";
+
+const StyledStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  justifyContent: "space-between",
+  alignItems: "center",
+  columnGap: theme.spacing(1),
+}));
+
+const StyledTypography = styled(Typography)({
+  overflowWrap: "anywhere",
+});
+
+const StatusText = styled("span", {
+  shouldForwardProp: (prop) => prop !== "as" && prop !== "status",
+})<{ status: OrderStatus }>(({ status, theme }) => {
+  const key = STATUS_TEXT_COLORS[status];
+
+  return {
+    color:
+      key === "text"
+        ? theme.vars.palette.text.primary
+        : theme.vars.palette[key].main,
+  };
+});
 
 interface OrdersBoardProps {
   columns: AdminOrderBoardColumn[];
@@ -109,13 +133,7 @@ const OrdersBoard = ({
             return {
               ...order,
               primary: (
-                <Stack
-                  flexWrap="wrap"
-                  direction="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  columnGap={1}
-                >
+                <StyledStack direction="row">
                   <Typography variant="body1">{order.orderNumber}</Typography>
                   <Chip
                     color={MODE_COLORS[order.mode]}
@@ -123,21 +141,17 @@ const OrdersBoard = ({
                     size="small"
                     variant="outlined"
                   />
-                </Stack>
+                </StyledStack>
               ),
               secondary: (
-                <Typography
-                  color="text.secondary"
-                  sx={{ overflowWrap: "anywhere" }}
-                  variant="caption"
-                >
+                <StyledTypography color="textSecondary" variant="caption">
                   {order.pickupTime
                     ? [
                         format.dateTime(new Date(order.pickupTime), "compact"),
                         order.customer.name,
                       ].join(tCommon("delimiter"))
                     : order.customer.name}
-                </Typography>
+                </StyledTypography>
               ),
             };
           }),
@@ -205,9 +219,9 @@ const OrdersBoard = ({
               orderNumbers: getOrderNumbers(ids),
               status: tOrders(`status.${toStatus}`),
               statusText: (chunks) => (
-                <Box color={STATUS_TEXT_COLORS[toStatus]} component="strong">
+                <StatusText as="strong" status={toStatus}>
                   {chunks}
-                </Box>
+                </StatusText>
               ),
             })}
           </DialogContentText>
@@ -239,9 +253,7 @@ const OrdersBoard = ({
           tOrders.rich(key, {
             status,
             statusText: (chunks) => (
-              <Box color={STATUS_TEXT_COLORS[toStatus]} component="span">
-                {chunks}
-              </Box>
+              <StatusText status={toStatus}>{chunks}</StatusText>
             ),
           }),
         ),

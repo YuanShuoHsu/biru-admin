@@ -26,6 +26,7 @@ import {
   Switch,
   TextField,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
@@ -41,6 +42,14 @@ import type { OrderMenu } from "@/types/menus";
 import type { OrganizationResponse } from "@/types/organizations";
 
 import { fetcher } from "@/utils/fetcher";
+
+const StyledGrid = styled(Grid)({
+  width: "100%",
+});
+
+const StyledFormControlLabel = styled(FormControlLabel)({
+  alignSelf: "flex-start",
+});
 
 const issueTriggerOptions: CouponFormValues["issueTrigger"][] = [
   "none",
@@ -393,7 +402,7 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
           />
         </>
       )}
-      <Grid container spacing={2} width="100%">
+      <StyledGrid container spacing={2}>
         <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             fullWidth
@@ -448,7 +457,7 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
             valueIsNumericString
           />
         </Grid>
-      </Grid>
+      </StyledGrid>
       <NumericFormat
         allowNegative={false}
         customInput={TextField}
@@ -476,7 +485,7 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
         value={minSubtotal}
         valueIsNumericString
       />
-      <Grid container spacing={2} width="100%">
+      <StyledGrid container spacing={2}>
         <Grid size={{ xs: 12, sm: 6 }}>
           <NumberSpinner
             clearable
@@ -513,8 +522,8 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
             value={perUserLimit !== "" ? Number(perUserLimit) : null}
           />
         </Grid>
-      </Grid>
-      <Grid container spacing={2} width="100%">
+      </StyledGrid>
+      <StyledGrid container spacing={2}>
         <Grid size={{ xs: 12, sm: 6 }}>
           <NumberSpinner
             clearable
@@ -532,8 +541,8 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
             value={pointsCost !== "" ? Number(pointsCost) : null}
           />
         </Grid>
-      </Grid>
-      <Grid container spacing={2} width="100%">
+      </StyledGrid>
+      <StyledGrid container spacing={2}>
         <Grid size={{ xs: 12, sm: 6 }}>
           <DateTimePicker
             label={`${tCoupons("validFrom.label")} ${tCommon("optional")}`}
@@ -584,8 +593,8 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
             }
           />
         </Grid>
-      </Grid>
-      <Grid container spacing={2} width="100%">
+      </StyledGrid>
+      <StyledGrid container spacing={2}>
         <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             disabled={isPointsRedeem}
@@ -647,9 +656,9 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
             />
           </Grid>
         )}
-      </Grid>
+      </StyledGrid>
       <FormControl>
-        <FormControlLabel
+        <StyledFormControlLabel
           control={
             <Switch
               checked={isActive}
@@ -657,12 +666,11 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
             />
           }
           label={tCoupons("isActive.label")}
-          sx={{ alignSelf: "flex-start" }}
         />
         <FormHelperText>{tCoupons("isActive.helperText")}</FormHelperText>
       </FormControl>
       <FormControl>
-        <FormControlLabel
+        <StyledFormControlLabel
           control={
             <Switch
               checked={isClaimable && !isPointsRedeem}
@@ -671,7 +679,6 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
             />
           }
           label={tCoupons("isClaimable.label")}
-          sx={{ alignSelf: "flex-start" }}
         />
         <FormHelperText>
           {isPointsRedeem
@@ -680,7 +687,7 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
         </FormHelperText>
       </FormControl>
       <FormControl>
-        <FormControlLabel
+        <StyledFormControlLabel
           control={
             <Switch
               checked={isPublic && !isPointsRedeem && !hasPerUserLimit}
@@ -689,7 +696,6 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
             />
           }
           label={tCoupons("isPublic.label")}
-          sx={{ alignSelf: "flex-start" }}
         />
         <FormHelperText>
           {isPointsRedeem

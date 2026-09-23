@@ -8,10 +8,16 @@ import SettingsDialog from "./SettingsDialog";
 import DetailsCard from "@/components/DetailsCard";
 
 import { Chip, Stack } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { AttendanceSettings } from "@/types/attendance";
+
+const StyledStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  gap: theme.spacing(1),
+}));
 
 const SETTING_KEYS = [
   "latitude",
@@ -56,11 +62,11 @@ const Settings = ({ organizationSlug, settings }: SettingsProps) => {
           key,
           label: tAttendance(`${key}.label`),
           value: Array.isArray(value) ? (
-            <Stack direction="row" flexWrap="wrap" gap={1}>
+            <StyledStack direction="row">
               {value.map((ip) => (
                 <Chip key={ip} label={ip} size="small" variant="outlined" />
               ))}
-            </Stack>
+            </StyledStack>
           ) : (
             value
           ),

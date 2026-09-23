@@ -5,14 +5,19 @@
 import { useTranslations } from "next-intl";
 
 import { Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
+
+const StyledTypography = styled(Typography)({
+  fontWeight: "bold",
+});
 
 const Maintenance = () => {
   const tMaintenance = useTranslations("maintenance");
 
   return (
-    <Typography color="primary" fontWeight="bold" variant="h4">
+    <StyledTypography color="primary" variant="h4">
       {tMaintenance("title")}
-    </Typography>
+    </StyledTypography>
   );
 };
 

@@ -27,6 +27,7 @@ import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { EditNote, History, MoreTime } from "@mui/icons-material";
 import { Alert, Chip, IconButton, Stack, Tooltip } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
   GridFilterModel,
@@ -50,6 +51,18 @@ import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAttendanceDayKindEnumOptions } from "@/utils/enumOptions";
 import { attendancePath } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+
+const ActionsStack = styled(Stack)(({ theme }) => ({
+  height: "100%",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
+
+const ChipsStack = styled(Stack)(({ theme }) => ({
+  alignItems: "center",
+  gap: theme.spacing(0.5),
+  height: "100%",
+}));
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -268,7 +281,7 @@ const Mine = ({
         filterable: false,
         headerName: tAttendance("actions"),
         renderCell: ({ row }: GridRenderCellParams<AttendanceShift>) => (
-          <Stack height="100%" direction="row" alignItems="center" gap={1}>
+          <ActionsStack direction="row">
             <Tooltip title={tAttendance("mine.actions.viewEvents")}>
               <IconButton onClick={() => handleViewEvents(row)} size="small">
                 <History fontSize="small" />
@@ -296,7 +309,7 @@ const Mine = ({
                 <MoreTime fontSize="small" />
               </IconButton>
             </Tooltip>
-          </Stack>
+          </ActionsStack>
         ),
         resizable: false,
         sortable: false,
@@ -327,7 +340,7 @@ const Mine = ({
         valueFormatter: (value: AttendanceShift["state"]) =>
           tAttendance(`state.options.${value}`),
         renderCell: ({ row }: GridRenderCellParams<AttendanceShift>) => (
-          <Stack alignItems="center" direction="row" gap={0.5} height="100%">
+          <ChipsStack direction="row">
             <Chip
               color={row.state === "working" ? "success" : "default"}
               label={tAttendance(`state.options.${row.state}`)}
@@ -339,7 +352,7 @@ const Mine = ({
             {row.early && (
               <Chip color="warning" label={tAttendance("early")} size="small" />
             )}
-          </Stack>
+          </ChipsStack>
         ),
       },
       {

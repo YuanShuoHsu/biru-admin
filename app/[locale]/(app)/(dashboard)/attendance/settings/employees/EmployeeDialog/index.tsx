@@ -17,6 +17,7 @@ import { STORE_TIMEZONE } from "@/constants/timezone";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Checkbox, FormControlLabel, TextField } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -31,6 +32,10 @@ import { fetcher } from "@/utils/fetcher";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
+
+const StyledFormControlLabel = styled(FormControlLabel)({
+  alignSelf: "flex-start",
+});
 
 interface EmployeeDialogProps {
   member: AttendanceMember;
@@ -159,7 +164,7 @@ const EmployeeDialog = ({
         timezone={STORE_TIMEZONE}
         value={terminatedAt ? dayjs(terminatedAt) : null}
       />
-      <FormControlLabel
+      <StyledFormControlLabel
         control={
           <Checkbox
             checked={enabled}
@@ -167,7 +172,6 @@ const EmployeeDialog = ({
           />
         }
         label={tAttendance("enabled")}
-        sx={{ alignSelf: "flex-start" }}
       />
     </FormBox>
   );

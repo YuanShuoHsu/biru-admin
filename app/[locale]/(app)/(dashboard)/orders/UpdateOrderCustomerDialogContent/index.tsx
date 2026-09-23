@@ -18,6 +18,7 @@ import TextMaskCustom from "@/components/TextMaskCustom";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Grid, TextField } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -26,6 +27,10 @@ import type { OrderResponse } from "@/types/orders";
 import { getPhoneDefaults, getPhoneFormatting } from "@/utils/countries";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
+
+const StyledGrid = styled(Grid)({
+  width: "100%",
+});
 
 export const UPDATE_ORDER_CUSTOMER_FORM_ID = "update-order-customer-form";
 
@@ -133,7 +138,7 @@ const UpdateOrderCustomerDialogContent = ({
         required
         {...register("name")}
       />
-      <Grid container spacing={2} width="100%">
+      <StyledGrid container spacing={2}>
         <Grid size={{ xs: 12, sm: 6 }}>
           <CountryAutocomplete
             error={!!errors.countryCode}
@@ -165,7 +170,7 @@ const UpdateOrderCustomerDialogContent = ({
             {...register("telephone")}
           />
         </Grid>
-      </Grid>
+      </StyledGrid>
       <TextField
         autoComplete="email"
         error={!!errors.email}

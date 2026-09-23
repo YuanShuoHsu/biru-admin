@@ -12,6 +12,7 @@ import FormBox from "@/components/FormBox";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Checkbox, FormControlLabel, MenuItem, TextField } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -27,6 +28,10 @@ import {
   weekdayDate,
 } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+
+const StyledFormControlLabel = styled(FormControlLabel)({
+  alignSelf: "flex-start",
+});
 
 interface TemplateDialogProps {
   employees: AttendanceEmployee[];
@@ -174,7 +179,7 @@ const TemplateDialog = ({
         type="time"
         {...register("endTime")}
       />
-      <FormControlLabel
+      <StyledFormControlLabel
         control={
           <Checkbox
             checked={nextDay}
@@ -182,9 +187,8 @@ const TemplateDialog = ({
           />
         }
         label={tAttendance("nextDay")}
-        sx={{ alignSelf: "flex-start" }}
       />
-      <FormControlLabel
+      <StyledFormControlLabel
         control={
           <Checkbox
             checked={paidBreak}
@@ -192,7 +196,6 @@ const TemplateDialog = ({
           />
         }
         label={tAttendance("paidBreak")}
-        sx={{ alignSelf: "flex-start" }}
       />
       <TextField
         error={!!errors.dayKind}

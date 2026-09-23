@@ -9,12 +9,45 @@ import { type Locale, routing } from "@/i18n/routing";
 
 import {
   Box,
+  type BoxProps,
   Divider,
   Link as MuiLink,
   Paper,
   Stack,
   Typography,
+  type TypographyProps,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
+
+const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  gap: theme.spacing(2),
+}));
+
+const BoldTypography = styled(Typography)<TypographyProps>({
+  fontWeight: "bold",
+});
+
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(2),
+}));
+
+const HeadingTypography = styled(Typography)<TypographyProps>({
+  fontWeight: "bold",
+  scrollMarginTop: 24,
+});
+
+const BulletList = styled("ul")(({ theme }) => ({
+  margin: 0,
+  paddingLeft: theme.spacing(2.5),
+  ...theme.typography.body2,
+  color: theme.vars.palette.text.secondary,
+
+  "& li": {
+    marginTop: theme.spacing(0.75),
+  },
+}));
 
 interface TermsSection {
   id: string;
@@ -551,30 +584,25 @@ const CompanyLegalTerms = ({ locale }: CompanyLegalTermsProps) => {
   const content = termsByLocale[locale] || termsByLocale[routing.defaultLocale];
 
   return (
-    <Box component="section" display="flex" flexDirection="column" gap={2}>
-      <Typography
-        color="text.primary"
-        component="h1"
-        fontWeight="bold"
-        variant="h4"
-      >
+    <StyledBox component="section">
+      <BoldTypography component="h1" variant="h4">
         {content.title}
-      </Typography>
-      <Typography color="text.secondary" variant="body2">
+      </BoldTypography>
+      <Typography color="textSecondary" variant="body2">
         {content.lastUpdated}
       </Typography>
-      <Typography color="text.secondary" variant="body2">
+      <Typography color="textSecondary" variant="body2">
         {content.intro}
       </Typography>
-      <Paper sx={{ p: 2 }} variant="outlined">
+      <StyledPaper variant="outlined">
         <Stack spacing={1}>
-          <Typography fontWeight="bold" variant="subtitle2">
+          <BoldTypography variant="subtitle2">
             {content.tocTitle}
-          </Typography>
+          </BoldTypography>
           <Stack spacing={1}>
             {content.sections.map((section) => (
               <MuiLink
-                color="text.secondary"
+                color="textSecondary"
                 href={`#${section.id}`}
                 key={section.id}
                 underline="hover"
@@ -585,50 +613,37 @@ const CompanyLegalTerms = ({ locale }: CompanyLegalTermsProps) => {
             ))}
           </Stack>
         </Stack>
-      </Paper>
+      </StyledPaper>
       <Stack divider={<Divider />} spacing={3}>
         {content.sections.map((section) => (
           <Stack key={section.id} spacing={1}>
-            <Typography
+            <HeadingTypography
               color="primary"
               component="h2"
-              fontWeight="bold"
               id={section.id}
-              sx={{ scrollMarginTop: 24 }}
               variant="h6"
             >
               {section.heading}
-            </Typography>
+            </HeadingTypography>
             {section.paragraphs.map((p) => (
-              <Typography color="text.secondary" key={p} variant="body2">
+              <Typography color="textSecondary" key={p} variant="body2">
                 {p}
               </Typography>
             ))}
             {section.bullets?.length ? (
-              <Box
-                component="ul"
-                sx={{
-                  m: 0,
-                  pl: 2.5,
-                  typography: "body2",
-                  color: "text.secondary",
-                  "& li": { mt: 0.75 },
-                }}
-              >
+              <BulletList>
                 {section.bullets.map((item) => (
-                  <Box component="li" key={item}>
-                    {item}
-                  </Box>
+                  <li key={item}>{item}</li>
                 ))}
-              </Box>
+              </BulletList>
             ) : null}
           </Stack>
         ))}
       </Stack>
-      <Typography color="text.secondary" variant="body2">
+      <Typography color="textSecondary" variant="body2">
         {content.contact}
       </Typography>
-    </Box>
+    </StyledBox>
   );
 };
 

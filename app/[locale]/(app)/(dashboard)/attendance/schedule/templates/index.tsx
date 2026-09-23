@@ -26,6 +26,7 @@ import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { Add, Delete, Edit, EventRepeat } from "@mui/icons-material";
 import { Button, Chip, IconButton, Stack, Tooltip } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
   GridFilterModel,
@@ -54,6 +55,16 @@ import {
   weekdayDate,
 } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+
+const StyledStack = styled(Stack)(({ theme }) => ({
+  height: "100%",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
+
+const StyledButton = styled(Button)({
+  alignSelf: "flex-start",
+});
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -301,12 +312,7 @@ const Templates = ({
               renderCell: ({
                 row,
               }: GridRenderCellParams<AttendanceTemplate>) => (
-                <Stack
-                  height="100%"
-                  direction="row"
-                  alignItems="center"
-                  gap={1}
-                >
+                <StyledStack direction="row">
                   {canGenerate && (
                     <Tooltip title={tAttendance("generate")}>
                       <IconButton
@@ -338,7 +344,7 @@ const Templates = ({
                       </IconButton>
                     </Tooltip>
                   )}
-                </Stack>
+                </StyledStack>
               ),
               resizable: false,
               sortable: false,
@@ -418,15 +424,14 @@ const Templates = ({
   return (
     <>
       {canCreate && (
-        <Button
+        <StyledButton
           onClick={() => handleTemplateDialog()}
           size="small"
           startIcon={<Add />}
-          sx={{ alignSelf: "flex-start" }}
           variant="contained"
         >
           {tAttendance("templates.actions.create")}
-        </Button>
+        </StyledButton>
       )}
       <DataGrid
         {...DATA_GRID_PROPS}

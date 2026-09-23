@@ -29,6 +29,11 @@ const StyledSvg = styled("svg")(({ theme }) => ({
   },
 }));
 
+const StyledStack = styled(Stack)(({ theme }) => ({
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
+
 const CustomNoColumnsOverlay = () => {
   const apiRef = useGridApiContext();
 
@@ -57,12 +62,12 @@ const CustomNoColumnsOverlay = () => {
           d="M185 71c-32.585 0-59 26.415-59 59s26.415 59 59 59 59-26.415 59-59-26.415-59-59-59Zm-79 59c0-43.63 35.37-79 79-79s79 35.37 79 79c0 43.631-35.37 79-79 79s-79-35.369-79-79Zm109.296-30.56c3.905 3.905 3.905 10.236 0 14.142l-16.286 16.286 16.286 16.286c3.905 3.905 3.905 10.237 0 14.142-3.905 3.905-10.237 3.905-14.142 0l-16.286-16.286-16.286 16.286c-3.905 3.905-10.237 3.905-14.142 0-3.906-3.905-3.906-10.237 0-14.142l16.286-16.286-16.286-16.286c-3.906-3.905-3.906-10.237 0-14.142 3.905-3.906 10.237-3.906 14.142 0l16.286 16.286 16.286-16.286c3.905-3.906 10.237-3.906 14.142 0Z"
         />
       </StyledSvg>
-      <Stack alignItems="center" gap={1}>
+      <StyledStack>
         <Typography variant="body2">{tOverlays("noColumns")}</Typography>
         <Button onClick={handleOpenManageColumns} size="small">
           {tOverlays("manageColumns")}
         </Button>
-      </Stack>
+      </StyledStack>
     </StyledOverlay>
   );
 };

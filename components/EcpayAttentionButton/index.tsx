@@ -12,10 +12,19 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { EcpayAttentionItem } from "@/types/ecpay";
+
+const ListStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(1),
+}));
+
+const ItemStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(0.25),
+}));
 
 interface EcpayAttentionButtonProps {
   organizationSlug: string;
@@ -41,17 +50,14 @@ const EcpayAttentionButton = ({
   const handleClick = () =>
     setDialog({
       content: (
-        <Stack divider={<Divider />} gap={1}>
+        <ListStack divider={<Divider />}>
           {items.map(
             ({ confirmationNumber, detail, occurredAt, orderNumber, type }) => (
-              <Stack
-                gap={0.25}
-                key={`${type}-${confirmationNumber}-${occurredAt}`}
-              >
+              <ItemStack key={`${type}-${confirmationNumber}-${occurredAt}`}>
                 <Typography variant="subtitle2">
                   {tOrders(`attention.type.${type}`)}
                 </Typography>
-                <Typography color="text.secondary" variant="body2">
+                <Typography color="textSecondary" variant="body2">
                   {tOrders("attention.orderLabel", {
                     orderNumber: orderNumber || "-",
                   })}
@@ -63,10 +69,10 @@ const EcpayAttentionButton = ({
                     {detail}
                   </Typography>
                 )}
-              </Stack>
+              </ItemStack>
             ),
           )}
-        </Stack>
+        </ListStack>
       ),
       open: true,
       showConfirm: false,

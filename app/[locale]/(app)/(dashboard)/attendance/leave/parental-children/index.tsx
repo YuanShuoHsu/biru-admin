@@ -22,6 +22,7 @@ import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { Add } from "@mui/icons-material";
 import { Alert, Button } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
   GridFilterModel,
@@ -44,6 +45,10 @@ import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { attendancePath } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+
+const StyledButton = styled(Button)({
+  alignSelf: "flex-start",
+});
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -259,15 +264,14 @@ const ParentalChildren = ({
     <>
       <Alert severity="info">{tAttendance("parentalChildHint")}</Alert>
       {canWrite && (
-        <Button
+        <StyledButton
           onClick={handleCreateChild}
           size="small"
           startIcon={<Add />}
-          sx={{ alignSelf: "flex-start" }}
           variant="contained"
         >
           {tAttendance("parentalChildren.actions.create")}
-        </Button>
+        </StyledButton>
       )}
       <DataGrid
         {...DATA_GRID_PROPS}

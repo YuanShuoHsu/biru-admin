@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 
-import { Stack } from "@mui/material";
+import { StyledStack } from "./styled";
 
 import EcpayAttentionButton from "@/components/EcpayAttentionButton";
 import OrganizationSelect from "@/components/OrganizationSelect";
@@ -28,13 +28,13 @@ const ToolbarOrdersListPage = async ({
   });
 
   return (
-    <Stack direction="row" alignItems="center" gap={1}>
+    <StyledStack direction="row">
       <EcpayAttentionButton organizationSlug={organization} />
       <OrganizationSelect
         organizations={organizations || []}
         organizationSlug={organization}
       />
-    </Stack>
+    </StyledStack>
   );
 };
 

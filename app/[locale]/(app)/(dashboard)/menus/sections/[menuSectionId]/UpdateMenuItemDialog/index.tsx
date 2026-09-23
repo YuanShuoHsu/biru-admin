@@ -26,6 +26,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
 import { Chip, Divider, Grid, MenuItem, TextField } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -48,6 +49,11 @@ import type { ApiOrderMode } from "@/types/orderMode";
 
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
+
+const StyledGrid = styled(Grid)({
+  width: "100%",
+  alignItems: "flex-end",
+});
 
 interface UpdateMenuItemDialogProps {
   canWrite: boolean;
@@ -569,7 +575,7 @@ const UpdateMenuItemDialog = ({
         required
         value={availableModes}
       />
-      <Grid container width="100%" alignItems="flex-end" spacing={2}>
+      <StyledGrid container spacing={2}>
         <Grid size={{ xs: 12 }}>
           <NumericFormat
             allowNegative={false}
@@ -720,7 +726,7 @@ const UpdateMenuItemDialog = ({
             }
           />
         </Grid>
-      </Grid>
+      </StyledGrid>
       <OpeningHoursField
         disabled={!canWrite}
         error={!!errors.offer?.availableHours}

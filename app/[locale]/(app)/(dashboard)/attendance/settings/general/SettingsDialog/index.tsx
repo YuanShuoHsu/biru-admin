@@ -16,7 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useRouter } from "@/i18n/navigation";
 
-import { Add, DeleteOutline, MyLocation } from "@mui/icons-material";
+import { Add, DeleteOutlined, MyLocation } from "@mui/icons-material";
 import {
   Button,
   FormControl,
@@ -36,11 +36,24 @@ import type { AttendanceSettings } from "@/types/attendance";
 import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
 
+const StyledButton = styled(Button)({
+  alignSelf: "flex-start",
+});
+
 const StyledFormControl = styled(FormControl)<FormControlProps>(
   ({ theme }) => ({
     gap: theme.spacing(2),
   }),
 );
+
+const IpFieldStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(0.5),
+}));
+
+const IpRowStack = styled(Stack)(({ theme }) => ({
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
 
 interface SettingsDialogProps {
   organizationSlug: string;
@@ -156,15 +169,14 @@ const SettingsDialog = ({
 
   return (
     <FormBox id="attendance-settings-form" onSubmit={onSubmit}>
-      <Button
+      <StyledButton
         loading={locating}
         onClick={handleUseCurrentLocation}
         startIcon={<MyLocation />}
-        sx={{ alignSelf: "flex-start" }}
         variant="outlined"
       >
         {tAttendance("useCurrentLocation")}
-      </Button>
+      </StyledButton>
       <NumberSpinner
         error={!!errors.latitude}
         fullWidth
@@ -214,8 +226,8 @@ const SettingsDialog = ({
           {tAttendance("allowedIps.label")}
         </FormLabel>
         {fields.map(({ id }, index) => (
-          <Stack gap={0.5} key={id}>
-            <Stack alignItems="center" direction="row" gap={1}>
+          <IpFieldStack key={id}>
+            <IpRowStack direction="row">
               <TextField
                 error={!!errors.allowedIps?.[index]?.value}
                 fullWidth
@@ -229,15 +241,15 @@ const SettingsDialog = ({
                 onClick={() => handleAllowedIpRemove(index)}
                 size="small"
               >
-                <DeleteOutline fontSize="small" />
+                <DeleteOutlined fontSize="small" />
               </IconButton>
-            </Stack>
+            </IpRowStack>
             {errors.allowedIps?.[index]?.value && (
               <FormHelperText error>
                 {errors.allowedIps[index].value.message}
               </FormHelperText>
             )}
-          </Stack>
+          </IpFieldStack>
         ))}
         {errors.allowedIps?.message && (
           <FormHelperText error>{errors.allowedIps.message}</FormHelperText>

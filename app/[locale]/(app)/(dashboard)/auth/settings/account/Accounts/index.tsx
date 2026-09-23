@@ -21,9 +21,14 @@ import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { Logout } from "@mui/icons-material";
 import { Button, Divider, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
+
+const StyledTypography = styled(Typography)({
+  fontWeight: "bold",
+});
 
 type DeviceSession = NonNullable<
   Awaited<ReturnType<typeof authClient.multiSession.listDeviceSessions>>["data"]
@@ -100,9 +105,9 @@ const Accounts = () => {
     <FormCard component="form">
       <StyledCardHeader
         title={
-          <Typography color="primary" fontWeight="bold" variant="h6">
+          <StyledTypography color="primary" variant="h6">
             {tAuth("settings.accounts.manage")}
-          </Typography>
+          </StyledTypography>
         }
       />
       <StyledCardContent>

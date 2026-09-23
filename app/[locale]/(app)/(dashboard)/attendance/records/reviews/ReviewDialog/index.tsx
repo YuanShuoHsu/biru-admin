@@ -24,6 +24,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -39,6 +40,14 @@ import { fetcher } from "@/utils/fetcher";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
+
+const StyledStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(1),
+}));
+
+const StyledFormControlLabel = styled(FormControlLabel)({
+  alignSelf: "flex-start",
+});
 
 interface ReviewDialogProps {
   leaveTypes: AttendanceLeaveType[];
@@ -165,7 +174,7 @@ const ReviewDialog = ({
 
   return (
     <FormBox id="attendance-review-form" onSubmit={onSubmit}>
-      <Stack gap={1}>
+      <StyledStack>
         <Typography>
           {request.employeeName} · {date(request.startsAt)} —{" "}
           {date(request.endsAt)}
@@ -185,7 +194,7 @@ const ReviewDialog = ({
             {tAttendance(`eventAction.options.${action}`)} · {date(occurredAt)}
           </Typography>
         ))}
-      </Stack>
+      </StyledStack>
       <TextField
         error={!!errors.reason}
         fullWidth
@@ -197,7 +206,7 @@ const ReviewDialog = ({
         {...register("reason")}
       />
       {isMedicalLeave && (
-        <FormControlLabel
+        <StyledFormControlLabel
           control={
             <Checkbox
               checked={medicalCertified}
@@ -205,12 +214,11 @@ const ReviewDialog = ({
             />
           }
           label={tAttendance("medicalCertified")}
-          sx={{ alignSelf: "flex-start" }}
         />
       )}
       {isOvertime && (
         <>
-          <FormControlLabel
+          <StyledFormControlLabel
             control={
               <Checkbox
                 checked={emergencyWork}
@@ -218,7 +226,6 @@ const ReviewDialog = ({
               />
             }
             label={tAttendance("emergencyWork")}
-            sx={{ alignSelf: "flex-start" }}
           />
           {emergencyWork && (
             <>

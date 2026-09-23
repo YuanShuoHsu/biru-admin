@@ -8,7 +8,6 @@ import { useForm } from "react-hook-form";
 import { type EmailForm, useEmailFormSchema } from "./definitions";
 
 import FormCard, {
-  StyledCardActions,
   StyledCardContent,
   StyledCardHeader,
 } from "@/components/FormCard";
@@ -17,10 +16,24 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { Button, TextField, Typography } from "@mui/material";
+import { Button, CardActions, TextField, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
+
+const StyledTypography = styled(Typography)({
+  fontWeight: "bold",
+});
+
+const StyledCardActions = styled(CardActions)(({ theme }) => ({
+  padding: theme.spacing(2),
+  paddingTop: 0,
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "flex-end",
+  gap: theme.spacing(2),
+}));
 
 const Email = () => {
   const { session } = useAuthStore((state) => state);
@@ -83,9 +96,9 @@ const Email = () => {
     <FormCard component="form" onSubmit={onSubmit}>
       <StyledCardHeader
         title={
-          <Typography color="primary" fontWeight="bold" variant="h6">
+          <StyledTypography color="primary" variant="h6">
             {tAuth("settings.email.changeLabel")}
-          </Typography>
+          </StyledTypography>
         }
       />
       <StyledCardContent>
@@ -101,7 +114,7 @@ const Email = () => {
           {...register("email")}
         />
       </StyledCardContent>
-      <StyledCardActions disableSpacing sx={{ alignItems: "flex-end" }}>
+      <StyledCardActions disableSpacing>
         <Button
           disabled={!isDirty}
           loading={isSubmitting}

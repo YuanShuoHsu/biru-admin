@@ -70,6 +70,18 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   gap: theme.spacing(1),
 }));
 
+const StartStack = styled(Stack)(({ theme }) => ({
+  minWidth: 0,
+  flexDirection: "row",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
+
+const EndStack = styled(Stack)(({ theme }) => ({
+  alignItems: "center",
+  gap: theme.spacing(0.5),
+}));
+
 const HideAppBar = () => {
   const { session, setSession } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
@@ -139,7 +151,7 @@ const HideAppBar = () => {
   return (
     <StyledAppBar position="fixed" trigger={trigger}>
       <StyledToolbar>
-        <Stack minWidth={0} flexDirection="row" alignItems="center" gap={1}>
+        <StartStack>
           {showAuthControls && (
             <IconButton
               aria-label="open drawer"
@@ -151,8 +163,8 @@ const HideAppBar = () => {
             </IconButton>
           )}
           <BrandMark href={navItem("/dashboard").to} />
-        </Stack>
-        <Stack direction="row" alignItems="center" gap={0.5}>
+        </StartStack>
+        <EndStack direction="row">
           <ThemeSwitcher />
           <Suspense>
             <LanguageMenu />
@@ -179,7 +191,7 @@ const HideAppBar = () => {
               <AccountMenu />
             </Suspense>
           )}
-        </Stack>
+        </EndStack>
       </StyledToolbar>
     </StyledAppBar>
   );

@@ -41,12 +41,23 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import { getHref } from "@/utils/href";
 import {
   handleMouseDownPassword,
   handleMouseUpPassword,
 } from "@/utils/password";
+
+const StyledTypography = styled(Typography)({
+  fontWeight: "bold",
+});
+
+const StyledStack = styled(Stack)(({ theme }) => ({
+  flexDirection: "row",
+  alignItems: "center",
+  gap: theme.spacing(0.5),
+}));
 
 interface AuthResetPasswordProps {
   email: string;
@@ -142,14 +153,9 @@ const AuthResetPassword = ({
     <FormCard component="form" onSubmit={onSubmit}>
       <StyledCardHeader
         title={
-          <Typography
-            color="primary"
-            fontWeight="bold"
-            textAlign="center"
-            variant="h6"
-          >
+          <StyledTypography align="center" color="primary" variant="h6">
             {tAuth("resetPassword.label")}
-          </Typography>
+          </StyledTypography>
         }
       />
       <StyledCardContent>
@@ -258,12 +264,12 @@ const AuthResetPassword = ({
         >
           {tAuth("resetPassword.label")}
         </Button>
-        <Stack flexDirection="row" alignItems="center" gap={0.5}>
+        <StyledStack>
           <Typography variant="body2">{tAuth("rememberedPassword")}</Typography>
           <Link href={signInHref} underline="hover" variant="body2">
             {tAuth("signIn.label")}
           </Link>
-        </Stack>
+        </StyledStack>
       </StyledCardActions>
     </FormCard>
   );

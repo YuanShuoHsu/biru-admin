@@ -44,6 +44,11 @@ const ROLE_COLOR_MAP: Record<string, "error" | "warning" | "default"> = {
   member: "default",
 };
 
+const AvatarStack = styled(Stack)({
+  height: "100%",
+  alignItems: "center",
+});
+
 const StyledAvatar = styled(Avatar)(({ theme }) => ({
   width: 24,
   height: 24,
@@ -57,6 +62,12 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
     border: `1px solid ${theme.vars.palette.primary.main}`,
     color: theme.vars.palette.primary.contrastText,
   },
+}));
+
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(1),
 }));
 
 interface OrganizationsSlugTeamsTeamIdProps {
@@ -218,11 +229,11 @@ const OrganizationsSlugTeamsTeamId = ({
         field: "avatar",
         headerName: tMembers("avatar"),
         renderCell: ({ row }: GridRenderCellParams<TeamMemberRow>) => (
-          <Stack height="100%" direction="row" alignItems="center">
+          <AvatarStack direction="row">
             <StyledAvatar alt={row.user.name} src={row.user.image || undefined}>
               {row.user.name[0]}
             </StyledAvatar>
-          </Stack>
+          </AvatarStack>
         ),
         resizable: false,
         sortable: false,
@@ -263,7 +274,7 @@ const OrganizationsSlugTeamsTeamId = ({
   return (
     <>
       {canUpdateTeam && (
-        <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
+        <ToolbarStack direction="row">
           <Button
             onClick={handleAddTeamMember}
             size="small"
@@ -272,7 +283,7 @@ const OrganizationsSlugTeamsTeamId = ({
           >
             {tTeams("actions.addTeamMember.title")}
           </Button>
-        </Stack>
+        </ToolbarStack>
       )}
       <DataGrid
         {...DATA_GRID_PROPS}

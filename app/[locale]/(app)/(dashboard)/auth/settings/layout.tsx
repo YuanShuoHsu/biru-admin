@@ -3,9 +3,15 @@
 import RouteTabs from "@/components/RouteTabs";
 
 import { Stack } from "@mui/material";
+import { styled } from "@mui/material/styles";
+
+const StyledStack = styled(Stack)(({ theme }) => ({
+  marginBottom: "auto",
+  gap: theme.spacing(2),
+}));
 
 const AuthSettingsLayout = ({ children }: { children: React.ReactNode }) => (
-  <Stack gap={2} marginBottom="auto">
+  <StyledStack>
     <RouteTabs
       ariaLabel="account settings tabs"
       tabs={[
@@ -14,7 +20,7 @@ const AuthSettingsLayout = ({ children }: { children: React.ReactNode }) => (
       ]}
     />
     {children}
-  </Stack>
+  </StyledStack>
 );
 
 export default AuthSettingsLayout;

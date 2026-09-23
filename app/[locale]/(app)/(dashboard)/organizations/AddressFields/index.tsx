@@ -17,12 +17,17 @@ import { COUNTRY_CURRENCIES } from "@/constants/countryCurrencies";
 import { LocaleEnum } from "@/enums/Locale";
 
 import { Stack, TextField } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import type { Organization } from "@/types/organizations";
 
 import { getAddress, getPostalCode } from "@/utils/tw-postal-codes";
 
 import type { UpdateLocationForm } from "../[slug]/location/UpdateLocationDialog/definitions";
+
+const StyledStack = styled(Stack)({
+  width: "100%",
+});
 
 type OrganizationForm = UpdateLocationForm;
 
@@ -108,8 +113,7 @@ const AddressFields = ({
   };
 
   return (
-    <Stack
-      width="100%"
+    <StyledStack
       direction={isEnglish ? "column" : "column-reverse"}
       spacing={2}
     >
@@ -180,7 +184,7 @@ const AddressFields = ({
           onChange: (e) => handleAddressCountryChange(e.target.value),
         })}
       />
-    </Stack>
+    </StyledStack>
   );
 };
 

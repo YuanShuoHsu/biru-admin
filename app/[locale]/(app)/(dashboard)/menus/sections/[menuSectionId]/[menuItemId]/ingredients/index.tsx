@@ -20,6 +20,7 @@ import { usePathname, useRouter } from "@/i18n/navigation";
 
 import { Add, Edit, Scale } from "@mui/icons-material";
 import { Button, IconButton, Stack, Tooltip, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -38,6 +39,18 @@ import {
   grossMargin,
   grossProfitPerServing,
 } from "@/utils/recipes";
+
+const ActionsStack = styled(Stack)(({ theme }) => ({
+  height: "100%",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
+
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(2),
+}));
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -169,7 +182,7 @@ const MenuItemRecipe = ({
         : formatMoney(value, priceCurrency, { maximumFractionDigits: 2 });
     const renderLoss = (value: number | null, text: string) => (
       <Typography
-        color={value != null && value < 0 ? "error.main" : "text.primary"}
+        color={value != null && value < 0 ? "error" : "textPrimary"}
         component="span"
         variant="body2"
       >
@@ -225,7 +238,7 @@ const MenuItemRecipe = ({
         field: "actions",
         headerName: tInventory("recipes.ingredients.actions.label"),
         renderCell: ({ row }: GridRenderCellParams<Recipe>) => (
-          <Stack height="100%" direction="row" alignItems="center" gap={1}>
+          <ActionsStack direction="row">
             <Tooltip
               title={tInventory("recipes.actions.viewRecipeIngredients.title")}
             >
@@ -247,7 +260,7 @@ const MenuItemRecipe = ({
               </Tooltip>
             )}
             {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
-          </Stack>
+          </ActionsStack>
         ),
         resizable: false,
       },
@@ -274,7 +287,7 @@ const MenuItemRecipe = ({
   return (
     <>
       {canCreate && !recipe && (
-        <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
+        <ToolbarStack direction="row">
           <Button
             onClick={handleCreateRecipeIngredient}
             size="small"
@@ -285,7 +298,7 @@ const MenuItemRecipe = ({
               "recipes.ingredients.actions.createRecipeIngredient.title",
             )}
           </Button>
-        </Stack>
+        </ToolbarStack>
       )}
       <DataGrid
         {...DATA_GRID_PROPS}

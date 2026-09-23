@@ -43,6 +43,10 @@ import { localize } from "@/utils/locale";
 
 const INGREDIENT_IMAGE_KEY = "ingredient-image";
 
+const StyledGrid = styled(Grid)({
+  width: "100%",
+});
+
 const StyledTextField = styled(TextField)(({ theme }) => ({
   [theme.breakpoints.up("sm")]: {
     marginTop: theme.spacing(3.75),
@@ -379,7 +383,7 @@ const IngredientDialog = ({
           valueIsNumericString
         />
       )}
-      <Grid container width="100%" spacing={2}>
+      <StyledGrid container spacing={2}>
         <Grid size={{ xs: 12, sm: 6 }}>
           <NumericFormat
             allowNegative={false}
@@ -450,8 +454,8 @@ const IngredientDialog = ({
             ))}
           </TextField>
         </Grid>
-      </Grid>
-      <Grid container width="100%" spacing={2}>
+      </StyledGrid>
+      <StyledGrid container spacing={2}>
         <Grid size={{ xs: 12, sm: 6 }}>
           <NumberSpinner
             clearable
@@ -492,7 +496,7 @@ const IngredientDialog = ({
             {...register("inventoryLevelUnitText")}
           />
         </Grid>
-      </Grid>
+      </StyledGrid>
       {stockEditable && stockChanged && (
         <TextField
           error={!!errors.transactionNote}

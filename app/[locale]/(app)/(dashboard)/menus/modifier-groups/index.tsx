@@ -52,6 +52,7 @@ import {
   Stack,
   Tooltip,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
   GridFilterModel,
@@ -78,6 +79,18 @@ import {
 } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
+
+const ActionsStack = styled(Stack)(({ theme }) => ({
+  height: "100%",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
+
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(2),
+}));
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -447,12 +460,7 @@ const ModifierGroups = ({
               filterable: false,
               headerName: tMenus("modifierGroups.actions.label"),
               renderCell: ({ row }: GridRenderCellParams<ModifierGroup>) => (
-                <Stack
-                  height="100%"
-                  direction="row"
-                  alignItems="center"
-                  gap={1}
-                >
+                <ActionsStack direction="row">
                   <Tooltip
                     title={tMenus("modifierGroups.actions.viewModifiers.title")}
                   >
@@ -501,7 +509,7 @@ const ModifierGroups = ({
                       </IconButton>
                     </Tooltip>
                   )}
-                </Stack>
+                </ActionsStack>
               ),
               resizable: false,
               sortable: false,
@@ -563,7 +571,7 @@ const ModifierGroups = ({
 
   return (
     <>
-      <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
+      <ToolbarStack direction="row">
         {!isReorderMode ? (
           <>
             {canWrite && (
@@ -608,7 +616,7 @@ const ModifierGroups = ({
             </Button>
           </>
         )}
-      </Stack>
+      </ToolbarStack>
       <DragDropProvider onDragEnd={handleModifierGroupDragEnd}>
         <DataGrid
           {...DATA_GRID_PROPS}

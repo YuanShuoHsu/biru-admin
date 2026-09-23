@@ -26,6 +26,7 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -38,6 +39,15 @@ import { fetcher } from "@/utils/fetcher";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
+
+const StyledStack = styled(Stack)(({ theme }) => ({
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
+
+const StyledButton = styled(Button)({
+  alignSelf: "flex-start",
+});
 
 interface CorrectionDialogProps {
   mutate: () => void;
@@ -142,7 +152,7 @@ const CorrectionDialog = ({
     <FormBox id="attendance-correction-form" onSubmit={onSubmit}>
       <Alert severity="info">{tAttendance("correctionHint")}</Alert>
       {fields.map(({ id }, index) => (
-        <Stack alignItems="center" direction="row" gap={1} key={id}>
+        <StyledStack direction="row" key={id}>
           <TextField
             error={!!errors.correctedEvents?.[index]?.action}
             fullWidth
@@ -193,21 +203,20 @@ const CorrectionDialog = ({
           >
             <Delete fontSize="small" />
           </IconButton>
-        </Stack>
+        </StyledStack>
       ))}
       {errors.correctedEvents?.message && (
         <Alert severity="error">{errors.correctedEvents.message}</Alert>
       )}
-      <Button
+      <StyledButton
         onClick={() =>
           append({ action: "breakStart", occurredAt: shift.startsAt })
         }
         size="small"
         startIcon={<Add />}
-        sx={{ alignSelf: "flex-start" }}
       >
         {tAttendance("add")}
-      </Button>
+      </StyledButton>
       <TextField
         error={!!errors.reason}
         fullWidth

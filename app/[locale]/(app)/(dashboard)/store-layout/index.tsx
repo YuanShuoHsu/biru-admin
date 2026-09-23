@@ -71,6 +71,12 @@ import type {
 
 const Joystick = dynamic(() => import("./Joystick"), { ssr: false });
 
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(2),
+}));
+
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
   backgroundColor: theme.vars.palette.background.paper,
   transition: theme.transitions.create("background-color"),
@@ -125,6 +131,11 @@ const GridLegend = styled(Stack)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   transition: theme.transitions.create("border-color"),
   pointerEvents: "none",
+}));
+
+const LegendStack = styled(Stack)(({ theme }) => ({
+  alignItems: "center",
+  gap: theme.spacing(0.5),
 }));
 
 const GridCellLine = styled("span")({
@@ -493,7 +504,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
   return (
     <>
       {!empty && (
-        <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
+        <ToolbarStack direction="row">
           <StyledToggleButtonGroup
             exclusive
             onChange={handleFloorsChange}
@@ -545,10 +556,10 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
             }
             label={tStoreLayout("showDimensions")}
           />
-          <KeyboardHint color="text.secondary" variant="caption">
+          <KeyboardHint color="textSecondary" variant="caption">
             {tStoreLayout("moveHint")}
           </KeyboardHint>
-        </Stack>
+        </ToolbarStack>
       )}
       <StyledPaper
         fullscreen={emulatedFullscreen}
@@ -557,7 +568,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
         {...(!empty && { onKeyDown: handleKeyDown, tabIndex: 0 })}
       >
         {empty ? (
-          <Typography color="text.secondary" variant="body2">
+          <Typography color="textSecondary" variant="body2">
             {tStoreLayout("empty")}
           </Typography>
         ) : (
@@ -826,18 +837,18 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
             </KeyboardControls>
             <Joystick inputRef={touchRef} />
             <GridLegend aria-label={tStoreLayout("gridScale")}>
-              <Stack alignItems="center" direction="row" gap={0.5}>
+              <LegendStack direction="row">
                 <GridCellLine />
-                <Typography color="text.secondary" variant="caption">
+                <Typography color="textSecondary" variant="caption">
                   {tStoreLayout("gridLegend.cell")}
                 </Typography>
-              </Stack>
-              <Stack alignItems="center" direction="row" gap={0.5}>
+              </LegendStack>
+              <LegendStack direction="row">
                 <GridSectionLine />
-                <Typography color="text.secondary" variant="caption">
+                <Typography color="textSecondary" variant="caption">
                   {tStoreLayout("gridLegend.section")}
                 </Typography>
-              </Stack>
+              </LegendStack>
             </GridLegend>
             <OverlayActions>
               <OverlayButton

@@ -46,11 +46,22 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
+const ActionsStack = styled(Stack)(({ theme }) => ({
+  height: "100%",
+  alignItems: "center",
+  gap: theme.spacing(0.5),
+}));
+
 const StyledIconButton = styled(IconButton, {
   shouldForwardProp: (prop) => prop !== "visible",
 })<{ visible: boolean }>(({ visible }) => ({
   visibility: visible ? "visible" : "hidden",
 }));
+
+const AvatarStack = styled(Stack)({
+  height: "100%",
+  alignItems: "center",
+});
 
 const StyledAvatar = styled(Avatar)(({ theme }) => ({
   width: 24,
@@ -65,6 +76,12 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
     border: `1px solid ${theme.vars.palette.primary.main}`,
     color: theme.vars.palette.primary.contrastText,
   },
+}));
+
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(1),
 }));
 
 const ROLE_COLOR_MAP: Record<string, "error" | "warning" | "default"> = {
@@ -341,12 +358,7 @@ const OrganizationsSlugMembers = ({
                 } = getMemberPermissions(row);
 
                 return (
-                  <Stack
-                    height="100%"
-                    direction="row"
-                    alignItems="center"
-                    gap={0.5}
-                  >
+                  <ActionsStack direction="row">
                     {canUpdateMemberRoles && (
                       <Tooltip
                         title={tMembers("actions.updateMemberRole.title")}
@@ -397,7 +409,7 @@ const OrganizationsSlugMembers = ({
                         </StyledIconButton>
                       </Tooltip>
                     )}
-                  </Stack>
+                  </ActionsStack>
                 );
               },
               resizable: false,
@@ -413,11 +425,11 @@ const OrganizationsSlugMembers = ({
             user: { image, name },
           },
         }: GridRenderCellParams<Member>) => (
-          <Stack height="100%" direction="row" alignItems="center">
+          <AvatarStack direction="row">
             <StyledAvatar alt={name} src={image || undefined}>
               {name[0]}
             </StyledAvatar>
-          </Stack>
+          </AvatarStack>
         ),
         resizable: false,
         sortable: false,
@@ -469,7 +481,7 @@ const OrganizationsSlugMembers = ({
   return (
     <>
       {canCreateInvitation && (
-        <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
+        <ToolbarStack direction="row">
           <Button
             onClick={handleInviteMember}
             size="small"
@@ -478,7 +490,7 @@ const OrganizationsSlugMembers = ({
           >
             {tMembers("actions.inviteMember.title")}
           </Button>
-        </Stack>
+        </ToolbarStack>
       )}
       <DataGrid
         {...DATA_GRID_PROPS}

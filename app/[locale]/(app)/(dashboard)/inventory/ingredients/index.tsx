@@ -98,11 +98,23 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
+const ActionsStack = styled(Stack)(({ theme }) => ({
+  height: "100%",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
+
 const StyledIconButton = styled(IconButton, {
   shouldForwardProp: (prop) => prop !== "visible",
 })<{ visible: boolean }>(({ visible }) => ({
   visibility: visible ? "visible" : "hidden",
 }));
+
+const ImageStack = styled(Stack)({
+  height: "100%",
+  flexDirection: "row",
+  alignItems: "center",
+});
 
 const StyledBox = styled(Box)(({ theme }) => ({
   position: "relative",
@@ -110,6 +122,30 @@ const StyledBox = styled(Box)(({ theme }) => ({
   height: theme.spacing(4),
   borderRadius: theme.shape.borderRadius,
   overflow: "hidden",
+}));
+
+const StockStack = styled(Stack, {
+  shouldForwardProp: (prop) => prop !== "isLowStock" && prop !== "isOutOfStock",
+})<{ isLowStock: boolean; isOutOfStock: boolean }>(
+  ({ isLowStock, isOutOfStock, theme }) => ({
+    height: "100%",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    gap: theme.spacing(1),
+
+    ...(isLowStock && {
+      color: theme.vars.palette.warning.main,
+    }),
+    ...(isOutOfStock && {
+      color: theme.vars.palette.error.main,
+    }),
+  }),
+);
+
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(2),
 }));
 
 interface IngredientsProps {
@@ -538,7 +574,7 @@ const Ingredients = ({
         filterable: false,
         headerName: tInventory("ingredients.actions.label"),
         renderCell: ({ row }: GridRenderCellParams<Ingredient>) => (
-          <Stack height="100%" direction="row" alignItems="center" gap={1}>
+          <ActionsStack direction="row">
             <Tooltip
               title={tInventory("ingredients.actions.viewTransactions.title")}
             >
@@ -579,7 +615,7 @@ const Ingredients = ({
                 </IconButton>
               </Tooltip>
             )}
-          </Stack>
+          </ActionsStack>
         ),
         resizable: false,
         sortable: false,
@@ -590,7 +626,7 @@ const Ingredients = ({
         headerName: `${tInventory("ingredients.image.label")} ${tCommon("optional")}`,
         renderCell: ({ value }: { value?: string | null }) =>
           value && (
-            <Stack height="100%" flexDirection="row" alignItems="center">
+            <ImageStack>
               <StyledBox>
                 <Image
                   alt={value}
@@ -600,7 +636,7 @@ const Ingredients = ({
                   style={{ objectFit: "cover" }}
                 />
               </StyledBox>
-            </Stack>
+            </ImageStack>
           ),
         resizable: false,
         sortable: false,
@@ -685,19 +721,10 @@ const Ingredients = ({
                     : ""
               }
             >
-              <Stack
-                height="100%"
-                color={
-                  isOutOfStock
-                    ? "error.main"
-                    : isLowStock
-                      ? "warning.main"
-                      : undefined
-                }
+              <StockStack
                 direction="row"
-                justifyContent="flex-end"
-                alignItems="center"
-                gap={1}
+                isLowStock={isLowStock}
+                isOutOfStock={isOutOfStock}
               >
                 {isOutOfStock ? (
                   <ErrorIcon fontSize="small" />
@@ -705,7 +732,7 @@ const Ingredients = ({
                   isLowStock && <Warning fontSize="small" />
                 )}
                 <StockCell ingredient={row} quantity={level} />
-              </Stack>
+              </StockStack>
             </Tooltip>
           );
         },
@@ -797,7 +824,7 @@ const Ingredients = ({
   return (
     <>
       {canWrite && (
-        <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
+        <ToolbarStack direction="row">
           {!isReorderMode ? (
             <>
               <Button
@@ -840,7 +867,7 @@ const Ingredients = ({
               </Button>
             </>
           )}
-        </Stack>
+        </ToolbarStack>
       )}
       <DragDropProvider onDragEnd={handleDragEnd}>
         <DataGrid

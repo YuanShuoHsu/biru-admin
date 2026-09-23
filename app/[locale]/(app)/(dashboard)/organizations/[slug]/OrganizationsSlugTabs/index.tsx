@@ -8,8 +8,19 @@ import RouteTabs from "@/components/RouteTabs";
 import { countKeys } from "@/constants/organizations";
 
 import { Chip, Stack } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import { useCountStore } from "@/providers/count-store-provider";
+
+const ContentStack = styled(Stack)(({ theme }) => ({
+  flex: 1,
+  gap: theme.spacing(2),
+}));
+
+const TabLabelStack = styled(Stack)(({ theme }) => ({
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
 
 interface OrganizationsSlugTabsProps {
   children: React.ReactNode;
@@ -24,7 +35,7 @@ const OrganizationsSlugTabs = ({ children }: OrganizationsSlugTabsProps) => {
   const tInvitations = useTranslations("organizations.invitations");
 
   return (
-    <Stack flex={1} gap={2}>
+    <ContentStack>
       <RouteTabs
         ariaLabel="organization tabs"
         tabs={[
@@ -32,12 +43,12 @@ const OrganizationsSlugTabs = ({ children }: OrganizationsSlugTabsProps) => {
           { path: `/organizations/${slug}/teams` },
           {
             label: (
-              <Stack alignItems="center" direction="row" gap={1}>
+              <TabLabelStack direction="row">
                 {tInvitations("label")}
                 {count > 0 && (
                   <Chip color="secondary" label={count} size="small" />
                 )}
-              </Stack>
+              </TabLabelStack>
             ),
             path: `/organizations/${slug}/invitations`,
           },
@@ -47,7 +58,7 @@ const OrganizationsSlugTabs = ({ children }: OrganizationsSlugTabsProps) => {
         ]}
       />
       {children}
-    </Stack>
+    </ContentStack>
   );
 };
 

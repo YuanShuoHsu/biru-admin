@@ -51,6 +51,10 @@ const StyledQuickFilter = styled(QuickFilter)({
   alignItems: "center",
 });
 
+type OwnerState = {
+  expanded: boolean;
+};
+
 const StyledToolbarButton = styled(ToolbarButton)<{ ownerState: OwnerState }>(
   ({ theme, ownerState }) => ({
     gridArea: "1 / 1",
@@ -63,10 +67,6 @@ const StyledToolbarButton = styled(ToolbarButton)<{ ownerState: OwnerState }>(
   }),
 );
 
-type OwnerState = {
-  expanded: boolean;
-};
-
 const StyledTextField = styled(TextField)<{
   ownerState: OwnerState;
 }>(({ theme, ownerState }) => ({
@@ -75,6 +75,12 @@ const StyledTextField = styled(TextField)<{
   width: ownerState.expanded ? 260 : "var(--trigger-width)",
   opacity: ownerState.expanded ? 1 : 0,
   transition: theme.transitions.create(["width", "opacity"]),
+}));
+
+const StyledInputAdornment = styled(InputAdornment)(({ theme }) => ({
+  "& .MuiIconButton-root": {
+    marginRight: theme.spacing(-0.75),
+  },
 }));
 
 declare module "@mui/x-data-grid" {
@@ -190,16 +196,15 @@ const CustomToolbar = ({ action }: CustomToolbarProps) => {
                     </InputAdornment>
                   ),
                   endAdornment: state.value ? (
-                    <InputAdornment position="end">
+                    <StyledInputAdornment position="end">
                       <QuickFilterClear
                         aria-label={tToolbar("search.clear")}
                         edge="end"
-                        material={{ sx: { marginRight: -0.75 } }}
                         size="small"
                       >
                         <Cancel fontSize="small" />
                       </QuickFilterClear>
-                    </InputAdornment>
+                    </StyledInputAdornment>
                   ) : null,
                   ...controlProps.slotProps?.input,
                 },

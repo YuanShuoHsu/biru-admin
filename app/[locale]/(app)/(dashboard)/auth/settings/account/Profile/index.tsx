@@ -11,7 +11,6 @@ import { type ProfileForm, useProfileFormSchema } from "./definitions";
 
 import CountryAutocomplete from "@/components/CountryAutocomplete";
 import FormCard, {
-  StyledCardActions,
   StyledCardContent,
   StyledCardHeader,
 } from "@/components/FormCard";
@@ -26,7 +25,15 @@ import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { Button, Grid, Stack, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  CardActions,
+  Grid,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
@@ -34,6 +41,27 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import { formatFullName } from "@/utils/auth";
 import { getPhoneDefaults, getPhoneFormatting } from "@/utils/countries";
+
+const StyledTypography = styled(Typography)({
+  fontWeight: "bold",
+});
+
+const StyledStack = styled(Stack)({
+  width: "100%",
+});
+
+const StyledGrid = styled(Grid)({
+  width: "100%",
+});
+
+const StyledCardActions = styled(CardActions)(({ theme }) => ({
+  padding: theme.spacing(2),
+  paddingTop: 0,
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "flex-end",
+  gap: theme.spacing(2),
+}));
 
 const PROFILE_UPLOAD_AVATAR_KEY = "profile-upload-avatar";
 
@@ -157,9 +185,9 @@ const Profile = () => {
     <FormCard component="form" onSubmit={onSubmit}>
       <StyledCardHeader
         title={
-          <Typography color="primary" fontWeight="bold" variant="h6">
+          <StyledTypography color="primary" variant="h6">
             {tAuth("settings.profile.label")}
-          </Typography>
+          </StyledTypography>
         }
       />
       <StyledCardContent>
@@ -168,8 +196,7 @@ const Profile = () => {
           key={session?.user.id}
           uploadKey={PROFILE_UPLOAD_AVATAR_KEY}
         />
-        <Stack
-          width="100%"
+        <StyledStack
           direction={locale === LocaleEnum.En ? "row-reverse" : "row"}
           spacing={2}
         >
@@ -192,7 +219,7 @@ const Profile = () => {
             required
             {...register("firstName")}
           />
-        </Stack>
+        </StyledStack>
         <DatePicker
           disableFuture
           label={`${tAuth("birthDate.label")} ${tCommon("optional")}`}
@@ -209,7 +236,7 @@ const Profile = () => {
             })
           }
         />
-        <Grid container spacing={2} width="100%">
+        <StyledGrid container spacing={2}>
           <Grid size={{ xs: 12, sm: 6 }}>
             <CountryAutocomplete
               error={!!errors.countryCode}
@@ -241,7 +268,7 @@ const Profile = () => {
               {...register("telephone")}
             />
           </Grid>
-        </Grid>
+        </StyledGrid>
         <TextField
           error={!!errors.bio}
           fullWidth
@@ -254,7 +281,7 @@ const Profile = () => {
           {...register("bio")}
         />
       </StyledCardContent>
-      <StyledCardActions disableSpacing sx={{ alignItems: "flex-end" }}>
+      <StyledCardActions disableSpacing>
         <Button
           disabled={!isNameDirty && !isAvatarDirty}
           loading={isSubmitting}

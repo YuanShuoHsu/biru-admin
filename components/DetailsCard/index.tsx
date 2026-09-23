@@ -11,6 +11,12 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
+const StyledStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
+
 const StyledCard = styled(Card)({
   flex: 1,
   display: "flex",
@@ -67,7 +73,7 @@ const DetailsCard = ({
   return (
     <>
       {action && (
-        <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
+        <StyledStack direction="row">
           <Button
             onClick={action.onClick}
             size="small"
@@ -76,7 +82,7 @@ const DetailsCard = ({
           >
             {action.label}
           </Button>
-        </Stack>
+        </StyledStack>
       )}
       <StyledCard variant="outlined">
         <StyledCardContent centered={showEmpty}>
@@ -84,7 +90,7 @@ const DetailsCard = ({
             <Grid container spacing={2}>
               {items.map(({ key, label, value }) => (
                 <StyledGrid key={key} size={{ xs: 12, sm: 6, md: 4 }}>
-                  <Typography color="text.secondary" variant="body2">
+                  <Typography color="textSecondary" variant="body2">
                     {label}
                   </Typography>
                   <Typography component="div" variant="body1">
@@ -95,7 +101,7 @@ const DetailsCard = ({
             </Grid>
           )}
           {showEmpty && (
-            <Typography color="text.secondary" variant="body2">
+            <Typography color="textSecondary" variant="body2">
               {empty}
             </Typography>
           )}

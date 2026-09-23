@@ -10,6 +10,11 @@ import type { TextFieldProps } from "@mui/material";
 import { Badge, Stack, Tab, Tabs, TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
+const StyledStack = styled(Stack)(({ theme }) => ({
+  width: "100%",
+  gap: theme.spacing(2),
+}));
+
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
     right: theme.spacing(-1.25),
@@ -47,7 +52,7 @@ const LocalizedTextFields = ({ fields }: LocalizedTextFieldsProps) => {
   }, [firstErrorLocale]);
 
   return (
-    <Stack width="100%" gap={2}>
+    <StyledStack>
       <Tabs
         aria-label="language tabs"
         onChange={(_event, value: Locale) => setActiveLocale(value)}
@@ -79,7 +84,7 @@ const LocalizedTextFields = ({ fields }: LocalizedTextFieldsProps) => {
       {fields(activeLocale).map((props, index) => (
         <TextField key={index} {...props} />
       ))}
-    </Stack>
+    </StyledStack>
   );
 };
 

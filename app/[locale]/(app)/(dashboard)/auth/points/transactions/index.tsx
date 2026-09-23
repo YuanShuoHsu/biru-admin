@@ -36,9 +36,19 @@ import type { MyPoints } from "@/types/points";
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
 
+const StyledTypography = styled(Typography)({
+  fontWeight: "bold",
+});
+
 const StyledAvatar = styled(Avatar)(({ theme }) => ({
   backgroundColor: theme.vars.palette.primary.main,
 }));
+
+const StyledListItemText = styled(ListItemText)({
+  "& .MuiListItemText-primary": {
+    fontWeight: "bold",
+  },
+});
 
 const StyledTransactionCardHeader = styled(CardHeader)({
   "& .MuiCardHeader-action": {
@@ -101,14 +111,14 @@ const Points = ({ page, pageSize, points }: PointsProps) => {
     <FormCard>
       <StyledCardHeader
         title={
-          <Typography color="primary" fontWeight="bold" variant="h6">
+          <StyledTypography color="primary" variant="h6">
             {tAuth("points.label")}
-          </Typography>
+          </StyledTypography>
         }
       />
       <StyledCardContent>
         {!points && (
-          <Typography color="text.secondary" variant="body2">
+          <Typography color="textSecondary" variant="body2">
             {tAuth("points.empty")}
           </Typography>
         )}
@@ -117,11 +127,11 @@ const Points = ({ page, pageSize, points }: PointsProps) => {
             <ListItem
               disableGutters
               secondaryAction={
-                <Typography color="primary" fontWeight="bold" variant="h5">
+                <StyledTypography color="primary" variant="h5">
                   {tAuth("points.points", {
                     points: format.number(points.balance),
                   })}
-                </Typography>
+                </StyledTypography>
               }
             >
               <ListItemAvatar>
@@ -129,17 +139,15 @@ const Points = ({ page, pageSize, points }: PointsProps) => {
                   <Stars fontSize="small" />
                 </StyledAvatar>
               </ListItemAvatar>
-              <ListItemText
+              <StyledListItemText
                 primary={tAuth("points.balance")}
-                slotProps={{
-                  primary: { fontWeight: "bold", variant: "subtitle2" },
-                }}
+                slotProps={{ primary: { variant: "subtitle2" } }}
               />
             </ListItem>
           </List>
         )}
         {points && transactions.length === 0 && (
-          <Typography color="text.secondary" variant="body2">
+          <Typography color="textSecondary" variant="body2">
             {tAuth("points.transactions.empty")}
           </Typography>
         )}
@@ -147,11 +155,10 @@ const Points = ({ page, pageSize, points }: PointsProps) => {
           <Card key={transaction.id} variant="outlined">
             <StyledTransactionCardHeader
               action={
-                <Typography
+                <StyledTypography
                   color={
-                    transaction.type === "earn" ? "primary" : "text.secondary"
+                    transaction.type === "earn" ? "primary" : "textSecondary"
                   }
-                  fontWeight="bold"
                   variant="body2"
                 >
                   {tAuth("points.points", {
@@ -159,7 +166,7 @@ const Points = ({ page, pageSize, points }: PointsProps) => {
                       signDisplay: "exceptZero",
                     }),
                   })}
-                </Typography>
+                </StyledTypography>
               }
               avatar={
                 <StyledAvatar>

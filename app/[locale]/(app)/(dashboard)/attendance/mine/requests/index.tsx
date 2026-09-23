@@ -72,11 +72,21 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
+const StyledStack = styled(Stack)(({ theme }) => ({
+  height: "100%",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
+
 const StyledIconButton = styled(IconButton, {
   shouldForwardProp: (prop) => prop !== "visible",
 })<{ visible: boolean }>(({ visible }) => ({
   visibility: visible ? "visible" : "hidden",
 }));
+
+const StyledButton = styled(Button)({
+  alignSelf: "flex-start",
+});
 
 interface RequestsProps {
   enabled: boolean;
@@ -341,7 +351,7 @@ const Requests = ({
         renderCell: ({ row }: GridRenderCellParams<AttendanceRequest>) =>
           row.status === "pending" ||
           (row.kind === "leave" && row.status === "approved") ? (
-            <Stack height="100%" direction="row" alignItems="center" gap={1}>
+            <StyledStack direction="row">
               <Tooltip title={tAttendance("parentalReturn")}>
                 <span>
                   <StyledIconButton
@@ -376,7 +386,7 @@ const Requests = ({
                   </IconButton>
                 </span>
               </Tooltip>
-            </Stack>
+            </StyledStack>
           ) : null,
         resizable: false,
         sortable: false,
@@ -474,16 +484,15 @@ const Requests = ({
           {tAttendance("errors.employeeNotEnabled")}
         </Alert>
       )}
-      <Button
+      <StyledButton
         disabled={!enabled}
         onClick={handleCreateRequest}
         size="small"
         startIcon={<Add />}
-        sx={{ alignSelf: "flex-start" }}
         variant="contained"
       >
         {tAttendance("requests.actions.create")}
-      </Button>
+      </StyledButton>
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}

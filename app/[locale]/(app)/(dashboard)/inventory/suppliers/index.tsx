@@ -34,6 +34,7 @@ import {
   Stack,
   Tooltip,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
   GridFilterModel,
@@ -56,6 +57,24 @@ import type {
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
+
+const ActionsStack = styled(Stack)(({ theme }) => ({
+  height: "100%",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
+
+const ChipsStack = styled(Stack)(({ theme }) => ({
+  alignItems: "center",
+  gap: theme.spacing(0.5),
+  height: "100%",
+}));
+
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(2),
+}));
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -299,12 +318,7 @@ const Suppliers = ({
               filterable: false,
               headerName: tInventory("suppliers.actions.label"),
               renderCell: ({ row }: GridRenderCellParams<Supplier>) => (
-                <Stack
-                  height="100%"
-                  direction="row"
-                  alignItems="center"
-                  gap={1}
-                >
+                <ActionsStack direction="row">
                   <Tooltip
                     title={tInventory("suppliers.actions.updateSupplier.title")}
                   >
@@ -327,7 +341,7 @@ const Suppliers = ({
                       <Delete fontSize="small" />
                     </IconButton>
                   </Tooltip>
-                </Stack>
+                </ActionsStack>
               ),
               resizable: false,
               sortable: false,
@@ -366,7 +380,7 @@ const Suppliers = ({
         renderCell: ({
           row: { ingredients: supplied },
         }: GridRenderCellParams<Supplier>) => (
-          <Stack alignItems="center" direction="row" gap={0.5} height="100%">
+          <ChipsStack direction="row">
             {supplied.map(({ id, name }) => (
               <Chip
                 key={id}
@@ -375,7 +389,7 @@ const Suppliers = ({
                 variant="outlined"
               />
             ))}
-          </Stack>
+          </ChipsStack>
         ),
       },
       {
@@ -416,7 +430,7 @@ const Suppliers = ({
 
   return (
     <>
-      <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
+      <ToolbarStack direction="row">
         {canWrite && (
           <Button
             onClick={handleCreateSupplier}
@@ -427,7 +441,7 @@ const Suppliers = ({
             {tInventory("suppliers.actions.createSupplier.title")}
           </Button>
         )}
-      </Stack>
+      </ToolbarStack>
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}

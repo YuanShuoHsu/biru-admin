@@ -80,10 +80,28 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
+const ActionsStack = styled(Stack)(({ theme }) => ({
+  height: "100%",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
+
 const StyledIconButton = styled(IconButton, {
   shouldForwardProp: (prop) => prop !== "visible",
 })<{ visible: boolean }>(({ visible }) => ({
   visibility: visible ? "visible" : "hidden",
+}));
+
+const ChipsStack = styled(Stack)(({ theme }) => ({
+  alignItems: "center",
+  gap: theme.spacing(0.5),
+  height: "100%",
+}));
+
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  alignItems: "center",
+  flexWrap: "wrap",
+  gap: theme.spacing(2),
 }));
 
 interface CouponsProps {
@@ -377,12 +395,7 @@ const Coupons = ({
               filterable: false,
               headerName: tCoupons("actions.label"),
               renderCell: ({ row }: GridRenderCellParams<Coupon>) => (
-                <Stack
-                  height="100%"
-                  direction="row"
-                  alignItems="center"
-                  gap={1}
-                >
+                <ActionsStack direction="row">
                   {canManageCoupon && (
                     <Tooltip title={tCoupons("actions.updateCoupon.title")}>
                       <IconButton
@@ -433,7 +446,7 @@ const Coupons = ({
                       </IconButton>
                     </Tooltip>
                   )}
-                </Stack>
+                </ActionsStack>
               ),
               resizable: false,
               sortable: false,
@@ -460,12 +473,7 @@ const Coupons = ({
             renderCell: ({
               row: { applicableOrganizationIds },
             }: GridRenderCellParams<Coupon>) => (
-              <Stack
-                alignItems="center"
-                direction="row"
-                gap={0.5}
-                height="100%"
-              >
+              <ChipsStack direction="row">
                 {applicableOrganizationIds?.length ? (
                   organizations
                     .filter(({ id }) => applicableOrganizationIds.includes(id))
@@ -484,7 +492,7 @@ const Coupons = ({
                     variant="outlined"
                   />
                 )}
-              </Stack>
+              </ChipsStack>
             ),
             type: "singleSelect",
             valueOptions: enumOptions.applicableOrganizationIds,
@@ -494,12 +502,7 @@ const Coupons = ({
             filterable: false,
             headerName: tCoupons("organizationScope.label"),
             renderCell: ({ row }: GridRenderCellParams<Coupon>) => (
-              <Stack
-                alignItems="center"
-                direction="row"
-                gap={0.5}
-                height="100%"
-              >
+              <ChipsStack direction="row">
                 <Chip
                   label={tCoupons(
                     !row.applicableOrganizationIds?.length
@@ -511,7 +514,7 @@ const Coupons = ({
                   size="small"
                   variant="outlined"
                 />
-              </Stack>
+              </ChipsStack>
             ),
           },
       {
@@ -522,11 +525,11 @@ const Coupons = ({
           row: { menuSectionNames },
         }: GridRenderCellParams<Coupon>) =>
           menuSectionNames?.length ? (
-            <Stack alignItems="center" direction="row" gap={0.5} height="100%">
+            <ChipsStack direction="row">
               {menuSectionNames.map((name) => (
                 <Chip key={name} label={name} size="small" variant="outlined" />
               ))}
-            </Stack>
+            </ChipsStack>
           ) : null,
       },
       {
@@ -537,11 +540,11 @@ const Coupons = ({
           row: { menuItemNames },
         }: GridRenderCellParams<Coupon>) =>
           menuItemNames?.length ? (
-            <Stack alignItems="center" direction="row" gap={0.5} height="100%">
+            <ChipsStack direction="row">
               {menuItemNames.map((name) => (
                 <Chip key={name} label={name} size="small" variant="outlined" />
               ))}
-            </Stack>
+            </ChipsStack>
           ) : null,
       },
       {
@@ -616,7 +619,7 @@ const Coupons = ({
         filterOperators: enumFilterOperators,
         headerName: tCoupons("distribution"),
         renderCell: ({ row }: GridRenderCellParams<Coupon>) => (
-          <Stack alignItems="center" direction="row" gap={0.5} height="100%">
+          <ChipsStack direction="row">
             {row.isPublic && (
               <Chip
                 label={tCoupons("isPublic.label")}
@@ -639,7 +642,7 @@ const Coupons = ({
                 variant="outlined"
               />
             )}
-          </Stack>
+          </ChipsStack>
         ),
         type: "singleSelect",
         valueOptions: enumOptions.distribution,
@@ -691,7 +694,7 @@ const Coupons = ({
   return (
     <>
       {canManageCoupon && (
-        <Stack alignItems="center" direction="row" flexWrap="wrap" gap={2}>
+        <ToolbarStack direction="row">
           <Button
             onClick={handleCreateCoupon}
             size="small"
@@ -700,7 +703,7 @@ const Coupons = ({
           >
             {tCoupons("actions.createCoupon.title")}
           </Button>
-        </Stack>
+        </ToolbarStack>
       )}
       <DataGrid
         {...DATA_GRID_PROPS}

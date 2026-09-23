@@ -25,6 +25,7 @@ import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { Check, Close } from "@mui/icons-material";
 import { Chip, IconButton, Stack, Tooltip } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
   GridFilterModel,
@@ -49,6 +50,12 @@ import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAttendanceRequestEnumOptions } from "@/utils/enumOptions";
 import { attendancePath, getStatutoryLeaveName } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+
+const StyledStack = styled(Stack)(({ theme }) => ({
+  alignItems: "center",
+  gap: theme.spacing(1),
+  height: "100%",
+}));
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -270,12 +277,7 @@ const Reviews = ({
               renderCell: ({ row }: GridRenderCellParams<AttendanceRequest>) =>
                 row.status === "pending" ||
                 row.status === "cancellationPending" ? (
-                  <Stack
-                    alignItems="center"
-                    direction="row"
-                    gap={1}
-                    height="100%"
-                  >
+                  <StyledStack direction="row">
                     <Tooltip
                       title={
                         row.employeeId === employeeId
@@ -312,7 +314,7 @@ const Reviews = ({
                         </IconButton>
                       </span>
                     </Tooltip>
-                  </Stack>
+                  </StyledStack>
                 ) : null,
               resizable: false,
               sortable: false,

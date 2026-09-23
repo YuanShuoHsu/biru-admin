@@ -70,10 +70,27 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
+const ActionsStack = styled(Stack)(({ theme }) => ({
+  height: "100%",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
+
+const ImageStack = styled(Stack)({
+  height: "100%",
+  alignItems: "center",
+});
+
 const StyledAvatar = styled(Avatar)(({ theme }) => ({
   width: theme.spacing(10),
   height: "auto",
   aspectRatio: "16/9",
+}));
+
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(2),
 }));
 
 interface BannersProps {
@@ -403,12 +420,7 @@ const Banners = ({
               filterable: false,
               headerName: tBanners("actions.label"),
               renderCell: ({ row }: GridRenderCellParams<Banner>) => (
-                <Stack
-                  height="100%"
-                  direction="row"
-                  alignItems="center"
-                  gap={1}
-                >
+                <ActionsStack direction="row">
                   <Tooltip title={tBanners("actions.updateBanner.title")}>
                     <IconButton
                       onClick={(event) => {
@@ -435,7 +447,7 @@ const Banners = ({
                       <Delete fontSize="small" />
                     </IconButton>
                   </Tooltip>
-                </Stack>
+                </ActionsStack>
               ),
               resizable: false,
               sortable: false,
@@ -448,13 +460,13 @@ const Banners = ({
         filterable: false,
         headerName: tBanners("image.label"),
         renderCell: ({ row: { image } }: GridRenderCellParams<Banner>) => (
-          <Stack height="100%" direction="row" alignItems="center">
+          <ImageStack direction="row">
             <StyledAvatar
               alt={tBanners("image.label")}
               src={image}
               variant="rounded"
             />
-          </Stack>
+          </ImageStack>
         ),
         sortable: false,
       },
@@ -500,7 +512,7 @@ const Banners = ({
 
   return (
     <>
-      <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
+      <ToolbarStack direction="row">
         {!isReorderMode ? (
           <>
             <Button
@@ -541,7 +553,7 @@ const Banners = ({
             </Button>
           </>
         )}
-      </Stack>
+      </ToolbarStack>
       <DragDropProvider onDragEnd={handleDragEnd}>
         <DataGrid
           {...DATA_GRID_PROPS}

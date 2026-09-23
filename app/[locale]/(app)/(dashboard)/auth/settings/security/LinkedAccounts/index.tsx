@@ -12,6 +12,11 @@ import FormCard, {
 import GoogleIcon from "@/components/GoogleIcon";
 
 import { Divider, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
+
+const StyledTypography = styled(Typography)({
+  fontWeight: "bold",
+});
 
 export interface Provider {
   id: string;
@@ -30,9 +35,9 @@ const LinkedAccounts = () => {
     <FormCard component="form">
       <StyledCardHeader
         title={
-          <Typography color="primary" fontWeight="bold" variant="h6">
+          <StyledTypography color="primary" variant="h6">
             {tAuth("settings.linkedAccounts.label")}
-          </Typography>
+          </StyledTypography>
         }
       />
       <StyledCardContent>

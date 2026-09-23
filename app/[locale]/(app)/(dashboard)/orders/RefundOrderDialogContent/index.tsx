@@ -10,9 +10,11 @@ import {
   Divider,
   MenuItem,
   Stack,
+  type StackProps,
   TextField,
   Typography,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -29,6 +31,33 @@ import { getRefundedQuantities } from "@/utils/refunds";
 
 import { useFormatMoney } from "@/hooks/useFormatMoney";
 import { useOrderItemName } from "@/hooks/useOrderItemName";
+
+const FormStack = styled(Stack)<StackProps>(({ theme }) => ({
+  gap: theme.spacing(2),
+}));
+
+const ItemRowStack = styled(Stack)(({ theme }) => ({
+  alignItems: "center",
+  gap: theme.spacing(1),
+  justifyContent: "space-between",
+}));
+
+const StyledTextField = styled(TextField)({
+  minWidth: 88,
+});
+
+const SummaryRowStack = styled(Stack)({
+  justifyContent: "space-between",
+});
+
+const TotalStack = styled(Stack)({
+  alignItems: "center",
+  justifyContent: "space-between",
+});
+
+const StyledTypography = styled(Typography)({
+  fontWeight: "bold",
+});
 
 export const REFUND_ORDER_FORM_ID = "refund-order-form";
 
@@ -159,12 +188,7 @@ const RefundOrderDialogContent = ({
   };
 
   return (
-    <Stack
-      component="form"
-      gap={2}
-      id={REFUND_ORDER_FORM_ID}
-      onSubmit={onSubmit}
-    >
+    <FormStack component="form" id={REFUND_ORDER_FORM_ID} onSubmit={onSubmit}>
       {!!error && (
         <Alert severity="error">{tOrders("actions.refund.loadFailed")}</Alert>
       )}
@@ -201,20 +225,14 @@ const RefundOrderDialogContent = ({
           item.orderQuantity - (refundedQuantities.get(item.id) ?? 0);
 
         return (
-          <Stack
-            alignItems="center"
-            direction="row"
-            gap={1}
-            justifyContent="space-between"
-            key={item.id}
-          >
+          <ItemRowStack direction="row" key={item.id}>
             <Typography
-              color={remaining ? "text.primary" : "text.disabled"}
+              color={remaining ? "textPrimary" : "textDisabled"}
               variant="body2"
             >
               {getOrderItemName(item)} {tCommon("multiply")} {remaining}
             </Typography>
-            <TextField
+            <StyledTextField
               disabled={!remaining || confirmLoading}
               onChange={({ target }) => {
                 setFailed(false);
@@ -227,7 +245,6 @@ const RefundOrderDialogContent = ({
               slotProps={{
                 htmlInput: { "aria-label": getOrderItemName(item) },
               }}
-              sx={{ minWidth: 88 }}
               value={Math.min(selected.get(item.id) ?? 0, remaining)}
             >
               {Array.from({ length: remaining + 1 }, (_, index) => (
@@ -235,8 +252,8 @@ const RefundOrderDialogContent = ({
                   {index}
                 </MenuItem>
               ))}
-            </TextField>
-          </Stack>
+            </StyledTextField>
+          </ItemRowStack>
         );
       })}
       <TextField
@@ -249,24 +266,24 @@ const RefundOrderDialogContent = ({
       />
       <Divider />
       {!!preview?.allocatedDiscount && (
-        <Stack direction="row" justifyContent="space-between">
+        <SummaryRowStack direction="row">
           <Typography variant="body2">
             {tOrders("actions.refund.allocatedDiscount")}
           </Typography>
           <Typography variant="body2">
             -{formatMoney(preview.allocatedDiscount, currency)}
           </Typography>
-        </Stack>
+        </SummaryRowStack>
       )}
-      <Stack alignItems="center" direction="row" justifyContent="space-between">
-        <Typography fontWeight="bold" variant="subtitle1">
+      <TotalStack direction="row">
+        <StyledTypography variant="subtitle1">
           {tOrders("actions.refund.amount")}
-        </Typography>
-        <Typography color="error" fontWeight="bold" variant="h6">
+        </StyledTypography>
+        <StyledTypography color="error" variant="h6">
           {formatMoney(preview?.amount ?? 0, currency)}
-        </Typography>
-      </Stack>
-    </Stack>
+        </StyledTypography>
+      </TotalStack>
+    </FormStack>
   );
 };
 

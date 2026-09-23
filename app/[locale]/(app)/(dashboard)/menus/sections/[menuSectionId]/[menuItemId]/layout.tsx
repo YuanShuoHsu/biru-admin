@@ -14,6 +14,12 @@ import {
   type SvgIconComponent,
 } from "@mui/icons-material";
 import { Stack, Tab, Tabs } from "@mui/material";
+import { styled } from "@mui/material/styles";
+
+const StyledStack = styled(Stack)(({ theme }) => ({
+  height: "100%",
+  gap: theme.spacing(2),
+}));
 
 const MenuItemLayout = ({ children }: { children: React.ReactNode }) => {
   const { menuSectionId, menuItemId } = useParams<{
@@ -62,7 +68,7 @@ const MenuItemLayout = ({ children }: { children: React.ReactNode }) => {
     tabs[0].value;
 
   return (
-    <Stack height="100%" gap={2}>
+    <StyledStack>
       <Tabs
         aria-label={tMenus("items.actions.manageItem.title")}
         scrollButtons="auto"
@@ -82,7 +88,7 @@ const MenuItemLayout = ({ children }: { children: React.ReactNode }) => {
         ))}
       </Tabs>
       {children}
-    </Stack>
+    </StyledStack>
   );
 };
 

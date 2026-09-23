@@ -1,8 +1,7 @@
 import DashboardRangeToggle from "./DashboardRangeToggle";
+import { StyledStack } from "./styled";
 
 import { resolveDashboardRange } from "@/app/[locale]/(app)/(dashboard)/dashboard/definitions";
-
-import { Stack } from "@mui/material";
 
 interface SubheaderDashboardPageProps {
   searchParams: Promise<{ organization?: string; range?: string }>;
@@ -16,13 +15,9 @@ const SubheaderDashboardPage = async ({
   const range = resolveDashboardRange(rangeParam);
 
   return (
-    <Stack
-      direction="row"
-      justifyContent={{ sm: "flex-end" }}
-      alignItems="center"
-    >
+    <StyledStack direction="row">
       <DashboardRangeToggle organizationSlug={organization} range={range} />
-    </Stack>
+    </StyledStack>
   );
 };
 

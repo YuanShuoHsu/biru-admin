@@ -44,9 +44,19 @@ import { fetcher } from "@/utils/fetcher";
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
 
+const StyledTypography = styled(Typography)({
+  fontWeight: "bold",
+});
+
 const StyledAvatar = styled(Avatar)(({ theme }) => ({
   backgroundColor: theme.vars.palette.primary.main,
 }));
+
+const StyledListItemText = styled(ListItemText)({
+  "& .MuiListItemText-primary": {
+    fontWeight: "bold",
+  },
+});
 
 const StyledCardActions = styled(CardActions)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -115,14 +125,14 @@ const Store = ({ points }: StoreProps) => {
     <FormCard>
       <StyledCardHeader
         title={
-          <Typography color="primary" fontWeight="bold" variant="h6">
+          <StyledTypography color="primary" variant="h6">
             {tAuth("store.label")}
-          </Typography>
+          </StyledTypography>
         }
       />
       <StyledCardContent>
         {!points && (
-          <Typography color="text.secondary" variant="body2">
+          <Typography color="textSecondary" variant="body2">
             {tAuth("points.empty")}
           </Typography>
         )}
@@ -131,11 +141,11 @@ const Store = ({ points }: StoreProps) => {
             <ListItem
               disableGutters
               secondaryAction={
-                <Typography color="primary" fontWeight="bold" variant="h5">
+                <StyledTypography color="primary" variant="h5">
                   {tAuth("points.points", {
                     points: format.number(points.balance),
                   })}
-                </Typography>
+                </StyledTypography>
               }
             >
               <ListItemAvatar>
@@ -143,17 +153,15 @@ const Store = ({ points }: StoreProps) => {
                   <Stars fontSize="small" />
                 </StyledAvatar>
               </ListItemAvatar>
-              <ListItemText
+              <StyledListItemText
                 primary={tAuth("points.balance")}
-                slotProps={{
-                  primary: { fontWeight: "bold", variant: "subtitle2" },
-                }}
+                slotProps={{ primary: { variant: "subtitle2" } }}
               />
             </ListItem>
           </List>
         )}
         {points && coupons.length === 0 && (
-          <Typography color="text.secondary" variant="body2">
+          <Typography color="textSecondary" variant="body2">
             {tAuth("points.redeemableEmpty")}
           </Typography>
         )}
@@ -199,11 +207,11 @@ const Store = ({ points }: StoreProps) => {
               title={coupon.code}
             />
             <StyledCardActions disableSpacing>
-              <Typography color="primary" fontWeight="bold" variant="h5">
+              <StyledTypography color="primary" variant="h5">
                 {tAuth("points.points", {
                   points: format.number(coupon.pointsCost),
                 })}
-              </Typography>
+              </StyledTypography>
               <Button
                 disabled={(points?.balance || 0) < coupon.pointsCost}
                 loading={redeemingId === coupon.id}

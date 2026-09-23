@@ -24,6 +24,7 @@ import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { Receipt } from "@mui/icons-material";
 import { IconButton, Stack, Tooltip } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
   GridFilterModel,
@@ -47,6 +48,11 @@ import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getPayrollStatementEnumOptions } from "@/utils/enumOptions";
 import { fromCents, payrollPath } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+
+const StyledStack = styled(Stack)({
+  alignItems: "center",
+  height: "100%",
+});
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -236,7 +242,7 @@ const Payslips = ({
         filterable: false,
         headerName: tAttendance("actions"),
         renderCell: ({ row }: GridRenderCellParams<PayrollStatement>) => (
-          <Stack alignItems="center" direction="row" height="100%">
+          <StyledStack direction="row">
             <Tooltip title={tAttendance("payslips.actions.view")}>
               <IconButton
                 onClick={() => handleStatementDialog(row)}
@@ -245,7 +251,7 @@ const Payslips = ({
                 <Receipt fontSize="small" />
               </IconButton>
             </Tooltip>
-          </Stack>
+          </StyledStack>
         ),
         resizable: false,
         sortable: false,

@@ -4,7 +4,8 @@ import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent, useEffect, useState } from "react";
 
-import { Alert, Stack, TextField } from "@mui/material";
+import { Alert, Stack, type StackProps, TextField } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -12,6 +13,10 @@ import type { AdminOrderResponse, VoidInvoiceDto } from "@/types/orders";
 
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
+
+const StyledStack = styled(Stack)<StackProps>(({ theme }) => ({
+  gap: theme.spacing(2),
+}));
 
 export const VOID_INVOICE_FORM_ID = "void-invoice-form";
 
@@ -83,12 +88,7 @@ const VoidInvoiceDialogContent = ({
   };
 
   return (
-    <Stack
-      component="form"
-      gap={2}
-      id={VOID_INVOICE_FORM_ID}
-      onSubmit={onSubmit}
-    >
+    <StyledStack component="form" id={VOID_INVOICE_FORM_ID} onSubmit={onSubmit}>
       <Alert severity="warning">
         {tOrders.rich("actions.voidInvoice.confirm", {
           bold: (chunks) => <strong>{chunks}</strong>,
@@ -128,7 +128,7 @@ const VoidInvoiceDialogContent = ({
         slotProps={{ htmlInput: { maxLength: 60 } }}
         value={customerName}
       />
-    </Stack>
+    </StyledStack>
   );
 };
 

@@ -18,6 +18,7 @@ import { STORE_TIMEZONE } from "@/constants/timezone";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Checkbox, FormControlLabel, MenuItem, TextField } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -30,6 +31,10 @@ import { fetcher } from "@/utils/fetcher";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
+
+const StyledFormControlLabel = styled(FormControlLabel)({
+  alignSelf: "flex-start",
+});
 
 interface ShiftDialogProps {
   date?: string;
@@ -192,7 +197,7 @@ const ShiftDialog = ({
         timezone={STORE_TIMEZONE}
         value={endsAt ? dayjs(endsAt) : null}
       />
-      <FormControlLabel
+      <StyledFormControlLabel
         control={
           <Checkbox
             checked={paidBreak}
@@ -200,7 +205,6 @@ const ShiftDialog = ({
           />
         }
         label={tAttendance("paidBreak")}
-        sx={{ alignSelf: "flex-start" }}
       />
       <TextField
         error={!!errors.dayKind}

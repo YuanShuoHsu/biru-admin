@@ -43,6 +43,16 @@ import { useCountdownStore } from "@/providers/countdown-store-provider";
 
 import { getHref } from "@/utils/href";
 
+const StyledStack = styled(Stack)(({ theme }) => ({
+  flexDirection: "row",
+  alignItems: "center",
+  gap: theme.spacing(0.5),
+}));
+
+const StyledTypography = styled(Typography)({
+  fontWeight: "bold",
+});
+
 const StyledAvatar = styled(Avatar, {
   shouldForwardProp: (prop) => prop !== "color",
 })<{ color: "error" | "primary" }>(({ color, theme }) => {
@@ -207,14 +217,14 @@ const AuthVerifyEmail = ({
         <>
           {resendButton}
           <Divider flexItem />
-          <Stack alignItems="center" flexDirection="row" gap={0.5}>
+          <StyledStack>
             <Typography variant="body2">
               {tAuth("verifyEmail.default.wrongEmail")}
             </Typography>
             <Link href={signUpHref} underline="hover" variant="body2">
               {tAuth("signUp.label")}
             </Link>
-          </Stack>
+          </StyledStack>
         </>
       ),
       color: "primary",
@@ -270,21 +280,16 @@ const AuthVerifyEmail = ({
     <FormCard component="form" onSubmit={onSubmit}>
       <StyledCardHeader
         title={
-          <Typography
-            color={config.color}
-            fontWeight="bold"
-            textAlign="center"
-            variant="h6"
-          >
+          <StyledTypography align="center" color={config.color} variant="h6">
             {config.title}
-          </Typography>
+          </StyledTypography>
         }
       />
       <StyledCardContent>
         <StyledAvatar color={config.color}>
           <Icon fontSize="large" />
         </StyledAvatar>
-        <Typography color="text.secondary" textAlign="center" variant="caption">
+        <Typography align="center" color="textSecondary" variant="caption">
           {config.subtitle}
         </Typography>
         <TextField

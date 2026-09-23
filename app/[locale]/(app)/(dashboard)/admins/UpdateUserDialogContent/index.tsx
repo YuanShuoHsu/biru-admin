@@ -25,10 +25,22 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { User } from "@/types/admins";
+
+const NameStack = styled(Stack)(({ theme }) => ({
+  width: "100%",
+  gap: theme.spacing(2),
+}));
+
+const OptionsStack = styled(Stack)({
+  width: "100%",
+  flexDirection: "row",
+  alignItems: "center",
+});
 
 interface UpdateUserDialogContentProps {
   mutateAdmins: () => void;
@@ -116,11 +128,7 @@ const UpdateUserDialogContent = ({
   return (
     <FormBox id="update-user-form" onSubmit={onSubmit}>
       <UploadAvatars initialSrc={user.image} uploadKey={uploadKey} />
-      <Stack
-        width="100%"
-        direction={locale === LocaleEnum.En ? "row-reverse" : "row"}
-        gap={2}
-      >
+      <NameStack direction={locale === LocaleEnum.En ? "row-reverse" : "row"}>
         <TextField
           autoComplete="family-name"
           error={!!errors.lastName}
@@ -140,7 +148,7 @@ const UpdateUserDialogContent = ({
           required
           {...register("firstName")}
         />
-      </Stack>
+      </NameStack>
       <TextField
         autoComplete="email"
         error={!!errors.email}
@@ -163,7 +171,7 @@ const UpdateUserDialogContent = ({
         slotProps={{ htmlInput: { maxLength: 160 } }}
         {...register("bio")}
       />
-      <Stack width="100%" flexDirection="row" alignItems="center">
+      <OptionsStack>
         <FormControlLabel
           control={
             <Controller
@@ -180,7 +188,7 @@ const UpdateUserDialogContent = ({
             </Typography>
           }
         />
-      </Stack>
+      </OptionsStack>
     </FormBox>
   );
 };

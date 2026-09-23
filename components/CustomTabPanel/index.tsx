@@ -1,6 +1,13 @@
 // https://mui.com/material-ui/react-tabs/#BasicTabs.tsx
 
 import { Box } from "@mui/material";
+import { styled } from "@mui/material/styles";
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  gap: theme.spacing(2),
+}));
 
 interface CustomTabPanelProps {
   children: React.ReactNode;
@@ -14,18 +21,15 @@ const CustomTabPanel = ({
   value,
   ...other
 }: CustomTabPanelProps) => (
-  <Box
+  <StyledBox
     aria-labelledby={`simple-tab-${index}`}
-    display="flex"
-    flexDirection="column"
-    gap={2}
     hidden={value !== index}
     id={`simple-tabpanel-${index}`}
     role="tabpanel"
     {...other}
   >
     {value === index && <>{children}</>}
-  </Box>
+  </StyledBox>
 );
 
 export default CustomTabPanel;

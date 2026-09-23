@@ -64,6 +64,8 @@ const StyledCardHeader = styled(CardHeader, {
 );
 
 const ActionStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(2),
+
   [theme.breakpoints.up("md")]: {
     position: "sticky",
     top: "50%",
@@ -85,6 +87,10 @@ const StyledList = styled(List, {
 })<ListProps<"div"> & { empty: boolean }>(({ empty, theme }) =>
   empty ? { padding: theme.spacing(2) } : {},
 );
+
+const StyledListItemText = styled(ListItemText)({
+  minWidth: 0,
+});
 
 const not = (a: readonly string[], b: readonly string[]) =>
   a.filter((value) => !b.includes(value));
@@ -203,11 +209,7 @@ const SelectAllTransferList = <
           role="list"
         >
           {items.length === 0 && (
-            <Typography
-              color="text.secondary"
-              textAlign="center"
-              variant="body2"
-            >
+            <Typography align="center" color="textSecondary" variant="body2">
               {emptyLabel}
             </Typography>
           )}
@@ -233,7 +235,7 @@ const SelectAllTransferList = <
                       tabIndex={-1}
                     />
                   </ListItemIcon>
-                  <ListItemText
+                  <StyledListItemText
                     id={labelId}
                     primary={item.primary}
                     secondary={item.secondary}
@@ -241,7 +243,6 @@ const SelectAllTransferList = <
                       primary: { component: "div" },
                       secondary: { component: "div" },
                     }}
-                    sx={{ minWidth: 0 }}
                   />
                 </ListItemButton>
               </ListItem>
@@ -258,10 +259,7 @@ const SelectAllTransferList = <
         <Fragment key={column.title}>
           <ColumnGrid size={column.size}>{customList(column)}</ColumnGrid>
           {index < columns.length - 1 && (
-            <ActionStack
-              direction={{ xs: "row-reverse", md: "column" }}
-              gap={2}
-            >
+            <ActionStack direction={{ xs: "row-reverse", md: "column" }}>
               {[
                 {
                   action: transferActions[index][0],

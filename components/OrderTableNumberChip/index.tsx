@@ -11,6 +11,10 @@ const StyledChip = styled(Chip)({
   height: "auto",
 });
 
+const StyledTypography = styled(Typography)({
+  fontWeight: "bold",
+});
+
 interface OrderTableNumberChipProps {
   tableNumber: string;
 }
@@ -27,9 +31,7 @@ const OrderTableNumberChip = ({ tableNumber }: OrderTableNumberChipProps) => {
           <Typography variant="caption">
             {tOrder("mode.dineIn.tableNumber.label")}
           </Typography>
-          <Typography fontWeight="bold" variant="body2">
-            {tableNumber}
-          </Typography>
+          <StyledTypography variant="body2">{tableNumber}</StyledTypography>
         </Stack>
       }
       variant="outlined"

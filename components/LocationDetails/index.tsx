@@ -12,11 +12,29 @@ import { LocaleEnum } from "@/enums/Locale";
 
 import { AccessTime, LocationOn, Phone } from "@mui/icons-material";
 import { Link, Stack, Typography } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { styled, type Theme } from "@mui/material/styles";
 
 import type { OrganizationResponse } from "@/types/organizations";
 
 import { formatOpeningHoursForDisplay } from "@/utils/openingHours";
+
+const InfoRowStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(1),
+}));
+
+const iconStyle = ({ theme }: { theme: Theme }) => ({
+  marginTop: theme.spacing(0.25),
+});
+
+const StyledLocationOn = styled(LocationOn)(iconStyle);
+
+const StyledAccessTime = styled(AccessTime)(iconStyle);
+
+const HoursStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(0.5),
+}));
+
+const StyledPhone = styled(Phone)(iconStyle);
 
 const StyledIframe = styled("iframe")(({ theme }) => ({
   width: "100%",
@@ -106,17 +124,17 @@ const LocationDetails = ({
   return (
     <>
       {!hasContent && (
-        <Typography color="text.secondary" variant="body2">
+        <Typography color="textSecondary" variant="body2">
           {tCommon("location.empty")}
         </Typography>
       )}
       {address && (
-        <Stack direction="row" gap={1}>
-          <LocationOn color="primary" fontSize="small" sx={{ mt: 0.25 }} />
-          <Typography color="text.secondary" variant="body2">
+        <InfoRowStack direction="row">
+          <StyledLocationOn color="primary" fontSize="small" />
+          <Typography color="textSecondary" variant="body2">
             {mapUrl ? (
               <Link
-                color="text.secondary"
+                color="textSecondary"
                 href={mapUrl}
                 rel="noopener noreferrer"
                 target="_blank"
@@ -128,12 +146,12 @@ const LocationDetails = ({
               address
             )}
           </Typography>
-        </Stack>
+        </InfoRowStack>
       )}
       {organization?.openingHours && (
-        <Stack direction="row" gap={1}>
-          <AccessTime color="primary" fontSize="small" sx={{ mt: 0.25 }} />
-          <Stack gap={0.5}>
+        <InfoRowStack direction="row">
+          <StyledAccessTime color="primary" fontSize="small" />
+          <HoursStack>
             {formatOpeningHoursForDisplay(organization.openingHours, {
               formatDay: (day) => tCommon(`location.openingHours.${day}`),
               formatNextDayTime: (time) =>
@@ -142,26 +160,26 @@ const LocationDetails = ({
               rangeSeparator: tCommon("location.openingHours.rangeSeparator"),
               delimiter: tCommon("delimiter"),
             }).map((line, index) => (
-              <Typography color="text.secondary" key={index} variant="body2">
+              <Typography color="textSecondary" key={index} variant="body2">
                 {line}
               </Typography>
             ))}
-          </Stack>
-        </Stack>
+          </HoursStack>
+        </InfoRowStack>
       )}
       {organization?.telephone && (
-        <Stack direction="row" gap={1}>
-          <Phone color="primary" fontSize="small" sx={{ mt: 0.25 }} />
-          <Typography color="text.secondary" variant="body2">
+        <InfoRowStack direction="row">
+          <StyledPhone color="primary" fontSize="small" />
+          <Typography color="textSecondary" variant="body2">
             <Link
-              color="text.secondary"
+              color="textSecondary"
               href={phoneNumber?.getURI() || `tel:${organization.telephone}`}
               underline="hover"
             >
               {phoneNumber?.formatInternational() || organization.telephone}
             </Link>
           </Typography>
-        </Stack>
+        </InfoRowStack>
       )}
       {showMap && organization?.hasMap && (
         <StyledIframe

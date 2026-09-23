@@ -197,8 +197,9 @@ const DonateCodeAutocomplete = ({
                   : "";
             }}
             slotProps={{
+              ...params.slotProps,
               htmlInput: {
-                ...params.inputProps,
+                ...params.slotProps.htmlInput,
                 autoComplete: "new-password",
               },
             }}

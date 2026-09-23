@@ -18,6 +18,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -29,6 +30,10 @@ import {
   getStatutoryLeaveName,
 } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+
+const StyledFormControlLabel = styled(FormControlLabel)({
+  alignSelf: "flex-start",
+});
 
 interface LeaveTypeDialogProps {
   leaveType?: AttendanceLeaveType;
@@ -153,12 +158,12 @@ const LeaveTypeDialog = ({
             slotProps={{ input: { readOnly: true } }}
             value={leaveType && getStatutoryLeaveName(tAttendance, leaveType)}
           />
-          <Typography color="text.secondary" variant="body2">
+          <Typography color="textSecondary" variant="body2">
             {tAttendance("statutoryPaidPercent", {
               percent: statutoryPaidPercent,
             })}
           </Typography>
-          <FormControlLabel
+          <StyledFormControlLabel
             control={
               <Checkbox
                 checked={overridden}
@@ -169,7 +174,6 @@ const LeaveTypeDialog = ({
               />
             }
             label={tAttendance("aboveStatutory")}
-            sx={{ alignSelf: "flex-start" }}
           />
         </>
       )}
@@ -191,7 +195,7 @@ const LeaveTypeDialog = ({
       )}
       {statutoryPaidPercent === null && (
         <>
-          <FormControlLabel
+          <StyledFormControlLabel
             control={
               <Checkbox
                 checked={requiresBalance}
@@ -199,9 +203,8 @@ const LeaveTypeDialog = ({
               />
             }
             label={tAttendance("requiresBalance")}
-            sx={{ alignSelf: "flex-start" }}
           />
-          <FormControlLabel
+          <StyledFormControlLabel
             control={
               <Checkbox
                 checked={enabled}
@@ -209,7 +212,6 @@ const LeaveTypeDialog = ({
               />
             }
             label={tAttendance("enabled")}
-            sx={{ alignSelf: "flex-start" }}
           />
         </>
       )}

@@ -2,9 +2,9 @@ import { hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
-import { routing } from "@/i18n/routing";
+import { DashboardStack, HeaderStack } from "./styled";
 
-import { Stack } from "@mui/material";
+import { routing } from "@/i18n/routing";
 
 interface DashboardLayoutProps extends LayoutProps<"/[locale]"> {
   breadcrumb: React.ReactNode;
@@ -25,14 +25,14 @@ const DashboardLayout = async ({
   setRequestLocale(locale);
 
   return (
-    <Stack padding={2} flex={1} gap={2}>
-      <Stack flexDirection="row" flexWrap="wrap" alignItems="center" gap={2}>
+    <DashboardStack>
+      <HeaderStack direction="row">
         {breadcrumb}
         {toolbar}
-      </Stack>
+      </HeaderStack>
       {subheader}
       {children}
-    </Stack>
+    </DashboardStack>
   );
 };
 

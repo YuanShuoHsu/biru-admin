@@ -14,6 +14,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import type {
   AttendanceEventAction,
@@ -22,6 +23,28 @@ import type {
 
 import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+
+const ContentStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(2),
+}));
+
+const ShiftStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(1.5),
+  [theme.breakpoints.up("sm")]: {
+    alignItems: "center",
+  },
+}));
+
+const ShiftTimeStack = styled(Stack)(({ theme }) => ({
+  alignItems: "center",
+  gap: theme.spacing(1),
+  flex: 1,
+}));
+
+const ActionsStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  gap: theme.spacing(1),
+}));
 
 const PUNCH_ICONS: Record<AttendanceEventAction, ReactNode> = {
   breakEnd: <PlayArrow />,
@@ -121,22 +144,17 @@ const PunchCard = ({
   return (
     <Card variant="outlined">
       <CardContent>
-        <Stack gap={2}>
+        <ContentStack>
           <Typography variant="h6">
             {tAttendance("mine.punch.title")}
           </Typography>
-          <Typography color="text.secondary" variant="body2">
+          <Typography color="textSecondary" variant="body2">
             {tAttendance("locationHint")}
           </Typography>
           {shifts.length ? (
             shifts.map((shift) => (
-              <Stack
-                alignItems={{ sm: "center" }}
-                direction={{ sm: "row" }}
-                gap={1.5}
-                key={shift.id}
-              >
-                <Stack alignItems="center" direction="row" gap={1} flex={1}>
+              <ShiftStack direction={{ sm: "row" }} key={shift.id}>
+                <ShiftTimeStack direction="row">
                   <Typography>
                     {format.dateTimeRange(
                       new Date(shift.startsAt),
@@ -149,8 +167,8 @@ const PunchCard = ({
                     label={tAttendance(`state.options.${shift.state}`)}
                     size="small"
                   />
-                </Stack>
-                <Stack direction="row" flexWrap="wrap" gap={1}>
+                </ShiftTimeStack>
+                <ActionsStack direction="row">
                   {shift.availableActions.map((action) => (
                     <Button
                       disabled={!!busy}
@@ -163,15 +181,15 @@ const PunchCard = ({
                       {tAttendance(`eventAction.options.${action}`)}
                     </Button>
                   ))}
-                </Stack>
-              </Stack>
+                </ActionsStack>
+              </ShiftStack>
             ))
           ) : (
-            <Typography color="text.secondary">
+            <Typography color="textSecondary">
               {tAttendance("mine.punch.empty")}
             </Typography>
           )}
-        </Stack>
+        </ContentStack>
       </CardContent>
     </Card>
   );

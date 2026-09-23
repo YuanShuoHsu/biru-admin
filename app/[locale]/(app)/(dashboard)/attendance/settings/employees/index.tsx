@@ -25,6 +25,7 @@ import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { Edit } from "@mui/icons-material";
 import { Chip, IconButton, Stack, Tooltip } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
   GridFilterModel,
@@ -50,6 +51,11 @@ import { attendancePath } from "@/utils/attendance";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAttendanceEmployeeEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
+
+const StyledStack = styled(Stack)({
+  height: "100%",
+  alignItems: "center",
+});
 
 const STATUS_COLORS: Record<
   AttendanceEmployeeStatus,
@@ -255,7 +261,7 @@ const Employees = ({
               filterable: false,
               headerName: tAttendance("actions"),
               renderCell: ({ row }: GridRenderCellParams<AttendanceMember>) => (
-                <Stack height="100%" direction="row" alignItems="center">
+                <StyledStack direction="row">
                   <Tooltip
                     title={tAttendance(
                       row.employee
@@ -270,7 +276,7 @@ const Employees = ({
                       <Edit fontSize="small" />
                     </IconButton>
                   </Tooltip>
-                </Stack>
+                </StyledStack>
               ),
               resizable: false,
               sortable: false,

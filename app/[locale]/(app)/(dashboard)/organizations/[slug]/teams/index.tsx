@@ -23,12 +23,25 @@ import {
   Stack,
   Tooltip,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { ActiveOrganization, Team } from "@/types/organizations";
+
+const ActionsStack = styled(Stack)(({ theme }) => ({
+  height: "100%",
+  alignItems: "center",
+  gap: theme.spacing(0.5),
+}));
+
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -177,7 +190,7 @@ const OrganizationsSlugTeams = ({
         filterable: false,
         headerName: tTeams("actions.label"),
         renderCell: ({ row }: GridRenderCellParams<Team>) => (
-          <Stack height="100%" direction="row" alignItems="center" gap={0.5}>
+          <ActionsStack direction="row">
             <Tooltip title={tTeams("actions.manageTeamMembers.title")}>
               <IconButton
                 onClick={(event) => {
@@ -219,7 +232,7 @@ const OrganizationsSlugTeams = ({
                 </IconButton>
               </Tooltip>
             )}
-          </Stack>
+          </ActionsStack>
         ),
         resizable: false,
         sortable: false,
@@ -249,7 +262,7 @@ const OrganizationsSlugTeams = ({
   return (
     <>
       {canCreateTeam && (
-        <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
+        <ToolbarStack direction="row">
           <Button
             onClick={handleCreateTeam}
             size="small"
@@ -258,7 +271,7 @@ const OrganizationsSlugTeams = ({
           >
             {tTeams("actions.createTeam.title")}
           </Button>
-        </Stack>
+        </ToolbarStack>
       )}
       <DataGrid
         {...DATA_GRID_PROPS}

@@ -19,7 +19,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { type CSSObject, styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -30,6 +30,11 @@ import { localize } from "@/utils/locale";
 
 import theme from "@/theme";
 import UpdateMenuDialog from "../UpdateMenuDialog";
+
+const LayoutStack = styled(Stack)(({ theme }) => ({
+  height: "100%",
+  gap: theme.spacing(2),
+}));
 
 const StyledCard = styled(Card)(({ theme }) => ({
   display: "flex",
@@ -55,6 +60,11 @@ const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
   },
 }));
 
+const InfoStack = styled(Stack)({
+  flex: 1,
+  minWidth: 0,
+});
+
 const StyledCardContent = styled(CardContent)({
   paddingBottom: 0,
   display: "flex",
@@ -62,9 +72,16 @@ const StyledCardContent = styled(CardContent)({
   gap: theme.spacing(1),
 });
 
-const WrapTypography = styled(Typography)({
+const wrapStyle: CSSObject = {
   overflowWrap: "anywhere",
+};
+
+const NameTypography = styled(Typography)({
+  ...wrapStyle,
+  fontWeight: "bold",
 });
+
+const WrapTypography = styled(Typography)(wrapStyle);
 
 const StyledCardActions = styled(CardActions)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -103,18 +120,18 @@ const MenusTabsLayout = ({
   };
 
   return (
-    <Stack height="100%" gap={2}>
+    <LayoutStack>
       <StyledCard variant="outlined">
         <StyledCardMedia image={menu.image || undefined}>
           {!menu.image && <RestaurantMenu color="disabled" fontSize="large" />}
         </StyledCardMedia>
-        <Stack flex={1} minWidth={0}>
+        <InfoStack>
           <StyledCardContent>
-            <WrapTypography fontWeight="bold" variant="subtitle1">
+            <NameTypography variant="subtitle1">
               {localize(menu.name, locale)}
-            </WrapTypography>
+            </NameTypography>
             {localize(menu.description, locale) && (
-              <WrapTypography color="text.secondary" variant="body2">
+              <WrapTypography color="textSecondary" variant="body2">
                 {localize(menu.description, locale)}
               </WrapTypography>
             )}
@@ -145,14 +162,14 @@ const MenusTabsLayout = ({
               </Button>
             )}
           </StyledCardActions>
-        </Stack>
+        </InfoStack>
       </StyledCard>
       <RouteTabs
         ariaLabel="menu tabs"
         tabs={[{ path: "/menus/sections" }, { path: "/menus/modifier-groups" }]}
       />
       {children}
-    </Stack>
+    </LayoutStack>
   );
 };
 

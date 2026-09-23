@@ -4,7 +4,7 @@ import type { Dayjs } from "dayjs";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-import { Add, DeleteOutline } from "@mui/icons-material";
+import { Add, DeleteOutlined } from "@mui/icons-material";
 import {
   Button,
   FormControl,
@@ -153,6 +153,14 @@ const StyledFormControl = styled(FormControl)<FormControlProps>(
   }),
 );
 
+const StyledStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(0.5),
+}));
+
+const ScheduleGrid = styled(Grid)({
+  alignItems: "start",
+});
+
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)({
   flexWrap: "wrap",
 });
@@ -170,6 +178,10 @@ const StyledGrid = styled(Grid)(({ theme }) => ({
   "@media (max-width: 320px)": {
     gridTemplateColumns: "1fr",
   },
+}));
+
+const StyledFormHelperText = styled(FormHelperText)(({ theme }) => ({
+  color: theme.vars.palette.warning.main,
 }));
 
 interface OpeningHoursFieldProps extends Omit<FormControlProps, "onChange"> {
@@ -252,9 +264,7 @@ const OpeningHoursField = ({
     >
       <FormLabel component="legend">{label}</FormLabel>
       {!!openingHours && (
-        <FormHelperText
-          sx={{ color: disabled ? "text.disabled" : "text.secondary" }}
-        >
+        <FormHelperText error={false}>
           {tOrganizations("localBusiness.openingHours.reference", {
             value: formatOpeningHoursForDisplay(
               openingHours,
@@ -274,8 +284,8 @@ const OpeningHoursField = ({
         const hasEndTimeError = error && days.length > 0 && !endTime;
 
         return (
-          <Stack key={id} gap={0.5}>
-            <Grid container alignItems="start" spacing={2}>
+          <StyledStack key={id}>
+            <ScheduleGrid container spacing={2}>
               <Grid size={{ xs: 12, sm: "auto" }}>
                 <StyledToggleButtonGroup
                   disabled={disabled}
@@ -345,8 +355,8 @@ const OpeningHoursField = ({
                   value={toTimeDayjs(startTime)}
                 />
                 <Typography
-                  color={disabled ? "text.disabled" : undefined}
-                  textAlign="center"
+                  align="center"
+                  color={disabled ? "textDisabled" : undefined}
                   variant="body2"
                 >
                   {tOrganizations("localBusiness.openingHours.to")}
@@ -401,10 +411,10 @@ const OpeningHoursField = ({
                   onClick={() => handleScheduleRemove(id)}
                   size="small"
                 >
-                  <DeleteOutline fontSize="small" />
+                  <DeleteOutlined fontSize="small" />
                 </IconButton>
               </StyledGrid>
-            </Grid>
+            </ScheduleGrid>
             {hasConflict && (
               <FormHelperText error>
                 {tOrganizations("localBusiness.openingHours.conflict", {
@@ -413,14 +423,14 @@ const OpeningHoursField = ({
               </FormHelperText>
             )}
             {!hasConflict && outsideDays && (
-              <FormHelperText sx={{ color: "warning.main" }}>
+              <StyledFormHelperText>
                 {tOrganizations(
                   "localBusiness.openingHours.outsideOpeningHours",
                   { days: formatDays([...outsideDays], displayConfig) },
                 )}
-              </FormHelperText>
+              </StyledFormHelperText>
             )}
-          </Stack>
+          </StyledStack>
         );
       })}
       <Button

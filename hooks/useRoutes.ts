@@ -46,7 +46,7 @@ import {
   Gavel,
   Group,
   Groups,
-  HelpOutline,
+  HelpOutlined,
   History,
   HowToReg,
   Inventory,
@@ -616,7 +616,7 @@ const routes: Route[] = [
         segment: "delete-account",
       },
       {
-        icon: HelpOutline,
+        icon: HelpOutlined,
         label: "auth.forgotPassword.label",
         segment: "forgot-password",
       },

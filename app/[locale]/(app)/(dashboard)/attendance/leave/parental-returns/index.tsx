@@ -26,6 +26,7 @@ import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { Check, Close, Undo } from "@mui/icons-material";
 import { Alert, Chip, IconButton, Stack, Tooltip } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
   GridFilterModel,
@@ -49,6 +50,12 @@ import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAttendanceParentalReturnEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
+
+const StyledStack = styled(Stack)(({ theme }) => ({
+  alignItems: "center",
+  gap: theme.spacing(1),
+  height: "100%",
+}));
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -274,7 +281,7 @@ const ParentalReturns = ({
           row,
         }: GridRenderCellParams<AttendanceParentalReturn>) =>
           row.status === "pending" ? (
-            <Stack alignItems="center" direction="row" gap={1} height="100%">
+            <StyledStack direction="row">
               {canReview && row.employeeId !== employeeId && (
                 <>
                   <Tooltip title={tAttendance("approve")}>
@@ -304,7 +311,7 @@ const ParentalReturns = ({
                   </IconButton>
                 </Tooltip>
               )}
-            </Stack>
+            </StyledStack>
           ) : null,
         resizable: false,
         sortable: false,

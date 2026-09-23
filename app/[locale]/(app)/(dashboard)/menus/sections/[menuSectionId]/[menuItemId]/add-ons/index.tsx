@@ -38,6 +38,7 @@ import {
   Stack,
   Tooltip,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
   GridFilterModel,
@@ -63,6 +64,18 @@ import {
 } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
+
+const ActionsStack = styled(Stack)(({ theme }) => ({
+  height: "100%",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
+
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(2),
+}));
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -445,12 +458,7 @@ const MenuItemAddOns = ({
               filterable: false,
               headerName: tMenus("items.addOns.actions.label"),
               renderCell: ({ row }: GridRenderCellParams<MenuItemAddOn>) => (
-                <Stack
-                  height="100%"
-                  direction="row"
-                  alignItems="center"
-                  gap={1}
-                >
+                <ActionsStack direction="row">
                   {canWrite && (
                     <Tooltip
                       title={tMenus("items.addOns.actions.updateAddOn.title")}
@@ -483,7 +491,7 @@ const MenuItemAddOns = ({
                       </IconButton>
                     </Tooltip>
                   )}
-                </Stack>
+                </ActionsStack>
               ),
               resizable: false,
               sortable: false,
@@ -540,7 +548,7 @@ const MenuItemAddOns = ({
 
   return (
     <>
-      <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
+      <ToolbarStack direction="row">
         {!isReorderMode ? (
           canWrite && (
             <>
@@ -583,7 +591,7 @@ const MenuItemAddOns = ({
             </Button>
           </>
         )}
-      </Stack>
+      </ToolbarStack>
       <DragDropProvider onDragEnd={handleDragEnd}>
         <DataGrid
           {...DATA_GRID_PROPS}

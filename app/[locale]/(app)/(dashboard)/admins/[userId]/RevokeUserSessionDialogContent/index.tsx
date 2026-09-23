@@ -12,8 +12,13 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Stack, TextField } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import { formatUserAgent } from "@/utils/auth";
+
+const StyledStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(2),
+}));
 
 interface RevokeUserSessionDialogContentProps {
   session: Pick<Session, "ipAddress" | "userAgent">;
@@ -36,7 +41,7 @@ const RevokeUserSessionDialogContent = ({
   });
 
   return (
-    <Stack gap={2}>
+    <StyledStack>
       <TextField
         error={!!errors.userAgent}
         fullWidth
@@ -57,7 +62,7 @@ const RevokeUserSessionDialogContent = ({
         slotProps={{ input: { readOnly: true } }}
         {...register("ipAddress")}
       />
-    </Stack>
+    </StyledStack>
   );
 };
 

@@ -141,7 +141,7 @@ const CountryAutocomplete = ({
 }: CountryAutocompleteProps) => {
   const isCurrency = mode === "currency";
   const currencies = useCurrencies();
-  const options = isCurrency
+  const options: (CountryType | CurrencyType)[] = isCurrency
     ? currencies
     : [...countries].sort((a, b) => a.label[0].localeCompare(b.label[0]));
   const value = isCurrency
@@ -233,12 +233,13 @@ const CountryAutocomplete = ({
                   : "";
             }}
             slotProps={{
+              ...params.slotProps,
               htmlInput: {
-                ...params.inputProps,
+                ...params.slotProps.htmlInput,
                 autoComplete: "new-password",
               },
               input: {
-                ...params.InputProps,
+                ...params.slotProps.input,
                 startAdornment: value && valueFlagCode && (
                   <StyledInputAdornment position="start">
                     <FlagImage code={valueFlagCode} label={value.label} />

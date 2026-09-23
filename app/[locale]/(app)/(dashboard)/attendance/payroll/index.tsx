@@ -28,6 +28,7 @@ import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { Add, Receipt } from "@mui/icons-material";
 import { Button, IconButton, Stack, Tooltip } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
   GridFilterModel,
@@ -53,6 +54,16 @@ import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getPayrollStatementEnumOptions } from "@/utils/enumOptions";
 import { fromCents, payrollPath } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+
+const ActionsStack = styled(Stack)({
+  alignItems: "center",
+  height: "100%",
+});
+
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  gap: theme.spacing(2),
+}));
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -327,7 +338,7 @@ const Payroll = ({
         filterable: false,
         headerName: tAttendance("actions"),
         renderCell: ({ row }: GridRenderCellParams<PayrollStatement>) => (
-          <Stack alignItems="center" direction="row" height="100%">
+          <ActionsStack direction="row">
             <Tooltip title={tAttendance("payroll.actions.view")}>
               <IconButton
                 onClick={() => handleStatementDialog(row)}
@@ -336,7 +347,7 @@ const Payroll = ({
                 <Receipt fontSize="small" />
               </IconButton>
             </Tooltip>
-          </Stack>
+          </ActionsStack>
         ),
         resizable: false,
         sortable: false,
@@ -397,7 +408,7 @@ const Payroll = ({
   return (
     <>
       {(canManageTerms || canCreate) && (
-        <Stack direction="row" flexWrap="wrap" gap={2}>
+        <ToolbarStack direction="row">
           {canManageTerms && (
             <Button onClick={handleTermsDialog} size="small">
               {tAttendance("payrollTerms")}
@@ -413,7 +424,7 @@ const Payroll = ({
               {tAttendance("payrollStatus.options.draft")}
             </Button>
           )}
-        </Stack>
+        </ToolbarStack>
       )}
       <DataGrid
         {...DATA_GRID_PROPS}

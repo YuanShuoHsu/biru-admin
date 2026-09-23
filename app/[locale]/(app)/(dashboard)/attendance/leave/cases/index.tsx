@@ -28,6 +28,7 @@ import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { Add, ChildCare, Delete, Edit } from "@mui/icons-material";
 import { Alert, Button, IconButton, Stack, Tooltip } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
   GridFilterModel,
@@ -57,6 +58,15 @@ import {
   getStatutoryLeaveName,
 } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+
+const StyledStack = styled(Stack)({
+  alignItems: "center",
+  height: "100%",
+});
+
+const StyledButton = styled(Button)({
+  alignSelf: "flex-start",
+});
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -351,7 +361,7 @@ const LeaveCases = ({
                 const own = row.employeeId === employeeId;
 
                 return (
-                  <Stack alignItems="center" direction="row" height="100%">
+                  <StyledStack direction="row">
                     {canAssignChild &&
                       isParentalLeave(row.leaveTypeId) &&
                       !own &&
@@ -385,7 +395,7 @@ const LeaveCases = ({
                         </IconButton>
                       </Tooltip>
                     )}
-                  </Stack>
+                  </StyledStack>
                 );
               },
               resizable: false,
@@ -492,15 +502,14 @@ const LeaveCases = ({
     <>
       <Alert severity="info">{tAttendance("leaveCaseHint")}</Alert>
       {canWrite && (
-        <Button
+        <StyledButton
           onClick={() => handleLeaveCaseDialog()}
           size="small"
           startIcon={<Add />}
-          sx={{ alignSelf: "flex-start" }}
           variant="contained"
         >
           {tAttendance("leaveCases.actions.create")}
-        </Button>
+        </StyledButton>
       )}
       <DataGrid
         {...DATA_GRID_PROPS}

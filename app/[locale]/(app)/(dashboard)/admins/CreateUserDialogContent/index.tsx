@@ -37,6 +37,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -44,6 +45,17 @@ import {
   handleMouseDownPassword,
   handleMouseUpPassword,
 } from "@/utils/password";
+
+const NameStack = styled(Stack)(({ theme }) => ({
+  width: "100%",
+  gap: theme.spacing(2),
+}));
+
+const OptionsStack = styled(Stack)({
+  width: "100%",
+  flexDirection: "row",
+  alignItems: "center",
+});
 
 const CREATE_USER_AVATAR_KEY = "create-user-avatar";
 
@@ -160,11 +172,7 @@ const CreateUserDialogContent = ({
   return (
     <FormBox id="create-user-form" onSubmit={onSubmit}>
       <UploadAvatars uploadKey={CREATE_USER_AVATAR_KEY} />
-      <Stack
-        width="100%"
-        direction={locale === LocaleEnum.En ? "row-reverse" : "row"}
-        gap={2}
-      >
+      <NameStack direction={locale === LocaleEnum.En ? "row-reverse" : "row"}>
         <TextField
           autoComplete="family-name"
           error={!!errors.lastName}
@@ -184,7 +192,7 @@ const CreateUserDialogContent = ({
           required
           {...register("firstName")}
         />
-      </Stack>
+      </NameStack>
       <TextField
         autoComplete="email"
         error={!!errors.email}
@@ -273,7 +281,7 @@ const CreateUserDialogContent = ({
         type={showPassword.confirmPassword ? "text" : "password"}
         {...register("confirmPassword")}
       />
-      <Stack width="100%" flexDirection="row" alignItems="center">
+      <OptionsStack>
         <FormControlLabel
           control={
             <Controller
@@ -290,7 +298,7 @@ const CreateUserDialogContent = ({
             </Typography>
           }
         />
-      </Stack>
+      </OptionsStack>
       <TextField
         error={!!errors.role}
         fullWidth

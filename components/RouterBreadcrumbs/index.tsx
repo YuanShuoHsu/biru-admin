@@ -90,7 +90,7 @@ const RouterBreadcrumbs = () => {
 
     return isText ? (
       <StyledTypography
-        color={isLast ? "text.primary" : "text.secondary"}
+        color={isLast ? "textPrimary" : "textSecondary"}
         key={path}
       >
         {Icon && <Icon fontSize="inherit" />}
@@ -98,7 +98,7 @@ const RouterBreadcrumbs = () => {
       </StyledTypography>
     ) : (
       <StyledLink
-        color="text.secondary"
+        color="textSecondary"
         component={Link}
         href={to}
         key={path}

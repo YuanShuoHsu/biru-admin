@@ -13,10 +13,26 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import type { PayrollStatement } from "@/types/attendance";
 
 import { downloadAttendanceCsv, fromCents } from "@/utils/attendance";
+
+const StatementStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(2),
+}));
+
+const LineStack = styled(Stack)(({ theme }) => ({
+  justifyContent: "space-between",
+  gap: theme.spacing(2),
+}));
+
+const ActionsStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  gap: theme.spacing(1),
+  paddingTop: theme.spacing(2),
+}));
 
 interface StatementDialogContentProps {
   canManage: boolean;
@@ -40,7 +56,7 @@ const StatementDialogContent = ({
 
   return (
     <>
-      <Stack data-payroll-print gap={2}>
+      <StatementStack data-payroll-print>
         <Typography variant="h5">
           {statement.employeeName} · {statement.month}
         </Typography>
@@ -59,17 +75,12 @@ const StatementDialogContent = ({
           </Alert>
         )}
         {statement.snapshot.lines.map((line) => (
-          <Stack
-            key={line.code}
-            direction="row"
-            justifyContent="space-between"
-            gap={2}
-          >
+          <LineStack key={line.code} direction="row">
             <Typography>
               {tAttendance(`payrollLine.options.${line.code}`)}
             </Typography>
             <Typography>{money(line.amountCents)}</Typography>
-          </Stack>
+          </LineStack>
         ))}
         <Divider />
         <Typography>
@@ -91,8 +102,8 @@ const StatementDialogContent = ({
             {tAttendance("sourceNote")}: {statement.snapshot.terms.sourceNote}
           </Typography>
         )}
-      </Stack>
-      <Stack direction="row" flexWrap="wrap" gap={1} pt={2}>
+      </StatementStack>
+      <ActionsStack direction="row">
         <Button
           onClick={() =>
             downloadAttendanceCsv(
@@ -137,7 +148,7 @@ const StatementDialogContent = ({
             {tAttendance(statement.status === "draft" ? "approve" : "publish")}
           </Button>
         )}
-      </Stack>
+      </ActionsStack>
       <GlobalStyles
         styles={{
           "@media print": {

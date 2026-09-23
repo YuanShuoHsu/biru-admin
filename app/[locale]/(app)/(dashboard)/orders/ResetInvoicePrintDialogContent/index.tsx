@@ -4,7 +4,8 @@ import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent, useEffect, useState } from "react";
 
-import { Alert, Stack, TextField } from "@mui/material";
+import { Alert, Stack, type StackProps, TextField } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -12,6 +13,10 @@ import type { AdminOrderResponse, ResetInvoicePrintDto } from "@/types/orders";
 
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
+
+const StyledStack = styled(Stack)<StackProps>(({ theme }) => ({
+  gap: theme.spacing(2),
+}));
 
 export const RESET_INVOICE_PRINT_FORM_ID = "reset-invoice-print-form";
 
@@ -78,9 +83,8 @@ const ResetInvoicePrintDialogContent = ({
   };
 
   return (
-    <Stack
+    <StyledStack
       component="form"
-      gap={2}
       id={RESET_INVOICE_PRINT_FORM_ID}
       onSubmit={onSubmit}
     >
@@ -107,7 +111,7 @@ const ResetInvoicePrintDialogContent = ({
         slotProps={{ htmlInput: { maxLength: 100 } }}
         value={reason}
       />
-    </Stack>
+    </StyledStack>
   );
 };
 

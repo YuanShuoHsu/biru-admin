@@ -44,7 +44,6 @@ import {
   Undo,
 } from "@mui/icons-material";
 import {
-  Box,
   Chip,
   DialogContentText,
   IconButton,
@@ -99,6 +98,25 @@ const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
   { ssr: false },
 );
+
+const StatusText = styled("span", {
+  shouldForwardProp: (prop) => prop !== "as" && prop !== "status",
+})<{ status: OrderStatus }>(({ status, theme }) => {
+  const key = STATUS_TEXT_COLORS[status];
+
+  return {
+    color:
+      key === "text"
+        ? theme.vars.palette.text.primary
+        : theme.vars.palette[key].main,
+  };
+});
+
+const StyledStack = styled(Stack)(({ theme }) => ({
+  height: "100%",
+  alignItems: "center",
+  gap: theme.spacing(0.5),
+}));
 
 const StyledIconButton = styled(IconButton, {
   shouldForwardProp: (prop) => prop !== "visible",
@@ -376,9 +394,9 @@ const Orders = ({
                 orderNumbers: order.orderNumber,
                 status,
                 statusText: (chunks) => (
-                  <Box color={STATUS_TEXT_COLORS[toStatus]} component="strong">
+                  <StatusText as="strong" status={toStatus}>
                     {chunks}
-                  </Box>
+                  </StatusText>
                 ),
               },
             )}
@@ -389,9 +407,7 @@ const Orders = ({
         title: tOrders.rich(`actions.updateStatus.title.${direction}`, {
           status,
           statusText: (chunks) => (
-            <Box color={STATUS_TEXT_COLORS[toStatus]} component="span">
-              {chunks}
-            </Box>
+            <StatusText status={toStatus}>{chunks}</StatusText>
           ),
         }),
       });
@@ -569,7 +585,7 @@ const Orders = ({
         filterable: false,
         headerName: tOrders("actions.label"),
         renderCell: ({ row }: GridRenderCellParams<AdminOrderResponse>) => (
-          <Stack height="100%" direction="row" alignItems="center" gap={0.5}>
+          <StyledStack direction="row">
             <Tooltip title={tOrders("actions.viewOrder.title")}>
               <IconButton
                 onClick={(event) => {
@@ -720,7 +736,7 @@ const Orders = ({
                   </Tooltip>
                 );
               })}
-          </Stack>
+          </StyledStack>
         ),
         resizable: false,
         sortable: false,

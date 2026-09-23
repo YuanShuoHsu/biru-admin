@@ -26,10 +26,21 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { Button, Link, Stack, TextField, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import { useCountdownStore } from "@/providers/countdown-store-provider";
 
 import { getHref } from "@/utils/href";
+
+const StyledTypography = styled(Typography)({
+  fontWeight: "bold",
+});
+
+const StyledStack = styled(Stack)(({ theme }) => ({
+  flexDirection: "row",
+  alignItems: "center",
+  gap: theme.spacing(0.5),
+}));
 
 interface AuthForgotPasswordProps {
   redirectTo?: string;
@@ -81,14 +92,9 @@ const AuthForgotPassword = ({ redirectTo }: AuthForgotPasswordProps) => {
     <FormCard component="form" onSubmit={onSubmit}>
       <StyledCardHeader
         title={
-          <Typography
-            color="primary"
-            fontWeight="bold"
-            textAlign="center"
-            variant="h6"
-          >
+          <StyledTypography align="center" color="primary" variant="h6">
             {tAuth("forgotPassword.label")}
-          </Typography>
+          </StyledTypography>
         }
       />
       <StyledCardContent>
@@ -121,12 +127,12 @@ const AuthForgotPassword = ({ redirectTo }: AuthForgotPasswordProps) => {
               })
             : sendPasswordResetLink}
         </Button>
-        <Stack flexDirection="row" alignItems="center" gap={0.5}>
+        <StyledStack>
           <Typography variant="body2">{tAuth("rememberedPassword")}</Typography>
           <Link href={signInHref} underline="hover" variant="body2">
             {tAuth("signIn.label")}
           </Link>
-        </Stack>
+        </StyledStack>
       </StyledCardActions>
     </FormCard>
   );

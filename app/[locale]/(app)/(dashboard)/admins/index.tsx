@@ -54,7 +54,7 @@ import {
   Delete,
   Devices,
   LockOpen,
-  MailOutline,
+  MailOutlined,
   ManageAccounts,
   Password,
   PersonAdd,
@@ -103,11 +103,22 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
+const ActionsStack = styled(Stack)(({ theme }) => ({
+  height: "100%",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
+
 const StyledIconButton = styled(IconButton, {
   shouldForwardProp: (prop) => prop !== "visible",
 })<{ visible: boolean }>(({ visible }) => ({
   visibility: visible ? "visible" : "hidden",
 }));
+
+const AvatarStack = styled(Stack)({
+  height: "100%",
+  alignItems: "center",
+});
 
 const StyledAvatar = styled(Avatar)(({ theme }) => ({
   width: 24,
@@ -122,6 +133,16 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
     border: `1px solid ${theme.vars.palette.primary.main}`,
     color: theme.vars.palette.primary.contrastText,
   },
+}));
+
+const StatusStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(0.5),
+}));
+
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(2),
 }));
 
 const ROLE_COLOR_MAP: Record<UserRole, "error" | "default"> = {
@@ -509,7 +530,7 @@ const Admins = ({
           const hasUserSession = userSession[row.id];
 
           return (
-            <Stack height="100%" direction="row" alignItems="center" gap={1}>
+            <ActionsStack direction="row">
               <Tooltip title={tAdmins("actions.updateUser.title")}>
                 <IconButton
                   onClick={(event) => {
@@ -619,7 +640,7 @@ const Admins = ({
                   <Delete fontSize="small" />
                 </StyledIconButton>
               </Tooltip>
-            </Stack>
+            </ActionsStack>
           );
         },
         resizable: false,
@@ -630,11 +651,11 @@ const Admins = ({
         filterable: false,
         headerName: tAdmins("image"),
         renderCell: ({ row: { image, name } }: GridRenderCellParams<User>) => (
-          <Stack height="100%" direction="row" alignItems="center">
+          <AvatarStack direction="row">
             <StyledAvatar alt={name} src={image || undefined}>
               {name[0]}
             </StyledAvatar>
-          </Stack>
+          </AvatarStack>
         ),
         sortable: false,
       },
@@ -685,7 +706,7 @@ const Admins = ({
             <Tooltip
               title={
                 isBanned ? (
-                  <Stack gap={0.5}>
+                  <StatusStack>
                     {row.banReason && (
                       <Typography variant="body2">
                         {tAdmins("status.banReason", {
@@ -700,7 +721,7 @@ const Admins = ({
                           : tAdmins("status.permanent"),
                       })}
                     </Typography>
-                  </Stack>
+                  </StatusStack>
                 ) : (
                   ""
                 )
@@ -736,7 +757,7 @@ const Admins = ({
             color={row.emailSubscribed ? "primary" : "default"}
             icon={
               row.emailSubscribed ? (
-                <MailOutline fontSize="small" />
+                <MailOutlined fontSize="small" />
               ) : (
                 <UnsubscribeOutlined fontSize="small" />
               )
@@ -787,7 +808,7 @@ const Admins = ({
 
   return (
     <>
-      <Stack direction="row" flexWrap="wrap" alignItems="center" gap={2}>
+      <ToolbarStack direction="row">
         <Button
           onClick={handleCreateUser}
           size="small"
@@ -796,7 +817,7 @@ const Admins = ({
         >
           {tAdmins("actions.createUser.title")}
         </Button>
-      </Stack>
+      </ToolbarStack>
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}

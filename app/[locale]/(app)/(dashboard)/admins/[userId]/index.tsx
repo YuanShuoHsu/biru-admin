@@ -18,7 +18,7 @@ import { useRouter } from "@/i18n/navigation";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { DeleteOutline, LogoutOutlined } from "@mui/icons-material";
+import { DeleteOutlined, LogoutOutlined } from "@mui/icons-material";
 import {
   Button,
   Chip,
@@ -27,6 +27,7 @@ import {
   Stack,
   Tooltip,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
@@ -34,6 +35,18 @@ import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import { formatUserAgent } from "@/utils/auth";
+
+const ActionsStack = styled(Stack)(({ theme }) => ({
+  height: "100%",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
+
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -194,7 +207,7 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
           const isCurrent = row.token === currentSession?.session.token;
 
           return (
-            <Stack height="100%" direction="row" alignItems="center" gap={1}>
+            <ActionsStack direction="row">
               <Tooltip title={tUserSessions("actions.revokeUserSession.title")}>
                 <IconButton
                   color="error"
@@ -205,7 +218,7 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
                   }}
                   size="small"
                 >
-                  <DeleteOutline fontSize="small" />
+                  <DeleteOutlined fontSize="small" />
                 </IconButton>
               </Tooltip>
               {isCurrent && (
@@ -215,7 +228,7 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
                   variant="outlined"
                 />
               )}
-            </Stack>
+            </ActionsStack>
           );
         },
         resizable: false,
@@ -251,7 +264,7 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
 
   return (
     <>
-      <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
+      <ToolbarStack direction="row">
         <Button
           color="error"
           onClick={handleRevokeUserSessions}
@@ -261,7 +274,7 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
         >
           {tUserSessions("actions.revokeUserSessions.title")}
         </Button>
-      </Stack>
+      </ToolbarStack>
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}

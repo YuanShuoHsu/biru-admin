@@ -7,8 +7,13 @@ import CorrectionDialog from "../../../CorrectionDialog";
 import OvertimeDialog from "../../../OvertimeDialog";
 
 import { Alert, MenuItem, Stack, TextField } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import type { AttendanceShift } from "@/types/attendance";
+
+const StyledStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(2),
+}));
 
 interface ShiftRequestDialogProps {
   kind: "correction" | "overtime";
@@ -43,7 +48,7 @@ const ShiftRequestDialog = ({
     );
 
   return (
-    <Stack gap={2}>
+    <StyledStack>
       <TextField
         fullWidth
         label={tAttendance("shift")}
@@ -73,7 +78,7 @@ const ShiftRequestDialog = ({
           shift={shift}
         />
       )}
-    </Stack>
+    </StyledStack>
   );
 };
 

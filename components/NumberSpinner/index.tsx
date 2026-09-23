@@ -33,6 +33,11 @@ const StyledFormControl = styled(FormControl)(({ theme }) => ({
   },
 }));
 
+const StyledStack = styled(Stack)({
+  justifyContent: "space-between",
+  alignItems: "center",
+});
+
 const ScrubAreaSpan = styled("span")({
   userSelect: "none",
   width: "max-content",
@@ -141,11 +146,7 @@ const NumberSpinner = ({
       )}
     >
       {(label || clearable) && (
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-        >
+        <StyledStack direction="row">
           <BaseNumberField.ScrubArea render={<ScrubAreaSpan />}>
             <StyledFormLabel htmlFor={id}>{label}</StyledFormLabel>
             <BaseNumberField.ScrubAreaCursor>
@@ -163,7 +164,7 @@ const NumberSpinner = ({
               <Clear fontSize="small" />
             </ClearButton>
           )}
-        </Stack>
+        </StyledStack>
       )}
       <FlexDiv onClick={(event) => event.stopPropagation()}>
         <BaseNumberField.Decrement

@@ -48,6 +48,20 @@ import { scheduledHours } from "@/utils/scheduledHours";
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
 
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  alignItems: "center",
+  flexWrap: "wrap",
+  gap: theme.spacing(1),
+}));
+
+const SpacerBox = styled(Box)({
+  flexGrow: 1,
+});
+
+const StyledPaper = styled(Paper)({
+  overflowX: "auto",
+});
+
 const Grid = styled(Box)({
   display: "grid",
   gridTemplateColumns: `minmax(112px, max-content) repeat(${WEEK_DAYS}, minmax(112px, 1fr))`,
@@ -76,6 +90,10 @@ const NameCell = styled(Cell)(({ theme }) => ({
   zIndex: 1,
 }));
 
+const RowBox = styled(Box)({
+  display: "contents",
+});
+
 const DayCell = styled(Cell, {
   shouldForwardProp: (prop) => prop !== "today",
 })<{ today: boolean }>(({ theme, today }) => ({
@@ -102,6 +120,25 @@ const ShiftCard = styled(Stack, {
   gap: theme.spacing(0.5),
   justifyContent: "space-between",
   paddingInlineStart: theme.spacing(0.75),
+}));
+
+const ShiftButton = styled("button")({
+  flexGrow: 1,
+  background: "none",
+  border: 0,
+  color: "inherit",
+  cursor: "pointer",
+  font: "inherit",
+  padding: 0,
+  textAlign: "start",
+});
+
+const StyledIconButton = styled(IconButton)({
+  alignSelf: "center",
+});
+
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  padding: theme.spacing(2),
 }));
 
 interface CalendarProps {
@@ -282,7 +319,7 @@ const Calendar = ({
 
   return (
     <>
-      <Stack alignItems="center" direction="row" flexWrap="wrap" gap={1}>
+      <ToolbarStack direction="row">
         <Tooltip title={tAttendance("schedule.previousWeek")}>
           <IconButton
             onClick={() =>
@@ -313,7 +350,7 @@ const Calendar = ({
             { day: "numeric", month: "short", timeZone: STORE_TIMEZONE },
           )}
         </Typography>
-        <Box flexGrow={1} />
+        <SpacerBox />
         {canCreate && (
           <Button
             onClick={() => handleCreate()}
@@ -329,8 +366,8 @@ const Calendar = ({
             {tAttendance("schedule.applyTemplate")}
           </Button>
         )}
-      </Stack>
-      <Paper sx={{ overflowX: "auto" }} variant="outlined">
+      </ToolbarStack>
+      <StyledPaper variant="outlined">
         <Grid>
           <NameCell />
           {days.map((day) => (
@@ -344,7 +381,7 @@ const Calendar = ({
                   weekday: "short",
                 })}
               </Typography>
-              <Typography color="text.secondary" variant="caption">
+              <Typography color="textSecondary" variant="caption">
                 {format.dateTime(day.toDate(), {
                   day: "numeric",
                   month: "numeric",
@@ -354,10 +391,10 @@ const Calendar = ({
             </HeadCell>
           ))}
           {employees.map(({ id: employeeId, name }) => (
-            <Box display="contents" key={employeeId}>
+            <RowBox key={employeeId}>
               <NameCell>
                 <Typography variant="body2">{name}</Typography>
-                <Typography color="text.secondary" variant="caption">
+                <Typography color="textSecondary" variant="caption">
                   {tAttendance("schedule.scheduledHours", {
                     hours: format.number(hoursByEmployee.get(employeeId) ?? 0, {
                       maximumFractionDigits: 2,
@@ -377,19 +414,8 @@ const Calendar = ({
                         key={shift.id}
                         muted={shift.dayKind !== "workday"}
                       >
-                        <Box
-                          component="button"
-                          flexGrow={1}
+                        <ShiftButton
                           onClick={() => handleViewEvents(shift)}
-                          sx={{
-                            background: "none",
-                            border: 0,
-                            color: "inherit",
-                            cursor: "pointer",
-                            font: "inherit",
-                            padding: 0,
-                            textAlign: "start",
-                          }}
                           type="button"
                         >
                           <Typography noWrap variant="caption">
@@ -407,7 +433,7 @@ const Calendar = ({
                               ),
                             )}
                           </Typography>
-                        </Box>
+                        </ShiftButton>
                         {canCancel && shift.state === "scheduled" && (
                           <Tooltip title={tAttendance("cancelShift")}>
                             <IconButton
@@ -423,27 +449,26 @@ const Calendar = ({
                     ))}
                     {canCreate && (
                       <Tooltip title={tAttendance("shifts.actions.create")}>
-                        <IconButton
+                        <StyledIconButton
                           onClick={() => handleCreate(employeeId, date)}
                           size="small"
-                          sx={{ alignSelf: "center" }}
                         >
                           <Add fontSize="inherit" />
-                        </IconButton>
+                        </StyledIconButton>
                       </Tooltip>
                     )}
                   </DayCell>
                 );
               })}
-            </Box>
+            </RowBox>
           ))}
         </Grid>
         {!employees.length && (
-          <Typography color="text.secondary" padding={2} variant="body2">
+          <StyledTypography color="textSecondary" variant="body2">
             {tAttendance("empty")}
-          </Typography>
+          </StyledTypography>
         )}
-      </Paper>
+      </StyledPaper>
     </>
   );
 };

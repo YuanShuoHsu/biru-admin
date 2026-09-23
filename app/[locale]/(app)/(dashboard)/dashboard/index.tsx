@@ -49,6 +49,41 @@ const StyledCardContent = styled(CardContent)(({ theme }) => ({
   gap: theme.spacing(0.5),
 }));
 
+const StatValueStack = styled(Stack)({
+  justifyContent: "space-between",
+  alignItems: "center",
+});
+
+const StyledSparkLineChart = styled(SparkLineChart, {
+  shouldForwardProp: (prop) => prop !== "gradientId",
+})<{ gradientId: string }>(({ gradientId }) => ({
+  "& .MuiLineChart-area": {
+    fill: `url('#${gradientId}')`,
+  },
+}));
+
+const RevenueValueStack = styled(Stack)(({ theme }) => ({
+  justifyContent: "space-between",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
+
+const StyledLineChart = styled(LineChart, {
+  shouldForwardProp: (prop) => prop !== "gradientId",
+})<{ gradientId: string }>(({ gradientId }) => ({
+  "& .MuiLineChart-area": {
+    fill: `url('#${gradientId}')`,
+  },
+}));
+
+const StyledBarChart = styled(BarChart, {
+  shouldForwardProp: (prop) => prop !== "gradientId",
+})<{ gradientId: string }>(({ gradientId }) => ({
+  "& .MuiBarChart-element": {
+    fill: `url('#${gradientId}')`,
+  },
+}));
+
 const TREND_NEUTRAL_THRESHOLD = 5;
 
 // https://github.com/mui/material-ui/blob/master/docs/data/material/getting-started/templates/dashboard/components/SessionsChart.tsx
@@ -242,9 +277,7 @@ const Dashboard = ({
 
   return (
     <>
-      <Typography color="text.primary" variant="h6">
-        {tDashboard("overview")}
-      </Typography>
+      <Typography variant="h6">{tDashboard("overview")}</Typography>
       <Grid container spacing={2}>
         {statCards.map(({ label, value, href, trend }, index) => {
           const { chipColor, trendColor } = getTrendColors(trend.percent);
@@ -255,11 +288,7 @@ const Dashboard = ({
                 <StyledCardActionArea onClick={() => href && router.push(href)}>
                   <StyledCardContent>
                     <Typography variant="subtitle2">{label}</Typography>
-                    <Stack
-                      direction="row"
-                      justifyContent="space-between"
-                      alignItems="center"
-                    >
+                    <StatValueStack direction="row">
                       <Typography variant="h4">
                         {format.number(value)}
                       </Typography>
@@ -268,29 +297,25 @@ const Dashboard = ({
                         label={`${trend.percent > 0 ? "+" : ""}${trend.percent}%`}
                         size="small"
                       />
-                    </Stack>
-                    <Typography variant="caption" color="text.secondary">
+                    </StatValueStack>
+                    <Typography color="textSecondary" variant="caption">
                       {periodLabel}
                     </Typography>
-                    <SparkLineChart
+                    <StyledSparkLineChart
                       data={trend.data}
                       area
                       height={50}
                       showHighlight
                       showTooltip
                       color={trendColor}
-                      sx={{
-                        "& .MuiLineChart-area": {
-                          fill: `url('#area-gradient-${index}')`,
-                        },
-                      }}
+                      gradientId={`area-gradient-${index}`}
                       xAxis={{ data: trendLabels, scaleType: "band" }}
                     >
                       <AreaGradient
                         color={trendColor}
                         id={`area-gradient-${index}`}
                       />
-                    </SparkLineChart>
+                    </StyledSparkLineChart>
                   </StyledCardContent>
                 </StyledCardActionArea>
               </StyledCard>
@@ -307,12 +332,7 @@ const Dashboard = ({
                   <Typography component="h2" variant="subtitle2">
                     {tDashboard("stats.revenue")}
                   </Typography>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    gap={1}
-                  >
+                  <RevenueValueStack direction="row">
                     <Typography variant="h4">
                       {formatMoney(revenue.total, currency)}
                     </Typography>
@@ -321,11 +341,11 @@ const Dashboard = ({
                       label={`${revenue.percent > 0 ? "+" : ""}${revenue.percent}%`}
                       size="small"
                     />
-                  </Stack>
-                  <Typography color="text.secondary" variant="caption">
+                  </RevenueValueStack>
+                  <Typography color="textSecondary" variant="caption">
                     {periodLabel}
                   </Typography>
-                  <LineChart
+                  <StyledLineChart
                     height={250}
                     hideLegend
                     grid={{ horizontal: true }}
@@ -343,11 +363,7 @@ const Dashboard = ({
                           formatMoney(value ?? 0, currency),
                       },
                     ]}
-                    sx={{
-                      "& .MuiLineChart-area": {
-                        fill: "url('#revenue')",
-                      },
-                    }}
+                    gradientId="revenue"
                     xAxis={[
                       {
                         data: trendLabels,
@@ -359,7 +375,7 @@ const Dashboard = ({
                     yAxis={[{ width: "auto" }]}
                   >
                     <AreaGradient color={revenue.trendColor} id="revenue" />
-                  </LineChart>
+                  </StyledLineChart>
                 </StyledCardContent>
               </StyledCard>
             </Grid>
@@ -372,10 +388,10 @@ const Dashboard = ({
                   <Typography variant="h4">
                     {formatMoney(revenue.avgTotal, currency)}
                   </Typography>
-                  <Typography color="text.secondary" variant="caption">
+                  <Typography color="textSecondary" variant="caption">
                     {periodLabel}
                   </Typography>
-                  <LineChart
+                  <StyledLineChart
                     height={250}
                     hideLegend
                     grid={{ horizontal: true }}
@@ -393,11 +409,7 @@ const Dashboard = ({
                           formatMoney(value ?? 0, currency),
                       },
                     ]}
-                    sx={{
-                      "& .MuiLineChart-area": {
-                        fill: "url('#avg-order-value')",
-                      },
-                    }}
+                    gradientId="avg-order-value"
                     xAxis={[
                       {
                         data: trendLabels,
@@ -409,7 +421,7 @@ const Dashboard = ({
                     yAxis={[{ width: "auto" }]}
                   >
                     <AreaGradient color={chartColor} id="avg-order-value" />
-                  </LineChart>
+                  </StyledLineChart>
                 </StyledCardContent>
               </StyledCard>
             </Grid>
@@ -421,10 +433,10 @@ const Dashboard = ({
               <Typography component="h2" variant="subtitle2">
                 {tDashboard("charts.topItems")}
               </Typography>
-              <Typography color="text.secondary" variant="caption">
+              <Typography color="textSecondary" variant="caption">
                 {periodLabel}
               </Typography>
-              <BarChart
+              <StyledBarChart
                 height={300}
                 hideLegend
                 grid={{ vertical: true }}
@@ -437,11 +449,7 @@ const Dashboard = ({
                     layout: "horizontal",
                   },
                 ]}
-                sx={{
-                  "& .MuiBarChart-element": {
-                    fill: "url('#top-items')",
-                  },
-                }}
+                gradientId="top-items"
                 xAxis={[{ tickMinStep: 1 }]}
                 yAxis={[
                   {
@@ -452,7 +460,7 @@ const Dashboard = ({
                 ]}
               >
                 <AreaGradient color={chartColor} horizontal id="top-items" />
-              </BarChart>
+              </StyledBarChart>
             </StyledCardContent>
           </StyledCard>
         </Grid>
@@ -462,10 +470,10 @@ const Dashboard = ({
               <Typography component="h2" variant="subtitle2">
                 {tDashboard("charts.slowItems")}
               </Typography>
-              <Typography color="text.secondary" variant="caption">
+              <Typography color="textSecondary" variant="caption">
                 {periodLabel}
               </Typography>
-              <BarChart
+              <StyledBarChart
                 height={300}
                 hideLegend
                 grid={{ vertical: true }}
@@ -478,11 +486,7 @@ const Dashboard = ({
                     layout: "horizontal",
                   },
                 ]}
-                sx={{
-                  "& .MuiBarChart-element": {
-                    fill: "url('#slow-items')",
-                  },
-                }}
+                gradientId="slow-items"
                 xAxis={[{ tickMinStep: 1 }]}
                 yAxis={[
                   {
@@ -497,7 +501,7 @@ const Dashboard = ({
                   horizontal
                   id="slow-items"
                 />
-              </BarChart>
+              </StyledBarChart>
             </StyledCardContent>
           </StyledCard>
         </Grid>
@@ -507,10 +511,10 @@ const Dashboard = ({
               <Typography component="h2" variant="subtitle2">
                 {tDashboard("charts.peakHours")}
               </Typography>
-              <Typography color="text.secondary" variant="caption">
+              <Typography color="textSecondary" variant="caption">
                 {periodLabel}
               </Typography>
-              <BarChart
+              <StyledBarChart
                 height={300}
                 hideLegend
                 grid={{ horizontal: true }}
@@ -522,11 +526,7 @@ const Dashboard = ({
                     label: tDashboard("charts.peakHours"),
                   },
                 ]}
-                sx={{
-                  "& .MuiBarChart-element": {
-                    fill: "url('#peak-hours')",
-                  },
-                }}
+                gradientId="peak-hours"
                 xAxis={[
                   {
                     data: hourLabels,
@@ -537,7 +537,7 @@ const Dashboard = ({
                 yAxis={[{ tickMinStep: 1, width: "auto" }]}
               >
                 <AreaGradient color={chartColor} id="peak-hours" />
-              </BarChart>
+              </StyledBarChart>
             </StyledCardContent>
           </StyledCard>
         </Grid>
@@ -547,10 +547,10 @@ const Dashboard = ({
               <Typography component="h2" variant="subtitle2">
                 {tDashboard("charts.orderModes")}
               </Typography>
-              <Typography color="text.secondary" variant="caption">
+              <Typography color="textSecondary" variant="caption">
                 {periodLabel}
               </Typography>
-              <BarChart
+              <StyledBarChart
                 height={250}
                 hideLegend
                 grid={{ vertical: true }}
@@ -563,11 +563,7 @@ const Dashboard = ({
                     layout: "horizontal",
                   },
                 ]}
-                sx={{
-                  "& .MuiBarChart-element": {
-                    fill: "url('#order-modes')",
-                  },
-                }}
+                gradientId="order-modes"
                 xAxis={[{ tickMinStep: 1 }]}
                 yAxis={[
                   {
@@ -578,7 +574,7 @@ const Dashboard = ({
                 ]}
               >
                 <AreaGradient color={chartColor} horizontal id="order-modes" />
-              </BarChart>
+              </StyledBarChart>
             </StyledCardContent>
           </StyledCard>
         </Grid>
@@ -588,10 +584,10 @@ const Dashboard = ({
               <Typography component="h2" variant="subtitle2">
                 {tDashboard("charts.paymentMethods")}
               </Typography>
-              <Typography color="text.secondary" variant="caption">
+              <Typography color="textSecondary" variant="caption">
                 {periodLabel}
               </Typography>
-              <BarChart
+              <StyledBarChart
                 height={250}
                 hideLegend
                 grid={{ vertical: true }}
@@ -604,11 +600,7 @@ const Dashboard = ({
                     layout: "horizontal",
                   },
                 ]}
-                sx={{
-                  "& .MuiBarChart-element": {
-                    fill: "url('#payment-methods')",
-                  },
-                }}
+                gradientId="payment-methods"
                 xAxis={[{ tickMinStep: 1 }]}
                 yAxis={[
                   {
@@ -623,7 +615,7 @@ const Dashboard = ({
                   horizontal
                   id="payment-methods"
                 />
-              </BarChart>
+              </StyledBarChart>
             </StyledCardContent>
           </StyledCard>
         </Grid>

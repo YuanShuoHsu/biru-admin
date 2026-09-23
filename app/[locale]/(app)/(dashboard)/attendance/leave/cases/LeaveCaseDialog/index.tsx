@@ -24,6 +24,7 @@ import {
   MenuItem,
   TextField,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -45,6 +46,10 @@ import { fetcher } from "@/utils/fetcher";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
+
+const StyledFormControlLabel = styled(FormControlLabel)({
+  alignSelf: "flex-start",
+});
 
 interface LeaveCaseDialogProps {
   canSetDailyPay: boolean;
@@ -363,7 +368,7 @@ const LeaveCaseDialog = ({
         value={endsAt ? dayjs(endsAt) : null}
       />
       {isMarriageLeave && (
-        <FormControlLabel
+        <StyledFormControlLabel
           control={
             <Checkbox
               checked={extensionAgreed}
@@ -371,11 +376,10 @@ const LeaveCaseDialog = ({
             />
           }
           label={tAttendance("extensionAgreed")}
-          sx={{ alignSelf: "flex-start" }}
         />
       )}
       {isParentalLeave && (
-        <FormControlLabel
+        <StyledFormControlLabel
           control={
             <Checkbox
               checked={earlyParentalAgreed}
@@ -385,7 +389,6 @@ const LeaveCaseDialog = ({
             />
           }
           label={tAttendance("earlyParentalAgreed")}
-          sx={{ alignSelf: "flex-start" }}
         />
       )}
       <TextField

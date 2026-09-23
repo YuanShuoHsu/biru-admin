@@ -32,6 +32,7 @@ import {
   Stack,
   Tooltip,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
   GridFilterModel,
@@ -59,6 +60,21 @@ import {
   getStatutoryLeaveName,
 } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+
+const ActionsStack = styled(Stack)({
+  height: "100%",
+  alignItems: "center",
+});
+
+const PaidPercentStack = styled(Stack)(({ theme }) => ({
+  height: "100%",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
+
+const StyledButton = styled(Button)({
+  alignSelf: "flex-start",
+});
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -279,7 +295,7 @@ const LeaveTypes = ({
         filterable: false,
         headerName: tAttendance("actions"),
         renderCell: ({ row }: GridRenderCellParams<AttendanceLeaveType>) => (
-          <Stack height="100%" direction="row" alignItems="center">
+          <ActionsStack direction="row">
             <Tooltip title={tAttendance("leaveTypes.actions.update.title")}>
               <IconButton
                 onClick={() => handleLeaveTypeDialog(row)}
@@ -299,7 +315,7 @@ const LeaveTypes = ({
                 </IconButton>
               </Tooltip>
             )}
-          </Stack>
+          </ActionsStack>
         ),
         resizable: false,
         sortable: false,
@@ -325,7 +341,7 @@ const LeaveTypes = ({
         renderCell: ({
           row: { paidPercent, statutoryPaidPercent },
         }: GridRenderCellParams<AttendanceLeaveType>) => (
-          <Stack height="100%" direction="row" alignItems="center" gap={1}>
+          <PaidPercentStack direction="row">
             {paidPercent ?? statutoryPaidPercent}
             {paidPercent != null && statutoryPaidPercent != null && (
               <Chip
@@ -335,7 +351,7 @@ const LeaveTypes = ({
                 variant="outlined"
               />
             )}
-          </Stack>
+          </PaidPercentStack>
         ),
         type: "number",
       },
@@ -393,14 +409,13 @@ const LeaveTypes = ({
 
   return (
     <>
-      <Button
+      <StyledButton
         onClick={() => handleLeaveTypeDialog()}
         startIcon={<Add />}
-        sx={{ alignSelf: "flex-start" }}
         variant="contained"
       >
         {tAttendance("leaveTypes.actions.create.title")}
-      </Button>
+      </StyledButton>
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}

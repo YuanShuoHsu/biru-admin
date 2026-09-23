@@ -15,11 +15,16 @@ import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { MoreHoriz } from "@mui/icons-material";
 import { IconButton, Menu, MenuItem } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { Session } from "@/types/auth";
+
+const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
+  color: theme.vars.palette.error.main,
+}));
 
 interface OtherAccountItemProps {
   token: string;
@@ -157,9 +162,9 @@ const OtherAccountItem = ({ token, user }: OtherAccountItemProps) => {
         <MenuItem onClick={handleSetActiveDialog}>
           {tAuth("settings.accounts.setActive.label")}
         </MenuItem>
-        <MenuItem onClick={handleRevokeDialog} sx={{ color: "error.main" }}>
+        <StyledMenuItem onClick={handleRevokeDialog}>
           {tAuth("settings.accounts.revoke.label")}
-        </MenuItem>
+        </StyledMenuItem>
       </Menu>
     </>
   );

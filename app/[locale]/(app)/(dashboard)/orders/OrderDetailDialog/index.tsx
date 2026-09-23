@@ -15,6 +15,7 @@ import { useFormatMoney } from "@/hooks/useFormatMoney";
 import { useOrderItemName } from "@/hooks/useOrderItemName";
 
 import { Button, Chip, Divider, Stack, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import type {
   OrderInvoiceVerification,
@@ -26,6 +27,61 @@ import type {
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
+const InfoRowStack = styled(Stack)(({ theme }) => ({
+  justifyContent: "space-between",
+  alignItems: "center",
+  gap: theme.spacing(2),
+}));
+
+const ValueTypography = styled(Typography)({
+  wordBreak: "break-all",
+});
+
+const SectionStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(1),
+}));
+
+const BoldTypography = styled(Typography)({
+  fontWeight: "bold",
+});
+
+const DetailStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(2),
+}));
+
+const InvoiceActionsStack = styled(Stack)(({ theme }) => ({
+  alignItems: "flex-start",
+  gap: theme.spacing(1),
+}));
+
+const EntryStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(0.5),
+}));
+
+const EntryRowStack = styled(Stack)(({ theme }) => ({
+  justifyContent: "space-between",
+  gap: theme.spacing(2),
+}));
+
+const AmountTypography = styled(Typography)({
+  flexShrink: 0,
+});
+
+const NotificationStack = styled(Stack)(({ theme }) => ({
+  alignItems: "flex-end",
+  gap: theme.spacing(0.5),
+}));
+
+const ItemRowStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(1),
+  justifyContent: "space-between",
+}));
+
+const TotalStack = styled(Stack)({
+  alignItems: "center",
+  justifyContent: "space-between",
+});
+
 const InfoRow = ({
   label,
   value,
@@ -33,23 +89,16 @@ const InfoRow = ({
   label: string;
   value: React.ReactNode;
 }) => (
-  <Stack
-    direction="row"
-    justifyContent="space-between"
-    alignItems="center"
-    gap={2}
-  >
-    <Typography color="text.secondary" variant="body2">
+  <InfoRowStack direction="row">
+    <Typography color="textSecondary" variant="body2">
       {label}
     </Typography>
     {typeof value === "string" ? (
-      <Typography sx={{ wordBreak: "break-all" }} variant="body2">
-        {value}
-      </Typography>
+      <ValueTypography variant="body2">{value}</ValueTypography>
     ) : (
       value
     )}
-  </Stack>
+  </InfoRowStack>
 );
 
 const Section = ({
@@ -59,12 +108,12 @@ const Section = ({
   children: React.ReactNode;
   title: string;
 }) => (
-  <Stack gap={1}>
-    <Typography color="text.secondary" fontWeight="bold" variant="subtitle2">
+  <SectionStack>
+    <BoldTypography color="textSecondary" variant="subtitle2">
       {title}
-    </Typography>
+    </BoldTypography>
     {children}
-  </Stack>
+  </SectionStack>
 );
 
 interface OrderDetailDialogProps {
@@ -125,7 +174,7 @@ const OrderDetailDialog = ({
   const totalAmount = Number(order.total);
 
   return (
-    <Stack divider={<Divider />} gap={2}>
+    <DetailStack divider={<Divider />}>
       <Section title={tOrders("detail.customer.title")}>
         <InfoRow
           label={tOrders("detail.customer.name")}
@@ -246,7 +295,7 @@ const OrderDetailDialog = ({
             />
           )}
           {!!organizationSlug && !!order.invoice.invoiceNumber && (
-            <Stack alignItems="flex-start" gap={1}>
+            <InvoiceActionsStack>
               <Button
                 loading={verifying}
                 onClick={handleVerifyInvoice}
@@ -256,11 +305,9 @@ const OrderDetailDialog = ({
                 {tOrders("detail.invoice.verification.label")}
               </Button>
               {!!verification && (
-                <Stack gap={0.5}>
+                <EntryStack>
                   <Typography
-                    color={
-                      verification.matchesLocal ? "success.main" : "error.main"
-                    }
+                    color={verification.matchesLocal ? "success" : "error"}
                     variant="body2"
                   >
                     {tOrders(
@@ -270,11 +317,11 @@ const OrderDetailDialog = ({
                     )}
                   </Typography>
                   {verification.invalidated && (
-                    <Typography color="text.secondary" variant="body2">
+                    <Typography color="textSecondary" variant="body2">
                       {tOrders("detail.invoice.verification.invalidated")}
                     </Typography>
                   )}
-                  <Typography color="text.secondary" variant="body2">
+                  <Typography color="textSecondary" variant="body2">
                     {tOrders(
                       verification.uploaded
                         ? "detail.invoice.verification.uploaded"
@@ -306,9 +353,9 @@ const OrderDetailDialog = ({
                       />
                     </>
                   )}
-                </Stack>
+                </EntryStack>
               )}
-            </Stack>
+            </InvoiceActionsStack>
           )}
           <InfoRow
             label={tOrder("checkout.invoice.title")}
@@ -355,22 +402,22 @@ const OrderDetailDialog = ({
       {!!refunds?.length && (
         <Section title={tOrders("detail.refunds.title")}>
           {refunds.map((refund) => (
-            <Stack gap={0.5} key={refund.id}>
-              <Stack direction="row" justifyContent="space-between" gap={2}>
+            <EntryStack key={refund.id}>
+              <EntryRowStack direction="row">
                 <Typography variant="body2">
                   {tOrders(`detail.refunds.scope.${refund.scope}`)}
                   {tCommon("parenthesisOpen")}
                   {tOrders(`detail.refunds.channel.${refund.channel}`)}
                   {tCommon("parenthesisClose")}
                 </Typography>
-                <Typography color="error" flexShrink={0} variant="body2">
+                <AmountTypography color="error" variant="body2">
                   -{formatMoney(Number(refund.amount), currency)}
-                </Typography>
-              </Stack>
+                </AmountTypography>
+              </EntryRowStack>
               <InfoRow
                 label={format.dateTime(new Date(refund.createdAt), "short")}
                 value={
-                  <Stack direction="row" gap={0.5}>
+                  <EntryStack direction="row">
                     <Chip
                       color={REFUND_STATUS_COLORS[refund.status]}
                       label={tOrders(`detail.refunds.status.${refund.status}`)}
@@ -385,7 +432,7 @@ const OrderDetailDialog = ({
                       )}
                       size="small"
                     />
-                  </Stack>
+                  </EntryStack>
                 }
               />
               {!!refund.reason && (
@@ -406,7 +453,7 @@ const OrderDetailDialog = ({
                   value={refund.invoiceError}
                 />
               )}
-            </Stack>
+            </EntryStack>
           ))}
         </Section>
       )}
@@ -417,7 +464,7 @@ const OrderDetailDialog = ({
               key={notification.id}
               label={format.dateTime(new Date(notification.createdAt), "short")}
               value={
-                <Stack alignItems="flex-end" gap={0.5}>
+                <NotificationStack>
                   <Typography variant="body2">
                     {tOrders(
                       `detail.notifications.endpoint.${notification.endpoint}`,
@@ -445,7 +492,7 @@ const OrderDetailDialog = ({
                       {notification.error}
                     </Typography>
                   )}
-                </Stack>
+                </NotificationStack>
               }
             />
           ))}
@@ -453,52 +500,43 @@ const OrderDetailDialog = ({
       )}
       <Section title={tOrders("detail.items.title")}>
         {order.items.map((item) => (
-          <Stack
-            direction="row"
-            gap={1}
-            justifyContent="space-between"
-            key={item.id}
-          >
+          <ItemRowStack direction="row" key={item.id}>
             <Typography variant="body2">
               {getOrderItemName(item)} {tCommon("multiply")}{" "}
               {item.orderQuantity}
             </Typography>
-            <Typography flexShrink={0} variant="body2">
+            <AmountTypography variant="body2">
               {formatMoney(
                 Number(item.unitPrice) * item.orderQuantity,
                 item.priceCurrency,
               )}
-            </Typography>
-          </Stack>
+            </AmountTypography>
+          </ItemRowStack>
         ))}
         {discount > 0 && (
-          <Stack direction="row" gap={1} justifyContent="space-between">
+          <ItemRowStack direction="row">
             <Typography variant="body2">
               {tOrders("detail.discount")}
               {order.discountCode
                 ? `${tCommon("parenthesisOpen")}${order.discountCode}${tCommon("parenthesisClose")}`
                 : ""}
             </Typography>
-            <Typography color="primary" flexShrink={0} variant="body2">
+            <AmountTypography color="primary" variant="body2">
               -{formatMoney(discount, currency)}
-            </Typography>
-          </Stack>
+            </AmountTypography>
+          </ItemRowStack>
         )}
         <Divider />
-        <Stack
-          alignItems="center"
-          direction="row"
-          justifyContent="space-between"
-        >
-          <Typography fontWeight="bold" variant="subtitle1">
+        <TotalStack direction="row">
+          <BoldTypography variant="subtitle1">
             {tOrders("detail.total")}
-          </Typography>
-          <Typography color="primary" fontWeight="bold" variant="h6">
+          </BoldTypography>
+          <BoldTypography color="primary" variant="h6">
             {formatMoney(totalAmount, currency)}
-          </Typography>
-        </Stack>
+          </BoldTypography>
+        </TotalStack>
       </Section>
-    </Stack>
+    </DetailStack>
   );
 };
 

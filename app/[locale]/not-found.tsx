@@ -6,15 +6,9 @@ import { Box, Link, Typography } from "@mui/material";
 
 const NotFound = () => (
   <Box>
-    <Typography color="text.primary" variant="h2">
-      Not Found
-    </Typography>
-    <Typography color="text.primary" variant="body1">
-      Could not find requested resource
-    </Typography>
-    <Link color="text.primary" href="/">
-      Return Home
-    </Link>
+    <Typography variant="h2">Not Found</Typography>
+    <Typography variant="body1">Could not find requested resource</Typography>
+    <Link href="/">Return Home</Link>
   </Box>
 );
 

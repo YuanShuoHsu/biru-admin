@@ -1,16 +1,9 @@
-import { Box, type BoxProps } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
-const FormBox = ({ ref, ...props }: BoxProps<"form">) => (
-  <Box
-    ref={ref}
-    component="form"
-    display="flex"
-    flexDirection="column"
-    gap={2}
-    {...props}
-  />
-);
-
-FormBox.displayName = "FormBox";
+const FormBox = styled("form")(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  gap: theme.spacing(2),
+}));
 
 export default FormBox;

@@ -20,11 +20,25 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
+const GroupStack = styled(Stack)(({ theme }) => ({
+  width: "100%",
+  gap: theme.spacing(2),
+}));
+
+const StyledTypography = styled(Typography)({
+  fontWeight: "bold",
+});
+
 const StyledFormControlLabel = styled(FormControlLabel)(({ theme }) => ({
   margin: 0,
   padding: theme.spacing(1, 2),
   flexDirection: "row-reverse",
   justifyContent: "space-between",
+}));
+
+const OptionLabelStack = styled(Stack)(({ theme }) => ({
+  alignItems: "center",
+  gap: theme.spacing(2),
 }));
 
 interface ListRadioGroupOption {
@@ -52,10 +66,10 @@ const ListRadioGroup = ({
   options,
   value,
 }: ListRadioGroupProps) => (
-  <Stack width="100%" gap={2}>
-    <Typography color="text.secondary" fontWeight="bold" variant="subtitle2">
+  <GroupStack>
+    <StyledTypography color="textSecondary" variant="subtitle2">
       {label}
-    </Typography>
+    </StyledTypography>
     <Paper variant="outlined">
       <RadioGroup onChange={onChange} value={value}>
         {options.map(
@@ -69,13 +83,13 @@ const ListRadioGroup = ({
                 control={<Radio size="small" />}
                 disabled={disabled}
                 label={
-                  <Stack direction="row" alignItems="center" gap={2}>
+                  <OptionLabelStack direction="row">
                     {icon}
                     <Typography variant="body2">{label}</Typography>
                     {disabled && disabledReason && (
                       <Chip label={disabledReason} size="small" />
                     )}
-                  </Stack>
+                  </OptionLabelStack>
                 }
                 value={optionValue}
               />
@@ -85,7 +99,7 @@ const ListRadioGroup = ({
       </RadioGroup>
     </Paper>
     {helperText && <FormHelperText error={error}>{helperText}</FormHelperText>}
-  </Stack>
+  </GroupStack>
 );
 
 export default ListRadioGroup;

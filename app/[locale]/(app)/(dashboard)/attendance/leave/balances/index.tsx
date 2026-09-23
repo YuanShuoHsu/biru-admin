@@ -26,6 +26,7 @@ import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { Add } from "@mui/icons-material";
 import { Button } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
   GridRenderCellParams,
@@ -50,6 +51,10 @@ import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { attendancePath, getStatutoryLeaveName } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+
+const StyledButton = styled(Button)({
+  alignSelf: "flex-start",
+});
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -314,15 +319,14 @@ const Balances = ({
   return (
     <>
       {canWrite && (
-        <Button
+        <StyledButton
           onClick={handleCreateBalance}
           size="small"
           startIcon={<Add />}
-          sx={{ alignSelf: "flex-start" }}
           variant="contained"
         >
           {tAttendance("balances.actions.create")}
-        </Button>
+        </StyledButton>
       )}
       <DataGrid
         {...DATA_GRID_PROPS}
