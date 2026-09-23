@@ -41,6 +41,8 @@ import {
 import type {
   MenuItem as MenuItemType,
   ServingTemperature,
+  ServingTemperatureLevel,
+  SweetnessLevel,
 } from "@/types/menus";
 import type { ApiOrderMode } from "@/types/orderMode";
 
@@ -282,7 +284,6 @@ const CreateMenuItemDialog = ({
 
           setValue("servingTemperatures", next);
 
-          // 取消勾選對應的冷熱時一併清掉推薦
           if (
             recommendedServingTemperatureLevel &&
             !next.includes(
@@ -300,9 +301,6 @@ const CreateMenuItemDialog = ({
       />
       {servingTemperatures.length > 0 && (
         <TextField
-          {...register("recommendedServingTemperatureLevel", {
-            setValueAs: (value) => value || null,
-          })}
           error={!!errors.recommendedServingTemperatureLevel}
           fullWidth
           helperText={
@@ -310,6 +308,12 @@ const CreateMenuItemDialog = ({
             tMenus("items.recommendedServingTemperatureLevel.helperText")
           }
           label={`${tMenus("items.recommendedServingTemperatureLevel.label")} ${tCommon("optional")}`}
+          onChange={(event) =>
+            setValue(
+              "recommendedServingTemperatureLevel",
+              (event.target.value || null) as ServingTemperatureLevel | null,
+            )
+          }
           select
           slotProps={{
             inputLabel: { shrink: true },
@@ -400,9 +404,6 @@ const CreateMenuItemDialog = ({
       )}
       {sweetness === "Adjustable" && (
         <TextField
-          {...register("recommendedSweetnessLevel", {
-            setValueAs: (value) => value || null,
-          })}
           error={!!errors.recommendedSweetnessLevel}
           fullWidth
           helperText={
@@ -410,6 +411,12 @@ const CreateMenuItemDialog = ({
             tMenus("items.recommendedSweetnessLevel.helperText")
           }
           label={`${tMenus("items.recommendedSweetnessLevel.label")} ${tCommon("optional")}`}
+          onChange={(event) =>
+            setValue(
+              "recommendedSweetnessLevel",
+              (event.target.value || null) as SweetnessLevel | null,
+            )
+          }
           select
           slotProps={{
             inputLabel: { shrink: true },

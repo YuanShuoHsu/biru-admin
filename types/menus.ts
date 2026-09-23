@@ -58,3 +58,4 @@ export type ServingTemperature = components["schemas"]["ServingTemperature"];
 export type ServingTemperatureLevel =
   components["schemas"]["ServingTemperatureLevel"];
 export type Sweetness = components["schemas"]["Sweetness"];
+export type SweetnessLevel = components["schemas"]["SweetnessLevel"];

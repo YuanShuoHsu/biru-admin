@@ -41,6 +41,8 @@ import {
 import type {
   MenuItem as MenuItemType,
   ServingTemperature,
+  ServingTemperatureLevel,
+  SweetnessLevel,
 } from "@/types/menus";
 import type { ApiOrderMode } from "@/types/orderMode";
 
@@ -172,7 +174,6 @@ const UpdateMenuItemDialog = ({
       setDialog({ confirmLoading: true });
 
       if (!canWrite) {
-        // 只有 itemAvailability 權限時打窄端點，整包 PATCH 會被後端的 menu:update 擋掉
         await fetcher(`/api/offers/${item.offer?.id}/availability`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -328,7 +329,6 @@ const UpdateMenuItemDialog = ({
 
           setValue("servingTemperatures", next);
 
-          // 取消勾選對應的冷熱時一併清掉推薦
           if (
             recommendedServingTemperatureLevel &&
             !next.includes(
@@ -346,9 +346,6 @@ const UpdateMenuItemDialog = ({
       />
       {servingTemperatures.length > 0 && (
         <TextField
-          {...register("recommendedServingTemperatureLevel", {
-            setValueAs: (value) => value || null,
-          })}
           disabled={!canWrite}
           error={!!errors.recommendedServingTemperatureLevel}
           fullWidth
@@ -357,6 +354,12 @@ const UpdateMenuItemDialog = ({
             tMenus("items.recommendedServingTemperatureLevel.helperText")
           }
           label={`${tMenus("items.recommendedServingTemperatureLevel.label")} ${tCommon("optional")}`}
+          onChange={(event) =>
+            setValue(
+              "recommendedServingTemperatureLevel",
+              (event.target.value || null) as ServingTemperatureLevel | null,
+            )
+          }
           select
           slotProps={{
             inputLabel: { shrink: true },
@@ -449,9 +452,6 @@ const UpdateMenuItemDialog = ({
       )}
       {sweetness === "Adjustable" && (
         <TextField
-          {...register("recommendedSweetnessLevel", {
-            setValueAs: (value) => value || null,
-          })}
           disabled={!canWrite}
           error={!!errors.recommendedSweetnessLevel}
           fullWidth
@@ -460,6 +460,12 @@ const UpdateMenuItemDialog = ({
             tMenus("items.recommendedSweetnessLevel.helperText")
           }
           label={`${tMenus("items.recommendedSweetnessLevel.label")} ${tCommon("optional")}`}
+          onChange={(event) =>
+            setValue(
+              "recommendedSweetnessLevel",
+              (event.target.value || null) as SweetnessLevel | null,
+            )
+          }
           select
           slotProps={{
             inputLabel: { shrink: true },
