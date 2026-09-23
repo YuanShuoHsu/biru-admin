@@ -1,6 +1,8 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
+import { FULL_TIME_MINUTES } from "@/constants/attendance";
+
 import type { AttendanceEmployment } from "@/types/attendance";
 
 export const useEmployeeFormSchema = (employee?: AttendanceEmployment) => {
@@ -17,11 +19,14 @@ export const useEmployeeFormSchema = (employee?: AttendanceEmployment) => {
         .number()
         .int({ error: tValidation("number.integer") })
         .min(1, { error: tValidation("number.min", { min: 1 }) })
-        .max(2400, { error: tValidation("number.max", { max: 2400 }) }),
+        .max(FULL_TIME_MINUTES, {
+          error: tValidation("number.max", { max: FULL_TIME_MINUTES }),
+        }),
       weeklyMinutesFrom: z.string(),
     })
     .refine(
-      ({ partTime, weeklyMinutes }) => !partTime || weeklyMinutes < 2400,
+      ({ partTime, weeklyMinutes }) =>
+        !partTime || weeklyMinutes < FULL_TIME_MINUTES,
       {
         error: tValidation("weeklyMinutes.partTime"),
         path: ["weeklyMinutes"],

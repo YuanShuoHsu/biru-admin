@@ -2390,6 +2390,8 @@ export interface components {
       minutes: number;
     };
     /** @enum {string} */
+    AttendanceEmploymentType: "fullTime" | "partTime";
+    /** @enum {string} */
     AttendanceEmployeeStatus:
       | "unconfigured"
       | "upcoming"
@@ -2403,6 +2405,7 @@ export interface components {
       name: string;
       weeklyMinutes: number;
       weeklyMinutesHistory: components["schemas"]["AttendanceWeeklyMinutesChangeResponseDto"][];
+      employmentType: components["schemas"]["AttendanceEmploymentType"];
       enabled: boolean;
       /** Format: date-time */
       hiredAt: string;
@@ -2449,7 +2452,6 @@ export interface components {
       | "email"
       | "hiredAt"
       | "terminatedAt"
-      | "weeklyMinutes"
       | "employmentType"
       | "status";
     /** @enum {string} */
@@ -2458,7 +2460,6 @@ export interface components {
       | "email"
       | "hiredAt"
       | "terminatedAt"
-      | "weeklyMinutes"
       | "employmentType"
       | "status";
     AttendanceEmploymentResponseDto: {
@@ -2468,6 +2469,7 @@ export interface components {
       name: string;
       weeklyMinutes: number;
       weeklyMinutesHistory: components["schemas"]["AttendanceWeeklyMinutesChangeResponseDto"][];
+      employmentType: components["schemas"]["AttendanceEmploymentType"];
       enabled: boolean;
       /** Format: date-time */
       hiredAt: string;
@@ -11698,6 +11700,9 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "weeklyMinutesFromOutsideEmployment",
   "weeklyMinutesFromRequired",
 ];
+export const attendanceEmploymentTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["AttendanceEmploymentType"]
+> = ["fullTime", "partTime"];
 export const attendanceEmployeeStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceEmployeeStatus"]
 > = ["unconfigured", "upcoming", "active", "disabled", "terminated"];
@@ -11731,26 +11736,10 @@ export const sortDirectionValues: ReadonlyArray<
 > = ["asc", "desc"];
 export const attendanceEmployeeFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceEmployeeFilterField"]
-> = [
-  "name",
-  "email",
-  "hiredAt",
-  "terminatedAt",
-  "weeklyMinutes",
-  "employmentType",
-  "status",
-];
+> = ["name", "email", "hiredAt", "terminatedAt", "employmentType", "status"];
 export const attendanceEmployeeSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceEmployeeSortField"]
-> = [
-  "name",
-  "email",
-  "hiredAt",
-  "terminatedAt",
-  "weeklyMinutes",
-  "employmentType",
-  "status",
-];
+> = ["name", "email", "hiredAt", "terminatedAt", "employmentType", "status"];
 export const attendanceShiftFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceShiftFilterField"]
 > = ["employeeName", "startsAt", "endsAt", "dayKind"];

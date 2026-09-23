@@ -30,6 +30,8 @@ export type AttendanceEmployment =
   components["schemas"]["AttendanceEmploymentResponseDto"];
 export type AttendanceEmployeeStatus =
   components["schemas"]["AttendanceEmployeeStatus"];
+export type AttendanceEmploymentType =
+  components["schemas"]["AttendanceEmploymentType"];
 export type SaveAttendanceEmployee =
   components["schemas"]["SaveAttendanceEmployeeDto"];
 export type AttendanceContext =

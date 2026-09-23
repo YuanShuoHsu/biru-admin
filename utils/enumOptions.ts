@@ -5,6 +5,7 @@ import { PLATFORM_ORGANIZATION_ID } from "@/constants/organizations";
 import {
   attendanceDayKindValues,
   attendanceEmployeeStatusValues,
+  attendanceEmploymentTypeValues,
   attendanceParentalReturnStatusValues,
   attendanceRequestKindValues,
   attendanceRequestStatusValues,
@@ -199,7 +200,7 @@ export const getAttendanceRequestEnumOptions = (
 export const getAttendanceEmployeeEnumOptions = (
   tAttendance: ReturnType<typeof useTranslations<"attendance">>,
 ) => ({
-  employmentType: (["fullTime", "partTime"] as const).map((value) => ({
+  employmentType: attendanceEmploymentTypeValues.map((value) => ({
     label: tAttendance(`employmentType.options.${value}`),
     value,
   })),

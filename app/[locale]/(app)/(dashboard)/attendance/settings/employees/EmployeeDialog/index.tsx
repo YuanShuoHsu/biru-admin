@@ -29,6 +29,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
+import { attendanceEmploymentTypeValues } from "@/types/api";
 import type {
   AttendanceMember,
   SaveAttendanceEmployee,
@@ -215,7 +216,7 @@ const EmployeeDialog = ({
         select
         value={partTime ? "partTime" : "fullTime"}
       >
-        {(["fullTime", "partTime"] as const).map((value) => (
+        {attendanceEmploymentTypeValues.map((value) => (
           <MenuItem key={value} value={value}>
             {tAttendance(`employmentType.options.${value}`)}
           </MenuItem>
@@ -257,10 +258,7 @@ const EmployeeDialog = ({
             onChange={(date) => {
               if (!date) {
                 setValue("weeklyMinutes", employee.weeklyMinutes);
-                setValue(
-                  "partTime",
-                  employee.weeklyMinutes < FULL_TIME_MINUTES,
-                );
+                setValue("partTime", employee.employmentType === "partTime");
               }
 
               setValue(

@@ -9,7 +9,6 @@ import EmployeeDialog from "./EmployeeDialog";
 
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
-import { FULL_TIME_MINUTES } from "@/constants/attendance";
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -41,6 +40,7 @@ import type {
   AttendanceEmployeeFilterField,
   AttendanceEmployeeSortField,
   AttendanceEmployeeStatus,
+  AttendanceEmploymentType,
   AttendanceMember,
   AttendanceMemberPage,
 } from "@/types/attendance";
@@ -313,11 +313,7 @@ const Employees = ({
           params.value ? (
             <Chip
               color={params.value === "fullTime" ? "primary" : "secondary"}
-              label={tAttendance(
-                params.value === "fullTime"
-                  ? "employmentType.options.fullTime"
-                  : "employmentType.options.partTime",
-              )}
+              label={params.formattedValue}
               size="small"
               variant="outlined"
             />
@@ -325,14 +321,9 @@ const Employees = ({
             renderEmptyableCell(params)
           ),
         type: "singleSelect",
-        valueFormatter: (value: "fullTime" | "partTime" | undefined) =>
+        valueFormatter: (value: AttendanceEmploymentType | undefined) =>
           value ? tAttendance(`employmentType.options.${value}`) : "",
-        valueGetter: (_, row: AttendanceMember) =>
-          row.employee
-            ? row.employee.weeklyMinutes < FULL_TIME_MINUTES
-              ? "partTime"
-              : "fullTime"
-            : undefined,
+        valueGetter: (_, row: AttendanceMember) => row.employee?.employmentType,
         valueOptions: enumOptions.employmentType,
       },
       {

@@ -23,7 +23,11 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { AttendanceLeaveType } from "@/types/attendance";
 
-import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
+import {
+  attendanceErrorKey,
+  attendancePath,
+  getStatutoryLeaveName,
+} from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
 
 interface LeaveTypeDialogProps {
@@ -102,7 +106,14 @@ const LeaveTypeDialog = ({
           leaveType
             ? "leaveTypes.actions.update.success"
             : "leaveTypes.actions.create.success",
-          { name: values.name },
+          {
+            name: leaveType
+              ? getStatutoryLeaveName(tAttendance, {
+                  ...leaveType,
+                  name: values.name,
+                })
+              : values.name,
+          },
         ),
         { variant: "success" },
       );
@@ -124,17 +135,24 @@ const LeaveTypeDialog = ({
 
   return (
     <FormBox id="attendance-leave-type-form" onSubmit={onSubmit}>
-      <TextField
-        error={!!errors.name}
-        fullWidth
-        helperText={errors.name?.message}
-        label={tAttendance("name")}
-        required
-        slotProps={{ input: { readOnly: statutoryPaidPercent !== null } }}
-        {...register("name")}
-      />
-      {statutoryPaidPercent !== null && (
+      {statutoryPaidPercent === null ? (
+        <TextField
+          error={!!errors.name}
+          fullWidth
+          helperText={errors.name?.message}
+          label={tAttendance("name")}
+          required
+          {...register("name")}
+        />
+      ) : (
         <>
+          <TextField
+            fullWidth
+            label={tAttendance("name")}
+            required
+            slotProps={{ input: { readOnly: true } }}
+            value={leaveType && getStatutoryLeaveName(tAttendance, leaveType)}
+          />
           <Typography color="text.secondary" variant="body2">
             {tAttendance("statutoryPaidPercent", {
               percent: statutoryPaidPercent,

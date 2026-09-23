@@ -8,8 +8,6 @@ import useSWR from "swr";
 
 import LeaveTypeDialog from "./LeaveTypeDialog";
 
-import EmptyCell from "@/components/EmptyCell";
-
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -350,7 +348,11 @@ const LeaveTypes = ({
           row: { requiresBalance },
         }: GridRenderCellParams<AttendanceLeaveType>) =>
           requiresBalance == null ? (
-            <EmptyCell />
+            <Chip
+              label={tAttendance("byStatute")}
+              size="small"
+              variant="outlined"
+            />
           ) : (
             <Chip
               color={requiresBalance ? "success" : "default"}
