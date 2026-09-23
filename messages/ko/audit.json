@@ -69,6 +69,8 @@
     "recipe": "레시피",
     "recipeInstructions": "조리법",
     "recipeYield": "분량",
+    "recommendedServingTemperatureLevel": "추천 얼음 양／온도",
+    "recommendedSweetnessLevel": "추천 당도",
     "requiredQuantity": "사용량",
     "servingTemperatures": "제공 온도",
     "slug": "매장 슬러그",

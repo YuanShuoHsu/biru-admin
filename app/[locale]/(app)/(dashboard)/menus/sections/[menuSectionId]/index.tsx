@@ -26,7 +26,11 @@ import {
 } from "@/constants/pagination";
 
 import { ITEM_AVAILABILITY_COLOR_MAP } from "@/constants/itemAvailability";
-import { SERVING_TEMPERATURE_COLOR_MAP } from "@/constants/menus";
+import {
+  SERVING_TEMPERATURE_COLOR_MAP,
+  SERVING_TEMPERATURE_OF_LEVEL,
+  SWEETNESS_COLOR_MAP,
+} from "@/constants/menus";
 import { MODE_COLORS } from "@/constants/orderMode";
 
 import { arrayMove } from "@dnd-kit/helpers";
@@ -595,7 +599,7 @@ const MenusMenuIdSectionId = ({
         type: "singleSelect",
         valueOptions: enumOptions.servingTemperatures,
         renderCell: ({
-          row: { servingTemperatures },
+          row: { recommendedServingTemperatureLevel, servingTemperatures },
         }: GridRenderCellParams<MenuItem>) =>
           servingTemperatures.length ? (
             <Stack alignItems="center" direction="row" gap={0.5} height="100%">
@@ -603,7 +607,14 @@ const MenusMenuIdSectionId = ({
                 <Chip
                   color={SERVING_TEMPERATURE_COLOR_MAP[value]}
                   key={value}
-                  label={tMenus(`items.servingTemperatures.options.${value}`)}
+                  label={
+                    recommendedServingTemperatureLevel &&
+                    SERVING_TEMPERATURE_OF_LEVEL[
+                      recommendedServingTemperatureLevel
+                    ] === value
+                      ? `${tMenus(`items.servingTemperatures.options.${value}`)}${tCommon("parenthesisOpen")}${tOrder("menuItem.recommended")}${tCommon("colon")}${tOrder(`menuItem.servingTemperatureLevels.${recommendedServingTemperatureLevel}`)}${tCommon("parenthesisClose")}`
+                      : tMenus(`items.servingTemperatures.options.${value}`)
+                  }
                   size="small"
                   variant="outlined"
                 />
@@ -618,16 +629,19 @@ const MenusMenuIdSectionId = ({
         filterOperators: enumFilterOperators,
         headerName: tMenus("items.sweetness.label"),
         renderCell: ({
-          row: { fixedSweetnessLevel, sweetness },
+          row: { fixedSweetnessLevel, recommendedSweetnessLevel, sweetness },
         }: GridRenderCellParams<MenuItem>) =>
           sweetness === "NotApplicable" ? (
             <EmptyCell />
           ) : (
             <Chip
+              color={SWEETNESS_COLOR_MAP[sweetness]}
               label={
                 sweetness === "Fixed" && fixedSweetnessLevel
                   ? `${tMenus("items.sweetness.options.Fixed")}${tCommon("parenthesisOpen")}${tOrder(`menuItem.sweetnessLevels.${fixedSweetnessLevel}`)}${tCommon("parenthesisClose")}`
-                  : tMenus(`items.sweetness.options.${sweetness}`)
+                  : sweetness === "Adjustable" && recommendedSweetnessLevel
+                    ? `${tMenus("items.sweetness.options.Adjustable")}${tCommon("parenthesisOpen")}${tOrder("menuItem.recommended")}${tCommon("colon")}${tOrder(`menuItem.sweetnessLevels.${recommendedSweetnessLevel}`)}${tCommon("parenthesisClose")}`
+                    : tMenus(`items.sweetness.options.${sweetness}`)
               }
               size="small"
               variant="outlined"

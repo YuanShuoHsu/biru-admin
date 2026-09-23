@@ -69,6 +69,8 @@
     "recipe": "食谱",
     "recipeInstructions": "制作步骤",
     "recipeYield": "份量",
+    "recommendedServingTemperatureLevel": "推荐冰量／温度",
+    "recommendedSweetnessLevel": "推荐甜度",
     "requiredQuantity": "用量",
     "servingTemperatures": "冷热供应",
     "slug": "店家代称",

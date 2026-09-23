@@ -4,6 +4,7 @@ import * as z from "zod";
 import {
   itemAvailabilityValues,
   orderModeValues,
+  servingTemperatureLevelValues,
   servingTemperatureValues,
   sweetnessLevelValues,
   sweetnessValues,
@@ -54,8 +55,12 @@ export const useUpdateMenuItemFormSchema = () => {
         .array(z.enum(orderModeValues))
         .min(1, { error: tValidation("availableModes.notSelected") }),
       servingTemperatures: z.array(z.enum(servingTemperatureValues)),
+      recommendedServingTemperatureLevel: z
+        .enum(servingTemperatureLevelValues)
+        .nullable(),
       sweetness: z.enum(sweetnessValues),
       fixedSweetnessLevel: z.enum(sweetnessLevelValues).nullable(),
+      recommendedSweetnessLevel: z.enum(sweetnessLevelValues).nullable(),
       offer: z
         .object({
           price: z

@@ -96,6 +96,9 @@ const FIELD_LABEL_KEYS = {
   servingTemperatures: "field.servingTemperatures",
   sweetness: "field.sweetness",
   fixedSweetnessLevel: "field.fixedSweetnessLevel",
+  recommendedServingTemperatureLevel:
+    "field.recommendedServingTemperatureLevel",
+  recommendedSweetnessLevel: "field.recommendedSweetnessLevel",
   availability: "field.availability",
   availableModes: "field.availableModes",
   isActive: "field.isActive",

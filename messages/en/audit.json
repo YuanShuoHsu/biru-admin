@@ -69,6 +69,8 @@
     "recipe": "Recipe",
     "recipeInstructions": "Instructions",
     "recipeYield": "Servings",
+    "recommendedServingTemperatureLevel": "Recommended ice / temperature",
+    "recommendedSweetnessLevel": "Recommended sweetness",
     "requiredQuantity": "Amount",
     "servingTemperatures": "Serving temperature",
     "slug": "Store slug",

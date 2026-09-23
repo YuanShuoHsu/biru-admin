@@ -233,6 +233,16 @@
         }
       }
     },
+    "recommendedServingTemperatureLevel": {
+      "helperText": "注文時にその選択肢の横に「おすすめ」と表示されます",
+      "label": "おすすめの氷の量／温度",
+      "placeholder": "おすすめの氷の量／温度を選択してください"
+    },
+    "recommendedSweetnessLevel": {
+      "helperText": "注文時にその選択肢の横に「おすすめ」と表示されます",
+      "label": "おすすめの甘さ",
+      "placeholder": "おすすめの甘さを選択してください"
+    },
     "servingTemperatures": {
       "helperText": "注文時にお客様が温度を選び、商品カードにもアイス／ホットのアイコンが表示されます",
       "label": "提供温度",

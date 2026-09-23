@@ -19,6 +19,8 @@ import NumberSpinner from "@/components/NumberSpinner";
 import OpeningHoursField from "@/components/OpeningHoursField";
 import UploadAvatars from "@/components/UploadAvatars";
 
+import { SERVING_TEMPERATURE_OF_LEVEL } from "@/constants/menus";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
@@ -31,6 +33,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import {
   itemAvailabilityValues,
   orderModeValues,
+  servingTemperatureLevelValues,
   servingTemperatureValues,
   sweetnessLevelValues,
   sweetnessValues,
@@ -81,6 +84,8 @@ const CreateMenuItemDialog = ({
       servingTemperatures: [],
       sweetness: "NotApplicable",
       fixedSweetnessLevel: null,
+      recommendedServingTemperatureLevel: null,
+      recommendedSweetnessLevel: null,
       offer: {
         price: "",
         availability: "InStock",
@@ -112,6 +117,14 @@ const CreateMenuItemDialog = ({
     control,
     name: "fixedSweetnessLevel",
   });
+  const recommendedServingTemperatureLevel = useWatch({
+    control,
+    name: "recommendedServingTemperatureLevel",
+  });
+  const recommendedSweetnessLevel = useWatch({
+    control,
+    name: "recommendedSweetnessLevel",
+  });
   const deliveryLeadTimeMinutes = useWatch({
     control,
     name: "offer.deliveryLeadTimeMinutes",
@@ -134,8 +147,10 @@ const CreateMenuItemDialog = ({
     description,
     availableModes,
     servingTemperatures,
+    recommendedServingTemperatureLevel,
     sweetness,
     fixedSweetnessLevel,
+    recommendedSweetnessLevel,
     offer,
   }: CreateMenuItemForm) => {
     try {
@@ -152,9 +167,12 @@ const CreateMenuItemDialog = ({
             ...(imageSrc && { image: imageSrc }),
             availableModes,
             servingTemperatures,
+            recommendedServingTemperatureLevel,
             sweetness,
             fixedSweetnessLevel:
               sweetness === "Fixed" ? fixedSweetnessLevel : null,
+            recommendedSweetnessLevel:
+              sweetness === "Adjustable" ? recommendedSweetnessLevel : null,
             offer: {
               price: offer?.price,
               availability: offer?.availability,
@@ -259,9 +277,20 @@ const CreateMenuItemDialog = ({
           tMenus("items.servingTemperatures.helperText")
         }
         label={`${tMenus("items.servingTemperatures.label")} ${tCommon("optional")}`}
-        onChange={(event, value) =>
-          setValue("servingTemperatures", value as ServingTemperature[])
-        }
+        onChange={(event, value) => {
+          const next = value as ServingTemperature[];
+
+          setValue("servingTemperatures", next);
+
+          // 取消勾選對應的冷熱時一併清掉推薦
+          if (
+            recommendedServingTemperatureLevel &&
+            !next.includes(
+              SERVING_TEMPERATURE_OF_LEVEL[recommendedServingTemperatureLevel],
+            )
+          )
+            setValue("recommendedServingTemperatureLevel", null);
+        }}
         options={servingTemperatureValues.map((value) => ({
           children: null,
           label: tMenus(`items.servingTemperatures.options.${value}`),
@@ -269,6 +298,55 @@ const CreateMenuItemDialog = ({
         }))}
         value={servingTemperatures}
       />
+      {servingTemperatures.length > 0 && (
+        <TextField
+          {...register("recommendedServingTemperatureLevel", {
+            setValueAs: (value) => value || null,
+          })}
+          error={!!errors.recommendedServingTemperatureLevel}
+          fullWidth
+          helperText={
+            errors.recommendedServingTemperatureLevel?.message ||
+            tMenus("items.recommendedServingTemperatureLevel.helperText")
+          }
+          label={`${tMenus("items.recommendedServingTemperatureLevel.label")} ${tCommon("optional")}`}
+          select
+          slotProps={{
+            inputLabel: { shrink: true },
+            select: {
+              displayEmpty: true,
+              renderValue: () =>
+                recommendedServingTemperatureLevel ? (
+                  tOrder(
+                    `menuItem.servingTemperatureLevels.${recommendedServingTemperatureLevel}`,
+                  )
+                ) : (
+                  <em>
+                    {tMenus(
+                      "items.recommendedServingTemperatureLevel.placeholder",
+                    )}
+                  </em>
+                ),
+            },
+          }}
+          value={recommendedServingTemperatureLevel || ""}
+        >
+          <MenuItem value="">
+            <em>
+              {tMenus("items.recommendedServingTemperatureLevel.placeholder")}
+            </em>
+          </MenuItem>
+          {servingTemperatureLevelValues
+            .filter((value) =>
+              servingTemperatures.includes(SERVING_TEMPERATURE_OF_LEVEL[value]),
+            )
+            .map((value) => (
+              <MenuItem key={value} value={value}>
+                {tOrder(`menuItem.servingTemperatureLevels.${value}`)}
+              </MenuItem>
+            ))}
+        </TextField>
+      )}
       <TextField
         {...register("sweetness")}
         error={!!errors.sweetness}
@@ -312,6 +390,47 @@ const CreateMenuItemDialog = ({
         >
           <MenuItem disabled value="">
             <em>{tMenus("items.fixedSweetnessLevel.placeholder")}</em>
+          </MenuItem>
+          {sweetnessLevelValues.map((value) => (
+            <MenuItem key={value} value={value}>
+              {tOrder(`menuItem.sweetnessLevels.${value}`)}
+            </MenuItem>
+          ))}
+        </TextField>
+      )}
+      {sweetness === "Adjustable" && (
+        <TextField
+          {...register("recommendedSweetnessLevel", {
+            setValueAs: (value) => value || null,
+          })}
+          error={!!errors.recommendedSweetnessLevel}
+          fullWidth
+          helperText={
+            errors.recommendedSweetnessLevel?.message ||
+            tMenus("items.recommendedSweetnessLevel.helperText")
+          }
+          label={`${tMenus("items.recommendedSweetnessLevel.label")} ${tCommon("optional")}`}
+          select
+          slotProps={{
+            inputLabel: { shrink: true },
+            select: {
+              displayEmpty: true,
+              renderValue: () =>
+                recommendedSweetnessLevel ? (
+                  tOrder(
+                    `menuItem.sweetnessLevels.${recommendedSweetnessLevel}`,
+                  )
+                ) : (
+                  <em>
+                    {tMenus("items.recommendedSweetnessLevel.placeholder")}
+                  </em>
+                ),
+            },
+          }}
+          value={recommendedSweetnessLevel || ""}
+        >
+          <MenuItem value="">
+            <em>{tMenus("items.recommendedSweetnessLevel.placeholder")}</em>
           </MenuItem>
           {sweetnessLevelValues.map((value) => (
             <MenuItem key={value} value={value}>

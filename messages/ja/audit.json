@@ -69,6 +69,8 @@
     "recipe": "レシピ",
     "recipeInstructions": "作り方",
     "recipeYield": "出来上がり分量",
+    "recommendedServingTemperatureLevel": "おすすめの氷の量／温度",
+    "recommendedSweetnessLevel": "おすすめの甘さ",
     "requiredQuantity": "使用量",
     "servingTemperatures": "提供温度",
     "slug": "店舗スラッグ",

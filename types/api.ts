@@ -5150,10 +5150,18 @@ export interface components {
       )[];
       /** @description 可供應的飲品溫度；省略代表不適用 */
       servingTemperatures?: components["schemas"]["ServingTemperature"][];
+      /** @description 推薦的溫度細項；須屬於可供應的冷熱，否則存 null */
+      recommendedServingTemperatureLevel?:
+        | components["schemas"]["ServingTemperatureLevel"]
+        | null;
       /** @description 甜度：不適用、固定、可調；省略代表不適用 */
       sweetness?: components["schemas"]["Sweetness"];
       /** @description 甜度固定時的等級；sweetness 為 Fixed 時必填，其他情況一律存 null */
       fixedSweetnessLevel?: components["schemas"]["SweetnessLevel"] | null;
+      /** @description 推薦的甜度；僅 sweetness 為 Adjustable 時可設，其他情況一律存 null */
+      recommendedSweetnessLevel?:
+        | components["schemas"]["SweetnessLevel"]
+        | null;
       /** @description 可販售的點餐模式；省略代表四種全開 */
       availableModes?: components["schemas"]["OrderMode"][];
       nutrition?: components["schemas"]["NutritionInformationDto"];
@@ -5211,10 +5219,18 @@ export interface components {
         | null;
       /** @description 可供應的飲品溫度；空陣列代表不適用 */
       servingTemperatures: components["schemas"]["ServingTemperature"][];
+      /** @description 推薦的溫度細項；未設定為 null */
+      recommendedServingTemperatureLevel?:
+        | components["schemas"]["ServingTemperatureLevel"]
+        | null;
       /** @description 甜度：不適用、固定、可調 */
       sweetness: components["schemas"]["Sweetness"];
       /** @description 甜度固定時的等級；其他情況為 null */
       fixedSweetnessLevel?: components["schemas"]["SweetnessLevel"] | null;
+      /** @description 推薦的甜度；僅甜度可調時可能有值 */
+      recommendedSweetnessLevel?:
+        | components["schemas"]["SweetnessLevel"]
+        | null;
       /** @description 可販售的點餐模式 */
       availableModes: components["schemas"]["OrderMode"][];
       nutrition?: components["schemas"]["NutritionInformationDto"] | null;
@@ -5283,10 +5299,18 @@ export interface components {
       )[];
       /** @description 可供應的飲品溫度；省略代表不適用 */
       servingTemperatures?: components["schemas"]["ServingTemperature"][];
+      /** @description 推薦的溫度細項；須屬於可供應的冷熱，否則存 null */
+      recommendedServingTemperatureLevel?:
+        | components["schemas"]["ServingTemperatureLevel"]
+        | null;
       /** @description 甜度：不適用、固定、可調；省略代表不適用 */
       sweetness?: components["schemas"]["Sweetness"];
       /** @description 甜度固定時的等級；sweetness 為 Fixed 時必填，其他情況一律存 null */
       fixedSweetnessLevel?: components["schemas"]["SweetnessLevel"] | null;
+      /** @description 推薦的甜度；僅 sweetness 為 Adjustable 時可設，其他情況一律存 null */
+      recommendedSweetnessLevel?:
+        | components["schemas"]["SweetnessLevel"]
+        | null;
       /** @description 可販售的點餐模式；省略代表四種全開 */
       availableModes?: components["schemas"]["OrderMode"][];
       nutrition?: components["schemas"]["NutritionInformationDto"];
@@ -5550,10 +5574,18 @@ export interface components {
       availableModes: components["schemas"]["OrderMode"][];
       /** @description 可供應的飲品溫度；空陣列代表不適用 */
       servingTemperatures: components["schemas"]["ServingTemperature"][];
+      /** @description 推薦的溫度細項；未設定為 null */
+      recommendedServingTemperatureLevel?:
+        | components["schemas"]["ServingTemperatureLevel"]
+        | null;
       /** @description 甜度：不適用、固定、可調 */
       sweetness: components["schemas"]["Sweetness"];
       /** @description 甜度固定時的等級；其他情況為 null */
       fixedSweetnessLevel?: components["schemas"]["SweetnessLevel"] | null;
+      /** @description 推薦的甜度；僅甜度可調時可能有值 */
+      recommendedSweetnessLevel?:
+        | components["schemas"]["SweetnessLevel"]
+        | null;
       offers: components["schemas"]["OrderMenuOfferResponseDto"][];
       modifierGroups: components["schemas"]["OrderMenuModifierGroupResponseDto"][];
     };
@@ -5594,10 +5626,18 @@ export interface components {
         | null;
       /** @description 可供應的飲品溫度；空陣列代表不適用 */
       servingTemperatures: components["schemas"]["ServingTemperature"][];
+      /** @description 推薦的溫度細項；未設定為 null */
+      recommendedServingTemperatureLevel?:
+        | components["schemas"]["ServingTemperatureLevel"]
+        | null;
       /** @description 甜度：不適用、固定、可調 */
       sweetness: components["schemas"]["Sweetness"];
       /** @description 甜度固定時的等級；其他情況為 null */
       fixedSweetnessLevel?: components["schemas"]["SweetnessLevel"] | null;
+      /** @description 推薦的甜度；僅甜度可調時可能有值 */
+      recommendedSweetnessLevel?:
+        | components["schemas"]["SweetnessLevel"]
+        | null;
       /** @description 可販售的點餐模式 */
       availableModes: components["schemas"]["OrderMode"][];
       nutrition?: components["schemas"]["NutritionInformationDto"] | null;

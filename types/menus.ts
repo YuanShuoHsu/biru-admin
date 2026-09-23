@@ -55,3 +55,6 @@ export type ModifierGroupSortField =
 export type ModifierFilterField = (typeof modifierFilterFieldValues)[number];
 export type ModifierSortField = (typeof modifierSortFieldValues)[number];
 export type ServingTemperature = components["schemas"]["ServingTemperature"];
+export type ServingTemperatureLevel =
+  components["schemas"]["ServingTemperatureLevel"];
+export type Sweetness = components["schemas"]["Sweetness"];

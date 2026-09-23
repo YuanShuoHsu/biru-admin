@@ -233,6 +233,16 @@
         }
       }
     },
+    "recommendedServingTemperatureLevel": {
+      "helperText": "주문 시 해당 선택지 옆에 \"추천\"이 표시됩니다",
+      "label": "추천 얼음 양／온도",
+      "placeholder": "추천 얼음 양／온도를 선택해 주세요"
+    },
+    "recommendedSweetnessLevel": {
+      "helperText": "주문 시 해당 선택지 옆에 \"추천\"이 표시됩니다",
+      "label": "추천 당도",
+      "placeholder": "추천 당도를 선택해 주세요"
+    },
     "servingTemperatures": {
       "helperText": "주문 시 고객이 온도를 선택하며, 메뉴 카드에도 아이스/핫 아이콘이 표시됩니다",
       "label": "제공 온도",

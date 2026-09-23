@@ -233,6 +233,16 @@
         }
       }
     },
+    "recommendedServingTemperatureLevel": {
+      "helperText": "Marked as \"Recommended\" next to the option when ordering",
+      "label": "Recommended ice / temperature",
+      "placeholder": "Please select your recommended ice / temperature"
+    },
+    "recommendedSweetnessLevel": {
+      "helperText": "Marked as \"Recommended\" next to the option when ordering",
+      "label": "Recommended sweetness",
+      "placeholder": "Please select your recommended sweetness"
+    },
     "servingTemperatures": {
       "helperText": "Customers choose a temperature when ordering, and the menu item card shows the icons",
       "label": "Serving temperature",

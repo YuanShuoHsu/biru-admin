@@ -149,6 +149,7 @@
     "outsideAvailableHours": "Outside serving hours",
     "preparationTime": "Ready in about {value} min",
     "promoUntil": "Offer ends {date}",
+    "recommended": "Recommended",
     "selectAtLeast": "Select at least {count}",
     "selectUpTo": "Select up to {count}",
     "servingTemperatureLevels": {

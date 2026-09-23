@@ -233,6 +233,16 @@
         }
       }
     },
+    "recommendedServingTemperatureLevel": {
+      "helperText": "点餐时在该选项旁标示「推荐」",
+      "label": "推荐冰量／温度",
+      "placeholder": "请选择您的推荐冰量／温度"
+    },
+    "recommendedSweetnessLevel": {
+      "helperText": "点餐时在该选项旁标示「推荐」",
+      "label": "推荐甜度",
+      "placeholder": "请选择您的推荐甜度"
+    },
     "servingTemperatures": {
       "helperText": "勾选后客人点餐时需选择温度，品项卡片也会显示冰／热图标",
       "label": "冷热供应",

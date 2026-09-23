@@ -7,6 +7,7 @@ import {
   orderModeValues,
   orderResponseDtoPaymentMethodValues,
   orderStatusValues,
+  servingTemperatureLevelValues,
   servingTemperatureValues,
   sweetnessLevelValues,
   sweetnessValues,
@@ -57,6 +58,18 @@ export const useAuditLogValueLabels = () => {
         userCouponSourceValues.map((value) => [
           value,
           tCoupons(`source.${value}`),
+        ]),
+      ),
+      recommendedServingTemperatureLevel: Object.fromEntries(
+        servingTemperatureLevelValues.map((value) => [
+          value,
+          tOrder(`menuItem.servingTemperatureLevels.${value}`),
+        ]),
+      ),
+      recommendedSweetnessLevel: Object.fromEntries(
+        sweetnessLevelValues.map((value) => [
+          value,
+          tOrder(`menuItem.sweetnessLevels.${value}`),
         ]),
       ),
       servingTemperatures: Object.fromEntries(
