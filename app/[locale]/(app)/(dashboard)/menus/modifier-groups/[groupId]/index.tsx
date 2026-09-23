@@ -21,6 +21,7 @@ import {
 import { getPageSizeOptions } from "@/constants/pagination";
 
 import { ITEM_AVAILABILITY_COLOR_MAP } from "@/constants/itemAvailability";
+import { MODE_COLORS } from "@/constants/orderMode";
 
 import { arrayMove } from "@dnd-kit/helpers";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
@@ -547,6 +548,7 @@ const Modifiers = ({
               .filter((mode) => availableModes.includes(mode))
               .map((mode) => (
                 <Chip
+                  color={MODE_COLORS[mode]}
                   key={mode}
                   label={tOrder(`mode.${mode}.label`)}
                   size="small"

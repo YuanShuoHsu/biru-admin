@@ -26,6 +26,8 @@ import {
 } from "@/constants/pagination";
 
 import { ITEM_AVAILABILITY_COLOR_MAP } from "@/constants/itemAvailability";
+import { SERVING_TEMPERATURE_COLOR_MAP } from "@/constants/menus";
+import { MODE_COLORS } from "@/constants/orderMode";
 
 import { arrayMove } from "@dnd-kit/helpers";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
@@ -72,7 +74,7 @@ import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { orderModeValues, servingTemperatureValues } from "@/types/api";
+import { orderModeValues } from "@/types/api";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type {
   MenuItem,
@@ -597,16 +599,15 @@ const MenusMenuIdSectionId = ({
         }: GridRenderCellParams<MenuItem>) =>
           servingTemperatures.length ? (
             <Stack alignItems="center" direction="row" gap={0.5} height="100%">
-              {servingTemperatureValues
-                .filter((value) => servingTemperatures.includes(value))
-                .map((value) => (
-                  <Chip
-                    key={value}
-                    label={tMenus(`items.servingTemperatures.options.${value}`)}
-                    size="small"
-                    variant="outlined"
-                  />
-                ))}
+              {servingTemperatures.map((value) => (
+                <Chip
+                  color={SERVING_TEMPERATURE_COLOR_MAP[value]}
+                  key={value}
+                  label={tMenus(`items.servingTemperatures.options.${value}`)}
+                  size="small"
+                  variant="outlined"
+                />
+              ))}
             </Stack>
           ) : (
             <EmptyCell />
@@ -658,6 +659,7 @@ const MenusMenuIdSectionId = ({
               .filter((mode) => availableModes.includes(mode))
               .map((mode) => (
                 <Chip
+                  color={MODE_COLORS[mode]}
                   key={mode}
                   label={tOrder(`mode.${mode}.label`)}
                   size="small"
