@@ -362,7 +362,7 @@ const Shifts = ({
               <Chip color="warning" label={tAttendance("late")} size="small" />
             )}
             {row.early && (
-              <Chip color="warning" label={tAttendance("early")} size="small" />
+              <Chip color="error" label={tAttendance("early")} size="small" />
             )}
           </ChipsStack>
         ),
