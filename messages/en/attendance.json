@@ -312,8 +312,6 @@
   "net": "Net pay",
   "nextDay": "Next day",
   "no": "No",
-  "noCorrectableShifts": "No shift can be corrected yet. A shift must have started first.",
-  "noShifts": "No shift is available yet. Ask your manager to schedule one first.",
   "originalEvents": "Original punches",
   "originalLeavePeriod": "Original leave period",
   "otherDeduction": "Other verified deductions ({currency})",
@@ -399,7 +397,7 @@
   "reportedAt": "Reported at",
   "requests": {
     "actions": {
-      "create": "New request"
+      "create": "Request leave"
     },
     "label": "My requests"
   },
@@ -434,7 +432,6 @@
     "empty": "This organization has no attendance settings yet.",
     "label": "Attendance settings"
   },
-  "shift": "Shift",
   "shifts": {
     "actions": {
       "create": "Add shift",

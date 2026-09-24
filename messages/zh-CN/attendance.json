@@ -312,8 +312,6 @@
   "net": "实领工资",
   "nextDay": "次日",
   "no": "否",
-  "noCorrectableShifts": "目前没有可补卡的班次，班次开始后才能补卡。",
-  "noShifts": "目前没有可选的班次，请先向主管确认排班。",
   "originalEvents": "原始打卡",
   "originalLeavePeriod": "原留停期间",
   "otherDeduction": "其他核定扣款（{currency}）",
@@ -399,7 +397,7 @@
   "reportedAt": "已报备时间",
   "requests": {
     "actions": {
-      "create": "新增申请"
+      "create": "申请请假"
     },
     "label": "我的申请"
   },
@@ -434,7 +432,6 @@
     "empty": "此组织尚未建立出勤设置。",
     "label": "出勤设置"
   },
-  "shift": "班次",
   "shifts": {
     "actions": {
       "create": "新增班次",

@@ -7,7 +7,7 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
-import RequestDialog from "./RequestDialog";
+import LeaveDialog from "./LeaveDialog";
 import ReturnDialog from "./ReturnDialog";
 
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
@@ -54,7 +54,6 @@ import type {
   AttendanceRequestFilterField,
   AttendanceRequestPage,
   AttendanceRequestSortField,
-  AttendanceShift,
 } from "@/types/attendance";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 
@@ -101,7 +100,6 @@ interface RequestsProps {
   quickFilterValue?: string;
   rowCount: number;
   rows: AttendanceRequest[];
-  shifts: AttendanceShift[];
   sortBy?: AttendanceRequestSortField;
   sortDirection?: SortDirection;
 }
@@ -119,7 +117,6 @@ const Requests = ({
   quickFilterValue: initialQuickFilterValue,
   rowCount: initialRowCount,
   rows: initialRows,
-  shifts,
   sortBy,
   sortDirection,
 }: RequestsProps) => {
@@ -244,39 +241,23 @@ const Requests = ({
     [updateQuery],
   );
 
-  const correctableShifts = useMemo(
-    () => shifts.filter(({ startsAt }) => new Date(startsAt) <= new Date()),
-    [shifts],
-  );
-
-  const handleCreateRequest = useCallback(
+  const handleCreateLeave = useCallback(
     () =>
       setDialog({
         confirmText: tAttendance("save"),
         content: (
-          <RequestDialog
-            correctableShifts={correctableShifts}
+          <LeaveDialog
             leaveCases={leaveCases}
             leaveTypes={leaveTypes}
             mutate={mutate}
             organizationSlug={organizationSlug}
-            shifts={shifts}
           />
         ),
         formId: "attendance-leave-form",
         open: true,
         title: tAttendance("requests.actions.create"),
       }),
-    [
-      correctableShifts,
-      leaveCases,
-      leaveTypes,
-      mutate,
-      organizationSlug,
-      setDialog,
-      shifts,
-      tAttendance,
-    ],
+    [leaveCases, leaveTypes, mutate, organizationSlug, setDialog, tAttendance],
   );
 
   const handleReturn = useCallback(
@@ -486,7 +467,7 @@ const Requests = ({
       )}
       <StyledButton
         disabled={!enabled}
-        onClick={handleCreateRequest}
+        onClick={handleCreateLeave}
         size="small"
         startIcon={<Add />}
         variant="contained"
