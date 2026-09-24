@@ -40,7 +40,6 @@
   "childReference": "子女识别依据编号",
   "clockedTime": "实际打卡",
   "confirm": "确认执行此操作？",
-  "correctionHint": "请填实际上下班时间，休息按排班扣除。批准后取代有效记录，原始记录仍保留。",
   "dailyPayCents": "核定每日全薪（{currency}，含应计入的津贴）",
   "dayKind": {
     "label": "日期类型",

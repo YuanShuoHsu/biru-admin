@@ -40,7 +40,6 @@
   "childReference": "확인된 자녀 식별 번호",
   "clockedTime": "실제 기록",
   "confirm": "이 작업을 실행할까요?",
-  "correctionHint": "실제 출퇴근 시간을 입력하세요. 휴게 시간은 근무 일정에 따라 공제됩니다. 승인 후에도 원본은 보존됩니다.",
   "dailyPayCents": "확인된 일일 전액 임금({currency}, 해당 수당 포함)",
   "dayKind": {
     "label": "일자 유형",

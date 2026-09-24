@@ -17,7 +17,7 @@ import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Alert, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -121,7 +121,6 @@ const CorrectionDialog = ({
 
   return (
     <FormBox id="attendance-correction-form" onSubmit={onSubmit}>
-      <Alert severity="info">{tAttendance("correctionHint")}</Alert>
       {(
         [
           ["clockInAt", clockInAt, "clockIn"],
