@@ -370,15 +370,23 @@ const Requests = ({
           row.status === "pending" ||
           (row.kind === "leave" && row.status === "approved") ? (
             <StyledStack direction="row">
-              <Tooltip title={tAttendance("parentalReturn")}>
+              <Tooltip
+                title={tAttendance(
+                  row.returnPending
+                    ? "errors.parentalReturnPending"
+                    : "parentalReturn",
+                )}
+              >
                 <span>
                   <StyledIconButton
-                    disabled={
-                      row.returnPending || dayjs(row.endsAt).isBefore(dayjs())
-                    }
+                    disabled={row.returnPending}
                     onClick={() => handleReturn(row)}
                     size="small"
-                    visible={row.status === "approved" && !!row.parentalMode}
+                    visible={
+                      row.status === "approved" &&
+                      !!row.parentalMode &&
+                      dayjs(row.endsAt).isAfter(dayjs())
+                    }
                   >
                     <AssignmentReturn fontSize="small" />
                   </StyledIconButton>
@@ -386,7 +394,11 @@ const Requests = ({
               </Tooltip>
               <Tooltip
                 title={tAttendance(
-                  row.status === "approved" ? "cancelLeave" : "withdraw",
+                  row.returnPending
+                    ? "errors.parentalReturnPending"
+                    : row.status === "approved"
+                      ? "cancelLeave"
+                      : "withdraw",
                 )}
               >
                 <span>
