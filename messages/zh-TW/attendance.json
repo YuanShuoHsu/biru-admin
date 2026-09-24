@@ -5,7 +5,7 @@
   "actions": "操作",
   "add": "新增",
   "addBreak": "新增休息",
-  "agreedSalary": "約定工資",
+  "agreedSalary": "月薪／時薪",
   "allowance": "固定津貼（{currency}）",
   "allowanceHours": "固定津貼對應每月正常工時（小時）",
   "allowedIps": {
@@ -421,7 +421,7 @@
   "reviews": {
     "label": "申請審核"
   },
-  "salary": "本薪／時薪（{currency}）",
+  "salary": "月薪／時薪（{currency}）",
   "salaryType": {
     "label": "薪資類型",
     "options": {

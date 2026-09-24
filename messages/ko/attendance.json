@@ -5,7 +5,7 @@
   "actions": "작업",
   "add": "추가",
   "addBreak": "휴게 추가",
-  "agreedSalary": "약정 임금",
+  "agreedSalary": "월급 / 시급",
   "allowance": "고정 수당({currency})",
   "allowanceHours": "고정 수당에 해당하는 월 소정 시간",
   "allowedIps": {
@@ -421,7 +421,7 @@
   "reviews": {
     "label": "신청 승인"
   },
-  "salary": "기본급 / 시급({currency})",
+  "salary": "월급 / 시급({currency})",
   "salaryType": {
     "label": "급여 유형",
     "options": {

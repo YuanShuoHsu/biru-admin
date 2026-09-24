@@ -5,7 +5,7 @@
   "actions": "操作",
   "add": "追加",
   "addBreak": "休憩を追加",
-  "agreedSalary": "約定賃金",
+  "agreedSalary": "月給・時給",
   "allowance": "固定手当（{currency}）",
   "allowanceHours": "固定手当に対応する月の所定時間",
   "allowedIps": {
@@ -421,7 +421,7 @@
   "reviews": {
     "label": "申請承認"
   },
-  "salary": "基本給・時給（{currency}）",
+  "salary": "月給・時給（{currency}）",
   "salaryType": {
     "label": "給与形態",
     "options": {

@@ -5,7 +5,7 @@
   "actions": "Actions",
   "add": "Add",
   "addBreak": "Add break",
-  "agreedSalary": "Agreed wage",
+  "agreedSalary": "Monthly salary / hourly rate",
   "allowance": "Fixed allowance ({currency})",
   "allowanceHours": "Monthly regular hours covered by the allowance",
   "allowedIps": {
@@ -421,7 +421,7 @@
   "reviews": {
     "label": "Approvals"
   },
-  "salary": "Base salary / hourly rate ({currency})",
+  "salary": "Monthly salary / hourly rate ({currency})",
   "salaryType": {
     "label": "Salary type",
     "options": {
