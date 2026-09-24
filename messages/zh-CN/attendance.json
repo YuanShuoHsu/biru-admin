@@ -123,9 +123,9 @@
     "invalidPayrollState": "薪资状态已变更，请重新加载。",
     "ipNotAllowed": "当前网络不在门店白名单，请连接门店网络。",
     "leaveCaseExists": "此员工的同假别事件编号已存在。",
-    "leaveCaseInUse": "此案件已有请假记录，无法删除。",
-    "leaveCaseIntervalConflict": "新的案件期间未涵盖已核准的请假。",
-    "leaveCaseRequired": "请先选择主管已确认的事件额度。",
+    "leaveCaseInUse": "此事件假额度已有请假记录，无法删除。",
+    "leaveCaseIntervalConflict": "新的适用期间未涵盖已核准的请假。",
+    "leaveCaseRequired": "请先选择主管核给的额度。",
     "leaveOutsideShift": "请假时间必须涵盖已排定的班次。",
     "leavePolicyRequired": "请先设置并选择有效假别。",
     "leavePolicyRulesRequired": "自定义假别必须设置给薪比例。",
@@ -246,22 +246,22 @@
   "latitude": {
     "label": "门店纬度"
   },
-  "leaveCase": "对应事件（事件型假别必填）",
+  "leaveCase": "核给额度",
   "leaveCaseHint": "主管先确认事件、亲属关系与有效期间，系统自动核给额度。同一事件不得重复建立。产假含例休假日，请使用完整日历日（起讫 00:00，结束日不含）；陪产检与陪产共用 7 日，请确认各次申请符合适用期间。 产假事件须由 owner 设置核定每日全薪，给薪比例由工龄自动计算。 育婴留停事件日期请填子女出生日期，同一子女沿用事件编号，期间不得超过三岁；未满六个月任职须先取得劳资同意。育婴留停不需核定日薪。",
   "leaveCases": {
     "actions": {
       "create": "新增事件假额度",
-      "delete": "删除案件",
-      "update": "编辑案件"
+      "delete": "删除事件假额度",
+      "update": "编辑事件假额度"
     },
     "label": "事件假额度"
   },
-  "leaveRequestHint": "住院／安胎假由主管查验医疗证明；病假及生理假的给薪会依已用额度分段计算，超出给薪额度的生理假为无薪。育婴留停请先选择主管建立的子女事件，使用完整日历日（起讫 00:00，结束日不含）。",
+  "leaveRequestHint": "住院伤病假、安胎休养假由主管查验医疗证明。普通伤病假、住院伤病假、安胎休养假每年合计 30 日内工资折半，超过部分无薪；生理假每月 1 日、工资折半，每年前 3 日不并入病假，第 4 日起并入上述 30 日计算。育婴留职停薪请先选择主管核给的额度，使用完整日历日（起讫 00:00，结束日不含）。",
   "leaveType": "假别",
   "leaveTypeGroups": {
-    "common": "常用",
     "custom": "自定义",
-    "event": "需先建立案件"
+    "event": "婚丧、生育及育婴",
+    "general": "一般假别"
   },
   "leaveTypes": {
     "actions": {
@@ -330,7 +330,7 @@
   "paidBreak": "此班次休息计薪",
   "paidPercent": "给薪比例（%）",
   "parentalChild": "子女",
-  "parentalChildHint": "同一子女请重用现有资料。主管查验证明后设置固定识别编号；双胞胎分别建立，请勿输入完整身份证号。现有育婴案件须先完成子女归户。",
+  "parentalChildHint": "同一子女请重用现有资料。主管查验证明后设置固定识别编号；双胞胎分别建立，请勿输入完整身份证号。现有育婴留职停薪额度须先完成子女归户。",
   "parentalChildren": {
     "actions": {
       "create": "新增子女资料"
@@ -399,7 +399,7 @@
     "actions": {
       "create": "申请请假"
     },
-    "label": "我的申请"
+    "label": "申请记录"
   },
   "requiresBalance": "需要休假额度",
   "returnsAt": "复职日期",

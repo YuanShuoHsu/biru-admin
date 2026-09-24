@@ -123,9 +123,9 @@
     "invalidPayrollState": "Payroll status changed; reload the list.",
     "ipNotAllowed": "This network is not allowed. Connect to the store network.",
     "leaveCaseExists": "This employee already has this event reference for the leave type.",
-    "leaveCaseInUse": "This case already has leave records and cannot be deleted.",
-    "leaveCaseIntervalConflict": "The new case period does not cover the approved leave.",
-    "leaveCaseRequired": "Select an event allowance verified by a manager.",
+    "leaveCaseInUse": "This event leave allowance already has leave records and cannot be deleted.",
+    "leaveCaseIntervalConflict": "The new eligible dates do not cover the approved leave.",
+    "leaveCaseRequired": "Select an allowance granted by a manager.",
     "leaveOutsideShift": "Leave must overlap a scheduled shift.",
     "leavePolicyRequired": "Configure and select an active leave policy.",
     "leavePolicyRulesRequired": "A custom leave type needs a paid percentage.",
@@ -246,22 +246,22 @@
   "latitude": {
     "label": "Store latitude"
   },
-  "leaveCase": "Related event (required for event leave)",
+  "leaveCase": "Granted allowance",
   "leaveCaseHint": "A manager must verify the event, relationship and eligible dates. Allowances are calculated automatically. Do not duplicate an event. Maternity periods include rest days and use full calendar days (midnight, exclusive end). Partner prenatal and childbirth leave share 7 days; verify the eligible dates for each request. An owner must provide the verified full daily wage for maternity leave. The paid percentage is calculated from seniority. For parental leave, use the child’s birth date as the event date and reuse the same reference for that child. The period must end by the third birthday. Service under six months requires employer–employee agreement. No daily wage is required.",
   "leaveCases": {
     "actions": {
       "create": "Add event leave allowance",
-      "delete": "Delete case",
-      "update": "Edit case"
+      "delete": "Delete event leave allowance",
+      "update": "Edit event leave allowance"
     },
     "label": "Event leave allowances"
   },
-  "leaveRequestHint": "Managers verify medical documentation for hospitalization and pregnancy bed rest. Sick and menstrual leave pay is split by used allowances; menstrual leave beyond the paid allowance is unpaid. For parental leave, select the child case created by a manager and use whole calendar days (midnight, exclusive end).",
+  "leaveRequestHint": "Managers verify medical documentation for hospitalization and pregnancy bed rest. Sick leave (including hospitalization and pregnancy bed rest) is paid at half wage for up to 30 days per year combined and is unpaid beyond that. Menstrual leave is 1 day per month at half wage; the first 3 days each year do not count toward sick leave, and from the 4th day they count toward those 30 days. For parental leave, select the allowance granted by a manager and use whole calendar days (midnight, exclusive end).",
   "leaveType": "Leave type",
   "leaveTypeGroups": {
-    "common": "Common",
     "custom": "Custom",
-    "event": "Requires a leave case"
+    "event": "Marriage, bereavement, childbirth & parental",
+    "general": "General"
   },
   "leaveTypes": {
     "actions": {
@@ -330,7 +330,7 @@
   "paidBreak": "Paid breaks for this shift",
   "paidPercent": "Paid percentage (%)",
   "parentalChild": "Child",
-  "parentalChildHint": "Reuse the existing record for the same child. A manager must verify evidence and assign a stable reference. Register twins separately; do not enter full national ID numbers. Assign legacy leave cases to a verified child.",
+  "parentalChildHint": "Reuse the existing record for the same child. A manager must verify evidence and assign a stable reference. Register twins separately; do not enter full national ID numbers. Assign existing parental leave allowances to a verified child.",
   "parentalChildren": {
     "actions": {
       "create": "Add child"
@@ -399,7 +399,7 @@
     "actions": {
       "create": "Request leave"
     },
-    "label": "My requests"
+    "label": "Request history"
   },
   "requiresBalance": "Balance required",
   "returnsAt": "Return date",

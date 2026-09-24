@@ -40,7 +40,7 @@ import { fetcher } from "@/utils/fetcher";
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
 
-const LEAVE_TYPE_GROUPS = ["common", "event", "custom"] as const;
+const LEAVE_TYPE_GROUPS = ["general", "event", "custom"] as const;
 
 interface LeaveDialogProps {
   leaveCases: AttendanceLeaveCase[];
@@ -90,7 +90,7 @@ const LeaveDialog = ({
     const available = leaveTypes.filter(({ enabled }) => enabled);
 
     const matches = {
-      common: ({ eventLeave, statutoryKind }: AttendanceLeaveType) =>
+      general: ({ eventLeave, statutoryKind }: AttendanceLeaveType) =>
         !eventLeave && statutoryKind !== "custom",
       event: ({ eventLeave }: AttendanceLeaveType) => eventLeave,
       custom: ({ statutoryKind }: AttendanceLeaveType) =>

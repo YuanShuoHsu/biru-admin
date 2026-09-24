@@ -123,9 +123,9 @@
     "invalidPayrollState": "薪資狀態已變更，請重新載入。",
     "ipNotAllowed": "目前網路不在店家白名單，請連接店家網路。",
     "leaveCaseExists": "此員工的同假別事件編號已存在。",
-    "leaveCaseInUse": "此案件已有請假紀錄，無法刪除。",
-    "leaveCaseIntervalConflict": "新的案件期間未涵蓋已核准的請假。",
-    "leaveCaseRequired": "請先選擇主管已確認的事件額度。",
+    "leaveCaseInUse": "此事件假額度已有請假紀錄，無法刪除。",
+    "leaveCaseIntervalConflict": "新的適用期間未涵蓋已核准的請假。",
+    "leaveCaseRequired": "請先選擇主管核給的額度。",
     "leaveOutsideShift": "請假時間必須涵蓋已排定的班次。",
     "leavePolicyRequired": "請先設定並選擇有效假別。",
     "leavePolicyRulesRequired": "自訂假別必須設定給薪比例。",
@@ -246,22 +246,22 @@
   "latitude": {
     "label": "店家緯度"
   },
-  "leaveCase": "對應事件（事件型假別必填）",
+  "leaveCase": "核給額度",
   "leaveCaseHint": "主管先確認事件、親屬關係與有效期間，系統自動核給額度。同一事件不得重複建立。產假含例休假日，請使用完整曆日（起訖 00:00，結束日不含）；陪產檢與陪產共用 7 日，請確認各次申請符合產檢或分娩前後的適用期間。 產假事件須由 owner 設定核定每日全薪，給薪比例由年資自動計算。 育嬰留停事件日期請填子女出生日期，同一子女沿用事件編號，期間不得超過三歲；未滿六個月任職須先取得勞資同意。育嬰留停不需核定日薪。",
   "leaveCases": {
     "actions": {
       "create": "新增事件假額度",
-      "delete": "刪除案件",
-      "update": "編輯案件"
+      "delete": "刪除事件假額度",
+      "update": "編輯事件假額度"
     },
     "label": "事件假額度"
   },
-  "leaveRequestHint": "住院／安胎假由主管查驗醫療證明；病假及生理假的給薪會依已用額度分段計算，超出給薪額度的生理假為無薪。育嬰留停請先選擇主管建立的子女事件，使用完整曆日（起訖 00:00，結束日不含）。",
+  "leaveRequestHint": "住院傷病假、安胎休養假由主管查驗醫療證明。普通傷病假、住院傷病假、安胎休養假每年合計 30 日內工資折半，超過部分無薪；生理假每月 1 日、工資折半，每年前 3 日不併入病假，第 4 日起併入上述 30 日計算。育嬰留職停薪請先選擇主管核給的額度，使用完整曆日（起訖 00:00，結束日不含）。",
   "leaveType": "假別",
   "leaveTypeGroups": {
-    "common": "常用",
     "custom": "自訂",
-    "event": "需先建立案件"
+    "event": "婚喪、生育及育嬰",
+    "general": "一般假別"
   },
   "leaveTypes": {
     "actions": {
@@ -330,7 +330,7 @@
   "paidBreak": "此班次休息計薪",
   "paidPercent": "給薪比例（%）",
   "parentalChild": "子女",
-  "parentalChildHint": "同一子女請重用既有資料。主管查驗證明後設定固定識別編號；雙胞胎分別建立，請勿輸入完整身分證號。既有育嬰案件須先完成子女歸戶。",
+  "parentalChildHint": "同一子女請重用既有資料。主管查驗證明後設定固定識別編號；雙胞胎分別建立，請勿輸入完整身分證號。既有育嬰留職停薪額度須先完成子女歸戶。",
   "parentalChildren": {
     "actions": {
       "create": "新增子女資料"
@@ -399,7 +399,7 @@
     "actions": {
       "create": "申請請假"
     },
-    "label": "我的申請"
+    "label": "申請紀錄"
   },
   "requiresBalance": "需要休假額度",
   "returnsAt": "復職日期",
