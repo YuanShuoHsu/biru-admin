@@ -2600,7 +2600,9 @@ export interface components {
       /** Format: date-time */
       createdAt: string;
       events: components["schemas"]["AttendanceEventResponseDto"][];
-      originalEvents: components["schemas"]["AttendanceEventResponseDto"][];
+      originalEvents:
+        | components["schemas"]["AttendanceEventResponseDto"][]
+        | null;
     };
     AttendanceShiftsResponseDto: {
       data: components["schemas"]["AttendanceShiftResponseDto"][];

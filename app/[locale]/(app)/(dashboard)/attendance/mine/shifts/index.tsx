@@ -64,6 +64,12 @@ const ActionsStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(1),
 }));
 
+const StyledIconButton = styled(IconButton, {
+  shouldForwardProp: (prop) => prop !== "visible",
+})<{ visible: boolean }>(({ visible }) => ({
+  visibility: visible ? "visible" : "hidden",
+}));
+
 const ChipsStack = styled(Stack)(({ theme }) => ({
   alignItems: "center",
   gap: theme.spacing(0.5),
@@ -273,6 +279,11 @@ const Mine = ({
     [mutate, organizationSlug, setDialog, tAttendance],
   );
 
+  const hasCorrectedShift = useMemo(
+    () => rows.some(({ originalEvents }) => originalEvents),
+    [rows],
+  );
+
   const columns = useMemo<GridColDef[]>(
     () => [
       {
@@ -283,11 +294,17 @@ const Mine = ({
         headerName: tAttendance("actions"),
         renderCell: ({ row }: GridRenderCellParams<AttendanceShift>) => (
           <ActionsStack direction="row">
-            <Tooltip title={tAttendance("mine.actions.viewEvents")}>
-              <IconButton onClick={() => handleViewEvents(row)} size="small">
-                <History fontSize="small" />
-              </IconButton>
-            </Tooltip>
+            {hasCorrectedShift && (
+              <Tooltip title={tAttendance("mine.actions.viewEvents")}>
+                <StyledIconButton
+                  onClick={() => handleViewEvents(row)}
+                  size="small"
+                  visible={!!row.originalEvents}
+                >
+                  <History fontSize="small" />
+                </StyledIconButton>
+              </Tooltip>
+            )}
             <Tooltip
               title={tAttendance(
                 dayjs(row.startsAt).isAfter(dayjs())
@@ -386,6 +403,7 @@ const Mine = ({
       handleCorrection,
       handleOvertime,
       handleViewEvents,
+      hasCorrectedShift,
       tAttendance,
     ],
   );

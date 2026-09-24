@@ -296,6 +296,11 @@ const Shifts = ({
     [base, mutate, setDialog, tAttendance],
   );
 
+  const hasCorrectedShift = useMemo(
+    () => rows.some(({ originalEvents }) => originalEvents),
+    [rows],
+  );
+
   const columns = useMemo<GridColDef[]>(
     () => [
       {
@@ -306,11 +311,17 @@ const Shifts = ({
         headerName: tAttendance("actions"),
         renderCell: ({ row }: GridRenderCellParams<AttendanceShift>) => (
           <ActionsStack direction="row">
-            <Tooltip title={tAttendance("shifts.actions.viewEvents")}>
-              <IconButton onClick={() => handleViewEvents(row)} size="small">
-                <History fontSize="small" />
-              </IconButton>
-            </Tooltip>
+            {hasCorrectedShift && (
+              <Tooltip title={tAttendance("shifts.actions.viewEvents")}>
+                <StyledIconButton
+                  onClick={() => handleViewEvents(row)}
+                  size="small"
+                  visible={!!row.originalEvents}
+                >
+                  <History fontSize="small" />
+                </StyledIconButton>
+              </Tooltip>
+            )}
             {canCancel && (
               <Tooltip title={tAttendance("cancelShift")}>
                 <StyledIconButton
@@ -402,6 +413,7 @@ const Shifts = ({
       format,
       handleCancelShift,
       handleViewEvents,
+      hasCorrectedShift,
       stringFilterOperators,
       tAttendance,
     ],
