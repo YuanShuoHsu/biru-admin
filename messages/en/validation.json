@@ -189,6 +189,9 @@
     "maxDateTime": "Please select a punch time on or before now.",
     "required": "Punch time is required."
   },
+  "overtimeExtensionPeriod": {
+    "invalid": "Select a start month."
+  },
   "parentalChild": {
     "notSelected": "Please select your child."
   },

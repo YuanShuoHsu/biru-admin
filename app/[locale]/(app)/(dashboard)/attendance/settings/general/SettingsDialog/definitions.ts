@@ -28,6 +28,13 @@ export const useSettingsFormSchema = () => {
           error: tValidation("allowedIps.max", { max: ALLOWED_IPS_MAX }),
         }),
       graceMinutes: range(0, 60),
+      overtimeExtensionPeriods: z.array(
+        z.object({
+          value: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, {
+            error: tValidation("overtimeExtensionPeriod.invalid"),
+          }),
+        }),
+      ),
       latitude: range(-90, 90).nullable(),
       longitude: range(-180, 180).nullable(),
       radiusMeters: range(10, 10000),

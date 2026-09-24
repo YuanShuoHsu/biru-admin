@@ -1,22 +1,28 @@
 "use client";
 
-import dayjs from "dayjs";
+import dayjs, { type Dayjs } from "dayjs";
 import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent } from "react";
+import { type BaseSyntheticEvent, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
 import { type OvertimeForm, useOvertimeFormSchema } from "./definitions";
 
 import FormBox from "@/components/FormBox";
 
+import { MAX_DAILY_WORK_HOURS } from "@/constants/attendance";
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Alert, TextField } from "@mui/material";
+import {
+  Alert,
+  TextField,
+  ToggleButton,
+  ToggleButtonGroup,
+} from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -25,9 +31,16 @@ import type { AttendanceShift } from "@/types/attendance";
 
 import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+import { scheduledHours } from "@/utils/scheduledHours";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
+
+type OvertimePosition = "before" | "after";
+
+const earlier = (a: Dayjs, b: Dayjs) => (a.isBefore(b) ? a : b);
+
+const later = (a: Dayjs, b: Dayjs) => (a.isAfter(b) ? a : b);
 
 interface OvertimeDialogProps {
   mutate: () => void;
@@ -46,6 +59,37 @@ const OvertimeDialog = ({
 
   const overtimeFormSchema = useOvertimeFormSchema();
 
+  const workday = shift.dayKind === "workday";
+
+  const workdayOvertimeHours =
+    MAX_DAILY_WORK_HOURS - scheduledHours(shift, -Infinity, Infinity);
+
+  const earliestStart = dayjs(shift.startsAt).subtract(
+    workdayOvertimeHours,
+    "hour",
+  );
+
+  const latestEnd = dayjs(shift.endsAt).add(workdayOvertimeHours, "hour");
+
+  const earlyClockIn =
+    shift.clockInAt && dayjs(shift.clockInAt).isBefore(shift.startsAt)
+      ? later(dayjs(shift.clockInAt), earliestStart).toISOString()
+      : "";
+
+  const lateClockOut =
+    shift.clockOutAt && dayjs(shift.clockOutAt).isAfter(shift.endsAt)
+      ? earlier(dayjs(shift.clockOutAt), latestEnd).toISOString()
+      : "";
+
+  const [position, setPosition] = useState<OvertimePosition>(
+    earlyClockIn && !lateClockOut ? "before" : "after",
+  );
+
+  const workdayInterval = (value: OvertimePosition) =>
+    value === "after"
+      ? { startsAt: shift.endsAt, endsAt: lateClockOut }
+      : { startsAt: earlyClockIn, endsAt: shift.startsAt };
+
   const {
     control,
     formState: { errors, isSubmitted },
@@ -54,12 +98,19 @@ const OvertimeDialog = ({
     setValue,
   } = useForm<OvertimeForm>({
     defaultValues: {
-      endsAt:
-        shift.dayKind === "workday"
-          ? dayjs(shift.endsAt).add(1, "hour").toISOString()
-          : shift.endsAt,
+      ...(workday
+        ? workdayInterval(position)
+        : {
+            startsAt: shift.startsAt,
+            endsAt:
+              shift.dayKind === "regularLeave"
+                ? shift.endsAt
+                : earlier(
+                    dayjs(shift.endsAt),
+                    dayjs(shift.startsAt).add(MAX_DAILY_WORK_HOURS, "hour"),
+                  ).toISOString(),
+          }),
       reason: "",
-      startsAt: shift.dayKind === "workday" ? shift.endsAt : shift.startsAt,
     },
     resolver: zodResolver(overtimeFormSchema),
   });
@@ -69,7 +120,36 @@ const OvertimeDialog = ({
     name: ["endsAt", "startsAt"],
   });
 
-  const afterShift = shift.dayKind === "workday";
+  const dailyCapped = shift.dayKind !== "regularLeave";
+
+  const startsAtMin = workday
+    ? earliestStart
+    : dailyCapped && endsAt
+      ? later(
+          dayjs(shift.startsAt),
+          dayjs(endsAt).subtract(MAX_DAILY_WORK_HOURS, "hour"),
+        )
+      : dayjs(shift.startsAt);
+
+  const endsAtMax = workday
+    ? latestEnd
+    : dailyCapped && startsAt
+      ? earlier(
+          dayjs(shift.endsAt),
+          dayjs(startsAt).add(MAX_DAILY_WORK_HOURS, "hour"),
+        )
+      : dayjs(shift.endsAt);
+
+  const handlePositionChange = (value: OvertimePosition | null) => {
+    if (!value) return;
+
+    setPosition(value);
+
+    const { endsAt, startsAt } = workdayInterval(value);
+
+    setValue("startsAt", startsAt, { shouldValidate: isSubmitted });
+    setValue("endsAt", endsAt, { shouldValidate: isSubmitted });
+  };
 
   const onSubmitHandler = async (values: OvertimeForm) => {
     try {
@@ -105,13 +185,30 @@ const OvertimeDialog = ({
   return (
     <FormBox id="attendance-overtime-form" onSubmit={onSubmit}>
       <Alert severity="info">
-        {tAttendance(afterShift ? "overtimeAfterShift" : "overtimeOnShift")}
+        {tAttendance(workday ? "overtimeOnWorkday" : "overtimeOnShift")}
       </Alert>
+      {workday && (
+        <ToggleButtonGroup
+          exclusive
+          fullWidth
+          onChange={(_, value: OvertimePosition | null) =>
+            handlePositionChange(value)
+          }
+          size="small"
+          value={position}
+        >
+          {(["before", "after"] as const).map((value) => (
+            <ToggleButton key={value} value={value}>
+              {tAttendance(`overtimePosition.${value}`)}
+            </ToggleButton>
+          ))}
+        </ToggleButtonGroup>
+      )}
       <DateTimePicker
-        disabled={afterShift}
+        disabled={workday && position === "after"}
         label={tAttendance("startsAt")}
         maxDateTime={endsAt ? dayjs(endsAt) : dayjs(shift.endsAt)}
-        minDateTime={dayjs(shift.startsAt)}
+        minDateTime={startsAtMin}
         onChange={(date) =>
           setValue("startsAt", date?.isValid() ? date.toISOString() : "", {
             shouldValidate: isSubmitted,
@@ -128,8 +225,9 @@ const OvertimeDialog = ({
         value={startsAt ? dayjs(startsAt) : null}
       />
       <DateTimePicker
+        disabled={workday && position === "before"}
         label={tAttendance("endsAt")}
-        maxDateTime={afterShift ? undefined : dayjs(shift.endsAt)}
+        maxDateTime={endsAtMax}
         minDateTime={startsAt ? dayjs(startsAt) : dayjs(shift.startsAt)}
         onChange={(date) =>
           setValue("endsAt", date?.isValid() ? date.toISOString() : "", {

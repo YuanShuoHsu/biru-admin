@@ -189,6 +189,9 @@
     "maxDateTime": "現在以前の打刻時刻を選択してください。",
     "required": "打刻日時は必須です。"
   },
+  "overtimeExtensionPeriod": {
+    "invalid": "開始月を選択してください。"
+  },
   "parentalChild": {
     "notSelected": "子どもを選択してください。"
   },

@@ -1,5 +1,8 @@
 "use client";
 
+import dayjs from "dayjs";
+import timezonePlugin from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent, useState } from "react";
@@ -11,6 +14,7 @@ import FormBox from "@/components/FormBox";
 import NumberSpinner from "@/components/NumberSpinner";
 
 import { ALLOWED_IPS_MAX } from "@/constants/attendance";
+import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -28,6 +32,7 @@ import {
   TextField,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -35,6 +40,9 @@ import type { AttendanceSettings } from "@/types/attendance";
 
 import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+
+dayjs.extend(utc);
+dayjs.extend(timezonePlugin);
 
 const StyledButton = styled(Button)({
   alignSelf: "flex-start",
@@ -88,6 +96,8 @@ const SettingsDialog = ({
       graceMinutes: settings?.graceMinutes ?? 0,
       latitude: settings?.latitude ?? null,
       longitude: settings?.longitude ?? null,
+      overtimeExtensionPeriods:
+        settings?.overtimeExtensionPeriods.map((value) => ({ value })) ?? [],
       radiusMeters: settings?.radiusMeters ?? 100,
     },
     resolver: zodResolver(settingsFormSchema),
@@ -102,6 +112,14 @@ const SettingsDialog = ({
     control,
     name: "allowedIps",
   });
+
+  const {
+    append: appendPeriod,
+    fields: periodFields,
+    remove: removePeriod,
+  } = useFieldArray({ control, name: "overtimeExtensionPeriods" });
+
+  const periods = useWatch({ control, name: "overtimeExtensionPeriods" });
 
   const firstAllowedIp = useWatch({ control, name: "allowedIps.0.value" });
 
@@ -120,6 +138,9 @@ const SettingsDialog = ({
         body: JSON.stringify({
           ...values,
           allowedIps: values.allowedIps.map(({ value }) => value.trim()),
+          overtimeExtensionPeriods: values.overtimeExtensionPeriods.map(
+            ({ value }) => value,
+          ),
         }),
       });
 
@@ -275,6 +296,57 @@ const SettingsDialog = ({
         }
         value={graceMinutes}
       />
+      <StyledFormControl component="fieldset" variant="standard">
+        <FormLabel component="legend">
+          {tAttendance("overtimeExtensionPeriods.label")}
+        </FormLabel>
+        <FormHelperText>
+          {tAttendance("overtimeExtensionPeriods.hint")}
+        </FormHelperText>
+        {periodFields.map(({ id }, index) => (
+          <IpRowStack direction="row" key={id}>
+            <DatePicker
+              label={tAttendance("overtimeExtensionPeriods.startMonth")}
+              onChange={(value) =>
+                setValue(
+                  `overtimeExtensionPeriods.${index}.value`,
+                  value?.isValid() ? value.format("YYYY-MM") : "",
+                  { shouldValidate: isSubmitted },
+                )
+              }
+              slotProps={{
+                textField: {
+                  error: !!errors.overtimeExtensionPeriods?.[index]?.value,
+                  fullWidth: true,
+                  helperText:
+                    errors.overtimeExtensionPeriods?.[index]?.value?.message,
+                },
+              }}
+              timezone={STORE_TIMEZONE}
+              value={
+                periods?.[index]?.value
+                  ? dayjs(periods[index].value, "YYYY-MM")
+                  : null
+              }
+              views={["year", "month"]}
+            />
+            <IconButton
+              color="error"
+              onClick={() => removePeriod(index)}
+              size="small"
+            >
+              <DeleteOutlined fontSize="small" />
+            </IconButton>
+          </IpRowStack>
+        ))}
+        <Button
+          onClick={() => appendPeriod({ value: "" })}
+          startIcon={<Add />}
+          variant="outlined"
+        >
+          {tAttendance("add")}
+        </Button>
+      </StyledFormControl>
     </FormBox>
   );
 };

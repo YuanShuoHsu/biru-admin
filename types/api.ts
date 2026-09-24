@@ -2345,6 +2345,7 @@ export interface components {
       | "outsideShiftWindow"
       | "overlappingAttendance"
       | "overlappingLeave"
+      | "overlappingOvertimeExtensions"
       | "overlappingShift"
       | "parentalChildExists"
       | "parentalChildMismatch"
@@ -2364,6 +2365,7 @@ export interface components {
       | "payrollSourceChanged"
       | "payrollTermsRequired"
       | "pendingRequestExists"
+      | "periodOvertimeExceeded"
       | "reasonRequired"
       | "requestAlreadyReviewed"
       | "reservedMakeupRest"
@@ -2503,6 +2505,14 @@ export interface components {
        *     ]
        */
       allowedIps: string[];
+      /**
+       * @description 經工會或勞資會議同意延長工時的各期起始月（每期連續 3 個曆月）
+       * @example [
+       *       "2026-01",
+       *       "2026-04"
+       *     ]
+       */
+      overtimeExtensionPeriods: string[];
       organizationId: string;
       /** Format: date-time */
       updatedAt: string;
@@ -2519,6 +2529,14 @@ export interface components {
        *     ]
        */
       allowedIps: string[];
+      /**
+       * @description 經工會或勞資會議同意延長工時的各期起始月（每期連續 3 個曆月）
+       * @example [
+       *       "2026-01",
+       *       "2026-04"
+       *     ]
+       */
+      overtimeExtensionPeriods: string[];
       latitude: number;
       longitude: number;
       radiusMeters: number;
@@ -11794,6 +11812,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "outsideShiftWindow",
   "overlappingAttendance",
   "overlappingLeave",
+  "overlappingOvertimeExtensions",
   "overlappingShift",
   "parentalChildExists",
   "parentalChildMismatch",
@@ -11813,6 +11832,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "payrollSourceChanged",
   "payrollTermsRequired",
   "pendingRequestExists",
+  "periodOvertimeExceeded",
   "reasonRequired",
   "requestAlreadyReviewed",
   "reservedMakeupRest",

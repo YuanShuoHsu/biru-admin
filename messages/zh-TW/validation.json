@@ -189,6 +189,9 @@
     "maxDateTime": "請選擇現在或之前的打卡時間。",
     "required": "打卡時間為必填。"
   },
+  "overtimeExtensionPeriod": {
+    "invalid": "請選擇起始月份。"
+  },
   "parentalChild": {
     "notSelected": "請選擇您的子女。"
   },

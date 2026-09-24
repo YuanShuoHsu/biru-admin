@@ -1,11 +1,16 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import dayjs from "dayjs";
+import timezonePlugin from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+import { useFormatter, useTranslations } from "next-intl";
 import { useCallback } from "react";
 
 import SettingsDialog from "./SettingsDialog";
 
 import DetailsCard from "@/components/DetailsCard";
+
+import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { Chip, Stack } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -13,6 +18,9 @@ import { styled } from "@mui/material/styles";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { AttendanceSettings } from "@/types/attendance";
+
+dayjs.extend(utc);
+dayjs.extend(timezonePlugin);
 
 const StyledStack = styled(Stack)(({ theme }) => ({
   flexWrap: "wrap",
@@ -25,6 +33,7 @@ const SETTING_KEYS = [
   "radiusMeters",
   "allowedIps",
   "graceMinutes",
+  "overtimeExtensionPeriods",
 ] as const satisfies readonly (keyof AttendanceSettings)[];
 
 interface SettingsProps {
@@ -33,6 +42,8 @@ interface SettingsProps {
 }
 
 const Settings = ({ organizationSlug, settings }: SettingsProps) => {
+  const format = useFormatter();
+
   const tAttendance = useTranslations("attendance");
 
   const { setDialog } = useDialogStore((state) => state);
@@ -54,6 +65,32 @@ const Settings = ({ organizationSlug, settings }: SettingsProps) => {
     [organizationSlug, setDialog, settings, tAttendance],
   );
 
+  const periodLabel = (month: string) => {
+    const start = dayjs.tz(`${month}-01`, STORE_TIMEZONE);
+
+    return format.dateTimeRange(
+      start.toDate(),
+      start.add(2, "month").toDate(),
+      {
+        month: "short",
+        year: "numeric",
+      },
+    );
+  };
+
+  const chips = (values: string[], label = (value: string) => value) => (
+    <StyledStack direction="row">
+      {values.map((value) => (
+        <Chip
+          key={value}
+          label={label(value)}
+          size="small"
+          variant="outlined"
+        />
+      ))}
+    </StyledStack>
+  );
+
   const items = settings
     ? SETTING_KEYS.map((key) => {
         const value = settings[key];
@@ -61,15 +98,14 @@ const Settings = ({ organizationSlug, settings }: SettingsProps) => {
         return {
           key,
           label: tAttendance(`${key}.label`),
-          value: Array.isArray(value) ? (
-            <StyledStack direction="row">
-              {value.map((ip) => (
-                <Chip key={ip} label={ip} size="small" variant="outlined" />
-              ))}
-            </StyledStack>
-          ) : (
-            value
-          ),
+          value:
+            key === "overtimeExtensionPeriods"
+              ? settings.overtimeExtensionPeriods.length
+                ? chips(settings.overtimeExtensionPeriods, periodLabel)
+                : tAttendance("overtimeExtensionPeriods.none")
+              : Array.isArray(value)
+                ? chips(value)
+                : value,
         };
       })
     : [];
