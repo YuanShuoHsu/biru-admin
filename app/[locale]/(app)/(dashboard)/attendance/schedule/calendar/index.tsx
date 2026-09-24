@@ -309,11 +309,7 @@ const Calendar = ({
 
   const time = useCallback(
     (value: string | number) =>
-      format.dateTime(new Date(value), {
-        hour: "2-digit",
-        minute: "2-digit",
-        timeZone: STORE_TIMEZONE,
-      }),
+      format.dateTime(new Date(value), "time", { timeZone: STORE_TIMEZONE }),
     [format],
   );
 
@@ -346,11 +342,13 @@ const Calendar = ({
           {tAttendance("schedule.thisWeek")}
         </Button>
         <Typography variant="subtitle1">
-          {format.dateTimeRange(
-            start.toDate(),
-            start.add(WEEK_DAYS - 1, "day").toDate(),
-            { day: "numeric", month: "short", timeZone: STORE_TIMEZONE },
-          )}
+          {[start, start.add(WEEK_DAYS - 1, "day")]
+            .map((day) =>
+              format.dateTime(day.toDate(), "monthDay", {
+                timeZone: STORE_TIMEZONE,
+              }),
+            )
+            .join(" – ")}
         </Typography>
         <SpacerBox />
         {canCreate && (
@@ -378,15 +376,12 @@ const Calendar = ({
               today={day.format("YYYY-MM-DD") === today}
             >
               <Typography variant="body2">
-                {format.dateTime(day.toDate(), {
+                {format.dateTime(day.toDate(), "weekday", {
                   timeZone: STORE_TIMEZONE,
-                  weekday: "short",
                 })}
               </Typography>
               <Typography color="textSecondary" variant="caption">
-                {format.dateTime(day.toDate(), {
-                  day: "numeric",
-                  month: "numeric",
+                {format.dateTime(day.toDate(), "monthDay", {
                   timeZone: STORE_TIMEZONE,
                 })}
               </Typography>

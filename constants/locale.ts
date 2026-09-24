@@ -18,6 +18,7 @@ interface LocaleConfig {
   dayjs: DayjsLocale;
   ecpayLanguage?: EcpayLanguage;
   label: string;
+  monthFormat: string;
   mui: ThemeOptions[];
 }
 
@@ -26,6 +27,7 @@ export const localeConfigs: Record<Locale, LocaleConfig> = {
     countryCode: "TW",
     dayjs: "zh-tw",
     label: "繁體中文",
+    monthFormat: "YYYY/MM",
     mui: [dataGridLocales.zhTW, muiLocales.zhTW, pickersLocales.zhTW],
   },
   [LocaleEnum.En]: {
@@ -33,6 +35,7 @@ export const localeConfigs: Record<Locale, LocaleConfig> = {
     dayjs: "en",
     ecpayLanguage: "ENG",
     label: "English",
+    monthFormat: "MM/YYYY",
     mui: [dataGridLocales.enUS, muiLocales.enUS, pickersLocales.enUS],
   },
   [LocaleEnum.Ja]: {
@@ -40,6 +43,7 @@ export const localeConfigs: Record<Locale, LocaleConfig> = {
     dayjs: "ja",
     ecpayLanguage: "JPN",
     label: "日本語",
+    monthFormat: "YYYY/MM",
     mui: [dataGridLocales.jaJP, muiLocales.jaJP, pickersLocales.jaJP],
   },
   [LocaleEnum.Ko]: {
@@ -47,6 +51,7 @@ export const localeConfigs: Record<Locale, LocaleConfig> = {
     dayjs: "ko",
     ecpayLanguage: "KOR",
     label: "한국어",
+    monthFormat: "YYYY.MM.",
     mui: [dataGridLocales.koKR, muiLocales.koKR, pickersLocales.koKR],
   },
   [LocaleEnum.ZhCN]: {
@@ -54,6 +59,7 @@ export const localeConfigs: Record<Locale, LocaleConfig> = {
     dayjs: "zh-cn",
     ecpayLanguage: "CHI",
     label: "简体中文",
+    monthFormat: "YYYY/MM",
     mui: [dataGridLocales.zhCN, muiLocales.zhCN, pickersLocales.zhCN],
   },
 };

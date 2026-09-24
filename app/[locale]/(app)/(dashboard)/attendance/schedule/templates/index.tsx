@@ -297,7 +297,7 @@ const Templates = ({
   );
 
   const weekday = useCallback(
-    (day: number) => format.dateTime(weekdayDate(day), { weekday: "long" }),
+    (day: number) => format.dateTime(weekdayDate(day), "weekdayLong"),
     [format],
   );
 

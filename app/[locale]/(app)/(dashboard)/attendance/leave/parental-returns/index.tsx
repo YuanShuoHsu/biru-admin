@@ -326,7 +326,8 @@ const ParentalReturns = ({
         field: "returnsAt",
         filterOperators: dateFilterOperators,
         headerName: tAttendance("returnsAt"),
-        valueFormatter: (value: string) => date(value),
+        valueFormatter: (value: string) =>
+          format.dateTime(new Date(value), "date"),
       },
       {
         field: "originalStartsAt",
@@ -379,6 +380,7 @@ const ParentalReturns = ({
       employeeId,
       enumFilterOperators,
       enumOptions.status,
+      format,
       handleReview,
       handleWithdraw,
       stringFilterOperators,

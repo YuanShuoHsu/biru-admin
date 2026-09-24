@@ -1,5 +1,6 @@
 "use client";
 
+import dayjs from "dayjs";
 import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
@@ -12,8 +13,9 @@ import {
 } from "@/constants/dataGrid";
 import { getPageSizeOptions } from "@/constants/pagination";
 
-import { useStringFilterOperators } from "@/hooks/useFilterOperators";
+import { useMonthFilterOperators } from "@/hooks/useFilterOperators";
 import { useFormatMoney } from "@/hooks/useFormatMoney";
+import { useMonthFormat } from "@/hooks/useMonthFormat";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import type {
@@ -102,7 +104,9 @@ const Payslips = ({
     quickFilterValues: initialQuickFilterValue ? [initialQuickFilterValue] : [],
   });
 
-  const stringFilterOperators = useStringFilterOperators();
+  const monthFilterOperators = useMonthFilterOperators();
+
+  const monthFormat = useMonthFormat();
 
   const apiRef = useGridApiRef();
 
@@ -198,12 +202,13 @@ const Payslips = ({
     () => [
       {
         field: "month",
-        filterOperators: stringFilterOperators,
+        filterOperators: monthFilterOperators,
         headerName: tAttendance("month"),
+        valueFormatter: (value: string) => dayjs(value).format(monthFormat),
       },
       ...getPayrollAmountColumns(tAttendance, format, money),
     ],
-    [format, money, stringFilterOperators, tAttendance],
+    [format, money, monthFilterOperators, monthFormat, tAttendance],
   );
 
   return (

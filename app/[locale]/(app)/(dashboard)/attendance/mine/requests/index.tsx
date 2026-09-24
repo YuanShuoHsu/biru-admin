@@ -303,7 +303,7 @@ const Requests = ({
         period: format.dateTimeRange(
           new Date(startsAt),
           new Date(endsAt),
-          "shiftDateTime",
+          "dateTime",
         ),
       };
 

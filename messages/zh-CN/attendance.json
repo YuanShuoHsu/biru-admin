@@ -372,6 +372,7 @@
       "leaveDeduction": "请假扣款",
       "otherDeduction": "其他核定扣款",
       "overtimePay": "加班费",
+      "roundingAdjustment": "尾数调整",
       "voluntaryPension": "劳退自提",
       "withholding": "所得税扣缴"
     }

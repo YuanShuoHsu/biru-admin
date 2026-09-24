@@ -13,46 +13,58 @@ import enMessages from "@/messages";
 
 export const formats = {
   dateTime: {
+    compact: {
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23",
+    },
     date: {
       year: "numeric",
-      month: "short",
-      day: "numeric",
+      month: "2-digit",
+      day: "2-digit",
     },
-    compact: {
-      day: "numeric",
-      month: "numeric",
-      hour: "numeric",
-      minute: "numeric",
+    dateTime: {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23",
+    },
+    monthDay: {
+      month: "2-digit",
+      day: "2-digit",
     },
     shift: {
       year: "numeric",
-      month: "numeric",
-      day: "numeric",
+      month: "2-digit",
+      day: "2-digit",
       weekday: "short",
       hour: "2-digit",
       minute: "2-digit",
       hourCycle: "h23",
     },
-    shiftDateTime: {
-      year: "numeric",
-      month: "numeric",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hourCycle: "h23",
-    },
-    shiftTime: {
-      hour: "2-digit",
-      minute: "2-digit",
-      hourCycle: "h23",
-    },
     short: {
-      day: "numeric",
-      month: "short",
       year: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-      second: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hourCycle: "h23",
+    },
+    time: {
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23",
+    },
+    weekday: {
+      weekday: "short",
+    },
+    weekdayLong: {
+      weekday: "long",
     },
   },
   number: {

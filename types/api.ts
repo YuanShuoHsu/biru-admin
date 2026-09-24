@@ -5873,7 +5873,8 @@ export interface components {
       | "overtimePay"
       | "holidayPay"
       | "calendarLeavePay"
-      | "annualLeavePay";
+      | "annualLeavePay"
+      | "roundingAdjustment";
     PayrollEarningLineResponseDto: {
       code: components["schemas"]["PayrollEarningLineCode"];
       amountCents: string;
@@ -12655,6 +12656,7 @@ export const payrollEarningLineCodeValues: ReadonlyArray<
   "holidayPay",
   "calendarLeavePay",
   "annualLeavePay",
+  "roundingAdjustment",
 ];
 export const payrollDeductionLineCodeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["PayrollDeductionLineCode"]

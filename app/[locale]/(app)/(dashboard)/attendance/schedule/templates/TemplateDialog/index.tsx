@@ -223,7 +223,7 @@ const TemplateDialog = ({
       >
         {Array.from({ length: 7 }, (_, day) => (
           <MenuItem key={day} value={day}>
-            {format.dateTime(weekdayDate(day), { weekday: "long" })}
+            {format.dateTime(weekdayDate(day), "weekdayLong")}
           </MenuItem>
         ))}
       </TextField>

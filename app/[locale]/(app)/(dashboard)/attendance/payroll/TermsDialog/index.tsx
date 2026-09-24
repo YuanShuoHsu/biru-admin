@@ -23,6 +23,8 @@ import NumberSpinner from "@/components/NumberSpinner";
 
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
+import { useMonthFormat } from "@/hooks/useMonthFormat";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
@@ -85,6 +87,8 @@ const TermsDialog = ({
   const format = useFormatter();
 
   const tAttendance = useTranslations("attendance");
+
+  const monthFormat = useMonthFormat();
   const tValidation = useTranslations("validation");
 
   const termsFormSchema = useTermsFormSchema();
@@ -269,6 +273,7 @@ const TermsDialog = ({
         ))}
       </TextField>
       <DatePicker
+        format={monthFormat}
         label={tAttendance("effectiveFrom")}
         onChange={(value) =>
           setValue(

@@ -14,6 +14,8 @@ import FormBox from "@/components/FormBox";
 
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
+import { useMonthFormat } from "@/hooks/useMonthFormat";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { MenuItem, TextField } from "@mui/material";
@@ -43,6 +45,8 @@ const DraftDialog = ({
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const tAttendance = useTranslations("attendance");
+
+  const monthFormat = useMonthFormat();
 
   const draftFormSchema = useDraftFormSchema();
 
@@ -119,6 +123,7 @@ const DraftDialog = ({
         ))}
       </TextField>
       <DatePicker
+        format={monthFormat}
         label={tAttendance("month")}
         onChange={(value) =>
           setValue("month", value?.isValid() ? value.format("YYYY-MM") : "", {

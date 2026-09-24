@@ -1,5 +1,6 @@
 "use client";
 
+import dayjs from "dayjs";
 import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
@@ -18,9 +19,11 @@ import { getPageSizeOptions } from "@/constants/pagination";
 
 import {
   useEnumFilterOperators,
+  useMonthFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
 import { useFormatMoney } from "@/hooks/useFormatMoney";
+import { useMonthFormat } from "@/hooks/useMonthFormat";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { Add, Check, Publish } from "@mui/icons-material";
@@ -141,7 +144,10 @@ const Payroll = ({
   const { setDialog } = useDialogStore((state) => state);
 
   const enumFilterOperators = useEnumFilterOperators();
+  const monthFilterOperators = useMonthFilterOperators();
   const stringFilterOperators = useStringFilterOperators();
+
+  const monthFormat = useMonthFormat();
 
   const apiRef = useGridApiRef();
 
@@ -374,8 +380,9 @@ const Payroll = ({
       },
       {
         field: "month",
-        filterOperators: stringFilterOperators,
+        filterOperators: monthFilterOperators,
         headerName: tAttendance("month"),
+        valueFormatter: (value: string) => dayjs(value).format(monthFormat),
       },
       {
         field: "status",
@@ -405,6 +412,8 @@ const Payroll = ({
       format,
       handleTransitionDialog,
       money,
+      monthFilterOperators,
+      monthFormat,
       stringFilterOperators,
       tAttendance,
     ],

@@ -1,7 +1,9 @@
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 
-import DateFilterInputValue from "@/components/DateFilterInputValue";
+import DateFilterInputValue, {
+  type DateFilterInputValueProps,
+} from "@/components/DateFilterInputValue";
 
 import {
   DATE_FILTER_OPERATORS,
@@ -10,6 +12,8 @@ import {
   NUMBER_FILTER_OPERATORS,
   STRING_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
+
+import { useMonthFormat } from "@/hooks/useMonthFormat";
 
 import type {
   GridFilterInputValueProps,
@@ -75,6 +79,37 @@ export const useDateFilterOperators = () => {
         value,
       })),
     [tToolbar],
+  );
+};
+
+export const useMonthFilterOperators = () => {
+  const monthFormat = useMonthFormat();
+
+  const tToolbar = useTranslations("dataGrid.toolbar");
+
+  return useMemo<
+    GridFilterOperator<
+      GridValidRowModel,
+      string,
+      string,
+      DateFilterInputValueProps
+    >[]
+  >(
+    () =>
+      DATE_FILTER_OPERATORS.filter(
+        (value) => !NO_VALUE_FILTER_OPERATORS.includes(value),
+      ).map((value) => ({
+        getApplyFilterFn: () => null,
+        InputComponent: DateFilterInputValue,
+        InputComponentProps: {
+          format: monthFormat,
+          valueFormat: "YYYY-MM",
+          views: ["year", "month"],
+        },
+        label: tToolbar(`filter.operator.${value}`),
+        value,
+      })),
+    [monthFormat, tToolbar],
   );
 };
 

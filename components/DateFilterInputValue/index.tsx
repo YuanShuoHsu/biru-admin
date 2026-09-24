@@ -4,15 +4,25 @@ import dayjs, { type Dayjs } from "dayjs";
 
 import type { GridFilterInputValueProps } from "@mui/x-data-grid";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import type { DateView } from "@mui/x-date-pickers/models";
+
+export interface DateFilterInputValueProps extends GridFilterInputValueProps {
+  format?: string;
+  valueFormat?: string;
+  views?: DateView[];
+}
 
 const DateFilterInputValue = ({
   item,
   applyValue,
-}: GridFilterInputValueProps) => {
+  format,
+  valueFormat = "YYYY-MM-DD",
+  views,
+}: DateFilterInputValueProps) => {
   const handleChange = (newValue: Dayjs | null) =>
     applyValue({
       ...item,
-      value: newValue?.isValid() ? newValue.format("YYYY-MM-DD") : "",
+      value: newValue?.isValid() ? newValue.format(valueFormat) : "",
     });
 
   const handleClear = () => applyValue({ ...item, value: "" });
@@ -20,6 +30,7 @@ const DateFilterInputValue = ({
   return (
     <DatePicker
       disableFuture
+      format={format}
       maxDate={dayjs()}
       onChange={handleChange}
       slotProps={{
@@ -29,6 +40,7 @@ const DateFilterInputValue = ({
         },
       }}
       value={item.value ? dayjs(item.value) : null}
+      views={views}
     />
   );
 };

@@ -16,6 +16,8 @@ import NumberSpinner from "@/components/NumberSpinner";
 import { ALLOWED_IPS_MAX } from "@/constants/attendance";
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
+import { useMonthFormat } from "@/hooks/useMonthFormat";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useRouter } from "@/i18n/navigation";
@@ -79,6 +81,8 @@ const SettingsDialog = ({
   const router = useRouter();
 
   const tAttendance = useTranslations("attendance");
+
+  const monthFormat = useMonthFormat();
 
   const settingsFormSchema = useSettingsFormSchema();
 
@@ -306,6 +310,7 @@ const SettingsDialog = ({
         {periodFields.map(({ id }, index) => (
           <IpRowStack direction="row" key={id}>
             <DatePicker
+              format={monthFormat}
               label={tAttendance("overtimeExtensionPeriods.startMonth")}
               onChange={(value) =>
                 setValue(

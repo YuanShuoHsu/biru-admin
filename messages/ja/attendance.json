@@ -372,6 +372,7 @@
       "leaveDeduction": "休暇控除",
       "otherDeduction": "その他確認済み控除",
       "overtimePay": "残業手当",
+      "roundingAdjustment": "端数調整",
       "voluntaryPension": "任意年金拠出",
       "withholding": "源泉徴収"
     }

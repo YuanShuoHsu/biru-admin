@@ -372,6 +372,7 @@
       "leaveDeduction": "휴가 공제",
       "otherDeduction": "기타 확인된 공제",
       "overtimePay": "초과 근무 수당",
+      "roundingAdjustment": "단수 조정",
       "voluntaryPension": "자발적 연금",
       "withholding": "원천징수"
     }

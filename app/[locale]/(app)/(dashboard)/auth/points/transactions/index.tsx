@@ -1,8 +1,5 @@
 "use client";
 
-import dayjs from "dayjs";
-import timezonePlugin from "dayjs/plugin/timezone";
-import utc from "dayjs/plugin/utc";
 import { useFormatter, useTranslations } from "next-intl";
 
 import FormCard, {
@@ -14,7 +11,6 @@ import PaginationActions, {
 } from "@/components/PaginationActions";
 
 import { getPageSizeOptions } from "@/constants/pagination";
-import { PLATFORM_TIMEZONE } from "@/constants/timezone";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
@@ -32,9 +28,6 @@ import {
 import { styled } from "@mui/material/styles";
 
 import type { MyPoints } from "@/types/points";
-
-dayjs.extend(utc);
-dayjs.extend(timezonePlugin);
 
 const StyledTypography = styled(Typography)({
   fontWeight: "bold",
@@ -183,9 +176,7 @@ const Points = ({ page, pageSize, points }: PointsProps) => {
               }}
               subheader={[
                 organizationCount > 1 && transaction.organizationName,
-                dayjs(transaction.createdAt)
-                  .tz(PLATFORM_TIMEZONE)
-                  .format("YYYY/MM/DD HH:mm:ss"),
+                format.dateTime(new Date(transaction.createdAt), "short"),
                 transaction.type === "earn"
                   ? (transaction.confirmationNumber ||
                       transaction.orderNumber) &&
@@ -194,9 +185,10 @@ const Points = ({ page, pageSize, points }: PointsProps) => {
                     `${tAuth("coupons.label")} ${transaction.couponCode}`,
                 transaction.expiresAt &&
                   tAuth("points.validUntil", {
-                    date: dayjs(transaction.expiresAt)
-                      .tz(PLATFORM_TIMEZONE)
-                      .format("YYYY/MM/DD"),
+                    date: format.dateTime(
+                      new Date(transaction.expiresAt),
+                      "date",
+                    ),
                   }),
               ]
                 .filter(Boolean)

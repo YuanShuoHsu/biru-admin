@@ -3,7 +3,7 @@
 import dayjs from "dayjs";
 import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
-import { useFormatter, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useCallback } from "react";
 
 import SettingsDialog from "./SettingsDialog";
@@ -11,6 +11,8 @@ import SettingsDialog from "./SettingsDialog";
 import DetailsCard from "@/components/DetailsCard";
 
 import { STORE_TIMEZONE } from "@/constants/timezone";
+
+import { useMonthFormat } from "@/hooks/useMonthFormat";
 
 import { Chip, Stack } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -46,7 +48,7 @@ const Settings = ({
   organization: { slug: organizationSlug },
   settings,
 }: SettingsProps) => {
-  const format = useFormatter();
+  const monthFormat = useMonthFormat();
 
   const tAttendance = useTranslations("attendance");
 
@@ -72,14 +74,9 @@ const Settings = ({
   const periodLabel = (month: string) => {
     const start = dayjs.tz(`${month}-01`, STORE_TIMEZONE);
 
-    return format.dateTimeRange(
-      start.toDate(),
-      start.add(2, "month").toDate(),
-      {
-        month: "short",
-        year: "numeric",
-      },
-    );
+    return [start, start.add(2, "month")]
+      .map((month) => month.format(monthFormat))
+      .join(" – ");
   };
 
   const chips = (values: string[], label = (value: string) => value) => (

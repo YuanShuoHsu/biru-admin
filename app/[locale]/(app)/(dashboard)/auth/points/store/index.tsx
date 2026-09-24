@@ -1,8 +1,5 @@
 "use client";
 
-import dayjs from "dayjs";
-import timezonePlugin from "dayjs/plugin/timezone";
-import utc from "dayjs/plugin/utc";
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
@@ -11,8 +8,6 @@ import FormCard, {
   StyledCardContent,
   StyledCardHeader,
 } from "@/components/FormCard";
-
-import { PLATFORM_TIMEZONE } from "@/constants/timezone";
 
 import { useFormatMoney } from "@/hooks/useFormatMoney";
 
@@ -40,9 +35,6 @@ import type { MyPoints, PointsCoupon } from "@/types/points";
 
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
-
-dayjs.extend(utc);
-dayjs.extend(timezonePlugin);
 
 const StyledTypography = styled(Typography)({
   fontWeight: "bold",
@@ -197,9 +189,10 @@ const Store = ({ points }: StoreProps) => {
                   }),
                 coupon.validThrough &&
                   tAuth("points.validUntil", {
-                    date: dayjs(coupon.validThrough)
-                      .tz(PLATFORM_TIMEZONE)
-                      .format("YYYY/MM/DD"),
+                    date: format.dateTime(
+                      new Date(coupon.validThrough),
+                      "date",
+                    ),
                   }),
               ]
                 .filter(Boolean)

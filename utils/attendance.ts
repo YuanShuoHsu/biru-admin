@@ -473,8 +473,8 @@ export const formatClockedShift = (
     (value) =>
       value == null || dayjs(value).tz(STORE_TIMEZONE).isSame(shiftDay, "day"),
   )
-    ? "shiftTime"
-    : "shiftDateTime";
+    ? "time"
+    : "dateTime";
 
   return clockOutAt == null
     ? `${format.dateTime(new Date(clockInAt), style)}–`

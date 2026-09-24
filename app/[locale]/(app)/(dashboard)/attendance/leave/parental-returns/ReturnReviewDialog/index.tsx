@@ -53,7 +53,7 @@ const ReturnReviewDialog = ({
     resolver: zodResolver(returnReviewFormSchema),
   });
 
-  const date = (value: string) => format.dateTime(new Date(value), "short");
+  const date = (value: string) => format.dateTime(new Date(value), "date");
 
   const onSubmitHandler = async (values: ReturnReviewForm) => {
     try {

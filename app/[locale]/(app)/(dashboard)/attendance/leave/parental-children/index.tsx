@@ -134,7 +134,7 @@ const ParentalChildren = ({
   const updateQuery = useUpdateQuery();
 
   const date = useCallback(
-    (value: string) => format.dateTime(new Date(value), "short"),
+    (value: string) => format.dateTime(new Date(value), "date"),
     [format],
   );
 
