@@ -5887,6 +5887,7 @@ export interface components {
       | "calendarLeavePay"
       | "annualLeavePay"
       | "leaveDeduction"
+      | "absenceDeduction"
       | "laborInsurance"
       | "healthInsurance"
       | "voluntaryPension"
@@ -5899,7 +5900,6 @@ export interface components {
     };
     /** @enum {string} */
     PayrollBlocker:
-      | "attendanceShortfall"
       | "belowMinimumWage"
       | "calendarLeavePayRequired"
       | "dailyHoursExceeded"
@@ -5921,7 +5921,6 @@ export interface components {
       | "payrollRuleSetStale"
       | "pendingRequests"
       | "prorationRequired"
-      | "unresolvedOvertime"
       | "unsupportedDayKind"
       | "weeklyScheduleRequiresReview";
     PayrollSnapshotResponseDto: {
@@ -12698,6 +12697,7 @@ export const payrollLineCodeValues: ReadonlyArray<
   "calendarLeavePay",
   "annualLeavePay",
   "leaveDeduction",
+  "absenceDeduction",
   "laborInsurance",
   "healthInsurance",
   "voluntaryPension",
@@ -12707,7 +12707,6 @@ export const payrollLineCodeValues: ReadonlyArray<
 export const payrollBlockerValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["PayrollBlocker"]
 > = [
-  "attendanceShortfall",
   "belowMinimumWage",
   "calendarLeavePayRequired",
   "dailyHoursExceeded",
@@ -12729,7 +12728,6 @@ export const payrollBlockerValues: ReadonlyArray<
   "payrollRuleSetStale",
   "pendingRequests",
   "prorationRequired",
-  "unresolvedOvertime",
   "unsupportedDayKind",
   "weeklyScheduleRequiresReview",
 ];

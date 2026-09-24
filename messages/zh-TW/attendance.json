@@ -88,7 +88,6 @@
   "endsAt": "結束時間",
   "errors": {
     "activeShiftExists": "還有尚未下班的班次，請先完成下班或補卡。",
-    "attendanceShortfall": "出勤時數少於排班，請先處理補卡或請假。",
     "belowMinimumWage": "薪資設定低於當期基本工資。",
     "belowStatutoryPaidPercent": "給薪比例不得低於法定標準。",
     "breakTooShort": "每段休息至少 30 分鐘。",
@@ -182,7 +181,6 @@
     "splitLeaveByYear": "跨年度請假請分成兩筆申請。",
     "statutoryBalanceAutomatic": "法定額度依規則計算，不能手動覆寫。",
     "statutoryLeaveTypeLocked": "法定假別不能刪除，請改為停用。",
-    "unresolvedOvertime": "實際加班時段尚未全部核准。",
     "unsupportedDayKind": "不支援的日期類型。",
     "weeklyScheduleRequiresReview": "每週排定工作日時數超過 40 小時，請確認班表。"
   },
@@ -357,6 +355,7 @@
   "payrollHint": "投保資料請依有效申報填寫；特殊身分或補助請關閉自動計算並填入核定金額及依據。生效日目前限月初。",
   "payrollLine": {
     "options": {
+      "absenceDeduction": "缺勤扣款",
       "allowance": "固定津貼",
       "annualLeavePay": "未休特休工資",
       "basePay": "本薪",

@@ -88,7 +88,6 @@
   "endsAt": "End time",
   "errors": {
     "activeShiftExists": "Another shift is still open. Clock out or correct it first.",
-    "attendanceShortfall": "Attendance is shorter than scheduled; resolve corrections or leave first.",
     "belowMinimumWage": "Pay is below the minimum wage in effect.",
     "belowStatutoryPaidPercent": "The paid percentage cannot be below the statutory rate.",
     "breakTooShort": "Each break must be at least 30 minutes.",
@@ -182,7 +181,6 @@
     "splitLeaveByYear": "Submit separate requests for each calendar year.",
     "statutoryBalanceAutomatic": "Statutory balances are calculated automatically.",
     "statutoryLeaveTypeLocked": "Statutory leave policies cannot be deleted. Disable it instead.",
-    "unresolvedOvertime": "Actual overtime intervals have not all been approved.",
     "unsupportedDayKind": "Unsupported day classification.",
     "weeklyScheduleRequiresReview": "Scheduled workdays exceed 40 hours in a week; review the schedule."
   },
@@ -357,6 +355,7 @@
   "payrollHint": "Use declared insurance values. For special status or subsidies, disable automatic premiums and enter verified amounts with evidence. Effective dates currently start at month boundaries.",
   "payrollLine": {
     "options": {
+      "absenceDeduction": "Absence deduction",
       "allowance": "Fixed allowance",
       "annualLeavePay": "Unused annual leave pay",
       "basePay": "Base pay",

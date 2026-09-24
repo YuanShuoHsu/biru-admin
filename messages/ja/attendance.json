@@ -88,7 +88,6 @@
   "endsAt": "終了日時",
   "errors": {
     "activeShiftExists": "未退勤のシフトがあります。先に退勤または修正してください。",
-    "attendanceShortfall": "勤務時間が予定より短いため、打刻訂正または休暇を処理してください。",
     "belowMinimumWage": "給与設定が適用中の最低賃金を下回っています。",
     "belowStatutoryPaidPercent": "支給率は法定基準を下回れません。",
     "breakTooShort": "休憩は1回につき30分以上にしてください。",
@@ -182,7 +181,6 @@
     "splitLeaveByYear": "年をまたぐ休暇は年ごとに申請してください。",
     "statutoryBalanceAutomatic": "法定休暇残高は自動計算されます。",
     "statutoryLeaveTypeLocked": "法定休暇区分は削除できません。無効化してください。",
-    "unresolvedOvertime": "実際の残業時間帯がすべて承認されていません。",
     "unsupportedDayKind": "未対応の日区分です。",
     "weeklyScheduleRequiresReview": "週の所定労働時間が 40 時間を超えています。シフトを確認してください。"
   },
@@ -357,6 +355,7 @@
   "payrollHint": "申告済み保険額を使用してください。特例・補助は自動計算を無効にし確認済み金額と根拠を入力してください。適用日は月初です。",
   "payrollLine": {
     "options": {
+      "absenceDeduction": "欠勤控除",
       "allowance": "固定手当",
       "annualLeavePay": "未消化有給休暇精算",
       "basePay": "基本給",

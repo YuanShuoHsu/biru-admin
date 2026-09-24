@@ -88,7 +88,6 @@
   "endsAt": "结束时间",
   "errors": {
     "activeShiftExists": "还有尚未下班的班次，请先完成下班或补卡。",
-    "attendanceShortfall": "出勤时数少于排班，请先处理补卡或请假。",
     "belowMinimumWage": "薪资设置低于当期最低工资。",
     "belowStatutoryPaidPercent": "给薪比例不得低于法定标准。",
     "breakTooShort": "每段休息至少 30 分钟。",
@@ -182,7 +181,6 @@
     "splitLeaveByYear": "跨年度请假请分成两笔申请。",
     "statutoryBalanceAutomatic": "法定额度按规则计算，不能手动覆盖。",
     "statutoryLeaveTypeLocked": "法定假别不能删除，请改为停用。",
-    "unresolvedOvertime": "实际加班时段尚未全部核准。",
     "unsupportedDayKind": "不支持的日期类型。",
     "weeklyScheduleRequiresReview": "每周排定工作日时数超过 40 小时，请确认班表。"
   },
@@ -357,6 +355,7 @@
   "payrollHint": "投保资料请依有效申报填写；特殊身份或补助请关闭自动计算并填入核定金额及依据。生效日目前限月初。",
   "payrollLine": {
     "options": {
+      "absenceDeduction": "缺勤扣款",
       "allowance": "固定津贴",
       "annualLeavePay": "未休年假工资",
       "basePay": "基本工资",
