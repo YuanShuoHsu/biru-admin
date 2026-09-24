@@ -344,8 +344,6 @@ const containsWeekMinute = ({ start, end }: WeekInterval, minute: number) =>
 const isWeekMinuteOpen = (openIntervals: WeekInterval[], minute: number) =>
   openIntervals.some((interval) => containsWeekMinute(interval, minute));
 
-// 中間跨過店休空檔是允許的（兩班制的店寫 11:00-21:00 才不會被擋），但跨午夜只有店家自己
-// 跨夜營業時才成立 —— 否則 20:00-09:00 會被讀成隔天，在不跨夜的店等於整晚都不供應
 const isIntervalWithinOpeningHours = (
   openIntervals: WeekInterval[],
   { start, end }: WeekInterval,
@@ -441,6 +439,17 @@ const getDaySchedules = (value: string, at: Dayjs): Schedule[] => {
     (schedule) =>
       schedule.days.includes(day) && !!schedule.startTime && !!schedule.endTime,
   );
+};
+
+export const getSingleDaySchedule = (
+  value: string,
+  at: Dayjs,
+): Schedule | null => {
+  const schedules = getDaySchedules(value, at);
+
+  return schedules.length === 1 && !isAllDay(schedules[0])
+    ? schedules[0]
+    : null;
 };
 
 export const isUnrestricted = (value: string): boolean =>

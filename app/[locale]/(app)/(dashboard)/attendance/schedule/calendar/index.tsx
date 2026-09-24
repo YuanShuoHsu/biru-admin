@@ -145,6 +145,7 @@ interface CalendarProps {
   canCancel: boolean;
   canCreate: boolean;
   employees: AttendanceEmployee[];
+  openingHours: string;
   organizationSlug: string;
   shifts: AttendanceShift[];
   templates: AttendanceTemplate[];
@@ -155,6 +156,7 @@ const Calendar = ({
   canCancel,
   canCreate,
   employees,
+  openingHours,
   organizationSlug,
   shifts: initialShifts,
   templates,
@@ -239,6 +241,7 @@ const Calendar = ({
             employeeId={employeeId}
             employees={employees}
             mutate={mutate}
+            openingHours={openingHours}
             organizationSlug={organizationSlug}
           />
         ),
@@ -246,7 +249,7 @@ const Calendar = ({
         open: true,
         title: tAttendance("shifts.actions.create"),
       }),
-    [employees, mutate, organizationSlug, setDialog, tAttendance],
+    [employees, mutate, openingHours, organizationSlug, setDialog, tAttendance],
   );
 
   const handleApplyTemplate = useCallback(

@@ -80,6 +80,7 @@ interface TemplatesProps {
   filterField?: AttendanceTemplateFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
+  openingHours: string;
   organizationSlug: string;
   page: number;
   pageSize: number;
@@ -99,6 +100,7 @@ const Templates = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
+  openingHours,
   organizationSlug,
   page,
   pageSize,
@@ -238,6 +240,7 @@ const Templates = ({
           <TemplateDialog
             employees={employees}
             mutate={mutate}
+            openingHours={openingHours}
             organizationSlug={organizationSlug}
             template={template}
           />
@@ -248,7 +251,7 @@ const Templates = ({
           template ? "templates.actions.update" : "templates.actions.create",
         ),
       }),
-    [employees, mutate, organizationSlug, setDialog, tAttendance],
+    [employees, mutate, openingHours, organizationSlug, setDialog, tAttendance],
   );
 
   const handleDeleteTemplate = useCallback(

@@ -45,6 +45,9 @@
   "childReference": {
     "required": "Verified child reference is required."
   },
+  "clockOutAt": {
+    "afterClockInAt": "Clock-out must be later than clock-in."
+  },
   "confirmNewPassword": {
     "mismatch": "Passwords do not match.",
     "required": "Confirm new password is required."
@@ -55,9 +58,6 @@
   },
   "contact": {
     "requiredForInvoice": "An invoice needs a contact method — provide either an email or a phone number."
-  },
-  "correctedEvents": {
-    "minLength": "Please enter at least two punch records."
   },
   "countryCode": {
     "invalid": "Country code is not valid.",

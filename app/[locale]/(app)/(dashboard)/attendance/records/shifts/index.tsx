@@ -88,6 +88,7 @@ interface ShiftsProps {
   filterField?: AttendanceShiftFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
+  openingHours: string;
   organizationSlug: string;
   page: number;
   pageSize: number;
@@ -105,6 +106,7 @@ const Shifts = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
+  openingHours,
   organizationSlug,
   page,
   pageSize,
@@ -243,6 +245,7 @@ const Shifts = ({
           <ShiftDialog
             employees={employees}
             mutate={mutate}
+            openingHours={openingHours}
             organizationSlug={organizationSlug}
           />
         ),
@@ -250,7 +253,7 @@ const Shifts = ({
         open: true,
         title: tAttendance("shifts.actions.create"),
       }),
-    [employees, mutate, organizationSlug, setDialog, tAttendance],
+    [employees, mutate, openingHours, organizationSlug, setDialog, tAttendance],
   );
 
   const handleViewEvents = useCallback(

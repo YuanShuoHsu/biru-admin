@@ -2301,10 +2301,12 @@ export interface components {
     AttendanceErrorCode:
       | "activeShiftExists"
       | "belowStatutoryPaidPercent"
+      | "breakTooShort"
       | "calendarLeaveInterval"
       | "calendarLeavePayRequired"
       | "cannotReviewOwnDraft"
       | "cannotReviewSelf"
+      | "continuousWorkTooLong"
       | "correctionSourceChanged"
       | "dailyHoursExceeded"
       | "emergencyDetailsRequired"
@@ -2535,6 +2537,10 @@ export interface components {
       | "endsAt"
       | "dayKind"
       | "state";
+    ShiftBreakDto: {
+      startsAt: string;
+      endsAt: string;
+    };
     /** @enum {string} */
     AttendanceDayKind: "workday" | "restDay" | "regularLeave" | "holiday";
     /** @enum {string} */
@@ -2554,10 +2560,7 @@ export interface components {
       /** Format: date-time */
       endsAt: string;
       paidBreak: boolean;
-      /** Format: date-time */
-      breakStartsAt?: string | null;
-      /** Format: date-time */
-      breakEndsAt?: string | null;
+      breaks: components["schemas"]["ShiftBreakDto"][];
       dayKind: components["schemas"]["AttendanceDayKind"];
       status: string;
       /** @enum {string} */
@@ -2578,14 +2581,13 @@ export interface components {
       total: number;
     };
     CreateAttendanceShiftDto: {
+      breaks: components["schemas"]["ShiftBreakDto"][];
       dayKind: components["schemas"]["AttendanceDayKind"];
       /** Format: uuid */
       employeeId: string;
       startsAt: string;
       endsAt: string;
       paidBreak: boolean;
-      breakStartsAt?: string;
-      breakEndsAt?: string;
     };
     CreateAttendanceShiftsDto: {
       shifts: components["schemas"]["CreateAttendanceShiftDto"][];
@@ -2599,10 +2601,7 @@ export interface components {
       /** Format: date-time */
       endsAt: string;
       paidBreak: boolean;
-      /** Format: date-time */
-      breakStartsAt?: string | null;
-      /** Format: date-time */
-      breakEndsAt?: string | null;
+      breaks: components["schemas"]["ShiftBreakDto"][];
       dayKind: components["schemas"]["AttendanceDayKind"];
       status: string;
       /** Format: date-time */
@@ -2647,6 +2646,10 @@ export interface components {
       | "weekday"
       | "nextDay"
       | "paidBreak";
+    TemplateBreakDto: {
+      startTime: string;
+      endTime: string;
+    };
     AttendanceTemplateResponseDto: {
       id: string;
       organizationId: string;
@@ -2658,8 +2661,7 @@ export interface components {
       endTime: string;
       nextDay: boolean;
       paidBreak: boolean;
-      breakStartTime?: string | null;
-      breakEndTime?: string | null;
+      breaks: components["schemas"]["TemplateBreakDto"][];
       dayKind: components["schemas"]["AttendanceDayKind"];
     };
     AttendanceTemplatesResponseDto: {
@@ -2667,6 +2669,7 @@ export interface components {
       total: number;
     };
     SaveAttendanceTemplateDto: {
+      breaks: components["schemas"]["TemplateBreakDto"][];
       dayKind: components["schemas"]["AttendanceDayKind"];
       /** Format: uuid */
       employeeId: string;
@@ -2676,8 +2679,6 @@ export interface components {
       endTime: string;
       nextDay: boolean;
       paidBreak: boolean;
-      breakStartTime?: string;
-      breakEndTime?: string;
     };
     AttendanceTemplateRecordResponseDto: {
       id: string;
@@ -2689,8 +2690,7 @@ export interface components {
       endTime: string;
       nextDay: boolean;
       paidBreak: boolean;
-      breakStartTime?: string | null;
-      breakEndTime?: string | null;
+      breaks: components["schemas"]["TemplateBreakDto"][];
       dayKind: components["schemas"]["AttendanceDayKind"];
     };
     GenerateAttendanceTemplateDto: {
@@ -11742,10 +11742,12 @@ export const attendanceErrorCodeValues: ReadonlyArray<
 > = [
   "activeShiftExists",
   "belowStatutoryPaidPercent",
+  "breakTooShort",
   "calendarLeaveInterval",
   "calendarLeavePayRequired",
   "cannotReviewOwnDraft",
   "cannotReviewSelf",
+  "continuousWorkTooLong",
   "correctionSourceChanged",
   "dailyHoursExceeded",
   "emergencyDetailsRequired",

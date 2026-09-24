@@ -153,6 +153,7 @@ const TemplatesPage = async ({ params, searchParams }: TemplatesPageProps) => {
         filterField={filterField}
         filterOperator={filterOperator}
         filterValue={filterValue}
+        openingHours={organization.openingHours ?? ""}
         organizationSlug={organization.slug}
         page={page}
         pageSize={pageSize}

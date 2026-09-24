@@ -45,6 +45,9 @@
   "childReference": {
     "required": "子女识别依据编号为必填。"
   },
+  "clockOutAt": {
+    "afterClockInAt": "下班时间必须晚于上班时间。"
+  },
   "confirmNewPassword": {
     "mismatch": "两次输入的密码不一致。",
     "required": "确认新密码为必填。"
@@ -55,9 +58,6 @@
   },
   "contact": {
     "requiredForInvoice": "开立发票需要联络方式，电子邮箱与电话请至少填写一项。"
-  },
-  "correctedEvents": {
-    "minLength": "请至少填写两笔打卡记录。"
   },
   "countryCode": {
     "invalid": "国家代码无效。",

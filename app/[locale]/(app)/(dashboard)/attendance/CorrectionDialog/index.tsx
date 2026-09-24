@@ -6,7 +6,7 @@ import utc from "dayjs/plugin/utc";
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
-import { useFieldArray, useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
 import { type CorrectionForm, useCorrectionFormSchema } from "./definitions";
 
@@ -17,21 +17,11 @@ import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Add, Delete } from "@mui/icons-material";
-import {
-  Alert,
-  Button,
-  IconButton,
-  MenuItem,
-  Stack,
-  TextField,
-} from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { Alert, TextField } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { attendanceEventActionValues } from "@/types/api";
 import type { AttendanceShift } from "@/types/attendance";
 
 import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
@@ -39,15 +29,6 @@ import { fetcher } from "@/utils/fetcher";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
-
-const StyledStack = styled(Stack)(({ theme }) => ({
-  alignItems: "center",
-  gap: theme.spacing(1),
-}));
-
-const StyledButton = styled(Button)({
-  alignSelf: "flex-start",
-});
 
 interface CorrectionDialogProps {
   mutate: () => void;
@@ -74,30 +55,21 @@ const CorrectionDialog = ({
     setValue,
   } = useForm<CorrectionForm>({
     defaultValues: {
-      correctedEvents:
-        shift.events.length >= 2
-          ? shift.events.map(({ action, occurredAt }) => ({
-              action,
-              occurredAt,
-            }))
-          : [
-              shift.events[0] ?? {
-                action: "clockIn",
-                occurredAt: shift.startsAt,
-              },
-              { action: "clockOut", occurredAt: shift.endsAt },
-            ],
+      clockInAt:
+        shift.events.find(({ action }) => action === "clockIn")?.occurredAt ??
+        shift.startsAt,
+      clockOutAt:
+        shift.events.find(({ action }) => action === "clockOut")?.occurredAt ??
+        shift.endsAt,
       reason: "",
     },
     resolver: zodResolver(correctionFormSchema),
   });
 
-  const { append, fields, remove } = useFieldArray({
+  const [clockInAt, clockOutAt] = useWatch({
     control,
-    name: "correctedEvents",
+    name: ["clockInAt", "clockOutAt"],
   });
-
-  const correctedEvents = useWatch({ control, name: "correctedEvents" });
 
   const earliest = dayjs(shift.startsAt).subtract(
     CORRECTION_LEAD_HOURS,
@@ -107,14 +79,10 @@ const CorrectionDialog = ({
   const latest = dayjs(shift.endsAt).add(1, "day");
 
   const onSubmitHandler = async ({
-    correctedEvents,
+    clockInAt,
+    clockOutAt,
     reason,
   }: CorrectionForm) => {
-    const sorted = [...correctedEvents].sort(
-      (first, second) =>
-        dayjs(first.occurredAt).valueOf() - dayjs(second.occurredAt).valueOf(),
-    );
-
     try {
       setDialog({ confirmLoading: true });
 
@@ -125,9 +93,12 @@ const CorrectionDialog = ({
           kind: "correction",
           shiftId: shift.id,
           reason,
-          correctedEvents: sorted,
-          startsAt: sorted[0].occurredAt,
-          endsAt: sorted[sorted.length - 1].occurredAt,
+          correctedEvents: [
+            { action: "clockIn", occurredAt: clockInAt },
+            { action: "clockOut", occurredAt: clockOutAt },
+          ],
+          startsAt: clockInAt,
+          endsAt: clockOutAt,
         }),
       });
 
@@ -151,72 +122,34 @@ const CorrectionDialog = ({
   return (
     <FormBox id="attendance-correction-form" onSubmit={onSubmit}>
       <Alert severity="info">{tAttendance("correctionHint")}</Alert>
-      {fields.map(({ id }, index) => (
-        <StyledStack direction="row" key={id}>
-          <TextField
-            error={!!errors.correctedEvents?.[index]?.action}
-            fullWidth
-            helperText={errors.correctedEvents?.[index]?.action?.message}
-            label={tAttendance("actions")}
-            select
-            value={correctedEvents?.[index]?.action ?? ""}
-            {...register(`correctedEvents.${index}.action`)}
-          >
-            {attendanceEventActionValues.map((value) => (
-              <MenuItem key={value} value={value}>
-                {tAttendance(`eventAction.options.${value}`)}
-              </MenuItem>
-            ))}
-          </TextField>
-          <DateTimePicker
-            disableFuture
-            label={tAttendance("startsAt")}
-            maxDateTime={latest}
-            minDateTime={earliest}
-            onChange={(date) =>
-              setValue(
-                `correctedEvents.${index}.occurredAt`,
-                date?.isValid() ? date.toISOString() : "",
-                { shouldValidate: isSubmitted },
-              )
-            }
-            slotProps={{
-              textField: {
-                error: !!errors.correctedEvents?.[index]?.occurredAt,
-                fullWidth: true,
-                helperText:
-                  errors.correctedEvents?.[index]?.occurredAt?.message,
-              },
-            }}
-            timezone={STORE_TIMEZONE}
-            value={
-              correctedEvents?.[index]?.occurredAt
-                ? dayjs(correctedEvents[index].occurredAt)
-                : null
-            }
-          />
-          <IconButton
-            color="error"
-            disabled={fields.length <= 2}
-            onClick={() => remove(index)}
-            size="small"
-          >
-            <Delete fontSize="small" />
-          </IconButton>
-        </StyledStack>
+      {(
+        [
+          ["clockInAt", clockInAt, "clockIn"],
+          ["clockOutAt", clockOutAt, "clockOut"],
+        ] as const
+      ).map(([name, value, action]) => (
+        <DateTimePicker
+          disableFuture
+          key={name}
+          label={tAttendance(`eventAction.options.${action}`)}
+          maxDateTime={latest}
+          minDateTime={earliest}
+          onChange={(date) =>
+            setValue(name, date?.isValid() ? date.toISOString() : "", {
+              shouldValidate: isSubmitted,
+            })
+          }
+          slotProps={{
+            textField: {
+              error: !!errors[name],
+              fullWidth: true,
+              helperText: errors[name]?.message,
+            },
+          }}
+          timezone={STORE_TIMEZONE}
+          value={value ? dayjs(value) : null}
+        />
       ))}
-      {errors.correctedEvents?.message && (
-        <Alert severity="error">{errors.correctedEvents.message}</Alert>
-      )}
-      <StyledButton
-        onClick={() =>
-          append({ action: "breakStart", occurredAt: shift.startsAt })
-        }
-        size="small"
-        startIcon={<Add />}
-      >
-        {tAttendance("add")}
-      </StyledButton>
       <TextField
         error={!!errors.reason}
         fullWidth

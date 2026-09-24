@@ -45,6 +45,9 @@
   "childReference": {
     "required": "確認済みの子ども識別番号は必須です。"
   },
+  "clockOutAt": {
+    "afterClockInAt": "退勤時刻は出勤時刻より後にしてください。"
+  },
   "confirmNewPassword": {
     "mismatch": "パスワードが一致しません。",
     "required": "新しいパスワードの確認は必須です。"
@@ -55,9 +58,6 @@
   },
   "contact": {
     "requiredForInvoice": "インボイスの発行には連絡先が必要です。メールアドレスまたは電話番号のいずれかをご入力ください。"
-  },
-  "correctedEvents": {
-    "minLength": "打刻記録を2件以上入力してください。"
   },
   "countryCode": {
     "invalid": "国コードが無効です。",

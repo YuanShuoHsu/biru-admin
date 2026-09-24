@@ -45,6 +45,9 @@
   "childReference": {
     "required": "子女識別依據編號為必填。"
   },
+  "clockOutAt": {
+    "afterClockInAt": "下班時間必須晚於上班時間。"
+  },
   "confirmNewPassword": {
     "mismatch": "兩次輸入的密碼不一致。",
     "required": "確認新密碼為必填。"
@@ -55,9 +58,6 @@
   },
   "contact": {
     "requiredForInvoice": "開立發票需要聯絡方式，電子信箱與電話請至少填寫一項。"
-  },
-  "correctedEvents": {
-    "minLength": "請至少填寫兩筆打卡紀錄。"
   },
   "countryCode": {
     "invalid": "國家代碼無效。",

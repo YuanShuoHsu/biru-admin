@@ -1,17 +1,31 @@
 "use client";
 
+import dayjs from "dayjs";
+import timezonePlugin from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
 
 import { type TemplateForm, useTemplateFormSchema } from "./definitions";
 
 import FormBox from "@/components/FormBox";
 
+import { STORE_TIMEZONE } from "@/constants/timezone";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Checkbox, FormControlLabel, MenuItem, TextField } from "@mui/material";
+import { Add, Delete } from "@mui/icons-material";
+import {
+  Button,
+  Checkbox,
+  FormControlLabel,
+  IconButton,
+  MenuItem,
+  Stack,
+  TextField,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -28,14 +42,28 @@ import {
   weekdayDate,
 } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+import { getSingleDaySchedule } from "@/utils/openingHours";
+
+dayjs.extend(utc);
+dayjs.extend(timezonePlugin);
 
 const StyledFormControlLabel = styled(FormControlLabel)({
+  alignSelf: "flex-start",
+});
+
+const StyledStack = styled(Stack)(({ theme }) => ({
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
+
+const StyledButton = styled(Button)({
   alignSelf: "flex-start",
 });
 
 interface TemplateDialogProps {
   employees: AttendanceEmployee[];
   mutate: () => void;
+  openingHours: string;
   organizationSlug: string;
   template?: AttendanceTemplate;
 }
@@ -43,6 +71,7 @@ interface TemplateDialogProps {
 const TemplateDialog = ({
   employees,
   mutate,
+  openingHours,
   organizationSlug,
   template,
 }: TemplateDialogProps) => {
@@ -54,24 +83,45 @@ const TemplateDialog = ({
 
   const templateFormSchema = useTemplateFormSchema();
 
+  const openingTimesOn = (day: number) => {
+    const schedule = getSingleDaySchedule(
+      openingHours,
+      dayjs().tz(STORE_TIMEZONE).day(day),
+    );
+
+    return {
+      endTime: schedule?.endTime ?? "",
+      nextDay: !!schedule && schedule.endTime <= schedule.startTime,
+      startTime: schedule?.startTime ?? "",
+    };
+  };
+
+  const initialTimes = template ?? openingTimesOn(1);
+
   const {
     control,
-    formState: { errors, isSubmitted },
+    formState: { dirtyFields, errors, isSubmitted },
     handleSubmit,
     register,
     setValue,
   } = useForm<TemplateForm>({
     defaultValues: {
+      breaks: template?.breaks ?? [],
       dayKind: template?.dayKind ?? "workday",
       employeeId: template?.employeeId ?? "",
-      endTime: template?.endTime ?? "17:00",
+      endTime: initialTimes.endTime,
       name: template?.name ?? "",
-      nextDay: template?.nextDay ?? false,
+      nextDay: initialTimes.nextDay,
       paidBreak: template?.paidBreak ?? false,
-      startTime: template?.startTime ?? "09:00",
+      startTime: initialTimes.startTime,
       weekday: template?.weekday ?? 1,
     },
     resolver: zodResolver(templateFormSchema),
+  });
+
+  const { append, fields, remove } = useFieldArray({
+    control,
+    name: "breaks",
   });
 
   const [dayKind, employeeId, nextDay, paidBreak, weekday] = useWatch({
@@ -148,11 +198,25 @@ const TemplateDialog = ({
         fullWidth
         helperText={errors.weekday?.message}
         label={tAttendance("weekday")}
-        onChange={(event) =>
-          setValue("weekday", Number(event.target.value), {
-            shouldValidate: isSubmitted,
-          })
-        }
+        onChange={(event) => {
+          const day = Number(event.target.value);
+
+          setValue("weekday", day, { shouldValidate: isSubmitted });
+
+          if (
+            template ||
+            dirtyFields.startTime ||
+            dirtyFields.endTime ||
+            dirtyFields.nextDay
+          )
+            return;
+
+          const times = openingTimesOn(day);
+
+          setValue("startTime", times.startTime);
+          setValue("endTime", times.endTime);
+          setValue("nextDay", times.nextDay);
+        }}
         required
         select
         value={weekday}
@@ -183,11 +247,43 @@ const TemplateDialog = ({
         control={
           <Checkbox
             checked={nextDay}
-            onChange={(_, checked) => setValue("nextDay", checked)}
+            onChange={(_, checked) =>
+              setValue("nextDay", checked, { shouldDirty: true })
+            }
           />
         }
         label={tAttendance("nextDay")}
       />
+      {fields.map(({ id }, index) => (
+        <StyledStack direction="row" key={id}>
+          <TextField
+            error={!!errors.breaks?.[index]?.startTime}
+            fullWidth
+            helperText={errors.breaks?.[index]?.startTime?.message}
+            label={tAttendance("breakStartTime")}
+            type="time"
+            {...register(`breaks.${index}.startTime`)}
+          />
+          <TextField
+            error={!!errors.breaks?.[index]?.endTime}
+            fullWidth
+            helperText={errors.breaks?.[index]?.endTime?.message}
+            label={tAttendance("breakEndTime")}
+            type="time"
+            {...register(`breaks.${index}.endTime`)}
+          />
+          <IconButton color="error" onClick={() => remove(index)} size="small">
+            <Delete fontSize="small" />
+          </IconButton>
+        </StyledStack>
+      ))}
+      <StyledButton
+        onClick={() => append({ startTime: "", endTime: "" })}
+        size="small"
+        startIcon={<Add />}
+      >
+        {tAttendance("addBreak")}
+      </StyledButton>
       <StyledFormControlLabel
         control={
           <Checkbox

@@ -25,6 +25,16 @@ export const useTemplateFormSchema = () => {
       .regex(TIME_PATTERN, { error: tValidation("endTime.invalid") }),
     nextDay: z.boolean(),
     paidBreak: z.boolean(),
+    breaks: z.array(
+      z.object({
+        startTime: z
+          .string()
+          .regex(TIME_PATTERN, { error: tValidation("startTime.invalid") }),
+        endTime: z
+          .string()
+          .regex(TIME_PATTERN, { error: tValidation("endTime.invalid") }),
+      }),
+    ),
     dayKind: z.enum(attendanceDayKindValues),
   });
 };

@@ -6,7 +6,7 @@ import utc from "dayjs/plugin/utc";
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
 
 import { type ShiftForm, useShiftFormSchema } from "./definitions";
 
@@ -17,7 +17,16 @@ import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Checkbox, FormControlLabel, MenuItem, TextField } from "@mui/material";
+import { Add, Delete } from "@mui/icons-material";
+import {
+  Button,
+  Checkbox,
+  FormControlLabel,
+  IconButton,
+  MenuItem,
+  Stack,
+  TextField,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
@@ -28,6 +37,7 @@ import type { AttendanceEmployee } from "@/types/attendance";
 
 import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+import { getSingleDaySchedule } from "@/utils/openingHours";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
@@ -36,11 +46,28 @@ const StyledFormControlLabel = styled(FormControlLabel)({
   alignSelf: "flex-start",
 });
 
+const StyledStack = styled(Stack)(({ theme }) => ({
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
+
+const StyledButton = styled(Button)({
+  alignSelf: "flex-start",
+});
+
+const atTimeAfter = (from: Dayjs, time: string) => {
+  const [hour, minute] = time.split(":").map(Number);
+  const candidate = from.hour(hour).minute(minute).second(0).millisecond(0);
+
+  return candidate.isBefore(from) ? candidate.add(1, "day") : candidate;
+};
+
 interface ShiftDialogProps {
   date?: string;
   employeeId?: string;
   employees: AttendanceEmployee[];
   mutate: () => void;
+  openingHours: string;
   organizationSlug: string;
 }
 
@@ -49,6 +76,7 @@ const ShiftDialog = ({
   employeeId: initialEmployeeId,
   employees,
   mutate,
+  openingHours,
   organizationSlug,
 }: ShiftDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
@@ -61,6 +89,12 @@ const ShiftDialog = ({
     ? dayjs(initialDate).tz(STORE_TIMEZONE)
     : dayjs().tz(STORE_TIMEZONE).add(1, "day");
 
+  const schedule = getSingleDaySchedule(openingHours, day);
+  const opensAt =
+    schedule && atTimeAfter(day.startOf("day"), schedule.startTime);
+  const closesAt =
+    schedule && opensAt && atTimeAfter(opensAt, schedule.endTime);
+
   const {
     control,
     formState: { errors, isSubmitted },
@@ -69,14 +103,20 @@ const ShiftDialog = ({
     setValue,
   } = useForm<ShiftForm>({
     defaultValues: {
+      breaks: [],
       dayKind: "workday",
       employeeId: initialEmployeeId ?? "",
-      endsAt: day.hour(17).minute(0).second(0).toISOString(),
+      endsAt: closesAt?.toISOString() ?? "",
       paidBreak: false,
       repeatWeeks: 1,
-      startsAt: day.hour(9).minute(0).second(0).toISOString(),
+      startsAt: opensAt?.toISOString() ?? "",
     },
     resolver: zodResolver(shiftFormSchema),
+  });
+
+  const { append, fields, remove } = useFieldArray({
+    control,
+    name: "breaks",
   });
 
   const [dayKind, employeeId, endsAt, paidBreak, repeatWeeks, startsAt] =
@@ -107,7 +147,18 @@ const ShiftDialog = ({
       });
   };
 
-  const onSubmitHandler = async ({ repeatWeeks, ...values }: ShiftForm) => {
+  const onSubmitHandler = async ({
+    breaks,
+    repeatWeeks,
+    ...values
+  }: ShiftForm) => {
+    const shiftStart = dayjs(values.startsAt).tz(STORE_TIMEZONE);
+    const breakWindows = breaks.map(({ startTime, endTime }) => {
+      const breakStart = atTimeAfter(shiftStart, startTime);
+
+      return { startsAt: breakStart, endsAt: atTimeAfter(breakStart, endTime) };
+    });
+
     try {
       setDialog({ confirmLoading: true });
 
@@ -123,6 +174,10 @@ const ShiftDialog = ({
             endsAt: dayjs(values.endsAt)
               .add(index * 7, "day")
               .toISOString(),
+            breaks: breakWindows.map((window) => ({
+              startsAt: window.startsAt.add(index * 7, "day").toISOString(),
+              endsAt: window.endsAt.add(index * 7, "day").toISOString(),
+            })),
           })),
         }),
       });
@@ -197,6 +252,36 @@ const ShiftDialog = ({
         timezone={STORE_TIMEZONE}
         value={endsAt ? dayjs(endsAt) : null}
       />
+      {fields.map(({ id }, index) => (
+        <StyledStack direction="row" key={id}>
+          <TextField
+            error={!!errors.breaks?.[index]?.startTime}
+            fullWidth
+            helperText={errors.breaks?.[index]?.startTime?.message}
+            label={tAttendance("breakStartTime")}
+            type="time"
+            {...register(`breaks.${index}.startTime`)}
+          />
+          <TextField
+            error={!!errors.breaks?.[index]?.endTime}
+            fullWidth
+            helperText={errors.breaks?.[index]?.endTime?.message}
+            label={tAttendance("breakEndTime")}
+            type="time"
+            {...register(`breaks.${index}.endTime`)}
+          />
+          <IconButton color="error" onClick={() => remove(index)} size="small">
+            <Delete fontSize="small" />
+          </IconButton>
+        </StyledStack>
+      ))}
+      <StyledButton
+        onClick={() => append({ startTime: "", endTime: "" })}
+        size="small"
+        startIcon={<Add />}
+      >
+        {tAttendance("addBreak")}
+      </StyledButton>
       <StyledFormControlLabel
         control={
           <Checkbox
