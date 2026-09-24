@@ -12,7 +12,7 @@ import { type CorrectionForm, useCorrectionFormSchema } from "./definitions";
 
 import FormBox from "@/components/FormBox";
 
-import { CORRECTION_LEAD_HOURS } from "@/constants/attendance";
+import { MAX_DAILY_WORK_HOURS } from "@/constants/attendance";
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,6 +26,7 @@ import type { AttendanceShift } from "@/types/attendance";
 
 import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+import { scheduledHours } from "@/utils/scheduledHours";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
@@ -71,12 +72,14 @@ const CorrectionDialog = ({
     name: ["clockInAt", "clockOutAt"],
   });
 
-  const earliest = dayjs(shift.startsAt).subtract(
-    CORRECTION_LEAD_HOURS,
-    "hour",
+  const leewayHours = Math.max(
+    0,
+    MAX_DAILY_WORK_HOURS - scheduledHours(shift, -Infinity, Infinity),
   );
 
-  const latest = dayjs(shift.endsAt).add(1, "day");
+  const earliest = dayjs(shift.startsAt).subtract(leewayHours, "hour");
+
+  const latest = dayjs(shift.endsAt).add(leewayHours, "hour");
 
   const onSubmitHandler = async ({
     clockInAt,
@@ -123,16 +126,16 @@ const CorrectionDialog = ({
     <FormBox id="attendance-correction-form" onSubmit={onSubmit}>
       {(
         [
-          ["clockInAt", clockInAt, "clockIn"],
-          ["clockOutAt", clockOutAt, "clockOut"],
+          ["clockInAt", clockInAt, "clockIn", earliest, dayjs(shift.endsAt)],
+          ["clockOutAt", clockOutAt, "clockOut", dayjs(shift.startsAt), latest],
         ] as const
-      ).map(([name, value, action]) => (
+      ).map(([name, value, action, minDateTime, maxDateTime]) => (
         <DateTimePicker
           disableFuture
           key={name}
           label={tAttendance(`eventAction.options.${action}`)}
-          maxDateTime={latest}
-          minDateTime={earliest}
+          maxDateTime={maxDateTime}
+          minDateTime={minDateTime}
           onChange={(date) =>
             setValue(name, date?.isValid() ? date.toISOString() : "", {
               shouldValidate: isSubmitted,

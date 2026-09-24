@@ -8,6 +8,7 @@ import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
+import EventList from "../../../EventsDialogContent/EventList";
 import { type ReviewForm, useReviewFormSchema } from "./definitions";
 
 import FormBox from "@/components/FormBox";
@@ -18,6 +19,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
   Checkbox,
+  Divider,
   FormControlLabel,
   MenuItem,
   Stack,
@@ -35,7 +37,11 @@ import type {
   AttendanceRequest,
 } from "@/types/attendance";
 
-import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
+import {
+  attendanceErrorKey,
+  attendancePath,
+  formatScheduledShift,
+} from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
 
 dayjs.extend(utc);
@@ -44,6 +50,14 @@ dayjs.extend(timezonePlugin);
 const StyledStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(1),
 }));
+
+const DetailStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(2),
+}));
+
+const StyledTypography = styled(Typography)({
+  fontWeight: "bold",
+});
 
 const StyledFormControlLabel = styled(FormControlLabel)({
   alignSelf: "flex-start",
@@ -189,12 +203,32 @@ const ReviewDialog = ({
             )}
           </Typography>
         )}
-        {request.correctedEvents?.map(({ action, occurredAt }, index) => (
-          <Typography key={index} variant="body2">
-            {tAttendance(`eventAction.options.${action}`)} · {date(occurredAt)}
-          </Typography>
-        ))}
       </StyledStack>
+      {request.correctedEvents && (
+        <DetailStack divider={<Divider />}>
+          {request.shiftStartsAt && request.shiftEndsAt && (
+            <StyledStack>
+              <StyledTypography color="textSecondary" variant="subtitle2">
+                {tAttendance("scheduledTime")}
+              </StyledTypography>
+              <Typography variant="body2">
+                {formatScheduledShift(format, {
+                  endsAt: request.shiftEndsAt,
+                  startsAt: request.shiftStartsAt,
+                })}
+              </Typography>
+            </StyledStack>
+          )}
+          <EventList
+            events={request.originalEvents ?? []}
+            title={tAttendance("originalEvents")}
+          />
+          <EventList
+            events={request.correctedEvents}
+            title={tAttendance("kind.options.correction")}
+          />
+        </DetailStack>
+      )}
       <TextField
         error={!!errors.reason}
         fullWidth

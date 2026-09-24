@@ -2820,6 +2820,13 @@ export interface components {
         | components["schemas"]["AttendanceEventResponseDto"][]
         | null;
       /** Format: date-time */
+      shiftStartsAt?: string | null;
+      /** Format: date-time */
+      shiftEndsAt?: string | null;
+      originalEvents?:
+        | components["schemas"]["AttendanceEventResponseDto"][]
+        | null;
+      /** Format: date-time */
       reviewedAt?: string | null;
       /** Format: date-time */
       createdAt: string;
