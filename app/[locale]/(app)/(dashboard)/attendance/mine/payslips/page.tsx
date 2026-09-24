@@ -17,8 +17,7 @@ import {
 } from "@/types/api";
 
 import { getAttendanceAccess, getPayrollStatements } from "@/utils/attendance";
-import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
-import { getPayrollStatementEnumOptions } from "@/utils/enumOptions";
+import { resolveGridSearchParams } from "@/utils/dataGrid";
 
 interface PayslipsPageProps {
   params: Promise<{ locale: Locale }>;
@@ -92,18 +91,6 @@ const PayslipsPage = async ({ params, searchParams }: PayslipsPageProps) => {
       locale,
     });
 
-  const tAttendance = await getTranslations({
-    locale,
-    namespace: "attendance",
-  });
-
-  const quickFilterEnums = quickFilterValue
-    ? getQuickFilterEnums(
-        quickFilterValue,
-        getPayrollStatementEnumOptions(tAttendance),
-      )
-    : [];
-
   const { statements: rows, total: rowCount } = await getPayrollStatements(
     organization.slug,
     "me",
@@ -113,7 +100,6 @@ const PayslipsPage = async ({ params, searchParams }: PayslipsPageProps) => {
       filterField,
       filterOperator,
       filterValue,
-      quickFilterEnums,
       quickFilterValue,
       sortBy,
       sortDirection,

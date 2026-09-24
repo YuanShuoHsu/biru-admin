@@ -5,6 +5,7 @@
   "actions": "작업",
   "add": "추가",
   "addBreak": "휴게 추가",
+  "agreedSalary": "약정 임금",
   "allowance": "고정 수당({currency})",
   "allowanceHours": "고정 수당에 해당하는 월 소정 시간",
   "allowedIps": {
@@ -195,7 +196,6 @@
   },
   "eventDate": "사유 발생일",
   "events": "기록 내역",
-  "exportCsv": "CSV 내보내기",
   "extensionAgreed": "결혼 휴가 6개월 연장 합의 완료",
   "from": "시작일",
   "generate": "근무 생성",
@@ -327,6 +327,7 @@
     "none": "미설정 (월 46시간까지)",
     "startMonth": "시작 월"
   },
+  "overtimeHours": "연장근로 시간(시간)",
   "overtimeOnShift": "휴식일·공휴일·법정휴일 출근은 전체가 연장 근무입니다. 실제 근무 구간을 입력하세요.",
   "overtimeOnWorkday": "연장 근무는 근무 시작 직전 또는 종료 직후여야 하며, 정규 근무와 합쳐 하루 12시간을 넘을 수 없습니다. 월 연장 근무는 46시간까지이며, 노동조합 또는 노사회의 동의를 받은 기간에는 월 54시간, 3개월 합계 138시간까지입니다.",
   "overtimePosition": {
@@ -355,9 +356,6 @@
     "label": "복직 신청"
   },
   "payroll": {
-    "actions": {
-      "view": "급여 명세 보기"
-    },
     "label": "급여"
   },
   "payrollHint": "신고된 보험 금액을 사용하세요. 특례나 보조금은 자동 계산을 끄고 확인된 금액과 근거를 입력하세요. 적용일은 월초입니다.",
@@ -387,14 +385,10 @@
   },
   "payrollTerms": "급여 및 보험 설정",
   "payslips": {
-    "actions": {
-      "view": "급여 명세 보기"
-    },
     "label": "급여 명세서"
   },
   "pendingWeeklyMinutes": "적용 예정 근무시간(시간)",
   "pensionBasis": "연금 기여 기준({currency})",
-  "print": "인쇄",
   "publish": "급여 명세서 게시",
   "radiusMeters": {
     "label": "허용 반경(m)"

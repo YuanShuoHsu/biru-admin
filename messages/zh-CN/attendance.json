@@ -5,6 +5,7 @@
   "actions": "操作",
   "add": "新增",
   "addBreak": "新增休息",
+  "agreedSalary": "约定工资",
   "allowance": "固定津贴（{currency}）",
   "allowanceHours": "固定津贴对应每月正常工时（小时）",
   "allowedIps": {
@@ -195,7 +196,6 @@
   },
   "eventDate": "事件日期",
   "events": "打卡时间明细",
-  "exportCsv": "导出 CSV",
   "extensionAgreed": "婚假延长至 6 个月已取得同意",
   "from": "开始日期",
   "generate": "生成班次",
@@ -327,6 +327,7 @@
     "none": "未设置（每月加班上限 46 小时）",
     "startMonth": "起始月份"
   },
+  "overtimeHours": "加班时数（小时）",
   "overtimeOnShift": "休息日、国定假日与例假出勤整段皆为加班，请填写实际出勤区间。",
   "overtimeOnWorkday": "加班须接在班次开始前或结束后，连同正常工时一日不得超过 12 小时。每月加班不得超过 46 小时；经工会或劳资会议同意延长的期间内，每月不得超过 54 小时，每 3 个月合计不得超过 138 小时。",
   "overtimePosition": {
@@ -355,9 +356,6 @@
     "label": "复职申请"
   },
   "payroll": {
-    "actions": {
-      "view": "查看工资明细"
-    },
     "label": "薪资"
   },
   "payrollHint": "投保资料请依有效申报填写；特殊身份或补助请关闭自动计算并填入核定金额及依据。生效日目前限月初。",
@@ -387,14 +385,10 @@
   },
   "payrollTerms": "薪资与投保设置",
   "payslips": {
-    "actions": {
-      "view": "查看工资明细"
-    },
     "label": "工资单"
   },
   "pendingWeeklyMinutes": "待生效工时（小时）",
   "pensionBasis": "劳退月提缴工资（{currency}）",
-  "print": "打印",
   "publish": "发布工资单",
   "radiusMeters": {
     "label": "允许半径（米）"

@@ -10,7 +10,14 @@ import { PLATFORM_TIMEZONE, STORE_TIMEZONE } from "@/constants/timezone";
 
 import { authClient } from "@/lib/auth-client";
 
-import { attendanceErrorCodeValues, payrollBlockerValues } from "@/types/api";
+import type { GridColDef } from "@mui/x-data-grid";
+
+import {
+  attendanceErrorCodeValues,
+  payrollBlockerValues,
+  payrollDeductionLineCodeValues,
+  payrollEarningLineCodeValues,
+} from "@/types/api";
 import type {
   AttendanceContext,
   AttendanceEmployee,
@@ -499,6 +506,106 @@ export const isMoney = (value: number) => money.test(String(value));
 
 export const fromCents = (value: string | number) => Number(value) / 100;
 
+export const getPayrollExportFileName = (
+  label: string,
+  rows: PayrollStatement[],
+  employeeName?: string,
+) => {
+  const months = rows.map(({ month }) => month).sort();
+  const first = months[0];
+  const last = months.at(-1);
+
+  return [
+    label,
+    employeeName,
+    first && (first === last ? first : `${first}~${last}`),
+  ]
+    .filter(Boolean)
+    .join("_");
+};
+
+const negateCents = (value: string) => (-BigInt(value)).toString();
+
+export const getPayrollAmountColumns = (
+  tAttendance: ReturnType<typeof useTranslations<"attendance">>,
+  format: ReturnType<typeof useFormatter>,
+  money: (value: string) => string,
+): GridColDef<PayrollStatement>[] => {
+  const amountColumn = (
+    field: string,
+    headerName: string,
+    getAmountCents: (
+      snapshot: PayrollStatement["snapshot"],
+    ) => string | undefined,
+  ): GridColDef<PayrollStatement> => ({
+    field,
+    filterable: false,
+    headerName,
+    sortable: false,
+    valueFormatter: (value?: string) => (value ? money(value) : "—"),
+    valueGetter: (_value, { snapshot }) => getAmountCents(snapshot),
+  });
+
+  const overtimeHoursColumn: GridColDef<PayrollStatement> = {
+    field: "overtimeHours",
+    filterable: false,
+    headerName: tAttendance("overtimeHours"),
+    sortable: false,
+    type: "number",
+    valueFormatter: (value?: number) =>
+      value === undefined
+        ? "—"
+        : format.number(value / 3600, { maximumFractionDigits: 2 }),
+    valueGetter: (_value, { snapshot }) =>
+      snapshot.earnings.find(({ code }) => code === "overtimePay")?.seconds,
+  };
+
+  return [
+    {
+      field: "agreedSalary",
+      filterable: false,
+      headerName: tAttendance("agreedSalary"),
+      sortable: false,
+      valueGetter: (_value, { snapshot: { terms } }) =>
+        `${tAttendance(`salaryType.options.${terms.salaryType}`)} ${money(terms.salaryCents)}`,
+    },
+    ...payrollEarningLineCodeValues.flatMap((code) => [
+      ...(code === "overtimePay" ? [overtimeHoursColumn] : []),
+      amountColumn(
+        code,
+        tAttendance(`payrollLine.options.${code}`),
+        ({ earnings }) =>
+          earnings.find((line) => line.code === code)?.amountCents,
+      ),
+    ]),
+    amountColumn("gross", tAttendance("gross"), ({ grossCents }) => grossCents),
+    ...payrollDeductionLineCodeValues.map((code) =>
+      amountColumn(
+        code,
+        tAttendance(`payrollLine.options.${code}`),
+        ({ deductions }) => {
+          const amountCents = deductions.find(
+            (line) => line.code === code,
+          )?.amountCents;
+
+          return amountCents && negateCents(amountCents);
+        },
+      ),
+    ),
+    amountColumn(
+      "deductions",
+      tAttendance("deductions"),
+      ({ deductionCents }) => negateCents(deductionCents),
+    ),
+    amountColumn("net", tAttendance("net"), ({ netCents }) => netCents),
+    amountColumn(
+      "employerPension",
+      tAttendance("employerPension"),
+      ({ employerPensionCents }) => employerPensionCents,
+    ),
+  ];
+};
+
 export const toCents = (value: number) => {
   const match = money.exec(String(value));
 
@@ -508,31 +615,4 @@ export const toCents = (value: number) => {
     BigInt(match[1]) * BigInt(100) +
     BigInt((match[2] ?? "").padEnd(2, "0"))
   ).toString();
-};
-
-export const downloadAttendanceCsv = (filename: string, rows: string[][]) => {
-  const content = rows
-    .map((row) =>
-      row
-        .map((value) => {
-          const safe = /^[=+\-@\t\r\n]/.test(value) ? `'${value}` : value;
-
-          return `"${safe.replaceAll('"', '""')}"`;
-        })
-        .join(","),
-    )
-    .join("\r\n");
-
-  const url = URL.createObjectURL(
-    new Blob(["\uFEFF", content], { type: "text/csv;charset=utf-8" }),
-  );
-
-  const link = document.createElement("a");
-
-  link.href = url;
-  link.download = filename;
-  document.body.append(link);
-  link.click();
-  link.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
 };

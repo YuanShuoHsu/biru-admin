@@ -5,6 +5,7 @@
   "actions": "操作",
   "add": "新增",
   "addBreak": "新增休息",
+  "agreedSalary": "約定工資",
   "allowance": "固定津貼（{currency}）",
   "allowanceHours": "固定津貼對應每月正常工時（小時）",
   "allowedIps": {
@@ -195,7 +196,6 @@
   },
   "eventDate": "事件日期",
   "events": "打卡時間明細",
-  "exportCsv": "匯出 CSV",
   "extensionAgreed": "婚假延長至 6 個月已取得同意",
   "from": "開始日期",
   "generate": "產生班次",
@@ -327,6 +327,7 @@
     "none": "未設定（每月加班上限 46 小時）",
     "startMonth": "起始月份"
   },
+  "overtimeHours": "加班時數（小時）",
   "overtimeOnShift": "休息日、國定假日與例假出勤整段皆為加班，請填寫實際出勤區間。",
   "overtimeOnWorkday": "加班須接在班次開始前或結束後，連同正常工時一日不得超過 12 小時。每月加班不得超過 46 小時；經工會或勞資會議同意延長的期間內，每月不得超過 54 小時，每 3 個月合計不得超過 138 小時。",
   "overtimePosition": {
@@ -355,9 +356,6 @@
     "label": "復職申請"
   },
   "payroll": {
-    "actions": {
-      "view": "查看薪資明細"
-    },
     "label": "薪資"
   },
   "payrollHint": "投保資料請依有效申報填寫；特殊身分或補助請關閉自動計算並填入核定金額及依據。生效日目前限月初。",
@@ -387,14 +385,10 @@
   },
   "payrollTerms": "薪資與投保設定",
   "payslips": {
-    "actions": {
-      "view": "查看薪資明細"
-    },
     "label": "薪資單"
   },
   "pendingWeeklyMinutes": "待生效工時（小時）",
   "pensionBasis": "勞退月提繳工資（{currency}）",
-  "print": "列印",
   "publish": "發布薪資單",
   "radiusMeters": {
     "label": "允許半徑（公尺）"

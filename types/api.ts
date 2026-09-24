@@ -5867,13 +5867,20 @@ export interface components {
     /** @enum {string} */
     PayrollStatementStatus: "draft" | "reviewed" | "published";
     /** @enum {string} */
-    PayrollLineCode:
+    PayrollEarningLineCode:
       | "basePay"
+      | "allowance"
       | "overtimePay"
       | "holidayPay"
-      | "allowance"
       | "calendarLeavePay"
-      | "annualLeavePay"
+      | "annualLeavePay";
+    PayrollEarningLineResponseDto: {
+      code: components["schemas"]["PayrollEarningLineCode"];
+      amountCents: string;
+      seconds?: number;
+    };
+    /** @enum {string} */
+    PayrollDeductionLineCode:
       | "leaveDeduction"
       | "absenceDeduction"
       | "laborInsurance"
@@ -5881,8 +5888,8 @@ export interface components {
       | "voluntaryPension"
       | "withholding"
       | "otherDeduction";
-    PayrollLineResponseDto: {
-      code: components["schemas"]["PayrollLineCode"];
+    PayrollDeductionLineResponseDto: {
+      code: components["schemas"]["PayrollDeductionLineCode"];
       amountCents: string;
       seconds?: number;
     };
@@ -5914,7 +5921,8 @@ export interface components {
     PayrollSnapshotResponseDto: {
       terms: components["schemas"]["PayrollTermsValuesDto"];
       ruleVersion: string;
-      lines: components["schemas"]["PayrollLineResponseDto"][];
+      earnings: components["schemas"]["PayrollEarningLineResponseDto"][];
+      deductions: components["schemas"]["PayrollDeductionLineResponseDto"][];
       grossCents: string;
       deductionCents: string;
       netCents: string;
@@ -12638,15 +12646,19 @@ export const payrollStatementSortFieldValues: ReadonlyArray<
 export const payrollStatementStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["PayrollStatementStatus"]
 > = ["draft", "reviewed", "published"];
-export const payrollLineCodeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["PayrollLineCode"]
+export const payrollEarningLineCodeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["PayrollEarningLineCode"]
 > = [
   "basePay",
+  "allowance",
   "overtimePay",
   "holidayPay",
-  "allowance",
   "calendarLeavePay",
   "annualLeavePay",
+];
+export const payrollDeductionLineCodeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["PayrollDeductionLineCode"]
+> = [
   "leaveDeduction",
   "absenceDeduction",
   "laborInsurance",

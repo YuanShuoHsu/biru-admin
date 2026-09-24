@@ -1,11 +1,9 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
-
-import StatementDialogContent from "../../StatementDialogContent";
 
 import {
   autosizeOptions,
@@ -14,26 +12,17 @@ import {
 } from "@/constants/dataGrid";
 import { getPageSizeOptions } from "@/constants/pagination";
 
-import {
-  useEnumFilterOperators,
-  useStringFilterOperators,
-} from "@/hooks/useFilterOperators";
+import { useStringFilterOperators } from "@/hooks/useFilterOperators";
 import { useFormatMoney } from "@/hooks/useFormatMoney";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
-import { Receipt } from "@mui/icons-material";
-import { IconButton, Stack, Tooltip } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
   GridFilterModel,
   GridPaginationModel,
-  GridRenderCellParams,
   GridSortModel,
 } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
-
-import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
   PayrollStatement,
@@ -44,14 +33,13 @@ import type {
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
-import { getPayrollStatementEnumOptions } from "@/utils/enumOptions";
-import { fromCents, payrollPath } from "@/utils/attendance";
+import {
+  fromCents,
+  getPayrollAmountColumns,
+  getPayrollExportFileName,
+  payrollPath,
+} from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
-
-const StyledStack = styled(Stack)({
-  alignItems: "center",
-  height: "100%",
-});
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -116,23 +104,17 @@ const Payslips = ({
     quickFilterValues: initialQuickFilterValue ? [initialQuickFilterValue] : [],
   });
 
-  const { setDialog } = useDialogStore((state) => state);
-
-  const enumFilterOperators = useEnumFilterOperators();
   const stringFilterOperators = useStringFilterOperators();
 
   const apiRef = useGridApiRef();
+
+  const format = useFormatter();
 
   const formatMoney = useFormatMoney();
 
   const tAttendance = useTranslations("attendance");
 
   const updateQuery = useUpdateQuery();
-
-  const enumOptions = useMemo(
-    () => getPayrollStatementEnumOptions(tAttendance),
-    [tAttendance],
-  );
 
   const money = useCallback(
     (value: string) =>
@@ -154,7 +136,7 @@ const Payslips = ({
     [base, paginationModel, filterModel, sortModel],
     () =>
       fetcher<PayrollStatementPage>(
-        `${base}?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
+        `${base}?${getDataGridSearchParams(paginationModel, filterModel, sortModel)}`,
       ),
     {
       fallbackData: { data: initialRows, total: initialRowCount },
@@ -214,85 +196,22 @@ const Payslips = ({
     [updateQuery],
   );
 
-  const handleStatementDialog = useCallback(
-    (statement: PayrollStatement) =>
-      setDialog({
-        content: (
-          <StatementDialogContent
-            canManage={false}
-            currency={currency}
-            statement={statement}
-          />
-        ),
-        open: true,
-        showConfirm: false,
-        title: `${statement.employeeName} · ${statement.month}`,
-      }),
-    [currency, setDialog],
-  );
-
   const columns = useMemo<GridColDef[]>(
     () => [
-      {
-        disableColumnMenu: true,
-        disableExport: true,
-        field: "actions",
-        filterable: false,
-        headerName: tAttendance("actions"),
-        renderCell: ({ row }: GridRenderCellParams<PayrollStatement>) => (
-          <StyledStack direction="row">
-            <Tooltip title={tAttendance("payslips.actions.view")}>
-              <IconButton
-                onClick={() => handleStatementDialog(row)}
-                size="small"
-              >
-                <Receipt fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </StyledStack>
-        ),
-        resizable: false,
-        sortable: false,
-      },
       {
         field: "month",
         filterOperators: stringFilterOperators,
         headerName: tAttendance("month"),
       },
-      {
-        field: "status",
-        filterOperators: enumFilterOperators,
-        headerName: tAttendance("status.label"),
-        type: "singleSelect",
-        valueOptions: enumOptions.status,
-      },
-      {
-        field: "gross",
-        filterable: false,
-        headerName: tAttendance("gross"),
-        sortable: false,
-        valueFormatter: (value: string) => money(value),
-        valueGetter: (_value: unknown, { snapshot }: PayrollStatement) =>
-          snapshot.grossCents,
-      },
-      {
-        field: "net",
-        filterable: false,
-        headerName: tAttendance("net"),
-        sortable: false,
-        valueFormatter: (value: string) => money(value),
-        valueGetter: (_value: unknown, { snapshot }: PayrollStatement) =>
-          snapshot.netCents,
-      },
+      ...getPayrollAmountColumns(tAttendance, format, money),
     ],
-    [
-      enumFilterOperators,
-      enumOptions.status,
-      handleStatementDialog,
-      money,
-      stringFilterOperators,
-      tAttendance,
-    ],
+    [format, money, stringFilterOperators, tAttendance],
+  );
+
+  const exportFileName = getPayrollExportFileName(
+    tAttendance("payslips.label"),
+    rows,
+    rows[0]?.employeeName,
   );
 
   return (
@@ -313,6 +232,13 @@ const Payslips = ({
       rows={rows}
       sortingMode="server"
       sortModel={sortModel}
+      slotProps={{
+        ...DATA_GRID_PROPS.slotProps,
+        toolbar: {
+          csvOptions: { fileName: exportFileName },
+          printOptions: { fileName: exportFileName },
+        },
+      }}
     />
   );
 };

@@ -5,6 +5,7 @@
   "actions": "操作",
   "add": "追加",
   "addBreak": "休憩を追加",
+  "agreedSalary": "約定賃金",
   "allowance": "固定手当（{currency}）",
   "allowanceHours": "固定手当に対応する月の所定時間",
   "allowedIps": {
@@ -195,7 +196,6 @@
   },
   "eventDate": "事由発生日",
   "events": "打刻明細",
-  "exportCsv": "CSV 出力",
   "extensionAgreed": "結婚休暇の6か月延長に合意済み",
   "from": "開始日",
   "generate": "シフトを生成",
@@ -327,6 +327,7 @@
     "none": "未設定（月 46 時間まで）",
     "startMonth": "開始月"
   },
+  "overtimeHours": "残業時間（時間）",
   "overtimeOnShift": "休息日・国定休日・法定休日の出勤は全体が残業です。実際の勤務時間を入力してください。",
   "overtimeOnWorkday": "残業はシフト開始直前または終了直後に行い、通常勤務と合わせて 1 日 12 時間を超えられません。月の残業は 46 時間まで、労働組合または労使会議の同意を得た期間は月 54 時間・3 か月合計 138 時間までです。",
   "overtimePosition": {
@@ -355,9 +356,6 @@
     "label": "復職申請"
   },
   "payroll": {
-    "actions": {
-      "view": "給与明細を見る"
-    },
     "label": "給与"
   },
   "payrollHint": "申告済み保険額を使用してください。特例・補助は自動計算を無効にし確認済み金額と根拠を入力してください。適用日は月初です。",
@@ -387,14 +385,10 @@
   },
   "payrollTerms": "給与・保険設定",
   "payslips": {
-    "actions": {
-      "view": "給与明細を見る"
-    },
     "label": "給与明細"
   },
   "pendingWeeklyMinutes": "適用予定の所定労働時間（時間）",
   "pensionBasis": "年金拠出基準（{currency}）",
-  "print": "印刷",
   "publish": "給与明細を公開",
   "radiusMeters": {
     "label": "許容半径（m）"

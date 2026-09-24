@@ -5,6 +5,7 @@
   "actions": "Actions",
   "add": "Add",
   "addBreak": "Add break",
+  "agreedSalary": "Agreed wage",
   "allowance": "Fixed allowance ({currency})",
   "allowanceHours": "Monthly regular hours covered by the allowance",
   "allowedIps": {
@@ -195,7 +196,6 @@
   },
   "eventDate": "Event date",
   "events": "Punch timeline",
-  "exportCsv": "Export CSV",
   "extensionAgreed": "Agreement to extend marriage leave to 6 months obtained",
   "from": "From",
   "generate": "Generate shifts",
@@ -327,6 +327,7 @@
     "none": "None (46 overtime hours per month)",
     "startMonth": "Start month"
   },
+  "overtimeHours": "Overtime (hours)",
   "overtimeOnShift": "On a rest day, public holiday or regular leave day, the whole shift counts as overtime. Enter the hours actually worked.",
   "overtimeOnWorkday": "Overtime must directly precede the shift start or follow the shift end, and the day's total including regular hours cannot exceed 12 hours. Monthly overtime cannot exceed 46 hours; within periods approved by the union or labor-management meeting, it cannot exceed 54 hours a month or 138 hours per 3 months.",
   "overtimePosition": {
@@ -355,9 +356,6 @@
     "label": "Return requests"
   },
   "payroll": {
-    "actions": {
-      "view": "View payslip details"
-    },
     "label": "Payroll"
   },
   "payrollHint": "Use declared insurance values. For special status or subsidies, disable automatic premiums and enter verified amounts with evidence. Effective dates currently start at month boundaries.",
@@ -387,14 +385,10 @@
   },
   "payrollTerms": "Pay and insurance settings",
   "payslips": {
-    "actions": {
-      "view": "View payslip details"
-    },
     "label": "Payslips"
   },
   "pendingWeeklyMinutes": "Scheduled weekly hours",
   "pensionBasis": "Pension contribution basis ({currency})",
-  "print": "Print",
   "publish": "Publish payslip",
   "radiusMeters": {
     "label": "Radius (meters)"

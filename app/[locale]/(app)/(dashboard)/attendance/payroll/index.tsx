@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
@@ -8,8 +8,6 @@ import useSWR from "swr";
 import DraftDialog from "./DraftDialog";
 import TermsDialog from "./TermsDialog";
 import TransitionDialog from "./TransitionDialog";
-
-import StatementDialogContent from "../StatementDialogContent";
 
 import {
   autosizeOptions,
@@ -25,8 +23,8 @@ import {
 import { useFormatMoney } from "@/hooks/useFormatMoney";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
-import { Add, Receipt } from "@mui/icons-material";
-import { Button, IconButton, Stack, Tooltip } from "@mui/material";
+import { Add, Check, Publish } from "@mui/icons-material";
+import { Button, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
@@ -51,7 +49,12 @@ import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getPayrollStatementEnumOptions } from "@/utils/enumOptions";
-import { fromCents, payrollPath } from "@/utils/attendance";
+import {
+  fromCents,
+  getPayrollAmountColumns,
+  getPayrollExportFileName,
+  payrollPath,
+} from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
 
 const ActionsStack = styled(Stack)({
@@ -143,6 +146,8 @@ const Payroll = ({
   const stringFilterOperators = useStringFilterOperators();
 
   const apiRef = useGridApiRef();
+
+  const format = useFormatter();
 
   const formatMoney = useFormatMoney();
 
@@ -309,47 +314,61 @@ const Payroll = ({
     [mutate, organizationSlug, setDialog, tAttendance],
   );
 
-  const handleStatementDialog = useCallback(
-    (statement: PayrollStatement) =>
-      setDialog({
-        content: (
-          <StatementDialogContent
-            canManage={canManage}
-            currency={currency}
-            onTransition={() => handleTransitionDialog(statement)}
-            statement={statement}
-          />
-        ),
-        open: true,
-        showConfirm: false,
-        title: `${statement.employeeName} · ${statement.month}`,
-      }),
-    [canManage, currency, handleTransitionDialog, setDialog],
-  );
-
   const columns = useMemo<GridColDef[]>(
     () => [
-      {
-        disableColumnMenu: true,
-        disableExport: true,
-        field: "actions",
-        filterable: false,
-        headerName: tAttendance("actions"),
-        renderCell: ({ row }: GridRenderCellParams<PayrollStatement>) => (
-          <ActionsStack direction="row">
-            <Tooltip title={tAttendance("payroll.actions.view")}>
-              <IconButton
-                onClick={() => handleStatementDialog(row)}
-                size="small"
-              >
-                <Receipt fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </ActionsStack>
-        ),
-        resizable: false,
-        sortable: false,
-      },
+      ...(canManage
+        ? [
+            {
+              disableColumnMenu: true,
+              disableExport: true,
+              field: "actions",
+              filterable: false,
+              headerName: tAttendance("actions"),
+              renderCell: ({ row }: GridRenderCellParams<PayrollStatement>) =>
+                row.status === "published" ? null : (
+                  <ActionsStack direction="row">
+                    <Tooltip
+                      title={
+                        row.snapshot.blockers.length > 0 ? (
+                          <>
+                            <Typography variant="inherit">
+                              {tAttendance("errors.payrollBlocked")}
+                            </Typography>
+                            {row.snapshot.blockers.map((blocker) => (
+                              <Typography key={blocker} variant="inherit">
+                                {tAttendance(`errors.${blocker}`)}
+                              </Typography>
+                            ))}
+                          </>
+                        ) : (
+                          tAttendance(
+                            row.status === "draft" ? "approve" : "publish",
+                          )
+                        )
+                      }
+                    >
+                      <span>
+                        <IconButton
+                          color="primary"
+                          disabled={row.snapshot.blockers.length > 0}
+                          onClick={() => handleTransitionDialog(row)}
+                          size="small"
+                        >
+                          {row.status === "draft" ? (
+                            <Check fontSize="small" />
+                          ) : (
+                            <Publish fontSize="small" />
+                          )}
+                        </IconButton>
+                      </span>
+                    </Tooltip>
+                  </ActionsStack>
+                ),
+              resizable: false,
+              sortable: false,
+            },
+          ]
+        : []),
       {
         field: "employeeName",
         filterOperators: stringFilterOperators,
@@ -367,33 +386,35 @@ const Payroll = ({
         type: "singleSelect",
         valueOptions: enumOptions.status,
       },
-      {
-        field: "gross",
-        filterable: false,
-        headerName: tAttendance("gross"),
-        sortable: false,
-        valueFormatter: (value: string) => money(value),
-        valueGetter: (_value: unknown, { snapshot }: PayrollStatement) =>
-          snapshot.grossCents,
-      },
-      {
-        field: "net",
-        filterable: false,
-        headerName: tAttendance("net"),
-        sortable: false,
-        valueFormatter: (value: string) => money(value),
-        valueGetter: (_value: unknown, { snapshot }: PayrollStatement) =>
-          snapshot.netCents,
-      },
+      ...getPayrollAmountColumns(tAttendance, format, money),
+      ...(canManage
+        ? [
+            {
+              field: "sourceNote",
+              filterable: false,
+              headerName: tAttendance("sourceNote"),
+              sortable: false,
+              valueGetter: (_value: unknown, { snapshot }: PayrollStatement) =>
+                snapshot.terms.sourceNote,
+            },
+          ]
+        : []),
     ],
     [
+      canManage,
       enumFilterOperators,
       enumOptions.status,
-      handleStatementDialog,
+      format,
+      handleTransitionDialog,
       money,
       stringFilterOperators,
       tAttendance,
     ],
+  );
+
+  const exportFileName = getPayrollExportFileName(
+    tAttendance("payroll.label"),
+    rows,
   );
 
   return (
@@ -434,6 +455,13 @@ const Payroll = ({
         rows={rows}
         sortingMode="server"
         sortModel={sortModel}
+        slotProps={{
+          ...DATA_GRID_PROPS.slotProps,
+          toolbar: {
+            csvOptions: { fileName: exportFileName },
+            printOptions: { fileName: exportFileName },
+          },
+        }}
       />
     </>
   );

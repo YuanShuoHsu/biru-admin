@@ -30,6 +30,8 @@ import {
   ExportCsv,
   ExportPrint,
   FilterPanelTrigger,
+  type GridCsvExportOptions,
+  type GridPrintExportOptions,
   QuickFilter,
   QuickFilterClear,
   QuickFilterControl,
@@ -91,9 +93,15 @@ declare module "@mui/x-data-grid" {
 
 interface CustomToolbarProps {
   action?: ReactNode;
+  csvOptions?: GridCsvExportOptions;
+  printOptions?: GridPrintExportOptions;
 }
 
-const CustomToolbar = ({ action }: CustomToolbarProps) => {
+const CustomToolbar = ({
+  action,
+  csvOptions,
+  printOptions,
+}: CustomToolbarProps) => {
   const tToolbar = useTranslations("dataGrid.toolbar");
   const [exportMenuTrigger, setExportMenuTrigger] =
     useState<HTMLElement | null>(null);
@@ -149,12 +157,14 @@ const CustomToolbar = ({ action }: CustomToolbarProps) => {
       >
         <ExportPrint
           onClick={() => setExportMenuTrigger(null)}
+          options={printOptions}
           render={<MenuItem />}
         >
           {tToolbar("export.print")}
         </ExportPrint>
         <ExportCsv
           onClick={() => setExportMenuTrigger(null)}
+          options={csvOptions}
           render={<MenuItem />}
         >
           {tToolbar("export.csv")}
