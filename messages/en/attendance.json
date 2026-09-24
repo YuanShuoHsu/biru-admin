@@ -75,7 +75,7 @@
     },
     "label": "Employees"
   },
-  "employerPension": "Employer pension ({currency})",
+  "employerPension": "Employer pension",
   "employerPercent": "Employer rate (%)",
   "employmentType": {
     "label": "Work type",
@@ -547,7 +547,6 @@
   "to": "To",
   "useCurrentLocation": "Use current location",
   "usedMinutes": "Used minutes",
-  "version": "Version",
   "voluntaryPension": "Voluntary pension ({currency})",
   "voluntaryPercent": "Voluntary rate (%)",
   "weekday": "Weekday",

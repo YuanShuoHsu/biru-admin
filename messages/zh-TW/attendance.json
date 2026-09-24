@@ -75,7 +75,7 @@
     },
     "label": "員工管理"
   },
-  "employerPension": "雇主提繳（{currency}）",
+  "employerPension": "雇主提繳",
   "employerPercent": "雇主提繳比例（%）",
   "employmentType": {
     "label": "工作型態",
@@ -547,7 +547,6 @@
   "to": "結束日期",
   "useCurrentLocation": "使用目前位置",
   "usedMinutes": "已用額度（分鐘）",
-  "version": "版本",
   "voluntaryPension": "勞退自提（{currency}）",
   "voluntaryPercent": "自提比例（%）",
   "weekday": "星期",

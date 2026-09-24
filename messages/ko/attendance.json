@@ -75,7 +75,7 @@
     },
     "label": "직원 관리"
   },
-  "employerPension": "고용주 연금({currency})",
+  "employerPension": "고용주 연금",
   "employerPercent": "고용주 기여율(%)",
   "employmentType": {
     "label": "근무 형태",
@@ -547,7 +547,6 @@
   "to": "종료일",
   "useCurrentLocation": "현재 위치 사용",
   "usedMinutes": "사용 시간(분)",
-  "version": "버전",
   "voluntaryPension": "자발적 연금({currency})",
   "voluntaryPercent": "자발적 기여율(%)",
   "weekday": "요일",

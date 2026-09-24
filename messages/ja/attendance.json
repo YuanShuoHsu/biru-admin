@@ -75,7 +75,7 @@
     },
     "label": "従業員管理"
   },
-  "employerPension": "雇用主年金拠出（{currency}）",
+  "employerPension": "雇用主年金拠出",
   "employerPercent": "雇用主拠出率（%）",
   "employmentType": {
     "label": "勤務形態",
@@ -547,7 +547,6 @@
   "to": "終了日",
   "useCurrentLocation": "現在地を使用",
   "usedMinutes": "使用時間（分）",
-  "version": "版",
   "voluntaryPension": "任意年金拠出（{currency}）",
   "voluntaryPercent": "任意拠出率（%）",
   "weekday": "曜日",

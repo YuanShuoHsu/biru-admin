@@ -2276,23 +2276,6 @@ export interface paths {
     patch: operations["PayrollController_publish"];
     trace?: never;
   };
-  "/api/organizations/{organizationSlug}/payroll/statements/{id}/reopen": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /** 重新開帳已發布薪資單 */
-    patch: operations["PayrollController_reopen"];
-    trace?: never;
-  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -5878,13 +5861,9 @@ export interface components {
       sourceNote: string;
     };
     /** @enum {string} */
-    PayrollStatementFilterField:
-      | "employeeName"
-      | "month"
-      | "status"
-      | "version";
+    PayrollStatementFilterField: "employeeName" | "month" | "status";
     /** @enum {string} */
-    PayrollStatementSortField: "employeeName" | "month" | "status" | "version";
+    PayrollStatementSortField: "employeeName" | "month" | "status";
     /** @enum {string} */
     PayrollStatementStatus: "draft" | "reviewed" | "published";
     /** @enum {string} */
@@ -5950,7 +5929,6 @@ export interface components {
       employeeId: string;
       employeeName: string;
       month: string;
-      version: number;
       status: components["schemas"]["PayrollStatementStatus"];
       idempotencyKey: string;
       snapshot: components["schemas"]["PayrollSnapshotResponseDto"];
@@ -5961,10 +5939,6 @@ export interface components {
       reviewedAt?: string | null;
       /** Format: date-time */
       publishedAt?: string | null;
-      reopenedBy?: string | null;
-      /** Format: date-time */
-      reopenedAt?: string | null;
-      reopenReason?: string | null;
       /** Format: date-time */
       createdAt: string;
     };
@@ -11707,38 +11681,6 @@ export interface operations {
       };
     };
   };
-  PayrollController_reopen: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["PayrollReviewDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["PayrollStatementResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
 }
 type FlattenedDeepRequired<T> = {
   [K in keyof T]-?: FlattenedDeepRequired<
@@ -12689,10 +12631,10 @@ export const payrollTaxMethodValues: ReadonlyArray<
 > = ["resident5", "verified"];
 export const payrollStatementFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["PayrollStatementFilterField"]
-> = ["employeeName", "month", "status", "version"];
+> = ["employeeName", "month", "status"];
 export const payrollStatementSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["PayrollStatementSortField"]
-> = ["employeeName", "month", "status", "version"];
+> = ["employeeName", "month", "status"];
 export const payrollStatementStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["PayrollStatementStatus"]
 > = ["draft", "reviewed", "published"];

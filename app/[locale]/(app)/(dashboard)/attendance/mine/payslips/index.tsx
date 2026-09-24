@@ -16,7 +16,6 @@ import { getPageSizeOptions } from "@/constants/pagination";
 
 import {
   useEnumFilterOperators,
-  useNumberFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
 import { useFormatMoney } from "@/hooks/useFormatMoney";
@@ -120,7 +119,6 @@ const Payslips = ({
   const { setDialog } = useDialogStore((state) => state);
 
   const enumFilterOperators = useEnumFilterOperators();
-  const numberFilterOperators = useNumberFilterOperators();
   const stringFilterOperators = useStringFilterOperators();
 
   const apiRef = useGridApiRef();
@@ -228,9 +226,9 @@ const Payslips = ({
         ),
         open: true,
         showConfirm: false,
-        title: `${statement.employeeName} · ${statement.month} · ${tAttendance(`payrollStatus.options.${statement.status}`)}`,
+        title: `${statement.employeeName} · ${statement.month}`,
       }),
-    [currency, setDialog, tAttendance],
+    [currency, setDialog],
   );
 
   const columns = useMemo<GridColDef[]>(
@@ -260,12 +258,6 @@ const Payslips = ({
         field: "month",
         filterOperators: stringFilterOperators,
         headerName: tAttendance("month"),
-      },
-      {
-        field: "version",
-        filterOperators: numberFilterOperators,
-        headerName: tAttendance("version"),
-        type: "number",
       },
       {
         field: "status",
@@ -298,7 +290,6 @@ const Payslips = ({
       enumOptions.status,
       handleStatementDialog,
       money,
-      numberFilterOperators,
       stringFilterOperators,
       tAttendance,
     ],
