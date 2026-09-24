@@ -397,7 +397,15 @@
   "reportedAt": "Reported at",
   "requests": {
     "actions": {
-      "create": "Request leave"
+      "cancelLeave": {
+        "confirm": "Request cancellation of <bold>{name} ({period})</bold>? The leave stays in effect until a manager approves.",
+        "success": "Cancellation request for {name} ({period}) submitted for manager approval"
+      },
+      "create": "Request leave",
+      "withdraw": {
+        "confirm": "Withdraw the request for <bold>{name} ({period})</bold>?",
+        "success": "Withdrew the request for {name} ({period})"
+      }
     },
     "label": "Request history"
   },

@@ -397,7 +397,15 @@
   "reportedAt": "신고 일시",
   "requests": {
     "actions": {
-      "create": "휴가 신청"
+      "cancelLeave": {
+        "confirm": "<bold>{name} ({period})</bold> 휴가 취소를 신청하시겠습니까? 관리자가 승인하기 전까지 휴가는 유효합니다.",
+        "success": "{name} ({period}) 휴가 취소를 신청했습니다. 관리자 승인을 기다립니다"
+      },
+      "create": "휴가 신청",
+      "withdraw": {
+        "confirm": "<bold>{name} ({period})</bold> 신청을 철회하시겠습니까?",
+        "success": "{name} ({period}) 신청을 철회했습니다"
+      }
     },
     "label": "신청 내역"
   },

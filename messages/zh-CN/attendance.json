@@ -397,7 +397,15 @@
   "reportedAt": "已报备时间",
   "requests": {
     "actions": {
-      "create": "申请请假"
+      "cancelLeave": {
+        "confirm": "确定要申请撤销 <bold>{name}（{period}）</bold> 吗？主管同意前此假仍然有效。",
+        "success": "已提交 {name}（{period}）的撤假申请，待主管审核"
+      },
+      "create": "申请请假",
+      "withdraw": {
+        "confirm": "确定要撤回 <bold>{name}（{period}）</bold> 的申请吗？",
+        "success": "已撤回 {name}（{period}）的申请"
+      }
     },
     "label": "申请记录"
   },

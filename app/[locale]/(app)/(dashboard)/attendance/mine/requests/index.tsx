@@ -31,6 +31,7 @@ import {
   Alert,
   Button,
   Chip,
+  DialogContentText,
   IconButton,
   Stack,
   styled,
@@ -279,9 +280,41 @@ const Requests = ({
   );
 
   const handleWithdraw = useCallback(
-    ({ id, status }: AttendanceRequest) =>
+    ({
+      endsAt,
+      id,
+      kind,
+      leaveTypeName,
+      leaveTypeStatutoryKind,
+      startsAt,
+      status,
+    }: AttendanceRequest) => {
+      const action = status === "approved" ? "cancelLeave" : "withdraw";
+
+      const values = {
+        name:
+          leaveTypeName && leaveTypeStatutoryKind
+            ? getStatutoryLeaveName(tAttendance, {
+                name: leaveTypeName,
+                statutoryKind: leaveTypeStatutoryKind,
+              })
+            : tAttendance(`kind.options.${kind}`),
+        period: format.dateTimeRange(
+          new Date(startsAt),
+          new Date(endsAt),
+          "shiftDateTime",
+        ),
+      };
+
       setDialog({
-        contentText: tAttendance("confirm"),
+        content: (
+          <DialogContentText>
+            {tAttendance.rich(`requests.actions.${action}.confirm`, {
+              ...values,
+              bold: (chunks) => <strong>{chunks}</strong>,
+            })}
+          </DialogContentText>
+        ),
         onConfirm: async () => {
           try {
             await fetcher(
@@ -293,7 +326,10 @@ const Requests = ({
               { method: "PATCH" },
             );
 
-            enqueueSnackbar(tAttendance("success"), { variant: "success" });
+            enqueueSnackbar(
+              tAttendance(`requests.actions.${action}.success`, values),
+              { variant: "success" },
+            );
             mutate();
           } catch (error) {
             enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
@@ -302,9 +338,10 @@ const Requests = ({
           }
         },
         open: true,
-        title: tAttendance(status === "approved" ? "cancelLeave" : "withdraw"),
-      }),
-    [mutate, organizationSlug, setDialog, tAttendance],
+        title: tAttendance(action),
+      });
+    },
+    [format, mutate, organizationSlug, setDialog, tAttendance],
   );
 
   const date = useCallback(

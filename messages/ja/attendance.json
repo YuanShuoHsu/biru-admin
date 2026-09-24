@@ -397,7 +397,15 @@
   "reportedAt": "報告日時",
   "requests": {
     "actions": {
-      "create": "休暇を申請"
+      "cancelLeave": {
+        "confirm": "<bold>{name}（{period}）</bold>の取消を申請しますか？管理者が承認するまで休暇は有効です。",
+        "success": "{name}（{period}）の休暇取消を申請しました。管理者の承認待ちです"
+      },
+      "create": "休暇を申請",
+      "withdraw": {
+        "confirm": "<bold>{name}（{period}）</bold>の申請を取り下げますか？",
+        "success": "{name}（{period}）の申請を取り下げました"
+      }
     },
     "label": "申請履歴"
   },
