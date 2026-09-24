@@ -142,6 +142,9 @@
   "latitude": {
     "required": "매장 위도는 필수입니다."
   },
+  "leaveCase": {
+    "notSelected": "부여된 한도를 선택해 주세요."
+  },
   "leaveType": {
     "notSelected": "휴가 유형을 선택해 주세요."
   },
@@ -194,6 +197,9 @@
   },
   "parentalChild": {
     "notSelected": "자녀를 선택해 주세요."
+  },
+  "parentalMode": {
+    "notSelected": "육아 휴직 신청 방식을 선택해 주세요."
   },
   "password": {
     "letter": "영문자를 최소 1개 포함.",

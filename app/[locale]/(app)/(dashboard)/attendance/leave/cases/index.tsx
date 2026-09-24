@@ -411,7 +411,7 @@ const LeaveCases = ({
       {
         field: "leaveTypeName",
         filterOperators: enumFilterOperators,
-        headerName: tAttendance("leaveType"),
+        headerName: tAttendance("leaveType.label"),
         renderCell: ({
           row: { leaveTypeName, leaveTypeStatutoryKind },
         }: GridRenderCellParams<AttendanceLeaveCase>) =>
@@ -473,7 +473,7 @@ const LeaveCases = ({
       {
         field: "reason",
         filterOperators: stringFilterOperators,
-        headerName: tAttendance("reason"),
+        headerName: tAttendance("reason.label"),
         maxWidth: 320,
         renderCell: renderEmptyableCell,
       },

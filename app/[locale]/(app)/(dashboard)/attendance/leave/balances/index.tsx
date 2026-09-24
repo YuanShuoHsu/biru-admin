@@ -261,7 +261,7 @@ const Balances = ({
       {
         field: "leaveTypeName",
         filterOperators: enumFilterOperators,
-        headerName: tAttendance("leaveType"),
+        headerName: tAttendance("leaveType.label"),
         renderCell: ({
           row: { leaveTypeName, leaveTypeStatutoryKind },
         }: GridRenderCellParams<AttendanceLeaveBalance>) =>

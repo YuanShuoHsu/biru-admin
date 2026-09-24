@@ -124,7 +124,7 @@ const BalanceDialog = ({
         error={!!errors.leaveTypeId}
         fullWidth
         helperText={errors.leaveTypeId?.message}
-        label={tAttendance("leaveType")}
+        label={tAttendance("leaveType.label")}
         onChange={(event) =>
           setValue("leaveTypeId", event.target.value, {
             shouldValidate: isSubmitted,

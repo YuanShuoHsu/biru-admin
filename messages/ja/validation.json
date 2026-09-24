@@ -142,6 +142,9 @@
   "latitude": {
     "required": "店舗の緯度は必須です。"
   },
+  "leaveCase": {
+    "notSelected": "付与済み休暇枠を選択してください。"
+  },
   "leaveType": {
     "notSelected": "休暇種類を選択してください。"
   },
@@ -194,6 +197,9 @@
   },
   "parentalChild": {
     "notSelected": "子どもを選択してください。"
+  },
+  "parentalMode": {
+    "notSelected": "育児休業の申請方法を選択してください。"
   },
   "password": {
     "letter": "英字を1文字以上含む。",

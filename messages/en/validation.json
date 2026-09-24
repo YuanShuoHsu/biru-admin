@@ -142,6 +142,9 @@
   "latitude": {
     "required": "Store latitude is required."
   },
+  "leaveCase": {
+    "notSelected": "Please select your granted allowance."
+  },
   "leaveType": {
     "notSelected": "Please select your leave type."
   },
@@ -194,6 +197,9 @@
   },
   "parentalChild": {
     "notSelected": "Please select your child."
+  },
+  "parentalMode": {
+    "notSelected": "Please select your parental leave request mode."
   },
   "password": {
     "letter": "Contain at least one letter.",

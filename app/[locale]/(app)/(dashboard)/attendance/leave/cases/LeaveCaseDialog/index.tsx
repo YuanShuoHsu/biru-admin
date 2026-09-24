@@ -229,7 +229,7 @@ const LeaveCaseDialog = ({
         error={!!errors.leaveTypeId}
         fullWidth
         helperText={errors.leaveTypeId?.message}
-        label={tAttendance("leaveType")}
+        label={tAttendance("leaveType.label")}
         onChange={(event) => {
           setValue("leaveTypeId", event.target.value, {
             shouldValidate: isSubmitted,
@@ -395,7 +395,7 @@ const LeaveCaseDialog = ({
         error={!!errors.reason}
         fullWidth
         helperText={errors.reason?.message}
-        label={tAttendance("reason")}
+        label={tAttendance("reason.label")}
         minRows={3}
         multiline
         required

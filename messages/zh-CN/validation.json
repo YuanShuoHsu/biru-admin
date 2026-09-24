@@ -142,6 +142,9 @@
   "latitude": {
     "required": "门店纬度为必填。"
   },
+  "leaveCase": {
+    "notSelected": "请选择您的核给额度。"
+  },
   "leaveType": {
     "notSelected": "请选择您的假别。"
   },
@@ -194,6 +197,9 @@
   },
   "parentalChild": {
     "notSelected": "请选择您的子女。"
+  },
+  "parentalMode": {
+    "notSelected": "请选择您的育婴留停申请方式。"
   },
   "password": {
     "letter": "包含至少一个英文字母。",

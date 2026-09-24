@@ -223,7 +223,7 @@
       "overtime": "加班"
     }
   },
-  "label": "员工出勤",
+  "label": "人事",
   "laborBasis": "劳就保月投保工资（{currency}）",
   "laborCoverage": {
     "label": "劳就保适用类型",
@@ -246,7 +246,10 @@
   "latitude": {
     "label": "门店纬度"
   },
-  "leaveCase": "核给额度",
+  "leaveCase": {
+    "label": "核给额度",
+    "placeholder": "请选择您的核给额度"
+  },
   "leaveCaseHint": "主管先确认事件、亲属关系与有效期间，系统自动核给额度。同一事件不得重复建立。产假含例休假日，请使用完整日历日（起讫 00:00，结束日不含）；陪产检与陪产共用 7 日，请确认各次申请符合适用期间。 产假事件须由 owner 设置核定每日全薪，给薪比例由工龄自动计算。 育婴留停事件日期请填子女出生日期，同一子女沿用事件编号，期间不得超过三岁；未满六个月任职须先取得劳资同意。育婴留停不需核定日薪。",
   "leaveCases": {
     "actions": {
@@ -257,7 +260,10 @@
     "label": "事件假额度"
   },
   "leaveRequestHint": "住院伤病假、安胎休养假由主管查验医疗证明。普通伤病假、住院伤病假、安胎休养假每年合计 30 日内工资折半，超过部分无薪；生理假每月 1 日、工资折半，每年前 3 日不并入病假，第 4 日起并入上述 30 日计算。育婴留职停薪请先选择主管核给的额度，使用完整日历日（起讫 00:00，结束日不含）。",
-  "leaveType": "假别",
+  "leaveType": {
+    "label": "假别",
+    "placeholder": "请选择您的假别"
+  },
   "leaveTypeGroups": {
     "custom": "自定义",
     "event": "婚丧、生育及育婴",
@@ -294,7 +300,7 @@
       "viewEvents": "查看打卡明细"
     },
     "correctionNotStarted": "班次尚未开始，无需补卡",
-    "label": "我的出勤",
+    "label": "出勤",
     "punch": {
       "empty": "目前没有可打卡的班次。",
       "title": "打卡"
@@ -339,7 +345,10 @@
   },
   "parentalContinuous": "连续期间申请",
   "parentalDaily": "按日申请",
-  "parentalMode": "育婴留停申请方式",
+  "parentalMode": {
+    "label": "育婴留停申请方式",
+    "placeholder": "请选择您的育婴留停申请方式"
+  },
   "parentalReturn": "提前复职",
   "parentalReturnHint": "复职申请须由另一位主管核准。核准前原留停仍有效；核准后保留已休期间与原申请记录。请选择复职当日，该日起不再留停。",
   "parentalReturns": {
@@ -381,7 +390,7 @@
     "actions": {
       "view": "查看工资明细"
     },
-    "label": "我的工资单"
+    "label": "工资单"
   },
   "pendingWeeklyMinutes": "待生效工时（小时）",
   "pensionBasis": "劳退月提缴工资（{currency}）",
@@ -390,7 +399,10 @@
   "radiusMeters": {
     "label": "允许半径（米）"
   },
-  "reason": "申请理由",
+  "reason": {
+    "label": "申请理由",
+    "placeholder": "请输入您的申请理由"
+  },
   "reject": "驳回",
   "rejectCancellation": "驳回撤假",
   "repeatWeeks": "每周重复次数",

@@ -223,7 +223,7 @@
       "overtime": "Overtime"
     }
   },
-  "label": "Staff attendance",
+  "label": "HR",
   "laborBasis": "Declared labor insured salary ({currency})",
   "laborCoverage": {
     "label": "Labor insurance coverage",
@@ -246,7 +246,10 @@
   "latitude": {
     "label": "Store latitude"
   },
-  "leaveCase": "Granted allowance",
+  "leaveCase": {
+    "label": "Granted allowance",
+    "placeholder": "Please select your granted allowance"
+  },
   "leaveCaseHint": "A manager must verify the event, relationship and eligible dates. Allowances are calculated automatically. Do not duplicate an event. Maternity periods include rest days and use full calendar days (midnight, exclusive end). Partner prenatal and childbirth leave share 7 days; verify the eligible dates for each request. An owner must provide the verified full daily wage for maternity leave. The paid percentage is calculated from seniority. For parental leave, use the child’s birth date as the event date and reuse the same reference for that child. The period must end by the third birthday. Service under six months requires employer–employee agreement. No daily wage is required.",
   "leaveCases": {
     "actions": {
@@ -257,7 +260,10 @@
     "label": "Event leave allowances"
   },
   "leaveRequestHint": "Managers verify medical documentation for hospitalization and pregnancy bed rest. Sick leave (including hospitalization and pregnancy bed rest) is paid at half wage for up to 30 days per year combined and is unpaid beyond that. Menstrual leave is 1 day per month at half wage; the first 3 days each year do not count toward sick leave, and from the 4th day they count toward those 30 days. For parental leave, select the allowance granted by a manager and use whole calendar days (midnight, exclusive end).",
-  "leaveType": "Leave type",
+  "leaveType": {
+    "label": "Leave type",
+    "placeholder": "Please select your leave type"
+  },
   "leaveTypeGroups": {
     "custom": "Custom",
     "event": "Marriage, bereavement, childbirth & parental",
@@ -294,7 +300,7 @@
       "viewEvents": "View punch timeline"
     },
     "correctionNotStarted": "This shift has not started yet",
-    "label": "My attendance",
+    "label": "Attendance",
     "punch": {
       "empty": "No shifts are open for punching right now.",
       "title": "Punch"
@@ -339,7 +345,10 @@
   },
   "parentalContinuous": "Continuous period",
   "parentalDaily": "Daily requests",
-  "parentalMode": "Parental leave request mode",
+  "parentalMode": {
+    "label": "Parental leave request mode",
+    "placeholder": "Please select your parental leave request mode"
+  },
   "parentalReturn": "Early return",
   "parentalReturnHint": "Another manager must approve the return. Leave remains active until approval. Approval preserves leave already taken and the original record. Leave ends at the start of the return date.",
   "parentalReturns": {
@@ -381,7 +390,7 @@
     "actions": {
       "view": "View payslip details"
     },
-    "label": "My payslips"
+    "label": "Payslips"
   },
   "pendingWeeklyMinutes": "Scheduled weekly hours",
   "pensionBasis": "Pension contribution basis ({currency})",
@@ -390,7 +399,10 @@
   "radiusMeters": {
     "label": "Radius (meters)"
   },
-  "reason": "Reason",
+  "reason": {
+    "label": "Reason",
+    "placeholder": "Please enter your reason"
+  },
   "reject": "Reject",
   "rejectCancellation": "Reject cancellation",
   "repeatWeeks": "Weekly occurrences",

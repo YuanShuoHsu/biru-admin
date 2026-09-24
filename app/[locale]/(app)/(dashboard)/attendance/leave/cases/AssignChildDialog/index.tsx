@@ -118,7 +118,7 @@ const AssignChildDialog = ({
         error={!!errors.reason}
         fullWidth
         helperText={errors.reason?.message}
-        label={tAttendance("reason")}
+        label={tAttendance("reason.label")}
         minRows={3}
         multiline
         required

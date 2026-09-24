@@ -61,7 +61,7 @@ const LeaveDialog = ({
 
   const tAttendance = useTranslations("attendance");
 
-  const leaveFormSchema = useLeaveFormSchema();
+  const leaveFormSchema = useLeaveFormSchema(leaveTypes);
 
   const {
     control,
@@ -146,8 +146,8 @@ const LeaveDialog = ({
         body: JSON.stringify({
           ...values,
           kind: "leave",
-          ...(isEventLeave && leaveCaseId ? { leaveCaseId } : {}),
-          ...(isParentalLeave && parentalMode ? { parentalMode } : {}),
+          ...(isEventLeave ? { leaveCaseId } : {}),
+          ...(isParentalLeave ? { parentalMode } : {}),
         }),
       });
 
@@ -175,7 +175,7 @@ const LeaveDialog = ({
         error={!!errors.leaveTypeId}
         fullWidth
         helperText={errors.leaveTypeId?.message}
-        label={tAttendance("leaveType")}
+        label={tAttendance("leaveType.label")}
         onChange={(event) => {
           setValue("leaveTypeId", event.target.value, {
             shouldValidate: isSubmitted,
@@ -186,8 +186,23 @@ const LeaveDialog = ({
         }}
         required
         select
+        slotProps={{
+          inputLabel: { shrink: true },
+          select: {
+            displayEmpty: true,
+            renderValue: () =>
+              leaveType ? (
+                getStatutoryLeaveName(tAttendance, leaveType)
+              ) : (
+                <em>{tAttendance("leaveType.placeholder")}</em>
+              ),
+          },
+        }}
         value={leaveTypeId}
       >
+        <MenuItem disabled value="">
+          <em>{tAttendance("leaveType.placeholder")}</em>
+        </MenuItem>
         {leaveTypeGroups.flatMap(({ group, items }) => [
           <ListSubheader key={group}>
             {tAttendance(`leaveTypeGroups.${group}`)}
@@ -204,16 +219,34 @@ const LeaveDialog = ({
           error={!!errors.leaveCaseId}
           fullWidth
           helperText={errors.leaveCaseId?.message}
-          label={tAttendance("leaveCase")}
+          label={tAttendance("leaveCase.label")}
           onChange={(event) =>
             setValue("leaveCaseId", event.target.value, {
               shouldValidate: isSubmitted,
             })
           }
+          required
           select
+          slotProps={{
+            inputLabel: { shrink: true },
+            select: {
+              displayEmpty: true,
+              renderValue: (selected) => {
+                const leaveCase = leaveCases.find(({ id }) => id === selected);
+
+                return leaveCase ? (
+                  `${leaveCase.reference} · ${date(leaveCase.startsAt)} — ${date(leaveCase.endsAt)}`
+                ) : (
+                  <em>{tAttendance("leaveCase.placeholder")}</em>
+                );
+              },
+            },
+          }}
           value={leaveCaseId}
         >
-          <MenuItem value="">—</MenuItem>
+          <MenuItem disabled value="">
+            <em>{tAttendance("leaveCase.placeholder")}</em>
+          </MenuItem>
           {leaveCases
             .filter((item) => item.leaveTypeId === leaveTypeId)
             .map(({ endsAt, id, reference, startsAt }) => (
@@ -228,12 +261,31 @@ const LeaveDialog = ({
           error={!!errors.parentalMode}
           fullWidth
           helperText={errors.parentalMode?.message}
-          label={tAttendance("parentalMode")}
+          label={tAttendance("parentalMode.label")}
           required
           select
+          slotProps={{
+            inputLabel: { shrink: true },
+            select: {
+              displayEmpty: true,
+              renderValue: (selected) =>
+                selected ? (
+                  tAttendance(
+                    selected === "daily"
+                      ? "parentalDaily"
+                      : "parentalContinuous",
+                  )
+                ) : (
+                  <em>{tAttendance("parentalMode.placeholder")}</em>
+                ),
+            },
+          }}
           value={parentalMode}
           {...register("parentalMode")}
         >
+          <MenuItem disabled value="">
+            <em>{tAttendance("parentalMode.placeholder")}</em>
+          </MenuItem>
           {attendanceParentalModeValues.map((value) => (
             <MenuItem key={value} value={value}>
               {tAttendance(
@@ -278,9 +330,10 @@ const LeaveDialog = ({
         error={!!errors.reason}
         fullWidth
         helperText={errors.reason?.message}
-        label={tAttendance("reason")}
+        label={tAttendance("reason.label")}
         minRows={3}
         multiline
+        placeholder={tAttendance("reason.placeholder")}
         required
         {...register("reason")}
       />

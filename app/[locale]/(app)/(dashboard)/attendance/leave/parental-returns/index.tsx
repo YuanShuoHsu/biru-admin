@@ -337,7 +337,7 @@ const ParentalReturns = ({
       {
         field: "reason",
         filterOperators: stringFilterOperators,
-        headerName: tAttendance("reason"),
+        headerName: tAttendance("reason.label"),
         maxWidth: 320,
         renderCell: renderEmptyableCell,
       },

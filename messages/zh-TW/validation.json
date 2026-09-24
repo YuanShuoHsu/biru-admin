@@ -142,6 +142,9 @@
   "latitude": {
     "required": "店家緯度為必填。"
   },
+  "leaveCase": {
+    "notSelected": "請選擇您的核給額度。"
+  },
   "leaveType": {
     "notSelected": "請選擇您的假別。"
   },
@@ -194,6 +197,9 @@
   },
   "parentalChild": {
     "notSelected": "請選擇您的子女。"
+  },
+  "parentalMode": {
+    "notSelected": "請選擇您的育嬰留停申請方式。"
   },
   "password": {
     "letter": "包含至少一個英文字母。",

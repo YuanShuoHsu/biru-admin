@@ -223,7 +223,7 @@
       "overtime": "초과 근무"
     }
   },
-  "label": "직원 근태",
+  "label": "인사",
   "laborBasis": "신고 노동 보험 급여({currency})",
   "laborCoverage": {
     "label": "노동 보험 적용",
@@ -246,7 +246,10 @@
   "latitude": {
     "label": "매장 위도"
   },
-  "leaveCase": "부여된 한도",
+  "leaveCase": {
+    "label": "부여된 한도",
+    "placeholder": "귀하의 부여된 한도를 선택해 주세요"
+  },
   "leaveCaseHint": "관리자가 사유, 가족 관계, 적용 기간을 확인하면 한도가 자동 계산됩니다. 동일 사유를 중복 등록하지 마세요. 출산 휴가는 휴일을 포함한 전체 날짜로 입력합니다(자정, 종료일 제외). 배우자 검진과 출산 휴가는 합계 7일이며 신청별 적용 기간을 확인해야 합니다. 출산 휴가 사유는 owner가 확인된 일일 전액 임금을 설정해야 합니다. 지급 비율은 근속 기간으로 자동 계산됩니다. 육아 휴직의 사유 발생일은 자녀 생년월일이며, 같은 자녀에는 동일한 사유 번호를 사용하세요. 기간은 만 3세 생일까지이며, 근속 6개월 미만은 노사 합의가 필요합니다. 일급 설정은 필요하지 않습니다.",
   "leaveCases": {
     "actions": {
@@ -257,7 +260,10 @@
     "label": "사유별 휴가 한도"
   },
   "leaveRequestHint": "입원 및 임신 안정 휴가는 관리자가 의료 증빙을 확인합니다. 병가(입원 및 임신 안정 휴가 포함)는 연간 합계 30일까지 임금의 절반을 지급하며 초과분은 무급입니다. 생리 휴가는 월 1일이며 임금의 절반을 지급하고, 연간 처음 3일은 병가에 포함되지 않으며 4일째부터 위 30일에 포함됩니다. 육아 휴직은 관리자가 부여한 한도를 선택하고 전체 날짜로 입력하세요(자정, 종료일 제외).",
-  "leaveType": "휴가 유형",
+  "leaveType": {
+    "label": "휴가 유형",
+    "placeholder": "귀하의 휴가 유형을 선택해 주세요"
+  },
   "leaveTypeGroups": {
     "custom": "사용자 지정",
     "event": "결혼·경조·출산·육아",
@@ -294,7 +300,7 @@
       "viewEvents": "기록 내역 보기"
     },
     "correctionNotStarted": "아직 시작되지 않은 근무입니다",
-    "label": "내 근태",
+    "label": "근태",
     "punch": {
       "empty": "지금 출퇴근을 기록할 수 있는 근무가 없습니다.",
       "title": "출퇴근 기록"
@@ -339,7 +345,10 @@
   },
   "parentalContinuous": "연속 기간 신청",
   "parentalDaily": "일 단위 신청",
-  "parentalMode": "육아 휴직 신청 방식",
+  "parentalMode": {
+    "label": "육아 휴직 신청 방식",
+    "placeholder": "귀하의 육아 휴직 신청 방식을 선택해 주세요"
+  },
   "parentalReturn": "조기 복직",
   "parentalReturnHint": "다른 관리자의 승인이 필요합니다. 승인 전에는 휴직이 유지됩니다. 승인 후에도 사용한 휴직 기간과 원본 기록을 보존하며 복직일 시작 시 휴직이 종료됩니다.",
   "parentalReturns": {
@@ -381,7 +390,7 @@
     "actions": {
       "view": "급여 명세 보기"
     },
-    "label": "내 급여 명세서"
+    "label": "급여 명세서"
   },
   "pendingWeeklyMinutes": "적용 예정 근무시간(시간)",
   "pensionBasis": "연금 기여 기준({currency})",
@@ -390,7 +399,10 @@
   "radiusMeters": {
     "label": "허용 반경(m)"
   },
-  "reason": "사유",
+  "reason": {
+    "label": "사유",
+    "placeholder": "귀하의 사유를 입력해 주세요"
+  },
   "reject": "반려",
   "rejectCancellation": "취소 반려",
   "repeatWeeks": "주간 반복 횟수",
