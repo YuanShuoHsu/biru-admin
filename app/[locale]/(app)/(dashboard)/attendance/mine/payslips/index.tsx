@@ -31,12 +31,12 @@ import type {
   PayrollStatementSortField,
 } from "@/types/attendance";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import {
   fromCents,
   getPayrollAmountColumns,
-  getPayrollExportFileName,
   payrollPath,
 } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
@@ -47,11 +47,10 @@ const DataGrid = dynamic(
 );
 
 interface PayslipsProps {
-  currency: string;
   filterField?: PayrollStatementFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  organizationSlug: string;
+  organization: Organization;
   page: number;
   pageSize: number;
   quickFilterValue?: string;
@@ -62,11 +61,10 @@ interface PayslipsProps {
 }
 
 const Payslips = ({
-  currency,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  organizationSlug,
+  organization: { currency = "", slug: organizationSlug },
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,
@@ -208,12 +206,6 @@ const Payslips = ({
     [format, money, stringFilterOperators, tAttendance],
   );
 
-  const exportFileName = getPayrollExportFileName(
-    tAttendance("payslips.label"),
-    rows,
-    rows[0]?.employeeName,
-  );
-
   return (
     <DataGrid
       {...DATA_GRID_PROPS}
@@ -235,8 +227,7 @@ const Payslips = ({
       slotProps={{
         ...DATA_GRID_PROPS.slotProps,
         toolbar: {
-          csvOptions: { fileName: exportFileName },
-          printOptions: { fileName: exportFileName },
+          exportDateField: "month",
         },
       }}
     />

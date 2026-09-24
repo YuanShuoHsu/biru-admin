@@ -31,6 +31,7 @@ import {
   orderResponseDtoPaymentMethodValues,
 } from "@/types/api";
 import type { OrderMode, OrderPaymentMethod } from "@/types/orders";
+import type { Organization } from "@/types/organizations";
 
 const StyledCard = styled(Card)({
   height: "100%",
@@ -116,7 +117,7 @@ interface Trend {
 }
 
 interface DashboardProps {
-  currency: string;
+  organization?: Organization;
   range: DashboardRange;
   trendEnd: string;
   stats: {
@@ -138,7 +139,7 @@ interface DashboardProps {
 }
 
 const Dashboard = ({
-  currency,
+  organization,
   range,
   trendEnd,
   stats,
@@ -147,6 +148,8 @@ const Dashboard = ({
   const format = useFormatter();
 
   const formatMoney = useFormatMoney();
+
+  const currency = organization?.currency ?? "";
 
   const router = useRouter();
 

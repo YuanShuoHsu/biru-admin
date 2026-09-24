@@ -63,7 +63,7 @@ const SettingsPage = async ({ params, searchParams }: SettingsPageProps) => {
 
   return (
     <AttendanceTabsLayout memberRole={memberRole}>
-      <Settings organizationSlug={organization.slug} settings={settings} />
+      <Settings organization={organization} settings={settings} />
     </AttendanceTabsLayout>
   );
 };

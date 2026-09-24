@@ -506,24 +506,6 @@ export const isMoney = (value: number) => money.test(String(value));
 
 export const fromCents = (value: string | number) => Number(value) / 100;
 
-export const getPayrollExportFileName = (
-  label: string,
-  rows: PayrollStatement[],
-  employeeName?: string,
-) => {
-  const months = rows.map(({ month }) => month).sort();
-  const first = months[0];
-  const last = months.at(-1);
-
-  return [
-    label,
-    employeeName,
-    first && (first === last ? first : `${first}~${last}`),
-  ]
-    .filter(Boolean)
-    .join("_");
-};
-
 const negateCents = (value: string) => (-BigInt(value)).toString();
 
 export const getPayrollAmountColumns = (

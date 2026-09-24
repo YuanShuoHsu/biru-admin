@@ -247,8 +247,6 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
       ? getHourlyValueBuckets(entries, trendBucketCount, trendStart)
       : getBinnedValueBuckets(entries, trendBucketCount, bucketDays, trendEnd);
 
-  const currency = selectedOrganization?.currency ?? "";
-
   const ordersTrendBuckets = getTrendBuckets(
     trendOrders.map((order) => order.createdAt),
   );
@@ -267,7 +265,7 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
 
   return (
     <Dashboard
-      currency={currency}
+      organization={selectedOrganization}
       range={range}
       trendEnd={trendEnd.toISOString()}
       stats={{

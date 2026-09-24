@@ -48,6 +48,7 @@ import type {
   AttendanceShiftSortField,
 } from "@/types/attendance";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import {
   attendanceErrorKey,
@@ -95,8 +96,7 @@ interface ShiftsProps {
   filterField?: AttendanceShiftFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  openingHours: string;
-  organizationSlug: string;
+  organization: Organization;
   page: number;
   pageSize: number;
   quickFilterValue?: string;
@@ -113,8 +113,7 @@ const Shifts = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  openingHours,
-  organizationSlug,
+  organization: { openingHours = "", slug: organizationSlug },
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,
@@ -450,6 +449,12 @@ const Shifts = ({
         rows={rows}
         sortingMode="server"
         sortModel={sortModel}
+        slotProps={{
+          ...DATA_GRID_PROPS.slotProps,
+          toolbar: {
+            exportDateField: "startsAt",
+          },
+        }}
       />
     </>
   );

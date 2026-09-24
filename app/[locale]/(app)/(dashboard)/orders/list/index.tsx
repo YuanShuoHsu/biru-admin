@@ -61,6 +61,7 @@ import type {
 import { useGridApiRef } from "@mui/x-data-grid";
 
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 import type {
   AdminOrderResponse,
   OrderFilterField,
@@ -155,7 +156,7 @@ interface OrdersProps {
   filterField?: OrderFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  organizationSlug: string;
+  organization: Organization;
   page: number;
   pageSize: number;
   quickFilterValue?: string;
@@ -170,7 +171,7 @@ const Orders = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  organizationSlug,
+  organization: { slug: organizationSlug },
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,
@@ -929,6 +930,12 @@ const Orders = ({
       rows={rows}
       sortingMode="server"
       sortModel={sortModel}
+      slotProps={{
+        ...DATA_GRID_PROPS.slotProps,
+        toolbar: {
+          exportDateField: "createdAt",
+        },
+      }}
     />
   );
 };

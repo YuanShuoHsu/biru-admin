@@ -45,6 +45,7 @@ import type {
   AttendanceParentalReturnSortField,
 } from "@/types/attendance";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
@@ -69,7 +70,7 @@ interface ParentalReturnsProps {
   filterField?: AttendanceParentalReturnFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  organizationSlug: string;
+  organization: Organization;
   page: number;
   pageSize: number;
   quickFilterValue?: string;
@@ -86,7 +87,7 @@ const ParentalReturns = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  organizationSlug,
+  organization: { slug: organizationSlug },
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,
@@ -405,6 +406,12 @@ const ParentalReturns = ({
         rows={rows}
         sortingMode="server"
         sortModel={sortModel}
+        slotProps={{
+          ...DATA_GRID_PROPS.slotProps,
+          toolbar: {
+            exportDateField: "returnsAt",
+          },
+        }}
       />
     </>
   );

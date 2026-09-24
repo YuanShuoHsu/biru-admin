@@ -18,6 +18,7 @@ import { styled } from "@mui/material/styles";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { AttendanceSettings } from "@/types/attendance";
+import type { Organization } from "@/types/organizations";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
@@ -37,11 +38,14 @@ const SETTING_KEYS = [
 ] as const satisfies readonly (keyof AttendanceSettings)[];
 
 interface SettingsProps {
-  organizationSlug: string;
+  organization: Organization;
   settings: AttendanceSettings | null;
 }
 
-const Settings = ({ organizationSlug, settings }: SettingsProps) => {
+const Settings = ({
+  organization: { slug: organizationSlug },
+  settings,
+}: SettingsProps) => {
   const format = useFormatter();
 
   const tAttendance = useTranslations("attendance");

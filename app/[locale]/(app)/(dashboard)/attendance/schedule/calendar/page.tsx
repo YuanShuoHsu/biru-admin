@@ -104,8 +104,7 @@ const CalendarPage = async ({ params, searchParams }: CalendarPageProps) => {
         canCancel={hasRolePermission(memberRole, { shift: ["update"] })}
         canCreate={hasRolePermission(memberRole, { shift: ["create"] })}
         employees={employees}
-        openingHours={organization.openingHours ?? ""}
-        organizationSlug={organization.slug}
+        organization={organization}
         shifts={shifts}
         templates={templates}
         week={start}

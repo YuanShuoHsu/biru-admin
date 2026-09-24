@@ -85,6 +85,7 @@ import type {
   MenuItemFilterField,
   MenuItemSortField,
 } from "@/types/menus";
+import type { Organization } from "@/types/organizations";
 
 import {
   getDataGridSearchParams,
@@ -139,7 +140,7 @@ interface MenusMenuIdSectionIdProps {
   filterField?: MenuItemFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  openingHours?: string | null;
+  organization: Organization;
   page: number;
   pageSize: number;
   quickFilterValue?: string;
@@ -157,7 +158,7 @@ const MenusMenuIdSectionId = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  openingHours,
+  organization: { openingHours },
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,

@@ -131,7 +131,7 @@ const OrdersPage = async ({ params, searchParams }: OrdersPageProps) => {
         filterField={filterField}
         filterOperator={filterOperator}
         filterValue={filterValue}
-        organizationSlug={selectedOrganization.slug}
+        organization={selectedOrganization}
         page={page}
         pageSize={pageSize}
         quickFilterValue={quickFilterValue}

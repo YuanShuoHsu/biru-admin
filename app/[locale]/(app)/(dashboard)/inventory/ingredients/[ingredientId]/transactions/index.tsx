@@ -324,6 +324,12 @@ const IngredientTransactions = ({
       rows={rows}
       sortingMode="server"
       sortModel={sortModel}
+      slotProps={{
+        ...DATA_GRID_PROPS.slotProps,
+        toolbar: {
+          exportDateField: "createdAt",
+        },
+      }}
     />
   );
 };

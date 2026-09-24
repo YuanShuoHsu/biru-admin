@@ -148,7 +148,7 @@ const SuppliersPage = async ({ params, searchParams }: SuppliersPageProps) => {
         filterOperator={filterOperator}
         filterValue={filterValue}
         ingredients={ingredients}
-        organizationSlug={organization.slug}
+        organization={organization}
         page={page}
         pageSize={pageSize}
         quickFilterValue={quickFilterValue}

@@ -31,6 +31,7 @@ import type {
   Recipe,
 } from "@/types/inventory";
 import type { MenuItem } from "@/types/menus";
+import type { Organization } from "@/types/organizations";
 
 import { fetcher } from "@/utils/fetcher";
 import { getHref } from "@/utils/href";
@@ -64,7 +65,7 @@ interface MenuItemRecipeProps {
   canWrite: boolean;
   ingredients: Ingredient[];
   menuItem: MenuItem;
-  organizationSlug: string;
+  organization: Organization;
   recipe: Recipe | null;
 }
 
@@ -75,7 +76,7 @@ const MenuItemRecipe = ({
   canWrite,
   ingredients,
   menuItem,
-  organizationSlug,
+  organization: { slug: organizationSlug },
   recipe: initialRecipe,
 }: MenuItemRecipeProps) => {
   const { setDialog } = useDialogStore((state) => state);

@@ -132,7 +132,7 @@ const EmployeesPage = async ({ params, searchParams }: EmployeesPageProps) => {
         filterField={filterField}
         filterOperator={filterOperator}
         filterValue={filterValue}
-        organizationSlug={organization.slug}
+        organization={organization}
         page={page}
         pageSize={pageSize}
         quickFilterValue={quickFilterValue}

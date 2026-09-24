@@ -165,7 +165,7 @@ const BalancesPage = async ({ params, searchParams }: BalancesPageProps) => {
         leaveTypes={leaveTypes.filter(
           ({ statutoryKind }) => statutoryKind === "custom",
         )}
-        organizationSlug={organization.slug}
+        organization={organization}
         page={page}
         pageSize={pageSize}
         quickFilterValue={quickFilterValue}

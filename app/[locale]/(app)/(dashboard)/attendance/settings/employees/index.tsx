@@ -46,6 +46,7 @@ import type {
   AttendanceMemberPage,
 } from "@/types/attendance";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import { attendancePath } from "@/utils/attendance";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
@@ -78,7 +79,7 @@ interface EmployeesProps {
   filterField?: AttendanceEmployeeFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  organizationSlug: string;
+  organization: Organization;
   page: number;
   pageSize: number;
   quickFilterValue?: string;
@@ -93,7 +94,7 @@ const Employees = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  organizationSlug,
+  organization: { slug: organizationSlug },
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,

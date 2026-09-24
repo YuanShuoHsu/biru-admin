@@ -51,6 +51,7 @@ import type {
   AttendanceLeaveTypeSortField,
 } from "@/types/attendance";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAttendanceLeaveTypeEnumOptions } from "@/utils/enumOptions";
@@ -85,7 +86,7 @@ interface LeaveTypesProps {
   filterField?: AttendanceLeaveTypeFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  organizationSlug: string;
+  organization: Organization;
   page: number;
   pageSize: number;
   quickFilterValue?: string;
@@ -99,7 +100,7 @@ const LeaveTypes = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  organizationSlug,
+  organization: { slug: organizationSlug },
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,

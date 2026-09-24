@@ -58,7 +58,7 @@ import type {
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Ingredient } from "@/types/inventory";
 import type { LocalizedText } from "@/types/locale";
-import type { OrganizationResponse } from "@/types/organizations";
+import type { Organization, OrganizationResponse } from "@/types/organizations";
 
 import { getAuditLogHref, getAuditLogsPath } from "@/utils/audit";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
@@ -270,8 +270,8 @@ interface AuditLogsProps {
   filterValue?: string;
   ingredient?: Ingredient;
   logs: AuditLogResponse[];
+  organization?: Organization;
   organizations: OrganizationResponse[];
-  organizationSlug?: string;
   page: number;
   pageSize: number;
   quickFilterValue?: string;
@@ -289,8 +289,8 @@ const AuditLogs = ({
   filterValue: initialFilterValue,
   ingredient,
   logs: initialLogs,
+  organization,
   organizations,
-  organizationSlug,
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,
@@ -360,7 +360,7 @@ const AuditLogs = ({
     isValidating: loading,
   } = useSWR(
     [
-      getAuditLogsPath(organizationSlug),
+      getAuditLogsPath(organization?.slug),
       resource,
       resourceId,
       ancestorId,
@@ -715,6 +715,10 @@ const AuditLogs = ({
       rows={logs}
       sortingMode="server"
       sortModel={sortModel}
+      slotProps={{
+        ...DATA_GRID_PROPS.slotProps,
+        toolbar: { exportDateField: "createdAt" },
+      }}
     />
   );
 };

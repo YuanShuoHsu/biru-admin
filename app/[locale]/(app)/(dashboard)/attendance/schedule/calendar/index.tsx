@@ -35,6 +35,7 @@ import type {
   AttendanceShift,
   AttendanceTemplate,
 } from "@/types/attendance";
+import type { Organization } from "@/types/organizations";
 
 import {
   attendanceCalendarPath,
@@ -145,8 +146,7 @@ interface CalendarProps {
   canCancel: boolean;
   canCreate: boolean;
   employees: AttendanceEmployee[];
-  openingHours: string;
-  organizationSlug: string;
+  organization: Organization;
   shifts: AttendanceShift[];
   templates: AttendanceTemplate[];
   week: string;
@@ -156,8 +156,7 @@ const Calendar = ({
   canCancel,
   canCreate,
   employees,
-  openingHours,
-  organizationSlug,
+  organization: { openingHours = "", slug: organizationSlug },
   shifts: initialShifts,
   templates,
   week,

@@ -41,6 +41,7 @@ import type {
   AttendanceParentalChildSortField,
 } from "@/types/attendance";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { attendancePath } from "@/utils/attendance";
@@ -63,7 +64,7 @@ interface ParentalChildrenProps {
   filterField?: AttendanceParentalChildFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  organizationSlug: string;
+  organization: Organization;
   page: number;
   pageSize: number;
   quickFilterValue?: string;
@@ -81,7 +82,7 @@ const ParentalChildren = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  organizationSlug,
+  organization: { slug: organizationSlug },
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,

@@ -45,6 +45,7 @@ import type {
   AttendanceRequestSortField,
 } from "@/types/attendance";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAttendanceRequestEnumOptions } from "@/utils/enumOptions";
@@ -69,7 +70,7 @@ interface ReviewsProps {
   filterOperator?: FilterOperator;
   filterValue?: string;
   leaveTypes: AttendanceLeaveType[];
-  organizationSlug: string;
+  organization: Organization;
   page: number;
   pageSize: number;
   quickFilterValue?: string;
@@ -86,7 +87,7 @@ const Reviews = ({
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
   leaveTypes,
-  organizationSlug,
+  organization: { slug: organizationSlug },
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,
@@ -432,6 +433,12 @@ const Reviews = ({
       rows={rows}
       sortingMode="server"
       sortModel={sortModel}
+      slotProps={{
+        ...DATA_GRID_PROPS.slotProps,
+        toolbar: {
+          exportDateField: "startsAt",
+        },
+      }}
     />
   );
 };

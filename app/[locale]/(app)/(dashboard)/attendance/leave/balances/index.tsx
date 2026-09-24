@@ -47,6 +47,7 @@ import type {
   AttendanceLeaveType,
 } from "@/types/attendance";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { attendancePath, getStatutoryLeaveName } from "@/utils/attendance";
@@ -69,7 +70,7 @@ interface BalancesProps {
   filterOperator?: FilterOperator;
   filterValue?: string;
   leaveTypes: AttendanceLeaveType[];
-  organizationSlug: string;
+  organization: Organization;
   page: number;
   pageSize: number;
   quickFilterValue?: string;
@@ -87,7 +88,7 @@ const Balances = ({
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
   leaveTypes,
-  organizationSlug,
+  organization: { slug: organizationSlug },
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,

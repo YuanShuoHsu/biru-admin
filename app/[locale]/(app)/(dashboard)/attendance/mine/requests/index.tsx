@@ -57,6 +57,7 @@ import type {
   AttendanceRequestSortField,
 } from "@/types/attendance";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import {
   attendanceErrorKey,
@@ -95,7 +96,7 @@ interface RequestsProps {
   filterValue?: string;
   leaveCases: AttendanceLeaveCase[];
   leaveTypes: AttendanceLeaveType[];
-  organizationSlug: string;
+  organization: Organization;
   page: number;
   pageSize: number;
   quickFilterValue?: string;
@@ -112,7 +113,7 @@ const Requests = ({
   filterValue: initialFilterValue,
   leaveCases,
   leaveTypes,
-  organizationSlug,
+  organization: { slug: organizationSlug },
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,
@@ -540,6 +541,12 @@ const Requests = ({
         rows={rows}
         sortingMode="server"
         sortModel={sortModel}
+        slotProps={{
+          ...DATA_GRID_PROPS.slotProps,
+          toolbar: {
+            exportDateField: "startsAt",
+          },
+        }}
       />
     </>
   );

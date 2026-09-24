@@ -103,7 +103,7 @@ const MenuItemRecipePage = async ({
       canWrite={canWrite}
       ingredients={ingredients}
       menuItem={menuItem}
-      organizationSlug={selectedOrganization.slug}
+      organization={selectedOrganization}
       recipe={recipe}
     />
   );

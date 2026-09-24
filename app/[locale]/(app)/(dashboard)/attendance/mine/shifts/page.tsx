@@ -145,7 +145,7 @@ const MinePage = async ({ params, searchParams }: MinePageProps) => {
         filterField={filterField}
         filterOperator={filterOperator}
         filterValue={filterValue}
-        organizationSlug={organization.slug}
+        organization={organization}
         page={page}
         pageSize={pageSize}
         punchableShifts={punchableShifts}

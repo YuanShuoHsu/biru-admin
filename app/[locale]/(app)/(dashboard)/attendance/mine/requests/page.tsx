@@ -168,7 +168,7 @@ const RequestsPage = async ({ params, searchParams }: RequestsPageProps) => {
         filterValue={filterValue}
         leaveCases={leaveCases}
         leaveTypes={leaveTypes}
-        organizationSlug={organization.slug}
+        organization={organization}
         page={page}
         pageSize={pageSize}
         quickFilterValue={quickFilterValue}

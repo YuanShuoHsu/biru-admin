@@ -46,6 +46,7 @@ import type {
   AttendanceTemplateSortField,
 } from "@/types/attendance";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAttendanceDayKindEnumOptions } from "@/utils/enumOptions";
@@ -80,8 +81,7 @@ interface TemplatesProps {
   filterField?: AttendanceTemplateFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  openingHours: string;
-  organizationSlug: string;
+  organization: Organization;
   page: number;
   pageSize: number;
   quickFilterValue?: string;
@@ -100,8 +100,7 @@ const Templates = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  openingHours,
-  organizationSlug,
+  organization: { openingHours = "", slug: organizationSlug },
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,

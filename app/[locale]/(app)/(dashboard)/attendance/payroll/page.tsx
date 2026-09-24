@@ -151,12 +151,11 @@ const PayrollPage = async ({ params, searchParams }: PayrollPageProps) => {
         canManageTerms={hasRolePermission(memberRole, {
           payrollTerm: ["create", "update"],
         })}
-        currency={organization.currency ?? ""}
         employees={employees}
         filterField={filterField}
         filterOperator={filterOperator}
         filterValue={filterValue}
-        organizationSlug={organization.slug}
+        organization={organization}
         page={page}
         pageSize={pageSize}
         quickFilterValue={quickFilterValue}

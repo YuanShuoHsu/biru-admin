@@ -6,9 +6,9 @@
 
 import { useState } from "react";
 
-import { useRoutes } from "@/hooks/useRoutes";
+import { useRouteSegments } from "@/hooks/useRoutes";
 
-import { Link, usePathname } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
 
 import { MoreHoriz } from "@mui/icons-material";
 import {
@@ -63,13 +63,7 @@ const RouterBreadcrumbs = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const open = Boolean(anchorEl);
 
-  const navItem = useRoutes();
-
-  const pathnames = usePathname().split("/").filter(Boolean);
-
-  const segments = pathnames.map((_, index) =>
-    navItem(`/${pathnames.slice(0, index + 1).join("/")}`),
-  );
+  const segments = useRouteSegments();
 
   const lastSegment = segments.at(-1);
   const isCollapsed = segments.length > MAX_ITEMS;

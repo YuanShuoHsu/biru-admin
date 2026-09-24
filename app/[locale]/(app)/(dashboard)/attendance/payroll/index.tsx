@@ -46,13 +46,13 @@ import type {
   PayrollTerms,
 } from "@/types/attendance";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getPayrollStatementEnumOptions } from "@/utils/enumOptions";
 import {
   fromCents,
   getPayrollAmountColumns,
-  getPayrollExportFileName,
   payrollPath,
 } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
@@ -76,12 +76,11 @@ interface PayrollProps {
   canCreate: boolean;
   canManage: boolean;
   canManageTerms: boolean;
-  currency: string;
   employees: AttendanceEmployee[];
   filterField?: PayrollStatementFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  organizationSlug: string;
+  organization: Organization;
   page: number;
   pageSize: number;
   quickFilterValue?: string;
@@ -96,12 +95,11 @@ const Payroll = ({
   canCreate,
   canManage,
   canManageTerms,
-  currency,
   employees,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  organizationSlug,
+  organization: { currency = "", slug: organizationSlug },
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,
@@ -412,11 +410,6 @@ const Payroll = ({
     ],
   );
 
-  const exportFileName = getPayrollExportFileName(
-    tAttendance("payroll.label"),
-    rows,
-  );
-
   return (
     <>
       {(canManageTerms || canCreate) && (
@@ -458,8 +451,7 @@ const Payroll = ({
         slotProps={{
           ...DATA_GRID_PROPS.slotProps,
           toolbar: {
-            csvOptions: { fileName: exportFileName },
-            printOptions: { fileName: exportFileName },
+            exportDateField: "month",
           },
         }}
       />

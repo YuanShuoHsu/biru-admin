@@ -1,9 +1,15 @@
+import dayjs from "dayjs";
+import timezonePlugin from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+
 import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
 import {
   DEFAULT_PAGE,
   DEFAULT_PAGE_SIZE,
   MAX_PAGE_SIZE,
 } from "@/constants/pagination";
+
+import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { sortDirectionValues } from "@/types/api";
 
@@ -15,6 +21,9 @@ import type {
   GridPaginationModel,
   GridSortModel,
 } from "@mui/x-data-grid";
+
+dayjs.extend(utc);
+dayjs.extend(timezonePlugin);
 
 export interface GridQuery<
   FilterField extends string,
@@ -270,3 +279,25 @@ export const getDataGridSearchParams = (
 
   return params;
 };
+
+export const toExportDate = (value?: dayjs.ConfigType) =>
+  typeof value === "string" && /^\d{4}-\d{2}$/.test(value)
+    ? value
+    : dayjs(value).tz(STORE_TIMEZONE).format("YYYY-MM-DD");
+
+export const getExportDateRange = (dates: (string | null | undefined)[]) => {
+  const sorted = dates.filter((date): date is string => !!date).toSorted();
+  const first = sorted[0];
+  const last = sorted.at(-1);
+
+  return first === last ? first : `${first}~${last}`;
+};
+
+export const getSoleValue = (values: (string | null | undefined)[]) =>
+  new Set(values).size === 1 ? (values[0] ?? undefined) : undefined;
+
+export const getExportFileName = (...parts: (string | null | undefined)[]) =>
+  parts
+    .filter(Boolean)
+    .join("_")
+    .replace(/[\\/:*?"<>|]/g, "-");

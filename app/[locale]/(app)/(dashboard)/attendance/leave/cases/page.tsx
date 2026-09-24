@@ -180,14 +180,13 @@ const LeaveCasesPage = async ({
         })}
         canViewAll={canViewAll}
         canWrite={canWrite}
-        currency={organization.currency ?? ""}
         employeeId={employee?.id}
         employees={employees}
         filterField={filterField}
         filterOperator={filterOperator}
         filterValue={filterValue}
         leaveTypes={leaveTypes}
-        organizationSlug={organization.slug}
+        organization={organization}
         page={page}
         pageSize={pageSize}
         parentalChildren={parentalChildren}

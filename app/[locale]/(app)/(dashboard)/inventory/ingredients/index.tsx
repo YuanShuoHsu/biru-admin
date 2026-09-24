@@ -72,6 +72,7 @@ import { useGridApiRef } from "@mui/x-data-grid";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 import type {
   Ingredient,
   IngredientFilterField,
@@ -149,16 +150,15 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface IngredientsProps {
+  organization: Organization;
   suppliers: Supplier[];
   canRecordTransaction: boolean;
   canViewAuditLog: boolean;
   canViewPurchasing: boolean;
   canWrite: boolean;
-  currency: string;
   filterField?: IngredientFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  organizationSlug: string;
   page: number;
   pageSize: number;
   quickFilterValue?: string;
@@ -173,11 +173,10 @@ const Ingredients = ({
   canViewAuditLog,
   canViewPurchasing,
   canWrite,
-  currency,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  organizationSlug,
+  organization: { currency = "", slug: organizationSlug },
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,

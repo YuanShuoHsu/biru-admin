@@ -38,6 +38,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { Organization } from "@/types/organizations";
 
 import { stringAvatar } from "@/utils/avatar";
+
 import {
   getOrganizationPermissions,
   type OrganizationPermissions,

@@ -146,8 +146,7 @@ const ShiftsPage = async ({ params, searchParams }: ShiftsPageProps) => {
         filterField={filterField}
         filterOperator={filterOperator}
         filterValue={filterValue}
-        openingHours={organization.openingHours ?? ""}
-        organizationSlug={organization.slug}
+        organization={organization}
         page={page}
         pageSize={pageSize}
         quickFilterValue={quickFilterValue}

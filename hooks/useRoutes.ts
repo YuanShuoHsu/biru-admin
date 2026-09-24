@@ -926,3 +926,13 @@ export const useRoutes = () => {
     };
   };
 };
+
+export const useRouteSegments = () => {
+  const navItem = useRoutes();
+
+  const pathnames = usePathname().split("/").filter(Boolean);
+
+  return pathnames.map((_, index) =>
+    navItem(`/${pathnames.slice(0, index + 1).join("/")}`),
+  );
+};

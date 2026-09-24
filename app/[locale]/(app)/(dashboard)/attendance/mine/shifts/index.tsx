@@ -48,6 +48,7 @@ import type {
   AttendanceShiftSortField,
 } from "@/types/attendance";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAttendanceDayKindEnumOptions } from "@/utils/enumOptions";
@@ -86,7 +87,7 @@ interface MineProps {
   filterField?: AttendanceShiftFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  organizationSlug: string;
+  organization: Organization;
   page: number;
   pageSize: number;
   punchableShifts: AttendanceShift[];
@@ -102,7 +103,7 @@ const Mine = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  organizationSlug,
+  organization: { slug: organizationSlug },
   page,
   pageSize,
   punchableShifts,
@@ -438,6 +439,12 @@ const Mine = ({
         rows={rows}
         sortingMode="server"
         sortModel={sortModel}
+        slotProps={{
+          ...DATA_GRID_PROPS.slotProps,
+          toolbar: {
+            exportDateField: "startsAt",
+          },
+        }}
       />
     </>
   );

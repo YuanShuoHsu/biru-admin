@@ -110,11 +110,10 @@ const PayslipsPage = async ({ params, searchParams }: PayslipsPageProps) => {
   return (
     <AttendanceTabsLayout memberRole={memberRole}>
       <Payslips
-        currency={organization.currency ?? ""}
         filterField={filterField}
         filterOperator={filterOperator}
         filterValue={filterValue}
-        organizationSlug={organization.slug}
+        organization={organization}
         page={page}
         pageSize={pageSize}
         quickFilterValue={quickFilterValue}

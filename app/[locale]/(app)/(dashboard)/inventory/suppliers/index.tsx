@@ -47,6 +47,7 @@ import { useGridApiRef } from "@mui/x-data-grid";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 import type {
   Ingredient,
   Supplier,
@@ -88,7 +89,7 @@ interface SuppliersProps {
   filterOperator?: FilterOperator;
   filterValue?: string;
   ingredients: Ingredient[];
-  organizationSlug: string;
+  organization: Organization;
   page: number;
   pageSize: number;
   quickFilterValue?: string;
@@ -105,7 +106,7 @@ const Suppliers = ({
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
   ingredients,
-  organizationSlug,
+  organization: { slug: organizationSlug },
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,

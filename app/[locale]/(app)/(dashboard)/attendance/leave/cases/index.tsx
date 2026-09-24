@@ -50,6 +50,7 @@ import type {
   AttendanceParentalChild,
 } from "@/types/attendance";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import {
@@ -80,14 +81,13 @@ interface LeaveCasesProps {
   canSetDailyPay: boolean;
   canViewAll: boolean;
   canWrite: boolean;
-  currency: string;
   employeeId?: string;
   employees: AttendanceEmployee[];
   filterField?: AttendanceLeaveCaseFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
   leaveTypes: AttendanceLeaveType[];
-  organizationSlug: string;
+  organization: Organization;
   page: number;
   pageSize: number;
   parentalChildren: AttendanceParentalChild[];
@@ -105,14 +105,13 @@ const LeaveCases = ({
   canSetDailyPay,
   canViewAll,
   canWrite,
-  currency,
   employeeId,
   employees,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
   leaveTypes,
-  organizationSlug,
+  organization: { currency = "", slug: organizationSlug },
   page,
   pageSize,
   parentalChildren,

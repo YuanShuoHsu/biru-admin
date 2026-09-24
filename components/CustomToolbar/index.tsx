@@ -5,7 +5,11 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import { type ReactNode, useState } from "react";
+
+import { useOrganizationName } from "@/hooks/organizations";
+import { useRouteSegments } from "@/hooks/useRoutes";
 
 import {
   Cancel,
@@ -30,15 +34,23 @@ import {
   ExportCsv,
   ExportPrint,
   FilterPanelTrigger,
-  type GridCsvExportOptions,
-  type GridPrintExportOptions,
+  gridRowsLookupSelector,
   QuickFilter,
   QuickFilterClear,
   QuickFilterControl,
   QuickFilterTrigger,
   Toolbar,
   ToolbarButton,
+  useGridApiContext,
+  useGridSelector,
 } from "@mui/x-data-grid";
+
+import {
+  getExportDateRange,
+  getExportFileName,
+  getSoleValue,
+  toExportDate,
+} from "@/utils/dataGrid";
 
 const StyledBox = styled(Box)({
   flex: 1,
@@ -88,24 +100,41 @@ const StyledInputAdornment = styled(InputAdornment)(({ theme }) => ({
 declare module "@mui/x-data-grid" {
   interface ToolbarPropsOverrides {
     action?: ReactNode;
+    exportDateField?: string;
   }
 }
 
 interface CustomToolbarProps {
   action?: ReactNode;
-  csvOptions?: GridCsvExportOptions;
-  printOptions?: GridPrintExportOptions;
+  exportDateField?: string;
 }
 
-const CustomToolbar = ({
-  action,
-  csvOptions,
-  printOptions,
-}: CustomToolbarProps) => {
+const CustomToolbar = ({ action, exportDateField }: CustomToolbarProps) => {
+  const apiRef = useGridApiContext();
+
+  const segments = useRouteSegments();
+
+  const organizationName = useOrganizationName(
+    useSearchParams().get("organization"),
+  );
+
   const tToolbar = useTranslations("dataGrid.toolbar");
   const [exportMenuTrigger, setExportMenuTrigger] =
     useState<HTMLElement | null>(null);
   const exportMenuOpen = Boolean(exportMenuTrigger);
+
+  const rows = Object.values(useGridSelector(apiRef, gridRowsLookupSelector));
+
+  const exportFileName = getExportFileName(
+    organizationName,
+    ...segments.map(({ label }) => label),
+    getSoleValue(rows.map((row) => row.employeeName)),
+    exportDateField
+      ? getExportDateRange(
+          rows.map((row) => toExportDate(row[exportDateField])),
+        )
+      : toExportDate(),
+  );
 
   return (
     <Toolbar>
@@ -157,14 +186,14 @@ const CustomToolbar = ({
       >
         <ExportPrint
           onClick={() => setExportMenuTrigger(null)}
-          options={printOptions}
+          options={{ fileName: exportFileName }}
           render={<MenuItem />}
         >
           {tToolbar("export.print")}
         </ExportPrint>
         <ExportCsv
           onClick={() => setExportMenuTrigger(null)}
-          options={csvOptions}
+          options={{ fileName: exportFileName }}
           render={<MenuItem />}
         >
           {tToolbar("export.csv")}

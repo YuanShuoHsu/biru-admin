@@ -43,3 +43,12 @@ export const useActiveMemberRole = () => {
 
   return role ?? undefined;
 };
+
+export const useOrganizationName = (organizationSlug?: string | null) => {
+  const { data: organizations } = useSWR(
+    organizationSlug ? swrKeys.organizations : null,
+    async () => (await authClient.organization.list()).data ?? [],
+  );
+
+  return organizations?.find(({ slug }) => slug === organizationSlug)?.name;
+};

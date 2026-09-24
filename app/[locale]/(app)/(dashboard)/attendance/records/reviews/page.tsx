@@ -155,7 +155,7 @@ const ReviewsPage = async ({ params, searchParams }: ReviewsPageProps) => {
         filterOperator={filterOperator}
         filterValue={filterValue}
         leaveTypes={leaveTypes}
-        organizationSlug={organization.slug}
+        organization={organization}
         page={page}
         pageSize={pageSize}
         quickFilterValue={quickFilterValue}
