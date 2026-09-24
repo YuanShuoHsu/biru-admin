@@ -12,6 +12,8 @@ import CorrectionDialog from "../../CorrectionDialog";
 import EventsDialogContent from "../../EventsDialogContent";
 import OvertimeDialog from "../../OvertimeDialog";
 
+import { renderEmptyableCell } from "@/components/EmptyCell";
+
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -49,7 +51,11 @@ import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAttendanceDayKindEnumOptions } from "@/utils/enumOptions";
-import { attendancePath } from "@/utils/attendance";
+import {
+  attendancePath,
+  formatClockedShift,
+  formatScheduledShift,
+} from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
 
 const ActionsStack = styled(Stack)(({ theme }) => ({
@@ -267,11 +273,6 @@ const Mine = ({
     [mutate, organizationSlug, setDialog, tAttendance],
   );
 
-  const date = useCallback(
-    (value: string) => format.dateTime(new Date(value), "short"),
-    [format],
-  );
-
   const columns = useMemo<GridColDef[]>(
     () => [
       {
@@ -317,14 +318,17 @@ const Mine = ({
       {
         field: "startsAt",
         filterOperators: dateFilterOperators,
-        headerName: tAttendance("startsAt"),
-        valueFormatter: (value: string) => date(value),
+        headerName: tAttendance("scheduledTime"),
+        valueFormatter: (_value, row: AttendanceShift) =>
+          formatScheduledShift(format, row),
       },
       {
-        field: "endsAt",
+        field: "clockInAt",
         filterOperators: dateFilterOperators,
-        headerName: tAttendance("endsAt"),
-        valueFormatter: (value: string) => date(value),
+        headerName: tAttendance("clockedTime"),
+        renderCell: renderEmptyableCell,
+        valueFormatter: (_value, row: AttendanceShift) =>
+          formatClockedShift(format, row),
       },
       {
         field: "dayKind",
@@ -375,7 +379,6 @@ const Mine = ({
       },
     ],
     [
-      date,
       dateFilterOperators,
       enumFilterOperators,
       enumOptions.dayKind,

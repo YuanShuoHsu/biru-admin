@@ -38,6 +38,7 @@
   "childBirthDate": "Birth date",
   "childLabel": "Child label",
   "childReference": "Verified child reference",
+  "clockedTime": "Clocked",
   "confirm": "Confirm this action?",
   "correctionHint": "Enter the actual clock-in and clock-out times; breaks are deducted per the schedule. Approval replaces the effective timeline while preserving originals.",
   "dailyPayCents": "Verified full daily wage ({currency}, including applicable allowances)",
@@ -414,6 +415,7 @@
     "previousWeek": "Previous week",
     "thisWeek": "This week"
   },
+  "scheduledTime": "Scheduled",
   "settings": {
     "actions": {
       "update": "Edit attendance settings"

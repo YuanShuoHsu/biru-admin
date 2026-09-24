@@ -38,6 +38,7 @@
   "childBirthDate": "生年月日",
   "childLabel": "子どもの呼称",
   "childReference": "確認済みの子ども識別番号",
+  "clockedTime": "実際の打刻",
   "confirm": "この操作を実行しますか？",
   "correctionHint": "実際の出退勤時刻を入力してください。休憩はシフトに従って差し引かれます。承認後も元の記録は保持されます。",
   "dailyPayCents": "確認済みの日額全額（{currency}、対象手当を含む）",
@@ -414,6 +415,7 @@
     "previousWeek": "前週",
     "thisWeek": "今週"
   },
+  "scheduledTime": "予定時間",
   "settings": {
     "actions": {
       "update": "勤怠設定を編集"

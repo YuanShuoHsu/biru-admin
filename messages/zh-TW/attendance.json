@@ -38,8 +38,9 @@
   "childBirthDate": "出生日期",
   "childLabel": "子女稱呼",
   "childReference": "子女識別依據編號",
+  "clockedTime": "實際打卡",
   "confirm": "確認執行此操作？",
-  "correctionHint": "補卡請填實際上下班時間，休息依排班扣除。核准後取代有效紀錄，原始紀錄仍保留。",
+  "correctionHint": "請填實際上下班時間，休息依排班扣除。核准後取代有效紀錄，原始紀錄仍保留。",
   "dailyPayCents": "核定每日全薪（{currency}，含應計入的津貼）",
   "dayKind": {
     "label": "日期類型",
@@ -414,6 +415,7 @@
     "previousWeek": "上一週",
     "thisWeek": "本週"
   },
+  "scheduledTime": "排定時段",
   "settings": {
     "actions": {
       "update": "編輯出勤設定"

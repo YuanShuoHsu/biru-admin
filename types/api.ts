@@ -2529,12 +2529,16 @@ export interface components {
       | "employeeName"
       | "startsAt"
       | "endsAt"
+      | "clockInAt"
+      | "clockOutAt"
       | "dayKind";
     /** @enum {string} */
     AttendanceShiftSortField:
       | "employeeName"
       | "startsAt"
       | "endsAt"
+      | "clockInAt"
+      | "clockOutAt"
       | "dayKind"
       | "state";
     ShiftBreakDto: {
@@ -2561,6 +2565,10 @@ export interface components {
       endsAt: string;
       paidBreak: boolean;
       breaks: components["schemas"]["ShiftBreakDto"][];
+      /** Format: date-time */
+      clockInAt?: string | null;
+      /** Format: date-time */
+      clockOutAt?: string | null;
       dayKind: components["schemas"]["AttendanceDayKind"];
       status: string;
       /** @enum {string} */
@@ -11860,10 +11868,25 @@ export const attendanceEmployeeSortFieldValues: ReadonlyArray<
 > = ["name", "email", "hiredAt", "terminatedAt", "employmentType", "status"];
 export const attendanceShiftFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceShiftFilterField"]
-> = ["employeeName", "startsAt", "endsAt", "dayKind"];
+> = [
+  "employeeName",
+  "startsAt",
+  "endsAt",
+  "clockInAt",
+  "clockOutAt",
+  "dayKind",
+];
 export const attendanceShiftSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceShiftSortField"]
-> = ["employeeName", "startsAt", "endsAt", "dayKind", "state"];
+> = [
+  "employeeName",
+  "startsAt",
+  "endsAt",
+  "clockInAt",
+  "clockOutAt",
+  "dayKind",
+  "state",
+];
 export const attendanceDayKindValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceDayKind"]
 > = ["workday", "restDay", "regularLeave", "holiday"];

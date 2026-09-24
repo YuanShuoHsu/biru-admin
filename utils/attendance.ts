@@ -1,4 +1,4 @@
-import type { useTranslations } from "next-intl";
+import type { useFormatter, useTranslations } from "next-intl";
 import dayjs from "dayjs";
 import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
@@ -443,6 +443,36 @@ const attendanceErrorCodes = [
   ...attendanceErrorCodeValues,
   ...payrollBlockerValues,
 ];
+
+type Formatter = ReturnType<typeof useFormatter>;
+
+export const formatScheduledShift = (
+  format: Formatter,
+  { endsAt, startsAt }: Pick<AttendanceShift, "endsAt" | "startsAt">,
+) => format.dateTimeRange(new Date(startsAt), new Date(endsAt), "shift");
+
+export const formatClockedShift = (
+  format: Formatter,
+  {
+    clockInAt,
+    clockOutAt,
+    startsAt,
+  }: Pick<AttendanceShift, "clockInAt" | "clockOutAt" | "startsAt">,
+) => {
+  if (clockInAt == null) return "";
+
+  const shiftDay = dayjs(startsAt).tz(STORE_TIMEZONE);
+  const style = [clockInAt, clockOutAt].every(
+    (value) =>
+      value == null || dayjs(value).tz(STORE_TIMEZONE).isSame(shiftDay, "day"),
+  )
+    ? "shiftTime"
+    : "shiftDateTime";
+
+  return clockOutAt == null
+    ? `${format.dateTime(new Date(clockInAt), style)}–`
+    : format.dateTimeRange(new Date(clockInAt), new Date(clockOutAt), style);
+};
 
 export const attendanceErrorKey = (
   error: unknown,

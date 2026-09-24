@@ -10,6 +10,8 @@ import ShiftDialog from "../../ShiftDialog";
 
 import EventsDialogContent from "../../EventsDialogContent";
 
+import { renderEmptyableCell } from "@/components/EmptyCell";
+
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -47,7 +49,12 @@ import type {
 } from "@/types/attendance";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 
-import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
+import {
+  attendanceErrorKey,
+  attendancePath,
+  formatClockedShift,
+  formatScheduledShift,
+} from "@/utils/attendance";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAttendanceDayKindEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
@@ -289,11 +296,6 @@ const Shifts = ({
     [base, mutate, setDialog, tAttendance],
   );
 
-  const date = useCallback(
-    (value: string) => format.dateTime(new Date(value), "short"),
-    [format],
-  );
-
   const columns = useMemo<GridColDef[]>(
     () => [
       {
@@ -334,14 +336,17 @@ const Shifts = ({
       {
         field: "startsAt",
         filterOperators: dateFilterOperators,
-        headerName: tAttendance("startsAt"),
-        valueFormatter: (value: string) => date(value),
+        headerName: tAttendance("scheduledTime"),
+        valueFormatter: (_value, row: AttendanceShift) =>
+          formatScheduledShift(format, row),
       },
       {
-        field: "endsAt",
+        field: "clockInAt",
         filterOperators: dateFilterOperators,
-        headerName: tAttendance("endsAt"),
-        valueFormatter: (value: string) => date(value),
+        headerName: tAttendance("clockedTime"),
+        renderCell: renderEmptyableCell,
+        valueFormatter: (_value, row: AttendanceShift) =>
+          formatClockedShift(format, row),
       },
       {
         field: "dayKind",
@@ -391,7 +396,6 @@ const Shifts = ({
     ],
     [
       canCancel,
-      date,
       dateFilterOperators,
       enumFilterOperators,
       enumOptions.dayKind,

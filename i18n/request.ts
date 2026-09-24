@@ -24,6 +24,28 @@ export const formats = {
       hour: "numeric",
       minute: "numeric",
     },
+    shift: {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      weekday: "short",
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23",
+    },
+    shiftDateTime: {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23",
+    },
+    shiftTime: {
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23",
+    },
     short: {
       day: "numeric",
       month: "short",
