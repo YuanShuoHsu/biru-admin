@@ -1,7 +1,5 @@
 import { cookies } from "next/headers";
 
-import { StyledStack } from "./styled";
-
 import EcpayAttentionButton from "@/components/EcpayAttentionButton";
 import OrganizationSelect from "@/components/OrganizationSelect";
 
@@ -28,13 +26,13 @@ const ToolbarOrdersListPage = async ({
   });
 
   return (
-    <StyledStack direction="row">
+    <>
       <EcpayAttentionButton organizationSlug={organization} />
       <OrganizationSelect
         organizations={organizations || []}
         organizationSlug={organization}
       />
-    </StyledStack>
+    </>
   );
 };
 
