@@ -287,6 +287,17 @@
     },
     "label": "假别设置"
   },
+  "legalStatus": {
+    "label": "法定身份",
+    "options": {
+      "national": "本国籍",
+      "spouse": "外籍、陆港澳配偶",
+      "formerSpouse": "离婚或丧偶后继续居留",
+      "permanentResident": "永久居留外国人",
+      "foreignStudent": "外国留学生、侨生及华裔学生",
+      "otherForeigner": "其他外国人"
+    }
+  },
   "locationError": "无法获取定位，请确认权限，或提出补卡申请。",
   "locationHint": "所有打卡都需要允许定位并连接门店指定网络。",
   "longitude": {

@@ -287,6 +287,17 @@
     },
     "label": "休暇設定"
   },
+  "legalStatus": {
+    "label": "法的身分",
+    "options": {
+      "national": "本国籍",
+      "spouse": "外国籍・中国大陸・香港・マカオ出身の配偶者",
+      "formerSpouse": "離婚・死別後の継続居留者",
+      "permanentResident": "永住外国人",
+      "foreignStudent": "外国人留学生・僑生・華僑系学生",
+      "otherForeigner": "その他の外国人"
+    }
+  },
   "locationError": "位置情報を取得できません。権限を確認するか修正申請を行ってください。",
   "locationHint": "打刻には位置情報の許可と店舗ネットワークへの接続が必要です。",
   "longitude": {

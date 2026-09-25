@@ -287,6 +287,17 @@
     },
     "label": "Leave policies"
   },
+  "legalStatus": {
+    "label": "Legal status",
+    "options": {
+      "national": "ROC national",
+      "spouse": "Foreign, mainland, HK or Macau spouse",
+      "formerSpouse": "Continued residence after divorce or spouse's death",
+      "permanentResident": "Foreign permanent resident",
+      "foreignStudent": "Foreign, overseas Chinese or ethnic Chinese student",
+      "otherForeigner": "Other foreign national"
+    }
+  },
   "locationError": "Unable to obtain location. Check permissions or submit a correction request.",
   "locationHint": "Every punch requires location permission and the store network.",
   "longitude": {

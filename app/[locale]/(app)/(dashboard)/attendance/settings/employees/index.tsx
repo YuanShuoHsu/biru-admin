@@ -42,6 +42,7 @@ import type {
   AttendanceEmployeeSortField,
   AttendanceEmployeeStatus,
   AttendanceEmploymentType,
+  AttendanceLegalStatus,
   AttendanceMember,
   AttendanceMemberPage,
 } from "@/types/attendance";
@@ -334,6 +335,17 @@ const Employees = ({
         valueOptions: enumOptions.employmentType,
       },
       {
+        field: "legalStatus",
+        filterOperators: enumFilterOperators,
+        headerName: tAttendance("legalStatus.label"),
+        renderCell: renderEmptyableCell,
+        type: "singleSelect",
+        valueFormatter: (value: AttendanceLegalStatus | undefined) =>
+          value ? tAttendance(`legalStatus.options.${value}`) : "",
+        valueGetter: (_, row: AttendanceMember) => row.employee?.legalStatus,
+        valueOptions: enumOptions.legalStatus,
+      },
+      {
         field: "status",
         filterOperators: enumFilterOperators,
         headerName: tAttendance("employeeStatus.label"),
@@ -357,6 +369,7 @@ const Employees = ({
       dateFilterOperators,
       enumFilterOperators,
       enumOptions.employmentType,
+      enumOptions.legalStatus,
       enumOptions.status,
       handleEmployeeDialog,
       stringFilterOperators,

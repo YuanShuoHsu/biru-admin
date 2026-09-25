@@ -6,6 +6,7 @@ import {
   attendanceDayKindValues,
   attendanceEmployeeStatusValues,
   attendanceEmploymentTypeValues,
+  attendanceLegalStatusValues,
   attendanceParentalReturnStatusValues,
   attendanceRequestKindValues,
   attendanceRequestStatusValues,
@@ -212,6 +213,10 @@ export const getAttendanceEmployeeEnumOptions = (
 ) => ({
   employmentType: attendanceEmploymentTypeValues.map((value) => ({
     label: tAttendance(`employmentType.options.${value}`),
+    value,
+  })),
+  legalStatus: attendanceLegalStatusValues.map((value) => ({
+    label: tAttendance(`legalStatus.options.${value}`),
     value,
   })),
   status: attendanceEmployeeStatusValues.map((value) => ({

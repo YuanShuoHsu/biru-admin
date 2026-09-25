@@ -2373,6 +2373,14 @@ export interface components {
     /** @enum {string} */
     AttendanceEmploymentType: "fullTime" | "partTime";
     /** @enum {string} */
+    AttendanceLegalStatus:
+      | "national"
+      | "spouse"
+      | "formerSpouse"
+      | "permanentResident"
+      | "foreignStudent"
+      | "otherForeigner";
+    /** @enum {string} */
     AttendanceEmployeeStatus:
       | "unconfigured"
       | "upcoming"
@@ -2385,6 +2393,7 @@ export interface components {
       userId: string;
       name: string;
       employmentType: components["schemas"]["AttendanceEmploymentType"];
+      legalStatus: components["schemas"]["AttendanceLegalStatus"];
       enabled: boolean;
       /** Format: date-time */
       hiredAt: string;
@@ -2432,6 +2441,7 @@ export interface components {
       | "hiredAt"
       | "terminatedAt"
       | "employmentType"
+      | "legalStatus"
       | "status";
     /** @enum {string} */
     AttendanceEmployeeSortField:
@@ -2440,6 +2450,7 @@ export interface components {
       | "hiredAt"
       | "terminatedAt"
       | "employmentType"
+      | "legalStatus"
       | "status";
     AttendanceEmploymentResponseDto: {
       id: string;
@@ -2447,6 +2458,7 @@ export interface components {
       userId: string;
       name: string;
       employmentType: components["schemas"]["AttendanceEmploymentType"];
+      legalStatus: components["schemas"]["AttendanceLegalStatus"];
       enabled: boolean;
       /** Format: date-time */
       hiredAt: string;
@@ -2475,6 +2487,7 @@ export interface components {
       total: number;
     };
     SaveAttendanceEmployeeDto: {
+      legalStatus: components["schemas"]["AttendanceLegalStatus"];
       userId: string;
       enabled: boolean;
       hiredAt: string;
@@ -11808,6 +11821,16 @@ export const attendanceErrorCodeValues: ReadonlyArray<
 export const attendanceEmploymentTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceEmploymentType"]
 > = ["fullTime", "partTime"];
+export const attendanceLegalStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["AttendanceLegalStatus"]
+> = [
+  "national",
+  "spouse",
+  "formerSpouse",
+  "permanentResident",
+  "foreignStudent",
+  "otherForeigner",
+];
 export const attendanceEmployeeStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceEmployeeStatus"]
 > = ["unconfigured", "upcoming", "active", "disabled", "terminated"];
@@ -11841,10 +11864,26 @@ export const sortDirectionValues: ReadonlyArray<
 > = ["asc", "desc"];
 export const attendanceEmployeeFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceEmployeeFilterField"]
-> = ["name", "email", "hiredAt", "terminatedAt", "employmentType", "status"];
+> = [
+  "name",
+  "email",
+  "hiredAt",
+  "terminatedAt",
+  "employmentType",
+  "legalStatus",
+  "status",
+];
 export const attendanceEmployeeSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceEmployeeSortField"]
-> = ["name", "email", "hiredAt", "terminatedAt", "employmentType", "status"];
+> = [
+  "name",
+  "email",
+  "hiredAt",
+  "terminatedAt",
+  "employmentType",
+  "legalStatus",
+  "status",
+];
 export const attendanceShiftFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceShiftFilterField"]
 > = [

@@ -287,6 +287,17 @@
     },
     "label": "휴가 정책"
   },
+  "legalStatus": {
+    "label": "법적 신분",
+    "options": {
+      "national": "본국적",
+      "spouse": "외국·중국 대륙·홍콩·마카오 출신 배우자",
+      "formerSpouse": "이혼·사별 후 계속 거류자",
+      "permanentResident": "영주 외국인",
+      "foreignStudent": "외국인 유학생·교포·화교 학생",
+      "otherForeigner": "기타 외국인"
+    }
+  },
   "locationError": "위치를 가져올 수 없습니다. 권한을 확인하거나 정정을 신청하세요.",
   "locationHint": "기록하려면 위치 권한과 매장 네트워크가 필요합니다.",
   "longitude": {

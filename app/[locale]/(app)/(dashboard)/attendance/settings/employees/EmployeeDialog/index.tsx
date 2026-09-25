@@ -16,11 +16,13 @@ import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Checkbox, FormControlLabel, TextField } from "@mui/material";
+import { Checkbox, FormControlLabel, MenuItem, TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
+
+import { attendanceLegalStatusValues } from "@/types/api";
 
 import type {
   AttendanceMember,
@@ -67,15 +69,16 @@ const EmployeeDialog = ({
       hiredAt:
         employee?.hiredAt ??
         dayjs(member.joinedAt).tz(STORE_TIMEZONE).startOf("day").toISOString(),
+      legalStatus: employee?.legalStatus ?? "national",
       terminatedAt: employee?.terminatedAt ?? "",
       userId: member.userId,
     },
     resolver: zodResolver(employeeFormSchema),
   });
 
-  const [enabled, hiredAt, terminatedAt] = useWatch({
+  const [enabled, hiredAt, legalStatus, terminatedAt] = useWatch({
     control,
-    name: ["enabled", "hiredAt", "terminatedAt"],
+    name: ["enabled", "hiredAt", "legalStatus", "terminatedAt"],
   });
 
   const onSubmitHandler = async (values: EmployeeForm) => {
@@ -85,6 +88,7 @@ const EmployeeDialog = ({
       const body: SaveAttendanceEmployee = {
         enabled: values.enabled,
         hiredAt: values.hiredAt,
+        legalStatus: values.legalStatus,
         userId: values.userId,
         ...(values.terminatedAt && { terminatedAt: values.terminatedAt }),
       };
@@ -121,6 +125,25 @@ const EmployeeDialog = ({
         slotProps={{ input: { readOnly: true } }}
         value={member.name}
       />
+      <TextField
+        fullWidth
+        label={tAttendance("legalStatus.label")}
+        onChange={(event) =>
+          setValue(
+            "legalStatus",
+            event.target.value as EmployeeForm["legalStatus"],
+          )
+        }
+        required
+        select
+        value={legalStatus}
+      >
+        {attendanceLegalStatusValues.map((value) => (
+          <MenuItem key={value} value={value}>
+            {tAttendance(`legalStatus.options.${value}`)}
+          </MenuItem>
+        ))}
+      </TextField>
       <DatePicker
         label={tAttendance("hiredAt")}
         maxDate={

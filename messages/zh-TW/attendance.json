@@ -287,6 +287,17 @@
     },
     "label": "假別設定"
   },
+  "legalStatus": {
+    "label": "法定身分",
+    "options": {
+      "national": "本國籍",
+      "spouse": "外籍、陸港澳配偶",
+      "formerSpouse": "離婚或喪偶後繼續居留",
+      "permanentResident": "永久居留外國人",
+      "foreignStudent": "外國留學生、僑生及華裔學生",
+      "otherForeigner": "其他外國人"
+    }
+  },
   "locationError": "無法取得定位，請確認定位權限；無法打卡時可提出補卡申請。",
   "locationHint": "所有打卡都需要允許定位並連接店家指定網路。",
   "longitude": {
