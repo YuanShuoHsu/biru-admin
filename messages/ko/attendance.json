@@ -114,7 +114,6 @@
       "partTime": "파트타임"
     }
   },
-  "empty": "아직 기록이 없습니다",
   "enabled": "활성화",
   "endsAt": "종료 시간",
   "errors": {
@@ -528,7 +527,20 @@
     "label": "주간 근무표",
     "nextWeek": "다음 주",
     "previousWeek": "이전 주",
-    "thisWeek": "이번 주"
+    "thisWeek": "이번 주",
+    "allDay": "종일",
+    "calendarContent": "근무표",
+    "closeSidePanel": "사이드 패널 닫기",
+    "openSidePanel": "사이드 패널 열기",
+    "openMenu": "메뉴 열기",
+    "eventActions": "근무 작업",
+    "showDetails": "출퇴근 기록 보기",
+    "endsOn": "{date} 종료",
+    "moreEvents": "{count}건 더 보기",
+    "miniCalendar": "달력",
+    "previousMonth": "이전 달",
+    "nextMonth": "다음 달",
+    "employeeLabel": "직원: {name}"
   },
   "scheduledTime": "예정 시간",
   "settings": {

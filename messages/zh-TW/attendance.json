@@ -114,7 +114,6 @@
       "partTime": "兼職"
     }
   },
-  "empty": "目前沒有資料",
   "enabled": "啟用",
   "endsAt": "結束時間",
   "errors": {
@@ -528,7 +527,20 @@
     "label": "週班表",
     "nextWeek": "下一週",
     "previousWeek": "上一週",
-    "thisWeek": "本週"
+    "thisWeek": "本週",
+    "allDay": "全天",
+    "calendarContent": "班表內容",
+    "closeSidePanel": "收合側欄",
+    "openSidePanel": "展開側欄",
+    "openMenu": "開啟選單",
+    "eventActions": "班次操作",
+    "showDetails": "查看打卡明細",
+    "endsOn": "{date} 結束",
+    "moreEvents": "還有 {count} 筆",
+    "miniCalendar": "月曆",
+    "previousMonth": "上個月",
+    "nextMonth": "下個月",
+    "employeeLabel": "員工：{name}"
   },
   "scheduledTime": "排定時段",
   "settings": {

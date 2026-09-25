@@ -1,3 +1,4 @@
+import { enUS, ja, ko, zhCN, zhTW } from "date-fns/locale";
 import type { CountryCode } from "libphonenumber-js";
 
 import { LocaleEnum } from "@/enums/Locale";
@@ -8,6 +9,7 @@ import * as muiLocales from "@mui/material/locale";
 import type { ThemeOptions } from "@mui/material/styles";
 import * as dataGridLocales from "@mui/x-data-grid/locales";
 import * as pickersLocales from "@mui/x-date-pickers/locales";
+import * as schedulerLocales from "@mui/x-scheduler/locales";
 
 import type { EcpayLanguage } from "@/types/ecpay";
 
@@ -28,7 +30,13 @@ export const localeConfigs: Record<Locale, LocaleConfig> = {
     dayjs: "zh-tw",
     label: "繁體中文",
     monthFormat: "YYYY/MM",
-    mui: [dataGridLocales.zhTW, muiLocales.zhTW, pickersLocales.zhTW],
+    mui: [
+      dataGridLocales.zhTW,
+      muiLocales.zhTW,
+      pickersLocales.zhTW,
+      schedulerLocales.zhTW,
+      schedulerLocales.createDateLocaleTheme(zhTW),
+    ],
   },
   [LocaleEnum.En]: {
     countryCode: "US",
@@ -36,7 +44,13 @@ export const localeConfigs: Record<Locale, LocaleConfig> = {
     ecpayLanguage: "ENG",
     label: "English",
     monthFormat: "MM/YYYY",
-    mui: [dataGridLocales.enUS, muiLocales.enUS, pickersLocales.enUS],
+    mui: [
+      dataGridLocales.enUS,
+      muiLocales.enUS,
+      pickersLocales.enUS,
+      schedulerLocales.enUS,
+      schedulerLocales.createDateLocaleTheme(enUS),
+    ],
   },
   [LocaleEnum.Ja]: {
     countryCode: "JP",
@@ -44,7 +58,13 @@ export const localeConfigs: Record<Locale, LocaleConfig> = {
     ecpayLanguage: "JPN",
     label: "日本語",
     monthFormat: "YYYY/MM",
-    mui: [dataGridLocales.jaJP, muiLocales.jaJP, pickersLocales.jaJP],
+    mui: [
+      dataGridLocales.jaJP,
+      muiLocales.jaJP,
+      pickersLocales.jaJP,
+      schedulerLocales.jaJP,
+      schedulerLocales.createDateLocaleTheme(ja),
+    ],
   },
   [LocaleEnum.Ko]: {
     countryCode: "KR",
@@ -52,7 +72,13 @@ export const localeConfigs: Record<Locale, LocaleConfig> = {
     ecpayLanguage: "KOR",
     label: "한국어",
     monthFormat: "YYYY.MM.",
-    mui: [dataGridLocales.koKR, muiLocales.koKR, pickersLocales.koKR],
+    mui: [
+      dataGridLocales.koKR,
+      muiLocales.koKR,
+      pickersLocales.koKR,
+      schedulerLocales.koKR,
+      schedulerLocales.createDateLocaleTheme(ko),
+    ],
   },
   [LocaleEnum.ZhCN]: {
     countryCode: "CN",
@@ -60,6 +86,12 @@ export const localeConfigs: Record<Locale, LocaleConfig> = {
     ecpayLanguage: "CHI",
     label: "简体中文",
     monthFormat: "YYYY/MM",
-    mui: [dataGridLocales.zhCN, muiLocales.zhCN, pickersLocales.zhCN],
+    mui: [
+      dataGridLocales.zhCN,
+      muiLocales.zhCN,
+      pickersLocales.zhCN,
+      schedulerLocales.zhCN,
+      schedulerLocales.createDateLocaleTheme(zhCN),
+    ],
   },
 };

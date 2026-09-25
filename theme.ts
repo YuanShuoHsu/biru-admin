@@ -21,6 +21,7 @@ import type {} from "@mui/material/themeCssVarsAugmentation";
 import type {} from "@mui/x-data-grid/themeAugmentation";
 import type {} from "@mui/x-date-pickers/AdapterDayjs";
 import type {} from "@mui/x-date-pickers/themeAugmentation";
+import type {} from "@mui/x-scheduler/theme-augmentation";
 
 const theme = createTheme({
   colorSchemes: {

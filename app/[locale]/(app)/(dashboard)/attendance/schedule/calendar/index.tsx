@@ -16,17 +16,18 @@ import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
-import { Add, ChevronLeft, ChevronRight, Close } from "@mui/icons-material";
-import {
-  Box,
-  Button,
-  IconButton,
-  Paper,
-  Stack,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Add } from "@mui/icons-material";
+import { Box, Button, Stack } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import {
+  EventCalendar,
+  type EventCalendarProps,
+} from "@mui/x-scheduler/event-calendar";
+import type {
+  SchedulerEvent,
+  SchedulerEventColor,
+  SchedulerResource,
+} from "@mui/x-scheduler/models";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -42,6 +43,7 @@ import {
   attendanceErrorKey,
   attendancePath,
   WEEK_DAYS,
+  weekStart,
 } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
 import { scheduledHours } from "@/utils/scheduledHours";
@@ -50,99 +52,25 @@ dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
 
 const ToolbarStack = styled(Stack)(({ theme }) => ({
-  alignItems: "center",
-  flexWrap: "wrap",
   gap: theme.spacing(1),
+  justifyContent: "flex-end",
 }));
 
-const SpacerBox = styled(Box)({
-  flexGrow: 1,
+const CalendarBox = styled(Box)({
+  height: 720,
 });
 
-const StyledPaper = styled(Paper)({
-  overflowX: "auto",
-});
-
-const Grid = styled(Box)({
-  display: "grid",
-  gridTemplateColumns: `minmax(112px, max-content) repeat(${WEEK_DAYS}, minmax(112px, 1fr))`,
-  minWidth: "max-content",
-  width: "100%",
-});
-
-const Cell = styled(Box)(({ theme }) => ({
-  borderBottom: `1px solid ${theme.vars.palette.divider}`,
-  borderInlineEnd: `1px solid ${theme.vars.palette.divider}`,
-  transition: theme.transitions.create(["background-color", "border-color"]),
-}));
-
-const HeadCell = styled(Cell, {
-  shouldForwardProp: (prop) => prop !== "today",
-})<{ today: boolean }>(({ theme, today }) => ({
-  ...(today && { backgroundColor: theme.vars.palette.action.hover }),
-  padding: theme.spacing(1),
-  textAlign: "center",
-}));
-
-const NameCell = styled(Cell)(({ theme }) => ({
-  backgroundColor: theme.vars.palette.background.paper,
-  left: 0,
-  padding: theme.spacing(1),
-  position: "sticky",
-  zIndex: 1,
-}));
-
-const RowBox = styled(Box)({
-  display: "contents",
-});
-
-const DayCell = styled(Cell, {
-  shouldForwardProp: (prop) => prop !== "today",
-})<{ today: boolean }>(({ theme, today }) => ({
-  ...(today && { backgroundColor: theme.vars.palette.action.hover }),
-  display: "flex",
-  flexDirection: "column",
-  gap: theme.spacing(0.5),
-  minHeight: theme.spacing(8),
-  padding: theme.spacing(0.5),
-}));
-
-const ShiftCard = styled(Stack, {
-  shouldForwardProp: (prop) => prop !== "muted",
-})<{ muted: boolean }>(({ muted, theme }) => ({
-  alignItems: "center",
-  backgroundColor: muted
-    ? theme.vars.palette.action.selected
-    : theme.vars.palette.primary.main,
-  borderRadius: theme.shape.borderRadius,
-  color: muted
-    ? theme.vars.palette.text.primary
-    : theme.vars.palette.primary.contrastText,
-  flexDirection: "row",
-  gap: theme.spacing(0.5),
-  justifyContent: "space-between",
-  paddingInlineStart: theme.spacing(0.75),
-  transition: theme.transitions.create(["background-color", "color"]),
-}));
-
-const ShiftButton = styled("button")({
-  flexGrow: 1,
-  background: "none",
-  border: 0,
-  color: "inherit",
-  cursor: "pointer",
-  font: "inherit",
-  padding: 0,
-  textAlign: "start",
-});
-
-const StyledIconButton = styled(IconButton)({
-  alignSelf: "center",
-});
-
-const StyledTypography = styled(Typography)(({ theme }) => ({
-  padding: theme.spacing(2),
-}));
+const EMPLOYEE_COLORS: SchedulerEventColor[] = [
+  "teal",
+  "indigo",
+  "orange",
+  "purple",
+  "green",
+  "pink",
+  "blue",
+  "amber",
+  "lime",
+];
 
 interface CalendarProps {
   canCancel: boolean;
@@ -173,12 +101,6 @@ const Calendar = ({
 
   const start = useMemo(() => dayjs.tz(week, STORE_TIMEZONE), [week]);
 
-  const days = useMemo(
-    () =>
-      Array.from({ length: WEEK_DAYS }, (_, index) => start.add(index, "day")),
-    [start],
-  );
-
   const path = attendanceCalendarPath(
     organizationSlug,
     start.toISOString(),
@@ -191,45 +113,64 @@ const Calendar = ({
     { fallbackData: initialShifts },
   );
 
-  const byEmployee = useMemo(() => {
-    const grouped = new Map<string, AttendanceShift[]>();
-
-    for (const shift of shifts) {
-      if (shift.status === "cancelled") continue;
-
-      for (const day of days) {
-        if (
-          dayjs(shift.startsAt).valueOf() >= day.add(1, "day").valueOf() ||
-          dayjs(shift.endsAt).valueOf() <= day.valueOf()
-        )
-          continue;
-
-        const key = `${shift.employeeId}:${day.format("YYYY-MM-DD")}`;
-        grouped.set(key, [...(grouped.get(key) ?? []), shift]);
-      }
-    }
-
-    return grouped;
-  }, [days, shifts]);
-
-  const hoursByEmployee = useMemo(() => {
-    const totals = new Map<string, number>();
+  const resources = useMemo<SchedulerResource[]>(() => {
     const from = start.valueOf();
     const to = start.add(WEEK_DAYS, "day").valueOf();
 
-    for (const shift of shifts) {
-      totals.set(
-        shift.employeeId,
-        (totals.get(shift.employeeId) ?? 0) + scheduledHours(shift, from, to),
-      );
-    }
+    return employees.map(({ id, name }, index) => {
+      const hours = shifts
+        .filter(({ employeeId }) => employeeId === id)
+        .reduce((total, shift) => total + scheduledHours(shift, from, to), 0);
 
-    return totals;
-  }, [shifts, start]);
+      return {
+        eventColor: EMPLOYEE_COLORS[index % EMPLOYEE_COLORS.length],
+        id,
+        title: `${name} · ${tAttendance("schedule.scheduledHours", {
+          hours: format.number(hours, { maximumFractionDigits: 2 }),
+        })}`,
+      };
+    });
+  }, [employees, format, shifts, start, tAttendance]);
 
-  const goToWeek = useCallback(
-    (value: string) => updateQuery({ week: value }),
-    [updateQuery],
+  const events = useMemo<SchedulerEvent[]>(
+    () =>
+      shifts
+        .filter(({ status }) => status !== "cancelled")
+        .map((shift) => ({
+          ...(shift.dayKind !== "workday" && { color: "grey" }),
+          end: shift.endsAt,
+          id: shift.id,
+          readOnly: true,
+          resource: shift.employeeId,
+          start: shift.startsAt,
+          title: shift.employeeName,
+        })),
+    [shifts],
+  );
+
+  const localeText = useMemo<EventCalendarProps<object, object>["localeText"]>(
+    () => ({
+      allDay: tAttendance("schedule.allDay"),
+      calendarContentAriaLabel: tAttendance("schedule.calendarContent"),
+      closeSidePanel: tAttendance("schedule.closeSidePanel"),
+      eventContextMenuAriaLabel: tAttendance("schedule.eventActions"),
+      eventItemMultiDayLabel: (date) =>
+        tAttendance("schedule.endsOn", { date }),
+      hiddenEvents: (count) => tAttendance("schedule.moreEvents", { count }),
+      miniCalendarGoToNextMonth: tAttendance("schedule.nextMonth"),
+      miniCalendarGoToPreviousMonth: tAttendance("schedule.previousMonth"),
+      miniCalendarLabel: tAttendance("schedule.miniCalendar"),
+      nextTimeSpan: () => tAttendance("schedule.nextWeek"),
+      openMenu: tAttendance("schedule.openMenu"),
+      openSidePanel: tAttendance("schedule.openSidePanel"),
+      previousTimeSpan: () => tAttendance("schedule.previousWeek"),
+      resourceAriaLabel: (name) =>
+        tAttendance("schedule.employeeLabel", { name }),
+      resourcesLabel: tAttendance("employee"),
+      showEventDetails: tAttendance("schedule.showDetails"),
+      today: tAttendance("schedule.thisWeek"),
+    }),
+    [tAttendance],
   );
 
   const handleCreate = useCallback(
@@ -274,86 +215,70 @@ const Calendar = ({
   );
 
   const handleViewEvents = useCallback(
-    (shift: AttendanceShift) =>
+    (shift: AttendanceShift) => {
+      const cancellable = canCancel && shift.state === "scheduled";
+
       setDialog({
+        confirmText: tAttendance("cancelShift"),
         content: <EventsDialogContent shift={shift} />,
+        onConfirm: cancellable
+          ? async () => {
+              try {
+                await fetcher(
+                  `${attendancePath(organizationSlug, "org", "shifts")}/${shift.id}/cancel`,
+                  { method: "PATCH" },
+                );
+
+                enqueueSnackbar(tAttendance("success"), {
+                  variant: "success",
+                });
+                mutate();
+              } catch (error) {
+                enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+                  variant: "error",
+                });
+              }
+            }
+          : undefined,
         open: true,
-        showConfirm: false,
+        showConfirm: cancellable,
         title: tAttendance("events"),
-      }),
-    [setDialog, tAttendance],
+      });
+    },
+    [canCancel, mutate, organizationSlug, setDialog, tAttendance],
   );
 
-  const handleCancel = useCallback(
-    ({ id }: AttendanceShift) =>
-      setDialog({
-        contentText: tAttendance("confirm"),
-        onConfirm: async () => {
-          try {
-            await fetcher(
-              `${attendancePath(organizationSlug, "org", "shifts")}/${id}/cancel`,
-              { method: "PATCH" },
-            );
+  const handleEventEditingStart = useCallback<
+    NonNullable<EventCalendarProps<object, object>["onEventEditingStart"]>
+  >(
+    (_, eventDetails) => {
+      eventDetails.cancel();
 
-            enqueueSnackbar(tAttendance("success"), { variant: "success" });
-            mutate();
-          } catch (error) {
-            enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
-              variant: "error",
-            });
-          }
-        },
-        open: true,
-        title: tAttendance("cancelShift"),
-      }),
-    [mutate, organizationSlug, setDialog, tAttendance],
+      if (eventDetails.reason === "creation") {
+        const { displayTimezone, resource } = eventDetails.occurrence;
+
+        handleCreate(
+          typeof resource === "string" ? resource : undefined,
+          dayjs(displayTimezone.start.value)
+            .tz(STORE_TIMEZONE)
+            .format("YYYY-MM-DD"),
+        );
+        return;
+      }
+
+      const shift = shifts.find(({ id }) => id === eventDetails.occurrence.id);
+
+      if (shift) handleViewEvents(shift);
+    },
+    [handleCreate, handleViewEvents, shifts],
   );
 
-  const time = useCallback(
-    (value: string | number) =>
-      format.dateTime(new Date(value), "time", { timeZone: STORE_TIMEZONE }),
-    [format],
-  );
-
-  const today = dayjs().tz(STORE_TIMEZONE).format("YYYY-MM-DD");
+  const visibleDate = useMemo(() => start.toDate(), [start]);
 
   return (
     <>
-      <ToolbarStack direction="row">
-        <Tooltip title={tAttendance("schedule.previousWeek")}>
-          <IconButton
-            onClick={() =>
-              goToWeek(start.subtract(WEEK_DAYS, "day").format("YYYY-MM-DD"))
-            }
-            size="small"
-          >
-            <ChevronLeft />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title={tAttendance("schedule.nextWeek")}>
-          <IconButton
-            onClick={() =>
-              goToWeek(start.add(WEEK_DAYS, "day").format("YYYY-MM-DD"))
-            }
-            size="small"
-          >
-            <ChevronRight />
-          </IconButton>
-        </Tooltip>
-        <Button onClick={() => goToWeek(today)} size="small">
-          {tAttendance("schedule.thisWeek")}
-        </Button>
-        <Typography variant="subtitle1">
-          {[start, start.add(WEEK_DAYS - 1, "day")]
-            .map((day) =>
-              format.dateTime(day.toDate(), "monthDay", {
-                timeZone: STORE_TIMEZONE,
-              }),
-            )
-            .join(" – ")}
-        </Typography>
-        <SpacerBox />
-        {canCreate && (
+      {canCreate && (
+        <ToolbarStack direction="row">
           <Button
             onClick={() => handleCreate()}
             size="small"
@@ -362,112 +287,37 @@ const Calendar = ({
           >
             {tAttendance("shifts.actions.create")}
           </Button>
-        )}
-        {canCreate && templates.length > 0 && (
-          <Button onClick={handleApplyTemplate} size="small">
-            {tAttendance("schedule.applyTemplate")}
-          </Button>
-        )}
-      </ToolbarStack>
-      <StyledPaper variant="outlined">
-        <Grid>
-          <NameCell />
-          {days.map((day) => (
-            <HeadCell
-              key={day.format("YYYY-MM-DD")}
-              today={day.format("YYYY-MM-DD") === today}
-            >
-              <Typography variant="body2">
-                {format.dateTime(day.toDate(), "weekday", {
-                  timeZone: STORE_TIMEZONE,
-                })}
-              </Typography>
-              <Typography color="textSecondary" variant="caption">
-                {format.dateTime(day.toDate(), "monthDay", {
-                  timeZone: STORE_TIMEZONE,
-                })}
-              </Typography>
-            </HeadCell>
-          ))}
-          {employees.map(({ id: employeeId, name }) => (
-            <RowBox key={employeeId}>
-              <NameCell>
-                <Typography variant="body2">{name}</Typography>
-                <Typography color="textSecondary" variant="caption">
-                  {tAttendance("schedule.scheduledHours", {
-                    hours: format.number(hoursByEmployee.get(employeeId) ?? 0, {
-                      maximumFractionDigits: 2,
-                    }),
-                  })}
-                </Typography>
-              </NameCell>
-              {days.map((day) => {
-                const date = day.format("YYYY-MM-DD");
-                const cellShifts =
-                  byEmployee.get(`${employeeId}:${date}`) ?? [];
-
-                return (
-                  <DayCell key={date} today={date === today}>
-                    {cellShifts.map((shift) => (
-                      <ShiftCard
-                        key={shift.id}
-                        muted={shift.dayKind !== "workday"}
-                      >
-                        <ShiftButton
-                          onClick={() => handleViewEvents(shift)}
-                          type="button"
-                        >
-                          <Typography noWrap variant="caption">
-                            {time(
-                              Math.max(
-                                dayjs(shift.startsAt).valueOf(),
-                                day.valueOf(),
-                              ),
-                            )}
-                            {"–"}
-                            {time(
-                              Math.min(
-                                dayjs(shift.endsAt).valueOf(),
-                                day.add(1, "day").valueOf(),
-                              ),
-                            )}
-                          </Typography>
-                        </ShiftButton>
-                        {canCancel && shift.state === "scheduled" && (
-                          <Tooltip title={tAttendance("cancelShift")}>
-                            <IconButton
-                              color="inherit"
-                              onClick={() => handleCancel(shift)}
-                              size="small"
-                            >
-                              <Close fontSize="inherit" />
-                            </IconButton>
-                          </Tooltip>
-                        )}
-                      </ShiftCard>
-                    ))}
-                    {canCreate && (
-                      <Tooltip title={tAttendance("shifts.actions.create")}>
-                        <StyledIconButton
-                          onClick={() => handleCreate(employeeId, date)}
-                          size="small"
-                        >
-                          <Add fontSize="inherit" />
-                        </StyledIconButton>
-                      </Tooltip>
-                    )}
-                  </DayCell>
-                );
-              })}
-            </RowBox>
-          ))}
-        </Grid>
-        {!employees.length && (
-          <StyledTypography color="textSecondary" variant="body2">
-            {tAttendance("empty")}
-          </StyledTypography>
-        )}
-      </StyledPaper>
+          {templates.length > 0 && (
+            <Button onClick={handleApplyTemplate} size="small">
+              {tAttendance("schedule.applyTemplate")}
+            </Button>
+          )}
+        </ToolbarStack>
+      )}
+      <CalendarBox>
+        <EventCalendar
+          areEventsDraggable={false}
+          areEventsResizable={false}
+          // 須與 weekStart() 的週日起算一致，否則畫面週與 URL 的 week 錯開
+          defaultPreferences={{ ampm: false, weekStartsOn: 0 }}
+          displayTimezone={STORE_TIMEZONE}
+          events={events}
+          localeText={localeText}
+          onEventEditingStart={handleEventEditingStart}
+          onVisibleDateChange={(value) =>
+            updateQuery({
+              week: weekStart(
+                dayjs(value).tz(STORE_TIMEZONE).format("YYYY-MM-DD"),
+              ),
+            })
+          }
+          preferencesMenuConfig={false}
+          readOnly={!canCreate}
+          resources={resources}
+          views={["week"]}
+          visibleDate={visibleDate}
+        />
+      </CalendarBox>
     </>
   );
 };

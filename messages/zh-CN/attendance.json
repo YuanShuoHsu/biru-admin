@@ -114,7 +114,6 @@
       "partTime": "兼职"
     }
   },
-  "empty": "目前没有数据",
   "enabled": "启用",
   "endsAt": "结束时间",
   "errors": {
@@ -528,7 +527,20 @@
     "label": "周班表",
     "nextWeek": "下一周",
     "previousWeek": "上一周",
-    "thisWeek": "本周"
+    "thisWeek": "本周",
+    "allDay": "全天",
+    "calendarContent": "排班内容",
+    "closeSidePanel": "收起侧栏",
+    "openSidePanel": "展开侧栏",
+    "openMenu": "打开菜单",
+    "eventActions": "班次操作",
+    "showDetails": "查看打卡明细",
+    "endsOn": "{date} 结束",
+    "moreEvents": "还有 {count} 条",
+    "miniCalendar": "月历",
+    "previousMonth": "上个月",
+    "nextMonth": "下个月",
+    "employeeLabel": "员工：{name}"
   },
   "scheduledTime": "排定时段",
   "settings": {

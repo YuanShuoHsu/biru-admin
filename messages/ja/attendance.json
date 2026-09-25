@@ -114,7 +114,6 @@
       "partTime": "パートタイム"
     }
   },
-  "empty": "データはありません",
   "enabled": "有効",
   "endsAt": "終了日時",
   "errors": {
@@ -528,7 +527,20 @@
     "label": "週間シフト",
     "nextWeek": "翌週",
     "previousWeek": "前週",
-    "thisWeek": "今週"
+    "thisWeek": "今週",
+    "allDay": "終日",
+    "calendarContent": "シフト表",
+    "closeSidePanel": "サイドパネルを閉じる",
+    "openSidePanel": "サイドパネルを開く",
+    "openMenu": "メニューを開く",
+    "eventActions": "シフト操作",
+    "showDetails": "打刻明細を見る",
+    "endsOn": "{date} 終了",
+    "moreEvents": "他 {count} 件",
+    "miniCalendar": "カレンダー",
+    "previousMonth": "前月",
+    "nextMonth": "翌月",
+    "employeeLabel": "従業員：{name}"
   },
   "scheduledTime": "予定時間",
   "settings": {

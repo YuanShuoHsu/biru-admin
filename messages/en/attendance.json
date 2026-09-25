@@ -114,7 +114,6 @@
       "partTime": "Part-time"
     }
   },
-  "empty": "No records yet",
   "enabled": "Enabled",
   "endsAt": "End time",
   "errors": {
@@ -528,7 +527,20 @@
     "label": "Weekly roster",
     "nextWeek": "Next week",
     "previousWeek": "Previous week",
-    "thisWeek": "This week"
+    "thisWeek": "This week",
+    "allDay": "All day",
+    "calendarContent": "Schedule",
+    "closeSidePanel": "Close side panel",
+    "openSidePanel": "Open side panel",
+    "openMenu": "Open menu",
+    "eventActions": "Shift actions",
+    "showDetails": "View clock records",
+    "endsOn": "Ends {date}",
+    "moreEvents": "{count} more",
+    "miniCalendar": "Calendar",
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month",
+    "employeeLabel": "Employee: {name}"
   },
   "scheduledTime": "Scheduled",
   "settings": {
