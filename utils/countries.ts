@@ -1,12 +1,12 @@
 import {
   type CountryCode,
   getExampleNumber,
+  isSupportedCountry,
   parsePhoneNumberFromString,
 } from "libphonenumber-js";
 import examples from "libphonenumber-js/mobile/examples";
 
 import { countries } from "@/constants/countries";
-import { localeConfigs } from "@/constants/locale";
 
 import type { Locale } from "@/i18n/routing";
 
@@ -14,8 +14,14 @@ import type { CountryType } from "@/types/countries";
 
 export const formatPhone = (phone: CountryType["phone"]) => `+${phone}`;
 
+const getLocaleCountryCode = (locale: Locale) => {
+  const { region } = new Intl.Locale(locale).maximize();
+
+  return region && isSupportedCountry(region) ? region : undefined;
+};
+
 export const getDefaultCountry = (locale: Locale) => {
-  const countryCode = localeConfigs[locale].countryCode;
+  const countryCode = getLocaleCountryCode(locale);
 
   return countries.find(({ code }) => code === countryCode);
 };
@@ -29,7 +35,7 @@ export const getPhoneDefaults = (
     : undefined;
 
   return {
-    countryCode: parsed?.country || localeConfigs[locale].countryCode,
+    countryCode: parsed?.country || getLocaleCountryCode(locale),
     telephone: parsed?.formatNational() || "",
   };
 };

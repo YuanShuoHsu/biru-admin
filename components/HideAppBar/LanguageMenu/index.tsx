@@ -7,12 +7,12 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
-import { localeConfigs } from "@/constants/locale";
+import { LocaleEnum } from "@/enums/Locale";
 
 import { useHref } from "@/hooks/useHref";
 
 import { Link } from "@/i18n/navigation";
-import { routing } from "@/i18n/routing";
+import { type Locale, routing } from "@/i18n/routing";
 
 import { Language } from "@mui/icons-material";
 import { IconButton, Menu, MenuItem, Tooltip } from "@mui/material";
@@ -26,9 +26,17 @@ const StyledMenu = styled(Menu)(({ theme }) => ({
   },
 }));
 
+const localeLabels: Record<Locale, string> = {
+  [LocaleEnum.ZhTW]: "繁體中文",
+  [LocaleEnum.En]: "English",
+  [LocaleEnum.Ja]: "日本語",
+  [LocaleEnum.Ko]: "한국어",
+  [LocaleEnum.ZhCN]: "简体中文",
+};
+
 const languages = routing.locales.map((locale) => ({
   locale,
-  label: localeConfigs[locale].label,
+  label: localeLabels[locale],
 }));
 
 const LanguageMenu = () => {

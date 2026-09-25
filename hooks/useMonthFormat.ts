@@ -1,5 +1,15 @@
 import { useLocale } from "next-intl";
 
-import { localeConfigs } from "@/constants/locale";
+import { LocaleEnum } from "@/enums/Locale";
 
-export const useMonthFormat = () => localeConfigs[useLocale()].monthFormat;
+import type { Locale } from "@/i18n/routing";
+
+const monthFormats: Record<Locale, string> = {
+  [LocaleEnum.ZhTW]: "YYYY/MM",
+  [LocaleEnum.En]: "MM/YYYY",
+  [LocaleEnum.Ja]: "YYYY/MM",
+  [LocaleEnum.Ko]: "YYYY.MM.",
+  [LocaleEnum.ZhCN]: "YYYY/MM",
+};
+
+export const useMonthFormat = () => monthFormats[useLocale()];

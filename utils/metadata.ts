@@ -3,8 +3,6 @@
 
 import type { Metadata } from "next";
 
-import { localeConfigs } from "@/constants/locale";
-
 import type { Locale } from "@/i18n/routing";
 import { routing } from "@/i18n/routing";
 
@@ -12,8 +10,11 @@ import { getSiteMeta } from "./siteMeta";
 
 const SITE_NAME = "Biru Coffee";
 
-const getOpenGraphLocale = (locale: Locale) =>
-  `${locale.split("-")[0]}_${localeConfigs[locale].countryCode}`;
+const getOpenGraphLocale = (locale: Locale) => {
+  const { language, region } = new Intl.Locale(locale).maximize();
+
+  return `${language}_${region}`;
+};
 
 interface BuildOpenGraphOptions {
   description: string;
