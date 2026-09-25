@@ -44,6 +44,8 @@ export type AttendanceContext =
   components["schemas"]["AttendanceContextResponseDto"];
 export type AttendanceShift =
   components["schemas"]["AttendanceShiftResponseDto"];
+export type AttendanceCalendarDayKinds =
+  components["schemas"]["AttendanceCalendarDayKindsResponseDto"];
 export type AttendanceShiftPage =
   components["schemas"]["AttendanceShiftsResponseDto"];
 export type AttendanceEvent =

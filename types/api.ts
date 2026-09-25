@@ -209,6 +209,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/attendance/day-kinds/calendar": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 指定期間各員工的假日、例假與休息日 */
+    get: operations["AttendanceShiftsController_calendarDayKinds"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/attendance/shifts/{id}/cancel": {
     parameters: {
       query?: never;
@@ -325,6 +342,23 @@ export interface paths {
     put?: never;
     /** 送出補打卡、請假或加班申請 */
     post: operations["AttendanceRequestsController_createRequest"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/attendance/leaves/calendar": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 指定期間已核准的全店請假 */
+    get: operations["AttendanceRequestsController_calendarLeaves"];
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -2415,6 +2449,7 @@ export interface components {
       | "childLaborHoursExceeded"
       | "childLaborNightWork"
       | "childLaborRestDay"
+      | "consecutiveWorkdaysExceeded"
       | "continuousWorkTooLong"
       | "correctionSourceChanged"
       | "dailyHoursExceeded"
@@ -2467,6 +2502,7 @@ export interface components {
       | "monthlyOvertimeExceeded"
       | "noTemplateDates"
       | "outsideShiftWindow"
+      | "occupationalIndustryInvalid"
       | "overlappingAttendance"
       | "overlappingLeave"
       | "overlappingOvertimeExtensions"
@@ -2867,6 +2903,21 @@ export interface components {
       data: components["schemas"]["AttendanceShiftResponseDto"][];
       total: number;
     };
+    AttendanceCalendarHolidayResponseDto: {
+      date: string;
+      name: string;
+    };
+    AttendanceCalendarDayKindResponseDto: {
+      employeeId: string;
+      employeeName: string;
+      date: string;
+      dayKind: components["schemas"]["AttendanceDayKind"];
+      holidayName?: string;
+    };
+    AttendanceCalendarDayKindsResponseDto: {
+      holidays: components["schemas"]["AttendanceCalendarHolidayResponseDto"][];
+      dayKinds: components["schemas"]["AttendanceCalendarDayKindResponseDto"][];
+    };
     /**
      * @description 員工設有固定例假日與休息日時由星期推得，未設定者必填
      * @enum {string}
@@ -3071,6 +3122,7 @@ export interface components {
       leaveTypeStatutoryKind?:
         | components["schemas"]["StatutoryLeaveKind"]
         | null;
+      calendarLeave: boolean;
       leaveCaseId?: string | null;
       leaveMinutes?: number | null;
       paidPercent?: number | null;
@@ -6290,6 +6342,7 @@ export interface components {
       | "childLaborHoursExceeded"
       | "childLaborNightWork"
       | "childLaborRestDay"
+      | "consecutiveWorkdaysExceeded"
       | "dailyHoursExceeded"
       | "emergencyDetailsRequired"
       | "employmentInsuranceExemptionInvalid"
@@ -6849,6 +6902,35 @@ export interface operations {
       };
     };
   };
+  AttendanceShiftsController_calendarDayKinds: {
+    parameters: {
+      query: {
+        from: string;
+        to: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceCalendarDayKindsResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   AttendanceShiftsController_cancelShift: {
     parameters: {
       query?: never;
@@ -7159,6 +7241,35 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["AttendanceRequestRecordResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AttendanceRequestsController_calendarLeaves: {
+    parameters: {
+      query: {
+        from: string;
+        to: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceRequestResponseDto"][];
         };
       };
       /** @description Internal server error */
@@ -12401,6 +12512,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "childLaborHoursExceeded",
   "childLaborNightWork",
   "childLaborRestDay",
+  "consecutiveWorkdaysExceeded",
   "continuousWorkTooLong",
   "correctionSourceChanged",
   "dailyHoursExceeded",
@@ -12453,6 +12565,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "monthlyOvertimeExceeded",
   "noTemplateDates",
   "outsideShiftWindow",
+  "occupationalIndustryInvalid",
   "overlappingAttendance",
   "overlappingLeave",
   "overlappingOvertimeExtensions",
@@ -13455,6 +13568,7 @@ export const payrollBlockerValues: ReadonlyArray<
   "childLaborHoursExceeded",
   "childLaborNightWork",
   "childLaborRestDay",
+  "consecutiveWorkdaysExceeded",
   "dailyHoursExceeded",
   "emergencyDetailsRequired",
   "employmentInsuranceExemptionInvalid",

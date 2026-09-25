@@ -522,12 +522,9 @@
   },
   "save": "保存",
   "schedule": {
-    "scheduledHours": "本周已排 {hours} 小时",
+    "scheduledHours": "已排 {hours} 小时",
     "applyTemplate": "套用模板",
-    "label": "周班表",
-    "nextWeek": "下一周",
-    "previousWeek": "上一周",
-    "thisWeek": "本周",
+    "label": "班表",
     "allDay": "全天",
     "calendarContent": "排班内容",
     "closeSidePanel": "收起侧栏",
@@ -540,7 +537,24 @@
     "miniCalendar": "月历",
     "previousMonth": "上个月",
     "nextMonth": "下个月",
-    "employeeLabel": "员工：{name}"
+    "employeeLabel": "员工：{name}",
+    "today": "今天",
+    "nextTimeSpan": "{view, select, day {后一天} week {下一周} month {下个月} other {往后 {days} 天}}",
+    "previousTimeSpan": "{view, select, day {前一天} week {上一周} month {上个月} other {往前 {days} 天}}",
+    "views": {
+      "day": "日",
+      "week": "周",
+      "month": "月",
+      "agenda": "议程"
+    },
+    "preferences": {
+      "label": "偏好设置",
+      "showWeekends": "显示周末",
+      "showWeekNumber": "显示周数",
+      "viewOptions": "{view, select, day {日} week {周} month {月} other {议程}}视图选项"
+    },
+    "weekAbbreviation": "周",
+    "weekNumber": "第 {weekNumber} 周"
   },
   "scheduledTime": "排定时段",
   "settings": {

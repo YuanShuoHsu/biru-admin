@@ -522,12 +522,9 @@
   },
   "save": "저장",
   "schedule": {
-    "scheduledHours": "이번 주 예정: {hours}시간",
+    "scheduledHours": "{hours}시간 배정됨",
     "applyTemplate": "템플릿 적용",
-    "label": "주간 근무표",
-    "nextWeek": "다음 주",
-    "previousWeek": "이전 주",
-    "thisWeek": "이번 주",
+    "label": "근무표",
     "allDay": "종일",
     "calendarContent": "근무표",
     "closeSidePanel": "사이드 패널 닫기",
@@ -540,7 +537,24 @@
     "miniCalendar": "달력",
     "previousMonth": "이전 달",
     "nextMonth": "다음 달",
-    "employeeLabel": "직원: {name}"
+    "employeeLabel": "직원: {name}",
+    "today": "오늘",
+    "nextTimeSpan": "{view, select, day {다음 날} week {다음 주} month {다음 달} other {다음 {days}일}}",
+    "previousTimeSpan": "{view, select, day {이전 날} week {이전 주} month {이전 달} other {이전 {days}일}}",
+    "views": {
+      "day": "일",
+      "week": "주",
+      "month": "월",
+      "agenda": "일정 목록"
+    },
+    "preferences": {
+      "label": "환경설정",
+      "showWeekends": "주말 표시",
+      "showWeekNumber": "주 번호 표시",
+      "viewOptions": "{view, select, day {일} week {주} month {월} other {일정 목록}} 보기 옵션"
+    },
+    "weekAbbreviation": "주",
+    "weekNumber": "{weekNumber}주차"
   },
   "scheduledTime": "예정 시간",
   "settings": {

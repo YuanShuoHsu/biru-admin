@@ -20,6 +20,7 @@ import {
   payrollEmployerCostCodeValues,
 } from "@/types/api";
 import type {
+  AttendanceCalendarDayKinds,
   AttendanceContext,
   AttendanceEmployee,
   AttendanceEmployeeFilterField,
@@ -76,13 +77,46 @@ export const weekdayDate = (day: number) =>
 
 export const WEEK_DAYS = 7;
 
-export const weekStart = (week?: string) =>
-  (week && /^\d{4}-\d{2}-\d{2}$/.test(week)
-    ? dayjs.tz(week, STORE_TIMEZONE)
+export const ATTENDANCE_CALENDAR_VIEWS = [
+  "day",
+  "week",
+  "month",
+  "agenda",
+] as const;
+
+export type AttendanceCalendarView = (typeof ATTENDANCE_CALENDAR_VIEWS)[number];
+
+// 須與 MUI 議程檢視的 AGENDA_VIEW_DAYS_AMOUNT 一致，否則畫面尾段沒有資料
+export const ATTENDANCE_AGENDA_DAYS = 12;
+
+export const attendanceCalendarDate = (date?: string) =>
+  (date && /^\d{4}-\d{2}-\d{2}$/.test(date)
+    ? dayjs.tz(date, STORE_TIMEZONE)
     : dayjs().tz(STORE_TIMEZONE)
-  )
-    .startOf("week")
-    .format("YYYY-MM-DD");
+  ).format("YYYY-MM-DD");
+
+const sundayOf = (day: dayjs.Dayjs) => day.subtract(day.day(), "day");
+
+export const attendanceCalendarRange = (
+  view: AttendanceCalendarView,
+  date: string,
+) => {
+  const day = dayjs.tz(date, STORE_TIMEZONE);
+
+  switch (view) {
+    case "day":
+      return { from: day, to: day.add(1, "day") };
+    case "week":
+      return { from: sundayOf(day), to: sundayOf(day).add(WEEK_DAYS, "day") };
+    case "month":
+      return {
+        from: sundayOf(day.startOf("month")),
+        to: sundayOf(day.endOf("month").startOf("day")).add(WEEK_DAYS, "day"),
+      };
+    case "agenda":
+      return { from: day, to: day.add(ATTENDANCE_AGENDA_DAYS, "day") };
+  }
+};
 
 export const attendanceNavGroups = (
   memberRole: Parameters<typeof hasRolePermission>[0],
@@ -255,27 +289,64 @@ export const getAttendanceShifts = cache(
 
 export const attendanceCalendarPath = (
   organizationSlug: string,
+  resource: "day-kinds" | "leaves" | "shifts",
   from: string,
   to: string,
 ) =>
-  `${attendancePath(organizationSlug, "org", "shifts/calendar")}?${new URLSearchParams({ from, to })}`;
+  `${attendancePath(organizationSlug, "org", `${resource}/calendar`)}?${new URLSearchParams({ from, to })}`;
+
+const getAttendanceCalendar = async <T>(
+  organizationSlug: string,
+  resource: Parameters<typeof attendanceCalendarPath>[1],
+  from: string,
+  to: string,
+  fallback: T,
+  init?: RequestInit,
+) => {
+  try {
+    return await fetcher<T>(
+      attendanceCalendarPath(organizationSlug, resource, from, to),
+      init,
+    );
+  } catch {
+    return fallback;
+  }
+};
 
 export const getAttendanceCalendarShifts = cache(
-  async (
-    organizationSlug: string,
-    from: string,
-    to: string,
-    init?: RequestInit,
-  ) => {
-    try {
-      return await fetcher<AttendanceShift[]>(
-        attendanceCalendarPath(organizationSlug, from, to),
-        init,
-      );
-    } catch {
-      return [];
-    }
-  },
+  (organizationSlug: string, from: string, to: string, init?: RequestInit) =>
+    getAttendanceCalendar<AttendanceShift[]>(
+      organizationSlug,
+      "shifts",
+      from,
+      to,
+      [],
+      init,
+    ),
+);
+
+export const getAttendanceCalendarDayKinds = cache(
+  (organizationSlug: string, from: string, to: string, init?: RequestInit) =>
+    getAttendanceCalendar<AttendanceCalendarDayKinds>(
+      organizationSlug,
+      "day-kinds",
+      from,
+      to,
+      { dayKinds: [], holidays: [] },
+      init,
+    ),
+);
+
+export const getAttendanceCalendarLeaves = cache(
+  (organizationSlug: string, from: string, to: string, init?: RequestInit) =>
+    getAttendanceCalendar<AttendanceRequest[]>(
+      organizationSlug,
+      "leaves",
+      from,
+      to,
+      [],
+      init,
+    ),
 );
 
 export const getAttendancePunchableShifts = cache(

@@ -75,7 +75,7 @@ const SubstituteDialog = ({
   const to = holiday.add(SUBSTITUTE_SEARCH_DAYS, "day").toISOString();
 
   const { data: shifts = [] } = useSWR(
-    attendanceCalendarPath(organizationSlug, from, to),
+    attendanceCalendarPath(organizationSlug, "shifts", from, to),
     (url: string) => fetcher<AttendanceShift[]>(url),
   );
 

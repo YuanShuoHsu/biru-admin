@@ -522,12 +522,9 @@
   },
   "save": "保存",
   "schedule": {
-    "scheduledHours": "今週の予定：{hours}時間",
+    "scheduledHours": "{hours} 時間シフト済み",
     "applyTemplate": "雛形を適用",
-    "label": "週間シフト",
-    "nextWeek": "翌週",
-    "previousWeek": "前週",
-    "thisWeek": "今週",
+    "label": "シフト表",
     "allDay": "終日",
     "calendarContent": "シフト表",
     "closeSidePanel": "サイドパネルを閉じる",
@@ -540,7 +537,24 @@
     "miniCalendar": "カレンダー",
     "previousMonth": "前月",
     "nextMonth": "翌月",
-    "employeeLabel": "従業員：{name}"
+    "employeeLabel": "従業員：{name}",
+    "today": "今日",
+    "nextTimeSpan": "{view, select, day {翌日} week {翌週} month {翌月} other {次の {days} 日間}}",
+    "previousTimeSpan": "{view, select, day {前日} week {前週} month {前月} other {前の {days} 日間}}",
+    "views": {
+      "day": "日",
+      "week": "週",
+      "month": "月",
+      "agenda": "予定リスト"
+    },
+    "preferences": {
+      "label": "表示設定",
+      "showWeekends": "週末を表示",
+      "showWeekNumber": "週番号を表示",
+      "viewOptions": "{view, select, day {日} week {週} month {月} other {予定リスト}}表示のオプション"
+    },
+    "weekAbbreviation": "週",
+    "weekNumber": "第 {weekNumber} 週"
   },
   "scheduledTime": "予定時間",
   "settings": {

@@ -522,12 +522,9 @@
   },
   "save": "Save",
   "schedule": {
-    "scheduledHours": "Scheduled this week: {hours} h",
+    "scheduledHours": "{hours} h scheduled",
     "applyTemplate": "Apply template",
-    "label": "Weekly roster",
-    "nextWeek": "Next week",
-    "previousWeek": "Previous week",
-    "thisWeek": "This week",
+    "label": "Roster",
     "allDay": "All day",
     "calendarContent": "Schedule",
     "closeSidePanel": "Close side panel",
@@ -540,7 +537,24 @@
     "miniCalendar": "Calendar",
     "previousMonth": "Previous month",
     "nextMonth": "Next month",
-    "employeeLabel": "Employee: {name}"
+    "employeeLabel": "Employee: {name}",
+    "today": "Today",
+    "nextTimeSpan": "{view, select, day {Next day} week {Next week} month {Next month} other {Next {days} days}}",
+    "previousTimeSpan": "{view, select, day {Previous day} week {Previous week} month {Previous month} other {Previous {days} days}}",
+    "views": {
+      "day": "Day",
+      "week": "Week",
+      "month": "Month",
+      "agenda": "Agenda"
+    },
+    "preferences": {
+      "label": "Preferences",
+      "showWeekends": "Show weekends",
+      "showWeekNumber": "Show week number",
+      "viewOptions": "{view, select, day {Day} week {Week} month {Month} other {Agenda}} view options"
+    },
+    "weekAbbreviation": "W",
+    "weekNumber": "Week {weekNumber}"
   },
   "scheduledTime": "Scheduled",
   "settings": {

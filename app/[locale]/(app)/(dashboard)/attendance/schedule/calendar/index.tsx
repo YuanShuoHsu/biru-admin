@@ -5,11 +5,11 @@ import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 
-import GenerateDialog from "../../GenerateDialog";
 import EventsDialogContent from "../../EventsDialogContent";
+import GenerateDialog from "../../GenerateDialog";
 import ShiftDialog from "../../ShiftDialog";
 
 import { STORE_TIMEZONE } from "@/constants/timezone";
@@ -32,18 +32,23 @@ import type {
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
+  AttendanceCalendarDayKinds,
   AttendanceEmployee,
+  AttendanceRequest,
   AttendanceShift,
   AttendanceTemplate,
 } from "@/types/attendance";
 import type { Organization } from "@/types/organizations";
 
 import {
+  ATTENDANCE_AGENDA_DAYS,
+  ATTENDANCE_CALENDAR_VIEWS,
   attendanceCalendarPath,
+  attendanceCalendarRange,
   attendanceErrorKey,
   attendancePath,
-  WEEK_DAYS,
-  weekStart,
+  getStatutoryLeaveName,
+  type AttendanceCalendarView,
 } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
 import { scheduledHours } from "@/utils/scheduledHours";
@@ -75,21 +80,29 @@ const EMPLOYEE_COLORS: SchedulerEventColor[] = [
 interface CalendarProps {
   canCancel: boolean;
   canCreate: boolean;
+  canReadLeaves: boolean;
+  dayKinds: AttendanceCalendarDayKinds;
   employees: AttendanceEmployee[];
+  leaves: AttendanceRequest[];
   organization: Organization;
   shifts: AttendanceShift[];
+  date: string;
   templates: AttendanceTemplate[];
-  week: string;
+  view: AttendanceCalendarView;
 }
 
 const Calendar = ({
   canCancel,
   canCreate,
+  canReadLeaves,
+  date: initialDate,
+  dayKinds: initialDayKinds,
   employees,
+  leaves: initialLeaves,
   organization: { openingHours = "", slug: organizationSlug },
   shifts: initialShifts,
   templates,
-  week,
+  view: initialView,
 }: CalendarProps) => {
   const { setDialog } = useDialogStore((state) => state);
 
@@ -99,45 +112,117 @@ const Calendar = ({
 
   const updateQuery = useUpdateQuery();
 
-  const start = useMemo(() => dayjs.tz(week, STORE_TIMEZONE), [week]);
+  const [date, setDate] = useState(initialDate);
 
-  const path = attendanceCalendarPath(
-    organizationSlug,
-    start.toISOString(),
-    start.add(WEEK_DAYS, "day").toISOString(),
+  const [view, setView] = useState(initialView);
+
+  useEffect(() => {
+    if (date !== initialDate || view !== initialView)
+      updateQuery({ date, view });
+  }, [date, initialDate, initialView, updateQuery, view]);
+
+  const range = useMemo(
+    () => attendanceCalendarRange(view, date),
+    [date, view],
   );
 
+  const from = range.from.toISOString();
+  const to = range.to.toISOString();
+
   const { data: shifts = initialShifts, mutate } = useSWR(
-    path,
-    () => fetcher<AttendanceShift[]>(path),
+    attendanceCalendarPath(organizationSlug, "shifts", from, to),
+    (url: string) => fetcher<AttendanceShift[]>(url),
     { fallbackData: initialShifts },
   );
 
-  const resources = useMemo<SchedulerResource[]>(() => {
-    const from = start.valueOf();
-    const to = start.add(WEEK_DAYS, "day").valueOf();
+  const { data: { dayKinds, holidays } = initialDayKinds } = useSWR(
+    attendanceCalendarPath(organizationSlug, "day-kinds", from, to),
+    (url: string) => fetcher<AttendanceCalendarDayKinds>(url),
+    { fallbackData: initialDayKinds },
+  );
 
-    return employees.map(({ id, name }, index) => {
-      const hours = shifts
-        .filter(({ employeeId }) => employeeId === id)
-        .reduce((total, shift) => total + scheduledHours(shift, from, to), 0);
+  const { data: leaves = initialLeaves } = useSWR(
+    canReadLeaves
+      ? attendanceCalendarPath(organizationSlug, "leaves", from, to)
+      : null,
+    (url: string) => fetcher<AttendanceRequest[]>(url),
+    { fallbackData: initialLeaves },
+  );
 
-      return {
-        eventColor: EMPLOYEE_COLORS[index % EMPLOYEE_COLORS.length],
-        id,
-        title: `${name} · ${tAttendance("schedule.scheduledHours", {
-          hours: format.number(hours, { maximumFractionDigits: 2 }),
-        })}`,
-      };
-    });
-  }, [employees, format, shifts, start, tAttendance]);
+  const resources = useMemo<SchedulerResource[]>(
+    () =>
+      employees.map(({ id, name }, index) => {
+        const hours = shifts
+          .filter(({ employeeId }) => employeeId === id)
+          .reduce(
+            (total, shift) =>
+              total +
+              scheduledHours(shift, range.from.valueOf(), range.to.valueOf()),
+            0,
+          );
+
+        return {
+          eventColor: EMPLOYEE_COLORS[index % EMPLOYEE_COLORS.length],
+          id,
+          title: `${name} · ${tAttendance("schedule.scheduledHours", {
+            hours: format.number(hours, { maximumFractionDigits: 2 }),
+          })}`,
+        };
+      }),
+    [employees, format, range, shifts, tAttendance],
+  );
 
   const events = useMemo<SchedulerEvent[]>(
-    () =>
-      shifts
+    () => [
+      ...holidays.map(({ date, name }) => {
+        const day = dayjs.tz(date, STORE_TIMEZONE).toISOString();
+
+        return {
+          allDay: true,
+          color: "grey" as const,
+          end: day,
+          id: `holiday-${date}`,
+          readOnly: true,
+          start: day,
+          title: name,
+        };
+      }),
+      ...dayKinds.map(
+        ({ date, dayKind, employeeId, employeeName, holidayName }) => {
+          const day = dayjs.tz(date, STORE_TIMEZONE).toISOString();
+
+          return {
+            allDay: true,
+            color: "grey" as const,
+            end: day,
+            id: `${dayKind}-${employeeId}-${date}`,
+            readOnly: true,
+            resource: employeeId,
+            start: day,
+            title: `${employeeName} · ${holidayName ?? tAttendance(`dayKind.options.${dayKind}`)}`,
+          };
+        },
+      ),
+      ...leaves.map((leave) => ({
+        allDay: leave.calendarLeave,
+        color: "red" as const,
+        // 請假區間不含結束時刻，全天事件的 end 卻含當天，不減會多佔一天
+        end: leave.calendarLeave
+          ? dayjs(leave.endsAt).subtract(1, "ms").toISOString()
+          : leave.endsAt,
+        id: leave.id,
+        readOnly: true,
+        resource: leave.employeeId,
+        start: leave.startsAt,
+        title: `${leave.employeeName} · ${getStatutoryLeaveName(tAttendance, {
+          name: leave.leaveTypeName ?? "",
+          statutoryKind: leave.leaveTypeStatutoryKind ?? "custom",
+        })}`,
+      })),
+      ...shifts
         .filter(({ status }) => status !== "cancelled")
         .map((shift) => ({
-          ...(shift.dayKind !== "workday" && { color: "grey" }),
+          ...(shift.dayKind !== "workday" && { color: "grey" as const }),
           end: shift.endsAt,
           id: shift.id,
           readOnly: true,
@@ -145,7 +230,8 @@ const Calendar = ({
           start: shift.startsAt,
           title: shift.employeeName,
         })),
-    [shifts],
+    ],
+    [dayKinds, holidays, leaves, shifts, tAttendance],
   );
 
   const localeText = useMemo<EventCalendarProps<object, object>["localeText"]>(
@@ -160,15 +246,37 @@ const Calendar = ({
       miniCalendarGoToNextMonth: tAttendance("schedule.nextMonth"),
       miniCalendarGoToPreviousMonth: tAttendance("schedule.previousMonth"),
       miniCalendarLabel: tAttendance("schedule.miniCalendar"),
-      nextTimeSpan: () => tAttendance("schedule.nextWeek"),
+      nextTimeSpan: (view) =>
+        tAttendance("schedule.nextTimeSpan", {
+          days: ATTENDANCE_AGENDA_DAYS,
+          view,
+        }),
       openMenu: tAttendance("schedule.openMenu"),
       openSidePanel: tAttendance("schedule.openSidePanel"),
-      previousTimeSpan: () => tAttendance("schedule.previousWeek"),
+      preferencesMenu: tAttendance("schedule.preferences.label"),
+      previousTimeSpan: (view) =>
+        tAttendance("schedule.previousTimeSpan", {
+          days: ATTENDANCE_AGENDA_DAYS,
+          view,
+        }),
       resourceAriaLabel: (name) =>
         tAttendance("schedule.employeeLabel", { name }),
       resourcesLabel: tAttendance("employee"),
       showEventDetails: tAttendance("schedule.showDetails"),
-      today: tAttendance("schedule.thisWeek"),
+      showWeekNumber: tAttendance("schedule.preferences.showWeekNumber"),
+      showWeekends: tAttendance("schedule.preferences.showWeekends"),
+      today: tAttendance("schedule.today"),
+      viewSpecificOptions: (view) =>
+        tAttendance("schedule.preferences.viewOptions", { view }),
+      weekAbbreviation: tAttendance("schedule.weekAbbreviation"),
+      weekNumberAriaLabel: (weekNumber) =>
+        tAttendance("schedule.weekNumber", { weekNumber }),
+      ...Object.fromEntries(
+        ATTENDANCE_CALENDAR_VIEWS.map((view) => [
+          view,
+          tAttendance(`schedule.views.${view}`),
+        ]),
+      ),
     }),
     [tAttendance],
   );
@@ -200,18 +308,18 @@ const Calendar = ({
         confirmText: tAttendance("save"),
         content: (
           <GenerateDialog
-            from={start.toISOString()}
+            from={from}
             mutate={mutate}
             organizationSlug={organizationSlug}
             templates={templates}
-            to={start.add(WEEK_DAYS - 1, "day").toISOString()}
+            to={range.to.subtract(1, "day").toISOString()}
           />
         ),
         formId: "attendance-template-generate-form",
         open: true,
         title: tAttendance("generate"),
       }),
-    [mutate, organizationSlug, setDialog, start, tAttendance, templates],
+    [from, mutate, organizationSlug, range, setDialog, tAttendance, templates],
   );
 
   const handleViewEvents = useCallback(
@@ -273,7 +381,10 @@ const Calendar = ({
     [handleCreate, handleViewEvents, shifts],
   );
 
-  const visibleDate = useMemo(() => start.toDate(), [start]);
+  const visibleDate = useMemo(
+    () => dayjs.tz(date, STORE_TIMEZONE).toDate(),
+    [date],
+  );
 
   return (
     <>
@@ -298,23 +409,24 @@ const Calendar = ({
         <EventCalendar
           areEventsDraggable={false}
           areEventsResizable={false}
-          // 須與 weekStart() 的週日起算一致，否則畫面週與 URL 的 week 錯開
           defaultPreferences={{ ampm: false, weekStartsOn: 0 }}
           displayTimezone={STORE_TIMEZONE}
           events={events}
           localeText={localeText}
           onEventEditingStart={handleEventEditingStart}
+          onViewChange={setView}
           onVisibleDateChange={(value) =>
-            updateQuery({
-              week: weekStart(
-                dayjs(value).tz(STORE_TIMEZONE).format("YYYY-MM-DD"),
-              ),
-            })
+            setDate(dayjs(value).tz(STORE_TIMEZONE).format("YYYY-MM-DD"))
           }
-          preferencesMenuConfig={false}
+          // 隱藏空白日時議程會往後掃到半年，超出抓取的資料區間
+          preferencesMenuConfig={{
+            toggleAmpm: false,
+            toggleEmptyDaysInAgenda: false,
+          }}
           readOnly={!canCreate}
           resources={resources}
-          views={["week"]}
+          view={view}
+          views={[...ATTENDANCE_CALENDAR_VIEWS]}
           visibleDate={visibleDate}
         />
       </CalendarBox>

@@ -1,6 +1,3 @@
-import dayjs from "dayjs";
-import timezonePlugin from "dayjs/plugin/timezone";
-import utc from "dayjs/plugin/utc";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -11,27 +8,31 @@ import Calendar from ".";
 import AttendanceTabsLayout from "../../AttendanceTabsLayout";
 
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
-import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
 import {
+  ATTENDANCE_CALENDAR_VIEWS,
+  attendanceCalendarDate,
+  attendanceCalendarRange,
   getAttendanceAccess,
+  getAttendanceCalendarDayKinds,
+  getAttendanceCalendarLeaves,
   getAttendanceCalendarShifts,
   getAttendanceEmployees,
   SCHEDULABLE_EMPLOYEES_QUERY,
   getAttendanceTemplates,
-  weekStart,
 } from "@/utils/attendance";
 import { hasRolePermission } from "@/utils/organizations";
 
-dayjs.extend(utc);
-dayjs.extend(timezonePlugin);
-
 interface CalendarPageProps {
   params: Promise<{ locale: Locale }>;
-  searchParams: Promise<{ organization?: string; week?: string }>;
+  searchParams: Promise<{
+    date?: string;
+    organization?: string;
+    view?: string;
+  }>;
 }
 
 export const generateMetadata = async ({
@@ -47,8 +48,11 @@ export const generateMetadata = async ({
 };
 
 const CalendarPage = async ({ params, searchParams }: CalendarPageProps) => {
-  const [cookieStore, { locale }, { organization: organizationSlug, week }] =
-    await Promise.all([cookies(), params, searchParams]);
+  const [
+    cookieStore,
+    { locale },
+    { date: dateParam, organization: organizationSlug, view: viewParam },
+  ] = await Promise.all([cookies(), params, searchParams]);
 
   setRequestLocale(locale);
 
@@ -61,12 +65,20 @@ const CalendarPage = async ({ params, searchParams }: CalendarPageProps) => {
 
   const { memberRole, organization } = access;
 
-  const start = weekStart(week);
+  const date = attendanceCalendarDate(dateParam);
 
-  if (organizationSlug !== organization.slug || week !== start) {
+  const view =
+    ATTENDANCE_CALENDAR_VIEWS.find((value) => value === viewParam) ?? "week";
+
+  if (
+    organizationSlug !== organization.slug ||
+    dateParam !== date ||
+    viewParam !== view
+  ) {
     const params = new URLSearchParams({
+      date,
       organization: organization.slug,
-      week: start,
+      view,
     });
 
     redirect({
@@ -79,35 +91,49 @@ const CalendarPage = async ({ params, searchParams }: CalendarPageProps) => {
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const from = dayjs.tz(start, STORE_TIMEZONE).toISOString();
-  const to = dayjs.tz(start, STORE_TIMEZONE).add(7, "day").toISOString();
+  const range = attendanceCalendarRange(view, date);
+  const from = range.from.toISOString();
+  const to = range.to.toISOString();
 
-  const [shifts, { employees }, { templates }] = await Promise.all([
-    getAttendanceCalendarShifts(organization.slug, from, to, fetchOptions),
-    getAttendanceEmployees(
-      organization.slug,
-      SCHEDULABLE_EMPLOYEES_QUERY,
-      fetchOptions,
-    ),
-    hasRolePermission(memberRole, { shiftTemplate: ["read"] })
-      ? getAttendanceTemplates(
-          organization.slug,
-          { pageSize: MAX_PAGE_SIZE },
-          fetchOptions,
-        )
-      : { templates: [] },
-  ]);
+  const canReadLeaves = hasRolePermission(memberRole, {
+    attendanceRequest: ["read"],
+  });
+
+  const [shifts, dayKinds, leaves, { employees }, { templates }] =
+    await Promise.all([
+      getAttendanceCalendarShifts(organization.slug, from, to, fetchOptions),
+      getAttendanceCalendarDayKinds(organization.slug, from, to, fetchOptions),
+      canReadLeaves
+        ? getAttendanceCalendarLeaves(organization.slug, from, to, fetchOptions)
+        : [],
+      getAttendanceEmployees(
+        organization.slug,
+        SCHEDULABLE_EMPLOYEES_QUERY,
+        fetchOptions,
+      ),
+      hasRolePermission(memberRole, { shiftTemplate: ["read"] })
+        ? getAttendanceTemplates(
+            organization.slug,
+            { pageSize: MAX_PAGE_SIZE },
+            fetchOptions,
+          )
+        : { templates: [] },
+    ]);
 
   return (
     <AttendanceTabsLayout memberRole={memberRole}>
       <Calendar
         canCancel={hasRolePermission(memberRole, { shift: ["update"] })}
         canCreate={hasRolePermission(memberRole, { shift: ["create"] })}
+        canReadLeaves={canReadLeaves}
+        dayKinds={dayKinds}
         employees={employees}
+        leaves={leaves}
         organization={organization}
         shifts={shifts}
         templates={templates}
-        week={start}
+        date={date}
+        view={view}
       />
     </AttendanceTabsLayout>
   );
