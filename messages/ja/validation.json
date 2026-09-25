@@ -314,9 +314,17 @@
     "required": "就労許可の開始日と終了日を選択してください。",
     "order": "終了日は開始日より前にできません。"
   },
-  "maternalProtectionPeriod": {
-    "required": "妊娠・授乳期間の開始日と終了日を選択してください。",
+  "pregnancyPeriod": {
+    "required": "妊娠期間の開始日と終了日を選択してください。",
     "order": "終了日は開始日より前にできません。"
+  },
+  "nursingPeriod": {
+    "required": "授乳期間の開始日と終了日を選択してください。",
+    "order": "終了日は開始日より前にできません。"
+  },
+  "indigenousHoliday": {
+    "required": "日付を選択してください。",
+    "duplicate": "日付が重複しています。"
   },
   "terminationReason": {
     "required": "退職理由を選択してください。"

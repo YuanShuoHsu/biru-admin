@@ -30,7 +30,7 @@ import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { attendanceDayKindValues } from "@/types/api";
+import { attendanceScheduledDayKindValues } from "@/types/api";
 import type {
   AttendanceEmployee,
   AttendanceTemplate,
@@ -91,7 +91,6 @@ const TemplateDialog = ({
 
     return {
       endTime: schedule?.endTime ?? "",
-      nextDay: !!schedule && schedule.endTime <= schedule.startTime,
       startTime: schedule?.startTime ?? "",
     };
   };
@@ -111,7 +110,6 @@ const TemplateDialog = ({
       employeeId: template?.employeeId ?? "",
       endTime: initialTimes.endTime,
       name: template?.name ?? "",
-      nextDay: initialTimes.nextDay,
       paidBreak: template?.paidBreak ?? false,
       startTime: initialTimes.startTime,
       weekday: template?.weekday ?? 1,
@@ -124,10 +122,13 @@ const TemplateDialog = ({
     name: "breaks",
   });
 
-  const [dayKind, employeeId, nextDay, paidBreak, weekday] = useWatch({
+  const [dayKind, employeeId, paidBreak, weekday] = useWatch({
     control,
-    name: ["dayKind", "employeeId", "nextDay", "paidBreak", "weekday"],
+    name: ["dayKind", "employeeId", "paidBreak", "weekday"],
   });
+
+  const rotating =
+    employees.find(({ id }) => id === employeeId)?.regularLeaveWeekday === null;
 
   const onSubmitHandler = async (values: TemplateForm) => {
     try {
@@ -142,7 +143,10 @@ const TemplateDialog = ({
         {
           method: template ? "PATCH" : "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(values),
+          body: JSON.stringify({
+            ...values,
+            dayKind: rotating ? values.dayKind : undefined,
+          }),
         },
       );
 
@@ -203,19 +207,12 @@ const TemplateDialog = ({
 
           setValue("weekday", day, { shouldValidate: isSubmitted });
 
-          if (
-            template ||
-            dirtyFields.startTime ||
-            dirtyFields.endTime ||
-            dirtyFields.nextDay
-          )
-            return;
+          if (template || dirtyFields.startTime || dirtyFields.endTime) return;
 
           const times = openingTimesOn(day);
 
           setValue("startTime", times.startTime);
           setValue("endTime", times.endTime);
-          setValue("nextDay", times.nextDay);
         }}
         required
         select
@@ -242,17 +239,6 @@ const TemplateDialog = ({
         label={tAttendance("endsAt")}
         type="time"
         {...register("endTime")}
-      />
-      <StyledFormControlLabel
-        control={
-          <Checkbox
-            checked={nextDay}
-            onChange={(_, checked) =>
-              setValue("nextDay", checked, { shouldDirty: true })
-            }
-          />
-        }
-        label={tAttendance("nextDay")}
       />
       {fields.map(({ id }, index) => (
         <StyledStack direction="row" key={id}>
@@ -293,22 +279,24 @@ const TemplateDialog = ({
         }
         label={tAttendance("paidBreak")}
       />
-      <TextField
-        error={!!errors.dayKind}
-        fullWidth
-        helperText={errors.dayKind?.message}
-        label={tAttendance("dayKind.label")}
-        required
-        select
-        value={dayKind}
-        {...register("dayKind")}
-      >
-        {attendanceDayKindValues.map((value) => (
-          <MenuItem key={value} value={value}>
-            {tAttendance(`dayKind.options.${value}`)}
-          </MenuItem>
-        ))}
-      </TextField>
+      {rotating && (
+        <TextField
+          error={!!errors.dayKind}
+          fullWidth
+          helperText={errors.dayKind?.message}
+          label={tAttendance("dayKind.label")}
+          required
+          select
+          value={dayKind}
+          {...register("dayKind")}
+        >
+          {attendanceScheduledDayKindValues.map((value) => (
+            <MenuItem key={value} value={value}>
+              {tAttendance(`dayKind.options.${value}`)}
+            </MenuItem>
+          ))}
+        </TextField>
+      )}
     </FormBox>
   );
 };

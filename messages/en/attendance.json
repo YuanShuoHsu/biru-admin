@@ -137,6 +137,7 @@
     "continuousWorkTooLong": "Continuous work cannot exceed 4 hours. Schedule a break of at least 30 minutes in between.",
     "correctionSourceChanged": "The shift's punches changed after this request was submitted. Review it again before approving.",
     "dailyHoursExceeded": "This would push the day past 12 working hours. Shorten the overtime.",
+    "dayKindRequired": "This employee has no fixed regular leave and rest days, so choose a day type.",
     "emergencyDetailsRequired": "Approve the emergency cause, report and make-up rest before settlement.",
     "employeeDisableConflict": "Cancel upcoming shifts and settle pending requests before disabling.",
     "employeeNotEnabled": "Ask a manager to enable your employee attendance profile.",
@@ -157,6 +158,8 @@
     "implausibleMinimumWage": "The confirmed minimum hourly wage is lower than the previous period. Please re-check the official announcement.",
     "incompleteAttendance": "Some shifts need completed attendance or approved leave.",
     "inconsistentDayKind": "Shifts on the same day have different day classifications.",
+    "indigenousHolidayInUse": "A substitute day was designated for this ceremony holiday. Revoke it first.",
+    "indigenousHolidayInvalid": "Ceremony holidays are limited to 3 per year, must fall within employment, cannot repeat, and cannot coincide with a national holiday.",
     "insufficientLeaveBalance": "Insufficient leave balance. Ask a manager to check the allowance.",
     "insuranceBasisOutdated": "Insurance bases are not in the current grade table. Re-check the labor and health insured amounts.",
     "insuranceBasisUnderDeclared": "Based on average wages for the latest adjustment period, the insured salary is below the required grade. Set up the payroll terms again.",
@@ -289,7 +292,7 @@
       "otherEmployer": "Insured by the unit with longer hours, higher pay or greater risk"
     }
   },
-  "healthInsured": "Enroll in health insurance here",
+  "voluntaryHealthInsurance": "Enroll in health insurance here even when not required",
   "hiredAt": "Employment starts",
   "kind": {
     "label": "Request type",
@@ -648,7 +651,7 @@
   "to": "To",
   "useCurrentLocation": "Use current location",
   "usedMinutes": "Used",
-  "voluntaryLaborInsurance": "Enroll in labor insurance with fewer than 5 employees",
+  "voluntaryLaborInsuranceFrom": "Voluntary labor insurance start month (under 5 employees)",
   "voluntaryPension": "Voluntary pension ({currency})",
   "voluntaryPercent": "Voluntary rate (%)",
   "weekday": "Weekday",
@@ -666,10 +669,19 @@
     }
   },
   "withholdingDependents": "Spouse and dependents",
-  "maternalProtectionPeriods": {
+  "pregnancyPeriods": {
     "from": "Start date",
-    "label": "Pregnancy or nursing periods",
+    "label": "Pregnancy periods",
     "to": "End date"
+  },
+  "nursingPeriods": {
+    "from": "Start date",
+    "label": "Nursing periods",
+    "to": "End date"
+  },
+  "indigenousHolidays": {
+    "date": "Holiday",
+    "label": "Indigenous ceremony holidays"
   },
   "terminationReason": {
     "label": "Termination reason",

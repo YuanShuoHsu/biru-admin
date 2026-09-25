@@ -138,9 +138,6 @@ const TermsDialog = ({
       healthDependents: current?.insurance?.healthDependents ?? 0,
       healthInsuranceExemption:
         current?.insurance?.healthInsuranceExemption ?? null,
-      healthInsured: current?.insurance
-        ? current.insurance.healthBasis > 0
-        : true,
       healthSupplementExemption:
         current?.insurance?.healthSupplementExemption ?? null,
       employmentInsuranceExemption:
@@ -150,9 +147,8 @@ const TermsDialog = ({
       monthlyProration: current?.monthlyProration ?? "thirtyDays",
       salaryType: current?.salaryType ?? "monthly",
       taxMethod: current?.insurance?.taxMethod ?? "resident5",
-      voluntaryLaborInsurance:
-        current?.insurance?.laborCoverage === "both" ||
-        current?.insurance?.laborCoverage === "labor",
+      voluntaryHealthInsurance:
+        current?.insurance?.voluntaryHealthInsurance ?? false,
       voluntaryPercent: current?.insurance?.voluntaryPercent ?? 0,
       withholdingDependents: current?.insurance?.withholdingDependents ?? 0,
       ...(Object.fromEntries(
@@ -215,20 +211,18 @@ const TermsDialog = ({
                 employmentInsuranceExemption: form.employmentInsuranceExemption,
               }),
             healthDependents: form.healthDependents,
-            ...(!form.healthInsured &&
-              form.healthInsuranceExemption && {
-                healthInsuranceExemption: form.healthInsuranceExemption,
-              }),
-            healthInsured: form.healthInsured,
-            ...(!form.healthInsured &&
-              form.healthSupplementExemption && {
-                healthSupplementExemption: form.healthSupplementExemption,
-              }),
+            ...(form.healthInsuranceExemption && {
+              healthInsuranceExemption: form.healthInsuranceExemption,
+            }),
+            ...(form.healthSupplementExemption && {
+              healthSupplementExemption: form.healthSupplementExemption,
+            }),
             ...(form.laborInsuranceExemption && {
               laborInsuranceExemption: form.laborInsuranceExemption,
             }),
             taxMethod: form.taxMethod,
-            voluntaryLaborInsurance: form.voluntaryLaborInsurance,
+            voluntaryHealthInsurance:
+              !form.healthInsuranceExemption && form.voluntaryHealthInsurance,
             voluntaryPercent: form.voluntaryPercent,
             withholdingDependents:
               form.taxMethod === "table" ? form.withholdingDependents : 0,
@@ -363,17 +357,6 @@ const TermsDialog = ({
           ))}
         </StyledFormControl>
       )}
-      <StyledFormControlLabel
-        control={
-          <Checkbox
-            checked={!!values.voluntaryLaborInsurance}
-            onChange={(_, checked) =>
-              setValue("voluntaryLaborInsurance", checked)
-            }
-          />
-        }
-        label={tAttendance("voluntaryLaborInsurance")}
-      />
       <ExemptionSelect
         label={tAttendance("laborInsuranceExemption.label")}
         none={tAttendance("laborInsuranceExemption.none")}
@@ -412,16 +395,37 @@ const TermsDialog = ({
           value={values.employmentInsuranceExemption}
         />
       )}
-      <StyledFormControlLabel
-        control={
-          <Checkbox
-            checked={!!values.healthInsured}
-            onChange={(_, checked) => setValue("healthInsured", checked)}
-          />
+      <ExemptionSelect
+        label={tAttendance("healthInsuranceExemption.label")}
+        none={tAttendance("healthInsuranceExemption.none")}
+        onChange={(value) =>
+          setValue(
+            "healthInsuranceExemption",
+            payrollHealthInsuranceExemptionValues.find(
+              (option) => option === value,
+            ) ?? null,
+          )
         }
-        label={tAttendance("healthInsured")}
+        options={payrollHealthInsuranceExemptionValues.map((option) => ({
+          label: tAttendance(`healthInsuranceExemption.options.${option}`),
+          value: option,
+        }))}
+        value={values.healthInsuranceExemption}
       />
-      {values.healthInsured ? (
+      {!values.healthInsuranceExemption && (
+        <StyledFormControlLabel
+          control={
+            <Checkbox
+              checked={!!values.voluntaryHealthInsurance}
+              onChange={(_, checked) =>
+                setValue("voluntaryHealthInsurance", checked)
+              }
+            />
+          }
+          label={tAttendance("voluntaryHealthInsurance")}
+        />
+      )}
+      {!values.healthInsuranceExemption && (
         <NumberSpinner
           error={!!errors.healthDependents}
           fullWidth
@@ -436,26 +440,9 @@ const TermsDialog = ({
           }
           value={values.healthDependents ?? 0}
         />
-      ) : (
-        <ExemptionSelect
-          label={tAttendance("healthInsuranceExemption.label")}
-          none={tAttendance("healthInsuranceExemption.none")}
-          onChange={(value) =>
-            setValue(
-              "healthInsuranceExemption",
-              payrollHealthInsuranceExemptionValues.find(
-                (option) => option === value,
-              ) ?? null,
-            )
-          }
-          options={payrollHealthInsuranceExemptionValues.map((option) => ({
-            label: tAttendance(`healthInsuranceExemption.options.${option}`),
-            value: option,
-          }))}
-          value={values.healthInsuranceExemption}
-        />
       )}
-      {!values.healthInsured && (
+      {(!!values.healthInsuranceExemption ||
+        !values.voluntaryHealthInsurance) && (
         <ExemptionSelect
           label={tAttendance("healthSupplementExemption.label")}
           none={tAttendance("healthSupplementExemption.none")}

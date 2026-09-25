@@ -10,7 +10,11 @@ export const useEmployeeFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   const periods = (
-    field: "maternalProtectionPeriod" | "studentVacation" | "workPermit",
+    field:
+      | "nursingPeriod"
+      | "pregnancyPeriod"
+      | "studentVacation"
+      | "workPermit",
   ) =>
     z.array(
       z
@@ -37,7 +41,29 @@ export const useEmployeeFormSchema = () => {
       taiwanStaySince: z.string(),
       studentVacations: periods("studentVacation"),
       workPermits: periods("workPermit"),
-      maternalProtectionPeriods: periods("maternalProtectionPeriod"),
+      pregnancyPeriods: periods("pregnancyPeriod"),
+      nursingPeriods: periods("nursingPeriod"),
+      indigenousHolidays: z
+        .array(
+          z.object({
+            date: z
+              .string()
+              .min(1, { error: tValidation("indigenousHoliday.required") }),
+          }),
+        )
+        .superRefine((holidays, context) =>
+          holidays.forEach(({ date }, index) => {
+            if (
+              date &&
+              holidays.findIndex((other) => other.date === date) !== index
+            )
+              context.addIssue({
+                code: "custom",
+                message: tValidation("indigenousHoliday.duplicate"),
+                path: [index, "date"],
+              });
+          }),
+        ),
       terminationReason: z.enum(attendanceTerminationReasonValues).nullable(),
       terminationNoticedAt: z.string(),
       regularLeaveWeekday: z.number().int().min(0).max(6).nullable(),

@@ -23,7 +23,7 @@ import {
   getAttendanceTemplates,
 } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
-import { getAttendanceDayKindEnumOptions } from "@/utils/enumOptions";
+import { getAttendanceScheduledDayKindEnumOptions } from "@/utils/enumOptions";
 import { hasRolePermission } from "@/utils/organizations";
 
 interface TemplatesPageProps {
@@ -108,7 +108,7 @@ const TemplatesPage = async ({ params, searchParams }: TemplatesPageProps) => {
   const quickFilterEnums = quickFilterValue
     ? getQuickFilterEnums(
         quickFilterValue,
-        getAttendanceDayKindEnumOptions(tAttendance),
+        getAttendanceScheduledDayKindEnumOptions(tAttendance),
       )
     : [];
 

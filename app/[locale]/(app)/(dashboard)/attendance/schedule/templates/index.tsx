@@ -49,7 +49,7 @@ import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization } from "@/types/organizations";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
-import { getAttendanceDayKindEnumOptions } from "@/utils/enumOptions";
+import { getAttendanceScheduledDayKindEnumOptions } from "@/utils/enumOptions";
 import {
   attendanceErrorKey,
   attendancePath,
@@ -121,7 +121,7 @@ const Templates = ({
   const booleanFilterOperators = useBooleanFilterOperators();
 
   const enumOptions = useMemo(
-    () => getAttendanceDayKindEnumOptions(tAttendance),
+    () => getAttendanceScheduledDayKindEnumOptions(tAttendance),
     [tAttendance],
   );
 
@@ -380,7 +380,7 @@ const Templates = ({
         filterOperators: stringFilterOperators,
         headerName: tAttendance("endsAt"),
         valueGetter: (value: string, row: AttendanceTemplate) =>
-          row.nextDay ? `${tAttendance("nextDay")} ${value}` : value,
+          value <= row.startTime ? `${tAttendance("nextDay")} ${value}` : value,
       },
       {
         field: "dayKind",

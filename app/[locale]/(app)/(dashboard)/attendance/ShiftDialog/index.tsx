@@ -32,7 +32,7 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { attendanceDayKindValues } from "@/types/api";
+import { attendanceScheduledDayKindValues } from "@/types/api";
 import type { AttendanceEmployee } from "@/types/attendance";
 
 import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
@@ -132,6 +132,9 @@ const ShiftDialog = ({
       ],
     });
 
+  const rotating =
+    employees.find(({ id }) => id === employeeId)?.regularLeaveWeekday === null;
+
   const handleStartsAtChange = (date: Dayjs | null) => {
     setValue("startsAt", date?.isValid() ? date.toISOString() : "", {
       shouldValidate: isSubmitted,
@@ -168,6 +171,7 @@ const ShiftDialog = ({
         body: JSON.stringify({
           shifts: Array.from({ length: repeatWeeks }, (_, index) => ({
             ...values,
+            dayKind: rotating ? values.dayKind : undefined,
             startsAt: dayjs(values.startsAt)
               .add(index * 7, "day")
               .toISOString(),
@@ -291,22 +295,24 @@ const ShiftDialog = ({
         }
         label={tAttendance("paidBreak")}
       />
-      <TextField
-        error={!!errors.dayKind}
-        fullWidth
-        helperText={errors.dayKind?.message}
-        label={tAttendance("dayKind.label")}
-        required
-        select
-        value={dayKind}
-        {...register("dayKind")}
-      >
-        {attendanceDayKindValues.map((value) => (
-          <MenuItem key={value} value={value}>
-            {tAttendance(`dayKind.options.${value}`)}
-          </MenuItem>
-        ))}
-      </TextField>
+      {rotating && (
+        <TextField
+          error={!!errors.dayKind}
+          fullWidth
+          helperText={errors.dayKind?.message}
+          label={tAttendance("dayKind.label")}
+          required
+          select
+          value={dayKind}
+          {...register("dayKind")}
+        >
+          {attendanceScheduledDayKindValues.map((value) => (
+            <MenuItem key={value} value={value}>
+              {tAttendance(`dayKind.options.${value}`)}
+            </MenuItem>
+          ))}
+        </TextField>
+      )}
       <NumberSpinner
         error={!!errors.repeatWeeks}
         fullWidth

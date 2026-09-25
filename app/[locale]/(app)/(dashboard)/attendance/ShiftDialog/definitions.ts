@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-import { attendanceDayKindValues } from "@/types/api";
+import { attendanceScheduledDayKindValues } from "@/types/api";
 
 const TIME_PATTERN = /^([01]\d|2[0-3]):[0-5]\d$/;
 
@@ -26,7 +26,7 @@ export const useShiftFormSchema = () => {
             .regex(TIME_PATTERN, { error: tValidation("endTime.invalid") }),
         }),
       ),
-      dayKind: z.enum(attendanceDayKindValues),
+      dayKind: z.enum(attendanceScheduledDayKindValues),
       repeatWeeks: z
         .number()
         .int({ error: tValidation("number.integer") })

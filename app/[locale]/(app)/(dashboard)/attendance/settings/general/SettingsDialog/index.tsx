@@ -108,6 +108,7 @@ const SettingsDialog = ({
       overtimeExtensionPeriods:
         settings?.overtimeExtensionPeriods.map((value) => ({ value })) ?? [],
       radiusMeters: settings?.radiusMeters ?? 100,
+      voluntaryLaborInsuranceFrom: settings?.voluntaryLaborInsuranceFrom ?? "",
     },
     resolver: zodResolver(settingsFormSchema),
   });
@@ -118,6 +119,7 @@ const SettingsDialog = ({
     longitude,
     occupationalAccidentRate,
     radiusMeters,
+    voluntaryLaborInsuranceFrom,
   ] = useWatch({
     control,
     name: [
@@ -126,6 +128,7 @@ const SettingsDialog = ({
       "longitude",
       "occupationalAccidentRate",
       "radiusMeters",
+      "voluntaryLaborInsuranceFrom",
     ],
   });
 
@@ -170,6 +173,8 @@ const SettingsDialog = ({
           overtimeExtensionPeriods: values.overtimeExtensionPeriods.map(
             ({ value }) => value,
           ),
+          voluntaryLaborInsuranceFrom:
+            values.voluntaryLaborInsuranceFrom || null,
         }),
       });
 
@@ -353,6 +358,27 @@ const SettingsDialog = ({
         }
         step={0.01}
         value={occupationalAccidentRate}
+      />
+      <DatePicker
+        format={monthFormat}
+        label={tAttendance("voluntaryLaborInsuranceFrom")}
+        onChange={(value) =>
+          setValue(
+            "voluntaryLaborInsuranceFrom",
+            value?.isValid() ? value.format("YYYY-MM") : "",
+          )
+        }
+        slotProps={{
+          field: { clearable: true },
+          textField: { fullWidth: true },
+        }}
+        timezone={STORE_TIMEZONE}
+        value={
+          voluntaryLaborInsuranceFrom
+            ? dayjs(voluntaryLaborInsuranceFrom, "YYYY-MM")
+            : null
+        }
+        views={["year", "month"]}
       />
       <StyledFormControl component="fieldset" variant="standard">
         <FormLabel component="legend">

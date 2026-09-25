@@ -137,6 +137,7 @@
     "continuousWorkTooLong": "连续工作不得超过 4 小时，请在中间安排至少 30 分钟的休息。",
     "correctionSourceChanged": "提交申请后这个班次的打卡有变动，请重新确认后再送审。",
     "dailyHoursExceeded": "当日工时将超过 12 小时，请缩短加班时间。",
+    "dayKindRequired": "员工未设置固定例假日与休息日，请选择日期类型。",
     "emergencyDetailsRequired": "例假出勤须先批准法定事由、报备及补假资料。",
     "employeeDisableConflict": "停用前请先取消未来班次并处理待审申请。",
     "employeeNotEnabled": "请由主管先在员工管理启用你的出勤资格。",
@@ -157,6 +158,8 @@
     "implausibleMinimumWage": "确认的每小时最低工资低于前一期，请重新核对官方公告。",
     "incompleteAttendance": "尚有班次未完成打卡或请假。",
     "inconsistentDayKind": "同一天的班次日期类型不一致。",
+    "indigenousHolidayInUse": "这个岁时祭仪放假日已指定补假日，请先撤销补假日。",
+    "indigenousHolidayInvalid": "岁时祭仪放假日每年最多 3 天，须在任职期间内、不可重复，也不可与国定假日同一天。",
     "insufficientLeaveBalance": "休假额度不足，请由主管确认年度额度。",
     "insuranceBasisOutdated": "投保金额不在当期投保级距表内，请重新确认劳就保与健保投保金额。",
     "insuranceBasisUnderDeclared": "依最近一次应调整期间的平均工资，投保级距低于应申报级距，请重新设置薪资条件。",
@@ -289,7 +292,7 @@
       "otherEmployer": "已在工时较长、所得较高或危险性较大的投保单位投保"
     }
   },
-  "healthInsured": "在本店投保健保",
+  "voluntaryHealthInsurance": "未达强制投保门槛仍在本店投保健保",
   "hiredAt": "入职日",
   "kind": {
     "label": "申请类型",
@@ -648,7 +651,7 @@
   "to": "结束日期",
   "useCurrentLocation": "使用当前位置",
   "usedMinutes": "已用额度",
-  "voluntaryLaborInsurance": "未满 5 人时仍投保劳保",
+  "voluntaryLaborInsuranceFrom": "未满 5 人自愿投保劳保起始月",
   "voluntaryPension": "劳退自提（{currency}）",
   "voluntaryPercent": "自提比例（%）",
   "weekday": "星期",
@@ -666,10 +669,19 @@
     }
   },
   "withholdingDependents": "配偶及受扶养亲属人数",
-  "maternalProtectionPeriods": {
+  "pregnancyPeriods": {
     "from": "开始日",
-    "label": "妊娠或哺乳期间",
+    "label": "妊娠期间",
     "to": "结束日"
+  },
+  "nursingPeriods": {
+    "from": "开始日",
+    "label": "哺乳期间",
+    "to": "结束日"
+  },
+  "indigenousHolidays": {
+    "date": "放假日",
+    "label": "原住民族岁时祭仪放假日"
   },
   "terminationReason": {
     "label": "离职原因",

@@ -10,6 +10,7 @@ import {
   attendanceParentalReturnStatusValues,
   attendanceRequestKindValues,
   attendanceRequestStatusValues,
+  attendanceScheduledDayKindValues,
   auditActionValues,
   auditResourceValues,
   baseUnitCodeValues,
@@ -190,6 +191,15 @@ export const getAttendanceDayKindEnumOptions = (
   tAttendance: ReturnType<typeof useTranslations<"attendance">>,
 ) => ({
   dayKind: attendanceDayKindValues.map((value) => ({
+    label: tAttendance(`dayKind.options.${value}`),
+    value,
+  })),
+});
+
+export const getAttendanceScheduledDayKindEnumOptions = (
+  tAttendance: ReturnType<typeof useTranslations<"attendance">>,
+) => ({
+  dayKind: attendanceScheduledDayKindValues.map((value) => ({
     label: tAttendance(`dayKind.options.${value}`),
     value,
   })),

@@ -65,7 +65,6 @@ export const useTermsFormSchema = () => {
     healthInsuranceExemption: z
       .enum(payrollHealthInsuranceExemptionValues)
       .nullable(),
-    healthInsured: z.boolean(),
     healthSupplementExemption: z
       .enum(payrollHealthSupplementExemptionValues)
       .nullable(),
@@ -78,7 +77,7 @@ export const useTermsFormSchema = () => {
     salaryType: z.enum(payrollSalaryTypeValues),
     sourceNote: z.string().trim(),
     taxMethod: z.enum(payrollTaxMethodValues),
-    voluntaryLaborInsurance: z.boolean(),
+    voluntaryHealthInsurance: z.boolean(),
     voluntaryPercent: number(0, 6),
     withholdingDependents: number(0, 99),
   });

@@ -314,9 +314,17 @@
     "required": "请选择工作许可起讫日。",
     "order": "讫日不可早于起日。"
   },
-  "maternalProtectionPeriod": {
-    "required": "请选择妊娠或哺乳期间起讫日。",
+  "pregnancyPeriod": {
+    "required": "请选择妊娠期间起讫日。",
     "order": "结束日不可早于开始日。"
+  },
+  "nursingPeriod": {
+    "required": "请选择哺乳期间起讫日。",
+    "order": "结束日不可早于开始日。"
+  },
+  "indigenousHoliday": {
+    "required": "请选择放假日。",
+    "duplicate": "日期不可重复。"
   },
   "terminationReason": {
     "required": "请选择离职原因。"

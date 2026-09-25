@@ -2401,6 +2401,7 @@ export interface components {
       | "continuousWorkTooLong"
       | "correctionSourceChanged"
       | "dailyHoursExceeded"
+      | "dayKindRequired"
       | "emergencyDetailsRequired"
       | "employeeDisableConflict"
       | "employeeNotEnabled"
@@ -2416,6 +2417,9 @@ export interface components {
       | "holidaySubstituteInvalid"
       | "idempotencyConflict"
       | "implausibleMinimumWage"
+      | "inconsistentDayKind"
+      | "indigenousHolidayInUse"
+      | "indigenousHolidayInvalid"
       | "insufficientLeaveBalance"
       | "invalidBreak"
       | "invalidEmergencyDetails"
@@ -2540,7 +2544,9 @@ export interface components {
       legalStatus: components["schemas"]["AttendanceLegalStatus"];
       studentVacations: components["schemas"]["DatePeriodDto"][];
       workPermits: components["schemas"]["DatePeriodDto"][];
-      maternalProtectionPeriods: components["schemas"]["DatePeriodDto"][];
+      pregnancyPeriods: components["schemas"]["DatePeriodDto"][];
+      nursingPeriods: components["schemas"]["DatePeriodDto"][];
+      indigenousHolidays: string[];
       regularLeaveWeekday?: number | null;
       restDayWeekday?: number | null;
       employmentInsuranceEligible: boolean;
@@ -2620,7 +2626,9 @@ export interface components {
       legalStatus: components["schemas"]["AttendanceLegalStatus"];
       studentVacations: components["schemas"]["DatePeriodDto"][];
       workPermits: components["schemas"]["DatePeriodDto"][];
-      maternalProtectionPeriods: components["schemas"]["DatePeriodDto"][];
+      pregnancyPeriods: components["schemas"]["DatePeriodDto"][];
+      nursingPeriods: components["schemas"]["DatePeriodDto"][];
+      indigenousHolidays: string[];
       regularLeaveWeekday?: number | null;
       restDayWeekday?: number | null;
       employmentInsuranceEligible: boolean;
@@ -2670,7 +2678,9 @@ export interface components {
       legalStatus: components["schemas"]["AttendanceLegalStatus"];
       studentVacations: components["schemas"]["DatePeriodDto"][];
       workPermits: components["schemas"]["DatePeriodDto"][];
-      maternalProtectionPeriods: components["schemas"]["DatePeriodDto"][];
+      pregnancyPeriods: components["schemas"]["DatePeriodDto"][];
+      nursingPeriods: components["schemas"]["DatePeriodDto"][];
+      indigenousHolidays: string[];
       terminationReason?: components["schemas"]["AttendanceTerminationReason"];
       userId: string;
       enabled: boolean;
@@ -2705,6 +2715,11 @@ export interface components {
        *     ]
        */
       overtimeExtensionPeriods: string[];
+      /**
+       * @description 僱用未滿 5 人時自願為全體員工投保勞保的起始月；曾達 5 人者依法強制，不需設定
+       * @example 2026-01
+       */
+      voluntaryLaborInsuranceFrom?: string | null;
       organizationId: string;
       /** Format: date-time */
       updatedAt: string;
@@ -2736,6 +2751,11 @@ export interface components {
        *     ]
        */
       overtimeExtensionPeriods: string[];
+      /**
+       * @description 僱用未滿 5 人時自願為全體員工投保勞保的起始月；曾達 5 人者依法強制，不需設定
+       * @example 2026-01
+       */
+      voluntaryLaborInsuranceFrom?: string | null;
       latitude: number;
       longitude: number;
       radiusMeters: number;
@@ -2812,9 +2832,15 @@ export interface components {
       data: components["schemas"]["AttendanceShiftResponseDto"][];
       total: number;
     };
+    /**
+     * @description 員工設有固定例假日與休息日時由星期推得，未設定者必填
+     * @enum {string}
+     */
+    AttendanceScheduledDayKind: "workday" | "restDay" | "regularLeave";
     CreateAttendanceShiftDto: {
       breaks: components["schemas"]["ShiftBreakDto"][];
-      dayKind: components["schemas"]["AttendanceDayKind"];
+      /** @description 員工設有固定例假日與休息日時由星期推得，未設定者必填 */
+      dayKind?: components["schemas"]["AttendanceScheduledDayKind"];
       /** Format: uuid */
       employeeId: string;
       startsAt: string;
@@ -2866,7 +2892,6 @@ export interface components {
       | "endTime"
       | "dayKind"
       | "weekday"
-      | "nextDay"
       | "paidBreak";
     /** @enum {string} */
     AttendanceTemplateSortField:
@@ -2876,7 +2901,6 @@ export interface components {
       | "endTime"
       | "dayKind"
       | "weekday"
-      | "nextDay"
       | "paidBreak";
     TemplateBreakDto: {
       startTime: string;
@@ -2891,10 +2915,9 @@ export interface components {
       weekday: number;
       startTime: string;
       endTime: string;
-      nextDay: boolean;
       paidBreak: boolean;
       breaks: components["schemas"]["TemplateBreakDto"][];
-      dayKind: components["schemas"]["AttendanceDayKind"];
+      dayKind: components["schemas"]["AttendanceScheduledDayKind"];
     };
     AttendanceTemplatesResponseDto: {
       data: components["schemas"]["AttendanceTemplateResponseDto"][];
@@ -2902,14 +2925,14 @@ export interface components {
     };
     SaveAttendanceTemplateDto: {
       breaks: components["schemas"]["TemplateBreakDto"][];
-      dayKind: components["schemas"]["AttendanceDayKind"];
+      /** @description 員工設有固定例假日與休息日時由星期推得，未設定者必填 */
+      dayKind?: components["schemas"]["AttendanceScheduledDayKind"];
       /** Format: uuid */
       employeeId: string;
       name: string;
       weekday: number;
       startTime: string;
       endTime: string;
-      nextDay: boolean;
       paidBreak: boolean;
     };
     AttendanceTemplateRecordResponseDto: {
@@ -2920,10 +2943,9 @@ export interface components {
       weekday: number;
       startTime: string;
       endTime: string;
-      nextDay: boolean;
       paidBreak: boolean;
       breaks: components["schemas"]["TemplateBreakDto"][];
-      dayKind: components["schemas"]["AttendanceDayKind"];
+      dayKind: components["schemas"]["AttendanceScheduledDayKind"];
     };
     GenerateAttendanceTemplateDto: {
       from: string;
@@ -6119,6 +6141,7 @@ export interface components {
       healthSupplementExemption?: components["schemas"]["PayrollHealthSupplementExemption"];
       laborLadder?: components["schemas"]["PayrollLaborLadder"];
       taxMethod: components["schemas"]["PayrollTaxMethod"];
+      voluntaryHealthInsurance?: boolean;
       laborBasis: number;
       occupationalBasis: number;
       healthBasis: number;
@@ -6154,8 +6177,8 @@ export interface components {
       employmentInsuranceExemption?: components["schemas"]["PayrollEmploymentInsuranceExemption"];
       healthSupplementExemption?: components["schemas"]["PayrollHealthSupplementExemption"];
       taxMethod: components["schemas"]["PayrollTaxMethod"];
-      healthInsured: boolean;
-      voluntaryLaborInsurance: boolean;
+      /** @description 每週工時未達法定投保門檻時仍在本店投保健保；達門檻者一律投保 */
+      voluntaryHealthInsurance: boolean;
       healthDependents: number;
       voluntaryPercent: number;
       employerPercent: number;
@@ -12320,6 +12343,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "continuousWorkTooLong",
   "correctionSourceChanged",
   "dailyHoursExceeded",
+  "dayKindRequired",
   "emergencyDetailsRequired",
   "employeeDisableConflict",
   "employeeNotEnabled",
@@ -12335,6 +12359,9 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "holidaySubstituteInvalid",
   "idempotencyConflict",
   "implausibleMinimumWage",
+  "inconsistentDayKind",
+  "indigenousHolidayInUse",
+  "indigenousHolidayInvalid",
   "insufficientLeaveBalance",
   "invalidBreak",
   "invalidEmergencyDetails",
@@ -12519,6 +12546,9 @@ export const attendanceEventActionValues: ReadonlyArray<
 export const attendanceShiftResponseDtoStateValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceShiftResponseDto"]["state"]
 > = ["scheduled", "working", "resting", "completed"];
+export const attendanceScheduledDayKindValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["AttendanceScheduledDayKind"]
+> = ["workday", "restDay", "regularLeave"];
 export const attendanceTemplateFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceTemplateFilterField"]
 > = [
@@ -12528,7 +12558,6 @@ export const attendanceTemplateFilterFieldValues: ReadonlyArray<
   "endTime",
   "dayKind",
   "weekday",
-  "nextDay",
   "paidBreak",
 ];
 export const attendanceTemplateSortFieldValues: ReadonlyArray<
@@ -12540,7 +12569,6 @@ export const attendanceTemplateSortFieldValues: ReadonlyArray<
   "endTime",
   "dayKind",
   "weekday",
-  "nextDay",
   "paidBreak",
 ];
 export const attendanceRequestFilterFieldValues: ReadonlyArray<

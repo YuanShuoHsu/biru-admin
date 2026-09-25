@@ -87,7 +87,11 @@ interface PeriodFieldsProps {
   control: Control<EmployeeForm>;
   errors: FieldErrors<EmployeeForm>;
   isSubmitted: boolean;
-  name: "maternalProtectionPeriods" | "studentVacations" | "workPermits";
+  name:
+    | "nursingPeriods"
+    | "pregnancyPeriods"
+    | "studentVacations"
+    | "workPermits";
   setValue: UseFormSetValue<EmployeeForm>;
 }
 
@@ -151,6 +155,69 @@ const PeriodFields = ({
   );
 };
 
+type HolidayFieldsProps = Omit<PeriodFieldsProps, "name">;
+
+const IndigenousHolidayFields = ({
+  control,
+  errors,
+  isSubmitted,
+  setValue,
+}: HolidayFieldsProps) => {
+  const tAttendance = useTranslations("attendance");
+
+  const { append, fields, remove } = useFieldArray({
+    control,
+    name: "indigenousHolidays",
+  });
+
+  const holidays = useWatch({ control, name: "indigenousHolidays" });
+
+  return (
+    <StyledFormControl component="fieldset" variant="standard">
+      <FormLabel component="legend">
+        {tAttendance("indigenousHolidays.label")}
+      </FormLabel>
+      {fields.map(({ id }, index) => (
+        <PeriodRowStack direction="row" key={id}>
+          <DatePicker
+            label={tAttendance("indigenousHolidays.date")}
+            onChange={(date) =>
+              setValue(
+                `indigenousHolidays.${index}.date`,
+                date?.isValid() ? date.format("YYYY-MM-DD") : "",
+                { shouldValidate: isSubmitted },
+              )
+            }
+            slotProps={{
+              textField: {
+                error: !!errors.indigenousHolidays?.[index]?.date,
+                fullWidth: true,
+                helperText: errors.indigenousHolidays?.[index]?.date?.message,
+              },
+            }}
+            timezone={STORE_TIMEZONE}
+            value={
+              holidays?.[index]?.date
+                ? dayjs.tz(holidays[index].date, STORE_TIMEZONE)
+                : null
+            }
+          />
+          <IconButton color="error" onClick={() => remove(index)} size="small">
+            <DeleteOutlined fontSize="small" />
+          </IconButton>
+        </PeriodRowStack>
+      ))}
+      <StyledButton
+        onClick={() => append({ date: "" })}
+        startIcon={<Add />}
+        variant="outlined"
+      >
+        {tAttendance("add")}
+      </StyledButton>
+    </StyledFormControl>
+  );
+};
+
 interface EmployeeDialogProps {
   legalStatusObligations: AttendanceLegalStatusObligation[];
   member: AttendanceMember;
@@ -192,7 +259,11 @@ const EmployeeDialog = ({
           .tz(STORE_TIMEZONE)
           .format("YYYY-MM-DD"),
       legalStatus: employee?.legalStatus ?? "national",
-      maternalProtectionPeriods: employee?.maternalProtectionPeriods ?? [],
+      indigenousHolidays: (employee?.indigenousHolidays ?? []).map((date) => ({
+        date,
+      })),
+      nursingPeriods: employee?.nursingPeriods ?? [],
+      pregnancyPeriods: employee?.pregnancyPeriods ?? [],
       regularLeaveWeekday: employee?.regularLeaveWeekday ?? null,
       restDayWeekday: employee?.restDayWeekday ?? null,
       studentVacations: employee?.studentVacations ?? [],
@@ -251,7 +322,9 @@ const EmployeeDialog = ({
         enabled: values.enabled,
         hiredAt: values.hiredAt,
         legalStatus: values.legalStatus,
-        maternalProtectionPeriods: values.maternalProtectionPeriods,
+        indigenousHolidays: values.indigenousHolidays.map(({ date }) => date),
+        nursingPeriods: values.nursingPeriods,
+        pregnancyPeriods: values.pregnancyPeriods,
         ...(values.regularLeaveWeekday !== null &&
           values.restDayWeekday !== null && {
             regularLeaveWeekday: values.regularLeaveWeekday,
@@ -380,7 +453,9 @@ const EmployeeDialog = ({
       {legalStatus === "foreignStudent" && (
         <PeriodFields name="studentVacations" {...periodFieldsProps} />
       )}
-      <PeriodFields name="maternalProtectionPeriods" {...periodFieldsProps} />
+      <PeriodFields name="pregnancyPeriods" {...periodFieldsProps} />
+      <PeriodFields name="nursingPeriods" {...periodFieldsProps} />
+      <IndigenousHolidayFields {...periodFieldsProps} />
       {(["regularLeaveWeekday", "restDayWeekday"] as const).map((name) => (
         <TextField
           error={!!errors[name]}

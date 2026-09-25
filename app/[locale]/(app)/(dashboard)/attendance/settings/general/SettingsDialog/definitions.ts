@@ -45,6 +45,7 @@ export const useSettingsFormSchema = () => {
       latitude: range(-90, 90).nullable(),
       longitude: range(-180, 180).nullable(),
       radiusMeters: range(10, 10000),
+      voluntaryLaborInsuranceFrom: z.string(),
     })
     .superRefine((data, ctx) => {
       for (const field of ["latitude", "longitude"] as const)

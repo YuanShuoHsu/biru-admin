@@ -137,6 +137,7 @@
     "continuousWorkTooLong": "連続勤務は4時間までです。間に30分以上の休憩を入れてください。",
     "correctionSourceChanged": "申請後にこのシフトの打刻が変更されました。再確認してから審査してください。",
     "dailyHoursExceeded": "1 日の労働時間が 12 時間を超えます。残業時間を短くしてください。",
+    "dayKindRequired": "従業員に固定の法定休日・休日が設定されていないため、日区分を選択してください。",
     "emergencyDetailsRequired": "緊急出勤の事由、報告、代休を承認してください。",
     "employeeDisableConflict": "停止する前に、今後のシフトを取り消し、審査待ちの申請を処理してください。",
     "employeeNotEnabled": "管理者に勤怠の有効化を依頼してください。",
@@ -157,6 +158,8 @@
     "implausibleMinimumWage": "確認した最低時給が前期より低くなっています。官報の公告を再確認してください。",
     "incompleteAttendance": "打刻または休暇の処理が未完了です。",
     "inconsistentDayKind": "同日のシフトで日区分が異なります。",
+    "indigenousHolidayInUse": "この歳時祭儀の休日には振替休日が指定されています。先に取り消してください。",
+    "indigenousHolidayInvalid": "歳時祭儀の休日は年 3 日までで、在職期間内・重複なし・国定休日以外の日にしてください。",
     "insufficientLeaveBalance": "休暇残数が不足しています。管理者に確認してください。",
     "insuranceBasisOutdated": "保険の基準額が当期の等級表にありません。労働保険と健康保険の月額を確認してください。",
     "insuranceBasisUnderDeclared": "直近の調整期間の平均賃金に対し、投保等級が申告すべき等級を下回っています。給与条件を再設定してください。",
@@ -289,7 +292,7 @@
       "otherEmployer": "労働時間・所得・危険性がより大きい事業所で加入済み"
     }
   },
-  "healthInsured": "当店で健保に加入",
+  "voluntaryHealthInsurance": "加入義務がなくても当店で健保に加入",
   "hiredAt": "入社日",
   "kind": {
     "label": "申請種類",
@@ -648,7 +651,7 @@
   "to": "終了日",
   "useCurrentLocation": "現在地を使用",
   "usedMinutes": "使用時間",
-  "voluntaryLaborInsurance": "5 人未満でも労保に加入",
+  "voluntaryLaborInsuranceFrom": "5 人未満で労保に任意加入した開始月",
   "voluntaryPension": "任意年金拠出（{currency}）",
   "voluntaryPercent": "任意拠出率（%）",
   "weekday": "曜日",
@@ -666,10 +669,19 @@
     }
   },
   "withholdingDependents": "配偶者および扶養親族の人数",
-  "maternalProtectionPeriods": {
+  "pregnancyPeriods": {
     "from": "開始日",
-    "label": "妊娠・授乳期間",
+    "label": "妊娠期間",
     "to": "終了日"
+  },
+  "nursingPeriods": {
+    "from": "開始日",
+    "label": "授乳期間",
+    "to": "終了日"
+  },
+  "indigenousHolidays": {
+    "date": "休日",
+    "label": "原住民族歳時祭儀の休日"
   },
   "terminationReason": {
     "label": "退職理由",

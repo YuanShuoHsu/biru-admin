@@ -314,9 +314,17 @@
     "required": "Select the permit start and end dates.",
     "order": "The end date can't be before the start date."
   },
-  "maternalProtectionPeriod": {
-    "required": "Choose the start and end dates of the pregnancy or nursing period.",
+  "pregnancyPeriod": {
+    "required": "Choose the start and end dates of the pregnancy period.",
     "order": "The end date cannot be before the start date."
+  },
+  "nursingPeriod": {
+    "required": "Choose the start and end dates of the nursing period.",
+    "order": "The end date cannot be before the start date."
+  },
+  "indigenousHoliday": {
+    "required": "Choose a date.",
+    "duplicate": "Dates cannot repeat."
   },
   "terminationReason": {
     "required": "Choose a termination reason."
