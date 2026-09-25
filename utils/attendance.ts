@@ -56,6 +56,7 @@ import type {
   AttendanceTemplate,
   AttendanceTemplateFilterField,
   AttendanceTemplateSortField,
+  OccupationalIndustryRate,
   PayrollBlocker,
   PayrollStatement,
   PayrollStatementFilterField,
@@ -194,6 +195,14 @@ export const getAttendanceLegalStatusObligations = cache(
   (organizationSlug: string, init?: RequestInit) =>
     fetcher<AttendanceLegalStatusObligation[]>(
       attendancePath(organizationSlug, "org", "legal-status-obligations"),
+      init,
+    ),
+);
+
+export const getOccupationalIndustryRates = cache(
+  (organizationSlug: string, init?: RequestInit) =>
+    fetcher<OccupationalIndustryRate[]>(
+      attendancePath(organizationSlug, "org", "occupational-industries"),
       init,
     ),
 );

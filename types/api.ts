@@ -87,6 +87,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/attendance/occupational-industries": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 現行職災保險適用行業別及費率 */
+    get: operations["AttendanceEmployeesController_occupationalIndustries"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/attendance/employees": {
     parameters: {
       query?: never;
@@ -2670,6 +2687,14 @@ export interface components {
       pensionApplicable: boolean;
       workPermitRequired: boolean;
     };
+    OccupationalIndustryRateResponseDto: {
+      /** @description 費率編號 */
+      code: string;
+      category: string;
+      industry: string;
+      /** @description 行業別災害費率（百萬分率，不含上下班費率） */
+      rateMicros: number;
+    };
     AttendanceEmployeesResponseDto: {
       data: components["schemas"]["AttendanceEmployeeResponseDto"][];
       total: number;
@@ -2703,10 +2728,15 @@ export interface components {
       /** @example 01234567A */
       laborInsuranceUnitCode?: string | null;
       /**
-       * @description 勞保局核定的行業別職災費率（百萬分率，不含上下班費率）
-       * @example 1200
+       * @description 勞保局核定的職災保險行業別費率編號
+       * @example 42
        */
-      occupationalAccidentRateMicros?: number | null;
+      occupationalIndustryCode?: string | null;
+      /**
+       * @description 投保人數達 50 人、收到勞保局實績費率通知時填寫（百萬分率，不含上下班費率）；未填依行業別費率
+       * @example 1100
+       */
+      occupationalExperienceRateMicros?: number | null;
       /**
        * @description 經工會或勞資會議同意延長工時的各期起始月（每期連續 3 個曆月）
        * @example [
@@ -2739,10 +2769,15 @@ export interface components {
       /** @example 01234567A */
       laborInsuranceUnitCode?: string | null;
       /**
-       * @description 勞保局核定的行業別職災費率（百萬分率，不含上下班費率）
-       * @example 1200
+       * @description 勞保局核定的職災保險行業別費率編號
+       * @example 42
        */
-      occupationalAccidentRateMicros?: number | null;
+      occupationalIndustryCode?: string | null;
+      /**
+       * @description 投保人數達 50 人、收到勞保局實績費率通知時填寫（百萬分率，不含上下班費率）；未填依行業別費率
+       * @example 1100
+       */
+      occupationalExperienceRateMicros?: number | null;
       /**
        * @description 經工會或勞資會議同意延長工時的各期起始月（每期連續 3 個曆月）
        * @example [
@@ -3069,7 +3104,6 @@ export interface components {
       occurredAt: string;
     };
     CreateAttendanceRequestDto: {
-      parentalMode?: components["schemas"]["AttendanceParentalMode"];
       kind: components["schemas"]["AttendanceRequestKind"];
       /** Format: uuid */
       leaveCaseId?: string;
@@ -3100,7 +3134,6 @@ export interface components {
       paidPercent?: number | null;
       reviewedBy?: string | null;
       emergency?: components["schemas"]["EmergencyWorkResponseDto"] | null;
-      parentalMode: components["schemas"]["AttendanceParentalMode"] | null;
       /** Format: date-time */
       originalEndsAt?: string | null;
       correctedEvents?:
@@ -3182,6 +3215,8 @@ export interface components {
       total: number;
     };
     CreateAttendanceLeaveCaseDto: {
+      /** @description 育嬰留職停薪取子女出生日，其他事件假必填 */
+      eventDate?: string;
       /** Format: uuid */
       childId?: string;
       earlyParentalAgreed?: boolean;
@@ -3190,7 +3225,6 @@ export interface components {
       /** Format: uuid */
       leaveTypeId: string;
       reference: string;
-      eventDate: string;
       startsAt: string;
       endsAt: string;
       reason: string;
@@ -6072,6 +6106,7 @@ export interface components {
       healthGrades: number[];
       minimumMonthlyWageCents: string;
       minimumHourlyWageCents: string;
+      occupationalIndustryRates?: components["schemas"]["OccupationalIndustryRateResponseDto"][];
     };
     PayrollRuleSourceResponseDto: {
       label: string;
@@ -6495,6 +6530,32 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["AttendanceLegalStatusObligationResponseDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AttendanceEmployeesController_occupationalIndustries: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OccupationalIndustryRateResponseDto"][];
         };
       };
       /** @description Internal server error */

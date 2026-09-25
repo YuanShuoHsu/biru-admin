@@ -134,6 +134,7 @@
     "childLaborHoursExceeded": "16세 미만 직원은 하루 8시간, 주 40시간을 초과하여 근무할 수 없습니다.",
     "childLaborNightWork": "16세 미만 직원은 오후 8시부터 다음 날 오전 6시까지 근무할 수 없습니다.",
     "childLaborRestDay": "16세 미만 직원은 법정 휴일에 근무할 수 없습니다.",
+    "consecutiveWorkdaysExceeded": "6일을 초과해 연속 근무할 수 없습니다. 근무 배정일, 휴가, 국정 공휴일은 모두 근무일로 계산되며, 중간에 근무가 없는 법정 휴일이나 휴식일을 하루 넣어야 합니다.",
     "continuousWorkTooLong": "연속 근무는 4시간을 넘을 수 없습니다. 중간에 30분 이상의 휴게 시간을 넣어 주세요.",
     "correctionSourceChanged": "신청 이후 이 근무의 기록이 변경되었습니다. 다시 확인한 뒤 심사하세요.",
     "dailyHoursExceeded": "하루 근무가 12시간을 넘게 됩니다. 연장 시간을 줄이세요.",
@@ -196,7 +197,8 @@
     "negativeNetPay": "공제액이 총급여를 초과합니다.",
     "noShifts": "해당 월에 근무 일정이 없습니다.",
     "noTemplateDates": "이 기간에 템플릿 요일에 해당하는 날짜가 없습니다.",
-    "occupationalAccidentRateRequired": "고용주 산재보험료를 계산하려면 근태 설정에 노동보험국이 인정한 업종별 산재보험 요율을 입력하세요.",
+    "occupationalAccidentRateRequired": "고용주 산재보험료를 계산하려면 근태 설정에서 노동보험국이 인정한 산재보험 업종을 선택하세요.",
+    "occupationalIndustryInvalid": "이 산재보험 업종을 찾을 수 없습니다. 다시 선택하세요.",
     "openingHoursRequired": "이 직원은 당점에서 건강보험에 가입하지 않았으므로 매 영업일 출근 여부를 영업시간으로 판단해야 합니다. 먼저 조직 설정에서 영업시간을 입력하세요.",
     "outsideShiftWindow": "현재 이 근무의 출근 기록 시간이 아닙니다.",
     "overlappingAttendance": "이 기간에 이미 다른 출근 기록이 있습니다.",
@@ -305,9 +307,13 @@
   "label": "인사",
   "laborBasis": "신고 노동 보험 급여({currency})",
   "occupationalBasis": "산재 월 보험 가입 임금({currency})",
-  "occupationalAccidentRateMicros": {
-    "helper": "노동보험국 인정 요율(출퇴근 재해 요율 0.07% 제외)",
-    "label": "산재보험 업종별 요율(%)",
+  "occupationalExperienceRateMicros": {
+    "helper": "피보험자 50명 이상이며 노동보험국의 실적 요율 통지를 받은 경우에만 입력(출퇴근 재해 요율 제외)",
+    "label": "산재보험 실적 요율(%)",
+    "none": "업종별 요율"
+  },
+  "occupationalIndustryCode": {
+    "label": "산재보험 업종",
     "none": "미설정"
   },
   "laborInsuranceExemption": {
@@ -325,7 +331,7 @@
     "label": "부여된 한도",
     "placeholder": "귀하의 부여된 한도를 선택해 주세요"
   },
-  "leaveCaseHint": "관리자가 사유, 가족 관계, 적용 기간을 확인하면 한도가 자동 계산됩니다. 동일 사유를 중복 등록하지 마세요. 출산 휴가는 휴일을 포함한 전체 날짜로 입력합니다(자정, 종료일 제외). 배우자 검진과 출산 휴가는 합계 7일이며 신청별 적용 기간을 확인해야 합니다. 출산 휴가 일급은 약정 임금과 평균 임금으로 자동 계산됩니다. 지급 비율은 근속 기간으로 자동 계산됩니다. 육아 휴직의 사유 발생일은 자녀 생년월일이며, 같은 자녀에는 동일한 사유 번호를 사용하세요. 기간은 만 3세 생일까지이며, 근속 6개월 미만은 노사 합의가 필요합니다. 일급 설정은 필요하지 않습니다.",
+  "leaveCaseHint": "관리자가 사유, 가족 관계, 적용 기간을 확인하면 한도가 자동 계산됩니다. 동일 사유를 중복 등록하지 마세요. 출산 휴가는 휴일을 포함한 전체 날짜로 입력합니다(자정, 종료일 제외). 배우자 검진과 출산 휴가는 합계 7일이며 신청별 적용 기간을 확인해야 합니다. 출산 휴가 일급은 약정 임금과 평균 임금으로 자동 계산됩니다. 지급 비율은 근속 기간으로 자동 계산됩니다. 육아 휴직은 같은 자녀에 동일한 사유 번호를 사용하세요. 기간은 만 3세 생일까지이며, 근속 6개월 미만은 노사 합의가 필요합니다. 일급 설정은 필요하지 않습니다.",
   "leaveCases": {
     "actions": {
       "create": "사유별 휴가 한도 추가",
@@ -432,10 +438,6 @@
   },
   "parentalContinuous": "연속 기간 신청",
   "parentalDaily": "일 단위 신청",
-  "parentalMode": {
-    "label": "육아 휴직 신청 방식",
-    "placeholder": "귀하의 육아 휴직 신청 방식을 선택해 주세요"
-  },
   "parentalReturn": "조기 복직",
   "parentalReturnHint": "다른 관리자의 승인이 필요합니다. 승인 전에는 휴직이 유지됩니다. 승인 후에도 사용한 휴직 기간과 원본 기록을 보존하며 복직일 시작 시 휴직이 종료됩니다.",
   "parentalReturns": {
@@ -444,7 +446,6 @@
   "payroll": {
     "label": "급여"
   },
-  "payrollHint": "보험 등급은 임금과 근무표로 자동 계산됩니다. 특례나 보조금은 자동 계산을 끄고 확인된 노동·건강보험 본인 부담액과 근거를 입력하세요. 적용일은 월초입니다.",
   "payrollLine": {
     "options": {
       "absenceDeduction": "결근 공제",

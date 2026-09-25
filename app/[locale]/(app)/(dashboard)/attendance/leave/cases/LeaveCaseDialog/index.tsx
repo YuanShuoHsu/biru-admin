@@ -154,9 +154,6 @@ const LeaveCaseDialog = ({
               ? {
                   childId: values.childId,
                   earlyParentalAgreed: values.earlyParentalAgreed,
-                  eventDate: parentalChildren.find(
-                    ({ id }) => id === values.childId,
-                  )?.birthDate,
                 }
               : { eventDate: values.eventDate }),
             ...(isMarriageLeave

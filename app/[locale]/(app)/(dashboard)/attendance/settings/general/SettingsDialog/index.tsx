@@ -3,7 +3,7 @@
 import dayjs from "dayjs";
 import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent, useState } from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
@@ -30,6 +30,8 @@ import {
   FormHelperText,
   FormLabel,
   IconButton,
+  ListSubheader,
+  MenuItem,
   Stack,
   TextField,
 } from "@mui/material";
@@ -38,7 +40,10 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { AttendanceSettings } from "@/types/attendance";
+import type {
+  AttendanceSettings,
+  OccupationalIndustryRate,
+} from "@/types/attendance";
 
 import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
@@ -66,11 +71,13 @@ const IpRowStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface SettingsDialogProps {
+  occupationalIndustryRates: OccupationalIndustryRate[];
   organizationSlug: string;
   settings: AttendanceSettings | null;
 }
 
 const SettingsDialog = ({
+  occupationalIndustryRates,
   organizationSlug,
   settings,
 }: SettingsDialogProps) => {
@@ -79,6 +86,8 @@ const SettingsDialog = ({
   const [locating, setLocating] = useState(false);
 
   const router = useRouter();
+
+  const format = useFormatter();
 
   const tAttendance = useTranslations("attendance");
 
@@ -99,10 +108,11 @@ const SettingsDialog = ({
         : [{ value: "" }],
       graceMinutes: settings?.graceMinutes ?? 0,
       laborInsuranceUnitCode: settings?.laborInsuranceUnitCode ?? "",
-      occupationalAccidentRate:
-        settings?.occupationalAccidentRateMicros == null
+      occupationalExperienceRate:
+        settings?.occupationalExperienceRateMicros == null
           ? null
-          : settings.occupationalAccidentRateMicros / 10000,
+          : settings.occupationalExperienceRateMicros / 10000,
+      occupationalIndustryCode: settings?.occupationalIndustryCode ?? "",
       latitude: settings?.latitude ?? null,
       longitude: settings?.longitude ?? null,
       overtimeExtensionPeriods:
@@ -117,7 +127,8 @@ const SettingsDialog = ({
     graceMinutes,
     latitude,
     longitude,
-    occupationalAccidentRate,
+    occupationalExperienceRate,
+    occupationalIndustryCode,
     radiusMeters,
     voluntaryLaborInsuranceFrom,
   ] = useWatch({
@@ -126,11 +137,22 @@ const SettingsDialog = ({
       "graceMinutes",
       "latitude",
       "longitude",
-      "occupationalAccidentRate",
+      "occupationalExperienceRate",
+      "occupationalIndustryCode",
       "radiusMeters",
       "voluntaryLaborInsuranceFrom",
     ],
   });
+
+  const industryCategories = [
+    ...new Set(occupationalIndustryRates.map(({ category }) => category)),
+  ];
+
+  const industryLabel = ({ industry, rateMicros }: OccupationalIndustryRate) =>
+    `${industry} · ${format.number(rateMicros / 1000000, {
+      maximumFractionDigits: 6,
+      style: "percent",
+    })}`;
 
   const { append, fields, remove } = useFieldArray({
     control,
@@ -165,10 +187,11 @@ const SettingsDialog = ({
           laborInsuranceUnitCode: values.laborInsuranceUnitCode || null,
           latitude: values.latitude,
           longitude: values.longitude,
-          occupationalAccidentRateMicros:
-            values.occupationalAccidentRate === null
+          occupationalExperienceRateMicros:
+            values.occupationalExperienceRate === null
               ? null
-              : Math.round(values.occupationalAccidentRate * 10000),
+              : Math.round(values.occupationalExperienceRate * 10000),
+          occupationalIndustryCode: values.occupationalIndustryCode || null,
           radiusMeters: values.radiusMeters,
           overtimeExtensionPeriods: values.overtimeExtensionPeriods.map(
             ({ value }) => value,
@@ -340,24 +363,64 @@ const SettingsDialog = ({
           setValueAs: (value: string) => value.toUpperCase(),
         })}
       />
+      <TextField
+        fullWidth
+        label={tAttendance("occupationalIndustryCode.label")}
+        onChange={(event) =>
+          setValue("occupationalIndustryCode", event.target.value)
+        }
+        select
+        slotProps={{
+          inputLabel: { shrink: true },
+          select: {
+            displayEmpty: true,
+            renderValue: (selected) => {
+              const industry = occupationalIndustryRates.find(
+                ({ code }) => code === selected,
+              );
+
+              return industry ? (
+                industryLabel(industry)
+              ) : (
+                <em>{tAttendance("occupationalIndustryCode.none")}</em>
+              );
+            },
+          },
+        }}
+        value={occupationalIndustryCode}
+      >
+        <MenuItem value="">
+          <em>{tAttendance("occupationalIndustryCode.none")}</em>
+        </MenuItem>
+        {industryCategories.flatMap((category) => [
+          <ListSubheader key={category}>{category}</ListSubheader>,
+          ...occupationalIndustryRates
+            .filter((industry) => industry.category === category)
+            .map((industry) => (
+              <MenuItem key={industry.code} value={industry.code}>
+                {industryLabel(industry)}
+              </MenuItem>
+            )),
+        ])}
+      </TextField>
       <NumberSpinner
         clearable
-        error={!!errors.occupationalAccidentRate}
+        error={!!errors.occupationalExperienceRate}
         fullWidth
         helperText={
-          errors.occupationalAccidentRate?.message ??
-          tAttendance("occupationalAccidentRateMicros.helper")
+          errors.occupationalExperienceRate?.message ??
+          tAttendance("occupationalExperienceRateMicros.helper")
         }
-        label={tAttendance("occupationalAccidentRateMicros.label")}
+        label={tAttendance("occupationalExperienceRateMicros.label")}
         max={10}
         min={0.0001}
         onValueChange={(value) =>
-          setValue("occupationalAccidentRate", value, {
+          setValue("occupationalExperienceRate", value, {
             shouldValidate: isSubmitted,
           })
         }
         step={0.01}
-        value={occupationalAccidentRate}
+        value={occupationalExperienceRate}
       />
       <DatePicker
         format={monthFormat}

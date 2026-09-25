@@ -19,7 +19,10 @@ import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { AttendanceSettings } from "@/types/attendance";
+import type {
+  AttendanceSettings,
+  OccupationalIndustryRate,
+} from "@/types/attendance";
 import type { Organization } from "@/types/organizations";
 
 dayjs.extend(utc);
@@ -37,16 +40,19 @@ const SETTING_KEYS = [
   "allowedIps",
   "graceMinutes",
   "laborInsuranceUnitCode",
-  "occupationalAccidentRateMicros",
+  "occupationalIndustryCode",
+  "occupationalExperienceRateMicros",
   "overtimeExtensionPeriods",
 ] as const satisfies readonly (keyof AttendanceSettings)[];
 
 interface SettingsProps {
+  occupationalIndustryRates: OccupationalIndustryRate[];
   organization: Organization;
   settings: AttendanceSettings | null;
 }
 
 const Settings = ({
+  occupationalIndustryRates,
   organization: { slug: organizationSlug },
   settings,
 }: SettingsProps) => {
@@ -64,6 +70,7 @@ const Settings = ({
         confirmText: tAttendance("save"),
         content: (
           <SettingsDialog
+            occupationalIndustryRates={occupationalIndustryRates}
             organizationSlug={organizationSlug}
             settings={settings}
           />
@@ -72,7 +79,13 @@ const Settings = ({
         open: true,
         title: tAttendance("settings.actions.update"),
       }),
-    [organizationSlug, setDialog, settings, tAttendance],
+    [
+      occupationalIndustryRates,
+      organizationSlug,
+      setDialog,
+      settings,
+      tAttendance,
+    ],
   );
 
   const periodLabel = (month: string) => {
@@ -96,8 +109,18 @@ const Settings = ({
     </StyledStack>
   );
 
+  const percent = (micros: number) =>
+    format.number(micros / 1000000, {
+      maximumFractionDigits: 6,
+      style: "percent",
+    });
+
   const settingValue = (
-    { occupationalAccidentRateMicros, ...values }: AttendanceSettings,
+    {
+      occupationalExperienceRateMicros,
+      occupationalIndustryCode,
+      ...values
+    }: AttendanceSettings,
     key: (typeof SETTING_KEYS)[number],
   ) => {
     if (key === "overtimeExtensionPeriods")
@@ -105,13 +128,21 @@ const Settings = ({
         ? chips(values.overtimeExtensionPeriods, periodLabel)
         : tAttendance("overtimeExtensionPeriods.none");
 
-    if (key === "occupationalAccidentRateMicros")
-      return occupationalAccidentRateMicros == null
-        ? tAttendance("occupationalAccidentRateMicros.none")
-        : format.number(occupationalAccidentRateMicros / 1000000, {
-            maximumFractionDigits: 6,
-            style: "percent",
-          });
+    if (key === "occupationalIndustryCode") {
+      const industry = occupationalIndustryRates.find(
+        ({ code }) => code === occupationalIndustryCode,
+      );
+
+      return industry
+        ? `${industry.industry} · ${percent(industry.rateMicros)}`
+        : (occupationalIndustryCode ??
+            tAttendance("occupationalIndustryCode.none"));
+    }
+
+    if (key === "occupationalExperienceRateMicros")
+      return occupationalExperienceRateMicros == null
+        ? tAttendance("occupationalExperienceRateMicros.none")
+        : percent(occupationalExperienceRateMicros);
 
     if (key === "laborInsuranceUnitCode")
       return (

@@ -192,9 +192,6 @@
   "parentalChild": {
     "notSelected": "자녀를 선택해 주세요."
   },
-  "parentalMode": {
-    "notSelected": "육아 휴직 신청 방식을 선택해 주세요."
-  },
   "password": {
     "letter": "영문자를 최소 1개 포함.",
     "match": "비밀번호와 일치.",

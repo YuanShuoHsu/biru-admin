@@ -93,6 +93,8 @@ export type AttendanceMemberPage =
   components["schemas"]["AttendanceMembersResponseDto"];
 export type AttendanceSettings =
   components["schemas"]["AttendanceSettingsResponseDto"];
+export type OccupationalIndustryRate =
+  components["schemas"]["OccupationalIndustryRateResponseDto"];
 export type AttendanceTemplate =
   components["schemas"]["AttendanceTemplateResponseDto"];
 export type PayrollStatement =

@@ -192,9 +192,6 @@
   "parentalChild": {
     "notSelected": "子どもを選択してください。"
   },
-  "parentalMode": {
-    "notSelected": "育児休業の申請方法を選択してください。"
-  },
   "password": {
     "letter": "英字を1文字以上含む。",
     "match": "パスワードと一致。",

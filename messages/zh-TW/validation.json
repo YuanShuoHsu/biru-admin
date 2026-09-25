@@ -192,9 +192,6 @@
   "parentalChild": {
     "notSelected": "請選擇您的子女。"
   },
-  "parentalMode": {
-    "notSelected": "請選擇您的育嬰留停申請方式。"
-  },
   "password": {
     "letter": "包含至少一個英文字母。",
     "match": "與密碼一致。",

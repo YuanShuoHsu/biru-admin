@@ -192,9 +192,6 @@
   "parentalChild": {
     "notSelected": "Please select your child."
   },
-  "parentalMode": {
-    "notSelected": "Please select your parental leave request mode."
-  },
   "password": {
     "letter": "Contain at least one letter.",
     "match": "Matches the password.",

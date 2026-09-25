@@ -134,6 +134,7 @@
     "childLaborHoursExceeded": "未满 16 岁的员工每日工作不得超过 8 小时、每周不得超过 40 小时。",
     "childLaborNightWork": "未满 16 岁的员工不得在晚上 8 点至次日早上 6 点工作。",
     "childLaborRestDay": "未满 16 岁的员工不得在例假日工作。",
+    "consecutiveWorkdaysExceeded": "不得连续工作超过 6 天：排班、请假与法定节假日都算工作日，中间要有一天没排班的例假或休息日。",
     "continuousWorkTooLong": "连续工作不得超过 4 小时，请在中间安排至少 30 分钟的休息。",
     "correctionSourceChanged": "提交申请后这个班次的打卡有变动，请重新确认后再送审。",
     "dailyHoursExceeded": "当日工时将超过 12 小时，请缩短加班时间。",
@@ -196,7 +197,8 @@
     "negativeNetPay": "扣款大于应发薪资。",
     "noShifts": "此月份没有班表。",
     "noTemplateDates": "这段日期范围内没有符合模板星期的日子。",
-    "occupationalAccidentRateRequired": "请先在出勤设置填写劳保局核定的职灾保险行业别费率，才能计算雇主职灾保费。",
+    "occupationalAccidentRateRequired": "请先在出勤设置选择劳保局核定的职灾保险行业别，才能计算雇主职灾保费。",
+    "occupationalIndustryInvalid": "找不到这个职灾保险行业别，请重新选择。",
     "openingHoursRequired": "此员工未在本店投保健保，须依营业时间判断是否每个工作日都到班；请先到组织设置填写营业时间。",
     "outsideShiftWindow": "当前不在此班次可上班打卡的时间内。",
     "overlappingAttendance": "这段时间已有其他出勤记录。",
@@ -305,9 +307,13 @@
   "label": "人事",
   "laborBasis": "劳就保月投保工资（{currency}）",
   "occupationalBasis": "职灾月投保薪资（{currency}）",
-  "occupationalAccidentRateMicros": {
-    "helper": "劳保局核定费率，不含上下班灾害费率 0.07%",
-    "label": "职灾保险行业别费率（%）",
+  "occupationalExperienceRateMicros": {
+    "helper": "投保人数达 50 人、收到劳保局实绩费率通知才填，不含上下班灾害费率",
+    "label": "职灾保险实绩费率（%）",
+    "none": "依行业别费率"
+  },
+  "occupationalIndustryCode": {
+    "label": "职灾保险行业别",
     "none": "未设置"
   },
   "laborInsuranceExemption": {
@@ -325,7 +331,7 @@
     "label": "核给额度",
     "placeholder": "请选择您的核给额度"
   },
-  "leaveCaseHint": "主管先确认事件、亲属关系与有效期间，系统自动核给额度。同一事件不得重复建立。产假含例休假日，请使用完整日历日（起讫 00:00，结束日不含）；陪产检与陪产共用 7 日，请确认各次申请符合适用期间。 产假每日工资依约定工资与平均工资自动计算，给薪比例由工龄自动计算。 育婴留停事件日期请填子女出生日期，同一子女沿用事件编号，期间不得超过三岁；未满六个月任职须先取得劳资同意。育婴留停不需核定日薪。",
+  "leaveCaseHint": "主管先确认事件、亲属关系与有效期间，系统自动核给额度。同一事件不得重复建立。产假含例休假日，请使用完整日历日（起讫 00:00，结束日不含）；陪产检与陪产共用 7 日，请确认各次申请符合适用期间。 产假每日工资依约定工资与平均工资自动计算，给薪比例由工龄自动计算。 育婴留停同一子女沿用事件编号，期间不得超过三岁；未满六个月任职须先取得劳资同意。育婴留停不需核定日薪。",
   "leaveCases": {
     "actions": {
       "create": "新增事件假额度",
@@ -432,10 +438,6 @@
   },
   "parentalContinuous": "连续期间申请",
   "parentalDaily": "按日申请",
-  "parentalMode": {
-    "label": "育婴留停申请方式",
-    "placeholder": "请选择您的育婴留停申请方式"
-  },
   "parentalReturn": "提前复职",
   "parentalReturnHint": "复职申请须由另一位主管核准。核准前原留停仍有效；核准后保留已休期间与原申请记录。请选择复职当日，该日起不再留停。",
   "parentalReturns": {
@@ -444,7 +446,6 @@
   "payroll": {
     "label": "薪资"
   },
-  "payrollHint": "投保级距依薪资与排班自动计算；特殊身份或补助请关闭自动计算，填入核定的劳健保自付额及依据。生效日目前限月初。",
   "payrollLine": {
     "options": {
       "absenceDeduction": "缺勤扣款",

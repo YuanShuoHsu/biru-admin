@@ -21,10 +21,7 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import {
-  attendanceParentalModeValues,
-  statutoryLeaveKindValues,
-} from "@/types/api";
+import { statutoryLeaveKindValues } from "@/types/api";
 import type {
   AttendanceLeaveCase,
   AttendanceLeaveType,
@@ -74,16 +71,15 @@ const LeaveDialog = ({
       endsAt: dayjs().tz(STORE_TIMEZONE).add(1, "hour").toISOString(),
       leaveCaseId: "",
       leaveTypeId: "",
-      parentalMode: "",
       reason: "",
       startsAt: dayjs().tz(STORE_TIMEZONE).toISOString(),
     },
     resolver: zodResolver(leaveFormSchema),
   });
 
-  const [endsAt, leaveCaseId, leaveTypeId, parentalMode, startsAt] = useWatch({
+  const [endsAt, leaveCaseId, leaveTypeId, startsAt] = useWatch({
     control,
-    name: ["endsAt", "leaveCaseId", "leaveTypeId", "parentalMode", "startsAt"],
+    name: ["endsAt", "leaveCaseId", "leaveTypeId", "startsAt"],
   });
 
   const leaveTypeGroups = useMemo(() => {
@@ -113,8 +109,6 @@ const LeaveDialog = ({
 
   const isEventLeave = !!leaveType?.eventLeave;
 
-  const isParentalLeave = leaveType?.statutoryKind === "parental";
-
   const date = (value: string) => format.dateTime(new Date(value), "short");
 
   const handleStartsAtChange = (date: Dayjs | null) => {
@@ -132,11 +126,7 @@ const LeaveDialog = ({
       });
   };
 
-  const onSubmitHandler = async ({
-    leaveCaseId,
-    parentalMode,
-    ...values
-  }: LeaveForm) => {
+  const onSubmitHandler = async ({ leaveCaseId, ...values }: LeaveForm) => {
     try {
       setDialog({ confirmLoading: true });
 
@@ -147,7 +137,6 @@ const LeaveDialog = ({
           ...values,
           kind: "leave",
           ...(isEventLeave ? { leaveCaseId } : {}),
-          ...(isParentalLeave ? { parentalMode } : {}),
         }),
       });
 
@@ -182,7 +171,6 @@ const LeaveDialog = ({
           });
 
           setValue("leaveCaseId", "");
-          setValue("parentalMode", "");
         }}
         required
         select
@@ -254,45 +242,6 @@ const LeaveDialog = ({
                 {reference} · {date(startsAt)} — {date(endsAt)}
               </MenuItem>
             ))}
-        </TextField>
-      )}
-      {isParentalLeave && (
-        <TextField
-          error={!!errors.parentalMode}
-          fullWidth
-          helperText={errors.parentalMode?.message}
-          label={tAttendance("parentalMode.label")}
-          required
-          select
-          slotProps={{
-            inputLabel: { shrink: true },
-            select: {
-              displayEmpty: true,
-              renderValue: (selected) =>
-                selected ? (
-                  tAttendance(
-                    selected === "daily"
-                      ? "parentalDaily"
-                      : "parentalContinuous",
-                  )
-                ) : (
-                  <em>{tAttendance("parentalMode.placeholder")}</em>
-                ),
-            },
-          }}
-          value={parentalMode}
-          {...register("parentalMode")}
-        >
-          <MenuItem disabled value="">
-            <em>{tAttendance("parentalMode.placeholder")}</em>
-          </MenuItem>
-          {attendanceParentalModeValues.map((value) => (
-            <MenuItem key={value} value={value}>
-              {tAttendance(
-                value === "daily" ? "parentalDaily" : "parentalContinuous",
-              )}
-            </MenuItem>
-          ))}
         </TextField>
       )}
       <DateTimePicker

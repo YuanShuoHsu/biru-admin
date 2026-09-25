@@ -1,7 +1,6 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-import { attendanceParentalModeValues } from "@/types/api";
 import type { AttendanceLeaveType } from "@/types/attendance";
 
 export const useLeaveFormSchema = (leaveTypes: AttendanceLeaveType[]) => {
@@ -12,7 +11,6 @@ export const useLeaveFormSchema = (leaveTypes: AttendanceLeaveType[]) => {
       .string()
       .min(1, { error: tValidation("leaveType.notSelected") }),
     leaveCaseId: z.string(),
-    parentalMode: z.enum(attendanceParentalModeValues).or(z.literal("")),
     startsAt: z.string().min(1, { error: tValidation("startsAt.required") }),
     endsAt: z.string().min(1, { error: tValidation("endsAt.required") }),
     reason: z
@@ -36,18 +34,11 @@ export const useLeaveFormSchema = (leaveTypes: AttendanceLeaveType[]) => {
             message: tValidation("leaveCase.notSelected"),
             path: ["leaveCaseId"],
           });
-
-        if (leaveType?.statutoryKind === "parental" && !data.parentalMode)
-          ctx.addIssue({
-            code: "custom",
-            message: tValidation("parentalMode.notSelected"),
-            path: ["parentalMode"],
-          });
       },
       {
         when: ({ value }) =>
           leaveFormObject
-            .pick({ leaveCaseId: true, leaveTypeId: true, parentalMode: true })
+            .pick({ leaveCaseId: true, leaveTypeId: true })
             .safeParse(value).success,
       },
     );

@@ -134,6 +134,7 @@
     "childLaborHoursExceeded": "Employees under 16 may work at most 8 hours a day and 40 hours a week.",
     "childLaborNightWork": "Employees under 16 may not work between 8 p.m. and 6 a.m.",
     "childLaborRestDay": "Employees under 16 may not work on regular days off.",
+    "consecutiveWorkdaysExceeded": "Employees cannot work more than 6 days in a row. Scheduled days, leave and national holidays all count; leave at least one unscheduled regular day off or rest day in between.",
     "continuousWorkTooLong": "Continuous work cannot exceed 4 hours. Schedule a break of at least 30 minutes in between.",
     "correctionSourceChanged": "The shift's punches changed after this request was submitted. Review it again before approving.",
     "dailyHoursExceeded": "This would push the day past 12 working hours. Shorten the overtime.",
@@ -196,7 +197,8 @@
     "negativeNetPay": "Deductions exceed gross pay.",
     "noShifts": "No shifts exist for this month.",
     "noTemplateDates": "No day in this range matches the template weekday.",
-    "occupationalAccidentRateRequired": "Enter the occupational accident insurance industry rate approved by the Bureau of Labor Insurance in attendance settings to calculate the employer premium.",
+    "occupationalAccidentRateRequired": "Select the occupational accident insurance industry approved by the Bureau of Labor Insurance in attendance settings to calculate the employer premium.",
+    "occupationalIndustryInvalid": "This occupational accident insurance industry was not found. Select it again.",
     "openingHoursRequired": "This employee isn't covered by health insurance here, so opening hours are needed to check whether they work every business day. Set the opening hours in organization settings first.",
     "outsideShiftWindow": "Clock-in is not available for this shift at this time.",
     "overlappingAttendance": "Another attendance record already covers this period.",
@@ -305,9 +307,13 @@
   "label": "HR",
   "laborBasis": "Declared labor insured salary ({currency})",
   "occupationalBasis": "Occupational accident insured salary ({currency})",
-  "occupationalAccidentRateMicros": {
-    "helper": "Rate approved by the Bureau of Labor Insurance, excluding the 0.07% commuting rate",
-    "label": "Occupational accident industry rate (%)",
+  "occupationalExperienceRateMicros": {
+    "helper": "Only for units with 50 or more insured employees that received an experience rate notice from the Bureau of Labor Insurance; excludes the commuting rate",
+    "label": "Occupational accident experience rate (%)",
+    "none": "Industry rate"
+  },
+  "occupationalIndustryCode": {
+    "label": "Occupational accident insurance industry",
     "none": "Not set"
   },
   "laborInsuranceExemption": {
@@ -325,7 +331,7 @@
     "label": "Granted allowance",
     "placeholder": "Please select your granted allowance"
   },
-  "leaveCaseHint": "A manager must verify the event, relationship and eligible dates. Allowances are calculated automatically. Do not duplicate an event. Maternity periods include rest days and use full calendar days (midnight, exclusive end). Partner prenatal and childbirth leave share 7 days; verify the eligible dates for each request. The maternity daily wage is calculated from the agreed and average wages. The paid percentage is calculated from seniority. For parental leave, use the child’s birth date as the event date and reuse the same reference for that child. The period must end by the third birthday. Service under six months requires employer–employee agreement. No daily wage is required.",
+  "leaveCaseHint": "A manager must verify the event, relationship and eligible dates. Allowances are calculated automatically. Do not duplicate an event. Maternity periods include rest days and use full calendar days (midnight, exclusive end). Partner prenatal and childbirth leave share 7 days; verify the eligible dates for each request. The maternity daily wage is calculated from the agreed and average wages. The paid percentage is calculated from seniority. For parental leave, reuse the same reference for that child. The period must end by the third birthday. Service under six months requires employer–employee agreement. No daily wage is required.",
   "leaveCases": {
     "actions": {
       "create": "Add event leave allowance",
@@ -432,10 +438,6 @@
   },
   "parentalContinuous": "Continuous period",
   "parentalDaily": "Daily requests",
-  "parentalMode": {
-    "label": "Parental leave request mode",
-    "placeholder": "Please select your parental leave request mode"
-  },
   "parentalReturn": "Early return",
   "parentalReturnHint": "Another manager must approve the return. Leave remains active until approval. Approval preserves leave already taken and the original record. Leave ends at the start of the return date.",
   "parentalReturns": {
@@ -444,7 +446,6 @@
   "payroll": {
     "label": "Payroll"
   },
-  "payrollHint": "Insured amounts are calculated from wages and schedules. For special status or subsidies, disable automatic calculation and enter the verified labor and health premiums with evidence. Effective dates currently start at month boundaries.",
   "payrollLine": {
     "options": {
       "absenceDeduction": "Absence deduction",

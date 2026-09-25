@@ -10,7 +10,11 @@ import AttendanceTabsLayout from "../../AttendanceTabsLayout";
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
-import { getAttendanceAccess, getAttendanceSettings } from "@/utils/attendance";
+import {
+  getAttendanceAccess,
+  getAttendanceSettings,
+  getOccupationalIndustryRates,
+} from "@/utils/attendance";
 import { hasRolePermission } from "@/utils/organizations";
 
 interface SettingsPageProps {
@@ -57,13 +61,20 @@ const SettingsPage = async ({ params, searchParams }: SettingsPageProps) => {
   if (!hasRolePermission(memberRole, { attendanceSetting: ["read"] }))
     notFound();
 
-  const settings = await getAttendanceSettings(organization.slug, {
-    headers: { cookie: cookieStore.toString() },
-  });
+  const init = { headers: { cookie: cookieStore.toString() } };
+
+  const [settings, occupationalIndustryRates] = await Promise.all([
+    getAttendanceSettings(organization.slug, init),
+    getOccupationalIndustryRates(organization.slug, init),
+  ]);
 
   return (
     <AttendanceTabsLayout memberRole={memberRole}>
-      <Settings organization={organization} settings={settings} />
+      <Settings
+        occupationalIndustryRates={occupationalIndustryRates}
+        organization={organization}
+        settings={settings}
+      />
     </AttendanceTabsLayout>
   );
 };

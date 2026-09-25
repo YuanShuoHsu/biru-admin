@@ -26,7 +26,6 @@ import { useMonthFormat } from "@/hooks/useMonthFormat";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
-  Alert,
   Checkbox,
   FormControl,
   FormControlLabel,
@@ -249,7 +248,6 @@ const TermsDialog = ({
 
   return (
     <FormBox id="payroll-terms-form" onSubmit={onSubmit}>
-      <Alert severity="info">{tAttendance("payrollHint")}</Alert>
       <TextField
         error={!!errors.employeeId}
         fullWidth

@@ -34,7 +34,8 @@ export const useSettingsFormSchema = () => {
         .regex(/^(\d{8}[A-Z])?$/, {
           error: tValidation("laborInsuranceUnitCode.invalid"),
         }),
-      occupationalAccidentRate: range(0.0001, 10).nullable(),
+      occupationalExperienceRate: range(0.0001, 10).nullable(),
+      occupationalIndustryCode: z.string(),
       overtimeExtensionPeriods: z.array(
         z.object({
           value: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, {
