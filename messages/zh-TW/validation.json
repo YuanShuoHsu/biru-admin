@@ -323,5 +323,11 @@
   },
   "terminationNoticedAt": {
     "withinEmployment": "預告日必須介於到職日與離職日之間。"
+  },
+  "restWeekdays": {
+    "pair": "固定例假日與休息日需同時設定且不可同一天。"
+  },
+  "shift": {
+    "notSelected": "請選擇班次。"
   }
 }

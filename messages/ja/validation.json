@@ -323,5 +323,11 @@
   },
   "terminationNoticedAt": {
     "withinEmployment": "予告日は入社日と退職日の間にしてください。"
+  },
+  "restWeekdays": {
+    "pair": "固定の法定休日と休日は両方を別の曜日で設定してください。"
+  },
+  "shift": {
+    "notSelected": "シフトを選択してください。"
   }
 }

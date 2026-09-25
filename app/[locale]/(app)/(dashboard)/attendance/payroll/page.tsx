@@ -147,6 +147,7 @@ const PayrollPage = async ({ params, searchParams }: PayrollPageProps) => {
     <AttendanceTabsLayout memberRole={memberRole}>
       <Payroll
         canCreate={hasRolePermission(memberRole, { payslip: ["create"] })}
+        canViewCosts={hasRolePermission(memberRole, { payslip: ["read"] })}
         canManage={hasRolePermission(memberRole, { payslip: ["update"] })}
         canManageTerms={hasRolePermission(memberRole, {
           payrollTerm: ["create", "update"],

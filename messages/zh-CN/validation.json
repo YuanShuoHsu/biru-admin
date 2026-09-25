@@ -323,5 +323,11 @@
   },
   "terminationNoticedAt": {
     "withinEmployment": "预告日必须介于到职日与离职日之间。"
+  },
+  "restWeekdays": {
+    "pair": "固定例假日与休息日需同时设定且不可同一天。"
+  },
+  "shift": {
+    "notSelected": "请选择班次。"
   }
 }

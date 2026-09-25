@@ -3,7 +3,7 @@
 import dayjs from "dayjs";
 import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import {
@@ -53,7 +53,12 @@ import type {
   SaveAttendanceEmployee,
 } from "@/types/attendance";
 
-import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
+import {
+  attendanceErrorKey,
+  attendancePath,
+  WEEK_DAYS,
+  weekdayDate,
+} from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
 
 dayjs.extend(utc);
@@ -163,6 +168,8 @@ const EmployeeDialog = ({
 
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
+  const format = useFormatter();
+
   const tAttendance = useTranslations("attendance");
 
   const employeeFormSchema = useEmployeeFormSchema();
@@ -186,6 +193,8 @@ const EmployeeDialog = ({
           .format("YYYY-MM-DD"),
       legalStatus: employee?.legalStatus ?? "national",
       maternalProtectionPeriods: employee?.maternalProtectionPeriods ?? [],
+      regularLeaveWeekday: employee?.regularLeaveWeekday ?? null,
+      restDayWeekday: employee?.restDayWeekday ?? null,
       studentVacations: employee?.studentVacations ?? [],
       terminatedAt: employee?.terminatedAt ?? "",
       terminationNoticedAt: employee?.terminationNoticedAt ?? "",
@@ -201,6 +210,8 @@ const EmployeeDialog = ({
     enabled,
     hiredAt,
     legalStatus,
+    regularLeaveWeekday,
+    restDayWeekday,
     taiwanStaySince,
     terminatedAt,
     terminationNoticedAt,
@@ -212,6 +223,8 @@ const EmployeeDialog = ({
       "enabled",
       "hiredAt",
       "legalStatus",
+      "regularLeaveWeekday",
+      "restDayWeekday",
       "taiwanStaySince",
       "terminatedAt",
       "terminationNoticedAt",
@@ -239,6 +252,11 @@ const EmployeeDialog = ({
         hiredAt: values.hiredAt,
         legalStatus: values.legalStatus,
         maternalProtectionPeriods: values.maternalProtectionPeriods,
+        ...(values.regularLeaveWeekday !== null &&
+          values.restDayWeekday !== null && {
+            regularLeaveWeekday: values.regularLeaveWeekday,
+            restDayWeekday: values.restDayWeekday,
+          }),
         studentVacations:
           values.legalStatus === "foreignStudent"
             ? values.studentVacations
@@ -363,6 +381,35 @@ const EmployeeDialog = ({
         <PeriodFields name="studentVacations" {...periodFieldsProps} />
       )}
       <PeriodFields name="maternalProtectionPeriods" {...periodFieldsProps} />
+      {(["regularLeaveWeekday", "restDayWeekday"] as const).map((name) => (
+        <TextField
+          error={!!errors[name]}
+          fullWidth
+          helperText={errors[name]?.message}
+          key={name}
+          label={tAttendance(`restWeekdays.${name}`)}
+          onChange={(event) =>
+            setValue(
+              name,
+              event.target.value === "" ? null : Number(event.target.value),
+              { shouldValidate: isSubmitted },
+            )
+          }
+          select
+          value={
+            (name === "regularLeaveWeekday"
+              ? regularLeaveWeekday
+              : restDayWeekday) ?? ""
+          }
+        >
+          <MenuItem value="">{tAttendance("restWeekdays.rotating")}</MenuItem>
+          {Array.from({ length: WEEK_DAYS }, (_, day) => (
+            <MenuItem key={day} value={day}>
+              {format.dateTime(weekdayDate(day), "weekdayLong")}
+            </MenuItem>
+          ))}
+        </TextField>
+      ))}
       <DatePicker
         label={tAttendance("hiredAt")}
         maxDate={

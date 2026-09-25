@@ -323,5 +323,11 @@
   },
   "terminationNoticedAt": {
     "withinEmployment": "The notice date must be between the hire date and the termination date."
+  },
+  "restWeekdays": {
+    "pair": "Set both the fixed regular leave day and rest day, on different days."
+  },
+  "shift": {
+    "notSelected": "Choose a shift."
   }
 }

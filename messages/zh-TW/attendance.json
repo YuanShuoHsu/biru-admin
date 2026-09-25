@@ -151,6 +151,8 @@
     "healthSupplementExemptionInvalid": "已在本店投保健保時，不可選擇補充保費免扣原因。",
     "holidayCalendarMissing": "尚未取得該年度的國定假日資料，請稍後再試。",
     "holidayDayKindRequired": "國定假日當天的班次須標為國定假日，請取消後重新排班。",
+    "holidaySubstituteInvalid": "這個國定假日不需補假、已指定補假日，或選擇的班次不是工作日。",
+    "holidaySubstituteRequired": "有國定假日遇到例假或休息日，尚未指定補假日，請到排班的「國定假日補假」指定。",
     "idempotencyConflict": "重試內容已變更，請關閉表單重新操作。",
     "implausibleMinimumWage": "確認的每小時最低工資低於前一期，請重新核對官方公告。",
     "incompleteAttendance": "尚有班次未完成打卡或請假。",
@@ -227,6 +229,7 @@
     "reasonRequired": "請填寫申請原因。",
     "requestAlreadyReviewed": "申請狀態已更新，請重新載入。",
     "reservedMakeupRest": "班次與已核准補假重疊。",
+    "restDayDesignationConflict": "班次的日別與員工約定的固定例假日、休息日不一致。",
     "settingsRequired": "請先由店家 owner 完成定位與 IP 設定。",
     "shiftHasCorrection": "這個班次已有核准的補卡，不能再次申請。",
     "shiftHasRecords": "班次已有打卡或申請紀錄，不能直接取消。",
@@ -458,7 +461,8 @@
       "healthSupplement": "二代健保補充保費",
       "severancePay": "資遣費",
       "noticePay": "預告期間工資",
-      "retirementWithholding": "退職所得扣繳"
+      "retirementWithholding": "退職所得扣繳",
+      "injuryCompensation": "職災原領工資補償"
     }
   },
   "payrollStatus": {
@@ -682,5 +686,33 @@
       "death": "死亡"
     }
   },
-  "terminationNoticedAt": "預告日"
+  "terminationNoticedAt": "預告日",
+  "holidaySubstitutes": {
+    "label": "國定假日補假",
+    "holidayDate": "國定假日",
+    "holidayName": "節日",
+    "substituteDate": "補假日",
+    "substituteShift": "補假的工作日班次",
+    "actions": {
+      "designate": "指定補假日",
+      "revoke": "撤銷補假日"
+    },
+    "status": {
+      "pending": "待指定",
+      "designated": "已指定",
+      "notOwed": "無須補假"
+    }
+  },
+  "restWeekdays": {
+    "regularLeaveWeekday": "固定例假日",
+    "restDayWeekday": "固定休息日",
+    "rotating": "不固定（輪休）"
+  },
+  "employerSupplement": {
+    "label": "投保單位補充保費",
+    "salaryCents": "當月支付的應稅薪資總額",
+    "insuredCents": "受僱者健保投保金額總額",
+    "premiumCents": "應繳補充保費",
+    "unpublished": "{count} 位員工本月薪資單尚未發布，投保金額總額可能不完整。"
+  }
 }

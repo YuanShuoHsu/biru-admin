@@ -25,6 +25,10 @@ import type {
   AttendanceEmployeeFilterField,
   AttendanceEmployeeSortField,
   AttendanceErrorCode,
+  AttendanceHolidaySubstitute,
+  AttendanceHolidaySubstituteFilterField,
+  AttendanceHolidaySubstitutePage,
+  AttendanceHolidaySubstituteSortField,
   AttendanceLeaveBalance,
   AttendanceLeaveBalanceFilterField,
   AttendanceLeaveBalanceSortField,
@@ -295,6 +299,45 @@ export const getAttendanceRequests = cache(
     >(attendancePath(organizationSlug, scope, "requests"), query, init);
 
     return { requests, total };
+  },
+);
+
+export const attendanceHolidaySubstitutesPath = (
+  organizationSlug: string,
+  year: number,
+  query: GridQuery<
+    AttendanceHolidaySubstituteFilterField,
+    AttendanceHolidaySubstituteSortField
+  > = {},
+) => {
+  const params = getGridSearchParams(query);
+
+  params.set("year", String(year));
+
+  return `${attendancePath(organizationSlug, "org", "holiday-substitutes")}?${params.toString()}`;
+};
+
+export const getAttendanceHolidaySubstitutes = cache(
+  async (
+    organizationSlug: string,
+    year: number,
+    query: GridQuery<
+      AttendanceHolidaySubstituteFilterField,
+      AttendanceHolidaySubstituteSortField
+    > = {},
+    init?: RequestInit,
+  ) => {
+    try {
+      const { data: substitutes, total } =
+        await fetcher<AttendanceHolidaySubstitutePage>(
+          attendanceHolidaySubstitutesPath(organizationSlug, year, query),
+          init,
+        );
+
+      return { substitutes, total };
+    } catch {
+      return { substitutes: [] as AttendanceHolidaySubstitute[], total: 0 };
+    }
   },
 );
 

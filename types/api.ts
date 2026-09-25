@@ -523,6 +523,41 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/attendance/holiday-substitutes": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 國定假日遇例休應補假 */
+    get: operations["AttendanceLeavesController_holidaySubstitutes"];
+    put?: never;
+    /** 指定補假日 */
+    post: operations["AttendanceLeavesController_createHolidaySubstitute"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/attendance/holiday-substitutes/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** 撤銷補假日 */
+    delete: operations["AttendanceLeavesController_deleteHolidaySubstitute"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/attendance/children": {
     parameters: {
       query?: never;
@@ -2276,6 +2311,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/payroll/employer-health-supplement": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 投保單位當月補充保費 */
+    get: operations["PayrollController_employerHealthSupplement"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/payroll/me/statements": {
     parameters: {
       query?: never;
@@ -2361,6 +2413,7 @@ export interface components {
       | "healthInsuranceRequired"
       | "healthSupplementExemptionInvalid"
       | "holidayCalendarMissing"
+      | "holidaySubstituteInvalid"
       | "idempotencyConflict"
       | "implausibleMinimumWage"
       | "insufficientLeaveBalance"
@@ -2421,6 +2474,7 @@ export interface components {
       | "reasonRequired"
       | "requestAlreadyReviewed"
       | "reservedMakeupRest"
+      | "restDayDesignationConflict"
       | "settingsRequired"
       | "shiftHasCorrection"
       | "shiftHasRecords"
@@ -2487,6 +2541,8 @@ export interface components {
       studentVacations: components["schemas"]["DatePeriodDto"][];
       workPermits: components["schemas"]["DatePeriodDto"][];
       maternalProtectionPeriods: components["schemas"]["DatePeriodDto"][];
+      regularLeaveWeekday?: number | null;
+      restDayWeekday?: number | null;
       employmentInsuranceEligible: boolean;
       workPermitRequired: boolean;
       pensionApplicable: boolean;
@@ -2565,6 +2621,8 @@ export interface components {
       studentVacations: components["schemas"]["DatePeriodDto"][];
       workPermits: components["schemas"]["DatePeriodDto"][];
       maternalProtectionPeriods: components["schemas"]["DatePeriodDto"][];
+      regularLeaveWeekday?: number | null;
+      restDayWeekday?: number | null;
       employmentInsuranceEligible: boolean;
       workPermitRequired: boolean;
       pensionApplicable: boolean;
@@ -2618,6 +2676,8 @@ export interface components {
       enabled: boolean;
       birthDate: string;
       taiwanStaySince?: string;
+      regularLeaveWeekday?: number;
+      restDayWeekday?: number;
       hiredAt: string;
       terminatedAt?: string;
       terminationNoticedAt?: string;
@@ -3231,6 +3291,41 @@ export interface components {
       employeeId: string;
       periodStart: string;
       reason: string;
+    };
+    /** @enum {string} */
+    AttendanceHolidaySubstituteFilterField:
+      | "employeeName"
+      | "holidayName"
+      | "holidayDate"
+      | "substituteStartsAt";
+    /** @enum {string} */
+    AttendanceHolidaySubstituteSortField:
+      | "employeeName"
+      | "holidayName"
+      | "holidayDate"
+      | "substituteStartsAt";
+    AttendanceHolidaySubstituteResponseDto: {
+      id: string;
+      employeeId: string;
+      employeeName: string;
+      holidayDate: string;
+      holidayName: string;
+      owed: boolean;
+      substituteId?: string | null;
+      substituteShiftId?: string | null;
+      /** Format: date-time */
+      substituteStartsAt?: string | null;
+    };
+    AttendanceHolidaySubstitutesResponseDto: {
+      data: components["schemas"]["AttendanceHolidaySubstituteResponseDto"][];
+      total: number;
+    };
+    CreateAttendanceHolidaySubstituteDto: {
+      /** Format: uuid */
+      employeeId: string;
+      holidayDate: string;
+      /** Format: uuid */
+      shiftId: string;
     };
     /** @enum {string} */
     AttendanceParentalChildFilterField:
@@ -6091,6 +6186,7 @@ export interface components {
       | "overtimePay"
       | "holidayPay"
       | "calendarLeavePay"
+      | "injuryCompensation"
       | "annualLeavePay"
       | "severancePay"
       | "noticePay"
@@ -6146,6 +6242,7 @@ export interface components {
       | "healthSupplementExemptionInvalid"
       | "holidayCalendarMissing"
       | "holidayDayKindRequired"
+      | "holidaySubstituteRequired"
       | "incompleteAttendance"
       | "inconsistentDayKind"
       | "insuranceBasisOutdated"
@@ -6217,6 +6314,13 @@ export interface components {
     PayrollStatementsResponseDto: {
       data: components["schemas"]["PayrollStatementResponseDto"][];
       total: number;
+    };
+    EmployerHealthSupplementResponseDto: {
+      month: string;
+      salaryCents: string;
+      insuredCents: string;
+      premiumCents: string;
+      unpublishedEmployees: number;
     };
     PayrollDraftDto: {
       /** Format: uuid */
@@ -7500,6 +7604,102 @@ export interface operations {
     };
   };
   AttendanceLeavesController_deleteAnnualLeaveDeferral: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceIdResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AttendanceLeavesController_holidaySubstitutes: {
+    parameters: {
+      query: {
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        filterField?: components["schemas"]["AttendanceHolidaySubstituteFilterField"];
+        sortBy?: components["schemas"]["AttendanceHolidaySubstituteSortField"];
+        year: number;
+        limit?: number;
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceHolidaySubstitutesResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AttendanceLeavesController_createHolidaySubstitute: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateAttendanceHolidaySubstituteDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceIdResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AttendanceLeavesController_deleteHolidaySubstitute: {
     parameters: {
       query?: never;
       header?: never;
@@ -11940,6 +12140,34 @@ export interface operations {
       };
     };
   };
+  PayrollController_employerHealthSupplement: {
+    parameters: {
+      query: {
+        month: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["EmployerHealthSupplementResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   PayrollController_myStatements: {
     parameters: {
       query?: {
@@ -12104,6 +12332,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "healthInsuranceRequired",
   "healthSupplementExemptionInvalid",
   "holidayCalendarMissing",
+  "holidaySubstituteInvalid",
   "idempotencyConflict",
   "implausibleMinimumWage",
   "insufficientLeaveBalance",
@@ -12164,6 +12393,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "reasonRequired",
   "requestAlreadyReviewed",
   "reservedMakeupRest",
+  "restDayDesignationConflict",
   "settingsRequired",
   "shiftHasCorrection",
   "shiftHasRecords",
@@ -12448,6 +12678,12 @@ export const attendanceLeaveBalanceSortFieldValues: ReadonlyArray<
   "grantedMinutes",
   "usedMinutes",
 ];
+export const attendanceHolidaySubstituteFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["AttendanceHolidaySubstituteFilterField"]
+> = ["employeeName", "holidayName", "holidayDate", "substituteStartsAt"];
+export const attendanceHolidaySubstituteSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["AttendanceHolidaySubstituteSortField"]
+> = ["employeeName", "holidayName", "holidayDate", "substituteStartsAt"];
 export const attendanceParentalChildFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceParentalChildFilterField"]
 > = ["employeeName", "reference", "label", "birthDate"];
@@ -13092,6 +13328,7 @@ export const payrollEarningLineCodeValues: ReadonlyArray<
   "overtimePay",
   "holidayPay",
   "calendarLeavePay",
+  "injuryCompensation",
   "annualLeavePay",
   "severancePay",
   "noticePay",
@@ -13139,6 +13376,7 @@ export const payrollBlockerValues: ReadonlyArray<
   "healthSupplementExemptionInvalid",
   "holidayCalendarMissing",
   "holidayDayKindRequired",
+  "holidaySubstituteRequired",
   "incompleteAttendance",
   "inconsistentDayKind",
   "insuranceBasisOutdated",

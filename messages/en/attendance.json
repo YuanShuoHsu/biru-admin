@@ -151,6 +151,8 @@
     "healthSupplementExemptionInvalid": "A supplementary premium exemption cannot be chosen while health insurance is enrolled at this store.",
     "holidayCalendarMissing": "The national holiday calendar for that year isn't available yet. Try again later.",
     "holidayDayKindRequired": "Shifts on national holidays must be marked as holidays. Cancel and reschedule them.",
+    "holidaySubstituteInvalid": "This holiday needs no substitute day, already has one, or the chosen shift is not a workday.",
+    "holidaySubstituteRequired": "A national holiday fell on a regular leave or rest day and no substitute day has been set. Set one under Schedule > Holiday substitutes.",
     "idempotencyConflict": "The retry payload changed; close and reopen the form.",
     "implausibleMinimumWage": "The confirmed minimum hourly wage is lower than the previous period. Please re-check the official announcement.",
     "incompleteAttendance": "Some shifts need completed attendance or approved leave.",
@@ -227,6 +229,7 @@
     "reasonRequired": "Enter a reason for the request.",
     "requestAlreadyReviewed": "This request has changed. Reload the page.",
     "reservedMakeupRest": "The shift overlaps approved make-up rest.",
+    "restDayDesignationConflict": "The shift's day type does not match the employee's fixed regular leave and rest days.",
     "settingsRequired": "The store owner must configure location and IP settings first.",
     "shiftHasCorrection": "This shift already has an approved correction.",
     "shiftHasRecords": "This shift has attendance or request records and cannot be cancelled.",
@@ -458,7 +461,8 @@
       "healthSupplement": "NHI supplementary premium",
       "severancePay": "Severance pay",
       "noticePay": "Pay in lieu of notice",
-      "retirementWithholding": "Retirement income withholding"
+      "retirementWithholding": "Retirement income withholding",
+      "injuryCompensation": "Occupational injury wage compensation"
     }
   },
   "payrollStatus": {
@@ -682,5 +686,33 @@
       "death": "Death"
     }
   },
-  "terminationNoticedAt": "Notice date"
+  "terminationNoticedAt": "Notice date",
+  "holidaySubstitutes": {
+    "label": "Holiday substitutes",
+    "holidayDate": "Holiday",
+    "holidayName": "Occasion",
+    "substituteDate": "Substitute day",
+    "substituteShift": "Workday shift to give off",
+    "actions": {
+      "designate": "Set substitute day",
+      "revoke": "Revoke substitute day"
+    },
+    "status": {
+      "pending": "Pending",
+      "designated": "Set",
+      "notOwed": "Not required"
+    }
+  },
+  "restWeekdays": {
+    "regularLeaveWeekday": "Fixed regular leave day",
+    "restDayWeekday": "Fixed rest day",
+    "rotating": "Not fixed (rotating)"
+  },
+  "employerSupplement": {
+    "label": "Employer NHI supplementary premium",
+    "salaryCents": "Taxable salary paid this month",
+    "insuredCents": "Employees' insured amounts",
+    "premiumCents": "Premium due",
+    "unpublished": "{count} employees have no published payslip this month, so the insured total may be incomplete."
+  }
 }

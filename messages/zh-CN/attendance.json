@@ -151,6 +151,8 @@
     "healthSupplementExemptionInvalid": "已在本店投保健保时，不可选择补充保费免扣原因。",
     "holidayCalendarMissing": "尚未取得该年度的国定假日资料，请稍后再试。",
     "holidayDayKindRequired": "国定假日当天的班次须标为国定假日，请取消后重新排班。",
+    "holidaySubstituteInvalid": "这个国定假日不需补假、已指定补假日，或选择的班次不是工作日。",
+    "holidaySubstituteRequired": "有国定假日遇到例假或休息日，尚未指定补假日，请到排班的「国定假日补假」指定。",
     "idempotencyConflict": "重试内容已变更，请关闭表单重新操作。",
     "implausibleMinimumWage": "确认的每小时最低工资低于前一期，请重新核对官方公告。",
     "incompleteAttendance": "尚有班次未完成打卡或请假。",
@@ -227,6 +229,7 @@
     "reasonRequired": "请填写申请原因。",
     "requestAlreadyReviewed": "申请状态已更新，请重新加载。",
     "reservedMakeupRest": "班次与已批准补假重叠。",
+    "restDayDesignationConflict": "班次的日别与员工约定的固定例假日、休息日不一致。",
     "settingsRequired": "请先由门店 owner 完成定位与 IP 设置。",
     "shiftHasCorrection": "这个班次已有核准的补卡，不能重复申请。",
     "shiftHasRecords": "班次已有打卡或申请记录，不能直接取消。",
@@ -458,7 +461,8 @@
       "healthSupplement": "二代健保补充保费",
       "severancePay": "资遣费",
       "noticePay": "预告期间工资",
-      "retirementWithholding": "退职所得扣缴"
+      "retirementWithholding": "退职所得扣缴",
+      "injuryCompensation": "职灾原领工资补偿"
     }
   },
   "payrollStatus": {
@@ -682,5 +686,33 @@
       "death": "死亡"
     }
   },
-  "terminationNoticedAt": "预告日"
+  "terminationNoticedAt": "预告日",
+  "holidaySubstitutes": {
+    "label": "国定假日补假",
+    "holidayDate": "国定假日",
+    "holidayName": "节日",
+    "substituteDate": "补假日",
+    "substituteShift": "补假的工作日班次",
+    "actions": {
+      "designate": "指定补假日",
+      "revoke": "撤销补假日"
+    },
+    "status": {
+      "pending": "待指定",
+      "designated": "已指定",
+      "notOwed": "无须补假"
+    }
+  },
+  "restWeekdays": {
+    "regularLeaveWeekday": "固定例假日",
+    "restDayWeekday": "固定休息日",
+    "rotating": "不固定（轮休）"
+  },
+  "employerSupplement": {
+    "label": "投保单位补充保费",
+    "salaryCents": "当月支付的应税薪资总额",
+    "insuredCents": "受雇者健保投保金额总额",
+    "premiumCents": "应缴补充保费",
+    "unpublished": "{count} 位员工本月薪资单尚未发布，投保金额总额可能不完整。"
+  }
 }

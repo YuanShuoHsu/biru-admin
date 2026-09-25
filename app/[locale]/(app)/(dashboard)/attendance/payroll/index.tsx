@@ -7,6 +7,7 @@ import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import DraftDialog from "./DraftDialog";
+import EmployerSupplementDialog from "./EmployerSupplementDialog";
 import TermsDialog from "./TermsDialog";
 import TransitionDialog from "./TransitionDialog";
 
@@ -79,6 +80,7 @@ const DataGrid = dynamic(
 
 interface PayrollProps {
   canCreate: boolean;
+  canViewCosts: boolean;
   canManage: boolean;
   canManageTerms: boolean;
   employees: AttendanceEmployee[];
@@ -98,6 +100,7 @@ interface PayrollProps {
 
 const Payroll = ({
   canCreate,
+  canViewCosts,
   canManage,
   canManageTerms,
   employees,
@@ -175,6 +178,22 @@ const Payroll = ({
   );
 
   const base = payrollPath(organizationSlug, "org", "statements");
+
+  const handleEmployerSupplementDialog = useCallback(
+    () =>
+      setDialog({
+        content: (
+          <EmployerSupplementDialog
+            currency={currency}
+            organizationSlug={organizationSlug}
+          />
+        ),
+        open: true,
+        showConfirm: false,
+        title: tAttendance("employerSupplement.label"),
+      }),
+    [currency, organizationSlug, setDialog, tAttendance],
+  );
 
   const { data: terms = initialTerms, mutate: mutateTerms } = useSWR<
     PayrollTerms[]
@@ -428,8 +447,13 @@ const Payroll = ({
 
   return (
     <>
-      {(canManageTerms || canCreate) && (
+      {(canManageTerms || canCreate || canViewCosts) && (
         <ToolbarStack direction="row">
+          {canViewCosts && (
+            <Button onClick={handleEmployerSupplementDialog} size="small">
+              {tAttendance("employerSupplement.label")}
+            </Button>
+          )}
           {canManageTerms && (
             <Button onClick={handleTermsDialog} size="small">
               {tAttendance("payrollTerms")}

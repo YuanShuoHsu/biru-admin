@@ -40,7 +40,19 @@ export const useEmployeeFormSchema = () => {
       maternalProtectionPeriods: periods("maternalProtectionPeriod"),
       terminationReason: z.enum(attendanceTerminationReasonValues).nullable(),
       terminationNoticedAt: z.string(),
+      regularLeaveWeekday: z.number().int().min(0).max(6).nullable(),
+      restDayWeekday: z.number().int().min(0).max(6).nullable(),
     })
+    .refine(
+      ({ regularLeaveWeekday, restDayWeekday }) =>
+        (regularLeaveWeekday === null) === (restDayWeekday === null) &&
+        (regularLeaveWeekday === null ||
+          regularLeaveWeekday !== restDayWeekday),
+      {
+        error: tValidation("restWeekdays.pair"),
+        path: ["restDayWeekday"],
+      },
+    )
     .refine(
       ({ legalStatus, taiwanStaySince }) =>
         legalStatus === "national" || !!taiwanStaySince,

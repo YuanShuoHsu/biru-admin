@@ -151,6 +151,8 @@
     "healthSupplementExemptionInvalid": "本店で健康保険に加入している場合、補充保険料の免除理由は選択できません。",
     "holidayCalendarMissing": "その年の国定休日データがまだ取得されていません。しばらくしてから再試行してください。",
     "holidayDayKindRequired": "国定休日のシフトは国定休日として登録する必要があります。取り消して再登録してください。",
+    "holidaySubstituteInvalid": "この祝日は振替休日が不要か、すでに指定済み、または選択したシフトが勤務日ではありません。",
+    "holidaySubstituteRequired": "法定休日または休日と重なった祝日の振替休日が未指定です。シフトの「祝日振替」で指定してください。",
     "idempotencyConflict": "再送内容が変更されています。フォームを開き直してください。",
     "implausibleMinimumWage": "確認した最低時給が前期より低くなっています。官報の公告を再確認してください。",
     "incompleteAttendance": "打刻または休暇の処理が未完了です。",
@@ -227,6 +229,7 @@
     "reasonRequired": "申請理由を入力してください。",
     "requestAlreadyReviewed": "申請状態が変更されました。再読み込みしてください。",
     "reservedMakeupRest": "シフトが承認済み代休と重複しています。",
+    "restDayDesignationConflict": "シフトの日種別が従業員の固定法定休日・休日と一致しません。",
     "settingsRequired": "オーナーが位置情報とIPを設定する必要があります。",
     "shiftHasCorrection": "このシフトには承認済みの打刻修正があるため再申請できません。",
     "shiftHasRecords": "打刻または申請があるためシフトを取り消せません。",
@@ -458,7 +461,8 @@
       "healthSupplement": "健康保険補充保険料",
       "severancePay": "解雇手当",
       "noticePay": "解雇予告手当",
-      "retirementWithholding": "退職所得の源泉徴収"
+      "retirementWithholding": "退職所得の源泉徴収",
+      "injuryCompensation": "労災の休業補償"
     }
   },
   "payrollStatus": {
@@ -682,5 +686,33 @@
       "death": "死亡"
     }
   },
-  "terminationNoticedAt": "予告日"
+  "terminationNoticedAt": "予告日",
+  "holidaySubstitutes": {
+    "label": "祝日振替",
+    "holidayDate": "祝日",
+    "holidayName": "名称",
+    "substituteDate": "振替休日",
+    "substituteShift": "振替える勤務日のシフト",
+    "actions": {
+      "designate": "振替休日を指定",
+      "revoke": "振替休日を取り消す"
+    },
+    "status": {
+      "pending": "未指定",
+      "designated": "指定済み",
+      "notOwed": "不要"
+    }
+  },
+  "restWeekdays": {
+    "regularLeaveWeekday": "固定の法定休日",
+    "restDayWeekday": "固定の休日",
+    "rotating": "固定しない（交替制）"
+  },
+  "employerSupplement": {
+    "label": "事業所の補充保険料",
+    "salaryCents": "当月支払った課税給与総額",
+    "insuredCents": "被保険者の標準報酬総額",
+    "premiumCents": "納付すべき補充保険料",
+    "unpublished": "今月の給与明細が未公開の従業員が {count} 名いるため、標準報酬総額が不完全な可能性があります。"
+  }
 }
