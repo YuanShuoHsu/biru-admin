@@ -10,6 +10,8 @@ import DraftDialog from "./DraftDialog";
 import TermsDialog from "./TermsDialog";
 import TransitionDialog from "./TransitionDialog";
 
+import { renderEmptyableCell } from "@/components/EmptyCell";
+
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -391,7 +393,12 @@ const Payroll = ({
         type: "singleSelect",
         valueOptions: enumOptions.status,
       },
-      ...getPayrollAmountColumns(tAttendance, format, money),
+      ...getPayrollAmountColumns(
+        tAttendance,
+        format,
+        money,
+        renderEmptyableCell,
+      ),
       ...(canManage
         ? [
             {

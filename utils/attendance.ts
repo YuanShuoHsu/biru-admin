@@ -1,7 +1,7 @@
-import type { useFormatter, useTranslations } from "next-intl";
 import dayjs from "dayjs";
 import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
+import type { useFormatter, useTranslations } from "next-intl";
 import { cache } from "react";
 
 import { ATTENDANCE_NAV_GROUPS } from "@/constants/attendance";
@@ -500,9 +500,9 @@ export const getStatutoryLeaveName = (
     ? leaveType.name
     : tAttendance(`statutoryKind.names.${leaveType.statutoryKind}`);
 
-const money = /^(\d{1,10})(?:\.(\d{1,2}))?$/;
+const moneyPattern = /^(\d{1,10})(?:\.(\d{1,2}))?$/;
 
-export const isMoney = (value: number) => money.test(String(value));
+export const isMoney = (value: number) => moneyPattern.test(String(value));
 
 export const fromCents = (value: string | number) => Number(value) / 100;
 
@@ -512,6 +512,7 @@ export const getPayrollAmountColumns = (
   tAttendance: ReturnType<typeof useTranslations<"attendance">>,
   format: ReturnType<typeof useFormatter>,
   money: (value: string) => string,
+  renderEmptyableCell: GridColDef["renderCell"],
 ): GridColDef<PayrollStatement>[] => {
   const amountColumn = (
     field: string,
@@ -523,8 +524,9 @@ export const getPayrollAmountColumns = (
     field,
     filterable: false,
     headerName,
+    renderCell: renderEmptyableCell,
     sortable: false,
-    valueFormatter: (value?: string) => (value ? money(value) : "—"),
+    valueFormatter: (value?: string) => (value == null ? "" : money(value)),
     valueGetter: (_value, { snapshot }) => getAmountCents(snapshot),
   });
 
@@ -532,11 +534,12 @@ export const getPayrollAmountColumns = (
     field: "overtimeHours",
     filterable: false,
     headerName: tAttendance("overtimeHours"),
+    renderCell: renderEmptyableCell,
     sortable: false,
     type: "number",
     valueFormatter: (value?: number) =>
-      value === undefined
-        ? "—"
+      value == null
+        ? ""
         : format.number(value / 3600, { maximumFractionDigits: 2 }),
     valueGetter: (_value, { snapshot }) =>
       snapshot.earnings.find(({ code }) => code === "overtimePay")?.seconds,
@@ -589,7 +592,7 @@ export const getPayrollAmountColumns = (
 };
 
 export const toCents = (value: number) => {
-  const match = money.exec(String(value));
+  const match = moneyPattern.exec(String(value));
 
   if (!match) throw new Error("invalidAmount");
 

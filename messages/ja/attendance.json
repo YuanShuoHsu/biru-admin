@@ -388,7 +388,6 @@
   "payslips": {
     "label": "給与明細"
   },
-  "pendingWeeklyMinutes": "適用予定の所定労働時間（時間）",
   "pensionBasis": "年金拠出基準（{currency}）",
   "publish": "給与明細を公開",
   "radiusMeters": {

@@ -388,7 +388,6 @@
   "payslips": {
     "label": "薪資單"
   },
-  "pendingWeeklyMinutes": "待生效工時（小時）",
   "pensionBasis": "勞退月提繳工資（{currency}）",
   "publish": "發布薪資單",
   "radiusMeters": {

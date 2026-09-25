@@ -388,7 +388,6 @@
   "payslips": {
     "label": "Payslips"
   },
-  "pendingWeeklyMinutes": "Scheduled weekly hours",
   "pensionBasis": "Pension contribution basis ({currency})",
   "publish": "Publish payslip",
   "radiusMeters": {

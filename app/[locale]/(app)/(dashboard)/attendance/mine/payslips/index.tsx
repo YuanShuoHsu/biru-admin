@@ -6,6 +6,8 @@ import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
+import { renderEmptyableCell } from "@/components/EmptyCell";
+
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -206,7 +208,12 @@ const Payslips = ({
         headerName: tAttendance("month"),
         valueFormatter: (value: string) => dayjs(value).format(monthFormat),
       },
-      ...getPayrollAmountColumns(tAttendance, format, money),
+      ...getPayrollAmountColumns(
+        tAttendance,
+        format,
+        money,
+        renderEmptyableCell,
+      ),
     ],
     [format, money, monthFilterOperators, monthFormat, tAttendance],
   );

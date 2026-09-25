@@ -388,7 +388,6 @@
   "payslips": {
     "label": "급여 명세서"
   },
-  "pendingWeeklyMinutes": "적용 예정 근무시간(시간)",
   "pensionBasis": "연금 기여 기준({currency})",
   "publish": "급여 명세서 게시",
   "radiusMeters": {

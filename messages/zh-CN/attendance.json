@@ -388,7 +388,6 @@
   "payslips": {
     "label": "工资单"
   },
-  "pendingWeeklyMinutes": "待生效工时（小时）",
   "pensionBasis": "劳退月提缴工资（{currency}）",
   "publish": "发布工资单",
   "radiusMeters": {
