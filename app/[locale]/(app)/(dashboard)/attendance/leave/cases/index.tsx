@@ -78,7 +78,6 @@ interface LeaveCasesProps {
   canAssignChild: boolean;
   canDelete: boolean;
   canUpdate: boolean;
-  canSetDailyPay: boolean;
   canViewAll: boolean;
   canWrite: boolean;
   employeeId?: string;
@@ -102,7 +101,6 @@ const LeaveCases = ({
   canAssignChild,
   canDelete,
   canUpdate,
-  canSetDailyPay,
   canViewAll,
   canWrite,
   employeeId,
@@ -111,7 +109,7 @@ const LeaveCases = ({
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
   leaveTypes,
-  organization: { currency = "", slug: organizationSlug },
+  organization: { slug: organizationSlug },
   page,
   pageSize,
   parentalChildren,
@@ -253,8 +251,6 @@ const LeaveCases = ({
         confirmText: tAttendance("save"),
         content: (
           <LeaveCaseDialog
-            canSetDailyPay={canSetDailyPay}
-            currency={currency}
             employeeId={employeeId}
             employees={employees}
             leaveCase={leaveCase}
@@ -271,8 +267,6 @@ const LeaveCases = ({
         ),
       }),
     [
-      canSetDailyPay,
-      currency,
       employeeId,
       employees,
       leaveTypes,

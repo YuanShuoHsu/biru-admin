@@ -15,13 +15,14 @@
   "approve": "承認",
   "approveCancellation": "取消を承認",
   "assignParentalChild": "子どもを関連付ける",
-  "autoInsurance": "現行の等級と料率で保険料を自動計算",
+  "autoInsurance": "現行の等級と料率で労保・健保の本人負担額を自動計算",
   "balances": {
     "actions": {
       "create": "休暇残数を追加"
     },
     "label": "休暇残数"
   },
+  "birthDate": "生年月日",
   "breakEndTime": "休憩終了",
   "breakStartTime": "休憩開始",
   "breaks": "休憩（分）",
@@ -41,7 +42,6 @@
   "childReference": "確認済みの子ども識別番号",
   "clockedTime": "実際の打刻",
   "confirm": "この操作を実行しますか？",
-  "dailyPayCents": "確認済みの日額全額（{currency}、対象手当を含む）",
   "dayKind": {
     "label": "日区分",
     "options": {
@@ -51,6 +51,7 @@
       "workday": "勤務日"
     }
   },
+  "declaredInsurance": "現在の申告等級",
   "deductions": "控除合計",
   "disabled": "無効",
   "early": "早退",
@@ -77,7 +78,26 @@
     "label": "従業員管理"
   },
   "employerPension": "雇用主年金拠出",
+  "employerCost": {
+    "options": {
+      "laborInsurance": "雇用主労保",
+      "employmentInsurance": "雇用主就業保険",
+      "healthInsurance": "雇用主健保",
+      "occupationalAccident": "雇用主職災",
+      "wageGuarantee": "未払賃金立替基金"
+    }
+  },
   "employerPercent": "雇用主拠出率（%）",
+  "employmentInsuranceExemption": {
+    "label": "就業保険の適用除外理由",
+    "none": "なし",
+    "options": {
+      "publicInsurance": "公務員保険または軍人保険に加入すべき者",
+      "oldAgeBenefit": "労保老齢給付または公保養老給付を受給済み",
+      "unregisteredEmployer": "登記免除かつ課税査定のない雇用主",
+      "otherEmployer": "他の雇用主で就業保険に加入済み"
+    }
+  },
   "employmentType": {
     "label": "勤務形態",
     "options": {
@@ -91,21 +111,33 @@
   "errors": {
     "activeShiftExists": "未退勤のシフトがあります。先に退勤または修正してください。",
     "belowMinimumWage": "給与設定が適用中の最低賃金を下回っています。",
+    "belowMinimumWorkingAge": "労働基準法により 15 歳未満の者を雇用することはできません。",
     "belowStatutoryPaidPercent": "支給率は法定基準を下回れません。",
+    "birthDateRequired": "年少者と保険の年齢制限を判断するため、従業員の生年月日を入力してください。",
     "breakTooShort": "休憩は1回につき30分以上にしてください。",
     "calendarLeaveInterval": "法定日数を暦日で指定してください（午前0時から午前0時、終了日を含まない）。",
     "calendarLeavePayRequired": "産休の事由は owner が確認済みの日額賃金を設定してください。支給率は勤続期間から自動計算されます。",
     "cannotReviewOwnDraft": "自分が作成した給与明細は確認できません。別の管理者が確認してください。",
     "cannotReviewSelf": "自分の申請は別の管理者が審査する必要があります。",
+    "childLaborHoursExceeded": "16 歳未満の従業員は 1 日 8 時間、1 週 40 時間を超えて働けません。",
+    "childLaborNightWork": "16 歳未満の従業員は午後 8 時から翌午前 6 時まで働けません。",
+    "childLaborRestDay": "16 歳未満の従業員は例假日に働けません。",
     "continuousWorkTooLong": "連続勤務は4時間までです。間に30分以上の休憩を入れてください。",
     "correctionSourceChanged": "申請後にこのシフトの打刻が変更されました。再確認してから審査してください。",
     "dailyHoursExceeded": "1 日の労働時間が 12 時間を超えます。残業時間を短くしてください。",
     "emergencyDetailsRequired": "緊急出勤の事由、報告、代休を承認してください。",
     "employeeDisableConflict": "停止する前に、今後のシフトを取り消し、審査待ちの申請を処理してください。",
     "employeeNotEnabled": "管理者に勤怠の有効化を依頼してください。",
+    "employmentInsuranceExemptionInvalid": "就業保険に加入している場合、または法的身分が就業保険の対象外の場合は、適用除外理由を選択できません。",
+    "employmentInsuranceIneligible": "この従業員の法的身分は就業保険の対象外です。労保のみ、または加入なしを選択してください。",
+    "employmentInsuranceRequired": "この従業員は法律上就業保険に加入する必要があります。法定の除外対象の場合は適用除外理由を選択してください。",
     "employmentWindowConflict": "在職期間外にシフトが登録されています。先にシフトを調整してください。",
     "error": "操作に失敗しました。再試行してください。",
     "futureCorrection": "修正する打刻時刻を未来にはできません。",
+    "healthInsuranceExemptionInvalid": "当店で健保に加入している場合は理由を選択できません。",
+    "healthInsuranceRequired": "この従業員は週平均 12 時間以上勤務しているため、健保への加入が必要です。例外に該当する場合は理由を選択してください。",
+    "holidayCalendarMissing": "その年の国定休日データがまだ取得されていません。しばらくしてから再試行してください。",
+    "holidayDayKindRequired": "国定休日のシフトは国定休日として登録する必要があります。取り消して再登録してください。",
     "hourlyAllowanceBasisRequired": "時給の固定手当を含む残業単価は自動計算の対象外です。",
     "idempotencyConflict": "再送内容が変更されています。フォームを開き直してください。",
     "implausibleMinimumWage": "確認した最低時給が前期より低くなっています。官報の公告を再確認してください。",
@@ -113,16 +145,19 @@
     "inconsistentDayKind": "同日のシフトで日区分が異なります。",
     "insufficientLeaveBalance": "休暇残数が不足しています。管理者に確認してください。",
     "insuranceBasisOutdated": "保険の基準額が当期の等級表にありません。労働保険と健康保険の月額を確認してください。",
+    "insuranceBasisUnderDeclared": "直近の調整期間の平均賃金に対し、投保等級が申告すべき等級を下回っています。給与条件を再設定してください。",
+    "insuranceTermsRequired": "給与条件に保険情報がありません。給与条件を再設定してください。",
     "invalidBreak": "休憩時間はシフト内に収め、重ならないようにしてください。",
     "invalidEmergencyDetails": "報告日時と連続 24 時間以上の代休を確認してください。",
     "invalidEventSequence": "打刻順序または時刻が不正です。出退勤時刻を確認してください。",
-    "invalidInsuranceBasis": "保険の基準額が計算方法に適合しません。",
     "invalidInterval": "開始と終了の時刻が不正です。終了は開始より後にしてください。",
     "invalidIp": "IPアドレスの形式が不正です。1行に有効なIPv4またはIPv6を1件入力してください。",
     "invalidLeaveCase": "事由、従業員、休暇種別または対象期間が一致しません。",
     "invalidParentalInterval": "育児休業は勤続要件、子が3歳未満、暦日単位の指定が必要です。連続申請は30日以上です。",
     "invalidPayrollState": "給与の状態が変更されました。再読み込みしてください。",
     "ipNotAllowed": "許可されていないネットワークです。店舗のネットワークに接続してください。",
+    "laborInsuranceExemptionInvalid": "労工保険に加入している場合は適用除外理由を選択できません。",
+    "laborInsuranceRequired": "当店は 5 人以上を雇用しているため、この従業員を労工保険に加入させる必要があります。例外に該当する場合は適用除外理由を選択してください。",
     "leaveCaseExists": "この従業員の同じ休暇種別に事由番号が登録済みです。",
     "leaveCaseInUse": "この事由別休暇枠には休暇の記録があるため削除できません。",
     "leaveCaseIntervalConflict": "新しい対象期間が承認済みの休暇を含んでいません。",
@@ -141,6 +176,8 @@
     "negativeNetPay": "控除額が支給額を超えています。",
     "noShifts": "対象月にシフトがありません。",
     "noTemplateDates": "この期間にテンプレートの曜日に該当する日がありません。",
+    "occupationalAccidentRateRequired": "雇用主の職災保険料を計算するには、勤怠設定で労保局が認定した業種別職災保険料率を入力してください。",
+    "openingHoursRequired": "この従業員は当店で健保に加入していないため、毎営業日出勤しているかを営業時間で判断する必要があります。先に組織設定で営業時間を入力してください。",
     "outsideShiftWindow": "現在このシフトに出勤打刻できません。",
     "overlappingAttendance": "この期間には既に別の出勤記録があります。",
     "overlappingLeave": "既存の休暇申請と重複しています。",
@@ -152,7 +189,7 @@
     "parentalChildRequired": "確認済みの子どもを選択してください。",
     "parentalChildUnassigned": "子どもの関連付けが必要です",
     "parentalDailyLimit": "同じ子の日単位の育児休業が30日を超えています。",
-    "parentalInsuranceRequired": "育児休業中は保険料の自動計算を無効にし、確認済みの保険料・年金額と根拠を入力して給与案を再作成してください。",
+    "parentalInsuranceRequired": "育児休業中は自動計算を無効にし、確認済みの労保・健保本人負担額と根拠を入力して給与案を再作成してください。",
     "parentalLeaveActive": "育児休業中です。取消が承認されるまで打刻できません。",
     "parentalReturnInvalid": "復職日は休業期間内の暦日単位で指定してください。",
     "parentalReturnPending": "審査待ちの復職申請を先に処理してください。",
@@ -169,6 +206,8 @@
     "payrollTermsRequired": "有効な給与設定を先に登録してください。",
     "pendingRequestExists": "このシフトには同じ種類の未審査申請があります。",
     "pendingRequests": "未審査の申請があります。",
+    "pensionIneligible": "この従業員の法的身分は労工退職金の対象外です。拠出率と月額拠出賃金は 0 にしてください。",
+    "pensionRequired": "この従業員は労工退職金の対象です。雇用主拠出率は 6% 以上とし、月額拠出賃金を入力してください。",
     "periodOvertimeExceeded": "延長期間の 3 か月合計 138 時間の上限を超えます。",
     "prorationRequired": "月途中の給与計算方法を設定してください。",
     "reasonRequired": "申請理由を入力してください。",
@@ -178,13 +217,17 @@
     "shiftHasCorrection": "このシフトには承認済みの打刻修正があるため再申請できません。",
     "shiftHasRecords": "打刻または申請があるためシフトを取り消せません。",
     "shiftRequired": "この種類の申請にはシフトの指定が必要です。",
+    "shiftRestTooShort": "別の日のシフトの間には連続 11 時間以上の休息が必要です。",
     "shiftTooLong": "1つのシフトは24時間を超えられません。",
-    "sourceRequired": "確認済み金額の根拠を入力してください。",
     "splitLeaveByYear": "年をまたぐ休暇は年ごとに申請してください。",
     "statutoryBalanceAutomatic": "法定休暇残高は自動計算されます。",
     "statutoryLeaveTypeLocked": "法定休暇区分は削除できません。無効化してください。",
+    "studentWeeklyHoursExceeded": "外国人学生は冬休み・夏休み以外、1 週間（月曜〜日曜）の労働時間が 20 時間を超えてはいけません。",
+    "taiwanStaySinceRequired": "源泉徴収税率を判断するため、外国籍従業員の今回の入国日を入力してください。",
     "unsupportedDayKind": "未対応の日区分です。",
-    "weeklyScheduleRequiresReview": "週の所定労働時間が 40 時間を超えています。シフトを確認してください。"
+    "weeklyRestRequired": "各週（月曜〜日曜）に例假 1 日と休息日 1 日が必要です。通常勤務日は最大 5 日、シフト日は最大 6 日です。",
+    "weeklyScheduleRequiresReview": "週の所定労働時間が 40 時間を超えています。シフトを確認してください。",
+    "workPermitRequired": "この従業員の法的身分では有効な就労許可が必要ですが、シフトまたは出勤日が許可期間外です。"
   },
   "eventAction": {
     "options": {
@@ -202,6 +245,10 @@
   "graceMinutes": {
     "label": "猶予時間（分）"
   },
+  "laborInsuranceUnitCode": {
+    "label": "労工保険の投保単位保険証番号",
+    "none": "未設定（当店の人数のみ計算）"
+  },
   "grantedMinutes": "付与時間（分）",
   "gross": "支給総額",
   "groups": {
@@ -211,9 +258,18 @@
     "schedule": "シフト作成",
     "settings": "設定"
   },
-  "healthBasis": "健康保険月額（{currency}、他所加入は0）",
+  "healthBasis": "健康保険月額（{currency}）",
   "healthDependents": "健康保険扶養人数",
   "healthInsurance": "従業員健康保険（{currency}）",
+  "healthInsuranceExemption": {
+    "label": "当店で健保に加入しない理由",
+    "none": "なし",
+    "options": {
+      "shortTermOriginalCoverage": "3か月以内の短期就労で従前の資格を継続",
+      "otherEmployer": "労働時間・所得・危険性がより大きい事業所で加入済み"
+    }
+  },
+  "healthInsured": "当店で健保に加入",
   "hiredAt": "入社日",
   "kind": {
     "label": "申請種類",
@@ -225,23 +281,20 @@
   },
   "label": "人事",
   "laborBasis": "労働保険申告月額（{currency}）",
-  "laborCoverage": {
-    "label": "労働保険区分",
+  "occupationalBasis": "職災月額投保賃金（{currency}）",
+  "occupationalAccidentRateMicros": {
+    "helper": "労保局の認定料率（通勤災害料率 0.07% を除く）",
+    "label": "職災保険の業種別料率（%）",
+    "none": "未設定"
+  },
+  "laborInsuranceExemption": {
+    "label": "労工保険の適用除外理由",
+    "none": "なし",
     "options": {
-      "both": "労働・雇用保険",
-      "employment": "雇用保険のみ",
-      "labor": "労働保険のみ",
-      "none": "対象外"
+      "oldAgeBenefit": "労保老齢給付を受給済み"
     }
   },
   "laborInsurance": "従業員労働・雇用保険（{currency}）",
-  "laborLadder": {
-    "label": "労働保険の等級表",
-    "options": {
-      "general": "一般",
-      "partTime": "パートタイム"
-    }
-  },
   "late": "遅刻",
   "latitude": {
     "label": "店舗の緯度"
@@ -250,7 +303,7 @@
     "label": "付与済み休暇枠",
     "placeholder": "あなたの付与済み休暇枠を選択してください"
   },
-  "leaveCaseHint": "管理者が事由・続柄・対象期間を確認すると、付与枠が自動計算されます。同じ事由を重複登録しないでください。産休は休日を含む暦日で指定します（午前0時、終了日を含まない）。配偶者の健診と出産は合計7日で、申請ごとに対象期間を確認してください。 産休の事由は owner が確認済みの日額賃金を設定してください。支給率は勤続期間から自動計算されます。 育児休業の事由発生日は子の生年月日を入力し、同じ子には同じ事由番号を使用してください。期間は3歳の誕生日までとし、勤続6か月未満の場合は労使合意が必要です。日額賃金の設定は不要です。",
+  "leaveCaseHint": "管理者が事由・続柄・対象期間を確認すると、付与枠が自動計算されます。同じ事由を重複登録しないでください。産休は休日を含む暦日で指定します（午前0時、終了日を含まない）。配偶者の健診と出産は合計7日で、申請ごとに対象期間を確認してください。 産休の日額賃金は約定賃金と平均賃金から自動計算されます。支給率は勤続期間から自動計算されます。 育児休業の事由発生日は子の生年月日を入力し、同じ子には同じ事由番号を使用してください。期間は3歳の誕生日までとし、勤続6か月未満の場合は労使合意が必要です。日額賃金の設定は不要です。",
   "leaveCases": {
     "actions": {
       "create": "事由別休暇枠を追加",
@@ -369,7 +422,7 @@
   "payroll": {
     "label": "給与"
   },
-  "payrollHint": "申告済み保険額を使用してください。特例・補助は自動計算を無効にし確認済み金額と根拠を入力してください。適用日は月初です。",
+  "payrollHint": "投保等級は賃金とシフトから自動計算されます。特例・補助は自動計算を無効にし、確認済みの労保・健保本人負担額と根拠を入力してください。適用日は月初です。",
   "payrollLine": {
     "options": {
       "absenceDeduction": "欠勤控除",
@@ -486,6 +539,16 @@
       "withdrawn": "取り下げ済み"
     }
   },
+  "studentVacations": {
+    "from": "開始日",
+    "label": "冬休み・夏休み期間",
+    "to": "終了日"
+  },
+  "workPermits": {
+    "from": "許可開始日",
+    "label": "就労許可期間",
+    "to": "許可終了日"
+  },
   "statutoryKind": {
     "label": "休暇規則",
     "names": {
@@ -532,6 +595,7 @@
   },
   "statutoryPaidPercent": "法定支給率：{percent}%",
   "success": "保存しました",
+  "taiwanStaySince": "今回の入国日",
   "taxMethod": {
     "label": "源泉徴収方法",
     "options": {
@@ -552,6 +616,7 @@
   "to": "終了日",
   "useCurrentLocation": "現在地を使用",
   "usedMinutes": "使用時間（分）",
+  "voluntaryLaborInsurance": "5 人未満でも労保に加入",
   "voluntaryPension": "任意年金拠出（{currency}）",
   "voluntaryPercent": "任意拠出率（%）",
   "weekday": "曜日",

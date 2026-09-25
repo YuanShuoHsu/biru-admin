@@ -3,7 +3,7 @@
 import dayjs from "dayjs";
 import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { useCallback } from "react";
 
 import SettingsDialog from "./SettingsDialog";
@@ -36,6 +36,8 @@ const SETTING_KEYS = [
   "radiusMeters",
   "allowedIps",
   "graceMinutes",
+  "laborInsuranceUnitCode",
+  "occupationalAccidentRateMicros",
   "overtimeExtensionPeriods",
 ] as const satisfies readonly (keyof AttendanceSettings)[];
 
@@ -48,6 +50,8 @@ const Settings = ({
   organization: { slug: organizationSlug },
   settings,
 }: SettingsProps) => {
+  const format = useFormatter();
+
   const monthFormat = useMonthFormat();
 
   const tAttendance = useTranslations("attendance");
@@ -92,23 +96,40 @@ const Settings = ({
     </StyledStack>
   );
 
-  const items = settings
-    ? SETTING_KEYS.map((key) => {
-        const value = settings[key];
+  const settingValue = (
+    { occupationalAccidentRateMicros, ...values }: AttendanceSettings,
+    key: (typeof SETTING_KEYS)[number],
+  ) => {
+    if (key === "overtimeExtensionPeriods")
+      return values.overtimeExtensionPeriods.length
+        ? chips(values.overtimeExtensionPeriods, periodLabel)
+        : tAttendance("overtimeExtensionPeriods.none");
 
-        return {
-          key,
-          label: tAttendance(`${key}.label`),
-          value:
-            key === "overtimeExtensionPeriods"
-              ? settings.overtimeExtensionPeriods.length
-                ? chips(settings.overtimeExtensionPeriods, periodLabel)
-                : tAttendance("overtimeExtensionPeriods.none")
-              : Array.isArray(value)
-                ? chips(value)
-                : value,
-        };
-      })
+    if (key === "occupationalAccidentRateMicros")
+      return occupationalAccidentRateMicros == null
+        ? tAttendance("occupationalAccidentRateMicros.none")
+        : format.number(occupationalAccidentRateMicros / 1000000, {
+            maximumFractionDigits: 6,
+            style: "percent",
+          });
+
+    if (key === "laborInsuranceUnitCode")
+      return (
+        values.laborInsuranceUnitCode ??
+        tAttendance("laborInsuranceUnitCode.none")
+      );
+
+    const value = values[key];
+
+    return Array.isArray(value) ? chips(value) : value;
+  };
+
+  const items = settings
+    ? SETTING_KEYS.map((key) => ({
+        key,
+        label: tAttendance(`${key}.label`),
+        value: settingValue(settings, key),
+      }))
     : [];
 
   return (

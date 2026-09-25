@@ -17,6 +17,7 @@ import {
   payrollBlockerValues,
   payrollDeductionLineCodeValues,
   payrollEarningLineCodeValues,
+  payrollEmployerCostCodeValues,
 } from "@/types/api";
 import type {
   AttendanceContext,
@@ -33,6 +34,7 @@ import type {
   AttendanceLeaveType,
   AttendanceLeaveTypeFilterField,
   AttendanceLeaveTypeSortField,
+  AttendanceLegalStatusObligation,
   AttendanceMember,
   AttendanceParentalChild,
   AttendanceParentalChildFilterField,
@@ -182,6 +184,14 @@ export const getAttendanceSettings = cache(
       return null;
     }
   },
+);
+
+export const getAttendanceLegalStatusObligations = cache(
+  (organizationSlug: string, init?: RequestInit) =>
+    fetcher<AttendanceLegalStatusObligation[]>(
+      attendancePath(organizationSlug, "org", "legal-status-obligations"),
+      init,
+    ),
 );
 
 export const SCHEDULABLE_EMPLOYEES_QUERY: GridQuery<
@@ -587,6 +597,14 @@ export const getPayrollAmountColumns = (
       "employerPension",
       tAttendance("employerPension"),
       ({ employerPensionCents }) => employerPensionCents,
+    ),
+    ...payrollEmployerCostCodeValues.map((code) =>
+      amountColumn(
+        `employerCost-${code}`,
+        tAttendance(`employerCost.options.${code}`),
+        ({ employerCosts }) =>
+          employerCosts?.find((cost) => cost.code === code)?.amountCents,
+      ),
     ),
   ];
 };

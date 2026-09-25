@@ -34,6 +34,8 @@ export type AttendanceEmploymentType =
   components["schemas"]["AttendanceEmploymentType"];
 export type AttendanceLegalStatus =
   components["schemas"]["AttendanceLegalStatus"];
+export type AttendanceLegalStatusObligation =
+  components["schemas"]["AttendanceLegalStatusObligationResponseDto"];
 export type SaveAttendanceEmployee =
   components["schemas"]["SaveAttendanceEmployeeDto"];
 export type AttendanceContext =
@@ -90,8 +92,6 @@ export type PayrollStatement =
 export type PayrollStatementPage =
   components["schemas"]["PayrollStatementsResponseDto"];
 export type PayrollTerms = components["schemas"]["PayrollTermsResponseDto"];
-export type PayrollInsuranceGrades =
-  components["schemas"]["PayrollInsuranceGradesResponseDto"];
 
 export type AttendanceErrorCode = (typeof attendanceErrorCodeValues)[number];
 export type PayrollBlocker = (typeof payrollBlockerValues)[number];

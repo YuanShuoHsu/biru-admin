@@ -16,10 +16,7 @@
     "maxLength": "Bio must not exceed 160 characters."
   },
   "birthDate": {
-    "invalid": "Birth date is not valid.",
-    "maxDate": "Please select a birth date on or before today.",
-    "minDate": "Please select a birth date on or after 1900-01-01.",
-    "required": "Birth date is required."
+    "required": "Select the birth date."
   },
   "carrierNum": {
     "certificate": {
@@ -124,9 +121,6 @@
   "gender": {
     "required": "Gender is required."
   },
-  "healthBasis": {
-    "notSelected": "Please select your health insured amount."
-  },
   "hiredAt": {
     "required": "Employment start is required."
   },
@@ -136,8 +130,8 @@
   "invoiceType": {
     "notSelected": "Please select your invoice type."
   },
-  "laborBasis": {
-    "notSelected": "Please select your declared labor insured salary."
+  "laborInsuranceUnitCode": {
+    "invalid": "The unit number must be 8 digits followed by 1 uppercase letter."
   },
   "latitude": {
     "required": "Store latitude is required."
@@ -213,9 +207,6 @@
   "payrollMonth": {
     "invalid": "Payroll month is not valid."
   },
-  "pensionBasis": {
-    "required": "Pension contribution basis is required."
-  },
   "pickupCutoffMinutes": {
     "invalid": "Cutoff before closing is not valid.",
     "required": "Cutoff before closing is required."
@@ -278,9 +269,6 @@
     "letter": "Slug must contain at least one letter.",
     "required": "Slug is required."
   },
-  "sourceNote": {
-    "required": "Insurance, tax and adjustment evidence is required."
-  },
   "startDate": {
     "invalid": "Start date is not valid."
   },
@@ -290,8 +278,15 @@
   "startsAt": {
     "required": "Start time is required."
   },
+  "studentVacation": {
+    "required": "Select the vacation start and end dates.",
+    "order": "The end date can't be before the start date."
+  },
   "supplierName": {
     "required": "Supplier name is required."
+  },
+  "taiwanStaySince": {
+    "required": "Select the latest arrival date."
   },
   "telephone": {
     "invalid": "Phone is not valid.",
@@ -314,5 +309,9 @@
   },
   "validFrom": {
     "beforeValidThrough": "Start date must be before end date."
+  },
+  "workPermit": {
+    "required": "Select the permit start and end dates.",
+    "order": "The end date can't be before the start date."
   }
 }

@@ -16,10 +16,7 @@
     "maxLength": "自己紹介は160文字以内で入力してください。"
   },
   "birthDate": {
-    "invalid": "生年月日が無効です。",
-    "maxDate": "今日以前の生年月日を選択してください。",
-    "minDate": "1900-01-01以降の生年月日を選択してください。",
-    "required": "生年月日は必須です。"
+    "required": "生年月日を選択してください。"
   },
   "carrierNum": {
     "certificate": {
@@ -124,9 +121,6 @@
   "gender": {
     "required": "性別は必須です。"
   },
-  "healthBasis": {
-    "notSelected": "健康保険月額を選択してください。"
-  },
   "hiredAt": {
     "required": "入社日時は必須です。"
   },
@@ -136,8 +130,8 @@
   "invoiceType": {
     "notSelected": "インボイスの種類を選択してください。"
   },
-  "laborBasis": {
-    "notSelected": "労働保険申告月額を選択してください。"
+  "laborInsuranceUnitCode": {
+    "invalid": "保険証番号は数字 8 桁と大文字英字 1 文字で入力してください。"
   },
   "latitude": {
     "required": "店舗の緯度は必須です。"
@@ -213,9 +207,6 @@
   "payrollMonth": {
     "invalid": "給与月が無効です。"
   },
-  "pensionBasis": {
-    "required": "年金拠出基準は必須です。"
-  },
   "pickupCutoffMinutes": {
     "invalid": "閉店前の締め切りが無効です。",
     "required": "閉店前の締め切りは必須です。"
@@ -278,9 +269,6 @@
     "letter": "スラッグには少なくとも1つのアルファベットを含める必要があります。",
     "required": "スラッグは必須です。"
   },
-  "sourceNote": {
-    "required": "保険・税・調整の根拠は必須です。"
-  },
   "startDate": {
     "invalid": "開始日が無効です。"
   },
@@ -290,8 +278,15 @@
   "startsAt": {
     "required": "開始日時は必須です。"
   },
+  "studentVacation": {
+    "required": "冬休み・夏休みの開始日と終了日を選択してください。",
+    "order": "終了日は開始日より前にできません。"
+  },
   "supplierName": {
     "required": "仕入先名は必須です。"
+  },
+  "taiwanStaySince": {
+    "required": "今回の入国日を選択してください。"
   },
   "telephone": {
     "invalid": "電話番号が無効です。",
@@ -314,5 +309,9 @@
   },
   "validFrom": {
     "beforeValidThrough": "開始日は終了日より前でなければなりません。"
+  },
+  "workPermit": {
+    "required": "就労許可の開始日と終了日を選択してください。",
+    "order": "終了日は開始日より前にできません。"
   }
 }

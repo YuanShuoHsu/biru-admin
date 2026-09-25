@@ -11,7 +11,6 @@ import { useForm, useWatch } from "react-hook-form";
 import { type LeaveCaseForm, useLeaveCaseFormSchema } from "./definitions";
 
 import FormBox from "@/components/FormBox";
-import NumberSpinner from "@/components/NumberSpinner";
 
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
@@ -40,7 +39,6 @@ import {
   attendanceErrorKey,
   attendancePath,
   getStatutoryLeaveName,
-  toCents,
 } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
 
@@ -52,8 +50,6 @@ const StyledFormControlLabel = styled(FormControlLabel)({
 });
 
 interface LeaveCaseDialogProps {
-  canSetDailyPay: boolean;
-  currency: string;
   employeeId?: string;
   employees: AttendanceEmployee[];
   leaveCase?: AttendanceLeaveCase;
@@ -64,8 +60,6 @@ interface LeaveCaseDialogProps {
 }
 
 const LeaveCaseDialog = ({
-  canSetDailyPay,
-  currency,
   employeeId: selfEmployeeId,
   employees,
   leaveCase,
@@ -89,7 +83,6 @@ const LeaveCaseDialog = ({
   } = useForm<LeaveCaseForm>({
     defaultValues: {
       childId: leaveCase?.childId ?? "",
-      dailyPay: null,
       earlyParentalAgreed: false,
       employeeId: leaveCase?.employeeId ?? "",
       endsAt:
@@ -111,7 +104,6 @@ const LeaveCaseDialog = ({
 
   const [
     childId,
-    dailyPay,
     earlyParentalAgreed,
     employeeId,
     endsAt,
@@ -123,7 +115,6 @@ const LeaveCaseDialog = ({
     control,
     name: [
       "childId",
-      "dailyPay",
       "earlyParentalAgreed",
       "employeeId",
       "endsAt",
@@ -138,7 +129,6 @@ const LeaveCaseDialog = ({
 
   const isParentalLeave = leaveType?.statutoryKind === "parental";
   const isMarriageLeave = leaveType?.statutoryKind === "marriage";
-  const isCalendarPaidLeave = !!leaveType?.calendarLeave && !isParentalLeave;
 
   const onSubmitHandler = async (values: LeaveCaseForm) => {
     try {
@@ -171,9 +161,6 @@ const LeaveCaseDialog = ({
               : { eventDate: values.eventDate }),
             ...(isMarriageLeave
               ? { extensionAgreed: values.extensionAgreed }
-              : {}),
-            ...(isCalendarPaidLeave && values.dailyPay !== null
-              ? { dailyPayCents: toCents(values.dailyPay) }
               : {}),
           }),
         },
@@ -236,7 +223,6 @@ const LeaveCaseDialog = ({
           });
 
           setValue("childId", "");
-          setValue("dailyPay", null);
           setValue("earlyParentalAgreed", false);
           setValue("extensionAgreed", false);
         }}
@@ -245,14 +231,7 @@ const LeaveCaseDialog = ({
         value={leaveTypeId}
       >
         {leaveTypes
-          .filter(
-            ({ calendarLeave, enabled, eventLeave, statutoryKind }) =>
-              enabled &&
-              eventLeave &&
-              (canSetDailyPay ||
-                !calendarLeave ||
-                statutoryKind === "parental"),
-          )
+          .filter(({ enabled, eventLeave }) => enabled && eventLeave)
           .map((leaveType) => (
             <MenuItem key={leaveType.id} value={leaveType.id}>
               {getStatutoryLeaveName(tAttendance, leaveType)}
@@ -290,21 +269,6 @@ const LeaveCaseDialog = ({
               </MenuItem>
             ))}
         </TextField>
-      )}
-      {canSetDailyPay && isCalendarPaidLeave && (
-        <NumberSpinner
-          clearable
-          error={!!errors.dailyPay}
-          fullWidth
-          helperText={errors.dailyPay?.message}
-          label={tAttendance("dailyPayCents", { currency })}
-          min={0}
-          onValueChange={(value) =>
-            setValue("dailyPay", value, { shouldValidate: isSubmitted })
-          }
-          step={0.01}
-          value={dailyPay}
-        />
       )}
       {!isParentalLeave && (
         <DatePicker

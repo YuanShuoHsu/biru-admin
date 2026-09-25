@@ -15,13 +15,14 @@
   "approve": "Approve",
   "approveCancellation": "Approve cancellation",
   "assignParentalChild": "Assign child",
-  "autoInsurance": "Calculate premiums from the current grades and rates",
+  "autoInsurance": "Calculate labor and health premiums from the current grades and rates",
   "balances": {
     "actions": {
       "create": "Add leave balance"
     },
     "label": "Leave balances"
   },
+  "birthDate": "Birth date",
   "breakEndTime": "Break end",
   "breakStartTime": "Break start",
   "breaks": "Break minutes",
@@ -41,7 +42,6 @@
   "childReference": "Verified child reference",
   "clockedTime": "Clocked",
   "confirm": "Confirm this action?",
-  "dailyPayCents": "Verified full daily wage ({currency}, including applicable allowances)",
   "dayKind": {
     "label": "Day classification",
     "options": {
@@ -51,6 +51,7 @@
       "workday": "Workday"
     }
   },
+  "declaredInsurance": "Current insured amounts",
   "deductions": "Total deductions",
   "disabled": "Disabled",
   "early": "Left early",
@@ -77,7 +78,26 @@
     "label": "Employees"
   },
   "employerPension": "Employer pension",
+  "employerCost": {
+    "options": {
+      "laborInsurance": "Employer labor insurance",
+      "employmentInsurance": "Employer employment insurance",
+      "healthInsurance": "Employer health insurance",
+      "occupationalAccident": "Employer occupational accident",
+      "wageGuarantee": "Wage arrears fund"
+    }
+  },
   "employerPercent": "Employer rate (%)",
+  "employmentInsuranceExemption": {
+    "label": "Employment insurance exemption",
+    "none": "None",
+    "options": {
+      "publicInsurance": "Covered by civil servant or military insurance",
+      "oldAgeBenefit": "Already receiving labor or civil servant old-age benefits",
+      "unregisteredEmployer": "Employer exempt from registration with no assessed tax",
+      "otherEmployer": "Insured through another employer"
+    }
+  },
   "employmentType": {
     "label": "Work type",
     "options": {
@@ -91,21 +111,33 @@
   "errors": {
     "activeShiftExists": "Another shift is still open. Clock out or correct it first.",
     "belowMinimumWage": "Pay is below the minimum wage in effect.",
+    "belowMinimumWorkingAge": "The Labor Standards Act prohibits employing anyone under 15.",
     "belowStatutoryPaidPercent": "The paid percentage cannot be below the statutory rate.",
+    "birthDateRequired": "Enter the employee's birth date so child labor and insurance age limits can be checked.",
     "breakTooShort": "Each break must be at least 30 minutes.",
     "calendarLeaveInterval": "Use the statutory number of full calendar days, from midnight to midnight (exclusive end).",
     "calendarLeavePayRequired": "An owner must provide the verified full daily wage for maternity leave. The paid percentage is calculated from seniority.",
     "cannotReviewOwnDraft": "You cannot review a payslip you drafted. Another manager must review it.",
     "cannotReviewSelf": "Another manager must review your request.",
+    "childLaborHoursExceeded": "Employees under 16 may work at most 8 hours a day and 40 hours a week.",
+    "childLaborNightWork": "Employees under 16 may not work between 8 p.m. and 6 a.m.",
+    "childLaborRestDay": "Employees under 16 may not work on regular days off.",
     "continuousWorkTooLong": "Continuous work cannot exceed 4 hours. Schedule a break of at least 30 minutes in between.",
     "correctionSourceChanged": "The shift's punches changed after this request was submitted. Review it again before approving.",
     "dailyHoursExceeded": "This would push the day past 12 working hours. Shorten the overtime.",
     "emergencyDetailsRequired": "Approve the emergency cause, report and make-up rest before settlement.",
     "employeeDisableConflict": "Cancel upcoming shifts and settle pending requests before disabling.",
     "employeeNotEnabled": "Ask a manager to enable your employee attendance profile.",
+    "employmentInsuranceExemptionInvalid": "An exemption can't be selected when employment insurance is covered or doesn't apply to this employee's legal status.",
+    "employmentInsuranceIneligible": "Employment insurance doesn't apply to this employee's legal status. Choose labor insurance only or none.",
+    "employmentInsuranceRequired": "This employee must be covered by employment insurance. If a statutory exclusion applies, select an exemption.",
     "employmentWindowConflict": "Shifts are scheduled outside the employment window. Adjust the schedule first.",
     "error": "The operation failed. Please try again.",
     "futureCorrection": "Corrected times cannot be in the future.",
+    "healthInsuranceExemptionInvalid": "A reason can't be selected when health insurance is covered here.",
+    "healthInsuranceRequired": "This employee averages at least 12 hours a week and must be covered by health insurance. If an exception applies, select a reason.",
+    "holidayCalendarMissing": "The national holiday calendar for that year isn't available yet. Try again later.",
+    "holidayDayKindRequired": "Shifts on national holidays must be marked as holidays. Cancel and reschedule them.",
     "hourlyAllowanceBasisRequired": "Hourly fixed allowances require an overtime basis not supported by this calculator.",
     "idempotencyConflict": "The retry payload changed; close and reopen the form.",
     "implausibleMinimumWage": "The confirmed minimum hourly wage is lower than the previous period. Please re-check the official announcement.",
@@ -113,16 +145,19 @@
     "inconsistentDayKind": "Shifts on the same day have different day classifications.",
     "insufficientLeaveBalance": "Insufficient leave balance. Ask a manager to check the allowance.",
     "insuranceBasisOutdated": "Insurance bases are not in the current grade table. Re-check the labor and health insured amounts.",
+    "insuranceBasisUnderDeclared": "Based on average wages for the latest adjustment period, the insured salary is below the required grade. Set up the payroll terms again.",
+    "insuranceTermsRequired": "The payroll terms have no insurance details. Set up the payroll terms again.",
     "invalidBreak": "Breaks must fall within the shift and cannot overlap.",
     "invalidEmergencyDetails": "Check the report time and at least 24 continuous hours of make-up rest.",
     "invalidEventSequence": "Invalid punch sequence or times. Check the clock-in and clock-out times.",
-    "invalidInsuranceBasis": "Insurance bases do not match the selected calculation method.",
     "invalidInterval": "Invalid start and end times. The end must be later than the start.",
     "invalidIp": "Invalid IP address. Enter one valid IPv4 or IPv6 address per line.",
     "invalidLeaveCase": "The event, employee, leave type or eligible dates do not match.",
     "invalidParentalInterval": "Parental leave requires eligible tenure, a child under three and whole calendar days. Continuous requests require at least 30 days.",
     "invalidPayrollState": "Payroll status changed; reload the list.",
     "ipNotAllowed": "This network is not allowed. Connect to the store network.",
+    "laborInsuranceExemptionInvalid": "An exemption can't be selected when labor insurance is covered.",
+    "laborInsuranceRequired": "This business employs 5 or more people, so this employee must be covered by labor insurance. If an exception applies, select an exemption.",
     "leaveCaseExists": "This employee already has this event reference for the leave type.",
     "leaveCaseInUse": "This event leave allowance already has leave records and cannot be deleted.",
     "leaveCaseIntervalConflict": "The new eligible dates do not cover the approved leave.",
@@ -141,6 +176,8 @@
     "negativeNetPay": "Deductions exceed gross pay.",
     "noShifts": "No shifts exist for this month.",
     "noTemplateDates": "No day in this range matches the template weekday.",
+    "occupationalAccidentRateRequired": "Enter the occupational accident insurance industry rate approved by the Bureau of Labor Insurance in attendance settings to calculate the employer premium.",
+    "openingHoursRequired": "This employee isn't covered by health insurance here, so opening hours are needed to check whether they work every business day. Set the opening hours in organization settings first.",
     "outsideShiftWindow": "Clock-in is not available for this shift at this time.",
     "overlappingAttendance": "Another attendance record already covers this period.",
     "overlappingLeave": "The time overlaps an existing leave request.",
@@ -152,7 +189,7 @@
     "parentalChildRequired": "Select a verified child record first.",
     "parentalChildUnassigned": "Child assignment required",
     "parentalDailyLimit": "Daily parental leave exceeds 30 days for this child.",
-    "parentalInsuranceRequired": "For parental leave, turn off automatic insurance, enter verified insurance and pension amounts with their basis, then generate a new payroll draft.",
+    "parentalInsuranceRequired": "For parental leave, turn off automatic calculation, enter the verified labor and health premiums with their basis, then generate a new payroll draft.",
     "parentalLeaveActive": "Parental leave is active. Cancellation must be approved before clocking in.",
     "parentalReturnInvalid": "The return date must fall within the leave period and follow full calendar-day rules.",
     "parentalReturnPending": "A return request is pending. Resolve it first.",
@@ -169,6 +206,8 @@
     "payrollTermsRequired": "Create effective payroll terms first.",
     "pendingRequestExists": "A request of this type is already pending for this shift.",
     "pendingRequests": "Requests are awaiting review.",
+    "pensionIneligible": "Labor pension doesn't apply to this employee's legal status. Contribution rates and contribution wage must be 0.",
+    "pensionRequired": "Labor pension applies to this employee. The employer rate must be at least 6% and a contribution wage is required.",
     "periodOvertimeExceeded": "This would exceed the 138-hour limit for the 3-month extension period.",
     "prorationRequired": "Set the partial-month salary agreement first.",
     "reasonRequired": "Enter a reason for the request.",
@@ -178,13 +217,17 @@
     "shiftHasCorrection": "This shift already has an approved correction.",
     "shiftHasRecords": "This shift has attendance or request records and cannot be cancelled.",
     "shiftRequired": "This request kind requires a shift.",
+    "shiftRestTooShort": "Shifts on different days need at least 11 consecutive hours of rest between them.",
     "shiftTooLong": "A single shift cannot exceed 24 hours.",
-    "sourceRequired": "Enter the evidence for the verified amounts.",
     "splitLeaveByYear": "Submit separate requests for each calendar year.",
     "statutoryBalanceAutomatic": "Statutory balances are calculated automatically.",
     "statutoryLeaveTypeLocked": "Statutory leave policies cannot be deleted. Disable it instead.",
+    "studentWeeklyHoursExceeded": "Outside school vacations, foreign students may work at most 20 hours per week (Monday to Sunday).",
+    "taiwanStaySinceRequired": "Enter the latest arrival date for foreign employees so the withholding rate can be determined.",
     "unsupportedDayKind": "Unsupported day classification.",
-    "weeklyScheduleRequiresReview": "Scheduled workdays exceed 40 hours in a week; review the schedule."
+    "weeklyRestRequired": "Each week (Monday to Sunday) needs 1 regular day off and 1 rest day: at most 5 workdays and 6 scheduled days.",
+    "weeklyScheduleRequiresReview": "Scheduled workdays exceed 40 hours in a week; review the schedule.",
+    "workPermitRequired": "This employee's legal status requires a valid work permit, and a shift or workday falls outside the permit period."
   },
   "eventAction": {
     "options": {
@@ -202,6 +245,10 @@
   "graceMinutes": {
     "label": "Grace period (minutes)"
   },
+  "laborInsuranceUnitCode": {
+    "label": "Labor insurance unit number",
+    "none": "Not set (counts this store only)"
+  },
   "grantedMinutes": "Granted minutes",
   "gross": "Gross pay",
   "groups": {
@@ -211,9 +258,18 @@
     "schedule": "Scheduling",
     "settings": "Settings"
   },
-  "healthBasis": "Health insured amount ({currency}; 0 if insured elsewhere)",
+  "healthBasis": "Health insured amount ({currency})",
   "healthDependents": "Health insurance dependents",
   "healthInsurance": "Employee health insurance ({currency})",
+  "healthInsuranceExemption": {
+    "label": "Reason for no health insurance here",
+    "none": "None",
+    "options": {
+      "shortTermOriginalCoverage": "Short-term work under 3 months kept on original coverage",
+      "otherEmployer": "Insured by the unit with longer hours, higher pay or greater risk"
+    }
+  },
+  "healthInsured": "Enroll in health insurance here",
   "hiredAt": "Employment starts",
   "kind": {
     "label": "Request type",
@@ -225,23 +281,20 @@
   },
   "label": "HR",
   "laborBasis": "Declared labor insured salary ({currency})",
-  "laborCoverage": {
-    "label": "Labor insurance coverage",
+  "occupationalBasis": "Occupational accident insured salary ({currency})",
+  "occupationalAccidentRateMicros": {
+    "helper": "Rate approved by the Bureau of Labor Insurance, excluding the 0.07% commuting rate",
+    "label": "Occupational accident industry rate (%)",
+    "none": "Not set"
+  },
+  "laborInsuranceExemption": {
+    "label": "Labor insurance exemption",
+    "none": "None",
     "options": {
-      "both": "Labor and employment",
-      "employment": "Employment only",
-      "labor": "Labor only",
-      "none": "Not applicable"
+      "oldAgeBenefit": "Already receiving labor old-age benefits"
     }
   },
   "laborInsurance": "Employee labor / employment insurance ({currency})",
-  "laborLadder": {
-    "label": "Labor insurance grade table",
-    "options": {
-      "general": "General",
-      "partTime": "Part-time"
-    }
-  },
   "late": "Late",
   "latitude": {
     "label": "Store latitude"
@@ -250,7 +303,7 @@
     "label": "Granted allowance",
     "placeholder": "Please select your granted allowance"
   },
-  "leaveCaseHint": "A manager must verify the event, relationship and eligible dates. Allowances are calculated automatically. Do not duplicate an event. Maternity periods include rest days and use full calendar days (midnight, exclusive end). Partner prenatal and childbirth leave share 7 days; verify the eligible dates for each request. An owner must provide the verified full daily wage for maternity leave. The paid percentage is calculated from seniority. For parental leave, use the child’s birth date as the event date and reuse the same reference for that child. The period must end by the third birthday. Service under six months requires employer–employee agreement. No daily wage is required.",
+  "leaveCaseHint": "A manager must verify the event, relationship and eligible dates. Allowances are calculated automatically. Do not duplicate an event. Maternity periods include rest days and use full calendar days (midnight, exclusive end). Partner prenatal and childbirth leave share 7 days; verify the eligible dates for each request. The maternity daily wage is calculated from the agreed and average wages. The paid percentage is calculated from seniority. For parental leave, use the child’s birth date as the event date and reuse the same reference for that child. The period must end by the third birthday. Service under six months requires employer–employee agreement. No daily wage is required.",
   "leaveCases": {
     "actions": {
       "create": "Add event leave allowance",
@@ -369,7 +422,7 @@
   "payroll": {
     "label": "Payroll"
   },
-  "payrollHint": "Use declared insurance values. For special status or subsidies, disable automatic premiums and enter verified amounts with evidence. Effective dates currently start at month boundaries.",
+  "payrollHint": "Insured amounts are calculated from wages and schedules. For special status or subsidies, disable automatic calculation and enter the verified labor and health premiums with evidence. Effective dates currently start at month boundaries.",
   "payrollLine": {
     "options": {
       "absenceDeduction": "Absence deduction",
@@ -486,6 +539,16 @@
       "withdrawn": "Withdrawn"
     }
   },
+  "studentVacations": {
+    "from": "Start date",
+    "label": "School vacations",
+    "to": "End date"
+  },
+  "workPermits": {
+    "from": "Permit start",
+    "label": "Work permit periods",
+    "to": "Permit end"
+  },
   "statutoryKind": {
     "label": "Leave rule",
     "names": {
@@ -532,6 +595,7 @@
   },
   "statutoryPaidPercent": "Statutory paid percentage: {percent}%",
   "success": "Saved",
+  "taiwanStaySince": "Latest arrival date",
   "taxMethod": {
     "label": "Withholding method",
     "options": {
@@ -552,6 +616,7 @@
   "to": "To",
   "useCurrentLocation": "Use current location",
   "usedMinutes": "Used minutes",
+  "voluntaryLaborInsurance": "Enroll in labor insurance with fewer than 5 employees",
   "voluntaryPension": "Voluntary pension ({currency})",
   "voluntaryPercent": "Voluntary rate (%)",
   "weekday": "Weekday",

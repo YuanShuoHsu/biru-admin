@@ -16,10 +16,7 @@
     "maxLength": "个人简介不能超过 160 个字符。"
   },
   "birthDate": {
-    "invalid": "出生日期无效。",
-    "maxDate": "请选择今天或之前的出生日期。",
-    "minDate": "请选择 1900-01-01 或之后的出生日期。",
-    "required": "出生日期为必填。"
+    "required": "请选择生日。"
   },
   "carrierNum": {
     "certificate": {
@@ -124,9 +121,6 @@
   "gender": {
     "required": "性别为必填。"
   },
-  "healthBasis": {
-    "notSelected": "请选择您的健保月投保金额。"
-  },
   "hiredAt": {
     "required": "入职时间为必填。"
   },
@@ -136,8 +130,8 @@
   "invoiceType": {
     "notSelected": "请选择您的发票类型。"
   },
-  "laborBasis": {
-    "notSelected": "请选择您的劳就保月投保工资。"
+  "laborInsuranceUnitCode": {
+    "invalid": "保险证号须为 8 码数字加 1 码大写英文字母。"
   },
   "latitude": {
     "required": "门店纬度为必填。"
@@ -213,9 +207,6 @@
   "payrollMonth": {
     "invalid": "薪资月份无效。"
   },
-  "pensionBasis": {
-    "required": "劳退月提缴工资为必填。"
-  },
   "pickupCutoffMinutes": {
     "invalid": "打烊前截止时间格式无效。",
     "required": "打烊前截止时间为必填。"
@@ -278,9 +269,6 @@
     "letter": "网址识别码必须包含至少一个英文字母。",
     "required": "网址识别码为必填。"
   },
-  "sourceNote": {
-    "required": "投保、扣缴与调整依据为必填。"
-  },
   "startDate": {
     "invalid": "开始日期无效。"
   },
@@ -290,8 +278,15 @@
   "startsAt": {
     "required": "开始时间为必填。"
   },
+  "studentVacation": {
+    "required": "请选择寒暑假起讫日。",
+    "order": "结束日不可早于开始日。"
+  },
   "supplierName": {
     "required": "供应商名称为必填。"
+  },
+  "taiwanStaySince": {
+    "required": "请选择本次入境日。"
   },
   "telephone": {
     "invalid": "电话格式无效。",
@@ -314,5 +309,9 @@
   },
   "validFrom": {
     "beforeValidThrough": "生效日期必须早于截止日期。"
+  },
+  "workPermit": {
+    "required": "请选择工作许可起讫日。",
+    "order": "讫日不可早于起日。"
   }
 }

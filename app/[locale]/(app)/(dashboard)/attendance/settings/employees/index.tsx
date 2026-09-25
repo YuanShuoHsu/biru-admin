@@ -43,6 +43,7 @@ import type {
   AttendanceEmployeeStatus,
   AttendanceEmploymentType,
   AttendanceLegalStatus,
+  AttendanceLegalStatusObligation,
   AttendanceMember,
   AttendanceMemberPage,
 } from "@/types/attendance";
@@ -80,6 +81,7 @@ interface EmployeesProps {
   filterField?: AttendanceEmployeeFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
+  legalStatusObligations: AttendanceLegalStatusObligation[];
   organization: Organization;
   page: number;
   pageSize: number;
@@ -95,6 +97,7 @@ const Employees = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
+  legalStatusObligations,
   organization: { slug: organizationSlug },
   page,
   pageSize,
@@ -236,6 +239,7 @@ const Employees = ({
         confirmText: tAttendance("save"),
         content: (
           <EmployeeDialog
+            legalStatusObligations={legalStatusObligations}
             member={member}
             mutate={mutate}
             organizationSlug={organizationSlug}
@@ -249,7 +253,7 @@ const Employees = ({
             : "employees.actions.create",
         ),
       }),
-    [mutate, organizationSlug, setDialog, tAttendance],
+    [legalStatusObligations, mutate, organizationSlug, setDialog, tAttendance],
   );
 
   const columns = useMemo<GridColDef[]>(

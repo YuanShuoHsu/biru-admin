@@ -15,13 +15,14 @@
   "approve": "批准",
   "approveCancellation": "批准撤假",
   "assignParentalChild": "确认子女归户",
-  "autoInsurance": "依当期投保级距与费率自动计算保费",
+  "autoInsurance": "依当期投保级距与费率自动计算劳健保自付额",
   "balances": {
     "actions": {
       "create": "新增休假额度"
     },
     "label": "休假额度"
   },
+  "birthDate": "生日",
   "breakEndTime": "休息结束",
   "breakStartTime": "休息开始",
   "breaks": "休息（分钟）",
@@ -41,7 +42,6 @@
   "childReference": "子女识别依据编号",
   "clockedTime": "实际打卡",
   "confirm": "确认执行此操作？",
-  "dailyPayCents": "核定每日全薪（{currency}，含应计入的津贴）",
   "dayKind": {
     "label": "日期类型",
     "options": {
@@ -51,6 +51,7 @@
       "workday": "工作日"
     }
   },
+  "declaredInsurance": "目前申报级距",
   "deductions": "扣款合计",
   "disabled": "已停用",
   "early": "早退",
@@ -77,7 +78,26 @@
     "label": "员工管理"
   },
   "employerPension": "雇主提缴",
+  "employerCost": {
+    "options": {
+      "laborInsurance": "雇主劳保",
+      "employmentInsurance": "雇主就保",
+      "healthInsurance": "雇主健保",
+      "occupationalAccident": "雇主职灾",
+      "wageGuarantee": "工资垫偿基金"
+    }
+  },
   "employerPercent": "雇主提缴比例（%）",
+  "employmentInsuranceExemption": {
+    "label": "就保不适用原因",
+    "none": "无",
+    "options": {
+      "publicInsurance": "应参加公教人员保险或军人保险",
+      "oldAgeBenefit": "已领劳保老年给付或公保养老给付",
+      "unregisteredEmployer": "雇主依法免办登记且无核定课税",
+      "otherEmployer": "已于其他雇主参加就保"
+    }
+  },
   "employmentType": {
     "label": "工作类型",
     "options": {
@@ -91,21 +111,33 @@
   "errors": {
     "activeShiftExists": "还有尚未下班的班次，请先完成下班或补卡。",
     "belowMinimumWage": "薪资设置低于当期最低工资。",
+    "belowMinimumWorkingAge": "依劳基法不得雇用未满 15 岁的人。",
     "belowStatutoryPaidPercent": "给薪比例不得低于法定标准。",
+    "birthDateRequired": "请先在员工资料填写生日，系统才能判断童工与保险年龄限制。",
     "breakTooShort": "每段休息至少 30 分钟。",
     "calendarLeaveInterval": "产假事件期间须为法定天数的完整日历日（起讫 00:00，结束日不含）。",
     "calendarLeavePayRequired": "产假事件须由 owner 设置核定每日全薪，给薪比例由工龄自动计算。",
     "cannotReviewOwnDraft": "不能复核自己创建的工资单，请由另一位管理者处理。",
     "cannotReviewSelf": "不能审核自己的申请，请由另一位主管处理。",
+    "childLaborHoursExceeded": "未满 16 岁的员工每日工作不得超过 8 小时、每周不得超过 40 小时。",
+    "childLaborNightWork": "未满 16 岁的员工不得在晚上 8 点至次日早上 6 点工作。",
+    "childLaborRestDay": "未满 16 岁的员工不得在例假日工作。",
     "continuousWorkTooLong": "连续工作不得超过 4 小时，请在中间安排至少 30 分钟的休息。",
     "correctionSourceChanged": "提交申请后这个班次的打卡有变动，请重新确认后再送审。",
     "dailyHoursExceeded": "当日工时将超过 12 小时，请缩短加班时间。",
     "emergencyDetailsRequired": "例假出勤须先批准法定事由、报备及补假资料。",
     "employeeDisableConflict": "停用前请先取消未来班次并处理待审申请。",
     "employeeNotEnabled": "请由主管先在员工管理启用你的出勤资格。",
+    "employmentInsuranceExemptionInvalid": "有投保就保，或员工身份不适用就保时，不可选择就保不适用原因。",
+    "employmentInsuranceIneligible": "此员工的法定身份不适用就业保险，请改为仅劳保或都不保。",
+    "employmentInsuranceRequired": "此员工依法应参加就业保险；若属法定排除对象，请选择就保不适用原因。",
     "employmentWindowConflict": "任职期间之外已排定班次，请先调整排班。",
     "error": "操作失败，请稍后重试。",
     "futureCorrection": "补卡时间不能晚于现在。",
+    "healthInsuranceExemptionInvalid": "已在本店投保健保时，不可选择健保未投保原因。",
+    "healthInsuranceRequired": "此员工平均每周工时达 12 小时，依法应投保健保；若属例外情形，请选择健保未在本店投保原因。",
+    "holidayCalendarMissing": "尚未取得该年度的国定假日资料，请稍后再试。",
+    "holidayDayKindRequired": "国定假日当天的班次须标为国定假日，请取消后重新排班。",
     "hourlyAllowanceBasisRequired": "时薪固定津贴的加班基数暂不支持自动计算。",
     "idempotencyConflict": "重试内容已变更，请关闭表单重新操作。",
     "implausibleMinimumWage": "确认的每小时最低工资低于前一期，请重新核对官方公告。",
@@ -113,16 +145,19 @@
     "inconsistentDayKind": "同一天的班次日期类型不一致。",
     "insufficientLeaveBalance": "休假额度不足，请由主管确认年度额度。",
     "insuranceBasisOutdated": "投保金额不在当期投保级距表内，请重新确认劳就保与健保投保金额。",
+    "insuranceBasisUnderDeclared": "依最近一次应调整期间的平均工资，投保级距低于应申报级距，请重新设置薪资条件。",
+    "insuranceTermsRequired": "薪资条件缺少投保资料，请重新设置薪资条件。",
     "invalidBreak": "休息时间必须在班次时间内，且不可重叠。",
     "invalidEmergencyDetails": "请确认报备时间与至少连续 24 小时的补假。",
     "invalidEventSequence": "打卡顺序或时间不正确，请确认上下班时间。",
-    "invalidInsuranceBasis": "投保金额不符合所选计算方式。",
     "invalidInterval": "开始与结束时间不正确，结束必须晚于开始。",
     "invalidIp": "IP 格式不正确，请一行填一个有效的 IPv4 或 IPv6 地址。",
     "invalidLeaveCase": "事件、员工、假别或适用期间不符。",
     "invalidParentalInterval": "育婴留停须符合任职资格、子女未满三岁及完整日历日规则；连续申请至少三十日。",
     "invalidPayrollState": "薪资状态已变更，请重新加载。",
     "ipNotAllowed": "当前网络不在门店白名单，请连接门店网络。",
+    "laborInsuranceExemptionInvalid": "已投保劳保时，不可选择劳保不适用原因。",
+    "laborInsuranceRequired": "本店雇用 5 人以上，依法应为此员工投保劳保；若属例外情形，请选择劳保不适用原因。",
     "leaveCaseExists": "此员工的同假别事件编号已存在。",
     "leaveCaseInUse": "此事件假额度已有请假记录，无法删除。",
     "leaveCaseIntervalConflict": "新的适用期间未涵盖已核准的请假。",
@@ -141,6 +176,8 @@
     "negativeNetPay": "扣款大于应发薪资。",
     "noShifts": "此月份没有班表。",
     "noTemplateDates": "这段日期范围内没有符合模板星期的日子。",
+    "occupationalAccidentRateRequired": "请先在出勤设置填写劳保局核定的职灾保险行业别费率，才能计算雇主职灾保费。",
+    "openingHoursRequired": "此员工未在本店投保健保，须依营业时间判断是否每个工作日都到班；请先到组织设置填写营业时间。",
     "outsideShiftWindow": "当前不在此班次可上班打卡的时间内。",
     "overlappingAttendance": "这段时间已有其他出勤记录。",
     "overlappingLeave": "时间与现有请假重叠，请先处理请假记录。",
@@ -152,7 +189,7 @@
     "parentalChildRequired": "请先选择已核定的子女资料。",
     "parentalChildUnassigned": "尚未确认子女归户",
     "parentalDailyLimit": "同一子女按日育婴留停已超过三十日。",
-    "parentalInsuranceRequired": "育婴留停期间请关闭自动保费，填入已核定的保费、退休金与计算依据，再重新生成薪资草稿。",
+    "parentalInsuranceRequired": "育婴留停期间请关闭自动计算，填入已核定的劳健保自付额与计算依据，再重新生成薪资草稿。",
     "parentalLeaveActive": "此期间正在育婴留停，撤假核准后才能打卡。",
     "parentalReturnInvalid": "复职日期须在原留停期间内，且符合完整历日规则。",
     "parentalReturnPending": "已有待审核的复职申请，请先处理。",
@@ -169,6 +206,8 @@
     "payrollTermsRequired": "请先建立有效薪资设置。",
     "pendingRequestExists": "此班次已有相同类型的待审申请。",
     "pendingRequests": "尚有未完成审核的申请。",
+    "pensionIneligible": "此员工的法定身份不适用劳工退休金，提缴率与月提缴工资须为 0。",
+    "pensionRequired": "此员工适用劳工退休金，雇主提缴率不得低于 6%，且须填写月提缴工资。",
     "periodOvertimeExceeded": "加班时数将超过延长期间每 3 个月合计 138 小时的上限。",
     "prorationRequired": "请先设置不足月薪资约定。",
     "reasonRequired": "请填写申请原因。",
@@ -178,13 +217,17 @@
     "shiftHasCorrection": "这个班次已有核准的补卡，不能重复申请。",
     "shiftHasRecords": "班次已有打卡或申请记录，不能直接取消。",
     "shiftRequired": "这类申请必须指定班次。",
+    "shiftRestTooShort": "不同日的两个班次之间至少要连续休息 11 小时。",
     "shiftTooLong": "单一班次不能超过 24 小时。",
-    "sourceRequired": "请填写核定依据。",
     "splitLeaveByYear": "跨年度请假请分成两笔申请。",
     "statutoryBalanceAutomatic": "法定额度按规则计算，不能手动覆盖。",
     "statutoryLeaveTypeLocked": "法定假别不能删除，请改为停用。",
+    "studentWeeklyHoursExceeded": "外国学生除寒暑假外，每周（周一至周日）工时不得超过 20 小时。",
+    "taiwanStaySinceRequired": "外国籍员工须填写本次入境日，才能判断扣缴税率。",
     "unsupportedDayKind": "不支持的日期类型。",
-    "weeklyScheduleRequiresReview": "每周排定工作日时数超过 40 小时，请确认班表。"
+    "weeklyRestRequired": "每周（周一至周日）须有 1 天例假与 1 天休息日：正常工作日最多 5 天，排班日最多 6 天。",
+    "weeklyScheduleRequiresReview": "每周排定工作日时数超过 40 小时，请确认班表。",
+    "workPermitRequired": "此员工的法定身份须持有有效工作许可，班次或出勤日期不在工作许可期间内。"
   },
   "eventAction": {
     "options": {
@@ -202,6 +245,10 @@
   "graceMinutes": {
     "label": "迟到早退宽限（分钟）"
   },
+  "laborInsuranceUnitCode": {
+    "label": "劳保投保单位保险证号",
+    "none": "未设置（仅计算本店人数）"
+  },
   "grantedMinutes": "核给额度（分钟）",
   "gross": "应发工资",
   "groups": {
@@ -211,9 +258,18 @@
     "schedule": "排班",
     "settings": "设置"
   },
-  "healthBasis": "健保月投保金额（{currency}，未在本店投保填 0）",
+  "healthBasis": "健保月投保金额（{currency}）",
   "healthDependents": "健保依附家属人数",
   "healthInsurance": "员工健保（{currency}）",
+  "healthInsuranceExemption": {
+    "label": "健保未在本店投保原因",
+    "none": "无",
+    "options": {
+      "shortTermOriginalCoverage": "短期工作未逾三个月，以原投保资格续保",
+      "otherEmployer": "已在工时较长、所得较高或危险性较大的投保单位投保"
+    }
+  },
+  "healthInsured": "在本店投保健保",
   "hiredAt": "入职日",
   "kind": {
     "label": "申请类型",
@@ -225,23 +281,20 @@
   },
   "label": "人事",
   "laborBasis": "劳就保月投保工资（{currency}）",
-  "laborCoverage": {
-    "label": "劳就保适用类型",
+  "occupationalBasis": "职灾月投保薪资（{currency}）",
+  "occupationalAccidentRateMicros": {
+    "helper": "劳保局核定费率，不含上下班灾害费率 0.07%",
+    "label": "职灾保险行业别费率（%）",
+    "none": "未设置"
+  },
+  "laborInsuranceExemption": {
+    "label": "劳保不适用原因",
+    "none": "无",
     "options": {
-      "both": "劳保及就保",
-      "employment": "仅就保",
-      "labor": "仅劳保",
-      "none": "不适用"
+      "oldAgeBenefit": "已领劳保老年给付"
     }
   },
   "laborInsurance": "员工劳就保（{currency}）",
-  "laborLadder": {
-    "label": "劳保投保级距表",
-    "options": {
-      "general": "一般",
-      "partTime": "部分工时"
-    }
-  },
   "late": "迟到",
   "latitude": {
     "label": "门店纬度"
@@ -250,7 +303,7 @@
     "label": "核给额度",
     "placeholder": "请选择您的核给额度"
   },
-  "leaveCaseHint": "主管先确认事件、亲属关系与有效期间，系统自动核给额度。同一事件不得重复建立。产假含例休假日，请使用完整日历日（起讫 00:00，结束日不含）；陪产检与陪产共用 7 日，请确认各次申请符合适用期间。 产假事件须由 owner 设置核定每日全薪，给薪比例由工龄自动计算。 育婴留停事件日期请填子女出生日期，同一子女沿用事件编号，期间不得超过三岁；未满六个月任职须先取得劳资同意。育婴留停不需核定日薪。",
+  "leaveCaseHint": "主管先确认事件、亲属关系与有效期间，系统自动核给额度。同一事件不得重复建立。产假含例休假日，请使用完整日历日（起讫 00:00，结束日不含）；陪产检与陪产共用 7 日，请确认各次申请符合适用期间。 产假每日工资依约定工资与平均工资自动计算，给薪比例由工龄自动计算。 育婴留停事件日期请填子女出生日期，同一子女沿用事件编号，期间不得超过三岁；未满六个月任职须先取得劳资同意。育婴留停不需核定日薪。",
   "leaveCases": {
     "actions": {
       "create": "新增事件假额度",
@@ -369,7 +422,7 @@
   "payroll": {
     "label": "薪资"
   },
-  "payrollHint": "投保资料请依有效申报填写；特殊身份或补助请关闭自动计算并填入核定金额及依据。生效日目前限月初。",
+  "payrollHint": "投保级距依薪资与排班自动计算；特殊身份或补助请关闭自动计算，填入核定的劳健保自付额及依据。生效日目前限月初。",
   "payrollLine": {
     "options": {
       "absenceDeduction": "缺勤扣款",
@@ -486,6 +539,16 @@
       "withdrawn": "已撤回"
     }
   },
+  "studentVacations": {
+    "from": "开始日",
+    "label": "寒暑假期间",
+    "to": "结束日"
+  },
+  "workPermits": {
+    "from": "许可起日",
+    "label": "工作许可期间",
+    "to": "许可迄日"
+  },
   "statutoryKind": {
     "label": "假别规则",
     "names": {
@@ -532,6 +595,7 @@
   },
   "statutoryPaidPercent": "法定给薪比例：{percent}%",
   "success": "已保存",
+  "taiwanStaySince": "本次入境日",
   "taxMethod": {
     "label": "扣缴方式",
     "options": {
@@ -552,6 +616,7 @@
   "to": "结束日期",
   "useCurrentLocation": "使用当前位置",
   "usedMinutes": "已用额度（分钟）",
+  "voluntaryLaborInsurance": "未满 5 人时仍投保劳保",
   "voluntaryPension": "劳退自提（{currency}）",
   "voluntaryPercent": "自提比例（%）",
   "weekday": "星期",

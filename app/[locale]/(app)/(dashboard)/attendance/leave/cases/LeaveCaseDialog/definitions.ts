@@ -3,28 +3,12 @@ import * as z from "zod";
 
 import type { AttendanceLeaveType } from "@/types/attendance";
 
-import { MONEY_FRACTION_DIGITS, MONEY_MAX } from "@/constants/attendance";
-
-import { isMoney } from "@/utils/attendance";
-
 export const useLeaveCaseFormSchema = (leaveTypes: AttendanceLeaveType[]) => {
   const tValidation = useTranslations("validation");
 
   return z
     .object({
       childId: z.string(),
-      dailyPay: z
-        .number()
-        .min(0, { error: tValidation("number.min", { min: 0 }) })
-        .max(MONEY_MAX, {
-          error: tValidation("number.max", { max: MONEY_MAX }),
-        })
-        .refine(isMoney, {
-          error: tValidation("number.maxFractionDigits", {
-            digits: MONEY_FRACTION_DIGITS,
-          }),
-        })
-        .nullable(),
       earlyParentalAgreed: z.boolean(),
       employeeId: z
         .string()

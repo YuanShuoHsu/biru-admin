@@ -7,13 +7,12 @@ import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import useSWR from "swr";
 
 import {
   AMOUNT_FIELDS,
   AUTO_INSURANCE_AMOUNT_FIELDS,
-  INSURANCE_NUMBER_FIELDS,
-  PENSION_BASIS_RANGE,
+  DECLARED_INSURANCE_FIELDS,
+  PENSION_PERCENT_FIELDS,
   type TermsForm,
   useTermsFormSchema,
 } from "./definitions";
@@ -30,7 +29,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Alert,
   Checkbox,
+  FormControl,
   FormControlLabel,
+  type FormControlProps,
+  FormLabel,
   MenuItem,
   TextField,
 } from "@mui/material";
@@ -40,17 +42,14 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import {
+  payrollEmploymentInsuranceExemptionValues,
+  payrollHealthInsuranceExemptionValues,
+  payrollLaborInsuranceExemptionValues,
   payrollMonthlyProrationValues,
   payrollSalaryTypeValues,
-  payrollLaborCoverageValues,
-  payrollLaborLadderValues,
   payrollTaxMethodValues,
 } from "@/types/api";
-import type {
-  AttendanceEmployee,
-  PayrollInsuranceGrades,
-  PayrollTerms,
-} from "@/types/attendance";
+import type { AttendanceEmployee, PayrollTerms } from "@/types/attendance";
 
 import {
   attendanceErrorKey,
@@ -66,6 +65,43 @@ dayjs.extend(timezonePlugin);
 const StyledFormControlLabel = styled(FormControlLabel)({
   alignSelf: "flex-start",
 });
+
+const StyledFormControl = styled(FormControl)<FormControlProps>(
+  ({ theme }) => ({
+    gap: theme.spacing(2),
+  }),
+);
+
+interface ExemptionSelectProps {
+  label: string;
+  none: string;
+  onChange: (value: string) => void;
+  options: { label: string; value: string }[];
+  value?: string | null;
+}
+
+const ExemptionSelect = ({
+  label,
+  none,
+  onChange,
+  options,
+  value,
+}: ExemptionSelectProps) => (
+  <TextField
+    fullWidth
+    label={label}
+    onChange={(event) => onChange(event.target.value)}
+    select
+    value={value ?? ""}
+  >
+    <MenuItem value="">{none}</MenuItem>
+    {options.map((option) => (
+      <MenuItem key={option.value} value={option.value}>
+        {option.label}
+      </MenuItem>
+    ))}
+  </TextField>
+);
 
 interface TermsDialogProps {
   currency: string;
@@ -89,7 +125,6 @@ const TermsDialog = ({
   const tAttendance = useTranslations("attendance");
 
   const monthFormat = useMonthFormat();
-  const tValidation = useTranslations("validation");
 
   const termsFormSchema = useTermsFormSchema();
 
@@ -99,18 +134,27 @@ const TermsDialog = ({
     const current = terms.find((item) => item.employeeId === employeeId)?.terms;
 
     return {
-      autoInsurance: !!current?.insurance,
+      autoInsurance: current?.insurance
+        ? !current.insurance.manualPremiums
+        : !current,
       allowanceHours: current?.allowanceHours ?? null,
-      employerPercent: current?.insurance?.employerPercent ?? 6,
-      healthBasis: current?.insurance?.healthBasis ?? null,
+      employerPercent: current?.insurance?.employerPercent || 6,
       healthDependents: current?.insurance?.healthDependents ?? 0,
-      laborBasis: current?.insurance?.laborBasis ?? null,
-      laborCoverage: current?.insurance?.laborCoverage ?? "both",
-      laborLadder: current?.insurance?.laborLadder ?? "general",
+      healthInsuranceExemption:
+        current?.insurance?.healthInsuranceExemption ?? null,
+      healthInsured: current?.insurance
+        ? current.insurance.healthBasis > 0
+        : true,
+      employmentInsuranceExemption:
+        current?.insurance?.employmentInsuranceExemption ?? null,
+      laborInsuranceExemption:
+        current?.insurance?.laborInsuranceExemption ?? null,
       monthlyProration: current?.monthlyProration ?? "thirtyDays",
-      pensionBasis: current?.insurance?.pensionBasis ?? null,
       salaryType: current?.salaryType ?? "monthly",
       taxMethod: current?.insurance?.taxMethod ?? "verified",
+      voluntaryLaborInsurance:
+        current?.insurance?.laborCoverage === "both" ||
+        current?.insurance?.laborCoverage === "labor",
       voluntaryPercent: current?.insurance?.voluntaryPercent ?? 0,
       ...(Object.fromEntries(
         AMOUNT_FIELDS.map((name) => [
@@ -127,7 +171,6 @@ const TermsDialog = ({
     handleSubmit,
     register,
     reset,
-    setError,
     setValue,
   } = useForm<TermsForm>({
     defaultValues: {
@@ -141,49 +184,14 @@ const TermsDialog = ({
 
   const values = useWatch({ control });
 
-  const month = values.effectiveFrom
-    ? dayjs(values.effectiveFrom).tz(STORE_TIMEZONE).format("YYYY-MM")
-    : "";
-
-  const { data: grades, error: gradesError } = useSWR<PayrollInsuranceGrades>(
-    values.autoInsurance && month
-      ? `${payrollPath(organizationSlug, "org", "insurance-grades")}?month=${month}`
-      : null,
-    fetcher,
-  );
-
-  const laborGrades =
-    values.laborLadder === "partTime"
-      ? grades?.partTimeLaborGrades
-      : grades?.laborGrades;
-
-  const gradeFields = [
-    ...(values.laborCoverage === "none"
-      ? []
-      : [{ name: "laborBasis" as const, options: laborGrades }]),
-    {
-      name: "healthBasis" as const,
-      options: grades && [0, ...grades.healthGrades],
-    },
-  ];
-
-  const isOutdatedGrade = (
-    value: number | null | undefined,
-    options?: number[],
-  ) => value != null && !!options && !options.includes(value);
+  const employee = employees.find(({ id }) => id === values.employeeId);
+  const employmentInsuranceEligible =
+    employee?.employmentInsuranceEligible ?? true;
+  const pensionApplicable = employee?.pensionApplicable ?? true;
+  const declared = terms.find((item) => item.employeeId === values.employeeId)
+    ?.terms.insurance;
 
   const onSubmitHandler = async (form: TermsForm) => {
-    if (form.autoInsurance) {
-      const outdated = gradeFields.filter(
-        ({ name, options }) => !options?.includes(form[name] ?? 0),
-      );
-
-      for (const { name } of outdated)
-        setError(name, { message: tValidation(`${name}.notSelected`) });
-
-      if (outdated.length) return;
-    }
-
     try {
       setDialog({ confirmLoading: true });
 
@@ -197,7 +205,7 @@ const TermsDialog = ({
           employeeId: form.employeeId,
           monthlyProration: form.monthlyProration,
           salaryType: form.salaryType,
-          sourceNote: form.sourceNote,
+          ...(form.sourceNote && { sourceNote: form.sourceNote }),
           ...(form.allowanceHours
             ? { allowanceHours: form.allowanceHours }
             : {}),
@@ -210,22 +218,26 @@ const TermsDialog = ({
                 : toCents(form[name]),
             ]),
           ),
-          ...(form.autoInsurance
-            ? {
-                insurance: {
-                  employerPercent: form.employerPercent,
-                  healthBasis: form.healthBasis,
-                  healthDependents: form.healthDependents,
-                  laborBasis:
-                    form.laborCoverage === "none" ? 0 : form.laborBasis,
-                  laborCoverage: form.laborCoverage,
-                  laborLadder: form.laborLadder,
-                  pensionBasis: form.pensionBasis,
-                  taxMethod: form.taxMethod,
-                  voluntaryPercent: form.voluntaryPercent,
-                },
-              }
-            : {}),
+          insurance: {
+            employerPercent: form.employerPercent,
+            ...(employmentInsuranceEligible &&
+              form.employmentInsuranceExemption && {
+                employmentInsuranceExemption: form.employmentInsuranceExemption,
+              }),
+            healthDependents: form.healthDependents,
+            ...(!form.healthInsured &&
+              form.healthInsuranceExemption && {
+                healthInsuranceExemption: form.healthInsuranceExemption,
+              }),
+            healthInsured: form.healthInsured,
+            ...(form.laborInsuranceExemption && {
+              laborInsuranceExemption: form.laborInsuranceExemption,
+            }),
+            manualPremiums: !form.autoInsurance,
+            taxMethod: form.taxMethod,
+            voluntaryLaborInsurance: form.voluntaryLaborInsurance,
+            voluntaryPercent: form.voluntaryPercent,
+          },
         }),
       });
 
@@ -366,128 +378,146 @@ const TermsDialog = ({
           value={values[name] ?? 0}
         />
       ))}
-      {values.autoInsurance && (
-        <>
-          {gradesError && (
-            <Alert severity="error">
-              {tAttendance(attendanceErrorKey(gradesError))}
-            </Alert>
-          )}
-          <TextField
-            error={!!errors.laborCoverage}
-            fullWidth
-            helperText={errors.laborCoverage?.message}
-            label={tAttendance("laborCoverage.label")}
-            required
-            select
-            value={values.laborCoverage ?? ""}
-            {...register("laborCoverage")}
-          >
-            {payrollLaborCoverageValues.map((value) => (
-              <MenuItem key={value} value={value}>
-                {tAttendance(`laborCoverage.options.${value}`)}
-              </MenuItem>
-            ))}
-          </TextField>
-          {values.laborCoverage !== "none" && (
+      {declared && (
+        <StyledFormControl component="fieldset" variant="standard">
+          <FormLabel component="legend">
+            {tAttendance("declaredInsurance")}
+          </FormLabel>
+          {DECLARED_INSURANCE_FIELDS.map((name) => (
             <TextField
-              error={!!errors.laborLadder}
               fullWidth
-              helperText={errors.laborLadder?.message}
-              label={tAttendance("laborLadder.label")}
-              required
-              select
-              value={values.laborLadder ?? ""}
-              {...register("laborLadder")}
-            >
-              {payrollLaborLadderValues.map((value) => (
-                <MenuItem key={value} value={value}>
-                  {tAttendance(`laborLadder.options.${value}`)}
-                </MenuItem>
-              ))}
-            </TextField>
-          )}
-          {gradeFields.map(({ name, options }) => {
-            const value = values[name];
-            const outdated = isOutdatedGrade(value, options);
-
-            return (
-              <TextField
-                disabled={!options}
-                error={!!errors[name] || outdated}
-                fullWidth
-                helperText={
-                  errors[name]?.message ??
-                  (outdated
-                    ? tAttendance("errors.insuranceBasisOutdated")
-                    : undefined)
-                }
-                key={name}
-                label={tAttendance(name, { currency })}
-                onChange={(event) =>
-                  setValue(name, Number(event.target.value), {
-                    shouldValidate: isSubmitted,
-                  })
-                }
-                required
-                select
-                value={value != null && !outdated && options ? value : ""}
-              >
-                {(options ?? []).map((grade) => (
-                  <MenuItem key={grade} value={grade}>
-                    {format.number(grade)}
-                  </MenuItem>
-                ))}
-              </TextField>
-            );
-          })}
-          <NumberSpinner
-            clearable
-            error={!!errors.pensionBasis}
-            fullWidth
-            helperText={errors.pensionBasis?.message}
-            label={tAttendance("pensionBasis", { currency })}
-            max={PENSION_BASIS_RANGE.max}
-            min={PENSION_BASIS_RANGE.min}
-            onValueChange={(value) =>
-              setValue("pensionBasis", value, { shouldValidate: isSubmitted })
-            }
-            required
-            value={values.pensionBasis ?? null}
-          />
-          {INSURANCE_NUMBER_FIELDS.map(({ max, min, name }) => (
-            <NumberSpinner
-              error={!!errors[name]}
-              fullWidth
-              helperText={errors[name]?.message}
               key={name}
-              label={tAttendance(name)}
-              max={max}
-              min={min}
-              onValueChange={(value) =>
-                setValue(name, value ?? min, { shouldValidate: isSubmitted })
-              }
-              value={values[name] ?? min}
+              label={tAttendance(name, { currency })}
+              slotProps={{ input: { readOnly: true } }}
+              value={format.number(declared[name])}
             />
           ))}
-          <TextField
-            error={!!errors.taxMethod}
-            fullWidth
-            helperText={errors.taxMethod?.message}
-            label={tAttendance("taxMethod.label")}
-            required
-            select
-            value={values.taxMethod ?? ""}
-            {...register("taxMethod")}
-          >
-            {payrollTaxMethodValues.map((value) => (
-              <MenuItem key={value} value={value}>
-                {tAttendance(`taxMethod.options.${value}`)}
-              </MenuItem>
-            ))}
-          </TextField>
-        </>
+        </StyledFormControl>
       )}
+      <StyledFormControlLabel
+        control={
+          <Checkbox
+            checked={!!values.voluntaryLaborInsurance}
+            onChange={(_, checked) =>
+              setValue("voluntaryLaborInsurance", checked)
+            }
+          />
+        }
+        label={tAttendance("voluntaryLaborInsurance")}
+      />
+      <ExemptionSelect
+        label={tAttendance("laborInsuranceExemption.label")}
+        none={tAttendance("laborInsuranceExemption.none")}
+        onChange={(value) =>
+          setValue(
+            "laborInsuranceExemption",
+            payrollLaborInsuranceExemptionValues.find(
+              (option) => option === value,
+            ) ?? null,
+          )
+        }
+        options={payrollLaborInsuranceExemptionValues.map((option) => ({
+          label: tAttendance(`laborInsuranceExemption.options.${option}`),
+          value: option,
+        }))}
+        value={values.laborInsuranceExemption}
+      />
+      {employmentInsuranceEligible && (
+        <ExemptionSelect
+          label={tAttendance("employmentInsuranceExemption.label")}
+          none={tAttendance("employmentInsuranceExemption.none")}
+          onChange={(value) =>
+            setValue(
+              "employmentInsuranceExemption",
+              payrollEmploymentInsuranceExemptionValues.find(
+                (option) => option === value,
+              ) ?? null,
+            )
+          }
+          options={payrollEmploymentInsuranceExemptionValues.map((option) => ({
+            label: tAttendance(
+              `employmentInsuranceExemption.options.${option}`,
+            ),
+            value: option,
+          }))}
+          value={values.employmentInsuranceExemption}
+        />
+      )}
+      <StyledFormControlLabel
+        control={
+          <Checkbox
+            checked={!!values.healthInsured}
+            onChange={(_, checked) => setValue("healthInsured", checked)}
+          />
+        }
+        label={tAttendance("healthInsured")}
+      />
+      {values.healthInsured ? (
+        <NumberSpinner
+          error={!!errors.healthDependents}
+          fullWidth
+          helperText={errors.healthDependents?.message}
+          label={tAttendance("healthDependents")}
+          max={20}
+          min={0}
+          onValueChange={(value) =>
+            setValue("healthDependents", value ?? 0, {
+              shouldValidate: isSubmitted,
+            })
+          }
+          value={values.healthDependents ?? 0}
+        />
+      ) : (
+        <ExemptionSelect
+          label={tAttendance("healthInsuranceExemption.label")}
+          none={tAttendance("healthInsuranceExemption.none")}
+          onChange={(value) =>
+            setValue(
+              "healthInsuranceExemption",
+              payrollHealthInsuranceExemptionValues.find(
+                (option) => option === value,
+              ) ?? null,
+            )
+          }
+          options={payrollHealthInsuranceExemptionValues.map((option) => ({
+            label: tAttendance(`healthInsuranceExemption.options.${option}`),
+            value: option,
+          }))}
+          value={values.healthInsuranceExemption}
+        />
+      )}
+      {pensionApplicable &&
+        PENSION_PERCENT_FIELDS.map(({ max, min, name }) => (
+          <NumberSpinner
+            error={!!errors[name]}
+            fullWidth
+            helperText={errors[name]?.message}
+            key={name}
+            label={tAttendance(name)}
+            max={max}
+            min={min}
+            onValueChange={(value) =>
+              setValue(name, value ?? min, { shouldValidate: isSubmitted })
+            }
+            value={values[name] ?? min}
+          />
+        ))}
+      <TextField
+        error={!!errors.taxMethod}
+        fullWidth
+        helperText={errors.taxMethod?.message}
+        label={tAttendance("taxMethod.label")}
+        required
+        select
+        value={values.taxMethod ?? ""}
+        {...register("taxMethod")}
+      >
+        {payrollTaxMethodValues.map((value) => (
+          <MenuItem key={value} value={value}>
+            {tAttendance(`taxMethod.options.${value}`)}
+          </MenuItem>
+        ))}
+      </TextField>
       <TextField
         error={!!errors.sourceNote}
         fullWidth
@@ -495,7 +525,6 @@ const TermsDialog = ({
         label={tAttendance("sourceNote")}
         minRows={3}
         multiline
-        required
         {...register("sourceNote")}
       />
     </FormBox>

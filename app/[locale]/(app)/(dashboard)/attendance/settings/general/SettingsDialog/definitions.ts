@@ -28,6 +28,13 @@ export const useSettingsFormSchema = () => {
           error: tValidation("allowedIps.max", { max: ALLOWED_IPS_MAX }),
         }),
       graceMinutes: range(0, 60),
+      laborInsuranceUnitCode: z
+        .string()
+        .trim()
+        .regex(/^(\d{8}[A-Z])?$/, {
+          error: tValidation("laborInsuranceUnitCode.invalid"),
+        }),
+      occupationalAccidentRate: range(0.0001, 10).nullable(),
       overtimeExtensionPeriods: z.array(
         z.object({
           value: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, {

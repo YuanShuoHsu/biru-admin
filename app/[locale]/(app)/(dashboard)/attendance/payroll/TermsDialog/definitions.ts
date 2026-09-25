@@ -2,10 +2,11 @@ import { useTranslations } from "next-intl";
 import * as z from "zod";
 
 import {
+  payrollEmploymentInsuranceExemptionValues,
+  payrollHealthInsuranceExemptionValues,
+  payrollLaborInsuranceExemptionValues,
   payrollMonthlyProrationValues,
   payrollSalaryTypeValues,
-  payrollLaborCoverageValues,
-  payrollLaborLadderValues,
   payrollTaxMethodValues,
 } from "@/types/api";
 
@@ -18,8 +19,6 @@ export const AMOUNT_FIELDS = [
   "allowance",
   "laborInsurance",
   "healthInsurance",
-  "voluntaryPension",
-  "employerPension",
   "withholding",
   "otherDeduction",
 ] as const;
@@ -27,14 +26,16 @@ export const AMOUNT_FIELDS = [
 export const AUTO_INSURANCE_AMOUNT_FIELDS = [
   "laborInsurance",
   "healthInsurance",
-  "voluntaryPension",
-  "employerPension",
 ] as const;
 
-export const PENSION_BASIS_RANGE = { max: 150000, min: 1 } as const;
+export const DECLARED_INSURANCE_FIELDS = [
+  "laborBasis",
+  "occupationalBasis",
+  "healthBasis",
+  "pensionBasis",
+] as const;
 
-export const INSURANCE_NUMBER_FIELDS = [
-  { max: 20, min: 0, name: "healthDependents" },
+export const PENSION_PERCENT_FIELDS = [
   { max: 6, min: 0, name: "voluntaryPercent" },
   { max: 100, min: 6, name: "employerPercent" },
 ] as const;
@@ -59,64 +60,40 @@ export const useTermsFormSchema = () => {
       }),
     });
 
-  return z
-    .object({
-      allowance: money(),
-      allowanceHours: number(1, 744).nullable(),
-      autoInsurance: z.boolean(),
-      effectiveFrom: z
-        .string()
-        .min(1, { error: tValidation("effectiveFrom.required") }),
-      employeeId: z
-        .string()
-        .min(1, { error: tValidation("employee.notSelected") }),
-      employerPension: money(),
-      employerPercent: number(6, 100),
-      healthBasis: z.number().nullable(),
-      healthDependents: number(0, 20),
-      healthInsurance: money(),
-      laborBasis: z.number().nullable(),
-      laborCoverage: z.enum(payrollLaborCoverageValues),
-      laborInsurance: money(),
-      laborLadder: z.enum(payrollLaborLadderValues),
-      monthlyProration: z.enum(payrollMonthlyProrationValues),
-      otherDeduction: money(),
-      pensionBasis: number(
-        PENSION_BASIS_RANGE.min,
-        PENSION_BASIS_RANGE.max,
-      ).nullable(),
-      salary: money(),
-      salaryType: z.enum(payrollSalaryTypeValues),
-      sourceNote: z
-        .string()
-        .trim()
-        .min(1, { error: tValidation("sourceNote.required") }),
-      taxMethod: z.enum(payrollTaxMethodValues),
-      voluntaryPension: money(),
-      voluntaryPercent: number(0, 6),
-      withholding: money(),
-    })
-    .superRefine((data, ctx) => {
-      if (!data.autoInsurance) return;
-
-      const requiredMessages = {
-        ...(data.laborCoverage === "none"
-          ? {}
-          : { laborBasis: tValidation("laborBasis.notSelected") }),
-        healthBasis: tValidation("healthBasis.notSelected"),
-        pensionBasis: tValidation("pensionBasis.required"),
-      };
-
-      for (const field of Object.keys(requiredMessages) as Array<
-        keyof typeof requiredMessages
-      >)
-        if (data[field] === null)
-          ctx.addIssue({
-            code: "custom",
-            message: requiredMessages[field],
-            path: [field],
-          });
-    });
+  return z.object({
+    allowance: money(),
+    allowanceHours: number(1, 744).nullable(),
+    autoInsurance: z.boolean(),
+    effectiveFrom: z
+      .string()
+      .min(1, { error: tValidation("effectiveFrom.required") }),
+    employeeId: z
+      .string()
+      .min(1, { error: tValidation("employee.notSelected") }),
+    employerPercent: number(6, 100),
+    employmentInsuranceExemption: z
+      .enum(payrollEmploymentInsuranceExemptionValues)
+      .nullable(),
+    healthDependents: number(0, 20),
+    healthInsuranceExemption: z
+      .enum(payrollHealthInsuranceExemptionValues)
+      .nullable(),
+    healthInsurance: money(),
+    healthInsured: z.boolean(),
+    laborInsuranceExemption: z
+      .enum(payrollLaborInsuranceExemptionValues)
+      .nullable(),
+    laborInsurance: money(),
+    monthlyProration: z.enum(payrollMonthlyProrationValues),
+    otherDeduction: money(),
+    salary: money(),
+    salaryType: z.enum(payrollSalaryTypeValues),
+    sourceNote: z.string().trim(),
+    taxMethod: z.enum(payrollTaxMethodValues),
+    voluntaryLaborInsurance: z.boolean(),
+    voluntaryPercent: number(0, 6),
+    withholding: money(),
+  });
 };
 
 export type TermsForm = z.infer<ReturnType<typeof useTermsFormSchema>>;

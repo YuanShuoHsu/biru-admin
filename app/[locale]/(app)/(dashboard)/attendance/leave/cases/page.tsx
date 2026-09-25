@@ -175,9 +175,6 @@ const LeaveCasesPage = async ({
         canAssignChild={hasRolePermission(memberRole, {
           leaveCase: ["update"],
         })}
-        canSetDailyPay={hasRolePermission(memberRole, {
-          payrollTerm: ["update"],
-        })}
         canViewAll={canViewAll}
         canWrite={canWrite}
         employeeId={employee?.id}

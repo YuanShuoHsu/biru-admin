@@ -98,6 +98,11 @@ const SettingsDialog = ({
         ? settings.allowedIps.map((value) => ({ value }))
         : [{ value: "" }],
       graceMinutes: settings?.graceMinutes ?? 0,
+      laborInsuranceUnitCode: settings?.laborInsuranceUnitCode ?? "",
+      occupationalAccidentRate:
+        settings?.occupationalAccidentRateMicros == null
+          ? null
+          : settings.occupationalAccidentRateMicros / 10000,
       latitude: settings?.latitude ?? null,
       longitude: settings?.longitude ?? null,
       overtimeExtensionPeriods:
@@ -107,9 +112,21 @@ const SettingsDialog = ({
     resolver: zodResolver(settingsFormSchema),
   });
 
-  const [graceMinutes, latitude, longitude, radiusMeters] = useWatch({
+  const [
+    graceMinutes,
+    latitude,
+    longitude,
+    occupationalAccidentRate,
+    radiusMeters,
+  ] = useWatch({
     control,
-    name: ["graceMinutes", "latitude", "longitude", "radiusMeters"],
+    name: [
+      "graceMinutes",
+      "latitude",
+      "longitude",
+      "occupationalAccidentRate",
+      "radiusMeters",
+    ],
   });
 
   const { append, fields, remove } = useFieldArray({
@@ -140,8 +157,16 @@ const SettingsDialog = ({
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          ...values,
           allowedIps: values.allowedIps.map(({ value }) => value.trim()),
+          graceMinutes: values.graceMinutes,
+          laborInsuranceUnitCode: values.laborInsuranceUnitCode || null,
+          latitude: values.latitude,
+          longitude: values.longitude,
+          occupationalAccidentRateMicros:
+            values.occupationalAccidentRate === null
+              ? null
+              : Math.round(values.occupationalAccidentRate * 10000),
+          radiusMeters: values.radiusMeters,
           overtimeExtensionPeriods: values.overtimeExtensionPeriods.map(
             ({ value }) => value,
           ),
@@ -299,6 +324,35 @@ const SettingsDialog = ({
           setValue("graceMinutes", value ?? 0, { shouldValidate: isSubmitted })
         }
         value={graceMinutes}
+      />
+      <TextField
+        error={!!errors.laborInsuranceUnitCode}
+        fullWidth
+        helperText={errors.laborInsuranceUnitCode?.message}
+        label={tAttendance("laborInsuranceUnitCode.label")}
+        slotProps={{ htmlInput: { maxLength: 9 } }}
+        {...register("laborInsuranceUnitCode", {
+          setValueAs: (value: string) => value.toUpperCase(),
+        })}
+      />
+      <NumberSpinner
+        clearable
+        error={!!errors.occupationalAccidentRate}
+        fullWidth
+        helperText={
+          errors.occupationalAccidentRate?.message ??
+          tAttendance("occupationalAccidentRateMicros.helper")
+        }
+        label={tAttendance("occupationalAccidentRateMicros.label")}
+        max={10}
+        min={0.0001}
+        onValueChange={(value) =>
+          setValue("occupationalAccidentRate", value, {
+            shouldValidate: isSubmitted,
+          })
+        }
+        step={0.01}
+        value={occupationalAccidentRate}
       />
       <StyledFormControl component="fieldset" variant="standard">
         <FormLabel component="legend">

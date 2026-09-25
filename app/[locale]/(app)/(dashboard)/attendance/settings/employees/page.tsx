@@ -16,7 +16,11 @@ import {
   filterOperatorValues,
 } from "@/types/api";
 
-import { getAttendanceAccess, getAttendanceMembers } from "@/utils/attendance";
+import {
+  getAttendanceAccess,
+  getAttendanceLegalStatusObligations,
+  getAttendanceMembers,
+} from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceEmployeeEnumOptions } from "@/utils/enumOptions";
 import { hasRolePermission } from "@/utils/organizations";
@@ -107,21 +111,25 @@ const EmployeesPage = async ({ params, searchParams }: EmployeesPageProps) => {
       )
     : [];
 
-  const { members: rows, total: rowCount } = await getAttendanceMembers(
-    organization.slug,
-    {
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterEnums,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-    },
-    fetchOptions,
-  );
+  const [{ members: rows, total: rowCount }, legalStatusObligations] =
+    await Promise.all([
+      getAttendanceMembers(
+        organization.slug,
+        {
+          page,
+          pageSize,
+          filterField,
+          filterOperator,
+          filterValue,
+          quickFilterEnums,
+          quickFilterValue,
+          sortBy,
+          sortDirection,
+        },
+        fetchOptions,
+      ),
+      getAttendanceLegalStatusObligations(organization.slug, fetchOptions),
+    ]);
 
   return (
     <AttendanceTabsLayout memberRole={memberRole}>
@@ -132,6 +140,7 @@ const EmployeesPage = async ({ params, searchParams }: EmployeesPageProps) => {
         filterField={filterField}
         filterOperator={filterOperator}
         filterValue={filterValue}
+        legalStatusObligations={legalStatusObligations}
         organization={organization}
         page={page}
         pageSize={pageSize}
