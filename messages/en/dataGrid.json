@@ -13,6 +13,10 @@
       "print": "Print"
     },
     "filter": {
+      "duration": {
+        "hours": "Hours",
+        "minutes": "Minutes"
+      },
       "operator": {
         "after": "Is after",
         "before": "Is before",

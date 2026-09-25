@@ -82,6 +82,12 @@ const BalancesPage = async ({ params, searchParams }: BalancesPageProps) => {
   const canWrite = hasRolePermission(memberRole, {
     leaveBalance: ["create", "update"],
   });
+  const canDefer = hasRolePermission(memberRole, {
+    leaveBalance: ["create"],
+  });
+  const canRevokeDeferral = hasRolePermission(memberRole, {
+    leaveBalance: ["delete"],
+  });
 
   const {
     filterField,
@@ -156,6 +162,8 @@ const BalancesPage = async ({ params, searchParams }: BalancesPageProps) => {
   return (
     <AttendanceTabsLayout memberRole={memberRole}>
       <Balances
+        canDefer={canDefer}
+        canRevokeDeferral={canRevokeDeferral}
         canViewAll={canViewAll}
         canWrite={canWrite}
         employees={employees}

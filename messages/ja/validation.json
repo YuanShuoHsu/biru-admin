@@ -313,5 +313,15 @@
   "workPermit": {
     "required": "就労許可の開始日と終了日を選択してください。",
     "order": "終了日は開始日より前にできません。"
+  },
+  "maternalProtectionPeriod": {
+    "required": "妊娠・授乳期間の開始日と終了日を選択してください。",
+    "order": "終了日は開始日より前にできません。"
+  },
+  "terminationReason": {
+    "required": "退職理由を選択してください。"
+  },
+  "terminationNoticedAt": {
+    "withinEmployment": "予告日は入社日と退職日の間にしてください。"
   }
 }

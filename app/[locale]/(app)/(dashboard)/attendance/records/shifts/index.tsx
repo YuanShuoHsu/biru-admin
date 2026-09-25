@@ -9,6 +9,7 @@ import useSWR from "swr";
 import ShiftDialog from "../../ShiftDialog";
 
 import EventsDialogContent from "../../EventsDialogContent";
+import ReviewDialog from "../reviews/ReviewDialog";
 
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -26,7 +27,7 @@ import {
 } from "@/hooks/useFilterOperators";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
-import { Add, Cancel, History } from "@mui/icons-material";
+import { Add, Cancel, Check, Close, History } from "@mui/icons-material";
 import { Button, Chip, IconButton, Stack, Tooltip } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type {
@@ -92,6 +93,7 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 interface ShiftsProps {
   canCancel: boolean;
   canCreate: boolean;
+  canReviewExtraWork: boolean;
   employees: AttendanceEmployee[];
   filterField?: AttendanceShiftFilterField;
   filterOperator?: FilterOperator;
@@ -109,6 +111,7 @@ interface ShiftsProps {
 const Shifts = ({
   canCancel,
   canCreate,
+  canReviewExtraWork,
   employees,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
@@ -295,6 +298,34 @@ const Shifts = ({
     [base, mutate, setDialog, tAttendance],
   );
 
+  const handleReviewExtraWork = useCallback(
+    (shift: AttendanceShift, status: "approved" | "rejected") =>
+      setDialog({
+        confirmText: tAttendance("save"),
+        content: (
+          <ReviewDialog
+            extraWork={{ shift, ...shift.unreviewedOvertime[0] }}
+            mutate={mutate}
+            organizationSlug={organizationSlug}
+            status={status}
+          />
+        ),
+        formId: "attendance-review-form",
+        open: true,
+        title: tAttendance(
+          status === "approved"
+            ? "shifts.actions.approveExtraWork"
+            : "shifts.actions.rejectExtraWork",
+        ),
+      }),
+    [mutate, organizationSlug, setDialog, tAttendance],
+  );
+
+  const hasExtraWork = useMemo(
+    () => rows.some(({ unreviewedOvertime }) => unreviewedOvertime.length),
+    [rows],
+  );
+
   const hasCorrectedShift = useMemo(
     () => rows.some(({ originalEvents }) => originalEvents),
     [rows],
@@ -321,6 +352,31 @@ const Shifts = ({
                 </StyledIconButton>
               </Tooltip>
             )}
+            {canReviewExtraWork &&
+              hasExtraWork &&
+              (["approved", "rejected"] as const).map((status) => (
+                <Tooltip
+                  key={status}
+                  title={tAttendance(
+                    status === "approved"
+                      ? "shifts.actions.approveExtraWork"
+                      : "shifts.actions.rejectExtraWork",
+                  )}
+                >
+                  <StyledIconButton
+                    color={status === "approved" ? "success" : "error"}
+                    onClick={() => handleReviewExtraWork(row, status)}
+                    size="small"
+                    visible={row.unreviewedOvertime.length > 0}
+                  >
+                    {status === "approved" ? (
+                      <Check fontSize="small" />
+                    ) : (
+                      <Close fontSize="small" />
+                    )}
+                  </StyledIconButton>
+                </Tooltip>
+              ))}
             {canCancel && (
               <Tooltip title={tAttendance("cancelShift")}>
                 <StyledIconButton
@@ -410,9 +466,12 @@ const Shifts = ({
       enumFilterOperators,
       enumOptions.dayKind,
       format,
+      canReviewExtraWork,
       handleCancelShift,
+      handleReviewExtraWork,
       handleViewEvents,
       hasCorrectedShift,
+      hasExtraWork,
       stringFilterOperators,
       tAttendance,
     ],

@@ -35,6 +35,7 @@ import { attendanceEmergencyCauseValues } from "@/types/api";
 import type {
   AttendanceLeaveType,
   AttendanceRequest,
+  AttendanceShift,
 } from "@/types/attendance";
 
 import {
@@ -63,16 +64,28 @@ const StyledFormControlLabel = styled(FormControlLabel)({
   alignSelf: "flex-start",
 });
 
-interface ReviewDialogProps {
-  leaveTypes: AttendanceLeaveType[];
-  mutate: () => void;
-  organizationSlug: string;
-  request: AttendanceRequest;
-  status: "approved" | "rejected";
+interface ExtraWork {
+  endsAt: string;
+  shift: AttendanceShift;
+  startsAt: string;
 }
 
+type ReviewDialogProps = {
+  mutate: () => void;
+  organizationSlug: string;
+  status: "approved" | "rejected";
+} & (
+  | {
+      extraWork?: never;
+      leaveTypes: AttendanceLeaveType[];
+      request: AttendanceRequest;
+    }
+  | { extraWork: ExtraWork; leaveTypes?: never; request?: never }
+);
+
 const ReviewDialog = ({
-  leaveTypes,
+  extraWork,
+  leaveTypes = [],
   mutate,
   organizationSlug,
   request,
@@ -124,15 +137,16 @@ const ReviewDialog = ({
     ],
   });
 
-  const leaveType = leaveTypes.find(({ id }) => id === request.leaveTypeId);
+  const leaveType = leaveTypes.find(({ id }) => id === request?.leaveTypeId);
 
   const isMedicalLeave =
-    request.kind === "leave" &&
+    request?.kind === "leave" &&
     status === "approved" &&
     request.status !== "cancellationPending" &&
     !!leaveType?.medicalCertificateRequired;
 
-  const isOvertime = request.kind === "overtime" && status === "approved";
+  const isOvertime =
+    status === "approved" && (!!extraWork || request?.kind === "overtime");
 
   const date = (value: string) => format.dateTime(new Date(value), "short");
 
@@ -144,14 +158,20 @@ const ReviewDialog = ({
         attendancePath(
           organizationSlug,
           "org",
-          `requests/${request.id}/review`,
+          extraWork
+            ? `shifts/${extraWork.shift.id}/extra-work-reviews`
+            : `requests/${request.id}/review`,
         ),
         {
-          method: "PATCH",
+          method: extraWork ? "POST" : "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             reason: values.reason,
             status,
+            ...(extraWork && {
+              endsAt: extraWork.endsAt,
+              startsAt: extraWork.startsAt,
+            }),
             ...(isMedicalLeave
               ? { medicalCertified: values.medicalCertified }
               : {}),
@@ -190,11 +210,12 @@ const ReviewDialog = ({
     <FormBox id="attendance-review-form" onSubmit={onSubmit}>
       <StyledStack>
         <Typography>
-          {request.employeeName} · {date(request.startsAt)} —{" "}
-          {date(request.endsAt)}
+          {extraWork ? extraWork.shift.employeeName : request.employeeName} ·{" "}
+          {date(extraWork ? extraWork.startsAt : request.startsAt)} —{" "}
+          {date(extraWork ? extraWork.endsAt : request.endsAt)}
         </Typography>
-        <Typography>{request.reason}</Typography>
-        {request.parentalMode && (
+        {request && <Typography>{request.reason}</Typography>}
+        {request?.parentalMode && (
           <Typography variant="body2">
             {tAttendance(
               request.parentalMode === "daily"
@@ -204,7 +225,7 @@ const ReviewDialog = ({
           </Typography>
         )}
       </StyledStack>
-      {request.correctedEvents && (
+      {request?.correctedEvents && (
         <DetailStack divider={<Divider />}>
           {request.shiftStartsAt && request.shiftEndsAt && (
             <StyledStack>

@@ -313,5 +313,15 @@
   "workPermit": {
     "required": "Select the permit start and end dates.",
     "order": "The end date can't be before the start date."
+  },
+  "maternalProtectionPeriod": {
+    "required": "Choose the start and end dates of the pregnancy or nursing period.",
+    "order": "The end date cannot be before the start date."
+  },
+  "terminationReason": {
+    "required": "Choose a termination reason."
+  },
+  "terminationNoticedAt": {
+    "withinEmployment": "The notice date must be between the hire date and the termination date."
   }
 }

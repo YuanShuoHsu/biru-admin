@@ -10,7 +10,6 @@ import { useForm, useWatch } from "react-hook-form";
 
 import {
   AMOUNT_FIELDS,
-  AUTO_INSURANCE_AMOUNT_FIELDS,
   DECLARED_INSURANCE_FIELDS,
   PENSION_PERCENT_FIELDS,
   type TermsForm,
@@ -44,6 +43,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import {
   payrollEmploymentInsuranceExemptionValues,
   payrollHealthInsuranceExemptionValues,
+  payrollHealthSupplementExemptionValues,
   payrollLaborInsuranceExemptionValues,
   payrollMonthlyProrationValues,
   payrollSalaryTypeValues,
@@ -134,10 +134,6 @@ const TermsDialog = ({
     const current = terms.find((item) => item.employeeId === employeeId)?.terms;
 
     return {
-      autoInsurance: current?.insurance
-        ? !current.insurance.manualPremiums
-        : !current,
-      allowanceHours: current?.allowanceHours ?? null,
       employerPercent: current?.insurance?.employerPercent || 6,
       healthDependents: current?.insurance?.healthDependents ?? 0,
       healthInsuranceExemption:
@@ -145,17 +141,20 @@ const TermsDialog = ({
       healthInsured: current?.insurance
         ? current.insurance.healthBasis > 0
         : true,
+      healthSupplementExemption:
+        current?.insurance?.healthSupplementExemption ?? null,
       employmentInsuranceExemption:
         current?.insurance?.employmentInsuranceExemption ?? null,
       laborInsuranceExemption:
         current?.insurance?.laborInsuranceExemption ?? null,
       monthlyProration: current?.monthlyProration ?? "thirtyDays",
       salaryType: current?.salaryType ?? "monthly",
-      taxMethod: current?.insurance?.taxMethod ?? "verified",
+      taxMethod: current?.insurance?.taxMethod ?? "resident5",
       voluntaryLaborInsurance:
         current?.insurance?.laborCoverage === "both" ||
         current?.insurance?.laborCoverage === "labor",
       voluntaryPercent: current?.insurance?.voluntaryPercent ?? 0,
+      withholdingDependents: current?.insurance?.withholdingDependents ?? 0,
       ...(Object.fromEntries(
         AMOUNT_FIELDS.map((name) => [
           name,
@@ -206,17 +205,8 @@ const TermsDialog = ({
           monthlyProration: form.monthlyProration,
           salaryType: form.salaryType,
           ...(form.sourceNote && { sourceNote: form.sourceNote }),
-          ...(form.allowanceHours
-            ? { allowanceHours: form.allowanceHours }
-            : {}),
           ...Object.fromEntries(
-            AMOUNT_FIELDS.map((name) => [
-              `${name}Cents`,
-              form.autoInsurance &&
-              AUTO_INSURANCE_AMOUNT_FIELDS.some((field) => field === name)
-                ? "0"
-                : toCents(form[name]),
-            ]),
+            AMOUNT_FIELDS.map((name) => [`${name}Cents`, toCents(form[name])]),
           ),
           insurance: {
             employerPercent: form.employerPercent,
@@ -230,13 +220,18 @@ const TermsDialog = ({
                 healthInsuranceExemption: form.healthInsuranceExemption,
               }),
             healthInsured: form.healthInsured,
+            ...(!form.healthInsured &&
+              form.healthSupplementExemption && {
+                healthSupplementExemption: form.healthSupplementExemption,
+              }),
             ...(form.laborInsuranceExemption && {
               laborInsuranceExemption: form.laborInsuranceExemption,
             }),
-            manualPremiums: !form.autoInsurance,
             taxMethod: form.taxMethod,
             voluntaryLaborInsurance: form.voluntaryLaborInsurance,
             voluntaryPercent: form.voluntaryPercent,
+            withholdingDependents:
+              form.taxMethod === "table" ? form.withholdingDependents : 0,
           },
         }),
       });
@@ -337,33 +332,7 @@ const TermsDialog = ({
           </MenuItem>
         ))}
       </TextField>
-      <NumberSpinner
-        clearable
-        error={!!errors.allowanceHours}
-        fullWidth
-        helperText={errors.allowanceHours?.message}
-        label={tAttendance("allowanceHours")}
-        max={744}
-        min={1}
-        onValueChange={(value) =>
-          setValue("allowanceHours", value, { shouldValidate: isSubmitted })
-        }
-        value={values.allowanceHours ?? null}
-      />
-      <StyledFormControlLabel
-        control={
-          <Checkbox
-            checked={!!values.autoInsurance}
-            onChange={(_, checked) => setValue("autoInsurance", checked)}
-          />
-        }
-        label={tAttendance("autoInsurance")}
-      />
-      {AMOUNT_FIELDS.filter(
-        (name) =>
-          !values.autoInsurance ||
-          !AUTO_INSURANCE_AMOUNT_FIELDS.some((field) => field === name),
-      ).map((name) => (
+      {AMOUNT_FIELDS.map((name) => (
         <NumberSpinner
           error={!!errors[name]}
           fullWidth
@@ -486,6 +455,25 @@ const TermsDialog = ({
           value={values.healthInsuranceExemption}
         />
       )}
+      {!values.healthInsured && (
+        <ExemptionSelect
+          label={tAttendance("healthSupplementExemption.label")}
+          none={tAttendance("healthSupplementExemption.none")}
+          onChange={(value) =>
+            setValue(
+              "healthSupplementExemption",
+              payrollHealthSupplementExemptionValues.find(
+                (option) => option === value,
+              ) ?? null,
+            )
+          }
+          options={payrollHealthSupplementExemptionValues.map((option) => ({
+            label: tAttendance(`healthSupplementExemption.options.${option}`),
+            value: option,
+          }))}
+          value={values.healthSupplementExemption}
+        />
+      )}
       {pensionApplicable &&
         PENSION_PERCENT_FIELDS.map(({ max, min, name }) => (
           <NumberSpinner
@@ -518,6 +506,22 @@ const TermsDialog = ({
           </MenuItem>
         ))}
       </TextField>
+      {values.taxMethod === "table" && (
+        <NumberSpinner
+          error={!!errors.withholdingDependents}
+          fullWidth
+          helperText={errors.withholdingDependents?.message}
+          label={tAttendance("withholdingDependents")}
+          max={99}
+          min={0}
+          onValueChange={(value) =>
+            setValue("withholdingDependents", value ?? 0, {
+              shouldValidate: isSubmitted,
+            })
+          }
+          value={values.withholdingDependents ?? 0}
+        />
+      )}
       <TextField
         error={!!errors.sourceNote}
         fullWidth

@@ -13,6 +13,10 @@
       "print": "印刷"
     },
     "filter": {
+      "duration": {
+        "hours": "時間",
+        "minutes": "分"
+      },
       "operator": {
         "after": "より後",
         "before": "より前",

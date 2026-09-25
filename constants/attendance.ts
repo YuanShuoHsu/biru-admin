@@ -84,3 +84,9 @@ export const MONEY_FRACTION_DIGITS = 2;
 export const MAX_DAILY_WORK_HOURS = 12;
 
 export const ALLOWED_IPS_MAX = 30;
+
+export const NOTICE_TERMINATION_REASONS = [
+  "layoff",
+  "forceMajeure",
+  "reorganization",
+] as const;

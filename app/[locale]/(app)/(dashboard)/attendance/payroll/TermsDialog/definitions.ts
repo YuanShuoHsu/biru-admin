@@ -4,6 +4,7 @@ import * as z from "zod";
 import {
   payrollEmploymentInsuranceExemptionValues,
   payrollHealthInsuranceExemptionValues,
+  payrollHealthSupplementExemptionValues,
   payrollLaborInsuranceExemptionValues,
   payrollMonthlyProrationValues,
   payrollSalaryTypeValues,
@@ -14,19 +15,7 @@ import { MONEY_FRACTION_DIGITS, MONEY_MAX } from "@/constants/attendance";
 
 import { isMoney } from "@/utils/attendance";
 
-export const AMOUNT_FIELDS = [
-  "salary",
-  "allowance",
-  "laborInsurance",
-  "healthInsurance",
-  "withholding",
-  "otherDeduction",
-] as const;
-
-export const AUTO_INSURANCE_AMOUNT_FIELDS = [
-  "laborInsurance",
-  "healthInsurance",
-] as const;
+export const AMOUNT_FIELDS = ["salary", "allowance", "otherDeduction"] as const;
 
 export const DECLARED_INSURANCE_FIELDS = [
   "laborBasis",
@@ -62,8 +51,6 @@ export const useTermsFormSchema = () => {
 
   return z.object({
     allowance: money(),
-    allowanceHours: number(1, 744).nullable(),
-    autoInsurance: z.boolean(),
     effectiveFrom: z
       .string()
       .min(1, { error: tValidation("effectiveFrom.required") }),
@@ -78,12 +65,13 @@ export const useTermsFormSchema = () => {
     healthInsuranceExemption: z
       .enum(payrollHealthInsuranceExemptionValues)
       .nullable(),
-    healthInsurance: money(),
     healthInsured: z.boolean(),
+    healthSupplementExemption: z
+      .enum(payrollHealthSupplementExemptionValues)
+      .nullable(),
     laborInsuranceExemption: z
       .enum(payrollLaborInsuranceExemptionValues)
       .nullable(),
-    laborInsurance: money(),
     monthlyProration: z.enum(payrollMonthlyProrationValues),
     otherDeduction: money(),
     salary: money(),
@@ -92,7 +80,7 @@ export const useTermsFormSchema = () => {
     taxMethod: z.enum(payrollTaxMethodValues),
     voluntaryLaborInsurance: z.boolean(),
     voluntaryPercent: number(0, 6),
-    withholding: money(),
+    withholdingDependents: number(0, 99),
   });
 };
 

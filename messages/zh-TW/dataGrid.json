@@ -13,6 +13,10 @@
       "print": "列印"
     },
     "filter": {
+      "duration": {
+        "hours": "小時",
+        "minutes": "分鐘"
+      },
       "operator": {
         "after": "晚於",
         "before": "早於",

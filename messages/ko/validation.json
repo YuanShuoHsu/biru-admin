@@ -313,5 +313,15 @@
   "workPermit": {
     "required": "취업 허가 시작일과 종료일을 선택하세요.",
     "order": "종료일은 시작일보다 앞설 수 없습니다."
+  },
+  "maternalProtectionPeriod": {
+    "required": "임신 또는 수유 기간의 시작일과 종료일을 선택하세요.",
+    "order": "종료일은 시작일보다 빠를 수 없습니다."
+  },
+  "terminationReason": {
+    "required": "퇴직 사유를 선택하세요."
+  },
+  "terminationNoticedAt": {
+    "withinEmployment": "예고일은 입사일과 퇴직일 사이여야 합니다."
   }
 }

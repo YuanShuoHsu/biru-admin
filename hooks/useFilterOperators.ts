@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import DateFilterInputValue, {
   type DateFilterInputValueProps,
 } from "@/components/DateFilterInputValue";
+import DurationFilterInputValue from "@/components/DurationFilterInputValue";
 
 import {
   DATE_FILTER_OPERATORS,
@@ -149,6 +150,21 @@ export const useNumberFilterOperators = () => {
     [tToolbar],
   );
 };
+
+export const useDurationFilterOperators = () =>
+  useMemo<GridFilterOperator[]>(
+    () =>
+      NUMBER_FILTER_OPERATORS.filter(
+        (value) =>
+          !NO_VALUE_FILTER_OPERATORS.includes(value) && value !== "isAnyOf",
+      ).map((value) => ({
+        getApplyFilterFn: () => null,
+        InputComponent: DurationFilterInputValue,
+        label: value,
+        value,
+      })),
+    [],
+  );
 
 export const useBooleanFilterOperators = () => {
   const tToolbar = useTranslations("dataGrid.toolbar");

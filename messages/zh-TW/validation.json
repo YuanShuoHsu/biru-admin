@@ -313,5 +313,15 @@
   "workPermit": {
     "required": "請選擇工作許可起訖日。",
     "order": "迄日不可早於起日。"
+  },
+  "maternalProtectionPeriod": {
+    "required": "請選擇妊娠或哺乳期間起訖日。",
+    "order": "結束日不可早於開始日。"
+  },
+  "terminationReason": {
+    "required": "請選擇離職原因。"
+  },
+  "terminationNoticedAt": {
+    "withinEmployment": "預告日必須介於到職日與離職日之間。"
   }
 }

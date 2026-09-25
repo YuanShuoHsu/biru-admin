@@ -7,7 +7,6 @@
   "addBreak": "休憩を追加",
   "agreedSalary": "月給・時給",
   "allowance": "固定手当（{currency}）",
-  "allowanceHours": "固定手当に対応する月の所定時間",
   "allowedIps": {
     "label": "固定グローバル IP",
     "placeholder": "あなたの固定グローバルIPを入力してください"
@@ -15,12 +14,16 @@
   "approve": "承認",
   "approveCancellation": "取消を承認",
   "assignParentalChild": "子どもを関連付ける",
-  "autoInsurance": "現行の等級と料率で労保・健保の本人負担額を自動計算",
   "balances": {
     "actions": {
-      "create": "休暇残数を追加"
+      "create": "休暇残数を追加",
+      "defer": "繰越協定を記録",
+      "revokeDeferral": "繰越協定を取り消す"
     },
-    "label": "休暇残数"
+    "grantedHours": "付与時間（時間）",
+    "grantedMinutes": "付与時間（分）",
+    "label": "休暇残数",
+    "deferralReason": "協定内容"
   },
   "birthDate": "生年月日",
   "breakEndTime": "休憩終了",
@@ -54,6 +57,12 @@
   "declaredInsurance": "現在の申告等級",
   "deductions": "控除合計",
   "disabled": "無効",
+  "duration": {
+    "days": "{days, number}日",
+    "hours": "{hours, number}時間",
+    "hoursMinutes": "{hours, number}時間{minutes, number}分",
+    "minutes": "{minutes, number}分"
+  },
   "early": "早退",
   "earlyParentalAgreed": "勤続6か月未満の育児休業について労使の合意を取得済み",
   "effectiveEvents": "採用された打刻",
@@ -110,6 +119,9 @@
   "endsAt": "終了日時",
   "errors": {
     "activeShiftExists": "未退勤のシフトがあります。先に退勤または修正してください。",
+    "annualLeaveDeferralInUse": "次の期間で繰り越した特別休暇をすでに使用しているため、繰越協定を取り消せません。",
+    "annualLeaveDeferralInvalid": "この特別休暇年度には繰越協定を記録できません。既に協定がある、退職済み、または年度が存在しない可能性があります。",
+    "averageWageStatementsRequired": "解雇手当または予告手当の計算には、退職前 6 か月間の公開済み給与明細が必要です。先に前月までの給与明細を公開してください。",
     "belowMinimumWage": "給与設定が適用中の最低賃金を下回っています。",
     "belowMinimumWorkingAge": "労働基準法により 15 歳未満の者を雇用することはできません。",
     "belowStatutoryPaidPercent": "支給率は法定基準を下回れません。",
@@ -136,9 +148,9 @@
     "futureCorrection": "修正する打刻時刻を未来にはできません。",
     "healthInsuranceExemptionInvalid": "当店で健保に加入している場合は理由を選択できません。",
     "healthInsuranceRequired": "この従業員は週平均 12 時間以上勤務しているため、健保への加入が必要です。例外に該当する場合は理由を選択してください。",
+    "healthSupplementExemptionInvalid": "本店で健康保険に加入している場合、補充保険料の免除理由は選択できません。",
     "holidayCalendarMissing": "その年の国定休日データがまだ取得されていません。しばらくしてから再試行してください。",
     "holidayDayKindRequired": "国定休日のシフトは国定休日として登録する必要があります。取り消して再登録してください。",
-    "hourlyAllowanceBasisRequired": "時給の固定手当を含む残業単価は自動計算の対象外です。",
     "idempotencyConflict": "再送内容が変更されています。フォームを開き直してください。",
     "implausibleMinimumWage": "確認した最低時給が前期より低くなっています。官報の公告を再確認してください。",
     "incompleteAttendance": "打刻または休暇の処理が未完了です。",
@@ -156,6 +168,7 @@
     "invalidParentalInterval": "育児休業は勤続要件、子が3歳未満、暦日単位の指定が必要です。連続申請は30日以上です。",
     "invalidPayrollState": "給与の状態が変更されました。再読み込みしてください。",
     "ipNotAllowed": "許可されていないネットワークです。店舗のネットワークに接続してください。",
+    "jobSearchLeaveInvalid": "求職休暇は解雇予告期間中のみ申請でき、週をまたぐことはできません。",
     "laborInsuranceExemptionInvalid": "労工保険に加入している場合は適用除外理由を選択できません。",
     "laborInsuranceRequired": "当店は 5 人以上を雇用しているため、この従業員を労工保険に加入させる必要があります。例外に該当する場合は適用除外理由を選択してください。",
     "leaveCaseExists": "この従業員の同じ休暇種別に事由番号が登録済みです。",
@@ -166,7 +179,9 @@
     "leavePolicyRequired": "有効な休暇種類を設定して選択してください。",
     "leavePolicyRulesRequired": "カスタム休暇には支給率の設定が必要です。",
     "leaveTypeInUse": "この休暇区分には休暇の記録があるため削除できません。無効化してください。",
+    "legacySeniorityUnsupported": "この従業員には 2005 年 7 月以前の旧制度の勤続年数があり、システムでは旧制度の解雇手当を計算できません。別途精算してください。",
     "locationNotAllowed": "位置情報が古い、不正確、または店舗の範囲外です。再試行してください。",
+    "maternalNightWork": "妊娠中または授乳中の従業員は午後 10 時から午前 6 時まで勤務できません。",
     "medicalCertificateRequired": "承認前に医療証明を確認してください。",
     "medicalLeaveInterval": "医療休暇の期間が無効です。日時と残りの付与枠を確認してください。",
     "memberNotFound": "該当する組織メンバーが見つかりません。",
@@ -189,7 +204,6 @@
     "parentalChildRequired": "確認済みの子どもを選択してください。",
     "parentalChildUnassigned": "子どもの関連付けが必要です",
     "parentalDailyLimit": "同じ子の日単位の育児休業が30日を超えています。",
-    "parentalInsuranceRequired": "育児休業中は自動計算を無効にし、確認済みの労保・健保本人負担額と根拠を入力して給与案を再作成してください。",
     "parentalLeaveActive": "育児休業中です。取消が承認されるまで打刻できません。",
     "parentalReturnInvalid": "復職日は休業期間内の暦日単位で指定してください。",
     "parentalReturnPending": "審査待ちの復職申請を先に処理してください。",
@@ -224,9 +238,13 @@
     "statutoryLeaveTypeLocked": "法定休暇区分は削除できません。無効化してください。",
     "studentWeeklyHoursExceeded": "外国人学生は冬休み・夏休み以外、1 週間（月曜〜日曜）の労働時間が 20 時間を超えてはいけません。",
     "taiwanStaySinceRequired": "源泉徴収税率を判断するため、外国籍従業員の今回の入国日を入力してください。",
+    "terminationProtected": "産前産後休業中または労災療養中は、解雇や事業再編による契約終了はできません。",
+    "terminationReasonRequired": "退職日がある場合は退職理由を選択してください。",
+    "unreviewedOvertime": "シフト外の打刻時間が未審査です。勤怠記録で承認または却下してから給与を確定してください。",
     "unsupportedDayKind": "未対応の日区分です。",
     "weeklyRestRequired": "各週（月曜〜日曜）に例假 1 日と休息日 1 日が必要です。通常勤務日は最大 5 日、シフト日は最大 6 日です。",
     "weeklyScheduleRequiresReview": "週の所定労働時間が 40 時間を超えています。シフトを確認してください。",
+    "withholdingTableOutdated": "今年度の給与所得源泉徴収税額表と退職所得の控除額がまだ更新されていません。",
     "workPermitRequired": "この従業員の法的身分では有効な就労許可が必要ですが、シフトまたは出勤日が許可期間外です。"
   },
   "eventAction": {
@@ -249,7 +267,7 @@
     "label": "労工保険の投保単位保険証番号",
     "none": "未設定（当店の人数のみ計算）"
   },
-  "grantedMinutes": "付与時間（分）",
+  "grantedMinutes": "付与時間",
   "gross": "支給総額",
   "groups": {
     "leave": "休暇",
@@ -260,7 +278,6 @@
   },
   "healthBasis": "健康保険月額（{currency}）",
   "healthDependents": "健康保険扶養人数",
-  "healthInsurance": "従業員健康保険（{currency}）",
   "healthInsuranceExemption": {
     "label": "当店で健保に加入しない理由",
     "none": "なし",
@@ -294,7 +311,6 @@
       "oldAgeBenefit": "労保老齢給付を受給済み"
     }
   },
-  "laborInsurance": "従業員労働・雇用保険（{currency}）",
   "late": "遅刻",
   "latitude": {
     "label": "店舗の緯度"
@@ -438,7 +454,11 @@
       "overtimePay": "残業手当",
       "roundingAdjustment": "端数調整",
       "voluntaryPension": "任意年金拠出",
-      "withholding": "源泉徴収"
+      "withholding": "源泉徴収",
+      "healthSupplement": "健康保険補充保険料",
+      "severancePay": "解雇手当",
+      "noticePay": "解雇予告手当",
+      "retirementWithholding": "退職所得の源泉徴収"
     }
   },
   "payrollStatus": {
@@ -513,7 +533,9 @@
   "shifts": {
     "actions": {
       "create": "シフトを追加",
-      "viewEvents": "打刻明細を見る"
+      "viewEvents": "打刻明細を見る",
+      "approveExtraWork": "シフト外の時間を承認",
+      "rejectExtraWork": "シフト外の時間を却下"
     },
     "label": "シフト管理"
   },
@@ -569,7 +591,10 @@
       "personal": "私用休暇",
       "pregnancyRest": "妊娠中の安静休暇",
       "prenatal": "妊婦健診休暇",
-      "sick": "傷病休暇"
+      "sick": "傷病休暇",
+      "official": "公務休暇",
+      "occupationalInjury": "労災休暇",
+      "jobSearch": "求職休暇"
     },
     "options": {
       "annual": "年次有給休暇（入社日起算）",
@@ -590,7 +615,10 @@
       "personal": "私用休暇",
       "pregnancyRest": "妊娠中の安静休暇",
       "prenatal": "妊婦健診休暇",
-      "sick": "傷病休暇（入院なし）"
+      "sick": "傷病休暇（入院なし）",
+      "official": "公務休暇",
+      "occupationalInjury": "労災休暇",
+      "jobSearch": "求職休暇"
     }
   },
   "statutoryPaidPercent": "法定支給率：{percent}%",
@@ -600,7 +628,7 @@
     "label": "源泉徴収方法",
     "options": {
       "resident5": "居住者が5%源泉徴収を選択",
-      "verified": "確認済み源泉徴収額を使用"
+      "table": "給与所得源泉徴収税額表による"
     }
   },
   "templateHint": "期間内のシフトを生成します。重複や休暇との競合があれば全件保存されません。",
@@ -615,14 +643,44 @@
   "terminatedAt": "退職日（任意）",
   "to": "終了日",
   "useCurrentLocation": "現在地を使用",
-  "usedMinutes": "使用時間（分）",
+  "usedMinutes": "使用時間",
   "voluntaryLaborInsurance": "5 人未満でも労保に加入",
   "voluntaryPension": "任意年金拠出（{currency}）",
   "voluntaryPercent": "任意拠出率（%）",
   "weekday": "曜日",
   "withdraw": "取り下げ",
-  "withholding": "源泉徴収（{currency}）",
   "worked": "計上時間",
   "year": "年度",
-  "yes": "あり"
+  "yes": "あり",
+  "healthSupplementExemption": {
+    "label": "補充保険料の免除理由",
+    "none": "なし",
+    "options": {
+      "secondCategory": "職業組合などの第 2 類で加入",
+      "fifthCategory": "第 5 類（低所得世帯）で加入",
+      "ineligible": "健康保険の加入資格なし"
+    }
+  },
+  "withholdingDependents": "配偶者および扶養親族の人数",
+  "maternalProtectionPeriods": {
+    "from": "開始日",
+    "label": "妊娠・授乳期間",
+    "to": "終了日"
+  },
+  "terminationReason": {
+    "label": "退職理由",
+    "options": {
+      "resignation": "自己都合退職",
+      "dismissalForCause": "懲戒解雇（労働基準法第 12 条）",
+      "layoff": "解雇（労働基準法第 11 条）",
+      "forceMajeure": "天災等による事業継続不能（労働基準法第 13 条ただし書）",
+      "employerBreach": "使用者の違反による従業員からの解除（労働基準法第 14 条）",
+      "reorganization": "事業の再編または譲渡（労働基準法第 20 条）",
+      "fixedTermExpiry": "有期契約の満了",
+      "mutualAgreement": "合意解約",
+      "retirement": "定年退職",
+      "death": "死亡"
+    }
+  },
+  "terminationNoticedAt": "予告日"
 }

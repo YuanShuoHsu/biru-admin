@@ -331,6 +331,23 @@ export interface paths {
     patch: operations["AttendanceRequestsController_review"];
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/attendance/shifts/{id}/extra-work-reviews": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 審核排班外的打卡時數 */
+    post: operations["AttendanceRequestsController_reviewExtraWork"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/attendance/requests/{id}/withdraw": {
     parameters: {
       query?: never;
@@ -467,6 +484,40 @@ export interface paths {
     put: operations["AttendanceLeavesController_saveLeaveBalance"];
     post?: never;
     delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/attendance/annual-leave-deferrals": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 記錄特休遞延協議 */
+    post: operations["AttendanceLeavesController_createAnnualLeaveDeferral"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/attendance/annual-leave-deferrals/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** 撤銷特休遞延協議 */
+    delete: operations["AttendanceLeavesController_deleteAnnualLeaveDeferral"];
     options?: never;
     head?: never;
     patch?: never;
@@ -2283,6 +2334,8 @@ export interface components {
     /** @enum {string} */
     AttendanceErrorCode:
       | "activeShiftExists"
+      | "annualLeaveDeferralInUse"
+      | "annualLeaveDeferralInvalid"
       | "belowMinimumWorkingAge"
       | "belowStatutoryPaidPercent"
       | "breakTooShort"
@@ -2306,6 +2359,7 @@ export interface components {
       | "futureCorrection"
       | "healthInsuranceExemptionInvalid"
       | "healthInsuranceRequired"
+      | "healthSupplementExemptionInvalid"
       | "holidayCalendarMissing"
       | "idempotencyConflict"
       | "implausibleMinimumWage"
@@ -2319,6 +2373,7 @@ export interface components {
       | "invalidParentalInterval"
       | "invalidPayrollState"
       | "ipNotAllowed"
+      | "jobSearchLeaveInvalid"
       | "laborInsuranceExemptionInvalid"
       | "laborInsuranceRequired"
       | "leaveCaseExists"
@@ -2330,6 +2385,7 @@ export interface components {
       | "leavePolicyRulesRequired"
       | "leaveTypeInUse"
       | "locationNotAllowed"
+      | "maternalNightWork"
       | "medicalCertificateRequired"
       | "medicalLeaveInterval"
       | "memberNotFound"
@@ -2375,6 +2431,8 @@ export interface components {
       | "statutoryBalanceAutomatic"
       | "statutoryLeaveTypeLocked"
       | "studentWeeklyHoursExceeded"
+      | "terminationProtected"
+      | "terminationReasonRequired"
       | "weeklyRestRequired"
       | "workPermitRequired";
     AttendanceErrorResponseDto: {
@@ -2401,6 +2459,18 @@ export interface components {
       to: string;
     };
     /** @enum {string} */
+    AttendanceTerminationReason:
+      | "resignation"
+      | "dismissalForCause"
+      | "layoff"
+      | "forceMajeure"
+      | "employerBreach"
+      | "reorganization"
+      | "fixedTermExpiry"
+      | "mutualAgreement"
+      | "retirement"
+      | "death";
+    /** @enum {string} */
     AttendanceEmployeeStatus:
       | "unconfigured"
       | "upcoming"
@@ -2416,6 +2486,7 @@ export interface components {
       legalStatus: components["schemas"]["AttendanceLegalStatus"];
       studentVacations: components["schemas"]["DatePeriodDto"][];
       workPermits: components["schemas"]["DatePeriodDto"][];
+      maternalProtectionPeriods: components["schemas"]["DatePeriodDto"][];
       employmentInsuranceEligible: boolean;
       workPermitRequired: boolean;
       pensionApplicable: boolean;
@@ -2426,6 +2497,11 @@ export interface components {
       hiredAt: string;
       /** Format: date-time */
       terminatedAt?: string | null;
+      terminationReason?:
+        | components["schemas"]["AttendanceTerminationReason"]
+        | null;
+      /** Format: date-time */
+      terminationNoticedAt?: string | null;
       /** Format: date-time */
       createdAt: string;
       status: components["schemas"]["AttendanceEmployeeStatus"];
@@ -2488,6 +2564,7 @@ export interface components {
       legalStatus: components["schemas"]["AttendanceLegalStatus"];
       studentVacations: components["schemas"]["DatePeriodDto"][];
       workPermits: components["schemas"]["DatePeriodDto"][];
+      maternalProtectionPeriods: components["schemas"]["DatePeriodDto"][];
       employmentInsuranceEligible: boolean;
       workPermitRequired: boolean;
       pensionApplicable: boolean;
@@ -2498,6 +2575,11 @@ export interface components {
       hiredAt: string;
       /** Format: date-time */
       terminatedAt?: string | null;
+      terminationReason?:
+        | components["schemas"]["AttendanceTerminationReason"]
+        | null;
+      /** Format: date-time */
+      terminationNoticedAt?: string | null;
       /** Format: date-time */
       createdAt: string;
     };
@@ -2530,12 +2612,15 @@ export interface components {
       legalStatus: components["schemas"]["AttendanceLegalStatus"];
       studentVacations: components["schemas"]["DatePeriodDto"][];
       workPermits: components["schemas"]["DatePeriodDto"][];
+      maternalProtectionPeriods: components["schemas"]["DatePeriodDto"][];
+      terminationReason?: components["schemas"]["AttendanceTerminationReason"];
       userId: string;
       enabled: boolean;
       birthDate: string;
       taiwanStaySince?: string;
       hiredAt: string;
       terminatedAt?: string;
+      terminationNoticedAt?: string;
     };
     AttendanceSettingsResponseDto: {
       /**
@@ -2621,6 +2706,10 @@ export interface components {
     AttendanceDayKind: "workday" | "restDay" | "regularLeave" | "holiday";
     /** @enum {string} */
     AttendanceEventAction: "clockIn" | "breakStart" | "breakEnd" | "clockOut";
+    AttendanceIntervalResponseDto: {
+      startsAt: string;
+      endsAt: string;
+    };
     AttendanceEventResponseDto: {
       paidBreak?: boolean;
       action: components["schemas"]["AttendanceEventAction"];
@@ -2649,6 +2738,7 @@ export interface components {
       workedSeconds: number;
       breakSeconds: number;
       unpaidBreakSeconds: number;
+      unreviewedOvertime: components["schemas"]["AttendanceIntervalResponseDto"][];
       late: boolean;
       early: boolean;
       /** Format: date-time */
@@ -2831,7 +2921,10 @@ export interface components {
       | "maternity"
       | "miscarriage28"
       | "miscarriage7"
-      | "miscarriage5";
+      | "miscarriage5"
+      | "official"
+      | "occupationalInjury"
+      | "jobSearch";
     /** @enum {string} */
     AttendanceEmergencyCause: "disaster" | "incident" | "unexpected";
     EmergencyWorkResponseDto: {
@@ -2891,7 +2984,6 @@ export interface components {
     };
     CorrectedEventDto: {
       action: components["schemas"]["AttendanceEventAction"];
-      paidBreak?: boolean;
       occurredAt: string;
     };
     CreateAttendanceRequestDto: {
@@ -2950,6 +3042,14 @@ export interface components {
       status: "approved" | "rejected";
       reason: string;
     };
+    ReviewAttendanceExtraWorkDto: {
+      startsAt: string;
+      endsAt: string;
+      emergency?: components["schemas"]["EmergencyWorkDto"];
+      /** @enum {string} */
+      status: "approved" | "rejected";
+      reason: string;
+    };
     /** @enum {string} */
     AttendanceLeaveCaseFilterField:
       | "employeeName"
@@ -2982,6 +3082,7 @@ export interface components {
       leaveTypeId: string;
       leaveTypeName: string;
       leaveTypeStatutoryKind: components["schemas"]["StatutoryLeaveKind"];
+      calendarLeave: boolean;
       reference: string;
       /** Format: date-time */
       eventDate: string;
@@ -3102,6 +3203,7 @@ export interface components {
       startsAt?: string | null;
       /** Format: date-time */
       endsAt?: string | null;
+      annualLeaveDeferralId?: string | null;
     };
     AttendanceLeaveBalancesResponseDto: {
       data: components["schemas"]["AttendanceLeaveBalanceResponseDto"][];
@@ -3123,6 +3225,12 @@ export interface components {
       year: number;
       grantedMinutes: number;
       usedMinutes: number;
+    };
+    CreateAttendanceAnnualLeaveDeferralDto: {
+      /** Format: uuid */
+      employeeId: string;
+      periodStart: string;
+      reason: string;
     };
     /** @enum {string} */
     AttendanceParentalChildFilterField:
@@ -5812,6 +5920,19 @@ export interface components {
       teams: components["schemas"]["OrganizationMemberTeamDto"][];
       userId: string;
     };
+    WithholdingBracketResponseDto: {
+      upTo?: number | null;
+      rateBp: number;
+    };
+    WithholdingTableResponseDto: {
+      year: number;
+      exemption: number;
+      standardDeduction: number;
+      salaryDeduction: number;
+      brackets: components["schemas"]["WithholdingBracketResponseDto"][];
+      retirementExemptPerYear: number;
+      retirementHalfTaxablePerYear: number;
+    };
     TaiwanRuleSetResponseDto: {
       laborPercentBp: number;
       employmentPercentBp: number;
@@ -5825,6 +5946,8 @@ export interface components {
       wageGuaranteeRateMicros: number;
       withholdingRateBp: number;
       withholdingExemptTaxCents: string;
+      withholdingTable: components["schemas"]["WithholdingTableResponseDto"];
+      healthSupplementRateBp: number;
       laborGrades: number[];
       partTimeLaborGrades: number[];
       occupationalGrades: number[];
@@ -5885,17 +6008,22 @@ export interface components {
       | "unregisteredEmployer"
       | "otherEmployer";
     /** @enum {string} */
+    PayrollHealthSupplementExemption:
+      | "secondCategory"
+      | "fifthCategory"
+      | "ineligible";
+    /** @enum {string} */
     PayrollLaborLadder: "general" | "partTime";
     /** @enum {string} */
-    PayrollTaxMethod: "resident5" | "verified";
+    PayrollTaxMethod: "resident5" | "table";
     TaiwanInsuranceDto: {
       laborCoverage: components["schemas"]["PayrollLaborCoverage"];
       laborInsuranceExemption?: components["schemas"]["PayrollLaborInsuranceExemption"];
       healthInsuranceExemption?: components["schemas"]["PayrollHealthInsuranceExemption"];
       employmentInsuranceExemption?: components["schemas"]["PayrollEmploymentInsuranceExemption"];
+      healthSupplementExemption?: components["schemas"]["PayrollHealthSupplementExemption"];
       laborLadder?: components["schemas"]["PayrollLaborLadder"];
       taxMethod: components["schemas"]["PayrollTaxMethod"];
-      manualPremiums?: boolean;
       laborBasis: number;
       occupationalBasis: number;
       healthBasis: number;
@@ -5903,16 +6031,13 @@ export interface components {
       pensionBasis: number;
       voluntaryPercent: number;
       employerPercent: number;
+      withholdingDependents: number;
     };
     PayrollTermsValuesDto: {
       monthlyProration?: components["schemas"]["PayrollMonthlyProration"];
       salaryType: components["schemas"]["PayrollSalaryType"];
       insurance?: components["schemas"]["TaiwanInsuranceDto"];
-      allowanceHours?: number;
       salaryCents: string;
-      laborInsuranceCents: string;
-      healthInsuranceCents: string;
-      withholdingCents: string;
       allowanceCents: string;
       otherDeductionCents: string;
       sourceNote?: string;
@@ -5932,26 +6057,23 @@ export interface components {
       laborInsuranceExemption?: components["schemas"]["PayrollLaborInsuranceExemption"];
       healthInsuranceExemption?: components["schemas"]["PayrollHealthInsuranceExemption"];
       employmentInsuranceExemption?: components["schemas"]["PayrollEmploymentInsuranceExemption"];
+      healthSupplementExemption?: components["schemas"]["PayrollHealthSupplementExemption"];
       taxMethod: components["schemas"]["PayrollTaxMethod"];
       healthInsured: boolean;
       voluntaryLaborInsurance: boolean;
-      manualPremiums?: boolean;
       healthDependents: number;
       voluntaryPercent: number;
       employerPercent: number;
+      withholdingDependents: number;
     };
     PayrollTermsDto: {
       monthlyProration?: components["schemas"]["PayrollMonthlyProration"];
       salaryType: components["schemas"]["PayrollSalaryType"];
-      allowanceHours?: number;
       insurance: components["schemas"]["TaiwanInsuranceInputDto"];
       /** Format: uuid */
       employeeId: string;
       effectiveFrom: string;
       salaryCents: string;
-      laborInsuranceCents: string;
-      healthInsuranceCents: string;
-      withholdingCents: string;
       allowanceCents: string;
       otherDeductionCents: string;
       sourceNote?: string;
@@ -5970,6 +6092,8 @@ export interface components {
       | "holidayPay"
       | "calendarLeavePay"
       | "annualLeavePay"
+      | "severancePay"
+      | "noticePay"
       | "roundingAdjustment";
     PayrollEarningLineResponseDto: {
       code: components["schemas"]["PayrollEarningLineCode"];
@@ -5982,8 +6106,10 @@ export interface components {
       | "absenceDeduction"
       | "laborInsurance"
       | "healthInsurance"
+      | "healthSupplement"
       | "voluntaryPension"
       | "withholding"
+      | "retirementWithholding"
       | "otherDeduction";
     PayrollDeductionLineResponseDto: {
       code: components["schemas"]["PayrollDeductionLineCode"];
@@ -6003,6 +6129,7 @@ export interface components {
     };
     /** @enum {string} */
     PayrollBlocker:
+      | "averageWageStatementsRequired"
       | "belowMinimumWage"
       | "birthDateRequired"
       | "calendarLeavePayRequired"
@@ -6016,9 +6143,9 @@ export interface components {
       | "employmentInsuranceRequired"
       | "healthInsuranceExemptionInvalid"
       | "healthInsuranceRequired"
+      | "healthSupplementExemptionInvalid"
       | "holidayCalendarMissing"
       | "holidayDayKindRequired"
-      | "hourlyAllowanceBasisRequired"
       | "incompleteAttendance"
       | "inconsistentDayKind"
       | "insuranceBasisOutdated"
@@ -6027,6 +6154,8 @@ export interface components {
       | "laborInsuranceExemptionInvalid"
       | "laborInsuranceRequired"
       | "leavePolicyRequired"
+      | "legacySeniorityUnsupported"
+      | "maternalNightWork"
       | "minimumWageUnconfirmed"
       | "monthlyOvertimeExceeded"
       | "negativeNetPay"
@@ -6034,7 +6163,6 @@ export interface components {
       | "occupationalAccidentRateRequired"
       | "openingHoursRequired"
       | "overlappingLeaveAttendance"
-      | "parentalInsuranceRequired"
       | "parentalReturnPending"
       | "partTimeLadderRequiresPartTime"
       | "payrollPeriodOpen"
@@ -6046,9 +6174,12 @@ export interface components {
       | "shiftRestTooShort"
       | "studentWeeklyHoursExceeded"
       | "taiwanStaySinceRequired"
+      | "terminationReasonRequired"
+      | "unreviewedOvertime"
       | "unsupportedDayKind"
       | "weeklyRestRequired"
       | "weeklyScheduleRequiresReview"
+      | "withholdingTableOutdated"
       | "workPermitRequired";
     PayrollSnapshotResponseDto: {
       terms: components["schemas"]["PayrollTermsValuesDto"];
@@ -6883,6 +7014,38 @@ export interface operations {
       };
     };
   };
+  AttendanceRequestsController_reviewExtraWork: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ReviewAttendanceExtraWorkDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceRequestRecordResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   AttendanceRequestsController_withdraw: {
     parameters: {
       query?: never;
@@ -7295,6 +7458,64 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["AttendanceLeaveBalanceRecordResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AttendanceLeavesController_createAnnualLeaveDeferral: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateAttendanceAnnualLeaveDeferralDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceIdResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AttendanceLeavesController_deleteAnnualLeaveDeferral: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceIdResponseDto"];
         };
       };
       /** @description Internal server error */
@@ -11856,6 +12077,8 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceErrorCode"]
 > = [
   "activeShiftExists",
+  "annualLeaveDeferralInUse",
+  "annualLeaveDeferralInvalid",
   "belowMinimumWorkingAge",
   "belowStatutoryPaidPercent",
   "breakTooShort",
@@ -11879,6 +12102,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "futureCorrection",
   "healthInsuranceExemptionInvalid",
   "healthInsuranceRequired",
+  "healthSupplementExemptionInvalid",
   "holidayCalendarMissing",
   "idempotencyConflict",
   "implausibleMinimumWage",
@@ -11892,6 +12116,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "invalidParentalInterval",
   "invalidPayrollState",
   "ipNotAllowed",
+  "jobSearchLeaveInvalid",
   "laborInsuranceExemptionInvalid",
   "laborInsuranceRequired",
   "leaveCaseExists",
@@ -11903,6 +12128,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "leavePolicyRulesRequired",
   "leaveTypeInUse",
   "locationNotAllowed",
+  "maternalNightWork",
   "medicalCertificateRequired",
   "medicalLeaveInterval",
   "memberNotFound",
@@ -11948,6 +12174,8 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "statutoryBalanceAutomatic",
   "statutoryLeaveTypeLocked",
   "studentWeeklyHoursExceeded",
+  "terminationProtected",
+  "terminationReasonRequired",
   "weeklyRestRequired",
   "workPermitRequired",
 ];
@@ -11963,6 +12191,20 @@ export const attendanceLegalStatusValues: ReadonlyArray<
   "permanentResident",
   "foreignStudent",
   "otherForeigner",
+];
+export const attendanceTerminationReasonValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["AttendanceTerminationReason"]
+> = [
+  "resignation",
+  "dismissalForCause",
+  "layoff",
+  "forceMajeure",
+  "employerBreach",
+  "reorganization",
+  "fixedTermExpiry",
+  "mutualAgreement",
+  "retirement",
+  "death",
 ];
 export const attendanceEmployeeStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceEmployeeStatus"]
@@ -12132,6 +12374,9 @@ export const statutoryLeaveKindValues: ReadonlyArray<
   "miscarriage28",
   "miscarriage7",
   "miscarriage5",
+  "official",
+  "occupationalInjury",
+  "jobSearch",
 ];
 export const attendanceEmergencyCauseValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceEmergencyCause"]
@@ -12141,6 +12386,9 @@ export const attendanceParentalModeValues: ReadonlyArray<
 > = ["daily", "continuous"];
 export const reviewAttendanceRequestDtoStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["ReviewAttendanceRequestDto"]["status"]
+> = ["approved", "rejected"];
+export const reviewAttendanceExtraWorkDtoStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["ReviewAttendanceExtraWorkDto"]["status"]
 > = ["approved", "rejected"];
 export const attendanceLeaveCaseFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceLeaveCaseFilterField"]
@@ -12818,12 +13066,15 @@ export const payrollEmploymentInsuranceExemptionValues: ReadonlyArray<
   "unregisteredEmployer",
   "otherEmployer",
 ];
+export const payrollHealthSupplementExemptionValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["PayrollHealthSupplementExemption"]
+> = ["secondCategory", "fifthCategory", "ineligible"];
 export const payrollLaborLadderValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["PayrollLaborLadder"]
 > = ["general", "partTime"];
 export const payrollTaxMethodValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["PayrollTaxMethod"]
-> = ["resident5", "verified"];
+> = ["resident5", "table"];
 export const payrollStatementFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["PayrollStatementFilterField"]
 > = ["employeeName", "month", "status"];
@@ -12842,6 +13093,8 @@ export const payrollEarningLineCodeValues: ReadonlyArray<
   "holidayPay",
   "calendarLeavePay",
   "annualLeavePay",
+  "severancePay",
+  "noticePay",
   "roundingAdjustment",
 ];
 export const payrollDeductionLineCodeValues: ReadonlyArray<
@@ -12851,8 +13104,10 @@ export const payrollDeductionLineCodeValues: ReadonlyArray<
   "absenceDeduction",
   "laborInsurance",
   "healthInsurance",
+  "healthSupplement",
   "voluntaryPension",
   "withholding",
+  "retirementWithholding",
   "otherDeduction",
 ];
 export const payrollEmployerCostCodeValues: ReadonlyArray<
@@ -12867,6 +13122,7 @@ export const payrollEmployerCostCodeValues: ReadonlyArray<
 export const payrollBlockerValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["PayrollBlocker"]
 > = [
+  "averageWageStatementsRequired",
   "belowMinimumWage",
   "birthDateRequired",
   "calendarLeavePayRequired",
@@ -12880,9 +13136,9 @@ export const payrollBlockerValues: ReadonlyArray<
   "employmentInsuranceRequired",
   "healthInsuranceExemptionInvalid",
   "healthInsuranceRequired",
+  "healthSupplementExemptionInvalid",
   "holidayCalendarMissing",
   "holidayDayKindRequired",
-  "hourlyAllowanceBasisRequired",
   "incompleteAttendance",
   "inconsistentDayKind",
   "insuranceBasisOutdated",
@@ -12891,6 +13147,8 @@ export const payrollBlockerValues: ReadonlyArray<
   "laborInsuranceExemptionInvalid",
   "laborInsuranceRequired",
   "leavePolicyRequired",
+  "legacySeniorityUnsupported",
+  "maternalNightWork",
   "minimumWageUnconfirmed",
   "monthlyOvertimeExceeded",
   "negativeNetPay",
@@ -12898,7 +13156,6 @@ export const payrollBlockerValues: ReadonlyArray<
   "occupationalAccidentRateRequired",
   "openingHoursRequired",
   "overlappingLeaveAttendance",
-  "parentalInsuranceRequired",
   "parentalReturnPending",
   "partTimeLadderRequiresPartTime",
   "payrollPeriodOpen",
@@ -12910,8 +13167,11 @@ export const payrollBlockerValues: ReadonlyArray<
   "shiftRestTooShort",
   "studentWeeklyHoursExceeded",
   "taiwanStaySinceRequired",
+  "terminationReasonRequired",
+  "unreviewedOvertime",
   "unsupportedDayKind",
   "weeklyRestRequired",
   "weeklyScheduleRequiresReview",
+  "withholdingTableOutdated",
   "workPermitRequired",
 ];

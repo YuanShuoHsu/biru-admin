@@ -19,6 +19,7 @@ import { type EmployeeForm, useEmployeeFormSchema } from "./definitions";
 
 import FormBox from "@/components/FormBox";
 
+import { NOTICE_TERMINATION_REASONS } from "@/constants/attendance";
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -41,7 +42,10 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { attendanceLegalStatusValues } from "@/types/api";
+import {
+  attendanceLegalStatusValues,
+  attendanceTerminationReasonValues,
+} from "@/types/api";
 
 import type {
   AttendanceLegalStatusObligation,
@@ -78,7 +82,7 @@ interface PeriodFieldsProps {
   control: Control<EmployeeForm>;
   errors: FieldErrors<EmployeeForm>;
   isSubmitted: boolean;
-  name: "studentVacations" | "workPermits";
+  name: "maternalProtectionPeriods" | "studentVacations" | "workPermits";
   setValue: UseFormSetValue<EmployeeForm>;
 }
 
@@ -181,8 +185,11 @@ const EmployeeDialog = ({
           .tz(STORE_TIMEZONE)
           .format("YYYY-MM-DD"),
       legalStatus: employee?.legalStatus ?? "national",
+      maternalProtectionPeriods: employee?.maternalProtectionPeriods ?? [],
       studentVacations: employee?.studentVacations ?? [],
       terminatedAt: employee?.terminatedAt ?? "",
+      terminationNoticedAt: employee?.terminationNoticedAt ?? "",
+      terminationReason: employee?.terminationReason ?? null,
       userId: member.userId,
       workPermits: employee?.workPermits ?? [],
     },
@@ -196,6 +203,8 @@ const EmployeeDialog = ({
     legalStatus,
     taiwanStaySince,
     terminatedAt,
+    terminationNoticedAt,
+    terminationReason,
   ] = useWatch({
     control,
     name: [
@@ -205,8 +214,14 @@ const EmployeeDialog = ({
       "legalStatus",
       "taiwanStaySince",
       "terminatedAt",
+      "terminationNoticedAt",
+      "terminationReason",
     ],
   });
+
+  const noticeRequired = NOTICE_TERMINATION_REASONS.some(
+    (reason) => reason === terminationReason,
+  );
 
   const workPermitRequired = !!legalStatusObligations.find(
     (obligation) => obligation.legalStatus === legalStatus,
@@ -223,6 +238,7 @@ const EmployeeDialog = ({
         enabled: values.enabled,
         hiredAt: values.hiredAt,
         legalStatus: values.legalStatus,
+        maternalProtectionPeriods: values.maternalProtectionPeriods,
         studentVacations:
           values.legalStatus === "foreignStudent"
             ? values.studentVacations
@@ -232,7 +248,16 @@ const EmployeeDialog = ({
         ...(values.legalStatus !== "national" && {
           taiwanStaySince: values.taiwanStaySince,
         }),
-        ...(values.terminatedAt && { terminatedAt: values.terminatedAt }),
+        ...(values.terminatedAt && {
+          terminatedAt: values.terminatedAt,
+          ...(values.terminationReason && {
+            terminationReason: values.terminationReason,
+          }),
+          ...(noticeRequired &&
+            values.terminationNoticedAt && {
+              terminationNoticedAt: values.terminationNoticedAt,
+            }),
+        }),
       };
 
       await fetcher(attendancePath(organizationSlug, "org", "employees"), {
@@ -337,6 +362,7 @@ const EmployeeDialog = ({
       {legalStatus === "foreignStudent" && (
         <PeriodFields name="studentVacations" {...periodFieldsProps} />
       )}
+      <PeriodFields name="maternalProtectionPeriods" {...periodFieldsProps} />
       <DatePicker
         label={tAttendance("hiredAt")}
         maxDate={
@@ -380,6 +406,56 @@ const EmployeeDialog = ({
         timezone={STORE_TIMEZONE}
         value={terminatedAt ? dayjs(terminatedAt) : null}
       />
+      {terminatedAt && (
+        <TextField
+          error={!!errors.terminationReason}
+          fullWidth
+          helperText={errors.terminationReason?.message}
+          label={tAttendance("terminationReason.label")}
+          onChange={(event) =>
+            setValue(
+              "terminationReason",
+              attendanceTerminationReasonValues.find(
+                (value) => value === event.target.value,
+              ) ?? null,
+              { shouldValidate: isSubmitted },
+            )
+          }
+          required
+          select
+          value={terminationReason ?? ""}
+        >
+          {attendanceTerminationReasonValues.map((value) => (
+            <MenuItem key={value} value={value}>
+              {tAttendance(`terminationReason.options.${value}`)}
+            </MenuItem>
+          ))}
+        </TextField>
+      )}
+      {terminatedAt && noticeRequired && (
+        <DatePicker
+          label={tAttendance("terminationNoticedAt")}
+          maxDate={dayjs(terminatedAt)}
+          minDate={hiredAt ? dayjs(hiredAt) : undefined}
+          onChange={(date) =>
+            setValue(
+              "terminationNoticedAt",
+              date?.isValid() ? date.startOf("day").toISOString() : "",
+              { shouldValidate: isSubmitted },
+            )
+          }
+          slotProps={{
+            field: { clearable: true },
+            textField: {
+              error: !!errors.terminationNoticedAt,
+              fullWidth: true,
+              helperText: errors.terminationNoticedAt?.message,
+            },
+          }}
+          timezone={STORE_TIMEZONE}
+          value={terminationNoticedAt ? dayjs(terminationNoticedAt) : null}
+        />
+      )}
       <StyledFormControlLabel
         control={
           <Checkbox

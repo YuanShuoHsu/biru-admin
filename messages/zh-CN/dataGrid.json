@@ -13,6 +13,10 @@
       "print": "打印"
     },
     "filter": {
+      "duration": {
+        "hours": "小时",
+        "minutes": "分钟"
+      },
       "operator": {
         "after": "晚于",
         "before": "早于",

@@ -158,15 +158,34 @@ const BalanceDialog = ({
         error={!!errors.grantedMinutes}
         fullWidth
         helperText={errors.grantedMinutes?.message}
-        label={tAttendance("grantedMinutes")}
-        max={525600}
+        label={tAttendance("balances.grantedHours")}
+        max={8760}
         min={0}
         onValueChange={(value) =>
-          setValue("grantedMinutes", value ?? 0, {
-            shouldValidate: isSubmitted,
-          })
+          setValue(
+            "grantedMinutes",
+            (value ?? 0) * 60 + (grantedMinutes % 60),
+            {
+              shouldValidate: isSubmitted,
+            },
+          )
         }
-        value={grantedMinutes}
+        value={Math.floor(grantedMinutes / 60)}
+      />
+      <NumberSpinner
+        error={!!errors.grantedMinutes}
+        fullWidth
+        label={tAttendance("balances.grantedMinutes")}
+        max={59}
+        min={0}
+        onValueChange={(value) =>
+          setValue(
+            "grantedMinutes",
+            Math.floor(grantedMinutes / 60) * 60 + (value ?? 0),
+            { shouldValidate: isSubmitted },
+          )
+        }
+        value={grantedMinutes % 60}
       />
     </FormBox>
   );

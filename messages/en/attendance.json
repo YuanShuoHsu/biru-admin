@@ -7,7 +7,6 @@
   "addBreak": "Add break",
   "agreedSalary": "Monthly salary / hourly rate",
   "allowance": "Fixed allowance ({currency})",
-  "allowanceHours": "Monthly regular hours covered by the allowance",
   "allowedIps": {
     "label": "Public IPs",
     "placeholder": "Please enter your static public IP"
@@ -15,12 +14,16 @@
   "approve": "Approve",
   "approveCancellation": "Approve cancellation",
   "assignParentalChild": "Assign child",
-  "autoInsurance": "Calculate labor and health premiums from the current grades and rates",
   "balances": {
     "actions": {
-      "create": "Add leave balance"
+      "create": "Add leave balance",
+      "defer": "Record deferral agreement",
+      "revokeDeferral": "Revoke deferral agreement"
     },
-    "label": "Leave balances"
+    "grantedHours": "Granted hours",
+    "grantedMinutes": "Granted minutes",
+    "label": "Leave balances",
+    "deferralReason": "Agreement details"
   },
   "birthDate": "Birth date",
   "breakEndTime": "Break end",
@@ -54,6 +57,12 @@
   "declaredInsurance": "Current insured amounts",
   "deductions": "Total deductions",
   "disabled": "Disabled",
+  "duration": {
+    "days": "{days, plural, one {# day} other {# days}}",
+    "hours": "{hours, plural, one {# hr} other {# hrs}}",
+    "hoursMinutes": "{hours, plural, one {# hr} other {# hrs}} {minutes, number} min",
+    "minutes": "{minutes, number} min"
+  },
   "early": "Left early",
   "earlyParentalAgreed": "Employer and employee agreed to parental leave before six months of service",
   "effectiveEvents": "Counted punches",
@@ -110,6 +119,9 @@
   "endsAt": "End time",
   "errors": {
     "activeShiftExists": "Another shift is still open. Clock out or correct it first.",
+    "annualLeaveDeferralInUse": "The next period has already used the deferred annual leave, so the deferral agreement cannot be revoked.",
+    "annualLeaveDeferralInvalid": "A deferral agreement cannot be recorded for this annual leave year. It may already exist, the employee may have left, or the year does not exist.",
+    "averageWageStatementsRequired": "Severance or notice pay needs published payslips for the six months before termination. Publish the earlier payslips first.",
     "belowMinimumWage": "Pay is below the minimum wage in effect.",
     "belowMinimumWorkingAge": "The Labor Standards Act prohibits employing anyone under 15.",
     "belowStatutoryPaidPercent": "The paid percentage cannot be below the statutory rate.",
@@ -136,9 +148,9 @@
     "futureCorrection": "Corrected times cannot be in the future.",
     "healthInsuranceExemptionInvalid": "A reason can't be selected when health insurance is covered here.",
     "healthInsuranceRequired": "This employee averages at least 12 hours a week and must be covered by health insurance. If an exception applies, select a reason.",
+    "healthSupplementExemptionInvalid": "A supplementary premium exemption cannot be chosen while health insurance is enrolled at this store.",
     "holidayCalendarMissing": "The national holiday calendar for that year isn't available yet. Try again later.",
     "holidayDayKindRequired": "Shifts on national holidays must be marked as holidays. Cancel and reschedule them.",
-    "hourlyAllowanceBasisRequired": "Hourly fixed allowances require an overtime basis not supported by this calculator.",
     "idempotencyConflict": "The retry payload changed; close and reopen the form.",
     "implausibleMinimumWage": "The confirmed minimum hourly wage is lower than the previous period. Please re-check the official announcement.",
     "incompleteAttendance": "Some shifts need completed attendance or approved leave.",
@@ -156,6 +168,7 @@
     "invalidParentalInterval": "Parental leave requires eligible tenure, a child under three and whole calendar days. Continuous requests require at least 30 days.",
     "invalidPayrollState": "Payroll status changed; reload the list.",
     "ipNotAllowed": "This network is not allowed. Connect to the store network.",
+    "jobSearchLeaveInvalid": "Job-search leave can only be taken during the layoff notice period and cannot span weeks.",
     "laborInsuranceExemptionInvalid": "An exemption can't be selected when labor insurance is covered.",
     "laborInsuranceRequired": "This business employs 5 or more people, so this employee must be covered by labor insurance. If an exception applies, select an exemption.",
     "leaveCaseExists": "This employee already has this event reference for the leave type.",
@@ -166,7 +179,9 @@
     "leavePolicyRequired": "Configure and select an active leave policy.",
     "leavePolicyRulesRequired": "A custom leave type needs a paid percentage.",
     "leaveTypeInUse": "This leave policy already has leave records and cannot be deleted. Disable it instead.",
+    "legacySeniorityUnsupported": "This employee has seniority under the pre-July 2005 Labor Standards Act scheme, which the system cannot calculate. Settle it separately.",
     "locationNotAllowed": "The location is stale, inaccurate or outside the store radius. Try again.",
+    "maternalNightWork": "Employees who are pregnant or nursing may not work between 10 PM and 6 AM.",
     "medicalCertificateRequired": "Verify medical documentation before approval.",
     "medicalLeaveInterval": "The medical leave interval is invalid. Check dates and available entitlement.",
     "memberNotFound": "That organization member was not found.",
@@ -189,7 +204,6 @@
     "parentalChildRequired": "Select a verified child record first.",
     "parentalChildUnassigned": "Child assignment required",
     "parentalDailyLimit": "Daily parental leave exceeds 30 days for this child.",
-    "parentalInsuranceRequired": "For parental leave, turn off automatic calculation, enter the verified labor and health premiums with their basis, then generate a new payroll draft.",
     "parentalLeaveActive": "Parental leave is active. Cancellation must be approved before clocking in.",
     "parentalReturnInvalid": "The return date must fall within the leave period and follow full calendar-day rules.",
     "parentalReturnPending": "A return request is pending. Resolve it first.",
@@ -224,9 +238,13 @@
     "statutoryLeaveTypeLocked": "Statutory leave policies cannot be deleted. Disable it instead.",
     "studentWeeklyHoursExceeded": "Outside school vacations, foreign students may work at most 20 hours per week (Monday to Sunday).",
     "taiwanStaySinceRequired": "Enter the latest arrival date for foreign employees so the withholding rate can be determined.",
+    "terminationProtected": "The contract cannot be ended by layoff or reorganization during maternity leave or occupational injury treatment.",
+    "terminationReasonRequired": "Choose a termination reason when a termination date is set.",
+    "unreviewedOvertime": "Clocked time outside the schedule has not been reviewed. Approve or reject it in attendance records before settling payroll.",
     "unsupportedDayKind": "Unsupported day classification.",
     "weeklyRestRequired": "Each week (Monday to Sunday) needs 1 regular day off and 1 rest day: at most 5 workdays and 6 scheduled days.",
     "weeklyScheduleRequiresReview": "Scheduled workdays exceed 40 hours in a week; review the schedule.",
+    "withholdingTableOutdated": "This year's salary withholding table and retirement income exemption amounts have not been updated yet.",
     "workPermitRequired": "This employee's legal status requires a valid work permit, and a shift or workday falls outside the permit period."
   },
   "eventAction": {
@@ -249,7 +267,7 @@
     "label": "Labor insurance unit number",
     "none": "Not set (counts this store only)"
   },
-  "grantedMinutes": "Granted minutes",
+  "grantedMinutes": "Granted",
   "gross": "Gross pay",
   "groups": {
     "leave": "Leave",
@@ -260,7 +278,6 @@
   },
   "healthBasis": "Health insured amount ({currency})",
   "healthDependents": "Health insurance dependents",
-  "healthInsurance": "Employee health insurance ({currency})",
   "healthInsuranceExemption": {
     "label": "Reason for no health insurance here",
     "none": "None",
@@ -294,7 +311,6 @@
       "oldAgeBenefit": "Already receiving labor old-age benefits"
     }
   },
-  "laborInsurance": "Employee labor / employment insurance ({currency})",
   "late": "Late",
   "latitude": {
     "label": "Store latitude"
@@ -438,7 +454,11 @@
       "overtimePay": "Overtime pay",
       "roundingAdjustment": "Rounding adjustment",
       "voluntaryPension": "Voluntary pension",
-      "withholding": "Tax withholding"
+      "withholding": "Tax withholding",
+      "healthSupplement": "NHI supplementary premium",
+      "severancePay": "Severance pay",
+      "noticePay": "Pay in lieu of notice",
+      "retirementWithholding": "Retirement income withholding"
     }
   },
   "payrollStatus": {
@@ -513,7 +533,9 @@
   "shifts": {
     "actions": {
       "create": "Add shift",
-      "viewEvents": "View punch timeline"
+      "viewEvents": "View punch timeline",
+      "approveExtraWork": "Approve time outside schedule",
+      "rejectExtraWork": "Reject time outside schedule"
     },
     "label": "Schedules"
   },
@@ -569,7 +591,10 @@
       "personal": "Personal leave",
       "pregnancyRest": "Pregnancy bed-rest leave",
       "prenatal": "Prenatal checkup leave",
-      "sick": "Sick leave"
+      "sick": "Sick leave",
+      "official": "Official leave",
+      "occupationalInjury": "Occupational injury leave",
+      "jobSearch": "Job-search leave"
     },
     "options": {
       "annual": "Annual leave (anniversary year)",
@@ -590,7 +615,10 @@
       "personal": "Personal leave",
       "pregnancyRest": "Pregnancy bed-rest leave",
       "prenatal": "Prenatal checkup leave",
-      "sick": "Non-hospitalized sick leave"
+      "sick": "Non-hospitalized sick leave",
+      "official": "Official leave",
+      "occupationalInjury": "Occupational injury leave",
+      "jobSearch": "Job-search leave"
     }
   },
   "statutoryPaidPercent": "Statutory paid percentage: {percent}%",
@@ -600,7 +628,7 @@
     "label": "Withholding method",
     "options": {
       "resident5": "Resident elected 5% withholding",
-      "verified": "Use verified withholding amount"
+      "table": "Salary withholding table"
     }
   },
   "templateHint": "Generate shifts for this period. Overlaps or leave conflicts reject the whole batch.",
@@ -615,14 +643,44 @@
   "terminatedAt": "Employment end (optional)",
   "to": "To",
   "useCurrentLocation": "Use current location",
-  "usedMinutes": "Used minutes",
+  "usedMinutes": "Used",
   "voluntaryLaborInsurance": "Enroll in labor insurance with fewer than 5 employees",
   "voluntaryPension": "Voluntary pension ({currency})",
   "voluntaryPercent": "Voluntary rate (%)",
   "weekday": "Weekday",
   "withdraw": "Withdraw",
-  "withholding": "Tax withholding ({currency})",
   "worked": "Counted hours",
   "year": "Year",
-  "yes": "Yes"
+  "yes": "Yes",
+  "healthSupplementExemption": {
+    "label": "Supplementary premium exemption",
+    "none": "None",
+    "options": {
+      "secondCategory": "Insured as category 2 (e.g. occupational union)",
+      "fifthCategory": "Insured as category 5 (low-income household)",
+      "ineligible": "Not eligible for NHI"
+    }
+  },
+  "withholdingDependents": "Spouse and dependents",
+  "maternalProtectionPeriods": {
+    "from": "Start date",
+    "label": "Pregnancy or nursing periods",
+    "to": "End date"
+  },
+  "terminationReason": {
+    "label": "Termination reason",
+    "options": {
+      "resignation": "Resignation",
+      "dismissalForCause": "Dismissal for cause (LSA Art. 12)",
+      "layoff": "Layoff (LSA Art. 11)",
+      "forceMajeure": "Business cannot continue due to force majeure (LSA Art. 13 proviso)",
+      "employerBreach": "Terminated by employee for employer breach (LSA Art. 14)",
+      "reorganization": "Reorganization or transfer (LSA Art. 20)",
+      "fixedTermExpiry": "Fixed-term contract expired",
+      "mutualAgreement": "Mutual agreement",
+      "retirement": "Retirement",
+      "death": "Death"
+    }
+  },
+  "terminationNoticedAt": "Notice date"
 }

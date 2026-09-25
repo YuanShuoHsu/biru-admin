@@ -142,6 +142,9 @@ const ShiftsPage = async ({ params, searchParams }: ShiftsPageProps) => {
       <Shifts
         canCancel={hasRolePermission(memberRole, { shift: ["update"] })}
         canCreate={hasRolePermission(memberRole, { shift: ["create"] })}
+        canReviewExtraWork={hasRolePermission(memberRole, {
+          attendanceRequest: ["update"],
+        })}
         employees={employees}
         filterField={filterField}
         filterOperator={filterOperator}

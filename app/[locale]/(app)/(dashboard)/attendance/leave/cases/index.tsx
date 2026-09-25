@@ -56,6 +56,7 @@ import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import {
   attendanceErrorKey,
   attendancePath,
+  formatLeaveDuration,
   getStatutoryLeaveName,
 } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
@@ -434,9 +435,11 @@ const LeaveCases = ({
       },
       {
         field: "grantedMinutes",
-        filterOperators: numberFilterOperators,
+        filterable: false,
         headerName: tAttendance("grantedMinutes"),
         type: "number",
+        valueFormatter: (value: number, row: AttendanceLeaveCase) =>
+          formatLeaveDuration(tAttendance, value, row.calendarLeave),
       },
       {
         field: "usedMinutes",
@@ -444,6 +447,8 @@ const LeaveCases = ({
         headerName: tAttendance("usedMinutes"),
         sortable: false,
         type: "number",
+        valueFormatter: (value: number, row: AttendanceLeaveCase) =>
+          formatLeaveDuration(tAttendance, value, row.calendarLeave),
       },
       {
         field: "paidPercent",

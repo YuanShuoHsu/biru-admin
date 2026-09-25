@@ -510,6 +510,24 @@ export const getStatutoryLeaveName = (
     ? leaveType.name
     : tAttendance(`statutoryKind.names.${leaveType.statutoryKind}`);
 
+export const formatLeaveDuration = (
+  tAttendance: ReturnType<typeof useTranslations<"attendance">>,
+  minutes: number,
+  calendarLeave: boolean,
+) => {
+  if (calendarLeave)
+    return tAttendance("duration.days", { days: minutes / 1440 });
+
+  const hours = Math.floor(minutes / 60);
+  const remainder = minutes % 60;
+
+  return remainder === 0
+    ? tAttendance("duration.hours", { hours })
+    : hours === 0
+      ? tAttendance("duration.minutes", { minutes: remainder })
+      : tAttendance("duration.hoursMinutes", { hours, minutes: remainder });
+};
+
 const moneyPattern = /^(\d{1,10})(?:\.(\d{1,2}))?$/;
 
 export const isMoney = (value: number) => moneyPattern.test(String(value));

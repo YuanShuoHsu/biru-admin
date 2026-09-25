@@ -7,7 +7,6 @@
   "addBreak": "휴게 추가",
   "agreedSalary": "월급 / 시급",
   "allowance": "고정 수당({currency})",
-  "allowanceHours": "고정 수당에 해당하는 월 소정 시간",
   "allowedIps": {
     "label": "고정 공인 IP",
     "placeholder": "귀하의 고정 공인 IP를 입력해 주세요"
@@ -15,12 +14,16 @@
   "approve": "승인",
   "approveCancellation": "취소 승인",
   "assignParentalChild": "자녀 연결",
-  "autoInsurance": "현행 등급과 요율로 노동·건강보험 본인 부담액 자동 계산",
   "balances": {
     "actions": {
-      "create": "휴가 잔여량 추가"
+      "create": "휴가 잔여량 추가",
+      "defer": "이월 합의 기록",
+      "revokeDeferral": "이월 합의 철회"
     },
-    "label": "휴가 잔여량"
+    "grantedHours": "부여 시간(시간)",
+    "grantedMinutes": "부여 시간(분)",
+    "label": "휴가 잔여량",
+    "deferralReason": "합의 내용"
   },
   "birthDate": "생년월일",
   "breakEndTime": "휴게 종료",
@@ -54,6 +57,12 @@
   "declaredInsurance": "현재 신고 등급",
   "deductions": "공제 합계",
   "disabled": "비활성화",
+  "duration": {
+    "days": "{days, number}일",
+    "hours": "{hours, number}시간",
+    "hoursMinutes": "{hours, number}시간 {minutes, number}분",
+    "minutes": "{minutes, number}분"
+  },
   "early": "조퇴",
   "earlyParentalAgreed": "근속 6개월 이전 육아 휴직에 노사가 합의함",
   "effectiveEvents": "적용 기록",
@@ -110,6 +119,9 @@
   "endsAt": "종료 시간",
   "errors": {
     "activeShiftExists": "종료되지 않은 근무가 있습니다. 먼저 퇴근 또는 정정하세요.",
+    "annualLeaveDeferralInUse": "다음 기간에 이월된 연차를 이미 사용하여 이월 합의를 철회할 수 없습니다.",
+    "annualLeaveDeferralInvalid": "이 연차 연도에는 이월 합의를 기록할 수 없습니다. 이미 합의가 있거나, 퇴직했거나, 해당 연도가 없을 수 있습니다.",
+    "averageWageStatementsRequired": "해고수당이나 예고수당을 계산하려면 퇴직 전 6개월 동안 게시된 급여명세서가 필요합니다. 이전 달 급여명세서를 먼저 게시하세요.",
     "belowMinimumWage": "급여가 현행 최저임금 미만입니다.",
     "belowMinimumWorkingAge": "근로기준법에 따라 15세 미만을 고용할 수 없습니다.",
     "belowStatutoryPaidPercent": "지급 비율은 법정 기준보다 낮을 수 없습니다.",
@@ -136,9 +148,9 @@
     "futureCorrection": "정정할 기록 시간은 미래일 수 없습니다.",
     "healthInsuranceExemptionInvalid": "당점에서 건강보험에 가입한 경우 사유를 선택할 수 없습니다.",
     "healthInsuranceRequired": "이 직원은 주 평균 12시간 이상 근무하므로 건강보험에 가입해야 합니다. 예외에 해당하면 사유를 선택하세요.",
+    "healthSupplementExemptionInvalid": "이 매장에서 건강보험에 가입한 경우 보충보험료 면제 사유를 선택할 수 없습니다.",
     "holidayCalendarMissing": "해당 연도의 공휴일 자료를 아직 받지 못했습니다. 잠시 후 다시 시도하세요.",
     "holidayDayKindRequired": "공휴일 근무는 공휴일로 지정해야 합니다. 취소 후 다시 배정하세요.",
-    "hourlyAllowanceBasisRequired": "시급 고정 수당을 포함한 초과 근무 단가는 자동 계산 대상이 아닙니다.",
     "idempotencyConflict": "재시도 내용이 변경되었습니다. 양식을 다시 여세요.",
     "implausibleMinimumWage": "확인한 시간당 최저임금이 이전 기간보다 낮습니다. 관보 공고를 다시 확인해 주세요.",
     "incompleteAttendance": "출퇴근 기록 또는 휴가 처리가 완료되지 않았습니다.",
@@ -156,6 +168,7 @@
     "invalidParentalInterval": "육아 휴직은 근속 자격, 만 3세 미만 자녀 및 전체 날짜 조건을 충족해야 합니다. 연속 신청은 최소 30일입니다.",
     "invalidPayrollState": "급여 상태가 변경되었습니다. 다시 불러오세요.",
     "ipNotAllowed": "허용된 네트워크가 아닙니다. 매장 네트워크에 연결하세요.",
+    "jobSearchLeaveInvalid": "구직 휴가는 해고 예고 기간에만 신청할 수 있으며 주를 넘길 수 없습니다.",
     "laborInsuranceExemptionInvalid": "노동보험에 가입한 경우 적용 제외 사유를 선택할 수 없습니다.",
     "laborInsuranceRequired": "당점은 5명 이상을 고용하므로 이 직원을 노동보험에 가입시켜야 합니다. 예외에 해당하면 적용 제외 사유를 선택하세요.",
     "leaveCaseExists": "이 직원의 같은 휴가 종류에 사유 번호가 이미 있습니다.",
@@ -166,7 +179,9 @@
     "leavePolicyRequired": "유효한 휴가 정책을 설정하고 선택하세요.",
     "leavePolicyRulesRequired": "사용자 지정 휴가에는 지급 비율이 필요합니다.",
     "leaveTypeInUse": "이 휴가 정책에는 휴가 기록이 있어 삭제할 수 없습니다. 비활성화해 주세요.",
+    "legacySeniorityUnsupported": "이 직원은 2005년 7월 이전 구제도 근속 기간이 있어 시스템에서 구제도 해고수당을 계산할 수 없습니다. 별도로 정산하세요.",
     "locationNotAllowed": "위치가 오래되었거나 부정확하거나 매장 범위 밖입니다. 다시 시도하세요.",
+    "maternalNightWork": "임신 중이거나 수유 중인 직원은 오후 10시부터 오전 6시까지 근무할 수 없습니다.",
     "medicalCertificateRequired": "승인 전 의료 증빙을 확인하세요.",
     "medicalLeaveInterval": "의료 휴가 기간이 올바르지 않습니다. 날짜와 잔여 한도를 확인하세요.",
     "memberNotFound": "해당 조직 구성원을 찾을 수 없습니다.",
@@ -189,7 +204,6 @@
     "parentalChildRequired": "확인된 자녀 정보를 선택하세요.",
     "parentalChildUnassigned": "자녀 연결이 필요합니다",
     "parentalDailyLimit": "동일 자녀의 일 단위 육아 휴직이 30일을 초과했습니다.",
-    "parentalInsuranceRequired": "육아 휴직 기간에는 자동 계산을 끄고 확인된 노동·건강보험 본인 부담액과 근거를 입력한 뒤 급여 초안을 다시 생성하세요.",
     "parentalLeaveActive": "육아 휴직 중입니다. 취소가 승인된 후 출퇴근을 기록할 수 있습니다.",
     "parentalReturnInvalid": "복직일은 휴직 기간 내의 온전한 날짜로 지정하세요.",
     "parentalReturnPending": "대기 중인 복직 신청을 먼저 처리하세요.",
@@ -224,9 +238,13 @@
     "statutoryLeaveTypeLocked": "법정 휴가 정책은 삭제할 수 없습니다. 비활성화해 주세요.",
     "studentWeeklyHoursExceeded": "외국인 학생은 방학 외 기간에 주(월요일~일요일) 20시간을 초과하여 근무할 수 없습니다.",
     "taiwanStaySinceRequired": "원천징수 세율을 판단하려면 외국인 직원의 최근 입국일을 입력하세요.",
+    "terminationProtected": "출산휴가 중이거나 산재 요양 중에는 해고 또는 사업 개편으로 계약을 종료할 수 없습니다.",
+    "terminationReasonRequired": "퇴직일이 있으면 퇴직 사유를 선택하세요.",
+    "unreviewedOvertime": "근무표 밖의 출퇴근 시간이 아직 검토되지 않았습니다. 출근 기록에서 승인 또는 거절한 후 급여를 정산하세요.",
     "unsupportedDayKind": "지원되지 않는 근무일 구분입니다.",
     "weeklyRestRequired": "매주(월~일) 법정 휴일 1일과 휴식일 1일이 필요합니다. 정상 근무일은 최대 5일, 근무 배정일은 최대 6일입니다.",
     "weeklyScheduleRequiresReview": "주간 예정 근무가 40시간을 초과합니다. 일정을 확인하세요.",
+    "withholdingTableOutdated": "올해 급여소득 원천징수 세액표와 퇴직소득 공제액이 아직 업데이트되지 않았습니다.",
     "workPermitRequired": "이 직원의 법적 신분은 유효한 취업 허가가 필요하지만 근무 또는 출근일이 허가 기간 밖입니다."
   },
   "eventAction": {
@@ -249,7 +267,7 @@
     "label": "노동보험 가입 단위 보험증 번호",
     "none": "미설정(당점 인원만 계산)"
   },
-  "grantedMinutes": "부여 시간(분)",
+  "grantedMinutes": "부여 시간",
   "gross": "총급여",
   "groups": {
     "leave": "휴가",
@@ -260,7 +278,6 @@
   },
   "healthBasis": "건강 보험 금액({currency})",
   "healthDependents": "건강 보험 피부양자 수",
-  "healthInsurance": "직원 건강 보험({currency})",
   "healthInsuranceExemption": {
     "label": "당점에서 건강보험에 가입하지 않는 사유",
     "none": "없음",
@@ -294,7 +311,6 @@
       "oldAgeBenefit": "노동보험 노령급여 수령자"
     }
   },
-  "laborInsurance": "직원 노동 / 고용 보험({currency})",
   "late": "지각",
   "latitude": {
     "label": "매장 위도"
@@ -438,7 +454,11 @@
       "overtimePay": "초과 근무 수당",
       "roundingAdjustment": "단수 조정",
       "voluntaryPension": "자발적 연금",
-      "withholding": "원천징수"
+      "withholding": "원천징수",
+      "healthSupplement": "건강보험 보충보험료",
+      "severancePay": "해고수당",
+      "noticePay": "해고예고수당",
+      "retirementWithholding": "퇴직소득 원천징수"
     }
   },
   "payrollStatus": {
@@ -513,7 +533,9 @@
   "shifts": {
     "actions": {
       "create": "근무 추가",
-      "viewEvents": "기록 내역 보기"
+      "viewEvents": "기록 내역 보기",
+      "approveExtraWork": "근무표 밖 시간 승인",
+      "rejectExtraWork": "근무표 밖 시간 거절"
     },
     "label": "근무 일정"
   },
@@ -569,7 +591,10 @@
       "personal": "개인 휴가",
       "pregnancyRest": "임신 안정 휴가",
       "prenatal": "산전 검진 휴가",
-      "sick": "일반 병가"
+      "sick": "일반 병가",
+      "official": "공가",
+      "occupationalInjury": "산재 휴가",
+      "jobSearch": "구직 휴가"
     },
     "options": {
       "annual": "연차 (입사일 기준)",
@@ -590,7 +615,10 @@
       "personal": "개인 휴가",
       "pregnancyRest": "임신 안정 휴가",
       "prenatal": "산전 검진 휴가",
-      "sick": "일반 병가 (비입원)"
+      "sick": "일반 병가 (비입원)",
+      "official": "공가",
+      "occupationalInjury": "산재 휴가",
+      "jobSearch": "구직 휴가"
     }
   },
   "statutoryPaidPercent": "법정 지급 비율: {percent}%",
@@ -600,7 +628,7 @@
     "label": "원천징수 방식",
     "options": {
       "resident5": "거주자 5% 원천징수 선택",
-      "verified": "확인된 원천징수액 사용"
+      "table": "급여소득 원천징수 세액표 적용"
     }
   },
   "templateHint": "기간 내 근무를 생성합니다. 중복이나 휴가 충돌이 있으면 전체가 저장되지 않습니다.",
@@ -615,14 +643,44 @@
   "terminatedAt": "퇴사일 (선택)",
   "to": "종료일",
   "useCurrentLocation": "현재 위치 사용",
-  "usedMinutes": "사용 시간(분)",
+  "usedMinutes": "사용 시간",
   "voluntaryLaborInsurance": "5명 미만이어도 노동보험 가입",
   "voluntaryPension": "자발적 연금({currency})",
   "voluntaryPercent": "자발적 기여율(%)",
   "weekday": "요일",
   "withdraw": "철회",
-  "withholding": "원천징수({currency})",
   "worked": "계산 근무 시간",
   "year": "연도",
-  "yes": "있음"
+  "yes": "있음",
+  "healthSupplementExemption": {
+    "label": "보충보험료 면제 사유",
+    "none": "없음",
+    "options": {
+      "secondCategory": "직업노조 등 제2류로 가입",
+      "fifthCategory": "제5류(저소득 가구)로 가입",
+      "ineligible": "건강보험 가입 자격 없음"
+    }
+  },
+  "withholdingDependents": "배우자 및 부양가족 수",
+  "maternalProtectionPeriods": {
+    "from": "시작일",
+    "label": "임신 또는 수유 기간",
+    "to": "종료일"
+  },
+  "terminationReason": {
+    "label": "퇴직 사유",
+    "options": {
+      "resignation": "자발적 퇴직",
+      "dismissalForCause": "징계 해고(근로기준법 제12조)",
+      "layoff": "해고(근로기준법 제11조)",
+      "forceMajeure": "천재지변 등으로 사업 계속 불가(근로기준법 제13조 단서)",
+      "employerBreach": "사용자 위반으로 근로자가 해지(근로기준법 제14조)",
+      "reorganization": "사업 개편 또는 양도(근로기준법 제20조)",
+      "fixedTermExpiry": "기간제 계약 만료",
+      "mutualAgreement": "합의 해지",
+      "retirement": "정년퇴직",
+      "death": "사망"
+    }
+  },
+  "terminationNoticedAt": "예고일"
 }

@@ -1,12 +1,17 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-import { attendanceLegalStatusValues } from "@/types/api";
+import {
+  attendanceLegalStatusValues,
+  attendanceTerminationReasonValues,
+} from "@/types/api";
 
 export const useEmployeeFormSchema = () => {
   const tValidation = useTranslations("validation");
 
-  const periods = (field: "studentVacation" | "workPermit") =>
+  const periods = (
+    field: "maternalProtectionPeriod" | "studentVacation" | "workPermit",
+  ) =>
     z.array(
       z
         .object({
@@ -32,6 +37,9 @@ export const useEmployeeFormSchema = () => {
       taiwanStaySince: z.string(),
       studentVacations: periods("studentVacation"),
       workPermits: periods("workPermit"),
+      maternalProtectionPeriods: periods("maternalProtectionPeriod"),
+      terminationReason: z.enum(attendanceTerminationReasonValues).nullable(),
+      terminationNoticedAt: z.string(),
     })
     .refine(
       ({ legalStatus, taiwanStaySince }) =>
@@ -47,6 +55,24 @@ export const useEmployeeFormSchema = () => {
       {
         error: tValidation("terminatedAt.afterHiredAt"),
         path: ["terminatedAt"],
+      },
+    )
+    .refine(
+      ({ terminatedAt, terminationReason }) =>
+        !terminatedAt || !!terminationReason,
+      {
+        error: tValidation("terminationReason.required"),
+        path: ["terminationReason"],
+      },
+    )
+    .refine(
+      ({ hiredAt, terminatedAt, terminationNoticedAt }) =>
+        !terminationNoticedAt ||
+        (new Date(terminationNoticedAt) >= new Date(hiredAt) &&
+          new Date(terminationNoticedAt) <= new Date(terminatedAt)),
+      {
+        error: tValidation("terminationNoticedAt.withinEmployment"),
+        path: ["terminationNoticedAt"],
       },
     );
 };

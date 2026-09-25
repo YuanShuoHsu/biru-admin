@@ -6,6 +6,7 @@ import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import BalanceDialog from "./BalanceDialog";
+import DeferralDialog from "./DeferralDialog";
 
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -18,14 +19,15 @@ import { getPageSizeOptions } from "@/constants/pagination";
 
 import {
   useDateFilterOperators,
+  useDurationFilterOperators,
   useEnumFilterOperators,
   useNumberFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
-import { Add } from "@mui/icons-material";
-import { Button } from "@mui/material";
+import { Add, EventRepeat, EventBusy } from "@mui/icons-material";
+import { Button, IconButton, Tooltip } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
@@ -35,6 +37,8 @@ import type {
   GridSortModel,
 } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
+
+import { enqueueSnackbar } from "notistack";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -50,7 +54,12 @@ import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization } from "@/types/organizations";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
-import { attendancePath, getStatutoryLeaveName } from "@/utils/attendance";
+import {
+  attendanceErrorKey,
+  attendancePath,
+  formatLeaveDuration,
+  getStatutoryLeaveName,
+} from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
 
 const StyledButton = styled(Button)({
@@ -63,6 +72,8 @@ const DataGrid = dynamic(
 );
 
 interface BalancesProps {
+  canDefer: boolean;
+  canRevokeDeferral: boolean;
   canViewAll: boolean;
   canWrite: boolean;
   employees: AttendanceEmployee[];
@@ -81,6 +92,8 @@ interface BalancesProps {
 }
 
 const Balances = ({
+  canDefer,
+  canRevokeDeferral,
   canViewAll,
   canWrite,
   employees,
@@ -129,6 +142,7 @@ const Balances = ({
   const { setDialog } = useDialogStore((state) => state);
 
   const dateFilterOperators = useDateFilterOperators();
+  const durationFilterOperators = useDurationFilterOperators();
   const enumFilterOperators = useEnumFilterOperators();
   const numberFilterOperators = useNumberFilterOperators();
   const stringFilterOperators = useStringFilterOperators();
@@ -242,6 +256,53 @@ const Balances = ({
     [employees, leaveTypes, mutate, organizationSlug, setDialog, tAttendance],
   );
 
+  const handleDefer = useCallback(
+    (balance: AttendanceLeaveBalance) =>
+      setDialog({
+        confirmText: tAttendance("save"),
+        content: (
+          <DeferralDialog
+            balance={balance}
+            mutate={mutate}
+            organizationSlug={organizationSlug}
+          />
+        ),
+        formId: "attendance-deferral-form",
+        open: true,
+        title: tAttendance("balances.actions.defer"),
+      }),
+    [mutate, organizationSlug, setDialog, tAttendance],
+  );
+
+  const handleRevokeDeferral = useCallback(
+    ({ annualLeaveDeferralId }: AttendanceLeaveBalance) =>
+      setDialog({
+        contentText: tAttendance("confirm"),
+        onConfirm: async () => {
+          try {
+            await fetcher(
+              attendancePath(
+                organizationSlug,
+                "org",
+                `annual-leave-deferrals/${annualLeaveDeferralId}`,
+              ),
+              { method: "DELETE" },
+            );
+
+            enqueueSnackbar(tAttendance("success"), { variant: "success" });
+            mutate();
+          } catch (error) {
+            enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+              variant: "error",
+            });
+          }
+        },
+        open: true,
+        title: tAttendance("balances.actions.revokeDeferral"),
+      }),
+    [mutate, organizationSlug, setDialog, tAttendance],
+  );
+
   const leaveTypeOptions = useMemo(
     () =>
       leaveTypes.map((leaveType) => ({
@@ -295,20 +356,69 @@ const Balances = ({
       },
       {
         field: "grantedMinutes",
-        filterOperators: numberFilterOperators,
+        filterOperators: durationFilterOperators,
         headerName: tAttendance("grantedMinutes"),
         type: "number",
+        valueFormatter: (value: number) =>
+          formatLeaveDuration(tAttendance, value, false),
       },
       {
         field: "usedMinutes",
-        filterOperators: numberFilterOperators,
+        filterOperators: durationFilterOperators,
         headerName: tAttendance("usedMinutes"),
         type: "number",
+        valueFormatter: (value: number) =>
+          formatLeaveDuration(tAttendance, value, false),
       },
+      ...(canViewAll && (canDefer || canRevokeDeferral)
+        ? [
+            {
+              field: "actions",
+              filterable: false,
+              headerName: tAttendance("actions"),
+              renderCell: ({
+                row,
+              }: GridRenderCellParams<AttendanceLeaveBalance>) => {
+                if (row.leaveTypeStatutoryKind !== "annual") return null;
+
+                return row.annualLeaveDeferralId
+                  ? canRevokeDeferral && (
+                      <Tooltip
+                        title={tAttendance("balances.actions.revokeDeferral")}
+                      >
+                        <IconButton
+                          onClick={() => handleRevokeDeferral(row)}
+                          size="small"
+                        >
+                          <EventBusy fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    )
+                  : canDefer && (
+                      <Tooltip title={tAttendance("balances.actions.defer")}>
+                        <IconButton
+                          onClick={() => handleDefer(row)}
+                          size="small"
+                        >
+                          <EventRepeat fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    );
+              },
+              sortable: false,
+            } satisfies GridColDef,
+          ]
+        : []),
     ],
     [
+      canDefer,
+      canRevokeDeferral,
+      canViewAll,
+      handleDefer,
+      handleRevokeDeferral,
       date,
       dateFilterOperators,
+      durationFilterOperators,
       enumFilterOperators,
       leaveTypeOptions,
       numberFilterOperators,

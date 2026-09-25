@@ -13,6 +13,10 @@
       "print": "프린트"
     },
     "filter": {
+      "duration": {
+        "hours": "시간",
+        "minutes": "분"
+      },
       "operator": {
         "after": "이후",
         "before": "이전",
