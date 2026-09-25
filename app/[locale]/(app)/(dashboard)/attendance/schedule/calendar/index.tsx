@@ -71,20 +71,21 @@ const Grid = styled(Box)({
 });
 
 const Cell = styled(Box)(({ theme }) => ({
-  borderBottom: `1px solid ${theme.palette.divider}`,
-  borderInlineEnd: `1px solid ${theme.palette.divider}`,
+  borderBottom: `1px solid ${theme.vars.palette.divider}`,
+  borderInlineEnd: `1px solid ${theme.vars.palette.divider}`,
+  transition: theme.transitions.create(["background-color", "border-color"]),
 }));
 
 const HeadCell = styled(Cell, {
   shouldForwardProp: (prop) => prop !== "today",
 })<{ today: boolean }>(({ theme, today }) => ({
-  ...(today && { backgroundColor: theme.palette.action.hover }),
+  ...(today && { backgroundColor: theme.vars.palette.action.hover }),
   padding: theme.spacing(1),
   textAlign: "center",
 }));
 
 const NameCell = styled(Cell)(({ theme }) => ({
-  backgroundColor: theme.palette.background.paper,
+  backgroundColor: theme.vars.palette.background.paper,
   left: 0,
   padding: theme.spacing(1),
   position: "sticky",
@@ -98,7 +99,7 @@ const RowBox = styled(Box)({
 const DayCell = styled(Cell, {
   shouldForwardProp: (prop) => prop !== "today",
 })<{ today: boolean }>(({ theme, today }) => ({
-  ...(today && { backgroundColor: theme.palette.action.hover }),
+  ...(today && { backgroundColor: theme.vars.palette.action.hover }),
   display: "flex",
   flexDirection: "column",
   gap: theme.spacing(0.5),
@@ -111,16 +112,17 @@ const ShiftCard = styled(Stack, {
 })<{ muted: boolean }>(({ muted, theme }) => ({
   alignItems: "center",
   backgroundColor: muted
-    ? theme.palette.action.selected
-    : theme.palette.primary.main,
+    ? theme.vars.palette.action.selected
+    : theme.vars.palette.primary.main,
   borderRadius: theme.shape.borderRadius,
   color: muted
-    ? theme.palette.text.primary
-    : theme.palette.primary.contrastText,
+    ? theme.vars.palette.text.primary
+    : theme.vars.palette.primary.contrastText,
   flexDirection: "row",
   gap: theme.spacing(0.5),
   justifyContent: "space-between",
   paddingInlineStart: theme.spacing(0.75),
+  transition: theme.transitions.create(["background-color", "color"]),
 }));
 
 const ShiftButton = styled("button")({

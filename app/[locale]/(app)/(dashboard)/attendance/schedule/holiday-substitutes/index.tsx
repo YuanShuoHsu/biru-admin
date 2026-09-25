@@ -46,11 +46,7 @@ import type {
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization } from "@/types/organizations";
 
-import {
-  attendanceErrorKey,
-  attendanceHolidaySubstitutesPath,
-  attendancePath,
-} from "@/utils/attendance";
+import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
 
@@ -151,10 +147,19 @@ const HolidaySubstitutes = ({
       filterModel,
       sortModel,
     ],
-    () =>
-      fetcher<AttendanceHolidaySubstitutePage>(
-        `${attendanceHolidaySubstitutesPath(organizationSlug, year)}&${getDataGridSearchParams(paginationModel, filterModel, sortModel)}`,
-      ),
+    () => {
+      const params = getDataGridSearchParams(
+        paginationModel,
+        filterModel,
+        sortModel,
+      );
+
+      params.set("year", String(year));
+
+      return fetcher<AttendanceHolidaySubstitutePage>(
+        `${attendancePath(organizationSlug, "org", "holiday-substitutes")}?${params}`,
+      );
+    },
     {
       fallbackData: { data: initialRows, total: initialRowCount },
       onSuccess: () => {
