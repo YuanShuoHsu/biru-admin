@@ -81,7 +81,7 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
     )?.slug ||
     organizations?.[0]?.slug;
 
-  if (resolvedSlug && (organization !== resolvedSlug || rangeParam !== range)) {
+  if (resolvedSlug && organization !== resolvedSlug) {
     const params = new URLSearchParams({ organization: resolvedSlug, range });
 
     redirect({ href: `/dashboard?${params.toString()}`, locale });
