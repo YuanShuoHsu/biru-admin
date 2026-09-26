@@ -257,6 +257,105 @@ const theme = createTheme({
         }),
       },
     },
+    MuiEventCalendar: {
+      styleOverrides: {
+        agendaView: ({ theme }) => ({
+          backgroundColor: theme.vars.palette.background.paper,
+          transition: theme.transitions.create([
+            "background-color",
+            "border-color",
+          ]),
+        }),
+        dayTimeGridContainer: ({ theme }) => ({
+          backgroundColor: theme.vars.palette.background.paper,
+          transition: theme.transitions.create([
+            "background-color",
+            "border-color",
+          ]),
+        }),
+        headerToolbarLabel: ({ theme }) => ({
+          transition: theme.transitions.create("color"),
+        }),
+        monthView: ({ theme }) => ({
+          backgroundColor: theme.vars.palette.background.paper,
+          transition: theme.transitions.create([
+            "background-color",
+            "border-color",
+          ]),
+        }),
+        root: ({ theme }) =>
+          Object.fromEntries(
+            (
+              [
+                [
+                  ["background-color", "border-color", "color"],
+                  [
+                    "agendaViewDayNumberCell",
+                    "agendaViewWeekDayNameLabel",
+                    "agendaViewWeekNumberLabel",
+                    "agendaViewYearAndMonthLabel",
+                    "dayGridEvent",
+                    "dayGridEventPlaceholder",
+                    "dayGridEventTime",
+                    "dayGridEventTitle",
+                    "dayTimeGridAllDayEventsHeaderCell",
+                    "dayTimeGridHeaderDayName",
+                    "dayTimeGridHeaderDayNumber",
+                    "dayTimeGridTimeAxisText",
+                    "eventItemCard",
+                    "eventItemTime",
+                    "eventItemTitle",
+                    "headerToolbarWeekNumber",
+                    "miniCalendarDayButton",
+                    "miniCalendarMonthLabel",
+                    "miniCalendarWeekdayCell",
+                    "monthViewCellNumber",
+                    "monthViewHeaderCell",
+                    "monthViewWeekHeaderCell",
+                    "monthViewWeekNumberCell",
+                    "timeGridEvent",
+                    "timeGridEventPlaceholder",
+                    "timeGridEventTime",
+                  ],
+                ],
+                [
+                  ["background-color", "border-color"],
+                  [
+                    "agendaViewDayHeaderCell",
+                    "agendaViewRow",
+                    "dayTimeGridAllDayEventsCell",
+                    "dayTimeGridAllDayEventsGrid",
+                    "dayTimeGridColumn",
+                    "dayTimeGridCurrentTimeIndicator",
+                    "dayTimeGridCurrentTimeIndicatorCircle",
+                    "dayTimeGridHeader",
+                    "dayTimeGridScrollablePlaceholder",
+                    "dayTimeGridTimeAxisCell::after",
+                    "eventColorIndicator",
+                    "monthViewCell",
+                    "monthViewCellNumberButton",
+                    "monthViewHeader",
+                    "monthViewRow",
+                    "resourceLegendColor",
+                    "sidePanelDivider",
+                    "timeGridEvent::before",
+                  ],
+                ],
+              ] as const
+            ).map(([properties, slots]) => [
+              slots.map((slot) => `& .MuiEventCalendar-${slot}`).join(", "),
+              { transition: theme.transitions.create([...properties]) },
+            ]),
+          ),
+        sidePanel: ({ theme }) => ({
+          backgroundColor: theme.vars.palette.background.paper,
+          transition: theme.transitions.create([
+            "background-color",
+            "border-color",
+          ]),
+        }),
+      },
+    },
     MuiIconButton: {
       styleOverrides: {
         root: ({ theme }) => ({
