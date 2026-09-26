@@ -13,6 +13,11 @@ import { DoubleSide } from "three";
 import Avatar from "./Avatar";
 import Elevator from "./Elevator";
 import { createElevatorState } from "./Elevator/motion";
+import Furniture from "./Realistic/Furniture";
+import ItemBody from "./Realistic/ItemBody";
+import Lighting from "./Realistic/Lighting";
+import Shell from "./Realistic/Shell";
+import Surface, { SURFACES } from "./Realistic/Surface";
 import SpriteLabel from "./SpriteLabel";
 import { ghostEdge, ghostSurface } from "./ghost";
 
@@ -390,6 +395,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
   const [stairs, setStairs] = useState(false);
   const [showLabels, setShowLabels] = useState(true);
   const [showDimensions, setShowDimensions] = useState(true);
+  const [realistic, setRealistic] = useState(true);
   const [view, setView] = useState<StoreLayoutView>("iso");
 
   const isGhostFloor = (value: StoreLayoutFloor) =>
@@ -469,6 +475,8 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
     if (event.code === "KeyC")
       setCharacter(nextInOrder(STORE_LAYOUT_CHARACTER_ORDER, character));
 
+    if (event.code === "KeyR") setRealistic((on) => !on);
+
     if (event.code === "KeyN") setShowLabels((on) => !on);
 
     if (event.code === "KeyM") setShowDimensions((on) => !on);
@@ -489,7 +497,8 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
     const state = rootStateRef.current;
     if (!state) return;
 
-    state.gl.render(state.scene, state.camera);
+    // 寫實模式由後製合成輸出，再直接 render 一次會蓋掉環境光遮蔽與泛光
+    if (!realistic) state.gl.render(state.scene, state.camera);
 
     const name = `store-layout-${floors}-${view}.png`;
     const dataUrl = state.gl.domElement.toDataURL("image/png");
@@ -528,6 +537,13 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
     checked: boolean,
   ) => {
     setShowDimensions(checked);
+  };
+
+  const handleRealisticChange = (
+    _event: React.ChangeEvent<HTMLInputElement>,
+    checked: boolean,
+  ) => {
+    setRealistic(checked);
   };
 
   // 不擋預設行為的話，按鈕會在 mousedown 之後搶走焦點，方向鍵與 WASD 就失效
@@ -578,6 +594,12 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
           </StyledToggleButtonGroup>
           <FormControlLabel
             control={
+              <Switch checked={realistic} onChange={handleRealisticChange} />
+            }
+            label={tStoreLayout("realistic")}
+          />
+          <FormControlLabel
+            control={
               <Switch checked={showLabels} onChange={handleShowLabelsChange} />
             }
             label={tStoreLayout("showLabels")}
@@ -618,13 +640,20 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                   position: [...STORE_LAYOUT_VIEWS.iso.position],
                 }}
                 gl={{ preserveDrawingBuffer: true }}
+                shadows
                 onCreated={(state) => {
                   rootStateRef.current = state;
                 }}
                 style={{ position: "absolute", inset: 0 }}
               >
-                <hemisphereLight args={[grey[50], blueGrey[500], 2.2]} />
-                <directionalLight intensity={1.1} position={[6, 8, 4]} />
+                {realistic ? (
+                  <Lighting />
+                ) : (
+                  <>
+                    <hemisphereLight args={[grey[50], blueGrey[500], 2.2]} />
+                    <directionalLight intensity={1.1} position={[6, 8, 4]} />
+                  </>
+                )}
                 {STORE_LAYOUT_FLOORS.map((value) => {
                   if (floors !== "all" && floors !== value) return null;
 
@@ -654,7 +683,9 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                             color={grey[300]}
                             {...ghostSurface(ghost)}
                           />
-                          <Edges color={grey[700]} {...ghostEdge(ghost)} />
+                          {!realistic && (
+                            <Edges color={grey[700]} {...ghostEdge(ghost)} />
+                          )}
                         </mesh>
                       ) : (
                         <>
@@ -679,10 +710,12 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                                   color={grey[300]}
                                   {...ghostSurface(ghost)}
                                 />
-                                <Edges
-                                  color={grey[700]}
-                                  {...ghostEdge(ghost)}
-                                />
+                                {!realistic && (
+                                  <Edges
+                                    color={grey[700]}
+                                    {...ghostEdge(ghost)}
+                                  />
+                                )}
                               </mesh>
                             ),
                           )}
@@ -703,20 +736,29 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                                     depth,
                                   ]}
                                 />
-                                <meshStandardMaterial
-                                  color={STORE_LAYOUT_KIND_COLORS.stair}
-                                  {...ghostSurface(ghost)}
-                                />
-                                <Edges
-                                  color={grey[700]}
-                                  {...ghostEdge(ghost)}
-                                />
+                                {realistic ? (
+                                  <Surface
+                                    ghost={ghost}
+                                    spec={SURFACES.glass}
+                                  />
+                                ) : (
+                                  <meshStandardMaterial
+                                    color={STORE_LAYOUT_KIND_COLORS.stair}
+                                    {...ghostSurface(ghost)}
+                                  />
+                                )}
+                                {!realistic && (
+                                  <Edges
+                                    color={grey[700]}
+                                    {...ghostEdge(ghost)}
+                                  />
+                                )}
                               </mesh>
                             ),
                           )}
                         </>
                       )}
-                      {!ghost && (
+                      {!ghost && !realistic && (
                         <>
                           <Line
                             color={grey[500]}
@@ -734,7 +776,9 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                           />
                         </>
                       )}
+                      {!ghost && realistic && <Shell floor={value} />}
                       {!ghost &&
+                        !realistic &&
                         STORE_LAYOUT_WALLS.map(
                           ({ position, rotationY, width }) => (
                             <mesh
@@ -776,14 +820,20 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                 })}
                 {STORE_LAYOUT_STAIR_STEPS.map(({ depth, top, width, x, z }) => (
                   <mesh
+                    castShadow={realistic}
                     key={`${x}-${z}`}
                     position={[x + width / 2, top / 2, z + depth / 2]}
+                    receiveShadow
                   >
                     <boxGeometry args={[width, top, depth]} />
-                    <meshStandardMaterial
-                      color={STORE_LAYOUT_KIND_COLORS.stair}
-                    />
-                    <Edges color={grey[700]} />
+                    {realistic ? (
+                      <Surface spec={SURFACES.walnut} />
+                    ) : (
+                      <meshStandardMaterial
+                        color={STORE_LAYOUT_KIND_COLORS.stair}
+                      />
+                    )}
+                    {!realistic && <Edges color={grey[700]} />}
                   </mesh>
                 ))}
                 {showLabels && (
@@ -806,7 +856,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                   const ghost = isGhostFloor(item.floor);
 
                   return (
-                    <mesh
+                    <group
                       key={`${item.floor}-${label}-${x}-${z}`}
                       position={[
                         x + width / 2,
@@ -816,12 +866,18 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                         z + depth / 2,
                       ]}
                     >
-                      <boxGeometry args={[width, height, depth]} />
-                      <meshStandardMaterial
-                        color={STORE_LAYOUT_KIND_COLORS[kind]}
-                        {...ghostSurface(ghost)}
-                      />
-                      <Edges color={grey[700]} {...ghostEdge(ghost)} />
+                      {realistic ? (
+                        <ItemBody ghost={ghost} item={item} />
+                      ) : (
+                        <mesh>
+                          <boxGeometry args={[width, height, depth]} />
+                          <meshStandardMaterial
+                            color={STORE_LAYOUT_KIND_COLORS[kind]}
+                            {...ghostSurface(ghost)}
+                          />
+                          <Edges color={grey[700]} {...ghostEdge(ghost)} />
+                        </mesh>
+                      )}
                       {showLabels && !ghost && (
                         <SpriteLabel
                           position={[0, height / 2 + 0.08, 0]}
@@ -845,35 +901,39 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                             />
                           ),
                         )}
-                    </mesh>
+                    </group>
                   );
                 })}
-                {STORE_LAYOUT_SEATS.map((seat) => {
-                  if (floors !== "all" && floors !== seat.floor) return null;
+                {realistic && (
+                  <Furniture floors={floors} isGhostFloor={isGhostFloor} />
+                )}
+                {!realistic &&
+                  STORE_LAYOUT_SEATS.map((seat) => {
+                    if (floors !== "all" && floors !== seat.floor) return null;
 
-                  const { depth, elevation, height, width, x, z } = seat;
-                  const ghost = isGhostFloor(seat.floor);
+                    const { depth, elevation, height, width, x, z } = seat;
+                    const ghost = isGhostFloor(seat.floor);
 
-                  return (
-                    <mesh
-                      key={`${seat.floor}-${x}-${z}-${elevation}`}
-                      position={[
-                        x + width / 2,
-                        STORE_LAYOUT_FLOOR_BASE[seat.floor] +
-                          elevation +
-                          height / 2,
-                        z + depth / 2,
-                      ]}
-                    >
-                      <boxGeometry args={[width, height, depth]} />
-                      <meshStandardMaterial
-                        color={STORE_LAYOUT_KIND_COLORS.seat}
-                        {...ghostSurface(ghost)}
-                      />
-                      <Edges color={grey[700]} {...ghostEdge(ghost)} />
-                    </mesh>
-                  );
-                })}
+                    return (
+                      <mesh
+                        key={`${seat.floor}-${x}-${z}-${elevation}`}
+                        position={[
+                          x + width / 2,
+                          STORE_LAYOUT_FLOOR_BASE[seat.floor] +
+                            elevation +
+                            height / 2,
+                          z + depth / 2,
+                        ]}
+                      >
+                        <boxGeometry args={[width, height, depth]} />
+                        <meshStandardMaterial
+                          color={STORE_LAYOUT_KIND_COLORS.seat}
+                          {...ghostSurface(ghost)}
+                        />
+                        <Edges color={grey[700]} {...ghostEdge(ghost)} />
+                      </mesh>
+                    );
+                  })}
                 <Avatar
                   character={character}
                   controlsRef={controlsRef}
@@ -889,6 +949,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                   floors={floors}
                   isGhostFloor={isGhostFloor}
                   label={showLabels ? tStoreLayout("items.elevator") : null}
+                  realistic={realistic}
                 />
                 <OrbitControls
                   maxPolarAngle={
@@ -904,20 +965,22 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
               </Canvas>
             </KeyboardControls>
             <Joystick inputRef={touchRef} />
-            <GridLegend aria-label={tStoreLayout("gridScale")}>
-              <LegendStack direction="row">
-                <GridCellLine />
-                <Typography color="textSecondary" variant="caption">
-                  {tStoreLayout("gridLegend.cell")}
-                </Typography>
-              </LegendStack>
-              <LegendStack direction="row">
-                <GridSectionLine />
-                <Typography color="textSecondary" variant="caption">
-                  {tStoreLayout("gridLegend.section")}
-                </Typography>
-              </LegendStack>
-            </GridLegend>
+            {!realistic && (
+              <GridLegend aria-label={tStoreLayout("gridScale")}>
+                <LegendStack direction="row">
+                  <GridCellLine />
+                  <Typography color="textSecondary" variant="caption">
+                    {tStoreLayout("gridLegend.cell")}
+                  </Typography>
+                </LegendStack>
+                <LegendStack direction="row">
+                  <GridSectionLine />
+                  <Typography color="textSecondary" variant="caption">
+                    {tStoreLayout("gridLegend.section")}
+                  </Typography>
+                </LegendStack>
+              </GridLegend>
+            )}
             <OverlayActions onMouseDown={handleControlsMouseDown}>
               <OverlayButton
                 aria-label={tStoreLayout("export")}

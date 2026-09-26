@@ -50,6 +50,7 @@
     "passCounter": "出餐台",
     "pastryCase": "甜点冷藏柜",
     "pickupScreen": "取餐叫号屏",
+    "plant": "绿植",
     "prepTable": "备料台",
     "rangeHood": "油烟机",
     "restroom": "卫生间",
@@ -64,7 +65,8 @@
     "workCounter": "吧台工作台"
   },
   "label": "店内布局",
-  "moveHint": "点击画面后，可用方向键或 WASD 移动角色，Shift 加速，空格键跳跃，IJKL 转动视角{view, select, first {} other {，O/U 拉近拉远}}，1/2/3 切换楼层，V 切换视角，C 切换角色，N/M 开关名称/尺寸",
+  "moveHint": "点击画面后，可用方向键或 WASD 移动角色，Shift 加速，空格键跳跃，IJKL 转动视角{view, select, first {} other {，O/U 拉近拉远}}，1/2/3 切换楼层，V 切换视角，C 切换角色，R 开关写实，N/M 开关名称/尺寸",
+  "realistic": "写实",
   "showDimensions": "尺寸",
   "showLabels": "名称",
   "touchControls": {

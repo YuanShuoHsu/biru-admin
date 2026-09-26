@@ -50,6 +50,7 @@
     "passCounter": "出餐檯",
     "pastryCase": "甜點冷藏櫃",
     "pickupScreen": "取餐叫號螢幕",
+    "plant": "植栽",
     "prepTable": "備料台",
     "rangeHood": "排油煙罩",
     "restroom": "廁所",
@@ -64,7 +65,8 @@
     "workCounter": "吧台工作檯"
   },
   "label": "店內配置",
-  "moveHint": "點擊畫面後，可用方向鍵或 WASD 移動角色，Shift 加速，空白鍵跳躍，IJKL 轉動視角{view, select, first {} other {，O/U 拉近拉遠}}，1/2/3 切換樓層，V 切換視角，C 切換角色，N/M 開關名稱/尺寸",
+  "moveHint": "點擊畫面後，可用方向鍵或 WASD 移動角色，Shift 加速，空白鍵跳躍，IJKL 轉動視角{view, select, first {} other {，O/U 拉近拉遠}}，1/2/3 切換樓層，V 切換視角，C 切換角色，R 開關寫實，N/M 開關名稱/尺寸",
+  "realistic": "寫實",
   "showDimensions": "尺寸",
   "showLabels": "名稱",
   "touchControls": {

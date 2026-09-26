@@ -22,6 +22,7 @@ import type {
   StoreLayoutFloorFilter,
 } from "@/types/storeLayout";
 
+import Surface, { SURFACES } from "../Realistic/Surface";
 import SpriteLabel from "../SpriteLabel";
 import { ghostEdge, ghostSurface } from "../ghost";
 import {
@@ -36,6 +37,7 @@ const { door } = STORE_LAYOUT_ELEVATOR;
 
 const GLASS_OPACITY = 0.3;
 const LABEL_ABOVE_DOOR = 0.35;
+const CAR_DRAW_LIFT = 0.005;
 
 const centerOf = ({
   depth,
@@ -50,6 +52,12 @@ const centerOf = ({
   z + depth / 2,
 ];
 
+const carCenter = (box: ElevatorBox): [number, number, number] => {
+  const [x, y, z] = centerOf(box);
+
+  return [x, y + CAR_DRAW_LIFT, z];
+};
+
 const INITIAL_STATE = createElevatorState();
 const INITIAL_CAR = elevatorCar(INITIAL_STATE);
 const INITIAL_DOORS = elevatorDoors(INITIAL_STATE);
@@ -59,6 +67,7 @@ interface ElevatorProps {
   floors: StoreLayoutFloorFilter;
   isGhostFloor: (floor: StoreLayoutFloor) => boolean;
   label: string | null;
+  realistic: boolean;
 }
 
 const Elevator = ({
@@ -66,6 +75,7 @@ const Elevator = ({
   floors,
   isGhostFloor,
   label,
+  realistic,
 }: ElevatorProps) => {
   const carRefs = useRef<(Mesh | null)[]>([]);
   const doorRefs = useRef<(Mesh | null)[]>([]);
@@ -75,14 +85,16 @@ const Elevator = ({
 
   useFrame(() => {
     const elevator = elevatorRef.current;
-    const carFloor =
-      STORE_LAYOUT_FLOORS[Math.round(elevator.y / STORE_LAYOUT_FLOOR_HEIGHT)];
+    const level = elevator.y / STORE_LAYOUT_FLOOR_HEIGHT;
+    const carVisible =
+      shows(STORE_LAYOUT_FLOORS[Math.floor(level)]) ||
+      shows(STORE_LAYOUT_FLOORS[Math.ceil(level)]);
 
     elevatorCar(elevator).forEach((box, index) => {
       const mesh = carRefs.current[index];
 
-      mesh?.position.set(...centerOf(box));
-      if (mesh) mesh.visible = shows(carFloor);
+      mesh?.position.set(...carCenter(box));
+      if (mesh) mesh.visible = carVisible;
     });
 
     elevatorDoors(elevator).forEach((box, index) =>
@@ -114,21 +126,26 @@ const Elevator = ({
               opacity={ghost ? 0.06 : GLASS_OPACITY}
               transparent
             />
-            <Edges color={grey[700]} {...ghostEdge(ghost)} />
+            {!realistic && <Edges color={grey[700]} {...ghostEdge(ghost)} />}
           </mesh>
         );
       })}
       {INITIAL_CAR.map((box, index) => (
         <mesh
+          castShadow={realistic}
           key={`car-${index}`}
-          position={centerOf(box)}
+          position={carCenter(box)}
           ref={(mesh) => {
             carRefs.current[index] = mesh;
           }}
         >
           <boxGeometry args={[box.width, box.height, box.depth]} />
-          <meshStandardMaterial color={grey[400]} />
-          <Edges color={grey[700]} />
+          {realistic ? (
+            <Surface spec={SURFACES.stainless} />
+          ) : (
+            <meshStandardMaterial color={grey[400]} />
+          )}
+          {!realistic && <Edges color={grey[700]} />}
         </mesh>
       ))}
       {INITIAL_DOORS.map((box, index) => {
@@ -139,6 +156,7 @@ const Elevator = ({
 
         return (
           <mesh
+            castShadow={realistic && !ghost}
             key={`door-${index}`}
             position={centerOf(box)}
             ref={(mesh) => {
@@ -146,8 +164,15 @@ const Elevator = ({
             }}
           >
             <boxGeometry args={[box.width, box.height, box.depth]} />
-            <meshStandardMaterial color={grey[500]} {...ghostSurface(ghost)} />
-            <Edges color={grey[700]} {...ghostEdge(ghost)} />
+            {realistic ? (
+              <Surface ghost={ghost} spec={SURFACES.stainless} />
+            ) : (
+              <meshStandardMaterial
+                color={grey[500]}
+                {...ghostSurface(ghost)}
+              />
+            )}
+            {!realistic && <Edges color={grey[700]} {...ghostEdge(ghost)} />}
           </mesh>
         );
       })}

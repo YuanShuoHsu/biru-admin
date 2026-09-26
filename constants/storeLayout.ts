@@ -34,6 +34,7 @@ export const STORE_LAYOUT_KIND_COLORS = {
   heat: deepOrange[300],
   prep: amber[300],
   seat: blueGrey[200],
+  plant: green[400],
   restroom: teal[200],
   stair: brown[300],
   storage: blueGrey[300],
@@ -134,6 +135,30 @@ const GROUND_WINDOW_COUNTERS = [
 ];
 
 const UPPER_WINDOW_COUNTERS = [windowCounter("upper", 0.3, 15.45)];
+
+const ENTRANCE = { height: 2.1, width: 2, x: 6.9 } as const;
+
+const PLANT_SIZE = 0.5;
+const PLANT_HEIGHT = 1.2;
+
+const plant = (floor: LayoutFloor, x: number, z: number) => ({
+  depth: PLANT_SIZE,
+  elevation: 0,
+  floor,
+  height: PLANT_HEIGHT,
+  kind: "plant" as const,
+  label: "plant" as const,
+  width: PLANT_SIZE,
+  x,
+  z,
+});
+
+const PLANTS = [
+  plant("ground", 6.25, 20.4),
+  plant("ground", 9.05, 20.4),
+  plant("upper", 13.7, 0.1),
+  plant("upper", 0.1, 6.5),
+];
 
 const GROUND_TABLES = [
   ...tableColumn("ground", FOUR_TOP, 0.1, [12.8, 15.2, 17.6]),
@@ -548,12 +573,12 @@ export const STORE_LAYOUT_ITEMS = [
     depth: 0.1,
     elevation: 0,
     floor: "ground",
-    height: 2.1,
+    height: ENTRANCE.height,
     kind: "front",
     label: "entrance",
-    width: 2,
-    x: 6.9,
-    z: 20.9,
+    width: ENTRANCE.width,
+    x: ENTRANCE.x,
+    z: STORE_LAYOUT_ROOM.depth - 0.1,
   },
   {
     depth: 1,
@@ -562,9 +587,9 @@ export const STORE_LAYOUT_ITEMS = [
     height: 0.02,
     kind: "front",
     label: "entranceMat",
-    width: 2,
-    x: 6.9,
-    z: 19.9,
+    width: ENTRANCE.width,
+    x: ENTRANCE.x,
+    z: STORE_LAYOUT_ROOM.depth - 1.1,
   },
   {
     depth: 0.7,
@@ -583,6 +608,7 @@ export const STORE_LAYOUT_ITEMS = [
   restroom("upper", "restroom"),
   ...UPPER_WINDOW_COUNTERS,
   ...UPPER_TABLES,
+  ...PLANTS,
 ] as const;
 
 const CHAIR_SIZE = 0.42;
@@ -629,6 +655,32 @@ const chairPair = (
     ...chair(floor, x, ahead, ahead + CHAIR_SIZE - CHAIR_BACK_DEPTH),
   ];
 };
+
+export const STORE_LAYOUT_KITCHEN_FLOOR_DEPTH = 4.8;
+
+const WINDOW_SILL = 0.9;
+const WINDOW_HEAD = 2.5;
+
+export const STORE_LAYOUT_STOREFRONT = [
+  ...[...GROUND_WINDOW_COUNTERS, ...UPPER_WINDOW_COUNTERS].map(
+    ({ floor, width, x }) => ({
+      bottom: WINDOW_SILL,
+      floor,
+      from: x,
+      kind: "window" as const,
+      to: x + width,
+      top: WINDOW_HEAD,
+    }),
+  ),
+  {
+    bottom: 0,
+    floor: "ground" as const,
+    from: ENTRANCE.x,
+    kind: "door" as const,
+    to: ENTRANCE.x + ENTRANCE.width,
+    top: ENTRANCE.height,
+  },
+];
 
 export const STORE_LAYOUT_SEATS = [
   ...[...GROUND_TABLES, ...UPPER_TABLES].flatMap(
@@ -857,13 +909,16 @@ const elevatorWalls = (floor: LayoutFloor) => {
 export const STORE_LAYOUT_ELEVATOR_WALLS =
   STORE_LAYOUT_FLOORS.flatMap(elevatorWalls);
 
-const SLAB_OPENINGS = [STORE_LAYOUT_STAIRWELL, ELEVATOR_SHAFT];
+export const STORE_LAYOUT_SLAB_OPENINGS = [
+  STORE_LAYOUT_STAIRWELL,
+  ELEVATOR_SHAFT,
+];
 
 const slabBands = [
   ...new Set([
     0,
     STORE_LAYOUT_ROOM.depth,
-    ...SLAB_OPENINGS.flatMap(({ depth, z }) => [z, z + depth]),
+    ...STORE_LAYOUT_SLAB_OPENINGS.flatMap(({ depth, z }) => [z, z + depth]),
   ]),
 ].sort((a, b) => a - b);
 
@@ -871,7 +926,7 @@ export const STORE_LAYOUT_SLAB_PANELS = slabBands
   .slice(1)
   .flatMap((to, index) => {
     const from = slabBands[index];
-    const cuts = SLAB_OPENINGS.filter(
+    const cuts = STORE_LAYOUT_SLAB_OPENINGS.filter(
       ({ depth, z }) => z < to && z + depth > from,
     ).sort((a, b) => a.x - b.x);
     const panels: { depth: number; width: number; x: number; z: number }[] = [];
