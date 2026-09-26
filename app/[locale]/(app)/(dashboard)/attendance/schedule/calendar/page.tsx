@@ -16,6 +16,7 @@ import {
   ATTENDANCE_CALENDAR_VIEWS,
   attendanceCalendarDate,
   attendanceCalendarRange,
+  DEFAULT_ATTENDANCE_CALENDAR_VIEW,
   getAttendanceAccess,
   getAttendanceCalendarDayKinds,
   getAttendanceCalendarLeaves,
@@ -68,9 +69,14 @@ const CalendarPage = async ({ params, searchParams }: CalendarPageProps) => {
   const date = attendanceCalendarDate(dateParam);
 
   const view =
-    ATTENDANCE_CALENDAR_VIEWS.find((value) => value === viewParam) ?? "week";
+    ATTENDANCE_CALENDAR_VIEWS.find((value) => value === viewParam) ??
+    DEFAULT_ATTENDANCE_CALENDAR_VIEW;
 
-  if (organizationSlug !== organization.slug) {
+  if (
+    organizationSlug !== organization.slug ||
+    dateParam !== date ||
+    viewParam !== view
+  ) {
     const params = new URLSearchParams({
       date,
       organization: organization.slug,

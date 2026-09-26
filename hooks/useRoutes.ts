@@ -12,6 +12,8 @@ import useSWR from "swr";
 
 import { DEFAULT_PAGINATION_QUERY } from "@/constants/pagination";
 
+import { resolveDashboardRange } from "@/app/[locale]/(app)/(dashboard)/dashboard/definitions";
+
 import { useDefaultOrganization } from "@/hooks/organizations";
 
 import { usePathname } from "@/i18n/navigation";
@@ -93,6 +95,10 @@ import type { NavItem } from "@/types/navItem";
 import type { AdminOrderResponse } from "@/types/orders";
 import type { RouteParams } from "@/types/routeParams";
 
+import {
+  attendanceCalendarDate,
+  DEFAULT_ATTENDANCE_CALENDAR_VIEW,
+} from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
 import { getHref } from "@/utils/href";
 import { localize } from "@/utils/locale";
@@ -101,11 +107,13 @@ type MessageKey = MessageKeys<Messages, NestedKeyOf<Messages>>;
 
 type RouteQuery =
   | "back"
+  | "date"
   | "organization"
   | "page"
   | "pageSize"
   | "range"
-  | "redirectTo";
+  | "redirectTo"
+  | "view";
 
 interface Route {
   children?: Route[];
@@ -156,7 +164,7 @@ const routes: Route[] = [
           {
             icon: CalendarMonth,
             label: "attendance.schedule.label",
-            query: ["organization"],
+            query: ["date", "organization", "view"],
             segment: "calendar",
           },
           {
@@ -375,6 +383,7 @@ const routes: Route[] = [
                     ],
                     icon: Extension,
                     label: "menus.items.addOns.label",
+                    query: ["organization", "page", "pageSize"],
                     segment: "add-ons",
                   },
                   {
@@ -424,6 +433,7 @@ const routes: Route[] = [
                     ],
                     icon: Tune,
                     label: "menus.items.modifierGroups.label",
+                    query: ["organization", "page", "pageSize"],
                     segment: "modifier-groups",
                   },
                 ],
@@ -902,11 +912,13 @@ export const useRoutes = () => {
 
   const values: Record<RouteQuery, string | null> = {
     back: pathname,
+    date: attendanceCalendarDate(),
     organization: searchParams.get("organization") || defaultOrganization,
     page: DEFAULT_PAGINATION_QUERY.page,
     pageSize: DEFAULT_PAGINATION_QUERY.pageSize,
-    range: searchParams.get("range"),
+    range: resolveDashboardRange(searchParams.get("range") || undefined),
     redirectTo: searchParams.get("redirectTo") || pathname,
+    view: DEFAULT_ATTENDANCE_CALENDAR_VIEW,
   };
 
   const buildHref = (href: string, query = findRoute(href)?.query) => {

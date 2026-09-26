@@ -86,7 +86,8 @@ export const ATTENDANCE_CALENDAR_VIEWS = [
 
 export type AttendanceCalendarView = (typeof ATTENDANCE_CALENDAR_VIEWS)[number];
 
-// 須與 MUI 議程檢視的 AGENDA_VIEW_DAYS_AMOUNT 一致，否則畫面尾段沒有資料
+export const DEFAULT_ATTENDANCE_CALENDAR_VIEW: AttendanceCalendarView = "week";
+
 export const ATTENDANCE_AGENDA_DAYS = 12;
 
 export const attendanceCalendarDate = (date?: string) =>

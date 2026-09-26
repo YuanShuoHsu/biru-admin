@@ -62,7 +62,6 @@ dayjs.extend(timezonePlugin);
 
 const ToolbarStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(1),
-  justifyContent: "flex-end",
 }));
 
 const CalendarBox = styled(Box)({
