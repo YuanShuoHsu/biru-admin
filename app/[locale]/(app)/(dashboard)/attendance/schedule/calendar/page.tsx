@@ -70,11 +70,7 @@ const CalendarPage = async ({ params, searchParams }: CalendarPageProps) => {
   const view =
     ATTENDANCE_CALENDAR_VIEWS.find((value) => value === viewParam) ?? "week";
 
-  if (
-    organizationSlug !== organization.slug ||
-    dateParam !== date ||
-    viewParam !== view
-  ) {
+  if (organizationSlug !== organization.slug) {
     const params = new URLSearchParams({
       date,
       organization: organization.slug,
