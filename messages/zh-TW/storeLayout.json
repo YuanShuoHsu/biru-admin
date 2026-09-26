@@ -52,7 +52,7 @@
     "workCounter": "吧台工作檯"
   },
   "label": "店內配置",
-  "moveHint": "點擊畫面後，可用方向鍵或 WASD 移動角色，Shift 加速，空白鍵跳躍，IJKL 轉動視角{view, select, first {} other {，O/U 拉近拉遠}}，1/2/3 切換樓層，V 切換視角，C 切換角色",
+  "moveHint": "點擊畫面後，可用方向鍵或 WASD 移動角色，Shift 加速，空白鍵跳躍，IJKL 轉動視角{view, select, first {} other {，O/U 拉近拉遠}}，1/2/3 切換樓層，V 切換視角，C 切換角色，N/M 開關名稱/尺寸",
   "showDimensions": "尺寸",
   "showLabels": "名稱",
   "touchControls": {

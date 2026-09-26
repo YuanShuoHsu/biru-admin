@@ -52,7 +52,7 @@
     "workCounter": "バー作業台"
   },
   "label": "店内レイアウト",
-  "moveHint": "画面をクリックすると、矢印キーまたは WASD でキャラクターを移動、Shift でダッシュ、スペースキーでジャンプ、IJKL で視線を動かし{view, select, first {} other {、O/U でズームイン・アウトし}}、1/2/3 で階を、V で視点を、C でキャラクターを切り替えられます",
+  "moveHint": "画面をクリックすると、矢印キーまたは WASD でキャラクターを移動、Shift でダッシュ、スペースキーでジャンプ、IJKL で視線を動かし{view, select, first {} other {、O/U でズームイン・アウトし}}、1/2/3 で階を、V で視点を、C でキャラクターを切り替え、N/M で名称／サイズの表示を切り替えられます",
   "showDimensions": "サイズ",
   "showLabels": "名称",
   "touchControls": {

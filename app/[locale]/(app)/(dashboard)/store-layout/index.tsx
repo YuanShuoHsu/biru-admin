@@ -472,6 +472,10 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
 
     if (event.code === "KeyC")
       setCharacter(nextInOrder(STORE_LAYOUT_CHARACTER_ORDER, character));
+
+    if (event.code === "KeyN") setShowLabels((on) => !on);
+
+    if (event.code === "KeyM") setShowDimensions((on) => !on);
   };
 
   // iPhone Safari 沒有 Element.requestFullscreen，只能改用固定定位鋪滿視窗
