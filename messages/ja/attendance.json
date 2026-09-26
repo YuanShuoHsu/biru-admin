@@ -195,7 +195,6 @@
     "monthlyOvertimeExceeded": "当月の残業上限（通常 46 時間、延長期間は 54 時間）を超えます。",
     "negativeNetPay": "控除額が支給額を超えています。",
     "noShifts": "対象月にシフトがありません。",
-    "noTemplateDates": "この期間にテンプレートの曜日に該当する日がありません。",
     "occupationalAccidentRateRequired": "雇用主の職災保険料を計算するには、勤怠設定で労保局が認定した職災保険の業種を選択してください。",
     "occupationalIndustryInvalid": "この職災保険の業種が見つかりません。選び直してください。",
     "openingHoursRequired": "この従業員は当店で健保に加入していないため、毎営業日出勤しているかを営業時間で判断する必要があります。先に組織設定で営業時間を入力してください。",
@@ -265,8 +264,6 @@
   "eventDate": "事由発生日",
   "events": "打刻明細",
   "extensionAgreed": "結婚休暇の6か月延長に合意済み",
-  "from": "開始日",
-  "generate": "シフトを生成",
   "graceMinutes": {
     "label": "猶予時間（分）"
   },
@@ -523,7 +520,6 @@
   "save": "保存",
   "schedule": {
     "scheduledHours": "{hours} 時間シフト済み",
-    "applyTemplate": "雛形を適用",
     "moveShift": "シフトを移動",
     "undo": "元に戻す",
     "label": "シフト表",
@@ -559,7 +555,8 @@
       "viewOptions": "{view, select, day {日} week {週} month {月} other {予定リスト}}表示のオプション"
     },
     "weekAbbreviation": "週",
-    "weekNumber": "第 {weekNumber} 週"
+    "weekNumber": "第 {weekNumber} 週",
+    "copyWeek": "今週のシフトをコピー"
   },
   "scheduledTime": "予定時間",
   "settings": {
@@ -670,17 +667,7 @@
       "table": "給与所得源泉徴収税額表による"
     }
   },
-  "templateHint": "期間内のシフトを生成します。重複や休暇との競合があれば全件保存されません。",
-  "templates": {
-    "actions": {
-      "create": "週間シフト雛形を追加",
-      "delete": "週間シフト雛形を削除",
-      "update": "週間シフト雛形を編集"
-    },
-    "label": "週間シフト雛形"
-  },
   "terminatedAt": "退職日（任意）",
-  "to": "終了日",
   "useCurrentLocation": "現在地を使用",
   "usedMinutes": "使用時間",
   "voluntaryLaborInsuranceFrom": "5 人未満で労保に任意加入した開始月",
@@ -758,5 +745,32 @@
     "insuredCents": "被保険者の標準報酬総額",
     "premiumCents": "納付すべき補充保険料",
     "unpublished": "今月の給与明細が未公開の従業員が {count} 名いるため、標準報酬総額が不完全な可能性があります。"
+  },
+  "copyWeek": {
+    "weeks": "コピーする週数",
+    "weeksOption": "{weeks} 週",
+    "target": "コピー先：{range}",
+    "confirm": "シフトを作成",
+    "created": "{count} 件のシフトを作成します",
+    "skipped": "次の {count} 件はスキップされます",
+    "empty": "今週コピーできるシフトはありません。",
+    "result": "{created} 件作成、{skipped} 件スキップしました",
+    "skipReasons": {
+      "holiday": "祝日または従業員の休日",
+      "restDay": "休息日",
+      "regularLeave": "法定休日",
+      "employeeNotEnabled": "在職中でない従業員",
+      "workPermitRequired": "就労許可期間外",
+      "maternalNightWork": "妊娠・授乳中は深夜勤務不可",
+      "shiftTooLong": "シフトが長すぎます",
+      "invalidBreak": "休憩がシフト外",
+      "breakTooShort": "休憩が短すぎます",
+      "continuousWorkTooLong": "連続勤務が 4 時間を超過",
+      "inconsistentDayKind": "同日に異なる日区分のシフトあり",
+      "payrollLocked": "給与公開済み",
+      "reservedMakeupRest": "代休と重複",
+      "overlappingShift": "既存シフトと重複",
+      "overlappingLeave": "休暇と重複"
+    }
   }
 }

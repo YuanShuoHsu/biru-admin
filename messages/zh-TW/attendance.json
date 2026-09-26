@@ -195,7 +195,6 @@
     "monthlyOvertimeExceeded": "加班時數將超過當月上限（一般 46 小時，同意延長期間 54 小時）。",
     "negativeNetPay": "扣款大於應發薪資。",
     "noShifts": "此月份沒有班表。",
-    "noTemplateDates": "這段日期範圍內沒有符合範本星期的日子。",
     "occupationalAccidentRateRequired": "請先在出勤設定選擇勞保局核定的職災保險行業別，才能計算雇主職災保費。",
     "occupationalIndustryInvalid": "找不到這個職災保險行業別，請重新選擇。",
     "openingHoursRequired": "此員工未在本店投保健保，須依營業時間判斷是否每個工作日都到班；請先到組織設定填寫營業時間。",
@@ -265,8 +264,6 @@
   "eventDate": "事件日期",
   "events": "打卡時間明細",
   "extensionAgreed": "婚假延長至 6 個月已取得同意",
-  "from": "開始日期",
-  "generate": "產生班次",
   "graceMinutes": {
     "label": "遲到早退寬限（分鐘）"
   },
@@ -523,7 +520,6 @@
   "save": "儲存",
   "schedule": {
     "scheduledHours": "已排 {hours} 小時",
-    "applyTemplate": "套用範本",
     "moveShift": "移動班次",
     "undo": "復原",
     "label": "班表",
@@ -559,7 +555,8 @@
       "viewOptions": "{view, select, day {日} week {週} month {月} other {議程}}檢視選項"
     },
     "weekAbbreviation": "週",
-    "weekNumber": "第 {weekNumber} 週"
+    "weekNumber": "第 {weekNumber} 週",
+    "copyWeek": "複製本週排班"
   },
   "scheduledTime": "排定時段",
   "settings": {
@@ -670,17 +667,7 @@
       "table": "依薪資所得扣繳稅額表"
     }
   },
-  "templateHint": "依範本產生期間內的班次；若有重疊或請假衝突，整批不會儲存。",
-  "templates": {
-    "actions": {
-      "create": "新增班表範本",
-      "delete": "刪除班表範本",
-      "update": "編輯班表範本"
-    },
-    "label": "每週班表範本"
-  },
   "terminatedAt": "離職日（選填）",
-  "to": "結束日期",
   "useCurrentLocation": "使用目前位置",
   "usedMinutes": "已用額度",
   "voluntaryLaborInsuranceFrom": "未滿 5 人自願投保勞保起始月",
@@ -758,5 +745,32 @@
     "insuredCents": "受僱者健保投保金額總額",
     "premiumCents": "應繳補充保費",
     "unpublished": "{count} 位員工本月薪資單尚未發布，投保金額總額可能不完整。"
+  },
+  "copyWeek": {
+    "weeks": "複製週數",
+    "weeksOption": "{weeks} 週",
+    "target": "複製到 {range}",
+    "confirm": "建立班次",
+    "created": "將建立 {count} 個班次",
+    "skipped": "以下 {count} 個班次將跳過",
+    "empty": "本週沒有可複製的班次。",
+    "result": "已建立 {created} 個班次，跳過 {skipped} 個",
+    "skipReasons": {
+      "holiday": "國定假日或員工假日",
+      "restDay": "休息日",
+      "regularLeave": "例假",
+      "employeeNotEnabled": "員工未在職或已停用",
+      "workPermitRequired": "不在工作許可期間",
+      "maternalNightWork": "妊娠或哺乳期間不得夜間工作",
+      "shiftTooLong": "班次過長",
+      "invalidBreak": "休息時段不在班次內",
+      "breakTooShort": "休息時間過短",
+      "continuousWorkTooLong": "連續工作超過 4 小時",
+      "inconsistentDayKind": "當天已有不同日別的班次",
+      "payrollLocked": "薪資已發布",
+      "reservedMakeupRest": "與補假重疊",
+      "overlappingShift": "已有班次",
+      "overlappingLeave": "已請假"
+    }
   }
 }

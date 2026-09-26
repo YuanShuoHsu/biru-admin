@@ -98,10 +98,6 @@
   "employee": {
     "notSelected": "請選擇您的員工。"
   },
-  "endDate": {
-    "beforeStartDate": "結束日期不能早於開始日期。",
-    "invalid": "結束日期無效。"
-  },
   "endTime": {
     "invalid": "結束時間格式無效。"
   },
@@ -266,9 +262,6 @@
     "letter": "網址識別碼必須包含至少一個英文字母。",
     "required": "網址識別碼為必填。"
   },
-  "startDate": {
-    "invalid": "開始日期無效。"
-  },
   "startTime": {
     "invalid": "開始時間格式無效。"
   },
@@ -288,12 +281,6 @@
   "telephone": {
     "invalid": "電話格式無效。",
     "required": "電話為必填。"
-  },
-  "template": {
-    "notSelected": "請選擇班表範本。"
-  },
-  "templateName": {
-    "required": "範本名稱為必填。"
   },
   "terminatedAt": {
     "afterHiredAt": "離職時間必須晚於到職時間。"

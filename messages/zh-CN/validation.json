@@ -98,10 +98,6 @@
   "employee": {
     "notSelected": "请选择您的员工。"
   },
-  "endDate": {
-    "beforeStartDate": "结束日期不能早于开始日期。",
-    "invalid": "结束日期无效。"
-  },
   "endTime": {
     "invalid": "结束时间格式无效。"
   },
@@ -266,9 +262,6 @@
     "letter": "网址识别码必须包含至少一个英文字母。",
     "required": "网址识别码为必填。"
   },
-  "startDate": {
-    "invalid": "开始日期无效。"
-  },
   "startTime": {
     "invalid": "开始时间格式无效。"
   },
@@ -288,12 +281,6 @@
   "telephone": {
     "invalid": "电话格式无效。",
     "required": "电话为必填。"
-  },
-  "template": {
-    "notSelected": "请选择班表模板。"
-  },
-  "templateName": {
-    "required": "模板名称为必填。"
   },
   "terminatedAt": {
     "afterHiredAt": "离职时间必须晚于入职时间。"

@@ -195,7 +195,6 @@
     "monthlyOvertimeExceeded": "This would exceed the monthly overtime limit (46 hours, or 54 hours in an approved extension period).",
     "negativeNetPay": "Deductions exceed gross pay.",
     "noShifts": "No shifts exist for this month.",
-    "noTemplateDates": "No day in this range matches the template weekday.",
     "occupationalAccidentRateRequired": "Select the occupational accident insurance industry approved by the Bureau of Labor Insurance in attendance settings to calculate the employer premium.",
     "occupationalIndustryInvalid": "This occupational accident insurance industry was not found. Select it again.",
     "openingHoursRequired": "This employee isn't covered by health insurance here, so opening hours are needed to check whether they work every business day. Set the opening hours in organization settings first.",
@@ -265,8 +264,6 @@
   "eventDate": "Event date",
   "events": "Punch timeline",
   "extensionAgreed": "Agreement to extend marriage leave to 6 months obtained",
-  "from": "From",
-  "generate": "Generate shifts",
   "graceMinutes": {
     "label": "Grace period (minutes)"
   },
@@ -523,7 +520,6 @@
   "save": "Save",
   "schedule": {
     "scheduledHours": "{hours} h scheduled",
-    "applyTemplate": "Apply template",
     "moveShift": "Move shift",
     "undo": "Undo",
     "label": "Roster",
@@ -559,7 +555,8 @@
       "viewOptions": "{view, select, day {Day} week {Week} month {Month} other {Agenda}} view options"
     },
     "weekAbbreviation": "W",
-    "weekNumber": "Week {weekNumber}"
+    "weekNumber": "Week {weekNumber}",
+    "copyWeek": "Copy this week"
   },
   "scheduledTime": "Scheduled",
   "settings": {
@@ -670,17 +667,7 @@
       "table": "Salary withholding table"
     }
   },
-  "templateHint": "Generate shifts for this period. Overlaps or leave conflicts reject the whole batch.",
-  "templates": {
-    "actions": {
-      "create": "Add weekly template",
-      "delete": "Delete weekly template",
-      "update": "Edit weekly template"
-    },
-    "label": "Weekly templates"
-  },
   "terminatedAt": "Employment end (optional)",
-  "to": "To",
   "useCurrentLocation": "Use current location",
   "usedMinutes": "Used",
   "voluntaryLaborInsuranceFrom": "Voluntary labor insurance start month (under 5 employees)",
@@ -758,5 +745,32 @@
     "insuredCents": "Employees' insured amounts",
     "premiumCents": "Premium due",
     "unpublished": "{count} employees have no published payslip this month, so the insured total may be incomplete."
+  },
+  "copyWeek": {
+    "weeks": "Weeks to copy",
+    "weeksOption": "{weeks, plural, one {# week} other {# weeks}}",
+    "target": "Copies to {range}",
+    "confirm": "Create shifts",
+    "created": "{count, plural, one {# shift will be created} other {# shifts will be created}}",
+    "skipped": "{count, plural, one {# shift will be skipped} other {# shifts will be skipped}}",
+    "empty": "There are no shifts to copy this week.",
+    "result": "{created, plural, one {Created # shift} other {Created # shifts}}, skipped {skipped}",
+    "skipReasons": {
+      "holiday": "Public or employee holiday",
+      "restDay": "Rest day",
+      "regularLeave": "Regular day off",
+      "employeeNotEnabled": "Employee not active",
+      "workPermitRequired": "Outside work permit period",
+      "maternalNightWork": "No night work during pregnancy or nursing",
+      "shiftTooLong": "Shift too long",
+      "invalidBreak": "Break outside the shift",
+      "breakTooShort": "Break too short",
+      "continuousWorkTooLong": "More than 4 hours of continuous work",
+      "inconsistentDayKind": "Different day type already scheduled",
+      "payrollLocked": "Payroll published",
+      "reservedMakeupRest": "Overlaps make-up rest",
+      "overlappingShift": "Already scheduled",
+      "overlappingLeave": "On leave"
+    }
   }
 }

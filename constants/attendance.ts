@@ -24,10 +24,6 @@ export const ATTENDANCE_NAV_GROUPS: {
         permission: { shift: ["read"] },
       },
       {
-        path: "/attendance/schedule/templates",
-        permission: { shiftTemplate: ["read"] },
-      },
-      {
         path: "/attendance/schedule/holiday-substitutes",
         permission: { shift: ["read"] },
       },

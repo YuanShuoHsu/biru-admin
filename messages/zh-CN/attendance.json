@@ -195,7 +195,6 @@
     "monthlyOvertimeExceeded": "加班时数将超过当月上限（一般 46 小时，同意延长期间 54 小时）。",
     "negativeNetPay": "扣款大于应发薪资。",
     "noShifts": "此月份没有班表。",
-    "noTemplateDates": "这段日期范围内没有符合模板星期的日子。",
     "occupationalAccidentRateRequired": "请先在出勤设置选择劳保局核定的职灾保险行业别，才能计算雇主职灾保费。",
     "occupationalIndustryInvalid": "找不到这个职灾保险行业别，请重新选择。",
     "openingHoursRequired": "此员工未在本店投保健保，须依营业时间判断是否每个工作日都到班；请先到组织设置填写营业时间。",
@@ -265,8 +264,6 @@
   "eventDate": "事件日期",
   "events": "打卡时间明细",
   "extensionAgreed": "婚假延长至 6 个月已取得同意",
-  "from": "开始日期",
-  "generate": "生成班次",
   "graceMinutes": {
     "label": "迟到早退宽限（分钟）"
   },
@@ -523,7 +520,6 @@
   "save": "保存",
   "schedule": {
     "scheduledHours": "已排 {hours} 小时",
-    "applyTemplate": "套用模板",
     "moveShift": "移动班次",
     "undo": "撤销",
     "label": "班表",
@@ -559,7 +555,8 @@
       "viewOptions": "{view, select, day {日} week {周} month {月} other {议程}}视图选项"
     },
     "weekAbbreviation": "周",
-    "weekNumber": "第 {weekNumber} 周"
+    "weekNumber": "第 {weekNumber} 周",
+    "copyWeek": "复制本周排班"
   },
   "scheduledTime": "排定时段",
   "settings": {
@@ -670,17 +667,7 @@
       "table": "依薪资所得扣缴税额表"
     }
   },
-  "templateHint": "依模板生成期间内的班次；若有重叠或请假冲突，整批不会保存。",
-  "templates": {
-    "actions": {
-      "create": "新增班表模板",
-      "delete": "删除班表模板",
-      "update": "编辑班表模板"
-    },
-    "label": "每周班表模板"
-  },
   "terminatedAt": "离职日（选填）",
-  "to": "结束日期",
   "useCurrentLocation": "使用当前位置",
   "usedMinutes": "已用额度",
   "voluntaryLaborInsuranceFrom": "未满 5 人自愿投保劳保起始月",
@@ -758,5 +745,32 @@
     "insuredCents": "受雇者健保投保金额总额",
     "premiumCents": "应缴补充保费",
     "unpublished": "{count} 位员工本月薪资单尚未发布，投保金额总额可能不完整。"
+  },
+  "copyWeek": {
+    "weeks": "复制周数",
+    "weeksOption": "{weeks} 周",
+    "target": "复制到 {range}",
+    "confirm": "创建班次",
+    "created": "将创建 {count} 个班次",
+    "skipped": "以下 {count} 个班次将跳过",
+    "empty": "本周没有可复制的班次。",
+    "result": "已创建 {created} 个班次，跳过 {skipped} 个",
+    "skipReasons": {
+      "holiday": "法定节假日或员工假日",
+      "restDay": "休息日",
+      "regularLeave": "例假",
+      "employeeNotEnabled": "员工未在职或已停用",
+      "workPermitRequired": "不在工作许可期间",
+      "maternalNightWork": "妊娠或哺乳期间不得夜间工作",
+      "shiftTooLong": "班次过长",
+      "invalidBreak": "休息时段不在班次内",
+      "breakTooShort": "休息时间过短",
+      "continuousWorkTooLong": "连续工作超过 4 小时",
+      "inconsistentDayKind": "当天已有不同日别的班次",
+      "payrollLocked": "薪资已发布",
+      "reservedMakeupRest": "与补假重叠",
+      "overlappingShift": "已有班次",
+      "overlappingLeave": "已请假"
+    }
   }
 }

@@ -7,8 +7,6 @@ import Calendar from ".";
 
 import AttendanceTabsLayout from "../../AttendanceTabsLayout";
 
-import { MAX_PAGE_SIZE } from "@/constants/pagination";
-
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -23,7 +21,6 @@ import {
   getAttendanceCalendarShifts,
   getAttendanceEmployees,
   SCHEDULABLE_EMPLOYEES_QUERY,
-  getAttendanceTemplates,
 } from "@/utils/attendance";
 import { hasRolePermission } from "@/utils/organizations";
 
@@ -101,26 +98,18 @@ const CalendarPage = async ({ params, searchParams }: CalendarPageProps) => {
     attendanceRequest: ["read"],
   });
 
-  const [shifts, dayKinds, leaves, { employees }, { templates }] =
-    await Promise.all([
-      getAttendanceCalendarShifts(organization.slug, from, to, fetchOptions),
-      getAttendanceCalendarDayKinds(organization.slug, from, to, fetchOptions),
-      canReadLeaves
-        ? getAttendanceCalendarLeaves(organization.slug, from, to, fetchOptions)
-        : [],
-      getAttendanceEmployees(
-        organization.slug,
-        SCHEDULABLE_EMPLOYEES_QUERY,
-        fetchOptions,
-      ),
-      hasRolePermission(memberRole, { shiftTemplate: ["read"] })
-        ? getAttendanceTemplates(
-            organization.slug,
-            { pageSize: MAX_PAGE_SIZE },
-            fetchOptions,
-          )
-        : { templates: [] },
-    ]);
+  const [shifts, dayKinds, leaves, { employees }] = await Promise.all([
+    getAttendanceCalendarShifts(organization.slug, from, to, fetchOptions),
+    getAttendanceCalendarDayKinds(organization.slug, from, to, fetchOptions),
+    canReadLeaves
+      ? getAttendanceCalendarLeaves(organization.slug, from, to, fetchOptions)
+      : [],
+    getAttendanceEmployees(
+      organization.slug,
+      SCHEDULABLE_EMPLOYEES_QUERY,
+      fetchOptions,
+    ),
+  ]);
 
   return (
     <AttendanceTabsLayout memberRole={memberRole}>
@@ -133,7 +122,6 @@ const CalendarPage = async ({ params, searchParams }: CalendarPageProps) => {
         leaves={leaves}
         organization={organization}
         shifts={shifts}
-        templates={templates}
         date={date}
         view={view}
       />

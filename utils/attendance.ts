@@ -54,9 +54,6 @@ import type {
   AttendanceShift,
   AttendanceShiftFilterField,
   AttendanceShiftSortField,
-  AttendanceTemplate,
-  AttendanceTemplateFilterField,
-  AttendanceTemplateSortField,
   OccupationalIndustryRate,
   PayrollBlocker,
   PayrollStatement,
@@ -478,25 +475,6 @@ export const getAttendanceLeaveCases = cache(
     >(attendancePath(organizationSlug, scope, "leave-cases"), query, init);
 
     return { leaveCases, total };
-  },
-);
-
-export const getAttendanceTemplates = cache(
-  async (
-    organizationSlug: string,
-    query: GridQuery<
-      AttendanceTemplateFilterField,
-      AttendanceTemplateSortField
-    > = {},
-    init?: RequestInit,
-  ) => {
-    const { data: templates, total } = await getGrid<
-      AttendanceTemplate,
-      AttendanceTemplateFilterField,
-      AttendanceTemplateSortField
-    >(attendancePath(organizationSlug, "org", "templates"), query, init);
-
-    return { templates, total };
   },
 );
 

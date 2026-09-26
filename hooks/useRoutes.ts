@@ -34,7 +34,6 @@ import {
   Category,
   Checklist,
   ConfirmationNumber,
-  ContentCopy,
   Dashboard,
   DeleteForever,
   Devices,
@@ -166,12 +165,6 @@ const routes: Route[] = [
             label: "attendance.schedule.label",
             query: ["date", "organization", "view"],
             segment: "calendar",
-          },
-          {
-            icon: ContentCopy,
-            label: "attendance.templates.label",
-            query: ["organization", "page", "pageSize"],
-            segment: "templates",
           },
           {
             icon: EventRepeat,

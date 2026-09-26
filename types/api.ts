@@ -226,6 +226,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/attendance/shifts/copy-week": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 將指定週的平日班次複製到之後數週
+     * @description 無法排入的班次（假日、休息日、例假、已有班、請假等）會跳過並附上原因；七休一等整週法規檢查不通過則整批不建立。dryRun 只回傳預計結果。
+     */
+    post: operations["AttendanceShiftsController_copyWeek"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/attendance/shifts/{id}": {
     parameters: {
       query?: never;
@@ -271,59 +291,6 @@ export interface paths {
     put?: never;
     /** 打卡（上下班、休息起迄） */
     post: operations["AttendanceShiftsController_punch"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/organizations/{organizationSlug}/attendance/templates": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** 班表範本清單 */
-    get: operations["AttendanceTemplatesController_templates"];
-    put?: never;
-    /** 新增班表範本 */
-    post: operations["AttendanceTemplatesController_createTemplate"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/organizations/{organizationSlug}/attendance/templates/{id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** 刪除班表範本 */
-    delete: operations["AttendanceTemplatesController_deleteTemplate"];
-    options?: never;
-    head?: never;
-    /** 更新班表範本 */
-    patch: operations["AttendanceTemplatesController_updateTemplate"];
-    trace?: never;
-  };
-  "/api/organizations/{organizationSlug}/attendance/templates/{id}/generate": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** 依範本產生指定期間的班表 */
-    post: operations["AttendanceTemplatesController_generateTemplate"];
     delete?: never;
     options?: never;
     head?: never;
@@ -2517,7 +2484,6 @@ export interface components {
       | "memberNotFound"
       | "menstrualDayLimit"
       | "monthlyOvertimeExceeded"
-      | "noTemplateDates"
       | "outsideShiftWindow"
       | "occupationalIndustryInvalid"
       | "overlappingAttendance"
@@ -2968,6 +2934,51 @@ export interface components {
       /** Format: date-time */
       createdAt: string;
     };
+    CopyAttendanceWeekDto: {
+      /** @description 來源週第一天（YYYY-MM-DD），往後 7 天為來源 */
+      from: string;
+      weeks: number;
+      /** @description 只回傳預計結果，不建立班次 */
+      dryRun?: boolean;
+    };
+    AttendanceCopiedShiftResponseDto: {
+      sourceShiftId: string;
+      employeeId: string;
+      employeeName: string;
+      startsAt: string;
+      endsAt: string;
+      /** @description dryRun 時不回傳 */
+      id?: string;
+    };
+    /** @enum {string} */
+    AttendanceCopySkipReason:
+      | "holiday"
+      | "restDay"
+      | "regularLeave"
+      | "employeeNotEnabled"
+      | "workPermitRequired"
+      | "maternalNightWork"
+      | "shiftTooLong"
+      | "invalidBreak"
+      | "breakTooShort"
+      | "continuousWorkTooLong"
+      | "inconsistentDayKind"
+      | "payrollLocked"
+      | "reservedMakeupRest"
+      | "overlappingShift"
+      | "overlappingLeave";
+    AttendanceSkippedShiftResponseDto: {
+      sourceShiftId: string;
+      employeeId: string;
+      employeeName: string;
+      startsAt: string;
+      endsAt: string;
+      reason: components["schemas"]["AttendanceCopySkipReason"];
+    };
+    AttendanceCopyWeekResponseDto: {
+      created: components["schemas"]["AttendanceCopiedShiftResponseDto"][];
+      skipped: components["schemas"]["AttendanceSkippedShiftResponseDto"][];
+    };
     UpdateAttendanceShiftDto: {
       breaks: components["schemas"]["ShiftBreakDto"][];
       /** @description 員工設有固定例假日與休息日時由星期推得；未設定者移到其他日期時必填，同日省略則沿用原日別 */
@@ -2994,73 +3005,6 @@ export interface components {
       id: string;
       /** Format: date-time */
       occurredAt: string;
-    };
-    /** @enum {string} */
-    AttendanceTemplateFilterField:
-      | "name"
-      | "employeeName"
-      | "startTime"
-      | "endTime"
-      | "dayKind"
-      | "weekday"
-      | "paidBreak";
-    /** @enum {string} */
-    AttendanceTemplateSortField:
-      | "name"
-      | "employeeName"
-      | "startTime"
-      | "endTime"
-      | "dayKind"
-      | "weekday"
-      | "paidBreak";
-    TemplateBreakDto: {
-      startTime: string;
-      endTime: string;
-    };
-    AttendanceTemplateResponseDto: {
-      id: string;
-      organizationId: string;
-      employeeId: string;
-      employeeName: string;
-      name: string;
-      weekday: number;
-      startTime: string;
-      endTime: string;
-      paidBreak: boolean;
-      breaks: components["schemas"]["TemplateBreakDto"][];
-      dayKind: components["schemas"]["AttendanceScheduledDayKind"];
-    };
-    AttendanceTemplatesResponseDto: {
-      data: components["schemas"]["AttendanceTemplateResponseDto"][];
-      total: number;
-    };
-    SaveAttendanceTemplateDto: {
-      breaks: components["schemas"]["TemplateBreakDto"][];
-      /** @description 員工設有固定例假日與休息日時由星期推得，未設定者必填 */
-      dayKind?: components["schemas"]["AttendanceScheduledDayKind"];
-      /** Format: uuid */
-      employeeId: string;
-      name: string;
-      weekday: number;
-      startTime: string;
-      endTime: string;
-      paidBreak: boolean;
-    };
-    AttendanceTemplateRecordResponseDto: {
-      id: string;
-      organizationId: string;
-      employeeId: string;
-      name: string;
-      weekday: number;
-      startTime: string;
-      endTime: string;
-      paidBreak: boolean;
-      breaks: components["schemas"]["TemplateBreakDto"][];
-      dayKind: components["schemas"]["AttendanceScheduledDayKind"];
-    };
-    GenerateAttendanceTemplateDto: {
-      from: string;
-      to: string;
     };
     /** @enum {string} */
     AttendanceRequestFilterField:
@@ -6956,6 +6900,36 @@ export interface operations {
       };
     };
   };
+  AttendanceShiftsController_copyWeek: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CopyAttendanceWeekDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceCopyWeekResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   AttendanceShiftsController_updateShift: {
     parameters: {
       query?: never;
@@ -7035,165 +7009,6 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["AttendancePunchResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  AttendanceTemplatesController_templates: {
-    parameters: {
-      query?: {
-        filterOperator?: components["schemas"]["FilterOperator"];
-        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
-        quickFilterEnums?: string[];
-        sortDirection?: components["schemas"]["SortDirection"];
-        filterField?: components["schemas"]["AttendanceTemplateFilterField"];
-        sortBy?: components["schemas"]["AttendanceTemplateSortField"];
-        limit?: number;
-        offset?: number;
-        filterValue?: string;
-        quickFilterValue?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["AttendanceTemplatesResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  AttendanceTemplatesController_createTemplate: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["SaveAttendanceTemplateDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["AttendanceTemplateRecordResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  AttendanceTemplatesController_deleteTemplate: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["AttendanceIdResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  AttendanceTemplatesController_updateTemplate: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["SaveAttendanceTemplateDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["AttendanceTemplateRecordResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  AttendanceTemplatesController_generateTemplate: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["GenerateAttendanceTemplateDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["AttendanceShiftRecordResponseDto"][];
         };
       };
       /** @description Internal server error */
@@ -12620,7 +12435,6 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "memberNotFound",
   "menstrualDayLimit",
   "monthlyOvertimeExceeded",
-  "noTemplateDates",
   "outsideShiftWindow",
   "occupationalIndustryInvalid",
   "overlappingAttendance",
@@ -12780,27 +12594,24 @@ export const attendanceShiftResponseDtoStateValues: ReadonlyArray<
 export const attendanceScheduledDayKindValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceScheduledDayKind"]
 > = ["workday", "restDay", "regularLeave"];
-export const attendanceTemplateFilterFieldValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["AttendanceTemplateFilterField"]
+export const attendanceCopySkipReasonValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["AttendanceCopySkipReason"]
 > = [
-  "name",
-  "employeeName",
-  "startTime",
-  "endTime",
-  "dayKind",
-  "weekday",
-  "paidBreak",
-];
-export const attendanceTemplateSortFieldValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["AttendanceTemplateSortField"]
-> = [
-  "name",
-  "employeeName",
-  "startTime",
-  "endTime",
-  "dayKind",
-  "weekday",
-  "paidBreak",
+  "holiday",
+  "restDay",
+  "regularLeave",
+  "employeeNotEnabled",
+  "workPermitRequired",
+  "maternalNightWork",
+  "shiftTooLong",
+  "invalidBreak",
+  "breakTooShort",
+  "continuousWorkTooLong",
+  "inconsistentDayKind",
+  "payrollLocked",
+  "reservedMakeupRest",
+  "overlappingShift",
+  "overlappingLeave",
 ];
 export const attendanceRequestFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceRequestFilterField"]

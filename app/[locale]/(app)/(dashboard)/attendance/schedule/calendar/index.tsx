@@ -8,17 +8,17 @@ import { closeSnackbar, enqueueSnackbar } from "notistack";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 
+import CopyWeekDialog from "./CopyWeekDialog";
 import DayKindDialog from "./DayKindDialog";
 
 import EventsDialogContent from "../../EventsDialogContent";
-import GenerateDialog from "../../GenerateDialog";
 import ShiftDialog from "../../ShiftDialog";
 
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
-import { Add } from "@mui/icons-material";
+import { Add, ContentCopy } from "@mui/icons-material";
 import { Box, Button, Stack } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import {
@@ -37,8 +37,8 @@ import type {
   AttendanceCalendarDayKinds,
   AttendanceEmployee,
   AttendanceRequest,
+  AttendanceCopyWeekResult,
   AttendanceShift,
-  AttendanceTemplate,
 } from "@/types/attendance";
 import type { attendanceScheduledDayKindValues } from "@/types/api";
 import type { Organization } from "@/types/organizations";
@@ -98,7 +98,6 @@ interface CalendarProps {
   organization: Organization;
   shifts: AttendanceShift[];
   date: string;
-  templates: AttendanceTemplate[];
   view: AttendanceCalendarView;
 }
 
@@ -112,7 +111,6 @@ const Calendar = ({
   leaves: initialLeaves,
   organization: { openingHours = "", slug: organizationSlug },
   shifts: initialShifts,
-  templates,
   view: initialView,
 }: CalendarProps) => {
   const { setDialog } = useDialogStore((state) => state);
@@ -316,24 +314,67 @@ const Calendar = ({
     [employees, mutate, openingHours, organizationSlug, setDialog, tAttendance],
   );
 
-  const handleApplyTemplate = useCallback(
+  const handleCopied = useCallback(
+    ({ created, skipped }: AttendanceCopyWeekResult) => {
+      mutate();
+
+      enqueueSnackbar(
+        tAttendance("copyWeek.result", {
+          created: created.length,
+          skipped: skipped.length,
+        }),
+        {
+          action: (key) => (
+            <Button
+              color="inherit"
+              onClick={async () => {
+                closeSnackbar(key);
+
+                try {
+                  await Promise.all(
+                    created.map(({ id }) =>
+                      fetcher(
+                        `${attendancePath(organizationSlug, "org", "shifts")}/${id}/cancel`,
+                        { method: "PATCH" },
+                      ),
+                    ),
+                  );
+                } catch (error) {
+                  enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+                    variant: "error",
+                  });
+                }
+
+                mutate();
+              }}
+              size="small"
+            >
+              {tAttendance("schedule.undo")}
+            </Button>
+          ),
+          variant: "success",
+        },
+      );
+    },
+    [mutate, organizationSlug, tAttendance],
+  );
+
+  const handleCopyWeek = useCallback(
     () =>
       setDialog({
-        confirmText: tAttendance("save"),
+        confirmText: tAttendance("copyWeek.confirm"),
         content: (
-          <GenerateDialog
-            from={from}
-            mutate={mutate}
+          <CopyWeekDialog
+            from={range.from.format("YYYY-MM-DD")}
+            onCopied={handleCopied}
             organizationSlug={organizationSlug}
-            templates={templates}
-            to={range.to.subtract(1, "day").toISOString()}
           />
         ),
-        formId: "attendance-template-generate-form",
+        formId: "attendance-copy-week-form",
         open: true,
-        title: tAttendance("generate"),
+        title: tAttendance("schedule.copyWeek"),
       }),
-    [from, mutate, organizationSlug, range, setDialog, tAttendance, templates],
+    [handleCopied, organizationSlug, range, setDialog, tAttendance],
   );
 
   const handleViewEvents = useCallback(
@@ -569,9 +610,13 @@ const Calendar = ({
           >
             {tAttendance("shifts.actions.create")}
           </Button>
-          {templates.length > 0 && (
-            <Button onClick={handleApplyTemplate} size="small">
-              {tAttendance("schedule.applyTemplate")}
+          {view === "week" && (
+            <Button
+              onClick={handleCopyWeek}
+              size="small"
+              startIcon={<ContentCopy />}
+            >
+              {tAttendance("schedule.copyWeek")}
             </Button>
           )}
         </ToolbarStack>

@@ -18,8 +18,6 @@ import {
   attendanceRequestSortFieldValues,
   attendanceShiftFilterFieldValues,
   attendanceShiftSortFieldValues,
-  attendanceTemplateFilterFieldValues,
-  attendanceTemplateSortFieldValues,
   type components,
   payrollBlockerValues,
   payrollStatementFilterFieldValues,
@@ -68,8 +66,6 @@ export type AttendanceLeaveBalancePage =
   components["schemas"]["AttendanceLeaveBalancesResponseDto"];
 export type AttendanceLeaveCasePage =
   components["schemas"]["AttendanceLeaveCasesResponseDto"];
-export type AttendanceTemplatePage =
-  components["schemas"]["AttendanceTemplatesResponseDto"];
 export type AttendanceParentalChild =
   components["schemas"]["AttendanceParentalChildResponseDto"];
 export type AttendanceParentalChildPage =
@@ -97,8 +93,8 @@ export type AttendanceSettings =
   components["schemas"]["AttendanceSettingsResponseDto"];
 export type OccupationalIndustryRate =
   components["schemas"]["OccupationalIndustryRateResponseDto"];
-export type AttendanceTemplate =
-  components["schemas"]["AttendanceTemplateResponseDto"];
+export type AttendanceCopyWeekResult =
+  components["schemas"]["AttendanceCopyWeekResponseDto"];
 export type PayrollStatement =
   components["schemas"]["PayrollStatementResponseDto"];
 export type PayrollStatementPage =
@@ -124,8 +120,6 @@ export type AttendanceHolidaySubstituteSortField =
   (typeof attendanceHolidaySubstituteSortFieldValues)[number];
 export type AttendanceLeaveCaseFilterField =
   (typeof attendanceLeaveCaseFilterFieldValues)[number];
-export type AttendanceTemplateFilterField =
-  (typeof attendanceTemplateFilterFieldValues)[number];
 export type AttendanceParentalChildFilterField =
   (typeof attendanceParentalChildFilterFieldValues)[number];
 export type AttendanceParentalReturnFilterField =
@@ -143,8 +137,6 @@ export type AttendanceLeaveBalanceSortField =
   (typeof attendanceLeaveBalanceSortFieldValues)[number];
 export type AttendanceLeaveCaseSortField =
   (typeof attendanceLeaveCaseSortFieldValues)[number];
-export type AttendanceTemplateSortField =
-  (typeof attendanceTemplateSortFieldValues)[number];
 export type AttendanceParentalChildSortField =
   (typeof attendanceParentalChildSortFieldValues)[number];
 export type AttendanceParentalReturnSortField =

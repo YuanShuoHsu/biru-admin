@@ -98,10 +98,6 @@
   "employee": {
     "notSelected": "従業員を選択してください。"
   },
-  "endDate": {
-    "beforeStartDate": "終了日は開始日より前にできません。",
-    "invalid": "終了日が無効です。"
-  },
   "endTime": {
     "invalid": "終了時刻の形式が無効です。"
   },
@@ -266,9 +262,6 @@
     "letter": "スラッグには少なくとも1つのアルファベットを含める必要があります。",
     "required": "スラッグは必須です。"
   },
-  "startDate": {
-    "invalid": "開始日が無効です。"
-  },
   "startTime": {
     "invalid": "開始時刻の形式が無効です。"
   },
@@ -288,12 +281,6 @@
   "telephone": {
     "invalid": "電話番号が無効です。",
     "required": "電話番号は必須です。"
-  },
-  "template": {
-    "notSelected": "シフト雛形を選択してください。"
-  },
-  "templateName": {
-    "required": "テンプレート名は必須です。"
   },
   "terminatedAt": {
     "afterHiredAt": "退職日時は入社日時より後でなければなりません。"

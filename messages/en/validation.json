@@ -98,10 +98,6 @@
   "employee": {
     "notSelected": "Please select your employee."
   },
-  "endDate": {
-    "beforeStartDate": "End date cannot be before start date.",
-    "invalid": "End date is not valid."
-  },
   "endTime": {
     "invalid": "End time format is invalid."
   },
@@ -266,9 +262,6 @@
     "letter": "Slug must contain at least one letter.",
     "required": "Slug is required."
   },
-  "startDate": {
-    "invalid": "Start date is not valid."
-  },
   "startTime": {
     "invalid": "Start time format is invalid."
   },
@@ -288,12 +281,6 @@
   "telephone": {
     "invalid": "Phone is not valid.",
     "required": "Phone is required."
-  },
-  "template": {
-    "notSelected": "Please select a shift template."
-  },
-  "templateName": {
-    "required": "Template name is required."
   },
   "terminatedAt": {
     "afterHiredAt": "Employment end must be after employment start."

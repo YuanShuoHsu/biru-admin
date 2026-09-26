@@ -195,7 +195,6 @@
     "monthlyOvertimeExceeded": "당월 연장 근무 상한(일반 46시간, 동의 기간 54시간)을 초과합니다.",
     "negativeNetPay": "공제액이 총급여를 초과합니다.",
     "noShifts": "해당 월에 근무 일정이 없습니다.",
-    "noTemplateDates": "이 기간에 템플릿 요일에 해당하는 날짜가 없습니다.",
     "occupationalAccidentRateRequired": "고용주 산재보험료를 계산하려면 근태 설정에서 노동보험국이 인정한 산재보험 업종을 선택하세요.",
     "occupationalIndustryInvalid": "이 산재보험 업종을 찾을 수 없습니다. 다시 선택하세요.",
     "openingHoursRequired": "이 직원은 당점에서 건강보험에 가입하지 않았으므로 매 영업일 출근 여부를 영업시간으로 판단해야 합니다. 먼저 조직 설정에서 영업시간을 입력하세요.",
@@ -265,8 +264,6 @@
   "eventDate": "사유 발생일",
   "events": "기록 내역",
   "extensionAgreed": "결혼 휴가 6개월 연장 합의 완료",
-  "from": "시작일",
-  "generate": "근무 생성",
   "graceMinutes": {
     "label": "유예 시간(분)"
   },
@@ -523,7 +520,6 @@
   "save": "저장",
   "schedule": {
     "scheduledHours": "{hours}시간 배정됨",
-    "applyTemplate": "템플릿 적용",
     "moveShift": "근무 이동",
     "undo": "실행 취소",
     "label": "근무표",
@@ -559,7 +555,8 @@
       "viewOptions": "{view, select, day {일} week {주} month {월} other {일정 목록}} 보기 옵션"
     },
     "weekAbbreviation": "주",
-    "weekNumber": "{weekNumber}주차"
+    "weekNumber": "{weekNumber}주차",
+    "copyWeek": "이번 주 근무 복사"
   },
   "scheduledTime": "예정 시간",
   "settings": {
@@ -670,17 +667,7 @@
       "table": "급여소득 원천징수 세액표 적용"
     }
   },
-  "templateHint": "기간 내 근무를 생성합니다. 중복이나 휴가 충돌이 있으면 전체가 저장되지 않습니다.",
-  "templates": {
-    "actions": {
-      "create": "주간 근무 템플릿 추가",
-      "delete": "주간 근무 템플릿 삭제",
-      "update": "주간 근무 템플릿 편집"
-    },
-    "label": "주간 근무 템플릿"
-  },
   "terminatedAt": "퇴사일 (선택)",
-  "to": "종료일",
   "useCurrentLocation": "현재 위치 사용",
   "usedMinutes": "사용 시간",
   "voluntaryLaborInsuranceFrom": "5명 미만 노동보험 임의 가입 시작 월",
@@ -758,5 +745,32 @@
     "insuredCents": "피보험자 보수월액 총액",
     "premiumCents": "납부할 보충보험료",
     "unpublished": "이번 달 급여명세서가 게시되지 않은 직원이 {count}명 있어 보수월액 총액이 불완전할 수 있습니다."
+  },
+  "copyWeek": {
+    "weeks": "복사할 주 수",
+    "weeksOption": "{weeks}주",
+    "target": "복사 대상: {range}",
+    "confirm": "근무 생성",
+    "created": "근무 {count}건을 생성합니다",
+    "skipped": "다음 {count}건은 건너뜁니다",
+    "empty": "이번 주에 복사할 근무가 없습니다.",
+    "result": "{created}건 생성, {skipped}건 건너뜀",
+    "skipReasons": {
+      "holiday": "공휴일 또는 직원 휴일",
+      "restDay": "휴무일",
+      "regularLeave": "정기 휴일",
+      "employeeNotEnabled": "재직 중이 아닌 직원",
+      "workPermitRequired": "취업 허가 기간 외",
+      "maternalNightWork": "임신·수유 중 야간 근무 불가",
+      "shiftTooLong": "근무가 너무 김",
+      "invalidBreak": "휴게가 근무 시간 밖",
+      "breakTooShort": "휴게 시간이 너무 짧음",
+      "continuousWorkTooLong": "연속 근무 4시간 초과",
+      "inconsistentDayKind": "같은 날 다른 근무일 구분 존재",
+      "payrollLocked": "급여 게시됨",
+      "reservedMakeupRest": "보상 휴일과 겹침",
+      "overlappingShift": "기존 근무와 겹침",
+      "overlappingLeave": "휴가와 겹침"
+    }
   }
 }
