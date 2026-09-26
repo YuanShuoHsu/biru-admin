@@ -521,6 +521,7 @@
   "schedule": {
     "scheduledHours": "已排 {hours} 小時",
     "moveShift": "移動班次",
+    "shiftUpdated": "已更新 {name} 的班次",
     "undo": "復原",
     "label": "班表",
     "allDay": "全天",

@@ -521,6 +521,7 @@
   "schedule": {
     "scheduledHours": "{hours} 時間シフト済み",
     "moveShift": "シフトを移動",
+    "shiftUpdated": "{name} のシフトを更新しました",
     "undo": "元に戻す",
     "label": "シフト表",
     "allDay": "終日",

@@ -521,6 +521,7 @@
   "schedule": {
     "scheduledHours": "{hours} h scheduled",
     "moveShift": "Move shift",
+    "shiftUpdated": "Updated {name}'s shift",
     "undo": "Undo",
     "label": "Roster",
     "allDay": "All day",

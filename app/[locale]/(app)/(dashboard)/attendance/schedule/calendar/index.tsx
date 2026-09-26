@@ -481,28 +481,31 @@ const Calendar = ({
       try {
         await saveShift(shift.id, change);
 
-        enqueueSnackbar(tAttendance("success"), {
-          action: (key) => (
-            <Button
-              color="inherit"
-              onClick={async () => {
-                closeSnackbar(key);
+        enqueueSnackbar(
+          tAttendance("schedule.shiftUpdated", { name: shift.employeeName }),
+          {
+            action: (key) => (
+              <Button
+                color="inherit"
+                onClick={async () => {
+                  closeSnackbar(key);
 
-                try {
-                  await saveShift(shift.id, original);
-                } catch (error) {
-                  enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
-                    variant: "error",
-                  });
-                }
-              }}
-              size="small"
-            >
-              {tAttendance("schedule.undo")}
-            </Button>
-          ),
-          variant: "success",
-        });
+                  try {
+                    await saveShift(shift.id, original);
+                  } catch (error) {
+                    enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+                      variant: "error",
+                    });
+                  }
+                }}
+                size="small"
+              >
+                {tAttendance("schedule.undo")}
+              </Button>
+            ),
+            variant: "success",
+          },
+        );
       } catch (error) {
         enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
           variant: "error",
