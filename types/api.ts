@@ -2512,6 +2512,7 @@ export interface components {
       | "requestAlreadyReviewed"
       | "reservedMakeupRest"
       | "restDayDesignationConflict"
+      | "scheduledDailyHoursExceeded"
       | "settingsRequired"
       | "shiftHasCorrection"
       | "shiftHasRecords"
@@ -2955,6 +2956,7 @@ export interface components {
       | "workPermitRequired"
       | "maternalNightWork"
       | "shiftTooLong"
+      | "scheduledDailyHoursExceeded"
       | "inconsistentDayKind"
       | "payrollLocked"
       | "reservedMakeupRest"
@@ -12455,6 +12457,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "requestAlreadyReviewed",
   "reservedMakeupRest",
   "restDayDesignationConflict",
+  "scheduledDailyHoursExceeded",
   "settingsRequired",
   "shiftHasCorrection",
   "shiftHasRecords",
@@ -12593,6 +12596,7 @@ export const attendanceCopySkipReasonValues: ReadonlyArray<
   "workPermitRequired",
   "maternalNightWork",
   "shiftTooLong",
+  "scheduledDailyHoursExceeded",
   "inconsistentDayKind",
   "payrollLocked",
   "reservedMakeupRest",
