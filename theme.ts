@@ -117,6 +117,9 @@ const theme = createTheme({
             "border-color",
             "color",
           ]),
+          "& .MuiSvgIcon-root": {
+            transition: "none",
+          },
           ...(ownerState.variant === "outlined" && {
             backgroundColor: theme.vars.palette.background.paper,
           }),
@@ -130,11 +133,13 @@ const theme = createTheme({
     },
     MuiChip: {
       styleOverrides: {
+        label: ({ theme }) => ({
+          transition: theme.transitions.create("color"),
+        }),
         root: ({ theme }) => ({
           transition: theme.transitions.create([
             "background-color",
             "border-color",
-            "color",
           ]),
         }),
       },
@@ -294,7 +299,6 @@ const theme = createTheme({
                     "agendaViewWeekDayNameLabel",
                     "agendaViewWeekNumberLabel",
                     "agendaViewYearAndMonthLabel",
-                    "dayGridEvent",
                     "dayGridEventPlaceholder",
                     "dayGridEventTime",
                     "dayGridEventTitle",
@@ -302,7 +306,6 @@ const theme = createTheme({
                     "dayTimeGridHeaderDayName",
                     "dayTimeGridHeaderDayNumber",
                     "dayTimeGridTimeAxisText",
-                    "eventItemCard",
                     "eventItemTime",
                     "eventItemTitle",
                     "headerToolbarWeekNumber",
@@ -313,7 +316,6 @@ const theme = createTheme({
                     "monthViewHeaderCell",
                     "monthViewWeekHeaderCell",
                     "monthViewWeekNumberCell",
-                    "timeGridEvent",
                     "timeGridEventPlaceholder",
                     "timeGridEventTime",
                   ],
@@ -323,6 +325,7 @@ const theme = createTheme({
                   [
                     "agendaViewDayHeaderCell",
                     "agendaViewRow",
+                    "dayGridEvent",
                     "dayTimeGridAllDayEventsCell",
                     "dayTimeGridAllDayEventsGrid",
                     "dayTimeGridColumn",
@@ -332,12 +335,14 @@ const theme = createTheme({
                     "dayTimeGridScrollablePlaceholder",
                     "dayTimeGridTimeAxisCell::after",
                     "eventColorIndicator",
+                    "eventItemCard",
                     "monthViewCell",
                     "monthViewCellNumberButton",
                     "monthViewHeader",
                     "monthViewRow",
                     "resourceLegendColor",
                     "sidePanelDivider",
+                    "timeGridEvent",
                     "timeGridEvent::before",
                   ],
                 ],
@@ -384,6 +389,9 @@ const theme = createTheme({
     },
     MuiTab: {
       styleOverrides: {
+        icon: {
+          transition: "none",
+        },
         root: ({ theme }) => ({
           transition: theme.transitions.create("color"),
         }),
