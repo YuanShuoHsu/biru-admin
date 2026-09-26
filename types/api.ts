@@ -226,6 +226,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/attendance/shifts/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** 修改班別時段 */
+    patch: operations["AttendanceShiftsController_updateShift"];
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/attendance/shifts/{id}/cancel": {
     parameters: {
       query?: never;
@@ -2950,6 +2967,14 @@ export interface components {
       status: string;
       /** Format: date-time */
       createdAt: string;
+    };
+    UpdateAttendanceShiftDto: {
+      breaks: components["schemas"]["ShiftBreakDto"][];
+      /** @description 員工設有固定例假日與休息日時由星期推得；未設定者移到其他日期時必填，同日省略則沿用原日別 */
+      dayKind?: components["schemas"]["AttendanceScheduledDayKind"];
+      startsAt: string;
+      endsAt: string;
+      paidBreak: boolean;
     };
     AttendanceIdResponseDto: {
       id: string;
@@ -6920,6 +6945,38 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["AttendanceCalendarDayKindsResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AttendanceShiftsController_updateShift: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateAttendanceShiftDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceShiftRecordResponseDto"];
         };
       };
       /** @description Internal server error */

@@ -432,7 +432,7 @@ export const getSchedulesOutsideOpeningHours = (
   return result;
 };
 
-const getDaySchedules = (value: string, at: Dayjs): Schedule[] => {
+export const getDaySchedules = (value: string, at: Dayjs): Schedule[] => {
   const day = DAYS[(at.day() + 6) % 7];
 
   return getSchedules(value).filter(

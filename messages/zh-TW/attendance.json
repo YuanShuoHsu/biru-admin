@@ -524,6 +524,8 @@
   "schedule": {
     "scheduledHours": "已排 {hours} 小時",
     "applyTemplate": "套用範本",
+    "moveShift": "移動班次",
+    "undo": "復原",
     "label": "班表",
     "allDay": "全天",
     "calendarContent": "班表內容",
@@ -548,9 +550,12 @@
       "agenda": "議程"
     },
     "preferences": {
+      "amPm12h": "12 小時制（下午1:00）",
+      "hour24h": "24 小時制（13:00）",
       "label": "偏好設定",
       "showWeekends": "顯示週末",
       "showWeekNumber": "顯示週次",
+      "timeFormat": "時間格式",
       "viewOptions": "{view, select, day {日} week {週} month {月} other {議程}}檢視選項"
     },
     "weekAbbreviation": "週",

@@ -524,6 +524,8 @@
   "schedule": {
     "scheduledHours": "{hours} 時間シフト済み",
     "applyTemplate": "雛形を適用",
+    "moveShift": "シフトを移動",
+    "undo": "元に戻す",
     "label": "シフト表",
     "allDay": "終日",
     "calendarContent": "シフト表",
@@ -548,9 +550,12 @@
       "agenda": "予定リスト"
     },
     "preferences": {
+      "amPm12h": "12時間制（午後1:00）",
+      "hour24h": "24時間制（13:00）",
       "label": "表示設定",
       "showWeekends": "週末を表示",
       "showWeekNumber": "週番号を表示",
+      "timeFormat": "時刻の形式",
       "viewOptions": "{view, select, day {日} week {週} month {月} other {予定リスト}}表示のオプション"
     },
     "weekAbbreviation": "週",

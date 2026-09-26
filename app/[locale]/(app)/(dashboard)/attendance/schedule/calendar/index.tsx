@@ -4,9 +4,11 @@ import dayjs from "dayjs";
 import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { useFormatter, useTranslations } from "next-intl";
-import { enqueueSnackbar } from "notistack";
+import { closeSnackbar, enqueueSnackbar } from "notistack";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
+
+import DayKindDialog from "./DayKindDialog";
 
 import EventsDialogContent from "../../EventsDialogContent";
 import GenerateDialog from "../../GenerateDialog";
@@ -38,6 +40,7 @@ import type {
   AttendanceShift,
   AttendanceTemplate,
 } from "@/types/attendance";
+import type { attendanceScheduledDayKindValues } from "@/types/api";
 import type { Organization } from "@/types/organizations";
 
 import {
@@ -51,6 +54,7 @@ import {
   type AttendanceCalendarView,
 } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+import { getDaySchedules, toTimeDayjs } from "@/utils/openingHours";
 import { scheduledHours } from "@/utils/scheduledHours";
 
 dayjs.extend(utc);
@@ -77,10 +81,18 @@ const EMPLOYEE_COLORS: SchedulerEventColor[] = [
   "lime",
 ];
 
+const storeDate = (value: string | Date) =>
+  dayjs(value).tz(STORE_TIMEZONE).format("YYYY-MM-DD");
+
+type ShiftChange = Pick<
+  AttendanceShift,
+  "breaks" | "endsAt" | "paidBreak" | "startsAt"
+> & { dayKind?: (typeof attendanceScheduledDayKindValues)[number] };
+
 interface CalendarProps {
-  canCancel: boolean;
   canCreate: boolean;
   canReadLeaves: boolean;
+  canUpdate: boolean;
   dayKinds: AttendanceCalendarDayKinds;
   employees: AttendanceEmployee[];
   leaves: AttendanceRequest[];
@@ -92,9 +104,9 @@ interface CalendarProps {
 }
 
 const Calendar = ({
-  canCancel,
   canCreate,
   canReadLeaves,
+  canUpdate,
   date: initialDate,
   dayKinds: initialDayKinds,
   employees,
@@ -225,24 +237,26 @@ const Calendar = ({
           ...(shift.dayKind !== "workday" && { color: "grey" as const }),
           end: shift.endsAt,
           id: shift.id,
-          readOnly: true,
+          readOnly: !canUpdate || shift.state !== "scheduled",
           resource: shift.employeeId,
           start: shift.startsAt,
           title: shift.employeeName,
         })),
     ],
-    [dayKinds, holidays, leaves, shifts, tAttendance],
+    [canUpdate, dayKinds, holidays, leaves, shifts, tAttendance],
   );
 
   const localeText = useMemo<EventCalendarProps<object, object>["localeText"]>(
     () => ({
       allDay: tAttendance("schedule.allDay"),
+      amPm12h: tAttendance("schedule.preferences.amPm12h"),
       calendarContentAriaLabel: tAttendance("schedule.calendarContent"),
       closeSidePanel: tAttendance("schedule.closeSidePanel"),
       eventContextMenuAriaLabel: tAttendance("schedule.eventActions"),
       eventItemMultiDayLabel: (date) =>
         tAttendance("schedule.endsOn", { date }),
       hiddenEvents: (count) => tAttendance("schedule.moreEvents", { count }),
+      hour24h: tAttendance("schedule.preferences.hour24h"),
       miniCalendarGoToNextMonth: tAttendance("schedule.nextMonth"),
       miniCalendarGoToPreviousMonth: tAttendance("schedule.previousMonth"),
       miniCalendarLabel: tAttendance("schedule.miniCalendar"),
@@ -265,6 +279,7 @@ const Calendar = ({
       showEventDetails: tAttendance("schedule.showDetails"),
       showWeekNumber: tAttendance("schedule.preferences.showWeekNumber"),
       showWeekends: tAttendance("schedule.preferences.showWeekends"),
+      timeFormat: tAttendance("schedule.preferences.timeFormat"),
       today: tAttendance("schedule.today"),
       viewSpecificOptions: (view) =>
         tAttendance("schedule.preferences.viewOptions", { view }),
@@ -324,7 +339,7 @@ const Calendar = ({
 
   const handleViewEvents = useCallback(
     (shift: AttendanceShift) => {
-      const cancellable = canCancel && shift.state === "scheduled";
+      const cancellable = canUpdate && shift.state === "scheduled";
 
       setDialog({
         confirmText: tAttendance("cancelShift"),
@@ -353,7 +368,7 @@ const Calendar = ({
         title: tAttendance("events"),
       });
     },
-    [canCancel, mutate, organizationSlug, setDialog, tAttendance],
+    [canUpdate, mutate, organizationSlug, setDialog, tAttendance],
   );
 
   const handleEventEditingStart = useCallback<
@@ -381,6 +396,163 @@ const Calendar = ({
     [handleCreate, handleViewEvents, shifts],
   );
 
+  const saveShift = useCallback(
+    (id: string, change: ShiftChange) =>
+      mutate(
+        async () => {
+          await fetcher(
+            `${attendancePath(organizationSlug, "org", "shifts")}/${id}`,
+            {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(change),
+            },
+          );
+
+          return undefined;
+        },
+        {
+          optimisticData: (current = shifts) =>
+            current.map((item) =>
+              item.id === id
+                ? { ...item, ...change, dayKind: item.dayKind }
+                : item,
+            ),
+          populateCache: false,
+          revalidate: true,
+          rollbackOnError: true,
+        },
+      ),
+    [mutate, organizationSlug, shifts],
+  );
+
+  const updateShift = useCallback(
+    async (shift: AttendanceShift, change: ShiftChange) => {
+      const original: ShiftChange = {
+        breaks: shift.breaks,
+        endsAt: shift.endsAt,
+        paidBreak: shift.paidBreak,
+        startsAt: shift.startsAt,
+        ...(change.dayKind && {
+          dayKind: shift.dayKind === "holiday" ? "workday" : shift.dayKind,
+        }),
+      };
+
+      try {
+        await saveShift(shift.id, change);
+
+        enqueueSnackbar(tAttendance("success"), {
+          action: (key) => (
+            <Button
+              color="inherit"
+              onClick={async () => {
+                closeSnackbar(key);
+
+                try {
+                  await saveShift(shift.id, original);
+                } catch (error) {
+                  enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+                    variant: "error",
+                  });
+                }
+              }}
+              size="small"
+            >
+              {tAttendance("schedule.undo")}
+            </Button>
+          ),
+          variant: "success",
+        });
+      } catch (error) {
+        enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+          variant: "error",
+        });
+      }
+    },
+    [saveShift, tAttendance],
+  );
+
+  const handleEventsChange = useCallback(
+    (value: SchedulerEvent[]) => {
+      for (const event of value) {
+        const shift = shifts.find(({ id }) => id === event.id);
+
+        if (!shift || event.allDay) continue;
+
+        const startsAt = dayjs(event.start);
+        const endsAt = dayjs(event.end);
+        const offset = startsAt.diff(shift.startsAt);
+
+        if (!offset && endsAt.isSame(shift.endsAt)) continue;
+
+        const moved = endsAt.diff(shift.endsAt) === offset;
+        const change: ShiftChange = {
+          breaks: moved
+            ? shift.breaks.map((item) => ({
+                endsAt: dayjs(item.endsAt).add(offset, "ms").toISOString(),
+                startsAt: dayjs(item.startsAt).add(offset, "ms").toISOString(),
+              }))
+            : shift.breaks,
+          endsAt: endsAt.toISOString(),
+          paidBreak: shift.paidBreak,
+          startsAt: startsAt.toISOString(),
+        };
+        const date = storeDate(change.startsAt);
+
+        if (
+          employees.find(({ id }) => id === shift.employeeId)
+            ?.regularLeaveWeekday !== null ||
+          date === storeDate(shift.startsAt)
+        ) {
+          updateShift(shift, change);
+          continue;
+        }
+
+        const sameDayKind = shifts.find(
+          (item) =>
+            item.id !== shift.id &&
+            item.employeeId === shift.employeeId &&
+            item.status !== "cancelled" &&
+            storeDate(item.startsAt) === date,
+        )?.dayKind;
+
+        setDialog({
+          confirmText: tAttendance("save"),
+          content: (
+            <DayKindDialog
+              defaultValue={
+                !sameDayKind || sameDayKind === "holiday"
+                  ? "workday"
+                  : sameDayKind
+              }
+              onSubmit={(dayKind) => updateShift(shift, { ...change, dayKind })}
+            />
+          ),
+          formId: "attendance-shift-day-kind-form",
+          open: true,
+          title: tAttendance("schedule.moveShift"),
+        });
+      }
+    },
+    [employees, setDialog, shifts, tAttendance, updateShift],
+  );
+
+  const viewConfig = useMemo(() => {
+    const openingHourValues = Array.from(
+      { length: range.to.diff(range.from, "day") },
+      (_, index) => getDaySchedules(openingHours, range.from.add(index, "day")),
+    ).flatMap((schedules) =>
+      schedules.flatMap(
+        ({ startTime }) => toTimeDayjs(startTime)?.hour() ?? [],
+      ),
+    );
+    const timeGrid = openingHourValues.length
+      ? { initialScrollTime: Math.min(...openingHourValues) }
+      : {};
+
+    return { day: timeGrid, week: timeGrid };
+  }, [openingHours, range]);
+
   const visibleDate = useMemo(
     () => dayjs.tz(date, STORE_TIMEZONE).toDate(),
     [date],
@@ -407,25 +579,25 @@ const Calendar = ({
       )}
       <CalendarBox>
         <EventCalendar
-          areEventsDraggable={false}
-          areEventsResizable={false}
-          defaultPreferences={{ ampm: false, weekStartsOn: 0 }}
+          areEventsDraggable={canUpdate}
+          areEventsResizable={canUpdate}
+          defaultPreferences={{ weekStartsOn: 0 }}
           displayTimezone={STORE_TIMEZONE}
+          eventCreation={canCreate}
           events={events}
           localeText={localeText}
           onEventEditingStart={handleEventEditingStart}
+          onEventsChange={handleEventsChange}
           onViewChange={setView}
           onVisibleDateChange={(value) =>
             setDate(dayjs(value).tz(STORE_TIMEZONE).format("YYYY-MM-DD"))
           }
-          // 隱藏空白日時議程會往後掃到半年，超出抓取的資料區間
           preferencesMenuConfig={{
-            toggleAmpm: false,
             toggleEmptyDaysInAgenda: false,
           }}
-          readOnly={!canCreate}
           resources={resources}
           view={view}
+          viewConfig={viewConfig}
           views={[...ATTENDANCE_CALENDAR_VIEWS]}
           visibleDate={visibleDate}
         />

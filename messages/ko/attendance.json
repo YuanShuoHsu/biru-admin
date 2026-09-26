@@ -524,6 +524,8 @@
   "schedule": {
     "scheduledHours": "{hours}시간 배정됨",
     "applyTemplate": "템플릿 적용",
+    "moveShift": "근무 이동",
+    "undo": "실행 취소",
     "label": "근무표",
     "allDay": "종일",
     "calendarContent": "근무표",
@@ -548,9 +550,12 @@
       "agenda": "일정 목록"
     },
     "preferences": {
+      "amPm12h": "12시간제(오후 1:00)",
+      "hour24h": "24시간제(13:00)",
       "label": "환경설정",
       "showWeekends": "주말 표시",
       "showWeekNumber": "주 번호 표시",
+      "timeFormat": "시간 형식",
       "viewOptions": "{view, select, day {일} week {주} month {월} other {일정 목록}} 보기 옵션"
     },
     "weekAbbreviation": "주",

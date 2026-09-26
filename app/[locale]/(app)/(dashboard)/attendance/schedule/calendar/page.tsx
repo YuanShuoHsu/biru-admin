@@ -123,9 +123,9 @@ const CalendarPage = async ({ params, searchParams }: CalendarPageProps) => {
   return (
     <AttendanceTabsLayout memberRole={memberRole}>
       <Calendar
-        canCancel={hasRolePermission(memberRole, { shift: ["update"] })}
         canCreate={hasRolePermission(memberRole, { shift: ["create"] })}
         canReadLeaves={canReadLeaves}
+        canUpdate={hasRolePermission(memberRole, { shift: ["update"] })}
         dayKinds={dayKinds}
         employees={employees}
         leaves={leaves}

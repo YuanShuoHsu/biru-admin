@@ -524,6 +524,8 @@
   "schedule": {
     "scheduledHours": "{hours} h scheduled",
     "applyTemplate": "Apply template",
+    "moveShift": "Move shift",
+    "undo": "Undo",
     "label": "Roster",
     "allDay": "All day",
     "calendarContent": "Schedule",
@@ -548,9 +550,12 @@
       "agenda": "Agenda"
     },
     "preferences": {
+      "amPm12h": "12-hour (1:00PM)",
+      "hour24h": "24-hour (13:00)",
       "label": "Preferences",
       "showWeekends": "Show weekends",
       "showWeekNumber": "Show week number",
+      "timeFormat": "Time format",
       "viewOptions": "{view, select, day {Day} week {Week} month {Month} other {Agenda}} view options"
     },
     "weekAbbreviation": "W",
