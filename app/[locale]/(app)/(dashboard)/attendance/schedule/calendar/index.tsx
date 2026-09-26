@@ -23,6 +23,7 @@ import { Box, Button, Stack } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import {
   EventCalendar,
+  eventCalendarClasses,
   type EventCalendarProps,
 } from "@mui/x-scheduler/event-calendar";
 import type {
@@ -64,8 +65,29 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(1),
 }));
 
-const CalendarBox = styled(Box)({
-  height: 720,
+const CalendarBox = styled(Box, {
+  shouldForwardProp: (prop) => prop !== "breakPatterns",
+})<{ breakPatterns: [number, number][][] }>(({ breakPatterns, theme }) => {
+  const breakColor = `rgba(${theme.vars.palette.background.paperChannel} / 0.6)`;
+
+  return {
+    height: 720,
+    ...Object.fromEntries(
+      breakPatterns.map((ranges, index) => [
+        `& .${eventCalendarClasses.timeGridEvent}.${breakClassName(index)}`,
+        {
+          backgroundImage: `linear-gradient(to bottom, ${ranges
+            .flatMap(([from, to]) => [
+              `transparent ${from}%`,
+              `${breakColor} ${from}%`,
+              `${breakColor} ${to}%`,
+              `transparent ${to}%`,
+            ])
+            .join(", ")})`,
+        },
+      ]),
+    ),
+  };
 });
 
 const EMPLOYEE_COLORS: SchedulerEventColor[] = [
@@ -79,6 +101,8 @@ const EMPLOYEE_COLORS: SchedulerEventColor[] = [
   "amber",
   "lime",
 ];
+
+const breakClassName = (index: number) => `attendance-shift-breaks-${index}`;
 
 const storeDate = (value: string | Date) =>
   dayjs(value).tz(STORE_TIMEZONE).format("YYYY-MM-DD");
@@ -181,6 +205,35 @@ const Calendar = ({
     [employees, format, range, shifts, tAttendance],
   );
 
+  const breaks = useMemo(() => {
+    const patterns = new Map<string, [number, number][]>();
+    const classNames = new Map<string, string>();
+
+    for (const shift of shifts) {
+      if (!shift.breaks.length) continue;
+
+      const start = dayjs(shift.startsAt);
+      const duration = dayjs(shift.endsAt).diff(start);
+      const ranges = shift.breaks.map(
+        ({ endsAt, startsAt }) =>
+          [
+            (dayjs(startsAt).diff(start) / duration) * 100,
+            (dayjs(endsAt).diff(start) / duration) * 100,
+          ] satisfies [number, number],
+      );
+      const key = ranges.join();
+
+      if (!patterns.has(key)) patterns.set(key, ranges);
+
+      classNames.set(
+        shift.id,
+        breakClassName([...patterns.keys()].indexOf(key)),
+      );
+    }
+
+    return { classNames, patterns: [...patterns.values()] };
+  }, [shifts]);
+
   const events = useMemo<SchedulerEvent[]>(
     () => [
       ...holidays.map(({ date, name }) => {
@@ -232,6 +285,7 @@ const Calendar = ({
         .filter(({ status }) => status !== "cancelled")
         .map((shift) => ({
           ...(shift.dayKind !== "workday" && { color: "grey" as const }),
+          className: breaks.classNames.get(shift.id),
           end: shift.endsAt,
           id: shift.id,
           readOnly: !canUpdate || shift.state !== "scheduled",
@@ -240,7 +294,7 @@ const Calendar = ({
           title: shift.employeeName,
         })),
     ],
-    [canUpdate, dayKinds, holidays, leaves, shifts, tAttendance],
+    [breaks, canUpdate, dayKinds, holidays, leaves, shifts, tAttendance],
   );
 
   const localeText = useMemo<EventCalendarProps<object, object>["localeText"]>(
@@ -628,7 +682,7 @@ const Calendar = ({
           )}
         </ToolbarStack>
       )}
-      <CalendarBox>
+      <CalendarBox breakPatterns={breaks.patterns}>
         <EventCalendar
           areEventsDraggable={canUpdate}
           areEventsResizable={canUpdate}
