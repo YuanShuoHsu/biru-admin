@@ -10,6 +10,7 @@ import {
   STORE_LAYOUT_FLOOR_ENTRY,
   STORE_LAYOUT_LOOK,
   STORE_LAYOUT_VIEWS,
+  STORE_LAYOUT_ZOOM_SPEED,
 } from "@/constants/storeLayout";
 
 import { OrbitControls, useKeyboardControls } from "@react-three/drei";
@@ -207,6 +208,11 @@ const Avatar = ({
           .copy(controls.target)
           .add(lookOffset.setFromSpherical(lookSpherical));
       }
+
+      const zoom = Number(move.zoomIn) - Number(move.zoomOut);
+
+      if (zoom)
+        controls.dollyIn(Math.exp(-zoom * STORE_LAYOUT_ZOOM_SPEED * delta));
     }
 
     if (!controls) return;

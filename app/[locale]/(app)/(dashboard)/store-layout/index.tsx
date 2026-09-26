@@ -35,6 +35,7 @@ import {
   STORE_LAYOUT_VIEWS,
   STORE_LAYOUT_VIEW_ORDER,
   STORE_LAYOUT_WALLS,
+  STORE_LAYOUT_ZOOM_DISTANCE,
 } from "@/constants/storeLayout";
 
 import { Download, Fullscreen, FullscreenExit } from "@mui/icons-material";
@@ -165,6 +166,8 @@ const MOVE_MAP: KeyboardControlsEntry<StoreLayoutMove>[] = [
   { keys: ["KeyK"], name: "lookDown" },
   { keys: ["KeyJ"], name: "lookLeft" },
   { keys: ["KeyL"], name: "lookRight" },
+  { keys: ["KeyO"], name: "zoomIn" },
+  { keys: ["KeyU"], name: "zoomOut" },
 ];
 
 const { pitchLimit } = STORE_LAYOUT_LOOK;
@@ -501,10 +504,16 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
     setShowDimensions(checked);
   };
 
+  // 不擋預設行為的話，按鈕會在 mousedown 之後搶走焦點，方向鍵與 WASD 就失效
+  const handleControlsMouseDown = (event: React.MouseEvent) => {
+    event.preventDefault();
+    canvasElement?.focus({ preventScroll: true });
+  };
+
   return (
     <>
       {!empty && (
-        <ToolbarStack direction="row">
+        <ToolbarStack direction="row" onMouseDown={handleControlsMouseDown}>
           <StyledToggleButtonGroup
             exclusive
             onChange={handleFloorsChange}
@@ -557,7 +566,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
             label={tStoreLayout("showDimensions")}
           />
           <KeyboardHint color="textSecondary" variant="caption">
-            {tStoreLayout("moveHint")}
+            {tStoreLayout("moveHint", { view })}
           </KeyboardHint>
         </ToolbarStack>
       )}
@@ -831,6 +840,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                     view === "first" ? Math.PI / 2 - pitchLimit : 0
                   }
                   ref={controlsRef}
+                  {...STORE_LAYOUT_ZOOM_DISTANCE}
                   target={[...STORE_LAYOUT_VIEWS.iso.target]}
                 />
               </Canvas>
@@ -850,7 +860,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                 </Typography>
               </LegendStack>
             </GridLegend>
-            <OverlayActions>
+            <OverlayActions onMouseDown={handleControlsMouseDown}>
               <OverlayButton
                 aria-label={tStoreLayout("export")}
                 onClick={handleExport}

@@ -910,6 +910,13 @@ export const STORE_LAYOUT_LOOK = {
   speed: 1.6,
 } as const;
 
+export const STORE_LAYOUT_ZOOM_DISTANCE = {
+  maxDistance: 45,
+  minDistance: 1.5,
+} as const;
+
+export const STORE_LAYOUT_ZOOM_SPEED = 1.2;
+
 export const STORE_LAYOUT_AVATAR = {
   gravity: 9.8,
   jumpSpeed: 3.2,

@@ -35,4 +35,6 @@ export type StoreLayoutMove =
   | "lookRight"
   | "lookUp"
   | "right"
-  | "sprint";
+  | "sprint"
+  | "zoomIn"
+  | "zoomOut";
