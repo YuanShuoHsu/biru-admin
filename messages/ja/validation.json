@@ -98,9 +98,6 @@
   "employee": {
     "notSelected": "従業員を選択してください。"
   },
-  "endTime": {
-    "invalid": "終了時刻の形式が無効です。"
-  },
   "endsAt": {
     "afterStartsAt": "終了日時は開始日時より後でなければなりません。",
     "required": "終了日時は必須です。"
@@ -261,9 +258,6 @@
   "slug": {
     "letter": "スラッグには少なくとも1つのアルファベットを含める必要があります。",
     "required": "スラッグは必須です。"
-  },
-  "startTime": {
-    "invalid": "開始時刻の形式が無効です。"
   },
   "startsAt": {
     "required": "開始日時は必須です。"

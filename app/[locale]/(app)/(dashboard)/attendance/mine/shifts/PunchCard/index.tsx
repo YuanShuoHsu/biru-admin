@@ -129,7 +129,12 @@ const PunchCard = ({
       });
 
       punchKeys.current.delete(pending);
-      enqueueSnackbar(tAttendance("success"), { variant: "success" });
+      enqueueSnackbar(
+        tAttendance("mine.punch.success", {
+          action: tAttendance(`eventAction.options.${action}`),
+        }),
+        { variant: "success" },
+      );
       mutate();
       onPunched();
     } catch (error) {

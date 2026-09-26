@@ -163,7 +163,16 @@ const LeaveCaseDialog = ({
         },
       );
 
-      enqueueSnackbar(tAttendance("success"), { variant: "success" });
+      enqueueSnackbar(
+        tAttendance(leaveCase ? "leaveCases.updated" : "leaveCases.created", {
+          leaveType: leaveType
+            ? getStatutoryLeaveName(tAttendance, leaveType)
+            : "",
+          name:
+            employees.find(({ id }) => id === values.employeeId)?.name ?? "",
+        }),
+        { variant: "success" },
+      );
 
       closeDialog();
 

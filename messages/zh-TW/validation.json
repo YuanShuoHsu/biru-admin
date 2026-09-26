@@ -98,9 +98,6 @@
   "employee": {
     "notSelected": "請選擇您的員工。"
   },
-  "endTime": {
-    "invalid": "結束時間格式無效。"
-  },
   "endsAt": {
     "afterStartsAt": "結束時間必須晚於開始時間。",
     "required": "結束時間為必填。"
@@ -261,9 +258,6 @@
   "slug": {
     "letter": "網址識別碼必須包含至少一個英文字母。",
     "required": "網址識別碼為必填。"
-  },
-  "startTime": {
-    "invalid": "開始時間格式無效。"
   },
   "startsAt": {
     "required": "開始時間為必填。"

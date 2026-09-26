@@ -229,7 +229,10 @@ const TermsDialog = ({
         }),
       });
 
-      enqueueSnackbar(tAttendance("success"), { variant: "success" });
+      enqueueSnackbar(
+        tAttendance("payroll.termsUpdated", { name: employee?.name ?? "" }),
+        { variant: "success" },
+      );
 
       closeDialog();
 

@@ -63,7 +63,12 @@ const DeferralDialog = ({
         },
       );
 
-      enqueueSnackbar(tAttendance("success"), { variant: "success" });
+      enqueueSnackbar(
+        tAttendance("balances.deferralRecorded", {
+          name: balance.employeeName,
+        }),
+        { variant: "success" },
+      );
 
       closeDialog();
 

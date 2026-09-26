@@ -3,8 +3,6 @@ import * as z from "zod";
 
 import { attendanceScheduledDayKindValues } from "@/types/api";
 
-const TIME_PATTERN = /^([01]\d|2[0-3]):[0-5]\d$/;
-
 export const useShiftFormSchema = () => {
   const tValidation = useTranslations("validation");
 
@@ -16,16 +14,6 @@ export const useShiftFormSchema = () => {
       startsAt: z.string().min(1, { error: tValidation("startsAt.required") }),
       endsAt: z.string().min(1, { error: tValidation("endsAt.required") }),
       paidBreak: z.boolean(),
-      breaks: z.array(
-        z.object({
-          startTime: z
-            .string()
-            .regex(TIME_PATTERN, { error: tValidation("startTime.invalid") }),
-          endTime: z
-            .string()
-            .regex(TIME_PATTERN, { error: tValidation("endTime.invalid") }),
-        }),
-      ),
       dayKind: z.enum(attendanceScheduledDayKindValues),
       repeatWeeks: z
         .number()

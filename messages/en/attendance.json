@@ -4,7 +4,6 @@
   "account": "Account",
   "actions": "Actions",
   "add": "Add",
-  "addBreak": "Add break",
   "agreedSalary": "Monthly salary / hourly rate",
   "allowance": "Fixed allowance ({currency})",
   "allowedIps": {
@@ -23,11 +22,12 @@
     "grantedHours": "Granted hours",
     "grantedMinutes": "Granted minutes",
     "label": "Leave balances",
-    "deferralReason": "Agreement details"
+    "deferralReason": "Agreement details",
+    "saved": "Set {name}'s {leaveType} balance for {year}",
+    "deferralRecorded": "Recorded {name}'s deferral agreement",
+    "deferralRevoked": "Revoked {name}'s deferral agreement"
   },
   "birthDate": "Birth date",
-  "breakEndTime": "Break end",
-  "breakStartTime": "Break start",
   "breaks": "Break minutes",
   "cancelLeave": "Request leave cancellation",
   "cancelShift": "Cancel shift",
@@ -84,7 +84,9 @@
       "create": "Add employee",
       "update": "Edit employee"
     },
-    "label": "Employees"
+    "label": "Employees",
+    "created": "Added employee {name}",
+    "updated": "Updated employee {name}"
   },
   "employerPension": "Employer pension",
   "employerCost": {
@@ -125,7 +127,6 @@
     "belowMinimumWorkingAge": "The Labor Standards Act prohibits employing anyone under 15.",
     "belowStatutoryPaidPercent": "The paid percentage cannot be below the statutory rate.",
     "birthDateRequired": "Enter the employee's birth date so child labor and insurance age limits can be checked.",
-    "breakTooShort": "Each break must be at least 30 minutes.",
     "calendarLeaveInterval": "Use the statutory number of full calendar days, from midnight to midnight (exclusive end).",
     "calendarLeavePayRequired": "An owner must provide the verified full daily wage for maternity leave. The paid percentage is calculated from seniority.",
     "cannotReviewOwnDraft": "You cannot review a payslip you drafted. Another manager must review it.",
@@ -134,7 +135,6 @@
     "childLaborNightWork": "Employees under 16 may not work between 8 p.m. and 6 a.m.",
     "childLaborRestDay": "Employees under 16 may not work on regular days off.",
     "consecutiveWorkdaysExceeded": "Employees cannot work more than 6 days in a row. Scheduled days, leave and national holidays all count; leave at least one unscheduled regular day off or rest day in between.",
-    "continuousWorkTooLong": "Continuous work cannot exceed 4 hours. Schedule a break of at least 30 minutes in between.",
     "correctionSourceChanged": "The shift's punches changed after this request was submitted. Review it again before approving.",
     "dailyHoursExceeded": "This would push the day past 12 working hours. Shorten the overtime.",
     "dayKindRequired": "This employee has no fixed regular leave and rest days, so choose a day type.",
@@ -164,7 +164,6 @@
     "insuranceBasisOutdated": "Insurance bases are not in the current grade table. Re-check the labor and health insured amounts.",
     "insuranceBasisUnderDeclared": "Based on average wages for the latest adjustment period, the insured salary is below the required grade. Set up the payroll terms again.",
     "insuranceTermsRequired": "The payroll terms have no insurance details. Set up the payroll terms again.",
-    "invalidBreak": "Breaks must fall within the shift and cannot overlap.",
     "invalidEmergencyDetails": "Check the report time and at least 24 continuous hours of make-up rest.",
     "invalidEventSequence": "Invalid punch sequence or times. Check the clock-in and clock-out times.",
     "invalidInterval": "Invalid start and end times. The end must be later than the start.",
@@ -334,7 +333,11 @@
       "delete": "Delete event leave allowance",
       "update": "Edit event leave allowance"
     },
-    "label": "Event leave allowances"
+    "label": "Event leave allowances",
+    "created": "Added {name}'s {leaveType} allowance",
+    "updated": "Updated {name}'s {leaveType} allowance",
+    "deleted": "Deleted {name}'s {leaveType} allowance",
+    "childAssigned": "Assigned the child for {name}'s {leaveType}"
   },
   "leaveRequestHint": "Managers verify medical documentation for hospitalization and pregnancy bed rest. Sick leave (including hospitalization and pregnancy bed rest) is paid at half wage for up to 30 days per year combined and is unpaid beyond that. Menstrual leave is 1 day per month at half wage; the first 3 days each year do not count toward sick leave, and from the 4th day they count toward those 30 days. For parental leave, select the allowance granted by a manager and use whole calendar days (midnight, exclusive end).",
   "leaveType": {
@@ -391,7 +394,8 @@
     "label": "Attendance",
     "punch": {
       "empty": "No shifts are open for punching right now.",
-      "title": "Punch"
+      "title": "Punch",
+      "success": "{action} recorded"
     }
   },
   "month": "Payroll month",
@@ -430,17 +434,25 @@
     "actions": {
       "create": "Add child"
     },
-    "label": "Children"
+    "label": "Children",
+    "created": "Added {name}'s child"
   },
   "parentalContinuous": "Continuous period",
   "parentalDaily": "Daily requests",
   "parentalReturn": "Early return",
   "parentalReturnHint": "Another manager must approve the return. Leave remains active until approval. Approval preserves leave already taken and the original record. Leave ends at the start of the return date.",
   "parentalReturns": {
-    "label": "Return requests"
+    "label": "Return requests",
+    "approved": "Approved {name}'s early return request",
+    "rejected": "Rejected {name}'s early return request",
+    "withdrawn": "Withdrew {name}'s early return request"
   },
   "payroll": {
-    "label": "Payroll"
+    "label": "Payroll",
+    "drafted": "Drafted {name}'s payslip for {month}",
+    "published": "Published {name}'s payslip for {month}",
+    "reviewed": "Reviewed {name}'s payslip for {month}",
+    "termsUpdated": "Updated {name}'s pay and insurance settings"
   },
   "payrollLine": {
     "options": {
@@ -499,6 +511,12 @@
       "withdraw": {
         "confirm": "Withdraw the request for <bold>{name} ({period})</bold>?",
         "success": "Withdrew the request for {name} ({period})"
+      },
+      "submit": {
+        "success": "Submitted the request for {name} ({period})"
+      },
+      "return": {
+        "success": "Submitted an early return request for {name} ({period})"
       }
     },
     "label": "Request history"
@@ -507,7 +525,11 @@
   "returnsAt": "Return date",
   "reviewReason": "Review reason",
   "reviews": {
-    "label": "Approvals"
+    "label": "Approvals",
+    "approved": "Approved {employee}'s {name} request",
+    "rejected": "Rejected {employee}'s {name} request",
+    "extraWorkApproved": "Approved {employee}'s time outside schedule",
+    "extraWorkRejected": "Rejected {employee}'s time outside schedule"
   },
   "salary": "Monthly salary / hourly rate ({currency})",
   "salaryType": {
@@ -522,6 +544,7 @@
     "scheduledHours": "{hours} h scheduled",
     "moveShift": "Move shift",
     "shiftUpdated": "Updated {name}'s shift",
+    "shiftCancelled": "Cancelled {name}'s shift",
     "undo": "Undo",
     "label": "Roster",
     "allDay": "All day",
@@ -557,7 +580,8 @@
     },
     "weekAbbreviation": "W",
     "weekNumber": "Week {weekNumber}",
-    "copyWeek": "Copy this week"
+    "copyWeek": "Copy this week",
+    "shiftCreated": "Added {count, plural, one {# shift} other {# shifts}} for {name}"
   },
   "scheduledTime": "Scheduled",
   "settings": {
@@ -565,7 +589,8 @@
       "update": "Edit attendance settings"
     },
     "empty": "This organization has no attendance settings yet.",
-    "label": "Attendance settings"
+    "label": "Attendance settings",
+    "updated": "Updated attendance settings"
   },
   "shifts": {
     "actions": {
@@ -659,7 +684,6 @@
     }
   },
   "statutoryPaidPercent": "Statutory paid percentage: {percent}%",
-  "success": "Saved",
   "taiwanStaySince": "Latest arrival date",
   "taxMethod": {
     "label": "Withholding method",
@@ -733,7 +757,9 @@
       "pending": "Pending",
       "designated": "Set",
       "notOwed": "Not required"
-    }
+    },
+    "substituteDesignated": "Set {name}'s substitute day for {holiday}",
+    "substituteRevoked": "Revoked {name}'s substitute day for {holiday}"
   },
   "restWeekdays": {
     "regularLeaveWeekday": "Fixed regular leave day",
@@ -764,9 +790,6 @@
       "workPermitRequired": "Outside work permit period",
       "maternalNightWork": "No night work during pregnancy or nursing",
       "shiftTooLong": "Shift too long",
-      "invalidBreak": "Break outside the shift",
-      "breakTooShort": "Break too short",
-      "continuousWorkTooLong": "More than 4 hours of continuous work",
       "inconsistentDayKind": "Different day type already scheduled",
       "payrollLocked": "Payroll published",
       "reservedMakeupRest": "Overlaps make-up rest",

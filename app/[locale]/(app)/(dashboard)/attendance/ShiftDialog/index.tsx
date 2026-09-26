@@ -6,7 +6,7 @@ import utc from "dayjs/plugin/utc";
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
-import { useFieldArray, useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
 import { type ShiftForm, useShiftFormSchema } from "./definitions";
 
@@ -17,16 +17,7 @@ import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Add, Delete } from "@mui/icons-material";
-import {
-  Button,
-  Checkbox,
-  FormControlLabel,
-  IconButton,
-  MenuItem,
-  Stack,
-  TextField,
-} from "@mui/material";
+import { Checkbox, FormControlLabel, MenuItem, TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
@@ -43,15 +34,6 @@ dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
 
 const StyledFormControlLabel = styled(FormControlLabel)({
-  alignSelf: "flex-start",
-});
-
-const StyledStack = styled(Stack)(({ theme }) => ({
-  alignItems: "center",
-  gap: theme.spacing(1),
-}));
-
-const StyledButton = styled(Button)({
   alignSelf: "flex-start",
 });
 
@@ -103,7 +85,6 @@ const ShiftDialog = ({
     setValue,
   } = useForm<ShiftForm>({
     defaultValues: {
-      breaks: [],
       dayKind: "workday",
       employeeId: initialEmployeeId ?? "",
       endsAt: closesAt?.toISOString() ?? "",
@@ -112,11 +93,6 @@ const ShiftDialog = ({
       startsAt: opensAt?.toISOString() ?? "",
     },
     resolver: zodResolver(shiftFormSchema),
-  });
-
-  const { append, fields, remove } = useFieldArray({
-    control,
-    name: "breaks",
   });
 
   const [dayKind, employeeId, endsAt, paidBreak, repeatWeeks, startsAt] =
@@ -150,18 +126,7 @@ const ShiftDialog = ({
       });
   };
 
-  const onSubmitHandler = async ({
-    breaks,
-    repeatWeeks,
-    ...values
-  }: ShiftForm) => {
-    const shiftStart = dayjs(values.startsAt).tz(STORE_TIMEZONE);
-    const breakWindows = breaks.map(({ startTime, endTime }) => {
-      const breakStart = atTimeAfter(shiftStart, startTime);
-
-      return { startsAt: breakStart, endsAt: atTimeAfter(breakStart, endTime) };
-    });
-
+  const onSubmitHandler = async ({ repeatWeeks, ...values }: ShiftForm) => {
     try {
       setDialog({ confirmLoading: true });
 
@@ -178,15 +143,18 @@ const ShiftDialog = ({
             endsAt: dayjs(values.endsAt)
               .add(index * 7, "day")
               .toISOString(),
-            breaks: breakWindows.map((window) => ({
-              startsAt: window.startsAt.add(index * 7, "day").toISOString(),
-              endsAt: window.endsAt.add(index * 7, "day").toISOString(),
-            })),
           })),
         }),
       });
 
-      enqueueSnackbar(tAttendance("success"), { variant: "success" });
+      enqueueSnackbar(
+        tAttendance("schedule.shiftCreated", {
+          count: repeatWeeks,
+          name:
+            employees.find(({ id }) => id === values.employeeId)?.name ?? "",
+        }),
+        { variant: "success" },
+      );
 
       closeDialog();
 
@@ -256,36 +224,6 @@ const ShiftDialog = ({
         timezone={STORE_TIMEZONE}
         value={endsAt ? dayjs(endsAt) : null}
       />
-      {fields.map(({ id }, index) => (
-        <StyledStack direction="row" key={id}>
-          <TextField
-            error={!!errors.breaks?.[index]?.startTime}
-            fullWidth
-            helperText={errors.breaks?.[index]?.startTime?.message}
-            label={tAttendance("breakStartTime")}
-            type="time"
-            {...register(`breaks.${index}.startTime`)}
-          />
-          <TextField
-            error={!!errors.breaks?.[index]?.endTime}
-            fullWidth
-            helperText={errors.breaks?.[index]?.endTime?.message}
-            label={tAttendance("breakEndTime")}
-            type="time"
-            {...register(`breaks.${index}.endTime`)}
-          />
-          <IconButton color="error" onClick={() => remove(index)} size="small">
-            <Delete fontSize="small" />
-          </IconButton>
-        </StyledStack>
-      ))}
-      <StyledButton
-        onClick={() => append({ startTime: "", endTime: "" })}
-        size="small"
-        startIcon={<Add />}
-      >
-        {tAttendance("addBreak")}
-      </StyledButton>
       <StyledFormControlLabel
         control={
           <Checkbox

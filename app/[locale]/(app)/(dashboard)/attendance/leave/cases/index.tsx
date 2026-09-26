@@ -280,7 +280,12 @@ const LeaveCases = ({
   );
 
   const handleDeleteLeaveCase = useCallback(
-    ({ id }: AttendanceLeaveCase) =>
+    ({
+      employeeName,
+      id,
+      leaveTypeName,
+      leaveTypeStatutoryKind,
+    }: AttendanceLeaveCase) =>
       setDialog({
         contentText: tAttendance("confirm"),
         onConfirm: async () => {
@@ -290,7 +295,16 @@ const LeaveCases = ({
               { method: "DELETE" },
             );
 
-            enqueueSnackbar(tAttendance("success"), { variant: "success" });
+            enqueueSnackbar(
+              tAttendance("leaveCases.deleted", {
+                leaveType: getStatutoryLeaveName(tAttendance, {
+                  name: leaveTypeName,
+                  statutoryKind: leaveTypeStatutoryKind,
+                }),
+                name: employeeName,
+              }),
+              { variant: "success" },
+            );
             mutate();
           } catch (error) {
             enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {

@@ -20,7 +20,11 @@ import type {
   AttendanceParentalChild,
 } from "@/types/attendance";
 
-import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
+import {
+  attendanceErrorKey,
+  attendancePath,
+  getStatutoryLeaveName,
+} from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
 
 interface AssignChildDialogProps {
@@ -72,7 +76,16 @@ const AssignChildDialog = ({
         },
       );
 
-      enqueueSnackbar(tAttendance("success"), { variant: "success" });
+      enqueueSnackbar(
+        tAttendance("leaveCases.childAssigned", {
+          leaveType: getStatutoryLeaveName(tAttendance, {
+            name: leaveCase.leaveTypeName,
+            statutoryKind: leaveCase.leaveTypeStatutoryKind,
+          }),
+          name: leaveCase.employeeName,
+        }),
+        { variant: "success" },
+      );
 
       closeDialog();
 

@@ -4,7 +4,6 @@
   "account": "帳號",
   "actions": "操作",
   "add": "新增",
-  "addBreak": "新增休息",
   "agreedSalary": "月薪／時薪",
   "allowance": "固定津貼（{currency}）",
   "allowedIps": {
@@ -23,11 +22,12 @@
     "grantedHours": "核給額度（小時）",
     "grantedMinutes": "核給額度（分鐘）",
     "label": "休假額度",
-    "deferralReason": "協議內容"
+    "deferralReason": "協議內容",
+    "saved": "已設定 {name} {year} 年的{leaveType}額度",
+    "deferralRecorded": "已記錄 {name} 的遞延協議",
+    "deferralRevoked": "已撤銷 {name} 的遞延協議"
   },
   "birthDate": "生日",
-  "breakEndTime": "休息結束",
-  "breakStartTime": "休息開始",
   "breaks": "休息（分鐘）",
   "cancelLeave": "申請撤假",
   "cancelShift": "取消班次",
@@ -84,7 +84,9 @@
       "create": "新增員工",
       "update": "編輯員工"
     },
-    "label": "員工管理"
+    "label": "員工管理",
+    "created": "已新增員工 {name}",
+    "updated": "已更新員工 {name}"
   },
   "employerPension": "雇主提繳",
   "employerCost": {
@@ -125,7 +127,6 @@
     "belowMinimumWorkingAge": "依勞基法不得僱用未滿 15 歲的人。",
     "belowStatutoryPaidPercent": "給薪比例不得低於法定標準。",
     "birthDateRequired": "請先在員工資料填寫生日，系統才能判斷童工與保險年齡限制。",
-    "breakTooShort": "每段休息至少 30 分鐘。",
     "calendarLeaveInterval": "產假事件期間須為法定天數的完整曆日（起訖 00:00，結束日不含）。",
     "calendarLeavePayRequired": "產假事件須由 owner 設定核定每日全薪，給薪比例由年資自動計算。",
     "cannotReviewOwnDraft": "不能覆核自己建立的薪資單，請由另一位管理者處理。",
@@ -134,7 +135,6 @@
     "childLaborNightWork": "未滿 16 歲的員工不得在晚上 8 點至隔天早上 6 點工作。",
     "childLaborRestDay": "未滿 16 歲的員工不得在例假日工作。",
     "consecutiveWorkdaysExceeded": "不得連續工作超過 6 天：排班、請假與國定假日都算工作日，中間要有一天沒排班的例假或休息日。",
-    "continuousWorkTooLong": "連續工作不得超過 4 小時，請在中間安排至少 30 分鐘的休息。",
     "correctionSourceChanged": "送出申請後這個班次的打卡有變動，請重新確認後再送審。",
     "dailyHoursExceeded": "當日工時將超過 12 小時，請縮短加班時間。",
     "dayKindRequired": "員工未設定固定例假日與休息日，請選擇日期類型。",
@@ -164,7 +164,6 @@
     "insuranceBasisOutdated": "投保金額不在當期投保級距表內，請重新確認勞就保與健保投保金額。",
     "insuranceBasisUnderDeclared": "依最近一次應調整期間的平均工資，投保級距低於應申報級距，請重新設定薪資條件。",
     "insuranceTermsRequired": "薪資條件缺少投保資料，請重新設定薪資條件。",
-    "invalidBreak": "休息時間必須落在班次時間內，且不可重疊。",
     "invalidEmergencyDetails": "請確認報備時間與至少連續 24 小時的補假。",
     "invalidEventSequence": "打卡順序或時間不正確，請確認上下班時間。",
     "invalidInterval": "開始與結束時間不正確，結束必須晚於開始。",
@@ -334,7 +333,11 @@
       "delete": "刪除事件假額度",
       "update": "編輯事件假額度"
     },
-    "label": "事件假額度"
+    "label": "事件假額度",
+    "created": "已新增 {name} 的{leaveType}額度",
+    "updated": "已更新 {name} 的{leaveType}額度",
+    "deleted": "已刪除 {name} 的{leaveType}額度",
+    "childAssigned": "已確認 {name} 的{leaveType}子女歸戶"
   },
   "leaveRequestHint": "住院傷病假、安胎休養假由主管查驗醫療證明。普通傷病假、住院傷病假、安胎休養假每年合計 30 日內工資折半，超過部分無薪；生理假每月 1 日、工資折半，每年前 3 日不併入病假，第 4 日起併入上述 30 日計算。育嬰留職停薪請先選擇主管核給的額度，使用完整曆日（起訖 00:00，結束日不含）。",
   "leaveType": {
@@ -391,7 +394,8 @@
     "label": "出勤",
     "punch": {
       "empty": "目前沒有可打卡的班次。",
-      "title": "打卡"
+      "title": "打卡",
+      "success": "已完成{action}"
     }
   },
   "month": "薪資月份",
@@ -430,17 +434,25 @@
     "actions": {
       "create": "新增子女資料"
     },
-    "label": "子女資料"
+    "label": "子女資料",
+    "created": "已新增 {name} 的子女資料"
   },
   "parentalContinuous": "連續期間申請",
   "parentalDaily": "按日申請",
   "parentalReturn": "提前復職",
   "parentalReturnHint": "復職申請須由另一位主管核准。核准前原留停仍有效；核准後保留已休期間與原申請紀錄。請選擇復職當日，該日起不再留停。",
   "parentalReturns": {
-    "label": "復職申請"
+    "label": "復職申請",
+    "approved": "已核准 {name} 的提前復職申請",
+    "rejected": "已駁回 {name} 的提前復職申請",
+    "withdrawn": "已撤回 {name} 的提前復職申請"
   },
   "payroll": {
-    "label": "薪資"
+    "label": "薪資",
+    "drafted": "已建立 {name} {month} 的薪資單草稿",
+    "published": "已發布 {name} {month} 的薪資單",
+    "reviewed": "已覆核 {name} {month} 的薪資單",
+    "termsUpdated": "已更新 {name} 的薪資與投保設定"
   },
   "payrollLine": {
     "options": {
@@ -499,6 +511,12 @@
       "withdraw": {
         "confirm": "確定要撤回 <bold>{name}（{period}）</bold> 的申請嗎？",
         "success": "已撤回 {name}（{period}）的申請"
+      },
+      "submit": {
+        "success": "已送出 {name}（{period}）的申請"
+      },
+      "return": {
+        "success": "已送出 {name}（{period}）的提前復職申請"
       }
     },
     "label": "申請紀錄"
@@ -507,7 +525,11 @@
   "returnsAt": "復職日期",
   "reviewReason": "審核說明",
   "reviews": {
-    "label": "申請審核"
+    "label": "申請審核",
+    "approved": "已核准 {employee} 的{name}申請",
+    "rejected": "已駁回 {employee} 的{name}申請",
+    "extraWorkApproved": "已核准 {employee} 的排班外時數",
+    "extraWorkRejected": "已不核准 {employee} 的排班外時數"
   },
   "salary": "月薪／時薪（{currency}）",
   "salaryType": {
@@ -522,6 +544,7 @@
     "scheduledHours": "已排 {hours} 小時",
     "moveShift": "移動班次",
     "shiftUpdated": "已更新 {name} 的班次",
+    "shiftCancelled": "已取消 {name} 的班次",
     "undo": "復原",
     "label": "班表",
     "allDay": "全天",
@@ -557,7 +580,8 @@
     },
     "weekAbbreviation": "週",
     "weekNumber": "第 {weekNumber} 週",
-    "copyWeek": "複製本週排班"
+    "copyWeek": "複製本週排班",
+    "shiftCreated": "已新增 {name} 的 {count} 個班次"
   },
   "scheduledTime": "排定時段",
   "settings": {
@@ -565,7 +589,8 @@
       "update": "編輯出勤設定"
     },
     "empty": "此組織尚未建立出勤設定。",
-    "label": "出勤設定"
+    "label": "出勤設定",
+    "updated": "已更新出勤設定"
   },
   "shifts": {
     "actions": {
@@ -659,7 +684,6 @@
     }
   },
   "statutoryPaidPercent": "法定給薪比例：{percent}%",
-  "success": "已儲存",
   "taiwanStaySince": "本次入境日",
   "taxMethod": {
     "label": "扣繳方式",
@@ -733,7 +757,9 @@
       "pending": "待指定",
       "designated": "已指定",
       "notOwed": "無須補假"
-    }
+    },
+    "substituteDesignated": "已指定 {name} 的{holiday}補假日",
+    "substituteRevoked": "已撤銷 {name} 的{holiday}補假日"
   },
   "restWeekdays": {
     "regularLeaveWeekday": "固定例假日",
@@ -764,9 +790,6 @@
       "workPermitRequired": "不在工作許可期間",
       "maternalNightWork": "妊娠或哺乳期間不得夜間工作",
       "shiftTooLong": "班次過長",
-      "invalidBreak": "休息時段不在班次內",
-      "breakTooShort": "休息時間過短",
-      "continuousWorkTooLong": "連續工作超過 4 小時",
       "inconsistentDayKind": "當天已有不同日別的班次",
       "payrollLocked": "薪資已發布",
       "reservedMakeupRest": "與補假重疊",

@@ -85,7 +85,7 @@ const storeDate = (value: string | Date) =>
 
 type ShiftChange = Pick<
   AttendanceShift,
-  "breaks" | "endsAt" | "paidBreak" | "startsAt"
+  "endsAt" | "paidBreak" | "startsAt"
 > & { dayKind?: (typeof attendanceScheduledDayKindValues)[number] };
 
 interface CalendarProps {
@@ -392,9 +392,12 @@ const Calendar = ({
                   { method: "PATCH" },
                 );
 
-                enqueueSnackbar(tAttendance("success"), {
-                  variant: "success",
-                });
+                enqueueSnackbar(
+                  tAttendance("schedule.shiftCancelled", {
+                    name: shift.employeeName,
+                  }),
+                  { variant: "success" },
+                );
                 mutate();
               } catch (error) {
                 enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
@@ -469,7 +472,6 @@ const Calendar = ({
   const updateShift = useCallback(
     async (shift: AttendanceShift, change: ShiftChange) => {
       const original: ShiftChange = {
-        breaks: shift.breaks,
         endsAt: shift.endsAt,
         paidBreak: shift.paidBreak,
         startsAt: shift.startsAt,
@@ -528,14 +530,7 @@ const Calendar = ({
 
         if (!offset && endsAt.isSame(shift.endsAt)) continue;
 
-        const moved = endsAt.diff(shift.endsAt) === offset;
         const change: ShiftChange = {
-          breaks: moved
-            ? shift.breaks.map((item) => ({
-                endsAt: dayjs(item.endsAt).add(offset, "ms").toISOString(),
-                startsAt: dayjs(item.startsAt).add(offset, "ms").toISOString(),
-              }))
-            : shift.breaks,
           endsAt: endsAt.toISOString(),
           paidBreak: shift.paidBreak,
           startsAt: startsAt.toISOString(),
@@ -559,15 +554,24 @@ const Calendar = ({
             storeDate(item.startsAt) === date,
         )?.dayKind;
 
+        if (sameDayKind) {
+          updateShift(shift, {
+            ...change,
+            dayKind: sameDayKind === "holiday" ? "workday" : sameDayKind,
+          });
+          continue;
+        }
+
+        if (shift.dayKind === "workday" || shift.dayKind === "holiday") {
+          updateShift(shift, { ...change, dayKind: "workday" });
+          continue;
+        }
+
         setDialog({
           confirmText: tAttendance("save"),
           content: (
             <DayKindDialog
-              defaultValue={
-                !sameDayKind || sameDayKind === "holiday"
-                  ? "workday"
-                  : sameDayKind
-              }
+              defaultValue={shift.dayKind}
               onSubmit={(dayKind) => updateShift(shift, { ...change, dayKind })}
             />
           ),

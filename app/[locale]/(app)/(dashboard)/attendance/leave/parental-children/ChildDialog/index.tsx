@@ -85,7 +85,13 @@ const ChildDialog = ({
         }),
       });
 
-      enqueueSnackbar(tAttendance("success"), { variant: "success" });
+      enqueueSnackbar(
+        tAttendance("parentalChildren.created", {
+          name:
+            employees.find(({ id }) => id === values.employeeId)?.name ?? "",
+        }),
+        { variant: "success" },
+      );
 
       closeDialog();
 

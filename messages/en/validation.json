@@ -98,9 +98,6 @@
   "employee": {
     "notSelected": "Please select your employee."
   },
-  "endTime": {
-    "invalid": "End time format is invalid."
-  },
   "endsAt": {
     "afterStartsAt": "End time must be after start time.",
     "required": "End time is required."
@@ -261,9 +258,6 @@
   "slug": {
     "letter": "Slug must contain at least one letter.",
     "required": "Slug is required."
-  },
-  "startTime": {
-    "invalid": "Start time format is invalid."
   },
   "startsAt": {
     "required": "Start time is required."

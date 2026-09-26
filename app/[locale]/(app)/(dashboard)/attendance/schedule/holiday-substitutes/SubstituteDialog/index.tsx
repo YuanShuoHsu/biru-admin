@@ -103,7 +103,13 @@ const SubstituteDialog = ({
         },
       );
 
-      enqueueSnackbar(tAttendance("success"), { variant: "success" });
+      enqueueSnackbar(
+        tAttendance("holidaySubstitutes.substituteDesignated", {
+          holiday: row.holidayName,
+          name: row.employeeName,
+        }),
+        { variant: "success" },
+      );
 
       closeDialog();
 

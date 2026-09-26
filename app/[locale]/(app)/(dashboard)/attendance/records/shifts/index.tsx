@@ -277,14 +277,17 @@ const Shifts = ({
   );
 
   const handleCancelShift = useCallback(
-    ({ id }: AttendanceShift) =>
+    ({ employeeName, id }: AttendanceShift) =>
       setDialog({
         contentText: tAttendance("confirm"),
         onConfirm: async () => {
           try {
             await fetcher(`${base}/${id}/cancel`, { method: "PATCH" });
 
-            enqueueSnackbar(tAttendance("success"), { variant: "success" });
+            enqueueSnackbar(
+              tAttendance("schedule.shiftCancelled", { name: employeeName }),
+              { variant: "success" },
+            );
             mutate();
           } catch (error) {
             enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {

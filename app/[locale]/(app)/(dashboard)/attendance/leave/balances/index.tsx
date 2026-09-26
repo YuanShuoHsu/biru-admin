@@ -275,7 +275,7 @@ const Balances = ({
   );
 
   const handleRevokeDeferral = useCallback(
-    ({ annualLeaveDeferralId }: AttendanceLeaveBalance) =>
+    ({ annualLeaveDeferralId, employeeName }: AttendanceLeaveBalance) =>
       setDialog({
         contentText: tAttendance("confirm"),
         onConfirm: async () => {
@@ -289,7 +289,10 @@ const Balances = ({
               { method: "DELETE" },
             );
 
-            enqueueSnackbar(tAttendance("success"), { variant: "success" });
+            enqueueSnackbar(
+              tAttendance("balances.deferralRevoked", { name: employeeName }),
+              { variant: "success" },
+            );
             mutate();
           } catch (error) {
             enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {

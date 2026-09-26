@@ -98,9 +98,6 @@
   "employee": {
     "notSelected": "직원을 선택해 주세요."
   },
-  "endTime": {
-    "invalid": "종료 시간 형식이 올바르지 않습니다."
-  },
   "endsAt": {
     "afterStartsAt": "종료 시간은 시작 시간보다 늦어야 합니다.",
     "required": "종료 시간은 필수입니다."
@@ -261,9 +258,6 @@
   "slug": {
     "letter": "슬러그에는 최소 하나의 영문자가 포함되어야 합니다.",
     "required": "슬러그는 필수입니다."
-  },
-  "startTime": {
-    "invalid": "시작 시간 형식이 올바르지 않습니다."
   },
   "startsAt": {
     "required": "시작 시간은 필수입니다."

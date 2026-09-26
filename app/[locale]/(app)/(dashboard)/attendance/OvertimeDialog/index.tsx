@@ -3,7 +3,7 @@
 import dayjs, { type Dayjs } from "dayjs";
 import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -54,6 +54,8 @@ const OvertimeDialog = ({
   shift,
 }: OvertimeDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
+
+  const format = useFormatter();
 
   const tAttendance = useTranslations("attendance");
 
@@ -165,7 +167,17 @@ const OvertimeDialog = ({
         }),
       });
 
-      enqueueSnackbar(tAttendance("success"), { variant: "success" });
+      enqueueSnackbar(
+        tAttendance("requests.actions.submit.success", {
+          name: tAttendance("kind.options.overtime"),
+          period: format.dateTimeRange(
+            new Date(values.startsAt),
+            new Date(values.endsAt),
+            "dateTime",
+          ),
+        }),
+        { variant: "success" },
+      );
 
       closeDialog();
 

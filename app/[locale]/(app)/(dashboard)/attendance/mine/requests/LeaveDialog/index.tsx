@@ -140,7 +140,19 @@ const LeaveDialog = ({
         }),
       });
 
-      enqueueSnackbar(tAttendance("success"), { variant: "success" });
+      enqueueSnackbar(
+        tAttendance("requests.actions.submit.success", {
+          name: leaveType
+            ? getStatutoryLeaveName(tAttendance, leaveType)
+            : tAttendance("kind.options.leave"),
+          period: format.dateTimeRange(
+            new Date(values.startsAt),
+            new Date(values.endsAt),
+            "dateTime",
+          ),
+        }),
+        { variant: "success" },
+      );
 
       closeDialog();
 

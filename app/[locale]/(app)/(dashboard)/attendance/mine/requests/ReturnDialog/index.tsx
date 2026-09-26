@@ -23,7 +23,11 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { AttendanceRequest } from "@/types/attendance";
 
-import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
+import {
+  attendanceErrorKey,
+  attendancePath,
+  getStatutoryLeaveName,
+} from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
 
 dayjs.extend(utc);
@@ -93,7 +97,23 @@ const ReturnDialog = ({
         },
       );
 
-      enqueueSnackbar(tAttendance("success"), { variant: "success" });
+      enqueueSnackbar(
+        tAttendance("requests.actions.return.success", {
+          name:
+            request.leaveTypeName && request.leaveTypeStatutoryKind
+              ? getStatutoryLeaveName(tAttendance, {
+                  name: request.leaveTypeName,
+                  statutoryKind: request.leaveTypeStatutoryKind,
+                })
+              : tAttendance("kind.options.leave"),
+          period: format.dateTimeRange(
+            new Date(request.startsAt),
+            new Date(request.endsAt),
+            "dateTime",
+          ),
+        }),
+        { variant: "success" },
+      );
 
       closeDialog();
 

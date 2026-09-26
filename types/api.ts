@@ -2425,7 +2425,6 @@ export interface components {
       | "annualLeaveDeferralInvalid"
       | "belowMinimumWorkingAge"
       | "belowStatutoryPaidPercent"
-      | "breakTooShort"
       | "calendarLeaveInterval"
       | "calendarLeavePayRequired"
       | "cannotReviewOwnDraft"
@@ -2434,7 +2433,6 @@ export interface components {
       | "childLaborNightWork"
       | "childLaborRestDay"
       | "consecutiveWorkdaysExceeded"
-      | "continuousWorkTooLong"
       | "correctionSourceChanged"
       | "dailyHoursExceeded"
       | "dayKindRequired"
@@ -2457,7 +2455,6 @@ export interface components {
       | "indigenousHolidayInUse"
       | "indigenousHolidayInvalid"
       | "insufficientLeaveBalance"
-      | "invalidBreak"
       | "invalidEmergencyDetails"
       | "invalidEventSequence"
       | "invalidInterval"
@@ -2907,7 +2904,6 @@ export interface components {
      */
     AttendanceScheduledDayKind: "workday" | "restDay" | "regularLeave";
     CreateAttendanceShiftDto: {
-      breaks: components["schemas"]["ShiftBreakDto"][];
       /** @description 員工設有固定例假日與休息日時由星期推得，未設定者必填 */
       dayKind?: components["schemas"]["AttendanceScheduledDayKind"];
       /** Format: uuid */
@@ -2959,9 +2955,6 @@ export interface components {
       | "workPermitRequired"
       | "maternalNightWork"
       | "shiftTooLong"
-      | "invalidBreak"
-      | "breakTooShort"
-      | "continuousWorkTooLong"
       | "inconsistentDayKind"
       | "payrollLocked"
       | "reservedMakeupRest"
@@ -2980,7 +2973,6 @@ export interface components {
       skipped: components["schemas"]["AttendanceSkippedShiftResponseDto"][];
     };
     UpdateAttendanceShiftDto: {
-      breaks: components["schemas"]["ShiftBreakDto"][];
       /** @description 員工設有固定例假日與休息日時由星期推得；未設定者移到其他日期時必填，同日省略則沿用原日別 */
       dayKind?: components["schemas"]["AttendanceScheduledDayKind"];
       startsAt: string;
@@ -12376,7 +12368,6 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "annualLeaveDeferralInvalid",
   "belowMinimumWorkingAge",
   "belowStatutoryPaidPercent",
-  "breakTooShort",
   "calendarLeaveInterval",
   "calendarLeavePayRequired",
   "cannotReviewOwnDraft",
@@ -12385,7 +12376,6 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "childLaborNightWork",
   "childLaborRestDay",
   "consecutiveWorkdaysExceeded",
-  "continuousWorkTooLong",
   "correctionSourceChanged",
   "dailyHoursExceeded",
   "dayKindRequired",
@@ -12408,7 +12398,6 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "indigenousHolidayInUse",
   "indigenousHolidayInvalid",
   "insufficientLeaveBalance",
-  "invalidBreak",
   "invalidEmergencyDetails",
   "invalidEventSequence",
   "invalidInterval",
@@ -12604,9 +12593,6 @@ export const attendanceCopySkipReasonValues: ReadonlyArray<
   "workPermitRequired",
   "maternalNightWork",
   "shiftTooLong",
-  "invalidBreak",
-  "breakTooShort",
-  "continuousWorkTooLong",
   "inconsistentDayKind",
   "payrollLocked",
   "reservedMakeupRest",

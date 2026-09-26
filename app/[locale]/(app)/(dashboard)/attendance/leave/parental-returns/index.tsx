@@ -249,14 +249,17 @@ const ParentalReturns = ({
   );
 
   const handleWithdraw = useCallback(
-    ({ id }: AttendanceParentalReturn) =>
+    ({ employeeName, id }: AttendanceParentalReturn) =>
       setDialog({
         contentText: tAttendance("confirm"),
         onConfirm: async () => {
           try {
             await fetcher(`${base}/${id}/withdraw`, { method: "PATCH" });
 
-            enqueueSnackbar(tAttendance("success"), { variant: "success" });
+            enqueueSnackbar(
+              tAttendance("parentalReturns.withdrawn", { name: employeeName }),
+              { variant: "success" },
+            );
             mutate();
           } catch (error) {
             enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {

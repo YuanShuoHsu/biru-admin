@@ -357,7 +357,12 @@ const EmployeeDialog = ({
         body: JSON.stringify(body),
       });
 
-      enqueueSnackbar(tAttendance("success"), { variant: "success" });
+      enqueueSnackbar(
+        tAttendance(employee ? "employees.updated" : "employees.created", {
+          name: member.name,
+        }),
+        { variant: "success" },
+      );
 
       closeDialog();
 

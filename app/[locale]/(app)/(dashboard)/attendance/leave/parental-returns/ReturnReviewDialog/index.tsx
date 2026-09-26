@@ -72,7 +72,12 @@ const ReturnReviewDialog = ({
         },
       );
 
-      enqueueSnackbar(tAttendance("success"), { variant: "success" });
+      enqueueSnackbar(
+        tAttendance(`parentalReturns.${status}`, {
+          name: parentalReturn.employeeName,
+        }),
+        { variant: "success" },
+      );
 
       closeDialog();
 

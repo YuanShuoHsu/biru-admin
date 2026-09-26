@@ -247,7 +247,11 @@ const HolidaySubstitutes = ({
   );
 
   const handleRevoke = useCallback(
-    ({ substituteId }: AttendanceHolidaySubstitute) =>
+    ({
+      employeeName,
+      holidayName,
+      substituteId,
+    }: AttendanceHolidaySubstitute) =>
       setDialog({
         contentText: tAttendance("confirm"),
         onConfirm: async () => {
@@ -261,7 +265,13 @@ const HolidaySubstitutes = ({
               { method: "DELETE" },
             );
 
-            enqueueSnackbar(tAttendance("success"), { variant: "success" });
+            enqueueSnackbar(
+              tAttendance("holidaySubstitutes.substituteRevoked", {
+                holiday: holidayName,
+                name: employeeName,
+              }),
+              { variant: "success" },
+            );
             mutate();
           } catch (error) {
             enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {

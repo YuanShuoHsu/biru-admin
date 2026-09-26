@@ -23,7 +23,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { AttendanceEmployee } from "@/types/attendance";
+import type { AttendanceEmployee, PayrollStatement } from "@/types/attendance";
 
 import { attendanceErrorKey, payrollPath } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
@@ -74,16 +74,25 @@ const DraftDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher(payrollPath(organizationSlug, "org", "statements"), {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...values,
-          idempotencyKey: crypto.randomUUID(),
-        }),
-      });
+      const statement = await fetcher<PayrollStatement>(
+        payrollPath(organizationSlug, "org", "statements"),
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...values,
+            idempotencyKey: crypto.randomUUID(),
+          }),
+        },
+      );
 
-      enqueueSnackbar(tAttendance("success"), { variant: "success" });
+      enqueueSnackbar(
+        tAttendance("payroll.drafted", {
+          month: dayjs(statement.month).format(monthFormat),
+          name: statement.employeeName,
+        }),
+        { variant: "success" },
+      );
 
       closeDialog();
 

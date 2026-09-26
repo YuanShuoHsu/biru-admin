@@ -1,5 +1,6 @@
 "use client";
 
+import dayjs from "dayjs";
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
@@ -8,6 +9,8 @@ import { useForm } from "react-hook-form";
 import { type TransitionForm, useTransitionFormSchema } from "./definitions";
 
 import FormBox from "@/components/FormBox";
+
+import { useMonthFormat } from "@/hooks/useMonthFormat";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -37,6 +40,8 @@ const TransitionDialog = ({
 
   const tAttendance = useTranslations("attendance");
 
+  const monthFormat = useMonthFormat();
+
   const transitionFormSchema = useTransitionFormSchema();
 
   const {
@@ -65,7 +70,16 @@ const TransitionDialog = ({
         },
       );
 
-      enqueueSnackbar(tAttendance("success"), { variant: "success" });
+      enqueueSnackbar(
+        tAttendance(
+          action === "publish" ? "payroll.published" : "payroll.reviewed",
+          {
+            month: dayjs(statement.month).format(monthFormat),
+            name: statement.employeeName,
+          },
+        ),
+        { variant: "success" },
+      );
 
       closeDialog();
 

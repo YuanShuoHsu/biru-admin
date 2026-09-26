@@ -4,7 +4,6 @@
   "account": "アカウント",
   "actions": "操作",
   "add": "追加",
-  "addBreak": "休憩を追加",
   "agreedSalary": "月給・時給",
   "allowance": "固定手当（{currency}）",
   "allowedIps": {
@@ -23,11 +22,12 @@
     "grantedHours": "付与時間（時間）",
     "grantedMinutes": "付与時間（分）",
     "label": "休暇残数",
-    "deferralReason": "協定内容"
+    "deferralReason": "協定内容",
+    "saved": "{name} の{year}年の{leaveType}残数を設定しました",
+    "deferralRecorded": "{name} の繰越協定を記録しました",
+    "deferralRevoked": "{name} の繰越協定を取り消しました"
   },
   "birthDate": "生年月日",
-  "breakEndTime": "休憩終了",
-  "breakStartTime": "休憩開始",
   "breaks": "休憩（分）",
   "cancelLeave": "休暇取消を申請",
   "cancelShift": "シフト取消",
@@ -84,7 +84,9 @@
       "create": "従業員を追加",
       "update": "従業員を編集"
     },
-    "label": "従業員管理"
+    "label": "従業員管理",
+    "created": "従業員 {name} を追加しました",
+    "updated": "従業員 {name} を更新しました"
   },
   "employerPension": "雇用主年金拠出",
   "employerCost": {
@@ -125,7 +127,6 @@
     "belowMinimumWorkingAge": "労働基準法により 15 歳未満の者を雇用することはできません。",
     "belowStatutoryPaidPercent": "支給率は法定基準を下回れません。",
     "birthDateRequired": "年少者と保険の年齢制限を判断するため、従業員の生年月日を入力してください。",
-    "breakTooShort": "休憩は1回につき30分以上にしてください。",
     "calendarLeaveInterval": "法定日数を暦日で指定してください（午前0時から午前0時、終了日を含まない）。",
     "calendarLeavePayRequired": "産休の事由は owner が確認済みの日額賃金を設定してください。支給率は勤続期間から自動計算されます。",
     "cannotReviewOwnDraft": "自分が作成した給与明細は確認できません。別の管理者が確認してください。",
@@ -134,7 +135,6 @@
     "childLaborNightWork": "16 歳未満の従業員は午後 8 時から翌午前 6 時まで働けません。",
     "childLaborRestDay": "16 歳未満の従業員は例假日に働けません。",
     "consecutiveWorkdaysExceeded": "連続勤務は6日までです。シフト日・休暇・国定休日はいずれも勤務日として数えます。間にシフトのない例假日または休息日を1日入れてください。",
-    "continuousWorkTooLong": "連続勤務は4時間までです。間に30分以上の休憩を入れてください。",
     "correctionSourceChanged": "申請後にこのシフトの打刻が変更されました。再確認してから審査してください。",
     "dailyHoursExceeded": "1 日の労働時間が 12 時間を超えます。残業時間を短くしてください。",
     "dayKindRequired": "従業員に固定の法定休日・休日が設定されていないため、日区分を選択してください。",
@@ -164,7 +164,6 @@
     "insuranceBasisOutdated": "保険の基準額が当期の等級表にありません。労働保険と健康保険の月額を確認してください。",
     "insuranceBasisUnderDeclared": "直近の調整期間の平均賃金に対し、投保等級が申告すべき等級を下回っています。給与条件を再設定してください。",
     "insuranceTermsRequired": "給与条件に保険情報がありません。給与条件を再設定してください。",
-    "invalidBreak": "休憩時間はシフト内に収め、重ならないようにしてください。",
     "invalidEmergencyDetails": "報告日時と連続 24 時間以上の代休を確認してください。",
     "invalidEventSequence": "打刻順序または時刻が不正です。出退勤時刻を確認してください。",
     "invalidInterval": "開始と終了の時刻が不正です。終了は開始より後にしてください。",
@@ -334,7 +333,11 @@
       "delete": "事由別休暇枠を削除",
       "update": "事由別休暇枠を編集"
     },
-    "label": "事由別休暇枠"
+    "label": "事由別休暇枠",
+    "created": "{name} の{leaveType}の休暇枠を追加しました",
+    "updated": "{name} の{leaveType}の休暇枠を更新しました",
+    "deleted": "{name} の{leaveType}の休暇枠を削除しました",
+    "childAssigned": "{name} の{leaveType}に子どもを関連付けました"
   },
   "leaveRequestHint": "入院・妊娠中の安静休暇は管理者が医療証明を確認します。傷病休暇（入院・妊娠中の安静休暇を含む）は年間合計30日まで賃金の半額が支給され、超過分は無給です。生理休暇は月1日まで賃金の半額が支給され、年間最初の3日は傷病休暇に算入されず、4日目からは上記の30日に算入されます。育児休業は管理者が付与した休暇枠を選び、暦日単位で指定してください（午前0時、終了日を含まない）。",
   "leaveType": {
@@ -391,7 +394,8 @@
     "label": "勤怠",
     "punch": {
       "empty": "現在打刻できるシフトはありません。",
-      "title": "打刻"
+      "title": "打刻",
+      "success": "{action}を記録しました"
     }
   },
   "month": "給与月",
@@ -430,17 +434,25 @@
     "actions": {
       "create": "子どもの情報を追加"
     },
-    "label": "子どもの情報"
+    "label": "子どもの情報",
+    "created": "{name} の子どもの情報を追加しました"
   },
   "parentalContinuous": "連続期間で申請",
   "parentalDaily": "日単位で申請",
   "parentalReturn": "早期復職",
   "parentalReturnHint": "別の管理者の承認が必要です。承認までは休業が有効で、承認後も取得済み期間と当初の記録を保存します。復職日の開始時点で休業が終了します。",
   "parentalReturns": {
-    "label": "復職申請"
+    "label": "復職申請",
+    "approved": "{name} の早期復職申請を承認しました",
+    "rejected": "{name} の早期復職申請を却下しました",
+    "withdrawn": "{name} の早期復職申請を取り下げました"
   },
   "payroll": {
-    "label": "給与"
+    "label": "給与",
+    "drafted": "{name} の {month} の給与明細を下書きしました",
+    "published": "{name} の {month} の給与明細を公開しました",
+    "reviewed": "{name} の {month} の給与明細を確認しました",
+    "termsUpdated": "{name} の給与・保険設定を更新しました"
   },
   "payrollLine": {
     "options": {
@@ -499,6 +511,12 @@
       "withdraw": {
         "confirm": "<bold>{name}（{period}）</bold>の申請を取り下げますか？",
         "success": "{name}（{period}）の申請を取り下げました"
+      },
+      "submit": {
+        "success": "{name}（{period}）を申請しました"
+      },
+      "return": {
+        "success": "{name}（{period}）の早期復職を申請しました"
       }
     },
     "label": "申請履歴"
@@ -507,7 +525,11 @@
   "returnsAt": "復職日",
   "reviewReason": "審査理由",
   "reviews": {
-    "label": "申請承認"
+    "label": "申請承認",
+    "approved": "{employee} の{name}申請を承認しました",
+    "rejected": "{employee} の{name}申請を却下しました",
+    "extraWorkApproved": "{employee} のシフト外の時間を承認しました",
+    "extraWorkRejected": "{employee} のシフト外の時間を却下しました"
   },
   "salary": "月給・時給（{currency}）",
   "salaryType": {
@@ -522,6 +544,7 @@
     "scheduledHours": "{hours} 時間シフト済み",
     "moveShift": "シフトを移動",
     "shiftUpdated": "{name} のシフトを更新しました",
+    "shiftCancelled": "{name} のシフトを取消しました",
     "undo": "元に戻す",
     "label": "シフト表",
     "allDay": "終日",
@@ -557,7 +580,8 @@
     },
     "weekAbbreviation": "週",
     "weekNumber": "第 {weekNumber} 週",
-    "copyWeek": "今週のシフトをコピー"
+    "copyWeek": "今週のシフトをコピー",
+    "shiftCreated": "{name} のシフトを {count} 件追加しました"
   },
   "scheduledTime": "予定時間",
   "settings": {
@@ -565,7 +589,8 @@
       "update": "勤怠設定を編集"
     },
     "empty": "この組織の勤怠設定はまだ作成されていません。",
-    "label": "勤怠設定"
+    "label": "勤怠設定",
+    "updated": "勤怠設定を更新しました"
   },
   "shifts": {
     "actions": {
@@ -659,7 +684,6 @@
     }
   },
   "statutoryPaidPercent": "法定支給率：{percent}%",
-  "success": "保存しました",
   "taiwanStaySince": "今回の入国日",
   "taxMethod": {
     "label": "源泉徴収方法",
@@ -733,7 +757,9 @@
       "pending": "未指定",
       "designated": "指定済み",
       "notOwed": "不要"
-    }
+    },
+    "substituteDesignated": "{name} の{holiday}の振替休日を指定しました",
+    "substituteRevoked": "{name} の{holiday}の振替休日を取り消しました"
   },
   "restWeekdays": {
     "regularLeaveWeekday": "固定の法定休日",
@@ -764,9 +790,6 @@
       "workPermitRequired": "就労許可期間外",
       "maternalNightWork": "妊娠・授乳中は深夜勤務不可",
       "shiftTooLong": "シフトが長すぎます",
-      "invalidBreak": "休憩がシフト外",
-      "breakTooShort": "休憩が短すぎます",
-      "continuousWorkTooLong": "連続勤務が 4 時間を超過",
       "inconsistentDayKind": "同日に異なる日区分のシフトあり",
       "payrollLocked": "給与公開済み",
       "reservedMakeupRest": "代休と重複",

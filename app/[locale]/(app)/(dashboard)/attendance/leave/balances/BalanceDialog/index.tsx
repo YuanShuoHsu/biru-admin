@@ -26,7 +26,11 @@ import type {
   AttendanceLeaveType,
 } from "@/types/attendance";
 
-import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
+import {
+  attendanceErrorKey,
+  attendancePath,
+  getStatutoryLeaveName,
+} from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
 
 dayjs.extend(utc);
@@ -81,7 +85,19 @@ const BalanceDialog = ({
         body: JSON.stringify(values),
       });
 
-      enqueueSnackbar(tAttendance("success"), { variant: "success" });
+      const leaveType = leaveTypes.find(({ id }) => id === values.leaveTypeId);
+
+      enqueueSnackbar(
+        tAttendance("balances.saved", {
+          leaveType: leaveType
+            ? getStatutoryLeaveName(tAttendance, leaveType)
+            : "",
+          name:
+            employees.find(({ id }) => id === values.employeeId)?.name ?? "",
+          year: String(values.year),
+        }),
+        { variant: "success" },
+      );
 
       closeDialog();
 

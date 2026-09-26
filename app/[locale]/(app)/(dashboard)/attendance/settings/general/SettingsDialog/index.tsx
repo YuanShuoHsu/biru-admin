@@ -201,7 +201,7 @@ const SettingsDialog = ({
         }),
       });
 
-      enqueueSnackbar(tAttendance("success"), { variant: "success" });
+      enqueueSnackbar(tAttendance("settings.updated"), { variant: "success" });
 
       closeDialog();
 

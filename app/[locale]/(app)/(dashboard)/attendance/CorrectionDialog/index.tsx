@@ -3,7 +3,7 @@
 import dayjs from "dayjs";
 import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -43,6 +43,8 @@ const CorrectionDialog = ({
   shift,
 }: CorrectionDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
+
+  const format = useFormatter();
 
   const tAttendance = useTranslations("attendance");
 
@@ -105,7 +107,17 @@ const CorrectionDialog = ({
         }),
       });
 
-      enqueueSnackbar(tAttendance("success"), { variant: "success" });
+      enqueueSnackbar(
+        tAttendance("requests.actions.submit.success", {
+          name: tAttendance("kind.options.correction"),
+          period: format.dateTimeRange(
+            new Date(clockInAt),
+            new Date(clockOutAt),
+            "dateTime",
+          ),
+        }),
+        { variant: "success" },
+      );
 
       closeDialog();
 

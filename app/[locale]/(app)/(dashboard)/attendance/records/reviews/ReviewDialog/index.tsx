@@ -42,6 +42,7 @@ import {
   attendanceErrorKey,
   attendancePath,
   formatScheduledShift,
+  getStatutoryLeaveName,
 } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
 
@@ -189,7 +190,26 @@ const ReviewDialog = ({
         },
       );
 
-      enqueueSnackbar(tAttendance("success"), { variant: "success" });
+      enqueueSnackbar(
+        extraWork
+          ? tAttendance(
+              status === "approved"
+                ? "reviews.extraWorkApproved"
+                : "reviews.extraWorkRejected",
+              { employee: extraWork.shift.employeeName },
+            )
+          : tAttendance(`reviews.${status}`, {
+              employee: request.employeeName,
+              name:
+                request.leaveTypeName && request.leaveTypeStatutoryKind
+                  ? getStatutoryLeaveName(tAttendance, {
+                      name: request.leaveTypeName,
+                      statutoryKind: request.leaveTypeStatutoryKind,
+                    })
+                  : tAttendance(`kind.options.${request.kind}`),
+            }),
+        { variant: "success" },
+      );
 
       closeDialog();
 
