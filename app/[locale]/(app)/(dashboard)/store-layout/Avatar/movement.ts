@@ -1,5 +1,6 @@
 import {
   STORE_LAYOUT_AVATAR,
+  STORE_LAYOUT_ELEVATOR_WALLS,
   STORE_LAYOUT_FLOORS,
   STORE_LAYOUT_FLOOR_BASE,
   STORE_LAYOUT_FLOOR_HEIGHT,
@@ -13,6 +14,8 @@ import {
   STORE_LAYOUT_STAIR_GUARD_HEIGHT,
   STORE_LAYOUT_STAIR_STEPS,
 } from "@/constants/storeLayout";
+
+import type { ElevatorBox } from "../Elevator/motion";
 
 const { gravity, jumpSpeed, radius } = STORE_LAYOUT_AVATAR;
 
@@ -33,16 +36,18 @@ interface Solid extends Footprint {
 }
 
 const SOLIDS: Solid[] = [
-  ...[...STORE_LAYOUT_ITEMS, ...STORE_LAYOUT_SEATS].map(
-    ({ depth, elevation, floor, height, width, x, z }) => ({
-      bottom: STORE_LAYOUT_FLOOR_BASE[floor] + elevation,
-      depth,
-      top: STORE_LAYOUT_FLOOR_BASE[floor] + elevation + height,
-      width,
-      x,
-      z,
-    }),
-  ),
+  ...[
+    ...STORE_LAYOUT_ITEMS,
+    ...STORE_LAYOUT_SEATS,
+    ...STORE_LAYOUT_ELEVATOR_WALLS,
+  ].map(({ depth, elevation, floor, height, width, x, z }) => ({
+    bottom: STORE_LAYOUT_FLOOR_BASE[floor] + elevation,
+    depth,
+    top: STORE_LAYOUT_FLOOR_BASE[floor] + elevation + height,
+    width,
+    x,
+    z,
+  })),
   ...STORE_LAYOUT_STAIR_STEPS.map(({ depth, top, width, x, z }) => ({
     bottom: 0,
     depth,
@@ -93,8 +98,23 @@ const overlaps = (solid: Solid, x: number, z: number) =>
   z + radius > solid.z &&
   z - radius < solid.z + solid.depth;
 
-export const supportAt = (x: number, z: number, feet: number, reach: number) =>
-  SOLIDS.reduce(
+const toSolid = ({ depth, elevation, height, width, x, z }: ElevatorBox) => ({
+  bottom: elevation,
+  depth,
+  top: elevation + height,
+  width,
+  x,
+  z,
+});
+
+const supportAt = (
+  solids: Solid[],
+  x: number,
+  z: number,
+  feet: number,
+  reach: number,
+) =>
+  solids.reduce(
     (highest, solid) =>
       covers(solid, x, z) && solid.top <= feet + reach && solid.top > highest
         ? solid.top
@@ -102,8 +122,14 @@ export const supportAt = (x: number, z: number, feet: number, reach: number) =>
     0,
   );
 
-const isBlocked = (x: number, z: number, feet: number, reach: number) =>
-  SOLIDS.some(
+const isBlocked = (
+  solids: Solid[],
+  x: number,
+  z: number,
+  feet: number,
+  reach: number,
+) =>
+  solids.some(
     (solid) =>
       solid.top > feet + reach &&
       solid.bottom < feet + PERSON_HEIGHT &&
@@ -130,7 +156,9 @@ export const advanceAvatar = (
   state: AvatarState,
   { forwardX, forwardZ, jump, sideways, speed, towards }: AvatarInput,
   delta: number,
+  movingBoxes: ElevatorBox[],
 ) => {
+  const solids = [...SOLIDS, ...movingBoxes.map(toSolid)];
   const feet = state.y;
   const airborne = Boolean(state.verticalSpeed);
   const reach = airborne ? 0 : STEP_UP;
@@ -144,13 +172,16 @@ export const advanceAvatar = (
     const nextX = clampToRoom(state.x + stepX * scale, STORE_LAYOUT_ROOM.width);
     const nextZ = clampToRoom(state.z + stepZ * scale, STORE_LAYOUT_ROOM.depth);
 
-    const trapped = !airborne && isBlocked(state.x, state.z, feet, reach);
+    const trapped =
+      !airborne && isBlocked(solids, state.x, state.z, feet, reach);
 
-    if (trapped || !isBlocked(nextX, state.z, feet, reach)) state.x = nextX;
-    if (trapped || !isBlocked(state.x, nextZ, feet, reach)) state.z = nextZ;
+    if (trapped || !isBlocked(solids, nextX, state.z, feet, reach))
+      state.x = nextX;
+    if (trapped || !isBlocked(solids, state.x, nextZ, feet, reach))
+      state.z = nextZ;
   }
 
-  const support = supportAt(state.x, state.z, feet, reach);
+  const support = supportAt(solids, state.x, state.z, feet, reach);
   const grounded = feet <= support + 1e-4 && state.verticalSpeed <= 0;
 
   if (grounded) {

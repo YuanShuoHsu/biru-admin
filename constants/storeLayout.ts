@@ -145,7 +145,7 @@ const GROUND_TABLES = [
 ];
 
 const UPPER_TABLES = [
-  ...tableColumn("upper", FOUR_TOP, 0.1, [1.1, 3.5, 5.9, 12.8, 15.2, 17.6]),
+  ...tableColumn("upper", FOUR_TOP, 0.1, [1.1, 3.5, 12.8, 15.2, 17.6]),
   ...tableColumn("upper", FOUR_TOP, 2.7, [1.1, 3.5, 5.9, 12.8, 15.2, 17.6]),
   ...tableColumn(
     "upper",
@@ -786,38 +786,113 @@ export const STORE_LAYOUT_STAIR_EXIT = {
   z: STAIR_Z - 0.5,
 } as const;
 
-export const STORE_LAYOUT_SLAB_PANELS = [
-  {
-    depth: STORE_LAYOUT_STAIRWELL.z,
-    width: STORE_LAYOUT_ROOM.width,
-    x: 0,
-    z: 0,
+const ELEVATOR_WALL = 0.1;
+const ELEVATOR_DOOR_WIDTH = 0.9;
+
+export const STORE_LAYOUT_ELEVATOR = {
+  shaft: { depth: 1.9, width: 1.7, x: 0, z: 7.2 },
+  car: { depth: 1.7, width: 1.6, x: 0, z: 7.3 },
+  door: {
+    height: 2.1,
+    thickness: ELEVATOR_WALL,
+    width: ELEVATOR_DOOR_WIDTH,
+    x: 1.6,
+    z: 7.7,
   },
-  {
-    depth:
-      STORE_LAYOUT_ROOM.depth -
-      STORE_LAYOUT_STAIRWELL.z -
-      STORE_LAYOUT_STAIRWELL.depth,
-    width: STORE_LAYOUT_ROOM.width,
-    x: 0,
-    z: STORE_LAYOUT_STAIRWELL.z + STORE_LAYOUT_STAIRWELL.depth,
-  },
-  {
-    depth: STORE_LAYOUT_STAIRWELL.depth,
-    width: STORE_LAYOUT_STAIRWELL.x,
-    x: 0,
-    z: STORE_LAYOUT_STAIRWELL.z,
-  },
-  {
-    depth: STORE_LAYOUT_STAIRWELL.depth,
-    width:
-      STORE_LAYOUT_ROOM.width -
-      STORE_LAYOUT_STAIRWELL.x -
-      STORE_LAYOUT_STAIRWELL.width,
-    x: STORE_LAYOUT_STAIRWELL.x + STORE_LAYOUT_STAIRWELL.width,
-    z: STORE_LAYOUT_STAIRWELL.z,
-  },
-];
+  landing: { depth: 1.5, width: 1.5, x: 1.7, z: 7.4 },
+} as const;
+
+const { door: ELEVATOR_DOOR, shaft: ELEVATOR_SHAFT } = STORE_LAYOUT_ELEVATOR;
+
+const elevatorWalls = (floor: LayoutFloor) => {
+  const wall = {
+    elevation: 0,
+    floor,
+    height: STORE_LAYOUT_FLOOR_HEIGHT,
+  };
+  const shaftEnd = ELEVATOR_SHAFT.z + ELEVATOR_SHAFT.depth;
+  const doorEnd = ELEVATOR_DOOR.z + ELEVATOR_DOOR.width;
+
+  return [
+    {
+      ...wall,
+      depth: ELEVATOR_WALL,
+      width: ELEVATOR_SHAFT.width,
+      x: ELEVATOR_SHAFT.x,
+      z: ELEVATOR_SHAFT.z,
+    },
+    {
+      ...wall,
+      depth: ELEVATOR_WALL,
+      width: ELEVATOR_SHAFT.width,
+      x: ELEVATOR_SHAFT.x,
+      z: shaftEnd - ELEVATOR_WALL,
+    },
+    {
+      ...wall,
+      depth: ELEVATOR_DOOR.z - ELEVATOR_SHAFT.z,
+      width: ELEVATOR_WALL,
+      x: ELEVATOR_DOOR.x,
+      z: ELEVATOR_SHAFT.z,
+    },
+    {
+      ...wall,
+      depth: shaftEnd - doorEnd,
+      width: ELEVATOR_WALL,
+      x: ELEVATOR_DOOR.x,
+      z: doorEnd,
+    },
+    {
+      ...wall,
+      depth: ELEVATOR_DOOR.width,
+      elevation: ELEVATOR_DOOR.height,
+      height: STORE_LAYOUT_FLOOR_HEIGHT - ELEVATOR_DOOR.height,
+      width: ELEVATOR_WALL,
+      x: ELEVATOR_DOOR.x,
+      z: ELEVATOR_DOOR.z,
+    },
+  ];
+};
+
+export const STORE_LAYOUT_ELEVATOR_WALLS =
+  STORE_LAYOUT_FLOORS.flatMap(elevatorWalls);
+
+const SLAB_OPENINGS = [STORE_LAYOUT_STAIRWELL, ELEVATOR_SHAFT];
+
+const slabBands = [
+  ...new Set([
+    0,
+    STORE_LAYOUT_ROOM.depth,
+    ...SLAB_OPENINGS.flatMap(({ depth, z }) => [z, z + depth]),
+  ]),
+].sort((a, b) => a - b);
+
+export const STORE_LAYOUT_SLAB_PANELS = slabBands
+  .slice(1)
+  .flatMap((to, index) => {
+    const from = slabBands[index];
+    const cuts = SLAB_OPENINGS.filter(
+      ({ depth, z }) => z < to && z + depth > from,
+    ).sort((a, b) => a.x - b.x);
+    const panels: { depth: number; width: number; x: number; z: number }[] = [];
+    let x = 0;
+
+    for (const cut of cuts) {
+      if (cut.x > x)
+        panels.push({ depth: to - from, width: cut.x - x, x, z: from });
+      x = Math.max(x, cut.x + cut.width);
+    }
+
+    if (x < STORE_LAYOUT_ROOM.width)
+      panels.push({
+        depth: to - from,
+        width: STORE_LAYOUT_ROOM.width - x,
+        x,
+        z: from,
+      });
+
+    return panels;
+  });
 
 export const STORE_LAYOUT_STAIR_GUARD_HEIGHT = 0.9;
 

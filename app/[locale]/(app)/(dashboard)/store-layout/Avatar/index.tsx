@@ -27,6 +27,12 @@ import type {
 } from "@/types/storeLayout";
 
 import Cat from "../Cat";
+import {
+  type ElevatorState,
+  advanceElevator,
+  elevatorCar,
+  elevatorDoors,
+} from "../Elevator/motion";
 import Person from "../Person";
 import {
   type AvatarState,
@@ -69,6 +75,7 @@ const START_POSITION: [number, number, number] = [start.x, 0, start.z];
 interface AvatarProps {
   character: StoreLayoutCharacter;
   controlsRef: RefObject<ComponentRef<typeof OrbitControls> | null>;
+  elevatorRef: RefObject<ElevatorState>;
   floor: StoreLayoutFloor;
   onFloorChange: (floor: StoreLayoutFloor) => void;
   onStairsChange: (stairs: boolean) => void;
@@ -79,6 +86,7 @@ interface AvatarProps {
 const Avatar = ({
   character,
   controlsRef,
+  elevatorRef,
   floor,
   onFloorChange,
   onStairsChange,
@@ -140,6 +148,11 @@ const Avatar = ({
 
     const deflection = Math.min(1, Math.hypot(touch.sideways, touch.towards));
 
+    const elevator = elevatorRef.current;
+    const lift = advanceElevator(elevator, state, delta);
+
+    if (elevator.riding) state.y += lift;
+
     advanceAvatar(
       state,
       {
@@ -151,6 +164,7 @@ const Avatar = ({
         towards: Number(move.forward) - Number(move.backward) + touch.towards,
       },
       delta,
+      [...elevatorCar(elevator), ...elevatorDoors(elevator)],
     );
 
     group.position.set(state.x, state.y, state.z);

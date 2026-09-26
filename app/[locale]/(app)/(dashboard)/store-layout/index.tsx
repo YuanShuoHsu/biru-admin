@@ -11,7 +11,10 @@ import {
 import { DoubleSide } from "three";
 
 import Avatar from "./Avatar";
+import Elevator from "./Elevator";
+import { createElevatorState } from "./Elevator/motion";
 import SpriteLabel from "./SpriteLabel";
+import { ghostEdge, ghostSurface } from "./ghost";
 
 import {
   STORE_LAYOUT_CHARACTER_ORDER,
@@ -195,18 +198,6 @@ const savesToPhotoLibrary = (file: File) =>
   window.matchMedia(STORE_LAYOUT_TOUCH_QUERY).matches &&
   Boolean(navigator.canShare?.({ files: [file] }));
 
-const ghostSurface = (ghost: boolean) => ({
-  depthWrite: !ghost,
-  opacity: ghost ? 0.06 : 1,
-  transparent: ghost,
-});
-
-const ghostEdge = (ghost: boolean) => ({
-  depthWrite: !ghost,
-  opacity: ghost ? 0.4 : 1,
-  transparent: ghost,
-});
-
 const toCentimeters = (value: number) => Math.round(value * 1000) / 10;
 
 type Point = [number, number, number];
@@ -367,6 +358,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
 
   const controlsRef = useRef<ComponentRef<typeof OrbitControls>>(null);
   const rootStateRef = useRef<RootState>(null);
+  const elevatorRef = useRef(createElevatorState());
   const touchRef = useRef<StoreLayoutTouchInput>({
     jump: false,
     lookSideways: 0,
@@ -399,6 +391,9 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
   const [showLabels, setShowLabels] = useState(true);
   const [showDimensions, setShowDimensions] = useState(true);
   const [view, setView] = useState<StoreLayoutView>("iso");
+
+  const isGhostFloor = (value: StoreLayoutFloor) =>
+    floors === "all" && !stairs && value !== floor;
 
   const applyView = (
     nextView: StoreLayoutView,
@@ -633,7 +628,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                 {STORE_LAYOUT_FLOORS.map((value) => {
                   if (floors !== "all" && floors !== value) return null;
 
-                  const ghost = floors === "all" && !stairs && value !== floor;
+                  const ghost = isGhostFloor(value);
 
                   return (
                     <group
@@ -808,8 +803,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
 
                   const { depth, elevation, height, kind, label, width, x, z } =
                     item;
-                  const ghost =
-                    floors === "all" && !stairs && item.floor !== floor;
+                  const ghost = isGhostFloor(item.floor);
 
                   return (
                     <mesh
@@ -858,8 +852,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                   if (floors !== "all" && floors !== seat.floor) return null;
 
                   const { depth, elevation, height, width, x, z } = seat;
-                  const ghost =
-                    floors === "all" && !stairs && seat.floor !== floor;
+                  const ghost = isGhostFloor(seat.floor);
 
                   return (
                     <mesh
@@ -884,11 +877,18 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                 <Avatar
                   character={character}
                   controlsRef={controlsRef}
+                  elevatorRef={elevatorRef}
                   floor={floor}
                   onFloorChange={showFloor}
                   onStairsChange={setStairs}
                   touchRef={touchRef}
                   view={view}
+                />
+                <Elevator
+                  elevatorRef={elevatorRef}
+                  floors={floors}
+                  isGhostFloor={isGhostFloor}
+                  label={showLabels ? tStoreLayout("items.elevator") : null}
                 />
                 <OrbitControls
                   maxPolarAngle={
