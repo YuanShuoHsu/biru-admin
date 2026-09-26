@@ -5,6 +5,7 @@ import {
   STORE_LAYOUT_FLOOR_HEIGHT,
   STORE_LAYOUT_ITEMS,
   STORE_LAYOUT_ROOM,
+  STORE_LAYOUT_SEATS,
   STORE_LAYOUT_SLAB_PANELS,
   STORE_LAYOUT_SLAB_THICKNESS,
   STORE_LAYOUT_STAIRWELL,
@@ -32,7 +33,7 @@ interface Solid extends Footprint {
 }
 
 const SOLIDS: Solid[] = [
-  ...STORE_LAYOUT_ITEMS.map(
+  ...[...STORE_LAYOUT_ITEMS, ...STORE_LAYOUT_SEATS].map(
     ({ depth, elevation, floor, height, width, x, z }) => ({
       bottom: STORE_LAYOUT_FLOOR_BASE[floor] + elevation,
       depth,

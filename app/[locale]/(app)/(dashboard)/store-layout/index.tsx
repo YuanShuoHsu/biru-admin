@@ -24,6 +24,7 @@ import {
   STORE_LAYOUT_KIND_COLORS,
   STORE_LAYOUT_LOOK,
   STORE_LAYOUT_ROOM,
+  STORE_LAYOUT_SEATS,
   STORE_LAYOUT_SLAB_PANELS,
   STORE_LAYOUT_SLAB_THICKNESS,
   STORE_LAYOUT_STAIRWELL,
@@ -850,6 +851,33 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                             />
                           ),
                         )}
+                    </mesh>
+                  );
+                })}
+                {STORE_LAYOUT_SEATS.map((seat) => {
+                  if (floors !== "all" && floors !== seat.floor) return null;
+
+                  const { depth, elevation, height, width, x, z } = seat;
+                  const ghost =
+                    floors === "all" && !stairs && seat.floor !== floor;
+
+                  return (
+                    <mesh
+                      key={`${seat.floor}-${x}-${z}-${elevation}`}
+                      position={[
+                        x + width / 2,
+                        STORE_LAYOUT_FLOOR_BASE[seat.floor] +
+                          elevation +
+                          height / 2,
+                        z + depth / 2,
+                      ]}
+                    >
+                      <boxGeometry args={[width, height, depth]} />
+                      <meshStandardMaterial
+                        color={STORE_LAYOUT_KIND_COLORS.seat}
+                        {...ghostSurface(ghost)}
+                      />
+                      <Edges color={grey[700]} {...ghostEdge(ghost)} />
                     </mesh>
                   );
                 })}
