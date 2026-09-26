@@ -177,6 +177,9 @@ const FLOORS_BY_KEY = new Map(
   ]),
 );
 
+const nextInOrder = <Value,>(order: readonly Value[], current: Value) =>
+  order[(order.indexOf(current) + 1) % order.length];
+
 const { pitchLimit } = STORE_LAYOUT_LOOK;
 
 const subscribeFullscreen = (onChange: () => void) => {
@@ -435,14 +438,16 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
     setFloors((current) => (current === "all" ? current : value));
   };
 
+  const selectView = (value: StoreLayoutView) => {
+    applyView(value, floor);
+    setView(value);
+  };
+
   const handleViewChange = (
     _event: React.MouseEvent<HTMLElement>,
     value: StoreLayoutView | null,
   ) => {
-    if (!value) return;
-
-    applyView(value, floor);
-    setView(value);
+    if (value) selectView(value);
   };
 
   const handleCharacterChange = (
@@ -456,10 +461,17 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
     if (event.key.startsWith("Arrow") || event.code === "Space")
       event.preventDefault();
 
+    if (event.repeat || event.metaKey || event.ctrlKey) return;
+
     const nextFloors = FLOORS_BY_KEY.get(event.code);
 
-    if (nextFloors && !event.repeat && !event.metaKey && !event.ctrlKey)
-      selectFloors(nextFloors);
+    if (nextFloors) selectFloors(nextFloors);
+
+    if (event.code === "KeyV")
+      selectView(nextInOrder(STORE_LAYOUT_VIEW_ORDER, view));
+
+    if (event.code === "KeyC")
+      setCharacter(nextInOrder(STORE_LAYOUT_CHARACTER_ORDER, character));
   };
 
   // iPhone Safari 沒有 Element.requestFullscreen，只能改用固定定位鋪滿視窗

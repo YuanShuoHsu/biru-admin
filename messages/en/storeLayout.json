@@ -52,7 +52,7 @@
     "workCounter": "Bar work counter"
   },
   "label": "Store Layout",
-  "moveHint": "Click the view, then move the character with the arrow keys or WASD, sprint with Shift, jump with the space bar, switch floors with 1/2/3{view, select, first { and turn the view with IJKL} other {, turn the view with IJKL and zoom in with O and out with U}}",
+  "moveHint": "Click the view, then move the character with the arrow keys or WASD, sprint with Shift, jump with the space bar, turn the view with IJKL{view, select, first {} other {, zoom in with O and out with U}}, and switch floors with 1/2/3, views with V and characters with C",
   "showDimensions": "Sizes",
   "showLabels": "Names",
   "touchControls": {
