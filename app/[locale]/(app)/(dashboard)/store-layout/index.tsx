@@ -170,6 +170,13 @@ const MOVE_MAP: KeyboardControlsEntry<StoreLayoutMove>[] = [
   { keys: ["KeyU"], name: "zoomOut" },
 ];
 
+const FLOORS_BY_KEY = new Map(
+  STORE_LAYOUT_FLOOR_FILTERS.map((value, index) => [
+    `Digit${index + 1}`,
+    value,
+  ]),
+);
+
 const { pitchLimit } = STORE_LAYOUT_LOOK;
 
 const subscribeFullscreen = (onChange: () => void) => {
@@ -407,18 +414,20 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
     controls.update();
   };
 
-  const handleFloorsChange = (
-    _event: React.MouseEvent<HTMLElement>,
-    value: StoreLayoutFloorFilter | null,
-  ) => {
-    if (!value) return;
-
+  const selectFloors = (value: StoreLayoutFloorFilter) => {
     setFloors(value);
 
     if (value === "all") return;
 
     setFloor(value);
     applyView(view, value);
+  };
+
+  const handleFloorsChange = (
+    _event: React.MouseEvent<HTMLElement>,
+    value: StoreLayoutFloorFilter | null,
+  ) => {
+    if (value) selectFloors(value);
   };
 
   const showFloor = (value: StoreLayoutFloor) => {
@@ -446,6 +455,11 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key.startsWith("Arrow") || event.code === "Space")
       event.preventDefault();
+
+    const nextFloors = FLOORS_BY_KEY.get(event.code);
+
+    if (nextFloors && !event.repeat && !event.metaKey && !event.ctrlKey)
+      selectFloors(nextFloors);
   };
 
   // iPhone Safari 沒有 Element.requestFullscreen，只能改用固定定位鋪滿視窗
