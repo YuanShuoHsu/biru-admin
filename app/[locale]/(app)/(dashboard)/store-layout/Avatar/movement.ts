@@ -1,15 +1,16 @@
 import {
   STORE_LAYOUT_AVATAR,
+  STORE_LAYOUT_DOORS,
   STORE_LAYOUT_ELEVATOR_WALLS,
   STORE_LAYOUT_FLOORS,
   STORE_LAYOUT_FLOOR_BASE,
   STORE_LAYOUT_FLOOR_HEIGHT,
   STORE_LAYOUT_ITEMS,
+  STORE_LAYOUT_RESTROOM_WALLS,
   STORE_LAYOUT_ROOM,
   STORE_LAYOUT_SEATS,
   STORE_LAYOUT_SLAB_PANELS,
   STORE_LAYOUT_SLAB_THICKNESS,
-  STORE_LAYOUT_STAIRWELL,
   STORE_LAYOUT_STAIR_FLIGHTS,
   STORE_LAYOUT_STAIR_GUARDS,
   STORE_LAYOUT_STAIR_GUARD_HEIGHT,
@@ -47,6 +48,8 @@ const SOLIDS: Solid[] = [
     ...STORE_LAYOUT_ITEMS,
     ...STORE_LAYOUT_SEATS,
     ...STORE_LAYOUT_ELEVATOR_WALLS,
+    ...STORE_LAYOUT_RESTROOM_WALLS,
+    ...STORE_LAYOUT_DOORS.map(({ leaf }) => leaf),
   ].map(({ depth, elevation, floor, height, width, x, z }) => ({
     bottom: STORE_LAYOUT_FLOOR_BASE[floor] + elevation,
     depth,
@@ -89,9 +92,6 @@ const covers = (area: Footprint, x: number, z: number) =>
   x <= area.x + area.width &&
   z >= area.z &&
   z <= area.z + area.depth;
-
-export const isOnStairs = (x: number, z: number) =>
-  covers(STORE_LAYOUT_STAIRWELL, x, z);
 
 export const floorIndexAt = (feet: number) =>
   Math.min(

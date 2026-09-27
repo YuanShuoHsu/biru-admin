@@ -12,6 +12,7 @@ import nipplejs from "nipplejs";
 import {
   STORE_LAYOUT_TOUCH_MEDIA,
   STORE_LAYOUT_TOUCH_QUERY,
+  STORE_LAYOUT_TOUCH_TARGET,
 } from "@/constants/storeLayout";
 
 import type { StoreLayoutTouchInput } from "@/types/storeLayout";
@@ -65,6 +66,7 @@ const Jump = styled(IconButton)(({ theme }) => ({
   touchAction: "none",
 
   [STORE_LAYOUT_TOUCH_MEDIA]: {
+    ...STORE_LAYOUT_TOUCH_TARGET[STORE_LAYOUT_TOUCH_MEDIA],
     display: "inline-flex",
   },
 }));

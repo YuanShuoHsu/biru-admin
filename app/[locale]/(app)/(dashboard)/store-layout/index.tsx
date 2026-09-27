@@ -2,15 +2,26 @@
 
 import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
+import { enqueueSnackbar } from "notistack";
 import {
   type ComponentRef,
+  useEffect,
+  useMemo,
   useRef,
   useState,
   useSyncExternalStore,
 } from "react";
+import useSWR from "swr";
 import { DoubleSide } from "three";
 
+import { STATUS_TEXT_COLORS } from "@/constants/orders";
+
+import { useSocketConnection } from "@/hooks/useSocketConnection";
+
+import { menuSocket } from "@/app/socket";
+
 import Avatar from "./Avatar";
+import DineInTables from "./DineInTables";
 import Elevator from "./Elevator";
 import { createElevatorState } from "./Elevator/motion";
 import Furniture from "./Realistic/Furniture";
@@ -18,6 +29,7 @@ import ItemBody from "./Realistic/ItemBody";
 import Lighting from "./Realistic/Lighting";
 import Shell from "./Realistic/Shell";
 import Surface, { SURFACES } from "./Realistic/Surface";
+import Restrooms from "./Restrooms";
 import SpriteLabel from "./SpriteLabel";
 import { ghostEdge, ghostSurface } from "./ghost";
 
@@ -40,8 +52,11 @@ import {
   STORE_LAYOUT_STAIR_GUARDS,
   STORE_LAYOUT_STAIR_GUARD_HEIGHT,
   STORE_LAYOUT_STAIR_STEPS,
+  STORE_LAYOUT_TABLES,
   STORE_LAYOUT_TOUCH_MEDIA,
   STORE_LAYOUT_TOUCH_QUERY,
+  STORE_LAYOUT_TOUCH_SLOP,
+  STORE_LAYOUT_TOUCH_TARGET,
   STORE_LAYOUT_VIEWS,
   STORE_LAYOUT_VIEW_ORDER,
   STORE_LAYOUT_WALLS,
@@ -50,6 +65,7 @@ import {
 
 import { Download, Fullscreen, FullscreenExit } from "@mui/icons-material";
 import {
+  Divider,
   FormControlLabel,
   IconButton,
   Paper,
@@ -60,7 +76,7 @@ import {
   Typography,
 } from "@mui/material";
 import { blueGrey, grey } from "@mui/material/colors";
-import { styled } from "@mui/material/styles";
+import { styled, useTheme } from "@mui/material/styles";
 
 import {
   Edges,
@@ -71,6 +87,17 @@ import {
 } from "@react-three/drei";
 import { Canvas, type RootState } from "@react-three/fiber";
 
+import OrderDetailDialog from "../orders/OrderDetailDialog";
+
+import { useDialogStore } from "@/providers/dialog-store-provider";
+
+import { orderBoardStatusValues } from "@/types/api";
+import type {
+  AdminOrderBoardColumn,
+  AdminOrderResponse,
+  OrderBoardStatus,
+} from "@/types/orders";
+import type { Organization } from "@/types/organizations";
 import type {
   StoreLayoutCharacter,
   StoreLayoutFloor,
@@ -79,6 +106,8 @@ import type {
   StoreLayoutTouchInput,
   StoreLayoutView,
 } from "@/types/storeLayout";
+
+import { getErrorMessage } from "@/utils/errors";
 
 const Joystick = dynamic(() => import("./Joystick"), { ssr: false });
 
@@ -123,11 +152,16 @@ const OverlayActions = styled(Stack)(({ theme }) => ({
   bottom: theme.spacing(1.5),
   flexDirection: "row",
   gap: theme.spacing(1),
+
+  [STORE_LAYOUT_TOUCH_MEDIA]: {
+    gap: STORE_LAYOUT_TOUCH_SLOP * 2,
+  },
 }));
 
 const OverlayButton = styled(IconButton)(({ theme }) => ({
   border: `1px solid ${theme.vars.palette.divider}`,
   color: theme.vars.palette.text.primary,
+  ...STORE_LAYOUT_TOUCH_TARGET,
 }));
 
 const GridLegend = styled(Stack)(({ theme }) => ({
@@ -142,6 +176,28 @@ const GridLegend = styled(Stack)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   transition: theme.transitions.create("border-color"),
   pointerEvents: "none",
+}));
+
+const SummaryPaper = styled(Paper)(({ theme }) => ({
+  position: "absolute",
+  top: theme.spacing(1.5),
+  left: theme.spacing(1.5),
+  maxWidth: `calc(100% - ${theme.spacing(3)})`,
+  padding: theme.spacing(0.5, 1),
+  pointerEvents: "none",
+}));
+
+const StatusLegend = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  columnGap: theme.spacing(1.5),
+}));
+
+const StatusDot = styled("span")(({ theme }) => ({
+  display: "inline-block",
+  width: 8,
+  height: 8,
+  marginInlineEnd: theme.spacing(0.5),
+  borderRadius: "50%",
 }));
 
 const LegendStack = styled(Stack)(({ theme }) => ({
@@ -203,6 +259,14 @@ const subscribeNothing = () => () => {};
 const savesToPhotoLibrary = (file: File) =>
   window.matchMedia(STORE_LAYOUT_TOUCH_QUERY).matches &&
   Boolean(navigator.canShare?.({ files: [file] }));
+
+const FLOOR_SUMMARIES = STORE_LAYOUT_FLOORS.map((floor) => ({
+  floor,
+  seats: STORE_LAYOUT_SEATS.filter(
+    (seat) => seat.floor === floor && !seat.elevation,
+  ).length,
+  tables: STORE_LAYOUT_TABLES.filter((table) => table.floor === floor),
+}));
 
 const toCentimeters = (value: number) => Math.round(value * 1000) / 10;
 
@@ -398,11 +462,87 @@ const ItemAnnotations = ({
 };
 
 interface StoreLayoutProps {
+  columns: AdminOrderBoardColumn[];
   empty?: boolean;
+  organization: Organization;
 }
 
-const StoreLayout = ({ empty }: StoreLayoutProps) => {
+const StoreLayout = ({
+  columns: initialColumns,
+  empty,
+  organization: { id: organizationId, slug: organizationSlug },
+}: StoreLayoutProps) => {
+  const tCommon = useTranslations("common");
+  const tOrder = useTranslations("order");
+  const tOrders = useTranslations("orders");
   const tStoreLayout = useTranslations("storeLayout");
+
+  const { setDialog } = useDialogStore((state) => state);
+
+  const theme = useTheme();
+
+  const { data: boardColumns = initialColumns, mutate } = useSWR<
+    AdminOrderBoardColumn[]
+  >(
+    empty ? null : `/api/organizations/${organizationSlug}/orders/board/admin`,
+    { fallbackData: initialColumns },
+  );
+
+  const { isConnected } = useSocketConnection(menuSocket);
+
+  useEffect(() => {
+    if (empty || !isConnected) return;
+
+    menuSocket
+      .timeout(5000)
+      .emitWithAck("joinOrdersBoard", { organizationId })
+      .catch((error) =>
+        enqueueSnackbar(getErrorMessage(error), { variant: "error" }),
+      );
+
+    menuSocket.on("orderUpdated", mutate);
+
+    return () => {
+      menuSocket.off("orderUpdated", mutate);
+    };
+  }, [empty, isConnected, mutate, organizationId]);
+
+  const tableOrders = useMemo(() => {
+    const byTable = new Map<number, AdminOrderResponse[]>();
+
+    for (const order of boardColumns.flatMap(({ orders }) => orders)) {
+      if (order.mode !== "dineIn" || !order.tableNumber) continue;
+      if (
+        !orderBoardStatusValues.some((status) => status === order.orderStatus)
+      )
+        continue;
+
+      byTable.set(order.tableNumber, [
+        ...(byTable.get(order.tableNumber) ?? []),
+        order,
+      ]);
+    }
+
+    return byTable;
+  }, [boardColumns]);
+
+  // 場景固定是亮色打光，跟著暗色模式換淺色色票會在木地板上看不出來
+  const statusColor = (status: OrderBoardStatus) => {
+    const palette = theme.colorSchemes.light?.palette ?? theme.palette;
+    const key = STATUS_TEXT_COLORS[status];
+
+    return key === "text" ? palette.text.primary : palette[key].main;
+  };
+
+  const tableColors = new Map(
+    [...tableOrders].flatMap(([tableNumber, orders]) => {
+      const status = orderBoardStatusValues.find((value) =>
+        orders.some(({ orderStatus }) => orderStatus === value),
+      );
+
+      return status ? [[tableNumber, statusColor(status)] as const] : [];
+    }),
+  );
 
   const controlsRef = useRef<ComponentRef<typeof OrbitControls>>(null);
   const rootStateRef = useRef<RootState>(null);
@@ -435,14 +575,14 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
   const [character, setCharacter] = useState<StoreLayoutCharacter>("male");
   const [floor, setFloor] = useState<StoreLayoutFloor>("ground");
   const [floors, setFloors] = useState<StoreLayoutFloorFilter>("ground");
-  const [stairs, setStairs] = useState(false);
+  const [focusFloor, setFocusFloor] = useState(true);
   const [showLabels, setShowLabels] = useState(true);
   const [showDimensions, setShowDimensions] = useState(true);
   const [realistic, setRealistic] = useState(true);
   const [view, setView] = useState<StoreLayoutView>("iso");
 
   const isGhostFloor = (value: StoreLayoutFloor) =>
-    floors === "all" && !stairs && value !== floor;
+    floors === "all" && focusFloor && value !== floor;
 
   const applyView = (
     nextView: StoreLayoutView,
@@ -518,6 +658,8 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
     if (event.code === "KeyC")
       setCharacter(nextInOrder(STORE_LAYOUT_CHARACTER_ORDER, character));
 
+    if (event.code === "KeyF") setFocusFloor((on) => !on);
+
     if (event.code === "KeyR") setRealistic((on) => !on);
 
     if (event.code === "KeyN") setShowLabels((on) => !on);
@@ -568,6 +710,39 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
     setTimeout(() => URL.revokeObjectURL(url));
   };
 
+  // 原生全螢幕只顯示畫布元素，對話框掛在 body 底下會被擋住
+  const handleTableSelect = (tableNumber: number) => {
+    if (document.fullscreenElement) void document.exitFullscreen();
+
+    setDialog({
+      content: (
+        <Stack divider={<Divider />} spacing={2}>
+          {tableOrders.get(tableNumber)?.map((order) => (
+            <OrderDetailDialog
+              key={order.id}
+              order={order}
+              organizationSlug={organizationSlug}
+            />
+          ))}
+        </Stack>
+      ),
+      open: true,
+      title: tOrder("mode.dineIn.tableNumber.value", { tableNumber }),
+    });
+  };
+
+  const tableLabel = (item: (typeof STORE_LAYOUT_TABLES)[number]) => {
+    const tableNumber = tOrder("mode.dineIn.tableNumber.value", {
+      tableNumber: item.tableNumber,
+    });
+
+    return item.label === "table"
+      ? tableNumber
+      : [tStoreLayout(`items.${item.label}`), tableNumber].join(
+          tCommon("delimiter"),
+        );
+  };
+
   const handleShowLabelsChange = (
     _event: React.ChangeEvent<HTMLInputElement>,
     checked: boolean,
@@ -580,6 +755,13 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
     checked: boolean,
   ) => {
     setShowDimensions(checked);
+  };
+
+  const handleFocusFloorChange = (
+    _event: React.ChangeEvent<HTMLInputElement>,
+    checked: boolean,
+  ) => {
+    setFocusFloor(checked);
   };
 
   const handleRealisticChange = (
@@ -611,6 +793,13 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
               </ToggleButton>
             ))}
           </StyledToggleButtonGroup>
+          <FormControlLabel
+            control={
+              <Switch checked={focusFloor} onChange={handleFocusFloorChange} />
+            }
+            disabled={floors !== "all"}
+            label={tStoreLayout("focusFloor")}
+          />
           <StyledToggleButtonGroup
             exclusive
             onChange={handleViewChange}
@@ -929,7 +1118,11 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                           depth={depth}
                           height={height}
                           label={
-                            showLabels ? tStoreLayout(`items.${label}`) : null
+                            !showLabels
+                              ? null
+                              : "tableNumber" in item
+                                ? tableLabel(item)
+                                : tStoreLayout(`items.${label}`)
                           }
                           showDimensions={showDimensions}
                           width={width}
@@ -938,6 +1131,18 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                     </group>
                   );
                 })}
+                <Restrooms
+                  floors={floors}
+                  isGhostFloor={isGhostFloor}
+                  realistic={realistic}
+                  showLabels={showLabels}
+                />
+                <DineInTables
+                  floors={floors}
+                  isGhostFloor={isGhostFloor}
+                  onSelect={handleTableSelect}
+                  tableColors={tableColors}
+                />
                 {realistic && (
                   <Furniture floors={floors} isGhostFloor={isGhostFloor} />
                 )}
@@ -1027,7 +1232,6 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                   elevatorRef={elevatorRef}
                   floor={floor}
                   onFloorChange={showFloor}
-                  onStairsChange={setStairs}
                   touchRef={touchRef}
                   view={view}
                 />
@@ -1052,6 +1256,38 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
               </Canvas>
             </KeyboardControls>
             <Joystick inputRef={touchRef} />
+            <SummaryPaper variant="outlined">
+              {FLOOR_SUMMARIES.map(({ floor: value, seats, tables }) => {
+                if (floors !== "all" && floors !== value) return null;
+
+                return (
+                  <Typography component="div" key={value} variant="caption">
+                    {tStoreLayout("summary", {
+                      floor: tStoreLayout(`floors.${value}`),
+                      occupied: tables.filter(({ tableNumber }) =>
+                        tableOrders.has(tableNumber),
+                      ).length,
+                      seats,
+                      tables: tables.length,
+                    })}
+                  </Typography>
+                );
+              })}
+              <StatusLegend direction="row">
+                {orderBoardStatusValues.map((status) => (
+                  <Typography
+                    color="textSecondary"
+                    key={status}
+                    variant="caption"
+                  >
+                    <StatusDot
+                      style={{ backgroundColor: statusColor(status) }}
+                    />
+                    {tOrders(`status.${status}`)}
+                  </Typography>
+                ))}
+              </StatusLegend>
+            </SummaryPaper>
             {!realistic && (
               <GridLegend aria-label={tStoreLayout("gridScale")}>
                 <LegendStack direction="row">

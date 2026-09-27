@@ -36,6 +36,7 @@ export type OrderMode = OrderResponse["mode"];
 export type OrderPaymentMethod = OrderResponse["paymentMethod"];
 export type OrderStatus = OrderResponse["orderStatus"];
 export type OrderFlowStatus = components["schemas"]["OrderFlowStatus"];
+export type OrderBoardStatus = components["schemas"]["OrderBoardStatus"];
 export type InvoiceStatus = components["schemas"]["InvoiceStatus"];
 export type RefundStatus = components["schemas"]["RefundStatus"];
 

@@ -18,6 +18,7 @@ interface SurfaceSpec {
 
 export const SURFACES = {
   blackSteel: { color: grey[900], metalness: 0.6, roughness: 0.45 },
+  ceramic: { color: "#f7f6f2", roughness: 0.2 },
   chalk: { color: "#1f2421", roughness: 0.95 },
   coir: { color: "#3b352f", roughness: 1 },
   glass: { color: "#dcecef", glass: true, roughness: 0.05 },
@@ -56,6 +57,9 @@ const BY_LABEL: Partial<Record<Label, SurfaceSpec>> = {
   orderScreen: SURFACES.screen,
   pastryCase: SURFACES.glass,
   pickupScreen: SURFACES.screen,
+  toilet: SURFACES.ceramic,
+  urinal: SURFACES.ceramic,
+  washbasin: SURFACES.ceramic,
 };
 
 export const surfaceOf = ({ kind, label }: StoreLayoutItem) =>

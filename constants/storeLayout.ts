@@ -84,15 +84,16 @@ const tableColumn = (
   floor: LayoutFloor,
   { depth, width }: { depth: number; width: number },
   x: number,
-  rows: number[],
+  rows: [z: number, tableNumber: number][],
 ) =>
-  rows.map((z) => ({
+  rows.map(([z, tableNumber]) => ({
     depth,
     elevation: 0,
     floor,
     height: TABLE_HEIGHT,
     kind: "seat" as const,
     label: "table" as const,
+    tableNumber,
     width,
     x,
     z,
@@ -102,40 +103,316 @@ const WINDOW_COUNTER_Z = STORE_LAYOUT_ROOM.depth - 0.5;
 const WINDOW_COUNTER_DEPTH = 0.45;
 const WINDOW_COUNTER_HEIGHT = 1.05;
 
-const windowCounter = (floor: LayoutFloor, from: number, to: number) => ({
+const windowCounter = (
+  floor: LayoutFloor,
+  from: number,
+  to: number,
+  tableNumber: number,
+) => ({
   depth: WINDOW_COUNTER_DEPTH,
   elevation: 0,
   floor,
   height: WINDOW_COUNTER_HEIGHT,
   kind: "seat" as const,
   label: "windowCounter" as const,
+  tableNumber,
   width: to - from,
   x: from,
   z: WINDOW_COUNTER_Z,
 });
 
-// 兩層廁所疊在同一位置，給排水管才能共用同一組立管
-const restroom = <Label extends "accessibleRestroom" | "restroom">(
+const RESTROOM_WALL = 0.1;
+const RESTROOM_DOOR_HEIGHT = 2.1;
+const STALL_PARTITION = 0.03;
+const STALL_PARTITION_HEIGHT = 1.85;
+const STALL_PARTITION_GAP = 0.15;
+const DOOR_LEAF = 0.04;
+const DOOR_ARC_SEGMENTS = 12;
+
+const ACCESSIBLE_RESTROOM = { depth: 2.2, width: 2.3, x: 0, z: 9.3 } as const;
+const WOMEN_RESTROOM = { depth: 3.9, width: 3.3, x: 0, z: 11.6 } as const;
+const MEN_RESTROOM = { depth: 2.5, width: 3.3, x: 0, z: 15.7 } as const;
+
+const WOMEN_STALLS = [11.6, 12.6, 13.6, 14.6];
+const MEN_STALL = 15.7;
+const STALL_WIDTH = 1;
+const STALL_DEPTH = 1.5;
+const STALL_DOOR_OFFSET = 0.4;
+const STALL_DOOR_WIDTH = 0.55;
+
+const ACCESSIBLE_DOOR = { from: 10.4, to: 11.3 } as const;
+const WOMEN_DOOR = { from: 14.6, to: 15.5 } as const;
+const MEN_DOOR = { from: 15.8, to: 16.7 } as const;
+
+const CORE_FACE = WOMEN_RESTROOM.width;
+const CORE_END = MEN_RESTROOM.z + MEN_RESTROOM.depth;
+
+const box = (
   floor: LayoutFloor,
-  label: Label,
+  [fromX, toX]: [number, number],
+  [fromZ, toZ]: [number, number],
+  elevation = 0,
+  height: number = STORE_LAYOUT_ROOM.height,
 ) => ({
-  depth: 2.4,
-  elevation: 0,
+  depth: toZ - fromZ,
+  elevation,
   floor,
-  height: STORE_LAYOUT_ROOM.height,
-  kind: "restroom" as const,
-  label,
-  width: 2.4,
-  x: 0,
-  z: 9.2,
+  height,
+  width: toX - fromX,
+  x: fromX,
+  z: fromZ,
 });
 
-const GROUND_WINDOW_COUNTERS = [
-  windowCounter("ground", 0.3, 6.1),
-  windowCounter("ground", 9.65, 15.45),
+const lintel = (floor: LayoutFloor, x: [number, number], z: [number, number]) =>
+  box(
+    floor,
+    x,
+    z,
+    RESTROOM_DOOR_HEIGHT,
+    STORE_LAYOUT_ROOM.height - RESTROOM_DOOR_HEIGHT,
+  );
+
+const stallPartition = (
+  floor: LayoutFloor,
+  x: [number, number],
+  z: [number, number],
+) => box(floor, x, z, STALL_PARTITION_GAP, STALL_PARTITION_HEIGHT);
+
+const stallWalls = (floor: LayoutFloor, from: number, partitioned: boolean) => {
+  const hinge = from + STALL_WIDTH - STALL_PARTITION;
+  const doorFrom = from + STALL_DOOR_OFFSET;
+
+  return [
+    ...(partitioned
+      ? [
+          stallPartition(
+            floor,
+            [0, STALL_DEPTH],
+            [hinge, hinge + STALL_PARTITION],
+          ),
+        ]
+      : []),
+    stallPartition(
+      floor,
+      [STALL_DEPTH, STALL_DEPTH + STALL_PARTITION],
+      [from, doorFrom],
+    ),
+  ];
+};
+
+// 兩層廁所疊在同一位置，給排水管才能共用同一組立管
+const restroomWalls = (floor: LayoutFloor) => {
+  const inner = CORE_FACE;
+  const outer = CORE_FACE + RESTROOM_WALL;
+  const accessibleFace = ACCESSIBLE_RESTROOM.width;
+
+  return [
+    box(floor, [0, accessibleFace + RESTROOM_WALL], [9.2, 9.3]),
+    box(
+      floor,
+      [accessibleFace, accessibleFace + RESTROOM_WALL],
+      [9.3, ACCESSIBLE_DOOR.from],
+    ),
+    box(
+      floor,
+      [accessibleFace, accessibleFace + RESTROOM_WALL],
+      [ACCESSIBLE_DOOR.to, WOMEN_RESTROOM.z - RESTROOM_WALL],
+    ),
+    lintel(
+      floor,
+      [accessibleFace, accessibleFace + RESTROOM_WALL],
+      [ACCESSIBLE_DOOR.from, ACCESSIBLE_DOOR.to],
+    ),
+    box(
+      floor,
+      [0, outer],
+      [WOMEN_RESTROOM.z - RESTROOM_WALL, WOMEN_RESTROOM.z],
+    ),
+    box(floor, [inner, outer], [WOMEN_RESTROOM.z, WOMEN_DOOR.from]),
+    lintel(floor, [inner, outer], [WOMEN_DOOR.from, WOMEN_DOOR.to]),
+    box(floor, [inner, outer], [WOMEN_DOOR.to, MEN_DOOR.from]),
+    box(floor, [0, inner], [MEN_RESTROOM.z - RESTROOM_WALL, MEN_RESTROOM.z]),
+    lintel(floor, [inner, outer], [MEN_DOOR.from, MEN_DOOR.to]),
+    box(floor, [inner, outer], [MEN_DOOR.to, CORE_END]),
+    box(floor, [0, outer], [CORE_END, CORE_END + RESTROOM_WALL]),
+    ...WOMEN_STALLS.flatMap((from, index) =>
+      stallWalls(floor, from, index < WOMEN_STALLS.length - 1),
+    ),
+    ...stallWalls(floor, MEN_STALL, true),
+  ];
+};
+
+const FIXTURE_HEIGHTS = { toilet: 0.42, urinal: 0.6, washbasin: 0.8 };
+
+const fixture = <Label extends "toilet" | "urinal" | "washbasin">(
+  floor: LayoutFloor,
+  label: Label,
+  x: [number, number],
+  z: [number, number],
+  elevation = 0,
+) => ({
+  ...box(floor, x, z, elevation, FIXTURE_HEIGHTS[label]),
+  kind: "restroom" as const,
+  label,
+});
+
+const TOILET_DEPTH = 0.7;
+const TOILET_WIDTH = 0.4;
+const URINAL_DEPTH = 0.35;
+const URINAL_ELEVATION = 0.35;
+const WASHBASIN_DEPTH = 0.55;
+const WASHBASIN_WIDTH = 0.6;
+
+const stallToilet = (floor: LayoutFloor, from: number) => {
+  const middle = from + STALL_WIDTH / 2;
+
+  return fixture(
+    floor,
+    "toilet",
+    [0, TOILET_DEPTH],
+    [middle - TOILET_WIDTH / 2, middle + TOILET_WIDTH / 2],
+  );
+};
+
+const vanityBasin = (floor: LayoutFloor, from: number) =>
+  fixture(
+    floor,
+    "washbasin",
+    [CORE_FACE - WASHBASIN_DEPTH, CORE_FACE],
+    [from, from + WASHBASIN_WIDTH],
+  );
+
+const urinal = (floor: LayoutFloor, from: number) =>
+  fixture(
+    floor,
+    "urinal",
+    [from, from + 0.45],
+    [CORE_END - URINAL_DEPTH, CORE_END],
+    URINAL_ELEVATION,
+  );
+
+const restroomFixtures = (floor: LayoutFloor) => [
+  fixture(floor, "toilet", [0, TOILET_DEPTH], [9.35, 9.75]),
+  fixture(floor, "washbasin", [0, WASHBASIN_DEPTH], [10.8, 11.4]),
+  ...WOMEN_STALLS.map((from) => stallToilet(floor, from)),
+  vanityBasin(floor, 11.8),
+  vanityBasin(floor, 12.4),
+  stallToilet(floor, MEN_STALL),
+  urinal(floor, 0.25),
+  urinal(floor, 0.95),
+  vanityBasin(floor, 17.5),
 ];
 
-const UPPER_WINDOW_COUNTERS = [windowCounter("upper", 0.3, 15.45)];
+type Direction = [x: number, z: number];
+
+const toward = (
+  [x, z]: [number, number],
+  [directionX, directionZ]: Direction,
+  distance: number,
+): [number, number] => [x + directionX * distance, z + directionZ * distance];
+
+const leafBox = (
+  floor: LayoutFloor,
+  hinge: [number, number],
+  [directionX, directionZ]: Direction,
+  width: number,
+) => {
+  const [endX, endZ] = toward(hinge, [directionX, directionZ], width);
+  const along = (from: number, to: number): [number, number] =>
+    from === to
+      ? [from - DOOR_LEAF / 2, from + DOOR_LEAF / 2]
+      : [Math.min(from, to), Math.max(from, to)];
+
+  return box(
+    floor,
+    along(hinge[0], endX),
+    along(hinge[1], endZ),
+    0,
+    RESTROOM_DOOR_HEIGHT,
+  );
+};
+
+const swingDoor = (
+  floor: LayoutFloor,
+  hinge: [number, number],
+  closed: Direction,
+  open: Direction,
+  width: number,
+) => ({
+  leaf: leafBox(floor, hinge, open, width),
+  path: Array.from({ length: DOOR_ARC_SEGMENTS + 1 }, (_, index) => {
+    const angle = ((Math.PI / 2) * index) / DOOR_ARC_SEGMENTS;
+
+    return toward(
+      toward(hinge, closed, width * Math.cos(angle)),
+      open,
+      width * Math.sin(angle),
+    );
+  }),
+});
+
+const slideDoor = (
+  floor: LayoutFloor,
+  from: [number, number],
+  open: Direction,
+  width: number,
+) => {
+  const parked = toward(from, open, width);
+
+  return {
+    leaf: leafBox(floor, from, open, width),
+    path: [toward(from, open, -width), parked],
+  };
+};
+
+const stallDoor = (floor: LayoutFloor, from: number) =>
+  swingDoor(
+    floor,
+    [STALL_DEPTH, from + STALL_DOOR_OFFSET + STALL_DOOR_WIDTH],
+    [0, -1],
+    [-1, 0],
+    STALL_DOOR_WIDTH,
+  );
+
+const restroomDoors = (floor: LayoutFloor) => [
+  slideDoor(
+    floor,
+    [
+      ACCESSIBLE_RESTROOM.width + RESTROOM_WALL + DOOR_LEAF,
+      ACCESSIBLE_DOOR.from,
+    ],
+    [0, -1],
+    ACCESSIBLE_DOOR.to - ACCESSIBLE_DOOR.from,
+  ),
+  swingDoor(
+    floor,
+    [CORE_FACE, WOMEN_DOOR.to],
+    [0, -1],
+    [-1, 0],
+    WOMEN_DOOR.to - WOMEN_DOOR.from,
+  ),
+  swingDoor(
+    floor,
+    [CORE_FACE, MEN_DOOR.from],
+    [0, 1],
+    [-1, 0],
+    MEN_DOOR.to - MEN_DOOR.from,
+  ),
+  ...[...WOMEN_STALLS, MEN_STALL].map((from) => stallDoor(floor, from)),
+];
+
+export const STORE_LAYOUT_RESTROOMS = [
+  { ...ACCESSIBLE_RESTROOM, label: "accessibleRestroom" as const },
+  { ...WOMEN_RESTROOM, label: "womenRestroom" as const },
+  { ...MEN_RESTROOM, label: "menRestroom" as const },
+];
+
+const GROUND_WINDOW_COUNTERS = [
+  windowCounter("ground", 0.3, 6.1, 117),
+  windowCounter("ground", 9.65, 15.45, 118),
+];
+
+const UPPER_WINDOW_COUNTERS = [windowCounter("upper", 0.3, 15.45, 234)];
 
 const ENTRANCE = { height: 2.1, width: 2, x: 6.9 } as const;
 
@@ -162,37 +439,80 @@ const PLANTS = [
 ];
 
 const GROUND_TABLES = [
-  ...tableColumn("ground", FOUR_TOP, 0.1, [12.8, 15.2, 17.6]),
-  ...tableColumn("ground", FOUR_TOP, 2.7, [12.8, 15.2, 17.6]),
-  ...tableColumn("ground", TWO_TOP, 5.3, [10.2, 12.65, 15.05, 17.45]),
-  ...tableColumn("ground", TWO_TOP, 9.75, [7.9, 10.3, 12.65, 15.05, 17.45]),
-  ...tableColumn("ground", FOUR_TOP, 11.65, [10.5, 12.9, 15.3, 17.7]),
-  ...tableColumn("ground", FOUR_TOP, 14.25, [11.1, 13.5, 15.9]),
+  ...tableColumn("ground", TWO_TOP, 5.3, [
+    [10.2, 101],
+    [12.65, 102],
+    [15.05, 103],
+    [17.45, 104],
+  ]),
+  ...tableColumn("ground", TWO_TOP, 9.75, [
+    [7.9, 105],
+    [10.3, 106],
+    [12.65, 107],
+    [15.05, 108],
+    [17.45, 109],
+  ]),
+  ...tableColumn("ground", FOUR_TOP, 11.65, [
+    [10.5, 110],
+    [12.9, 111],
+    [15.3, 112],
+    [17.7, 113],
+  ]),
+  ...tableColumn("ground", FOUR_TOP, 14.25, [
+    [11.1, 114],
+    [13.5, 115],
+    [15.9, 116],
+  ]),
 ];
 
 const UPPER_TABLES = [
-  ...tableColumn("upper", FOUR_TOP, 0.1, [1.1, 3.5, 12.8, 15.2, 17.6]),
-  ...tableColumn("upper", FOUR_TOP, 2.7, [1.1, 3.5, 5.9, 12.8, 15.2, 17.6]),
-  ...tableColumn(
-    "upper",
-    TWO_TOP,
-    5.3,
-    [1.15, 3.55, 5.95, 8.35, 12.85, 15.25, 17.65],
-  ),
-  ...tableColumn(
-    "upper",
-    FOUR_TOP,
-    7.175,
-    [1.1, 3.5, 5.9, 8.3, 12.8, 15.2, 17.6],
-  ),
-  ...tableColumn(
-    "upper",
-    TWO_TOP,
-    9.75,
-    [1.15, 3.55, 5.95, 8.35, 12.85, 15.25, 17.65],
-  ),
-  ...tableColumn("upper", FOUR_TOP, 11.65, [1.8, 12.8, 15.2, 17.6]),
-  ...tableColumn("upper", FOUR_TOP, 14.25, [12.8, 15.2, 17.6]),
+  ...tableColumn("upper", FOUR_TOP, 0.1, [
+    [1.1, 201],
+    [3.5, 202],
+  ]),
+  ...tableColumn("upper", FOUR_TOP, 2.7, [
+    [1.1, 203],
+    [3.5, 204],
+    [5.9, 205],
+  ]),
+  ...tableColumn("upper", TWO_TOP, 5.3, [
+    [1.15, 206],
+    [3.55, 207],
+    [5.95, 208],
+    [8.35, 209],
+    [12.85, 210],
+    [15.25, 211],
+    [17.65, 212],
+  ]),
+  ...tableColumn("upper", FOUR_TOP, 7.175, [
+    [1.1, 213],
+    [3.5, 214],
+    [5.9, 215],
+    [8.3, 216],
+    [12.8, 217],
+    [15.2, 218],
+    [17.6, 219],
+  ]),
+  ...tableColumn("upper", TWO_TOP, 9.75, [
+    [1.15, 220],
+    [3.55, 221],
+    [5.95, 222],
+    [8.35, 223],
+    [12.85, 224],
+    [15.25, 225],
+    [17.65, 226],
+  ]),
+  ...tableColumn("upper", FOUR_TOP, 11.65, [
+    [1.8, 227],
+    [12.8, 228],
+    [15.2, 229],
+    [17.6, 230],
+  ]),
+  ...tableColumn("upper", FOUR_TOP, 14.25, [
+    [12.8, 231],
+    [15.2, 232],
+    [17.6, 233],
+  ]),
 ];
 
 export const STORE_LAYOUT_ITEMS = [
@@ -603,14 +923,21 @@ export const STORE_LAYOUT_ITEMS = [
     x: 14.4,
     z: 0.1,
   },
-  restroom("ground", "accessibleRestroom"),
+  ...restroomFixtures("ground"),
   ...GROUND_WINDOW_COUNTERS,
   ...GROUND_TABLES,
-  restroom("upper", "restroom"),
+  ...restroomFixtures("upper"),
   ...UPPER_WINDOW_COUNTERS,
   ...UPPER_TABLES,
   ...PLANTS,
 ] as const;
+
+export const STORE_LAYOUT_TABLES = [
+  ...GROUND_TABLES,
+  ...GROUND_WINDOW_COUNTERS,
+  ...UPPER_TABLES,
+  ...UPPER_WINDOW_COUNTERS,
+];
 
 const CHAIR_SIZE = 0.42;
 const CHAIR_GAP = 0.05;
@@ -744,6 +1071,19 @@ export const STORE_LAYOUT_FOV = 55;
 export const STORE_LAYOUT_TOUCH_QUERY = "(hover: none) and (pointer: coarse)";
 
 export const STORE_LAYOUT_TOUCH_MEDIA = `@media ${STORE_LAYOUT_TOUCH_QUERY}`;
+
+// 按鈕底下就是搖桿感應區，手指按偏會變成在轉視角，觸控時把按鈕的感應範圍往外擴
+export const STORE_LAYOUT_TOUCH_SLOP = 12;
+
+export const STORE_LAYOUT_TOUCH_TARGET = {
+  [STORE_LAYOUT_TOUCH_MEDIA]: {
+    "&::before": {
+      content: '""',
+      position: "absolute",
+      inset: -STORE_LAYOUT_TOUCH_SLOP,
+    },
+  },
+} as const;
 
 export const STORE_LAYOUT_LOOK = {
   pitchLimit: (Math.PI / 180) * 80,
@@ -975,6 +1315,11 @@ const elevatorWalls = (floor: LayoutFloor) => {
 
 export const STORE_LAYOUT_ELEVATOR_WALLS =
   STORE_LAYOUT_FLOORS.flatMap(elevatorWalls);
+
+export const STORE_LAYOUT_RESTROOM_WALLS =
+  STORE_LAYOUT_FLOORS.flatMap(restroomWalls);
+
+export const STORE_LAYOUT_DOORS = STORE_LAYOUT_FLOORS.flatMap(restroomDoors);
 
 export const STORE_LAYOUT_SLAB_OPENINGS = [
   STORE_LAYOUT_STAIRWELL,

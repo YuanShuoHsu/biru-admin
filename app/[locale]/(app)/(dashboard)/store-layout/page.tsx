@@ -11,6 +11,7 @@ import type { Locale } from "@/i18n/routing";
 import { STORE_LAYOUT_ORGANIZATION_SLUG } from "@/constants/storeLayout";
 
 import { getResolvedAdminOrganization } from "@/utils/menus";
+import { getAdminOrderBoard } from "@/utils/orders";
 
 interface StoreLayoutPageProps {
   params: Promise<{ locale: Locale }>;
@@ -51,8 +52,16 @@ const StoreLayoutPage = async ({
     redirect({ href: `/store-layout?${params.toString()}`, locale });
   }
 
+  const empty = organization.slug !== STORE_LAYOUT_ORGANIZATION_SLUG;
+
+  const columns = empty
+    ? []
+    : await getAdminOrderBoard(organization.slug, {
+        headers: { cookie: cookieStore.toString() },
+      });
+
   return (
-    <StoreLayout empty={organization.slug !== STORE_LAYOUT_ORGANIZATION_SLUG} />
+    <StoreLayout columns={columns} empty={empty} organization={organization} />
   );
 };
 

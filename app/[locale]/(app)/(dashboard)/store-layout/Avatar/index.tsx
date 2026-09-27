@@ -41,7 +41,6 @@ import {
   advanceAvatar,
   floorIndexAt,
   footholdAt,
-  isOnStairs,
   surfaceAt,
 } from "./movement";
 
@@ -107,7 +106,6 @@ interface AvatarProps {
   elevatorRef: RefObject<ElevatorState>;
   floor: StoreLayoutFloor;
   onFloorChange: (floor: StoreLayoutFloor) => void;
-  onStairsChange: (stairs: boolean) => void;
   touchRef: RefObject<StoreLayoutTouchInput>;
   view: StoreLayoutView;
 }
@@ -118,7 +116,6 @@ const Avatar = ({
   elevatorRef,
   floor,
   onFloorChange,
-  onStairsChange,
   touchRef,
   view,
 }: AvatarProps) => {
@@ -137,7 +134,6 @@ const Avatar = ({
   const strideRef = useRef(0);
   const swingRef = useRef(0);
   const floorIndexRef = useRef(0);
-  const stairsRef = useRef(false);
   const cameraModeRef = useRef<string | null>(null);
   const stateRef = useRef<AvatarState>({
     verticalSpeed: 0,
@@ -326,13 +322,6 @@ const Avatar = ({
     if (floorIndex !== floorIndexRef.current) {
       floorIndexRef.current = floorIndex;
       onFloorChange(STORE_LAYOUT_FLOORS[floorIndex]);
-    }
-
-    const stairs = isOnStairs(state.x, state.z);
-
-    if (stairs !== stairsRef.current) {
-      stairsRef.current = stairs;
-      onStairsChange(stairs);
     }
 
     const controls = controlsRef.current;
