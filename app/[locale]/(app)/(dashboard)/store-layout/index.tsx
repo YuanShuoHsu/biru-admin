@@ -640,7 +640,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                   position: [...STORE_LAYOUT_VIEWS.iso.position],
                 }}
                 gl={{ preserveDrawingBuffer: true }}
-                shadows
+                shadows="percentage"
                 onCreated={(state) => {
                   rootStateRef.current = state;
                 }}
