@@ -8,6 +8,7 @@ import {
   green,
   grey,
   lightBlue,
+  pink,
   teal,
 } from "@mui/material/colors";
 
@@ -767,16 +768,24 @@ export const STORE_LAYOUT_CHARACTERS = {
     color: deepOrange[600],
     eye: 1.55,
     followOffset: [0, 1.2, 3.2],
+    hair: brown[900],
+    iris: grey[900],
+    pants: blueGrey[800],
+    shoe: grey[900],
     skin: brown[200],
+    sole: grey[400],
   },
   cat: {
     belly: grey[50],
+    earInner: pink[100],
     eye: 0.4,
     followOffset: [0, 1.1, 2.6],
     fur: deepOrange[400],
     iris: green[800],
-    nose: brown[300],
+    nose: pink[300],
+    pupil: grey[900],
     stripe: deepOrange[800],
+    whisker: grey[100],
   },
 } as const;
 
