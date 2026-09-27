@@ -142,7 +142,7 @@ const StyledPaper = styled(Paper, {
 })<{ fullscreen: boolean }>(({ fullscreen, theme }) => ({
   position: "relative",
   flex: 1,
-  minHeight: 240,
+  minHeight: 300,
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
@@ -592,6 +592,21 @@ const StoreLayout = ({
   const [emulatedFullscreen, setEmulatedFullscreen] = useState(false);
 
   const fullscreen = nativeFullscreen || emulatedFullscreen;
+
+  useEffect(() => {
+    if (!emulatedFullscreen) return;
+
+    const { scrollX, scrollY } = window;
+    const root = document.documentElement;
+
+    root.style.overflow = "hidden";
+    window.scrollTo(0, 0);
+
+    return () => {
+      root.style.overflow = "";
+      window.scrollTo(scrollX, scrollY);
+    };
+  }, [emulatedFullscreen]);
 
   const [character, setCharacter] = useState<StoreLayoutCharacter>("male");
   const [floor, setFloor] = useState<StoreLayoutFloor>("ground");
