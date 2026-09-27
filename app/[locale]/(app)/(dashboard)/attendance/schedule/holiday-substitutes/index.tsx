@@ -363,7 +363,13 @@ const HolidaySubstitutes = ({
 
           return (
             <Chip
-              color={status === "pending" ? "warning" : "default"}
+              color={
+                status === "pending"
+                  ? "warning"
+                  : status === "notOwed"
+                    ? "error"
+                    : "default"
+              }
               label={tAttendance(`holidaySubstitutes.status.${status}`)}
               size="small"
             />

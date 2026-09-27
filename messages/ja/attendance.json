@@ -153,7 +153,7 @@
     "holidayCalendarMissing": "その年の国定休日データがまだ取得されていません。しばらくしてから再試行してください。",
     "holidayDayKindRequired": "国定休日のシフトは国定休日として登録する必要があります。取り消して再登録してください。",
     "holidaySubstituteInvalid": "この祝日は振替休日が不要か、すでに指定済み、または選択したシフトが勤務日ではありません。",
-    "holidaySubstituteRequired": "法定休日または休日と重なった祝日の振替休日が未指定です。シフトの「祝日振替」で指定してください。",
+    "holidaySubstituteRequired": "退職前に、法定休日または休日と重なった祝日の振替休日が未指定です。シフトの「祝日振替」で指定してください。",
     "idempotencyConflict": "再送内容が変更されています。フォームを開き直してください。",
     "implausibleMinimumWage": "確認した最低時給が前期より低くなっています。官報の公告を再確認してください。",
     "incompleteAttendance": "打刻または休暇の処理が未完了です。",
@@ -545,6 +545,7 @@
     "scheduledHours": "{hours} 時間シフト済み",
     "moveShift": "シフトを移動",
     "shiftUpdated": "{name} のシフトを更新しました",
+    "pendingSubstitute": "{name} · {holiday}の振替日未指定",
     "shiftCancelled": "{name} のシフトを取消しました",
     "undo": "元に戻す",
     "label": "シフト表",
@@ -582,7 +583,9 @@
     "weekAbbreviation": "週",
     "weekNumber": "第 {weekNumber} 週",
     "copyWeek": "今週のシフトをコピー",
-    "shiftCreated": "{name} のシフトを {count} 件追加しました"
+    "shiftCreated": "{name} のシフトを {count} 件追加しました",
+    "shiftRestored": "{name} のシフトを元に戻しました",
+    "recentTimes": "よく使う時間帯"
   },
   "scheduledTime": "予定時間",
   "settings": {
@@ -598,7 +601,8 @@
       "create": "シフトを追加",
       "viewEvents": "打刻明細を見る",
       "approveExtraWork": "シフト外の時間を承認",
-      "rejectExtraWork": "シフト外の時間を却下"
+      "rejectExtraWork": "シフト外の時間を却下",
+      "edit": "シフトを編集"
     },
     "label": "シフト管理"
   },
@@ -750,6 +754,7 @@
     "holidayName": "名称",
     "substituteDate": "振替休日",
     "substituteShift": "振替える勤務日のシフト",
+    "noWorkdayShifts": "{date} までに指定できる勤務日のシフトがありません。先にシフトを作成してください",
     "actions": {
       "designate": "振替休日を指定",
       "revoke": "振替休日を取り消す"
@@ -757,7 +762,7 @@
     "status": {
       "pending": "未指定",
       "designated": "指定済み",
-      "notOwed": "不要"
+      "notOwed": "不要・取消してください"
     },
     "substituteDesignated": "{name} の{holiday}の振替休日を指定しました",
     "substituteRevoked": "{name} の{holiday}の振替休日を取り消しました"

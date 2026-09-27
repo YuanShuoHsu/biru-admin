@@ -330,7 +330,7 @@ export const getAttendanceCalendarDayKinds = cache(
       "day-kinds",
       from,
       to,
-      { dayKinds: [], holidays: [] },
+      { dayKinds: [], holidays: [], pendingSubstitutes: [] },
       init,
     ),
 );

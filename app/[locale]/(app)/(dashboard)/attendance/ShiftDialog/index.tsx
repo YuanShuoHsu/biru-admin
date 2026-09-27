@@ -3,9 +3,9 @@
 import dayjs, { type Dayjs } from "dayjs";
 import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent } from "react";
+import { type BaseSyntheticEvent, useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
 import { type ShiftForm, useShiftFormSchema } from "./definitions";
@@ -17,14 +17,25 @@ import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Checkbox, FormControlLabel, MenuItem, TextField } from "@mui/material";
+import { EventBusy } from "@mui/icons-material";
+import {
+  Button,
+  Checkbox,
+  Chip,
+  FormControlLabel,
+  FormHelperText,
+  MenuItem,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import { attendanceScheduledDayKindValues } from "@/types/api";
-import type { AttendanceEmployee } from "@/types/attendance";
+import type { AttendanceEmployee, AttendanceShift } from "@/types/attendance";
 
 import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
@@ -37,6 +48,20 @@ const StyledFormControlLabel = styled(FormControlLabel)({
   alignSelf: "flex-start",
 });
 
+const StartButton = styled(Button)({
+  alignSelf: "flex-start",
+});
+
+const ChipStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
+
+const RECENT_TIMES_LIMIT = 4;
+
+const VALIDATION_DELAY_MS = 400;
+
 const atTimeAfter = (from: Dayjs, time: string) => {
   const [hour, minute] = time.split(":").map(Number);
   const candidate = from.hour(hour).minute(minute).second(0).millisecond(0);
@@ -44,13 +69,28 @@ const atTimeAfter = (from: Dayjs, time: string) => {
   return candidate.isBefore(from) ? candidate.add(1, "day") : candidate;
 };
 
+const storeTime = (value: string) =>
+  dayjs(value).tz(STORE_TIMEZONE).format("HH:mm");
+
+export type ShiftChange = Pick<
+  AttendanceShift,
+  "employeeId" | "endsAt" | "paidBreak" | "startsAt"
+> & { dayKind?: (typeof attendanceScheduledDayKindValues)[number] };
+
 interface ShiftDialogProps {
   date?: string;
   employeeId?: string;
   employees: AttendanceEmployee[];
   mutate: () => void;
+  onCancelShift?: (shift: AttendanceShift) => void;
+  onUpdateShift?: (
+    shift: AttendanceShift,
+    change: ShiftChange,
+  ) => Promise<boolean>;
   openingHours: string;
   organizationSlug: string;
+  recentShifts?: AttendanceShift[];
+  shift?: AttendanceShift;
 }
 
 const ShiftDialog = ({
@@ -58,10 +98,16 @@ const ShiftDialog = ({
   employeeId: initialEmployeeId,
   employees,
   mutate,
+  onCancelShift,
+  onUpdateShift,
   openingHours,
   organizationSlug,
+  recentShifts = [],
+  shift,
 }: ShiftDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
+
+  const format = useFormatter();
 
   const tAttendance = useTranslations("attendance");
 
@@ -84,32 +130,140 @@ const ShiftDialog = ({
     register,
     setValue,
   } = useForm<ShiftForm>({
-    defaultValues: {
-      dayKind: "workday",
-      employeeId: initialEmployeeId ?? "",
-      endsAt: closesAt?.toISOString() ?? "",
-      paidBreak: false,
-      repeatWeeks: 1,
-      startsAt: opensAt?.toISOString() ?? "",
-    },
+    defaultValues: shift
+      ? {
+          dayKind: shift.dayKind === "holiday" ? "workday" : shift.dayKind,
+          employeeIds: [shift.employeeId],
+          endsAt: shift.endsAt,
+          paidBreak: shift.paidBreak,
+          repeatWeeks: 1,
+          startsAt: shift.startsAt,
+        }
+      : {
+          dayKind: "workday",
+          employeeIds: initialEmployeeId ? [initialEmployeeId] : [],
+          endsAt: closesAt?.toISOString() ?? "",
+          paidBreak: false,
+          repeatWeeks: 1,
+          startsAt: opensAt?.toISOString() ?? "",
+        },
     resolver: zodResolver(shiftFormSchema),
   });
 
-  const [dayKind, employeeId, endsAt, paidBreak, repeatWeeks, startsAt] =
-    useWatch({
-      control,
-      name: [
-        "dayKind",
-        "employeeId",
-        "endsAt",
-        "paidBreak",
-        "repeatWeeks",
-        "startsAt",
-      ],
-    });
+  const values = useWatch({ control });
 
-  const rotating =
-    employees.find(({ id }) => id === employeeId)?.regularLeaveWeekday === null;
+  const {
+    dayKind,
+    employeeIds = [],
+    endsAt,
+    paidBreak,
+    repeatWeeks,
+    startsAt,
+  } = values;
+
+  const rotatingIds = new Set(
+    employees
+      .filter(({ regularLeaveWeekday }) => regularLeaveWeekday === null)
+      .map(({ id }) => id),
+  );
+
+  const rotating = employeeIds.some((id) => rotatingIds.has(id));
+
+  const recentTimes = useMemo(() => {
+    const counts = new Map<string, number>();
+
+    for (const { endsAt, startsAt, status } of recentShifts) {
+      if (status === "cancelled") continue;
+
+      const key = `${storeTime(startsAt)}-${storeTime(endsAt)}`;
+
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+
+    return [...counts]
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, RECENT_TIMES_LIMIT)
+      .map(([key]) => key.split("-") as [string, string]);
+  }, [recentShifts]);
+
+  const [conflict, setConflict] = useState<string>();
+
+  const buildRequest = ({
+    dayKind,
+    employeeIds,
+    endsAt,
+    paidBreak,
+    repeatWeeks,
+    startsAt,
+  }: ShiftForm) =>
+    shift
+      ? {
+          body: {
+            dayKind: rotatingIds.has(employeeIds[0]) ? dayKind : undefined,
+            employeeId: employeeIds[0],
+            endsAt,
+            paidBreak,
+            startsAt,
+          } satisfies ShiftChange,
+          method: "PATCH",
+          url: `${attendancePath(organizationSlug, "org", "shifts")}/${shift.id}`,
+        }
+      : {
+          body: {
+            shifts: employeeIds.flatMap((employeeId) =>
+              Array.from({ length: repeatWeeks }, (_, index) => ({
+                dayKind: rotatingIds.has(employeeId) ? dayKind : undefined,
+                employeeId,
+                endsAt: dayjs(endsAt)
+                  .add(index * 7, "day")
+                  .toISOString(),
+                paidBreak,
+                startsAt: dayjs(startsAt)
+                  .add(index * 7, "day")
+                  .toISOString(),
+              })),
+            ),
+          },
+          method: "POST",
+          url: attendancePath(organizationSlug, "org", "shifts"),
+        };
+
+  const request = (() => {
+    const parsed = shiftFormSchema.safeParse(values);
+
+    return parsed.success ? buildRequest(parsed.data) : undefined;
+  })();
+
+  const requestKey = request && JSON.stringify(request);
+
+  useEffect(() => {
+    if (!requestKey) return;
+
+    const { body, method, url } = JSON.parse(requestKey) as NonNullable<
+      typeof request
+    >;
+    const controller = new AbortController();
+    const timer = setTimeout(async () => {
+      try {
+        await fetcher(url, {
+          body: JSON.stringify({ ...body, dryRun: true }),
+          headers: { "Content-Type": "application/json" },
+          method,
+          signal: controller.signal,
+        });
+
+        setConflict(undefined);
+      } catch (error) {
+        if (!controller.signal.aborted)
+          setConflict(tAttendance(attendanceErrorKey(error)));
+      }
+    }, VALIDATION_DELAY_MS);
+
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [requestKey, tAttendance]);
 
   const handleStartsAtChange = (date: Dayjs | null) => {
     setValue("startsAt", date?.isValid() ? date.toISOString() : "", {
@@ -126,32 +280,53 @@ const ShiftDialog = ({
       });
   };
 
-  const onSubmitHandler = async ({ repeatWeeks, ...values }: ShiftForm) => {
-    try {
-      setDialog({ confirmLoading: true });
+  const handleRecentTime = ([start, end]: [string, string]) => {
+    const base = (startsAt ? dayjs(startsAt).tz(STORE_TIMEZONE) : day).startOf(
+      "day",
+    );
+    const nextStartsAt = atTimeAfter(base, start);
 
-      await fetcher(attendancePath(organizationSlug, "org", "shifts"), {
-        method: "POST",
+    setValue("startsAt", nextStartsAt.toISOString(), {
+      shouldValidate: isSubmitted,
+    });
+    setValue("endsAt", atTimeAfter(nextStartsAt, end).toISOString(), {
+      shouldValidate: isSubmitted,
+    });
+  };
+
+  const employeeNames = (ids: string[]) =>
+    format.list(
+      ids.map(
+        (id) => employees.find((employee) => employee.id === id)?.name ?? "",
+      ),
+      "enumeration",
+    );
+
+  const onSubmitHandler = async (form: ShiftForm) => {
+    setDialog({ confirmLoading: true });
+
+    if (shift && onUpdateShift) {
+      const { body } = buildRequest(form) as { body: ShiftChange };
+
+      if (await onUpdateShift(shift, body)) closeDialog();
+      else setDialog({ confirmLoading: false });
+
+      return;
+    }
+
+    try {
+      const { body, method, url } = buildRequest(form);
+
+      await fetcher(url, {
+        method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          shifts: Array.from({ length: repeatWeeks }, (_, index) => ({
-            ...values,
-            dayKind: rotating ? values.dayKind : undefined,
-            startsAt: dayjs(values.startsAt)
-              .add(index * 7, "day")
-              .toISOString(),
-            endsAt: dayjs(values.endsAt)
-              .add(index * 7, "day")
-              .toISOString(),
-          })),
-        }),
+        body: JSON.stringify(body),
       });
 
       enqueueSnackbar(
         tAttendance("schedule.shiftCreated", {
-          count: repeatWeeks,
-          name:
-            employees.find(({ id }) => id === values.employeeId)?.name ?? "",
+          count: form.repeatWeeks * form.employeeIds.length,
+          name: employeeNames(form.employeeIds),
         }),
         { variant: "success" },
       );
@@ -174,18 +349,27 @@ const ShiftDialog = ({
   return (
     <FormBox id="attendance-shift-form" onSubmit={onSubmit}>
       <TextField
-        error={!!errors.employeeId}
+        error={!!errors.employeeIds}
         fullWidth
-        helperText={errors.employeeId?.message}
+        helperText={errors.employeeIds?.message}
         label={tAttendance("employee")}
-        onChange={(event) =>
-          setValue("employeeId", event.target.value, {
+        onChange={(event) => {
+          const { value } = event.target as { value: string | string[] };
+
+          setValue("employeeIds", Array.isArray(value) ? value : [value], {
             shouldValidate: isSubmitted,
-          })
-        }
+          });
+        }}
         required
         select
-        value={employeeId}
+        slotProps={{
+          select: {
+            multiple: !shift,
+            renderValue: (selected) =>
+              employeeNames(Array.isArray(selected) ? selected : [selected]),
+          },
+        }}
+        value={shift ? (employeeIds[0] ?? "") : employeeIds}
       >
         {employees.map(({ id, name }) => (
           <MenuItem key={id} value={id}>
@@ -193,6 +377,22 @@ const ShiftDialog = ({
           </MenuItem>
         ))}
       </TextField>
+      {!!recentTimes.length && (
+        <ChipStack direction="row">
+          <Typography color="textSecondary" variant="body2">
+            {tAttendance("schedule.recentTimes")}
+          </Typography>
+          {recentTimes.map((time) => (
+            <Chip
+              key={time.join()}
+              label={time.join("–")}
+              onClick={() => handleRecentTime(time)}
+              size="small"
+              variant="outlined"
+            />
+          ))}
+        </ChipStack>
+      )}
       <DateTimePicker
         label={tAttendance("startsAt")}
         onChange={handleStartsAtChange}
@@ -227,7 +427,7 @@ const ShiftDialog = ({
       <StyledFormControlLabel
         control={
           <Checkbox
-            checked={paidBreak}
+            checked={!!paidBreak}
             onChange={(_, checked) => setValue("paidBreak", checked)}
           />
         }
@@ -251,18 +451,33 @@ const ShiftDialog = ({
           ))}
         </TextField>
       )}
-      <NumberSpinner
-        error={!!errors.repeatWeeks}
-        fullWidth
-        helperText={errors.repeatWeeks?.message}
-        label={tAttendance("repeatWeeks")}
-        max={12}
-        min={1}
-        onValueChange={(value) =>
-          setValue("repeatWeeks", value ?? 1, { shouldValidate: isSubmitted })
-        }
-        value={repeatWeeks}
-      />
+      {!shift && (
+        <NumberSpinner
+          error={!!errors.repeatWeeks}
+          fullWidth
+          helperText={errors.repeatWeeks?.message}
+          label={tAttendance("repeatWeeks")}
+          max={12}
+          min={1}
+          onValueChange={(value) =>
+            setValue("repeatWeeks", value ?? 1, { shouldValidate: isSubmitted })
+          }
+          value={repeatWeeks}
+        />
+      )}
+      {request && conflict && <FormHelperText error>{conflict}</FormHelperText>}
+      {shift && onCancelShift && (
+        <StartButton
+          color="error"
+          onClick={() => {
+            closeDialog();
+            onCancelShift(shift);
+          }}
+          startIcon={<EventBusy />}
+        >
+          {tAttendance("cancelShift")}
+        </StartButton>
+      )}
     </FormBox>
   );
 };

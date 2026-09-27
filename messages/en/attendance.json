@@ -153,7 +153,7 @@
     "holidayCalendarMissing": "The national holiday calendar for that year isn't available yet. Try again later.",
     "holidayDayKindRequired": "Shifts on national holidays must be marked as holidays. Cancel and reschedule them.",
     "holidaySubstituteInvalid": "This holiday needs no substitute day, already has one, or the chosen shift is not a workday.",
-    "holidaySubstituteRequired": "A national holiday fell on a regular leave or rest day and no substitute day has been set. Set one under Schedule > Holiday substitutes.",
+    "holidaySubstituteRequired": "The employee is leaving with a national holiday that fell on a regular leave or rest day and has no substitute day. Set one under Schedule > Holiday substitutes.",
     "idempotencyConflict": "The retry payload changed; close and reopen the form.",
     "implausibleMinimumWage": "The confirmed minimum hourly wage is lower than the previous period. Please re-check the official announcement.",
     "incompleteAttendance": "Some shifts need completed attendance or approved leave.",
@@ -545,6 +545,7 @@
     "scheduledHours": "{hours} h scheduled",
     "moveShift": "Move shift",
     "shiftUpdated": "Updated {name}'s shift",
+    "pendingSubstitute": "{name} · {holiday} substitute day pending",
     "shiftCancelled": "Cancelled {name}'s shift",
     "undo": "Undo",
     "label": "Roster",
@@ -582,7 +583,9 @@
     "weekAbbreviation": "W",
     "weekNumber": "Week {weekNumber}",
     "copyWeek": "Copy this week",
-    "shiftCreated": "Added {count, plural, one {# shift} other {# shifts}} for {name}"
+    "shiftCreated": "Added {count, plural, one {# shift} other {# shifts}} for {name}",
+    "shiftRestored": "Restored {name}'s shift",
+    "recentTimes": "Common times"
   },
   "scheduledTime": "Scheduled",
   "settings": {
@@ -598,7 +601,8 @@
       "create": "Add shift",
       "viewEvents": "View punch timeline",
       "approveExtraWork": "Approve time outside schedule",
-      "rejectExtraWork": "Reject time outside schedule"
+      "rejectExtraWork": "Reject time outside schedule",
+      "edit": "Edit shift"
     },
     "label": "Schedules"
   },
@@ -750,6 +754,7 @@
     "holidayName": "Occasion",
     "substituteDate": "Substitute day",
     "substituteShift": "Workday shift to give off",
+    "noWorkdayShifts": "No workday shifts to choose before {date}; schedule shifts first",
     "actions": {
       "designate": "Set substitute day",
       "revoke": "Revoke substitute day"
@@ -757,7 +762,7 @@
     "status": {
       "pending": "Pending",
       "designated": "Set",
-      "notOwed": "Not required"
+      "notOwed": "Not required, revoke"
     },
     "substituteDesignated": "Set {name}'s substitute day for {holiday}",
     "substituteRevoked": "Revoked {name}'s substitute day for {holiday}"

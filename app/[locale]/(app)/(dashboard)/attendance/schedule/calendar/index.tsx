@@ -12,7 +12,7 @@ import CopyWeekDialog from "./CopyWeekDialog";
 import DayKindDialog from "./DayKindDialog";
 
 import EventsDialogContent from "../../EventsDialogContent";
-import ShiftDialog from "../../ShiftDialog";
+import ShiftDialog, { type ShiftChange } from "../../ShiftDialog";
 
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
@@ -41,7 +41,6 @@ import type {
   AttendanceCopyWeekResult,
   AttendanceShift,
 } from "@/types/attendance";
-import type { attendanceScheduledDayKindValues } from "@/types/api";
 import type { Organization } from "@/types/organizations";
 
 import {
@@ -107,11 +106,6 @@ const breakClassName = (index: number) => `attendance-shift-breaks-${index}`;
 const storeDate = (value: string | Date) =>
   dayjs(value).tz(STORE_TIMEZONE).format("YYYY-MM-DD");
 
-type ShiftChange = Pick<
-  AttendanceShift,
-  "endsAt" | "paidBreak" | "startsAt"
-> & { dayKind?: (typeof attendanceScheduledDayKindValues)[number] };
-
 interface CalendarProps {
   canCreate: boolean;
   canReadLeaves: boolean;
@@ -162,17 +156,25 @@ const Calendar = ({
   const from = range.from.toISOString();
   const to = range.to.toISOString();
 
-  const { data: shifts = initialShifts, mutate } = useSWR(
+  const { data: shifts = initialShifts, mutate: mutateShifts } = useSWR(
     attendanceCalendarPath(organizationSlug, "shifts", from, to),
     (url: string) => fetcher<AttendanceShift[]>(url),
     { fallbackData: initialShifts },
   );
 
-  const { data: { dayKinds, holidays } = initialDayKinds } = useSWR(
+  const {
+    data: { dayKinds, holidays, pendingSubstitutes } = initialDayKinds,
+    mutate: mutateDayKinds,
+  } = useSWR(
     attendanceCalendarPath(organizationSlug, "day-kinds", from, to),
     (url: string) => fetcher<AttendanceCalendarDayKinds>(url),
     { fallbackData: initialDayKinds },
   );
+
+  const mutate = useCallback(() => {
+    mutateDayKinds();
+    mutateShifts();
+  }, [mutateDayKinds, mutateShifts]);
 
   const { data: leaves = initialLeaves } = useSWR(
     canReadLeaves
@@ -265,6 +267,25 @@ const Calendar = ({
           };
         },
       ),
+      ...pendingSubstitutes.map(
+        ({ date, employeeId, employeeName, holidayName }) => {
+          const day = dayjs.tz(date, STORE_TIMEZONE).toISOString();
+
+          return {
+            allDay: true,
+            color: "grey" as const,
+            end: day,
+            id: `pending-substitute-${employeeId}-${date}`,
+            readOnly: true,
+            resource: employeeId,
+            start: day,
+            title: tAttendance("schedule.pendingSubstitute", {
+              holiday: holidayName,
+              name: employeeName,
+            }),
+          };
+        },
+      ),
       ...leaves.map((leave) => ({
         allDay: leave.calendarLeave,
         color: "red" as const,
@@ -294,7 +315,16 @@ const Calendar = ({
           title: shift.employeeName,
         })),
     ],
-    [breaks, canUpdate, dayKinds, holidays, leaves, shifts, tAttendance],
+    [
+      breaks,
+      canUpdate,
+      dayKinds,
+      holidays,
+      leaves,
+      pendingSubstitutes,
+      shifts,
+      tAttendance,
+    ],
   );
 
   const localeText = useMemo<EventCalendarProps<object, object>["localeText"]>(
@@ -359,13 +389,22 @@ const Calendar = ({
             mutate={mutate}
             openingHours={openingHours}
             organizationSlug={organizationSlug}
+            recentShifts={shifts}
           />
         ),
         formId: "attendance-shift-form",
         open: true,
         title: tAttendance("shifts.actions.create"),
       }),
-    [employees, mutate, openingHours, organizationSlug, setDialog, tAttendance],
+    [
+      employees,
+      mutate,
+      openingHours,
+      organizationSlug,
+      setDialog,
+      shifts,
+      tAttendance,
+    ],
   );
 
   const handleCopied = useCallback(
@@ -431,71 +470,9 @@ const Calendar = ({
     [handleCopied, organizationSlug, range, setDialog, tAttendance],
   );
 
-  const handleViewEvents = useCallback(
-    (shift: AttendanceShift) => {
-      const cancellable = canUpdate && shift.state === "scheduled";
-
-      setDialog({
-        confirmText: tAttendance("cancelShift"),
-        content: <EventsDialogContent shift={shift} />,
-        onConfirm: cancellable
-          ? async () => {
-              try {
-                await fetcher(
-                  `${attendancePath(organizationSlug, "org", "shifts")}/${shift.id}/cancel`,
-                  { method: "PATCH" },
-                );
-
-                enqueueSnackbar(
-                  tAttendance("schedule.shiftCancelled", {
-                    name: shift.employeeName,
-                  }),
-                  { variant: "success" },
-                );
-                mutate();
-              } catch (error) {
-                enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
-                  variant: "error",
-                });
-              }
-            }
-          : undefined,
-        open: true,
-        showConfirm: cancellable,
-        title: tAttendance("events"),
-      });
-    },
-    [canUpdate, mutate, organizationSlug, setDialog, tAttendance],
-  );
-
-  const handleEventEditingStart = useCallback<
-    NonNullable<EventCalendarProps<object, object>["onEventEditingStart"]>
-  >(
-    (_, eventDetails) => {
-      eventDetails.cancel();
-
-      if (eventDetails.reason === "creation") {
-        const { displayTimezone, resource } = eventDetails.occurrence;
-
-        handleCreate(
-          typeof resource === "string" ? resource : undefined,
-          dayjs(displayTimezone.start.value)
-            .tz(STORE_TIMEZONE)
-            .format("YYYY-MM-DD"),
-        );
-        return;
-      }
-
-      const shift = shifts.find(({ id }) => id === eventDetails.occurrence.id);
-
-      if (shift) handleViewEvents(shift);
-    },
-    [handleCreate, handleViewEvents, shifts],
-  );
-
   const saveShift = useCallback(
-    (id: string, change: ShiftChange) =>
-      mutate(
+    async (id: string, change: ShiftChange) => {
+      await mutateShifts(
         async () => {
           await fetcher(
             `${attendancePath(organizationSlug, "org", "shifts")}/${id}`,
@@ -512,20 +489,31 @@ const Calendar = ({
           optimisticData: (current = shifts) =>
             current.map((item) =>
               item.id === id
-                ? { ...item, ...change, dayKind: item.dayKind }
+                ? {
+                    ...item,
+                    ...change,
+                    dayKind: item.dayKind,
+                    employeeName:
+                      employees.find(({ id }) => id === change.employeeId)
+                        ?.name ?? item.employeeName,
+                  }
                 : item,
             ),
           populateCache: false,
           revalidate: true,
           rollbackOnError: true,
         },
-      ),
-    [mutate, organizationSlug, shifts],
+      );
+
+      mutateDayKinds();
+    },
+    [employees, mutateDayKinds, mutateShifts, organizationSlug, shifts],
   );
 
   const updateShift = useCallback(
     async (shift: AttendanceShift, change: ShiftChange) => {
       const original: ShiftChange = {
+        employeeId: shift.employeeId,
         endsAt: shift.endsAt,
         paidBreak: shift.paidBreak,
         startsAt: shift.startsAt,
@@ -562,13 +550,139 @@ const Calendar = ({
             variant: "success",
           },
         );
+
+        return true;
+      } catch (error) {
+        enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+          variant: "error",
+        });
+
+        return false;
+      }
+    },
+    [saveShift, tAttendance],
+  );
+
+  const cancelShift = useCallback(
+    async (shift: AttendanceShift) => {
+      const shiftPath = `${attendancePath(organizationSlug, "org", "shifts")}/${shift.id}`;
+
+      try {
+        await fetcher(`${shiftPath}/cancel`, { method: "PATCH" });
+
+        mutate();
+
+        enqueueSnackbar(
+          tAttendance("schedule.shiftCancelled", { name: shift.employeeName }),
+          {
+            action: (key) => (
+              <Button
+                color="inherit"
+                onClick={async () => {
+                  closeSnackbar(key);
+
+                  try {
+                    await fetcher(`${shiftPath}/restore`, { method: "PATCH" });
+
+                    enqueueSnackbar(
+                      tAttendance("schedule.shiftRestored", {
+                        name: shift.employeeName,
+                      }),
+                      { variant: "success" },
+                    );
+                  } catch (error) {
+                    enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+                      variant: "error",
+                    });
+                  }
+
+                  mutate();
+                }}
+                size="small"
+              >
+                {tAttendance("schedule.undo")}
+              </Button>
+            ),
+            variant: "success",
+          },
+        );
       } catch (error) {
         enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
           variant: "error",
         });
       }
     },
-    [saveShift, tAttendance],
+    [mutate, organizationSlug, tAttendance],
+  );
+
+  const handleOpenShift = useCallback(
+    (shift: AttendanceShift) => {
+      if (canUpdate && shift.state === "scheduled") {
+        setDialog({
+          confirmText: tAttendance("save"),
+          content: (
+            <ShiftDialog
+              employees={employees}
+              mutate={mutate}
+              onCancelShift={cancelShift}
+              onUpdateShift={updateShift}
+              openingHours={openingHours}
+              organizationSlug={organizationSlug}
+              recentShifts={shifts}
+              shift={shift}
+            />
+          ),
+          formId: "attendance-shift-form",
+          open: true,
+          title: tAttendance("shifts.actions.edit"),
+        });
+        return;
+      }
+
+      setDialog({
+        content: <EventsDialogContent shift={shift} />,
+        open: true,
+        showConfirm: false,
+        title: tAttendance("events"),
+      });
+    },
+    [
+      canUpdate,
+      cancelShift,
+      employees,
+      mutate,
+      openingHours,
+      organizationSlug,
+      setDialog,
+      shifts,
+      tAttendance,
+      updateShift,
+    ],
+  );
+
+  const handleEventEditingStart = useCallback<
+    NonNullable<EventCalendarProps<object, object>["onEventEditingStart"]>
+  >(
+    (_, eventDetails) => {
+      eventDetails.cancel();
+
+      if (eventDetails.reason === "creation") {
+        const { displayTimezone, resource } = eventDetails.occurrence;
+
+        handleCreate(
+          typeof resource === "string" ? resource : undefined,
+          dayjs(displayTimezone.start.value)
+            .tz(STORE_TIMEZONE)
+            .format("YYYY-MM-DD"),
+        );
+        return;
+      }
+
+      const shift = shifts.find(({ id }) => id === eventDetails.occurrence.id);
+
+      if (shift) handleOpenShift(shift);
+    },
+    [handleCreate, handleOpenShift, shifts],
   );
 
   const handleEventsChange = useCallback(
@@ -585,6 +699,7 @@ const Calendar = ({
         if (!offset && endsAt.isSame(shift.endsAt)) continue;
 
         const change: ShiftChange = {
+          employeeId: shift.employeeId,
           endsAt: endsAt.toISOString(),
           paidBreak: shift.paidBreak,
           startsAt: startsAt.toISOString(),
@@ -626,7 +741,9 @@ const Calendar = ({
           content: (
             <DayKindDialog
               defaultValue={shift.dayKind}
-              onSubmit={(dayKind) => updateShift(shift, { ...change, dayKind })}
+              onSubmit={async (dayKind) => {
+                await updateShift(shift, { ...change, dayKind });
+              }}
             />
           ),
           formId: "attendance-shift-day-kind-form",

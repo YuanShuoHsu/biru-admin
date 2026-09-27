@@ -8,8 +8,8 @@ export const useShiftFormSchema = () => {
 
   return z
     .object({
-      employeeId: z
-        .string()
+      employeeIds: z
+        .array(z.string())
         .min(1, { error: tValidation("employee.notSelected") }),
       startsAt: z.string().min(1, { error: tValidation("startsAt.required") }),
       endsAt: z.string().min(1, { error: tValidation("endsAt.required") }),

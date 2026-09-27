@@ -153,7 +153,7 @@
     "holidayCalendarMissing": "尚未取得該年度的國定假日資料，請稍後再試。",
     "holidayDayKindRequired": "國定假日當天的班次須標為國定假日，請取消後重新排班。",
     "holidaySubstituteInvalid": "這個國定假日不需補假、已指定補假日，或選擇的班次不是工作日。",
-    "holidaySubstituteRequired": "有國定假日遇到例假或休息日，尚未指定補假日，請到排班的「國定假日補假」指定。",
+    "holidaySubstituteRequired": "員工離職前仍有國定假日遇到例假或休息日、尚未指定補假日，請到排班的「國定假日補假」指定。",
     "idempotencyConflict": "重試內容已變更，請關閉表單重新操作。",
     "implausibleMinimumWage": "確認的每小時最低工資低於前一期，請重新核對官方公告。",
     "incompleteAttendance": "尚有班次未完成打卡或請假。",
@@ -545,6 +545,7 @@
     "scheduledHours": "已排 {hours} 小時",
     "moveShift": "移動班次",
     "shiftUpdated": "已更新 {name} 的班次",
+    "pendingSubstitute": "{name} · {holiday}待指定補假日",
     "shiftCancelled": "已取消 {name} 的班次",
     "undo": "復原",
     "label": "班表",
@@ -582,7 +583,9 @@
     "weekAbbreviation": "週",
     "weekNumber": "第 {weekNumber} 週",
     "copyWeek": "複製本週排班",
-    "shiftCreated": "已新增 {name} 的 {count} 個班次"
+    "shiftCreated": "已新增 {name} 的 {count} 個班次",
+    "shiftRestored": "已復原 {name} 的班次",
+    "recentTimes": "常用時段"
   },
   "scheduledTime": "排定時段",
   "settings": {
@@ -598,7 +601,8 @@
       "create": "新增班次",
       "viewEvents": "查看打卡明細",
       "approveExtraWork": "核准排班外時數",
-      "rejectExtraWork": "不核准排班外時數"
+      "rejectExtraWork": "不核准排班外時數",
+      "edit": "編輯班次"
     },
     "label": "班表管理"
   },
@@ -750,6 +754,7 @@
     "holidayName": "節日",
     "substituteDate": "補假日",
     "substituteShift": "補假的工作日班次",
+    "noWorkdayShifts": "{date} 前沒有可指定的工作日班次，請先排班",
     "actions": {
       "designate": "指定補假日",
       "revoke": "撤銷補假日"
@@ -757,7 +762,7 @@
     "status": {
       "pending": "待指定",
       "designated": "已指定",
-      "notOwed": "無須補假"
+      "notOwed": "無須補假，請撤銷"
     },
     "substituteDesignated": "已指定 {name} 的{holiday}補假日",
     "substituteRevoked": "已撤銷 {name} 的{holiday}補假日"

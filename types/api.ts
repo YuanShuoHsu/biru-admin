@@ -259,7 +259,7 @@ export interface paths {
     delete?: never;
     options?: never;
     head?: never;
-    /** 修改班別時段 */
+    /** 修改班別時段或改排其他員工 */
     patch: operations["AttendanceShiftsController_updateShift"];
     trace?: never;
   };
@@ -278,6 +278,26 @@ export interface paths {
     head?: never;
     /** 取消班別 */
     patch: operations["AttendanceShiftsController_cancelShift"];
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/attendance/shifts/{id}/restore": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /**
+     * 復原已取消的班別
+     * @description 依目前資料重新檢查排班規則，不通過則不復原
+     */
+    patch: operations["AttendanceShiftsController_restoreShift"];
     trace?: never;
   };
   "/api/organizations/{organizationSlug}/attendance/punch": {
@@ -2895,9 +2915,16 @@ export interface components {
       dayKind: components["schemas"]["AttendanceDayKind"];
       holidayName?: string;
     };
+    AttendanceCalendarPendingSubstituteResponseDto: {
+      employeeId: string;
+      employeeName: string;
+      date: string;
+      holidayName: string;
+    };
     AttendanceCalendarDayKindsResponseDto: {
       holidays: components["schemas"]["AttendanceCalendarHolidayResponseDto"][];
       dayKinds: components["schemas"]["AttendanceCalendarDayKindResponseDto"][];
+      pendingSubstitutes: components["schemas"]["AttendanceCalendarPendingSubstituteResponseDto"][];
     };
     /**
      * @description 員工設有固定例假日與休息日時由星期推得，未設定者必填
@@ -2914,6 +2941,8 @@ export interface components {
       paidBreak: boolean;
     };
     CreateAttendanceShiftsDto: {
+      /** @description 只檢查能否排入，不寫入 */
+      dryRun?: boolean;
       shifts: components["schemas"]["CreateAttendanceShiftDto"][];
     };
     AttendanceShiftRecordResponseDto: {
@@ -2975,8 +3004,15 @@ export interface components {
       skipped: components["schemas"]["AttendanceSkippedShiftResponseDto"][];
     };
     UpdateAttendanceShiftDto: {
-      /** @description 員工設有固定例假日與休息日時由星期推得；未設定者移到其他日期時必填，同日省略則沿用原日別 */
+      /**
+       * Format: uuid
+       * @description 改排給其他員工，省略則沿用原員工
+       */
+      employeeId?: string;
+      /** @description 員工設有固定例假日與休息日時由星期推得；未設定者移到其他日期或改排其他員工時必填，同員工同日省略則沿用原日別 */
       dayKind?: components["schemas"]["AttendanceScheduledDayKind"];
+      /** @description 只檢查能否排入，不寫入 */
+      dryRun?: boolean;
       startsAt: string;
       endsAt: string;
       paidBreak: boolean;
@@ -6957,6 +6993,34 @@ export interface operations {
     };
   };
   AttendanceShiftsController_cancelShift: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceIdResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AttendanceShiftsController_restoreShift: {
     parameters: {
       query?: never;
       header?: never;

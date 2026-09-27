@@ -58,6 +58,32 @@ const SubstituteDialog = ({
 
   const substituteFormSchema = useSubstituteFormSchema();
 
+  const holiday = dayjs.tz(row.holidayDate, STORE_TIMEZONE);
+  const from = holiday.startOf("week").toISOString();
+  const today = dayjs().tz(STORE_TIMEZONE).startOf("day");
+  const earliestSuggestion = holiday.isAfter(today) ? holiday : today;
+  const to = earliestSuggestion.add(SUBSTITUTE_SEARCH_DAYS, "day");
+
+  const { data: shifts } = useSWR(
+    attendanceCalendarPath(organizationSlug, "shifts", from, to.toISOString()),
+    (url: string) => fetcher<AttendanceShift[]>(url),
+  );
+
+  const options = (shifts ?? [])
+    .filter(
+      (shift) =>
+        shift.employeeId === row.employeeId &&
+        shift.dayKind === "workday" &&
+        shift.status !== "cancelled",
+    )
+    .sort((first, second) => dayjs(first.startsAt).diff(second.startsAt));
+
+  const nearestShiftId = (
+    options.find(
+      (shift) => !dayjs(shift.startsAt).isBefore(earliestSuggestion),
+    ) ?? options.at(-1)
+  )?.id;
+
   const {
     control,
     formState: { errors, isSubmitted },
@@ -65,26 +91,12 @@ const SubstituteDialog = ({
     setValue,
   } = useForm<SubstituteForm>({
     defaultValues: { shiftId: "" },
+    resetOptions: { keepDirtyValues: true },
     resolver: zodResolver(substituteFormSchema),
+    values: { shiftId: nearestShiftId ?? "" },
   });
 
   const shiftId = useWatch({ control, name: "shiftId" });
-
-  const holiday = dayjs.tz(row.holidayDate, STORE_TIMEZONE);
-  const from = holiday.startOf("week").toISOString();
-  const to = holiday.add(SUBSTITUTE_SEARCH_DAYS, "day").toISOString();
-
-  const { data: shifts = [] } = useSWR(
-    attendanceCalendarPath(organizationSlug, "shifts", from, to),
-    (url: string) => fetcher<AttendanceShift[]>(url),
-  );
-
-  const options = shifts.filter(
-    (shift) =>
-      shift.employeeId === row.employeeId &&
-      shift.dayKind === "workday" &&
-      shift.status !== "cancelled",
-  );
 
   const onSubmitHandler = async (values: SubstituteForm) => {
     try {
@@ -137,10 +149,18 @@ const SubstituteDialog = ({
       <TextField
         error={!!errors.shiftId}
         fullWidth
-        helperText={errors.shiftId?.message}
+        helperText={
+          errors.shiftId?.message ??
+          (shifts && !options.length
+            ? tAttendance("holidaySubstitutes.noWorkdayShifts", {
+                date: format.dateTime(to.toDate(), "short"),
+              })
+            : undefined)
+        }
         label={tAttendance("holidaySubstitutes.substituteShift")}
         onChange={(event) =>
           setValue("shiftId", event.target.value, {
+            shouldDirty: true,
             shouldValidate: isSubmitted,
           })
         }
