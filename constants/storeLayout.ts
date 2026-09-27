@@ -627,6 +627,7 @@ const chair = (floor: LayoutFloor, x: number, z: number, backZ: number) => [
     elevation: 0,
     floor,
     height: CHAIR_SEAT_HEIGHT,
+    label: "chair" as const,
     width: CHAIR_SIZE,
     x,
     z,
@@ -636,6 +637,7 @@ const chair = (floor: LayoutFloor, x: number, z: number, backZ: number) => [
     elevation: CHAIR_SEAT_HEIGHT,
     floor,
     height: CHAIR_BACK_HEIGHT,
+    label: "chair" as const,
     width: CHAIR_SIZE,
     x,
     z: backZ,
@@ -705,6 +707,7 @@ export const STORE_LAYOUT_SEATS = [
         elevation: 0,
         floor,
         height: STOOL_HEIGHT,
+        label: "stool" as const,
         width: STOOL_SIZE,
         x: x + STOOL_PITCH * (index + 0.5) - STOOL_SIZE / 2,
         z: z - CHAIR_GAP - STOOL_SIZE,
@@ -764,15 +767,32 @@ export const STORE_LAYOUT_AVATAR = {
 } as const;
 
 export const STORE_LAYOUT_CHARACTERS = {
-  person: {
+  male: {
     color: deepOrange[600],
     eye: 1.55,
     followOffset: [0, 1.2, 3.2],
     hair: brown[900],
     iris: grey[900],
+    longHair: false,
     pants: blueGrey[800],
+    scale: 1,
     shoe: grey[900],
     skin: brown[200],
+    skirt: null,
+    sole: grey[400],
+  },
+  female: {
+    color: teal[400],
+    eye: 1.49,
+    followOffset: [0, 1.15, 3.1],
+    hair: brown[700],
+    iris: grey[900],
+    longHair: true,
+    pants: grey[800],
+    scale: 0.96,
+    shoe: brown[800],
+    skin: brown[100],
+    skirt: deepPurple[400],
     sole: grey[400],
   },
   cat: {
@@ -787,11 +807,25 @@ export const STORE_LAYOUT_CHARACTERS = {
     stripe: deepOrange[800],
     whisker: grey[100],
   },
+  dog: {
+    belly: amber[50],
+    collar: blue[600],
+    ear: brown[600],
+    eye: 0.58,
+    followOffset: [0, 1.2, 2.8],
+    fur: amber[800],
+    iris: grey[900],
+    nose: grey[900],
+    tag: amber[400],
+    tongue: pink[300],
+  },
 } as const;
 
 export const STORE_LAYOUT_CHARACTER_ORDER = [
-  "person",
+  "male",
+  "female",
   "cat",
+  "dog",
 ] as const satisfies readonly (keyof typeof STORE_LAYOUT_CHARACTERS)[];
 
 export const STORE_LAYOUT_FLOOR_HEIGHT = 3.05;

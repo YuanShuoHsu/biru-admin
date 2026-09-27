@@ -27,6 +27,7 @@ import type {
 } from "@/types/storeLayout";
 
 import Cat from "../Cat";
+import Dog from "../Dog";
 import {
   type ElevatorState,
   advanceElevator,
@@ -274,8 +275,10 @@ const Avatar = ({
       {view !== "first" &&
         (character === "cat" ? (
           <Cat swingRef={swingRef} />
+        ) : character === "dog" ? (
+          <Dog swingRef={swingRef} />
         ) : (
-          <Person swingRef={swingRef} />
+          <Person character={character} swingRef={swingRef} />
         ))}
     </group>
   );

@@ -1,7 +1,9 @@
 {
   "characters": {
     "cat": "고양이",
-    "person": "사람"
+    "dog": "개",
+    "female": "여자",
+    "male": "남자"
   },
   "dimensions": {
     "depth": "깊이 {value} m",
@@ -30,6 +32,7 @@
   "items": {
     "accessibleRestroom": "장애인 화장실",
     "blender": "블렌더",
+    "chair": "의자",
     "cleanShelf": "세척 식기 선반",
     "cupShelf": "컵 선반",
     "elevator": "엘리베이터",
@@ -58,6 +61,7 @@
     "selfService": "셀프 서비스 코너",
     "sink": "3조 세척 싱크",
     "stair": "계단",
+    "stool": "스툴",
     "storageShelf": "수납 선반",
     "stove": "화구",
     "table": "테이블",

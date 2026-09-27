@@ -23,6 +23,7 @@ import { ghostEdge, ghostSurface } from "./ghost";
 
 import {
   STORE_LAYOUT_CHARACTER_ORDER,
+  STORE_LAYOUT_ELEVATOR,
   STORE_LAYOUT_FLOORS,
   STORE_LAYOUT_FLOOR_BASE,
   STORE_LAYOUT_FLOOR_FILTERS,
@@ -354,6 +355,48 @@ const DimensionLine = ({
   </>
 );
 
+interface ItemAnnotationsProps {
+  depth: number;
+  height: number;
+  label: string | null;
+  showDimensions: boolean;
+  width: number;
+}
+
+const ItemAnnotations = ({
+  depth,
+  height,
+  label,
+  showDimensions,
+  width,
+}: ItemAnnotationsProps) => {
+  const tStoreLayout = useTranslations("storeLayout");
+
+  return (
+    <>
+      {label && (
+        <SpriteLabel position={[0, height / 2 + 0.08, 0]} text={label} />
+      )}
+      {showDimensions &&
+        itemDimensions(width, height, depth).map(
+          ({ from, key, outwards, to, value }) => (
+            <DimensionLine
+              from={from}
+              key={key}
+              labelGap={ITEM_DIMENSION_LABEL_GAP}
+              outwards={outwards}
+              text={tStoreLayout(`itemDimensions.${key}`, {
+                value: toCentimeters(value),
+              })}
+              tick={ITEM_DIMENSION_TICK}
+              to={to}
+            />
+          ),
+        )}
+    </>
+  );
+};
+
 interface StoreLayoutProps {
   empty?: boolean;
 }
@@ -389,7 +432,7 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
 
   const fullscreen = nativeFullscreen || emulatedFullscreen;
 
-  const [character, setCharacter] = useState<StoreLayoutCharacter>("person");
+  const [character, setCharacter] = useState<StoreLayoutCharacter>("male");
   const [floor, setFloor] = useState<StoreLayoutFloor>("ground");
   const [floors, setFloors] = useState<StoreLayoutFloorFilter>("ground");
   const [stairs, setStairs] = useState(false);
@@ -836,18 +879,21 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                     {!realistic && <Edges color={grey[700]} />}
                   </mesh>
                 ))}
-                {showLabels && (
-                  <SpriteLabel
-                    position={[
-                      STORE_LAYOUT_STAIRWELL.x +
-                        STORE_LAYOUT_STAIRWELL.width / 2,
-                      STORE_LAYOUT_FLOOR_HEIGHT,
-                      STORE_LAYOUT_STAIRWELL.z +
-                        STORE_LAYOUT_STAIRWELL.depth / 2,
-                    ]}
-                    text={tStoreLayout("items.stair")}
+                <group
+                  position={[
+                    STORE_LAYOUT_STAIRWELL.x + STORE_LAYOUT_STAIRWELL.width / 2,
+                    STORE_LAYOUT_FLOOR_HEIGHT / 2,
+                    STORE_LAYOUT_STAIRWELL.z + STORE_LAYOUT_STAIRWELL.depth / 2,
+                  ]}
+                >
+                  <ItemAnnotations
+                    depth={STORE_LAYOUT_STAIRWELL.depth}
+                    height={STORE_LAYOUT_FLOOR_HEIGHT}
+                    label={showLabels ? tStoreLayout("items.stair") : null}
+                    showDimensions={showDimensions}
+                    width={STORE_LAYOUT_STAIRWELL.width}
                   />
-                )}
+                </group>
                 {STORE_LAYOUT_ITEMS.map((item) => {
                   if (floors !== "all" && floors !== item.floor) return null;
 
@@ -878,29 +924,17 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                           <Edges color={grey[700]} {...ghostEdge(ghost)} />
                         </mesh>
                       )}
-                      {showLabels && !ghost && (
-                        <SpriteLabel
-                          position={[0, height / 2 + 0.08, 0]}
-                          text={tStoreLayout(`items.${label}`)}
+                      {!ghost && (
+                        <ItemAnnotations
+                          depth={depth}
+                          height={height}
+                          label={
+                            showLabels ? tStoreLayout(`items.${label}`) : null
+                          }
+                          showDimensions={showDimensions}
+                          width={width}
                         />
                       )}
-                      {showDimensions &&
-                        !ghost &&
-                        itemDimensions(width, height, depth).map(
-                          ({ from, key, outwards, to, value }) => (
-                            <DimensionLine
-                              from={from}
-                              key={key}
-                              labelGap={ITEM_DIMENSION_LABEL_GAP}
-                              outwards={outwards}
-                              text={tStoreLayout(`itemDimensions.${key}`, {
-                                value: toCentimeters(value),
-                              })}
-                              tick={ITEM_DIMENSION_TICK}
-                              to={to}
-                            />
-                          ),
-                        )}
                     </group>
                   );
                 })}
@@ -934,6 +968,59 @@ const StoreLayout = ({ empty }: StoreLayoutProps) => {
                       </mesh>
                     );
                   })}
+                {STORE_LAYOUT_SEATS.map((seat) => {
+                  if (floors !== "all" && floors !== seat.floor) return null;
+                  if (seat.elevation || isGhostFloor(seat.floor)) return null;
+
+                  const { depth, height, label, width, x, z } = seat;
+
+                  return (
+                    <group
+                      key={`${seat.floor}-${x}-${z}`}
+                      position={[
+                        x + width / 2,
+                        STORE_LAYOUT_FLOOR_BASE[seat.floor] + height / 2,
+                        z + depth / 2,
+                      ]}
+                    >
+                      <ItemAnnotations
+                        depth={depth}
+                        height={height}
+                        label={
+                          showLabels ? tStoreLayout(`items.${label}`) : null
+                        }
+                        showDimensions={showDimensions}
+                        width={width}
+                      />
+                    </group>
+                  );
+                })}
+                {STORE_LAYOUT_FLOORS.map((value) => {
+                  if (floors !== "all" && floors !== value) return null;
+                  if (isGhostFloor(value)) return null;
+
+                  const { depth, width, x, z } = STORE_LAYOUT_ELEVATOR.shaft;
+
+                  return (
+                    <group
+                      key={`elevator-${value}`}
+                      position={[
+                        x + width / 2,
+                        STORE_LAYOUT_FLOOR_BASE[value] +
+                          STORE_LAYOUT_FLOOR_HEIGHT / 2,
+                        z + depth / 2,
+                      ]}
+                    >
+                      <ItemAnnotations
+                        depth={depth}
+                        height={STORE_LAYOUT_FLOOR_HEIGHT}
+                        label={null}
+                        showDimensions={showDimensions}
+                        width={width}
+                      />
+                    </group>
+                  );
+                })}
                 <Avatar
                   character={character}
                   controlsRef={controlsRef}

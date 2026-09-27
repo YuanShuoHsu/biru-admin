@@ -1,7 +1,9 @@
 {
   "characters": {
     "cat": "猫",
-    "person": "人"
+    "dog": "犬",
+    "female": "女性",
+    "male": "男性"
   },
   "dimensions": {
     "depth": "奥行 {value} m",
@@ -30,6 +32,7 @@
   "items": {
     "accessibleRestroom": "多目的トイレ",
     "blender": "ブレンダー",
+    "chair": "椅子",
     "cleanShelf": "清潔な食器棚",
     "cupShelf": "カップ棚",
     "elevator": "エレベーター",
@@ -58,6 +61,7 @@
     "selfService": "セルフサービスコーナー",
     "sink": "3槽シンク",
     "stair": "階段",
+    "stool": "スツール",
     "storageShelf": "収納棚",
     "stove": "コンロ",
     "table": "テーブル",

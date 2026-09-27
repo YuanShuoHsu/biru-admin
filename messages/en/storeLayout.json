@@ -1,7 +1,9 @@
 {
   "characters": {
     "cat": "Cat",
-    "person": "Person"
+    "dog": "Dog",
+    "female": "Female",
+    "male": "Male"
   },
   "dimensions": {
     "depth": "D {value} m",
@@ -30,6 +32,7 @@
   "items": {
     "accessibleRestroom": "Accessible restroom",
     "blender": "Blender",
+    "chair": "Chair",
     "cleanShelf": "Clean tableware shelf",
     "cupShelf": "Cup shelf",
     "elevator": "Elevator",
@@ -58,6 +61,7 @@
     "selfService": "Self-service station",
     "sink": "Three-compartment sink",
     "stair": "Stairs",
+    "stool": "Stool",
     "storageShelf": "Storage shelf",
     "stove": "Stove",
     "table": "Table",
