@@ -122,11 +122,11 @@ const windowCounter = (
 });
 
 const RESTROOM_WALL = 0.1;
-const RESTROOM_DOOR_HEIGHT = 2.1;
+export const STORE_LAYOUT_RESTROOM_DOOR_HEIGHT = 2.1;
 const STALL_PARTITION = 0.03;
 const STALL_PARTITION_HEIGHT = 1.85;
 const STALL_PARTITION_GAP = 0.15;
-const DOOR_LEAF = 0.04;
+export const STORE_LAYOUT_DOOR_LEAF = 0.04;
 const DOOR_ARC_SEGMENTS = 12;
 
 const ACCESSIBLE_RESTROOM = { depth: 2.2, width: 2.3, x: 0, z: 9.3 } as const;
@@ -168,8 +168,8 @@ const lintel = (floor: LayoutFloor, x: [number, number], z: [number, number]) =>
     floor,
     x,
     z,
-    RESTROOM_DOOR_HEIGHT,
-    STORE_LAYOUT_ROOM.height - RESTROOM_DOOR_HEIGHT,
+    STORE_LAYOUT_RESTROOM_DOOR_HEIGHT,
+    STORE_LAYOUT_ROOM.height - STORE_LAYOUT_RESTROOM_DOOR_HEIGHT,
   );
 
 const stallPartition = (
@@ -311,27 +311,6 @@ const toward = (
   distance: number,
 ): [number, number] => [x + directionX * distance, z + directionZ * distance];
 
-const leafBox = (
-  floor: LayoutFloor,
-  hinge: [number, number],
-  [directionX, directionZ]: Direction,
-  width: number,
-) => {
-  const [endX, endZ] = toward(hinge, [directionX, directionZ], width);
-  const along = (from: number, to: number): [number, number] =>
-    from === to
-      ? [from - DOOR_LEAF / 2, from + DOOR_LEAF / 2]
-      : [Math.min(from, to), Math.max(from, to)];
-
-  return box(
-    floor,
-    along(hinge[0], endX),
-    along(hinge[1], endZ),
-    0,
-    RESTROOM_DOOR_HEIGHT,
-  );
-};
-
 const swingDoor = (
   floor: LayoutFloor,
   hinge: [number, number],
@@ -339,7 +318,13 @@ const swingDoor = (
   open: Direction,
   width: number,
 ) => ({
-  leaf: leafBox(floor, hinge, open, width),
+  closed,
+  floor,
+  hinge,
+  open,
+  bottom: 0,
+  glass: false,
+  height: STORE_LAYOUT_RESTROOM_DOOR_HEIGHT,
   path: Array.from({ length: DOOR_ARC_SEGMENTS + 1 }, (_, index) => {
     const angle = ((Math.PI / 2) * index) / DOOR_ARC_SEGMENTS;
 
@@ -349,19 +334,34 @@ const swingDoor = (
       width * Math.sin(angle),
     );
   }),
+  slide: false,
+  width,
 });
 
 const slideDoor = (
   floor: LayoutFloor,
-  from: [number, number],
+  hinge: [number, number],
   open: Direction,
   width: number,
+  {
+    bottom = 0,
+    glass = false,
+    height = STORE_LAYOUT_RESTROOM_DOOR_HEIGHT,
+  }: { bottom?: number; glass?: boolean; height?: number } = {},
 ) => {
-  const parked = toward(from, open, width);
+  const closed: Direction = [-open[0], -open[1]];
 
   return {
-    leaf: leafBox(floor, from, open, width),
-    path: [toward(from, open, -width), parked],
+    bottom,
+    closed,
+    floor,
+    glass,
+    height,
+    hinge,
+    open,
+    path: [toward(hinge, closed, width), toward(hinge, open, width)],
+    slide: true,
+    width,
   };
 };
 
@@ -378,7 +378,7 @@ const restroomDoors = (floor: LayoutFloor) => [
   slideDoor(
     floor,
     [
-      ACCESSIBLE_RESTROOM.width + RESTROOM_WALL + DOOR_LEAF,
+      ACCESSIBLE_RESTROOM.width + RESTROOM_WALL + STORE_LAYOUT_DOOR_LEAF,
       ACCESSIBLE_DOOR.from,
     ],
     [0, -1],
@@ -514,6 +514,29 @@ const UPPER_TABLES = [
     [17.6, 233],
   ]),
 ];
+
+// 臺灣靠右行駛、駕駛座在左，取餐窗口與點餐機必須在車道左側，車道因此沿右外牆由店前往店後行駛
+const DRIVE_THRU_WINDOW = { bottom: 1, from: 3, to: 4.05, top: 1.9 } as const;
+const DRIVE_THRU_ORDER_POINT = 15;
+const DRIVE_THRU_CURB = {
+  height: 0.15,
+  width: 0.3,
+  x: STORE_LAYOUT_ROOM.width,
+} as const;
+const DRIVER_TO_BUMPER = 2;
+
+export const STORE_LAYOUT_DRIVE_THRU = {
+  arrowDistances: [10, 34, 52, 64, 86],
+  crossing: { from: 6.4, stripe: 0.4, to: 9.4 },
+  curb: DRIVE_THRU_CURB,
+  laneWidth: 3.2,
+  stopLines: [
+    DRIVE_THRU_ORDER_POINT - DRIVER_TO_BUMPER,
+    (DRIVE_THRU_WINDOW.from + DRIVE_THRU_WINDOW.to) / 2 - DRIVER_TO_BUMPER,
+  ],
+  turnRadius: 6,
+  window: DRIVE_THRU_WINDOW,
+} as const;
 
 export const STORE_LAYOUT_ITEMS = [
   {
@@ -660,7 +683,7 @@ export const STORE_LAYOUT_ITEMS = [
     z: 2.2,
   },
   {
-    depth: 1.8,
+    depth: 1,
     elevation: 0,
     floor: "ground",
     height: 2,
@@ -679,7 +702,51 @@ export const STORE_LAYOUT_ITEMS = [
     label: "handSink",
     width: 0.45,
     x: 15.2,
-    z: 3.3,
+    z: 2.45,
+  },
+  {
+    depth: DRIVE_THRU_WINDOW.to - DRIVE_THRU_WINDOW.from,
+    elevation: 0,
+    floor: "ground",
+    height: DRIVE_THRU_WINDOW.bottom,
+    kind: "front",
+    label: "driveThruCounter",
+    width: 0.4,
+    x: STORE_LAYOUT_ROOM.width - 0.4,
+    z: DRIVE_THRU_WINDOW.from,
+  },
+  {
+    depth: DRIVE_THRU_WINDOW.to - DRIVE_THRU_WINDOW.from,
+    elevation: DRIVE_THRU_WINDOW.bottom,
+    floor: "ground",
+    height: DRIVE_THRU_WINDOW.top - DRIVE_THRU_WINDOW.bottom,
+    kind: "front",
+    label: "driveThruWindow",
+    width: 0.04,
+    x: STORE_LAYOUT_ROOM.width - 0.02,
+    z: DRIVE_THRU_WINDOW.from,
+  },
+  {
+    depth: 1.2,
+    elevation: DRIVE_THRU_CURB.height,
+    floor: "ground",
+    height: 1.9,
+    kind: "front",
+    label: "driveThruMenuBoard",
+    width: 0.15,
+    x: DRIVE_THRU_CURB.x + 0.05,
+    z: DRIVE_THRU_ORDER_POINT - 1.4,
+  },
+  {
+    depth: 0.2,
+    elevation: DRIVE_THRU_CURB.height,
+    floor: "ground",
+    height: 1.1,
+    kind: "front",
+    label: "driveThruSpeaker",
+    width: 0.15,
+    x: DRIVE_THRU_CURB.x + 0.05,
+    z: DRIVE_THRU_ORDER_POINT - 0.1,
   },
   {
     depth: 0.8,
@@ -1103,7 +1170,7 @@ export const STORE_LAYOUT_AVATAR = {
   radius: 0.25,
   speed: 1.4,
   sprintSpeed: 2.8,
-  start: { x: STORE_LAYOUT_ROOM.width / 2, z: 20 },
+  start: { x: STORE_LAYOUT_ROOM.width / 2, z: 19.2 },
 } as const;
 
 export const STORE_LAYOUT_CHARACTERS = {
@@ -1319,7 +1386,39 @@ export const STORE_LAYOUT_ELEVATOR_WALLS =
 export const STORE_LAYOUT_RESTROOM_WALLS =
   STORE_LAYOUT_FLOORS.flatMap(restroomWalls);
 
-export const STORE_LAYOUT_DOORS = STORE_LAYOUT_FLOORS.flatMap(restroomDoors);
+// 門片收進兩側時要跨過窗邊吧台末端，得貼在吧台外緣與牆面玻璃之間
+const ENTRANCE_DOOR_LINE =
+  WINDOW_COUNTER_Z + WINDOW_COUNTER_DEPTH + STORE_LAYOUT_DOOR_LEAF / 2;
+const ENTRANCE_LEAF_WIDTH = ENTRANCE.width / 2;
+
+export const STORE_LAYOUT_DOORS = [
+  ...STORE_LAYOUT_FLOORS.flatMap(restroomDoors),
+  slideDoor(
+    "ground",
+    [ENTRANCE.x, ENTRANCE_DOOR_LINE],
+    [-1, 0],
+    ENTRANCE_LEAF_WIDTH,
+    { glass: true },
+  ),
+  slideDoor(
+    "ground",
+    [ENTRANCE.x + ENTRANCE.width, ENTRANCE_DOOR_LINE],
+    [1, 0],
+    ENTRANCE_LEAF_WIDTH,
+    { glass: true },
+  ),
+  slideDoor(
+    "ground",
+    [STORE_LAYOUT_ROOM.width - STORE_LAYOUT_DOOR_LEAF, DRIVE_THRU_WINDOW.from],
+    [0, -1],
+    DRIVE_THRU_WINDOW.to - DRIVE_THRU_WINDOW.from,
+    {
+      bottom: DRIVE_THRU_WINDOW.bottom,
+      glass: true,
+      height: DRIVE_THRU_WINDOW.top - DRIVE_THRU_WINDOW.bottom,
+    },
+  ),
+];
 
 export const STORE_LAYOUT_SLAB_OPENINGS = [
   STORE_LAYOUT_STAIRWELL,

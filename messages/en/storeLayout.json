@@ -18,7 +18,7 @@
     "ground": "1F",
     "upper": "2F"
   },
-  "focusFloor": "Focus current floor",
+  "focusFloor": "Focus floor",
   "fullscreen": "Fullscreen",
   "gridLegend": {
     "cell": "1 m",
@@ -36,6 +36,11 @@
     "chair": "Chair",
     "cleanShelf": "Clean tableware shelf",
     "cupShelf": "Cup shelf",
+    "driveThruCounter": "Meow-thru counter",
+    "driveThruLane": "Meow-thru lane",
+    "driveThruMenuBoard": "Meow-thru menu board",
+    "driveThruSpeaker": "Meow-thru speaker",
+    "driveThruWindow": "Meow-thru window",
     "elevator": "Elevator",
     "entrance": "Entrance",
     "entranceMat": "Entrance mat",
@@ -74,7 +79,7 @@
     "workCounter": "Bar work counter"
   },
   "label": "Store Layout",
-  "moveHint": "Click the view, then move the character with the arrow keys or WASD, sprint with Shift, jump with the space bar, turn the view with IJKL{view, select, first {} other {, zoom in with O and out with U}}, switch floors with 1/2/3, views with V and characters with C, and toggle focusing the current floor with F, realistic mode with R, names with N and sizes with M",
+  "moveHint": "Click the view, then move the character with the arrow keys or WASD, sprint with Shift, jump with the space bar, turn the view with IJKL{view, select, first {} other {, zoom in with O and out with U}}, switch floors with 1/2/3, toggle floor focus with F, switch characters with C and views with V, and toggle realistic mode, names and sizes with R/N/M",
   "realistic": "Realistic",
   "showDimensions": "Sizes",
   "showLabels": "Names",

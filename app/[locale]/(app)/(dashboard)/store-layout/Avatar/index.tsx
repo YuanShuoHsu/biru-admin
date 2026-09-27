@@ -36,6 +36,7 @@ import {
   elevatorDoors,
 } from "../Elevator/motion";
 import Person from "../Person";
+import { advanceDoors, doorLeaves } from "../Restrooms/motion";
 import {
   type AvatarState,
   advanceAvatar,
@@ -103,6 +104,7 @@ const START_POSITION: [number, number, number] = [start.x, 0, start.z];
 interface AvatarProps {
   character: StoreLayoutCharacter;
   controlsRef: RefObject<ComponentRef<typeof OrbitControls> | null>;
+  doorsRef: RefObject<number[]>;
   elevatorRef: RefObject<ElevatorState>;
   floor: StoreLayoutFloor;
   onFloorChange: (floor: StoreLayoutFloor) => void;
@@ -113,6 +115,7 @@ interface AvatarProps {
 const Avatar = ({
   character,
   controlsRef,
+  doorsRef,
   elevatorRef,
   floor,
   onFloorChange,
@@ -206,6 +209,8 @@ const Avatar = ({
 
     if (elevator.riding) state.y += lift;
 
+    advanceDoors(doorsRef.current, state, delta);
+
     const wasAirborne = Boolean(state.verticalSpeed);
     const fallSpeed = state.verticalSpeed;
 
@@ -220,7 +225,11 @@ const Avatar = ({
         towards: Number(move.forward) - Number(move.backward) + touch.towards,
       },
       delta,
-      [...elevatorCar(elevator), ...elevatorDoors(elevator)],
+      [
+        ...elevatorCar(elevator),
+        ...elevatorDoors(elevator),
+        ...doorLeaves(doorsRef.current),
+      ],
     );
 
     const jump = jumpRef.current;

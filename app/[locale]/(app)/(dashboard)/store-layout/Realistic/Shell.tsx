@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 
 import {
+  STORE_LAYOUT_DRIVE_THRU,
   STORE_LAYOUT_FLOORS,
   STORE_LAYOUT_KITCHEN_FLOOR_DEPTH,
   STORE_LAYOUT_ROOM,
@@ -10,7 +11,7 @@ import {
   STORE_LAYOUT_STOREFRONT,
 } from "@/constants/storeLayout";
 
-import { Path, Shape, ShapeGeometry } from "three";
+import { BackSide, FrontSide, Path, Shape, ShapeGeometry } from "three";
 
 import type { StoreLayoutFloor } from "@/types/storeLayout";
 
@@ -28,6 +29,7 @@ const CEILING_DROP = 0.002;
 const PANE_THICKNESS = 0.02;
 const MULLION = 0.05;
 const MULLION_SPACING = 1.5;
+const OUTER_SKIN = 0.01;
 
 interface Rect {
   bottom: number;
@@ -57,12 +59,30 @@ const shapeWithHoles = (outline: Rect, holes: Rect[] = []) => {
   return new ShapeGeometry(shape);
 };
 
-// 牆面只有正面會畫，法線一律朝室內；從室外看靠近鏡頭的牆會自動透空，走進室內又看得到四面牆
 const WALLS = [
-  { length: ROOM_WIDTH, position: [0, 0, 0], rotationY: 0 },
-  { length: ROOM_DEPTH, position: [0, 0, ROOM_DEPTH], rotationY: Math.PI / 2 },
-  { length: ROOM_DEPTH, position: [ROOM_WIDTH, 0, 0], rotationY: -Math.PI / 2 },
+  { driveThru: false, length: ROOM_WIDTH, position: [0, 0, 0], rotationY: 0 },
+  {
+    driveThru: false,
+    length: ROOM_DEPTH,
+    position: [0, 0, ROOM_DEPTH],
+    rotationY: Math.PI / 2,
+  },
+  {
+    driveThru: true,
+    length: ROOM_DEPTH,
+    position: [ROOM_WIDTH, 0, 0],
+    rotationY: -Math.PI / 2,
+  },
 ] as const;
+
+const { window: DRIVE_THRU_WINDOW } = STORE_LAYOUT_DRIVE_THRU;
+
+const DRIVE_THRU_HOLE: Rect = {
+  bottom: DRIVE_THRU_WINDOW.bottom,
+  left: DRIVE_THRU_WINDOW.from,
+  right: DRIVE_THRU_WINDOW.to,
+  top: DRIVE_THRU_WINDOW.top,
+};
 
 const FRONT_WALL = {
   position: [ROOM_WIDTH, 0, ROOM_DEPTH],
@@ -104,9 +124,10 @@ const ceilingFootprint = (
 
 interface ShellProps {
   floor: StoreLayoutFloor;
+  ghost: boolean;
 }
 
-const Shell = ({ floor }: ShellProps) => {
+const Shell = ({ floor, ghost }: ShellProps) => {
   const openings = OPENINGS[floor];
 
   const geometries = useMemo(() => {
@@ -136,7 +157,9 @@ const Shell = ({ floor }: ShellProps) => {
           top,
         })),
       ),
-      sides: WALLS.map(({ length }) => wall(length)),
+      sides: WALLS.map(({ driveThru, length }) =>
+        wall(length, driveThru && floor === "ground" ? [DRIVE_THRU_HOLE] : []),
+      ),
       floors:
         floor === "ground"
           ? [
@@ -174,46 +197,48 @@ const Shell = ({ floor }: ShellProps) => {
 
   return (
     <>
-      {geometries.floors.map(({ geometry, texture }) => (
+      {!ghost &&
+        geometries.floors.map(({ geometry, texture }) => (
+          <mesh
+            geometry={geometry}
+            key={texture}
+            position-y={FINISH_LIFT}
+            receiveShadow
+            rotation-x={-Math.PI / 2}
+          >
+            <meshStandardMaterial
+              map={realisticTextures()[texture]}
+              roughness={texture === "tiles" ? 0.7 : 0.55}
+            />
+          </mesh>
+        ))}
+      {!ghost && (
         <mesh
-          geometry={geometry}
-          key={texture}
-          position-y={FINISH_LIFT}
-          receiveShadow
-          rotation-x={-Math.PI / 2}
-        >
-          <meshStandardMaterial
-            map={realisticTextures()[texture]}
-            roughness={texture === "tiles" ? 0.7 : 0.55}
-          />
-        </mesh>
-      ))}
-      <mesh
-        geometry={geometries.ceiling}
-        position-y={ROOM_HEIGHT - CEILING_DROP}
-        rotation-x={Math.PI / 2}
-      >
-        <Surface spec={SURFACES.plaster} />
-      </mesh>
-      {WALLS.map(({ position, rotationY }, index) => (
-        <mesh
-          geometry={geometries.sides[index]}
-          key={rotationY}
-          position={[...position]}
-          receiveShadow
-          rotation-y={rotationY}
+          geometry={geometries.ceiling}
+          position-y={ROOM_HEIGHT - CEILING_DROP}
+          rotation-x={Math.PI / 2}
         >
           <Surface spec={SURFACES.plaster} />
         </mesh>
+      )}
+      {[
+        ...WALLS.map(({ position, rotationY }, index) => ({
+          geometry: geometries.sides[index],
+          position,
+          rotationY,
+        })),
+        { ...FRONT_WALL, geometry: geometries.front },
+      ].map(({ geometry, position, rotationY }) => (
+        <group key={rotationY} position={[...position]} rotation-y={rotationY}>
+          <mesh geometry={geometry} receiveShadow>
+            <Surface ghost={ghost} side={FrontSide} spec={SURFACES.plaster} />
+          </mesh>
+          {/* 外側面往外推，貼牆家具的端面才不會和牆面共面、從室外透出來 */}
+          <mesh geometry={geometry} position-z={-OUTER_SKIN} receiveShadow>
+            <Surface ghost={ghost} side={BackSide} spec={SURFACES.plaster} />
+          </mesh>
+        </group>
       ))}
-      <mesh
-        geometry={geometries.front}
-        position={[...FRONT_WALL.position]}
-        receiveShadow
-        rotation-y={FRONT_WALL.rotationY}
-      >
-        <Surface spec={SURFACES.plaster} />
-      </mesh>
       {windows.map(({ bottom, from, to, top }) => {
         const width = to - from;
         const height = top - bottom;
@@ -223,7 +248,7 @@ const Shell = ({ floor }: ShellProps) => {
           <group key={from} position={[from, bottom, ROOM_DEPTH]}>
             <mesh position={[width / 2, height / 2, -PANE_THICKNESS]}>
               <boxGeometry args={[width, height, PANE_THICKNESS]} />
-              <Surface spec={SURFACES.glass} />
+              <Surface ghost={ghost} spec={SURFACES.glass} />
             </mesh>
             {Array.from({ length: mullions + 2 }, (_, index) => (
               <mesh
@@ -235,13 +260,13 @@ const Shell = ({ floor }: ShellProps) => {
                 ]}
               >
                 <boxGeometry args={[MULLION, height, MULLION]} />
-                <Surface spec={SURFACES.blackSteel} />
+                <Surface ghost={ghost} spec={SURFACES.blackSteel} />
               </mesh>
             ))}
             {[0, height].map((y) => (
               <mesh key={y} position={[width / 2, y, -PANE_THICKNESS]}>
                 <boxGeometry args={[width, MULLION, MULLION]} />
-                <Surface spec={SURFACES.blackSteel} />
+                <Surface ghost={ghost} spec={SURFACES.blackSteel} />
               </mesh>
             ))}
           </group>

@@ -123,7 +123,7 @@ const Elevator = ({
             <meshStandardMaterial
               color={blueGrey[100]}
               depthWrite={false}
-              opacity={ghost ? 0.06 : GLASS_OPACITY}
+              opacity={ghost ? ghostSurface(true).opacity : GLASS_OPACITY}
               transparent
             />
             {!realistic && <Edges color={grey[700]} {...ghostEdge(ghost)} />}

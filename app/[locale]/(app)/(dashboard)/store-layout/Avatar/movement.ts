@@ -1,6 +1,5 @@
 import {
   STORE_LAYOUT_AVATAR,
-  STORE_LAYOUT_DOORS,
   STORE_LAYOUT_ELEVATOR_WALLS,
   STORE_LAYOUT_FLOORS,
   STORE_LAYOUT_FLOOR_BASE,
@@ -49,7 +48,6 @@ const SOLIDS: Solid[] = [
     ...STORE_LAYOUT_SEATS,
     ...STORE_LAYOUT_ELEVATOR_WALLS,
     ...STORE_LAYOUT_RESTROOM_WALLS,
-    ...STORE_LAYOUT_DOORS.map(({ leaf }) => leaf),
   ].map(({ depth, elevation, floor, height, width, x, z }) => ({
     bottom: STORE_LAYOUT_FLOOR_BASE[floor] + elevation,
     depth,

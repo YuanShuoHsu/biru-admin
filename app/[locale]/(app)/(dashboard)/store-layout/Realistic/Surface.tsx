@@ -2,6 +2,8 @@
 
 import { grey } from "@mui/material/colors";
 
+import type { Side } from "three";
+
 import type { StoreLayoutItem } from "@/types/storeLayout";
 
 import { ghostSurface } from "../ghost";
@@ -49,6 +51,9 @@ const BY_KIND: Record<Kind, SurfaceSpec> = {
 
 const BY_LABEL: Partial<Record<Label, SurfaceSpec>> = {
   cupShelf: SURFACES.walnut,
+  driveThruMenuBoard: SURFACES.screen,
+  driveThruSpeaker: SURFACES.blackSteel,
+  driveThruWindow: SURFACES.glass,
   entrance: SURFACES.glass,
   entranceMat: SURFACES.coir,
   frontCounter: SURFACES.walnut,
@@ -69,10 +74,11 @@ const GLASS_OPACITY = 0.22;
 
 interface SurfaceProps {
   ghost?: boolean;
+  side?: Side;
   spec: SurfaceSpec;
 }
 
-const Surface = ({ ghost = false, spec }: SurfaceProps) => {
+const Surface = ({ ghost = false, side, spec }: SurfaceProps) => {
   const { color, emissive, glass, metalness = 0, roughness, wood } = spec;
 
   if (glass)
@@ -93,6 +99,7 @@ const Surface = ({ ghost = false, spec }: SurfaceProps) => {
       map={wood ? realisticTextures().wood : null}
       metalness={metalness}
       roughness={roughness}
+      side={side}
       {...(emissive && { emissive })}
       {...ghostSurface(ghost)}
     />

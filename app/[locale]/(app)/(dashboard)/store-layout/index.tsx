@@ -22,6 +22,7 @@ import { menuSocket } from "@/app/socket";
 
 import Avatar from "./Avatar";
 import DineInTables from "./DineInTables";
+import DriveThru from "./DriveThru";
 import Elevator from "./Elevator";
 import { createElevatorState } from "./Elevator/motion";
 import Furniture from "./Realistic/Furniture";
@@ -30,6 +31,7 @@ import Lighting from "./Realistic/Lighting";
 import Shell from "./Realistic/Shell";
 import Surface, { SURFACES } from "./Realistic/Surface";
 import Restrooms from "./Restrooms";
+import { createDoorsState } from "./Restrooms/motion";
 import SpriteLabel from "./SpriteLabel";
 import { ghostEdge, ghostSurface } from "./ghost";
 
@@ -102,6 +104,7 @@ import type {
   StoreLayoutCharacter,
   StoreLayoutFloor,
   StoreLayoutFloorFilter,
+  StoreLayoutItem,
   StoreLayoutMove,
   StoreLayoutTouchInput,
   StoreLayoutView,
@@ -115,6 +118,18 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
   flexWrap: "wrap",
   alignItems: "center",
   gap: theme.spacing(2),
+}));
+
+const DisplaySwitches = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(2),
+}));
+
+const FloorControls = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(1, 2),
 }));
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
@@ -267,6 +282,11 @@ const FLOOR_SUMMARIES = STORE_LAYOUT_FLOORS.map((floor) => ({
   ).length,
   tables: STORE_LAYOUT_TABLES.filter((table) => table.floor === floor),
 }));
+
+const DRIVE_THRU_OUTDOOR_LABELS = new Set<StoreLayoutItem["label"]>([
+  "driveThruMenuBoard",
+  "driveThruSpeaker",
+]);
 
 const toCentimeters = (value: number) => Math.round(value * 1000) / 10;
 
@@ -547,6 +567,7 @@ const StoreLayout = ({
   const controlsRef = useRef<ComponentRef<typeof OrbitControls>>(null);
   const rootStateRef = useRef<RootState>(null);
   const elevatorRef = useRef(createElevatorState());
+  const doorsRef = useRef(createDoorsState());
   const touchRef = useRef<StoreLayoutTouchInput>({
     jump: false,
     lookSideways: 0,
@@ -583,6 +604,10 @@ const StoreLayout = ({
 
   const isGhostFloor = (value: StoreLayoutFloor) =>
     floors === "all" && focusFloor && value !== floor;
+
+  const isGhostItem = (item: StoreLayoutItem) =>
+    isGhostFloor(item.floor) ||
+    (focusFloor && DRIVE_THRU_OUTDOOR_LABELS.has(item.label));
 
   const applyView = (
     nextView: StoreLayoutView,
@@ -658,7 +683,7 @@ const StoreLayout = ({
     if (event.code === "KeyC")
       setCharacter(nextInOrder(STORE_LAYOUT_CHARACTER_ORDER, character));
 
-    if (event.code === "KeyF") setFocusFloor((on) => !on);
+    if (event.code === "KeyF" && floors !== "upper") setFocusFloor((on) => !on);
 
     if (event.code === "KeyR") setRealistic((on) => !on);
 
@@ -771,7 +796,6 @@ const StoreLayout = ({
     setRealistic(checked);
   };
 
-  // 不擋預設行為的話，按鈕會在 mousedown 之後搶走焦點，方向鍵與 WASD 就失效
   const handleControlsMouseDown = (event: React.MouseEvent) => {
     event.preventDefault();
     canvasElement?.focus({ preventScroll: true });
@@ -781,37 +805,31 @@ const StoreLayout = ({
     <>
       {!empty && (
         <ToolbarStack direction="row" onMouseDown={handleControlsMouseDown}>
-          <StyledToggleButtonGroup
-            exclusive
-            onChange={handleFloorsChange}
-            size="small"
-            value={floors}
-          >
-            {STORE_LAYOUT_FLOOR_FILTERS.map((value) => (
-              <ToggleButton key={value} value={value}>
-                {tStoreLayout(`floors.${value}`)}
-              </ToggleButton>
-            ))}
-          </StyledToggleButtonGroup>
-          <FormControlLabel
-            control={
-              <Switch checked={focusFloor} onChange={handleFocusFloorChange} />
-            }
-            disabled={floors !== "all"}
-            label={tStoreLayout("focusFloor")}
-          />
-          <StyledToggleButtonGroup
-            exclusive
-            onChange={handleViewChange}
-            size="small"
-            value={view}
-          >
-            {STORE_LAYOUT_VIEW_ORDER.map((value) => (
-              <ToggleButton key={value} value={value}>
-                {tStoreLayout(`views.${value}`)}
-              </ToggleButton>
-            ))}
-          </StyledToggleButtonGroup>
+          <FloorControls direction="row">
+            <StyledToggleButtonGroup
+              exclusive
+              onChange={handleFloorsChange}
+              size="small"
+              value={floors}
+            >
+              {STORE_LAYOUT_FLOOR_FILTERS.map((value) => (
+                <ToggleButton key={value} value={value}>
+                  {tStoreLayout(`floors.${value}`)}
+                </ToggleButton>
+              ))}
+            </StyledToggleButtonGroup>
+            {floors !== "upper" && (
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={focusFloor}
+                    onChange={handleFocusFloorChange}
+                  />
+                }
+                label={tStoreLayout("focusFloor")}
+              />
+            )}
+          </FloorControls>
           <StyledToggleButtonGroup
             exclusive
             onChange={handleCharacterChange}
@@ -824,27 +842,44 @@ const StoreLayout = ({
               </ToggleButton>
             ))}
           </StyledToggleButtonGroup>
-          <FormControlLabel
-            control={
-              <Switch checked={realistic} onChange={handleRealisticChange} />
-            }
-            label={tStoreLayout("realistic")}
-          />
-          <FormControlLabel
-            control={
-              <Switch checked={showLabels} onChange={handleShowLabelsChange} />
-            }
-            label={tStoreLayout("showLabels")}
-          />
-          <FormControlLabel
-            control={
-              <Switch
-                checked={showDimensions}
-                onChange={handleShowDimensionsChange}
-              />
-            }
-            label={tStoreLayout("showDimensions")}
-          />
+          <StyledToggleButtonGroup
+            exclusive
+            onChange={handleViewChange}
+            size="small"
+            value={view}
+          >
+            {STORE_LAYOUT_VIEW_ORDER.map((value) => (
+              <ToggleButton key={value} value={value}>
+                {tStoreLayout(`views.${value}`)}
+              </ToggleButton>
+            ))}
+          </StyledToggleButtonGroup>
+          <DisplaySwitches direction="row">
+            <FormControlLabel
+              control={
+                <Switch checked={realistic} onChange={handleRealisticChange} />
+              }
+              label={tStoreLayout("realistic")}
+            />
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={showLabels}
+                  onChange={handleShowLabelsChange}
+                />
+              }
+              label={tStoreLayout("showLabels")}
+            />
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={showDimensions}
+                  onChange={handleShowDimensionsChange}
+                />
+              }
+              label={tStoreLayout("showDimensions")}
+            />
+          </DisplaySwitches>
           <KeyboardHint color="textSecondary" variant="caption">
             {tStoreLayout("moveHint", { view })}
           </KeyboardHint>
@@ -1008,7 +1043,7 @@ const StoreLayout = ({
                           />
                         </>
                       )}
-                      {!ghost && realistic && <Shell floor={value} />}
+                      {realistic && <Shell floor={value} ghost={ghost} />}
                       {!ghost &&
                         !realistic &&
                         STORE_LAYOUT_WALLS.map(
@@ -1088,7 +1123,7 @@ const StoreLayout = ({
 
                   const { depth, elevation, height, kind, label, width, x, z } =
                     item;
-                  const ghost = isGhostFloor(item.floor);
+                  const ghost = isGhostItem(item);
 
                   return (
                     <group
@@ -1101,7 +1136,8 @@ const StoreLayout = ({
                         z + depth / 2,
                       ]}
                     >
-                      {realistic ? (
+                      {label === "entrance" ||
+                      label === "driveThruWindow" ? null : realistic ? (
                         <ItemBody ghost={ghost} item={item} />
                       ) : (
                         <mesh>
@@ -1131,7 +1167,15 @@ const StoreLayout = ({
                     </group>
                   );
                 })}
+                {floors !== "upper" && (
+                  <DriveThru
+                    ghost={focusFloor}
+                    realistic={realistic}
+                    showLabels={showLabels}
+                  />
+                )}
                 <Restrooms
+                  doorsRef={doorsRef}
                   floors={floors}
                   isGhostFloor={isGhostFloor}
                   realistic={realistic}
@@ -1229,6 +1273,7 @@ const StoreLayout = ({
                 <Avatar
                   character={character}
                   controlsRef={controlsRef}
+                  doorsRef={doorsRef}
                   elevatorRef={elevatorRef}
                   floor={floor}
                   onFloorChange={showFloor}

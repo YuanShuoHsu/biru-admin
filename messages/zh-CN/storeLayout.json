@@ -18,7 +18,7 @@
     "ground": "一楼",
     "upper": "二楼"
   },
-  "focusFloor": "聚焦所在楼层",
+  "focusFloor": "聚焦本层",
   "fullscreen": "全屏",
   "gridLegend": {
     "cell": "1 m",
@@ -36,6 +36,11 @@
     "chair": "椅子",
     "cleanShelf": "洁净餐具层架",
     "cupShelf": "杯具层架",
+    "driveThruCounter": "猫速通出餐台",
+    "driveThruLane": "猫速通车道",
+    "driveThruMenuBoard": "猫速通菜单看板",
+    "driveThruSpeaker": "猫速通点餐对讲机",
+    "driveThruWindow": "猫速通取餐窗口",
     "elevator": "电梯",
     "entrance": "入口",
     "entranceMat": "入口地垫",
@@ -74,7 +79,7 @@
     "workCounter": "吧台工作台"
   },
   "label": "店内布局",
-  "moveHint": "点击画面后，可用方向键或 WASD 移动角色，Shift 加速，空格键跳跃，IJKL 转动视角{view, select, first {} other {，O/U 拉近拉远}}，1/2/3 切换楼层，V 切换视角，C 切换角色，F 开关聚焦所在楼层，R 开关写实，N/M 开关名称/尺寸",
+  "moveHint": "点击画面后，可用方向键或 WASD 移动角色，Shift 加速，空格键跳跃，IJKL 转动视角{view, select, first {} other {，O/U 拉近拉远}}，1/2/3 切换楼层，F 开关聚焦本层，C 切换角色，V 切换视角，R/N/M 开关写实/名称/尺寸",
   "realistic": "写实",
   "showDimensions": "尺寸",
   "showLabels": "名称",
