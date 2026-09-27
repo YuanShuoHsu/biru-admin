@@ -8,6 +8,8 @@ import { useFrame } from "@react-three/fiber";
 
 import type { Group } from "three";
 
+import type { StoreLayoutJump } from "@/types/storeLayout";
+
 const LEG_SWING = 0.6;
 
 const TAIL_SWING = 0.3;
@@ -26,6 +28,22 @@ const TAIL_SWAY_SPEED = 2;
 
 const HEAD_NOD = 0.08;
 
+const RUN_LEG_SWING = 0.9;
+
+const RUN_BOB = 0.03;
+
+const RUN_PITCH = 0.12;
+
+const JUMP_PITCH = 0.35;
+
+const JUMP_FRONT = [0.3, 0.9] as const;
+
+const JUMP_HIND = [0.25, -0.8] as const;
+
+const LAND_SQUASH = 0.04;
+
+const LAND_NOD = 0.25;
+
 const BOB = 0.012;
 
 const SIDES = [-1, 1] as const;
@@ -38,33 +56,52 @@ const { belly, earInner, fur, iris, nose, pupil, stripe, whisker } =
 const STRIPE_POSITIONS = [-0.12, 0, 0.12];
 
 const LEGS = [
-  { phase: 1, x: -0.08, z: -0.16 },
-  { phase: -1, x: 0.08, z: -0.16 },
-  { phase: -1, x: -0.08, z: 0.16 },
-  { phase: 1, x: 0.08, z: 0.16 },
+  { gallop: 1, phase: 1, x: -0.08, z: -0.16 },
+  { gallop: 1, phase: -1, x: 0.08, z: -0.16 },
+  { gallop: -1, phase: -1, x: -0.08, z: 0.16 },
+  { gallop: -1, phase: 1, x: 0.08, z: 0.16 },
 ] as const;
 
 interface CatProps {
+  jumpRef: RefObject<StoreLayoutJump>;
+  runRef: RefObject<number>;
   swingRef: RefObject<number>;
 }
 
-const Cat = ({ swingRef }: CatProps) => {
+const mix = (walk: number, run: number, amount: number) =>
+  walk + (run - walk) * amount;
+
+const Cat = ({ jumpRef, runRef, swingRef }: CatProps) => {
   const bodyRef = useRef<Group>(null);
   const headRef = useRef<Group>(null);
   const legRefs = useRef<(Group | null)[]>([]);
   const tailRefs = useRef<(Group | null)[]>([]);
 
   useFrame(({ clock }) => {
-    const swing = swingRef.current;
+    const { air, land, rise } = jumpRef.current;
+    const swing = swingRef.current * (1 - air);
+    const arc = (rise + 1) / 2;
     const time = clock.elapsedTime;
 
-    if (bodyRef.current) bodyRef.current.position.y = -BOB * Math.abs(swing);
-    if (headRef.current)
-      headRef.current.rotation.x = HEAD_NOD * Math.abs(swing);
+    const run = runRef.current;
 
-    LEGS.forEach(({ phase }, index) => {
+    if (bodyRef.current) {
+      bodyRef.current.position.y =
+        mix(-BOB, RUN_BOB, run) * Math.abs(swing) - LAND_SQUASH * land;
+      bodyRef.current.rotation.x =
+        RUN_PITCH * run * swing + JUMP_PITCH * air * rise;
+    }
+    if (headRef.current)
+      headRef.current.rotation.x = HEAD_NOD * Math.abs(swing) + LAND_NOD * land;
+
+    LEGS.forEach(({ gallop, phase }, index) => {
       const leg = legRefs.current[index];
-      if (leg) leg.rotation.x = swing * phase * LEG_SWING;
+      const [falling, rising] = gallop > 0 ? JUMP_FRONT : JUMP_HIND;
+
+      if (leg)
+        leg.rotation.x =
+          swing * mix(phase, gallop, run) * mix(LEG_SWING, RUN_LEG_SWING, run) +
+          air * mix(falling, rising, arc);
     });
 
     tailRefs.current.forEach((segment, index) => {

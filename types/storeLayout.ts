@@ -25,6 +25,12 @@ export interface StoreLayoutTouchInput {
   towards: number;
 }
 
+export interface StoreLayoutJump {
+  air: number;
+  land: number;
+  rise: number;
+}
+
 export type StoreLayoutMove =
   | "backward"
   | "forward"

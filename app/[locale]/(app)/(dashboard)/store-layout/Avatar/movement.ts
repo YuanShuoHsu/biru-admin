@@ -10,9 +10,12 @@ import {
   STORE_LAYOUT_SLAB_PANELS,
   STORE_LAYOUT_SLAB_THICKNESS,
   STORE_LAYOUT_STAIRWELL,
+  STORE_LAYOUT_STAIR_FLIGHTS,
   STORE_LAYOUT_STAIR_GUARDS,
   STORE_LAYOUT_STAIR_GUARD_HEIGHT,
+  STORE_LAYOUT_STAIR_RISER,
   STORE_LAYOUT_STAIR_STEPS,
+  STORE_LAYOUT_STAIR_TREAD,
 } from "@/constants/storeLayout";
 
 import type { ElevatorBox } from "../Elevator/motion";
@@ -22,6 +25,10 @@ const { gravity, jumpSpeed, radius } = STORE_LAYOUT_AVATAR;
 const PERSON_HEIGHT = 1.7;
 
 const STEP_UP = 0.45;
+
+const STEP_DOWN = 0.3;
+
+const FOOT_REACH = 0.35;
 
 interface Footprint {
   depth: number;
@@ -113,13 +120,14 @@ const supportAt = (
   z: number,
   feet: number,
   reach: number,
+  lowest = 0,
 ) =>
   solids.reduce(
     (highest, solid) =>
       covers(solid, x, z) && solid.top <= feet + reach && solid.top > highest
         ? solid.top
         : highest,
-    0,
+    lowest,
   );
 
 const isBlocked = (
@@ -135,6 +143,64 @@ const isBlocked = (
       solid.bottom < feet + PERSON_HEIGHT &&
       overlaps(solid, x, z),
   );
+
+const rampAt = (x: number, z: number) => {
+  for (const {
+    base,
+    direction,
+    risers,
+    start,
+    width,
+    ...flight
+  } of STORE_LAYOUT_STAIR_FLIGHTS) {
+    if (x < flight.x || x > flight.x + width) continue;
+
+    const run = (z - start) * direction;
+
+    if (
+      run >= -STORE_LAYOUT_STAIR_TREAD / 2 &&
+      run <= (risers - 0.5) * STORE_LAYOUT_STAIR_TREAD
+    )
+      return (
+        base + STORE_LAYOUT_STAIR_RISER * (run / STORE_LAYOUT_STAIR_TREAD + 0.5)
+      );
+  }
+
+  return null;
+};
+
+// 腳伸進空的電梯井道時，兜底的 0 m 會把骨盆拉到樓下，腳下構不到的地方要當作同高
+export const footholdAt = (
+  x: number,
+  z: number,
+  from: number,
+  movingBoxes: ElevatorBox[],
+) => {
+  const lowest = from - FOOT_REACH;
+  const support = supportAt(
+    [...SOLIDS, ...movingBoxes.map(toSolid)],
+    x,
+    z,
+    from,
+    FOOT_REACH,
+    lowest,
+  );
+
+  return support > lowest ? support : from;
+};
+
+export const surfaceAt = (
+  x: number,
+  z: number,
+  from: number,
+  movingBoxes: ElevatorBox[],
+) => {
+  const ramp = rampAt(x, z);
+
+  return ramp !== null && ramp <= from + FOOT_REACH
+    ? ramp
+    : footholdAt(x, z, from, movingBoxes);
+};
 
 export interface AvatarState {
   verticalSpeed: number;
@@ -181,8 +247,15 @@ export const advanceAvatar = (
       state.z = nextZ;
   }
 
-  const support = supportAt(solids, state.x, state.z, feet, reach);
-  const grounded = feet <= support + 1e-4 && state.verticalSpeed <= 0;
+  const ramp = rampAt(state.x, state.z);
+  const onRamp = ramp !== null && ramp <= feet + reach;
+  const support = onRamp
+    ? ramp
+    : supportAt(solids, state.x, state.z, feet, reach);
+  const grounded =
+    state.verticalSpeed <= 0 && feet - support <= (airborne ? 1e-4 : STEP_DOWN);
+
+  const snap = grounded && !onRamp ? support - feet : 0;
 
   if (grounded) {
     state.y = support;
@@ -200,4 +273,6 @@ export const advanceAvatar = (
       state.verticalSpeed = 0;
     }
   }
+
+  return snap;
 };

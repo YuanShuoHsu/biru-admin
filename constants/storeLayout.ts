@@ -9,7 +9,6 @@ import {
   grey,
   lightBlue,
   pink,
-  red,
   teal,
 } from "@mui/material/colors";
 
@@ -769,30 +768,33 @@ export const STORE_LAYOUT_AVATAR = {
 
 export const STORE_LAYOUT_CHARACTERS = {
   male: {
-    color: deepOrange[600],
+    cap: grey[900],
+    color: grey[800],
+    drawstring: grey[50],
     eye: 1.55,
     followOffset: [0, 1.2, 3.2],
-    hair: brown[900],
+    hair: grey[900],
     iris: grey[900],
-    pants: blueGrey[800],
+    pants: blueGrey[700],
     scale: 1,
-    shoe: grey[900],
+    shoe: grey[50],
     skin: brown[200],
-    sole: grey[400],
+    sole: grey[300],
   },
   female: {
-    blush: pink[200],
-    bow: red[400],
-    color: pink[300],
+    belt: deepPurple[300],
+    blush: pink[100],
+    color: grey[50],
     eye: 1.49,
     followOffset: [0, 1.15, 3.1],
-    hair: brown[800],
+    hair: brown[900],
     iris: grey[900],
-    lips: pink[300],
+    lips: pink[200],
     scale: 0.96,
-    shoe: red[400],
-    skin: brown[100],
-    sole: grey[200],
+    shoe: grey[900],
+    skin: deepOrange[100],
+    skirt: deepPurple[200],
+    sole: grey[800],
   },
   cat: {
     belly: grey[50],
@@ -867,6 +869,29 @@ export const STORE_LAYOUT_STAIR_STEPS = [
   },
   ...flightTreads(STAIR_FLIGHT_TREADS),
 ];
+
+export const STORE_LAYOUT_STAIR_FLIGHTS = [
+  {
+    base: 0,
+    direction: 1,
+    risers: STAIR_FLIGHT_TREADS,
+    start: STAIR_Z,
+    width: STAIR_FLIGHT_WIDTH,
+    x: STAIR_X,
+  },
+  {
+    base: STAIR_FLIGHT_TREADS * STAIR_RISER,
+    direction: -1,
+    risers: STAIR_FLIGHT_TREADS + 1,
+    start: STAIR_LANDING_Z,
+    width: STAIR_FLIGHT_WIDTH,
+    x: STAIR_X + STAIR_FLIGHT_WIDTH,
+  },
+] as const;
+
+export const STORE_LAYOUT_STAIR_RISER = STAIR_RISER;
+
+export const STORE_LAYOUT_STAIR_TREAD = STAIR_TREAD;
 
 export const STORE_LAYOUT_STAIRWELL = {
   depth: STAIR_FLIGHT_RUN + STAIR_LANDING_DEPTH,

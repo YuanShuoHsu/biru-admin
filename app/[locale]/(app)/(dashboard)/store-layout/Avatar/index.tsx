@@ -21,6 +21,7 @@ import { type Group, Spherical, Vector3 } from "three";
 import type {
   StoreLayoutCharacter,
   StoreLayoutFloor,
+  StoreLayoutJump,
   StoreLayoutMove,
   StoreLayoutTouchInput,
   StoreLayoutView,
@@ -39,8 +40,13 @@ import {
   type AvatarState,
   advanceAvatar,
   floorIndexAt,
+  footholdAt,
   isOnStairs,
+  surfaceAt,
 } from "./movement";
+
+const reachableCar = (elevator: ElevatorState) =>
+  elevator.phase === "moving" ? [] : elevatorCar(elevator);
 
 const heading = new Vector3();
 const eyePoint = new Vector3();
@@ -50,7 +56,7 @@ const lookOffset = new Vector3();
 const lookSpherical = new Spherical();
 const followOffset = new Vector3();
 
-const { speed: walkSpeed, sprintSpeed, start } = STORE_LAYOUT_AVATAR;
+const { jumpSpeed, speed: walkSpeed, sprintSpeed, start } = STORE_LAYOUT_AVATAR;
 
 const SPRINT_FROM = 0.8;
 
@@ -63,9 +69,31 @@ const paceFor = (deflection: number) =>
 
 const STRIDE_LENGTH = 0.75;
 
+const RUN_STRIDE_LENGTH = 1.2;
+
+const RUN_DAMPING = 6;
+
 const SWING_DAMPING = 8;
 
 const TURN_SPEED = 12;
+
+const STEP_STIFFNESS = 10;
+
+const MAX_SPRING_STEP = 1 / 30;
+
+const CLIMB_FULL = 0.5;
+
+const CLIMB_DAMPING = 10;
+
+const CLIMB_STRIDE = 0.45;
+
+const TILT_SPAN = 0.2;
+
+const TILT_DAMPING = 10;
+
+const AIR_DAMPING = 14;
+
+const LAND_RECOVERY = 6;
 
 const { speed: lookSpeed } = STORE_LAYOUT_LOOK;
 
@@ -95,10 +123,17 @@ const Avatar = ({
   view,
 }: AvatarProps) => {
   const groupRef = useRef<Group>(null);
-  const previousRef = useRef<{ x: number; z: number }>({
+  const previousRef = useRef<{ x: number; y: number; z: number }>({
     x: start.x,
+    y: 0,
     z: start.z,
   });
+  const stepOffsetRef = useRef(0);
+  const stepVelocityRef = useRef(0);
+  const climbRef = useRef(0);
+  const runRef = useRef(0);
+  const jumpRef = useRef<StoreLayoutJump>({ air: 0, land: 0, rise: 0 });
+  const tiltRef = useRef<Group>(null);
   const strideRef = useRef(0);
   const swingRef = useRef(0);
   const floorIndexRef = useRef(0);
@@ -109,6 +144,24 @@ const Avatar = ({
     x: start.x,
     y: 0,
     z: start.z,
+  });
+  const groundRef = useRef((right: number, forward: number) => {
+    const group = groupRef.current;
+    if (!group || stateRef.current.verticalSpeed || elevatorRef.current.riding)
+      return 0;
+
+    const { position, rotation } = group;
+    const cos = Math.cos(rotation.y);
+    const sin = Math.sin(rotation.y);
+
+    return (
+      footholdAt(
+        position.x + right * cos - forward * sin,
+        position.z - right * sin - forward * cos,
+        position.y,
+        reachableCar(elevatorRef.current),
+      ) - position.y
+    );
   });
   const { eye, followOffset: characterOffset } =
     STORE_LAYOUT_CHARACTERS[character];
@@ -129,6 +182,9 @@ const Avatar = ({
       y: STORE_LAYOUT_FLOOR_BASE[floor],
       z: entry.z,
     });
+    stepOffsetRef.current = 0;
+    stepVelocityRef.current = 0;
+    previousRef.current.y = STORE_LAYOUT_FLOOR_BASE[floor];
   }, [floor]);
 
   useFrame((_state, delta) => {
@@ -154,7 +210,10 @@ const Avatar = ({
 
     if (elevator.riding) state.y += lift;
 
-    advanceAvatar(
+    const wasAirborne = Boolean(state.verticalSpeed);
+    const fallSpeed = state.verticalSpeed;
+
+    const snap = advanceAvatar(
       state,
       {
         forwardX: heading.x,
@@ -168,18 +227,71 @@ const Avatar = ({
       [...elevatorCar(elevator), ...elevatorDoors(elevator)],
     );
 
-    group.position.set(state.x, state.y, state.z);
+    const jump = jumpRef.current;
+    const airborne = Boolean(state.verticalSpeed) && !elevator.riding;
+
+    if (wasAirborne && !state.verticalSpeed)
+      jump.land = Math.max(jump.land, Math.min(1, -fallSpeed / jumpSpeed));
+
+    jump.land -= jump.land * Math.min(1, delta * LAND_RECOVERY);
+    jump.air +=
+      (Number(airborne) - jump.air) * Math.min(1, delta * AIR_DAMPING);
+    jump.rise = Math.max(-1, Math.min(1, state.verticalSpeed / jumpSpeed));
+
+    if (!elevator.riding) stepOffsetRef.current -= snap;
+
+    const springStep = Math.min(delta, MAX_SPRING_STEP);
+
+    stepVelocityRef.current +=
+      (-STEP_STIFFNESS * STEP_STIFFNESS * stepOffsetRef.current -
+        2 * STEP_STIFFNESS * stepVelocityRef.current) *
+      springStep;
+    stepOffsetRef.current += stepVelocityRef.current * springStep;
+
+    const bodyY = state.y + stepOffsetRef.current;
+
+    group.position.set(state.x, bodyY, state.z);
 
     const stepX = state.x - previousRef.current.x;
     const stepZ = state.z - previousRef.current.z;
 
+    const rise = bodyY - previousRef.current.y;
+
     previousRef.current.x = state.x;
+    previousRef.current.y = bodyY;
     previousRef.current.z = state.z;
 
     const travelled = Math.hypot(stepX, stepZ);
 
+    const climb =
+      travelled > 1e-4 && !elevator.riding
+        ? Math.min(1, Math.abs(rise / travelled) / CLIMB_FULL)
+        : 0;
+
+    climbRef.current +=
+      (climb - climbRef.current) * Math.min(1, delta * CLIMB_DAMPING);
+
+    const run =
+      delta > 0
+        ? Math.min(
+            1,
+            Math.max(
+              0,
+              (travelled / delta - walkSpeed) / (sprintSpeed - walkSpeed),
+            ),
+          )
+        : runRef.current;
+
+    runRef.current += (run - runRef.current) * Math.min(1, delta * RUN_DAMPING);
+
     if (travelled > 1e-4) {
-      strideRef.current += (travelled / STRIDE_LENGTH) * Math.PI * 2;
+      strideRef.current +=
+        (travelled /
+          ((STRIDE_LENGTH +
+            (RUN_STRIDE_LENGTH - STRIDE_LENGTH) * runRef.current) *
+            (1 - CLIMB_STRIDE * climbRef.current))) *
+        Math.PI *
+        2;
       swingRef.current = Math.sin(strideRef.current);
 
       const turn = Math.atan2(-stepX, -stepZ) - group.rotation.y;
@@ -189,6 +301,25 @@ const Avatar = ({
         Math.min(1, delta * TURN_SPEED);
     } else
       swingRef.current -= swingRef.current * Math.min(1, delta * SWING_DAMPING);
+
+    const tilt = tiltRef.current;
+
+    if (tilt) {
+      const car = reachableCar(elevator);
+      const ahead = -Math.sin(group.rotation.y) * TILT_SPAN;
+      const across = -Math.cos(group.rotation.y) * TILT_SPAN;
+      const slope =
+        state.verticalSpeed || elevator.riding
+          ? 0
+          : Math.atan2(
+              surfaceAt(state.x + ahead, state.z + across, state.y, car) -
+                surfaceAt(state.x - ahead, state.z - across, state.y, car),
+              2 * TILT_SPAN,
+            );
+
+      tilt.rotation.x +=
+        (slope - tilt.rotation.x) * Math.min(1, delta * TILT_DAMPING);
+    }
 
     const floorIndex = floorIndexAt(state.y);
 
@@ -239,9 +370,8 @@ const Avatar = ({
       cameraModeRef.current = mode;
 
       if (view === "first") {
-        eyePoint.set(state.x, state.y + eye, state.z);
+        eyePoint.set(state.x, bodyY + eye, state.z);
 
-        // 注視點擺在眼前 lookAhead 處，拖曳就是繞著它轉，等同第一人稱的轉頭
         look.subVectors(controls.target, controls.object.position);
         if (entering) look.y = 0;
         if (look.lengthSq() < 1e-6) look.set(0, 0, -1);
@@ -250,13 +380,12 @@ const Avatar = ({
         controls.object.position.copy(eyePoint);
         controls.target.copy(eyePoint).addScaledVector(look, lookAhead);
       } else {
-        eyePoint.set(state.x, state.y + eye, state.z);
+        eyePoint.set(state.x, bodyY + eye, state.z);
 
         if (entering)
           controls.object.position
             .copy(eyePoint)
             .add(followOffset.fromArray(characterOffset));
-        // 相機與注視點位移同一個量，軌道半徑與角度才不會被覆寫，使用者轉過的視角得以保留
         else
           controls.object.position.add(
             followShift.subVectors(eyePoint, controls.target),
@@ -273,12 +402,23 @@ const Avatar = ({
   return (
     <group position={START_POSITION} ref={groupRef}>
       {view !== "first" &&
-        (character === "cat" ? (
-          <Cat swingRef={swingRef} />
-        ) : character === "dog" ? (
-          <Dog swingRef={swingRef} />
+        (character === "cat" || character === "dog" ? (
+          <group ref={tiltRef}>
+            {character === "cat" ? (
+              <Cat jumpRef={jumpRef} runRef={runRef} swingRef={swingRef} />
+            ) : (
+              <Dog jumpRef={jumpRef} runRef={runRef} swingRef={swingRef} />
+            )}
+          </group>
         ) : (
-          <Person character={character} swingRef={swingRef} />
+          <Person
+            character={character}
+            climbRef={climbRef}
+            groundRef={groundRef}
+            jumpRef={jumpRef}
+            runRef={runRef}
+            swingRef={swingRef}
+          />
         ))}
     </group>
   );
