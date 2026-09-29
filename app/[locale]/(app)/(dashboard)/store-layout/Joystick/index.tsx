@@ -12,7 +12,6 @@ import nipplejs from "nipplejs";
 import {
   STORE_LAYOUT_TOUCH_MEDIA,
   STORE_LAYOUT_TOUCH_QUERY,
-  STORE_LAYOUT_TOUCH_TARGET,
 } from "@/constants/storeLayout";
 
 import type { StoreLayoutTouchInput } from "@/types/storeLayout";
@@ -39,7 +38,6 @@ const Zone = styled(Box)({
   width: "50%",
   height: "50%",
   display: "none",
-  isolation: "isolate",
 
   [STORE_LAYOUT_TOUCH_MEDIA]: {
     display: "block",
@@ -60,7 +58,6 @@ const Jump = styled(IconButton)(({ theme }) => ({
   touchAction: "none",
 
   [STORE_LAYOUT_TOUCH_MEDIA]: {
-    ...STORE_LAYOUT_TOUCH_TARGET[STORE_LAYOUT_TOUCH_MEDIA],
     display: "inline-flex",
   },
 }));

@@ -57,8 +57,6 @@ import {
   STORE_LAYOUT_TABLES,
   STORE_LAYOUT_TOUCH_MEDIA,
   STORE_LAYOUT_TOUCH_QUERY,
-  STORE_LAYOUT_TOUCH_SLOP,
-  STORE_LAYOUT_TOUCH_TARGET,
   STORE_LAYOUT_VIEWS,
   STORE_LAYOUT_VIEW_ORDER,
   STORE_LAYOUT_WALLS,
@@ -167,16 +165,11 @@ const OverlayActions = styled(Stack)(({ theme }) => ({
   bottom: theme.spacing(1.5),
   flexDirection: "row",
   gap: theme.spacing(1),
-
-  [STORE_LAYOUT_TOUCH_MEDIA]: {
-    gap: STORE_LAYOUT_TOUCH_SLOP * 2,
-  },
 }));
 
 const OverlayButton = styled(IconButton)(({ theme }) => ({
   border: `1px solid ${theme.vars.palette.divider}`,
   color: theme.vars.palette.text.primary,
-  ...STORE_LAYOUT_TOUCH_TARGET,
 }));
 
 const GridLegend = styled(Stack)(({ theme }) => ({
@@ -603,11 +596,9 @@ const StoreLayout = ({
     root.style.overflow = "hidden";
     scrollToTop();
 
-    window.addEventListener("resize", scrollToTop);
     window.addEventListener("scroll", scrollToTop);
 
     return () => {
-      window.removeEventListener("resize", scrollToTop);
       window.removeEventListener("scroll", scrollToTop);
       root.style.overflow = "";
       window.scrollTo(scrollX, scrollY);

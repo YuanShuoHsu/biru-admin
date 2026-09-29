@@ -1139,19 +1139,6 @@ export const STORE_LAYOUT_TOUCH_QUERY = "(hover: none) and (pointer: coarse)";
 
 export const STORE_LAYOUT_TOUCH_MEDIA = `@media ${STORE_LAYOUT_TOUCH_QUERY}`;
 
-// 按鈕底下就是搖桿感應區，手指按偏會變成在轉視角，觸控時把按鈕的感應範圍往外擴
-export const STORE_LAYOUT_TOUCH_SLOP = 12;
-
-export const STORE_LAYOUT_TOUCH_TARGET = {
-  [STORE_LAYOUT_TOUCH_MEDIA]: {
-    "&::before": {
-      content: '""',
-      position: "absolute",
-      inset: -STORE_LAYOUT_TOUCH_SLOP,
-    },
-  },
-} as const;
-
 export const STORE_LAYOUT_LOOK = {
   pitchLimit: (Math.PI / 180) * 80,
   speed: 1.6,
