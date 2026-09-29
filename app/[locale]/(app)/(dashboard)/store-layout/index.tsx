@@ -187,18 +187,10 @@ const CanvasOverlay = styled(Box)(({ theme }) => ({
   pointerEvents: "none",
 }));
 
-const TopRow = styled(Box)(({ theme }) => ({
+const Summary = styled(Box)(({ theme }) => ({
   gridRow: 1,
   gridColumn: "1 / -1",
-  alignSelf: "stretch",
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "flex-start",
-  gap: theme.spacing(1),
-  minHeight: 0,
-}));
-
-const Summary = styled(Box)(({ theme }) => ({
+  justifySelf: "start",
   padding: theme.spacing(0.5, 1),
   backgroundColor: `rgba(${theme.vars.palette.background.paperChannel} / 0.4)`,
   backdropFilter: "blur(24px)",
@@ -1402,40 +1394,38 @@ const StoreLayout = ({
             </KeyboardControls>
             <Joystick inputRef={touchRef} />
             <CanvasOverlay onMouseDown={handleControlsMouseDown}>
-              <TopRow>
-                <Summary>
-                  {FLOOR_SUMMARIES.map(({ floor: value, seats, tables }) => {
-                    if (floors !== "all" && floors !== value) return null;
+              <Summary>
+                {FLOOR_SUMMARIES.map(({ floor: value, seats, tables }) => {
+                  if (floors !== "all" && floors !== value) return null;
 
-                    return (
-                      <Typography component="div" key={value} variant="caption">
-                        {tStoreLayout("summary", {
-                          floor: tStoreLayout(`floors.${value}`),
-                          occupied: tables.filter(({ tableNumber }) =>
-                            tableOrders.has(tableNumber),
-                          ).length,
-                          seats,
-                          tables: tables.length,
-                        })}
-                      </Typography>
-                    );
-                  })}
-                  <StatusLegend direction="row">
-                    {orderBoardStatusValues.map((status) => (
-                      <Typography
-                        color="textSecondary"
-                        key={status}
-                        variant="caption"
-                      >
-                        <StatusDot
-                          style={{ backgroundColor: statusColor(status) }}
-                        />
-                        {tOrders(`status.${status}`)}
-                      </Typography>
-                    ))}
-                  </StatusLegend>
-                </Summary>
-              </TopRow>
+                  return (
+                    <Typography component="div" key={value} variant="caption">
+                      {tStoreLayout("summary", {
+                        floor: tStoreLayout(`floors.${value}`),
+                        occupied: tables.filter(({ tableNumber }) =>
+                          tableOrders.has(tableNumber),
+                        ).length,
+                        seats,
+                        tables: tables.length,
+                      })}
+                    </Typography>
+                  );
+                })}
+                <StatusLegend direction="row">
+                  {orderBoardStatusValues.map((status) => (
+                    <Typography
+                      color="textSecondary"
+                      key={status}
+                      variant="caption"
+                    >
+                      <StatusDot
+                        style={{ backgroundColor: statusColor(status) }}
+                      />
+                      {tOrders(`status.${status}`)}
+                    </Typography>
+                  ))}
+                </StatusLegend>
+              </Summary>
               <ControlRail>
                 {view !== "first" && <ZoomLever inputRef={touchRef} />}
                 <JumpButton inputRef={touchRef} />
