@@ -90,7 +90,6 @@
     "move": "キャラクター移動スティック",
     "zoom": "ズームレバー"
   },
-  "viewTableOrders": "{table}の注文を見る",
   "views": {
     "first": "キャラクター視点",
     "follow": "キャラクター追従",

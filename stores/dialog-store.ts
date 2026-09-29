@@ -1,10 +1,13 @@
 import { createStore } from "zustand/vanilla";
 
+import type { DialogProps } from "@mui/material";
+
 type DialogState = {
   cancelText?: string;
   confirmDisabled: boolean;
   confirmLoading: boolean;
   confirmText?: string;
+  container?: DialogProps["container"];
   content?: React.ReactNode;
   contentText?: string;
   formId?: string;
@@ -30,6 +33,7 @@ export const defaultInitState: DialogState = {
   confirmDisabled: false,
   confirmLoading: false,
   confirmText: "",
+  container: null,
   content: null,
   contentText: "",
   formId: undefined,

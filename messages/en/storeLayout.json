@@ -90,7 +90,6 @@
     "move": "Move the character",
     "zoom": "Zoom lever"
   },
-  "viewTableOrders": "View orders for {table}",
   "views": {
     "first": "First person",
     "follow": "Follow avatar",

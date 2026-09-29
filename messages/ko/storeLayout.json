@@ -90,7 +90,6 @@
     "move": "캐릭터 이동 조이스틱",
     "zoom": "확대·축소 레버"
   },
-  "viewTableOrders": "{table} 주문 보기",
   "views": {
     "first": "캐릭터 시점",
     "follow": "캐릭터 따라가기",

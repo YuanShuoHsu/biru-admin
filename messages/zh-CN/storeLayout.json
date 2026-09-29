@@ -90,7 +90,6 @@
     "move": "移动角色摇杆",
     "zoom": "缩放推杆"
   },
-  "viewTableOrders": "查看{table} 的订单",
   "views": {
     "first": "角色视角",
     "follow": "跟随角色",

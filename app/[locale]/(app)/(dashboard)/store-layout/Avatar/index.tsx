@@ -108,7 +108,7 @@ interface AvatarProps {
   elevatorRef: RefObject<ElevatorState>;
   floor: StoreLayoutFloor;
   onFloorChange: (floor: StoreLayoutFloor) => void;
-  stateRef: RefObject<AvatarState>;
+  avatarRef: RefObject<AvatarState>;
   touchRef: RefObject<StoreLayoutTouchInput>;
   view: StoreLayoutView;
 }
@@ -120,7 +120,7 @@ const Avatar = ({
   elevatorRef,
   floor,
   onFloorChange,
-  stateRef,
+  avatarRef,
   touchRef,
   view,
 }: AvatarProps) => {
@@ -142,7 +142,7 @@ const Avatar = ({
   const cameraModeRef = useRef<string | null>(null);
   const groundRef = useRef((right: number, forward: number) => {
     const group = groupRef.current;
-    if (!group || stateRef.current.verticalSpeed || elevatorRef.current.riding)
+    if (!group || avatarRef.current.verticalSpeed || elevatorRef.current.riding)
       return 0;
 
     const { position, rotation } = group;
@@ -171,7 +171,7 @@ const Avatar = ({
 
     const entry = STORE_LAYOUT_FLOOR_ENTRY[floor];
 
-    Object.assign(stateRef.current, {
+    Object.assign(avatarRef.current, {
       verticalSpeed: 0,
       x: entry.x,
       y: STORE_LAYOUT_FLOOR_BASE[floor],
@@ -180,7 +180,7 @@ const Avatar = ({
     stepOffsetRef.current = 0;
     stepVelocityRef.current = 0;
     previousRef.current.y = STORE_LAYOUT_FLOOR_BASE[floor];
-  }, [floor, stateRef]);
+  }, [floor, avatarRef]);
 
   useFrame((_state, delta) => {
     const group = groupRef.current;
@@ -194,7 +194,7 @@ const Avatar = ({
       heading.set(0, 1, 0).applyQuaternion(camera.quaternion).setY(0);
     heading.normalize();
 
-    const state = stateRef.current;
+    const state = avatarRef.current;
 
     const touch = touchRef.current;
 

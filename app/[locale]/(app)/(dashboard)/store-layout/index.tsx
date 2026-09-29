@@ -14,7 +14,7 @@ import {
 import useSWR from "swr";
 import { DoubleSide } from "three";
 
-import { STATUS_TEXT_COLORS } from "@/constants/orders";
+import { STATUS_COLORS, STATUS_TEXT_COLORS } from "@/constants/orders";
 
 import { useSocketConnection } from "@/hooks/useSocketConnection";
 
@@ -65,9 +65,16 @@ import {
   STORE_LAYOUT_ZOOM_DISTANCE,
 } from "@/constants/storeLayout";
 
-import { Download, Fullscreen, FullscreenExit } from "@mui/icons-material";
 import {
+  Download,
+  Fullscreen,
+  FullscreenExit,
+  ReceiptLong,
+} from "@mui/icons-material";
+import {
+  Box,
   Button,
+  Chip,
   Divider,
   FormControlLabel,
   IconButton,
@@ -162,25 +169,45 @@ const StyledPaper = styled(Paper, {
   }),
 }));
 
-const OverlayActions = styled(Stack)(({ theme }) => ({
+const BottomBar = styled(Box)(({ theme }) => ({
   position: "absolute",
-  right: theme.spacing(1.5),
+  insetInline: theme.spacing(1.5),
   bottom: theme.spacing(1.5),
+  display: "grid",
+  gridTemplateColumns: "1fr auto 1fr",
+  alignItems: "end",
+  columnGap: theme.spacing(1),
+  pointerEvents: "none",
+
+  [STORE_LAYOUT_TOUCH_MEDIA]: {
+    gridTemplateRows: `auto calc(${
+      STORE_LAYOUT_JOYSTICK.inset +
+      STORE_LAYOUT_JOYSTICK.radius +
+      STORE_LAYOUT_JOYSTICK.edgeGap
+    }px - ${theme.spacing(1.5)})`,
+  },
+}));
+
+const OverlayActions = styled(Stack)(({ theme }) => ({
+  gridRow: 2,
+  gridColumn: 3,
+  justifySelf: "end",
   flexDirection: "row",
   gap: theme.spacing(1),
+  pointerEvents: "auto",
 }));
 
 const TablePrompt = styled(Button)(({ theme }) => ({
-  position: "absolute",
-  bottom: theme.spacing(1.5),
-  left: "50%",
-  transform: "translateX(-50%)",
+  gridRow: 2,
+  gridColumn: 2,
+  flexWrap: "wrap",
+  gap: theme.spacing(1),
+  pointerEvents: "auto",
 
   [STORE_LAYOUT_TOUCH_MEDIA]: {
-    bottom:
-      STORE_LAYOUT_JOYSTICK.inset +
-      STORE_LAYOUT_JOYSTICK.radius +
-      STORE_LAYOUT_JOYSTICK.edgeGap,
+    gridRow: 1,
+    gridColumn: "1 / -1",
+    justifySelf: "center",
   },
 }));
 
@@ -190,9 +217,9 @@ const OverlayButton = styled(IconButton)(({ theme }) => ({
 }));
 
 const GridLegend = styled(Stack)(({ theme }) => ({
-  position: "absolute",
-  bottom: theme.spacing(1.5),
-  left: theme.spacing(1.5),
+  gridRow: 2,
+  gridColumn: 1,
+  justifySelf: "start",
   flexDirection: "row",
   alignItems: "center",
   gap: theme.spacing(1.5),
@@ -200,7 +227,6 @@ const GridLegend = styled(Stack)(({ theme }) => ({
   border: `1px solid ${theme.vars.palette.divider}`,
   borderRadius: theme.shape.borderRadius,
   transition: theme.transitions.create("border-color"),
-  pointerEvents: "none",
 }));
 
 const SummaryPaper = styled(Paper)(({ theme }) => ({
@@ -564,14 +590,21 @@ const StoreLayout = ({
     return key === "text" ? palette.text.primary : palette[key].main;
   };
 
-  const tableColors = new Map(
+  const tableStatuses = new Map(
     [...tableOrders].flatMap(([tableNumber, orders]) => {
       const status = orderBoardStatusValues.find((value) =>
         orders.some(({ orderStatus }) => orderStatus === value),
       );
 
-      return status ? [[tableNumber, statusColor(status)] as const] : [];
+      return status ? [[tableNumber, status] as const] : [];
     }),
+  );
+
+  const tableColors = new Map(
+    [...tableStatuses].map(([tableNumber, status]) => [
+      tableNumber,
+      statusColor(status),
+    ]),
   );
 
   const controlsRef = useRef<ComponentRef<typeof OrbitControls>>(null);
@@ -633,6 +666,8 @@ const StoreLayout = ({
   const [realistic, setRealistic] = useState(true);
   const [view, setView] = useState<StoreLayoutView>("iso");
   const [nearbyTable, setNearbyTable] = useState<number | null>(null);
+
+  const nearbyStatus = nearbyTable ? tableStatuses.get(nearbyTable) : undefined;
 
   const isGhostFloor = (value: StoreLayoutFloor) =>
     floors === "all" && focusFloor && value !== floor;
@@ -774,11 +809,9 @@ const StoreLayout = ({
     setTimeout(() => URL.revokeObjectURL(url));
   };
 
-  // 原生全螢幕只顯示畫布元素，對話框掛在 body 底下會被擋住
   const handleTableSelect = (tableNumber: number) => {
-    if (document.fullscreenElement) void document.exitFullscreen();
-
     setDialog({
+      container: document.fullscreenElement,
       content: (
         <Stack divider={<Divider />} spacing={2}>
           {tableOrders.get(tableNumber)?.map((order) => (
@@ -1318,7 +1351,7 @@ const StoreLayout = ({
                   elevatorRef={elevatorRef}
                   floor={floor}
                   onFloorChange={showFloor}
-                  stateRef={avatarRef}
+                  avatarRef={avatarRef}
                   touchRef={touchRef}
                   view={view}
                 />
@@ -1375,57 +1408,64 @@ const StoreLayout = ({
                 ))}
               </StatusLegend>
             </SummaryPaper>
-            {!realistic && (
-              <GridLegend aria-label={tStoreLayout("gridScale")}>
-                <LegendStack direction="row">
-                  <GridCellLine />
-                  <Typography color="textSecondary" variant="caption">
-                    {tStoreLayout("gridLegend.cell")}
-                  </Typography>
-                </LegendStack>
-                <LegendStack direction="row">
-                  <GridSectionLine />
-                  <Typography color="textSecondary" variant="caption">
-                    {tStoreLayout("gridLegend.section")}
-                  </Typography>
-                </LegendStack>
-              </GridLegend>
-            )}
-            {nearbyTable && (
-              <TablePrompt
-                onClick={() => handleTableSelect(nearbyTable)}
-                onMouseDown={handleControlsMouseDown}
-                variant="contained"
-              >
-                {tStoreLayout("viewTableOrders", {
-                  table: tOrder("mode.dineIn.tableNumber.value", {
+            <BottomBar onMouseDown={handleControlsMouseDown}>
+              {!realistic && (
+                <GridLegend aria-label={tStoreLayout("gridScale")}>
+                  <LegendStack direction="row">
+                    <GridCellLine />
+                    <Typography color="textSecondary" variant="caption">
+                      {tStoreLayout("gridLegend.cell")}
+                    </Typography>
+                  </LegendStack>
+                  <LegendStack direction="row">
+                    <GridSectionLine />
+                    <Typography color="textSecondary" variant="caption">
+                      {tStoreLayout("gridLegend.section")}
+                    </Typography>
+                  </LegendStack>
+                </GridLegend>
+              )}
+              {nearbyTable && nearbyStatus && (
+                <TablePrompt
+                  onClick={() => handleTableSelect(nearbyTable)}
+                  variant="outlined"
+                >
+                  <ReceiptLong fontSize="small" />
+                  {tOrder("mode.dineIn.tableNumber.value", {
                     tableNumber: nearbyTable,
-                  }),
-                })}
-              </TablePrompt>
-            )}
-            <OverlayActions onMouseDown={handleControlsMouseDown}>
-              <OverlayButton
-                aria-label={tStoreLayout("export")}
-                onClick={handleExport}
-                size="small"
-              >
-                <Download fontSize="small" />
-              </OverlayButton>
-              <OverlayButton
-                aria-label={tStoreLayout(
-                  fullscreen ? "exitFullscreen" : "fullscreen",
-                )}
-                onClick={handleFullscreen}
-                size="small"
-              >
-                {fullscreen ? (
-                  <FullscreenExit fontSize="small" />
-                ) : (
-                  <Fullscreen fontSize="small" />
-                )}
-              </OverlayButton>
-            </OverlayActions>
+                  })}
+                  <Chip
+                    color={STATUS_COLORS[nearbyStatus]}
+                    component="span"
+                    label={tOrders(`status.${nearbyStatus}`)}
+                    size="small"
+                    variant="outlined"
+                  />
+                </TablePrompt>
+              )}
+              <OverlayActions>
+                <OverlayButton
+                  aria-label={tStoreLayout("export")}
+                  onClick={handleExport}
+                  size="small"
+                >
+                  <Download fontSize="small" />
+                </OverlayButton>
+                <OverlayButton
+                  aria-label={tStoreLayout(
+                    fullscreen ? "exitFullscreen" : "fullscreen",
+                  )}
+                  onClick={handleFullscreen}
+                  size="small"
+                >
+                  {fullscreen ? (
+                    <FullscreenExit fontSize="small" />
+                  ) : (
+                    <Fullscreen fontSize="small" />
+                  )}
+                </OverlayButton>
+              </OverlayActions>
+            </BottomBar>
           </>
         )}
       </StyledPaper>

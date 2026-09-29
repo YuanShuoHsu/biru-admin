@@ -10,7 +10,7 @@ import {
 } from "react";
 
 import { ArrowUpward } from "@mui/icons-material";
-import { Box, IconButton, Slider, Stack } from "@mui/material";
+import { Box, IconButton, Paper, Slider, Stack } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 
 import nipplejs from "nipplejs";
@@ -82,12 +82,10 @@ const EdgeControls = styled(Stack)({
   },
 });
 
-const LeverTrack = styled(Box)(({ theme }) => ({
+const LeverTrack = styled(Paper)(({ theme }) => ({
   flex: `0 1 ${ZOOM_LEVER_LENGTH}px`,
   minHeight: 0,
   paddingBlock: theme.spacing(1.5),
-  borderRadius: 9999,
-  backgroundColor: `rgba(${theme.vars.palette.text.primaryChannel} / 0.14)`,
 }));
 
 const Jump = styled(IconButton)(({ theme }) => ({
@@ -118,7 +116,7 @@ const ZoomLever = ({ inputRef }: ZoomLeverProps) => {
   };
 
   return (
-    <LeverTrack>
+    <LeverTrack variant="outlined">
       <Slider
         aria-label={tStoreLayout("touchControls.zoom")}
         max={1}

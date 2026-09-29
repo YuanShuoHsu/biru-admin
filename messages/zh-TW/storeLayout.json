@@ -90,7 +90,6 @@
     "move": "移動角色搖桿",
     "zoom": "縮放推桿"
   },
-  "viewTableOrders": "查看{table} 的訂單",
   "views": {
     "first": "角色視角",
     "follow": "跟隨角色",

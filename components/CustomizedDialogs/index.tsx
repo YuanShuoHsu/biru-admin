@@ -57,6 +57,7 @@ const CustomizedDialogs = () => {
     confirmDisabled,
     confirmLoading,
     confirmText,
+    container,
     content,
     contentText,
     formId,
@@ -122,6 +123,7 @@ const CustomizedDialogs = () => {
       aria-describedby={
         contentText ? "customized-dialog-description" : undefined
       }
+      container={container}
       fullWidth
       onClose={handleClose}
       open={open}
