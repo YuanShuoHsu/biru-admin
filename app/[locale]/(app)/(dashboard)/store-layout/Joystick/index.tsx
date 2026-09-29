@@ -46,16 +46,21 @@ const MOVE_POSITION = { bottom: `${STICK_INSET}px`, left: `${STICK_INSET}px` };
 
 const LOOK_POSITION = { bottom: `${STICK_INSET}px`, right: `${STICK_INSET}px` };
 
-const Zone = styled(Box)({
+const TouchControls = styled(Box)({
   position: "absolute",
-  top: 0,
-  bottom: 0,
-  width: "50%",
+  inset: 0,
   display: "none",
 
   [STORE_LAYOUT_TOUCH_MEDIA]: {
     display: "block",
   },
+});
+
+const Zone = styled(Box)({
+  position: "absolute",
+  top: 0,
+  bottom: 0,
+  width: "50%",
 });
 
 const MoveZone = styled(Zone)({ left: 0 });
@@ -70,12 +75,7 @@ const EdgeControls = styled(Stack)({
   alignItems: "center",
   justifyContent: "flex-end",
   gap: EDGE_GAP,
-  display: "none",
   pointerEvents: "none",
-
-  [STORE_LAYOUT_TOUCH_MEDIA]: {
-    display: "flex",
-  },
 
   "& > *": {
     pointerEvents: "auto",
@@ -166,6 +166,7 @@ const Joystick = ({ inputRef, view }: JoystickProps) => {
 
     const move = nipplejs.create({
       color: { back, front: moveFront },
+      follow: true,
       mode: "static",
       position: MOVE_POSITION,
       restOpacity: 0.9,
@@ -174,6 +175,7 @@ const Joystick = ({ inputRef, view }: JoystickProps) => {
 
     const look = nipplejs.create({
       color: { back, front: lookFront },
+      follow: true,
       mode: "static",
       position: LOOK_POSITION,
       restOpacity: 0.9,
@@ -203,18 +205,7 @@ const Joystick = ({ inputRef, view }: JoystickProps) => {
     move.on("end", restMove);
     look.on("end", restLook);
 
-    const reposition = () => {
-      move.reposition();
-      look.reposition();
-    };
-
-    const observer = new ResizeObserver(reposition);
-
-    observer.observe(moveZone);
-    observer.observe(lookZone);
-
     return () => {
-      observer.disconnect();
       move.destroy();
       look.destroy();
       restMove();
@@ -251,7 +242,7 @@ const Joystick = ({ inputRef, view }: JoystickProps) => {
   };
 
   return (
-    <>
+    <TouchControls>
       <MoveZone
         aria-label={tStoreLayout("touchControls.move")}
         ref={moveZoneRef}
@@ -274,7 +265,7 @@ const Joystick = ({ inputRef, view }: JoystickProps) => {
           <ArrowUpward />
         </Jump>
       </EdgeControls>
-    </>
+    </TouchControls>
   );
 };
 
