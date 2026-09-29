@@ -451,10 +451,24 @@ const theme = createTheme({
         }),
       },
     },
+    MuiSlider: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          transition: theme.transitions.create("color"),
+        }),
+      },
+    },
     MuiSvgIcon: {
       styleOverrides: {
         root: ({ theme }) => ({
           transition: theme.transitions.create("color"),
+        }),
+      },
+    },
+    MuiSwitch: {
+      styleOverrides: {
+        switchBase: ({ theme }) => ({
+          transition: theme.transitions.create(["color", "transform"]),
         }),
       },
     },
@@ -464,6 +478,7 @@ const theme = createTheme({
           transition: theme.transitions.create([
             "background-color",
             "border-color",
+            "color",
           ]),
         }),
       },

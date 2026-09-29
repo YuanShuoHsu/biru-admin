@@ -26,6 +26,7 @@ import DineInTables from "./DineInTables";
 import DriveThru from "./DriveThru";
 import Elevator from "./Elevator";
 import { createElevatorState } from "./Elevator/motion";
+import JumpButton from "./JumpButton";
 import Furniture from "./Realistic/Furniture";
 import ItemBody from "./Realistic/ItemBody";
 import Lighting from "./Realistic/Lighting";
@@ -34,7 +35,7 @@ import Surface, { SURFACES } from "./Realistic/Surface";
 import Restrooms from "./Restrooms";
 import { createDoorsState } from "./Restrooms/motion";
 import SpriteLabel from "./SpriteLabel";
-import TouchActions from "./TouchActions";
+import ZoomLever from "./ZoomLever";
 import { ghostEdge, ghostSurface } from "./ghost";
 
 import {
@@ -175,18 +176,40 @@ const StyledPaper = styled(Paper, {
   }),
 }));
 
-const SummaryPaper = styled(Paper)(({ theme }) => ({
+const CanvasOverlay = styled(Box)(({ theme }) => ({
   position: "absolute",
-  top: theme.spacing(1.5),
-  left: theme.spacing(1.5),
-  maxWidth: `calc(100% - ${theme.spacing(3)})`,
-  padding: theme.spacing(0.5, 1),
+  inset: theme.spacing(2),
+  display: "grid",
+  gridTemplateColumns: "1fr auto 1fr",
+  gridTemplateRows: "1fr auto auto",
+  alignItems: "end",
+  gap: theme.spacing(1),
   pointerEvents: "none",
+}));
+
+const TopRow = styled(Box)(({ theme }) => ({
+  gridRow: 1,
+  gridColumn: "1 / -1",
+  alignSelf: "stretch",
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "flex-start",
+  gap: theme.spacing(1),
+  minHeight: 0,
+}));
+
+const Summary = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(0.5, 1),
+  backgroundColor: `rgba(${theme.vars.palette.background.paperChannel} / 0.4)`,
+  backdropFilter: "blur(24px)",
+  border: `1px solid ${theme.vars.palette.divider}`,
+  borderRadius: theme.shape.borderRadius,
+  transition: theme.transitions.create(["background-color", "border-color"]),
 }));
 
 const StatusLegend = styled(Stack)(({ theme }) => ({
   flexWrap: "wrap",
-  columnGap: theme.spacing(1.5),
+  columnGap: theme.spacing(1),
 }));
 
 const StatusDot = styled("span")(({ theme }) => ({
@@ -197,28 +220,28 @@ const StatusDot = styled("span")(({ theme }) => ({
   borderRadius: "50%",
 }));
 
-const BottomBar = styled(Box)(({ theme }) => ({
-  position: "absolute",
-  inset: theme.spacing(1.5),
-  display: "grid",
-  gridTemplateColumns: "1fr auto 1fr",
-  gridTemplateRows: "auto 1fr auto",
-  alignItems: "end",
-  gap: theme.spacing(1),
-  pointerEvents: "none",
-}));
-
-const GridLegend = styled(Stack)(({ theme }) => ({
+const GridLegend = styled(Stack, {
+  shouldForwardProp: (prop) => prop !== "shown",
+})<{ shown: boolean }>(({ shown, theme }) => ({
+  padding: theme.spacing(0.5, 1),
   gridRow: 3,
   gridColumn: 1,
   justifySelf: "start",
   flexDirection: "row",
   alignItems: "center",
-  gap: theme.spacing(1.5),
-  padding: theme.spacing(0.25, 1),
+  gap: theme.spacing(1),
+  backgroundColor: `rgba(${theme.vars.palette.background.paperChannel} / 0.4)`,
+  backdropFilter: "blur(24px)",
   border: `1px solid ${theme.vars.palette.divider}`,
   borderRadius: theme.shape.borderRadius,
-  transition: theme.transitions.create("border-color"),
+  opacity: shown ? 1 : 0,
+  visibility: shown ? "visible" : "hidden",
+  transition: theme.transitions.create([
+    "background-color",
+    "border-color",
+    "opacity",
+    "visibility",
+  ]),
 }));
 
 const LegendStack = styled(Stack)(({ theme }) => ({
@@ -245,10 +268,9 @@ const TablePrompt = styled(Button)(({ theme }) => ({
 }));
 
 const OverlayActions = styled(Stack)(({ theme }) => ({
-  gridRow: 1,
+  gridRow: 3,
   gridColumn: 3,
   justifySelf: "end",
-  alignSelf: "start",
   flexDirection: "row",
   gap: theme.spacing(1),
   pointerEvents: "auto",
@@ -1369,56 +1391,60 @@ const StoreLayout = ({
               </Canvas>
             </KeyboardControls>
             <Joystick inputRef={touchRef} />
-            <SummaryPaper variant="outlined">
-              {FLOOR_SUMMARIES.map(({ floor: value, seats, tables }) => {
-                if (floors !== "all" && floors !== value) return null;
+            <CanvasOverlay onMouseDown={handleControlsMouseDown}>
+              <TopRow>
+                <Summary>
+                  {FLOOR_SUMMARIES.map(({ floor: value, seats, tables }) => {
+                    if (floors !== "all" && floors !== value) return null;
 
-                return (
-                  <Typography component="div" key={value} variant="caption">
-                    {tStoreLayout("summary", {
-                      floor: tStoreLayout(`floors.${value}`),
-                      occupied: tables.filter(({ tableNumber }) =>
-                        tableOrders.has(tableNumber),
-                      ).length,
-                      seats,
-                      tables: tables.length,
-                    })}
+                    return (
+                      <Typography component="div" key={value} variant="caption">
+                        {tStoreLayout("summary", {
+                          floor: tStoreLayout(`floors.${value}`),
+                          occupied: tables.filter(({ tableNumber }) =>
+                            tableOrders.has(tableNumber),
+                          ).length,
+                          seats,
+                          tables: tables.length,
+                        })}
+                      </Typography>
+                    );
+                  })}
+                  <StatusLegend direction="row">
+                    {orderBoardStatusValues.map((status) => (
+                      <Typography
+                        color="textSecondary"
+                        key={status}
+                        variant="caption"
+                      >
+                        <StatusDot
+                          style={{ backgroundColor: statusColor(status) }}
+                        />
+                        {tOrders(`status.${status}`)}
+                      </Typography>
+                    ))}
+                  </StatusLegend>
+                </Summary>
+                {view !== "first" && <ZoomLever inputRef={touchRef} />}
+              </TopRow>
+              <JumpButton inputRef={touchRef} />
+              <GridLegend
+                aria-label={tStoreLayout("gridScale")}
+                shown={!realistic}
+              >
+                <LegendStack direction="row">
+                  <GridCellLine />
+                  <Typography color="textSecondary" variant="caption">
+                    {tStoreLayout("gridLegend.cell")}
                   </Typography>
-                );
-              })}
-              <StatusLegend direction="row">
-                {orderBoardStatusValues.map((status) => (
-                  <Typography
-                    color="textSecondary"
-                    key={status}
-                    variant="caption"
-                  >
-                    <StatusDot
-                      style={{ backgroundColor: statusColor(status) }}
-                    />
-                    {tOrders(`status.${status}`)}
+                </LegendStack>
+                <LegendStack direction="row">
+                  <GridSectionLine />
+                  <Typography color="textSecondary" variant="caption">
+                    {tStoreLayout("gridLegend.section")}
                   </Typography>
-                ))}
-              </StatusLegend>
-            </SummaryPaper>
-            <BottomBar onMouseDown={handleControlsMouseDown}>
-              <TouchActions inputRef={touchRef} view={view} />
-              {!realistic && (
-                <GridLegend aria-label={tStoreLayout("gridScale")}>
-                  <LegendStack direction="row">
-                    <GridCellLine />
-                    <Typography color="textSecondary" variant="caption">
-                      {tStoreLayout("gridLegend.cell")}
-                    </Typography>
-                  </LegendStack>
-                  <LegendStack direction="row">
-                    <GridSectionLine />
-                    <Typography color="textSecondary" variant="caption">
-                      {tStoreLayout("gridLegend.section")}
-                    </Typography>
-                  </LegendStack>
-                </GridLegend>
-              )}
+                </LegendStack>
+              </GridLegend>
               {nearbyTable && nearbyStatus && (
                 <TablePrompt
                   onClick={() => handleTableSelect(nearbyTable)}
@@ -1459,7 +1485,7 @@ const StoreLayout = ({
                   )}
                 </OverlayButton>
               </OverlayActions>
-            </BottomBar>
+            </CanvasOverlay>
           </>
         )}
       </StyledPaper>

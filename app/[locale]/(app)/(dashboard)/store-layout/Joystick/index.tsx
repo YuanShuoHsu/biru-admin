@@ -1,10 +1,19 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { type RefObject, useEffect, useRef, useSyncExternalStore } from "react";
+import {
+  type RefObject,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
+import { createPortal } from "react-dom";
 
+import { OpenWith, ThreeSixty } from "@mui/icons-material";
 import { Box } from "@mui/material";
-import { styled, useTheme } from "@mui/material/styles";
+import { blueGrey, pink } from "@mui/material/colors";
+import { type CSSObject, styled, useTheme } from "@mui/material/styles";
 
 import nipplejs from "nipplejs";
 
@@ -44,6 +53,22 @@ const MoveZone = styled(Zone)({ left: 0 });
 
 const LookZone = styled(Zone)({ left: "50%" });
 
+const knobIcon: CSSObject = {
+  position: "absolute",
+  inset: 0,
+  margin: "auto",
+};
+
+const MoveIcon = styled(OpenWith)(({ theme }) => ({
+  ...knobIcon,
+  color: theme.vars.palette.common.white,
+}));
+
+const LookIcon = styled(ThreeSixty)(({ theme }) => ({
+  ...knobIcon,
+  color: theme.vars.palette.common.white,
+}));
+
 interface JoystickProps {
   inputRef: RefObject<StoreLayoutTouchInput>;
 }
@@ -55,6 +80,9 @@ const Joystick = ({ inputRef }: JoystickProps) => {
   const moveZoneRef = useRef<HTMLDivElement>(null);
   const lookZoneRef = useRef<HTMLDivElement>(null);
 
+  const [moveKnob, setMoveKnob] = useState<HTMLElement | null>(null);
+  const [lookKnob, setLookKnob] = useState<HTMLElement | null>(null);
+
   const touch = useSyncExternalStore(
     subscribeTouch,
     () => window.matchMedia(STORE_LAYOUT_TOUCH_QUERY).matches,
@@ -62,8 +90,6 @@ const Joystick = ({ inputRef }: JoystickProps) => {
   );
 
   const back = `rgba(${theme.vars.palette.text.primaryChannel} / 0.14)`;
-  const moveFront = theme.vars.palette.primary.main;
-  const lookFront = theme.vars.palette.secondary.main;
 
   useEffect(() => {
     if (!touch) return;
@@ -75,13 +101,13 @@ const Joystick = ({ inputRef }: JoystickProps) => {
     const input = inputRef.current;
 
     const move = nipplejs.create({
-      color: { back, front: moveFront },
+      color: { back, front: blueGrey[500] },
       mode: "dynamic",
       zone: moveZone,
     });
 
     const look = nipplejs.create({
-      color: { back, front: lookFront },
+      color: { back, front: pink[500] },
       mode: "dynamic",
       zone: lookZone,
     });
@@ -95,6 +121,11 @@ const Joystick = ({ inputRef }: JoystickProps) => {
       input.lookSideways = 0;
       input.lookVertical = 0;
     };
+
+    move.on("added", ({ data }) => setMoveKnob(data.ui.front));
+    look.on("added", ({ data }) => setLookKnob(data.ui.front));
+    move.on("removed", () => setMoveKnob(null));
+    look.on("removed", () => setLookKnob(null));
 
     move.on("move", ({ data }) => {
       input.sideways = data.vector.x;
@@ -114,8 +145,10 @@ const Joystick = ({ inputRef }: JoystickProps) => {
       look.destroy();
       restMove();
       restLook();
+      setMoveKnob(null);
+      setLookKnob(null);
     };
-  }, [back, inputRef, lookFront, moveFront, touch]);
+  }, [back, inputRef, touch]);
 
   return (
     <TouchControls>
@@ -127,6 +160,8 @@ const Joystick = ({ inputRef }: JoystickProps) => {
         aria-label={tStoreLayout("touchControls.look")}
         ref={lookZoneRef}
       />
+      {moveKnob && createPortal(<MoveIcon />, moveKnob)}
+      {lookKnob && createPortal(<LookIcon />, lookKnob)}
     </TouchControls>
   );
 };
