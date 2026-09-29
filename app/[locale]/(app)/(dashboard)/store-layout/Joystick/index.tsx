@@ -1,24 +1,38 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { type RefObject, useEffect, useRef, useSyncExternalStore } from "react";
+import {
+  type RefObject,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 
 import { ArrowUpward } from "@mui/icons-material";
-import { Box, IconButton } from "@mui/material";
+import { Box, IconButton, Slider, Stack } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 
 import nipplejs from "nipplejs";
 
 import {
+  STORE_LAYOUT_JOYSTICK,
   STORE_LAYOUT_TOUCH_MEDIA,
   STORE_LAYOUT_TOUCH_QUERY,
 } from "@/constants/storeLayout";
 
-import type { StoreLayoutTouchInput } from "@/types/storeLayout";
+import type {
+  StoreLayoutTouchInput,
+  StoreLayoutView,
+} from "@/types/storeLayout";
 
-const STICK_RADIUS = 50;
-const STICK_INSET = 100;
-const EDGE_GAP = 16;
+const {
+  edgeGap: EDGE_GAP,
+  inset: STICK_INSET,
+  radius: STICK_RADIUS,
+} = STORE_LAYOUT_JOYSTICK;
+
+const ZOOM_LEVER_LENGTH = 160;
 
 const subscribeTouch = (onChange: () => void) => {
   const query = window.matchMedia(STORE_LAYOUT_TOUCH_QUERY);
@@ -34,9 +48,9 @@ const LOOK_POSITION = { bottom: `${STICK_INSET}px`, right: `${STICK_INSET}px` };
 
 const Zone = styled(Box)({
   position: "absolute",
+  top: 0,
   bottom: 0,
   width: "50%",
-  height: "50%",
   display: "none",
 
   [STORE_LAYOUT_TOUCH_MEDIA]: {
@@ -48,25 +62,84 @@ const MoveZone = styled(Zone)({ left: 0 });
 
 const LookZone = styled(Zone)({ left: "50%" });
 
-const Jump = styled(IconButton)(({ theme }) => ({
+const EdgeControls = styled(Stack)({
   position: "absolute",
+  top: EDGE_GAP,
   right: EDGE_GAP,
   bottom: STICK_INSET + STICK_RADIUS + EDGE_GAP,
-  border: `1px solid ${theme.vars.palette.divider}`,
-  color: theme.vars.palette.text.primary,
+  alignItems: "center",
+  justifyContent: "flex-end",
+  gap: EDGE_GAP,
   display: "none",
-  touchAction: "none",
+  pointerEvents: "none",
 
   [STORE_LAYOUT_TOUCH_MEDIA]: {
-    display: "inline-flex",
+    display: "flex",
   },
+
+  "& > *": {
+    pointerEvents: "auto",
+  },
+});
+
+const LeverTrack = styled(Box)(({ theme }) => ({
+  flex: `0 1 ${ZOOM_LEVER_LENGTH}px`,
+  minHeight: 0,
+  paddingBlock: theme.spacing(1.5),
+  borderRadius: 9999,
+  backgroundColor: `rgba(${theme.vars.palette.text.primaryChannel} / 0.14)`,
 }));
 
-interface JoystickProps {
+const Jump = styled(IconButton)(({ theme }) => ({
+  border: `1px solid ${theme.vars.palette.divider}`,
+  color: theme.vars.palette.text.primary,
+  touchAction: "none",
+}));
+
+interface ZoomLeverProps {
   inputRef: RefObject<StoreLayoutTouchInput>;
 }
 
-const Joystick = ({ inputRef }: JoystickProps) => {
+const ZoomLever = ({ inputRef }: ZoomLeverProps) => {
+  const tStoreLayout = useTranslations("storeLayout");
+
+  const [zoom, setZoom] = useState(0);
+
+  useEffect(
+    () => () => {
+      inputRef.current.zoom = 0;
+    },
+    [inputRef],
+  );
+
+  const pushZoom = (value: number) => {
+    inputRef.current.zoom = value;
+    setZoom(value);
+  };
+
+  return (
+    <LeverTrack>
+      <Slider
+        aria-label={tStoreLayout("touchControls.zoom")}
+        max={1}
+        min={-1}
+        onChange={(_event, value) => pushZoom(value)}
+        onChangeCommitted={() => pushZoom(0)}
+        orientation="vertical"
+        step={0.01}
+        track={false}
+        value={zoom}
+      />
+    </LeverTrack>
+  );
+};
+
+interface JoystickProps {
+  inputRef: RefObject<StoreLayoutTouchInput>;
+  view: StoreLayoutView;
+}
+
+const Joystick = ({ inputRef, view }: JoystickProps) => {
   const tStoreLayout = useTranslations("storeLayout");
   const theme = useTheme();
 
@@ -189,17 +262,20 @@ const Joystick = ({ inputRef }: JoystickProps) => {
         aria-label={tStoreLayout("touchControls.look")}
         ref={lookZoneRef}
       />
-      <Jump
-        aria-label={tStoreLayout("touchControls.jump")}
-        onContextMenu={(event) => event.preventDefault()}
-        onLostPointerCapture={handleJumpUp}
-        onPointerCancel={handleJumpUp}
-        onPointerDown={handleJumpDown}
-        onPointerUp={handleJumpUp}
-        size="large"
-      >
-        <ArrowUpward />
-      </Jump>
+      <EdgeControls>
+        {view !== "first" && <ZoomLever inputRef={inputRef} />}
+        <Jump
+          aria-label={tStoreLayout("touchControls.jump")}
+          onContextMenu={(event) => event.preventDefault()}
+          onLostPointerCapture={handleJumpUp}
+          onPointerCancel={handleJumpUp}
+          onPointerDown={handleJumpDown}
+          onPointerUp={handleJumpUp}
+          size="large"
+        >
+          <ArrowUpward />
+        </Jump>
+      </EdgeControls>
     </>
   );
 };

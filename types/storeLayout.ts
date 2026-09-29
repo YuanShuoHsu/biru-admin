@@ -23,6 +23,7 @@ export interface StoreLayoutTouchInput {
   lookVertical: number;
   sideways: number;
   towards: number;
+  zoom: number;
 }
 
 export interface StoreLayoutJump {

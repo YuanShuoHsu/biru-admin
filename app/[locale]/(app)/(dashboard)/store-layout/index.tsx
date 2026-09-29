@@ -21,6 +21,7 @@ import { useSocketConnection } from "@/hooks/useSocketConnection";
 import { menuSocket } from "@/app/socket";
 
 import Avatar from "./Avatar";
+import { createAvatarState } from "./Avatar/movement";
 import DineInTables from "./DineInTables";
 import DriveThru from "./DriveThru";
 import Elevator from "./Elevator";
@@ -44,6 +45,7 @@ import {
   STORE_LAYOUT_FLOOR_HEIGHT,
   STORE_LAYOUT_FOV,
   STORE_LAYOUT_ITEMS,
+  STORE_LAYOUT_JOYSTICK,
   STORE_LAYOUT_KIND_COLORS,
   STORE_LAYOUT_LOOK,
   STORE_LAYOUT_ROOM,
@@ -65,6 +67,7 @@ import {
 
 import { Download, Fullscreen, FullscreenExit } from "@mui/icons-material";
 import {
+  Button,
   Divider,
   FormControlLabel,
   IconButton,
@@ -165,6 +168,20 @@ const OverlayActions = styled(Stack)(({ theme }) => ({
   bottom: theme.spacing(1.5),
   flexDirection: "row",
   gap: theme.spacing(1),
+}));
+
+const TablePrompt = styled(Button)(({ theme }) => ({
+  position: "absolute",
+  bottom: theme.spacing(1.5),
+  left: "50%",
+  transform: "translateX(-50%)",
+
+  [STORE_LAYOUT_TOUCH_MEDIA]: {
+    bottom:
+      STORE_LAYOUT_JOYSTICK.inset +
+      STORE_LAYOUT_JOYSTICK.radius +
+      STORE_LAYOUT_JOYSTICK.edgeGap,
+  },
 }));
 
 const OverlayButton = styled(IconButton)(({ theme }) => ({
@@ -561,12 +578,14 @@ const StoreLayout = ({
   const rootStateRef = useRef<RootState>(null);
   const elevatorRef = useRef(createElevatorState());
   const doorsRef = useRef(createDoorsState());
+  const avatarRef = useRef(createAvatarState());
   const touchRef = useRef<StoreLayoutTouchInput>({
     jump: false,
     lookSideways: 0,
     lookVertical: 0,
     sideways: 0,
     towards: 0,
+    zoom: 0,
   });
 
   const [canvasElement, setCanvasElement] = useState<HTMLDivElement | null>(
@@ -613,6 +632,7 @@ const StoreLayout = ({
   const [showDimensions, setShowDimensions] = useState(true);
   const [realistic, setRealistic] = useState(true);
   const [view, setView] = useState<StoreLayoutView>("iso");
+  const [nearbyTable, setNearbyTable] = useState<number | null>(null);
 
   const isGhostFloor = (value: StoreLayoutFloor) =>
     floors === "all" && focusFloor && value !== floor;
@@ -702,6 +722,13 @@ const StoreLayout = ({
     if (event.code === "KeyN") setShowLabels((on) => !on);
 
     if (event.code === "KeyM") setShowDimensions((on) => !on);
+
+    if (
+      event.key === "Enter" &&
+      event.target === event.currentTarget &&
+      nearbyTable
+    )
+      handleTableSelect(nearbyTable);
   };
 
   // iPhone Safari 沒有 Element.requestFullscreen，只能改用固定定位鋪滿視窗
@@ -1194,9 +1221,11 @@ const StoreLayout = ({
                   showLabels={showLabels}
                 />
                 <DineInTables
+                  avatarRef={avatarRef}
+                  floor={floor}
                   floors={floors}
                   isGhostFloor={isGhostFloor}
-                  onSelect={handleTableSelect}
+                  onNearbyTableChange={setNearbyTable}
                   tableColors={tableColors}
                 />
                 {realistic && (
@@ -1289,6 +1318,7 @@ const StoreLayout = ({
                   elevatorRef={elevatorRef}
                   floor={floor}
                   onFloorChange={showFloor}
+                  stateRef={avatarRef}
                   touchRef={touchRef}
                   view={view}
                 />
@@ -1312,7 +1342,7 @@ const StoreLayout = ({
                 />
               </Canvas>
             </KeyboardControls>
-            <Joystick inputRef={touchRef} />
+            <Joystick inputRef={touchRef} view={view} />
             <SummaryPaper variant="outlined">
               {FLOOR_SUMMARIES.map(({ floor: value, seats, tables }) => {
                 if (floors !== "all" && floors !== value) return null;
@@ -1360,6 +1390,19 @@ const StoreLayout = ({
                   </Typography>
                 </LegendStack>
               </GridLegend>
+            )}
+            {nearbyTable && (
+              <TablePrompt
+                onClick={() => handleTableSelect(nearbyTable)}
+                onMouseDown={handleControlsMouseDown}
+                variant="contained"
+              >
+                {tStoreLayout("viewTableOrders", {
+                  table: tOrder("mode.dineIn.tableNumber.value", {
+                    tableNumber: nearbyTable,
+                  }),
+                })}
+              </TablePrompt>
             )}
             <OverlayActions onMouseDown={handleControlsMouseDown}>
               <OverlayButton

@@ -108,6 +108,7 @@ interface AvatarProps {
   elevatorRef: RefObject<ElevatorState>;
   floor: StoreLayoutFloor;
   onFloorChange: (floor: StoreLayoutFloor) => void;
+  stateRef: RefObject<AvatarState>;
   touchRef: RefObject<StoreLayoutTouchInput>;
   view: StoreLayoutView;
 }
@@ -119,6 +120,7 @@ const Avatar = ({
   elevatorRef,
   floor,
   onFloorChange,
+  stateRef,
   touchRef,
   view,
 }: AvatarProps) => {
@@ -138,12 +140,6 @@ const Avatar = ({
   const swingRef = useRef(0);
   const floorIndexRef = useRef(0);
   const cameraModeRef = useRef<string | null>(null);
-  const stateRef = useRef<AvatarState>({
-    verticalSpeed: 0,
-    x: start.x,
-    y: 0,
-    z: start.z,
-  });
   const groundRef = useRef((right: number, forward: number) => {
     const group = groupRef.current;
     if (!group || stateRef.current.verticalSpeed || elevatorRef.current.riding)
@@ -184,7 +180,7 @@ const Avatar = ({
     stepOffsetRef.current = 0;
     stepVelocityRef.current = 0;
     previousRef.current.y = STORE_LAYOUT_FLOOR_BASE[floor];
-  }, [floor]);
+  }, [floor, stateRef]);
 
   useFrame((_state, delta) => {
     const group = groupRef.current;
@@ -353,7 +349,7 @@ const Avatar = ({
           .add(lookOffset.setFromSpherical(lookSpherical));
       }
 
-      const zoom = Number(move.zoomIn) - Number(move.zoomOut);
+      const zoom = Number(move.zoomIn) - Number(move.zoomOut) + touch.zoom;
 
       if (zoom)
         controls.dollyIn(Math.exp(-zoom * STORE_LAYOUT_ZOOM_SPEED * delta));

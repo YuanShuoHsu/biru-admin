@@ -207,6 +207,13 @@ export interface AvatarState {
   z: number;
 }
 
+export const createAvatarState = (): AvatarState => ({
+  verticalSpeed: 0,
+  x: STORE_LAYOUT_AVATAR.start.x,
+  y: 0,
+  z: STORE_LAYOUT_AVATAR.start.z,
+});
+
 export interface AvatarInput {
   forwardX: number;
   forwardZ: number;
