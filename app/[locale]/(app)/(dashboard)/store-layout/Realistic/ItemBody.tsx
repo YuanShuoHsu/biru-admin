@@ -1,6 +1,8 @@
 "use client";
 
-import { RoundedBox } from "@react-three/drei";
+import { RoundedBox, useGLTF } from "@react-three/drei";
+import { Suspense, useMemo } from "react";
+import { Material, Mesh } from "three";
 
 import type { StoreLayoutItem } from "@/types/storeLayout";
 
@@ -9,6 +11,8 @@ import Surface, { SURFACES, surfaceOf } from "./Surface";
 
 const CORNER_RADIUS = 0.02;
 const CORNER_SEGMENTS = 2;
+
+const GRINDER_MODEL = "/models/grinder.glb";
 
 const POT_HEIGHT = 0.35;
 const LEAF_COLOR = "#4f7a3a";
@@ -122,8 +126,40 @@ const Planter = ({ ghost, item }: ItemBodyProps) => {
   );
 };
 
+const Grinder = ({ ghost, item }: ItemBodyProps) => {
+  const { scene } = useGLTF(GRINDER_MODEL);
+
+  const model = useMemo(() => {
+    const clone = scene.clone();
+
+    clone.traverse((object) => {
+      if (!(object instanceof Mesh)) return;
+
+      object.castShadow = !ghost;
+      object.receiveShadow = true;
+
+      if (ghost && object.material instanceof Material)
+        object.material = Object.assign(
+          object.material.clone(),
+          ghostSurface(true),
+        );
+    });
+
+    return clone;
+  }, [ghost, scene]);
+
+  return <primitive object={model} position-y={-item.height / 2} />;
+};
+
 const ItemBody = ({ ghost, item }: ItemBodyProps) => {
   if (item.label === "table") return null;
+
+  if (item.label === "grinder")
+    return (
+      <Suspense fallback={<Block ghost={ghost} item={item} />}>
+        <Grinder ghost={ghost} item={item} />
+      </Suspense>
+    );
 
   if (item.label === "plant") return <Plant ghost={ghost} item={item} />;
 
