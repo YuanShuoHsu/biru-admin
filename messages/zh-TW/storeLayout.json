@@ -10,12 +10,14 @@
     "height": "高 {value} m",
     "width": "寬 {value} m"
   },
+  "elevatorFloors": "電梯樓層",
   "empty": "此組織尚未建立店內配置。",
   "exitFullscreen": "離開全螢幕",
   "export": "匯出 PNG",
   "floors": {
     "all": "全部",
     "ground": "一樓",
+    "roof": "空中花園",
     "upper": "二樓"
   },
   "focusFloor": "聚焦本層",
@@ -32,6 +34,7 @@
   },
   "items": {
     "accessibleRestroom": "無障礙廁所",
+    "bench": "長椅",
     "blender": "果汁機",
     "chair": "椅子",
     "cleanShelf": "潔淨餐具層架",
@@ -52,6 +55,7 @@
     "handSink": "洗手台",
     "iceMachine": "製冰機",
     "kettle": "手沖壺",
+    "lawn": "草坪",
     "menRestroom": "男廁",
     "menuBoard": "菜單看板",
     "orderCounter": "點餐檯",
@@ -61,6 +65,7 @@
     "pastryCase": "甜點冷藏櫃",
     "pickupScreen": "取餐叫號螢幕",
     "plant": "植栽",
+    "planter": "植栽槽",
     "prepTable": "備料台",
     "rangeHood": "排油煙罩",
     "returnCounter": "回收檯",
@@ -79,7 +84,7 @@
     "workCounter": "吧台工作檯"
   },
   "label": "店內配置",
-  "moveHint": "點擊畫面後，可用方向鍵或 WASD 移動角色，Shift 加速，空白鍵跳躍，IJKL 轉動視角{view, select, first {} other {，O/U 拉近拉遠}}，靠近桌子時按 Enter 查看訂單，1/2/3 切換樓層，F 開關聚焦本層，C 切換角色，V 切換視角，R/N/M 開關寫實/名稱/尺寸",
+  "moveHint": "點擊畫面後，可用方向鍵或 WASD 移動角色，Shift 加速，空白鍵跳躍，IJKL 轉動視角{view, select, first {} other {，O/U 拉近拉遠}}，靠近桌子時按 Enter 查看訂單，1/2/3/4 切換樓層，F 開關聚焦本層，C 切換角色，V 切換視角，R/N/M 開關寫實/名稱/尺寸",
   "realistic": "寫實",
   "showDimensions": "尺寸",
   "showLabels": "名稱",

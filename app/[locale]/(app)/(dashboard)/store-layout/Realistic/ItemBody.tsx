@@ -55,11 +55,7 @@ const Plant = ({ ghost, item }: ItemBodyProps) => {
   );
 };
 
-const ItemBody = ({ ghost, item }: ItemBodyProps) => {
-  if (item.label === "table") return null;
-
-  if (item.label === "plant") return <Plant ghost={ghost} item={item} />;
-
+const Block = ({ ghost, item }: ItemBodyProps) => {
   const { depth, height, width } = item;
 
   return (
@@ -73,6 +69,67 @@ const ItemBody = ({ ghost, item }: ItemBodyProps) => {
       <Surface ghost={ghost} spec={surfaceOf(item)} />
     </RoundedBox>
   );
+};
+
+const SOIL_INSET = 0.08;
+const SOIL_LIFT = 0.002;
+const SOIL_COLOR = "#4a3726";
+const SHRUB_SPACING = 0.6;
+const SHRUB_RADIUS = 0.3;
+
+const Planter = ({ ghost, item }: ItemBodyProps) => {
+  const { depth, height, width } = item;
+  const long = Math.max(width, depth);
+  const shrubs = Math.max(1, Math.floor(long / SHRUB_SPACING));
+  const top = height / 2 + SOIL_LIFT;
+
+  return (
+    <>
+      <Block ghost={ghost} item={item} />
+      <mesh position-y={top} rotation-x={-Math.PI / 2}>
+        <planeGeometry args={[width - SOIL_INSET, depth - SOIL_INSET]} />
+        <meshStandardMaterial
+          color={SOIL_COLOR}
+          roughness={1}
+          {...ghostSurface(ghost)}
+        />
+      </mesh>
+      {Array.from({ length: shrubs }, (_, index) => {
+        const along = (long / shrubs) * (index + 0.5) - long / 2;
+        const radius = SHRUB_RADIUS * (index % 2 ? 0.8 : 1);
+
+        return (
+          <mesh
+            castShadow={!ghost}
+            key={index}
+            position={[
+              width >= depth ? along : 0,
+              top + radius * 0.6,
+              width >= depth ? 0 : along,
+            ]}
+          >
+            <icosahedronGeometry args={[radius, 1]} />
+            <meshStandardMaterial
+              color={LEAF_COLOR}
+              flatShading
+              roughness={0.8}
+              {...ghostSurface(ghost)}
+            />
+          </mesh>
+        );
+      })}
+    </>
+  );
+};
+
+const ItemBody = ({ ghost, item }: ItemBodyProps) => {
+  if (item.label === "table") return null;
+
+  if (item.label === "plant") return <Plant ghost={ghost} item={item} />;
+
+  if (item.label === "planter") return <Planter ghost={ghost} item={item} />;
+
+  return <Block ghost={ghost} item={item} />;
 };
 
 export default ItemBody;

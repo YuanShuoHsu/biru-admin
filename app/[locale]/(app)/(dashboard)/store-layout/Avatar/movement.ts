@@ -6,6 +6,8 @@ import {
   STORE_LAYOUT_FLOOR_HEIGHT,
   STORE_LAYOUT_ITEMS,
   STORE_LAYOUT_RESTROOM_WALLS,
+  STORE_LAYOUT_ROOF_GUARDS,
+  STORE_LAYOUT_ROOF_WALLS,
   STORE_LAYOUT_ROOM,
   STORE_LAYOUT_SEATS,
   STORE_LAYOUT_SLAB_PANELS,
@@ -48,6 +50,8 @@ const SOLIDS: Solid[] = [
     ...STORE_LAYOUT_SEATS,
     ...STORE_LAYOUT_ELEVATOR_WALLS,
     ...STORE_LAYOUT_RESTROOM_WALLS,
+    ...STORE_LAYOUT_ROOF_WALLS,
+    ...STORE_LAYOUT_ROOF_GUARDS,
   ].map(({ depth, elevation, floor, height, width, x, z }) => ({
     bottom: STORE_LAYOUT_FLOOR_BASE[floor] + elevation,
     depth,
@@ -56,26 +60,28 @@ const SOLIDS: Solid[] = [
     x,
     z,
   })),
-  ...STORE_LAYOUT_STAIR_STEPS.map(({ depth, top, width, x, z }) => ({
-    bottom: 0,
+  ...STORE_LAYOUT_STAIR_STEPS.map(({ bottom, depth, top, width, x, z }) => ({
+    bottom,
     depth,
     top,
     width,
     x,
     z,
   })),
-  ...STORE_LAYOUT_SLAB_PANELS.map(({ depth, width, x, z }) => ({
-    bottom: STORE_LAYOUT_FLOOR_HEIGHT - STORE_LAYOUT_SLAB_THICKNESS,
+  ...STORE_LAYOUT_FLOORS.slice(1).flatMap((floor) =>
+    STORE_LAYOUT_SLAB_PANELS.map(({ depth, width, x, z }) => ({
+      bottom: STORE_LAYOUT_FLOOR_BASE[floor] - STORE_LAYOUT_SLAB_THICKNESS,
+      depth,
+      top: STORE_LAYOUT_FLOOR_BASE[floor],
+      width,
+      x,
+      z,
+    })),
+  ),
+  ...STORE_LAYOUT_STAIR_GUARDS.map(({ depth, floor, width, x, z }) => ({
+    bottom: STORE_LAYOUT_FLOOR_BASE[floor],
     depth,
-    top: STORE_LAYOUT_FLOOR_HEIGHT,
-    width,
-    x,
-    z,
-  })),
-  ...STORE_LAYOUT_STAIR_GUARDS.map(({ depth, width, x, z }) => ({
-    bottom: STORE_LAYOUT_FLOOR_HEIGHT,
-    depth,
-    top: STORE_LAYOUT_FLOOR_HEIGHT + STORE_LAYOUT_STAIR_GUARD_HEIGHT,
+    top: STORE_LAYOUT_FLOOR_BASE[floor] + STORE_LAYOUT_STAIR_GUARD_HEIGHT,
     width,
     x,
     z,
@@ -142,7 +148,10 @@ const isBlocked = (
       overlaps(solid, x, z),
   );
 
-const rampAt = (x: number, z: number) => {
+// 樓梯逐層疊在同一個位置，要取腳構得到的梯段裡最高的那一段，否則在上層梯段會被拉回下層
+const rampAt = (x: number, z: number, reachable: number) => {
+  let highest: number | null = null;
+
   for (const {
     base,
     direction,
@@ -156,15 +165,19 @@ const rampAt = (x: number, z: number) => {
     const run = (z - start) * direction;
 
     if (
-      run >= -STORE_LAYOUT_STAIR_TREAD / 2 &&
-      run <= (risers - 0.5) * STORE_LAYOUT_STAIR_TREAD
+      run < -STORE_LAYOUT_STAIR_TREAD / 2 ||
+      run > (risers - 0.5) * STORE_LAYOUT_STAIR_TREAD
     )
-      return (
-        base + STORE_LAYOUT_STAIR_RISER * (run / STORE_LAYOUT_STAIR_TREAD + 0.5)
-      );
+      continue;
+
+    const height =
+      base + STORE_LAYOUT_STAIR_RISER * (run / STORE_LAYOUT_STAIR_TREAD + 0.5);
+
+    if (height <= reachable && (highest === null || height > highest))
+      highest = height;
   }
 
-  return null;
+  return highest;
 };
 
 // 腳伸進空的電梯井道時，兜底的 0 m 會把骨盆拉到樓下，腳下構不到的地方要當作同高
@@ -193,11 +206,9 @@ export const surfaceAt = (
   from: number,
   movingBoxes: ElevatorBox[],
 ) => {
-  const ramp = rampAt(x, z);
+  const ramp = rampAt(x, z, from + FOOT_REACH);
 
-  return ramp !== null && ramp <= from + FOOT_REACH
-    ? ramp
-    : footholdAt(x, z, from, movingBoxes);
+  return ramp ?? footholdAt(x, z, from, movingBoxes);
 };
 
 export interface AvatarState {
@@ -252,11 +263,9 @@ export const advanceAvatar = (
       state.z = nextZ;
   }
 
-  const ramp = rampAt(state.x, state.z);
-  const onRamp = ramp !== null && ramp <= feet + reach;
-  const support = onRamp
-    ? ramp
-    : supportAt(solids, state.x, state.z, feet, reach);
+  const ramp = rampAt(state.x, state.z, feet + reach);
+  const onRamp = ramp !== null;
+  const support = ramp ?? supportAt(solids, state.x, state.z, feet, reach);
   const grounded =
     state.verticalSpeed <= 0 && feet - support <= (airborne ? 1e-4 : STEP_DOWN);
 

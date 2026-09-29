@@ -12,7 +12,6 @@ const FLOOR_LEVELS = STORE_LAYOUT_FLOORS.map(
 
 const SPEED = 1;
 const DOOR_SECONDS = 1;
-const DWELL_BOARDED = 1.5;
 const DWELL_IDLE = 3;
 const LEVEL_TOLERANCE = 0.5;
 const DOORWAY_REACH = 0.35;
@@ -21,10 +20,10 @@ const CAR_FLOOR_THICKNESS = 0.08;
 const CAR_HEIGHT = 2.3;
 
 export interface ElevatorState {
-  boarded: boolean;
   doors: number;
   floorIndex: number;
   phase: "closed" | "closing" | "moving" | "open" | "opening";
+  requestedIndex: number | null;
   riding: boolean;
   targetIndex: number;
   waited: number;
@@ -32,10 +31,10 @@ export interface ElevatorState {
 }
 
 export const createElevatorState = (): ElevatorState => ({
-  boarded: false,
   doors: 0,
   floorIndex: 0,
   phase: "closed",
+  requestedIndex: null,
   riding: false,
   targetIndex: 0,
   waited: 0,
@@ -80,15 +79,14 @@ export const advanceElevator = (
     : -1;
   const inDoorway = covers(DOORWAY, x, z);
 
-  if (state.phase !== "moving")
-    state.boarded = inCar && (state.boarded || !state.riding);
   state.riding = inCar;
+  if (!inCar && state.phase !== "moving") state.requestedIndex = null;
 
   switch (state.phase) {
     case "closed":
-      if (state.boarded) {
-        state.boarded = false;
-        state.targetIndex = (state.floorIndex + 1) % FLOOR_LEVELS.length;
+      if (state.requestedIndex !== null) {
+        state.targetIndex = state.requestedIndex;
+        state.requestedIndex = null;
         state.phase = "moving";
       } else if (inCar || waitingAt === state.floorIndex)
         state.phase = "opening";
@@ -109,11 +107,14 @@ export const advanceElevator = (
     case "open":
       state.waited =
         inDoorway ||
-        (inCar && !state.boarded) ||
-        (waitingAt === state.floorIndex && !inCar)
+        (inCar && state.requestedIndex === null) ||
+        waitingAt === state.floorIndex
           ? 0
           : state.waited + delta;
-      if (state.waited >= (state.boarded ? DWELL_BOARDED : DWELL_IDLE))
+      if (
+        (state.requestedIndex !== null && !inDoorway) ||
+        state.waited >= DWELL_IDLE
+      )
         state.phase = "closing";
       return 0;
 
@@ -141,6 +142,15 @@ export const advanceElevator = (
       return step;
     }
   }
+};
+
+export const requestElevator = (state: ElevatorState, floorIndex: number) => {
+  if (
+    state.riding &&
+    state.phase !== "moving" &&
+    floorIndex !== state.floorIndex
+  )
+    state.requestedIndex = floorIndex;
 };
 
 export interface ElevatorBox {

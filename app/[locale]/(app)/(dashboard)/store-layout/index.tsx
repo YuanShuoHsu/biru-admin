@@ -25,7 +25,7 @@ import { createAvatarState } from "./Avatar/movement";
 import DineInTables from "./DineInTables";
 import DriveThru from "./DriveThru";
 import Elevator from "./Elevator";
-import { createElevatorState } from "./Elevator/motion";
+import { createElevatorState, requestElevator } from "./Elevator/motion";
 import JumpButton from "./JumpButton";
 import Furniture from "./Realistic/Furniture";
 import ItemBody from "./Realistic/ItemBody";
@@ -33,6 +33,7 @@ import Lighting from "./Realistic/Lighting";
 import Shell from "./Realistic/Shell";
 import Surface, { SURFACES } from "./Realistic/Surface";
 import Restrooms from "./Restrooms";
+import Rooftop from "./Rooftop";
 import { createDoorsState } from "./Restrooms/motion";
 import SpriteLabel from "./SpriteLabel";
 import ZoomLever from "./ZoomLever";
@@ -57,6 +58,7 @@ import {
   STORE_LAYOUT_STAIR_GUARDS,
   STORE_LAYOUT_STAIR_GUARD_HEIGHT,
   STORE_LAYOUT_STAIR_STEPS,
+  STORE_LAYOUT_STAIR_STOREYS,
   STORE_LAYOUT_TABLES,
   STORE_LAYOUT_TOUCH_MEDIA,
   STORE_LAYOUT_TOUCH_QUERY,
@@ -75,6 +77,7 @@ import {
 import {
   Box,
   Button,
+  ButtonGroup,
   Chip,
   Divider,
   FormControlLabel,
@@ -269,6 +272,13 @@ const TablePrompt = styled(Button)(({ theme }) => ({
   pointerEvents: "auto",
 }));
 
+const ElevatorPanel = styled(ButtonGroup)(({ theme }) => ({
+  gridRow: 3,
+  gridColumn: 2,
+  backgroundColor: theme.vars.palette.background.paper,
+  pointerEvents: "auto",
+}));
+
 const OverlayActions = styled(Stack)(({ theme }) => ({
   gridRow: 3,
   gridColumn: 3,
@@ -328,7 +338,7 @@ const FLOOR_SUMMARIES = STORE_LAYOUT_FLOORS.map((floor) => ({
     (seat) => seat.floor === floor && !seat.elevation,
   ).length,
   tables: STORE_LAYOUT_TABLES.filter((table) => table.floor === floor),
-}));
+})).filter(({ tables }) => tables.length);
 
 const DRIVE_THRU_OUTDOOR_LABELS = new Set<StoreLayoutItem["label"]>([
   "driveThruMenuBoard",
@@ -683,8 +693,14 @@ const StoreLayout = ({
   const [realistic, setRealistic] = useState(true);
   const [view, setView] = useState<StoreLayoutView>("iso");
   const [nearbyTable, setNearbyTable] = useState<number | null>(null);
+  const [elevatorStop, setElevatorStop] = useState<StoreLayoutFloor | null>(
+    null,
+  );
 
   const nearbyStatus = nearbyTable ? tableStatuses.get(nearbyTable) : undefined;
+
+  const shows = (value: StoreLayoutFloor) =>
+    floors === "all" || floors === value;
 
   const isGhostFloor = (value: StoreLayoutFloor) =>
     floors === "all" && focusFloor && value !== floor;
@@ -767,7 +783,7 @@ const StoreLayout = ({
     if (event.code === "KeyC")
       setCharacter(nextInOrder(STORE_LAYOUT_CHARACTER_ORDER, character));
 
-    if (event.code === "KeyF" && floors !== "upper") setFocusFloor((on) => !on);
+    if (event.code === "KeyF" && shows("ground")) setFocusFloor((on) => !on);
 
     if (event.code === "KeyR") setRealistic((on) => !on);
 
@@ -907,7 +923,7 @@ const StoreLayout = ({
                 </ToggleButton>
               ))}
             </StyledToggleButtonGroup>
-            {floors !== "upper" && (
+            {shows("ground") && (
               <FormControlLabel
                 control={
                   <Switch
@@ -1076,41 +1092,42 @@ const StoreLayout = ({
                             ),
                           )}
                           {STORE_LAYOUT_STAIR_GUARDS.map(
-                            ({ depth, width, x, z }) => (
-                              <mesh
-                                key={`guard-${x}-${z}`}
-                                position={[
-                                  x + width / 2,
-                                  STORE_LAYOUT_STAIR_GUARD_HEIGHT / 2,
-                                  z + depth / 2,
-                                ]}
-                              >
-                                <boxGeometry
-                                  args={[
-                                    width,
-                                    STORE_LAYOUT_STAIR_GUARD_HEIGHT,
-                                    depth,
+                            ({ depth, floor: guardFloor, width, x, z }) =>
+                              guardFloor === value && (
+                                <mesh
+                                  key={`guard-${x}-${z}`}
+                                  position={[
+                                    x + width / 2,
+                                    STORE_LAYOUT_STAIR_GUARD_HEIGHT / 2,
+                                    z + depth / 2,
                                   ]}
-                                />
-                                {realistic ? (
-                                  <Surface
-                                    ghost={ghost}
-                                    spec={SURFACES.glass}
+                                >
+                                  <boxGeometry
+                                    args={[
+                                      width,
+                                      STORE_LAYOUT_STAIR_GUARD_HEIGHT,
+                                      depth,
+                                    ]}
                                   />
-                                ) : (
-                                  <meshStandardMaterial
-                                    color={STORE_LAYOUT_KIND_COLORS.stair}
-                                    {...ghostSurface(ghost)}
-                                  />
-                                )}
-                                {!realistic && (
-                                  <Edges
-                                    color={grey[700]}
-                                    {...ghostEdge(ghost)}
-                                  />
-                                )}
-                              </mesh>
-                            ),
+                                  {realistic ? (
+                                    <Surface
+                                      ghost={ghost}
+                                      spec={SURFACES.glass}
+                                    />
+                                  ) : (
+                                    <meshStandardMaterial
+                                      color={STORE_LAYOUT_KIND_COLORS.stair}
+                                      {...ghostSurface(ghost)}
+                                    />
+                                  )}
+                                  {!realistic && (
+                                    <Edges
+                                      color={grey[700]}
+                                      {...ghostEdge(ghost)}
+                                    />
+                                  )}
+                                </mesh>
+                              ),
                           )}
                         </>
                       )}
@@ -1135,6 +1152,7 @@ const StoreLayout = ({
                       {realistic && <Shell floor={value} ghost={ghost} />}
                       {!ghost &&
                         !realistic &&
+                        value !== "roof" &&
                         STORE_LAYOUT_WALLS.map(
                           ({ position, rotationY, width }) => (
                             <mesh
@@ -1157,56 +1175,75 @@ const StoreLayout = ({
                       {!ghost &&
                         showDimensions &&
                         ROOM_DIMENSIONS.map(
-                          ({ from, key, outwards, to, value }) => (
-                            <DimensionLine
-                              from={from}
-                              key={key}
-                              labelGap={DIMENSION_LABEL_GAP}
-                              outwards={outwards}
-                              text={tStoreLayout(`dimensions.${key}`, {
-                                value,
-                              })}
-                              tick={DIMENSION_TICK}
-                              to={to}
-                            />
-                          ),
+                          ({ from, key, outwards, to, value: size }) =>
+                            (value !== "roof" || key !== "height") && (
+                              <DimensionLine
+                                from={from}
+                                key={key}
+                                labelGap={DIMENSION_LABEL_GAP}
+                                outwards={outwards}
+                                text={tStoreLayout(`dimensions.${key}`, {
+                                  value: size,
+                                })}
+                                tick={DIMENSION_TICK}
+                                to={to}
+                              />
+                            ),
                         )}
                     </group>
                   );
                 })}
-                {STORE_LAYOUT_STAIR_STEPS.map(({ depth, top, width, x, z }) => (
-                  <mesh
-                    castShadow={realistic}
-                    key={`${x}-${z}`}
-                    position={[x + width / 2, top / 2, z + depth / 2]}
-                    receiveShadow
-                  >
-                    <boxGeometry args={[width, top, depth]} />
-                    {realistic ? (
-                      <Surface spec={SURFACES.walnut} />
-                    ) : (
-                      <meshStandardMaterial
-                        color={STORE_LAYOUT_KIND_COLORS.stair}
-                      />
-                    )}
-                    {!realistic && <Edges color={grey[700]} />}
-                  </mesh>
-                ))}
-                <group
-                  position={[
-                    STORE_LAYOUT_STAIRWELL.x + STORE_LAYOUT_STAIRWELL.width / 2,
-                    STORE_LAYOUT_FLOOR_HEIGHT / 2,
-                    STORE_LAYOUT_STAIRWELL.z + STORE_LAYOUT_STAIRWELL.depth / 2,
-                  ]}
-                >
-                  <ItemAnnotations
-                    depth={STORE_LAYOUT_STAIRWELL.depth}
-                    height={STORE_LAYOUT_FLOOR_HEIGHT}
-                    label={showLabels ? tStoreLayout("items.stair") : null}
-                    showDimensions={showDimensions}
-                    width={STORE_LAYOUT_STAIRWELL.width}
-                  />
-                </group>
+                {STORE_LAYOUT_STAIR_STEPS.map(
+                  ({ bottom, depth, from, to, top, width, x, z }) =>
+                    (shows(from) || shows(to)) && (
+                      <mesh
+                        castShadow={realistic}
+                        key={`${x}-${z}-${top}`}
+                        position={[
+                          x + width / 2,
+                          (top + bottom) / 2,
+                          z + depth / 2,
+                        ]}
+                        receiveShadow
+                      >
+                        <boxGeometry args={[width, top - bottom, depth]} />
+                        {realistic ? (
+                          <Surface spec={SURFACES.walnut} />
+                        ) : (
+                          <meshStandardMaterial
+                            color={STORE_LAYOUT_KIND_COLORS.stair}
+                          />
+                        )}
+                        {!realistic && <Edges color={grey[700]} />}
+                      </mesh>
+                    ),
+                )}
+                {STORE_LAYOUT_STAIR_STOREYS.map(
+                  ({ base, from }) =>
+                    shows(from) &&
+                    !isGhostFloor(from) && (
+                      <group
+                        key={from}
+                        position={[
+                          STORE_LAYOUT_STAIRWELL.x +
+                            STORE_LAYOUT_STAIRWELL.width / 2,
+                          base + STORE_LAYOUT_FLOOR_HEIGHT / 2,
+                          STORE_LAYOUT_STAIRWELL.z +
+                            STORE_LAYOUT_STAIRWELL.depth / 2,
+                        ]}
+                      >
+                        <ItemAnnotations
+                          depth={STORE_LAYOUT_STAIRWELL.depth}
+                          height={STORE_LAYOUT_FLOOR_HEIGHT}
+                          label={
+                            showLabels ? tStoreLayout("items.stair") : null
+                          }
+                          showDimensions={showDimensions}
+                          width={STORE_LAYOUT_STAIRWELL.width}
+                        />
+                      </group>
+                    ),
+                )}
                 {STORE_LAYOUT_ITEMS.map((item) => {
                   if (floors !== "all" && floors !== item.floor) return null;
 
@@ -1256,7 +1293,7 @@ const StoreLayout = ({
                     </group>
                   );
                 })}
-                {floors !== "upper" && (
+                {shows("ground") && (
                   <DriveThru
                     ghost={focusFloor}
                     realistic={realistic}
@@ -1270,6 +1307,9 @@ const StoreLayout = ({
                   realistic={realistic}
                   showLabels={showLabels}
                 />
+                {shows("roof") && (
+                  <Rooftop ghost={isGhostFloor("roof")} realistic={realistic} />
+                )}
                 <DineInTables
                   avatarRef={avatarRef}
                   floor={floor}
@@ -1377,6 +1417,7 @@ const StoreLayout = ({
                   floors={floors}
                   isGhostFloor={isGhostFloor}
                   label={showLabels ? tStoreLayout("items.elevator") : null}
+                  onRidingStopChange={setElevatorStop}
                   realistic={realistic}
                 />
                 <OrbitControls
@@ -1447,6 +1488,25 @@ const StoreLayout = ({
                   </Typography>
                 </LegendStack>
               </GridLegend>
+              {elevatorStop && (
+                <ElevatorPanel
+                  aria-label={tStoreLayout("elevatorFloors")}
+                  size="small"
+                  variant="outlined"
+                >
+                  {STORE_LAYOUT_FLOORS.map((value, index) => (
+                    <Button
+                      disabled={value === elevatorStop}
+                      key={value}
+                      onClick={() =>
+                        requestElevator(elevatorRef.current, index)
+                      }
+                    >
+                      {tStoreLayout(`floors.${value}`)}
+                    </Button>
+                  ))}
+                </ElevatorPanel>
+              )}
               {nearbyTable && nearbyStatus && (
                 <TablePrompt
                   onClick={() => handleTableSelect(nearbyTable)}

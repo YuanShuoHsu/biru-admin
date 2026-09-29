@@ -67,6 +67,7 @@ interface ElevatorProps {
   floors: StoreLayoutFloorFilter;
   isGhostFloor: (floor: StoreLayoutFloor) => boolean;
   label: string | null;
+  onRidingStopChange: (floor: StoreLayoutFloor | null) => void;
   realistic: boolean;
 }
 
@@ -75,8 +76,10 @@ const Elevator = ({
   floors,
   isGhostFloor,
   label,
+  onRidingStopChange,
   realistic,
 }: ElevatorProps) => {
+  const ridingStopRef = useRef<StoreLayoutFloor | null>(null);
   const carRefs = useRef<(Mesh | null)[]>([]);
   const doorRefs = useRef<(Mesh | null)[]>([]);
 
@@ -100,6 +103,16 @@ const Elevator = ({
     elevatorDoors(elevator).forEach((box, index) =>
       doorRefs.current[index]?.position.set(...centerOf(box)),
     );
+
+    const ridingStop =
+      elevator.riding && elevator.phase !== "moving"
+        ? STORE_LAYOUT_FLOORS[elevator.floorIndex]
+        : null;
+
+    if (ridingStop === ridingStopRef.current) return;
+
+    ridingStopRef.current = ridingStop;
+    onRidingStopChange(ridingStop);
   });
 
   return (

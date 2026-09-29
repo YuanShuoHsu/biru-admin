@@ -8,6 +8,7 @@ import {
   green,
   grey,
   lightBlue,
+  lightGreen,
   pink,
   teal,
 } from "@mui/material/colors";
@@ -20,7 +21,7 @@ export const STORE_LAYOUT_ROOM = {
   width: 15.75,
 } as const;
 
-export const STORE_LAYOUT_FLOORS = ["ground", "upper"] as const;
+export const STORE_LAYOUT_FLOORS = ["ground", "upper", "roof"] as const;
 
 export const STORE_LAYOUT_FLOOR_FILTERS = [
   ...STORE_LAYOUT_FLOORS,
@@ -35,6 +36,7 @@ export const STORE_LAYOUT_KIND_COLORS = {
   heat: deepOrange[300],
   prep: amber[300],
   seat: blueGrey[200],
+  lawn: lightGreen[300],
   plant: green[400],
   restroom: teal[200],
   stair: brown[300],
@@ -401,6 +403,11 @@ const restroomDoors = (floor: LayoutFloor) => [
   ...[...WOMEN_STALLS, MEN_STALL].map((from) => stallDoor(floor, from)),
 ];
 
+export const STORE_LAYOUT_RESTROOM_FLOORS = [
+  "ground",
+  "upper",
+] as const satisfies readonly LayoutFloor[];
+
 export const STORE_LAYOUT_RESTROOMS = [
   { ...ACCESSIBLE_RESTROOM, label: "accessibleRestroom" as const },
   { ...WOMEN_RESTROOM, label: "womenRestroom" as const },
@@ -436,6 +443,45 @@ const PLANTS = [
   plant("ground", 9.05, 20.4),
   plant("upper", 13.7, 0.1),
   plant("upper", 0.1, 6.5),
+  plant("roof", 12.8, 4.3),
+  plant("roof", 3.5, 9.4),
+];
+
+const PLANTER_HEIGHT = 0.45;
+const LAWN_HEIGHT = 0.03;
+const BENCH_HEIGHT = 0.45;
+
+const planter = (x: [number, number], z: [number, number]) => ({
+  ...box("roof", x, z, 0, PLANTER_HEIGHT),
+  kind: "plant" as const,
+  label: "planter" as const,
+});
+
+const bench = (x: [number, number], z: [number, number]) => ({
+  ...box("roof", x, z, 0, BENCH_HEIGHT),
+  kind: "seat" as const,
+  label: "bench" as const,
+});
+
+// 植栽槽離欄杆至少留 0.9 m，貼著欄杆放會變成墊腳處，欄杆高度就得從槽頂重新起算
+const ROOF_GARDEN = [
+  planter([1, 6], [1, 1.8]),
+  planter([7.5, 12.5], [1, 1.8]),
+  planter([1, 6], [19.2, 20]),
+  planter([9.75, 14.75], [19.2, 20]),
+  planter([1, 1.8], [11, 17]),
+  planter([13.95, 14.75], [11.5, 17.5]),
+  {
+    ...box("roof", [4.5, 11.5], [11, 17], 0, LAWN_HEIGHT),
+    kind: "lawn" as const,
+    label: "lawn" as const,
+  },
+  bench([5.2, 6.8], [10.15, 10.6]),
+  bench([9.2, 10.8], [10.15, 10.6]),
+  bench([5.2, 6.8], [17.4, 17.85]),
+  bench([9.2, 10.8], [17.4, 17.85]),
+  bench([3.6, 4.05], [13.2, 14.8]),
+  bench([11.95, 12.4], [13.2, 14.8]),
 ];
 
 const GROUND_TABLES = [
@@ -997,6 +1043,7 @@ export const STORE_LAYOUT_ITEMS = [
   ...UPPER_WINDOW_COUNTERS,
   ...UPPER_TABLES,
   ...PLANTS,
+  ...ROOF_GARDEN,
 ] as const;
 
 export const STORE_LAYOUT_TABLES = [
@@ -1239,6 +1286,16 @@ const STAIR_FLIGHT_WIDTH = STAIR_WIDTH / 2;
 const STAIR_FLIGHT_RUN = STAIR_FLIGHT_TREADS * STAIR_TREAD;
 const STAIR_LANDING_Z = STAIR_Z + STAIR_FLIGHT_RUN;
 
+const STAIR_SOFFIT = 0.35;
+
+export const STORE_LAYOUT_STAIR_STOREYS = STORE_LAYOUT_FLOORS.slice(1).map(
+  (to, index) => ({
+    base: index * STORE_LAYOUT_FLOOR_HEIGHT,
+    from: STORE_LAYOUT_FLOORS[index],
+    to,
+  }),
+);
+
 const flightTreads = (count: number) =>
   Array.from({ length: STAIR_FLIGHT_TREADS }, (_, index) => index + 1).map(
     (tread) => ({
@@ -1252,7 +1309,7 @@ const flightTreads = (count: number) =>
     }),
   );
 
-export const STORE_LAYOUT_STAIR_STEPS = [
+const STOREY_STEPS = [
   ...flightTreads(0),
   {
     depth: STAIR_LANDING_DEPTH,
@@ -1264,24 +1321,38 @@ export const STORE_LAYOUT_STAIR_STEPS = [
   ...flightTreads(STAIR_FLIGHT_TREADS),
 ];
 
-export const STORE_LAYOUT_STAIR_FLIGHTS = [
-  {
-    base: 0,
-    direction: 1,
-    risers: STAIR_FLIGHT_TREADS,
-    start: STAIR_Z,
-    width: STAIR_FLIGHT_WIDTH,
-    x: STAIR_X,
-  },
-  {
-    base: STAIR_FLIGHT_TREADS * STAIR_RISER,
-    direction: -1,
-    risers: STAIR_FLIGHT_TREADS + 1,
-    start: STAIR_LANDING_Z,
-    width: STAIR_FLIGHT_WIDTH,
-    x: STAIR_X + STAIR_FLIGHT_WIDTH,
-  },
-] as const;
+// 上層梯段疊在下層梯段正上方，做成實心會壓掉下層的淨高，走到一半就撞頭
+export const STORE_LAYOUT_STAIR_STEPS = STORE_LAYOUT_STAIR_STOREYS.flatMap(
+  ({ base, from, to }) =>
+    STOREY_STEPS.map((step) => ({
+      ...step,
+      bottom: base ? base + step.top - STAIR_SOFFIT : 0,
+      from,
+      to,
+      top: base + step.top,
+    })),
+);
+
+export const STORE_LAYOUT_STAIR_FLIGHTS = STORE_LAYOUT_STAIR_STOREYS.flatMap(
+  ({ base }) => [
+    {
+      base,
+      direction: 1,
+      risers: STAIR_FLIGHT_TREADS,
+      start: STAIR_Z,
+      width: STAIR_FLIGHT_WIDTH,
+      x: STAIR_X,
+    },
+    {
+      base: base + STAIR_FLIGHT_TREADS * STAIR_RISER,
+      direction: -1,
+      risers: STAIR_FLIGHT_TREADS + 1,
+      start: STAIR_LANDING_Z,
+      width: STAIR_FLIGHT_WIDTH,
+      x: STAIR_X + STAIR_FLIGHT_WIDTH,
+    },
+  ],
+);
 
 export const STORE_LAYOUT_STAIR_RISER = STAIR_RISER;
 
@@ -1371,7 +1442,145 @@ export const STORE_LAYOUT_ELEVATOR_WALLS =
   STORE_LAYOUT_FLOORS.flatMap(elevatorWalls);
 
 export const STORE_LAYOUT_RESTROOM_WALLS =
-  STORE_LAYOUT_FLOORS.flatMap(restroomWalls);
+  STORE_LAYOUT_RESTROOM_FLOORS.flatMap(restroomWalls);
+
+const PENTHOUSE_WALL = 0.1;
+const STAIR_PENTHOUSE_BACK = 4.9;
+const STAIR_PENTHOUSE_DOOR = { from: 5.3, to: 6.3 } as const;
+const STAIR_PENTHOUSE_WEST = STORE_LAYOUT_STAIRWELL.x - PENTHOUSE_WALL;
+const STAIR_PENTHOUSE_FRONT =
+  STORE_LAYOUT_STAIRWELL.z + STORE_LAYOUT_STAIRWELL.depth;
+const VESTIBULE_EAST = 3.4;
+const VESTIBULE_DOOR = {
+  from: ELEVATOR_DOOR.z,
+  to: ELEVATOR_DOOR.z + ELEVATOR_DOOR.width,
+} as const;
+const ELEVATOR_SHAFT_END = ELEVATOR_SHAFT.z + ELEVATOR_SHAFT.depth;
+
+export const STORE_LAYOUT_ROOF_WALLS = [
+  box(
+    "roof",
+    [STAIR_PENTHOUSE_WEST, STORE_LAYOUT_STAIRWELL.x],
+    [STAIR_PENTHOUSE_BACK, STAIR_PENTHOUSE_DOOR.from],
+  ),
+  lintel(
+    "roof",
+    [STAIR_PENTHOUSE_WEST, STORE_LAYOUT_STAIRWELL.x],
+    [STAIR_PENTHOUSE_DOOR.from, STAIR_PENTHOUSE_DOOR.to],
+  ),
+  box(
+    "roof",
+    [STAIR_PENTHOUSE_WEST, STORE_LAYOUT_STAIRWELL.x],
+    [STAIR_PENTHOUSE_DOOR.to, STAIR_PENTHOUSE_FRONT + PENTHOUSE_WALL],
+  ),
+  box(
+    "roof",
+    [STORE_LAYOUT_STAIRWELL.x, STORE_LAYOUT_ROOM.width],
+    [STAIR_PENTHOUSE_BACK, STAIR_PENTHOUSE_BACK + PENTHOUSE_WALL],
+  ),
+  box(
+    "roof",
+    [STORE_LAYOUT_STAIRWELL.x, STORE_LAYOUT_ROOM.width],
+    [STAIR_PENTHOUSE_FRONT, STAIR_PENTHOUSE_FRONT + PENTHOUSE_WALL],
+  ),
+  box(
+    "roof",
+    [STORE_LAYOUT_ROOM.width - PENTHOUSE_WALL, STORE_LAYOUT_ROOM.width],
+    [STAIR_PENTHOUSE_BACK + PENTHOUSE_WALL, STAIR_PENTHOUSE_FRONT],
+  ),
+  box(
+    "roof",
+    [ELEVATOR_SHAFT.width, VESTIBULE_EAST],
+    [ELEVATOR_SHAFT.z, ELEVATOR_SHAFT.z + PENTHOUSE_WALL],
+  ),
+  box(
+    "roof",
+    [ELEVATOR_SHAFT.width, VESTIBULE_EAST],
+    [ELEVATOR_SHAFT_END - PENTHOUSE_WALL, ELEVATOR_SHAFT_END],
+  ),
+  box(
+    "roof",
+    [VESTIBULE_EAST - PENTHOUSE_WALL, VESTIBULE_EAST],
+    [ELEVATOR_SHAFT.z + PENTHOUSE_WALL, VESTIBULE_DOOR.from],
+  ),
+  lintel(
+    "roof",
+    [VESTIBULE_EAST - PENTHOUSE_WALL, VESTIBULE_EAST],
+    [VESTIBULE_DOOR.from, VESTIBULE_DOOR.to],
+  ),
+  box(
+    "roof",
+    [VESTIBULE_EAST - PENTHOUSE_WALL, VESTIBULE_EAST],
+    [VESTIBULE_DOOR.to, ELEVATOR_SHAFT_END - PENTHOUSE_WALL],
+  ),
+];
+
+export const STORE_LAYOUT_PENTHOUSE_CEILINGS = [
+  {
+    depth: STAIR_PENTHOUSE_FRONT + PENTHOUSE_WALL - STAIR_PENTHOUSE_BACK,
+    width: STORE_LAYOUT_ROOM.width - STAIR_PENTHOUSE_WEST,
+    x: STAIR_PENTHOUSE_WEST,
+    z: STAIR_PENTHOUSE_BACK,
+  },
+  {
+    depth: ELEVATOR_SHAFT.depth,
+    width: VESTIBULE_EAST,
+    x: ELEVATOR_SHAFT.x,
+    z: ELEVATOR_SHAFT.z,
+  },
+];
+
+// 建築技術規則設計施工編第 38 條：平屋頂欄杆扶手高度不得小於 1.10 m
+const ROOF_GUARD_HEIGHT = 1.1;
+const ROOF_GUARD_THICKNESS = 0.08;
+
+const roofGuard = (x: [number, number], z: [number, number]) =>
+  box("roof", x, z, 0, ROOF_GUARD_HEIGHT);
+
+export const STORE_LAYOUT_ROOF_GUARDS = [
+  roofGuard([0, STORE_LAYOUT_ROOM.width], [0, ROOF_GUARD_THICKNESS]),
+  roofGuard(
+    [0, STORE_LAYOUT_ROOM.width],
+    [STORE_LAYOUT_ROOM.depth - ROOF_GUARD_THICKNESS, STORE_LAYOUT_ROOM.depth],
+  ),
+  roofGuard(
+    [0, ROOF_GUARD_THICKNESS],
+    [ROOF_GUARD_THICKNESS, STORE_LAYOUT_ROOM.depth - ROOF_GUARD_THICKNESS],
+  ),
+  roofGuard(
+    [STORE_LAYOUT_ROOM.width - ROOF_GUARD_THICKNESS, STORE_LAYOUT_ROOM.width],
+    [ROOF_GUARD_THICKNESS, STORE_LAYOUT_ROOM.depth - ROOF_GUARD_THICKNESS],
+  ),
+];
+
+const VESTIBULE_LEAF_WIDTH = (VESTIBULE_DOOR.to - VESTIBULE_DOOR.from) / 2;
+
+const ROOF_DOORS = [
+  slideDoor(
+    "roof",
+    [
+      STAIR_PENTHOUSE_WEST - STORE_LAYOUT_DOOR_LEAF / 2,
+      STAIR_PENTHOUSE_DOOR.to,
+    ],
+    [0, 1],
+    STAIR_PENTHOUSE_DOOR.to - STAIR_PENTHOUSE_DOOR.from,
+    { glass: true },
+  ),
+  slideDoor(
+    "roof",
+    [VESTIBULE_EAST + STORE_LAYOUT_DOOR_LEAF / 2, VESTIBULE_DOOR.from],
+    [0, -1],
+    VESTIBULE_LEAF_WIDTH,
+    { glass: true },
+  ),
+  slideDoor(
+    "roof",
+    [VESTIBULE_EAST + STORE_LAYOUT_DOOR_LEAF / 2, VESTIBULE_DOOR.to],
+    [0, 1],
+    VESTIBULE_LEAF_WIDTH,
+    { glass: true },
+  ),
+];
 
 // 門片收進兩側時要跨過窗邊吧台末端，得貼在吧台外緣與牆面玻璃之間
 const ENTRANCE_DOOR_LINE =
@@ -1379,7 +1588,7 @@ const ENTRANCE_DOOR_LINE =
 const ENTRANCE_LEAF_WIDTH = ENTRANCE.width / 2;
 
 export const STORE_LAYOUT_DOORS = [
-  ...STORE_LAYOUT_FLOORS.flatMap(restroomDoors),
+  ...STORE_LAYOUT_RESTROOM_FLOORS.flatMap(restroomDoors),
   slideDoor(
     "ground",
     [ENTRANCE.x, ENTRANCE_DOOR_LINE],
@@ -1405,6 +1614,7 @@ export const STORE_LAYOUT_DOORS = [
       height: DRIVE_THRU_WINDOW.top - DRIVE_THRU_WINDOW.bottom,
     },
   ),
+  ...ROOF_DOORS,
 ];
 
 export const STORE_LAYOUT_SLAB_OPENINGS = [
@@ -1451,31 +1661,35 @@ export const STORE_LAYOUT_STAIR_GUARD_HEIGHT = 0.9;
 
 const STAIR_GUARD_THICKNESS = 0.08;
 
-// 第一段只擋上行梯段那半邊，剩下的半邊是出梯口；補成整寬會把二樓封死，上不去也下不來
+// 二樓前緣左半是往上的梯段入口、右半是出梯口，補上護欄會把樓梯封死；屋頂三面由梯間屋牆圍住，只剩前緣上行梯段那半邊要擋
 export const STORE_LAYOUT_STAIR_GUARDS = [
   {
-    depth: STAIR_GUARD_THICKNESS,
-    width: STAIR_FLIGHT_WIDTH,
-    x: STORE_LAYOUT_STAIRWELL.x,
-    z: STORE_LAYOUT_STAIRWELL.z - STAIR_GUARD_THICKNESS,
-  },
-  {
     depth: STORE_LAYOUT_STAIRWELL.depth,
+    floor: "upper" as const,
     width: STAIR_GUARD_THICKNESS,
     x: STORE_LAYOUT_STAIRWELL.x - STAIR_GUARD_THICKNESS,
     z: STORE_LAYOUT_STAIRWELL.z,
   },
   {
     depth: STORE_LAYOUT_STAIRWELL.depth,
+    floor: "upper" as const,
     width: STAIR_GUARD_THICKNESS,
     x: STORE_LAYOUT_STAIRWELL.x + STORE_LAYOUT_STAIRWELL.width,
     z: STORE_LAYOUT_STAIRWELL.z,
   },
   {
     depth: STAIR_GUARD_THICKNESS,
+    floor: "upper" as const,
     width: STORE_LAYOUT_STAIRWELL.width,
     x: STORE_LAYOUT_STAIRWELL.x,
     z: STORE_LAYOUT_STAIRWELL.z + STORE_LAYOUT_STAIRWELL.depth,
+  },
+  {
+    depth: STAIR_GUARD_THICKNESS,
+    floor: "roof" as const,
+    width: STAIR_FLIGHT_WIDTH,
+    x: STORE_LAYOUT_STAIRWELL.x,
+    z: STORE_LAYOUT_STAIRWELL.z - STAIR_GUARD_THICKNESS,
   },
 ];
 
@@ -1489,6 +1703,7 @@ export const STORE_LAYOUT_FLOOR_BASE = Object.fromEntries(
 export const STORE_LAYOUT_FLOOR_ENTRY = {
   ground: STORE_LAYOUT_AVATAR.start,
   upper: STORE_LAYOUT_STAIR_EXIT,
+  roof: STORE_LAYOUT_STAIR_EXIT,
 } as const satisfies Record<
   (typeof STORE_LAYOUT_FLOORS)[number],
   { x: number; z: number }

@@ -6,10 +6,10 @@ import { type RefObject, useRef } from "react";
 import {
   STORE_LAYOUT_DOORS,
   STORE_LAYOUT_DOOR_LEAF,
-  STORE_LAYOUT_FLOORS,
   STORE_LAYOUT_FLOOR_BASE,
   STORE_LAYOUT_KIND_COLORS,
   STORE_LAYOUT_RESTROOMS,
+  STORE_LAYOUT_RESTROOM_FLOORS,
   STORE_LAYOUT_RESTROOM_WALLS,
   STORE_LAYOUT_ROOM,
 } from "@/constants/storeLayout";
@@ -232,7 +232,7 @@ const Restrooms = ({
         );
       })}
       {showLabels &&
-        STORE_LAYOUT_FLOORS.map((floor) => {
+        STORE_LAYOUT_RESTROOM_FLOORS.map((floor) => {
           if (!shows(floor) || isGhostFloor(floor)) return null;
 
           return STORE_LAYOUT_RESTROOMS.map(({ depth, label, width, x, z }) => (

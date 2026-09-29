@@ -10,12 +10,14 @@
     "height": "높이 {value} m",
     "width": "너비 {value} m"
   },
+  "elevatorFloors": "엘리베이터 층",
   "empty": "이 조직의 매장 배치는 아직 작성되지 않았습니다.",
   "exitFullscreen": "전체 화면 종료",
   "export": "PNG 내보내기",
   "floors": {
     "all": "전체",
     "ground": "1층",
+    "roof": "옥상 정원",
     "upper": "2층"
   },
   "focusFloor": "현재 층 강조",
@@ -32,6 +34,7 @@
   },
   "items": {
     "accessibleRestroom": "장애인 화장실",
+    "bench": "벤치",
     "blender": "블렌더",
     "chair": "의자",
     "cleanShelf": "세척 식기 선반",
@@ -52,6 +55,7 @@
     "handSink": "손 세척대",
     "iceMachine": "제빙기",
     "kettle": "드립 주전자",
+    "lawn": "잔디밭",
     "menRestroom": "남자 화장실",
     "menuBoard": "메뉴판",
     "orderCounter": "주문 카운터",
@@ -61,6 +65,7 @@
     "pastryCase": "디저트 쇼케이스",
     "pickupScreen": "픽업 호출 화면",
     "plant": "화분",
+    "planter": "화단",
     "prepTable": "준비대",
     "rangeHood": "레인지 후드",
     "returnCounter": "반납 카운터",
@@ -79,7 +84,7 @@
     "workCounter": "바 작업대"
   },
   "label": "매장 배치",
-  "moveHint": "화면을 클릭한 뒤 방향키 또는 WASD로 캐릭터를 이동하고 Shift로 질주하며 스페이스바로 점프하고 IJKL로 시야를 돌리고 {view, select, first {} other {O/U로 확대·축소하고 }}테이블 가까이에서 Enter로 주문을 보고 1/2/3으로 층을 바꾸고 F로 현재 층 강조를 켜고 끄며 C로 캐릭터를, V로 시점을 바꾸고 R/N/M으로 사실적 표시/이름/크기 표시를 켜고 끌 수 있습니다",
+  "moveHint": "화면을 클릭한 뒤 방향키 또는 WASD로 캐릭터를 이동하고 Shift로 질주하며 스페이스바로 점프하고 IJKL로 시야를 돌리고 {view, select, first {} other {O/U로 확대·축소하고 }}테이블 가까이에서 Enter로 주문을 보고 1/2/3/4으로 층을 바꾸고 F로 현재 층 강조를 켜고 끄며 C로 캐릭터를, V로 시점을 바꾸고 R/N/M으로 사실적 표시/이름/크기 표시를 켜고 끌 수 있습니다",
   "realistic": "사실적",
   "showDimensions": "크기",
   "showLabels": "이름",

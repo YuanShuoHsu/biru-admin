@@ -10,12 +10,14 @@
     "height": "H {value} m",
     "width": "W {value} m"
   },
+  "elevatorFloors": "Elevator floors",
   "empty": "This organization has no store layout yet.",
   "exitFullscreen": "Exit fullscreen",
   "export": "Export PNG",
   "floors": {
     "all": "All",
     "ground": "1F",
+    "roof": "Roof garden",
     "upper": "2F"
   },
   "focusFloor": "Focus floor",
@@ -32,6 +34,7 @@
   },
   "items": {
     "accessibleRestroom": "Accessible restroom",
+    "bench": "Bench",
     "blender": "Blender",
     "chair": "Chair",
     "cleanShelf": "Clean tableware shelf",
@@ -52,6 +55,7 @@
     "handSink": "Hand sink",
     "iceMachine": "Ice machine",
     "kettle": "Pour-over kettle",
+    "lawn": "Lawn",
     "menRestroom": "Men's restroom",
     "menuBoard": "Menu board",
     "orderCounter": "Order counter",
@@ -61,6 +65,7 @@
     "pastryCase": "Pastry case",
     "pickupScreen": "Pickup display",
     "plant": "Plant",
+    "planter": "Planter",
     "prepTable": "Prep table",
     "rangeHood": "Range hood",
     "returnCounter": "Return counter",
@@ -79,7 +84,7 @@
     "workCounter": "Bar work counter"
   },
   "label": "Store Layout",
-  "moveHint": "Click the view, then move the character with the arrow keys or WASD, sprint with Shift, jump with the space bar, turn the view with IJKL{view, select, first {} other {, zoom in with O and out with U}}, press Enter near a table to view its orders, switch floors with 1/2/3, toggle floor focus with F, switch characters with C and views with V, and toggle realistic mode, names and sizes with R/N/M",
+  "moveHint": "Click the view, then move the character with the arrow keys or WASD, sprint with Shift, jump with the space bar, turn the view with IJKL{view, select, first {} other {, zoom in with O and out with U}}, press Enter near a table to view its orders, switch floors with 1/2/3/4, toggle floor focus with F, switch characters with C and views with V, and toggle realistic mode, names and sizes with R/N/M",
   "realistic": "Realistic",
   "showDimensions": "Sizes",
   "showLabels": "Names",

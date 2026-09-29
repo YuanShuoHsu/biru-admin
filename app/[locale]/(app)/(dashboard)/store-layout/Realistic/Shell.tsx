@@ -194,6 +194,7 @@ const Shell = ({ floor, ghost }: ShellProps) => {
   }, [floor, openings]);
 
   const windows = openings.filter(({ kind }) => kind === "window");
+  const enclosed = floor !== "roof";
 
   return (
     <>
@@ -212,7 +213,7 @@ const Shell = ({ floor, ghost }: ShellProps) => {
             />
           </mesh>
         ))}
-      {!ghost && (
+      {!ghost && enclosed && (
         <mesh
           geometry={geometries.ceiling}
           position-y={ROOM_HEIGHT - CEILING_DROP}
@@ -221,24 +222,29 @@ const Shell = ({ floor, ghost }: ShellProps) => {
           <Surface spec={SURFACES.plaster} />
         </mesh>
       )}
-      {[
-        ...WALLS.map(({ position, rotationY }, index) => ({
-          geometry: geometries.sides[index],
-          position,
-          rotationY,
-        })),
-        { ...FRONT_WALL, geometry: geometries.front },
-      ].map(({ geometry, position, rotationY }) => (
-        <group key={rotationY} position={[...position]} rotation-y={rotationY}>
-          <mesh geometry={geometry} receiveShadow>
-            <Surface ghost={ghost} side={FrontSide} spec={SURFACES.plaster} />
-          </mesh>
-          {/* 外側面往外推，貼牆家具的端面才不會和牆面共面、從室外透出來 */}
-          <mesh geometry={geometry} position-z={-OUTER_SKIN} receiveShadow>
-            <Surface ghost={ghost} side={BackSide} spec={SURFACES.plaster} />
-          </mesh>
-        </group>
-      ))}
+      {enclosed &&
+        [
+          ...WALLS.map(({ position, rotationY }, index) => ({
+            geometry: geometries.sides[index],
+            position,
+            rotationY,
+          })),
+          { ...FRONT_WALL, geometry: geometries.front },
+        ].map(({ geometry, position, rotationY }) => (
+          <group
+            key={rotationY}
+            position={[...position]}
+            rotation-y={rotationY}
+          >
+            <mesh geometry={geometry} receiveShadow>
+              <Surface ghost={ghost} side={FrontSide} spec={SURFACES.plaster} />
+            </mesh>
+            {/* 外側面往外推，貼牆家具的端面才不會和牆面共面、從室外透出來 */}
+            <mesh geometry={geometry} position-z={-OUTER_SKIN} receiveShadow>
+              <Surface ghost={ghost} side={BackSide} spec={SURFACES.plaster} />
+            </mesh>
+          </group>
+        ))}
       {windows.map(({ bottom, from, to, top }) => {
         const width = to - from;
         const height = top - bottom;
