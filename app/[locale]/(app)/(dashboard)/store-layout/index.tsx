@@ -34,6 +34,7 @@ import Surface, { SURFACES } from "./Realistic/Surface";
 import Restrooms from "./Restrooms";
 import { createDoorsState } from "./Restrooms/motion";
 import SpriteLabel from "./SpriteLabel";
+import TouchActions from "./TouchActions";
 import { ghostEdge, ghostSurface } from "./ghost";
 
 import {
@@ -45,7 +46,6 @@ import {
   STORE_LAYOUT_FLOOR_HEIGHT,
   STORE_LAYOUT_FOV,
   STORE_LAYOUT_ITEMS,
-  STORE_LAYOUT_JOYSTICK,
   STORE_LAYOUT_KIND_COLORS,
   STORE_LAYOUT_LOOK,
   STORE_LAYOUT_ROOM,
@@ -128,12 +128,6 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-const DisplaySwitches = styled(Stack)(({ theme }) => ({
-  flexWrap: "wrap",
-  alignItems: "center",
-  gap: theme.spacing(2),
-}));
-
 const FloorControls = styled(Stack)(({ theme }) => ({
   flexWrap: "wrap",
   alignItems: "center",
@@ -144,6 +138,18 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
   backgroundColor: theme.vars.palette.background.paper,
   transition: theme.transitions.create("background-color"),
 }));
+
+const DisplaySwitches = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(2),
+}));
+
+const KeyboardHint = styled(Typography)({
+  [STORE_LAYOUT_TOUCH_MEDIA]: {
+    display: "none",
+  },
+});
 
 const StyledPaper = styled(Paper, {
   shouldForwardProp: (prop) => prop !== "fullscreen",
@@ -169,66 +175,6 @@ const StyledPaper = styled(Paper, {
   }),
 }));
 
-const BottomBar = styled(Box)(({ theme }) => ({
-  position: "absolute",
-  insetInline: theme.spacing(1.5),
-  bottom: theme.spacing(1.5),
-  display: "grid",
-  gridTemplateColumns: "1fr auto 1fr",
-  alignItems: "end",
-  columnGap: theme.spacing(1),
-  pointerEvents: "none",
-
-  [STORE_LAYOUT_TOUCH_MEDIA]: {
-    gridTemplateRows: `auto calc(${
-      STORE_LAYOUT_JOYSTICK.inset +
-      STORE_LAYOUT_JOYSTICK.radius +
-      STORE_LAYOUT_JOYSTICK.edgeGap
-    }px - ${theme.spacing(1.5)})`,
-  },
-}));
-
-const OverlayActions = styled(Stack)(({ theme }) => ({
-  gridRow: 2,
-  gridColumn: 3,
-  justifySelf: "end",
-  flexDirection: "row",
-  gap: theme.spacing(1),
-  pointerEvents: "auto",
-}));
-
-const TablePrompt = styled(Button)(({ theme }) => ({
-  gridRow: 2,
-  gridColumn: 2,
-  flexWrap: "wrap",
-  gap: theme.spacing(1),
-  pointerEvents: "auto",
-
-  [STORE_LAYOUT_TOUCH_MEDIA]: {
-    gridRow: 1,
-    gridColumn: "1 / -1",
-    justifySelf: "center",
-  },
-}));
-
-const OverlayButton = styled(IconButton)(({ theme }) => ({
-  border: `1px solid ${theme.vars.palette.divider}`,
-  color: theme.vars.palette.text.primary,
-}));
-
-const GridLegend = styled(Stack)(({ theme }) => ({
-  gridRow: 2,
-  gridColumn: 1,
-  justifySelf: "start",
-  flexDirection: "row",
-  alignItems: "center",
-  gap: theme.spacing(1.5),
-  padding: theme.spacing(0.25, 1),
-  border: `1px solid ${theme.vars.palette.divider}`,
-  borderRadius: theme.shape.borderRadius,
-  transition: theme.transitions.create("border-color"),
-}));
-
 const SummaryPaper = styled(Paper)(({ theme }) => ({
   position: "absolute",
   top: theme.spacing(1.5),
@@ -251,6 +197,30 @@ const StatusDot = styled("span")(({ theme }) => ({
   borderRadius: "50%",
 }));
 
+const BottomBar = styled(Box)(({ theme }) => ({
+  position: "absolute",
+  inset: theme.spacing(1.5),
+  display: "grid",
+  gridTemplateColumns: "1fr auto 1fr",
+  gridTemplateRows: "auto 1fr auto",
+  alignItems: "end",
+  gap: theme.spacing(1),
+  pointerEvents: "none",
+}));
+
+const GridLegend = styled(Stack)(({ theme }) => ({
+  gridRow: 3,
+  gridColumn: 1,
+  justifySelf: "start",
+  flexDirection: "row",
+  alignItems: "center",
+  gap: theme.spacing(1.5),
+  padding: theme.spacing(0.25, 1),
+  border: `1px solid ${theme.vars.palette.divider}`,
+  borderRadius: theme.shape.borderRadius,
+  transition: theme.transitions.create("border-color"),
+}));
+
 const LegendStack = styled(Stack)(({ theme }) => ({
   alignItems: "center",
   gap: theme.spacing(0.5),
@@ -266,11 +236,28 @@ const GridSectionLine = styled(GridCellLine)({
   borderTopColor: grey[700],
 });
 
-const KeyboardHint = styled(Typography)({
-  [STORE_LAYOUT_TOUCH_MEDIA]: {
-    display: "none",
-  },
-});
+const TablePrompt = styled(Button)(({ theme }) => ({
+  gridRow: 3,
+  gridColumn: 2,
+  flexWrap: "wrap",
+  gap: theme.spacing(1),
+  pointerEvents: "auto",
+}));
+
+const OverlayActions = styled(Stack)(({ theme }) => ({
+  gridRow: 1,
+  gridColumn: 3,
+  justifySelf: "end",
+  alignSelf: "start",
+  flexDirection: "row",
+  gap: theme.spacing(1),
+  pointerEvents: "auto",
+}));
+
+const OverlayButton = styled(IconButton)(({ theme }) => ({
+  border: `1px solid ${theme.vars.palette.divider}`,
+  color: theme.vars.palette.text.primary,
+}));
 
 const MOVE_MAP: KeyboardControlsEntry<StoreLayoutMove>[] = [
   { keys: ["ArrowUp", "KeyW"], name: "forward" },
@@ -328,6 +315,28 @@ const toCentimeters = (value: number) => Math.round(value * 1000) / 10;
 
 type Point = [number, number, number];
 
+const GRID_CELL_SIZE = 1;
+const GRID_SECTION_SIZE = 5;
+
+const gridPoints = (step: number, keep: (value: number) => boolean) => {
+  const points: Point[] = [];
+
+  for (let x = 0; x <= STORE_LAYOUT_ROOM.width; x += step)
+    if (keep(x)) points.push([x, 0, 0], [x, 0, STORE_LAYOUT_ROOM.depth]);
+
+  for (let z = 0; z <= STORE_LAYOUT_ROOM.depth; z += step)
+    if (keep(z)) points.push([0, 0, z], [STORE_LAYOUT_ROOM.width, 0, z]);
+
+  return points;
+};
+
+const GRID_CELL_POINTS = gridPoints(
+  GRID_CELL_SIZE,
+  (value) => value % GRID_SECTION_SIZE !== 0,
+);
+
+const GRID_SECTION_POINTS = gridPoints(GRID_SECTION_SIZE, () => true);
+
 const DIMENSION_TICK = 0.12;
 const DIMENSION_LABEL_GAP = 0.22;
 
@@ -346,13 +355,15 @@ const middleOf = (
   [toX, toY, toZ]: Point,
 ): Point => [(fromX + toX) / 2, (fromY + toY) / 2, (fromZ + toZ) / 2];
 
-const ROOM_DIMENSIONS: {
+interface Dimension {
   from: Point;
   key: "width" | "depth" | "height";
   outwards: Point;
   to: Point;
   value: number;
-}[] = [
+}
+
+const ROOM_DIMENSIONS: Dimension[] = [
   {
     from: [0, 0, STORE_LAYOUT_ROOM.depth + 0.45],
     key: "width",
@@ -376,33 +387,15 @@ const ROOM_DIMENSIONS: {
   },
 ];
 
-const GRID_CELL_SIZE = 1;
-const GRID_SECTION_SIZE = 5;
-
-const gridPoints = (step: number, keep: (value: number) => boolean) => {
-  const points: Point[] = [];
-
-  for (let x = 0; x <= STORE_LAYOUT_ROOM.width; x += step)
-    if (keep(x)) points.push([x, 0, 0], [x, 0, STORE_LAYOUT_ROOM.depth]);
-
-  for (let z = 0; z <= STORE_LAYOUT_ROOM.depth; z += step)
-    if (keep(z)) points.push([0, 0, z], [STORE_LAYOUT_ROOM.width, 0, z]);
-
-  return points;
-};
-
-const GRID_CELL_POINTS = gridPoints(
-  GRID_CELL_SIZE,
-  (value) => value % GRID_SECTION_SIZE !== 0,
-);
-
-const GRID_SECTION_POINTS = gridPoints(GRID_SECTION_SIZE, () => true);
-
 const ITEM_DIMENSION_OFFSET = 0.06;
 const ITEM_DIMENSION_TICK = 0.04;
 const ITEM_DIMENSION_LABEL_GAP = 0.1;
 
-const itemDimensions = (width: number, height: number, depth: number) => {
+const itemDimensions = (
+  width: number,
+  height: number,
+  depth: number,
+): Dimension[] => {
   const halfWidth = width / 2;
   const halfHeight = height / 2;
   const halfDepth = depth / 2;
@@ -411,24 +404,24 @@ const itemDimensions = (width: number, height: number, depth: number) => {
 
   return [
     {
-      from: [-halfWidth, -halfHeight, outside] as Point,
-      key: "width" as const,
-      outwards: [0, 0, 1] as Point,
-      to: [halfWidth, -halfHeight, outside] as Point,
+      from: [-halfWidth, -halfHeight, outside],
+      key: "width",
+      outwards: [0, 0, 1],
+      to: [halfWidth, -halfHeight, outside],
       value: width,
     },
     {
-      from: [beside, -halfHeight, -halfDepth] as Point,
-      key: "depth" as const,
-      outwards: [1, 0, 0] as Point,
-      to: [beside, -halfHeight, halfDepth] as Point,
+      from: [beside, -halfHeight, -halfDepth],
+      key: "depth",
+      outwards: [1, 0, 0],
+      to: [beside, -halfHeight, halfDepth],
       value: depth,
     },
     {
-      from: [-beside, -halfHeight, -outside] as Point,
-      key: "height" as const,
-      outwards: [-1, 0, 0] as Point,
-      to: [-beside, halfHeight, -outside] as Point,
+      from: [-beside, -halfHeight, -outside],
+      key: "height",
+      outwards: [-1, 0, 0],
+      to: [-beside, halfHeight, -outside],
       value: height,
     },
   ];
@@ -1375,7 +1368,7 @@ const StoreLayout = ({
                 />
               </Canvas>
             </KeyboardControls>
-            <Joystick inputRef={touchRef} view={view} />
+            <Joystick inputRef={touchRef} />
             <SummaryPaper variant="outlined">
               {FLOOR_SUMMARIES.map(({ floor: value, seats, tables }) => {
                 if (floors !== "all" && floors !== value) return null;
@@ -1409,6 +1402,7 @@ const StoreLayout = ({
               </StatusLegend>
             </SummaryPaper>
             <BottomBar onMouseDown={handleControlsMouseDown}>
+              <TouchActions inputRef={touchRef} view={view} />
               {!realistic && (
                 <GridLegend aria-label={tStoreLayout("gridScale")}>
                   <LegendStack direction="row">

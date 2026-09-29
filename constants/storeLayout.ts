@@ -1139,12 +1139,6 @@ export const STORE_LAYOUT_TOUCH_QUERY = "(hover: none) and (pointer: coarse)";
 
 export const STORE_LAYOUT_TOUCH_MEDIA = `@media ${STORE_LAYOUT_TOUCH_QUERY}`;
 
-export const STORE_LAYOUT_JOYSTICK = {
-  edgeGap: 16,
-  inset: 100,
-  radius: 50,
-} as const;
-
 export const STORE_LAYOUT_LOOK = {
   pitchLimit: (Math.PI / 180) * 80,
   speed: 1.6,

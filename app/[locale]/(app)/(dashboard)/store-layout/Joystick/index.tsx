@@ -1,38 +1,19 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import {
-  type RefObject,
-  useEffect,
-  useRef,
-  useState,
-  useSyncExternalStore,
-} from "react";
+import { type RefObject, useEffect, useRef, useSyncExternalStore } from "react";
 
-import { ArrowUpward } from "@mui/icons-material";
-import { Box, IconButton, Paper, Slider, Stack } from "@mui/material";
+import { Box } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 
 import nipplejs from "nipplejs";
 
 import {
-  STORE_LAYOUT_JOYSTICK,
   STORE_LAYOUT_TOUCH_MEDIA,
   STORE_LAYOUT_TOUCH_QUERY,
 } from "@/constants/storeLayout";
 
-import type {
-  StoreLayoutTouchInput,
-  StoreLayoutView,
-} from "@/types/storeLayout";
-
-const {
-  edgeGap: EDGE_GAP,
-  inset: STICK_INSET,
-  radius: STICK_RADIUS,
-} = STORE_LAYOUT_JOYSTICK;
-
-const ZOOM_LEVER_LENGTH = 160;
+import type { StoreLayoutTouchInput } from "@/types/storeLayout";
 
 const subscribeTouch = (onChange: () => void) => {
   const query = window.matchMedia(STORE_LAYOUT_TOUCH_QUERY);
@@ -42,7 +23,6 @@ const subscribeTouch = (onChange: () => void) => {
   return () => query.removeEventListener("change", onChange);
 };
 
-// 搖桿感應區的父層不能是 flex，否則 nipplejs 不扣感應區的位置，浮動搖桿會出現在手指下方偏移處
 const TouchControls = styled(Box)({
   position: "absolute",
   inset: 0,
@@ -64,83 +44,16 @@ const MoveZone = styled(Zone)({ left: 0 });
 
 const LookZone = styled(Zone)({ left: "50%" });
 
-const EdgeControls = styled(Stack)({
-  position: "absolute",
-  top: EDGE_GAP,
-  right: EDGE_GAP,
-  bottom: STICK_INSET + STICK_RADIUS + EDGE_GAP,
-  alignItems: "center",
-  justifyContent: "flex-end",
-  gap: EDGE_GAP,
-  pointerEvents: "none",
-
-  "& > *": {
-    pointerEvents: "auto",
-  },
-});
-
-const LeverTrack = styled(Paper)(({ theme }) => ({
-  flex: `0 1 ${ZOOM_LEVER_LENGTH}px`,
-  minHeight: 0,
-  paddingBlock: theme.spacing(1.5),
-}));
-
-const Jump = styled(IconButton)(({ theme }) => ({
-  border: `1px solid ${theme.vars.palette.divider}`,
-  color: theme.vars.palette.text.primary,
-  touchAction: "none",
-}));
-
-interface ZoomLeverProps {
-  inputRef: RefObject<StoreLayoutTouchInput>;
-}
-
-const ZoomLever = ({ inputRef }: ZoomLeverProps) => {
-  const tStoreLayout = useTranslations("storeLayout");
-
-  const [zoom, setZoom] = useState(0);
-
-  useEffect(
-    () => () => {
-      inputRef.current.zoom = 0;
-    },
-    [inputRef],
-  );
-
-  const pushZoom = (value: number) => {
-    inputRef.current.zoom = value;
-    setZoom(value);
-  };
-
-  return (
-    <LeverTrack variant="outlined">
-      <Slider
-        aria-label={tStoreLayout("touchControls.zoom")}
-        max={1}
-        min={-1}
-        onChange={(_event, value) => pushZoom(value)}
-        onChangeCommitted={() => pushZoom(0)}
-        orientation="vertical"
-        step={0.01}
-        track={false}
-        value={zoom}
-      />
-    </LeverTrack>
-  );
-};
-
 interface JoystickProps {
   inputRef: RefObject<StoreLayoutTouchInput>;
-  view: StoreLayoutView;
 }
 
-const Joystick = ({ inputRef, view }: JoystickProps) => {
+const Joystick = ({ inputRef }: JoystickProps) => {
   const tStoreLayout = useTranslations("storeLayout");
   const theme = useTheme();
 
   const moveZoneRef = useRef<HTMLDivElement>(null);
   const lookZoneRef = useRef<HTMLDivElement>(null);
-  const jumpPointerRef = useRef<number | null>(null);
 
   const touch = useSyncExternalStore(
     subscribeTouch,
@@ -204,34 +117,6 @@ const Joystick = ({ inputRef, view }: JoystickProps) => {
     };
   }, [back, inputRef, lookFront, moveFront, touch]);
 
-  useEffect(
-    () => () => {
-      inputRef.current.jump = false;
-    },
-    [inputRef],
-  );
-
-  const setJump = (pressed: boolean) => {
-    inputRef.current.jump = pressed;
-  };
-
-  const handleJumpDown = (event: React.PointerEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-
-    if (jumpPointerRef.current !== null) return;
-
-    jumpPointerRef.current = event.pointerId;
-    event.currentTarget.setPointerCapture(event.pointerId);
-    setJump(true);
-  };
-
-  const handleJumpUp = (event: React.PointerEvent<HTMLButtonElement>) => {
-    if (jumpPointerRef.current !== event.pointerId) return;
-
-    jumpPointerRef.current = null;
-    setJump(false);
-  };
-
   return (
     <TouchControls>
       <MoveZone
@@ -242,20 +127,6 @@ const Joystick = ({ inputRef, view }: JoystickProps) => {
         aria-label={tStoreLayout("touchControls.look")}
         ref={lookZoneRef}
       />
-      <EdgeControls>
-        {view !== "first" && <ZoomLever inputRef={inputRef} />}
-        <Jump
-          aria-label={tStoreLayout("touchControls.jump")}
-          onContextMenu={(event) => event.preventDefault()}
-          onLostPointerCapture={handleJumpUp}
-          onPointerCancel={handleJumpUp}
-          onPointerDown={handleJumpDown}
-          onPointerUp={handleJumpUp}
-          size="large"
-        >
-          <ArrowUpward />
-        </Jump>
-      </EdgeControls>
     </TouchControls>
   );
 };
