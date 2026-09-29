@@ -12,7 +12,10 @@ import Surface, { SURFACES, surfaceOf } from "./Surface";
 const CORNER_RADIUS = 0.02;
 const CORNER_SEGMENTS = 2;
 
-const GRINDER_MODEL = "/models/grinder.glb";
+const MODELS: Partial<Record<StoreLayoutItem["label"], string>> = {
+  grinder: "/models/grinder.glb",
+  iceMachine: "/models/iceMachine.glb",
+};
 
 const POT_HEIGHT = 0.35;
 const LEAF_COLOR = "#4f7a3a";
@@ -126,8 +129,12 @@ const Planter = ({ ghost, item }: ItemBodyProps) => {
   );
 };
 
-const Grinder = ({ ghost, item }: ItemBodyProps) => {
-  const { scene } = useGLTF(GRINDER_MODEL);
+interface ModelProps extends ItemBodyProps {
+  url: string;
+}
+
+const Model = ({ ghost, item, url }: ModelProps) => {
+  const { scene } = useGLTF(url);
 
   const model = useMemo(() => {
     const clone = scene.clone();
@@ -154,10 +161,12 @@ const Grinder = ({ ghost, item }: ItemBodyProps) => {
 const ItemBody = ({ ghost, item }: ItemBodyProps) => {
   if (item.label === "table") return null;
 
-  if (item.label === "grinder")
+  const url = MODELS[item.label];
+
+  if (url)
     return (
       <Suspense fallback={<Block ghost={ghost} item={item} />}>
-        <Grinder ghost={ghost} item={item} />
+        <Model ghost={ghost} item={item} url={url} />
       </Suspense>
     );
 
