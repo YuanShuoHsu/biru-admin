@@ -598,11 +598,17 @@ const StoreLayout = ({
 
     const { scrollX, scrollY } = window;
     const root = document.documentElement;
+    const scrollToTop = () => window.scrollTo(0, 0);
 
     root.style.overflow = "hidden";
-    window.scrollTo(0, 0);
+    scrollToTop();
+
+    window.addEventListener("resize", scrollToTop);
+    window.addEventListener("scroll", scrollToTop);
 
     return () => {
+      window.removeEventListener("resize", scrollToTop);
+      window.removeEventListener("scroll", scrollToTop);
       root.style.overflow = "";
       window.scrollTo(scrollX, scrollY);
     };
