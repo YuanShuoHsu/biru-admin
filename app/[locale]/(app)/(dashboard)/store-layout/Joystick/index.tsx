@@ -42,10 +42,7 @@ const subscribeTouch = (onChange: () => void) => {
   return () => query.removeEventListener("change", onChange);
 };
 
-const MOVE_POSITION = { bottom: `${STICK_INSET}px`, left: `${STICK_INSET}px` };
-
-const LOOK_POSITION = { bottom: `${STICK_INSET}px`, right: `${STICK_INSET}px` };
-
+// 搖桿感應區的父層不能是 flex，否則 nipplejs 不扣感應區的位置，浮動搖桿會出現在手指下方偏移處
 const TouchControls = styled(Box)({
   position: "absolute",
   inset: 0,
@@ -166,19 +163,13 @@ const Joystick = ({ inputRef, view }: JoystickProps) => {
 
     const move = nipplejs.create({
       color: { back, front: moveFront },
-      follow: true,
-      mode: "static",
-      position: MOVE_POSITION,
-      restOpacity: 0.9,
+      mode: "dynamic",
       zone: moveZone,
     });
 
     const look = nipplejs.create({
       color: { back, front: lookFront },
-      follow: true,
-      mode: "static",
-      position: LOOK_POSITION,
-      restOpacity: 0.9,
+      mode: "dynamic",
       zone: lookZone,
     });
 
