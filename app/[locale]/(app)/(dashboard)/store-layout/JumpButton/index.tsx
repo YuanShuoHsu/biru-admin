@@ -12,9 +12,6 @@ import { STORE_LAYOUT_TOUCH_MEDIA } from "@/constants/storeLayout";
 import type { StoreLayoutTouchInput } from "@/types/storeLayout";
 
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
-  gridRow: 2,
-  gridColumn: 3,
-  justifySelf: "end",
   border: `1px solid ${theme.vars.palette.divider}`,
   color: theme.vars.palette.text.primary,
   touchAction: "none",

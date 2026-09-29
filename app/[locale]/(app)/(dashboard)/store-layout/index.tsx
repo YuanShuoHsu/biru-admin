@@ -181,7 +181,7 @@ const CanvasOverlay = styled(Box)(({ theme }) => ({
   inset: theme.spacing(2),
   display: "grid",
   gridTemplateColumns: "1fr auto 1fr",
-  gridTemplateRows: "1fr auto auto",
+  gridTemplateRows: "auto 1fr auto",
   alignItems: "end",
   gap: theme.spacing(1),
   pointerEvents: "none",
@@ -218,6 +218,16 @@ const StatusDot = styled("span")(({ theme }) => ({
   height: 8,
   marginInlineEnd: theme.spacing(0.5),
   borderRadius: "50%",
+}));
+
+const ControlRail = styled(Stack)(({ theme }) => ({
+  gridRow: 2,
+  gridColumn: 3,
+  justifySelf: "end",
+  alignSelf: "stretch",
+  justifyContent: "center",
+  alignItems: "center",
+  gap: theme.spacing(1),
 }));
 
 const GridLegend = styled(Stack, {
@@ -1425,9 +1435,11 @@ const StoreLayout = ({
                     ))}
                   </StatusLegend>
                 </Summary>
-                {view !== "first" && <ZoomLever inputRef={touchRef} />}
               </TopRow>
-              <JumpButton inputRef={touchRef} />
+              <ControlRail>
+                {view !== "first" && <ZoomLever inputRef={touchRef} />}
+                <JumpButton inputRef={touchRef} />
+              </ControlRail>
               <GridLegend
                 aria-label={tStoreLayout("gridScale")}
                 shown={!realistic}

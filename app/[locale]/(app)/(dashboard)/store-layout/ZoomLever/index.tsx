@@ -13,9 +13,7 @@ import type { StoreLayoutTouchInput } from "@/types/storeLayout";
 const ZOOM_LEVER_LENGTH = 160;
 
 const LeverTrack = styled(Box)(({ theme }) => ({
-  flexShrink: 0,
   height: ZOOM_LEVER_LENGTH,
-  maxHeight: "100%",
   paddingBlock: theme.spacing(1),
   border: `1px solid ${theme.vars.palette.divider}`,
   borderRadius: theme.shape.borderRadius,
