@@ -39,6 +39,7 @@ const Zone = styled(Box)({
   width: "50%",
   height: "50%",
   display: "none",
+  isolation: "isolate",
 
   [STORE_LAYOUT_TOUCH_MEDIA]: {
     display: "block",
