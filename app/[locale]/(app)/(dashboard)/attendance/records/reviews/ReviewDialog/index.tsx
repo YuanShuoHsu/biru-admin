@@ -231,7 +231,7 @@ const ReviewDialog = ({
       <StyledStack>
         <Typography>
           {extraWork ? extraWork.shift.employeeName : request.employeeName} ·{" "}
-          {date(extraWork ? extraWork.startsAt : request.startsAt)} —{" "}
+          {date(extraWork ? extraWork.startsAt : request.startsAt)} –{" "}
           {date(extraWork ? extraWork.endsAt : request.endsAt)}
         </Typography>
         {request && <Typography>{request.reason}</Typography>}

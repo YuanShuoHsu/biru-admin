@@ -235,7 +235,7 @@ const LeaveDialog = ({
                 const leaveCase = leaveCases.find(({ id }) => id === selected);
 
                 return leaveCase ? (
-                  `${leaveCase.reference} · ${date(leaveCase.startsAt)} — ${date(leaveCase.endsAt)}`
+                  `${leaveCase.reference} · ${date(leaveCase.startsAt)} – ${date(leaveCase.endsAt)}`
                 ) : (
                   <em>{tAttendance("leaveCase.placeholder")}</em>
                 );
@@ -251,7 +251,7 @@ const LeaveDialog = ({
             .filter((item) => item.leaveTypeId === leaveTypeId)
             .map(({ endsAt, id, reference, startsAt }) => (
               <MenuItem key={id} value={id}>
-                {reference} · {date(startsAt)} — {date(endsAt)}
+                {reference} · {date(startsAt)} – {date(endsAt)}
               </MenuItem>
             ))}
         </TextField>

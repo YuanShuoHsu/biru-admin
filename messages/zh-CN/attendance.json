@@ -450,7 +450,7 @@
   "parentalContinuous": "连续期间申请",
   "parentalDaily": "按日申请",
   "parentalReturn": "提前复职",
-  "parentalReturnHint": "复职申请须由另一位主管核准。核准前原留停仍有效；核准后保留已休期间与原申请记录。请选择复职当日，该日起不再留停。",
+  "parentalReturnHint": "核准前原留停仍有效；核准后保留已休期间与原申请记录。请选择复职当日，该日起不再留停。",
   "parentalReturns": {
     "label": "复职申请",
     "approved": "已批准 {name} 的提前复职申请",

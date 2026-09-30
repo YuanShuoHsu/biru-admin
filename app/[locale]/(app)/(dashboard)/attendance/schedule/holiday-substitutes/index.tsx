@@ -333,7 +333,7 @@ const HolidaySubstitutes = ({
         filterOperators: stringFilterOperators,
         headerName: tAttendance("holidaySubstitutes.holidayDate"),
         valueFormatter: (value: string) =>
-          format.dateTime(dayjs.tz(value, STORE_TIMEZONE).toDate(), "short"),
+          format.dateTime(dayjs.tz(value, STORE_TIMEZONE).toDate(), "date"),
       },
       {
         field: "holidayName",
@@ -346,7 +346,7 @@ const HolidaySubstitutes = ({
         headerName: tAttendance("holidaySubstitutes.substituteDate"),
         renderCell: renderEmptyableCell,
         valueFormatter: (value: string | null) =>
-          value ? format.dateTime(new Date(value), "short") : "",
+          value ? format.dateTime(new Date(value), "date") : "",
       },
       {
         field: "status",

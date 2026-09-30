@@ -705,7 +705,7 @@ export const getPayrollAmountColumns = (
       return names.length
         ? tAttendance("namedAmount", {
             amount: money(value),
-            names: names.join("、"),
+            names: format.list(names, "enumeration"),
           })
         : money(value);
     },

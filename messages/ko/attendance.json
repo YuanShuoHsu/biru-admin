@@ -450,7 +450,7 @@
   "parentalContinuous": "연속 기간 신청",
   "parentalDaily": "일 단위 신청",
   "parentalReturn": "조기 복직",
-  "parentalReturnHint": "다른 관리자의 승인이 필요합니다. 승인 전에는 휴직이 유지됩니다. 승인 후에도 사용한 휴직 기간과 원본 기록을 보존하며 복직일 시작 시 휴직이 종료됩니다.",
+  "parentalReturnHint": "승인 전에는 휴직이 유지됩니다. 승인 후에도 사용한 휴직 기간과 원본 기록을 보존하며 복직일 시작 시 휴직이 종료됩니다.",
   "parentalReturns": {
     "label": "복직 신청",
     "approved": "{name}의 조기 복직 신청을 승인했습니다",

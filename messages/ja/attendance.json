@@ -450,7 +450,7 @@
   "parentalContinuous": "連続期間で申請",
   "parentalDaily": "日単位で申請",
   "parentalReturn": "早期復職",
-  "parentalReturnHint": "別の管理者の承認が必要です。承認までは休業が有効で、承認後も取得済み期間と当初の記録を保存します。復職日の開始時点で休業が終了します。",
+  "parentalReturnHint": "承認までは休業が有効で、承認後も取得済み期間と当初の記録を保存します。復職日の開始時点で休業が終了します。",
   "parentalReturns": {
     "label": "復職申請",
     "approved": "{name} の早期復職申請を承認しました",

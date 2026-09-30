@@ -134,7 +134,7 @@ const ReturnDialog = ({
     <FormBox id="attendance-return-form" onSubmit={onSubmit}>
       <Alert severity="info">{tAttendance("parentalReturnHint")}</Alert>
       <Typography>
-        {date(request.startsAt)} — {date(request.endsAt)}
+        {date(request.startsAt)} – {date(request.endsAt)}
       </Typography>
       <DatePicker
         label={tAttendance("returnsAt")}

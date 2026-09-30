@@ -341,7 +341,7 @@ const ParentalReturns = ({
         filterOperators: dateFilterOperators,
         headerName: tAttendance("originalLeavePeriod"),
         valueGetter: (value: string, row: AttendanceParentalReturn) =>
-          `${date(value)} — ${date(row.originalEndsAt)}`,
+          `${date(value)} – ${date(row.originalEndsAt)}`,
       },
       {
         field: "reason",

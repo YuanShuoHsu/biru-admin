@@ -450,7 +450,7 @@
   "parentalContinuous": "Continuous period",
   "parentalDaily": "Daily requests",
   "parentalReturn": "Early return",
-  "parentalReturnHint": "Another manager must approve the return. Leave remains active until approval. Approval preserves leave already taken and the original record. Leave ends at the start of the return date.",
+  "parentalReturnHint": "Leave remains active until approval. Approval preserves leave already taken and the original record. Leave ends at the start of the return date.",
   "parentalReturns": {
     "label": "Return requests",
     "approved": "Approved {name}'s early return request",

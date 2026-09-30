@@ -9,7 +9,7 @@ import { useCallback, useMemo, useState } from "react";
 import TaxIdentityDialog from "./TaxIdentityDialog";
 import UnitDialog from "./UnitDialog";
 
-import EmptyCell from "@/components/EmptyCell";
+import { renderEmptyableCell } from "@/components/EmptyCell";
 
 import { DATA_GRID_PROPS } from "@/constants/dataGrid";
 
@@ -192,7 +192,7 @@ const Withholding = ({
   );
 
   const amountColumn = useCallback(
-    (field: string): GridColDef => ({
+    (field: (typeof ANNUAL_AMOUNT_FIELDS)[number]): GridColDef => ({
       field,
       headerName: tAttendance(`withholding.amounts.${field}`),
       type: "number",
@@ -211,7 +211,7 @@ const Withholding = ({
       {
         field: "taxIdMasked",
         headerName: tAttendance("withholding.taxId"),
-        renderCell: ({ value }: GridRenderCellParams) => value ?? <EmptyCell />,
+        renderCell: renderEmptyableCell,
       },
       {
         field: "identityComplete",

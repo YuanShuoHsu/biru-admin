@@ -153,7 +153,7 @@ const SubstituteDialog = ({
           errors.shiftId?.message ??
           (shifts && !options.length
             ? tAttendance("holidaySubstitutes.noWorkdayShifts", {
-                date: format.dateTime(to.toDate(), "short"),
+                date: format.dateTime(to.toDate(), "date"),
               })
             : undefined)
         }
