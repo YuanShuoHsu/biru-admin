@@ -340,5 +340,15 @@
     "phone": "数字とハイフンで 15 桁以内で入力してください。",
     "taxOfficeCode": "英字 1 文字と数字 2 桁で入力してください（例：A03）。",
     "taxRegistrationNumber": "9 桁の源泉徴収単位税籍番号を入力してください。"
+  },
+  "foreignTaxId": {
+    "invalid": "英数字とハイフンで 30 文字以内で入力してください。",
+    "required": "納税者番号を入力してください（ない場合は NOTIN）。"
+  },
+  "residenceCountryCode": {
+    "required": "居住国・地域を選択してください。"
+  },
+  "residentCertificateId": {
+    "invalid": "10 桁の居留証統一証番号またはパスポート由来コードを入力してください。"
   }
 }

@@ -258,8 +258,8 @@
     "invalidBusinessNumber": "統一編號檢查碼不正確。",
     "invalidTaxId": "身分證統一編號檢查碼不正確。",
     "taxIdentityRequired": "還有員工尚未填寫身分證統一編號與戶籍地址。",
-    "taxIdentityUnsupported": "外籍員工目前需另行申報。",
-    "withholdingUnitRequired": "請先填寫申報單位資料。"
+    "withholdingUnitRequired": "請先填寫申報單位資料。",
+    "foreignTaxIdentityRequired": "外籍員工須填寫居住地國與稅務識別碼（無則填 NOTIN）。"
   },
   "eventAction": {
     "options": {
@@ -867,7 +867,6 @@
     "taxId": "身分證統一編號",
     "address": "戶籍地址",
     "period": "所得所屬期間",
-    "fileSeparately": "外籍需另行申報",
     "recipient": "所得人",
     "print": "列印",
     "noMine": "目前沒有已結束年度的扣繳憑單。",
@@ -905,6 +904,33 @@
       "title": "{name} 的申報資料",
       "edit": "編輯申報資料",
       "saved": "已儲存申報資料"
-    }
+    },
+    "identityStatus": "申報資料",
+    "idType": {
+      "label": "證號別",
+      "options": {
+        "0": "本國個人",
+        "3": "外籍居住者",
+        "7": "非居住者"
+      }
+    },
+    "issuance": {
+      "label": "填發方式",
+      "requested": "員工申請填發",
+      "exempt": "免填發"
+    },
+    "nonResident": {
+      "title": "非居住者給付（給付後 10 日內申報）"
+    },
+    "paymentDate": "給付日",
+    "deadline": "申報期限",
+    "downloadPayment": "下載 {date} 給付的申報檔",
+    "residentCertificateId": "居留證統一證號／護照衍生碼",
+    "residenceCountry": "居住地國或地區",
+    "foreignTaxId": "居住地國稅務識別碼（無則填 NOTIN）",
+    "otherCountry": "其他國家",
+    "paymentCertificateTitle": "{date} 給付之各類所得扣繳暨免扣繳憑單",
+    "request": "申請填發",
+    "requested": "已申請填發 {year} 年度扣繳憑單"
   }
 }

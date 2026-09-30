@@ -66,6 +66,7 @@ const DataGrid = dynamic(
 
 interface ReviewsProps {
   canReview: boolean;
+  canReviewOwn: boolean;
   employeeId?: string;
   filterField?: AttendanceRequestFilterField;
   filterOperator?: FilterOperator;
@@ -83,6 +84,7 @@ interface ReviewsProps {
 
 const Reviews = ({
   canReview,
+  canReviewOwn,
   employeeId,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
@@ -283,7 +285,7 @@ const Reviews = ({
                   <StyledStack direction="row">
                     <Tooltip
                       title={
-                        row.employeeId === employeeId
+                        !canReviewOwn && row.employeeId === employeeId
                           ? tAttendance("errors.cannotReviewSelf")
                           : reviewTitle(row, "approved")
                       }
@@ -291,7 +293,9 @@ const Reviews = ({
                       <span>
                         <IconButton
                           color="success"
-                          disabled={row.employeeId === employeeId}
+                          disabled={
+                            !canReviewOwn && row.employeeId === employeeId
+                          }
                           onClick={() => handleReview(row, "approved")}
                           size="small"
                         >
@@ -301,7 +305,7 @@ const Reviews = ({
                     </Tooltip>
                     <Tooltip
                       title={
-                        row.employeeId === employeeId
+                        !canReviewOwn && row.employeeId === employeeId
                           ? tAttendance("errors.cannotReviewSelf")
                           : reviewTitle(row, "rejected")
                       }
@@ -309,7 +313,9 @@ const Reviews = ({
                       <span>
                         <IconButton
                           color="error"
-                          disabled={row.employeeId === employeeId}
+                          disabled={
+                            !canReviewOwn && row.employeeId === employeeId
+                          }
                           onClick={() => handleReview(row, "rejected")}
                           size="small"
                         >
@@ -402,6 +408,7 @@ const Reviews = ({
       },
     ],
     [
+      canReviewOwn,
       canReview,
       date,
       dateFilterOperators,

@@ -340,5 +340,15 @@
     "phone": "请输入数字与连字号，最多 15 位。",
     "taxOfficeCode": "请输入 1 个英文字母加 2 位数字，例如 A03。",
     "taxRegistrationNumber": "请输入 9 位扣缴单位税籍编号。"
+  },
+  "foreignTaxId": {
+    "invalid": "只能输入英数字与连字号，最多 30 位。",
+    "required": "请输入税务识别码，无则填 NOTIN。"
+  },
+  "residenceCountryCode": {
+    "required": "请选择居住地国或地区。"
+  },
+  "residentCertificateId": {
+    "invalid": "请输入 10 位居留证统一证号或护照衍生码。"
   }
 }

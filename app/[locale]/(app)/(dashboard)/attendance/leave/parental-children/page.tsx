@@ -112,7 +112,7 @@ const ParentalChildrenPage = async ({
   const [
     { parentalChildren: rows, total: rowCount },
     { employees },
-    { employee },
+    { employee, selfReviewAllowed },
   ] = await Promise.all([
     getAttendanceParentalChildren(
       organization.slug,
@@ -144,6 +144,7 @@ const ParentalChildrenPage = async ({
       <ParentalChildren
         canViewAll={canViewAll}
         canWrite={canWrite}
+        canReviewOwn={selfReviewAllowed.parentalChild}
         employeeId={employee?.id}
         employees={employees}
         filterField={filterField}

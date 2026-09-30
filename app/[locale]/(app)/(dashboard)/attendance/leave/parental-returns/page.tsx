@@ -116,26 +116,28 @@ const ParentalReturnsPage = async ({
       )
     : [];
 
-  const [{ parentalReturns: rows, total: rowCount }, { employee }] =
-    await Promise.all([
-      getAttendanceParentalReturns(
-        organization.slug,
-        canViewAll ? "org" : "me",
-        {
-          page,
-          pageSize,
-          filterField,
-          filterOperator,
-          filterValue,
-          quickFilterEnums,
-          quickFilterValue,
-          sortBy,
-          sortDirection,
-        },
-        fetchOptions,
-      ),
-      getAttendanceContext(organization.slug, fetchOptions),
-    ]);
+  const [
+    { parentalReturns: rows, total: rowCount },
+    { employee, selfReviewAllowed },
+  ] = await Promise.all([
+    getAttendanceParentalReturns(
+      organization.slug,
+      canViewAll ? "org" : "me",
+      {
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterEnums,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+      },
+      fetchOptions,
+    ),
+    getAttendanceContext(organization.slug, fetchOptions),
+  ]);
 
   return (
     <AttendanceTabsLayout memberRole={memberRole}>
@@ -144,6 +146,7 @@ const ParentalReturnsPage = async ({
           parentalReturn: ["update"],
         })}
         canViewAll={canViewAll}
+        canReviewOwn={selfReviewAllowed.parentalReturn}
         employeeId={employee?.id}
         filterField={filterField}
         filterOperator={filterOperator}

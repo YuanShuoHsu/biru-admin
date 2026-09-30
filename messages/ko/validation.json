@@ -340,5 +340,15 @@
     "phone": "숫자와 하이픈만 최대 15자리까지 입력하세요.",
     "taxOfficeCode": "영문자 1자와 숫자 2자리로 입력하세요 (예: A03).",
     "taxRegistrationNumber": "9자리 원천징수 단위 세적 번호를 입력하세요."
+  },
+  "foreignTaxId": {
+    "invalid": "영문, 숫자, 하이픈만 최대 30자까지 입력하세요.",
+    "required": "납세자 번호를 입력하세요 (없으면 NOTIN)."
+  },
+  "residenceCountryCode": {
+    "required": "거주 국가 또는 지역을 선택하세요."
+  },
+  "residentCertificateId": {
+    "invalid": "10자리 거류증 통일 증번호 또는 여권 기반 코드를 입력하세요."
   }
 }

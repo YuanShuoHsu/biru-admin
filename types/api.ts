@@ -2538,6 +2538,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/payroll/withholding-file/non-resident": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 產生非居住者給付日的扣繳憑單申報檔（給付後 10 日內申報） */
+    get: operations["PayrollWithholdingController_nonResidentFile"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/payroll/withholding-unit": {
     parameters: {
       query?: never;
@@ -2589,6 +2606,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/payroll/me/withholding-certificates/{year}/request": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 申請填發扣繳憑單（免填發年度改為填發） */
+    post: operations["PayrollWithholdingController_requestCertificate"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2624,6 +2658,7 @@ export interface components {
       | "healthInsuranceExemptionInvalid"
       | "healthInsuranceRequired"
       | "healthSupplementExemptionInvalid"
+      | "foreignTaxIdentityRequired"
       | "holidayCalendarMissing"
       | "holidaySubstituteInvalid"
       | "idempotencyConflict"
@@ -2704,7 +2739,6 @@ export interface components {
       | "statutoryLeaveTypeLocked"
       | "studentWeeklyHoursExceeded"
       | "taxIdentityRequired"
-      | "taxIdentityUnsupported"
       | "terminationProtected"
       | "terminationReasonRequired"
       | "weeklyRestRequired"
@@ -2785,11 +2819,20 @@ export interface components {
       createdAt: string;
       status: components["schemas"]["AttendanceEmployeeStatus"];
     };
+    AttendanceSelfReviewAllowanceDto: {
+      attendanceRequest: boolean;
+      leaveCase: boolean;
+      parentalChild: boolean;
+      parentalReturn: boolean;
+      payslip: boolean;
+    };
     AttendanceContextResponseDto: {
       employee?: components["schemas"]["AttendanceEmployeeResponseDto"] | null;
       canManage: boolean;
       canManageSettings: boolean;
       canManagePayroll: boolean;
+      /** @description 店內沒有其他人具備同一審核權限時，本人可處理自己的案件 */
+      selfReviewAllowed: components["schemas"]["AttendanceSelfReviewAllowanceDto"];
     };
     /** @enum {string} */
     FilterOperator:
@@ -6665,14 +6708,16 @@ export interface components {
       /** Format: email */
       contactEmail: string;
     };
+    /** @enum {string} */
+    WithholdingIdType: "0" | "3" | "7";
     PayrollWithholdingCertificateResponseDto: {
       employeeId: string;
       employeeName: string;
       legalStatus: components["schemas"]["AttendanceLegalStatus"];
-      /** @description 外籍員工目前需另行申報 */
-      filable: boolean;
+      idType: components["schemas"]["WithholdingIdType"];
       taxIdMasked?: string | null;
-      addressProvided: boolean;
+      identityComplete: boolean;
+      certificateRequested: boolean;
       periodFrom: string;
       periodTo: string;
       salaryCents: string;
@@ -6681,10 +6726,24 @@ export interface components {
       retirementIncomeCents: string;
       retirementWithholdingCents: string;
     };
+    PayrollNonResidentPaymentResponseDto: {
+      paymentDate: string;
+      /** @description 代扣稅款之日起 10 日內 */
+      deadline: string;
+      employeeId: string;
+      employeeName: string;
+      taxIdMasked?: string | null;
+      identityComplete: boolean;
+      salaryCents: string;
+      salaryWithholdingCents: string;
+      retirementIncomeCents: string;
+      retirementWithholdingCents: string;
+    };
     PayrollWithholdingSummaryResponseDto: {
       year: number;
       unit?: components["schemas"]["PayrollWithholdingUnitResponseDto"] | null;
       certificates: components["schemas"]["PayrollWithholdingCertificateResponseDto"][];
+      nonResidentPayments: components["schemas"]["PayrollNonResidentPaymentResponseDto"][];
     };
     PayrollWithholdingFileResponseDto: {
       fileName: string;
@@ -6705,12 +6764,272 @@ export interface components {
       /** Format: email */
       contactEmail: string;
     };
+    /** @enum {string} */
+    ResidenceCountryCode:
+      | "AD"
+      | "AE"
+      | "AF"
+      | "AG"
+      | "AI"
+      | "AL"
+      | "AM"
+      | "AN"
+      | "AO"
+      | "AQ"
+      | "AR"
+      | "AS"
+      | "AT"
+      | "AU"
+      | "AW"
+      | "AX"
+      | "AZ"
+      | "BA"
+      | "BB"
+      | "BD"
+      | "BE"
+      | "BF"
+      | "BG"
+      | "BH"
+      | "BI"
+      | "BJ"
+      | "BL"
+      | "BM"
+      | "BN"
+      | "BO"
+      | "BR"
+      | "BS"
+      | "BT"
+      | "BV"
+      | "BW"
+      | "BY"
+      | "BZ"
+      | "CA"
+      | "CC"
+      | "CD"
+      | "CF"
+      | "CG"
+      | "CH"
+      | "CI"
+      | "CK"
+      | "CL"
+      | "CM"
+      | "CN"
+      | "CO"
+      | "CR"
+      | "CU"
+      | "CV"
+      | "CX"
+      | "CY"
+      | "CZ"
+      | "DE"
+      | "DJ"
+      | "DK"
+      | "DM"
+      | "DO"
+      | "DZ"
+      | "EC"
+      | "EE"
+      | "EG"
+      | "EH"
+      | "ER"
+      | "ES"
+      | "ET"
+      | "FI"
+      | "FJ"
+      | "FK"
+      | "FM"
+      | "FO"
+      | "FR"
+      | "FX"
+      | "GA"
+      | "GB"
+      | "GD"
+      | "GE"
+      | "GF"
+      | "GG"
+      | "GH"
+      | "GI"
+      | "GL"
+      | "GM"
+      | "GN"
+      | "GP"
+      | "GQ"
+      | "GR"
+      | "GS"
+      | "GT"
+      | "GU"
+      | "GW"
+      | "GY"
+      | "HK"
+      | "HM"
+      | "HN"
+      | "HR"
+      | "HT"
+      | "HU"
+      | "ID"
+      | "IE"
+      | "IL"
+      | "IM"
+      | "IN"
+      | "IO"
+      | "IQ"
+      | "IR"
+      | "IS"
+      | "IT"
+      | "JE"
+      | "JM"
+      | "JO"
+      | "JP"
+      | "KE"
+      | "KG"
+      | "KH"
+      | "KI"
+      | "KM"
+      | "KN"
+      | "KP"
+      | "KR"
+      | "KW"
+      | "KY"
+      | "KZ"
+      | "LA"
+      | "LB"
+      | "LC"
+      | "LI"
+      | "LK"
+      | "LR"
+      | "LS"
+      | "LT"
+      | "LU"
+      | "LV"
+      | "LY"
+      | "MA"
+      | "MC"
+      | "MD"
+      | "ME"
+      | "MF"
+      | "MG"
+      | "MH"
+      | "MK"
+      | "ML"
+      | "MM"
+      | "MN"
+      | "MO"
+      | "MP"
+      | "MQ"
+      | "MR"
+      | "MS"
+      | "MT"
+      | "MU"
+      | "MV"
+      | "MW"
+      | "MX"
+      | "MY"
+      | "MZ"
+      | "NA"
+      | "NC"
+      | "NE"
+      | "NF"
+      | "NG"
+      | "NI"
+      | "NL"
+      | "NO"
+      | "NP"
+      | "NR"
+      | "NU"
+      | "NZ"
+      | "OM"
+      | "PA"
+      | "PE"
+      | "PF"
+      | "PG"
+      | "PH"
+      | "PK"
+      | "PL"
+      | "PM"
+      | "PN"
+      | "PR"
+      | "PS"
+      | "PT"
+      | "PW"
+      | "PY"
+      | "QA"
+      | "RE"
+      | "RO"
+      | "RS"
+      | "RU"
+      | "RW"
+      | "SA"
+      | "SB"
+      | "SC"
+      | "SD"
+      | "SE"
+      | "SG"
+      | "SH"
+      | "SI"
+      | "SJ"
+      | "SK"
+      | "SL"
+      | "SM"
+      | "SN"
+      | "SO"
+      | "SR"
+      | "ST"
+      | "SV"
+      | "SY"
+      | "SZ"
+      | "TC"
+      | "TD"
+      | "TF"
+      | "TG"
+      | "TH"
+      | "TJ"
+      | "TK"
+      | "TL"
+      | "TM"
+      | "TN"
+      | "TO"
+      | "TP"
+      | "TR"
+      | "TT"
+      | "TV"
+      | "TW"
+      | "TZ"
+      | "UA"
+      | "UG"
+      | "UM"
+      | "US"
+      | "UY"
+      | "UZ"
+      | "VA"
+      | "VC"
+      | "VE"
+      | "VG"
+      | "VI"
+      | "VN"
+      | "VU"
+      | "WF"
+      | "WS"
+      | "XA"
+      | "XB"
+      | "XC"
+      | "YE"
+      | "YT"
+      | "YU"
+      | "ZA"
+      | "ZM"
+      | "ZW"
+      | "ZZ";
     PayrollTaxIdentityDto: {
-      /** @description 國民身分證統一編號 */
+      /** @description 本國籍為身分證統一編號；外籍為居留證統一證號，未住滿 183 天且無統一證號者為護照出生年月日加英文姓名前 2 字母 */
       taxId: string;
-      /** @description 戶籍地址 */
+      /** @description 戶籍地址；外籍無中文地址者填雇主地址 */
       address: string;
+      residenceCountryCode?: components["schemas"]["ResidenceCountryCode"];
+      /** @description 居住地國稅務識別碼，無則填 NOTIN */
+      foreignTaxId?: string;
     };
+    /** @enum {string} */
+    MyWithholdingCertificateKind: "annual" | "nonResident";
     MyWithholdingUnitResponseDto: {
       businessNumber: string;
       name: string;
@@ -6718,7 +7037,12 @@ export interface components {
       agentName: string;
     };
     MyWithholdingCertificateResponseDto: {
+      kind: components["schemas"]["MyWithholdingCertificateKind"];
+      idType: components["schemas"]["WithholdingIdType"];
       year: number;
+      paymentDate?: string | null;
+      /** @description 免填發的年度憑單可由員工申請填發 */
+      requested: boolean;
       unit: components["schemas"]["MyWithholdingUnitResponseDto"];
       employeeName: string;
       taxId: string;
@@ -12920,6 +13244,34 @@ export interface operations {
       };
     };
   };
+  PayrollWithholdingController_nonResidentFile: {
+    parameters: {
+      query: {
+        paymentDate: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PayrollWithholdingFileResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   PayrollWithholdingController_saveUnit: {
     parameters: {
       query?: never;
@@ -13008,6 +13360,34 @@ export interface operations {
       };
     };
   };
+  PayrollWithholdingController_requestCertificate: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        year: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceIdResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
 }
 type FlattenedDeepRequired<T> = {
   [K in keyof T]-?: FlattenedDeepRequired<
@@ -13072,6 +13452,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "healthInsuranceExemptionInvalid",
   "healthInsuranceRequired",
   "healthSupplementExemptionInvalid",
+  "foreignTaxIdentityRequired",
   "holidayCalendarMissing",
   "holidaySubstituteInvalid",
   "idempotencyConflict",
@@ -13152,7 +13533,6 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "statutoryLeaveTypeLocked",
   "studentWeeklyHoursExceeded",
   "taxIdentityRequired",
-  "taxIdentityUnsupported",
   "terminationProtected",
   "terminationReasonRequired",
   "weeklyRestRequired",
@@ -14173,3 +14553,266 @@ export const payrollEarningTypeSortFieldValues: ReadonlyArray<
 export const payrollEarningCategoryValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["PayrollEarningCategory"]
 > = ["wage", "bonus"];
+export const withholdingIdTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["WithholdingIdType"]
+> = ["0", "3", "7"];
+export const residenceCountryCodeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["ResidenceCountryCode"]
+> = [
+  "AD",
+  "AE",
+  "AF",
+  "AG",
+  "AI",
+  "AL",
+  "AM",
+  "AN",
+  "AO",
+  "AQ",
+  "AR",
+  "AS",
+  "AT",
+  "AU",
+  "AW",
+  "AX",
+  "AZ",
+  "BA",
+  "BB",
+  "BD",
+  "BE",
+  "BF",
+  "BG",
+  "BH",
+  "BI",
+  "BJ",
+  "BL",
+  "BM",
+  "BN",
+  "BO",
+  "BR",
+  "BS",
+  "BT",
+  "BV",
+  "BW",
+  "BY",
+  "BZ",
+  "CA",
+  "CC",
+  "CD",
+  "CF",
+  "CG",
+  "CH",
+  "CI",
+  "CK",
+  "CL",
+  "CM",
+  "CN",
+  "CO",
+  "CR",
+  "CU",
+  "CV",
+  "CX",
+  "CY",
+  "CZ",
+  "DE",
+  "DJ",
+  "DK",
+  "DM",
+  "DO",
+  "DZ",
+  "EC",
+  "EE",
+  "EG",
+  "EH",
+  "ER",
+  "ES",
+  "ET",
+  "FI",
+  "FJ",
+  "FK",
+  "FM",
+  "FO",
+  "FR",
+  "FX",
+  "GA",
+  "GB",
+  "GD",
+  "GE",
+  "GF",
+  "GG",
+  "GH",
+  "GI",
+  "GL",
+  "GM",
+  "GN",
+  "GP",
+  "GQ",
+  "GR",
+  "GS",
+  "GT",
+  "GU",
+  "GW",
+  "GY",
+  "HK",
+  "HM",
+  "HN",
+  "HR",
+  "HT",
+  "HU",
+  "ID",
+  "IE",
+  "IL",
+  "IM",
+  "IN",
+  "IO",
+  "IQ",
+  "IR",
+  "IS",
+  "IT",
+  "JE",
+  "JM",
+  "JO",
+  "JP",
+  "KE",
+  "KG",
+  "KH",
+  "KI",
+  "KM",
+  "KN",
+  "KP",
+  "KR",
+  "KW",
+  "KY",
+  "KZ",
+  "LA",
+  "LB",
+  "LC",
+  "LI",
+  "LK",
+  "LR",
+  "LS",
+  "LT",
+  "LU",
+  "LV",
+  "LY",
+  "MA",
+  "MC",
+  "MD",
+  "ME",
+  "MF",
+  "MG",
+  "MH",
+  "MK",
+  "ML",
+  "MM",
+  "MN",
+  "MO",
+  "MP",
+  "MQ",
+  "MR",
+  "MS",
+  "MT",
+  "MU",
+  "MV",
+  "MW",
+  "MX",
+  "MY",
+  "MZ",
+  "NA",
+  "NC",
+  "NE",
+  "NF",
+  "NG",
+  "NI",
+  "NL",
+  "NO",
+  "NP",
+  "NR",
+  "NU",
+  "NZ",
+  "OM",
+  "PA",
+  "PE",
+  "PF",
+  "PG",
+  "PH",
+  "PK",
+  "PL",
+  "PM",
+  "PN",
+  "PR",
+  "PS",
+  "PT",
+  "PW",
+  "PY",
+  "QA",
+  "RE",
+  "RO",
+  "RS",
+  "RU",
+  "RW",
+  "SA",
+  "SB",
+  "SC",
+  "SD",
+  "SE",
+  "SG",
+  "SH",
+  "SI",
+  "SJ",
+  "SK",
+  "SL",
+  "SM",
+  "SN",
+  "SO",
+  "SR",
+  "ST",
+  "SV",
+  "SY",
+  "SZ",
+  "TC",
+  "TD",
+  "TF",
+  "TG",
+  "TH",
+  "TJ",
+  "TK",
+  "TL",
+  "TM",
+  "TN",
+  "TO",
+  "TP",
+  "TR",
+  "TT",
+  "TV",
+  "TW",
+  "TZ",
+  "UA",
+  "UG",
+  "UM",
+  "US",
+  "UY",
+  "UZ",
+  "VA",
+  "VC",
+  "VE",
+  "VG",
+  "VI",
+  "VN",
+  "VU",
+  "WF",
+  "WS",
+  "XA",
+  "XB",
+  "XC",
+  "YE",
+  "YT",
+  "YU",
+  "ZA",
+  "ZM",
+  "ZW",
+  "ZZ",
+];
+export const myWithholdingCertificateKindValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["MyWithholdingCertificateKind"]
+> = ["annual", "nonResident"];

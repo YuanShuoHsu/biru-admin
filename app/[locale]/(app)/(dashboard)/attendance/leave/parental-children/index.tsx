@@ -59,6 +59,7 @@ const DataGrid = dynamic(
 interface ParentalChildrenProps {
   canViewAll: boolean;
   canWrite: boolean;
+  canReviewOwn: boolean;
   employeeId?: string;
   employees: AttendanceEmployee[];
   filterField?: AttendanceParentalChildFilterField;
@@ -77,6 +78,7 @@ interface ParentalChildrenProps {
 const ParentalChildren = ({
   canViewAll,
   canWrite,
+  canReviewOwn,
   employeeId,
   employees,
   filterField: initialFilterField,
@@ -221,7 +223,7 @@ const ParentalChildren = ({
         confirmText: tAttendance("save"),
         content: (
           <ChildDialog
-            employeeId={employeeId}
+            employeeId={canReviewOwn ? undefined : employeeId}
             employees={employees}
             mutate={mutate}
             organizationSlug={organizationSlug}
@@ -231,7 +233,15 @@ const ParentalChildren = ({
         open: true,
         title: tAttendance("parentalChildren.actions.create"),
       }),
-    [employeeId, employees, mutate, organizationSlug, setDialog, tAttendance],
+    [
+      canReviewOwn,
+      employeeId,
+      employees,
+      mutate,
+      organizationSlug,
+      setDialog,
+      tAttendance,
+    ],
   );
 
   const columns = useMemo<GridColDef[]>(

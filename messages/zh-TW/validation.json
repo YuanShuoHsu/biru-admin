@@ -340,5 +340,15 @@
     "phone": "請輸入數字與連字號，最多 15 碼。",
     "taxOfficeCode": "請輸入 1 個英文字母加 2 位數字，例如 A03。",
     "taxRegistrationNumber": "請輸入 9 碼扣繳單位稅籍編號。"
+  },
+  "foreignTaxId": {
+    "invalid": "只能輸入英數字與連字號，最多 30 碼。",
+    "required": "請輸入稅務識別碼，無則填 NOTIN。"
+  },
+  "residenceCountryCode": {
+    "required": "請選擇居住地國或地區。"
+  },
+  "residentCertificateId": {
+    "invalid": "請輸入 10 碼居留證統一證號或護照衍生碼。"
   }
 }

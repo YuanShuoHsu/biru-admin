@@ -114,6 +114,10 @@ export type PayrollEarningInput =
   components["schemas"]["PayrollEarningInputDto"];
 export type PayrollWithholdingSummary =
   components["schemas"]["PayrollWithholdingSummaryResponseDto"];
+export type PayrollNonResidentPayment =
+  components["schemas"]["PayrollNonResidentPaymentResponseDto"];
+export type ResidenceCountryCode =
+  components["schemas"]["ResidenceCountryCode"];
 export type PayrollWithholdingCertificate =
   components["schemas"]["PayrollWithholdingCertificateResponseDto"];
 export type PayrollWithholdingUnit =

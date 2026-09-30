@@ -258,8 +258,8 @@
     "invalidBusinessNumber": "统一编号检查码不正确。",
     "invalidTaxId": "身份证统一编号检查码不正确。",
     "taxIdentityRequired": "还有员工尚未填写身份证统一编号与户籍地址。",
-    "taxIdentityUnsupported": "外籍员工目前需另行申报。",
-    "withholdingUnitRequired": "请先填写申报单位资料。"
+    "withholdingUnitRequired": "请先填写申报单位资料。",
+    "foreignTaxIdentityRequired": "外籍员工须填写居住地国与税务识别码（无则填 NOTIN）。"
   },
   "eventAction": {
     "options": {
@@ -867,7 +867,6 @@
     "taxId": "身份证统一编号",
     "address": "户籍地址",
     "period": "所得所属期间",
-    "fileSeparately": "外籍需另行申报",
     "recipient": "所得人",
     "print": "打印",
     "noMine": "目前没有已结束年度的扣缴凭单。",
@@ -905,6 +904,33 @@
       "title": "{name} 的申报资料",
       "edit": "编辑申报资料",
       "saved": "已保存申报资料"
-    }
+    },
+    "identityStatus": "申报资料",
+    "idType": {
+      "label": "证号别",
+      "options": {
+        "0": "本国个人",
+        "3": "外籍居住者",
+        "7": "非居住者"
+      }
+    },
+    "issuance": {
+      "label": "填发方式",
+      "requested": "员工申请填发",
+      "exempt": "免填发"
+    },
+    "nonResident": {
+      "title": "非居住者给付（给付后 10 日内申报）"
+    },
+    "paymentDate": "给付日",
+    "deadline": "申报期限",
+    "downloadPayment": "下载 {date} 给付的申报文件",
+    "residentCertificateId": "居留证统一证号／护照衍生码",
+    "residenceCountry": "居住地国或地区",
+    "foreignTaxId": "居住地国税务识别码（无则填 NOTIN）",
+    "otherCountry": "其他国家",
+    "paymentCertificateTitle": "{date} 给付之各类所得扣缴暨免扣缴凭单",
+    "request": "申请填发",
+    "requested": "已申请填发 {year} 年度扣缴凭单"
   }
 }

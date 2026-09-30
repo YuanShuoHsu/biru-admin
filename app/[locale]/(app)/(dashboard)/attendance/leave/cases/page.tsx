@@ -128,7 +128,7 @@ const LeaveCasesPage = async ({
     { employees },
     { leaveTypes },
     { parentalChildren },
-    { employee },
+    { employee, selfReviewAllowed },
   ] = await Promise.all([
     getAttendanceLeaveCases(
       organization.slug,
@@ -177,6 +177,7 @@ const LeaveCasesPage = async ({
         })}
         canViewAll={canViewAll}
         canWrite={canWrite}
+        canReviewOwn={selfReviewAllowed.leaveCase}
         employeeId={employee?.id}
         employees={employees}
         filterField={filterField}

@@ -81,6 +81,7 @@ interface LeaveCasesProps {
   canUpdate: boolean;
   canViewAll: boolean;
   canWrite: boolean;
+  canReviewOwn: boolean;
   employeeId?: string;
   employees: AttendanceEmployee[];
   filterField?: AttendanceLeaveCaseFilterField;
@@ -104,6 +105,7 @@ const LeaveCases = ({
   canUpdate,
   canViewAll,
   canWrite,
+  canReviewOwn,
   employeeId,
   employees,
   filterField: initialFilterField,
@@ -252,7 +254,7 @@ const LeaveCases = ({
         confirmText: tAttendance("save"),
         content: (
           <LeaveCaseDialog
-            employeeId={employeeId}
+            employeeId={canReviewOwn ? undefined : employeeId}
             employees={employees}
             leaveCase={leaveCase}
             leaveTypes={leaveTypes}
@@ -268,6 +270,7 @@ const LeaveCases = ({
         ),
       }),
     [
+      canReviewOwn,
       employeeId,
       employees,
       leaveTypes,
@@ -366,7 +369,7 @@ const LeaveCases = ({
               renderCell: ({
                 row,
               }: GridRenderCellParams<AttendanceLeaveCase>) => {
-                const own = row.employeeId === employeeId;
+                const own = !canReviewOwn && row.employeeId === employeeId;
 
                 return (
                   <StyledStack direction="row">
@@ -491,6 +494,7 @@ const LeaveCases = ({
       },
     ],
     [
+      canReviewOwn,
       canAssignChild,
       canDelete,
       canUpdate,

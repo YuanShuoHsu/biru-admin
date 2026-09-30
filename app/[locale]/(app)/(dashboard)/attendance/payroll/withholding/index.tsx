@@ -1,7 +1,7 @@
 "use client";
 
 import dayjs from "dayjs";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
@@ -35,6 +35,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
+  PayrollNonResidentPayment,
   PayrollWithholdingCertificate,
   PayrollWithholdingFile,
   PayrollWithholdingSummary,
@@ -60,10 +61,17 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
-const AMOUNT_FIELDS = [
+const ANNUAL_AMOUNT_FIELDS = [
   "salaryCents",
   "salaryWithholdingCents",
   "voluntaryPensionCents",
+  "retirementIncomeCents",
+  "retirementWithholdingCents",
+] as const;
+
+const NON_RESIDENT_AMOUNT_FIELDS = [
+  "salaryCents",
+  "salaryWithholdingCents",
   "retirementIncomeCents",
   "retirementWithholdingCents",
 ] as const;
@@ -77,13 +85,15 @@ interface WithholdingProps {
 const Withholding = ({
   canManage,
   organization: { currency = "", slug: organizationSlug },
-  summary: { certificates, unit, year },
+  summary: { certificates, nonResidentPayments, unit, year },
 }: WithholdingProps) => {
-  const [downloading, setDownloading] = useState(false);
+  const [downloading, setDownloading] = useState<string | null>(null);
 
   const { setDialog } = useDialogStore((state) => state);
 
   const tAttendance = useTranslations("attendance");
+
+  const format = useFormatter();
 
   const formatMoney = useFormatMoney();
 
@@ -95,19 +105,24 @@ const Withholding = ({
 
   const refresh = useCallback(() => router.refresh(), [router]);
 
-  const missingIdentities = certificates.filter(
-    ({ filable, taxIdMasked }) => filable && !taxIdMasked,
-  ).length;
+  const blockedReason = useCallback(
+    (rows: { identityComplete: boolean }[]) => {
+      const missing = rows.filter(({ identityComplete }) => !identityComplete);
 
-  const downloadBlockedReason = !unit
-    ? tAttendance("withholding.unitRequired")
-    : missingIdentities
-      ? tAttendance("withholding.identitiesMissing", {
-          count: missingIdentities,
-        })
-      : !certificates.some(({ filable }) => filable)
-        ? tAttendance("withholding.noCertificates")
-        : null;
+      return !unit
+        ? tAttendance("withholding.unitRequired")
+        : missing.length
+          ? tAttendance("withholding.identitiesMissing", {
+              count: missing.length,
+            })
+          : !rows.length
+            ? tAttendance("withholding.noCertificates")
+            : null;
+    },
+    [tAttendance, unit],
+  );
+
+  const annualBlockedReason = blockedReason(certificates);
 
   const handleUnitDialog = useCallback(
     () =>
@@ -128,12 +143,13 @@ const Withholding = ({
   );
 
   const handleTaxIdentityDialog = useCallback(
-    ({ employeeId, employeeName }: PayrollWithholdingCertificate) =>
+    (employeeId: string, employeeName: string, foreign: boolean) =>
       setDialog({
         confirmText: tAttendance("save"),
         content: (
           <TaxIdentityDialog
             employeeId={employeeId}
+            foreign={foreign}
             mutate={refresh}
             organizationSlug={organizationSlug}
           />
@@ -147,32 +163,74 @@ const Withholding = ({
     [organizationSlug, refresh, setDialog, tAttendance],
   );
 
-  const handleDownload = async () => {
-    try {
-      setDownloading(true);
+  const download = useCallback(
+    async (key: string, path: string, query: Record<string, string>) => {
+      try {
+        setDownloading(key);
 
-      const { content, fileName } = await fetcher<PayrollWithholdingFile>(
-        `${payrollPath(organizationSlug, "org", "withholding-file")}?${new URLSearchParams({ year: String(year) })}`,
-      );
+        const { content, fileName } = await fetcher<PayrollWithholdingFile>(
+          `${payrollPath(organizationSlug, "org", path)}?${new URLSearchParams(query)}`,
+        );
 
-      const url = URL.createObjectURL(
-        new Blob([content], { type: "text/plain;charset=utf-8" }),
-      );
-      const anchor = document.createElement("a");
-      anchor.href = url;
-      anchor.download = fileName;
-      anchor.click();
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
-        variant: "error",
-      });
-    } finally {
-      setDownloading(false);
-    }
-  };
+        const url = URL.createObjectURL(
+          new Blob([content], { type: "text/plain;charset=utf-8" }),
+        );
+        const anchor = document.createElement("a");
+        anchor.href = url;
+        anchor.download = fileName;
+        anchor.click();
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+          variant: "error",
+        });
+      } finally {
+        setDownloading(null);
+      }
+    },
+    [organizationSlug, tAttendance],
+  );
 
-  const columns = useMemo<GridColDef[]>(
+  const amountColumn = useCallback(
+    (field: string): GridColDef => ({
+      field,
+      headerName: tAttendance(`withholding.amounts.${field}`),
+      type: "number",
+      valueFormatter: (value: string) =>
+        formatMoney(fromCents(value), currency, { minimumFractionDigits: 2 }),
+    }),
+    [currency, formatMoney, tAttendance],
+  );
+
+  const identityColumns = useMemo<GridColDef[]>(
+    () => [
+      {
+        field: "employeeName",
+        headerName: tAttendance("employee"),
+      },
+      {
+        field: "taxIdMasked",
+        headerName: tAttendance("withholding.taxId"),
+        renderCell: ({ value }: GridRenderCellParams) => value ?? <EmptyCell />,
+      },
+      {
+        field: "identityComplete",
+        headerName: tAttendance("withholding.identityStatus"),
+        renderCell: ({ value }: GridRenderCellParams) => (
+          <Chip
+            color={value ? "success" : "warning"}
+            label={tAttendance(value ? "provided" : "notProvided")}
+            size="small"
+            variant="outlined"
+          />
+        ),
+        type: "boolean",
+      },
+    ],
+    [tAttendance],
+  );
+
+  const annualColumns = useMemo<GridColDef[]>(
     () => [
       ...(canManage
         ? [
@@ -184,60 +242,53 @@ const Withholding = ({
               headerName: tAttendance("actions"),
               renderCell: ({
                 row,
-              }: GridRenderCellParams<PayrollWithholdingCertificate>) =>
-                row.filable && (
-                  <ActionsStack direction="row">
-                    <Tooltip title={tAttendance("withholding.identity.edit")}>
-                      <IconButton
-                        onClick={() => handleTaxIdentityDialog(row)}
-                        size="small"
-                      >
-                        <Edit fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  </ActionsStack>
-                ),
+              }: GridRenderCellParams<PayrollWithholdingCertificate>) => (
+                <ActionsStack direction="row">
+                  <Tooltip title={tAttendance("withholding.identity.edit")}>
+                    <IconButton
+                      onClick={() =>
+                        handleTaxIdentityDialog(
+                          row.employeeId,
+                          row.employeeName,
+                          row.idType !== "0",
+                        )
+                      }
+                      size="small"
+                    >
+                      <Edit fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </ActionsStack>
+              ),
               resizable: false,
               sortable: false,
             } satisfies GridColDef,
           ]
         : []),
+      ...identityColumns,
       {
-        field: "employeeName",
-        headerName: tAttendance("employee"),
+        field: "idType",
+        headerName: tAttendance("withholding.idType.label"),
+        valueFormatter: (value: PayrollWithholdingCertificate["idType"]) =>
+          tAttendance(`withholding.idType.options.${value}`),
       },
       {
-        field: "taxIdMasked",
-        headerName: tAttendance("withholding.taxId"),
-        renderCell: ({
-          row: { filable, taxIdMasked },
-        }: GridRenderCellParams<PayrollWithholdingCertificate>) =>
-          filable ? (
-            (taxIdMasked ?? <EmptyCell />)
-          ) : (
-            <Chip
-              color="warning"
-              label={tAttendance("withholding.fileSeparately")}
-              size="small"
-              variant="outlined"
-            />
-          ),
-      },
-      {
-        field: "addressProvided",
-        headerName: tAttendance("withholding.address"),
-        renderCell: ({
-          row: { addressProvided, filable },
-        }: GridRenderCellParams<PayrollWithholdingCertificate>) =>
-          filable && (
-            <Chip
-              color={addressProvided ? "success" : "default"}
-              label={tAttendance(addressProvided ? "provided" : "notProvided")}
-              size="small"
-              variant="outlined"
-            />
-          ),
+        field: "certificateRequested",
+        headerName: tAttendance("withholding.issuance.label"),
         type: "boolean",
+        renderCell: ({
+          value,
+        }: GridRenderCellParams<PayrollWithholdingCertificate>) => (
+          <Chip
+            label={tAttendance(
+              value
+                ? "withholding.issuance.requested"
+                : "withholding.issuance.exempt",
+            )}
+            size="small"
+            variant="outlined"
+          />
+        ),
       },
       {
         field: "period",
@@ -248,24 +299,114 @@ const Withholding = ({
         ) =>
           `${dayjs(periodFrom, "YYYY-MM").format(monthFormat)}–${dayjs(periodTo, "YYYY-MM").format(monthFormat)}`,
       },
-      ...AMOUNT_FIELDS.map(
-        (field): GridColDef => ({
-          field,
-          headerName: tAttendance(`withholding.amounts.${field}`),
-          type: "number",
-          valueFormatter: (value: string) =>
-            formatMoney(fromCents(value), currency, {
-              minimumFractionDigits: 2,
-            }),
-        }),
-      ),
+      ...ANNUAL_AMOUNT_FIELDS.map(amountColumn),
     ],
     [
+      amountColumn,
       canManage,
-      currency,
-      formatMoney,
       handleTaxIdentityDialog,
+      identityColumns,
       monthFormat,
+      tAttendance,
+    ],
+  );
+
+  const nonResidentColumns = useMemo<GridColDef[]>(
+    () => [
+      {
+        disableColumnMenu: true,
+        disableExport: true,
+        field: "actions",
+        filterable: false,
+        headerName: tAttendance("actions"),
+        renderCell: ({
+          row,
+        }: GridRenderCellParams<PayrollNonResidentPayment>) => {
+          const reason = blockedReason(
+            nonResidentPayments.filter(
+              ({ paymentDate }) => paymentDate === row.paymentDate,
+            ),
+          );
+
+          return (
+            <ActionsStack direction="row">
+              {canManage && (
+                <Tooltip title={tAttendance("withholding.identity.edit")}>
+                  <IconButton
+                    onClick={() =>
+                      handleTaxIdentityDialog(
+                        row.employeeId,
+                        row.employeeName,
+                        true,
+                      )
+                    }
+                    size="small"
+                  >
+                    <Edit fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              )}
+              <Tooltip
+                title={
+                  reason ??
+                  tAttendance("withholding.downloadPayment", {
+                    date: format.dateTime(
+                      new Date(`${row.paymentDate}T00:00:00`),
+                      "date",
+                    ),
+                  })
+                }
+              >
+                <span>
+                  <IconButton
+                    disabled={!!reason}
+                    loading={downloading === row.paymentDate}
+                    onClick={() =>
+                      download(
+                        row.paymentDate,
+                        "withholding-file/non-resident",
+                        {
+                          paymentDate: row.paymentDate,
+                        },
+                      )
+                    }
+                    size="small"
+                  >
+                    <Download fontSize="small" />
+                  </IconButton>
+                </span>
+              </Tooltip>
+            </ActionsStack>
+          );
+        },
+        resizable: false,
+        sortable: false,
+      },
+      {
+        field: "paymentDate",
+        headerName: tAttendance("withholding.paymentDate"),
+        valueFormatter: (value: string) =>
+          format.dateTime(new Date(`${value}T00:00:00`), "date"),
+      },
+      {
+        field: "deadline",
+        headerName: tAttendance("withholding.deadline"),
+        valueFormatter: (value: string) =>
+          format.dateTime(new Date(`${value}T00:00:00`), "date"),
+      },
+      ...identityColumns,
+      ...NON_RESIDENT_AMOUNT_FIELDS.map(amountColumn),
+    ],
+    [
+      amountColumn,
+      blockedReason,
+      canManage,
+      download,
+      downloading,
+      format,
+      handleTaxIdentityDialog,
+      identityColumns,
+      nonResidentPayments,
       tAttendance,
     ],
   );
@@ -286,12 +427,14 @@ const Withholding = ({
             {tAttendance("withholding.unit.title")}
           </Button>
         )}
-        <Tooltip title={downloadBlockedReason ?? ""}>
+        <Tooltip title={annualBlockedReason ?? ""}>
           <span>
             <Button
-              disabled={!!downloadBlockedReason}
-              loading={downloading}
-              onClick={handleDownload}
+              disabled={!!annualBlockedReason}
+              loading={downloading === "annual"}
+              onClick={() =>
+                download("annual", "withholding-file", { year: String(year) })
+              }
               startIcon={<Download />}
               variant="contained"
             >
@@ -310,10 +453,25 @@ const Withholding = ({
       )}
       <DataGrid
         {...DATA_GRID_PROPS}
-        columns={columns}
+        columns={annualColumns}
         getRowId={({ employeeId }) => employeeId}
         rows={certificates}
       />
+      {nonResidentPayments.length > 0 && (
+        <>
+          <Typography component="h2" variant="h6">
+            {tAttendance("withholding.nonResident.title")}
+          </Typography>
+          <DataGrid
+            {...DATA_GRID_PROPS}
+            columns={nonResidentColumns}
+            getRowId={({ employeeId, paymentDate }) =>
+              `${paymentDate}-${employeeId}`
+            }
+            rows={nonResidentPayments}
+          />
+        </>
+      )}
     </>
   );
 };

@@ -258,8 +258,8 @@
     "invalidBusinessNumber": "統一番号のチェックディジットが正しくありません。",
     "invalidTaxId": "身分証番号のチェックディジットが正しくありません。",
     "taxIdentityRequired": "身分証番号と戸籍住所が未入力の従業員がいます。",
-    "taxIdentityUnsupported": "外国籍の従業員は現在別途申告が必要です。",
-    "withholdingUnitRequired": "先に申告単位情報を入力してください。"
+    "withholdingUnitRequired": "先に申告単位情報を入力してください。",
+    "foreignTaxIdentityRequired": "外国籍の従業員は居住国と納税者番号（ない場合は NOTIN）が必要です。"
   },
   "eventAction": {
     "options": {
@@ -867,7 +867,6 @@
     "taxId": "身分証番号",
     "address": "戸籍住所",
     "period": "所得の対象期間",
-    "fileSeparately": "外国籍は別途申告",
     "recipient": "所得者",
     "print": "印刷",
     "noMine": "終了した年度の源泉徴収票はまだありません。",
@@ -905,6 +904,33 @@
       "title": "{name} の申告情報",
       "edit": "申告情報を編集",
       "saved": "申告情報を保存しました"
-    }
+    },
+    "identityStatus": "申告情報",
+    "idType": {
+      "label": "証番号区分",
+      "options": {
+        "0": "自国民",
+        "3": "外国籍居住者",
+        "7": "非居住者"
+      }
+    },
+    "issuance": {
+      "label": "交付方法",
+      "requested": "従業員が交付を申請",
+      "exempt": "交付免除"
+    },
+    "nonResident": {
+      "title": "非居住者への支払（支払後 10 日以内に申告）"
+    },
+    "paymentDate": "支払日",
+    "deadline": "申告期限",
+    "downloadPayment": "{date} 支払分の申告ファイルをダウンロード",
+    "residentCertificateId": "居留証統一証番号／パスポート由来コード",
+    "residenceCountry": "居住国・地域",
+    "foreignTaxId": "居住国の納税者番号（ない場合は NOTIN）",
+    "otherCountry": "その他の国",
+    "paymentCertificateTitle": "{date} 支払分 各種所得源泉徴収・免除証明書",
+    "request": "交付を申請",
+    "requested": "{year} 年度の源泉徴収票の交付を申請しました"
   }
 }

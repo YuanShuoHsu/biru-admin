@@ -258,8 +258,8 @@
     "invalidBusinessNumber": "The business ID number check digit is invalid.",
     "invalidTaxId": "The national ID number check digit is invalid.",
     "taxIdentityRequired": "Some employees are still missing their national ID number and registered address.",
-    "taxIdentityUnsupported": "Foreign employees must currently be filed separately.",
-    "withholdingUnitRequired": "Fill in the withholding unit details first."
+    "withholdingUnitRequired": "Fill in the withholding unit details first.",
+    "foreignTaxIdentityRequired": "Foreign employees need a country of residence and tax ID (NOTIN if none)."
   },
   "eventAction": {
     "options": {
@@ -867,7 +867,6 @@
     "taxId": "National ID number",
     "address": "Registered address",
     "period": "Income period",
-    "fileSeparately": "Foreign staff filed separately",
     "recipient": "Income recipient",
     "print": "Print",
     "noMine": "No withholding statements for completed years yet.",
@@ -905,6 +904,33 @@
       "title": "Filing details for {name}",
       "edit": "Edit filing details",
       "saved": "Filing details saved"
-    }
+    },
+    "identityStatus": "Filing details",
+    "idType": {
+      "label": "ID type",
+      "options": {
+        "0": "National",
+        "3": "Foreign resident",
+        "7": "Non-resident"
+      }
+    },
+    "issuance": {
+      "label": "Issuance",
+      "requested": "Requested by employee",
+      "exempt": "Exempt from issuance"
+    },
+    "nonResident": {
+      "title": "Non-resident payments (file within 10 days of payment)"
+    },
+    "paymentDate": "Payment date",
+    "deadline": "Filing deadline",
+    "downloadPayment": "Download filing file for payments on {date}",
+    "residentCertificateId": "Resident certificate number / passport-derived code",
+    "residenceCountry": "Country or region of residence",
+    "foreignTaxId": "Tax ID in country of residence (NOTIN if none)",
+    "otherCountry": "Other countries",
+    "paymentCertificateTitle": "Withholding statement for payment on {date}",
+    "request": "Request statement",
+    "requested": "Requested the {year} withholding statement"
   }
 }

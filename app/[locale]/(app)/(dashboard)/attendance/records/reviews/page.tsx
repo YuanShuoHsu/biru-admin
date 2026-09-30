@@ -118,31 +118,34 @@ const ReviewsPage = async ({ params, searchParams }: ReviewsPageProps) => {
       })
     : [];
 
-  const [{ requests: rows, total: rowCount }, { leaveTypes }, { employee }] =
-    await Promise.all([
-      getAttendanceRequests(
-        organization.slug,
-        "org",
-        {
-          page,
-          pageSize,
-          filterField,
-          filterOperator,
-          filterValue,
-          quickFilterEnums,
-          quickFilterValue,
-          sortBy,
-          sortDirection,
-        },
-        fetchOptions,
-      ),
-      getAttendanceLeaveTypes(
-        organization.slug,
-        { pageSize: MAX_PAGE_SIZE, sortDirection: "asc" },
-        fetchOptions,
-      ),
-      getAttendanceContext(organization.slug, fetchOptions),
-    ]);
+  const [
+    { requests: rows, total: rowCount },
+    { leaveTypes },
+    { employee, selfReviewAllowed },
+  ] = await Promise.all([
+    getAttendanceRequests(
+      organization.slug,
+      "org",
+      {
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterEnums,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+      },
+      fetchOptions,
+    ),
+    getAttendanceLeaveTypes(
+      organization.slug,
+      { pageSize: MAX_PAGE_SIZE, sortDirection: "asc" },
+      fetchOptions,
+    ),
+    getAttendanceContext(organization.slug, fetchOptions),
+  ]);
 
   return (
     <AttendanceTabsLayout memberRole={memberRole}>
@@ -150,6 +153,7 @@ const ReviewsPage = async ({ params, searchParams }: ReviewsPageProps) => {
         canReview={hasRolePermission(memberRole, {
           attendanceRequest: ["update"],
         })}
+        canReviewOwn={selfReviewAllowed.attendanceRequest}
         employeeId={employee?.id}
         filterField={filterField}
         filterOperator={filterOperator}

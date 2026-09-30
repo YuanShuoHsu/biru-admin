@@ -1,11 +1,14 @@
 "use client";
 
 import dayjs from "dayjs";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
+import { enqueueSnackbar } from "notistack";
 import { Fragment } from "react";
 
 import { useFormatMoney } from "@/hooks/useFormatMoney";
 import { useMonthFormat } from "@/hooks/useMonthFormat";
+
+import { useRouter } from "@/i18n/navigation";
 
 import { Print } from "@mui/icons-material";
 import {
@@ -22,7 +25,8 @@ import { styled } from "@mui/material/styles";
 import type { MyWithholdingCertificate } from "@/types/attendance";
 import type { Organization } from "@/types/organizations";
 
-import { fromCents } from "@/utils/attendance";
+import { attendanceErrorKey, fromCents, payrollPath } from "@/utils/attendance";
+import { fetcher } from "@/utils/fetcher";
 
 const CardsStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(2),
@@ -58,9 +62,43 @@ interface MyWithholdingProps {
 
 const MyWithholding = ({
   certificates,
-  organization: { currency = "" },
+  organization: { currency = "", slug: organizationSlug },
 }: MyWithholdingProps) => {
   const tAttendance = useTranslations("attendance");
+
+  const format = useFormatter();
+
+  const router = useRouter();
+
+  const titleOf = ({ kind, paymentDate, year }: MyWithholdingCertificate) =>
+    kind === "nonResident" && paymentDate
+      ? tAttendance("withholding.paymentCertificateTitle", {
+          date: format.dateTime(new Date(`${paymentDate}T00:00:00`), "date"),
+        })
+      : tAttendance("withholding.certificateTitle", { year });
+
+  const handleRequest = async ({ year }: MyWithholdingCertificate) => {
+    try {
+      await fetcher(
+        payrollPath(
+          organizationSlug,
+          "me",
+          `withholding-certificates/${year}/request`,
+        ),
+        { method: "POST" },
+      );
+
+      enqueueSnackbar(tAttendance("withholding.requested", { year }), {
+        variant: "success",
+      });
+
+      router.refresh();
+    } catch (error) {
+      enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+        variant: "error",
+      });
+    }
+  };
 
   const formatMoney = useFormatMoney();
 
@@ -93,7 +131,14 @@ const MyWithholding = ({
         certificate.unit.agentName,
       ],
       [tAttendance("withholding.recipient"), certificate.employeeName],
-      [tAttendance("withholding.taxId"), certificate.taxId],
+      [
+        tAttendance(
+          certificate.idType === "0"
+            ? "withholding.taxId"
+            : "withholding.residentCertificateId",
+        ),
+        certificate.taxId,
+      ],
       [tAttendance("withholding.address"), certificate.address],
       [
         tAttendance("withholding.period"),
@@ -132,9 +177,7 @@ const MyWithholding = ({
   };
 
   const handlePrint = (certificate: MyWithholdingCertificate) => {
-    const title = tAttendance("withholding.certificateTitle", {
-      year: certificate.year,
-    });
+    const title = titleOf(certificate);
     const rows = fieldsOf(certificate)
       .map(
         ([label, value]) =>
@@ -163,12 +206,11 @@ const MyWithholding = ({
   return (
     <CardsStack>
       {certificates.map((certificate) => (
-        <Card key={certificate.year} variant="outlined">
-          <CardHeader
-            title={tAttendance("withholding.certificateTitle", {
-              year: certificate.year,
-            })}
-          />
+        <Card
+          key={certificate.paymentDate ?? certificate.year}
+          variant="outlined"
+        >
+          <CardHeader title={titleOf(certificate)} />
           <CardContent>
             <FieldList>
               {fieldsOf(certificate).map(([label, value]) => (
@@ -188,6 +230,11 @@ const MyWithholding = ({
             >
               {tAttendance("withholding.print")}
             </Button>
+            {!certificate.requested && (
+              <Button onClick={() => handleRequest(certificate)}>
+                {tAttendance("withholding.request")}
+              </Button>
+            )}
           </CardActions>
         </Card>
       ))}

@@ -67,6 +67,7 @@ const DataGrid = dynamic(
 interface ParentalReturnsProps {
   canReview: boolean;
   canViewAll: boolean;
+  canReviewOwn: boolean;
   employeeId?: string;
   filterField?: AttendanceParentalReturnFilterField;
   filterOperator?: FilterOperator;
@@ -84,6 +85,7 @@ interface ParentalReturnsProps {
 const ParentalReturns = ({
   canReview,
   canViewAll,
+  canReviewOwn,
   employeeId,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
@@ -288,7 +290,7 @@ const ParentalReturns = ({
         }: GridRenderCellParams<AttendanceParentalReturn>) =>
           row.status === "pending" ? (
             <StyledStack direction="row">
-              {canReview && row.employeeId !== employeeId && (
+              {canReview && (canReviewOwn || row.employeeId !== employeeId) && (
                 <>
                   <Tooltip title={tAttendance("approve")}>
                     <IconButton
@@ -379,6 +381,7 @@ const ParentalReturns = ({
       },
     ],
     [
+      canReviewOwn,
       canReview,
       date,
       dateFilterOperators,

@@ -340,5 +340,15 @@
     "phone": "Use digits and hyphens only, up to 15 characters.",
     "taxOfficeCode": "Enter one letter followed by two digits, e.g. A03.",
     "taxRegistrationNumber": "Enter the 9-character withholding tax registration number."
+  },
+  "foreignTaxId": {
+    "invalid": "Use letters, digits and hyphens only, up to 30 characters.",
+    "required": "Enter the tax ID, or NOTIN if none."
+  },
+  "residenceCountryCode": {
+    "required": "Select the country or region of residence."
+  },
+  "residentCertificateId": {
+    "invalid": "Enter the 10-character resident certificate number or passport-derived code."
   }
 }
