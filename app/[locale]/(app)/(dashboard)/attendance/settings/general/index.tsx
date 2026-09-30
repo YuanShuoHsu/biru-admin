@@ -42,6 +42,8 @@ const SETTING_KEYS = [
   "laborInsuranceUnitCode",
   "occupationalIndustryCode",
   "occupationalExperienceRateMicros",
+  "payday",
+  "overtimeAgreedFrom",
   "overtimeExtensionPeriods",
 ] as const satisfies readonly (keyof AttendanceSettings)[];
 
@@ -143,6 +145,22 @@ const Settings = ({
       return occupationalExperienceRateMicros == null
         ? tAttendance("occupationalExperienceRateMicros.none")
         : percent(occupationalExperienceRateMicros);
+
+    if (key === "payday")
+      return values.payday == null
+        ? tAttendance("payday.none")
+        : tAttendance("payday.value", {
+            day: values.payday,
+            nextMonth: String(values.paydayNextMonth),
+          });
+
+    if (key === "overtimeAgreedFrom")
+      return values.overtimeAgreedFrom
+        ? format.dateTime(
+            dayjs.tz(values.overtimeAgreedFrom, STORE_TIMEZONE).toDate(),
+            "date",
+          )
+        : tAttendance("overtimeAgreedFrom.none");
 
     if (key === "laborInsuranceUnitCode")
       return (

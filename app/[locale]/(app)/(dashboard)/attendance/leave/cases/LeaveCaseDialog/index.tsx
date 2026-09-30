@@ -129,6 +129,13 @@ const LeaveCaseDialog = ({
 
   const isParentalLeave = leaveType?.statutoryKind === "parental";
   const isMarriageLeave = leaveType?.statutoryKind === "marriage";
+  const fixedCalendarDays = leaveType?.fixedCalendarDays ?? null;
+  const shownEndsAt =
+    fixedCalendarDays && startsAt
+      ? dayjs(startsAt).tz(STORE_TIMEZONE).add(fixedCalendarDays, "day")
+      : endsAt
+        ? dayjs(endsAt)
+        : null;
 
   const onSubmitHandler = async (values: LeaveCaseForm) => {
     try {
@@ -145,17 +152,16 @@ const LeaveCaseDialog = ({
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             employeeId: values.employeeId,
-            endsAt: values.endsAt,
+            ...(!fixedCalendarDays && { endsAt: values.endsAt }),
             leaveTypeId: values.leaveTypeId,
             reason: values.reason,
-            reference: values.reference,
             startsAt: values.startsAt,
             ...(isParentalLeave
               ? {
                   childId: values.childId,
                   earlyParentalAgreed: values.earlyParentalAgreed,
                 }
-              : { eventDate: values.eventDate }),
+              : { eventDate: values.eventDate, reference: values.reference }),
             ...(isMarriageLeave
               ? { extensionAgreed: values.extensionAgreed }
               : {}),
@@ -244,14 +250,16 @@ const LeaveCaseDialog = ({
             </MenuItem>
           ))}
       </TextField>
-      <TextField
-        error={!!errors.reference}
-        fullWidth
-        helperText={errors.reference?.message}
-        label={tAttendance("caseReference")}
-        required
-        {...register("reference")}
-      />
+      {!isParentalLeave && (
+        <TextField
+          error={!!errors.reference}
+          fullWidth
+          helperText={errors.reference?.message}
+          label={tAttendance("caseReference")}
+          required
+          {...register("reference")}
+        />
+      )}
       {isParentalLeave && (
         <TextField
           error={!!errors.childId}
@@ -299,7 +307,7 @@ const LeaveCaseDialog = ({
       )}
       <DatePicker
         label={tAttendance("startsAt")}
-        maxDate={endsAt ? dayjs(endsAt) : undefined}
+        maxDate={fixedCalendarDays || !endsAt ? undefined : dayjs(endsAt)}
         onChange={(value) =>
           setValue(
             "startsAt",
@@ -318,6 +326,7 @@ const LeaveCaseDialog = ({
         value={startsAt ? dayjs(startsAt) : null}
       />
       <DatePicker
+        disabled={!!fixedCalendarDays}
         label={tAttendance("endsAt")}
         minDate={startsAt ? dayjs(startsAt) : undefined}
         onChange={(value) =>
@@ -335,7 +344,7 @@ const LeaveCaseDialog = ({
           },
         }}
         timezone={STORE_TIMEZONE}
-        value={endsAt ? dayjs(endsAt) : null}
+        value={shownEndsAt}
       />
       {isMarriageLeave && (
         <StyledFormControlLabel

@@ -122,6 +122,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/attendance/employees/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** 刪除沒有任何出勤或薪資紀錄的員工設定 */
+    delete: operations["AttendanceEmployeesController_deleteEmployee"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/attendance/settings": {
     parameters: {
       query?: never;
@@ -2235,7 +2252,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** 依統一編號查詢公司名稱與地址 */
+    /** 依統一編號查詢公司名稱、地址與負責人 */
     get: operations["GcisController_findOne"];
     put?: never;
     post?: never;
@@ -2648,7 +2665,7 @@ export interface components {
       | "dailyHoursExceeded"
       | "dayKindRequired"
       | "emergencyDetailsRequired"
-      | "employeeDisableConflict"
+      | "employeeInUse"
       | "employeeNotEnabled"
       | "employmentInsuranceExemptionInvalid"
       | "employmentInsuranceIneligible"
@@ -2702,6 +2719,7 @@ export interface components {
       | "overlappingLeave"
       | "overlappingOvertimeExtensions"
       | "overlappingShift"
+      | "overtimeAgreementRequired"
       | "parentalChildExists"
       | "parentalChildMismatch"
       | "parentalChildRequired"
@@ -2784,7 +2802,6 @@ export interface components {
       | "unconfigured"
       | "upcoming"
       | "active"
-      | "disabled"
       | "terminated";
     AttendanceEmployeeResponseDto: {
       id: string;
@@ -2803,7 +2820,6 @@ export interface components {
       employmentInsuranceEligible: boolean;
       workPermitRequired: boolean;
       pensionApplicable: boolean;
-      enabled: boolean;
       birthDate?: string | null;
       taiwanStaySince?: string | null;
       /** Format: date-time */
@@ -2894,7 +2910,6 @@ export interface components {
       employmentInsuranceEligible: boolean;
       workPermitRequired: boolean;
       pensionApplicable: boolean;
-      enabled: boolean;
       birthDate?: string | null;
       taiwanStaySince?: string | null;
       /** Format: date-time */
@@ -2915,6 +2930,8 @@ export interface components {
       email: string;
       /** Format: date-time */
       joinedAt: string;
+      /** @description 已設定且沒有任何出勤或薪資紀錄 */
+      deletable: boolean;
       status: components["schemas"]["AttendanceEmployeeStatus"];
       employee?:
         | components["schemas"]["AttendanceEmploymentResponseDto"]
@@ -2951,7 +2968,6 @@ export interface components {
       indigenousHolidays: string[];
       terminationReason?: components["schemas"]["AttendanceTerminationReason"];
       userId: string;
-      enabled: boolean;
       birthDate: string;
       taiwanStaySince?: string;
       regularLeaveWeekday?: number;
@@ -2959,6 +2975,9 @@ export interface components {
       hiredAt: string;
       terminatedAt?: string;
       terminationNoticedAt?: string;
+    };
+    AttendanceIdResponseDto: {
+      id: string;
     };
     AttendanceSettingsResponseDto: {
       /**
@@ -2993,6 +3012,18 @@ export interface components {
        * @example 2026-01
        */
       voluntaryLaborInsuranceFrom?: string | null;
+      /**
+       * @description 工會或勞資會議同意延長工時（含休息日出勤）的決議日；未設定時不得延長工時
+       * @example 2026-01-15
+       */
+      overtimeAgreedFrom?: string | null;
+      /**
+       * @description 每月發薪日，超過該月天數時為月底
+       * @example 5
+       */
+      payday?: number | null;
+      /** @description 發薪日在薪資月份的次月 */
+      paydayNextMonth: boolean;
       organizationId: string;
       /** Format: date-time */
       updatedAt: string;
@@ -3034,6 +3065,18 @@ export interface components {
        * @example 2026-01
        */
       voluntaryLaborInsuranceFrom?: string | null;
+      /**
+       * @description 工會或勞資會議同意延長工時（含休息日出勤）的決議日；未設定時不得延長工時
+       * @example 2026-01-15
+       */
+      overtimeAgreedFrom?: string | null;
+      /**
+       * @description 每月發薪日，超過該月天數時為月底
+       * @example 5
+       */
+      payday?: number | null;
+      /** @description 發薪日在薪資月份的次月 */
+      paydayNextMonth: boolean;
       latitude: number;
       longitude: number;
       radiusMeters: number;
@@ -3222,9 +3265,6 @@ export interface components {
       startsAt: string;
       endsAt: string;
       paidBreak: boolean;
-    };
-    AttendanceIdResponseDto: {
-      id: string;
     };
     CreateAttendancePunchDto: {
       action: components["schemas"]["AttendanceEventAction"];
@@ -3459,7 +3499,7 @@ export interface components {
       leaveTypeName: string;
       leaveTypeStatutoryKind: components["schemas"]["StatutoryLeaveKind"];
       calendarLeave: boolean;
-      reference: string;
+      reference?: string | null;
       /** Format: date-time */
       eventDate: string;
       /** Format: date-time */
@@ -3476,8 +3516,12 @@ export interface components {
       total: number;
     };
     CreateAttendanceLeaveCaseDto: {
+      /** @description 育嬰留職停薪以子女區分，其他事件假必填 */
+      reference?: string;
       /** @description 育嬰留職停薪取子女出生日，其他事件假必填 */
       eventDate?: string;
+      /** @description 產假、流產假由開始日加法定天數推得，其他假別必填 */
+      endsAt?: string;
       /** Format: uuid */
       childId?: string;
       earlyParentalAgreed?: boolean;
@@ -3485,9 +3529,7 @@ export interface components {
       employeeId: string;
       /** Format: uuid */
       leaveTypeId: string;
-      reference: string;
       startsAt: string;
-      endsAt: string;
       reason: string;
       extensionAgreed?: boolean;
     };
@@ -3496,7 +3538,7 @@ export interface components {
       id: string;
       employeeId: string;
       leaveTypeId: string;
-      reference: string;
+      reference?: string | null;
       /** Format: date-time */
       eventDate: string;
       /** Format: date-time */
@@ -3528,6 +3570,8 @@ export interface components {
       statutoryKind: components["schemas"]["StatutoryLeaveKind"];
       eventLeave: boolean;
       calendarLeave: boolean;
+      /** @description 產假、流產假等固定天數曆日假的法定天數，請假案件結束日由此推得 */
+      fixedCalendarDays?: number | null;
       medicalCertificateRequired: boolean;
       paidPercent?: number | null;
       statutoryPaidPercent?: number | null;
@@ -6590,8 +6634,10 @@ export interface components {
       | "openingHoursRequired"
       | "overlappingLeaveAttendance"
       | "parentalReturnPending"
+      | "overtimeAgreementRequired"
       | "partTimeLadderRequiresPartTime"
       | "payrollPeriodOpen"
+      | "paydayRequired"
       | "payrollRuleSetStale"
       | "pendingRequests"
       | "pensionIneligible"
@@ -6637,6 +6683,8 @@ export interface components {
       reviewedAt?: string | null;
       /** Format: date-time */
       publishedAt?: string | null;
+      /** @description 依店家發薪日推得的給付日，扣繳與補充保費以此認定 */
+      paidOn?: string | null;
       /** Format: date-time */
       createdAt: string;
     };
@@ -7287,6 +7335,34 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["AttendanceEmployeeResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AttendanceEmployeesController_deleteEmployee: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceIdResponseDto"];
         };
       };
       /** @description Internal server error */
@@ -13442,7 +13518,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "dailyHoursExceeded",
   "dayKindRequired",
   "emergencyDetailsRequired",
-  "employeeDisableConflict",
+  "employeeInUse",
   "employeeNotEnabled",
   "employmentInsuranceExemptionInvalid",
   "employmentInsuranceIneligible",
@@ -13496,6 +13572,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "overlappingLeave",
   "overlappingOvertimeExtensions",
   "overlappingShift",
+  "overtimeAgreementRequired",
   "parentalChildExists",
   "parentalChildMismatch",
   "parentalChildRequired",
@@ -13568,7 +13645,7 @@ export const attendanceTerminationReasonValues: ReadonlyArray<
 ];
 export const attendanceEmployeeStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceEmployeeStatus"]
-> = ["unconfigured", "upcoming", "active", "disabled", "terminated"];
+> = ["unconfigured", "upcoming", "active", "terminated"];
 export const filterOperatorValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["FilterOperator"]
 > = [
@@ -14526,8 +14603,10 @@ export const payrollBlockerValues: ReadonlyArray<
   "openingHoursRequired",
   "overlappingLeaveAttendance",
   "parentalReturnPending",
+  "overtimeAgreementRequired",
   "partTimeLadderRequiresPartTime",
   "payrollPeriodOpen",
+  "paydayRequired",
   "payrollRuleSetStale",
   "pendingRequests",
   "pensionIneligible",

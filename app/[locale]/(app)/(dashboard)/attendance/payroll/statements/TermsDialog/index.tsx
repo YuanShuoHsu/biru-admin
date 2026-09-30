@@ -182,6 +182,9 @@ const TermsDialog = ({
   const employmentInsuranceEligible =
     employee?.employmentInsuranceEligible ?? true;
   const pensionApplicable = employee?.pensionApplicable ?? true;
+  const employmentExemptionSelectable =
+    employmentInsuranceEligible &&
+    values.laborInsuranceExemption !== "oldAgeBenefit";
   const declared = terms.find((item) => item.employeeId === values.employeeId)
     ?.terms.insurance;
 
@@ -205,7 +208,7 @@ const TermsDialog = ({
           ),
           insurance: {
             employerPercent: form.employerPercent,
-            ...(employmentInsuranceEligible &&
+            ...(employmentExemptionSelectable &&
               form.employmentInsuranceExemption && {
                 employmentInsuranceExemption: form.employmentInsuranceExemption,
               }),
@@ -375,7 +378,7 @@ const TermsDialog = ({
         }))}
         value={values.laborInsuranceExemption}
       />
-      {employmentInsuranceEligible && (
+      {employmentExemptionSelectable && (
         <ExemptionSelect
           label={tAttendance("employmentInsuranceExemption.label")}
           none={tAttendance("employmentInsuranceExemption.none")}

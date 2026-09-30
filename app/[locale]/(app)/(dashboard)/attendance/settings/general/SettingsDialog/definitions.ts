@@ -36,6 +36,7 @@ export const useSettingsFormSchema = () => {
         }),
       occupationalExperienceRate: range(0.0001, 10).nullable(),
       occupationalIndustryCode: z.string(),
+      overtimeAgreedFrom: z.string(),
       overtimeExtensionPeriods: z.array(
         z.object({
           value: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, {
@@ -44,6 +45,8 @@ export const useSettingsFormSchema = () => {
         }),
       ),
       latitude: range(-90, 90).nullable(),
+      payday: range(1, 31).nullable(),
+      paydayNextMonth: z.boolean(),
       longitude: range(-180, 180).nullable(),
       radiusMeters: range(10, 10000),
       voluntaryLaborInsuranceFrom: z.string(),

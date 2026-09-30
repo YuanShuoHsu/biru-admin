@@ -6,8 +6,8 @@ export const UNIT_ADDRESS_MAX_LENGTH = 26;
 export const UNIT_TEXT_FIELDS = [
   { max: 50, name: "name" },
   { max: UNIT_ADDRESS_MAX_LENGTH, name: "address" },
-  { max: 50, name: "agentName" },
   { max: 20, name: "representativeName" },
+  { max: 50, name: "agentName" },
   { max: 20, name: "contactName" },
 ] as const;
 

@@ -75,14 +75,18 @@
       "unconfigured": "未设置",
       "upcoming": "尚未到职",
       "active": "在职",
-      "disabled": "已停用",
       "terminated": "已离职"
     }
   },
   "employees": {
     "actions": {
       "create": "新增员工",
-      "update": "编辑员工"
+      "update": "编辑员工",
+      "delete": {
+        "confirm": "确定要删除 <bold>{name}</bold> 的员工设置吗？此员工没有任何出勤或薪资记录，删除后回到“未设置”。",
+        "success": "已删除 {name} 的员工设置",
+        "title": "删除员工设置"
+      }
     },
     "label": "员工管理",
     "created": "已新增员工 {name}",
@@ -139,8 +143,8 @@
     "dailyHoursExceeded": "当日工时将超过 12 小时，请缩短加班时间。",
     "dayKindRequired": "员工未设置固定例假日与休息日，请选择日期类型。",
     "emergencyDetailsRequired": "例假出勤须先批准法定事由、报备及补假资料。",
-    "employeeDisableConflict": "停用前请先取消未来班次并处理待审申请。",
-    "employeeNotEnabled": "请由主管先在员工管理启用你的出勤资格。",
+    "employeeInUse": "此员工已有出勤或薪资记录，无法删除；若已离开请设置离职日。",
+    "employeeNotEnabled": "你目前不在职（尚未设置、尚未到职或已离职），请联系主管确认员工资料。",
     "employmentInsuranceExemptionInvalid": "有投保就保，或员工身份不适用就保时，不可选择就保不适用原因。",
     "employmentInsuranceIneligible": "此员工的法定身份不适用就业保险，请改为仅劳保或都不保。",
     "employmentInsuranceRequired": "此员工依法应参加就业保险；若属法定排除对象，请选择就保不适用原因。",
@@ -148,7 +152,7 @@
     "error": "操作失败，请稍后重试。",
     "futureCorrection": "补卡时间不能晚于现在。",
     "healthInsuranceExemptionInvalid": "已在本店投保健保时，不可选择健保未投保原因。",
-    "healthInsuranceRequired": "此员工平均每周工时达 12 小时，依法应投保健保；若属例外情形，请选择健保未在本店投保原因。",
+    "healthInsuranceRequired": "此员工平均每周工时达 12 小时或每个营业日都有排班，依法应投保健保，请重新保存薪资条件；若属例外情形，请选择健保未在本店投保原因。",
     "healthSupplementExemptionInvalid": "已在本店投保健保时，不可选择补充保费免扣原因。",
     "holidayCalendarMissing": "尚未取得该年度的国定假日资料，请稍后再试。",
     "holidayDayKindRequired": "国定假日当天的班次须标为国定假日，请取消后重新排班。",
@@ -192,6 +196,7 @@
     "menstrualDayLimit": "生理假每月限一个日历日，请确认日期。",
     "minimumWageUnconfirmed": "本期每小时最低工资尚未依官方公告确认。",
     "monthlyOvertimeExceeded": "加班时数将超过当月上限（一般 46 小时，同意延长期间 54 小时）。",
+    "overtimeAgreementRequired": "尚未取得工会或劳资会议同意延长工时，不得安排加班或休息日出勤；请先在出勤设置填写同意日。",
     "negativeNetPay": "扣款大于应发薪资。",
     "noShifts": "此月份没有班表。",
     "occupationalAccidentRateRequired": "请先在出勤设置选择劳保局核定的职灾保险行业别，才能计算雇主职灾保费。",
@@ -222,6 +227,7 @@
     "payrollRuleSetStale": "计薪规则超过一个月未与官方公告核对，请先更新规则。",
     "payrollSourceChanged": "资料已变更，请重新建立薪资草稿。",
     "payrollTermsRequired": "请先建立有效薪资设置。",
+    "paydayRequired": "请先在出勤设置填写发薪日，系统才能认定给付日与扣缴年度。",
     "pendingRequestExists": "此班次已有相同类型的待审申请。",
     "pendingRequests": "尚有未完成审核的申请。",
     "pensionIneligible": "此员工的法定身份不适用劳工退休金，提缴率与月提缴工资须为 0。",
@@ -336,7 +342,7 @@
     "label": "核给额度",
     "placeholder": "请选择您的核给额度"
   },
-  "leaveCaseHint": "主管先确认事件、亲属关系与有效期间，系统自动核给额度。同一事件不得重复建立。产假含例休假日，请使用完整日历日（起讫 00:00，结束日不含）；陪产检与陪产共用 7 日，请确认各次申请符合适用期间。 产假每日工资依约定工资与平均工资自动计算，给薪比例由工龄自动计算。 育婴留停同一子女沿用事件编号，期间不得超过三岁；未满六个月任职须先取得劳资同意。育婴留停不需核定日薪。",
+  "leaveCaseHint": "主管先确认事件、亲属关系与有效期间，系统自动核给额度。同一事件不得重复建立。产假与流产假的结束日依法定天数自动带出；陪产检与陪产共用 7 日，请确认各次申请符合适用期间。 产假每日工资依约定工资与平均工资自动计算，给薪比例由工龄自动计算。 育婴留停依子女区分，期间不得超过三岁；未满六个月任职须先取得劳资同意。育婴留停不需核定日薪。",
   "leaveCases": {
     "actions": {
       "create": "新增事件假额度",
@@ -423,6 +429,10 @@
   "originalEvents": "原始打卡",
   "originalLeavePeriod": "原留停期间",
   "otherDeduction": "其他核定扣款（{currency}）",
+  "overtimeAgreedFrom": {
+    "label": "延长工时同意日",
+    "none": "未取得同意（不得加班或休息日出勤）"
+  },
   "overtimeExtensionPeriods": {
     "hint": "经工会同意（无工会者经劳资会议同意）后填写。每期为连续 3 个月，期间内每月加班上限 54 小时、合计不得超过 138 小时；其余月份上限 46 小时。雇用 30 人以上者应报当地主管机关备查。",
     "label": "延长工时同意期间",
@@ -437,6 +447,13 @@
     "before": "班前加班"
   },
   "paidBreak": "此班次休息计薪",
+  "paidOn": "给付日",
+  "payday": {
+    "label": "发薪日",
+    "none": "未设置",
+    "value": "{nextMonth, select, true {次月} other {当月}} {day, number} 日"
+  },
+  "paydayNextMonth": "发薪日在次月",
   "paidPercent": "给薪比例（%）",
   "parentalChild": "子女",
   "parentalChildHint": "同一子女请重用现有资料。主管查验证明后设置固定识别编号；双胞胎分别建立，请勿输入完整身份证号。现有育婴留职停薪额度须先完成子女归户。",
@@ -805,7 +822,7 @@
       "holiday": "法定节假日或员工假日",
       "restDay": "休息日",
       "regularLeave": "例假",
-      "employeeNotEnabled": "员工未在职或已停用",
+      "employeeNotEnabled": "员工未在职",
       "workPermitRequired": "不在工作许可期间",
       "maternalNightWork": "妊娠或哺乳期间不得夜间工作",
       "shiftTooLong": "班次过长",

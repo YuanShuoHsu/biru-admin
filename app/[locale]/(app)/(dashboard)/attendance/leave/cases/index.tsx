@@ -437,6 +437,7 @@ const LeaveCases = ({
         field: "reference",
         filterOperators: stringFilterOperators,
         headerName: tAttendance("caseReference"),
+        renderCell: renderEmptyableCell,
       },
       {
         field: "startsAt",

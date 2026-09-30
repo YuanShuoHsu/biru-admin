@@ -75,14 +75,18 @@
       "unconfigured": "未設定",
       "upcoming": "尚未到職",
       "active": "在職",
-      "disabled": "已停用",
       "terminated": "已離職"
     }
   },
   "employees": {
     "actions": {
       "create": "新增員工",
-      "update": "編輯員工"
+      "update": "編輯員工",
+      "delete": {
+        "confirm": "確定要刪除 <bold>{name}</bold> 的員工設定嗎？此員工沒有任何出勤或薪資紀錄，刪除後回到「未設定」。",
+        "success": "已刪除 {name} 的員工設定",
+        "title": "刪除員工設定"
+      }
     },
     "label": "員工管理",
     "created": "已新增員工 {name}",
@@ -139,8 +143,8 @@
     "dailyHoursExceeded": "當日工時將超過 12 小時，請縮短加班時間。",
     "dayKindRequired": "員工未設定固定例假日與休息日，請選擇日期類型。",
     "emergencyDetailsRequired": "例假出勤須先核准法定事由、報備及補假資料。",
-    "employeeDisableConflict": "停用前請先取消未來班次並處理待審申請。",
-    "employeeNotEnabled": "請由主管先在員工管理啟用你的出勤資格。",
+    "employeeInUse": "此員工已有出勤或薪資紀錄，無法刪除；若已離開請設定離職日。",
+    "employeeNotEnabled": "你目前不在職（尚未設定、尚未到職或已離職），請洽主管確認員工資料。",
     "employmentInsuranceExemptionInvalid": "有投保就保，或員工身分不適用就保時，不可選擇就保不適用原因。",
     "employmentInsuranceIneligible": "此員工的法定身分不適用就業保險，請改為僅勞保或都不保。",
     "employmentInsuranceRequired": "此員工依法應參加就業保險；若屬法定排除對象，請選擇就保不適用原因。",
@@ -148,7 +152,7 @@
     "error": "操作失敗，請稍後重試。",
     "futureCorrection": "補卡時間不能晚於現在。",
     "healthInsuranceExemptionInvalid": "已在本店投保健保時，不可選擇健保未投保原因。",
-    "healthInsuranceRequired": "此員工平均每週工時達 12 小時，依法應投保健保；若屬例外情形，請選擇健保未在本店投保原因。",
+    "healthInsuranceRequired": "此員工平均每週工時達 12 小時或每個營業日都有排班，依法應投保健保，請重新儲存薪資條件；若屬例外情形，請選擇健保未在本店投保原因。",
     "healthSupplementExemptionInvalid": "已在本店投保健保時，不可選擇補充保費免扣原因。",
     "holidayCalendarMissing": "尚未取得該年度的國定假日資料，請稍後再試。",
     "holidayDayKindRequired": "國定假日當天的班次須標為國定假日，請取消後重新排班。",
@@ -192,6 +196,7 @@
     "menstrualDayLimit": "生理假每月限一個曆日，請確認日期。",
     "minimumWageUnconfirmed": "本期每小時最低工資尚未依官方公告確認。",
     "monthlyOvertimeExceeded": "加班時數將超過當月上限（一般 46 小時，同意延長期間 54 小時）。",
+    "overtimeAgreementRequired": "尚未取得工會或勞資會議同意延長工時，不得安排加班或休息日出勤；請先在出勤設定填寫同意日。",
     "negativeNetPay": "扣款大於應發薪資。",
     "noShifts": "此月份沒有班表。",
     "occupationalAccidentRateRequired": "請先在出勤設定選擇勞保局核定的職災保險行業別，才能計算雇主職災保費。",
@@ -222,6 +227,7 @@
     "payrollRuleSetStale": "計薪規則超過一個月未與官方公告核對，請先更新規則。",
     "payrollSourceChanged": "資料已變更，請重新建立薪資草稿。",
     "payrollTermsRequired": "請先建立有效薪資設定。",
+    "paydayRequired": "請先在出勤設定填寫發薪日，系統才能認定給付日與扣繳年度。",
     "pendingRequestExists": "此班次已有相同類型的待審申請。",
     "pendingRequests": "尚有未完成審核的申請。",
     "pensionIneligible": "此員工的法定身分不適用勞工退休金，提繳率與月提繳工資須為 0。",
@@ -336,7 +342,7 @@
     "label": "核給額度",
     "placeholder": "請選擇您的核給額度"
   },
-  "leaveCaseHint": "主管先確認事件、親屬關係與有效期間，系統自動核給額度。同一事件不得重複建立。產假含例休假日，請使用完整曆日（起訖 00:00，結束日不含）；陪產檢與陪產共用 7 日，請確認各次申請符合產檢或分娩前後的適用期間。 產假每日工資依約定工資與平均工資自動計算，給薪比例由年資自動計算。 育嬰留停同一子女沿用事件編號，期間不得超過三歲；未滿六個月任職須先取得勞資同意。育嬰留停不需核定日薪。",
+  "leaveCaseHint": "主管先確認事件、親屬關係與有效期間，系統自動核給額度。同一事件不得重複建立。產假與流產假的結束日依法定天數自動帶出；陪產檢與陪產共用 7 日，請確認各次申請符合產檢或分娩前後的適用期間。 產假每日工資依約定工資與平均工資自動計算，給薪比例由年資自動計算。 育嬰留停依子女區分，期間不得超過三歲；未滿六個月任職須先取得勞資同意。育嬰留停不需核定日薪。",
   "leaveCases": {
     "actions": {
       "create": "新增事件假額度",
@@ -423,6 +429,10 @@
   "originalEvents": "原始打卡",
   "originalLeavePeriod": "原留停期間",
   "otherDeduction": "其他核定扣款（{currency}）",
+  "overtimeAgreedFrom": {
+    "label": "延長工時同意日",
+    "none": "未取得同意（不得加班或休息日出勤）"
+  },
   "overtimeExtensionPeriods": {
     "hint": "經工會同意（無工會者經勞資會議同意）後填寫。每期為連續 3 個月，期間內每月加班上限 54 小時、合計不得超過 138 小時；其餘月份上限 46 小時。僱用 30 人以上者應報當地主管機關備查。",
     "label": "延長工時同意期間",
@@ -437,6 +447,13 @@
     "before": "班前加班"
   },
   "paidBreak": "此班次休息計薪",
+  "paidOn": "給付日",
+  "payday": {
+    "label": "發薪日",
+    "none": "未設定",
+    "value": "{nextMonth, select, true {次月} other {當月}} {day, number} 日"
+  },
+  "paydayNextMonth": "發薪日在次月",
   "paidPercent": "給薪比例（%）",
   "parentalChild": "子女",
   "parentalChildHint": "同一子女請重用既有資料。主管查驗證明後設定固定識別編號；雙胞胎分別建立，請勿輸入完整身分證號。既有育嬰留職停薪額度須先完成子女歸戶。",
@@ -805,7 +822,7 @@
       "holiday": "國定假日或員工假日",
       "restDay": "休息日",
       "regularLeave": "例假",
-      "employeeNotEnabled": "員工未在職或已停用",
+      "employeeNotEnabled": "員工未在職",
       "workPermitRequired": "不在工作許可期間",
       "maternalNightWork": "妊娠或哺乳期間不得夜間工作",
       "shiftTooLong": "班次過長",

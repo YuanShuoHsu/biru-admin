@@ -1,6 +1,8 @@
 "use client";
 
 import dayjs from "dayjs";
+import timezonePlugin from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
@@ -12,6 +14,8 @@ import TermsDialog from "./TermsDialog";
 import TransitionDialog from "./TransitionDialog";
 
 import { renderEmptyableCell } from "@/components/EmptyCell";
+
+import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import {
   autosizeOptions,
@@ -64,6 +68,8 @@ import {
 } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
 
+dayjs.extend(utc);
+dayjs.extend(timezonePlugin);
 const ActionsStack = styled(Stack)({
   alignItems: "center",
   height: "100%",
@@ -417,6 +423,17 @@ const Payroll = ({
         filterOperators: monthFilterOperators,
         headerName: tAttendance("month"),
         valueFormatter: (value: string) => dayjs(value).format(monthFormat),
+      },
+      {
+        field: "paidOn",
+        filterable: false,
+        headerName: tAttendance("paidOn"),
+        renderCell: renderEmptyableCell,
+        sortable: false,
+        valueFormatter: (value: string | null) =>
+          value
+            ? format.dateTime(dayjs.tz(value, STORE_TIMEZONE).toDate(), "date")
+            : "",
       },
       {
         field: "status",

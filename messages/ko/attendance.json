@@ -75,14 +75,18 @@
       "unconfigured": "미설정",
       "upcoming": "입사 전",
       "active": "재직 중",
-      "disabled": "사용 중지",
       "terminated": "퇴사"
     }
   },
   "employees": {
     "actions": {
       "create": "직원 추가",
-      "update": "직원 편집"
+      "update": "직원 편집",
+      "delete": {
+        "confirm": "<bold>{name}</bold>의 직원 설정을 삭제할까요? 근태나 급여 기록이 없으며 삭제 후 '미설정'으로 돌아갑니다.",
+        "success": "{name}의 직원 설정을 삭제했습니다",
+        "title": "직원 설정 삭제"
+      }
     },
     "label": "직원 관리",
     "created": "{name} 직원을 추가했습니다",
@@ -139,8 +143,8 @@
     "dailyHoursExceeded": "하루 근무가 12시간을 넘게 됩니다. 연장 시간을 줄이세요.",
     "dayKindRequired": "직원에게 고정 주휴일·휴일이 설정되지 않아 날짜 유형을 선택해야 합니다.",
     "emergencyDetailsRequired": "긴급 사유, 신고 및 보상 휴일을 먼저 승인하세요.",
-    "employeeDisableConflict": "사용 중지하기 전에 예정된 근무를 취소하고 대기 중인 신청을 처리하세요.",
-    "employeeNotEnabled": "관리자에게 근태 프로필 활성화를 요청하세요.",
+    "employeeInUse": "이 직원은 근태 또는 급여 기록이 있어 삭제할 수 없습니다. 퇴사일을 설정하세요.",
+    "employeeNotEnabled": "현재 재직 중이 아닙니다(미설정, 입사 전 또는 퇴사). 관리자에게 직원 정보를 확인하세요.",
     "employmentInsuranceExemptionInvalid": "고용보험에 가입했거나 법적 신분상 고용보험 대상이 아니면 적용 제외 사유를 선택할 수 없습니다.",
     "employmentInsuranceIneligible": "이 직원의 법적 신분은 고용보험 대상이 아닙니다. 노동보험만 또는 미가입을 선택하세요.",
     "employmentInsuranceRequired": "이 직원은 법적으로 고용보험에 가입해야 합니다. 법정 제외 대상이면 적용 제외 사유를 선택하세요.",
@@ -148,7 +152,7 @@
     "error": "작업에 실패했습니다. 다시 시도하세요.",
     "futureCorrection": "정정할 기록 시간은 미래일 수 없습니다.",
     "healthInsuranceExemptionInvalid": "당점에서 건강보험에 가입한 경우 사유를 선택할 수 없습니다.",
-    "healthInsuranceRequired": "이 직원은 주 평균 12시간 이상 근무하므로 건강보험에 가입해야 합니다. 예외에 해당하면 사유를 선택하세요.",
+    "healthInsuranceRequired": "이 직원은 주 평균 12시간 이상 근무하거나 모든 영업일에 근무가 배정되어 건강보험에 가입해야 합니다. 급여 조건을 다시 저장하세요. 예외에 해당하면 사유를 선택하세요.",
     "healthSupplementExemptionInvalid": "이 매장에서 건강보험에 가입한 경우 보충보험료 면제 사유를 선택할 수 없습니다.",
     "holidayCalendarMissing": "해당 연도의 공휴일 자료를 아직 받지 못했습니다. 잠시 후 다시 시도하세요.",
     "holidayDayKindRequired": "공휴일 근무는 공휴일로 지정해야 합니다. 취소 후 다시 배정하세요.",
@@ -192,6 +196,7 @@
     "menstrualDayLimit": "생리 휴가는 월 1일로 제한됩니다.",
     "minimumWageUnconfirmed": "이번 기간의 최저 시급이 공식 공고로 아직 확인되지 않았습니다.",
     "monthlyOvertimeExceeded": "당월 연장 근무 상한(일반 46시간, 동의 기간 54시간)을 초과합니다.",
+    "overtimeAgreementRequired": "연장 근무와 휴무일 출근에는 노동조합 또는 노사회의의 동의가 필요합니다. 먼저 근태 설정에서 동의일을 입력하세요.",
     "negativeNetPay": "공제액이 총급여를 초과합니다.",
     "noShifts": "해당 월에 근무 일정이 없습니다.",
     "occupationalAccidentRateRequired": "고용주 산재보험료를 계산하려면 근태 설정에서 노동보험국이 인정한 산재보험 업종을 선택하세요.",
@@ -222,6 +227,7 @@
     "payrollRuleSetStale": "급여 계산 규칙이 한 달 넘게 공식 공고와 대조되지 않았습니다. 먼저 규칙을 업데이트하세요.",
     "payrollSourceChanged": "원본 데이터가 변경되었습니다. 급여 초안을 다시 생성하세요.",
     "payrollTermsRequired": "유효한 급여 설정을 먼저 등록하세요.",
+    "paydayRequired": "근태 설정에서 급여일을 설정해야 지급일과 원천징수 연도를 판단할 수 있습니다.",
     "pendingRequestExists": "이 근무에 같은 유형의 대기 중 신청이 있습니다.",
     "pendingRequests": "심사 대기 중인 신청이 있습니다.",
     "pensionIneligible": "이 직원의 법적 신분은 노동 퇴직금 대상이 아닙니다. 적립률과 월 적립 임금은 0이어야 합니다.",
@@ -336,7 +342,7 @@
     "label": "부여된 한도",
     "placeholder": "귀하의 부여된 한도를 선택해 주세요"
   },
-  "leaveCaseHint": "관리자가 사유, 가족 관계, 적용 기간을 확인하면 한도가 자동 계산됩니다. 동일 사유를 중복 등록하지 마세요. 출산 휴가는 휴일을 포함한 전체 날짜로 입력합니다(자정, 종료일 제외). 배우자 검진과 출산 휴가는 합계 7일이며 신청별 적용 기간을 확인해야 합니다. 출산 휴가 일급은 약정 임금과 평균 임금으로 자동 계산됩니다. 지급 비율은 근속 기간으로 자동 계산됩니다. 육아 휴직은 같은 자녀에 동일한 사유 번호를 사용하세요. 기간은 만 3세 생일까지이며, 근속 6개월 미만은 노사 합의가 필요합니다. 일급 설정은 필요하지 않습니다.",
+  "leaveCaseHint": "관리자가 사유, 가족 관계, 적용 기간을 확인하면 한도가 자동 계산됩니다. 동일 사유를 중복 등록하지 마세요. 출산 휴가와 유산 휴가의 종료일은 법정 일수로 자동 설정됩니다. 배우자 검진과 출산 휴가는 합계 7일이며 신청별 적용 기간을 확인해야 합니다. 출산 휴가 일급은 약정 임금과 평균 임금으로 자동 계산됩니다. 지급 비율은 근속 기간으로 자동 계산됩니다. 육아 휴직은 자녀별로 관리합니다. 기간은 만 3세 생일까지이며, 근속 6개월 미만은 노사 합의가 필요합니다. 일급 설정은 필요하지 않습니다.",
   "leaveCases": {
     "actions": {
       "create": "사유별 휴가 한도 추가",
@@ -423,6 +429,10 @@
   "originalEvents": "원본 기록",
   "originalLeavePeriod": "원래 휴직 기간",
   "otherDeduction": "기타 확인된 공제({currency})",
+  "overtimeAgreedFrom": {
+    "label": "연장 근무 동의일",
+    "none": "동의 없음(연장 근무·휴무일 출근 불가)"
+  },
   "overtimeExtensionPeriods": {
     "hint": "노동조합(없으면 노사회의)의 동의를 받은 후 등록하세요. 각 기간은 연속 3개월이며, 기간 중 월 54시간·합계 138시간까지, 그 외 월은 46시간까지입니다. 30인 이상 사업장은 관할 기관에 신고해야 합니다.",
     "label": "연장 근무 동의 기간",
@@ -437,6 +447,13 @@
     "before": "근무 전"
   },
   "paidBreak": "이 근무의 유급 휴식",
+  "paidOn": "지급일",
+  "payday": {
+    "label": "급여일",
+    "none": "미설정",
+    "value": "{nextMonth, select, true {다음 달} other {당월}} {day, number}일"
+  },
+  "paydayNextMonth": "급여일이 다음 달",
   "paidPercent": "유급 비율(%)",
   "parentalChild": "자녀",
   "parentalChildHint": "같은 자녀는 기존 정보를 사용하세요. 관리자가 증빙을 확인하고 고정 식별 번호를 부여합니다. 쌍둥이는 별도로 등록하며 주민등록번호 전체를 입력하지 마세요. 기존 육아휴직 한도도 자녀 연결이 필요합니다.",

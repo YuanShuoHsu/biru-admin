@@ -13,7 +13,7 @@ export const useLeaveCaseFormSchema = (leaveTypes: AttendanceLeaveType[]) => {
       employeeId: z
         .string()
         .min(1, { error: tValidation("employee.notSelected") }),
-      endsAt: z.string().min(1, { error: tValidation("endsAt.required") }),
+      endsAt: z.string(),
       eventDate: z.string(),
       extensionAgreed: z.boolean(),
       leaveTypeId: z
@@ -23,23 +23,34 @@ export const useLeaveCaseFormSchema = (leaveTypes: AttendanceLeaveType[]) => {
         .string()
         .trim()
         .min(1, { error: tValidation("reason.required") }),
-      reference: z
-        .string()
-        .trim()
-        .min(1, { error: tValidation("caseReference.required") }),
+      reference: z.string().trim(),
       startsAt: z.string().min(1, { error: tValidation("startsAt.required") }),
     })
     .superRefine((data, ctx) => {
-      if (new Date(data.endsAt) <= new Date(data.startsAt))
+      const leaveType = leaveTypes.find(({ id }) => id === data.leaveTypeId);
+      const isParental = leaveType?.statutoryKind === "parental";
+
+      if (!leaveType?.fixedCalendarDays) {
+        if (!data.endsAt)
+          ctx.addIssue({
+            code: "custom",
+            message: tValidation("endsAt.required"),
+            path: ["endsAt"],
+          });
+        else if (new Date(data.endsAt) <= new Date(data.startsAt))
+          ctx.addIssue({
+            code: "custom",
+            message: tValidation("endsAt.afterStartsAt"),
+            path: ["endsAt"],
+          });
+      }
+
+      if (!isParental && !data.reference)
         ctx.addIssue({
           code: "custom",
-          message: tValidation("endsAt.afterStartsAt"),
-          path: ["endsAt"],
+          message: tValidation("caseReference.required"),
+          path: ["reference"],
         });
-
-      const isParental =
-        leaveTypes.find(({ id }) => id === data.leaveTypeId)?.statutoryKind ===
-        "parental";
 
       if (isParental && !data.childId)
         ctx.addIssue({

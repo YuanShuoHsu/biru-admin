@@ -25,7 +25,9 @@ import { useRouter } from "@/i18n/navigation";
 import { Add, DeleteOutlined, MyLocation } from "@mui/icons-material";
 import {
   Button,
+  Checkbox,
   FormControl,
+  FormControlLabel,
   type FormControlProps,
   FormHelperText,
   FormLabel,
@@ -52,6 +54,10 @@ dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
 
 const StyledButton = styled(Button)({
+  alignSelf: "flex-start",
+});
+
+const StyledFormControlLabel = styled(FormControlLabel)({
   alignSelf: "flex-start",
 });
 
@@ -115,8 +121,11 @@ const SettingsDialog = ({
       occupationalIndustryCode: settings?.occupationalIndustryCode ?? "",
       latitude: settings?.latitude ?? null,
       longitude: settings?.longitude ?? null,
+      overtimeAgreedFrom: settings?.overtimeAgreedFrom ?? "",
       overtimeExtensionPeriods:
         settings?.overtimeExtensionPeriods.map((value) => ({ value })) ?? [],
+      payday: settings?.payday ?? null,
+      paydayNextMonth: settings?.paydayNextMonth ?? false,
       radiusMeters: settings?.radiusMeters ?? 100,
       voluntaryLaborInsuranceFrom: settings?.voluntaryLaborInsuranceFrom ?? "",
     },
@@ -129,6 +138,9 @@ const SettingsDialog = ({
     longitude,
     occupationalExperienceRate,
     occupationalIndustryCode,
+    overtimeAgreedFrom,
+    payday,
+    paydayNextMonth,
     radiusMeters,
     voluntaryLaborInsuranceFrom,
   ] = useWatch({
@@ -139,6 +151,9 @@ const SettingsDialog = ({
       "longitude",
       "occupationalExperienceRate",
       "occupationalIndustryCode",
+      "overtimeAgreedFrom",
+      "payday",
+      "paydayNextMonth",
       "radiusMeters",
       "voluntaryLaborInsuranceFrom",
     ],
@@ -192,6 +207,9 @@ const SettingsDialog = ({
               ? null
               : Math.round(values.occupationalExperienceRate * 10000),
           occupationalIndustryCode: values.occupationalIndustryCode || null,
+          overtimeAgreedFrom: values.overtimeAgreedFrom || null,
+          payday: values.payday,
+          paydayNextMonth: values.paydayNextMonth,
           radiusMeters: values.radiusMeters,
           overtimeExtensionPeriods: values.overtimeExtensionPeriods.map(
             ({ value }) => value,
@@ -442,6 +460,47 @@ const SettingsDialog = ({
             : null
         }
         views={["year", "month"]}
+      />
+      <NumberSpinner
+        clearable
+        error={!!errors.payday}
+        fullWidth
+        helperText={errors.payday?.message}
+        label={tAttendance("payday.label")}
+        max={31}
+        min={1}
+        onValueChange={(value) =>
+          setValue("payday", value, { shouldValidate: isSubmitted })
+        }
+        value={payday}
+      />
+      <StyledFormControlLabel
+        control={
+          <Checkbox
+            checked={paydayNextMonth}
+            onChange={(_, checked) => setValue("paydayNextMonth", checked)}
+          />
+        }
+        label={tAttendance("paydayNextMonth")}
+      />
+      <DatePicker
+        label={tAttendance("overtimeAgreedFrom.label")}
+        onChange={(value) =>
+          setValue(
+            "overtimeAgreedFrom",
+            value?.isValid() ? value.format("YYYY-MM-DD") : "",
+          )
+        }
+        slotProps={{
+          field: { clearable: true },
+          textField: { fullWidth: true },
+        }}
+        timezone={STORE_TIMEZONE}
+        value={
+          overtimeAgreedFrom
+            ? dayjs.tz(overtimeAgreedFrom, STORE_TIMEZONE)
+            : null
+        }
       />
       <StyledFormControl component="fieldset" variant="standard">
         <FormLabel component="legend">

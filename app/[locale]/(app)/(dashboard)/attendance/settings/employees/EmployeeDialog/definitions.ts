@@ -33,7 +33,6 @@ export const useEmployeeFormSchema = () => {
       userId: z.string(),
       hiredAt: z.string().min(1, { error: tValidation("hiredAt.required") }),
       terminatedAt: z.string(),
-      enabled: z.boolean(),
       birthDate: z
         .string()
         .min(1, { error: tValidation("birthDate.required") }),

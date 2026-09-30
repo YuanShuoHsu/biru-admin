@@ -3,6 +3,7 @@
 import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
+import { enqueueSnackbar } from "notistack";
 import useSWR from "swr";
 
 import EmployeeDialog from "./EmployeeDialog";
@@ -23,8 +24,14 @@ import {
 } from "@/hooks/useFilterOperators";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
-import { Edit } from "@mui/icons-material";
-import { Chip, IconButton, Stack, Tooltip } from "@mui/material";
+import { Delete, Edit } from "@mui/icons-material";
+import {
+  Chip,
+  DialogContentText,
+  IconButton,
+  Stack,
+  Tooltip,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
@@ -50,7 +57,7 @@ import type {
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization } from "@/types/organizations";
 
-import { attendancePath } from "@/utils/attendance";
+import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAttendanceEmployeeEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
@@ -67,7 +74,6 @@ const STATUS_COLORS: Record<
   unconfigured: "warning",
   upcoming: "info",
   active: "success",
-  disabled: "default",
   terminated: "default",
 };
 
@@ -77,6 +83,7 @@ const DataGrid = dynamic(
 );
 
 interface EmployeesProps {
+  canDelete: boolean;
   canWrite: boolean;
   filterField?: AttendanceEmployeeFilterField;
   filterOperator?: FilterOperator;
@@ -93,6 +100,7 @@ interface EmployeesProps {
 }
 
 const Employees = ({
+  canDelete,
   canWrite,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
@@ -256,9 +264,50 @@ const Employees = ({
     [legalStatusObligations, mutate, organizationSlug, setDialog, tAttendance],
   );
 
+  const handleDeleteEmployee = useCallback(
+    ({ employee, name }: AttendanceMember) =>
+      employee &&
+      setDialog({
+        content: (
+          <DialogContentText>
+            {tAttendance.rich("employees.actions.delete.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              name,
+            })}
+          </DialogContentText>
+        ),
+        onConfirm: async () => {
+          try {
+            await fetcher(
+              attendancePath(
+                organizationSlug,
+                "org",
+                `employees/${employee.id}`,
+              ),
+              { method: "DELETE" },
+            );
+
+            enqueueSnackbar(
+              tAttendance("employees.actions.delete.success", { name }),
+              { variant: "success" },
+            );
+
+            mutate();
+          } catch (error) {
+            enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+              variant: "error",
+            });
+          }
+        },
+        open: true,
+        title: tAttendance("employees.actions.delete.title"),
+      }),
+    [mutate, organizationSlug, setDialog, tAttendance],
+  );
+
   const columns = useMemo<GridColDef[]>(
     () => [
-      ...(canWrite
+      ...(canWrite || canDelete
         ? [
             {
               disableColumnMenu: true,
@@ -268,20 +317,35 @@ const Employees = ({
               headerName: tAttendance("actions"),
               renderCell: ({ row }: GridRenderCellParams<AttendanceMember>) => (
                 <StyledStack direction="row">
-                  <Tooltip
-                    title={tAttendance(
-                      row.employee
-                        ? "employees.actions.update"
-                        : "employees.actions.create",
-                    )}
-                  >
-                    <IconButton
-                      onClick={() => handleEmployeeDialog(row)}
-                      size="small"
+                  {canWrite && (
+                    <Tooltip
+                      title={tAttendance(
+                        row.employee
+                          ? "employees.actions.update"
+                          : "employees.actions.create",
+                      )}
                     >
-                      <Edit fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
+                      <IconButton
+                        onClick={() => handleEmployeeDialog(row)}
+                        size="small"
+                      >
+                        <Edit fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                  {canDelete && row.deletable && (
+                    <Tooltip
+                      title={tAttendance("employees.actions.delete.title")}
+                    >
+                      <IconButton
+                        color="error"
+                        onClick={() => handleDeleteEmployee(row)}
+                        size="small"
+                      >
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
                 </StyledStack>
               ),
               resizable: false,
@@ -368,6 +432,7 @@ const Employees = ({
       },
     ],
     [
+      canDelete,
       canWrite,
       date,
       dateFilterOperators,
@@ -375,6 +440,7 @@ const Employees = ({
       enumOptions.employmentType,
       enumOptions.legalStatus,
       enumOptions.status,
+      handleDeleteEmployee,
       handleEmployeeDialog,
       stringFilterOperators,
       tAttendance,

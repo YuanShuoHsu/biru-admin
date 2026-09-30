@@ -62,19 +62,31 @@ const UnitDialog = ({ mutate, organizationSlug, unit }: UnitDialogProps) => {
 
   const businessNumberField = register("businessNumber");
 
+  // 營利事業的扣繳義務人即負責人（所得稅法 §89）
+  const fillAgentName = (representativeName: string) => {
+    if (!getValues("agentName")) setValue("agentName", representativeName);
+  };
+
   const fillFromRegistry = async (businessNumber: string) => {
     if (!/^\d{8}$/.test(businessNumber) || getValues("name")) return;
 
     try {
-      const { address, name } = await fetcher<{
+      const { address, name, representativeName } = await fetcher<{
         address: string;
         name: string;
+        representativeName: string;
       }>(`/api/gcis/${businessNumber}`);
 
       setValue("name", name);
 
       if (!getValues("address") && address.length <= UNIT_ADDRESS_MAX_LENGTH)
         setValue("address", address);
+
+      if (!getValues("representativeName")) {
+        setValue("representativeName", representativeName);
+
+        fillAgentName(representativeName);
+      }
     } catch {
       return;
     }
@@ -133,7 +145,12 @@ const UnitDialog = ({ mutate, organizationSlug, unit }: UnitDialogProps) => {
           label={tAttendance(`withholding.unit.fields.${name}`)}
           required
           slotProps={{ htmlInput: { maxLength: max } }}
-          {...register(name)}
+          {...register(name, {
+            onBlur:
+              name === "representativeName"
+                ? (event) => fillAgentName(event.target.value.trim())
+                : undefined,
+          })}
         />
       ))}
       <TextField

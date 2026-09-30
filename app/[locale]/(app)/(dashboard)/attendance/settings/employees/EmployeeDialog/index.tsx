@@ -27,9 +27,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Add, DeleteOutlined } from "@mui/icons-material";
 import {
   Button,
-  Checkbox,
   FormControl,
-  FormControlLabel,
   type FormControlProps,
   FormLabel,
   IconButton,
@@ -63,10 +61,6 @@ import { fetcher } from "@/utils/fetcher";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
-
-const StyledFormControlLabel = styled(FormControlLabel)({
-  alignSelf: "flex-start",
-});
 
 const StyledFormControl = styled(FormControl)<FormControlProps>(
   ({ theme }) => ({
@@ -249,7 +243,6 @@ const EmployeeDialog = ({
   } = useForm<EmployeeForm>({
     defaultValues: {
       birthDate: employee?.birthDate ?? "",
-      enabled: employee?.enabled ?? true,
       hiredAt:
         employee?.hiredAt ??
         dayjs(member.joinedAt).tz(STORE_TIMEZONE).startOf("day").toISOString(),
@@ -278,7 +271,6 @@ const EmployeeDialog = ({
 
   const [
     birthDate,
-    enabled,
     hiredAt,
     legalStatus,
     regularLeaveWeekday,
@@ -291,7 +283,6 @@ const EmployeeDialog = ({
     control,
     name: [
       "birthDate",
-      "enabled",
       "hiredAt",
       "legalStatus",
       "regularLeaveWeekday",
@@ -319,7 +310,6 @@ const EmployeeDialog = ({
 
       const body: SaveAttendanceEmployee = {
         birthDate: values.birthDate,
-        enabled: values.enabled,
         hiredAt: values.hiredAt,
         legalStatus: values.legalStatus,
         indigenousHolidays: values.indigenousHolidays.map(({ date }) => date),
@@ -583,15 +573,6 @@ const EmployeeDialog = ({
           value={terminationNoticedAt ? dayjs(terminationNoticedAt) : null}
         />
       )}
-      <StyledFormControlLabel
-        control={
-          <Checkbox
-            checked={enabled}
-            onChange={(_, checked) => setValue("enabled", checked)}
-          />
-        }
-        label={tAttendance("enabled")}
-      />
     </FormBox>
   );
 };

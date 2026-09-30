@@ -75,14 +75,18 @@
       "unconfigured": "Not set up",
       "upcoming": "Not started",
       "active": "Active",
-      "disabled": "Disabled",
       "terminated": "Terminated"
     }
   },
   "employees": {
     "actions": {
       "create": "Add employee",
-      "update": "Edit employee"
+      "update": "Edit employee",
+      "delete": {
+        "confirm": "Delete the employee setup for <bold>{name}</bold>? This employee has no attendance or payroll records and will return to “Not set up”.",
+        "success": "Deleted the employee setup for {name}",
+        "title": "Delete employee setup"
+      }
     },
     "label": "Employees",
     "created": "Added employee {name}",
@@ -139,8 +143,8 @@
     "dailyHoursExceeded": "This would push the day past 12 working hours. Shorten the overtime.",
     "dayKindRequired": "This employee has no fixed regular leave and rest days, so choose a day type.",
     "emergencyDetailsRequired": "Approve the emergency cause, report and make-up rest before settlement.",
-    "employeeDisableConflict": "Cancel upcoming shifts and settle pending requests before disabling.",
-    "employeeNotEnabled": "Ask a manager to enable your employee attendance profile.",
+    "employeeInUse": "This employee already has attendance or payroll records and cannot be deleted. Set a termination date instead.",
+    "employeeNotEnabled": "You are not currently employed here (not set up, not started yet or terminated). Ask a manager to check your employee record.",
     "employmentInsuranceExemptionInvalid": "An exemption can't be selected when employment insurance is covered or doesn't apply to this employee's legal status.",
     "employmentInsuranceIneligible": "Employment insurance doesn't apply to this employee's legal status. Choose labor insurance only or none.",
     "employmentInsuranceRequired": "This employee must be covered by employment insurance. If a statutory exclusion applies, select an exemption.",
@@ -148,7 +152,7 @@
     "error": "The operation failed. Please try again.",
     "futureCorrection": "Corrected times cannot be in the future.",
     "healthInsuranceExemptionInvalid": "A reason can't be selected when health insurance is covered here.",
-    "healthInsuranceRequired": "This employee averages at least 12 hours a week and must be covered by health insurance. If an exception applies, select a reason.",
+    "healthInsuranceRequired": "This employee averages at least 12 hours a week or is scheduled on every business day and must be covered by health insurance. Save the payroll terms again. If an exception applies, select a reason.",
     "healthSupplementExemptionInvalid": "A supplementary premium exemption cannot be chosen while health insurance is enrolled at this store.",
     "holidayCalendarMissing": "The national holiday calendar for that year isn't available yet. Try again later.",
     "holidayDayKindRequired": "Shifts on national holidays must be marked as holidays. Cancel and reschedule them.",
@@ -192,6 +196,7 @@
     "menstrualDayLimit": "Menstrual leave is limited to one calendar day per month.",
     "minimumWageUnconfirmed": "This period's hourly minimum wage has not been confirmed against the official announcement.",
     "monthlyOvertimeExceeded": "This would exceed the monthly overtime limit (46 hours, or 54 hours in an approved extension period).",
+    "overtimeAgreementRequired": "Overtime and rest-day work require union or labor–management meeting consent. Enter the consent date in attendance settings first.",
     "negativeNetPay": "Deductions exceed gross pay.",
     "noShifts": "No shifts exist for this month.",
     "occupationalAccidentRateRequired": "Select the occupational accident insurance industry approved by the Bureau of Labor Insurance in attendance settings to calculate the employer premium.",
@@ -222,6 +227,7 @@
     "payrollRuleSetStale": "Payroll rules have not been checked against official announcements for over a month. Update the rules first.",
     "payrollSourceChanged": "Source data changed; create a new payroll draft.",
     "payrollTermsRequired": "Create effective payroll terms first.",
+    "paydayRequired": "Set the payday in attendance settings so the payment date and withholding year can be determined.",
     "pendingRequestExists": "A request of this type is already pending for this shift.",
     "pendingRequests": "Requests are awaiting review.",
     "pensionIneligible": "Labor pension doesn't apply to this employee's legal status. Contribution rates and contribution wage must be 0.",
@@ -336,7 +342,7 @@
     "label": "Granted allowance",
     "placeholder": "Please select your granted allowance"
   },
-  "leaveCaseHint": "A manager must verify the event, relationship and eligible dates. Allowances are calculated automatically. Do not duplicate an event. Maternity periods include rest days and use full calendar days (midnight, exclusive end). Partner prenatal and childbirth leave share 7 days; verify the eligible dates for each request. The maternity daily wage is calculated from the agreed and average wages. The paid percentage is calculated from seniority. For parental leave, reuse the same reference for that child. The period must end by the third birthday. Service under six months requires employer–employee agreement. No daily wage is required.",
+  "leaveCaseHint": "A manager must verify the event, relationship and eligible dates. Allowances are calculated automatically. Do not duplicate an event. The end date of maternity and miscarriage leave is set from the statutory number of days. Partner prenatal and childbirth leave share 7 days; verify the eligible dates for each request. The maternity daily wage is calculated from the agreed and average wages. The paid percentage is calculated from seniority. Parental leave is tracked per child. The period must end by the third birthday. Service under six months requires employer–employee agreement. No daily wage is required.",
   "leaveCases": {
     "actions": {
       "create": "Add event leave allowance",
@@ -423,6 +429,10 @@
   "originalEvents": "Original punches",
   "originalLeavePeriod": "Original leave period",
   "otherDeduction": "Other verified deductions ({currency})",
+  "overtimeAgreedFrom": {
+    "label": "Overtime consent date",
+    "none": "No consent (overtime and rest-day work not allowed)"
+  },
   "overtimeExtensionPeriods": {
     "hint": "Add only after approval by the union (or labor-management meeting if there is no union). Each period covers 3 consecutive months with up to 54 overtime hours a month and 138 hours in total; other months are limited to 46 hours. Employers with 30 or more employees must file with the local authority.",
     "label": "Approved overtime extension periods",
@@ -437,6 +447,13 @@
     "before": "Before shift"
   },
   "paidBreak": "Paid breaks for this shift",
+  "paidOn": "Payment date",
+  "payday": {
+    "label": "Payday",
+    "none": "Not set",
+    "value": "Day {day, number} of {nextMonth, select, true {the following month} other {the same month}}"
+  },
+  "paydayNextMonth": "Payday falls in the following month",
   "paidPercent": "Paid percentage (%)",
   "parentalChild": "Child",
   "parentalChildHint": "Reuse the existing record for the same child. A manager must verify evidence and assign a stable reference. Register twins separately; do not enter full national ID numbers. Assign existing parental leave allowances to a verified child.",
