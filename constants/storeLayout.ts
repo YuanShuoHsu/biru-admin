@@ -872,10 +872,10 @@ export const STORE_LAYOUT_ITEMS = [
     z: 2.2,
   },
   {
-    depth: 0.52,
+    depth: 0.585,
     elevation: 0.9,
     floor: "ground",
-    height: 0.695,
+    height: 0.815,
     kind: "equipment",
     label: "iceMachine",
     width: 0.35,
