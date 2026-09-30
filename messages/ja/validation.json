@@ -173,7 +173,8 @@
     "integer": "整数を入力してください。",
     "max": "{max} 以下の値を入力してください。",
     "maxFractionDigits": "小数点以下 {digits} 桁以内の値を入力してください。",
-    "min": "{min} 以上の値を入力してください。"
+    "min": "{min} 以上の値を入力してください。",
+    "positive": "0 より大きい数値を入力してください。"
   },
   "occurredAt": {
     "maxDateTime": "現在以前の打刻時刻を選択してください。",
@@ -315,5 +316,29 @@
   },
   "shift": {
     "notSelected": "シフトを選択してください。"
+  },
+  "earningTypeName": {
+    "required": "名称を入力してください。",
+    "maxLength": "名称は 50 文字以内で入力してください。"
+  },
+  "earningType": {
+    "notSelected": "加算項目を選択してください。"
+  },
+  "businessNumber": {
+    "invalid": "8 桁の統一番号を入力してください。"
+  },
+  "taxId": {
+    "invalid": "10 桁の身分証番号を入力してください。"
+  },
+  "registeredAddress": {
+    "required": "戸籍住所を入力してください。",
+    "maxLength": "戸籍住所は {max} 文字以内で入力してください。"
+  },
+  "withholdingUnit": {
+    "required": "この項目は必須です。",
+    "maxLength": "{max} 文字以内で入力してください。",
+    "phone": "数字とハイフンで 15 桁以内で入力してください。",
+    "taxOfficeCode": "英字 1 文字と数字 2 桁で入力してください（例：A03）。",
+    "taxRegistrationNumber": "9 桁の源泉徴収単位税籍番号を入力してください。"
   }
 }

@@ -251,7 +251,15 @@
     "weeklyRestRequired": "매주(월~일) 법정 휴일 1일과 휴식일 1일이 필요합니다. 정상 근무일은 최대 5일, 근무 배정일은 최대 6일입니다.",
     "weeklyScheduleRequiresReview": "주간 예정 근무가 40시간을 초과합니다. 일정을 확인하세요.",
     "withholdingTableOutdated": "올해 급여소득 원천징수 세액표와 퇴직소득 공제액이 아직 업데이트되지 않았습니다.",
-    "workPermitRequired": "이 직원의 법적 신분은 유효한 취업 허가가 필요하지만 근무 또는 출근일이 허가 기간 밖입니다."
+    "workPermitRequired": "이 직원의 법적 신분은 유효한 취업 허가가 필요하지만 근무 또는 출근일이 허가 기간 밖입니다.",
+    "earningTypeInUse": "사용 중인 가산 항목이라 삭제할 수 없습니다.",
+    "earningTypeNameTaken": "같은 이름의 가산 항목이 이미 있습니다.",
+    "invalidEarningType": "가산 항목을 찾을 수 없습니다.",
+    "invalidBusinessNumber": "사업자 번호 검증 숫자가 올바르지 않습니다.",
+    "invalidTaxId": "신분증 번호 검증 숫자가 올바르지 않습니다.",
+    "taxIdentityRequired": "신분증 번호와 호적 주소를 입력하지 않은 직원이 있습니다.",
+    "taxIdentityUnsupported": "외국인 직원은 현재 별도로 신고해야 합니다.",
+    "withholdingUnitRequired": "먼저 신고 단위 정보를 입력하세요."
   },
   "eventAction": {
     "options": {
@@ -278,7 +286,8 @@
     "mine": "내 정보",
     "records": "근태 기록",
     "schedule": "근무 편성",
-    "settings": "설정"
+    "settings": "설정",
+    "payroll": "급여"
   },
   "healthBasis": "건강 보험 금액({currency})",
   "healthDependents": "건강 보험 피부양자 수",
@@ -475,7 +484,11 @@
       "severancePay": "해고수당",
       "noticePay": "해고예고수당",
       "retirementWithholding": "퇴직소득 원천징수",
-      "injuryCompensation": "산재 휴업 보상"
+      "injuryCompensation": "산재 휴업 보상",
+      "attendanceBonus": "개근 수당",
+      "mealAllowance": "식대",
+      "otherWage": "정기 임금",
+      "bonus": "상여"
     }
   },
   "payrollStatus": {
@@ -802,6 +815,96 @@
       "reservedMakeupRest": "보상 휴일과 겹침",
       "overlappingShift": "기존 근무와 겹침",
       "overlappingLeave": "휴가와 겹침"
+    }
+  },
+  "amount": "금액 ({currency})",
+  "attendanceBonus": "개근 수당 ({currency})",
+  "mealAllowance": "식대 ({currency})",
+  "namedAmount": "{amount} ({names})",
+  "provided": "입력됨",
+  "notProvided": "미입력",
+  "earningCategory": {
+    "label": "구분",
+    "options": {
+      "wage": "정기 임금",
+      "bonus": "비정기 상여"
+    },
+    "descriptions": {
+      "wage": "매월 실적에 따라 지급하며 연장근로 시급과 평균임금에 산입하고 당월 급여와 함께 원천징수합니다.",
+      "bonus": "연말·명절 등 비정기로 지급하며 평균임금에 산입하지 않고 별도로 5%를 원천징수합니다."
+    }
+  },
+  "earningTypes": {
+    "label": "급여 가산 항목",
+    "item": "가산 항목",
+    "actions": {
+      "create": {
+        "title": "가산 항목 추가",
+        "success": "\"{name}\"을(를) 추가했습니다"
+      },
+      "update": {
+        "title": "가산 항목 편집",
+        "success": "\"{name}\"을(를) 수정했습니다"
+      },
+      "delete": {
+        "title": "가산 항목 삭제",
+        "confirm": "<bold>{name}</bold>을(를) 삭제할까요?",
+        "success": "\"{name}\"을(를) 삭제했습니다"
+      }
+    }
+  },
+  "earnings": {
+    "label": "이번 달 가산 항목"
+  },
+  "withholding": {
+    "label": "원천징수영수증",
+    "mine": "내 원천징수영수증",
+    "year": "소득 연도",
+    "download": "신고 파일 다운로드",
+    "unitRequired": "먼저 신고 단위 정보를 입력하세요",
+    "identitiesMissing": "직원 {count}명의 신분증 번호와 호적 주소가 입력되지 않았습니다",
+    "noCertificates": "이 연도에 신고할 원천징수 자료가 없습니다",
+    "taxId": "신분증 번호",
+    "address": "호적 주소",
+    "period": "소득 귀속 기간",
+    "fileSeparately": "외국인은 별도 신고",
+    "recipient": "소득자",
+    "print": "인쇄",
+    "noMine": "종료된 연도의 원천징수영수증이 아직 없습니다.",
+    "certificateTitle": "{year}년도 각종 소득 원천징수·면제 영수증",
+    "amountSummary": "지급 총액 {total}, 원천징수 세액 {tax}, 지급 순액 {net}",
+    "formats": {
+      "salary": "급여 소득 (50)",
+      "retirement": "퇴직 소득 (93)"
+    },
+    "amounts": {
+      "salaryCents": "급여 지급 총액",
+      "salaryWithholdingCents": "급여 원천징수 세액",
+      "voluntaryPensionCents": "자발적 퇴직연금 납입 (비과세)",
+      "retirementIncomeCents": "퇴직 소득",
+      "retirementWithholdingCents": "퇴직 소득 원천징수 세액"
+    },
+    "unit": {
+      "title": "신고 단위 정보",
+      "saved": "신고 단위 정보를 저장했습니다",
+      "summary": "{name} (사업자 번호 {businessNumber})",
+      "fields": {
+        "businessNumber": "사업자 번호",
+        "taxOfficeCode": "세무서 코드",
+        "taxRegistrationNumber": "원천징수 단위 세적 번호",
+        "name": "원천징수 단위명",
+        "address": "원천징수 단위 주소",
+        "agentName": "원천징수 의무자",
+        "representativeName": "대표자",
+        "contactName": "담당자",
+        "contactPhone": "연락처",
+        "contactEmail": "이메일"
+      }
+    },
+    "identity": {
+      "title": "{name}의 신고 정보",
+      "edit": "신고 정보 편집",
+      "saved": "신고 정보를 저장했습니다"
     }
   }
 }

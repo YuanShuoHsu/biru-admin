@@ -251,7 +251,15 @@
     "weeklyRestRequired": "每週（週一至週日）須有 1 天例假與 1 天休息日：正常工作日最多 5 天，排班日最多 6 天。",
     "weeklyScheduleRequiresReview": "每週排定工作日時數超過 40 小時，請確認班表。",
     "withholdingTableOutdated": "系統尚未更新本年度的薪資所得扣繳稅額表與退職所得定額免稅金額。",
-    "workPermitRequired": "此員工的法定身分須持有有效工作許可，班次或出勤日期不在工作許可期間內。"
+    "workPermitRequired": "此員工的法定身分須持有有效工作許可，班次或出勤日期不在工作許可期間內。",
+    "earningTypeInUse": "這個加項名目已被使用，無法刪除。",
+    "earningTypeNameTaken": "已有同名的加項名目。",
+    "invalidEarningType": "找不到這個加項名目。",
+    "invalidBusinessNumber": "統一編號檢查碼不正確。",
+    "invalidTaxId": "身分證統一編號檢查碼不正確。",
+    "taxIdentityRequired": "還有員工尚未填寫身分證統一編號與戶籍地址。",
+    "taxIdentityUnsupported": "外籍員工目前需另行申報。",
+    "withholdingUnitRequired": "請先填寫申報單位資料。"
   },
   "eventAction": {
     "options": {
@@ -278,7 +286,8 @@
     "mine": "我的",
     "records": "出勤紀錄",
     "schedule": "排班",
-    "settings": "設定"
+    "settings": "設定",
+    "payroll": "薪資"
   },
   "healthBasis": "健保月投保金額（{currency}）",
   "healthDependents": "健保依附眷屬人數",
@@ -475,7 +484,11 @@
       "severancePay": "資遣費",
       "noticePay": "預告期間工資",
       "retirementWithholding": "退職所得扣繳",
-      "injuryCompensation": "職災原領工資補償"
+      "injuryCompensation": "職災原領工資補償",
+      "attendanceBonus": "全勤獎金",
+      "mealAllowance": "伙食費",
+      "otherWage": "經常性工資",
+      "bonus": "獎金"
     }
   },
   "payrollStatus": {
@@ -802,6 +815,96 @@
       "reservedMakeupRest": "與補假重疊",
       "overlappingShift": "已有班次",
       "overlappingLeave": "已請假"
+    }
+  },
+  "amount": "金額（{currency}）",
+  "attendanceBonus": "全勤獎金（{currency}）",
+  "mealAllowance": "伙食費（{currency}）",
+  "namedAmount": "{amount}（{names}）",
+  "provided": "已填",
+  "notProvided": "未填",
+  "earningCategory": {
+    "label": "類別",
+    "options": {
+      "wage": "經常性工資",
+      "bonus": "非經常性獎金"
+    },
+    "descriptions": {
+      "wage": "每月依表現發放，計入加班費時薪與平均工資，併入當月薪資扣繳。",
+      "bonus": "年終、三節等不定期發放，不計入平均工資，另按 5% 扣繳。"
+    }
+  },
+  "earningTypes": {
+    "label": "薪資加項",
+    "item": "加項名目",
+    "actions": {
+      "create": {
+        "title": "新增加項名目",
+        "success": "已新增「{name}」"
+      },
+      "update": {
+        "title": "編輯加項名目",
+        "success": "已更新「{name}」"
+      },
+      "delete": {
+        "title": "刪除加項名目",
+        "confirm": "確定要刪除 <bold>{name}</bold> 嗎？",
+        "success": "已刪除「{name}」"
+      }
+    }
+  },
+  "earnings": {
+    "label": "本月加項"
+  },
+  "withholding": {
+    "label": "扣繳憑單",
+    "mine": "我的扣繳憑單",
+    "year": "所得年度",
+    "download": "下載申報檔",
+    "unitRequired": "請先填寫申報單位資料",
+    "identitiesMissing": "{count} 位員工尚未填寫身分證統一編號與戶籍地址",
+    "noCertificates": "此年度沒有可申報的扣繳資料",
+    "taxId": "身分證統一編號",
+    "address": "戶籍地址",
+    "period": "所得所屬期間",
+    "fileSeparately": "外籍需另行申報",
+    "recipient": "所得人",
+    "print": "列印",
+    "noMine": "目前沒有已結束年度的扣繳憑單。",
+    "certificateTitle": "{year} 年度各類所得扣繳暨免扣繳憑單",
+    "amountSummary": "給付總額 {total}、扣繳稅額 {tax}、給付淨額 {net}",
+    "formats": {
+      "salary": "薪資所得（50）",
+      "retirement": "退職所得（93）"
+    },
+    "amounts": {
+      "salaryCents": "薪資給付總額",
+      "salaryWithholdingCents": "薪資扣繳稅額",
+      "voluntaryPensionCents": "自提勞退（不計入課稅）",
+      "retirementIncomeCents": "退職所得",
+      "retirementWithholdingCents": "退職所得扣繳稅額"
+    },
+    "unit": {
+      "title": "申報單位資料",
+      "saved": "已儲存申報單位資料",
+      "summary": "{name}（統一編號 {businessNumber}）",
+      "fields": {
+        "businessNumber": "統一編號",
+        "taxOfficeCode": "稽徵機關代號",
+        "taxRegistrationNumber": "扣繳單位稅籍編號",
+        "name": "扣繳單位名稱",
+        "address": "扣繳單位地址",
+        "agentName": "扣繳義務人",
+        "representativeName": "負責人",
+        "contactName": "聯絡人",
+        "contactPhone": "聯絡電話",
+        "contactEmail": "電子郵件"
+      }
+    },
+    "identity": {
+      "title": "{name} 的申報資料",
+      "edit": "編輯申報資料",
+      "saved": "已儲存申報資料"
     }
   }
 }

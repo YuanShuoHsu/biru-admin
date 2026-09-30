@@ -20,6 +20,8 @@ import {
   attendanceShiftSortFieldValues,
   type components,
   payrollBlockerValues,
+  payrollEarningTypeFilterFieldValues,
+  payrollEarningTypeSortFieldValues,
   payrollStatementFilterFieldValues,
   payrollStatementSortFieldValues,
 } from "@/types/api";
@@ -40,6 +42,8 @@ export type SaveAttendanceEmployee =
   components["schemas"]["SaveAttendanceEmployeeDto"];
 export type AttendanceContext =
   components["schemas"]["AttendanceContextResponseDto"];
+export type AttendanceReviewCounts =
+  components["schemas"]["AttendanceReviewCountsResponseDto"];
 export type AttendanceShift =
   components["schemas"]["AttendanceShiftResponseDto"];
 export type AttendanceCalendarDayKinds =
@@ -100,6 +104,28 @@ export type PayrollStatement =
 export type PayrollStatementPage =
   components["schemas"]["PayrollStatementsResponseDto"];
 export type PayrollTerms = components["schemas"]["PayrollTermsResponseDto"];
+export type PayrollEarningType =
+  components["schemas"]["PayrollEarningTypeResponseDto"];
+export type PayrollEarningTypePage =
+  components["schemas"]["PayrollEarningTypesResponseDto"];
+export type PayrollEarningCategory =
+  components["schemas"]["PayrollEarningCategory"];
+export type PayrollEarningInput =
+  components["schemas"]["PayrollEarningInputDto"];
+export type PayrollWithholdingSummary =
+  components["schemas"]["PayrollWithholdingSummaryResponseDto"];
+export type PayrollWithholdingCertificate =
+  components["schemas"]["PayrollWithholdingCertificateResponseDto"];
+export type PayrollWithholdingUnit =
+  components["schemas"]["PayrollWithholdingUnitDto"];
+export type PayrollWithholdingFile =
+  components["schemas"]["PayrollWithholdingFileResponseDto"];
+export type MyWithholdingCertificate =
+  components["schemas"]["MyWithholdingCertificateResponseDto"];
+export type PayrollEarningTypeFilterField =
+  (typeof payrollEarningTypeFilterFieldValues)[number];
+export type PayrollEarningTypeSortField =
+  (typeof payrollEarningTypeSortFieldValues)[number];
 
 export type AttendanceErrorCode = (typeof attendanceErrorCodeValues)[number];
 export type PayrollBlocker = (typeof payrollBlockerValues)[number];

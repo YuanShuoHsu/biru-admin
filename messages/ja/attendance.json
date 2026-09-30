@@ -251,7 +251,15 @@
     "weeklyRestRequired": "各週（月曜〜日曜）に例假 1 日と休息日 1 日が必要です。通常勤務日は最大 5 日、シフト日は最大 6 日です。",
     "weeklyScheduleRequiresReview": "週の所定労働時間が 40 時間を超えています。シフトを確認してください。",
     "withholdingTableOutdated": "今年度の給与所得源泉徴収税額表と退職所得の控除額がまだ更新されていません。",
-    "workPermitRequired": "この従業員の法的身分では有効な就労許可が必要ですが、シフトまたは出勤日が許可期間外です。"
+    "workPermitRequired": "この従業員の法的身分では有効な就労許可が必要ですが、シフトまたは出勤日が許可期間外です。",
+    "earningTypeInUse": "この加算項目は使用中のため削除できません。",
+    "earningTypeNameTaken": "同じ名前の加算項目が既にあります。",
+    "invalidEarningType": "この加算項目が見つかりません。",
+    "invalidBusinessNumber": "統一番号のチェックディジットが正しくありません。",
+    "invalidTaxId": "身分証番号のチェックディジットが正しくありません。",
+    "taxIdentityRequired": "身分証番号と戸籍住所が未入力の従業員がいます。",
+    "taxIdentityUnsupported": "外国籍の従業員は現在別途申告が必要です。",
+    "withholdingUnitRequired": "先に申告単位情報を入力してください。"
   },
   "eventAction": {
     "options": {
@@ -278,7 +286,8 @@
     "mine": "自分",
     "records": "勤怠記録",
     "schedule": "シフト作成",
-    "settings": "設定"
+    "settings": "設定",
+    "payroll": "給与"
   },
   "healthBasis": "健康保険月額（{currency}）",
   "healthDependents": "健康保険扶養人数",
@@ -475,7 +484,11 @@
       "severancePay": "解雇手当",
       "noticePay": "解雇予告手当",
       "retirementWithholding": "退職所得の源泉徴収",
-      "injuryCompensation": "労災の休業補償"
+      "injuryCompensation": "労災の休業補償",
+      "attendanceBonus": "皆勤手当",
+      "mealAllowance": "食事手当",
+      "otherWage": "経常的賃金",
+      "bonus": "賞与"
     }
   },
   "payrollStatus": {
@@ -802,6 +815,96 @@
       "reservedMakeupRest": "代休と重複",
       "overlappingShift": "既存シフトと重複",
       "overlappingLeave": "休暇と重複"
+    }
+  },
+  "amount": "金額（{currency}）",
+  "attendanceBonus": "皆勤手当（{currency}）",
+  "mealAllowance": "食事手当（{currency}）",
+  "namedAmount": "{amount}（{names}）",
+  "provided": "入力済み",
+  "notProvided": "未入力",
+  "earningCategory": {
+    "label": "区分",
+    "options": {
+      "wage": "経常的賃金",
+      "bonus": "非経常的賞与"
+    },
+    "descriptions": {
+      "wage": "毎月の実績に応じて支給。残業代の時給と平均賃金に算入し、当月給与と合わせて源泉徴収します。",
+      "bonus": "年末・節句など不定期に支給。平均賃金に算入せず、別途 5% を源泉徴収します。"
+    }
+  },
+  "earningTypes": {
+    "label": "給与加算項目",
+    "item": "加算項目",
+    "actions": {
+      "create": {
+        "title": "加算項目を追加",
+        "success": "「{name}」を追加しました"
+      },
+      "update": {
+        "title": "加算項目を編集",
+        "success": "「{name}」を更新しました"
+      },
+      "delete": {
+        "title": "加算項目を削除",
+        "confirm": "<bold>{name}</bold> を削除しますか？",
+        "success": "「{name}」を削除しました"
+      }
+    }
+  },
+  "earnings": {
+    "label": "今月の加算項目"
+  },
+  "withholding": {
+    "label": "源泉徴収票",
+    "mine": "自分の源泉徴収票",
+    "year": "所得年度",
+    "download": "申告ファイルをダウンロード",
+    "unitRequired": "先に申告単位情報を入力してください",
+    "identitiesMissing": "{count} 名の従業員が身分証番号と戸籍住所を未入力です",
+    "noCertificates": "この年度に申告する源泉徴収データはありません",
+    "taxId": "身分証番号",
+    "address": "戸籍住所",
+    "period": "所得の対象期間",
+    "fileSeparately": "外国籍は別途申告",
+    "recipient": "所得者",
+    "print": "印刷",
+    "noMine": "終了した年度の源泉徴収票はまだありません。",
+    "certificateTitle": "{year} 年度 各種所得源泉徴収・免除証明書",
+    "amountSummary": "支払総額 {total}、源泉徴収税額 {tax}、支払純額 {net}",
+    "formats": {
+      "salary": "給与所得（50）",
+      "retirement": "退職所得（93）"
+    },
+    "amounts": {
+      "salaryCents": "給与支払総額",
+      "salaryWithholdingCents": "給与源泉徴収税額",
+      "voluntaryPensionCents": "任意拠出年金（非課税）",
+      "retirementIncomeCents": "退職所得",
+      "retirementWithholdingCents": "退職所得源泉徴収税額"
+    },
+    "unit": {
+      "title": "申告単位情報",
+      "saved": "申告単位情報を保存しました",
+      "summary": "{name}（統一番号 {businessNumber}）",
+      "fields": {
+        "businessNumber": "統一番号",
+        "taxOfficeCode": "税務署コード",
+        "taxRegistrationNumber": "源泉徴収単位税籍番号",
+        "name": "源泉徴収単位名",
+        "address": "源泉徴収単位住所",
+        "agentName": "源泉徴収義務者",
+        "representativeName": "代表者",
+        "contactName": "担当者",
+        "contactPhone": "連絡先電話番号",
+        "contactEmail": "メールアドレス"
+      }
+    },
+    "identity": {
+      "title": "{name} の申告情報",
+      "edit": "申告情報を編集",
+      "saved": "申告情報を保存しました"
     }
   }
 }

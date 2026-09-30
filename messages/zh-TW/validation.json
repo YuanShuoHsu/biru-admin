@@ -173,7 +173,8 @@
     "integer": "請輸入整數。",
     "max": "請輸入不大於 {max} 的數值。",
     "maxFractionDigits": "請輸入最多 {digits} 位小數的數值。",
-    "min": "請輸入不小於 {min} 的數值。"
+    "min": "請輸入不小於 {min} 的數值。",
+    "positive": "請輸入大於 0 的數值。"
   },
   "occurredAt": {
     "maxDateTime": "請選擇現在或之前的打卡時間。",
@@ -315,5 +316,29 @@
   },
   "shift": {
     "notSelected": "請選擇班次。"
+  },
+  "earningTypeName": {
+    "required": "請輸入名稱。",
+    "maxLength": "名稱不能超過 50 個字元。"
+  },
+  "earningType": {
+    "notSelected": "請選擇加項名目。"
+  },
+  "businessNumber": {
+    "invalid": "請輸入 8 碼統一編號。"
+  },
+  "taxId": {
+    "invalid": "請輸入 10 碼身分證統一編號。"
+  },
+  "registeredAddress": {
+    "required": "請輸入戶籍地址。",
+    "maxLength": "戶籍地址不能超過 {max} 個字元。"
+  },
+  "withholdingUnit": {
+    "required": "此欄位為必填。",
+    "maxLength": "不能超過 {max} 個字元。",
+    "phone": "請輸入數字與連字號，最多 15 碼。",
+    "taxOfficeCode": "請輸入 1 個英文字母加 2 位數字，例如 A03。",
+    "taxRegistrationNumber": "請輸入 9 碼扣繳單位稅籍編號。"
   }
 }

@@ -15,6 +15,7 @@ const CORNER_SEGMENTS = 2;
 const MODELS: Partial<Record<StoreLayoutItem["label"], string>> = {
   grinder: "/models/grinder.glb",
   iceMachine: "/models/iceMachine.glb",
+  kettle: "/models/kettle.glb",
 };
 
 const POT_HEIGHT = 0.35;

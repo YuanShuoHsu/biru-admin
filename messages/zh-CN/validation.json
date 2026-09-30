@@ -173,7 +173,8 @@
     "integer": "请输入整数。",
     "max": "请输入不大于 {max} 的数值。",
     "maxFractionDigits": "请输入最多 {digits} 位小数的数值。",
-    "min": "请输入不小于 {min} 的数值。"
+    "min": "请输入不小于 {min} 的数值。",
+    "positive": "请输入大于 0 的数值。"
   },
   "occurredAt": {
     "maxDateTime": "请选择现在或之前的打卡时间。",
@@ -315,5 +316,29 @@
   },
   "shift": {
     "notSelected": "请选择班次。"
+  },
+  "earningTypeName": {
+    "required": "请输入名称。",
+    "maxLength": "名称不能超过 50 个字符。"
+  },
+  "earningType": {
+    "notSelected": "请选择加项名目。"
+  },
+  "businessNumber": {
+    "invalid": "请输入 8 位统一编号。"
+  },
+  "taxId": {
+    "invalid": "请输入 10 位身份证统一编号。"
+  },
+  "registeredAddress": {
+    "required": "请输入户籍地址。",
+    "maxLength": "户籍地址不能超过 {max} 个字符。"
+  },
+  "withholdingUnit": {
+    "required": "此字段为必填。",
+    "maxLength": "不能超过 {max} 个字符。",
+    "phone": "请输入数字与连字号，最多 15 位。",
+    "taxOfficeCode": "请输入 1 个英文字母加 2 位数字，例如 A03。",
+    "taxRegistrationNumber": "请输入 9 位扣缴单位税籍编号。"
   }
 }

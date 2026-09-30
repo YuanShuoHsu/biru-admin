@@ -173,7 +173,8 @@
     "integer": "Please enter a whole number.",
     "max": "Please enter a value no greater than {max}.",
     "maxFractionDigits": "Please enter a value with at most {digits} decimal places.",
-    "min": "Please enter a value no less than {min}."
+    "min": "Please enter a value no less than {min}.",
+    "positive": "Enter a value greater than 0."
   },
   "occurredAt": {
     "maxDateTime": "Please select a punch time on or before now.",
@@ -315,5 +316,29 @@
   },
   "shift": {
     "notSelected": "Choose a shift."
+  },
+  "earningTypeName": {
+    "required": "Enter a name.",
+    "maxLength": "Name must be 50 characters or fewer."
+  },
+  "earningType": {
+    "notSelected": "Select a pay item."
+  },
+  "businessNumber": {
+    "invalid": "Enter an 8-digit business ID number."
+  },
+  "taxId": {
+    "invalid": "Enter a 10-character national ID number."
+  },
+  "registeredAddress": {
+    "required": "Enter the registered address.",
+    "maxLength": "Registered address must be {max} characters or fewer."
+  },
+  "withholdingUnit": {
+    "required": "This field is required.",
+    "maxLength": "Must be {max} characters or fewer.",
+    "phone": "Use digits and hyphens only, up to 15 characters.",
+    "taxOfficeCode": "Enter one letter followed by two digits, e.g. A03.",
+    "taxRegistrationNumber": "Enter the 9-character withholding tax registration number."
   }
 }

@@ -35,13 +35,21 @@ const useNavItems = (): NavItem[][] => {
   const isAdmin = session?.user?.role === "admin";
 
   const inventoryChildren = navChildren["/inventory"];
+  const attendanceChildren = navChildren["/attendance"];
 
   return [
     [navItem("/dashboard")],
     ...(defaultOrganizationSlug
       ? [
           [
-            { ...navItem("/attendance"), children: navChildren["/attendance"] },
+            {
+              ...navItem("/attendance"),
+              badge: attendanceChildren.reduce(
+                (sum, child) => sum + (child.badge ?? 0),
+                0,
+              ),
+              children: attendanceChildren,
+            },
             { ...navItem("/orders"), children: navChildren["/orders"] },
             { ...navItem("/menus"), children: navChildren["/menus"] },
             ...(inventoryChildren.length

@@ -15,7 +15,13 @@ import { MONEY_FRACTION_DIGITS, MONEY_MAX } from "@/constants/attendance";
 
 import { isMoney } from "@/utils/attendance";
 
-export const AMOUNT_FIELDS = ["salary", "allowance", "otherDeduction"] as const;
+export const AMOUNT_FIELDS = [
+  "salary",
+  "allowance",
+  "attendanceBonus",
+  "mealAllowance",
+  "otherDeduction",
+] as const;
 
 export const DECLARED_INSURANCE_FIELDS = [
   "laborBasis",
@@ -51,6 +57,7 @@ export const useTermsFormSchema = () => {
 
   return z.object({
     allowance: money(),
+    attendanceBonus: money(),
     effectiveFrom: z
       .string()
       .min(1, { error: tValidation("effectiveFrom.required") }),
@@ -71,6 +78,7 @@ export const useTermsFormSchema = () => {
     laborInsuranceExemption: z
       .enum(payrollLaborInsuranceExemptionValues)
       .nullable(),
+    mealAllowance: money(),
     monthlyProration: z.enum(payrollMonthlyProrationValues),
     otherDeduction: money(),
     salary: money(),

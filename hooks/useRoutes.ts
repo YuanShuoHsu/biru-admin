@@ -21,8 +21,10 @@ import { usePathname } from "@/i18n/navigation";
 import { authClient } from "@/lib/auth-client";
 
 import {
+  AccountBalance,
   AccountBalanceWallet,
   AccountCircle,
+  AddCard,
   AdminPanelSettings,
   Apartment,
   Assignment,
@@ -152,6 +154,12 @@ const routes: Route[] = [
             query: ["organization", "page", "pageSize"],
             segment: "payslips",
           },
+          {
+            icon: ReceiptLong,
+            label: "attendance.withholding.mine",
+            query: ["organization"],
+            segment: "withholding",
+          },
         ],
         icon: Person,
         label: "attendance.groups.mine",
@@ -231,10 +239,24 @@ const routes: Route[] = [
         to: null,
       },
       {
-        icon: Payments,
-        label: "attendance.payroll.label",
-        query: ["organization", "page", "pageSize"],
+        children: [
+          {
+            icon: Payments,
+            label: "attendance.payslips.label",
+            query: ["organization", "page", "pageSize"],
+            segment: "statements",
+          },
+          {
+            icon: ReceiptLong,
+            label: "attendance.withholding.label",
+            query: ["organization"],
+            segment: "withholding",
+          },
+        ],
+        icon: AccountBalance,
+        label: "attendance.groups.payroll",
         segment: "payroll",
+        to: null,
       },
       {
         children: [
@@ -255,6 +277,12 @@ const routes: Route[] = [
             label: "attendance.leaveTypes.label",
             query: ["organization", "page", "pageSize"],
             segment: "leave-types",
+          },
+          {
+            icon: AddCard,
+            label: "attendance.earningTypes.label",
+            query: ["organization", "page", "pageSize"],
+            segment: "earning-types",
           },
         ],
         icon: Settings,

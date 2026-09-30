@@ -251,7 +251,15 @@
     "weeklyRestRequired": "每周（周一至周日）须有 1 天例假与 1 天休息日：正常工作日最多 5 天，排班日最多 6 天。",
     "weeklyScheduleRequiresReview": "每周排定工作日时数超过 40 小时，请确认班表。",
     "withholdingTableOutdated": "系统尚未更新本年度的薪资所得扣缴税额表与退职所得定额免税金额。",
-    "workPermitRequired": "此员工的法定身份须持有有效工作许可，班次或出勤日期不在工作许可期间内。"
+    "workPermitRequired": "此员工的法定身份须持有有效工作许可，班次或出勤日期不在工作许可期间内。",
+    "earningTypeInUse": "这个加项名目已被使用，无法删除。",
+    "earningTypeNameTaken": "已有同名的加项名目。",
+    "invalidEarningType": "找不到这个加项名目。",
+    "invalidBusinessNumber": "统一编号检查码不正确。",
+    "invalidTaxId": "身份证统一编号检查码不正确。",
+    "taxIdentityRequired": "还有员工尚未填写身份证统一编号与户籍地址。",
+    "taxIdentityUnsupported": "外籍员工目前需另行申报。",
+    "withholdingUnitRequired": "请先填写申报单位资料。"
   },
   "eventAction": {
     "options": {
@@ -278,7 +286,8 @@
     "mine": "我的",
     "records": "出勤记录",
     "schedule": "排班",
-    "settings": "设置"
+    "settings": "设置",
+    "payroll": "薪资"
   },
   "healthBasis": "健保月投保金额（{currency}）",
   "healthDependents": "健保依附家属人数",
@@ -475,7 +484,11 @@
       "severancePay": "资遣费",
       "noticePay": "预告期间工资",
       "retirementWithholding": "退职所得扣缴",
-      "injuryCompensation": "职灾原领工资补偿"
+      "injuryCompensation": "职灾原领工资补偿",
+      "attendanceBonus": "全勤奖金",
+      "mealAllowance": "伙食费",
+      "otherWage": "经常性工资",
+      "bonus": "奖金"
     }
   },
   "payrollStatus": {
@@ -802,6 +815,96 @@
       "reservedMakeupRest": "与补假重叠",
       "overlappingShift": "已有班次",
       "overlappingLeave": "已请假"
+    }
+  },
+  "amount": "金额（{currency}）",
+  "attendanceBonus": "全勤奖金（{currency}）",
+  "mealAllowance": "伙食费（{currency}）",
+  "namedAmount": "{amount}（{names}）",
+  "provided": "已填",
+  "notProvided": "未填",
+  "earningCategory": {
+    "label": "类别",
+    "options": {
+      "wage": "经常性工资",
+      "bonus": "非经常性奖金"
+    },
+    "descriptions": {
+      "wage": "每月依表现发放，计入加班费时薪与平均工资，并入当月薪资扣缴。",
+      "bonus": "年终、三节等不定期发放，不计入平均工资，另按 5% 扣缴。"
+    }
+  },
+  "earningTypes": {
+    "label": "薪资加项",
+    "item": "加项名目",
+    "actions": {
+      "create": {
+        "title": "新增加项名目",
+        "success": "已新增「{name}」"
+      },
+      "update": {
+        "title": "编辑加项名目",
+        "success": "已更新「{name}」"
+      },
+      "delete": {
+        "title": "删除加项名目",
+        "confirm": "确定要删除 <bold>{name}</bold> 吗？",
+        "success": "已删除「{name}」"
+      }
+    }
+  },
+  "earnings": {
+    "label": "本月加项"
+  },
+  "withholding": {
+    "label": "扣缴凭单",
+    "mine": "我的扣缴凭单",
+    "year": "所得年度",
+    "download": "下载申报文件",
+    "unitRequired": "请先填写申报单位资料",
+    "identitiesMissing": "{count} 位员工尚未填写身份证统一编号与户籍地址",
+    "noCertificates": "此年度没有可申报的扣缴资料",
+    "taxId": "身份证统一编号",
+    "address": "户籍地址",
+    "period": "所得所属期间",
+    "fileSeparately": "外籍需另行申报",
+    "recipient": "所得人",
+    "print": "打印",
+    "noMine": "目前没有已结束年度的扣缴凭单。",
+    "certificateTitle": "{year} 年度各类所得扣缴暨免扣缴凭单",
+    "amountSummary": "给付总额 {total}、扣缴税额 {tax}、给付净额 {net}",
+    "formats": {
+      "salary": "薪资所得（50）",
+      "retirement": "退职所得（93）"
+    },
+    "amounts": {
+      "salaryCents": "薪资给付总额",
+      "salaryWithholdingCents": "薪资扣缴税额",
+      "voluntaryPensionCents": "自提劳退（不计入课税）",
+      "retirementIncomeCents": "退职所得",
+      "retirementWithholdingCents": "退职所得扣缴税额"
+    },
+    "unit": {
+      "title": "申报单位资料",
+      "saved": "已保存申报单位资料",
+      "summary": "{name}（统一编号 {businessNumber}）",
+      "fields": {
+        "businessNumber": "统一编号",
+        "taxOfficeCode": "稽征机关代号",
+        "taxRegistrationNumber": "扣缴单位税籍编号",
+        "name": "扣缴单位名称",
+        "address": "扣缴单位地址",
+        "agentName": "扣缴义务人",
+        "representativeName": "负责人",
+        "contactName": "联系人",
+        "contactPhone": "联系电话",
+        "contactEmail": "电子邮件"
+      }
+    },
+    "identity": {
+      "title": "{name} 的申报资料",
+      "edit": "编辑申报资料",
+      "saved": "已保存申报资料"
     }
   }
 }

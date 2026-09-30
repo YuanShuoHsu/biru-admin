@@ -14,6 +14,7 @@ export const ATTENDANCE_NAV_GROUPS: {
       { path: "/attendance/mine/shifts" },
       { path: "/attendance/mine/requests" },
       { path: "/attendance/mine/payslips" },
+      { path: "/attendance/mine/withholding" },
     ],
     path: "/attendance/mine",
   },
@@ -52,7 +53,11 @@ export const ATTENDANCE_NAV_GROUPS: {
   {
     children: [
       {
-        path: "/attendance/payroll",
+        path: "/attendance/payroll/statements",
+        permission: { payrollTerm: ["read"], payslip: ["read"] },
+      },
+      {
+        path: "/attendance/payroll/withholding",
         permission: { payrollTerm: ["read"], payslip: ["read"] },
       },
     ],
@@ -71,6 +76,10 @@ export const ATTENDANCE_NAV_GROUPS: {
       {
         path: "/attendance/settings/leave-types",
         permission: { leaveType: ["update"] },
+      },
+      {
+        path: "/attendance/settings/earning-types",
+        permission: { payrollTerm: ["create"] },
       },
     ],
     path: "/attendance/settings",

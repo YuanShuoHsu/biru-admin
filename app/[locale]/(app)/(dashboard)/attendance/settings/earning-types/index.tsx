@@ -1,14 +1,12 @@
 "use client";
 
-import { useFormatter, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
+import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
+import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
-import useSWR, { mutate as mutateCache } from "swr";
+import useSWR from "swr";
 
-import ReturnReviewDialog from "./ReturnReviewDialog";
-
-import { renderEmptyableCell } from "@/components/EmptyCell";
+import EarningTypeDialog from "./EarningTypeDialog";
 
 import {
   autosizeOptions,
@@ -18,15 +16,19 @@ import {
 import { getPageSizeOptions } from "@/constants/pagination";
 
 import {
-  useDateFilterOperators,
   useEnumFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
-import { attendanceReviewCountsKey } from "@/hooks/useAttendanceReviewCounts";
 
-import { Check, Close, Undo } from "@mui/icons-material";
-import { Alert, Chip, IconButton, Stack, Tooltip } from "@mui/material";
+import { Add, Delete, Edit } from "@mui/icons-material";
+import {
+  Button,
+  DialogContentText,
+  IconButton,
+  Stack,
+  Tooltip,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
@@ -40,35 +42,35 @@ import { useGridApiRef } from "@mui/x-data-grid";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
-  AttendanceParentalReturn,
-  AttendanceParentalReturnFilterField,
-  AttendanceParentalReturnPage,
-  AttendanceParentalReturnSortField,
+  PayrollEarningType,
+  PayrollEarningTypeFilterField,
+  PayrollEarningTypePage,
+  PayrollEarningTypeSortField,
 } from "@/types/attendance";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization } from "@/types/organizations";
 
-import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
+import { attendanceErrorKey, payrollPath } from "@/utils/attendance";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
-import { getAttendanceParentalReturnEnumOptions } from "@/utils/enumOptions";
+import { getPayrollEarningTypeEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
 
-const StyledStack = styled(Stack)(({ theme }) => ({
-  alignItems: "center",
-  gap: theme.spacing(1),
+const ActionsStack = styled(Stack)({
   height: "100%",
-}));
+  alignItems: "center",
+});
+
+const StyledButton = styled(Button)({
+  alignSelf: "flex-start",
+});
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
   { ssr: false },
 );
 
-interface ParentalReturnsProps {
-  canReview: boolean;
-  canViewAll: boolean;
-  employeeId?: string;
-  filterField?: AttendanceParentalReturnFilterField;
+interface EarningTypesProps {
+  filterField?: PayrollEarningTypeFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
   organization: Organization;
@@ -76,15 +78,12 @@ interface ParentalReturnsProps {
   pageSize: number;
   quickFilterValue?: string;
   rowCount: number;
-  rows: AttendanceParentalReturn[];
-  sortBy?: AttendanceParentalReturnSortField;
+  rows: PayrollEarningType[];
+  sortBy?: PayrollEarningTypeSortField;
   sortDirection?: SortDirection;
 }
 
-const ParentalReturns = ({
-  canReview,
-  canViewAll,
-  employeeId,
+const EarningTypes = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
@@ -96,7 +95,7 @@ const ParentalReturns = ({
   rows: initialRows,
   sortBy,
   sortDirection,
-}: ParentalReturnsProps) => {
+}: EarningTypesProps) => {
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -128,33 +127,21 @@ const ParentalReturns = ({
 
   const { setDialog } = useDialogStore((state) => state);
 
-  const dateFilterOperators = useDateFilterOperators();
   const enumFilterOperators = useEnumFilterOperators();
   const stringFilterOperators = useStringFilterOperators();
 
   const apiRef = useGridApiRef();
-
-  const format = useFormatter();
 
   const tAttendance = useTranslations("attendance");
 
   const updateQuery = useUpdateQuery();
 
   const enumOptions = useMemo(
-    () => getAttendanceParentalReturnEnumOptions(tAttendance),
+    () => getPayrollEarningTypeEnumOptions(tAttendance),
     [tAttendance],
   );
 
-  const date = useCallback(
-    (value: string) => format.dateTime(new Date(value), "short"),
-    [format],
-  );
-
-  const base = attendancePath(
-    organizationSlug,
-    canViewAll ? "org" : "me",
-    "return-requests",
-  );
+  const base = payrollPath(organizationSlug, "org", "earning-types");
 
   const {
     data: { data: rows, total: rowCount } = {
@@ -166,7 +153,7 @@ const ParentalReturns = ({
   } = useSWR(
     [base, paginationModel, filterModel, sortModel],
     () =>
-      fetcher<AttendanceParentalReturnPage>(
+      fetcher<PayrollEarningTypePage>(
         `${base}?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
       ),
     {
@@ -175,7 +162,6 @@ const ParentalReturns = ({
         setTimeout(() => {
           apiRef.current?.autosizeColumns(autosizeOptions);
         }, 0);
-        mutateCache(attendanceReviewCountsKey(organizationSlug));
       },
     },
   );
@@ -228,40 +214,51 @@ const ParentalReturns = ({
     [updateQuery],
   );
 
-  const handleReview = useCallback(
-    (
-      parentalReturn: AttendanceParentalReturn,
-      status: "approved" | "rejected",
-    ) =>
+  const handleEarningTypeDialog = useCallback(
+    (earningType?: PayrollEarningType) =>
       setDialog({
         confirmText: tAttendance("save"),
         content: (
-          <ReturnReviewDialog
+          <EarningTypeDialog
+            earningType={earningType}
             mutate={mutate}
             organizationSlug={organizationSlug}
-            parentalReturn={parentalReturn}
-            status={status}
           />
         ),
-        formId: "attendance-return-review-form",
+        formId: "payroll-earning-type-form",
         open: true,
-        title: tAttendance(status === "approved" ? "approve" : "reject"),
+        title: tAttendance(
+          earningType
+            ? "earningTypes.actions.update.title"
+            : "earningTypes.actions.create.title",
+        ),
       }),
     [mutate, organizationSlug, setDialog, tAttendance],
   );
 
-  const handleWithdraw = useCallback(
-    ({ employeeName, id }: AttendanceParentalReturn) =>
+  const handleDeleteEarningType = useCallback(
+    ({ id, name }: PayrollEarningType) =>
       setDialog({
-        contentText: tAttendance("confirm"),
+        content: (
+          <DialogContentText>
+            {tAttendance.rich("earningTypes.actions.delete.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              name,
+            })}
+          </DialogContentText>
+        ),
         onConfirm: async () => {
           try {
-            await fetcher(`${base}/${id}/withdraw`, { method: "PATCH" });
+            await fetcher(
+              payrollPath(organizationSlug, "org", `earning-types/${id}`),
+              { method: "DELETE" },
+            );
 
             enqueueSnackbar(
-              tAttendance("parentalReturns.withdrawn", { name: employeeName }),
+              tAttendance("earningTypes.actions.delete.success", { name }),
               { variant: "success" },
             );
+
             mutate();
           } catch (error) {
             enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
@@ -270,9 +267,9 @@ const ParentalReturns = ({
           }
         },
         open: true,
-        title: tAttendance("withdraw"),
+        title: tAttendance("earningTypes.actions.delete.title"),
       }),
-    [base, mutate, setDialog, tAttendance],
+    [mutate, organizationSlug, setDialog, tAttendance],
   );
 
   const columns = useMemo<GridColDef[]>(
@@ -283,111 +280,50 @@ const ParentalReturns = ({
         field: "actions",
         filterable: false,
         headerName: tAttendance("actions"),
-        renderCell: ({
-          row,
-        }: GridRenderCellParams<AttendanceParentalReturn>) =>
-          row.status === "pending" ? (
-            <StyledStack direction="row">
-              {canReview && row.employeeId !== employeeId && (
-                <>
-                  <Tooltip title={tAttendance("approve")}>
-                    <IconButton
-                      color="success"
-                      onClick={() => handleReview(row, "approved")}
-                      size="small"
-                    >
-                      <Check fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title={tAttendance("reject")}>
-                    <IconButton
-                      color="error"
-                      onClick={() => handleReview(row, "rejected")}
-                      size="small"
-                    >
-                      <Close fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                </>
-              )}
-              {row.employeeId === employeeId && (
-                <Tooltip title={tAttendance("withdraw")}>
-                  <IconButton onClick={() => handleWithdraw(row)} size="small">
-                    <Undo fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              )}
-            </StyledStack>
-          ) : null,
+        renderCell: ({ row }: GridRenderCellParams<PayrollEarningType>) => (
+          <ActionsStack direction="row">
+            <Tooltip title={tAttendance("earningTypes.actions.update.title")}>
+              <IconButton
+                onClick={() => handleEarningTypeDialog(row)}
+                size="small"
+              >
+                <Edit fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            {!row.inUse && (
+              <Tooltip title={tAttendance("earningTypes.actions.delete.title")}>
+                <IconButton
+                  color="error"
+                  onClick={() => handleDeleteEarningType(row)}
+                  size="small"
+                >
+                  <Delete fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            )}
+          </ActionsStack>
+        ),
         resizable: false,
         sortable: false,
       },
       {
-        field: "employeeName",
+        field: "name",
         filterOperators: stringFilterOperators,
-        headerName: tAttendance("employee"),
+        headerName: tAttendance("name"),
       },
       {
-        field: "returnsAt",
-        filterOperators: dateFilterOperators,
-        headerName: tAttendance("returnsAt"),
-        valueFormatter: (value: string) =>
-          format.dateTime(new Date(value), "date"),
-      },
-      {
-        field: "originalStartsAt",
-        filterOperators: dateFilterOperators,
-        headerName: tAttendance("originalLeavePeriod"),
-        valueGetter: (value: string, row: AttendanceParentalReturn) =>
-          `${date(value)} — ${date(row.originalEndsAt)}`,
-      },
-      {
-        field: "reason",
-        filterOperators: stringFilterOperators,
-        headerName: tAttendance("reason.label"),
-        maxWidth: 320,
-        renderCell: renderEmptyableCell,
-      },
-      {
-        field: "status",
+        field: "category",
         filterOperators: enumFilterOperators,
-        headerName: tAttendance("status.label"),
-        renderCell: ({
-          row,
-        }: GridRenderCellParams<AttendanceParentalReturn>) => (
-          <Chip
-            color={
-              row.status === "approved"
-                ? "success"
-                : row.status === "rejected"
-                  ? "error"
-                  : "default"
-            }
-            label={tAttendance(`status.options.${row.status}`)}
-            size="small"
-          />
-        ),
+        headerName: tAttendance("earningCategory.label"),
         type: "singleSelect",
-        valueOptions: enumOptions.status,
-      },
-      {
-        field: "reviewReason",
-        filterOperators: stringFilterOperators,
-        headerName: tAttendance("reviewReason"),
-        maxWidth: 320,
-        renderCell: renderEmptyableCell,
+        valueOptions: enumOptions.category,
       },
     ],
     [
-      canReview,
-      date,
-      dateFilterOperators,
-      employeeId,
       enumFilterOperators,
-      enumOptions.status,
-      format,
-      handleReview,
-      handleWithdraw,
+      enumOptions.category,
+      handleDeleteEarningType,
+      handleEarningTypeDialog,
       stringFilterOperators,
       tAttendance,
     ],
@@ -395,7 +331,13 @@ const ParentalReturns = ({
 
   return (
     <>
-      <Alert severity="info">{tAttendance("parentalReturnHint")}</Alert>
+      <StyledButton
+        onClick={() => handleEarningTypeDialog()}
+        startIcon={<Add />}
+        variant="contained"
+      >
+        {tAttendance("earningTypes.actions.create.title")}
+      </StyledButton>
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}
@@ -413,15 +355,9 @@ const ParentalReturns = ({
         rows={rows}
         sortingMode="server"
         sortModel={sortModel}
-        slotProps={{
-          ...DATA_GRID_PROPS.slotProps,
-          toolbar: {
-            exportDateField: "returnsAt",
-          },
-        }}
       />
     </>
   );
 };
 
-export default ParentalReturns;
+export default EarningTypes;

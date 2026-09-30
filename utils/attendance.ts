@@ -55,11 +55,16 @@ import type {
   AttendanceShiftFilterField,
   AttendanceShiftSortField,
   OccupationalIndustryRate,
+  MyWithholdingCertificate,
   PayrollBlocker,
+  PayrollEarningType,
+  PayrollEarningTypeFilterField,
+  PayrollEarningTypeSortField,
   PayrollStatement,
   PayrollStatementFilterField,
   PayrollStatementSortField,
   PayrollTerms,
+  PayrollWithholdingSummary,
 } from "@/types/attendance";
 import { getGridSearchParams, type GridQuery } from "@/utils/dataGrid";
 import { fetcher, type FetchError } from "@/utils/fetcher";
@@ -525,6 +530,25 @@ export const payrollPath = (
 ) =>
   `/api/organizations/${organizationSlug}/payroll/${scope === "me" ? "me/" : ""}${resource}`;
 
+export const getPayrollEarningTypes = cache(
+  async (
+    organizationSlug: string,
+    query: GridQuery<
+      PayrollEarningTypeFilterField,
+      PayrollEarningTypeSortField
+    > = {},
+    init?: RequestInit,
+  ) => {
+    const { data: earningTypes, total } = await getGrid<
+      PayrollEarningType,
+      PayrollEarningTypeFilterField,
+      PayrollEarningTypeSortField
+    >(payrollPath(organizationSlug, "org", "earning-types"), query, init);
+
+    return { earningTypes, total };
+  },
+);
+
 export const getPayrollStatements = cache(
   async (
     organizationSlug: string,
@@ -543,6 +567,22 @@ export const getPayrollStatements = cache(
 
     return { statements, total };
   },
+);
+
+export const getPayrollWithholdingSummary = cache(
+  (organizationSlug: string, year: number, init?: RequestInit) =>
+    fetcher<PayrollWithholdingSummary>(
+      `${payrollPath(organizationSlug, "org", "withholding-certificates")}?${new URLSearchParams({ year: String(year) })}`,
+      init,
+    ),
+);
+
+export const getMyWithholdingCertificates = cache(
+  (organizationSlug: string, init?: RequestInit) =>
+    fetcher<MyWithholdingCertificate[]>(
+      payrollPath(organizationSlug, "me", "withholding-certificates"),
+      init,
+    ),
 );
 
 export const getPayrollTerms = cache(
@@ -650,13 +690,25 @@ export const getPayrollAmountColumns = (
     getAmountCents: (
       snapshot: PayrollStatement["snapshot"],
     ) => string | undefined,
+    getNames: (snapshot: PayrollStatement["snapshot"]) => string[] = () => [],
   ): GridColDef<PayrollStatement> => ({
     field,
     filterable: false,
     headerName,
     renderCell: renderEmptyableCell,
     sortable: false,
-    valueFormatter: (value?: string) => (value == null ? "" : money(value)),
+    valueFormatter: (value: string | undefined, { snapshot }) => {
+      if (value == null) return "";
+
+      const names = getNames(snapshot);
+
+      return names.length
+        ? tAttendance("namedAmount", {
+            amount: money(value),
+            names: names.join("、"),
+          })
+        : money(value);
+    },
     valueGetter: (_value, { snapshot }) => getAmountCents(snapshot),
   });
 
@@ -689,8 +741,22 @@ export const getPayrollAmountColumns = (
       amountColumn(
         code,
         tAttendance(`payrollLine.options.${code}`),
+        ({ earnings }) => {
+          const lines = earnings.filter((line) => line.code === code);
+
+          return lines.length
+            ? lines
+                .reduce(
+                  (sum, line) => sum + BigInt(line.amountCents),
+                  BigInt(0),
+                )
+                .toString()
+            : undefined;
+        },
         ({ earnings }) =>
-          earnings.find((line) => line.code === code)?.amountCents,
+          earnings.flatMap((line) =>
+            line.code === code && line.name ? [line.name] : [],
+          ),
       ),
     ]),
     amountColumn("gross", tAttendance("gross"), ({ grossCents }) => grossCents),

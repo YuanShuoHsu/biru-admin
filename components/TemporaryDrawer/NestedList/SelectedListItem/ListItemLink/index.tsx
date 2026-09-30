@@ -4,6 +4,7 @@ import { Link } from "@/i18n/navigation";
 
 import { ExpandMore } from "@mui/icons-material";
 import {
+  Badge,
   ListItem,
   ListItemButton,
   type ListItemButtonProps,
@@ -49,6 +50,7 @@ const StyledExpandMore = styled(ExpandMore, {
 }));
 
 export interface ListItemLinkProps {
+  badge?: number;
   href?: string;
   icon?: React.ComponentType<SvgIconProps>;
   isExpandable?: boolean;
@@ -60,6 +62,7 @@ export interface ListItemLinkProps {
 }
 
 const ListItemLink = ({
+  badge,
   href,
   icon: Icon,
   isExpandable,
@@ -78,7 +81,9 @@ const ListItemLink = ({
     >
       {Icon && (
         <ListItemIcon>
-          <Icon />
+          <Badge badgeContent={badge} color="error">
+            <Icon />
+          </Badge>
         </ListItemIcon>
       )}
       <ListItemText primary={label} />

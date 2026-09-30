@@ -45,6 +45,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
   AttendanceEmployee,
+  PayrollEarningType,
   PayrollStatement,
   PayrollStatementFilterField,
   PayrollStatementPage,
@@ -83,6 +84,7 @@ interface PayrollProps {
   canViewCosts: boolean;
   canManage: boolean;
   canManageTerms: boolean;
+  earningTypes: PayrollEarningType[];
   employees: AttendanceEmployee[];
   filterField?: PayrollStatementFilterField;
   filterOperator?: FilterOperator;
@@ -103,6 +105,7 @@ const Payroll = ({
   canViewCosts,
   canManage,
   canManageTerms,
+  earningTypes,
   employees,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
@@ -306,6 +309,8 @@ const Payroll = ({
         confirmText: tAttendance("save"),
         content: (
           <DraftDialog
+            currency={currency}
+            earningTypes={earningTypes}
             employees={employees}
             mutate={mutate}
             organizationSlug={organizationSlug}
@@ -315,7 +320,15 @@ const Payroll = ({
         open: true,
         title: tAttendance("payrollStatus.options.draft"),
       }),
-    [employees, mutate, organizationSlug, setDialog, tAttendance],
+    [
+      currency,
+      earningTypes,
+      employees,
+      mutate,
+      organizationSlug,
+      setDialog,
+      tAttendance,
+    ],
   );
 
   const handleTransitionDialog = useCallback(

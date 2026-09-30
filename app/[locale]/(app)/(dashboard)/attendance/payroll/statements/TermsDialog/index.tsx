@@ -153,7 +153,7 @@ const TermsDialog = ({
       ...(Object.fromEntries(
         AMOUNT_FIELDS.map((name) => [
           name,
-          current ? fromCents(current[`${name}Cents`]) : 0,
+          current ? fromCents(current[`${name}Cents`] ?? "0") : 0,
         ]),
       ) as Record<(typeof AMOUNT_FIELDS)[number], number>),
     };

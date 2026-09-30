@@ -24,6 +24,7 @@ import {
   orderResponseDtoModeValues,
   orderResponseDtoOrderStatusValues,
   orderResponseDtoPaymentMethodValues,
+  payrollEarningCategoryValues,
   payrollStatementStatusValues,
   servingTemperatureValues,
   sweetnessValues,
@@ -244,6 +245,15 @@ export const getAttendanceLeaveTypeNameEnumOptions = (
       label: tAttendance(`statutoryKind.names.${value}`),
       value,
     })),
+});
+
+export const getPayrollEarningTypeEnumOptions = (
+  tAttendance: ReturnType<typeof useTranslations<"attendance">>,
+) => ({
+  category: payrollEarningCategoryValues.map((value) => ({
+    label: tAttendance(`earningCategory.options.${value}`),
+    value,
+  })),
 });
 
 export const getAttendanceLeaveTypeEnumOptions = (

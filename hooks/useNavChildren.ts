@@ -1,6 +1,7 @@
 "use client";
 
 import { useActiveMemberRole } from "@/hooks/organizations";
+import { useAttendanceReviewCounts } from "@/hooks/useAttendanceReviewCounts";
 import { useAuthNavItems } from "@/hooks/useAuth";
 import { useRoutes } from "@/hooks/useRoutes";
 
@@ -21,14 +22,22 @@ export const useNavChildren = (): Record<string, NavItem[]> => {
 
   const accountChildren = useAccountNavItems();
   const authChildren = useAuthNavItems();
+  const reviewCounts = useAttendanceReviewCounts();
 
   return {
     "/attendance": attendanceNavGroups(memberRole).map(({ children, path }) =>
       children.length === 1
-        ? navItem(children[0])
+        ? { ...navItem(children[0]), badge: reviewCounts[children[0]] }
         : {
             ...navItem(path),
-            children: children.map((child) => navItem(child)),
+            badge: children.reduce(
+              (sum, child) => sum + (reviewCounts[child] ?? 0),
+              0,
+            ),
+            children: children.map((child) => ({
+              ...navItem(child),
+              badge: reviewCounts[child],
+            })),
           },
     ),
     "/auth": session ? accountChildren : authChildren,

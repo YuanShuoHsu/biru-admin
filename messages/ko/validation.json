@@ -173,7 +173,8 @@
     "integer": "정수를 입력해 주세요.",
     "max": "{max} 이하의 값을 입력해 주세요.",
     "maxFractionDigits": "소수점 이하 {digits}자리 이내의 값을 입력해 주세요.",
-    "min": "{min} 이상의 값을 입력해 주세요."
+    "min": "{min} 이상의 값을 입력해 주세요.",
+    "positive": "0보다 큰 값을 입력하세요."
   },
   "occurredAt": {
     "maxDateTime": "현재 또는 그 이전 시간을 선택해 주세요.",
@@ -315,5 +316,29 @@
   },
   "shift": {
     "notSelected": "근무를 선택하세요."
+  },
+  "earningTypeName": {
+    "required": "이름을 입력하세요.",
+    "maxLength": "이름은 50자 이하여야 합니다."
+  },
+  "earningType": {
+    "notSelected": "가산 항목을 선택하세요."
+  },
+  "businessNumber": {
+    "invalid": "8자리 사업자 번호를 입력하세요."
+  },
+  "taxId": {
+    "invalid": "10자리 신분증 번호를 입력하세요."
+  },
+  "registeredAddress": {
+    "required": "호적 주소를 입력하세요.",
+    "maxLength": "호적 주소는 {max}자 이하여야 합니다."
+  },
+  "withholdingUnit": {
+    "required": "필수 입력 항목입니다.",
+    "maxLength": "{max}자 이하여야 합니다.",
+    "phone": "숫자와 하이픈만 최대 15자리까지 입력하세요.",
+    "taxOfficeCode": "영문자 1자와 숫자 2자리로 입력하세요 (예: A03).",
+    "taxRegistrationNumber": "9자리 원천징수 단위 세적 번호를 입력하세요."
   }
 }

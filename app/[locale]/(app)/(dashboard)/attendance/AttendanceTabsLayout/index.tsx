@@ -2,6 +2,8 @@
 
 import RouteTabs from "@/components/RouteTabs";
 
+import { useAttendanceReviewCounts } from "@/hooks/useAttendanceReviewCounts";
+
 import { usePathname } from "@/i18n/navigation";
 
 import { attendanceNavGroups } from "@/utils/attendance";
@@ -17,6 +19,7 @@ const AttendanceTabsLayout = ({
   memberRole,
 }: AttendanceTabsLayoutProps) => {
   const pathname = usePathname();
+  const reviewCounts = useAttendanceReviewCounts();
 
   const groups = attendanceNavGroups(memberRole);
 
@@ -30,7 +33,10 @@ const AttendanceTabsLayout = ({
       {active && active.children.length > 1 && (
         <RouteTabs
           ariaLabel="attendance tabs"
-          tabs={active.children.map((path) => ({ path }))}
+          tabs={active.children.map((path) => ({
+            badge: reviewCounts[path],
+            path,
+          }))}
         />
       )}
       {children}

@@ -251,7 +251,15 @@
     "weeklyRestRequired": "Each week (Monday to Sunday) needs 1 regular day off and 1 rest day: at most 5 workdays and 6 scheduled days.",
     "weeklyScheduleRequiresReview": "Scheduled workdays exceed 40 hours in a week; review the schedule.",
     "withholdingTableOutdated": "This year's salary withholding table and retirement income exemption amounts have not been updated yet.",
-    "workPermitRequired": "This employee's legal status requires a valid work permit, and a shift or workday falls outside the permit period."
+    "workPermitRequired": "This employee's legal status requires a valid work permit, and a shift or workday falls outside the permit period.",
+    "earningTypeInUse": "This pay item is in use and cannot be deleted.",
+    "earningTypeNameTaken": "A pay item with this name already exists.",
+    "invalidEarningType": "This pay item no longer exists.",
+    "invalidBusinessNumber": "The business ID number check digit is invalid.",
+    "invalidTaxId": "The national ID number check digit is invalid.",
+    "taxIdentityRequired": "Some employees are still missing their national ID number and registered address.",
+    "taxIdentityUnsupported": "Foreign employees must currently be filed separately.",
+    "withholdingUnitRequired": "Fill in the withholding unit details first."
   },
   "eventAction": {
     "options": {
@@ -278,7 +286,8 @@
     "mine": "Mine",
     "records": "Attendance",
     "schedule": "Scheduling",
-    "settings": "Settings"
+    "settings": "Settings",
+    "payroll": "Payroll"
   },
   "healthBasis": "Health insured amount ({currency})",
   "healthDependents": "Health insurance dependents",
@@ -475,7 +484,11 @@
       "severancePay": "Severance pay",
       "noticePay": "Pay in lieu of notice",
       "retirementWithholding": "Retirement income withholding",
-      "injuryCompensation": "Occupational injury wage compensation"
+      "injuryCompensation": "Occupational injury wage compensation",
+      "attendanceBonus": "Perfect attendance bonus",
+      "mealAllowance": "Meal allowance",
+      "otherWage": "Regular wages",
+      "bonus": "Bonus"
     }
   },
   "payrollStatus": {
@@ -802,6 +815,96 @@
       "reservedMakeupRest": "Overlaps make-up rest",
       "overlappingShift": "Already scheduled",
       "overlappingLeave": "On leave"
+    }
+  },
+  "amount": "Amount ({currency})",
+  "attendanceBonus": "Perfect attendance bonus ({currency})",
+  "mealAllowance": "Meal allowance ({currency})",
+  "namedAmount": "{amount} ({names})",
+  "provided": "Provided",
+  "notProvided": "Missing",
+  "earningCategory": {
+    "label": "Category",
+    "options": {
+      "wage": "Regular wages",
+      "bonus": "Non-regular bonus"
+    },
+    "descriptions": {
+      "wage": "Paid monthly by performance; counts toward the overtime rate and average wage and is withheld with that month's salary.",
+      "bonus": "Paid irregularly (year-end, festivals); excluded from the average wage and withheld separately at 5%."
+    }
+  },
+  "earningTypes": {
+    "label": "Pay items",
+    "item": "Pay item",
+    "actions": {
+      "create": {
+        "title": "Add pay item",
+        "success": "Added \"{name}\""
+      },
+      "update": {
+        "title": "Edit pay item",
+        "success": "Updated \"{name}\""
+      },
+      "delete": {
+        "title": "Delete pay item",
+        "confirm": "Delete <bold>{name}</bold>?",
+        "success": "Deleted \"{name}\""
+      }
+    }
+  },
+  "earnings": {
+    "label": "Pay items this month"
+  },
+  "withholding": {
+    "label": "Withholding statements",
+    "mine": "My withholding statements",
+    "year": "Income year",
+    "download": "Download filing file",
+    "unitRequired": "Fill in the withholding unit details first",
+    "identitiesMissing": "{count} employees are missing their national ID number and registered address",
+    "noCertificates": "No withholding records to file for this year",
+    "taxId": "National ID number",
+    "address": "Registered address",
+    "period": "Income period",
+    "fileSeparately": "Foreign staff filed separately",
+    "recipient": "Income recipient",
+    "print": "Print",
+    "noMine": "No withholding statements for completed years yet.",
+    "certificateTitle": "{year} withholding and non-withholding tax statement",
+    "amountSummary": "Total paid {total}, tax withheld {tax}, net paid {net}",
+    "formats": {
+      "salary": "Salary income (50)",
+      "retirement": "Retirement income (93)"
+    },
+    "amounts": {
+      "salaryCents": "Salary paid",
+      "salaryWithholdingCents": "Salary tax withheld",
+      "voluntaryPensionCents": "Voluntary pension (tax-exempt)",
+      "retirementIncomeCents": "Retirement income",
+      "retirementWithholdingCents": "Retirement tax withheld"
+    },
+    "unit": {
+      "title": "Withholding unit details",
+      "saved": "Withholding unit details saved",
+      "summary": "{name} (Business ID {businessNumber})",
+      "fields": {
+        "businessNumber": "Business ID number",
+        "taxOfficeCode": "Tax office code",
+        "taxRegistrationNumber": "Withholding tax registration number",
+        "name": "Withholding unit name",
+        "address": "Withholding unit address",
+        "agentName": "Withholding agent",
+        "representativeName": "Representative",
+        "contactName": "Contact person",
+        "contactPhone": "Contact phone",
+        "contactEmail": "Email"
+      }
+    },
+    "identity": {
+      "title": "Filing details for {name}",
+      "edit": "Edit filing details",
+      "saved": "Filing details saved"
     }
   }
 }

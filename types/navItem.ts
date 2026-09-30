@@ -3,6 +3,7 @@ import type { SvgIconProps } from "@mui/material";
 export type Slot = React.ComponentType<{ level: number }>;
 
 export interface NavItem {
+  badge?: number;
   children?: NavItem[];
   icon?: React.ComponentType<SvgIconProps>;
   label?: string;

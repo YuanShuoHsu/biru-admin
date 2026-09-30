@@ -334,6 +334,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/attendance/review-counts": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 目前使用者可審核的待審件數 */
+    get: operations["AttendanceRequestsController_reviewCounts"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/attendance/requests": {
     parameters: {
       query?: never;
@@ -2434,6 +2451,144 @@ export interface paths {
     patch: operations["PayrollController_publish"];
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/payroll/earning-types": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 薪資加項名目 */
+    get: operations["PayrollEarningsController_earningTypes"];
+    put?: never;
+    /** 新增薪資加項名目 */
+    post: operations["PayrollEarningsController_createEarningType"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/payroll/earning-types/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** 刪除尚未使用的薪資加項名目 */
+    delete: operations["PayrollEarningsController_deleteEarningType"];
+    options?: never;
+    head?: never;
+    /** 重新命名薪資加項名目 */
+    patch: operations["PayrollEarningsController_renameEarningType"];
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/payroll/earnings": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 員工當月已登錄的薪資加項 */
+    get: operations["PayrollEarningsController_earnings"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/payroll/withholding-certificates": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 年度扣繳憑單彙總與申報單位資料 */
+    get: operations["PayrollWithholdingController_summary"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/payroll/withholding-file": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 產生各類所得扣繳憑單電子申報檔（UTF-8 分隔符號格式） */
+    get: operations["PayrollWithholdingController_file"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/payroll/withholding-unit": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** 儲存扣繳單位申報資料 */
+    put: operations["PayrollWithholdingController_saveUnit"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/payroll/tax-identities/{employeeId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** 儲存員工身分證統一編號與戶籍地址（加密） */
+    put: operations["PayrollWithholdingController_saveTaxIdentity"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/payroll/me/withholding-certificates": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 我的扣繳憑單（已結束的年度） */
+    get: operations["PayrollWithholdingController_mine"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2453,6 +2608,8 @@ export interface components {
       | "childLaborNightWork"
       | "childLaborRestDay"
       | "consecutiveWorkdaysExceeded"
+      | "earningTypeInUse"
+      | "earningTypeNameTaken"
       | "correctionSourceChanged"
       | "dailyHoursExceeded"
       | "dayKindRequired"
@@ -2475,6 +2632,8 @@ export interface components {
       | "indigenousHolidayInUse"
       | "indigenousHolidayInvalid"
       | "insufficientLeaveBalance"
+      | "invalidBusinessNumber"
+      | "invalidEarningType"
       | "invalidEmergencyDetails"
       | "invalidEventSequence"
       | "invalidInterval"
@@ -2482,6 +2641,7 @@ export interface components {
       | "invalidLeaveCase"
       | "invalidParentalInterval"
       | "invalidPayrollState"
+      | "invalidTaxId"
       | "ipNotAllowed"
       | "jobSearchLeaveInvalid"
       | "laborInsuranceExemptionInvalid"
@@ -2543,9 +2703,12 @@ export interface components {
       | "statutoryBalanceAutomatic"
       | "statutoryLeaveTypeLocked"
       | "studentWeeklyHoursExceeded"
+      | "taxIdentityRequired"
+      | "taxIdentityUnsupported"
       | "terminationProtected"
       | "terminationReasonRequired"
       | "weeklyRestRequired"
+      | "withholdingUnitRequired"
       | "workPermitRequired";
     AttendanceErrorResponseDto: {
       message: components["schemas"]["AttendanceErrorCode"];
@@ -3149,6 +3312,10 @@ export interface components {
     AttendanceRequestsResponseDto: {
       data: components["schemas"]["AttendanceRequestResponseDto"][];
       total: number;
+    };
+    AttendanceReviewCountsResponseDto: {
+      requests: number;
+      parentalReturns: number;
     };
     CorrectedEventDto: {
       action: components["schemas"]["AttendanceEventAction"];
@@ -6243,6 +6410,8 @@ export interface components {
       insurance?: components["schemas"]["TaiwanInsuranceDto"];
       salaryCents: string;
       allowanceCents: string;
+      attendanceBonusCents?: string;
+      mealAllowanceCents?: string;
       otherDeductionCents: string;
       sourceNote?: string;
     };
@@ -6279,6 +6448,8 @@ export interface components {
       effectiveFrom: string;
       salaryCents: string;
       allowanceCents: string;
+      attendanceBonusCents?: string;
+      mealAllowanceCents?: string;
       otherDeductionCents: string;
       sourceNote?: string;
     };
@@ -6292,6 +6463,10 @@ export interface components {
     PayrollEarningLineCode:
       | "basePay"
       | "allowance"
+      | "attendanceBonus"
+      | "mealAllowance"
+      | "otherWage"
+      | "bonus"
       | "overtimePay"
       | "holidayPay"
       | "calendarLeavePay"
@@ -6304,6 +6479,7 @@ export interface components {
       code: components["schemas"]["PayrollEarningLineCode"];
       amountCents: string;
       seconds?: number;
+      name?: string;
     };
     /** @enum {string} */
     PayrollDeductionLineCode:
@@ -6432,6 +6608,11 @@ export interface components {
       premiumCents: string;
       unpublishedEmployees: number;
     };
+    PayrollEarningInputDto: {
+      /** Format: uuid */
+      earningTypeId: string;
+      amountCents: string;
+    };
     PayrollDraftDto: {
       /** Format: uuid */
       idempotencyKey: string;
@@ -6439,9 +6620,116 @@ export interface components {
       employeeId: string;
       month: string;
       reason: string;
+      earnings?: components["schemas"]["PayrollEarningInputDto"][];
     };
     PayrollReviewDto: {
       reason: string;
+    };
+    /** @enum {string} */
+    PayrollEarningTypeFilterField: "name" | "category";
+    /** @enum {string} */
+    PayrollEarningTypeSortField: "name" | "category";
+    /** @enum {string} */
+    PayrollEarningCategory: "wage" | "bonus";
+    PayrollEarningTypeResponseDto: {
+      id: string;
+      name: string;
+      category: components["schemas"]["PayrollEarningCategory"];
+      inUse: boolean;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    PayrollEarningTypesResponseDto: {
+      data: components["schemas"]["PayrollEarningTypeResponseDto"][];
+      total: number;
+    };
+    CreatePayrollEarningTypeDto: {
+      category: components["schemas"]["PayrollEarningCategory"];
+      name: string;
+    };
+    RenamePayrollEarningTypeDto: {
+      name: string;
+    };
+    PayrollWithholdingUnitResponseDto: {
+      /** @description 國稅局分局、稽徵所或服務處代號 */
+      taxOfficeCode: string;
+      /** @description 扣繳單位稅籍編號 */
+      taxRegistrationNumber: string;
+      businessNumber: string;
+      name: string;
+      address: string;
+      agentName: string;
+      representativeName: string;
+      contactName: string;
+      contactPhone: string;
+      /** Format: email */
+      contactEmail: string;
+    };
+    PayrollWithholdingCertificateResponseDto: {
+      employeeId: string;
+      employeeName: string;
+      legalStatus: components["schemas"]["AttendanceLegalStatus"];
+      /** @description 外籍員工目前需另行申報 */
+      filable: boolean;
+      taxIdMasked?: string | null;
+      addressProvided: boolean;
+      periodFrom: string;
+      periodTo: string;
+      salaryCents: string;
+      salaryWithholdingCents: string;
+      voluntaryPensionCents: string;
+      retirementIncomeCents: string;
+      retirementWithholdingCents: string;
+    };
+    PayrollWithholdingSummaryResponseDto: {
+      year: number;
+      unit?: components["schemas"]["PayrollWithholdingUnitResponseDto"] | null;
+      certificates: components["schemas"]["PayrollWithholdingCertificateResponseDto"][];
+    };
+    PayrollWithholdingFileResponseDto: {
+      fileName: string;
+      content: string;
+    };
+    PayrollWithholdingUnitDto: {
+      /** @description 國稅局分局、稽徵所或服務處代號 */
+      taxOfficeCode: string;
+      /** @description 扣繳單位稅籍編號 */
+      taxRegistrationNumber: string;
+      businessNumber: string;
+      name: string;
+      address: string;
+      agentName: string;
+      representativeName: string;
+      contactName: string;
+      contactPhone: string;
+      /** Format: email */
+      contactEmail: string;
+    };
+    PayrollTaxIdentityDto: {
+      /** @description 國民身分證統一編號 */
+      taxId: string;
+      /** @description 戶籍地址 */
+      address: string;
+    };
+    MyWithholdingUnitResponseDto: {
+      businessNumber: string;
+      name: string;
+      address: string;
+      agentName: string;
+    };
+    MyWithholdingCertificateResponseDto: {
+      year: number;
+      unit: components["schemas"]["MyWithholdingUnitResponseDto"];
+      employeeName: string;
+      taxId: string;
+      address: string;
+      periodFrom: string;
+      periodTo: string;
+      salaryCents: string;
+      salaryWithholdingCents: string;
+      voluntaryPensionCents: string;
+      retirementIncomeCents: string;
+      retirementWithholdingCents: string;
     };
   };
   responses: never;
@@ -7104,6 +7392,32 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["AttendanceRequestsResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AttendanceRequestsController_reviewCounts: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceReviewCountsResponseDto"];
         };
       };
       /** @description Internal server error */
@@ -12394,6 +12708,306 @@ export interface operations {
       };
     };
   };
+  PayrollEarningsController_earningTypes: {
+    parameters: {
+      query?: {
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        filterField?: components["schemas"]["PayrollEarningTypeFilterField"];
+        sortBy?: components["schemas"]["PayrollEarningTypeSortField"];
+        limit?: number;
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PayrollEarningTypesResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  PayrollEarningsController_createEarningType: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreatePayrollEarningTypeDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceIdResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  PayrollEarningsController_deleteEarningType: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceIdResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  PayrollEarningsController_renameEarningType: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["RenamePayrollEarningTypeDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceIdResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  PayrollEarningsController_earnings: {
+    parameters: {
+      query: {
+        employeeId: string;
+        month: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PayrollEarningInputDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  PayrollWithholdingController_summary: {
+    parameters: {
+      query: {
+        year: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PayrollWithholdingSummaryResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  PayrollWithholdingController_file: {
+    parameters: {
+      query: {
+        year: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PayrollWithholdingFileResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  PayrollWithholdingController_saveUnit: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PayrollWithholdingUnitDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PayrollWithholdingUnitResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  PayrollWithholdingController_saveTaxIdentity: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        employeeId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PayrollTaxIdentityDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceIdResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  PayrollWithholdingController_mine: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["MyWithholdingCertificateResponseDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
 }
 type FlattenedDeepRequired<T> = {
   [K in keyof T]-?: FlattenedDeepRequired<
@@ -12442,6 +13056,8 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "childLaborNightWork",
   "childLaborRestDay",
   "consecutiveWorkdaysExceeded",
+  "earningTypeInUse",
+  "earningTypeNameTaken",
   "correctionSourceChanged",
   "dailyHoursExceeded",
   "dayKindRequired",
@@ -12464,6 +13080,8 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "indigenousHolidayInUse",
   "indigenousHolidayInvalid",
   "insufficientLeaveBalance",
+  "invalidBusinessNumber",
+  "invalidEarningType",
   "invalidEmergencyDetails",
   "invalidEventSequence",
   "invalidInterval",
@@ -12471,6 +13089,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "invalidLeaveCase",
   "invalidParentalInterval",
   "invalidPayrollState",
+  "invalidTaxId",
   "ipNotAllowed",
   "jobSearchLeaveInvalid",
   "laborInsuranceExemptionInvalid",
@@ -12532,9 +13151,12 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "statutoryBalanceAutomatic",
   "statutoryLeaveTypeLocked",
   "studentWeeklyHoursExceeded",
+  "taxIdentityRequired",
+  "taxIdentityUnsupported",
   "terminationProtected",
   "terminationReasonRequired",
   "weeklyRestRequired",
+  "withholdingUnitRequired",
   "workPermitRequired",
 ];
 export const attendanceEmploymentTypeValues: ReadonlyArray<
@@ -13449,6 +14071,10 @@ export const payrollEarningLineCodeValues: ReadonlyArray<
 > = [
   "basePay",
   "allowance",
+  "attendanceBonus",
+  "mealAllowance",
+  "otherWage",
+  "bonus",
   "overtimePay",
   "holidayPay",
   "calendarLeavePay",
@@ -13538,3 +14164,12 @@ export const payrollBlockerValues: ReadonlyArray<
   "withholdingTableOutdated",
   "workPermitRequired",
 ];
+export const payrollEarningTypeFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["PayrollEarningTypeFilterField"]
+> = ["name", "category"];
+export const payrollEarningTypeSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["PayrollEarningTypeSortField"]
+> = ["name", "category"];
+export const payrollEarningCategoryValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["PayrollEarningCategory"]
+> = ["wage", "bonus"];

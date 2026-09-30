@@ -16,7 +16,7 @@ interface SelectedListItemProps {
 }
 
 const SelectedListItem = ({
-  item: { children, icon, label, onClick, path, slot: Slot, to },
+  item: { badge, children, icon, label, onClick, path, slot: Slot, to },
   level = 0,
 }: SelectedListItemProps) => {
   const [open, setOpen] = useState(false);
@@ -46,6 +46,7 @@ const SelectedListItem = ({
   return (
     <>
       <ListItemLink
+        badge={badge}
         href={href}
         icon={icon}
         isExpandable={isExpandable}

@@ -3,7 +3,7 @@
 import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
-import useSWR from "swr";
+import useSWR, { mutate as mutateCache } from "swr";
 
 import ReviewDialog from "./ReviewDialog";
 
@@ -22,6 +22,7 @@ import {
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
+import { attendanceReviewCountsKey } from "@/hooks/useAttendanceReviewCounts";
 
 import { Check, Close } from "@mui/icons-material";
 import { Chip, IconButton, Stack, Tooltip } from "@mui/material";
@@ -170,6 +171,7 @@ const Reviews = ({
         setTimeout(() => {
           apiRef.current?.autosizeColumns(autosizeOptions);
         }, 0);
+        mutateCache(attendanceReviewCountsKey(organizationSlug));
       },
     },
   );
