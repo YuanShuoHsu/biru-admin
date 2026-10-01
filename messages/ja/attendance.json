@@ -267,7 +267,8 @@
     "withholdingUnitRequired": "先に申告単位情報を入力してください。",
     "foreignTaxIdentityRequired": "外国籍の従業員は居住国と納税者番号（ない場合は NOTIN）が必要です。",
     "employeeNotInTeam": "従業員は選択したチームのメンバーではありません。",
-    "shiftTypeNameTaken": "同じ名前のシフト区分が既にあります。"
+    "shiftTypeNameTaken": "同じ名前のシフト区分が既にあります。",
+    "leaveCaseGrantRequired": "この事由休暇にはまだ休暇枠が付与されていません。1 件ずつ承認して事由の情報を入力してください。"
   },
   "eventAction": {
     "options": {

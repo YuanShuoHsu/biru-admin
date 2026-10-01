@@ -267,7 +267,8 @@
     "withholdingUnitRequired": "먼저 신고 단위 정보를 입력하세요.",
     "foreignTaxIdentityRequired": "외국인 직원은 거주 국가와 납세자 번호(없으면 NOTIN)가 필요합니다.",
     "employeeNotInTeam": "직원이 선택한 팀의 구성원이 아닙니다.",
-    "shiftTypeNameTaken": "같은 이름의 근무 유형이 이미 있습니다."
+    "shiftTypeNameTaken": "같은 이름의 근무 유형이 이미 있습니다.",
+    "leaveCaseGrantRequired": "이 사유 휴가는 아직 한도가 부여되지 않았습니다. 한 건씩 승인하고 사유 정보를 입력하세요."
   },
   "eventAction": {
     "options": {

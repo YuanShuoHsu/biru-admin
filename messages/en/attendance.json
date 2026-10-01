@@ -267,7 +267,8 @@
     "withholdingUnitRequired": "Fill in the withholding unit details first.",
     "foreignTaxIdentityRequired": "Foreign employees need a country of residence and tax ID (NOTIN if none).",
     "employeeNotInTeam": "The employee is not a member of the selected team.",
-    "shiftTypeNameTaken": "A shift type with this name already exists."
+    "shiftTypeNameTaken": "A shift type with this name already exists.",
+    "leaveCaseGrantRequired": "This event leave has no granted allowance yet. Approve it individually and enter the event details."
   },
   "eventAction": {
     "options": {

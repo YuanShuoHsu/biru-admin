@@ -267,7 +267,8 @@
     "withholdingUnitRequired": "请先填写申报单位资料。",
     "foreignTaxIdentityRequired": "外籍员工须填写居住地国与税务识别码（无则填 NOTIN）。",
     "employeeNotInTeam": "员工不是所选团队的成员。",
-    "shiftTypeNameTaken": "已有同名的班别。"
+    "shiftTypeNameTaken": "已有同名的班别。",
+    "leaveCaseGrantRequired": "此事件假尚未核给额度，请逐笔批准并填写事件资料。"
   },
   "eventAction": {
     "options": {

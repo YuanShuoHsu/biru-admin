@@ -2850,6 +2850,7 @@ export interface components {
       | "laborInsuranceExemptionInvalid"
       | "laborInsuranceRequired"
       | "leaveCaseExists"
+      | "leaveCaseGrantRequired"
       | "leaveCaseInUse"
       | "leaveCaseIntervalConflict"
       | "leaveCaseRequired"
@@ -2864,6 +2865,7 @@ export interface components {
       | "memberNotFound"
       | "menstrualDayLimit"
       | "monthlyOvertimeExceeded"
+      | "noShifts"
       | "outsideShiftWindow"
       | "occupationalIndustryInvalid"
       | "overlappingAttendance"
@@ -2970,6 +2972,8 @@ export interface components {
       regularLeaveWeekday?: number | null;
       restDayWeekday?: number | null;
       employmentInsuranceEligible: boolean;
+      /** @description 報稅身分須填居留證號、居住地國與當地稅務識別碼 */
+      foreignTaxIdentityRequired: boolean;
       workPermitRequired: boolean;
       pensionApplicable: boolean;
       birthDate?: string | null;
@@ -3060,6 +3064,8 @@ export interface components {
       regularLeaveWeekday?: number | null;
       restDayWeekday?: number | null;
       employmentInsuranceEligible: boolean;
+      /** @description 報稅身分須填居留證號、居住地國與當地稅務識別碼 */
+      foreignTaxIdentityRequired: boolean;
       workPermitRequired: boolean;
       pensionApplicable: boolean;
       birthDate?: string | null;
@@ -3096,6 +3102,8 @@ export interface components {
     AttendanceLegalStatusObligationResponseDto: {
       legalStatus: components["schemas"]["AttendanceLegalStatus"];
       employmentInsuranceEligible: boolean;
+      /** @description 報稅身分須填居留證號、居住地國與當地稅務識別碼 */
+      foreignTaxIdentityRequired: boolean;
       pensionApplicable: boolean;
       workPermitRequired: boolean;
     };
@@ -3596,6 +3604,8 @@ export interface components {
       requests: number;
       parentalReturns: number;
       extraWork: number;
+      /** @description 本年度待指定或須撤銷的國定假日補假 */
+      holidaySubstitutes: number;
     };
     CorrectedEventDto: {
       action: components["schemas"]["AttendanceEventAction"];
@@ -14100,6 +14110,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "laborInsuranceExemptionInvalid",
   "laborInsuranceRequired",
   "leaveCaseExists",
+  "leaveCaseGrantRequired",
   "leaveCaseInUse",
   "leaveCaseIntervalConflict",
   "leaveCaseRequired",
@@ -14114,6 +14125,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "memberNotFound",
   "menstrualDayLimit",
   "monthlyOvertimeExceeded",
+  "noShifts",
   "outsideShiftWindow",
   "occupationalIndustryInvalid",
   "overlappingAttendance",

@@ -7,6 +7,7 @@ import { enqueueSnackbar } from "notistack";
 import useSWR from "swr";
 
 import TermsDialog from "../../payroll/statements/TermsDialog";
+import TaxIdentityDialog from "../../payroll/withholding/TaxIdentityDialog";
 import EmployeeDialog from "./EmployeeDialog";
 
 import { renderEmptyableCell } from "@/components/EmptyCell";
@@ -25,7 +26,7 @@ import {
 } from "@/hooks/useFilterOperators";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
-import { Delete, Edit, Payments } from "@mui/icons-material";
+import { AssignmentInd, Delete, Edit, Payments } from "@mui/icons-material";
 import {
   Chip,
   DialogContentText,
@@ -96,6 +97,7 @@ const DataGrid = dynamic(
 
 interface EmployeesProps {
   canDelete: boolean;
+  canManageTaxIdentity: boolean;
   canManageTerms: boolean;
   canWrite: boolean;
   filterField?: AttendanceEmployeeFilterField;
@@ -115,6 +117,7 @@ interface EmployeesProps {
 
 const Employees = ({
   canDelete,
+  canManageTaxIdentity,
   canManageTerms,
   canWrite,
   filterField: initialFilterField,
@@ -310,6 +313,26 @@ const Employees = ({
     [currency, mutateTerms, organizationSlug, setDialog, tAttendance, terms],
   );
 
+  const handleTaxIdentityDialog = useCallback(
+    ({ employee, name }: AttendanceMember) =>
+      employee &&
+      setDialog({
+        confirmText: tAttendance("save"),
+        content: (
+          <TaxIdentityDialog
+            employeeId={employee.id}
+            foreign={employee.foreignTaxIdentityRequired}
+            mutate={mutate}
+            organizationSlug={organizationSlug}
+          />
+        ),
+        formId: "payroll-tax-identity-form",
+        open: true,
+        title: tAttendance("withholding.identity.title", { name }),
+      }),
+    [mutate, organizationSlug, setDialog, tAttendance],
+  );
+
   const handleDeleteEmployee = useCallback(
     ({ employee, name }: AttendanceMember) =>
       employee &&
@@ -353,7 +376,7 @@ const Employees = ({
 
   const columns = useMemo<GridColDef[]>(
     () => [
-      ...(canWrite || canDelete || canManageTerms
+      ...(canWrite || canDelete || canManageTerms || canManageTaxIdentity
         ? [
             {
               disableColumnMenu: true,
@@ -387,6 +410,17 @@ const Employees = ({
                         visible={!!row.employee}
                       >
                         <Payments fontSize="small" />
+                      </StyledIconButton>
+                    </Tooltip>
+                  )}
+                  {canManageTaxIdentity && (
+                    <Tooltip title={tAttendance("withholding.identity.edit")}>
+                      <StyledIconButton
+                        onClick={() => handleTaxIdentityDialog(row)}
+                        size="small"
+                        visible={!!row.employee}
+                      >
+                        <AssignmentInd fontSize="small" />
                       </StyledIconButton>
                     </Tooltip>
                   )}
@@ -490,6 +524,7 @@ const Employees = ({
     ],
     [
       canDelete,
+      canManageTaxIdentity,
       canManageTerms,
       canWrite,
       date,
@@ -500,6 +535,7 @@ const Employees = ({
       enumOptions.status,
       handleDeleteEmployee,
       handleEmployeeDialog,
+      handleTaxIdentityDialog,
       handleTermsDialog,
       stringFilterOperators,
       tAttendance,

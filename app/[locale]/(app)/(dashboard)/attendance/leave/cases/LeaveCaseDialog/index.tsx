@@ -228,7 +228,9 @@ const LeaveCaseDialog = ({
 
   return (
     <FormBox id="attendance-leave-case-form" onSubmit={onSubmit}>
-      <Alert severity="info">{tAttendance("leaveCaseHint")}</Alert>
+      {!request && (
+        <Alert severity="info">{tAttendance("leaveCaseHint")}</Alert>
+      )}
       <TextField
         disabled={!!leaveCase || !!request}
         error={!!errors.employeeId}
