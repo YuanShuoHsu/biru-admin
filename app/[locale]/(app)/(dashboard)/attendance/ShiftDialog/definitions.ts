@@ -15,6 +15,7 @@ export const useShiftFormSchema = () => {
       endsAt: z.string().min(1, { error: tValidation("endsAt.required") }),
       paidBreak: z.boolean(),
       dayKind: z.enum(attendanceScheduledDayKindValues),
+      teamId: z.string(),
       repeatWeeks: z
         .number()
         .int({ error: tValidation("number.integer") })

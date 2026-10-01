@@ -265,7 +265,9 @@
     "invalidTaxId": "身分証番号のチェックディジットが正しくありません。",
     "taxIdentityRequired": "身分証番号と戸籍住所が未入力の従業員がいます。",
     "withholdingUnitRequired": "先に申告単位情報を入力してください。",
-    "foreignTaxIdentityRequired": "外国籍の従業員は居住国と納税者番号（ない場合は NOTIN）が必要です。"
+    "foreignTaxIdentityRequired": "外国籍の従業員は居住国と納税者番号（ない場合は NOTIN）が必要です。",
+    "employeeNotInTeam": "従業員は選択したチームのメンバーではありません。",
+    "shiftTypeNameTaken": "同じ名前のシフト区分が既にあります。"
   },
   "eventAction": {
     "options": {
@@ -831,7 +833,8 @@
       "payrollLocked": "給与公開済み",
       "reservedMakeupRest": "代休と重複",
       "overlappingShift": "既存シフトと重複",
-      "overlappingLeave": "休暇と重複"
+      "overlappingLeave": "休暇と重複",
+      "employeeNotInTeam": "従業員が元のチームに所属していない"
     }
   },
   "amount": "金額（{currency}）",
@@ -949,5 +952,25 @@
     "paymentCertificateTitle": "{date} 支払分 各種所得源泉徴収・免除証明書",
     "request": "交付を申請",
     "requested": "{year} 年度の源泉徴収票の交付を申請しました"
-  }
+  },
+  "shiftTypes": {
+    "label": "シフト区分",
+    "actions": {
+      "create": {
+        "title": "シフト区分を追加",
+        "success": "「{name}」を追加しました"
+      },
+      "update": {
+        "title": "シフト区分を編集",
+        "success": "「{name}」を更新しました"
+      },
+      "delete": {
+        "title": "シフト区分を削除",
+        "confirm": "<bold>{name}</bold> を削除しますか？",
+        "success": "「{name}」を削除しました"
+      }
+    }
+  },
+  "team": "チーム",
+  "noTeam": "指定なし"
 }

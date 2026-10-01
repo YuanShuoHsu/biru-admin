@@ -10,6 +10,8 @@ import AttendanceTabsLayout from "../../AttendanceTabsLayout";
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
+import { MAX_PAGE_SIZE } from "@/constants/pagination";
+
 import {
   ATTENDANCE_CALENDAR_VIEWS,
   attendanceCalendarDate,
@@ -20,6 +22,8 @@ import {
   getAttendanceCalendarLeaves,
   getAttendanceCalendarShifts,
   getAttendanceEmployees,
+  getAttendanceShiftTypes,
+  getAttendanceTeams,
   SCHEDULABLE_EMPLOYEES_QUERY,
 } from "@/utils/attendance";
 import { hasRolePermission } from "@/utils/organizations";
@@ -98,18 +102,25 @@ const CalendarPage = async ({ params, searchParams }: CalendarPageProps) => {
     attendanceRequest: ["read"],
   });
 
-  const [shifts, dayKinds, leaves, { employees }] = await Promise.all([
-    getAttendanceCalendarShifts(organization.slug, from, to, fetchOptions),
-    getAttendanceCalendarDayKinds(organization.slug, from, to, fetchOptions),
-    canReadLeaves
-      ? getAttendanceCalendarLeaves(organization.slug, from, to, fetchOptions)
-      : [],
-    getAttendanceEmployees(
-      organization.slug,
-      SCHEDULABLE_EMPLOYEES_QUERY,
-      fetchOptions,
-    ),
-  ]);
+  const [shifts, dayKinds, leaves, { employees }, { shiftTypes }, teams] =
+    await Promise.all([
+      getAttendanceCalendarShifts(organization.slug, from, to, fetchOptions),
+      getAttendanceCalendarDayKinds(organization.slug, from, to, fetchOptions),
+      canReadLeaves
+        ? getAttendanceCalendarLeaves(organization.slug, from, to, fetchOptions)
+        : [],
+      getAttendanceEmployees(
+        organization.slug,
+        SCHEDULABLE_EMPLOYEES_QUERY,
+        fetchOptions,
+      ),
+      getAttendanceShiftTypes(
+        organization.slug,
+        { pageSize: MAX_PAGE_SIZE },
+        fetchOptions,
+      ),
+      getAttendanceTeams(organization.slug, fetchOptions),
+    ]);
 
   return (
     <AttendanceTabsLayout memberRole={memberRole}>
@@ -122,6 +133,8 @@ const CalendarPage = async ({ params, searchParams }: CalendarPageProps) => {
         leaves={leaves}
         organization={organization}
         shifts={shifts}
+        shiftTypes={shiftTypes}
+        teams={teams}
         date={date}
         view={view}
       />

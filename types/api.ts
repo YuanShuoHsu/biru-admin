@@ -157,6 +157,45 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/attendance/shift-types": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 班別 */
+    get: operations["AttendanceShiftTypesController_shiftTypes"];
+    put?: never;
+    /** 新增班別 */
+    post: operations["AttendanceShiftTypesController_createShiftType"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/attendance/shift-types/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** 刪除班別 */
+    delete: operations["AttendanceShiftTypesController_deleteShiftType"];
+    options?: never;
+    head?: never;
+    /**
+     * 修改班別
+     * @description 已排定的班次存的是實際起訖時間，不會跟著變動。
+     */
+    patch: operations["AttendanceShiftTypesController_updateShiftType"];
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/attendance/me/shifts": {
     parameters: {
       query?: never;
@@ -235,6 +274,23 @@ export interface paths {
     };
     /** 指定期間各員工的假日、例假與休息日 */
     get: operations["AttendanceShiftsController_calendarDayKinds"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/attendance/teams": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 可排班的團隊與其成員 */
+    get: operations["AttendanceShiftsController_teams"];
     put?: never;
     post?: never;
     delete?: never;
@@ -2666,6 +2722,7 @@ export interface components {
       | "dayKindRequired"
       | "emergencyDetailsRequired"
       | "employeeInUse"
+      | "employeeNotInTeam"
       | "employeeNotEnabled"
       | "employmentInsuranceExemptionInvalid"
       | "employmentInsuranceIneligible"
@@ -2752,6 +2809,7 @@ export interface components {
       | "shiftRequired"
       | "shiftRestTooShort"
       | "shiftTooLong"
+      | "shiftTypeNameTaken"
       | "splitLeaveByYear"
       | "statutoryBalanceAutomatic"
       | "statutoryLeaveTypeLocked"
@@ -3083,8 +3141,38 @@ export interface components {
       graceMinutes: number;
     };
     /** @enum {string} */
+    AttendanceShiftTypeFilterField: "name" | "startTime" | "endTime";
+    /** @enum {string} */
+    AttendanceShiftTypeSortField: "name" | "startTime" | "endTime";
+    AttendanceShiftTypeResponseDto: {
+      id: string;
+      name: string;
+      startTime: string;
+      endTime: string;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    AttendanceShiftTypesResponseDto: {
+      data: components["schemas"]["AttendanceShiftTypeResponseDto"][];
+      total: number;
+    };
+    SaveAttendanceShiftTypeDto: {
+      /**
+       * @description 店家時區的 HH:mm
+       * @example 09:00
+       */
+      startTime: string;
+      /**
+       * @description 店家時區的 HH:mm，早於開始時間表示隔日結束
+       * @example 17:00
+       */
+      endTime: string;
+      name: string;
+    };
+    /** @enum {string} */
     AttendanceShiftFilterField:
       | "employeeName"
+      | "teamName"
       | "startsAt"
       | "endsAt"
       | "clockInAt"
@@ -3093,6 +3181,7 @@ export interface components {
     /** @enum {string} */
     AttendanceShiftSortField:
       | "employeeName"
+      | "teamName"
       | "startsAt"
       | "endsAt"
       | "clockInAt"
@@ -3121,6 +3210,8 @@ export interface components {
       organizationId: string;
       employeeId: string;
       employeeName: string;
+      teamId?: string | null;
+      teamName?: string | null;
       /** Format: date-time */
       startsAt: string;
       /** Format: date-time */
@@ -3175,6 +3266,12 @@ export interface components {
       dayKinds: components["schemas"]["AttendanceCalendarDayKindResponseDto"][];
       pendingSubstitutes: components["schemas"]["AttendanceCalendarPendingSubstituteResponseDto"][];
     };
+    AttendanceTeamResponseDto: {
+      id: string;
+      name: string;
+      /** @description 屬於該團隊的出勤員工 */
+      employeeIds: string[];
+    };
     /**
      * @description 員工設有固定例假日與休息日時由星期推得，未設定者必填
      * @enum {string}
@@ -3183,6 +3280,8 @@ export interface components {
     CreateAttendanceShiftDto: {
       /** @description 員工設有固定例假日與休息日時由星期推得，未設定者必填 */
       dayKind?: components["schemas"]["AttendanceScheduledDayKind"];
+      /** @description 員工必須是該團隊的成員 */
+      teamId?: string | null;
       /** Format: uuid */
       employeeId: string;
       startsAt: string;
@@ -3198,6 +3297,7 @@ export interface components {
       id: string;
       organizationId: string;
       employeeId: string;
+      teamId?: string | null;
       /** Format: date-time */
       startsAt: string;
       /** Format: date-time */
@@ -3231,6 +3331,7 @@ export interface components {
       | "restDay"
       | "regularLeave"
       | "employeeNotEnabled"
+      | "employeeNotInTeam"
       | "workPermitRequired"
       | "maternalNightWork"
       | "shiftTooLong"
@@ -3260,6 +3361,8 @@ export interface components {
       employeeId?: string;
       /** @description 員工設有固定例假日與休息日時由星期推得；未設定者移到其他日期或改排其他員工時必填，同員工同日省略則沿用原日別 */
       dayKind?: components["schemas"]["AttendanceScheduledDayKind"];
+      /** @description 省略則沿用原團隊，null 則清除 */
+      teamId?: string | null;
       /** @description 只檢查能否排入，不寫入 */
       dryRun?: boolean;
       startsAt: string;
@@ -7430,6 +7533,133 @@ export interface operations {
       };
     };
   };
+  AttendanceShiftTypesController_shiftTypes: {
+    parameters: {
+      query?: {
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        filterField?: components["schemas"]["AttendanceShiftTypeFilterField"];
+        sortBy?: components["schemas"]["AttendanceShiftTypeSortField"];
+        limit?: number;
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceShiftTypesResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AttendanceShiftTypesController_createShiftType: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SaveAttendanceShiftTypeDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceIdResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AttendanceShiftTypesController_deleteShiftType: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceIdResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AttendanceShiftTypesController_updateShiftType: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SaveAttendanceShiftTypeDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceIdResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   AttendanceShiftsController_myShifts: {
     parameters: {
       query?: {
@@ -7607,6 +7837,32 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["AttendanceCalendarDayKindsResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AttendanceShiftsController_teams: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceTeamResponseDto"][];
         };
       };
       /** @description Internal server error */
@@ -13519,6 +13775,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "dayKindRequired",
   "emergencyDetailsRequired",
   "employeeInUse",
+  "employeeNotInTeam",
   "employeeNotEnabled",
   "employmentInsuranceExemptionInvalid",
   "employmentInsuranceIneligible",
@@ -13605,6 +13862,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "shiftRequired",
   "shiftRestTooShort",
   "shiftTooLong",
+  "shiftTypeNameTaken",
   "splitLeaveByYear",
   "statutoryBalanceAutomatic",
   "statutoryLeaveTypeLocked",
@@ -13696,10 +13954,17 @@ export const attendanceEmployeeSortFieldValues: ReadonlyArray<
   "legalStatus",
   "status",
 ];
+export const attendanceShiftTypeFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["AttendanceShiftTypeFilterField"]
+> = ["name", "startTime", "endTime"];
+export const attendanceShiftTypeSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["AttendanceShiftTypeSortField"]
+> = ["name", "startTime", "endTime"];
 export const attendanceShiftFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceShiftFilterField"]
 > = [
   "employeeName",
+  "teamName",
   "startsAt",
   "endsAt",
   "clockInAt",
@@ -13710,6 +13975,7 @@ export const attendanceShiftSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceShiftSortField"]
 > = [
   "employeeName",
+  "teamName",
   "startsAt",
   "endsAt",
   "clockInAt",
@@ -13736,6 +14002,7 @@ export const attendanceCopySkipReasonValues: ReadonlyArray<
   "restDay",
   "regularLeave",
   "employeeNotEnabled",
+  "employeeNotInTeam",
   "workPermitRequired",
   "maternalNightWork",
   "shiftTooLong",

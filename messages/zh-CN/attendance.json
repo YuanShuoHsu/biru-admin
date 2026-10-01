@@ -265,7 +265,9 @@
     "invalidTaxId": "身份证统一编号检查码不正确。",
     "taxIdentityRequired": "还有员工尚未填写身份证统一编号与户籍地址。",
     "withholdingUnitRequired": "请先填写申报单位资料。",
-    "foreignTaxIdentityRequired": "外籍员工须填写居住地国与税务识别码（无则填 NOTIN）。"
+    "foreignTaxIdentityRequired": "外籍员工须填写居住地国与税务识别码（无则填 NOTIN）。",
+    "employeeNotInTeam": "员工不是所选团队的成员。",
+    "shiftTypeNameTaken": "已有同名的班别。"
   },
   "eventAction": {
     "options": {
@@ -831,7 +833,8 @@
       "payrollLocked": "薪资已发布",
       "reservedMakeupRest": "与补假重叠",
       "overlappingShift": "已有班次",
-      "overlappingLeave": "已请假"
+      "overlappingLeave": "已请假",
+      "employeeNotInTeam": "员工不在原团队"
     }
   },
   "amount": "金额（{currency}）",
@@ -949,5 +952,25 @@
     "paymentCertificateTitle": "{date} 给付之各类所得扣缴暨免扣缴凭单",
     "request": "申请填发",
     "requested": "已申请填发 {year} 年度扣缴凭单"
-  }
+  },
+  "shiftTypes": {
+    "label": "班别",
+    "actions": {
+      "create": {
+        "title": "新增班别",
+        "success": "已新增「{name}」"
+      },
+      "update": {
+        "title": "编辑班别",
+        "success": "已更新「{name}」"
+      },
+      "delete": {
+        "title": "删除班别",
+        "confirm": "确定要删除 <bold>{name}</bold> 吗？",
+        "success": "已删除「{name}」"
+      }
+    }
+  },
+  "team": "团队",
+  "noTeam": "不指定"
 }

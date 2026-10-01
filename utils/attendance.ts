@@ -54,6 +54,10 @@ import type {
   AttendanceShift,
   AttendanceShiftFilterField,
   AttendanceShiftSortField,
+  AttendanceShiftType,
+  AttendanceShiftTypeFilterField,
+  AttendanceShiftTypeSortField,
+  AttendanceTeam,
   OccupationalIndustryRate,
   MyWithholdingCertificate,
   PayrollBlocker,
@@ -297,6 +301,38 @@ export const attendanceCalendarPath = (
   to: string,
 ) =>
   `${attendancePath(organizationSlug, "org", `${resource}/calendar`)}?${new URLSearchParams({ from, to })}`;
+
+export const getAttendanceShiftTypes = cache(
+  async (
+    organizationSlug: string,
+    query: GridQuery<
+      AttendanceShiftTypeFilterField,
+      AttendanceShiftTypeSortField
+    > = {},
+    init?: RequestInit,
+  ) => {
+    const { data: shiftTypes, total } = await getGrid<
+      AttendanceShiftType,
+      AttendanceShiftTypeFilterField,
+      AttendanceShiftTypeSortField
+    >(attendancePath(organizationSlug, "org", "shift-types"), query, init);
+
+    return { shiftTypes, total };
+  },
+);
+
+export const getAttendanceTeams = cache(
+  async (organizationSlug: string, init?: RequestInit) => {
+    try {
+      return await fetcher<AttendanceTeam[]>(
+        attendancePath(organizationSlug, "org", "teams"),
+        init,
+      );
+    } catch {
+      return [];
+    }
+  },
+);
 
 const getAttendanceCalendar = async <T>(
   organizationSlug: string,

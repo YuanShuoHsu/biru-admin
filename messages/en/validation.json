@@ -350,5 +350,12 @@
   },
   "residentCertificateId": {
     "invalid": "Enter the 10-character resident certificate number or passport-derived code."
+  },
+  "shiftTypeName": {
+    "required": "Enter a name.",
+    "maxLength": "Name must be 50 characters or fewer."
+  },
+  "endTime": {
+    "sameAsStartTime": "End time must be different from start time."
   }
 }

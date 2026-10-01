@@ -265,7 +265,9 @@
     "invalidTaxId": "The national ID number check digit is invalid.",
     "taxIdentityRequired": "Some employees are still missing their national ID number and registered address.",
     "withholdingUnitRequired": "Fill in the withholding unit details first.",
-    "foreignTaxIdentityRequired": "Foreign employees need a country of residence and tax ID (NOTIN if none)."
+    "foreignTaxIdentityRequired": "Foreign employees need a country of residence and tax ID (NOTIN if none).",
+    "employeeNotInTeam": "The employee is not a member of the selected team.",
+    "shiftTypeNameTaken": "A shift type with this name already exists."
   },
   "eventAction": {
     "options": {
@@ -831,7 +833,8 @@
       "payrollLocked": "Payroll published",
       "reservedMakeupRest": "Overlaps make-up rest",
       "overlappingShift": "Already scheduled",
-      "overlappingLeave": "On leave"
+      "overlappingLeave": "On leave",
+      "employeeNotInTeam": "Employee no longer in the team"
     }
   },
   "amount": "Amount ({currency})",
@@ -949,5 +952,25 @@
     "paymentCertificateTitle": "Withholding statement for payment on {date}",
     "request": "Request statement",
     "requested": "Requested the {year} withholding statement"
-  }
+  },
+  "shiftTypes": {
+    "label": "Shift types",
+    "actions": {
+      "create": {
+        "title": "Add shift type",
+        "success": "Added \"{name}\""
+      },
+      "update": {
+        "title": "Edit shift type",
+        "success": "Updated \"{name}\""
+      },
+      "delete": {
+        "title": "Delete shift type",
+        "confirm": "Delete <bold>{name}</bold>?",
+        "success": "Deleted \"{name}\""
+      }
+    }
+  },
+  "team": "Team",
+  "noTeam": "None"
 }

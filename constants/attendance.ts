@@ -74,6 +74,10 @@ export const ATTENDANCE_NAV_GROUPS: {
         permission: { employee: ["read"] },
       },
       {
+        path: "/attendance/settings/shift-types",
+        permission: { shiftType: ["create"] },
+      },
+      {
         path: "/attendance/settings/leave-types",
         permission: { leaveType: ["update"] },
       },

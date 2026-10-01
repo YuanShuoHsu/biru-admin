@@ -350,5 +350,12 @@
   },
   "residentCertificateId": {
     "invalid": "10자리 거류증 통일 증번호 또는 여권 기반 코드를 입력하세요."
+  },
+  "shiftTypeName": {
+    "required": "이름을 입력하세요.",
+    "maxLength": "이름은 50자 이하여야 합니다."
+  },
+  "endTime": {
+    "sameAsStartTime": "종료 시간은 시작 시간과 달라야 합니다."
   }
 }

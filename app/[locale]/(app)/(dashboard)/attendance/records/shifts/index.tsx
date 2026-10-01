@@ -47,6 +47,8 @@ import type {
   AttendanceShiftFilterField,
   AttendanceShiftPage,
   AttendanceShiftSortField,
+  AttendanceShiftType,
+  AttendanceTeam,
 } from "@/types/attendance";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization } from "@/types/organizations";
@@ -104,8 +106,10 @@ interface ShiftsProps {
   quickFilterValue?: string;
   rowCount: number;
   rows: AttendanceShift[];
+  shiftTypes: AttendanceShiftType[];
   sortBy?: AttendanceShiftSortField;
   sortDirection?: SortDirection;
+  teams: AttendanceTeam[];
 }
 
 const Shifts = ({
@@ -122,8 +126,10 @@ const Shifts = ({
   quickFilterValue: initialQuickFilterValue,
   rowCount: initialRowCount,
   rows: initialRows,
+  shiftTypes,
   sortBy,
   sortDirection,
+  teams,
 }: ShiftsProps) => {
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
@@ -256,13 +262,24 @@ const Shifts = ({
             mutate={mutate}
             openingHours={openingHours}
             organizationSlug={organizationSlug}
+            shiftTypes={shiftTypes}
+            teams={teams}
           />
         ),
         formId: "attendance-shift-form",
         open: true,
         title: tAttendance("shifts.actions.create"),
       }),
-    [employees, mutate, openingHours, organizationSlug, setDialog, tAttendance],
+    [
+      employees,
+      mutate,
+      openingHours,
+      organizationSlug,
+      setDialog,
+      shiftTypes,
+      tAttendance,
+      teams,
+    ],
   );
 
   const handleViewEvents = useCallback(
@@ -401,6 +418,12 @@ const Shifts = ({
         field: "employeeName",
         filterOperators: stringFilterOperators,
         headerName: tAttendance("employee"),
+      },
+      {
+        field: "teamName",
+        filterOperators: stringFilterOperators,
+        headerName: tAttendance("team"),
+        renderCell: renderEmptyableCell,
       },
       {
         field: "startsAt",

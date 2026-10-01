@@ -35,7 +35,12 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import { attendanceScheduledDayKindValues } from "@/types/api";
-import type { AttendanceEmployee, AttendanceShift } from "@/types/attendance";
+import type {
+  AttendanceEmployee,
+  AttendanceShift,
+  AttendanceShiftType,
+  AttendanceTeam,
+} from "@/types/attendance";
 
 import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
@@ -75,7 +80,10 @@ const storeTime = (value: string) =>
 export type ShiftChange = Pick<
   AttendanceShift,
   "employeeId" | "endsAt" | "paidBreak" | "startsAt"
-> & { dayKind?: (typeof attendanceScheduledDayKindValues)[number] };
+> & {
+  dayKind?: (typeof attendanceScheduledDayKindValues)[number];
+  teamId?: string | null;
+};
 
 interface ShiftDialogProps {
   date?: string;
@@ -91,6 +99,8 @@ interface ShiftDialogProps {
   organizationSlug: string;
   recentShifts?: AttendanceShift[];
   shift?: AttendanceShift;
+  shiftTypes: AttendanceShiftType[];
+  teams: AttendanceTeam[];
 }
 
 const ShiftDialog = ({
@@ -104,6 +114,8 @@ const ShiftDialog = ({
   organizationSlug,
   recentShifts = [],
   shift,
+  shiftTypes,
+  teams,
 }: ShiftDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
@@ -123,6 +135,17 @@ const ShiftDialog = ({
   const closesAt =
     schedule && opensAt && atTimeAfter(opensAt, schedule.endTime);
 
+  const sharedTeams = (ids: string[]) =>
+    teams.filter(({ employeeIds }) =>
+      ids.every((id) => employeeIds.includes(id)),
+    );
+
+  const soleTeamId = (ids: string[]) => {
+    const shared = ids.length ? sharedTeams(ids) : [];
+
+    return shared.length === 1 ? shared[0].id : "";
+  };
+
   const {
     control,
     formState: { errors, isSubmitted },
@@ -138,6 +161,7 @@ const ShiftDialog = ({
           paidBreak: shift.paidBreak,
           repeatWeeks: 1,
           startsAt: shift.startsAt,
+          teamId: shift.teamId ?? "",
         }
       : {
           dayKind: "workday",
@@ -146,6 +170,7 @@ const ShiftDialog = ({
           paidBreak: false,
           repeatWeeks: 1,
           startsAt: opensAt?.toISOString() ?? "",
+          teamId: soleTeamId(initialEmployeeId ? [initialEmployeeId] : []),
         },
     resolver: zodResolver(shiftFormSchema),
   });
@@ -159,6 +184,7 @@ const ShiftDialog = ({
     paidBreak,
     repeatWeeks,
     startsAt,
+    teamId,
   } = values;
 
   const rotatingIds = new Set(
@@ -169,7 +195,13 @@ const ShiftDialog = ({
 
   const rotating = employeeIds.some((id) => rotatingIds.has(id));
 
-  const recentTimes = useMemo(() => {
+  const timePresets = useMemo(() => {
+    if (shiftTypes.length)
+      return shiftTypes.map(({ endTime, name, startTime }) => ({
+        label: `${name} ${startTime}–${endTime}`,
+        time: [startTime, endTime] as [string, string],
+      }));
+
     const counts = new Map<string, number>();
 
     for (const { endsAt, startsAt, status } of recentShifts) {
@@ -183,8 +215,12 @@ const ShiftDialog = ({
     return [...counts]
       .sort(([, a], [, b]) => b - a)
       .slice(0, RECENT_TIMES_LIMIT)
-      .map(([key]) => key.split("-") as [string, string]);
-  }, [recentShifts]);
+      .map(([key]) => {
+        const time = key.split("-") as [string, string];
+
+        return { label: time.join("–"), time };
+      });
+  }, [recentShifts, shiftTypes]);
 
   const [conflict, setConflict] = useState<string>();
 
@@ -195,6 +231,7 @@ const ShiftDialog = ({
     paidBreak,
     repeatWeeks,
     startsAt,
+    teamId,
   }: ShiftForm) =>
     shift
       ? {
@@ -204,6 +241,7 @@ const ShiftDialog = ({
             endsAt,
             paidBreak,
             startsAt,
+            teamId: teamId || null,
           } satisfies ShiftChange,
           method: "PATCH",
           url: `${attendancePath(organizationSlug, "org", "shifts")}/${shift.id}`,
@@ -221,6 +259,7 @@ const ShiftDialog = ({
                 startsAt: dayjs(startsAt)
                   .add(index * 7, "day")
                   .toISOString(),
+                teamId: teamId || null,
               })),
             ),
           },
@@ -280,7 +319,14 @@ const ShiftDialog = ({
       });
   };
 
-  const handleRecentTime = ([start, end]: [string, string]) => {
+  const handleEmployeeIdsChange = (ids: string[]) => {
+    setValue("employeeIds", ids, { shouldValidate: isSubmitted });
+
+    if (!sharedTeams(ids).some(({ id }) => id === teamId))
+      setValue("teamId", soleTeamId(ids));
+  };
+
+  const handleTimePreset = ([start, end]: [string, string]) => {
     const base = (startsAt ? dayjs(startsAt).tz(STORE_TIMEZONE) : day).startOf(
       "day",
     );
@@ -356,9 +402,7 @@ const ShiftDialog = ({
         onChange={(event) => {
           const { value } = event.target as { value: string | string[] };
 
-          setValue("employeeIds", Array.isArray(value) ? value : [value], {
-            shouldValidate: isSubmitted,
-          });
+          handleEmployeeIdsChange(Array.isArray(value) ? value : [value]);
         }}
         required
         select
@@ -377,16 +421,38 @@ const ShiftDialog = ({
           </MenuItem>
         ))}
       </TextField>
-      {!!recentTimes.length && (
+      {!!teams.length && (
+        <TextField
+          fullWidth
+          label={tAttendance("team")}
+          onChange={(event) => setValue("teamId", event.target.value)}
+          select
+          slotProps={{
+            inputLabel: { shrink: true },
+            select: { displayEmpty: true },
+          }}
+          value={teamId}
+        >
+          <MenuItem value="">{tAttendance("noTeam")}</MenuItem>
+          {sharedTeams(employeeIds).map(({ id, name }) => (
+            <MenuItem key={id} value={id}>
+              {name}
+            </MenuItem>
+          ))}
+        </TextField>
+      )}
+      {!!timePresets.length && (
         <ChipStack direction="row">
           <Typography color="textSecondary" variant="body2">
-            {tAttendance("schedule.recentTimes")}
+            {tAttendance(
+              shiftTypes.length ? "shiftTypes.label" : "schedule.recentTimes",
+            )}
           </Typography>
-          {recentTimes.map((time) => (
+          {timePresets.map(({ label, time }) => (
             <Chip
-              key={time.join()}
-              label={time.join("–")}
-              onClick={() => handleRecentTime(time)}
+              key={label}
+              label={label}
+              onClick={() => handleTimePreset(time)}
               size="small"
               variant="outlined"
             />

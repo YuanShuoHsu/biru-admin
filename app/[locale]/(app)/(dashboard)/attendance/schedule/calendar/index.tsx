@@ -40,6 +40,8 @@ import type {
   AttendanceRequest,
   AttendanceCopyWeekResult,
   AttendanceShift,
+  AttendanceShiftType,
+  AttendanceTeam,
 } from "@/types/attendance";
 import type { Organization } from "@/types/organizations";
 
@@ -115,6 +117,8 @@ interface CalendarProps {
   leaves: AttendanceRequest[];
   organization: Organization;
   shifts: AttendanceShift[];
+  shiftTypes: AttendanceShiftType[];
+  teams: AttendanceTeam[];
   date: string;
   view: AttendanceCalendarView;
 }
@@ -129,6 +133,8 @@ const Calendar = ({
   leaves: initialLeaves,
   organization: { openingHours = "", slug: organizationSlug },
   shifts: initialShifts,
+  shiftTypes,
+  teams,
   view: initialView,
 }: CalendarProps) => {
   const { setDialog } = useDialogStore((state) => state);
@@ -312,7 +318,9 @@ const Calendar = ({
           readOnly: !canUpdate || shift.state !== "scheduled",
           resource: shift.employeeId,
           start: shift.startsAt,
-          title: shift.employeeName,
+          title: shift.teamName
+            ? `${shift.employeeName} · ${shift.teamName}`
+            : shift.employeeName,
         })),
     ],
     [
@@ -390,6 +398,8 @@ const Calendar = ({
             openingHours={openingHours}
             organizationSlug={organizationSlug}
             recentShifts={shifts}
+            shiftTypes={shiftTypes}
+            teams={teams}
           />
         ),
         formId: "attendance-shift-form",
@@ -402,8 +412,10 @@ const Calendar = ({
       openingHours,
       organizationSlug,
       setDialog,
+      shiftTypes,
       shifts,
       tAttendance,
+      teams,
     ],
   );
 
@@ -496,6 +508,11 @@ const Calendar = ({
                     employeeName:
                       employees.find(({ id }) => id === change.employeeId)
                         ?.name ?? item.employeeName,
+                    ...(change.teamId !== undefined && {
+                      teamName:
+                        teams.find(({ id }) => id === change.teamId)?.name ??
+                        null,
+                    }),
                   }
                 : item,
             ),
@@ -507,7 +524,7 @@ const Calendar = ({
 
       mutateDayKinds();
     },
-    [employees, mutateDayKinds, mutateShifts, organizationSlug, shifts],
+    [employees, mutateDayKinds, mutateShifts, organizationSlug, shifts, teams],
   );
 
   const updateShift = useCallback(
@@ -517,6 +534,7 @@ const Calendar = ({
         endsAt: shift.endsAt,
         paidBreak: shift.paidBreak,
         startsAt: shift.startsAt,
+        teamId: shift.teamId ?? null,
         ...(change.dayKind && {
           dayKind: shift.dayKind === "holiday" ? "workday" : shift.dayKind,
         }),
@@ -630,6 +648,8 @@ const Calendar = ({
               organizationSlug={organizationSlug}
               recentShifts={shifts}
               shift={shift}
+              shiftTypes={shiftTypes}
+              teams={teams}
             />
           ),
           formId: "attendance-shift-form",
@@ -654,8 +674,10 @@ const Calendar = ({
       openingHours,
       organizationSlug,
       setDialog,
+      shiftTypes,
       shifts,
       tAttendance,
+      teams,
       updateShift,
     ],
   );

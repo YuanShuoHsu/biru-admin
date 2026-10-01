@@ -76,6 +76,7 @@ import {
   ReceiptLong,
   RequestQuote,
   Scale,
+  Schedule,
   Settings,
   SoupKitchen,
   Stars,
@@ -271,6 +272,12 @@ const routes: Route[] = [
             label: "attendance.employees.label",
             query: ["organization", "page", "pageSize"],
             segment: "employees",
+          },
+          {
+            icon: Schedule,
+            label: "attendance.shiftTypes.label",
+            query: ["organization", "page", "pageSize"],
+            segment: "shift-types",
           },
           {
             icon: Category,

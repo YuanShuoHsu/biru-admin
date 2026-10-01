@@ -265,7 +265,9 @@
     "invalidTaxId": "身分證統一編號檢查碼不正確。",
     "taxIdentityRequired": "還有員工尚未填寫身分證統一編號與戶籍地址。",
     "withholdingUnitRequired": "請先填寫申報單位資料。",
-    "foreignTaxIdentityRequired": "外籍員工須填寫居住地國與稅務識別碼（無則填 NOTIN）。"
+    "foreignTaxIdentityRequired": "外籍員工須填寫居住地國與稅務識別碼（無則填 NOTIN）。",
+    "employeeNotInTeam": "員工不是所選團隊的成員。",
+    "shiftTypeNameTaken": "已有同名的班別。"
   },
   "eventAction": {
     "options": {
@@ -831,7 +833,8 @@
       "payrollLocked": "薪資已發布",
       "reservedMakeupRest": "與補假重疊",
       "overlappingShift": "已有班次",
-      "overlappingLeave": "已請假"
+      "overlappingLeave": "已請假",
+      "employeeNotInTeam": "員工不在原團隊"
     }
   },
   "amount": "金額（{currency}）",
@@ -949,5 +952,25 @@
     "paymentCertificateTitle": "{date} 給付之各類所得扣繳暨免扣繳憑單",
     "request": "申請填發",
     "requested": "已申請填發 {year} 年度扣繳憑單"
-  }
+  },
+  "shiftTypes": {
+    "label": "班別",
+    "actions": {
+      "create": {
+        "title": "新增班別",
+        "success": "已新增「{name}」"
+      },
+      "update": {
+        "title": "編輯班別",
+        "success": "已更新「{name}」"
+      },
+      "delete": {
+        "title": "刪除班別",
+        "confirm": "確定要刪除 <bold>{name}</bold> 嗎？",
+        "success": "已刪除「{name}」"
+      }
+    }
+  },
+  "team": "團隊",
+  "noTeam": "不指定"
 }

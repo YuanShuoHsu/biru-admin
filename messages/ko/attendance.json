@@ -265,7 +265,9 @@
     "invalidTaxId": "신분증 번호 검증 숫자가 올바르지 않습니다.",
     "taxIdentityRequired": "신분증 번호와 호적 주소를 입력하지 않은 직원이 있습니다.",
     "withholdingUnitRequired": "먼저 신고 단위 정보를 입력하세요.",
-    "foreignTaxIdentityRequired": "외국인 직원은 거주 국가와 납세자 번호(없으면 NOTIN)가 필요합니다."
+    "foreignTaxIdentityRequired": "외국인 직원은 거주 국가와 납세자 번호(없으면 NOTIN)가 필요합니다.",
+    "employeeNotInTeam": "직원이 선택한 팀의 구성원이 아닙니다.",
+    "shiftTypeNameTaken": "같은 이름의 근무 유형이 이미 있습니다."
   },
   "eventAction": {
     "options": {
@@ -831,7 +833,8 @@
       "payrollLocked": "급여 게시됨",
       "reservedMakeupRest": "보상 휴일과 겹침",
       "overlappingShift": "기존 근무와 겹침",
-      "overlappingLeave": "휴가와 겹침"
+      "overlappingLeave": "휴가와 겹침",
+      "employeeNotInTeam": "직원이 기존 팀에 속해 있지 않음"
     }
   },
   "amount": "금액 ({currency})",
@@ -949,5 +952,25 @@
     "paymentCertificateTitle": "{date} 지급분 각종 소득 원천징수·면제 영수증",
     "request": "발급 신청",
     "requested": "{year}년도 원천징수영수증 발급을 신청했습니다"
-  }
+  },
+  "shiftTypes": {
+    "label": "근무 유형",
+    "actions": {
+      "create": {
+        "title": "근무 유형 추가",
+        "success": "\"{name}\"을(를) 추가했습니다"
+      },
+      "update": {
+        "title": "근무 유형 편집",
+        "success": "\"{name}\"을(를) 수정했습니다"
+      },
+      "delete": {
+        "title": "근무 유형 삭제",
+        "confirm": "<bold>{name}</bold>을(를) 삭제할까요?",
+        "success": "\"{name}\"을(를) 삭제했습니다"
+      }
+    }
+  },
+  "team": "팀",
+  "noTeam": "지정 안 함"
 }

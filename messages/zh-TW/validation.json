@@ -350,5 +350,12 @@
   },
   "residentCertificateId": {
     "invalid": "請輸入 10 碼居留證統一證號或護照衍生碼。"
+  },
+  "shiftTypeName": {
+    "required": "請輸入名稱。",
+    "maxLength": "名稱不能超過 50 個字元。"
+  },
+  "endTime": {
+    "sameAsStartTime": "結束時間不能與開始時間相同。"
   }
 }

@@ -350,5 +350,12 @@
   },
   "residentCertificateId": {
     "invalid": "10 桁の居留証統一証番号またはパスポート由来コードを入力してください。"
+  },
+  "shiftTypeName": {
+    "required": "名称を入力してください。",
+    "maxLength": "名称は 50 文字以内で入力してください。"
+  },
+  "endTime": {
+    "sameAsStartTime": "終了時刻は開始時刻と異なる必要があります。"
   }
 }

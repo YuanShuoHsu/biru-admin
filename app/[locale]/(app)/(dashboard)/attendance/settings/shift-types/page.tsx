@@ -3,33 +3,27 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
-import Shifts from ".";
+import ShiftTypes from ".";
 
 import AttendanceTabsLayout from "../../AttendanceTabsLayout";
-
-import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
 import {
-  attendanceShiftFilterFieldValues,
-  attendanceShiftSortFieldValues,
+  attendanceShiftTypeFilterFieldValues,
+  attendanceShiftTypeSortFieldValues,
   filterOperatorValues,
 } from "@/types/api";
 
 import {
   getAttendanceAccess,
-  getAttendanceEmployees,
-  getAttendanceShifts,
   getAttendanceShiftTypes,
-  getAttendanceTeams,
 } from "@/utils/attendance";
-import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
-import { getAttendanceDayKindEnumOptions } from "@/utils/enumOptions";
+import { resolveGridSearchParams } from "@/utils/dataGrid";
 import { hasRolePermission } from "@/utils/organizations";
 
-interface ShiftsPageProps {
+interface ShiftTypesPageProps {
   params: Promise<{ locale: Locale }>;
   searchParams: Promise<{
     filterField?: string;
@@ -47,17 +41,20 @@ interface ShiftsPageProps {
 
 export const generateMetadata = async ({
   params,
-}: ShiftsPageProps): Promise<Metadata> => {
+}: ShiftTypesPageProps): Promise<Metadata> => {
   const { locale } = await params;
   const tAttendance = await getTranslations({
     locale,
     namespace: "attendance",
   });
 
-  return { title: tAttendance("shifts.label") };
+  return { title: tAttendance("shiftTypes.label") };
 };
 
-const ShiftsPage = async ({ params, searchParams }: ShiftsPageProps) => {
+const ShiftTypesPage = async ({
+  params,
+  searchParams,
+}: ShiftTypesPageProps) => {
   const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
     cookies(),
     params,
@@ -77,7 +74,7 @@ const ShiftsPage = async ({ params, searchParams }: ShiftsPageProps) => {
 
   const { memberRole, organization } = access;
 
-  if (!hasRolePermission(memberRole, { shift: ["read"] })) notFound();
+  if (!hasRolePermission(memberRole, { shiftType: ["create"] })) notFound();
 
   const {
     filterField,
@@ -91,74 +88,36 @@ const ShiftsPage = async ({ params, searchParams }: ShiftsPageProps) => {
     sortDirection,
   } = resolveGridSearchParams({
     searchParams: rawSearchParams,
-    sortFields: attendanceShiftSortFieldValues,
-    filterFields: attendanceShiftFilterFieldValues,
+    sortFields: attendanceShiftTypeSortFieldValues,
+    filterFields: attendanceShiftTypeFilterFieldValues,
     filterOperators: filterOperatorValues,
     organizationSlug: organization.slug,
   });
 
   if (redirectParams)
     redirect({
-      href: `/attendance/records/shifts?${redirectParams.toString()}`,
+      href: `/attendance/settings/shift-types?${redirectParams.toString()}`,
       locale,
     });
 
-  const tAttendance = await getTranslations({
-    locale,
-    namespace: "attendance",
-  });
-
-  const quickFilterEnums = quickFilterValue
-    ? getQuickFilterEnums(
-        quickFilterValue,
-        getAttendanceDayKindEnumOptions(tAttendance),
-      )
-    : [];
-
-  const [
-    { shifts: rows, total: rowCount },
-    { employees },
-    { shiftTypes },
-    teams,
-  ] = await Promise.all([
-    getAttendanceShifts(
-      organization.slug,
-      "org",
-      {
-        page,
-        pageSize,
-        filterField,
-        filterOperator,
-        filterValue,
-        quickFilterEnums,
-        quickFilterValue,
-        sortBy,
-        sortDirection,
-      },
-      fetchOptions,
-    ),
-    getAttendanceEmployees(
-      organization.slug,
-      { pageSize: MAX_PAGE_SIZE },
-      fetchOptions,
-    ),
-    getAttendanceShiftTypes(
-      organization.slug,
-      { pageSize: MAX_PAGE_SIZE },
-      fetchOptions,
-    ),
-    getAttendanceTeams(organization.slug, fetchOptions),
-  ]);
+  const { shiftTypes: rows, total: rowCount } = await getAttendanceShiftTypes(
+    organization.slug,
+    {
+      page,
+      pageSize,
+      filterField,
+      filterOperator,
+      filterValue,
+      quickFilterValue,
+      sortBy,
+      sortDirection,
+    },
+    fetchOptions,
+  );
 
   return (
     <AttendanceTabsLayout memberRole={memberRole}>
-      <Shifts
-        canCancel={hasRolePermission(memberRole, { shift: ["update"] })}
-        canCreate={hasRolePermission(memberRole, { shift: ["create"] })}
-        canReviewExtraWork={hasRolePermission(memberRole, {
-          attendanceRequest: ["update"],
-        })}
-        employees={employees}
+      <ShiftTypes
         filterField={filterField}
         filterOperator={filterOperator}
         filterValue={filterValue}
@@ -168,13 +127,11 @@ const ShiftsPage = async ({ params, searchParams }: ShiftsPageProps) => {
         quickFilterValue={quickFilterValue}
         rowCount={rowCount}
         rows={rows}
-        shiftTypes={shiftTypes}
         sortBy={sortBy}
         sortDirection={sortDirection}
-        teams={teams}
       />
     </AttendanceTabsLayout>
   );
 };
 
-export default ShiftsPage;
+export default ShiftTypesPage;

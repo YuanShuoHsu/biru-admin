@@ -24,6 +24,7 @@ import { getPageSizeOptions } from "@/constants/pagination";
 import {
   useDateFilterOperators,
   useEnumFilterOperators,
+  useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
@@ -146,6 +147,7 @@ const Mine = ({
 
   const dateFilterOperators = useDateFilterOperators();
   const enumFilterOperators = useEnumFilterOperators();
+  const stringFilterOperators = useStringFilterOperators();
 
   const format = useFormatter();
 
@@ -334,6 +336,12 @@ const Mine = ({
         sortable: false,
       },
       {
+        field: "teamName",
+        filterOperators: stringFilterOperators,
+        headerName: tAttendance("team"),
+        renderCell: renderEmptyableCell,
+      },
+      {
         field: "startsAt",
         filterOperators: dateFilterOperators,
         headerName: tAttendance("scheduledTime"),
@@ -405,6 +413,7 @@ const Mine = ({
       handleOvertime,
       handleViewEvents,
       hasCorrectedShift,
+      stringFilterOperators,
       tAttendance,
     ],
   );

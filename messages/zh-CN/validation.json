@@ -350,5 +350,12 @@
   },
   "residentCertificateId": {
     "invalid": "请输入 10 位居留证统一证号或护照衍生码。"
+  },
+  "shiftTypeName": {
+    "required": "请输入名称。",
+    "maxLength": "名称不能超过 50 个字符。"
+  },
+  "endTime": {
+    "sameAsStartTime": "结束时间不能与开始时间相同。"
   }
 }

@@ -18,6 +18,8 @@ import {
   attendanceRequestSortFieldValues,
   attendanceShiftFilterFieldValues,
   attendanceShiftSortFieldValues,
+  attendanceShiftTypeFilterFieldValues,
+  attendanceShiftTypeSortFieldValues,
   type components,
   payrollBlockerValues,
   payrollEarningTypeFilterFieldValues,
@@ -46,6 +48,11 @@ export type AttendanceReviewCounts =
   components["schemas"]["AttendanceReviewCountsResponseDto"];
 export type AttendanceShift =
   components["schemas"]["AttendanceShiftResponseDto"];
+export type AttendanceShiftType =
+  components["schemas"]["AttendanceShiftTypeResponseDto"];
+export type AttendanceShiftTypePage =
+  components["schemas"]["AttendanceShiftTypesResponseDto"];
+export type AttendanceTeam = components["schemas"]["AttendanceTeamResponseDto"];
 export type AttendanceCalendarDayKinds =
   components["schemas"]["AttendanceCalendarDayKindsResponseDto"];
 export type AttendanceShiftPage =
@@ -126,6 +133,10 @@ export type PayrollWithholdingFile =
   components["schemas"]["PayrollWithholdingFileResponseDto"];
 export type MyWithholdingCertificate =
   components["schemas"]["MyWithholdingCertificateResponseDto"];
+export type AttendanceShiftTypeFilterField =
+  (typeof attendanceShiftTypeFilterFieldValues)[number];
+export type AttendanceShiftTypeSortField =
+  (typeof attendanceShiftTypeSortFieldValues)[number];
 export type PayrollEarningTypeFilterField =
   (typeof payrollEarningTypeFilterFieldValues)[number];
 export type PayrollEarningTypeSortField =
