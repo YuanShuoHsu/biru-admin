@@ -66,6 +66,7 @@ const BY_LABEL: Partial<Record<Label, SurfaceSpec>> = {
   pastryCase: SURFACES.glass,
   pickupScreen: SURFACES.screen,
   planter: SURFACES.walnut,
+  tamper: SURFACES.blackSteel,
   toilet: SURFACES.ceramic,
   urinal: SURFACES.ceramic,
   washbasin: SURFACES.ceramic,

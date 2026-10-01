@@ -17,6 +17,7 @@ const MODELS: Partial<Record<StoreLayoutItem["label"], string>> = {
   iceMachine: "/models/iceMachine.glb",
   kettle: "/models/kettle.glb",
   microwave: "/models/microwave.glb",
+  tamper: "/models/tamper.glb",
 };
 
 const POT_HEIGHT = 0.35;
