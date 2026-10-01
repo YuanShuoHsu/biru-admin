@@ -169,10 +169,16 @@ const getGrid = async <
   path: string,
   query: GridQuery<FilterField, SortField>,
   init?: RequestInit,
+  extraParams?: Record<string, string>,
 ) => {
   try {
+    const params = getGridSearchParams(query);
+
+    for (const [key, value] of Object.entries(extraParams ?? {}))
+      params.set(key, value);
+
     const result = await fetcher<{ data: Row[]; total: number }>(
-      `${path}?${getGridSearchParams(query).toString()}`,
+      `${path}?${params.toString()}`,
       init,
     );
 
@@ -283,12 +289,18 @@ export const getAttendanceShifts = cache(
     scope: AttendanceScope,
     query: GridQuery<AttendanceShiftFilterField, AttendanceShiftSortField> = {},
     init?: RequestInit,
+    unreviewedOvertime = false,
   ) => {
     const { data: shifts, total } = await getGrid<
       AttendanceShift,
       AttendanceShiftFilterField,
       AttendanceShiftSortField
-    >(attendancePath(organizationSlug, scope, "shifts"), query, init);
+    >(
+      attendancePath(organizationSlug, scope, "shifts"),
+      query,
+      init,
+      unreviewedOvertime ? { unreviewedOvertime: "true" } : undefined,
+    );
 
     return { shifts, total };
   },

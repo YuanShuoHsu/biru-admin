@@ -33,6 +33,7 @@ import type {
   AttendanceLeaveCase,
   AttendanceLeaveType,
   AttendanceParentalChild,
+  AttendanceRequest,
 } from "@/types/attendance";
 
 import {
@@ -57,6 +58,7 @@ interface LeaveCaseDialogProps {
   mutate: () => void;
   organizationSlug: string;
   parentalChildren: AttendanceParentalChild[];
+  request?: AttendanceRequest;
 }
 
 const LeaveCaseDialog = ({
@@ -67,12 +69,18 @@ const LeaveCaseDialog = ({
   mutate,
   organizationSlug,
   parentalChildren,
+  request,
 }: LeaveCaseDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const tAttendance = useTranslations("attendance");
 
   const leaveCaseFormSchema = useLeaveCaseFormSchema(leaveTypes);
+
+  const requestDay = dayjs(request?.startsAt)
+    .tz(STORE_TIMEZONE)
+    .startOf("day")
+    .toISOString();
 
   const {
     control,
@@ -84,20 +92,22 @@ const LeaveCaseDialog = ({
     defaultValues: {
       childId: leaveCase?.childId ?? "",
       earlyParentalAgreed: false,
-      employeeId: leaveCase?.employeeId ?? "",
+      employeeId: leaveCase?.employeeId ?? request?.employeeId ?? "",
       endsAt:
         leaveCase?.endsAt ??
-        dayjs().tz(STORE_TIMEZONE).add(1, "month").startOf("day").toISOString(),
-      eventDate:
-        leaveCase?.eventDate ??
-        dayjs().tz(STORE_TIMEZONE).startOf("day").toISOString(),
+        (request
+          ? dayjs(request.endsAt).subtract(1, "millisecond").add(1, "day")
+          : dayjs().add(1, "month")
+        )
+          .tz(STORE_TIMEZONE)
+          .startOf("day")
+          .toISOString(),
+      eventDate: leaveCase?.eventDate ?? requestDay,
       extensionAgreed: false,
-      leaveTypeId: leaveCase?.leaveTypeId ?? "",
-      reason: leaveCase?.reason ?? "",
+      leaveTypeId: leaveCase?.leaveTypeId ?? request?.leaveTypeId ?? "",
+      reason: leaveCase?.reason ?? request?.reason ?? "",
       reference: leaveCase?.reference ?? "",
-      startsAt:
-        leaveCase?.startsAt ??
-        dayjs().tz(STORE_TIMEZONE).startOf("day").toISOString(),
+      startsAt: leaveCase?.startsAt ?? requestDay,
     },
     resolver: zodResolver(leaveCaseFormSchema),
   });
@@ -141,42 +151,63 @@ const LeaveCaseDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
+      const leaveCaseValues = {
+        ...(!fixedCalendarDays && { endsAt: values.endsAt }),
+        startsAt: values.startsAt,
+        ...(isParentalLeave
+          ? {
+              childId: values.childId,
+              earlyParentalAgreed: values.earlyParentalAgreed,
+            }
+          : { eventDate: values.eventDate, reference: values.reference }),
+        ...(isMarriageLeave ? { extensionAgreed: values.extensionAgreed } : {}),
+      };
+
       await fetcher(
         attendancePath(
           organizationSlug,
           "org",
-          leaveCase ? `leave-cases/${leaveCase.id}` : "leave-cases",
+          request
+            ? `requests/${request.id}/review`
+            : leaveCase
+              ? `leave-cases/${leaveCase.id}`
+              : "leave-cases",
         ),
         {
-          method: leaveCase ? "PATCH" : "POST",
+          method: request || leaveCase ? "PATCH" : "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            employeeId: values.employeeId,
-            ...(!fixedCalendarDays && { endsAt: values.endsAt }),
-            leaveTypeId: values.leaveTypeId,
-            reason: values.reason,
-            startsAt: values.startsAt,
-            ...(isParentalLeave
-              ? {
-                  childId: values.childId,
-                  earlyParentalAgreed: values.earlyParentalAgreed,
-                }
-              : { eventDate: values.eventDate, reference: values.reference }),
-            ...(isMarriageLeave
-              ? { extensionAgreed: values.extensionAgreed }
-              : {}),
-          }),
+          body: JSON.stringify(
+            request
+              ? { leaveCase: leaveCaseValues, status: "approved" }
+              : {
+                  ...leaveCaseValues,
+                  employeeId: values.employeeId,
+                  leaveTypeId: values.leaveTypeId,
+                  reason: values.reason,
+                },
+          ),
         },
       );
 
+      const leaveTypeName = leaveType
+        ? getStatutoryLeaveName(tAttendance, leaveType)
+        : "";
+
       enqueueSnackbar(
-        tAttendance(leaveCase ? "leaveCases.updated" : "leaveCases.created", {
-          leaveType: leaveType
-            ? getStatutoryLeaveName(tAttendance, leaveType)
-            : "",
-          name:
-            employees.find(({ id }) => id === values.employeeId)?.name ?? "",
-        }),
+        request
+          ? tAttendance("reviews.approved", {
+              employee: request.employeeName,
+              name: leaveTypeName,
+            })
+          : tAttendance(
+              leaveCase ? "leaveCases.updated" : "leaveCases.created",
+              {
+                leaveType: leaveTypeName,
+                name:
+                  employees.find(({ id }) => id === values.employeeId)?.name ??
+                  "",
+              },
+            ),
         { variant: "success" },
       );
 
@@ -199,7 +230,7 @@ const LeaveCaseDialog = ({
     <FormBox id="attendance-leave-case-form" onSubmit={onSubmit}>
       <Alert severity="info">{tAttendance("leaveCaseHint")}</Alert>
       <TextField
-        disabled={!!leaveCase}
+        disabled={!!leaveCase || !!request}
         error={!!errors.employeeId}
         fullWidth
         helperText={errors.employeeId?.message}
@@ -224,7 +255,7 @@ const LeaveCaseDialog = ({
           ))}
       </TextField>
       <TextField
-        disabled={!!leaveCase}
+        disabled={!!leaveCase || !!request}
         error={!!errors.leaveTypeId}
         fullWidth
         helperText={errors.leaveTypeId?.message}
@@ -370,16 +401,18 @@ const LeaveCaseDialog = ({
           label={tAttendance("earlyParentalAgreed")}
         />
       )}
-      <TextField
-        error={!!errors.reason}
-        fullWidth
-        helperText={errors.reason?.message}
-        label={tAttendance("reason.label")}
-        minRows={3}
-        multiline
-        required
-        {...register("reason")}
-      />
+      {!request && (
+        <TextField
+          error={!!errors.reason}
+          fullWidth
+          helperText={errors.reason?.message}
+          label={tAttendance("reason.label")}
+          minRows={3}
+          multiline
+          required
+          {...register("reason")}
+        />
+      )}
     </FormBox>
   );
 };

@@ -98,7 +98,24 @@ const ReviewDialog = ({
 
   const tAttendance = useTranslations("attendance");
 
-  const reviewFormSchema = useReviewFormSchema();
+  const leaveType = leaveTypes.find(({ id }) => id === request?.leaveTypeId);
+
+  const isMedicalLeave =
+    request?.kind === "leave" &&
+    status === "approved" &&
+    request.status !== "cancellationPending" &&
+    !!leaveType?.medicalCertificateRequired;
+
+  const isEmergencyWork =
+    status === "approved" &&
+    (extraWork
+      ? extraWork.shift.dayKind
+      : request.kind === "overtime" && request.shiftDayKind) === "regularLeave";
+
+  const reviewFormSchema = useReviewFormSchema({
+    emergency: isEmergencyWork,
+    rejected: status === "rejected",
+  });
 
   const {
     control,
@@ -109,7 +126,6 @@ const ReviewDialog = ({
   } = useForm<ReviewForm>({
     defaultValues: {
       cause: "",
-      emergencyWork: false,
       makeupEndsAt: "",
       makeupStartsAt: "",
       medicalCertified: false,
@@ -119,35 +135,17 @@ const ReviewDialog = ({
     resolver: zodResolver(reviewFormSchema),
   });
 
-  const [
-    cause,
-    emergencyWork,
-    makeupEndsAt,
-    makeupStartsAt,
-    medicalCertified,
-    reportedAt,
-  ] = useWatch({
-    control,
-    name: [
-      "cause",
-      "emergencyWork",
-      "makeupEndsAt",
-      "makeupStartsAt",
-      "medicalCertified",
-      "reportedAt",
-    ],
-  });
-
-  const leaveType = leaveTypes.find(({ id }) => id === request?.leaveTypeId);
-
-  const isMedicalLeave =
-    request?.kind === "leave" &&
-    status === "approved" &&
-    request.status !== "cancellationPending" &&
-    !!leaveType?.medicalCertificateRequired;
-
-  const isOvertime =
-    status === "approved" && (!!extraWork || request?.kind === "overtime");
+  const [cause, makeupEndsAt, makeupStartsAt, medicalCertified, reportedAt] =
+    useWatch({
+      control,
+      name: [
+        "cause",
+        "makeupEndsAt",
+        "makeupStartsAt",
+        "medicalCertified",
+        "reportedAt",
+      ],
+    });
 
   const date = (value: string) => format.dateTime(new Date(value), "short");
 
@@ -176,7 +174,7 @@ const ReviewDialog = ({
             ...(isMedicalLeave
               ? { medicalCertified: values.medicalCertified }
               : {}),
-            ...(values.emergencyWork
+            ...(isEmergencyWork
               ? {
                   emergency: {
                     cause: values.cause,
@@ -277,7 +275,7 @@ const ReviewDialog = ({
         label={tAttendance("reviewReason")}
         minRows={3}
         multiline
-        required
+        required={status === "rejected"}
         {...register("reason")}
       />
       {isMedicalLeave && (
@@ -291,96 +289,86 @@ const ReviewDialog = ({
           label={tAttendance("medicalCertified")}
         />
       )}
-      {isOvertime && (
+      {isEmergencyWork && (
         <>
-          <StyledFormControlLabel
-            control={
-              <Checkbox
-                checked={emergencyWork}
-                onChange={(_, checked) => setValue("emergencyWork", checked)}
-              />
+          <StyledTypography color="textSecondary" variant="subtitle2">
+            {tAttendance("emergencyWork")}
+          </StyledTypography>
+          <TextField
+            error={!!errors.cause}
+            fullWidth
+            helperText={errors.cause?.message}
+            label={tAttendance("cause.label")}
+            required
+            select
+            value={cause}
+            {...register("cause")}
+          >
+            {attendanceEmergencyCauseValues.map((value) => (
+              <MenuItem key={value} value={value}>
+                {tAttendance(`cause.options.${value}`)}
+              </MenuItem>
+            ))}
+          </TextField>
+          <DateTimePicker
+            label={tAttendance("reportedAt")}
+            onChange={(value) =>
+              setValue(
+                "reportedAt",
+                value?.isValid() ? value.toISOString() : "",
+                { shouldValidate: isSubmitted },
+              )
             }
-            label={tAttendance("emergencyWork")}
+            slotProps={{
+              textField: {
+                error: !!errors.reportedAt,
+                fullWidth: true,
+                helperText: errors.reportedAt?.message,
+              },
+            }}
+            timezone={STORE_TIMEZONE}
+            value={reportedAt ? dayjs(reportedAt) : null}
           />
-          {emergencyWork && (
-            <>
-              <TextField
-                error={!!errors.cause}
-                fullWidth
-                helperText={errors.cause?.message}
-                label={tAttendance("cause.label")}
-                required
-                select
-                value={cause}
-                {...register("cause")}
-              >
-                {attendanceEmergencyCauseValues.map((value) => (
-                  <MenuItem key={value} value={value}>
-                    {tAttendance(`cause.options.${value}`)}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <DateTimePicker
-                label={tAttendance("reportedAt")}
-                onChange={(value) =>
-                  setValue(
-                    "reportedAt",
-                    value?.isValid() ? value.toISOString() : "",
-                    { shouldValidate: isSubmitted },
-                  )
-                }
-                slotProps={{
-                  textField: {
-                    error: !!errors.reportedAt,
-                    fullWidth: true,
-                    helperText: errors.reportedAt?.message,
-                  },
-                }}
-                timezone={STORE_TIMEZONE}
-                value={reportedAt ? dayjs(reportedAt) : null}
-              />
-              <DateTimePicker
-                label={tAttendance("makeupStartsAt")}
-                maxDateTime={makeupEndsAt ? dayjs(makeupEndsAt) : undefined}
-                onChange={(value) =>
-                  setValue(
-                    "makeupStartsAt",
-                    value?.isValid() ? value.toISOString() : "",
-                    { shouldValidate: isSubmitted },
-                  )
-                }
-                slotProps={{
-                  textField: {
-                    error: !!errors.makeupStartsAt,
-                    fullWidth: true,
-                    helperText: errors.makeupStartsAt?.message,
-                  },
-                }}
-                timezone={STORE_TIMEZONE}
-                value={makeupStartsAt ? dayjs(makeupStartsAt) : null}
-              />
-              <DateTimePicker
-                label={tAttendance("makeupEndsAt")}
-                minDateTime={makeupStartsAt ? dayjs(makeupStartsAt) : undefined}
-                onChange={(value) =>
-                  setValue(
-                    "makeupEndsAt",
-                    value?.isValid() ? value.toISOString() : "",
-                    { shouldValidate: isSubmitted },
-                  )
-                }
-                slotProps={{
-                  textField: {
-                    error: !!errors.makeupEndsAt,
-                    fullWidth: true,
-                    helperText: errors.makeupEndsAt?.message,
-                  },
-                }}
-                timezone={STORE_TIMEZONE}
-                value={makeupEndsAt ? dayjs(makeupEndsAt) : null}
-              />
-            </>
-          )}
+          <DateTimePicker
+            label={tAttendance("makeupStartsAt")}
+            maxDateTime={makeupEndsAt ? dayjs(makeupEndsAt) : undefined}
+            onChange={(value) =>
+              setValue(
+                "makeupStartsAt",
+                value?.isValid() ? value.toISOString() : "",
+                { shouldValidate: isSubmitted },
+              )
+            }
+            slotProps={{
+              textField: {
+                error: !!errors.makeupStartsAt,
+                fullWidth: true,
+                helperText: errors.makeupStartsAt?.message,
+              },
+            }}
+            timezone={STORE_TIMEZONE}
+            value={makeupStartsAt ? dayjs(makeupStartsAt) : null}
+          />
+          <DateTimePicker
+            label={tAttendance("makeupEndsAt")}
+            minDateTime={makeupStartsAt ? dayjs(makeupStartsAt) : undefined}
+            onChange={(value) =>
+              setValue(
+                "makeupEndsAt",
+                value?.isValid() ? value.toISOString() : "",
+                { shouldValidate: isSubmitted },
+              )
+            }
+            slotProps={{
+              textField: {
+                error: !!errors.makeupEndsAt,
+                fullWidth: true,
+                helperText: errors.makeupEndsAt?.message,
+              },
+            }}
+            timezone={STORE_TIMEZONE}
+            value={makeupEndsAt ? dayjs(makeupEndsAt) : null}
+          />
         </>
       )}
     </FormBox>

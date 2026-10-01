@@ -6,6 +6,7 @@ import { useCallback, useMemo, useState } from "react";
 import { enqueueSnackbar } from "notistack";
 import useSWR from "swr";
 
+import TermsDialog from "../../payroll/statements/TermsDialog";
 import EmployeeDialog from "./EmployeeDialog";
 
 import { renderEmptyableCell } from "@/components/EmptyCell";
@@ -24,7 +25,7 @@ import {
 } from "@/hooks/useFilterOperators";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
-import { Delete, Edit } from "@mui/icons-material";
+import { Delete, Edit, Payments } from "@mui/icons-material";
 import {
   Chip,
   DialogContentText,
@@ -53,11 +54,16 @@ import type {
   AttendanceLegalStatusObligation,
   AttendanceMember,
   AttendanceMemberPage,
+  PayrollTerms,
 } from "@/types/attendance";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization } from "@/types/organizations";
 
-import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
+import {
+  attendanceErrorKey,
+  attendancePath,
+  payrollPath,
+} from "@/utils/attendance";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAttendanceEmployeeEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
@@ -66,6 +72,12 @@ const StyledStack = styled(Stack)({
   height: "100%",
   alignItems: "center",
 });
+
+const StyledIconButton = styled(IconButton, {
+  shouldForwardProp: (prop) => prop !== "visible",
+})<{ visible: boolean }>(({ visible }) => ({
+  visibility: visible ? "visible" : "hidden",
+}));
 
 const STATUS_COLORS: Record<
   AttendanceEmployeeStatus,
@@ -84,6 +96,7 @@ const DataGrid = dynamic(
 
 interface EmployeesProps {
   canDelete: boolean;
+  canManageTerms: boolean;
   canWrite: boolean;
   filterField?: AttendanceEmployeeFilterField;
   filterOperator?: FilterOperator;
@@ -97,16 +110,18 @@ interface EmployeesProps {
   rows: AttendanceMember[];
   sortBy?: AttendanceEmployeeSortField;
   sortDirection?: SortDirection;
+  terms: PayrollTerms[];
 }
 
 const Employees = ({
   canDelete,
+  canManageTerms,
   canWrite,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
   legalStatusObligations,
-  organization: { slug: organizationSlug },
+  organization: { currency = "", slug: organizationSlug },
   page,
   pageSize,
   quickFilterValue: initialQuickFilterValue,
@@ -114,6 +129,7 @@ const Employees = ({
   rows: initialRows,
   sortBy,
   sortDirection,
+  terms: initialTerms,
 }: EmployeesProps) => {
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
@@ -264,6 +280,36 @@ const Employees = ({
     [legalStatusObligations, mutate, organizationSlug, setDialog, tAttendance],
   );
 
+  const { data: terms = initialTerms, mutate: mutateTerms } = useSWR<
+    PayrollTerms[]
+  >(
+    canManageTerms ? payrollPath(organizationSlug, "org", "terms") : null,
+    fetcher,
+    { fallbackData: initialTerms },
+  );
+
+  const handleTermsDialog = useCallback(
+    ({ employee, status }: AttendanceMember) =>
+      employee &&
+      setDialog({
+        confirmText: tAttendance("save"),
+        content: (
+          <TermsDialog
+            currency={currency}
+            employeeId={employee.id}
+            employees={[{ ...employee, status }]}
+            mutate={mutateTerms}
+            organizationSlug={organizationSlug}
+            terms={terms}
+          />
+        ),
+        formId: "payroll-terms-form",
+        open: true,
+        title: tAttendance("payrollTerms"),
+      }),
+    [currency, mutateTerms, organizationSlug, setDialog, tAttendance, terms],
+  );
+
   const handleDeleteEmployee = useCallback(
     ({ employee, name }: AttendanceMember) =>
       employee &&
@@ -307,7 +353,7 @@ const Employees = ({
 
   const columns = useMemo<GridColDef[]>(
     () => [
-      ...(canWrite || canDelete
+      ...(canWrite || canDelete || canManageTerms
         ? [
             {
               disableColumnMenu: true,
@@ -331,6 +377,17 @@ const Employees = ({
                       >
                         <Edit fontSize="small" />
                       </IconButton>
+                    </Tooltip>
+                  )}
+                  {canManageTerms && (
+                    <Tooltip title={tAttendance("payrollTerms")}>
+                      <StyledIconButton
+                        onClick={() => handleTermsDialog(row)}
+                        size="small"
+                        visible={!!row.employee}
+                      >
+                        <Payments fontSize="small" />
+                      </StyledIconButton>
                     </Tooltip>
                   )}
                   {canDelete && row.deletable && (
@@ -433,6 +490,7 @@ const Employees = ({
     ],
     [
       canDelete,
+      canManageTerms,
       canWrite,
       date,
       dateFilterOperators,
@@ -442,6 +500,7 @@ const Employees = ({
       enumOptions.status,
       handleDeleteEmployee,
       handleEmployeeDialog,
+      handleTermsDialog,
       stringFilterOperators,
       tAttendance,
     ],

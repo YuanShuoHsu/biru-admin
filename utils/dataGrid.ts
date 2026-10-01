@@ -19,6 +19,7 @@ import type {
   GridFilterItem,
   GridFilterModel,
   GridPaginationModel,
+  GridRowSelectionModel,
   GridSortModel,
 } from "@mui/x-data-grid";
 
@@ -279,6 +280,11 @@ export const getDataGridSearchParams = (
 
   return params;
 };
+
+export const getSelectedRows = <Row extends { id: string }>(
+  rows: Row[],
+  { ids, type }: GridRowSelectionModel,
+) => rows.filter(({ id }) => ids.has(id) === (type === "include"));
 
 export const toExportDate = (value?: dayjs.ConfigType) =>
   typeof value === "string" && /^\d{4}-\d{2}$/.test(value)

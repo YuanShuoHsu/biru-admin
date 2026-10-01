@@ -342,7 +342,8 @@
   },
   "leaveCase": {
     "label": "核给额度",
-    "placeholder": "请选择您的核给额度"
+    "placeholder": "请选择您的核给额度",
+    "new": "新事件，主管批准时核给额度"
   },
   "leaveCaseHint": "主管先确认事件、亲属关系与有效期间，系统自动核给额度。同一事件不得重复建立。产假与流产假的结束日依法定天数自动带出；陪产检与陪产共用 7 日，请确认各次申请符合适用期间。 产假每日工资依约定工资与平均工资自动计算，给薪比例由工龄自动计算。 育婴留停依子女区分，期间不得超过三岁；未满六个月任职须先取得劳资同意。育婴留停不需核定日薪。",
   "leaveCases": {
@@ -481,7 +482,12 @@
     "drafted": "已建立 {name} {month} 的工资单草稿",
     "published": "已发布 {name} {month} 的工资单",
     "reviewed": "已复核 {name} {month} 的工资单",
-    "termsUpdated": "已更新 {name} 的薪资与投保设置"
+    "termsUpdated": "已更新 {name} 的薪资与投保设置",
+    "draftedAll": "已建立 {month} 共 {count} 张工资单草稿",
+    "reviewSelected": "复核所选（{count}）",
+    "publishSelected": "发布所选（{count}）",
+    "reviewedCount": "已复核 {count} 张工资单",
+    "publishedCount": "已发布 {count} 张工资单"
   },
   "payrollLine": {
     "options": {
@@ -634,9 +640,12 @@
       "viewEvents": "查看打卡明细",
       "approveExtraWork": "核准排班外时数",
       "rejectExtraWork": "不核准排班外时数",
-      "edit": "编辑班次"
+      "edit": "编辑班次",
+      "approveSelectedExtraWork": "核准所选排班外时数（{count}）",
+      "rejectSelectedExtraWork": "不核准所选排班外时数（{count}）"
     },
-    "label": "班表管理"
+    "label": "班表管理",
+    "unreviewedOvertime": "待审排班外时数"
   },
   "sourceNote": "投保、扣缴与调整依据",
   "startsAt": "开始时间",
@@ -972,5 +981,12 @@
     }
   },
   "team": "团队",
-  "noTeam": "不指定"
+  "noTeam": "不指定",
+  "approveSelected": "批准所选（{count}）",
+  "rejectSelected": "驳回所选（{count}）",
+  "allEmployees": "全部员工",
+  "batch": {
+    "succeeded": "已处理 {count} 笔",
+    "skipped": "{count} 笔未处理"
+  }
 }

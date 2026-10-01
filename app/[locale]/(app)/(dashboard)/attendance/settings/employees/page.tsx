@@ -20,6 +20,7 @@ import {
   getAttendanceAccess,
   getAttendanceLegalStatusObligations,
   getAttendanceMembers,
+  getPayrollTerms,
 } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceEmployeeEnumOptions } from "@/utils/enumOptions";
@@ -111,7 +112,11 @@ const EmployeesPage = async ({ params, searchParams }: EmployeesPageProps) => {
       )
     : [];
 
-  const [{ members: rows, total: rowCount }, legalStatusObligations] =
+  const canManageTerms = hasRolePermission(memberRole, {
+    payrollTerm: ["create", "read", "update"],
+  });
+
+  const [{ members: rows, total: rowCount }, legalStatusObligations, terms] =
     await Promise.all([
       getAttendanceMembers(
         organization.slug,
@@ -129,12 +134,14 @@ const EmployeesPage = async ({ params, searchParams }: EmployeesPageProps) => {
         fetchOptions,
       ),
       getAttendanceLegalStatusObligations(organization.slug, fetchOptions),
+      canManageTerms ? getPayrollTerms(organization.slug, fetchOptions) : [],
     ]);
 
   return (
     <AttendanceTabsLayout memberRole={memberRole}>
       <Employees
         canDelete={hasRolePermission(memberRole, { employee: ["delete"] })}
+        canManageTerms={canManageTerms}
         canWrite={hasRolePermission(memberRole, {
           employee: ["create", "update"],
         })}
@@ -150,6 +157,7 @@ const EmployeesPage = async ({ params, searchParams }: EmployeesPageProps) => {
         rows={rows}
         sortBy={sortBy}
         sortDirection={sortDirection}
+        terms={terms}
       />
     </AttendanceTabsLayout>
   );

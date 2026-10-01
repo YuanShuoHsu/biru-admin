@@ -104,6 +104,7 @@ const ExemptionSelect = ({
 
 interface TermsDialogProps {
   currency: string;
+  employeeId?: string;
   employees: AttendanceEmployee[];
   mutate: () => void;
   organizationSlug: string;
@@ -112,6 +113,7 @@ interface TermsDialogProps {
 
 const TermsDialog = ({
   currency,
+  employeeId = "",
   employees,
   mutate,
   organizationSlug,
@@ -169,9 +171,9 @@ const TermsDialog = ({
   } = useForm<TermsForm>({
     defaultValues: {
       effectiveFrom: dayjs().tz(STORE_TIMEZONE).startOf("month").toISOString(),
-      employeeId: "",
+      employeeId,
       sourceNote: "",
-      ...employeeValues(""),
+      ...employeeValues(employeeId),
     },
     resolver: zodResolver(termsFormSchema),
   });

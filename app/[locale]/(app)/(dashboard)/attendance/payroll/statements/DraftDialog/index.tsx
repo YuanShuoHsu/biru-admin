@@ -9,6 +9,7 @@ import { type BaseSyntheticEvent } from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import useSWR from "swr";
 
+import BatchSkippedList from "../../../BatchSkippedList";
 import { type DraftForm, useDraftFormSchema } from "./definitions";
 
 import FormBox from "@/components/FormBox";
@@ -37,6 +38,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
+  AttendanceBatchResult,
   AttendanceEmployee,
   PayrollEarningInput,
   PayrollEarningType,
@@ -139,6 +141,50 @@ const DraftDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
+      if (!values.employeeId) {
+        const { skipped, succeeded } = await fetcher<AttendanceBatchResult>(
+          payrollPath(organizationSlug, "org", "statements/batch"),
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              month: values.month,
+              reason: values.reason,
+            }),
+          },
+        );
+
+        if (succeeded.length)
+          enqueueSnackbar(
+            tAttendance("payroll.draftedAll", {
+              count: succeeded.length,
+              month: dayjs(values.month).format(monthFormat),
+            }),
+            { variant: "success" },
+          );
+
+        mutate();
+
+        if (skipped.length)
+          setDialog({
+            confirmLoading: false,
+            content: (
+              <BatchSkippedList
+                labels={Object.fromEntries(
+                  employees.map(({ id, name }) => [id, name]),
+                )}
+                skipped={skipped}
+              />
+            ),
+            formId: undefined,
+            showConfirm: false,
+            title: tAttendance("batch.skipped", { count: skipped.length }),
+          });
+        else closeDialog();
+
+        return;
+      }
+
       const statement = await fetcher<PayrollStatement>(
         payrollPath(organizationSlug, "org", "statements"),
         {
@@ -190,10 +236,14 @@ const DraftDialog = ({
             shouldValidate: isSubmitted,
           })
         }
-        required
         select
+        slotProps={{
+          inputLabel: { shrink: true },
+          select: { displayEmpty: true },
+        }}
         value={employeeId}
       >
+        <MenuItem value="">{tAttendance("allEmployees")}</MenuItem>
         {employees.map(({ id, name }) => (
           <MenuItem key={id} value={id}>
             {name}
@@ -226,10 +276,9 @@ const DraftDialog = ({
         label={tAttendance("reason.label")}
         minRows={3}
         multiline
-        required
         {...register("reason")}
       />
-      {earningTypes.length > 0 && (
+      {earningTypes.length > 0 && !!employeeId && (
         <StyledFormControl component="fieldset" variant="standard">
           <FormLabel component="legend">
             {tAttendance("earnings.label")}

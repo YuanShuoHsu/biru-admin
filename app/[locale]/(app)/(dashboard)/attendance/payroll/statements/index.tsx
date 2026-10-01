@@ -8,10 +8,11 @@ import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
+import BatchReviewDialog from "../../BatchReviewDialog";
+import BlockerList from "./BlockerList";
 import DraftDialog from "./DraftDialog";
 import EmployerSupplementDialog from "./EmployerSupplementDialog";
 import TermsDialog from "./TermsDialog";
-import TransitionDialog from "./TransitionDialog";
 
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -33,14 +34,15 @@ import { useFormatMoney } from "@/hooks/useFormatMoney";
 import { useMonthFormat } from "@/hooks/useMonthFormat";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
-import { Add, Check, Publish } from "@mui/icons-material";
-import { Button, IconButton, Stack, Tooltip, Typography } from "@mui/material";
+import { Add, Check, ErrorOutlined, Publish } from "@mui/icons-material";
+import { Button, IconButton, Stack, Tooltip } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
   GridFilterModel,
   GridPaginationModel,
   GridRenderCellParams,
+  GridRowSelectionModel,
   GridSortModel,
 } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
@@ -59,7 +61,11 @@ import type {
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization } from "@/types/organizations";
 
-import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
+import {
+  getDataGridSearchParams,
+  getFilterItemParams,
+  getSelectedRows,
+} from "@/utils/dataGrid";
 import { getPayrollStatementEnumOptions } from "@/utils/enumOptions";
 import {
   fromCents,
@@ -154,6 +160,9 @@ const Payroll = ({
         : [],
     quickFilterValues: initialQuickFilterValue ? [initialQuickFilterValue] : [],
   });
+
+  const [rowSelectionModel, setRowSelectionModel] =
+    useState<GridRowSelectionModel>({ ids: new Set(), type: "include" });
 
   const { setDialog } = useDialogStore((state) => state);
 
@@ -282,12 +291,13 @@ const Payroll = ({
   );
 
   const handleTermsDialog = useCallback(
-    () =>
+    (employeeId?: string) =>
       setDialog({
         confirmText: tAttendance("save"),
         content: (
           <TermsDialog
             currency={currency}
+            employeeId={employeeId}
             employees={employees}
             mutate={mutateTerms}
             organizationSlug={organizationSlug}
@@ -296,6 +306,7 @@ const Payroll = ({
         ),
         formId: "payroll-terms-form",
         open: true,
+        showConfirm: true,
         title: tAttendance("payrollTerms"),
       }),
     [
@@ -338,24 +349,75 @@ const Payroll = ({
   );
 
   const handleTransitionDialog = useCallback(
-    (statement: PayrollStatement) =>
+    (statements: PayrollStatement[], action: "publish" | "review") =>
       setDialog({
         confirmText: tAttendance("save"),
         content: (
-          <TransitionDialog
-            action={statement.status === "draft" ? "review" : "publish"}
-            mutate={mutate}
-            organizationSlug={organizationSlug}
+          <BatchReviewDialog
+            labels={Object.fromEntries(
+              statements.map(({ employeeName, id, month }) => [
+                id,
+                `${employeeName} · ${dayjs(month).format(monthFormat)}`,
+              ]),
+            )}
+            method="PATCH"
+            mutate={() => {
+              setRowSelectionModel({ ids: new Set(), type: "include" });
+
+              mutate();
+            }}
+            path={`${base}/${action}`}
+            succeededMessage={(count) =>
+              tAttendance(
+                action === "publish"
+                  ? "payroll.publishedCount"
+                  : "payroll.reviewedCount",
+                { count },
+              )
+            }
+          />
+        ),
+        formId: "attendance-batch-review-form",
+        open: true,
+        title: tAttendance(action === "publish" ? "publish" : "approve"),
+      }),
+    [base, monthFormat, mutate, setDialog, tAttendance],
+  );
+
+  const handleBlockersDialog = useCallback(
+    (statement: PayrollStatement) =>
+      setDialog({
+        content: (
+          <BlockerList
+            onEditTerms={
+              canManageTerms
+                ? () => handleTermsDialog(statement.employeeId)
+                : undefined
+            }
             statement={statement}
           />
         ),
-        formId: "payroll-transition-form",
         open: true,
-        title: tAttendance(
-          statement.status === "draft" ? "approve" : "publish",
-        ),
+        showConfirm: false,
+        title: tAttendance("errors.payrollBlocked"),
       }),
-    [mutate, organizationSlug, setDialog, tAttendance],
+    [canManageTerms, handleTermsDialog, setDialog, tAttendance],
+  );
+
+  const selectedRows = useMemo(
+    () =>
+      getSelectedRows(rows, rowSelectionModel).filter(
+        ({ snapshot, status }) =>
+          status !== "published" && !snapshot.blockers.length,
+      ),
+    [rowSelectionModel, rows],
+  );
+
+  const selectedDrafts = selectedRows.filter(
+    ({ status }) => status === "draft",
+  );
+  const selectedReviewed = selectedRows.filter(
+    ({ status }) => status === "reviewed",
   );
 
   const columns = useMemo<GridColDef[]>(
@@ -371,31 +433,30 @@ const Payroll = ({
               renderCell: ({ row }: GridRenderCellParams<PayrollStatement>) =>
                 row.status === "published" ? null : (
                   <ActionsStack direction="row">
-                    <Tooltip
-                      title={
-                        row.snapshot.blockers.length > 0 ? (
-                          <>
-                            <Typography variant="inherit">
-                              {tAttendance("errors.payrollBlocked")}
-                            </Typography>
-                            {row.snapshot.blockers.map((blocker) => (
-                              <Typography key={blocker} variant="inherit">
-                                {tAttendance(`errors.${blocker}`)}
-                              </Typography>
-                            ))}
-                          </>
-                        ) : (
-                          tAttendance(
-                            row.status === "draft" ? "approve" : "publish",
-                          )
-                        )
-                      }
-                    >
-                      <span>
+                    {row.snapshot.blockers.length > 0 ? (
+                      <Tooltip title={tAttendance("errors.payrollBlocked")}>
+                        <IconButton
+                          color="warning"
+                          onClick={() => handleBlockersDialog(row)}
+                          size="small"
+                        >
+                          <ErrorOutlined fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    ) : (
+                      <Tooltip
+                        title={tAttendance(
+                          row.status === "draft" ? "approve" : "publish",
+                        )}
+                      >
                         <IconButton
                           color="primary"
-                          disabled={row.snapshot.blockers.length > 0}
-                          onClick={() => handleTransitionDialog(row)}
+                          onClick={() =>
+                            handleTransitionDialog(
+                              [row],
+                              row.status === "draft" ? "review" : "publish",
+                            )
+                          }
                           size="small"
                         >
                           {row.status === "draft" ? (
@@ -404,8 +465,8 @@ const Payroll = ({
                             <Publish fontSize="small" />
                           )}
                         </IconButton>
-                      </span>
-                    </Tooltip>
+                      </Tooltip>
+                    )}
                   </ActionsStack>
                 ),
               resizable: false,
@@ -466,6 +527,7 @@ const Payroll = ({
       enumFilterOperators,
       enumOptions.status,
       format,
+      handleBlockersDialog,
       handleTransitionDialog,
       money,
       monthFilterOperators,
@@ -477,15 +539,39 @@ const Payroll = ({
 
   return (
     <>
-      {(canManageTerms || canCreate || canViewCosts) && (
+      {(canManageTerms || canCreate || canViewCosts || canManage) && (
         <ToolbarStack direction="row">
+          {canManage && (
+            <>
+              <Button
+                disabled={!selectedDrafts.length}
+                onClick={() => handleTransitionDialog(selectedDrafts, "review")}
+                size="small"
+              >
+                {tAttendance("payroll.reviewSelected", {
+                  count: selectedDrafts.length,
+                })}
+              </Button>
+              <Button
+                disabled={!selectedReviewed.length}
+                onClick={() =>
+                  handleTransitionDialog(selectedReviewed, "publish")
+                }
+                size="small"
+              >
+                {tAttendance("payroll.publishSelected", {
+                  count: selectedReviewed.length,
+                })}
+              </Button>
+            </>
+          )}
           {canViewCosts && (
             <Button onClick={handleEmployerSupplementDialog} size="small">
               {tAttendance("employerSupplement.label")}
             </Button>
           )}
           {canManageTerms && (
-            <Button onClick={handleTermsDialog} size="small">
+            <Button onClick={() => handleTermsDialog()} size="small">
               {tAttendance("payrollTerms")}
             </Button>
           )}
@@ -504,13 +590,19 @@ const Payroll = ({
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}
+        checkboxSelection={canManage}
         columns={columns}
         filterMode="server"
         filterModel={filterModel}
+        isRowSelectable={({ row }) =>
+          row.status !== "published" && !row.snapshot.blockers.length
+        }
         loading={loading}
         onFilterModelChange={handleFilterModelChange}
         onPaginationModelChange={handlePaginationModelChange}
+        onRowSelectionModelChange={setRowSelectionModel}
         onSortModelChange={handleSortModelChange}
+        rowSelectionModel={rowSelectionModel}
         pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
         paginationMode="server"
         paginationModel={paginationModel}

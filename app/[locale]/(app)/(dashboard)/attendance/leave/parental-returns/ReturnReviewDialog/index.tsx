@@ -42,7 +42,9 @@ const ReturnReviewDialog = ({
 
   const tAttendance = useTranslations("attendance");
 
-  const returnReviewFormSchema = useReturnReviewFormSchema();
+  const returnReviewFormSchema = useReturnReviewFormSchema(
+    status === "rejected",
+  );
 
   const {
     formState: { errors },
@@ -108,7 +110,7 @@ const ReturnReviewDialog = ({
         label={tAttendance("reviewReason")}
         minRows={3}
         multiline
-        required
+        required={status === "rejected"}
         {...register("reason")}
       />
     </FormBox>

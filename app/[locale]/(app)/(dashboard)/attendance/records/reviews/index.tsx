@@ -5,6 +5,8 @@ import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
 import useSWR, { mutate as mutateCache } from "swr";
 
+import BatchReviewDialog from "../../BatchReviewDialog";
+import LeaveCaseDialog from "../../leave/cases/LeaveCaseDialog";
 import ReviewDialog from "./ReviewDialog";
 
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
@@ -25,13 +27,14 @@ import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 import { attendanceReviewCountsKey } from "@/hooks/useAttendanceReviewCounts";
 
 import { Check, Close } from "@mui/icons-material";
-import { Chip, IconButton, Stack, Tooltip } from "@mui/material";
+import { Button, Chip, IconButton, Stack, Tooltip } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
   GridFilterModel,
   GridPaginationModel,
   GridRenderCellParams,
+  GridRowSelectionModel,
   GridSortModel,
 } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
@@ -39,6 +42,7 @@ import { useGridApiRef } from "@mui/x-data-grid";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
+  AttendanceEmployee,
   AttendanceLeaveType,
   AttendanceRequest,
   AttendanceRequestFilterField,
@@ -48,7 +52,11 @@ import type {
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization } from "@/types/organizations";
 
-import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
+import {
+  getDataGridSearchParams,
+  getFilterItemParams,
+  getSelectedRows,
+} from "@/utils/dataGrid";
 import { getAttendanceRequestEnumOptions } from "@/utils/enumOptions";
 import { attendancePath, getStatutoryLeaveName } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
@@ -59,15 +67,23 @@ const StyledStack = styled(Stack)(({ theme }) => ({
   height: "100%",
 }));
 
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  alignItems: "center",
+  flexWrap: "wrap",
+  gap: theme.spacing(2),
+}));
+
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
   { ssr: false },
 );
 
 interface ReviewsProps {
+  canGrantLeaveCase: boolean;
   canReview: boolean;
   canReviewOwn: boolean;
   employeeId?: string;
+  employees: AttendanceEmployee[];
   filterField?: AttendanceRequestFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
@@ -83,9 +99,11 @@ interface ReviewsProps {
 }
 
 const Reviews = ({
+  canGrantLeaveCase,
   canReview,
   canReviewOwn,
   employeeId,
+  employees,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
@@ -127,6 +145,9 @@ const Reviews = ({
         : [],
     quickFilterValues: initialQuickFilterValue ? [initialQuickFilterValue] : [],
   });
+
+  const [rowSelectionModel, setRowSelectionModel] =
+    useState<GridRowSelectionModel>({ ids: new Set(), type: "include" });
 
   const { setDialog } = useDialogStore((state) => state);
 
@@ -240,11 +261,38 @@ const Reviews = ({
     [tAttendance],
   );
 
+  const requestName = useCallback(
+    ({ kind, leaveTypeName, leaveTypeStatutoryKind }: AttendanceRequest) =>
+      leaveTypeName && leaveTypeStatutoryKind
+        ? getStatutoryLeaveName(tAttendance, {
+            name: leaveTypeName,
+            statutoryKind: leaveTypeStatutoryKind,
+          })
+        : tAttendance(`kind.options.${kind}`),
+    [tAttendance],
+  );
+
   const handleReview = useCallback(
-    (request: AttendanceRequest, status: "approved" | "rejected") =>
+    (request: AttendanceRequest, status: "approved" | "rejected") => {
+      const grantsLeaveCase =
+        canGrantLeaveCase &&
+        status === "approved" &&
+        request.status === "pending" &&
+        !request.leaveCaseId &&
+        !!leaveTypes.find(({ id }) => id === request.leaveTypeId)?.eventLeave;
+
       setDialog({
         confirmText: tAttendance("save"),
-        content: (
+        content: grantsLeaveCase ? (
+          <LeaveCaseDialog
+            employees={employees}
+            leaveTypes={leaveTypes}
+            mutate={mutate}
+            organizationSlug={organizationSlug}
+            parentalChildren={[]}
+            request={request}
+          />
+        ) : (
           <ReviewDialog
             leaveTypes={leaveTypes}
             mutate={mutate}
@@ -253,11 +301,70 @@ const Reviews = ({
             status={status}
           />
         ),
-        formId: "attendance-review-form",
+        formId: grantsLeaveCase
+          ? "attendance-leave-case-form"
+          : "attendance-review-form",
         open: true,
         title: reviewTitle(request, status),
+      });
+    },
+    [
+      canGrantLeaveCase,
+      employees,
+      leaveTypes,
+      mutate,
+      organizationSlug,
+      reviewTitle,
+      setDialog,
+      tAttendance,
+    ],
+  );
+
+  const isReviewable = useCallback(
+    ({
+      employeeId: requestEmployeeId,
+      status,
+    }: Pick<AttendanceRequest, "employeeId" | "status">) =>
+      (status === "pending" || status === "cancellationPending") &&
+      (canReviewOwn || requestEmployeeId !== employeeId),
+    [canReviewOwn, employeeId],
+  );
+
+  const selectedRows = useMemo(
+    () => getSelectedRows(rows, rowSelectionModel).filter(isReviewable),
+    [isReviewable, rowSelectionModel, rows],
+  );
+
+  const handleBatchReview = useCallback(
+    (status: "approved" | "rejected") =>
+      setDialog({
+        confirmText: tAttendance("save"),
+        content: (
+          <BatchReviewDialog
+            labels={Object.fromEntries(
+              selectedRows.map((request) => [
+                request.id,
+                `${request.employeeName} · ${requestName(request)} · ${date(request.startsAt)}`,
+              ]),
+            )}
+            method="PATCH"
+            mutate={() => {
+              setRowSelectionModel({ ids: new Set(), type: "include" });
+
+              mutate();
+            }}
+            path={`${base}/review`}
+            status={status}
+          />
+        ),
+        formId: "attendance-batch-review-form",
+        open: true,
+        title: tAttendance(
+          status === "approved" ? "approveSelected" : "rejectSelected",
+          { count: selectedRows.length },
+        ),
       }),
-    [leaveTypes, mutate, organizationSlug, reviewTitle, setDialog, tAttendance],
+    [base, date, mutate, requestName, selectedRows, setDialog, tAttendance],
   );
 
   const leaveTypeOptions = useMemo(
@@ -425,30 +532,58 @@ const Reviews = ({
   );
 
   return (
-    <DataGrid
-      {...DATA_GRID_PROPS}
-      apiRef={apiRef}
-      columns={columns}
-      filterMode="server"
-      filterModel={filterModel}
-      loading={loading}
-      onFilterModelChange={handleFilterModelChange}
-      onPaginationModelChange={handlePaginationModelChange}
-      onSortModelChange={handleSortModelChange}
-      pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
-      paginationMode="server"
-      paginationModel={paginationModel}
-      rowCount={rowCount}
-      rows={rows}
-      sortingMode="server"
-      sortModel={sortModel}
-      slotProps={{
-        ...DATA_GRID_PROPS.slotProps,
-        toolbar: {
-          exportDateField: "startsAt",
-        },
-      }}
-    />
+    <>
+      {canReview && (
+        <ToolbarStack direction="row">
+          <Button
+            color="error"
+            disabled={!selectedRows.length}
+            onClick={() => handleBatchReview("rejected")}
+            size="small"
+          >
+            {tAttendance("rejectSelected", { count: selectedRows.length })}
+          </Button>
+          <Button
+            disabled={!selectedRows.length}
+            onClick={() => handleBatchReview("approved")}
+            size="small"
+            variant="contained"
+          >
+            {tAttendance("approveSelected", { count: selectedRows.length })}
+          </Button>
+        </ToolbarStack>
+      )}
+      <DataGrid
+        {...DATA_GRID_PROPS}
+        apiRef={apiRef}
+        checkboxSelection={canReview}
+        columns={columns}
+        filterMode="server"
+        filterModel={filterModel}
+        isRowSelectable={({ row: { employeeId, status } }) =>
+          isReviewable({ employeeId, status })
+        }
+        loading={loading}
+        onFilterModelChange={handleFilterModelChange}
+        onPaginationModelChange={handlePaginationModelChange}
+        onRowSelectionModelChange={setRowSelectionModel}
+        onSortModelChange={handleSortModelChange}
+        pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
+        paginationMode="server"
+        paginationModel={paginationModel}
+        rowCount={rowCount}
+        rows={rows}
+        rowSelectionModel={rowSelectionModel}
+        sortingMode="server"
+        sortModel={sortModel}
+        slotProps={{
+          ...DATA_GRID_PROPS.slotProps,
+          toolbar: {
+            exportDateField: "startsAt",
+          },
+        }}
+      />
+    </>
   );
 };
 

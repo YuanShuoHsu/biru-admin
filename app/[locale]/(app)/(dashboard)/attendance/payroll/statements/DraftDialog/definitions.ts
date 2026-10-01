@@ -27,16 +27,11 @@ export const useDraftFormSchema = () => {
           .min(1, { error: tValidation("earningType.notSelected") }),
       }),
     ),
-    employeeId: z
-      .string()
-      .min(1, { error: tValidation("employee.notSelected") }),
+    employeeId: z.string(),
     month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, {
       error: tValidation("payrollMonth.invalid"),
     }),
-    reason: z
-      .string()
-      .trim()
-      .min(1, { error: tValidation("reason.required") }),
+    reason: z.string().trim(),
   });
 };
 

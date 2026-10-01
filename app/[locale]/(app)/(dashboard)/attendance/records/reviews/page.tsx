@@ -21,6 +21,7 @@ import {
 import {
   getAttendanceAccess,
   getAttendanceContext,
+  getAttendanceEmployees,
   getAttendanceLeaveTypes,
   getAttendanceRequests,
 } from "@/utils/attendance";
@@ -122,6 +123,7 @@ const ReviewsPage = async ({ params, searchParams }: ReviewsPageProps) => {
     { requests: rows, total: rowCount },
     { leaveTypes },
     { employee, selfReviewAllowed },
+    { employees },
   ] = await Promise.all([
     getAttendanceRequests(
       organization.slug,
@@ -145,16 +147,25 @@ const ReviewsPage = async ({ params, searchParams }: ReviewsPageProps) => {
       fetchOptions,
     ),
     getAttendanceContext(organization.slug, fetchOptions),
+    getAttendanceEmployees(
+      organization.slug,
+      { pageSize: MAX_PAGE_SIZE },
+      fetchOptions,
+    ),
   ]);
 
   return (
     <AttendanceTabsLayout memberRole={memberRole}>
       <Reviews
+        canGrantLeaveCase={hasRolePermission(memberRole, {
+          leaveCase: ["create"],
+        })}
         canReview={hasRolePermission(memberRole, {
           attendanceRequest: ["update"],
         })}
         canReviewOwn={selfReviewAllowed.attendanceRequest}
         employeeId={employee?.id}
+        employees={employees}
         filterField={filterField}
         filterOperator={filterOperator}
         filterValue={filterValue}

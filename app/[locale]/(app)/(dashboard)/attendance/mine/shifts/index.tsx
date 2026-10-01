@@ -11,6 +11,7 @@ import PunchCard from "./PunchCard";
 import CorrectionDialog from "../../CorrectionDialog";
 import EventsDialogContent from "../../EventsDialogContent";
 import OvertimeDialog from "../../OvertimeDialog";
+import LeaveDialog from "../requests/LeaveDialog";
 
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -28,7 +29,7 @@ import {
 } from "@/hooks/useFilterOperators";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
-import { EditNote, History, MoreTime } from "@mui/icons-material";
+import { EditNote, EventBusy, History, MoreTime } from "@mui/icons-material";
 import { Alert, Chip, IconButton, Stack, Tooltip } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type {
@@ -43,6 +44,8 @@ import { useGridApiRef } from "@mui/x-data-grid";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
+  AttendanceLeaveCase,
+  AttendanceLeaveType,
   AttendanceShift,
   AttendanceShiftFilterField,
   AttendanceShiftPage,
@@ -88,6 +91,8 @@ interface MineProps {
   filterField?: AttendanceShiftFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
+  leaveCases: AttendanceLeaveCase[];
+  leaveTypes: AttendanceLeaveType[];
   organization: Organization;
   page: number;
   pageSize: number;
@@ -104,6 +109,8 @@ const Mine = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
+  leaveCases,
+  leaveTypes,
   organization: { slug: organizationSlug },
   page,
   pageSize,
@@ -282,6 +289,26 @@ const Mine = ({
     [mutate, organizationSlug, setDialog, tAttendance],
   );
 
+  const handleLeave = useCallback(
+    (shift: AttendanceShift) =>
+      setDialog({
+        confirmText: tAttendance("save"),
+        content: (
+          <LeaveDialog
+            leaveCases={leaveCases}
+            leaveTypes={leaveTypes}
+            mutate={mutate}
+            organizationSlug={organizationSlug}
+            shift={shift}
+          />
+        ),
+        formId: "attendance-leave-form",
+        open: true,
+        title: tAttendance("requests.actions.create"),
+      }),
+    [leaveCases, leaveTypes, mutate, organizationSlug, setDialog, tAttendance],
+  );
+
   const hasCorrectedShift = useMemo(
     () => rows.some(({ originalEvents }) => originalEvents),
     [rows],
@@ -329,6 +356,15 @@ const Mine = ({
               <IconButton onClick={() => handleOvertime(row)} size="small">
                 <MoreTime fontSize="small" />
               </IconButton>
+            </Tooltip>
+            <Tooltip title={tAttendance("requests.actions.create")}>
+              <StyledIconButton
+                onClick={() => handleLeave(row)}
+                size="small"
+                visible={row.state === "scheduled"}
+              >
+                <EventBusy fontSize="small" />
+              </StyledIconButton>
             </Tooltip>
           </ActionsStack>
         ),
@@ -410,6 +446,7 @@ const Mine = ({
       enumOptions.dayKind,
       format,
       handleCorrection,
+      handleLeave,
       handleOvertime,
       handleViewEvents,
       hasCorrectedShift,

@@ -7,6 +7,8 @@ import Mine from ".";
 
 import AttendanceTabsLayout from "../../AttendanceTabsLayout";
 
+import { MAX_PAGE_SIZE } from "@/constants/pagination";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -19,6 +21,8 @@ import {
 import {
   getAttendanceAccess,
   getAttendanceContext,
+  getAttendanceLeaveCases,
+  getAttendanceLeaveTypes,
   getAttendancePunchableShifts,
   getAttendanceShifts,
 } from "@/utils/attendance";
@@ -116,7 +120,12 @@ const MinePage = async ({ params, searchParams }: MinePageProps) => {
 
   const enabled = employee?.status === "active";
 
-  const [{ shifts: rows, total: rowCount }, punchableShifts] = enabled
+  const [
+    { shifts: rows, total: rowCount },
+    punchableShifts,
+    { leaveTypes },
+    { leaveCases },
+  ] = enabled
     ? await Promise.all([
         getAttendanceShifts(
           organization.slug,
@@ -135,8 +144,19 @@ const MinePage = async ({ params, searchParams }: MinePageProps) => {
           fetchOptions,
         ),
         getAttendancePunchableShifts(organization.slug, fetchOptions),
+        getAttendanceLeaveTypes(
+          organization.slug,
+          { pageSize: MAX_PAGE_SIZE, sortDirection: "asc" },
+          fetchOptions,
+        ),
+        getAttendanceLeaveCases(
+          organization.slug,
+          "me",
+          { pageSize: MAX_PAGE_SIZE },
+          fetchOptions,
+        ),
       ])
-    : [{ shifts: [], total: 0 }, []];
+    : [{ shifts: [], total: 0 }, [], { leaveTypes: [] }, { leaveCases: [] }];
 
   return (
     <AttendanceTabsLayout memberRole={memberRole}>
@@ -145,6 +165,8 @@ const MinePage = async ({ params, searchParams }: MinePageProps) => {
         filterField={filterField}
         filterOperator={filterOperator}
         filterValue={filterValue}
+        leaveCases={leaveCases}
+        leaveTypes={leaveTypes}
         organization={organization}
         page={page}
         pageSize={pageSize}

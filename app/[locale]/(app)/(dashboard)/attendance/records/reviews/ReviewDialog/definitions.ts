@@ -3,24 +3,33 @@ import * as z from "zod";
 
 import { attendanceEmergencyCauseValues } from "@/types/api";
 
-export const useReviewFormSchema = () => {
+export const useReviewFormSchema = ({
+  emergency,
+  rejected,
+}: {
+  emergency: boolean;
+  rejected: boolean;
+}) => {
   const tValidation = useTranslations("validation");
 
   return z
     .object({
       cause: z.enum(attendanceEmergencyCauseValues).or(z.literal("")),
-      emergencyWork: z.boolean(),
       makeupEndsAt: z.string(),
       makeupStartsAt: z.string(),
       medicalCertified: z.boolean(),
-      reason: z
-        .string()
-        .trim()
-        .min(1, { error: tValidation("reviewReason.required") }),
+      reason: z.string().trim(),
       reportedAt: z.string(),
     })
     .superRefine((data, ctx) => {
-      if (!data.emergencyWork) return;
+      if (rejected && !data.reason)
+        ctx.addIssue({
+          code: "custom",
+          message: tValidation("reviewReason.required"),
+          path: ["reason"],
+        });
+
+      if (!emergency) return;
 
       const requiredMessages = {
         cause: tValidation("cause.notSelected"),

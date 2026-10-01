@@ -28,7 +28,7 @@ export const useLeaveFormSchema = (leaveTypes: AttendanceLeaveType[]) => {
       (data, ctx) => {
         const leaveType = leaveTypes.find(({ id }) => id === data.leaveTypeId);
 
-        if (leaveType?.eventLeave && !data.leaveCaseId)
+        if (leaveType?.statutoryKind === "parental" && !data.leaveCaseId)
           ctx.addIssue({
             code: "custom",
             message: tValidation("leaveCase.notSelected"),

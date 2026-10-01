@@ -24,6 +24,7 @@ export const useAttendanceReviewCounts = (): Record<string, number> => {
   );
 
   return {
+    "/attendance/records/shifts": data?.extraWork ?? 0,
     "/attendance/records/reviews": data?.requests ?? 0,
     "/attendance/leave/parental-returns": data?.parentalReturns ?? 0,
   };

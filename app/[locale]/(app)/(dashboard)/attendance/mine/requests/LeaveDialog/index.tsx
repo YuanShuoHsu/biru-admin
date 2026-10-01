@@ -25,6 +25,7 @@ import { statutoryLeaveKindValues } from "@/types/api";
 import type {
   AttendanceLeaveCase,
   AttendanceLeaveType,
+  AttendanceShift,
 } from "@/types/attendance";
 
 import {
@@ -44,6 +45,7 @@ interface LeaveDialogProps {
   leaveTypes: AttendanceLeaveType[];
   mutate: () => void;
   organizationSlug: string;
+  shift?: AttendanceShift;
 }
 
 const LeaveDialog = ({
@@ -51,6 +53,7 @@ const LeaveDialog = ({
   leaveTypes,
   mutate,
   organizationSlug,
+  shift,
 }: LeaveDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
@@ -68,11 +71,13 @@ const LeaveDialog = ({
     setValue,
   } = useForm<LeaveForm>({
     defaultValues: {
-      endsAt: dayjs().tz(STORE_TIMEZONE).add(1, "hour").toISOString(),
+      endsAt:
+        shift?.endsAt ??
+        dayjs().tz(STORE_TIMEZONE).add(1, "hour").toISOString(),
       leaveCaseId: "",
       leaveTypeId: "",
       reason: "",
-      startsAt: dayjs().tz(STORE_TIMEZONE).toISOString(),
+      startsAt: shift?.startsAt ?? dayjs().tz(STORE_TIMEZONE).toISOString(),
     },
     resolver: zodResolver(leaveFormSchema),
   });
@@ -107,7 +112,11 @@ const LeaveDialog = ({
 
   const leaveType = leaveTypes.find(({ id }) => id === leaveTypeId);
 
-  const isEventLeave = !!leaveType?.eventLeave;
+  const isParentalLeave = leaveType?.statutoryKind === "parental";
+
+  const selectableLeaveCases = leaveCases.filter(
+    (item) => item.leaveTypeId === leaveTypeId,
+  );
 
   const date = (value: string) => format.dateTime(new Date(value), "short");
 
@@ -136,7 +145,7 @@ const LeaveDialog = ({
         body: JSON.stringify({
           ...values,
           kind: "leave",
-          ...(isEventLeave ? { leaveCaseId } : {}),
+          ...(leaveCaseId ? { leaveCaseId } : {}),
         }),
       });
 
@@ -214,7 +223,7 @@ const LeaveDialog = ({
           )),
         ])}
       </TextField>
-      {isEventLeave && (
+      {(isParentalLeave || selectableLeaveCases.length > 0) && (
         <TextField
           error={!!errors.leaveCaseId}
           fullWidth
@@ -225,7 +234,7 @@ const LeaveDialog = ({
               shouldValidate: isSubmitted,
             })
           }
-          required
+          required={isParentalLeave}
           select
           slotProps={{
             inputLabel: { shrink: true },
@@ -237,23 +246,31 @@ const LeaveDialog = ({
                 return leaveCase ? (
                   `${leaveCase.reference} · ${date(leaveCase.startsAt)} – ${date(leaveCase.endsAt)}`
                 ) : (
-                  <em>{tAttendance("leaveCase.placeholder")}</em>
+                  <em>
+                    {tAttendance(
+                      isParentalLeave
+                        ? "leaveCase.placeholder"
+                        : "leaveCase.new",
+                    )}
+                  </em>
                 );
               },
             },
           }}
           value={leaveCaseId}
         >
-          <MenuItem disabled value="">
-            <em>{tAttendance("leaveCase.placeholder")}</em>
+          <MenuItem disabled={isParentalLeave} value="">
+            <em>
+              {tAttendance(
+                isParentalLeave ? "leaveCase.placeholder" : "leaveCase.new",
+              )}
+            </em>
           </MenuItem>
-          {leaveCases
-            .filter((item) => item.leaveTypeId === leaveTypeId)
-            .map(({ endsAt, id, reference, startsAt }) => (
-              <MenuItem key={id} value={id}>
-                {reference} · {date(startsAt)} – {date(endsAt)}
-              </MenuItem>
-            ))}
+          {selectableLeaveCases.map(({ endsAt, id, reference, startsAt }) => (
+            <MenuItem key={id} value={id}>
+              {reference} · {date(startsAt)} – {date(endsAt)}
+            </MenuItem>
+          ))}
         </TextField>
       )}
       <DateTimePicker

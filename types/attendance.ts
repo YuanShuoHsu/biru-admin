@@ -46,6 +46,8 @@ export type AttendanceContext =
   components["schemas"]["AttendanceContextResponseDto"];
 export type AttendanceReviewCounts =
   components["schemas"]["AttendanceReviewCountsResponseDto"];
+export type AttendanceBatchResult =
+  components["schemas"]["AttendanceBatchResponseDto"];
 export type AttendanceShift =
   components["schemas"]["AttendanceShiftResponseDto"];
 export type AttendanceShiftType =

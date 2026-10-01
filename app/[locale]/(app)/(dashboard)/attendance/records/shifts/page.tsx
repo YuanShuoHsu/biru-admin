@@ -42,6 +42,7 @@ interface ShiftsPageProps {
     quickFilterValue?: string;
     sortBy?: string;
     sortDirection?: string;
+    unreviewedOvertime?: string;
   }>;
 }
 
@@ -115,6 +116,13 @@ const ShiftsPage = async ({ params, searchParams }: ShiftsPageProps) => {
       )
     : [];
 
+  const canReviewExtraWork = hasRolePermission(memberRole, {
+    attendanceRequest: ["update"],
+  });
+
+  const unreviewedOvertime =
+    canReviewExtraWork && rawSearchParams.unreviewedOvertime === "true";
+
   const [
     { shifts: rows, total: rowCount },
     { employees },
@@ -136,6 +144,7 @@ const ShiftsPage = async ({ params, searchParams }: ShiftsPageProps) => {
         sortDirection,
       },
       fetchOptions,
+      unreviewedOvertime,
     ),
     getAttendanceEmployees(
       organization.slug,
@@ -155,9 +164,7 @@ const ShiftsPage = async ({ params, searchParams }: ShiftsPageProps) => {
       <Shifts
         canCancel={hasRolePermission(memberRole, { shift: ["update"] })}
         canCreate={hasRolePermission(memberRole, { shift: ["create"] })}
-        canReviewExtraWork={hasRolePermission(memberRole, {
-          attendanceRequest: ["update"],
-        })}
+        canReviewExtraWork={canReviewExtraWork}
         employees={employees}
         filterField={filterField}
         filterOperator={filterOperator}
@@ -172,6 +179,7 @@ const ShiftsPage = async ({ params, searchParams }: ShiftsPageProps) => {
         sortBy={sortBy}
         sortDirection={sortDirection}
         teams={teams}
+        unreviewedOvertime={unreviewedOvertime}
       />
     </AttendanceTabsLayout>
   );

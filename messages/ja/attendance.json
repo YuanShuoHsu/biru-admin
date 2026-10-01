@@ -342,7 +342,8 @@
   },
   "leaveCase": {
     "label": "付与済み休暇枠",
-    "placeholder": "あなたの付与済み休暇枠を選択してください"
+    "placeholder": "あなたの付与済み休暇枠を選択してください",
+    "new": "新しい事由（管理者の承認時に休暇枠を付与）"
   },
   "leaveCaseHint": "管理者が事由・続柄・対象期間を確認すると、付与枠が自動計算されます。同じ事由を重複登録しないでください。産休と流産休暇の終了日は法定日数から自動で設定されます。配偶者の健診と出産は合計7日で、申請ごとに対象期間を確認してください。 産休の日額賃金は約定賃金と平均賃金から自動計算されます。支給率は勤続期間から自動計算されます。 育児休業は子ごとに管理します。期間は3歳の誕生日までとし、勤続6か月未満の場合は労使合意が必要です。日額賃金の設定は不要です。",
   "leaveCases": {
@@ -481,7 +482,12 @@
     "drafted": "{name} の {month} の給与明細を下書きしました",
     "published": "{name} の {month} の給与明細を公開しました",
     "reviewed": "{name} の {month} の給与明細を確認しました",
-    "termsUpdated": "{name} の給与・保険設定を更新しました"
+    "termsUpdated": "{name} の給与・保険設定を更新しました",
+    "draftedAll": "{month} の給与明細 {count} 件を下書きしました",
+    "reviewSelected": "選択した項目を確認（{count}）",
+    "publishSelected": "選択した項目を公開（{count}）",
+    "reviewedCount": "給与明細 {count} 件を確認しました",
+    "publishedCount": "給与明細 {count} 件を公開しました"
   },
   "payrollLine": {
     "options": {
@@ -634,9 +640,12 @@
       "viewEvents": "打刻明細を見る",
       "approveExtraWork": "シフト外の時間を承認",
       "rejectExtraWork": "シフト外の時間を却下",
-      "edit": "シフトを編集"
+      "edit": "シフトを編集",
+      "approveSelectedExtraWork": "選択したシフト外の時間を承認（{count}）",
+      "rejectSelectedExtraWork": "選択したシフト外の時間を却下（{count}）"
     },
-    "label": "シフト管理"
+    "label": "シフト管理",
+    "unreviewedOvertime": "未審査のシフト外時間"
   },
   "sourceNote": "保険・税・調整の根拠",
   "startsAt": "開始日時",
@@ -972,5 +981,12 @@
     }
   },
   "team": "チーム",
-  "noTeam": "指定なし"
+  "noTeam": "指定なし",
+  "approveSelected": "選択した項目を承認（{count}）",
+  "rejectSelected": "選択した項目を却下（{count}）",
+  "allEmployees": "全従業員",
+  "batch": {
+    "succeeded": "{count} 件を処理しました",
+    "skipped": "{count} 件は処理されませんでした"
+  }
 }

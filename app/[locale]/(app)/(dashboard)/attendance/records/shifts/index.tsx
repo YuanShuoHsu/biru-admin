@@ -4,10 +4,11 @@ import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
-import useSWR from "swr";
+import useSWR, { mutate as mutateCache } from "swr";
 
 import ShiftDialog from "../../ShiftDialog";
 
+import BatchReviewDialog from "../../BatchReviewDialog";
 import EventsDialogContent from "../../EventsDialogContent";
 import ReviewDialog from "../reviews/ReviewDialog";
 
@@ -26,6 +27,7 @@ import {
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
+import { attendanceReviewCountsKey } from "@/hooks/useAttendanceReviewCounts";
 
 import { Add, Cancel, Check, Close, History } from "@mui/icons-material";
 import { Button, Chip, IconButton, Stack, Tooltip } from "@mui/material";
@@ -35,6 +37,7 @@ import type {
   GridFilterModel,
   GridPaginationModel,
   GridRenderCellParams,
+  GridRowSelectionModel,
   GridSortModel,
 } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
@@ -59,7 +62,11 @@ import {
   formatClockedShift,
   formatScheduledShift,
 } from "@/utils/attendance";
-import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
+import {
+  getDataGridSearchParams,
+  getFilterItemParams,
+  getSelectedRows,
+} from "@/utils/dataGrid";
 import { getAttendanceDayKindEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
 
@@ -110,6 +117,7 @@ interface ShiftsProps {
   sortBy?: AttendanceShiftSortField;
   sortDirection?: SortDirection;
   teams: AttendanceTeam[];
+  unreviewedOvertime: boolean;
 }
 
 const Shifts = ({
@@ -130,6 +138,7 @@ const Shifts = ({
   sortBy,
   sortDirection,
   teams,
+  unreviewedOvertime: initialUnreviewedOvertime,
 }: ShiftsProps) => {
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
@@ -160,6 +169,13 @@ const Shifts = ({
     quickFilterValues: initialQuickFilterValue ? [initialQuickFilterValue] : [],
   });
 
+  const [unreviewedOvertime, setUnreviewedOvertime] = useState(
+    initialUnreviewedOvertime,
+  );
+
+  const [rowSelectionModel, setRowSelectionModel] =
+    useState<GridRowSelectionModel>({ ids: new Set(), type: "include" });
+
   const { setDialog } = useDialogStore((state) => state);
 
   const dateFilterOperators = useDateFilterOperators();
@@ -189,17 +205,26 @@ const Shifts = ({
     isValidating: loading,
     mutate,
   } = useSWR(
-    [base, paginationModel, filterModel, sortModel],
-    () =>
-      fetcher<AttendanceShiftPage>(
-        `${base}?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
-      ),
+    [base, paginationModel, filterModel, sortModel, unreviewedOvertime],
+    () => {
+      const params = getDataGridSearchParams(
+        paginationModel,
+        filterModel,
+        sortModel,
+        enumOptions,
+      );
+
+      if (unreviewedOvertime) params.set("unreviewedOvertime", "true");
+
+      return fetcher<AttendanceShiftPage>(`${base}?${params}`);
+    },
     {
       fallbackData: { data: initialRows, total: initialRowCount },
       onSuccess: () => {
         setTimeout(() => {
           apiRef.current?.autosizeColumns(autosizeOptions);
         }, 0);
+        mutateCache(attendanceReviewCountsKey(organizationSlug));
       },
     },
   );
@@ -251,6 +276,16 @@ const Shifts = ({
     },
     [updateQuery],
   );
+
+  const handleToggleUnreviewedOvertime = useCallback(() => {
+    setUnreviewedOvertime(!unreviewedOvertime);
+    setPaginationModel((previous) => ({ ...previous, page: 0 }));
+
+    updateQuery({
+      page: "1",
+      unreviewedOvertime: unreviewedOvertime ? "" : "true",
+    });
+  }, [unreviewedOvertime, updateQuery]);
 
   const handleCreateShift = useCallback(
     () =>
@@ -344,6 +379,48 @@ const Shifts = ({
   const hasExtraWork = useMemo(
     () => rows.some(({ unreviewedOvertime }) => unreviewedOvertime.length),
     [rows],
+  );
+
+  const selectedRows = useMemo(
+    () =>
+      getSelectedRows(rows, rowSelectionModel).filter(
+        ({ unreviewedOvertime }) => unreviewedOvertime.length,
+      ),
+    [rowSelectionModel, rows],
+  );
+
+  const handleBatchReviewExtraWork = useCallback(
+    (status: "approved" | "rejected") =>
+      setDialog({
+        confirmText: tAttendance("save"),
+        content: (
+          <BatchReviewDialog
+            labels={Object.fromEntries(
+              selectedRows.map((shift) => [
+                shift.id,
+                `${shift.employeeName} · ${formatScheduledShift(format, shift)}`,
+              ]),
+            )}
+            method="POST"
+            mutate={() => {
+              setRowSelectionModel({ ids: new Set(), type: "include" });
+
+              mutate();
+            }}
+            path={`${base}/extra-work-reviews`}
+            status={status}
+          />
+        ),
+        formId: "attendance-batch-review-form",
+        open: true,
+        title: tAttendance(
+          status === "approved"
+            ? "shifts.actions.approveSelectedExtraWork"
+            : "shifts.actions.rejectSelectedExtraWork",
+          { count: selectedRows.length },
+        ),
+      }),
+    [base, format, mutate, selectedRows, setDialog, tAttendance],
   );
 
   const hasCorrectedShift = useMemo(
@@ -505,28 +582,65 @@ const Shifts = ({
 
   return (
     <>
-      {canCreate && (
+      {(canCreate || canReviewExtraWork) && (
         <ToolbarStack direction="row">
-          <Button
-            onClick={handleCreateShift}
-            size="small"
-            startIcon={<Add />}
-            variant="contained"
-          >
-            {tAttendance("shifts.actions.create")}
-          </Button>
+          {canReviewExtraWork && (
+            <Chip
+              color={unreviewedOvertime ? "primary" : "default"}
+              label={tAttendance("shifts.unreviewedOvertime")}
+              onClick={handleToggleUnreviewedOvertime}
+              variant={unreviewedOvertime ? "filled" : "outlined"}
+            />
+          )}
+          {canReviewExtraWork && hasExtraWork && (
+            <>
+              <Button
+                color="error"
+                disabled={!selectedRows.length}
+                onClick={() => handleBatchReviewExtraWork("rejected")}
+                size="small"
+              >
+                {tAttendance("shifts.actions.rejectSelectedExtraWork", {
+                  count: selectedRows.length,
+                })}
+              </Button>
+              <Button
+                disabled={!selectedRows.length}
+                onClick={() => handleBatchReviewExtraWork("approved")}
+                size="small"
+              >
+                {tAttendance("shifts.actions.approveSelectedExtraWork", {
+                  count: selectedRows.length,
+                })}
+              </Button>
+            </>
+          )}
+          {canCreate && (
+            <Button
+              onClick={handleCreateShift}
+              size="small"
+              startIcon={<Add />}
+              variant="contained"
+            >
+              {tAttendance("shifts.actions.create")}
+            </Button>
+          )}
         </ToolbarStack>
       )}
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}
+        checkboxSelection={canReviewExtraWork && hasExtraWork}
         columns={columns}
         filterMode="server"
         filterModel={filterModel}
+        isRowSelectable={({ row }) => row.unreviewedOvertime.length > 0}
         loading={loading}
         onFilterModelChange={handleFilterModelChange}
         onPaginationModelChange={handlePaginationModelChange}
+        onRowSelectionModelChange={setRowSelectionModel}
         onSortModelChange={handleSortModelChange}
+        rowSelectionModel={rowSelectionModel}
         pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
         paginationMode="server"
         paginationModel={paginationModel}

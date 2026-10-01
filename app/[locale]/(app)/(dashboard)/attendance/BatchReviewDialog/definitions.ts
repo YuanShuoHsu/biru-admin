@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-export const useReturnReviewFormSchema = (reasonRequired: boolean) => {
+export const useBatchReviewFormSchema = (reasonRequired: boolean) => {
   const tValidation = useTranslations("validation");
 
   return z.object({
@@ -14,6 +14,6 @@ export const useReturnReviewFormSchema = (reasonRequired: boolean) => {
   });
 };
 
-export type ReturnReviewForm = z.infer<
-  ReturnType<typeof useReturnReviewFormSchema>
+export type BatchReviewForm = z.infer<
+  ReturnType<typeof useBatchReviewFormSchema>
 >;

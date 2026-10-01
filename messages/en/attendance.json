@@ -342,7 +342,8 @@
   },
   "leaveCase": {
     "label": "Granted allowance",
-    "placeholder": "Please select your granted allowance"
+    "placeholder": "Please select your granted allowance",
+    "new": "New event, allowance granted on manager approval"
   },
   "leaveCaseHint": "A manager must verify the event, relationship and eligible dates. Allowances are calculated automatically. Do not duplicate an event. The end date of maternity and miscarriage leave is set from the statutory number of days. Partner prenatal and childbirth leave share 7 days; verify the eligible dates for each request. The maternity daily wage is calculated from the agreed and average wages. The paid percentage is calculated from seniority. Parental leave is tracked per child. The period must end by the third birthday. Service under six months requires employer–employee agreement. No daily wage is required.",
   "leaveCases": {
@@ -481,7 +482,12 @@
     "drafted": "Drafted {name}'s payslip for {month}",
     "published": "Published {name}'s payslip for {month}",
     "reviewed": "Reviewed {name}'s payslip for {month}",
-    "termsUpdated": "Updated {name}'s pay and insurance settings"
+    "termsUpdated": "Updated {name}'s pay and insurance settings",
+    "draftedAll": "Drafted {count, plural, one {# payslip} other {# payslips}} for {month}",
+    "reviewSelected": "Review selected ({count})",
+    "publishSelected": "Publish selected ({count})",
+    "reviewedCount": "Reviewed {count, plural, one {# payslip} other {# payslips}}",
+    "publishedCount": "Published {count, plural, one {# payslip} other {# payslips}}"
   },
   "payrollLine": {
     "options": {
@@ -634,9 +640,12 @@
       "viewEvents": "View punch timeline",
       "approveExtraWork": "Approve time outside schedule",
       "rejectExtraWork": "Reject time outside schedule",
-      "edit": "Edit shift"
+      "edit": "Edit shift",
+      "approveSelectedExtraWork": "Approve selected time outside schedule ({count})",
+      "rejectSelectedExtraWork": "Reject selected time outside schedule ({count})"
     },
-    "label": "Schedules"
+    "label": "Schedules",
+    "unreviewedOvertime": "Time outside schedule to review"
   },
   "sourceNote": "Insurance, tax and adjustment evidence",
   "startsAt": "Start time",
@@ -972,5 +981,12 @@
     }
   },
   "team": "Team",
-  "noTeam": "None"
+  "noTeam": "None",
+  "approveSelected": "Approve selected ({count})",
+  "rejectSelected": "Reject selected ({count})",
+  "allEmployees": "All employees",
+  "batch": {
+    "succeeded": "Processed {count, plural, one {# item} other {# items}}",
+    "skipped": "{count, plural, one {# item was} other {# items were}} not processed"
+  }
 }
