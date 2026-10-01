@@ -806,6 +806,17 @@ export const STORE_LAYOUT_ITEMS = [
     z: 2.1,
   },
   {
+    depth: 0.546,
+    elevation: 0.9,
+    floor: "ground",
+    height: 0.337,
+    kind: "equipment",
+    label: "microwave",
+    width: 0.422,
+    x: 3.6,
+    z: 2.2,
+  },
+  {
     depth: 0.8,
     elevation: 0,
     floor: "ground",
