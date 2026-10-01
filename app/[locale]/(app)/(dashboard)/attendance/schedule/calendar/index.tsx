@@ -532,7 +532,6 @@ const Calendar = ({
       const original: ShiftChange = {
         employeeId: shift.employeeId,
         endsAt: shift.endsAt,
-        paidBreak: shift.paidBreak,
         startsAt: shift.startsAt,
         teamId: shift.teamId ?? null,
         ...(change.dayKind && {
@@ -723,7 +722,6 @@ const Calendar = ({
         const change: ShiftChange = {
           employeeId: shift.employeeId,
           endsAt: endsAt.toISOString(),
-          paidBreak: shift.paidBreak,
           startsAt: startsAt.toISOString(),
         };
         const date = storeDate(change.startsAt);

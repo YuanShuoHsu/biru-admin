@@ -20,9 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { EventBusy } from "@mui/icons-material";
 import {
   Button,
-  Checkbox,
   Chip,
-  FormControlLabel,
   FormHelperText,
   MenuItem,
   Stack,
@@ -48,10 +46,6 @@ import { getSingleDaySchedule } from "@/utils/openingHours";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
-
-const StyledFormControlLabel = styled(FormControlLabel)({
-  alignSelf: "flex-start",
-});
 
 const StartButton = styled(Button)({
   alignSelf: "flex-start",
@@ -79,7 +73,7 @@ const storeTime = (value: string) =>
 
 export type ShiftChange = Pick<
   AttendanceShift,
-  "employeeId" | "endsAt" | "paidBreak" | "startsAt"
+  "employeeId" | "endsAt" | "startsAt"
 > & {
   dayKind?: (typeof attendanceScheduledDayKindValues)[number];
   teamId?: string | null;
@@ -158,7 +152,6 @@ const ShiftDialog = ({
           dayKind: shift.dayKind === "holiday" ? "workday" : shift.dayKind,
           employeeIds: [shift.employeeId],
           endsAt: shift.endsAt,
-          paidBreak: shift.paidBreak,
           repeatWeeks: 1,
           startsAt: shift.startsAt,
           teamId: shift.teamId ?? "",
@@ -167,7 +160,6 @@ const ShiftDialog = ({
           dayKind: "workday",
           employeeIds: initialEmployeeId ? [initialEmployeeId] : [],
           endsAt: closesAt?.toISOString() ?? "",
-          paidBreak: false,
           repeatWeeks: 1,
           startsAt: opensAt?.toISOString() ?? "",
           teamId: soleTeamId(initialEmployeeId ? [initialEmployeeId] : []),
@@ -181,7 +173,6 @@ const ShiftDialog = ({
     dayKind,
     employeeIds = [],
     endsAt,
-    paidBreak,
     repeatWeeks,
     startsAt,
     teamId,
@@ -228,7 +219,6 @@ const ShiftDialog = ({
     dayKind,
     employeeIds,
     endsAt,
-    paidBreak,
     repeatWeeks,
     startsAt,
     teamId,
@@ -239,7 +229,6 @@ const ShiftDialog = ({
             dayKind: rotatingIds.has(employeeIds[0]) ? dayKind : undefined,
             employeeId: employeeIds[0],
             endsAt,
-            paidBreak,
             startsAt,
             teamId: teamId || null,
           } satisfies ShiftChange,
@@ -255,7 +244,6 @@ const ShiftDialog = ({
                 endsAt: dayjs(endsAt)
                   .add(index * 7, "day")
                   .toISOString(),
-                paidBreak,
                 startsAt: dayjs(startsAt)
                   .add(index * 7, "day")
                   .toISOString(),
@@ -489,15 +477,6 @@ const ShiftDialog = ({
         }}
         timezone={STORE_TIMEZONE}
         value={endsAt ? dayjs(endsAt) : null}
-      />
-      <StyledFormControlLabel
-        control={
-          <Checkbox
-            checked={!!paidBreak}
-            onChange={(_, checked) => setValue("paidBreak", checked)}
-          />
-        }
-        label={tAttendance("paidBreak")}
       />
       {rotating && (
         <TextField

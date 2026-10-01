@@ -3380,7 +3380,6 @@ export interface components {
       employeeId: string;
       startsAt: string;
       endsAt: string;
-      paidBreak: boolean;
     };
     CreateAttendanceShiftsDto: {
       /** @description 只檢查能否排入，不寫入 */
@@ -3461,7 +3460,6 @@ export interface components {
       dryRun?: boolean;
       startsAt: string;
       endsAt: string;
-      paidBreak: boolean;
     };
     CreateAttendancePunchDto: {
       action: components["schemas"]["AttendanceEventAction"];
