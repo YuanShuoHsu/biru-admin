@@ -828,7 +828,7 @@ export const STORE_LAYOUT_ITEMS = [
     z: 2.1,
   },
   {
-    depth: 0.338,
+    depth: 0.3646,
     elevation: 0.9,
     floor: "ground",
     height: 0.14,
