@@ -254,5 +254,41 @@
       "label": "團隊",
       "placeholder": "請選擇您的團隊"
     }
+  },
+  "waitlist": {
+    "actions": {
+      "updateWaitlist": {
+        "success": "成功更新現場候位設定",
+        "title": "編輯現場候位"
+      }
+    },
+    "enabled": {
+      "label": "現場候位",
+      "off": "未開啟",
+      "on": "已開啟"
+    },
+    "groups": {
+      "add": "新增分組",
+      "helperText": "各組人數須從 1 開始連續、不可重疊，號碼依代號分組各自編號",
+      "label": "人數分組",
+      "maxPartySize": {
+        "label": "最多人數"
+      },
+      "minPartySize": {
+        "label": "最少人數"
+      },
+      "prefix": {
+        "label": "代號"
+      },
+      "remove": "移除分組",
+      "value": "{prefix} 組：{range}"
+    },
+    "label": "現場候位",
+    "qrCode": {
+      "download": "下載",
+      "helperText": "列印後張貼在門口，客人用手機掃碼即可取號",
+      "kiosk": "開啟門口平板模式",
+      "label": "門口取號 QR code"
+    }
   }
 }

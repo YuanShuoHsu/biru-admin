@@ -152,6 +152,10 @@
   "makeupStartsAt": {
     "required": "보상 휴일 시작은 필수입니다."
   },
+  "maxPartySize": {
+    "belowMin": "최대 인원은 최소 인원보다 적을 수 없습니다.",
+    "required": "최대 인원은 필수입니다."
+  },
   "member": {
     "required": "멤버를 선택해 주세요."
   },
@@ -225,6 +229,11 @@
   },
   "postalCode": {
     "format": "우편번호 형식이 올바르지 않습니다."
+  },
+  "prefix": {
+    "duplicate": "코드는 중복될 수 없습니다.",
+    "invalid": "코드 형식이 올바르지 않습니다.",
+    "required": "코드는 필수입니다."
   },
   "price": {
     "required": "가격을 입력해 주세요."

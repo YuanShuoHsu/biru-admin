@@ -1,0 +1,45 @@
+{
+  "actions": {
+    "call": "Call",
+    "cancel": "Cancel",
+    "cancelConfirm": "Cancel {ticketNumber} ({name}) on the waitlist?",
+    "noShow": "Skip",
+    "recall": "Call again",
+    "seat": "Seat",
+    "success": "{ticketNumber} is now {status}"
+  },
+  "disabled": "The walk-in waitlist is off for this store. Turn it on from the Waitlist tab in organization settings.",
+  "empty": "No one is waiting",
+  "ended": "Handled today ({count, plural, one {# party} other {# parties}})",
+  "errors": {
+    "waitlistClosed": "The store is closed, so the waitlist isn't open.",
+    "waitlistDisabled": "The walk-in waitlist is off for this store.",
+    "waitlistGroupsInvalid": "Party size groups must start at 1 and be continuous without overlaps.",
+    "waitlistPartySizeUnavailable": "No group covers this party size.",
+    "waitlistPaused": "The waitlist is paused.",
+    "waitlistPhoneInQueue": "This phone number is already on the waitlist.",
+    "waitlistTransitionInvalid": "This ticket has changed. Please refresh."
+  },
+  "group": "Group {prefix}",
+  "label": "Waitlist",
+  "paused": {
+    "label": "Pause new tickets",
+    "off": "New tickets resumed",
+    "on": "New tickets paused"
+  },
+  "range": "{min}–{max} guests",
+  "single": "{count, plural, one {# guest} other {# guests}}",
+  "status": {
+    "called": "Called",
+    "cancelled": "Cancelled",
+    "noShow": "Skipped",
+    "seated": "Seated",
+    "waiting": "Waiting"
+  },
+  "ticket": {
+    "calledAt": "Called {time}",
+    "createdAt": "Joined {time}",
+    "partySize": "{count, plural, one {# guest} other {# guests}}"
+  },
+  "waitingCount": "{count, plural, one {# party waiting} other {# parties waiting}}"
+}

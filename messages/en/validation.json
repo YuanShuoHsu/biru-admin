@@ -152,6 +152,10 @@
   "makeupStartsAt": {
     "required": "Make-up rest start is required."
   },
+  "maxPartySize": {
+    "belowMin": "Maximum guests can't be less than minimum guests.",
+    "required": "Maximum guests is required."
+  },
   "member": {
     "required": "Please select a member."
   },
@@ -225,6 +229,11 @@
   },
   "postalCode": {
     "format": "Postal code format is invalid."
+  },
+  "prefix": {
+    "duplicate": "Codes must be unique.",
+    "invalid": "Code is invalid.",
+    "required": "Code is required."
   },
   "price": {
     "required": "Please enter a price."

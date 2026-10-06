@@ -254,5 +254,41 @@
       "label": "チーム",
       "placeholder": "あなたのチームを選択してください"
     }
+  },
+  "waitlist": {
+    "actions": {
+      "updateWaitlist": {
+        "success": "順番待ちの設定を更新しました",
+        "title": "順番待ちを編集"
+      }
+    },
+    "enabled": {
+      "label": "店頭の順番待ち",
+      "off": "オフ",
+      "on": "オン"
+    },
+    "groups": {
+      "add": "区分を追加",
+      "helperText": "人数区分は 1 から連続し、重複しないように設定してください。番号は区分ごとに採番されます",
+      "label": "人数区分",
+      "maxPartySize": {
+        "label": "最大人数"
+      },
+      "minPartySize": {
+        "label": "最小人数"
+      },
+      "prefix": {
+        "label": "記号"
+      },
+      "remove": "区分を削除",
+      "value": "{prefix} 区分：{range}"
+    },
+    "label": "順番待ち",
+    "qrCode": {
+      "download": "ダウンロード",
+      "helperText": "印刷して入口に掲示すると、お客様がスマートフォンで読み取って受付できます",
+      "kiosk": "入口タブレットモードを開く",
+      "label": "入口用 QR コード"
+    }
   }
 }

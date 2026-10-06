@@ -254,5 +254,41 @@
       "label": "팀",
       "placeholder": "귀하의 팀을 선택해 주세요"
     }
+  },
+  "waitlist": {
+    "actions": {
+      "updateWaitlist": {
+        "success": "현장 대기 설정이 업데이트되었습니다",
+        "title": "현장 대기 편집"
+      }
+    },
+    "enabled": {
+      "label": "현장 대기",
+      "off": "꺼짐",
+      "on": "켜짐"
+    },
+    "groups": {
+      "add": "그룹 추가",
+      "helperText": "인원 그룹은 1부터 연속되고 겹치지 않아야 하며, 번호는 그룹 코드별로 매겨집니다",
+      "label": "인원 그룹",
+      "maxPartySize": {
+        "label": "최대 인원"
+      },
+      "minPartySize": {
+        "label": "최소 인원"
+      },
+      "prefix": {
+        "label": "코드"
+      },
+      "remove": "그룹 삭제",
+      "value": "{prefix} 그룹: {range}"
+    },
+    "label": "현장 대기",
+    "qrCode": {
+      "download": "다운로드",
+      "helperText": "인쇄해 입구에 붙여 두면 고객이 휴대폰으로 스캔해 대기 등록할 수 있습니다",
+      "kiosk": "입구 태블릿 모드 열기",
+      "label": "입구용 QR 코드"
+    }
   }
 }

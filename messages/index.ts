@@ -19,6 +19,7 @@ import orders from "./en/orders.json";
 import organizations from "./en/organizations.json";
 import storeLayout from "./en/storeLayout.json";
 import validation from "./en/validation.json";
+import waitlist from "./en/waitlist.json";
 
 const messages = {
   admins,
@@ -42,6 +43,7 @@ const messages = {
   organizations,
   storeLayout,
   validation,
+  waitlist,
 };
 
 export default messages;

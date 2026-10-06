@@ -880,6 +880,23 @@ export interface paths {
     patch: operations["AttendanceParentalController_withdrawReturn"];
     trace?: never;
   };
+  "/api/mails/test": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 測試 SMTP 設定 */
+    post: operations["MailsController_test"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/audit-logs": {
     parameters: {
       query?: never;
@@ -1035,23 +1052,6 @@ export interface paths {
     head?: never;
     /** 更新輪播圖 */
     patch: operations["AdminBannersController_update"];
-    trace?: never;
-  };
-  "/api/mails/test": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** 測試 SMTP 設定 */
-    post: operations["MailsController_test"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
     trace?: never;
   };
   "/api/coupons": {
@@ -2334,6 +2334,130 @@ export interface paths {
     /** 取得點餐菜單 */
     get: operations["PublicMenusController_findOrderMenu"];
     put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/waitlist": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 候位狀態（公開） */
+    get: operations["WaitlistController_status"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/waitlist/tickets": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 後台候位清單（進行中＋今日已結束） */
+    get: operations["WaitlistController_listAdmin"];
+    put?: never;
+    /** 取號 */
+    post: operations["WaitlistController_createTicket"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/waitlist/tickets/{ticketId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢號碼牌（公開） */
+    get: operations["WaitlistController_getTicket"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/waitlist/tickets/{ticketId}/cancel": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 顧客取消候位 */
+    post: operations["WaitlistController_cancelTicket"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/waitlist/tickets/{ticketId}/transitions/{status}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /**
+     * 叫號／入座／過號／取消
+     * @description 已叫號可再次叫號；過號可補入座
+     */
+    patch: operations["WaitlistController_transitionTicket"];
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/waitlist/paused": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** 暫停／恢復取號 */
+    put: operations["WaitlistController_updatePaused"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/waitlist/settings": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 候位設定 */
+    get: operations["WaitlistController_settings"];
+    /** 更新候位設定 */
+    put: operations["WaitlistController_updateSettings"];
     post?: never;
     delete?: never;
     options?: never;
@@ -4042,6 +4166,14 @@ export interface components {
       /** Format: date-time */
       createdAt: string;
     };
+    SendTestEmailDto: {
+      /**
+       * Format: email
+       * @description 收件人 Email
+       * @example user@example.com
+       */
+      email: string;
+    };
     /** @enum {string} */
     AuditResource:
       | "menu"
@@ -4326,14 +4458,6 @@ export interface components {
       isActive?: boolean;
       /** @description 未帶時排在最後 */
       sortOrder?: number;
-    };
-    SendTestEmailDto: {
-      /**
-       * Format: email
-       * @description 收件人 Email
-       * @example user@example.com
-       */
-      email: string;
     };
     /** @enum {string} */
     CouponDiscountType: "fixed" | "percentage";
@@ -6566,6 +6690,122 @@ export interface components {
       createdAt: string;
       /** Format: date-time */
       updatedAt: string;
+    };
+    /** @enum {string} */
+    WaitlistErrorCode:
+      | "waitlistClosed"
+      | "waitlistDisabled"
+      | "waitlistGroupsInvalid"
+      | "waitlistPartySizeUnavailable"
+      | "waitlistPaused"
+      | "waitlistPhoneInQueue"
+      | "waitlistTransitionInvalid";
+    WaitlistErrorResponseDto: {
+      message: components["schemas"]["WaitlistErrorCode"];
+      /** @example Conflict */
+      error: string;
+      statusCode: number;
+      path: string;
+      success: boolean;
+      timestamp: string;
+    };
+    WaitlistGroupStatusDto: {
+      /** @example 4 */
+      maxPartySize: number;
+      /** @example 3 */
+      minPartySize: number;
+      /** @example B */
+      prefix: string;
+      /** @description 叫號中的號碼，最近叫的在前 */
+      calledTicketNumbers: string[];
+      waitingCount: number;
+    };
+    WaitlistStatusResponseDto: {
+      enabled: boolean;
+      groups: components["schemas"]["WaitlistGroupStatusDto"][];
+      /** @description 是否在營業時間內 */
+      open: boolean;
+      paused: boolean;
+    };
+    CreateWaitlistTicketDto: {
+      /** Format: email */
+      email?: string;
+      name: string;
+      partySize: number;
+      /**
+       * @description E.164
+       * @example +886912345678
+       */
+      phoneNumber: string;
+    };
+    /** @enum {string} */
+    WaitlistTicketStatus:
+      | "waiting"
+      | "called"
+      | "seated"
+      | "noShow"
+      | "cancelled";
+    WaitlistTicketResponseDto: {
+      /** @description 前方候位組數，非候位中為 0 */
+      aheadCount: number;
+      /** Format: date-time */
+      calledAt?: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      endedAt?: string | null;
+      id: string;
+      partySize: number;
+      prefix: string;
+      status: components["schemas"]["WaitlistTicketStatus"];
+      /** @example A012 */
+      ticketNumber: string;
+    };
+    WaitlistGroupDto: {
+      /** @example 4 */
+      maxPartySize: number;
+      /** @example 3 */
+      minPartySize: number;
+      /** @example B */
+      prefix: string;
+    };
+    AdminWaitlistTicketDto: {
+      /** @description 前方候位組數，非候位中為 0 */
+      aheadCount: number;
+      /** Format: date-time */
+      calledAt?: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      endedAt?: string | null;
+      id: string;
+      partySize: number;
+      prefix: string;
+      status: components["schemas"]["WaitlistTicketStatus"];
+      /** @example A012 */
+      ticketNumber: string;
+      email?: string | null;
+      name: string;
+      phoneNumber: string;
+    };
+    AdminWaitlistResponseDto: {
+      enabled: boolean;
+      groups: components["schemas"]["WaitlistGroupDto"][];
+      paused: boolean;
+      /** @description 進行中的號碼牌與今日已結束的號碼牌 */
+      tickets: components["schemas"]["AdminWaitlistTicketDto"][];
+    };
+    UpdateWaitlistPausedDto: {
+      paused: boolean;
+    };
+    WaitlistSettingsResponseDto: {
+      enabled: boolean;
+      groups: components["schemas"]["WaitlistGroupDto"][];
+      paused: boolean;
+    };
+    UpdateWaitlistSettingsDto: {
+      enabled: boolean;
+      groups: components["schemas"]["WaitlistGroupDto"][];
     };
     OrganizationResponseDto: {
       id: string;
@@ -9329,6 +9569,34 @@ export interface operations {
       };
     };
   };
+  MailsController_test: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SendTestEmailDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   AdminAuditController_findAll: {
     parameters: {
       query?: {
@@ -9739,34 +10007,6 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["BannerResponseDto"];
         };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MailsController_test: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["SendTestEmailDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
       };
       /** @description Internal server error */
       500: {
@@ -13122,6 +13362,277 @@ export interface operations {
       };
     };
   };
+  WaitlistController_status: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["WaitlistStatusResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  WaitlistController_listAdmin: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AdminWaitlistResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  WaitlistController_createTicket: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description 同一次取號重試請帶同一把鍵，重送會回傳既有號碼牌 */
+        "Idempotency-Key"?: string;
+      };
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateWaitlistTicketDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["WaitlistTicketResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  WaitlistController_getTicket: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        ticketId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["WaitlistTicketResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  WaitlistController_cancelTicket: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        ticketId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["WaitlistTicketResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  WaitlistController_transitionTicket: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        ticketId: string;
+        status: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["WaitlistTicketResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  WaitlistController_updatePaused: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateWaitlistPausedDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["WaitlistSettingsResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  WaitlistController_settings: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["WaitlistSettingsResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  WaitlistController_updateSettings: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateWaitlistSettingsDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["WaitlistSettingsResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   GcisController_findOne: {
     parameters: {
       query?: never;
@@ -15049,6 +15560,20 @@ export const orderMenuItemResponseDtoSuitableForDietValues: ReadonlyArray<
   "VeganDiet",
   "VegetarianDiet",
 ];
+export const waitlistErrorCodeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["WaitlistErrorCode"]
+> = [
+  "waitlistClosed",
+  "waitlistDisabled",
+  "waitlistGroupsInvalid",
+  "waitlistPartySizeUnavailable",
+  "waitlistPaused",
+  "waitlistPhoneInQueue",
+  "waitlistTransitionInvalid",
+];
+export const waitlistTicketStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["WaitlistTicketStatus"]
+> = ["waiting", "called", "seated", "noShow", "cancelled"];
 export const organizationMemberResponseDtoRoleValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrganizationMemberResponseDto"]["role"]
 > = ["admin", "member", "owner"];

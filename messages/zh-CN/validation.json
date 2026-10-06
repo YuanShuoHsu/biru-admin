@@ -152,6 +152,10 @@
   "makeupStartsAt": {
     "required": "补假开始为必填。"
   },
+  "maxPartySize": {
+    "belowMin": "最多人数不可少于最少人数。",
+    "required": "最多人数为必填。"
+  },
   "member": {
     "required": "请选择成员。"
   },
@@ -225,6 +229,11 @@
   },
   "postalCode": {
     "format": "邮政编码格式无效。"
+  },
+  "prefix": {
+    "duplicate": "代号不可重复。",
+    "invalid": "代号格式无效。",
+    "required": "代号为必填。"
   },
   "price": {
     "required": "请输入价格。"

@@ -152,6 +152,10 @@
   "makeupStartsAt": {
     "required": "代休開始は必須です。"
   },
+  "maxPartySize": {
+    "belowMin": "最大人数は最小人数以上にしてください。",
+    "required": "最大人数は必須です。"
+  },
   "member": {
     "required": "メンバーを選択してください。"
   },
@@ -225,6 +229,11 @@
   },
   "postalCode": {
     "format": "郵便番号の形式が無効です。"
+  },
+  "prefix": {
+    "duplicate": "記号が重複しています。",
+    "invalid": "記号の形式が無効です。",
+    "required": "記号は必須です。"
   },
   "price": {
     "required": "価格を入力してください。"

@@ -52,6 +52,7 @@ import {
   Groups,
   HelpOutlined,
   History,
+  HourglassTop,
   HowToReg,
   Inventory,
   Kitchen,
@@ -578,6 +579,11 @@ const routes: Route[] = [
             segment: "points",
           },
           {
+            icon: HourglassTop,
+            label: "organizations.waitlist.label",
+            segment: "waitlist",
+          },
+          {
             children: [{ icon: Group, segment: "[teamId]" }],
             icon: Groups,
             label: "organizations.teams.label",
@@ -647,6 +653,12 @@ const routes: Route[] = [
     label: "storeLayout.label",
     query: ["organization"],
     segment: "store-layout",
+  },
+  {
+    icon: HourglassTop,
+    label: "waitlist.label",
+    query: ["organization"],
+    segment: "waitlist",
   },
   {
     children: [

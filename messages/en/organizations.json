@@ -254,5 +254,41 @@
       "label": "Team",
       "placeholder": "Please select your team"
     }
+  },
+  "waitlist": {
+    "actions": {
+      "updateWaitlist": {
+        "success": "Waitlist settings updated",
+        "title": "Edit waitlist"
+      }
+    },
+    "enabled": {
+      "label": "Walk-in waitlist",
+      "off": "Off",
+      "on": "On"
+    },
+    "groups": {
+      "add": "Add group",
+      "helperText": "Groups must start at 1 and be continuous without overlaps. Each code is numbered separately",
+      "label": "Party size groups",
+      "maxPartySize": {
+        "label": "Maximum guests"
+      },
+      "minPartySize": {
+        "label": "Minimum guests"
+      },
+      "prefix": {
+        "label": "Code"
+      },
+      "remove": "Remove group",
+      "value": "Group {prefix}: {range}"
+    },
+    "label": "Waitlist",
+    "qrCode": {
+      "download": "Download",
+      "helperText": "Print and post this at the entrance so guests can scan it to join the waitlist",
+      "kiosk": "Open entrance tablet mode",
+      "label": "Entrance QR code"
+    }
   }
 }

@@ -1,0 +1,45 @@
+{
+  "actions": {
+    "call": "呼び出す",
+    "cancel": "キャンセル",
+    "cancelConfirm": "{ticketNumber}（{name}）の順番待ちをキャンセルしますか？",
+    "noShow": "スキップ",
+    "recall": "再度呼び出す",
+    "seat": "案内済み",
+    "success": "{ticketNumber} を「{status}」に更新しました"
+  },
+  "disabled": "この店舗では店頭の順番待ちがオフになっています。組織設定の「順番待ち」タブからオンにしてください。",
+  "empty": "順番待ちはありません",
+  "ended": "本日対応済み（{count} 組）",
+  "errors": {
+    "waitlistClosed": "営業時間外のため、受付を停止しています。",
+    "waitlistDisabled": "この店舗では店頭の順番待ちがオフになっています。",
+    "waitlistGroupsInvalid": "人数区分は 1 から連続し、重複しないように設定してください。",
+    "waitlistPartySizeUnavailable": "この人数に該当する区分がありません。",
+    "waitlistPaused": "受付を一時停止しています。",
+    "waitlistPhoneInQueue": "この電話番号はすでに順番待ちに登録されています。",
+    "waitlistTransitionInvalid": "整理券の状態が変わりました。再読み込みしてください。"
+  },
+  "group": "{prefix} 区分",
+  "label": "順番待ち",
+  "paused": {
+    "label": "受付を一時停止",
+    "off": "受付を再開しました",
+    "on": "受付を一時停止しました"
+  },
+  "range": "{min}～{max} 名",
+  "single": "{count} 名",
+  "status": {
+    "called": "呼び出し中",
+    "cancelled": "キャンセル",
+    "noShow": "スキップ",
+    "seated": "案内済み",
+    "waiting": "待機中"
+  },
+  "ticket": {
+    "calledAt": "呼び出し {time}",
+    "createdAt": "受付 {time}",
+    "partySize": "{count} 名"
+  },
+  "waitingCount": "{count} 組待ち"
+}
