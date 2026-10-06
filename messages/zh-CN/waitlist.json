@@ -11,19 +11,24 @@
   },
   "add": {
     "label": "新增排队",
-    "notice": "代客登记不受暂停取号与营业时间限制，号码按人数自动分组。",
     "partySize": {
       "label": "用餐人数",
       "placeholder": "请选择您的用餐人数",
       "value": "{count} 位"
     },
-    "success": "已新增排队 {ticketNumber}"
+    "success": "已新增排队 {ticketNumber}",
+    "unavailable": {
+      "closed": "当前非营业时间，顾客无法自行取号；代客登记不受影响。",
+      "cutoff": "已过打烊前停止取号时间，顾客无法自行取号；代客登记不受影响。",
+      "paused": "当前暂停取号，顾客无法自行取号；代客登记不受影响。"
+    }
   },
   "disabled": "本店尚未开启现场排队，请到组织设置的“现场排队”标签页开启。",
   "empty": "当前没有排队",
   "ended": "今日已处理（{count} 组）",
   "errors": {
     "waitlistClosed": "当前非营业时间，暂不开放取号。",
+    "waitlistCutoff": "已接近打烊时间，现场排队已停止取号。",
     "waitlistDisabled": "本店尚未开启现场排队。",
     "waitlistGroupsInvalid": "人数分组须从 1 开始连续且不可重叠。",
     "waitlistPartySizeUnavailable": "没有符合此人数的分组。",

@@ -262,6 +262,12 @@
         "title": "编辑现场排队"
       }
     },
+    "cutoffMinutes": {
+      "helperText": "距离打烊不到这个时间就停止顾客自助取号，店员代客登记不受影响；设为 0 代表开放到打烊",
+      "label": "打烊前停止取号（分钟）",
+      "placeholder": "请输入打烊前停止取号时间",
+      "value": "{value, plural, =0 {开放到打烊} other {打烊前 # 分钟}}"
+    },
     "enabled": {
       "label": "现场排队",
       "off": "未开启",

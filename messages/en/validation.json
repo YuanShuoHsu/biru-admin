@@ -78,6 +78,9 @@
   "customerName": {
     "required": "Company name is required."
   },
+  "cutoffMinutes": {
+    "required": "Minutes before closing is required."
+  },
   "description": {
     "maxLength": "Description must not exceed 160 characters."
   },

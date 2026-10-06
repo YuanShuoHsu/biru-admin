@@ -78,6 +78,9 @@
   "customerName": {
     "required": "公司名称为必填。"
   },
+  "cutoffMinutes": {
+    "required": "打烊前停止取号时间为必填。"
+  },
   "description": {
     "maxLength": "描述不能超过 160 个字符。"
   },

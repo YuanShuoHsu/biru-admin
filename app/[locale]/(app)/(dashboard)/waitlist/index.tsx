@@ -207,21 +207,33 @@ const AdminWaitlist = ({
       title: tWaitlist("actions.cancelTitle"),
     });
 
-  const handleAddDialog = () =>
+  const handleAddDialog = async () => {
+    const latest = (await mutate()) || waitlist;
+
     setDialog({
       content: (
         <AddWaitlistTicketDialog
           maxPartySize={Math.max(
-            ...waitlist.groups.map(({ maxPartySize }) => maxPartySize),
+            ...latest.groups.map(({ maxPartySize }) => maxPartySize),
           )}
           onCreated={() => mutate()}
           organizationSlug={organizationSlug}
+          unavailable={
+            latest.paused
+              ? "paused"
+              : !latest.open
+                ? "closed"
+                : latest.cutoff
+                  ? "cutoff"
+                  : null
+          }
         />
       ),
       formId: "add-waitlist-ticket-form",
       open: true,
       title: tWaitlist("add.label"),
     });
+  };
 
   const handlePausedChange = async (
     _event: React.ChangeEvent<HTMLInputElement>,

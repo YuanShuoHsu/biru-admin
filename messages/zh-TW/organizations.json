@@ -262,6 +262,12 @@
         "title": "編輯現場候位"
       }
     },
+    "cutoffMinutes": {
+      "helperText": "距離打烊不到這個時間就停止顧客自助取號，店員代客登記不受影響；設為 0 代表開放到打烊",
+      "label": "打烊前停止取號（分鐘）",
+      "placeholder": "請輸入打烊前停止取號時間",
+      "value": "{value, plural, =0 {開放到打烊} other {打烊前 # 分鐘}}"
+    },
     "enabled": {
       "label": "現場候位",
       "off": "未開啟",

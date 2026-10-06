@@ -6731,6 +6731,7 @@ export interface components {
     /** @enum {string} */
     WaitlistErrorCode:
       | "waitlistClosed"
+      | "waitlistCutoff"
       | "waitlistDisabled"
       | "waitlistGroupsInvalid"
       | "waitlistPartySizeUnavailable"
@@ -6753,11 +6754,16 @@ export interface components {
       minPartySize: number;
       /** @example B */
       prefix: string;
-      /** @description 叫號中的號碼，最近叫的在前 */
-      calledTicketNumbers: string[];
+      /**
+       * @description 最近一次叫號的號碼（之後入座、過號或取消仍保留），尚未叫號為 null
+       * @example A008
+       */
+      currentTicketNumber?: string | null;
       waitingCount: number;
     };
     WaitlistStatusResponseDto: {
+      /** @description 營業中但已過打烊前停止取號時間 */
+      cutoff: boolean;
       enabled: boolean;
       groups: components["schemas"]["WaitlistGroupStatusDto"][];
       /** @description 是否在營業時間內 */
@@ -6846,17 +6852,55 @@ export interface components {
       phoneNumber: string;
     };
     AdminWaitlistResponseDto: {
+      /** @description 營業中但已過打烊前停止取號時間 */
+      cutoff: boolean;
+      cutoffMinutes: number;
       enabled: boolean;
       groups: components["schemas"]["WaitlistGroupDto"][];
       holdMinutes: number;
+      /** @description 是否在營業時間內 */
+      open: boolean;
       paused: boolean;
       /** @description 進行中的號碼牌與今日已結束的號碼牌 */
       tickets: components["schemas"]["AdminWaitlistTicketDto"][];
+    };
+    WaitlistTicketDetailResponseDto: {
+      /** @description 前方候位組數，非候位中為 0 */
+      aheadCount: number;
+      /** Format: date-time */
+      calledAt?: string | null;
+      /**
+       * Format: date-time
+       * @description 顧客回覆確認前往的時間
+       */
+      confirmedAt?: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      endedAt?: string | null;
+      /**
+       * Format: date-time
+       * @description 叫號後的保留期限，非叫號中為 null
+       */
+      holdUntil?: string | null;
+      id: string;
+      partySize: number;
+      prefix: string;
+      status: components["schemas"]["WaitlistTicketStatus"];
+      /** @example A012 */
+      ticketNumber: string;
+      /**
+       * @description 同組最近一次叫號的號碼，與候位狀態的 currentTicketNumber 相同
+       * @example B003
+       */
+      currentTicketNumber?: string | null;
     };
     UpdateWaitlistPausedDto: {
       paused: boolean;
     };
     WaitlistSettingsResponseDto: {
+      /** @description 打烊前幾分鐘停止顧客自助取號 */
+      cutoffMinutes: number;
       enabled: boolean;
       groups: components["schemas"]["WaitlistGroupDto"][];
       /** @description 叫號後保留分鐘數 */
@@ -6864,6 +6908,11 @@ export interface components {
       paused: boolean;
     };
     UpdateWaitlistSettingsDto: {
+      /**
+       * @description 打烊前幾分鐘停止顧客自助取號
+       * @example 60
+       */
+      cutoffMinutes: number;
       enabled: boolean;
       groups: components["schemas"]["WaitlistGroupDto"][];
       /**
@@ -13570,7 +13619,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["WaitlistTicketResponseDto"];
+          "application/json": components["schemas"]["WaitlistTicketDetailResponseDto"];
         };
       };
       /** @description Internal server error */
@@ -15693,6 +15742,7 @@ export const waitlistErrorCodeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["WaitlistErrorCode"]
 > = [
   "waitlistClosed",
+  "waitlistCutoff",
   "waitlistDisabled",
   "waitlistGroupsInvalid",
   "waitlistPartySizeUnavailable",

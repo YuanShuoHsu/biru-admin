@@ -17,7 +17,7 @@ import TextMaskCustom from "@/components/TextMaskCustom";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Grid, MenuItem, TextField, Typography } from "@mui/material";
+import { Alert, Grid, MenuItem, TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -35,12 +35,14 @@ interface AddWaitlistTicketDialogProps {
   maxPartySize: number;
   onCreated: () => void;
   organizationSlug: string;
+  unavailable: "closed" | "cutoff" | "paused" | null;
 }
 
 const AddWaitlistTicketDialog = ({
   maxPartySize,
   onCreated,
   organizationSlug,
+  unavailable,
 }: AddWaitlistTicketDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
@@ -135,9 +137,11 @@ const AddWaitlistTicketDialog = ({
 
   return (
     <FormBox id="add-waitlist-ticket-form" noValidate onSubmit={onSubmit}>
-      <Typography color="textSecondary" variant="body2">
-        {tWaitlist("add.notice")}
-      </Typography>
+      {unavailable && (
+        <Alert severity="info">
+          {tWaitlist(`add.unavailable.${unavailable}`)}
+        </Alert>
+      )}
       <TextField
         {...register("partySize")}
         error={!!errors.partySize}

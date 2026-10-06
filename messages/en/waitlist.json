@@ -11,19 +11,24 @@
   },
   "add": {
     "label": "Add to waitlist",
-    "notice": "Staff entries skip the pause and opening hours. The number is assigned by party size.",
     "partySize": {
       "label": "Party size",
       "placeholder": "Select party size",
       "value": "{count, plural, one {# guest} other {# guests}}"
     },
-    "success": "Added {ticketNumber} to the waitlist"
+    "success": "Added {ticketNumber} to the waitlist",
+    "unavailable": {
+      "closed": "The store is closed, so guests can't join on their own. You can still add parties here.",
+      "cutoff": "It's past the cutoff before closing, so guests can't join on their own. You can still add parties here.",
+      "paused": "New tickets are paused, so guests can't join on their own. You can still add parties here."
+    }
   },
   "disabled": "The walk-in waitlist is off for this store. Turn it on from the Waitlist tab in organization settings.",
   "empty": "No one is waiting",
   "ended": "Handled today ({count, plural, one {# party} other {# parties}})",
   "errors": {
     "waitlistClosed": "The store is closed, so the waitlist isn't open.",
+    "waitlistCutoff": "It's close to closing time, so guests can no longer join the waitlist.",
     "waitlistDisabled": "The walk-in waitlist is off for this store.",
     "waitlistGroupsInvalid": "Party size groups must start at 1 and be continuous without overlaps.",
     "waitlistPartySizeUnavailable": "No group covers this party size.",

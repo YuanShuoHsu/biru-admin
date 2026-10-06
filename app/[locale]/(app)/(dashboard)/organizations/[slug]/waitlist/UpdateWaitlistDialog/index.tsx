@@ -40,6 +40,7 @@ import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 import { getWaitlistErrorCode } from "@/utils/waitlist";
 
+const CUTOFF_MINUTES_MAX = 240;
 const GROUPS_MAX = 26;
 const HOLD_MINUTES_MAX = 60;
 
@@ -83,6 +84,7 @@ const UpdateWaitlistDialog = ({
     setValue,
   } = useForm<UpdateWaitlistForm>({
     defaultValues: {
+      cutoffMinutes: String(settings.cutoffMinutes),
       enabled: settings.enabled,
       groups: settings.groups.map(({ maxPartySize, prefix }) => ({
         maxPartySize: String(maxPartySize),
@@ -98,9 +100,9 @@ const UpdateWaitlistDialog = ({
     name: "groups",
   });
 
-  const [enabled, groups, holdMinutes] = useWatch({
+  const [cutoffMinutes, enabled, groups, holdMinutes] = useWatch({
     control,
-    name: ["enabled", "groups", "holdMinutes"],
+    name: ["cutoffMinutes", "enabled", "groups", "holdMinutes"],
   });
 
   const onSubmitHandler = async (values: UpdateWaitlistForm) => {
@@ -111,6 +113,7 @@ const UpdateWaitlistDialog = ({
         `/api/organizations/${organizationSlug}/waitlist/settings`,
         {
           body: JSON.stringify({
+            cutoffMinutes: Number(values.cutoffMinutes),
             enabled: values.enabled,
             groups: values.groups.map(({ maxPartySize, prefix }, index) => ({
               maxPartySize: Number(maxPartySize),
@@ -175,6 +178,24 @@ const UpdateWaitlistDialog = ({
         }
         placeholder={tOrganizations("waitlist.holdMinutes.placeholder")}
         value={holdMinutes !== "" ? Number(holdMinutes) : null}
+      />
+      <NumberSpinner
+        error={!!errors.cutoffMinutes}
+        fullWidth
+        helperText={
+          errors.cutoffMinutes?.message ||
+          tOrganizations("waitlist.cutoffMinutes.helperText")
+        }
+        label={tOrganizations("waitlist.cutoffMinutes.label")}
+        max={CUTOFF_MINUTES_MAX}
+        min={0}
+        onValueChange={(value) =>
+          setValue("cutoffMinutes", value != null ? String(value) : "", {
+            shouldValidate: isSubmitted,
+          })
+        }
+        placeholder={tOrganizations("waitlist.cutoffMinutes.placeholder")}
+        value={cutoffMinutes !== "" ? Number(cutoffMinutes) : null}
       />
       <FormLabel component="legend">
         {tOrganizations("waitlist.groups.label")}

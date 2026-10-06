@@ -262,6 +262,12 @@
         "title": "Edit waitlist"
       }
     },
+    "cutoffMinutes": {
+      "helperText": "Guests can't join the waitlist on their own once closing is this close. Staff can still add parties. Set to 0 to stay open until closing",
+      "label": "Stop taking new parties before closing (minutes)",
+      "placeholder": "Enter the minutes before closing",
+      "value": "{value, plural, =0 {Open until closing} one {# minute before closing} other {# minutes before closing}}"
+    },
     "enabled": {
       "label": "Walk-in waitlist",
       "off": "Off",

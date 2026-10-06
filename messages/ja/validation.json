@@ -78,6 +78,9 @@
   "customerName": {
     "required": "会社名は必須です。"
   },
+  "cutoffMinutes": {
+    "required": "閉店前の受付終了時間は必須です。"
+  },
   "description": {
     "maxLength": "説明は160文字以内で入力してください。"
   },

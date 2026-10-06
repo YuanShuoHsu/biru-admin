@@ -78,6 +78,9 @@
   "customerName": {
     "required": "회사명은 필수입니다."
   },
+  "cutoffMinutes": {
+    "required": "영업 종료 전 마감 시간은 필수입니다."
+  },
   "description": {
     "maxLength": "설명은 160자를 초과할 수 없습니다."
   },

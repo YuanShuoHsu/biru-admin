@@ -102,6 +102,13 @@ const OrganizationsSlugWaitlist = ({
         .join(tCommon("delimiter")),
     },
     {
+      key: "cutoffMinutes",
+      label: tOrganizations("waitlist.cutoffMinutes.label"),
+      value: tOrganizations("waitlist.cutoffMinutes.value", {
+        value: settings.cutoffMinutes,
+      }),
+    },
+    {
       key: "holdMinutes",
       label: tOrganizations("waitlist.holdMinutes.label"),
       value: tOrganizations("waitlist.holdMinutes.value", {
