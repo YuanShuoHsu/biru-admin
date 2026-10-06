@@ -3,6 +3,7 @@
     "call": "呼び出す",
     "cancel": "キャンセル",
     "cancelConfirm": "{ticketNumber}（{name}）の順番待ちをキャンセルしますか？",
+    "cancelTitle": "順番待ちをキャンセル",
     "noShow": "スキップ",
     "recall": "再度呼び出す",
     "seat": "案内済み",
@@ -48,7 +49,9 @@
   },
   "ticket": {
     "calledAt": "呼び出し {time}",
+    "confirmed": "来店確定",
     "createdAt": "受付 {time}",
+    "holdUntil": "{time} まで確保",
     "partySize": "{count} 名"
   },
   "waitingCount": "{count} 組待ち"

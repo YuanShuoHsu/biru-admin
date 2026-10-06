@@ -283,6 +283,12 @@
       "remove": "移除分組",
       "value": "{prefix} 組：{range}"
     },
+    "holdMinutes": {
+      "helperText": "叫號後為顧客保留的時間，逾時是否過號由店員決定",
+      "label": "叫號保留時間（分鐘）",
+      "placeholder": "請輸入叫號保留時間",
+      "value": "{value} 分鐘"
+    },
     "label": "現場候位",
     "qrCode": {
       "download": "下載",

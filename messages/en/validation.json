@@ -117,6 +117,9 @@
   "hiredAt": {
     "required": "Employment start is required."
   },
+  "holdMinutes": {
+    "required": "Hold time is required."
+  },
   "ingredientId": {
     "notSelected": "Please select your ingredient."
   },

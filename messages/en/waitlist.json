@@ -3,6 +3,7 @@
     "call": "Call",
     "cancel": "Cancel",
     "cancelConfirm": "Cancel {ticketNumber} ({name}) on the waitlist?",
+    "cancelTitle": "Cancel waitlist entry",
     "noShow": "Skip",
     "recall": "Call again",
     "seat": "Seat",
@@ -48,7 +49,9 @@
   },
   "ticket": {
     "calledAt": "Called {time}",
+    "confirmed": "Confirmed",
     "createdAt": "Joined {time}",
+    "holdUntil": "Held until {time}",
     "partySize": "{count, plural, one {# guest} other {# guests}}"
   },
   "waitingCount": "{count, plural, one {# party waiting} other {# parties waiting}}"

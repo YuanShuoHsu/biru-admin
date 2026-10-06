@@ -283,6 +283,12 @@
       "remove": "区分を削除",
       "value": "{prefix} 区分：{range}"
     },
+    "holdMinutes": {
+      "helperText": "呼び出し後にお客様のために確保する時間です。過ぎた後にスキップするかはスタッフが判断します",
+      "label": "呼び出し後の確保時間（分）",
+      "placeholder": "確保時間を入力",
+      "value": "{value} 分"
+    },
     "label": "順番待ち",
     "qrCode": {
       "download": "ダウンロード",

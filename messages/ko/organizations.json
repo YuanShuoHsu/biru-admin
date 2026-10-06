@@ -283,6 +283,12 @@
       "remove": "그룹 삭제",
       "value": "{prefix} 그룹: {range}"
     },
+    "holdMinutes": {
+      "helperText": "호출 후 고객을 위해 자리를 유지하는 시간입니다. 시간이 지난 뒤 건너뛸지는 직원이 판단합니다",
+      "label": "호출 후 유지 시간(분)",
+      "placeholder": "유지 시간 입력",
+      "value": "{value}분"
+    },
     "label": "현장 대기",
     "qrCode": {
       "download": "다운로드",

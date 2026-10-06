@@ -283,6 +283,12 @@
       "remove": "移除分组",
       "value": "{prefix} 组：{range}"
     },
+    "holdMinutes": {
+      "helperText": "叫号后为顾客保留的时间，逾时是否过号由店员决定",
+      "label": "叫号保留时间（分钟）",
+      "placeholder": "请输入叫号保留时间",
+      "value": "{value} 分钟"
+    },
     "label": "现场排队",
     "qrCode": {
       "download": "下载",

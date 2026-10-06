@@ -191,8 +191,8 @@ const AdminWaitlist = ({
     } catch (error) {
       showError(error);
     } finally {
+      await mutate();
       setPendingAction(null);
-      mutate();
     }
   };
 
@@ -204,7 +204,7 @@ const AdminWaitlist = ({
       }),
       onConfirm: () => handleTransition(ticket, "cancelled"),
       open: true,
-      title: tWaitlist("actions.cancel"),
+      title: tWaitlist("actions.cancelTitle"),
     });
 
   const handleAddDialog = () =>
@@ -242,8 +242,8 @@ const AdminWaitlist = ({
     } catch (error) {
       showError(error);
     } finally {
+      await mutate();
       setIsPausing(false);
-      mutate();
     }
   };
 
@@ -294,6 +294,13 @@ const AdminWaitlist = ({
               size="small"
               variant="outlined"
             />
+            {ticket.status === "called" && ticket.confirmedAt && (
+              <Chip
+                color="success"
+                label={tWaitlist("ticket.confirmed")}
+                size="small"
+              />
+            )}
           </TitleStack>
         }
         secondary={
@@ -306,6 +313,10 @@ const AdminWaitlist = ({
               ticket.calledAt &&
                 tWaitlist("ticket.calledAt", {
                   time: format.dateTime(new Date(ticket.calledAt), "time"),
+                }),
+              ticket.holdUntil &&
+                tWaitlist("ticket.holdUntil", {
+                  time: format.dateTime(new Date(ticket.holdUntil), "time"),
                 }),
             ]
               .filter(Boolean)
@@ -366,7 +377,7 @@ const AdminWaitlist = ({
             );
 
           return (
-            <Grid key={group.prefix} size={{ xs: 12, lg: 4 }}>
+            <Grid key={group.prefix} size={{ xs: 12, md: 6 }}>
               <StyledCard variant="outlined">
                 <CardHeader
                   subheader={

@@ -117,6 +117,9 @@
   "hiredAt": {
     "required": "입사 시간은 필수입니다."
   },
+  "holdMinutes": {
+    "required": "호출 후 유지 시간은 필수입니다."
+  },
   "ingredientId": {
     "notSelected": "식자재를 선택해 주세요."
   },

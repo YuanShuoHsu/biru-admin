@@ -25,6 +25,9 @@ export const useWaitlistFormSchema = () => {
           }),
         )
         .min(1),
+      holdMinutes: z
+        .string()
+        .min(1, { error: tValidation("holdMinutes.required") }),
     })
     .superRefine(({ groups }, ctx) => {
       groups.forEach(({ maxPartySize, prefix }, index) => {

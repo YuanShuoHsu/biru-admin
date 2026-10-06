@@ -2430,6 +2430,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/waitlist/tickets/{ticketId}/confirm": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 顧客回覆確認前往（僅限已叫號） */
+    post: operations["WaitlistController_confirmTicket"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/waitlist/tickets/{ticketId}/transitions/{status}": {
     parameters: {
       query?: never;
@@ -6770,10 +6787,20 @@ export interface components {
       aheadCount: number;
       /** Format: date-time */
       calledAt?: string | null;
+      /**
+       * Format: date-time
+       * @description 顧客回覆確認前往的時間
+       */
+      confirmedAt?: string | null;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
       endedAt?: string | null;
+      /**
+       * Format: date-time
+       * @description 叫號後的保留期限，非叫號中為 null
+       */
+      holdUntil?: string | null;
       id: string;
       partySize: number;
       prefix: string;
@@ -6794,10 +6821,20 @@ export interface components {
       aheadCount: number;
       /** Format: date-time */
       calledAt?: string | null;
+      /**
+       * Format: date-time
+       * @description 顧客回覆確認前往的時間
+       */
+      confirmedAt?: string | null;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
       endedAt?: string | null;
+      /**
+       * Format: date-time
+       * @description 叫號後的保留期限，非叫號中為 null
+       */
+      holdUntil?: string | null;
       id: string;
       partySize: number;
       prefix: string;
@@ -6811,6 +6848,7 @@ export interface components {
     AdminWaitlistResponseDto: {
       enabled: boolean;
       groups: components["schemas"]["WaitlistGroupDto"][];
+      holdMinutes: number;
       paused: boolean;
       /** @description 進行中的號碼牌與今日已結束的號碼牌 */
       tickets: components["schemas"]["AdminWaitlistTicketDto"][];
@@ -6821,11 +6859,18 @@ export interface components {
     WaitlistSettingsResponseDto: {
       enabled: boolean;
       groups: components["schemas"]["WaitlistGroupDto"][];
+      /** @description 叫號後保留分鐘數 */
+      holdMinutes: number;
       paused: boolean;
     };
     UpdateWaitlistSettingsDto: {
       enabled: boolean;
       groups: components["schemas"]["WaitlistGroupDto"][];
+      /**
+       * @description 叫號後保留分鐘數
+       * @example 10
+       */
+      holdMinutes: number;
     };
     OrganizationResponseDto: {
       id: string;
@@ -13538,6 +13583,35 @@ export interface operations {
     };
   };
   WaitlistController_cancelTicket: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        ticketId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["WaitlistTicketResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  WaitlistController_confirmTicket: {
     parameters: {
       query?: never;
       header?: never;

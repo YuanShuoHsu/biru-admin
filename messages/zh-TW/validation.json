@@ -117,6 +117,9 @@
   "hiredAt": {
     "required": "到職時間為必填。"
   },
+  "holdMinutes": {
+    "required": "叫號保留時間為必填。"
+  },
   "ingredientId": {
     "notSelected": "請選擇您的食材。"
   },

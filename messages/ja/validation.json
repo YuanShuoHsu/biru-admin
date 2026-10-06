@@ -117,6 +117,9 @@
   "hiredAt": {
     "required": "入社日時は必須です。"
   },
+  "holdMinutes": {
+    "required": "呼び出し後の確保時間は必須です。"
+  },
   "ingredientId": {
     "notSelected": "食材を選択してください。"
   },

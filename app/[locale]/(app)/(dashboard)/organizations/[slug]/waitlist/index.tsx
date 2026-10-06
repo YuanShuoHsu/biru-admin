@@ -17,7 +17,8 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { WaitlistSettingsResponse } from "@/types/waitlist";
 
-const QR_CODE_SIZE = 240;
+const QR_CODE_DISPLAY_SIZE = 240;
+const QR_CODE_DOWNLOAD_SIZE = 1024;
 
 const BoldTypography = styled(Typography)({
   fontWeight: "bold",
@@ -100,6 +101,13 @@ const OrganizationsSlugWaitlist = ({
         )
         .join(tCommon("delimiter")),
     },
+    {
+      key: "holdMinutes",
+      label: tOrganizations("waitlist.holdMinutes.label"),
+      value: tOrganizations("waitlist.holdMinutes.value", {
+        value: settings.holdMinutes,
+      }),
+    },
   ];
 
   return (
@@ -124,7 +132,11 @@ const OrganizationsSlugWaitlist = ({
             <QRCodeCanvas
               marginSize={2}
               ref={qrCodeRef}
-              size={QR_CODE_SIZE}
+              size={QR_CODE_DOWNLOAD_SIZE}
+              style={{
+                height: QR_CODE_DISPLAY_SIZE,
+                width: QR_CODE_DISPLAY_SIZE,
+              }}
               value={waitlistUrl}
             />
             <UrlTypography variant="body2">{waitlistUrl}</UrlTypography>

@@ -3,6 +3,7 @@
     "call": "叫號",
     "cancel": "取消",
     "cancelConfirm": "確定要取消 {ticketNumber}（{name}）的候位嗎？",
+    "cancelTitle": "取消候位",
     "noShow": "過號",
     "recall": "再次叫號",
     "seat": "入座",
@@ -48,7 +49,9 @@
   },
   "ticket": {
     "calledAt": "叫號 {time}",
+    "confirmed": "已確認前往",
     "createdAt": "取號 {time}",
+    "holdUntil": "保留至 {time}",
     "partySize": "{count} 位"
   },
   "waitingCount": "{count} 組等候中"

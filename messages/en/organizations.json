@@ -283,6 +283,12 @@
       "remove": "Remove group",
       "value": "Group {prefix}: {range}"
     },
+    "holdMinutes": {
+      "helperText": "How long a called party's spot is held. Staff decide whether to skip them after it passes",
+      "label": "Hold time after calling (minutes)",
+      "placeholder": "Enter the hold time",
+      "value": "{value, plural, one {# minute} other {# minutes}}"
+    },
     "label": "Waitlist",
     "qrCode": {
       "download": "Download",

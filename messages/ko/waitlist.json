@@ -3,6 +3,7 @@
     "call": "호출",
     "cancel": "취소",
     "cancelConfirm": "{ticketNumber}({name}) 대기를 취소하시겠습니까?",
+    "cancelTitle": "대기 취소",
     "noShow": "건너뛰기",
     "recall": "다시 호출",
     "seat": "착석",
@@ -48,7 +49,9 @@
   },
   "ticket": {
     "calledAt": "호출 {time}",
+    "confirmed": "방문 확정",
     "createdAt": "등록 {time}",
+    "holdUntil": "{time}까지 유지",
     "partySize": "{count}명"
   },
   "waitingCount": "{count}팀 대기 중"

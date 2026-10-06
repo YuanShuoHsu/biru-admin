@@ -12,6 +12,7 @@ import {
 } from "./definitions";
 
 import FormBox from "@/components/FormBox";
+import NumberSpinner from "@/components/NumberSpinner";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -40,6 +41,7 @@ import { fetcher } from "@/utils/fetcher";
 import { getWaitlistErrorCode } from "@/utils/waitlist";
 
 const GROUPS_MAX = 26;
+const HOLD_MINUTES_MAX = 60;
 
 const GroupRowStack = styled(Stack)(({ theme }) => ({
   alignItems: "flex-start",
@@ -86,6 +88,7 @@ const UpdateWaitlistDialog = ({
         maxPartySize: String(maxPartySize),
         prefix,
       })),
+      holdMinutes: String(settings.holdMinutes),
     },
     resolver: zodResolver(waitlistFormSchema),
   });
@@ -95,7 +98,10 @@ const UpdateWaitlistDialog = ({
     name: "groups",
   });
 
-  const [enabled, groups] = useWatch({ control, name: ["enabled", "groups"] });
+  const [enabled, groups, holdMinutes] = useWatch({
+    control,
+    name: ["enabled", "groups", "holdMinutes"],
+  });
 
   const onSubmitHandler = async (values: UpdateWaitlistForm) => {
     try {
@@ -111,6 +117,7 @@ const UpdateWaitlistDialog = ({
               minPartySize: getMinPartySize(values.groups, index),
               prefix,
             })),
+            holdMinutes: Number(values.holdMinutes),
           } satisfies UpdateWaitlistSettingsDto),
           headers: { "Content-Type": "application/json" },
           method: "PUT",
@@ -150,6 +157,24 @@ const UpdateWaitlistDialog = ({
           />
         }
         label={tOrganizations("waitlist.enabled.label")}
+      />
+      <NumberSpinner
+        error={!!errors.holdMinutes}
+        fullWidth
+        helperText={
+          errors.holdMinutes?.message ||
+          tOrganizations("waitlist.holdMinutes.helperText")
+        }
+        label={tOrganizations("waitlist.holdMinutes.label")}
+        max={HOLD_MINUTES_MAX}
+        min={1}
+        onValueChange={(value) =>
+          setValue("holdMinutes", value != null ? String(value) : "", {
+            shouldValidate: isSubmitted,
+          })
+        }
+        placeholder={tOrganizations("waitlist.holdMinutes.placeholder")}
+        value={holdMinutes !== "" ? Number(holdMinutes) : null}
       />
       <FormLabel component="legend">
         {tOrganizations("waitlist.groups.label")}
