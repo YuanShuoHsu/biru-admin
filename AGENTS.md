@@ -66,7 +66,7 @@ React Hook Form + Zod schemas (`definitions.ts` files). Form schemas and error h
 
 ### UI & Theme
 
-MUI v7 with a custom theme (`theme.ts`) supporting light/dark via CSS variables (`colorSchemeSelector: "class"`). Tailwind CSS v4 is also available for utilities. MUI DataGrid (`@mui/x-data-grid`) is used for all tabular data with server-side pagination/sorting/filtering.
+MUI v9 with a custom theme (`theme.ts`) supporting light/dark via CSS variables (`colorSchemeSelector: "class"`). Tailwind CSS v4 is also available for utilities. MUI DataGrid (`@mui/x-data-grid`) is used for all tabular data with server-side pagination/sorting/filtering.
 
 ### Auth
 
