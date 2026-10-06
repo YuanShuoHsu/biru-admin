@@ -8,6 +8,16 @@
     "seat": "착석",
     "success": "{ticketNumber} 상태가 '{status}'(으)로 변경되었습니다"
   },
+  "add": {
+    "label": "대기 추가",
+    "notice": "직원 등록은 일시 중지와 영업시간 제한을 받지 않으며, 번호는 인원에 따라 자동으로 그룹이 정해집니다.",
+    "partySize": {
+      "label": "인원",
+      "placeholder": "인원을 선택해 주세요",
+      "value": "{count}명"
+    },
+    "success": "{ticketNumber}을(를) 대기에 추가했습니다"
+  },
   "disabled": "이 매장은 현장 대기가 꺼져 있습니다. 조직 설정의 '현장 대기' 탭에서 켜 주세요.",
   "empty": "대기 중인 팀이 없습니다",
   "ended": "오늘 처리됨({count}팀)",

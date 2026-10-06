@@ -287,7 +287,6 @@
     "qrCode": {
       "download": "下載",
       "helperText": "列印後張貼在門口，客人用手機掃碼即可取號",
-      "kiosk": "開啟門口平板模式",
       "label": "門口取號 QR code"
     }
   }

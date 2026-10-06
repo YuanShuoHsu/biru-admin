@@ -8,6 +8,16 @@
     "seat": "入座",
     "success": "{ticketNumber} 已更新為「{status}」"
   },
+  "add": {
+    "label": "新增候位",
+    "notice": "代客登記不受暫停取號與營業時間限制，號碼依人數自動分組。",
+    "partySize": {
+      "label": "用餐人數",
+      "placeholder": "請選擇您的用餐人數",
+      "value": "{count} 位"
+    },
+    "success": "已新增候位 {ticketNumber}"
+  },
   "disabled": "本店尚未開啟現場候位，請至組織設定的「現場候位」分頁開啟。",
   "empty": "目前沒有候位",
   "ended": "今日已處理（{count} 組）",

@@ -11,6 +11,7 @@ import { useSocketConnection } from "@/hooks/useSocketConnection";
 
 import { menuSocket } from "@/app/socket";
 
+import { Add } from "@mui/icons-material";
 import {
   Alert,
   Button,
@@ -28,6 +29,8 @@ import {
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+
+import AddWaitlistTicketDialog from "./AddWaitlistTicketDialog";
 
 import CustomizedAccordions from "@/components/CustomizedAccordions";
 import { StyledListItem } from "@/components/FormCard";
@@ -204,6 +207,22 @@ const AdminWaitlist = ({
       title: tWaitlist("actions.cancel"),
     });
 
+  const handleAddDialog = () =>
+    setDialog({
+      content: (
+        <AddWaitlistTicketDialog
+          maxPartySize={Math.max(
+            ...waitlist.groups.map(({ maxPartySize }) => maxPartySize),
+          )}
+          onCreated={() => mutate()}
+          organizationSlug={organizationSlug}
+        />
+      ),
+      formId: "add-waitlist-ticket-form",
+      open: true,
+      title: tWaitlist("add.label"),
+    });
+
   const handlePausedChange = async (
     _event: React.ChangeEvent<HTMLInputElement>,
     paused: boolean,
@@ -313,6 +332,13 @@ const AdminWaitlist = ({
   return (
     <>
       <HeaderStack direction="row">
+        <Button
+          onClick={handleAddDialog}
+          startIcon={<Add />}
+          variant="contained"
+        >
+          {tWaitlist("add.label")}
+        </Button>
         <FormControlLabel
           control={
             <Switch

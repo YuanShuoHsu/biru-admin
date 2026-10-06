@@ -9,7 +9,7 @@ import UpdateWaitlistDialog from "./UpdateWaitlistDialog";
 import DetailsCard from "@/components/DetailsCard";
 import { StyledCardContent } from "@/components/FormCard";
 
-import { Download, OpenInNew } from "@mui/icons-material";
+import { Download } from "@mui/icons-material";
 import { Button, Card, Stack, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -138,14 +138,6 @@ const OrganizationsSlugWaitlist = ({
                 variant="outlined"
               >
                 {tOrganizations("waitlist.qrCode.download")}
-              </Button>
-              <Button
-                endIcon={<OpenInNew />}
-                href={`${waitlistUrl}?kiosk=true`}
-                rel="noopener"
-                target="_blank"
-              >
-                {tOrganizations("waitlist.qrCode.kiosk")}
               </Button>
             </ActionsStack>
           </StyledCardContent>

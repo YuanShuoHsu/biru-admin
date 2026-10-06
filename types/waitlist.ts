@@ -4,6 +4,8 @@ export type AdminWaitlistResponse =
   components["schemas"]["AdminWaitlistResponseDto"];
 export type AdminWaitlistTicket =
   components["schemas"]["AdminWaitlistTicketDto"];
+export type CreateWaitlistTicketDto =
+  components["schemas"]["CreateWaitlistTicketDto"];
 export type UpdateWaitlistSettingsDto =
   components["schemas"]["UpdateWaitlistSettingsDto"];
 export type WaitlistErrorCode = components["schemas"]["WaitlistErrorCode"];

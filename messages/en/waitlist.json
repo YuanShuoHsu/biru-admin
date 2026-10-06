@@ -8,6 +8,16 @@
     "seat": "Seat",
     "success": "{ticketNumber} is now {status}"
   },
+  "add": {
+    "label": "Add to waitlist",
+    "notice": "Staff entries skip the pause and opening hours. The number is assigned by party size.",
+    "partySize": {
+      "label": "Party size",
+      "placeholder": "Select party size",
+      "value": "{count, plural, one {# guest} other {# guests}}"
+    },
+    "success": "Added {ticketNumber} to the waitlist"
+  },
   "disabled": "The walk-in waitlist is off for this store. Turn it on from the Waitlist tab in organization settings.",
   "empty": "No one is waiting",
   "ended": "Handled today ({count, plural, one {# party} other {# parties}})",

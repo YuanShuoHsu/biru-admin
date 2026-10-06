@@ -190,6 +190,9 @@
   "parentalChild": {
     "notSelected": "Please select your child."
   },
+  "partySize": {
+    "notSelected": "Please select your party size."
+  },
   "password": {
     "letter": "Contain at least one letter.",
     "match": "Matches the password.",

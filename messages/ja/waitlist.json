@@ -8,6 +8,16 @@
     "seat": "案内済み",
     "success": "{ticketNumber} を「{status}」に更新しました"
   },
+  "add": {
+    "label": "順番待ちを追加",
+    "notice": "スタッフによる受付は一時停止や営業時間の制限を受けません。番号は人数に応じて自動で区分されます。",
+    "partySize": {
+      "label": "人数",
+      "placeholder": "人数を選択してください",
+      "value": "{count} 名"
+    },
+    "success": "{ticketNumber} を順番待ちに追加しました"
+  },
   "disabled": "この店舗では店頭の順番待ちがオフになっています。組織設定の「順番待ち」タブからオンにしてください。",
   "empty": "順番待ちはありません",
   "ended": "本日対応済み（{count} 組）",

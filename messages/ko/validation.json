@@ -190,6 +190,9 @@
   "parentalChild": {
     "notSelected": "자녀를 선택해 주세요."
   },
+  "partySize": {
+    "notSelected": "인원을 선택해 주세요."
+  },
   "password": {
     "letter": "영문자를 최소 1개 포함.",
     "match": "비밀번호와 일치.",

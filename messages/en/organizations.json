@@ -287,7 +287,6 @@
     "qrCode": {
       "download": "Download",
       "helperText": "Print and post this at the entrance so guests can scan it to join the waitlist",
-      "kiosk": "Open entrance tablet mode",
       "label": "Entrance QR code"
     }
   }
