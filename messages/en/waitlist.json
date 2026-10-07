@@ -1,4 +1,5 @@
 {
+  "accepting": "Accept new tickets",
   "actions": {
     "cancel": "Cancel",
     "cancelConfirm": "Cancel <bold>{ticketNumber}</bold> ({name}) on the waitlist?",
@@ -43,9 +44,10 @@
   "group": "Group {prefix}",
   "label": "Waitlist",
   "paused": {
-    "label": "Pause new tickets",
+    "confirm": "Guests won't be able to join on their own, but you can still add parties here. Pause new tickets?",
     "off": "New tickets resumed",
-    "on": "New tickets paused"
+    "on": "New tickets paused",
+    "title": "Pause new tickets"
   },
   "range": "{min}–{max} guests",
   "single": "{count, plural, one {# guest} other {# guests}}",

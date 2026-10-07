@@ -1,4 +1,5 @@
 {
+  "accepting": "대기 등록 받기",
   "actions": {
     "cancel": "취소",
     "cancelConfirm": "<bold>{ticketNumber}</bold>({name}) 대기를 취소하시겠습니까?",
@@ -43,9 +44,10 @@
   "group": "{prefix} 그룹",
   "label": "현장 대기",
   "paused": {
-    "label": "대기 등록 일시 중지",
+    "confirm": "일시 중지하면 고객이 직접 등록할 수 없습니다. 대리 등록은 계속 가능합니다. 대기 등록을 일시 중지하시겠습니까?",
     "off": "대기 등록을 재개했습니다",
-    "on": "대기 등록을 일시 중지했습니다"
+    "on": "대기 등록을 일시 중지했습니다",
+    "title": "대기 등록 일시 중지"
   },
   "range": "{min}~{max}명",
   "single": "{count}명",

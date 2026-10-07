@@ -1,4 +1,5 @@
 {
+  "accepting": "開放取號",
   "actions": {
     "cancel": "取消",
     "cancelConfirm": "確定要取消 <bold>{ticketNumber}</bold>（{name}）的候位嗎？",
@@ -43,9 +44,10 @@
   "group": "{prefix} 組",
   "label": "現場候位",
   "paused": {
-    "label": "暫停取號",
+    "confirm": "暫停後顧客將無法自行取號，代客登記不受影響。確定要暫停取號嗎？",
     "off": "已恢復取號",
-    "on": "已暫停取號"
+    "on": "已暫停取號",
+    "title": "暫停取號"
   },
   "range": "{min}–{max} 位",
   "single": "{count} 位",

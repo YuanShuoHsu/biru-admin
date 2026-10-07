@@ -1,4 +1,5 @@
 {
+  "accepting": "开放取号",
   "actions": {
     "cancel": "取消",
     "cancelConfirm": "确定要取消 <bold>{ticketNumber}</bold>（{name}）的排队吗？",
@@ -43,9 +44,10 @@
   "group": "{prefix} 组",
   "label": "现场排队",
   "paused": {
-    "label": "暂停取号",
+    "confirm": "暂停后顾客将无法自行取号，代客登记不受影响。确定要暂停取号吗？",
     "off": "已恢复取号",
-    "on": "已暂停取号"
+    "on": "已暂停取号",
+    "title": "暂停取号"
   },
   "range": "{min}–{max} 位",
   "single": "{count} 位",

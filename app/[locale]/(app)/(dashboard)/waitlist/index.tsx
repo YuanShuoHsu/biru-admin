@@ -274,10 +274,7 @@ const AdminWaitlist = ({
     });
   };
 
-  const handlePausedChange = async (
-    _event: React.ChangeEvent<HTMLInputElement>,
-    paused: boolean,
-  ) => {
+  const handleUpdatePaused = async (paused: boolean) => {
     setIsPausing(true);
 
     try {
@@ -296,6 +293,22 @@ const AdminWaitlist = ({
       await mutate();
       setIsPausing(false);
     }
+  };
+
+  const handleAcceptingChange = (
+    _event: React.ChangeEvent<HTMLInputElement>,
+    checked: boolean,
+  ) => {
+    if (checked) return handleUpdatePaused(false);
+
+    setDialog({
+      content: (
+        <DialogContentText>{tWaitlist("paused.confirm")}</DialogContentText>
+      ),
+      onConfirm: () => handleUpdatePaused(true),
+      open: true,
+      title: tWaitlist("paused.title"),
+    });
   };
 
   const handleBatchTransition = async (
@@ -578,14 +591,17 @@ const AdminWaitlist = ({
         <FormControlLabel
           control={
             <Switch
-              checked={waitlist.paused}
+              checked={!waitlist.paused}
               disabled={isPausing}
-              onChange={handlePausedChange}
+              onChange={handleAcceptingChange}
             />
           }
-          label={tWaitlist("paused.label")}
+          label={tWaitlist("accepting")}
         />
       </HeaderStack>
+      {waitlist.paused && (
+        <Alert severity="warning">{tWaitlist("add.unavailable.paused")}</Alert>
+      )}
       <SelectAllTransferList
         columns={columns}
         transferActions={[

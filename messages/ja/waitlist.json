@@ -1,4 +1,5 @@
 {
+  "accepting": "新規受付",
   "actions": {
     "cancel": "キャンセル",
     "cancelConfirm": "<bold>{ticketNumber}</bold>（{name}）の順番待ちをキャンセルしますか？",
@@ -43,9 +44,10 @@
   "group": "{prefix} 区分",
   "label": "順番待ち",
   "paused": {
-    "label": "受付を一時停止",
+    "confirm": "一時停止中はお客様ご自身での受付ができなくなります。代理登録は引き続き可能です。受付を一時停止しますか？",
     "off": "受付を再開しました",
-    "on": "受付を一時停止しました"
+    "on": "受付を一時停止しました",
+    "title": "受付を一時停止"
   },
   "range": "{min}～{max} 名",
   "single": "{count} 名",
