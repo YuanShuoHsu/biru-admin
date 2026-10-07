@@ -47,6 +47,8 @@
     "confirm": "暂停后顾客将无法自行取号，代客登记不受影响。确定要暂停 <bold>{name}</bold> 的取号吗？",
     "off": "{name} 已恢复取号",
     "on": "{name} 已暂停取号",
+    "resumeConfirm": "恢复后顾客即可自行取号。确定要恢复 <bold>{name}</bold> 的取号吗？",
+    "resumeTitle": "恢复取号",
     "title": "暂停取号"
   },
   "range": "{min}–{max} 位",

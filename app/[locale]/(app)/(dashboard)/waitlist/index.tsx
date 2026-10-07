@@ -301,23 +301,20 @@ const AdminWaitlist = ({
   const handleAcceptingChange = (
     _event: React.ChangeEvent<HTMLInputElement>,
     checked: boolean,
-  ) => {
-    if (checked) return handleUpdatePaused(false);
-
+  ) =>
     setDialog({
       content: (
         <DialogContentText>
-          {tWaitlist.rich("paused.confirm", {
+          {tWaitlist.rich(checked ? "paused.resumeConfirm" : "paused.confirm", {
             bold: (chunks) => <strong>{chunks}</strong>,
             name,
           })}
         </DialogContentText>
       ),
-      onConfirm: () => handleUpdatePaused(true),
+      onConfirm: () => handleUpdatePaused(!checked),
       open: true,
-      title: tWaitlist("paused.title"),
+      title: tWaitlist(checked ? "paused.resumeTitle" : "paused.title"),
     });
-  };
 
   const handleBatchTransition = async (
     ids: string[],

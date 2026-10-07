@@ -47,6 +47,8 @@
     "confirm": "Guests won't be able to join on their own, but you can still add parties here. Pause new tickets for <bold>{name}</bold>?",
     "off": "New tickets resumed for {name}",
     "on": "New tickets paused for {name}",
+    "resumeConfirm": "Guests will be able to join on their own again. Resume new tickets for <bold>{name}</bold>?",
+    "resumeTitle": "Resume new tickets",
     "title": "Pause new tickets"
   },
   "range": "{min}–{max} guests",
