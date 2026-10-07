@@ -62,10 +62,13 @@
   },
   "ticket": {
     "calledAt": "Called {time}",
+    "cancelledAt": "Cancelled {time}",
     "confirmed": "Confirmed",
     "createdAt": "Joined {time}",
     "holdUntil": "Held until {time}",
+    "noShowAt": "Skipped {time}",
     "overdue": "Overdue",
-    "partySize": "{count, plural, one {# guest} other {# guests}}"
+    "partySize": "{count, plural, one {# guest} other {# guests}}",
+    "seatedAt": "Seated {time}"
   }
 }

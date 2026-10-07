@@ -142,9 +142,12 @@ const StyledListSubheader = styled(ListSubheader<"div">, {
   }),
 }));
 
-const StyledListItemText = styled(ListItemText)({
+const StyledListItemText = styled(ListItemText)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  gap: theme.spacing(1),
   minWidth: 0,
-});
+}));
 
 const ExpandIcon = styled(ExpandMore, {
   shouldForwardProp: (prop) => prop !== "expanded",

@@ -62,10 +62,13 @@
   },
   "ticket": {
     "calledAt": "호출 {time}",
+    "cancelledAt": "취소 {time}",
     "confirmed": "방문 확정",
     "createdAt": "등록 {time}",
     "holdUntil": "{time}까지 유지",
+    "noShowAt": "건너뜀 {time}",
     "overdue": "시간 초과",
-    "partySize": "{count}명"
+    "partySize": "{count}명",
+    "seatedAt": "착석 {time}"
   }
 }

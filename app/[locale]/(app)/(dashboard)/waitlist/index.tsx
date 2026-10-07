@@ -18,10 +18,13 @@ import {
   AccessTime,
   Add,
   Campaign,
+  Cancel,
   ConfirmationNumber,
-  People,
+  EventSeat,
   Person,
   Phone,
+  SkipNext,
+  type SvgIconComponent,
 } from "@mui/icons-material";
 import {
   Alert,
@@ -71,27 +74,17 @@ const TICKET_ACTIONS: Record<
     color: "error" | "primary" | "warning";
     label: "cancel" | "noShow" | "recall" | "seat";
     status: StaffTransitionStatus;
-    variant: "outlined" | "text";
   }[]
 > = {
   called: [
-    {
-      color: "primary",
-      label: "recall",
-      status: "called",
-      variant: "outlined",
-    },
-    { color: "warning", label: "noShow", status: "noShow", variant: "text" },
-    { color: "error", label: "cancel", status: "cancelled", variant: "text" },
+    { color: "primary", label: "recall", status: "called" },
+    { color: "warning", label: "noShow", status: "noShow" },
+    { color: "error", label: "cancel", status: "cancelled" },
   ],
   cancelled: [],
-  noShow: [
-    { color: "primary", label: "seat", status: "seated", variant: "outlined" },
-  ],
+  noShow: [{ color: "primary", label: "seat", status: "seated" }],
   seated: [],
-  waiting: [
-    { color: "error", label: "cancel", status: "cancelled", variant: "text" },
-  ],
+  waiting: [{ color: "error", label: "cancel", status: "cancelled" }],
 };
 
 const HeaderStack = styled(Stack)(({ theme }) => ({
@@ -100,32 +93,40 @@ const HeaderStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-const InfoStack = styled(Stack)(({ theme }) => ({
-  gap: theme.spacing(0.5),
-  minWidth: 0,
-}));
-
 const TitleStack = styled(Stack)(({ theme }) => ({
   alignItems: "center",
   columnGap: theme.spacing(1),
   flexWrap: "wrap",
+  justifyContent: "space-between",
+}));
+
+const ChipStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  gap: theme.spacing(0.5),
 }));
 
 const MetaStack = styled(Stack)(({ theme }) => ({
-  columnGap: theme.spacing(2),
+  columnGap: theme.spacing(1.5),
   flexWrap: "wrap",
-  rowGap: theme.spacing(0.5),
 }));
 
 const MetaItemStack = styled(Stack)(({ theme }) => ({
   alignItems: "center",
-  color: theme.vars.palette.text.secondary,
   gap: theme.spacing(0.5),
+}));
+
+const DetailsTypography = styled(Typography)({
+  overflowWrap: "anywhere",
+});
+
+const SecondaryStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(1),
 }));
 
 const ActionsStack = styled(Stack)(({ theme }) => ({
   flexWrap: "wrap",
   gap: theme.spacing(1),
+  justifyContent: "flex-end",
 }));
 
 const StatusText = styled("span", {
@@ -139,10 +140,6 @@ const StatusText = styled("span", {
         ? theme.vars.palette.text.primary
         : theme.vars.palette[color].main,
   };
-});
-
-const BoldTypography = styled(Typography)({
-  fontWeight: "bold",
 });
 
 interface AdminWaitlistProps {
@@ -413,106 +410,147 @@ const AdminWaitlist = ({
 
   const renderTitle = (ticket: AdminWaitlistTicket) => (
     <TitleStack direction="row">
-      <BoldTypography variant="h6">{ticket.ticketNumber}</BoldTypography>
-      <MetaItemStack direction="row">
-        <People fontSize="small" />
-        <Typography variant="body2">
-          {tWaitlist("ticket.partySize", { count: ticket.partySize })}
-        </Typography>
-      </MetaItemStack>
-      {ticket.status === "called" && ticket.overdue && (
-        <Chip color="error" label={tWaitlist("ticket.overdue")} size="small" />
-      )}
-      {ticket.status === "called" && ticket.confirmedAt && (
+      <Typography variant="body1">{ticket.ticketNumber}</Typography>
+      <ChipStack direction="row">
+        {ticket.status === "called" && ticket.overdue && (
+          <Chip
+            color="error"
+            label={tWaitlist("ticket.overdue")}
+            size="small"
+          />
+        )}
+        {ticket.status === "called" && ticket.confirmedAt && (
+          <Chip
+            color="success"
+            label={tWaitlist("ticket.confirmed")}
+            size="small"
+          />
+        )}
         <Chip
-          color="success"
-          label={tWaitlist("ticket.confirmed")}
+          label={tWaitlist("ticket.partySize", { count: ticket.partySize })}
           size="small"
+          variant="outlined"
         />
-      )}
+      </ChipStack>
     </TitleStack>
   );
 
   const renderDetails = (ticket: AdminWaitlistTicket) => {
-    const times = [
-      {
-        icon: ConfirmationNumber,
-        text: tWaitlist("ticket.createdAt", {
-          time: format.dateTime(new Date(ticket.createdAt), "time"),
-        }),
-      },
-      ticket.calledAt && {
-        icon: Campaign,
-        text: tWaitlist("ticket.calledAt", {
-          time: format.dateTime(new Date(ticket.calledAt), "time"),
-        }),
-      },
-      ticket.holdUntil && {
-        color: ticket.overdue ? ("error" as const) : ("warning" as const),
-        icon: AccessTime,
-        text: tWaitlist("ticket.holdUntil", {
-          time: format.dateTime(new Date(ticket.holdUntil), "time"),
-        }),
-      },
-    ].filter((time) => !!time);
+    const formatTime = (date?: string | null) =>
+      date ? format.dateTime(new Date(date), "time") : "";
+
+    const times: {
+      color?: "error" | "warning";
+      icon: SvgIconComponent;
+      text: string;
+    }[] = {
+      called: [
+        {
+          icon: Campaign,
+          text: tWaitlist("ticket.calledAt", {
+            time: formatTime(ticket.calledAt),
+          }),
+        },
+        ticket.holdUntil && {
+          color: ticket.overdue ? ("error" as const) : ("warning" as const),
+          icon: AccessTime,
+          text: tWaitlist("ticket.holdUntil", {
+            time: formatTime(ticket.holdUntil),
+          }),
+        },
+      ],
+      cancelled: [
+        {
+          icon: Cancel,
+          text: tWaitlist("ticket.cancelledAt", {
+            time: formatTime(ticket.endedAt),
+          }),
+        },
+      ],
+      noShow: [
+        {
+          icon: SkipNext,
+          text: tWaitlist("ticket.noShowAt", {
+            time: formatTime(ticket.endedAt),
+          }),
+        },
+      ],
+      seated: [
+        {
+          icon: EventSeat,
+          text: tWaitlist("ticket.seatedAt", {
+            time: formatTime(ticket.endedAt),
+          }),
+        },
+      ],
+      waiting: [
+        {
+          icon: ConfirmationNumber,
+          text: tWaitlist("ticket.createdAt", {
+            time: formatTime(ticket.createdAt),
+          }),
+        },
+      ],
+    }[ticket.status].filter((time) => !!time);
 
     return (
-      <InfoStack>
-        <MetaStack direction="row">
-          <MetaItemStack direction="row">
-            <Person fontSize="small" />
-            <Typography variant="body2">{ticket.name}</Typography>
-          </MetaItemStack>
-          <MetaItemStack direction="row">
-            <Phone fontSize="small" />
-            <Link
-              href={`tel:${ticket.phoneNumber}`}
-              onClick={(event) => event.stopPropagation()}
-              variant="body2"
-            >
-              {ticket.phoneNumber}
-            </Link>
-          </MetaItemStack>
-        </MetaStack>
-        <MetaStack direction="row">
-          {times.map(({ color, icon: Icon, text }) => (
-            <MetaItemStack direction="row" key={text}>
-              <Icon color={color} fontSize="small" />
-              <Typography color={color} variant="body2">
-                {text}
-              </Typography>
+      <SecondaryStack>
+        <Stack>
+          <MetaStack direction="row">
+            <MetaItemStack direction="row">
+              <Person fontSize="inherit" />
+              <DetailsTypography variant="caption">
+                {ticket.name}
+              </DetailsTypography>
             </MetaItemStack>
-          ))}
-        </MetaStack>
+            <MetaItemStack direction="row">
+              <Phone fontSize="inherit" />
+              <Link
+                href={`tel:${ticket.phoneNumber}`}
+                onClick={(event) => event.stopPropagation()}
+                variant="caption"
+              >
+                {ticket.phoneNumber}
+              </Link>
+            </MetaItemStack>
+          </MetaStack>
+          <MetaStack direction="row">
+            {times.map(({ color, icon: Icon, text }) => (
+              <MetaItemStack direction="row" key={text}>
+                <Icon color={color} fontSize="inherit" />
+                <Typography color={color} variant="caption">
+                  {text}
+                </Typography>
+              </MetaItemStack>
+            ))}
+          </MetaStack>
+        </Stack>
         {TICKET_ACTIONS[ticket.status].length > 0 && (
           <ActionsStack direction="row">
-            {TICKET_ACTIONS[ticket.status].map(
-              ({ color, label, status, variant }) => (
-                <Button
-                  color={color}
-                  disabled={
-                    !!pendingAction &&
-                    pendingAction !== `${ticket.id}:${status}`
-                  }
-                  key={label}
-                  loading={pendingAction === `${ticket.id}:${status}`}
-                  onClick={(event) => {
-                    event.stopPropagation();
+            {TICKET_ACTIONS[ticket.status].map(({ color, label, status }) => (
+              <Button
+                color={color}
+                disabled={
+                  !!pendingAction && pendingAction !== `${ticket.id}:${status}`
+                }
+                key={label}
+                loading={pendingAction === `${ticket.id}:${status}`}
+                onClick={(event) => {
+                  event.stopPropagation();
 
-                    if (status === "cancelled") handleCancelDialog(ticket);
-                    else handleTransition(ticket, status);
-                  }}
-                  onMouseDown={(event) => event.stopPropagation()}
-                  size="small"
-                  variant={variant}
-                >
-                  {tWaitlist(`actions.${label}`)}
-                </Button>
-              ),
-            )}
+                  if (status === "cancelled") handleCancelDialog(ticket);
+                  else handleTransition(ticket, status);
+                }}
+                onMouseDown={(event) => event.stopPropagation()}
+                size="small"
+                variant="outlined"
+              >
+                {tWaitlist(`actions.${label}`)}
+              </Button>
+            ))}
           </ActionsStack>
         )}
-      </InfoStack>
+      </SecondaryStack>
     );
   };
 

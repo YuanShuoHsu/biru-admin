@@ -32,11 +32,7 @@ import SelectAllTransferList, {
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import { orderFlowStatusValues } from "@/types/api";
-import type {
-  AdminOrderBoardColumn,
-  AdminOrderResponse,
-  OrderStatus,
-} from "@/types/orders";
+import type { AdminOrderBoardColumn, OrderStatus } from "@/types/orders";
 import type { Organization } from "@/types/organizations";
 
 import { getErrorMessage } from "@/utils/errors";
@@ -49,6 +45,16 @@ const StyledStack = styled(Stack)(({ theme }) => ({
   justifyContent: "space-between",
   alignItems: "center",
   columnGap: theme.spacing(1),
+}));
+
+const SecondaryStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(1),
+}));
+
+const ActionsStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  gap: theme.spacing(1),
+  justifyContent: "flex-end",
 }));
 
 const StyledTypography = styled(Typography)({
@@ -138,21 +144,56 @@ const OrdersBoard = ({
               </StyledStack>
             ),
             secondary: (
-              <StyledTypography color="textSecondary" variant="caption">
-                {order.pickupTime
-                  ? [
-                      format.dateTime(new Date(order.pickupTime), "compact"),
-                      order.customer.name,
-                    ].join(tCommon("delimiter"))
-                  : order.customer.name}
-              </StyledTypography>
+              <SecondaryStack>
+                <StyledTypography color="textSecondary" variant="caption">
+                  {order.pickupTime
+                    ? [
+                        format.dateTime(new Date(order.pickupTime), "compact"),
+                        order.customer.name,
+                      ].join(tCommon("delimiter"))
+                    : order.customer.name}
+                </StyledTypography>
+                <ActionsStack direction="row">
+                  <Tooltip title={tOrders("actions.viewOrder.title")}>
+                    <IconButton
+                      edge="end"
+                      onClick={(event) => {
+                        event.stopPropagation();
+
+                        setDialog({
+                          content: (
+                            <OrderDetailDialog
+                              order={order}
+                              organizationSlug={organizationSlug}
+                            />
+                          ),
+                          open: true,
+                          title: tOrders("actions.viewOrder.title"),
+                        });
+                      }}
+                      onMouseDown={(event) => event.stopPropagation()}
+                      size="small"
+                    >
+                      <ReceiptLong fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </ActionsStack>
+              </SecondaryStack>
             ),
           };
         }),
         size: { xs: 12, md: 3 },
         title: tOrders(`status.${status}`),
       })),
-    [boardColumns, format, getOrderModeLabel, tCommon, tOrders],
+    [
+      boardColumns,
+      format,
+      getOrderModeLabel,
+      organizationSlug,
+      setDialog,
+      tCommon,
+      tOrders,
+    ],
   );
 
   const orders = useMemo(
@@ -267,35 +308,9 @@ const OrdersBoard = ({
       ],
     );
 
-  const renderAction = (order: AdminOrderResponse) => (
-    <Tooltip title={tOrders("actions.viewOrder.title")}>
-      <IconButton
-        edge="end"
-        onClick={(event) => {
-          event.stopPropagation();
-
-          setDialog({
-            content: (
-              <OrderDetailDialog
-                order={order}
-                organizationSlug={organizationSlug}
-              />
-            ),
-            open: true,
-            title: tOrders("actions.viewOrder.title"),
-          });
-        }}
-        size="small"
-      >
-        <ReceiptLong fontSize="small" />
-      </IconButton>
-    </Tooltip>
-  );
-
   return (
     <SelectAllTransferList
       columns={columns}
-      renderAction={renderAction}
       transferActions={transferActions}
     />
   );

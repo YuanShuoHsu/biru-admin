@@ -62,10 +62,13 @@
   },
   "ticket": {
     "calledAt": "叫號 {time}",
+    "cancelledAt": "取消 {time}",
     "confirmed": "已確認前往",
     "createdAt": "取號 {time}",
     "holdUntil": "保留至 {time}",
+    "noShowAt": "過號 {time}",
     "overdue": "已逾時",
-    "partySize": "{count} 位"
+    "partySize": "{count} 位",
+    "seatedAt": "入座 {time}"
   }
 }

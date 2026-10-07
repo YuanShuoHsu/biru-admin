@@ -62,10 +62,13 @@
   },
   "ticket": {
     "calledAt": "呼び出し {time}",
+    "cancelledAt": "キャンセル {time}",
     "confirmed": "来店確定",
     "createdAt": "受付 {time}",
     "holdUntil": "{time} まで確保",
+    "noShowAt": "スキップ {time}",
     "overdue": "時間超過",
-    "partySize": "{count} 名"
+    "partySize": "{count} 名",
+    "seatedAt": "案内 {time}"
   }
 }
