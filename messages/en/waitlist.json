@@ -44,9 +44,9 @@
   "group": "Group {prefix}",
   "label": "Waitlist",
   "paused": {
-    "confirm": "Guests won't be able to join on their own, but you can still add parties here. Pause new tickets?",
-    "off": "New tickets resumed",
-    "on": "New tickets paused",
+    "confirm": "Guests won't be able to join on their own, but you can still add parties here. Pause new tickets for <bold>{name}</bold>?",
+    "off": "New tickets resumed for {name}",
+    "on": "New tickets paused for {name}",
     "title": "Pause new tickets"
   },
   "range": "{min}–{max} guests",

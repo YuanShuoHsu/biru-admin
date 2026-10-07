@@ -87,6 +87,13 @@ const theme = createTheme({
     },
   },
   components: {
+    MuiAlert: {
+      styleOverrides: {
+        message: ({ theme }) => ({
+          transition: theme.transitions.create("color"),
+        }),
+      },
+    },
     MuiAvatar: {
       styleOverrides: {
         root: ({ theme }) => ({
@@ -253,6 +260,8 @@ const theme = createTheme({
     MuiDivider: {
       styleOverrides: {
         root: ({ theme }) => ({
+          transition: theme.transitions.create("border-color"),
+
           "&::before, &::after": {
             transition: theme.transitions.create(["border-color"]),
           },
@@ -386,6 +395,28 @@ const theme = createTheme({
       defaultProps: {
         component: LinkBehavior,
       } as LinkProps,
+      styleOverrides: {
+        root: ({ theme }) => ({
+          transition: theme.transitions.create([
+            "color",
+            "text-decoration-color",
+          ]),
+        }),
+      },
+    },
+    MuiListItem: {
+      styleOverrides: {
+        divider: ({ theme }) => ({
+          transition: theme.transitions.create("border-color"),
+        }),
+      },
+    },
+    MuiListSubheader: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          transition: theme.transitions.create(["background-color", "color"]),
+        }),
+      },
     },
     MuiTab: {
       styleOverrides: {

@@ -52,7 +52,12 @@ const StyledCard = styled(Card, {
         maxHeight: expanded
           ? "100%"
           : `calc(${theme.spacing(4)} + 2 * ${theme.typography.body2.lineHeight} * ${theme.typography.body2.fontSize} + 4px)`,
-        transition: theme.transitions.create("max-height"),
+        transition: theme.transitions.create([
+          "background-color",
+          "border-color",
+          "box-shadow",
+          "max-height",
+        ]),
       },
     }),
 
@@ -73,6 +78,7 @@ const StyledCardHeader = styled(CardHeader, {
   ...(onClick && { cursor: "pointer" }),
 
   ...(color && {
+    transition: theme.transitions.create("background-color"),
     backgroundColor:
       color === "default"
         ? theme.vars.palette.action.selected
@@ -144,7 +150,7 @@ const ExpandIcon = styled(ExpandMore, {
   shouldForwardProp: (prop) => prop !== "expanded",
 })<{ expanded: boolean }>(({ expanded, theme }) => ({
   transform: expanded ? "rotate(180deg)" : "none",
-  transition: theme.transitions.create("transform"),
+  transition: theme.transitions.create(["color", "transform"]),
 }));
 
 const not = (a: readonly string[], b: readonly string[]) =>

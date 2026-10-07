@@ -151,7 +151,7 @@ interface AdminWaitlistProps {
 }
 
 const AdminWaitlist = ({
-  organization: { id: organizationId, slug: organizationSlug },
+  organization: { id: organizationId, name, slug: organizationSlug },
   waitlist: initialWaitlist,
 }: AdminWaitlistProps) => {
   const { setDialog } = useDialogStore((state) => state);
@@ -284,9 +284,12 @@ const AdminWaitlist = ({
         method: "PUT",
       });
 
-      enqueueSnackbar(tWaitlist(paused ? "paused.on" : "paused.off"), {
-        variant: "success",
-      });
+      enqueueSnackbar(
+        tWaitlist(paused ? "paused.on" : "paused.off", { name }),
+        {
+          variant: "success",
+        },
+      );
     } catch (error) {
       showError(error);
     } finally {
@@ -303,7 +306,12 @@ const AdminWaitlist = ({
 
     setDialog({
       content: (
-        <DialogContentText>{tWaitlist("paused.confirm")}</DialogContentText>
+        <DialogContentText>
+          {tWaitlist.rich("paused.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            name,
+          })}
+        </DialogContentText>
       ),
       onConfirm: () => handleUpdatePaused(true),
       open: true,
