@@ -117,6 +117,9 @@
   "gender": {
     "required": "성별은 필수입니다."
   },
+  "graceMinutes": {
+    "required": "초과 유예 시간은 필수입니다."
+  },
   "hiredAt": {
     "required": "입사 시간은 필수입니다."
   },

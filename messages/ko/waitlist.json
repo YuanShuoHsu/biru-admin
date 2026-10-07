@@ -1,13 +1,17 @@
 {
   "actions": {
-    "call": "호출",
     "cancel": "취소",
-    "cancelConfirm": "{ticketNumber}({name}) 대기를 취소하시겠습니까?",
+    "cancelConfirm": "<bold>{ticketNumber}</bold>({name}) 대기를 취소하시겠습니까?",
     "cancelTitle": "대기 취소",
     "noShow": "건너뛰기",
     "recall": "다시 호출",
     "seat": "착석",
-    "success": "{ticketNumber} 상태가 '{status}'(으)로 변경되었습니다"
+    "success": "{ticketNumber} 상태가 '{status}'(으)로 변경되었습니다",
+    "transfer": {
+      "advance": "<statusText>{status}</statusText>(으)로 설정",
+      "confirm": "<bold>{ticketNumbers}</bold>을(를) <statusText>{status}</statusText>(으)로 변경하시겠습니까?",
+      "revert": "<statusText>{status}</statusText>(으)로 되돌리기"
+    }
   },
   "add": {
     "label": "대기 추가",
@@ -23,9 +27,9 @@
       "paused": "대기 등록이 일시 중지되어 고객이 직접 등록할 수 없습니다. 대리 등록은 계속 가능합니다."
     }
   },
+  "count": "{count}팀",
   "disabled": "이 매장은 현장 대기가 꺼져 있습니다. 조직 설정의 '현장 대기' 탭에서 켜 주세요.",
   "empty": "대기 중인 팀이 없습니다",
-  "ended": "오늘 처리됨({count}팀)",
   "errors": {
     "waitlistClosed": "영업시간이 아니라 대기 등록을 받지 않습니다.",
     "waitlistCutoff": "곧 영업이 종료되어 현장 대기 등록이 마감되었습니다.",
@@ -57,7 +61,7 @@
     "confirmed": "방문 확정",
     "createdAt": "등록 {time}",
     "holdUntil": "{time}까지 유지",
+    "overdue": "시간 초과",
     "partySize": "{count}명"
-  },
-  "waitingCount": "{count}팀 대기 중"
+  }
 }

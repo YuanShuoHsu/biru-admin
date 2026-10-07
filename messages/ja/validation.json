@@ -117,6 +117,9 @@
   "gender": {
     "required": "性別は必須です。"
   },
+  "graceMinutes": {
+    "required": "超過猶予は必須です。"
+  },
   "hiredAt": {
     "required": "入社日時は必須です。"
   },

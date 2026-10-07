@@ -1,13 +1,17 @@
 {
   "actions": {
-    "call": "呼び出す",
     "cancel": "キャンセル",
-    "cancelConfirm": "{ticketNumber}（{name}）の順番待ちをキャンセルしますか？",
+    "cancelConfirm": "<bold>{ticketNumber}</bold>（{name}）の順番待ちをキャンセルしますか？",
     "cancelTitle": "順番待ちをキャンセル",
     "noShow": "スキップ",
     "recall": "再度呼び出す",
     "seat": "案内済み",
-    "success": "{ticketNumber} を「{status}」に更新しました"
+    "success": "{ticketNumber} を「{status}」に更新しました",
+    "transfer": {
+      "advance": "<statusText>{status}</statusText>にする",
+      "confirm": "<bold>{ticketNumbers}</bold> を <statusText>{status}</statusText> に変更しますか？",
+      "revert": "<statusText>{status}</statusText>に戻す"
+    }
   },
   "add": {
     "label": "順番待ちを追加",
@@ -23,9 +27,9 @@
       "paused": "受付を一時停止中のため、お客様ご自身での受付はできません。代理登録は引き続き可能です。"
     }
   },
+  "count": "{count} 組",
   "disabled": "この店舗では店頭の順番待ちがオフになっています。組織設定の「順番待ち」タブからオンにしてください。",
   "empty": "順番待ちはありません",
-  "ended": "本日対応済み（{count} 組）",
   "errors": {
     "waitlistClosed": "営業時間外のため、受付を停止しています。",
     "waitlistCutoff": "まもなく閉店のため、順番待ちの受付を終了しました。",
@@ -57,7 +61,7 @@
     "confirmed": "来店確定",
     "createdAt": "受付 {time}",
     "holdUntil": "{time} まで確保",
+    "overdue": "時間超過",
     "partySize": "{count} 名"
-  },
-  "waitingCount": "{count} 組待ち"
+  }
 }

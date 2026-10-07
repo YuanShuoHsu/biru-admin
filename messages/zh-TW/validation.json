@@ -117,6 +117,9 @@
   "gender": {
     "required": "性別為必填。"
   },
+  "graceMinutes": {
+    "required": "逾時寬限時間為必填。"
+  },
   "hiredAt": {
     "required": "到職時間為必填。"
   },

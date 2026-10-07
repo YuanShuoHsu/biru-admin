@@ -117,6 +117,9 @@
   "gender": {
     "required": "Gender is required."
   },
+  "graceMinutes": {
+    "required": "Grace period is required."
+  },
   "hiredAt": {
     "required": "Employment start is required."
   },

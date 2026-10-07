@@ -118,43 +118,37 @@ const OrdersBoard = ({
       orderFlowStatusValues.map((status) => ({
         color: STATUS_COLORS[status],
         emptyLabel: tOrders("board.empty"),
-        items: [
-          ...(boardColumns.find(({ orderStatus }) => orderStatus === status)
-            ?.orders || []),
-        ]
-          .sort(
-            (a, b) =>
-              new Date(a.pickupTime || a.createdAt).getTime() -
-              new Date(b.pickupTime || b.createdAt).getTime(),
-          )
-          .map((order) => {
-            const modeLabel = getOrderModeLabel(order.mode, order.tableNumber);
+        items: (
+          boardColumns.find(({ orderStatus }) => orderStatus === status)
+            ?.orders || []
+        ).map((order) => {
+          const modeLabel = getOrderModeLabel(order.mode, order.tableNumber);
 
-            return {
-              ...order,
-              primary: (
-                <StyledStack direction="row">
-                  <Typography variant="body1">{order.orderNumber}</Typography>
-                  <Chip
-                    color={MODE_COLORS[order.mode]}
-                    label={modeLabel}
-                    size="small"
-                    variant="outlined"
-                  />
-                </StyledStack>
-              ),
-              secondary: (
-                <StyledTypography color="textSecondary" variant="caption">
-                  {order.pickupTime
-                    ? [
-                        format.dateTime(new Date(order.pickupTime), "compact"),
-                        order.customer.name,
-                      ].join(tCommon("delimiter"))
-                    : order.customer.name}
-                </StyledTypography>
-              ),
-            };
-          }),
+          return {
+            ...order,
+            primary: (
+              <StyledStack direction="row">
+                <Typography variant="body1">{order.orderNumber}</Typography>
+                <Chip
+                  color={MODE_COLORS[order.mode]}
+                  label={modeLabel}
+                  size="small"
+                  variant="outlined"
+                />
+              </StyledStack>
+            ),
+            secondary: (
+              <StyledTypography color="textSecondary" variant="caption">
+                {order.pickupTime
+                  ? [
+                      format.dateTime(new Date(order.pickupTime), "compact"),
+                      order.customer.name,
+                    ].join(tCommon("delimiter"))
+                  : order.customer.name}
+              </StyledTypography>
+            ),
+          };
+        }),
         size: { xs: 12, md: 3 },
         title: tOrders(`status.${status}`),
       })),

@@ -6848,6 +6848,8 @@ export interface components {
       /** @example A012 */
       ticketNumber: string;
       email?: string | null;
+      /** @description 已叫號且超過保留期限 */
+      overdue: boolean;
       name: string;
       phoneNumber: string;
     };
@@ -6857,6 +6859,7 @@ export interface components {
       cutoffMinutes: number;
       enabled: boolean;
       groups: components["schemas"]["WaitlistGroupDto"][];
+      graceMinutes: number;
       holdMinutes: number;
       /** @description 是否在營業時間內 */
       open: boolean;
@@ -6903,6 +6906,8 @@ export interface components {
       cutoffMinutes: number;
       enabled: boolean;
       groups: components["schemas"]["WaitlistGroupDto"][];
+      /** @description 保留期限過後再等幾分鐘自動過號，0 為不自動過號 */
+      graceMinutes: number;
       /** @description 叫號後保留分鐘數 */
       holdMinutes: number;
       paused: boolean;
@@ -6915,6 +6920,11 @@ export interface components {
       cutoffMinutes: number;
       enabled: boolean;
       groups: components["schemas"]["WaitlistGroupDto"][];
+      /**
+       * @description 保留期限過後再等幾分鐘自動過號，0 為不自動過號
+       * @example 10
+       */
+      graceMinutes: number;
       /**
        * @description 叫號後保留分鐘數
        * @example 10

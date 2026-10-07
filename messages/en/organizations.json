@@ -273,6 +273,12 @@
       "off": "Off",
       "on": "On"
     },
+    "graceMinutes": {
+      "helperText": "How long to wait after the hold expires before skipping automatically, even for confirmed parties. Set to 0 to skip manually",
+      "label": "Grace period (minutes)",
+      "placeholder": "Enter the grace period",
+      "value": "{value, plural, =0 {No automatic skip} one {Skip # minute after the hold} other {Skip # minutes after the hold}}"
+    },
     "groups": {
       "add": "Add group",
       "helperText": "Groups must start at 1 and be continuous without overlaps. Each code is numbered separately",

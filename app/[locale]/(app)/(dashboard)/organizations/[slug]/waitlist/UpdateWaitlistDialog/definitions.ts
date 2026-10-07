@@ -15,6 +15,9 @@ export const useWaitlistFormSchema = () => {
         .string()
         .min(1, { error: tValidation("cutoffMinutes.required") }),
       enabled: z.boolean(),
+      graceMinutes: z
+        .string()
+        .min(1, { error: tValidation("graceMinutes.required") }),
       groups: z
         .array(
           z.object({

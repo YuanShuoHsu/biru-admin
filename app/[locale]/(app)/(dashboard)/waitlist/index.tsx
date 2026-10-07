@@ -2,28 +2,34 @@
 
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import useSWR from "swr";
 
-import { WAITLIST_STATUS_COLORS } from "@/constants/waitlist";
+import {
+  WAITLIST_GROUP_COLORS,
+  WAITLIST_STATUS_COLORS,
+} from "@/constants/waitlist";
 
 import { useSocketConnection } from "@/hooks/useSocketConnection";
 
 import { menuSocket } from "@/app/socket";
 
-import { Add } from "@mui/icons-material";
+import {
+  AccessTime,
+  Add,
+  Campaign,
+  ConfirmationNumber,
+  People,
+  Person,
+  Phone,
+} from "@mui/icons-material";
 import {
   Alert,
   Button,
-  Card,
-  CardHeader,
   Chip,
-  Divider,
+  DialogContentText,
   FormControlLabel,
-  Grid,
   Link,
-  List,
-  ListItemText,
   Stack,
   Switch,
   Typography,
@@ -32,8 +38,9 @@ import { styled } from "@mui/material/styles";
 
 import AddWaitlistTicketDialog from "./AddWaitlistTicketDialog";
 
-import CustomizedAccordions from "@/components/CustomizedAccordions";
-import { StyledListItem } from "@/components/FormCard";
+import SelectAllTransferList, {
+  type SelectAllTransferListAction,
+} from "@/components/SelectAllTransferList";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -50,17 +57,24 @@ import { getWaitlistErrorCode } from "@/utils/waitlist";
 
 type StaffTransitionStatus = Exclude<WaitlistTicketStatus, "waiting">;
 
+const COLUMN_STATUSES = [
+  "waiting",
+  "called",
+  "seated",
+  "noShow",
+  "cancelled",
+] as const satisfies readonly WaitlistTicketStatus[];
+
 const TICKET_ACTIONS: Record<
   WaitlistTicketStatus,
   {
     color: "error" | "primary" | "warning";
-    label: "call" | "cancel" | "noShow" | "recall" | "seat";
+    label: "cancel" | "noShow" | "recall" | "seat";
     status: StaffTransitionStatus;
-    variant: "contained" | "outlined" | "text";
+    variant: "outlined" | "text";
   }[]
 > = {
   called: [
-    { color: "primary", label: "seat", status: "seated", variant: "contained" },
     {
       color: "primary",
       label: "recall",
@@ -68,6 +82,7 @@ const TICKET_ACTIONS: Record<
       variant: "outlined",
     },
     { color: "warning", label: "noShow", status: "noShow", variant: "text" },
+    { color: "error", label: "cancel", status: "cancelled", variant: "text" },
   ],
   cancelled: [],
   noShow: [
@@ -75,8 +90,6 @@ const TICKET_ACTIONS: Record<
   ],
   seated: [],
   waiting: [
-    { color: "primary", label: "call", status: "called", variant: "contained" },
-    { color: "primary", label: "seat", status: "seated", variant: "outlined" },
     { color: "error", label: "cancel", status: "cancelled", variant: "text" },
   ],
 };
@@ -87,9 +100,10 @@ const HeaderStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-const StyledCard = styled(Card)({
-  height: "100%",
-});
+const InfoStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(0.5),
+  minWidth: 0,
+}));
 
 const TitleStack = styled(Stack)(({ theme }) => ({
   alignItems: "center",
@@ -97,19 +111,39 @@ const TitleStack = styled(Stack)(({ theme }) => ({
   flexWrap: "wrap",
 }));
 
+const MetaStack = styled(Stack)(({ theme }) => ({
+  columnGap: theme.spacing(2),
+  flexWrap: "wrap",
+  rowGap: theme.spacing(0.5),
+}));
+
+const MetaItemStack = styled(Stack)(({ theme }) => ({
+  alignItems: "center",
+  color: theme.vars.palette.text.secondary,
+  gap: theme.spacing(0.5),
+}));
+
 const ActionsStack = styled(Stack)(({ theme }) => ({
   flexWrap: "wrap",
   gap: theme.spacing(1),
 }));
 
+const StatusText = styled("span", {
+  shouldForwardProp: (prop) => prop !== "as" && prop !== "status",
+})<{ status: WaitlistTicketStatus }>(({ status, theme }) => {
+  const color = WAITLIST_STATUS_COLORS[status];
+
+  return {
+    color:
+      !color || color === "default"
+        ? theme.vars.palette.text.primary
+        : theme.vars.palette[color].main,
+  };
+});
+
 const BoldTypography = styled(Typography)({
   fontWeight: "bold",
 });
-
-const StyledEmptyTypography = styled(Typography)(({ theme }) => ({
-  padding: theme.spacing(2),
-  textAlign: "center",
-}));
 
 interface AdminWaitlistProps {
   organization: Organization;
@@ -198,10 +232,15 @@ const AdminWaitlist = ({
 
   const handleCancelDialog = (ticket: AdminWaitlistTicket) =>
     setDialog({
-      contentText: tWaitlist("actions.cancelConfirm", {
-        name: ticket.name,
-        ticketNumber: ticket.ticketNumber,
-      }),
+      content: (
+        <DialogContentText>
+          {tWaitlist.rich("actions.cancelConfirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            name: ticket.name,
+            ticketNumber: ticket.ticketNumber,
+          })}
+        </DialogContentText>
+      ),
       onConfirm: () => handleTransition(ticket, "cancelled"),
       open: true,
       title: tWaitlist("actions.cancelTitle"),
@@ -259,98 +298,272 @@ const AdminWaitlist = ({
     }
   };
 
-  const renderTicket = (
-    ticket: AdminWaitlistTicket,
-    index: number,
-    tickets: AdminWaitlistTicket[],
-  ) => (
-    <StyledListItem
-      divider={index < tickets.length - 1}
-      key={ticket.id}
-      secondaryAction={
-        <ActionsStack direction="row">
-          {TICKET_ACTIONS[ticket.status].map(
-            ({ color, label, status, variant }) => (
-              <Button
-                color={color}
-                disabled={
-                  !!pendingAction && pendingAction !== `${ticket.id}:${status}`
-                }
-                key={label}
-                loading={pendingAction === `${ticket.id}:${status}`}
-                onClick={() =>
-                  status === "cancelled"
-                    ? handleCancelDialog(ticket)
-                    : handleTransition(ticket, status)
-                }
-                size="small"
-                variant={variant}
-              >
-                {tWaitlist(`actions.${label}`)}
-              </Button>
+  const handleBatchTransition = async (
+    ids: string[],
+    status: "called" | "seated" | "waiting",
+  ) => {
+    const tickets = waitlist.tickets.filter(({ id }) => ids.includes(id));
+    const results = await Promise.allSettled(
+      tickets.map(({ id }) =>
+        fetcher(`${waitlistUrl}/tickets/${id}/transitions/${status}`, {
+          method: "PATCH",
+        }),
+      ),
+    );
+    const succeeded = tickets.filter(
+      (_, index) => results[index].status === "fulfilled",
+    );
+    const failure = results.find((result) => result.status === "rejected");
+
+    if (succeeded.length)
+      enqueueSnackbar(
+        tWaitlist("actions.success", {
+          status: tWaitlist(`status.${status}`),
+          ticketNumber: succeeded
+            .map(({ ticketNumber }) => ticketNumber)
+            .join(tCommon("delimiter")),
+        }),
+        { variant: "success" },
+      );
+    if (failure) showError(failure.reason);
+
+    await mutate();
+
+    return true;
+  };
+
+  const confirmBatchTransition = (
+    ids: string[],
+    status: "called" | "seated" | "waiting",
+    title: React.ReactNode,
+  ) =>
+    new Promise<boolean>((resolve) => {
+      setDialog({
+        content: (
+          <DialogContentText>
+            {tWaitlist.rich("actions.transfer.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              status: tWaitlist(`status.${status}`),
+              statusText: (chunks) => (
+                <StatusText as="strong" status={status}>
+                  {chunks}
+                </StatusText>
+              ),
+              ticketNumbers: waitlist.tickets
+                .filter(({ id }) => ids.includes(id))
+                .map(({ ticketNumber }) => ticketNumber)
+                .join(tCommon("delimiter")),
+            })}
+          </DialogContentText>
+        ),
+        onCancel: async () => resolve(false),
+        onConfirm: async () => {
+          await handleBatchTransition(ids, status);
+
+          resolve(true);
+        },
+        open: true,
+        title,
+      });
+    });
+
+  const toTransferAction = (
+    direction: "advance" | "revert",
+    status: "called" | "seated" | "waiting",
+  ): SelectAllTransferListAction => {
+    const key = `actions.transfer.${direction}` as const;
+    const statusLabel = tWaitlist(`status.${status}`);
+
+    return {
+      onTransfer: (ids) =>
+        confirmBatchTransition(
+          ids,
+          status,
+          tWaitlist.rich(key, {
+            status: statusLabel,
+            statusText: (chunks) => (
+              <StatusText status={status}>{chunks}</StatusText>
             ),
-          )}
-        </ActionsStack>
-      }
-    >
-      <ListItemText
-        primary={
-          <TitleStack direction="row">
-            <BoldTypography variant="h6">{ticket.ticketNumber}</BoldTypography>
-            <Typography variant="body2">
-              {tWaitlist("ticket.partySize", { count: ticket.partySize })}
-            </Typography>
-            <Chip
-              color={WAITLIST_STATUS_COLORS[ticket.status]}
-              label={tWaitlist(`status.${ticket.status}`)}
-              size="small"
-              variant="outlined"
-            />
-            {ticket.status === "called" && ticket.confirmedAt && (
-              <Chip
-                color="success"
-                label={tWaitlist("ticket.confirmed")}
-                size="small"
-              />
-            )}
-          </TitleStack>
-        }
-        secondary={
-          <>
-            {[
-              ticket.name,
-              tWaitlist("ticket.createdAt", {
-                time: format.dateTime(new Date(ticket.createdAt), "time"),
-              }),
-              ticket.calledAt &&
-                tWaitlist("ticket.calledAt", {
-                  time: format.dateTime(new Date(ticket.calledAt), "time"),
-                }),
-              ticket.holdUntil &&
-                tWaitlist("ticket.holdUntil", {
-                  time: format.dateTime(new Date(ticket.holdUntil), "time"),
-                }),
-            ]
-              .filter(Boolean)
-              .join(tCommon("delimiter"))}
-            <br />
-            <Link href={`tel:${ticket.phoneNumber}`}>{ticket.phoneNumber}</Link>
-          </>
-        }
-        slotProps={{ primary: { component: "div" } }}
-      />
-    </StyledListItem>
+          }),
+        ),
+      title: tWaitlist.markup(key, {
+        status: statusLabel,
+        statusText: (chunks) => chunks,
+      }),
+    };
+  };
+
+  const renderTitle = (ticket: AdminWaitlistTicket) => (
+    <TitleStack direction="row">
+      <BoldTypography variant="h6">{ticket.ticketNumber}</BoldTypography>
+      <MetaItemStack direction="row">
+        <People fontSize="small" />
+        <Typography variant="body2">
+          {tWaitlist("ticket.partySize", { count: ticket.partySize })}
+        </Typography>
+      </MetaItemStack>
+      {ticket.status === "called" && ticket.overdue && (
+        <Chip color="error" label={tWaitlist("ticket.overdue")} size="small" />
+      )}
+      {ticket.status === "called" && ticket.confirmedAt && (
+        <Chip
+          color="success"
+          label={tWaitlist("ticket.confirmed")}
+          size="small"
+        />
+      )}
+    </TitleStack>
   );
+
+  const renderDetails = (ticket: AdminWaitlistTicket) => {
+    const times = [
+      {
+        icon: ConfirmationNumber,
+        text: tWaitlist("ticket.createdAt", {
+          time: format.dateTime(new Date(ticket.createdAt), "time"),
+        }),
+      },
+      ticket.calledAt && {
+        icon: Campaign,
+        text: tWaitlist("ticket.calledAt", {
+          time: format.dateTime(new Date(ticket.calledAt), "time"),
+        }),
+      },
+      ticket.holdUntil && {
+        color: ticket.overdue ? ("error" as const) : ("warning" as const),
+        icon: AccessTime,
+        text: tWaitlist("ticket.holdUntil", {
+          time: format.dateTime(new Date(ticket.holdUntil), "time"),
+        }),
+      },
+    ].filter((time) => !!time);
+
+    return (
+      <InfoStack>
+        <MetaStack direction="row">
+          <MetaItemStack direction="row">
+            <Person fontSize="small" />
+            <Typography variant="body2">{ticket.name}</Typography>
+          </MetaItemStack>
+          <MetaItemStack direction="row">
+            <Phone fontSize="small" />
+            <Link
+              href={`tel:${ticket.phoneNumber}`}
+              onClick={(event) => event.stopPropagation()}
+              variant="body2"
+            >
+              {ticket.phoneNumber}
+            </Link>
+          </MetaItemStack>
+        </MetaStack>
+        <MetaStack direction="row">
+          {times.map(({ color, icon: Icon, text }) => (
+            <MetaItemStack direction="row" key={text}>
+              <Icon color={color} fontSize="small" />
+              <Typography color={color} variant="body2">
+                {text}
+              </Typography>
+            </MetaItemStack>
+          ))}
+        </MetaStack>
+        {TICKET_ACTIONS[ticket.status].length > 0 && (
+          <ActionsStack direction="row">
+            {TICKET_ACTIONS[ticket.status].map(
+              ({ color, label, status, variant }) => (
+                <Button
+                  color={color}
+                  disabled={
+                    !!pendingAction &&
+                    pendingAction !== `${ticket.id}:${status}`
+                  }
+                  key={label}
+                  loading={pendingAction === `${ticket.id}:${status}`}
+                  onClick={(event) => {
+                    event.stopPropagation();
+
+                    if (status === "cancelled") handleCancelDialog(ticket);
+                    else handleTransition(ticket, status);
+                  }}
+                  onMouseDown={(event) => event.stopPropagation()}
+                  size="small"
+                  variant={variant}
+                >
+                  {tWaitlist(`actions.${label}`)}
+                </Button>
+              ),
+            )}
+          </ActionsStack>
+        )}
+      </InfoStack>
+    );
+  };
 
   if (!waitlist.enabled)
     return <Alert severity="info">{tWaitlist("disabled")}</Alert>;
 
-  const activeTickets = waitlist.tickets.filter(
-    ({ status }) => status === "waiting" || status === "called",
-  );
-  const endedTickets = waitlist.tickets.filter(
-    ({ status }) => status !== "waiting" && status !== "called",
-  );
+  const getGroupIndex = (prefix: string) =>
+    waitlist.groups.findIndex((group) => group.prefix === prefix);
+
+  const getGroupLabel = (prefix: string, count: number) => {
+    const group = waitlist.groups[getGroupIndex(prefix)];
+    const range =
+      !group || group.minPartySize === group.maxPartySize
+        ? tWaitlist("single", { count: group?.minPartySize || 0 })
+        : tWaitlist("range", {
+            max: group.maxPartySize,
+            min: group.minPartySize,
+          });
+
+    return `${tWaitlist("group", { prefix })}${tCommon("delimiter")}${range}${tCommon("parenthesisOpen")}${count}${tCommon("parenthesisClose")}`;
+  };
+
+  const getGroup = (
+    ticket: AdminWaitlistTicket,
+    tickets: AdminWaitlistTicket[],
+  ) => ({
+    color:
+      WAITLIST_GROUP_COLORS[
+        Math.max(getGroupIndex(ticket.prefix), 0) % WAITLIST_GROUP_COLORS.length
+      ],
+    label: getGroupLabel(
+      ticket.prefix,
+      tickets.filter(({ prefix }) => prefix === ticket.prefix).length,
+    ),
+  });
+
+  const columns = COLUMN_STATUSES.map((status) => {
+    const isEnded = status === "noShow" || status === "cancelled";
+    const tickets = waitlist.tickets
+      .filter((ticket) => ticket.status === status)
+      .sort(
+        (a, b) =>
+          getGroupIndex(a.prefix) - getGroupIndex(b.prefix) ||
+          (status === "called"
+            ? new Date(a.calledAt || 0).getTime() -
+              new Date(b.calledAt || 0).getTime()
+            : status === "waiting"
+              ? 0
+              : new Date(b.endedAt || 0).getTime() -
+                new Date(a.endedAt || 0).getTime()),
+      );
+
+    return {
+      color: WAITLIST_STATUS_COLORS[status],
+      defaultExpanded: isEnded ? false : undefined,
+      emptyLabel: tWaitlist("empty"),
+      items: tickets.map((ticket) => ({
+        group: getGroup(ticket, tickets),
+        id: ticket.id,
+        primary: renderTitle(ticket),
+        secondary: renderDetails(ticket),
+      })),
+      size: { xs: 12, md: isEnded ? ("grow" as const) : 4 },
+      subheader: isEnded
+        ? tWaitlist("count", { count: tickets.length })
+        : undefined,
+      title: tWaitlist(`status.${status}`),
+    };
+  });
 
   return (
     <>
@@ -372,67 +585,22 @@ const AdminWaitlist = ({
           }
           label={tWaitlist("paused.label")}
         />
-        <Typography color="textSecondary" variant="body2">
-          {tWaitlist("waitingCount", {
-            count: activeTickets.filter(({ status }) => status === "waiting")
-              .length,
-          })}
-        </Typography>
       </HeaderStack>
-      <Grid container spacing={2}>
-        {waitlist.groups.map((group) => {
-          const tickets = activeTickets
-            .filter(({ prefix }) => prefix === group.prefix)
-            .sort(
-              (a, b) =>
-                Number(b.status === "called") - Number(a.status === "called"),
-            );
-
-          return (
-            <Grid key={group.prefix} size={{ xs: 12, md: 6 }}>
-              <StyledCard variant="outlined">
-                <CardHeader
-                  subheader={
-                    group.minPartySize === group.maxPartySize
-                      ? tWaitlist("single", { count: group.minPartySize })
-                      : tWaitlist("range", {
-                          max: group.maxPartySize,
-                          min: group.minPartySize,
-                        })
-                  }
-                  title={tWaitlist("group", { prefix: group.prefix })}
-                />
-                <Divider />
-                <List disablePadding>
-                  {tickets.length ? (
-                    tickets.map(renderTicket)
-                  ) : (
-                    <StyledEmptyTypography
-                      color="textSecondary"
-                      variant="body2"
-                    >
-                      {tWaitlist("empty")}
-                    </StyledEmptyTypography>
-                  )}
-                </List>
-              </StyledCard>
-            </Grid>
-          );
-        })}
-      </Grid>
-      <CustomizedAccordions
-        summary={tWaitlist("ended", { count: endedTickets.length })}
-      >
-        <List disablePadding>
-          {endedTickets.length ? (
-            endedTickets.map(renderTicket)
-          ) : (
-            <StyledEmptyTypography color="textSecondary" variant="body2">
-              {tWaitlist("empty")}
-            </StyledEmptyTypography>
-          )}
-        </List>
-      </CustomizedAccordions>
+      <SelectAllTransferList
+        columns={columns}
+        transferActions={[
+          [
+            toTransferAction("advance", "called"),
+            toTransferAction("revert", "waiting"),
+          ],
+          [
+            toTransferAction("advance", "seated"),
+            toTransferAction("revert", "called"),
+          ],
+          null,
+          null,
+        ]}
+      />
     </>
   );
 };

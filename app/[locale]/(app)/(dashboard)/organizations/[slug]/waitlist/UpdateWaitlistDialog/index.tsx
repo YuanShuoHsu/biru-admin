@@ -41,6 +41,7 @@ import { fetcher } from "@/utils/fetcher";
 import { getWaitlistErrorCode } from "@/utils/waitlist";
 
 const CUTOFF_MINUTES_MAX = 240;
+const GRACE_MINUTES_MAX = 60;
 const GROUPS_MAX = 26;
 const HOLD_MINUTES_MAX = 60;
 
@@ -86,6 +87,7 @@ const UpdateWaitlistDialog = ({
     defaultValues: {
       cutoffMinutes: String(settings.cutoffMinutes),
       enabled: settings.enabled,
+      graceMinutes: String(settings.graceMinutes),
       groups: settings.groups.map(({ maxPartySize, prefix }) => ({
         maxPartySize: String(maxPartySize),
         prefix,
@@ -100,9 +102,9 @@ const UpdateWaitlistDialog = ({
     name: "groups",
   });
 
-  const [cutoffMinutes, enabled, groups, holdMinutes] = useWatch({
+  const [cutoffMinutes, enabled, graceMinutes, groups, holdMinutes] = useWatch({
     control,
-    name: ["cutoffMinutes", "enabled", "groups", "holdMinutes"],
+    name: ["cutoffMinutes", "enabled", "graceMinutes", "groups", "holdMinutes"],
   });
 
   const onSubmitHandler = async (values: UpdateWaitlistForm) => {
@@ -115,6 +117,7 @@ const UpdateWaitlistDialog = ({
           body: JSON.stringify({
             cutoffMinutes: Number(values.cutoffMinutes),
             enabled: values.enabled,
+            graceMinutes: Number(values.graceMinutes),
             groups: values.groups.map(({ maxPartySize, prefix }, index) => ({
               maxPartySize: Number(maxPartySize),
               minPartySize: getMinPartySize(values.groups, index),
@@ -178,6 +181,24 @@ const UpdateWaitlistDialog = ({
         }
         placeholder={tOrganizations("waitlist.holdMinutes.placeholder")}
         value={holdMinutes !== "" ? Number(holdMinutes) : null}
+      />
+      <NumberSpinner
+        error={!!errors.graceMinutes}
+        fullWidth
+        helperText={
+          errors.graceMinutes?.message ||
+          tOrganizations("waitlist.graceMinutes.helperText")
+        }
+        label={tOrganizations("waitlist.graceMinutes.label")}
+        max={GRACE_MINUTES_MAX}
+        min={0}
+        onValueChange={(value) =>
+          setValue("graceMinutes", value != null ? String(value) : "", {
+            shouldValidate: isSubmitted,
+          })
+        }
+        placeholder={tOrganizations("waitlist.graceMinutes.placeholder")}
+        value={graceMinutes !== "" ? Number(graceMinutes) : null}
       />
       <NumberSpinner
         error={!!errors.cutoffMinutes}

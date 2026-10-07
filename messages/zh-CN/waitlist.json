@@ -1,13 +1,17 @@
 {
   "actions": {
-    "call": "叫号",
     "cancel": "取消",
-    "cancelConfirm": "确定要取消 {ticketNumber}（{name}）的排队吗？",
+    "cancelConfirm": "确定要取消 <bold>{ticketNumber}</bold>（{name}）的排队吗？",
     "cancelTitle": "取消排队",
     "noShow": "过号",
     "recall": "再次叫号",
     "seat": "入座",
-    "success": "{ticketNumber} 已更新为“{status}”"
+    "success": "{ticketNumber} 已更新为“{status}”",
+    "transfer": {
+      "advance": "设为<statusText>{status}</statusText>",
+      "confirm": "确定要将 <bold>{ticketNumbers}</bold> 设为 <statusText>{status}</statusText> 吗？",
+      "revert": "退回<statusText>{status}</statusText>"
+    }
   },
   "add": {
     "label": "新增排队",
@@ -23,9 +27,9 @@
       "paused": "当前暂停取号，顾客无法自行取号；代客登记不受影响。"
     }
   },
+  "count": "{count} 组",
   "disabled": "本店尚未开启现场排队，请到组织设置的“现场排队”标签页开启。",
   "empty": "当前没有排队",
-  "ended": "今日已处理（{count} 组）",
   "errors": {
     "waitlistClosed": "当前非营业时间，暂不开放取号。",
     "waitlistCutoff": "已接近打烊时间，现场排队已停止取号。",
@@ -57,7 +61,7 @@
     "confirmed": "已确认前往",
     "createdAt": "取号 {time}",
     "holdUntil": "保留至 {time}",
+    "overdue": "已逾时",
     "partySize": "{count} 位"
-  },
-  "waitingCount": "{count} 组等候中"
+  }
 }

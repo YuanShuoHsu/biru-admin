@@ -109,6 +109,13 @@ const OrganizationsSlugWaitlist = ({
       }),
     },
     {
+      key: "graceMinutes",
+      label: tOrganizations("waitlist.graceMinutes.label"),
+      value: tOrganizations("waitlist.graceMinutes.value", {
+        value: settings.graceMinutes,
+      }),
+    },
+    {
       key: "holdMinutes",
       label: tOrganizations("waitlist.holdMinutes.label"),
       value: tOrganizations("waitlist.holdMinutes.value", {

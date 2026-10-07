@@ -1,13 +1,17 @@
 {
   "actions": {
-    "call": "Call",
     "cancel": "Cancel",
-    "cancelConfirm": "Cancel {ticketNumber} ({name}) on the waitlist?",
+    "cancelConfirm": "Cancel <bold>{ticketNumber}</bold> ({name}) on the waitlist?",
     "cancelTitle": "Cancel waitlist entry",
     "noShow": "Skip",
     "recall": "Call again",
     "seat": "Seat",
-    "success": "{ticketNumber} is now {status}"
+    "success": "{ticketNumber} is now {status}",
+    "transfer": {
+      "advance": "Set to <statusText>{status}</statusText>",
+      "confirm": "Set <bold>{ticketNumbers}</bold> to <statusText>{status}</statusText>?",
+      "revert": "Move back to <statusText>{status}</statusText>"
+    }
   },
   "add": {
     "label": "Add to waitlist",
@@ -23,9 +27,9 @@
       "paused": "New tickets are paused, so guests can't join on their own. You can still add parties here."
     }
   },
+  "count": "{count, plural, one {# party} other {# parties}}",
   "disabled": "The walk-in waitlist is off for this store. Turn it on from the Waitlist tab in organization settings.",
   "empty": "No one is waiting",
-  "ended": "Handled today ({count, plural, one {# party} other {# parties}})",
   "errors": {
     "waitlistClosed": "The store is closed, so the waitlist isn't open.",
     "waitlistCutoff": "It's close to closing time, so guests can no longer join the waitlist.",
@@ -57,7 +61,7 @@
     "confirmed": "Confirmed",
     "createdAt": "Joined {time}",
     "holdUntil": "Held until {time}",
+    "overdue": "Overdue",
     "partySize": "{count, plural, one {# guest} other {# guests}}"
-  },
-  "waitingCount": "{count, plural, one {# party waiting} other {# parties waiting}}"
+  }
 }
