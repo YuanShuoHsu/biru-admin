@@ -142,10 +142,23 @@ const StyledListSubheader = styled(ListSubheader<"div">, {
   }),
 }));
 
+const ItemContentStack = styled(Stack)(({ theme }) => ({
+  flex: 1,
+  gap: theme.spacing(1),
+  minWidth: 0,
+}));
+
+const ItemActionsStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  justifyContent: "flex-end",
+  gap: theme.spacing(1),
+}));
+
 const StyledListItemText = styled(ListItemText)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   gap: theme.spacing(1),
+  margin: 0,
   minWidth: 0,
 }));
 
@@ -155,6 +168,10 @@ const ExpandIcon = styled(ExpandMore, {
   transform: expanded ? "rotate(180deg)" : "none",
   transition: theme.transitions.create(["color", "transform"]),
 }));
+
+const stopPropagationFromChildren = (event: React.SyntheticEvent) => {
+  if (event.target !== event.currentTarget) event.stopPropagation();
+};
 
 const not = (a: readonly string[], b: readonly string[]) =>
   a.filter((value) => !b.includes(value));
@@ -190,6 +207,7 @@ export interface SelectAllTransferListAction {
 
 interface SelectAllTransferListProps<
   T extends {
+    actions?: React.ReactNode;
     group?: SelectAllTransferListGroup;
     id: string;
     primary: React.ReactNode;
@@ -197,7 +215,6 @@ interface SelectAllTransferListProps<
   },
 > {
   columns: SelectAllTransferListColumn<T>[];
-  renderAction?: (item: T) => React.ReactNode;
   transferActions: (
     | [SelectAllTransferListAction, SelectAllTransferListAction]
     | null
@@ -206,6 +223,7 @@ interface SelectAllTransferListProps<
 
 const SelectAllTransferList = <
   T extends {
+    actions?: React.ReactNode;
     group?: SelectAllTransferListGroup;
     id: string;
     primary: React.ReactNode;
@@ -213,7 +231,6 @@ const SelectAllTransferList = <
   },
 >({
   columns,
-  renderAction,
   transferActions,
 }: SelectAllTransferListProps<T>) => {
   const [checked, setChecked] = useState<string[]>([]);
@@ -259,7 +276,6 @@ const SelectAllTransferList = <
   ) => (
     <StyledList
       component="div"
-      dense
       disablePadding
       empty={items.length === 0}
       role="list"
@@ -272,15 +288,26 @@ const SelectAllTransferList = <
       {items.map((item, index) => {
         const labelId = `transfer-list-item-${item.id}-label`;
         const itemText = (
-          <StyledListItemText
-            id={labelId}
-            primary={item.primary}
-            secondary={item.secondary}
-            slotProps={{
-              primary: { component: "div" },
-              secondary: { component: "div" },
-            }}
-          />
+          <ItemContentStack>
+            <StyledListItemText
+              id={labelId}
+              primary={item.primary}
+              secondary={item.secondary}
+              slotProps={{
+                primary: { component: "div" },
+                secondary: { component: "div" },
+              }}
+            />
+            {item.actions && (
+              <ItemActionsStack
+                direction="row"
+                onClick={stopPropagationFromChildren}
+                onMouseDown={stopPropagationFromChildren}
+              >
+                {item.actions}
+              </ItemActionsStack>
+            )}
+          </ItemContentStack>
         );
 
         return (
@@ -303,7 +330,6 @@ const SelectAllTransferList = <
                 items[index + 1].group?.label === item.group?.label
               }
               role="listitem"
-              secondaryAction={renderAction?.(item)}
             >
               {selectable ? (
                 <ListItemButton onClick={() => handleToggle(item.id)}>

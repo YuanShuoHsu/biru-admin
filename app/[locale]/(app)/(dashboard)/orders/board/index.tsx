@@ -14,7 +14,7 @@ import { useSocketConnection } from "@/hooks/useSocketConnection";
 
 import { menuSocket } from "@/app/socket";
 
-import { ReceiptLong } from "@mui/icons-material";
+import { Person, ReceiptLong, Schedule } from "@mui/icons-material";
 import {
   Chip,
   DialogContentText,
@@ -47,17 +47,18 @@ const StyledStack = styled(Stack)(({ theme }) => ({
   columnGap: theme.spacing(1),
 }));
 
-const SecondaryStack = styled(Stack)(({ theme }) => ({
-  gap: theme.spacing(1),
-}));
-
-const ActionsStack = styled(Stack)(({ theme }) => ({
+const MetaStack = styled(Stack)(({ theme }) => ({
+  columnGap: theme.spacing(1.5),
   flexWrap: "wrap",
-  gap: theme.spacing(1),
-  justifyContent: "flex-end",
 }));
 
-const StyledTypography = styled(Typography)({
+const MetaItemStack = styled(Stack)(({ theme }) => ({
+  ...theme.typography.caption,
+  alignItems: "center",
+  gap: theme.spacing(0.5),
+}));
+
+const DetailsTypography = styled(Typography)({
   overflowWrap: "anywhere",
 });
 
@@ -144,41 +145,48 @@ const OrdersBoard = ({
               </StyledStack>
             ),
             secondary: (
-              <SecondaryStack>
-                <StyledTypography color="textSecondary" variant="caption">
-                  {order.pickupTime
-                    ? [
-                        format.dateTime(new Date(order.pickupTime), "compact"),
-                        order.customer.name,
-                      ].join(tCommon("delimiter"))
-                    : order.customer.name}
-                </StyledTypography>
-                <ActionsStack direction="row">
-                  <Tooltip title={tOrders("actions.viewOrder.title")}>
-                    <IconButton
-                      edge="end"
-                      onClick={(event) => {
-                        event.stopPropagation();
-
-                        setDialog({
-                          content: (
-                            <OrderDetailDialog
-                              order={order}
-                              organizationSlug={organizationSlug}
-                            />
-                          ),
-                          open: true,
-                          title: tOrders("actions.viewOrder.title"),
-                        });
-                      }}
-                      onMouseDown={(event) => event.stopPropagation()}
-                      size="small"
-                    >
-                      <ReceiptLong fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                </ActionsStack>
-              </SecondaryStack>
+              <Stack>
+                <MetaStack direction="row">
+                  <MetaItemStack direction="row">
+                    <Person fontSize="inherit" />
+                    <DetailsTypography variant="caption">
+                      {order.customer.name}
+                    </DetailsTypography>
+                  </MetaItemStack>
+                </MetaStack>
+                {order.pickupTime && (
+                  <MetaStack direction="row">
+                    <MetaItemStack direction="row">
+                      <Schedule fontSize="inherit" />
+                      <Typography variant="caption">
+                        {format.dateTime(new Date(order.pickupTime), "compact")}
+                      </Typography>
+                    </MetaItemStack>
+                  </MetaStack>
+                )}
+              </Stack>
+            ),
+            actions: (
+              <Tooltip title={tOrders("actions.viewOrder.title")}>
+                <IconButton
+                  edge="end"
+                  onClick={() =>
+                    setDialog({
+                      content: (
+                        <OrderDetailDialog
+                          order={order}
+                          organizationSlug={organizationSlug}
+                        />
+                      ),
+                      open: true,
+                      title: tOrders("actions.viewOrder.title"),
+                    })
+                  }
+                  size="small"
+                >
+                  <ReceiptLong fontSize="small" />
+                </IconButton>
+              </Tooltip>
             ),
           };
         }),
@@ -191,7 +199,6 @@ const OrdersBoard = ({
       getOrderModeLabel,
       organizationSlug,
       setDialog,
-      tCommon,
       tOrders,
     ],
   );

@@ -111,6 +111,7 @@ const MetaStack = styled(Stack)(({ theme }) => ({
 }));
 
 const MetaItemStack = styled(Stack)(({ theme }) => ({
+  ...theme.typography.caption,
   alignItems: "center",
   gap: theme.spacing(0.5),
 }));
@@ -118,16 +119,6 @@ const MetaItemStack = styled(Stack)(({ theme }) => ({
 const DetailsTypography = styled(Typography)({
   overflowWrap: "anywhere",
 });
-
-const SecondaryStack = styled(Stack)(({ theme }) => ({
-  gap: theme.spacing(1),
-}));
-
-const ActionsStack = styled(Stack)(({ theme }) => ({
-  flexWrap: "wrap",
-  gap: theme.spacing(1),
-  justifyContent: "flex-end",
-}));
 
 const StatusText = styled("span", {
   shouldForwardProp: (prop) => prop !== "as" && prop !== "status",
@@ -494,65 +485,58 @@ const AdminWaitlist = ({
     }[ticket.status].filter((time) => !!time);
 
     return (
-      <SecondaryStack>
-        <Stack>
-          <MetaStack direction="row">
-            <MetaItemStack direction="row">
-              <Person fontSize="inherit" />
-              <DetailsTypography variant="caption">
-                {ticket.name}
-              </DetailsTypography>
+      <Stack>
+        <MetaStack direction="row">
+          <MetaItemStack direction="row">
+            <Person fontSize="inherit" />
+            <DetailsTypography variant="caption">
+              {ticket.name}
+            </DetailsTypography>
+          </MetaItemStack>
+          <MetaItemStack direction="row">
+            <Phone fontSize="inherit" />
+            <Link
+              href={`tel:${ticket.phoneNumber}`}
+              onClick={(event) => event.stopPropagation()}
+              variant="caption"
+            >
+              {ticket.phoneNumber}
+            </Link>
+          </MetaItemStack>
+        </MetaStack>
+        <MetaStack direction="row">
+          {times.map(({ color, icon: Icon, text }) => (
+            <MetaItemStack direction="row" key={text}>
+              <Icon color={color} fontSize="inherit" />
+              <Typography color={color} variant="caption">
+                {text}
+              </Typography>
             </MetaItemStack>
-            <MetaItemStack direction="row">
-              <Phone fontSize="inherit" />
-              <Link
-                href={`tel:${ticket.phoneNumber}`}
-                onClick={(event) => event.stopPropagation()}
-                variant="caption"
-              >
-                {ticket.phoneNumber}
-              </Link>
-            </MetaItemStack>
-          </MetaStack>
-          <MetaStack direction="row">
-            {times.map(({ color, icon: Icon, text }) => (
-              <MetaItemStack direction="row" key={text}>
-                <Icon color={color} fontSize="inherit" />
-                <Typography color={color} variant="caption">
-                  {text}
-                </Typography>
-              </MetaItemStack>
-            ))}
-          </MetaStack>
-        </Stack>
-        {TICKET_ACTIONS[ticket.status].length > 0 && (
-          <ActionsStack direction="row">
-            {TICKET_ACTIONS[ticket.status].map(({ color, label, status }) => (
-              <Button
-                color={color}
-                disabled={
-                  !!pendingAction && pendingAction !== `${ticket.id}:${status}`
-                }
-                key={label}
-                loading={pendingAction === `${ticket.id}:${status}`}
-                onClick={(event) => {
-                  event.stopPropagation();
-
-                  if (status === "cancelled") handleCancelDialog(ticket);
-                  else handleTransition(ticket, status);
-                }}
-                onMouseDown={(event) => event.stopPropagation()}
-                size="small"
-                variant="outlined"
-              >
-                {tWaitlist(`actions.${label}`)}
-              </Button>
-            ))}
-          </ActionsStack>
-        )}
-      </SecondaryStack>
+          ))}
+        </MetaStack>
+      </Stack>
     );
   };
+
+  const renderActions = (ticket: AdminWaitlistTicket) =>
+    TICKET_ACTIONS[ticket.status].length > 0 &&
+    TICKET_ACTIONS[ticket.status].map(({ color, label, status }) => (
+      <Button
+        color={color}
+        disabled={!!pendingAction && pendingAction !== `${ticket.id}:${status}`}
+        key={label}
+        loading={pendingAction === `${ticket.id}:${status}`}
+        onClick={() =>
+          status === "cancelled"
+            ? handleCancelDialog(ticket)
+            : handleTransition(ticket, status)
+        }
+        size="small"
+        variant="outlined"
+      >
+        {tWaitlist(`actions.${label}`)}
+      </Button>
+    ));
 
   if (!waitlist.enabled)
     return <Alert severity="info">{tWaitlist("disabled")}</Alert>;
@@ -612,6 +596,7 @@ const AdminWaitlist = ({
         id: ticket.id,
         primary: renderTitle(ticket),
         secondary: renderDetails(ticket),
+        actions: renderActions(ticket),
       })),
       size: { xs: 12, md: isEnded ? ("grow" as const) : 4 },
       subheader: isEnded
