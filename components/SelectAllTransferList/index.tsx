@@ -40,12 +40,21 @@ const ColumnGrid = styled(Grid)({
 
 const StyledCard = styled(Card, {
   shouldForwardProp: (prop) => prop !== "color" && prop !== "expanded",
-})<{ color?: ChipProps["color"]; expanded: boolean }>(
+})<{ color?: ChipProps["color"]; expanded: boolean | null }>(
   ({ color, expanded, theme }) => ({
-    ...(expanded && { height: "100%" }),
+    height: "100%",
     display: "flex",
     flexDirection: "column",
     overflow: "hidden",
+
+    ...(expanded !== null && {
+      [theme.breakpoints.up("md")]: {
+        maxHeight: expanded
+          ? "100%"
+          : `calc(${theme.spacing(4)} + 2 * ${theme.typography.body2.lineHeight} * ${theme.typography.body2.fontSize} + 4px)`,
+        transition: theme.transitions.create("max-height"),
+      },
+    }),
 
     ...(color && {
       borderTop: `3px solid ${color === "default" ? theme.vars.palette.grey[500] : theme.vars.palette[color].main}`,
@@ -317,7 +326,11 @@ const SelectAllTransferList = <
     const selectable = !!transferActions[index - 1] || !!transferActions[index];
 
     return (
-      <StyledCard color={color} expanded={expanded[title]} variant="outlined">
+      <StyledCard
+        color={color}
+        expanded={defaultExpanded === undefined ? null : expanded[title]}
+        variant="outlined"
+      >
         <StyledCardHeader
           action={
             defaultExpanded !== undefined && (
