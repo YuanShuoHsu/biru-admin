@@ -1,6 +1,5 @@
 {
   "label": "대시보드",
-  "overview": "개요",
   "stats": {
     "totalOrders": "총 주문 수",
     "totalUsers": "총 사용자 수",

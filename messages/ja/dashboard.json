@@ -1,6 +1,5 @@
 {
   "label": "ダッシュボード",
-  "overview": "概要",
   "stats": {
     "totalOrders": "総注文数",
     "totalUsers": "総ユーザー数",

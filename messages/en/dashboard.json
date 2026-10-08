@@ -1,6 +1,5 @@
 {
   "label": "Dashboard",
-  "overview": "Overview",
   "stats": {
     "totalOrders": "Total Orders",
     "totalUsers": "Total Users",

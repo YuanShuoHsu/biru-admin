@@ -335,7 +335,6 @@ const Dashboard = ({
 
   return (
     <>
-      <Typography variant="h6">{tDashboard("overview")}</Typography>
       <Grid container spacing={2}>
         {statCards.map(({ label, value, href, trend }, index) => {
           const { chipColor, trendColor } = getTrendColors(trend.percent);
@@ -345,9 +344,11 @@ const Dashboard = ({
               <StyledCard variant="outlined">
                 <StyledCardActionArea onClick={() => href && router.push(href)}>
                   <StyledCardContent>
-                    <Typography variant="subtitle2">{label}</Typography>
+                    <Typography component="h3" variant="subtitle2">
+                      {label}
+                    </Typography>
                     <StatValueStack direction="row">
-                      <Typography variant="h4">
+                      <Typography component="p" variant="h4">
                         {format.number(value)}
                       </Typography>
                       <Chip
@@ -382,117 +383,114 @@ const Dashboard = ({
         })}
       </Grid>
       {revenue && (
-        <>
-          <Typography variant="h6">{tDashboard("stats.revenue")}</Typography>
-          <Grid container spacing={2}>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <StyledCard variant="outlined">
-                <StyledCardContent>
-                  <Typography component="h2" variant="subtitle2">
-                    {tDashboard("stats.revenue")}
+        <Grid container spacing={2}>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <StyledCard variant="outlined">
+              <StyledCardContent>
+                <Typography component="h3" variant="subtitle2">
+                  {tDashboard("stats.revenue")}
+                </Typography>
+                <RevenueValueStack direction="row">
+                  <Typography component="p" variant="h4">
+                    {formatMoney(revenue.total, currency)}
                   </Typography>
-                  <RevenueValueStack direction="row">
-                    <Typography variant="h4">
-                      {formatMoney(revenue.total, currency)}
-                    </Typography>
-                    <Chip
-                      color={revenue.chipColor}
-                      label={`${revenue.percent > 0 ? "+" : ""}${revenue.percent}%`}
-                      size="small"
-                    />
-                  </RevenueValueStack>
-                  <Typography color="textSecondary" variant="caption">
-                    {periodLabel}
-                  </Typography>
-                  <StyledLineChart
-                    height={250}
-                    hideLegend
-                    grid={{ horizontal: true }}
-                    margin={{ left: 0, bottom: 0 }}
-                    series={[
-                      {
-                        area: true,
-                        color: revenue.trendColor,
-                        curve: "linear",
-                        data: revenue.data,
-                        id: "revenue",
-                        label: tDashboard("stats.revenue"),
-                        showMark: false,
-                        valueFormatter: (value) =>
-                          formatMoney(value ?? 0, currency),
-                      },
-                    ]}
-                    gradientId="revenue"
-                    xAxis={[
-                      {
-                        data: trendLabels,
-                        scaleType: "point",
-                        tickInterval: (_, index) =>
-                          (index + 1) % tickStep === 0,
-                      },
-                    ]}
-                    yAxis={[moneyAxis]}
-                  >
-                    <AreaGradient color={revenue.trendColor} id="revenue" />
-                  </StyledLineChart>
-                </StyledCardContent>
-              </StyledCard>
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <StyledCard variant="outlined">
-                <StyledCardContent>
-                  <Typography component="h2" variant="subtitle2">
-                    {tDashboard("charts.avgOrderValue")}
-                  </Typography>
-                  <Typography variant="h4">
-                    {formatMoney(revenue.avgTotal, currency)}
-                  </Typography>
-                  <Typography color="textSecondary" variant="caption">
-                    {periodLabel}
-                  </Typography>
-                  <StyledLineChart
-                    height={250}
-                    hideLegend
-                    grid={{ horizontal: true }}
-                    margin={{ left: 0, bottom: 0 }}
-                    series={[
-                      {
-                        area: true,
-                        color: chartColor,
-                        curve: "linear",
-                        data: revenue.avgValues,
-                        id: "avg-order-value",
-                        label: tDashboard("charts.avgOrderValue"),
-                        showMark: false,
-                        valueFormatter: (value) =>
-                          formatMoney(value ?? 0, currency),
-                      },
-                    ]}
-                    gradientId="avg-order-value"
-                    xAxis={[
-                      {
-                        data: trendLabels,
-                        scaleType: "point",
-                        tickInterval: (_, index) =>
-                          (index + 1) % tickStep === 0,
-                      },
-                    ]}
-                    yAxis={[moneyAxis]}
-                  >
-                    <AreaGradient color={chartColor} id="avg-order-value" />
-                  </StyledLineChart>
-                </StyledCardContent>
-              </StyledCard>
-            </Grid>
+                  <Chip
+                    color={revenue.chipColor}
+                    label={`${revenue.percent > 0 ? "+" : ""}${revenue.percent}%`}
+                    size="small"
+                  />
+                </RevenueValueStack>
+                <Typography color="textSecondary" variant="caption">
+                  {periodLabel}
+                </Typography>
+                <StyledLineChart
+                  height={250}
+                  hideLegend
+                  grid={{ horizontal: true }}
+                  margin={{ left: 0, bottom: 0 }}
+                  series={[
+                    {
+                      area: true,
+                      color: revenue.trendColor,
+                      curve: "linear",
+                      data: revenue.data,
+                      id: "revenue",
+                      label: tDashboard("stats.revenue"),
+                      showMark: false,
+                      valueFormatter: (value) =>
+                        formatMoney(value ?? 0, currency),
+                    },
+                  ]}
+                  gradientId="revenue"
+                  xAxis={[
+                    {
+                      data: trendLabels,
+                      scaleType: "point",
+                      tickInterval: (_, index) => (index + 1) % tickStep === 0,
+                    },
+                  ]}
+                  yAxis={[moneyAxis]}
+                >
+                  <AreaGradient color={revenue.trendColor} id="revenue" />
+                </StyledLineChart>
+              </StyledCardContent>
+            </StyledCard>
           </Grid>
-        </>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <StyledCard variant="outlined">
+              <StyledCardContent>
+                <Typography component="h3" variant="subtitle2">
+                  {tDashboard("charts.avgOrderValue")}
+                </Typography>
+                <Typography component="p" variant="h4">
+                  {formatMoney(revenue.avgTotal, currency)}
+                </Typography>
+                <Typography color="textSecondary" variant="caption">
+                  {periodLabel}
+                </Typography>
+                <StyledLineChart
+                  height={250}
+                  hideLegend
+                  grid={{ horizontal: true }}
+                  margin={{ left: 0, bottom: 0 }}
+                  series={[
+                    {
+                      area: true,
+                      color: chartColor,
+                      curve: "linear",
+                      data: revenue.avgValues,
+                      id: "avg-order-value",
+                      label: tDashboard("charts.avgOrderValue"),
+                      showMark: false,
+                      valueFormatter: (value) =>
+                        formatMoney(value ?? 0, currency),
+                    },
+                  ]}
+                  gradientId="avg-order-value"
+                  xAxis={[
+                    {
+                      data: trendLabels,
+                      scaleType: "point",
+                      tickInterval: (_, index) => (index + 1) % tickStep === 0,
+                    },
+                  ]}
+                  yAxis={[moneyAxis]}
+                >
+                  <AreaGradient color={chartColor} id="avg-order-value" />
+                </StyledLineChart>
+              </StyledCardContent>
+            </StyledCard>
+          </Grid>
+        </Grid>
       )}
-      <Typography variant="h6">{tOrders("label")}</Typography>
+      <Typography component="h2" variant="h6">
+        {tOrders("label")}
+      </Typography>
       <Grid container spacing={2}>
         <Grid size={12}>
           <StyledCard variant="outlined">
             <StyledCardContent>
-              <Typography component="h2" variant="subtitle2">
+              <Typography component="h3" variant="subtitle2">
                 {tDashboard("charts.peakHours")}
               </Typography>
               <Typography color="textSecondary" variant="caption">
@@ -528,7 +526,7 @@ const Dashboard = ({
         <Grid size={{ xs: 12, md: 6 }}>
           <StyledCard variant="outlined">
             <StyledCardContent>
-              <Typography component="h2" variant="subtitle2">
+              <Typography component="h3" variant="subtitle2">
                 {tDashboard("charts.orderModes")}
               </Typography>
               <Typography color="textSecondary" variant="caption">
@@ -565,7 +563,7 @@ const Dashboard = ({
         <Grid size={{ xs: 12, md: 6 }}>
           <StyledCard variant="outlined">
             <StyledCardContent>
-              <Typography component="h2" variant="subtitle2">
+              <Typography component="h3" variant="subtitle2">
                 {tDashboard("charts.paymentMethods")}
               </Typography>
               <Typography color="textSecondary" variant="caption">
@@ -604,12 +602,14 @@ const Dashboard = ({
           </StyledCard>
         </Grid>
       </Grid>
-      <Typography variant="h6">{tMenus("label")}</Typography>
+      <Typography component="h2" variant="h6">
+        {tMenus("label")}
+      </Typography>
       <Grid container spacing={2}>
         <Grid size={{ xs: 12, md: 6 }}>
           <StyledCard variant="outlined">
             <StyledCardContent>
-              <Typography component="h2" variant="subtitle2">
+              <Typography component="h3" variant="subtitle2">
                 {tDashboard("charts.topItems")}
               </Typography>
               <Typography color="textSecondary" variant="caption">
@@ -646,7 +646,7 @@ const Dashboard = ({
         <Grid size={{ xs: 12, md: 6 }}>
           <StyledCard variant="outlined">
             <StyledCardContent>
-              <Typography component="h2" variant="subtitle2">
+              <Typography component="h3" variant="subtitle2">
                 {tDashboard("charts.slowItems")}
               </Typography>
               <Typography color="textSecondary" variant="caption">
@@ -687,7 +687,7 @@ const Dashboard = ({
         <Grid size={{ xs: 12, md: 4 }}>
           <StyledCard variant="outlined">
             <StyledCardContent>
-              <Typography component="h2" variant="subtitle2">
+              <Typography component="h3" variant="subtitle2">
                 {tDashboard("charts.topModifiers")}
               </Typography>
               <Typography color="textSecondary" variant="caption">
@@ -734,7 +734,7 @@ const Dashboard = ({
         <Grid size={{ xs: 12, md: 4 }}>
           <StyledCard variant="outlined">
             <StyledCardContent>
-              <Typography component="h2" variant="subtitle2">
+              <Typography component="h3" variant="subtitle2">
                 {tDashboard("charts.sweetnessLevels")}
               </Typography>
               <Typography color="textSecondary" variant="caption">
@@ -775,7 +775,7 @@ const Dashboard = ({
         <Grid size={{ xs: 12, md: 4 }}>
           <StyledCard variant="outlined">
             <StyledCardContent>
-              <Typography component="h2" variant="subtitle2">
+              <Typography component="h3" variant="subtitle2">
                 {tDashboard("charts.servingTemperatureLevels")}
               </Typography>
               <Typography color="textSecondary" variant="caption">
@@ -814,17 +814,19 @@ const Dashboard = ({
           </StyledCard>
         </Grid>
       </Grid>
-      <Typography variant="h6">{tCoupons("label")}</Typography>
+      <Typography component="h2" variant="h6">
+        {tCoupons("label")}
+      </Typography>
       <Grid container spacing={2}>
         {stats.discountTrend && (
           <Grid size={{ xs: 12, md: 6 }}>
             <StyledCard variant="outlined">
               <StyledCardContent>
-                <Typography component="h2" variant="subtitle2">
+                <Typography component="h3" variant="subtitle2">
                   {tDashboard("stats.discount")}
                 </Typography>
                 <RevenueValueStack direction="row">
-                  <Typography variant="h4">
+                  <Typography component="p" variant="h4">
                     {formatMoney(discountTotal, currency)}
                   </Typography>
                   <Chip
@@ -872,7 +874,7 @@ const Dashboard = ({
         <Grid size={{ xs: 12, md: 6 }}>
           <StyledCard variant="outlined">
             <StyledCardContent>
-              <Typography component="h2" variant="subtitle2">
+              <Typography component="h3" variant="subtitle2">
                 {tDashboard("charts.couponUsage")}
               </Typography>
               <Typography color="textSecondary" variant="caption">
@@ -909,7 +911,9 @@ const Dashboard = ({
       </Grid>
       {waitlist && (
         <>
-          <Typography variant="h6">{tWaitlist("label")}</Typography>
+          <Typography component="h2" variant="h6">
+            {tWaitlist("label")}
+          </Typography>
           <Grid container spacing={2}>
             <Grid size={{ xs: 12, sm: 6 }}>
               <StyledCard variant="outlined">
@@ -917,10 +921,10 @@ const Dashboard = ({
                   onClick={() => waitlistHref && router.push(waitlistHref)}
                 >
                   <StyledCardContent>
-                    <Typography variant="subtitle2">
+                    <Typography component="h3" variant="subtitle2">
                       {tDashboard("waitlist.total")}
                     </Typography>
-                    <Typography variant="h4">
+                    <Typography component="p" variant="h4">
                       {format.number(waitlist.total)}
                     </Typography>
                     <Typography color="textSecondary" variant="caption">
@@ -933,10 +937,10 @@ const Dashboard = ({
             <Grid size={{ xs: 12, sm: 6 }}>
               <StyledCard variant="outlined">
                 <StyledCardContent>
-                  <Typography component="h2" variant="subtitle2">
+                  <Typography component="h3" variant="subtitle2">
                     {tDashboard("waitlist.medianWait")}
                   </Typography>
-                  <Typography variant="h4">
+                  <Typography component="p" variant="h4">
                     {waitlist.medianWaitMinutes === null ||
                     waitlist.medianWaitMinutes === undefined
                       ? "—"
@@ -955,7 +959,7 @@ const Dashboard = ({
             <Grid size={{ xs: 12, md: 6 }}>
               <StyledCard variant="outlined">
                 <StyledCardContent>
-                  <Typography component="h2" variant="subtitle2">
+                  <Typography component="h3" variant="subtitle2">
                     {tDashboard("waitlist.outcomes")}
                   </Typography>
                   <Typography color="textSecondary" variant="caption">
@@ -1012,7 +1016,7 @@ const Dashboard = ({
             <Grid size={{ xs: 12, md: 6 }}>
               <StyledCard variant="outlined">
                 <StyledCardContent>
-                  <Typography component="h2" variant="subtitle2">
+                  <Typography component="h3" variant="subtitle2">
                     {tDashboard("waitlist.hourlyTickets")}
                   </Typography>
                   <Typography color="textSecondary" variant="caption">
