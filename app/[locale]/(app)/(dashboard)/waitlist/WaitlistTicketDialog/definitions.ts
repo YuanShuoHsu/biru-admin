@@ -2,7 +2,7 @@ import { type CountryCode, isValidPhoneNumber } from "libphonenumber-js";
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-export const useAddWaitlistTicketFormSchema = () => {
+export const useWaitlistTicketFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z
@@ -39,6 +39,6 @@ export const useAddWaitlistTicketFormSchema = () => {
     });
 };
 
-export type AddWaitlistTicketForm = z.infer<
-  ReturnType<typeof useAddWaitlistTicketFormSchema>
+export type WaitlistTicketForm = z.infer<
+  ReturnType<typeof useWaitlistTicketFormSchema>
 >;

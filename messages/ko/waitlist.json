@@ -42,6 +42,12 @@
   },
   "count": "{count}팀",
   "disabled": "이 매장은 현장 대기가 꺼져 있습니다. 조직 설정의 '현장 대기' 탭에서 켜 주세요.",
+  "edit": {
+    "action": "수정",
+    "label": "대기 수정",
+    "renumbered": "인원 그룹이 바뀌어 {from}이(가) {to}(으)로 변경되고 맨 뒤로 이동했습니다",
+    "success": "{ticketNumber}을(를) 수정했습니다"
+  },
   "empty": "대기 중인 팀이 없습니다",
   "errors": {
     "waitlistClosed": "영업시간이 아니라 대기 등록을 받지 않습니다.",

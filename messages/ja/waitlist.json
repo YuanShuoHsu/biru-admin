@@ -42,6 +42,12 @@
   },
   "count": "{count} 組",
   "disabled": "この店舗では店頭の順番待ちがオフになっています。組織設定の「順番待ち」タブからオンにしてください。",
+  "edit": {
+    "action": "編集",
+    "label": "順番待ちを編集",
+    "renumbered": "人数のグループが変わったため、{from} を {to} に変更し最後尾に移動しました",
+    "success": "{ticketNumber} を更新しました"
+  },
   "empty": "順番待ちはありません",
   "errors": {
     "waitlistClosed": "営業時間外のため、受付を停止しています。",

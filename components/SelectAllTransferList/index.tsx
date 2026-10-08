@@ -29,7 +29,6 @@ import {
 import { darken, lighten, styled } from "@mui/material/styles";
 
 const ContainerGrid = styled(Grid)({
-  flex: 1,
   justifyContent: "center",
   alignItems: "center",
 });
@@ -93,23 +92,37 @@ const ActionGrid = styled(Grid)({
   justifyContent: "center",
 });
 
-const ActionStack = styled(Stack)(({ theme }) => ({
+type TransferPlacement = "forward" | "backward" | "turn";
+
+const ActionStack = styled(Stack, {
+  shouldForwardProp: (prop) => prop !== "sticky",
+})<{ sticky: boolean }>(({ sticky, theme }) => ({
   justifyContent: "center",
   alignItems: "center",
   gap: theme.spacing(2),
 
-  [theme.breakpoints.up("md")]: {
-    position: "sticky",
-    top: "50%",
-    bottom: "50%",
-  },
+  ...(sticky && {
+    [theme.breakpoints.up("md")]: {
+      position: "sticky",
+      top: "50%",
+      bottom: "50%",
+    },
+  }),
 }));
 
-const ActionButton = styled(Button)(({ theme }) => ({
+const ActionButton = styled(Button, {
+  shouldForwardProp: (prop) => prop !== "placement",
+})<{ placement: TransferPlacement }>(({ placement, theme }) => ({
   svg: { transform: "rotate(90deg)" },
 
   [theme.breakpoints.up("md")]: {
-    svg: { transform: "none" },
+    svg: {
+      transform: {
+        backward: "rotate(180deg)",
+        forward: "none",
+        turn: "rotate(90deg)",
+      }[placement],
+    },
   },
 }));
 
@@ -136,9 +149,11 @@ const ItemContentStack = styled(Stack)(({ theme }) => ({
   minWidth: 0,
 }));
 
-const ItemActionsStack = styled(Stack)(({ theme }) => ({
+const ItemActionsStack = styled(Stack, {
+  shouldForwardProp: (prop) => prop !== "align",
+})<{ align: "end" | "start" }>(({ align, theme }) => ({
   flexWrap: "wrap",
-  justifyContent: "flex-end",
+  justifyContent: align === "start" ? "flex-start" : "flex-end",
   gap: theme.spacing(1),
 }));
 
@@ -184,6 +199,7 @@ interface SelectAllTransferListColumn<T> {
   size?: React.ComponentProps<typeof Grid>["size"];
   subheader?: string;
   title: string;
+  turnAfter?: boolean;
 }
 
 export interface SelectAllTransferListAction {
@@ -201,6 +217,7 @@ interface SelectAllTransferListProps<
     secondary?: React.ReactNode;
   },
 > {
+  actionsAlign?: "end" | "start";
   columns: SelectAllTransferListColumn<T>[];
   transferActions: (
     | [SelectAllTransferListAction, SelectAllTransferListAction]
@@ -217,6 +234,7 @@ const SelectAllTransferList = <
     secondary?: React.ReactNode;
   },
 >({
+  actionsAlign = "end",
   columns,
   transferActions,
 }: SelectAllTransferListProps<T>) => {
@@ -287,6 +305,7 @@ const SelectAllTransferList = <
             />
             {item.actions && (
               <ItemActionsStack
+                align={actionsAlign}
                 direction="row"
                 onClick={stopPropagationFromChildren}
                 onMouseDown={stopPropagationFromChildren}
@@ -402,57 +421,120 @@ const SelectAllTransferList = <
     );
   };
 
+  const mdColumns = 12 + transferActions.filter(Boolean).length;
+
+  const rows = columns.reduce<number[][]>(
+    (rows, { turnAfter }, index) => {
+      rows[rows.length - 1].push(index);
+      if (turnAfter) rows.push([]);
+
+      return rows;
+    },
+    [[]],
+  );
+
+  const rowSpan = columns.length * 2;
+
+  const layouts = rows.flatMap((row, rowIndex) => {
+    const reversed = rowIndex % 2 === 1;
+    const toOrder = (cell: number) =>
+      rowIndex * rowSpan + (reversed ? rowSpan - 2 - cell : cell);
+
+    return row.map((_, position) => {
+      const isLast = position === row.length - 1;
+      const placement: TransferPlacement = isLast
+        ? "turn"
+        : reversed
+          ? "backward"
+          : "forward";
+
+      return {
+        columnOrder: toOrder(position * 2),
+        placement,
+        reversed,
+        transferOrder: isLast
+          ? (rowIndex + 1) * rowSpan - 1
+          : toOrder(position * 2 + 1),
+      };
+    });
+  });
+
   return (
-    <ContainerGrid
-      columns={{ xs: 12, md: 12 + transferActions.filter(Boolean).length }}
-      container
-      spacing={2}
-    >
+    <ContainerGrid columns={{ xs: 12, md: mdColumns }} container spacing={2}>
       {columns.map((column, index) => {
         const transferAction = transferActions[index];
+        const { columnOrder, placement, reversed, transferOrder } =
+          layouts[index];
+
+        const transferStack = transferAction && (
+          <ActionStack
+            direction={{
+              xs: "row-reverse",
+              md: placement === "turn" ? "row-reverse" : "column",
+            }}
+            sticky={rows.length === 1}
+          >
+            {[
+              {
+                action: transferAction[0],
+                Icon: ChevronRight,
+                sourceItems: column.items,
+              },
+              {
+                action: transferAction[1],
+                Icon: ChevronLeft,
+                sourceItems: columns[index + 1].items,
+              },
+            ].map(({ action, Icon, sourceItems }) => {
+              const ids = intersection(
+                checked,
+                sourceItems.map((item) => item.id),
+              );
+
+              return (
+                <Tooltip key={action.title} title={action.title}>
+                  <span>
+                    <ActionButton
+                      aria-label={action.title}
+                      disabled={ids.length === 0 || !!action.disabled?.(ids)}
+                      onClick={() => handleTransfer(action, ids)}
+                      placement={placement}
+                      size="small"
+                      variant="outlined"
+                    >
+                      <Icon />
+                    </ActionButton>
+                  </span>
+                </Tooltip>
+              );
+            })}
+          </ActionStack>
+        );
 
         return (
           <Fragment key={column.title}>
-            <ColumnGrid size={column.size}>{customList(index)}</ColumnGrid>
-            {transferAction && (
-              <ActionGrid size={{ xs: 12, md: 1 }}>
-                <ActionStack direction={{ xs: "row-reverse", md: "column" }}>
-                  {[
-                    {
-                      action: transferAction[0],
-                      Icon: ChevronRight,
-                      sourceItems: column.items,
-                    },
-                    {
-                      action: transferAction[1],
-                      Icon: ChevronLeft,
-                      sourceItems: columns[index + 1].items,
-                    },
-                  ].map(({ action, Icon, sourceItems }) => {
-                    const ids = intersection(
-                      checked,
-                      sourceItems.map((item) => item.id),
-                    );
-
-                    return (
-                      <Tooltip key={action.title} title={action.title}>
-                        <span>
-                          <ActionButton
-                            aria-label={action.title}
-                            disabled={
-                              ids.length === 0 || !!action.disabled?.(ids)
-                            }
-                            onClick={() => handleTransfer(action, ids)}
-                            size="small"
-                            variant="outlined"
-                          >
-                            <Icon />
-                          </ActionButton>
-                        </span>
-                      </Tooltip>
-                    );
-                  })}
-                </ActionStack>
+            <ColumnGrid size={column.size} sx={{ order: { md: columnOrder } }}>
+              {customList(index)}
+            </ColumnGrid>
+            {transferStack && (
+              <ActionGrid
+                size={{ xs: 12, md: placement === "turn" ? mdColumns : 1 }}
+                sx={{ order: { md: transferOrder } }}
+              >
+                {placement === "turn" ? (
+                  <Grid
+                    columns={{ xs: 12, md: mdColumns }}
+                    container
+                    spacing={2}
+                    sx={{
+                      justifyContent: reversed ? "flex-start" : "flex-end",
+                    }}
+                  >
+                    <Grid size={column.size}>{transferStack}</Grid>
+                  </Grid>
+                ) : (
+                  transferStack
+                )}
               </ActionGrid>
             )}
           </Fragment>

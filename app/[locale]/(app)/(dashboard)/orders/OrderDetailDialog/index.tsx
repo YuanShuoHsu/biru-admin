@@ -5,14 +5,16 @@ import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 import useSWR from "swr";
 
+import { MODE_COLORS } from "@/constants/orderMode";
 import {
   INVOICE_STATUS_COLORS,
+  REFUND_INVOICE_ACTION_COLORS,
   REFUND_STATUS_COLORS,
   STATUS_COLORS,
 } from "@/constants/orders";
 
 import { useFormatMoney } from "@/hooks/useFormatMoney";
-import { useOrderItemName } from "@/hooks/useOrderItemName";
+import { useOrderItemChoiceNames } from "@/hooks/useOrderItemName";
 
 import { Button, Chip, Divider, Stack, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -29,12 +31,18 @@ import { fetcher } from "@/utils/fetcher";
 
 const InfoRowStack = styled(Stack)(({ theme }) => ({
   justifyContent: "space-between",
-  alignItems: "center",
+  alignItems: "baseline",
   gap: theme.spacing(2),
 }));
 
+const LabelTypography = styled(Typography)({
+  flexShrink: 0,
+});
+
 const ValueTypography = styled(Typography)({
-  wordBreak: "break-all",
+  overflowWrap: "anywhere",
+  textAlign: "end",
+  whiteSpace: "pre-wrap",
 });
 
 const SectionStack = styled(Stack)(({ theme }) => ({
@@ -49,10 +57,9 @@ const DetailStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-const InvoiceActionsStack = styled(Stack)(({ theme }) => ({
-  alignItems: "flex-start",
-  gap: theme.spacing(1),
-}));
+const VerifyButton = styled(Button)({
+  alignSelf: "flex-start",
+});
 
 const EntryStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(0.5),
@@ -60,7 +67,13 @@ const EntryStack = styled(Stack)(({ theme }) => ({
 
 const EntryRowStack = styled(Stack)(({ theme }) => ({
   justifyContent: "space-between",
+  alignItems: "baseline",
   gap: theme.spacing(2),
+}));
+
+const ChipStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  gap: theme.spacing(0.5),
 }));
 
 const AmountTypography = styled(Typography)({
@@ -70,11 +83,6 @@ const AmountTypography = styled(Typography)({
 const NotificationStack = styled(Stack)(({ theme }) => ({
   alignItems: "flex-end",
   gap: theme.spacing(0.5),
-}));
-
-const ItemRowStack = styled(Stack)(({ theme }) => ({
-  gap: theme.spacing(1),
-  justifyContent: "space-between",
 }));
 
 const TotalStack = styled(Stack)({
@@ -90,9 +98,9 @@ const InfoRow = ({
   value: React.ReactNode;
 }) => (
   <InfoRowStack direction="row">
-    <Typography color="textSecondary" variant="body2">
+    <LabelTypography color="textSecondary" variant="body2">
       {label}
-    </Typography>
+    </LabelTypography>
     {typeof value === "string" ? (
       <ValueTypography variant="body2">{value}</ValueTypography>
     ) : (
@@ -118,7 +126,7 @@ const Section = ({
 
 interface OrderDetailDialogProps {
   order: OrderResponse;
-  organizationSlug?: string;
+  organizationSlug: string;
 }
 
 const OrderDetailDialog = ({
@@ -129,23 +137,19 @@ const OrderDetailDialog = ({
 
   const formatMoney = useFormatMoney();
 
-  const getOrderItemName = useOrderItemName();
+  const getOrderItemChoiceNames = useOrderItemChoiceNames();
 
   const tCommon = useTranslations("common");
   const tOrder = useTranslations("order");
   const tOrders = useTranslations("orders");
 
   const { data: refunds } = useSWR<OrderRefund[]>(
-    organizationSlug
-      ? `/api/organizations/${organizationSlug}/orders/${order.id}/refunds`
-      : null,
+    `/api/organizations/${organizationSlug}/orders/${order.id}/refunds`,
     fetcher,
   );
 
   const { data: notifications } = useSWR<OrderPaymentNotification[]>(
-    organizationSlug
-      ? `/api/organizations/${organizationSlug}/orders/${order.id}/payment-notifications`
-      : null,
+    `/api/organizations/${organizationSlug}/orders/${order.id}/payment-notifications`,
     fetcher,
   );
 
@@ -209,7 +213,14 @@ const OrderDetailDialog = ({
         )}
         <InfoRow
           label={tOrders("mode")}
-          value={tOrder(`mode.${order.mode}.label`)}
+          value={
+            <Chip
+              color={MODE_COLORS[order.mode]}
+              label={tOrder(`mode.${order.mode}.label`)}
+              size="small"
+              variant="outlined"
+            />
+          }
         />
         {!!order.tableNumber && (
           <InfoRow
@@ -257,6 +268,54 @@ const OrderDetailDialog = ({
           value={format.dateTime(new Date(order.createdAt), "short")}
         />
       </Section>
+      <Section title={tOrders("detail.items.title")}>
+        {order.items.map((item) => {
+          const choiceNames = getOrderItemChoiceNames(item);
+
+          return (
+            <EntryRowStack direction="row" key={item.id}>
+              <Stack>
+                <Typography variant="body2">
+                  {item.menuItemName} {tCommon("multiply")} {item.orderQuantity}
+                </Typography>
+                {choiceNames && (
+                  <Typography color="textSecondary" variant="caption">
+                    {choiceNames}
+                  </Typography>
+                )}
+              </Stack>
+              <AmountTypography variant="body2">
+                {formatMoney(
+                  Number(item.unitPrice) * item.orderQuantity,
+                  item.priceCurrency,
+                )}
+              </AmountTypography>
+            </EntryRowStack>
+          );
+        })}
+        {discount > 0 && (
+          <EntryRowStack direction="row">
+            <Typography variant="body2">
+              {tOrders("detail.discount")}
+              {order.discountCode
+                ? `${tCommon("parenthesisOpen")}${order.discountCode}${tCommon("parenthesisClose")}`
+                : ""}
+            </Typography>
+            <AmountTypography color="textSecondary" variant="body2">
+              -{formatMoney(discount, currency)}
+            </AmountTypography>
+          </EntryRowStack>
+        )}
+        <Divider />
+        <TotalStack direction="row">
+          <BoldTypography variant="subtitle1">
+            {tOrders("detail.total")}
+          </BoldTypography>
+          <BoldTypography color="primary" variant="h6">
+            {formatMoney(totalAmount, currency)}
+          </BoldTypography>
+        </TotalStack>
+      </Section>
       {order.invoice && (
         <Section title={tOrders("detail.invoice.title")}>
           <InfoRow
@@ -294,71 +353,8 @@ const OrderDetailDialog = ({
               )}
             />
           )}
-          {!!organizationSlug && !!order.invoice.invoiceNumber && (
-            <InvoiceActionsStack>
-              <Button
-                loading={verifying}
-                onClick={handleVerifyInvoice}
-                size="small"
-                variant="outlined"
-              >
-                {tOrders("detail.invoice.verification.label")}
-              </Button>
-              {!!verification && (
-                <EntryStack>
-                  <Typography
-                    color={verification.matchesLocal ? "success" : "error"}
-                    variant="body2"
-                  >
-                    {tOrders(
-                      verification.matchesLocal
-                        ? "detail.invoice.verification.matched"
-                        : "detail.invoice.verification.mismatched",
-                    )}
-                  </Typography>
-                  {verification.invalidated && (
-                    <Typography color="textSecondary" variant="body2">
-                      {tOrders("detail.invoice.verification.invalidated")}
-                    </Typography>
-                  )}
-                  <Typography color="textSecondary" variant="body2">
-                    {tOrders(
-                      verification.uploaded
-                        ? "detail.invoice.verification.uploaded"
-                        : "detail.invoice.verification.notUploaded",
-                    )}
-                  </Typography>
-                  {!verification.matchesLocal && (
-                    <>
-                      <InfoRow
-                        label={tOrders(
-                          "detail.invoice.verification.invoiceNumber",
-                        )}
-                        value={verification.invoiceNumber}
-                      />
-                      <InfoRow
-                        label={tOrders(
-                          "detail.invoice.verification.invoiceDate",
-                        )}
-                        value={verification.invoiceDate}
-                      />
-                      <InfoRow
-                        label={tOrders(
-                          "detail.invoice.verification.salesAmount",
-                        )}
-                        value={formatMoney(
-                          Number(verification.salesAmount),
-                          currency,
-                        )}
-                      />
-                    </>
-                  )}
-                </EntryStack>
-              )}
-            </InvoiceActionsStack>
-          )}
           <InfoRow
-            label={tOrder("checkout.invoice.title")}
+            label={tOrders("invoiceType")}
             value={tOrder(`checkout.invoice.${order.invoice.type}`)}
           />
           {order.invoice.carrierType && (
@@ -397,6 +393,71 @@ const OrderDetailDialog = ({
               value={order.invoice.donateCode}
             />
           )}
+          {!!order.invoice.invoiceNumber && (
+            <VerifyButton
+              loading={verifying}
+              onClick={handleVerifyInvoice}
+              size="small"
+              variant="outlined"
+            >
+              {tOrders("detail.invoice.verification.label")}
+            </VerifyButton>
+          )}
+          {!!verification && (
+            <EntryStack>
+              <ChipStack direction="row">
+                <Chip
+                  color={verification.matchesLocal ? "success" : "error"}
+                  label={tOrders(
+                    verification.matchesLocal
+                      ? "detail.invoice.verification.matched"
+                      : "detail.invoice.verification.mismatched",
+                  )}
+                  size="small"
+                  variant="outlined"
+                />
+                {verification.invalidated && (
+                  <Chip
+                    label={tOrders("detail.invoice.verification.invalidated")}
+                    size="small"
+                    variant="outlined"
+                  />
+                )}
+                <Chip
+                  color={verification.uploaded ? "success" : "default"}
+                  label={tOrders(
+                    verification.uploaded
+                      ? "detail.invoice.verification.uploaded"
+                      : "detail.invoice.verification.notUploaded",
+                  )}
+                  size="small"
+                  variant="outlined"
+                />
+              </ChipStack>
+              {!verification.matchesLocal && (
+                <>
+                  <InfoRow
+                    label={tOrders("detail.invoice.verification.invoiceNumber")}
+                    value={verification.invoiceNumber}
+                  />
+                  <InfoRow
+                    label={tOrders("detail.invoice.verification.invoiceDate")}
+                    value={format.dateTime(
+                      new Date(verification.invoiceDate),
+                      "short",
+                    )}
+                  />
+                  <InfoRow
+                    label={tOrders("detail.invoice.verification.salesAmount")}
+                    value={formatMoney(
+                      Number(verification.salesAmount),
+                      currency,
+                    )}
+                  />
+                </>
+              )}
+            </EntryStack>
+          )}
         </Section>
       )}
       {!!refunds?.length && (
@@ -410,29 +471,33 @@ const OrderDetailDialog = ({
                   {tOrders(`detail.refunds.channel.${refund.channel}`)}
                   {tCommon("parenthesisClose")}
                 </Typography>
-                <AmountTypography color="error" variant="body2">
+                <AmountTypography color="textSecondary" variant="body2">
                   -{formatMoney(Number(refund.amount), currency)}
                 </AmountTypography>
               </EntryRowStack>
               <InfoRow
                 label={format.dateTime(new Date(refund.createdAt), "short")}
                 value={
-                  <EntryStack direction="row">
+                  <ChipStack direction="row">
                     <Chip
                       color={REFUND_STATUS_COLORS[refund.status]}
                       label={tOrders(`detail.refunds.status.${refund.status}`)}
                       size="small"
+                      variant="outlined"
                     />
                     <Chip
                       color={
-                        refund.invoiceAction === "failed" ? "error" : "default"
+                        REFUND_INVOICE_ACTION_COLORS[
+                          refund.invoiceAction ?? "pending"
+                        ]
                       }
                       label={tOrders(
                         `detail.refunds.invoiceAction.${refund.invoiceAction ?? "pending"}`,
                       )}
                       size="small"
+                      variant="outlined"
                     />
-                  </EntryStack>
+                  </ChipStack>
                 }
               />
               {!!refund.reason && (
@@ -486,6 +551,7 @@ const OrderDetailDialog = ({
                           : "detail.notifications.unhandled",
                     )}
                     size="small"
+                    variant="outlined"
                   />
                   {!!notification.error && (
                     <Typography color="error" variant="caption">
@@ -498,44 +564,6 @@ const OrderDetailDialog = ({
           ))}
         </Section>
       )}
-      <Section title={tOrders("detail.items.title")}>
-        {order.items.map((item) => (
-          <ItemRowStack direction="row" key={item.id}>
-            <Typography variant="body2">
-              {getOrderItemName(item)} {tCommon("multiply")}{" "}
-              {item.orderQuantity}
-            </Typography>
-            <AmountTypography variant="body2">
-              {formatMoney(
-                Number(item.unitPrice) * item.orderQuantity,
-                item.priceCurrency,
-              )}
-            </AmountTypography>
-          </ItemRowStack>
-        ))}
-        {discount > 0 && (
-          <ItemRowStack direction="row">
-            <Typography variant="body2">
-              {tOrders("detail.discount")}
-              {order.discountCode
-                ? `${tCommon("parenthesisOpen")}${order.discountCode}${tCommon("parenthesisClose")}`
-                : ""}
-            </Typography>
-            <AmountTypography color="primary" variant="body2">
-              -{formatMoney(discount, currency)}
-            </AmountTypography>
-          </ItemRowStack>
-        )}
-        <Divider />
-        <TotalStack direction="row">
-          <BoldTypography variant="subtitle1">
-            {tOrders("detail.total")}
-          </BoldTypography>
-          <BoldTypography color="primary" variant="h6">
-            {formatMoney(totalAmount, currency)}
-          </BoldTypography>
-        </TotalStack>
-      </Section>
     </DetailStack>
   );
 };

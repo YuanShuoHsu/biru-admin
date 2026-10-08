@@ -42,6 +42,12 @@
   },
   "count": "{count, plural, one {# party} other {# parties}}",
   "disabled": "The walk-in waitlist is off for this store. Turn it on from the Waitlist tab in organization settings.",
+  "edit": {
+    "action": "Edit",
+    "label": "Edit waitlist entry",
+    "renumbered": "Party size moved to another group: {from} is now {to}, at the end of the line",
+    "success": "Updated {ticketNumber}"
+  },
   "empty": "No one is waiting",
   "errors": {
     "waitlistClosed": "The store is closed, so the waitlist isn't open.",

@@ -7,8 +7,8 @@ import { type BaseSyntheticEvent, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
 import {
-  type AddWaitlistTicketForm,
-  useAddWaitlistTicketFormSchema,
+  type WaitlistTicketForm,
+  useWaitlistTicketFormSchema,
 } from "./definitions";
 
 import CountryAutocomplete from "@/components/CountryAutocomplete";
@@ -22,8 +22,9 @@ import { Alert, Grid, MenuItem, TextField } from "@mui/material";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
-  AdminWaitlistTicket,
   CreateWaitlistTicketDto,
+  WaitlistTicketListItem,
+  WaitlistTicketResponse,
 } from "@/types/waitlist";
 
 import { getPhoneDefaults, getPhoneFormatting } from "@/utils/countries";
@@ -31,19 +32,23 @@ import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 import { getWaitlistErrorCode } from "@/utils/waitlist";
 
-interface AddWaitlistTicketDialogProps {
+export const WAITLIST_TICKET_FORM_ID = "waitlist-ticket-form";
+
+interface WaitlistTicketDialogProps {
   maxPartySize: number;
-  onCreated: () => void;
+  mutate: () => void;
   organizationSlug: string;
-  unavailable: "closed" | "cutoff" | "paused" | null;
+  ticket?: WaitlistTicketListItem;
+  unavailable?: "closed" | "cutoff" | "paused" | null;
 }
 
-const AddWaitlistTicketDialog = ({
+const WaitlistTicketDialog = ({
   maxPartySize,
-  onCreated,
+  mutate,
   organizationSlug,
+  ticket,
   unavailable,
-}: AddWaitlistTicketDialogProps) => {
+}: WaitlistTicketDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const [idempotencyKey] = useState(() => crypto.randomUUID());
@@ -54,9 +59,9 @@ const AddWaitlistTicketDialog = ({
   const tOrder = useTranslations("order");
   const tWaitlist = useTranslations("waitlist");
 
-  const addWaitlistTicketFormSchema = useAddWaitlistTicketFormSchema();
+  const waitlistTicketFormSchema = useWaitlistTicketFormSchema();
 
-  const phoneDefaults = getPhoneDefaults(null, locale);
+  const phoneDefaults = getPhoneDefaults(ticket?.phoneNumber, locale);
 
   const {
     control,
@@ -64,15 +69,15 @@ const AddWaitlistTicketDialog = ({
     handleSubmit,
     register,
     setValue,
-  } = useForm<AddWaitlistTicketForm>({
+  } = useForm<WaitlistTicketForm>({
     defaultValues: {
       countryCode: phoneDefaults.countryCode || "",
-      email: "",
-      name: "",
-      partySize: "",
-      telephone: "",
+      email: ticket?.email || "",
+      name: ticket?.name || "",
+      partySize: ticket ? String(ticket.partySize) : "",
+      telephone: phoneDefaults.telephone,
     },
-    resolver: zodResolver(addWaitlistTicketFormSchema),
+    resolver: zodResolver(waitlistTicketFormSchema),
   });
 
   const [countryCode, partySize, telephone] = useWatch({
@@ -88,12 +93,14 @@ const AddWaitlistTicketDialog = ({
     name,
     partySize,
     telephone,
-  }: AddWaitlistTicketForm) => {
+  }: WaitlistTicketForm) => {
     try {
       setDialog({ confirmLoading: true });
 
-      const ticket = await fetcher<AdminWaitlistTicket>(
-        `/api/organizations/${organizationSlug}/waitlist/tickets/admin`,
+      const saved = await fetcher<WaitlistTicketResponse>(
+        ticket
+          ? `/api/organizations/${organizationSlug}/waitlist/tickets/${ticket.id}`
+          : `/api/organizations/${organizationSlug}/waitlist/tickets/admin`,
         {
           body: JSON.stringify({
             email: email || undefined,
@@ -108,18 +115,25 @@ const AddWaitlistTicketDialog = ({
             "Content-Type": "application/json",
             "Idempotency-Key": idempotencyKey,
           },
-          method: "POST",
+          method: ticket ? "PATCH" : "POST",
         },
       );
 
       enqueueSnackbar(
-        tWaitlist("add.success", { ticketNumber: ticket.ticketNumber }),
+        !ticket
+          ? tWaitlist("add.success", { ticketNumber: saved.ticketNumber })
+          : saved.ticketNumber === ticket.ticketNumber
+            ? tWaitlist("edit.success", { ticketNumber: saved.ticketNumber })
+            : tWaitlist("edit.renumbered", {
+                from: ticket.ticketNumber,
+                to: saved.ticketNumber,
+              }),
         { variant: "success" },
       );
 
       closeDialog();
 
-      onCreated();
+      mutate();
     } catch (error) {
       const code = getWaitlistErrorCode(error);
 
@@ -136,7 +150,7 @@ const AddWaitlistTicketDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="add-waitlist-ticket-form" noValidate onSubmit={onSubmit}>
+    <FormBox id={WAITLIST_TICKET_FORM_ID} noValidate onSubmit={onSubmit}>
       {unavailable && (
         <Alert severity="info">
           {tWaitlist(`add.unavailable.${unavailable}`)}
@@ -232,4 +246,4 @@ const AddWaitlistTicketDialog = ({
   );
 };
 
-export default AddWaitlistTicketDialog;
+export default WaitlistTicketDialog;

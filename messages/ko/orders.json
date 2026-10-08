@@ -8,6 +8,7 @@
     "label": "작업",
     "printInvoice": {
       "reprintConfirm": "주문 <bold>{orderNumber}</bold>의 영수증을 재인쇄하시겠습니까? 정본은 이미 인쇄되었으며 재인쇄본은 추첨 대상이 아닙니다. 정본이 실제로 출력되지 않았다면 먼저 미인쇄로 되돌리세요.",
+      "reprintLabel": "영수증 재인쇄",
       "reprintTitle": "영수증 재인쇄 (정본 인쇄됨)",
       "title": "영수증 인쇄"
     },

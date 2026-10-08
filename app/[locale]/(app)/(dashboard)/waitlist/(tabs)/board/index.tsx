@@ -36,7 +36,9 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import AddWaitlistTicketDialog from "../../AddWaitlistTicketDialog";
+import WaitlistTicketDialog, {
+  WAITLIST_TICKET_FORM_ID,
+} from "../../WaitlistTicketDialog";
 
 import SelectAllTransferList, {
   type SelectAllTransferListAction,
@@ -233,16 +235,17 @@ const AdminWaitlist = ({
     });
   };
 
+  const getMaxPartySize = ({ groups }: AdminWaitlistResponse) =>
+    Math.max(...groups.map(({ maxPartySize }) => maxPartySize));
+
   const handleAddDialog = async () => {
     const latest = (await mutate()) || waitlist;
 
     setDialog({
       content: (
-        <AddWaitlistTicketDialog
-          maxPartySize={Math.max(
-            ...latest.groups.map(({ maxPartySize }) => maxPartySize),
-          )}
-          onCreated={() => mutate()}
+        <WaitlistTicketDialog
+          maxPartySize={getMaxPartySize(latest)}
+          mutate={() => mutate()}
           organizationSlug={organizationSlug}
           unavailable={
             latest.paused
@@ -255,9 +258,27 @@ const AdminWaitlist = ({
           }
         />
       ),
-      formId: "add-waitlist-ticket-form",
+      formId: WAITLIST_TICKET_FORM_ID,
       open: true,
       title: tWaitlist("add.label"),
+    });
+  };
+
+  const handleEditDialog = async (ticket: AdminWaitlistTicket) => {
+    const latest = (await mutate()) || waitlist;
+
+    setDialog({
+      content: (
+        <WaitlistTicketDialog
+          maxPartySize={getMaxPartySize(latest)}
+          mutate={() => mutate()}
+          organizationSlug={organizationSlug}
+          ticket={ticket}
+        />
+      ),
+      formId: WAITLIST_TICKET_FORM_ID,
+      open: true,
+      title: tWaitlist("edit.label"),
     });
   };
 
@@ -528,28 +549,43 @@ const AdminWaitlist = ({
     const statuses = ticket.availableTransitions.filter(
       (status) => !TRANSFER_TRANSITIONS[ticket.status]?.includes(status),
     );
+    const editable = ticket.status === "waiting" || ticket.status === "called";
+
+    if (!editable && !statuses.length) return null;
 
     return (
-      statuses.length > 0 &&
-      statuses.map((status) => {
-        const color = WAITLIST_STATUS_COLORS[status];
-
-        return (
+      <>
+        {editable && (
           <Button
-            color={color === "default" ? "inherit" : color}
-            disabled={
-              !!pendingAction && pendingAction !== `${ticket.id}:${status}`
-            }
-            key={status}
-            loading={pendingAction === `${ticket.id}:${status}`}
-            onClick={() => handleTransitionDialog(ticket, status)}
+            color="inherit"
+            disabled={!!pendingAction}
+            onClick={() => handleEditDialog(ticket)}
             size="small"
             variant="outlined"
           >
-            {tWaitlist(`actions.${TRANSITION_LABELS[status]}`)}
+            {tWaitlist("edit.action")}
           </Button>
-        );
-      })
+        )}
+        {statuses.map((status) => {
+          const color = WAITLIST_STATUS_COLORS[status];
+
+          return (
+            <Button
+              color={color === "default" ? "inherit" : color}
+              disabled={
+                !!pendingAction && pendingAction !== `${ticket.id}:${status}`
+              }
+              key={status}
+              loading={pendingAction === `${ticket.id}:${status}`}
+              onClick={() => handleTransitionDialog(ticket, status)}
+              size="small"
+              variant="outlined"
+            >
+              {tWaitlist(`actions.${TRANSITION_LABELS[status]}`)}
+            </Button>
+          );
+        })}
+      </>
     );
   };
 

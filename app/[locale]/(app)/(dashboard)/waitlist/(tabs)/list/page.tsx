@@ -120,9 +120,13 @@ const WaitlistListPage = async ({
   const canViewAuditLog = hasRolePermission(memberRole?.role, {
     auditLog: ["read"],
   });
+  const canUpdate = hasRolePermission(memberRole?.role, {
+    waitlist: ["update"],
+  });
 
   return (
     <WaitlistTickets
+      canUpdate={canUpdate}
       canViewAuditLog={canViewAuditLog}
       filterField={filterField}
       filterOperator={filterOperator}

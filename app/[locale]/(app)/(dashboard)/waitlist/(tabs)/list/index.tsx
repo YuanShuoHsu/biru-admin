@@ -2,8 +2,13 @@
 
 import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
+import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
+
+import WaitlistTicketDialog, {
+  WAITLIST_TICKET_FORM_ID,
+} from "../../WaitlistTicketDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
 import { renderEmptyableCell } from "@/components/EmptyCell";
@@ -24,7 +29,8 @@ import {
 } from "@/hooks/useFilterOperators";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
-import { Chip, Stack } from "@mui/material";
+import { Edit } from "@mui/icons-material";
+import { Chip, IconButton, Stack, Tooltip } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
@@ -35,9 +41,12 @@ import type {
 } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
+import { useDialogStore } from "@/providers/dialog-store-provider";
+
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization } from "@/types/organizations";
 import type {
+  AdminWaitlistResponse,
   WaitlistTicketFilterField,
   WaitlistTicketListItem,
   WaitlistTicketSortField,
@@ -45,6 +54,7 @@ import type {
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getWaitlistEnumOptions } from "@/utils/enumOptions";
+import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
 const DataGrid = dynamic(
@@ -59,6 +69,7 @@ const ActionsStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface WaitlistTicketsProps {
+  canUpdate: boolean;
   canViewAuditLog: boolean;
   filterField?: WaitlistTicketFilterField;
   filterOperator?: FilterOperator;
@@ -74,6 +85,7 @@ interface WaitlistTicketsProps {
 }
 
 const WaitlistTickets = ({
+  canUpdate,
   canViewAuditLog,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
@@ -114,6 +126,8 @@ const WaitlistTickets = ({
     quickFilterValues: initialQuickFilterValue ? [initialQuickFilterValue] : [],
   });
 
+  const { setDialog } = useDialogStore((state) => state);
+
   const format = useFormatter();
 
   const apiRef = useGridApiRef();
@@ -131,6 +145,7 @@ const WaitlistTickets = ({
       total: initialRowCount,
     },
     isValidating: loading,
+    mutate,
   } = useSWR(
     [
       `/api/organizations/${organizationSlug}/waitlist/tickets/list`,
@@ -216,6 +231,37 @@ const WaitlistTickets = ({
     [updateQuery],
   );
 
+  const handleEditDialog = useCallback(
+    async (ticket: WaitlistTicketListItem) => {
+      const groups = await fetcher<AdminWaitlistResponse>(
+        `/api/organizations/${organizationSlug}/waitlist/tickets`,
+      ).then(
+        (waitlist) => waitlist.groups,
+        (error) => {
+          enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+        },
+      );
+      if (!groups) return;
+
+      setDialog({
+        content: (
+          <WaitlistTicketDialog
+            maxPartySize={Math.max(
+              ...groups.map(({ maxPartySize }) => maxPartySize),
+            )}
+            mutate={() => mutate()}
+            organizationSlug={organizationSlug}
+            ticket={ticket}
+          />
+        ),
+        formId: WAITLIST_TICKET_FORM_ID,
+        open: true,
+        title: tWaitlist("edit.label"),
+      });
+    },
+    [mutate, organizationSlug, setDialog, tWaitlist],
+  );
+
   const columns = useMemo<GridColDef[]>(() => {
     const formatSameDayTime = (
       value: string | null,
@@ -232,7 +278,7 @@ const WaitlistTickets = ({
     };
 
     return [
-      ...(canViewAuditLog
+      ...(canUpdate || canViewAuditLog
         ? [
             {
               disableColumnMenu: true,
@@ -244,7 +290,18 @@ const WaitlistTickets = ({
                 row,
               }: GridRenderCellParams<WaitlistTicketListItem>) => (
                 <ActionsStack direction="row">
-                  <AuditLogButton resourceId={row.id} />
+                  {canUpdate &&
+                    (row.status === "waiting" || row.status === "called") && (
+                      <Tooltip title={tWaitlist("edit.label")}>
+                        <IconButton
+                          onClick={() => handleEditDialog(row)}
+                          size="small"
+                        >
+                          <Edit fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                  {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
                 </ActionsStack>
               ),
               resizable: false,
@@ -318,11 +375,13 @@ const WaitlistTickets = ({
       },
     ];
   }, [
+    canUpdate,
     canViewAuditLog,
     dateFilterOperators,
     enumFilterOperators,
     enumOptions,
     format,
+    handleEditDialog,
     numberFilterOperators,
     stringFilterOperators,
     tWaitlist,

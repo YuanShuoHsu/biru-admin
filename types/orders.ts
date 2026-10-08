@@ -38,6 +38,7 @@ export type OrderStatus = OrderResponse["orderStatus"];
 export type OrderFlowStatus = components["schemas"]["OrderFlowStatus"];
 export type OrderBoardStatus = components["schemas"]["OrderBoardStatus"];
 export type InvoiceStatus = components["schemas"]["InvoiceStatus"];
+export type RefundInvoiceAction = components["schemas"]["RefundInvoiceAction"];
 export type RefundStatus = components["schemas"]["RefundStatus"];
 
 export type OrderFilterField = (typeof orderFilterFieldValues)[number];

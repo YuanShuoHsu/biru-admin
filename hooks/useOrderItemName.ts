@@ -2,7 +2,7 @@ import { useTranslations } from "next-intl";
 
 import type { OrderItemResponse } from "@/types/orders";
 
-export const useOrderItemName = () => {
+export const useOrderItemChoiceNames = () => {
   const tCommon = useTranslations("common");
   const tOrder = useTranslations("order");
 
@@ -20,22 +20,30 @@ export const useOrderItemName = () => {
       ? [tOrder(`menuItem.sweetnessLevels.${sweetnessLevel}`)]
       : [];
 
-  return (item: OrderItemResponse) => {
-    const { addOns, menuItemName, modifiers } = item;
-    const choiceNames = [
+  return (item: OrderItemResponse) =>
+    [
       ...getServingTemperatureLevelNames(item),
       ...getSweetnessLevelNames(item),
-      ...(modifiers || []).map(({ modifierName }) => modifierName),
-      ...(addOns || []).flatMap((addOn) => [
+      ...(item.modifiers || []).map(({ modifierName }) => modifierName),
+      ...(item.addOns || []).flatMap((addOn) => [
         addOn.menuItemName,
         ...getServingTemperatureLevelNames(addOn),
         ...getSweetnessLevelNames(addOn),
         ...addOn.modifiers.map(({ modifierName }) => modifierName),
       ]),
     ].join(tCommon("delimiter"));
+};
+
+export const useOrderItemName = () => {
+  const tCommon = useTranslations("common");
+
+  const getOrderItemChoiceNames = useOrderItemChoiceNames();
+
+  return (item: OrderItemResponse) => {
+    const choiceNames = getOrderItemChoiceNames(item);
 
     return choiceNames
-      ? `${menuItemName}${tCommon("parenthesisOpen")}${choiceNames}${tCommon("parenthesisClose")}`
-      : menuItemName;
+      ? `${item.menuItemName}${tCommon("parenthesisOpen")}${choiceNames}${tCommon("parenthesisClose")}`
+      : item.menuItemName;
   };
 };

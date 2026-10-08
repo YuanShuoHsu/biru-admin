@@ -2427,7 +2427,11 @@ export interface paths {
     delete?: never;
     options?: never;
     head?: never;
-    patch?: never;
+    /**
+     * 修改號碼牌
+     * @description 僅限進行中；人數換到其他分組時改發新組號碼並排到最後
+     */
+    patch: operations["WaitlistController_updateTicket"];
     trace?: never;
   };
   "/api/organizations/{organizationSlug}/waitlist/tickets/{ticketId}/cancel": {
@@ -5151,7 +5155,10 @@ export interface components {
     OrderInvoiceVerificationDto: {
       /** @description 綠界端的發票號碼 */
       invoiceNumber: string;
-      /** @description 綠界端的開立時間 */
+      /**
+       * Format: date-time
+       * @description 綠界端的開立時間
+       */
       invoiceDate: string;
       /** @description 綠界端的發票金額 */
       salesAmount: string;
@@ -13737,6 +13744,39 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["WaitlistTicketDetailResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  WaitlistController_updateTicket: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        ticketId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateWaitlistTicketDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["WaitlistTicketResponseDto"];
         };
       };
       /** @description Internal server error */

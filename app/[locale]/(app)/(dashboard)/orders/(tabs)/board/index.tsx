@@ -2,26 +2,31 @@
 
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { useCallback, useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import useSWR from "swr";
 
 import { MODE_COLORS } from "@/constants/orderMode";
 import { STATUS_COLORS, STATUS_TEXT_COLORS } from "@/constants/orders";
 
 import useInvoiceAutoPrint from "@/hooks/useInvoiceAutoPrint";
+import {
+  canIssueInvoice,
+  canPrintInvoice,
+  canResetInvoicePrint,
+  canVoidInvoice,
+  useOrderActions,
+} from "@/hooks/useOrderActions";
 import { useOrderModeLabel } from "@/hooks/useOrderModeLabel";
 import { useSocketConnection } from "@/hooks/useSocketConnection";
 
 import { menuSocket } from "@/app/socket";
 
-import { Person, ReceiptLong, Schedule } from "@mui/icons-material";
+import { Person, Schedule } from "@mui/icons-material";
 import {
   Button,
   Chip,
   DialogContentText,
-  IconButton,
   Stack,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -33,17 +38,11 @@ import SelectAllTransferList, {
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import { orderFlowStatusValues } from "@/types/api";
-import type {
-  AdminOrderBoardColumn,
-  AdminOrderResponse,
-  OrderStatus,
-} from "@/types/orders";
+import type { AdminOrderBoardColumn, OrderStatus } from "@/types/orders";
 import type { Organization } from "@/types/organizations";
 
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
-
-import OrderDetailDialog from "../../OrderDetailDialog";
 
 const StyledStack = styled(Stack)(({ theme }) => ({
   flexWrap: "wrap",
@@ -125,46 +124,16 @@ const OrdersBoard = ({
     };
   }, [isConnected, mutate, organizationId]);
 
-  const handleConfirmCancel = useCallback(
-    (order: AdminOrderResponse) =>
-      setDialog({
-        content: (
-          <DialogContentText>
-            {tOrders.rich("actions.updateStatus.confirm.cancel", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              count: 1,
-              orderNumbers: order.orderNumber,
-            })}
-          </DialogContentText>
-        ),
-        onConfirm: async () => {
-          try {
-            await fetcher(
-              `/api/organizations/${organizationSlug}/orders/transitions/OrderCancelled`,
-              {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ orderIds: [order.id] }),
-              },
-            );
-
-            enqueueSnackbar(
-              tOrders("actions.updateStatus.success", {
-                count: 1,
-                orderNumbers: order.orderNumber,
-                status: tOrders("status.OrderCancelled"),
-              }),
-              { variant: "success" },
-            );
-          } finally {
-            mutate();
-          }
-        },
-        open: true,
-        title: tOrders("actions.updateStatus.title.cancel"),
-      }),
-    [mutate, organizationSlug, setDialog, tOrders],
-  );
+  const {
+    handleConfirmIssueInvoice,
+    handleConfirmPrintInvoice,
+    handleConfirmResetInvoicePrint,
+    handleConfirmStatusAction,
+    handleConfirmVoidInvoice,
+    handleRefund,
+    handleUpdateCustomer,
+    handleViewOrder,
+  } = useOrderActions(organizationSlug, mutate);
 
   const columns = useMemo(
     () =>
@@ -176,6 +145,52 @@ const OrdersBoard = ({
             ?.orders || []
         ).map((order) => {
           const modeLabel = getOrderModeLabel(order.mode, order.tableNumber);
+          const cancelTransition = order.availableTransitions.find(
+            ({ direction }) => direction === "cancel",
+          );
+          const actions: {
+            color?: "error";
+            label: string;
+            onClick: () => void;
+          }[] = [
+            {
+              label: tOrders("actions.viewOrder.title"),
+              onClick: () => handleViewOrder(order),
+            },
+            {
+              label: tOrders("actions.updateCustomer.title"),
+              onClick: () => handleUpdateCustomer(order),
+            },
+            canIssueInvoice(order) && {
+              label: tOrders("actions.issueInvoice.title"),
+              onClick: () => handleConfirmIssueInvoice(order),
+            },
+            canPrintInvoice(order) && {
+              label: tOrders(
+                order.invoice?.printedAt
+                  ? "actions.printInvoice.reprintLabel"
+                  : "actions.printInvoice.title",
+              ),
+              onClick: () => handleConfirmPrintInvoice(order),
+            },
+            canResetInvoicePrint(order) && {
+              label: tOrders("actions.resetInvoicePrint.title"),
+              onClick: () => handleConfirmResetInvoicePrint(order),
+            },
+            canVoidInvoice(order) && {
+              label: tOrders("actions.voidInvoice.title"),
+              onClick: () => handleConfirmVoidInvoice(order),
+            },
+            order.refundable && {
+              label: tOrders("actions.refund.title"),
+              onClick: () => handleRefund(order),
+            },
+            cancelTransition && {
+              color: "error" as const,
+              label: tOrders("actions.updateStatus.title.cancel"),
+              onClick: () => handleConfirmStatusAction(order, cancelTransition),
+            },
+          ].filter((action) => !!action);
 
           return {
             ...order,
@@ -212,54 +227,35 @@ const OrdersBoard = ({
                 )}
               </Stack>
             ),
-            actions: (
-              <>
-                {order.availableTransitions.some(
-                  ({ direction }) => direction === "cancel",
-                ) && (
-                  <Button
-                    color="error"
-                    onClick={() => handleConfirmCancel(order)}
-                    size="small"
-                    variant="outlined"
-                  >
-                    {tOrders("actions.updateStatus.title.cancel")}
-                  </Button>
-                )}
-                <Tooltip title={tOrders("actions.viewOrder.title")}>
-                  <IconButton
-                    edge="end"
-                    onClick={() =>
-                      setDialog({
-                        content: (
-                          <OrderDetailDialog
-                            order={order}
-                            organizationSlug={organizationSlug}
-                          />
-                        ),
-                        open: true,
-                        title: tOrders("actions.viewOrder.title"),
-                      })
-                    }
-                    size="small"
-                  >
-                    <ReceiptLong fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              </>
-            ),
+            actions: actions.map(({ color, label, onClick }) => (
+              <Button
+                color={color || "inherit"}
+                key={label}
+                onClick={onClick}
+                size="small"
+                variant="outlined"
+              >
+                {label}
+              </Button>
+            )),
           };
         }),
-        size: { xs: 12, md: 3 },
+        size: { xs: 12, md: 7 },
         title: tOrders(`status.${status}`),
+        turnAfter: status === "OrderProcessing",
       })),
     [
       boardColumns,
       format,
       getOrderModeLabel,
-      handleConfirmCancel,
-      organizationSlug,
-      setDialog,
+      handleConfirmIssueInvoice,
+      handleConfirmPrintInvoice,
+      handleConfirmResetInvoicePrint,
+      handleConfirmStatusAction,
+      handleConfirmVoidInvoice,
+      handleRefund,
+      handleUpdateCustomer,
+      handleViewOrder,
       tOrders,
     ],
   );
@@ -378,6 +374,7 @@ const OrdersBoard = ({
 
   return (
     <SelectAllTransferList
+      actionsAlign="start"
       columns={columns}
       transferActions={transferActions}
     />
