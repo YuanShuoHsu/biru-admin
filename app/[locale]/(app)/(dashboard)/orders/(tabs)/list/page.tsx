@@ -21,8 +21,6 @@ import { getResolvedAdminOrganization } from "@/utils/menus";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAdminOrders } from "@/utils/orders";
 
-import OrdersTabsLayout from "../OrdersTabsLayout";
-
 interface OrdersPageProps {
   params: Promise<{ locale: Locale }>;
   searchParams: Promise<{
@@ -64,7 +62,7 @@ const OrdersPage = async ({ params, searchParams }: OrdersPageProps) => {
     cookieStore.toString(),
   );
 
-  if (!selectedOrganization) return <OrdersTabsLayout>{null}</OrdersTabsLayout>;
+  if (!selectedOrganization) return null;
 
   const {
     filterField,
@@ -125,22 +123,20 @@ const OrdersPage = async ({ params, searchParams }: OrdersPageProps) => {
   );
 
   return (
-    <OrdersTabsLayout>
-      <Orders
-        canViewAuditLog={canViewAuditLog}
-        filterField={filterField}
-        filterOperator={filterOperator}
-        filterValue={filterValue}
-        organization={selectedOrganization}
-        page={page}
-        pageSize={pageSize}
-        quickFilterValue={quickFilterValue}
-        rowCount={rowCount}
-        rows={rows}
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-      />
-    </OrdersTabsLayout>
+    <Orders
+      canViewAuditLog={canViewAuditLog}
+      filterField={filterField}
+      filterOperator={filterOperator}
+      filterValue={filterValue}
+      organization={selectedOrganization}
+      page={page}
+      pageSize={pageSize}
+      quickFilterValue={quickFilterValue}
+      rowCount={rowCount}
+      rows={rows}
+      sortBy={sortBy}
+      sortDirection={sortDirection}
+    />
   );
 };
 

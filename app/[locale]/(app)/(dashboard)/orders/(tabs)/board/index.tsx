@@ -38,7 +38,7 @@ import type { Organization } from "@/types/organizations";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
-import OrderDetailDialog from "../OrderDetailDialog";
+import OrderDetailDialog from "../../OrderDetailDialog";
 
 const StyledStack = styled(Stack)(({ theme }) => ({
   flexWrap: "wrap",

@@ -2,11 +2,7 @@
 
 import RouteTabs from "@/components/RouteTabs";
 
-interface OrdersTabsLayoutProps {
-  children: React.ReactNode;
-}
-
-const OrdersTabsLayout = ({ children }: OrdersTabsLayoutProps) => (
+const OrdersTabsLayout = ({ children }: { children: React.ReactNode }) => (
   <>
     <RouteTabs
       ariaLabel="orders tabs"

@@ -10,8 +10,6 @@ import type { Locale } from "@/i18n/routing";
 import { getResolvedAdminOrganization } from "@/utils/menus";
 import { getAdminOrderBoard } from "@/utils/orders";
 
-import OrdersTabsLayout from "../OrdersTabsLayout";
-
 interface OrdersBoardPageProps {
   params: Promise<{ locale: Locale }>;
   searchParams: Promise<{ organization?: string }>;
@@ -45,7 +43,7 @@ const OrdersBoardPage = async ({
     cookieStore.toString(),
   );
 
-  if (!selectedOrganization) return <OrdersTabsLayout>{null}</OrdersTabsLayout>;
+  if (!selectedOrganization) return null;
 
   if (organization !== selectedOrganization.slug) {
     const params = new URLSearchParams({
@@ -60,11 +58,7 @@ const OrdersBoardPage = async ({
     fetchOptions,
   );
 
-  return (
-    <OrdersTabsLayout>
-      <OrdersBoard columns={columns} organization={selectedOrganization} />
-    </OrdersTabsLayout>
-  );
+  return <OrdersBoard columns={columns} organization={selectedOrganization} />;
 };
 
 export default OrdersBoardPage;
