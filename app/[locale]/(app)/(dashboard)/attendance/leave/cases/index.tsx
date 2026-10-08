@@ -66,6 +66,12 @@ const StyledStack = styled(Stack)({
   height: "100%",
 });
 
+const StyledIconButton = styled(IconButton, {
+  shouldForwardProp: (prop) => prop !== "visible",
+})<{ visible: boolean }>(({ visible }) => ({
+  visibility: visible ? "visible" : "hidden",
+}));
+
 const StyledButton = styled(Button)({
   alignSelf: "flex-start",
 });
@@ -347,6 +353,40 @@ const LeaveCases = ({
     [leaveTypes],
   );
 
+  const getRowActions = useCallback(
+    (row: AttendanceLeaveCase) => {
+      const own = !canReviewOwn && row.employeeId === employeeId;
+
+      return {
+        assignChild:
+          canAssignChild &&
+          isParentalLeave(row.leaveTypeId) &&
+          !own &&
+          !row.childId,
+        delete: canDelete && !own && !row.usedMinutes,
+        update: canUpdate && !own,
+      };
+    },
+    [
+      canAssignChild,
+      canDelete,
+      canReviewOwn,
+      canUpdate,
+      employeeId,
+      isParentalLeave,
+    ],
+  );
+
+  const availableActions = useMemo(() => {
+    const rowActions = rows.map(getRowActions);
+
+    return {
+      assignChild: rowActions.some(({ assignChild }) => assignChild),
+      delete: rowActions.some((actions) => actions.delete),
+      update: rowActions.some(({ update }) => update),
+    };
+  }, [getRowActions, rows]);
+
   const leaveTypeOptions = useMemo(
     () =>
       leaveTypes.map((leaveType) => ({
@@ -358,7 +398,9 @@ const LeaveCases = ({
 
   const columns = useMemo<GridColDef[]>(
     () => [
-      ...(canAssignChild || canUpdate || canDelete
+      ...(availableActions.assignChild ||
+      availableActions.update ||
+      availableActions.delete
         ? [
             {
               disableColumnMenu: true,
@@ -369,41 +411,47 @@ const LeaveCases = ({
               renderCell: ({
                 row,
               }: GridRenderCellParams<AttendanceLeaveCase>) => {
-                const own = !canReviewOwn && row.employeeId === employeeId;
+                const rowActions = getRowActions(row);
 
                 return (
                   <StyledStack direction="row">
-                    {canAssignChild &&
-                      isParentalLeave(row.leaveTypeId) &&
-                      !own &&
-                      !row.childId && (
-                        <Tooltip title={tAttendance("assignParentalChild")}>
-                          <IconButton
-                            onClick={() => handleAssignChild(row)}
-                            size="small"
-                          >
-                            <ChildCare fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                      )}
-                    {canUpdate && !own && (
-                      <Tooltip title={tAttendance("leaveCases.actions.update")}>
-                        <IconButton
-                          onClick={() => handleLeaveCaseDialog(row)}
+                    {availableActions.assignChild && (
+                      <Tooltip title={tAttendance("assignParentalChild")}>
+                        <StyledIconButton
+                          onClick={() => {
+                            if (rowActions.assignChild) handleAssignChild(row);
+                          }}
                           size="small"
+                          visible={rowActions.assignChild}
                         >
-                          <Edit fontSize="small" />
-                        </IconButton>
+                          <ChildCare fontSize="small" />
+                        </StyledIconButton>
                       </Tooltip>
                     )}
-                    {canDelete && !own && !row.usedMinutes && (
-                      <Tooltip title={tAttendance("leaveCases.actions.delete")}>
-                        <IconButton
-                          onClick={() => handleDeleteLeaveCase(row)}
+                    {availableActions.update && (
+                      <Tooltip title={tAttendance("leaveCases.actions.update")}>
+                        <StyledIconButton
+                          onClick={() => {
+                            if (rowActions.update) handleLeaveCaseDialog(row);
+                          }}
                           size="small"
+                          visible={rowActions.update}
+                        >
+                          <Edit fontSize="small" />
+                        </StyledIconButton>
+                      </Tooltip>
+                    )}
+                    {availableActions.delete && (
+                      <Tooltip title={tAttendance("leaveCases.actions.delete")}>
+                        <StyledIconButton
+                          onClick={() => {
+                            if (rowActions.delete) handleDeleteLeaveCase(row);
+                          }}
+                          size="small"
+                          visible={rowActions.delete}
                         >
                           <Delete fontSize="small" />
-                        </IconButton>
+                        </StyledIconButton>
                       </Tooltip>
                     )}
                   </StyledStack>
@@ -495,14 +543,11 @@ const LeaveCases = ({
       },
     ],
     [
-      canReviewOwn,
-      canAssignChild,
-      canDelete,
-      canUpdate,
+      availableActions,
       date,
       dateFilterOperators,
-      employeeId,
       enumFilterOperators,
+      getRowActions,
       handleAssignChild,
       handleDeleteLeaveCase,
       handleLeaveCaseDialog,

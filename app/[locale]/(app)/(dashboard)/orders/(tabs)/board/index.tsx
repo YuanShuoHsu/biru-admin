@@ -2,7 +2,7 @@
 
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import useSWR from "swr";
 
 import { MODE_COLORS } from "@/constants/orderMode";
@@ -41,7 +41,6 @@ import { orderFlowStatusValues } from "@/types/api";
 import type { AdminOrderBoardColumn, OrderStatus } from "@/types/orders";
 import type { Organization } from "@/types/organizations";
 
-import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
 const StyledStack = styled(Stack)(({ theme }) => ({
@@ -86,7 +85,7 @@ interface OrdersBoardProps {
 
 const OrdersBoard = ({
   columns: initialColumns,
-  organization: { id: organizationId, slug: organizationSlug },
+  organization: { slug: organizationSlug },
 }: OrdersBoardProps) => {
   const { setDialog } = useDialogStore((state) => state);
 
@@ -106,23 +105,6 @@ const OrdersBoard = ({
   const { isConnected } = useSocketConnection(menuSocket);
 
   useInvoiceAutoPrint(isConnected, organizationSlug);
-
-  useEffect(() => {
-    if (!isConnected) return;
-
-    menuSocket
-      .timeout(5000)
-      .emitWithAck("joinOrdersBoard", { organizationId })
-      .catch((error) =>
-        enqueueSnackbar(getErrorMessage(error), { variant: "error" }),
-      );
-
-    menuSocket.on("orderUpdated", mutate);
-
-    return () => {
-      menuSocket.off("orderUpdated", mutate);
-    };
-  }, [isConnected, mutate, organizationId]);
 
   const {
     handleConfirmIssueInvoice,

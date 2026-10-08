@@ -107,6 +107,12 @@ const ActionsStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(1),
 }));
 
+const StyledIconButton = styled(IconButton, {
+  shouldForwardProp: (prop) => prop !== "visible",
+})<{ visible: boolean }>(({ visible }) => ({
+  visibility: visible ? "visible" : "hidden",
+}));
+
 const ImageStack = styled(Stack)({
   height: "100%",
   flexDirection: "row",
@@ -500,6 +506,16 @@ const MenusMenuIdSectionId = ({
     [locale, mutate, setDialog, tMenus],
   );
 
+  const canUpdateItem = useCallback(
+    (item: MenuItem) => canWrite || (canUpdateAvailability && !!item.offer),
+    [canUpdateAvailability, canWrite],
+  );
+
+  const hasUpdatableItem = useMemo(
+    () => rows.some(canUpdateItem),
+    [canUpdateItem, rows],
+  );
+
   const columns = useMemo<GridColDef[]>(
     () => [
       ...(isReorderMode
@@ -538,18 +554,19 @@ const MenusMenuIdSectionId = ({
                       <Widgets fontSize="small" />
                     </IconButton>
                   </Tooltip>
-                  {(canWrite || (canUpdateAvailability && !!row.offer)) && (
+                  {hasUpdatableItem && (
                     <Tooltip title={tMenus("items.actions.updateItem.title")}>
-                      <IconButton
+                      <StyledIconButton
                         onClick={(event) => {
                           event.stopPropagation();
 
-                          handleUpdateItem(row);
+                          if (canUpdateItem(row)) handleUpdateItem(row);
                         }}
                         size="small"
+                        visible={canUpdateItem(row)}
                       >
                         <Edit fontSize="small" />
-                      </IconButton>
+                      </StyledIconButton>
                     </Tooltip>
                   )}
                   {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
@@ -797,6 +814,7 @@ const MenusMenuIdSectionId = ({
     ],
     [
       canUpdateAvailability,
+      canUpdateItem,
       canViewAuditLog,
       canWrite,
       dateFilterOperators,
@@ -807,6 +825,7 @@ const MenusMenuIdSectionId = ({
       handleDeleteItem,
       handleManageItem,
       handleUpdateItem,
+      hasUpdatableItem,
       isReorderMode,
       locale,
       numberFilterOperators,

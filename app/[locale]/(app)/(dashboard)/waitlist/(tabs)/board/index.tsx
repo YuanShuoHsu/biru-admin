@@ -2,18 +2,13 @@
 
 import { useFormatter, useNow, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useSWR from "swr";
 
 import { WAITLIST_STATUS_COLORS } from "@/constants/waitlist";
 
-import { useSocketConnection } from "@/hooks/useSocketConnection";
-
-import { menuSocket } from "@/app/socket";
-
 import {
   AccessTime,
-  Add,
   Campaign,
   Cancel,
   ConfirmationNumber,
@@ -28,10 +23,8 @@ import {
   Button,
   Chip,
   DialogContentText,
-  FormControlLabel,
   Link,
   Stack,
-  Switch,
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -81,12 +74,6 @@ const TRANSFER_TRANSITIONS: Partial<
   waiting: ["called"],
 };
 
-const HeaderStack = styled(Stack)(({ theme }) => ({
-  alignItems: "center",
-  flexWrap: "wrap",
-  gap: theme.spacing(2),
-}));
-
 const TitleStack = styled(Stack)(({ theme }) => ({
   alignItems: "center",
   columnGap: theme.spacing(1),
@@ -133,13 +120,12 @@ interface AdminWaitlistProps {
 }
 
 const AdminWaitlist = ({
-  organization: { id: organizationId, name, slug: organizationSlug },
+  organization: { slug: organizationSlug },
   waitlist: initialWaitlist,
 }: AdminWaitlistProps) => {
   const { setDialog } = useDialogStore((state) => state);
 
   const [pendingAction, setPendingAction] = useState<string | null>(null);
-  const [isPausing, setIsPausing] = useState(false);
 
   const format = useFormatter();
   const now = useNow({ updateInterval: 60_000 });
@@ -153,29 +139,6 @@ const AdminWaitlist = ({
     useSWR<AdminWaitlistResponse>(`${waitlistUrl}/tickets`, {
       fallbackData: initialWaitlist,
     });
-
-  const { isConnected } = useSocketConnection(menuSocket);
-
-  useEffect(() => {
-    if (!isConnected) return;
-
-    menuSocket
-      .timeout(5000)
-      .emitWithAck("joinWaitlist", { organizationId })
-      .catch((error) =>
-        enqueueSnackbar(getErrorMessage(error), { variant: "error" }),
-      );
-
-    const handleUpdate = () => {
-      mutate();
-    };
-
-    menuSocket.on("waitlistUpdated", handleUpdate);
-
-    return () => {
-      menuSocket.off("waitlistUpdated", handleUpdate);
-    };
-  }, [isConnected, mutate, organizationId]);
 
   const showError = (error: unknown) => {
     const code = getWaitlistErrorCode(error);
@@ -238,32 +201,6 @@ const AdminWaitlist = ({
   const getMaxPartySize = ({ groups }: AdminWaitlistResponse) =>
     Math.max(...groups.map(({ maxPartySize }) => maxPartySize));
 
-  const handleAddDialog = async () => {
-    const latest = (await mutate()) || waitlist;
-
-    setDialog({
-      content: (
-        <WaitlistTicketDialog
-          maxPartySize={getMaxPartySize(latest)}
-          mutate={() => mutate()}
-          organizationSlug={organizationSlug}
-          unavailable={
-            latest.paused
-              ? "paused"
-              : !latest.open
-                ? "closed"
-                : latest.cutoff
-                  ? "cutoff"
-                  : null
-          }
-        />
-      ),
-      formId: WAITLIST_TICKET_FORM_ID,
-      open: true,
-      title: tWaitlist("add.label"),
-    });
-  };
-
   const handleEditDialog = async (ticket: AdminWaitlistTicket) => {
     const latest = (await mutate()) || waitlist;
 
@@ -281,48 +218,6 @@ const AdminWaitlist = ({
       title: tWaitlist("edit.label"),
     });
   };
-
-  const handleUpdatePaused = async (paused: boolean) => {
-    setIsPausing(true);
-
-    try {
-      await fetcher(`${waitlistUrl}/paused`, {
-        body: JSON.stringify({ paused }),
-        headers: { "Content-Type": "application/json" },
-        method: "PUT",
-      });
-
-      enqueueSnackbar(
-        tWaitlist(paused ? "paused.on" : "paused.off", { name }),
-        {
-          variant: "success",
-        },
-      );
-    } catch (error) {
-      showError(error);
-    } finally {
-      await mutate();
-      setIsPausing(false);
-    }
-  };
-
-  const handleAcceptingChange = (
-    _event: React.ChangeEvent<HTMLInputElement>,
-    checked: boolean,
-  ) =>
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tWaitlist.rich(checked ? "paused.resumeConfirm" : "paused.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-            name,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: () => handleUpdatePaused(!checked),
-      open: true,
-      title: tWaitlist(checked ? "paused.resumeTitle" : "paused.title"),
-    });
 
   const handleBatchTransition = async (
     ids: string[],
@@ -655,28 +550,6 @@ const AdminWaitlist = ({
 
   return (
     <>
-      <HeaderStack direction="row">
-        <Button
-          onClick={handleAddDialog}
-          startIcon={<Add />}
-          variant="contained"
-        >
-          {tWaitlist("add.label")}
-        </Button>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={!waitlist.paused}
-              disabled={isPausing}
-              onChange={handleAcceptingChange}
-            />
-          }
-          label={tWaitlist("accepting")}
-        />
-      </HeaderStack>
-      {waitlist.paused && (
-        <Alert severity="warning">{tWaitlist("add.unavailable.paused")}</Alert>
-      )}
       <SelectAllTransferList
         columns={columns}
         transferActions={[

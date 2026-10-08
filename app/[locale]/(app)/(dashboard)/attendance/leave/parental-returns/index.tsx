@@ -59,6 +59,12 @@ const StyledStack = styled(Stack)(({ theme }) => ({
   height: "100%",
 }));
 
+const StyledIconButton = styled(IconButton, {
+  shouldForwardProp: (prop) => prop !== "visible",
+})<{ visible: boolean }>(({ visible }) => ({
+  visibility: visible ? "visible" : "hidden",
+}));
+
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
   { ssr: false },
@@ -277,6 +283,26 @@ const ParentalReturns = ({
     [base, mutate, setDialog, tAttendance],
   );
 
+  const getRowActions = useCallback(
+    (row: AttendanceParentalReturn) => ({
+      review:
+        row.status === "pending" &&
+        canReview &&
+        (canReviewOwn || row.employeeId !== employeeId),
+      withdraw: row.status === "pending" && row.employeeId === employeeId,
+    }),
+    [canReview, canReviewOwn, employeeId],
+  );
+
+  const availableActions = useMemo(() => {
+    const rowActions = rows.map(getRowActions);
+
+    return {
+      review: rowActions.some(({ review }) => review),
+      withdraw: rowActions.some(({ withdraw }) => withdraw),
+    };
+  }, [getRowActions, rows]);
+
   const columns = useMemo<GridColDef[]>(
     () => [
       {
@@ -290,33 +316,47 @@ const ParentalReturns = ({
         }: GridRenderCellParams<AttendanceParentalReturn>) =>
           row.status === "pending" ? (
             <StyledStack direction="row">
-              {canReview && (canReviewOwn || row.employeeId !== employeeId) && (
+              {availableActions.review && (
                 <>
                   <Tooltip title={tAttendance("approve")}>
-                    <IconButton
+                    <StyledIconButton
                       color="success"
-                      onClick={() => handleReview(row, "approved")}
+                      onClick={() => {
+                        if (getRowActions(row).review)
+                          handleReview(row, "approved");
+                      }}
                       size="small"
+                      visible={getRowActions(row).review}
                     >
                       <Check fontSize="small" />
-                    </IconButton>
+                    </StyledIconButton>
                   </Tooltip>
                   <Tooltip title={tAttendance("reject")}>
-                    <IconButton
+                    <StyledIconButton
                       color="error"
-                      onClick={() => handleReview(row, "rejected")}
+                      onClick={() => {
+                        if (getRowActions(row).review)
+                          handleReview(row, "rejected");
+                      }}
                       size="small"
+                      visible={getRowActions(row).review}
                     >
                       <Close fontSize="small" />
-                    </IconButton>
+                    </StyledIconButton>
                   </Tooltip>
                 </>
               )}
-              {row.employeeId === employeeId && (
+              {availableActions.withdraw && (
                 <Tooltip title={tAttendance("withdraw")}>
-                  <IconButton onClick={() => handleWithdraw(row)} size="small">
+                  <StyledIconButton
+                    onClick={() => {
+                      if (getRowActions(row).withdraw) handleWithdraw(row);
+                    }}
+                    size="small"
+                    visible={getRowActions(row).withdraw}
+                  >
                     <Undo fontSize="small" />
-                  </IconButton>
+                  </StyledIconButton>
                 </Tooltip>
               )}
             </StyledStack>
@@ -381,14 +421,13 @@ const ParentalReturns = ({
       },
     ],
     [
-      canReviewOwn,
-      canReview,
+      availableActions,
       date,
       dateFilterOperators,
-      employeeId,
       enumFilterOperators,
       enumOptions.status,
       format,
+      getRowActions,
       handleReview,
       handleWithdraw,
       stringFilterOperators,

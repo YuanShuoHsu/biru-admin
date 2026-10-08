@@ -44,11 +44,14 @@ export const useActiveMemberRole = () => {
   return role ?? undefined;
 };
 
-export const useOrganizationName = (organizationSlug?: string | null) => {
+export const useOrganization = (organizationSlug?: string | null) => {
   const { data: organizations } = useSWR(
     organizationSlug ? swrKeys.organizations : null,
     async () => (await authClient.organization.list()).data ?? [],
   );
 
-  return organizations?.find(({ slug }) => slug === organizationSlug)?.name;
+  return organizations?.find(({ slug }) => slug === organizationSlug);
 };
+
+export const useOrganizationName = (organizationSlug?: string | null) =>
+  useOrganization(organizationSlug)?.name;

@@ -68,6 +68,15 @@ const ActionsStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(0.5),
 }));
 
+const StyledIconButton = styled(IconButton, {
+  shouldForwardProp: (prop) => prop !== "visible",
+})<{ visible: boolean }>(({ visible }) => ({
+  visibility: visible ? "visible" : "hidden",
+}));
+
+const isEditable = ({ status }: WaitlistTicketListItem) =>
+  status === "waiting" || status === "called";
+
 interface WaitlistTicketsProps {
   canUpdate: boolean;
   canViewAuditLog: boolean;
@@ -262,6 +271,11 @@ const WaitlistTickets = ({
     [mutate, organizationSlug, setDialog, tWaitlist],
   );
 
+  const hasEditable = useMemo(
+    () => canUpdate && rows.some(isEditable),
+    [canUpdate, rows],
+  );
+
   const columns = useMemo<GridColDef[]>(() => {
     const formatSameDayTime = (
       value: string | null,
@@ -278,7 +292,7 @@ const WaitlistTickets = ({
     };
 
     return [
-      ...(canUpdate || canViewAuditLog
+      ...(hasEditable || canViewAuditLog
         ? [
             {
               disableColumnMenu: true,
@@ -290,17 +304,19 @@ const WaitlistTickets = ({
                 row,
               }: GridRenderCellParams<WaitlistTicketListItem>) => (
                 <ActionsStack direction="row">
-                  {canUpdate &&
-                    (row.status === "waiting" || row.status === "called") && (
-                      <Tooltip title={tWaitlist("edit.label")}>
-                        <IconButton
-                          onClick={() => handleEditDialog(row)}
-                          size="small"
-                        >
-                          <Edit fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                    )}
+                  {hasEditable && (
+                    <Tooltip title={tWaitlist("edit.label")}>
+                      <StyledIconButton
+                        onClick={() => {
+                          if (isEditable(row)) handleEditDialog(row);
+                        }}
+                        size="small"
+                        visible={isEditable(row)}
+                      >
+                        <Edit fontSize="small" />
+                      </StyledIconButton>
+                    </Tooltip>
+                  )}
                   {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
                 </ActionsStack>
               ),
@@ -375,13 +391,13 @@ const WaitlistTickets = ({
       },
     ];
   }, [
-    canUpdate,
     canViewAuditLog,
     dateFilterOperators,
     enumFilterOperators,
     enumOptions,
     format,
     handleEditDialog,
+    hasEditable,
     numberFilterOperators,
     stringFilterOperators,
     tWaitlist,
