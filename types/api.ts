@@ -6793,8 +6793,6 @@ export interface components {
       email?: string | null;
       name: string;
       phoneNumber: string;
-      /** @example 2026-10-08 */
-      serviceDate: string;
     };
     WaitlistGroupStatusDto: {
       /** @example 4 */
@@ -6919,7 +6917,6 @@ export interface components {
       | "email"
       | "status"
       | "partySize"
-      | "serviceDate"
       | "createdAt"
       | "calledAt"
       | "endedAt";
@@ -6931,7 +6928,6 @@ export interface components {
       | "email"
       | "status"
       | "partySize"
-      | "serviceDate"
       | "createdAt"
       | "calledAt"
       | "endedAt";
@@ -15884,7 +15880,6 @@ export const waitlistTicketFilterFieldValues: ReadonlyArray<
   "email",
   "status",
   "partySize",
-  "serviceDate",
   "createdAt",
   "calledAt",
   "endedAt",
@@ -15898,7 +15893,6 @@ export const waitlistTicketSortFieldValues: ReadonlyArray<
   "email",
   "status",
   "partySize",
-  "serviceDate",
   "createdAt",
   "calledAt",
   "endedAt",

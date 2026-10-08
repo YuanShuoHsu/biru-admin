@@ -2,7 +2,7 @@
 
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import useSWR from "swr";
 
 import { MODE_COLORS } from "@/constants/orderMode";
@@ -16,6 +16,7 @@ import { menuSocket } from "@/app/socket";
 
 import { Person, ReceiptLong, Schedule } from "@mui/icons-material";
 import {
+  Button,
   Chip,
   DialogContentText,
   IconButton,
@@ -32,7 +33,11 @@ import SelectAllTransferList, {
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import { orderFlowStatusValues } from "@/types/api";
-import type { AdminOrderBoardColumn, OrderStatus } from "@/types/orders";
+import type {
+  AdminOrderBoardColumn,
+  AdminOrderResponse,
+  OrderStatus,
+} from "@/types/orders";
 import type { Organization } from "@/types/organizations";
 
 import { getErrorMessage } from "@/utils/errors";
@@ -120,6 +125,47 @@ const OrdersBoard = ({
     };
   }, [isConnected, mutate, organizationId]);
 
+  const handleConfirmCancel = useCallback(
+    (order: AdminOrderResponse) =>
+      setDialog({
+        content: (
+          <DialogContentText>
+            {tOrders.rich("actions.updateStatus.confirm.cancel", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              count: 1,
+              orderNumbers: order.orderNumber,
+            })}
+          </DialogContentText>
+        ),
+        onConfirm: async () => {
+          try {
+            await fetcher(
+              `/api/organizations/${organizationSlug}/orders/transitions/OrderCancelled`,
+              {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ orderIds: [order.id] }),
+              },
+            );
+
+            enqueueSnackbar(
+              tOrders("actions.updateStatus.success", {
+                count: 1,
+                orderNumbers: order.orderNumber,
+                status: tOrders("status.OrderCancelled"),
+              }),
+              { variant: "success" },
+            );
+          } finally {
+            mutate();
+          }
+        },
+        open: true,
+        title: tOrders("actions.updateStatus.title.cancel"),
+      }),
+    [mutate, organizationSlug, setDialog, tOrders],
+  );
+
   const columns = useMemo(
     () =>
       orderFlowStatusValues.map((status) => ({
@@ -167,26 +213,40 @@ const OrdersBoard = ({
               </Stack>
             ),
             actions: (
-              <Tooltip title={tOrders("actions.viewOrder.title")}>
-                <IconButton
-                  edge="end"
-                  onClick={() =>
-                    setDialog({
-                      content: (
-                        <OrderDetailDialog
-                          order={order}
-                          organizationSlug={organizationSlug}
-                        />
-                      ),
-                      open: true,
-                      title: tOrders("actions.viewOrder.title"),
-                    })
-                  }
-                  size="small"
-                >
-                  <ReceiptLong fontSize="small" />
-                </IconButton>
-              </Tooltip>
+              <>
+                {order.availableTransitions.some(
+                  ({ direction }) => direction === "cancel",
+                ) && (
+                  <Button
+                    color="error"
+                    onClick={() => handleConfirmCancel(order)}
+                    size="small"
+                    variant="outlined"
+                  >
+                    {tOrders("actions.updateStatus.title.cancel")}
+                  </Button>
+                )}
+                <Tooltip title={tOrders("actions.viewOrder.title")}>
+                  <IconButton
+                    edge="end"
+                    onClick={() =>
+                      setDialog({
+                        content: (
+                          <OrderDetailDialog
+                            order={order}
+                            organizationSlug={organizationSlug}
+                          />
+                        ),
+                        open: true,
+                        title: tOrders("actions.viewOrder.title"),
+                      })
+                    }
+                    size="small"
+                  >
+                    <ReceiptLong fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              </>
             ),
           };
         }),
@@ -197,6 +257,7 @@ const OrdersBoard = ({
       boardColumns,
       format,
       getOrderModeLabel,
+      handleConfirmCancel,
       organizationSlug,
       setDialog,
       tOrders,

@@ -65,7 +65,6 @@
     "name": "이름",
     "partySize": "인원",
     "phoneNumber": "전화번호",
-    "serviceDate": "영업일",
     "status": "상태",
     "ticketNumber": "번호"
   },

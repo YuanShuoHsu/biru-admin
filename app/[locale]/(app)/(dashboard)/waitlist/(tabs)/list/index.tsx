@@ -1,8 +1,5 @@
 "use client";
 
-import dayjs from "dayjs";
-import timezonePlugin from "dayjs/plugin/timezone";
-import utc from "dayjs/plugin/utc";
 import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
@@ -17,7 +14,6 @@ import {
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
 import { getPageSizeOptions } from "@/constants/pagination";
-import { STORE_TIMEZONE } from "@/constants/timezone";
 import { WAITLIST_STATUS_COLORS } from "@/constants/waitlist";
 
 import {
@@ -50,9 +46,6 @@ import type {
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getWaitlistEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
-
-dayjs.extend(utc);
-dayjs.extend(timezonePlugin);
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -224,8 +217,19 @@ const WaitlistTickets = ({
   );
 
   const columns = useMemo<GridColDef[]>(() => {
-    const formatDateTime = (value: string | null) =>
-      value ? format.dateTime(new Date(value), "short") : "";
+    const formatSameDayTime = (
+      value: string | null,
+      { createdAt }: WaitlistTicketListItem,
+    ) => {
+      if (!value) return "";
+
+      const date = new Date(value);
+      const isSameDay =
+        format.dateTime(date, "date") ===
+        format.dateTime(new Date(createdAt), "date");
+
+      return format.dateTime(date, isSameDay ? "time" : "compact");
+    };
 
     return [
       ...(canViewAuditLog
@@ -292,31 +296,25 @@ const WaitlistTickets = ({
         renderCell: renderEmptyableCell,
       },
       {
-        field: "serviceDate",
-        filterOperators: dateFilterOperators,
-        headerName: tWaitlist("list.serviceDate"),
-        valueFormatter: (value: string) =>
-          format.dateTime(dayjs.tz(value, STORE_TIMEZONE).toDate(), "date"),
-      },
-      {
         field: "createdAt",
         filterOperators: dateFilterOperators,
         headerName: tWaitlist("list.createdAt"),
-        valueFormatter: formatDateTime,
+        valueFormatter: (value: string) =>
+          format.dateTime(new Date(value), "short"),
       },
       {
         field: "calledAt",
         filterOperators: dateFilterOperators,
         headerName: tWaitlist("list.calledAt"),
         renderCell: renderEmptyableCell,
-        valueFormatter: formatDateTime,
+        valueFormatter: formatSameDayTime,
       },
       {
         field: "endedAt",
         filterOperators: dateFilterOperators,
         headerName: tWaitlist("list.endedAt"),
         renderCell: renderEmptyableCell,
-        valueFormatter: formatDateTime,
+        valueFormatter: formatSameDayTime,
       },
     ];
   }, [
