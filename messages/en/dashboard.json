@@ -27,7 +27,9 @@
     "orderModes": "Order Modes",
     "paymentMethods": "Payment Methods",
     "peakHours": "Peak Hours",
+    "servingTemperatureLevels": "Ice & Temperature",
     "slowItems": "Slow-Moving Items",
+    "sweetnessLevels": "Sweetness Levels",
     "topItems": "Top Items",
     "topModifiers": "Top Modifiers"
   },

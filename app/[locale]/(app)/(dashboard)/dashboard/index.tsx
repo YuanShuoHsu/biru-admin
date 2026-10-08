@@ -30,7 +30,11 @@ import { BarChart } from "@mui/x-charts/BarChart";
 import { LineChart } from "@mui/x-charts/LineChart";
 import { SparkLineChart } from "@mui/x-charts/SparkLineChart";
 
-import { orderResponseDtoModeValues } from "@/types/api";
+import {
+  orderResponseDtoModeValues,
+  servingTemperatureLevelValues,
+  sweetnessLevelValues,
+} from "@/types/api";
 import type { OrderStatsResponse } from "@/types/orders";
 import type { Organization } from "@/types/organizations";
 import type { WaitlistStats } from "@/types/waitlist";
@@ -139,6 +143,8 @@ interface DashboardProps {
   charts: {
     coupons: OrderStatsResponse["coupons"];
     modifiers: OrderStatsResponse["modifiers"];
+    servingTemperatureLevels: OrderStatsResponse["servingTemperatureLevels"];
+    sweetnessLevels: OrderStatsResponse["sweetnessLevels"];
     topItems: { name: string; quantity: number }[];
     slowItems: { name: string; quantity: number }[];
     hourlyOrders: number[];
@@ -210,6 +216,12 @@ const Dashboard = ({
 
   const periodLabel = tDashboard(`stats.period.${range}`);
 
+  const moneyAxis = {
+    valueFormatter: (value: number) =>
+      format.number(value, { notation: "compact" }),
+    width: "auto",
+  } as const;
+
   const statCards = [
     {
       label: tDashboard("stats.totalOrders"),
@@ -259,6 +271,21 @@ const Dashboard = ({
     count: charts.modes.find((entry) => entry.mode === mode)?.orders ?? 0,
     label: tOrder(`mode.${mode}.label`),
   }));
+
+  const sweetnessLevels = sweetnessLevelValues.map((level) => ({
+    count:
+      charts.sweetnessLevels.find((entry) => entry.level === level)?.sold ?? 0,
+    label: tOrder(`menuItem.sweetnessLevels.${level}`),
+  }));
+
+  const servingTemperatureLevels = servingTemperatureLevelValues.map(
+    (level) => ({
+      count:
+        charts.servingTemperatureLevels.find((entry) => entry.level === level)
+          ?.sold ?? 0,
+      label: tOrder(`menuItem.servingTemperatureLevels.${level}`),
+    }),
+  );
 
   const payments = [...charts.paymentMethods]
     .sort((a, b) => b.orders - a.orders)
@@ -400,7 +427,7 @@ const Dashboard = ({
                           (index + 1) % tickStep === 0,
                       },
                     ]}
-                    yAxis={[{ width: "auto" }]}
+                    yAxis={[moneyAxis]}
                   >
                     <AreaGradient color={revenue.trendColor} id="revenue" />
                   </StyledLineChart>
@@ -446,7 +473,7 @@ const Dashboard = ({
                           (index + 1) % tickStep === 0,
                       },
                     ]}
-                    yAxis={[{ width: "auto" }]}
+                    yAxis={[moneyAxis]}
                   >
                     <AreaGradient color={chartColor} id="avg-order-value" />
                   </StyledLineChart>
@@ -500,7 +527,7 @@ const Dashboard = ({
                       tickInterval: (_, index) => (index + 1) % tickStep === 0,
                     },
                   ]}
-                  yAxis={[{ width: "auto" }]}
+                  yAxis={[moneyAxis]}
                 >
                   <AreaGradient color={chartColor} id="discount" />
                 </StyledLineChart>
@@ -665,6 +692,88 @@ const Dashboard = ({
                   color={chartColor}
                   horizontal
                   id="top-modifiers"
+                />
+              </StyledBarChart>
+            </StyledCardContent>
+          </StyledCard>
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <StyledCard variant="outlined">
+            <StyledCardContent>
+              <Typography component="h2" variant="subtitle2">
+                {tDashboard("charts.sweetnessLevels")}
+              </Typography>
+              <Typography color="textSecondary" variant="caption">
+                {periodLabel}
+              </Typography>
+              <StyledBarChart
+                height={250}
+                hideLegend
+                grid={{ vertical: true }}
+                margin={{ left: 0, bottom: 0 }}
+                series={[
+                  {
+                    color: chartColor,
+                    data: sweetnessLevels.map(({ count }) => count),
+                    label: tDashboard("charts.sweetnessLevels"),
+                    layout: "horizontal",
+                  },
+                ]}
+                gradientId="sweetness-levels"
+                xAxis={[{ tickMinStep: 1 }]}
+                yAxis={[
+                  {
+                    data: sweetnessLevels.map(({ label }) => label),
+                    scaleType: "band",
+                    width: "auto",
+                  },
+                ]}
+              >
+                <AreaGradient
+                  color={chartColor}
+                  horizontal
+                  id="sweetness-levels"
+                />
+              </StyledBarChart>
+            </StyledCardContent>
+          </StyledCard>
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <StyledCard variant="outlined">
+            <StyledCardContent>
+              <Typography component="h2" variant="subtitle2">
+                {tDashboard("charts.servingTemperatureLevels")}
+              </Typography>
+              <Typography color="textSecondary" variant="caption">
+                {periodLabel}
+              </Typography>
+              <StyledBarChart
+                height={250}
+                hideLegend
+                grid={{ vertical: true }}
+                margin={{ left: 0, bottom: 0 }}
+                series={[
+                  {
+                    color: chartColor,
+                    data: servingTemperatureLevels.map(({ count }) => count),
+                    label: tDashboard("charts.servingTemperatureLevels"),
+                    layout: "horizontal",
+                  },
+                ]}
+                gradientId="serving-temperature-levels"
+                xAxis={[{ tickMinStep: 1 }]}
+                yAxis={[
+                  {
+                    data: servingTemperatureLevels.map(({ label }) => label),
+                    scaleType: "band",
+                    width: "auto",
+                  },
+                ]}
+              >
+                <AreaGradient
+                  color={chartColor}
+                  horizontal
+                  id="serving-temperature-levels"
                 />
               </StyledBarChart>
             </StyledCardContent>

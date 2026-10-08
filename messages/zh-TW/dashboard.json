@@ -27,7 +27,9 @@
     "orderModes": "點餐方式",
     "paymentMethods": "付款方式",
     "peakHours": "尖峰時段",
+    "servingTemperatureLevels": "冰量／溫度分布",
     "slowItems": "滯銷品項",
+    "sweetnessLevels": "甜度分布",
     "topItems": "熱銷品項",
     "topModifiers": "熱門客製化選項"
   },

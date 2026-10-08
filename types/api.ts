@@ -5812,6 +5812,16 @@ export interface components {
       /** @description 售出份數減去退款份數 */
       sold: number;
     };
+    OrderStatsSweetnessLevelDto: {
+      level: components["schemas"]["SweetnessLevel"];
+      /** @description 售出份數減去退款份數 */
+      sold: number;
+    };
+    OrderStatsServingTemperatureLevelDto: {
+      level: components["schemas"]["ServingTemperatureLevel"];
+      /** @description 售出份數減去退款份數 */
+      sold: number;
+    };
     OrderStatsResponseDto: {
       /** @description 開店以來計入的訂單數（含之後退貨的訂單） */
       lifetimeOrders: number;
@@ -5825,6 +5835,10 @@ export interface components {
       coupons: components["schemas"]["OrderStatsCouponDto"][];
       /** @description 客製化選項（含加購品項上的選項）售出份數前 10 名 */
       modifiers: components["schemas"]["OrderStatsModifierDto"][];
+      /** @description 各甜度售出份數（含加購品項）；不適用甜度的品項不計 */
+      sweetnessLevels: components["schemas"]["OrderStatsSweetnessLevelDto"][];
+      /** @description 各冰量／溫度售出份數（含加購品項）；不分冷熱的品項不計 */
+      servingTemperatureLevels: components["schemas"]["OrderStatsServingTemperatureLevelDto"][];
     };
     CreateOrderCustomerDto: {
       /** Format: email */

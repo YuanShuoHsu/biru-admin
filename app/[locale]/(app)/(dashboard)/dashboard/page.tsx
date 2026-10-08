@@ -242,6 +242,8 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
       charts={{
         coupons: orderStats?.coupons ?? [],
         modifiers: orderStats?.modifiers ?? [],
+        servingTemperatureLevels: orderStats?.servingTemperatureLevels ?? [],
+        sweetnessLevels: orderStats?.sweetnessLevels ?? [],
         topItems,
         slowItems,
         hourlyOrders: orderStats?.hourlyOrders ?? Array<number>(24).fill(0),
