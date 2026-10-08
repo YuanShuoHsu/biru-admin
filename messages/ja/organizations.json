@@ -105,7 +105,7 @@
   "location": {
     "actions": {
       "updateLocation": {
-        "success": "所在地情報を更新しました",
+        "success": "{name} の所在地情報を更新しました",
         "title": "所在地を編集"
       }
     },
@@ -166,7 +166,7 @@
   "pickup": {
     "actions": {
       "updatePickup": {
-        "success": "予約設定を更新しました",
+        "success": "{name} の予約設定を更新しました",
         "title": "予約を編集"
       }
     },
@@ -193,7 +193,7 @@
   "points": {
     "actions": {
       "updatePoints": {
-        "success": "ポイント設定を更新しました",
+        "success": "{name} のポイント設定を更新しました",
         "title": "ポイントを編集"
       }
     },

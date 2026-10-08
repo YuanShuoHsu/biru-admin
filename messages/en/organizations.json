@@ -105,7 +105,7 @@
   "location": {
     "actions": {
       "updateLocation": {
-        "success": "Location updated successfully",
+        "success": "Location updated for {name}",
         "title": "Edit location"
       }
     },
@@ -166,7 +166,7 @@
   "pickup": {
     "actions": {
       "updatePickup": {
-        "success": "Pickup settings updated",
+        "success": "Pickup settings updated for {name}",
         "title": "Edit pickup"
       }
     },
@@ -193,7 +193,7 @@
   "points": {
     "actions": {
       "updatePoints": {
-        "success": "Points settings updated",
+        "success": "Points settings updated for {name}",
         "title": "Edit points"
       }
     },

@@ -91,7 +91,12 @@ const UpdatePointsDialog = ({
         },
         onRequest: () => setDialog({ confirmLoading: true }),
         onSuccess: () => {
-          const message = tOrganizations("points.actions.updatePoints.success");
+          const message = tOrganizations(
+            "points.actions.updatePoints.success",
+            {
+              name: organization.name,
+            },
+          );
           enqueueSnackbar(message, { variant: "success" });
 
           closeDialog();

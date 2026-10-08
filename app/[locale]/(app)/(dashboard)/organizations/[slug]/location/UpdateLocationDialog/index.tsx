@@ -103,6 +103,7 @@ const UpdateLocationDialog = ({
         onSuccess: () => {
           const message = tOrganizations(
             "location.actions.updateLocation.success",
+            { name: organization.name },
           );
           enqueueSnackbar(message, { variant: "success" });
 

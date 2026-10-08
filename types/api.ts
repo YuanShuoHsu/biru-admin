@@ -6847,6 +6847,8 @@ export interface components {
       status: components["schemas"]["WaitlistTicketStatus"];
       /** @example A012 */
       ticketNumber: string;
+      /** @description 店員可將此號碼牌轉換到的狀態 */
+      availableTransitions: components["schemas"]["WaitlistTicketStatus"][];
       email?: string | null;
       /** @description 已叫號且超過保留期限 */
       overdue: boolean;

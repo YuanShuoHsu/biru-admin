@@ -105,7 +105,7 @@
   "location": {
     "actions": {
       "updateLocation": {
-        "success": "위치 정보가 업데이트되었습니다",
+        "success": "{name}의 위치 정보가 업데이트되었습니다",
         "title": "위치 편집"
       }
     },
@@ -166,7 +166,7 @@
   "pickup": {
     "actions": {
       "updatePickup": {
-        "success": "픽업 설정을 업데이트했습니다",
+        "success": "{name}의 픽업 설정을 업데이트했습니다",
         "title": "픽업 편집"
       }
     },
@@ -193,7 +193,7 @@
   "points": {
     "actions": {
       "updatePoints": {
-        "success": "포인트 설정을 업데이트했습니다",
+        "success": "{name}의 포인트 설정을 업데이트했습니다",
         "title": "포인트 편집"
       }
     },

@@ -86,7 +86,12 @@ const UpdatePickupDialog = ({
         },
         onRequest: () => setDialog({ confirmLoading: true }),
         onSuccess: () => {
-          const message = tOrganizations("pickup.actions.updatePickup.success");
+          const message = tOrganizations(
+            "pickup.actions.updatePickup.success",
+            {
+              name: organization.name,
+            },
+          );
           enqueueSnackbar(message, { variant: "success" });
 
           closeDialog();

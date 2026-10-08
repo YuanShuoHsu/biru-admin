@@ -105,7 +105,7 @@
   "location": {
     "actions": {
       "updateLocation": {
-        "success": "成功更新位置信息",
+        "success": "成功更新 {name} 的位置信息",
         "title": "编辑位置"
       }
     },
@@ -166,7 +166,7 @@
   "pickup": {
     "actions": {
       "updatePickup": {
-        "success": "成功更新预约设置",
+        "success": "成功更新 {name} 的预约设置",
         "title": "编辑预约"
       }
     },
@@ -193,7 +193,7 @@
   "points": {
     "actions": {
       "updatePoints": {
-        "success": "成功更新点数设置",
+        "success": "成功更新 {name} 的点数设置",
         "title": "编辑点数"
       }
     },

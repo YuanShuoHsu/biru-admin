@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 
 import { DEFAULT_PAGINATION_QUERY } from "@/constants/pagination";
 
@@ -31,6 +32,7 @@ const OrganizationSelect = ({
 }: OrganizationSelectProps) => {
   const pathname = usePathname();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const tCommon = useTranslations("common");
 
@@ -42,7 +44,7 @@ const OrganizationSelect = ({
     router.push(
       getHref(pathname, {
         organization: event.target.value,
-        ...DEFAULT_PAGINATION_QUERY,
+        ...(searchParams.has("page") && DEFAULT_PAGINATION_QUERY),
       }),
     );
   };

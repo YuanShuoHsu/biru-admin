@@ -2,7 +2,7 @@
 
 import { useFormatter, useNow, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 
 import { WAITLIST_STATUS_COLORS } from "@/constants/waitlist";
@@ -63,24 +63,20 @@ const COLUMN_STATUSES = [
   "cancelled",
 ] as const satisfies readonly WaitlistTicketStatus[];
 
-interface TicketAction {
-  label: "cancel" | "noShow" | "recall" | "restore" | "seat";
-  status: WaitlistTicketStatus;
-}
+const TRANSITION_LABELS = {
+  called: "recall",
+  cancelled: "cancel",
+  noShow: "noShow",
+  seated: "seat",
+  waiting: "restore",
+} as const satisfies Record<WaitlistTicketStatus, string>;
 
-const TICKET_ACTIONS: Record<WaitlistTicketStatus, TicketAction[]> = {
-  called: [
-    { label: "recall", status: "called" },
-    { label: "noShow", status: "noShow" },
-    { label: "cancel", status: "cancelled" },
-  ],
-  cancelled: [{ label: "restore", status: "waiting" }],
-  noShow: [
-    { label: "recall", status: "called" },
-    { label: "seat", status: "seated" },
-  ],
-  seated: [],
-  waiting: [{ label: "cancel", status: "cancelled" }],
+const TRANSFER_TRANSITIONS: Partial<
+  Record<WaitlistTicketStatus, WaitlistTicketStatus[]>
+> = {
+  called: ["waiting", "seated"],
+  seated: ["called"],
+  waiting: ["called"],
 };
 
 const HeaderStack = styled(Stack)(({ theme }) => ({
@@ -217,8 +213,10 @@ const AdminWaitlist = ({
 
   const handleTransitionDialog = (
     ticket: AdminWaitlistTicket,
-    { label, status }: TicketAction,
-  ) =>
+    status: WaitlistTicketStatus,
+  ) => {
+    const label = TRANSITION_LABELS[status];
+
     setDialog({
       content: (
         <DialogContentText>
@@ -233,6 +231,7 @@ const AdminWaitlist = ({
       open: true,
       title: tWaitlist(`actions.${label}Title`),
     });
+  };
 
   const handleAddDialog = async () => {
     const latest = (await mutate()) || waitlist;
@@ -525,27 +524,34 @@ const AdminWaitlist = ({
     );
   };
 
-  const renderActions = (ticket: AdminWaitlistTicket) =>
-    TICKET_ACTIONS[ticket.status].length > 0 &&
-    TICKET_ACTIONS[ticket.status].map((action) => {
-      const color = WAITLIST_STATUS_COLORS[action.status];
+  const renderActions = (ticket: AdminWaitlistTicket) => {
+    const statuses = ticket.availableTransitions.filter(
+      (status) => !TRANSFER_TRANSITIONS[ticket.status]?.includes(status),
+    );
 
-      return (
-        <Button
-          color={color === "default" ? "inherit" : color}
-          disabled={
-            !!pendingAction && pendingAction !== `${ticket.id}:${action.status}`
-          }
-          key={action.label}
-          loading={pendingAction === `${ticket.id}:${action.status}`}
-          onClick={() => handleTransitionDialog(ticket, action)}
-          size="small"
-          variant="outlined"
-        >
-          {tWaitlist(`actions.${action.label}`)}
-        </Button>
-      );
-    });
+    return (
+      statuses.length > 0 &&
+      statuses.map((status) => {
+        const color = WAITLIST_STATUS_COLORS[status];
+
+        return (
+          <Button
+            color={color === "default" ? "inherit" : color}
+            disabled={
+              !!pendingAction && pendingAction !== `${ticket.id}:${status}`
+            }
+            key={status}
+            loading={pendingAction === `${ticket.id}:${status}`}
+            onClick={() => handleTransitionDialog(ticket, status)}
+            size="small"
+            variant="outlined"
+          >
+            {tWaitlist(`actions.${TRANSITION_LABELS[status]}`)}
+          </Button>
+        );
+      })
+    );
+  };
 
   if (!waitlist.enabled)
     return <Alert severity="info">{tWaitlist("disabled")}</Alert>;
