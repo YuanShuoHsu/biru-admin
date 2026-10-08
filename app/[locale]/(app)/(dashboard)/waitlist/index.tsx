@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormatter, useTranslations } from "next-intl";
+import { useFormatter, useNow, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { Fragment, useEffect, useState } from "react";
 import useSWR from "swr";
@@ -58,8 +58,6 @@ import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 import { getWaitlistErrorCode } from "@/utils/waitlist";
 
-type StaffTransitionStatus = Exclude<WaitlistTicketStatus, "waiting">;
-
 const COLUMN_STATUSES = [
   "waiting",
   "called",
@@ -70,8 +68,8 @@ const COLUMN_STATUSES = [
 
 interface TicketAction {
   color: "error" | "primary" | "warning";
-  label: "cancel" | "noShow" | "recall" | "seat";
-  status: StaffTransitionStatus;
+  label: "cancel" | "noShow" | "recall" | "restore" | "seat";
+  status: WaitlistTicketStatus;
 }
 
 const TICKET_ACTIONS: Record<WaitlistTicketStatus, TicketAction[]> = {
@@ -80,7 +78,7 @@ const TICKET_ACTIONS: Record<WaitlistTicketStatus, TicketAction[]> = {
     { color: "warning", label: "noShow", status: "noShow" },
     { color: "error", label: "cancel", status: "cancelled" },
   ],
-  cancelled: [],
+  cancelled: [{ color: "primary", label: "restore", status: "waiting" }],
   noShow: [
     { color: "primary", label: "recall", status: "called" },
     { color: "primary", label: "seat", status: "seated" },
@@ -150,6 +148,7 @@ const AdminWaitlist = ({
   const [isPausing, setIsPausing] = useState(false);
 
   const format = useFormatter();
+  const now = useNow({ updateInterval: 60_000 });
 
   const tCommon = useTranslations("common");
   const tWaitlist = useTranslations("waitlist");
@@ -195,7 +194,7 @@ const AdminWaitlist = ({
 
   const handleTransition = async (
     ticket: AdminWaitlistTicket,
-    status: StaffTransitionStatus,
+    status: WaitlistTicketStatus,
   ) => {
     setPendingAction(`${ticket.id}:${status}`);
 
@@ -432,8 +431,15 @@ const AdminWaitlist = ({
   );
 
   const renderDetails = (ticket: AdminWaitlistTicket) => {
-    const formatTime = (date?: string | null) =>
-      date ? format.dateTime(new Date(date), "time") : "";
+    const formatTime = (date?: string | null) => {
+      if (!date) return "";
+
+      const time = new Date(date);
+      const isToday =
+        format.dateTime(time, "date") === format.dateTime(now, "date");
+
+      return format.dateTime(time, isToday ? "time" : "compact");
+    };
 
     const times: {
       color?: "error" | "warning";
