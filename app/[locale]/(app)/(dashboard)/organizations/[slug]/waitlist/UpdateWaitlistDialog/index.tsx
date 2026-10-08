@@ -12,6 +12,7 @@ import {
 } from "./definitions";
 
 import FormBox from "@/components/FormBox";
+import NumberField from "@/components/NumberField";
 import NumberSpinner from "@/components/NumberSpinner";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -44,6 +45,7 @@ const CUTOFF_MINUTES_MAX = 240;
 const GRACE_MINUTES_MAX = 60;
 const GROUPS_MAX = 26;
 const HOLD_MINUTES_MAX = 60;
+const PARTY_SIZE_MAX = 99;
 
 const GroupRowStack = styled(Stack)(({ theme }) => ({
   alignItems: "flex-start",
@@ -81,16 +83,14 @@ const UpdateWaitlistDialog = ({
     control,
     formState: { errors, isSubmitted },
     handleSubmit,
-    register,
     setValue,
   } = useForm<UpdateWaitlistForm>({
     defaultValues: {
       cutoffMinutes: String(settings.cutoffMinutes),
       enabled: settings.enabled,
       graceMinutes: String(settings.graceMinutes),
-      groups: settings.groups.map(({ maxPartySize, prefix }) => ({
+      groups: settings.groups.map(({ maxPartySize }) => ({
         maxPartySize: String(maxPartySize),
-        prefix,
       })),
       holdMinutes: String(settings.holdMinutes),
     },
@@ -107,6 +107,30 @@ const UpdateWaitlistDialog = ({
     name: ["cutoffMinutes", "enabled", "graceMinutes", "groups", "holdMinutes"],
   });
 
+  const handleMaxPartySizeChange = (index: number, value: number | null) => {
+    setValue(
+      `groups.${index}.maxPartySize`,
+      value != null ? String(value) : "",
+      { shouldValidate: isSubmitted },
+    );
+
+    if (value == null) return;
+
+    let previousMax = value;
+
+    for (let next = index + 1; next < groups.length; next++) {
+      const { maxPartySize } = groups[next];
+
+      if (!maxPartySize || Number(maxPartySize) > previousMax) break;
+
+      previousMax += 1;
+
+      setValue(`groups.${next}.maxPartySize`, String(previousMax), {
+        shouldValidate: isSubmitted,
+      });
+    }
+  };
+
   const onSubmitHandler = async (values: UpdateWaitlistForm) => {
     try {
       setDialog({ confirmLoading: true });
@@ -118,10 +142,9 @@ const UpdateWaitlistDialog = ({
             cutoffMinutes: Number(values.cutoffMinutes),
             enabled: values.enabled,
             graceMinutes: Number(values.graceMinutes),
-            groups: values.groups.map(({ maxPartySize, prefix }, index) => ({
+            groups: values.groups.map(({ maxPartySize }, index) => ({
               maxPartySize: Number(maxPartySize),
               minPartySize: getMinPartySize(values.groups, index),
-              prefix,
             })),
             holdMinutes: Number(values.holdMinutes),
           } satisfies UpdateWaitlistSettingsDto),
@@ -227,20 +250,9 @@ const UpdateWaitlistDialog = ({
         return (
           <GroupRowStack direction="row" key={id}>
             <PrefixTextField
-              {...register(`groups.${index}.prefix`)}
-              error={!!errors.groups?.[index]?.prefix}
-              helperText={errors.groups?.[index]?.prefix?.message}
+              disabled
               label={tOrganizations("waitlist.groups.prefix.label")}
-              onChange={(event) =>
-                setValue(
-                  `groups.${index}.prefix`,
-                  event.target.value.toUpperCase(),
-                  { shouldValidate: isSubmitted },
-                )
-              }
-              required
-              slotProps={{ htmlInput: { maxLength: 1 } }}
-              value={groups[index]?.prefix || ""}
+              value={String.fromCharCode(65 + index)}
             />
             <TextField
               disabled
@@ -248,15 +260,20 @@ const UpdateWaitlistDialog = ({
               label={tOrganizations("waitlist.groups.minPartySize.label")}
               value={Number.isNaN(minPartySize) ? "" : minPartySize}
             />
-            <TextField
-              {...register(`groups.${index}.maxPartySize`)}
+            <NumberField
               error={!!errors.groups?.[index]?.maxPartySize}
               fullWidth
               helperText={errors.groups?.[index]?.maxPartySize?.message}
               label={tOrganizations("waitlist.groups.maxPartySize.label")}
+              max={PARTY_SIZE_MAX}
+              min={Number.isNaN(minPartySize) ? 1 : minPartySize}
+              onValueChange={(value) => handleMaxPartySizeChange(index, value)}
               required
-              slotProps={{ htmlInput: { max: 99, min: 1 } }}
-              type="number"
+              value={
+                groups[index]?.maxPartySize
+                  ? Number(groups[index].maxPartySize)
+                  : null
+              }
             />
             <StyledIconButton
               aria-label={tOrganizations("waitlist.groups.remove")}
@@ -275,12 +292,7 @@ const UpdateWaitlistDialog = ({
       </FormHelperText>
       <Button
         disabled={fields.length >= GROUPS_MAX}
-        onClick={() =>
-          append({
-            maxPartySize: "",
-            prefix: String.fromCharCode(65 + fields.length),
-          })
-        }
+        onClick={() => append({ maxPartySize: "" })}
         startIcon={<Add />}
         variant="outlined"
       >

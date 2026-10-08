@@ -68,21 +68,23 @@ const COLUMN_STATUSES = [
   "cancelled",
 ] as const satisfies readonly WaitlistTicketStatus[];
 
-const TICKET_ACTIONS: Record<
-  WaitlistTicketStatus,
-  {
-    color: "error" | "primary" | "warning";
-    label: "cancel" | "noShow" | "recall" | "seat";
-    status: StaffTransitionStatus;
-  }[]
-> = {
+interface TicketAction {
+  color: "error" | "primary" | "warning";
+  label: "cancel" | "noShow" | "recall" | "seat";
+  status: StaffTransitionStatus;
+}
+
+const TICKET_ACTIONS: Record<WaitlistTicketStatus, TicketAction[]> = {
   called: [
     { color: "primary", label: "recall", status: "called" },
     { color: "warning", label: "noShow", status: "noShow" },
     { color: "error", label: "cancel", status: "cancelled" },
   ],
   cancelled: [],
-  noShow: [{ color: "primary", label: "seat", status: "seated" }],
+  noShow: [
+    { color: "primary", label: "recall", status: "called" },
+    { color: "primary", label: "seat", status: "seated" },
+  ],
   seated: [],
   waiting: [{ color: "error", label: "cancel", status: "cancelled" }],
 };
@@ -218,20 +220,23 @@ const AdminWaitlist = ({
     }
   };
 
-  const handleCancelDialog = (ticket: AdminWaitlistTicket) =>
+  const handleTransitionDialog = (
+    ticket: AdminWaitlistTicket,
+    { label, status }: TicketAction,
+  ) =>
     setDialog({
       content: (
         <DialogContentText>
-          {tWaitlist.rich("actions.cancelConfirm", {
+          {tWaitlist.rich(`actions.${label}Confirm`, {
             bold: (chunks) => <strong>{chunks}</strong>,
             name: ticket.name,
             ticketNumber: ticket.ticketNumber,
           })}
         </DialogContentText>
       ),
-      onConfirm: () => handleTransition(ticket, "cancelled"),
+      onConfirm: () => handleTransition(ticket, status),
       open: true,
-      title: tWaitlist("actions.cancelTitle"),
+      title: tWaitlist(`actions.${label}Title`),
     });
 
   const handleAddDialog = async () => {
@@ -520,21 +525,19 @@ const AdminWaitlist = ({
 
   const renderActions = (ticket: AdminWaitlistTicket) =>
     TICKET_ACTIONS[ticket.status].length > 0 &&
-    TICKET_ACTIONS[ticket.status].map(({ color, label, status }) => (
+    TICKET_ACTIONS[ticket.status].map((action) => (
       <Button
-        color={color}
-        disabled={!!pendingAction && pendingAction !== `${ticket.id}:${status}`}
-        key={label}
-        loading={pendingAction === `${ticket.id}:${status}`}
-        onClick={() =>
-          status === "cancelled"
-            ? handleCancelDialog(ticket)
-            : handleTransition(ticket, status)
+        color={action.color}
+        disabled={
+          !!pendingAction && pendingAction !== `${ticket.id}:${action.status}`
         }
+        key={action.label}
+        loading={pendingAction === `${ticket.id}:${action.status}`}
+        onClick={() => handleTransitionDialog(ticket, action)}
         size="small"
         variant="outlined"
       >
-        {tWaitlist(`actions.${label}`)}
+        {tWaitlist(`actions.${action.label}`)}
       </Button>
     ));
 

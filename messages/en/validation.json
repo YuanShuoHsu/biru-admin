@@ -242,11 +242,6 @@
   "postalCode": {
     "format": "Postal code format is invalid."
   },
-  "prefix": {
-    "duplicate": "Codes must be unique.",
-    "invalid": "Code is invalid.",
-    "required": "Code is required."
-  },
   "price": {
     "required": "Please enter a price."
   },

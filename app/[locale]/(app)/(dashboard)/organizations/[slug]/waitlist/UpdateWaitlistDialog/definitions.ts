@@ -24,10 +24,6 @@ export const useWaitlistFormSchema = () => {
             maxPartySize: z
               .string()
               .min(1, { error: tValidation("maxPartySize.required") }),
-            prefix: z
-              .string()
-              .min(1, { error: tValidation("prefix.required") })
-              .regex(/^[A-Z]$/, { error: tValidation("prefix.invalid") }),
           }),
         )
         .min(1),
@@ -36,7 +32,7 @@ export const useWaitlistFormSchema = () => {
         .min(1, { error: tValidation("holdMinutes.required") }),
     })
     .superRefine(({ groups }, ctx) => {
-      groups.forEach(({ maxPartySize, prefix }, index) => {
+      groups.forEach(({ maxPartySize }, index) => {
         if (
           maxPartySize &&
           Number(maxPartySize) < getMinPartySize(groups, index)
@@ -45,13 +41,6 @@ export const useWaitlistFormSchema = () => {
             code: "custom",
             message: tValidation("maxPartySize.belowMin"),
             path: ["groups", index, "maxPartySize"],
-          });
-
-        if (groups.findIndex((group) => group.prefix === prefix) !== index)
-          ctx.addIssue({
-            code: "custom",
-            message: tValidation("prefix.duplicate"),
-            path: ["groups", index, "prefix"],
           });
       });
     });

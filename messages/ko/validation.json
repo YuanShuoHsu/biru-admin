@@ -242,11 +242,6 @@
   "postalCode": {
     "format": "우편번호 형식이 올바르지 않습니다."
   },
-  "prefix": {
-    "duplicate": "코드는 중복될 수 없습니다.",
-    "invalid": "코드 형식이 올바르지 않습니다.",
-    "required": "코드는 필수입니다."
-  },
   "price": {
     "required": "가격을 입력해 주세요."
   },

@@ -242,11 +242,6 @@
   "postalCode": {
     "format": "邮政编码格式无效。"
   },
-  "prefix": {
-    "duplicate": "代号不可重复。",
-    "invalid": "代号格式无效。",
-    "required": "代号为必填。"
-  },
   "price": {
     "required": "请输入价格。"
   },

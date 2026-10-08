@@ -6912,6 +6912,12 @@ export interface components {
       holdMinutes: number;
       paused: boolean;
     };
+    UpdateWaitlistGroupDto: {
+      /** @example 4 */
+      maxPartySize: number;
+      /** @example 3 */
+      minPartySize: number;
+    };
     UpdateWaitlistSettingsDto: {
       /**
        * @description 打烊前幾分鐘停止顧客自助取號
@@ -6919,7 +6925,7 @@ export interface components {
        */
       cutoffMinutes: number;
       enabled: boolean;
-      groups: components["schemas"]["WaitlistGroupDto"][];
+      groups: components["schemas"]["UpdateWaitlistGroupDto"][];
       /**
        * @description 保留期限過後再等幾分鐘自動過號，0 為不自動過號
        * @example 10
