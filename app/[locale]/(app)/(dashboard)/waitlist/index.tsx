@@ -5,10 +5,7 @@ import { enqueueSnackbar } from "notistack";
 import { Fragment, useEffect, useState } from "react";
 import useSWR from "swr";
 
-import {
-  WAITLIST_GROUP_COLORS,
-  WAITLIST_STATUS_COLORS,
-} from "@/constants/waitlist";
+import { WAITLIST_STATUS_COLORS } from "@/constants/waitlist";
 
 import { useSocketConnection } from "@/hooks/useSocketConnection";
 
@@ -573,10 +570,6 @@ const AdminWaitlist = ({
     ticket: AdminWaitlistTicket,
     tickets: AdminWaitlistTicket[],
   ) => ({
-    color:
-      WAITLIST_GROUP_COLORS[
-        Math.max(getGroupIndex(ticket.prefix), 0) % WAITLIST_GROUP_COLORS.length
-      ],
     label: getGroupLabel(
       ticket.prefix,
       tickets.filter(({ prefix }) => prefix === ticket.prefix).length,

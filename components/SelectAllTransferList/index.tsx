@@ -26,7 +26,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { alpha, darken, lighten, styled } from "@mui/material/styles";
+import { darken, lighten, styled } from "@mui/material/styles";
 
 const ContainerGrid = styled(Grid)({
   flex: 1,
@@ -119,9 +119,7 @@ const StyledList = styled(List, {
   empty ? { padding: theme.spacing(2) } : {},
 );
 
-const StyledListSubheader = styled(ListSubheader<"div">, {
-  shouldForwardProp: (prop) => prop !== "groupColor",
-})<{ groupColor?: string }>(({ groupColor, theme }) => ({
+const StyledListSubheader = styled(ListSubheader<"div">)(({ theme }) => ({
   padding: theme.spacing(0.5, 1.25),
   lineHeight: "inherit",
   color: theme.palette.primary.main,
@@ -129,16 +127,6 @@ const StyledListSubheader = styled(ListSubheader<"div">, {
 
   ...theme.applyStyles("dark", {
     backgroundColor: darken(theme.palette.primary.main, 0.8),
-  }),
-
-  ...(groupColor && {
-    borderLeft: `4px solid ${groupColor}`,
-    color: theme.vars.palette.text.primary,
-    backgroundColor: alpha(groupColor, 0.16),
-
-    ...theme.applyStyles("dark", {
-      backgroundColor: alpha(groupColor, 0.24),
-    }),
   }),
 }));
 
@@ -185,7 +173,6 @@ const union = (a: readonly string[], b: readonly string[]) => [
 ];
 
 interface SelectAllTransferListGroup {
-  color?: string;
   label: string;
 }
 
@@ -314,11 +301,7 @@ const SelectAllTransferList = <
           <Fragment key={item.id}>
             {item.group &&
               item.group.label !== items[index - 1]?.group?.label && (
-                <StyledListSubheader
-                  component="div"
-                  disableSticky
-                  groupColor={item.group.color}
-                >
+                <StyledListSubheader component="div" disableSticky>
                   {item.group.label}
                 </StyledListSubheader>
               )}
