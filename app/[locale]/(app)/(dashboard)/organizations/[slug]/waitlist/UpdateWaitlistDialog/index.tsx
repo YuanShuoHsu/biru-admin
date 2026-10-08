@@ -63,12 +63,14 @@ const StyledIconButton = styled(IconButton)(({ theme }) => ({
 
 interface UpdateWaitlistDialogProps {
   onSaved: (settings: WaitlistSettingsResponse) => void;
+  organizationName: string;
   organizationSlug: string;
   settings: WaitlistSettingsResponse;
 }
 
 const UpdateWaitlistDialog = ({
   onSaved,
+  organizationName,
   organizationSlug,
   settings,
 }: UpdateWaitlistDialogProps) => {
@@ -154,7 +156,9 @@ const UpdateWaitlistDialog = ({
       );
 
       enqueueSnackbar(
-        tOrganizations("waitlist.actions.updateWaitlist.success"),
+        tOrganizations("waitlist.actions.updateWaitlist.success", {
+          name: organizationName,
+        }),
         { variant: "success" },
       );
 

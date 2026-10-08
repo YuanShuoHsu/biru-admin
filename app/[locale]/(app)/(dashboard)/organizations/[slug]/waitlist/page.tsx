@@ -73,6 +73,7 @@ const OrganizationsSlugWaitlistPage = async ({
       canUpdateWaitlist={hasRolePermission(currentUserRole, {
         waitlistSetting: ["update"],
       })}
+      organizationName={data.name}
       organizationSlug={organizationSlug}
       settings={settings}
     />

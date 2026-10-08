@@ -35,12 +35,14 @@ const ActionsStack = styled(Stack)(({ theme }) => ({
 
 interface OrganizationsSlugWaitlistProps {
   canUpdateWaitlist: boolean;
+  organizationName: string;
   organizationSlug: string;
   settings: WaitlistSettingsResponse;
 }
 
 const OrganizationsSlugWaitlist = ({
   canUpdateWaitlist,
+  organizationName,
   organizationSlug,
   settings: initialSettings,
 }: OrganizationsSlugWaitlistProps) => {
@@ -61,6 +63,7 @@ const OrganizationsSlugWaitlist = ({
       content: (
         <UpdateWaitlistDialog
           onSaved={setSettings}
+          organizationName={organizationName}
           organizationSlug={organizationSlug}
           settings={settings}
         />

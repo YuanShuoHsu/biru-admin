@@ -258,7 +258,7 @@
   "waitlist": {
     "actions": {
       "updateWaitlist": {
-        "success": "Waitlist settings updated",
+        "success": "Waitlist settings updated for {name}",
         "title": "Edit waitlist"
       }
     },

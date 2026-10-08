@@ -258,7 +258,7 @@
   "waitlist": {
     "actions": {
       "updateWaitlist": {
-        "success": "成功更新現場候位設定",
+        "success": "成功更新 {name} 的現場候位設定",
         "title": "編輯現場候位"
       }
     },

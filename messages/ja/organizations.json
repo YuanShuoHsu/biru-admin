@@ -258,7 +258,7 @@
   "waitlist": {
     "actions": {
       "updateWaitlist": {
-        "success": "順番待ちの設定を更新しました",
+        "success": "{name} の順番待ちの設定を更新しました",
         "title": "順番待ちを編集"
       }
     },

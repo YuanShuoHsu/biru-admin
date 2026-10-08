@@ -258,7 +258,7 @@
   "waitlist": {
     "actions": {
       "updateWaitlist": {
-        "success": "成功更新现场排队设置",
+        "success": "成功更新 {name} 的现场排队设置",
         "title": "编辑现场排队"
       }
     },

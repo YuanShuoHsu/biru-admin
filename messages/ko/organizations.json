@@ -258,7 +258,7 @@
   "waitlist": {
     "actions": {
       "updateWaitlist": {
-        "success": "현장 대기 설정이 업데이트되었습니다",
+        "success": "{name}의 현장 대기 설정이 업데이트되었습니다",
         "title": "현장 대기 편집"
       }
     },
