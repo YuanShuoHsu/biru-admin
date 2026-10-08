@@ -73,8 +73,9 @@ export const getAuditLogHref = (
     case "userCoupon":
     case "coupon":
     case "banner":
-    case "organization":
     case "waitlistTicket":
+      return `/waitlist/list/${resourceId}/audit-logs`;
+    case "organization":
       return null;
   }
 };

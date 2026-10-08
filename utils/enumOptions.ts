@@ -31,6 +31,7 @@ import {
   statutoryLeaveKindValues,
   userCouponSourceValues,
   userRoleValues,
+  waitlistTicketStatusValues,
 } from "@/types/api";
 import type { OrganizationResponse } from "@/types/organizations";
 
@@ -279,6 +280,15 @@ export const getPayrollStatementEnumOptions = (
 ) => ({
   status: payrollStatementStatusValues.map((value) => ({
     label: tAttendance(`payrollStatus.options.${value}`),
+    value,
+  })),
+});
+
+export const getWaitlistEnumOptions = (
+  tWaitlist: ReturnType<typeof useTranslations<"waitlist">>,
+) => ({
+  status: waitlistTicketStatusValues.map((value) => ({
+    label: tWaitlist(`status.${value}`),
     value,
   })),
 });

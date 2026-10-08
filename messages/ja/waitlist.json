@@ -37,6 +37,9 @@
       "paused": "受付を一時停止中のため、お客様ご自身での受付はできません。代理登録は引き続き可能です。"
     }
   },
+  "board": {
+    "label": "順番待ちボード"
+  },
   "count": "{count} 組",
   "disabled": "この店舗では店頭の順番待ちがオフになっています。組織設定の「順番待ち」タブからオンにしてください。",
   "empty": "順番待ちはありません",
@@ -52,6 +55,20 @@
   },
   "group": "{prefix} 区分",
   "label": "順番待ち",
+  "list": {
+    "actions": "操作",
+    "calledAt": "呼び出し日時",
+    "createdAt": "受付日時",
+    "email": "メールアドレス",
+    "endedAt": "終了日時",
+    "label": "順番待ち一覧",
+    "name": "お名前",
+    "partySize": "人数",
+    "phoneNumber": "電話番号",
+    "serviceDate": "営業日",
+    "status": "状態",
+    "ticketNumber": "番号"
+  },
   "paused": {
     "confirm": "一時停止中はお客様ご自身での受付ができなくなります。代理登録は引き続き可能です。<bold>{name}</bold> の受付を一時停止しますか？",
     "off": "{name} の受付を再開しました",

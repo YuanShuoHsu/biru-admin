@@ -36,7 +36,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import AddWaitlistTicketDialog from "./AddWaitlistTicketDialog";
+import AddWaitlistTicketDialog from "../../AddWaitlistTicketDialog";
 
 import SelectAllTransferList, {
   type SelectAllTransferListAction,

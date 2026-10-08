@@ -23,7 +23,7 @@ export const generateMetadata = async ({
   const { locale } = await params;
   const tWaitlist = await getTranslations({ locale, namespace: "waitlist" });
 
-  return { title: tWaitlist("label") };
+  return { title: tWaitlist("board.label") };
 };
 
 const WaitlistPage = async ({ params, searchParams }: WaitlistPageProps) => {
@@ -47,7 +47,7 @@ const WaitlistPage = async ({ params, searchParams }: WaitlistPageProps) => {
       organization: selectedOrganization.slug,
     });
 
-    redirect({ href: `/waitlist?${params.toString()}`, locale });
+    redirect({ href: `/waitlist/board?${params.toString()}`, locale });
   }
 
   const waitlist = await fetcher<AdminWaitlistResponse>(

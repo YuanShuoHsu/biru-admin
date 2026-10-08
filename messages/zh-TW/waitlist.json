@@ -37,6 +37,9 @@
       "paused": "目前暫停取號，顧客無法自行取號；代客登記不受影響。"
     }
   },
+  "board": {
+    "label": "候位看板"
+  },
   "count": "{count} 組",
   "disabled": "本店尚未開啟現場候位，請至組織設定的「現場候位」分頁開啟。",
   "empty": "目前沒有候位",
@@ -52,6 +55,20 @@
   },
   "group": "{prefix} 組",
   "label": "現場候位",
+  "list": {
+    "actions": "操作",
+    "calledAt": "叫號時間",
+    "createdAt": "取號時間",
+    "email": "電子郵件",
+    "endedAt": "結束時間",
+    "label": "候位列表",
+    "name": "姓名",
+    "partySize": "人數",
+    "phoneNumber": "電話",
+    "serviceDate": "服務日期",
+    "status": "狀態",
+    "ticketNumber": "號碼"
+  },
   "paused": {
     "confirm": "暫停後顧客將無法自行取號，代客登記不受影響。確定要暫停 <bold>{name}</bold> 的取號嗎？",
     "off": "{name} 已恢復取號",

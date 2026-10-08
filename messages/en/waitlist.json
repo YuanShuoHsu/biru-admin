@@ -37,6 +37,9 @@
       "paused": "New tickets are paused, so guests can't join on their own. You can still add parties here."
     }
   },
+  "board": {
+    "label": "Waitlist board"
+  },
   "count": "{count, plural, one {# party} other {# parties}}",
   "disabled": "The walk-in waitlist is off for this store. Turn it on from the Waitlist tab in organization settings.",
   "empty": "No one is waiting",
@@ -52,6 +55,20 @@
   },
   "group": "Group {prefix}",
   "label": "Waitlist",
+  "list": {
+    "actions": "Actions",
+    "calledAt": "Called at",
+    "createdAt": "Issued at",
+    "email": "Email",
+    "endedAt": "Ended at",
+    "label": "Waitlist list",
+    "name": "Name",
+    "partySize": "Party size",
+    "phoneNumber": "Phone",
+    "serviceDate": "Service date",
+    "status": "Status",
+    "ticketNumber": "Number"
+  },
   "paused": {
     "confirm": "Guests won't be able to join on their own, but you can still add parties here. Pause new tickets for <bold>{name}</bold>?",
     "off": "New tickets resumed for {name}",

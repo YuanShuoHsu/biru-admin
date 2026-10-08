@@ -97,6 +97,7 @@ import type { MenuItem, MenuSection, ModifierGroup } from "@/types/menus";
 import type { NavItem } from "@/types/navItem";
 import type { AdminOrderResponse } from "@/types/orders";
 import type { RouteParams } from "@/types/routeParams";
+import type { WaitlistTicketDetailResponse } from "@/types/waitlist";
 
 import {
   attendanceCalendarDate,
@@ -655,9 +656,37 @@ const routes: Route[] = [
     segment: "store-layout",
   },
   {
+    children: [
+      {
+        icon: ViewKanban,
+        label: "waitlist.board.label",
+        query: ["organization"],
+        segment: "board",
+      },
+      {
+        children: [
+          {
+            children: [
+              {
+                icon: History,
+                label: "audit.title",
+                query: ["organization", "page", "pageSize"],
+                segment: "audit-logs",
+              },
+            ],
+            icon: ConfirmationNumber,
+            segment: "[ticketId]",
+            to: null,
+          },
+        ],
+        icon: ListAlt,
+        label: "waitlist.list.label",
+        query: ["organization", "page", "pageSize"],
+        segment: "list",
+      },
+    ],
     icon: HourglassTop,
     label: "waitlist.label",
-    query: ["organization"],
     segment: "waitlist",
   },
   {
@@ -803,6 +832,7 @@ const useDynamicLabels = (): Partial<Record<string, string>> => {
     slug,
     supplierId,
     teamId,
+    ticketId,
     userId,
   } = useParams<RouteParams>();
 
@@ -914,6 +944,22 @@ const useDynamicLabels = (): Partial<Record<string, string>> => {
     },
   );
 
+  const { data: ticketNumber = "" } = useSWR(
+    ticketId && organizationQuery
+      ? `/api/organizations/${organizationQuery}/waitlist/tickets/${ticketId}`
+      : null,
+    async (url) => {
+      try {
+        const { ticketNumber } =
+          await fetcher<WaitlistTicketDetailResponse>(url);
+
+        return ticketNumber;
+      } catch {
+        return "";
+      }
+    },
+  );
+
   const { data: modifierGroupName = "" } = useSWR(
     groupId ? `/api/modifier-groups/${groupId}` : null,
     async (url) => {
@@ -937,6 +983,7 @@ const useDynamicLabels = (): Partial<Record<string, string>> => {
     slug: organizationSlugName,
     supplierId: supplierName,
     teamId: teamName,
+    ticketId: ticketNumber,
     userId: userEmail,
   };
 };

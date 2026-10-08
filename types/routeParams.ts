@@ -15,6 +15,7 @@ interface RouteParam {
   slug: string;
   supplierId: string;
   teamId: string;
+  ticketId: string;
   userId: string;
 }
 

@@ -51,7 +51,7 @@ const useNavItems = (): NavItem[][] => {
               children: attendanceChildren,
             },
             { ...navItem("/orders"), children: navChildren["/orders"] },
-            navItem("/waitlist"),
+            { ...navItem("/waitlist"), children: navChildren["/waitlist"] },
             { ...navItem("/menus"), children: navChildren["/menus"] },
             ...(inventoryChildren.length
               ? [{ ...navItem("/inventory"), children: inventoryChildren }]

@@ -4,13 +4,13 @@ import OrganizationSelect from "@/components/OrganizationSelect";
 
 import { authClient } from "@/lib/auth-client";
 
-interface ToolbarWaitlistPageProps {
+interface ToolbarWaitlistListPageProps {
   searchParams: Promise<{ organization?: string }>;
 }
 
-const ToolbarWaitlistPage = async ({
+const ToolbarWaitlistListPage = async ({
   searchParams,
-}: ToolbarWaitlistPageProps) => {
+}: ToolbarWaitlistListPageProps) => {
   const [cookieStore, { organization = "" }] = await Promise.all([
     cookies(),
     searchParams,
@@ -32,4 +32,4 @@ const ToolbarWaitlistPage = async ({
   );
 };
 
-export default ToolbarWaitlistPage;
+export default ToolbarWaitlistListPage;

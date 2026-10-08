@@ -37,6 +37,9 @@
       "paused": "대기 등록이 일시 중지되어 고객이 직접 등록할 수 없습니다. 대리 등록은 계속 가능합니다."
     }
   },
+  "board": {
+    "label": "대기 보드"
+  },
   "count": "{count}팀",
   "disabled": "이 매장은 현장 대기가 꺼져 있습니다. 조직 설정의 '현장 대기' 탭에서 켜 주세요.",
   "empty": "대기 중인 팀이 없습니다",
@@ -52,6 +55,20 @@
   },
   "group": "{prefix} 그룹",
   "label": "현장 대기",
+  "list": {
+    "actions": "작업",
+    "calledAt": "호출 시간",
+    "createdAt": "발급 시간",
+    "email": "이메일",
+    "endedAt": "종료 시간",
+    "label": "대기 목록",
+    "name": "이름",
+    "partySize": "인원",
+    "phoneNumber": "전화번호",
+    "serviceDate": "영업일",
+    "status": "상태",
+    "ticketNumber": "번호"
+  },
   "paused": {
     "confirm": "일시 중지하면 고객이 직접 등록할 수 없습니다. 대리 등록은 계속 가능합니다. <bold>{name}</bold>의 대기 등록을 일시 중지하시겠습니까?",
     "off": "{name}의 대기 등록을 재개했습니다",
