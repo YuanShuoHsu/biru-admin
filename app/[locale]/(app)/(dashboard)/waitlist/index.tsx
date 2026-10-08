@@ -67,24 +67,23 @@ const COLUMN_STATUSES = [
 ] as const satisfies readonly WaitlistTicketStatus[];
 
 interface TicketAction {
-  color: "error" | "primary" | "warning";
   label: "cancel" | "noShow" | "recall" | "restore" | "seat";
   status: WaitlistTicketStatus;
 }
 
 const TICKET_ACTIONS: Record<WaitlistTicketStatus, TicketAction[]> = {
   called: [
-    { color: "primary", label: "recall", status: "called" },
-    { color: "warning", label: "noShow", status: "noShow" },
-    { color: "error", label: "cancel", status: "cancelled" },
+    { label: "recall", status: "called" },
+    { label: "noShow", status: "noShow" },
+    { label: "cancel", status: "cancelled" },
   ],
-  cancelled: [{ color: "primary", label: "restore", status: "waiting" }],
+  cancelled: [{ label: "restore", status: "waiting" }],
   noShow: [
-    { color: "primary", label: "recall", status: "called" },
-    { color: "primary", label: "seat", status: "seated" },
+    { label: "recall", status: "called" },
+    { label: "seat", status: "seated" },
   ],
   seated: [],
-  waiting: [{ color: "error", label: "cancel", status: "cancelled" }],
+  waiting: [{ label: "cancel", status: "cancelled" }],
 };
 
 const HeaderStack = styled(Stack)(({ theme }) => ({
@@ -531,21 +530,25 @@ const AdminWaitlist = ({
 
   const renderActions = (ticket: AdminWaitlistTicket) =>
     TICKET_ACTIONS[ticket.status].length > 0 &&
-    TICKET_ACTIONS[ticket.status].map((action) => (
-      <Button
-        color={action.color}
-        disabled={
-          !!pendingAction && pendingAction !== `${ticket.id}:${action.status}`
-        }
-        key={action.label}
-        loading={pendingAction === `${ticket.id}:${action.status}`}
-        onClick={() => handleTransitionDialog(ticket, action)}
-        size="small"
-        variant="outlined"
-      >
-        {tWaitlist(`actions.${action.label}`)}
-      </Button>
-    ));
+    TICKET_ACTIONS[ticket.status].map((action) => {
+      const color = WAITLIST_STATUS_COLORS[action.status];
+
+      return (
+        <Button
+          color={color === "default" ? "inherit" : color}
+          disabled={
+            !!pendingAction && pendingAction !== `${ticket.id}:${action.status}`
+          }
+          key={action.label}
+          loading={pendingAction === `${ticket.id}:${action.status}`}
+          onClick={() => handleTransitionDialog(ticket, action)}
+          size="small"
+          variant="outlined"
+        >
+          {tWaitlist(`actions.${action.label}`)}
+        </Button>
+      );
+    });
 
   if (!waitlist.enabled)
     return <Alert severity="info">{tWaitlist("disabled")}</Alert>;
