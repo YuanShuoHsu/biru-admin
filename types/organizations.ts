@@ -12,3 +12,5 @@ export type OrganizationResponse =
   components["schemas"]["OrganizationResponseDto"];
 export type OrganizationMember =
   components["schemas"]["OrganizationMemberResponseDto"];
+export type OrganizationStats =
+  components["schemas"]["OrganizationStatsResponseDto"];

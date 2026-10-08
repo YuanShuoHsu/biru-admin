@@ -8,6 +8,7 @@ export const WAITLIST_STATUS_COLORS: Record<
 > = {
   called: "success",
   cancelled: "default",
+  expired: "default",
   noShow: "error",
   seated: "primary",
   waiting: "warning",

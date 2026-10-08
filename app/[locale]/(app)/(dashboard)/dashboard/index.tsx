@@ -30,12 +30,10 @@ import { BarChart } from "@mui/x-charts/BarChart";
 import { LineChart } from "@mui/x-charts/LineChart";
 import { SparkLineChart } from "@mui/x-charts/SparkLineChart";
 
-import {
-  orderResponseDtoModeValues,
-  orderResponseDtoPaymentMethodValues,
-} from "@/types/api";
-import type { OrderMode, OrderPaymentMethod } from "@/types/orders";
+import { orderResponseDtoModeValues } from "@/types/api";
+import type { OrderStatsResponse } from "@/types/orders";
 import type { Organization } from "@/types/organizations";
+import type { WaitlistStats } from "@/types/waitlist";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
@@ -49,6 +47,7 @@ const StyledCardActionArea = styled(CardActionArea)({
   display: "flex",
   flexDirection: "column",
   alignItems: "stretch",
+  justifyContent: "flex-start",
 });
 
 const StyledCardContent = styled(CardContent)(({ theme }) => ({
@@ -133,16 +132,20 @@ interface DashboardProps {
     totalOrders: number;
     ordersTrend: Trend;
     revenueTrend: Trend | null;
+    discountTrend: Trend | null;
     usersTrend: Trend | null;
     organizationsTrend: Trend;
   };
   charts: {
+    coupons: OrderStatsResponse["coupons"];
+    modifiers: OrderStatsResponse["modifiers"];
     topItems: { name: string; quantity: number }[];
     slowItems: { name: string; quantity: number }[];
     hourlyOrders: number[];
-    modeCounts: Partial<Record<OrderMode, number>>;
-    paymentCounts: Partial<Record<OrderPaymentMethod, number>>;
+    modes: OrderStatsResponse["modes"];
+    paymentMethods: OrderStatsResponse["paymentMethods"];
   };
+  waitlist: WaitlistStats | null;
 }
 
 const Dashboard = ({
@@ -151,6 +154,7 @@ const Dashboard = ({
   trendEnd,
   stats,
   charts,
+  waitlist,
 }: DashboardProps) => {
   const format = useFormatter();
 
@@ -166,9 +170,11 @@ const Dashboard = ({
 
   const tDashboard = useTranslations("dashboard");
   const tOrder = useTranslations("order");
+  const tWaitlist = useTranslations("waitlist");
 
   const navItem = useRoutes();
   const ordersHref = navItem("/orders/list").to;
+  const waitlistHref = navItem("/waitlist/list").to;
 
   const { hourly, bucketDays, tickStep } = DASHBOARD_RANGES[range];
 
@@ -250,17 +256,16 @@ const Dashboard = ({
   const hourLabels = Array.from({ length: 24 }, (_, hour) => `${hour}:00`);
 
   const modes = orderResponseDtoModeValues.map((mode) => ({
-    count: charts.modeCounts[mode] || 0,
+    count: charts.modes.find((entry) => entry.mode === mode)?.orders ?? 0,
     label: tOrder(`mode.${mode}.label`),
   }));
 
-  const payments = orderResponseDtoPaymentMethodValues
-    .map((method) => ({
-      count: charts.paymentCounts[method] || 0,
-      label: tOrder(`checkout.payment.${method}`),
-    }))
-    .filter(({ count }) => count > 0)
-    .sort((a, b) => b.count - a.count);
+  const payments = [...charts.paymentMethods]
+    .sort((a, b) => b.orders - a.orders)
+    .map(({ orders, paymentMethod }) => ({
+      count: orders,
+      label: tOrder(`checkout.payment.${paymentMethod}`),
+    }));
 
   const periodOrderCount = stats.ordersTrend.data.reduce(
     (sum, n) => sum + n,
@@ -283,6 +288,20 @@ const Dashboard = ({
         : 0,
     ),
   };
+
+  const discountTotal =
+    stats.discountTrend?.data.reduce((sum, n) => sum + n, 0) ?? 0;
+
+  const waitlistOutcomes = waitlist
+    ? (["seated", "noShow", "cancelled", "expired"] as const).map((status) => ({
+        count: waitlist[status],
+        label: tWaitlist(`status.${status}`),
+      }))
+    : [];
+  const waitlistEndedCount = waitlistOutcomes.reduce(
+    (sum, { count }) => sum + count,
+    0,
+  );
 
   return (
     <>
@@ -436,6 +455,96 @@ const Dashboard = ({
             </Grid>
           </>
         )}
+        {stats.discountTrend && (
+          <Grid size={{ xs: 12, md: 6 }}>
+            <StyledCard variant="outlined">
+              <StyledCardContent>
+                <Typography component="h2" variant="subtitle2">
+                  {tDashboard("stats.discount")}
+                </Typography>
+                <RevenueValueStack direction="row">
+                  <Typography variant="h4">
+                    {formatMoney(discountTotal, currency)}
+                  </Typography>
+                  <Chip
+                    label={`${stats.discountTrend.percent > 0 ? "+" : ""}${stats.discountTrend.percent}%`}
+                    size="small"
+                  />
+                </RevenueValueStack>
+                <Typography color="textSecondary" variant="caption">
+                  {periodLabel}
+                </Typography>
+                <StyledLineChart
+                  height={250}
+                  hideLegend
+                  grid={{ horizontal: true }}
+                  margin={{ left: 0, bottom: 0 }}
+                  series={[
+                    {
+                      area: true,
+                      color: chartColor,
+                      curve: "linear",
+                      data: stats.discountTrend.data,
+                      id: "discount",
+                      label: tDashboard("stats.discount"),
+                      showMark: false,
+                      valueFormatter: (value) =>
+                        formatMoney(value ?? 0, currency),
+                    },
+                  ]}
+                  gradientId="discount"
+                  xAxis={[
+                    {
+                      data: trendLabels,
+                      scaleType: "point",
+                      tickInterval: (_, index) => (index + 1) % tickStep === 0,
+                    },
+                  ]}
+                  yAxis={[{ width: "auto" }]}
+                >
+                  <AreaGradient color={chartColor} id="discount" />
+                </StyledLineChart>
+              </StyledCardContent>
+            </StyledCard>
+          </Grid>
+        )}
+        <Grid size={{ xs: 12, md: 6 }}>
+          <StyledCard variant="outlined">
+            <StyledCardContent>
+              <Typography component="h2" variant="subtitle2">
+                {tDashboard("charts.couponUsage")}
+              </Typography>
+              <Typography color="textSecondary" variant="caption">
+                {periodLabel}
+              </Typography>
+              <StyledBarChart
+                height={300}
+                hideLegend
+                grid={{ vertical: true }}
+                margin={{ left: 0, bottom: 0 }}
+                series={[
+                  {
+                    color: chartColor,
+                    data: charts.coupons.map(({ orders }) => orders),
+                    label: tDashboard("charts.couponUsage"),
+                    layout: "horizontal",
+                  },
+                ]}
+                gradientId="coupon-usage"
+                xAxis={[{ tickMinStep: 1 }]}
+                yAxis={[
+                  {
+                    data: charts.coupons.map(({ code }) => code),
+                    scaleType: "band",
+                    width: "auto",
+                  },
+                ]}
+              >
+                <AreaGradient color={chartColor} horizontal id="coupon-usage" />
+              </StyledBarChart>
+            </StyledCardContent>
+          </StyledCard>
+        </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
           <StyledCard variant="outlined">
             <StyledCardContent>
@@ -509,6 +618,53 @@ const Dashboard = ({
                   color={slowItemsColor}
                   horizontal
                   id="slow-items"
+                />
+              </StyledBarChart>
+            </StyledCardContent>
+          </StyledCard>
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <StyledCard variant="outlined">
+            <StyledCardContent>
+              <Typography component="h2" variant="subtitle2">
+                {tDashboard("charts.topModifiers")}
+              </Typography>
+              <Typography color="textSecondary" variant="caption">
+                {periodLabel}
+              </Typography>
+              <StyledBarChart
+                height={300}
+                hideLegend
+                grid={{ vertical: true }}
+                margin={{ left: 0, bottom: 0 }}
+                series={[
+                  {
+                    color: chartColor,
+                    data: charts.modifiers.map(({ sold }) => sold),
+                    label: tDashboard("charts.topModifiers"),
+                    layout: "horizontal",
+                  },
+                ]}
+                gradientId="top-modifiers"
+                xAxis={[{ tickMinStep: 1 }]}
+                yAxis={[
+                  {
+                    data: charts.modifiers.map(
+                      ({ modifierGroupName, modifierName }) =>
+                        tDashboard("charts.modifierOption", {
+                          group: modifierGroupName,
+                          option: modifierName,
+                        }),
+                    ),
+                    scaleType: "band",
+                    width: "auto",
+                  },
+                ]}
+              >
+                <AreaGradient
+                  color={chartColor}
+                  horizontal
+                  id="top-modifiers"
                 />
               </StyledBarChart>
             </StyledCardContent>
@@ -629,6 +785,147 @@ const Dashboard = ({
           </StyledCard>
         </Grid>
       </Grid>
+      {waitlist && (
+        <>
+          <Typography variant="h6">{tWaitlist("label")}</Typography>
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <StyledCard variant="outlined">
+                <StyledCardActionArea
+                  onClick={() => waitlistHref && router.push(waitlistHref)}
+                >
+                  <StyledCardContent>
+                    <Typography variant="subtitle2">
+                      {tDashboard("waitlist.total")}
+                    </Typography>
+                    <Typography variant="h4">
+                      {format.number(waitlist.total)}
+                    </Typography>
+                    <Typography color="textSecondary" variant="caption">
+                      {periodLabel}
+                    </Typography>
+                  </StyledCardContent>
+                </StyledCardActionArea>
+              </StyledCard>
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <StyledCard variant="outlined">
+                <StyledCardContent>
+                  <Typography component="h2" variant="subtitle2">
+                    {tDashboard("waitlist.medianWait")}
+                  </Typography>
+                  <Typography variant="h4">
+                    {waitlist.medianWaitMinutes === null ||
+                    waitlist.medianWaitMinutes === undefined
+                      ? "—"
+                      : format.number(waitlist.medianWaitMinutes, {
+                          style: "unit",
+                          unit: "minute",
+                          unitDisplay: "long",
+                        })}
+                  </Typography>
+                  <Typography color="textSecondary" variant="caption">
+                    {periodLabel}
+                  </Typography>
+                </StyledCardContent>
+              </StyledCard>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <StyledCard variant="outlined">
+                <StyledCardContent>
+                  <Typography component="h2" variant="subtitle2">
+                    {tDashboard("waitlist.outcomes")}
+                  </Typography>
+                  <Typography color="textSecondary" variant="caption">
+                    {periodLabel}
+                  </Typography>
+                  <StyledBarChart
+                    height={250}
+                    hideLegend
+                    grid={{ vertical: true }}
+                    margin={{ left: 0, bottom: 0 }}
+                    series={[
+                      {
+                        barLabel: ({ value }) =>
+                          waitlistEndedCount && value !== null
+                            ? format.number(value / waitlistEndedCount, {
+                                style: "percent",
+                              })
+                            : null,
+                        barLabelPlacement: "outside",
+                        color: chartColor,
+                        data: waitlistOutcomes.map(({ count }) => count),
+                        label: tDashboard("waitlist.outcomes"),
+                        layout: "horizontal",
+                      },
+                    ]}
+                    gradientId="waitlist-outcomes"
+                    xAxis={[
+                      {
+                        // 長條外側的百分比畫在繪圖區的 clip-path 內，不留空間最長那條的標籤會被裁掉
+                        domainLimit: (_, max) => ({
+                          min: 0,
+                          max: Number(max) * 1.2,
+                        }),
+                        tickMinStep: 1,
+                      },
+                    ]}
+                    yAxis={[
+                      {
+                        data: waitlistOutcomes.map(({ label }) => label),
+                        scaleType: "band",
+                        width: "auto",
+                      },
+                    ]}
+                  >
+                    <AreaGradient
+                      color={chartColor}
+                      horizontal
+                      id="waitlist-outcomes"
+                    />
+                  </StyledBarChart>
+                </StyledCardContent>
+              </StyledCard>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <StyledCard variant="outlined">
+                <StyledCardContent>
+                  <Typography component="h2" variant="subtitle2">
+                    {tDashboard("waitlist.hourlyTickets")}
+                  </Typography>
+                  <Typography color="textSecondary" variant="caption">
+                    {periodLabel}
+                  </Typography>
+                  <StyledBarChart
+                    height={250}
+                    hideLegend
+                    grid={{ horizontal: true }}
+                    margin={{ left: 0, bottom: 0 }}
+                    series={[
+                      {
+                        color: chartColor,
+                        data: waitlist.hourlyTickets,
+                        label: tDashboard("waitlist.hourlyTickets"),
+                      },
+                    ]}
+                    gradientId="waitlist-hourly"
+                    xAxis={[
+                      {
+                        data: hourLabels,
+                        scaleType: "band",
+                        tickInterval: (_, index) => index % 3 === 0,
+                      },
+                    ]}
+                    yAxis={[{ tickMinStep: 1, width: "auto" }]}
+                  >
+                    <AreaGradient color={chartColor} id="waitlist-hourly" />
+                  </StyledBarChart>
+                </StyledCardContent>
+              </StyledCard>
+            </Grid>
+          </Grid>
+        </>
+      )}
     </>
   );
 };

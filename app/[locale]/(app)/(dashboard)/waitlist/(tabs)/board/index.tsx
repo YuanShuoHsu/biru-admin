@@ -13,6 +13,7 @@ import {
   Cancel,
   ConfirmationNumber,
   EventSeat,
+  HourglassDisabled,
   Person,
   Phone,
   SkipNext,
@@ -44,6 +45,7 @@ import type {
   AdminWaitlistResponse,
   AdminWaitlistTicket,
   WaitlistTicketStatus,
+  WaitlistTransitionStatus,
 } from "@/types/waitlist";
 
 import { getErrorMessage } from "@/utils/errors";
@@ -56,6 +58,7 @@ const COLUMN_STATUSES = [
   "seated",
   "noShow",
   "cancelled",
+  "expired",
 ] as const satisfies readonly WaitlistTicketStatus[];
 
 const TRANSITION_LABELS = {
@@ -64,7 +67,7 @@ const TRANSITION_LABELS = {
   noShow: "noShow",
   seated: "seat",
   waiting: "restore",
-} as const satisfies Record<WaitlistTicketStatus, string>;
+} as const satisfies Record<WaitlistTransitionStatus, string>;
 
 const TRANSFER_TRANSITIONS: Partial<
   Record<WaitlistTicketStatus, WaitlistTicketStatus[]>
@@ -151,7 +154,7 @@ const AdminWaitlist = ({
 
   const handleTransition = async (
     ticket: AdminWaitlistTicket,
-    status: WaitlistTicketStatus,
+    status: WaitlistTransitionStatus,
   ) => {
     setPendingAction(`${ticket.id}:${status}`);
 
@@ -178,7 +181,7 @@ const AdminWaitlist = ({
 
   const handleTransitionDialog = (
     ticket: AdminWaitlistTicket,
-    status: WaitlistTicketStatus,
+    status: WaitlistTransitionStatus,
   ) => {
     const label = TRANSITION_LABELS[status];
 
@@ -380,6 +383,14 @@ const AdminWaitlist = ({
           }),
         },
       ],
+      expired: [
+        {
+          icon: HourglassDisabled,
+          text: tWaitlist("ticket.expiredAt", {
+            time: formatTime(ticket.endedAt),
+          }),
+        },
+      ],
       noShow: [
         {
           icon: SkipNext,
@@ -514,7 +525,8 @@ const AdminWaitlist = ({
   });
 
   const columns = COLUMN_STATUSES.map((status) => {
-    const isEnded = status === "noShow" || status === "cancelled";
+    const isEnded =
+      status === "noShow" || status === "cancelled" || status === "expired";
     const tickets = waitlist.tickets
       .filter((ticket) => ticket.status === status)
       .sort(

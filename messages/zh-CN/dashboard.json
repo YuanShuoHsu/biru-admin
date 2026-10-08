@@ -12,7 +12,8 @@
       "90d": "近 3 个月",
       "365d": "近 1 年"
     },
-    "revenue": "营业额"
+    "revenue": "营业额",
+    "discount": "折扣金额"
   },
   "quickActions": {
     "label": "快速操作",
@@ -21,10 +22,19 @@
   },
   "charts": {
     "avgOrderValue": "平均客单价",
+    "couponUsage": "优惠券使用次数",
+    "modifierOption": "{group}：{option}",
     "orderModes": "点餐方式",
     "paymentMethods": "付款方式",
     "peakHours": "高峰时段",
     "slowItems": "滞销品项",
-    "topItems": "热销品项"
+    "topItems": "热销品项",
+    "topModifiers": "热门定制选项"
+  },
+  "waitlist": {
+    "total": "候位组数",
+    "medianWait": "等候时间中位数",
+    "outcomes": "候位结果",
+    "hourlyTickets": "各时段取号量"
   }
 }

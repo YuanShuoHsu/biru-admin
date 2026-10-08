@@ -12,7 +12,8 @@
       "90d": "Last 3 months",
       "365d": "Last year"
     },
-    "revenue": "Revenue"
+    "revenue": "Revenue",
+    "discount": "Discounts"
   },
   "quickActions": {
     "label": "Quick Actions",
@@ -21,10 +22,19 @@
   },
   "charts": {
     "avgOrderValue": "Average Order Value",
+    "couponUsage": "Coupon Usage",
+    "modifierOption": "{group}: {option}",
     "orderModes": "Order Modes",
     "paymentMethods": "Payment Methods",
     "peakHours": "Peak Hours",
     "slowItems": "Slow-Moving Items",
-    "topItems": "Top Items"
+    "topItems": "Top Items",
+    "topModifiers": "Top Modifiers"
+  },
+  "waitlist": {
+    "total": "Waitlist Parties",
+    "medianWait": "Median Wait Time",
+    "outcomes": "Waitlist Outcomes",
+    "hourlyTickets": "Tickets by Hour"
   }
 }

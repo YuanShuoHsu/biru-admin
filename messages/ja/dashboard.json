@@ -12,7 +12,8 @@
       "90d": "過去3ヶ月",
       "365d": "過去1年間"
     },
-    "revenue": "売上"
+    "revenue": "売上",
+    "discount": "割引額"
   },
   "quickActions": {
     "label": "クイックアクション",
@@ -21,10 +22,19 @@
   },
   "charts": {
     "avgOrderValue": "平均注文金額",
+    "couponUsage": "クーポン利用回数",
+    "modifierOption": "{group}：{option}",
     "orderModes": "注文方式",
     "paymentMethods": "支払い方法",
     "peakHours": "ピーク時間帯",
     "slowItems": "不振商品",
-    "topItems": "人気商品"
+    "topItems": "人気商品",
+    "topModifiers": "人気のカスタマイズ"
+  },
+  "waitlist": {
+    "total": "順番待ち組数",
+    "medianWait": "待ち時間の中央値",
+    "outcomes": "順番待ちの結果",
+    "hourlyTickets": "時間帯別の順番待ち数"
   }
 }

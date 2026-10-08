@@ -87,6 +87,7 @@
   "status": {
     "called": "呼び出し中",
     "cancelled": "キャンセル",
+    "expired": "期限切れ",
     "noShow": "スキップ",
     "seated": "案内済み",
     "waiting": "待機中"
@@ -96,6 +97,7 @@
     "cancelledAt": "キャンセル {time}",
     "confirmed": "来店確定",
     "createdAt": "受付 {time}",
+    "expiredAt": "期限切れ {time}",
     "holdUntil": "{time} まで確保",
     "noShowAt": "スキップ {time}",
     "overdue": "時間超過",

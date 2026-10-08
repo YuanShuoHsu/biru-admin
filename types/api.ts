@@ -965,6 +965,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/users/stats": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢使用者統計 */
+    get: operations["UsersController_getStats"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/users/{id}": {
     parameters: {
       query?: never;
@@ -1745,6 +1762,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/order-stats": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢訂單統計 */
+    get: operations["OrderStatsController_findOne"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/orders": {
     parameters: {
       query?: never;
@@ -2413,6 +2447,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/waitlist/stats": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 候位統計 */
+    get: operations["WaitlistController_stats"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/waitlist/tickets/{ticketId}": {
     parameters: {
       query?: never;
@@ -2532,6 +2583,23 @@ export interface paths {
     };
     /** 依統一編號查詢公司名稱、地址與負責人 */
     get: operations["GcisController_findOne"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/users/me/organization-stats": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢我所屬組織的統計 */
+    get: operations["MyOrganizationStatsController_getStats"];
     put?: never;
     post?: never;
     delete?: never;
@@ -4444,6 +4512,20 @@ export interface components {
       | "banned"
       | "emailSubscribed"
       | "createdAt";
+    /** @enum {string} */
+    StatsBucketUnit: "day" | "hour";
+    UserStatsBucketDto: {
+      /** Format: date-time */
+      start: string;
+      users: number;
+    };
+    UserStatsResponseDto: {
+      /** @description 平台全部使用者數 */
+      total: number;
+      buckets: components["schemas"]["UserStatsBucketDto"][];
+      /** @description 上期新增使用者數 */
+      previous: number;
+    };
     UpdateUserDto: {
       /**
        * Format: date
@@ -5686,6 +5768,64 @@ export interface components {
       /** @description 視窗內售出數量，含被加購的次數 */
       sold: number;
     };
+    OrderStatsBucketDto: {
+      orders: number;
+      /** @description 淨營收：銷售減去該區間內確認的退款（退款依退款日歸期）；需 revenue:read */
+      revenue?: number;
+      /** @description 需 revenue:read */
+      discount?: number;
+      /** Format: date-time */
+      start: string;
+    };
+    OrderStatsTotalsDto: {
+      orders: number;
+      /** @description 淨營收：銷售減去該區間內確認的退款（退款依退款日歸期）；需 revenue:read */
+      revenue?: number;
+      /** @description 需 revenue:read */
+      discount?: number;
+    };
+    OrderStatsModeDto: {
+      /** @enum {string} */
+      mode: "counter" | "dineIn" | "driveThru" | "pickup";
+      orders: number;
+    };
+    OrderStatsPaymentMethodDto: {
+      /** @enum {string} */
+      paymentMethod:
+        | "ApplePay"
+        | "Cash"
+        | "Credit"
+        | "iPASS"
+        | "Jkopay"
+        | "TWQR"
+        | "WeiXin";
+      orders: number;
+    };
+    OrderStatsCouponDto: {
+      code: string;
+      orders: number;
+    };
+    OrderStatsModifierDto: {
+      modifierId: string;
+      modifierGroupName: string;
+      modifierName: string;
+      /** @description 售出份數減去退款份數 */
+      sold: number;
+    };
+    OrderStatsResponseDto: {
+      /** @description 開店以來計入的訂單數（含之後退貨的訂單） */
+      lifetimeOrders: number;
+      buckets: components["schemas"]["OrderStatsBucketDto"][];
+      previous: components["schemas"]["OrderStatsTotalsDto"];
+      /** @description 依店家時區各小時（0–23）的訂單數 */
+      hourlyOrders: number[];
+      modes: components["schemas"]["OrderStatsModeDto"][];
+      paymentMethods: components["schemas"]["OrderStatsPaymentMethodDto"][];
+      /** @description 使用次數前 10 名 */
+      coupons: components["schemas"]["OrderStatsCouponDto"][];
+      /** @description 客製化選項（含加購品項上的選項）售出份數前 10 名 */
+      modifiers: components["schemas"]["OrderStatsModifierDto"][];
+    };
     CreateOrderCustomerDto: {
       /** Format: email */
       email?: string;
@@ -6716,7 +6856,7 @@ export interface components {
       availableModes: components["schemas"]["OrderMode"][];
       nutrition?: components["schemas"]["NutritionInformationDto"] | null;
       sortOrder: number;
-      /** @description 近期售出數量，含被加購的次數 */
+      /** @description 近期售出數量（含被加購的次數）減去同期退款份數；退款多於售出時為負數 */
       sold: number;
       offers: components["schemas"]["OrderMenuOfferResponseDto"][];
       addOns: components["schemas"]["OrderMenuAddOnResponseDto"][];
@@ -6778,7 +6918,8 @@ export interface components {
       | "called"
       | "seated"
       | "noShow"
-      | "cancelled";
+      | "cancelled"
+      | "expired";
     WaitlistTicketListItemDto: {
       /** Format: date-time */
       calledAt?: string | null;
@@ -6869,6 +7010,16 @@ export interface components {
       /** @example B */
       prefix: string;
     };
+    /**
+     * @description 店員可將此號碼牌轉換到的狀態
+     * @enum {string}
+     */
+    WaitlistTransitionStatus:
+      | "waiting"
+      | "called"
+      | "seated"
+      | "noShow"
+      | "cancelled";
     AdminWaitlistTicketDto: {
       /** @description 前方候位組數，非候位中為 0 */
       aheadCount: number;
@@ -6895,7 +7046,7 @@ export interface components {
       /** @example A012 */
       ticketNumber: string;
       /** @description 店員可將此號碼牌轉換到的狀態 */
-      availableTransitions: components["schemas"]["WaitlistTicketStatus"][];
+      availableTransitions: components["schemas"]["WaitlistTransitionStatus"][];
       email?: string | null;
       /** @description 已叫號且超過保留期限 */
       overdue: boolean;
@@ -6938,6 +7089,20 @@ export interface components {
       | "createdAt"
       | "calledAt"
       | "endedAt";
+    WaitlistStatsResponseDto: {
+      /** @description 期間內取號組數，含仍在進行中的號碼牌 */
+      total: number;
+      seated: number;
+      noShow: number;
+      /** @description 含顧客取消與店員取消 */
+      cancelled: number;
+      /** @description 逾 24 小時未處理而自動作廢 */
+      expired: number;
+      /** @description 已入座號碼牌從取號到入座的分鐘數中位數，無入座為 null */
+      medianWaitMinutes?: number | null;
+      /** @description 依店家時區各小時（0–23）的取號組數 */
+      hourlyTickets: number[];
+    };
     WaitlistTicketDetailResponseDto: {
       /** @description 前方候位組數，非候位中為 0 */
       aheadCount: number;
@@ -7007,6 +7172,18 @@ export interface components {
        * @example 10
        */
       holdMinutes: number;
+    };
+    OrganizationStatsBucketDto: {
+      /** Format: date-time */
+      start: string;
+      organizations: number;
+    };
+    OrganizationStatsResponseDto: {
+      /** @description 目前使用者所屬的組織數 */
+      total: number;
+      buckets: components["schemas"]["OrganizationStatsBucketDto"][];
+      /** @description 上期新建立的所屬組織數 */
+      previous: number;
     };
     OrganizationResponseDto: {
       id: string;
@@ -9953,6 +10130,40 @@ export interface operations {
       };
     };
   };
+  UsersController_getStats: {
+    parameters: {
+      query: {
+        /** @description 本期起始時間；上期為緊接在前、等長的區間 */
+        since: string;
+        bucketUnit: components["schemas"]["StatsBucketUnit"];
+        /** @description 每個區間包含幾個 bucketUnit */
+        bucketSize: number;
+        /** @description 本期切成幾個區間 */
+        bucketCount: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["UserStatsResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   UsersController_findOne: {
     parameters: {
       query?: never;
@@ -11945,6 +12156,42 @@ export interface operations {
       };
     };
   };
+  OrderStatsController_findOne: {
+    parameters: {
+      query: {
+        /** @description 本期起始時間；上期為緊接在前、等長的區間 */
+        since: string;
+        bucketUnit: components["schemas"]["StatsBucketUnit"];
+        /** @description 每個區間包含幾個 bucketUnit */
+        bucketSize: number;
+        /** @description 本期切成幾個區間 */
+        bucketCount: number;
+      };
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderStatsResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   OrdersController_findAll: {
     parameters: {
       query?: {
@@ -13726,6 +13973,37 @@ export interface operations {
       };
     };
   };
+  WaitlistController_stats: {
+    parameters: {
+      query: {
+        /** @description 統計起始時間（以取號時間計） */
+        since: string;
+      };
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["WaitlistStatsResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   WaitlistController_getTicket: {
     parameters: {
       query?: never;
@@ -13986,6 +14264,40 @@ export interface operations {
         };
         content: {
           "application/json": Record<string, never>;
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  MyOrganizationStatsController_getStats: {
+    parameters: {
+      query: {
+        /** @description 本期起始時間；上期為緊接在前、等長的區間 */
+        since: string;
+        bucketUnit: components["schemas"]["StatsBucketUnit"];
+        /** @description 每個區間包含幾個 bucketUnit */
+        bucketSize: number;
+        /** @description 本期切成幾個區間 */
+        bucketCount: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrganizationStatsResponseDto"];
         };
       };
       /** @description Internal server error */
@@ -15412,6 +15724,9 @@ export const userSearchOperatorValues: ReadonlyArray<
 export const userSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UserSortField"]
 > = ["name", "email", "role", "banned", "emailSubscribed", "createdAt"];
+export const statsBucketUnitValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["StatsBucketUnit"]
+> = ["day", "hour"];
 export const updateUserDtoGenderValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UpdateUserDto"]["gender"]
 > = ["female", "male", "other"];
@@ -15607,6 +15922,12 @@ export const recipeIngredientSortFieldValues: ReadonlyArray<
   "unitPrice",
   "cost",
 ];
+export const orderStatsModeDtoModeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["OrderStatsModeDto"]["mode"]
+> = ["counter", "dineIn", "driveThru", "pickup"];
+export const orderStatsPaymentMethodDtoPaymentMethodValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["OrderStatsPaymentMethodDto"]["paymentMethod"]
+> = ["ApplePay", "Cash", "Credit", "iPASS", "Jkopay", "TWQR", "WeiXin"];
 export const createOrderInvoiceDtoTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CreateOrderInvoiceDto"]["type"]
 > = ["personal", "company", "donate"];
@@ -15910,6 +16231,9 @@ export const waitlistErrorCodeValues: ReadonlyArray<
 ];
 export const waitlistTicketStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["WaitlistTicketStatus"]
+> = ["waiting", "called", "seated", "noShow", "cancelled", "expired"];
+export const waitlistTransitionStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["WaitlistTransitionStatus"]
 > = ["waiting", "called", "seated", "noShow", "cancelled"];
 export const waitlistTicketFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["WaitlistTicketFilterField"]

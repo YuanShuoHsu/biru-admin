@@ -87,6 +87,7 @@
   "status": {
     "called": "호출됨",
     "cancelled": "취소됨",
+    "expired": "시간 초과 만료",
     "noShow": "순서 지남",
     "seated": "착석 완료",
     "waiting": "대기 중"
@@ -96,6 +97,7 @@
     "cancelledAt": "취소 {time}",
     "confirmed": "방문 확정",
     "createdAt": "등록 {time}",
+    "expiredAt": "만료 {time}",
     "holdUntil": "{time}까지 유지",
     "noShowAt": "건너뜀 {time}",
     "overdue": "시간 초과",

@@ -18,6 +18,7 @@ import {
 import type { LinkProps } from "@mui/material/Link";
 import { alpha, createTheme } from "@mui/material/styles";
 import type {} from "@mui/material/themeCssVarsAugmentation";
+import type {} from "@mui/x-charts/themeAugmentation";
 import type {} from "@mui/x-data-grid/themeAugmentation";
 import type {} from "@mui/x-date-pickers/AdapterDayjs";
 import type {} from "@mui/x-date-pickers/themeAugmentation";

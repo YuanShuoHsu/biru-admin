@@ -87,6 +87,7 @@
   "status": {
     "called": "Called",
     "cancelled": "Cancelled",
+    "expired": "Expired",
     "noShow": "Skipped",
     "seated": "Seated",
     "waiting": "Waiting"
@@ -96,6 +97,7 @@
     "cancelledAt": "Cancelled {time}",
     "confirmed": "Confirmed",
     "createdAt": "Joined {time}",
+    "expiredAt": "Expired {time}",
     "holdUntil": "Held until {time}",
     "noShowAt": "Skipped {time}",
     "overdue": "Overdue",

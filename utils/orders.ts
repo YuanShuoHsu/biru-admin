@@ -4,18 +4,7 @@ import { fetcher } from "./fetcher";
 
 import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
 
-import type {
-  AdminOrderBoardColumn,
-  AdminOrderResponse,
-  OrderResponse,
-  OrderStatus,
-} from "@/types/orders";
-
-const PAID_ORDER_STATUSES: OrderStatus[] = [
-  "OrderDelivered",
-  "OrderPickupAvailable",
-  "OrderProcessing",
-];
+import type { AdminOrderBoardColumn, AdminOrderResponse } from "@/types/orders";
 
 interface GetAdminOrdersQuery {
   page?: number;
@@ -101,11 +90,3 @@ export const getAdminOrderBoard = cache(
     }
   },
 );
-
-export const isCountedOrder = ({
-  orderStatus,
-  paymentMethod,
-}: OrderResponse): boolean =>
-  orderStatus !== "OrderCancelled" &&
-  orderStatus !== "OrderProblem" &&
-  (paymentMethod === "Cash" || PAID_ORDER_STATUSES.includes(orderStatus));

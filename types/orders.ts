@@ -13,6 +13,7 @@ export type UserOrderResponse = components["schemas"]["UserOrderResponseDto"];
 export type OrderItemResponse = components["schemas"]["OrderItemResponseDto"];
 export type MenuItemSalesResponse =
   components["schemas"]["MenuItemSalesResponseDto"];
+export type OrderStatsResponse = components["schemas"]["OrderStatsResponseDto"];
 export type AdminOrderBoardColumn =
   components["schemas"]["AdminOrderBoardColumnDto"];
 export type AdminOrderResponse = components["schemas"]["AdminOrderResponseDto"];

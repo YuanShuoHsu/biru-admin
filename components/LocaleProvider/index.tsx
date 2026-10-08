@@ -19,6 +19,10 @@ import {
   type ThemeOptions,
   ThemeProvider,
 } from "@mui/material/styles";
+import {
+  type ChartsLocaleText,
+  enUS as chartsEnUS,
+} from "@mui/x-charts/locales";
 import * as dataGridLocales from "@mui/x-data-grid/locales";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -33,8 +37,17 @@ import "dayjs/locale/ko";
 import "dayjs/locale/zh-cn";
 import "dayjs/locale/zh-tw";
 
+const chartsLocalization = (
+  localeText: Partial<ChartsLocaleText>,
+): ThemeOptions => ({
+  components: {
+    MuiChartsLocalizationProvider: { defaultProps: { localeText } },
+  },
+});
+
 const themeLocales: Record<Locale, ThemeOptions[]> = {
   [LocaleEnum.ZhTW]: [
+    chartsLocalization({ loading: "載入中…", noData: "沒有資料" }),
     dataGridLocales.zhTW,
     muiLocales.zhTW,
     pickersLocales.zhTW,
@@ -42,6 +55,7 @@ const themeLocales: Record<Locale, ThemeOptions[]> = {
     schedulerLocales.createDateLocaleTheme(zhTW),
   ],
   [LocaleEnum.En]: [
+    chartsEnUS,
     dataGridLocales.enUS,
     muiLocales.enUS,
     pickersLocales.enUS,
@@ -49,6 +63,10 @@ const themeLocales: Record<Locale, ThemeOptions[]> = {
     schedulerLocales.createDateLocaleTheme(enUS),
   ],
   [LocaleEnum.Ja]: [
+    chartsLocalization({
+      loading: "読み込み中…",
+      noData: "データがありません",
+    }),
     dataGridLocales.jaJP,
     muiLocales.jaJP,
     pickersLocales.jaJP,
@@ -56,6 +74,10 @@ const themeLocales: Record<Locale, ThemeOptions[]> = {
     schedulerLocales.createDateLocaleTheme(ja),
   ],
   [LocaleEnum.Ko]: [
+    chartsLocalization({
+      loading: "불러오는 중…",
+      noData: "데이터가 없습니다",
+    }),
     dataGridLocales.koKR,
     muiLocales.koKR,
     pickersLocales.koKR,
@@ -63,6 +85,7 @@ const themeLocales: Record<Locale, ThemeOptions[]> = {
     schedulerLocales.createDateLocaleTheme(ko),
   ],
   [LocaleEnum.ZhCN]: [
+    chartsLocalization({ loading: "加载中…", noData: "暂无数据" }),
     dataGridLocales.zhCN,
     muiLocales.zhCN,
     pickersLocales.zhCN,

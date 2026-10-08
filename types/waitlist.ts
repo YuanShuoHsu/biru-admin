@@ -12,6 +12,9 @@ export type WaitlistErrorCode = components["schemas"]["WaitlistErrorCode"];
 export type WaitlistGroup = components["schemas"]["WaitlistGroupDto"];
 export type WaitlistSettingsResponse =
   components["schemas"]["WaitlistSettingsResponseDto"];
+export type WaitlistStats = components["schemas"]["WaitlistStatsResponseDto"];
+export type WaitlistStatusResponse =
+  components["schemas"]["WaitlistStatusResponseDto"];
 export type WaitlistTicketDetailResponse =
   components["schemas"]["WaitlistTicketDetailResponseDto"];
 export type WaitlistTicketFilterField =
@@ -22,5 +25,7 @@ export type WaitlistTicketResponse =
   components["schemas"]["WaitlistTicketResponseDto"];
 export type WaitlistTicketSortField =
   components["schemas"]["WaitlistTicketSortField"];
+export type WaitlistTransitionStatus =
+  components["schemas"]["WaitlistTransitionStatus"];
 export type WaitlistTicketStatus =
   components["schemas"]["WaitlistTicketStatus"];

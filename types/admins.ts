@@ -7,6 +7,7 @@ import {
 
 export type User = components["schemas"]["UserResponseDto"];
 export type UserRole = NonNullable<User["role"]>;
+export type UserStatsResponse = components["schemas"]["UserStatsResponseDto"];
 
 export type UserFilterField = (typeof userFilterFieldValues)[number];
 export type UserFilterOperator = (typeof userFilterOperatorValues)[number];

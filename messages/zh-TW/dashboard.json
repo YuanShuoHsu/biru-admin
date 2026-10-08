@@ -12,7 +12,8 @@
       "90d": "近 3 個月",
       "365d": "近 1 年"
     },
-    "revenue": "營業額"
+    "revenue": "營業額",
+    "discount": "折扣金額"
   },
   "quickActions": {
     "label": "快速操作",
@@ -21,10 +22,19 @@
   },
   "charts": {
     "avgOrderValue": "平均客單價",
+    "couponUsage": "優惠券使用次數",
+    "modifierOption": "{group}：{option}",
     "orderModes": "點餐方式",
     "paymentMethods": "付款方式",
     "peakHours": "尖峰時段",
     "slowItems": "滯銷品項",
-    "topItems": "熱銷品項"
+    "topItems": "熱銷品項",
+    "topModifiers": "熱門客製化選項"
+  },
+  "waitlist": {
+    "total": "候位組數",
+    "medianWait": "等候時間中位數",
+    "outcomes": "候位結果",
+    "hourlyTickets": "各時段取號量"
   }
 }

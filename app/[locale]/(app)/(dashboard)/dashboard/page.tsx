@@ -15,19 +15,15 @@ import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
+import type { UserStatsResponse } from "@/types/admins";
 import type { OrderMenu } from "@/types/menus";
-import type { MenuItemSalesResponse, OrderResponse } from "@/types/orders";
+import type { MenuItemSalesResponse, OrderStatsResponse } from "@/types/orders";
+import type { OrganizationStats } from "@/types/organizations";
+import type { WaitlistStats, WaitlistStatusResponse } from "@/types/waitlist";
 
-import {
-  getBinnedBuckets,
-  getBinnedValueBuckets,
-  getHourlyBuckets,
-  getHourlyValueBuckets,
-  getTrendPercent,
-} from "@/utils/dashboard";
+import { getChangePercent } from "@/utils/dashboard";
 import { fetcher } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
-import { getAdminOrders, isCountedOrder } from "@/utils/orders";
 import { getSession } from "@/utils/session";
 
 dayjs.extend(utc);
@@ -54,7 +50,6 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
   const range = resolveDashboardRange(rangeParam);
   const { hourly, bucketDays, buckets } = DASHBOARD_RANGES[range];
   const trendPeriodDays = hourly ? 1 : buckets * bucketDays;
-  const trendFetchDays = trendPeriodDays * 2;
 
   setRequestLocale(locale);
 
@@ -96,77 +91,39 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
 
   const trendEnd = storeToday.toDate();
 
-  const trendStart = storeToday.subtract(trendFetchDays - 1, "day").toDate();
-  const trendStartISO = trendStart.toISOString();
-
   const periodStart = storeToday.subtract(trendPeriodDays - 1, "day").toDate();
 
+  const statsQuery = new URLSearchParams({
+    since: periodStart.toISOString(),
+    bucketUnit: hourly ? "hour" : "day",
+    bucketSize: String(bucketDays),
+    bucketCount: String(buckets),
+  });
+
   const [
-    usersTotal,
-    usersTrendCreatedAt,
-    ordersData,
-    trendOrders,
+    userStats,
+    organizationStats,
+    orderStats,
     orderMenu,
     sales,
     memberRole,
   ] = await Promise.all([
     isAdmin
-      ? authClient.admin
-          .listUsers({
-            query: {
-              limit: 1,
-              offset: 0,
-              sortBy: "createdAt",
-              sortDirection: "desc",
-            },
-            fetchOptions,
-          })
-          .then(({ data }) => data?.total || 0)
-      : Promise.resolve(null),
-    isAdmin
-      ? authClient.admin
-          .listUsers({
-            query: {
-              limit: 1000,
-              offset: 0,
-              sortBy: "createdAt",
-              sortDirection: "asc",
-              filterField: "createdAt",
-              filterOperator: "gte",
-              filterValue: trendStartISO,
-            },
-            fetchOptions,
-          })
-          .then(({ data }) => data?.users?.map((user) => user.createdAt) || [])
-      : Promise.resolve([]),
-    organizationSlug
-      ? // 後端篩選僅支援單一欄位，無法完整表達 isCountedOrder 的口徑，
-        // 這裡排除佔最大宗的已取消訂單；付款失敗與尚未付款的線上訂單仍會計入
-        getAdminOrders(
-          organizationSlug,
-          {
-            filterField: "orderStatus",
-            filterOperator: "not",
-            filterValue: "OrderCancelled",
-            pageSize: 1,
-          },
+      ? fetcher<UserStatsResponse>(
+          `/api/users/stats?${statsQuery}`,
           fetchOptions,
-        )
+        ).catch(() => null)
       : Promise.resolve(null),
+    fetcher<OrganizationStats>(
+      `/api/users/me/organization-stats?${statsQuery}`,
+      fetchOptions,
+    ).catch(() => null),
     organizationSlug
-      ? getAdminOrders(
-          organizationSlug,
-          {
-            filterField: "createdAt",
-            filterOperator: "onOrAfter",
-            filterValue: trendStartISO,
-            sortBy: "createdAt",
-            sortDirection: "asc",
-            pageSize: 1000,
-          },
+      ? fetcher<OrderStatsResponse>(
+          `/api/organizations/${organizationSlug}/order-stats?${statsQuery}`,
           fetchOptions,
-        ).then(({ orders }) => orders.filter(isCountedOrder))
-      : Promise.resolve([]),
+        ).catch(() => null)
+      : Promise.resolve(null),
     resolvedOrganizationId
       ? fetcher<OrderMenu>(
           `/api/organizations/${resolvedOrganizationId}/order-menu?lang=${locale}`,
@@ -189,12 +146,22 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
       : Promise.resolve(undefined),
   ]);
 
-  const canViewRevenue =
-    isAdmin || hasRolePermission(memberRole, { revenue: ["read"] });
+  const canViewWaitlist =
+    isAdmin || hasRolePermission(memberRole, { waitlist: ["read"] });
 
-  const periodOrders = trendOrders.filter(
-    (order) => new Date(order.createdAt) >= periodStart,
-  );
+  const [waitlistStats, waitlistStatus] =
+    organizationSlug && canViewWaitlist
+      ? await Promise.all([
+          fetcher<WaitlistStats>(
+            `/api/organizations/${organizationSlug}/waitlist/stats?since=${periodStart.toISOString()}`,
+            fetchOptions,
+          ).catch(() => null),
+          fetcher<WaitlistStatusResponse>(
+            `/api/organizations/${organizationSlug}/waitlist`,
+            fetchOptions,
+          ).catch(() => null),
+        ])
+      : [null, null];
 
   const topItems = [...sales]
     .sort((a, b) => b.sold - a.sold)
@@ -213,55 +180,26 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
     .sort((a, b) => a.quantity - b.quantity)
     .slice(0, 10);
 
-  const hourlyOrders = Array<number>(24).fill(0);
-  for (const order of periodOrders) {
-    hourlyOrders[dayjs(order.createdAt).tz(STORE_TIMEZONE).hour()] += 1;
-  }
+  const orderBuckets = orderStats?.buckets ?? [];
 
-  const countBy = <Key extends string>(getKey: (order: OrderResponse) => Key) =>
-    periodOrders.reduce<Partial<Record<Key, number>>>((counts, order) => {
-      const key = getKey(order);
+  const sumOf = (values: number[]) => values.reduce((sum, n) => sum + n, 0);
 
-      counts[key] = (counts[key] || 0) + 1;
+  const getMoneyTrend = (key: "discount" | "revenue") => {
+    const previous = orderStats?.previous[key];
+    if (previous === undefined) return null;
 
-      return counts;
-    }, {});
+    const data = orderBuckets.map((bucket) => bucket[key] ?? 0);
 
-  const modeCounts = countBy((order) => order.mode);
-  const paymentCounts = countBy((order) => order.paymentMethod);
+    return { data, percent: getChangePercent(previous, sumOf(data)) };
+  };
 
-  const organizationsTrendCreatedAt = (organizations || [])
-    .filter((organization) => new Date(organization.createdAt) >= trendStart)
-    .map((organization) => organization.createdAt);
+  const ordersTrendData = orderBuckets.length
+    ? orderBuckets.map(({ orders }) => orders)
+    : Array<number>(buckets).fill(0);
 
-  const trendBucketCount = buckets * 2;
-
-  const getTrendBuckets = (createdAts: (string | Date)[]) =>
-    hourly
-      ? getHourlyBuckets(createdAts, trendBucketCount, trendStart)
-      : getBinnedBuckets(createdAts, trendBucketCount, bucketDays, trendEnd);
-  const getTrendValueBuckets = (
-    entries: { date: string | Date; value: number }[],
-  ) =>
-    hourly
-      ? getHourlyValueBuckets(entries, trendBucketCount, trendStart)
-      : getBinnedValueBuckets(entries, trendBucketCount, bucketDays, trendEnd);
-
-  const ordersTrendBuckets = getTrendBuckets(
-    trendOrders.map((order) => order.createdAt),
-  );
-  const revenueTrendBuckets = getTrendValueBuckets(
-    canViewRevenue
-      ? trendOrders.map((order) => ({
-          date: order.createdAt,
-          value: Number(order.total),
-        }))
-      : [],
-  );
-  const usersTrendBuckets = getTrendBuckets(usersTrendCreatedAt);
-  const organizationsTrendBuckets = getTrendBuckets(
-    organizationsTrendCreatedAt,
-  );
+  const organizationsTrendData = organizationStats
+    ? organizationStats.buckets.map(({ organizations }) => organizations)
+    : Array<number>(buckets).fill(0);
 
   return (
     <Dashboard
@@ -269,36 +207,46 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
       range={range}
       trendEnd={trendEnd.toISOString()}
       stats={{
-        totalUsers: usersTotal,
-        totalOrganizations: organizations?.length || 0,
-        totalOrders: ordersData?.total || 0,
+        totalUsers: userStats?.total ?? null,
+        totalOrganizations: organizationStats?.total ?? 0,
+        totalOrders: orderStats?.lifetimeOrders ?? 0,
         ordersTrend: {
-          data: ordersTrendBuckets.slice(buckets),
-          percent: getTrendPercent(ordersTrendBuckets),
+          data: ordersTrendData,
+          percent: getChangePercent(
+            orderStats?.previous.orders ?? 0,
+            sumOf(ordersTrendData),
+          ),
         },
-        revenueTrend: canViewRevenue
-          ? {
-              data: revenueTrendBuckets.slice(buckets),
-              percent: getTrendPercent(revenueTrendBuckets),
-            }
-          : null,
-        usersTrend: isAdmin
-          ? {
-              data: usersTrendBuckets.slice(buckets),
-              percent: getTrendPercent(usersTrendBuckets),
-            }
-          : null,
+        revenueTrend: getMoneyTrend("revenue"),
+        discountTrend: getMoneyTrend("discount"),
+        usersTrend: userStats && {
+          data: userStats.buckets.map(({ users }) => users),
+          percent: getChangePercent(
+            userStats.previous,
+            sumOf(userStats.buckets.map(({ users }) => users)),
+          ),
+        },
         organizationsTrend: {
-          data: organizationsTrendBuckets.slice(buckets),
-          percent: getTrendPercent(organizationsTrendBuckets),
+          data: organizationsTrendData,
+          percent: getChangePercent(
+            organizationStats?.previous ?? 0,
+            sumOf(organizationsTrendData),
+          ),
         },
       }}
+      waitlist={
+        waitlistStats && (waitlistStatus?.enabled || waitlistStats.total)
+          ? waitlistStats
+          : null
+      }
       charts={{
+        coupons: orderStats?.coupons ?? [],
+        modifiers: orderStats?.modifiers ?? [],
         topItems,
         slowItems,
-        hourlyOrders,
-        modeCounts,
-        paymentCounts,
+        hourlyOrders: orderStats?.hourlyOrders ?? Array<number>(24).fill(0),
+        modes: orderStats?.modes ?? [],
+        paymentMethods: orderStats?.paymentMethods ?? [],
       }}
     />
   );

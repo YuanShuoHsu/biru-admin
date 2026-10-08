@@ -87,6 +87,7 @@
   "status": {
     "called": "已叫號",
     "cancelled": "已取消",
+    "expired": "逾時作廢",
     "noShow": "已過號",
     "seated": "已入座",
     "waiting": "候位中"
@@ -96,6 +97,7 @@
     "cancelledAt": "取消 {time}",
     "confirmed": "已確認前往",
     "createdAt": "取號 {time}",
+    "expiredAt": "作廢 {time}",
     "holdUntil": "保留至 {time}",
     "noShowAt": "過號 {time}",
     "overdue": "已逾時",
