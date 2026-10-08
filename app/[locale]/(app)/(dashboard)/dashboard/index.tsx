@@ -32,6 +32,7 @@ import { SparkLineChart } from "@mui/x-charts/SparkLineChart";
 
 import {
   orderResponseDtoModeValues,
+  refundReasonCodeValues,
   servingTemperatureLevelValues,
   sweetnessLevelValues,
 } from "@/types/api";
@@ -44,6 +45,8 @@ dayjs.extend(timezonePlugin);
 
 const StyledCard = styled(Card)({
   height: "100%",
+  display: "flex",
+  flexDirection: "column",
 });
 
 const StyledCardActionArea = styled(CardActionArea)({
@@ -55,6 +58,7 @@ const StyledCardActionArea = styled(CardActionArea)({
 });
 
 const StyledCardContent = styled(CardContent)(({ theme }) => ({
+  flex: 1,
   display: "flex",
   flexDirection: "column",
   gap: theme.spacing(0.5),
@@ -142,12 +146,15 @@ interface DashboardProps {
     ordersTrend: Trend;
     revenueTrend: Trend | null;
     discountTrend: Trend | null;
+    refundedOrders: { data: number[]; total: number };
     usersTrend: Trend | null;
     organizationsTrend: Trend;
   };
   charts: {
     coupons: OrderStatsResponse["coupons"];
     modifiers: OrderStatsResponse["modifiers"];
+    refundedItems: OrderStatsResponse["refundedItems"];
+    refundReasons: OrderStatsResponse["refundReasons"];
     servingTemperatureLevels: OrderStatsResponse["servingTemperatureLevels"];
     sweetnessLevels: OrderStatsResponse["sweetnessLevels"];
     topItems: { name: string; quantity: number }[];
@@ -309,6 +316,19 @@ const Dashboard = ({
     })),
   );
 
+  const refundReasons = emptyWhenAllZero(
+    refundReasonCodeValues.map((reasonCode) => ({
+      count:
+        charts.refundReasons.find((entry) => entry.reasonCode === reasonCode)
+          ?.refunds ?? 0,
+      label: tOrders(`detail.refunds.reasonCode.${reasonCode}`),
+    })),
+  );
+  const refundReasonTotal = refundReasons.reduce(
+    (sum, { count }) => sum + count,
+    0,
+  );
+
   const payments = [...charts.paymentMethods]
     .sort((a, b) => b.orders - a.orders)
     .map(({ orders, paymentMethod }) => ({
@@ -428,7 +448,7 @@ const Dashboard = ({
                   {periodLabel}
                 </Typography>
                 <StyledLineChart
-                  height={250}
+                  sx={{ minHeight: 250 }}
                   hideLegend
                   grid={{ horizontal: true }}
                   margin={{ left: 0, bottom: 0 }}
@@ -473,7 +493,7 @@ const Dashboard = ({
                   {periodLabel}
                 </Typography>
                 <StyledLineChart
-                  height={250}
+                  sx={{ minHeight: 250 }}
                   hideLegend
                   grid={{ horizontal: true }}
                   margin={{ left: 0, bottom: 0 }}
@@ -521,7 +541,7 @@ const Dashboard = ({
                 {periodLabel}
               </Typography>
               <StyledBarChart
-                height={300}
+                sx={{ minHeight: 300 }}
                 hideLegend
                 grid={{ horizontal: true }}
                 margin={{ left: 0, bottom: 0 }}
@@ -563,7 +583,7 @@ const Dashboard = ({
                 {periodLabel}
               </Typography>
               <StyledBarChart
-                height={250}
+                sx={{ minHeight: 250 }}
                 hideLegend
                 grid={{ vertical: true }}
                 margin={{ left: 0, bottom: 0 }}
@@ -600,7 +620,7 @@ const Dashboard = ({
                 {periodLabel}
               </Typography>
               <StyledBarChart
-                height={250}
+                sx={{ minHeight: 250 }}
                 hideLegend
                 grid={{ vertical: true }}
                 margin={{ left: 0, bottom: 0 }}
@@ -631,6 +651,166 @@ const Dashboard = ({
             </StyledCardContent>
           </StyledCard>
         </Grid>
+        <Grid size={{ xs: 12, md: 4 }}>
+          <StyledCard variant="outlined">
+            <StyledCardContent>
+              <Typography component="h3" variant="subtitle2">
+                {tDashboard("charts.refundedOrders")}
+              </Typography>
+              <RevenueValueStack direction="row">
+                <Typography component="p" variant="h4">
+                  {format.number(stats.refundedOrders.total)}
+                </Typography>
+                {periodOrderCount > 0 && (
+                  <Typography color="textSecondary" variant="body2">
+                    {tDashboard("charts.refundRate", {
+                      rate: format.number(
+                        stats.refundedOrders.total / periodOrderCount,
+                        { maximumFractionDigits: 1, style: "percent" },
+                      ),
+                    })}
+                  </Typography>
+                )}
+              </RevenueValueStack>
+              <Typography color="textSecondary" variant="caption">
+                {periodLabel}
+              </Typography>
+              <StyledLineChart
+                sx={{ minHeight: 250 }}
+                hideLegend
+                grid={{ horizontal: true }}
+                margin={{ left: 0, bottom: 0 }}
+                series={[
+                  {
+                    area: true,
+                    color: chartColor,
+                    curve: "linear",
+                    data: stats.refundedOrders.data,
+                    id: "refunded-orders",
+                    label: tDashboard("charts.refundedOrders"),
+                    showMark: false,
+                  },
+                ]}
+                gradientId="refunded-orders"
+                xAxis={[
+                  {
+                    data: trendLabels,
+                    scaleType: "point",
+                    tickInterval: (_, index) => (index + 1) % tickStep === 0,
+                  },
+                ]}
+                yAxis={[
+                  {
+                    ...countAxis,
+                    tickNumber: AXIS_TICK_NUMBER,
+                    width: "auto",
+                  },
+                ]}
+              >
+                <AreaGradient color={chartColor} id="refunded-orders" />
+              </StyledLineChart>
+            </StyledCardContent>
+          </StyledCard>
+        </Grid>
+        <Grid size={{ xs: 12, md: 4 }}>
+          <StyledCard variant="outlined">
+            <StyledCardContent>
+              <Typography component="h3" variant="subtitle2">
+                {tDashboard("charts.refundReasons")}
+              </Typography>
+              <Typography color="textSecondary" variant="caption">
+                {periodLabel}
+              </Typography>
+              <StyledBarChart
+                sx={{ minHeight: 300 }}
+                hideLegend
+                grid={{ vertical: true }}
+                margin={{ left: 0, bottom: 0 }}
+                series={[
+                  {
+                    barLabel: ({ value }) =>
+                      refundReasonTotal && value !== null
+                        ? format.number(value / refundReasonTotal, {
+                            style: "percent",
+                          })
+                        : null,
+                    barLabelPlacement: "outside",
+                    color: chartColor,
+                    data: refundReasons.map(({ count }) => count),
+                    label: tDashboard("charts.refundReasons"),
+                    layout: "horizontal",
+                  },
+                ]}
+                gradientId="refund-reasons"
+                xAxis={[
+                  {
+                    domainLimit: (_, max) => ({
+                      min: 0,
+                      max: Number(max) * 1.2,
+                    }),
+                    ...countAxis,
+                  },
+                ]}
+                yAxis={[
+                  {
+                    data: refundReasons.map(({ label }) => label),
+                    scaleType: "band",
+                    width: "auto",
+                  },
+                ]}
+              >
+                <AreaGradient
+                  color={chartColor}
+                  horizontal
+                  id="refund-reasons"
+                />
+              </StyledBarChart>
+            </StyledCardContent>
+          </StyledCard>
+        </Grid>
+        <Grid size={{ xs: 12, md: 4 }}>
+          <StyledCard variant="outlined">
+            <StyledCardContent>
+              <Typography component="h3" variant="subtitle2">
+                {tDashboard("charts.refundedItems")}
+              </Typography>
+              <Typography color="textSecondary" variant="caption">
+                {periodLabel}
+              </Typography>
+              <StyledBarChart
+                sx={{ minHeight: 300 }}
+                hideLegend
+                grid={{ vertical: true }}
+                margin={{ left: 0, bottom: 0 }}
+                series={[
+                  {
+                    color: chartColor,
+                    data: charts.refundedItems.map(({ quantity }) => quantity),
+                    label: tDashboard("charts.refundedItems"),
+                    layout: "horizontal",
+                  },
+                ]}
+                gradientId="refunded-items"
+                xAxis={[countAxis]}
+                yAxis={[
+                  {
+                    data: charts.refundedItems.map(
+                      ({ menuItemName }) => menuItemName,
+                    ),
+                    scaleType: "band",
+                    width: "auto",
+                  },
+                ]}
+              >
+                <AreaGradient
+                  color={chartColor}
+                  horizontal
+                  id="refunded-items"
+                />
+              </StyledBarChart>
+            </StyledCardContent>
+          </StyledCard>
+        </Grid>
       </Grid>
       <Typography component="h2" variant="h6">
         {tMenus("label")}
@@ -646,7 +826,7 @@ const Dashboard = ({
                 {periodLabel}
               </Typography>
               <StyledBarChart
-                height={300}
+                sx={{ minHeight: 300 }}
                 hideLegend
                 grid={{ vertical: true }}
                 margin={{ left: 0, bottom: 0 }}
@@ -683,7 +863,7 @@ const Dashboard = ({
                 {periodLabel}
               </Typography>
               <StyledBarChart
-                height={300}
+                sx={{ minHeight: 300 }}
                 hideLegend
                 grid={{ vertical: true }}
                 margin={{ left: 0, bottom: 0 }}
@@ -724,7 +904,7 @@ const Dashboard = ({
                 {periodLabel}
               </Typography>
               <StyledBarChart
-                height={300}
+                sx={{ minHeight: 300 }}
                 hideLegend
                 grid={{ vertical: true }}
                 margin={{ left: 0, bottom: 0 }}
@@ -771,7 +951,7 @@ const Dashboard = ({
                 {periodLabel}
               </Typography>
               <StyledBarChart
-                height={250}
+                sx={{ minHeight: 300 }}
                 hideLegend
                 grid={{ vertical: true }}
                 margin={{ left: 0, bottom: 0 }}
@@ -812,7 +992,7 @@ const Dashboard = ({
                 {periodLabel}
               </Typography>
               <StyledBarChart
-                height={250}
+                sx={{ minHeight: 300 }}
                 hideLegend
                 grid={{ vertical: true }}
                 margin={{ left: 0, bottom: 0 }}
@@ -868,7 +1048,7 @@ const Dashboard = ({
                   {periodLabel}
                 </Typography>
                 <StyledLineChart
-                  height={250}
+                  sx={{ minHeight: 250 }}
                   hideLegend
                   grid={{ horizontal: true }}
                   margin={{ left: 0, bottom: 0 }}
@@ -911,7 +1091,7 @@ const Dashboard = ({
                 {periodLabel}
               </Typography>
               <StyledBarChart
-                height={300}
+                sx={{ minHeight: 300 }}
                 hideLegend
                 grid={{ vertical: true }}
                 margin={{ left: 0, bottom: 0 }}
@@ -974,10 +1154,8 @@ const Dashboard = ({
                     {waitlist.medianWaitMinutes === null ||
                     waitlist.medianWaitMinutes === undefined
                       ? "—"
-                      : format.number(waitlist.medianWaitMinutes, {
-                          style: "unit",
-                          unit: "minute",
-                          unitDisplay: "long",
+                      : tDashboard("waitlist.medianWaitValue", {
+                          minutes: waitlist.medianWaitMinutes,
                         })}
                   </Typography>
                   <Typography color="textSecondary" variant="caption">
@@ -996,7 +1174,7 @@ const Dashboard = ({
                     {periodLabel}
                   </Typography>
                   <StyledBarChart
-                    height={250}
+                    sx={{ minHeight: 250 }}
                     hideLegend
                     grid={{ vertical: true }}
                     margin={{ left: 0, bottom: 0 }}
@@ -1053,7 +1231,7 @@ const Dashboard = ({
                     {periodLabel}
                   </Typography>
                   <StyledBarChart
-                    height={250}
+                    sx={{ minHeight: 250 }}
                     hideLegend
                     grid={{ horizontal: true }}
                     margin={{ left: 0, bottom: 0 }}

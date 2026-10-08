@@ -17,7 +17,7 @@ import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { MenuItem, TextField } from "@mui/material";
+import { ListItemText, MenuItem, TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -130,9 +130,13 @@ const BalanceDialog = ({
         select
         value={employeeId}
       >
-        {employees.map(({ id, name }) => (
+        {employees.map(({ email, id, name }) => (
           <MenuItem key={id} value={id}>
-            {name}
+            <ListItemText
+              primary={name}
+              secondary={email}
+              slotProps={{ secondary: { variant: "caption" } }}
+            />
           </MenuItem>
         ))}
       </TextField>

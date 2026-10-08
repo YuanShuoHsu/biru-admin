@@ -350,7 +350,11 @@
     "placeholder": "請選擇您的核給額度",
     "new": "新事件，主管核准時核給額度"
   },
-  "leaveCaseHint": "主管先確認事件、親屬關係與有效期間，系統自動核給額度。同一事件不得重複建立。產假與流產假的結束日依法定天數自動帶出；陪產檢與陪產共用 7 日，請確認各次申請符合產檢或分娩前後的適用期間。 產假每日工資依約定工資與平均工資自動計算，給薪比例由年資自動計算。 育嬰留停依子女區分，期間不得超過三歲；未滿六個月任職須先取得勞資同意。育嬰留停不需核定日薪。",
+  "leaveCaseHint": {
+    "maternity": "結束日依法定天數自動帶出。任職滿 6 個月者工資照給、未滿 6 個月減半，系統依年資與平均工資自動計算。",
+    "parental": "育嬰留停依子女區分，期間至子女滿 3 歲止且最長 2 年；任職未滿 6 個月須先取得勞資同意。不需核定日薪。",
+    "paternity": "陪產檢與陪產假共用 7 日，請確認各次申請落在產檢或分娩前後的適用期間。"
+  },
   "leaveCases": {
     "actions": {
       "create": "新增事件假額度",
@@ -363,7 +367,12 @@
     "deleted": "已刪除 {name} 的{leaveType}額度",
     "childAssigned": "已確認 {name} 的{leaveType}子女歸戶"
   },
-  "leaveRequestHint": "住院傷病假、安胎休養假由主管查驗醫療證明。普通傷病假、住院傷病假、安胎休養假每年合計 30 日內工資折半，超過部分無薪；生理假每月 1 日、工資折半，每年前 3 日不併入病假，第 4 日起併入上述 30 日計算。育嬰留職停薪請先選擇主管核給的額度，使用完整曆日（起訖 00:00，結束日不含）。",
+  "leaveRequestHint": {
+    "certified": "須由主管查驗醫療證明。普通傷病假、住院傷病假、安胎休養假每年合計 30 日內工資折半，超過部分無薪。",
+    "menstrual": "生理假每月 1 日、工資折半；每年前 3 日不併入病假，第 4 日起併入病假每年 30 日計算。",
+    "parental": "請先選擇主管核給的額度，以完整曆日申請（起訖 00:00，結束日不含）。",
+    "sick": "普通傷病假、住院傷病假、安胎休養假每年合計 30 日內工資折半，超過部分無薪。"
+  },
   "leaveType": {
     "label": "假別",
     "placeholder": "請選擇您的假別"
@@ -463,7 +472,7 @@
   "paydayNextMonth": "發薪日在次月",
   "paidPercent": "給薪比例（%）",
   "parentalChild": "子女",
-  "parentalChildHint": "同一子女請重用既有資料。主管查驗證明後設定固定識別編號；雙胞胎分別建立，請勿輸入完整身分證號。既有育嬰留職停薪額度須先完成子女歸戶。",
+  "parentalChildHint": "查驗證明後填寫固定識別編號，請勿輸入完整身分證號",
   "parentalChildren": {
     "actions": {
       "create": "新增子女資料"
@@ -474,7 +483,7 @@
   "parentalContinuous": "連續期間申請",
   "parentalDaily": "按日申請",
   "parentalReturn": "提前復職",
-  "parentalReturnHint": "核准前原留停仍有效；核准後保留已休期間與原申請紀錄。請選擇復職當日，該日起不再留停。",
+  "parentalReturnHint": "該日起不再留停",
   "parentalReturns": {
     "label": "復職申請",
     "approved": "已核准 {name} 的提前復職申請",
@@ -483,6 +492,7 @@
   },
   "payroll": {
     "label": "薪資",
+    "draftReason": "試算說明",
     "drafted": "已建立 {name} {month} 的薪資單草稿",
     "published": "已發布 {name} {month} 的薪資單",
     "reviewed": "已覆核 {name} {month} 的薪資單",
@@ -795,6 +805,7 @@
       "death": "死亡"
     }
   },
+  "terminationNoticeHint": "法定預告期間：任職 3 個月以上未滿 1 年 10 日、1 年以上未滿 3 年 20 日、3 年以上 30 日；不足日數依法發給預告期間工資",
   "terminationNoticedAt": "預告日",
   "holidaySubstitutes": {
     "label": "國定假日補假",

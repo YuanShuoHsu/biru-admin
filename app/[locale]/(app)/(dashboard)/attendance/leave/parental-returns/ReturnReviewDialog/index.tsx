@@ -14,7 +14,7 @@ import FormBox from "@/components/FormBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Alert, TextField, Typography } from "@mui/material";
+import { TextField, Typography } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -98,7 +98,6 @@ const ReturnReviewDialog = ({
 
   return (
     <FormBox id="attendance-return-review-form" onSubmit={onSubmit}>
-      <Alert severity="info">{tAttendance("parentalReturnHint")}</Alert>
       <Typography>
         {parentalReturn.employeeName} · {tAttendance("returnsAt")}:{" "}
         {date(parentalReturn.returnsAt)} · {parentalReturn.reason}

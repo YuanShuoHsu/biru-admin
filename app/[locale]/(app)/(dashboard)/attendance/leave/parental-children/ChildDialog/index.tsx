@@ -16,7 +16,7 @@ import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Alert, MenuItem, TextField } from "@mui/material";
+import { ListItemText, MenuItem, TextField } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -110,7 +110,6 @@ const ChildDialog = ({
 
   return (
     <FormBox id="attendance-child-form" onSubmit={onSubmit}>
-      <Alert severity="info">{tAttendance("parentalChildHint")}</Alert>
       <TextField
         error={!!errors.employeeId}
         fullWidth
@@ -127,16 +126,22 @@ const ChildDialog = ({
       >
         {employees
           .filter(({ id }) => id !== selfEmployeeId)
-          .map(({ id, name }) => (
+          .map(({ email, id, name }) => (
             <MenuItem key={id} value={id}>
-              {name}
+              <ListItemText
+                primary={name}
+                secondary={email}
+                slotProps={{ secondary: { variant: "caption" } }}
+              />
             </MenuItem>
           ))}
       </TextField>
       <TextField
         error={!!errors.reference}
         fullWidth
-        helperText={errors.reference?.message}
+        helperText={
+          errors.reference?.message ?? tAttendance("parentalChildHint")
+        }
         label={tAttendance("childReference")}
         required
         {...register("reference")}

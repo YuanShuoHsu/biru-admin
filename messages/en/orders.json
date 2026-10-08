@@ -22,7 +22,8 @@
       "loadFailed": "Could not load previous refunds. Close and try again.",
       "manualChannel": "ECPay does not support online refunds for this payment method. This only updates the system record and the invoice — refund the customer via the ECPay portal or in person.",
       "previewFailedWithReason": "Could not calculate the refund amount ({reason}). Adjust the quantities or close and try again.",
-      "reason": "Reason (optional)",
+      "reason": "Note",
+      "reasonCode": "Refund reason",
       "retryBlocked": "This refund was not submitted successfully. Refunds cannot be undone — check whether the refundable quantities above have changed, then adjust the quantities to try again.",
       "selectAtLeastOne": "Select a quantity for at least one item to refund.",
       "success": "Refunded {amount} for order {orderNumber}",
@@ -153,7 +154,17 @@
         "voided": "Invoice voided"
       },
       "invoiceError": "Invoice error",
+      "note": "Note",
       "reason": "Reason",
+      "reasonCode": {
+        "wrongItem": "Wrong item served",
+        "qualityIssue": "Quality issue",
+        "outOfStock": "Out of stock",
+        "longWait": "Long wait",
+        "customerMistake": "Ordered by mistake",
+        "customerCancelled": "Customer cancelled",
+        "other": "Other"
+      },
       "scope": {
         "full": "Full refund",
         "partial": "Partial refund"

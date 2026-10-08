@@ -26,6 +26,10 @@
     "orderModes": "주문 방식",
     "paymentMethods": "결제 수단",
     "peakHours": "피크 시간대",
+    "refundRate": "주문의 {rate}",
+    "refundReasons": "환불 사유",
+    "refundedItems": "환불된 메뉴",
+    "refundedOrders": "환불된 주문",
     "servingTemperatureLevels": "얼음·온도 분포",
     "slowItems": "판매 부진 메뉴",
     "sweetnessLevels": "당도 분포",
@@ -35,6 +39,7 @@
   "waitlist": {
     "total": "대기 팀 수",
     "medianWait": "대기 시간 중앙값",
+    "medianWaitValue": "{minutes, number}분",
     "outcomes": "대기 결과",
     "hourlyTickets": "시간대별 대기 접수"
   }

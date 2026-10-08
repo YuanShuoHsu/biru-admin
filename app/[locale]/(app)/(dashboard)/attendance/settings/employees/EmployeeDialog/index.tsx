@@ -31,6 +31,7 @@ import {
   type FormControlProps,
   FormLabel,
   IconButton,
+  ListItemText,
   MenuItem,
   Stack,
   TextField,
@@ -76,6 +77,8 @@ const PeriodRowStack = styled(Stack)(({ theme }) => ({
 const StyledButton = styled(Button)({
   alignSelf: "flex-start",
 });
+
+const NoSelectIcon = () => null;
 
 interface PeriodFieldsProps {
   control: Control<EmployeeForm>;
@@ -374,11 +377,22 @@ const EmployeeDialog = ({
     <FormBox id="attendance-employee-form" onSubmit={onSubmit}>
       <TextField
         fullWidth
-        helperText={member.email}
         label={tAttendance("employee")}
-        slotProps={{ input: { readOnly: true } }}
-        value={member.name}
-      />
+        select
+        slotProps={{
+          input: { readOnly: true },
+          select: { IconComponent: NoSelectIcon },
+        }}
+        value={member.userId}
+      >
+        <MenuItem value={member.userId}>
+          <ListItemText
+            primary={member.name}
+            secondary={member.email}
+            slotProps={{ secondary: { variant: "caption" } }}
+          />
+        </MenuItem>
+      </TextField>
       <TextField
         fullWidth
         label={tAttendance("legalStatus.label")}
@@ -572,7 +586,9 @@ const EmployeeDialog = ({
             textField: {
               error: !!errors.terminationNoticedAt,
               fullWidth: true,
-              helperText: errors.terminationNoticedAt?.message,
+              helperText:
+                errors.terminationNoticedAt?.message ??
+                tAttendance("terminationNoticeHint"),
             },
           }}
           timezone={STORE_TIMEZONE}

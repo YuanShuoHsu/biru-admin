@@ -28,6 +28,7 @@ import {
   type FormControlProps,
   FormLabel,
   IconButton,
+  ListItemText,
   MenuItem,
   Stack,
   TextField,
@@ -244,9 +245,13 @@ const DraftDialog = ({
         value={employeeId}
       >
         <MenuItem value="">{tAttendance("allEmployees")}</MenuItem>
-        {employees.map(({ id, name }) => (
+        {employees.map(({ email, id, name }) => (
           <MenuItem key={id} value={id}>
-            {name}
+            <ListItemText
+              primary={name}
+              secondary={email}
+              slotProps={{ secondary: { variant: "caption" } }}
+            />
           </MenuItem>
         ))}
       </TextField>
@@ -274,7 +279,7 @@ const DraftDialog = ({
         error={!!errors.reason}
         fullWidth
         helperText={errors.reason?.message}
-        label={tAttendance("reason.label")}
+        label={tAttendance("payroll.draftReason")}
         minRows={3}
         multiline
         {...register("reason")}

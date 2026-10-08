@@ -3213,6 +3213,7 @@ export interface components {
       organizationId: string;
       userId: string;
       name: string;
+      email: string;
       employmentType: components["schemas"]["AttendanceEmploymentType"];
       legalStatus: components["schemas"]["AttendanceLegalStatus"];
       studentVacations: components["schemas"]["DatePeriodDto"][];
@@ -3305,6 +3306,7 @@ export interface components {
       organizationId: string;
       userId: string;
       name: string;
+      email: string;
       employmentType: components["schemas"]["AttendanceEmploymentType"];
       legalStatus: components["schemas"]["AttendanceLegalStatus"];
       studentVacations: components["schemas"]["DatePeriodDto"][];
@@ -5313,6 +5315,18 @@ export interface components {
      * @enum {string}
      */
     RefundInvoiceAction: "none" | "voided" | "allowance" | "failed";
+    /**
+     * @description 退款原因分類；導入分類前的舊紀錄為 null
+     * @enum {string}
+     */
+    RefundReasonCode:
+      | "wrongItem"
+      | "qualityIssue"
+      | "outOfStock"
+      | "longWait"
+      | "customerMistake"
+      | "customerCancelled"
+      | "other";
     OrderRefundDto: {
       /** @description 退款 ID */
       id: string;
@@ -5335,7 +5349,9 @@ export interface components {
       invoiceError: string | null;
       /** @description 綠界折讓單號 */
       allowanceNo: string | null;
-      /** @description 退款原因 */
+      /** @description 退款原因分類；導入分類前的舊紀錄為 null */
+      reasonCode: components["schemas"]["RefundReasonCode"] | null;
+      /** @description 退款說明 */
       reason: string | null;
       /**
        * Format: date-time
@@ -5352,11 +5368,9 @@ export interface components {
        */
       quantity: number;
     };
-    CreateOrderRefundDto: {
+    PreviewOrderRefundDto: {
       /** @description 退款品項與數量；省略代表整單全額退款。金額由後端依原單價計算，不接受自訂金額，否則湊不出合法的發票折讓明細 */
       items?: components["schemas"]["RefundItemInputDto"][];
-      /** @description 退款原因 */
-      reason?: string;
     };
     OrderRefundPreviewDto: {
       /** @description 此次會退給顧客的金額 */
@@ -5365,6 +5379,14 @@ export interface components {
       allocatedDiscount: number;
       /** @description 這次退完後整張訂單是否已全額退款 */
       isFull: boolean;
+    };
+    CreateOrderRefundDto: {
+      /** @description 退款品項與數量；省略代表整單全額退款。金額由後端依原單價計算，不接受自訂金額，否則湊不出合法的發票折讓明細 */
+      items?: components["schemas"]["RefundItemInputDto"][];
+      /** @description 退款原因分類，用於統計出錯比例 */
+      reasonCode: components["schemas"]["RefundReasonCode"];
+      /** @description 退款說明，會作為發票作廢／折讓原因送至綠界；原因分類為 other 時必填 */
+      reason?: string;
     };
     /** @enum {string} */
     IngredientFilterField:
@@ -5777,6 +5799,8 @@ export interface components {
       discount?: number;
       /** Format: date-time */
       start: string;
+      /** @description 區間內首次確認退款的訂單數（依首次退款日歸期） */
+      refundedOrders: number;
     };
     OrderStatsTotalsDto: {
       orders: number;
@@ -5784,6 +5808,17 @@ export interface components {
       revenue?: number;
       /** @description 需 revenue:read */
       discount?: number;
+    };
+    OrderStatsRefundedItemDto: {
+      menuItemId: string;
+      menuItemName: string;
+      /** @description 確認退款的份數 */
+      quantity: number;
+    };
+    OrderStatsRefundReasonDto: {
+      reasonCode: components["schemas"]["RefundReasonCode"];
+      /** @description 確認退款的筆數 */
+      refunds: number;
     };
     OrderStatsModeDto: {
       /** @enum {string} */
@@ -5830,6 +5865,12 @@ export interface components {
       previous: components["schemas"]["OrderStatsTotalsDto"];
       /** @description 依店家時區各小時（0–23）的訂單數 */
       hourlyOrders: number[];
+      /** @description 期間內首次確認退款的訂單數（依首次退款日歸期，同一訂單只算一次） */
+      refundedOrders: number;
+      /** @description 期間內確認退款份數前 10 名品項（依退款日歸期） */
+      refundedItems: components["schemas"]["OrderStatsRefundedItemDto"][];
+      /** @description 期間內確認退款依原因分類的筆數（依退款日歸期）；導入分類前的舊紀錄不計 */
+      refundReasons: components["schemas"]["OrderStatsRefundReasonDto"][];
       modes: components["schemas"]["OrderStatsModeDto"][];
       paymentMethods: components["schemas"]["OrderStatsPaymentMethodDto"][];
       /** @description 使用次數前 10 名 */
@@ -11390,7 +11431,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["CreateOrderRefundDto"];
+        "application/json": components["schemas"]["PreviewOrderRefundDto"];
       };
     };
     responses: {
@@ -15866,6 +15907,17 @@ export const refundStatusValues: ReadonlyArray<
 export const refundInvoiceActionValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["RefundInvoiceAction"]
 > = ["none", "voided", "allowance", "failed"];
+export const refundReasonCodeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["RefundReasonCode"]
+> = [
+  "wrongItem",
+  "qualityIssue",
+  "outOfStock",
+  "longWait",
+  "customerMistake",
+  "customerCancelled",
+  "other",
+];
 export const orderRefundDtoScopeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrderRefundDto"]["scope"]
 > = ["full", "partial"];

@@ -219,6 +219,10 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
         },
         revenueTrend: getMoneyTrend("revenue"),
         discountTrend: getMoneyTrend("discount"),
+        refundedOrders: {
+          data: orderBuckets.map(({ refundedOrders }) => refundedOrders),
+          total: orderStats?.refundedOrders ?? 0,
+        },
         usersTrend: userStats && {
           data: userStats.buckets.map(({ users }) => users),
           percent: getChangePercent(
@@ -242,6 +246,8 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
       charts={{
         coupons: orderStats?.coupons ?? [],
         modifiers: orderStats?.modifiers ?? [],
+        refundedItems: orderStats?.refundedItems ?? [],
+        refundReasons: orderStats?.refundReasons ?? [],
         servingTemperatureLevels: orderStats?.servingTemperatureLevels ?? [],
         sweetnessLevels: orderStats?.sweetnessLevels ?? [],
         topItems,

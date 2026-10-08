@@ -26,6 +26,10 @@
     "orderModes": "点餐方式",
     "paymentMethods": "付款方式",
     "peakHours": "高峰时段",
+    "refundRate": "占订单 {rate}",
+    "refundReasons": "退款原因",
+    "refundedItems": "退款品项",
+    "refundedOrders": "退款订单",
     "servingTemperatureLevels": "冰量／温度分布",
     "slowItems": "滞销品项",
     "sweetnessLevels": "甜度分布",
@@ -35,6 +39,7 @@
   "waitlist": {
     "total": "候位组数",
     "medianWait": "等候时间中位数",
+    "medianWaitValue": "{minutes, number} 分钟",
     "outcomes": "候位结果",
     "hourlyTickets": "各时段取号量"
   }

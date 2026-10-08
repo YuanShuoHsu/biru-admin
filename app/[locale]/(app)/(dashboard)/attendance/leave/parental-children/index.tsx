@@ -21,7 +21,7 @@ import {
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { Add } from "@mui/icons-material";
-import { Alert, Button } from "@mui/material";
+import { Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
@@ -273,7 +273,6 @@ const ParentalChildren = ({
 
   return (
     <>
-      <Alert severity="info">{tAttendance("parentalChildHint")}</Alert>
       {canWrite && (
         <StyledButton
           onClick={handleCreateChild}

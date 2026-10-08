@@ -27,7 +27,7 @@ import {
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { Add, ChildCare, Delete, Edit } from "@mui/icons-material";
-import { Alert, Button, IconButton, Stack, Tooltip } from "@mui/material";
+import { Button, IconButton, Stack, Tooltip } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
@@ -562,7 +562,6 @@ const LeaveCases = ({
 
   return (
     <>
-      <Alert severity="info">{tAttendance("leaveCaseHint")}</Alert>
       {canWrite && (
         <StyledButton
           onClick={() => handleLeaveCaseDialog()}

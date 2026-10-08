@@ -22,7 +22,8 @@
       "loadFailed": "返金履歴を読み込めませんでした。閉じてからやり直してください",
       "manualChannel": "この支払い方法はECPayのオンライン返金に対応していません。この操作はシステムの記録と請求書のみを更新します。返金はECPay管理画面または直接お客様へ行ってください。",
       "previewFailedWithReason": "返金額を試算できませんでした（{reason}）。数量を調整するか、閉じてからやり直してください。",
-      "reason": "返金理由（任意）",
+      "reason": "補足",
+      "reasonCode": "返金理由",
       "retryBlocked": "今回の返金は正常に送信されませんでした。返金は取り消せないため、上の返金可能数量が変わっていないか確認してから、数量を調整して再試行してください。",
       "selectAtLeastOne": "返金する商品の数量を1つ以上選択してください。",
       "success": "注文 {orderNumber} に {amount} を返金しました",
@@ -153,7 +154,17 @@
         "voided": "インボイスを無効化"
       },
       "invoiceError": "インボイスエラー",
+      "note": "補足",
       "reason": "理由",
+      "reasonCode": {
+        "wrongItem": "提供ミス",
+        "qualityIssue": "品質の問題",
+        "outOfStock": "品切れ",
+        "longWait": "待ち時間が長い",
+        "customerMistake": "お客様の注文間違い",
+        "customerCancelled": "お客様都合のキャンセル",
+        "other": "その他"
+      },
       "scope": {
         "full": "全額返金",
         "partial": "一部返金"

@@ -350,7 +350,11 @@
     "placeholder": "请选择您的核给额度",
     "new": "新事件，主管批准时核给额度"
   },
-  "leaveCaseHint": "主管先确认事件、亲属关系与有效期间，系统自动核给额度。同一事件不得重复建立。产假与流产假的结束日依法定天数自动带出；陪产检与陪产共用 7 日，请确认各次申请符合适用期间。 产假每日工资依约定工资与平均工资自动计算，给薪比例由工龄自动计算。 育婴留停依子女区分，期间不得超过三岁；未满六个月任职须先取得劳资同意。育婴留停不需核定日薪。",
+  "leaveCaseHint": {
+    "maternity": "结束日依法定天数自动带出。任职满 6 个月者工资照给、未满 6 个月减半，系统依工龄与平均工资自动计算。",
+    "parental": "育婴留停依子女区分，期间至子女满 3 岁止且最长 2 年；任职未满 6 个月须先取得劳资同意。不需核定日薪。",
+    "paternity": "陪产检与陪产假共用 7 日，请确认各次申请落在产检或分娩前后的适用期间。"
+  },
   "leaveCases": {
     "actions": {
       "create": "新增事件假额度",
@@ -363,7 +367,12 @@
     "deleted": "已删除 {name} 的{leaveType}额度",
     "childAssigned": "已确认 {name} 的{leaveType}子女归户"
   },
-  "leaveRequestHint": "住院伤病假、安胎休养假由主管查验医疗证明。普通伤病假、住院伤病假、安胎休养假每年合计 30 日内工资折半，超过部分无薪；生理假每月 1 日、工资折半，每年前 3 日不并入病假，第 4 日起并入上述 30 日计算。育婴留职停薪请先选择主管核给的额度，使用完整日历日（起讫 00:00，结束日不含）。",
+  "leaveRequestHint": {
+    "certified": "须由主管查验医疗证明。普通伤病假、住院伤病假、安胎休养假每年合计 30 日内工资折半，超过部分无薪。",
+    "menstrual": "生理假每月 1 日、工资折半；每年前 3 日不并入病假，第 4 日起并入病假每年 30 日计算。",
+    "parental": "请先选择主管核给的额度，以完整日历日申请（起讫 00:00，结束日不含）。",
+    "sick": "普通伤病假、住院伤病假、安胎休养假每年合计 30 日内工资折半，超过部分无薪。"
+  },
   "leaveType": {
     "label": "假别",
     "placeholder": "请选择您的假别"
@@ -463,7 +472,7 @@
   "paydayNextMonth": "发薪日在次月",
   "paidPercent": "给薪比例（%）",
   "parentalChild": "子女",
-  "parentalChildHint": "同一子女请重用现有资料。主管查验证明后设置固定识别编号；双胞胎分别建立，请勿输入完整身份证号。现有育婴留职停薪额度须先完成子女归户。",
+  "parentalChildHint": "查验证明后填写固定识别编号，请勿输入完整身份证号",
   "parentalChildren": {
     "actions": {
       "create": "新增子女资料"
@@ -474,7 +483,7 @@
   "parentalContinuous": "连续期间申请",
   "parentalDaily": "按日申请",
   "parentalReturn": "提前复职",
-  "parentalReturnHint": "核准前原留停仍有效；核准后保留已休期间与原申请记录。请选择复职当日，该日起不再留停。",
+  "parentalReturnHint": "该日起不再留停",
   "parentalReturns": {
     "label": "复职申请",
     "approved": "已批准 {name} 的提前复职申请",
@@ -483,6 +492,7 @@
   },
   "payroll": {
     "label": "薪资",
+    "draftReason": "试算说明",
     "drafted": "已建立 {name} {month} 的工资单草稿",
     "published": "已发布 {name} {month} 的工资单",
     "reviewed": "已复核 {name} {month} 的工资单",
@@ -795,6 +805,7 @@
       "death": "死亡"
     }
   },
+  "terminationNoticeHint": "法定预告期间：任职 3 个月以上未满 1 年 10 日、1 年以上未满 3 年 20 日、3 年以上 30 日；不足日数依法发给预告期间工资",
   "terminationNoticedAt": "预告日",
   "holidaySubstitutes": {
     "label": "国定假日补假",

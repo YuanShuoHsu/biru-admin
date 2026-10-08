@@ -16,7 +16,7 @@ import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Alert, TextField, Typography } from "@mui/material";
+import { TextField, Typography } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -132,7 +132,6 @@ const ReturnDialog = ({
 
   return (
     <FormBox id="attendance-return-form" onSubmit={onSubmit}>
-      <Alert severity="info">{tAttendance("parentalReturnHint")}</Alert>
       <Typography>
         {date(request.startsAt)} – {date(request.endsAt)}
       </Typography>
@@ -149,7 +148,8 @@ const ReturnDialog = ({
           textField: {
             error: !!errors.returnsAt,
             fullWidth: true,
-            helperText: errors.returnsAt?.message,
+            helperText:
+              errors.returnsAt?.message ?? tAttendance("parentalReturnHint"),
             required: true,
           },
         }}

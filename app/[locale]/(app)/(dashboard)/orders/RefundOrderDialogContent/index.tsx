@@ -18,11 +18,13 @@ import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
+import { refundReasonCodeValues } from "@/types/api";
 import type {
   AdminOrderResponse,
   CreateOrderRefundDto,
   OrderRefund,
   OrderRefundPreview,
+  PreviewOrderRefundDto,
 } from "@/types/orders";
 
 import { getErrorMessage } from "@/utils/errors";
@@ -98,6 +100,9 @@ const RefundOrderDialogContent = ({
   );
 
   const [quantities, setQuantities] = useState<Map<string, number>>(new Map());
+  const [reasonCode, setReasonCode] = useState<
+    CreateOrderRefundDto["reasonCode"] | ""
+  >("");
   const [reason, setReason] = useState("");
   const [failed, setFailed] = useState(false);
 
@@ -118,13 +123,22 @@ const RefundOrderDialogContent = ({
 
   const { data: preview, error: previewError } = useSWR<OrderRefundPreview>(
     items.length ? [`${refundsKey}/preview`, items] : null,
-    ([url, body]: [string, CreateOrderRefundDto["items"]]) =>
-      sendRequest<OrderRefundPreview, CreateOrderRefundDto>()(url, {
+    ([url, body]: [string, PreviewOrderRefundDto["items"]]) =>
+      sendRequest<OrderRefundPreview, PreviewOrderRefundDto>()(url, {
         arg: { items: body },
       }),
   );
 
-  const disabled = isLoading || !!error || !!previewError || !preview || failed;
+  const isReasonRequired = reasonCode === "other";
+
+  const disabled =
+    isLoading ||
+    !!error ||
+    !!previewError ||
+    !preview ||
+    !reasonCode ||
+    (isReasonRequired && !reason.trim()) ||
+    failed;
 
   useEffect(() => {
     setDialog({ confirmDisabled: disabled });
@@ -136,7 +150,7 @@ const RefundOrderDialogContent = ({
   const onSubmit = async (event: BaseSyntheticEvent) => {
     event.preventDefault();
 
-    if (confirmLoading || disabled || !preview) return;
+    if (confirmLoading || disabled || !preview || !reasonCode) return;
 
     setDialog({ confirmLoading: true });
 
@@ -144,6 +158,7 @@ const RefundOrderDialogContent = ({
       const created = await fetcher<OrderRefund>(refundsKey, {
         body: JSON.stringify({
           ...(preview.isFull ? {} : { items }),
+          reasonCode,
           ...(reason ? { reason } : {}),
         } satisfies CreateOrderRefundDto),
         headers: { "Content-Type": "application/json" },
@@ -258,8 +273,28 @@ const RefundOrderDialogContent = ({
       })}
       <TextField
         disabled={confirmLoading}
+        label={tOrders("actions.refund.reasonCode")}
+        onChange={({ target }) =>
+          setReasonCode(
+            refundReasonCodeValues.find((code) => code === target.value) ?? "",
+          )
+        }
+        required
+        select
+        size="small"
+        value={reasonCode}
+      >
+        {refundReasonCodeValues.map((code) => (
+          <MenuItem key={code} value={code}>
+            {tOrders(`detail.refunds.reasonCode.${code}`)}
+          </MenuItem>
+        ))}
+      </TextField>
+      <TextField
+        disabled={confirmLoading}
         label={tOrders("actions.refund.reason")}
         onChange={({ target }) => setReason(target.value)}
+        required={isReasonRequired}
         size="small"
         slotProps={{ htmlInput: { maxLength: 50 } }}
         value={reason}

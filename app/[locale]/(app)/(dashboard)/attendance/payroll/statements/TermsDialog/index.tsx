@@ -31,6 +31,7 @@ import {
   FormControlLabel,
   type FormControlProps,
   FormLabel,
+  ListItemText,
   MenuItem,
   TextField,
 } from "@mui/material";
@@ -273,9 +274,13 @@ const TermsDialog = ({
         select
         value={values.employeeId ?? ""}
       >
-        {employees.map(({ id, name }) => (
+        {employees.map(({ email, id, name }) => (
           <MenuItem key={id} value={id}>
-            {name}
+            <ListItemText
+              primary={name}
+              secondary={email}
+              slotProps={{ secondary: { variant: "caption" } }}
+            />
           </MenuItem>
         ))}
       </TextField>

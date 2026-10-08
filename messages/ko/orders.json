@@ -22,7 +22,8 @@
       "loadFailed": "환불 내역을 불러오지 못했습니다. 닫은 뒤 다시 시도해 주세요",
       "manualChannel": "이 결제 수단은 ECPay 온라인 환불을 지원하지 않습니다. 이 작업은 시스템 기록과 세금계산서만 반영하므로, 실제 환불은 ECPay 관리자 페이지나 직접 처리해 주세요.",
       "previewFailedWithReason": "환불 금액을 계산하지 못했습니다({reason}). 수량을 조정하거나 닫은 뒤 다시 시도해 주세요.",
-      "reason": "환불 사유(선택)",
+      "reason": "추가 설명",
+      "reasonCode": "환불 사유",
       "retryBlocked": "이번 환불은 정상적으로 전송되지 않았습니다. 환불은 되돌릴 수 없으니 위의 환불 가능 수량이 바뀌었는지 확인한 뒤 수량을 조정해 다시 시도해 주세요.",
       "selectAtLeastOne": "환불할 항목의 수량을 하나 이상 선택해 주세요.",
       "success": "주문 {orderNumber}에 대해 {amount} 환불했습니다",
@@ -153,7 +154,17 @@
         "voided": "세금계산서 취소됨"
       },
       "invoiceError": "세금계산서 오류",
+      "note": "추가 설명",
       "reason": "사유",
+      "reasonCode": {
+        "wrongItem": "잘못된 메뉴 제공",
+        "qualityIssue": "품질 문제",
+        "outOfStock": "품절",
+        "longWait": "대기 시간 초과",
+        "customerMistake": "고객 주문 실수",
+        "customerCancelled": "고객 취소",
+        "other": "기타"
+      },
       "scope": {
         "full": "전액 환불",
         "partial": "부분 환불"

@@ -26,6 +26,10 @@
     "orderModes": "Order Modes",
     "paymentMethods": "Payment Methods",
     "peakHours": "Peak Hours",
+    "refundRate": "{rate} of orders",
+    "refundReasons": "Refund Reasons",
+    "refundedItems": "Refunded Items",
+    "refundedOrders": "Refunded Orders",
     "servingTemperatureLevels": "Ice & Temperature",
     "slowItems": "Slow-Moving Items",
     "sweetnessLevels": "Sweetness Levels",
@@ -35,6 +39,7 @@
   "waitlist": {
     "total": "Waitlist Parties",
     "medianWait": "Median Wait Time",
+    "medianWaitValue": "{minutes, number} min",
     "outcomes": "Waitlist Outcomes",
     "hourlyTickets": "Tickets by Hour"
   }

@@ -403,18 +403,26 @@ const ShiftDialog = ({
         required
         select
         slotProps={{
-          select: {
-            multiple: !shift,
-            renderValue: (selected) =>
-              employeeNames(Array.isArray(selected) ? selected : [selected]),
-          },
+          select: shift
+            ? undefined
+            : {
+                multiple: true,
+                renderValue: (selected) =>
+                  employeeNames(
+                    Array.isArray(selected) ? selected : [selected],
+                  ),
+              },
         }}
         value={shift ? (employeeIds[0] ?? "") : employeeIds}
       >
-        {employees.map(({ id, name }) => (
+        {employees.map(({ email, id, name }) => (
           <MenuItem key={id} value={id}>
             {!shift && <Checkbox checked={employeeIds.includes(id)} />}
-            <ListItemText primary={name} />
+            <ListItemText
+              primary={name}
+              secondary={email}
+              slotProps={{ secondary: { variant: "caption" } }}
+            />
           </MenuItem>
         ))}
       </TextField>

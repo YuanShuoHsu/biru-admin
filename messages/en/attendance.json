@@ -350,7 +350,11 @@
     "placeholder": "Please select your granted allowance",
     "new": "New event, allowance granted on manager approval"
   },
-  "leaveCaseHint": "A manager must verify the event, relationship and eligible dates. Allowances are calculated automatically. Do not duplicate an event. The end date of maternity and miscarriage leave is set from the statutory number of days. Partner prenatal and childbirth leave share 7 days; verify the eligible dates for each request. The maternity daily wage is calculated from the agreed and average wages. The paid percentage is calculated from seniority. Parental leave is tracked per child. The period must end by the third birthday. Service under six months requires employer–employee agreement. No daily wage is required.",
+  "leaveCaseHint": {
+    "maternity": "The end date is set from the statutory number of days. Employees with six months of service receive full wages, others half; the system calculates this from seniority and average wages.",
+    "parental": "Parental leave is tracked per child and lasts until the child's third birthday, for at most two years. Service under six months requires employer–employee agreement. No daily wage is required.",
+    "paternity": "Partner prenatal and childbirth leave share 7 days; verify each request falls within the eligible prenatal or childbirth period."
+  },
   "leaveCases": {
     "actions": {
       "create": "Add event leave allowance",
@@ -363,7 +367,12 @@
     "deleted": "Deleted {name}'s {leaveType} allowance",
     "childAssigned": "Assigned the child for {name}'s {leaveType}"
   },
-  "leaveRequestHint": "Managers verify medical documentation for hospitalization and pregnancy bed rest. Sick leave (including hospitalization and pregnancy bed rest) is paid at half wage for up to 30 days per year combined and is unpaid beyond that. Menstrual leave is 1 day per month at half wage; the first 3 days each year do not count toward sick leave, and from the 4th day they count toward those 30 days. For parental leave, select the allowance granted by a manager and use whole calendar days (midnight, exclusive end).",
+  "leaveRequestHint": {
+    "certified": "A manager verifies medical documentation. Sick leave, hospitalization and pregnancy bed rest are paid at half wage for up to 30 days per year combined and are unpaid beyond that.",
+    "menstrual": "Menstrual leave is 1 day per month at half wage; the first 3 days each year do not count toward sick leave, and from the 4th day they count toward the 30 days of sick leave.",
+    "parental": "Select the allowance granted by a manager and use whole calendar days (midnight, exclusive end).",
+    "sick": "Sick leave, hospitalization and pregnancy bed rest are paid at half wage for up to 30 days per year combined and are unpaid beyond that."
+  },
   "leaveType": {
     "label": "Leave type",
     "placeholder": "Please select your leave type"
@@ -463,7 +472,7 @@
   "paydayNextMonth": "Payday falls in the following month",
   "paidPercent": "Paid percentage (%)",
   "parentalChild": "Child",
-  "parentalChildHint": "Reuse the existing record for the same child. A manager must verify evidence and assign a stable reference. Register twins separately; do not enter full national ID numbers. Assign existing parental leave allowances to a verified child.",
+  "parentalChildHint": "Use a stable reference from verified evidence; do not enter full national ID numbers",
   "parentalChildren": {
     "actions": {
       "create": "Add child"
@@ -474,7 +483,7 @@
   "parentalContinuous": "Continuous period",
   "parentalDaily": "Daily requests",
   "parentalReturn": "Early return",
-  "parentalReturnHint": "Leave remains active until approval. Approval preserves leave already taken and the original record. Leave ends at the start of the return date.",
+  "parentalReturnHint": "Leave ends at the start of this date",
   "parentalReturns": {
     "label": "Return requests",
     "approved": "Approved {name}'s early return request",
@@ -483,6 +492,7 @@
   },
   "payroll": {
     "label": "Payroll",
+    "draftReason": "Draft note",
     "drafted": "Drafted {name}'s payslip for {month}",
     "published": "Published {name}'s payslip for {month}",
     "reviewed": "Reviewed {name}'s payslip for {month}",
@@ -795,6 +805,7 @@
       "death": "Death"
     }
   },
+  "terminationNoticeHint": "Statutory notice: 10 days for 3 months to under 1 year of service, 20 days for 1 to under 3 years, 30 days for 3 years or more; wages are paid for any shortfall",
   "terminationNoticedAt": "Notice date",
   "holidaySubstitutes": {
     "label": "Holiday substitutes",

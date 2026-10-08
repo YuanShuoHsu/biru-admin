@@ -20,6 +20,7 @@ import {
   Alert,
   Checkbox,
   FormControlLabel,
+  ListItemText,
   MenuItem,
   TextField,
 } from "@mui/material";
@@ -45,6 +46,18 @@ import { fetcher } from "@/utils/fetcher";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
+
+const LEAVE_CASE_HINTS: Partial<
+  Record<
+    AttendanceLeaveType["statutoryKind"],
+    "maternity" | "parental" | "paternity"
+  >
+> = {
+  maternity: "maternity",
+  miscarriage28: "maternity",
+  parental: "parental",
+  paternity: "paternity",
+};
 
 const StyledFormControlLabel = styled(FormControlLabel)({
   alignSelf: "flex-start",
@@ -138,6 +151,8 @@ const LeaveCaseDialog = ({
   const leaveType = leaveTypes.find(({ id }) => id === leaveTypeId);
 
   const isParentalLeave = leaveType?.statutoryKind === "parental";
+
+  const leaveCaseHint = leaveType && LEAVE_CASE_HINTS[leaveType.statutoryKind];
   const isMarriageLeave = leaveType?.statutoryKind === "marriage";
   const fixedCalendarDays = leaveType?.fixedCalendarDays ?? null;
   const shownEndsAt =
@@ -228,9 +243,6 @@ const LeaveCaseDialog = ({
 
   return (
     <FormBox id="attendance-leave-case-form" onSubmit={onSubmit}>
-      {!request && (
-        <Alert severity="info">{tAttendance("leaveCaseHint")}</Alert>
-      )}
       <TextField
         disabled={!!leaveCase || !!request}
         error={!!errors.employeeId}
@@ -250,9 +262,13 @@ const LeaveCaseDialog = ({
       >
         {employees
           .filter(({ id }) => id !== selfEmployeeId)
-          .map(({ id, name }) => (
+          .map(({ email, id, name }) => (
             <MenuItem key={id} value={id}>
-              {name}
+              <ListItemText
+                primary={name}
+                secondary={email}
+                slotProps={{ secondary: { variant: "caption" } }}
+              />
             </MenuItem>
           ))}
       </TextField>
@@ -283,6 +299,11 @@ const LeaveCaseDialog = ({
             </MenuItem>
           ))}
       </TextField>
+      {leaveCaseHint && (
+        <Alert severity="info">
+          {tAttendance(`leaveCaseHint.${leaveCaseHint}`)}
+        </Alert>
+      )}
       {!isParentalLeave && (
         <TextField
           error={!!errors.reference}

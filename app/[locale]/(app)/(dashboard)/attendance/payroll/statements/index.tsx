@@ -512,6 +512,13 @@ const Payroll = ({
       ...(canManage
         ? [
             {
+              field: "reason",
+              filterable: false,
+              headerName: tAttendance("payroll.draftReason"),
+              renderCell: renderEmptyableCell,
+              sortable: false,
+            },
+            {
               field: "sourceNote",
               filterable: false,
               headerName: tAttendance("sourceNote"),

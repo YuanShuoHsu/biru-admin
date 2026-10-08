@@ -40,6 +40,19 @@ dayjs.extend(timezonePlugin);
 
 const LEAVE_TYPE_GROUPS = ["general", "event", "custom"] as const;
 
+const LEAVE_REQUEST_HINTS: Partial<
+  Record<
+    AttendanceLeaveType["statutoryKind"],
+    "certified" | "menstrual" | "parental" | "sick"
+  >
+> = {
+  hospitalSick: "certified",
+  menstrual: "menstrual",
+  parental: "parental",
+  pregnancyRest: "certified",
+  sick: "sick",
+};
+
 interface LeaveDialogProps {
   leaveCases: AttendanceLeaveCase[];
   leaveTypes: AttendanceLeaveType[];
@@ -114,6 +127,8 @@ const LeaveDialog = ({
 
   const isParentalLeave = leaveType?.statutoryKind === "parental";
 
+  const leaveHint = leaveType && LEAVE_REQUEST_HINTS[leaveType.statutoryKind];
+
   const selectableLeaveCases = leaveCases.filter(
     (item) => item.leaveTypeId === leaveTypeId,
   );
@@ -180,7 +195,6 @@ const LeaveDialog = ({
 
   return (
     <FormBox id="attendance-leave-form" onSubmit={onSubmit}>
-      <Alert severity="info">{tAttendance("leaveRequestHint")}</Alert>
       <TextField
         error={!!errors.leaveTypeId}
         fullWidth
@@ -223,6 +237,11 @@ const LeaveDialog = ({
           )),
         ])}
       </TextField>
+      {leaveHint && (
+        <Alert severity="info">
+          {tAttendance(`leaveRequestHint.${leaveHint}`)}
+        </Alert>
+      )}
       {(isParentalLeave || selectableLeaveCases.length > 0) && (
         <TextField
           error={!!errors.leaveCaseId}

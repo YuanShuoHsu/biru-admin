@@ -11,7 +11,7 @@ import FormBox from "@/components/FormBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Alert, MenuItem, TextField } from "@mui/material";
+import { MenuItem, TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -104,7 +104,6 @@ const AssignChildDialog = ({
 
   return (
     <FormBox id="attendance-assign-child-form" onSubmit={onSubmit}>
-      <Alert severity="info">{tAttendance("parentalChildHint")}</Alert>
       <TextField
         error={!!errors.childId}
         fullWidth

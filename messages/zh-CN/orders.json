@@ -22,7 +22,8 @@
       "loadFailed": "无法读取已退款记录，请关闭后重试",
       "manualChannel": "此付款方式绿界不支持在线退款，本操作只会同步系统记录与发票，实际款项请至绿界后台或直接退还顾客。",
       "previewFailedWithReason": "无法试算退款金额（{reason}），请调整商品数量或关闭后重试。",
-      "reason": "退款原因（选填）",
+      "reason": "补充说明",
+      "reasonCode": "退款原因",
       "retryBlocked": "这次退款没有成功送出。退款不可逆，请先确认上方的可退数量是否已变动，再调整商品数量重试。",
       "selectAtLeastOne": "请至少选择一项要退款的商品数量。",
       "success": "订单 {orderNumber} 已退款 {amount}",
@@ -153,7 +154,17 @@
         "voided": "发票已作废"
       },
       "invoiceError": "发票错误",
+      "note": "说明",
       "reason": "原因",
+      "reasonCode": {
+        "wrongItem": "出餐错误",
+        "qualityIssue": "品质问题",
+        "outOfStock": "缺货",
+        "longWait": "等候过久",
+        "customerMistake": "顾客点错",
+        "customerCancelled": "顾客取消",
+        "other": "其他"
+      },
       "scope": {
         "full": "整单退款",
         "partial": "部分退款"

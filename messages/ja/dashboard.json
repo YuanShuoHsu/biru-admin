@@ -26,6 +26,10 @@
     "orderModes": "注文方式",
     "paymentMethods": "支払い方法",
     "peakHours": "ピーク時間帯",
+    "refundRate": "注文の {rate}",
+    "refundReasons": "返金理由",
+    "refundedItems": "返金された商品",
+    "refundedOrders": "返金された注文",
     "servingTemperatureLevels": "氷の量・温度の内訳",
     "slowItems": "不振商品",
     "sweetnessLevels": "甘さの内訳",
@@ -35,6 +39,7 @@
   "waitlist": {
     "total": "順番待ち組数",
     "medianWait": "待ち時間の中央値",
+    "medianWaitValue": "{minutes, number}分",
     "outcomes": "順番待ちの結果",
     "hourlyTickets": "時間帯別の順番待ち数"
   }

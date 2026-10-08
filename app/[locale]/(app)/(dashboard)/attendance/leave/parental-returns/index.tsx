@@ -26,7 +26,7 @@ import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 import { attendanceReviewCountsKey } from "@/hooks/useAttendanceReviewCounts";
 
 import { Check, Close, Undo } from "@mui/icons-material";
-import { Alert, Chip, IconButton, Stack, Tooltip } from "@mui/material";
+import { Chip, IconButton, Stack, Tooltip } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
@@ -437,7 +437,6 @@ const ParentalReturns = ({
 
   return (
     <>
-      <Alert severity="info">{tAttendance("parentalReturnHint")}</Alert>
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}

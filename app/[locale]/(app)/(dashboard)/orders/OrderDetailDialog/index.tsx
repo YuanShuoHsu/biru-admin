@@ -500,9 +500,17 @@ const OrderDetailDialog = ({
                   </ChipStack>
                 }
               />
-              {!!refund.reason && (
+              {!!refund.reasonCode && (
                 <InfoRow
                   label={tOrders("detail.refunds.reason")}
+                  value={tOrders(
+                    `detail.refunds.reasonCode.${refund.reasonCode}`,
+                  )}
+                />
+              )}
+              {!!refund.reason && (
+                <InfoRow
+                  label={tOrders("detail.refunds.note")}
                   value={refund.reason}
                 />
               )}
