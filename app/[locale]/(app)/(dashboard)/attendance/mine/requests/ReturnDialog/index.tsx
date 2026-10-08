@@ -72,7 +72,7 @@ const ReturnDialog = ({
 
   const returnsAt = useWatch({ control, name: "returnsAt" });
 
-  const date = (value: string) => format.dateTime(new Date(value), "short");
+  const date = (value: string) => format.dateTime(new Date(value), "dateTime");
 
   const onSubmitHandler = async ({ reason, returnsAt }: ReturnForm) => {
     try {
@@ -150,6 +150,7 @@ const ReturnDialog = ({
             error: !!errors.returnsAt,
             fullWidth: true,
             helperText: errors.returnsAt?.message,
+            required: true,
           },
         }}
         timezone={STORE_TIMEZONE}

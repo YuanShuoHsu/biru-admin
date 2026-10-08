@@ -54,7 +54,7 @@ export const generateMetadata = async ({
     namespace: "attendance",
   });
 
-  return { title: tAttendance("payroll.label") };
+  return { title: tAttendance("payslips.label") };
 };
 
 const PayrollPage = async ({ params, searchParams }: PayrollPageProps) => {

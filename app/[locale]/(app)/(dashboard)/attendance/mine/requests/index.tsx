@@ -346,7 +346,7 @@ const Requests = ({
   );
 
   const date = useCallback(
-    (value: string) => format.dateTime(new Date(value), "short"),
+    (value: string) => format.dateTime(new Date(value), "dateTime"),
     [format],
   );
 

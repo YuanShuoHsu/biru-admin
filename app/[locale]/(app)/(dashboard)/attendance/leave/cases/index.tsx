@@ -173,7 +173,7 @@ const LeaveCases = ({
   const updateQuery = useUpdateQuery();
 
   const date = useCallback(
-    (value: string) => format.dateTime(new Date(value), "short"),
+    (value: string) => format.dateTime(new Date(value), "dateTime"),
     [format],
   );
 
@@ -484,7 +484,7 @@ const LeaveCases = ({
       {
         field: "reference",
         filterOperators: stringFilterOperators,
-        headerName: tAttendance("caseReference"),
+        headerName: tAttendance("caseReference.label"),
         renderCell: renderEmptyableCell,
       },
       {

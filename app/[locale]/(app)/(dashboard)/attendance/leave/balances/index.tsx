@@ -156,7 +156,7 @@ const Balances = ({
   const updateQuery = useUpdateQuery();
 
   const date = useCallback(
-    (value: string) => format.dateTime(new Date(value), "short"),
+    (value: string) => format.dateTime(new Date(value), "dateTime"),
     [format],
   );
 
@@ -317,65 +317,11 @@ const Balances = ({
 
   const columns = useMemo<GridColDef[]>(
     () => [
-      {
-        field: "employeeName",
-        filterOperators: stringFilterOperators,
-        headerName: tAttendance("employee"),
-        renderCell: renderEmptyableCell,
-      },
-      {
-        field: "leaveTypeName",
-        filterOperators: enumFilterOperators,
-        headerName: tAttendance("leaveType.label"),
-        renderCell: ({
-          row: { leaveTypeName, leaveTypeStatutoryKind },
-        }: GridRenderCellParams<AttendanceLeaveBalance>) =>
-          getStatutoryLeaveName(tAttendance, {
-            name: leaveTypeName,
-            statutoryKind: leaveTypeStatutoryKind,
-          }),
-        type: "singleSelect",
-        valueOptions: leaveTypeOptions,
-      },
-      {
-        field: "year",
-        filterOperators: numberFilterOperators,
-        headerName: tAttendance("year"),
-        type: "number",
-      },
-      {
-        field: "startsAt",
-        filterOperators: dateFilterOperators,
-        headerName: tAttendance("startsAt"),
-        renderCell: renderEmptyableCell,
-        valueFormatter: (value: string | null) => (value ? date(value) : ""),
-      },
-      {
-        field: "endsAt",
-        filterOperators: dateFilterOperators,
-        headerName: tAttendance("endsAt"),
-        renderCell: renderEmptyableCell,
-        valueFormatter: (value: string | null) => (value ? date(value) : ""),
-      },
-      {
-        field: "grantedMinutes",
-        filterOperators: durationFilterOperators,
-        headerName: tAttendance("grantedMinutes"),
-        type: "number",
-        valueFormatter: (value: number) =>
-          formatLeaveDuration(tAttendance, value, false),
-      },
-      {
-        field: "usedMinutes",
-        filterOperators: durationFilterOperators,
-        headerName: tAttendance("usedMinutes"),
-        type: "number",
-        valueFormatter: (value: number) =>
-          formatLeaveDuration(tAttendance, value, false),
-      },
       ...(canViewAll && (canDefer || canRevokeDeferral)
         ? [
             {
+              disableColumnMenu: true,
+              disableExport: true,
               field: "actions",
               filterable: false,
               headerName: tAttendance("actions"),
@@ -408,10 +354,68 @@ const Balances = ({
                       </Tooltip>
                     );
               },
+              resizable: false,
               sortable: false,
             } satisfies GridColDef,
           ]
         : []),
+      {
+        field: "employeeName",
+        filterOperators: stringFilterOperators,
+        headerName: tAttendance("employee"),
+        renderCell: renderEmptyableCell,
+      },
+      {
+        field: "leaveTypeName",
+        filterOperators: enumFilterOperators,
+        headerName: tAttendance("leaveType.label"),
+        renderCell: ({
+          row: { leaveTypeName, leaveTypeStatutoryKind },
+        }: GridRenderCellParams<AttendanceLeaveBalance>) =>
+          getStatutoryLeaveName(tAttendance, {
+            name: leaveTypeName,
+            statutoryKind: leaveTypeStatutoryKind,
+          }),
+        type: "singleSelect",
+        valueOptions: leaveTypeOptions,
+      },
+      {
+        field: "year",
+        filterOperators: numberFilterOperators,
+        headerName: tAttendance("year"),
+        type: "number",
+        valueFormatter: (value: number) => String(value),
+      },
+      {
+        field: "startsAt",
+        filterOperators: dateFilterOperators,
+        headerName: tAttendance("startsAt"),
+        renderCell: renderEmptyableCell,
+        valueFormatter: (value: string | null) => (value ? date(value) : ""),
+      },
+      {
+        field: "endsAt",
+        filterOperators: dateFilterOperators,
+        headerName: tAttendance("endsAt"),
+        renderCell: renderEmptyableCell,
+        valueFormatter: (value: string | null) => (value ? date(value) : ""),
+      },
+      {
+        field: "grantedMinutes",
+        filterOperators: durationFilterOperators,
+        headerName: tAttendance("grantedMinutes"),
+        type: "number",
+        valueFormatter: (value: number) =>
+          formatLeaveDuration(tAttendance, value, false),
+      },
+      {
+        field: "usedMinutes",
+        filterOperators: durationFilterOperators,
+        headerName: tAttendance("usedMinutes"),
+        type: "number",
+        valueFormatter: (value: number) =>
+          formatLeaveDuration(tAttendance, value, false),
+      },
     ],
     [
       canDefer,

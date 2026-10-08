@@ -147,7 +147,7 @@ const ReviewDialog = ({
       ],
     });
 
-  const date = (value: string) => format.dateTime(new Date(value), "short");
+  const date = (value: string) => format.dateTime(new Date(value), "dateTime");
 
   const onSubmitHandler = async (values: ReviewForm) => {
     try {
@@ -324,6 +324,7 @@ const ReviewDialog = ({
                 error: !!errors.reportedAt,
                 fullWidth: true,
                 helperText: errors.reportedAt?.message,
+                required: true,
               },
             }}
             timezone={STORE_TIMEZONE}
@@ -344,6 +345,7 @@ const ReviewDialog = ({
                 error: !!errors.makeupStartsAt,
                 fullWidth: true,
                 helperText: errors.makeupStartsAt?.message,
+                required: true,
               },
             }}
             timezone={STORE_TIMEZONE}
@@ -364,6 +366,7 @@ const ReviewDialog = ({
                 error: !!errors.makeupEndsAt,
                 fullWidth: true,
                 helperText: errors.makeupEndsAt?.message,
+                required: true,
               },
             }}
             timezone={STORE_TIMEZONE}

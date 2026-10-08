@@ -31,7 +31,10 @@
   "breaks": "休憩（分）",
   "cancelLeave": "休暇取消を申請",
   "cancelShift": "シフト取消",
-  "caseReference": "事由番号（同じ事由には同じ番号）",
+  "caseReference": {
+    "label": "事由番号",
+    "helper": "同じ事由には同じ番号"
+  },
   "cause": {
     "label": "法定事由",
     "options": {
@@ -66,7 +69,7 @@
   "early": "早退",
   "earlyParentalAgreed": "勤続6か月未満の育児休業について労使の合意を取得済み",
   "effectiveEvents": "採用された打刻",
-  "effectiveFrom": "適用開始日",
+  "effectiveFrom": "適用開始月",
   "emergencyWork": "法定休日の緊急出勤",
   "employee": "従業員",
   "employeeStatus": {
@@ -268,6 +271,7 @@
     "foreignTaxIdentityRequired": "外国籍の従業員は居住国と納税者番号（ない場合は NOTIN）が必要です。",
     "employeeNotInTeam": "従業員は選択したチームのメンバーではありません。",
     "shiftTypeNameTaken": "同じ名前のシフト区分が既にあります。",
+    "shiftTypeTooLong": "このシフト区分は休憩を除いて 12 時間を超えるため、シフトに使用できません。",
     "leaveCaseGrantRequired": "この事由休暇にはまだ休暇枠が付与されていません。1 件ずつ承認して事由の情報を入力してください。"
   },
   "eventAction": {
@@ -570,7 +574,7 @@
     "extraWorkApproved": "{employee} のシフト外の時間を承認しました",
     "extraWorkRejected": "{employee} のシフト外の時間を却下しました"
   },
-  "salary": "月給・時給（{currency}）",
+  "salary": "{salaryType, select, hourly {時給} other {月給}}（{currency}）",
   "salaryType": {
     "label": "給与形態",
     "options": {
@@ -738,10 +742,13 @@
       "table": "給与所得源泉徴収税額表による"
     }
   },
-  "terminatedAt": "退職日（任意）",
+  "terminatedAt": "退職日",
   "useCurrentLocation": "現在地を使用",
   "usedMinutes": "使用時間",
-  "voluntaryLaborInsuranceFrom": "5 人未満で労保に任意加入した開始月",
+  "voluntaryLaborInsuranceFrom": {
+    "label": "5 人未満で労保に任意加入した開始月",
+    "none": "未設定（5 人以上で強制加入）"
+  },
   "voluntaryPension": "任意年金拠出（{currency}）",
   "voluntaryPercent": "任意拠出率（%）",
   "weekday": "曜日",

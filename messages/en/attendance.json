@@ -31,7 +31,10 @@
   "breaks": "Break minutes",
   "cancelLeave": "Request leave cancellation",
   "cancelShift": "Cancel shift",
-  "caseReference": "Event reference (reuse for the same event)",
+  "caseReference": {
+    "label": "Event reference",
+    "helper": "Reuse for the same event"
+  },
   "cause": {
     "label": "Statutory cause",
     "options": {
@@ -66,7 +69,7 @@
   "early": "Left early",
   "earlyParentalAgreed": "Employer and employee agreed to parental leave before six months of service",
   "effectiveEvents": "Counted punches",
-  "effectiveFrom": "Effective date",
+  "effectiveFrom": "Effective month",
   "emergencyWork": "Emergency regular-leave-day work",
   "employee": "Employee",
   "employeeStatus": {
@@ -268,6 +271,7 @@
     "foreignTaxIdentityRequired": "Foreign employees need a country of residence and tax ID (NOTIN if none).",
     "employeeNotInTeam": "The employee is not a member of the selected team.",
     "shiftTypeNameTaken": "A shift type with this name already exists.",
+    "shiftTypeTooLong": "This shift type exceeds 12 working hours after breaks and cannot be scheduled.",
     "leaveCaseGrantRequired": "This event leave has no granted allowance yet. Approve it individually and enter the event details."
   },
   "eventAction": {
@@ -570,7 +574,7 @@
     "extraWorkApproved": "Approved {employee}'s time outside schedule",
     "extraWorkRejected": "Rejected {employee}'s time outside schedule"
   },
-  "salary": "Monthly salary / hourly rate ({currency})",
+  "salary": "{salaryType, select, hourly {Hourly rate} other {Monthly salary}} ({currency})",
   "salaryType": {
     "label": "Salary type",
     "options": {
@@ -738,10 +742,13 @@
       "table": "Salary withholding table"
     }
   },
-  "terminatedAt": "Employment end (optional)",
+  "terminatedAt": "Employment end",
   "useCurrentLocation": "Use current location",
   "usedMinutes": "Used",
-  "voluntaryLaborInsuranceFrom": "Voluntary labor insurance start month (under 5 employees)",
+  "voluntaryLaborInsuranceFrom": {
+    "label": "Voluntary labor insurance start month (under 5 employees)",
+    "none": "Not set (mandatory from 5 employees)"
+  },
   "voluntaryPension": "Voluntary pension ({currency})",
   "voluntaryPercent": "Voluntary rate (%)",
   "weekday": "Weekday",

@@ -31,7 +31,10 @@
   "breaks": "휴식 시간(분)",
   "cancelLeave": "휴가 취소 신청",
   "cancelShift": "근무 취소",
-  "caseReference": "사유 번호(같은 사유에 동일 번호 사용)",
+  "caseReference": {
+    "label": "사유 번호",
+    "helper": "같은 사유에 동일 번호 사용"
+  },
   "cause": {
     "label": "법정 사유",
     "options": {
@@ -66,7 +69,7 @@
   "early": "조퇴",
   "earlyParentalAgreed": "근속 6개월 이전 육아 휴직에 노사가 합의함",
   "effectiveEvents": "적용 기록",
-  "effectiveFrom": "적용일",
+  "effectiveFrom": "적용 시작 월",
   "emergencyWork": "법정 휴일 긴급 근무",
   "employee": "직원",
   "employeeStatus": {
@@ -268,6 +271,7 @@
     "foreignTaxIdentityRequired": "외국인 직원은 거주 국가와 납세자 번호(없으면 NOTIN)가 필요합니다.",
     "employeeNotInTeam": "직원이 선택한 팀의 구성원이 아닙니다.",
     "shiftTypeNameTaken": "같은 이름의 근무 유형이 이미 있습니다.",
+    "shiftTypeTooLong": "이 근무 유형은 휴게를 제외해도 12시간을 초과하여 근무 편성에 사용할 수 없습니다.",
     "leaveCaseGrantRequired": "이 사유 휴가는 아직 한도가 부여되지 않았습니다. 한 건씩 승인하고 사유 정보를 입력하세요."
   },
   "eventAction": {
@@ -570,7 +574,7 @@
     "extraWorkApproved": "{employee}의 근무표 밖 시간을 승인했습니다",
     "extraWorkRejected": "{employee}의 근무표 밖 시간을 거절했습니다"
   },
-  "salary": "월급 / 시급({currency})",
+  "salary": "{salaryType, select, hourly {시급} other {월급}}({currency})",
   "salaryType": {
     "label": "급여 유형",
     "options": {
@@ -654,7 +658,7 @@
     "options": {
       "completed": "퇴근 완료",
       "resting": "휴식 중",
-      "scheduled": "출근 전",
+      "scheduled": "미출근",
       "working": "근무 중"
     }
   },
@@ -738,10 +742,13 @@
       "table": "급여소득 원천징수 세액표 적용"
     }
   },
-  "terminatedAt": "퇴사일 (선택)",
+  "terminatedAt": "퇴사일",
   "useCurrentLocation": "현재 위치 사용",
   "usedMinutes": "사용 시간",
-  "voluntaryLaborInsuranceFrom": "5명 미만 노동보험 임의 가입 시작 월",
+  "voluntaryLaborInsuranceFrom": {
+    "label": "5명 미만 노동보험 임의 가입 시작 월",
+    "none": "미설정(5명 이상부터 의무 가입)"
+  },
   "voluntaryPension": "자발적 연금({currency})",
   "voluntaryPercent": "자발적 기여율(%)",
   "weekday": "요일",

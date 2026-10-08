@@ -154,7 +154,7 @@ const ParentalReturns = ({
   );
 
   const date = useCallback(
-    (value: string) => format.dateTime(new Date(value), "short"),
+    (value: string) => format.dateTime(new Date(value), "dateTime"),
     [format],
   );
 
@@ -242,7 +242,7 @@ const ParentalReturns = ({
       status: "approved" | "rejected",
     ) =>
       setDialog({
-        confirmText: tAttendance("save"),
+        confirmText: tAttendance(status === "approved" ? "approve" : "reject"),
         content: (
           <ReturnReviewDialog
             mutate={mutate}

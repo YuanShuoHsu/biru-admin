@@ -158,6 +158,7 @@ const CorrectionDialog = ({
               error: !!errors[name],
               fullWidth: true,
               helperText: errors[name]?.message,
+              required: true,
             },
           }}
           timezone={STORE_TIMEZONE}

@@ -232,6 +232,7 @@ const EmployeeDialog = ({
   const format = useFormatter();
 
   const tAttendance = useTranslations("attendance");
+  const tCommon = useTranslations("common");
 
   const employeeFormSchema = useEmployeeFormSchema();
 
@@ -466,6 +467,10 @@ const EmployeeDialog = ({
             )
           }
           select
+          slotProps={{
+            inputLabel: { shrink: true },
+            select: { displayEmpty: true },
+          }}
           value={
             (name === "regularLeaveWeekday"
               ? regularLeaveWeekday
@@ -497,13 +502,14 @@ const EmployeeDialog = ({
             error: !!errors.hiredAt,
             fullWidth: true,
             helperText: errors.hiredAt?.message,
+            required: true,
           },
         }}
         timezone={STORE_TIMEZONE}
         value={hiredAt ? dayjs(hiredAt) : null}
       />
       <DatePicker
-        label={tAttendance("terminatedAt")}
+        label={`${tAttendance("terminatedAt")} ${tCommon("optional")}`}
         minDate={hiredAt ? dayjs(hiredAt).add(1, "day") : undefined}
         onChange={(date) =>
           setValue(

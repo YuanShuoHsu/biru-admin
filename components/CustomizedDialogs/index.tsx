@@ -157,7 +157,7 @@ const CustomizedDialogs = () => {
         )}
         {showConfirm && (
           <Button
-            autoFocus
+            autoFocus={!formId}
             disabled={confirmDisabled}
             form={formId}
             loading={confirmLoading}

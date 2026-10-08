@@ -118,7 +118,7 @@ const LeaveDialog = ({
     (item) => item.leaveTypeId === leaveTypeId,
   );
 
-  const date = (value: string) => format.dateTime(new Date(value), "short");
+  const date = (value: string) => format.dateTime(new Date(value), "dateTime");
 
   const handleStartsAtChange = (date: Dayjs | null) => {
     setValue("startsAt", date?.isValid() ? date.toISOString() : "", {
@@ -281,6 +281,7 @@ const LeaveDialog = ({
             error: !!errors.startsAt,
             fullWidth: true,
             helperText: errors.startsAt?.message,
+            required: true,
           },
         }}
         timezone={STORE_TIMEZONE}
@@ -299,6 +300,7 @@ const LeaveDialog = ({
             error: !!errors.endsAt,
             fullWidth: true,
             helperText: errors.endsAt?.message,
+            required: true,
           },
         }}
         timezone={STORE_TIMEZONE}

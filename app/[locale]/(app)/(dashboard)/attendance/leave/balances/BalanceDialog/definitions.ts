@@ -15,7 +15,7 @@ export const useBalanceFormSchema = () => {
       .number()
       .int({ error: tValidation("number.integer") })
       .min(2026, { error: tValidation("number.min", { min: 2026 }) })
-      .max(2100, { error: tValidation("number.max", { max: 2100 }) }),
+      .max(2099, { error: tValidation("number.max", { max: 2099 }) }),
     grantedMinutes: z
       .number()
       .int({ error: tValidation("number.integer") })

@@ -163,6 +163,7 @@ const ChildDialog = ({
             error: !!errors.birthDate,
             fullWidth: true,
             helperText: errors.birthDate?.message,
+            required: true,
           },
         }}
         timezone={STORE_TIMEZONE}

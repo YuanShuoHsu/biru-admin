@@ -20,8 +20,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { EventBusy } from "@mui/icons-material";
 import {
   Button,
+  Checkbox,
   Chip,
   FormHelperText,
+  ListItemText,
   MenuItem,
   Stack,
   TextField,
@@ -213,7 +215,10 @@ const ShiftDialog = ({
       });
   }, [recentShifts, shiftTypes]);
 
-  const [conflict, setConflict] = useState<string>();
+  const [conflict, setConflict] = useState<{
+    message: string;
+    requestKey: string;
+  }>();
 
   const buildRequest = ({
     dayKind,
@@ -282,7 +287,10 @@ const ShiftDialog = ({
         setConflict(undefined);
       } catch (error) {
         if (!controller.signal.aborted)
-          setConflict(tAttendance(attendanceErrorKey(error)));
+          setConflict({
+            message: tAttendance(attendanceErrorKey(error)),
+            requestKey,
+          });
       }
     }, VALIDATION_DELAY_MS);
 
@@ -405,7 +413,8 @@ const ShiftDialog = ({
       >
         {employees.map(({ id, name }) => (
           <MenuItem key={id} value={id}>
-            {name}
+            {!shift && <Checkbox checked={employeeIds.includes(id)} />}
+            <ListItemText primary={name} />
           </MenuItem>
         ))}
       </TextField>
@@ -455,6 +464,7 @@ const ShiftDialog = ({
             error: !!errors.startsAt,
             fullWidth: true,
             helperText: errors.startsAt?.message,
+            required: true,
           },
         }}
         timezone={STORE_TIMEZONE}
@@ -473,6 +483,7 @@ const ShiftDialog = ({
             error: !!errors.endsAt,
             fullWidth: true,
             helperText: errors.endsAt?.message,
+            required: true,
           },
         }}
         timezone={STORE_TIMEZONE}
@@ -510,7 +521,9 @@ const ShiftDialog = ({
           value={repeatWeeks}
         />
       )}
-      {request && conflict && <FormHelperText error>{conflict}</FormHelperText>}
+      {conflict && conflict.requestKey === requestKey && (
+        <FormHelperText error>{conflict.message}</FormHelperText>
+      )}
       {shift && onCancelShift && (
         <StartButton
           color="error"

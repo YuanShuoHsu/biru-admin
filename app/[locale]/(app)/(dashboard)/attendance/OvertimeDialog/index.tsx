@@ -231,6 +231,7 @@ const OvertimeDialog = ({
             error: !!errors.startsAt,
             fullWidth: true,
             helperText: errors.startsAt?.message,
+            required: true,
           },
         }}
         timezone={STORE_TIMEZONE}
@@ -251,6 +252,7 @@ const OvertimeDialog = ({
             error: !!errors.endsAt,
             fullWidth: true,
             helperText: errors.endsAt?.message,
+            required: true,
           },
         }}
         timezone={STORE_TIMEZONE}

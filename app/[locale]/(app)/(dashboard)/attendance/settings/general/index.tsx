@@ -40,6 +40,7 @@ const SETTING_KEYS = [
   "allowedIps",
   "graceMinutes",
   "laborInsuranceUnitCode",
+  "voluntaryLaborInsuranceFrom",
   "occupationalIndustryCode",
   "occupationalExperienceRateMicros",
   "payday",
@@ -161,6 +162,13 @@ const Settings = ({
             "date",
           )
         : tAttendance("overtimeAgreedFrom.none");
+
+    if (key === "voluntaryLaborInsuranceFrom")
+      return values.voluntaryLaborInsuranceFrom
+        ? dayjs
+            .tz(`${values.voluntaryLaborInsuranceFrom}-01`, STORE_TIMEZONE)
+            .format(monthFormat)
+        : tAttendance("voluntaryLaborInsuranceFrom.none");
 
     if (key === "laborInsuranceUnitCode")
       return (

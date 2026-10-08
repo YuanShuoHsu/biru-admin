@@ -294,6 +294,7 @@ const TermsDialog = ({
             error: !!errors.effectiveFrom,
             fullWidth: true,
             helperText: errors.effectiveFrom?.message,
+            required: true,
           },
         }}
         timezone={STORE_TIMEZONE}
@@ -338,7 +339,10 @@ const TermsDialog = ({
           fullWidth
           helperText={errors[name]?.message}
           key={name}
-          label={tAttendance(name, { currency })}
+          label={tAttendance(name, {
+            currency,
+            salaryType: values.salaryType ?? "monthly",
+          })}
           min={0}
           onValueChange={(value) =>
             setValue(name, value ?? 0, { shouldValidate: isSubmitted })

@@ -287,8 +287,10 @@ const LeaveCaseDialog = ({
         <TextField
           error={!!errors.reference}
           fullWidth
-          helperText={errors.reference?.message}
-          label={tAttendance("caseReference")}
+          helperText={
+            errors.reference?.message ?? tAttendance("caseReference.helper")
+          }
+          label={tAttendance("caseReference.label")}
           required
           {...register("reference")}
         />
@@ -332,6 +334,7 @@ const LeaveCaseDialog = ({
               error: !!errors.eventDate,
               fullWidth: true,
               helperText: errors.eventDate?.message,
+              required: true,
             },
           }}
           timezone={STORE_TIMEZONE}
@@ -353,6 +356,7 @@ const LeaveCaseDialog = ({
             error: !!errors.startsAt,
             fullWidth: true,
             helperText: errors.startsAt?.message,
+            required: true,
           },
         }}
         timezone={STORE_TIMEZONE}
@@ -374,6 +378,7 @@ const LeaveCaseDialog = ({
             error: !!errors.endsAt,
             fullWidth: true,
             helperText: errors.endsAt?.message,
+            required: !fixedCalendarDays,
           },
         }}
         timezone={STORE_TIMEZONE}

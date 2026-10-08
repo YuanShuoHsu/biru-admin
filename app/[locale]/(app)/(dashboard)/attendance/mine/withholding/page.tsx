@@ -7,6 +7,7 @@ import MyWithholding from ".";
 
 import AttendanceTabsLayout from "../../AttendanceTabsLayout";
 
+import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
 import {
@@ -51,6 +52,15 @@ const MyWithholdingPage = async ({
   if (!access) notFound();
 
   const { memberRole, organization } = access;
+
+  if (rawSearchParams.organization !== organization.slug) {
+    const params = new URLSearchParams({ organization: organization.slug });
+
+    redirect({
+      href: `/attendance/mine/withholding?${params.toString()}`,
+      locale,
+    });
+  }
 
   const certificates = await getMyWithholdingCertificates(organization.slug, {
     headers: { cookie: cookieStore.toString() },

@@ -442,7 +442,7 @@ const SettingsDialog = ({
       />
       <DatePicker
         format={monthFormat}
-        label={tAttendance("voluntaryLaborInsuranceFrom")}
+        label={tAttendance("voluntaryLaborInsuranceFrom.label")}
         onChange={(value) =>
           setValue(
             "voluntaryLaborInsuranceFrom",

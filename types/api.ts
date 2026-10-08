@@ -3156,6 +3156,7 @@ export interface components {
       | "shiftRestTooShort"
       | "shiftTooLong"
       | "shiftTypeNameTaken"
+      | "shiftTypeTooLong"
       | "splitLeaveByYear"
       | "statutoryBalanceAutomatic"
       | "statutoryLeaveTypeLocked"
@@ -15338,6 +15339,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "shiftRestTooShort",
   "shiftTooLong",
   "shiftTypeNameTaken",
+  "shiftTypeTooLong",
   "splitLeaveByYear",
   "statutoryBalanceAutomatic",
   "statutoryLeaveTypeLocked",

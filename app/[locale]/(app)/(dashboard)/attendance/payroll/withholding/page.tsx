@@ -12,6 +12,7 @@ import AttendanceTabsLayout from "../../AttendanceTabsLayout";
 
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
+import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
 import {
@@ -64,6 +65,18 @@ const WithholdingPage = async ({
   if (!access) notFound();
 
   const { memberRole, organization } = access;
+
+  if (rawSearchParams.organization !== organization.slug) {
+    const params = new URLSearchParams({
+      organization: organization.slug,
+      ...(rawSearchParams.year && { year: rawSearchParams.year }),
+    });
+
+    redirect({
+      href: `/attendance/payroll/withholding?${params.toString()}`,
+      locale,
+    });
+  }
 
   if (
     !hasRolePermission(memberRole, { payrollTerm: ["read"], payslip: ["read"] })

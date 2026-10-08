@@ -163,7 +163,7 @@ const BalanceDialog = ({
         fullWidth
         helperText={errors.year?.message}
         label={tAttendance("year")}
-        max={2100}
+        max={2099}
         min={2026}
         onValueChange={(value) =>
           setValue("year", value ?? 2026, { shouldValidate: isSubmitted })

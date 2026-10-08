@@ -169,7 +169,7 @@ const Reviews = ({
   );
 
   const date = useCallback(
-    (value: string) => format.dateTime(new Date(value), "short"),
+    (value: string) => format.dateTime(new Date(value), "dateTime"),
     [format],
   );
 
@@ -282,7 +282,7 @@ const Reviews = ({
         !!leaveTypes.find(({ id }) => id === request.leaveTypeId)?.eventLeave;
 
       setDialog({
-        confirmText: tAttendance("save"),
+        confirmText: tAttendance(status === "approved" ? "approve" : "reject"),
         content: grantsLeaveCase ? (
           <LeaveCaseDialog
             employees={employees}
@@ -338,7 +338,7 @@ const Reviews = ({
   const handleBatchReview = useCallback(
     (status: "approved" | "rejected") =>
       setDialog({
-        confirmText: tAttendance("save"),
+        confirmText: tAttendance(status === "approved" ? "approve" : "reject"),
         content: (
           <BatchReviewDialog
             labels={Object.fromEntries(

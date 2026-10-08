@@ -823,7 +823,7 @@ const Calendar = ({
         <EventCalendar
           areEventsDraggable={canUpdate}
           areEventsResizable={canUpdate}
-          defaultPreferences={{ weekStartsOn: 0 }}
+          defaultPreferences={{ ampm: false, weekStartsOn: 0 }}
           displayTimezone={STORE_TIMEZONE}
           eventCreation={canCreate}
           events={events}

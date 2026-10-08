@@ -263,6 +263,7 @@ const DraftDialog = ({
             error: !!errors.month,
             fullWidth: true,
             helperText: errors.month?.message,
+            required: true,
           },
         }}
         timezone={STORE_TIMEZONE}

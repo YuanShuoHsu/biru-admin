@@ -31,7 +31,10 @@
   "breaks": "休息（分钟）",
   "cancelLeave": "申请撤假",
   "cancelShift": "取消班次",
-  "caseReference": "事件编号（同一事件请沿用）",
+  "caseReference": {
+    "label": "事件编号",
+    "helper": "同一事件请沿用"
+  },
   "cause": {
     "label": "法定事由",
     "options": {
@@ -66,7 +69,7 @@
   "early": "早退",
   "earlyParentalAgreed": "任职未满六个月，已取得提前育婴留停的劳资同意",
   "effectiveEvents": "采计打卡",
-  "effectiveFrom": "生效日期",
+  "effectiveFrom": "生效月份",
   "emergencyWork": "例假紧急出勤资料",
   "employee": "员工",
   "employeeStatus": {
@@ -268,6 +271,7 @@
     "foreignTaxIdentityRequired": "外籍员工须填写居住地国与税务识别码（无则填 NOTIN）。",
     "employeeNotInTeam": "员工不是所选团队的成员。",
     "shiftTypeNameTaken": "已有同名的班别。",
+    "shiftTypeTooLong": "班别扣除休息后工时超过 12 小时，无法用于排班。",
     "leaveCaseGrantRequired": "此事件假尚未核给额度，请逐笔批准并填写事件资料。"
   },
   "eventAction": {
@@ -570,7 +574,7 @@
     "extraWorkApproved": "已核准 {employee} 的排班外时数",
     "extraWorkRejected": "已不核准 {employee} 的排班外时数"
   },
-  "salary": "月薪／时薪（{currency}）",
+  "salary": "{salaryType, select, hourly {时薪} other {月薪}}（{currency}）",
   "salaryType": {
     "label": "薪资类型",
     "options": {
@@ -654,7 +658,7 @@
     "options": {
       "completed": "已下班",
       "resting": "休息中",
-      "scheduled": "尚未上班",
+      "scheduled": "未上班",
       "working": "工作中"
     }
   },
@@ -738,10 +742,13 @@
       "table": "依薪资所得扣缴税额表"
     }
   },
-  "terminatedAt": "离职日（选填）",
+  "terminatedAt": "离职日",
   "useCurrentLocation": "使用当前位置",
   "usedMinutes": "已用额度",
-  "voluntaryLaborInsuranceFrom": "未满 5 人自愿投保劳保起始月",
+  "voluntaryLaborInsuranceFrom": {
+    "label": "未满 5 人自愿投保劳保起始月",
+    "none": "未设置（满 5 人才强制投保）"
+  },
   "voluntaryPension": "劳退自提（{currency}）",
   "voluntaryPercent": "自提比例（%）",
   "weekday": "星期",

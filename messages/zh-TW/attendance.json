@@ -31,7 +31,10 @@
   "breaks": "休息（分鐘）",
   "cancelLeave": "申請撤假",
   "cancelShift": "取消班次",
-  "caseReference": "事件編號（同一事件請沿用）",
+  "caseReference": {
+    "label": "事件編號",
+    "helper": "同一事件請沿用"
+  },
   "cause": {
     "label": "法定事由",
     "options": {
@@ -66,7 +69,7 @@
   "early": "早退",
   "earlyParentalAgreed": "任職未滿六個月，已取得提前育嬰留停的勞資同意",
   "effectiveEvents": "採計打卡",
-  "effectiveFrom": "生效日期",
+  "effectiveFrom": "生效月份",
   "emergencyWork": "例假緊急出勤資料",
   "employee": "員工",
   "employeeStatus": {
@@ -268,6 +271,7 @@
     "foreignTaxIdentityRequired": "外籍員工須填寫居住地國與稅務識別碼（無則填 NOTIN）。",
     "employeeNotInTeam": "員工不是所選團隊的成員。",
     "shiftTypeNameTaken": "已有同名的班別。",
+    "shiftTypeTooLong": "班別扣除休息後工時超過 12 小時，無法用於排班。",
     "leaveCaseGrantRequired": "此事件假尚未核給額度，請逐筆核准並填寫事件資料。"
   },
   "eventAction": {
@@ -570,7 +574,7 @@
     "extraWorkApproved": "已核准 {employee} 的排班外時數",
     "extraWorkRejected": "已不核准 {employee} 的排班外時數"
   },
-  "salary": "月薪／時薪（{currency}）",
+  "salary": "{salaryType, select, hourly {時薪} other {月薪}}（{currency}）",
   "salaryType": {
     "label": "薪資類型",
     "options": {
@@ -654,7 +658,7 @@
     "options": {
       "completed": "已下班",
       "resting": "休息中",
-      "scheduled": "尚未上班",
+      "scheduled": "未上班",
       "working": "工作中"
     }
   },
@@ -738,10 +742,13 @@
       "table": "依薪資所得扣繳稅額表"
     }
   },
-  "terminatedAt": "離職日（選填）",
+  "terminatedAt": "離職日",
   "useCurrentLocation": "使用目前位置",
   "usedMinutes": "已用額度",
-  "voluntaryLaborInsuranceFrom": "未滿 5 人自願投保勞保起始月",
+  "voluntaryLaborInsuranceFrom": {
+    "label": "未滿 5 人自願投保勞保起始月",
+    "none": "未設定（滿 5 人才強制投保）"
+  },
   "voluntaryPension": "勞退自提（{currency}）",
   "voluntaryPercent": "自提比例（%）",
   "weekday": "星期",
