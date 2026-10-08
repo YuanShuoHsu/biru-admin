@@ -174,8 +174,11 @@ const Dashboard = ({
 
   const theme = useTheme();
 
+  const tCoupons = useTranslations("coupons");
   const tDashboard = useTranslations("dashboard");
+  const tMenus = useTranslations("menus");
   const tOrder = useTranslations("order");
+  const tOrders = useTranslations("orders");
   const tWaitlist = useTranslations("waitlist");
 
   const navItem = useRoutes();
@@ -378,9 +381,10 @@ const Dashboard = ({
           );
         })}
       </Grid>
-      <Grid container spacing={2}>
-        {revenue && (
-          <>
+      {revenue && (
+        <>
+          <Typography variant="h6">{tDashboard("stats.revenue")}</Typography>
+          <Grid container spacing={2}>
             <Grid size={{ xs: 12, md: 6 }}>
               <StyledCard variant="outlined">
                 <StyledCardContent>
@@ -480,306 +484,12 @@ const Dashboard = ({
                 </StyledCardContent>
               </StyledCard>
             </Grid>
-          </>
-        )}
-        {stats.discountTrend && (
-          <Grid size={{ xs: 12, md: 6 }}>
-            <StyledCard variant="outlined">
-              <StyledCardContent>
-                <Typography component="h2" variant="subtitle2">
-                  {tDashboard("stats.discount")}
-                </Typography>
-                <RevenueValueStack direction="row">
-                  <Typography variant="h4">
-                    {formatMoney(discountTotal, currency)}
-                  </Typography>
-                  <Chip
-                    label={`${stats.discountTrend.percent > 0 ? "+" : ""}${stats.discountTrend.percent}%`}
-                    size="small"
-                  />
-                </RevenueValueStack>
-                <Typography color="textSecondary" variant="caption">
-                  {periodLabel}
-                </Typography>
-                <StyledLineChart
-                  height={250}
-                  hideLegend
-                  grid={{ horizontal: true }}
-                  margin={{ left: 0, bottom: 0 }}
-                  series={[
-                    {
-                      area: true,
-                      color: chartColor,
-                      curve: "linear",
-                      data: stats.discountTrend.data,
-                      id: "discount",
-                      label: tDashboard("stats.discount"),
-                      showMark: false,
-                      valueFormatter: (value) =>
-                        formatMoney(value ?? 0, currency),
-                    },
-                  ]}
-                  gradientId="discount"
-                  xAxis={[
-                    {
-                      data: trendLabels,
-                      scaleType: "point",
-                      tickInterval: (_, index) => (index + 1) % tickStep === 0,
-                    },
-                  ]}
-                  yAxis={[moneyAxis]}
-                >
-                  <AreaGradient color={chartColor} id="discount" />
-                </StyledLineChart>
-              </StyledCardContent>
-            </StyledCard>
           </Grid>
-        )}
-        <Grid size={{ xs: 12, md: 6 }}>
-          <StyledCard variant="outlined">
-            <StyledCardContent>
-              <Typography component="h2" variant="subtitle2">
-                {tDashboard("charts.couponUsage")}
-              </Typography>
-              <Typography color="textSecondary" variant="caption">
-                {periodLabel}
-              </Typography>
-              <StyledBarChart
-                height={300}
-                hideLegend
-                grid={{ vertical: true }}
-                margin={{ left: 0, bottom: 0 }}
-                series={[
-                  {
-                    color: chartColor,
-                    data: charts.coupons.map(({ orders }) => orders),
-                    label: tDashboard("charts.couponUsage"),
-                    layout: "horizontal",
-                  },
-                ]}
-                gradientId="coupon-usage"
-                xAxis={[{ tickMinStep: 1 }]}
-                yAxis={[
-                  {
-                    data: charts.coupons.map(({ code }) => code),
-                    scaleType: "band",
-                    width: "auto",
-                  },
-                ]}
-              >
-                <AreaGradient color={chartColor} horizontal id="coupon-usage" />
-              </StyledBarChart>
-            </StyledCardContent>
-          </StyledCard>
-        </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <StyledCard variant="outlined">
-            <StyledCardContent>
-              <Typography component="h2" variant="subtitle2">
-                {tDashboard("charts.topItems")}
-              </Typography>
-              <Typography color="textSecondary" variant="caption">
-                {periodLabel}
-              </Typography>
-              <StyledBarChart
-                height={300}
-                hideLegend
-                grid={{ vertical: true }}
-                margin={{ left: 0, bottom: 0 }}
-                series={[
-                  {
-                    color: chartColor,
-                    data: charts.topItems.map(({ quantity }) => quantity),
-                    label: tDashboard("charts.topItems"),
-                    layout: "horizontal",
-                  },
-                ]}
-                gradientId="top-items"
-                xAxis={[{ tickMinStep: 1 }]}
-                yAxis={[
-                  {
-                    data: charts.topItems.map(({ name }) => name),
-                    scaleType: "band",
-                    width: "auto",
-                  },
-                ]}
-              >
-                <AreaGradient color={chartColor} horizontal id="top-items" />
-              </StyledBarChart>
-            </StyledCardContent>
-          </StyledCard>
-        </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <StyledCard variant="outlined">
-            <StyledCardContent>
-              <Typography component="h2" variant="subtitle2">
-                {tDashboard("charts.slowItems")}
-              </Typography>
-              <Typography color="textSecondary" variant="caption">
-                {periodLabel}
-              </Typography>
-              <StyledBarChart
-                height={300}
-                hideLegend
-                grid={{ vertical: true }}
-                margin={{ left: 0, bottom: 0 }}
-                series={[
-                  {
-                    color: slowItemsColor,
-                    data: charts.slowItems.map(({ quantity }) => quantity),
-                    label: tDashboard("charts.slowItems"),
-                    layout: "horizontal",
-                  },
-                ]}
-                gradientId="slow-items"
-                xAxis={[{ tickMinStep: 1 }]}
-                yAxis={[
-                  {
-                    data: charts.slowItems.map(({ name }) => name),
-                    scaleType: "band",
-                    width: "auto",
-                  },
-                ]}
-              >
-                <AreaGradient
-                  color={slowItemsColor}
-                  horizontal
-                  id="slow-items"
-                />
-              </StyledBarChart>
-            </StyledCardContent>
-          </StyledCard>
-        </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <StyledCard variant="outlined">
-            <StyledCardContent>
-              <Typography component="h2" variant="subtitle2">
-                {tDashboard("charts.topModifiers")}
-              </Typography>
-              <Typography color="textSecondary" variant="caption">
-                {periodLabel}
-              </Typography>
-              <StyledBarChart
-                height={300}
-                hideLegend
-                grid={{ vertical: true }}
-                margin={{ left: 0, bottom: 0 }}
-                series={[
-                  {
-                    color: chartColor,
-                    data: charts.modifiers.map(({ sold }) => sold),
-                    label: tDashboard("charts.topModifiers"),
-                    layout: "horizontal",
-                  },
-                ]}
-                gradientId="top-modifiers"
-                xAxis={[{ tickMinStep: 1 }]}
-                yAxis={[
-                  {
-                    data: charts.modifiers.map(
-                      ({ modifierGroupName, modifierName }) =>
-                        tDashboard("charts.modifierOption", {
-                          group: modifierGroupName,
-                          option: modifierName,
-                        }),
-                    ),
-                    scaleType: "band",
-                    width: "auto",
-                  },
-                ]}
-              >
-                <AreaGradient
-                  color={chartColor}
-                  horizontal
-                  id="top-modifiers"
-                />
-              </StyledBarChart>
-            </StyledCardContent>
-          </StyledCard>
-        </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <StyledCard variant="outlined">
-            <StyledCardContent>
-              <Typography component="h2" variant="subtitle2">
-                {tDashboard("charts.sweetnessLevels")}
-              </Typography>
-              <Typography color="textSecondary" variant="caption">
-                {periodLabel}
-              </Typography>
-              <StyledBarChart
-                height={250}
-                hideLegend
-                grid={{ vertical: true }}
-                margin={{ left: 0, bottom: 0 }}
-                series={[
-                  {
-                    color: chartColor,
-                    data: sweetnessLevels.map(({ count }) => count),
-                    label: tDashboard("charts.sweetnessLevels"),
-                    layout: "horizontal",
-                  },
-                ]}
-                gradientId="sweetness-levels"
-                xAxis={[{ tickMinStep: 1 }]}
-                yAxis={[
-                  {
-                    data: sweetnessLevels.map(({ label }) => label),
-                    scaleType: "band",
-                    width: "auto",
-                  },
-                ]}
-              >
-                <AreaGradient
-                  color={chartColor}
-                  horizontal
-                  id="sweetness-levels"
-                />
-              </StyledBarChart>
-            </StyledCardContent>
-          </StyledCard>
-        </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <StyledCard variant="outlined">
-            <StyledCardContent>
-              <Typography component="h2" variant="subtitle2">
-                {tDashboard("charts.servingTemperatureLevels")}
-              </Typography>
-              <Typography color="textSecondary" variant="caption">
-                {periodLabel}
-              </Typography>
-              <StyledBarChart
-                height={250}
-                hideLegend
-                grid={{ vertical: true }}
-                margin={{ left: 0, bottom: 0 }}
-                series={[
-                  {
-                    color: chartColor,
-                    data: servingTemperatureLevels.map(({ count }) => count),
-                    label: tDashboard("charts.servingTemperatureLevels"),
-                    layout: "horizontal",
-                  },
-                ]}
-                gradientId="serving-temperature-levels"
-                xAxis={[{ tickMinStep: 1 }]}
-                yAxis={[
-                  {
-                    data: servingTemperatureLevels.map(({ label }) => label),
-                    scaleType: "band",
-                    width: "auto",
-                  },
-                ]}
-              >
-                <AreaGradient
-                  color={chartColor}
-                  horizontal
-                  id="serving-temperature-levels"
-                />
-              </StyledBarChart>
-            </StyledCardContent>
-          </StyledCard>
-        </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
+        </>
+      )}
+      <Typography variant="h6">{tOrders("label")}</Typography>
+      <Grid container spacing={2}>
+        <Grid size={12}>
           <StyledCard variant="outlined">
             <StyledCardContent>
               <Typography component="h2" variant="subtitle2">
@@ -889,6 +599,309 @@ const Dashboard = ({
                   horizontal
                   id="payment-methods"
                 />
+              </StyledBarChart>
+            </StyledCardContent>
+          </StyledCard>
+        </Grid>
+      </Grid>
+      <Typography variant="h6">{tMenus("label")}</Typography>
+      <Grid container spacing={2}>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <StyledCard variant="outlined">
+            <StyledCardContent>
+              <Typography component="h2" variant="subtitle2">
+                {tDashboard("charts.topItems")}
+              </Typography>
+              <Typography color="textSecondary" variant="caption">
+                {periodLabel}
+              </Typography>
+              <StyledBarChart
+                height={300}
+                hideLegend
+                grid={{ vertical: true }}
+                margin={{ left: 0, bottom: 0 }}
+                series={[
+                  {
+                    color: chartColor,
+                    data: charts.topItems.map(({ quantity }) => quantity),
+                    label: tDashboard("charts.topItems"),
+                    layout: "horizontal",
+                  },
+                ]}
+                gradientId="top-items"
+                xAxis={[{ tickMinStep: 1 }]}
+                yAxis={[
+                  {
+                    data: charts.topItems.map(({ name }) => name),
+                    scaleType: "band",
+                    width: "auto",
+                  },
+                ]}
+              >
+                <AreaGradient color={chartColor} horizontal id="top-items" />
+              </StyledBarChart>
+            </StyledCardContent>
+          </StyledCard>
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <StyledCard variant="outlined">
+            <StyledCardContent>
+              <Typography component="h2" variant="subtitle2">
+                {tDashboard("charts.slowItems")}
+              </Typography>
+              <Typography color="textSecondary" variant="caption">
+                {periodLabel}
+              </Typography>
+              <StyledBarChart
+                height={300}
+                hideLegend
+                grid={{ vertical: true }}
+                margin={{ left: 0, bottom: 0 }}
+                series={[
+                  {
+                    color: slowItemsColor,
+                    data: charts.slowItems.map(({ quantity }) => quantity),
+                    label: tDashboard("charts.slowItems"),
+                    layout: "horizontal",
+                  },
+                ]}
+                gradientId="slow-items"
+                xAxis={[{ tickMinStep: 1 }]}
+                yAxis={[
+                  {
+                    data: charts.slowItems.map(({ name }) => name),
+                    scaleType: "band",
+                    width: "auto",
+                  },
+                ]}
+              >
+                <AreaGradient
+                  color={slowItemsColor}
+                  horizontal
+                  id="slow-items"
+                />
+              </StyledBarChart>
+            </StyledCardContent>
+          </StyledCard>
+        </Grid>
+        <Grid size={{ xs: 12, md: 4 }}>
+          <StyledCard variant="outlined">
+            <StyledCardContent>
+              <Typography component="h2" variant="subtitle2">
+                {tDashboard("charts.topModifiers")}
+              </Typography>
+              <Typography color="textSecondary" variant="caption">
+                {periodLabel}
+              </Typography>
+              <StyledBarChart
+                height={300}
+                hideLegend
+                grid={{ vertical: true }}
+                margin={{ left: 0, bottom: 0 }}
+                series={[
+                  {
+                    color: chartColor,
+                    data: charts.modifiers.map(({ sold }) => sold),
+                    label: tDashboard("charts.topModifiers"),
+                    layout: "horizontal",
+                  },
+                ]}
+                gradientId="top-modifiers"
+                xAxis={[{ tickMinStep: 1 }]}
+                yAxis={[
+                  {
+                    data: charts.modifiers.map(
+                      ({ modifierGroupName, modifierName }) =>
+                        tDashboard("charts.modifierOption", {
+                          group: modifierGroupName,
+                          option: modifierName,
+                        }),
+                    ),
+                    scaleType: "band",
+                    width: "auto",
+                  },
+                ]}
+              >
+                <AreaGradient
+                  color={chartColor}
+                  horizontal
+                  id="top-modifiers"
+                />
+              </StyledBarChart>
+            </StyledCardContent>
+          </StyledCard>
+        </Grid>
+        <Grid size={{ xs: 12, md: 4 }}>
+          <StyledCard variant="outlined">
+            <StyledCardContent>
+              <Typography component="h2" variant="subtitle2">
+                {tDashboard("charts.sweetnessLevels")}
+              </Typography>
+              <Typography color="textSecondary" variant="caption">
+                {periodLabel}
+              </Typography>
+              <StyledBarChart
+                height={250}
+                hideLegend
+                grid={{ vertical: true }}
+                margin={{ left: 0, bottom: 0 }}
+                series={[
+                  {
+                    color: chartColor,
+                    data: sweetnessLevels.map(({ count }) => count),
+                    label: tDashboard("charts.sweetnessLevels"),
+                    layout: "horizontal",
+                  },
+                ]}
+                gradientId="sweetness-levels"
+                xAxis={[{ tickMinStep: 1 }]}
+                yAxis={[
+                  {
+                    data: sweetnessLevels.map(({ label }) => label),
+                    scaleType: "band",
+                    width: "auto",
+                  },
+                ]}
+              >
+                <AreaGradient
+                  color={chartColor}
+                  horizontal
+                  id="sweetness-levels"
+                />
+              </StyledBarChart>
+            </StyledCardContent>
+          </StyledCard>
+        </Grid>
+        <Grid size={{ xs: 12, md: 4 }}>
+          <StyledCard variant="outlined">
+            <StyledCardContent>
+              <Typography component="h2" variant="subtitle2">
+                {tDashboard("charts.servingTemperatureLevels")}
+              </Typography>
+              <Typography color="textSecondary" variant="caption">
+                {periodLabel}
+              </Typography>
+              <StyledBarChart
+                height={250}
+                hideLegend
+                grid={{ vertical: true }}
+                margin={{ left: 0, bottom: 0 }}
+                series={[
+                  {
+                    color: chartColor,
+                    data: servingTemperatureLevels.map(({ count }) => count),
+                    label: tDashboard("charts.servingTemperatureLevels"),
+                    layout: "horizontal",
+                  },
+                ]}
+                gradientId="serving-temperature-levels"
+                xAxis={[{ tickMinStep: 1 }]}
+                yAxis={[
+                  {
+                    data: servingTemperatureLevels.map(({ label }) => label),
+                    scaleType: "band",
+                    width: "auto",
+                  },
+                ]}
+              >
+                <AreaGradient
+                  color={chartColor}
+                  horizontal
+                  id="serving-temperature-levels"
+                />
+              </StyledBarChart>
+            </StyledCardContent>
+          </StyledCard>
+        </Grid>
+      </Grid>
+      <Typography variant="h6">{tCoupons("label")}</Typography>
+      <Grid container spacing={2}>
+        {stats.discountTrend && (
+          <Grid size={{ xs: 12, md: 6 }}>
+            <StyledCard variant="outlined">
+              <StyledCardContent>
+                <Typography component="h2" variant="subtitle2">
+                  {tDashboard("stats.discount")}
+                </Typography>
+                <RevenueValueStack direction="row">
+                  <Typography variant="h4">
+                    {formatMoney(discountTotal, currency)}
+                  </Typography>
+                  <Chip
+                    label={`${stats.discountTrend.percent > 0 ? "+" : ""}${stats.discountTrend.percent}%`}
+                    size="small"
+                  />
+                </RevenueValueStack>
+                <Typography color="textSecondary" variant="caption">
+                  {periodLabel}
+                </Typography>
+                <StyledLineChart
+                  height={250}
+                  hideLegend
+                  grid={{ horizontal: true }}
+                  margin={{ left: 0, bottom: 0 }}
+                  series={[
+                    {
+                      area: true,
+                      color: chartColor,
+                      curve: "linear",
+                      data: stats.discountTrend.data,
+                      id: "discount",
+                      label: tDashboard("stats.discount"),
+                      showMark: false,
+                      valueFormatter: (value) =>
+                        formatMoney(value ?? 0, currency),
+                    },
+                  ]}
+                  gradientId="discount"
+                  xAxis={[
+                    {
+                      data: trendLabels,
+                      scaleType: "point",
+                      tickInterval: (_, index) => (index + 1) % tickStep === 0,
+                    },
+                  ]}
+                  yAxis={[moneyAxis]}
+                >
+                  <AreaGradient color={chartColor} id="discount" />
+                </StyledLineChart>
+              </StyledCardContent>
+            </StyledCard>
+          </Grid>
+        )}
+        <Grid size={{ xs: 12, md: 6 }}>
+          <StyledCard variant="outlined">
+            <StyledCardContent>
+              <Typography component="h2" variant="subtitle2">
+                {tDashboard("charts.couponUsage")}
+              </Typography>
+              <Typography color="textSecondary" variant="caption">
+                {periodLabel}
+              </Typography>
+              <StyledBarChart
+                height={300}
+                hideLegend
+                grid={{ vertical: true }}
+                margin={{ left: 0, bottom: 0 }}
+                series={[
+                  {
+                    color: chartColor,
+                    data: charts.coupons.map(({ orders }) => orders),
+                    label: tDashboard("charts.couponUsage"),
+                    layout: "horizontal",
+                  },
+                ]}
+                gradientId="coupon-usage"
+                xAxis={[{ tickMinStep: 1 }]}
+                yAxis={[
+                  {
+                    data: charts.coupons.map(({ code }) => code),
+                    scaleType: "band",
+                    width: "auto",
+                  },
+                ]}
+              >
+                <AreaGradient color={chartColor} horizontal id="coupon-usage" />
               </StyledBarChart>
             </StyledCardContent>
           </StyledCard>

@@ -2598,7 +2598,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** 查詢我所屬組織的統計 */
+    /** 查詢組織統計；平台管理員為全平台，其他人為所屬組織 */
     get: operations["MyOrganizationStatsController_getStats"];
     put?: never;
     post?: never;
@@ -7193,10 +7193,10 @@ export interface components {
       organizations: number;
     };
     OrganizationStatsResponseDto: {
-      /** @description 目前使用者所屬的組織數 */
+      /** @description 組織數；平台管理員為全平台，其他人為所屬組織 */
       total: number;
       buckets: components["schemas"]["OrganizationStatsBucketDto"][];
-      /** @description 上期新建立的所屬組織數 */
+      /** @description 上期新建立的組織數（範圍同 total） */
       previous: number;
     };
     OrganizationResponseDto: {
