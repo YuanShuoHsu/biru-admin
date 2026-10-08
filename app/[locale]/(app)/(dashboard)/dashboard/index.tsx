@@ -97,6 +97,11 @@ const StyledBarChart = styled(BarChart, {
 
 const TREND_NEUTRAL_THRESHOLD = 5;
 
+const AXIS_TICK_NUMBER = 5;
+
+const emptyWhenAllZero = <Row extends { count: number }>(rows: Row[]): Row[] =>
+  rows.some(({ count }) => count) ? rows : [];
+
 // https://github.com/mui/material-ui/blob/master/docs/data/material/getting-started/templates/dashboard/components/SessionsChart.tsx
 const AreaGradient = ({
   color,
@@ -219,11 +224,15 @@ const Dashboard = ({
 
   const periodLabel = tDashboard(`stats.period.${range}`);
 
+  const formatTick = (value: number) => format.number(value);
+
   const moneyAxis = {
-    valueFormatter: (value: number) =>
-      format.number(value, { notation: "compact" }),
+    tickNumber: AXIS_TICK_NUMBER,
+    valueFormatter: formatTick,
     width: "auto",
   } as const;
+
+  const countAxis = { tickMinStep: 1, valueFormatter: formatTick } as const;
 
   const statCards = [
     {
@@ -268,26 +277,36 @@ const Dashboard = ({
   const chartColor = theme.vars.palette.primary.main;
   const slowItemsColor = theme.vars.palette.warning.main;
 
-  const hourLabels = Array.from({ length: 24 }, (_, hour) => `${hour}:00`);
+  const toHourlyRows = (counts: number[]) =>
+    emptyWhenAllZero(
+      counts.map((count, hour) => ({ count, label: `${hour}:00` })),
+    );
 
-  const modes = orderResponseDtoModeValues.map((mode) => ({
-    count: charts.modes.find((entry) => entry.mode === mode)?.orders ?? 0,
-    label: tOrder(`mode.${mode}.label`),
-  }));
+  const peakHours = toHourlyRows(charts.hourlyOrders);
 
-  const sweetnessLevels = sweetnessLevelValues.map((level) => ({
-    count:
-      charts.sweetnessLevels.find((entry) => entry.level === level)?.sold ?? 0,
-    label: tOrder(`menuItem.sweetnessLevels.${level}`),
-  }));
+  const modes = emptyWhenAllZero(
+    orderResponseDtoModeValues.map((mode) => ({
+      count: charts.modes.find((entry) => entry.mode === mode)?.orders ?? 0,
+      label: tOrder(`mode.${mode}.label`),
+    })),
+  );
 
-  const servingTemperatureLevels = servingTemperatureLevelValues.map(
-    (level) => ({
+  const sweetnessLevels = emptyWhenAllZero(
+    sweetnessLevelValues.map((level) => ({
+      count:
+        charts.sweetnessLevels.find((entry) => entry.level === level)?.sold ??
+        0,
+      label: tOrder(`menuItem.sweetnessLevels.${level}`),
+    })),
+  );
+
+  const servingTemperatureLevels = emptyWhenAllZero(
+    servingTemperatureLevelValues.map((level) => ({
       count:
         charts.servingTemperatureLevels.find((entry) => entry.level === level)
           ?.sold ?? 0,
       label: tOrder(`menuItem.servingTemperatureLevels.${level}`),
-    }),
+    })),
   );
 
   const payments = [...charts.paymentMethods]
@@ -323,11 +342,16 @@ const Dashboard = ({
     stats.discountTrend?.data.reduce((sum, n) => sum + n, 0) ?? 0;
 
   const waitlistOutcomes = waitlist
-    ? (["seated", "noShow", "cancelled", "expired"] as const).map((status) => ({
-        count: waitlist[status],
-        label: tWaitlist(`status.${status}`),
-      }))
+    ? emptyWhenAllZero(
+        (["seated", "noShow", "cancelled", "expired"] as const).map(
+          (status) => ({
+            count: waitlist[status],
+            label: tWaitlist(`status.${status}`),
+          }),
+        ),
+      )
     : [];
+  const waitlistHourly = toHourlyRows(waitlist?.hourlyTickets ?? []);
   const waitlistEndedCount = waitlistOutcomes.reduce(
     (sum, { count }) => sum + count,
     0,
@@ -504,19 +528,25 @@ const Dashboard = ({
                 series={[
                   {
                     color: chartColor,
-                    data: charts.hourlyOrders,
+                    data: peakHours.map(({ count }) => count),
                     label: tDashboard("charts.peakHours"),
                   },
                 ]}
                 gradientId="peak-hours"
                 xAxis={[
                   {
-                    data: hourLabels,
+                    data: peakHours.map(({ label }) => label),
                     scaleType: "band",
                     tickInterval: (_, index) => index % 3 === 0,
                   },
                 ]}
-                yAxis={[{ tickMinStep: 1, width: "auto" }]}
+                yAxis={[
+                  {
+                    ...countAxis,
+                    tickNumber: AXIS_TICK_NUMBER,
+                    width: "auto",
+                  },
+                ]}
               >
                 <AreaGradient color={chartColor} id="peak-hours" />
               </StyledBarChart>
@@ -546,7 +576,7 @@ const Dashboard = ({
                   },
                 ]}
                 gradientId="order-modes"
-                xAxis={[{ tickMinStep: 1 }]}
+                xAxis={[countAxis]}
                 yAxis={[
                   {
                     data: modes.map(({ label }) => label),
@@ -583,7 +613,7 @@ const Dashboard = ({
                   },
                 ]}
                 gradientId="payment-methods"
-                xAxis={[{ tickMinStep: 1 }]}
+                xAxis={[countAxis]}
                 yAxis={[
                   {
                     data: payments.map(({ label }) => label),
@@ -629,7 +659,7 @@ const Dashboard = ({
                   },
                 ]}
                 gradientId="top-items"
-                xAxis={[{ tickMinStep: 1 }]}
+                xAxis={[countAxis]}
                 yAxis={[
                   {
                     data: charts.topItems.map(({ name }) => name),
@@ -666,7 +696,7 @@ const Dashboard = ({
                   },
                 ]}
                 gradientId="slow-items"
-                xAxis={[{ tickMinStep: 1 }]}
+                xAxis={[countAxis]}
                 yAxis={[
                   {
                     data: charts.slowItems.map(({ name }) => name),
@@ -707,7 +737,7 @@ const Dashboard = ({
                   },
                 ]}
                 gradientId="top-modifiers"
-                xAxis={[{ tickMinStep: 1 }]}
+                xAxis={[countAxis]}
                 yAxis={[
                   {
                     data: charts.modifiers.map(
@@ -754,7 +784,7 @@ const Dashboard = ({
                   },
                 ]}
                 gradientId="sweetness-levels"
-                xAxis={[{ tickMinStep: 1 }]}
+                xAxis={[countAxis]}
                 yAxis={[
                   {
                     data: sweetnessLevels.map(({ label }) => label),
@@ -795,7 +825,7 @@ const Dashboard = ({
                   },
                 ]}
                 gradientId="serving-temperature-levels"
-                xAxis={[{ tickMinStep: 1 }]}
+                xAxis={[countAxis]}
                 yAxis={[
                   {
                     data: servingTemperatureLevels.map(({ label }) => label),
@@ -894,7 +924,7 @@ const Dashboard = ({
                   },
                 ]}
                 gradientId="coupon-usage"
-                xAxis={[{ tickMinStep: 1 }]}
+                xAxis={[countAxis]}
                 yAxis={[
                   {
                     data: charts.coupons.map(({ code }) => code),
@@ -993,7 +1023,7 @@ const Dashboard = ({
                           min: 0,
                           max: Number(max) * 1.2,
                         }),
-                        tickMinStep: 1,
+                        ...countAxis,
                       },
                     ]}
                     yAxis={[
@@ -1030,19 +1060,25 @@ const Dashboard = ({
                     series={[
                       {
                         color: chartColor,
-                        data: waitlist.hourlyTickets,
+                        data: waitlistHourly.map(({ count }) => count),
                         label: tDashboard("waitlist.hourlyTickets"),
                       },
                     ]}
                     gradientId="waitlist-hourly"
                     xAxis={[
                       {
-                        data: hourLabels,
+                        data: waitlistHourly.map(({ label }) => label),
                         scaleType: "band",
                         tickInterval: (_, index) => index % 3 === 0,
                       },
                     ]}
-                    yAxis={[{ tickMinStep: 1, width: "auto" }]}
+                    yAxis={[
+                      {
+                        ...countAxis,
+                        tickNumber: AXIS_TICK_NUMBER,
+                        width: "auto",
+                      },
+                    ]}
                   >
                     <AreaGradient color={chartColor} id="waitlist-hourly" />
                   </StyledBarChart>
