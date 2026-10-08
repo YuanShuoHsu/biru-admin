@@ -6,7 +6,7 @@ const OrdersTabsLayout = ({ children }: { children: React.ReactNode }) => (
   <>
     <RouteTabs
       ariaLabel="orders tabs"
-      tabs={[{ path: "/orders/list" }, { path: "/orders/board" }]}
+      tabs={[{ path: "/orders/board" }, { path: "/orders/list" }]}
     />
     {children}
   </>

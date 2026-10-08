@@ -338,7 +338,7 @@ const routes: Route[] = [
     icon: Assignment,
     label: "orders.label",
     segment: "orders",
-    to: "/orders/list",
+    to: "/orders/board",
   },
   {
     children: [
@@ -688,6 +688,7 @@ const routes: Route[] = [
     icon: HourglassTop,
     label: "waitlist.label",
     segment: "waitlist",
+    to: "/waitlist/board",
   },
   {
     children: [
