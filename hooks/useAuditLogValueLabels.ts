@@ -13,14 +13,19 @@ import {
   sweetnessValues,
   unitCodeValues,
   userCouponSourceValues,
+  waitlistTicketStatusValues,
 } from "@/types/api";
 
+import { routing } from "@/i18n/routing";
+
 export const useAuditLogValueLabels = () => {
+  const tCommon = useTranslations("common");
   const tCoupons = useTranslations("coupons");
   const tInventory = useTranslations("inventory");
   const tMenus = useTranslations("menus");
   const tOrder = useTranslations("order");
   const tOrders = useTranslations("orders");
+  const tWaitlist = useTranslations("waitlist");
 
   return useMemo<Record<string, Record<string, string>>>(
     () => ({
@@ -41,6 +46,9 @@ export const useAuditLogValueLabels = () => {
           value,
           tOrder(`menuItem.sweetnessLevels.${value}`),
         ]),
+      ),
+      locale: Object.fromEntries(
+        routing.locales.map((value) => [value, tCommon(`locales.${value}`)]),
       ),
       mode: Object.fromEntries(
         orderModeValues.map((value) => [value, tOrder(`mode.${value}.label`)]),
@@ -78,6 +86,12 @@ export const useAuditLogValueLabels = () => {
           tMenus(`items.servingTemperatures.options.${value}`),
         ]),
       ),
+      status: Object.fromEntries(
+        waitlistTicketStatusValues.map((value) => [
+          value,
+          tWaitlist(`status.${value}`),
+        ]),
+      ),
       suitableForDiet: Object.fromEntries(
         createMenuItemDtoSuitableForDietValues.map((value) => [
           value,
@@ -94,6 +108,6 @@ export const useAuditLogValueLabels = () => {
         unitCodeValues.map((value) => [value, tInventory(`units.${value}`)]),
       ),
     }),
-    [tCoupons, tInventory, tMenus, tOrder, tOrders],
+    [tCommon, tCoupons, tInventory, tMenus, tOrder, tOrders, tWaitlist],
   );
 };

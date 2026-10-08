@@ -74,6 +74,7 @@ export const getAuditLogHref = (
     case "coupon":
     case "banner":
     case "organization":
+    case "waitlistTicket":
       return null;
   }
 };

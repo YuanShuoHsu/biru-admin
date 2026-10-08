@@ -209,6 +209,22 @@ const FIELD_LABEL_KEYS = {
   pickupLeadMinutes: "field.pickupLeadMinutes",
   pickupMaxAdvanceDays: "field.pickupMaxAdvanceDays",
   pickupCutoffMinutes: "field.pickupCutoffMinutes",
+  prefix: "field.prefix",
+  number: "field.number",
+  status: "field.status",
+  phoneNumber: "field.phoneNumber",
+  email: "field.email",
+  locale: "field.locale",
+  serviceDate: "field.serviceDate",
+  calledAt: "field.calledAt",
+  confirmedAt: "field.confirmedAt",
+  endedAt: "field.endedAt",
+  enabled: "field.enabled",
+  paused: "field.paused",
+  groups: "field.groups",
+  holdMinutes: "field.holdMinutes",
+  graceMinutes: "field.graceMinutes",
+  cutoffMinutes: "field.cutoffMinutes",
 } as const;
 
 const FIELD_RANK = new Map(
@@ -231,6 +247,15 @@ const isUrlValue = (value: unknown): value is string =>
   typeof value === "string" && /^https?:\/\//.test(value);
 
 const STOCK_FIELDS = new Set(["inventoryLevel", "lowStockThreshold"]);
+
+const TIMESTAMP_FIELDS = new Set([
+  "calledAt",
+  "confirmedAt",
+  "endedAt",
+  "paymentDate",
+  "pointsEnabledAt",
+  "usedAt",
+]);
 
 const NUMERIC_FIELDS = new Set([
   "discount",
@@ -461,6 +486,9 @@ const AuditLogs = ({
       if (typeof value === "string") {
         const snapshot = changeLabels?.[field]?.[value];
         if (snapshot) return getTargetLabel(snapshot, locale);
+
+        if (TIMESTAMP_FIELDS.has(field))
+          return format.dateTime(new Date(value), "short");
 
         if (ingredient && STOCK_FIELDS.has(field))
           return formatStock(Number(value), ingredient, {

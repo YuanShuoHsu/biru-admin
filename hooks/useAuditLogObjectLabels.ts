@@ -5,6 +5,8 @@ const QUANTITATIVE_KEYS = ["unitText", "value"] as const;
 
 const CUSTOMER_KEYS = ["email", "name", "remark", "telephone"] as const;
 
+const WAITLIST_GROUP_KEYS = ["prefix", "minPartySize", "maxPartySize"] as const;
+
 const NUTRITION_KEYS = [
   "calories",
   "carbohydrateContent",
@@ -24,6 +26,7 @@ export const useAuditLogObjectLabels = () => {
   const tAudit = useTranslations("audit");
   const tMenus = useTranslations("menus");
   const tOrder = useTranslations("order");
+  const tOrganizations = useTranslations("organizations");
 
   return useMemo<Record<string, Record<string, string>>>(
     () => ({
@@ -31,6 +34,12 @@ export const useAuditLogObjectLabels = () => {
         CUSTOMER_KEYS.map((key) => [
           key,
           tOrder(`checkout.customer.${key}.label`),
+        ]),
+      ),
+      groups: Object.fromEntries(
+        WAITLIST_GROUP_KEYS.map((key) => [
+          key,
+          tOrganizations(`waitlist.groups.${key}.label`),
         ]),
       ),
       inventoryLevel: Object.fromEntries(
@@ -50,6 +59,6 @@ export const useAuditLogObjectLabels = () => {
         ),
       },
     }),
-    [tAudit, tMenus, tOrder],
+    [tAudit, tMenus, tOrder, tOrganizations],
   );
 };
