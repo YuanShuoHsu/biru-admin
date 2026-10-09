@@ -155,6 +155,7 @@
       },
       "invoiceError": "インボイスエラー",
       "note": "補足",
+      "operator": "担当者",
       "reason": "理由",
       "reasonCode": {
         "wrongItem": "提供ミス",

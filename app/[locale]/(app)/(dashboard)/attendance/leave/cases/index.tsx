@@ -468,6 +468,11 @@ const LeaveCases = ({
         headerName: tAttendance("employee"),
       },
       {
+        field: "employeeEmail",
+        filterOperators: stringFilterOperators,
+        headerName: tAttendance("account"),
+      },
+      {
         field: "leaveTypeName",
         filterOperators: enumFilterOperators,
         headerName: tAttendance("leaveType.label"),

@@ -155,6 +155,7 @@
       },
       "invoiceError": "发票错误",
       "note": "说明",
+      "operator": "操作人员",
       "reason": "原因",
       "reasonCode": {
         "wrongItem": "出餐错误",

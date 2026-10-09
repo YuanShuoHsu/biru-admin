@@ -24,7 +24,7 @@ import {
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { EventAvailable, EventBusy } from "@mui/icons-material";
-import { Chip, IconButton, MenuItem, TextField, Tooltip } from "@mui/material";
+import { Chip, IconButton, Tooltip } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
@@ -34,6 +34,7 @@ import type {
   GridSortModel,
 } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -58,7 +59,7 @@ const DataGrid = dynamic(
   { ssr: false },
 );
 
-const YearTextField = styled(TextField)({
+const YearDatePicker = styled(DatePicker)({
   alignSelf: "flex-start",
 });
 
@@ -329,6 +330,11 @@ const HolidaySubstitutes = ({
         headerName: tAttendance("employee"),
       },
       {
+        field: "employeeEmail",
+        filterOperators: stringFilterOperators,
+        headerName: tAttendance("account"),
+      },
+      {
         field: "holidayDate",
         filterOperators: stringFilterOperators,
         headerName: tAttendance("holidaySubstitutes.holidayDate"),
@@ -391,19 +397,12 @@ const HolidaySubstitutes = ({
 
   return (
     <>
-      <YearTextField
+      <YearDatePicker
         label={tAttendance("year")}
-        onChange={(event) => handleYearChange(Number(event.target.value))}
-        select
-        size="small"
-        value={year}
-      >
-        {[initialYear - 1, initialYear, initialYear + 1].map((value) => (
-          <MenuItem key={value} value={value}>
-            {value}
-          </MenuItem>
-        ))}
-      </YearTextField>
+        onChange={(value) => value?.isValid() && handleYearChange(value.year())}
+        value={dayjs(`${year}-01-01`)}
+        views={["year"]}
+      />
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}

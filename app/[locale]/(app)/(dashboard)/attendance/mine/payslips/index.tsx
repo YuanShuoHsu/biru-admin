@@ -33,7 +33,7 @@ import type {
 import { useGridApiRef } from "@mui/x-data-grid";
 
 import type {
-  PayrollStatement,
+  PayrollStatementListItem,
   PayrollStatementFilterField,
   PayrollStatementPage,
   PayrollStatementSortField,
@@ -65,7 +65,7 @@ interface PayslipsProps {
   pageSize: number;
   quickFilterValue?: string;
   rowCount: number;
-  rows: PayrollStatement[];
+  rows: PayrollStatementListItem[];
   sortBy?: PayrollStatementSortField;
   sortDirection?: SortDirection;
 }

@@ -96,6 +96,8 @@ export const MONEY_MAX = 9_999_999_999.99;
 
 export const MONEY_FRACTION_DIGITS = 2;
 
+export const NORMAL_DAILY_WORK_HOURS = 8;
+
 export const MAX_DAILY_WORK_HOURS = 12;
 
 export const ALLOWED_IPS_MAX = 30;

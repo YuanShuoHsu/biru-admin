@@ -13,6 +13,7 @@ import { type ShiftForm, useShiftFormSchema } from "./definitions";
 import FormBox from "@/components/FormBox";
 import NumberSpinner from "@/components/NumberSpinner";
 
+import { NORMAL_DAILY_WORK_HOURS } from "@/constants/attendance";
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -131,6 +132,44 @@ const ShiftDialog = ({
   const closesAt =
     schedule && opensAt && atTimeAfter(opensAt, schedule.endTime);
 
+  const timePresets = useMemo(() => {
+    if (shiftTypes.length)
+      return shiftTypes.map(({ endTime, name, startTime }) => ({
+        label: `${name} ${startTime}–${endTime}`,
+        time: [startTime, endTime] as [string, string],
+      }));
+
+    const counts = new Map<string, number>();
+
+    for (const { endsAt, startsAt, status } of recentShifts) {
+      if (status === "cancelled") continue;
+
+      const key = `${storeTime(startsAt)}-${storeTime(endsAt)}`;
+
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+
+    return [...counts]
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, RECENT_TIMES_LIMIT)
+      .map(([key]) => {
+        const time = key.split("-") as [string, string];
+
+        return { label: time.join("–"), time };
+      });
+  }, [recentShifts, shiftTypes]);
+
+  const presetTime = timePresets[0]?.time;
+  const defaultStartsAt = presetTime
+    ? atTimeAfter(day.startOf("day"), presetTime[0])
+    : opensAt;
+  const normalEndsAt = opensAt?.add(NORMAL_DAILY_WORK_HOURS, "hour");
+  const defaultEndsAt = presetTime
+    ? defaultStartsAt && atTimeAfter(defaultStartsAt, presetTime[1])
+    : closesAt && normalEndsAt?.isBefore(closesAt)
+      ? normalEndsAt
+      : closesAt;
+
   const sharedTeams = (ids: string[]) =>
     teams.filter(({ employeeIds }) =>
       ids.every((id) => employeeIds.includes(id)),
@@ -161,9 +200,9 @@ const ShiftDialog = ({
       : {
           dayKind: "workday",
           employeeIds: initialEmployeeId ? [initialEmployeeId] : [],
-          endsAt: closesAt?.toISOString() ?? "",
+          endsAt: defaultEndsAt?.toISOString() ?? "",
           repeatWeeks: 1,
-          startsAt: opensAt?.toISOString() ?? "",
+          startsAt: defaultStartsAt?.toISOString() ?? "",
           teamId: soleTeamId(initialEmployeeId ? [initialEmployeeId] : []),
         },
     resolver: zodResolver(shiftFormSchema),
@@ -187,33 +226,6 @@ const ShiftDialog = ({
   );
 
   const rotating = employeeIds.some((id) => rotatingIds.has(id));
-
-  const timePresets = useMemo(() => {
-    if (shiftTypes.length)
-      return shiftTypes.map(({ endTime, name, startTime }) => ({
-        label: `${name} ${startTime}–${endTime}`,
-        time: [startTime, endTime] as [string, string],
-      }));
-
-    const counts = new Map<string, number>();
-
-    for (const { endsAt, startsAt, status } of recentShifts) {
-      if (status === "cancelled") continue;
-
-      const key = `${storeTime(startsAt)}-${storeTime(endsAt)}`;
-
-      counts.set(key, (counts.get(key) ?? 0) + 1);
-    }
-
-    return [...counts]
-      .sort(([, a], [, b]) => b - a)
-      .slice(0, RECENT_TIMES_LIMIT)
-      .map(([key]) => {
-        const time = key.split("-") as [string, string];
-
-        return { label: time.join("–"), time };
-      });
-  }, [recentShifts, shiftTypes]);
 
   const [conflict, setConflict] = useState<{
     message: string;

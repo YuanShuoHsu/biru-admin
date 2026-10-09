@@ -53,6 +53,7 @@ import type {
   AttendanceEmployee,
   PayrollEarningType,
   PayrollStatement,
+  PayrollStatementListItem,
   PayrollStatementFilterField,
   PayrollStatementPage,
   PayrollStatementSortField,
@@ -106,7 +107,7 @@ interface PayrollProps {
   pageSize: number;
   quickFilterValue?: string;
   rowCount: number;
-  rows: PayrollStatement[];
+  rows: PayrollStatementListItem[];
   sortBy?: PayrollStatementSortField;
   sortDirection?: SortDirection;
   terms: PayrollTerms[];
@@ -478,6 +479,11 @@ const Payroll = ({
         field: "employeeName",
         filterOperators: stringFilterOperators,
         headerName: tAttendance("employee"),
+      },
+      {
+        field: "employeeEmail",
+        filterOperators: stringFilterOperators,
+        headerName: tAttendance("account"),
       },
       {
         field: "month",

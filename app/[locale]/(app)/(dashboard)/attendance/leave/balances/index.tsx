@@ -366,6 +366,12 @@ const Balances = ({
         renderCell: renderEmptyableCell,
       },
       {
+        field: "employeeEmail",
+        filterOperators: stringFilterOperators,
+        headerName: tAttendance("account"),
+        renderCell: renderEmptyableCell,
+      },
+      {
         field: "leaveTypeName",
         filterOperators: enumFilterOperators,
         headerName: tAttendance("leaveType.label"),

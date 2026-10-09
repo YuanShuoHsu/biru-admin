@@ -66,6 +66,7 @@
     "hoursMinutes": "{hours, number}시간 {minutes, number}분",
     "minutes": "{minutes, number}분"
   },
+  "absent": "결근",
   "early": "조퇴",
   "earlyParentalAgreed": "근속 6개월 이전 육아 휴직에 노사가 합의함",
   "effectiveEvents": "적용 기록",
@@ -342,6 +343,7 @@
     }
   },
   "late": "지각",
+  "missingClockOut": "퇴근 미기록",
   "latitude": {
     "label": "매장 위도"
   },
@@ -609,6 +611,7 @@
     "eventActions": "근무 작업",
     "showDetails": "출퇴근 기록 보기",
     "endsOn": "{date} 종료",
+    "employeeWithEmail": "{name} ({email})",
     "moreEvents": "{count}건 더 보기",
     "miniCalendar": "달력",
     "previousMonth": "이전 달",

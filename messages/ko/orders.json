@@ -155,6 +155,7 @@
       },
       "invoiceError": "세금계산서 오류",
       "note": "추가 설명",
+      "operator": "처리자",
       "reason": "사유",
       "reasonCode": {
         "wrongItem": "잘못된 메뉴 제공",

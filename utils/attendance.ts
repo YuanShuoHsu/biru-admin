@@ -65,6 +65,7 @@ import type {
   PayrollEarningTypeFilterField,
   PayrollEarningTypeSortField,
   PayrollStatement,
+  PayrollStatementListItem,
   PayrollStatementFilterField,
   PayrollStatementSortField,
   PayrollTerms,
@@ -608,7 +609,7 @@ export const getPayrollStatements = cache(
     init?: RequestInit,
   ) => {
     const { data: statements, total } = await getGrid<
-      PayrollStatement,
+      PayrollStatementListItem,
       PayrollStatementFilterField,
       PayrollStatementSortField
     >(payrollPath(organizationSlug, scope, "statements"), query, init);

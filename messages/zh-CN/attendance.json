@@ -66,6 +66,7 @@
     "hoursMinutes": "{hours, number} 小时 {minutes, number} 分",
     "minutes": "{minutes, number} 分"
   },
+  "absent": "缺勤",
   "early": "早退",
   "earlyParentalAgreed": "任职未满六个月，已取得提前育婴留停的劳资同意",
   "effectiveEvents": "采计打卡",
@@ -342,6 +343,7 @@
     }
   },
   "late": "迟到",
+  "missingClockOut": "未打下班卡",
   "latitude": {
     "label": "门店纬度"
   },
@@ -609,6 +611,7 @@
     "eventActions": "班次操作",
     "showDetails": "查看打卡明细",
     "endsOn": "{date} 结束",
+    "employeeWithEmail": "{name} ({email})",
     "moreEvents": "还有 {count} 条",
     "miniCalendar": "月历",
     "previousMonth": "上个月",

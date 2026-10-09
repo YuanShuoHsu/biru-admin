@@ -155,6 +155,7 @@
       },
       "invoiceError": "Invoice error",
       "note": "Note",
+      "operator": "Operator",
       "reason": "Reason",
       "reasonCode": {
         "wrongItem": "Wrong item served",

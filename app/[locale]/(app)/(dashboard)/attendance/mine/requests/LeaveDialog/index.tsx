@@ -76,6 +76,8 @@ const LeaveDialog = ({
 
   const leaveFormSchema = useLeaveFormSchema(leaveTypes);
 
+  const tomorrow = dayjs().tz(STORE_TIMEZONE).add(1, "day").startOf("day");
+
   const {
     control,
     formState: { errors, isSubmitted },
@@ -84,13 +86,11 @@ const LeaveDialog = ({
     setValue,
   } = useForm<LeaveForm>({
     defaultValues: {
-      endsAt:
-        shift?.endsAt ??
-        dayjs().tz(STORE_TIMEZONE).add(1, "hour").toISOString(),
+      endsAt: shift?.endsAt ?? tomorrow.add(1, "day").toISOString(),
       leaveCaseId: "",
       leaveTypeId: "",
       reason: "",
-      startsAt: shift?.startsAt ?? dayjs().tz(STORE_TIMEZONE).toISOString(),
+      startsAt: shift?.startsAt ?? tomorrow.toISOString(),
     },
     resolver: zodResolver(leaveFormSchema),
   });

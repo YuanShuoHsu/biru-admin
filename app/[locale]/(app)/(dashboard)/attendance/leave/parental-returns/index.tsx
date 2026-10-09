@@ -370,6 +370,11 @@ const ParentalReturns = ({
         headerName: tAttendance("employee"),
       },
       {
+        field: "employeeEmail",
+        filterOperators: stringFilterOperators,
+        headerName: tAttendance("account"),
+      },
+      {
         field: "returnsAt",
         filterOperators: dateFilterOperators,
         headerName: tAttendance("returnsAt"),

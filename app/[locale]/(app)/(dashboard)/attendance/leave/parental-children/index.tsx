@@ -252,6 +252,11 @@ const ParentalChildren = ({
         headerName: tAttendance("employee"),
       },
       {
+        field: "employeeEmail",
+        filterOperators: stringFilterOperators,
+        headerName: tAttendance("account"),
+      },
+      {
         field: "label",
         filterOperators: stringFilterOperators,
         headerName: tAttendance("childLabel"),

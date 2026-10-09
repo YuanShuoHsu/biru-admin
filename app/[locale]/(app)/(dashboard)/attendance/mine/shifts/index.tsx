@@ -418,6 +418,16 @@ const Mine = ({
             {row.early && (
               <Chip color="error" label={tAttendance("early")} size="small" />
             )}
+            {row.absent && (
+              <Chip color="error" label={tAttendance("absent")} size="small" />
+            )}
+            {row.missingClockOut && (
+              <Chip
+                color="warning"
+                label={tAttendance("missingClockOut")}
+                size="small"
+              />
+            )}
           </ChipsStack>
         ),
       },

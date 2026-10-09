@@ -190,28 +190,36 @@ const Calendar = ({
     { fallbackData: initialLeaves },
   );
 
-  const resources = useMemo<SchedulerResource[]>(
-    () =>
-      employees.map(({ id, name }, index) => {
-        const hours = shifts
-          .filter(({ employeeId }) => employeeId === id)
-          .reduce(
-            (total, shift) =>
-              total +
-              scheduledHours(shift, range.from.valueOf(), range.to.valueOf()),
-            0,
-          );
+  const resources = useMemo<SchedulerResource[]>(() => {
+    const duplicateNames = new Set(
+      employees
+        .map(({ name }) => name)
+        .filter((name, index, names) => names.indexOf(name) !== index),
+    );
 
-        return {
-          eventColor: EMPLOYEE_COLORS[index % EMPLOYEE_COLORS.length],
-          id,
-          title: `${name} · ${tAttendance("schedule.scheduledHours", {
-            hours: format.number(hours, { maximumFractionDigits: 2 }),
-          })}`,
-        };
-      }),
-    [employees, format, range, shifts, tAttendance],
-  );
+    return employees.map(({ email, id, name }, index) => {
+      const hours = shifts
+        .filter(({ employeeId }) => employeeId === id)
+        .reduce(
+          (total, shift) =>
+            total +
+            scheduledHours(shift, range.from.valueOf(), range.to.valueOf()),
+          0,
+        );
+
+      return {
+        eventColor: EMPLOYEE_COLORS[index % EMPLOYEE_COLORS.length],
+        id,
+        title: `${
+          duplicateNames.has(name)
+            ? tAttendance("schedule.employeeWithEmail", { email, name })
+            : name
+        } · ${tAttendance("schedule.scheduledHours", {
+          hours: format.number(hours, { maximumFractionDigits: 2 }),
+        })}`,
+      };
+    });
+  }, [employees, format, range, shifts, tAttendance]);
 
   const breaks = useMemo(() => {
     const patterns = new Map<string, [number, number][]>();

@@ -110,6 +110,8 @@ export type AttendanceCopyWeekResult =
   components["schemas"]["AttendanceCopyWeekResponseDto"];
 export type PayrollStatement =
   components["schemas"]["PayrollStatementResponseDto"];
+export type PayrollStatementListItem =
+  components["schemas"]["PayrollStatementListItemResponseDto"];
 export type PayrollStatementPage =
   components["schemas"]["PayrollStatementsResponseDto"];
 export type PayrollTerms = components["schemas"]["PayrollTermsResponseDto"];

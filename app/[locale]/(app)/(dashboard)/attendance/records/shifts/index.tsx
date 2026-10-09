@@ -497,6 +497,11 @@ const Shifts = ({
         headerName: tAttendance("employee"),
       },
       {
+        field: "employeeEmail",
+        filterOperators: stringFilterOperators,
+        headerName: tAttendance("account"),
+      },
+      {
         field: "teamName",
         filterOperators: stringFilterOperators,
         headerName: tAttendance("team"),
@@ -540,6 +545,16 @@ const Shifts = ({
             )}
             {row.early && (
               <Chip color="error" label={tAttendance("early")} size="small" />
+            )}
+            {row.absent && (
+              <Chip color="error" label={tAttendance("absent")} size="small" />
+            )}
+            {row.missingClockOut && (
+              <Chip
+                color="warning"
+                label={tAttendance("missingClockOut")}
+                size="small"
+              />
             )}
           </ChipsStack>
         ),

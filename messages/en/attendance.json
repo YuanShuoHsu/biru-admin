@@ -66,6 +66,7 @@
     "hoursMinutes": "{hours, plural, one {# hr} other {# hrs}} {minutes, number} min",
     "minutes": "{minutes, number} min"
   },
+  "absent": "Absent",
   "early": "Left early",
   "earlyParentalAgreed": "Employer and employee agreed to parental leave before six months of service",
   "effectiveEvents": "Counted punches",
@@ -342,6 +343,7 @@
     }
   },
   "late": "Late",
+  "missingClockOut": "No clock-out",
   "latitude": {
     "label": "Store latitude"
   },
@@ -609,6 +611,7 @@
     "eventActions": "Shift actions",
     "showDetails": "View clock records",
     "endsOn": "Ends {date}",
+    "employeeWithEmail": "{name} ({email})",
     "moreEvents": "{count} more",
     "miniCalendar": "Calendar",
     "previousMonth": "Previous month",

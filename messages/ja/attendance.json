@@ -66,6 +66,7 @@
     "hoursMinutes": "{hours, number}時間{minutes, number}分",
     "minutes": "{minutes, number}分"
   },
+  "absent": "欠勤",
   "early": "早退",
   "earlyParentalAgreed": "勤続6か月未満の育児休業について労使の合意を取得済み",
   "effectiveEvents": "採用された打刻",
@@ -342,6 +343,7 @@
     }
   },
   "late": "遅刻",
+  "missingClockOut": "退勤打刻なし",
   "latitude": {
     "label": "店舗の緯度"
   },
@@ -609,6 +611,7 @@
     "eventActions": "シフト操作",
     "showDetails": "打刻明細を見る",
     "endsOn": "{date} 終了",
+    "employeeWithEmail": "{name} ({email})",
     "moreEvents": "他 {count} 件",
     "miniCalendar": "カレンダー",
     "previousMonth": "前月",

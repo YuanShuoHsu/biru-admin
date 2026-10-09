@@ -500,6 +500,12 @@ const OrderDetailDialog = ({
                   </ChipStack>
                 }
               />
+              {!!refund.operatorName && (
+                <InfoRow
+                  label={tOrders("detail.refunds.operator")}
+                  value={refund.operatorName}
+                />
+              )}
               {!!refund.reasonCode && (
                 <InfoRow
                   label={tOrders("detail.refunds.reason")}

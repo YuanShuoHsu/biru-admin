@@ -443,6 +443,11 @@ const Reviews = ({
         headerName: tAttendance("employee"),
       },
       {
+        field: "employeeEmail",
+        filterOperators: stringFilterOperators,
+        headerName: tAttendance("account"),
+      },
+      {
         field: "kind",
         filterOperators: enumFilterOperators,
         headerName: tAttendance("kind.label"),
